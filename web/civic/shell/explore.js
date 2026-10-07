@@ -27,6 +27,10 @@
     search.className = "civic-explore-search";
     search.innerHTML = `<input type="search" placeholder="Найти улицу в Астане" aria-label="Найти улицу в Астане" list="civic-explore-streets" autocomplete="off"><datalist id="civic-explore-streets"></datalist><button type="submit">Найти</button><span role="status" hidden></span>`;
     box.append(search);
+    // Host notices (e.g. "basemap unavailable") are placed here so they never sit under this box.
+    const notices = document.createElement("div");
+    notices.className = "civic-explore-notices";
+    box.append(notices);
     const input = search.querySelector("input"), status = search.querySelector("span"), datalist = search.querySelector("datalist");
     let streets = null;
     const controller = new AbortController();
@@ -90,6 +94,7 @@
     map?.on("style.load", paint);
     paint();
     return {
+      noticeSlot: notices,
       reset() { selected = ""; select.value = ""; input.value = ""; datalist.replaceChildren(); status.hidden = true; paint(); },
       updateRecords(items) {
         const demo = items.filter((x) => x.evidence === "synthetic").length;

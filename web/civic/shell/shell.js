@@ -446,8 +446,21 @@
     } catch (error) { console.warn("civic camera", error); }
   }
 
+  // The map's status notice (map.js writes it, e.g. "basemap unavailable") lives inside the navigation
+  // box while the city mode is on, so the box can never cover it; it goes back for the other modes.
+  const mapStatus = document.getElementById("map-status");
+  const mapStatusHome = document.createComment("map-status home");
+  mapStatus?.after(mapStatusHome);
+  function placeMapStatus(inside) {
+    if (!mapStatus) return;
+    const slot = inside ? S.mounted.explore?.noticeSlot : null;
+    if (slot) { if (mapStatus.parentNode !== slot) slot.append(mapStatus); }
+    else if (mapStatus.parentNode !== mapStatusHome.parentNode) mapStatusHome.before(mapStatus);
+  }
+
   function mountExplore() {
-    if (S.mounted.explore || !currentMap() || !window.CivicExplore) return;
+    if (S.mounted.explore) { placeMapStatus(true); return; }
+    if (!currentMap() || !window.CivicExplore) return;
     const frame = (b, maxZoom) => {
       const mobile = innerWidth < 761;
       const padding = mobile ? { top: 185, left: 24, right: 60, bottom: Math.round(innerHeight * 0.48) }
@@ -476,6 +489,7 @@
         if (!S.mounted.map?.fitAll?.()) toastSafe("Нет объектов с координатами для выбранных фильтров.");
       },
     });
+    placeMapStatus(true);
   }
 
   function syncModeButtons() {
@@ -498,6 +512,7 @@
     void loadModules().then(() => mountPublic());
   }
   function deactivateCivic() {
+    placeMapStatus(false);  // before the navigation box (its current parent) is destroyed
     for (const name of Object.keys(S.mounted)) destroyMounted(name);
     for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-moderation-root", "civic-scenarios-root"])
       $c(id).replaceChildren();

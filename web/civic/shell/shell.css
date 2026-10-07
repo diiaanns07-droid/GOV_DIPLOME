@@ -30,6 +30,16 @@
 .civic-explore-search input { flex: 1; width: 0; min-width: 60px; border: 0; border-radius: 5px; padding: 5px; background: #f2f5ee; color: var(--ink); font: inherit; font-size: 12px; }
 .civic-explore-search span { width: 100%; font-size: 11px; color: #8b5419; }
 body[data-civic-drawer="open"] .civic-explore { display: none; }
+/* Basemap/map notice inside the navigation box (moved there by shell.js in the city mode). */
+.civic-mode .civic-explore #map-status { position: static; max-width: none; margin: 7px 0 0; padding: 6px 9px;
+  font-size: 11px; line-height: 1.35; white-space: normal; }
+.civic-explore-notices:empty { display: none; }
+/* Tablets (761–1100): the panel is 360px wide; the navigation box takes the rest and wraps its row. */
+@media (min-width: 761px) and (max-width: 1100px) {
+  .civic-explore { left: 396px; right: 76px; max-width: none; }
+  .civic-explore-row { flex-wrap: wrap; row-gap: 2px; }
+  .civic-explore-row > label { flex: 1 1 100%; }
+}
 body[data-civic-drawer="open"].civic-mode .civic-panel { visibility: hidden; }
 @media (max-width: 760px) {
   .civic-explore { top: 82px; left: 10px; right: 60px; max-width: none; padding: 7px 10px; border-radius: 12px; }

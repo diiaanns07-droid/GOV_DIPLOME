@@ -1,0 +1,130 @@
+{
+  "base": "http://127.0.0.1:45147/",
+  "empty": false,
+  "started_at": "2026-10-07T10:15:48.999Z",
+  "checks": [
+    {
+      "name": "360x800: no horizontal scroll",
+      "status": "PASS",
+      "detail": {
+        "scrollW": 360,
+        "innerW": 360,
+        "over": [],
+        "status": {
+          "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+          "readable": false,
+          "insideExplore": false
+        },
+        "explore": 290
+      }
+    },
+    {
+      "name": "360x800: navigation box, map tools, top bar and panel do not overlap",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "360x800: map notice readable (not under the navigation box)",
+      "status": "FAIL",
+      "detail": {
+        "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+        "readable": false,
+        "insideExplore": false
+      }
+    },
+    {
+      "name": "360x800: navigation box wide enough for the district name and search (≥ 280px)",
+      "status": "PASS",
+      "detail": 290
+    },
+    {
+      "name": "360x800: no page errors",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "768x1024: no horizontal scroll",
+      "status": "PASS",
+      "detail": {
+        "scrollW": 768,
+        "innerW": 768,
+        "over": [],
+        "status": {
+          "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+          "readable": false,
+          "insideExplore": false
+        },
+        "explore": 220
+      }
+    },
+    {
+      "name": "768x1024: navigation box, map tools, top bar and panel do not overlap",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "768x1024: map notice readable (not under the navigation box)",
+      "status": "FAIL",
+      "detail": {
+        "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+        "readable": false,
+        "insideExplore": false
+      }
+    },
+    {
+      "name": "768x1024: navigation box wide enough for the district name and search (≥ 280px)",
+      "status": "FAIL",
+      "detail": 220
+    },
+    {
+      "name": "768x1024: no page errors",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1440x900: no horizontal scroll",
+      "status": "PASS",
+      "detail": {
+        "scrollW": 1440,
+        "innerW": 1440,
+        "over": [],
+        "status": {
+          "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+          "readable": false,
+          "insideExplore": false
+        },
+        "explore": 440
+      }
+    },
+    {
+      "name": "1440x900: navigation box, map tools, top bar and panel do not overlap",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1440x900: map notice readable (not under the navigation box)",
+      "status": "FAIL",
+      "detail": {
+        "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+        "readable": false,
+        "insideExplore": false
+      }
+    },
+    {
+      "name": "1440x900: navigation box wide enough for the district name and search (≥ 280px)",
+      "status": "PASS",
+      "detail": 440
+    },
+    {
+      "name": "1440x900: no page errors",
+      "status": "PASS",
+      "detail": []
+    }
+  ],
+  "finished_at": "2026-10-07T10:15:58.660Z",
+  "summary": {
+    "pass": 11,
+    "fail": 4,
+    "not_run": 0
+  }
+}
