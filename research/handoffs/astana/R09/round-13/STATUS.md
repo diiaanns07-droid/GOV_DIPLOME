@@ -13,7 +13,7 @@
 
 - Код: `c46b2ed` (tested_sha = code_sha). Документы поставки: research/round-13-results/R09/
   (DELIVERY.json, ACCEPTANCE.txt, RUN.txt, INTEGRATION.txt, EVAL_REPORT.txt, патчи, JSON прогонов, скриншоты).
-- Последний запушенный SHA: см. строку «Последний push» ниже (обновляется отдельным коммитом).
+- Последний запушенный SHA с поставкой: `ef7f4b0` (код `c46b2ed`).
 - Проверки: pytest tests/civic/R09 — 360 passed (вкл. Chromium); остальные тесты базы — 746 passed, 2 skipped;
   eval 61 PASS / 0 FAIL / 1 NOT_RUN; приёмка integration_r13 — 13/13 на R07 56538a3 и 13/13 на R07 f166100;
   шлюз R01 8eb301d + патч — 6/6, pytest R01+R09 — 410 passed, 1 skipped.
@@ -80,4 +80,4 @@ CP4 — интеграция (результаты в research/round-13-results/
 R01 применяет research/round-13-results/R09/r01_integration_r13.patch в кандидате и прогоняет браузерный P0:
 карточка -> вопрос -> публикация новой редакции -> onStale; сравнение R07 -> «Это ваш расчёт».
 
-Последний push: c46b2ed (код); документы — следующий коммит ветки.
+Последний push с поставкой: ef7f4b0 (документы; код c46b2ed). Эта строка добавлена следующим коммитом.
