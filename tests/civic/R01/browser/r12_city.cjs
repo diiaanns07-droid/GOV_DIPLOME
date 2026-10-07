@@ -17,6 +17,15 @@ const checks = [];
 const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null });
   console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined && detail !== null ? " — " + JSON.stringify(detail).slice(0, 400) : "")); };
 const notRun = (name, reason) => { checks.push({ name, status: "NOT_RUN", detail: reason }); console.log("NOT_RUN " + name + " — " + reason); };
+// R03's intermittent "Image civic-r03-demo-ring could not be loaded" (race after the offline style
+// swap; R03-owned, fix proposed in research/round-13-results/R01/proposed/r03_r01_proposal.patch) is
+// reported as its own FAIL so it neither hides other page errors nor masquerades as an R01 error.
+const R03_RING = /Image "civic-r03-demo-ring" could not be loaded/;
+function checkPageErrors(name, errs) {
+  const ring = errs.filter((e) => R03_RING.test(e)), other = errs.filter((e) => !R03_RING.test(e));
+  check(name, other.length === 0, other);
+  if (ring.length) check(name + " — R03 demo-ring image race (R03-owned)", false, ring.length + " warning(s)");
+}
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
 
@@ -112,7 +121,7 @@ async function directLinkAndReload(browser, base, w, h, item) {
   const again = await state();
   check(`${tag}: F5 keeps the city mode, the record and its place`, again.selected === item.id && !!again.cardTitle && Array.isArray(again.covered) && again.covered.length === 0, again);
   check(`${tag}: resident session makes no staff API calls`, staffCalls.length === 0, staffCalls.slice(0, 3));
-  check(`${tag}: no page errors on direct link / reload`, errs.length === 0, errs);
+  checkPageErrors(`${tag}: no page errors on direct link / reload`, errs);
   await ctx.close();
 }
 
@@ -150,7 +159,7 @@ async function modeRoundTrip(browser, base, w, h) {
     check(`${tag}: back from ${other}: navigation box, notice inside it, city overview, training districts hidden`,
       back.mode === "civic" && back.explore && (back.readable === null || (back.statusInExplore && back.readable)) && /Обзор: вся Астана/.test(back.view || "") && back.districts !== "visible", back);
   }
-  check(`${tag}: no page errors across mode switches`, page.errs.length === 0, page.errs);
+  checkPageErrors(`${tag}: no page errors across mode switches`, page.errs);
   await ctx.close();
 }
 
@@ -175,7 +184,7 @@ async function emptyRegistry(browser, base) {
     await page.waitForTimeout(2600);
     const view = await page.textContent(".civic-explore-view");
     check(`${tag}: district view on an empty registry says "реестр пуст"`, /реестр пуст/.test(view || ""), view);
-    check(`${tag}: no page errors (empty registry)`, page.errs.length === 0, page.errs);
+    checkPageErrors(`${tag}: no page errors (empty registry)`, page.errs);
     await ctx.close();
   }
 }
@@ -289,7 +298,7 @@ async function emptyRegistry(browser, base) {
       const selView = await page.textContent(".civic-explore-view");
       check(`${tag}: the view line names the open record`, /Открыта запись/.test(selView || ""), selView);
       await page.screenshot({ path: path.join(OUT, `05_selected_${tag}.png`) });
-      check(`${tag}: no page errors`, page.errs.length === 0, page.errs);
+      checkPageErrors(`${tag}: no page errors`, page.errs);
       await ctx.close();
     }
 

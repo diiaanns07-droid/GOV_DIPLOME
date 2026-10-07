@@ -202,7 +202,14 @@
     <section id="civic-scenarios" class="civic-drawer" hidden aria-label="Сравнение ограничений">
       <div class="civic-box-head"><h2>Сравнение ограничений</h2><button type="button" class="civic-close" data-close="scenarios" aria-label="Закрыть сравнение">×</button></div>
       <p class="civic-note civic-scenario-limits">Сравните два варианта перекрытия на пешеходной сети. Расчёт показывает изменение длины пути; неизвестный доступ исключён. Это гипотеза, не прогноз пробок и не официальное перекрытие.</p>
-      <div id="civic-scenarios-root" class="civic-slot civic-drawer-body"></div>
+      <div class="civic-drawer-body">
+        <div id="civic-scenarios-root" class="civic-slot"></div>
+        <section id="civic-scenario-explain" class="civic-scenario-explain" hidden aria-label="Объяснение расчёта A/B">
+          <h3>Объяснение этого расчёта</h3>
+          <p class="civic-note">Помощник объясняет результат, который посчитал сервер для показанных вариантов; цифры из браузера не принимаются. Изменили варианты — нажмите «Сравнить» снова.</p>
+          <div id="civic-scenario-explain-root"></div>
+        </section>
+      </div>
       <p class="civic-attribution">© участники OpenStreetMap (ODbL-1.0). Дата и источник — у выбранной сети. Старый срез K03: Overture Maps Foundation, выпуск 2026-09-23.1.</p>
     </section>`;
   document.body.append(root);
@@ -212,7 +219,7 @@
   // implementation per function. A missing module is reported, never silently replaced.
   const moduleFor = (name) => ({
     map: window.CivicMap, editor: window.CivicEditor, feedback: window.CivicFeedback,
-    scenarios: window.CivicScenarios, assistant: window.CivicAssistant,
+    scenarios: window.CivicScenarios, assistant: window.CivicAssistant, scenarioAssistant: window.CivicAssistant,
   })[name] || null;
   const isFallback = () => false;
   const MODULE_MISSING = {
@@ -294,8 +301,11 @@
     mount("map", $c("civic-map-root"), {
       map: currentMap(),
       fitOnLoad: false,  // Open the city; fitting the small demo list is an explicit action.
-      onData: (items) => { S.recordCount = items.length; S.mounted.explore?.updateRecords?.(items); },
-      onSelect: (item) => onSelect(item),
+      onData: (items) => { S.recordCount = items.length; S.mounted.explore?.updateRecords?.(items); refreshAssistantRevision(); },
+      onSelect: (item, info) => onSelect(item, info),
+      // Proposed R03 option (INTEGRATION.txt): camera padding from the host's live layout. An R03
+      // that does not know it ignores it; the shell's fitAll adapter/keepVisible cover that case.
+      getPadding: () => freeArea(),
       onFeedback: (target) => openFeedback(target),
     });
     if (S.selected) S.mounted.map?.selectObject?.(S.selected);
@@ -305,7 +315,19 @@
     mountPublic();
   }
 
-  function onSelect(item) {
+  // A map click belongs to the active tool: R04 drawing (civic-editor:tool) or the open scenario drawer
+  // (R07 picks closures/points by clicking the map). R03 does not know these tools, so a click that
+  // also hit a public object is undone here; list/card/permalink selections are not affected.
+  const mapToolActive = () => S.editorTool || !$c("civic-scenarios").hidden;
+  // An R03 with the proposed setInteractive() lock stops selecting/hovering by itself; the undo in
+  // onSelect stays as the fallback for R03 versions without it.
+  const syncMapInteractive = () => S.mounted.map?.setInteractive?.(!mapToolActive());
+  function onSelect(item, info) {
+    if (item && info?.source === "map" && mapToolActive()) {
+      setTimeout(() => S.mounted.map?.selectObject?.(null), 0);  // not inside R03's own selectObject
+      if (!S.toolHintShown) { S.toolHintShown = true; toastSafe("Пока открыт инструмент на карте, щелчок не открывает карточки объектов."); }
+      return;
+    }
     const id = item && typeof item === "object" ? item.id : item;
     S.selected = typeof id === "string" ? id : null;
     if (S.selected && window.CivicExplore) {
@@ -331,10 +353,11 @@
     if (S.selected && assistant && S.modules?.assistant?.status === "ready") {
       // Mount R09 only for an object confirmed public (permalinks may name drafts/unknown ids).
       const id = S.selected, seq = ++S.assistantSeq;
-      request("GET", "/objects/" + encodeURIComponent(id)).then(() => {
+      request("GET", "/objects/" + encodeURIComponent(id)).then((data) => {
         if (seq !== S.assistantSeq || S.selected !== id || S.mode !== "civic") return;
         $c("civic-assistant-box").hidden = false;
-        mount("assistant", $c("civic-assistant-root"), { objectId: id });
+        // R09: the card's revision on screen; an answer built for another revision is not shown.
+        mount("assistant", $c("civic-assistant-root"), { objectId: id, revision: revisionOf(data) });
       }).catch((error) => {
         if (seq !== S.assistantSeq || S.selected !== id) return;
         if (error?.status === 404) {
@@ -344,6 +367,17 @@
       });
     }
     if (S.selected && innerWidth < 761 && S.sheet === "peek") setSheet("half");
+  }
+  const revisionOf = (data) => (Number.isInteger(data?.item?.revision) ? data.item.revision : undefined);
+  // Data changed (R03 refresh, a publish from the cabinet): the assistant learns the current revision of
+  // the open card, so an answer prepared for the previous revision is withdrawn by R09 itself.
+  function refreshAssistantRevision() {
+    const id = S.selected, handle = S.mounted.assistant;
+    if (!id || typeof handle?.update !== "function") return;
+    const seq = S.assistantSeq;
+    request("GET", "/objects/" + encodeURIComponent(id)).then((data) => {
+      if (seq === S.assistantSeq && S.selected === id && S.mounted.assistant === handle) handle.update({ revision: revisionOf(data) });
+    }, () => null);
   }
   function openFeedback(target) {
     if (S.modules?.feedback?.status !== "ready") {
@@ -368,15 +402,47 @@
     $c("civic-editor").hidden = false;
     syncDrawerFlag();
     document.body.classList.add("civic-editor-open");
+    // R04 boots with its own GET /session; openObject before that answer shows the login form and
+    // gives up. A freshly mounted cabinet opens the object after that /session reply was applied.
+    const fresh = !S.mounted.editor;
+    const sessionApplied = fresh && objectId ? nextSessionReply(8000) : Promise.resolve();
     const handle = S.mounted.editor || mount("editor", $c("civic-editor-root"), {
-      map: currentMap(),
-      onPublished: (item) => {
-        S.mounted.map?.refresh?.();
-        if (item?.id) { S.selected = item.id; S.mounted.map?.selectObject?.(item.id); }
-      },
+      // A getter: a cabinet opened before the map loads is not left with map=null (R04 resolves it).
+      map: () => currentMap(),
+      onPublished: (item, info) => onEditorPublished(item, info),
     });
-    if (objectId && handle?.openObject) handle.openObject(objectId);
+    if (objectId && handle?.openObject) {
+      sessionApplied.then(async () => {
+        if (S.mounted.editor !== handle) return;
+        const opened = await handle.openObject(objectId);
+        // Still booting (slow /session): one more try once its reply is in.
+        if (opened === false && session.authenticated && S.mounted.editor === handle)
+          nextSessionReply(4000).then(() => { if (S.mounted.editor === handle) handle.openObject(objectId); });
+      });
+    }
     $c("civic-editor").querySelector(".civic-close")?.focus();
+  }
+  // Resolves after the next /session-family reply has been applied by everyone (macrotask later).
+  function nextSessionReply(timeoutMs) {
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = () => { if (done) return; done = true; sessionListeners.delete(listener); setTimeout(resolve, 0); };
+      const listener = () => finish();
+      sessionListeners.add(listener);
+      setTimeout(finish, timeoutMs);
+    });
+  }
+  // R04 calls onPublished(publicItem, {action}) for publish, an edit of a published record and archive.
+  // Residents are shown only what is public now: an archived (or not published) record is never
+  // selected as public; if it was open, its card is closed.
+  function onEditorPublished(item, info) {
+    S.mounted.map?.refresh?.();
+    refreshAssistantRevision();
+    const id = typeof item?.id === "string" ? item.id : null;
+    if (!id) return;
+    const isPublic = info?.action !== "archive" && item.publication === "published";
+    if (isPublic) { S.selected = id; S.mounted.map?.selectObject?.(id); }
+    else if (S.selected === id) { S.selected = null; S.mounted.map?.selectObject?.(null); }
   }
   // Resident messages (R06 mountModeration): own staff-only drawer, as proposed in R06's
   // r01_integration.patch. The button exists only for a signed-in editor; the server still decides.
@@ -413,8 +479,17 @@
     const open = ["civic-editor", "civic-moderation", "civic-scenarios"].some((id) => !$c(id).hidden);
     if (open) document.body.dataset.civicDrawer = "open"; else delete document.body.dataset.civicDrawer;
   }
+  // R03 answers a click on overlapping objects with its own chooser ("pick") without calling onSelect,
+  // so a click made for a tool can leave it open behind the drawer. When the tool ends, a pick view
+  // that nobody chose is closed (R03 interaction lock proposed in INTEGRATION.txt).
+  function clearToolPick() {
+    S.toolHintShown = false;
+    syncMapInteractive();
+    if (S.mounted.map?.getState?.().view === "pick" && !S.selected) S.mounted.map.selectObject?.(null);
+  }
   function closeEditor() {
     S.editorTool = false;
+    clearToolPick();
     destroyMounted("editor");
     $c("civic-editor").hidden = true;
     syncDrawerFlag();
@@ -426,13 +501,47 @@
     if (!$c("civic-moderation").hidden) closeModeration();
     $c("civic-scenarios").hidden = false;
     syncDrawerFlag();
+    syncMapInteractive();
     // R07 review: the shell's api.request already adds /api/civic/v1 -> empty apiPrefix.
-    mount("scenarios", $c("civic-scenarios-root"), { map: currentMap(), apiPrefix: "" });
+    mount("scenarios", $c("civic-scenarios-root"), { map: currentMap(), apiPrefix: "", api: scenarioApi() });
+    watchScenarioResult();
+  }
+  // R09 x R07 (round 13): R07 has no result callback, so the shell watches the requests it makes through
+  // the shell API. A successful server compare is explained by the assistant as scenario_id
+  // "result:<result_digest>" (the gateway keeps that server result; the browser sends no numbers).
+  // A new compare, or R07 clearing its result after the inputs changed, withdraws the old explanation.
+  function scenarioApi() {
+    return { ...api, request: async (method, path, body, options) => {
+      const compare = String(method).toUpperCase() === "POST" && /\/scenarios\/compare$/.test(path);
+      if (compare) explainScenario(null);
+      const data = await api.request(method, path, body, options);
+      if (compare && typeof data?.result_digest === "string" && /^[0-9a-f]{16,64}$/.test(data.result_digest)) explainScenario(data.result_digest);
+      return data;
+    } };
+  }
+  function explainScenario(digest) {
+    if (digest === S.scenarioDigest && S.mounted.scenarioAssistant) return;
+    S.scenarioDigest = digest || null;
+    destroyMounted("scenarioAssistant");
+    $c("civic-scenario-explain-root").replaceChildren();
+    const ready = !!digest && !!moduleFor("assistant") && S.modules?.assistant?.status === "ready" && !$c("civic-scenarios").hidden;
+    $c("civic-scenario-explain").hidden = !ready;
+    if (ready) mount("scenarioAssistant", $c("civic-scenario-explain-root"), { objectId: null, scenarioId: "result:" + digest });
+  }
+  function watchScenarioResult() {
+    S.scenarioObserver?.disconnect();
+    const out = $c("civic-scenarios-root").querySelector(".civic-r07-result");
+    if (!out || typeof MutationObserver !== "function") return;
+    S.scenarioObserver = new MutationObserver(() => { if (!out.childElementCount && S.scenarioDigest) explainScenario(null); });
+    S.scenarioObserver.observe(out, { childList: true });
   }
   function closeScenarios() {
+    S.scenarioObserver?.disconnect(); S.scenarioObserver = null;
+    explainScenario(null);
     destroyMounted("scenarios");
     $c("civic-scenarios-root").replaceChildren();
     $c("civic-scenarios").hidden = true;
+    clearToolPick();  // after hiding: the map is interactive again
     syncDrawerFlag();
   }
   function setSheet(stateName) {
@@ -648,7 +757,9 @@
   function deactivateCivic() {
     placeMapStatus(false);  // before the navigation box (its current parent) is destroyed
     for (const name of Object.keys(S.mounted)) destroyMounted(name);
-    for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-moderation-root", "civic-scenarios-root"])
+    S.scenarioObserver?.disconnect(); S.scenarioObserver = null; S.scenarioDigest = null;
+    $c("civic-scenario-explain").hidden = true;
+    for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-moderation-root", "civic-scenarios-root", "civic-scenario-explain-root"])
       $c(id).replaceChildren();
     $c("civic-feedback-box").hidden = $c("civic-assistant-box").hidden = true;
     $c("civic-editor").hidden = $c("civic-scenarios").hidden = $c("civic-moderation").hidden = true;
@@ -693,7 +804,7 @@
     setTimeout(() => { if (!window.GOVTECH?.active && S.mode === "school") { S.mode = "training"; syncModeButtons(); } }, 0);
   });
   // R04 announces its map drawing tool; while it is active, Escape cancels the tool, not the cabinet.
-  root.addEventListener("civic-editor:tool", (event) => { S.editorTool = !!event.detail?.active; });
+  root.addEventListener("civic-editor:tool", (event) => { S.editorTool = !!event.detail?.active; if (S.editorTool) syncMapInteractive(); else clearToolPick(); });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || S.mode !== "civic") return;
     // A module that handled Escape itself (confirmation, tool, menu) calls preventDefault.
@@ -725,6 +836,7 @@
   function onMapReady() {
     S.mapState = "ready";
     if (S.mode === "civic") { trainingLayers(false); mountExplore(); civicCamera(); remountAll(); }
+    S.mounted.editor?.setMap?.(currentMap());  // a cabinet opened before the map gets it now
     S.started = true;
   }
   function onMapUnavailable() {
@@ -739,6 +851,7 @@
     get active() { return S.mode === "civic"; },
     get mode() { return S.mode; },
     get selected() { return S.selected; },
+    get mapView() { return S.mounted.map?.getState?.().view || null; },  // R03 view: list | card | pick (read-only)
     get modules() { return S.modules ? JSON.parse(JSON.stringify(S.modules)) : null; },
     isFallback,
     setMode, openEditor, closeEditor, openFeedback, closeFeedback, onMapReady, onMapUnavailable,
