@@ -1,5 +1,5 @@
 # Proposed by R04 round 13 for R01 (owner of these files). Base: R01 code 223296ec02bb14568b7d5782dc7de473372d2aec.
-# Apply: git apply --check research/round-13-results/R04/r01_editor_integration.patch (on a checkout of 223296e)
+# Check: git apply --check research/round-13-results/R04/r01_editor_integration.patch (on a checkout of 223296e)
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
 @@ -97,6 +97,11 @@
@@ -28,7 +28,7 @@
        }
        throw error;
      }
-@@ -350,10 +352,12 @@
+@@ -350,10 +352,20 @@
      syncDrawerFlag();
      document.body.classList.add("civic-editor-open");
      const handle = S.mounted.editor || mount("editor", $c("civic-editor-root"), {
@@ -39,8 +39,16 @@
 +      onPublished: (item, info) => {
          S.mounted.map?.refresh?.();
 -        if (item?.id) { S.selected = item.id; S.mounted.map?.selectObject?.(item.id); }
-+        // after archive (info.visible === false) the record is no longer public: do not open it (R03 would show 404)
-+        if (item?.id && info?.visible !== false && item.publication === "published") { S.selected = item.id; S.mounted.map?.selectObject?.(item.id); }
++        if (!item?.id) return;
++        if (info?.visible === false || item.publication !== "published") {
++          // archived: no longer public — forget it as the selected object (no 404 card, no stale #object= link)
++          if (S.selected === item.id) {
++            S.selected = null;
++            if (location.hash.startsWith("#object=")) history.replaceState(null, "", location.pathname + location.search);
++          }
++          return;
++        }
++        S.selected = item.id; S.mounted.map?.selectObject?.(item.id);
        },
      });
      if (objectId && handle?.openObject) handle.openObject(objectId);

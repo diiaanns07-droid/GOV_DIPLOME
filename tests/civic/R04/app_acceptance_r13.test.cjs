@@ -170,7 +170,8 @@ describe("R04 round 13 in the real app (" + LABEL + (PATCHED ? ", R01 patch appl
     await sleep(1200);
     const after = await p.evaluate(() => ({ hash: location.hash, notFound: /Объект не найден/.test(document.body.innerText) }));
     notes.after_archive = after;
-    if (PATCHED) assert.equal(after.notFound, false, "with the R01 patch the archived record is not opened on the public map");
+    // the R03 panel is hidden behind the cabinet drawer, so the page text cannot show its card: check the shell's selection/link instead
+    if (PATCHED) assert.ok(!after.hash.includes(encodeURIComponent(chainId)), "with the R01 patch the archived record is not the selected object / link: " + after.hash);
     await shot(p, "03-after-archive");
     assert.deepEqual(p.errors, []);
     await p.context().close();

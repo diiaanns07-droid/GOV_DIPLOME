@@ -1,0 +1,61 @@
+{
+ "purpose": "temporary verification assembly of R04 round 13 (not committed, not pushed, not a competing build); removed after the run",
+ "base": {
+  "role": "R01",
+  "branch": "claude/affectionate-ride-bol5v8",
+  "sha": "223296ec02bb14568b7d5782dc7de473372d2aec"
+ },
+ "applied": [
+  {
+   "what": "R04 proposed patch for R01",
+   "file": "research/round-13-results/R04/r01_editor_integration.patch",
+   "sha256": "d0b8dbf72454724d436a4542df5d9523518232de364cadb07ac774378224adb1",
+   "paths": [
+    "ui/web_server.py",
+    "web/civic/shell/shell.js"
+   ],
+   "note": "patch revision 2: onPublished also clears the shell selection and #object= for an archived record (visible:false)"
+  },
+  {
+   "what": "R02 store of the pinned delivery",
+   "role": "R02",
+   "branch": "claude/elegant-franklin-jbhprq",
+   "sha": "bd7a911ad23573ce0d168823199ecb3cc86557c9",
+   "paths": [
+    "ui/civic_store/"
+   ]
+  },
+  {
+   "what": "R04 editor",
+   "role": "R04",
+   "branch": "claude/intelligent-sagan-7shpeh",
+   "sha": "3cb89c4",
+   "paths": [
+    "web/civic/editor/editor.js",
+    "web/civic/editor/editor-core.js",
+    "web/civic/editor/editor.css"
+   ]
+  }
+ ],
+ "unchanged_from_base": "everything else of 223296e (incl. web/civic/map = base R03, data/, app.py)",
+ "diff_stat_vs_base": " 9 files changed, 1813 insertions(+), 236 deletions(-)",
+ "files_changed": [
+  "M\tui/civic_store/cli.py",
+  "M\tui/civic_store/importer.py",
+  "M\tui/civic_store/objects.py",
+  "A\tui/civic_store/public_export.py",
+  "M\tui/web_server.py",
+  "M\tweb/civic/editor/editor-core.js",
+  "M\tweb/civic/editor/editor.css",
+  "M\tweb/civic/editor/editor.js",
+  "M\tweb/civic/shell/shell.js"
+ ],
+ "editor_files_identical_to": "3cb89c4 (no editor change after it in this run)",
+ "run": {
+  "test": "tests/civic/R04/app_acceptance_r13.test.cjs",
+  "env": "R04_APP=1 R04_APP_LABEL=asm R04_APP_PATCHED=1",
+  "result": "4 pass, 0 fail",
+  "evidence": "evidence/app13-asm.json",
+  "screenshots": "screenshots/app13-asm-0*.jpg"
+ }
+}
