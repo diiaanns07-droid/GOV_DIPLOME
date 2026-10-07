@@ -557,9 +557,14 @@ class ScenarioEngineProduct(unittest.TestCase):
                          f"{cid}: two identical calls returned different results {self.evidence(first)}")
 
     def test_input_objects_not_mutated(self):
-        """[M01] compare() must not mutate the caller's payload/graph (needs an in-process run)"""
-        raise unittest.SkipTest("NOT_RUN: input mutation is only observable in-process; R10 runs compare() in a "
-                                "fresh `python -I` subprocess per call (see test_repeat_call_gives_identical_output)")
+        """[M01] compare() must not mutate the caller's payload/graph (checked in-process inside the isolated child)"""
+        cid = EXPECTED["repeat_case"]["case"]
+        case = CASES[cid]
+        graph = build_graph(case)
+        reply = modrun.call_module(self.root, TARGET, build_payload(case, graph), graph,
+                                   timeout=CALL_TIMEOUT, check_mutation=True)
+        self.assertTrue(reply.get("ok"), f"{cid}: compare failed {reply.get('error_type')}: {reply.get('error')}")
+        self.assertFalse(reply.get("inputs_mutated"), f"{cid}: compare() changed its payload/graph arguments")
 
     def test_result_echoes_schema_version_input_digest_and_parameters(self):
         """[M01] result carries a civic-scenario schema_version, the graph digest, an input digest that tracks the payload, and analysis_at/mode"""

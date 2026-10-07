@@ -16,10 +16,11 @@ import sys
 import time
 
 
-def _child(root: str, target: str) -> None:
+def _child(root: str, target: str, check_mutation: bool = False) -> None:
     sys.path.insert(0, root)
     module_name, func_name = target.split(":")
     args = json.loads(sys.stdin.read() or "[]")
+    before = json.dumps(args, sort_keys=True, ensure_ascii=False, allow_nan=True)
     import importlib
 
     try:
@@ -27,16 +28,23 @@ def _child(root: str, target: str) -> None:
         func = getattr(module, func_name)
         result = func(*args)
         out = {"ok": True, "result": result, "module_file": getattr(module, "__file__", None)}
+        if check_mutation:
+            # Same objects the function received, serialised again after the call.
+            out["inputs_mutated"] = json.dumps(args, sort_keys=True, ensure_ascii=False, allow_nan=True) != before
     except Exception as exc:  # report, the caller decides PASS/FAIL
         out = {"ok": False, "error_type": type(exc).__name__, "error": str(exc)[:2000]}
     print(json.dumps(out, ensure_ascii=False, default=str, allow_nan=True))
 
 
-def call_module(root, target: str, *args, timeout: float = 120.0) -> dict:
-    """Run module:function(*args) under ROOT in a fresh `python -I`; return the JSON reply."""
+def call_module(root, target: str, *args, timeout: float = 120.0, check_mutation: bool = False) -> dict:
+    """Run module:function(*args) under ROOT in a fresh `python -I`; return the JSON reply.
+
+    check_mutation=True adds reply["inputs_mutated"]: whether the call changed its arguments.
+    """
     root = str(Path(root).resolve())
     started = time.monotonic()
-    proc = subprocess.run([sys.executable, "-I", "-B", __file__, root, target],
+    extra = ["--check-mutation"] if check_mutation else []
+    proc = subprocess.run([sys.executable, "-I", "-B", __file__, root, target, *extra],
                           input=json.dumps(list(args), ensure_ascii=False),
                           capture_output=True, text=True, timeout=timeout, cwd=root)
     try:
@@ -57,4 +65,4 @@ def module_available(root, module_path: str) -> bool:
 
 
 if __name__ == "__main__":
-    _child(sys.argv[1], sys.argv[2])
+    _child(sys.argv[1], sys.argv[2], "--check-mutation" in sys.argv[3:])

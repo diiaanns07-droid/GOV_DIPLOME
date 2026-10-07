@@ -1,0 +1,238 @@
+{
+ "label": "r07-d77ec45-tinygraph",
+ "started_utc": "2026-10-07T04:14:19+00:00",
+ "seconds": 4.0,
+ "command": "python3 -I -B tests/civic/R10/run_acceptance.py --pattern test_scenarios_tinygraph.py --label r07-d77ec45-tinygraph --out research/round-11-results/R10/runs/r07-d77ec45-tinygraph.json",
+ "python": "3.13.16",
+ "platform": "Linux-6.18.44-fc-v77-x86_64-with-glibc2.39",
+ "target": {
+  "target": null,
+  "note": "no test started a server"
+ },
+ "suite_files": {
+  "test_api_feedback.py": "8f90f7a570d6476f",
+  "test_api_objects.py": "9b9b177d4c4aee4d",
+  "test_api_security.py": "e1d012753d6c69f6",
+  "test_fixture_contract.py": "6e7dcc1932484be4",
+  "test_scenarios_tinygraph.py": "318bfc610e99ad75",
+  "r10lib/__init__.py": "e3b0c44298fc1c14",
+  "r10lib/client.py": "f27011e116d61022",
+  "r10lib/contract.py": "bfe34000e9edbffd",
+  "r10lib/helpers.py": "e73f272fdb7b4633",
+  "r10lib/modrun.py": "52eb8f5f41e17c42",
+  "r10lib/oracle/server.py": "9862f8fd27f3ea6d",
+  "r10lib/standalone_server.py": "9663021bedf286f8",
+  "r10lib/target.py": "f5405f6a86c5ae5b"
+ },
+ "counts": {
+  "PASS": 19,
+  "FAIL": 0,
+  "ERROR": 0,
+  "NOT_RUN": 0,
+  "XFAIL": 0,
+  "XPASS": 0
+ },
+ "acceptance": {
+  "M01": {
+   "status": "PASS",
+   "tests": 19,
+   "counts": {
+    "PASS": 19
+   }
+  }
+ },
+ "tests": [
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_closure_and_plan_order_do_not_change_routes",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "permuting closures, edge_ids inside a closure, and plans leaves routes unchanged",
+   "message": "",
+   "seconds": 0.26
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_closure_window_is_half_open",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "closure is active at start_at (inclusive) and inactive at end_at (exclusive)",
+   "message": "",
+   "seconds": 0.125
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_input_objects_not_mutated",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "compare() must not mutate the caller's payload/graph (checked in-process inside the isolated child)",
+   "message": "",
+   "seconds": 0.146
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_invalid_inputs_are_rejected_without_crash",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "unknown edge/node, negative/NaN/Infinity length, city mismatch, stale or wrong digest, duplicate plan ids -> validation error, never a result or crash",
+   "message": "",
+   "seconds": 1.822
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_no_traffic_co2_or_congestion_claims",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "no result key claims traffic, congestion, CO2, emissions or travel time (contract: length only)",
+   "message": "",
+   "seconds": 1.346
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_oneway_direction_is_respected",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "oneway edge usable only from->to: reverse trip takes the 120/180 m detour; closing o2's exit isolates it",
+   "message": "",
+   "seconds": 0.001
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_repeat_call_gives_identical_output",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "same payload and graph twice (fresh interpreters) -> identical result apart from timing fields",
+   "message": "",
+   "seconds": 0.122
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_result_echoes_schema_version_input_digest_and_parameters",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "result carries a civic-scenario schema_version, the graph digest, an input digest that tracks the payload, and analysis_at/mode",
+   "message": "",
+   "seconds": 0.002
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_same_instant_with_different_offsets_same_routes",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "analysis_at as +05:00, Z and +06:00 for one instant gives identical routes (absolute-time comparison)",
+   "message": "",
+   "seconds": 0.001
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_short_route_closure_detour_and_bridge_unreachable",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "closing the short route gives the long alternative (+170 m exactly); closing a bridge gives unreachable, not 0",
+   "message": "",
+   "seconds": 0.001
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_tie_asserts_length_only",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "equal-length alternatives: only the length is asserted; closing one tie branch keeps 550.3 m",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_unknown_access_is_neither_ok_nor_proven_unreachable",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "strict mode: unknown-access-only target is 'unknown'; unknown shortcut never shortens an ok route; denied never ok",
+   "message": "",
+   "seconds": 0.001
+  },
+  {
+   "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_zero_closure_plan_equals_baseline",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "plan with no closures, and plan whose closure already ended, both equal baseline exactly",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "test_scenarios_tinygraph.TinyGraphSelfCheck.test_case_set_catches_typical_engine_bugs",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "a brute force with one injected bug (unknown as allowed, oneway ignored, closures ignored, string time compare, end inclusive, denied as allowed) disagrees with the expectations",
+   "message": "",
+   "seconds": 0.014
+  },
+  {
+   "test": "test_scenarios_tinygraph.TinyGraphSelfCheck.test_error_cases_are_invalid_for_exactly_their_stated_reason",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "each error case has exactly one defect of its kind; every result case is valid input",
+   "message": "",
+   "seconds": 0.003
+  },
+  {
+   "test": "test_scenarios_tinygraph.TinyGraphSelfCheck.test_every_result_case_has_an_owning_product_test",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "product tests cover every result case and every same-result group exactly",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "test_scenarios_tinygraph.TinyGraphSelfCheck.test_graph_files_are_well_formed_with_documented_digest",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "R10 tiny graphs: unique ids, existing endpoints, finite non-negative lengths, Astana coordinates, documented digest",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "test_scenarios_tinygraph.TinyGraphSelfCheck.test_hand_expectations_equal_bruteforce",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "every hand-written status/length/tie flag equals the exhaustive simple-path enumeration",
+   "message": "",
+   "seconds": 0.003
+  },
+  {
+   "test": "test_scenarios_tinygraph.TinyGraphSelfCheck.test_hand_paths_are_valid_routes_summing_to_length",
+   "status": "PASS",
+   "ids": [
+    "M01"
+   ],
+   "title": "each hand-written path_edges is an open strict route of the stated length, and every derivation states its number",
+   "message": "",
+   "seconds": 0.019
+  }
+ ],
+ "journal": [],
+ "startup_error": null
+}
