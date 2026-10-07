@@ -135,6 +135,13 @@ async function modeRoundTrip(browser, base, w, h) {
   for (const other of ["training", "school"]) {
     await page.click(`#civic-modes [data-mode=${other}]`);
     await page.waitForTimeout(1500);
+    if (other === "training") {
+      // The training district view keeps its soft 22° tilt without switching the 3D button on.
+      await page.evaluate(() => selectDistrict("esil"));
+      await page.waitForTimeout(2200);
+      const t = await page.evaluate(() => ({ pitch: Math.round(map.getPitch()), pressed: document.getElementById("toggle-3d").getAttribute("aria-pressed") }));
+      check(`${tag}: training district view: soft tilt, 3D button stays off`, t.pressed === "false" && t.pitch < 30, t);
+    }
     const away = await probe();
     check(`${tag}: ${other} mode: no navigation box, map notice back in place and readable`, away.mode === other && !away.explore && !away.statusInExplore && away.readable !== false && away.scrollW <= w, away);
     await page.click("#civic-modes [data-mode=civic]");

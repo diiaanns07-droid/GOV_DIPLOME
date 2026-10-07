@@ -40,15 +40,20 @@ function showThreeD(on) {
   button?.classList.toggle("active", state.threeD);
   button?.setAttribute("aria-pressed", String(state.threeD));
 }
+// 30°: every 3D view tilts 40–56°, flat views use 0° or the training district's soft 22°.
+const THREE_D_MIN_PITCH = 30;
 function syncThreeD() {
   if (!map || map.isMoving()) return;
-  const on = map.getPitch() >= 15;
+  const on = map.getPitch() >= THREE_D_MIN_PITCH;
   if (on !== state.threeD) showThreeD(on);
 }
-// Zoom buttons keep the intended tilt when they interrupt a running camera animation.
+// Zoom buttons keep the intended tilt when they interrupt a running camera animation: finish a 3D
+// tilt, or finish leaving 3D; any other tilt (e.g. the training district's soft 22°) is left as is.
 function zoomBy(delta) {
   if (!map) return;
-  const intent = map.isMoving() ? { pitch: state.threeD ? THREE_D_PITCH : 0, bearing: state.threeD ? -16 : 0 } : {};
+  const moving = map.isMoving();
+  const intent = !moving ? {} : state.threeD ? { pitch: THREE_D_PITCH, bearing: -16 }
+    : map.getPitch() >= THREE_D_MIN_PITCH ? { pitch: 0, bearing: 0 } : {};
   map.easeTo({ zoom: map.getZoom() + delta, ...intent, duration: 450 * motion() });
 }
 const clone = (value) => structuredClone(value);
