@@ -1,7 +1,7 @@
 # R09 — помощник по городским данным без выдумок (раунд 12, Астана)
 
-Статус: PARTIAL (checkpoint 3)
-Обновлено: 2026-10-07 10:30 UTC
+Статус: DONE (финальная сдача раунда 12; ограничения — ниже)
+Обновлено: 2026-10-07 10:50 UTC
 Ветка: claude/fervent-dijkstra-1cqrg5 (назначенная ветка сессии)
 CODE_BASE_SHA: 56538a3a7504d4589c38ab4d3c5107f12aa7f8a6 — влит обычным merge (56885d5), без reset/force push.
 Ветка до merge содержала только файлы R10 раунда 11 (tests/civic/R10, research/round-11-results/R10, их handoff) —
@@ -41,6 +41,35 @@ agent/civic_assistant/, web/civic/assistant/, tests/civic/R09/, research/round-1
   tests/civic/R09/test_r09_round12_robustness.py (20), ui_check.cjs +6 проверок (22/22 в Chromium).
   R09 pytest 188/188. Скриншоты компонента (демо, не интеграция): research/round-12-results/R09/screenshots/.
 
+- Checkpoint 4 (f8aea9a): eval-набор раунда 12 по запущенному приложению (база + R09) —
+  tests/civic/R09/eval_r12_live.py: 7 опубликованных синтетических объектов x 12 вопросов RU/KK, 3 кейса R07 x 3
+  вопроса, отрицательные (несуществующий объект, факты в теле, пароли, инъекция, лимит 20/мин); протокол ошибок и
+  сценарий демонстрации — research/round-12-results/R09/EVAL_PROTOCOL.md; RUN.txt, INTEGRATION.txt;
+  r01_integration.patch для файлов R01 (не применён; проверен на копии); скриншоты реального приложения.
+- Финал: DELIVERY.json, отчёты eval (EVAL_REPORT.txt, eval_results.json, eval_live.json) сгенерированы на f8aea9a.
+
+## Проверки (на code_sha f8aea9a)
+- R09 pytest: 188 passed (база: 122).
+- Adversarial eval `python3 -B -m agent.civic_assistant.evaluate --ui`: PASS 59 / FAIL 0 / NOT_RUN 1 (живой LLM).
+- Live eval по приложению: 104/104 PASS.
+- UI-компонент в Chromium (ui_check.cjs): 22/22 PASS.
+- r01_integration.patch: `git apply --check` на 56538a3 OK; на копии base+R09+patch пользовательское сравнение
+  объясняется как scenario_id=result:<digest>, неизвестный digest -> scenario_not_found.
+- Независимые проверки R10 раунда 11 (standalone_r09.py, не мой файл): 20/22 (база 19/22). Остаются test_17 —
+  служебная оговорка «UI exists now» (UI есть и на базе; XSS проверен в Chromium) и test_20 — намеренная замена
+  ожидания на быстрый provider_busy при занятых слотах (см. DELIVERY.json).
+- NOT_RUN: живой LLM (платный API вне бюджета); подложка/3D карты (OpenFreeMap заблокирован прокси).
+
+## Не завершено
+- Подключение в общих файлах R01 (shell.js передаёт revision; gateway кэширует результаты /scenarios/compare) —
+  только предложенный patch; объяснение собственного сравнения пользователя без него недоступно.
+- Экран сценариев R07 не монтирует помощник (предложение в INTEGRATION.txt п.2).
+- Казахские формулировки не проверены носителем языка; все данные синтетические.
+
+## Последний успешно отправленный SHA
+f8aea9a763c81775c85bbdaa6c429b49a245d60a (код и тесты). Коммит сдачи (DELIVERY.json, отчёты eval, этот файл)
+отправляется следом; его SHA — в итоговом сообщении роли (SHA коммита внутри самого коммита не пишется).
+
 ## Следующий шаг
-Eval-набор раунда 12 (реальные поддерживаемые ситуации + отрицательные), протокол ошибок, инструкция демо,
-DELIVERY/RUN/INTEGRATION.
+Владелец R01 применяет research/round-12-results/R09/r01_integration.patch и перезапускает
+tests/civic/R09/eval_r12_live.py по RUN.txt п.4.

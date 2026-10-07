@@ -1,0 +1,450 @@
+{
+ "generated_at": "2026-10-07T10:36:15+00:00",
+ "code_sha": "f8aea9a763c81775c85bbdaa6c429b49a245d60a",
+ "code_paths_dirty": false,
+ "facts_version": "civic-assistant-facts-v1",
+ "modes_executed": [
+  "audit",
+  "browser:chromium",
+  "endpoint",
+  "extract:llm:mock",
+  "extract:template",
+  "llm:mock",
+  "template",
+  "template-fallback",
+  "unavailable"
+ ],
+ "summary": {
+  "PASS": 59,
+  "FAIL": 0,
+  "NOT_RUN": 1
+ },
+ "rows": [
+  {
+   "id": "A01",
+   "category": "unknown_fact_id",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A02",
+   "category": "changed_date",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A03",
+   "category": "changed_date",
+   "kind": "tampered_context",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A04",
+   "category": "free_text_instead_of_schema",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A05",
+   "category": "free_text_instead_of_schema",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A06",
+   "category": "added_number",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A07",
+   "category": "added_number",
+   "kind": "audit",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A08",
+   "category": "completion_claim_with_only_planned_end",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A09",
+   "category": "completion_claim_with_only_planned_end",
+   "kind": "audit",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A10",
+   "category": "qualitative_claim",
+   "kind": "audit",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A11",
+   "category": "qualitative_claim",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A12",
+   "category": "passwords_in_source",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A13",
+   "category": "passwords_in_source",
+   "kind": "extract",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A14",
+   "category": "passwords_in_question",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A15",
+   "category": "html",
+   "kind": "endpoint",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A16",
+   "category": "very_long_question",
+   "kind": "endpoint",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A17",
+   "category": "unexpected_json_type",
+   "kind": "endpoint",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A18",
+   "category": "unexpected_json_type",
+   "kind": "endpoint",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A19",
+   "category": "unexpected_json_type",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A20",
+   "category": "client_supplied_facts",
+   "kind": "endpoint",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A21",
+   "category": "timeout",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A22",
+   "category": "object_switch",
+   "kind": "endpoint",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A23",
+   "category": "private_facts",
+   "kind": "endpoint",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A24",
+   "category": "private_facts",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A25",
+   "category": "missing_data_ru",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A26",
+   "category": "missing_data_kk",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A27",
+   "category": "missing_data_kk",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A28",
+   "category": "scenario_no_best_claim",
+   "kind": "scenario",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A29",
+   "category": "source_truthfulness",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A30",
+   "category": "source_truthfulness",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A31",
+   "category": "extract_inexact_date",
+   "kind": "extract",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A32",
+   "category": "extract_conflict",
+   "kind": "extract",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A33",
+   "category": "extract_model_quote_not_in_text",
+   "kind": "extract",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A34",
+   "category": "extract_model_quote_from_instruction",
+   "kind": "extract",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A35",
+   "category": "extract_no_autonomous_actions",
+   "kind": "extract",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A36",
+   "category": "staff_extract_auth",
+   "kind": "extract_endpoint",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A37",
+   "category": "provider_sees_no_values",
+   "kind": "answer",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U01",
+   "category": "ui:examples_rendered",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U02",
+   "category": "ui:template_answer_from_facts",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U03",
+   "category": "ui:statement_sources_human_readable",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U04",
+   "category": "ui:answer_names_card_revision",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U05",
+   "category": "ui:card_update_removes_stale_answer",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U06",
+   "category": "ui:answer_for_older_revision_not_shown",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U07",
+   "category": "ui:card_update_cancels_pending_request",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U08",
+   "category": "ui:missing_data_example_offered",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U09",
+   "category": "ui:html_rendered_as_text",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U10",
+   "category": "ui:stale_answer_ignored",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U11",
+   "category": "ui:object_switch_drops_old_answer",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U12",
+   "category": "ui:foreign_object_answer_rejected",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U13",
+   "category": "ui:draft_object_unavailable",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U14",
+   "category": "ui:rate_limit_and_network_messages",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U15",
+   "category": "ui:user_cancel",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U16",
+   "category": "ui:draft_marked_not_official",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U17",
+   "category": "ui:draft_injection_ignored",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U18",
+   "category": "ui:draft_partial_date_not_acceptable",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U19",
+   "category": "ui:draft_manual_apply_only_checked",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U20",
+   "category": "ui:mobile_no_horizontal_scroll",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U21",
+   "category": "ui:destroy_cleans_root",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "U22",
+   "category": "ui:no_console_errors",
+   "kind": "ui",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L00",
+   "category": "live_llm_provider",
+   "kind": "llm",
+   "status": "NOT_RUN",
+   "detail": "Платный живой вызов вне задания R09; адаптер проверен на поддельном клиенте (pytest)."
+  }
+ ],
+ "inputs": [
+  "tests/civic/R09/fixtures/eval_cases.json",
+  "objects.json",
+  "publications.json",
+  "r07_synthetic_result.json (R07 18f8ac8)"
+ ]
+}

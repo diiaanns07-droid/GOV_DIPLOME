@@ -1,0 +1,50 @@
+{
+  "role": "R09",
+  "round": 12,
+  "title": "Помощник, который объясняет городские данные без выдумок",
+  "branch": "claude/fervent-dijkstra-1cqrg5",
+  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "base_merge_commit": "56885d5",
+  "code_sha": "f8aea9a763c81775c85bbdaa6c429b49a245d60a",
+  "code_sha_note": "последний коммит с кодом и тестами; коммит с этим файлом (только research/round-12-results/R09 и handoff) идёт следом, его SHA — в handoff STATUS.md следующего обновления и в итоговом сообщении",
+  "push_status": "OK — code_sha отправлен в origin/claude/fervent-dijkstra-1cqrg5 обычным push (без force)",
+  "changed_paths": [
+    "agent/civic_assistant/answer.py",
+    "agent/civic_assistant/render.py",
+    "agent/civic_assistant/scenario.py",
+    "agent/civic_assistant/api.py",
+    "web/civic/assistant/assistant.js",
+    "web/civic/assistant/assistant.css",
+    "web/civic/assistant/demo.html",
+    "tests/civic/R09/test_r09_round12_questions.py",
+    "tests/civic/R09/test_r09_round12_scenario.py",
+    "tests/civic/R09/test_r09_round12_robustness.py",
+    "tests/civic/R09/test_r09_facts_template.py",
+    "tests/civic/R09/test_r09_scenario_api.py",
+    "tests/civic/R09/ui_check.cjs",
+    "tests/civic/R09/eval_r12_live.py",
+    "research/round-12-results/R09/",
+    "research/handoffs/astana/R09/round-12/STATUS.md"
+  ],
+  "diff_command": "git diff 56538a3 -- agent/civic_assistant web/civic/assistant tests/civic/R09",
+  "tests": [
+    {"name": "R09 pytest (tests/civic/R09, numpy для engine/)", "status": "PASS", "detail": "188 passed (на базе было 122)"},
+    {"name": "adversarial eval: python3 -B -m agent.civic_assistant.evaluate --ui", "status": "PASS", "detail": "PASS 59 / FAIL 0 / NOT_RUN 1 (живой LLM) — EVAL_REPORT.txt, eval_results.json"},
+    {"name": "live eval по запущенному приложению (база + R09): tests/civic/R09/eval_r12_live.py", "status": "PASS", "detail": "104/104: 7 опубликованных синтетических объектов x 12 вопросов RU/KK, 3 кейса R07 x 3 вопроса, отрицательные (несуществующий объект, факты в теле, пароли, инъекция, лимит 20/мин) — eval_live.json"},
+    {"name": "UI-компонент в Chromium (Playwright): tests/civic/R09/ui_check.cjs", "status": "PASS", "detail": "22/22, включая обновление карточки, ответ по чужой редакции, XSS, 429/сеть, ширина 375"},
+    {"name": "r01_integration.patch (shell.js + ui/web_server.py, файлы R01)", "status": "PASS", "detail": "git apply --check на 56538a3; проверен на копии: пользовательское сравнение объяснено как scenario_id=result:<digest>; неизвестный digest -> scenario_not_found. В общие файлы НЕ применён"},
+    {"name": "интегрированный экран: подложка/3D карты", "status": "NOT_RUN", "detail": "тайлы OpenFreeMap блокируются прокси окружения; скриншоты приложения сняты без подложки"},
+    {"name": "живой вызов LLM-провайдера", "status": "NOT_RUN", "detail": "платный API вне бюджета задания; адаптеры проверены заглушками (MockProvider, поддельный OpenAI-совместимый клиент)"},
+    {"name": "независимые проверки R10 раунда 11: tests/civic/R10/standalone/standalone_r09.py (файл R10 не менялся)", "status": "FAIL", "detail": "f8aea9a: 20/22 (база 56538a3: 19/22). Исправлено: test_14 (CancelledError провайдера выходил из build_answer). Остаются 2, оба не регрессии: test_17 — проверки HTML проходят, падает служебная оговорка «UI exists now: run browser check U10» (web/civic/assistant есть и на базе; браузерная проверка XSS — ui_check.cjs 22/22); test_20 — ожидание «быстрый провайдер вызывается при 4 зависших» намеренно заменено: при занятых слотах ответ сразу шаблоном с provider_busy (на базе — ложный provider_timeout через 1 с), пул ограничен, слоты восстанавливаются"}
+  ],
+  "known_limits": [
+    "Все 7 опубликованных записей демо-среза синтетические; помощник говорит это в каждом ответе. Реальных опубликованных карточек нет.",
+    "Сервер приложения работает без провайдера: ответы — шаблон (source=template), так и подписаны. LLM — опциональный путь {intent, fact_ids}, живьём не проверен.",
+    "Объяснение СОБСТВЕННОГО сравнения пользователя (scenario_id=result:<digest>) работает только после применения r01_integration.patch владельцем R01; без него — только подготовленные кейсы R07.",
+    "Экран сценариев R07 (web/civic/scenarios/) не монтирует помощник; сотрудник получает объяснение A/B через API или после подключения по INTEGRATION.txt п.2.",
+    "Сценарий: длина обхода в графе — не время в пути и не прогноз автомобильного трафика; снимок OSM 06.05.2026, доля длины сети без известного доступа 82,5 % на городском кейсе; граф — срез.",
+    "Казахские формулировки составлены без проверки носителем языка.",
+    "Маршрутизация — по основам слов; вопрос вне правил получает обзор с пометкой intent_guessed."
+  ],
+  "next_step": "Владелец R01 применяет research/round-12-results/R09/r01_integration.patch (shell передаёт revision, gateway кэширует результаты /scenarios/compare) и перезапускает eval_r12_live.py; затем R07 монтирует CivicAssistant с scenarioId=\"result:\"+result_digest в панели сравнения."
+}
