@@ -1,0 +1,581 @@
+{
+ "label": "r01-eb7b0cd",
+ "started_utc": "2026-10-07T04:10:28+00:00",
+ "seconds": 14.7,
+ "command": "python3 -I -B tests/civic/R10/run_acceptance.py --label r01-eb7b0cd --out /tmp/claude-0/-home-user-GOV-DIPLOME/351fdf90-5c8e-5391-bfca-cbdbc078480a/scratchpad/r10run/r01.json --pattern test_api_*.py",
+ "python": "3.13.16",
+ "platform": "Linux-6.18.44-fc-v77-x86_64-with-glibc2.39",
+ "target": {
+  "target": "command",
+  "base_url": "http://127.0.0.1:39883",
+  "prefix": "/api/civic/v1",
+  "code_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/351fdf90-5c8e-5391-bfca-cbdbc078480a/scratchpad/r10run/tree",
+  "code_sha": null,
+  "code_dirty": false,
+  "can_restart": true,
+  "notes": [],
+  "mutant": null
+ },
+ "suite_files": {
+  "test_api_feedback.py": "8f90f7a570d6476f",
+  "test_api_objects.py": "9b9b177d4c4aee4d",
+  "test_fixture_contract.py": "6e7dcc1932484be4",
+  "test_scenarios_tinygraph.py": "dc5bc76d8cd3c955",
+  "r10lib/__init__.py": "e3b0c44298fc1c14",
+  "r10lib/client.py": "f27011e116d61022",
+  "r10lib/contract.py": "bfe34000e9edbffd",
+  "r10lib/helpers.py": "3e9154c6fafb7b1a",
+  "r10lib/modrun.py": "3116b200792c0bc4",
+  "r10lib/oracle/server.py": "9862f8fd27f3ea6d",
+  "r10lib/standalone_server.py": "9663021bedf286f8",
+  "r10lib/target.py": "3ed6df7cc410b123"
+ },
+ "counts": {
+  "PASS": 34,
+  "FAIL": 0,
+  "ERROR": 0,
+  "NOT_RUN": 0,
+  "XFAIL": 0,
+  "XPASS": 0
+ },
+ "acceptance": {
+  "A01": {
+   "status": "PASS",
+   "tests": 2,
+   "counts": {
+    "PASS": 2
+   }
+  },
+  "A02": {
+   "status": "PASS",
+   "tests": 2,
+   "counts": {
+    "PASS": 2
+   }
+  },
+  "A03": {
+   "status": "PASS",
+   "tests": 2,
+   "counts": {
+    "PASS": 2
+   }
+  },
+  "A04": {
+   "status": "PASS",
+   "tests": 3,
+   "counts": {
+    "PASS": 3
+   }
+  },
+  "A05": {
+   "status": "PASS",
+   "tests": 3,
+   "counts": {
+    "PASS": 3
+   }
+  },
+  "A06": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "A07": {
+   "status": "PASS",
+   "tests": 4,
+   "counts": {
+    "PASS": 4
+   }
+  },
+  "A08": {
+   "status": "PASS",
+   "tests": 5,
+   "counts": {
+    "PASS": 5
+   }
+  },
+  "A09": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "A10": {
+   "status": "PASS",
+   "tests": 5,
+   "counts": {
+    "PASS": 5
+   }
+  },
+  "C02": {
+   "status": "PASS",
+   "tests": 4,
+   "counts": {
+    "PASS": 4
+   }
+  },
+  "C03": {
+   "status": "PASS",
+   "tests": 3,
+   "counts": {
+    "PASS": 3
+   }
+  },
+  "C04": {
+   "status": "PASS",
+   "tests": 2,
+   "counts": {
+    "PASS": 2
+   }
+  },
+  "C05": {
+   "status": "PASS",
+   "tests": 3,
+   "counts": {
+    "PASS": 3
+   }
+  },
+  "C06": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "C09": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "S07": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "S09": {
+   "status": "PASS",
+   "tests": 5,
+   "counts": {
+    "PASS": 5
+   }
+  },
+  "S10": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "S12": {
+   "status": "PASS",
+   "tests": 2,
+   "counts": {
+    "PASS": 2
+   }
+  },
+  "S14": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  }
+ },
+ "tests": [
+  {
+   "test": "test_api_feedback.FeedbackAccessControl.test_s12_s07_moderation_needs_session_csrf_origin",
+   "status": "PASS",
+   "ids": [
+    "S12",
+    "S07"
+   ],
+   "title": "moderation needs editor session + CSRF + same Origin; spoofed roles grant nothing.",
+   "message": "",
+   "seconds": 3.364
+  },
+  {
+   "test": "test_api_feedback.FeedbackAccessControl.test_s14_feedback_to_draft_and_missing_id_indistinguishable",
+   "status": "PASS",
+   "ids": [
+    "S14",
+    "S09"
+   ],
+   "title": "feedback to a draft and to a missing id: same status, error.code, message; no draft data.",
+   "message": "",
+   "seconds": 0.336
+  },
+  {
+   "test": "test_api_feedback.FeedbackHtmlIsText.test_s10_html_payload_stays_literal_json_text",
+   "status": "PASS",
+   "ids": [
+    "S10"
+   ],
+   "title": "HTML/script in feedback text, public_reply and object title stays literal text in JSON with nosniff.",
+   "message": "",
+   "seconds": 0.27
+  },
+  {
+   "test": "test_api_feedback.FeedbackLifecycle.test_a07_receipt_only_pending_stays_private",
+   "status": "PASS",
+   "ids": [
+    "A07",
+    "A08",
+    "S09"
+   ],
+   "title": "submit -> receipt {receipt_id, moderation:pending} only; pending stays private, staff queue has it.",
+   "message": "",
+   "seconds": 0.331
+  },
+  {
+   "test": "test_api_feedback.FeedbackLifecycle.test_a08_approved_with_consent_public_with_reply",
+   "status": "PASS",
+   "ids": [
+    "A08",
+    "S09"
+   ],
+   "title": "approve + consent + public_reply -> public with reply; no IP/UA/editor identity publicly.",
+   "message": "",
+   "seconds": 0.305
+  },
+  {
+   "test": "test_api_feedback.FeedbackLifecycle.test_a08_moderation_revision_conflicts",
+   "status": "PASS",
+   "ids": [
+    "A08",
+    "S12"
+   ],
+   "title": "concurrent same-revision moderation: exactly one wins, other 409; stale revision -> 409, no change.",
+   "message": "",
+   "seconds": 0.66
+  },
+  {
+   "test": "test_api_feedback.FeedbackLifecycle.test_a08_rejected_never_public",
+   "status": "PASS",
+   "ids": [
+    "A08"
+   ],
+   "title": "rejected feedback (consent given) never appears publicly.",
+   "message": "",
+   "seconds": 0.331
+  },
+  {
+   "test": "test_api_feedback.FeedbackLifecycle.test_a08_s09_no_consent_text_never_public",
+   "status": "PASS",
+   "ids": [
+    "A08",
+    "S09"
+   ],
+   "title": "consent_public=false: text never reaches public feedback, object detail or object list.",
+   "message": "",
+   "seconds": 0.319
+  },
+  {
+   "test": "test_api_feedback.FeedbackValidation.test_a07_duplicate_submission_not_silent",
+   "status": "PASS",
+   "ids": [
+    "A07"
+   ],
+   "title": "identical resubmission is deduplicated or flagged, never a silent duplicate; original kept.",
+   "message": "",
+   "seconds": 0.353
+  },
+  {
+   "test": "test_api_feedback.FeedbackValidation.test_a07_location_only_accepted_no_location_or_outside_astana_rejected",
+   "status": "PASS",
+   "ids": [
+    "A07"
+   ],
+   "title": "object_id null + Astana Point accepted; no object and no geometry -> 400/422; Shymkent point -> 4xx, not stored.",
+   "message": "",
+   "seconds": 0.32
+  },
+  {
+   "test": "test_api_feedback.FeedbackValidation.test_a07_unknown_category_rejected",
+   "status": "PASS",
+   "ids": [
+    "A07"
+   ],
+   "title": "category outside roads/sidewalks/transport_stops/lighting/landscaping/other -> 400/422, not stored.",
+   "message": "",
+   "seconds": 0.259
+  },
+  {
+   "test": "test_api_objects.FiltersAndPagination.test_a10_cursor_pagination_each_object_exactly_once",
+   "status": "PASS",
+   "ids": [
+    "A10"
+   ],
+   "title": "cursor walk (filtered and default list) returns every published object exactly once, incl. ties.",
+   "message": "",
+   "seconds": 0.293
+  },
+  {
+   "test": "test_api_objects.FiltersAndPagination.test_a10_inclusive_date_window_with_kind_and_status",
+   "status": "PASS",
+   "ids": [
+    "A10"
+   ],
+   "title": "from/to inclusive on boundaries, outside days excluded, kind/status narrow, drafts never listed.",
+   "message": "",
+   "seconds": 0.298
+  },
+  {
+   "test": "test_api_objects.FiltersAndPagination.test_a10_invalid_filters_rejected",
+   "status": "PASS",
+   "ids": [
+    "A10",
+    "C06"
+   ],
+   "title": "unknown kind/status, impossible or malformed dates -> 400/422 JSON error, never 500.",
+   "message": "",
+   "seconds": 0.009
+  },
+  {
+   "test": "test_api_objects.FiltersAndPagination.test_a10_pagination_stable_when_objects_change_mid_walk",
+   "status": "PASS",
+   "ids": [
+    "A10"
+   ],
+   "title": "publish/archive between page requests: no other pre-existing object is lost or duplicated.",
+   "message": "",
+   "seconds": 0.357
+  },
+  {
+   "test": "test_api_objects.ObjectLifecycle.test_a01_create_draft_server_assigns_identity",
+   "status": "PASS",
+   "ids": [
+    "A01",
+    "C03"
+   ],
+   "title": "create -> draft with server id, revision>=1, server updated_at, fields stored as sent.",
+   "message": "",
+   "seconds": 0.262
+  },
+  {
+   "test": "test_api_objects.ObjectLifecycle.test_a02_draft_invisible_publicly",
+   "status": "PASS",
+   "ids": [
+    "A02"
+   ],
+   "title": "draft: absent from every public list page (filtered or not), detail 404, nothing leaks.",
+   "message": "",
+   "seconds": 0.246
+  },
+  {
+   "test": "test_api_objects.ObjectLifecycle.test_a03_publish_makes_object_public_with_contract_dto",
+   "status": "PASS",
+   "ids": [
+    "A03"
+   ],
+   "title": "publish -> object in public list/detail, public DTO passes civic-v1 public checks.",
+   "message": "",
+   "seconds": 0.301
+  },
+  {
+   "test": "test_api_objects.ObjectLifecycle.test_a04_date_change_with_reason_is_public_and_explained",
+   "status": "PASS",
+   "ids": [
+    "A04",
+    "C05"
+   ],
+   "title": "new current_planned_end with reason: public date changes, original kept, history explains.",
+   "message": "",
+   "seconds": 0.249
+  },
+  {
+   "test": "test_api_objects.ObjectLifecycle.test_a05_draft_era_changes_never_reach_public_history",
+   "status": "PASS",
+   "ids": [
+    "A05"
+   ],
+   "title": "contract reading \"только опубликованные изменения\": draft-era reasons/values never public.",
+   "message": "",
+   "seconds": 0.259
+  },
+  {
+   "test": "test_api_objects.ObjectLifecycle.test_a05_s09_no_editor_identity_or_internal_notes_publicly",
+   "status": "PASS",
+   "ids": [
+    "A05",
+    "S09"
+   ],
+   "title": "editor usernames and internal notes never appear in public list/detail/history.",
+   "message": "",
+   "seconds": 0.309
+  },
+  {
+   "test": "test_api_objects.ObjectLifecycle.test_a09_archive_hides_publicly_staff_keeps",
+   "status": "PASS",
+   "ids": [
+    "A09"
+   ],
+   "title": "archive -> public list/detail hide it (404), staff still sees intact archived object.",
+   "message": "",
+   "seconds": 0.328
+  },
+  {
+   "test": "test_api_objects.ObjectLifecycle.test_c09_no_physical_delete",
+   "status": "PASS",
+   "ids": [
+    "C09"
+   ],
+   "title": "DELETE (and /delete) on objects -> 404/405 (anon also 401/403); objects still exist.",
+   "message": "",
+   "seconds": 0.374
+  },
+  {
+   "test": "test_api_objects.PersistenceAcrossRestart.test_a06_restart_keeps_objects_history_and_hiding",
+   "status": "PASS",
+   "ids": [
+    "A06",
+    "A02",
+    "A04"
+   ],
+   "title": "after restart: published object, dates, history, revision counter persist; draft stays hidden.",
+   "message": "",
+   "seconds": 1.204
+  },
+  {
+   "test": "test_api_objects.RevisionsAndReasons.test_c04_concurrent_same_revision_exactly_one_wins",
+   "status": "PASS",
+   "ids": [
+    "C04"
+   ],
+   "title": "two editors, same expected_revision, parallel -> one 2xx + one 409, revision+1, one history entry.",
+   "message": "",
+   "seconds": 0.637
+  },
+  {
+   "test": "test_api_objects.RevisionsAndReasons.test_c04_stale_or_missing_revision_rejected_without_change",
+   "status": "PASS",
+   "ids": [
+    "C04"
+   ],
+   "title": "stale/future/missing expected_revision on update, stale on publish/archive -> rejected, no change.",
+   "message": "",
+   "seconds": 0.351
+  },
+  {
+   "test": "test_api_objects.RevisionsAndReasons.test_c05_original_planned_end_never_silently_overwritten",
+   "status": "PASS",
+   "ids": [
+    "C05",
+    "A04"
+   ],
+   "title": "after publication original_planned_end is rejected, ignored, or changed only with public history+reason.",
+   "message": "",
+   "seconds": 0.285
+  },
+  {
+   "test": "test_api_objects.RevisionsAndReasons.test_c05_reason_required_for_public_date_change",
+   "status": "PASS",
+   "ids": [
+    "C05"
+   ],
+   "title": "published object: no public date change without a non-blank reason (update or publish).",
+   "message": "",
+   "seconds": 0.415
+  },
+  {
+   "test": "test_api_objects.ServerOwnedFields.test_c02_create_ignores_server_owned_fields",
+   "status": "PASS",
+   "ids": [
+    "C02",
+    "A01"
+   ],
+   "title": "create body id/publication/revision/updated_at/actor/city/schema are not trusted.",
+   "message": "",
+   "seconds": 0.308
+  },
+  {
+   "test": "test_api_objects.ServerOwnedFields.test_c02_create_with_existing_id_cannot_overwrite_published",
+   "status": "PASS",
+   "ids": [
+    "C02"
+   ],
+   "title": "create with body id of an existing published object never replaces/changes that object.",
+   "message": "",
+   "seconds": 0.281
+  },
+  {
+   "test": "test_api_objects.ServerOwnedFields.test_c02_public_actor_label_not_taken_from_body",
+   "status": "PASS",
+   "ids": [
+    "C02",
+    "A05"
+   ],
+   "title": "actor/public_actor_label sent in an update body never shows in public history.",
+   "message": "",
+   "seconds": 0.284
+  },
+  {
+   "test": "test_api_objects.ServerOwnedFields.test_c02_update_ignores_server_owned_fields",
+   "status": "PASS",
+   "ids": [
+    "C02"
+   ],
+   "title": "update with publication/id/revision/updated_at in changes or body cannot publish/rename/rewind.",
+   "message": "",
+   "seconds": 0.269
+  },
+  {
+   "test": "test_api_objects.UnknownStaysUnknown.test_c03_a10_no_status_or_actual_end_computed_from_dates",
+   "status": "PASS",
+   "ids": [
+    "C03",
+    "A10"
+   ],
+   "title": "past dates do not change status or set actual_end; status filter uses stored status.",
+   "message": "",
+   "seconds": 0.261
+  },
+  {
+   "test": "test_api_objects.UnknownStaysUnknown.test_c03_null_schedule_budget_geometry_survive_publish_and_update",
+   "status": "PASS",
+   "ids": [
+    "C03",
+    "A03"
+   ],
+   "title": "null dates/budget/geometry stay null (not today/0) through create, publish, unrelated update.",
+   "message": "",
+   "seconds": 0.267
+  }
+ ],
+ "journal": [
+  {
+   "cmd": "/usr/bin/python3 -B -m ui.civic_store --db /tmp/r10-civic-zydm6bym/civic.sqlite3 create-editor r10_editor_alpha",
+   "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/351fdf90-5c8e-5391-bfca-cbdbc078480a/scratchpad/r10run/tree",
+   "exit_code": 0,
+   "seconds": 1.22,
+   "interactive": true
+  },
+  {
+   "cmd": "/usr/bin/python3 -B -m ui.civic_store --db /tmp/r10-civic-zydm6bym/civic.sqlite3 create-editor r10_editor_beta",
+   "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/351fdf90-5c8e-5391-bfca-cbdbc078480a/scratchpad/r10run/tree",
+   "exit_code": 0,
+   "seconds": 1.22,
+   "interactive": true
+  },
+  {
+   "cmd": "/usr/bin/python3 -B app.py --host 127.0.0.1 --port 39883 --civic-db /tmp/r10-civic-zydm6bym/civic.sqlite3",
+   "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/351fdf90-5c8e-5391-bfca-cbdbc078480a/scratchpad/r10run/tree",
+   "exit_code": null,
+   "state": "running",
+   "seconds_to_ready": 0.6
+  },
+  {
+   "cmd": "/usr/bin/python3 -B app.py --host 127.0.0.1 --port 39883 --civic-db /tmp/r10-civic-zydm6bym/civic.sqlite3",
+   "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/351fdf90-5c8e-5391-bfca-cbdbc078480a/scratchpad/r10run/tree",
+   "exit_code": null,
+   "state": "running",
+   "seconds_to_ready": 0.65
+  }
+ ],
+ "startup_error": null
+}
