@@ -51,6 +51,7 @@
     const state = {
       graphs: [], cases: [], graph: null, edgeIndex: new Map(), nodeIndex: new Map(),
       payload: null, editPlan: "A", clickMode: "close", result: null, selectedPair: null, busy: false, destroyed: false,
+      graphSeq: 0, resultSeq: 0, drawnGraph: null,
     };
     const listeners = [];
     const ui = {};
@@ -72,7 +73,7 @@
     ui.modeBar = el("div", { class: P + "modes" });
     ui.planBody = el("div", { class: P + "plan" });
     ui.points = el("div", { class: P + "points" });
-    ui.run = el("button", { class: P + "btn " + P + "primary", type: "button", text: "Сравнить", onclick: run });
+    ui.run = el("button", { class: P + "btn " + P + "primary", type: "button", text: "Сравнить", disabled: true, onclick: run });
     ui.err = el("div", { class: P + "error", role: "alert", hidden: true });
     ui.out = el("div", { class: P + "result", "aria-live": "polite" });
 
@@ -87,7 +88,7 @@
       ].map(([c, st, t]) => el("span", { class: P + "lg" }, [el("i", { style: "border-top:3px " + st + " " + c }), t]))),
       el("div", { class: P + "row" }, [el("label", { class: P + "lbl" }, ["Момент анализа ", ui.atLocal]), ui.atOff]),
       ui.planTabs, ui.modeBar, ui.planBody, ui.points,
-      el("div", { class: P + "row" }, [ui.run]),
+      el("div", { class: P + "row" }, [ui.run, el("button", { class: P + "btn", type: "button", text: "Вся сеть", onclick: () => drawGraph(true) })]),
       ui.err, ui.out,
     );
 
@@ -104,15 +105,24 @@
       state.graphs = g.items || []; state.cases = c.items || [];
       ui.graphSel.replaceChildren(...state.graphs.map((x) => el("option", { value: x.id, text: (x.evidence_type === "synthetic" ? "[СИНТЕТИКА] " : "") + x.label })));
       for (const nr of g.not_ready || []) ui.graphSel.appendChild(el("option", { disabled: true, text: "[NOT_READY] " + (MODE_LABEL[nr.mode] || nr.mode) + ": нет проверенного графа" }));
-      const first = state.cases.find((x) => x.payload.graph_id !== "synthetic-tiny-v1") || state.cases[0];
+      const preferred = state.graphs.find((g) => g.default === true);
+      const first = state.cases.find((x) => x.payload.graph_id === preferred?.id) || state.cases.find((x) => x.payload.graph_id !== "synthetic-tiny-v1") || state.cases[0];
+      if (preferred) { selectGraph(preferred.id, first?.payload.graph_id === preferred.id ? first.case_id : null); return; }
       if (first) selectGraph(first.payload.graph_id, first.case_id); else if (state.graphs[0]) selectGraph(state.graphs[0].id, null);
     }).catch(showError);
 
     function selectGraph(id, caseId) {
       clearError();
+      const seq = ++state.graphSeq;
+      ++state.resultSeq;
+      state.payload = null; state.graph = null; state.result = null; state.drawnGraph = null;
+      ui.run.disabled = true; ui.caseSel.disabled = true;
+      ui.graphInfo.textContent = "Загружаем сеть…";
+      ui.planBody.replaceChildren(); ui.points.replaceChildren(); ui.out.replaceChildren();
+      if (map) for (const source of SOURCES) map.getSource(source)?.setData(fc([]));
       ui.graphSel.value = id;
       return req("GET", "/graphs/" + encodeURIComponent(id)).then((d) => {
-        if (state.destroyed) return;
+        if (state.destroyed || seq !== state.graphSeq) return;
         const g = d.graph;
         state.graph = g; state.edgeIndex = new Map(g.edges.map((e) => [e.id, e])); state.nodeIndex = new Map(g.nodes.map((n) => [n.id, n]));
         state.result = null; state.selectedPair = null; ui.out.replaceChildren();
@@ -120,8 +130,9 @@
         const cases = state.cases.filter((c) => c.payload.graph_id === id);
         ui.caseSel.replaceChildren(el("option", { value: "", text: "— пустой сценарий —" }), ...cases.map((c) => el("option", { value: c.case_id, text: c.title })));
         if (caseId) { ui.caseSel.value = caseId; applyCase(caseId); } else applyCase("");
+        ui.run.disabled = false; ui.caseSel.disabled = false;
         drawGraph(true);
-      }).catch(showError);
+      }).catch((e) => { if (!state.destroyed && seq === state.graphSeq) { ui.graphInfo.textContent = "Сеть не загружена."; showError(e); } });
     }
 
     function renderGraphInfo() {
@@ -130,6 +141,7 @@
       const lim = el("ul", { class: P + "lim" }, (g.limitations || []).map((t) => el("li", { text: t })));
       ui.graphInfo.replaceChildren(
         el("div", {}, [badge, " ", el("span", { text: "режим: " + (MODE_LABEL[g.mode] || g.mode) + " · узлов " + g.nodes.length + " · рёбер " + g.edges.length + " · digest " + g.digest.slice(0, 12) })]),
+        el("p", { text: g.source?.snapshot_at ? "Состояние OSM: " + g.source.snapshot_at.slice(0, 10) + ". Приблизьте карту, чтобы выбрать участок, старт и цель." : "Расчёт доступен только на показанных линиях. Приблизьте карту для выбора точек." }),
         el("details", {}, [el("summary", { text: "Пределы данных и источник" }), lim,
           el("div", { class: P + "src", text: g.source && g.source.commit ? "Источник: " + g.source.path + " @ " + g.source.commit.slice(0, 10) + (g.license && g.license.id ? " · лицензия " + g.license.id : "") : "Источник: " + ((g.source && g.source.kind) || "—") })]),
       );
@@ -142,6 +154,8 @@
         plans: [{ id: "A", closures: [] }, { id: "B", closures: [] }] };
     }
     function applyCase(caseId) {
+      if (!state.graph) return;
+      ++state.resultSeq;
       const c = state.cases.find((x) => x.case_id === caseId);
       state.payload = c ? JSON.parse(JSON.stringify(c.payload)) : emptyPayload();
       for (const id of ["A", "B"]) if (!state.payload.plans.find((p) => p.id === id)) state.payload.plans.push({ id, closures: [] });
@@ -151,7 +165,8 @@
       state.result = null; ui.out.replaceChildren();
       renderPlans(); renderPoints(); drawOverlays();
     }
-    function syncAt() { if (state.payload && ui.atLocal.value) { state.payload.analysis_at = isoWithOffset(ui.atLocal.value, ui.atOff.value); drawOverlays(); } }
+    function invalidateResult() { ++state.resultSeq; state.result = null; state.selectedPair = null; ui.out.replaceChildren(); }
+    function syncAt() { if (state.payload && ui.atLocal.value) { const at = isoWithOffset(ui.atLocal.value, ui.atOff.value); if (state.payload.analysis_at !== at) invalidateResult(); state.payload.analysis_at = at; drawOverlays(); } }
 
     // ---------- планы ----------
     const plan = (id) => state.payload.plans.find((p) => p.id === id);
@@ -163,6 +178,7 @@
       return s;
     }
     function renderPlans() {
+      if (!state.payload) return;
       ui.planTabs.replaceChildren(...["A", "B"].map((id) => el("button", {
         type: "button", role: "tab", class: P + "tab" + (state.editPlan === id ? " " + P + "active" : ""), "aria-selected": state.editPlan === id ? "true" : "false",
         style: "border-color:" + PLAN_COLORS[id], onclick: () => { state.editPlan = id; renderPlans(); },
@@ -172,13 +188,13 @@
       const p = plan(state.editPlan);
       const items = p.closures.map((c, i) => {
         const s = splitIso(c.start_at), e = splitIso(c.end_at);
-        const sIn = el("input", { type: "datetime-local", class: P + "input", value: s.local, "aria-label": "Начало", onchange: () => { c.start_at = isoWithOffset(sIn.value, s.off); drawOverlays(); } });
-        const eIn = el("input", { type: "datetime-local", class: P + "input", value: e.local, "aria-label": "Конец", onchange: () => { c.end_at = isoWithOffset(eIn.value, e.off); drawOverlays(); } });
+        const sIn = el("input", { type: "datetime-local", class: P + "input", value: s.local, "aria-label": "Начало", onchange: () => { invalidateResult(); c.start_at = isoWithOffset(sIn.value, s.off); drawOverlays(); } });
+        const eIn = el("input", { type: "datetime-local", class: P + "input", value: e.local, "aria-label": "Конец", onchange: () => { invalidateResult(); c.end_at = isoWithOffset(eIn.value, e.off); drawOverlays(); } });
         return el("li", { class: P + "closure" }, [
           el("div", { text: "Перекрытие " + (i + 1) + ": рёбер " + c.edge_ids.length + " · UTC" + s.off }),
           el("div", { class: P + "row" }, [el("label", { class: P + "lbl" }, ["с ", sIn]), el("label", { class: P + "lbl" }, ["до ", eIn])]),
           el("div", { class: P + "hint", text: "[начало, конец): начало включительно, конец — нет" }),
-          el("button", { type: "button", class: P + "btn", text: "Удалить", onclick: () => { p.closures.splice(i, 1); renderPlans(); drawOverlays(); } }),
+          el("button", { type: "button", class: P + "btn", text: "Удалить", onclick: () => { invalidateResult(); p.closures.splice(i, 1); renderPlans(); drawOverlays(); } }),
         ]);
       });
       ui.planBody.replaceChildren(
@@ -195,10 +211,11 @@
     function renderPoints() {
       const mk = (ids, key, label) => el("div", {}, [el("strong", { text: label + ": " }),
         ...ids.map((id) => el("button", { type: "button", class: P + "chip", title: id, text: short(id) + " ×", onclick: () => {
-          state.payload[key] = state.payload[key].filter((x) => x !== id); renderPoints(); drawOverlays(); } }))]);
+          if (!state.payload) return; invalidateResult(); state.payload[key] = state.payload[key].filter((x) => x !== id); renderPoints(); drawOverlays(); } }))]);
       ui.points.replaceChildren(mk(state.payload.origin_node_ids, "origin_node_ids", "Старты"), mk(state.payload.destination_node_ids, "destination_node_ids", "Цели"));
     }
     function toggleEdge(id) {
+      invalidateResult();
       const p = plan(state.editPlan);
       const holder = p.closures.find((c) => c.edge_ids.includes(id));
       if (holder) { holder.edge_ids = holder.edge_ids.filter((x) => x !== id); if (!holder.edge_ids.length) p.closures.splice(p.closures.indexOf(holder), 1); }
@@ -210,6 +227,7 @@
       renderPlans(); drawOverlays();
     }
     function addPoint(nodeId) {
+      invalidateResult();
       const key = state.clickMode === "origin" ? "origin_node_ids" : "destination_node_ids";
       if (!state.payload[key].includes(nodeId)) state.payload[key].push(nodeId);
       renderPoints(); drawOverlays();
@@ -220,12 +238,13 @@
       if (state.busy || !state.payload) return;
       clearError(); syncAt();
       const body = JSON.parse(JSON.stringify(state.payload));
+      const seq = ++state.resultSeq;
       body.plans = body.plans.map((p) => ({ id: p.id, closures: p.closures.filter((c) => c.edge_ids.length) }));
       state.busy = true; ui.run.disabled = true; ui.run.textContent = "Считаю…";
       req("POST", "/compare", body).then((r) => {
-        if (state.destroyed) return;
+        if (state.destroyed || seq !== state.resultSeq) return;
         state.result = r; state.sentPayload = body; state.selectedPair = null; renderResult(); drawOverlays();
-      }).catch(showError).finally(() => { state.busy = false; ui.run.disabled = false; ui.run.textContent = "Сравнить"; });
+      }).catch((e) => { if (!state.destroyed && seq === state.resultSeq) showError(e); }).finally(() => { state.busy = false; ui.run.disabled = !state.graph; ui.run.textContent = "Сравнить"; });
     }
 
     function cell(row, delta) {
@@ -288,7 +307,7 @@
 
     // ---------- карта ----------
     const LAYERS = [P + "edges-allowed", P + "edges-unknown", P + "edges-denied", P + "closed-A", P + "closed-B", P + "closed-A-other", P + "closed-B-other", P + "route-base", P + "route-A", P + "route-B", P + "pts"];
-    const SOURCES = [P + "graph", P + "routes", P + "pts"];
+    const SOURCES = [P + "graph", P + "closed", P + "routes", P + "pts"];
     const fc = (features) => ({ type: "FeatureCollection", features });
     function edgeLine(e) { return e.geometry || [[state.nodeIndex.get(e.from).lon, state.nodeIndex.get(e.from).lat], [state.nodeIndex.get(e.to).lon, state.nodeIndex.get(e.to).lat]]; }
     function routeLine(row) {
@@ -304,12 +323,12 @@
     function ensureLayers() {
       if (map.getLayer(P + "edges-allowed")) return;
       const line = (id, src, filter, paint) => map.addLayer({ id, type: "line", source: src, filter, layout: { "line-cap": "round", "line-join": "round" }, paint });
-      line(P + "edges-allowed", P + "graph", ["==", ["get", "access"], "allowed"], { "line-color": "#495057", "line-width": 2.5 });
-      line(P + "edges-unknown", P + "graph", ["==", ["get", "access"], "unknown"], { "line-color": "#adb5bd", "line-width": 1.8, "line-dasharray": [2, 2] });
+      line(P + "edges-allowed", P + "graph", ["==", ["get", "access"], "allowed"], { "line-color": "#437b68", "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.6, 14, 2, 17, 3] });
+      line(P + "edges-unknown", P + "graph", ["==", ["get", "access"], "unknown"], { "line-color": "#adb5bd", "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.4, 14, 1.8], "line-opacity": 0.6, "line-dasharray": [2, 2] });
       line(P + "edges-denied", P + "graph", ["==", ["get", "access"], "denied"], { "line-color": "#c92a2a", "line-width": 1.2, "line-opacity": 0.6 });
       for (const k of ["A", "B"]) {
-        line(P + "closed-" + k + "-other", P + "graph", ["==", ["get", "c" + k], "other"], { "line-color": PLAN_COLORS[k], "line-width": 5, "line-offset": k === "A" ? -3 : 3, "line-opacity": 0.35, "line-dasharray": [1, 1.5] });
-        line(P + "closed-" + k, P + "graph", ["==", ["get", "c" + k], "active"], { "line-color": PLAN_COLORS[k], "line-width": 7, "line-offset": k === "A" ? -3 : 3, "line-opacity": 0.85 });
+        line(P + "closed-" + k + "-other", P + "closed", ["==", ["get", "c" + k], "other"], { "line-color": PLAN_COLORS[k], "line-width": 5, "line-offset": k === "A" ? -3 : 3, "line-opacity": 0.35, "line-dasharray": [1, 1.5] });
+        line(P + "closed-" + k, P + "closed", ["==", ["get", "c" + k], "active"], { "line-color": PLAN_COLORS[k], "line-width": 7, "line-offset": k === "A" ? -3 : 3, "line-opacity": 0.85 });
       }
       for (const [k, off] of [["base", 0], ["A", -5], ["B", 5]])
         line(P + "route-" + k, P + "routes", ["==", ["get", "kind"], k], { "line-color": ROUTE_COLORS[k], "line-width": k === "base" ? 5 : 3.5, "line-offset": off, "line-opacity": 0.9 });
@@ -327,7 +346,10 @@
         if (fit) {
           let W = 180, S = 90, E = -180, N = -90;
           for (const n of state.graph.nodes) { W = Math.min(W, n.lon); E = Math.max(E, n.lon); S = Math.min(S, n.lat); N = Math.max(N, n.lat); }
-          map.fitBounds([[W, S], [E, N]], { padding: 40, duration: 0 });
+          const mobile = innerWidth < 761;
+          const padding = mobile ? { top: 85, left: 24, right: 60, bottom: Math.round(innerHeight * 0.64) }
+            : { top: 120, left: 50, right: Math.min(innerWidth * 0.5, 640), bottom: 60 };
+          map.fitBounds([[W, S], [E, N]], { padding, pitch: map.getPitch(), bearing: map.getBearing(), maxZoom: 14, duration: 0 });
         }
       };
       if (styleReady) go(); else pending = go;
@@ -337,8 +359,14 @@
       if (!map || !styleReady || !state.graph || !state.payload) return;
       const cA = closedIds("A"), cB = closedIds("B"), aA = activeIds("A"), aB = activeIds("B");
       const st = (all, act, id) => (act.has(id) ? "active" : all.has(id) ? "other" : "no");
-      setData(P + "graph", fc(state.graph.edges.map((e) => ({ type: "Feature", properties: { id: e.id, access: e.access, cA: st(cA, aA, e.id), cB: st(cB, aB, e.id) },
-        geometry: { type: "LineString", coordinates: edgeLine(e) } }))));
+      if (!map.getSource(P + "graph") || state.drawnGraph !== state.graph.id) {
+        setData(P + "graph", fc(state.graph.edges.map((e) => ({ type: "Feature", properties: { id: e.id, access: e.access },
+          geometry: { type: "LineString", coordinates: edgeLine(e) } }))));
+        state.drawnGraph = state.graph.id;
+      }
+      setData(P + "closed", fc([...new Set([...cA, ...cB])].map((id) => state.edgeIndex.get(id)).filter(Boolean).map((e) => ({
+        type: "Feature", properties: { id: e.id, cA: st(cA, aA, e.id), cB: st(cB, aB, e.id) }, geometry: { type: "LineString", coordinates: edgeLine(e) },
+      }))));
       const routes = [];
       if (state.result && state.selectedPair) {
         const pick = (rows) => rows.find((x) => x.origin_node_id + ">" + x.destination_node_id === state.selectedPair);
@@ -347,14 +375,18 @@
         for (const p of state.result.plans) add(pick(p.routes), p.id);
       }
       setData(P + "routes", fc(routes));
-      const pts = [];
+      drawPoints();
+      ensureLayers();
+    }
+    function drawPoints() {
+      if (!map || !styleReady || !state.graph || !state.payload) return;
+      const pts = [], visible = map.getBounds(), detailed = map.getZoom() >= 14;
       const o = new Set(state.payload.origin_node_ids), d = new Set(state.payload.destination_node_ids);
       for (const n of state.graph.nodes) {
-        const kind = o.has(n.id) ? "origin" : d.has(n.id) ? "dest" : state.clickMode === "close" ? null : "node";
+        const kind = o.has(n.id) ? "origin" : d.has(n.id) ? "dest" : state.clickMode !== "close" && detailed && visible.contains([n.lon, n.lat]) ? "node" : null;
         if (kind) pts.push({ type: "Feature", properties: { id: n.id, kind }, geometry: { type: "Point", coordinates: [n.lon, n.lat] } });
       }
       setData(P + "pts", fc(pts));
-      ensureLayers();
     }
     function onClick(ev) {
       if (!state.graph || !state.payload) return;
@@ -375,6 +407,7 @@
       if (f) f(); else drawOverlays();
     }
     if (map) {
+      map.on("moveend", drawPoints); listeners.push(["moveend", drawPoints]);
       map.on("click", onClick); listeners.push(["click", onClick]);
       map.on("style.load", onStyle); listeners.push(["style.load", onStyle]);
       if (map.isStyleLoaded && map.isStyleLoaded()) styleReady = true;

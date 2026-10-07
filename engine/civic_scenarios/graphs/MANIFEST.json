@@ -71,6 +71,52 @@
     ],
     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
    }
+  },
+  {
+   "id": "osm-astana-walking-20260506",
+   "city": "astana",
+   "mode": "walking",
+   "label": "Астана и окрестности · пешеходная сеть OSM",
+   "evidence_type": "derived",
+   "digest": "a694be21cc08ef1bf8000387a5120e7e5ad810ee37a955a4c223c004aeba5e35",
+   "source": {
+    "kind": "overpass_snapshot",
+    "url": "https://overpass.private.coffee/api/interpreter",
+    "query": "[out:json][timeout:90];way[highway](50.9206,71.2079,51.3612,71.7953);(._;>;);out body;",
+    "snapshot_at": "2026-05-06T03:25:00Z",
+    "retrieved_at": "2026-10-07",
+    "raw_sha256": "477bff5d1fa207aca2cc9df00288ebfcf152f890cceac3364af0404a63f80f0c",
+    "path": "data/civic/astana/osm-walking/overpass.json.gz",
+    "policy": "osm-conservative-walking-v1",
+    "docs": [
+     "https://wiki.openstreetmap.org/wiki/Key:foot",
+     "https://wiki.openstreetmap.org/wiki/Key:access"
+    ]
+   },
+   "license": {
+    "id": "ODbL-1.0",
+    "attribution": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "bbox": [
+    71.2079,
+    50.9206,
+    71.7953,
+    51.3612
+   ],
+   "limitations": [
+    "Снимок OSM на 2026-05-06T03:25:00Z; не оперативные данные.",
+    "Прямоугольная выборка Астаны и окрестностей: наличие линий не подтверждает полноту сети.",
+    "Пеший доступ: явные foot/access или пешеходное назначение footway/pedestrian/steps; прочие улицы без сведений имеют неизвестный доступ и исключены из маршрута.",
+    "Условный доступ и непроверенные барьеры считаются неизвестными. Ограничения через отношения OSM не разобраны; натурной проверки нет.",
+    "Только длина пути; нет прогноза пробок, времени, пропускной способности или выбросов. Не навигатор для поездок."
+   ],
+   "file": "osm-astana-walking-20260506.graph.json",
+   "file_sha256": "4d93d8b5af188a65e25efe67add2b60ea066cc8ff9f9d4c6927a46b9c6cc8883",
+   "default": true,
+   "nodes": 66027,
+   "edges": 94089
   }
  ],
  "not_ready": [

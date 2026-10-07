@@ -43,6 +43,8 @@ def load_graph_dict(graph_id):
 
 def load_graph(graph_id):
     """PreparedGraph из кэша (проверка digest — при первой загрузке)."""
+    if not isinstance(graph_id, str):
+        raise ScenarioError("unknown_graph", "graph_id — строка")
     with _lock:
         pg = _cache.get(graph_id)
         if pg is None:

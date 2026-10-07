@@ -656,6 +656,7 @@
         st.excluded = norm.excluded.length;
         st.truncated = truncated;
         st.list = "ready";
+        if (typeof opt.onData === "function") safeCall(opt.onData, st.items.map((item) => ({ evidence: item.evidence })));
         renderList();
         updateMapData();
         if (fitOnLoad && !fitted && !st.selectedId) fitted = fitAll();
