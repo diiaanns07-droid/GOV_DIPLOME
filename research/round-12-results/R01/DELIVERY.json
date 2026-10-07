@@ -1,0 +1,102 @@
+{
+  "role": "R01",
+  "round": 12,
+  "title": "Общий интерфейс: удобная карта города и целостный продукт",
+  "branch": "claude/affectionate-ride-bol5v8",
+  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "base_adoption": "429933b: merge whose tree equals 56538a3 (first parent 27ea222 = round-11 history, content not merged); no force push",
+  "code_sha": "223296ec02bb14568b7d5782dc7de473372d2aec",
+  "push_status": "pushed; every checkpoint pushed to origin/claude/affectionate-ride-bol5v8 (final SHA of the branch: see the chat message — a commit cannot name its own SHA)",
+  "changed_paths": [
+    "web/civic/shell/explore.js",
+    "web/civic/shell/shell.js",
+    "web/civic/shell/shell.css",
+    "web/interface.js",
+    "web/map.js",
+    "tests/civic/R01/explore.test.cjs",
+    "tests/civic/R01/browser/r12_city.cjs",
+    "tests/civic/R01/run_checks.sh",
+    "research/round-12-results/R01/",
+    "research/handoffs/astana/R01/round-12/STATUS.md"
+  ],
+  "unchanged_owned_paths": [
+    "ui/web_server.py",
+    "web/index.html",
+    "web/style.css"
+  ],
+  "portable_patch": "research/round-12-results/R01/r01_round12_code.patch (git diff 56538a3..code_sha on R01 code paths; git apply --check on 56538a3: OK)",
+  "tests": [
+    {
+      "name": "pytest (whole repo)",
+      "status": "PASS",
+      "command": "python3 -m pytest -q -p no:cacheprovider tests",
+      "result": "868 passed, 2 skipped in 105.40s (0:01:45)"
+    },
+    {
+      "name": "ui.web_check",
+      "status": "PASS",
+      "command": "python3 -B -m ui.web_check"
+    },
+    {
+      "name": "node govtech plan/resilience/whatif/school_case/school_vs_k05",
+      "status": "PASS"
+    },
+    {
+      "name": "node R03 core",
+      "status": "PASS",
+      "result": "24 pass"
+    },
+    {
+      "name": "node R04 core+mock",
+      "status": "PASS",
+      "result": "27 pass"
+    },
+    {
+      "name": "node R01 explore (street search helpers)",
+      "status": "PASS",
+      "result": "5 pass"
+    },
+    {
+      "name": "browser r12 city 360x800/768x1024/1440x900",
+      "status": "PASS",
+      "command": "node tests/civic/R01/browser/r12_city.cjs <out>",
+      "result": "81 PASS / 0 FAIL / 0 NOT_RUN"
+    },
+    {
+      "name": "browser r12 empty registry",
+      "status": "PASS",
+      "command": "node tests/civic/R01/browser/r12_city.cjs <out> --empty",
+      "result": "15 PASS / 0 FAIL / 0 NOT_RUN"
+    },
+    {
+      "name": "browser round-11 P0 flow (editor -> resident -> feedback)",
+      "status": "PASS",
+      "result": "59 PASS / 0 FAIL / 2 NOT_RUN"
+    },
+    {
+      "name": "browser scenarios (R07)",
+      "status": "PASS",
+      "result": "16 PASS / 0 FAIL / 0 NOT_RUN"
+    },
+    {
+      "name": "live basemap, street layer and 3D buildings",
+      "status": "NOT_RUN",
+      "reason": "tiles.openfreemap.org blocked by the environment proxy; offline background and 3D tilt verified only"
+    },
+    {
+      "name": "real devices (iOS/Android), human usability test",
+      "status": "NOT_RUN",
+      "reason": "Chromium emulation only (Playwright isMobile/hasTouch)"
+    }
+  ],
+  "evidence": "research/round-12-results/R01/runs/final_223296e/ (logs, JSON, screenshots); screens/final/; OBSERVATIONS.md (problems before/after)",
+  "known_limits": [
+    "Street pin = centre of the OSM bbox of the street part (streets.json has no geometry); curved streets may put it beside the street.",
+    "District label of a street = point-in-polygon of that centre against six OSM district polygons (public map, not cadastre).",
+    "R03 camera adapter: fitBounds is wrapped for one synchronous fitAll() call; selection correction pans after R03's camera. Proposal for an R03 getPadding() callback in INTEGRATION.txt.",
+    "Intermittent R03 warning 'Image civic-r03-demo-ring could not be loaded' after the offline style swap (1 of 4 P0 runs during development) — R03-owned.",
+    "All published records are synthetic demo data (R05 round 11); no confirmed real Astana works in this build.",
+    "Basemap/3D buildings not observable in this environment (NOT_RUN)."
+  ],
+  "next_step": "Coordinator: integrate R01 round-12 paths (diff 56538a3..code_sha) and rerun run_checks.sh; R03: adopt a getPadding() camera callback so the R01 adapter can be removed."
+}
