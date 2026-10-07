@@ -57,6 +57,13 @@ _RULES = (
                       "что неизвестно", "данные неизвест", "неизвестные данные", "каких данных нет",
                       "чего нет в карточке", "что не указано", "пустые поля", "поля пуст",
                       "мәліметтер жоқ", "мәлімет жоқ", "деректер жоқ", "не белгісіз", "жетіспей", "missing")),
+    # «Насколько свежие данные?» — даты данных с основой, а не сроки работ. Раньше schedule: «когда обновили».
+    ("freshness", ("свеж", "актуальны ли", "актуальность", "насколько актуальн", "данные актуальн",
+                   "сведения актуальн", "когда обновил", "когда обновлял", "когда обновлен", "обновлялась",
+                   "обновлялись", "последнее обновление", "устарел", "дата данных", "на какую дату", "снимок",
+                   "по числу участков", "по числу ребер", "по числу рёбер", "доля неизвестн", "долю неизвестн",
+                   "неизвестным доступом", "неизвестный доступ", "доля по длине", "жаңартыл", "өзекті", "ескір",
+                   "белгісіз үлес", "fresh", "up to date")),
     ("schedule", ("когда", "срок", "до какого", "дата", "сколько продл", "на сколько сдвин", "на сколько продл",
                   "неше күн", "ұзарт", "қашан", "мерзім", "күні", "when", "deadline")),
     ("status", ("законч", "заверш", "уже сделал", "готов ли", "готово", "сдали", "уже идут", "идут ли",
@@ -265,6 +272,18 @@ def unavailable_text(lang: str, code: str) -> str:
 def unavailable_answer(lang: str = "ru", code: str = "context_unavailable") -> dict:
     st = [{"text": unavailable_text(lang, code), "kind": "notice", "fact_ids": [], "source_ids": []}]
     return _result("unavailable", None, lang, st, None, [code], mode="unavailable")
+
+
+def stale_revision_answer(lang: str, object_id: str, current_revision, updated_at=None) -> dict:
+    """Клиент спросил о редакции, которой уже нет: фактов не выдаём, называем текущую редакцию."""
+    rev = current_revision if isinstance(current_revision, int) and not isinstance(current_revision, bool) else None
+    text = T[lang]["revision_changed"].format(r=rev if rev is not None else T[lang]["unknown_value"])
+    st = [{"text": text, "kind": "notice", "fact_ids": [], "source_ids": []}]
+    out = _result("unavailable", None, lang, st, {"object_id": object_id}, ["object_revision_changed"],
+                  mode="unavailable")
+    out["object_revision"] = rev
+    out["object_updated_at"] = clean_text(updated_at, 40)
+    return out
 
 
 def prepend_notice(answer: dict, code: str) -> dict:

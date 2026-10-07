@@ -1,10 +1,12 @@
 /*
  * R09 CivicAssistant — помощник по проверенным фактам карточки (раунд 11, civic-v1).
  *
- * window.CivicAssistant.mount({root, api, objectId, scenarioId?, revision?}) -> {ask, update, destroy}
+ * window.CivicAssistant.mount({root, api, objectId, scenarioId?, revision?, onStale?}) -> {ask, update, destroy}
  *   Житель задаёт вопрос; сервер (POST /assistant) собирает ответ из опубликованных
- *   фактов. Браузер не передаёт фактов: только {question, object_id, scenario_id}.
- *   revision — редакция карточки на экране; ответ по другой редакции не показывается.
+ *   фактов. Браузер не передаёт фактов: только {question, object_id, scenario_id, revision}.
+ *   revision — редакция карточки на экране; сервер отвечает только по ней (раунд 13), иначе
+ *   object_revision_changed: ответ не показывается, onStale({objectId, revision}) просит R01
+ *   перечитать карточку. Ответ по другой редакции не показывается и без серверной проверки.
  *   update({objectId?, scenarioId?, revision?}) — карточка обновилась/сменилась: прежний
  *   запрос отменяется, ответ по устаревшей редакции убирается (раунд 12).
  * window.CivicAssistant.mountDraftReview({root, api, onApplyField}) -> {destroy}
@@ -202,6 +204,7 @@
     let scenarioId = idOrNull(opts.scenarioId);
     let revision = revOrNull(opts.revision);
     let shownRevision = null;
+    let onStale = typeof opts.onStale === "function" ? opts.onStale : null;
     const gate = requestGate();
     let destroyed = false;
     let clientTimer = null;
@@ -262,7 +265,7 @@
         status.textContent = errorMessage({ code: "timeout" });
       }, CLIENT_TIMEOUT_MS);
       try {
-        const data = await api.request("POST", "/assistant", { question: q, object_id: objectId, scenario_id: scenarioId },
+        const data = await api.request("POST", "/assistant", { question: q, object_id: objectId, scenario_id: scenarioId, revision: objectId ? revision : null },
           { signal: ticket.signal, timeoutMs: CLIENT_TIMEOUT_MS });
         if (destroyed || !gate.isCurrent(ticket.id)) return; // запоздавший ответ на прежний вопрос
         clearTimer();
@@ -271,6 +274,17 @@
         // Ответ должен относиться к этой карточке; иначе это ответ про другой объект.
         if ((data.object_id ?? null) !== objectId && data.source !== "unavailable") {
           status.textContent = "Ответ относится к другому объекту и не показан.";
+          return;
+        }
+        // Сервер: на экране не текущая редакция — фактов не показываем, просим перечитать карточку.
+        const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+        if (warnings.includes("object_revision_changed")) {
+          const current = Number.isInteger(data.object_revision) ? data.object_revision : null;
+          status.textContent = "Карточка изменилась: сейчас опубликована редакция " + (current ?? "—") +
+            (revision !== null ? " (на экране — редакция " + revision + ")" : "") + ". Обновите карточку и задайте вопрос снова.";
+          if (onStale) {
+            try { onStale({ objectId, revision: current }); } catch (e) { /* ошибка обработчика R01 не ломает компонент */ }
+          }
           return;
         }
         // Карточка обновилась, пока готовился ответ: устаревшую редакцию не выдаём за текущую.
@@ -356,6 +370,7 @@
       destroy() {
         if (destroyed) return;
         destroyed = true;
+        onStale = null;
         gate.cancel();
         clearTimer();
         form.removeEventListener("submit", onSubmit);

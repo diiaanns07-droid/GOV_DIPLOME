@@ -96,7 +96,8 @@ T = {
         "amount_missing": "Сумма в карточке не указана — нет данных.",
         "amount_source": "Источник суммы: {src}.",
         "amount_source_missing": "Источник суммы не указан.",
-        "source": "Источник: {publisher}; опубликовано: {published}; доступ: {access}; лицензия: {license}{url}.",
+        "source": "Источник: {publisher}; опубликовано: {published}; получено системой: {retrieved}; доступ: {access}; "
+                  "лицензия: {license}{url}.",
         "source_url": "; ссылка: {u}",
         "no_sources": "У записи нет ссылок на источники.",
         "old_plan": "Публикация плана не доказывает фактическое состояние работ.",
@@ -117,6 +118,20 @@ T = {
         "unavailable_result_unknown": "Результат расчёта с таким идентификатором на сервере не найден. Выполните "
                                       "сравнение заново — помощник не подставляет другой сценарий.",
         "unavailable_scenario": "Сценарий с таким идентификатором недоступен — помощник не подставляет другой сценарий.",
+        "revision_changed": "Карточка объекта изменилась после того, как вы её открыли: сейчас опубликована редакция {r}. "
+                            "Обновите карточку и задайте вопрос снова — помощник не отвечает по устаревшей редакции.",
+        "freshness_card": "Карточка обновлена в системе {d} (редакция {r}). Это дата изменения записи, а не дата проверки "
+                          "работ на месте.",
+        "freshness_card_missing": "Дата обновления карточки: нет данных.",
+        "freshness_source": "Источник «{publisher}»: опубликован {published}; получен системой {retrieved}; доступ при "
+                            "проверке: {access}.",
+        "freshness_source_note": "Дата публикации — когда источник выпустил сведения; дата получения — когда система их "
+                                 "загрузила. Ни одна из них не подтверждает, что сведения верны сегодня.",
+        "freshness_no_sources": "У записи нет источников — подтвердить свежесть сведений нечем.",
+        "freshness_none": "Сведений о датах данных нет.",
+        "freshness_unknown_after": "Помощник не знает, менялось ли что-то после этих дат.",
+        "no_active_closure_claim": "Помощник не делает вывода, что перекрытие действует сейчас: объявление о работах или план "
+                                   "не подтверждают текущее состояние на месте.",
         "unknown_value": "нет данных",
         "unknown_actor": "",
         "missing_list": "В опубликованной карточке не указано: {fields}.",
@@ -167,7 +182,8 @@ T = {
         "amount_missing": "Сома карточкада көрсетілмеген — деректер жоқ.",
         "amount_source": "Сома дереккөзі: {src}.",
         "amount_source_missing": "Сома дереккөзі көрсетілмеген.",
-        "source": "Дереккөз: {publisher}; жарияланған күні: {published}; қолжетімділік: {access}; лицензия: {license}{url}.",
+        "source": "Дереккөз: {publisher}; жарияланған күні: {published}; жүйе алған күні: {retrieved}; қолжетімділік: "
+                  "{access}; лицензия: {license}{url}.",
         "source_url": "; сілтеме: {u}",
         "no_sources": "Жазбада дереккөзге сілтеме жоқ.",
         "old_plan": "Жоспардың жариялануы жұмыстың нақты жағдайын дәлелдемейді.",
@@ -188,6 +204,20 @@ T = {
         "unavailable_result_unknown": "Мұндай идентификатормен есеп нәтижесі серверде табылмады. Салыстыруды қайта "
                                       "орындаңыз — көмекші басқа сценарийді қоймайды.",
         "unavailable_scenario": "Мұндай идентификатормен сценарий қолжетімсіз — көмекші басқа сценарийді қоймайды.",
+        "revision_changed": "Сіз ашқаннан кейін нысан карточкасы өзгерді: қазір {r}-нұсқа жарияланған. Карточканы "
+                            "жаңартып, сұрақты қайта қойыңыз — көмекші ескірген нұсқа бойынша жауап бермейді.",
+        "freshness_card": "Карточка жүйеде {d} жаңартылды ({r}-нұсқа). Бұл жазбаның өзгерген күні, жұмыстың орнында "
+                          "тексерілген күні емес.",
+        "freshness_card_missing": "Карточканың жаңартылған күні: деректер жоқ.",
+        "freshness_source": "«{publisher}» дереккөзі: {published} жарияланған; жүйе {retrieved} алған; тексеру кезіндегі "
+                            "қолжетімділік: {access}.",
+        "freshness_source_note": "Жариялану күні — дереккөз мәліметті шығарған күн; алыну күні — жүйе оны жүктеген күн. "
+                                 "Екеуі де мәліметтің бүгін дұрыс екенін растамайды.",
+        "freshness_no_sources": "Жазбада дереккөз жоқ — мәліметтің өзектілігін растайтын ештеңе жоқ.",
+        "freshness_none": "Деректердің күндері туралы мәлімет жоқ.",
+        "freshness_unknown_after": "Осы күндерден кейін бірдеңе өзгергенін көмекші білмейді.",
+        "no_active_closure_claim": "Көмекші жабылу қазір әрекет етеді деп айтпайды: жұмыс туралы хабарландыру немесе "
+                                   "жоспар орындағы қазіргі жағдайды растамайды.",
         "unknown_value": "деректер жоқ",
         "unknown_actor": "",
         "missing_list": "Жарияланған карточкада көрсетілмеген: {fields}.",
@@ -404,6 +434,7 @@ def _source_text(ref, lang):
     return t["source"].format(
         publisher=ref["publisher"] or NO_DATA[lang],
         published=fmt_date(ref["published_on"], lang),
+        retrieved=fmt_at(ref["retrieved_at"], lang),
         access=ACCESS_LABELS[lang][ref["access_status"]],
         license=ref["license"] or NO_DATA[lang],
         url=t["source_url"].format(u=ref["url"]) if ref["url"] else "",
@@ -473,8 +504,40 @@ def r_location(facts, lang):
 
 def r_access_impact(facts, lang):
     from agent.civic_assistant.scenario import render_scenario
-    out = render_scenario(facts, lang, focus="impact")
-    return out or [_st(T[lang]["access_none"], [], kind="missing")]
+    out = render_scenario(facts, lang, focus="impact") or [_st(T[lang]["access_none"], [], kind="missing")]
+    # Объявление/план не доказывает, что перекрытие действует сейчас; сценарий — только гипотеза.
+    return out + [_req(_st(T[lang]["no_active_closure_claim"], [], kind="notice"))]
+
+
+def r_freshness(facts, lang):
+    """Даты данных с явной основой: изменение карточки, публикация и получение источника, снимок сети."""
+    from agent.civic_assistant.scenario import render_scenario_freshness
+    t = T[lang]
+    out = []
+    if "object.title" in facts:
+        upd, rev = _v(facts, "object.updated_at"), _v(facts, "object.revision")
+        if upd and rev and fmt_at(upd, lang) != NO_DATA[lang]:
+            out.append(_st(t["freshness_card"].format(d=fmt_at(upd, lang), r=rev),
+                           ["object.updated_at", "object.revision"], facts=facts))
+        else:
+            out.append(_req(_st(t["freshness_card_missing"], ["object.updated_at"], kind="missing")))
+        refs = [f for fid, f in facts.items() if fid.startswith("source.")]
+        for f in refs:
+            ref = f["value"]
+            out.append(_st(t["freshness_source"].format(publisher=ref["publisher"] or NO_DATA[lang],
+                                                        published=fmt_date(ref["published_on"], lang),
+                                                        retrieved=fmt_at(ref["retrieved_at"], lang),
+                                                        access=ACCESS_LABELS[lang][ref["access_status"]]),
+                           [f["id"]], facts=facts))
+        if refs:
+            out.append(_req(_st(t["freshness_source_note"], [], kind="notice")))
+        else:
+            out.append(_req(_st(t["freshness_no_sources"], [], kind="missing")))
+    out += render_scenario_freshness(facts, lang)
+    if not out:
+        out.append(_st(t["freshness_none"], [], kind="missing"))
+    out.append(_req(_st(t["freshness_unknown_after"], [], kind="notice")))
+    return out
 
 
 def r_scenario_compare(facts, lang):
@@ -534,6 +597,7 @@ RENDERERS = {
     "location": r_location,
     "access_impact": r_access_impact,
     "scenario_compare": r_scenario_compare,
+    "freshness": r_freshness,
     "missing_data": r_missing_data,
     "unsupported": r_unsupported,
 }
@@ -552,6 +616,8 @@ INTENT_FACT_PREFIXES = {
     "location": ("object.geometry_type", "object.geometry_precision"),
     "access_impact": ("scenario.",),
     "scenario_compare": ("scenario.",),
+    "freshness": ("object.updated_at", "object.revision", "source.", "scenario.graph.", "scenario.known_access_share",
+                  "scenario.unknown_access_share", "scenario.engine_warnings"),
     "missing_data": ("schedule.", "budget.", "responsible.", "object.", "source.", "history."),
     "unsupported": (),
 }

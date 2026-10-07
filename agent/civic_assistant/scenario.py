@@ -59,7 +59,7 @@ S = {
         "graph_data": "Сеть: «{label}». Снимок OpenStreetMap на {snapshot}, получен {retrieved}; лицензия: {license}. "
                       "Это не оперативные данные.",
         "graph_data_short": "Сеть: «{label}»; дата снимка данных не указана.",
-        "closure": "План {p}: перекрытие ({n} уч.) с {start} до {end} — в момент анализа {state}.",
+        "closure": "План {p}: перекрытие ({n} уч.) с {start} до {end} — по условию сценария в момент анализа {state}.",
         "closure_active": "действует",
         "closure_inactive": "не действует",
         "closure_unverified": "Интервалы перекрытий не показаны: входные данные сценария не совпали с расчётом.",
@@ -71,6 +71,10 @@ S = {
         "route_status": {"unreachable": "пути в модели нет", "unknown": "путь не подтверждён (участки с неизвестным доступом)"},
         "pair_label": "Пара {i}: ",
         "unknown_access": "Режим доступа неизвестен для {share} % длины сети; такие участки маршрутом не используются.",
+        "unknown_by_edges_none": "Долю участков (рёбер) с неизвестным доступом по их числу движок не сообщает — нет "
+                                 "данных; доля по длине и доля по числу участков — разные метрики.",
+        "unknown_by_edges": "По числу участков (рёбер) режим доступа неизвестен для {share} %; это другая метрика, "
+                            "чем доля по длине.",
         "slice": "Граф — прямоугольная выборка: сеть за её границей не моделируется; путь через внешнюю сеть мог бы "
                  "быть короче, а «нет пути» не доказано.",
         "no_best": "Помощник не ранжирует варианты: показаны только длины путей в модели, выбор остаётся за сотрудником.",
@@ -112,7 +116,8 @@ S = {
         "graph_data": "Желі: «{label}». OpenStreetMap суреті {snapshot} күнгі, {retrieved} алынған; лицензия: {license}. "
                       "Бұл жедел деректер емес.",
         "graph_data_short": "Желі: «{label}»; деректер суретінің күні көрсетілмеген.",
-        "closure": "{p} жоспары: жабылу ({n} учаске) {start} бастап {end} дейін — талдау сәтінде {state}.",
+        "closure": "{p} жоспары: жабылу ({n} учаске) {start} бастап {end} дейін — сценарий шарты бойынша талдау "
+                   "сәтінде {state}.",
         "closure_active": "әрекет етеді",
         "closure_inactive": "әрекет етпейді",
         "closure_unverified": "Жабылу аралықтары көрсетілмеді: сценарийдің кіріс деректері есеппен сәйкес келмеді.",
@@ -124,6 +129,10 @@ S = {
         "route_status": {"unreachable": "модельде жол жоқ", "unknown": "жол расталмаған (қолжетімділігі белгісіз учаскелер)"},
         "pair_label": "{i}-жұп: ",
         "unknown_access": "Желі ұзындығының {share} % үшін қолжетімділік режимі белгісіз; мұндай учаскелер маршрутта қолданылмайды.",
+        "unknown_by_edges_none": "Қолжетімділігі белгісіз учаскелердің (қабырғалардың) саны бойынша үлесін қозғалтқыш "
+                                 "хабарламайды — деректер жоқ; ұзындық бойынша үлес пен саны бойынша үлес — әртүрлі көрсеткіштер.",
+        "unknown_by_edges": "Учаскелер (қабырғалар) саны бойынша {share} % үшін қолжетімділік режимі белгісіз; бұл "
+                            "ұзындық бойынша үлестен басқа көрсеткіш.",
         "slice": "Граф — тікбұрышты үзінді: оның шекарасынан тыс желі модельденбейді; сыртқы желі арқылы жол қысқа "
                  "болуы мүмкін, ал «жол жоқ» дәлелденбеген.",
         "no_best": "Көмекші нұсқаларды саралап, ұсыныс бермейді: тек модельдегі жолдардың ұзындығы салыстырылады.",
@@ -589,6 +598,11 @@ def scenario_facts(scenario, scenario_id=None) -> tuple[list[dict], list[str]]:
     facts.append(_fact("scenario.unknown_access_share", "unknown_access_share",
                        None if share is None else round(1 - share, 4), "share",
                        display=[fmt_money(unknown)] if unknown is not None else None))
+    # Доля по ЧИСЛУ рёбер — другая метрика; движок R07 (56538a3) её не возвращает -> known=False, не пересчитываем.
+    by_edges = _num(cov.get("unknown_access_share_by_edges"))
+    by_edges = by_edges if by_edges is not None and 0 <= by_edges <= 1 else None
+    facts.append(_fact("scenario.unknown_access_share_by_edges", "unknown_access_share_by_edges", by_edges, "share",
+                       display=[fmt_money(round(by_edges * 100, 1))] if by_edges is not None else None))
     codes = sorted({w.get("code") for w in result.get("warnings") or [] if isinstance(w, dict)
                     and isinstance(w.get("code"), str) and len(w["code"]) <= 60})
     facts.append(_fact("scenario.engine_warnings", "engine_warnings", codes, "codes"))
@@ -692,6 +706,52 @@ def _closure_lines(facts, lang):
     return out
 
 
+def _graph_lines(facts, lang):
+    s = S[lang]
+    label = _v(facts, "scenario.graph.label")
+    if not label:
+        return []
+    snap = ((facts["scenario.graph.snapshot_at"].get("meta") or {}).get("display") or [None])[0] \
+        if "scenario.graph.snapshot_at" in facts else None
+    got = ((facts["scenario.graph.retrieved_at"].get("meta") or {}).get("display") or [None])[0] \
+        if "scenario.graph.retrieved_at" in facts else None
+    if snap:
+        return [_st(s["graph_data"].format(label=label, snapshot=snap, retrieved=got or NO_DATA[lang],
+                                           license=_v(facts, "scenario.graph.license") or NO_DATA[lang]),
+                    ["scenario.graph.label", "scenario.graph.snapshot_at", "scenario.graph.retrieved_at",
+                     "scenario.graph.license"], facts=facts)]
+    return [_st(s["graph_data_short"].format(label=label), ["scenario.graph.label"], kind="missing", facts=facts)]
+
+
+def _coverage_lines(facts, lang, by_edges=False):
+    """Доля известного/неизвестного доступа всегда с основой («длины сети»); по числу рёбер — отдельная метрика."""
+    s = S[lang]
+    out = []
+    share = facts.get("scenario.known_access_share")
+    if share and share["known"]:
+        out.append(_st(s["coverage"].format(share=share["meta"]["display"][0]), ["scenario.known_access_share"],
+                       kind="derived", facts=facts))
+    unknown = facts.get("scenario.unknown_access_share")
+    if unknown and unknown["known"]:
+        out.append(_st(s["unknown_access"].format(share=unknown["meta"]["display"][0]),
+                       ["scenario.unknown_access_share"], kind="derived", facts=facts))
+    edges = facts.get("scenario.unknown_access_share_by_edges")
+    if by_edges and edges is not None:
+        if edges["known"]:
+            out.append(_st(s["unknown_by_edges"].format(share=edges["meta"]["display"][0]),
+                           ["scenario.unknown_access_share_by_edges"], kind="derived", facts=facts))
+        else:
+            out.append(_st(s["unknown_by_edges_none"], ["scenario.unknown_access_share_by_edges"], kind="missing"))
+    return out
+
+
+def render_scenario_freshness(facts: dict, lang: str) -> list[dict]:
+    """Для вопроса о свежести/полноте: снимок сети, дата получения и доли неизвестного доступа с основой."""
+    if "scenario.engine" not in facts:
+        return []
+    return _graph_lines(facts, lang) + _coverage_lines(facts, lang, by_edges=True)
+
+
 def render_scenario(facts: dict, lang: str, focus: str = "compare") -> list[dict]:
     if "scenario.engine" not in facts:
         return []
@@ -716,20 +776,7 @@ def render_scenario(facts: dict, lang: str, focus: str = "compare") -> list[dict
         out.append(_st(s[graph_note], ["scenario.graph_evidence_type"], kind="notice"))
     # Перекрытие в сценарии — всегда гипотеза пользователя, даже на наблюдаемом графе.
     out.append(_st(s["hypothesis"], [], kind="notice"))
-    label = _v(facts, "scenario.graph.label")
-    if label:
-        snap = ((facts["scenario.graph.snapshot_at"].get("meta") or {}).get("display") or [None])[0] \
-            if "scenario.graph.snapshot_at" in facts else None
-        got = ((facts["scenario.graph.retrieved_at"].get("meta") or {}).get("display") or [None])[0] \
-            if "scenario.graph.retrieved_at" in facts else None
-        if snap:
-            out.append(_st(s["graph_data"].format(label=label, snapshot=snap, retrieved=got or NO_DATA[lang],
-                                                  license=_v(facts, "scenario.graph.license") or NO_DATA[lang]),
-                           ["scenario.graph.label", "scenario.graph.snapshot_at", "scenario.graph.retrieved_at",
-                            "scenario.graph.license"], facts=facts))
-        else:
-            out.append(_st(s["graph_data_short"].format(label=label), ["scenario.graph.label"], kind="missing",
-                           facts=facts))
+    out += _graph_lines(facts, lang)
     mode, at = _v(facts, "scenario.mode"), _v(facts, "scenario.analysis_at")
     at_text = (facts["scenario.analysis_at"].get("meta") or {}).get("display", [None])[0] if at else None
     out.append(_st(s["run"].format(mode=s["mode"].get(mode, NO_DATA[lang]), at=at_text or NO_DATA[lang]),
@@ -762,14 +809,7 @@ def render_scenario(facts: dict, lang: str, focus: str = "compare") -> list[dict
                 out.append(_mean_line(facts, lang, "scenario.AB", "ab_mean"))
             else:
                 out.append(_st(s["ab_none"], [], kind="missing"))
-    share = facts.get("scenario.known_access_share")
-    if share and share["known"]:
-        out.append(_st(s["coverage"].format(share=share["meta"]["display"][0]), ["scenario.known_access_share"],
-                       kind="derived", facts=facts))
-    unknown = facts.get("scenario.unknown_access_share")
-    if unknown and unknown["known"]:
-        out.append(_st(s["unknown_access"].format(share=unknown["meta"]["display"][0]),
-                       ["scenario.unknown_access_share"], kind="derived", facts=facts))
+    out += _coverage_lines(facts, lang)
     if "graph_is_slice" in (_v(facts, "scenario.engine_warnings") or []):
         out.append(_st(s["slice"], ["scenario.engine_warnings"], kind="notice"))
     if focus == "compare":

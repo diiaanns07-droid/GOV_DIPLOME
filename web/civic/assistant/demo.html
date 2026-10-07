@@ -55,7 +55,7 @@
       return env.data;
     }
     const api = { request };
-    window.__r09demo = { api, applied: [] };
+    window.__r09demo = { api, applied: [], stale: [] };
     const ids = ["r09-synth-full", "r09-synth-missing", "r09-synth-html", "r09-synth-draft"];
     const bar = document.getElementById("objects");
     let handle = null;
@@ -64,7 +64,8 @@
       for (const b of bar.children) b.setAttribute("aria-pressed", String(b.dataset.id === id));
       const rev = Number.parseInt(revision ?? new URLSearchParams(location.search).get("revision") ?? "", 10);
       handle = window.CivicAssistant.mount({ root: document.getElementById("assistant-root"), api, objectId: id,
-        revision: Number.isInteger(rev) ? rev : undefined });
+        revision: Number.isInteger(rev) ? rev : undefined,
+        onStale: (info) => window.__r09demo.stale.push(info) });
       window.__r09demo.handle = handle;
       window.__r09demo.objectId = id;
     }

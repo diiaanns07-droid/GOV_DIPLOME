@@ -66,14 +66,33 @@ async function answerText(page) {
     record("card_update_removes_stale_answer", afterUpdate.answer === "" && afterUpdate.status.includes("Карточка обновилась"),
       JSON.stringify(afterUpdate));
 
-    // 1c. На экране новая редакция, сервер ответил по старой -> не показываем как текущий ответ.
+    // 1c. Раунд 13: на экране редакция 4, опубликована 3 -> сервер не отвечает по фактам, UI просит перечитать.
     await page.evaluate(() => window.__r09demo.select("r09-synth-full", 4));
+    const sentBodies = [];
+    const onReq = (r) => { if (r.url().includes("/api/civic/v1/assistant")) sentBodies.push(r.postDataJSON()); };
+    page.on("request", onReq);
     await page.click("#assistant-root .civic-r09-chip >> text=Когда закончат работы?");
-    await page.waitForFunction(() => document.querySelector("#assistant-root .civic-r09-status")?.textContent.includes("редакции 3"));
+    await page.waitForFunction(() => document.querySelector("#assistant-root .civic-r09-status")?.textContent.includes("опубликована редакция 3"));
+    page.off("request", onReq);
     const oldRev = await page.$eval("#assistant-root", (n) => ({ answer: n.querySelector(".civic-r09-answer").textContent,
       status: n.querySelector(".civic-r09-status").textContent }));
-    record("answer_for_older_revision_not_shown", oldRev.answer === "" && oldRev.status.includes("на экране — редакция 4"),
-      JSON.stringify(oldRev));
+    const stale = await page.evaluate(() => window.__r09demo.stale.slice(-1)[0]);
+    record("server_rejects_stale_revision", oldRev.answer === "" && oldRev.status.includes("на экране — редакция 4") &&
+      sentBodies.length === 1 && sentBodies[0].revision === 4 && !!stale && stale.revision === 3 &&
+      stale.objectId === "r09-synth-full", JSON.stringify({ oldRev, sentBodies, stale }));
+    // 1c'. Без серверной проверки (тело переписано на revision=null) клиент тоже не показывает ответ по редакции 3.
+    await page.route("**/api/civic/v1/assistant", async (route) => {
+      const body = route.request().postDataJSON();
+      const resp = await route.fetch({ postData: JSON.stringify({ ...body, revision: null }) });
+      await route.fulfill({ response: resp });
+    });
+    await page.click("#assistant-root .civic-r09-chip >> text=Когда закончат работы?");
+    await page.waitForFunction(() => document.querySelector("#assistant-root .civic-r09-status")?.textContent.includes("редакции 3"));
+    const clientRev = await page.$eval("#assistant-root", (n) => ({ answer: n.querySelector(".civic-r09-answer").textContent,
+      status: n.querySelector(".civic-r09-status").textContent }));
+    record("answer_for_older_revision_not_shown", clientRev.answer === "" && clientRev.status.includes("на экране — редакция 4"),
+      JSON.stringify(clientRev));
+    await page.unroute("**/api/civic/v1/assistant");
 
     // 1d. Обновление карточки во время запроса отменяет его.
     await page.evaluate(() => window.__r09demo.select("r09-synth-full", 3));
@@ -225,9 +244,31 @@ async function answerText(page) {
     record("mobile_no_horizontal_scroll", overflow.doc <= overflow.vw && overflow.comp <= overflow.compClient + 1, JSON.stringify(overflow));
     await page.screenshot({ path: path.join(shotDir, "ui_assistant_mobile.png"), fullPage: false });
 
-    // 10. destroy снимает разметку.
-    const destroyed = await page.evaluate(() => { window.__r09demo.handle.destroy(); return document.querySelector("#assistant-root").children.length; });
+    // 10. destroy во время запроса: запоздавший ответ не появляется, обработчики сняты, разметка убрана.
+    await page.route("**/api/civic/v1/assistant", async (route) => { await sleep(800); try { await route.continue(); } catch (e) {} });
+    let afterDestroyRequests = 0;
+    await page.fill("#assistant-root textarea", "Когда закончат?");
+    await page.press("#assistant-root textarea", "Enter");
+    await sleep(100);
+    await page.evaluate(() => {
+      window.__r09old = { form: document.querySelector("#assistant-root form"), input: document.querySelector("#assistant-root textarea") };
+      window.__r09demo.handle.destroy();
+    });
+    const countReq = (r) => { if (r.url().includes("/api/civic/v1/assistant")) afterDestroyRequests += 1; };
+    page.on("request", countReq);
+    await page.evaluate(() => {
+      const { form, input } = window.__r09old;
+      input.value = "Кто отвечает?";
+      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+      form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    });
+    await sleep(1200);
+    page.off("request", countReq);
+    await page.unroute("**/api/civic/v1/assistant");
+    const destroyed = await page.evaluate(() => document.querySelector("#assistant-root").children.length);
     record("destroy_cleans_root", destroyed === 0, "children=" + destroyed);
+    record("destroy_removes_listeners_and_drops_late_answer", destroyed === 0 && afterDestroyRequests === 0,
+      "requests after destroy=" + afterDestroyRequests);
     record("no_console_errors", consoleErrors.filter((e) => !/Failed to load resource/.test(e)).length === 0, consoleErrors.join(" | ").slice(0, 300));
   } catch (e) {
     record("ui_run_exception", false, String(e && e.stack || e).slice(0, 600));

@@ -5,9 +5,10 @@
 
 None — путь не относится к помощнику. Ответ — конверт {ok:true,data} | {ok:false,error}.
 
-POST /api/civic/v1/assistant  {question, object_id|null, scenario_id|null}
-    Публичный. Тело принимает ровно эти три ключа: facts/context/answer/role и любые
-    другие поля отклоняются (400) — клиент не передаёт доверенных фактов.
+POST /api/civic/v1/assistant  {question, object_id|null, scenario_id|null, revision?}
+    Публичный. Тело принимает только эти ключи: facts/context/answer/role и любые
+    другие поля отклоняются (400) — клиент не передаёт доверенных фактов. revision —
+    редакция карточки на экране; если опубликована другая, ответ — object_revision_changed.
     Объект берётся только через load_public_object (тот же публичный маршрут, что у
     браузера, без cookie редактора). Черновик и несуществующий объект неразличимы:
     оба дают source=unavailable.
@@ -28,7 +29,7 @@ import time
 from urllib.parse import quote
 
 from agent.civic_assistant.answer import (AssistantInputError, build_answer, detect_language, prepend_notice,
-                                          unavailable_answer)
+                                          stale_revision_answer, unavailable_answer)
 from agent.civic_assistant.facts import ID_RE, ContextError, build_verified_context
 
 API_PREFIX = "/api/civic/v1"
@@ -38,7 +39,7 @@ EXTRACT_PATH = API_PREFIX + "/staff/assistant/extract"
 _ASSISTANT_PATHS = (ASSISTANT_PATH, "/assistant")
 _EXTRACT_PATHS = (EXTRACT_PATH, "/staff/assistant/extract")
 HEADERS = {"Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store"}
-ALLOWED_KEYS = {"question", "object_id", "scenario_id"}
+ALLOWED_KEYS = {"question", "object_id", "scenario_id", "revision"}
 RATE_LIMIT = (20, 60.0)  # запросов на IP за окно, секунд
 SCENARIO_INPUT_SCHEMA = "civic-assistant-scenario-input-v1"
 
@@ -301,6 +302,10 @@ class AssistantEndpoint:
                 return _err(422, "invalid_id", "недопустимый идентификатор", [name])
         if object_id is None and scenario_id is None:
             return _err(422, "missing_target", "нужен object_id или scenario_id", ["object_id", "scenario_id"])
+        revision = body.get("revision")
+        if revision is not None and (not isinstance(revision, int) or isinstance(revision, bool) or revision < 1
+                                     or object_id is None):
+            return _err(422, "invalid_revision", "revision — целое ≥ 1 и только вместе с object_id", ["revision"])
         question = body.get("question")
         try:
             from agent.civic_assistant.answer import normalize_question
@@ -320,6 +325,9 @@ class AssistantEndpoint:
             if not loaded or not isinstance(loaded, (tuple, list)) or len(loaded) != 2:
                 return _ok(unavailable_answer(lang, "object_not_public_or_missing"))
             item, history = loaded
+            # Раунд 13: ответ о конкретной редакции — только если она всё ещё текущая.
+            if revision is not None and isinstance(item, dict) and item.get("revision") != revision:
+                return _ok(stale_revision_answer(lang, object_id, item.get("revision"), item.get("updated_at")))
         missing_scenario = None
         if scenario_id is not None:
             try:
