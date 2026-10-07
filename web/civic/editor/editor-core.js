@@ -475,7 +475,9 @@
     const en = (m, v, d) => (typeof v === "string" && has(m, v) ? v : d);
     const s2 = (v) => (typeof v === "string" ? v.trim() : "");
     const day = (v) => (isIsoDate(v) ? v : null);
-    const fmt = (v) => (isIsoDate(v) ? v.slice(8, 10) + "." + v.slice(5, 7) + "." + v.slice(0, 4) : NO_DATA);
+    const MG = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+    const fmt = (v, style) => (!isIsoDate(v) ? NO_DATA : style === "long" ? +v.slice(8, 10) + " " + MG[+v.slice(5, 7) - 1] + " " + v.slice(0, 4)
+      : v.slice(8, 10) + "." + v.slice(5, 7) + "." + v.slice(0, 4));
     const num = (n, d) => Number(n).toLocaleString("ru-RU", { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }).replace(/\s/g, "\u202f");
     const safeUrl = (v) => { try { const u = new URL(String(v).trim()); return (u.protocol === "https:" || u.protocol === "http:") && !u.username && !u.password ? u.href : null; } catch (e) { return null; } };
     const host = (v) => { const u = safeUrl(v); try { return u ? new URL(u).hostname.replace(/^www\./, "") : null; } catch (e) { return null; } };

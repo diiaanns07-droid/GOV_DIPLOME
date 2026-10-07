@@ -1,0 +1,20 @@
+--- a/web/civic/map/civic-map.js
++++ b/web/civic/map/civic-map.js
+@@ -1259,13 +1259,16 @@
+     }
+     function hitAt(point) { return hitIds(point)[0] || null; }
+     // One object -> open it. Several on top of each other -> let the resident choose in the panel.
++    // R04 round 13: while the staff editor draws, map clicks belong to its tool, not to the public card.
++    const editorDrawing = () => !!(window.CivicEditor && typeof window.CivicEditor.isDrawing === "function" && window.CivicEditor.isDrawing());
+     function onMapClick(e) {
+-      if (destroyed) return;
++      if (destroyed || editorDrawing()) return;
+       const ids = hitIds(e.point);
+       if (ids.length === 1) selectObject(ids[0], { source: "map" });
+       else if (ids.length > 1) openPick(ids);
+     }
+     function onMapMove(e) {
++      if (editorDrawing()) { lastHoverPoint = null; hideTip(); return; }  // keep the editor's crosshair, no tooltip
+       lastHoverPoint = e;
+       if (hoverRaf) return;
+       hoverRaf = requestAnimationFrame(() => {

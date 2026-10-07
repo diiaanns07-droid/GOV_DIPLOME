@@ -116,7 +116,7 @@ describe("R04 editor against the real R02 service", { skip }, () => {
     await p.click(fk("preview"));
     const card = await p.textContent(".civic-r04-preview");
     assert.ok(!card.includes("СЛУЖЕБНО"));
-    assert.match(card, /Синтетические данные/);
+    assert.match(card, /Демо\. Синтетическая демо-запись — не сведения о реальных работах/);
     await p.click(fk("publish"));
     await p.click(fk("confirm"));
     assert.equal(p.reqs.filter((r) => r.path.endsWith("/publish")).length, 0, "no publish without a reason");
@@ -157,7 +157,7 @@ describe("R04 editor against the real R02 service", { skip }, () => {
     assert.match(table, /Было у жителей \/ станет после публикации/);
     assert.match(table, /Актуальный плановый срок окончания\s*20\.10\.2026\s*05\.11\.2026/);
     await p.click(fk("chip-0"));
-    await p.type(fk("reason"), ": подрядчик сообщил о задержке");
+    await p.type(fk("reason"), "подрядчик сообщил о задержке");
     await shot(p, "06-publish-changes-before-after");
     await p.click(fk("confirm"));
     await ok(p, "Изменения опубликованы");

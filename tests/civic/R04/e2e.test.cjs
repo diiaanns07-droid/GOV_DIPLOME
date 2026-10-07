@@ -239,7 +239,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     const card = await p.textContent(".civic-r04-preview");
     assert.ok(!card.includes("СЛУЖЕБНО"), "preview must not show internal notes");
     assert.match(card, /Черновик: жители не видят/);
-    assert.match(card, /Синтетические данные/);
+    assert.match(card, /Демо\. Синтетическая демо-запись — не сведения о реальных работах/);
     await p.click(fk("publish"));
     await p.click(fk("confirm"));
     assert.match(await p.textContent(`#${await p.getAttribute(fk("reason"), "aria-describedby")}`), /причину/);
@@ -292,7 +292,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     const pub = await p.evaluate(() => window.__published);
     assert.equal(pub.at(-1).info.action, "update");
     await p.click(fk("preview"));
-    assert.match(await p.textContent(".civic-r04-preview"), /было 20\.10\.2026, стало 05\.11\.2026/);
+    assert.match(await p.textContent(".civic-r04-preview"), /Срок перенесён на 16 дней позже: 20\.10\.2026 → 05\.11\.2026/);
     await shot(p, "06-history-preview-desktop");
   });
 
@@ -464,6 +464,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     await p.waitForSelector('.civic-r04-msg-ok:has-text("архиве")');
     assert.equal((await publicGet("/objects")).json.data.items.length, 0);
     assert.equal((await p.evaluate(() => window.__published)).at(-1).info.action, "archive");
+    assert.equal((await p.evaluate(() => window.__published)).at(-1).info.visible, false, "round 13: the host is told not to open an archived record on the public map");
     assert.equal(await p.$(fk("save")), null);
     assert.equal(await p.isDisabled(fk("title")), true);
   });

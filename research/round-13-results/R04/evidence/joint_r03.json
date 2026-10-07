@@ -1,0 +1,26 @@
+{
+ "r03_sha": "d5ee7586592b743db0e4ab31a057e53bc4bc7fab",
+ "runs": {
+  "pinned": {
+   "r03_selected_while_drawing": true,
+   "r03_selects": [
+    {
+     "id": "obj-1",
+     "source": "map"
+    }
+   ],
+   "cursor_while_drawing": "pointer",
+   "tool_events_balanced": true,
+   "editor_point_set": true,
+   "public_id": "obj-1"
+  },
+  "patched": {
+   "r03_selected_while_drawing": false,
+   "r03_selects": [],
+   "cursor_while_drawing": "crosshair",
+   "tool_events_balanced": true,
+   "editor_point_set": true,
+   "public_id": "obj-1"
+  }
+ }
+}

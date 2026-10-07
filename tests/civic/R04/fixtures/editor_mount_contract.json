@@ -9,7 +9,8 @@
     "api": { "type": "object", "required": true, "shape": "request(method, path, body?, {idempotencyKey?}) -> Promise<data>; setCsrfToken?(token|null)" },
     "map": { "type": "MapLibre Map | null | () => (MapLibre Map | null)", "required": false,
       "note": "A function is re-read lazily (before drawing and about once a second while the form is open and no map is known), so a cabinet opened before the map is ready enables drawing as soon as the getter returns the map." },
-    "onPublished": { "type": "(publicItem, {action: 'publish'|'update'|'archive'}) -> void", "required": false },
+    "onPublished": { "type": "(publicItem, {action: 'publish'|'update'|'archive', visible: boolean}) -> void", "required": false,
+      "note": "visible=false after archive: refresh the public map but do not select/open the id (it is no longer public; R03 would show «Объект не найден»)" },
     "apiPrefix": { "type": "string", "required": false },
     "internalNotes": { "type": "boolean", "required": false },
     "now": { "type": "() => Date", "required": false }

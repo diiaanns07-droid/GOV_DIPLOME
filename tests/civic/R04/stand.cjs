@@ -45,7 +45,7 @@ async function startStand(opts) {
     staticDirs: [
       { prefix: "/harness/", dir: path.join(__dirname, "harness") },
       { prefix: "/web/civic/editor/", dir: path.join(REPO, "web/civic/editor") },
-    ],
+    ].concat(o.staticDirs || []),  // e.g. a neighbour module at a pinned SHA for a joint test
   });
   const url = await mock.listen(o.port || 0);
   return { url, mock, creds, creds2, close: () => mock.close() };

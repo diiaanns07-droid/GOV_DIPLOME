@@ -4,7 +4,8 @@
  *   root        element given to the editor (it owns the children, never document.body);
  *   map         the one shared MapLibre instance, or null (coordinates can then be typed);
  *   api         R01 adapter: api.request(method, path, body) -> Promise<data>; cookies and CSRF are its job;
- *   onPublished (publicItem, {action}) after the public version changed: publish, edit of a published record, archive.
+ *   onPublished (publicItem, {action, visible}) after the public version changed: publish, edit of a published record,
+ *               archive (visible:false — do not open it on the public map).
  * Optional: apiPrefix (default "", paths are relative to /api/civic/v1), internalNotes:true, now() for tests.
  * The server decides rights. The UI never derives rights from a browser role and keeps no session in storage.
  * Unsaved text (RECOVERY) lives in this page's memory and, to survive a reload or a tab crash, in this tab's
@@ -1324,39 +1325,27 @@
       } finally { if (S.alive && S.busy === "open") setBusy(null); }
     }
 
-    function publicCard(dto, note) {
-      const sc = dto.schedule || {}, b = dto.budget || {}, r = dto.responsible || {};
-      const shift = C.scheduleShift(sc);
-      const badges = [badge(C.KINDS[dto.kind] || "тип не указан", "kind"), badge(C.STATUSES[dto.status] || "Статус неизвестен", "status")];
-      if (dto.evidence_type === "synthetic") badges.push(badge("Синтетические данные — не сведения о реальных работах", "synthetic"));
-      else if (dto.evidence_type === "hypothesis") badges.push(badge("Предположение, не подтверждено", "warn"));
-      const row = (k, v) => [el("dt", {}, k), el("dd", {}, v)];
-      const sources = (dto.source_refs || []).map((s) => {
-        let href = null, host = "";
-        try { const u = new URL(s.url); if (u.protocol === "https:" || u.protocol === "http:") { href = u.href; host = u.hostname; } } catch (e) { href = null; }
-        const label = s.publisher || host || "источник";
-        return el("li", {}, [href ? el("a", { href, target: "_blank", rel: "noopener noreferrer" }, label) : label,
-          s.published_on ? ", опубликовано " + C.fmtDate(s.published_on) : "", " · " + (C.ACCESS[s.access_status] || "доступ неизвестен")]);
-      });
-      return el("article", { class: "civic-r04-card", "aria-label": "Карточка для жителей" }, [
+    // The resident card rows come from residentView(): R03's own CivicMapCore rules when the page has it (the app),
+    // the same rules in editor-core otherwise. Only the layout is the editor's.
+    function publicCard(dto, note, pending) {
+      const v = C.residentView(dto, window.CivicMapCore || null);
+      if (!v) return el("p", { class: "civic-r04-err" }, "Карточку построить не удалось.");
+      const row = (k, t) => [el("dt", {}, k), el("dd", {}, t === C.NO_DATA ? el("span", { class: "civic-r04-nodata" }, t) : t)];
+      const sources = v.sources.map((s) => el("li", {}, [
+        s.href ? el("a", { href: s.href, target: "_blank", rel: "noopener noreferrer nofollow" }, [s.name, el("span", { class: "civic-r04-sr" }, " (откроется в новой вкладке)")]) : s.name,
+        s.published ? " · " + s.published : "", s.access ? " · " + s.access : ""]));
+      return el("article", { class: "civic-r04-card", "aria-label": "Карточка для жителей", "data-engine": v.engine }, [
         note ? el("p", { class: "civic-r04-card-note" }, note) : null,
-        el("p", { class: "civic-r04-badges" }, badges),
-        el("h4", {}, dto.title || "(без названия)"),
-        dto.description ? el("p", {}, dto.description) : null,
-        el("dl", {}, [].concat(
-          row("Плановые сроки", C.fmtDate(sc.planned_start) + " — " + C.fmtDate(sc.current_planned_end)),
-          shift ? row("Перенос срока", "было " + C.fmtDate(shift.from) + ", стало " + C.fmtDate(shift.to)) : [],
-          row("Фактически завершено", sc.actual_end ? C.fmtDate(sc.actual_end) : "нет сведений"),
-          row("Место", dto.geometry ? (dto.geometry.type === "Point" ? "точка на карте" : "участок на карте") + " · " + (C.PRECISION[dto.geometry_precision] || "точность неизвестна") : "без точки на карте"),
-          row("Ответственный", r.organization || "не указан"),
-          r.public_contact ? row("Контакт", r.public_contact) : [],
-          row("Стоимость", b.amount_kzt === null || b.amount_kzt === undefined ? "неизвестно" : C.fmtMoney(b.amount_kzt) + " · " + (C.BASIS[b.basis] || b.basis)),
-          row("Достоверность", C.EVIDENCE[dto.evidence_type] || "не указана"),
-        )),
-        dto.evidence_notes ? el("p", { class: "civic-r04-muted" }, dto.evidence_notes) : null,
+        v.banner ? el("p", { class: "civic-r04-card-banner" + (v.banner.demo ? " civic-r04-card-demo" : ""), role: "note" }, v.banner.text) : null,
+        el("p", { class: "civic-r04-badges" }, [badge(v.kind, "kind")]),
+        el("h4", {}, v.title),
+        v.description ? el("p", {}, v.description) : null,
+        el("dl", {}, [].concat(...v.rows.map(([k, t]) => row(k, t)))),
+        v.evidenceNotes ? el("p", { class: "civic-r04-muted" }, "Примечание: " + v.evidenceNotes) : null,
         el("p", {}, el("b", {}, "Источники")),
-        sources.length ? el("ul", {}, sources) : el("p", { class: "civic-r04-muted" }, "Источник не указан."),
-        el("p", { class: "civic-r04-muted" }, dto.updated_at ? "Обновлено " + C.fmtDateTime(dto.updated_at) + " · ред. " + dto.revision : "Дату обновления и редакцию назначит сервер при сохранении."),
+        sources.length ? el("ul", {}, sources) : el("p", { class: "civic-r04-muted" }, v.noSources),
+        el("p", { class: "civic-r04-muted" }, pending || !dto.updated_at ? "Дату обновления и редакцию назначит сервер при сохранении."
+          : "Запись обновлена: " + C.fmtDateTime(dto.updated_at) + " · ред. " + dto.revision),
       ].filter(Boolean));
     }
     function renderPreview() {
@@ -1367,7 +1356,7 @@
       const kids = [el("h4", {}, publishing ? "Так запись увидят жители после публикации" : "Предпросмотр карточки жителя")];
       if (isDirty()) kids.push(el("p", { class: "civic-r04-warn" }, "С учётом несохранённых правок. Жители увидят их только после сохранения."));
       if (dto.publication !== "published") kids.push(el("p", { class: "civic-r04-msg civic-r04-msg-info" }, dto.publication === "archived" ? "Запись в архиве: жители её не видят." : "Черновик: жители не видят эту запись, пока вы её не опубликуете."));
-      kids.push(publicCard(dto, "Внутренние заметки и служебные поля сюда не попадают."));
+      kids.push(publicCard(dto, "Внутренние заметки и служебные поля сюда не попадают.", isDirty() || !S.item));
       const pend = C.pendingInfo(S.item);
       if (pend.publicItem && (publishing || pend.pending)) {
         const d = C.diffFields(C.pickPublic(pend.publicItem), C.pickPublic(dto));
@@ -1703,9 +1692,12 @@
       S.notice = notice;
       return true;
     }
+    // info.visible: is the record public after this action? false after archive — the host must not open it on the
+    // public map (R03 would show «Объект не найден»); refresh the map instead.
     function notifyPublished(item, action) {
       if (!onPublished) return;
-      try { onPublished(C.pickPublic(item), { action }); } catch (e) { console.error("CivicEditor onPublished:", e); }
+      const visible = action !== "archive" && item && item.publication === "published";
+      try { onPublished(C.pickPublic(item), { action, visible }); } catch (e) { console.error("CivicEditor onPublished:", e); }
     }
     async function loadConflict(n, action) {
       const it = S.item;
