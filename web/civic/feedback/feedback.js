@@ -621,7 +621,13 @@
     var detail = el("div", { className: P + "-detail", "aria-live": "polite" });
     container.appendChild(header);
     container.appendChild(tabs);
-    container.appendChild(el("div", { className: P + "-filters" }, [search, publicationFilter, categoryFilter, consentFilter, orderFilter]));
+    // Поиск всегда виден; остальные фильтры свёрнуты, чтобы очередь помещалась в узкую панель.
+    var moreFilters = el("details", { className: P + "-more-filters" }, [
+      el("summary", { text: "Ещё фильтры" }),
+      el("div", { className: P + "-filters" }, [publicationFilter, categoryFilter, consentFilter, orderFilter]),
+    ]);
+    container.appendChild(el("div", { className: P + "-filters" }, [search]));
+    container.appendChild(moreFilters);
     container.appendChild(listStatus);
     container.appendChild(el("div", { className: P + "-mod-body" }, [list, detail]));
     root.appendChild(container);

@@ -1,0 +1,20 @@
+--- a/ui/web_server.py	2026-10-07 10:29:21.112830481 +0000
++++ b/ui/web_server.py	2026-10-07 10:29:21.128790329 +0000
+@@ -253,9 +253,15 @@
+                     return None  # published but no public view: never fall back to the staff copy
+                 return staff_item
+ 
+-            # classifier=None: the R08 model is not integrated/verified in this build.
++            # R08 is opt-in until its model is reviewed: CIVIC_R08_CLASSIFIER=1 loads ml.civic_classifier.classify
++            # through R06's adapter (contract probe with timeout). Missing/failing/hanging model -> None, and
++            # messages are still saved; the suggestion never changes the resident's category.
++            classifier = None
++            if os.environ.get("CIVIC_R08_CLASSIFIER") == "1":
++                adapter = importlib.import_module("ui.civic_feedback.classifier_adapter")
++                classifier = adapter.load_r08_classifier()
+             return service_module.FeedbackService(str(db_path), lookup, getattr(store_service, "clock", None),
+-                                                  classifier=None)
++                                                  classifier=classifier)
+ 
+         def scenarios():
+             # R07 @22fa413: graphs only by id from its MANIFEST; every graph is hashed at start so a

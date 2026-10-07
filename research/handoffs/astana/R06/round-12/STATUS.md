@@ -34,3 +34,16 @@ DONE: интерфейс сотрудника — вкладки по стату
 Проверки (worktree 56538a3): pytest tests/civic/R06 — 156 passed; node tests/civic/R06/browser_r06.cjs — 40/40 PASS
 (Chromium/Playwright, стенд FIXTURE). Скриншоты: research/round-12-results/R06/screenshots/.
 NEXT: R08-адаптер (проверка контракта), сквозной тест через шлюз R01 на временной БД, RUN/INTEGRATION/DELIVERY.
+
+## Checkpoint 3 — PARTIAL
+DONE: адаптер R08 — load_r08_classifier с пробным вызовом (таймаут) и проверкой контракта, r08_status()
+для диагностики; отсутствие/ошибка/зависание/несоответствие контракту -> None, сообщения сохраняются.
+Предложенный патч R01 `research/round-12-results/R06/r01_r08_optin.patch` (CIVIC_R08_CLASSIFIER=1, по
+умолчанию выключено) проверен на распакованной копии 56538a3 с подменным ml.civic_classifier (scratch, не в Git):
+с флагом classifier=ok и категория жителя не меняется; без флага unavailable.
+Приёмка через настоящий шлюз R01+R02 (tests/civic/R06/test_r06_r12_acceptance.py): создать -> очередь ->
+обработать -> публично/приватно; два одновременных клика -> 201+200 и одна запись.
+Настоящее приложение (python3 -m ui.web_server, worktree 56538a3+R06, временная БД, одноразовый редактор):
+node tests/civic/R06/app_e2e_r06.cjs — 12/12 PASS (подложка карты недоступна из облака).
+Проверки: pytest tests/civic/R06 — 166 passed; browser_r06.cjs — 40/40 PASS.
+NEXT: полный tests/civic, RUN.txt, INTEGRATION.txt, DELIVERY.json.

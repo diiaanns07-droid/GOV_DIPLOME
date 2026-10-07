@@ -151,3 +151,6 @@
 .civic-r06-history-note { background: #fbf8ee; }
 .civic-r06-draft-note { display: block; }
 .civic-r06-recat input[type="text"] { width: 100%; }
+.civic-r06-more-filters { margin: 4px 0 8px; font-size: 13px; }
+.civic-r06-more-filters > summary { cursor: pointer; color: var(--r06-muted); }
+.civic-r06-more-filters .civic-r06-filters { margin-top: 6px; }

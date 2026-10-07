@@ -1,0 +1,206 @@
+{
+ "passed": 40,
+ "failed": 0,
+ "results": [
+  {
+   "name": "official notice shown in form",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "empty public list",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "consent not preselected",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "client validation shows errors",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "text kept after validation error",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "network error message keeps text",
+   "status": "PASS",
+   "detail": "Нет связи с сервером. Текст сохранён в форме — повторите отправку."
+  },
+  {
+   "name": "receipt shows id and pending label",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "receipt states no official registration",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "receipt does not promise execution",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "duplicate warning with confirm",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "draft object rejected without revealing draft",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "text kept after server error",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "place-only receipt warns about contacts",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "anonymous queue is 401",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "moderation UI shows login error",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "resident queue is 403",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "double click created one message (2 pending total)",
+   "status": "PASS",
+   "detail": "2"
+  },
+  {
+   "name": "staff detail shows object and synthetic badge",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "approved via UI",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "xss payload rendered as literal text",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "xss payload not executed or parsed",
+   "status": "PASS",
+   "detail": "{\"imgs\":0,\"scripts\":0,\"bold\":0,\"flag\":null}"
+  },
+  {
+   "name": "logout blocks moderation in open form",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "pending unchanged after logout/expired attempts",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "degraded detail without detail route",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "R03-style mount with object polygon submits",
+   "status": "PASS",
+   "detail": "{\"okReceipt\":true,\"noPlaceText\":true}"
+  },
+  {
+   "name": "polygon without object is not treated as a place",
+   "status": "PASS",
+   "detail": "{\"okReceipt\":true,\"noPlaceText\":true}"
+  },
+  {
+   "name": "destroy clears root",
+   "status": "PASS",
+   "detail": "{\"children\":0,\"cls\":\"\"}"
+  },
+  {
+   "name": "mobile form has no horizontal overflow",
+   "status": "PASS",
+   "detail": "0"
+  },
+  {
+   "name": "r12 draft survives page reload (same tab)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "r12 draft cleared after successful send",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "r12 edited resend shows saved previous receipt",
+   "status": "PASS",
+   "detail": "Предыдущая версия уже сохранена (квитанция fbr_7--gWkCxdGs6ENK9D6W8KnEE). Отправить изменённый текст отдельным сообщением"
+  },
+  {
+   "name": "r12 lost response + double click = one message",
+   "status": "PASS",
+   "detail": "[\"R12 вторая версия: нет освещения на дорожке в сквере вечером, совсем темно.\",\"R12 вторая версия: нет освещения на дорожке в сквере вечером.\",\"R12 черновик: сломана скамейка у входа в сквер, сидеть нельзя.\"]"
+  },
+  {
+   "name": "r12 edited version saved only by explicit choice (2 versions)",
+   "status": "PASS",
+   "detail": "[\"R12 вторая версия: нет освещения на дорожке в сквере вечером, совсем темно.\",\"R12 вторая версия: нет освещения на дорожке в сквере вечером.\",\"R12 черновик: сломана скамейка у входа в сквер, сидеть нельзя.\"]"
+  },
+  {
+   "name": "r12 receipt shown after replayed send",
+   "status": "PASS",
+   "detail": "fbr_N965wEwZdrkJ6wHSXuFzjCaI"
+  },
+  {
+   "name": "r12 queue search finds by word",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "r12 classifier absence is explicit",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "r12 status changed via UI",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "r12 note visible in staff history",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "r12 note and staff names never in public list",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "no page errors",
+   "status": "PASS",
+   "detail": null
+  }
+ ]
+}

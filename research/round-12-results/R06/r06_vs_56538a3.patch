@@ -1,3 +1,32 @@
+diff --git a/tests/civic/R06/app_e2e_r06.cjs b/tests/civic/R06/app_e2e_r06.cjs
+index 8f547d3..07936b4 100644
+--- a/tests/civic/R06/app_e2e_r06.cjs
++++ b/tests/civic/R06/app_e2e_r06.cjs
+@@ -90,6 +90,15 @@ const check = (name, ok, detail) => {
+       h4: document.querySelector("#civic-moderation-root .civic-r06-detail h4")?.textContent || "",
+       status: document.querySelector("#civic-moderation-root .civic-r06-decision .civic-r06-status")?.textContent || "" }));
+     check("approved in app", /Проверено модератором/.test(decisionStatus.h4), JSON.stringify(decisionStatus));
++    // Round 12: решение с ответом переводит новое сообщение в «Дан ответ»; заметка видна только сотруднику.
++    await page.waitForFunction(() => /Дан ответ/.test(document.querySelector("#civic-moderation-root .civic-r06-handling-line")?.textContent || ""), null, { timeout: 10000 });
++    check("handling status answered in app", true);
++    const note = marker + " служебная заметка";
++    await mod.locator(".civic-r06-note textarea").fill(note);
++    await mod.locator(".civic-r06-note button[type=submit]").click();
++    await page.waitForFunction((n) => (document.querySelector("#civic-moderation-root .civic-r06-history")?.textContent || "").includes(n), note, { timeout: 10000 });
++    check("staff note saved in app", true);
++    if (shotDir) await page.locator("#civic-moderation").screenshot({ path: path.join(shotDir, "r06_app_moderation_r12.png") });
+ 
+     // Публичная карточка: XSS как текст.
+     await page.click("#civic-moderation [data-close=moderation]");
+@@ -98,6 +107,8 @@ const check = (name, ok, detail) => {
+     const injected = await page.evaluate(() => ({
+       imgs: document.querySelectorAll("#civic-feedback-root img").length, flag: window.__r06xss || null }));
+     check("public card shows XSS as text", injected.imgs === 0 && injected.flag === null, JSON.stringify(injected));
++    const publicText = await root.locator(".civic-r06-public-item", { hasText: marker }).innerText();
++    check("public card has no staff note", !publicText.includes("служебная заметка"));
+ 
+     // Выход: кнопка модерации скрывается, staff-запрос отклоняется.
+     await page.evaluate(() => window.CivicShell.api.logout());
 diff --git a/tests/civic/R06/browser_r06.cjs b/tests/civic/R06/browser_r06.cjs
 index 58324d1..e819a93 100644
 --- a/tests/civic/R06/browser_r06.cjs
@@ -505,6 +534,249 @@ index 1f38203..65c5599 100644
  
  
  def first_pending(service):
+diff --git a/tests/civic/R06/test_r06_r08_adapter.py b/tests/civic/R06/test_r06_r08_adapter.py
+new file mode 100644
+index 0000000..de5d487
+--- /dev/null
++++ b/tests/civic/R06/test_r06_r08_adapter.py
+@@ -0,0 +1,66 @@
++"""Round 12: подключение R08 через load_r08_classifier — проверка контракта до подключения.
++
++Настоящего ml/civic_classifier в этой сборке нет; здесь — подменные модули в sys.modules
++(FIXTURE), чтобы проверить поведение адаптера на всех исходах.
++"""
++
++import sys
++import time
++import types
++
++import pytest
++
++from ui.civic_feedback.classifier_adapter import check_suggestion, load_r08_classifier, r08_status
++
++
++def fake_module(monkeypatch, name, classify):
++    module = types.ModuleType(name)
++    if classify is not None:
++        module.classify = classify
++    monkeypatch.setitem(sys.modules, name, module)
++    return name
++
++
++GOOD = {"label": "lighting", "score": 0.61, "score_kind": "uncalibrated_margin", "needs_review": True,
++        "model_version": "r08-test-0", "training_data_status": "synthetic"}
++
++
++def test_contract_conforming_model_is_connected(monkeypatch):
++    name = fake_module(monkeypatch, "r06_fake_good", lambda text, language: dict(GOOD))
++    status = r08_status(name)
++    assert status["available"] and status["model_version"] == "r08-test-0" and status["score_kind"] == "uncalibrated_margin"
++    assert load_r08_classifier(name)("текст", "ru")["label"] == "lighting"
++
++
++@pytest.mark.parametrize("result,reason", [
++    ({"label": "potholes"}, "label_not_in_contract"),
++    ({"label": "roads", "score": float("nan")}, "score_not_finite_number"),
++    ({"label": "roads", "score": True}, "score_not_finite_number"),
++    ("roads", "result_not_object"),
++    ({"label": "roads", "needs_review": "yes"}, "needs_review_not_bool"),
++])
++def test_contract_mismatch_is_not_connected(monkeypatch, result, reason):
++    name = fake_module(monkeypatch, "r06_fake_bad", lambda text, language: result)
++    status = r08_status(name)
++    assert status["available"] is False and status["reason"] == "contract_mismatch:" + reason
++    assert load_r08_classifier(name) is None
++
++
++def test_missing_raising_or_hanging_model_is_not_connected(monkeypatch):
++    assert load_r08_classifier("ml.r06_definitely_missing_module") is None
++    assert r08_status(fake_module(monkeypatch, "r06_fake_none", None))["reason"] == "no_classify_function"
++
++    def boom(text, language):
++        raise MemoryError("model too big")
++    assert r08_status(fake_module(monkeypatch, "r06_fake_boom", boom))["reason"] == "probe_error:MemoryError"
++
++    def hang(text, language):
++        time.sleep(2)
++        return dict(GOOD)
++    started = time.monotonic()
++    assert r08_status(fake_module(monkeypatch, "r06_fake_hang", hang), timeout_s=0.2)["reason"] == "probe_timeout"
++    assert time.monotonic() - started < 1.5
++
++
++def test_check_suggestion_accepts_null_score():
++    assert check_suggestion({"label": "other", "score": None, "needs_review": True}) is None
+diff --git a/tests/civic/R06/test_r06_r12_acceptance.py b/tests/civic/R06/test_r06_r12_acceptance.py
+new file mode 100644
+index 0000000..fe9f3d7
+--- /dev/null
++++ b/tests/civic/R06/test_r06_r12_acceptance.py
+@@ -0,0 +1,165 @@
++"""Round 12, приёмка R06 через настоящий HTTP-шлюз R01 + R02 (временная SQLite, синтетический объект).
++
++создать -> увидеть в очереди -> обработать -> проверить публичность/приватность;
++без модели R08 сообщение сохраняется; два быстрых одинаковых клика не дают неожиданного дубля.
++Пропускается, если в дереве нет шлюза R01/R02 (как в ветке только с путями R06).
++"""
++
++import json
++import secrets
++import threading
++import urllib.error
++import urllib.request
++
++import pytest
++
++web_server = pytest.importorskip("ui.web_server")
++civic_service_module = pytest.importorskip("ui.civic_store.service")
++civic_auth = pytest.importorskip("ui.civic_store.auth")
++if not hasattr(web_server, "CivicGateway"):
++    pytest.skip("шлюз civic-v1 R01 ещё не в этом дереве", allow_module_level=True)
++
++NOTE = "R12-ACCEPT служебная заметка: не для публикации"
++REASON = "R12-ACCEPT внутреннее обоснование"
++
++
++@pytest.fixture
++def app(tmp_path, monkeypatch):
++    monkeypatch.setattr(civic_auth, "SCRYPT_N", 2 ** 10)  # быстрый KDF только в тесте
++    monkeypatch.setattr(civic_auth, "SCRYPT_P", 1)
++    db_path = tmp_path / "civic.sqlite3"
++    password = "R06-" + secrets.token_urlsafe(16)          # одноразовый, не хранится в Git
++    store = civic_service_module.CivicService(db_path)
++    store.accounts.create_user("r06editor", password, display_name="Редактор R06")
++    srv = web_server.create_server(port=0, civic_db=db_path)
++    thread = threading.Thread(target=srv.serve_forever, daemon=True)
++    thread.start()
++    base = f"http://127.0.0.1:{srv.server_address[1]}"
++    status, login, headers = http(base, "POST", "/session/login", {"username": "r06editor", "password": password})
++    assert status == 200, login
++    session = {"cookie": headers["Set-Cookie"].split(";", 1)[0], "csrf": login["data"]["csrf_token"]}
++    object_id = publish_object(base, session)
++    yield base, session, object_id
++    srv.shutdown()
++    srv.server_close()
++
++
++def http(base, method, path, body=None, cookie=None, csrf=None, query=""):
++    request = urllib.request.Request(base + "/api/civic/v1" + path + query, method=method,
++                                     data=None if body is None else json.dumps(body).encode())
++    request.add_header("Content-Type", "application/json")
++    request.add_header("Origin", base)
++    if cookie:
++        request.add_header("Cookie", cookie)
++    if csrf:
++        request.add_header("X-CSRF-Token", csrf)
++    try:
++        with urllib.request.urlopen(request, timeout=10) as response:
++            return response.status, json.loads(response.read()), response.headers
++    except urllib.error.HTTPError as error:
++        return error.code, json.loads(error.read()), error.headers
++
++
++def staff(base, session, method, path, body=None, query=""):
++    return http(base, method, path, body, session["cookie"], session["csrf"], query)
++
++
++def publish_object(base, session):
++    payload = {"kind": "roadworks", "title": "СИНТЕТИКА R06 r12: ремонт прохода", "description": "Тестовая запись.",
++               "status": "planned", "geometry": {"type": "Point", "coordinates": [71.43, 51.17]},
++               "geometry_precision": "approximate",
++               "schedule": {"planned_start": "2026-10-14", "original_planned_end": None,
++                            "current_planned_end": "2026-10-20", "actual_end": None},
++               "budget": {"amount_kzt": None, "basis": "unknown", "source_id": None},
++               "responsible": {"organization": None, "public_contact": None},
++               "evidence_type": "synthetic", "source_refs": [], "evidence_notes": "R06 r12 acceptance"}
++    status, created, _ = staff(base, session, "POST", "/staff/objects", payload)
++    assert status == 201, created
++    item = created["data"]["item"]
++    status, published, _ = staff(base, session, "POST", f"/staff/objects/{item['id']}/publish",
++                                 {"expected_revision": item["revision"], "reason": "R06 r12"})
++    assert status == 200, published
++    return item["id"]
++
++
++def test_create_queue_process_public_private(app):
++    base, session, object_id = app
++    public_body = {"object_id": object_id, "category": "roads", "consent_public": True,
++                   "text": "R12 приёмка: нет прохода вдоль ограждения, люди идут по дороге."}
++    private_body = {"object_id": object_id, "category": "sidewalks", "consent_public": False,
++                    "text": "R12 приёмка: прошу не публиковать — у перехода опасно вечером."}
++    status, receipt, _ = http(base, "POST", "/feedback", public_body)
++    assert status == 201 and receipt["data"]["official_registration"] is False
++    assert receipt["data"]["handling_status"] == "new"
++    status, private_receipt, _ = http(base, "POST", "/feedback", private_body)
++    assert status == 201
++
++    # очередь через шлюз: новые фильтры query проходят allowlist шлюза
++    status, queue, _ = staff(base, session, "GET", "/staff/feedback", query="?status=new&q=" +
++                             urllib.request.quote("ограждения"))
++    assert status == 200 and len(queue["data"]["items"]) == 1, queue
++    entry = queue["data"]["items"][0]
++    assert entry["classifier"]["status"] == "unavailable"     # модель R08 не подключена — сообщение сохранено
++    path = f"/staff/feedback/{entry['id']}/moderate"
++
++    assert staff(base, session, "POST", path, {"action": "note", "internal_note": NOTE})[0] == 200
++    status, step, _ = staff(base, session, "POST", path, {"expected_revision": 1, "action": "status",
++                                                           "status": "in_review", "reason": REASON})
++    assert status == 200 and step["data"]["item"]["handling_status"] == "in_review"
++    status, step, _ = staff(base, session, "POST", path, {
++        "expected_revision": 2, "action": "approve", "reason": REASON, "status": "answered",
++        "public_reply": "Спасибо. Сообщение опубликовано на платформе; это не означает начала работ."})
++    assert status == 200 and step["data"]["item"]["handling_status"] == "answered"
++
++    # публично: текст и ответ платформы, статус обработки; ни заметок, ни обоснований, ни сотрудника
++    status, listing, _ = http(base, "GET", f"/objects/{object_id}/feedback")
++    dumped = json.dumps(listing, ensure_ascii=False)
++    assert status == 200 and len(listing["data"]["items"]) == 1
++    assert listing["data"]["items"][0]["handling_label"] == "Дан ответ платформы"
++    for secret in (NOTE, REASON, "r06editor", "Редактор R06", "прошу не публиковать", "fbr_", "client"):
++        assert secret not in dumped, secret
++    # автор видит ответ и статус по квитанции
++    status, check, _ = http(base, "POST", "/feedback/receipt", {"receipt_id": receipt["data"]["receipt_id"]})
++    assert status == 200 and check["data"]["handling_status"] == "answered" and check["data"]["is_public"]
++    assert NOTE not in json.dumps(check, ensure_ascii=False)
++    # сообщение без согласия не публикуется даже после одобрения
++    status, queue, _ = staff(base, session, "GET", "/staff/feedback", query="?status=new")
++    other = queue["data"]["items"][0]
++    status, _, _ = staff(base, session, "POST", f"/staff/feedback/{other['id']}/moderate",
++                         {"expected_revision": 1, "action": "approve", "reason": REASON})
++    assert status == 200
++    status, listing, _ = http(base, "GET", f"/objects/{object_id}/feedback")
++    assert len(listing["data"]["items"]) == 1
++    status, check, _ = http(base, "POST", "/feedback/receipt", {"receipt_id": private_receipt["data"]["receipt_id"]})
++    assert check["data"]["is_public"] is False
++
++    # служебные действия без сессии/CSRF не проходят через шлюз
++    assert http(base, "POST", path, {"action": "note", "internal_note": "x"})[0] == 401
++    assert http(base, "POST", path, {"action": "note", "internal_note": "x"}, session["cookie"])[0] == 403
++
++
++def test_two_fast_identical_clicks_make_one_message(app):
++    base, session, object_id = app
++    body = {"object_id": object_id, "category": "roads", "consent_public": True,
++            "text": "R12 двойной клик: яма у въезда во двор, машины объезжают по тротуару.",
++            "client_request_id": "r12-double-click-000000001"}
++    results = []
++
++    def click():
++        results.append(http(base, "POST", "/feedback", body))
++
++    threads = [threading.Thread(target=click) for _ in range(2)]
++    for thread in threads:
++        thread.start()
++    for thread in threads:
++        thread.join()
++    statuses = sorted(r[0] for r in results)
++    assert statuses == [200, 201], [r[1] for r in results]           # вторая — повтор той же отправки
++    assert len({r[1]["data"]["receipt_id"] for r in results}) == 1    # одна квитанция
++    status, queue, _ = staff(base, session, "GET", "/staff/feedback", query="?status=all&q=" +
++                             urllib.request.quote("двойной клик"))
++    assert len(queue["data"]["items"]) == 1
++    # клиент без client_request_id: повтор того же текста — предупреждение, а не тихая копия
++    plain = {k: v for k, v in body.items() if k != "client_request_id"}
++    status, warning, _ = http(base, "POST", "/feedback", plain)
++    assert status == 409 and warning["error"]["code"] == "duplicate_warning" and warning["error"]["can_confirm"]
 diff --git a/ui/civic_feedback/__init__.py b/ui/civic_feedback/__init__.py
 index ce17aac..e9a10ea 100644
 --- a/ui/civic_feedback/__init__.py
@@ -519,6 +791,115 @@ index ce17aac..e9a10ea 100644
 -__all__ = ["API_PREFIX", "CATEGORIES", "CATEGORY_LABELS", "MODERATION_LABELS",
 +__all__ = ["API_PREFIX", "CATEGORIES", "CATEGORY_LABELS", "HANDLING", "HANDLING_LABELS", "MODERATION_LABELS",
             "PUBLIC_NOTICE", "RECEIPT_NOTICE", "FeedbackService"]
+diff --git a/ui/civic_feedback/classifier_adapter.py b/ui/civic_feedback/classifier_adapter.py
+index 74667d8..2d75b0c 100644
+--- a/ui/civic_feedback/classifier_adapter.py
++++ b/ui/civic_feedback/classifier_adapter.py
+@@ -1,23 +1,98 @@
+ """Необязательное подключение классификатора R08 (ml/civic_classifier).
+ 
+ Контракт civic-v1: classify(text, language) -> {label, score|null, score_kind,
+-needs_review, model_version, training_data_status}. Если модуля нет или импорт
+-падает, возвращается None — FeedbackService сохраняет сообщения без подсказки.
++needs_review, model_version, training_data_status}. Если модуля нет, импорт падает,
++пробный вызов зависает или ответ не соответствует контракту, возвращается None —
++FeedbackService сохраняет сообщения без подсказки.
++
++Подсказка модели никогда не меняет категорию жителя и не принимает решение: сотрудник
++может подставить её в форму «Категория» и сохранить сам. Некалиброванный score не
++выдаётся за вероятность (интерфейс показывает число и score_kind, без процентов).
+ """
+ 
+ from __future__ import annotations
+ 
+ import importlib
+ import logging
++import math
++import threading
+ 
+ LOGGER = logging.getLogger(__name__)
++CONTRACT_LABELS = ("roads", "sidewalks", "transport_stops", "lighting", "landscaping", "other")
++PROBE_TEXT = "Не горят фонари во дворе, вечером темно."
++PROBE_LANGUAGE = "ru"
++
++
++def check_suggestion(value) -> str | None:
++    """None, если ответ соответствует контракту civic-v1, иначе краткая причина."""
++    if not isinstance(value, dict):
++        return "result_not_object"
++    if value.get("label") not in CONTRACT_LABELS:
++        return "label_not_in_contract"
++    score = value.get("score")
++    if score is not None and not (isinstance(score, (int, float)) and not isinstance(score, bool) and math.isfinite(score)):
++        return "score_not_finite_number"
++    for key in ("score_kind", "model_version", "training_data_status"):
++        if value.get(key) is not None and not isinstance(value.get(key), str):
++            return f"{key}_not_string"
++    if not isinstance(value.get("needs_review", True), bool):
++        return "needs_review_not_bool"
++    return None
++
++
++def _probe(classify, timeout_s: float) -> tuple[str | None, dict | None]:
++    outcome: dict = {}
++
++    def run():
++        try:
++            outcome["value"] = classify(PROBE_TEXT, PROBE_LANGUAGE)
++        except Exception as exc:  # чужая модель: любая ошибка = модель недоступна
++            outcome["error"] = type(exc).__name__
+ 
++    worker = threading.Thread(target=run, name="civic-r06-classifier-probe", daemon=True)
++    worker.start()
++    worker.join(timeout_s)
++    if worker.is_alive():
++        return "probe_timeout", None
++    if "error" in outcome:
++        return "probe_error:" + outcome["error"], None
++    problem = check_suggestion(outcome.get("value"))
++    return (("contract_mismatch:" + problem) if problem else None), outcome.get("value")
+ 
+-def load_r08_classifier(module_name: str = "ml.civic_classifier"):
++
++def r08_status(module_name: str = "ml.civic_classifier", *, probe: bool = True, timeout_s: float = 10.0) -> dict:
++    """Диагностика без текстов жителей: доступна ли модель и почему нет.
++
++    {available, reason, module, model_version, training_data_status, score_kind}
++    """
++    status = {"available": False, "reason": None, "module": module_name, "model_version": None,
++              "training_data_status": None, "score_kind": None}
+     try:
+         module = importlib.import_module(module_name)
+     except Exception as exc:  # отсутствие/поломка модели не блокирует обращения
+-        LOGGER.info("R08 classifier unavailable: %s", type(exc).__name__)
+-        return None
++        status["reason"] = "import_failed:" + type(exc).__name__
++        return status
+     classify = getattr(module, "classify", None)
+-    return classify if callable(classify) else None
++    if not callable(classify):
++        status["reason"] = "no_classify_function"
++        return status
++    status["classify"] = classify
++    if probe:
++        problem, value = _probe(classify, timeout_s)
++        if problem:
++            status["reason"] = problem
++            return status
++        for key in ("model_version", "training_data_status", "score_kind"):
++            status[key] = value.get(key) if isinstance(value.get(key), str) else None
++    status["available"] = True
++    return status
++
++
++def load_r08_classifier(module_name: str = "ml.civic_classifier", *, probe: bool = True, timeout_s: float = 10.0):
++    """classify(text, language) R08 либо None. Пробный вызов проверяет контракт до подключения."""
++    status = r08_status(module_name, probe=probe, timeout_s=timeout_s)
++    if not status["available"]:
++        LOGGER.info("R08 classifier not connected: %s", status["reason"])
++        return None
++    LOGGER.info("R08 classifier connected: %s", status.get("model_version") or "version unknown")
++    return status["classify"]
 diff --git a/ui/civic_feedback/fixtures.py b/ui/civic_feedback/fixtures.py
 index 7f84c66..380c093 100644
 --- a/ui/civic_feedback/fixtures.py
@@ -1176,10 +1557,10 @@ index 4b95490..30d7ec1 100644
      """Найденные фрагменты, похожие на контакты/идентификаторы. Не гарантия полноты."""
      found: list[dict] = []
 diff --git a/web/civic/feedback/feedback.css b/web/civic/feedback/feedback.css
-index 953d190..b68cc73 100644
+index 953d190..f2613c7 100644
 --- a/web/civic/feedback/feedback.css
 +++ b/web/civic/feedback/feedback.css
-@@ -137,3 +137,17 @@
+@@ -137,3 +137,20 @@
  @media (max-width: 720px) {
    .civic-r06-primary { width: 100%; justify-self: stretch; }
  }
@@ -1197,8 +1578,11 @@ index 953d190..b68cc73 100644
 +.civic-r06-history-note { background: #fbf8ee; }
 +.civic-r06-draft-note { display: block; }
 +.civic-r06-recat input[type="text"] { width: 100%; }
++.civic-r06-more-filters { margin: 4px 0 8px; font-size: 13px; }
++.civic-r06-more-filters > summary { cursor: pointer; color: var(--r06-muted); }
++.civic-r06-more-filters .civic-r06-filters { margin-top: 6px; }
 diff --git a/web/civic/feedback/feedback.js b/web/civic/feedback/feedback.js
-index 498c26c..29fb3c6 100644
+index 498c26c..8d88dd8 100644
 --- a/web/civic/feedback/feedback.js
 +++ b/web/civic/feedback/feedback.js
 @@ -12,14 +12,27 @@
@@ -1405,7 +1789,7 @@ index 498c26c..29fb3c6 100644
                actionStatus.appendChild(el("span", { text: data.public_reply }));
              }
            },
-@@ -530,48 +591,62 @@
+@@ -530,48 +591,68 @@
      var marker = null;
      var life = lifecycle(root);
      var on = life.on;
@@ -1451,7 +1835,13 @@ index 498c26c..29fb3c6 100644
      container.appendChild(header);
      container.appendChild(tabs);
 -    container.appendChild(el("div", { className: P + "-filters" }, [categoryFilter, consentFilter]));
-+    container.appendChild(el("div", { className: P + "-filters" }, [search, publicationFilter, categoryFilter, consentFilter, orderFilter]));
++    // Поиск всегда виден; остальные фильтры свёрнуты, чтобы очередь помещалась в узкую панель.
++    var moreFilters = el("details", { className: P + "-more-filters" }, [
++      el("summary", { text: "Ещё фильтры" }),
++      el("div", { className: P + "-filters" }, [publicationFilter, categoryFilter, consentFilter, orderFilter]),
++    ]);
++    container.appendChild(el("div", { className: P + "-filters" }, [search]));
++    container.appendChild(moreFilters);
      container.appendChild(listStatus);
      container.appendChild(el("div", { className: P + "-mod-body" }, [list, detail]));
      root.appendChild(container);
@@ -1484,7 +1874,7 @@ index 498c26c..29fb3c6 100644
          tabs.appendChild(button);
        });
      }
-@@ -590,15 +665,16 @@
+@@ -590,15 +671,16 @@
  
      function refresh() {
        var token = (loadToken += 1);
@@ -1505,7 +1895,7 @@ index 498c26c..29fb3c6 100644
            renderList(data.items || []);
          },
          function (err) {
-@@ -631,12 +707,13 @@
+@@ -631,12 +713,13 @@
            dataset: { feedbackId: item.id },
          }, [
            el("span", { className: P + "-meta" }, [
@@ -1521,7 +1911,7 @@ index 498c26c..29fb3c6 100644
          ]);
          on(button, "click", function () {
            select(item.id);
-@@ -655,7 +732,7 @@
+@@ -655,7 +738,7 @@
        });
        clear(detail);
        detail.appendChild(el("p", { className: P + "-muted", text: "Загрузка сообщения…" }));
@@ -1530,7 +1920,7 @@ index 498c26c..29fb3c6 100644
          function (data) { if (!life.destroyed && selectedId === id) renderDetail(data); },
          function (err) {
            if (life.destroyed) return;
-@@ -688,6 +765,35 @@
+@@ -688,6 +771,35 @@
        return out.join("");
      }
  
@@ -1566,7 +1956,7 @@ index 498c26c..29fb3c6 100644
      function renderDetail(data) {
        var item = data.item;
        var object = data.object;
-@@ -697,13 +803,17 @@
+@@ -697,13 +809,17 @@
          ? "Согласие на публикацию отозвано автором " + formatDate(item.consent_withdrawn_at)
          : item.consent_public ? "Автор разрешил публикацию текста после проверки" : "Автор НЕ разрешил публиковать текст";
        detail.appendChild(el("h4", { text: "Сообщение #" + item.id + " · " + item.moderation_label }));
@@ -1586,7 +1976,7 @@ index 498c26c..29fb3c6 100644
          el("p", { className: P + "-text", text: item.text }),
        ]));
  
-@@ -735,34 +845,177 @@
+@@ -735,34 +851,177 @@
        if (item.personal_data_hints && item.personal_data_hints.length) {
          detail.appendChild(el("p", { className: P + "-warning-text", text: "Возможные персональные данные: " + item.personal_data_hints.map(function (h) { return h.label; }).join(", ") + ". Автоматический поиск неполный — проверьте имена и адреса вручную." }));
        }
@@ -1771,7 +2161,7 @@ index 498c26c..29fb3c6 100644
      }
  
      function renderDecisionForm(item) {
-@@ -771,7 +1024,7 @@
+@@ -771,7 +1030,7 @@
        var approve = el("input", { type: "radio", name: actionName, value: "approve", checked: item.moderation !== "rejected" });
        var reject = el("input", { type: "radio", name: actionName, value: "reject", checked: item.moderation === "rejected" });
        var reasonId = nextId("reason");
@@ -1780,7 +2170,7 @@ index 498c26c..29fb3c6 100644
        var canPublish = item.consent_public && !item.consent_withdrawn_at;
        var publicTextId = nextId("public-text");
        var publicText = el("textarea", { id: publicTextId, rows: 4, maxLength: 2000 });
-@@ -780,10 +1033,10 @@
+@@ -780,10 +1039,10 @@
        var reply = el("textarea", { id: replyId, rows: 3, maxLength: 2000, placeholder: "Необязательно. Не обещайте сроки и работы, которые не подтверждены." });
        reply.value = item.public_reply || "";
        var status = el("div", { className: P + "-status", role: "status", "aria-live": "polite" });
@@ -1793,7 +2183,7 @@ index 498c26c..29fb3c6 100644
          el("label", { className: P + "-choice" }, [approve, canPublish ? " Одобрить и опубликовать" : " Одобрить (текст не публикуется — нет согласия)"]),
          el("label", { className: P + "-choice" }, [reject, " Отклонить"]),
        ]));
-@@ -796,15 +1049,14 @@
+@@ -796,15 +1055,14 @@
          form.appendChild(publicText);
          if (item.personal_data_hints && item.personal_data_hints.length) form.appendChild(redactButton);
        }
@@ -1811,7 +2201,7 @@ index 498c26c..29fb3c6 100644
          var action = reject.checked ? "reject" : "approve";
          if (reason.value.trim().length < 3) {
            status.textContent = "Укажите причину решения.";
-@@ -812,30 +1064,7 @@
+@@ -812,30 +1070,7 @@
          }
          var body = { expected_revision: item.revision, action: action, reason: reason.value, public_reply: reply.value.trim() ? reply.value : null };
          if (canPublish && action === "approve" && publicText.value !== (item.public_text || item.text)) body.public_text = publicText.value;
@@ -1843,7 +2233,7 @@ index 498c26c..29fb3c6 100644
        });
        return form;
      }
-@@ -844,7 +1073,10 @@
+@@ -844,7 +1079,10 @@
      refresh();
      return {
        refresh: refresh,
