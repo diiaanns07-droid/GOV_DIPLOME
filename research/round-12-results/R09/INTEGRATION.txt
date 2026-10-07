@@ -1,0 +1,35 @@
+R09 (раунд 12) — что подключить координатору / R01
+
+0. Без изменений общих файлов работает уже сейчас (проверено на запущенном приложении база+R09):
+   - ui/web_server.py вызывает api.r07_case_loader(list_cases, load_graph, compare) — сигнатура
+     совместима; запись MANIFEST графа (дата снимка OSM, лицензия) берётся из того же модуля, что
+     load_graph (engine.civic_scenarios.registry.manifest).
+   - Новые поля ответа /assistant (обратно совместимы): object_revision, object_updated_at, sources
+     [{id,publisher,published_on,retrieved_at,access_status,license,url}]; новый intent missing_data.
+   - assistant.js: mount({root, api, objectId, scenarioId?, revision?}) -> {ask, update, destroy};
+     без revision ведёт себя как раньше.
+
+1. Предлагаемый patch общих файлов R01: research/round-12-results/R09/r01_integration.patch
+   (git apply --check проходит на 56538a3; проверен на копии: base + R09 + patch, реальный сервер).
+   a) web/civic/shell/shell.js — передать редакцию карточки:
+      mount("assistant", root, { objectId: id, revision: data.item.revision })
+      (данные уже есть: shell перед монтированием делает GET /objects/{id}). Если карточка обновится без
+      перемонтирования, вызвать handle.update({ revision }) — ответ по старой редакции будет убран.
+   b) ui/web_server.py — общий api.ScenarioResultCache в CivicGateway:
+      - gateway.scenario_results() создаёт кэш один раз (None, если пакета R09 нет);
+      - после успешного POST /scenarios/compare: cache.remember(body, reply.body.data) — проверяет
+        input.payload_digest, хранит 64 последних результата 1 ч;
+      - r07_case_loader(..., result_cache=gateway.scenario_results()).
+      Тогда POST /assistant {"scenario_id": "result:" + result.result_digest} объясняет именно этот расчёт
+      сервера (клиент метрик не передаёт). Проверено: пользовательский вариант с закончившимся
+      перекрытием B -> «в момент анализа не действует», длины = расчёт движка.
+
+2. Соседние интерфейсы (не мои файлы; только предложение):
+   - R07 web/civic/scenarios/: после показа результата сравнения смонтировать
+     CivicAssistant.mount({root, api, scenarioId: "result:" + result.result_digest}) — тогда сотрудник
+     получает объяснение A/B в той же панели. Без этого API уже работает (п.1b).
+   - R03 карточка: при обновлении данных карточки без смены объекта вызывать handle.update({revision}).
+   - R08: классификатор в помощник не подключался; помощник его не использует.
+
+3. Не требуется: новых зависимостей, ключей, сетевых вызовов, миграций БД. Контракт /assistant
+   {question, object_id, scenario_id} не меняется (scenario_id "result:<digest>" укладывается в ID_RE).
