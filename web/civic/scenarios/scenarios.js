@@ -82,7 +82,7 @@
       el("div", { class: P + "row" }, [el("label", { class: P + "lbl" }, ["Граф ", ui.graphSel]), el("label", { class: P + "lbl" }, ["Кейс ", ui.caseSel])]),
       ui.graphInfo,
       el("div", { class: P + "legend" }, [
-        ["#495057", "solid", "доступ подтверждён"], ["#adb5bd", "dashed", "доступ неизвестен (не используется)"], ["#c92a2a", "solid", "запрет"],
+        ["#495057", "solid", "разрешено в выбранном графе"], ["#adb5bd", "dashed", "доступ неизвестен (не используется)"], ["#c92a2a", "solid", "запрет"],
         [PLAN_COLORS.A, "solid", "закрыто в плане A / путь A"], [PLAN_COLORS.B, "solid", "закрыто в плане B / путь B"], ["#adb5bd", "dotted", "перекрытие не действует в момент анализа"], [ROUTE_COLORS.base, "solid", "путь в базе"],
       ].map(([c, st, t]) => el("span", { class: P + "lg" }, [el("i", { style: "border-top:3px " + st + " " + c }), t]))),
       el("div", { class: P + "row" }, [el("label", { class: P + "lbl" }, ["Момент анализа ", ui.atLocal]), ui.atOff]),

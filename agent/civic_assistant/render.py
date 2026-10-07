@@ -335,10 +335,14 @@ def r_delay_reason(facts, lang):
     hist = _history(facts)
     # История может быть неполной: первая доступная запись тоже может содержать перенос.
     # Учитываем явное изменение текущего срока независимо от позиции записи.
-    reasons = [h for h in hist if h.get("meta", {}).get("schedule_change") and h["value"]["reason"]
-               and ("schedule.current_planned_end" in h["value"]["changed_fields"]
-                    or ("schedule" in h["value"]["changed_fields"]
-                        and "publication" not in h["value"]["changed_fields"]))]
+    reasons = [h for h in hist if h["value"]["reason"]
+               and "schedule.current_planned_end" in h["value"]["changed_fields"]]
+    if not reasons:
+        # Старый контракт мог отмечать весь schedule; цитируем его без вывода
+        # о конкретной изменённой дате. Явная публикация не является переносом.
+        reasons = [h for h in hist if h["value"]["reason"]
+                   and "schedule" in h["value"]["changed_fields"]
+                   and "publication" not in h["value"]["changed_fields"]]
     for h in reasons[-3:]:
         e = h["value"]
         out.append(_st(t["reason_quote"].format(r=e["revision"], at=fmt_at(e["at"], lang), text=e["reason"]),
