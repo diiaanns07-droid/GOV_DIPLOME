@@ -42,21 +42,21 @@
       status.hidden = true;
       const q = input.value.trim().toLocaleLowerCase("ru");
       datalist.replaceChildren(...(q.length > 1 ? (streets || []).filter((s) => s.name.toLocaleLowerCase("ru").includes(q)).slice(0, 12) : []).map((s) => {
-        const o = document.createElement("option"); o.value = s.name; return o;
+        const o = document.createElement("option"); o.value = s.label || s.name; return o;
       }));
     });
     search.addEventListener("submit", (event) => {
       event.preventDefault();
       const q = input.value.trim().toLocaleLowerCase("ru");
-      const matches = q ? (streets || []).filter((s) => s.name.toLocaleLowerCase("ru").includes(q)) : [];
-      const street = matches.find((s) => s.name.toLocaleLowerCase("ru") === q) || (matches.length === 1 ? matches[0] : null);
+      const matches = q ? (streets || []).filter((s) => (s.label || s.name).toLocaleLowerCase("ru").includes(q)) : [];
+      const street = matches.find((s) => (s.label || s.name).toLocaleLowerCase("ru") === q) || (matches.length === 1 ? matches[0] : null);
       if (!street) {
         status.hidden = false;
         status.textContent = streets === null ? "Список улиц ещё загружается." : matches.length ? "Уточните название или выберите улицу из подсказок." : "Улица не найдена в снимке OSM. Попробуйте другое название или выберите район.";
         return;
       }
       selected = ""; select.value = ""; paint(); status.hidden = true;
-      input.value = street.name; onStreet(street);
+      input.value = street.label || street.name; onStreet(street);
     });
     const select = box.querySelector("select"), checkbox = box.querySelector("input");
     features.forEach((f) => {
@@ -81,6 +81,7 @@
     }
     select.addEventListener("change", () => {
       selected = select.value;
+      input.value = ""; datalist.replaceChildren(); status.hidden = true;
       paint();
       onNavigate(features.find((f) => f.properties.id === selected) || null);
     });
@@ -89,7 +90,7 @@
     map?.on("style.load", paint);
     paint();
     return {
-      reset() { selected = ""; select.value = ""; paint(); },
+      reset() { selected = ""; select.value = ""; input.value = ""; datalist.replaceChildren(); status.hidden = true; paint(); },
       updateRecords(items) {
         const demo = items.filter((x) => x.evidence === "synthetic").length;
         box.querySelector(".civic-explore-count").textContent = `Опубликовано записей: ${items.length}. Из них демонстрационных: ${demo}.`;

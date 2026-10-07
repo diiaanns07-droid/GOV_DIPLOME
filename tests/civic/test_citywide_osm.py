@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from engine.civic_scenarios import compare, ScenarioError
-from engine.civic_scenarios.adapters.osm_city import build_graph, distance, foot_access, GRAPH_ID
+from engine.civic_scenarios.adapters.osm_city import build_graph, distance, foot_access, street_index, GRAPH_ID
 from engine.civic_scenarios.registry import load_graph, load_graph_dict, manifest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -110,3 +110,15 @@ def test_long_route_and_both_closures_are_computed():
 def test_bad_graph_id_is_validation_error():
     with pytest.raises(ScenarioError):
         load_graph([])
+
+
+def test_street_namesakes_do_not_frame_unrelated_neighbourhoods():
+    graph = {"source": {}, "license": {}, "edges": [
+        {"name": "Same", "geometry": [[71.4, 51.1], [71.401, 51.1]]},
+        {"name": "Same", "geometry": [[71.401, 51.1001], [71.402, 51.1001]]},
+        {"name": "same", "geometry": [[71.6, 51.3], [71.601, 51.3]]},
+    ]}
+    streets = street_index(graph)["streets"]
+    assert len(streets) == 2
+    assert streets[0]["bbox"] == [71.4, 51.1, 71.402, 51.1001]
+    assert len({s["label"] for s in streets}) == 2

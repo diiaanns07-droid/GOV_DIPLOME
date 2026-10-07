@@ -122,6 +122,46 @@ def build_graph(raw, source, bbox=BBOX):
     return graph
 
 
+def street_index(graph):
+    """Group nearby same-name geometry for map search only, never for routing.
+
+    A 150m endpoint neighbourhood can join opposite carriageways. Distant namesakes
+    remain separate choices instead of one bounding box covering unrelated towns.
+    """
+    names = {}
+    for edge in graph["edges"]:
+        if edge.get("name"):
+            names.setdefault(edge["name"].strip().casefold(), []).append(edge)
+    streets = []
+    for _, edges in sorted(names.items()):
+        name = min(edge["name"].strip() for edge in edges)
+        parent = list(range(len(edges)))
+        def find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]; i = parent[i]
+            return i
+        buckets = {}
+        for i, edge in enumerate(edges):
+            for point in (edge["geometry"][0], edge["geometry"][-1]):
+                x, y = int(point[0] * 70000 // 150), int(point[1] * 111000 // 150)
+                for dx in (-1, 0, 1):
+                    for dy in (-1, 0, 1):
+                        for j, other in buckets.get((x + dx, y + dy), ()):
+                            if distance(point, other) <= 150:
+                                parent[find(i)] = find(j)
+                buckets.setdefault((x, y), []).append((i, point))
+        groups = {}
+        for i, edge in enumerate(edges):
+            box = groups.setdefault(find(i), [180, 90, -180, -90])
+            for lon, lat in edge["geometry"]:
+                box[0], box[1] = min(box[0], lon), min(box[1], lat)
+                box[2], box[3] = max(box[2], lon), max(box[3], lat)
+        for idx, box in enumerate(sorted(groups.values())):
+            label = name if len(groups) == 1 else f"{name} · участок {idx + 1} ({(box[1] + box[3]) / 2:.3f}, {(box[0] + box[2]) / 2:.3f})"
+            streets.append({"name": name, "label": label, "bbox": box})
+    return {"source": graph["source"], "license": graph["license"], "grouping": "same-name endpoints within 150m; map search only", "streets": streets}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("raw", type=Path)
@@ -153,15 +193,7 @@ def main():
     manifest["graphs"] = [g for g in manifest["graphs"] if g["id"] != GRAPH_ID] + [entry]
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     (folder / "SOURCE.json").write_text(json.dumps(source, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
-    streets = {}
-    for edge in graph["edges"]:
-        if not edge["name"]:
-            continue
-        box = streets.setdefault(edge["name"], [180, 90, -180, -90])
-        for lon, lat in edge["geometry"]:
-            box[0], box[1] = min(box[0], lon), min(box[1], lat)
-            box[2], box[3] = max(box[2], lon), max(box[3], lat)
-    index = {"source": source, "license": graph["license"], "streets": [{"name": n, "bbox": b} for n, b in sorted(streets.items())]}
+    index = street_index(graph)
     (repo / "web/civic/map/streets.json").write_text(canonical_json(index) + "\n", encoding="utf-8", newline="\n")
     print(json.dumps({"id": graph["id"], "nodes": len(graph["nodes"]), "edges": len(graph["edges"]),
                       "access": dict(Counter(e["access"] for e in graph["edges"])), "bytes": len(content), "digest": graph["digest"]}))
