@@ -3,7 +3,7 @@
   "role": "R01",
   "branch": "claude/affectionate-ride-bol5v8",
   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-  "updated_at": "2026-10-07T04:16Z",
+  "updated_at": "2026-10-07T04:20Z",
   "application_snapshot": {
     "source_branch": "claude/beautiful-clarke-sbzomj",
     "source_sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
@@ -397,6 +397,32 @@
     {
       "id": "D-12",
       "decision": "Gateway service registry uses an RLock: dependent factories (feedback/assistant need store) no longer deadlock on lazy start (found by tests/civic/R01/test_r01_integrated_routes.py)."
+    }
+  ],
+  "self_review": [
+    {
+      "finding": "deeply nested JSON (RecursionError) dropped the connection with a traceback",
+      "severity": "minor",
+      "status": "fixed",
+      "test": "test_deeply_nested_json_is_400_json_not_a_dropped_connection"
+    },
+    {
+      "finding": "OPTIONS/TRACE/unknown methods and protocol errors on civic paths answered HTML",
+      "severity": "minor",
+      "status": "fixed",
+      "test": "test_other_methods_on_civic_paths_answer_json, test_protocol_error_on_civic_path_is_json"
+    },
+    {
+      "finding": "PUT/PATCH/DELETE 405 without Allow and without 404 for unknown civic paths",
+      "severity": "minor",
+      "status": "fixed",
+      "test": "test_put_delete_follow_route_table"
+    },
+    {
+      "finding": "HTML shell could be framed by a neighbour loopback origin (clickjacking of staff actions)",
+      "severity": "minor",
+      "status": "fixed (X-Frame-Options DENY + CSP frame-ancestors 'none')",
+      "test": "test_html_shell_cannot_be_framed"
     }
   ]
 }

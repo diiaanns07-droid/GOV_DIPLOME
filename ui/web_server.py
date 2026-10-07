@@ -504,6 +504,9 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-store")
             self.send_header("X-Content-Type-Options", "nosniff")
             self.send_header("Referrer-Policy", "same-origin")
+            # The page carries staff actions: no framing by another (e.g. neighbour loopback) origin.
+            self.send_header("X-Frame-Options", "DENY")
+            self.send_header("Content-Security-Policy", "frame-ancestors 'none'")
             self.end_headers()
             if self.command != "HEAD":
                 self.wfile.write(data)
@@ -598,6 +601,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options", "nosniff")
             self.send_header("Referrer-Policy", "same-origin")
             self.send_header("X-Frame-Options", "DENY")
+            self.send_header("Content-Security-Policy", "frame-ancestors 'none'")
             self.send_header("Cross-Origin-Resource-Policy", "same-origin")
             for name, value in extra:
                 self.send_header(name, value)
@@ -654,7 +658,8 @@ class Handler(BaseHTTPRequestHandler):
             except CLIENT_DISCONNECTED:
                 self.close_connection = True
                 return
-            except (ValueError, UnicodeDecodeError):
+            except (ValueError, UnicodeDecodeError, RecursionError):
+                # RecursionError: pathologically nested JSON within the size limit.
                 self.civic_send(civic_error(400, "invalid_json", "Тело запроса должно быть корректным JSON."))
                 return
             if not isinstance(body, dict):
@@ -771,17 +776,46 @@ class Handler(BaseHTTPRequestHandler):
             self.error_reply(500, "Не удалось выполнить запрос. Попробуйте ещё раз.")
 
 
+    def _is_civic_path(self):
+        raw = getattr(self, "path", "") or ""
+        if not raw:
+            # Protocol errors (e.g. 505) happen before parse_request stores self.path.
+            words = (getattr(self, "requestline", "") or "").split()
+            raw = words[1] if len(words) >= 2 else ""
+        try:
+            path = urlsplit(raw).path
+        except ValueError:
+            return False
+        return path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/")
+
     def do_unsupported(self):
-        """PUT/PATCH/DELETE: civic answers 405 in its envelope; the rest keeps a JSON 405."""
-        path = urlsplit(self.path).path
+        """PUT/PATCH/DELETE/OPTIONS/TRACE: on civic paths the route table decides (404 for an unknown
+        path, 405 with Allow for a known one, never a service call); elsewhere a JSON 405."""
         self.discard_body()
         self.close_connection = True
-        if path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/"):
-            self.civic_send(civic_error(405, "method_not_allowed", "Метод не поддерживается."))
+        if self._is_civic_path():
+            rel_path = urlsplit(self.path).path[len(CIVIC_PREFIX):] or "/"
+            # No route accepts these methods, so handle() only produces 404/405 envelopes.
+            self.civic_send(self.server.civic.handle(self.command, rel_path, "", None, {}))
         else:
             self.error_reply(405, "Метод не поддерживается.")
 
-    do_PUT = do_PATCH = do_DELETE = do_unsupported
+    do_PUT = do_PATCH = do_DELETE = do_OPTIONS = do_TRACE = do_unsupported
+
+    def send_error(self, code, message=None, explain=None):
+        """Protocol errors raised by BaseHTTPRequestHandler (unknown method, 400/414/431/505) are
+        answered with the civic JSON envelope on civic paths instead of an HTML page."""
+        if not self._is_civic_path():
+            return super().send_error(code, message, explain)
+        self.close_connection = True
+        if code == 501:  # unknown method: semantically "not allowed on this resource"
+            reply = civic_error(405, "method_not_allowed", "Метод не поддерживается.")
+        else:
+            reply = civic_error(code, "bad_request" if code == 400 else "http_error",
+                                "Некорректный HTTP-запрос.")
+        if not hasattr(self, "headers") or self.headers is None:
+            self.headers = {}
+        self.civic_send(reply)
 
 
 def _invalid_number(value):

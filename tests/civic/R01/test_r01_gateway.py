@@ -284,3 +284,65 @@ def test_lazy_dependent_service_does_not_deadlock():
     worker.join(timeout=5)
     assert not worker.is_alive(), "gateway.service deadlocked"
     assert result["svc"] is not None and created == ["store", "feedback"]
+
+
+def raw_request(port, data: bytes):
+    import socket
+    with socket.create_connection(("127.0.0.1", port), timeout=10) as sock:
+        sock.sendall(data)
+        chunks = []
+        while True:
+            chunk = sock.recv(65536)
+            if not chunk:
+                break
+            chunks.append(chunk)
+    head, _, body = b"".join(chunks).partition(b"\r\n\r\n")
+    return head.decode("latin-1"), body
+
+
+def test_deeply_nested_json_is_400_json_not_a_dropped_connection(served):
+    port, store, _ = served
+    deep = b'{"q":' + b"[" * 30000 + b"]" * 30000 + b"}"
+    status, _, body = call(port, "POST", "/api/civic/v1/staff/objects", raw=deep)
+    assert status == 400 and body["error"]["code"] == "invalid_json"
+    assert store.calls == []
+
+
+@pytest.mark.parametrize("method", ["OPTIONS", "TRACE", "PROPFIND", "get"])
+def test_other_methods_on_civic_paths_answer_json(served, method):
+    port, store, _ = served
+    head, body = raw_request(port, f"{method} /api/civic/v1/staff/objects HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\n"
+                                   f"Connection: close\r\n\r\n".encode())
+    assert " 405 " in head.splitlines()[0], head
+    assert "application/json" in head
+    assert json.loads(body.decode("utf-8"))["ok"] is False
+    assert store.calls == []
+
+
+def test_put_delete_follow_route_table(served):
+    port, store, _ = served
+    status, headers, body = call(port, "PUT", "/api/civic/v1/staff/objects", {"a": 1})
+    assert status == 405 and dict(headers).get("Allow") == "GET,POST"
+    status, _, body = call(port, "DELETE", "/api/civic/v1/no-such-route", None)
+    assert status == 404 and body["error"]["code"] == "not_found"
+    assert store.calls == []
+
+
+def test_protocol_error_on_civic_path_is_json(served):
+    port, _, _ = served
+    head, body = raw_request(port, b"GET /api/civic/v1/objects HTTP/9.9\r\nHost: x\r\n\r\n")
+    assert "application/json" in head and json.loads(body.decode("utf-8"))["ok"] is False
+
+
+def test_html_shell_cannot_be_framed(served):
+    port, _, _ = served
+    conn = HTTPConnection("127.0.0.1", port, timeout=10)
+    try:
+        conn.request("GET", "/")
+        response = conn.getresponse()
+        response.read()
+        headers = {k.lower(): v for k, v in response.getheaders()}
+    finally:
+        conn.close()
+    assert headers["x-frame-options"] == "DENY"
+    assert "frame-ancestors 'none'" in headers["content-security-policy"]
