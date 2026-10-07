@@ -1,0 +1,13 @@
+--- a/tests/civic/R08/test_r08_feedback_integration.py
++++ b/tests/civic/R08/test_r08_feedback_integration.py
+@@ -56,7 +56,9 @@
+         assert lamp["classifier"]["status"] == "ok" and sug["label"] == "lighting"
+         assert sug["model_version"].startswith("civic-clf-") and sug["needs_review"] is True
+         assert sug["training_data_status"] == "synthetic_demo_only;real_data_NOT_EVALUATED"
+-        assert sug["score_kind"] == "softmax_max_uncalibrated" and 0 <= sug["score"] <= 1
++        # R06 round 13: некалиброванное число не показывается сотруднику (score = null, score_shown = False).
++        assert sug["score_kind"] == "softmax_max_uncalibrated" and sug["score"] is None
++        assert sug["needs_review"] is True and sug["score_shown"] is False
+         stop = items["Аялдамадағы "]
+         assert stop["language"] == "kk" and stop["classifier"]["suggestion"]["label"] == "transport_stops"
+     finally:

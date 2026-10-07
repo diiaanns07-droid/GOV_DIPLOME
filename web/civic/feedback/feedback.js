@@ -54,6 +54,15 @@
     completed: "завершено (по данным источника)", cancelled: "отменено", unknown: "статус неизвестен",
   };
   var PUBLICATION = { published: "опубликован", draft: "черновик", archived: "в архиве" };
+  // Запасные подписи, если сервер старше round 13 и не прислал status_label/source_label.
+  var CLASSIFIER_STATUS = {
+    unavailable: "модель не подключена", error: "ошибка модели", timeout: "модель не ответила вовремя",
+    invalid: "некорректный ответ модели", busy: "модель занята", not_run: "не запрашивалась",
+  };
+  var CLASSIFIER_SOURCE = {
+    r08: "модель R08", fixture: "FIXTURE-заглушка, не модель R08", external: "функция неизвестного происхождения",
+    disabled: "AI-подсказка выключена",
+  };
   var TEXT_MIN = 10;
   var TEXT_MAX = 2000;
   var OFFICIAL_NOTICE =
@@ -707,7 +716,9 @@
         else if (hints.length) flags.push("есть ссылка");
         if (!item.consent_public) flags.push("без публикации");
         if (item.similar_count) flags.push("похожих: " + item.similar_count);
-        if (item.antispam && item.antispam.same_sender_24h > 2) flags.push("частые отправки");
+        // Совпадение сетевого адреса (общий NAT, мобильная сеть) не доказывает одного автора или спам.
+        var sameNetwork = item.antispam ? (item.antispam.same_network_24h !== undefined ? item.antispam.same_network_24h : item.antispam.same_sender_24h) : 0;
+        if (sameNetwork > 2) flags.push("много сообщений из одной сети");
         var button = el("button", {
           type: "button", className: P + "-queue-item", "aria-pressed": String(item.id === selectedId),
           dataset: { feedbackId: item.id },
@@ -869,18 +880,27 @@
       var forms = {};
       var clf = item.classifier || {};
       var clfBox = el("div", { className: P + "-classifier" });
+      // Round 13: подсказка без числа (score R08 не откалиброван — не вероятность) и с источником:
+      // настоящая модель R08, FIXTURE или выключено. Проверка сотрудником обязательна всегда.
+      var sourceText = clf.source_label || CLASSIFIER_SOURCE[clf.source] || "источник не записан";
       if (clf.suggestion) {
         var sug = clf.suggestion;
-        var scoreText = sug.score !== null && sug.score !== undefined
-          ? "; оценка модели " + Number(sug.score).toFixed(2) + " (" + (sug.score_kind || "некалиброванная") + ", не вероятность)" : "";
-        clfBox.appendChild(el("span", { className: P + "-muted", text: "Подсказка модели " + (sug.model_version || "(версия неизвестна)") + ": «" + sug.label_text + "»" + scoreText + ". Решает сотрудник; категорию жителя модель не меняет." }));
+        clfBox.appendChild(el("strong", { text: "AI-подсказка категории: «" + (sug.label_text || CATEGORY_LABEL[sug.label] || sug.label) + "»" }));
+        clfBox.appendChild(el("span", { className: P + "-muted", text: " · " + sourceText + (sug.model_version ? ", " + sug.model_version : "") }));
+        if (sug.synthetic_only || sug.needs_review !== false) {
+          clfBox.appendChild(el("p", { className: P + "-warning-text", text: sug.synthetic_only
+            ? "Демо-модель обучена только на синтетических примерах и не проверена на реальных сообщениях: проверьте текст сами."
+            : "Модель просит проверки человеком." }));
+        }
+        if (clf.language === "unknown") clfBox.appendChild(el("p", { className: P + "-muted", text: "Язык текста не распознан как русский или казахский — подсказка особенно ненадёжна." }));
+        clfBox.appendChild(el("p", { className: P + "-muted", text: "Это не решение: категорию жителя и статус модель не меняет. Числовая оценка модели не показывается — она не откалибрована." }));
         if (sug.label !== (item.staff_category || item.category)) {
-          var useHint = el("button", { type: "button", className: P + "-link", text: "Подставить в исправление категории" });
+          var useHint = el("button", { type: "button", className: P + "-link", text: "Подставить в исправление категории (сохраните сами)" });
           on(useHint, "click", function () { if (forms.recat) forms.recat.prefill(sug.label); });
           clfBox.appendChild(useHint);
         }
       } else {
-        clfBox.appendChild(el("span", { className: P + "-muted", text: "Подсказка модели: " + ({ unavailable: "модель не подключена", error: "ошибка модели", timeout: "модель не ответила", invalid: "некорректный ответ модели" }[clf.status] || "нет") + ". Сообщение сохранено без неё." }));
+        clfBox.appendChild(el("span", { className: P + "-muted", text: "AI-подсказка: " + (clf.status_label || CLASSIFIER_STATUS[clf.status] || "нет") + " (" + sourceText + "). Сообщение сохранено, категория жителя не изменена." }));
       }
       detail.appendChild(clfBox);
       if (data.similar && data.similar.length) {

@@ -250,7 +250,7 @@ def test_v1_database_is_migrated_without_losing_rows(tmp_path, clock):
                           FIXTURE_EDITOR, fixture_context())["body"]["data"]
         assert [i["handling_status"] for i in data["items"]] == ["new", "answered", "closed"]
         assert [i["text"] for i in data["items"]][0] == "Старое сообщение номер 1 о дороге"
-        assert svc.stats()["schema_version"] == "civic-feedback-v2"
+        assert svc.stats()["schema_version"] == "civic-feedback-v3"   # round 13: v1 -> v3 одним шагом
     finally:
         svc.close()
     # повторное открытие — миграция идемпотентна
@@ -267,9 +267,14 @@ def test_request_id_conflict_returns_previous_receipt_to_same_sender(service):
     assert edited["status"] == 409 and error["code"] == "request_id_conflict"
     assert error["previous_receipt"]["receipt_id"] == first["body"]["data"]["receipt_id"]
     assert "text" not in error["previous_receipt"]            # квитанция без текста сообщения
-    other_device = submit(service, ip="10.0.0.9", client_request_id="r12-request-0000000001",
-                          text="Совсем другое сообщение о яме на дороге возле остановки.")
-    assert other_device["status"] == 201                      # чужое устройство не видит чужую квитанцию
+    # round 13: тот же client_request_id после смены сети (другой IP) — та же форма, а не новый автор.
+    other_network = submit(service, ip="10.0.0.9", client_request_id="r12-request-0000000001",
+                           text="Совсем другое сообщение о яме на дороге возле остановки.")
+    assert other_network["status"] == 409
+    assert other_network["body"]["error"]["previous_receipt"]["receipt_id"] == first["body"]["data"]["receipt_id"]
+    # Без client_request_id квитанция не выдаётся никому, даже с того же адреса (общий NAT).
+    same_ip_no_id = submit(service, text="Нет безопасного прохода вдоль ограждения, люди идут по проезжей части.")
+    assert same_ip_no_id["status"] == 409 and "previous_receipt" not in same_ip_no_id["body"]["error"]
 
 
 def test_answered_reply_cannot_be_silently_removed(service):

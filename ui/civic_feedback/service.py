@@ -35,7 +35,7 @@ from . import text as textutil
 LOGGER = logging.getLogger(__name__)
 
 API_PREFIX = "/api/civic/v1"
-SCHEMA_VERSION = "civic-feedback-v2"
+SCHEMA_VERSION = "civic-feedback-v3"
 CITY = "astana"
 CATEGORIES = ("roads", "sidewalks", "transport_stops", "lighting", "landscaping", "other")
 CATEGORY_LABELS = {
@@ -62,6 +62,7 @@ RECEIPT_NOTICE = ("Сообщение сохранено на платформе
                   "Официальная регистрация обращения не выполняется; городские службы "
                   "автоматически не уведомляются.")
 PUBLIC_ACTOR_LABEL = "Модератор платформы"
+PUBLICATION_LABELS = {"published": "опубликован", "draft": "черновик", "archived": "в архиве", "hidden": "скрыт"}
 # Статус ОБРАБОТКИ на платформе (round 12) — отдельная ось от публикации (moderation).
 # Описывает работу сотрудников этого сервиса, не статус eOtinish/iKOMEK и не работы города.
 HANDLING = ("new", "in_review", "answered", "duplicate", "closed")
@@ -82,6 +83,24 @@ HANDLING_TRANSITIONS = {
 }
 MODERATE_ACTIONS = ("approve", "reject", "status", "note", "recategorize")
 DEFAULT_STAFF_ROLES = frozenset({"editor", "moderator", "admin"})
+CLASSIFIER_SOURCES = {
+    "r08": "Модель R08 (ml.civic_classifier)",
+    "fixture": "FIXTURE-заглушка для тестов, не модель R08",
+    "external": "Подключённая функция неизвестного происхождения",
+    "disabled": "AI-подсказка выключена",
+}
+CLASSIFIER_STATUS_LABELS = {
+    "ok": "Подсказка получена",
+    "unavailable": "AI-подсказка выключена: модель не подключена",
+    "error": "Ошибка модели — сообщение сохранено без подсказки",
+    "timeout": "Модель не ответила вовремя — сообщение сохранено без подсказки",
+    "invalid": "Ответ модели не соответствует контракту — подсказка отброшена",
+    "busy": "Модель занята предыдущими запросами — подсказка пропущена",
+    "not_run": "Подсказка не запрашивалась",
+}
+# score модели R08 — softmax_max_uncalibrated: не вероятность и не уверенность. Пока нет score_kind,
+# откалиброванного на реальных сообщениях, число не хранится и не показывается (без ложной точности).
+CALIBRATED_SCORE_KINDS: frozenset = frozenset()
 # Широкая рамка вокруг Астаны (lon_min, lat_min, lon_max, lat_max), WGS84.
 ASTANA_BBOX = (70.9, 50.8, 72.0, 51.5)
 OBJECT_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$")
@@ -107,6 +126,7 @@ DEFAULT_LIMITS = {
     "similar_window_days": 180,
     "similar_threshold": 0.35,
     "classifier_timeout_s": 2.0,
+    "classifier_max_inflight": 2,
     "note_max": 1000,
     "search_max": 100,
     "text_min_letters": 5,
@@ -169,7 +189,9 @@ CREATE TABLE IF NOT EXISTS feedback_messages (
   duplicate_of INTEGER,
   staff_category TEXT,
   handled_by TEXT,
-  handled_at TEXT
+  handled_at TEXT,
+  object_revision INTEGER,
+  object_snapshot TEXT
 );
 CREATE INDEX IF NOT EXISTS feedback_messages_object
   ON feedback_messages (object_id, moderation, consent_public);
@@ -187,7 +209,9 @@ CREATE TABLE IF NOT EXISTS feedback_events (
   actor TEXT,
   reason TEXT,
   changed_fields TEXT NOT NULL,
-  is_public INTEGER NOT NULL DEFAULT 0
+  is_public INTEGER NOT NULL DEFAULT 0,
+  handling_after TEXT,
+  moderation_after TEXT
 );
 CREATE INDEX IF NOT EXISTS feedback_events_message ON feedback_events (feedback_id, id);
 """
@@ -199,6 +223,14 @@ MIGRATION_COLUMNS = (
     ("staff_category", "TEXT"),
     ("handled_by", "TEXT"),
     ("handled_at", "TEXT"),
+    # round 13 (civic-feedback-v3): снимок объекта на момент отправки; у старых строк — NULL («неизвестно»).
+    ("object_revision", "INTEGER"),
+    ("object_snapshot", "TEXT"),
+)
+# round 13: состояние после события — для хронологии автора по квитанции (без исполнителей и причин).
+EVENT_MIGRATION_COLUMNS = (
+    ("handling_after", "TEXT"),
+    ("moderation_after", "TEXT"),
 )
 EFFECTIVE_CATEGORY = "COALESCE(staff_category, category)"
 
@@ -274,6 +306,36 @@ def _distance_to_object_m(lon: float, lat: float, geometry) -> float | None:
     return min(_haversine_m(lon, lat, p[0], p[1]) for p in points)
 
 
+def _geometry_hash(geometry) -> str | None:
+    if geometry is None:
+        return None
+    try:
+        raw = json.dumps(geometry, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    except (TypeError, ValueError):
+        return None
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def _object_snapshot(item: Mapping) -> dict:
+    """Что житель видел при отправке: ревизия, название и отпечаток геометрии (без копии геометрии)."""
+    revision = item.get("revision")
+    title = item.get("title")
+    return {"revision": revision if isinstance(revision, int) and not isinstance(revision, bool) else None,
+            "title": title[:200] if isinstance(title, str) else None,
+            "kind": item.get("kind") if isinstance(item.get("kind"), str) else None,
+            "geometry_sha256": _geometry_hash(item.get("geometry")),
+            "updated_at": item.get("updated_at") if isinstance(item.get("updated_at"), str) else None}
+
+
+def _human_wait(seconds: int) -> str:
+    if seconds < 90:
+        return f"через {seconds} с"
+    minutes = math.ceil(seconds / 60)
+    if minutes < 120:
+        return f"через {minutes} мин"
+    return f"через {math.ceil(minutes / 60)} ч"
+
+
 def _header(context: Mapping, name: str) -> str | None:
     headers = context.get("headers") or {}
     if hasattr(headers, "get") and headers.get(name) is not None:
@@ -294,12 +356,22 @@ class FeedbackService:
     def __init__(self, db_path, object_lookup: Callable[[str], Mapping | None],
                  clock: Callable[[], datetime | float] | None = None, *,
                  classifier: Callable[[str, str], Mapping] | None = None,
-                 staff_roles=DEFAULT_STAFF_ROLES, limits: Mapping | None = None):
+                 staff_roles=DEFAULT_STAFF_ROLES, limits: Mapping | None = None,
+                 classifier_source: str | None = None):
         if not callable(object_lookup):
             raise TypeError("object_lookup должен быть функцией object_id -> объект|None")
         self.object_lookup = object_lookup
         self.clock = clock
         self.classifier = classifier
+        # Откуда подсказка: r08 (настоящий ml.civic_classifier, подключён integration), fixture
+        # (заглушка тестов), external (функция неизвестного происхождения), disabled (нет модели).
+        # Сохраняется в каждой подсказке, чтобы отчёт не выдал fixture за модель R08.
+        if classifier is None:
+            source = "disabled"
+        else:
+            source = classifier_source or getattr(classifier, "r06_source", None) or "external"
+        self.classifier_source = source if source in CLASSIFIER_SOURCES else "external"
+        self._classifier_inflight = 0
         self.staff_roles = frozenset(staff_roles)
         self.limits = {**DEFAULT_LIMITS, **(limits or {})}
         self._lock = threading.RLock()
@@ -333,18 +405,28 @@ class FeedbackService:
                            deterministic=True)
         have = {row[1] for row in db.execute("PRAGMA table_info(feedback_messages)")}
         added = [name for name, _ in MIGRATION_COLUMNS if name not in have]
-        if added:
+        have_events = {row[1] for row in db.execute("PRAGMA table_info(feedback_events)")}
+        added_events = [name for name, _ in EVENT_MIGRATION_COLUMNS if name not in have_events]
+        if added or added_events:
+            # v1/v2 -> v3 одной транзакцией: либо все колонки, либо ни одной.
             db.execute("BEGIN IMMEDIATE")
             try:
                 for name, ddl in MIGRATION_COLUMNS:
                     if name in added:
                         db.execute(f"ALTER TABLE feedback_messages ADD COLUMN {name} {ddl}")
+                for name, ddl in EVENT_MIGRATION_COLUMNS:
+                    if name in added_events:
+                        db.execute(f"ALTER TABLE feedback_events ADD COLUMN {name} {ddl}")
                 if "handling_status" in added:
                     db.execute("UPDATE feedback_messages SET handling_status = CASE "
                                "WHEN moderation = 'pending' THEN 'new' "
                                "WHEN public_reply IS NOT NULL THEN 'answered' ELSE 'closed' END")
-                db.execute("INSERT OR REPLACE INTO feedback_meta (key, value) VALUES (?, ?)",
-                           ("migrated_v2_columns", ",".join(added)))
+                if added:
+                    db.execute("INSERT OR REPLACE INTO feedback_meta (key, value) VALUES (?, ?)",
+                               ("migrated_message_columns", ",".join(added)))
+                if added_events:
+                    db.execute("INSERT OR REPLACE INTO feedback_meta (key, value) VALUES (?, ?)",
+                               ("migrated_event_columns", ",".join(added_events)))
                 db.execute("COMMIT")
             except BaseException:
                 db.execute("ROLLBACK")
@@ -632,6 +714,10 @@ class FeedbackService:
         request_id = body.get("client_request_id")
         if request_id is not None and not (isinstance(request_id, str) and REQUEST_ID.match(request_id)):
             fields["client_request_id"] = "Некорректный идентификатор отправки."
+        elif request_id is not None and len(set(request_id.lower())) < 8:
+            # Идентификатор отправки — секрет клиента (по нему повтор получает квитанцию), поэтому
+            # «aaaa…»/«0000…» не принимаются: форма создаёт случайный UUID.
+            fields["client_request_id"] = "Идентификатор отправки должен быть случайным (например, UUID)."
         confirm = body.get("confirm_duplicate", False)
         if not isinstance(confirm, bool):
             fields["confirm_duplicate"] = "Ожидается true или false."
@@ -668,6 +754,7 @@ class FeedbackService:
         self._require_same_origin(context)
         data = self._validate_submission(self._json_body(body))
         object_id, point = data["object_id"], data["point"]
+        snapshot = None
         if object_id is not None:
             item = self._lookup(object_id)
             # Черновик, архив и несуществующий объект неразличимы для жителя.
@@ -680,6 +767,7 @@ class FeedbackService:
                     raise ApiError(422, "location_conflict",
                                    "Указанное место далеко от выбранного объекта. Уточните объект или точку.",
                                    fields={"geometry": f"Около {round(distance / 1000, 1)} км от объекта."})
+            snapshot = _object_snapshot(item)
 
         now = self._now()
         now_ts = now.timestamp()
@@ -688,13 +776,22 @@ class FeedbackService:
         limits = self.limits
         with self._transaction() as db:
             if data["request_id"]:
+                # Идемпотентность по client_request_id — случайному секрету формы, а не по IP: при смене
+                # сети (мобильный интернет, общий NAT) повтор той же отправки не создаёт второго автора.
                 previous = db.execute(
-                    "SELECT * FROM feedback_messages WHERE client_request_id = ? AND client_hash = ? "
-                    "AND created_ts >= ?", (data["request_id"], client_hash,
-                                            now_ts - limits["duplicate_window_s"])).fetchone()
+                    "SELECT * FROM feedback_messages WHERE client_request_id = ? AND created_ts >= ? "
+                    "ORDER BY id LIMIT 1",
+                    (data["request_id"], now_ts - limits["duplicate_window_s"])).fetchone()
                 if previous is not None:
-                    if previous["text_fingerprint"] != fingerprint or previous["object_id"] != object_id:
-                        # Тот же client_request_id и то же устройство: прежняя версия уже сохранена
+                    # Любое отличие (текст, место, категория, согласие) — конфликт, а не тихая замена:
+                    # например, житель после обрыва сети снял согласие на публикацию.
+                    same = (previous["text_fingerprint"] == fingerprint and previous["object_id"] == object_id
+                            and previous["lon"] == (point[0] if point else None)
+                            and previous["lat"] == (point[1] if point else None)
+                            and previous["category"] == data["category"] and previous["kind"] == data["kind"]
+                            and bool(previous["consent_public"]) == data["consent"])
+                    if not same:
+                        # Тот же client_request_id знает только эта форма: прежняя версия уже сохранена
                         # (ответ мог потеряться в сети). Возвращаем её квитанцию, чтобы автор её не потерял.
                         raise ApiError(409, "request_id_conflict",
                                        "Предыдущая версия этого сообщения уже сохранена. Изменённый текст "
@@ -703,18 +800,7 @@ class FeedbackService:
                     # Повтор той же отправки (например, после обрыва сети) — тот же receipt.
                     return _ok(200, self._receipt(previous, replayed=True))
 
-            recent = db.execute("SELECT COUNT(*) FROM feedback_messages WHERE client_hash = ? AND created_ts >= ?",
-                                (client_hash, now_ts - limits["per_sender_window_s"])).fetchone()[0]
-            daily = db.execute("SELECT COUNT(*) FROM feedback_messages WHERE client_hash = ? AND created_ts >= ?",
-                               (client_hash, now_ts - 86400)).fetchone()[0]
-            overall = db.execute("SELECT COUNT(*) FROM feedback_messages WHERE created_ts >= ?",
-                                 (now_ts - limits["global_window_s"],)).fetchone()[0]
-            if recent >= limits["per_sender_max"] or daily >= limits["per_sender_day_max"]:
-                raise ApiError(429, "rate_limited", "Слишком много сообщений подряд. Попробуйте позже.",
-                               headers={"Retry-After": str(int(limits["per_sender_window_s"]))})
-            if overall >= limits["global_max"]:
-                raise ApiError(429, "rate_limited", "Сервис перегружен. Попробуйте через минуту.",
-                               headers={"Retry-After": str(int(limits["global_window_s"]))})
+            self._check_rate_limits(db, client_hash, now_ts)
 
             if not data["confirm_duplicate"]:
                 same = db.execute(
@@ -722,9 +808,11 @@ class FeedbackService:
                     "AND object_id IS ? AND created_ts >= ? LIMIT 1",
                     (client_hash, fingerprint, object_id, now_ts - limits["duplicate_window_s"])).fetchone()
                 if same is not None:
+                    # Совпадение сети не доказывает, что это тот же человек (общий NAT): только предупреждение,
+                    # без квитанции и без сведений о первом сообщении.
                     raise ApiError(409, "duplicate_warning",
-                                   "Такое же сообщение уже отправлено с этого устройства. "
-                                   "Отправить ещё раз всё равно?",
+                                   "Недавно такое же сообщение об этом месте уже отправляли из этой сети. "
+                                   "Если это были вы — квитанция у вас уже есть. Отправить ещё раз?",
                                    extra={"can_confirm": True})
 
             stamp = _iso(now)
@@ -732,22 +820,65 @@ class FeedbackService:
             cursor = db.execute(
                 "INSERT INTO feedback_messages (public_id, receipt_id, city, object_id, lon, lat, kind, "
                 "category, text, text_fingerprint, language, consent_public, moderation, revision, "
-                "created_at, created_ts, updated_at, client_hash, client_request_id, duplicate_confirmed) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 1, ?, ?, ?, ?, ?, ?)",
+                "created_at, created_ts, updated_at, client_hash, client_request_id, duplicate_confirmed, "
+                "object_revision, object_snapshot) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 1, ?, ?, ?, ?, ?, ?, ?, ?)",
                 ("fbp_" + secrets.token_urlsafe(9), receipt_id, CITY, object_id,
                  point[0] if point else None, point[1] if point else None,
                  data["kind"], data["category"], data["text"], fingerprint,
                  textutil.detect_language(data["text"]), int(data["consent"]),
-                 stamp, now_ts, stamp, client_hash, data["request_id"], int(data["confirm_duplicate"])))
+                 stamp, now_ts, stamp, client_hash, data["request_id"], int(data["confirm_duplicate"]),
+                 snapshot["revision"] if snapshot else None,
+                 json.dumps(snapshot, ensure_ascii=False, sort_keys=True) if snapshot else None))
             message_id = cursor.lastrowid
             self._event(message_id, 1, stamp, "submitted", "resident", None, None,
-                        ["text", "category", "kind", "location", "consent_public"], False)
+                        ["text", "category", "kind", "location", "consent_public"], False,
+                        handling_after="new", moderation_after="pending")
 
         # Сообщение уже сохранено; классификатор может только добавить подсказку.
         self._classify(message_id, data["text"])
         with self._lock:
             row = self._db.execute("SELECT * FROM feedback_messages WHERE id = ?", (message_id,)).fetchone()
         return _ok(201, self._receipt(row))
+
+    def _check_rate_limits(self, db, client_hash: str, now_ts: float) -> None:
+        """429 с реальным временем до освобождения лимита (Retry-After и retry_after_s).
+
+        Лимит по хэшу адреса — грубая защита от потока: адрес бывает общим (NAT, мобильная сеть),
+        поэтому текст ответа не обвиняет в спаме, а данные об отправителе не собираются.
+        """
+        limits = self.limits
+        windows = (
+            ("per_sender", "client_hash = ? AND ", (client_hash,), limits["per_sender_window_s"],
+             limits["per_sender_max"]),
+            ("per_sender_day", "client_hash = ? AND ", (client_hash,), 86400, limits["per_sender_day_max"]),
+            ("global", "", (), limits["global_window_s"], limits["global_max"]),
+        )
+        waits: list[tuple[float, str]] = []
+        for name, where, params, window, maximum in windows:
+            since = now_ts - window
+            count = db.execute(f"SELECT COUNT(*) FROM feedback_messages WHERE {where}created_ts >= ?",
+                               (*params, since)).fetchone()[0]
+            if count < maximum:
+                continue
+            # Лимит освободится, когда из окна выйдет (count - maximum + 1)-е по старшинству сообщение.
+            oldest = db.execute(f"SELECT created_ts FROM feedback_messages WHERE {where}created_ts >= ? "
+                                "ORDER BY created_ts ASC LIMIT 1 OFFSET ?",
+                                (*params, since, count - maximum)).fetchone()
+            free_at = (oldest[0] if oldest else now_ts) + window
+            waits.append((free_at - now_ts, name))
+        if not waits:
+            return
+        wait, name = max(waits)
+        seconds = max(1, math.ceil(wait))
+        when = _human_wait(seconds)
+        if name == "global":
+            message = f"Сервис сейчас получает много сообщений. Текст сохранён в форме — повторите {when}."
+        else:
+            message = ("С этого сетевого адреса недавно отправлено много сообщений (адрес может быть общим, "
+                       f"например в мобильной сети). Текст сохранён в форме — повторите {when}.")
+        raise ApiError(429, "rate_limited", message, extra={"retry_after_s": seconds, "limit": name},
+                       headers={"Retry-After": str(seconds)})
 
     def _receipt(self, row, *, replayed: bool = False) -> dict:
         warnings = []
@@ -786,13 +917,68 @@ class FeedbackService:
         return row
 
     def _receipt_status(self, *, query, body, principal, context):
+        """Статус по номеру квитанции (capability): только то, что можно знать автору.
+
+        Ответ платформы автору виден всегда (даже без публикации); служебные заметки, причины
+        решений, исполнители, номер исходного сообщения для дубля, хэши и черновики — нет.
+        """
         self._require_same_origin(context)
         with self._lock:
             row = self._receipt_row(body)
+            timeline = self._author_timeline(row["id"])
         result = self._receipt(row)
         result["public_reply"] = row["public_reply"]
         result["is_public"] = self._row_is_public(row)
+        result["updated_at"] = row["updated_at"]
+        result["timeline"] = timeline
+        note = self._author_object_note(row["object_id"])
+        if note:
+            result["object_note"] = note
         return _ok(200, result)
+
+    def _author_timeline(self, message_id: int) -> list[dict]:
+        events = self._db.execute(
+            "SELECT at, action, changed_fields, handling_after, moderation_after FROM feedback_events "
+            "WHERE feedback_id = ? AND is_public = 0 ORDER BY id", (message_id,)).fetchall()
+        timeline, handling, moderation = [], None, None
+        for event in events:
+            changed = set(json.loads(event["changed_fields"]))
+            action = event["action"]
+            if action == "submitted":
+                timeline.append({"at": event["at"], "event": "submitted", "label": "Сообщение получено платформой"})
+            elif action == "consent_withdrawn":
+                timeline.append({"at": event["at"], "event": "consent_withdrawn",
+                                 "label": "Согласие на публикацию отозвано автором"})
+            elif action in ("approved", "rejected", "status_changed"):
+                after_moderation = event["moderation_after"] or (action if action != "status_changed" else None)
+                if action != "status_changed" and after_moderation and after_moderation != moderation:
+                    timeline.append({"at": event["at"], "event": "moderation",
+                                     "label": MODERATION_LABELS.get(after_moderation, after_moderation)})
+                after_handling = event["handling_after"]
+                if after_handling and after_handling != handling and after_handling in HANDLING_LABELS:
+                    timeline.append({"at": event["at"], "event": "handling",
+                                     "label": "Статус: " + HANDLING_LABELS[after_handling]})
+                elif after_handling is None and "handling_status" in changed:  # событие до v3
+                    timeline.append({"at": event["at"], "event": "handling", "label": "Статус обработки изменён"})
+                if "public_reply" in changed:
+                    timeline.append({"at": event["at"], "event": "reply", "label": "Ответ платформы обновлён"})
+            # note, recategorized и публичные события в хронологию автора не входят.
+            handling = event["handling_after"] or handling
+            moderation = event["moderation_after"] or moderation
+        return timeline
+
+    def _author_object_note(self, object_id) -> str | None:
+        """Объект скрыт/архивирован/удалён после отправки: автору — без подробностей, почему."""
+        if object_id is None:
+            return None
+        try:
+            item = self._lookup(object_id)
+        except ApiError:
+            return None
+        if self._is_public_object(item):
+            return None
+        return ("Объект, к которому относится сообщение, сейчас не показывается на карте. "
+                "Сообщение сохранено на платформе и остаётся у сотрудников.")
 
     def _withdraw_consent(self, *, query, body, principal, context):
         """Автор по номеру квитанции отзывает согласие; публичная карточка исчезает."""
@@ -861,7 +1047,6 @@ class FeedbackService:
         }
 
     def _staff_dto(self, row) -> dict:
-        classifier = json.loads(row["classifier_json"]) if row["classifier_json"] else None
         hints = textutil.personal_hints(row["text"])
         same_sender = self._db.execute(
             "SELECT COUNT(*) FROM feedback_messages WHERE client_hash = ? AND created_ts BETWEEN ? AND ? AND id != ?",
@@ -902,10 +1087,11 @@ class FeedbackService:
             "moderated_by": row["moderated_by"],
             "published_at": row["published_at"],
             "personal_data_hints": hints,
-            "classifier": {"status": row["classifier_status"], "suggestion": classifier,
-                           "note": "Подсказка модели, не решение. Категорию жителя не меняет."},
-            "antispam": {"same_sender_24h": same_sender,
-                         "duplicate_confirmed_by_sender": bool(row["duplicate_confirmed"])},
+            "classifier": self._classifier_dto(row),
+            # Хэш сетевого адреса, а не автор: общий NAT/мобильная сеть дают совпадения у разных людей.
+            "antispam": {"same_network_24h": same_sender, "same_sender_24h": same_sender,
+                         "duplicate_confirmed_by_sender": bool(row["duplicate_confirmed"]),
+                         "note": "Совпадение сетевого адреса не доказывает одного автора или спам."},
         }
 
     def _staff_history(self, message_id: int) -> list[dict]:
@@ -914,14 +1100,16 @@ class FeedbackService:
         return [{"id": str(row["id"]), "revision": row["revision"], "at": row["at"],
                  "action": row["action"], "actor_kind": row["actor_kind"], "actor": row["actor"],
                  "reason": row["reason"], "changed_fields": json.loads(row["changed_fields"]),
-                 "is_public": bool(row["is_public"])} for row in rows]
+                 "is_public": bool(row["is_public"]), "handling_after": row["handling_after"],
+                 "moderation_after": row["moderation_after"]} for row in rows]
 
-    def _event(self, message_id, revision, at, action, actor_kind, actor, reason, changed, public):
+    def _event(self, message_id, revision, at, action, actor_kind, actor, reason, changed, public, *,
+               handling_after=None, moderation_after=None):
         self._db.execute(
             "INSERT INTO feedback_events (feedback_id, revision, at, action, actor_kind, actor, reason, "
-            "changed_fields, is_public) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "changed_fields, is_public, handling_after, moderation_after) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (message_id, revision, at, action, actor_kind, actor, reason,
-             json.dumps(sorted(changed)), int(public)))
+             json.dumps(sorted(changed)), int(public), handling_after, moderation_after))
 
     # ---------------------------------------------------------------- staff API
     def _queue(self, *, query, body, principal, context):
@@ -1007,6 +1195,7 @@ class FeedbackService:
                 handling_counts[name] = count
         return _ok(200, {"items": items, "next_cursor": str(offset + limit) if len(rows) > limit else None,
                          "counts": counts, "handling_counts": handling_counts,
+                         "classifier": self.classifier_info(),
                          "filters": {"moderation": moderation, "status": status or "all", "order": order}})
 
     def _message_by_staff_id(self, message_id: str):
@@ -1046,8 +1235,60 @@ class FeedbackService:
                 target = self._db.execute("SELECT * FROM feedback_messages WHERE id = ?", (row["duplicate_of"],)).fetchone()
                 original = self._brief(target) if target is not None else None
         return _ok(200, {"item": item, "history": history, "object": self._object_summary(row["object_id"]),
+                         "object_binding": self._object_binding(row),
                          "similar": similar, "duplicate_of": original, "duplicates": duplicates,
                          "similar_note": "Похожие сообщения — подсказка. Система не объединяет и не отклоняет их сама."})
+
+    def _object_binding(self, row) -> dict | None:
+        """Привязка сообщения к объекту: что изменилось после отправки (round 13).
+
+        Сообщение остаётся привязанным к object_id, указанному жителем; система не переносит его
+        молча на другой объект. Снимок (ревизия, отпечаток геометрии) есть у сообщений с v3.
+        """
+        object_id = row["object_id"]
+        if object_id is None:
+            return None
+        snapshot = json.loads(row["object_snapshot"]) if row["object_snapshot"] else None
+        try:
+            item = self._lookup(object_id)
+            state = "published" if self._is_public_object(item) else ("missing" if item is None else "not_public")
+        except ApiError:
+            item, state = None, "lookup_failed"
+        current_revision = item.get("revision") if item else None
+        if isinstance(current_revision, bool) or not isinstance(current_revision, int):
+            current_revision = None
+        binding = {"object_id": object_id, "state": state,
+                   "publication": item.get("publication") if item else None,
+                   "submitted_revision": row["object_revision"], "current_revision": current_revision,
+                   "submitted_title": snapshot.get("title") if snapshot else None,
+                   "changed_since_submit": None, "geometry_changed": None, "point_distance_m": None,
+                   "warnings": []}
+        warnings = binding["warnings"]
+        if state == "missing":
+            warnings.append("Объект удалён или не найден в справочнике. Сообщение сохранено с исходной привязкой.")
+        elif state == "not_public":
+            warnings.append(f"Объект сейчас не опубликован ({PUBLICATION_LABELS.get(item.get('publication'), 'не опубликован')}). "
+                            "Сообщение не видно в публичном списке, пока объект не опубликуют снова.")
+        elif state == "lookup_failed":
+            warnings.append("Справочник объектов недоступен — состояние объекта не проверено.")
+        if item is not None and snapshot is not None:
+            geometry_changed = snapshot.get("geometry_sha256") != _geometry_hash(item.get("geometry"))
+            revision_changed = (snapshot.get("revision") is not None and current_revision is not None
+                                and snapshot["revision"] != current_revision)
+            binding["geometry_changed"] = geometry_changed
+            binding["changed_since_submit"] = bool(geometry_changed or revision_changed
+                                                   or snapshot.get("updated_at") != item.get("updated_at"))
+            if geometry_changed:
+                warnings.append("Геометрия объекта изменена после отправки — проверьте, относится ли сообщение к новому месту.")
+            elif binding["changed_since_submit"]:
+                warnings.append(f"Объект обновлён после отправки (ревизия {snapshot.get('revision')} → {current_revision}).")
+        if item is not None and row["lon"] is not None:
+            distance = _distance_to_object_m(row["lon"], row["lat"], item.get("geometry"))
+            if distance is not None:
+                binding["point_distance_m"] = round(distance)
+                if distance > self.limits["location_conflict_m"]:
+                    warnings.append(f"Точка жителя сейчас в {round(distance / 1000, 1)} км от геометрии объекта.")
+        return binding
 
     @staticmethod
     def _brief(row) -> dict:
@@ -1159,17 +1400,18 @@ class FeedbackService:
                 self._event(row["id"], row["revision"], now, "note", "staff", actor, note, [], False)
                 return _ok(200, {"item": self._staff_dto(row), "history": self._staff_history(row["id"])})
             if row["revision"] != expected:
-                raise ApiError(409, "stale_revision",
-                               "Сообщение изменено другим действием. Обновите карточку.",
-                               extra={"current_revision": row["revision"]})
+                raise self._stale(db, row)
             revision = row["revision"] + 1
             if action == "recategorize":
                 effective = row["staff_category"] or row["category"]
                 if category == effective:
                     raise ApiError(422, "no_change", "Категория уже такая.", fields={"category": "Без изменений."})
                 staff_category = None if category == row["category"] else category
-                db.execute("UPDATE feedback_messages SET staff_category = ?, revision = ?, updated_at = ? "
-                           "WHERE id = ? AND revision = ?", (staff_category, revision, now, row["id"], row["revision"]))
+                updated = db.execute("UPDATE feedback_messages SET staff_category = ?, revision = ?, updated_at = ? "
+                                     "WHERE id = ? AND revision = ?",
+                                     (staff_category, revision, now, row["id"], row["revision"]))
+                if updated.rowcount != 1:
+                    raise self._stale(db, row)
                 self._event(row["id"], revision, now, "recategorized", "staff", actor,
                             f"{effective} -> {category}: {reason}", ["staff_category"], False)
                 row = db.execute("SELECT * FROM feedback_messages WHERE id = ?", (row["id"],)).fetchone()
@@ -1225,7 +1467,7 @@ class FeedbackService:
                 raise ApiError(422, "no_change", "Статус и ответ не изменились.",
                                fields={"status": "Без изменений."})
             handled = handling != row["handling_status"] or dup != row["duplicate_of"]
-            db.execute(
+            updated = db.execute(
                 "UPDATE feedback_messages SET moderation = ?, moderation_reason = ?, public_reply = ?, "
                 "public_text = ?, moderated_by = ?, moderated_at = ?, published_at = ?, revision = ?, "
                 "updated_at = ?, handling_status = ?, duplicate_of = ?, handled_by = ?, handled_at = ? "
@@ -1235,6 +1477,8 @@ class FeedbackService:
                  now if action != "status" else row["moderated_at"], published_at, revision, now,
                  handling, dup, actor if handled else row["handled_by"], now if handled else row["handled_at"],
                  row["id"], row["revision"]))
+            if updated.rowcount != 1:  # защита и при нескольких процессах на одной БД
+                raise self._stale(db, row)
             if visible and not was_visible:
                 public_event, public_fields = "published", ["text"] + (["public_reply"] if reply else [])
             elif visible:
@@ -1244,11 +1488,33 @@ class FeedbackService:
             else:
                 public_event, public_fields = None, []
             event_action = moderation if action != "status" else "status_changed"
-            self._event(row["id"], revision, now, event_action, "staff", actor, reason, changed, False)
+            self._event(row["id"], revision, now, event_action, "staff", actor, reason, changed, False,
+                        handling_after=handling, moderation_after=moderation)
             if public_event and public_fields:
                 self._event(row["id"], revision, now, public_event, "staff", actor, None, public_fields, True)
             row = db.execute("SELECT * FROM feedback_messages WHERE id = ?", (row["id"],)).fetchone()
-            return _ok(200, {"item": self._staff_dto(row), "history": self._staff_history(row["id"])})
+            result = {"item": self._staff_dto(row), "history": self._staff_history(row["id"])}
+        binding = self._object_binding(row)
+        if binding and binding.get("warnings"):
+            result["warnings"] = binding["warnings"]
+        return _ok(200, result)
+
+    def _stale(self, db, row) -> ApiError:
+        """409 без перезаписи: что сейчас в сообщении и кто последним его менял (для сотрудника)."""
+        current = db.execute("SELECT * FROM feedback_messages WHERE id = ?", (row["id"],)).fetchone()
+        last = db.execute("SELECT action, at, actor FROM feedback_events WHERE feedback_id = ? AND is_public = 0 "
+                          "AND action != 'note' ORDER BY id DESC LIMIT 1", (row["id"],)).fetchone()
+        return ApiError(409, "stale_revision",
+                        "Сообщение уже изменено другим действием. Ваше изменение не сохранено — "
+                        "проверьте текущее состояние и повторите.",
+                        extra={"current_revision": current["revision"],
+                               "current": {"revision": current["revision"], "moderation": current["moderation"],
+                                           "moderation_label": MODERATION_LABELS[current["moderation"]],
+                                           "handling_status": current["handling_status"],
+                                           "handling_label": HANDLING_LABELS[current["handling_status"]],
+                                           "public_reply": current["public_reply"],
+                                           "updated_at": current["updated_at"],
+                                           "last_action": dict(last) if last else None}})
 
     def _resolve_handling(self, db, row, action, requested, duplicate_of, reply):
         """Следующий статус обработки и ссылка на исходное сообщение для дубля.
@@ -1305,52 +1571,120 @@ class FeedbackService:
 
     # --------------------------------------------------------------- classifier
     def _classify(self, message_id: int, text: str) -> None:
+        language = textutil.detect_language(text)
+        meta = {"source": self.classifier_source, "language": language}
         if self.classifier is None:
-            self._store_classifier(message_id, "unavailable", None)
+            self._store_classifier(message_id, "unavailable", meta)
+            return
+        with self._lock:
+            # Зависшая модель не должна копить потоки: при N незавершённых вызовах подсказка пропускается.
+            if self._classifier_inflight >= self.limits["classifier_max_inflight"]:
+                busy = True
+            else:
+                busy = False
+                self._classifier_inflight += 1
+        if busy:
+            self._store_classifier(message_id, "busy", meta)
             return
         outcome: dict = {}
 
         def run():
             try:
-                outcome["value"] = self.classifier(text, textutil.detect_language(text))
+                outcome["value"] = self.classifier(text, language)
             except Exception as exc:  # чужая модель: любая ошибка = подсказки нет
                 outcome["error"] = type(exc).__name__
+            finally:
+                with self._lock:
+                    self._classifier_inflight -= 1
 
         worker = threading.Thread(target=run, name="civic-r06-classifier", daemon=True)
         worker.start()
         worker.join(self.limits["classifier_timeout_s"])
         if worker.is_alive():
-            self._store_classifier(message_id, "timeout", None)
+            self._store_classifier(message_id, "timeout", meta)
         elif "error" in outcome:
             LOGGER.warning("classifier error: %s", outcome["error"])
-            self._store_classifier(message_id, "error", None)
+            self._store_classifier(message_id, "error", dict(meta, error=outcome["error"][:80]))
         else:
             suggestion = self._clean_suggestion(outcome.get("value"))
-            self._store_classifier(message_id, "ok" if suggestion else "invalid", suggestion)
+            if suggestion is None:
+                self._store_classifier(message_id, "invalid", meta)
+            else:
+                self._store_classifier(message_id, "ok", dict(meta, **suggestion))
 
     @staticmethod
     def _clean_suggestion(value) -> dict | None:
+        """Поля контракта R08 без score: число softmax_max_uncalibrated — не вероятность (см. выше)."""
         if not isinstance(value, Mapping) or value.get("label") not in CATEGORIES:
             return None
         score = value.get("score")
-        if not (isinstance(score, (int, float)) and not isinstance(score, bool) and math.isfinite(score)):
-            score = None
+        if score is not None and not (isinstance(score, (int, float)) and not isinstance(score, bool)
+                                      and math.isfinite(score)):
+            return None
+
         def short(key):
             item = value.get(key)
             return item[:80] if isinstance(item, str) else None
-        return {"label": value["label"], "label_text": CATEGORY_LABELS[value["label"]], "score": score,
-                "score_kind": short("score_kind"), "needs_review": value.get("needs_review") is not False,
-                "model_version": short("model_version"),
-                "training_data_status": short("training_data_status")}
+        training = short("training_data_status")
+        score_kind = short("score_kind")
+        reasons = []
+        if value.get("needs_review") is not False:
+            reasons.append("model_flag")
+        if training is None or training.startswith("synthetic") or "NOT_EVALUATED" in training \
+                or training.startswith("no_trained_model") or training == "none":
+            reasons.append("training_not_evaluated_on_real_messages")
+        result = {"label": value["label"], "score_kind": score_kind,
+                  # Пока модель не проверена на реальных сообщениях, проверка человеком обязательна.
+                  "needs_review": bool(reasons), "review_reasons": reasons,
+                  "model_version": short("model_version"), "training_data_status": training}
+        if score is not None and score_kind in CALIBRATED_SCORE_KINDS:
+            result["score"] = float(score)
+        return result
 
-    def _store_classifier(self, message_id: int, status: str, suggestion: dict | None) -> None:
+    def _store_classifier(self, message_id: int, status: str, payload: dict | None) -> None:
         try:
             with self._lock:
                 self._db.execute("UPDATE feedback_messages SET classifier_status = ?, classifier_json = ? WHERE id = ?",
-                                 (status, json.dumps(suggestion, ensure_ascii=False) if suggestion else None,
+                                 (status, json.dumps(payload, ensure_ascii=False) if payload else None,
                                   message_id))
         except sqlite3.Error:
             LOGGER.exception("could not store classifier suggestion")
+
+    def _classifier_dto(self, row) -> dict:
+        """Подсказка отдельно от категории жителя, staff_category и решения модератора."""
+        stored = json.loads(row["classifier_json"]) if row["classifier_json"] else {}
+        status = row["classifier_status"]
+        # Строки до round 13 хранили только подсказку (source неизвестен) и, возможно, score.
+        source = stored.get("source") if stored.get("source") in CLASSIFIER_SOURCES else (
+            "disabled" if status == "unavailable" else "unknown")
+        suggestion = None
+        if status == "ok" and stored.get("label") in CATEGORIES:
+            training = stored.get("training_data_status")
+            suggestion = {
+                "label": stored["label"], "label_text": CATEGORY_LABELS[stored["label"]],
+                "score_kind": stored.get("score_kind"),
+                "needs_review": True if stored.get("needs_review") is not False or "review_reasons" not in stored
+                else False,
+                "review_reasons": stored.get("review_reasons") or ["model_flag"],
+                "model_version": stored.get("model_version"), "training_data_status": training,
+                "synthetic_only": bool(training is None or str(training).startswith(("synthetic", "no_trained_model"))
+                                       or training == "none"),
+                "score_shown": "score" in stored and stored.get("score_kind") in CALIBRATED_SCORE_KINDS,
+                # null — не «нет уверенности», а «число не показывается»: оно не откалибровано.
+                "score": None,
+            }
+            if suggestion["score_shown"]:
+                suggestion["score"] = stored["score"]
+        return {"status": status, "status_label": CLASSIFIER_STATUS_LABELS.get(status, status),
+                "source": source, "source_label": CLASSIFIER_SOURCES.get(source, "Источник не записан (до round 13)"),
+                "language": stored.get("language"),
+                "suggestion": suggestion,
+                "note": "Подсказка модели, не решение: категорию жителя и решение не меняет; "
+                        "проверка сотрудником обязательна. Число модели не показывается — оно не откалибровано."}
+
+    def classifier_info(self) -> dict:
+        return {"source": self.classifier_source, "source_label": CLASSIFIER_SOURCES[self.classifier_source],
+                "connected": self.classifier is not None}
 
     # ------------------------------------------------------------ maintenance
     def stats(self) -> dict:

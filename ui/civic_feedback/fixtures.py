@@ -113,3 +113,8 @@ def fixture_keyword_classifier(text: str, language: str) -> dict:
 
 def broken_classifier(text: str, language: str) -> dict:
     raise RuntimeError("FIXTURE: модель недоступна")
+
+
+# Источник подсказки для отчёта и интерфейса: FIXTURE, а не модель R08.
+fixture_keyword_classifier.r06_source = "fixture"
+broken_classifier.r06_source = "fixture"
