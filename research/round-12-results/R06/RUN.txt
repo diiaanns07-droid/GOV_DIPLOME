@@ -1,0 +1,52 @@
+R06 РАУНД 12 — ЗАПУСК И ПРОВЕРКА
+Код: ветка claude/brave-hopper-bkc58b, коммит e0b4741 (пути R06) = 56538a3 + r06_vs_56538a3.patch.
+
+ВАЖНО (BASE_MISMATCH): ветка сессии основана на старом main, поэтому приложение целиком запускается
+не из неё, а из 56538a3 с применённым патчем R06:
+
+  git fetch origin
+  git worktree add ../gov-r06 56538a3a7504d4589c38ab4d3c5107f12aa7f8a6
+  cd ../gov-r06
+  git apply <путь к этой папке>/r06_vs_56538a3.patch        # только ui/civic_feedback, web/civic/feedback, tests/civic/R06
+
+(Либо взять три каталога R06 из ветки claude/brave-hopper-bkc58b @ e0b4741 поверх 56538a3 — файлы идентичны.)
+
+1. ТЕСТЫ (Python 3.11+, pytest)
+   python -m pytest -q tests/civic/R06            # 166 passed (temp SQLite в tmp_path, без сети)
+   python -m pytest -q tests/civic                # 769 passed, 2 skipped (вся civic-сборка с R06)
+
+2. БРАУЗЕР НА FIXTURE-СТЕНДЕ (Chromium + Playwright, временная БД, fixture-учётки без паролей)
+   node tests/civic/R06/browser_r06.cjs --screenshots <папка>      # 40/40 PASS
+   Ручной стенд: python tests/civic/R06/harness/serve_r06.py --port 8766 [--classifier fixture|broken|none]
+   -> http://127.0.0.1:8766/harness/  (FIXTURE: синтетические объекты; «fixture» — подсказка по ключевым
+      словам с пометкой «не модель R08», только для показа интерфейса)
+
+3. НАСТОЯЩЕЕ ПРИЛОЖЕНИЕ (локально; на Windows — run-city.bat, порт 8611)
+   python -m ui.web_server --port 8611 --civic-db .runtime/civic.sqlite3
+   Редактор: python -m ui.civic_store --db .runtime/civic.sqlite3 create-editor <user>   (пароль через getpass,
+   в Git не хранится). Синтетический демо-набор: python -m ui.civic_store --db ... seed-demo
+   Сквозной сценарий (пишет одно тестовое сообщение — запускать на тестовой БД):
+   R06_BASE=http://127.0.0.1:8611 R06_USER=<editor> R06_PASS=<пароль> R06_OBJECT_ID=<опубликованный id> \
+     node tests/civic/R06/app_e2e_r06.cjs --screenshots <папка>       # 12/12 PASS в облаке на временной БД
+
+4. ПОДСКАЗКА МОДЕЛИ R08 (после поставки ml/civic_classifier и применения r01_r08_optin.patch)
+   CIVIC_R08_CLASSIFIER=1 python -m ui.web_server ...
+   Без переменной (по умолчанию) подсказок нет, сообщения сохраняются как обычно.
+   Диагностика без текстов жителей:
+   python -c "from ui.civic_feedback.classifier_adapter import r08_status as s; d=s(); d.pop('classify',None); print(d)"
+
+5. ОБСЛУЖИВАНИЕ БД
+   python -m ui.civic_feedback stats --db .runtime/civic.sqlite3          # счётчики: публикация, обработка, модель
+   python -m ui.civic_feedback purge-antispam --db .runtime/civic.sqlite3 --days 30
+   Старая БД civic-feedback-v1 при первом запуске дополняется колонками v2 (ALTER TABLE, строки сохраняются).
+
+ЧТО МОЖЕТ ПОЛЬЗОВАТЕЛЬ
+Житель: выбрать объект или точку на карте, тип (проблема/предложение), категорию с примерами, описать,
+решить, можно ли публиковать текст; получить квитанцию; по квитанции увидеть статус публикации, статус
+обработки и ответ платформы; отозвать согласие. Черновик не теряется при ошибке сети и перезагрузке вкладки;
+повторная отправка не создаёт копию. Сайт везде пишет, что это НЕ официальное обращение (eOtinish/iKOMEK 109).
+Сотрудник: очередь «К обработке / Новые / В работе / С ответом / Дубли / Закрытые / Все», поиск по тексту и
+#номеру, фильтры публикации/категории/согласия/порядка; карточка с объектом, местом, подсказками о ПДн,
+похожими сообщениями, подсказкой модели (если подключена); действия: статус обработки с обоснованием,
+ответ платформы, связь с исходным сообщением (дубль), решение о публикации с публичной версией текста,
+исправление категории (категория жителя сохраняется), служебная заметка; полный журнал действий.

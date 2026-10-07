@@ -1,0 +1,103 @@
+{
+ "round": 12,
+ "role": "R06",
+ "title": "Сообщения жителей и реальная очередь обработки",
+ "branch": "claude/brave-hopper-bkc58b",
+ "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+ "base_note": "BASE_MISMATCH: ветка сессии основана на старом main (834a25f) + R07 r11; забирать только пути R06 или r06_vs_56538a3.patch",
+ "code_sha": "e0b4741",
+ "push_status": "OK (checkpoints f422e24, 2b3ac3e, e0b4741, be4e808 pushed; итоговый SHA — в handoff/чате)",
+ "changed_paths": [
+  "ui/civic_feedback/",
+  "web/civic/feedback/",
+  "tests/civic/R06/",
+  "research/round-12-results/R06/",
+  "research/handoffs/astana/R06/round-12/STATUS.md"
+ ],
+ "portable_patch": "research/round-12-results/R06/r06_vs_56538a3.patch",
+ "proposed_shared_patch": "research/round-12-results/R06/r01_r08_optin.patch (ui/web_server.py, необязательно, R01/координатор)",
+ "tests": [
+  {
+   "name": "R06 unit/service",
+   "status": "PASS",
+   "command": "python -m pytest -q tests/civic/R06",
+   "input": "56538a3 + патч, temp SQLite",
+   "result": "166 passed"
+  },
+  {
+   "name": "whole civic suite",
+   "status": "PASS",
+   "command": "python -m pytest -q tests/civic",
+   "input": "worktree 56538a3 + изменения R06",
+   "result": "769 passed, 2 skipped"
+  },
+  {
+   "name": "patch applies to clean base",
+   "status": "PASS",
+   "command": "git apply r06_vs_56538a3.patch (чистая распаковка 56538a3) && pytest tests/civic/R06",
+   "input": "git archive 56538a3",
+   "result": "applied; 166 passed; файлы идентичны worktree"
+  },
+  {
+   "name": "gateway acceptance (R01+R02+R06, temp DB)",
+   "status": "PASS",
+   "command": "pytest tests/civic/R06/test_r06_r12_acceptance.py",
+   "input": "синтетический опубликованный объект",
+   "result": "create->queue->process->public/private; 2 одновременных клика -> 201+200, одна запись"
+  },
+  {
+   "name": "browser FIXTURE harness",
+   "status": "PASS",
+   "command": "node tests/civic/R06/browser_r06.cjs",
+   "input": "Chromium/Playwright, serve_r06.py --per-sender-max 20",
+   "result": "40/40 (browser_r06.json)"
+  },
+  {
+   "name": "real app e2e",
+   "status": "PASS",
+   "command": "python -m ui.web_server --civic-db <tmp>; node tests/civic/R06/app_e2e_r06.cjs",
+   "input": "56538a3 + патч, временная БД, одноразовый редактор, синтетический объект",
+   "result": "12/12 (app_e2e_r06.json)"
+  },
+  {
+   "name": "R08 opt-in via gateway",
+   "status": "PASS",
+   "command": "CIVIC_R08_CLASSIFIER=1 + r01_r08_optin.patch + подменный ml.civic_classifier (scratch)",
+   "input": "копия 56538a3",
+   "result": "с флагом classifier=ok, категория жителя не изменилась; без флага unavailable"
+  },
+  {
+   "name": "real R08 model",
+   "status": "NOT_RUN",
+   "command": null,
+   "input": null,
+   "reason": "ml/civic_classifier нет ни в одной доступной ветке; проверено только по контракту на подменах"
+  },
+  {
+   "name": "basemap/3D in app",
+   "status": "NOT_RUN",
+   "command": null,
+   "input": null,
+   "reason": "tiles.openfreemap.org закрыт прокси облака (connect_rejected); форма и кабинет работают без подложки"
+  },
+  {
+   "name": "Windows run-city.bat :8611",
+   "status": "NOT_RUN",
+   "command": null,
+   "input": null,
+   "reason": "облачная Linux-среда; эквивалент python -m ui.web_server проверен"
+  }
+ ],
+ "known_limits": [
+  "Сообщение жителя — запись на платформе, не обращение eOtinish/iKOMEK; статусы обработки — работа сотрудников платформы.",
+  "Обратной связи автору, кроме квитанции, нет: контакты не собираются (минимум данных), уведомлений нет.",
+  "Подсказки о персональных данных — регулярные выражения; имена/адреса без шаблона не находятся, решает модератор.",
+  "Черновик жителя хранится в sessionStorage вкладки до отправки (на общем компьютере виден в этой вкладке до её закрытия).",
+  "Анти-спам: лимиты по хэшу IP, проверка «есть слова», ≤3 ссылок; за NAT несколько жителей делят лимит.",
+  "Поиск по очереди — полный просмотр текстов (без индекса), рассчитан на очередь до тысяч сообщений.",
+  "Похожие сообщения — доля общих основ слов (не вероятность, не семантика).",
+  "Выгрузки разметки (staff_category) для R08 нет: нужна политика согласия на использование текстов.",
+  "Все объекты в тестах и e2e синтетические."
+ ],
+ "next_step": "Координатор: взять пути R06 из e0b4741 (или применить r06_vs_56538a3.patch к 56538a3) и прогнать pytest tests/civic/R06 + app_e2e_r06.cjs; после проверки поставки R08 — r01_r08_optin.patch."
+}

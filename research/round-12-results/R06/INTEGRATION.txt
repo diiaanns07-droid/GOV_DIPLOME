@@ -1,0 +1,58 @@
+R06 РАУНД 12 -> КООРДИНАТОР (Codex) / R01
+
+ЧТО ЗАБРАТЬ
+Только пути R06 из ветки claude/brave-hopper-bkc58b @ e0b4741 (или применить r06_vs_56538a3.patch к 56538a3):
+  ui/civic_feedback/   web/civic/feedback/   tests/civic/R06/
+НЕ сливать ветку целиком: её остальное дерево — старый main + R07 раунда 11 (BASE_MISMATCH, см. handoff).
+Патч проверен: git apply на чистой распаковке 56538a3 -> pytest tests/civic/R06 166 passed,
+app_e2e_r06.cjs 12/12 PASS в настоящем приложении на временной БД.
+
+ОБЩИЕ ФАЙЛЫ: ИЗМЕНЕНИЙ НЕ ТРЕБУЕТСЯ
+Все новые возможности идут через уже разрешённые маршруты шлюза ui/web_server.py:
+  POST /api/civic/v1/staff/feedback/{id}/moderate  — расширенное тело (см. ниже), шлюз тело не фильтрует;
+  GET  /api/civic/v1/staff/feedback?...             — новые query-параметры (длина < CIVIC_MAX_QUERY 2048);
+  POST /api/civic/v1/feedback, /feedback/receipt    — новые поля ответа.
+web/civic/shell/shell.js вызывает CivicFeedback.mount / mountModeration как раньше — сигнатуры не менялись.
+Ассеты те же (feedback/feedback.js, feedback/feedback.css), новых файлов для раздачи нет.
+
+НЕОБЯЗАТЕЛЬНО (R08): r01_r08_optin.patch для ui/web_server.py
+  Сейчас FeedbackService создаётся с classifier=None. Патч подключает ml.civic_classifier.classify только
+  при CIVIC_R08_CLASSIFIER=1 через ui.civic_feedback.classifier_adapter.load_r08_classifier (пробный
+  вызов с таймаутом 10 с, проверка контракта civic-v1). Без переменной поведение не меняется.
+  Проверено на копии 56538a3 + оба патча + подменный ml.civic_classifier (scratch): classifier=ok,
+  категория жителя не изменилась; без флага — unavailable, сообщение сохранено.
+  Применять после того, как поставка R08 проверена; модуль ml/civic_classifier в этой сборке отсутствует.
+
+СОВМЕСТИМЫЕ ИЗМЕНЕНИЯ КОНТРАКТА (civic-v1 + дополнения R06 раунда 12)
+1. POST /staff/feedback/{id}/moderate, поле action:
+   approve | reject  — как в v1 (+ необязательные status, duplicate_of). Без status новое сообщение
+                       переходит в in_review (или answered, если есть ответ); иначе статус не меняется.
+   status            — {expected_revision, status, reason, public_reply?, duplicate_of?}: только обработка.
+   note              — {internal_note}: служебная заметка; ревизию не меняет; никогда не публична.
+   recategorize      — {expected_revision, category, reason}: категория сотрудника (staff_category);
+                       категория жителя не перезаписывается.
+   Поля, не подходящие к действию, -> 422. Ошибки: invalid_transition (с allowed), reply_required,
+   duplicate_chain, has_duplicates, no_change, stale_revision 409.
+2. Статус обработки handling_status: new | in_review | answered | duplicate | closed. Переходы:
+   new -> in_review|answered|duplicate|closed; in_review -> answered|duplicate|closed;
+   answered -> in_review|closed; duplicate -> in_review; closed -> in_review.
+   Это статус работы сотрудников платформы, НЕ статус eOtinish/iKOMEK и не работ города.
+3. GET /staff/feedback: status=<список через запятую>|all, q (до 100 символов; текст без учёта регистра,
+   ё=е; «#12» — номер), order=oldest|newest; category учитывает исправление сотрудника.
+   Без moderation и status — как в v1 (moderation=pending). Ответ: + handling_counts, filters.
+4. Новые поля DTO: staff — handling_status/label/next, duplicate_of, staff_category, effective_category(_label),
+   handled_by/at; карточка — duplicate_of {id,...}, duplicates [...]; квитанция и публичная карточка —
+   handling_status, handling_label (без номера исходного сообщения и без заметок).
+5. POST /feedback: 409 request_id_conflict теперь содержит previous_receipt (квитанция уже сохранённой
+   версии, без текста) — только для того же отправителя и того же client_request_id.
+   422 для текста без слов (<5 букв или <3 разных) и для >3 ссылок.
+6. SQLite: схема civic-feedback-v2. Существующая БД мигрирует автоматически (ALTER TABLE ADD COLUMN),
+   старым строкам статус выводится из модерации: pending->new, решение с ответом->answered, иначе closed.
+
+ЗАТРОНУТЫЕ СОСЕДИ
+- tests/civic/R01/contract_double.py (владелец R01): тест-дублёр R06 не знает новых полей; на текущие тесты
+  R01 это не влияет (весь tests/civic: 769 passed, 2 skipped), обновлять не обязательно.
+- R08: формат подсказки не менялся (classify(text, language) -> civic-v1 dict). Исправления категории
+  сотрудником (staff_category) — потенциальная разметка, но выгрузка текстов жителей для обучения требует
+  отдельного решения о согласии; экспорта в этом раунде НЕТ.
+- R03/R04/R09/R07: не затронуты.
