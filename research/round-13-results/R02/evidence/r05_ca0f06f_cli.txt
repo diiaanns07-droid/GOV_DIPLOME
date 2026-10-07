@@ -1,0 +1,25 @@
+### package.civic-v1.json
+## dry-run
+{"status": "dry_run", "source": "r05-astana-r12-verified", "demo": false, "counts": {"report_missing": 0}, "summary": {"items_in_package": 0, "valid": 0, "invalid": 0, "new_drafts": 0, "updated_import_drafts": 0, "waiting_editor_review": 0, "unchanged": 0, "id_conflicts": 0, "missing_from_package": 0, "published_by_import": 0, "evidence_types": {}, "with_warnings": 0, "budget_unknown": 0, "geometry_unknown": 0, "note": "Пакет пуст: проверена только обработка пустого ввода; объекты городского реестра не загружены."}, "items": [], "missing": []}
+## import x2
+applied {'report_missing': 0} 0
+applied {'report_missing': 0} 0
+### historical.civic-v1.json
+## dry-run
+{"status": "dry_run", "source": "r05-astana-r12-verified-historical", "demo": false, "counts": {"report_missing": 0}, "summary": {"items_in_package": 0, "valid": 0, "invalid": 0, "new_drafts": 0, "updated_import_drafts": 0, "waiting_editor_review": 0, "unchanged": 0, "id_conflicts": 0, "missing_from_package": 0, "published_by_import": 0, "evidence_types": {}, "with_warnings": 0, "budget_unknown": 0, "geometry_unknown": 0, "note": "Пакет пуст: проверена только обработка пустого ввода; объекты городского реестра не загружены."}, "items": [], "missing": []}
+## import x2
+applied {'report_missing': 0} 0
+applied {'report_missing': 0} 0
+## candidates.json
+Ошибка: schema_version пакета должен быть civic-v1.
+exit=2
+## status
+{
+  "db": "$SCRATCH/r05.sqlite3",
+  "schema_version": 5,
+  "objects": {},
+  "public_objects": 0,
+  "history_entries": 0,
+  "editors": 0,
+  "pending_import_candidates": 0
+}

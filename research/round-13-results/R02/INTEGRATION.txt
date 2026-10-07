@@ -1,0 +1,48 @@
+R02 раунд 13 — интеграция
+
+Исходные поставки, на которые опирается проверка:
+- R02 (своя) 9366217 / код bd7a911 — продолжена в той же ветке.
+- R05 ca0f06f8245e24adcae751acea321d19d9366576 — package/historical: 0 записей; candidates.json: 73 кандидата.
+  R05 раунд 13 b604855: пакет по-прежнему 0 записей (сеть недоступна). Копии ca0f06f — tests/civic/R02/fixtures/r05_ca0f06f/.
+- R04 6d5cd7171fcacd63d30c4230329f9ff6a0887e23 — прочитан INTEGRATION (запрос /staff/meta); код R04 не запускался.
+- R01 6dc16602b7f63fcf60489553dde4502378a08d09 — только проверка, что patch шлюза накладывается (patch --dry-run).
+
+1. ДЛЯ R01 (ui/web_server.py принадлежит R01; R02 его не менял)
+   Patch: research/round-13-results/R02/gateway_routes.patch — 5 строк в CIVIC_ROUTES:
+     GET  staff/meta, GET staff/audit, GET staff/objects/{id}/import-candidates,
+     POST staff/objects/{id}/import-candidates/{id}/apply|dismiss  -> "store".
+   Сервис уже обслуживает эти пути (ui/civic_store/service.py), авторизация/CSRF внутри R02.
+   Без patch: 404 not_found от шлюза; с patch: evidence/gateway_check.json (all_ok=true, реальный HTTP,
+   app.py на временной БД). Накладывается на 56538a3 и на R01 6dc1660.
+
+2. ДЛЯ R04 (кабинет)
+   - GET /staff/meta (meta_version 2): enums, limits, astana_bbox, text_rules, required_reason, public_reason,
+     locked_after_first_publication, publication_requires, import_candidates{...}, import_warnings,
+     errors {code: status} (полный каталог, тест сверяет с исходником), error_shape. Клиентские копии
+     констант можно заменить чтением meta после появления маршрута.
+   - Кандидаты: прежние ключи (id, source, external_id, digest, created_at, resolved_at, resolution, content,
+     diff, original_planned_end_locked) сохранены. Новые: object_revision, decision, review (только у
+     нерассмотренных), pending. resolution: applied | partially_applied | dismissed | superseded.
+   - apply принимает необязательный fields; reason обязателен после первой публикации. Причина apply — служебная:
+     для жителя причину переноса пишет publish.
+   - 409 различимы по error.code: stale_revision / candidate_superseded / candidate_resolved; current_revision есть.
+   - Фикстуры настоящих ответов: fixtures-r04/ (временная БД, тестовое содержимое, без cookie/CSRF).
+
+3. ДЛЯ R05
+   Команды проверки — RUN.txt п.2. Формат пакета не менялся. Новое в отчёте: summary и items[].warnings
+   (end_date_passed, end_date_unknown, field_has_several_sources, observed_source_not_fetched) — подсказки,
+   импорт не блокируют и ничего не исправляют. observed с not_fetched источником будет помечен.
+
+4. Совместимость
+   - Миграция 5 (только ADD COLUMN в civic_import_candidates). Существующая база обновляется
+     python -m ui.civic_store init (или автоматически CivicService(auto_migrate=True), как подключает R01).
+     Код раунда 12 откажется открыть базу со схемой 5 («более новая версия») — откат кода требует backup.
+   - Публичный DTO, публичная история и формат пакета civic-v1 не изменились.
+   - Новый импорт помечает прежнего нерассмотренного кандидата того же объекта как superseded (раньше копились).
+   - R06 (feedback_*) не затрагивается.
+
+5. Ограничения
+   - Настоящих подтверждённых записей проверено: 0. Пустой пакет подтверждает только обработку пустого ввода.
+   - Конфликт двух источников по значению одного поля внутри записи виден только как предупреждение
+     field_has_several_sources: в civic-v1 у поля одно значение, расхождение сверяет человек.
+   - restore-public переносит только публичную историю; для служебной — backup/verify-backup/restore.

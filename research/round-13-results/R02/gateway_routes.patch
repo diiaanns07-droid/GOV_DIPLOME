@@ -1,0 +1,17 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 2e91a1f..53ec7fa 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -97,6 +97,12 @@ CIVIC_ROUTES = (
+     ("POST", ("staff", "objects", "{id}", "update"), "store"),
+     ("POST", ("staff", "objects", "{id}", "publish"), "store"),
+     ("POST", ("staff", "objects", "{id}", "archive"), "store"),
++    # R02 round 13 (compatible additions): editor reference data, audit page, import candidates.
++    ("GET", ("staff", "meta"), "store"),
++    ("GET", ("staff", "audit"), "store"),
++    ("GET", ("staff", "objects", "{id}", "import-candidates"), "store"),
++    ("POST", ("staff", "objects", "{id}", "import-candidates", "{id}", "apply"), "store"),
++    ("POST", ("staff", "objects", "{id}", "import-candidates", "{id}", "dismiss"), "store"),
+     ("POST", ("feedback",), "feedback"),
+     ("GET", ("staff", "feedback"), "feedback"),
+     ("POST", ("staff", "feedback", "{id}", "moderate"), "feedback"),

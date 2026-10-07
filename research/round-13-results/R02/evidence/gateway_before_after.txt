@@ -1,0 +1,6 @@
+Без patch (ui/web_server.py @56538a3, тот же ui/civic_store):
+GET /api/civic/v1/staff/meta -> 404 not_found
+GET /api/civic/v1/staff/objects/r02-gw-1/import-candidates -> 404
+С patch: evidence/gateway_check.json (all_ok=true).
+Patch: git apply --check на 56538a3 — OK; patch --dry-run на ui/web_server.py R01 6dc16602 — OK.
+Сборка: git worktree от 56538a3 + ui/civic_store из b9eb180, python3 app.py --port 8622 --civic-db <временная БД вне репозитория>, Python 3.13.

@@ -1,0 +1,51 @@
+R02 раунд 13 — команды и сценарий (Linux; на Windows python вместо python3)
+Проверено на: ветка claude/elegant-franklin-jbhprq, Python 3.13, Linux (облачный контейнер).
+Все базы — временные, вне репозитория. Пользовательская .runtime/*.sqlite3 не открывалась.
+
+1. Тесты
+   python3 -m pip install pytest
+   python3 -m pytest -q tests/civic/R02     # 247 passed, 1 skipped
+   python3 -m pytest -q tests/civic         # полный набор civic (результат — в DELIVERY.json)
+
+2. Проверка пакета R05 (для R05 и координатора)
+   T=$(mktemp -d)
+   python3 -m ui.civic_store --db $T/c.sqlite3 init
+   python3 -m ui.civic_store --db $T/c.sqlite3 import data/civic/astana/round12-verified/package.civic-v1.json --dry-run
+   python3 -m ui.civic_store --db $T/c.sqlite3 import data/civic/astana/round12-verified/package.civic-v1.json
+   python3 -m ui.civic_store --db $T/c.sqlite3 import data/civic/astana/round12-verified/package.civic-v1.json   # повтор
+   python3 -m ui.civic_store --db $T/c.sqlite3 status
+   Смотреть: summary.items_in_package / new_drafts / waiting_editor_review / published_by_import (всегда 0),
+   summary.note («Пакет пуст» для 0 записей), items[].warnings, items[].fields (ошибки по путям), код выхода 2 = отказ.
+   historical.civic-v1.json — так же (у него свой slice.source). candidates.json не импортируется (код 2).
+   Пример на ca0f06f: evidence/r05_ca0f06f_cli.txt (0 записей).
+
+3. Редактор: принять изменение источника (API, после patch шлюза из INTEGRATION.txt)
+   GET  /api/civic/v1/staff/objects/{id}/import-candidates     -> items[].review.fields: current/proposed/
+        previous_import, changed_by_source/changed_by_editor/conflict, proposed_sources; review.locked_fields
+   POST /api/civic/v1/staff/objects/{id}/import-candidates/{cid}/apply
+        {"expected_revision": N, "reason": "...", "fields": ["schedule.current_planned_end"]}   (fields необязателен)
+   POST .../dismiss {"expected_revision": N, "reason": "..."}
+   Затем POST /staff/objects/{id}/publish с ПУБЛИЧНОЙ причиной переноса. Причина apply — служебная.
+   409: stale_revision (карточка изменилась), candidate_superseded (источник изменился ещё раз),
+        candidate_resolved (уже решено). 422: неверный список fields или недопустимый результат; ничего не записано.
+
+4. Резервные копии
+   Полная служебная (секрет: хэши паролей, сессии, заметки):
+     python3 -m ui.civic_store --db <база> backup $T/full.sqlite3
+     python3 -m ui.civic_store verify-backup $T/full.sqlite3          # только чтение
+     python3 -m ui.civic_store --db $T/new.sqlite3 restore $T/full.sqlite3 --yes   # в новое место; старая база сохраняется копией
+   Публичная (без служебного; не заменяет backup):
+     python3 -m ui.civic_store --db <база> export-public --out $T/public.json
+     python3 -m ui.civic_store --db $T/empty.sqlite3 init
+     python3 -m ui.civic_store --db $T/empty.sqlite3 restore-public $T/public.json [--dry-run]   # только в базу без объектов
+
+5. Фикстуры для R04: research/round-13-results/R02/fixtures-r04/*.json
+   (пересоздать: python3 research/round-13-results/R02/tools/make_r04_fixtures.py <каталог>)
+
+6. Проверка шлюза (R01/координатор, после patch):
+   python3 app.py --port 8622 --civic-db <временная БД>; создать редактора CLI create-editor --password-stdin;
+   python3 research/round-13-results/R02/tools/gateway_check.py http://127.0.0.1:8622 <БД> <файл пароля> <логин>
+
+Сценарий пользователя: сотрудник видит, что источник перенёс срок (какое поле, по какой ссылке, менял ли он
+сам это поле), принимает только срок, оставляя своё название; первоначальный срок не меняется; публикует
+перенос с публичным объяснением. Второй сотрудник со старой формой получает 409, данные не портятся.

@@ -1,0 +1,69 @@
+{
+ "role": "R02",
+ "branch": "claude/elegant-franklin-jbhprq",
+ "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+ "continued_from": {
+  "head": "9366217b0a06d4e90fdd8e5647a2ac64f4a52ac0",
+  "code": "bd7a911ad23573ce0d168823199ecb3cc86557c9"
+ },
+ "source_deliveries": [
+  {
+   "role": "R05",
+   "sha": "ca0f06f8245e24adcae751acea321d19d9366576",
+   "used": "package/historical/candidates скопированы в tests/civic/R02/fixtures/r05_ca0f06f (sha256 в PROVENANCE.txt)"
+  },
+  {
+   "role": "R05",
+   "sha": "b604855",
+   "used": "только просмотр: пакет по-прежнему 0 записей"
+  },
+  {
+   "role": "R04",
+   "sha": "6d5cd7171fcacd63d30c4230329f9ff6a0887e23",
+   "used": "прочитан INTEGRATION (запрос /staff/meta); код не запускался"
+  },
+  {
+   "role": "R01",
+   "sha": "6dc16602b7f63fcf60489553dde4502378a08d09",
+   "used": "patch --dry-run для gateway_routes.patch"
+  }
+ ],
+ "code_sha": "b9eb180",
+ "tested_sha": "b9eb180 (ui/ и tests/ не менялись после; финальный коммит добавляет только research/)",
+ "push_status": "OK: 53b7551, 1b86293, b9eb180 (+ финальный коммит передачи — SHA в сообщении после push)",
+ "verified_real_records": 0,
+ "synthetic_or_test_fixture_records": "тестовые пакеты в tests/civic/R02 (example.org, synthetic/demo-срез) — не городские данные",
+ "changed_paths": [
+  "ui/civic_store/db.py",
+  "ui/civic_store/importer.py",
+  "ui/civic_store/objects.py",
+  "ui/civic_store/service.py",
+  "ui/civic_store/cli.py",
+  "tests/civic/R02/test_r02_round13_r05.py",
+  "tests/civic/R02/test_r02_round13_review.py",
+  "tests/civic/R02/test_r02_round13_backup.py",
+  "tests/civic/R02/test_r02_schema.py",
+  "tests/civic/R02/test_r02_round12_export.py",
+  "tests/civic/R02/fixtures/r05_ca0f06f/",
+  "research/round-13-results/R02/",
+  "research/handoffs/astana/R02/round-13/STATUS.md"
+ ],
+ "tests": {
+  "pytest tests/civic/R02 @b9eb180": "PASS 247 passed, 1 skipped (skip унаследован)",
+  "pytest tests/civic @b9eb180": "PASS 772 passed, 2 skipped",
+  "реальный пакет R05 ca0f06f: dry-run/импорт/повтор": "PASS — 0 записей; это проверка пустого ввода, не загрузка реестра",
+  "приёмка draft->publish->changed source->review->accepted update->409 + перезапуск": "PASS test_r02_round13_review.py",
+  "шлюз ui/web_server.py с patch, реальный HTTP (app.py, временная БД)": "PASS evidence/gateway_check.json; без patch 404",
+  "UI R04 с новыми полями": "NOT_RUN: код R04 вне роли; переданы фикстуры",
+  "весь tests/ репозитория": "NOT_RUN: вне роли",
+  "Windows run-city.bat": "NOT_RUN: облачный Linux; использован app.py"
+ },
+ "known_limits": [
+  "Подтверждённых реальных записей 0 (R05 без сети); проверены пустые пакеты и тестовые/synthetic fixtures.",
+  "Маршруты /staff/meta, /staff/audit, import-candidates доступны через шлюз только после patch R01.",
+  "Схема 5: код раунда 12 не откроет обновлённую базу (защита от понижения версии); перед обновлением — backup.",
+  "Противоречие источников по значению видно только как предупреждение field_has_several_sources.",
+  "restore-public переносит публичную историю; служебная — только через backup/restore."
+ ],
+ "next_step": "R01: наложить gateway_routes.patch и прогнать tools/gateway_check.py; затем R04 читает /staff/meta и review кандидатов."
+}

@@ -1,0 +1,99 @@
+{
+ "base": "http://127.0.0.1:8622",
+ "all_ok": true,
+ "steps": [
+  {
+   "step": "meta без входа",
+   "status": 401,
+   "expected": 401,
+   "ok": true,
+   "code": "unauthenticated"
+  },
+  {
+   "step": "вход",
+   "status": 200,
+   "expected": 200,
+   "ok": true,
+   "code": null
+  },
+  {
+   "step": "meta",
+   "status": 200,
+   "expected": 200,
+   "ok": true,
+   "code": null
+  },
+  {
+   "meta_version": 2
+  },
+  {
+   "step": "audit",
+   "status": 200,
+   "expected": 200,
+   "ok": true,
+   "code": null
+  },
+  {
+   "step": "карточка",
+   "status": 200,
+   "expected": 200,
+   "ok": true,
+   "code": null
+  },
+  {
+   "step": "публикация",
+   "status": 200,
+   "expected": 200,
+   "ok": true,
+   "code": null
+  },
+  {
+   "import_v2_action": "editor_review"
+  },
+  {
+   "step": "кандидаты",
+   "status": 200,
+   "expected": 200,
+   "ok": true,
+   "code": null
+  },
+  {
+   "step": "apply со старой ревизией",
+   "status": 409,
+   "expected": 409,
+   "ok": true,
+   "code": "stale_revision"
+  },
+  {
+   "step": "apply",
+   "status": 200,
+   "expected": 200,
+   "ok": true,
+   "code": null
+  },
+  {
+   "step": "dismiss уже решённого",
+   "status": 409,
+   "expected": 409,
+   "ok": true,
+   "code": "candidate_resolved"
+  },
+  {
+   "step": "неизвестный маршрут кандидата",
+   "status": 404,
+   "expected": 404,
+   "ok": true,
+   "code": "not_found"
+  },
+  {
+   "step": "публичная карточка",
+   "status": 200,
+   "expected": 200,
+   "ok": true,
+   "code": null
+  },
+  {
+   "public_current_end_before_publish": "2026-10-20"
+  }
+ ]
+}
