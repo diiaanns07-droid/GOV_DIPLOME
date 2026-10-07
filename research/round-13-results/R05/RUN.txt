@@ -1,0 +1,65 @@
+R05 раунд 13 — как проверить и принять реальную запись (работа, стройка, событие, перекрытие)
+
+ЧЕСТНЫЙ ИТОГ: подтверждённых реальных записей 0. В облачной среде R05 страницы источников закрыты политикой сети
+(NETWORK_STATUS.txt). Ниже — воспроизводимый путь, по которому человек с доступом к сайтам проверяет цель,
+а сотрудник её принимает. Ни один шаг не публикует запись автоматически.
+
+Все команды из корня репозитория, Python 3.11+ без зависимостей. T=data/civic/astana/round13-verified/tools/r13.py
+
+0. Что проверять первым
+   python3 -I $T status                       # состояние каждой цели (вычисляется, не хранится)
+   Откройте data/civic/astana/round13-verified/VERIFY_QUEUE.json: цели по приоритету, какие URL открыть,
+   что должна показать выдержка (required_evidence), чего не выводить (do_not_infer), противоречия,
+   подсказка геометрии по OSM-снимку 2026-05-06. Сводка для человека — VERIFY_QUEUE.md в этой папке.
+
+1. Оператор (человек с доступом к сайту) — прикрепить доказательство
+   a) Откройте URL источника в СВОЁМ браузере. Не используйте чужие cookies, архивы и «зеркала».
+   b) Сохраните текст страницы в файл ВНЕ репозитория: Ctrl+A, Ctrl+C -> ~/r05-pages/<slug>-<источник>.txt
+      (или «Сохранить как» HTML). Файл в Git не попадает; в Git остаются только sha256 и короткие выдержки.
+   c) python3 -I $T form <slug> --source <src-r12-…> > /tmp/form.json
+      (новый источник, которого нет в реестре: --url https://… --publisher "…" --publisher-kind official_gov)
+   d) Заполните /tmp/form.json: заголовок статьи, дата публикации и выдержка с ней, выдержка с «Астана»,
+      утверждения what / location.text / даты / статус / ответственный — каждое ДОСЛОВНОЙ выдержкой.
+      Чего страница не говорит — в not_stated. attached_by — роль/метка, не контакт.
+   e) python3 -I $T attach /tmp/form.json --text ~/r05-pages/<файл>.txt
+      Результат: {"status":"evidence_attached", …} или список проблем (выдержка не найдена, нет даты, сниппет…).
+
+2. Сотрудник (ДРУГОЙ человек) — проверка и принятие
+   a) python3 -I $T review-form <slug> > /tmp/review.json
+   b) Откройте тот же URL (или возьмите тот же сохранённый файл) и сверьте каждую выдержку.
+      Для каждого утверждения: "accept" или "reject: причина". Одно значение поля — один источник.
+      Напишите title/description для карточки. Геометрия: street_segment / intersection (OSM-снимок),
+      whole_street (только с reason), manual (сотрудник рисует, basis обязателен) или none (не публикуется).
+   c) python3 -I $T review /tmp/review.json
+      или со сверкой файла: method "saved_text_rechecked" и --text <src-id>=~/r05-pages/<файл>.txt
+   d) python3 -I $T status <slug>          # ожидается draft_ready
+
+3. Сборка пакета черновиков и проверка
+   python3 -I $T build                     # package.civic-v1.json, historical.civic-v1.json, summary.json
+   python3 -I $T queue                     # обновить VERIFY_QUEUE.json
+   python3 -I $T check                     # 0 — всё согласовано; иначе список проблем/устаревших файлов
+   Устаревшее объявление (> 45 дней) не даёт текущего статуса (unknown); прошедший плановый срок без свежего
+   сообщения уходит в historical, а не на текущую карту. Неизвестная сумма/подрядчик остаются пустыми.
+
+4. Импорт в базу (R02) — только черновики, на отдельной временной БД для проверки
+   python3 -s -B -m ui.civic_store --db /tmp/r05-check/civic.sqlite3 init
+   python3 -s -B -m ui.civic_store --db /tmp/r05-check/civic.sqlite3 import data/civic/astana/round13-verified/package.civic-v1.json --dry-run
+   python3 -s -B -m ui.civic_store --db /tmp/r05-check/civic.sqlite3 import data/civic/astana/round13-verified/package.civic-v1.json
+   Повторный импорт того же пакета: skip_unchanged (id записи ast-r05-<kind>-<slug> стабилен).
+   Исторический пакет — тем же способом (у него свой slice.source …-historical).
+
+5. Публикация — только сотрудником в кабинете (R04) после просмотра черновика на карте; R05 не публикует.
+
+ПРОВЕРКИ R05 (без сети)
+   Ветка:  PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider tests/civic/R05
+           (нужен pytest; round12/round13 — синтетика во временных каталогах)
+   Изолированная сборка с закреплённым R02 (как проверено в этом раунде):
+     git worktree add --detach /tmp/r05-build 56538a3a7504d4589c38ab4d3c5107f12aa7f8a6
+     (cd /tmp/r05-build && git checkout 9366217b0a06d4e90fdd8e5647a2ac64f4a52ac0 -- ui/civic_store tests/civic/R02)
+     скопировать пути R05 (data/civic/astana/round12-verified, round13-verified, tests/civic/R05/round12, round13)
+     (cd /tmp/r05-build && python3 -m pytest -q -p no:cacheprovider tests/civic/R02 tests/civic/R05)
+     или: R05_R02_ROOT=/tmp/r05-build python3 -m pytest -q tests/civic/R05/round13/test_r13_r02_import.py
+
+ЕСЛИ СЕТЬ ОТКРОЮТ (решение пользователя, Network access в настройках окружения)
+   Агент может сохранить страницу сам (origin agent_http) — но принимать запись всё равно должен сотрудник (шаг 2).
+   Начинать с первых целей VERIFY_QUEUE.md (разные типы: перекрытие, стройка, событие).

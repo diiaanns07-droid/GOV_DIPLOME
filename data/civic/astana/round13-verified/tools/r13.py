@@ -924,6 +924,52 @@ def build_queue() -> dict:
     }
 
 
+def queue_markdown(queue: dict) -> str:
+    """Лист проверки для человека из VERIFY_QUEUE.json (тот же порядок и те же оговорки)."""
+    out = [f"# Очередь проверки R05 (раунд 13), срез {queue.get('as_of')}", "",
+           queue.get("note", ""), "",
+           f"Целей: {queue['counts']['targets']}; текущих кандидатов раунда 12: "
+           f"{queue['counts']['current_priority_candidates']}; по состояниям: "
+           + ", ".join(f"{k} {v}" for k, v in queue["counts"]["by_state"].items()), ""]
+    for i, t in enumerate(queue["targets"], 1):
+        geo = t.get("geometry_plan") or {}
+        out += [f"## {i}. {t['title_working']} — `{t['slug']}`",
+                f"- вид: {t['kind']}; состояние: **{t['state']}**; на карте: {'да' if t['mappable'] else 'нет (программа/без места)'}; "
+                f"доказуемость: {(t.get('provability') or {}).get('score')}/5",
+                f"- где (подсказка): {t.get('location_text')}"]
+        if geo.get("result") == "ok":
+            out.append(f"- геометрия-подсказка: {geo['level']} — {geo.get('basis')}; район по OSM-границам: "
+                       f"{geo.get('district_by_osm_boundaries') or 'не определён'}")
+        else:
+            out.append(f"- геометрия: {geo.get('level')} — {geo.get('precision')}"
+                       + (f" ({'; '.join(geo.get('notes') or [])})" if geo.get("notes") else ""))
+        th = t.get("timing_hint") or {}
+        if th:
+            out.append(f"- сроки (подсказка, {th.get('origin')}): начало {th.get('start_hint') or '—'}; окончание "
+                       f"{th.get('end_hint') or '—'}; актуальность на {queue.get('as_of')}: {th.get('actuality_on_2026_10_07')}"
+                       f" — {th.get('reason') or ''}")
+        for s in t.get("sources_to_open") or []:
+            out.append(f"- открыть: {s['url']} ({s.get('publisher') or 'издатель не указан'}, `{s['id']}`)")
+        req = [r for r in t.get("required_evidence") or [] if isinstance(r, dict)]
+        if req:
+            out.append("- выписать дословно: " + "; ".join(
+                f"{r.get('field')}{' (обязательно)' if r.get('mandatory') else ''}: {r.get('quote_must_show')}" for r in req))
+        if t.get("do_not_infer"):
+            out.append("- не выводить: " + "; ".join(t["do_not_infer"]))
+        for c in t.get("contradictions") or []:
+            out.append(f"- противоречие: {c.get('about')} — {c.get('assessment')}; проверить: {c.get('what_to_check_on_page')}")
+        for h in t.get("followup_hints") or []:
+            out.append(f"- позднее сообщение (только подсказка поиска, {h.get('origin')}): {h.get('title')} — {h.get('url')}")
+        out.append(f"- шаг: {t['next_action']}")
+        out.append("")
+    out += ["## Текущие кандидаты раунда 12 и решения", "",
+            "| кандидат | вид | роль | цели |", "|---|---|---|---|"]
+    for c in queue["current_candidates"]:
+        out.append(f"| {c['title_as_listed']} (`{c['candidate_id']}`) | {c['kind']} | {c.get('role') or '—'} | "
+                   f"{', '.join(c['targets']) or '—'} |")
+    return "\n".join(out).rstrip() + "\n"
+
+
 # ---------------------------------------------------------------- forms
 def evidence_form(slug: str, source_id: str | None, url: str | None, publisher: str | None, kind_pub: str | None) -> dict:
     tgts, reg = targets(), registry()
@@ -1178,6 +1224,7 @@ def main(argv=None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     q = sub.add_parser("queue")
     q.add_argument("--check", action="store_true")
+    q.add_argument("--markdown", help="также записать лист проверки для человека (Markdown) в этот файл")
     s = sub.add_parser("status")
     s.add_argument("slug", nargs="?")
     f = sub.add_parser("form")
@@ -1215,6 +1262,8 @@ def main(argv=None) -> int:
             print(dump_json({"status": "ok" if ok else "stale", "counts": queue["counts"]}))
             return 0 if ok else 1
         write_json(path, queue)
+        if args.markdown:
+            Path(args.markdown).write_text(queue_markdown(queue), encoding="utf-8")
         print(dump_json({"status": "written", "counts": queue["counts"]}))
         return 0
     if args.cmd == "status":
