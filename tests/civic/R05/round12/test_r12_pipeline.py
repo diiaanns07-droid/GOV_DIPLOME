@@ -1,0 +1,241 @@
+"""R05 раунд 12: verify → build → проверка civic-v1 → dry-run импортера R02 на FIXTURE-данных.
+
+FIXTURE-текст ниже синтетический и нужен только тесту механизма: он никогда не попадает
+в data/civic/astana/round12-verified/. Реальные кандидаты проверяются в test_r12_real_data.py.
+"""
+
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+import pytest
+
+REPO = Path(__file__).resolve().parents[4]
+PKG = REPO / "data/civic/astana/round12-verified"
+TOOL = PKG / "tools/r12.py"
+HAS_BASE = (REPO / "data/civic/astana/tools/civic_v1.py").exists()
+
+FIXTURE_TEXT = """<html><body><h1>FIXTURE R05: синтетическая заметка для теста механизма проверки</h1>
+<p>Опубликовано 2026-09-20. Ремонт тестового участка улицы Примерной планируют завершить
+до 30 ноября 2026 года.</p>
+<p>Работы ведёт ТОО «Тестовый подрядчик». Стоимость работ по договору — 125 000 000 тенге.</p>
+<script>var ignored = "текст скрипта не считается текстом страницы";</script>
+</body></html>"""
+
+SOURCE = {"id": "src-r12-fixture-1", "url": "https://example.org/r05-fixture-1",
+          "publisher": "FIXTURE publisher", "publisher_kind": "other",
+          "title_as_listed": "FIXTURE R05: синтетическая заметка", "published_on": None,
+          "published_on_basis": None,
+          "discovered_via": {"tool": "fixture", "at": "2026-10-07T00:00:00Z", "query": "fixture"},
+          "access_status": "not_fetched", "retrieved_at": None, "content_sha256": None,
+          "fetch_method": None, "license": None, "license_status": "unknown", "access_attempts": []}
+
+
+def draft(**changes):
+    rec = {
+        "schema": "r05-r12-record-v1", "id": "ast-r12-roadworks-fixture-primernaya",
+        "kind": "roadworks", "title": "FIXTURE: ремонт тестового участка",
+        "description": "Синтетическая запись теста механизма.", "historical": False,
+        "location": {"text": "улица Примерная", "geometry": {"type": "Point", "coordinates": [71.43, 51.16]},
+                     "geometry_precision": "approximate", "geometry_basis": "FIXTURE: условная точка теста"},
+        "claims": [
+            {"field": "status", "value": "planned", "claim_type": "expected", "source_id": "src-r12-fixture-1",
+             "quote": "планируют завершить до 30 ноября 2026 года", "locator": "абзац 1", "value_basis": None},
+            {"field": "schedule.current_planned_end", "value": "2026-11-30", "claim_type": "expected",
+             "source_id": "src-r12-fixture-1", "quote": "завершить до 30 ноября 2026 года", "locator": "абзац 1",
+             "value_basis": None},
+            {"field": "responsible.organization", "value": "ТОО «Тестовый подрядчик»", "claim_type": "stated",
+             "source_id": "src-r12-fixture-1", "quote": "Работы ведёт ТОО «Тестовый подрядчик»",
+             "locator": "абзац 2", "value_basis": None},
+            {"field": "budget.amount_kzt", "value": 125000000, "claim_type": "stated",
+             "source_id": "src-r12-fixture-1", "quote": "по договору — 125 000 000 тенге", "locator": "абзац 2",
+             "value_basis": None},
+            {"field": "budget.basis", "value": "contract", "claim_type": "stated",
+             "source_id": "src-r12-fixture-1", "quote": "Стоимость работ по договору", "locator": "абзац 2",
+             "value_basis": None},
+        ],
+        "not_confirmed": ["schedule.planned_start"],
+        "evidence_notes": "FIXTURE: срок — ожидаемый, о начале работ источник не сообщает.",
+    }
+    rec.update(changes)
+    return rec
+
+
+@pytest.fixture
+def home(tmp_path):
+    root = tmp_path / "pkg"
+    (root / "drafts").mkdir(parents=True)
+    (root / "verified").mkdir()
+    shutil.copy(PKG / "config.json", root / "config.json")
+    (root / "sources.json").write_text(json.dumps(
+        {"schema": "r05-r12-sources-v1", "city": "astana", "sources": [dict(SOURCE)]}, ensure_ascii=False))
+    (root / "candidates.json").write_text(json.dumps({"schema": "r05-r12-candidates-v1", "candidates": []}))
+    page = tmp_path / "outside" / "page.html"
+    page.parent.mkdir()
+    page.write_text(FIXTURE_TEXT, encoding="utf-8")
+    return root, page
+
+
+def run(home_dir, *args):
+    env = dict(os.environ, R12_HOME=str(home_dir))
+    return subprocess.run([sys.executable, "-I", str(TOOL), *args], capture_output=True, text=True, env=env,
+                          cwd=str(REPO), timeout=120)
+
+
+def write_draft(root, rec):
+    path = root / "drafts" / f"{rec['id']}.json"
+    path.write_text(json.dumps(rec, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
+def verify(root, page, path, *extra):
+    return run(root, "verify", str(path), "--text", f"src-r12-fixture-1={page}",
+               "--published-on", "src-r12-fixture-1=2026-09-20", "--retrieved-at", "2026-10-07T10:30:00Z", *extra)
+
+
+def test_verify_moves_record_and_records_sha(home):
+    root, page = home
+    path = write_draft(root, draft())
+    result = verify(root, page, path)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert not path.exists() and (root / "verified" / path.name).exists()
+    src = json.loads((root / "sources.json").read_text())["sources"][0]
+    assert src["access_status"] == "fetched" and src["published_on"] == "2026-09-20"
+    assert src["content_sha256"] == hashlib.sha256(page.read_bytes()).hexdigest()
+    rec = json.loads((root / "verified" / path.name).read_text())
+    assert rec["verification"]["sources"]["src-r12-fixture-1"]["content_sha256"] == src["content_sha256"]
+
+
+def test_missing_quote_keeps_draft_and_registry_untouched(home):
+    root, page = home
+    rec = draft()
+    rec["claims"][1]["quote"] = "завершить до 31 декабря 2026 года"   # нет в тексте
+    path = write_draft(root, rec)
+    result = verify(root, page, path)
+    assert result.returncode == 1 and "не найдена дословно" in result.stdout
+    assert path.exists() and not list((root / "verified").glob("*.json"))
+    assert json.loads((root / "sources.json").read_text())["sources"][0]["access_status"] == "not_fetched"
+
+
+def test_script_text_is_not_page_text(home):
+    root, page = home
+    rec = draft()
+    rec["claims"][2]["quote"] = "текст скрипта не считается текстом страницы"
+    result = verify(root, page, write_draft(root, rec))
+    assert result.returncode == 1
+
+
+@pytest.mark.parametrize("claim_change,code", [
+    ({"field": "status", "value": "in_progress", "claim_type": "expected"}, "status_type"),
+    ({"field": "status", "value": "completed", "claim_type": "stated"}, "status_type"),
+    ({"field": "schedule.current_planned_end", "value": "30.11.2026"}, "date"),
+    ({"field": "budget.amount_kzt", "value": 0}, "amount"),
+    ({"field": "budget.amount_kzt", "value": "125 млн"}, "amount"),
+])
+def test_bad_claims_rejected_before_text_check(home, claim_change, code):
+    root, page = home
+    rec = draft()
+    target = next(c for c in rec["claims"] if c["field"] == claim_change["field"])
+    target.update(claim_change)
+    result = verify(root, page, write_draft(root, rec))
+    assert result.returncode == 1 and code in result.stdout
+
+
+def test_budget_without_basis_and_actual_end_without_completed(home):
+    root, page = home
+    rec = draft()
+    rec["claims"] = [c for c in rec["claims"] if c["field"] != "budget.basis"]
+    rec["claims"].append({"field": "schedule.actual_end", "value": "2026-09-01", "claim_type": "reported_actual",
+                          "source_id": "src-r12-fixture-1", "quote": "Опубликовано 2026-09-20",
+                          "locator": "шапка", "value_basis": None})
+    result = verify(root, page, write_draft(root, rec))
+    assert result.returncode == 1 and "budget_basis" in result.stdout and "actual_end" in result.stdout
+
+
+@pytest.mark.skipif(not HAS_BASE, reason="NOT_RUN: нет data/civic/astana/tools (дерево не от 56538a3)")
+def test_pii_in_quote_is_rejected(home):
+    root, page = home
+    rec = draft()
+    rec["claims"][2]["quote"] = "Работы ведёт ТОО, телефон +7 701 123 45 67"
+    result = verify(root, page, write_draft(root, rec))
+    assert result.returncode == 1 and "pii" in result.stdout
+
+
+def test_build_is_deterministic_and_check_detects_staleness(home):
+    root, page = home
+    assert verify(root, page, write_draft(root, draft())).returncode == 0
+    first = run(root, "build")
+    assert first.returncode == 0, first.stdout + first.stderr
+    pkg_bytes = (root / "package.civic-v1.json").read_bytes()
+    assert run(root, "build").returncode == 0
+    assert (root / "package.civic-v1.json").read_bytes() == pkg_bytes
+    assert run(root, "build", "--check").returncode == 0
+    (root / "package.civic-v1.json").write_text("{}")
+    assert run(root, "build", "--check").returncode == 1
+    package = json.loads(pkg_bytes)
+    item = package["items"][0]
+    # Серверные поля есть (как в срезах раунда 11), но импорт их игнорирует; публикации в пакете нет.
+    assert package["slice"]["demo"] is False and item["publication"] == "draft" and item["revision"] == 1
+    assert package["slice"]["count"] == 1 and len(package["slice"]["content_sha256"]) == 64
+    assert item["status"] == "planned" and item["schedule"]["current_planned_end"] == "2026-11-30"
+    assert item["schedule"]["planned_start"] is None
+    assert item["budget"] == {"amount_kzt": 125000000, "basis": "contract", "source_id": "src-r12-fixture-1"}
+    assert item["evidence_type"] == "observed"
+    assert item["source_refs"][0]["access_status"] == "fetched"
+    assert "Источник не подтверждает: schedule.planned_start" in item["evidence_notes"]
+    summary = json.loads((root / "summary.json").read_text())
+    assert summary["confirmed_current"] == 1 and summary["confirmed_historical"] == 0
+
+
+def test_value_basis_makes_record_derived_and_old_end_goes_historical(home):
+    root, page = home
+    rec = draft()
+    rec["claims"][1].update(value="2024-11-30", value_basis="FIXTURE: проверка исторического среза")
+    rec["claims"][0].update(value="planned")
+    assert verify(root, page, write_draft(root, rec)).returncode == 0
+    assert run(root, "build").returncode == 0
+    current = json.loads((root / "package.civic-v1.json").read_text())["items"]
+    hist = json.loads((root / "historical.civic-v1.json").read_text())["items"]
+    assert current == [] and hist[0]["evidence_type"] == "derived"
+    assert "FIXTURE: проверка исторического среза" in hist[0]["evidence_notes"]
+
+
+@pytest.mark.skipif(not HAS_BASE, reason="NOT_RUN: нет валидатора R05 (дерево не от 56538a3)")
+def test_built_package_passes_r05_real_profile_and_r02_rules(home):
+    root, page = home
+    assert verify(root, page, write_draft(root, draft())).returncode == 0
+    assert run(root, "build").returncode == 0
+    check = run(root, "check")
+    report = json.loads(check.stdout)
+    assert check.returncode == 0, report
+    assert report["validators"]["r05_civic_v1_real"] == "RUN"
+    if (REPO / "ui/civic_store/validate.py").exists():
+        assert report["validators"]["r02_validate_content"] == "RUN"
+
+
+@pytest.mark.skipif(not (REPO / "ui/civic_store/importer.py").exists(), reason="NOT_RUN: нет импортера R02")
+def test_importer_dry_run_accepts_package(home, tmp_path):
+    root, page = home
+    assert verify(root, page, write_draft(root, draft())).returncode == 0
+    assert run(root, "build").returncode == 0
+    sys.path.insert(0, str(REPO))
+    try:
+        from ui.civic_store.importer import import_package, load_package
+        from ui.civic_store.service import CivicService
+    finally:
+        sys.path.pop(0)
+    service = CivicService(tmp_path / "dry.sqlite3")
+    report = import_package(service.objects, load_package(root / "package.civic-v1.json"), dry_run=True)
+    assert report["status"] == "dry_run" and report["counts"].get("create") == 1
+    assert not any(item["action"] == "invalid" for item in report["items"])
+    assert report["source"] == "r05-astana-r12-verified"
+
+
+def test_fetch_refuses_to_store_text_inside_repo(home):
+    root, _ = home
+    result = run(root, "fetch", "src-r12-fixture-1", "--out", str(REPO / "data"))
+    assert result.returncode == 2 and "вне репозитория" in result.stderr

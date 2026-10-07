@@ -7,13 +7,19 @@
   проверка выполняется в отдельном worktree от 56538a3, переносимый патч — в `research/round-12-results/R05/`.
 - Пути: `data/civic/astana/round12-verified/`, `tests/civic/R05/round12/`, `research/round-12-results/R05/`, этот файл.
 
-## Статус: PARTIAL — checkpoint 1
+## Статус: PARTIAL — checkpoint 2
 
 - Сеть: все KZ-источники, OSM и wikipedia.org закрыты политикой egress (proxy 403 / WebFetch EGRESS_BLOCKED),
   журнал `data/civic/astana/round12-verified/network_audit.json`. Работает только серверный WebSearch
   (заголовки + URL + пересказ) — пригоден для поиска кандидатов, не для подтверждения.
 - Сделано: схема пакета `SCHEMA.md`, `config.json`, README, журнал сети.
-- В работе: поиск кандидатов (6 поисковых срезов + 3 скептика), инструмент `tools/r12.py`
-  (verify по дословным выдержкам, build пакета, геокодирование по OSM-снимку), тесты.
+- `data/civic/astana/round12-verified/tools/r12.py`: check, verify (каждая выдержка должна дословно найтись в
+  сохранённом тексте страницы; sha256 в реестр; текст в Git не хранится), build (детерминированный пакет
+  civic-v1 только из verified/, исторический срез отдельно), geocode (OSM-снимок 2026-05-06: пересечение,
+  участок между улицами, вся улица только если одна связная цепочка), fetch (для сред с открытой сетью).
+- Тесты `tests/civic/R05/round12/test_r12_pipeline.py` на FIXTURE: в worktree 56538a3 — 15 passed
+  (профиль real валидатора R05, validate_content R02, dry-run импортера: create=1); в ветке без базы
+  12 passed, 3 skipped (NOT_RUN: нет файлов базы). Весь tests/civic/R05 в 56538a3: 164 passed.
+- В работе: поиск кандидатов (workflow: 6 поисковых срезов + 3 скептика).
 
-Следующий шаг: реестр источников и кандидатов из результатов поиска, затем `tools/r12.py` и тесты.
+Следующий шаг: sources.json/candidates.json из результатов поиска (import_search_results.py), геокодирование кандидатов.
