@@ -323,7 +323,7 @@ def _apply_one(repo, conn, actor, source, external_id, content, digest, reason) 
         repo.update(actor, row["id"], expected_revision=row["revision"], changes=content,
                     reason=reason, conn=conn, import_meta={"digest": digest})
         return {"action": "update_import_draft", "object_id": row["id"], **details}
-    if json.loads(row["data_json"]) == content:
+    if json.loads(row["data_json"]) == ObjectRepository._candidate_content(row, _canonical(content)):
         # Редактор уже привёл объект к этой версии вручную: запоминаем отпечаток, кандидаты закрываем.
         conn.execute("UPDATE civic_objects SET import_digest = ? WHERE id = ?", (digest, row["id"]))
         conn.execute(
