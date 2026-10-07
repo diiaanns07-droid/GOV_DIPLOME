@@ -137,7 +137,7 @@ def main() -> int:
                 del node_env[k]
         node_env.update({
             "NODE_PATH": NODE_PATH, "R10_BASE_URL": server.base, "R10_OUT_JSON": str(out), "R10_SHOTS": str(shots),
-            "R10_CODE_SHA": harness["code_sha"] or "", "R10_LABEL": args.label,
+            "R10_CODE_SHA": harness["code_sha"] or "", "R10_LABEL": args.label, "R10_CTL": "1",
             "R10_EDITOR_USER": editors[0][0], "R10_EDITOR_PASSWORD": editors[0][1],
             "R10_EDITOR2_USER": editors[1][0], "R10_EDITOR2_PASSWORD": editors[1][1],
         })
