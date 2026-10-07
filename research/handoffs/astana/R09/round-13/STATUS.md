@@ -9,9 +9,9 @@
   `agent/civic_assistant/`, `web/civic/assistant/`, `tests/civic/R09/`, `research/round-13-results/R09/`, этот файл.
 - Базовая линия: на 56538a3 + R09 f8aea9a `pytest tests/civic/R09` -> 188 passed (воспроизведено).
 
-## Статус: PARTIAL — checkpoint 3 (намерения RU/KK, grounded generation)
+## Статус: PARTIAL — checkpoint 4 (интеграция на реальных модулях, патч R01)
 
-Проверено на 56538a3 + R09: `pytest tests/civic/R09` -> 355 passed (включая браузерный прогон UI в Chromium,
+Проверено на 56538a3 + R09: `pytest tests/civic/R09` -> 360 passed (включая браузерный прогон UI в Chromium,
 24 проверки ui_check.cjs; 120 параметризованных вопросов RU/KK).
 
 CP1 (ab1d2fc) — контракт пользовательского результата:
@@ -55,6 +55,20 @@ CP3 — намерения и проверки генерации:
   intent; инъекции в названии/описании/издателе/организации/причине по всем intents (шаблон и провайдер);
   перебор 240 случайных выборов провайдера — ни одного числа/ID вне фактов в тексте.
 
+CP4 — интеграция (результаты в research/round-13-results/R09/):
+- `tests/civic/R09/integration_r13.py`: R02 CivicService (временная SQLite) + R07 http.handle POST /compare двумя
+  разными входами на городском графе + ScenarioResultCache + AssistantEndpoint. 13/13 PASS на R07 56538a3
+  (1.0.0, без on_result -> `remember_compare_response`) и 13/13 на ветке R07 `claude/brave-hopper-bkc58b`
+  @ f166100 (1.1.0, `on_result=cache.remember`; только пакет engine/ через --r07-root, без коммита чужого кода).
+- Поля R07 1.1.0 используются, только если движок их прислал: `identical_active_closures` -> «закрыты одни и те
+  же участки»; `closed_on_baseline_routes` пуст -> «длины не меняются». У 1.0.0 таких выводов нет.
+- Кэш: результат, который сервер посчитал, но не сохранил (проверка/размер) -> `scenario_result_not_stored`
+  («не сохранил для объяснения»), а не «не найден»; в записи нет списков рёбер вообще.
+- `r01_integration_r13.patch` (ui/web_server.py: общий ScenarioResultCache + remember после 200 на POST
+  /scenarios/compare; shell.js: revision + onStale). `git apply --check` OK на 56538a3, 6dc1660 и 8eb301d (голова
+  R01 раунда 13). Кандидат 8eb301d + R09 + патч: `gateway_check_r13.py` 6/6 PASS; pytest R01+R09 410 passed,
+  1 skipped.
+
 ### Следующий шаг
-Пример интеграции на реальных модулях (R02 + R07 + кэш, два разных результата сравнения) и обновлённый патч R01
-с проверкой `git apply --check` на 56538a3 и голове R01.
+Приёмочный отчёт (5 сценариев с ожиданием и наблюдением), качество шаблон / контракт-провайдер / live LLM,
+DELIVERY.json, RUN.txt, INTEGRATION.txt, патч путей R09 относительно 56538a3; handoff DONE/PARTIAL.

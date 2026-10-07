@@ -140,7 +140,15 @@ def test_oversized_entry_is_rejected_not_truncated(city):
     payload, result = city
     cache = ScenarioResultCache(max_entry_bytes=1024)
     assert cache.remember(payload, result) is None and cache.last_rejection == "entry_too_large"
-    assert cache.status("result:" + result["result_digest"]) == "unknown"
+    # Сервер посчитал, но не сохранил: «не сохранён», а не «не найден» (иначе клиент пересчитывал бы по кругу).
+    assert cache.status("result:" + result["result_digest"]) == "rejected"
+    assert cache.status("result:" + "e" * 64) == "unknown"
+    ep = AssistantEndpoint(lambda oid: None, load_scenario_result=r07_case_loader(
+        registry.list_cases, registry.load_graph, engine_compare.compare, result_cache=cache),
+        rate_limiter=RateLimiter(100, 60))
+    data = _ask(ep, "Сравни планы", "result:" + result["result_digest"])
+    assert data["source"] == "unavailable" and "scenario_result_not_stored" in data["warnings"]
+    assert "не сохранил для объяснения" in data["text"] and "Без перекрытий" not in data["text"]
 
 
 def test_total_bytes_limit_evicts_oldest_and_marks_it_expired(tiny):

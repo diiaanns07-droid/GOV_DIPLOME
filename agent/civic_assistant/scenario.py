@@ -79,6 +79,10 @@ S = {
                  "быть короче, а «нет пути» не доказано.",
         "no_best": "Помощник не ранжирует варианты: показаны только длины путей в модели, выбор остаётся за сотрудником.",
         "many_pairs": "Пар маршрутов: {n}; ниже — сводка по парам, а не каждый путь.",
+        "ab_identical": "По данным движка, в момент анализа у планов A и B закрыты одни и те же участки, поэтому "
+                        "результаты A и B совпадают.",
+        "plan_not_on_base": "План {p}: по данным движка, закрытые участки не лежат на базовых путях выбранных пар, "
+                            "поэтому длины путей не меняются.",
         "kind_user": "Это ваш расчёт: результат сравнения, выполненного сервером (идентификатор {digest}…), "
                      "сохранён {stored}.",
         "kind_user_short": "Это ваш расчёт: результат сравнения, выполненного сервером (идентификатор {digest}…).",
@@ -137,6 +141,10 @@ S = {
                  "болуы мүмкін, ал «жол жоқ» дәлелденбеген.",
         "no_best": "Көмекші нұсқаларды саралап, ұсыныс бермейді: тек модельдегі жолдардың ұзындығы салыстырылады.",
         "many_pairs": "Маршрут жұптары: {n}; төменде әр жол емес, жұптар бойынша жиынтық.",
+        "ab_identical": "Қозғалтқыш деректері бойынша талдау сәтінде A және B жоспарларында бірдей учаскелер жабық, "
+                        "сондықтан A мен B нәтижелері бірдей.",
+        "plan_not_on_base": "{p} жоспары: қозғалтқыш деректері бойынша жабық учаскелер таңдалған жұптардың базалық "
+                            "жолдарында жатпайды, сондықтан жол ұзындықтары өзгермейді.",
         "kind_user": "Бұл сіздің есебіңіз: сервер орындаған салыстыру нәтижесі (идентификатор {digest}…), "
                      "{stored} сақталған.",
         "kind_user_short": "Бұл сіздің есебіңіз: сервер орындаған салыстыру нәтижесі (идентификатор {digest}…).",
@@ -310,6 +318,15 @@ def _slim_pair(x):
     return {k: x.get(k) for k in keep if k in x}
 
 
+def _warning_codes(items) -> list[dict]:
+    """Предупреждения движка: только коды (и число, если есть) — текст сообщений помощник не цитирует."""
+    out = []
+    for w in items or []:
+        if isinstance(w, dict) and isinstance(w.get("code"), str) and len(w["code"]) <= 60:
+            out.append({k: w[k] for k in ("code", "count") if k in w and (k == "code" or isinstance(w[k], int))})
+    return out[:20]
+
+
 def slim_result(result: dict) -> dict:
     """Только то, что читает scenario_facts: без edge_ids/node_ids маршрутов и без пар сверх MAX_ROUTE_PAIRS.
 
@@ -324,8 +341,9 @@ def slim_result(result: dict) -> dict:
         return [_slim_pair(x) for x in items or [] if isinstance(x, dict)
                 and (x.get("origin_node_id"), x.get("destination_node_id")) in od]
 
-    out = {k: result.get(k) for k in ("schema_version", "engine", "input", "graph_coverage", "warnings",
+    out = {k: result.get(k) for k in ("schema_version", "engine", "input", "graph_coverage",
                                        "assumptions", "limitations", "result_digest") if k in result}
+    out["warnings"] = _warning_codes(result.get("warnings"))
     out["baseline"] = {"status_summary": base.get("status_summary"), "routes_total": len(routes),
                        "routes": [_slim_route(r) for r in routes] if keep_pairs else []}
     plans = []
@@ -336,16 +354,20 @@ def slim_result(result: dict) -> dict:
         active = p.get("active_closed_edge_ids")
         plans.append({"id": p.get("id"), "status_summary": p.get("status_summary"),
                       "active_closed_edge_count": len(active) if isinstance(active, list) else None,
-                      "inactive_closures": [{k: c.get(k) for k in ("start_at", "end_at", "edge_ids")}
-                                            for c in p.get("inactive_closures") or [] if isinstance(c, dict)][:MAX_CLOSURES],
+                      # Интервалы и активность перекрытий — в closure_summary (из полного результата); здесь без рёбер.
+                      "inactive_closure_count": len([c for c in p.get("inactive_closures") or [] if isinstance(c, dict)]),
                       "routes": [_slim_route(r) for r in p.get("routes") or [] if isinstance(r, dict)
                                  and (r.get("origin_node_id"), r.get("destination_node_id")) in od],
                       "vs_baseline": {"summary": vs.get("summary"), "pairs": pairs(vs.get("pairs"))},
-                      "warnings": [w for w in p.get("warnings") or [] if isinstance(w, dict)][:10]})
+                      "warnings": _warning_codes(p.get("warnings")),
+                      **({"closed_on_baseline_count": len(p["closed_on_baseline_routes"])}
+                         if isinstance(p.get("closed_on_baseline_routes"), list) else {})})
     out["plans"] = plans
     ab = result.get("a_vs_b") if isinstance(result.get("a_vs_b"), dict) else None
     out["a_vs_b"] = None if ab is None else {"from_plan": ab.get("from_plan"), "to_plan": ab.get("to_plan"),
-                                             "summary": ab.get("summary"), "pairs": pairs(ab.get("pairs"))}
+                                             "summary": ab.get("summary"), "pairs": pairs(ab.get("pairs")),
+                                             **({"identical_active_closures": ab["identical_active_closures"]}
+                                                if isinstance(ab.get("identical_active_closures"), bool) else {})}
     return out
 
 
@@ -584,9 +606,17 @@ def scenario_facts(scenario, scenario_id=None) -> tuple[list[dict], list[str]]:
         active = p.get("active_closed_edge_ids")
         count = len(active) if isinstance(active, list) else _count(p.get("active_closed_edge_count"))
         facts.append(_fact(f"scenario.{pid}.active_closures", "active_closed_edges", count))
+        # R07 1.1.0: сколько закрытых участков лежит на базовых путях пар (нет поля у 1.0 -> факта нет).
+        on_base = p.get("closed_on_baseline_routes")
+        on_base = len(on_base) if isinstance(on_base, list) else _count(p.get("closed_on_baseline_count"))
+        if on_base is not None:
+            facts.append(_fact(f"scenario.{pid}.closed_on_baseline", "closed_on_baseline_edges", on_base))
     ab = result.get("a_vs_b") if isinstance(result.get("a_vs_b"), dict) else None
     if ab and ab.get("from_plan") == "A" and ab.get("to_plan") == "B":
         facts += _change_facts("scenario.AB", ab.get("summary"))
+        if isinstance(ab.get("identical_active_closures"), bool):  # R07 1.1.0
+            facts.append(_fact("scenario.AB.identical_active_closures", "identical_active_closures",
+                               ab["identical_active_closures"], "flag"))
     if any(f["value"] is None for f in facts if f["kind"] == "count"):
         warnings.append("scenario_metric_missing")
     route_facts, pairs = _route_facts(result, warnings)
@@ -706,6 +736,19 @@ def _closure_lines(facts, lang):
     return out
 
 
+def _engine_explanations(facts, lang):
+    """Объяснения A/B, которые движок сообщил сам (R07 1.1.0); у 1.0 этих фактов нет — фраз нет."""
+    s = S[lang]
+    out = []
+    for pid in PLAN_IDS:
+        if _v(facts, f"scenario.{pid}.closed_on_baseline") == 0 and (_v(facts, f"scenario.{pid}.active_closures") or 0) > 0:
+            out.append(_st(s["plan_not_on_base"].format(p=pid),
+                           [f"scenario.{pid}.closed_on_baseline", f"scenario.{pid}.active_closures"], facts=facts))
+    if _v(facts, "scenario.AB.identical_active_closures") is True:
+        out.append(_st(s["ab_identical"], ["scenario.AB.identical_active_closures"], facts=facts))
+    return out
+
+
 def _graph_lines(facts, lang):
     s = S[lang]
     label = _v(facts, "scenario.graph.label")
@@ -782,6 +825,7 @@ def render_scenario(facts: dict, lang: str, focus: str = "compare") -> list[dict
     out.append(_st(s["run"].format(mode=s["mode"].get(mode, NO_DATA[lang]), at=at_text or NO_DATA[lang]),
                    ["scenario.mode", "scenario.analysis_at"], facts=facts))
     out += _closure_lines(facts, lang)
+    out += _engine_explanations(facts, lang)
     routes = _route_lines(facts, lang)
     if routes:
         out += routes

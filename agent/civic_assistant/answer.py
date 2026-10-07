@@ -279,6 +279,7 @@ def _result(source, intent, lang, statements, ctx, warnings, mode, model=None, f
 # Тексты отказа по коду: расчёт пользователя и объект — разные причины, текст не должен их путать.
 _UNAVAILABLE_TEXT = {"scenario_result_expired": "unavailable_result_expired",
                      "scenario_result_unknown": "unavailable_result_unknown",
+                     "scenario_result_not_stored": "unavailable_result_not_stored",
                      "scenario_not_found": "unavailable_scenario"}
 
 

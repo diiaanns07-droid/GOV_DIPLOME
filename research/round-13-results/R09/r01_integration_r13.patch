@@ -1,0 +1,75 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 2e91a1f..9f1cb5a 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -205,6 +205,22 @@ class CivicGateway:
+         self._failed = {}
+         # Re-entrant: the feedback/assistant factories ask for the store while the lock is held.
+         self._lock = threading.RLock()
++        self._scenario_results = None  # R09: server-computed A/B results the assistant may explain
++
++    def scenario_results(self):
++        """Shared R09 ScenarioResultCache (None when the assistant package is not delivered)."""
++        with self._lock:
++            if self._scenario_results is None:
++                try:
++                    api = importlib.import_module("agent.civic_assistant.api")
++                except ModuleNotFoundError as exc:
++                    if not _role_package_missing(exc):
++                        raise
++                    return None
++                if not hasattr(api, "ScenarioResultCache"):
++                    return None
++                self._scenario_results = api.ScenarioResultCache()
++            return self._scenario_results
+ 
+     @classmethod
+     def for_project(cls, project: Path, db_path: Path | None = None):
+@@ -279,7 +295,7 @@ class CivicGateway:
+                 scen_registry = importlib.import_module("engine.civic_scenarios.registry")
+                 scen_compare = importlib.import_module("engine.civic_scenarios.compare")
+                 load_scenario = api.r07_case_loader(scen_registry.list_cases, scen_registry.load_graph,
+-                                                    scen_compare.compare)
++                                                    scen_compare.compare, result_cache=gateway.scenario_results())
+             except ModuleNotFoundError as exc:
+                 if not _role_package_missing(exc):
+                     raise
+@@ -385,7 +401,16 @@ class CivicGateway:
+                     return service.handle(method, full_path, query, body, context)
+             return service.handle(method, full_path, query, body, context)
+         if owner == "scenarios":
+-            return self._scenarios(service, method, full_path, query, body)
++            reply = self._scenarios(service, method, full_path, query, body)
++            if (method == "POST" and rel_path == "/scenarios/compare" and isinstance(reply, dict)
++                    and reply.get("status") == 200):
++                # R09 r13: the assistant may explain this comparison as scenario_id "result:<result_digest>".
++                # remember() keeps only the server's own result verified against this payload (digest, input,
++                # totals); a rejected or expired result makes the assistant ask to recompute, never a prepared case.
++                cache = self.scenario_results()
++                if cache is not None:
++                    cache.remember(body, (reply.get("body") or {}).get("data"))
++            return reply
+         if owner == "assistant":
+             if rel_path.startswith("/staff/"):
+                 # Staff extraction: the gateway enforces R02 session + CSRF + origin like other staff POSTs.
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index c0125a7..7916084 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -331,10 +331,14 @@
+     if (S.selected && assistant && S.modules?.assistant?.status === "ready") {
+       // Mount R09 only for an object confirmed public (permalinks may name drafts/unknown ids).
+       const id = S.selected, seq = ++S.assistantSeq;
+-      request("GET", "/objects/" + encodeURIComponent(id)).then(() => {
++      request("GET", "/objects/" + encodeURIComponent(id)).then((data) => {
+         if (seq !== S.assistantSeq || S.selected !== id || S.mode !== "civic") return;
+         $c("civic-assistant-box").hidden = false;
+-        mount("assistant", $c("civic-assistant-root"), { objectId: id });
++        // R09 r13: the server answers only about this published revision (else object_revision_changed);
++        // onStale re-runs the selection so the card and the assistant read the current revision.
++        const revision = Number.isInteger(data?.item?.revision) ? data.item.revision : undefined;
++        mount("assistant", $c("civic-assistant-root"), { objectId: id, revision,
++          onStale: () => { if (seq === S.assistantSeq && S.selected === id) onSelect({ id }); } });
+       }).catch((error) => {
+         if (seq !== S.assistantSeq || S.selected !== id) return;
+         if (error?.status === 404) {

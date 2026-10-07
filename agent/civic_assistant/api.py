@@ -139,14 +139,21 @@ class ScenarioResultCache:
         self.wall_clock = wall_clock or (lambda: datetime.now(timezone.utc).isoformat(timespec="seconds"))
         self._items: dict[str, tuple[float, int, dict]] = {}  # key -> (время, байты, запись)
         self._tombstones: dict[str, float] = {}
+        self._rejected: dict[str, str] = {}  # "result:<digest>" -> код отказа: клиенту «не сохранён», а не «не найден»
         self._bytes = 0
         self._lock = threading.Lock()
         self.rejections: dict[str, int] = {}
         self.last_rejection: str | None = None
 
-    def _reject(self, code):
+    def _reject(self, code, result=None):
         self.last_rejection = code
         self.rejections[code] = self.rejections.get(code, 0) + 1
+        digest = result.get("result_digest") if isinstance(result, dict) else None
+        if isinstance(digest, str) and re.fullmatch(r"[0-9a-f]{64}", digest):
+            with self._lock:
+                self._rejected["result:" + digest] = code
+                while len(self._rejected) > self.max_tombstones:
+                    self._rejected.pop(next(iter(self._rejected)))
         return None
 
     def _drop(self, key, now):
@@ -164,13 +171,13 @@ class ScenarioResultCache:
         from agent.civic_assistant.scenario import make_entry, verify_user_result
         code = verify_user_result(payload, result)
         if code:
-            return self._reject(code)
+            return self._reject(code, result)
         inp = result["input"]
         graph = self.graph_info(inp.get("graph_id")) if self.graph_info else None
         entry = make_entry(result, payload, graph, kind="user_result", stored_at=self.wall_clock())
         size = len(json.dumps(entry, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
         if size > self.max_entry_bytes:
-            return self._reject("entry_too_large")
+            return self._reject("entry_too_large", result)
         key = "result:" + result["result_digest"]
         with self._lock:
             now = self.clock()
@@ -181,19 +188,23 @@ class ScenarioResultCache:
             self._items[key] = (now, size, entry)
             self._bytes += size
             self._tombstones.pop(key, None)
+            self._rejected.pop(key, None)
             while self._items and (len(self._items) > self.max_items or self._bytes > self.max_total_bytes):
                 self._drop(next(iter(self._items)), now)
         self.last_rejection = None
         return key
 
     def status(self, scenario_id) -> str:
-        """"ok" | "expired" (хранился, но истёк/вытеснен) | "unknown" (сервер такого не считал или забыл давно)."""
+        """"ok" | "expired" (хранился, но истёк/вытеснен) | "rejected" (сервер посчитал, но не сохранил: проверка
+        или лимит размера) | "unknown" (сервер такого не считал или забыл давно)."""
         with self._lock:
             now = self.clock()
             self._expire(now)
             if scenario_id in self._items:
                 return "ok"
-            return "expired" if scenario_id in self._tombstones else "unknown"
+            if scenario_id in self._tombstones:
+                return "expired"
+            return "rejected" if scenario_id in self._rejected else "unknown"
 
     def get(self, scenario_id):
         with self._lock:
@@ -206,6 +217,19 @@ class ScenarioResultCache:
         with self._lock:
             return {"items": len(self._items), "bytes": self._bytes, "tombstones": len(self._tombstones),
                     "rejections": dict(self.rejections)}
+
+
+def remember_compare_response(cache: ScenarioResultCache, payload, response) -> str | None:
+    """Для шлюза, у которого R07 http.handle без on_result (база 56538a3): после ответа POST /scenarios/compare.
+
+    Берётся конверт, который сервер сам отдал клиенту ({ok:true,data:result+timing_ms}); timing_ms вне digest.
+    С R07 1.1.0 то же делает http.handle(..., on_result=cache.remember).
+    """
+    if not isinstance(response, dict) or response.get("status") != 200:
+        return None
+    body = response.get("body") if isinstance(response.get("body"), dict) else {}
+    data = body.get("data") if body.get("ok") is True else None
+    return cache.remember(payload, data) if isinstance(data, dict) else None
 
 
 def r07_case_loader(list_cases, load_graph, compare, manifest=None, *, result_cache=None):
@@ -363,4 +387,5 @@ class AssistantEndpoint:
             state = status(scenario_id) if callable(status) else "unknown"
         except Exception:  # noqa: BLE001
             state = "unknown"
-        return "scenario_result_expired" if state == "expired" else "scenario_result_unknown"
+        return {"expired": "scenario_result_expired", "rejected": "scenario_result_not_stored"}.get(
+            state, "scenario_result_unknown")

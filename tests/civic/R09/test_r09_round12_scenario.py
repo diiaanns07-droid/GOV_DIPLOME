@@ -119,7 +119,9 @@ def test_citywide_closure_intervals_and_activity_come_from_engine(city):
 
 def test_inactive_closure_reported_from_engine_list(loader):
     entry = copy.deepcopy(loader(TINY))
-    inactive = [(p["id"], c) for p in entry["result"]["plans"] for c in p["inactive_closures"]]
+    # Раунд 13: в компактной записи нет списков рёбер — число неактивных перекрытий и их интервалы из closures.
+    inactive = sum(p["inactive_closure_count"] for p in entry["result"]["plans"])
+    assert inactive == sum(1 for c in entry["closures"] if not c.get("truncated") and not c["active"])
     a = build_answer("Сравни варианты", _ctx(entry, TINY))
     if inactive:
         assert "в момент анализа не действует" in a["text"]
