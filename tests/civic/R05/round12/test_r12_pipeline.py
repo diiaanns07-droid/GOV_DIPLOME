@@ -18,6 +18,7 @@ REPO = Path(__file__).resolve().parents[4]
 PKG = REPO / "data/civic/astana/round12-verified"
 TOOL = PKG / "tools/r12.py"
 HAS_BASE = (REPO / "data/civic/astana/tools/civic_v1.py").exists()
+needs_base = pytest.mark.skipif(not HAS_BASE, reason="NOT_RUN: нет валидатора R05 data/civic/astana/tools (дерево не от 56538a3)")
 
 FIXTURE_TEXT = """<html><body><h1>FIXTURE R05: синтетическая заметка для теста механизма проверки</h1>
 <p>Опубликовано 2026-09-20. Ремонт тестового участка улицы Примерной планируют завершить
@@ -113,7 +114,7 @@ def test_verify_moves_record_and_records_sha(home):
 def test_missing_quote_keeps_draft_and_registry_untouched(home):
     root, page = home
     rec = draft()
-    rec["claims"][1]["quote"] = "завершить до 31 декабря 2026 года"   # нет в тексте
+    rec["claims"][1]["quote"] = "сдать объект до 30 ноября 2026 года"   # дата согласована, но фразы нет в тексте
     path = write_draft(root, rec)
     result = verify(root, page, path)
     assert result.returncode == 1 and "не найдена дословно" in result.stdout
@@ -165,6 +166,7 @@ def test_pii_in_quote_is_rejected(home):
     assert result.returncode == 1 and "pii" in result.stdout
 
 
+@needs_base
 def test_build_is_deterministic_and_check_detects_staleness(home):
     root, page = home
     assert verify(root, page, write_draft(root, draft())).returncode == 0
@@ -191,6 +193,7 @@ def test_build_is_deterministic_and_check_detects_staleness(home):
     assert summary["confirmed_current"] == 1 and summary["confirmed_historical"] == 0
 
 
+@needs_base
 def test_value_basis_makes_record_derived_and_old_end_goes_historical(home):
     root, page = home
     rec = draft()
@@ -233,6 +236,109 @@ def test_importer_dry_run_accepts_package(home, tmp_path):
     assert report["status"] == "dry_run" and report["counts"].get("create") == 1
     assert not any(item["action"] == "invalid" for item in report["items"])
     assert report["source"] == "r05-astana-r12-verified"
+
+
+def test_build_refuses_records_without_base_validator(home, monkeypatch):
+    root, page = home
+    assert verify(root, page, write_draft(root, draft())).returncode == 0
+    if HAS_BASE:
+        pytest.skip("проверяется только в дереве без валидатора R05")
+    result = run(root, "build")
+    assert result.returncode == 1 and "validator_not_run" in result.stdout
+    assert json.loads((root / "package.civic-v1.json").read_text())["items"] == []
+
+
+# ---------------------------------------------------------------- регрессии ревью (2026-10-07)
+@needs_base
+def test_editing_verified_record_after_verify_drops_it(home):
+    root, page = home
+    assert verify(root, page, write_draft(root, draft())).returncode == 0
+    path = root / "verified" / "ast-r12-roadworks-fixture-primernaya.json"
+    rec = json.loads(path.read_text())
+    rec["claims"][2]["value"] = "ТОО «Другой подрядчик»"          # правка после проверки
+    path.write_text(json.dumps(rec, ensure_ascii=False))
+    result = run(root, "build")
+    assert result.returncode == 1 and "edited_after_verify" in result.stdout
+    assert json.loads((root / "package.civic-v1.json").read_text())["items"] == []
+    assert run(root, "check").returncode == 1
+
+
+def test_budget_basis_from_another_source_is_rejected(home):
+    root, page = home
+    reg = json.loads((root / "sources.json").read_text())
+    reg["sources"].append(dict(SOURCE, id="src-r12-fixture-2", url="https://example.org/r05-fixture-2"))
+    (root / "sources.json").write_text(json.dumps(reg, ensure_ascii=False))
+    rec = draft()
+    next(c for c in rec["claims"] if c["field"] == "budget.basis")["source_id"] = "src-r12-fixture-2"
+    result = run(root, "verify", str(write_draft(root, rec)), "--text", f"src-r12-fixture-1={page}",
+                 "--text", f"src-r12-fixture-2={page}", "--retrieved-at", "2026-10-07T10:30:00Z")
+    assert result.returncode == 1 and "budget_basis_source" in result.stdout
+
+
+def test_actual_end_must_be_reported_actual(home):
+    root, page = home
+    rec = draft()
+    rec["claims"][0].update(value="completed", claim_type="reported_actual", quote="планируют завершить до 30 ноября 2026 года")
+    rec["claims"].append({"field": "schedule.actual_end", "value": "2026-09-20", "claim_type": "expected",
+                          "source_id": "src-r12-fixture-1", "quote": "Опубликовано 2026-09-20. Ремонт",
+                          "locator": "шапка", "value_basis": None})
+    result = verify(root, page, write_draft(root, rec))
+    assert result.returncode == 1 and "actual_type" in result.stdout
+
+
+@pytest.mark.parametrize("field,value,quote,code", [
+    ("budget.amount_kzt", 25000000, "по договору — 125 000 000 тенге", "value_not_in_quote"),
+    ("schedule.current_planned_end", "2026-11-03", "завершить до 30 ноября 2026 года", "value_not_in_quote"),
+    ("responsible.organization", "ТОО", "ведёт", "quote_short"),
+])
+def test_value_must_be_in_quote_and_quote_not_trivial(home, field, value, quote, code):
+    root, page = home
+    rec = draft()
+    claim = next(c for c in rec["claims"] if c["field"] == field)
+    claim.update(value=value, quote=quote)
+    result = verify(root, page, write_draft(root, rec))
+    assert result.returncode == 1 and code in result.stdout
+
+
+def test_number_inside_bigger_number_is_not_a_match(home, tmp_path):
+    root, _ = home
+    page = tmp_path / "big.txt"
+    page.write_text("Опубликовано 2026-09-20. Общая стоимость работ по договору — 1 125 000 000 тенге. "
+                    "Ремонт планируют завершить до 30 ноября 2026 года. Работы ведёт ТОО «Тестовый подрядчик».",
+                    encoding="utf-8")
+    result = verify(root, page, write_draft(root, draft()))
+    assert result.returncode == 1 and "по договору — 125 000 000 тенге" in result.stdout
+
+
+def test_script_in_fragment_without_html_tag_is_not_text(home, tmp_path):
+    root, _ = home
+    page = tmp_path / "fragment.html"
+    page.write_text('<article><script>window.x="Работы ведёт ТОО «Тестовый подрядчик»"</script>'
+                    "Ремонт планируют завершить до 30 ноября 2026 года. Стоимость работ по договору — 125 000 000 тенге."
+                    "</article>", encoding="utf-8")
+    result = verify(root, page, write_draft(root, draft()))
+    assert result.returncode == 1 and "Тестовый подрядчик" in result.stdout
+
+
+def test_reverify_shared_source_with_other_text_is_refused(home, tmp_path):
+    root, page = home
+    assert verify(root, page, write_draft(root, draft())).returncode == 0
+    other = tmp_path / "other.html"
+    other.write_text(FIXTURE_TEXT + "<p>Обновлено.</p>", encoding="utf-8")
+    rec = draft(id="ast-r12-roadworks-fixture-second")
+    result = verify(root, other, write_draft(root, rec))
+    assert result.returncode == 1 and "текст отличается" in result.stdout
+    changed_date = verify(root, page, write_draft(root, rec), "--published-on", "src-r12-fixture-1=2026-09-01")
+    assert changed_date.returncode == 1 and "дата публикации отличается" in changed_date.stdout
+
+
+def test_published_on_without_basis_is_an_error(home):
+    root, _ = home
+    reg = json.loads((root / "sources.json").read_text())
+    reg["sources"][0].update(published_on="2026-09-30", published_on_basis=None)
+    (root / "sources.json").write_text(json.dumps(reg, ensure_ascii=False))
+    result = run(root, "check")
+    assert result.returncode == 1 and "published_on_basis" in result.stdout
 
 
 def test_fetch_refuses_to_store_text_inside_repo(home):

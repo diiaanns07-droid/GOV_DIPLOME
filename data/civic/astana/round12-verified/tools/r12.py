@@ -91,12 +91,54 @@ def norm_text(value: str) -> str:
 
 
 def page_text(raw: str) -> str:
-    """HTML -> текст (грубо, без зависимостей); обычный текст — как есть."""
-    if re.search(r"<(html|body|div|p)\b", raw, re.I):
-        raw = re.sub(r"(?is)<(script|style|noscript)\b.*?</\1>", " ", raw)
-        raw = re.sub(r"(?s)<[^>]+>", " ", raw)
+    """HTML/фрагмент -> текст: комментарии, script/style/noscript/template и теги удаляются всегда,
+    если в файле есть разметка (даже без <html>/<body>). Обычный текст — как есть."""
+    if re.search(r"<\s*[A-Za-z!/]", raw):
+        raw = re.sub(r"(?s)<!--.*?-->", " ", raw)
+        raw = re.sub(r"(?is)<(script|style|noscript|template)\b.*?</\1\s*>", " ", raw)
+        raw = re.sub(r"(?is)<(script|style|noscript|template)\b.*$", " ", raw)   # незакрытый блок
+        raw = re.sub(r"(?s)<[^>]*>", " ", raw)
         raw = html.unescape(raw)
     return raw
+
+
+def quote_found(quote: str, text_norm: str) -> bool:
+    """Выдержка найдена целыми словами: «250 000 000» не совпадает внутри «1 250 000 000», «1 ноября» — внутри «21 ноября»."""
+    q = norm_text(quote)
+    pattern = r"(?<!\w)(?<!\d )" + re.escape(q) + r"(?!\w)(?! \d)"
+    return re.search(pattern, text_norm) is not None
+
+
+MONTHS_GEN = ("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября",
+              "октября", "ноября", "декабря")
+
+
+def date_in_quote(value: str, quote: str) -> bool:
+    d = parse_date(value)
+    if d is None:
+        return False
+    q = norm_text(quote)
+    forms = [d.isoformat(), f"{d.day:02d}.{d.month:02d}.{d.year}", f"{d.day}.{d.month:02d}.{d.year}",
+             f"{d.day} {MONTHS_GEN[d.month - 1]} {d.year}", f"{d.day:02d} {MONTHS_GEN[d.month - 1]} {d.year}"]
+    return any(re.search(r"(?<!\d)" + re.escape(f) + r"(?!\d)", q) for f in forms)
+
+
+def amount_in_quote(value, quote: str) -> bool:
+    """Сумма в тенге целиком записана цифрами в выдержке (разряды через пробел допустимы)."""
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or value != int(value):
+        return False
+    numbers = re.findall(r"(?<![\d.,])\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?![\d])|(?<![\d.,])\d+(?![\d.,])",
+                         unicodedata.normalize("NFKC", quote))
+    return any(int(re.sub(r"\D", "", n)) == int(value) for n in numbers)
+
+
+MIN_QUOTE_WORDS = 3
+
+
+def claims_digest(rec: dict) -> str:
+    """Отпечаток того, что проверил verify: правка claims/места после проверки его меняет."""
+    keep = {k: rec.get(k) for k in ("id", "kind", "historical", "location", "claims")}
+    return hashlib.sha256(json.dumps(keep, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 
 
 def config() -> dict:
@@ -177,8 +219,13 @@ def check_sources(reg: dict, issues: Issues) -> dict:
         access = src.get("access_status")
         if access not in ACCESS:
             issues.add(here + ".access_status", "enum", "fetched | not_fetched | unavailable")
-        if src.get("published_on") is not None and parse_date(src.get("published_on")) is None:
-            issues.add(here + ".published_on", "date", "YYYY-MM-DD или null")
+        if src.get("published_on") is not None:
+            if parse_date(src.get("published_on")) is None:
+                issues.add(here + ".published_on", "date", "YYYY-MM-DD или null")
+            elif src.get("published_on_basis") not in ("page", "url"):
+                issues.add(here + ".published_on_basis", "basis", "дата публикации только со страницы (page) или из URL (url)")
+            elif src.get("published_on_basis") == "url" and src["published_on"] not in str(src.get("url")):
+                issues.add(here + ".published_on", "url_date", "published_on_basis=url, но этой даты нет в URL")
         if access == "fetched":
             if not (isinstance(src.get("retrieved_at"), str) and TS_RE.match(src["retrieved_at"])):
                 issues.add(here + ".retrieved_at", "required", "fetched требует retrieved_at (UTC ...Z)")
@@ -296,7 +343,17 @@ def check_record(rec: dict, sources: dict, issues: Issues, *, verified: bool, pi
         quote = claim.get("quote")
         if not isinstance(quote, str) or not quote.strip() or len(quote) > MAX_QUOTE:
             issues.add(cw + ".quote", "quote", f"дословная выдержка 1–{MAX_QUOTE} символов")
+            quote = ""
+        elif len(norm_text(quote).split()) < MIN_QUOTE_WORDS:
+            issues.add(cw + ".quote", "quote_short", f"выдержка не короче {MIN_QUOTE_WORDS} слов (одно слово ничего не подтверждает)")
         value = claim.get("value")
+        basis = claim.get("value_basis")
+        if field.startswith("schedule.") and quote and not basis and parse_date(value) and not date_in_quote(value, quote):
+            issues.add(cw + ".quote", "value_not_in_quote", "дата значения должна быть в выдержке (иначе объясните в value_basis)")
+        if field == "budget.amount_kzt" and quote and not basis and not amount_in_quote(value, quote):
+            issues.add(cw + ".quote", "value_not_in_quote", "сумма цифрами должна быть в выдержке (иначе объясните в value_basis)")
+        if field == "schedule.actual_end" and claim.get("claim_type") != "reported_actual":
+            issues.add(cw + ".claim_type", "actual_type", "actual_end — только reported_actual (обещанная дата ≠ факт)")
         if field.startswith("schedule."):
             if parse_date(value) is None:
                 issues.add(cw + ".value", "date", "YYYY-MM-DD")
@@ -322,6 +379,10 @@ def check_record(rec: dict, sources: dict, issues: Issues, *, verified: bool, pi
     fields = {c.get("field") for c in claims}
     if "budget.amount_kzt" in fields and "budget.basis" not in fields:
         issues.add(here + ".claims", "budget_basis", "сумма без основания (planned/contract/spent)")
+    by_field = {c.get("field"): c for c in claims}
+    if "budget.amount_kzt" in by_field and "budget.basis" in by_field and \
+            by_field["budget.amount_kzt"].get("source_id") != by_field["budget.basis"].get("source_id"):
+        issues.add(here + ".claims", "budget_basis_source", "основание суммы должно быть из того же источника, что и сумма")
     status = next((c.get("value") for c in claims if c.get("field") == "status"), None)
     if "schedule.actual_end" in fields and status != "completed":
         issues.add(here + ".claims", "actual_end", "actual_end только при status=completed")
@@ -330,9 +391,17 @@ def check_record(rec: dict, sources: dict, issues: Issues, *, verified: bool, pi
         if not isinstance(ver, dict) or not isinstance(ver.get("sources"), dict):
             issues.add(here + ".verification", "required", "блок verification создаёт команда verify")
         else:
+            if ver.get("claims_digest") != claims_digest(rec):
+                issues.add(here + ".verification", "edited_after_verify",
+                           "claims/место изменены после verify: запись нужно проверить заново")
+            for c in claims:
+                if c.get("source_id") not in ver["sources"]:
+                    issues.add(here + ".verification", "unverified_source", f"{c.get('source_id')} не проверялся для этой записи")
             for sid, info in ver["sources"].items():
-                if sources.get(sid, {}).get("content_sha256") != info.get("content_sha256"):
-                    issues.add(here + ".verification", "sha_mismatch", f"sha256 {sid} не совпадает с реестром")
+                src = sources.get(sid, {})
+                for key in ("content_sha256", "published_on", "retrieved_at"):
+                    if src.get(key) != info.get(key):
+                        issues.add(here + ".verification", "source_changed", f"{sid}.{key} изменился после проверки записи")
 
 
 # ---------------------------------------------------------------- civic-v1
@@ -410,13 +479,24 @@ def build(write: bool = True) -> tuple[dict, list[dict]]:
     issues = Issues()
     sources = check_sources(reg, issues)
     current, historical = [], []
-    for rec in load_records("verified"):
+    validator = base_validator()
+    records = load_records("verified")
+    if records and validator is None:
+        issues.add("build", "validator_not_run",
+                   "нет data/civic/astana/tools/civic_v1.py: без профиля real записи в пакет не попадают")
+    for rec in records:
         before = len(issues.errors)
         check_record(rec, sources, issues, verified=True)
-        if len(issues.errors) > before:
+        if len(issues.errors) > before or validator is None:
             continue
-        (historical if is_historical(rec, as_of, cfg.get("historical_cutoff_days", 365)) else current).append(
-            to_civic(rec, sources, cfg.get("as_of")))
+        item = to_civic(rec, sources, cfg.get("as_of"))
+        problems = [i for i in validator.validate_object(item, profile="real", as_of=cfg.get("as_of"))
+                    if i.get("severity", "error") == "error"]
+        for prob in problems:
+            issues.add(f"record:{rec.get('id')}", "r05_real_" + str(prob.get("code")), str(prob.get("message"))[:300])
+        if problems:
+            continue
+        (historical if is_historical(rec, as_of, cfg.get("historical_cutoff_days", 365)) else current).append(item)
 
     inputs = [{"path": f"verified/{p.name}", "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}
               for p in sorted((HERE / "verified").glob("*.json"))]
@@ -492,7 +572,7 @@ def cmd_verify(args) -> int:
         sid = claim["source_id"]
         if sid not in texts:
             missing.append({"field": claim["field"], "source_id": sid, "problem": "нет текста источника (--text)"})
-        elif norm_text(claim["quote"]) not in texts[sid][1]:
+        elif not quote_found(claim["quote"], texts[sid][1]):
             missing.append({"field": claim["field"], "source_id": sid, "problem": "выдержка не найдена дословно",
                             "quote": claim["quote"]})
     for sid, date in published.items():
@@ -502,21 +582,41 @@ def cmd_verify(args) -> int:
         print(dump_json({"status": "not_verified", "problems": missing}))
         return 1
     used = sorted({c["source_id"] for c in rec["claims"]})
-    for src in reg["sources"]:
-        if src["id"] in used:
+    by_id = {s["id"]: s for s in reg["sources"]}
+    conflicts = []
+    for sid in used:
+        src = by_id[sid]
+        if src.get("access_status") == "fetched":
+            # Источник уже подтверждал другие записи: другой текст или другая дата публикации их обесценили бы.
+            if src.get("content_sha256") != texts[sid][0]:
+                conflicts.append({"source_id": sid, "problem": "текст отличается от уже проверенного (sha256): "
+                                  "сохраните прежнюю версию или перепроверьте все записи этого источника"})
+            if sid in published and src.get("published_on") not in (None, published[sid]):
+                conflicts.append({"source_id": sid, "problem": "дата публикации отличается от уже записанной"})
+    if conflicts:
+        print(dump_json({"status": "not_verified", "problems": conflicts}))
+        return 1
+    for sid in used:
+        src = by_id[sid]
+        if src.get("access_status") != "fetched":
             src.update({"access_status": "fetched", "retrieved_at": args.retrieved_at,
-                        "content_sha256": texts[src["id"]][0], "fetch_method": args.method})
-            if src["id"] in published:
-                src["published_on"], src["published_on_basis"] = published[src["id"]], "page"
+                        "content_sha256": texts[sid][0], "fetch_method": args.method})
             src.setdefault("access_attempts", []).append(
                 {"at": args.retrieved_at, "method": args.method, "outcome": "fetched",
-                 "detail": "все выдержки записи найдены дословно; текст страницы в Git не хранится"})
+                 "detail": "все выдержки записи найдены целыми словами; текст страницы в Git не хранится"})
+        if sid in published:
+            src["published_on"], src["published_on_basis"] = published[sid], "page"
+        elif src.get("published_on_basis") not in ("page", "url"):
+            src["published_on"], src["published_on_basis"] = None, None   # дата без основания не используется
     rec["verification"] = {"method": "quote_match_saved_text", "verified_at": args.retrieved_at,
-                           "sources": {sid: {"content_sha256": texts[sid][0]} for sid in used}}
+                           "claims_digest": claims_digest(rec),
+                           "sources": {sid: {"content_sha256": by_id[sid]["content_sha256"],
+                                             "published_on": by_id[sid].get("published_on"),
+                                             "retrieved_at": by_id[sid].get("retrieved_at")} for sid in used}}
     # actual_end не может быть позже публикации источника, сообщившего о нём
     for claim in rec["claims"]:
         if claim["field"] == "schedule.actual_end":
-            pub = parse_date(next(s for s in reg["sources"] if s["id"] == claim["source_id"]).get("published_on"))
+            pub = parse_date(by_id[claim["source_id"]].get("published_on"))
             if pub is None or parse_date(claim["value"]) > pub:
                 print(dump_json({"status": "not_verified", "problems": [
                     {"field": "schedule.actual_end", "problem": "дата позже публикации или публикация без даты: это ожидание, не факт"}]}))
@@ -847,6 +947,8 @@ def cmd_check(args) -> int:
         on_disk = (HERE / name).read_text(encoding="utf-8") if (HERE / name).exists() else None
         if on_disk != dump_json(value):
             stale.append(name)
+    if load_records("verified") and "NOT_RUN" in ran.values():
+        issues.add("check", "validator_not_run", "есть подтверждённые записи, но валидаторы R05/R02 не запускались")
     report = {"issues": issues.items, "civic_issues": civic, "validators": ran, "stale_packages": stale}
     print(dump_json(report))
     return 1 if issues.errors or civic or stale else 0
