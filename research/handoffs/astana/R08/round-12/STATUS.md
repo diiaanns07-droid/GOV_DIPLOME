@@ -8,7 +8,7 @@
 - Прежней работы R08 нет ни в одной ветке origin (проверено 2026-10-07).
 - Пути: `ml/civic_classifier/`, `tests/civic/R08/`, `research/round-12-results/R08/`, этот файл.
 
-## Статус: PARTIAL — checkpoint 1
+## Статус: PARTIAL — checkpoint 2
 
 ### Сделано
 - Контракт по фактическому коду базы: метки = `ui/civic_feedback/service.py CATEGORIES`; язык от
@@ -16,9 +16,14 @@
 - `ml/civic_classifier`: `classify(text, language)`, загрузка JSON-модели (gzip, sha256, без pickle),
   безопасный fallback на эвристику (needs_review=True, score=None), обезличивание телефонов/e-mail/ИИН/ссылок.
 - `LABELING_GUIDE.md`, `research/round-12-results/R08/DATA_SOURCES.json` (реальные источники: 403).
+- CP2 `corpus.py`: детерминированный СИНТЕТИЧЕСКИЙ корпус (seed 20261007): 131 шаблон, 1748 сообщений
+  RU/KK/смешанный; обезличивание до сохранения (81 телефон, 43 e-mail); 120 точных дубликатов удалены до split;
+  group split по шаблонам (train 995 / val 318 / test 435); фильтр близких дубликатов val/test (Jaccard ≥ 0.8) — 0.
+- `data/probe_agent_v1.jsonl`: 112 сообщений, написаны вручную агентом вне генератора (другой стиль) —
+  проверка переноса; разметка агентская, не экспертная.
 
 ### Проверки
-- `python3 -m pytest tests/civic/R08 -q` -> 15 passed.
+- `python3 -m pytest tests/civic/R08 -q` -> 20 passed.
 
 ### Следующий шаг
-Синтетический корпус RU/KK/смешанный с группами шаблонов, dedup до split, манифест split.
+Обучение NB и логистической регрессии (stdlib), JSON-артефакт, CLI train/evaluate/predict.
