@@ -1,9 +1,12 @@
 /*
  * R09 CivicAssistant — помощник по проверенным фактам карточки (раунд 11, civic-v1).
  *
- * window.CivicAssistant.mount({root, api, objectId, scenarioId?}) -> {destroy}
+ * window.CivicAssistant.mount({root, api, objectId, scenarioId?, revision?}) -> {ask, update, destroy}
  *   Житель задаёт вопрос; сервер (POST /assistant) собирает ответ из опубликованных
  *   фактов. Браузер не передаёт фактов: только {question, object_id, scenario_id}.
+ *   revision — редакция карточки на экране; ответ по другой редакции не показывается.
+ *   update({objectId?, scenarioId?, revision?}) — карточка обновилась/сменилась: прежний
+ *   запрос отменяется, ответ по устаревшей редакции убирается (раунд 12).
  * window.CivicAssistant.mountDraftReview({root, api, onApplyField}) -> {destroy}
  *   Редактор вставляет текст публикации, получает черновик полей
  *   (POST /staff/assistant/extract) и вручную переносит отмеченные поля в форму
@@ -29,9 +32,10 @@
     "Сколько это стоит и откуда сумма?",
     "Откуда эти данные?",
     "Работы уже закончены?",
+    "Какие сведения отсутствуют?",
     "Не болып жатыр? Қашан аяқталады?",
   ];
-  const SCENARIO_EXAMPLES = ["Чем план A отличается от B?", "Как изменится проход?"];
+  const SCENARIO_EXAMPLES = ["Чем план A отличается от B?", "Как изменится проход?", "A мен B жоспарын салыстыр"];
 
   const SOURCE_LABELS = {
     template: "Ответ собран по данным карточки (шаблон, без модели)",
@@ -111,12 +115,47 @@
     };
   }
 
+  function fmtDay(value) {
+    // "2026-10-05" или "2026-10-05T09:00:00+05:00" -> "05.10.2026"; иначе null.
+    const m = typeof value === "string" ? /^(\d{4})-(\d{2})-(\d{2})/.exec(value) : null;
+    return m ? m[3] + "." + m[2] + "." + m[1] : null;
+  }
+
+  function safeUrl(value) {
+    if (typeof value !== "string") return null;
+    try {
+      const u = new URL(value);
+      return u.protocol === "https:" || u.protocol === "http:" ? u.href : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function sourceNode(ref) {
+    // Подпись источника для человека: издатель и дата публикации из карточки; ID — во всплывающей подсказке.
+    const span = el("span", { className: "civic-r09-st-src", title: "ID источника: " + ref.id });
+    const parts = [ref.publisher || "источник без названия"];
+    const day = fmtDay(ref.published_on);
+    if (day) parts.push("опубл. " + day);
+    span.append(document.createTextNode("источник: " + parts.join(", ")));
+    const href = safeUrl(ref.url);
+    if (href) {
+      span.append(document.createTextNode(" · "));
+      span.append(el("a", { href, target: "_blank", rel: "noopener noreferrer nofollow", className: "civic-r09-src-link" }, "ссылка"));
+    }
+    return span;
+  }
+
   function renderAnswer(box, data) {
     box.replaceChildren();
     const source = typeof data.source === "string" && SOURCE_LABELS[data.source] ? data.source : "unavailable";
     const head = el("div", { className: "civic-r09-answer-head" });
     head.append(el("span", { className: "civic-r09-badge civic-r09-badge--" + source, "data-source": source }, SOURCE_LABELS[source]));
     box.append(head);
+    const refs = new Map();
+    for (const ref of Array.isArray(data.sources) ? data.sources : []) {
+      if (ref && typeof ref.id === "string") refs.set(ref.id, ref);
+    }
     const list = el("ul", { className: "civic-r09-statements" });
     const statements = Array.isArray(data.statements) ? data.statements : [];
     for (const st of statements) {
@@ -126,7 +165,10 @@
       item.append(el("span", { className: "civic-r09-st-text" }, st.text));
       if (KIND_LABELS[kind]) item.append(el("span", { className: "civic-r09-st-kind" }, KIND_LABELS[kind]));
       const sources = Array.isArray(st.source_ids) ? st.source_ids.filter((s) => typeof s === "string") : [];
-      if (sources.length) item.append(el("span", { className: "civic-r09-st-src" }, "источник: " + sources.join(", ")));
+      for (const sid of sources) {
+        const ref = refs.get(sid);
+        item.append(ref ? sourceNode(ref) : el("span", { className: "civic-r09-st-src" }, "источник: " + sid));
+      }
       const facts = Array.isArray(st.fact_ids) ? st.fact_ids.filter((s) => typeof s === "string") : [];
       if (facts.length) item.setAttribute("data-fact-ids", facts.join(" "));
       list.append(item);
@@ -136,6 +178,11 @@
     const warnings = Array.isArray(data.warnings) ? data.warnings : [];
     if (warnings.some((w) => typeof w === "string" && w.startsWith("audit_dropped"))) {
       box.append(el("p", { className: "civic-r09-note" }, "Часть ответа скрыта автоматической проверкой: она не подтверждалась данными карточки."));
+    }
+    if (Number.isInteger(data.object_revision)) {
+      const day = fmtDay(data.object_updated_at);
+      box.append(el("p", { className: "civic-r09-version" },
+        "По данным карточки: редакция " + data.object_revision + (day ? " от " + day : "") + "."));
     }
     const meta = [];
     if (typeof data.facts_version === "string") meta.push(data.facts_version);
@@ -149,8 +196,12 @@
     const api = opts.api;
     if (!root || typeof root.append !== "function") throw new TypeError("CivicAssistant.mount: root is required");
     if (!api || typeof api.request !== "function") throw new TypeError("CivicAssistant.mount: api.request is required");
-    const objectId = typeof opts.objectId === "string" && opts.objectId ? opts.objectId : null;
-    const scenarioId = typeof opts.scenarioId === "string" && opts.scenarioId ? opts.scenarioId : null;
+    const idOrNull = (v) => (typeof v === "string" && v ? v : null);
+    const revOrNull = (v) => (Number.isInteger(v) && v >= 1 ? v : null);
+    let objectId = idOrNull(opts.objectId);
+    let scenarioId = idOrNull(opts.scenarioId);
+    let revision = revOrNull(opts.revision);
+    let shownRevision = null;
     const gate = requestGate();
     let destroyed = false;
     let clientTimer = null;
@@ -222,7 +273,14 @@
           status.textContent = "Ответ относится к другому объекту и не показан.";
           return;
         }
+        // Карточка обновилась, пока готовился ответ: устаревшую редакцию не выдаём за текущую.
+        if (revision !== null && Number.isInteger(data.object_revision) && data.object_revision !== revision) {
+          status.textContent = "Карточка обновилась, пока готовился ответ (ответ по редакции " + data.object_revision +
+            ", на экране — редакция " + revision + "). Задайте вопрос ещё раз.";
+          return;
+        }
         renderAnswer(answer, data);
+        shownRevision = Number.isInteger(data.object_revision) ? data.object_revision : null;
       } catch (error) {
         if (destroyed || !gate.isCurrent(ticket.id)) return;
         clearTimer();
@@ -264,8 +322,37 @@
     input.addEventListener("keydown", onKey);
     cancel.addEventListener("click", onCancel);
 
+    function update(next) {
+      if (destroyed || !next || typeof next !== "object") return;
+      const nextObject = "objectId" in next ? idOrNull(next.objectId) : objectId;
+      const nextScenario = "scenarioId" in next ? idOrNull(next.scenarioId) : scenarioId;
+      const nextRevision = "revision" in next ? revOrNull(next.revision) : revision;
+      const targetChanged = nextObject !== objectId || nextScenario !== scenarioId;
+      const pending = section.getAttribute("aria-busy") === "true";
+      objectId = nextObject;
+      scenarioId = nextScenario;
+      revision = nextRevision;
+      if (pending || targetChanged) {
+        gate.cancel();
+        clearTimer();
+        setPending(false);
+      }
+      if (targetChanged) {
+        answer.replaceChildren();
+        status.textContent = "";
+        shownRevision = null;
+      } else if (shownRevision !== null && revision !== null && shownRevision !== revision) {
+        answer.replaceChildren();
+        shownRevision = null;
+        status.textContent = "Карточка обновилась (редакция " + revision + "). Прежний ответ убран — задайте вопрос ещё раз.";
+      } else if (pending) {
+        status.textContent = "Карточка обновилась — запрос отменён. Задайте вопрос ещё раз.";
+      }
+    }
+
     return {
       ask: (question) => submit(question),
+      update,
       destroy() {
         if (destroyed) return;
         destroyed = true;

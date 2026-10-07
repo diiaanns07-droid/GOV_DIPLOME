@@ -10,6 +10,8 @@ claude/brave-hopper-bkc58b, SHA 18f8ac8, синтетический кейс syn
 from __future__ import annotations
 
 from datetime import datetime
+import hashlib
+import json
 import math
 import re
 
@@ -53,6 +55,25 @@ S = {
                        "движок не моделирует.",
         "unreachable_note": "«Нет пути в модели» — свойство графа, а не доказанная потеря доступа на местности.",
         "mode": {"walking": "пешком", "driving": "на автомобиле"},
+        "graph_data": "Сеть: «{label}». Снимок OpenStreetMap на {snapshot}, получен {retrieved}; лицензия: {license}. "
+                      "Это не оперативные данные.",
+        "graph_data_short": "Сеть: «{label}»; дата снимка данных не указана.",
+        "closure": "План {p}: перекрытие ({n} уч.) с {start} до {end} — в момент анализа {state}.",
+        "closure_active": "действует",
+        "closure_inactive": "не действует",
+        "closure_unverified": "Интервалы перекрытий не показаны: входные данные сценария не совпали с расчётом.",
+        "route_base": "Без перекрытий: путь {v} м.",
+        "route_plan": "План {p}: путь {v} м — {delta} относительно состояния без перекрытий.",
+        "route_plan_status": "План {p}: {status}.",
+        "route_base_status": "Без перекрытий: {status}.",
+        "route_ab": "От плана A к плану B путь {delta}.",
+        "route_status": {"unreachable": "пути в модели нет", "unknown": "путь не подтверждён (участки с неизвестным доступом)"},
+        "pair_label": "Пара {i}: ",
+        "unknown_access": "Режим доступа неизвестен для {share} % длины сети; такие участки маршрутом не используются.",
+        "slice": "Граф — прямоугольная выборка: сеть за её границей не моделируется; путь через внешнюю сеть мог бы "
+                 "быть короче, а «нет пути» не доказано.",
+        "no_best": "Помощник не ранжирует варианты: показаны только длины путей в модели, выбор остаётся за сотрудником.",
+        "many_pairs": "Пар маршрутов: {n}; ниже — сводка по парам, а не каждый путь.",
     },
     "kk": {
         "graph_synthetic": "Сценарий графы синтетикалық (шартты), бұл Астана көшелері емес.",
@@ -83,6 +104,25 @@ S = {
                        "қауіпсіздік модельденбейді.",
         "unreachable_note": "«Модельде жол жоқ» — граф қасиеті, жергілікті жерде қолжетімділіктің жоғалғаны дәлелденбеген.",
         "mode": {"walking": "жаяу", "driving": "көлікпен"},
+        "graph_data": "Желі: «{label}». OpenStreetMap суреті {snapshot} күнгі, {retrieved} алынған; лицензия: {license}. "
+                      "Бұл жедел деректер емес.",
+        "graph_data_short": "Желі: «{label}»; деректер суретінің күні көрсетілмеген.",
+        "closure": "{p} жоспары: жабылу ({n} учаске) {start} бастап {end} дейін — талдау сәтінде {state}.",
+        "closure_active": "әрекет етеді",
+        "closure_inactive": "әрекет етпейді",
+        "closure_unverified": "Жабылу аралықтары көрсетілмеді: сценарийдің кіріс деректері есеппен сәйкес келмеді.",
+        "route_base": "Жабылусыз: жол {v} м.",
+        "route_plan": "{p} жоспары: жол {v} м — жабылусыз күймен салыстырғанда {delta}.",
+        "route_plan_status": "{p} жоспары: {status}.",
+        "route_base_status": "Жабылусыз: {status}.",
+        "route_ab": "A жоспарынан B жоспарына жол {delta}.",
+        "route_status": {"unreachable": "модельде жол жоқ", "unknown": "жол расталмаған (қолжетімділігі белгісіз учаскелер)"},
+        "pair_label": "{i}-жұп: ",
+        "unknown_access": "Желі ұзындығының {share} % үшін қолжетімділік режимі белгісіз; мұндай учаскелер маршрутта қолданылмайды.",
+        "slice": "Граф — тікбұрышты үзінді: оның шекарасынан тыс желі модельденбейді; сыртқы желі арқылы жол қысқа "
+                 "болуы мүмкін, ал «жол жоқ» дәлелденбеген.",
+        "no_best": "Көмекші нұсқаларды саралап, ұсыныс бермейді: тек модельдегі жолдардың ұзындығы салыстырылады.",
+        "many_pairs": "Маршрут жұптары: {n}; төменде әр жол емес, жұптар бойынша жиынтық.",
     },
 }
 
@@ -137,9 +177,132 @@ def _change_facts(prefix, summary):
     return out
 
 
-def scenario_facts(result, scenario_id=None) -> tuple[list[dict], list[str]]:
+INPUT_SCHEMA = "civic-assistant-scenario-input-v1"
+MAX_ROUTE_PAIRS = 3
+MAX_CLOSURES = 5
+
+
+def payload_digest(payload) -> str:
+    """Тот же канонический JSON, что engine.civic_scenarios.canon.sha256_hex (sort_keys, без пробелов, UTF-8)."""
+    raw = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def _date_display(value):
+    """'2026-05-06T03:25:00Z' или '2026-10-07' -> '06.05.2026'; иначе None."""
+    if not isinstance(value, str) or len(value) < 10:
+        return None
+    try:
+        d = datetime.fromisoformat(value[:10])
+    except ValueError:
+        return None
+    return f"{d.day:02d}.{d.month:02d}.{d.year:04d}"
+
+
+def _graph_facts(graph, result_input, warnings):
+    """Сведения о сети из MANIFEST R07 (сервер), только если это тот же граф, что в расчёте."""
+    if not isinstance(graph, dict):
+        return []
+    if graph.get("id") != result_input.get("graph_id") or graph.get("digest") != result_input.get("graph_digest"):
+        warnings.append("scenario_graph_info_mismatch")
+        return []
+    source = graph.get("source") if isinstance(graph.get("source"), dict) else {}
+    lic = graph.get("license")
+    if isinstance(lic, dict):
+        parts = [clean_text(lic.get("id"), 40)] + [clean_text(a, 80) for a in (lic.get("attribution") or [])
+                                                    if isinstance(a, str)]
+        lic = "; ".join(x for x in parts if x) or None
+    else:
+        lic = clean_text(lic, 120)
+    snap, got = clean_text(source.get("snapshot_at"), 40), clean_text(source.get("retrieved_at"), 40)
+    return [
+        _fact("scenario.graph.label", "graph_label", clean_text(graph.get("label"), 160), "text"),
+        _fact("scenario.graph.snapshot_at", "graph_snapshot_at", snap, "timestamp",
+              display=[_date_display(snap)] if _date_display(snap) else None),
+        _fact("scenario.graph.retrieved_at", "graph_retrieved_at", got, "timestamp",
+              display=[_date_display(got)] if _date_display(got) else None),
+        _fact("scenario.graph.license", "graph_license", lic, "text"),
+    ]
+
+
+def _route_facts(result, warnings):
+    """Длины путей по парам (до MAX_ROUTE_PAIRS) и разницы — только значения движка, без пересчёта."""
+    base = result.get("baseline") if isinstance(result.get("baseline"), dict) else {}
+    base_routes = [r for r in (base.get("routes") or []) if isinstance(r, dict)]
+    if not base_routes or len(base_routes) > MAX_ROUTE_PAIRS:
+        return [], len(base_routes)
+    key = lambda r: (r.get("origin_node_id"), r.get("destination_node_id"))  # noqa: E731
+    plans = {p.get("id"): p for p in (result.get("plans") or []) if isinstance(p, dict) and p.get("id") in PLAN_IDS}
+    ab = result.get("a_vs_b") if isinstance(result.get("a_vs_b"), dict) else {}
+    ab_pairs = {key(x): x for x in (ab.get("pairs") or []) if isinstance(x, dict)}
+    facts = []
+    for i, br in enumerate(base_routes, start=1):
+        pre = f"scenario.route{i}"
+        facts += [_fact(pre + ".baseline.status", "route_status", br.get("status") if br.get("status") in
+                        ("ok", "unknown", "unreachable") else None, "enum"),
+                  _fact(pre + ".baseline.length_m", "route_length_m",
+                        _num(br.get("length_m")) if br.get("status") == "ok" else None, "metric_m")]
+        for pid, plan in plans.items():
+            route = next((r for r in plan.get("routes") or [] if isinstance(r, dict) and key(r) == key(br)), None)
+            vs = next((x for x in ((plan.get("vs_baseline") or {}).get("pairs") or [])
+                       if isinstance(x, dict) and key(x) == key(br)), None)
+            status = route.get("status") if route and route.get("status") in ("ok", "unknown", "unreachable") else None
+            facts += [_fact(f"{pre}.{pid}.status", "route_status", status, "enum"),
+                      _fact(f"{pre}.{pid}.length_m", "route_length_m",
+                            _num(route.get("length_m")) if route and status == "ok" else None, "metric_m"),
+                      _fact(f"{pre}.{pid}.delta_m", "route_delta_m", _num(vs.get("delta_m")) if vs else None,
+                            "metric_m")]
+        x = ab_pairs.get(key(br))
+        if x is not None:
+            facts.append(_fact(f"{pre}.AB.delta_m", "route_delta_m", _num(x.get("delta_m")), "metric_m"))
+    return facts, len(base_routes)
+
+
+def _closure_facts(result, payload, warnings):
+    """Интервалы перекрытий из входа сценария; активность — по списку inactive_closures движка."""
+    if not isinstance(payload, dict):
+        return []
+    inp = result.get("input") if isinstance(result.get("input"), dict) else {}
+    try:
+        same = payload_digest(payload) == inp.get("payload_digest")
+    except (TypeError, ValueError):
+        same = False
+    if not same:
+        warnings.append("scenario_payload_mismatch")
+        return [_fact("scenario.closures_unverified", "closures_unverified", True, "flag")]
+    facts = []
+    plans = {p.get("id"): p for p in (result.get("plans") or []) if isinstance(p, dict)}
+    for plan in payload.get("plans") or []:
+        pid = plan.get("id") if isinstance(plan, dict) else None
+        if pid not in PLAN_IDS or pid not in plans:
+            continue
+        inactive = plans[pid].get("inactive_closures") or []
+        sig = lambda c: (c.get("start_at"), c.get("end_at"), sorted(c.get("edge_ids") or []))  # noqa: E731
+        inactive_sigs = [sig(c) for c in inactive if isinstance(c, dict)]
+        for j, c in enumerate((plan.get("closures") or [])[:MAX_CLOSURES], start=1):
+            if not isinstance(c, dict) or not isinstance(c.get("edge_ids"), list):
+                continue
+            start, end = _fmt_at(c.get("start_at")), _fmt_at(c.get("end_at"))
+            value = {"edges": len(c["edge_ids"]), "start_at": clean_text(c.get("start_at"), 40),
+                     "end_at": clean_text(c.get("end_at"), 40), "active": sig(c) not in inactive_sigs}
+            facts.append(_fact(f"scenario.{pid}.closure{j}", "closure", value, "closure",
+                               display=[x for x in (start, end) if x]))
+        if len(plan.get("closures") or []) > MAX_CLOSURES:
+            warnings.append("scenario_closures_truncated")
+    return facts
+
+
+def _unwrap(scenario):
+    """Принимаем результат R07 как есть или обёртку {schema, result, payload, graph} от сервера."""
+    if isinstance(scenario, dict) and scenario.get("schema") == INPUT_SCHEMA:
+        return scenario.get("result"), scenario.get("payload"), scenario.get("graph")
+    return scenario, None, None
+
+
+def scenario_facts(scenario, scenario_id=None) -> tuple[list[dict], list[str]]:
     """Нормализация результата compare() R07 в каталог фактов. Неизвестное -> known=False."""
     warnings: list[str] = []
+    result, payload, graph = _unwrap(scenario)
     if not isinstance(result, dict) or result.get("schema_version") != RESULT_SCHEMA:
         raise ContextError("scenario_schema", "ожидается " + RESULT_SCHEMA)
     inp = result.get("input") if isinstance(result.get("input"), dict) else {}
@@ -187,6 +350,18 @@ def scenario_facts(result, scenario_id=None) -> tuple[list[dict], list[str]]:
         facts += _change_facts("scenario.AB", ab.get("summary"))
     if any(f["value"] is None for f in facts if f["kind"] == "count"):
         warnings.append("scenario_metric_missing")
+    route_facts, pairs = _route_facts(result, warnings)
+    facts += route_facts
+    facts.append(_fact("scenario.route_pairs", "route_pairs", pairs))
+    facts += _closure_facts(result, payload, warnings)
+    facts += _graph_facts(graph, inp, warnings)
+    unknown = None if share is None else round((1 - share) * 100, 1)
+    facts.append(_fact("scenario.unknown_access_share", "unknown_access_share",
+                       None if share is None else round(1 - share, 4), "share",
+                       display=[fmt_money(unknown)] if unknown is not None else None))
+    codes = sorted({w.get("code") for w in result.get("warnings") or [] if isinstance(w, dict)
+                    and isinstance(w.get("code"), str) and len(w["code"]) <= 60})
+    facts.append(_fact("scenario.engine_warnings", "engine_warnings", codes, "codes"))
     return facts, warnings
 
 
@@ -233,6 +408,60 @@ def _mean_line(facts, lang, prefix, key, plan=None):
                facts=facts)
 
 
+def _route_lines(facts, lang):
+    """Длины путей по парам и разницы — значения движка; статус без пути — не ноль и не «закрыто»."""
+    s = S[lang]
+    out = []
+    pairs = _v(facts, "scenario.route_pairs") or 0
+    for i in range(1, pairs + 1):
+        pre = f"scenario.route{i}"
+        if f"{pre}.baseline.status" not in facts:
+            continue
+        label = s["pair_label"].format(i=i) if pairs > 1 else ""
+        base_len = _v(facts, f"{pre}.baseline.length_m")
+        if base_len is not None:
+            out.append(_st(label + s["route_base"].format(v=fmt_money(base_len)),
+                           [f"{pre}.baseline.length_m", f"{pre}.baseline.status"], facts=facts))
+        else:
+            status = _v(facts, f"{pre}.baseline.status")
+            out.append(_st(label + s["route_base_status"].format(status=s["route_status"].get(status, NO_DATA[lang])),
+                           [f"{pre}.baseline.status"], kind="missing", facts=facts))
+        for pid in PLAN_IDS:
+            if f"{pre}.{pid}.status" not in facts:
+                continue
+            length = _v(facts, f"{pre}.{pid}.length_m")
+            if length is not None:
+                out.append(_st(label + s["route_plan"].format(p=pid, v=fmt_money(length),
+                                                              delta=_delta(_v(facts, f"{pre}.{pid}.delta_m"), lang)),
+                               [f"{pre}.{pid}.length_m", f"{pre}.{pid}.delta_m", f"{pre}.{pid}.status"], facts=facts))
+            else:
+                status = _v(facts, f"{pre}.{pid}.status")
+                out.append(_st(label + s["route_plan_status"].format(
+                    p=pid, status=s["route_status"].get(status, NO_DATA[lang])), [f"{pre}.{pid}.status"],
+                    kind="missing", facts=facts))
+        if f"{pre}.AB.delta_m" in facts and _v(facts, f"{pre}.AB.delta_m") is not None:
+            out.append(_st(label + s["route_ab"].format(delta=_delta(_v(facts, f"{pre}.AB.delta_m"), lang)),
+                           [f"{pre}.AB.delta_m"], facts=facts))
+    return out
+
+
+def _closure_lines(facts, lang):
+    s = S[lang]
+    if "scenario.closures_unverified" in facts:
+        return [_st(s["closure_unverified"], ["scenario.closures_unverified"], kind="notice")]
+    out = []
+    for fid in sorted(f for f in facts if re.match(r"^scenario\.[AB]\.closure\d+$", f)):
+        c = facts[fid]
+        v = c["value"]
+        disp = (c.get("meta") or {}).get("display") or []
+        if len(disp) != 2:
+            continue
+        out.append(_st(s["closure"].format(p=fid.split(".")[1], n=v["edges"], start=disp[0], end=disp[1],
+                                           state=s["closure_active" if v["active"] else "closure_inactive"]),
+                       [fid], facts=facts))
+    return out
+
+
 def render_scenario(facts: dict, lang: str, focus: str = "compare") -> list[dict]:
     if "scenario.engine" not in facts:
         return []
@@ -245,34 +474,64 @@ def render_scenario(facts: dict, lang: str, focus: str = "compare") -> list[dict
         out.append(_st(s[graph_note], ["scenario.graph_evidence_type"], kind="notice"))
     # Перекрытие в сценарии — всегда гипотеза пользователя, даже на наблюдаемом графе.
     out.append(_st(s["hypothesis"], [], kind="notice"))
+    label = _v(facts, "scenario.graph.label")
+    if label:
+        snap = ((facts["scenario.graph.snapshot_at"].get("meta") or {}).get("display") or [None])[0] \
+            if "scenario.graph.snapshot_at" in facts else None
+        got = ((facts["scenario.graph.retrieved_at"].get("meta") or {}).get("display") or [None])[0] \
+            if "scenario.graph.retrieved_at" in facts else None
+        if snap:
+            out.append(_st(s["graph_data"].format(label=label, snapshot=snap, retrieved=got or NO_DATA[lang],
+                                                  license=_v(facts, "scenario.graph.license") or NO_DATA[lang]),
+                           ["scenario.graph.label", "scenario.graph.snapshot_at", "scenario.graph.retrieved_at",
+                            "scenario.graph.license"], facts=facts))
+        else:
+            out.append(_st(s["graph_data_short"].format(label=label), ["scenario.graph.label"], kind="missing",
+                           facts=facts))
     mode, at = _v(facts, "scenario.mode"), _v(facts, "scenario.analysis_at")
     at_text = (facts["scenario.analysis_at"].get("meta") or {}).get("display", [None])[0] if at else None
     out.append(_st(s["run"].format(mode=s["mode"].get(mode, NO_DATA[lang]), at=at_text or NO_DATA[lang]),
                    ["scenario.mode", "scenario.analysis_at"], facts=facts))
+    out += _closure_lines(facts, lang)
+    routes = _route_lines(facts, lang)
+    if routes:
+        out += routes
+    else:
+        pairs = _v(facts, "scenario.route_pairs")
+        if pairs:
+            out.append(_st(s["many_pairs"].format(n=pairs), ["scenario.route_pairs"], kind="notice", facts=facts))
+        out.append(_status_line(facts, lang, "scenario.baseline", "baseline"))
+        plans = [p for p in PLAN_IDS if f"scenario.{p}.pairs" in facts]
+        for p in plans:
+            if _v(facts, f"scenario.{p}.active_closures") == 0:
+                out.append(_st(s["plan_no_active"].format(p=p), [f"scenario.{p}.active_closures"], kind="notice",
+                               facts=facts))
+            if focus == "impact" or "scenario.AB.comparable_pairs" not in facts:
+                out.append(_status_line(facts, lang, f"scenario.{p}", "plan_status", p))
+            out.append(_changes_line(facts, lang, f"scenario.{p}.vs_baseline", "plan_vs_base", p))
+            out.append(_mean_line(facts, lang, f"scenario.{p}.vs_baseline", "plan_mean", p))
+        if focus == "compare":
+            if "scenario.AB.comparable_pairs" in facts:
+                out.append(_st(s["ab_status"].format(a=_n(_v(facts, "scenario.A.ok"), lang),
+                                                     b=_n(_v(facts, "scenario.B.ok"), lang),
+                                                     pairs=_n(_v(facts, "scenario.A.pairs"), lang)),
+                               ["scenario.A.ok", "scenario.B.ok", "scenario.A.pairs"], facts=facts))
+                out.append(_changes_line(facts, lang, "scenario.AB", "ab_changes"))
+                out.append(_mean_line(facts, lang, "scenario.AB", "ab_mean"))
+            else:
+                out.append(_st(s["ab_none"], [], kind="missing"))
     share = facts.get("scenario.known_access_share")
     if share and share["known"]:
         out.append(_st(s["coverage"].format(share=share["meta"]["display"][0]), ["scenario.known_access_share"],
                        kind="derived", facts=facts))
-    out.append(_status_line(facts, lang, "scenario.baseline", "baseline"))
-    plans = [p for p in PLAN_IDS if f"scenario.{p}.pairs" in facts]
-    for p in plans:
-        if _v(facts, f"scenario.{p}.active_closures") == 0:
-            out.append(_st(s["plan_no_active"].format(p=p), [f"scenario.{p}.active_closures"], kind="notice",
-                           facts=facts))
-        if focus == "impact" or "scenario.AB.comparable_pairs" not in facts:
-            out.append(_status_line(facts, lang, f"scenario.{p}", "plan_status", p))
-        out.append(_changes_line(facts, lang, f"scenario.{p}.vs_baseline", "plan_vs_base", p))
-        out.append(_mean_line(facts, lang, f"scenario.{p}.vs_baseline", "plan_mean", p))
+    unknown = facts.get("scenario.unknown_access_share")
+    if unknown and unknown["known"]:
+        out.append(_st(s["unknown_access"].format(share=unknown["meta"]["display"][0]),
+                       ["scenario.unknown_access_share"], kind="derived", facts=facts))
+    if "graph_is_slice" in (_v(facts, "scenario.engine_warnings") or []):
+        out.append(_st(s["slice"], ["scenario.engine_warnings"], kind="notice"))
     if focus == "compare":
-        if "scenario.AB.comparable_pairs" in facts:
-            out.append(_st(s["ab_status"].format(a=_n(_v(facts, "scenario.A.ok"), lang),
-                                                 b=_n(_v(facts, "scenario.B.ok"), lang),
-                                                 pairs=_n(_v(facts, "scenario.A.pairs"), lang)),
-                           ["scenario.A.ok", "scenario.B.ok", "scenario.A.pairs"], facts=facts))
-            out.append(_changes_line(facts, lang, "scenario.AB", "ab_changes"))
-            out.append(_mean_line(facts, lang, "scenario.AB", "ab_mean"))
-        else:
-            out.append(_st(s["ab_none"], [], kind="missing"))
+        out.append(_st(s["no_best"], [], kind="notice"))
     out.append(_st(s["metric_note"], [], kind="notice"))
     out.append(_st(s["unreachable_note"], [], kind="notice"))
     return out

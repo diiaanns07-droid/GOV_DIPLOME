@@ -46,7 +46,51 @@ async function answerText(page) {
       await page.waitForFunction(() => document.querySelector("#assistant-root .civic-r09-answer")?.textContent.includes("₸"));
       return page.$eval("#assistant-root .civic-r09-answer", (n) => n.textContent);
     })();
-    record("statement_sources_shown", t.includes("источник: src-synth-1"), t.slice(0, 200));
+    const src = await page.$eval("#assistant-root .civic-r09-answer .civic-r09-st-src", (n) => ({
+      text: n.textContent, title: n.title,
+      link: n.querySelector("a") ? { href: n.querySelector("a").href, rel: n.querySelector("a").rel } : null }));
+    // Раунд 12: подпись источника для человека (издатель, дата), ID — только в подсказке.
+    record("statement_sources_human_readable", src.text.includes("источник: Синтетический издатель") &&
+      !src.text.includes("src-synth-1") && src.title.includes("src-synth-1") && !!src.link &&
+      src.link.href.startsWith("https://") && src.link.rel.includes("noopener"), JSON.stringify(src));
+    const version = await page.$eval("#assistant-root .civic-r09-version", (n) => n.textContent);
+    record("answer_names_card_revision", /редакция 3 от \d\d\.\d\d\.\d{4}/.test(version), version);
+
+    // 1b. Карточка обновилась после ответа -> ответ по прежней редакции убран.
+    await page.evaluate(() => window.__r09demo.select("r09-synth-full", 3));
+    await page.click("#assistant-root .civic-r09-chip >> text=Когда закончат работы?");
+    await answerText(page);
+    await page.evaluate(() => window.__r09demo.update({ revision: 4 }));
+    const afterUpdate = await page.$eval("#assistant-root", (n) => ({ answer: n.querySelector(".civic-r09-answer").textContent,
+      status: n.querySelector(".civic-r09-status").textContent }));
+    record("card_update_removes_stale_answer", afterUpdate.answer === "" && afterUpdate.status.includes("Карточка обновилась"),
+      JSON.stringify(afterUpdate));
+
+    // 1c. На экране новая редакция, сервер ответил по старой -> не показываем как текущий ответ.
+    await page.evaluate(() => window.__r09demo.select("r09-synth-full", 4));
+    await page.click("#assistant-root .civic-r09-chip >> text=Когда закончат работы?");
+    await page.waitForFunction(() => document.querySelector("#assistant-root .civic-r09-status")?.textContent.includes("редакции 3"));
+    const oldRev = await page.$eval("#assistant-root", (n) => ({ answer: n.querySelector(".civic-r09-answer").textContent,
+      status: n.querySelector(".civic-r09-status").textContent }));
+    record("answer_for_older_revision_not_shown", oldRev.answer === "" && oldRev.status.includes("на экране — редакция 4"),
+      JSON.stringify(oldRev));
+
+    // 1d. Обновление карточки во время запроса отменяет его.
+    await page.evaluate(() => window.__r09demo.select("r09-synth-full", 3));
+    await page.route("**/api/civic/v1/assistant", async (route) => { await sleep(1200); try { await route.continue(); } catch (e) {} });
+    await page.fill("#assistant-root textarea", "Когда закончат?");
+    await page.press("#assistant-root textarea", "Enter");
+    await sleep(150);
+    await page.evaluate(() => window.__r09demo.update({ revision: 5 }));
+    await sleep(1500);
+    const midUpdate = await page.$eval("#assistant-root", (n) => ({ answer: n.querySelector(".civic-r09-answer").textContent,
+      status: n.querySelector(".civic-r09-status").textContent }));
+    record("card_update_cancels_pending_request", midUpdate.answer === "" && midUpdate.status.includes("запрос отменён"),
+      JSON.stringify(midUpdate));
+    await page.unroute("**/api/civic/v1/assistant");
+    await page.evaluate(() => window.__r09demo.select("r09-synth-full"));
+    const chipsNow = await page.$$eval("#assistant-root .civic-r09-chip", (n) => n.map((x) => x.textContent));
+    record("missing_data_example_offered", chipsNow.includes("Какие сведения отсутствуют?"), chipsNow.join(" | "));
 
     // 2. HTML в данных карточки выводится как текст, скрипты не исполняются.
     await page.goto(url + "?object=r09-synth-html");

@@ -16,6 +16,7 @@ import concurrent.futures as cf
 import json
 import logging
 import re
+import threading
 
 from agent.civic_assistant.audit import audit_statements
 from agent.civic_assistant.facts import FACTS_VERSION, ContextError, check_context, clean_text
@@ -28,7 +29,11 @@ MAX_QUESTION = 500
 MAX_PROVIDER_RAW = 4000
 MAX_FACT_IDS = 8
 PROVIDER_TIMEOUT_S = 8.0
-_POOL = cf.ThreadPoolExecutor(max_workers=4, thread_name_prefix="civic-assistant-provider")
+PROVIDER_WORKERS = 4
+_POOL = cf.ThreadPoolExecutor(max_workers=PROVIDER_WORKERS, thread_name_prefix="civic-assistant-provider")
+# Свободные слоты пула. Зависший провайдер держит поток и после тайм-аута ответа; если слотов нет,
+# вопрос сразу получает шаблон с честным provider_busy, а не ждёт в очереди и не пишет ложный provider_timeout.
+_SLOTS = threading.BoundedSemaphore(PROVIDER_WORKERS)
 
 _KK_LETTERS = re.compile(r"[әғқңөұүһіӘҒҚҢӨҰҮҺІ]")
 _KK_WORDS = re.compile(r"\b(?:кім|неге|неліктен|қашан|жатыр|қанша|мерзім|қайда|қайдан|мен|бойынша|туралы|"
@@ -47,23 +52,32 @@ _RULES = (
                       "причин", "почему срок", "почему задерж", "перенесли", "отложили", "продлили",
                       "перенос", "перенес", "неге ауыс", "неліктен ауыс", "ауыстыр", "кейінге қалдыр", "шегер", "неге кешік",
                       "себеб", "неге жылжы", "why")),
-    ("schedule", ("когда", "срок", "до какого", "дата", "сколько продл", "қашан", "мерзім", "күні", "when",
-                  "deadline")),
-    ("status", ("законч", "заверш", "уже сделал", "готов ли", "готово", "сдали", "аяқталды ма", "аяқталды",
-                "бітті", "finished", "done")),
+    # «Какие сведения отсутствуют?» — список пустых полей карточки, а не обзор.
+    ("missing_data", ("сведения отсутств", "сведений нет", "каких сведений не", "чего не хватает", "не хватает",
+                      "что неизвестно", "данные неизвест", "неизвестные данные", "каких данных нет",
+                      "чего нет в карточке", "что не указано", "пустые поля", "поля пуст",
+                      "мәліметтер жоқ", "мәлімет жоқ", "деректер жоқ", "не белгісіз", "жетіспей", "missing")),
+    ("schedule", ("когда", "срок", "до какого", "дата", "сколько продл", "на сколько сдвин", "на сколько продл",
+                  "неше күн", "ұзарт", "қашан", "мерзім", "күні", "when", "deadline")),
+    ("status", ("законч", "заверш", "уже сделал", "готов ли", "готово", "сдали", "уже идут", "идут ли",
+                "начали ли", "уже начали", "ведутся", "аяқталды ма", "аяқталды", "бітті", "басталды ма",
+                "жүріп жатыр ма", "finished", "done")),
     ("responsible", ("кто отвеча", "кто делает", "кто ведёт", "кто ведет", "подрядчик", "исполнитель",
-                     "ответствен", "заказчик", "куда обращ", "контакт", "кім", "жауапты", "who")),
+                     "ответствен", "заказчик", "куда обращ", "куда жалов", "куда пожалов", "жалоб", "куда писать",
+                     "куда звонить", "контакт", "кім", "жауапты", "шағым", "хабарлас", "who")),
     ("budget", ("сколько сто", "стоимост", "бюджет", "сумм", "деньг", "тенге", "потрат", "затрат", "освоен", "смет", "₸", "қанша тұр", "ақша", "сома",
-                "cost", "budget")),
+                "құн", "cost", "budget")),
     ("sources", ("источник", "откуда данн", "откуда эти", "откуда это", "откуда информац", "откуда сведен",
-                 "откуда вы знаете", "на основании", "где взяли", "ссылк",
-                 "дереккөз", "қайдан", "source")),
-    ("history", ("истори", "что измен", "что поменял", "изменени", "ревизи", "тарих", "өзгер", "history")),
+                 "откуда вы знаете", "на основании", "где взяли", "ссылк", "реальн", "это настоящ",
+                 "настоящий ремонт", "настоящие данн", "достоверн", "синтетич", "выдуман", "демонстрац",
+                 "это демо", "демо-", "правда ли",
+                 "дереккөз", "қайдан", "нақты дерек", "шын ба", "рас па", "source")),
+    ("history", ("истори", "что измен", "что поменял", "что менял", "изменени", "ревизи", "тарих", "өзгер", "history")),
     ("access_impact", ("доступн", "проезд", "проход", "пройти", "проехать", "объезд", "перекрыт", "обход",
                        "как добраться", "маршрут", "пешеход", "өту", "жабыл", "жол жабы", "access", "detour")),
     ("location", ("где", "адрес", "место", "располож", "қайда", "орны", "where")),
-    ("overview", ("что происходит", "что здесь", "что это", "что за", "что делают", "что строят", "расскажи",
-                  "не болып", "не салы", "what")),
+    ("overview", ("что происходит", "что здесь", "что тут", "что это", "что за", "что делают", "делают",
+                  "что строят", "расскажи", "не болып", "не салы", "what")),
 )
 
 
@@ -166,12 +180,48 @@ def validate_choice(raw, facts: dict) -> dict:
 
 
 def _call_provider(provider, request: dict, timeout_s: float):
-    future = _POOL.submit(provider.choose, request, timeout_s=timeout_s)
+    if not _SLOTS.acquire(blocking=False):
+        raise ProviderRejected("provider_busy")
+    try:
+        future = _POOL.submit(provider.choose, request, timeout_s=timeout_s)
+    except BaseException:
+        _SLOTS.release()
+        raise
+    future.add_done_callback(lambda _f: _SLOTS.release())
     try:
         return future.result(timeout=timeout_s)
     except cf.TimeoutError as exc:
         future.cancel()
         raise ProviderRejected("provider_timeout") from exc
+    except BaseException as exc:
+        # Исключение самого провайдера (в т.ч. CancelledError/SystemExit из его потока) — отказ
+        # провайдера, а не падение ответа. Прерывание, пришедшее во время ожидания, пробрасываем.
+        if future.done() and not future.cancelled() and future.exception() is exc:
+            raise ProviderRejected("provider_error") from exc
+        raise
+
+
+def _public_sources(statements, facts) -> list[dict]:
+    """Описание источников, на которые ссылаются фразы, — для подписи человеку (не только ID).
+
+    Значения уже прошли проверку при сборке контекста: ссылка только http(s), текст без управляющих символов.
+    """
+    out = []
+    cited = [sid for s in statements for sid in s.get("source_ids", [])]
+    cited += [fid[len("source."):] for s in statements for fid in s.get("fact_ids", []) if fid.startswith("source.")]
+    for sid in dict.fromkeys(cited):
+        ref = (facts.get("source." + sid) or {}).get("value")
+        if isinstance(ref, dict):
+            out.append({k: ref.get(k) for k in ("id", "publisher", "published_on", "retrieved_at", "access_status",
+                                                "license", "url")})
+    return out
+
+
+def _card_version(facts) -> dict:
+    rev = (facts.get("object.revision") or {}).get("value") if facts else None
+    upd = (facts.get("object.updated_at") or {}).get("value") if facts else None
+    return {"object_revision": rev if isinstance(rev, int) else None,
+            "object_updated_at": upd if isinstance(upd, str) else None}
 
 
 def _result(source, intent, lang, statements, ctx, warnings, mode, model=None, facts=None):
@@ -179,6 +229,7 @@ def _result(source, intent, lang, statements, ctx, warnings, mode, model=None, f
         statements, dropped = audit_statements(statements, facts)
         warnings = list(warnings) + dropped
     fact_ids = list(dict.fromkeys(fid for s in statements for fid in s["fact_ids"]))
+    version = _card_version(facts)
     return {
         "schema": ANSWER_SCHEMA,
         "source": source,
@@ -194,6 +245,10 @@ def _result(source, intent, lang, statements, ctx, warnings, mode, model=None, f
         "scenario_id": ctx.get("scenario_id") if isinstance(ctx, dict) else None,
         "context_digest": ctx.get("digest") if isinstance(ctx, dict) else None,
         "facts_version": FACTS_VERSION,
+        # Раунд 12: по какой редакции карточки собран ответ и какие источники он цитирует.
+        "object_revision": version["object_revision"],
+        "object_updated_at": version["object_updated_at"],
+        "sources": _public_sources(statements, facts) if facts else [],
     }
 
 
@@ -233,6 +288,10 @@ def build_answer(question, verified_context, provider=None, *, timeout_s: float 
     # Модель не может заставить ответить на «покажи пароли»: правило безопасности шаблона сильнее.
     intent = "unsupported" if template_intent == "unsupported" else choice["intent"]
     extra = ["provider_overridden_unsupported"] if intent != choice["intent"] else []
+    if extra:
+        st = render(template_intent, facts, lang)
+        return _result("template", template_intent, lang, st, verified_context,
+                       warnings + cw + extra, mode="template-fallback", facts=facts)
     st = render(intent, facts, lang, choice["fact_ids"])
     return _result("llm", intent, lang, st, verified_context, warnings + extra, mode="llm:" + str(name),
                    model=getattr(provider, "model", None), facts=facts)
