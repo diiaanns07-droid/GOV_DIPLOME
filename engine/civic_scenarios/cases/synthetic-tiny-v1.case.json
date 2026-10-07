@@ -1,0 +1,25 @@
+{
+ "case_id": "synthetic-tiny-v1-demo",
+ "title": "СИНТЕТИКА: перекрытие B–C (план A) против перекрытия C–D и G–D (план B)",
+ "evidence_type": "synthetic",
+ "note": "Учебный эталон. Граф условный, не реальные улицы Астаны.",
+ "payload": {
+  "schema_version": "civic-scenario-v1",
+  "city": "astana",
+  "graph_id": "synthetic-tiny-v1",
+  "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+  "mode": "walking",
+  "analysis_at": "2026-10-07T09:00:00+05:00",
+  "origin_node_ids": ["n_a", "n_h"],
+  "destination_node_ids": ["n_c", "n_d", "n_h", "n_u", "n_x", "n_a"],
+  "plans": [
+   {"id": "A", "closures": [
+    {"edge_ids": ["e_bc"], "start_at": "2026-10-07T08:00:00+05:00", "end_at": "2026-10-07T18:00:00+05:00"},
+    {"edge_ids": ["e_ab"], "start_at": "2026-10-08T08:00:00+05:00", "end_at": "2026-10-08T18:00:00+05:00"}
+   ]},
+   {"id": "B", "closures": [
+    {"edge_ids": ["e_cd", "e_gd"], "start_at": "2026-10-07T04:00:00Z", "end_at": "2026-10-07T12:00:00+05:00"}
+   ]}
+  ]
+ }
+}

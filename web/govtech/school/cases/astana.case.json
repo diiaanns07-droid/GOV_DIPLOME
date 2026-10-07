@@ -1,0 +1,4979 @@
+{
+ "schema_version": "school-access-case-v1",
+ "case_id": "astana-school-access-k10-r10-v1",
+ "city_id": "astana",
+ "title": "Астана: близость к известным школам в участке ≈2×2 км (открытые данные OSM/Overture, не официальный реестр)",
+ "bbox": [
+  71.418372,
+  51.163033,
+  71.447,
+  51.181
+ ],
+ "snapshot_id": "astana-ov2026-09-23.1-appd2ff344-bbox-r17c7-buf2100m-k10r10",
+ "sources": [
+  {
+   "id": "ov-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "publisher": "Overture Maps Foundation (POI records from Meta and other contributors)",
+   "title": "Overture places, education records around the Astana slice (bbox + ~3 km)",
+   "published_at": null,
+   "data_period": "release 2026-09-23.1; Meta record update_time 2026-08/09",
+   "retrieved_at": "2026-10-06T07:02:52+00:00",
+   "verification_status": "secondary_only",
+   "license": "CDLA-Permissive-2.0 (per record; see inputs)",
+   "content_sha256": "d737a18842c2f521d3fe6dfd4174c788ba4cdcab3f340cc1b4caab2cd7914250"
+  },
+  {
+   "id": "osm-landuse-via-overture-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=base/type=land_use/",
+   "publisher": "OpenStreetMap contributors via Overture Maps Foundation",
+   "title": "OSM education land use (amenity=school/kindergarten/college/university) with source tags",
+   "published_at": null,
+   "data_period": "OSM snapshot used by Overture 2026-09-23.1 (record version 2026-09-06)",
+   "retrieved_at": "2026-10-06T07:03:03+00:00",
+   "verification_status": "secondary_only",
+   "license": "ODbL-1.0",
+   "content_sha256": "06d7f12881a5e05423e8ab0fa671e49d31b23407820495e016cc2ab67aa9240f"
+  },
+  {
+   "id": "ov-buildings-edu-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=buildings/type=building/",
+   "publisher": "OpenStreetMap contributors via Overture Maps Foundation",
+   "title": "OSM buildings with an education class (building=school etc.)",
+   "published_at": null,
+   "data_period": "Overture 2026-09-23.1",
+   "retrieved_at": "2026-10-06T07:03:25+00:00",
+   "verification_status": "secondary_only",
+   "license": "ODbL-1.0",
+   "content_sha256": "e1c27eda5cb47970d6b6cffef2d04c1d63fc38dc78c82d83cb8ad1441f2ba189"
+  },
+  {
+   "id": "ov-buildings-res-bbox-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=buildings/type=building/",
+   "publisher": "OpenStreetMap contributors via Overture Maps Foundation",
+   "title": "Residential building footprints with centroid in the slice bbox (origin pool)",
+   "published_at": null,
+   "data_period": "Overture 2026-09-23.1",
+   "retrieved_at": "2026-10-06T07:03:25+00:00",
+   "verification_status": "secondary_only",
+   "license": "ODbL-1.0",
+   "content_sha256": "364c85783df8c5ea1ecb5c52a885a2db9ba9d8ab278adc3970d694d65bd93a11"
+  },
+  {
+   "id": "ov-buildings-all-bbox-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=buildings/type=building/",
+   "publisher": "OpenStreetMap contributors and Microsoft ML Buildings via Overture Maps Foundation",
+   "title": "All building footprints intersecting the slice bbox (used only to flag hypothesis points on existing footprints)",
+   "published_at": null,
+   "data_period": "Overture 2026-09-23.1",
+   "retrieved_at": "2026-10-06T07:03:25+00:00",
+   "verification_status": "secondary_only",
+   "license": "ODbL-1.0 (OSM); Microsoft ML Buildings licence per record",
+   "content_sha256": "3de986275ee1e7b3711e16cd76831d1400377e6b08de54e098b46db94635131d"
+  },
+  {
+   "id": "app-slice-astana-d2ff344",
+   "url": "git:diiaanns07-droid/GOV_DIPLOME@d2ff344c5ec9b9a729ea59df50ec81f981e619de:web/govtech/core/data.js",
+   "publisher": "GOV_DIPLOME (pinned app slice of Overture/OSM)",
+   "title": "Astana slice of the current main site (school group, 8 records)",
+   "published_at": null,
+   "data_period": "Overture 2026-09-23.1, retrieved 2026-10-05T06:20:01+00:00",
+   "retrieved_at": "2026-10-05T06:20:01+00:00",
+   "verification_status": "secondary_only",
+   "license": "CDLA-Permissive-2.0 / ODbL-1.0 (see web/govtech/core/attribution)",
+   "content_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+  },
+  {
+   "id": "egov-school-contacts",
+   "url": "https://egov.kz/cms/ru/articles/2Fspisok_wkol_rk",
+   "publisher": "eGov.kz (по домену; страница не открыта)",
+   "title": "Контакты общеобразовательных школ городов Астана, Алматы, Шымкент и областных центров РК (заголовок из результата поиска)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "gov-kz-astana-bilim",
+   "url": "https://www.gov.kz/memleket/entities/astana-bilim",
+   "publisher": "gov.kz (по URL — управление образования г. Астаны; страница не открыта)",
+   "title": "Страница управления образования г. Астаны (не открыта)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "astana-bilim-school-sites",
+   "url": "https://astana-bilim.kz/",
+   "publisher": "astana-bilim.kz (сайты школ, на которые указывают теги website в OSM; не открыт)",
+   "title": "Сайты школ вида N.astana-bilim.kz (не открыты)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "lead-informburo-sh8-closed",
+   "url": "https://informburo.kz/novosti/v-astane-shkoly-8-zakryli-a-detey-otpravili-po-drugim-uchebnym-zavedeniyam.html",
+   "publisher": "informburo.kz (СМИ; страница не открыта)",
+   "title": "Наводка из поиска: «в Астане школу №8 закрыли, а детей отправили по другим учебным заведениям» (по адресу страницы)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "lead-informburo-sh8-repair",
+   "url": "https://informburo.kz/novosti/ucheniki-ssh-8-astany-hodyat-na-zanyatiya-v-tri-drugie-shkoly-zdaniyu-trebuetsya-kapremont.html",
+   "publisher": "informburo.kz (СМИ; страница не открыта)",
+   "title": "Наводка из поиска: «ученики СШ №8 Астаны ходят на занятия в три другие школы, зданию требуется капремонт» (по адресу страницы)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "lead-forbes-agis",
+   "url": "https://forbes.kz/ranking/object/1146",
+   "publisher": "forbes.kz (рейтинг; страница не открыта)",
+   "title": "Наводка из поиска: Astana Garden International School в рейтинге частных школ",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  }
+ ],
+ "schools": [
+  {
+   "id": "ast-sch-meta-2b731251",
+   "label": "Казахско-турецкий лицей / Kazakh-Turkish High School",
+   "lon": 71.4482,
+   "lat": 51.17445,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "2b731251-aa57-4256-8130-d1739368fe39",
+     "field": "names.primary (meta)",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "2b731251-aa57-4256-8130-d1739368fe39",
+     "method": "Overture/Meta POI point",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "school_lyceum_unverified",
+     "method": "manual_review",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "unknown",
+     "method": "manual_review",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": null,
+     "method": null,
+     "verification_status": "not_fetched",
+     "confidence": null
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": null,
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    },
+    {
+     "code": "possible_same_site",
+     "text": "Возможно, то же место, что и участок «№8 мектеп-лицей» в OSM (~100 м)."
+    },
+    {
+     "code": "single_poi_source",
+     "text": "Только точка POI (Overture/Meta); геометрии школы в OSM рядом нет."
+    }
+   ],
+   "category": "school_lyceum_unverified",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-meta-47e1ffcd",
+   "label": "Жиырма Үшінші Орта Мектеп",
+   "lon": 71.4245201,
+   "lat": 51.198154,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "47e1ffcd-2c25-4b45-bbfc-3ef4a7c911a4",
+     "field": "names.primary (meta)",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "47e1ffcd-2c25-4b45-bbfc-3ef4a7c911a4",
+     "method": "Overture/Meta POI point",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "school_unverified",
+     "method": "R-meta-only-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "unknown",
+     "method": "R-meta-only-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": null,
+     "method": null,
+     "verification_status": "not_fetched",
+     "confidence": null
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": null,
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    },
+    {
+     "code": "single_poi_source",
+     "text": "Только точка POI (Overture/Meta); геометрии школы в OSM рядом нет."
+    }
+   ],
+   "category": "school_unverified",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-meta-491687bb",
+   "label": "ГУ \"Школа для одарённых детей Зерде № 9\" УО г. Астаны",
+   "lon": 71.4086396,
+   "lat": 51.1680544,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "491687bb-69b7-4bf0-8122-01e16165937e",
+     "field": "names.primary (meta)",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "491687bb-69b7-4bf0-8122-01e16165937e",
+     "method": "Overture/Meta POI point",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "school_for_gifted",
+     "method": "manual_review",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "known_restricted",
+     "method": "manual_review",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "название в POI («ГУ … УО г. Астаны» / State School)",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": "conflict",
+     "verification_status": "secondary_only",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": null,
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "location_conflict",
+     "text": "Другой источник называет ту же школу в 266 м отсюда: «Зерде Дарынды Балаларға Арналған Мектеп». Конфликт не разрешён."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    },
+    {
+     "code": "restricted_by_type",
+     "text": "Специальная, профильная для одарённых, частная/международная или вечерняя школа по названию: не считается общедоступной целью."
+    },
+    {
+     "code": "single_poi_source",
+     "text": "Только точка POI (Overture/Meta); геометрии школы в OSM рядом нет."
+    }
+   ],
+   "category": "school_for_gifted",
+   "access_eligibility": "known_restricted",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-meta-7d548c22",
+   "label": "Дарынды Қыз Балаларға Арналған Астана Бил / Астана Бил Для Одаренных Девочек",
+   "lon": 71.3885,
+   "lat": 51.17312,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "7d548c22-02db-4e0b-a5e4-8140591dc359",
+     "field": "names.primary (meta)",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "7d548c22-02db-4e0b-a5e4-8140591dc359",
+     "method": "Overture/Meta POI point",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "school_for_gifted",
+     "method": "R-meta-only-school_for_gifted",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "known_restricted",
+     "method": "R-meta-only-school_for_gifted",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": null,
+     "method": null,
+     "verification_status": "not_fetched",
+     "confidence": null
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": null,
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    },
+    {
+     "code": "restricted_by_type",
+     "text": "Специальная, профильная для одарённых, частная/международная или вечерняя школа по названию: не считается общедоступной целью."
+    },
+    {
+     "code": "single_poi_source",
+     "text": "Только точка POI (Overture/Meta); геометрии школы в OSM рядом нет."
+    }
+   ],
+   "category": "school_for_gifted",
+   "access_eligibility": "known_restricted",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-meta-a4483f53",
+   "label": "Astana Garden International School",
+   "lon": 71.42298,
+   "lat": 51.16765,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "app-slice-astana-d2ff344",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+     "field": "names.primary (meta)",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-places-2026-09-23.1",
+     "record": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+     "method": "Overture/Meta POI point",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "school_private_international",
+     "method": "manual_review",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "known_restricted",
+     "method": "manual_review",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "private_inferred",
+     "method": "название (international/private)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": [
+      "lead-forbes-agis"
+     ]
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": null,
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "restricted_by_type",
+     "text": "Специальная, профильная для одарённых, частная/международная или вечерняя школа по названию: не считается общедоступной целью."
+    },
+    {
+     "code": "single_poi_source",
+     "text": "Только точка POI (Overture/Meta); геометрии школы в OSM рядом нет."
+    }
+   ],
+   "category": "school_private_international",
+   "access_eligibility": "known_restricted",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1443249141",
+   "label": "Гимназия №6",
+   "lon": 71.4204101,
+   "lat": 51.1775188,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "app-slice-astana-d2ff344",
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1443249141@2",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1443249141@2",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:46:35.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "c97435da-cd05-4549-bec1-ff297e858554",
+      "distance_m": 0.0
+     },
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "r3825878@11",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939111",
+   "label": "Школа-лицей №56 имени Шакарима",
+   "lon": 71.4066295,
+   "lat": 51.1611755,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939111@2",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939111@2",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-26T14:18:49.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939113",
+   "label": "Школа-лицей №11 имени Узбекали Жанибекова",
+   "lon": 71.4027479,
+   "lat": 51.1646005,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939113@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939113@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w577099478@9",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939114",
+   "label": "Школа-лицей № 35 имени Назира Торекулова",
+   "lon": 71.4048992,
+   "lat": 51.1672318,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939114@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939114@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939116",
+   "label": "Школа-лицей №60",
+   "lon": 71.4023067,
+   "lat": 51.1710574,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939116@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939116@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "09777f23-2725-4527-8e44-333299060aea",
+      "distance_m": 0.0
+     },
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w241053201@10",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939123",
+   "label": "Специальная школа №2",
+   "lon": 71.4164801,
+   "lat": 51.1739216,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939123@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939123@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "special_school",
+     "method": "R-special_school",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "known_restricted",
+     "method": "R-special_school",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": null,
+     "method": null,
+     "verification_status": "not_fetched",
+     "confidence": null
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w30637529@12",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    },
+    {
+     "code": "restricted_by_type",
+     "text": "Специальная, профильная для одарённых, частная/международная или вечерняя школа по названию: не считается общедоступной целью."
+    }
+   ],
+   "category": "special_school",
+   "access_eligibility": "known_restricted",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939125",
+   "label": "Школа-гимназия №3",
+   "lon": 71.4246691,
+   "lat": 51.1705259,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "app-slice-astana-d2ff344",
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939125@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939125@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "distance_m": 0.0
+     },
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w242223234@9",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939127",
+   "label": "Школа-гимназия №4 имени Жамбыла Жабаева",
+   "lon": 71.4295586,
+   "lat": 51.1741308,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939127@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939127@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939129",
+   "label": "Школа-лицей №62",
+   "lon": 71.4184994,
+   "lat": 51.1834845,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939129@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939129@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "fc123f17-00ec-408d-8801-267e50c547ea",
+      "distance_m": 0.0
+     },
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w258363083@7",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939134",
+   "label": "Областная специализированная школа-лицей-интернат №2 \"Дарын\"",
+   "lon": 71.4019375,
+   "lat": 51.1907243,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939134@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939134@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "school_for_gifted",
+     "method": "R-school_for_gifted",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "known_restricted",
+     "method": "R-school_for_gifted",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": null,
+     "method": null,
+     "verification_status": "not_fetched",
+     "confidence": null
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w236522907@4",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    },
+    {
+     "code": "restricted_by_type",
+     "text": "Специальная, профильная для одарённых, частная/международная или вечерняя школа по названию: не считается общедоступной целью."
+    }
+   ],
+   "category": "school_for_gifted",
+   "access_eligibility": "known_restricted",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939135",
+   "label": "Средняя школа №25",
+   "lon": 71.4122225,
+   "lat": 51.1916127,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939135@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939135@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w30658962@9",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512939139",
+   "label": "Детский сад-школа-гимназия №46",
+   "lon": 71.4177588,
+   "lat": 51.1872014,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939139@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512939139@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:43:18.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w30659002@13",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512942774",
+   "label": "Школа-гимназия №31",
+   "lon": 71.4326573,
+   "lat": 51.1668489,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512942774@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512942774@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:56:11.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w1100946263@3",
+      "relation": "building inside grounds"
+     },
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "r6314560@5",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512942775",
+   "label": "Школа-лицей №54 имени Акселеу Сейдимбека",
+   "lon": 71.4379795,
+   "lat": 51.1613316,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512942775@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512942775@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:56:11.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "2176c0b8-d2db-47a8-aaf0-3968c198baac",
+      "distance_m": 0.0
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1512942776",
+   "label": "Школа-гимназия №10 имени Жумабека Ташенева",
+   "lon": 71.4316391,
+   "lat": 51.1596901,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512942776@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1512942776@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-13T09:56:11.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w425997774@9",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1513435673",
+   "label": "Школа-гимназия №7 им. Г. Орманова",
+   "lon": 71.4276892,
+   "lat": 51.1785504,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435673@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435673@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": "conflict",
+     "verification_status": "secondary_only",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-14T09:38:48.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "r3258585@9",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "location_conflict",
+     "text": "Другой источник называет ту же школу в 1902 м отсюда: «Ғали Орманов атындағы 7 мектеп-гимназиясы». Конфликт не разрешён."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1513435675",
+   "label": "Школа-лицей №8",
+   "lon": 71.4468988,
+   "lat": 51.17302,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435675@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435675@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "manual_review",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "unknown",
+     "method": "manual_review",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": null,
+     "method": null,
+     "verification_status": "not_fetched",
+     "confidence": null
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": "conflict",
+     "verification_status": "secondary_only",
+     "lead_source_ids": [
+      "lead-informburo-sh8-closed",
+      "lead-informburo-sh8-repair"
+     ]
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-14T09:38:48.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "r9938881@3",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "identity_conflict",
+     "text": "Название и местоположение расходятся между источниками; есть непроверенная наводка о закрытии здания школы №8 в 2017 г. (NOT_FETCHED)."
+    },
+    {
+     "code": "location_conflict",
+     "text": "Другой источник называет ту же школу в 624 м отсюда: «\"ГУ \"Средняя школа № 8\" УО г. Астаны\"». Конфликт не разрешён."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1513435676",
+   "label": "Общеобразовательная школа №16 им. Т. Айбергенова",
+   "lon": 71.4566384,
+   "lat": 51.1659537,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435676@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435676@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-14T09:38:48.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "r3242130@8",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1513435677",
+   "label": "Школа-гимназия №87 им. А. Қунанбайулы",
+   "lon": 71.4555237,
+   "lat": 51.1630407,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435677@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435677@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-14T09:38:48.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w715268266@5",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1513435680",
+   "label": "Гимназия №5",
+   "lon": 71.454172,
+   "lat": 51.1585416,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435680@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435680@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-14T09:38:48.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1513435683",
+   "label": "Школа-лицей №27 им. К. Кайсенова",
+   "lon": 71.4415256,
+   "lat": 51.1552774,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435683@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435683@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-14T09:38:48.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "1a3ab899-f9f6-483e-989f-8253aadff60a",
+      "distance_m": 0.0
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1513435686",
+   "label": "Школа-лицей №48 им. А. Байтурсынулы",
+   "lon": 71.471113,
+   "lat": 51.1534759,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435686@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435686@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "название в POI («ГУ … УО г. Астаны» / State School)",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-14T09:38:48.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "78fce555-4e3d-48ad-b6a6-dfd4fb69a0b6",
+      "distance_m": 0.0
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1513435689",
+   "label": "Школа-гимназия №30",
+   "lon": 71.466479,
+   "lat": 51.1500825,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435689@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435689@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "название в POI («ГУ … УО г. Астаны» / State School)",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-14T09:38:48.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "59906dca-fbf0-4e8b-9dc5-2da0d7d1b250",
+      "distance_m": 0.0
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1513435691",
+   "label": "Школа-лицей №28",
+   "lon": 71.4615273,
+   "lat": 51.1496945,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435691@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1513435691@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-14T09:38:48.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "821166c9-bbb8-48a0-ba5e-dd4d9f5103e3",
+      "distance_m": 4.1
+     },
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w240485189@10",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1519562357",
+   "label": "Общеобразовательная школа №119",
+   "lon": 71.4493279,
+   "lat": 51.1650335,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1519562357@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1519562357@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-23T11:39:37.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "r19737407@4",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1530014506",
+   "label": "Общеобразовательная школа №18",
+   "lon": 71.399747,
+   "lat": 51.1762546,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1530014506@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1530014506@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-06-16T09:11:12.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "r3253001@9",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w1530014507",
+   "label": "Школа-гимназия №14",
+   "lon": 71.4024086,
+   "lat": 51.1813769,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1530014507@1",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w1530014507@1",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-06-16T09:11:12.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w307047274@7",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osm-w260543959",
+   "label": "Средняя школа №36",
+   "lon": 71.3996488,
+   "lat": 51.1957589,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "osm-landuse-via-overture-2026-09-23.1",
+    "ov-buildings-edu-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w260543959@7",
+     "field": "names.common.ru",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "osm-landuse-via-overture-2026-09-23.1",
+     "record": "w260543959@7",
+     "method": "centroid of OSM school grounds polygon",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-05-23T11:39:37.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "8a0e86d5-58d4-4de5-b31c-f17b85d5c3f2",
+      "distance_m": 0.0
+     },
+     {
+      "source_id": "ov-buildings-edu-2026-09-23.1",
+      "record": "w24805437@9",
+      "relation": "building inside grounds"
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osmb-w240110499",
+   "label": "Здание школы без названия (OSM w240110499)",
+   "lon": 71.4540528,
+   "lat": 51.1754475,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w240110499@5",
+     "field": "names.primary",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w240110499@5",
+     "method": "centroid of OSM building=school footprint",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "school_unknown_type",
+     "method": "R-unnamed-building",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "unknown",
+     "method": "R-unnamed-building",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": null,
+     "method": null,
+     "verification_status": "not_fetched",
+     "confidence": null
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2023-02-05T13:41:09.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    },
+    {
+     "code": "unnamed_school_building",
+     "text": "Здание с тегом building=school без названия: тип и доступность неизвестны."
+    }
+   ],
+   "category": "school_unknown_type",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osmb-w240938582",
+   "label": "Школа-лицей №1 им. Талгата Бигельдинова",
+   "lon": 71.4163069,
+   "lat": 51.1630791,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w240938582@10",
+     "field": "names.primary",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w240938582@10",
+     "method": "centroid of OSM building=school footprint",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-02-02T06:18:06.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osmb-w240949245",
+   "label": "Школа-лицей №15",
+   "lon": 71.409633,
+   "lat": 51.1656626,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w240949245@9",
+     "field": "names.primary",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w240949245@9",
+     "method": "centroid of OSM building=school footprint",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-03-13T16:23:08.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osmb-w241090081",
+   "label": "Здание школы без названия (OSM w241090081)",
+   "lon": 71.3918188,
+   "lat": 51.1777324,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w241090081@9",
+     "field": "names.primary",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w241090081@9",
+     "method": "centroid of OSM building=school footprint",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "school_unknown_type",
+     "method": "R-unnamed-building",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "unknown",
+     "method": "R-unnamed-building",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": null,
+     "method": null,
+     "verification_status": "not_fetched",
+     "confidence": null
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-02-02T06:18:06.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    },
+    {
+     "code": "unnamed_school_building",
+     "text": "Здание с тегом building=school без названия: тип и доступность неизвестны."
+    }
+   ],
+   "category": "school_unknown_type",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osmb-w30012464",
+   "label": "Школа-гимназия №2 им. Гафу Каирбекова",
+   "lon": 71.4158019,
+   "lat": 51.1706541,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-buildings-edu-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w30012464@16",
+     "field": "names.primary",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w30012464@16",
+     "method": "centroid of OSM building=school footprint",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-02-02T06:18:06.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "1c004136-8f4d-463b-88fc-4769e8f8dccd",
+      "distance_m": 6.8
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osmb-w30012477",
+   "label": "Детский сад - Школа гимназия №47",
+   "lon": 71.4173377,
+   "lat": 51.1707715,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-buildings-edu-2026-09-23.1",
+    "ov-places-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w30012477@13",
+     "field": "names.primary",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w30012477@13",
+     "method": "centroid of OSM building=school footprint",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "general_school",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium"
+    },
+    "access_eligibility": {
+     "value": "known_public",
+     "method": "R-general-numbered",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": "state_inferred",
+     "method": "номерное название общеобразовательной школы (вывод, не реестр)",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-02-02T06:18:06.000Z",
+     "poi_update_time": "2026-09-14T00:00:00.000Z"
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": [
+     {
+      "source_id": "ov-places-2026-09-23.1",
+      "record": "89d23158-25ff-4829-ab77-2c83d986eed5",
+      "distance_m": 0.0
+     }
+    ]
+   },
+   "qa": [
+    {
+     "code": "eligibility_inferred_from_name",
+     "text": "Общедоступность выведена из номерного названия общеобразовательной школы, не из реестра; правила приёма не проверены."
+    },
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    }
+   ],
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "ast-sch-osmb-w30014478",
+   "label": "Вечерняя сменная школа №39",
+   "lon": 71.4062215,
+   "lat": 51.1846762,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "ov-buildings-edu-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "label": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w30014478@9",
+     "field": "names.primary",
+     "verification_status": "secondary_only"
+    },
+    "coordinates": {
+     "source_id": "ov-buildings-edu-2026-09-23.1",
+     "record": "w30014478@9",
+     "method": "centroid of OSM building=school footprint",
+     "verification_status": "secondary_only",
+     "confidence": "medium",
+     "note": "модельная точка (центр участка/здания или точка POI), не вход"
+    },
+    "category": {
+     "value": "evening_school",
+     "method": "R-evening_school",
+     "verification_status": "secondary_only",
+     "confidence": "low"
+    },
+    "access_eligibility": {
+     "value": "known_restricted",
+     "method": "R-evening_school",
+     "verification_status": "secondary_only",
+     "confidence": "low",
+     "official_source_ids": [
+      "egov-school-contacts",
+      "gov-kz-astana-bilim"
+     ],
+     "official_status": "not_fetched"
+    },
+    "ownership": {
+     "value": null,
+     "method": null,
+     "verification_status": "not_fetched",
+     "confidence": null
+    },
+    "admission_rules": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "закрепление территорий/правила приёма не получены"
+    },
+    "operating_status": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "lead_source_ids": []
+    },
+    "period": {
+     "overture_release": "2026-09-23.1",
+     "osm_last_edit": "2026-02-02T06:18:06.000Z",
+     "poi_update_time": null
+    },
+    "capacity": {
+     "value": null,
+     "verification_status": "not_fetched",
+     "note": "источника вместимости нет"
+    },
+    "corroboration": []
+   },
+   "qa": [
+    {
+     "code": "no_official_verification",
+     "text": "Официальный перечень не открыт из этой среды (NOT_FETCHED); запись — вторичные открытые данные."
+    },
+    {
+     "code": "osm_only",
+     "text": "Нет подтверждающей точки POI второго поставщика (только OSM)."
+    },
+    {
+     "code": "outside_bbox_in_buffer",
+     "text": "Вне участка, в буфере 2100 м: нужна для ближайшей школы у границы."
+    },
+    {
+     "code": "restricted_by_type",
+     "text": "Специальная, профильная для одарённых, частная/международная или вечерняя школа по названию: не считается общедоступной целью."
+    }
+   ],
+   "category": "evening_school",
+   "access_eligibility": "known_restricted",
+   "capacity": null,
+   "capacity_source_ids": []
+  }
+ ],
+ "origins": [
+  {
+   "id": "ast-org-c00",
+   "label": "Жилое здание (apartments) — ячейка 1-1",
+   "lon": 71.4209568,
+   "lat": 51.1632317,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w240938590@9",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 736.0,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w240938590@9; выбор: крупнейшее жилое здание ячейки 1-1 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c10",
+   "label": "Жилое здание (apartments) — ячейка 2-1",
+   "lon": 71.4214185,
+   "lat": 51.169858,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w30614774@9",
+     "method": "representative_point of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 2303.7,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w30614774@9; выбор: крупнейшее жилое здание ячейки 2-1 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c20",
+   "label": "Жилое здание (apartments) — ячейка 3-1",
+   "lon": 71.4204037,
+   "lat": 51.1720208,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w30012458@11",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 2452.8,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w30012458@11; выбор: крупнейшее жилое здание ячейки 3-1 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c30",
+   "label": "Жилое здание (apartments) — ячейка 4-1",
+   "lon": 71.4183803,
+   "lat": 51.1745768,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w30637524@15",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1448.9,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w30637524@15; выбор: крупнейшее жилое здание ячейки 4-1 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c40",
+   "label": "Жилое здание (apartments) — ячейка 5-1",
+   "lon": 71.422565,
+   "lat": 51.1806721,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w30614870@8",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1575.7,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w30614870@8; выбор: крупнейшее жилое здание ячейки 5-1 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c01",
+   "label": "Жилое здание (apartments) — ячейка 1-2",
+   "lon": 71.4269462,
+   "lat": 51.1643205,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w240949260@9",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1868.9,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w240949260@9; выбор: крупнейшее жилое здание ячейки 1-2 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c11",
+   "label": "Жилое здание (apartments) — ячейка 2-2",
+   "lon": 71.4272433,
+   "lat": 51.1677529,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "r8789331@4",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1529.7,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM r8789331@4; выбор: крупнейшее жилое здание ячейки 2-2 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c21",
+   "label": "Жилое здание (apartments) — ячейка 3-2",
+   "lon": 71.4292794,
+   "lat": 51.173433,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w426120430@8",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1737.8,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w426120430@8; выбор: крупнейшее жилое здание ячейки 3-2 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c31",
+   "label": "Жилое здание (apartments) — ячейка 4-2",
+   "lon": 71.4290227,
+   "lat": 51.176745,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w239953935@13",
+     "method": "representative_point of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 2474.1,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w239953935@13; выбор: крупнейшее жилое здание ячейки 4-2 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c41",
+   "label": "Жилое здание (apartments) — ячейка 5-2",
+   "lon": 71.4297769,
+   "lat": 51.1783607,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w30614888@10",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1748.6,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w30614888@10; выбор: крупнейшее жилое здание ячейки 5-2 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c02",
+   "label": "Жилое здание (apartments) — ячейка 1-3",
+   "lon": 71.4303326,
+   "lat": 51.1664531,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w1088789200@4",
+     "method": "representative_point of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 2128.1,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w1088789200@4; выбор: крупнейшее жилое здание ячейки 1-3 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c12",
+   "label": "Жилое здание (residential) — ячейка 2-3",
+   "lon": 71.4322994,
+   "lat": 51.1674261,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w241226083@8",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1890.7,
+     "class": "residential"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w241226083@8; выбор: крупнейшее жилое здание ячейки 2-3 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c22",
+   "label": "Жилое здание (apartments) — ячейка 3-3",
+   "lon": 71.4327048,
+   "lat": 51.1728676,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "r6314561@8",
+     "method": "representative_point of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 4581.6,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM r6314561@8; выбор: крупнейшее жилое здание ячейки 3-3 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c32",
+   "label": "Жилое здание (apartments) — ячейка 4-3",
+   "lon": 71.4352108,
+   "lat": 51.1764963,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w691853050@7",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 2494.8,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w691853050@7; выбор: крупнейшее жилое здание ячейки 4-3 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c42",
+   "label": "Жилое здание (apartments) — ячейка 5-3",
+   "lon": 71.4328094,
+   "lat": 51.1792872,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w414689789@8",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1470.2,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w414689789@8; выбор: крупнейшее жилое здание ячейки 5-3 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c03",
+   "label": "Жилое здание (apartments) — ячейка 1-4",
+   "lon": 71.4409173,
+   "lat": 51.1665451,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w240383508@10",
+     "method": "representative_point of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 4036.1,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w240383508@10; выбор: крупнейшее жилое здание ячейки 1-4 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c13",
+   "label": "Жилое здание (apartments) — ячейка 2-4",
+   "lon": 71.4389925,
+   "lat": 51.16743,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w30012627@10",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1232.3,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w30012627@10; выбор: крупнейшее жилое здание ячейки 2-4 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c23",
+   "label": "Жилое здание (apartments) — ячейка 3-4",
+   "lon": 71.440889,
+   "lat": 51.1706516,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w240321203@9",
+     "method": "representative_point of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 5611.3,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w240321203@9; выбор: крупнейшее жилое здание ячейки 3-4 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c33",
+   "label": "Жилое здание (apartments) — ячейка 4-4",
+   "lon": 71.4364366,
+   "lat": 51.1769642,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w691853048@7",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 765.9,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w691853048@7; выбор: крупнейшее жилое здание ячейки 4-4 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c04",
+   "label": "Жилое здание (apartments) — ячейка 1-5",
+   "lon": 71.4446272,
+   "lat": 51.1638959,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w241226117@12",
+     "method": "representative_point of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 4048.8,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w241226117@12; выбор: крупнейшее жилое здание ячейки 1-5 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c14",
+   "label": "Жилое здание (apartments) — ячейка 2-5",
+   "lon": 71.4417473,
+   "lat": 51.1677847,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w240383458@7",
+     "method": "representative_point of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 3136.6,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w240383458@7; выбор: крупнейшее жилое здание ячейки 2-5 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c24",
+   "label": "Жилое здание (apartments) — ячейка 3-5",
+   "lon": 71.4458358,
+   "lat": 51.1708237,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w240321201@7",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 1226.2,
+     "class": "apartments"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w240321201@7; выбор: крупнейшее жилое здание ячейки 3-5 сетки 5×5"
+  },
+  {
+   "id": "ast-org-c34",
+   "label": "Жилое здание (house) — ячейка 4-5",
+   "lon": 71.4469638,
+   "lat": 51.177225,
+   "kind": "derived",
+   "source_ids": [
+    "ov-buildings-res-bbox-2026-09-23.1"
+   ],
+   "field_provenance": {
+    "coordinates": {
+     "source_id": "ov-buildings-res-bbox-2026-09-23.1",
+     "record": "w240107782@3",
+     "method": "centroid of the building footprint",
+     "verification_status": "secondary_only"
+    },
+    "selection": {
+     "method": "крупнейшая по площади жилая постройка (классы apartments/residential/house/detached/dormitory…) в ячейке сетки 5×5 участка",
+     "footprint_area_m2": 164.2,
+     "class": "house"
+    },
+    "weight": {
+     "value": 1,
+     "method": "равные веса первого сценария"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_population",
+     "text": "Точка анализа — центр здания, а не жители или дети; численность неизвестна."
+    }
+   ],
+   "weight": 1,
+   "parent_source_id": "ov-buildings-res-bbox-2026-09-23.1",
+   "method": "центр контура здания OSM w240107782@3; выбор: крупнейшее жилое здание ячейки 4-5 сетки 5×5"
+  }
+ ],
+ "candidates": [
+  {
+   "id": "ast-hyp-a",
+   "label": "Гипотеза A: точка для сравнения (не участок)",
+   "lon": 71.4455686,
+   "lat": 51.1783049,
+   "kind": "hypothesis",
+   "source_ids": [],
+   "field_provenance": {
+    "coordinates": {
+     "method": "центр ячейки сетки 10×10 участка не далее 300 м от точки анализа, с наибольшим расстоянием по прямой до ближайшей школы known_public; не ближе 50 м к школе; точки не ближе 600 м друг к другу; правило K10",
+     "nearest_known_public_m_at_selection": 1208.7
+    },
+    "cost": {
+     "value": null,
+     "verification_status": "not_fetched"
+    },
+    "land_status": {
+     "value": "unknown",
+     "verification_status": "not_fetched"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_a_land_plot",
+     "text": "Гипотетическая точка для сравнения, а не свободный или утверждённый участок; статус земли и стоимость неизвестны."
+    },
+    {
+     "code": "on_existing_building_footprint",
+     "text": "Точка попадает на контур существующего здания (14115be4-b893…): как место строительства не проверена."
+    }
+   ],
+   "cost": null,
+   "land_status": "unknown"
+  },
+  {
+   "id": "ast-hyp-b",
+   "label": "Гипотеза B: точка для сравнения (не участок)",
+   "lon": 71.4427058,
+   "lat": 51.1729148,
+   "kind": "hypothesis",
+   "source_ids": [],
+   "field_provenance": {
+    "coordinates": {
+     "method": "центр ячейки сетки 10×10 участка не далее 300 м от точки анализа, с наибольшим расстоянием по прямой до ближайшей школы known_public; не ближе 50 м к школе; точки не ближе 600 м друг к другу; правило K10",
+     "nearest_known_public_m_at_selection": 926.5
+    },
+    "cost": {
+     "value": null,
+     "verification_status": "not_fetched"
+    },
+    "land_status": {
+     "value": "unknown",
+     "verification_status": "not_fetched"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_a_land_plot",
+     "text": "Гипотетическая точка для сравнения, а не свободный или утверждённый участок; статус земли и стоимость неизвестны."
+    }
+   ],
+   "cost": null,
+   "land_status": "unknown"
+  },
+  {
+   "id": "ast-hyp-c",
+   "label": "Гипотеза C: точка для сравнения (не участок)",
+   "lon": 71.425529,
+   "lat": 51.1639313,
+   "kind": "hypothesis",
+   "source_ids": [],
+   "field_provenance": {
+    "coordinates": {
+     "method": "центр ячейки сетки 10×10 участка не далее 300 м от точки анализа, с наибольшим расстоянием по прямой до ближайшей школы known_public; не ближе 50 м к школе; точки не ближе 600 м друг к другу; правило K10",
+     "nearest_known_public_m_at_selection": 593.5
+    },
+    "cost": {
+     "value": null,
+     "verification_status": "not_fetched"
+    },
+    "land_status": {
+     "value": "unknown",
+     "verification_status": "not_fetched"
+    }
+   },
+   "qa": [
+    {
+     "code": "not_a_land_plot",
+     "text": "Гипотетическая точка для сравнения, а не свободный или утверждённый участок; статус земли и стоимость неизвестны."
+    },
+    {
+     "code": "on_existing_building_footprint",
+     "text": "Точка попадает на контур существующего здания (704b3fb6-3d6c…): как место строительства не проверена."
+    }
+   ],
+   "cost": null,
+   "land_status": "unknown"
+  }
+ ],
+ "selected_candidate_ids": [],
+ "parameters": {
+  "distance_method": "geodesic",
+  "routing_policy_id": null,
+  "threshold_m": 800,
+  "max_new_objects": 1
+ },
+ "model_assumptions": [
+  {
+   "id": "A-realm",
+   "text": "Реальный участок Астаны по открытым вторичным данным. Не учебная модель 52.56 и не synthetic demo: числа отсюда не переносятся в учебный Score."
+  },
+  {
+   "id": "A-data",
+   "text": "Школы — OSM (через Overture 2026-09-23.1) и POI Overture/Meta. Официальный перечень (eGov, управление образования) из среды подготовки не открыт — NOT_FETCHED. Наличие записи не подтверждает работу школы."
+  },
+  {
+   "id": "A-eligibility",
+   "text": "known_public — вывод K10: геометрия школы в OSM и номерное название общеобразовательной школы. Это не официальное подтверждение; закрепление территорий и правила приёма не проверены. Специальные, для одарённых, частные/международные и вечерние школы — known_restricted по названию; прочие — unknown."
+  },
+  {
+   "id": "A-point",
+   "text": "Точка школы — центр участка школы или здания в OSM либо точка POI; не вход и не калитка."
+  },
+  {
+   "id": "A-origins",
+   "text": "Точки анализа — центры жилых зданий OSM: по одному самому крупному в каждой ячейке сетки 5×5 участка, равные веса. Это не жители, не дети и не численность; неклассифицированные здания OSM в выбор не входят."
+  },
+  {
+   "id": "A-candidates",
+   "text": "Гипотезы A/B/C — точки, выбранные правилом K10 для сравнения; не участки, не проекты, стоимость и статус земли неизвестны."
+  },
+  {
+   "id": "A-buffer",
+   "text": "Школы включены в участок и буфер 2100 м. D = 1373 м — наибольшее расстояние по прямой от точки сетки 25 м внутри участка до ближайшей школы known_public; B = ceil100(1.5·D). Множитель 1.5 — допущение об обходе по улицам, не измерение: если пешеходный маршрут до ближайшей школы длиннее B, буфер недостаточен и нужен новый срез."
+  },
+  {
+   "id": "A-method",
+   "text": "Метод по умолчанию — расстояние по прямой (geodesic), без улиц. Порог 800 м — пользовательский параметр, не норматив."
+  },
+  {
+   "id": "A-capacity",
+   "text": "Вместимость, наполненность и дефицит мест неизвестны: результат описывает только пространственную близость к известным школам."
+  }
+ ]
+}

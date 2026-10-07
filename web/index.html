@@ -4,13 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#f7f8f4" />
-    <title>Аким на 5 часов · Астана</title>
+    <title>Астана · городские работы и события</title>
     <link rel="icon" href="/favicon.svg" />
     <link rel="stylesheet" href="/vendor/maplibre-gl.css" />
     <link rel="stylesheet" href="/style.css" />
     <link rel="stylesheet" href="/govtech/shell.css" />
+    <link rel="stylesheet" href="/govtech/school/school.css" />
+    <link rel="stylesheet" href="/civic/map/civic-map.css" />
+    <link rel="stylesheet" href="/civic/editor/editor.css" />
+    <link rel="stylesheet" href="/civic/feedback/feedback.css" />
+    <link rel="stylesheet" href="/civic/scenarios/scenarios.css" />
+    <link rel="stylesheet" href="/civic/assistant/assistant.css" />
+    <link rel="stylesheet" href="/civic/shell/shell.css" />
   </head>
-  <body>
+  <body class="civic-mode">
     <div id="map" aria-label="Интерактивная карта районов Астаны"></div>
     <div class="map-vignette"></div>
     <header class="topbar">
@@ -33,6 +40,9 @@
         <i class="dot"></i><span>Подключение…</span>
       </div>
       <div class="top-actions">
+        <div id="civic-modes" role="group" aria-label="Режим карты">
+          <button type="button" data-mode="civic" aria-pressed="true" title="Городские работы, сроки и сообщения жителей">Город</button><button type="button" data-mode="school" aria-pressed="false" title="Доступность школ: модель по открытым данным">Школы</button><button type="button" data-mode="training" aria-pressed="false" title="Учебная модель «Аким на 5 часов» (условные показатели)">Учебная модель</button>
+        </div>
         <button id="govtech-toggle" class="btn govtech-toggle" aria-pressed="false">Городское планирование</button>
         <button id="reset-demo-button" class="btn" title="Сбросить проекты, событие и текущий чат. Сохранённые планы команд останутся." disabled>Сбросить</button>
         <button id="saved-plans-button" class="btn" title="Сохранение, импорт и сравнение команд">Планы команд</button>
@@ -188,5 +198,19 @@
     <script defer src="/govtech/shell.js"></script>
     <script defer src="/govtech/core/plan-ui.js"></script>
     <script defer src="/govtech/core/resilience-ui.js"></script>
+    <script defer src="/govtech/k03/routing.js"></script>
+    <script defer src="/govtech/k03/school-access-routing.js"></script>
+    <script defer src="/govtech/school/case.js"></script>
+    <script defer src="/govtech/school/note.js"></script>
+    <script defer src="/govtech/school/school-ui.js"></script>
+    <!-- Round 11 civic-v1: role modules (when delivered) load before the R01 shell. -->
+    <script defer src="/civic/map/civic-map-core.js"></script>
+    <script defer src="/civic/map/civic-map.js"></script>
+    <script defer src="/civic/editor/editor-core.js"></script>
+    <script defer src="/civic/editor/editor.js"></script>
+    <script defer src="/civic/feedback/feedback.js"></script>
+    <script defer src="/civic/scenarios/scenarios.js"></script>
+    <script defer src="/civic/assistant/assistant.js"></script>
+    <script defer src="/civic/shell/shell.js"></script>
   </body>
 </html>

@@ -1,0 +1,235 @@
+{
+  "schema": "r05-demo-intake-v1",
+  "city": "astana",
+  "notice": "СИНТЕТИЧЕСКИЕ ДАННЫЕ. Все записи — выдуманные примеры для проверки интерфейса и сценариев; не реальные работы, сроки или места.",
+  "records": [
+    {
+      "_case": "срок перенесён: исходный и текущий срок различаются",
+      "id": "demo-astana-roadworks-delay",
+      "kind": "roadworks",
+      "title": "Демо: ремонт участка дороги со сдвигом срока",
+      "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах в Астане.",
+      "status": "in_progress",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            71.4251,
+            51.1712
+          ],
+          [
+            71.4289,
+            51.1716
+          ],
+          [
+            71.4326,
+            51.1719
+          ]
+        ]
+      },
+      "geometry_precision": "approximate",
+      "schedule": {
+        "planned_start": "2026-09-20",
+        "original_planned_end": "2026-10-10",
+        "current_planned_end": "2026-10-25",
+        "actual_end": null
+      },
+      "evidence_notes": "Создано R05 (раунд 11) как демонстрационный пример. Геометрия схематичная, не ось реальной улицы. Не публиковать как реальные работы."
+    },
+    {
+      "_case": "плановые работы, полигон двора",
+      "id": "demo-astana-landscaping-yard",
+      "kind": "landscaping",
+      "title": "Демо: благоустройство двора (условный участок)",
+      "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах в Астане.",
+      "status": "planned",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              71.4372,
+              51.1752
+            ],
+            [
+              71.4391,
+              51.1752
+            ],
+            [
+              71.4391,
+              51.1763
+            ],
+            [
+              71.4372,
+              51.1763
+            ],
+            [
+              71.4372,
+              51.1752
+            ]
+          ]
+        ]
+      },
+      "geometry_precision": "approximate",
+      "schedule": {
+        "planned_start": "2026-10-15",
+        "original_planned_end": "2026-11-15",
+        "current_planned_end": "2026-11-15",
+        "actual_end": null
+      },
+      "evidence_notes": "Создано R05 (раунд 11) как демонстрационный пример. Геометрия схематичная, не ось реальной улицы. Не публиковать как реальные работы."
+    },
+    {
+      "_case": "статус и сроки неизвестны: карточка показывает «нет данных»",
+      "id": "demo-astana-construction-unknown",
+      "kind": "construction",
+      "title": "Демо: строительство с неизвестным статусом",
+      "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах в Астане.",
+      "status": "unknown",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          71.4214,
+          51.1789
+        ]
+      },
+      "geometry_precision": "approximate",
+      "evidence_notes": "Создано R05 (раунд 11) как демонстрационный пример. Геометрия схематичная, не ось реальной улицы. Не публиковать как реальные работы."
+    },
+    {
+      "_case": "событие на выходных",
+      "id": "demo-astana-event-weekend",
+      "kind": "event",
+      "title": "Демо: городское мероприятие на выходных",
+      "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах в Астане.",
+      "status": "planned",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          71.4402,
+          51.1668
+        ]
+      },
+      "geometry_precision": "approximate",
+      "schedule": {
+        "planned_start": "2026-10-17",
+        "original_planned_end": "2026-10-18",
+        "current_planned_end": "2026-10-18",
+        "actual_end": null
+      },
+      "evidence_notes": "Создано R05 (раунд 11) как демонстрационный пример. Геометрия схематичная, не ось реальной улицы. Не публиковать как реальные работы."
+    },
+    {
+      "_case": "завершено: фактическая дата не позже даты среза",
+      "id": "demo-astana-roadworks-completed",
+      "kind": "roadworks",
+      "title": "Демо: завершённый ремонт тротуара",
+      "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах в Астане.",
+      "status": "completed",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            71.4302,
+            51.1655
+          ],
+          [
+            71.4307,
+            51.1683
+          ]
+        ]
+      },
+      "geometry_precision": "approximate",
+      "schedule": {
+        "planned_start": "2026-09-01",
+        "original_planned_end": "2026-09-25",
+        "current_planned_end": "2026-09-30",
+        "actual_end": "2026-09-30"
+      },
+      "evidence_notes": "Создано R05 (раунд 11) как демонстрационный пример. Геометрия схематичная, не ось реальной улицы. Не публиковать как реальные работы."
+    },
+    {
+      "_case": "отменено",
+      "id": "demo-astana-roadworks-cancelled",
+      "kind": "roadworks",
+      "title": "Демо: отменённое перекрытие проезда",
+      "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах в Астане.",
+      "status": "cancelled",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          71.4448,
+          51.1741
+        ]
+      },
+      "geometry_precision": "approximate",
+      "schedule": {
+        "planned_start": "2026-10-12",
+        "original_planned_end": "2026-10-14",
+        "current_planned_end": "2026-10-14",
+        "actual_end": null
+      },
+      "evidence_notes": "Создано R05 (раунд 11) как демонстрационный пример. Геометрия схематичная, не ось реальной улицы. Не публиковать как реальные работы."
+    },
+    {
+      "_case": "нет геометрии: только список",
+      "id": "demo-astana-list-only",
+      "kind": "landscaping",
+      "title": "Демо: работы без известного места (только в списке)",
+      "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах в Астане.",
+      "status": "planned",
+      "geometry": null,
+      "geometry_precision": "unknown",
+      "schedule": {
+        "planned_start": "2026-11-01",
+        "original_planned_end": null,
+        "current_planned_end": null,
+        "actual_end": null
+      },
+      "evidence_notes": "Создано R05 (раунд 11) как демонстрационный пример. Геометрия схематичная, не ось реальной улицы. Не публиковать как реальные работы."
+    },
+    {
+      "_case": "черновик: публичная карта не должна показывать",
+      "id": "demo-astana-draft-hidden",
+      "kind": "construction",
+      "title": "Демо: черновик, скрытый от жителей",
+      "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах в Астане.",
+      "status": "planned",
+      "publication": "draft",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          71.4339,
+          51.1773
+        ]
+      },
+      "geometry_precision": "approximate",
+      "evidence_notes": "Создано R05 (раунд 11) как демонстрационный пример. Геометрия схематичная, не ось реальной улицы. Не публиковать как реальные работы."
+    },
+    {
+      "_case": "архив: публичный список не должен показывать как текущее",
+      "id": "demo-astana-archived",
+      "kind": "event",
+      "title": "Демо: архивное мероприятие",
+      "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах в Астане.",
+      "status": "completed",
+      "publication": "archived",
+      "revision": 3,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          71.4236,
+          51.1646
+        ]
+      },
+      "geometry_precision": "approximate",
+      "schedule": {
+        "planned_start": "2026-08-29",
+        "original_planned_end": "2026-08-30",
+        "current_planned_end": "2026-08-30",
+        "actual_end": "2026-08-30"
+      },
+      "evidence_notes": "Создано R05 (раунд 11) как демонстрационный пример. Геометрия схематичная, не ось реальной улицы. Не публиковать как реальные работы."
+    }
+  ]
+}

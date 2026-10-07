@@ -1,0 +1,89 @@
+{
+ "graphs": [
+  {
+   "id": "synthetic-tiny-v1",
+   "file": "synthetic-tiny-v1.graph.json",
+   "city": "astana",
+   "mode": "walking",
+   "evidence_type": "synthetic",
+   "digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+   "file_sha256": "8ad4cdd1b04debeb6141f7fc04ef015056a8d697964531aa157c2ab4f421bb2b",
+   "nodes": 10,
+   "edges": 11,
+   "label": "СИНТЕТИЧЕСКИЙ эталонный граф (10 узлов) — не реальная улица Астаны",
+   "source": {
+    "kind": "hand_made",
+    "author": "R07 round 11"
+   },
+   "license": null
+  },
+  {
+   "id": "k03-astana-pedestrian-r10",
+   "file": "k03-astana-pedestrian-r10.graph.json",
+   "city": "astana",
+   "mode": "walking",
+   "evidence_type": "derived",
+   "digest": "15d85071aa92934082e2c02fe627687729c006d327c2fdc25bf6b3aae75bd357",
+   "file_sha256": "71aba7fe365a5ae05e2783667e9fdf458a424134e523a10694a69ae291e9297b",
+   "nodes": 2309,
+   "edges": 3269,
+   "label": "Пешеходный граф K03 (центр Астаны, ~2×2 км), Overture/OSM — не проверен на месте",
+   "source": {
+    "branch": "claude/beautiful-clarke-sbzomj",
+    "commit": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+    "path": "web/govtech/k03/astana.graph.json",
+    "file_sha256": "a6f823292331713dc5eb314aff53fc3de0836bf9fdc95f310c21053d0c28aace",
+    "graph_sha256": "799d26e5155248cceb31eb67f76f92d453491770a73c387bf0371289ddcf0ae4",
+    "schema": "k03-pedestrian-graph-v1",
+    "release": "2026-09-23.1",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "inputs": {
+     "segments": {
+      "commit": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+      "path": "prototypes/city-evidence/inputs/k10/data/astana/segments.geojson",
+      "git_blob": "f246dd7ce72cf677318415875dcd74fd5472390a",
+      "sha256": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9"
+     },
+     "connectors": {
+      "commit": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+      "path": "prototypes/city-evidence/inputs/k10/data/astana/connectors.geojson",
+      "git_blob": "ff47fff0e5b81db7d64d6ea4257b92c37b27c8f8",
+      "sha256": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801"
+     },
+     "data_js": {
+      "commit": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+      "path": "web/govtech/core/data.js",
+      "git_blob": "e61ff9925a51505dbf2b307d950aab558b4d2a5d",
+      "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+     }
+    }
+   },
+   "license": {
+    "id": "ODbL-1.0",
+    "attribution": [
+     "© OpenStreetMap contributors (ODbL-1.0)",
+     "Overture Maps Foundation, release 2026-09-23.1"
+    ],
+    "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+   }
+  }
+ ],
+ "not_ready": [
+  {
+   "status": "NOT_READY",
+   "mode": "driving",
+   "missing_fields": [
+    "motor_vehicle access по направлениям (в K03 есть только foot-политика pedestrian-v1)",
+    "oneway для автомобилей как отдельный признак (K03 сворачивает его в strict-доступ пешехода)",
+    "запреты поворотов (turn restrictions) и связность по уровням для машин",
+    "покрытие города: доступен только bbox центра ~2×2 км"
+   ],
+   "note": "Пешеходный граф не переименовывается в driving ради интерфейса."
+  }
+ ]
+}

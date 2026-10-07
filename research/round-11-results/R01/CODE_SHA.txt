@@ -1,0 +1,6 @@
+a5d184b4f5aa7df608a2ae9124408201b14ecb67
+# R01 BUILD round 11: last commit that changes code/tests (branch claude/affectionate-ride-bol5v8).
+# Later commits on the branch change only research/ (evidence, MATRIX, handoff); check with:
+#   git diff --stat a5d184b4f5aa7df608a2ae9124408201b14ecb67 HEAD -- . ':!research'
+# Verified on this code (2026-10-07T04:21:18Z): tests/civic/R01/run_checks.sh — all 11 steps PASS
+# (pytest, ui.web_check, node govtech x5, node R03, node R04, browser P0 49/0/2, browser scenarios 16/0).

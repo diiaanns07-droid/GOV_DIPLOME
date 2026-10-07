@@ -1,0 +1,113 @@
+/* Civic shell (round 11, R01): light design of the original simulator, one map.
+ * Desktop: left panel (map tools and MapLibre attribution stay free on the right).
+ * Mobile ≤760: bottom sheet; attribution is lifted above the sheet. */
+
+/* Mode switch replaces the old single "Городское планирование" toggle. */
+#govtech-toggle, .topbar .top-actions #govtech-toggle { display: none !important; } /* beats govtech/shell.css mobile rule */
+#civic-modes { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: #e8eee3; }
+#civic-modes button { padding: 7px 12px; border-radius: 9px; font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+#civic-modes button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 6px #19362812; }
+/* The mode switch takes the room the training header's info block had (R10-D012): below 1680px that
+ * block («Астана / Городская лаборатория», counts) is hidden; the counts stay in the map footer. */
+@media (max-width: 1680px) { .topbar .top-center { display: none; } }
+#civic-modes button:hover:not([aria-pressed="true"]) { background: #f3f6ee; }
+.govtech-mode .top-actions > #civic-modes { display: flex !important; }
+
+/* Training UI is hidden while the civic mode owns the map. */
+.civic-mode .top-actions > :not(#civic-modes),
+.civic-mode .sidebar, .civic-mode .top-center, .civic-mode #connection,
+.civic-mode .map-top, .civic-mode .plan-ribbon, .civic-mode .map-footer,
+.civic-mode #map-hint, .civic-mode #event-banner, .civic-mode #advisor-card,
+.civic-mode #drawer, .civic-mode #tour, .civic-mode #map-fallback,
+.civic-mode .district-marker { display: none !important; }
+.civic-mode .top-actions { margin-left: auto; }
+
+#civic-root[hidden], #civic-root [hidden] { display: none !important; }
+.civic-panel { position: absolute; z-index: 5; top: 112px; bottom: 34px; left: 20px; width: 420px;
+  display: flex; flex-direction: column; background: #fffffff7; border: 1px solid var(--line);
+  border-radius: 20px; box-shadow: var(--shadow); overflow: hidden; }
+.civic-sheet-handle { display: none; }
+.civic-head { padding: 18px 22px 10px; background: linear-gradient(130deg, #fff, #eff4e6); flex-shrink: 0; }
+.civic-head h1 { margin: 2px 0 4px; font-size: 24px; line-height: 1.15; letter-spacing: -.6px; }
+.civic-data-note { margin: 0; font-size: 12px; color: var(--muted); }
+.civic-state { margin: 10px 16px 0; padding: 9px 12px; border-radius: 11px; font-size: 12px; background: #f0f5e7; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.civic-state[data-kind="warn"] { background: #faf5e7; color: #7a531a; }
+.civic-state[data-kind="error"] { background: #fbeceb; color: #ab3934; }
+.civic-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 16px 16px; scrollbar-width: thin; }
+.civic-foot { flex-shrink: 0; display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--line); background: #f7f9f2; }
+.civic-foot .btn { padding: 8px 12px; }
+
+/* Shell blocks around the role modules (each role module ships its own CSS). */
+.civic-box h3, .civic-drawer h3 { font-size: 13px; margin: 14px 0 6px; }
+.civic-error { color: #ab3934; font-size: 12px; }
+.civic-box { margin-top: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: #fbfcf8; }
+.civic-box-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.civic-box-head h2 { margin: 0; font-size: 15px; }
+.civic-close { width: 36px; height: 36px; border-radius: 10px; font-size: 20px; line-height: 1; flex-shrink: 0; }
+.civic-close:hover { background: #f0f5e9; }
+.civic-note { font-size: 12px; background: #f0f5e7; border-radius: 10px; padding: 8px 10px; margin: 0; }
+
+/* Staff drawer and scenarios drawer: right side, clear of the map tools column. */
+.civic-drawer { position: absolute; z-index: 6; top: 112px; bottom: 34px; right: 84px; width: 440px;
+  display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; background: #fffffffa;
+  border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 12px 60px #213b2726; }
+.civic-drawer-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.civic-attribution { margin: 0; font-size: 10px; color: var(--muted); }
+@media (min-width: 761px) { #civic-scenarios { width: 520px; } }
+@media (min-width: 761px) and (max-width: 1100px) { #civic-scenarios { width: 440px; } }
+
+.civic-mode #map-status { top: 112px; left: 460px; max-width: 420px; }
+@media (max-width: 1100px) {
+  .civic-panel { width: 360px; }
+  .civic-drawer { width: 380px; right: 70px; }
+  .civic-mode #map-status { left: 400px; }
+}
+
+@media (max-width: 760px) {
+  #civic-modes button { padding: 6px 7px; font-size: 11px; }
+  .civic-mode .brand > div:not(.brand-mark) .brand-sub { display: none; }
+  .civic-panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 46%; border-radius: 18px 18px 0 0;
+    box-shadow: 0 -8px 30px #19362818; padding-bottom: env(safe-area-inset-bottom); transition: height .25s var(--ease); }
+  .civic-panel[data-sheet="peek"] { height: 24%; }
+  .civic-panel[data-sheet="full"] { height: calc(100% - 184px); }
+  .civic-sheet-handle { display: grid; place-items: center; width: 100%; height: 36px; flex-shrink: 0; margin-bottom: -10px; }
+  .civic-sheet-handle i { width: 44px; height: 5px; border-radius: 3px; background: #c9d3c4; }
+  .civic-head { padding: 0 16px 8px; background: #fff; }
+  .civic-head h1 { font-size: 18px; }
+  .civic-data-note { display: none; }
+  .civic-scroll { padding: 2px 12px 12px; }
+  .civic-foot { padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); }
+  /* Drawers are bottom sheets too: the map stays usable above them (R04 point tool, R07 edge clicks). */
+  .civic-drawer { top: auto; height: 62%; bottom: 0; left: 0; right: 0; width: auto; border-radius: 18px 18px 0 0;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(46% + 6px); right: 4px; transition: bottom .25s var(--ease); }
+  body[data-civic-sheet="peek"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(24% + 6px); }
+  /* Full sheet: attribution goes left, between the basemap notice and the sheet (clear of map tools). */
+  body[data-civic-sheet="full"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(100% - 178px); right: auto; left: 6px; }
+  body[data-civic-drawer="open"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(62% + 6px); right: 4px; left: auto; }
+  /* A full sheet would stick out above the drawer and cover the map strip the drawer leaves free;
+     the panel keeps its state (scroll, sheet size) and comes back when the drawer closes. */
+  body[data-civic-drawer="open"].civic-mode .civic-panel { visibility: hidden; }
+  .civic-mode .map-tools { top: 84px; }
+  .civic-mode #map-status { top: 84px; left: 10px; right: 60px; max-width: none; white-space: normal; }
+  .civic-mode .toast { bottom: calc(46% + 48px); }
+  /* Training/school modes on a phone: the actions row scrolls inside the top bar instead of
+     widening the page; the mode switch comes first and stays visible. */
+  .topbar { min-width: 0; }
+  .topbar .brand { flex: 1 1 0; min-width: 33px; }
+  .topbar .brand > div:not(.brand-mark) { min-width: 0; }
+  .topbar .brand-sub { display: none; }
+  .topbar .brand-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar .top-actions { min-width: 0; flex: 0 1 auto; max-width: calc(100% - 41px); justify-content: flex-start;
+    overflow-x: auto; scrollbar-width: none; }
+  .topbar .top-actions::-webkit-scrollbar { display: none; }
+  .topbar .top-actions > * { flex-shrink: 0; }
+}
+/* Adapter for R04 @da46e1c (not an R01 style; R10-D010): R04's sticky action bar may grow to 70vh, taller
+ * than the editor body inside the drawer, and then covers the 409 conflict panel and its buttons.
+ * Inside the shell's drawer the bar is capped (it scrolls internally). Remove when R04 caps it itself. */
+#civic-editor .civic-r04-actions { max-height: 36vh; }
+@media (max-width: 760px) { #civic-editor .civic-r04-actions { max-height: 24vh; } }
+@media (prefers-reduced-motion: reduce) {
+  .civic-panel, .civic-mode .maplibregl-ctrl-bottom-right { transition: none; }
+}

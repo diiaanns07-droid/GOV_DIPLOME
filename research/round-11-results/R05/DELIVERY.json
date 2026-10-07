@@ -1,0 +1,106 @@
+{
+  "round": 11,
+  "role": "R05",
+  "branch": "claude/intelligent-sagan-7shpeh",
+  "base_sha": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+  "status": "partial",
+  "owned_paths": [
+    "data/civic/astana/",
+    "tests/civic/R05/",
+    "research/round-11-results/R05/",
+    "research/handoffs/astana/R05/round-11/STATUS.md"
+  ],
+  "integration_notes": "research/round-11-results/R05/INTEGRATION.txt — the package is integration-ready (tools, demo slice, licenses, R02-compatible); 'partial' only because no real Astana record could be fetched.",
+  "code_commit": "f90858cc58cef8368e3d6dc0ece3b6d41111ce15",
+  "deliverables": {
+    "objects": "data/civic/astana/objects.json (real, 0 records: no Astana source reachable)",
+    "historical": "data/civic/astana/historical.json (0 records)",
+    "demo": "data/civic/astana/demo_synthetic.json (slice.demo=true, 9 synthetic records)",
+    "sources": "data/civic/astana/sources.json (28 sources, 7 fetched, 21 egress-denied)",
+    "validation": "data/civic/astana/validation.json",
+    "attribution": "data/civic/astana/ATTRIBUTION.txt",
+    "license_register": "data/civic/astana/LICENSE_REGISTER.json",
+    "import_helper": "data/civic/astana/tools/import_helper.py + README.md",
+    "validator": "data/civic/astana/tools/civic_v1.py",
+    "builder": "data/civic/astana/tools/build_slice.py",
+    "schedule_diff_stretch": "data/civic/astana/tools/schedule_diff.py",
+    "pilot": "research/round-11-results/R05/PILOT.md",
+    "qa": "research/round-11-results/R05/QA.md",
+    "review": "research/round-11-results/R05/REVIEW.md (round 1: 33 fixed / 7 refuted; round 2: 29 fixed / 3 refuted + 14 first-run date findings fixed)",
+    "r02_compat": "research/round-11-results/R05/r02_import_check.json + evidence/r02_diff_fuzz_*.py"
+  },
+  "checks": [
+    {
+      "name": "r05-unit-tests",
+      "status": "PASS",
+      "command": "python3 -m pytest tests/civic/R05 -q",
+      "input": "tests/civic/R05 (inline + synthetic fixtures, PACK_SHA civic_object.json)",
+      "reason": "149 passed at f90858c"
+    },
+    {
+      "name": "r05-unit-tests-stdlib",
+      "status": "PASS",
+      "command": "python3 -m unittest discover -s tests/civic/R05",
+      "input": "same",
+      "reason": "Ran 149, OK at f90858c"
+    },
+    {
+      "name": "slice-determinism",
+      "status": "PASS",
+      "command": "python3 -I data/civic/astana/tools/build_slice.py --check",
+      "input": "data/civic/astana inputs",
+      "reason": "valid=true, changed=[]; versions r05-astana-current-2026-10-06-be154531ff77, r05-astana-demo-2026-10-06-0063f1c38b60"
+    },
+    {
+      "name": "r02-importer-compat",
+      "status": "PASS",
+      "command": "python3 -B -m ui.civic_store --db <scratch>/.runtime/t.sqlite3 import data/civic/astana/demo_synthetic.json [--dry-run]",
+      "input": "R02 ui/civic_store @ 7d5e39a (git archive to scratch, diff read before running)",
+      "reason": "demo create 9, re-import skip_unchanged 9; real slices empty"
+    },
+    {
+      "name": "r02-validator-differential-fuzz",
+      "status": "PASS",
+      "command": "python3 -I research/round-11-results/R05/evidence/r02_diff_fuzz_{demo,real}.py data/civic/astana/tools <R02 dir>",
+      "input": "12000 mutations (seeds 7, 11), R02 7d5e39a validate_content",
+      "reason": "1863 records accepted by R05 demo/real profiles, 0 rejected by R02"
+    },
+    {
+      "name": "adversarial-review-round-1",
+      "status": "PASS",
+      "command": "Workflow r05-adversarial-review (5 finders + 5 skeptics)",
+      "input": "tree e4ab1ff",
+      "reason": "40 findings: 33 confirmed and fixed with regression tests, 7 refuted"
+    },
+    {
+      "name": "adversarial-review-round-2",
+      "status": "PASS",
+      "command": "Workflow r05-review-round2 (3 finders + skeptics, resumed after session limit)",
+      "input": "diff e4ab1ff..01f89df",
+      "reason": "32 findings with skeptic: 29 confirmed and fixed, 3 refuted; 14 first-run date findings also fixed"
+    },
+    {
+      "name": "official-source-fetch",
+      "status": "FAIL",
+      "command": "python3 -I data/civic/astana/tools/probe_sources.py --from-file <list>",
+      "input": "BRIEF.txt gov.kz URLs, astana.gov.kz, data.egov.kz, news, OSM/OpenFreeMap/Overture sites",
+      "reason": "egress proxy 403 (organisation policy) for every non-GitHub host; not circumvented; fetch_audit_2026-10-06_*.json"
+    },
+    {
+      "name": "basemap-3d-render",
+      "status": "NOT_RUN",
+      "command": null,
+      "input": null,
+      "reason": "tiles.openfreemap.org denied by egress policy; R05 owns no UI"
+    }
+  ],
+  "limitations": [
+    "No real Astana work/event announcement could be fetched (egress 403); objects.json has 0 confirmed records. Empty slice is not evidence that no works exist.",
+    "OSM copyright page, OSMF tile policy, gov.kz reuse terms not fetched; license register marks them not_verified/partial.",
+    "schedule_diff role detection is a Russian-language heuristic for editor triage only; Kazakh text is not parsed; every finding needs editor confirmation.",
+    "Geofence uses OSM district polygons (not legal boundaries).",
+    "R02 parity checked against 7d5e39a; a later R02 validator change needs a re-run of evidence/r02_diff_fuzz_*.py."
+  ],
+  "next_step": "With www.gov.kz allowed in the environment network policy: fetch the two BRIEF.txt announcements and 30-45 days of akimat news, create 8-15 intake records (NEXT_SOURCES.md), rebuild, rerun pilot_check on the real slice."
+}

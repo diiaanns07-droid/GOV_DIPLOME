@@ -1,0 +1,964 @@
+{
+ "_provenance": {
+  "producer": "R07 engine.civic_scenarios.compare",
+  "branch": "claude/brave-hopper-bkc58b",
+  "sha": "18f8ac8",
+  "case_id": "synthetic-tiny-v1-demo",
+  "case_title": "СИНТЕТИКА: перекрытие B–C (план A) против перекрытия C–D и G–D (план B)",
+  "evidence_type": "synthetic",
+  "note": "Сгенерировано R09 запуском кода R07 на его синтетическом кейсе; граф условный, не улицы Астаны."
+ },
+ "result": {
+  "schema_version": "civic-scenario-result-v1",
+  "engine": {
+   "name": "engine.civic_scenarios",
+   "version": "1.0.0",
+   "policy": "strict-allowed-only"
+  },
+  "input": {
+   "payload_schema_version": "civic-scenario-v1",
+   "payload_digest": "efb32f8cace0856c9e103951d6d55af3c62bc9eaebc78d3dbb90f2a9bcfb7889",
+   "scenario_digest": "55d17ba1b795f7db2d5792de0aad7a007bc9b22c2cf0ef4f82190a756d17b8ab",
+   "city": "astana",
+   "graph_id": "synthetic-tiny-v1",
+   "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+   "graph_evidence_type": "synthetic",
+   "mode": "walking",
+   "analysis_at": "2026-10-07T09:00:00+05:00",
+   "analysis_at_utc": "2026-10-07T04:00:00Z",
+   "origin_node_ids": [
+    "n_a",
+    "n_h"
+   ],
+   "destination_node_ids": [
+    "n_c",
+    "n_d",
+    "n_h",
+    "n_u",
+    "n_x",
+    "n_a"
+   ],
+   "interval_rule": "start_at <= analysis_at < end_at",
+   "units": {
+    "length": "m",
+    "internal": "integer mm",
+    "delta": "m"
+   }
+  },
+  "graph_coverage": {
+   "edges": 11,
+   "nodes": 10,
+   "length_m_by_access": {
+    "allowed": 890.0,
+    "denied": 50.0,
+    "unknown": 200.0
+   },
+   "known_access_share_by_length": 0.8246
+  },
+  "baseline": {
+   "routes": [
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_c",
+     "status": "ok",
+     "length_m": 200.0,
+     "edge_ids": [
+      "e_ab",
+      "e_bc"
+     ],
+     "node_ids": [
+      "n_a",
+      "n_b",
+      "n_c"
+     ],
+     "equal_cost_alternatives": false,
+     "reason": null
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_d",
+     "status": "ok",
+     "length_m": 300.0,
+     "edge_ids": [
+      "e_ab",
+      "e_bc",
+      "e_cd"
+     ],
+     "node_ids": [
+      "n_a",
+      "n_b",
+      "n_c",
+      "n_d"
+     ],
+     "equal_cost_alternatives": false,
+     "reason": null
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_h",
+     "status": "ok",
+     "length_m": 450.0,
+     "edge_ids": [
+      "e_ab",
+      "e_bc",
+      "e_cd",
+      "e_dh"
+     ],
+     "node_ids": [
+      "n_a",
+      "n_b",
+      "n_c",
+      "n_d",
+      "n_h"
+     ],
+     "equal_cost_alternatives": false,
+     "reason": null
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_u",
+     "status": "unknown",
+     "length_m": null,
+     "edge_ids": [],
+     "node_ids": [],
+     "equal_cost_alternatives": false,
+     "reason": "path_only_via_unknown_access",
+     "length_if_unknown_allowed_m": 500.0
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_x",
+     "status": "unreachable",
+     "length_m": null,
+     "edge_ids": [],
+     "node_ids": [],
+     "equal_cost_alternatives": false,
+     "reason": "no_path_within_model"
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_a",
+     "status": "ok",
+     "length_m": 0.0,
+     "edge_ids": [],
+     "node_ids": [
+      "n_a"
+     ],
+     "equal_cost_alternatives": false,
+     "reason": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_c",
+     "status": "unreachable",
+     "length_m": null,
+     "edge_ids": [],
+     "node_ids": [],
+     "equal_cost_alternatives": false,
+     "reason": "no_path_within_model"
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_d",
+     "status": "unreachable",
+     "length_m": null,
+     "edge_ids": [],
+     "node_ids": [],
+     "equal_cost_alternatives": false,
+     "reason": "no_path_within_model"
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_h",
+     "status": "ok",
+     "length_m": 0.0,
+     "edge_ids": [],
+     "node_ids": [
+      "n_h"
+     ],
+     "equal_cost_alternatives": false,
+     "reason": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_u",
+     "status": "unreachable",
+     "length_m": null,
+     "edge_ids": [],
+     "node_ids": [],
+     "equal_cost_alternatives": false,
+     "reason": "no_path_within_model"
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_x",
+     "status": "unreachable",
+     "length_m": null,
+     "edge_ids": [],
+     "node_ids": [],
+     "equal_cost_alternatives": false,
+     "reason": "no_path_within_model"
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_a",
+     "status": "unreachable",
+     "length_m": null,
+     "edge_ids": [],
+     "node_ids": [],
+     "equal_cost_alternatives": false,
+     "reason": "no_path_within_model"
+    }
+   ],
+   "status_summary": {
+    "pairs": 12,
+    "by_status": {
+     "ok": 5,
+     "unknown": 1,
+     "unreachable": 6
+    },
+    "ok_share": 0.4167
+   }
+  },
+  "plans": [
+   {
+    "id": "A",
+    "active_closed_edge_ids": [
+     "e_bc"
+    ],
+    "inactive_closures": [
+     {
+      "edge_ids": [
+       "e_ab"
+      ],
+      "start_at": "2026-10-08T08:00:00+05:00",
+      "end_at": "2026-10-08T18:00:00+05:00",
+      "reason": "not_started"
+     }
+    ],
+    "routes": [
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_c",
+      "status": "ok",
+      "length_m": 360.0,
+      "edge_ids": [
+       "e_ab",
+       "e_be",
+       "e_ef",
+       "e_fc"
+      ],
+      "node_ids": [
+       "n_a",
+       "n_b",
+       "n_e",
+       "n_f",
+       "n_c"
+      ],
+      "equal_cost_alternatives": false,
+      "reason": null
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_d",
+      "status": "ok",
+      "length_m": 460.0,
+      "edge_ids": [
+       "e_ab",
+       "e_be",
+       "e_ef",
+       "e_fc",
+       "e_cd"
+      ],
+      "node_ids": [
+       "n_a",
+       "n_b",
+       "n_e",
+       "n_f",
+       "n_c",
+       "n_d"
+      ],
+      "equal_cost_alternatives": true,
+      "reason": null
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_h",
+      "status": "ok",
+      "length_m": 610.0,
+      "edge_ids": [
+       "e_ab",
+       "e_be",
+       "e_ef",
+       "e_fc",
+       "e_cd",
+       "e_dh"
+      ],
+      "node_ids": [
+       "n_a",
+       "n_b",
+       "n_e",
+       "n_f",
+       "n_c",
+       "n_d",
+       "n_h"
+      ],
+      "equal_cost_alternatives": true,
+      "reason": null
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_u",
+      "status": "unknown",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "path_only_via_unknown_access",
+      "length_if_unknown_allowed_m": 660.0
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_x",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_a",
+      "status": "ok",
+      "length_m": 0.0,
+      "edge_ids": [],
+      "node_ids": [
+       "n_a"
+      ],
+      "equal_cost_alternatives": false,
+      "reason": null
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_c",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_d",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_h",
+      "status": "ok",
+      "length_m": 0.0,
+      "edge_ids": [],
+      "node_ids": [
+       "n_h"
+      ],
+      "equal_cost_alternatives": false,
+      "reason": null
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_u",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_x",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_a",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     }
+    ],
+    "status_summary": {
+     "pairs": 12,
+     "by_status": {
+      "ok": 5,
+      "unknown": 1,
+      "unreachable": 6
+     },
+     "ok_share": 0.4167
+    },
+    "vs_baseline": {
+     "pairs": [
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_c",
+       "from_status": "ok",
+       "to_status": "ok",
+       "delta_m": 160.0,
+       "change": "longer",
+       "route_changed": true,
+       "baseline_route_uses_closed_edge": true
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_d",
+       "from_status": "ok",
+       "to_status": "ok",
+       "delta_m": 160.0,
+       "change": "longer",
+       "route_changed": true,
+       "baseline_route_uses_closed_edge": true
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_h",
+       "from_status": "ok",
+       "to_status": "ok",
+       "delta_m": 160.0,
+       "change": "longer",
+       "route_changed": true,
+       "baseline_route_uses_closed_edge": true
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_u",
+       "from_status": "unknown",
+       "to_status": "unknown",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_x",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_a",
+       "from_status": "ok",
+       "to_status": "ok",
+       "delta_m": 0.0,
+       "change": "unchanged",
+       "route_changed": false,
+       "baseline_route_uses_closed_edge": false
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_c",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_d",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_h",
+       "from_status": "ok",
+       "to_status": "ok",
+       "delta_m": 0.0,
+       "change": "unchanged",
+       "route_changed": false,
+       "baseline_route_uses_closed_edge": false
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_u",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_x",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_a",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      }
+     ],
+     "summary": {
+      "pairs": 12,
+      "comparable_pairs": 5,
+      "changes": {
+       "unchanged": 2,
+       "longer": 3,
+       "shorter": 0,
+       "lost_within_model": 0,
+       "became_uncertain": 0,
+       "gained": 0,
+       "not_comparable": 7
+      },
+      "mean_delta_m_comparable": 96.0,
+      "max_delta_m_comparable": 160.0,
+      "sum_delta_m_comparable": 480.0,
+      "note": "средние/суммы только по парам со статусом ok в обоих состояниях; пары без пути не считаются нулём"
+     }
+    },
+    "warnings": []
+   },
+   {
+    "id": "B",
+    "active_closed_edge_ids": [
+     "e_cd",
+     "e_gd"
+    ],
+    "inactive_closures": [],
+    "routes": [
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_c",
+      "status": "ok",
+      "length_m": 200.0,
+      "edge_ids": [
+       "e_ab",
+       "e_bc"
+      ],
+      "node_ids": [
+       "n_a",
+       "n_b",
+       "n_c"
+      ],
+      "equal_cost_alternatives": false,
+      "reason": null
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_d",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_h",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_u",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_x",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_a",
+      "destination_node_id": "n_a",
+      "status": "ok",
+      "length_m": 0.0,
+      "edge_ids": [],
+      "node_ids": [
+       "n_a"
+      ],
+      "equal_cost_alternatives": false,
+      "reason": null
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_c",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_d",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_h",
+      "status": "ok",
+      "length_m": 0.0,
+      "edge_ids": [],
+      "node_ids": [
+       "n_h"
+      ],
+      "equal_cost_alternatives": false,
+      "reason": null
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_u",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_x",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     },
+     {
+      "origin_node_id": "n_h",
+      "destination_node_id": "n_a",
+      "status": "unreachable",
+      "length_m": null,
+      "edge_ids": [],
+      "node_ids": [],
+      "equal_cost_alternatives": false,
+      "reason": "no_path_within_model"
+     }
+    ],
+    "status_summary": {
+     "pairs": 12,
+     "by_status": {
+      "ok": 3,
+      "unknown": 0,
+      "unreachable": 9
+     },
+     "ok_share": 0.25
+    },
+    "vs_baseline": {
+     "pairs": [
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_c",
+       "from_status": "ok",
+       "to_status": "ok",
+       "delta_m": 0.0,
+       "change": "unchanged",
+       "route_changed": false,
+       "baseline_route_uses_closed_edge": false
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_d",
+       "from_status": "ok",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "lost_within_model",
+       "baseline_route_uses_closed_edge": true
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_h",
+       "from_status": "ok",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "lost_within_model",
+       "baseline_route_uses_closed_edge": true
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_u",
+       "from_status": "unknown",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_x",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_a",
+       "destination_node_id": "n_a",
+       "from_status": "ok",
+       "to_status": "ok",
+       "delta_m": 0.0,
+       "change": "unchanged",
+       "route_changed": false,
+       "baseline_route_uses_closed_edge": false
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_c",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_d",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_h",
+       "from_status": "ok",
+       "to_status": "ok",
+       "delta_m": 0.0,
+       "change": "unchanged",
+       "route_changed": false,
+       "baseline_route_uses_closed_edge": false
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_u",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_x",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      },
+      {
+       "origin_node_id": "n_h",
+       "destination_node_id": "n_a",
+       "from_status": "unreachable",
+       "to_status": "unreachable",
+       "delta_m": null,
+       "change": "not_comparable"
+      }
+     ],
+     "summary": {
+      "pairs": 12,
+      "comparable_pairs": 3,
+      "changes": {
+       "unchanged": 3,
+       "longer": 0,
+       "shorter": 0,
+       "lost_within_model": 2,
+       "became_uncertain": 0,
+       "gained": 0,
+       "not_comparable": 7
+      },
+      "mean_delta_m_comparable": 0.0,
+      "max_delta_m_comparable": 0.0,
+      "sum_delta_m_comparable": 0.0,
+      "note": "средние/суммы только по парам со статусом ok в обоих состояниях; пары без пути не считаются нулём"
+     }
+    },
+    "warnings": []
+   }
+  ],
+  "a_vs_b": {
+   "from_plan": "A",
+   "to_plan": "B",
+   "pairs": [
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_c",
+     "from_status": "ok",
+     "to_status": "ok",
+     "delta_m": -160.0,
+     "change": "shorter",
+     "route_changed": true
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_d",
+     "from_status": "ok",
+     "to_status": "unreachable",
+     "delta_m": null,
+     "change": "lost_within_model"
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_h",
+     "from_status": "ok",
+     "to_status": "unreachable",
+     "delta_m": null,
+     "change": "lost_within_model"
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_u",
+     "from_status": "unknown",
+     "to_status": "unreachable",
+     "delta_m": null,
+     "change": "not_comparable"
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_x",
+     "from_status": "unreachable",
+     "to_status": "unreachable",
+     "delta_m": null,
+     "change": "not_comparable"
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_a",
+     "from_status": "ok",
+     "to_status": "ok",
+     "delta_m": 0.0,
+     "change": "unchanged",
+     "route_changed": false
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_c",
+     "from_status": "unreachable",
+     "to_status": "unreachable",
+     "delta_m": null,
+     "change": "not_comparable"
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_d",
+     "from_status": "unreachable",
+     "to_status": "unreachable",
+     "delta_m": null,
+     "change": "not_comparable"
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_h",
+     "from_status": "ok",
+     "to_status": "ok",
+     "delta_m": 0.0,
+     "change": "unchanged",
+     "route_changed": false
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_u",
+     "from_status": "unreachable",
+     "to_status": "unreachable",
+     "delta_m": null,
+     "change": "not_comparable"
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_x",
+     "from_status": "unreachable",
+     "to_status": "unreachable",
+     "delta_m": null,
+     "change": "not_comparable"
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_a",
+     "from_status": "unreachable",
+     "to_status": "unreachable",
+     "delta_m": null,
+     "change": "not_comparable"
+    }
+   ],
+   "summary": {
+    "pairs": 12,
+    "comparable_pairs": 3,
+    "changes": {
+     "unchanged": 2,
+     "longer": 0,
+     "shorter": 1,
+     "lost_within_model": 2,
+     "became_uncertain": 0,
+     "gained": 0,
+     "not_comparable": 7
+    },
+    "mean_delta_m_comparable": -53.333,
+    "max_delta_m_comparable": 0.0,
+    "sum_delta_m_comparable": -160.0,
+    "note": "средние/суммы только по парам со статусом ok в обоих состояниях; пары без пути не считаются нулём"
+   }
+  },
+  "warnings": [
+   {
+    "code": "baseline_has_unknown_pairs",
+    "message": "в базовом состоянии 1 пар без подтверждённого пути (unknown)",
+    "count": 1
+   }
+  ],
+  "assumptions": [
+   "metric_is_network_length_m_not_travel_time",
+   "closure_blocks_edge_in_both_directions",
+   "unknown_access_not_used_for_ok_routes",
+   "no_congestion_no_signals_no_turn_costs",
+   "scenario_is_hypothesis_not_official_closure"
+  ],
+  "limitations": [
+   "Нет модели пробок, времени в пути, CO2, аварийности или экономического эффекта.",
+   "Сценарий перекрытия — гипотеза пользователя; он не равен официальному решению о перекрытии.",
+   "«unreachable» означает отсутствие пути в данной модели графа, а не доказанную потерю доступа на местности.",
+   "Средние изменения считаются только по парам, где путь найден и в базовом, и в сравниваемом состоянии."
+  ],
+  "result_digest": "c9cb2ffabdcaecff711a1872fa33194430071b471dfc43c9b6f7acf3a9130648"
+ }
+}

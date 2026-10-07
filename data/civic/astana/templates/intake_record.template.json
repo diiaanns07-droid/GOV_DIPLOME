@@ -1,0 +1,24 @@
+{
+  "_help": "Шаблон записи R05 до нормализации в civic-v1. Заполняется только тем, что прямо сказано в полученном источнике (sources.json, access_status=fetched). Всё неизвестное остаётся null/unknown. Файл-шаблон не импортируется.",
+  "intake_version": "r05-intake-v1",
+  "id": "ast-r05-<kind>-<короткий-латинский-слаг>",
+  "kind": null,
+  "title": null,
+  "description": null,
+  "historical": false,
+  "geometry": null,
+  "geometry_precision": "unknown",
+  "geometry_basis": "Как получена геометрия: из открытых данных (OSM way/relation id) или приблизительная точка по названию улицы. Никогда не копировать геометрию 2GIS/Google/Yandex.",
+  "claims": [
+    {
+      "field": "schedule.planned_start | schedule.original_planned_end | schedule.current_planned_end | schedule.actual_end | status | kind | budget.amount_kzt | budget.basis | responsible.organization | responsible.public_contact | geometry",
+      "value": null,
+      "source_id": "src-... (id из sources.json)",
+      "claim_type": "stated | expected | reported_actual",
+      "quote": "Короткая точная выдержка из источника (до 300 символов), не вся статья.",
+      "locator": "Где в источнике: абзац/таблица/строка."
+    }
+  ],
+  "evidence_notes": "Что именно подтверждено и чего источник НЕ говорит (например: дата окончания — ожидаемая, фактическое завершение не сообщалось).",
+  "reviewed_at": "YYYY-MM-DDThh:mm:ssZ (UTC)"
+}

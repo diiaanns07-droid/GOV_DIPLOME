@@ -1,0 +1,142 @@
+{
+ "schema": "k01-case-meta-v1",
+ "case_id": "shymkent-k10r3-schools-v1",
+ "snapshot_id": "shymkent-2026-09-23.1-ed0d46bbe5fa1f8e",
+ "note": "Дополнение к shymkent.case.json вне полей CONTRACT (кейс остаётся строго по контракту): исключённые записи, пробелы данных, provenance сборки.",
+ "excluded_school_records": [
+  {
+   "id": "overture:01961e84-815f-4bd1-85c3-6bf1734256ec",
+   "label": "Реклама 42",
+   "reason": "Название «Реклама 42»; QA ad_or_business_page. Адрес Республика көшесі 5 может принадлежать реальному объекту — проверить по официальному перечню.",
+   "qa": [
+    "category_doubt:ad_or_business_page",
+    "official_status:not_verified"
+   ]
+  },
+  {
+   "id": "overture:176c5993-4b62-4e90-849f-88addc0153bb",
+   "label": "Dostyk Bilim Beru Ortalygy",
+   "reason": "«Dostyk Bilim Beru Ortalygy» = «образовательный центр»; confidence 0.385. Не похоже на общеобразовательную школу; не подтверждено.",
+   "qa": [
+    "official_status:not_verified"
+   ]
+  },
+  {
+   "id": "overture:51ac9e88-456d-4b3a-a657-d3cbc516c708",
+   "label": "Reklama 8888",
+   "reason": "«Reklama 8888»; QA ad_or_business_page; координата в точке-заглушке (10 записей в одной точке).",
+   "qa": [
+    "category_doubt:ad_or_business_page",
+    "colocated:10_records_same_point",
+    "conflict:CONFLICT-PLACEHOLDER-01",
+    "official_status:not_verified"
+   ]
+  },
+  {
+   "id": "overture:68c8f007-75bc-42f6-8da8-baa72042bde4",
+   "label": "Baiterek School",
+   "reason": "«Baiterek School», адрес Рыскулова 141, но координата — точка-заглушка (QA colocated: 10 записей в одной точке). Положение неизвестно; в расстояния не включать, показать как пробел.",
+   "qa": [
+    "colocated:10_records_same_point",
+    "conflict:CONFLICT-PLACEHOLDER-01",
+    "official_status:not_verified"
+   ]
+  },
+  {
+   "id": "overture:931d6da5-e9db-4523-a6fd-79c88f235f88",
+   "label": "Учебный центр Меруерт",
+   "reason": "«Учебный центр Меруерт» — учебный центр, не школа (по названию).",
+   "qa": [
+    "official_status:not_verified"
+   ]
+  },
+  {
+   "id": "overture:99759f95-3ddb-4d87-8091-c301f9c23c9b",
+   "label": "Express toefl",
+   "reason": "«Express toefl» — языковые курсы (по названию); та же точка, что Kasipkoy.kurs.",
+   "qa": [
+    "official_status:not_verified"
+   ]
+  },
+  {
+   "id": "overture:9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+   "label": "Реклама 3131",
+   "reason": "«Реклама 3131»; QA ad_or_business_page; координата в точке-заглушке; адрес «шәуілдір» не адрес в срезе.",
+   "qa": [
+    "category_doubt:ad_or_business_page",
+    "colocated:10_records_same_point",
+    "conflict:CONFLICT-PLACEHOLDER-01",
+    "official_status:not_verified"
+   ]
+  },
+  {
+   "id": "overture:a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+   "label": "Kasipkoy.kurs",
+   "reason": "«Kasipkoy.kurs» — курсы (по названию).",
+   "qa": [
+    "official_status:not_verified"
+   ]
+  },
+  {
+   "id": "overture:b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+   "label": "Монтессори Детский Сад \"Бала Би\"",
+   "reason": "«Монтессори Детский Сад \"Бала Би\"» — детский сад, не школа.",
+   "qa": [
+    "official_status:not_verified"
+   ]
+  },
+  {
+   "id": "overture:fd50a858-462d-477f-8bc6-a8d3e03a9576",
+   "label": "Техникалық лицей",
+   "reason": "«Техникалық лицей», place_of_learning: может быть колледжем/профтехучреждением, а не общеобразовательной школой. Не подтверждено — в расчёт по умолчанию не включено.",
+   "qa": [
+    "official_status:not_verified"
+   ]
+  }
+ ],
+ "parameter_notes": {
+  "threshold_m": "пользовательский параметр анализа, не норматив доступности"
+ },
+ "data_gaps": [
+  {
+   "id": "GAP-OFFICIAL-LIST",
+   "text": "Нет официального перечня школ Шымкента (источники NOT_FETCHED).",
+   "source_ids": [
+    "SRC-GOVKZ-SHYMKENT",
+    "SRC-GOVKZ-SHYMKENT-BILIM",
+    "SRC-SHYMKENT-GOV",
+    "SRC-EGOV",
+    "SRC-DATA-EGOV",
+    "SRC-EDU-GOV",
+    "SRC-BILIMAL"
+   ]
+  },
+  {
+   "id": "GAP-CAPACITY",
+   "text": "Нет вместимости и контингента; capacity=null.",
+   "source_ids": []
+  },
+  {
+   "id": "GAP-BUFFER",
+   "text": "Школы за пределами bbox не загружены (нет буфера); расстояния у краёв — верхняя оценка.",
+   "source_ids": [
+    "SRC-OVERTURE-PLACES"
+   ]
+  },
+  {
+   "id": "GAP-OSM-GEOMETRY",
+   "text": "Геометрия OSM зданий школ не загружена (Overpass NOT_FETCHED).",
+   "source_ids": [
+    "SRC-OSM-OVERPASS"
+   ]
+  }
+ ],
+ "provenance": {
+  "code_sha": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "manual_review_sha256": "560e078e32ad78d43be5c310a7d2c6c94fc27a8b5e775ee3498cb4ae3c10616e",
+  "builder": "research/round-10-results/K01/build_k01.py",
+  "k10_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909"
+ }
+}

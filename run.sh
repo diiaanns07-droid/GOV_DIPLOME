@@ -9,6 +9,9 @@
 #   PYTHON=python3.12 bash run.sh   — выбрать интерпретатор (нужен Python 3.11–3.14)
 #   PORT=8502 bash run.sh           — другой порт
 #   NO_BROWSER=1 bash run.sh        — не открывать браузер (сервер без экрана)
+#   CIVIC_DEMO=1 bash run.sh        — загрузить синтетический демо-срез Астаны (R05) в .runtime/civic.sqlite3
+# Учётная запись редактора создаётся отдельно, пароль вводится скрыто:
+#   .venv/bin/python -m ui.civic_store create-editor <логин>
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -76,6 +79,15 @@ if [ -f .env ]; then
 else
     cp .env.example .env
     echo "[3/4] Создан .env из .env.example: советник работает офлайн, пока в .env не указан ключ OPENAI_API_KEY."
+fi
+
+# Городская платформа (civic-v1): база .runtime/civic.sqlite3 создаётся сервером при первом запросе
+# или командой init (R02 >= 9b005be требует init перед seed-demo/import).
+# Демо-данные — только по явному флагу; импорт идемпотентен и публикует лишь synthetic-записи.
+if [ -n "${CIVIC_DEMO:-}" ]; then
+    echo "[civic] Загружаю синтетический демо-срез Астаны (не сведения о реальных работах)..."
+    "$VENV_PY" -B -m ui.civic_store init >/dev/null
+    "$VENV_PY" -B -m ui.civic_store seed-demo --package data/civic/astana/demo_synthetic.json >/dev/null
 fi
 
 # 4. app.py запускает Python-сервер (ui/web_server.py): HTML-интерфейс и API. Флаг --open открывает браузер.
