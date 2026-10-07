@@ -1,6 +1,6 @@
 R06 РАУНД 13 — ИНТЕГРАЦИЯ ДЛЯ R01 (и заметка для R08)
 
-Ветка R06: claude/focused-hypatia-z8h0no. Код R06 — только ui/civic_feedback/, web/civic/feedback/,
+Ветка R06: claude/focused-hypatia-z8h0no, код 12b3170d60267a5d40d0ceb68e113b4cfa9c853c. Код R06 — только ui/civic_feedback/, web/civic/feedback/,
 tests/civic/R06/. Общие файлы R01 (ui/web_server.py, web/civic/shell/shell.js) R06 НЕ менял: ниже —
 предложенный патч и проверка контракта в изолированной сборке.
 
@@ -57,7 +57,7 @@ BASE_MISMATCH: история ветки R06 не содержит 56538a3. Пр
 
 3. R08 (заметка, чужие файлы не менялись)
    Контракт classify(text, language) R08 9660885 соблюдён; R06 вызывает настоящий модуль
-   (tests/civic/R06/test_r06_r13_r08_pair.py, 11 PASS в r13). В объединённой сборке один тест R08
+   (tests/civic/R06/test_r06_r13_r08_pair.py, 11 PASS в r13; весь tests/civic/R06 — 221 PASS). В объединённой сборке один тест R08
    tests/civic/R08/test_r08_feedback_integration.py:59 ожидает, что R06 показывает score в [0,1];
    по заданию round 13 R06 его скрывает. Предложенный патч теста:
    research/round-13-results/R06/r08_test_score_hidden.patch (проверен: 3/3 PASS). Без него
