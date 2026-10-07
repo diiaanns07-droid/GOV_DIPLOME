@@ -1,0 +1,111 @@
+{
+  "schema": "r05-r13-network-audit-v1",
+  "city": "astana",
+  "round": 13,
+  "session_utc_window": "2026-10-07T17:01Z..",
+  "environment": "Claude Code cloud container; outbound HTTPS only via the environment egress proxy (policy chosen in environment settings)",
+  "summary": "Same result as round 12 (data/civic/astana/round12-verified/network_audit.json): every Kazakhstan official/news host tried, OSM and en.wikipedia.org are denied by the egress policy (CONNECT 403 / EGRESS_BLOCKED). No page body of any candidate source could be read. Diagnostics stopped after 9 hosts by curl and 3 URLs by WebFetch; the other 70 registered URLs were not retried one by one (same hosts, same policy).",
+  "circumvention": "Not attempted: no web archives, mirrors, reader proxies, cached-page services or other proxies were used for blocked hosts.",
+  "how_to_unblock": "Environment settings -> Network access: broader level, or add gov.kz, www.gov.kz, astana.gov.kz, inform.kz, www.inform.kz, kazpravda.kz, zakon.kz, www.zakon.kz, bes.media, vechastana.kz to Allowed domains (https://code.claude.com/docs/en/cloud-environments#network-access). Alternatively a person opens the page in their own browser and attaches the saved text with tools/r13.py attach (see RUN.txt).",
+  "attempts": [
+    {
+      "at": "2026-10-07T17:01:25Z",
+      "host": "www.gov.kz",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru",
+      "tool": "curl GET via environment egress proxy (HTTPS_PROXY)",
+      "outcome": "egress_denied",
+      "detail": "curl: (56) CONNECT tunnel failed, response 403; proxy status: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T17:01:25Z",
+      "host": "www.inform.kz",
+      "url": "https://www.inform.kz/ru/",
+      "tool": "curl GET via environment egress proxy (HTTPS_PROXY)",
+      "outcome": "egress_denied",
+      "detail": "curl: (56) CONNECT tunnel failed, response 403; proxy status: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T17:01:26Z",
+      "host": "kazpravda.kz",
+      "url": "https://kazpravda.kz/",
+      "tool": "curl GET via environment egress proxy (HTTPS_PROXY)",
+      "outcome": "egress_denied",
+      "detail": "curl: (56) CONNECT tunnel failed, response 403; proxy status: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T17:01:26Z",
+      "host": "www.zakon.kz",
+      "url": "https://www.zakon.kz/",
+      "tool": "curl GET via environment egress proxy (HTTPS_PROXY)",
+      "outcome": "egress_denied",
+      "detail": "curl: (56) CONNECT tunnel failed, response 403; proxy status: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T17:01:26Z",
+      "host": "bes.media",
+      "url": "https://bes.media/",
+      "tool": "curl GET via environment egress proxy (HTTPS_PROXY)",
+      "outcome": "egress_denied",
+      "detail": "curl: (56) CONNECT tunnel failed, response 403; proxy status: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T17:01:27Z",
+      "host": "astana.gov.kz",
+      "url": "https://astana.gov.kz/",
+      "tool": "curl GET via environment egress proxy (HTTPS_PROXY)",
+      "outcome": "egress_denied",
+      "detail": "curl: (56) CONNECT tunnel failed, response 403; proxy status: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T17:01:27Z",
+      "host": "vechastana.kz",
+      "url": "https://vechastana.kz/",
+      "tool": "curl GET via environment egress proxy (HTTPS_PROXY)",
+      "outcome": "egress_denied",
+      "detail": "curl: (56) CONNECT tunnel failed, response 403; proxy status: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T17:01:27Z",
+      "host": "www.openstreetmap.org",
+      "url": "https://www.openstreetmap.org/",
+      "tool": "curl GET via environment egress proxy (HTTPS_PROXY)",
+      "outcome": "egress_denied",
+      "detail": "curl: (56) CONNECT tunnel failed, response 403; proxy status: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T17:01:28Z",
+      "host": "en.wikipedia.org",
+      "url": "https://en.wikipedia.org/wiki/Astana",
+      "tool": "curl GET via environment egress proxy (HTTPS_PROXY)",
+      "outcome": "egress_denied",
+      "detail": "curl: (56) CONNECT tunnel failed, response 403; proxy status: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T17:03Z",
+      "host": "www.gov.kz",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru",
+      "tool": "WebFetch (Claude Code tool)",
+      "outcome": "egress_denied",
+      "detail": "error_type EGRESS_BLOCKED: Access to www.gov.kz is blocked by the network egress proxy.",
+      "at_note": "approximate (minute), WebFetch reports no timestamp"
+    },
+    {
+      "at": "2026-10-07T17:03Z",
+      "host": "kazpravda.kz",
+      "url": "https://kazpravda.kz/n/ulitsu-almaty-v-astane-chastichno-zakroyut-do-kontsa-2026-goda",
+      "tool": "WebFetch (Claude Code tool)",
+      "outcome": "egress_denied",
+      "detail": "error_type EGRESS_BLOCKED: Access to kazpravda.kz is blocked by the network egress proxy.",
+      "at_note": "approximate (minute), WebFetch reports no timestamp"
+    },
+    {
+      "at": "2026-10-07T17:03Z",
+      "host": "www.inform.kz",
+      "url": "https://www.inform.kz/ru/kogda-otkroyut-novuyu-razvyazku-beysekovoy-tlendieva-v-astane-8ebee5ee",
+      "tool": "WebFetch (Claude Code tool)",
+      "outcome": "egress_denied",
+      "detail": "error_type EGRESS_BLOCKED: Access to www.inform.kz is blocked by the network egress proxy.",
+      "at_note": "approximate (minute), WebFetch reports no timestamp"
+    }
+  ]
+}

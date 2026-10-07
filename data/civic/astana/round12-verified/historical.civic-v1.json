@@ -1,0 +1,26 @@
+{
+  "schema_version": "civic-v1",
+  "city": "astana",
+  "slice": {
+    "name": "r05-astana-r12-verified-historical",
+    "version": "r05-r12-2026-10-07",
+    "demo": false,
+    "count": 0,
+    "content_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "builder": "data/civic/astana/round12-verified/tools/r12.py",
+    "inputs": [
+      {
+        "path": "sources.json",
+        "sha256": "c55889388a2abfd467ce1e9efce6ec74330e6123c5a1e6442210293ce0066a33"
+      },
+      {
+        "path": "config.json",
+        "sha256": "ca1a8d3ebd43b970ee95cf9275ef9bae5d28969d1d77e707c628109fb1ecad51"
+      }
+    ],
+    "source": "r05-astana-r12-verified-historical",
+    "as_of": "2026-10-07",
+    "notes": "Только записи из verified/ (каждое значение — дословная выдержка из полученного источника). Импорт создаёт черновики."
+  },
+  "items": []
+}

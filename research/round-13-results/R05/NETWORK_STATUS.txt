@@ -1,0 +1,34 @@
+R05 раунд 13 — состояние сети (Claude Code, облачный контейнер), 2026-10-07
+
+ИТОГ: первичные источники снова недоступны. Ни одна страница кандидатов не открыта; подтверждённых объектов 0.
+
+Диагностика ограничена (не 73 одинаковых отказа):
+  время (UTC)          инструмент                        URL / хост                                        результат
+  17:01:25Z            curl через HTTPS_PROXY             https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru   CONNECT 403
+  17:01:25Z            curl                               https://www.inform.kz/ru/                         CONNECT 403
+  17:01:26Z            curl                               https://kazpravda.kz/                             CONNECT 403
+  17:01:26Z            curl                               https://www.zakon.kz/                             CONNECT 403
+  17:01:26Z            curl                               https://bes.media/                                CONNECT 403
+  17:01:27Z            curl                               https://astana.gov.kz/                            CONNECT 403
+  17:01:27Z            curl                               https://vechastana.kz/                            CONNECT 403
+  17:01:27Z            curl                               https://www.openstreetmap.org/                    CONNECT 403
+  17:01:28Z            curl                               https://en.wikipedia.org/wiki/Astana              CONNECT 403
+  ~17:03Z              WebFetch                           www.gov.kz …/details/1193903?lang=ru              EGRESS_BLOCKED
+  ~17:03Z              WebFetch                           kazpravda.kz/n/ulitsu-almaty-v-astane-…           EGRESS_BLOCKED
+  ~17:03Z              WebFetch                           www.inform.kz/ru/kogda-otkroyut-novuyu-razvyazku-… EGRESS_BLOCKED
+  Прокси окружения (/__agentproxy/status, recentRelayFailures): kind=connect_rejected,
+  "gateway answered 403 to CONNECT (policy denial or upstream failure)" для каждого хоста выше.
+  Секреты, токены и cookies не читались и не использовались.
+
+Не делалось: обход политики через веб-архивы, зеркала, reader/cached-сервисы или другие прокси; авторизация
+чужими cookies; повтор одинаковых отказов по остальным 70 URL реестра (те же хосты, та же политика).
+
+Как снять блокировку (решение пользователя, не агента): настройки окружения → Network access — более широкий
+уровень или домены в Allowed domains: gov.kz, www.gov.kz, astana.gov.kz, inform.kz, www.inform.kz, kazpravda.kz,
+zakon.kz, www.zakon.kz, bes.media, vechastana.kz. https://code.claude.com/docs/en/cloud-environments#network-access
+Изменение действует в новой сессии.
+
+Без сети работа продолжена по плану «сеть блокируется»: очередь проверки 19 текущих кандидатов (дубли,
+противоречия, обязательные доказательства), инструмент прикрепления сохранённого человеком текста страницы,
+проверка сотрудником и сборка пакета черновиков civic-v1 (см. RUN.txt). Машиночитаемый журнал:
+data/civic/astana/round13-verified/network_audit.json.
