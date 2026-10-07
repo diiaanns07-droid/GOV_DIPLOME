@@ -1029,7 +1029,7 @@ def verify_sheet() -> str:
             lines.append(f"- противоречия: {cand['contradictions']}")
         lines.append("- проверить: " + "; ".join(cand.get("verify_checklist") or []))
         lines.append("")
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines).rstrip("\n") + "\n"
 
 
 # ---------------------------------------------------------------- fetch (where the network allows it)
