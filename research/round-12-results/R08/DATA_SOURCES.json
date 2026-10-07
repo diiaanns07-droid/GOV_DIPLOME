@@ -1,0 +1,22 @@
+{
+  "role": "R08",
+  "round": 12,
+  "checked_at": "2026-10-07",
+  "policy": "Реальные обращения — только легально открытые с лицензией, допускающей использование; без утечек и частных чатов. Отсутствие доступа не считается отсутствием данных.",
+  "real_corpus_status": "NOT_AVAILABLE_IN_THIS_ENVIRONMENT",
+  "attempts": [
+    {"host": "data.egov.kz", "purpose": "открытые данные РК (обращения/категории)", "result": "CONNECT 403 от сетевой политики среды", "bypassed": false},
+    {"host": "opendata.kz", "purpose": "открытые данные", "result": "CONNECT 403 от сетевой политики среды", "bypassed": false},
+    {"host": "huggingface.co", "purpose": "открытые датасеты RU/KK обращений", "result": "CONNECT 403 от сетевой политики среды", "bypassed": false},
+    {"host": "www.kaggle.com", "purpose": "открытые датасеты", "result": "CONNECT 403 от сетевой политики среды", "bypassed": false},
+    {"host": "www.gov.kz", "purpose": "публикации акимата (раунд 11, R09)", "result": "CONNECT 403 от сетевой политики среды", "bypassed": false}
+  ],
+  "in_repo_check": "В CODE_BASE_SHA 56538a3 нет корпуса реальных сообщений жителей с метками; ui/civic_feedback хранит сообщения в runtime SQLite (не в Git) и не должен экспортироваться без согласия.",
+  "decision": "Демонстрационная модель на явно синтетическом корпусе (ml/civic_classifier/data/corpus_synthetic_v1.jsonl). Качество на реальных данных: NOT_EVALUATED.",
+  "what_real_evaluation_needs": [
+    "выгрузка обращений с правовым основанием (например, по запросу акимата/оператора 109) и согласием на обработку",
+    "обезличивание до передачи (ml/civic_classifier/text.py anonymize как минимум, плюс ручная проверка)",
+    "независимая человеческая разметка двумя разметчиками по LABELING_GUIDE.md и согласованность (Cohen's kappa)",
+    "временной split (обучение на прошлых месяцах, тест на последующих)"
+  ]
+}

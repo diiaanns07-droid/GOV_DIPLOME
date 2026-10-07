@@ -1,0 +1,34 @@
+{
+  "role": "R08",
+  "round": 12,
+  "branch": "claude/wizardly-ptolemy-qy8ltw",
+  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "base_mismatch": "branch history starts at 834a25f (+R09 round 11); only R08 paths committed; verified against 56538a3 in a separate worktree",
+  "code_sha": null,
+  "push_status": "pending",
+  "status": "partial",
+  "changed_paths": [
+    "ml/civic_classifier/",
+    "tests/civic/R08/",
+    "research/round-12-results/R08/",
+    "research/handoffs/astana/R08/round-12/STATUS.md"
+  ],
+  "tests": [
+    {
+      "name": "r08-contract",
+      "status": "PASS",
+      "command": "python3 -m pytest tests/civic/R08 -q",
+      "reason": "15 passed (fallback mode, no trained model yet)"
+    },
+    {
+      "name": "real-data-evaluation",
+      "status": "NOT_RUN",
+      "command": null,
+      "reason": "Нет легально доступного реального корпуса: data.egov.kz/opendata.kz/huggingface/kaggle — 403 от сетевой политики"
+    }
+  ],
+  "known_limits": [
+    "Модель ещё не обучена (checkpoint 1): работает эвристика-fallback"
+  ],
+  "next_step": "Синтетический корпус и split"
+}
