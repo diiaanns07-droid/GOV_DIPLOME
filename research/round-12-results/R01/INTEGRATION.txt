@@ -1,0 +1,41 @@
+R01 — РАУНД 12. ИНТЕГРАЦИЯ ДЛЯ КООРДИНАТОРА
+
+ЧТО ПОДКЛЮЧАТЬ
+Ветка claude/affectionate-ride-bol5v8. Коммит 429933b — merge с деревом, ИДЕНТИЧНЫМ 56538a3
+(git diff 56538a3 429933b пуст): так ветка сессии перешла на основу без force push; первый родитель
+(27ea222) — история раунда 11, её содержимое в дерево не попадает. Поэтому
+  git diff 56538a3 <последний SHA ветки>
+содержит только раунд 12 R01: код в путях R01 + research/round-12-results/R01 + handoff.
+Изменённые пути кода (относительно 56538a3):
+  web/civic/shell/explore.js, web/civic/shell/shell.js, web/civic/shell/shell.css,
+  web/interface.js, web/map.js (1 строка),
+  tests/civic/R01/explore.test.cjs, tests/civic/R01/browser/r12_city.cjs, tests/civic/R01/run_checks.sh
+НЕ менялись: ui/web_server.py (explore.js и map/streets.json уже в allowlist базы), web/index.html,
+web/style.css, CSP/аутентификация/статический whitelist. Переносимый патч только путей R01:
+research/round-12-results/R01/r01_round12_code.patch (git apply --check на 56538a3 — см. DELIVERY.json).
+
+СОСЕДНИЕ ИНТЕРФЕЙСЫ (файлы соседей не менялись)
+- R03 (web/civic/map): используется публичный API mount/handle: onData, onSelect, selectObject,
+  setFilters, fitAll, layerIds. Временный адаптер R01: на время ОДНОГО синхронного вызова fitAll()
+  оболочка подменяет map.fitBounds, чтобы передать свободную область (блок навигации, лист, ящики) и
+  задуманный наклон; в finally карта восстанавливается. После посадки камеры выбора R01 сдвигает
+  карту (panBy), только если выбранная запись оказалась под оверлеем.
+  Предложение R03: опция mount `getPadding()` (функция, вызывается при каждом движении камеры) и
+  `pitch` по намерению хоста вместо map.getPitch() в середине анимации — тогда адаптер R01 и
+  keepVisible можно удалить. Для ссылок `#object=` R03 вызывает onSelect с `{id}` без геометрии
+  до загрузки списка — R01 читает публичный GET /objects/{id}; лучше передавать геометрию из detail.
+  Замечено 1 раз из 4 прогонов P0 (1440×900): предупреждение MapLibre «Image civic-r03-demo-ring
+  could not be loaded» — гонка ensureLayers R03 после замены стиля офлайн-подложкой (hasImage
+  видит старый стиль). Предложение: повторно добавлять изображение по `styleimagemissing`.
+- R07 (web/civic/map/streets.json): только чтение. Подписи одноимённых улиц R01 строит в браузере
+  (точка-в-полигоне центра bbox по шести районам OSM из /api/bootstrap). Пожелания R07: поле
+  `district` и точка на самой улице (`anchor`) для каждого варианта — точнее метка (центр bbox
+  кривой улицы может лежать в стороне) и без расчёта на клиенте.
+- R02, R04, R06, R09: контракты не менялись; житель обращается только к публичным GET
+  (/objects, /objects/{id}, /session); вызовов /staff у жителя нет (проверено в r12_city.cjs).
+- Учебная модель/школы (GOVTECH): общий 3D-флаг теперь синхронизируется с реальным наклоном
+  (порог 30°: 3D-виды 40–56°, мягкий наклон района учебной модели 22° остаётся «плоским»).
+
+ЧТО ПЕРЕПРОВЕРИТЬ ПОСЛЕ СБОРКИ (R10/координатор)
+  bash tests/civic/R01/run_checks.sh <out>   — включает r12_city.cjs (+ --empty) и P0 раунда 11.
+  На машине с сетью: подложка OpenFreeMap и 3D-здания при 360×800 (NOT_RUN в этой среде).
