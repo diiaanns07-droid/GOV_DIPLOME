@@ -1,6 +1,6 @@
 # R09 — помощник по городским данным без выдумок (раунд 12, Астана)
 
-Статус: PARTIAL (checkpoint 1)
+Статус: PARTIAL (checkpoint 2)
 Обновлено: 2026-10-07 10:30 UTC
 Ветка: claude/fervent-dijkstra-1cqrg5 (назначенная ветка сессии)
 CODE_BASE_SHA: 56538a3a7504d4589c38ab4d3c5107f12aa7f8a6 — влит обычным merge (56885d5), без reset/force push.
@@ -19,6 +19,17 @@ agent/civic_assistant/, web/civic/assistant/, tests/civic/R09/, research/round-1
   «Это реальные данные?», «Работы уже идут?», «Куда жаловаться?», «Құны қайдан алынды?», «Неше күнге ұзартылды?».
 - tests/civic/R09/test_r09_round12_questions.py — 32 регрессии; R09 pytest 154/154.
 
+- Checkpoint 2 (сценарий A/B только по результату движка R07, без пересчёта):
+  длины пути без перекрытий / A / B и разницы — значения compare() (vs_baseline.pairs, a_vs_b.pairs), до 3 пар,
+  иначе прежняя сводка; интервалы перекрытий из серверного входа сценария, проверенного по input.payload_digest,
+  активность — по inactive_closures движка; сеть, дата снимка OSM (06.05.2026), дата получения (07.10.2026),
+  лицензия ODbL — из MANIFEST, только если id+digest графа совпадают с расчётом; доля неизвестного доступа;
+  предупреждение graph_is_slice; «не ранжирует варианты», «не время в пути / не пробки».
+  api.r07_case_loader отдаёт {schema: civic-assistant-scenario-input-v1, result, payload, graph};
+  ScenarioResultCache: сравнения пользователя, посчитанные сервером, доступны как scenario_id="result:<digest>"
+  (нужно подключение R01 — см. INTEGRATION.txt). tests/civic/R09/test_r09_round12_scenario.py (14, реальный движок
+  на городском кейсе). R09 pytest 168/168.
+
 ## Следующий шаг
-Сценарий A/B по фактическому результату движка: длины маршрутов, разница, активные интервалы, неизвестный доступ,
-дата снимка OSM, пределы модели.
+Устойчивость: CancelledError провайдера, зависшие провайдеры (fail-fast provider_busy), ответ по устаревшей
+ревизии карточки, понятные человеку подписи источников и дат в UI.

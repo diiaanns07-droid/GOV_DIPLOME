@@ -217,9 +217,14 @@ def test_r07_case_loader_uses_server_payload():
     calls = []
     cases = [{"case_id": SID, "payload": {"graph_id": "g1", "x": 1}}]
     load = r07_case_loader(lambda: cases, lambda gid: ("graph", gid), lambda p, g: calls.append((p, g)) or RESULT)
-    assert load(SID) is RESULT and load(SID) is RESULT and len(calls) == 1
+    # Раунд 12: загрузчик отдаёт тот же результат движка вместе с серверным входом сценария
+    # (интервалы перекрытий) и записью MANIFEST графа (здесь manifest не передан -> None).
+    first, second = load(SID), load(SID)
+    assert first is second and first["result"] is RESULT and len(calls) == 1
+    assert first["payload"] == {"graph_id": "g1", "x": 1} and first["graph"] is None
     assert calls[0] == ({"graph_id": "g1", "x": 1}, ("graph", "g1"))
     assert load("other") is None
+    assert load("result:" + "0" * 64) is None  # без кэша результатов пользовательских сравнений нет
 
 
 @pytest.mark.parametrize("bad", [("only-one",), "string", {"item": {}}, (None, None, None)])

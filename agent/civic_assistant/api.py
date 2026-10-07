@@ -20,6 +20,8 @@ POST /api/civic/v1/staff/assistant/extract  — см. extract.py (только �
 from __future__ import annotations
 
 import json
+import re
+import sys
 import threading
 import time
 from urllib.parse import quote
@@ -36,6 +38,7 @@ _EXTRACT_PATHS = (EXTRACT_PATH, "/staff/assistant/extract")
 HEADERS = {"Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store"}
 ALLOWED_KEYS = {"question", "object_id", "scenario_id"}
 RATE_LIMIT = (20, 60.0)  # запросов на IP за окно, секунд
+SCENARIO_INPUT_SCHEMA = "civic-assistant-scenario-input-v1"
 
 
 def _reject_constant(value):
@@ -96,12 +99,89 @@ def r02_public_loader(service, prefix: str = API_PREFIX):
     return load
 
 
-def r07_case_loader(list_cases, load_graph, compare):
-    """scenario_id = case_id подготовленного кейса R07; payload/граф берёт сервер, не клиент."""
+def _manifest_graph_info(manifest):
+    """graph_id -> запись MANIFEST R07 (подпись, источник/дата снимка, лицензия) или None."""
+    def info(graph_id):
+        if manifest is None:
+            return None
+        try:
+            entries = manifest().get("graphs") or []
+        except Exception:  # noqa: BLE001 — сведения о сети необязательны для ответа
+            return None
+        return next((g for g in entries if isinstance(g, dict) and g.get("id") == graph_id), None)
+    return info
+
+
+def _scenario_input(result, payload, graph):
+    return {"schema": SCENARIO_INPUT_SCHEMA, "result": result, "payload": payload, "graph": graph}
+
+
+class ScenarioResultCache:
+    """Результаты POST /scenarios/compare, посчитанные САМИМ сервером, для объяснения сравнения A/B.
+
+    scenario_id = "result:" + result_digest движка. Клиент не передаёт метрик: шлюз R01 после успешного
+    расчёта вызывает remember(payload, result); помощник берёт отсюда тот же результат. Перед
+    сохранением проверяется, что payload — вход именно этого расчёта (input.payload_digest).
+    """
+
+    def __init__(self, graph_info=None, *, max_items: int = 64, ttl_s: float = 3600.0, clock=time.monotonic):
+        self.graph_info = graph_info  # None -> r07_case_loader подставит сведения MANIFEST
+        self.max_items, self.ttl_s, self.clock = max_items, ttl_s, clock
+        self._items: dict[str, tuple[float, dict]] = {}
+        self._lock = threading.Lock()
+
+    def remember(self, payload, result) -> str | None:
+        from agent.civic_assistant.scenario import RESULT_SCHEMA, payload_digest
+        if not isinstance(result, dict) or result.get("schema_version") != RESULT_SCHEMA:
+            return None
+        digest = result.get("result_digest")
+        inp = result.get("input") if isinstance(result.get("input"), dict) else {}
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{16,64}", digest):
+            return None
+        try:
+            if payload_digest(payload) != inp.get("payload_digest"):
+                return None
+        except (TypeError, ValueError):
+            return None
+        key = "result:" + digest
+        entry = _scenario_input(result, payload, self.graph_info(inp.get("graph_id")) if self.graph_info else None)
+        with self._lock:
+            self._items.pop(key, None)
+            self._items[key] = (self.clock(), entry)
+            while len(self._items) > self.max_items:
+                self._items.pop(next(iter(self._items)))
+        return key
+
+    def get(self, scenario_id):
+        with self._lock:
+            item = self._items.get(scenario_id)
+            if item is None:
+                return None
+            if self.clock() - item[0] > self.ttl_s:
+                self._items.pop(scenario_id, None)
+                return None
+            return item[1]
+
+
+def r07_case_loader(list_cases, load_graph, compare, manifest=None, *, result_cache=None):
+    """scenario_id = case_id подготовленного кейса R07 или "result:<digest>" из ScenarioResultCache.
+
+    payload/граф берёт сервер, не клиент. Результат отдаётся вместе с входом сценария (интервалы
+    перекрытий) и записью MANIFEST графа (дата снимка OSM, лицензия). manifest по умолчанию — функция
+    manifest() того же модуля, что load_graph (engine.civic_scenarios.registry).
+    """
+    if manifest is None:
+        module = sys.modules.get(getattr(load_graph, "__module__", "") or "")
+        manifest = getattr(module, "manifest", None)
+    graph_info = _manifest_graph_info(manifest)
+    if result_cache is not None and getattr(result_cache, "graph_info", None) is None:
+        result_cache.graph_info = graph_info
     cache: dict[str, dict] = {}
     lock = threading.Lock()
 
     def load(scenario_id: str):
+        if scenario_id.startswith("result:"):
+            return result_cache.get(scenario_id) if result_cache is not None else None
         with lock:
             if scenario_id in cache:
                 return cache[scenario_id]
@@ -109,10 +189,12 @@ def r07_case_loader(list_cases, load_graph, compare):
             if isinstance(case, dict) and case.get("case_id") == scenario_id:
                 payload = case["payload"]
                 result = compare(payload, load_graph(payload["graph_id"]))
+                entry = _scenario_input(result, payload, graph_info(payload.get("graph_id")))
                 with lock:
-                    cache[scenario_id] = result
-                return result
+                    cache[scenario_id] = entry
+                return entry
         return None
+    load.graph_info = graph_info
     return load
 
 
