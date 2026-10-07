@@ -26,9 +26,28 @@
 .civic-explore-details p { margin: 10px 0 0; color: var(--muted); }
 .civic-explore-details label { display: flex; gap: 8px; align-items: center; font-weight: 600; }
 .civic-explore-count { color: var(--ink) !important; }
-.civic-explore-search { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--line); }
-.civic-explore-search input { flex: 1; width: 0; min-width: 60px; border: 0; border-radius: 5px; padding: 5px; background: #f2f5ee; color: var(--ink); font: inherit; font-size: 12px; }
-.civic-explore-search span { width: 100%; font-size: 11px; color: #8b5419; }
+.civic-explore-search { position: relative; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--line); }
+.civic-explore-field { position: relative; flex: 1; min-width: 0; display: flex; }
+.civic-explore-field input { flex: 1; width: 0; min-width: 60px; min-height: 34px; border: 1px solid transparent; border-radius: 8px; padding: 6px 30px 6px 9px;
+  background: #f2f5ee; color: var(--ink); font: inherit; font-size: 13px; }
+.civic-explore-field input:focus { outline: 2px solid #2f7a5c; outline-offset: 1px; background: #fff; }
+.civic-explore .civic-explore-clear { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; padding: 0;
+  border-radius: 50%; font-size: 18px; line-height: 1; color: var(--muted); }
+.civic-explore .civic-explore-clear:hover { color: var(--ink); background: #e6ece1; }
+.civic-explore-list { position: absolute; z-index: 2; top: calc(100% + 4px); left: 0; right: 0; margin: 0; padding: 4px; list-style: none;
+  max-height: min(320px, 46vh); overflow-y: auto; overscroll-behavior: contain; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+.civic-explore-list [role="option"] { display: flex; flex-direction: column; gap: 1px; min-height: 40px; justify-content: center; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
+.civic-explore-list [role="option"][aria-selected="true"], .civic-explore-list [role="option"]:hover { background: #e8f0e4; }
+.civic-explore-opt-name { font-size: 13px; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.civic-explore-opt-place { font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.civic-explore-more { padding: 6px 10px; font-size: 11px; color: var(--muted); }
+.civic-explore-status { width: 100%; margin: 0; font-size: 11px; line-height: 1.4; color: var(--muted); }
+.civic-explore-status[data-kind="none"], .civic-explore-status[data-kind="error"] { color: #8b5419; }
+.civic-explore-pin { pointer-events: none; display: flex; flex-direction: column; align-items: center; }
+.civic-explore-pin span { max-width: 220px; padding: 4px 9px; border-radius: 8px; background: #183a2d; color: #fff; font-size: 12px; font-weight: 600;
+  line-height: 1.25; text-align: center; overflow-wrap: anywhere; box-shadow: 0 4px 14px #18362840; }
+.civic-explore-pin::after { content: ""; width: 2px; height: 14px; background: #183a2d; }
+.civic-explore .civic-explore-retry { padding: 2px 6px; margin-left: 2px; border: 1px solid #d9c49b; border-radius: 6px; font-size: 11px; color: #6d4512; }
 body[data-civic-drawer="open"] .civic-explore { display: none; }
 /* Basemap/map notice inside the navigation box (moved there by shell.js in the city mode). */
 .civic-mode .civic-explore #map-status { position: static; max-width: none; margin: 7px 0 0; padding: 6px 9px;
@@ -44,7 +63,15 @@ body[data-civic-drawer="open"].civic-mode .civic-panel { visibility: hidden; }
 @media (max-width: 760px) {
   .civic-explore { top: 82px; left: 10px; right: 60px; max-width: none; padding: 7px 10px; border-radius: 12px; }
   .civic-explore-row { gap: 10px; }
-  .civic-explore select { font-size: 13px; }
+  .civic-explore select { font-size: 13px; min-height: 36px; }
+  /* Finger-sized targets (≥ 40px) on phones. */
+  .civic-explore .civic-explore-objects, .civic-explore summary, .civic-explore .civic-explore-go { min-height: 40px; padding: 8px 4px; }
+  .civic-explore summary { display: flex; align-items: center; }
+  .civic-explore-field input { min-height: 40px; font-size: 16px; }  /* 16px: no iOS zoom on focus */
+  .civic-explore .civic-explore-clear { width: 36px; height: 36px; }
+  .civic-explore .civic-explore-retry { min-height: 36px; padding: 6px 10px; }
+  /* A fully raised sheet leaves only a thin map strip: the navigation box steps aside (attribution stays readable). */
+  body[data-civic-sheet="full"] .civic-explore { display: none; }
 }
 
 .civic-mode .top-actions > :not(#civic-modes),

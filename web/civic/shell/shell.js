@@ -417,7 +417,8 @@
   });
   $c("civic-staff-button").addEventListener("click", () => openEditor());
   $c("civic-scenarios-button").addEventListener("click", openScenarios);
-  $c("civic-sheet-handle").addEventListener("click", () => setSheet(S.sheet === "full" ? "half" : "full"));
+  // peek -> half -> full -> half: a lowered sheet comes back to its usual height first.
+  $c("civic-sheet-handle").addEventListener("click", () => setSheet(S.sheet === "half" ? "full" : "half"));
 
   function toastSafe(text) {
     if (typeof toast === "function") toast(text);
@@ -433,16 +434,48 @@
     if (typeof markers !== "undefined") for (const { el: marker } of markers) marker.style.display = visible ? "" : "none";
     if (!visible && typeof popup !== "undefined") popup?.remove();
   }
+  // The part of the map not covered by the top bar, navigation box, map tools, panel/sheet or an open
+  // drawer, as MapLibre padding. Measured from the live layout, so sheet size and box height count.
+  function freeArea() {
+    const m = currentMap();
+    const c = m.getContainer().getBoundingClientRect();
+    const pad = { top: 12, right: 12, bottom: 12, left: 12 };
+    const mobile = innerWidth < 761;
+    const shown = (el) => el && el.getClientRects().length && getComputedStyle(el).visibility !== "hidden" ? el.getBoundingClientRect() : null;
+    for (const el of [document.querySelector(".topbar"), root.querySelector(".civic-explore")]) {
+      const r = shown(el);
+      if (r && r.top < c.top + c.height / 2) pad.top = Math.max(pad.top, r.bottom - c.top + 12);
+    }
+    const tools = shown(document.querySelector(".map-tools"));
+    if (tools) pad.right = Math.max(pad.right, c.right - tools.left + 10);
+    const panel = shown($c("civic-panel"));
+    if (panel) {
+      if (mobile) pad.bottom = Math.max(pad.bottom, c.bottom - panel.top + 12);
+      else pad.left = Math.max(pad.left, panel.right - c.left + 20);
+    }
+    for (const id of ["civic-editor", "civic-moderation", "civic-scenarios"]) {
+      const r = shown($c(id));
+      if (!r) continue;
+      if (mobile) pad.bottom = Math.max(pad.bottom, c.bottom - r.top + 12);
+      else pad.right = Math.max(pad.right, c.right - r.left + 16);
+    }
+    // Never ask for more than the map has: keep at least a 120px free window each way.
+    const fit = (a, b, size) => { const max = Math.max(0, size - 120); if (pad[a] + pad[b] > max) { const k = max / (pad[a] + pad[b]); pad[a] = Math.floor(pad[a] * k); pad[b] = Math.floor(pad[b] * k); } };
+    fit("left", "right", c.width); fit("top", "bottom", c.height);
+    return pad;
+  }
+  // Pitch for camera moves started by the shell: the intended 3D state, not a mid-animation value.
+  const intendedPitch = () => (typeof state !== "undefined" && state?.threeD ? 45 : 0);
+  const intendedBearing = () => (typeof state !== "undefined" && state?.threeD ? -14 : 0);
+
   function civicCamera() {
     const m = currentMap();
     if (!m) return;
-    const mobile = innerWidth < 761;
-    const padding = mobile ? { top: 90, left: 20, right: 60, bottom: Math.round(innerHeight * 0.48) }
-      : { top: 120, left: 470, right: 90, bottom: 60 };
+    const padding = freeArea();
     try {
       const bounds = typeof cityBounds === "function" ? cityBounds() : null;
-      if (bounds) m.fitBounds(bounds, { padding, maxZoom: 12.2, pitch: state?.threeD ? 45 : 0,
-        bearing: state?.threeD ? -14 : 0, duration: S.started ? 700 * (motionSafe() ? 1 : 0) : 0 });
+      if (bounds) m.fitBounds(bounds, { padding, maxZoom: 12.2, pitch: intendedPitch(),
+        bearing: intendedBearing(), duration: S.started ? 700 * (motionSafe() ? 1 : 0) : 0 });
     } catch (error) { console.warn("civic camera", error); }
   }
 
@@ -462,11 +495,20 @@
     if (S.mounted.explore) { placeMapStatus(true); return; }
     if (!currentMap() || !window.CivicExplore) return;
     const frame = (b, maxZoom) => {
-      const mobile = innerWidth < 761;
-      const padding = mobile ? { top: 185, left: 24, right: 60, bottom: Math.round(innerHeight * 0.48) }
-        : { top: 220, left: 470, right: 90, bottom: 60 };
-      currentMap().fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding, maxZoom,
-        pitch: currentMap().getPitch(), bearing: currentMap().getBearing(), duration: motionSafe() ? 800 : 0 });
+      // Measure after the navigation box has updated its status line (its height changes).
+      requestAnimationFrame(() => {
+        const m = currentMap();
+        if (!m || !b) return;
+        const pitch = intendedPitch();
+        m.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freeArea(), maxZoom,
+          pitch, bearing: pitch ? m.getBearing() || intendedBearing() : 0, duration: motionSafe() ? 800 : 0 });
+      });
+    };
+    // Phones: exploring the map lowers the sheet to its peek height first, otherwise the free map
+    // window between the navigation box and a half sheet is ~120px; framing waits for the sheet.
+    const roomy = (fn) => {
+      if (innerWidth < 761 && S.sheet !== "peek") { setSheet("peek"); setTimeout(fn, motionSafe() ? 300 : 0); }
+      else fn();
     };
     S.mounted.explore = window.CivicExplore.mount({ root, map: currentMap(),
       districts: typeof geojson !== "undefined" ? geojson : null,
@@ -475,12 +517,12 @@
         S.mounted.map?.setFilters?.({ area: !!feature });
         if (!feature) { civicCamera(); return; }
         const b = window.CivicExplore.bounds(feature.geometry);
-        frame(b, 13.7);
+        roomy(() => frame(b, 13.7));
       },
       onStreet: (street) => {
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: true });
-        frame(street.bbox, 16);
+        roomy(() => frame(street.bbox, 16));
       },
       onObjects: () => {
         S.mounted.explore?.reset?.();
