@@ -144,7 +144,7 @@
 .civic-r04-card-banner { margin: 4px 0 8px; padding: 6px 8px; border-radius: 8px; background: #fdf1e4; font-size: 13px; }
 .civic-r04-card-demo { background: #eef0f2; border: 1px dashed #6d7c76; }
 .civic-r04-nodata { color: var(--r4-muted); font-style: italic; }
-.civic-r04-rules { margin: 2px 0 0; font-size: 12px; color: var(--r4-muted); }
+.civic-r04-rules { color: var(--r4-muted); }
 .civic-r04-street { margin: 8px 0; padding: 8px 10px; border: 1px solid var(--r4-line); border-radius: 10px; background: var(--r4-paper); }
 .civic-r04-street > label { font-weight: 700; font-size: 13px; display: block; margin: 0 0 4px; }
 .civic-r04-street-list { list-style: none; margin: 4px 0; padding: 0; max-height: 220px; overflow-y: auto; }

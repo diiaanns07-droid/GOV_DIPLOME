@@ -355,10 +355,10 @@
       const kids = [el("h2", { id: P + "h" }, "Кабинет редактора")];
       if (S.session && S.session.authenticated) {
         const u = S.session.user || {};
-        kids.push(el("p", { class: "civic-r04-who" }, ["Вы вошли: ", el("b", {}, u.name || "сотрудник"), u.role ? " · роль по данным сервера: " + u.role : ""]));
-        if (S.rules && S.rules.source !== "checking") kids.push(el("p", { class: "civic-r04-rules", "data-fk": "rules" }, S.rules.source === "server"
-          ? "Правила проверки полей — с сервера (/staff/meta)."
-          : "Правила проверки полей — локальная копия правил R02 (" + S.rules.why + "); окончательно решает сервер при сохранении."));
+        const rules = S.rules && S.rules.source !== "checking" ? el("span", { class: "civic-r04-rules", "data-fk": "rules",
+          title: S.rules.source === "server" ? "Лимиты, границы и поля источников получены с сервера." : "Окончательно решает сервер при сохранении." },
+          S.rules.source === "server" ? " · правила проверки с сервера (/staff/meta)" : " · правила проверки: локальная копия правил R02 (" + S.rules.why + ")") : null;
+        kids.push(el("p", { class: "civic-r04-who" }, ["Вы вошли: ", el("b", {}, u.name || "сотрудник"), u.role ? " · роль по данным сервера: " + u.role : "", rules].filter(Boolean)));
         if (S.logoutAsk) {
           kids.push(el("div", { class: "civic-r04-ask", role: "group", "aria-label": "Подтверждение выхода" }, [
             el("p", {}, "Есть несохранённые правки. При выходе они будут удалены из памяти вкладки."),
