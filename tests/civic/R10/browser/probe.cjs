@@ -77,6 +77,7 @@ async function probe(browser, vp) {
   const sensitive = /(csrf|token|password|passwd|secret|bearer)/i;
   const staffCalls = requests.filter((r) => /\/api\/civic\/v1\/staff\//.test(r.url));
   const basemap = requests.filter((r) => /openfreemap|openstreetmap|tile|\.pbf|glyphs|sprite/i.test(r.url));
+  const basemapBlocked = basemap.length > 0 && failures.some((f) => basemap.some((b) => b.url === f.url));
   const lum = (() => { const m = facts.bodyBackground.match(/\d+(\.\d+)?/g); if (!m) return null;
     const [r, g, b] = m.slice(0, 3).map(Number); return +(0.2126 * r + 0.7152 * g + 0.0722 * b).toFixed(1) / 255; })();
   return {
@@ -84,7 +85,11 @@ async function probe(browser, vp) {
     checks: {
       U01_single_map_canvas: facts.mapCanvasCount === 1 ? 'PASS' : (facts.mapCanvasCount === 0 ? 'FAIL(no maplibre canvas)' : `FAIL(${facts.mapCanvasCount} map canvases)`),
       U01_light_background: lum === null ? 'NOT_RUN(transparent body bg)' : (lum >= 0.7 ? 'PASS' : `FAIL(luminance ${lum.toFixed(2)})`),
-      U06_attribution_visible: !facts.attribution ? 'FAIL(no OSM/OpenFreeMap attribution text found)' : (facts.attribution.inViewport && facts.attribution.notCovered ? 'PASS' : 'FAIL(covered or off-screen)'),
+      // With the basemap blocked MapLibre never receives the style's attribution; whether any
+      // third-party layer is drawn must then be judged from the screenshot, not asserted here.
+      U06_attribution_visible: (facts.attribution && facts.attribution.inViewport && facts.attribution.notCovered) ? 'PASS'
+        : (basemapBlocked ? 'NOT_RUN(basemap blocked: no style attribution to show; check screenshot for third-party layers)'
+          : (!facts.attribution ? 'FAIL(no OSM/OpenFreeMap attribution text found)' : 'FAIL(covered or off-screen)')),
       U06_basemap: basemap.length === 0 ? 'NOT_RUN(no basemap requests)' : (failures.some((f) => basemap.some((b) => b.url === f.url)) ? 'NOT_RUN(basemap blocked by network; check fallback in screenshot)' : 'PASS(requests succeeded)'),
       U09_no_staff_calls_public: staffCalls.length === 0 ? 'PASS' : `FAIL(${staffCalls.length} staff calls)`,
       S06_no_session_in_js_storage: [facts.jsCookies, JSON.stringify(facts.localStorage), JSON.stringify(facts.sessionStorage)].some((s) => sensitive.test(s)) ? 'REVIEW(auth-like key/value in JS-visible storage)' : 'PASS',

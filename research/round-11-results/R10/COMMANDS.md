@@ -26,3 +26,12 @@
 | 15:50 | `git worktree add --detach … 6a28de2` (R02) и `… d8aff46` (R06) | 0 | изолированные копии для standalone |
 | 15:50 | standalone smoke: R10_TARGET=command, standalone_server.py serve --root <R02> --feedback-root <R06> | 0 | create-editor через pty/getpass ×2 OK; draft→404 публично; publish; DTO allowlist OK; feedback 201 pending |
 | 15:51 | R02 update/publish semantics probe | 0 | правка опубликованного = рабочая копия до повторной публикации; reason обязателен (422); публичная история несёт reason публикации → R10-O001 |
+| 04:03 (07.10) | `git fetch origin; delivery_scan.py` | 0 | R06/R07/R09 ready; R01 head 8c6add9 (checkpoint 11, 06.10 16:34) без DELIVERY/CODE_SHA/RUN.txt |
+| 04:06 | `run_acceptance.py --label oracle-clean` | 0 | 67 PASS / 0 FAIL / 13 NOT_RUN (R07 продукт без R10_CODE_ROOT) |
+| 04:08 | `R10_TARGET=command R10_CODE_ROOT=<wt-r01-8c6add9> R10_START_CMD='{python} -E -s -B app.py --port {port} --civic-db {db}' R10_CREATE_EDITOR_CMD='{python} -E -s -B -m ui.civic_store --db {db} create-editor {username}' run_acceptance.py --label r01-8c6add9` | 1 | 78 PASS / 1 FAIL / 1 NOT_RUN; FAIL = маркер R10 похож на телефон (R06 PII guard прав) |
+| 04:10 | тот же файл test_api_feedback.py ×3 после исправления helpers.token | 0 | 11/11 OK ×3 |
+| 04:11 | D001/D002 повторно на 8c6add9 | 0 | .runtime игнорируется; graph_id не строка → 422 |
+| 04:12 | standalone R06/R09/R05 на копиях внутри 8c6add9 | 1 | R06 23/23; R09 16/6; R05 16/3/1 NOT_RUN |
+| 04:13 | `integrated_checks.py --out runs/integrated-extra-8c6add9.json` | 0 | H6 даты прослеживаются, бюджет не 0, template; O001 подтверждено на API |
+| 04:14 | `run_acceptance.py --pattern test_scenarios_tinygraph.py` (R10_CODE_ROOT=wt-r07-d77ec45) | 0 | 19/19 PASS |
+| 04:15 | seed-demo + `app.py` (pid остановлен) + `probe.cjs` 1440/390 | 0 | 1 canvas, светлый фон, нет staff-вызовов; подложка/attribution NOT_RUN (сеть) |
