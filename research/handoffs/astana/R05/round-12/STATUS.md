@@ -36,4 +36,8 @@
 - Тесты: worktree 56538a3 — tests/civic/R05 194 passed, 1 skipped (round12: 45 passed, 1 skip «только без базы»);
   ветка без базы — round12 30 passed, 16 NOT_RUN.
 
-Следующий шаг: линза robustness ревью, DELIVERY.json, переносимый патч путей, финальный handoff.
+- Push checkpoint 6 (d94671b): 5 попыток подряд `remote rejected (Internal Server Error)` от GitHub
+  в 15:15Z (чтение ls-remote при этом работало); повтор в 15:16Z прошёл успешно.
+- `research/round-12-results/R05/DELIVERY.json` — состав поставки, проверки PASS/NOT_RUN, ограничения.
+
+Следующий шаг: линза robustness ревью (в работе), переносимый патч путей, финальный handoff.

@@ -1,0 +1,97 @@
+{
+  "round": 12,
+  "role": "R05",
+  "title": "Подтверждённые работы, стройки и события Астаны",
+  "branch": "claude/focused-hypatia-z8h0no",
+  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "base_mismatch": "Ветка назначена средой и содержит историю R06 раунда 11 (73f9576); перевод основы на 56538a3 merge-коммитом отклонён автоматической проверкой как разрушительная git-операция, force push запрещён. Коммиты раунда 12 трогают только пути R05; проверка — в отдельном worktree от 56538a3; перенос — по путям или патчем r05_round12_paths.patch (git apply --check на 56538a3: OK).",
+  "code_sha": "d94671b",
+  "push_status": "OK (один временный сбой GitHub 500 на checkpoint 6, повтор успешен)",
+  "changed_paths": [
+    "data/civic/astana/round12-verified/",
+    "tests/civic/R05/round12/",
+    "research/round-12-results/R05/",
+    "research/handoffs/astana/R05/round-12/STATUS.md"
+  ],
+  "result": {
+    "confirmed_current": 0,
+    "confirmed_historical": 0,
+    "unverified_candidates": 44,
+    "rejected_candidates": 20,
+    "duplicate_candidates": 9,
+    "sources_registered": 73,
+    "sources_fetched": 0,
+    "why_zero_confirmed": "Сетевая политика среды закрыла все KZ-источники (gov.kz, inform.kz, kazpravda.kz, zakon.kz…), OSM и wikipedia.org; ни одна страница не открыта (network_audit.json). Выдача поиска — кандидаты, не факты."
+  },
+  "tests": [
+    {
+      "name": "round12 suite in worktree of CODE_BASE_SHA 56538a3",
+      "status": "PASS",
+      "command": "python3 -m pytest -q -p no:cacheprovider tests/civic/R05/round12",
+      "result": "45 passed, 1 skipped (skip: проверка только для дерева без валидатора)"
+    },
+    {
+      "name": "all tests/civic/R05 (round 11 + round 12) on 56538a3",
+      "status": "PASS",
+      "command": "python3 -m pytest -q -p no:cacheprovider tests/civic/R05",
+      "result": "194 passed, 1 skipped"
+    },
+    {
+      "name": "round12 suite on the branch tree without base files",
+      "status": "PASS",
+      "command": "python3 -m pytest -q -p no:cacheprovider tests/civic/R05/round12",
+      "result": "30 passed, 16 skipped (NOT_RUN: нет валидатора R05/импортера/OSM-снимка в этом дереве)"
+    },
+    {
+      "name": "FIXTURE pipeline: verify -> build -> R05 profile real + R02 validate_content + importer dry-run",
+      "status": "PASS",
+      "command": "tests/civic/R05/round12/test_r12_pipeline.py (на 56538a3)",
+      "result": "dry-run create=1, invalid=0; синтетический текст только в тесте"
+    },
+    {
+      "name": "importer CLI dry-run of the real (empty) package",
+      "status": "PASS",
+      "command": "python3 -m ui.civic_store --db /tmp/x.sqlite3 import data/civic/astana/round12-verified/package.civic-v1.json --dry-run",
+      "result": "status dry_run, items [] (подтверждённых записей нет)"
+    },
+    {
+      "name": "r12.py check on committed data",
+      "status": "PASS",
+      "command": "python3 -I data/civic/astana/round12-verified/tools/r12.py check",
+      "result": "0 ошибок, пакеты и summary не устарели; валидаторы NOT_RUN — в пакете нет записей"
+    },
+    {
+      "name": "path-only patch applies to clean 56538a3",
+      "status": "PASS",
+      "command": "git apply --check research/round-12-results/R05/r05_round12_paths.patch (в чистом worktree 56538a3)",
+      "result": "OK"
+    },
+    {
+      "name": "adversarial review of r12.py (evidence + correctness lenses)",
+      "status": "PASS",
+      "command": "workflow r05-r12-tool-review",
+      "result": "12 находок с воспроизведением исправлены, регрессионные тесты добавлены; агентная перепроверка выполнилась для 1 находки (подтвердила исправление), 12 проверок не выполнились из-за лимита сессии"
+    },
+    {
+      "name": "independent human check of any accepted record",
+      "status": "NOT_RUN",
+      "command": null,
+      "result": "принятых записей нет"
+    },
+    {
+      "name": "opening any source page",
+      "status": "NOT_RUN",
+      "command": "curl / WebFetch",
+      "result": "egress denied для всех KZ-доменов (network_audit.json)"
+    }
+  ],
+  "known_limits": [
+    "0 подтверждённых записей: страницы источников недоступны в этой среде; кандидаты требуют открытия URL человеком или сессией с разрешёнными доменами.",
+    "Кандидаты найдены серверным поиском; подсказки с origin=search_summary — пересказ поисковой модели, самый ненадёжный уровень.",
+    "Геометрия — только из OSM-снимка 2026-05-06 (не наблюдение октября), точность approximate; у 42 из 44 кандидатов геометрии нет.",
+    "Перевод формулировок («до конца года») в даты допускается только с value_basis и делает запись derived.",
+    "Поиск дубликатов между кандидатами выполнен агентами-скептиками по заголовкам/URL; окончательно — после открытия страниц.",
+    "Ветка не основана на 56538a3 (BASE_MISMATCH): переносить по путям/патчем, не сливать ветку целиком."
+  ],
+  "next_step": "Открыть 19 текущих кандидатов из VERIFY_SHEET.md (официальные gov.kz первыми), сохранить тексты, заполнить drafts/ и выполнить r12.py verify → build → dry-run импорта."
+}
