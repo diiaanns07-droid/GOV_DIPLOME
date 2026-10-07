@@ -1,0 +1,10 @@
+Копии файлов поставки R05 раунда 12 без изменений.
+Ветка: claude/focused-hypatia-z8h0no, коммит ca0f06f8245e24adcae751acea321d19d9366576
+Путь в коммите: data/civic/astana/round12-verified/<имя файла>
+sha256:
+df928c9df332dcfd799b616e5cb3d69d0a4ed750a90d08ad0652a70a8fa72834  candidates.json
+028f7624a73ba91b7a76f06b45c55f9394cdf72d1477665f0a50495734c47d72  historical.civic-v1.json
+34e36840e44b9a567e24d13bd91727a532f9173bdf8ed9a3a6cfc5bf4103f6d6  package.civic-v1.json
+Состояние на этом коммите: package и historical — 0 записей (подтверждённых объектов нет),
+candidates.json — 73 кандидата (to_verify/rejected/duplicate), найденные поиском; страницы
+источников не получены. Это НЕ проверенные городские данные и НЕ формат импорта.

@@ -170,6 +170,9 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
                 raise ValidationError({"evidence_type": "Демо-срез содержит только synthetic."})
             if not meta["demo"] and content["evidence_type"] == "synthetic":
                 raise ValidationError({"evidence_type": "Синтетика не импортируется как реальный срез."})
+            warnings = record_warnings(content, today)
+            if warnings:
+                entry["warnings"] = warnings
             prepared.append((entry, content, digest_of(content)))
         except ValidationError as exc:
             entry.update({"action": "invalid", "fields": exc.fields})
@@ -183,6 +186,7 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
     if rejected and not dry_run:
         report["status"] = "rejected"
         report["counts"] = {"invalid": invalid, "valid": len(prepared)}
+        report["summary"] = _summary(report, [content for _, content, _ in prepared], len(meta["items"]))
         raise ImportRejected("Пакет содержит недопустимые записи; ничего не импортировано.", report)
 
     try:
@@ -215,6 +219,7 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
             report["status"] = "rejected" if rejected else ("dry_run" if dry_run else "applied")
             if rejected:
                 report["counts"]["valid"] = len(prepared)
+            report["summary"] = _summary(report, [content for _, content, _ in prepared], len(meta["items"]))
             candidates = [(entry, entry.pop("_candidate", None)) for entry in report["items"]]
             if dry_run:
                 raise _DryRun(report)
@@ -236,6 +241,66 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
                                  "(dry-run показал и допустимые записи).", dry.report)
         return dry.report
     return report
+
+
+ACTIVE_STATUSES = ("planned", "in_progress", "unknown")
+
+
+def record_warnings(content, today) -> list[dict]:
+    """Предупреждения редактору по записи источника. Ничего не исправляют и не блокируют импорт."""
+    out = []
+    end = content["schedule"]["current_planned_end"]
+    if end is not None and end < today.isoformat() and content["status"] in ACTIVE_STATUSES:
+        out.append({"code": "end_date_passed", "field": "schedule.current_planned_end",
+                    "message": "Срок по источнику уже прошёл, а статус не completed/cancelled: объявление могло "
+                               "устареть. Статус не меняется автоматически — проверьте актуальность."})
+    if end is None and content["status"] in ("planned", "in_progress"):
+        out.append({"code": "end_date_unknown", "field": "schedule.current_planned_end",
+                    "message": "Срок окончания в источнике не указан. Это «неизвестно», а не «бессрочно»."})
+    claims = {}
+    for ref in content["source_refs"]:
+        for field in ref.get("fields") or []:
+            claims.setdefault(field, []).append(ref["id"])
+    for field, ref_ids in sorted(claims.items()):
+        if len(ref_ids) > 1:
+            out.append({"code": "field_has_several_sources", "field": field, "refs": ref_ids,
+                        "message": "Поле подтверждают несколько источников: в записи одно значение, "
+                                   "сверьте, что источники не противоречат друг другу."})
+    if content["evidence_type"] == "observed":
+        unfetched = [ref["id"] for ref in content["source_refs"] if ref.get("access_status") != "fetched"]
+        if unfetched:
+            out.append({"code": "observed_source_not_fetched", "field": "source_refs", "refs": unfetched,
+                        "message": "observed, но текст источника не получен (not_fetched/unavailable): "
+                                   "поисковый сниппет не подтверждает утверждение."})
+    return out
+
+
+def _summary(report, contents, total) -> dict:
+    """Понятная сводка: сколько записей и что с ними будет/стало. Пустой пакет назван пустым."""
+    counts = report.get("counts", {})
+    evidence = {}
+    for content in contents:
+        evidence[content["evidence_type"]] = evidence.get(content["evidence_type"], 0) + 1
+    summary = {
+        "items_in_package": total,
+        "valid": len(contents),
+        "invalid": sum(1 for item in report["items"] if item.get("action") == "invalid"),
+        "new_drafts": counts.get("create", 0),
+        "updated_import_drafts": counts.get("update_import_draft", 0),
+        "waiting_editor_review": counts.get("editor_review", 0),
+        "unchanged": counts.get("skip_unchanged", 0),
+        "id_conflicts": counts.get("id_conflict", 0),
+        "missing_from_package": len(report.get("missing", [])),
+        "published_by_import": 0,
+        "evidence_types": evidence,
+        "with_warnings": sum(1 for item in report["items"] if item.get("warnings")),
+        "budget_unknown": sum(1 for c in contents if c["budget"]["amount_kzt"] is None),
+        "geometry_unknown": sum(1 for c in contents if c["geometry"] is None),
+    }
+    if total == 0:
+        summary["note"] = ("Пакет пуст: проверена только обработка пустого ввода; объекты городского "
+                           "реестра не загружены.")
+    return summary
 
 
 def _norm_title(text) -> str:
