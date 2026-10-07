@@ -19,7 +19,7 @@ from agent.civic_assistant.api import (ASSISTANT_PATH, AssistantEndpoint, RateLi
 from agent.civic_assistant.audit import statement_violations
 from agent.civic_assistant.facts import check_context
 from agent.civic_assistant.render import fmt_money
-from agent.civic_assistant.scenario import INPUT_SCHEMA, payload_digest
+from agent.civic_assistant.scenario import ENTRY_SCHEMA, INPUT_SCHEMA, make_entry, payload_digest
 
 registry = importlib.import_module("engine.civic_scenarios.registry")
 engine_compare = importlib.import_module("engine.civic_scenarios.compare")
@@ -39,6 +39,22 @@ def loader():
 @pytest.fixture(scope="module")
 def city(loader):
     return loader(CITY)
+
+
+def _raw(case_id):
+    case = next(c for c in registry.list_cases() if c["case_id"] == case_id)
+    payload = copy.deepcopy(case["payload"])
+    return {"payload": payload, "result": engine_compare.compare(payload, registry.load_graph(payload["graph_id"]))}
+
+
+@pytest.fixture(scope="module")
+def city_raw():
+    return _raw(CITY)
+
+
+@pytest.fixture(scope="module")
+def tiny_raw():
+    return _raw(TINY)
 
 
 def _ctx(entry, sid=CITY):
@@ -108,19 +124,23 @@ def test_inactive_closure_reported_from_engine_list(loader):
     if inactive:
         assert "в момент анализа не действует" in a["text"]
     states = re.findall(r"в момент анализа (действует|не действует)", a["text"])
-    total = sum(len(p["closures"]) for p in entry["payload"]["plans"])
+    payload = next(c for c in registry.list_cases() if c["case_id"] == TINY)["payload"]
+    total = sum(len(p["closures"]) for p in payload["plans"])
     assert len(states) == total
 
 
-def test_payload_not_matching_result_hides_intervals(city):
-    entry = copy.deepcopy(city)
-    entry["payload"]["plans"][0]["closures"][0]["end_at"] = "2026-12-31T00:00:00+05:00"
-    ctx = _ctx(entry)
-    assert "scenario_payload_mismatch" in ctx["warnings"]
-    a = build_answer("Сравни варианты", ctx)
-    assert "Интервалы перекрытий не показаны" in a["text"]
-    assert "31.12.2026" not in a["text"]
-    _audit_clean(a, ctx)
+def test_payload_not_matching_result_hides_intervals(city_raw):
+    bad = copy.deepcopy(city_raw["payload"])
+    bad["plans"][0]["closures"][0]["end_at"] = "2026-12-31T00:00:00+05:00"
+    # и старая обёртка v1, и компактная запись v2: интервалы не берутся из входа, не совпавшего с расчётом
+    for entry in ({"schema": INPUT_SCHEMA, "result": city_raw["result"], "payload": bad, "graph": None},
+                  make_entry(city_raw["result"], bad, None, kind="prepared_case")):
+        ctx = _ctx(entry)
+        assert "scenario_payload_mismatch" in ctx["warnings"]
+        a = build_answer("Сравни варианты", ctx)
+        assert "Интервалы перекрытий не показаны" in a["text"]
+        assert "31.12.2026" not in a["text"]
+        _audit_clean(a, ctx)
 
 
 def test_graph_info_of_another_graph_is_ignored(city):
@@ -148,8 +168,8 @@ def test_unreachable_and_unknown_routes_are_not_zero(city):
 
 def test_many_pairs_fall_back_to_engine_summary(loader):
     entry = loader("k03-astana-demo-v1")
-    pairs = len(entry["result"]["baseline"]["routes"])
-    assert pairs > 3
+    pairs = entry["result"]["baseline"]["routes_total"]
+    assert pairs > 3 and entry["result"]["baseline"]["routes"] == []  # большие маршруты не хранятся
     ctx = _ctx(entry, "k03-astana-demo-v1")
     a = build_answer("Сравни варианты", ctx)
     assert f"Пар маршрутов: {pairs}" in a["text"] and "Без перекрытий: путь" not in a["text"]
@@ -165,34 +185,38 @@ def test_kazakh_scenario_answer_is_audit_clean(city):
 
 # ---- результаты пользовательских сравнений (кэш сервера, не данные клиента) ----
 
-def test_result_cache_accepts_only_the_payload_of_that_result(city):
+def test_result_cache_accepts_only_the_payload_of_that_result(city_raw):
     cache = ScenarioResultCache()
-    bad = copy.deepcopy(city["payload"])
+    bad = copy.deepcopy(city_raw["payload"])
     bad["analysis_at"] = "2026-10-07T10:00:00+05:00"
-    assert cache.remember(bad, city["result"]) is None
-    assert cache.remember(city["payload"], {"schema_version": "x"}) is None
-    key = cache.remember(city["payload"], city["result"])
-    assert key == "result:" + city["result"]["result_digest"]
-    assert cache.get(key)["result"] is city["result"]
-    assert payload_digest(city["payload"]) == city["result"]["input"]["payload_digest"]
+    assert cache.remember(bad, city_raw["result"]) is None and cache.last_rejection == "payload_digest_mismatch"
+    assert cache.remember(city_raw["payload"], {"schema_version": "x"}) is None
+    key = cache.remember(city_raw["payload"], city_raw["result"])
+    assert key == "result:" + city_raw["result"]["result_digest"]
+    entry = cache.get(key)
+    assert entry["kind"] == "user_result" and entry["result_digest"] == city_raw["result"]["result_digest"]
+    assert payload_digest(city_raw["payload"]) == city_raw["result"]["input"]["payload_digest"]
 
 
-def test_result_cache_ttl_and_size_limit(city):
+def _tiny_variant(tiny_raw, minute):
+    payload = copy.deepcopy(tiny_raw["payload"])
+    payload["analysis_at"] = f"2026-10-07T09:{minute:02d}:00+05:00"
+    return payload, engine_compare.compare(payload, registry.load_graph(payload["graph_id"]))
+
+
+def test_result_cache_ttl_and_size_limit(tiny_raw):
     now = [0.0]
     cache = ScenarioResultCache(max_items=2, ttl_s=10, clock=lambda: now[0])
-    key = cache.remember(city["payload"], city["result"])
+    key = cache.remember(tiny_raw["payload"], tiny_raw["result"])
     now[0] = 11
-    assert cache.get(key) is None
-    keys = []
-    for i in range(3):
-        r = copy.deepcopy(city["result"])
-        r["result_digest"] = f"{i:064x}"
-        keys.append(cache.remember(city["payload"], r))
-    assert cache.get(keys[0]) is None and cache.get(keys[2]) is not None
+    assert cache.get(key) is None and cache.status(key) == "expired"
+    keys = [cache.remember(*_tiny_variant(tiny_raw, m)) for m in (1, 2, 3)]
+    assert None not in keys and len(set(keys)) == 3
+    assert cache.get(keys[0]) is None and cache.status(keys[0]) == "expired" and cache.get(keys[2]) is not None
 
 
-def test_endpoint_explains_a_server_computed_user_comparison(loader, city):
-    key = loader.cache.remember(city["payload"], city["result"])
+def test_endpoint_explains_a_server_computed_user_comparison(loader, city_raw):
+    key = loader.cache.remember(city_raw["payload"], city_raw["result"])
     ep = AssistantEndpoint(lambda oid: None, load_scenario_result=loader, rate_limiter=RateLimiter(100, 60))
     ok = ep.handle("POST", ASSISTANT_PATH, {}, {"question": "Сравни варианты", "object_id": None, "scenario_id": key},
                    {"client_ip": "127.0.0.1", "headers": {}})
@@ -203,7 +227,8 @@ def test_endpoint_explains_a_server_computed_user_comparison(loader, city):
                                                      "scenario_id": "result:" + "f" * 64},
                         {"client_ip": "127.0.0.1", "headers": {}})
     assert missing["body"]["data"]["source"] == "unavailable"
-    assert "scenario_not_found" in missing["body"]["data"]["warnings"]
+    assert "scenario_result_unknown" in missing["body"]["data"]["warnings"]
+    assert "Выполните сравнение заново" in missing["body"]["data"]["text"]
 
 
 def test_client_cannot_send_metrics_with_the_question(loader):
@@ -215,5 +240,5 @@ def test_client_cannot_send_metrics_with_the_question(loader):
 
 
 def test_wrapper_schema_is_shared(city):
-    assert city["schema"] == INPUT_SCHEMA
+    assert city["schema"] == ENTRY_SCHEMA and city["kind"] == "prepared_case"
     json.dumps(city["graph"])  # запись MANIFEST сериализуема (уходит только в серверный контекст)

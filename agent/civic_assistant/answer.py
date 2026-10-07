@@ -252,9 +252,28 @@ def _result(source, intent, lang, statements, ctx, warnings, mode, model=None, f
     }
 
 
+# Тексты отказа по коду: расчёт пользователя и объект — разные причины, текст не должен их путать.
+_UNAVAILABLE_TEXT = {"scenario_result_expired": "unavailable_result_expired",
+                     "scenario_result_unknown": "unavailable_result_unknown",
+                     "scenario_not_found": "unavailable_scenario"}
+
+
+def unavailable_text(lang: str, code: str) -> str:
+    return T[lang][_UNAVAILABLE_TEXT.get(code, "unavailable")]
+
+
 def unavailable_answer(lang: str = "ru", code: str = "context_unavailable") -> dict:
-    st = [{"text": T[lang]["unavailable"], "kind": "notice", "fact_ids": [], "source_ids": []}]
+    st = [{"text": unavailable_text(lang, code), "kind": "notice", "fact_ids": [], "source_ids": []}]
     return _result("unavailable", None, lang, st, None, [code], mode="unavailable")
+
+
+def prepend_notice(answer: dict, code: str) -> dict:
+    """Добавить в начало ответа пометку об отсутствующем расчёте (текст без чисел и без фактов)."""
+    note = {"text": unavailable_text(answer.get("language") or "ru", code), "kind": "notice", "fact_ids": [],
+            "source_ids": []}
+    answer["statements"] = [note] + list(answer.get("statements") or [])
+    answer["text"] = " ".join(s["text"] for s in answer["statements"])
+    return answer
 
 
 def build_answer(question, verified_context, provider=None, *, timeout_s: float = PROVIDER_TIMEOUT_S) -> dict:

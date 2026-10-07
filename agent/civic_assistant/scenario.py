@@ -9,6 +9,7 @@ claude/brave-hopper-bkc58b, SHA 18f8ac8, синтетический кейс syn
 
 from __future__ import annotations
 
+import copy
 from datetime import datetime
 import hashlib
 import json
@@ -74,6 +75,10 @@ S = {
                  "быть короче, а «нет пути» не доказано.",
         "no_best": "Помощник не ранжирует варианты: показаны только длины путей в модели, выбор остаётся за сотрудником.",
         "many_pairs": "Пар маршрутов: {n}; ниже — сводка по парам, а не каждый путь.",
+        "kind_user": "Это ваш расчёт: результат сравнения, выполненного сервером (идентификатор {digest}…), "
+                     "сохранён {stored}.",
+        "kind_user_short": "Это ваш расчёт: результат сравнения, выполненного сервером (идентификатор {digest}…).",
+        "kind_prepared": "Это подготовленный пример сценария, а не ваш расчёт.",
     },
     "kk": {
         "graph_synthetic": "Сценарий графы синтетикалық (шартты), бұл Астана көшелері емес.",
@@ -123,6 +128,10 @@ S = {
                  "болуы мүмкін, ал «жол жоқ» дәлелденбеген.",
         "no_best": "Көмекші нұсқаларды саралап, ұсыныс бермейді: тек модельдегі жолдардың ұзындығы салыстырылады.",
         "many_pairs": "Маршрут жұптары: {n}; төменде әр жол емес, жұптар бойынша жиынтық.",
+        "kind_user": "Бұл сіздің есебіңіз: сервер орындаған салыстыру нәтижесі (идентификатор {digest}…), "
+                     "{stored} сақталған.",
+        "kind_user_short": "Бұл сіздің есебіңіз: сервер орындаған салыстыру нәтижесі (идентификатор {digest}…).",
+        "kind_prepared": "Бұл сіздің есебіңіз емес, дайындалған сценарий мысалы.",
     },
 }
 
@@ -188,6 +197,186 @@ def payload_digest(payload) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
+ENTRY_SCHEMA = "civic-assistant-scenario-entry-v2"
+ENTRY_KINDS = ("user_result", "prepared_case")
+# Поля, которые R07 добавляет вне дайджеста: timing_ms — HTTP-адаптер после compare().
+_DIGEST_EXCLUDED = ("result_digest", "timing_ms")
+
+
+def result_digest_ok(result) -> bool:
+    """result_digest = sha256(canonical_json(result без result_digest/timing_ms)) — как в compare() R07."""
+    digest = result.get("result_digest") if isinstance(result, dict) else None
+    if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+        return False
+    try:
+        return payload_digest({k: v for k, v in result.items() if k not in _DIGEST_EXCLUDED}) == digest
+    except (TypeError, ValueError):
+        return False
+
+
+def verify_user_result(payload, result) -> str | None:
+    """None, если результат — проверенный ответ движка именно на этот вход; иначе код отказа."""
+    if not isinstance(result, dict) or result.get("schema_version") != RESULT_SCHEMA:
+        return "result_schema"
+    if not result_digest_ok(result):
+        return "result_digest_mismatch"
+    inp = result.get("input") if isinstance(result.get("input"), dict) else {}
+    if not isinstance(payload, dict):
+        return "payload_missing"
+    try:
+        if payload_digest(payload) != inp.get("payload_digest"):
+            return "payload_digest_mismatch"
+    except (TypeError, ValueError):
+        return "payload_digest_mismatch"
+    if inp.get("city") != "astana" or payload.get("city") != "astana":
+        return "city_mismatch"
+    for key in ("graph_id", "graph_digest", "mode", "analysis_at"):
+        if inp.get(key) != payload.get(key):
+            return "input_mismatch:" + key
+    for key in ("origin_node_ids", "destination_node_ids"):
+        if not isinstance(payload.get(key), list) or set(map(str, inp.get(key) or [])) != set(map(str, payload[key])):
+            return "input_mismatch:" + key
+    want = [p.get("id") for p in payload.get("plans") or [] if isinstance(p, dict)]
+    got = [p.get("id") for p in result.get("plans") or [] if isinstance(p, dict)]
+    if not want or len(want) > len(PLAN_IDS) or sorted(want) != sorted(got) or any(x not in PLAN_IDS for x in got):
+        return "plans_mismatch"
+    return _totals_problem(result)
+
+
+def _int(value):
+    return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
+
+
+def _status_ok(summary, pairs) -> bool:
+    if not isinstance(summary, dict) or _int(summary.get("pairs")) != pairs:
+        return False
+    by = summary.get("by_status") if isinstance(summary.get("by_status"), dict) else {}
+    counts = [_int(by.get(k)) for k in ("ok", "unknown", "unreachable")]
+    return None not in counts and sum(counts) == pairs
+
+
+def _changes_ok(summary, pairs) -> bool:
+    if not isinstance(summary, dict) or _int(summary.get("pairs")) != pairs:
+        return False
+    ch = summary.get("changes") if isinstance(summary.get("changes"), dict) else {}
+    keys = ("unchanged", "longer", "shorter", "lost_within_model", "became_uncertain", "gained", "not_comparable")
+    counts = {k: _int(ch.get(k)) for k in keys}
+    if None in counts.values() or sum(counts.values()) != pairs:
+        return False
+    return _int(summary.get("comparable_pairs")) == counts["unchanged"] + counts["longer"] + counts["shorter"]
+
+
+def _totals_problem(result) -> str | None:
+    """Итоги согласованы со входом: пар = точек отправления × назначения, суммы статусов и изменений сходятся."""
+    inp = result["input"]
+    origins, dests = inp.get("origin_node_ids"), inp.get("destination_node_ids")
+    if not isinstance(origins, list) or not isinstance(dests, list):
+        return "totals_mismatch:input"
+    pairs = len(origins) * len(dests)
+    base = result.get("baseline") if isinstance(result.get("baseline"), dict) else {}
+    if not isinstance(base.get("routes"), list) or len(base["routes"]) != pairs \
+            or not _status_ok(base.get("status_summary"), pairs):
+        return "totals_mismatch:baseline"
+    for plan in result.get("plans") or []:
+        vs = plan.get("vs_baseline") if isinstance(plan.get("vs_baseline"), dict) else {}
+        if not _status_ok(plan.get("status_summary"), pairs) or not _changes_ok(vs.get("summary"), pairs):
+            return "totals_mismatch:plan_" + str(plan.get("id"))
+    ids = {p.get("id") for p in result.get("plans") or [] if isinstance(p, dict)}
+    ab = result.get("a_vs_b")
+    if (ab is not None) != (ids == {"A", "B"}):
+        return "totals_mismatch:a_vs_b"
+    if ab is not None and (not isinstance(ab, dict) or ab.get("from_plan") != "A" or ab.get("to_plan") != "B"
+                           or not _changes_ok(ab.get("summary"), pairs)):
+        return "totals_mismatch:a_vs_b"
+    return None
+
+
+def _slim_route(r):
+    keep = ("origin_node_id", "destination_node_id", "status", "length_m", "reason")
+    return {k: r.get(k) for k in keep if k in r}
+
+
+def _slim_pair(x):
+    keep = ("origin_node_id", "destination_node_id", "from_status", "to_status", "delta_m", "change")
+    return {k: x.get(k) for k in keep if k in x}
+
+
+def slim_result(result: dict) -> dict:
+    """Только то, что читает scenario_facts: без edge_ids/node_ids маршрутов и без пар сверх MAX_ROUTE_PAIRS.
+
+    Сводки движка (status_summary, vs_baseline.summary, a_vs_b.summary) копируются как есть.
+    """
+    base = result.get("baseline") if isinstance(result.get("baseline"), dict) else {}
+    routes = [r for r in base.get("routes") or [] if isinstance(r, dict)]
+    keep_pairs = len(routes) <= MAX_ROUTE_PAIRS
+    od = {(r.get("origin_node_id"), r.get("destination_node_id")) for r in routes} if keep_pairs else set()
+
+    def pairs(items):
+        return [_slim_pair(x) for x in items or [] if isinstance(x, dict)
+                and (x.get("origin_node_id"), x.get("destination_node_id")) in od]
+
+    out = {k: result.get(k) for k in ("schema_version", "engine", "input", "graph_coverage", "warnings",
+                                       "assumptions", "limitations", "result_digest") if k in result}
+    out["baseline"] = {"status_summary": base.get("status_summary"), "routes_total": len(routes),
+                       "routes": [_slim_route(r) for r in routes] if keep_pairs else []}
+    plans = []
+    for p in result.get("plans") or []:
+        if not isinstance(p, dict):
+            continue
+        vs = p.get("vs_baseline") if isinstance(p.get("vs_baseline"), dict) else {}
+        active = p.get("active_closed_edge_ids")
+        plans.append({"id": p.get("id"), "status_summary": p.get("status_summary"),
+                      "active_closed_edge_count": len(active) if isinstance(active, list) else None,
+                      "inactive_closures": [{k: c.get(k) for k in ("start_at", "end_at", "edge_ids")}
+                                            for c in p.get("inactive_closures") or [] if isinstance(c, dict)][:MAX_CLOSURES],
+                      "routes": [_slim_route(r) for r in p.get("routes") or [] if isinstance(r, dict)
+                                 and (r.get("origin_node_id"), r.get("destination_node_id")) in od],
+                      "vs_baseline": {"summary": vs.get("summary"), "pairs": pairs(vs.get("pairs"))},
+                      "warnings": [w for w in p.get("warnings") or [] if isinstance(w, dict)][:10]})
+    out["plans"] = plans
+    ab = result.get("a_vs_b") if isinstance(result.get("a_vs_b"), dict) else None
+    out["a_vs_b"] = None if ab is None else {"from_plan": ab.get("from_plan"), "to_plan": ab.get("to_plan"),
+                                             "summary": ab.get("summary"), "pairs": pairs(ab.get("pairs"))}
+    return out
+
+
+def closure_summary(result: dict, payload) -> list[dict] | None:
+    """Интервалы перекрытий из ПРОВЕРЕННОГО входа (payload_digest совпал) — без списков рёбер."""
+    inp = result.get("input") if isinstance(result.get("input"), dict) else {}
+    try:
+        if not isinstance(payload, dict) or payload_digest(payload) != inp.get("payload_digest"):
+            return None
+    except (TypeError, ValueError):
+        return None
+    plans = {p.get("id"): p for p in result.get("plans") or [] if isinstance(p, dict)}
+    sig = lambda c: (c.get("start_at"), c.get("end_at"), sorted(c.get("edge_ids") or []))  # noqa: E731
+    out = []
+    for plan in payload.get("plans") or []:
+        pid = plan.get("id") if isinstance(plan, dict) else None
+        if pid not in PLAN_IDS or pid not in plans:
+            continue
+        inactive = [sig(c) for c in plans[pid].get("inactive_closures") or [] if isinstance(c, dict)]
+        closures = [c for c in plan.get("closures") or [] if isinstance(c, dict) and isinstance(c.get("edge_ids"), list)]
+        for c in closures[:MAX_CLOSURES]:
+            out.append({"plan": pid, "edges": len(c["edge_ids"]), "start_at": clean_text(c.get("start_at"), 40),
+                        "end_at": clean_text(c.get("end_at"), 40), "active": sig(c) not in inactive})
+        if len(closures) > MAX_CLOSURES:
+            out.append({"plan": pid, "truncated": True})
+    return out
+
+
+def make_entry(result: dict, payload, graph, *, kind: str, stored_at: str | None = None) -> dict:
+    """Компактная запись для помощника (кэш и подготовленные кейсы): факты те же, что из полного результата."""
+    if kind not in ENTRY_KINDS:
+        raise ValueError("kind")
+    entry = {"schema": ENTRY_SCHEMA, "kind": kind, "result": slim_result(result),
+             "closures": closure_summary(result, payload), "graph": graph,
+             "payload_digest": (result.get("input") or {}).get("payload_digest"),
+             "result_digest": result.get("result_digest"), "stored_at": stored_at}
+    # Отдельная копия: запись в кэше не меняется, если вызывающий код потом правит свой result/graph.
+    return copy.deepcopy(entry)
+
+
 def _date_display(value):
     """'2026-05-06T03:25:00Z' или '2026-10-07' -> '06.05.2026'; иначе None."""
     if not isinstance(value, str) or len(value) < 10:
@@ -229,8 +418,9 @@ def _route_facts(result, warnings):
     """Длины путей по парам (до MAX_ROUTE_PAIRS) и разницы — только значения движка, без пересчёта."""
     base = result.get("baseline") if isinstance(result.get("baseline"), dict) else {}
     base_routes = [r for r in (base.get("routes") or []) if isinstance(r, dict)]
-    if not base_routes or len(base_routes) > MAX_ROUTE_PAIRS:
-        return [], len(base_routes)
+    total = base.get("routes_total") if isinstance(base.get("routes_total"), int) else len(base_routes)
+    if not base_routes or total > MAX_ROUTE_PAIRS:
+        return [], total
     key = lambda r: (r.get("origin_node_id"), r.get("destination_node_id"))  # noqa: E731
     plans = {p.get("id"): p for p in (result.get("plans") or []) if isinstance(p, dict) and p.get("id") in PLAN_IDS}
     ab = result.get("a_vs_b") if isinstance(result.get("a_vs_b"), dict) else {}
@@ -260,6 +450,24 @@ def _route_facts(result, warnings):
 
 def _closure_facts(result, payload, warnings):
     """Интервалы перекрытий из входа сценария; активность — по списку inactive_closures движка."""
+    if isinstance(payload, dict) and payload.get("schema") == ENTRY_SCHEMA:
+        summary = payload.get("closures")
+        if summary is None:
+            warnings.append("scenario_payload_mismatch")
+            return [_fact("scenario.closures_unverified", "closures_unverified", True, "flag")]
+        facts, counters = [], {}
+        for c in summary:
+            pid = c.get("plan")
+            if c.get("truncated"):
+                warnings.append("scenario_closures_truncated")
+                continue
+            counters[pid] = counters.get(pid, 0) + 1
+            start, end = _fmt_at(c.get("start_at")), _fmt_at(c.get("end_at"))
+            value = {"edges": c.get("edges"), "start_at": c.get("start_at"), "end_at": c.get("end_at"),
+                     "active": bool(c.get("active"))}
+            facts.append(_fact(f"scenario.{pid}.closure{counters[pid]}", "closure", value, "closure",
+                               display=[x for x in (start, end) if x]))
+        return facts
     if not isinstance(payload, dict):
         return []
     inp = result.get("input") if isinstance(result.get("input"), dict) else {}
@@ -293,7 +501,9 @@ def _closure_facts(result, payload, warnings):
 
 
 def _unwrap(scenario):
-    """Принимаем результат R07 как есть или обёртку {schema, result, payload, graph} от сервера."""
+    """Результат R07 как есть, обёртка v1 {schema, result, payload, graph} или запись v2 (make_entry)."""
+    if isinstance(scenario, dict) and scenario.get("schema") == ENTRY_SCHEMA:
+        return scenario.get("result"), scenario, scenario.get("graph")
     if isinstance(scenario, dict) and scenario.get("schema") == INPUT_SCHEMA:
         return scenario.get("result"), scenario.get("payload"), scenario.get("graph")
     return scenario, None, None
@@ -310,6 +520,17 @@ def scenario_facts(scenario, scenario_id=None) -> tuple[list[dict], list[str]]:
         raise ContextError("scenario_city", "раунд 11 — только Астана")
     if scenario_id is not None and (not isinstance(scenario_id, str) or not ID_RE.match(scenario_id)):
         raise ContextError("scenario_id")
+    entry_kind = payload.get("kind") if isinstance(payload, dict) and payload.get("schema") == ENTRY_SCHEMA else None
+    if entry_kind is not None and entry_kind not in ENTRY_KINDS:
+        raise ContextError("scenario_kind", "неизвестный вид записи")
+    if isinstance(scenario_id, str):
+        # Смешение запрещено: "result:<digest>" — только проверенный расчёт пользователя с тем же digest,
+        # id подготовленного кейса — никогда не пользовательский результат.
+        if scenario_id.startswith("result:"):
+            if entry_kind != "user_result" or scenario_id != "result:" + str(result.get("result_digest")):
+                raise ContextError("scenario_kind_mismatch")
+        elif entry_kind == "user_result":
+            raise ContextError("scenario_kind_mismatch")
     ev = inp.get("graph_evidence_type") if inp.get("graph_evidence_type") in EVIDENCE_TYPES else None
     mode = inp.get("mode") if inp.get("mode") in ("walking", "driving") else None
     at = clean_text(inp.get("analysis_at"), 40)
@@ -329,6 +550,15 @@ def scenario_facts(scenario, scenario_id=None) -> tuple[list[dict], list[str]]:
                                             "result_digest": clean_text(result.get("result_digest"), 80),
                                             "graph_id": clean_text(inp.get("graph_id"), 120)}, "engine"),
     ]
+    if entry_kind is not None:
+        stored = clean_text(payload.get("stored_at"), 40) if entry_kind == "user_result" else None
+        digest = result.get("result_digest") if entry_kind == "user_result" else None
+        facts += [_fact("scenario.kind", "scenario_kind", entry_kind, "enum"),
+                  _fact("scenario.result_ref", "result_ref",
+                        digest[:12] if isinstance(digest, str) and re.fullmatch(r"[0-9a-f]{64}", digest) else None,
+                        "text"),
+                  _fact("scenario.stored_at", "scenario_stored_at", stored, "timestamp",
+                        display=[_fmt_at(stored)] if _fmt_at(stored) else None)]
     facts += _status_facts("scenario.baseline", (result.get("baseline") or {}).get("status_summary")
                            if isinstance(result.get("baseline"), dict) else None)
     plans = result.get("plans") if isinstance(result.get("plans"), list) else []
@@ -343,8 +573,8 @@ def scenario_facts(scenario, scenario_id=None) -> tuple[list[dict], list[str]]:
         vs = p.get("vs_baseline") if isinstance(p.get("vs_baseline"), dict) else {}
         facts += _change_facts(f"scenario.{pid}.vs_baseline", vs.get("summary"))
         active = p.get("active_closed_edge_ids")
-        facts.append(_fact(f"scenario.{pid}.active_closures", "active_closed_edges",
-                           len(active) if isinstance(active, list) else None))
+        count = len(active) if isinstance(active, list) else _count(p.get("active_closed_edge_count"))
+        facts.append(_fact(f"scenario.{pid}.active_closures", "active_closed_edges", count))
     ab = result.get("a_vs_b") if isinstance(result.get("a_vs_b"), dict) else None
     if ab and ab.get("from_plan") == "A" and ab.get("to_plan") == "B":
         facts += _change_facts("scenario.AB", ab.get("summary"))
@@ -468,6 +698,18 @@ def render_scenario(facts: dict, lang: str, focus: str = "compare") -> list[dict
     s = S[lang]
     ev = _v(facts, "scenario.graph_evidence_type")
     out = []
+    kind = _v(facts, "scenario.kind")
+    if kind == "user_result":
+        digest = _v(facts, "scenario.result_ref") or NO_DATA[lang]
+        stored = ((facts.get("scenario.stored_at") or {}).get("meta") or {}).get("display") or []
+        if stored and _v(facts, "scenario.stored_at"):
+            out.append(_st(s["kind_user"].format(digest=digest, stored=stored[0]),
+                           ["scenario.kind", "scenario.result_ref", "scenario.stored_at"], kind="notice", facts=facts))
+        else:
+            out.append(_st(s["kind_user_short"].format(digest=digest), ["scenario.kind", "scenario.result_ref"],
+                           kind="notice", facts=facts))
+    elif kind == "prepared_case":
+        out.append(_st(s["kind_prepared"], ["scenario.kind"], kind="notice", facts=facts))
     graph_note = {"synthetic": "graph_synthetic", "hypothesis": "graph_hypothesis", "derived": "graph_derived",
                   None: "graph_unknown"}.get(ev)
     if graph_note:

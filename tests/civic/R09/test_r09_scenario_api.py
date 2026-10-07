@@ -220,11 +220,14 @@ def test_r07_case_loader_uses_server_payload():
     # Раунд 12: загрузчик отдаёт тот же результат движка вместе с серверным входом сценария
     # (интервалы перекрытий) и записью MANIFEST графа (здесь manifest не передан -> None).
     first, second = load(SID), load(SID)
-    assert first is second and first["result"] is RESULT and len(calls) == 1
-    assert first["payload"] == {"graph_id": "g1", "x": 1} and first["graph"] is None
+    # Раунд 13: компактная запись v2 (без маршрутов), подготовленный кейс помечен kind=prepared_case.
+    assert first is second and len(calls) == 1 and first["kind"] == "prepared_case"
+    assert first["result_digest"] == RESULT["result_digest"] and first["graph"] is None
+    assert first["closures"] is None  # вход {"graph_id": "g1", "x": 1} не совпадает с input.payload_digest
     assert calls[0] == ({"graph_id": "g1", "x": 1}, ("graph", "g1"))
-    assert load("other") is None
+    assert load("other") is None and load.status("other") == "unknown" and load.status(SID) == "ok"
     assert load("result:" + "0" * 64) is None  # без кэша результатов пользовательских сравнений нет
+    assert load.status("result:" + "0" * 64) == "unknown"
 
 
 @pytest.mark.parametrize("bad", [("only-one",), "string", {"item": {}}, (None, None, None)])
