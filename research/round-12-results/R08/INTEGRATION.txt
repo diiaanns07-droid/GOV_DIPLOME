@@ -17,8 +17,9 @@ R08 — ЧТО ПОДКЛЮЧИТЬ КООРДИНАТОРУ (раунд 12)
      build_feedback_service(db_path, civic, classifier=None)   # выключить подсказку
    Поведенческое изменение после переноса: у новых сообщений classifier.status становится "ok" (была
    "unavailable"), в очереди редактора появляется suggestion. Категория жителя не меняется.
-   Проверка в worktree 56538a3 с путями R08: pytest tests/civic (без R08) -> 735 passed, 2 skipped;
-   tests/civic/R08 -> 27 passed (включая 3 теста с настоящим FeedbackService).
+   Проверка на чистом worktree 56538a3 + r08_paths.patch: pytest tests/civic -> 763 passed, 3 skipped
+   (включая 3 теста R08 с настоящим FeedbackService; пропуски: тест отчётов R08 без каталога результатов
+   и 2 прежних пропуска базы). Каталог research/round-12-results/R08/ переносить не обязательно.
 
 3. КОНТРАКТ (CONTRACT.txt раздел 6 и ui/civic_feedback/service.py _clean_suggestion)
    classify(text: str, language: "ru"|"kk"|"unknown") ->

@@ -3,32 +3,93 @@
   "round": 12,
   "branch": "claude/wizardly-ptolemy-qy8ltw",
   "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
-  "base_mismatch": "branch history starts at 834a25f (+R09 round 11); only R08 paths committed; verified against 56538a3 in a separate worktree",
-  "code_sha": null,
-  "push_status": "pending",
-  "status": "partial",
+  "base_mismatch": "branch history starts at 834a25f (+R09 round 11); cannot rebase without force push. Only R08 paths committed; verified on a clean worktree of 56538a3 via r08_paths.patch",
+  "code_sha": "e311ba822c82d4904f9be72b2db05d991dc8ae12",
+  "push_status": "OK (code_sha pushed; this file lands in the following commit)",
+  "status": "done_demo_model_real_data_not_evaluated",
   "changed_paths": [
     "ml/civic_classifier/",
     "tests/civic/R08/",
     "research/round-12-results/R08/",
     "research/handoffs/astana/R08/round-12/STATUS.md"
   ],
+  "portable_patch": {
+    "path": "research/round-12-results/R08/r08_paths.patch",
+    "sha256": "a5b4e15945b6bb82ea7e4a7d898a7cc541e2adcdde6ecfd3d92146c63d53219f",
+    "made_from": "git diff --binary 834a25f e311ba822c82d4904f9be72b2db05d991dc8ae12 -- ml/civic_classifier tests/civic/R08",
+    "apply_check_on_base": "OK",
+    "applied_tree_identical_to_code": true
+  },
+  "model": {
+    "version": "civic-clf-logreg-kw-cf4464341-pe9ba054a",
+    "kind": "logistic regression + keyword-hit features",
+    "file": "ml/civic_classifier/data/model.json.gz",
+    "training_data_status": "synthetic_demo_only;real_data_NOT_EVALUATED",
+    "needs_review_policy": "always True while training data is synthetic; threshold 0.30 chosen on validation is reported, not trusted"
+  },
   "tests": [
     {
-      "name": "r08-contract",
+      "name": "r08-suite-branch",
       "status": "PASS",
       "command": "python3 -m pytest tests/civic/R08 -q",
-      "reason": "15 passed (fallback mode, no trained model yet)"
+      "reason": "28 passed, 1 skipped (R06 integration test: ui.civic_feedback absent on this branch)"
+    },
+    {
+      "name": "base-56538a3-full-civic-with-patch",
+      "status": "PASS",
+      "command": "git apply --binary r08_paths.patch && python3 -m pytest tests/civic -q (clean worktree of 56538a3)",
+      "reason": "763 passed, 3 skipped (R08 report test: results dir not transferred; 2 pre-existing base skips)"
+    },
+    {
+      "name": "r06-integration-real-feedbackservice",
+      "status": "PASS",
+      "command": "tests/civic/R08/test_r08_feedback_integration.py on 56538a3",
+      "reason": "adapter loads ml.civic_classifier.classify; suggestion stored, category unchanged, fallback ok, < 2 s timeout"
+    },
+    {
+      "name": "reproducible-training",
+      "status": "PASS",
+      "command": "python3 -m ml.civic_classifier train (test_r08_train.py)",
+      "reason": "retraining reproduces model.json.gz byte for byte (Linux, CPython 3.13.16)"
+    },
+    {
+      "name": "demo-eval-test-unseen-templates",
+      "status": "PASS",
+      "command": "python3 -m ml.civic_classifier evaluate",
+      "reason": "DEMONSTRATION on synthetic data: macro-F1 0.8707 [0.7803-0.9275] vs heuristic 0.8482; paired delta 0.0225 [-0.0484; 0.0959] — advantage not established; test viewed twice"
+    },
+    {
+      "name": "demo-eval-agent-probe",
+      "status": "PASS",
+      "command": "python3 -m ml.civic_classifier evaluate",
+      "reason": "DEMONSTRATION: macro-F1 0.837 vs heuristic 0.8316; translit 1/6 correct"
     },
     {
       "name": "real-data-evaluation",
       "status": "NOT_RUN",
       "command": null,
-      "reason": "Нет легально доступного реального корпуса: data.egov.kz/opendata.kz/huggingface/kaggle — 403 от сетевой политики"
+      "reason": "no legally available labeled corpus of real resident appeals; data.egov.kz, opendata.kz, huggingface.co, kaggle.com, gov.kz -> 403 from environment network policy (not bypassed)"
+    },
+    {
+      "name": "kazakh-native-review",
+      "status": "NOT_RUN",
+      "command": null,
+      "reason": "no native speaker available in this session"
+    },
+    {
+      "name": "windows-checkout",
+      "status": "NOT_RUN",
+      "command": null,
+      "reason": "no Windows here; mitigated by nested .gitattributes (data/** -text) and LF-canonical hashes, CRLF test passes"
     }
   ],
   "known_limits": [
-    "Модель ещё не обучена (checkpoint 1): работает эвристика-fallback"
+    "Метрики только демонстрационные: синтетический корпус и агентская (не экспертная) разметка; реальные данные NOT_EVALUATED",
+    "Гибрид не доказанно лучше словарной эвристики; без словаря обученная модель хуже эвристики",
+    "Test просмотрен дважды (эксп. 1 и 2); выбор и порог — только по validation",
+    "Транслит, сленг, невиданные слова, намерение (благодарность/вопрос) — основные ошибки",
+    "Один автор шаблонов, пробного набора и словаря — преимущество словарным методам на этих данных",
+    "Обезличивание не удаляет имена и адреса"
   ],
-  "next_step": "Синтетический корпус и split"
+  "next_step": "Координатор переносит ml/civic_classifier/ и tests/civic/R08/ (или r08_paths.patch) — подключение через существующий classifier='auto'; для диплома — легальный реальный корпус с двойной разметкой."
 }
