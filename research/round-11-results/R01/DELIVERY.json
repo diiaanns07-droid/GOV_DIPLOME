@@ -5,7 +5,7 @@
   "base_sha": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
   "status": "ready",
-  "code_commit": "a5d184b4f5aa7df608a2ae9124408201b14ecb67",
+  "code_commit": "85b2aeb66e20415fac661aedd1bfb60782353cdc",
   "owned_paths": [
     "ui/web_server.py",
     "app.py",
@@ -25,77 +25,63 @@
   "extra_paths_touched": [
     ".dockerignore (R10-D001: keep runtime SQLite out of images; see MATRIX D-11)"
   ],
-  "integration_notes": "research/round-11-results/R01/MATRIX.json (per role source branch/SHA, imported paths, checks, decisions D-01..D-12); RUN.txt; DEMO.txt",
+  "integration_notes": "research/round-11-results/R01/MATRIX.json (per role source branch/SHA, imported paths, checks, decisions D-01..D-15, self-review C0-C19); RUN.txt; DEMO.txt",
   "checks": [
     {
       "name": "pytest (whole repo incl. R02-R09 suites)",
       "status": "PASS",
       "command": "python3 -m pytest -q -p no:cacheprovider tests",
-      "input": "a5d184b4f5aa7df608a2ae9124408201b14ecb67",
-      "reason": null
+      "input": "85b2aeb66e20415fac661aedd1bfb60782353cdc",
+      "reason": "849 passed, 2 skipped in 90.63s (0:01:30)"
     },
     {
       "name": "ui.web_check",
       "status": "PASS",
       "command": "python3 -B -m ui.web_check",
-      "input": "a5d184b4f5aa7df608a2ae9124408201b14ecb67",
-      "reason": null
+      "input": "85b2aeb66e20415fac661aedd1bfb60782353cdc",
+      "reason": "14 OK"
     },
     {
       "name": "node govtech plan/resilience/whatif/school_case/school_vs_k05",
       "status": "PASS",
       "command": "node tests/govtech/<suite>.cjs",
-      "input": "a5d184b4f5aa7df608a2ae9124408201b14ecb67",
+      "input": "85b2aeb66e20415fac661aedd1bfb60782353cdc",
       "reason": null
     },
     {
       "name": "node R03 core + R04 core/mock",
       "status": "PASS",
       "command": "node --test tests/civic/R03/core.test.mjs; node --test tests/civic/R04/core.test.cjs tests/civic/R04/contract_mock.test.cjs",
-      "input": "a5d184b4f5aa7df608a2ae9124408201b14ecb67",
-      "reason": null
+      "input": "85b2aeb66e20415fac661aedd1bfb60782353cdc",
+      "reason": "R03 24 pass; R04 27 pass"
     },
     {
       "name": "browser P0 flow (R02+R03+R04+R05 demo+R06+R09), 1440x900 and 390x844",
       "status": "PASS",
       "command": "node tests/civic/R01/browser/p0_flow.cjs <out>",
-      "input": "a5d184b4f5aa7df608a2ae9124408201b14ecb67",
-      "reason": "49 PASS / 0 FAIL / 2 NOT_RUN"
+      "input": "85b2aeb66e20415fac661aedd1bfb60782353cdc",
+      "reason": "59 PASS / 0 FAIL / 2 NOT_RUN (NOT_RUN: OpenFreeMap basemap/3D and real attribution — host blocked by the environment proxy)"
     },
     {
-      "name": "browser R07 scenarios",
+      "name": "browser scenarios (R07) 1440x900 and 390x844",
       "status": "PASS",
       "command": "node tests/civic/R01/browser/scenarios_smoke.cjs <out>",
-      "input": "a5d184b4f5aa7df608a2ae9124408201b14ecb67",
-      "reason": "16 PASS"
+      "input": "85b2aeb66e20415fac661aedd1bfb60782353cdc",
+      "reason": "16 PASS / 0 FAIL"
     },
     {
-      "name": "R06 app e2e against the integrated build",
+      "name": "all of the above in one command",
       "status": "PASS",
-      "command": "node tests/civic/R06/app_e2e_r06.cjs",
-      "input": "875f088",
-      "reason": "9/9"
+      "command": "bash tests/civic/R01/run_checks.sh <out>",
+      "input": "85b2aeb66e20415fac661aedd1bfb60782353cdc",
+      "reason": "11/11 PASS; logs research/round-11-results/R01/runs/final_85b2aeb/"
     },
     {
-      "name": "R10 WIP acceptance suite against the build",
-      "status": "PASS",
-      "command": "tests/civic/R10/run_acceptance.py (R10 13de522, target=command)",
-      "input": "f0724b7",
-      "reason": "63 PASS / 1 NOT_RUN (by design)"
-    },
-    {
-      "name": "basemap OpenFreeMap + 3D buildings",
+      "name": "live basemap/3D, live LLM, human user test",
       "status": "NOT_RUN",
       "command": null,
       "input": null,
-      "reason": "host blocked by environment proxy (CONNECT 403)"
-    },
-    {
-      "name": "live LLM for assistant",
-      "status": "NOT_RUN",
-      "command": null,
-      "input": null,
-      "reason": "no provider configured; template mode only, no paid calls"
+      "reason": "host blocked / no provider configured (no paid calls) / out of round"
     }
   ],
   "limitations": [
