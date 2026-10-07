@@ -1,0 +1,176 @@
+{
+ "role": "R09",
+ "round": 13,
+ "task": "Помощник по текущему объекту и собственному расчёту пользователя",
+ "branch": "claude/wizardly-ptolemy-qy8ltw",
+ "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+ "base_note": "BASE_MISMATCH: история ветки от 834a25f (пересоздать от 56538a3 без force push нельзя). Код проверен в изолированном worktree 56538a3 + пути R09; перенос — r09_vs_56538a3.patch (git apply на чистом 56538a3 даёт пути R09, побайтно равные ветке).",
+ "pack_sha": "c0765696742a9f75648173a31a83fc7ea6084763",
+ "source_deliveries": [
+  {
+   "role": "R09",
+   "round": 12,
+   "branch": "claude/fervent-dijkstra-1cqrg5",
+   "head_sha": "f2ebaf979fc05ed715549bf4eba5c39e6190bb4a",
+   "code_sha": "f8aea9a763c81775c85bbdaa6c429b49a245d60a",
+   "status": "DELIVERED_NOT_ACCEPTED",
+   "use": "пути R09 восстановлены побайтно (CP0 40a9e11), без merge истории"
+  }
+ ],
+ "neighbors_checked": [
+  {
+   "role": "R07",
+   "branch": "claude/brave-hopper-bkc58b",
+   "sha": "f166100",
+   "state": "раунд 13 checkpoint 2 (PARTIAL)",
+   "use": "только пакет engine/ через --r07-root во временном worktree; чужой код не коммитился"
+  },
+  {
+   "role": "R01",
+   "branch": "claude/affectionate-ride-bol5v8",
+   "sha": "8eb301d",
+   "state": "раунд 13 checkpoint 1 (PARTIAL)",
+   "use": "временный кандидат 8eb301d + R09 + r01_integration_r13.patch"
+  },
+  {
+   "role": "R01",
+   "round": 12,
+   "sha": "6dc1660",
+   "use": "git apply --check патча R01"
+  }
+ ],
+ "code_sha": "c46b2ed",
+ "tested_sha": "c46b2ed",
+ "tested_note": "тесты в worktree 56538a3 + пути R09, содержимое которых = c46b2ed (проверено diff -r)",
+ "push_status": "OK",
+ "checkpoints": {
+  "CP0": "40a9e11",
+  "CP1": "ab1d2fc",
+  "CP2": "982f511",
+  "CP3": "3abc98d",
+  "CP4": "c46b2ed"
+ },
+ "changed_paths": {
+  "code_vs_round12_delivery_f8aea9a": [
+   "agent/civic_assistant/answer.py",
+   "agent/civic_assistant/api.py",
+   "agent/civic_assistant/providers.py",
+   "agent/civic_assistant/render.py",
+   "agent/civic_assistant/scenario.py",
+   "tests/civic/R09/fixtures/intent_questions.json",
+   "tests/civic/R09/gateway_check_r13.py",
+   "tests/civic/R09/integration_r13.py",
+   "tests/civic/R09/test_r09_round12_scenario.py",
+   "tests/civic/R09/test_r09_round13_cache.py",
+   "tests/civic/R09/test_r09_round13_grounding.py",
+   "tests/civic/R09/test_r09_round13_integration.py",
+   "tests/civic/R09/test_r09_round13_object.py",
+   "tests/civic/R09/test_r09_scenario_api.py",
+   "tests/civic/R09/test_r09_ui.py",
+   "tests/civic/R09/ui_check.cjs",
+   "web/civic/assistant/assistant.js",
+   "web/civic/assistant/demo.html"
+  ],
+  "results": [
+   "research/round-13-results/R09/ACCEPTANCE.txt",
+   "research/round-13-results/R09/DELIVERY.json",
+   "research/round-13-results/R09/EVAL_REPORT.txt",
+   "research/round-13-results/R09/INTEGRATION.txt",
+   "research/round-13-results/R09/RUN.txt",
+   "research/round-13-results/R09/eval_results.json",
+   "research/round-13-results/R09/gateway_check_r01_8eb301d.json",
+   "research/round-13-results/R09/integration_run_r07_56538a3.json",
+   "research/round-13-results/R09/integration_run_r07_f166100.json",
+   "research/round-13-results/R09/r01_integration_r13.patch",
+   "research/round-13-results/R09/r09_vs_56538a3.patch",
+   "research/round-13-results/R09/screenshots/ui_assistant_desktop.png",
+   "research/round-13-results/R09/screenshots/ui_assistant_mobile.png"
+  ],
+  "handoff": [
+   "research/handoffs/astana/R09/round-13/STATUS.md"
+  ]
+ },
+ "tests": [
+  {
+   "name": "pytest tests/civic/R09 (56538a3 + R09, вкл. Chromium 24 проверки)",
+   "status": "PASS",
+   "detail": "360 passed"
+  },
+  {
+   "name": "pytest tests --ignore=tests/civic/R09 (56538a3 + R09)",
+   "status": "PASS",
+   "detail": "746 passed, 2 skipped"
+  },
+  {
+   "name": "adversarial eval (agent.civic_assistant.evaluate --ui)",
+   "status": "PASS",
+   "detail": "61 PASS / 0 FAIL / 1 NOT_RUN (live LLM)"
+  },
+  {
+   "name": "приёмка integration_r13.py на R07 56538a3 (1.0.0)",
+   "status": "PASS",
+   "detail": "13/13"
+  },
+  {
+   "name": "приёмка integration_r13.py на движке R07 f166100 (1.1.0, on_result)",
+   "status": "PASS",
+   "detail": "13/13"
+  },
+  {
+   "name": "gateway_check_r13.py на R01 8eb301d + R09 + r01_integration_r13.patch",
+   "status": "PASS",
+   "detail": "6/6"
+  },
+  {
+   "name": "pytest tests/civic/R01 tests/civic/R09 на том же кандидате",
+   "status": "PASS",
+   "detail": "410 passed, 1 skipped"
+  },
+  {
+   "name": "git apply --check r01_integration_r13.patch",
+   "status": "PASS",
+   "detail": "56538a3, 6dc1660, 8eb301d"
+  },
+  {
+   "name": "git apply r09_vs_56538a3.patch на чистом 56538a3 + сверка путей",
+   "status": "PASS",
+   "detail": "побайтно равны ветке"
+  },
+  {
+   "name": "набор вопросов RU/KK (dev 80 + holdout_v1 40)",
+   "status": "PASS",
+   "detail": "120/120 после доработки; holdout_v1 до доработки 32/40, 7 clarify, 1 уверенно неверный"
+  },
+  {
+   "name": "браузерный P0 R01 с патчем shell.js (revision/onStale в оболочке)",
+   "status": "NOT_RUN",
+   "detail": "проверены компонент R09 в Chromium и шлюз в Python; оболочку R01 в браузере не запускали"
+  },
+  {
+   "name": "live LLM",
+   "status": "NOT_RUN",
+   "detail": "ключа/разрешённого провайдера нет; платные вызовы вне задания"
+  },
+  {
+   "name": "экспертная проверка казахских формулировок",
+   "status": "NOT_RUN",
+   "detail": "носитель языка не привлекался"
+  }
+ ],
+ "quality": {
+  "template": "отвечает в этой сборке; eval 61/0/1, приёмка 13/13 (R07 1.0 и 1.1), набор вопросов 120/120 (регрессионный)",
+  "contract_provider": "MockProvider: проверена защита контракта (7 классов нарушений -> шаблон; 240 случайных выборов -> 0 непроверенных чисел/ID); качество модели этим не измеряется",
+  "live_llm": "NOT_RUN"
+ },
+ "known_limits": [
+  "Все объекты синтетические (R05: 0 подтверждённых объектов Астаны); граф — реальный снимок OSM 06.05.2026, перекрытия — гипотезы.",
+  "result_digest — контроль целостности, не подпись: подлинность держится на том, что remember вызывает только шлюз после своего compare().",
+  "Кэш расчётов в памяти одного процесса: после перезапуска или при нескольких процессах ответ «не найден, пересчитайте».",
+  "Доля неизвестного доступа по числу рёбер движком не сообщается — помощник отвечает «нет данных» и называет основу «по длине сети».",
+  "Намерения — правила по началу слова; набор вопросов составлен автором правил (не независимая оценка), казахский не проверен носителем.",
+  "revision необязателен: старый клиент без revision получает ответ по текущей редакции (UI R09 сверяет номер сам).",
+  "Поддержка полей R07 1.1.0 проверена на голове ветки R07 f166100 (PARTIAL) — формат может ещё измениться.",
+  "Патч R01 не применён владельцем; оболочка R01 с revision/onStale в браузере не проверялась."
+ ],
+ "next_step": "R01 применяет r01_integration_r13.patch в кандидате и прогоняет браузерный P0 (карточка -> вопрос -> новая редакция -> onStale; сравнение R07 -> «Это ваш расчёт»)."
+}

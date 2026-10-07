@@ -1,0 +1,34 @@
+R09 раунд 13 — как воспроизвести (из корня checkout = 56538a3 + пути R09; либо git apply r09_vs_56538a3.patch)
+
+Окружение прогона: Python 3.13, stdlib (+ pytest); браузерные проверки — node 22 + playwright + Chromium
+(без них test_ui_in_real_chromium = skip, т.е. NOT_RUN). Сеть, ключи и .env не нужны.
+
+1) Тесты R09 (включая Chromium, 24 проверки ui_check.cjs)
+   python3 -B -m pytest tests/civic/R09 -q -p no:cacheprovider          -> 360 passed
+   Остальные тесты базы с путями R09:
+   python3 -B -m pytest tests -q -p no:cacheprovider --ignore=tests/civic/R09 -> 746 passed, 2 skipped
+
+2) Adversarial eval (шаблон, MockProvider, endpoint, extract, браузер; live LLM всегда NOT_RUN)
+   python3 -m agent.civic_assistant.evaluate --ui --out <каталог>     -> 61 PASS / 0 FAIL / 1 NOT_RUN
+   (EVAL_REPORT.txt здесь получен в изолированном worktree 56538a3 + пути R09 — отсюда строка
+   «code_sha 56538a3 … незакоммиченные изменения в путях R09»; содержимое путей R09 = коммит c46b2ed.)
+
+3) Приёмка / пример интеграции на настоящих R02 + R07 + R09
+   python3 -B tests/civic/R09/integration_r13.py --out integration_run_r07_56538a3.json   -> 13/13 PASS
+   С движком из другого checkout (только пакет engine/), например ветки R07 раунда 13:
+   git worktree add --detach <dir> f166100      # claude/brave-hopper-bkc58b
+   python3 -B tests/civic/R09/integration_r13.py --r07-root <dir> --out integration_run_r07_f166100.json -> 13/13
+
+4) Стык со шлюзом R01
+   git worktree add --detach <cand> 8eb301d     # R01 claude/affectionate-ride-bol5v8, раунд 13 checkpoint 1
+   (в <cand>) заменить agent/civic_assistant, web/civic/assistant, tests/civic/R09 на пути R09 этой ветки
+   git apply research/round-13-results/R09/r01_integration_r13.patch
+   python3 -B tests/civic/R09/gateway_check_r13.py --root <cand>      -> 6/6 PASS
+   python3 -B -m pytest tests/civic/R01 tests/civic/R09 -q            -> 410 passed, 1 skipped
+   Без патча (например, на 56538a3) gateway_check_r13.py печатает NOT_APPLICABLE.
+
+5) Демо UI вручную
+   python3 tests/civic/R09/demo_server.py 8765   -> http://127.0.0.1:8765/web/civic/assistant/demo.html?object=r09-synth-full
+   ?revision=4 — карточка «на экране» новее опубликованной: сервер ответит object_revision_changed.
+
+Все объекты в тестах и прогонах синтетические; БД R02 — временные каталоги (tempfile), удаляются после прогона.

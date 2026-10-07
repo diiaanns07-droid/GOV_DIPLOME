@@ -1,0 +1,72 @@
+R09 — ADVERSARIAL EVALUATION (раунд 11, Астана, синтетические данные)
+generated_at: 2026-10-07T17:42:34+00:00
+code_sha: 56538a3a7504d4589c38ab4d3c5107f12aa7f8a6 (ВНИМАНИЕ: незакоммиченные изменения в путях R09)
+facts_version: civic-assistant-facts-v1
+modes_executed: audit, browser:chromium, endpoint, extract:llm:mock, extract:template, llm:mock, template, template-fallback, unavailable
+live LLM: NOT_RUN (платные вызовы не выполнялись; source=llm в кейсах — MockProvider)
+summary: PASS 61 / FAIL 0 / NOT_RUN 1
+команда: python3 -m agent.civic_assistant.evaluate --ui
+
+ID    STATUS   KIND              CATEGORY / DETAIL
+A01   PASS     answer            unknown_fact_id
+A02   PASS     answer            changed_date
+A03   PASS     tampered_context  changed_date
+A04   PASS     answer            free_text_instead_of_schema
+A05   PASS     answer            free_text_instead_of_schema
+A06   PASS     answer            added_number
+A07   PASS     audit             added_number
+A08   PASS     answer            completion_claim_with_only_planned_end
+A09   PASS     audit             completion_claim_with_only_planned_end
+A10   PASS     audit             qualitative_claim
+A11   PASS     answer            qualitative_claim
+A12   PASS     answer            passwords_in_source
+A13   PASS     extract           passwords_in_source
+A14   PASS     answer            passwords_in_question
+A15   PASS     endpoint          html
+A16   PASS     endpoint          very_long_question
+A17   PASS     endpoint          unexpected_json_type
+A18   PASS     endpoint          unexpected_json_type
+A19   PASS     answer            unexpected_json_type
+A20   PASS     endpoint          client_supplied_facts
+A21   PASS     answer            timeout
+A22   PASS     endpoint          object_switch
+A23   PASS     endpoint          private_facts
+A24   PASS     answer            private_facts
+A25   PASS     answer            missing_data_ru
+A26   PASS     answer            missing_data_kk
+A27   PASS     answer            missing_data_kk
+A28   PASS     scenario          scenario_no_best_claim
+A29   PASS     answer            source_truthfulness
+A30   PASS     answer            source_truthfulness
+A31   PASS     extract           extract_inexact_date
+A32   PASS     extract           extract_conflict
+A33   PASS     extract           extract_model_quote_not_in_text
+A34   PASS     extract           extract_model_quote_from_instruction
+A35   PASS     extract           extract_no_autonomous_actions
+A36   PASS     extract_endpoint  staff_extract_auth
+A37   PASS     answer            provider_sees_no_values
+U01   PASS     ui                ui:examples_rendered
+U02   PASS     ui                ui:template_answer_from_facts
+U03   PASS     ui                ui:statement_sources_human_readable
+U04   PASS     ui                ui:answer_names_card_revision
+U05   PASS     ui                ui:card_update_removes_stale_answer
+U06   PASS     ui                ui:server_rejects_stale_revision
+U07   PASS     ui                ui:answer_for_older_revision_not_shown
+U08   PASS     ui                ui:card_update_cancels_pending_request
+U09   PASS     ui                ui:missing_data_example_offered
+U10   PASS     ui                ui:html_rendered_as_text
+U11   PASS     ui                ui:stale_answer_ignored
+U12   PASS     ui                ui:object_switch_drops_old_answer
+U13   PASS     ui                ui:foreign_object_answer_rejected
+U14   PASS     ui                ui:draft_object_unavailable
+U15   PASS     ui                ui:rate_limit_and_network_messages
+U16   PASS     ui                ui:user_cancel
+U17   PASS     ui                ui:draft_marked_not_official
+U18   PASS     ui                ui:draft_injection_ignored
+U19   PASS     ui                ui:draft_partial_date_not_acceptable
+U20   PASS     ui                ui:draft_manual_apply_only_checked
+U21   PASS     ui                ui:mobile_no_horizontal_scroll
+U22   PASS     ui                ui:destroy_cleans_root
+U23   PASS     ui                ui:destroy_removes_listeners_and_drops_late_answer
+U24   PASS     ui                ui:no_console_errors
+L00   NOT_RUN  llm               live_llm_provider — Платный живой вызов вне задания R09; адаптер проверен на поддельном клиенте (pytest).

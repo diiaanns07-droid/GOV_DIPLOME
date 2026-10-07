@@ -9,10 +9,17 @@
   `agent/civic_assistant/`, `web/civic/assistant/`, `tests/civic/R09/`, `research/round-13-results/R09/`, этот файл.
 - Базовая линия: на 56538a3 + R09 f8aea9a `pytest tests/civic/R09` -> 188 passed (воспроизведено).
 
-## Статус: PARTIAL — checkpoint 4 (интеграция на реальных модулях, патч R01)
+## Статус: DONE (в пределах R09) — поставка раунда 13
 
-Проверено на 56538a3 + R09: `pytest tests/civic/R09` -> 360 passed (включая браузерный прогон UI в Chromium,
-24 проверки ui_check.cjs; 120 параметризованных вопросов RU/KK).
+- Код: `c46b2ed` (tested_sha = code_sha). Документы поставки: research/round-13-results/R09/
+  (DELIVERY.json, ACCEPTANCE.txt, RUN.txt, INTEGRATION.txt, EVAL_REPORT.txt, патчи, JSON прогонов, скриншоты).
+- Последний запушенный SHA: см. строку «Последний push» ниже (обновляется отдельным коммитом).
+- Проверки: pytest tests/civic/R09 — 360 passed (вкл. Chromium); остальные тесты базы — 746 passed, 2 skipped;
+  eval 61 PASS / 0 FAIL / 1 NOT_RUN; приёмка integration_r13 — 13/13 на R07 56538a3 и 13/13 на R07 f166100;
+  шлюз R01 8eb301d + патч — 6/6, pytest R01+R09 — 410 passed, 1 skipped.
+- NOT_RUN: live LLM; браузерный P0 оболочки R01 с патчем shell.js; проверка казахского носителем языка.
+- Главное ограничение: все объекты синтетические; кэш расчётов — в памяти одного процесса (после перезапуска —
+  «пересчитайте»); digest — контроль целостности, не подпись.
 
 CP1 (ab1d2fc) — контракт пользовательского результата:
 - `ScenarioResultCache.remember(payload, result)` принимает только проверенный ответ движка R07 на этот вход:
@@ -69,6 +76,8 @@ CP4 — интеграция (результаты в research/round-13-results/
   R01 раунда 13). Кандидат 8eb301d + R09 + патч: `gateway_check_r13.py` 6/6 PASS; pytest R01+R09 410 passed,
   1 skipped.
 
-### Следующий шаг
-Приёмочный отчёт (5 сценариев с ожиданием и наблюдением), качество шаблон / контракт-провайдер / live LLM,
-DELIVERY.json, RUN.txt, INTEGRATION.txt, патч путей R09 относительно 56538a3; handoff DONE/PARTIAL.
+### Следующий шаг (один)
+R01 применяет research/round-13-results/R09/r01_integration_r13.patch в кандидате и прогоняет браузерный P0:
+карточка -> вопрос -> публикация новой редакции -> onStale; сравнение R07 -> «Это ваш расчёт».
+
+Последний push: c46b2ed (код); документы — следующий коммит ветки.

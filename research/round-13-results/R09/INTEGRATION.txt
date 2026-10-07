@@ -1,0 +1,67 @@
+R09 раунд 13 — подключение помощника (для R01, R07, R02)
+
+Код R09: agent/civic_assistant/, web/civic/assistant/, tests/civic/R09/ (ветка claude/wizardly-ptolemy-qy8ltw).
+Перенос на базу без истории ветки: research/round-13-results/R09/r09_vs_56538a3.patch
+(git apply на чистом 56538a3 -> пути R09 побайтно равны ветке; проверено).
+
+1. Контракт POST /api/civic/v1/assistant (изменения раунда 13)
+   Тело: {question, object_id|null, scenario_id|null, revision?}. Любой другой ключ -> 400 unexpected_fields.
+   - revision (новое, необязательное): целое ≥ 1, только вместе с object_id, иначе 422 invalid_revision.
+     Если опубликована другая редакция -> 200, source=unavailable, warnings=[object_revision_changed],
+     object_revision = текущая, фактов нет. Без revision (старый клиент) — ответ по текущей редакции,
+     номер в object_revision (UI R09 сам отбрасывает ответ по чужой редакции).
+   - Загрузчик вернул объект с другим id -> unavailable, object_mismatch.
+   - Новые коды отсутствующего расчёта (все — «выполните сравнение заново», подготовленный кейс не подставляется):
+     scenario_result_expired (истёк/вытеснен), scenario_result_unknown (не считался/давно забыт),
+     scenario_result_not_stored (сервер посчитал, но не сохранил: проверка или размер), scenario_not_found (кейс).
+     С object_id ответ по карточке + пометка первой фразой; без object_id — source=unavailable.
+   - Новые intents: freshness (даты данных с основой), clarify (вопрос не распознан — без фактов).
+
+2. Стык R07 -> R09 (собственный расчёт пользователя)
+   scenario_id = "result:" + result_digest ответа POST /scenarios/compare. Клиент метрик не передаёт.
+   Шлюз после УСПЕШНОГО compare кладёт результат в общий ScenarioResultCache:
+     a) R07 1.1.0 (ветка claude/brave-hopper-bkc58b @ f166100): http.handle(..., on_result=cache.remember);
+     b) R07 базы 56538a3 (без on_result) или обвязка в шлюзе: после 200 —
+        cache.remember(body, reply["body"]["data"])  или  api.remember_compare_response(cache, body, reply).
+   remember() принимает только проверенный результат: result_digest (timing_ms вне digest), payload_digest,
+   город/граф/режим/момент/точки, планы и согласованность итогов; иначе None + код в stats()["rejections"].
+   Важно: digest — контроль целостности, не подпись. remember вызывает только сервер после своего compare();
+   клиентского пути к remember нет и не должно быть.
+   Лимиты по умолчанию: 64 записи, TTL 3600 с, 64 КиБ на запись, 2 МиБ всего; запись — компактная
+   (без edge_ids/node_ids, сводки движка как есть; с записью MANIFEST графа: город 7,4 КБ вместо 55 КБ,
+   k03 7,1 КБ вместо 148 КБ, tiny 5,1 КБ вместо 18 КБ).
+   Кэш в памяти процесса: после перезапуска или при нескольких процессах -> scenario_result_unknown
+   (честный «пересчитайте»); общий для процессов кэш не сделан.
+   r07_case_loader(list_cases, load_graph, compare, manifest=None, *, result_cache=cache) — "result:..." ищется
+   только в кэше; load.status(id) -> ok|expired|rejected|unknown.
+   Поля R07 1.1.0, если пришли: a_vs_b.identical_active_closures -> «закрыты одни и те же участки»;
+   closed_on_baseline_routes пуст -> «длины не меняются». Доля неизвестного доступа — только «по длине сети»
+   (graph_coverage.known_access_share_by_length); доли по числу рёбер движок не даёт -> «нет данных»; если R07
+   добавит graph_coverage.unknown_access_share_by_edges (0..1), помощник покажет её отдельной фразой.
+
+3. Патч для R01: r01_integration_r13.patch (ui/web_server.py, web/civic/shell/shell.js)
+   - CivicGateway.scenario_results(): один ScenarioResultCache на шлюз (None, если R09 не поставлен);
+   - assistant(): r07_case_loader(..., result_cache=gateway.scenario_results());
+   - handle(): после 200 на POST /scenarios/compare -> cache.remember(body, data) (работает и с R07 1.0, и с 1.1);
+   - shell.js: mount("assistant", …, {objectId, revision, onStale}) — revision из GET /objects/{id};
+     onStale повторяет выбор объекта (карточка и помощник перечитывают текущую редакцию).
+   git apply --check: OK на 56538a3, 6dc1660 (R01 раунда 12) и 8eb301d (R01 раунда 13, checkpoint 1).
+   Кандидат 8eb301d + R09 + патч: tests/civic/R09/gateway_check_r13.py 6/6 PASS (compare через шлюз двумя
+   входами -> помощник объясняет каждый свой результат); pytest tests/civic/R01 tests/civic/R09 — 410 passed,
+   1 skipped. Браузерный P0 R01 с этим shell.js — NOT_RUN.
+   R01 решает сам, применять ли патч; R09 чужие файлы в своей ветке не меняет.
+
+4. UI R09 (web/civic/assistant/assistant.js)
+   CivicAssistant.mount({root, api, objectId, scenarioId?, revision?, onStale?}) -> {ask, update, destroy}.
+   Шлёт revision; на object_revision_changed ответ не показывает и вызывает onStale({objectId, revision}).
+   update({objectId?, scenarioId?, revision?}) отменяет текущий запрос и убирает ответ по старой редакции;
+   destroy во время запроса снимает обработчики, запоздавший ответ не появляется (проверено в Chromium).
+
+5. R02
+   Используется только публичный маршрут GET /objects/{id} (r02_public_loader) — черновики и архив помощнику
+   не видны. Публичная история R02 содержит только публикации (причина = причина публикации); причина
+   архивации жителю не цитируется. Проверено на настоящем CivicService (временная SQLite).
+
+6. Провайдер (модель)
+   provider=None в сборке -> шаблон. Модель выбирает только {intent, fact_ids}; значения, описания, издатели,
+   организации ей не передаются. Живой вызов не выполнялся (NOT_RUN).
