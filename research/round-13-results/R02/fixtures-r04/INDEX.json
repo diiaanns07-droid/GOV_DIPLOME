@@ -1,0 +1,13 @@
+{
+ "meta": "GET /staff/meta (редактор)",
+ "error_401_unauthenticated": "GET /staff/meta без входа",
+ "staff_object_with_pending_candidate": "GET /staff/objects/{id}: staff.pending_import_candidates=1",
+ "candidates_review": "GET /staff/objects/{id}/import-candidates: review по полям, конфликт title",
+ "error_422_unknown_field": "apply с полем, которого нет среди изменений",
+ "error_409_stale_revision": "apply со старой ревизией (второй редактор)",
+ "apply_partial": "частичное принятие: только срок; ответ — staff item",
+ "candidates_decided": "после решения: resolution=partially_applied, decision{...}",
+ "error_409_superseded": "форма открыта на версии v3, источник уже дал v4",
+ "error_422_validation": "update с недопустимыми status и geometry",
+ "public_object_after_move": "GET /objects/{id}: публичная история с причиной публикации, без служебной причины"
+}

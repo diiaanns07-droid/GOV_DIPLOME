@@ -1,6 +1,6 @@
 # R02 раунд 13 — импорт, источники и сохранность истории
 
-Статус: PARTIAL (checkpoint 2)
+Статус: PARTIAL (checkpoint 3)
 Ветка: claude/elegant-franklin-jbhprq, продолжение поставки 9366217 (код раунда 12 bd7a911).
 База сравнения: 56538a3. Поставка R05: ca0f06f8245e24adcae751acea321d19d9366576.
 
@@ -28,4 +28,14 @@
   проверено после перезапуска сервиса на том же файле (test_r02_round13_review.py).
 Проверки: tests/civic — 769 passed, 2 skipped.
 
-Следующий шаг: export/restore и полный backup, метаданные /staff/meta для R04, fixtures, передача.
+- Полный служебный backup отдельно от публичной выгрузки: новая команда verify-backup SRC (только чтение:
+  integrity, миграции, счётчики; рабочая база не трогается). backup -> verify -> restore в новое место сохраняет
+  служебную историю и кандидатов; export-public того же состояния не содержит служебного.
+- /staff/meta (meta_version 2): каталог всех кодов ошибок (тест сверяет с исходником), правила причин,
+  locked_after_first_publication, контракт кандидатов, предупреждения импорта.
+- 409 кандидата различимы: candidate_superseded / candidate_resolved (статус 409 как раньше).
+- research/round-13-results/R02/fixtures-r04/: настоящие ответы сервиса (временная БД, тестовое содержимое),
+  генератор tools/make_r04_fixtures.py. Без cookie/CSRF/паролей.
+Проверки: tests/civic/R02 — 247 passed, 1 skipped.
+
+Следующий шаг: patch маршрутов шлюза для R01 с проверкой в отдельном worktree, передача.

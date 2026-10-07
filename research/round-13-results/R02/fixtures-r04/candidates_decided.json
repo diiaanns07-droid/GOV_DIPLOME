@@ -1,0 +1,83 @@
+{
+ "_fixture": "после решения: resolution=partially_applied, decision{...}",
+ "status": 200,
+ "body": {
+  "ok": true,
+  "data": {
+   "items": [
+    {
+     "id": 1,
+     "source": "r02-r04-fixture",
+     "external_id": "r02-fixture-1",
+     "digest": "b17c8f05d14521e3bf978ebb91f746624f641999a3a12577dbbcba22ea717225",
+     "created_at": "2026-10-07T09:10:00+00:00",
+     "resolved_at": "2026-10-07T09:13:30+00:00",
+     "resolution": "partially_applied",
+     "content": {
+      "budget": {
+       "amount_kzt": null,
+       "basis": "unknown",
+       "source_id": null
+      },
+      "description": "Тестовая запись для R04; фактов не содержит.",
+      "evidence_notes": "Тестовая запись.",
+      "evidence_type": "hypothesis",
+      "geometry": {
+       "coordinates": [
+        71.43,
+        51.17
+       ],
+       "type": "Point"
+      },
+      "geometry_precision": "approximate",
+      "kind": "roadworks",
+      "responsible": {
+       "organization": null,
+       "public_contact": null
+      },
+      "schedule": {
+       "actual_end": null,
+       "current_planned_end": "2026-11-30",
+       "original_planned_end": null,
+       "planned_start": "2026-10-14"
+      },
+      "source_refs": [
+       {
+        "access_status": "not_fetched",
+        "fields": [
+         "title",
+         "schedule.current_planned_end"
+        ],
+        "id": "src-1",
+        "license": null,
+        "published_on": "2026-10-01",
+        "publisher": "ТЕСТ",
+        "retrieved_at": "2026-10-07T10:00:00Z",
+        "url": "https://example.org/fixture/1"
+       }
+      ],
+      "status": "planned",
+      "title": "ТЕСТ: новое название из источника"
+     },
+     "diff": {
+      "title": {
+       "before": "ТЕСТ: ремонт участка, название уточнено редактором",
+       "after": "ТЕСТ: новое название из источника"
+      }
+     },
+     "original_planned_end_locked": true,
+     "object_revision": 4,
+     "decision": {
+      "by": "editor1",
+      "reason": "Срок по источнику, название оставлено",
+      "accepted_fields": [
+       "schedule.current_planned_end"
+      ],
+      "resulting_revision": 4
+     }
+    }
+   ],
+   "pending": 0
+  }
+ }
+}

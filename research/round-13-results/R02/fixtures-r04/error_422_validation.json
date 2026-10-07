@@ -1,0 +1,15 @@
+{
+ "_fixture": "update с недопустимыми status и geometry",
+ "status": 422,
+ "body": {
+  "ok": false,
+  "error": {
+   "code": "validation_failed",
+   "message": "Проверьте выделенные поля.",
+   "fields": {
+    "status": "Допустимые значения: planned, in_progress, completed, cancelled, unknown.",
+    "geometry.coordinates": "Точка вне Астаны: проверьте порядок [долгота, широта]."
+   }
+  }
+ }
+}

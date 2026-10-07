@@ -1,0 +1,12 @@
+{
+ "_fixture": "apply со старой ревизией (второй редактор)",
+ "status": 409,
+ "body": {
+  "ok": false,
+  "error": {
+   "code": "stale_revision",
+   "message": "Объект уже изменён другим редактором: обновите карточку.",
+   "current_revision": 3
+  }
+ }
+}

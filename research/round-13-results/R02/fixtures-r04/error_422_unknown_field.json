@@ -1,0 +1,14 @@
+{
+ "_fixture": "apply с полем, которого нет среди изменений",
+ "status": 422,
+ "body": {
+  "ok": false,
+  "error": {
+   "code": "validation_failed",
+   "message": "Проверьте выделенные поля.",
+   "fields": {
+    "fields": "Нет среди изменений кандидата: budget.amount_kzt"
+   }
+  }
+ }
+}

@@ -1,0 +1,11 @@
+{
+ "_fixture": "GET /staff/meta без входа",
+ "status": 401,
+ "body": {
+  "ok": false,
+  "error": {
+   "code": "unauthenticated",
+   "message": "Войдите как редактор."
+  }
+ }
+}

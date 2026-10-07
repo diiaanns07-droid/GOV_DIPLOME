@@ -11,6 +11,7 @@
   seed-demo [--package FILE]    синтетический демо-набор + демо-публикация (только synthetic)
   backup DEST                   согласованная копия через SQLite backup API
   restore SRC --yes             восстановление с предварительной копией текущей базы
+  verify-backup SRC             проверить копию только для чтения: целостность, схема, счётчики
   export-audit [--since ISO]    служебная история изменений (JSON Lines) для редактора
   export-public [--out FILE]    только опубликованные карточки + публичная история (без сессий/секретов)
   restore-public FILE [--dry-run]  восстановить публичную выгрузку в базу без объектов
@@ -238,6 +239,31 @@ def _check_source_schema(source: Path) -> None:
             raise SystemExit(f"Миграция {version} в копии отличается от кода; восстановление не выполнено.")
 
 
+def cmd_verify_backup(args, _service_unused=None):
+    """Копия открывается только для чтения; рабочая база не трогается и не нужна."""
+    source = Path(args.src).expanduser().resolve()
+    if not source.is_file():
+        raise SystemExit("Файл копии не найден.")
+    _check_source_schema(source)
+    conn = sqlite3.connect(f"{source.as_uri()}?mode=ro", uri=True)
+    try:
+        versions = [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")]
+        counts = {row[0]: row[1] for row in conn.execute(
+            "SELECT publication, COUNT(*) FROM civic_objects GROUP BY publication")}
+        report = {
+            "file": str(source), "integrity": "ok", "migrations": versions,
+            "needs_migration": [v for v, _, _ in MIGRATIONS if v not in versions],
+            "objects": counts,
+            "public_objects": conn.execute("SELECT COUNT(*) FROM civic_public_objects").fetchone()[0],
+            "history_entries": conn.execute("SELECT COUNT(*) FROM civic_history").fetchone()[0],
+            "editors": conn.execute("SELECT COUNT(*) FROM civic_users").fetchone()[0],
+            "note": "Полная служебная копия: содержит хэши паролей, сессии и заметки — хранить как секрет.",
+        }
+    finally:
+        conn.close()
+    _print(report)
+
+
 def _unique_sibling(path: Path, label: str) -> Path:
     stamp = time.strftime("%Y%m%dT%H%M%S")
     for attempt in range(1000):
@@ -445,6 +471,9 @@ def build_parser() -> argparse.ArgumentParser:
     cmd.add_argument("src")
     cmd.add_argument("--yes", action="store_true")
     cmd.set_defaults(func=cmd_restore, no_service=True)
+    cmd = sub.add_parser("verify-backup")
+    cmd.add_argument("src")
+    cmd.set_defaults(func=cmd_verify_backup, no_service=True)
     cmd = sub.add_parser("export-audit")
     cmd.add_argument("--since", help="ISO-время, с которого выгружать")
     cmd.add_argument("--out")

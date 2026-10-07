@@ -1,0 +1,52 @@
+{
+ "_fixture": "import_package(...) отчёт: опубликованная запись, источник изменился",
+ "report": {
+  "dry_run": false,
+  "source": "r02-r04-fixture",
+  "slice_version": "v2",
+  "demo": false,
+  "package_digest": "e4ec634940db0b7286a0eb372be2e74f2dfa4111a97d97ec1a621bf9810ef419",
+  "status": "applied",
+  "counts": {
+   "editor_review": 1,
+   "report_missing": 0
+  },
+  "items": [
+   {
+    "index": 0,
+    "external_id": "r02-fixture-1",
+    "action": "editor_review",
+    "object_id": "r02-fixture-1",
+    "detail": "объект изменён редактором или опубликован; новая версия ждёт решения",
+    "changed_fields": [
+     "schedule.current_planned_end",
+     "schedule.original_planned_end",
+     "title"
+    ],
+    "source_changed_fields": [
+     "schedule.current_planned_end",
+     "title"
+    ]
+   }
+  ],
+  "missing": [],
+  "summary": {
+   "items_in_package": 1,
+   "valid": 1,
+   "invalid": 0,
+   "new_drafts": 0,
+   "updated_import_drafts": 0,
+   "waiting_editor_review": 1,
+   "unchanged": 0,
+   "id_conflicts": 0,
+   "missing_from_package": 0,
+   "published_by_import": 0,
+   "evidence_types": {
+    "hypothesis": 1
+   },
+   "with_warnings": 0,
+   "budget_unknown": 1,
+   "geometry_unknown": 0
+  }
+ }
+}

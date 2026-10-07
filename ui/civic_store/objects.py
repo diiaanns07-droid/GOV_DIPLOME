@@ -34,9 +34,10 @@ class NotFound(LookupError):
 
 
 class Conflict(RuntimeError):
-    def __init__(self, message: str, current_revision: int | None = None):
+    def __init__(self, message: str, current_revision: int | None = None, code: str = "stale_revision"):
         super().__init__(message)
         self.current_revision = current_revision
+        self.code = code
 
 
 class BadRequest(ValueError):
@@ -551,8 +552,8 @@ class ObjectRepository:
             if cand["resolved_at"] is not None:
                 if cand["resolution"] == "superseded":
                     raise Conflict("Источник изменился ещё раз: эта версия заменена новой. "
-                                   "Откройте актуального кандидата.", row["revision"])
-                raise Conflict("Кандидат уже рассмотрен.", row["revision"])
+                                   "Откройте актуального кандидата.", row["revision"], code="candidate_superseded")
+                raise Conflict("Кандидат уже рассмотрен.", row["revision"], code="candidate_resolved")
             now = iso(utc_now(self.clock))
             reason_text = clean_reason(reason, required=False)
             accepted = None

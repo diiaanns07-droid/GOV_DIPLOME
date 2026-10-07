@@ -1,0 +1,87 @@
+{
+ "_fixture": "GET /objects/{id}: публичная история с причиной публикации, без служебной причины",
+ "status": 200,
+ "body": {
+  "ok": true,
+  "data": {
+   "item": {
+    "schema_version": "civic-v1",
+    "id": "r02-fixture-1",
+    "city": "astana",
+    "kind": "roadworks",
+    "title": "ТЕСТ: ремонт участка, название уточнено редактором",
+    "description": "Тестовая запись для R04; фактов не содержит.",
+    "status": "planned",
+    "publication": "published",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      71.43,
+      51.17
+     ]
+    },
+    "geometry_precision": "approximate",
+    "schedule": {
+     "planned_start": "2026-10-14",
+     "original_planned_end": "2026-10-20",
+     "current_planned_end": "2026-11-30",
+     "actual_end": null
+    },
+    "budget": {
+     "amount_kzt": null,
+     "basis": "unknown",
+     "source_id": null
+    },
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "evidence_type": "hypothesis",
+    "source_refs": [
+     {
+      "id": "src-1",
+      "url": "https://example.org/fixture/1",
+      "publisher": "ТЕСТ",
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-07T10:00:00Z",
+      "access_status": "not_fetched",
+      "license": null,
+      "fields": [
+       "title",
+       "schedule.current_planned_end"
+      ]
+     }
+    ],
+    "evidence_notes": "Тестовая запись.",
+    "updated_at": "2026-10-07T09:22:30+00:00",
+    "revision": 5
+   },
+   "history": [
+    {
+     "id": "r02-fixture-1@2",
+     "object_id": "r02-fixture-1",
+     "revision": 2,
+     "at": "2026-10-07T09:07:00+00:00",
+     "changed_fields": [
+      "publication",
+      "schedule.original_planned_end"
+     ],
+     "reason": "Первая публикация",
+     "public_actor_label": "Редактор платформы"
+    },
+    {
+     "id": "r02-fixture-1@5",
+     "object_id": "r02-fixture-1",
+     "revision": 5,
+     "at": "2026-10-07T09:22:30+00:00",
+     "changed_fields": [
+      "schedule.current_planned_end",
+      "title"
+     ],
+     "reason": "Срок перенесён на 30 ноября по данным источника",
+     "public_actor_label": "Редактор платформы"
+    }
+   ]
+  }
+ }
+}

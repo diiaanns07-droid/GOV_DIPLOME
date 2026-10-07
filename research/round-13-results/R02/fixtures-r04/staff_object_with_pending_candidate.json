@@ -1,0 +1,307 @@
+{
+ "_fixture": "GET /staff/objects/{id}: staff.pending_import_candidates=1",
+ "status": 200,
+ "body": {
+  "ok": true,
+  "data": {
+   "item": {
+    "schema_version": "civic-v1",
+    "id": "r02-fixture-1",
+    "city": "astana",
+    "kind": "roadworks",
+    "title": "ТЕСТ: ремонт участка, название уточнено редактором",
+    "description": "Тестовая запись для R04; фактов не содержит.",
+    "status": "planned",
+    "publication": "published",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      71.43,
+      51.17
+     ]
+    },
+    "geometry_precision": "approximate",
+    "schedule": {
+     "planned_start": "2026-10-14",
+     "original_planned_end": "2026-10-20",
+     "current_planned_end": "2026-10-20",
+     "actual_end": null
+    },
+    "budget": {
+     "amount_kzt": null,
+     "basis": "unknown",
+     "source_id": null
+    },
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "evidence_type": "hypothesis",
+    "source_refs": [
+     {
+      "id": "src-1",
+      "url": "https://example.org/fixture/1",
+      "publisher": "ТЕСТ",
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-07T10:00:00Z",
+      "access_status": "not_fetched",
+      "license": null,
+      "fields": [
+       "title",
+       "schedule.current_planned_end"
+      ]
+     }
+    ],
+    "evidence_notes": "Тестовая запись.",
+    "updated_at": "2026-10-07T09:08:30+00:00",
+    "revision": 3,
+    "internal_notes": "",
+    "created_by": null,
+    "staff": {
+     "created_at": "2026-10-07T09:04:00+00:00",
+     "created_by": null,
+     "updated_by": "editor1",
+     "first_published_at": "2026-10-07T09:07:00+00:00",
+     "published_revision": 2,
+     "has_unpublished_changes": true,
+     "public_item": {
+      "budget": {
+       "amount_kzt": null,
+       "basis": "unknown",
+       "source_id": null
+      },
+      "city": "astana",
+      "description": "Тестовая запись для R04; фактов не содержит.",
+      "evidence_notes": "Тестовая запись.",
+      "evidence_type": "hypothesis",
+      "geometry": {
+       "coordinates": [
+        71.43,
+        51.17
+       ],
+       "type": "Point"
+      },
+      "geometry_precision": "approximate",
+      "id": "r02-fixture-1",
+      "kind": "roadworks",
+      "publication": "published",
+      "responsible": {
+       "organization": null,
+       "public_contact": null
+      },
+      "revision": 2,
+      "schedule": {
+       "actual_end": null,
+       "current_planned_end": "2026-10-20",
+       "original_planned_end": "2026-10-20",
+       "planned_start": "2026-10-14"
+      },
+      "schema_version": "civic-v1",
+      "source_refs": [
+       {
+        "access_status": "not_fetched",
+        "fields": [
+         "title",
+         "schedule.current_planned_end"
+        ],
+        "id": "src-1",
+        "license": null,
+        "published_on": "2026-10-01",
+        "publisher": "ТЕСТ",
+        "retrieved_at": "2026-10-07T10:00:00Z",
+        "url": "https://example.org/fixture/1"
+       }
+      ],
+      "status": "planned",
+      "title": "ТЕСТ: ремонт участка (не реальная работа)",
+      "updated_at": "2026-10-07T09:07:00+00:00"
+     },
+     "original_planned_end_locked": true,
+     "import": {
+      "source": "r02-r04-fixture",
+      "external_id": "r02-fixture-1"
+     },
+     "pending_import_candidates": 1
+    }
+   },
+   "history": [
+    {
+     "id": 1,
+     "object_id": "r02-fixture-1",
+     "revision": 1,
+     "at": "2026-10-07T09:04:00+00:00",
+     "action": "import_create",
+     "publication": "draft",
+     "changed_fields": [
+      "budget.amount_kzt",
+      "budget.basis",
+      "budget.source_id",
+      "description",
+      "evidence_notes",
+      "evidence_type",
+      "geometry",
+      "geometry_precision",
+      "kind",
+      "responsible.organization",
+      "responsible.public_contact",
+      "schedule.actual_end",
+      "schedule.current_planned_end",
+      "schedule.original_planned_end",
+      "schedule.planned_start",
+      "source_refs",
+      "status",
+      "title"
+     ],
+     "diff": {
+      "budget.amount_kzt": {
+       "after": null,
+       "before": null
+      },
+      "budget.basis": {
+       "after": "unknown",
+       "before": null
+      },
+      "budget.source_id": {
+       "after": null,
+       "before": null
+      },
+      "description": {
+       "after": "Тестовая запись для R04; фактов не содержит.",
+       "before": null
+      },
+      "evidence_notes": {
+       "after": "Тестовая запись.",
+       "before": null
+      },
+      "evidence_type": {
+       "after": "hypothesis",
+       "before": null
+      },
+      "geometry": {
+       "after": {
+        "coordinates": [
+         71.43,
+         51.17
+        ],
+        "type": "Point"
+       },
+       "before": null
+      },
+      "geometry_precision": {
+       "after": "approximate",
+       "before": null
+      },
+      "kind": {
+       "after": "roadworks",
+       "before": null
+      },
+      "responsible.organization": {
+       "after": null,
+       "before": null
+      },
+      "responsible.public_contact": {
+       "after": null,
+       "before": null
+      },
+      "schedule.actual_end": {
+       "after": null,
+       "before": null
+      },
+      "schedule.current_planned_end": {
+       "after": "2026-10-20",
+       "before": null
+      },
+      "schedule.original_planned_end": {
+       "after": null,
+       "before": null
+      },
+      "schedule.planned_start": {
+       "after": "2026-10-14",
+       "before": null
+      },
+      "source_refs": {
+       "after": [
+        {
+         "access_status": "not_fetched",
+         "fields": [
+          "title",
+          "schedule.current_planned_end"
+         ],
+         "id": "src-1",
+         "license": null,
+         "published_on": "2026-10-01",
+         "publisher": "ТЕСТ",
+         "retrieved_at": "2026-10-07T10:00:00Z",
+         "url": "https://example.org/fixture/1"
+        }
+       ],
+       "before": null
+      },
+      "status": {
+       "after": "planned",
+       "before": null
+      },
+      "title": {
+       "after": "ТЕСТ: ремонт участка (не реальная работа)",
+       "before": null
+      }
+     },
+     "reason": "Импорт v1",
+     "actor_kind": "import",
+     "actor_label": "import:r02-r04-fixture:cli",
+     "public_actor_label": "Импорт данных",
+     "is_public": false
+    },
+    {
+     "id": 2,
+     "object_id": "r02-fixture-1",
+     "revision": 2,
+     "at": "2026-10-07T09:07:00+00:00",
+     "action": "publish",
+     "publication": "published",
+     "changed_fields": [
+      "publication",
+      "schedule.original_planned_end"
+     ],
+     "diff": {
+      "publication": {
+       "after": "published",
+       "before": "draft"
+      },
+      "schedule.original_planned_end": {
+       "after": "2026-10-20",
+       "before": null
+      }
+     },
+     "reason": "Первая публикация",
+     "actor_kind": "editor",
+     "actor_label": "editor1",
+     "public_actor_label": "Редактор платформы",
+     "is_public": true
+    },
+    {
+     "id": 3,
+     "object_id": "r02-fixture-1",
+     "revision": 3,
+     "at": "2026-10-07T09:08:30+00:00",
+     "action": "update",
+     "publication": "published",
+     "changed_fields": [
+      "title"
+     ],
+     "diff": {
+      "title": {
+       "after": "ТЕСТ: ремонт участка, название уточнено редактором",
+       "before": "ТЕСТ: ремонт участка (не реальная работа)"
+      }
+     },
+     "reason": "Уточнение редактора",
+     "actor_kind": "editor",
+     "actor_label": "editor1",
+     "public_actor_label": "Редактор платформы",
+     "is_public": false
+    }
+   ]
+  }
+ }
+}

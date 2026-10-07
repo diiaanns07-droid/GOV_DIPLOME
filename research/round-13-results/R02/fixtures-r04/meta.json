@@ -1,0 +1,198 @@
+{
+ "_fixture": "GET /staff/meta (редактор)",
+ "status": 200,
+ "body": {
+  "ok": true,
+  "data": {
+   "schema_version": "civic-v1",
+   "city": "astana",
+   "enums": {
+    "kind": [
+     "construction",
+     "roadworks",
+     "landscaping",
+     "event"
+    ],
+    "status": [
+     "planned",
+     "in_progress",
+     "completed",
+     "cancelled",
+     "unknown"
+    ],
+    "publication": [
+     "draft",
+     "published",
+     "archived"
+    ],
+    "geometry_precision": [
+     "source",
+     "approximate",
+     "unknown"
+    ],
+    "evidence_type": [
+     "observed",
+     "derived",
+     "hypothesis",
+     "synthetic"
+    ],
+    "budget_basis": [
+     "planned",
+     "contract",
+     "spent",
+     "unknown"
+    ],
+    "access_status": [
+     "fetched",
+     "not_fetched",
+     "unavailable"
+    ]
+   },
+   "limits": {
+    "text": {
+     "title": 200,
+     "description": 5000,
+     "evidence_notes": 2000,
+     "internal_notes": 5000,
+     "organization": 300,
+     "public_contact": 200,
+     "publisher": 300,
+     "license": 200,
+     "reason": 1000
+    },
+    "url": 2000,
+    "source_refs": 30,
+    "fields_per_source": 40,
+    "geometry_positions": 5000,
+    "amount_kzt_max": 10000000000000,
+    "date_years": [
+     1990,
+     2100
+    ],
+    "body_bytes": 65536,
+    "page": {
+     "default": 50,
+     "max": 100
+    }
+   },
+   "astana_bbox": [
+    70.8,
+    50.75,
+    72.1,
+    51.6
+   ],
+   "source_field_paths": [
+    "budget",
+    "budget.amount_kzt",
+    "budget.basis",
+    "budget.source_id",
+    "description",
+    "evidence_notes",
+    "evidence_type",
+    "geometry",
+    "geometry_precision",
+    "kind",
+    "responsible",
+    "responsible.organization",
+    "responsible.public_contact",
+    "schedule",
+    "schedule.actual_end",
+    "schedule.current_planned_end",
+    "schedule.original_planned_end",
+    "schedule.planned_start",
+    "status",
+    "title"
+   ],
+   "roles": [
+    "editor",
+    "admin"
+   ],
+   "meta_version": 2,
+   "text_rules": "Длина — кодовые точки после NFC и обрезки пробелов; HTML и управляющие символы запрещены.",
+   "required_reason": {
+    "update": "после первой публикации",
+    "publish": "всегда",
+    "archive": "всегда",
+    "candidate_apply": "после первой публикации",
+    "candidate_dismiss": "нет"
+   },
+   "public_reason": "Публично видна только причина публикации; причина правки (update/apply) — служебная.",
+   "locked_after_first_publication": [
+    "schedule.original_planned_end"
+   ],
+   "publication_requires": {
+    "observed": [
+     "source_refs"
+    ],
+    "derived": [
+     "source_refs"
+    ]
+   },
+   "import_candidates": {
+    "resolutions": [
+     "applied",
+     "partially_applied",
+     "dismissed",
+     "superseded"
+    ],
+    "actions": [
+     "apply",
+     "dismiss"
+    ],
+    "apply_body": {
+     "expected_revision": "int",
+     "reason": "text",
+     "fields": "[path] | null (все изменения)"
+    },
+    "review_field_keys": [
+     "path",
+     "current",
+     "proposed",
+     "previous_import",
+     "changed_by_source",
+     "changed_by_editor",
+     "conflict",
+     "proposed_sources",
+     "current_sources"
+    ]
+   },
+   "import_warnings": [
+    "end_date_passed",
+    "end_date_unknown",
+    "field_has_several_sources",
+    "observed_source_not_fetched"
+   ],
+   "errors": {
+    "bad_request": 400,
+    "invalid_credentials": 401,
+    "unauthenticated": 401,
+    "cross_origin": 403,
+    "csrf_failed": 403,
+    "forbidden": 403,
+    "forbidden_host": 403,
+    "not_found": 404,
+    "method_not_allowed": 405,
+    "request_timeout": 408,
+    "stale_revision": 409,
+    "candidate_superseded": 409,
+    "candidate_resolved": 409,
+    "length_required": 411,
+    "payload_too_large": 413,
+    "unsupported_media_type": 415,
+    "validation_failed": 422,
+    "rate_limited": 429,
+    "internal_error": 500,
+    "busy": 503
+   },
+   "error_shape": {
+    "ok": false,
+    "error": {
+     "code": "str",
+     "message": "str",
+     "fields": "{path: message} | absent",
+     "current_revision": "int (только 409)"
+    }
+   }
+  }
+ }
+}

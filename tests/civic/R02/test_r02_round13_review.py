@@ -152,7 +152,8 @@ def test_source_changed_again_while_form_open_is_409(service, editor):
     import_package(service.objects, version("v3", schedule=schedule("2026-12-15")))
     before = object_state(service)
     stale = apply(editor, open_form, item["revision"])
-    assert stale["status"] == 409 and "изменился ещё раз" in stale["body"]["error"]["message"]
+    assert stale["status"] == 409 and stale["body"]["error"]["code"] == "candidate_superseded"
+    assert "изменился ещё раз" in stale["body"]["error"]["message"]
     assert object_state(service) == before
     (current,) = pending(editor)
     assert current["review"]["fields"][0]["proposed"] == "2026-12-15"
