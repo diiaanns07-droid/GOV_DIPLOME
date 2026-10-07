@@ -195,6 +195,7 @@
       aborters[kind] = typeof AbortController === "function" ? new AbortController() : null;
       return aborters[kind] ? aborters[kind].signal : undefined;
     }
+    let areaTimer = 0, copyTimer = 0;
     let popup = null, cursorSet = false, hoverRaf = 0, moveTimer = 0, lastHoverPoint = null, searchTimer = 0, layoutTimer = 0;
     let statusKey = null;
     const searchText = new Map();
@@ -207,7 +208,7 @@
       selectedId: null, view: "list",
       detail: { id: null, state: "idle", item: null, history: [], error: null },
       sheet: "peek", viewBox: null, limit: LIST_STEP, cameraPending: false,
-      compare: { a: null, b: null }, pick: null,
+      compare: { a: null, b: null }, pick: null, listScroll: null, areaPending: false, copy: null,
     };
     if (persist) {
       try { const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "null"); if (saved) st.filters = C.sanitizeFilters(saved); } catch (e) { /* storage blocked: defaults */ }
@@ -347,7 +348,7 @@
     function keepFocus(t, a) {
       if (destroyed || (t.isConnected && !t.closest("[hidden]") && t.getClientRects().length)) return;
       let target = countEl;
-      if (a === "reset-filters" || a === "show-undated") target = filters.open ? (a === "show-undated" ? periodSel : searchInput) : filtersSummary;
+      if (a === "reset-filters" || a === "reset-other" || a === "show-undated") target = filters.open ? (a === "show-undated" ? periodSel : searchInput) : filtersSummary;
       else if (a === "more") target = listEl.querySelector("[data-r03-more-anchor]") || countEl;
       else if (a === "drop-filter") target = pills.querySelector("button") || filtersSummary;
       if (target === countEl) countEl.setAttribute("tabindex", "-1");
@@ -374,9 +375,10 @@
         const it = currentItem();
         if (it && onFeedback) onFeedback({ objectId: it.id, title: it.title, geometry: it.geometry, object: publicCopy(it) });
       } else if (a === "sheet") cycleSheet();
-      else if (a === "copy-link") copyLink(t);
+      else if (a === "copy-link") copyLink();
       else if (a === "show-undated") { st.filters.period = "all"; filtersChanged(); }
       else if (a === "area-off") { st.filters.area = false; filtersChanged(); }
+      else if (a === "reset-other") { st.filters = Object.assign(C.defaultFilters(), { area: st.filters.area }); st.q = ""; searchInput.value = ""; clearTimeout(searchTimer); filtersChanged(); }
       else if (a === "drop-filter") dropFilter(t.getAttribute("data-key"), t.getAttribute("data-value"));
       else if (a === "pick-cancel") closePick();
       else if (a === "pick-fit" && st.pick) fitIds(st.pick.ids);
@@ -480,8 +482,9 @@
     function filtersChanged() {
       st.filters = C.sanitizeFilters(st.filters);
       st.limit = LIST_STEP;
-      // setFilters({area:true}) from the host may come without any later map move: measure now.
-      if (st.filters.area) updateViewBox();
+      if (!st.filters.area) st.areaPending = false;
+      // Measure the visible part now, unless the host is about to move the camera (see setFiltersFromHost).
+      if (st.filters.area && !st.areaPending) updateViewBox();
       if (persist) { try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(st.filters)); } catch (e) { /* ignore */ } }
       syncFilterControls();
       renderList();
@@ -542,7 +545,12 @@
     const norm = (v) => String(v || "").toLocaleLowerCase("ru").replace(/ё/g, "е");
     function textOf(it) {
       let t = searchText.get(it.id);
-      if (t === undefined) { t = norm(it.title) + "\n" + norm(it.description) + "\n" + norm(it.responsible.organization); searchText.set(it.id, t); }
+      if (t === undefined) {
+        // The organisation is searchable only when the card shows it (a source covers it).
+        const rv = C.responsibleView(it);
+        t = norm(it.title) + "\n" + norm(it.description) + "\n" + (rv.show ? norm(rv.organization) : "");
+        searchText.set(it.id, t);
+      }
       return t;
     }
     function searchPredicate() {
@@ -551,7 +559,7 @@
     }
     // st.items is sorted once per load, so filtering keeps a stable, cheap order.
     function filtered() {
-      return C.applyFilters(st.items, st.filters, { today: today(), viewBox: st.filters.area ? st.viewBox : null, match: searchPredicate() });
+      return C.applyFilters(st.items, st.filters, { today: today(), viewBox: st.filters.area && !st.areaPending ? st.viewBox : null, match: searchPredicate() });
     }
     // Map shows kind/status/period/search filters, never the viewport filter.
     function mapItems() {
@@ -572,22 +580,27 @@
     function setCount(text) { if (countEl.textContent !== text) countEl.textContent = text; }
     // What the published list actually contains: demo vs records backed by a source (observed/derived).
     function coverage() {
-      const c = { total: st.items.length, demo: 0, real: 0, other: 0 };
+      const c = { total: st.items.length, demo: 0, real: 0, other: 0, sourced: 0 };
       for (const it of st.items) {
         if (it.evidence === "synthetic") c.demo++;
         else if (it.evidence === "observed" || it.evidence === "derived") c.real++;
         else c.other++;
+        if (C.evidenceGroup(it) === "sourced") c.sourced++;
       }
       return c;
     }
     function coverageText(c) {
       if (!c.total) return "Опубликованных записей пока нет.";
-      if (!c.real) return "Подтверждённых реальных работ в нём пока нет, опубликовано " + plural(c.total, "запись", "записи", "записей") + (c.demo === c.total ? ", все демонстрационные." : ".");
-      return "Записей с источником: " + c.real + " из " + c.total + ".";
+      if (!c.real) {
+        const allDemo = c.demo === c.total ? (c.total === 1 ? ", она демонстрационная." : ", все демонстрационные.") : ".";
+        return "Подтверждённых реальных работ в нём пока нет, " + C.plural(c.total, "опубликована", "опубликованы", "опубликовано") + " " + plural(c.total, "запись", "записи", "записей") + allDemo;
+      }
+      return "Записей с источником: " + c.sourced + " из " + c.total + ".";
     }
     function activeFilterCount() {
       const f = st.filters;
-      return (f.kinds.length ? 1 : 0) + (f.statuses.length ? 1 : 0) + (f.period !== "all" ? 1 : 0) + (f.area ? 1 : 0) + (st.q ? 1 : 0) +
+      // One per removable pill (each kind is its own pill), so «активно: N» matches what is shown below it.
+      return f.kinds.length + (f.statuses.length ? 1 : 0) + (f.period !== "all" ? 1 : 0) + (f.area ? 1 : 0) + (st.q ? 1 : 0) +
         (f.evidence !== "all" ? 1 : 0) + (f.hidePast ? 1 : 0);
     }
     function renderList(focusFrom) {
@@ -595,21 +608,22 @@
       const focusedId = document.activeElement && listEl.contains(document.activeElement) ? document.activeElement.getAttribute("data-id") : null;
       const res = filtered();
       const c = res.counts;
+      // Counts describe the list on screen (fresh or «прежние данные»); without one, plain labels.
+      const counted = st.items.length > 0;
       for (const b of kindBox.querySelectorAll("[data-kind]")) {
         const n = c.byKind[b.getAttribute("data-kind")] || 0;
-        const t = st.list === "ready" ? String(n) : "";
+        const t = counted ? String(n) : "";
         const el = b.querySelector("." + P + "chip-count");
         if (el.textContent !== t) el.textContent = t;
       }
-      if (st.list === "ready") {
-        for (const o of statusSel.options) if (o.value) o.textContent = C.STATUSES[o.value] + " (" + (c.byStatus[o.value] || 0) + ")";
-        for (const o of evidenceSel.options) if (o.value !== "all") o.textContent = C.EVIDENCE_FILTERS[o.value] + " (" + (c.byEvidence[o.value] || 0) + ")";
-      }
+      for (const o of statusSel.options) if (o.value) o.textContent = C.STATUSES[o.value] + (counted ? " (" + (c.byStatus[o.value] || 0) + ")" : "");
+      for (const o of evidenceSel.options) if (o.value !== "all") o.textContent = C.EVIDENCE_FILTERS[o.value] + (counted ? " (" + (c.byEvidence[o.value] || 0) + ")" : "");
       const cov = coverage();
       demoNote.hidden = !cov.demo;
-      demoNote.textContent = !cov.demo ? "" : cov.real === 0
-        ? "Подтверждённых реальных работ в реестре пока нет: все " + plural(cov.total, "запись", "записи", "записей") + " — демонстрационные, не сведения о работах в городе."
-        : "Демо-записей: " + cov.demo + ". Они отмечены «Демо» и не описывают реальные работы.";
+      demoNote.textContent = !cov.demo ? "" : cov.demo === cov.total
+        ? "Подтверждённых реальных работ в реестре пока нет: " + (cov.total === 1 ? "единственная запись — демонстрационная" : "все " + plural(cov.total, "запись", "записи", "записей") + " — демонстрационные") + ", не сведения о работах в городе."
+        : (cov.real === 0 ? "Подтверждённых реальных работ в реестре пока нет. " : "") +
+          "Демо-записей: " + cov.demo + " из " + cov.total + ". Они отмечены «Демо» и не описывают реальные работы.";
       listEl.replaceChildren();
       listNotes.replaceChildren();
       listEl.setAttribute("aria-busy", String(st.list === "loading"));
@@ -621,18 +635,28 @@
       const emptyFilter = st.items.length > 0 && !res.shown.length;
       const shownText = c.shown === c.total ? plural(c.total, "объект", "объекта", "объектов") : "Показано " + c.shown + " из " + c.total;
       // With "visible part" on (the shell turns it on when a street or district is chosen) an empty
-      // result must not read as "no works here": the registry is incomplete.
-      const areaEmpty = emptyFilter && st.filters.area;
+      // result must not read as "no works here": the registry is incomplete. "No published records here"
+      // is said only when none lies in the visible part at all; otherwise the other filters hid them.
+      const inView = emptyFilter && st.filters.area && st.viewBox ? st.items.filter((it) => it.bbox && C.bboxIntersects(it.bbox, st.viewBox)).length : null;
+      const areaEmpty = inView === 0, areaFiltered = inView > 0;
+      const partial = st.truncated ? " Загружены не все записи реестра." : "";
       const emptyNode = () => areaEmpty
         ? h("div", { class: P + "empty" },
           h("p", { class: P + "empty-title", text: "В видимой части карты нет опубликованных записей." }),
-          h("p", { class: P + "hint", text: "Это не значит, что здесь не ведутся работы: реестр неполный. " + coverageText(cov) }),
+          h("p", { class: P + "hint", text: "Это не значит, что здесь не ведутся работы: реестр неполный. " + coverageText(cov) + partial }),
           h("div", { class: P + "row" },
             h("button", { type: "button", class: P + "btn", "data-r03-action": "area-off", text: "Показать записи по всему городу" }),
             activeFilterCount() > 1 ? h("button", { type: "button", class: P + "link-btn", "data-r03-action": "reset-filters", text: "Сбросить все фильтры" }) : null))
-        : h("div", { class: P + "empty" }, h("p", { text: "По выбранным условиям ничего не найдено." }),
-          h("button", { type: "button", class: P + "btn", "data-r03-action": "reset-filters", text: "Сбросить фильтры" }));
-      const emptyKey = areaEmpty ? "empty-area" : "empty-filter";
+        : areaFiltered
+          ? h("div", { class: P + "empty" },
+            h("p", { class: P + "empty-title", text: "В видимой части карты нет записей по выбранным условиям." }),
+            h("p", { class: P + "hint", text: "Здесь опубликовано записей: " + inView + " — их скрывают другие фильтры (они перечислены выше)." + partial }),
+            h("div", { class: P + "row" },
+              h("button", { type: "button", class: P + "btn", "data-r03-action": "reset-other", text: "Сбросить остальные фильтры" }),
+              h("button", { type: "button", class: P + "link-btn", "data-r03-action": "area-off", text: "Показать записи по всему городу" })))
+          : h("div", { class: P + "empty" }, h("p", { text: "По выбранным условиям ничего не найдено." + partial }),
+            h("button", { type: "button", class: P + "btn", "data-r03-action": "reset-filters", text: "Сбросить фильтры" }));
+      const emptyKey = areaEmpty ? "empty-area" : areaFiltered ? "empty-area-filtered" : "empty-filter";
       if (st.list === "error") {
         const text = st.listError ? st.listError.text : "Не удалось загрузить объекты.";
         setCount(st.items.length ? shownText + " · прежние данные" : "Данные не загружены");
@@ -650,8 +674,9 @@
         return;
       } else {
         if (st.list === "loading") setStatus("refreshing|" + (emptyFilter ? emptyKey : ""), () => { const box = h("div", null, h("p", { class: P + "hint", text: "Обновляем…" })); if (emptyFilter) box.append(emptyNode()); return box; });
+        else if (st.filters.area && st.areaPending) setStatus("area-pending", () => h("p", { class: P + "hint", text: "Обновляем список для видимой части карты…" }));
         else setStatus(emptyFilter ? emptyKey : "", emptyFilter ? emptyNode : null);
-        setCount(st.list === "idle" ? "" : shownText);
+        setCount(st.list === "idle" ? "" : st.filters.area && st.areaPending ? "Обновляем…" : shownText);
       }
       const frag = document.createDocumentFragment();
       const visible = res.shown.slice(0, st.limit);
@@ -690,10 +715,13 @@
     function cssEscape(s) { return window.CSS && CSS.escape ? CSS.escape(s) : String(s).replace(/["\\]/g, "\\$&"); }
     function plural(n, a, b, c) { return n + " " + C.plural(n, a, b, c); }
     function badge(text, cls, title) { return h("span", { class: P + "badge " + (cls ? P + cls : ""), title: title || null, text }); }
-    function evidenceBadge(it) {
-      if (it.evidence === "observed") return badge("С источником", "b-ok", "Сведения из опубликованного источника");
+    // The list uses the words of the «Сведения» filter: «С источником» exactly when the card lists a source;
+    // the type of the record (вывод, гипотеза) is added next to it, never instead of it.
+    function evidenceBadges(it) {
       const info = C.evidenceInfo(it.evidence);
-      return badge(info.short, it.evidence === "synthetic" ? "b-demo" : "b-warn", info.label);
+      if (it.evidence === "synthetic") return [badge(info.short, "b-demo", info.label)];
+      if (C.evidenceGroup(it) === "sourced") return [badge("С источником", "b-ok", "Источник указан в карточке"), it.evidence === "observed" ? null : badge(info.short, "b-warn", info.label)];
+      return [badge("Без источника", "b-warn", info.label)];
     }
     function listItem(it, missing) {
       const k = C.kindInfo(it.kind);
@@ -703,7 +731,7 @@
       const when = iv.end ? "до " + C.formatDay(iv.end) : iv.start ? "с " + C.formatDay(iv.start) : "сроки: нет данных";
       const meta = [C.STATUSES[it.status], when];
       if (shift) meta.push(shift.days > 0 ? "срок перенесён" : "срок сдвинут раньше");
-      const badges = [evidenceBadge(it),
+      const badges = [...evidenceBadges(it),
         stale ? badge(stale.kind === "old_start_no_end" ? "Старый план без срока" : "Срок по плану прошёл", "b-warn") : null,
         !it.geometry ? badge("Нет на карте", "b-muted", it.geoIssue ? it.issues.find((x) => /координат|геометр/.test(x)) : "Координаты не указаны") : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
         missing === "end" ? badge("Окончание неизвестно", "b-muted", "Плановая дата окончания не указана") : missing === "start" ? badge("Начало неизвестно", "b-muted", "Плановая дата начала не указана") : null].filter(Boolean);
@@ -733,14 +761,18 @@
         // Ask for R02's largest page (limit 1-100, default 50) so 20 pages cover 2000 records; a server that
         // rejects the parameter (400/422 on the first page) is asked again without it.
         let limit = PAGE_LIMIT;
-        do {
+        for (;;) {
           const qs = [cursor ? "cursor=" + encodeURIComponent(cursor) : null, limit ? "limit=" + limit : null].filter(Boolean).join("&");
           let data;
           try {
             data = await request("GET", "/objects" + (qs ? "?" + qs : ""), signal);
           } catch (err) {
             const info = C.errorInfo(err);
-            if (limit && !cursor && (info.status === 400 || info.status === 422)) { limit = 0; continue; }
+            if (limit && !cursor && (info.status === 400 || info.status === 422)) {
+              if (destroyed || !listSeq.isCurrent(t)) return;
+              limit = 0;
+              continue;
+            }
             throw err;
           }
           if (destroyed || !listSeq.isCurrent(t)) return;
@@ -749,8 +781,9 @@
           raw.push(...items);
           cursor = data && typeof data.next_cursor === "string" && data.next_cursor ? data.next_cursor : null;
           pages++;
-          if (cursor && pages >= MAX_PAGES) { truncated = true; break; }
-        } while (cursor);
+          if (!cursor) break;
+          if (pages >= MAX_PAGES) { truncated = true; break; }
+        }
         const norm = C.normalizeList(raw, { region });
         st.items = C.sortItems(norm.items);
         searchText.clear();
@@ -801,8 +834,7 @@
         return;
       }
       const prevFocus = opts.source === "list" ? id : null;
-      // Remember where the resident was in the list, to come back to the same place.
-      if (st.view === "list") st.listScroll = scroller.scrollTop;
+      saveListScroll();
       st.selectedId = id;
       st.view = "card";
       st.compare = { a: null, b: null };
@@ -859,22 +891,80 @@
       }
       try { renderCard(); } finally { updateSelection(); }
     }
+    // ---------- list position ----------
+    // The element that really scrolls the list: the module's own scroller (overlay) or, embedded, the
+    // host's panel (the R01 shell scrolls .civic-scroll; our scroller is overflow: visible there).
+    function listScroller() {
+      if (layout !== "embedded") return scroller;
+      for (let el = root.parentElement; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+        const oy = getComputedStyle(el).overflowY;
+        if ((oy === "auto" || oy === "scroll") && el.scrollHeight > el.clientHeight) return el;
+      }
+      return document.scrollingElement || document.documentElement;
+    }
+    // Remember where the resident was in the list when leaving it (card or chooser), to come back there.
+    function saveListScroll() {
+      if (st.view !== "list") return;
+      const el = listScroller();
+      st.listScroll = { el, top: el.scrollTop };
+    }
+    // Used once, on the way back to the list; a later close from the list itself must not jump.
+    function restoreListScroll() {
+      const saved = st.listScroll;
+      st.listScroll = null;
+      if (saved && saved.el.isConnected) saved.el.scrollTop = saved.top;
+    }
+    function visibleRect(el) {
+      if (el === document.scrollingElement || el === document.documentElement) return { top: 0, bottom: window.innerHeight };
+      const r = el.getBoundingClientRect();
+      return { top: Math.max(r.top, 0), bottom: Math.min(r.bottom, window.innerHeight) };
+    }
+    // Keyboard focus must never sit off-screen: bring the element into the visible part of the list.
+    function reveal(el) {
+      const b = visibleRect(listScroller()), r = el.getBoundingClientRect();
+      if (r.top < b.top || r.bottom > b.bottom) { try { el.scrollIntoView({ block: "nearest" }); } catch (e) { /* ignore */ } }
+    }
+    function firstVisibleItem() {
+      const b = visibleRect(listScroller());
+      for (const el of listEl.querySelectorAll("[data-id]")) {
+        const r = el.getBoundingClientRect();
+        if (r.height && r.top >= b.top && r.bottom <= b.bottom) return el;
+      }
+      return null;
+    }
+
     // ---------- choosing among overlapping objects ----------
-    function openPick(ids) {
+    function openPick(ids, at) {
       hideTip();
-      st.pick = { ids: ids.slice(0, 50), more: Math.max(0, ids.length - 50), prevView: st.view, prevId: st.selectedId };
+      saveListScroll();
+      // A second chooser opened over the first keeps the first one's origin (card or list) for «Отмена».
+      const origin = st.view === "pick" && st.pick ? st.pick : { prevView: st.view, prevId: st.selectedId };
+      st.pick = { ids: ids.slice(0, 50), more: Math.max(0, ids.length - 50), prevView: origin.prevView, prevId: origin.prevId };
       st.view = "pick";
       if (isMobile() && layout === "overlay" && st.sheet === "peek") setSheet("half");
       renderCard(true);
       updateSelection();
+      // The tapped spot may now sit under the opened sheet: keep it (and the outlined candidates) in view.
+      if (at && Number.isFinite(at.lng) && Number.isFinite(at.lat)) {
+        const spot = { bbox: [at.lng, at.lat, at.lng, at.lat] };
+        clearTimeout(layoutTimer);
+        const run = () => { if (!destroyed && st.view === "pick") ensureVisible(spot); };
+        if (!isMobile() || reducedMotion()) run(); else layoutTimer = setTimeout(run, 320);
+      }
     }
     function closePick(nextView) {
       if (!st.pick) return;
       const prev = st.pick;
       st.pick = null;
-      st.view = nextView || (prev.prevView === "card" && prev.prevId ? "card" : "list");
+      st.view = nextView || (prev.prevView === "card" && prev.prevId && prev.prevId === st.selectedId ? "card" : "list");
       renderCard(st.view === "card");
-      if (st.view === "list") { renderList(); countEl.setAttribute("tabindex", "-1"); focusEl(countEl); }
+      if (st.view === "list") {
+        renderList();
+        restoreListScroll();
+        const first = firstVisibleItem();
+        if (first) focusEl(first, { preventScroll: true });
+        else { countEl.setAttribute("tabindex", "-1"); focusEl(countEl); }
+      }
       updateSelection();
     }
     function renderPick(focus) {
@@ -904,7 +994,9 @@
       st.cameraPending = false;
       if (aborters.card) { try { aborters.card.abort(); } catch (e) { /* ignore */ } aborters.card = null; }
       const back = st.detail.returnFocus || st.selectedId;
+      const wasOpen = st.view !== "list" || !!st.selectedId;
       st.selectedId = null;
+      st.pick = null;
       st.view = "list";
       st.detail = { id: null, state: "idle", item: null, history: [], error: null };
       updateSelection();
@@ -913,8 +1005,9 @@
       if (permalink) writeHash(null);
       if (onSelect) safeCall(onSelect, null, { source: "close" });
       const target = back ? listEl.querySelector('[data-id="' + cssEscape(back) + '"]') : null;
-      if (typeof st.listScroll === "number") scroller.scrollTop = st.listScroll;
-      if (target) focusEl(target, { preventScroll: true });
+      restoreListScroll();
+      if (target) { focusEl(target, { preventScroll: true }); reveal(target); }
+      else if (!wasOpen) { /* nothing was open: leave focus and scroll where the resident has them */ }
       else if (root.contains(document.activeElement) || document.activeElement === document.body) { countEl.setAttribute("tabindex", "-1"); focusEl(countEl); }
     }
     function safeCall(fn, ...args) { try { fn(...args); } catch (e) { console.error("CivicMap callback failed", e); } }
@@ -929,10 +1022,20 @@
       const active = document.activeElement;
       const keep = !focus && active && cardView.contains(active) ? (active.getAttribute("data-r03-action") || active.getAttribute("data-r03-compare") || "title") : null;
       root.setAttribute("data-civic-r03-view", st.view);
+      cardView.setAttribute("aria-label", st.view === "pick" ? "Выбор объекта" : "Карточка объекта");
       listView.hidden = st.view !== "list";
       cardView.hidden = st.view === "list";
+      const keepId = keep && active.closest("[data-id]") ? active.closest("[data-id]").getAttribute("data-id") : null;
       cardView.replaceChildren();
-      if (st.view === "pick") { renderPick(focus); return; }
+      if (st.view === "pick") {
+        renderPick(focus);
+        if (!focus && keep) {
+          const again = (keepId && cardView.querySelector('[data-id="' + cssEscape(keepId) + '"]')) || (keep !== "title" && cardView.querySelector('[data-r03-action="' + keep + '"]'));
+          if (again) focusEl(again, { preventScroll: true });
+          else restoreFocus("title");
+        }
+        return;
+      }
       if (st.view !== "card") return;
       const d = st.detail;
       const it = d.item;
@@ -950,7 +1053,9 @@
       }
       const k = C.kindInfo(it.kind);
       const ev = C.evidenceInfo(it.evidence);
-      const statusSrc = it.sourceRefs.find((r) => r.published_on && r.fields.includes("status"));
+      // The newest source that covers the status (published_on is YYYY-MM-DD, so strings compare as dates).
+      const statusSrc = it.sourceRefs.filter((r) => r.published_on && r.fields.includes("status"))
+        .reduce((a, r) => (!a || r.published_on > a.published_on ? r : a), null);
       if (it.evidence !== "observed") {
         cardView.append(h("p", { class: P + "banner " + (it.evidence === "synthetic" ? P + "banner-demo" : P + "banner-warn"), role: "note" },
           it.evidence === "synthetic" ? h("b", { text: "Демо. " }) : null, ev.label + "."));
@@ -966,7 +1071,10 @@
       const resp = C.responsibleView(it);
       const prov = C.provenanceLine(it);
       let whenText;
+      const planEnd = s.current_planned_end || s.original_planned_end;
       if (s.actual_end) whenText = "завершено " + C.formatDay(s.actual_end, "long");
+      // Finished without a recorded date: never present the old plan as the time works go on until.
+      else if (it.status === "completed") whenText = "завершено, дата окончания не указана" + (planEnd ? " (план был до " + C.formatDay(planEnd, "long") + ")" : "");
       else if (it.status === "cancelled") whenText = "отменено" + (s.current_planned_end ? " (план был до " + C.formatDay(s.current_planned_end, "long") + ")" : "");
       else if (s.current_planned_end) whenText = "до " + C.formatDay(s.current_planned_end, "long") + " (по плану)";
       else if (s.original_planned_end) whenText = "новый срок не опубликован (изначально до " + C.formatDay(s.original_planned_end, "long") + ")";
@@ -974,11 +1082,11 @@
       const summary = h("dl", { class: P + "summary", "aria-label": "Коротко об объекте" },
         h("dt", { text: "Сейчас" }),
         h("dd", null, h("span", { class: P + "status " + P + "status-" + it.status, text: C.STATUSES[it.status] }),
-          statusSrc ? h("span", { class: P + "muted", text: " по источнику от " + C.formatDay(statusSrc.published_on) }) : h("span", { class: P + "muted", text: " по записи" }),
+          h("span", { class: P + "muted", text: statusSrc ? " — по источнику от " + C.formatDay(statusSrc.published_on) : " — источник статуса не указан" }),
           stale ? h("span", { class: P + "warn-text", text: " · срок по плану уже прошёл" }) : null),
         h("dt", { text: "Когда закончат" }),
         h("dd", null, h("span", { text: whenText }),
-          shift && !s.actual_end ? h("span", { class: P + "shift-chip", text: (shift.days > 0 ? "перенесён на " : "сдвинут раньше на ") + C.daysText(shift.days) }) : null),
+          shift && !s.actual_end && it.status !== "completed" && it.status !== "cancelled" ? h("span", { class: P + "shift-chip", text: (shift.days > 0 ? "перенесён на " : "сдвинут раньше на ") + C.daysText(shift.days) }) : null),
         h("dt", { text: "Кто отвечает" }),
         h("dd", null, resp.show
           ? h("span", null, [resp.organization, resp.contact].filter(Boolean).join(" · "), h("span", { class: P + "muted", text: " — по источнику" }))
@@ -1093,7 +1201,8 @@
       const actions = h("div", { class: P + "actions" });
       if (onFeedback) actions.append(h("button", { type: "button", class: P + "btn " + P + "btn-primary", "data-r03-action": "feedback" }, svgIcon(ICON.chat), "Задать вопрос по объекту"));
       actions.append(h("button", { type: "button", class: P + "btn", "data-r03-action": "copy-link" }, svgIcon(ICON.link), "Скопировать ссылку"));
-      if (actions.childNodes.length) cardView.append(actions);
+      cardView.append(actions, h("p", { class: P + "copy-note", role: "status" }));
+      paintCopyNote(false);
       if (focus) focusCard();
       else if (keep) restoreFocus(keep);
     }
@@ -1170,24 +1279,43 @@
       const l = window.location;
       return l.origin + l.pathname + l.search + "#" + (permalink ? HASH_KEY : "object") + "=" + encodeURIComponent(id);
     }
-    function copyLink(btn) {
+    // The confirmation lives in an empty role=status line rendered with the card (a live region that appears
+    // together with its text is often not announced); the text is set only after the copy, cleared first so a
+    // repeated copy is announced again, and kept across card re-renders.
+    function copyLink() {
       const id = st.selectedId;
       if (!id) return;
       const url = objectLink(id);
-      const box = btn.parentElement;
+      let done = false;
       const say = (text, showField) => {
-        let note = box.querySelector("." + P + "copy-note");
-        if (!note) { note = h("p", { class: P + "copy-note", role: "status" }); box.append(note); }
-        note.replaceChildren(text);
-        if (showField) {
-          const field = h("input", { type: "text", readonly: true, class: P + "search", value: url, "aria-label": "Ссылка на объект" });
-          note.append(field);
-          field.select();
-        }
+        if (done || destroyed || st.selectedId !== id) return;
+        done = true;
+        clearTimeout(copyTimer);
+        st.copy = { id, text, url: showField ? url : null };
+        paintCopyNote(showField);
       };
-      try {
-        navigator.clipboard.writeText(url).then(() => say("Ссылка скопирована.", false), () => say("Скопируйте ссылку:", true));
-      } catch (e) { say("Скопируйте ссылку:", true); }
+      st.copy = null;
+      paintCopyNote(false);
+      clearTimeout(copyTimer);
+      // A clipboard promise that never settles (permission prompt, busy machine) still ends in a usable field.
+      copyTimer = setTimeout(() => say("Скопируйте ссылку:", true), 1500);
+      let p = null;
+      try { p = navigator.clipboard && navigator.clipboard.writeText(url); } catch (e) { p = null; }
+      if (p && typeof p.then === "function") p.then(() => say("Ссылка скопирована.", false), () => say("Скопируйте ссылку:", true));
+      else setTimeout(() => say("Скопируйте ссылку:", true), 0);
+    }
+    function paintCopyNote(selectField) {
+      const note = cardView.querySelector("." + P + "copy-note");
+      if (!note) return;
+      const c = st.copy && st.copy.id === st.selectedId ? st.copy : null;
+      note.replaceChildren();
+      if (!c) return;
+      note.append(c.text);
+      if (c.url) {
+        const field = h("input", { type: "text", readonly: true, class: P + "search", value: c.url, "aria-label": "Ссылка на объект" });
+        note.append(field);
+        if (selectField) field.select();
+      }
     }
 
     // ---------- map ----------
@@ -1263,7 +1391,7 @@
       if (destroyed) return;
       const ids = hitIds(e.point);
       if (ids.length === 1) selectObject(ids[0], { source: "map" });
-      else if (ids.length > 1) openPick(ids);
+      else if (ids.length > 1) openPick(ids, e.lngLat);
     }
     function onMapMove(e) {
       lastHoverPoint = e;
@@ -1302,7 +1430,26 @@
     function onMoveEnd() {
       if (!st.filters.area) return;
       clearTimeout(moveTimer);
-      moveTimer = setTimeout(() => { updateViewBox(); renderList(); }, 120);
+      moveTimer = setTimeout(() => { st.areaPending = false; updateViewBox(); renderList(); }, 120);
+    }
+    // The R01 shell calls setFilters({area:true}) and then, in the same task, moves the camera to the street
+    // or district. Measuring at once would judge the OLD view and flash a false «нет записей»; so the area
+    // is "pending" until that move ends (or measured right away when no move follows).
+    function setFiltersFromHost(f) {
+      const turnsOn = !!(f && f.area === true && map);
+      st.filters = C.sanitizeFilters(Object.assign({}, st.filters, f));
+      if (turnsOn) {
+        st.areaPending = true;
+        clearTimeout(areaTimer);
+        areaTimer = setTimeout(() => {
+          if (destroyed || !st.areaPending) return;
+          if (map.isMoving()) return;  // moveend measures
+          st.areaPending = false;
+          updateViewBox();
+          renderList();
+        }, 0);
+      }
+      filtersChanged();
     }
     // "Visible part" = the map canvas minus the panel or sheet that covers it.
     function updateViewBox() {
@@ -1425,6 +1572,8 @@
       cardSeq.cancel();
       for (const k of ["list", "card"]) if (aborters[k]) { try { aborters[k].abort(); } catch (e) { /* ignore */ } aborters[k] = null; }
       clearTimeout(moveTimer);
+      clearTimeout(areaTimer);
+      clearTimeout(copyTimer);
       clearTimeout(searchTimer);
       clearTimeout(layoutTimer);
       detachMap();
@@ -1452,7 +1601,7 @@
       layerIds: () => BELOW_LABELS.concat(ON_TOP),
       sourceId: SRC,
       getState: () => ({ list: st.list, count: st.items.length, selectedId: st.selectedId, view: st.view, detail: st.detail.state, filters: C.sanitizeFilters(st.filters), q: st.q, sheet: st.sheet, cameraPending: st.cameraPending }),
-      setFilters: (f) => { st.filters = C.sanitizeFilters(Object.assign({}, st.filters, f)); filtersChanged(); },
+      setFilters: setFiltersFromHost,
     };
 
     byRoot.set(root, instance);

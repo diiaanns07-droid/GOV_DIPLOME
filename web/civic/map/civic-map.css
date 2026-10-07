@@ -68,7 +68,8 @@
   display: none;
 }
 /* In the host panel the card needs no list header above it. */
-.civic-r03-layout-embedded[data-civic-r03-view="card"] .civic-r03-head {
+.civic-r03-layout-embedded[data-civic-r03-view="card"] .civic-r03-head,
+.civic-r03-layout-embedded[data-civic-r03-view="pick"] .civic-r03-head {
   display: none;
 }
 .civic-r03-layout-embedded .civic-r03-scroll {
@@ -122,10 +123,13 @@
   color: var(--civic-r03-demo-ink);
 }
 .civic-r03-root[data-civic-r03-view="card"] .civic-r03-demo-note,
-.civic-r03-root[data-civic-r03-view="card"] .civic-r03-count {
+.civic-r03-root[data-civic-r03-view="card"] .civic-r03-count,
+.civic-r03-root[data-civic-r03-view="pick"] .civic-r03-demo-note,
+.civic-r03-root[data-civic-r03-view="pick"] .civic-r03-count {
   display: none;
 }
-.civic-r03-root[data-civic-r03-view="card"] .civic-r03-head {
+.civic-r03-root[data-civic-r03-view="card"] .civic-r03-head,
+.civic-r03-root[data-civic-r03-view="pick"] .civic-r03-head {
   padding-bottom: 8px;
 }
 .civic-r03-scroll {
@@ -723,6 +727,9 @@
   margin: 4px 0 0;
   font-size: 12.5px;
 }
+.civic-r03-copy-note:empty {
+  margin: 0;
+}
 .civic-r03-status-line {
   margin: 0 0 10px;
   font-size: 13px;
@@ -989,6 +996,11 @@
   }
   .civic-r03-layout-overlay[data-civic-r03-sheet="full"] {
     --civic-r03-sheet-h: 100vh;
+  }
+  /* The overlap chooser needs its header and at least one candidate on screen, even on a 640px-high phone;
+     the rest of the map (with the candidates outlined) stays visible above. */
+  .civic-r03-layout-overlay[data-civic-r03-view="pick"][data-civic-r03-sheet="half"] {
+    --civic-r03-sheet-h: min(max(46dvh, 380px), 72dvh);
   }
   .civic-r03-layout-overlay[data-civic-r03-dragging] {
     height: var(--civic-r03-drag-h);

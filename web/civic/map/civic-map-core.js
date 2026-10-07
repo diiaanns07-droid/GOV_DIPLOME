@@ -387,7 +387,8 @@
       if (item.evidence === "synthetic") return { state: "demo", text: "Демонстрационная запись — источника нет." };
       return { state: "none", text: "Источник не указан — сведения нельзя проверить по документу." };
     }
-    const r = refs[0];
+    // The newest dated source leads (dates are YYYY-MM-DD strings); undated ones only when nothing is dated.
+    const r = refs.reduce((a, x) => (x.published_on && (!a.published_on || x.published_on > a.published_on) ? x : a), refs[0]);
     const name = r.publisher || r.host || "источник без названия";
     return { state: "ok", ref: r, text: name + (r.published_on ? ", " + formatDay(r.published_on) : "") + (refs.length > 1 ? " и ещё " + (refs.length - 1) : "") };
   }
@@ -540,13 +541,20 @@
     }
     return { from: null, to: null };
   }
-  // evidence: which records by provenance — all | sourced (observed/derived) | demo (synthetic) | unsourced (hypothesis/unknown).
-  // hidePast: hide plans whose planned end passed without a recorded finish (see staleness()).
+  // evidence: which records by provenance — all | sourced (at least one source shown on the card) | demo
+  // (synthetic) | unsourced (no source). Grouped by the sources the card lists, so the filter never
+  // contradicts the card's «Откуда сведения» (R02 lets a hypothesis carry a source).
+  // hidePast: hide plans that never started (planned/unknown) whose planned end passed; overdue works in
+  // progress stay visible — a delay is what the resident needs to see (see pastPlan()).
   const EVIDENCE_FILTERS = { all: "Все записи", sourced: "С источником", demo: "Демонстрационные", unsourced: "Без источника" };
   function evidenceGroup(item) {
     if (item.evidence === "synthetic") return "demo";
-    if (item.evidence === "observed" || item.evidence === "derived") return "sourced";
-    return "unsourced";
+    return Array.isArray(item.sourceRefs) && item.sourceRefs.length ? "sourced" : "unsourced";
+  }
+  function pastPlan(item, today) {
+    if (item.status !== "planned" && item.status !== "unknown") return false;
+    const st = staleness(item, today);
+    return !!st && st.kind === "plan_end_passed";   // an old start with no end has no passed deadline
   }
   function defaultFilters() {
     return { kinds: [], statuses: [], period: "all", from: null, to: null, area: false, evidence: "all", hidePast: false };
@@ -587,7 +595,7 @@
       const kindOk = !f.kinds.length || f.kinds.includes(it.kind);
       const statusOk = !f.statuses.length || f.statuses.includes(it.status);
       const evOk = f.evidence === "all" || f.evidence === eg;
-      const pastOk = !f.hidePast || !staleness(it, c.today);
+      const pastOk = !f.hidePast || !pastPlan(it, c.today);
       let areaOut = null;
       if (f.area && c.viewBox) areaOut = !it.bbox ? "noGeometry" : !bboxIntersects(it.bbox, c.viewBox) ? "outsideArea" : null;
       const pm = matchPeriod(it, range.from, range.to);
@@ -597,9 +605,10 @@
       if (rest && kindOk && evOk) counts.byStatus[it.status] = (counts.byStatus[it.status] || 0) + 1;
       if (rest && kindOk && statusOk) counts.byEvidence[eg] = (counts.byEvidence[eg] || 0) + 1;
       if (!kindOk || !statusOk || !evOk) continue;
-      // Period first: an area counter must not promise records the period would hide anyway.
-      if (!pm.match) { if (pm.undated && !areaOut) counts.undated++; continue; }
-      if (areaOut) { counts[areaOut]++; continue; }
+      // Each counter promises what its «show» action yields, so it only counts records every other
+      // filter lets through: undated (period) needs area and past, area needs past, past needs both.
+      if (!pm.match) { if (pm.undated && !areaOut && pastOk) counts.undated++; continue; }
+      if (areaOut) { if (pastOk) counts[areaOut]++; continue; }
       if (!pastOk) { counts.past++; continue; }
       if (pm.partial) counts.partial++;
       if (!it.bbox) counts.mappedOut++;
@@ -711,7 +720,7 @@
     sourceFor, costView, responsibleView, provenanceLine,
     budgetInfo, safeUrl, urlHost, normalizeGeometry, bboxOf, bboxIntersects, normalizeObject, normalizeList,
     plannedInterval, matchPeriod, scheduleShift, staleness, plural, daysText, normalizeHistory, fieldLabel,
-    shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters, EVIDENCE_FILTERS, evidenceGroup,
+    shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters, EVIDENCE_FILTERS, evidenceGroup, pastPlan,
     applyFilters, sortItems, featureCollection, createSequence, unwrap, errorInfo, contrast,
   };
 });

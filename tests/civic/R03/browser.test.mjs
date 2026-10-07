@@ -140,7 +140,7 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   assert.doesNotMatch(demo, /₸/, "no tenge on a synthetic record");
   assert.match(demo, /Демо\. Синтетическая демо-запись/);
   // r12: the short answer comes first; technical provenance is folded away
-  assert.match(demo, /Сейчас\s+Идут работы по записи/);
+  assert.match(demo, /Сейчас\s+Идут работы — источник статуса не указан/);
   assert.match(demo, /Когда закончат\s+до 5 ноября 2026 \(по плану\)\s*перенесён на 16 дней/);
   assert.match(demo, /Кто отвечает\s+не подтверждено источником/);
   assert.match(demo, /Откуда сведения\s+Тестовый источник \(fixture R03\), 15\.09\.2026/);
@@ -161,7 +161,7 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   assert.match(card.text, /сумма договора · источник: Тестовый источник/);
   assert.match(card.text, /Кто отвечает\s+Тестовая организация \(fixture\) — по источнику/);
   assert.match(card.text, /Выведено из источников/);
-  assert.match(card.text, /Сейчас\s+Идут работы по источнику от 15\.09\.2026/);
+  assert.match(card.text, /Сейчас\s+Идут работы — по источнику от 15\.09\.2026/);
   assert.match(card.text, /Откуда сведения\s+Тестовый источник \(fixture R03, не реальный\), 15\.09\.2026/);
   assert.match(card.text, /Изначально — до\s+20 октября 2026\s+Сейчас — до\s+5 ноября 2026\s+Фактически\s+нет данных/);
   assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /подтверждает: статус, текущий срок, стоимость, основание стоимости, организация/);
@@ -436,6 +436,7 @@ test("mobile 390x844: bottom sheet states keep 3D toggle and attribution reachab
     if (s.sheet !== want) {
       await page.click(".civic-r03-handle");
       await page.waitForTimeout(350);
+      await sheetSettled(page);
     }
     assert.equal((await state(page)).sheet, want);
     heights[want] = await page.evaluate(() => Math.round(document.getElementById("civic-public").getBoundingClientRect().height));
@@ -979,7 +980,8 @@ test("r12: overlapping objects: one click offers a choice, keyboard picks one, c
   await page.waitForFunction(() => window.__stand.instance.getState().selectedId === "ov-area" && window.__stand.instance.getState().view === "card");
   // copy link: clipboard may be unavailable headless -> a selectable field with the R01 link format appears
   await page.click('[data-r03-action="copy-link"]');
-  await page.waitForSelector(".civic-r03-copy-note");
+  assert.equal(await page.getAttribute(".civic-r03-copy-note", "role"), "status", "the live region exists before the copy");
+  await page.waitForFunction(() => document.querySelector(".civic-r03-copy-note").textContent.trim() !== "");
   const note = await page.evaluate(() => { const n = document.querySelector(".civic-r03-copy-note"); const f = n.querySelector("input"); return { text: n.textContent, url: f ? f.value : null }; });
   assert.ok(/Ссылка скопирована/.test(note.text) || /#object=ov-area$/.test(note.url), JSON.stringify(note));
   // pick again, then cancel -> back to the open card
@@ -1084,6 +1086,234 @@ test("r12: narrow 320x640 phone: no horizontal scroll in list, pills, card and c
   assert.deepEqual(await noHorizontalOverflow(page), []);
   assert.equal(await reachable(page, "#toggle-3d"), true);
   await shot(page, "r12-mobile-320-card-long-kk");
+  // the chooser on a 320px phone: opened from the peeking sheet, at least one candidate on screen
+  await page.click('[data-r03-action="back"]');
+  await page.evaluate(() => window.__stand.instance.setFilters({ kinds: [], hidePast: false, evidence: "all" }));
+  while ((await state(page)).sheet !== "peek") { await page.click(".civic-r03-handle"); await sheetSettled(page); }
+  await addItems(page, [
+    mkTest("ov320-a", { kind: "event", geometry: { type: "Point", coordinates: [71.3800, 51.1800] } }),
+    mkTest("ov320-b", { geometry: { type: "LineString", coordinates: [[71.3790, 51.1800], [71.3810, 51.1800]] } }),
+    mkTest("ov320-c", { kind: "landscaping", title: "Тест очень длинного названия объекта для узкого экрана телефона в Астане — благоустройство двора", geometry: { type: "Polygon", coordinates: [[[71.3795, 51.1797], [71.3805, 51.1797], [71.3805, 51.1803], [71.3795, 51.1803], [71.3795, 51.1797]]] } }),
+  ]);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 }));
+  await page.waitForTimeout(400);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.38, 51.18]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.touchscreen.tap(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  await sheetSettled(page);
+  assert.deepEqual(await noHorizontalOverflow(page), []);
+  const seen = await page.evaluate(() => {
+    const sc = document.querySelector(".civic-r03-scroll").getBoundingClientRect();
+    return [...document.querySelectorAll(".civic-r03-card .civic-r03-item")].filter((b) => { const r = b.getBoundingClientRect(); return r.top >= sc.top && r.bottom <= Math.min(sc.bottom, innerHeight); }).length;
+  });
+  assert.ok(seen >= 1, "candidates visible when the chooser opens: " + seen);
+  assert.equal(await page.getAttribute(".civic-r03-card", "aria-label"), "Выбор объекта");
+  // the tapped spot is moved out from under the sheet
+  await settle(page);
+  await page.waitForTimeout(400);
+  const spotY = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(); return c.top + m.project([71.38, 51.18]).y; });
+  const sheetTop = await page.evaluate(() => document.getElementById("civic-public").getBoundingClientRect().top);
+  assert.ok(spotY < sheetTop, JSON.stringify({ spotY, sheetTop }));
+  await shot(page, "r12-mobile-320-chooser");
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+// ---------- round 12, adversarial review: regressions ----------
+// Test-only synthetic records (never written to fixtures or any registry).
+const mkTest = (id, o) => Object.assign({ schema_version: "civic-v1", id, city: "astana", kind: "roadworks", title: "Тест " + id, status: "planned", publication: "published",
+  geometry: null, geometry_precision: "source", schedule: {}, budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 }, o);
+async function addItems(page, items) {
+  await page.evaluate(async (list) => { window.__stand.api.options.items.push(...list); await window.__stand.instance.refresh(); }, items);
+}
+
+test("r12 review: a server that refuses 'limit' still lists every record (retry without it)", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  const r = await page.evaluate(async () => {
+    const api = window.__stand.api;
+    api.options.rejectLimit = true;
+    api.calls.length = 0;
+    await window.__stand.instance.refresh();
+    return { paths: api.calls.map((c) => c.path), count: window.__stand.instance.getState().count, data: window.__stand.data.at(-1).length };
+  });
+  assert.deepEqual(r.paths, ["/objects?limit=100", "/objects", "/objects?cursor=5", "/objects?cursor=10"]);
+  assert.equal(r.count, 12);
+  assert.equal(r.data, 12, "the host gets all records, not an empty registry");
+  assert.equal(await page.locator(".civic-r03-item").count(), 12);
+  assert.doesNotMatch(await page.locator(".civic-r03-root").innerText(), /Опубликованных объектов пока нет/);
+  await ctx.close();
+});
+
+test("r12 review: mixed registry — no 'all demo' claim; a hypothesis with a source counts as 'С источником'", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await addItems(page, [
+    mkTest("hyp-src", { evidence_type: "hypothesis", source_refs: [{ id: "s1", publisher: "Акимат s1", published_on: "2026-09-01", fields: ["status"] }] }),
+    mkTest("hyp-none", { evidence_type: "hypothesis" }),
+  ]);
+  const note = await page.locator(".civic-r03-demo-note").innerText();
+  assert.doesNotMatch(note, /все 14/);
+  assert.match(note, /Подтверждённых реальных работ в реестре пока нет\. Демо-записей: 12 из 14/);
+  const opts = await page.evaluate(() => [...document.querySelector('[data-r03-filter="evidence"]').options].map((o) => o.textContent));
+  assert.deepEqual(opts, ["Все записи", "С источником (1)", "Демонстрационные (12)", "Без источника (1)"]);
+  await page.selectOption('[data-r03-filter="evidence"]', "sourced");
+  await page.click('[data-id="hyp-src"]');
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  assert.match(await page.locator(".civic-r03-summary").innerText(), /Откуда сведения\s+Акимат s1, 01\.09\.2026/);
+  await ctx.close();
+});
+
+test("r12 review: visible part with records hidden by other filters is not 'no published records here'", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  // city overview: the demo records are in view; 'С источником' hides them all
+  await page.evaluate(() => { window.__stand.map.jumpTo({ center: [71.43, 51.135], zoom: 11.4 }); window.__stand.instance.setFilters({ area: true, evidence: "sourced" }); });
+  await page.waitForTimeout(300);
+  const t = await page.locator(".civic-r03-state").innerText();
+  assert.match(t, /В видимой части карты нет записей по выбранным условиям/);
+  assert.match(t, /Здесь опубликовано записей: \d+ — их скрывают другие фильтры/);
+  assert.doesNotMatch(t, /нет опубликованных записей/);
+  await page.click('[data-r03-action="reset-other"]');
+  const s = await state(page);
+  assert.equal(s.filters.area, true, "the visible-part filter stays");
+  assert.equal(s.filters.evidence, "all");
+  assert.ok(await page.locator(".civic-r03-item").count() > 0);
+  await ctx.close();
+});
+
+test("r12 review: finished without a date never reads as going on; status is credited to the newest source", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await addItems(page, [mkTest("done-nodate", { status: "completed", evidence_type: "observed",
+    schedule: { planned_start: "2026-08-01", original_planned_end: "2026-11-30", current_planned_end: "2026-12-31" },
+    source_refs: [{ id: "s-old", publisher: "Акимат", published_on: "2025-03-01", fields: ["status"] }, { id: "s-new", publisher: "Акимат", published_on: "2026-09-20", fields: ["status"] }] })]);
+  await select(page, "done-nodate");
+  const t = await page.locator(".civic-r03-summary").innerText();
+  assert.match(t, /Когда закончат\s+завершено, дата окончания не указана \(план был до 31 декабря 2026\)/);
+  assert.doesNotMatch(t, /по плану\)|перенесён/);
+  assert.match(t, /по источнику от 20\.09\.2026/);
+  assert.match(t, /Откуда сведения\s+Акимат, 20\.09\.2026 и ещё 1/);
+  assert.doesNotMatch(t, /01\.03\.2025/);
+  await ctx.close();
+});
+
+test("r12 review: after a failed refresh the option counts still add up to the list on screen", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await page.evaluate(async () => { window.__stand.api.options.failList = 1; await window.__stand.instance.refresh(); });
+  assert.equal((await state(page)).list, "error");
+  await page.click('[data-kind="event"]');
+  const shown = await page.locator(".civic-r03-item").count();
+  const opts = await page.evaluate(() => [...document.querySelector('[data-r03-filter="status"]').options].slice(1).map((o) => o.textContent));
+  const sum = opts.reduce((a, t) => a + Number((t.match(/\((\d+)\)$/) || [0, -999])[1]), 0);
+  assert.equal(sum, shown, opts.join("|"));
+  await ctx.close();
+});
+
+test("r12 review: embedded in the R01-like host, back to the list restores the host's scroll and keeps focus visible", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", host: "r01" }, { folded: true });
+  const before = await page.evaluate(() => { const sc = document.querySelector(".stand-host-scroll"); sc.scrollTop = 500; return sc.scrollTop; });
+  assert.ok(before > 200, "the host panel scrolls: " + before);
+  const id = await page.evaluate(() => { const r = document.querySelector(".stand-host-scroll").getBoundingClientRect(); return [...document.querySelectorAll(".civic-r03-item")].find((b) => b.getBoundingClientRect().top > r.top + 10).dataset.id; });
+  await page.focus(`[data-id="${id}"]`);
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.click('[data-r03-action="back"]');
+  const after = await page.evaluate(() => {
+    const sc = document.querySelector(".stand-host-scroll"), r = sc.getBoundingClientRect(), f = document.activeElement.getBoundingClientRect();
+    return { top: sc.scrollTop, focused: document.activeElement.dataset.id, visible: f.top >= r.top - 1 && f.bottom <= r.bottom + 1 };
+  });
+  assert.equal(after.focused, id);
+  assert.ok(Math.abs(after.top - before) < 60, JSON.stringify({ before, after }));
+  assert.equal(after.visible, true, "the focused item is on screen");
+  await ctx.close();
+});
+
+test("r12 review: chooser keeps its origin and focus; list position survives the chooser; no stale jump later", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" }, { folded: true });
+  await page.evaluate(async () => {
+    const mk = (id, kind, geometry) => ({ schema_version: "civic-v1", id, city: "astana", kind, title: "Тест перекрытия " + id, status: "planned", publication: "published",
+      geometry, geometry_precision: "source", schedule: {}, budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 });
+    window.__stand.api.options.items.push(mk("ov-point", "event", { type: "Point", coordinates: [71.3800, 51.1800] }),
+      mk("ov-line", "roadworks", { type: "LineString", coordinates: [[71.3790, 51.1800], [71.3810, 51.1800]] }));
+    await window.__stand.instance.refresh();
+    window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 });
+  });
+  await page.waitForTimeout(400);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.38, 51.18]); return { x: c.left + p.x, y: c.top + p.y }; });
+  const scrollTo = (y) => page.evaluate((v) => { const sc = document.querySelector(".civic-r03-scroll"); sc.scrollTop = v; return sc.scrollTop; }, y);
+  const view = async () => page.evaluate(() => {
+    const sc = document.querySelector(".civic-r03-scroll"), r = sc.getBoundingClientRect(), a = document.activeElement, f = a.getBoundingClientRect();
+    return { top: sc.scrollTop, id: a.dataset.id || a.className, visible: f.top >= r.top - 1 && f.bottom <= r.bottom + 1 };
+  });
+  // list (scrolled) -> chooser -> «Отмена»: same place, focus on a visible item
+  const before = await scrollTo(400);
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  // every candidate is outlined on the map; «Приблизить все» frames them all
+  const outlined = await page.evaluate(() => JSON.stringify(window.__stand.map.getFilter("civic-r03-selected-line")));
+  assert.match(outlined, /ov-point/);
+  assert.match(outlined, /ov-line/);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.30, 51.10], zoom: 12 }));
+  await page.click('[data-r03-action="pick-fit"]');
+  await settle(page);
+  const framed = await page.evaluate(() => { const b = window.__stand.map.getBounds(); return [[71.3790, 51.18], [71.3810, 51.18]].every(([x, y]) => b.contains([x, y])); });
+  assert.equal(framed, true);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 }));
+  await page.waitForTimeout(300);
+  await page.click('[data-r03-action="pick-cancel"]');
+  let v = await view();
+  assert.ok(Math.abs(v.top - before) < 60 && v.visible, JSON.stringify({ before, v }));
+  // list -> chooser -> pick an object -> back: the focused object is visible
+  await scrollTo(400);
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  await page.click('.civic-r03-card [data-id="ov-line"]');
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.click('[data-r03-action="back"]');
+  v = await view();
+  assert.equal(v.id, "ov-line");
+  assert.equal(v.visible, true, JSON.stringify(v));
+  // card -> chooser -> chooser again -> Escape: back to the card, not to a list with a hidden selection
+  await select(page, "r03-demo-shifted");
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 }));
+  await page.waitForTimeout(300);
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForTimeout(200);
+  // focus inside the chooser survives a refresh (R01 refreshes after a publish)
+  await page.focus('.civic-r03-card [data-id="ov-line"]');
+  await page.evaluate(() => window.__stand.instance.refresh());
+  assert.equal(await page.evaluate(() => document.activeElement.dataset.id), "ov-line");
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "card");
+  assert.equal((await state(page)).selectedId, "r03-demo-shifted");
+  // a later close from the list itself (the R01 shell calls selectObject(null) on a street pick) does not jump
+  await page.click('[data-r03-action="back"]');
+  const mid = await scrollTo(300);
+  await page.evaluate(() => window.__stand.instance.selectObject(null));
+  assert.ok(Math.abs((await view()).top - mid) < 2);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r12 review: a street pick is judged after the camera arrives — no false 'no records' on the way", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" });
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.36, 51.19], zoom: 16 }));  // an empty part of the city
+  await page.waitForTimeout(300);
+  await page.evaluate(() => {
+    const seen = (window.__r03Seen = []);
+    const rec = () => seen.push(document.querySelector(".civic-r03-state").innerText + " | " + document.querySelector(".civic-r03-count").textContent);
+    new MutationObserver(rec).observe(document.querySelector(".civic-r03-root"), { subtree: true, childList: true, characterData: true });
+    // exactly what the R01 shell does on a street pick: setFilters({area:true}), then fitBounds in the same task
+    const g = window.__stand.api.options.items.find((x) => x.id === "r03-demo-shifted").geometry;
+    const pts = g.type === "Point" ? [g.coordinates] : g.coordinates.flat(g.type === "Polygon" ? 1 : 0);
+    const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+    window.__stand.instance.setFilters({ area: true });
+    window.__stand.map.fitBounds([[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]], { padding: 80, maxZoom: 16, duration: 800 });
+  });
+  await page.waitForFunction(() => !window.__stand.map.isMoving());
+  await page.waitForFunction(() => !/Обновляем/.test(document.querySelector(".civic-r03-count").textContent), null, { timeout: 5000 });
+  const seen = await page.evaluate(() => window.__r03Seen);
+  assert.ok(!seen.some((t) => /нет опубликованных записей|Показано 0 из/.test(t)), seen.join("\n"));
+  assert.ok(await page.locator(".civic-r03-item").count() >= 1, "the street's record is listed");
   assert.deepEqual(errors, []);
   await ctx.close();
 });

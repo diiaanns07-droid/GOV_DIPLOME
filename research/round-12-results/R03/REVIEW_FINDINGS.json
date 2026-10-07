@@ -1,0 +1,356 @@
+{
+ "review": "adversarial review of the round-12 diff (4 finders + skeptical verifiers), reviewed snapshot 71c4e1b",
+ "note": "verify:completeness did not run (session limit) -> its findings are 'unverified'; all were checked by hand and handled anyway",
+ "findings": [
+  {
+   "id": "R03-r12-limit-fallback-empty",
+   "finder": "honesty-data",
+   "severity": "high",
+   "verdict": "confirmed",
+   "title": "The 400/422 fallback for limit=100 ends the paging loop, so the map says there are no published objects",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "for(;;) loop: the first page is really retried without limit; test 'r12 review: a server that refuses limit…'"
+  },
+  {
+   "id": "R03-r12-demo-note-all-demo",
+   "finder": "honesty-data",
+   "severity": "medium",
+   "verdict": "confirmed",
+   "title": "Header says 'все N записей — демонстрационные' when some records are hypothesis or of unknown type",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "'все … демонстрационные' only when demo === total; mixed registry test"
+  },
+  {
+   "id": "R03-r12-area-empty-ignores-other-filters",
+   "finder": "honesty-data",
+   "severity": "medium",
+   "verdict": "confirmed",
+   "title": "Visible-area empty state says 'нет опубликованных записей' when other filters caused the empty list",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "area headline only when no record lies in the view at all; otherwise 'нет записей по выбранным условиям' + 'Сбросить остальные фильтры' (keeps area); test"
+  },
+  {
+   "id": "R03-r12-completed-no-actual-end-when",
+   "finder": "honesty-data",
+   "severity": "medium",
+   "verdict": "confirmed",
+   "title": "For a completed record with no actual end date, «Когда закончат» still shows a future planned end date",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "completed without actual_end: 'завершено, дата окончания не указана (план был до …)', no shift chip (also for cancelled); test"
+  },
+  {
+   "id": "R03-r12-hidepast-hides-ongoing",
+   "finder": "honesty-data",
+   "severity": "medium",
+   "verdict": "confirmed",
+   "title": "'Скрыть планы с прошедшим сроком' hides overdue in-progress works but keeps completed and cancelled plans",
+   "file": "web/civic/map/civic-map-core.js",
+   "outcome": "fixed",
+   "resolution": "pastPlan(): only planned/unknown with a really passed planned end; overdue in-progress and 'old start, no end' stay; core test"
+  },
+  {
+   "id": "R03-r12-evidence-group-by-type",
+   "finder": "honesty-data",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "«Сведения» filter and source counter label hypothesis records that have sources as 'Без источника'",
+   "file": "web/civic/map/civic-map-core.js",
+   "outcome": "fixed",
+   "resolution": "«Сведения» grouped by the sources the card lists; list badges use the same words; coverage 'с источником' too; tests"
+  },
+  {
+   "id": "R03-r12-facet-counts-stale-on-error",
+   "finder": "honesty-data",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "Status and «Сведения» option counts stop updating after a failed refresh and no longer match the list",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "option counts follow the list on screen also in error/refresh state; test"
+  },
+  {
+   "id": "R03-r12-counters-ignore-hidepast",
+   "finder": "honesty-data",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "'Вне видимой части' and 'Без плановых дат' counters include records that hidePast would hide",
+   "file": "web/civic/map/civic-map-core.js",
+   "outcome": "fixed",
+   "resolution": "undated/outsideArea/noGeometry count only records hidePast lets through; core test"
+  },
+  {
+   "id": "R03-r12-status-source-first-ref",
+   "finder": "honesty-data",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "«Сейчас … по источнику от» shows the first status source in the list, not the latest",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "newest dated source for status and for «Откуда сведения»; test"
+  },
+  {
+   "id": "R03-IX-1",
+   "finder": "interaction-lifecycle",
+   "severity": "medium",
+   "verdict": "confirmed",
+   "title": "Retry without `limit` never runs: a server that rejects `limit` makes the list say there are no published objects",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "for(;;) loop: the first page is really retried without limit; test 'r12 review: a server that refuses limit…'"
+  },
+  {
+   "id": "R03-IX-2",
+   "finder": "interaction-lifecycle",
+   "severity": "medium",
+   "verdict": "confirmed",
+   "title": "Back to list in the R01 embedded layout: the scroll position is not restored and focus lands on an item outside the visible area (regression from base)",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "scroll saved/restored on the element that really scrolls (host panel when embedded), saved on opening the chooser, used once; focused item revealed; tests (overlay + host=r01)"
+  },
+  {
+   "id": "R03-IX-3",
+   "finder": "interaction-lifecycle",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "Overlay layout: list position is lost via the overlap chooser and map/API selections, focus lands off-screen, and a stale position is reapplied when the host closes",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "scroll saved/restored on the element that really scrolls (host panel when embedded), saved on opening the chooser, used once; focused item revealed; tests (overlay + host=r01)"
+  },
+  {
+   "id": "R03-IX-4",
+   "finder": "interaction-lifecycle",
+   "severity": "medium",
+   "verdict": "confirmed",
+   "title": "Opening the chooser again while it is open drops the card context: Cancel/Escape shows the list but the object stays selected and the host is not told",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "second chooser keeps the first one's origin; Escape returns to the card; test"
+  },
+  {
+   "id": "R03-IX-5",
+   "finder": "interaction-lifecycle",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "Overlap chooser loses keyboard focus when a refresh or a late card response re-renders it, and Escape then stops working",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "focus inside the chooser kept across re-render (refresh, late card); test"
+  },
+  {
+   "id": "R12-A11Y-1",
+   "finder": "a11y-ux",
+   "severity": "high",
+   "verdict": "confirmed",
+   "title": "Going back from a card puts keyboard focus on a list item that is off-screen (regression; broken in the R01 shell layout)",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "scroll saved/restored on the element that really scrolls (host panel when embedded), saved on opening the chooser, used once; focused item revealed; tests (overlay + host=r01)"
+  },
+  {
+   "id": "R12-UX-2",
+   "finder": "a11y-ux",
+   "severity": "medium",
+   "verdict": "confirmed",
+   "title": "'В видимой части карты нет опубликованных записей' shows when records are there but hidden by another filter",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "area headline only when no record lies in the view at all; otherwise 'нет записей по выбранным условиям' + 'Сбросить остальные фильтры' (keeps area); test"
+  },
+  {
+   "id": "R12-UX-3",
+   "finder": "a11y-ux",
+   "severity": "medium",
+   "verdict": "confirmed",
+   "title": "Card summary 'Когда закончат' gives a future plan date for a record whose status is 'Завершено'",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "completed without actual_end: 'завершено, дата окончания не указана (план был до …)', no shift chip (also for cancelled); test"
+  },
+  {
+   "id": "R12-A11Y-4",
+   "finder": "a11y-ux",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "A street or district pick briefly shows and announces a false 'no published records here'",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "host setFilters({area:true}) waits for the camera move that follows (R01 street/district pick) — no false 'нет записей' in between; test replays the shell sequence"
+  },
+  {
+   "id": "R12-A11Y-5",
+   "finder": "a11y-ux",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "Copy-link confirmation probably not announced: role=status region is inserted already holding its message, and the button label no longer changes",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "empty role=status line rendered with the card, text set after copy (cleared first), kept across re-render; 1.5 s fallback field if the clipboard promise never settles"
+  },
+  {
+   "id": "R12-UX-6",
+   "finder": "a11y-ux",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "Overlapping-objects chooser on phones: no candidate visible when it opens",
+   "file": "web/civic/map/civic-map.css",
+   "outcome": "fixed",
+   "resolution": "chooser collapses the list header like the card; phone half sheet ≥380px (≤72dvh) in chooser; tapped spot panned above the sheet; aria-label 'Выбор объекта'; 320px test opens the chooser"
+  },
+  {
+   "id": "R12-UX-7",
+   "finder": "a11y-ux",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "Filter 'С источником' lists derived records whose badge says 'Вывод' in warning colour",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "«Сведения» grouped by the sources the card lists; list badges use the same words; coverage 'с источником' too; tests"
+  },
+  {
+   "id": "R12-UX-8",
+   "finder": "a11y-ux",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "'Скрыть планы с прошедшим сроком' also hides records that have no deadline at all, including ongoing works",
+   "file": "web/civic/map/civic-map-core.js",
+   "outcome": "fixed",
+   "resolution": "pastPlan(): only planned/unknown with a really passed planned end; overdue in-progress and 'old start, no end' stay; core test"
+  },
+  {
+   "id": "R12-UX-9",
+   "finder": "a11y-ux",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "Filter summary 'активно: N' does not match the number of removable pills",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "«активно: N» = number of pills (each kind counts)"
+  },
+  {
+   "id": "R12-TXT-10",
+   "finder": "a11y-ux",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "New Russian count strings agree wrongly with 1, 21, 31… records",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "опубликована/опубликованы/опубликовано; 'единственная запись — демонстрационная'"
+  },
+  {
+   "id": "R12-TXT-11",
+   "finder": "a11y-ux",
+   "severity": "low",
+   "verdict": "confirmed",
+   "title": "Status qualifier 'по записи' is ambiguous in Russian ('by appointment')",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "'— источник статуса не указан' instead of 'по записи'"
+  },
+  {
+   "id": "R03-R12-1",
+   "finder": "completeness",
+   "severity": "high",
+   "verdict": "unverified",
+   "title": "The 400/422 retry without limit never runs, so the list shows a false 'no records'",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "for(;;) loop: the first page is really retried without limit; test 'r12 review: a server that refuses limit…'"
+  },
+  {
+   "id": "R03-R12-2",
+   "finder": "completeness",
+   "severity": "medium",
+   "verdict": "unverified",
+   "title": "'Скрыть планы с прошедшим сроком' also hides overdue works in progress; counters ignore it",
+   "file": "web/civic/map/civic-map-core.js",
+   "outcome": "fixed",
+   "resolution": "pastPlan(): only planned/unknown with a really passed planned end; overdue in-progress and 'old start, no end' stay; core test"
+  },
+  {
+   "id": "R03-R12-3",
+   "finder": "completeness",
+   "severity": "medium",
+   "verdict": "unverified",
+   "title": "The demo note says 'все N записей — демонстрационные' when some records are not demo",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "'все … демонстрационные' only when demo === total; mixed registry test"
+  },
+  {
+   "id": "R03-R12-4",
+   "finder": "completeness",
+   "severity": "low",
+   "verdict": "unverified",
+   "title": "'Сведения' filter groups by evidence_type while the card shows source_refs, so they contradict",
+   "file": "web/civic/map/civic-map-core.js",
+   "outcome": "fixed",
+   "resolution": "«Сведения» grouped by the sources the card lists; list badges use the same words; coverage 'с источником' too; tests"
+  },
+  {
+   "id": "R03-R12-5",
+   "finder": "completeness",
+   "severity": "low",
+   "verdict": "unverified",
+   "title": "The 'no records in the visible part' message appears when another filter caused the empty list",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "area headline only when no record lies in the view at all; otherwise 'нет записей по выбранным условиям' + 'Сбросить остальные фильтры' (keeps area); test"
+  },
+  {
+   "id": "R03-R12-6",
+   "finder": "completeness",
+   "severity": "low",
+   "verdict": "unverified",
+   "title": "Search still matches an organisation name the card now hides as unconfirmed",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "organisation is searchable only when the card shows it"
+  },
+  {
+   "id": "R03-R12-7",
+   "finder": "completeness",
+   "severity": "low",
+   "verdict": "unverified",
+   "title": "After a pick from the overlap chooser, 'back' restores a stale list scroll",
+   "file": "web/civic/map/civic-map.js",
+   "outcome": "fixed",
+   "resolution": "scroll saved/restored on the element that really scrolls (host panel when embedded), saved on opening the chooser, used once; focused item revealed; tests (overlay + host=r01)"
+  },
+  {
+   "id": "R03-R12-8",
+   "finder": "completeness",
+   "severity": "low",
+   "verdict": "unverified",
+   "title": "Mandatory DELIVERY.json is stale and contradicts the code, tests and INTEGRATION.txt",
+   "file": "research/round-12-results/R03/DELIVERY.json",
+   "outcome": "fixed",
+   "resolution": "DELIVERY.json regenerated with all three web/civic/map files, real counts, SHAs"
+  },
+  {
+   "id": "R03-R12-9",
+   "finder": "completeness",
+   "severity": "low",
+   "verdict": "unverified",
+   "title": "Branch diff against CODE_BASE_SHA adds 35 round-11 files outside the round-12 allowed paths",
+   "file": "research/round-11-results/R03/stand/stand.js",
+   "outcome": "documented",
+   "resolution": "documented: transfer only the round-12 paths (DELIVERY/INTEGRATION); round-11 result files are R03's own earlier results"
+  },
+  {
+   "id": "R03-R12-10",
+   "finder": "completeness",
+   "severity": "low",
+   "verdict": "unverified",
+   "title": "Test names and STATUS claim more than the tests check (chooser at 320px, every dense object clickable)",
+   "file": "tests/civic/R03/browser.test.mjs",
+   "outcome": "fixed",
+   "resolution": "320px test now opens the chooser; chooser test checks outline filter and «Приблизить все»; STATUS claim about density softened (source data drawn, sample click)"
+  }
+ ]
+}
