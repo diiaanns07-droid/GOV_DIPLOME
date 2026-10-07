@@ -53,7 +53,11 @@ class PreparedGraph:
         self.edges = edges                # dict id -> (from, to, mm, access, oneway)
         self.warnings = warnings
         self.coverage = coverage
+        # Координаты узлов — для привязки точки пользователя к сети (snap.py), не для расчёта длины.
+        self.coords = {n["id"]: (float(n["lon"]), float(n["lat"])) for n in graph["nodes"]}
+        self.bbox = graph.get("bbox") if isinstance(graph.get("bbox"), list) and len(graph.get("bbox")) == 4 else None
         self._adj_cache = {}
+        self._snap_cache = None
 
     def adjacency(self, accesses, closed, reverse=False):
         """Список смежности: node -> [(edge_id, neighbor, mm)], отсортированный по edge_id.
@@ -74,7 +78,10 @@ class PreparedGraph:
                 if reverse:
                     a, b = b, a
                 adj.setdefault(a, []).append((eid, b, mm))
-        if len(self._adj_cache) > 64:
+        # A city graph has ~100k edges: retaining 65 alternate closure indexes
+        # can exhaust memory. Bound the cache by graph size, not just requests.
+        cache_limit = max(2, min(64, 200_000 // max(1, len(self.edges))))
+        if len(self._adj_cache) >= cache_limit:
             self._adj_cache.clear()
         self._adj_cache[key] = adj
         return adj

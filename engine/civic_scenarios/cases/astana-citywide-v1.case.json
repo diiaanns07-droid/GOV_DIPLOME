@@ -1,0 +1,46 @@
+{
+ "case_id": "astana-citywide-north-south-v1",
+ "title": "Городская сеть: два варианта ограничения пешего пути",
+ "evidence_type": "hypothesis",
+ "note": "Автоматически выбранные крайние по широте точки крупнейшей доступной компоненты. Два вымышленных перекрытия; не сведения о реальных работах.",
+ "payload": {
+  "schema_version": "civic-scenario-v1",
+  "city": "astana",
+  "graph_id": "osm-astana-walking-20260506",
+  "graph_digest": "a694be21cc08ef1bf8000387a5120e7e5ad810ee37a955a4c223c004aeba5e35",
+  "mode": "walking",
+  "analysis_at": "2026-10-07T09:00:00+05:00",
+  "origin_node_ids": [
+   "osm-n13657601063"
+  ],
+  "destination_node_ids": [
+   "osm-n9961409043"
+  ],
+  "plans": [
+   {
+    "id": "A",
+    "closures": [
+     {
+      "edge_ids": [
+       "osm-w1177858836-0"
+      ],
+      "start_at": "2026-10-07T00:00:00+05:00",
+      "end_at": "2026-10-08T00:00:00+05:00"
+     }
+    ]
+   },
+   {
+    "id": "B",
+    "closures": [
+     {
+      "edge_ids": [
+       "osm-w515074716-0"
+      ],
+      "start_at": "2026-10-07T00:00:00+05:00",
+      "end_at": "2026-10-08T00:00:00+05:00"
+     }
+    ]
+   }
+  ]
+ }
+}
