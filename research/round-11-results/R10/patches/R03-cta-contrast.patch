@@ -1,0 +1,20 @@
+diff --git a/web/civic/map/civic-map.css b/web/civic/map/civic-map.css
+index 97b1225..f0b0733 100644
+--- a/web/civic/map/civic-map.css
++++ b/web/civic/map/civic-map.css
+@@ -180,12 +180,13 @@
+   padding-left: 6px;
+   padding-right: 8px;
+ }
+-.civic-r03-btn-primary {
++/* Scoped like `.civic-r03-root button` (0,1,1) so color:#fff is not overridden by color:inherit. */
++.civic-r03-root .civic-r03-btn-primary {
+   background: var(--civic-r03-ink);
+   border-color: var(--civic-r03-ink);
+   color: #fff;
+ }
+-.civic-r03-btn-primary:hover {
++.civic-r03-root .civic-r03-btn-primary:hover {
+   background: #23453c;
+ }
+ .civic-r03-link-btn {

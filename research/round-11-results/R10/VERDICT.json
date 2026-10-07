@@ -1,0 +1,87 @@
+{
+  "round": 11,
+  "role": "R10",
+  "generated_utc": "2026-10-07T05:10Z",
+  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+  "code_sha_tested": "8c6add919efa9ed965cb05a57626744fed750da1",
+  "code_sha_source": "Head of R01 branch claude/affectionate-ride-bol5v8 (checkpoint 11, 2026-10-06T16:34Z). R01 has NOT published research/round-11-results/R01/DELIVERY.json, CODE_SHA or RUN.txt; R10 therefore treats this commit as the candidate build and says so. If R01 later publishes a different CODE_SHA, this verdict does not apply to it.",
+  "level": "local-demo",
+  "levels_defined": {
+    "incomplete": "P0 not passing or not run",
+    "local-demo": "P0 passes locally (HTTP + browser, restart); open defects are not critical; not all pilot criteria met",
+    "pilot-candidate": "P0 + security + facts pass, restart and browser checked, no open critical/high defect, CODE_SHA/RUN.txt published"
+  },
+  "why_local_demo": [
+    "P0 over HTTP on an isolated copy with a temp DB: 82/82 PASS incl. draft hidden, publish, deadline change with reason and preserved original, history, feedback pending->moderation->public reply, restart persistence, concurrency (one of two same-revision writes wins) — runs/r01-8c6add9.json.",
+    "P0 in a real browser (Chromium 141, 1440x900 and 390x844): editor login via form, draft via form (no raw JSON), publish, resident card with deadline/organisation 'нет данных'/synthetic banner/cost 'нет данных', date change with reason in history, F5 and real server restart, feedback with 'not official' receipt, moderation, reply visible, XSS payloads shown as text — runs/browser-r01-8c6add9.json (48 PASS / 5 FAIL / 1 NOT_RUN, after skeptic review).",
+    "Security over HTTP and in the browser: anonymous/CSRF/foreign Origin/wrong Host refused with state unchanged, logout revokes the server session, HttpOnly+SameSite=Strict cookie not visible to JS, role from body/headers/localStorage ignored, no runtime DB/.env/sources served, no server-side fetch of user URLs, login rate limit — S01-S14 PASS.",
+    "Facts: unknown budget/responsible shown as 'нет данных' (not 0) in API, card and assistant; assistant answers carry only dates present in the facts and are honestly labelled 'template' (no LLM configured) — runs/integrated-extra-8c6add9.json."
+  ],
+  "blocking_pilot_candidate": [
+    "R10-D009 (high): the card's 'Задать вопрос по объекту' button text is invisible (contrast 1:1) at both sizes — the resident entry to the feedback step. One-selector patch verified (1.00 -> 14.79): patches/R03-cta-contrast.patch.",
+    "R10-D010 (medium): 409 conflict panel and its buttons hidden under the editor's sticky action bar at 1366/1440/390 (data is kept).",
+    "R01 has not published CODE_SHA/RUN.txt/DELIVERY.json (process D02).",
+    "Basemap and 3D could not be observed (OpenFreeMap blocked by the sandbox proxy): U06 basemap NOT_RUN; must be checked on a networked machine.",
+    "0 real Astana records: R05 could not fetch official sources; every object shown is synthetic and labelled so. A pilot needs verified real data."
+  ],
+  "not_production_ready": "Local loopback server, local editor accounts via CLI, no SSO/IAM, no deployment hardening, no real data. Nothing here supports a public production claim.",
+  "acceptance": {
+    "A01": "PASS", "A02": "PASS", "A03": "PASS", "A04": "PASS", "A05": "PASS", "A06": "PASS",
+    "A07": "PASS", "A08": "PASS", "A09": "PASS", "A10": "PASS",
+    "C01": "PASS", "C02": "PASS", "C03": "PASS", "C04": "PASS", "C05": "PASS", "C06": "PASS",
+    "C07": "PASS", "C08": "PASS", "C09": "PASS",
+    "S01": "PASS", "S02": "PASS", "S03": "PASS", "S04": "PASS", "S05": "PASS", "S06": "PASS",
+    "S07": "PASS", "S08": "PASS", "S09": "PASS", "S10": "PASS", "S11": "PASS", "S12": "PASS",
+    "S13": "PASS", "S14": "PASS",
+    "U01": "FAIL(low: R10-D012 training-mode header overflow; one canvas, light theme, civic default PASS)",
+    "U02": "FAIL(high: R10-D009 invisible feedback button; deadline/responsible/source/synthetic/unknown PASS)",
+    "U03": "FAIL(low: R10-D011 editor footer overflow at 1440; mobile bottom sheet PASS)",
+    "U04": "FAIL(medium: R10-D010 conflict panel covered; no raw JSON and form kept on 409 PASS)",
+    "U05": "PASS",
+    "U06": "PARTIAL(attribution PASS with a local stand-in style; honest offline notice PASS; real basemap/3D NOT_RUN — proxy blocks tiles.openfreemap.org)",
+    "U07": "PASS(note R10-O007: focus to body after Escape)",
+    "U08": "PASS",
+    "U09": "PASS",
+    "U10": "PASS",
+    "M01": "PASS (R07 d77ec45 19/19 and integrated copy; R10's own tiny graphs, hand + brute-force expectations)",
+    "M02": "NOT_RUN (no R08 delivery on any origin branch)",
+    "M03": "FAIL(low: R10-D003/D004/D005 in R09 f895c30; integrated answers fact-consistent)",
+    "M04": "FAIL(low: R10-D008 in R05 e477e5d; provenance/licence register PASS; official licence pages NOT_RUN — proxy)",
+    "D01": "PARTIAL (R02-R07, R09 DELIVERY valid; R01 and R08 have none)",
+    "D02": "FAIL (R01 CODE_SHA/RUN.txt not published)"
+  },
+  "results": {
+    "http_suite_r01": {"file": "runs/r01-8c6add9.json", "pass": 82, "fail": 0, "not_run": 0},
+    "browser_r01": {"file": "runs/browser-r01-8c6add9.json", "pass": 48, "fail": 5, "not_run": 1, "fails": ["U02-cta-contrast@1440", "U02-cta-contrast@390", "U04-reach", "U03-editor-footer", "U01-modes-header"]},
+    "ui_probe_r01": {"file": "shots/r01-8c6add9-probe/r01-8c6add9-probe.json"},
+    "integrated_extras_r01": {"file": "runs/integrated-extra-8c6add9.json"},
+    "r07_tinygraph": {"file": "runs/r07-d77ec45-tinygraph.json", "pass": 19, "fail": 0},
+    "r06_standalone_integrated": {"file": "runs/standalone-r06-in-r01-8c6add9.json", "pass": 23, "fail": 0},
+    "r09_standalone": {"files": ["runs/standalone-r09-in-r01-8c6add9.json", "runs/standalone-r09-head-f895c30.json"], "pass": 16, "fail": 6, "note": "3 low defects + 2 informational + 1 pointer to the browser XSS check (U10 PASS)"},
+    "r05_standalone": {"file": "runs/standalone-r05-in-r01-8c6add9.json", "pass": 16, "fail": 3, "not_run": 1, "note": "1 low defect, 1 info, 1 stale DELIVERY since fixed on R05 head"},
+    "suite_self_test": {"oracle_run": "runs/oracle-clean.json", "mutation": "MUTATION_RESULTS.json", "mutation_score": "28/28", "note": "oracle = R10 test-only reference server, not product"}
+  },
+  "timing_automated_not_user_study": {
+    "label": "automated-run, not a user study",
+    "editor_publish_date_change": {"wall_ms": 2146, "ui_actions": 9, "includes_republish_step": true},
+    "resident_find_deadline_and_reason": {"wall_ms": 1843, "ui_actions": 1},
+    "baseline": "NOT measured: the comparison app b2cb2e0 has no civic workflow at all (no objects/editor/feedback), so there is no like-for-like baseline run."
+  },
+  "not_run": [
+    "Real basemap, streets and 3D buildings (OpenFreeMap blocked by the proxy).",
+    "Live LLM answers (no provider configured; no paid calls in this round).",
+    "R08 classifier (not delivered).",
+    "Official licence/terms pages re-read (proxy 403); licence texts were checked only against R05's stored copies.",
+    "Expired-session behaviour over HTTP (needs control of the server clock).",
+    "Human user study: only automated runs and an AI review; USER_TEST_SCRIPT.md is ready for people."
+  ],
+  "defects_open": {"high": ["R10-D009"], "medium": ["R10-D010"], "low": ["R10-D003", "R10-D004", "R10-D005", "R10-D008", "R10-D011", "R10-D012"]},
+  "defects_fixed_verified": ["R10-D001", "R10-D002 (at gateway)", "R10-D006", "R10-D007", "R10-I001"],
+  "claims_not_made": [
+    "No 'проверено пользователями': only automated runs and AI review.",
+    "No real Astana works are shown; all data synthetic and labelled.",
+    "No traffic, travel time or CO2 claims from the scenario engine (checked: none present).",
+    "Not production-ready."
+  ],
+  "next_step": "R01: apply patches/R03-cta-contrast.patch (or the R03 fix), fix the R04 sticky action bar (R10-D010), publish CODE_SHA/RUN.txt/DELIVERY.json; R10 then re-runs run_acceptance.py + browser/run_walkthrough.py on that exact SHA."
+}

@@ -1,0 +1,33 @@
+{
+  "round": 11,
+  "role": "R10",
+  "branch": "claude/fervent-dijkstra-1cqrg5",
+  "base_sha": "834a25f",
+  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+  "status": "ready",
+  "owned_paths": [
+    "tests/civic/R10/",
+    "research/round-11-results/R10/",
+    "research/handoffs/astana/R10/round-11/STATUS.md"
+  ],
+  "integration_notes": "R10 adds no product code. R01 applies research/round-11-results/R10/patches/*.patch after review; re-run instructions in research/handoffs/astana/R10/round-11/STATUS.md (Для воспроизведения).",
+  "code_commit": "ce3ce46",
+  "checks": [
+    {"name": "fixture-smoke", "status": "PASS", "command": "python3 -I -B -m unittest discover -s tests/civic/R10 -p test_fixture_contract.py", "input": "PACK fixture (sha256 e2ba1de7...) + 22 broken variants", "reason": "11/11"},
+    {"name": "suite-on-oracle", "status": "PASS", "command": "python3 -I -B tests/civic/R10/run_acceptance.py --label oracle-clean --out research/round-11-results/R10/runs/oracle-clean.json", "input": "R10 test-only reference server", "reason": "69 PASS / 0 FAIL / 13 NOT_RUN (R07 product tests need R10_CODE_ROOT)"},
+    {"name": "mutation-score", "status": "PASS", "command": "python3 -I -B tests/civic/R10/mutation_selftest.py", "input": "28 deliberate oracle defects", "reason": "28/28 killed; baseline 52/52"},
+    {"name": "http-acceptance-r01", "status": "PASS", "command": "R10_TARGET=command R10_CODE_ROOT=<detached worktree 8c6add9> R10_START_CMD='{python} -E -s -B app.py --port {port} --civic-db {db}' R10_CREATE_EDITOR_CMD='{python} -E -s -B -m ui.civic_store --db {db} create-editor {username}' python3 -I -B tests/civic/R10/run_acceptance.py --label r01-8c6add9 --out research/round-11-results/R10/runs/r01-8c6add9.json", "input": "R01 8c6add919efa9ed965cb05a57626744fed750da1 (no R01 DELIVERY/CODE_SHA published)", "reason": "82 PASS / 0 FAIL / 0 NOT_RUN"},
+    {"name": "browser-acceptance-r01", "status": "FAIL", "command": "python3 -I -B tests/civic/R10/browser/run_walkthrough.py (Playwright 1.56, Chromium 141, 1440x900 + 390x844)", "input": "R01 8c6add9, fresh temp DB, editors via product CLI", "reason": "48 PASS / 5 FAIL / 1 NOT_RUN: R10-D009 high (invisible feedback button), D010 medium, D011/D012 low; basemap NOT_RUN (proxy)"},
+    {"name": "r07-tinygraph", "status": "PASS", "command": "R10_CODE_ROOT=<worktree d77ec45> run_acceptance.py --pattern test_scenarios_tinygraph.py", "input": "R10 tiny graphs, hand + brute-force expectations", "reason": "19/19"},
+    {"name": "standalone-r06-r09-r05", "status": "FAIL", "command": "run_acceptance.py --start standalone --pattern standalone_r0X.py (R10_R0X_ROOT=<checkout>)", "input": "versions integrated in 8c6add9; R09 head f895c30", "reason": "R06 23/23; R09 16 PASS / 6 FAIL (3 low defects); R05 16 PASS / 3 FAIL / 1 NOT_RUN (1 low defect)"},
+    {"name": "basemap-3d", "status": "NOT_RUN", "command": "browser probe/walkthrough", "input": "tiles.openfreemap.org", "reason": "egress proxy CONNECT 403 in this environment"},
+    {"name": "user-study", "status": "NOT_RUN", "command": null, "input": "USER_TEST_SCRIPT.md", "reason": "no human participants; only automated runs and AI review"}
+  ],
+  "limitations": [
+    "Tested commit is R01's branch head; R01 published no CODE_SHA/RUN.txt.",
+    "Oracle and standalone harness are R10 test tools, not product code.",
+    "All data synthetic; 0 verified real Astana records exist in the build.",
+    "Timing figures are automated runs, not a user study; no baseline workflow exists to compare."
+  ],
+  "next_step": "After R01 applies R10-D009/D010 fixes and publishes CODE_SHA: re-run run_acceptance.py and browser/run_walkthrough.py on that SHA and update VERDICT.json."
+}

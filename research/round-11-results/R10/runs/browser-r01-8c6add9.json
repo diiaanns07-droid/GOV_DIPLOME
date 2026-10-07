@@ -1,9 +1,9 @@
 {
  "code_sha": "8c6add919efa9ed965cb05a57626744fed750da1",
  "label": "r01-8c6add9",
- "started_utc": "2026-10-07T04:31:29.355Z",
- "finished_utc": "2026-10-07T04:32:43.402Z",
- "base_url": "http://127.0.0.1:38371",
+ "started_utc": "2026-10-07T04:48:28.661Z",
+ "finished_utc": "2026-10-07T04:49:38.786Z",
+ "base_url": "http://127.0.0.1:40017",
  "chromium": {
   "executablePath": "/opt/pw-browsers/chromium-1194/chrome-linux/chrome",
   "version": "141.0.7390.37",
@@ -53,6 +53,14 @@
    "screenshot": null
   },
   {
+   "id": "U01-modes-header",
+   "name": "training-mode header text stays inside the header bar at 1440x900",
+   "viewport": "1440x900",
+   "status": "FAIL",
+   "evidence": "header bar y=20,96; .top-center width 111px; children: \"Астана / Городская лаборатория\" y=-13..45; \"6 районов на карте · 5 в модели · 14 проектов\" y=50..127; outside the bar: 2 (text above the page top is cut off)",
+   "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/02_training_mode_1440x900.png"
+  },
+  {
    "id": "U01-modes",
    "name": "training model / school modes reachable, separate, labelled",
    "viewport": "1440x900",
@@ -100,7 +108,7 @@
    "name": "draft created through the form (roadworks, 2026-10-14..2026-10-20, synthetic)",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "POST /staff/objects 201 id=ast-2c214ecc92 rev=1; body keys sent by the form: title,description,kind,status,geometry,geometry_precision,schedule,budget,responsible,evidence_type,source_refs,evidence_notes; kind=roadworks, schedule={\"planned_start\":\"2026-10-14\",\"original_planned_end\":\"2026-10-20\",\"current_planned_end\":\"2026-10-20\",\"actual_end\":null}, evidence=synthetic; notice: \"Черновик создан (ред. 1). Жители его не видят.\"; meta: \"Черновик ред. 1 · обновлено 07.10.2026 09:31 · ID ast-2c214ecc92\"",
+   "evidence": "POST /staff/objects 201 id=ast-4c8f5f0a7b rev=1; body keys sent by the form: title,description,kind,status,geometry,geometry_precision,schedule,budget,responsible,evidence_type,source_refs,evidence_notes; kind=roadworks, schedule={\"planned_start\":\"2026-10-14\",\"original_planned_end\":\"2026-10-20\",\"current_planned_end\":\"2026-10-20\",\"actual_end\":null}, evidence=synthetic; notice: \"Черновик создан (ред. 1). Жители его не видят.\"; meta: \"Черновик ред. 1 · обновлено 07.10.2026 09:48 · ID ast-4c8f5f0a7b\"",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/06_draft_created_1440x900.png"
   },
   {
@@ -127,7 +135,7 @@
    "name": "draft invisible to a fresh resident (list/map/deep link)",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "list contains title=false, list item by id=0, map source features=0 has id=false; deep link /#object=ast-2c214ecc92 -> card \"Объект не найден\" (Все объекты Объект не найден Возможно, его сняли с публикации или ссылка устарела.), contains draft title=false; GET /api/civic/v1/objects/{id} -> 404; staff calls=0",
+   "evidence": "list contains title=false, list item by id=0, map source features=0 has id=false; deep link /#object=ast-4c8f5f0a7b -> card \"Объект не найден\" (Все объекты Объект не найден Возможно, его сняли с публикации или ссылка устарела.), contains draft title=false; GET /api/civic/v1/objects/{id} -> 404; staff calls=0",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/07_draft_deeplink_notfound_1440x900.png"
   },
   {
@@ -135,7 +143,7 @@
    "name": "draft invisible to a fresh resident (list/map/deep link)",
    "viewport": "390x844",
    "status": "PASS",
-   "evidence": "list contains title=false, list item by id=0, map source features=0 has id=false; deep link /#object=ast-2c214ecc92 -> card \"Объект не найден\" (Все объекты Объект не найден Возможно, его сняли с публикации или ссылка устарела.), contains draft title=false; GET /api/civic/v1/objects/{id} -> 404; staff calls=0",
+   "evidence": "list contains title=false, list item by id=0, map source features=0 has id=false; deep link /#object=ast-4c8f5f0a7b -> card \"Объект не найден\" (Все объекты Объект не найден Возможно, его сняли с публикации или ссылка устарела.), contains draft title=false; GET /api/civic/v1/objects/{id} -> 404; staff calls=0",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/07_draft_deeplink_notfound_390x844.png"
   },
   {
@@ -151,7 +159,7 @@
    "name": "resident (reload) sees the published object in list and map",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "list item by id=1 text=\"Дорожные работы R10 ремонт тротуара «проверка» & синтетика Запланировано · до 20.10.2026 Демо Примерное место\"; map source has feature cid=ast-2c214ecc92: true (features=1)",
+   "evidence": "list item by id=1 text=\"Дорожные работы R10 ремонт тротуара «проверка» & синтетика Запланировано · до 20.10.2026 Демо Примерное место\"; map source has feature cid=ast-4c8f5f0a7b: true (features=1)",
    "screenshot": null
   },
   {
@@ -159,15 +167,23 @@
    "name": "card: current deadline, responsible, source/demo label, unknown budget not 0",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "Текущий срок=\"20 октября 2026\", Начало=\"14 октября 2026\", Организация=\"нет данных\", Стоимость=\"нет данных\", banner on card=\"Демо. Синтетическая демо-запись — не сведения о реальных работах.\" (visible=true), Источники=\"ИСТОЧНИКИ Нет: это демо-запись. Обновлено: 7 октября 2026, 04:31 (UTC+0) · редакция 2\", checks={\"deadline\":true,\"responsible\":true,\"source\":true,\"budget\":true}",
+   "evidence": "Текущий срок=\"20 октября 2026\", Начало=\"14 октября 2026\", Организация=\"нет данных\", Стоимость=\"нет данных\", banner on card=\"Демо. Синтетическая демо-запись — не сведения о реальных работах.\" (visible=true), Источники=\"ИСТОЧНИКИ Нет: это демо-запись. Обновлено: 7 октября 2026, 04:48 (UTC+0) · редакция 2\", checks={\"deadline\":true,\"responsible\":true,\"source\":true,\"budget\":true}",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/08_published_card_1440x900.png"
+  },
+  {
+   "id": "U02-cta-contrast",
+   "name": "card button \"Задать вопрос по объекту\" is legible (WCAG 1.4.3 >= 4.5:1)",
+   "viewport": "1440x900",
+   "status": "FAIL",
+   "evidence": "label=\"Задать вопрос по объекту\"; computed color=rgb(21, 44, 38) on background=rgb(21, 44, 38) -> contrast 1:1 (hover=false); icon stroke=rgb(21, 44, 38); cause: \".civic-r03-root button { color: inherit }\" (0,1,1) overrides \".civic-r03-btn-primary { color: #fff }\" (0,1,0) in web/civic/map/civic-map.css",
+   "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/08b_card_cta_1440x900.png"
   },
   {
    "id": "E2-resident",
    "name": "resident (reload) sees the published object in list and map",
    "viewport": "390x844",
    "status": "PASS",
-   "evidence": "list item by id=1 text=\"Дорожные работы R10 ремонт тротуара «проверка» & синтетика Запланировано · до 20.10.2026 Демо Примерное место\"; map source has feature cid=ast-2c214ecc92: true (features=1)",
+   "evidence": "list item by id=1 text=\"Дорожные работы R10 ремонт тротуара «проверка» & синтетика Запланировано · до 20.10.2026 Демо Примерное место\"; map source has feature cid=ast-4c8f5f0a7b: true (features=1)",
    "screenshot": null
   },
   {
@@ -175,7 +191,7 @@
    "name": "card: current deadline, responsible, source/demo label, unknown budget not 0",
    "viewport": "390x844",
    "status": "PASS",
-   "evidence": "Текущий срок=\"20 октября 2026\", Начало=\"14 октября 2026\", Организация=\"нет данных\", Стоимость=\"нет данных\", banner on card=\"Демо. Синтетическая демо-запись — не сведения о реальных работах.\" (visible=true), Источники=\"ИСТОЧНИКИ Нет: это демо-запись. Обновлено: 7 октября 2026, 04:31 (UTC+0) · редакция 2\", checks={\"deadline\":true,\"responsible\":true,\"source\":true,\"budget\":true}",
+   "evidence": "Текущий срок=\"20 октября 2026\", Начало=\"14 октября 2026\", Организация=\"нет данных\", Стоимость=\"нет данных\", banner on card=\"Демо. Синтетическая демо-запись — не сведения о реальных работах.\" (visible=true), Источники=\"ИСТОЧНИКИ Нет: это демо-запись. Обновлено: 7 октября 2026, 04:48 (UTC+0) · редакция 2\", checks={\"deadline\":true,\"responsible\":true,\"source\":true,\"budget\":true}",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/08_published_card_390x844.png"
   },
   {
@@ -187,11 +203,19 @@
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/08_published_card_390x844.png"
   },
   {
+   "id": "U02-cta-contrast",
+   "name": "card button \"Задать вопрос по объекту\" is legible (WCAG 1.4.3 >= 4.5:1)",
+   "viewport": "390x844",
+   "status": "FAIL",
+   "evidence": "label=\"Задать вопрос по объекту\"; computed color=rgb(21, 44, 38) on background=rgb(21, 44, 38) -> contrast 1:1 (hover=false); icon stroke=rgb(21, 44, 38); cause: \".civic-r03-root button { color: inherit }\" (0,1,1) overrides \".civic-r03-btn-primary { color: #fff }\" (0,1,0) in web/civic/map/civic-map.css",
+   "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/08b_card_cta_390x844.png"
+  },
+  {
    "id": "U04",
    "name": "stale form save -> conflict message, typed values kept",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "tab2 API update rev 2->3 (status 200); stale save -> conflict box: \"Запись уже изменена: на сервере ред. 3, у вас была ред. 2. Последнее изменение: 07.10.2026 09:31 — «R10 вторая вкладка: уточнение описания» Изменено на сервере: Описание. Ваши правки (сохранены в форме): Актуальный плановый срок. Перенести мои правки на новую \"; notice: \"Запись уже изменена: на сервере ред. 3, у вас была ред. 2. Последнее изменение: 07.10.2026 09:31 — «R10 вторая вкладка: \"; date field still \"2026-10-27\", reason still \"Перенос срока: подрядчик запросил неделю (R10)\"",
+   "evidence": "tab2 API update rev 2->3 (status 200); stale save -> conflict box: \"Запись уже изменена: на сервере ред. 3, у вас была ред. 2. Последнее изменение: 07.10.2026 09:48 — «R10 вторая вкладка: уточнение описания» Изменено на сервере: Описание. Ваши правки (сохранены в форме): Актуальный плановый срок. Перенести мои правки на новую \"; notice: \"Запись уже изменена: на сервере ред. 3, у вас была ред. 2. Последнее изменение: 07.10.2026 09:48 — «R10 вторая вкладка: \"; date field still \"2026-10-27\", reason still \"Перенос срока: подрядчик запросил неделю (R10)\"",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/09_conflict_1440x900.png"
   },
   {
@@ -199,16 +223,15 @@
    "name": "conflict panel action (\"Перенести мои правки…\") reachable by pointer",
    "viewport": "1440x900",
    "status": "FAIL",
-   "evidence": "Playwright actionability (trial click) ok=false; button focused by the UI=true; after scrollIntoView top element at its centre: sticky action bar .civic-r04-actions (rect 961,535,297,44); with the drawer body scrolled to top: sticky action bar .civic-r04-actions; drawer body top=263 height=588px vs action bar top=275 height=630px (sticky, max-height 630px); notice text says versions are compared \"ниже\" (below) while the panel is above",
-   "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/09b_conflict_panel_reach_1440x900.png",
-   "reproduced_in_rerun": true
+   "evidence": "Playwright actionability (trial click) ok=false; button focused by the UI=true; after scrollIntoView top element at its centre: sticky action bar .civic-r04-actions (rect 961,535,297,44); with the drawer body scrolled to top: sticky action bar .civic-r04-actions; drawer body top=263 height=588px vs action bar top=275 height=630px (sticky, max-height 630px) — the whole conflict panel (what changed on the server) is under the bar; notice text says versions are compared \"ниже\" (below) while the panel is above; mouse-only workaround: collapse the diff <details> (clicked=true, action bar height 547px vs body 588px) -> pointer reach after collapse=true (a ~40px strip above the bar; not discoverable); keyboard: focus is already on the button, Enter works. Other sizes: see skeptic_rechecks K-U04-reach (1366x768 and 390x844: no pointer/touch path even after collapsing)",
+   "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/09b_conflict_panel_reach_1440x900.png"
   },
   {
    "id": "E3",
    "name": "current_planned_end -> 2026-10-27 with reason via the form (re-publish if required)",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "rebase offered and used=true via keyboard (focus + Enter): pointer click impossible; update body changes keys=schedule+internal_notes; reason kept after rebase=true; POST .../update 200 (has_unpublished_changes=true); re-publish required=true, POST .../publish 200; notice: \"Есть сохранённые, но не опубликованные изменения: жители видят прежнюю версию (ред. 2). Нажмите «Опубликовать изменения…».\"",
+   "evidence": "rebase offered and used=true via mouse click after collapsing the diff (direct click was blocked); update body changes keys=schedule+internal_notes; reason kept after rebase=true; POST .../update 200 (has_unpublished_changes=true); re-publish required=true, POST .../publish 200; notice: \"Запись опубликована. Сохранённые правки станут видны жителям после «Опубликовать изменения…»; причина попадёт в историю.\"",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/10_shift_published_editor_1440x900.png"
   },
   {
@@ -216,7 +239,7 @@
    "name": "resident card: new date + original date + history entry with reason",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "Текущий срок=\"27 октября 2026\", Первоначальный срок=\"20 октября 2026\", shift note=\"Срок перенесён на 7 дней позже: 20.10.2026 → 27.10.2026 Причина: «Публикация переноса срока (R10)» · 7 октября 2026, 04:32 (UTC+0)\", history=\"7 октября 2026, 04:32 (UTC+0) · ред. 5 Изменено: описание; текущий срок Причина: Публикация переноса срока (R10) Редактор платформы || 7 октября 2026, 04:31 (UTC+0) · ред. 2 Изменено: публикация Причина: Первая публикация: синтетическая запись R10 Редактор платформы\"",
+   "evidence": "Текущий срок=\"27 октября 2026\", Первоначальный срок=\"20 октября 2026\", shift note=\"Срок перенесён на 7 дней позже: 20.10.2026 → 27.10.2026 Причина: «Публикация переноса срока (R10)» · 7 октября 2026, 04:49 (UTC+0)\", history=\"7 октября 2026, 04:49 (UTC+0) · ред. 5 Изменено: описание; текущий срок Причина: Публикация переноса срока (R10) Редактор платформы || 7 октября 2026, 04:48 (UTC+0) · ред. 2 Изменено: публикация Причина: Первая публикация: синтетическая запись R10 Редактор платформы\"",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/11_card_shift_history_1440x900.png"
   },
   {
@@ -224,7 +247,7 @@
    "name": "resident card: new date + original date + history entry with reason",
    "viewport": "390x844",
    "status": "PASS",
-   "evidence": "Текущий срок=\"27 октября 2026\", Первоначальный срок=\"20 октября 2026\", shift note=\"Срок перенесён на 7 дней позже: 20.10.2026 → 27.10.2026 Причина: «Публикация переноса срока (R10)» · 7 октября 2026, 04:32 (UTC+0)\", history=\"7 октября 2026, 04:32 (UTC+0) · ред. 5 Изменено: описание; текущий срок Причина: Публикация переноса срока (R10) Редактор платформы || 7 октября 2026, 04:31 (UTC+0) · ред. 2 Изменено: публикация Причина: Первая публикация: синтетическая запись R10 Редактор платформы\"",
+   "evidence": "Текущий срок=\"27 октября 2026\", Первоначальный срок=\"20 октября 2026\", shift note=\"Срок перенесён на 7 дней позже: 20.10.2026 → 27.10.2026 Причина: «Публикация переноса срока (R10)» · 7 октября 2026, 04:49 (UTC+0)\", history=\"7 октября 2026, 04:49 (UTC+0) · ред. 5 Изменено: описание; текущий срок Причина: Публикация переноса срока (R10) Редактор платформы || 7 октября 2026, 04:48 (UTC+0) · ред. 2 Изменено: публикация Причина: Первая публикация: синтетическая запись R10 Редактор платформы\"",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/11_card_shift_history_390x844.png"
   },
   {
@@ -232,7 +255,7 @@
    "name": "F5 keeps the selected object (permalink #object=) and data",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "hash before=\"#object=ast-2c214ecc92\" after=\"#object=ast-2c214ecc92\"; card title after reload=\"R10 ремонт тротуара «проверка» & синтетика\"; Текущий срок=\"27 октября 2026\"",
+   "evidence": "hash before=\"#object=ast-4c8f5f0a7b\" after=\"#object=ast-4c8f5f0a7b\"; card title after reload=\"R10 ремонт тротуара «проверка» & синтетика\"; Текущий срок=\"27 октября 2026\"",
    "screenshot": null
   },
   {
@@ -240,7 +263,7 @@
    "name": "server process restarted (same DB) -> reload: data still there",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "launcher: OK stop=0.01s start=0.56s pid=16306; 2690 ms to reload; after restart card=\"R10 ремонт тротуара «проверка» & синтетика\", Текущий срок=\"27 октября 2026\", Первоначальный=\"20 октября 2026\", reason in history=true; editor session still valid after restart=true",
+   "evidence": "launcher: OK stop=0.01s start=0.47s pid=13281; 1949 ms to reload; after restart card=\"R10 ремонт тротуара «проверка» & синтетика\", Текущий срок=\"27 октября 2026\", Первоначальный=\"20 октября 2026\", reason in history=true; editor session still valid after restart=true",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/12_after_restart_1440x900.png"
   },
   {
@@ -260,13 +283,12 @@
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/14_feedback_receipt_1440x900.png"
   },
   {
-   "id": "A07-receipt-channels",
-   "name": "receipt itself names iKOMEK/eOtinish as the official channel",
+   "id": "A07-receipt-visible",
+   "name": "receipt number and \"not an official registration\" notice are on screen (T4)",
    "viewport": "1440x900",
-   "status": "FAIL",
-   "evidence": "receipt mentions iKOMEK=false, eOtinish=false (server receipt notice replaces the form notice); the form notice shown BEFORE submitting did name them: \"Сообщение на платформе; официальная регистрация не выполняется. Для официального обращения используйте eOtinish или единый контакт-центр iKOMEK 109.\"; after submit the form and its notice are replaced by the receipt",
-   "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/14_feedback_receipt_1440x900.png",
-   "reproduced_in_rerun": true
+   "status": "PASS",
+   "evidence": "receipt id in view=true; notice in view=true: \"Сообщение сохранено на платформе и ожидает проверки модератором. Официальная регистрация обращения не выполняется; городские службы автоматически не уведомляются.\"",
+   "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/14_feedback_receipt_1440x900.png"
   },
   {
    "id": "A07-mobile-form",
@@ -283,6 +305,14 @@
    "status": "PASS",
    "evidence": "public block: \"Сообщения жителей Сообщения жителей на платформе. Это не официальные обращения: регистрация в iKOMEK/eOtinish не выполняется, публикация не означает, что работы начаты или запланированы. Пока нет опуб\"; GET /objects/{id}/feedback 200, items=0, contains text=false",
    "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/15_pending_not_public_1440x900.png"
+  },
+  {
+   "id": "U03-editor-footer",
+   "name": "desktop 1440x900, signed-in editor: panel footer fits; clicking \"Сообщения жителей\" does not shift the panel",
+   "viewport": "1440x900",
+   "status": "FAIL",
+   "evidence": "footer scrollWidth 482 vs clientWidth 418; \"Сообщения жителей\" right edge 503px vs panel right 440px; after the click #civic-panel.scrollLeft=64, card content left=0px vs panel left=20px (content clipped on the left)",
+   "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/16a_panel_after_moderation_click_1440x900.png"
   },
   {
    "id": "A08",
@@ -399,7 +429,7 @@
    "name": "STRETCH timing: editor publishes a date change with reason (automated-run, not a user study)",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "2097 ms, 9 UI actions (clicks+fills+keys), re-publish step=true",
+   "evidence": "2146 ms, 9 UI actions (clicks+fills+keys), re-publish step=true",
    "screenshot": null
   },
   {
@@ -407,7 +437,7 @@
    "name": "STRETCH timing: resident finds deadline + reason (automated-run, not a user study)",
    "viewport": "1440x900",
    "status": "PASS",
-   "evidence": "2513 ms incl. page load, 1 UI actions; deadline=\"29 октября 2026\", shift=\"Срок перенесён на 9 дней позже: 20.10.2026 → 29.10.2026 Причина: «Перенос срока: замер времени R10» · 7 октября 2026, 04:32 (UTC+0)\"",
+   "evidence": "1843 ms incl. page load, 1 UI actions; deadline=\"29 октября 2026\", shift=\"Срок перенесён на 9 дней позже: 20.10.2026 → 29.10.2026 Причина: «Перенос срока: замер времени R10» · 7 октября 2026, 04:49 (UTC+0)\"",
    "screenshot": null
   },
   {
@@ -440,7 +470,7 @@
    "label": "automated-run, not a user study",
    "from": "click \"Для сотрудников\" (already logged in)",
    "to": "server confirmed the public change",
-   "wall_ms": 2097,
+   "wall_ms": 2146,
    "ui_actions": 9,
    "republish_step": true,
    "new_current_planned_end": "2026-10-29"
@@ -449,10 +479,10 @@
    "label": "automated-run, not a user study",
    "from": "page.goto(\"/\")",
    "to": "history entry with the reason visible",
-   "wall_ms": 2513,
+   "wall_ms": 1843,
    "ui_actions": 1,
    "shown_deadline": "29 октября 2026",
-   "shift_note": "Срок перенесён на 9 дней позже: 20.10.2026 → 29.10.2026 Причина: «Перенос срока: замер времени R10» · 7 октября 2026, 04:32 (UTC+0)"
+   "shift_note": "Срок перенесён на 9 дней позже: 20.10.2026 → 29.10.2026 Причина: «Перенос срока: замер времени R10» · 7 октября 2026, 04:49 (UTC+0)"
   }
  },
  "network_staff_calls_public": [],
@@ -460,308 +490,309 @@
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-desktop",
    "kind": "U08 deliberate abort (expected)",
-   "text": "Failed to load resource: net::ERR_FAILED"
+   "text": "Failed to load resource: net::ERR_FAILED @ /api/civic/v1/feedback"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "modes-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "modes-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "editor-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "editor-desktop",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "editor-desktop",
    "kind": "expected 409 from the U04 conflict",
-   "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+   "text": "Failed to load resource: the server responded with a status of 409 (Conflict) @ /api/civic/v1/staff/objects/ast-4c8f5f0a7b/update"
   },
   {
    "page": "editor-desktop",
-   "kind": "expected 401/404 from a negative check",
-   "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+   "kind": "expected 401 from a deliberate staff call (S07/LOGOUT)",
+   "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized) @ /api/civic/v1/staff/objects"
   },
   {
    "page": "editor-desktop",
-   "kind": "expected 401/404 from a negative check",
-   "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+   "kind": "expected 401 from a deliberate staff call (S07/LOGOUT)",
+   "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized) @ /api/civic/v1/staff/objects/ast-4c8f5f0a7b/update"
   },
   {
    "page": "editor-tab2-api",
-   "kind": "expected 401/404 from a negative check",
-   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+   "kind": "favicon.ico 404 (browser default request; benign)",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found) @ /favicon.ico"
   },
   {
    "page": "editor-tab2-api",
    "kind": "expected 422 from the server-side HTML-title check",
-   "text": "Failed to load resource: the server responded with a status of 422 (Unprocessable Content)"
+   "text": "Failed to load resource: the server responded with a status of 422 (Unprocessable Content) @ /api/civic/v1/staff/objects"
   },
   {
    "page": "editor-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "editor-mobile",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-fresh-a02-1440x900",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-fresh-a02-1440x900",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-fresh-a02-deeplink-1440x900",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-fresh-a02-deeplink-1440x900",
-   "kind": "expected 401/404 from a negative check",
-   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+   "kind": "expected 404 for the draft deep link (A02)",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found) @ /api/civic/v1/objects/ast-4c8f5f0a7b"
   },
   {
    "page": "resident-fresh-a02-deeplink-1440x900",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-fresh-a02-deeplink-1440x900",
-   "kind": "expected 401/404 from a negative check",
-   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+   "kind": "expected 404 for the draft deep link (A02)",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found) @ /api/civic/v1/objects/ast-4c8f5f0a7b"
   },
   {
    "page": "resident-fresh-a02-390x844",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-fresh-a02-390x844",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-fresh-a02-deeplink-390x844",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-fresh-a02-deeplink-390x844",
-   "kind": "expected 401/404 from a negative check",
-   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+   "kind": "expected 404 for the draft deep link (A02)",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found) @ /api/civic/v1/objects/ast-4c8f5f0a7b"
+  },
+  {
+   "page": "resident-fresh-a02-deeplink-390x844",
+   "kind": "expected 404 for the draft deep link (A02)",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found) @ /api/civic/v1/objects/ast-4c8f5f0a7b"
   },
   {
    "page": "resident-fresh-a02-deeplink-390x844",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
-  },
-  {
-   "page": "resident-fresh-a02-deeplink-390x844",
-   "kind": "expected 401/404 from a negative check",
-   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-fresh-pending",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-fresh-pending",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-stubstyle-1440x900",
-   "kind": "U08 deliberate abort (expected)",
-   "text": "Failed to load resource: net::ERR_FAILED"
+   "kind": "stub-style tile request aborted by the script (expected)",
+   "text": "Failed to load resource: net::ERR_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-stubstyle-390x844",
-   "kind": "U08 deliberate abort (expected)",
-   "text": "Failed to load resource: net::ERR_FAILED"
+   "kind": "stub-style tile request aborted by the script (expected)",
+   "text": "Failed to load resource: net::ERR_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-keyboard",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-keyboard",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-role-spoof",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-role-spoof",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-role-spoof",
-   "kind": "expected 401/404 from a negative check",
-   "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+   "kind": "expected 401 from a deliberate staff call (S07/LOGOUT)",
+   "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized) @ /api/civic/v1/staff/objects"
   },
   {
    "page": "resident-role-spoof",
-   "kind": "expected 401/404 from a negative check",
-   "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+   "kind": "expected 401 from a deliberate staff call (S07/LOGOUT)",
+   "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized) @ /api/civic/v1/staff/feedback?moderation=pending"
   },
   {
    "page": "editor-timing",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "editor-timing",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   },
   {
    "page": "resident-timing",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/styles/liberty"
   },
   {
    "page": "resident-timing",
    "kind": "basemap-blocked (expected)",
-   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED @ https://tiles.openfreemap.org/planet"
   }
  ],
  "dialogs": [],
  "notes": [
   "E3 observation: the editor diff lists \"Внутренняя заметка: пусто → пусто\" as a change and the update request carries changes.internal_notes=null although the field was not touched (changes keys: schedule+internal_notes, schedule+internal_notes)",
   "A04 observation: the public history/shift note shows the re-publish reason «Публикация переноса срока (R10)», not the reason typed together with the date change «Перенос срока: подрядчик запросил неделю (R10)»; while typing it the editor was told: \"Запись опубликована: причину увидят в истории изменений. / label: Причина изменения опубликованной записи *\". With the pending-publication model the update reason stays editor-only, so the hint over-promises.",
+  "A07 wording observation (not graded; not a CONTRACT/BRIEF requirement): the receipt notice from the server replaces the form notice, so after submitting the resident is told the message is not official but not where to go; the form notice before submitting did name the channels: \"Сообщение на платформе; официальная регистрация не выполняется. Для официального обращения используйте eOtinish или единый контакт-центр iKOMEK 109.\". Suggestion only.",
   "A08 observation (1440x900): for a signed-in editor the panel footer overflows — \"Сообщения жителей\" button right edge 503px vs panel right 440px (footer scrollWidth 482 > clientWidth 418); the label is clipped (see 09_conflict / 16 screenshots).",
   "U07 observation: after Escape closes the feedback form, keyboard focus falls back to <body> (not returned to the \"Задать вопрос\" button); a second Escape then does not reach the card."
  ],
@@ -772,7 +803,7 @@
   }
  ],
  "state": {
-  "id": "ast-2c214ecc92",
+  "id": "ast-4c8f5f0a7b",
   "revAfterCreate": 1,
   "serverAcceptedXssTitle": null,
   "updateHint": "Запись опубликована: причину увидят в истории изменений. / label: Причина изменения опубликованной записи *",
@@ -812,62 +843,99 @@
     "expected_revision": 1
    }
   ],
-  "e3ms": 6712,
+  "e3ms": 7267,
   "editorSessionAfterRestart": true,
   "formNotice": "Сообщение на платформе; официальная регистрация не выполняется. Для официального обращения используйте eOtinish или единый контакт-центр iKOMEK 109.",
   "receiptShown": true
  },
  "network_staff_calls_public_note": "resident contexts never logged in; deliberate script fetches (401 checks) are excluded",
+ "http_errors": [
+  {
+   "page": "editor-desktop",
+   "responses": [
+    "409 POST /api/civic/v1/staff/objects/ast-4c8f5f0a7b/update",
+    "401 GET /api/civic/v1/staff/objects (script)",
+    "401 POST /api/civic/v1/staff/objects/ast-4c8f5f0a7b/update (script)"
+   ]
+  },
+  {
+   "page": "editor-tab2-api",
+   "responses": [
+    "422 POST /api/civic/v1/staff/objects (script)"
+   ]
+  },
+  {
+   "page": "resident-fresh-a02-deeplink-1440x900",
+   "responses": [
+    "404 GET /api/civic/v1/objects/ast-4c8f5f0a7b",
+    "404 GET /api/civic/v1/objects/ast-4c8f5f0a7b (script)"
+   ]
+  },
+  {
+   "page": "resident-fresh-a02-deeplink-390x844",
+   "responses": [
+    "404 GET /api/civic/v1/objects/ast-4c8f5f0a7b",
+    "404 GET /api/civic/v1/objects/ast-4c8f5f0a7b (script)"
+   ]
+  },
+  {
+   "page": "resident-role-spoof",
+   "responses": [
+    "401 GET /api/civic/v1/staff/objects (script)",
+    "401 GET /api/civic/v1/staff/feedback?moderation=pending (script)"
+   ]
+  }
+ ],
  "summary": {
-  "PASS": 47,
-  "FAIL": 2,
+  "PASS": 48,
+  "FAIL": 5,
   "NOT_RUN": 1
  },
  "harness": {
   "code_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r01-8c6add9",
   "code_sha": "8c6add919efa9ed965cb05a57626744fed750da1",
   "code_dirty_before": false,
-  "tmp_dir": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-hcxmp1ue",
-  "port": 38371,
+  "tmp_dir": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-jkltefwn",
+  "port": 40017,
   "server": [
    {
     "action": "start",
-    "pid": 14061,
-    "cmd": "python3 -E -s -B app.py --port 38371 --civic-db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-hcxmp1ue/civic.sqlite3",
+    "pid": 12195,
+    "cmd": "python3 -E -s -B app.py --port 40017 --civic-db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-jkltefwn/civic.sqlite3",
     "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r01-8c6add9",
-    "ready_seconds": 0.45,
-    "total_seconds": 0.46
+    "ready_seconds": 0.48,
+    "total_seconds": 0.48
    },
    {
     "action": "stop",
-    "pid": 14061,
+    "pid": 12195,
     "exit_code": -15,
     "seconds": 0.01
    },
    {
     "action": "start",
-    "pid": 16306,
-    "cmd": "python3 -E -s -B app.py --port 38371 --civic-db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-hcxmp1ue/civic.sqlite3",
+    "pid": 13281,
+    "cmd": "python3 -E -s -B app.py --port 40017 --civic-db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-jkltefwn/civic.sqlite3",
     "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r01-8c6add9",
-    "ready_seconds": 0.56,
-    "total_seconds": 0.56
+    "ready_seconds": 0.47,
+    "total_seconds": 0.47
    },
    {
     "action": "stop",
-    "pid": 16306,
+    "pid": 13281,
     "exit_code": -15,
     "seconds": 0.01
    }
   ],
   "editors": [
    {
-    "cmd": "python3 -E -s -B -m ui.civic_store --db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-hcxmp1ue/civic.sqlite3 create-editor r10walk",
+    "cmd": "python3 -E -s -B -m ui.civic_store --db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-jkltefwn/civic.sqlite3 create-editor r10walk",
     "exit_code": 0,
     "via": "pty+getpass x2",
     "output_tail": "Пароль: \r\nПовторите пароль: \r\nСоздан редактор r10walk (роль editor). Пароль не сохранён в открытом виде.\r\n"
    },
    {
-    "cmd": "python3 -E -s -B -m ui.civic_store --db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-hcxmp1ue/civic.sqlite3 create-editor r10walk2",
+    "cmd": "python3 -E -s -B -m ui.civic_store --db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-jkltefwn/civic.sqlite3 create-editor r10walk2",
     "exit_code": 0,
     "via": "pty+getpass x2",
     "output_tail": "Пароль: \r\nПовторите пароль: \r\nСоздан редактор r10walk2 (роль editor). Пароль не сохранён в открытом виде.\r\n"
@@ -876,55 +944,822 @@
   "node": {
    "cmd": "NODE_PATH=/opt/node22/lib/node_modules node /home/user/GOV_DIPLOME/tests/civic/R10/browser/walkthrough.cjs",
    "exit_code": 0,
-   "seconds": 74.3
+   "seconds": 70.5
   },
   "code_dirty_after": false,
-  "server_log_tail": "-\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /civic/scenarios/scenarios.js HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /civic/assistant/assistant.js HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /civic/shell/shell.js HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /govtech/school/SCHOOL_MANIFEST.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /api/civic/v1/modules HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /api/bootstrap HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"POST /api/plan-status HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /favicon.svg HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /govtech/school/cases/shymkent.case.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /vendor/maplibre-gl.js HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /govtech/school/cases/shymkent.case.meta.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:39] \"GET /govtech/school/cases/astana.case.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:40] \"GET /govtech/school/cases/astana.match-review.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:40] \"GET /api/civic/v1/objects HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:41] \"GET /api/civic/v1/objects/ast-2c214ecc92 HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:42] \"GET /favicon.svg HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:42] \"GET /api/civic/v1/session HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:42] \"GET /api/civic/v1/staff/objects HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:42] \"POST /api/civic/v1/session/logout HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:43] \"GET /api/civic/v1/staff/objects HTTP/1.1\" 401 -\n127.0.0.1 - - [07/Oct/2026 04:32:43] \"GET /api/civic/v1/session HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:32:43] \"POST /api/civic/v1/staff/objects/ast-2c214ecc92/update HTTP/1.1\" 401 -\n127.0.0.1 - - [07/Oct/2026 04:32:43] \"GET /api/civic/v1/staff/objects HTTP/1.1\" 401 -\n",
+  "server_log_tail": "-\n127.0.0.1 - - [07/Oct/2026 04:49:35] \"GET /civic/assistant/assistant.js HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:35] \"GET /civic/scenarios/scenarios.js HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:35] \"GET /civic/shell/shell.js HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:35] \"GET /govtech/school/SCHOOL_MANIFEST.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:35] \"GET /api/civic/v1/modules HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:35] \"GET /api/bootstrap HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:36] \"GET /favicon.svg HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:36] \"POST /api/plan-status HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:36] \"GET /govtech/school/cases/shymkent.case.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:36] \"GET /vendor/maplibre-gl.js HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:36] \"GET /govtech/school/cases/shymkent.case.meta.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:36] \"GET /govtech/school/cases/astana.case.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:36] \"GET /govtech/school/cases/astana.match-review.json HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:36] \"GET /api/civic/v1/objects HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:37] \"GET /api/civic/v1/objects/ast-4c8f5f0a7b HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:37] \"GET /favicon.svg HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:37] \"GET /api/civic/v1/session HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:37] \"GET /api/civic/v1/staff/objects HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:37] \"POST /api/civic/v1/session/logout HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:38] \"GET /api/civic/v1/staff/objects HTTP/1.1\" 401 -\n127.0.0.1 - - [07/Oct/2026 04:49:38] \"GET /api/civic/v1/session HTTP/1.1\" 200 -\n127.0.0.1 - - [07/Oct/2026 04:49:38] \"POST /api/civic/v1/staff/objects/ast-4c8f5f0a7b/update HTTP/1.1\" 401 -\n127.0.0.1 - - [07/Oct/2026 04:49:38] \"GET /api/civic/v1/staff/objects HTTP/1.1\" 401 -\n",
   "tmp_dir_removed": true
  },
- "rerun": {
-  "purpose": "confirm FAILs are reproducible (fresh server, fresh DB, same script, explicit waits)",
-  "started_utc": "2026-10-07T04:32:51.980Z",
-  "finished_utc": "2026-10-07T04:34:09.241Z",
-  "summary": {
-   "PASS": 47,
-   "FAIL": 2,
-   "NOT_RUN": 1
+ "skeptic_review": {
+  "by": "R10 skeptic sub-agent (independent re-check of the R10 walkthrough), round 11",
+  "at_utc": "2026-10-07T04:51:41Z",
+  "requirements_used": "git show 9c2f5c0:research/round-11/CONTRACT.txt, BRIEF.txt; research/round-11-results/R10/ACCEPTANCE.txt, USER_TEST_SCRIPT.md",
+  "superseded_run": {
+   "summary": {
+    "PASS": 47,
+    "FAIL": 2,
+    "NOT_RUN": 1
+   },
+   "rerun_summary": {
+    "PASS": 47,
+    "FAIL": 2,
+    "NOT_RUN": 1
+   },
+   "started_utc": "2026-10-07T04:31:29.355Z",
+   "fails": [
+    {
+     "id": "U04-reach",
+     "viewport": "1440x900",
+     "status": "FAIL",
+     "evidence": "Playwright actionability (trial click) ok=false; button focused by the UI=true; after scrollIntoView top element at its centre: sticky action bar .civic-r04-actions (rect 961,535,297,44); with the drawer body scrolled to top: sticky action bar .civic-r04-actions; drawer body top=263 height=588px vs action bar top=275 height=630px (sticky, max-height 630px); notice text says versions are compared \"ниже\" (below) while the panel is above",
+     "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/09b_conflict_panel_reach_1440x900.png"
+    },
+    {
+     "id": "A07-receipt-channels",
+     "viewport": "1440x900",
+     "status": "FAIL",
+     "evidence": "receipt mentions iKOMEK=false, eOtinish=false (server receipt notice replaces the form notice); the form notice shown BEFORE submitting did name them: \"Сообщение на платформе; официальная регистрация не выполняется. Для официального обращения используйте eOtinish или единый контакт-центр iKOMEK 109.\"; after submit the form and its notice are replaced by the receipt",
+     "screenshot": "research/round-11-results/R10/shots/r01-8c6add9/14_feedback_receipt_1440x900.png"
+    }
+   ]
   },
-  "fails": [
+  "verdict_on_fails": [
    {
     "id": "U04-reach",
-    "viewport": "1440x900",
-    "evidence": "Playwright actionability (trial click) ok=false; button focused by the UI=true; after scrollIntoView top element at its centre: sticky action bar .civic-r04-actions (rect 961,535,297,44); with the drawer body scrolled to top: sticky action bar .civic-r04-actions; drawer body top=263 height=588px vs "
+    "verdict": "REAL product defect (confirmed on own server copy, 4 viewports)",
+    "severity": "medium",
+    "correction": "The original wording \"covers the panel at every scroll position; a mouse cannot click it\" is too strong for 1440x900: collapsing the \"Изменения\" <details> in the action bar leaves a ~40px strip and the button becomes clickable (done in this run, E3 used the mouse). No pointer/touch path at 1366x768 and 390x844 even after collapsing; reachable at 1920x1080. Keyboard path works (UI focuses the button). Data is not lost."
    },
    {
     "id": "A07-receipt-channels",
-    "viewport": "1440x900",
-    "evidence": "receipt mentions iKOMEK=false, eOtinish=false (server receipt notice replaces the form notice); the form notice shown BEFORE submitting did name them: \"Сообщение на платформе; официальная регистрация не выполняется. Для официального обращения используйте eOtinish или единый контакт-центр iKOMEK 109."
+    "verdict": "SCRIPT ARTEFACT (wrong expectation): naming iKOMEK/eOtinish in the receipt is not required by CONTRACT (s.3: official channel is a later stage), BRIEF, ACCEPTANCE A07 or USER_TEST_SCRIPT T4",
+    "severity": "n/a (wording suggestion, recorded as a note)",
+    "fix": "step replaced by A07-receipt-visible (receipt id + not-official notice must be in the viewport, T4) -> PASS"
    }
   ],
-  "status_differences_vs_run1": [],
-  "timing": {
-   "editor_publish_date_change": {
-    "label": "automated-run, not a user study",
-    "from": "click \"Для сотрудников\" (already logged in)",
-    "to": "server confirmed the public change",
-    "wall_ms": 2030,
-    "ui_actions": 9,
-    "republish_step": true,
-    "new_current_planned_end": "2026-10-29"
+  "script_fixes": [
+   "walkthrough.cjs: A07-receipt-channels -> A07-receipt-visible + note",
+   "walkthrough.cjs: U04-reach records a mouse-only recovery (collapse diff) and E3 uses the mouse when that works",
+   "walkthrough.cjs: console errors carry the resource URL; classifier is URL-based (old text-only labels mislabelled 3 errors: /favicon.ico 404 as \"negative check\", 2 stub-style tile aborts as \"U08 abort\"); http_errors lists 4xx with URLs",
+   "walkthrough.cjs: new graded checks U02-cta-contrast (both sizes), U03-editor-footer, U01-modes-header (defects visible in the old screenshots 15, 16, 02 but not graded)",
+   "run_walkthrough.py: --script option (default walkthrough.cjs) so skeptic_r01.cjs runs under the same launcher"
+  ],
+  "pass_audit": [
+   {
+    "id": "U04",
+    "status": "PASS kept, caveat",
+    "note": "the conflict-box text was read with innerText from a panel that is entirely under the sticky action bar (screenshots 09/09b); what the user can actually see is only the action-bar notice \"Запись уже изменил кто-то другой. Ваши правки не потеряны — сравните версии ниже.\" plus kept values. Acceptance U04 (409 understandable, input not lost) still holds."
    },
-   "resident_find_deadline_reason": {
-    "label": "automated-run, not a user study",
-    "from": "page.goto(\"/\")",
-    "to": "history entry with the reason visible",
-    "wall_ms": 1960,
-    "ui_actions": 1,
-    "shown_deadline": "29 октября 2026",
-    "shift_note": "Срок перенесён на 9 дней позже: 20.10.2026 → 29.10.2026 Причина: «Перенос срока: замер времени R10» · 7 октября 2026, 04:34 (UTC+0)"
+   {
+    "id": "A07 / U07 / U02",
+    "status": "PASS kept, but they missed a defect",
+    "note": "the card button \"Задать вопрос по объекту\" was found by selector/focus; its label is invisible (text colour = background, 1:1). Now graded as U02-cta-contrast FAIL."
+   },
+   {
+    "id": "U02@390, A04@390, U03",
+    "status": "PASS (DOM-backed)",
+    "note": "08_/11_ 390x844 screenshots show only the card header in the half sheet; dates, organisation, cost and history are DOM evidence, not visible in the screenshot."
+   },
+   {
+    "id": "U01-modes",
+    "status": "PASS kept",
+    "note": "labelled by the visible pressed tab \"Учебная модель\"; \"(условные показатели)\" exists only in a title tooltip. Header text overflow in training mode visible in 02_ is now U01-modes-header FAIL."
+   },
+   {
+    "id": "E-mobile",
+    "status": "PASS (narrow scope)",
+    "note": "only login + list at 390x844; the editor form and the conflict state were not exercised on mobile — K-U04-reach@390x844 shows the conflict panel is unreachable by touch."
+   },
+   {
+    "id": "A04",
+    "status": "PASS (lenient)",
+    "note": "accepts the re-publish reason; the reason typed with the date change never becomes public although the reason field says \"причину увидят в истории изменений\" (kept as note)."
+   },
+   {
+    "id": "A02",
+    "status": "PASS, strengthened",
+    "note": "K-X4: the assistant shown on the \"Объект не найден\" card answers a draft id exactly like a non-existent id; no title/date leak."
+   },
+   {
+    "id": "CONSOLE",
+    "status": "PASS kept",
+    "note": "0 unexpected after URL-based classification; K-X5: no 4xx/failed requests on a fresh resident page."
+   },
+   {
+    "id": "T-editor / T-resident",
+    "status": "PASS (stretch)",
+    "note": "prose in the earlier report (2.2 s / 2.1 s) did not match its JSON (2097/2030 ms and 2513/1960 ms); this run: 2146 ms / 1843 ms."
    }
+  ],
+  "reproducibility": {
+   "scratch_run_summary": {
+    "PASS": 47,
+    "FAIL": 6,
+    "NOT_RUN": 1
+   },
+   "scratch_vs_this_run": "same statuses except U03@390x844, which FAILed in the scratch run only because the newly added CTA check scrolled the sheet before the U03 measurement (skeptic's own ordering artefact, fixed by moving the CTA check after U03)"
   },
-  "shots": "scratch only (not kept)",
-  "harness_code_sha": "8c6add919efa9ed965cb05a57626744fed750da1"
+  "skeptic_rechecks": {
+   "script": "tests/civic/R10/browser/skeptic_r01.cjs",
+   "started_utc": "2026-10-07T04:49:48.333Z",
+   "finished_utc": "2026-10-07T04:50:40.957Z",
+   "chromium": "141.0.7390.37",
+   "server": [
+    {
+     "action": "start",
+     "pid": 14069,
+     "cmd": "python3 -E -s -B app.py --port 56975 --civic-db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-6q6rzhke/civic.sqlite3",
+     "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r01-8c6add9",
+     "ready_seconds": 0.43,
+     "total_seconds": 0.43
+    },
+    {
+     "action": "stop",
+     "pid": 14069,
+     "exit_code": -15,
+     "seconds": 0.01
+    }
+   ],
+   "editors": [
+    {
+     "cmd": "python3 -E -s -B -m ui.civic_store --db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-6q6rzhke/civic.sqlite3 create-editor r10walk",
+     "exit_code": 0,
+     "via": "pty+getpass x2"
+    },
+    {
+     "cmd": "python3 -E -s -B -m ui.civic_store --db /tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/r10-walk-6q6rzhke/civic.sqlite3 create-editor r10walk2",
+     "exit_code": 0,
+     "via": "pty+getpass x2"
+    }
+   ],
+   "tmp_dir_removed": true,
+   "code_dirty_after": false,
+   "checks": [
+    {
+     "id": "K-U04-reach",
+     "viewport": "1440x900",
+     "status": "FAIL",
+     "evidence": {
+      "bump_status": 200,
+      "pointer_trial_click_initial": false,
+      "ui_moved_focus_to_rebase": true,
+      "body_rect": [
+       933,
+       263,
+       406,
+       588
+      ],
+      "body_scroll_top_height_client": [
+       17,
+       4046,
+       588
+      ],
+      "action_bar_rect": [
+       933,
+       258,
+       406,
+       630
+      ],
+      "action_bar_css": "sticky/630px",
+      "action_bar_scroll_top_height_client": [
+       0,
+       717,
+       629
+      ],
+      "diff_open": true,
+      "conflict_panel_rect": [
+       949,
+       384,
+       374,
+       260
+      ],
+      "rebase_btn_after_scrollIntoView": {
+       "rect": [
+        961,
+        535,
+        297,
+        44
+       ],
+       "hit": "action bar"
+      },
+      "rebase_btn_with_body_at_top": {
+       "rect": [
+        961,
+        552,
+        297,
+        44
+       ],
+       "hit": "action bar"
+      },
+      "conflict_panel_first_line_hit": "action bar",
+      "save_button": {
+       "rect": [
+        949,
+        850,
+        186,
+        44
+       ],
+       "hit": "canvas.maplibregl-canvas"
+      },
+      "notice": "Запись уже изменена: на сервере ред. 3, у вас была ред. 2. Последнее изменение: 07.10.2026 09:49 — «R10 skeptic: вторая вкладка» Изменено на сервере: Описание. Ваши правки (сохранены в форме): Актуаль",
+      "recovery_collapse_diff": {
+       "summary_clicked_and_collapsed": true,
+       "pointer_trial_click_after": true,
+       "geometry_after": {
+        "action_bar_rect": [
+         917,
+         304,
+         406,
+         547
+        ],
+        "rebase_btn": {
+         "rect": [
+          945,
+          535,
+          297,
+          44
+         ],
+         "hit": "action bar"
+        },
+        "rebase_btn_body_top": {
+         "rect": [
+          945,
+          552,
+          297,
+          44
+         ],
+         "hit": "action bar"
+        }
+       },
+       "clicked_rebase": true,
+       "notice_after_click": "Есть сохранённые, но не опубликованные изменения: жители видят прежнюю версию (ред. 2). Нажмите «Опубликовать изменения…». | Ваши правки перенесены на ред. 3. Проверьте «было/станет» и сохраните ещё раз."
+      }
+     },
+     "screenshot": [
+      "research/round-11-results/R10/shots/r01-8c6add9/k09_conflict_state_1440x900.png",
+      "research/round-11-results/R10/shots/r01-8c6add9/k09b_conflict_diff_collapsed_1440x900.png"
+     ]
+    },
+    {
+     "id": "K-U04-reach",
+     "viewport": "1366x768",
+     "status": "FAIL",
+     "evidence": {
+      "bump_status": 200,
+      "pointer_trial_click_initial": false,
+      "ui_moved_focus_to_rebase": true,
+      "body_rect": [
+       859,
+       263,
+       406,
+       456
+      ],
+      "body_scroll_top_height_client": [
+       83,
+       3953,
+       456
+      ],
+      "action_bar_rect": [
+       859,
+       192,
+       406,
+       538
+      ],
+      "action_bar_css": "sticky/537.6px",
+      "action_bar_scroll_top_height_client": [
+       0,
+       717,
+       537
+      ],
+      "diff_open": true,
+      "conflict_panel_rect": [
+       875,
+       318,
+       374,
+       260
+      ],
+      "rebase_btn_after_scrollIntoView": {
+       "rect": [
+        887,
+        469,
+        297,
+        44
+       ],
+       "hit": "action bar"
+      },
+      "rebase_btn_with_body_at_top": {
+       "rect": [
+        887,
+        552,
+        297,
+        44
+       ],
+       "hit": "action bar"
+      },
+      "conflict_panel_first_line_hit": "action bar",
+      "save_button": {
+       "rect": [
+        875,
+        850,
+        186,
+        44
+       ],
+       "hit": "nothing"
+      },
+      "notice": "Запись уже изменена: на сервере ред. 3, у вас была ред. 2. Последнее изменение: 07.10.2026 09:49 — «R10 skeptic: вторая вкладка» Изменено на сервере: Описание. Ваши правки (сохранены в форме): Актуаль",
+      "recovery_collapse_diff": {
+       "summary_clicked_and_collapsed": true,
+       "pointer_trial_click_after": false,
+       "geometry_after": {
+        "action_bar_rect": [
+         859,
+         275,
+         406,
+         538
+        ],
+        "rebase_btn": {
+         "rect": [
+          887,
+          469,
+          297,
+          44
+         ],
+         "hit": "action bar"
+        },
+        "rebase_btn_body_top": {
+         "rect": [
+          887,
+          552,
+          297,
+          44
+         ],
+         "hit": "action bar"
+        }
+       },
+       "clicked_rebase": false,
+       "notice_after_click": null
+      }
+     },
+     "screenshot": [
+      "research/round-11-results/R10/shots/r01-8c6add9/k09_conflict_state_1366x768.png",
+      "research/round-11-results/R10/shots/r01-8c6add9/k09b_conflict_diff_collapsed_1366x768.png"
+     ]
+    },
+    {
+     "id": "K-U04-reach",
+     "viewport": "1920x1080",
+     "status": "PASS",
+     "evidence": {
+      "bump_status": 200,
+      "pointer_trial_click_initial": true,
+      "ui_moved_focus_to_rebase": true,
+      "body_rect": [
+       1413,
+       263,
+       406,
+       768
+      ],
+      "body_scroll_top_height_client": [
+       0,
+       4133,
+       768
+      ],
+      "action_bar_rect": [
+       1413,
+       313,
+       406,
+       718
+      ],
+      "action_bar_css": "sticky/756px",
+      "action_bar_scroll_top_height_client": [
+       0,
+       717,
+       717
+      ],
+      "diff_open": true,
+      "conflict_panel_rect": [
+       1429,
+       401,
+       374,
+       260
+      ],
+      "rebase_btn_after_scrollIntoView": {
+       "rect": [
+        1441,
+        552,
+        297,
+        44
+       ],
+       "hit": "action bar"
+      },
+      "rebase_btn_with_body_at_top": {
+       "rect": [
+        1441,
+        552,
+        297,
+        44
+       ],
+       "hit": "action bar"
+      },
+      "conflict_panel_first_line_hit": "action bar",
+      "save_button": {
+       "rect": [
+        1429,
+        888,
+        186,
+        44
+       ],
+       "hit": "itself"
+      },
+      "notice": "Запись уже изменена: на сервере ред. 3, у вас была ред. 2. Последнее изменение: 07.10.2026 09:50 — «R10 skeptic: вторая вкладка» Изменено на сервере: Описание. Ваши правки (сохранены в форме): Актуаль",
+      "recovery_collapse_diff": {
+       "summary_clicked_and_collapsed": true,
+       "pointer_trial_click_after": true,
+       "geometry_after": {
+        "action_bar_rect": [
+         1397,
+         484,
+         406,
+         547
+        ],
+        "rebase_btn": {
+         "rect": [
+          1425,
+          552,
+          297,
+          44
+         ],
+         "hit": "action bar"
+        },
+        "rebase_btn_body_top": {
+         "rect": [
+          1425,
+          552,
+          297,
+          44
+         ],
+         "hit": "action bar"
+        }
+       },
+       "clicked_rebase": true,
+       "notice_after_click": "Есть сохранённые, но не опубликованные изменения: жители видят прежнюю версию (ред. 2). Нажмите «Опубликовать изменения…». | Ваши правки перенесены на ред. 3. Проверьте «было/станет» и сохраните ещё раз."
+      }
+     },
+     "screenshot": [
+      "research/round-11-results/R10/shots/r01-8c6add9/k09_conflict_state_1920x1080.png",
+      "research/round-11-results/R10/shots/r01-8c6add9/k09b_conflict_diff_collapsed_1920x1080.png"
+     ]
+    },
+    {
+     "id": "K-U04-reach",
+     "viewport": "390x844",
+     "status": "FAIL",
+     "evidence": {
+      "bump_status": 200,
+      "pointer_trial_click_initial": false,
+      "ui_moved_focus_to_rebase": true,
+      "body_rect": [
+       17,
+       225,
+       356,
+       604
+      ],
+      "body_scroll_top_height_client": [
+       7,
+       4373,
+       604
+      ],
+      "action_bar_rect": [
+       17,
+       238,
+       356,
+       591
+      ],
+      "action_bar_css": "sticky/590.8px",
+      "action_bar_scroll_top_height_client": [
+       0,
+       812,
+       590
+      ],
+      "diff_open": true,
+      "conflict_panel_rect": [
+       29,
+       354,
+       332,
+       260
+      ],
+      "rebase_btn_after_scrollIntoView": {
+       "rect": [
+        41,
+        505,
+        297,
+        44
+       ],
+       "hit": "action bar"
+      },
+      "rebase_btn_with_body_at_top": {
+       "rect": [
+        41,
+        512,
+        297,
+        44
+       ],
+       "hit": "action bar"
+      },
+      "conflict_panel_first_line_hit": "action bar",
+      "save_button": {
+       "rect": [
+        29,
+        872,
+        162,
+        63
+       ],
+       "hit": "nothing"
+      },
+      "notice": "Запись уже изменена: на сервере ред. 3, у вас была ред. 2. Последнее изменение: 07.10.2026 09:50 — «R10 skeptic: вторая вкладка» Изменено на сервере: Описание. Ваши правки (сохранены в форме): Актуаль",
+      "recovery_collapse_diff": {
+       "summary_clicked_and_collapsed": true,
+       "pointer_trial_click_after": false,
+       "geometry_after": {
+        "action_bar_rect": [
+         17,
+         238,
+         356,
+         591
+        ],
+        "rebase_btn": {
+         "rect": [
+          41,
+          505,
+          297,
+          44
+         ],
+         "hit": "action bar"
+        },
+        "rebase_btn_body_top": {
+         "rect": [
+          41,
+          512,
+          297,
+          44
+         ],
+         "hit": "action bar"
+        }
+       },
+       "clicked_rebase": false,
+       "notice_after_click": null
+      }
+     },
+     "screenshot": [
+      "research/round-11-results/R10/shots/r01-8c6add9/k09_conflict_state_390x844.png",
+      "research/round-11-results/R10/shots/r01-8c6add9/k09b_conflict_diff_collapsed_390x844.png"
+     ]
+    },
+    {
+     "id": "K-X1-feedback-button",
+     "viewport": "1440x900",
+     "status": "FAIL",
+     "evidence": {
+      "idle": {
+       "color": "rgb(21, 44, 38)",
+       "background": "rgb(21, 44, 38)",
+       "focused": false,
+       "hover": false
+      },
+      "hover": {
+       "color": "rgb(21, 44, 38)",
+       "background": "rgb(35, 69, 60)",
+       "focused": false,
+       "hover": true
+      },
+      "form_open_mouse_away": {
+       "color": "rgb(21, 44, 38)",
+       "background": "rgb(21, 44, 38)",
+       "focused": true,
+       "hover": false
+      },
+      "text_colour_equals_background": {
+       "idle": true,
+       "form_open": true
+      },
+      "matched_rules_with_hover_forced": [
+       {
+        "selector": "input, textarea, select, button",
+        "origin": "user-agent",
+        "props": [
+         "color:fieldtext"
+        ]
+       },
+       {
+        "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+        "origin": "user-agent",
+        "props": [
+         "background-color:buttonface",
+         "color:buttontext"
+        ]
+       },
+       {
+        "selector": "button",
+        "origin": "regular",
+        "props": [
+         "color:inherit",
+         "background:none",
+         "color:inherit",
+         "background-color:initial"
+        ]
+       },
+       {
+        "selector": ".civic-r03-btn",
+        "origin": "regular",
+        "props": [
+         "background:#fff",
+         "background-color:rgb(255, 255, 255)"
+        ]
+       },
+       {
+        "selector": ".civic-r03-btn-primary",
+        "origin": "regular",
+        "props": [
+         "background:var(--civic-r03-ink)",
+         "color:#fff",
+         "color:rgb(255, 255, 255)"
+        ]
+       },
+       {
+        "selector": ".civic-r03-root button, .civic-r03-root input, .civic-r03-root select",
+        "origin": "regular",
+        "props": [
+         "color:inherit",
+         "color:inherit"
+        ]
+       },
+       {
+        "selector": ".civic-r03-btn:hover",
+        "origin": "regular",
+        "props": [
+         "background:#f0f5e9",
+         "background-color:rgb(240, 245, 233)"
+        ]
+       },
+       {
+        "selector": ".civic-r03-btn-primary:hover",
+        "origin": "regular",
+        "props": [
+         "background:#23453c",
+         "background-color:rgb(35, 69, 60)"
+        ]
+       }
+      ]
+     },
+     "screenshot": [
+      "research/round-11-results/R10/shots/r01-8c6add9/kx1_feedback_button_idle_1440x900.png",
+      "research/round-11-results/R10/shots/r01-8c6add9/kx1_feedback_button_hover_1440x900.png"
+     ]
+    },
+    {
+     "id": "K-A07-receipt",
+     "viewport": "1440x900",
+     "status": "PASS",
+     "evidence": {
+      "post_status": 201,
+      "form_notice_before_submit": "Сообщение на платформе; официальная регистрация не выполняется. Для официального обращения используйте eOtinish или единый контакт-центр iKOMEK 109.",
+      "box_text_mentions": {
+       "iKOMEK": true,
+       "eOtinish": true
+      },
+      "receipt_mentions": {
+       "iKOMEK": false,
+       "eOtinish": false
+      },
+      "mention_elements": [
+       {
+        "cls": "civic-r06-notice",
+        "text": "Сообщения жителей на платформе. Это не официальные обращения: регистрация в iKOMEK/eOtinish не выполняется, публикация не означает, что работы начаты или заплан",
+        "visible_now": false,
+        "inside_receipt": false
+       }
+      ],
+      "receipt_notice": {
+       "text": "Сообщение сохранено на платформе и ожидает проверки модератором. Официальная регистрация обращения не выполняется; городские службы автоматически не уведомляются.",
+       "visible_now": true
+      },
+      "form_still_present": false
+     },
+     "screenshot": [
+      "research/round-11-results/R10/shots/r01-8c6add9/k14_receipt_view_1440x900.png",
+      "research/round-11-results/R10/shots/r01-8c6add9/k14b_receipt_box_top_1440x900.png"
+     ]
+    },
+    {
+     "id": "K-X5-resident-4xx",
+     "viewport": "1440x900",
+     "status": "INFO",
+     "evidence": {
+      "responses_4xx_or_failed": []
+     },
+     "screenshot": []
+    },
+    {
+     "id": "K-X2-editor-footer",
+     "viewport": "1440x900",
+     "status": "FAIL",
+     "evidence": {
+      "before_click": {
+       "foot_scroll_client": [
+        482,
+        418
+       ],
+       "btn_right": 503,
+       "panel_right": 440
+      },
+      "after_click": {
+       "h_scrolled": [
+        {
+         "el": "div#civic-panel.civic-panel",
+         "scrollLeft": 64
+        }
+       ],
+       "card_title_left": -27,
+       "panel_left": 20
+      }
+     },
+     "screenshot": [
+      "research/round-11-results/R10/shots/r01-8c6add9/kx2_moderation_open_panel_1440x900.png"
+     ]
+    },
+    {
+     "id": "K-X3-training-header",
+     "viewport": "1440x900",
+     "status": "FAIL",
+     "evidence": {
+      "topbar": [
+       20,
+       96
+      ],
+      "top_center": [
+       -13,
+       129,
+       111
+      ],
+      "center_scroll_client_h": [
+       143,
+       143
+      ],
+      "overflow": "visible",
+      "kids": [
+       {
+        "text": "Астана / Городская\n          лаборатория",
+        "top": -13,
+        "bottom": 45
+       },
+       {
+        "text": "/",
+        "top": -10,
+        "bottom": 4
+       },
+       {
+        "text": "6 районов на карте · 5 в модели · 14 про",
+        "top": 50,
+        "bottom": 127
+       },
+       {
+        "text": "6 районов на карте · 5 в модели · 14 про",
+        "top": 50,
+        "bottom": 127
+       }
+      ],
+      "outside": 4
+     },
+     "screenshot": [
+      "research/round-11-results/R10/shots/r01-8c6add9/kx3_training_header_1440x900.png"
+     ]
+    },
+    {
+     "id": "K-X4-assistant-draft",
+     "viewport": "1440x900",
+     "status": "PASS",
+     "evidence": {
+      "draft_response": {
+       "status": 200,
+       "leak": {
+        "title": false,
+        "date": false
+       },
+       "body": "{\"ok\":true,\"data\":{\"schema\":\"civic-assistant-answer-v1\",\"source\":\"unavailable\",\"mode\":\"unavailable\",\"model\":null,\"intent\":null,\"language\":\"ru\",\"text\":\"Помощник сейчас не может ответить: опубликованные сведения по этому объекту недоступны.\",\"statements\":[{\"text\":\"Помощник сейчас не может ответить: опубликованные сведения по этому объекту недоступны.\",\"kind\":\"notice\",\"fact_ids\":[],\"source_ids\":[]}],"
+      },
+      "nonexistent_response": {
+       "status": 200,
+       "body": "{\"ok\":true,\"data\":{\"schema\":\"civic-assistant-answer-v1\",\"source\":\"unavailable\",\"mode\":\"unavailable\",\"model\":null,\"intent\":null,\"language\":\"ru\",\"text\":\"Помощник сейчас не может ответить: опубликованные сведения по этому объекту недоступны.\",\"statements\":[{\"text\":\"Помощник сейчас не может ответить: опубликованные сведения по этому объекту недоступны.\",\"kind\":\"notice\",\"fact_ids\":[],\"source_ids\":[]}],"
+      },
+      "same_shape_as_nonexistent": true,
+      "ui_answer": "| Помощник не может ответить Помощник сейчас не может ответить: опубликованные сведения по этому объекту недоступны. пометка civic-assistant-facts-v1 · режим: unavailable",
+      "page_mentions_draft": false
+     },
+     "screenshot": [
+      "research/round-11-results/R10/shots/r01-8c6add9/kx4_assistant_on_draft_1440x900.png"
+     ]
+    }
+   ]
+  }
  }
 }

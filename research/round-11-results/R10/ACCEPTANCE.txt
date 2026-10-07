@@ -117,4 +117,4 @@ D02  R01: MATRIX.json, CODE_SHA, RUN.txt; проверяется именно э
 local-demo (P0 PASS локально, есть открытые SEC/FACTS дефекты не критичные) / pilot-candidate
 (P0+SEC+FACTS PASS, restart и браузер проверены, нет critical/high). Не production-ready.
 
-Неоднозначности контракта, найденные при написании тестов: tests/civic/R10/CONTRACT_AMBIGUITIES.md.
+Неоднозначности контракта, найденные при написании тестов: research/round-11-results/R10/CONTRACT_AMBIGUITIES.md.

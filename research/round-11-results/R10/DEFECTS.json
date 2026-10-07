@@ -122,6 +122,67 @@
       "expected": "R05 prompt: без подтверждения состояния status=unknown; CONTRACT §1: публикация старого плана не доказывает фактическое состояние.",
       "actual": "A future announcement can enter as 'in progress'. Mitigation: 0 real records, import creates drafts only, editor must publish.",
       "status": "open"
+    },
+    {
+      "id": "R10-D009",
+      "title": "Object card: 'Задать вопрос по объекту' button text invisible (contrast 1:1)",
+      "severity": "high",
+      "severity_note": "The resident's only entry point to the P0 'оставить связанное сообщение' step is a blank dark bar at both sizes; keyboard/AT users still get the accessible name.",
+      "owner": "R03 (web/civic/map/civic-map.css), integrated by R01",
+      "sha": [
+        "R01 8c6add919efa9ed965cb05a57626744fed750da1 (R03 @f73745c)",
+        "R03 head 1bc9c48 (same rule order)"
+      ],
+      "repro": "Open any published card (e.g. /#object=<id>) at 1440x900 or 390x844 and look at the primary button. Computed: color rgb(21,44,38) on background rgb(21,44,38).",
+      "expected": "BRIEF: житель может оставить связанное сообщение; понятные карточки. WCAG 1.4.3 contrast >= 4.5:1.",
+      "actual": "Contrast 1.00 (1.4 on hover). Cause: '.civic-r03-root button {color: inherit}' (specificity 0,1,1) overrides '.civic-r03-btn-primary {color:#fff}' (0,1,0).",
+      "evidence": "research/round-11-results/R10/shots/r01-8c6add9/08b_card_cta_1440x900.png, 08b_card_cta_390x844.png, kx1_feedback_button_idle_1440x900.png; runs/browser-r01-8c6add9.json U02-cta-contrast",
+      "patch": "research/round-11-results/R10/patches/R03-cta-contrast.patch (scope the rule under .civic-r03-root). Measured in Chromium on 8c6add9: contrast 1.00 -> 14.79; git apply --check OK on 8c6add9 and R03 1bc9c48.",
+      "status": "open"
+    },
+    {
+      "id": "R10-D010",
+      "title": "Editor conflict (409) panel and its 'Перенести мои правки…'/'Отказаться' buttons are covered by the sticky action bar",
+      "severity": "medium",
+      "severity_note": "No data loss: typed values are kept and the UI focuses the rebase button so Enter works; but the 'сравните версии ниже' comparison is not visible and there is no pointer/touch path at 1366x768 and 390x844 (at 1440x900 only after collapsing the change list).",
+      "owner": "R04 (web/civic/editor/editor.css .civic-r04-actions max-height:70vh), integrated by R01",
+      "sha": [
+        "R01 8c6add919efa9ed965cb05a57626744fed750da1 (R04 @da46e1c)"
+      ],
+      "repro": "Editor: open a published object, change current_planned_end, type a reason; bump the revision from a second tab via API; click 'Сохранить изменения'. Action bar (max-height 70vh) is taller than the editor body (630 vs 588 px at 1440; 538 vs 456 at 1366; 591 vs 604 at 390) and overlays the conflict panel.",
+      "expected": "USER_TEST E4: понятная ошибка 409, введённые данные не потеряны; ACCEPTANCE U04; product criterion: редактор не теряет форму при ошибке.",
+      "actual": "Form data kept (PASS for U04 data), but the conflict comparison and its buttons are under the sticky bar.",
+      "evidence": "research/round-11-results/R10/shots/r01-8c6add9/09b_conflict_panel_reach_1440x900.png, k09_conflict_state_{1366x768,1440x900,1920x1080,390x844}.png",
+      "patch": "Proposal: cap .civic-r04-actions at a smaller max-height (e.g. 40vh) with internal scroll, or render the conflict panel inside the sticky area above the buttons.",
+      "status": "open"
+    },
+    {
+      "id": "R10-D011",
+      "title": "Logged-in editor at 1440x900: panel footer overflows, 'Сообщения жителей' clipped and panel scrolls sideways",
+      "severity": "low",
+      "owner": "R01 (web/civic/shell)",
+      "sha": [
+        "R01 8c6add919efa9ed965cb05a57626744fed750da1"
+      ],
+      "repro": "Log in as editor at 1440x900, open a card, click 'Сообщения жителей': footer scrollWidth 482 > clientWidth 418; #civic-panel.scrollLeft becomes 64 and card content is clipped on the left.",
+      "expected": "ACCEPTANCE U03 desktop 1440x900 without horizontal scroll/clipping.",
+      "actual": "Clipped button and shifted panel.",
+      "evidence": "research/round-11-results/R10/shots/r01-8c6add9/16a_panel_after_moderation_click_1440x900.png, kx2_moderation_open_panel_1440x900.png",
+      "status": "open"
+    },
+    {
+      "id": "R10-D012",
+      "title": "Training mode header text overflows the header bar ('Астана / Городская лаборатория' cut at the top)",
+      "severity": "low",
+      "owner": "R01 (web/style.css / shell)",
+      "sha": [
+        "R01 8c6add919efa9ed965cb05a57626744fed750da1"
+      ],
+      "repro": "Switch to 'Учебная модель' at 1440x900: .top-center children span y=-13..127 while the bar spans 20..96.",
+      "expected": "BRIEF: учебная модель доступна отдельно, явно помечена.",
+      "actual": "Label partly off-page; mode is still marked by the pressed tab.",
+      "evidence": "research/round-11-results/R10/shots/r01-8c6add9/02_training_mode_1440x900.png, kx3_training_header_1440x900.png",
+      "status": "open"
     }
   ],
   "observations": [
@@ -176,6 +237,42 @@
         "e477e5d"
       ],
       "status": "resolved on R05 head ee7516f (DELIVERY updated, code_commit 01f89df)"
+    },
+    {
+      "id": "R10-O006",
+      "title": "Editor diff shows a phantom 'Внутренняя заметка: пусто → пусто' and the update sends internal_notes:null although untouched",
+      "kind": "R04 UX/data hygiene",
+      "sha": [
+        "8c6add919efa9ed965cb05a57626744fed750da1"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "R10-O007",
+      "title": "Escape closing the feedback form drops focus to <body> instead of returning to 'Задать вопрос'",
+      "kind": "accessibility (U07)",
+      "sha": [
+        "8c6add919efa9ed965cb05a57626744fed750da1"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "R10-O008",
+      "title": "Feedback receipt says the message is not official but (unlike the form) does not name eOtinish/iKOMEK 109",
+      "kind": "wording; not required by CONTRACT §3 (official channel is a later stage)",
+      "sha": [
+        "8c6add919efa9ed965cb05a57626744fed750da1"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "R10-O009",
+      "title": "Editor's reason field says 'причину увидят в истории изменений', but residents see the later publish reason (see O001)",
+      "kind": "UI wording vs behaviour",
+      "sha": [
+        "8c6add919efa9ed965cb05a57626744fed750da1"
+      ],
+      "status": "open"
     }
   ],
   "integration_risks": [
@@ -196,7 +293,12 @@
       "id": "R06-cand-D2",
       "title": "R06 answers paths without /api/civic/v1 prefix",
       "why": "CONTRACT §3 leaves the path form open; R01 strips the prefix before calling R06; R06 returns None for 20 foreign paths (skeptic verification)."
+    },
+    {
+      "id": "browser-A07-receipt-channels",
+      "title": "Receipt must name iKOMEK/eOtinish",
+      "why": "No CONTRACT/BRIEF/ACCEPTANCE requirement; CONTRACT §3 defers the official channel. Replaced by A07-receipt-visible (PASS); wording kept as O008."
     }
   ],
-  "updated_utc": "2026-10-07T04:25Z"
+  "updated_utc": "2026-10-07T05:05Z"
 }

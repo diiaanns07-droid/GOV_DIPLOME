@@ -5,6 +5,9 @@
 // Environment (set by the launcher): R10_BASE_URL R10_OUT_JSON R10_SHOTS R10_CODE_SHA R10_EDITOR_USER
 //   R10_EDITOR_PASSWORD R10_EDITOR2_USER R10_EDITOR2_PASSWORD R10_CTL=1 (restart control on stdin/stdout).
 // Passwords and session/CSRF values are never written to the report or printed.
+// Skeptic revision (round 11): A07-receipt-channels (not a CONTRACT/BRIEF requirement) -> A07-receipt-visible + note;
+// U04-reach also tries the mouse-only way out (collapse the diff); URL-based console classification; new graded checks
+// U02-cta-contrast, U03-editor-footer, U01-modes-header. Targeted re-checks at other viewports: skeptic_r01.cjs.
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -73,7 +76,7 @@ function ctl(cmd, timeoutMs = 150000) {
 const PAGES = [];
 let DELIBERATE = 0;  // >0 while the script itself calls the API from a page (not the UI)
 function instrument(page, label, role) {
-  const rec = { label, role, api: [], staff: [], consoleErrors: [], dialogs: [] };
+  const rec = { label, role, api: [], staff: [], consoleErrors: [], dialogs: [], bad: [] };
   page.on('request', (r) => {
     const u = r.url();
     if (!u.includes(API)) return;
@@ -81,7 +84,8 @@ function instrument(page, label, role) {
     rec.api.push(e);
     if (u.includes(API + '/staff')) rec.staff.push(e);
   });
-  page.on('console', (m) => { if (m.type() === 'error') rec.consoleErrors.push(m.text().slice(0, 300)); });
+  page.on('console', (m) => { if (m.type() === 'error') { const loc = (m.location() || {}).url || ''; rec.consoleErrors.push(m.text().slice(0, 300) + (loc ? ' @ ' + loc.replace(BASE, '').slice(0, 160) : '')); } });
+  page.on('response', (r) => { if (r.status() >= 400) rec.bad.push(r.status() + ' ' + r.request().method() + ' ' + r.url().replace(BASE, '').slice(0, 160) + (DELIBERATE > 0 ? ' (script)' : '')); });
   page.on('pageerror', (e) => rec.consoleErrors.push('pageerror: ' + String(e).slice(0, 300)));
   page.on('dialog', async (d) => { rec.dialogs.push(d.type() + ': ' + d.message().slice(0, 200)); try { await d.dismiss(); } catch (e) { /* closed */ } });
   PAGES.push(rec);
@@ -186,6 +190,12 @@ async function pageFetch(page, method, p, body, withCsrf) {
   } finally { DELIBERATE--; }
 }
 const strip = (s) => String(s || '').replace(/\s+/g, ' ').trim();
+// WCAG contrast ratio of two rgb()/rgba() colours (alpha ignored)
+function contrast(c1, c2) {
+  const L = (c) => { const m = String(c).match(/[\d.]+/g); if (!m) return null; const [r, g, b] = m.slice(0, 3).map((v) => { v = Number(v) / 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const a = L(c1), b = L(c2); if (a === null || b === null) return null;
+  return +((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toFixed(2);
+}
 function lumOf(color) {
   if (!color) return null;
   let r, g, b, a = 1;
@@ -261,6 +271,12 @@ async function main() {
     await p.waitForTimeout(800);
     const tr = await read();
     const shT = await shot(p, '02', 'training_mode');
+    // header text must stay inside the header bar (round-11 skeptic addition: 02_training_mode showed clipped text)
+    const hdr = await p.evaluate(() => { const top = document.querySelector('.topbar').getBoundingClientRect(); const c = document.querySelector('.top-center');
+      const kids = [...c.children].map((k) => { const r = k.getBoundingClientRect(); return { text: k.textContent.replace(/\s+/g, ' ').trim().slice(0, 50), top: Math.round(r.top), bottom: Math.round(r.bottom) }; });
+      return { bar: [Math.round(top.top), Math.round(top.bottom)], width: Math.round(c.getBoundingClientRect().width), kids, outside: kids.filter((k) => k.top < top.top - 1 || k.bottom > top.bottom + 1) }; });
+    step('U01-modes-header', 'training-mode header text stays inside the header bar at 1440x900', D, hdr.outside.length ? 'FAIL' : 'PASS',
+      `header bar y=${hdr.bar}; .top-center width ${hdr.width}px; children: ${hdr.kids.map((k) => `"${k.text}" y=${k.top}..${k.bottom}`).join('; ')}; outside the bar: ${hdr.outside.length} (text above the page top is cut off)`, shT);
     await click(p.locator('#civic-modes [data-mode="school"]'));
     await p.waitForTimeout(1500);
     const sc = await read();
@@ -467,6 +483,21 @@ async function main() {
         step('U03', 'mobile: card opens in a bottom sheet, no horizontal scroll', M, ok ? 'PASS' : 'FAIL',
           `panel [left,top,width,height,bottom]=${f.panel} of viewport ${f.iw}x${f.ih}; data-sheet=${f.sheet}; card inside sheet (top ${f.cardTop}); scrollWidth=${f.sw} <= innerWidth+1=${f.iw + 1}`, sh);
       }
+      // (after U03: scrolling the CTA into view moves the card inside the sheet) the card's call to action must be legible, not only present in the DOM (round-11 skeptic addition)
+      {
+        const cta = page.locator('#civic-map-root [data-r03-action="feedback"]');
+        await cta.scrollIntoViewIfNeeded();
+        if (vp === D) await page.mouse.move(1000, 600);
+        await page.waitForTimeout(250);
+        const st = await page.evaluate(() => { const b = document.querySelector('#civic-map-root [data-r03-action="feedback"]'); const cs = getComputedStyle(b); const svg = b.querySelector('svg');
+          return { label: b.textContent.trim(), color: cs.color, background: cs.backgroundColor, hover: b.matches(':hover'), icon: svg ? getComputedStyle(svg).stroke : null }; });
+        const bb = await cta.boundingBox();
+        const file = path.join(SHOTS, `08b_card_cta_${vpn(vp)}.png`);
+        await page.screenshot({ path: file, clip: { x: Math.max(0, bb.x - 12), y: Math.max(0, bb.y - 40), width: Math.min(bb.width + 24, vp.width), height: bb.height + 60 } });
+        const ratio = contrast(st.color, st.background);
+        step('U02-cta-contrast', 'card button "Задать вопрос по объекту" is legible (WCAG 1.4.3 >= 4.5:1)', vp, ratio !== null && ratio >= 4.5 ? 'PASS' : 'FAIL',
+          `label="${st.label}"; computed color=${st.color} on background=${st.background} -> contrast ${ratio}:1 (hover=${st.hover}); icon stroke=${st.icon}; cause: ".civic-r03-root button { color: inherit }" (0,1,1) overrides ".civic-r03-btn-primary { color: #fff }" (0,1,0) in web/civic/map/civic-map.css`, path.relative(REPO, file));
+      }
     });
   }
 
@@ -517,9 +548,22 @@ async function main() {
       let pointerOk = true;
       try { await ed('[data-fk="rebase"]').click({ trial: true, timeout: 5000 }); } catch (e) { pointerOk = false; }
       const shR = await shot(eD, '09b', 'conflict_panel_reach');
+      // mouse-only way out: collapse the "Изменения: … было / станет" <details> in the action bar, then try again
+      let collapsed = false, pointerAfterCollapse = null, barAfter = null;
+      if (!pointerOk) {
+        const sum = ed('.civic-r04-actions details.civic-r04-diff > summary');
+        if (await sum.count()) {
+          try { await click(sum, { timeout: 4000 }); collapsed = !(await eD.evaluate(() => !!document.querySelector('#civic-editor .civic-r04-actions details.civic-r04-diff[open]'))); } catch (e) { collapsed = false; }
+          await eD.waitForTimeout(300);
+          barAfter = await eD.evaluate(() => { const a = document.querySelector('#civic-editor .civic-r04-actions').getBoundingClientRect(); const b = document.querySelector('#civic-editor .civic-r04-body').getBoundingClientRect(); return `action bar height ${Math.round(a.height)}px vs body ${Math.round(b.height)}px`; });
+          pointerAfterCollapse = true;
+          try { await ed('[data-fk="rebase"]').click({ trial: true, timeout: 5000 }); } catch (e) { pointerAfterCollapse = false; }
+        }
+      }
       step('U04-reach', 'conflict panel action ("Перенести мои правки…") reachable by pointer', D, pointerOk ? 'PASS' : 'FAIL',
-        `Playwright actionability (trial click) ok=${pointerOk}; button focused by the UI=${geo.focused}; after scrollIntoView top element at its centre: ${geo.centred.top} (rect ${geo.centred.rect}); with the drawer body scrolled to top: ${geo.atTop.top}; drawer body top=${geo.body.top} height=${geo.body.height}px vs action bar top=${geo.actions.top} height=${geo.actions.height}px (${geo.actions.css}); notice text says versions are compared "ниже" (below) while the panel is above`, shR);
+        `Playwright actionability (trial click) ok=${pointerOk}; button focused by the UI=${geo.focused}; after scrollIntoView top element at its centre: ${geo.centred.top} (rect ${geo.centred.rect}); with the drawer body scrolled to top: ${geo.atTop.top}; drawer body top=${geo.body.top} height=${geo.body.height}px vs action bar top=${geo.actions.top} height=${geo.actions.height}px (${geo.actions.css}) — the whole conflict panel (what changed on the server) is under the bar; notice text says versions are compared "ниже" (below) while the panel is above; mouse-only workaround: collapse the diff <details> (clicked=${collapsed}${barAfter ? ', ' + barAfter : ''}) -> pointer reach after collapse=${pointerAfterCollapse} (a ~40px strip above the bar; not discoverable); keyboard: focus is already on the button, Enter works. Other sizes: see skeptic_rechecks K-U04-reach (1366x768 and 390x844: no pointer/touch path even after collapsing)`, shR);
       if (pointerOk) { await click(ed('[data-fk="rebase"]')); rebaseHow = 'mouse click'; }
+      else if (pointerAfterCollapse) { await click(ed('[data-fk="rebase"]')); rebaseHow = 'mouse click after collapsing the diff (direct click was blocked)'; }
       else { await ed('[data-fk="rebase"]').focus(); await key(eD, 'Enter'); rebaseHow = 'keyboard (focus + Enter): pointer click impossible'; }
       rebased = true;
     }
@@ -645,8 +689,20 @@ async function main() {
     const channels = /iKOMEK/i.test(receipt) && /eOtinish/i.test(receipt);
     step('A07', 'feedback via the card form with consent; receipt says it is not an official registration', D,
       resp.status() < 300 && notOfficial ? 'PASS' : 'FAIL', `POST /feedback ${resp.status()}; receipt: "${receipt.replace(/[0-9A-Za-z_-]{16,}/g, '<id>').slice(0, 900)}"`, sh);
-    step('A07-receipt-channels', 'receipt itself names iKOMEK/eOtinish as the official channel', D, channels ? 'PASS' : 'FAIL',
-      `receipt mentions iKOMEK=${/iKOMEK/i.test(receipt)}, eOtinish=${/eOtinish/i.test(receipt)} (server receipt notice replaces the form notice); the form notice shown BEFORE submitting did name them: "${S.formNotice}"; after submit the form and its notice are replaced by the receipt`, sh);
+    // Graded against USER_TEST_SCRIPT T4 ("понятен receipt и что это не официальное обращение"): the receipt number and the
+    // not-official notice must be on screen, not only in the DOM. Naming iKOMEK/eOtinish in the receipt is NOT required by
+    // CONTRACT/BRIEF/ACCEPTANCE (official channel = later stage) -> recorded as a note, not graded (round-11 skeptic fix).
+    const vis = await rD.evaluate(() => {
+      const box = document.getElementById('civic-feedback-box');
+      let sc = box.parentElement; while (sc && sc !== document.body) { const o = getComputedStyle(sc).overflowY; if ((o === 'auto' || o === 'scroll') && sc.scrollHeight > sc.clientHeight) break; sc = sc.parentElement; }
+      const vr = sc && sc !== document.body ? sc.getBoundingClientRect() : { top: 0, bottom: innerHeight };
+      const inView = (el) => { if (!el) return false; const r = el.getBoundingClientRect(); return r.height > 0 && r.top >= Math.max(vr.top, 0) - 1 && r.bottom <= Math.min(vr.bottom, innerHeight) + 1; };
+      const rc = box.querySelector('.civic-r06-receipt');
+      return { id: inView(rc && rc.querySelector('.civic-r06-receipt-id')), notice: inView(rc && rc.querySelector('.civic-r06-official')), noticeText: ((rc && rc.querySelector('.civic-r06-official')) || {}).innerText || '' };
+    });
+    step('A07-receipt-visible', 'receipt number and "not an official registration" notice are on screen (T4)', D, vis.id && vis.notice && /не выполняется/.test(vis.noticeText) ? 'PASS' : 'FAIL',
+      `receipt id in view=${vis.id}; notice in view=${vis.notice}: "${strip(vis.noticeText)}"`, sh);
+    if (!channels) note(`A07 wording observation (not graded; not a CONTRACT/BRIEF requirement): the receipt notice from the server replaces the form notice, so after submitting the resident is told the message is not official but not where to go; the form notice before submitting did name the channels: "${S.formNotice}". Suggestion only.`);
   });
   await guard('A07-mobile-form', 'feedback form at 390x844', M, async () => {
     await openObject(rM, S.id, TITLE);
@@ -688,6 +744,14 @@ async function main() {
     if (foot.btnRight > foot.panelRight + 1 || foot.footScroll > foot.footClient + 1)
       note(`A08 observation (1440x900): for a signed-in editor the panel footer overflows — "Сообщения жителей" button right edge ${foot.btnRight}px vs panel right ${foot.panelRight}px (footer scrollWidth ${foot.footScroll} > clientWidth ${foot.footClient}); the label is clipped (see 09_conflict / 16 screenshots).`);
     await click(eD.locator('#civic-moderation-button'));
+    // layout after the click: does the overflowing footer drag the resident panel sideways? (round-11 skeptic addition)
+    await eD.waitForTimeout(500);
+    const shift = await eD.evaluate(() => { const pn = document.getElementById('civic-panel'); const t = document.querySelector('#civic-map-root .civic-r03-card-title, #civic-map-root .civic-r03-count');
+      const pr = pn.getBoundingClientRect(), tr = t ? t.getBoundingClientRect() : null; return { scrollLeft: pn.scrollLeft, panelLeft: Math.round(pr.left), contentLeft: tr ? Math.round(tr.left) : null }; });
+    const shP = await shot(eD, '16a', 'panel_after_moderation_click');
+    step('U03-editor-footer', 'desktop 1440x900, signed-in editor: panel footer fits; clicking "Сообщения жителей" does not shift the panel', D,
+      foot.btnRight <= foot.panelRight + 1 && shift.scrollLeft === 0 ? 'PASS' : 'FAIL',
+      `footer scrollWidth ${foot.footScroll} vs clientWidth ${foot.footClient}; "Сообщения жителей" right edge ${foot.btnRight}px vs panel right ${foot.panelRight}px; after the click #civic-panel.scrollLeft=${shift.scrollLeft}, card content left=${shift.contentLeft}px vs panel left=${shift.panelLeft}px (content clipped on the left)`, shP);
     const item = eD.locator('#civic-moderation .civic-r06-queue-item', { hasText: 'тротуар перекрыт' });
     await item.first().waitFor({ timeout: 15000 });
     await click(item.first());
@@ -966,12 +1030,17 @@ async function main() {
   const residentPages = PAGES.filter((p) => p.role === 'resident');
   R.network_staff_calls_public = residentPages.flatMap((p) => p.staff.filter((e) => !e.deliberate).map((e) => ({ page: p.label, call: e.m + ' ' + e.p })));
   R.network_staff_calls_public_note = 'resident contexts never logged in; deliberate script fetches (401 checks) are excluded';
-  const classify = (t) => (/ERR_TUNNEL_CONNECTION_FAILED|openfreemap/i.test(t) ? 'basemap-blocked (expected)'
-    : /status of 40[14]/.test(t) ? 'expected 401/404 from a negative check'
-    : /status of 409/.test(t) ? 'expected 409 from the U04 conflict'
-    : /status of 422/.test(t) ? 'expected 422 from the server-side HTML-title check'
-    : /net::ERR_FAILED/.test(t) ? 'U08 deliberate abort (expected)' : 'unexpected');
-  R.console_errors = PAGES.flatMap((p) => p.consoleErrors.map((t) => ({ page: p.label, kind: classify(t), text: t })));
+  // classified by the resource URL (console location) first, then by text; anything else is 'unexpected'
+  const classify = (t, page) => (/ERR_TUNNEL_CONNECTION_FAILED|openfreemap/i.test(t) && !/stubstyle/.test(page) ? 'basemap-blocked (expected)'
+    : /net::ERR_FAILED @ https:\/\/tiles\.openfreemap\.org/.test(t) && /stubstyle/.test(page) ? 'stub-style tile request aborted by the script (expected)'
+    : /status of 404 .*@ \/favicon\.ico/.test(t) ? 'favicon.ico 404 (browser default request; benign)'
+    : /status of 401 .*@ \/api\/civic\/v1\/staff\//.test(t) && /role-spoof|editor-desktop/.test(page) ? 'expected 401 from a deliberate staff call (S07/LOGOUT)'
+    : /status of 404 .*@ \/api\/civic\/v1\/objects\//.test(t) && /a02-deeplink/.test(page) ? 'expected 404 for the draft deep link (A02)'
+    : /status of 409 .*@ \/api\/civic\/v1\/staff\/objects\/[^/]+\/update/.test(t) ? 'expected 409 from the U04 conflict'
+    : /status of 422 .*@ \/api\/civic\/v1\/staff\/objects$/.test(t) ? 'expected 422 from the server-side HTML-title check'
+    : /net::ERR_FAILED @ \/api\/civic\/v1\/feedback$/.test(t) ? 'U08 deliberate abort (expected)' : 'unexpected');
+  R.console_errors = PAGES.flatMap((p) => p.consoleErrors.map((t) => ({ page: p.label, kind: classify(t, p.label), text: t })));
+  R.http_errors = PAGES.filter((p) => p.bad.length).map((p) => ({ page: p.label, responses: p.bad }));
   R.dialogs = PAGES.flatMap((p) => p.dialogs.map((d) => ({ page: p.label, dialog: d })));
   const unexpected = R.console_errors.filter((e) => e.kind === 'unexpected');
   step('CONSOLE', 'console/page errors (all pages)', 'n/a', unexpected.length ? 'FAIL' : 'PASS',

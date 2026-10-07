@@ -38,3 +38,6 @@
 | 04:31 | `python3 -I -B tests/civic/R10/mutation_selftest.py` (финальный набор после ревью) | 0 | 28/28 мутантов убито, базовый прогон 52/52 |
 | 04:34 | `run_acceptance.py --label r01-8c6add9` (финальный набор) | 0 | 82 PASS / 0 FAIL / 0 NOT_RUN |
 | 04:35 | `run_acceptance.py --label oracle-clean` (финальный набор) | 0 | см. runs/oracle-clean.json |
+| 04:36–04:57 | `browser/run_walkthrough.py` (агент) ×2 + скептическая перепроверка `skeptic_r01.cjs` | 1 | 48 PASS / 5 FAIL / 1 NOT_RUN; FAIL воспроизводимы на свежей БД |
+| 05:02 | `cta_check.cjs` до/после patches/R03-cta-contrast.patch (копия 8c6add9, затем откат) | 0 | контраст кнопки 1.00 → 14.79; `git apply --check` OK на 8c6add9 и R03 1bc9c48 |
+| 05:12 | `check_delivery(DELIVERY.json R10)` | 0 | [] |

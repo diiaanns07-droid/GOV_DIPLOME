@@ -105,6 +105,8 @@ def main() -> int:
     ap.add_argument("--tmp-root", default=None)
     ap.add_argument("--keep-db", action="store_true")
     ap.add_argument("--label", default="walkthrough")
+    ap.add_argument("--script", default="walkthrough.cjs",
+                    help="node scenario in this folder (default walkthrough.cjs; skeptic_r01.cjs = targeted re-checks)")
     args = ap.parse_args()
 
     root = Path(args.code_root).resolve()
@@ -142,7 +144,10 @@ def main() -> int:
             "R10_EDITOR2_USER": editors[1][0], "R10_EDITOR2_PASSWORD": editors[1][1],
         })
         t0 = time.monotonic()
-        node = subprocess.Popen([NODE, str(HERE / "walkthrough.cjs")], env=node_env, cwd=str(HERE.parents[3]),
+        script = (HERE / args.script).resolve()
+        if script.parent != HERE:
+            raise RuntimeError("--script must name a file in " + str(HERE))
+        node = subprocess.Popen([NODE, str(script)], env=node_env, cwd=str(HERE.parents[3]),
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1)
         assert node.stdin and node.stdout
         for line in node.stdout:
@@ -160,7 +165,7 @@ def main() -> int:
                 node.stdin.write(reply + "\n")
                 node.stdin.flush()
         node_rc = node.wait()
-        harness["node"] = {"cmd": f"NODE_PATH={NODE_PATH} {NODE} {HERE / 'walkthrough.cjs'}", "exit_code": node_rc,
+        harness["node"] = {"cmd": f"NODE_PATH={NODE_PATH} {NODE} {script}", "exit_code": node_rc,
                            "seconds": round(time.monotonic() - t0, 1)}
     finally:
         server.stop()
