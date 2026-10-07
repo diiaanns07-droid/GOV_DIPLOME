@@ -164,3 +164,23 @@ def test_second_editor_sees_first_editors_actions_in_history(service):
     detail = staff(service, "GET", f"/staff/feedback/{staff_id}", principal=FIXTURE_SECOND_EDITOR)["body"]["data"]
     entry = [h for h in detail["history"] if h["action"] == "status_changed"][0]
     assert entry["actor"] == "fixture-editor" and entry["reason"] == REASON
+
+
+def test_classifier_thread_failure_still_saves_message(tmp_path, clock, monkeypatch):
+    import threading
+
+    svc = FeedbackService(tmp_path / "thread.sqlite3", fixture_object_lookup, clock,
+                          classifier=lambda text, language: {"label": "roads"})
+
+    def no_threads(self):
+        raise RuntimeError("can't start new thread")
+    monkeypatch.setattr(threading.Thread, "start", no_threads)
+    try:
+        response = submit(svc)
+        assert response["status"] == 201 and response["body"]["data"]["receipt_id"].startswith("fbr_")
+        item = queue_items(svc, moderation="all")[0]
+        assert item["classifier"]["status"] == "error" and item["category"] == "sidewalks"
+        assert svc._classifier_inflight == 0
+    finally:
+        monkeypatch.undo()
+        svc.close()

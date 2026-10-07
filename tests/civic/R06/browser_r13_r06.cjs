@@ -167,7 +167,7 @@ async function openFirst(page) {
     await desk.locator("#moderation-root .civic-r06-handling select").selectOption("in_review");
     await desk.locator("#moderation-root .civic-r06-handling textarea").last().fill("Первый сотрудник взял в работу");
     await desk.locator("#moderation-root .civic-r06-handling button[type=submit]").click();
-    await desk.waitForFunction(() => /В работе/.test(document.querySelector("#moderation-root .civic-r06-handling-line").textContent));
+    await desk.waitForFunction(() => /В работе/.test((document.querySelector("#moderation-root .civic-r06-handling-line")?.textContent || "")));
     const reply2 = "Ответ второго сотрудника: сообщение передано модератору района на платформе.";
     await desk2.locator("#moderation-root .civic-r06-handling select").selectOption("answered");
     await desk2.locator("#moderation-root .civic-r06-handling textarea").first().fill(reply2);
@@ -187,7 +187,7 @@ async function openFirst(page) {
     // Осознанная повторная отправка из обновлённой карточки проходит.
     await desk2.locator("#moderation-root .civic-r06-handling select").selectOption("answered");
     await desk2.locator("#moderation-root .civic-r06-handling button[type=submit]").click();
-    await desk2.waitForFunction(() => /Дан ответ/.test(document.querySelector("#moderation-root .civic-r06-handling-line").textContent));
+    await desk2.waitForFunction(() => /Дан ответ/.test((document.querySelector("#moderation-root .civic-r06-handling-line")?.textContent || "")));
     check("resubmission after conflict succeeds", true);
 
     // 5. Житель открывает ссылку «на другом устройстве» и видит ответ и хронологию.
@@ -203,7 +203,7 @@ async function openFirst(page) {
     check("360px: link view has no horizontal scroll", ov.doc <= ov.win, JSON.stringify(ov));
     if (shotDir) await other.screenshot({ path: path.join(shotDir, "r13_link_reply_360.png"), fullPage: true });
     await phone.locator("#resident-root .civic-r06-receipt button", { hasText: "Обновить статус" }).click();
-    await phone.waitForFunction((r) => document.querySelector("#resident-root .civic-r06-receipt").textContent.includes(r), reply2);
+    await phone.waitForFunction((r) => (document.querySelector("#resident-root .civic-r06-receipt")?.textContent || "").includes(r), reply2);
     check("original tab sees reply after refresh", true);
 
     // 6. Истёкшая сессия сотрудника: действие не выполнено, текст в форме остаётся.
@@ -213,7 +213,7 @@ async function openFirst(page) {
     await desk.locator("#moderation-root .civic-r06-handling select").selectOption("closed").catch(() => null);
     await desk.locator("#moderation-root .civic-r06-handling textarea").last().fill(closingReason);
     await desk.locator("#moderation-root .civic-r06-handling button[type=submit]").click();
-    await desk.waitForFunction(() => /истекла|Войдите снова|изменено/.test(document.querySelector("#moderation-root .civic-r06-detail").textContent));
+    await desk.waitForFunction(() => /истекла|Войдите снова|изменено/.test((document.querySelector("#moderation-root .civic-r06-detail")?.textContent || "")));
     check("expired session keeps typed reason", (await desk.locator("#moderation-root .civic-r06-handling textarea").last().inputValue()) === closingReason);
 
     // 7. Узкий экран кабинета сотрудника.

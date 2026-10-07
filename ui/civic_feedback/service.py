@@ -835,8 +835,13 @@ class FeedbackService:
                         ["text", "category", "kind", "location", "consent_public"], False,
                         handling_after="new", moderation_after="pending")
 
-        # Сообщение уже сохранено; классификатор может только добавить подсказку.
-        self._classify(message_id, data["text"])
+        # Сообщение уже сохранено; классификатор может только добавить подсказку. Любой сбой здесь
+        # (в т.ч. невозможность запустить поток) не превращает сохранённое сообщение в ошибку 500.
+        try:
+            self._classify(message_id, data["text"])
+        except Exception:
+            LOGGER.exception("classifier wrapper failed")
+            self._store_classifier(message_id, "error", {"source": self.classifier_source})
         with self._lock:
             row = self._db.execute("SELECT * FROM feedback_messages WHERE id = ?", (message_id,)).fetchone()
         return _ok(201, self._receipt(row))
@@ -1599,7 +1604,12 @@ class FeedbackService:
                     self._classifier_inflight -= 1
 
         worker = threading.Thread(target=run, name="civic-r06-classifier", daemon=True)
-        worker.start()
+        try:
+            worker.start()
+        except RuntimeError:  # нет ресурсов на поток: подсказки не будет, счётчик возвращается
+            with self._lock:
+                self._classifier_inflight -= 1
+            raise
         worker.join(self.limits["classifier_timeout_s"])
         if worker.is_alive():
             self._store_classifier(message_id, "timeout", meta)

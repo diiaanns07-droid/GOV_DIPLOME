@@ -962,13 +962,22 @@
 
     function select(id, carry) {
       selectedId = id;
+      // Текст, сохранённый в памяти после истёкшей сессии, возвращается с явной пометкой.
+      var restored = !carry && staffDrafts.has(id);
       Array.prototype.forEach.call(list.querySelectorAll("." + P + "-queue-item"), function (node) {
         node.setAttribute("aria-pressed", String(node.dataset.feedbackId === id));
       });
       clear(detail);
       detail.appendChild(el("p", { className: P + "-muted", text: "Загрузка сообщения…" }));
       return api.request("GET", "/staff/feedback/" + encodeURIComponent(id)).then(
-        function (data) { if (!life.destroyed && selectedId === id) renderDetail(data, carry || staffDrafts.get(id) || null); },
+        function (data) {
+          if (life.destroyed || selectedId !== id) return;
+          renderDetail(data, carry || staffDrafts.get(id) || null);
+          if (restored) {
+            detail.insertBefore(el("p", { className: P + "-warning-text", role: "status",
+              text: "Восстановлен несохранённый текст (сессия истекла до отправки). Проверьте его — он ещё не сохранён." }), detail.firstChild);
+          }
+        },
         function (err) {
           if (life.destroyed) return;
           var info = errorInfo(err);
@@ -1062,7 +1071,6 @@
             var conflict = "Сообщение уже изменено" + (last ? " (" + (HISTORY_LABELS[last.action] || last.action) + (last.actor ? ", " + last.actor : "") + ", " + formatDate(last.at) + ")" : "") +
               ". Сейчас: " + (current.handling_label || "") + (current.revision ? ", ревизия " + current.revision : "") +
               ". Ваше действие не сохранено; ваш текст перенесён в обновлённую карточку — проверьте и отправьте снова.";
-            staffDrafts.set(item.id, typed);
             select(item.id, typed).then(function () {
               detail.insertBefore(el("p", { className: P + "-warning-text " + P + "-conflict", role: "alert", text: conflict }), detail.firstChild);
             });

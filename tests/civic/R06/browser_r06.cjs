@@ -190,7 +190,7 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     await page.waitForFunction(() => document.getElementById("session").textContent.includes("не вошли"));
     await page.locator("#moderation-root .civic-r06-decision textarea").first().fill("Попытка после выхода");
     await page.locator("#moderation-root .civic-r06-decision button[type=submit]").click();
-    await page.waitForFunction(() => /Войдите снова|не выполнено/.test(document.querySelector("#moderation-root .civic-r06-decision .civic-r06-status").textContent));
+    await page.waitForFunction(() => /Войдите снова|не выполнено/.test((document.querySelector("#moderation-root .civic-r06-decision .civic-r06-status")?.textContent || "")));
     check("logout blocks moderation in open form", true);
 
     // 13. Истёкшая сессия тоже не выполняет действие.
@@ -202,7 +202,7 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     await page.click("#expire");
     await page.locator("#moderation-root .civic-r06-decision textarea").first().fill("Попытка с истёкшей сессией");
     await page.locator("#moderation-root .civic-r06-decision button[type=submit]").click();
-    await page.waitForFunction(() => /истекла/.test(document.querySelector("#moderation-root .civic-r06-decision .civic-r06-status").textContent));
+    await page.waitForFunction(() => /истекла/.test((document.querySelector("#moderation-root .civic-r06-decision .civic-r06-status")?.textContent || "")));
     await page.click("#login-editor");
     await page.waitForFunction(() => document.getElementById("session").textContent.includes("editor"));
     check("pending unchanged after logout/expired attempts", (await apiQueue(page, "pending")).body.data.items.length === 1);
@@ -331,13 +331,13 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     await p2.locator("#moderation-root .civic-r06-handling select").selectOption("in_review");
     await p2.locator("#moderation-root .civic-r06-handling textarea").last().fill("Взято в работу сотрудником платформы");
     await p2.locator("#moderation-root .civic-r06-handling button[type=submit]").click();
-    await p2.waitForFunction(() => /В работе/.test(document.querySelector("#moderation-root .civic-r06-handling-line").textContent));
+    await p2.waitForFunction(() => /В работе/.test((document.querySelector("#moderation-root .civic-r06-handling-line")?.textContent || "")));
     check("r12 status changed via UI", true);
     const note = "R12 служебно: уточнить у балансодержателя сквера";
     await p2.locator("#moderation-root .civic-r06-note textarea").fill(note);
     await p2.locator("#moderation-root .civic-r06-note button[type=submit]").click();
     await p2.waitForFunction((n) => document.querySelector("#moderation-root .civic-r06-history") &&
-      document.querySelector("#moderation-root .civic-r06-history").textContent.includes(n), note);
+      (document.querySelector("#moderation-root .civic-r06-history")?.textContent || "").includes(n), note);
     check("r12 note visible in staff history", true);
     if (shotDir) await p2.locator("#moderation-root").screenshot({ path: path.join(shotDir, "r06_r12_moderation.png") });
     const publicDump = await p2.evaluate(async () => {
