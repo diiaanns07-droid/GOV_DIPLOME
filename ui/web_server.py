@@ -129,9 +129,13 @@ LOGIN_LOCK = threading.Lock()
 CIVIC_SERVICE_HEADERS = {"set-cookie", "retry-after", "vary"}
 
 
-def _restrict_db_files(db_path: Path):
-    """R02 review: runtime DB holds password hashes and sessions — owner-only where supported."""
-    for path in (db_path.parent, db_path, Path(str(db_path) + "-wal"), Path(str(db_path) + "-shm")):
+def _restrict_db_files(db_path: Path, own_parent: bool = False):
+    """R02 review: runtime DB holds password hashes and sessions — owner-only where supported.
+
+    The parent directory is tightened only when R01 created it (own_parent): a --civic-db in an
+    existing shared folder must not change that folder's permissions."""
+    paths = (db_path.parent,) if own_parent else ()
+    for path in paths + (db_path, Path(str(db_path) + "-wal"), Path(str(db_path) + "-shm")):
         try:
             if path.exists():
                 os.chmod(path, 0o700 if path.is_dir() else 0o600)
@@ -167,11 +171,32 @@ def match_civic_route(method, segments):
     raise LookupError(",".join(sorted(set(allowed))) if allowed else "")
 
 
+# Role packages: only a missing package itself means "not delivered"; any other ImportError
+# (a broken dependency inside a delivered module) is an init failure and is logged.
+CIVIC_ROLE_PACKAGES = {"ui.civic_store", "ui.civic_feedback", "engine.civic_scenarios", "agent.civic_assistant"}
+
+
+class ModuleNotDelivered(Exception):
+    """A factory precondition: the module this service depends on is not delivered."""
+
+
+def _role_package_missing(exc):
+    name = getattr(exc, "name", None) or ""
+    return isinstance(exc, ModuleNotFoundError) and any(
+        name == package or package.startswith(name + ".") for package in CIVIC_ROLE_PACKAGES)
+
+
+def resolve_db_path(value):
+    """CLI/env value -> absolute path (~ expanded), so the startup line and chmod name one file."""
+    return Path(value).expanduser().resolve() if value else None
+
+
 class CivicGateway:
     """Explicit civic-v1 routing to role services; services are created lazily.
 
     Lazy creation keeps unrelated checks (ui.web_check) free of a runtime DB.
-    Each factory returns the service or raises ImportError when not delivered.
+    Each factory returns the service; a missing role package or ModuleNotDelivered means
+    "not delivered", any other exception means "init_failed".
     """
 
     def __init__(self, factories=None):
@@ -183,28 +208,49 @@ class CivicGateway:
 
     @classmethod
     def for_project(cls, project: Path, db_path: Path | None = None):
-        db_path = Path(db_path) if db_path else project / ".runtime" / "civic.sqlite3"
+        db_path = resolve_db_path(db_path) or Path(project).resolve() / ".runtime" / "civic.sqlite3"
+
+        def ensure_parent():
+            created = not db_path.parent.exists()
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            return created
 
         def store():
             module = importlib.import_module("ui.civic_store")
             # R02 exports CivicService from ui.civic_store.service (package __init__ may not re-export).
             service_class = getattr(module, "CivicService", None) or \
                 importlib.import_module("ui.civic_store.service").CivicService
-            db_path.parent.mkdir(parents=True, exist_ok=True)
+            created = ensure_parent()
             service = service_class(str(db_path))
-            _restrict_db_files(db_path)
+            _restrict_db_files(db_path, own_parent=created)
             return service
 
         def feedback():
-            # R06 on the same SQLite file (own feedback_* tables). Object lookup via R02's staff
-            # read; R06 itself requires city=astana and publication=published for residents.
+            # R06 on the same SQLite file (own feedback_* tables). Residents must be checked against
+            # what they see: a published object is looked up through R02's PUBLIC view, so an
+            # unpublished staff edit (e.g. a moved point) cannot change the location check. Only
+            # objects without a public version fall back to the staff read, and R06 rejects those
+            # for residents (publication != published); staff moderation still sees their summary.
             integration = importlib.import_module("ui.civic_feedback.integration")
+            service_module = importlib.import_module("ui.civic_feedback.service")
             store_service = gateway.service("store")
             if store_service is None:
-                raise ImportError("feedback needs the object store")
-            db_path.parent.mkdir(parents=True, exist_ok=True)
+                raise ModuleNotDelivered("feedback needs the object store")
+            ensure_parent()
+            staff_lookup = integration.object_lookup_from_civic_service(store_service)
+
+            def lookup(object_id):
+                item = gateway.public_object(object_id)
+                if item is not None:
+                    return item
+                staff_item = staff_lookup(object_id)
+                if isinstance(staff_item, dict) and staff_item.get("publication") == "published":
+                    return None  # published but no public view: never fall back to the staff copy
+                return staff_item
+
             # classifier=None: the R08 model is not integrated/verified in this build.
-            return integration.build_feedback_service(str(db_path), store_service, classifier=None)
+            return service_module.FeedbackService(str(db_path), lookup, getattr(store_service, "clock", None),
+                                                  classifier=None)
 
         def scenarios():
             # R07 @22fa413: graphs only by id from its MANIFEST; every graph is hashed at start so a
@@ -222,14 +268,16 @@ class CivicGateway:
             api = importlib.import_module("agent.civic_assistant.api")
             store_service = gateway.service("store")
             if store_service is None:
-                raise ImportError("assistant needs the object store")
+                raise ModuleNotDelivered("assistant needs the object store")
             load_scenario = None
             try:
                 scen_registry = importlib.import_module("engine.civic_scenarios.registry")
                 scen_compare = importlib.import_module("engine.civic_scenarios.compare")
                 load_scenario = api.r07_case_loader(scen_registry.list_cases, scen_registry.load_graph,
                                                     scen_compare.compare)
-            except ImportError:
+            except ModuleNotFoundError as exc:
+                if not _role_package_missing(exc):
+                    raise
                 load_scenario = None
             return api.AssistantEndpoint(load_public_object=api.r02_public_loader(store_service),
                                          load_scenario_result=load_scenario, provider=None, extractor=None,
@@ -251,7 +299,11 @@ class CivicGateway:
                 return None
             try:
                 self._services[name] = factory()
-            except ImportError as exc:
+            except (ModuleNotFoundError, ModuleNotDelivered) as exc:
+                if not (isinstance(exc, ModuleNotDelivered) or _role_package_missing(exc)):
+                    self._failed[name] = "init_failed"
+                    LOGGER.exception("civic module %s failed to start", name)
+                    return None
                 # Not delivered yet: recorded once, reported as module_unavailable.
                 self._failed[name] = "not_delivered"
                 LOGGER.info("civic module %s unavailable: %s", name, exc.__class__.__name__)
@@ -779,8 +831,13 @@ class Handler(BaseHTTPRequestHandler):
     def _is_civic_path(self):
         raw = getattr(self, "path", "") or ""
         if not raw:
-            # Protocol errors (e.g. 505) happen before parse_request stores self.path.
-            words = (getattr(self, "requestline", "") or "").split()
+            # Protocol errors (e.g. 505) happen before parse_request stores self.path; a 414 is sent
+            # before even requestline is set, so the raw bytes are the last resort.
+            line = getattr(self, "requestline", "") or ""
+            if not line:
+                raw_line = getattr(self, "raw_requestline", b"") or b""
+                line = raw_line[:4096].decode("iso-8859-1", "replace")
+            words = line.split()
             raw = words[1] if len(words) >= 2 else ""
         try:
             path = urlsplit(raw).path
@@ -844,7 +901,7 @@ def main():
         parser.error("Порт должен быть от 1 до 65535.")
     try:
         server = create_server(port=args.port, host=args.host,
-                               civic_db=Path(args.civic_db) if args.civic_db else None)
+                               civic_db=resolve_db_path(args.civic_db))
     except OSError as exc:
         if getattr(exc, "winerror", None) == 10048 or getattr(exc, "errno", None) in (48, 98, 10048):
             parser.exit(1, "Порт занят. Закройте прежнее приложение или задайте другой PORT.\n")

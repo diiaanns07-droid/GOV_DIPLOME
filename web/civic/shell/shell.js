@@ -96,6 +96,7 @@
     }
     return envelope.data;
   }
+  let sessionSeq = 0;
   async function request(method, path, body, options) {
     method = String(method || "GET").toUpperCase();
     if (method !== "GET" && method !== "POST") throw new CivicApiError(0, "bad_method", "Метод не поддерживается.");
@@ -103,6 +104,9 @@
     // The public map never needs staff data: refuse /staff calls without a session.
     if (path.startsWith("/staff") && session.checked && !session.authenticated)
       throw new CivicApiError(401, "unauthenticated", "Войдите как сотрудник, чтобы продолжить.");
+    const isSessionPath = path === "/session" || path === "/session/login" || path === "/session/logout";
+    // Only the latest /session-family request may change the session (no stale overwrite).
+    const seq = isSessionPath ? ++sessionSeq : 0;
     let data;
     try {
       data = await send(method, path, body, options);
@@ -118,7 +122,7 @@
       }
       throw error;
     }
-    if (path === "/session" || path === "/session/login" || path === "/session/logout") applySession(data);
+    if (isSessionPath && seq === sessionSeq) applySession(data);
     return data;
   }
   const refreshSession = () => request("GET", "/session");
@@ -133,7 +137,7 @@
   };
 
   // ---------------------------------------------------------------- page modes
-  const S = { mode: null, mapState: "pending", modules: null, mounted: {}, selected: null,
+  const S = { mode: null, mapState: "pending", modules: null, mounted: {}, selected: null, assistantSeq: 0, editorTool: false,
     panelOpen: true, sheet: "half", started: false };
   const originalTitle = document.title;
   const brandTitle = document.querySelector(".brand-title");
@@ -287,13 +291,23 @@
     const hash = S.selected ? "#object=" + encodeURIComponent(S.selected) : "";
     if (location.hash !== hash) history.replaceState(null, "", location.pathname + location.search + hash);
     closeFeedback();
+    destroyMounted("assistant");
+    $c("civic-assistant-box").hidden = true;
     const assistant = moduleFor("assistant");
     if (S.selected && assistant && S.modules?.assistant?.status === "ready") {
-      $c("civic-assistant-box").hidden = false;
-      mount("assistant", $c("civic-assistant-root"), { objectId: S.selected });
-    } else {
-      destroyMounted("assistant");
-      $c("civic-assistant-box").hidden = true;
+      // Mount R09 only for an object confirmed public (permalinks may name drafts/unknown ids).
+      const id = S.selected, seq = ++S.assistantSeq;
+      request("GET", "/objects/" + encodeURIComponent(id)).then(() => {
+        if (seq !== S.assistantSeq || S.selected !== id || S.mode !== "civic") return;
+        $c("civic-assistant-box").hidden = false;
+        mount("assistant", $c("civic-assistant-root"), { objectId: id });
+      }).catch((error) => {
+        if (seq !== S.assistantSeq || S.selected !== id) return;
+        if (error?.status === 404) {
+          S.selected = null;
+          if (location.hash.startsWith("#object=")) history.replaceState(null, "", location.pathname + location.search);
+        }
+      });
     }
     if (S.selected && innerWidth < 761 && S.sheet === "peek") setSheet("half");
   }
@@ -318,6 +332,7 @@
     if (!$c("civic-moderation").hidden) closeModeration();
     if (!$c("civic-scenarios").hidden) closeScenarios();
     $c("civic-editor").hidden = false;
+    syncDrawerFlag();
     document.body.classList.add("civic-editor-open");
     const handle = S.mounted.editor || mount("editor", $c("civic-editor-root"), {
       map: currentMap(),
@@ -334,12 +349,14 @@
   const moderationReady = () => S.modules?.feedback?.status === "ready" && typeof window.CivicFeedback?.mountModeration === "function";
   function syncModerationButton() {
     $c("civic-moderation-button").hidden = !(moderationReady() && session.authenticated && S.mode === "civic");
-    if ($c("civic-moderation-button").hidden && !$c("civic-moderation").hidden) closeModeration();
+    // Session end hides only the launcher: an open drawer stays so R06 can show "сессия истекла"
+    // and keep the moderator's text; the server refuses further staff actions anyway.
   }
   function openModeration() {
     if (!$c("civic-editor").hidden) closeEditor();
     if (!$c("civic-scenarios").hidden) closeScenarios();
     $c("civic-moderation").hidden = false;
+    syncDrawerFlag();
     destroyMounted("moderation");
     try {
       S.mounted.moderation = window.CivicFeedback.mountModeration({ root: $c("civic-moderation-root"), api, map: currentMap(),
@@ -354,12 +371,19 @@
     destroyMounted("moderation");
     $c("civic-moderation-root").replaceChildren();
     $c("civic-moderation").hidden = true;
+    syncDrawerFlag();
   }
   $c("civic-moderation-button").addEventListener("click", openModeration);
   sessionListeners.add(() => syncModerationButton());
+  function syncDrawerFlag() {
+    const open = ["civic-editor", "civic-moderation", "civic-scenarios"].some((id) => !$c(id).hidden);
+    if (open) document.body.dataset.civicDrawer = "open"; else delete document.body.dataset.civicDrawer;
+  }
   function closeEditor() {
+    S.editorTool = false;
     destroyMounted("editor");
     $c("civic-editor").hidden = true;
+    syncDrawerFlag();
     document.body.classList.remove("civic-editor-open");
     $c("civic-staff-button").focus();
   }
@@ -367,6 +391,7 @@
     if (!$c("civic-editor").hidden) closeEditor();
     if (!$c("civic-moderation").hidden) closeModeration();
     $c("civic-scenarios").hidden = false;
+    syncDrawerFlag();
     // R07 review: the shell's api.request already adds /api/civic/v1 -> empty apiPrefix.
     mount("scenarios", $c("civic-scenarios-root"), { map: currentMap(), apiPrefix: "" });
   }
@@ -374,6 +399,7 @@
     destroyMounted("scenarios");
     $c("civic-scenarios-root").replaceChildren();
     $c("civic-scenarios").hidden = true;
+    syncDrawerFlag();
   }
   function setSheet(stateName) {
     S.sheet = ["peek", "half", "full"].includes(stateName) ? stateName : "half";
@@ -443,6 +469,7 @@
       $c(id).replaceChildren();
     $c("civic-feedback-box").hidden = $c("civic-assistant-box").hidden = true;
     $c("civic-editor").hidden = $c("civic-scenarios").hidden = $c("civic-moderation").hidden = true;
+    syncDrawerFlag();
     $c("civic-moderation-button").hidden = true;
     document.body.classList.remove("civic-mode", "civic-editor-open");
     delete document.body.dataset.civicSheet;
@@ -482,9 +509,16 @@
   $c("govtech-toggle")?.addEventListener("click", () => {
     setTimeout(() => { if (!window.GOVTECH?.active && S.mode === "school") { S.mode = "training"; syncModeButtons(); } }, 0);
   });
+  // R04 announces its map drawing tool; while it is active, Escape cancels the tool, not the cabinet.
+  root.addEventListener("civic-editor:tool", (event) => { S.editorTool = !!event.detail?.active; });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || S.mode !== "civic") return;
-    if (!$c("civic-editor").hidden) closeEditor();
+    // A module that handled Escape itself (confirmation, tool, menu) calls preventDefault.
+    if (event.defaultPrevented) return;
+    if (!$c("civic-editor").hidden) {
+      if (S.editorTool || $c("civic-editor").querySelector("[aria-modal='true'], .civic-r04-confirm-box")) return;
+      closeEditor();
+    }
     else if (!$c("civic-moderation").hidden) closeModeration();
     else if (!$c("civic-scenarios").hidden) closeScenarios();
     else if (!$c("civic-feedback-box").hidden) closeFeedback();
@@ -538,7 +572,22 @@
   const start = () => {
     setMode(initialMode(), { persist: false });
     if (currentMap()) onMapReady();
+    // The HttpOnly session cookie may already be valid (F5, new tab): learn it once on boot.
+    void refreshSession().catch(() => null);
   };
+  // In-page navigation to #object=<id>, #training or #school (links, back/forward).
+  window.addEventListener("hashchange", () => {
+    const hash = location.hash.replace(/^#/, "");
+    if (hash === "training" || hash === "school" || hash === "civic") { setMode(hash); return; }
+    if (!hash.startsWith("object=")) return;
+    let id = null;
+    try { id = decodeURIComponent(hash.slice(7)) || null; } catch { id = null; }
+    // Same id is a no-op only while its card is on screen (S.selected survives other modes).
+    if (!id || (id === S.selected && S.mode === "civic")) return;
+    S.selected = id;
+    if (S.mode !== "civic") setMode("civic");
+    else S.mounted.map?.selectObject?.(id);
+  });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 })();

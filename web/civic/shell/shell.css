@@ -3,7 +3,7 @@
  * Mobile ≤760: bottom sheet; attribution is lifted above the sheet. */
 
 /* Mode switch replaces the old single "Городское планирование" toggle. */
-#govtech-toggle { display: none !important; }
+#govtech-toggle, .topbar .top-actions #govtech-toggle { display: none !important; } /* beats govtech/shell.css mobile rule */
 #civic-modes { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: #e8eee3; }
 #civic-modes button { padding: 7px 12px; border-radius: 9px; font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
 #civic-modes button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 6px #19362812; }
@@ -66,7 +66,7 @@
   .civic-panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 46%; border-radius: 18px 18px 0 0;
     box-shadow: 0 -8px 30px #19362818; padding-bottom: env(safe-area-inset-bottom); transition: height .25s var(--ease); }
   .civic-panel[data-sheet="peek"] { height: 24%; }
-  .civic-panel[data-sheet="full"] { height: calc(100% - 132px); }
+  .civic-panel[data-sheet="full"] { height: calc(100% - 184px); }
   .civic-sheet-handle { display: grid; place-items: center; width: 100%; height: 36px; flex-shrink: 0; margin-bottom: -10px; }
   .civic-sheet-handle i { width: 44px; height: 5px; border-radius: 3px; background: #c9d3c4; }
   .civic-head { padding: 0 16px 8px; background: #fff; }
@@ -74,13 +74,31 @@
   .civic-data-note { display: none; }
   .civic-scroll { padding: 2px 12px 12px; }
   .civic-foot { padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); }
-  .civic-drawer { top: 80px; bottom: 0; left: 0; right: 0; width: auto; border-radius: 18px 18px 0 0; }
+  /* Drawers are bottom sheets too: the map stays usable above them (R04 point tool, R07 edge clicks). */
+  .civic-drawer { top: auto; height: 62%; bottom: 0; left: 0; right: 0; width: auto; border-radius: 18px 18px 0 0;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
   .civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(46% + 6px); right: 4px; transition: bottom .25s var(--ease); }
   body[data-civic-sheet="peek"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(24% + 6px); }
-  body[data-civic-sheet="full"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(100% - 126px); }
+  /* Full sheet: attribution goes left, between the basemap notice and the sheet (clear of map tools). */
+  body[data-civic-sheet="full"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(100% - 178px); right: auto; left: 6px; }
+  body[data-civic-drawer="open"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(62% + 6px); right: 4px; left: auto; }
+  /* A full sheet would stick out above the drawer and cover the map strip the drawer leaves free;
+     the panel keeps its state (scroll, sheet size) and comes back when the drawer closes. */
+  body[data-civic-drawer="open"].civic-mode .civic-panel { visibility: hidden; }
   .civic-mode .map-tools { top: 84px; }
   .civic-mode #map-status { top: 84px; left: 10px; right: 60px; max-width: none; white-space: normal; }
   .civic-mode .toast { bottom: calc(46% + 48px); }
+  /* Training/school modes on a phone: the actions row scrolls inside the top bar instead of
+     widening the page; the mode switch comes first and stays visible. */
+  .topbar { min-width: 0; }
+  .topbar .brand { flex: 1 1 0; min-width: 33px; }
+  .topbar .brand > div:not(.brand-mark) { min-width: 0; }
+  .topbar .brand-sub { display: none; }
+  .topbar .brand-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar .top-actions { min-width: 0; flex: 0 1 auto; max-width: calc(100% - 41px); justify-content: flex-start;
+    overflow-x: auto; scrollbar-width: none; }
+  .topbar .top-actions::-webkit-scrollbar { display: none; }
+  .topbar .top-actions > * { flex-shrink: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .civic-panel, .civic-mode .maplibregl-ctrl-bottom-right { transition: none; }

@@ -112,6 +112,12 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await page.fill(fk("planned_start"), "2026-10-14");
     await page.fill(fk("original_planned_end"), "2026-10-30");
     await page.click(fk("tool-point"));
+    await page.evaluate(() => document.activeElement?.blur());
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(200);
+    check("Escape with the map tool active cancels the tool, not the editor", await page.locator("#civic-editor").isVisible()
+      && await page.locator(fk("title")).inputValue() !== "");
+    await page.click(fk("tool-point"));
     const box = await page.locator("#map").boundingBox();
     await page.mouse.click(box.x + box.width * 0.55, box.y + box.height * 0.5);
     await page.check(fk("geometry_confirmed")).catch(() => null);
@@ -267,6 +273,17 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     const back = await page.evaluate(() => ({ gov: window.GOVTECH?.active, district: map.getLayoutProperty("district-fill", "visibility"),
       civicLayers: map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03-")).length }));
     check("back to civic: GOVTECH off, districts hidden, R03 layers back", back.gov === false && back.district === "none" && back.civicLayers > 0, back);
+    await page.evaluate(() => { location.hash = "#training"; });
+    const hashTraining = await page.waitForFunction(() => window.CivicShell.mode === "training", null, { timeout: 5000 }).then(() => true).catch(() => false);
+    await page.evaluate((id) => { location.hash = "#object=" + encodeURIComponent(id); }, createdId);
+    const hashCard = await page.waitForFunction(() => window.CivicShell.mode === "civic"
+      && document.querySelector("#civic-map-root .civic-r03-card")?.textContent.includes("Проверочный ремонт тротуара R01"), null, { timeout: 15000 }).then(() => true).catch(() => false);
+    check("in-page #training / #object= links switch mode and open the card", hashTraining && hashCard, { hashTraining, hashCard });
+    await page.evaluate(() => { location.hash = "#object=no-such-object-r01"; });
+    await page.waitForTimeout(1500);
+    const unknownLink = await page.evaluate(() => ({ assistantHidden: document.getElementById("civic-assistant-box").hidden,
+      assistantEmpty: !document.getElementById("civic-assistant-root").textContent.trim(), hash: location.hash }));
+    check("unknown/draft permalink: no assistant mounted, hash cleared", unknownLink.assistantHidden && unknownLink.assistantEmpty && !unknownLink.hash.includes("no-such"), unknownLink);
     check("no page errors (desktop)", page.errs.length === 0, page.errs);
     await ctx.close();
 
@@ -290,6 +307,27 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     check("mobile: bottom sheet leaves the map visible", mob.panelTop > 844 * 0.4, mob.panelTop);
     check("mobile: tap targets ≥36px", mob.small.length === 0, mob.small);
     await m.page.screenshot({ path: path.join(OUT, "09_civic_start_390.png") });
+    const attribSlot = () => m.page.evaluate(() => {
+      const holder = document.querySelector(".maplibregl-ctrl-bottom-right");
+      if (!holder) return { ok: false, reason: "no control container" };
+      let el = holder.querySelector(".maplibregl-ctrl-attrib");
+      const injected = !el || el.getBoundingClientRect().width === 0;
+      if (injected && !document.getElementById("r01-test-attrib")) {
+        el = document.createElement("div");
+        el.id = "r01-test-attrib";
+        el.className = "maplibregl-ctrl";
+        el.style.cssText = "background:#fff;font-size:11px;padding:2px 6px";
+        el.textContent = "© тестовая атрибуция R01";
+        holder.appendChild(el);
+      }
+      el = document.getElementById("r01-test-attrib") || el;
+      const r = el.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return { ok: !!hit && (el === hit || el.contains(hit)) && r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth,
+        injected, rect: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)],
+        sheet: document.body.dataset.civicSheet || null, drawer: document.body.dataset.civicDrawer || null };
+    });
+    const slots = [await attribSlot()];
     await m.page.click(`#civic-map-root .civic-r03-item[data-id="${createdId}"]`);
     await m.page.waitForSelector("#civic-map-root .civic-r03-card", { timeout: 10000 });
     await m.page.waitForTimeout(800);
@@ -297,6 +335,7 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await m.page.click("#civic-sheet-handle");
     await m.page.waitForTimeout(500);
     await m.page.screenshot({ path: path.join(OUT, "11_card_full_390.png") });
+    slots.push(await attribSlot());
     // Signed-in editor on a phone: footer gains the moderation button; nothing may overflow.
     await m.page.evaluate(([u, p]) => window.CivicShell.api.login(u, p), [USER, PASSWORD]);
     await m.page.waitForSelector("#civic-moderation-button:not([hidden])", { timeout: 10000 });
@@ -305,6 +344,22 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
         .filter((r) => r.right > innerWidth + 0.5 || r.left < -0.5).length }));
     check("mobile: staff footer fits (3 buttons, no overflow)", foot.scrollW <= 390 && foot.out === 0, foot);
     await m.page.screenshot({ path: path.join(OUT, "12_staff_footer_390.png") });
+    // Drawers are bottom sheets on a phone: map stays visible above, attribution moves above the drawer.
+    await m.page.click("#civic-scenarios-button");
+    await m.page.waitForTimeout(600);
+    const drawer = await m.page.evaluate(() => ({ top: document.getElementById("civic-scenarios").getBoundingClientRect().top,
+      flag: document.body.dataset.civicDrawer || null }));
+    slots.push(await attribSlot());
+    check("mobile: drawer is a bottom sheet, map visible above it", drawer.flag === "open" && drawer.top > 844 * 0.3, drawer);
+    check("mobile: attribution slot visible in half/full sheet and with a drawer (test element if none rendered)", slots.every((x) => x.ok), slots);
+    await m.page.screenshot({ path: path.join(OUT, "13_drawer_390.png") });
+    await m.page.click("#civic-scenarios [data-close=scenarios]");
+    await m.page.evaluate(() => document.getElementById("r01-test-attrib")?.remove());
+    // F5 with a valid HttpOnly session cookie: the shell learns the session on boot (no re-login).
+    await m.page.reload();
+    await m.page.waitForFunction(() => window.CivicShell?.mode === "civic" && mapReady, null, { timeout: 30000 });
+    const f5staff = await m.page.waitForSelector("#civic-moderation-button:not([hidden])", { timeout: 10000 }).then(() => true).catch(() => false);
+    check("F5 with a valid session: staff buttons return without re-login", f5staff);
     check("no page errors (mobile)", m.page.errs.length === 0, m.page.errs);
     await m.ctx.close();
   } catch (error) {
