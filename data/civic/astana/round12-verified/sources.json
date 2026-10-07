@@ -1,0 +1,1744 @@
+{
+  "schema": "r05-r12-sources-v1",
+  "city": "astana",
+  "registry_as_of": "2026-10-07",
+  "note": "Все источники найдены серверным поиском; ни одна страница в среде R05 не открыта (network_audit.json). published_on заполнен только там, где дата есть в самом URL (published_on_basis=url).",
+  "sources": [
+    {
+      "id": "src-r12-24-904669ed",
+      "url": "https://24.kz/ru/news/culture/789305-kontsert-enrike-iglesiasa-gde-v-astane-ogranichat-dvizhenie-3-sentyabrya",
+      "publisher": null,
+      "publisher_kind": "other",
+      "title_as_listed": "Концерт Энрике Иглесиаса: где в Астане ограничат движение 3 сентября",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-24-a62036ad",
+      "url": "https://24.kz/ru/news/sport/771073-uww-vybral-astanu-dlya-mirovogo-turnira-2026",
+      "publisher": null,
+      "publisher_kind": "other",
+      "title_as_listed": "UWW выбрал Астану для мирового турнира 2026",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-24-e486a296",
+      "url": "https://24.kz/ru/news/sport/791320-v-astane-20-sentyabrya-projdet-blagotvoritelnyj-zabeg-unicef-charity-run",
+      "publisher": null,
+      "publisher_kind": "other",
+      "title_as_listed": "В Астане 20 сентября пройдет благотворительный забег UNICEF Charity Run",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-bes-00377498",
+      "url": "https://bes.media/news/dvuhurovnevuyu-razvyazku-na-peresechenii-ulits-beysekovoy-i-tlendieva-v-astane-zavershat-do-kontsa-goda",
+      "publisher": "Bes.media",
+      "publisher_kind": "news",
+      "title_as_listed": "dvuhurovnevuyu razvyazku na peresechenii ulits beysekovoy i tlendieva v astane zavershat do kontsa goda",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-bes-31baedd3",
+      "url": "https://bes.media/ekopark-na-malom-taldikole-nachnut-stroit-v-2026-godu-dlya-sohraneniya-urovnya-vodi-postroyat-73-skvazhini-3d5b51",
+      "publisher": "Bes.media",
+      "publisher_kind": "news",
+      "title_as_listed": "Экопарк на Малом Талдыколе начнут строить в 2026 году: для сохранения уровня воды пробурят 73 скважины",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-bes-fd21add9",
+      "url": "https://bes.media/kakie-ulitsi-otremontiruyut-v-astane-v-2026-godu",
+      "publisher": "Bes.media",
+      "publisher_kind": "news",
+      "title_as_listed": "Какие улицы отремонтируют в Астане в 2026 году",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-bizmedia-6da2f5d8",
+      "url": "https://bizmedia.kz/2026-05-12-lrt-v-astane-zapustyat-16-17-maya/md",
+      "publisher": "Bizmedia.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "bizmedia.kz",
+      "published_on": "2026-05-12",
+      "published_on_basis": "url",
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-digitalbusiness-b4fdfb12",
+      "url": "https://digitalbusiness.kz/2026-06-05/v-astane-perekroyut-dorogi-iz-za-marafona-proverte-zatronet-li-eto-vash-marshrut",
+      "publisher": "Digital Business",
+      "publisher_kind": "news",
+      "title_as_listed": "В Астане перекроют дороги из-за марафона: проверьте, затронет ли это ваш маршрут",
+      "published_on": "2026-06-05",
+      "published_on_basis": "url",
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-digitalbusiness-b9532dd5",
+      "url": "https://digitalbusiness.kz/2026-09-21/v-astane-poyavitsya-noviy-most-cherez-esil-kakie-dorogi-on-razgruzit",
+      "publisher": "Digital Business",
+      "publisher_kind": "news",
+      "title_as_listed": "В Астане появится новый мост через Есиль: какие дороги он разгрузит",
+      "published_on": "2026-09-21",
+      "published_on_basis": "url",
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-digitalbusiness-cff2c1cc",
+      "url": "https://digitalbusiness.kz/2026-09-03/kuda-shodit-v-astane-5-i-6-sentyabrya-besplatnie-i-neobichnie-sobitiya-dlya-detey-i-vzroslih",
+      "publisher": "Digital Business",
+      "publisher_kind": "news",
+      "title_as_listed": "Куда сходить в Астане 5 и 6 сентября: бесплатные и необычные события для детей и взрослых",
+      "published_on": "2026-09-03",
+      "published_on_basis": "url",
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-118ae997",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1267167?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Масштабное благоустройство общественных пространств продолжается в Астане",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-2010a772",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "В Астане стартовал сезон дорожно-строительных работ 2026 года",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-29873139",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/826426?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Участок дороги между стадионом «Астана Арена» и велотреком «Сарыарка» закроют на ремонт",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-30bcde65",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1042433?lang=kk",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Астанада 50 көше жөнделеді",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-31ffbdc4",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1226867?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Новые скверы, дворы и променады: как благоустраивают Астану",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-3fa6af4f",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1269761?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Фестиваль Comic Con Astana 2026 стартовал в столице",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-4cc9f2f9",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1214778?lang=kk",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Астанада жөндеу жұмысына байланысты бірқатар көшеде көлік қозғалысы ішінара жабылады",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-5d47a9d5",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1213149?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "В Астане начался второй этап LRT: залита первая опора",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-7b9c737a",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1233855?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Строительство развязок и дорог: как развивают дорожную сеть в Астане",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-823b8956",
+      "url": "https://www.gov.kz/memleket/entities/tsm/press/news/details/1294963",
+      "publisher": "Министерство туризма и спорта РК",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Астанада өткен алғашқы UNICEF Charity Run қайырымдылық жүгірісіне 2000 адам қатысты",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-844b3675",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1212421?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Участок улицы Баршын временно закроют в Астане",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-9adcb614",
+      "url": "https://www.gov.kz/memleket/entities/astana-uvp/press/news/details/1276562",
+      "publisher": "Госорган на gov.kz (раздел entities/astana-uvp)",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Астанада «Халық қатысатын бюджет» жобасы аясында 60-тан астам аула абаттандырылды",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-a5870e38",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1141308?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "В 2026 году в Астане построят еще 13 школ",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-a6b387ae",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1242774?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Ливневки, канализационные очистные сооружения и водовод строят в Астане",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-c0c11753",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1253881?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Более 30 новых дворов, скверов и спортплощадок открыли в Астане ко Дню города",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-ca64318a",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1286417",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Bala Fest: Астанада 200-ге жуық бала спорт пен шығармашылықтан сынға түсті",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-f5f840ad",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1152208?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "В Астане построят 11 медицинских учреждений",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gurk-62a200e3",
+      "url": "https://gurk.kz/news/bolee-30-novy-h-dvorov-skverov-i-sportploshhadok-otkry-li-v-astane-ko-dnyu-goroda",
+      "publisher": null,
+      "publisher_kind": "other",
+      "title_as_listed": "Более 30 новых дворов, скверов и спортплощадок открыли в Астане ко Дню города: Город Астана, 06 Июля 2026 года - новости на сайте gurk.kz",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inbusiness-0f38949f",
+      "url": "https://inbusiness.kz/ru/news/poyavilis-detali-i-sroki-stroitelstva-lrt-iz-astany-v-kosshy",
+      "publisher": "Inbusiness.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "Появились детали и сроки строительства ЛРТ из Астаны в Косшы",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inbusiness-a9438155",
+      "url": "https://inbusiness.kz/ru/last/milliardy-vlozhat-v-obnovlenie-kommunalnoj-infrastruktury-astany",
+      "publisher": "Inbusiness.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "Миллиарды вложат в обновление коммунальной инфраструктуры Астаны",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inbusiness-ca006aba",
+      "url": "https://inbusiness.kz/ru/last/ekopark-na-malom-taldykole-poyavitsya-v-2027-godu",
+      "publisher": "Inbusiness.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "Экопарк на Малом Талдыколе появится в 2027 году",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-001616a2",
+      "url": "https://www.inform.kz/ru/desyatki-ulits-obnovyat-v-astane-osnovnie-dorozhnie-proekti-03ddd32d",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Десятки улиц обновят в Астане: основные дорожные проекты",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-1559cfb9",
+      "url": "https://www.inform.kz/ru/nochnoy-zabeg-na1700-uchastnikov-proydet-vastane-67a1b973",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Ночной забег на 1700 участников пройдет в Астане",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-217a2ebb",
+      "url": "https://www.inform.kz/ru/dva-perekrestka-vastane-perekroyut-iz-za-dorozhnih-rabot-1c0fa04e",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Два перекрестка в Астане перекроют из-за дорожных работ",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-28726f83",
+      "url": "https://www.inform.kz/ru/v-astane-otkrili-noviy-most-po-tauelsizdik-6eaff9",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "В Астане открыли новый мост по Тауелсиздик",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-46e9053b",
+      "url": "https://www.inform.kz/ru/perekrestok-akmeshit-almati-polnostyu-perekroyut-v-astane-40f40b73",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Перекресток Акмешит — Алматы полностью перекроют в Астане",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-5dcd4f53",
+      "url": "https://www.inform.kz/ru/uchastok-dorogi-na-huseyn-ben-talal-perekroyut-na-pyat-dney-v-astane-26caad45",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Участок дороги на Хусейн бен Талал перекроют на пять дней в Астане",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-62624847",
+      "url": "https://www.inform.kz/ru/kogda-i-gde-proydut-zabegi-v-astane-v-etom-godu-5c8749",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Когда и где пройдут забеги в Астане в этом году",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-69dbf4ea",
+      "url": "https://www.inform.kz/ru/nachalis-raboti-poblagoustroystvu-ekoparka-namalom-taldikole-vastane-99e4dfb6",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Национальный курултай Национальный курултай",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-8b260c3c",
+      "url": "https://www.inform.kz/ru/92-mlrd-tenge-napravyat-na-modernizatsiyu-vodosnabzheniya-v-astane-dea777",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Национальный курултай Национальный курултай",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-ab56e781",
+      "url": "https://www.inform.kz/ru/noviy-vosmipolosniy-most-planiruyut-postroit-vastane-c1e34cb5",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Новый восьмиполосный мост планируют построить в Астане",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-ab83093f",
+      "url": "https://www.inform.kz/ru/800-metroviy-tonnel-poyavitsya-nalevoberezhe-astani-chto-izmenitsya-dlyavoditele-c8edae42",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "800-метровый тоннель появится на левобережье Астаны: что изменится для водителей",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-ae29218b",
+      "url": "https://www.inform.kz/ru/kogda-otkroyut-novuyu-razvyazku-beysekovoy-tlendieva-v-astane-8ebee5ee",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Когда откроют новую развязку Бейсековой — Тлендиева в Астане",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-cb7478e4",
+      "url": "https://www.inform.kz/ru/bolee-11-mln-zelenih-nasazhdeniy-visadyat-v-astane-v-2026-godu-6a64cf5e",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Более 1,1 млн зеленых насаждений высадят в Астане в 2026 году",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-ddac7182",
+      "url": "https://www.inform.kz/ru/novie-tochki-prityazheniya-v-astane-nachalos-stroitelstvo-allei-minzhildik-1b899d",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Национальный курултай Национальный курултай",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-kapital-6bc0a124",
+      "url": "https://kapital.kz/gosudarstvo/151149/v-astane-blagoustroyat-173-obshestvennyh-i-dvorovyh-prostranstva.html",
+      "publisher": "Kapital.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "v astane blagoustroyat 173 obshestvennyh i dvorovyh prostranstva",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-kazpravda-7d59b698",
+      "url": "https://kazpravda.kz/n/ulitsu-kenesary-v-astane-chastichno-perekryli",
+      "publisher": "«Казахстанская правда»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Улицу Кенесары в Астане частично перекрыли",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-kazpravda-851c791a",
+      "url": "https://www.kazpravda.kz/n/ulitsu-almaty-v-astane-chastichno-zakroyut-do-kontsa-2026-goda",
+      "publisher": "«Казахстанская правда»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Улицу Алматы в Астане частично закроют до конца 2026 года",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-kazpravda-c3c0b72d",
+      "url": "https://kazpravda.kz/n/v-astane-poyavyatsya-novye-tochki-prityazheniya",
+      "publisher": "«Казахстанская правда»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "В Астане появятся новые точки притяжения",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-kazpravda-e43cc86a",
+      "url": "https://kazpravda.kz/n/ulitsu-almaty-v-astane-chastichno-zakroyut-do-kontsa-2026-goda",
+      "publisher": "«Казахстанская правда»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Улицу Алматы в Астане частично закроют до конца 2026 года",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: closures"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-kazpravda-f290cf3d",
+      "url": "https://kazpravda.kz/n/astana-primet-chempionat-mira-po-vidam-borby-spustya-sem-let",
+      "publisher": "«Казахстанская правда»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Астана примет чемпионат мира по видам борьбы спустя семь лет",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-kz-ddff58c7",
+      "url": "https://kz.kursiv.media/2026-09-04/svvo-srazu-50-ulicz-kasymbek-rasskazal-o-dorozhnyh-planah-astany",
+      "publisher": "Kursiv Media",
+      "publisher_kind": "news",
+      "title_as_listed": "Сразу 50 улиц: Касымбек рассказал о дорожных планах Астаны",
+      "published_on": "2026-09-04",
+      "published_on_basis": "url",
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-sxodim-971c7536",
+      "url": "https://sxodim.com/astana/event/prazdnichnyy-koncert-k-fest-2026",
+      "publisher": null,
+      "publisher_kind": "other",
+      "title_as_listed": "prazdnichnyy koncert k fest 2026",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: events"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-vechastana-9b3b3aa4",
+      "url": "https://www.vechastana.kz/news/do-konca-goda-zakroiut-ulicy-akmesit-almaty",
+      "publisher": "«Вечерняя Астана»",
+      "publisher_kind": "city_media",
+      "title_as_listed": "До конца года закроют улицы Акмешит-Алматы",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-vechastana-f09cd5ec",
+      "url": "https://www.vechastana.kz/news/svoi-kopengagen-i-ekopark-na-malom-taldykole",
+      "publisher": "«Вечерняя Астана»",
+      "publisher_kind": "city_media",
+      "title_as_listed": "Свой «Копенгаген» и экопарк на Малом Талдыколе",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-zakon-5ca5a9bc",
+      "url": "https://www.zakon.kz/obshestvo/6532842-gde-i-kogda-ogranichat-dvizhenie-v-astane-izza-kontserta-kayrata-nurtasa.html",
+      "publisher": "Zakon.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "Где и когда ограничат движение в Астане из-за концерта Кайрата Нуртаса ᐈ новость от 13:58, 26 сентября 2026 на zakon.kz",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-zakon-85f32915",
+      "url": "https://www.zakon.kz/sobytiia/6513512-masshtabnyy-remont-v-astane-zablokiruet-vazhnuyu-dorogu-na-7-mesyatsev.html",
+      "publisher": "Zakon.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "Масштабный ремонт в Астане заблокирует важную дорогу на 7 месяцев ᐈ новость от 13:10, 06 апреля 2026 на zakon.kz",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-zakon-95af9e35",
+      "url": "https://www.zakon.kz/sobytiia/6518094-v-astane-zapustili-LRT.html",
+      "publisher": "Zakon.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "В Астане запустили LRT",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-zakon-bc223a78",
+      "url": "https://www.zakon.kz/obshestvo/6532785-odnu-iz-ulits-polnostyu-perekroyut-v-astane-v-vykhodnye-nazvana-prichina.html",
+      "publisher": "Zakon.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "Одну из улиц полностью перекроют в Астане в выходные: названа причина ᐈ новость от 19:18, 25 сентября 2026 на zakon.kz",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-zakon-e0e1795d",
+      "url": "https://www.zakon.kz/sobytiia/6527998-izza-stroitelstva-tonnelya-v-astane-perekroyut-ulitsu-almaty-do-kontsa-2026-goda.html",
+      "publisher": "Zakon.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "Из-за строительства тоннеля в Астане перекроют улицу Алматы до конца 2026 года ᐈ новость от 17:28, 13 августа 2026 на zakon.kz",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-zakon-f3d2c1b7",
+      "url": "https://www.zakon.kz/obshestvo/6533466-dva-zagruzhennykh-perekrestka-zakroyut-v-astane.html",
+      "publisher": "Zakon.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "Два загруженных перекрестка закроют в Астане ᐈ новость от 16:55, 01 октября 2026 на zakon.kz",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-zakon-fc1fea08",
+      "url": "https://www.zakon.kz/sobytiia/6530987-v-astane-na-pyat-dney-polnostyu-perekroyut-dvizhenie-na-odnom-iz-vazhnykh-perekrestkov.html",
+      "publisher": "Zakon.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "В Астане на пять дней полностью перекроют движение на одном из важных перекрестков ᐈ новость от 18:36, 09 сентября 2026 на zakon.kz",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: official-roadworks"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    }
+  ]
+}

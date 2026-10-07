@@ -1,0 +1,95 @@
+{
+  "as_of": "2026-10-07",
+  "discovered_at": "2026-10-07T10:16:00Z",
+  "note": "Ручное курирование R05: геометрия только там, где место однозначно названо в заголовке; иначе null.",
+  "overrides": {
+    "https://www.inform.kz/ru/perekrestok-akmeshit-almati-polnostyu-perekroyut-v-astane-40f40b73": {
+      "geocode": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            71.424016,
+            51.116668
+          ]
+        },
+        "geometry_precision": "approximate",
+        "geometry_basis": "OSM: пересечение «Ақмешіт көшесі» и «Алматы көшесі», узлы 2671166709,6539398108, снимок 2026-05-06, ODbL",
+        "query": {
+          "street": "Акмешит",
+          "cross": "Алматы",
+          "from": null,
+          "to": null
+        },
+        "notes": [],
+        "why": "перекрёсток «Акмешит — Алматы» назван в заголовке; точка — общий узел улиц в OSM"
+      }
+    },
+    "https://www.vechastana.kz/news/do-konca-goda-zakroiut-ulicy-akmesit-almaty": {
+      "geocode": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            71.424016,
+            51.116668
+          ]
+        },
+        "geometry_precision": "approximate",
+        "geometry_basis": "OSM: пересечение «Ақмешіт көшесі» и «Алматы көшесі», узлы 2671166709,6539398108, снимок 2026-05-06, ODbL",
+        "query": {
+          "street": "Акмешит",
+          "cross": "Алматы",
+          "from": null,
+          "to": null
+        },
+        "notes": [],
+        "why": "перекрёсток «Акмешит — Алматы» назван в заголовке; точка — общий узел улиц в OSM"
+      }
+    },
+    "https://www.inform.kz/ru/kogda-otkroyut-novuyu-razvyazku-beysekovoy-tlendieva-v-astane-8ebee5ee": {
+      "geocode": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            71.382253,
+            51.178849
+          ]
+        },
+        "geometry_precision": "approximate",
+        "geometry_basis": "OSM: пересечение «Шабал Бейсекова көшесі» и «проспект Нургисы Тлендиева», узлы 13418022861, снимок 2026-05-06, ODbL",
+        "query": {
+          "street": "Бейсековой",
+          "cross": "Тлендиева",
+          "from": null,
+          "to": null
+        },
+        "notes": [
+          "общего узла нет; ближайшие узлы улиц в 20 м"
+        ],
+        "why": "пересечение названо в заголовке; точка — ближайшие узлы двух улиц в OSM, не проект развязки"
+      }
+    },
+    "https://bes.media/news/dvuhurovnevuyu-razvyazku-na-peresechenii-ulits-beysekovoy-i-tlendieva-v-astane-zavershat-do-kontsa-goda": {
+      "geocode": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            71.382253,
+            51.178849
+          ]
+        },
+        "geometry_precision": "approximate",
+        "geometry_basis": "OSM: пересечение «Шабал Бейсекова көшесі» и «проспект Нургисы Тлендиева», узлы 13418022861, снимок 2026-05-06, ODbL",
+        "query": {
+          "street": "Бейсековой",
+          "cross": "Тлендиева",
+          "from": null,
+          "to": null
+        },
+        "notes": [
+          "общего узла нет; ближайшие узлы улиц в 20 м"
+        ],
+        "why": "пересечение названо в заголовке; точка — ближайшие узлы двух улиц в OSM, не проект развязки"
+      }
+    }
+  }
+}

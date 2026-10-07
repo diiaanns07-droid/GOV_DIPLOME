@@ -22,8 +22,13 @@ from urllib.parse import urlsplit
 REPO = Path(__file__).resolve().parents[3]
 PKG = REPO / "data/civic/astana/round12-verified"
 
+# gov.kz — портал многих госорганов: издатель определяется по разделу /memleket/entities/<орган>/.
+GOV_KZ_ENTITIES = {
+    "astana": "Акимат города Астаны",
+    "tsm": "Министерство туризма и спорта РК",
+}
 PUBLISHERS = {
-    "gov.kz": ("Акимат города Астаны (страница на портале gov.kz)", "official_gov"),
+    "gov.kz": (None, "official_gov"),
     "astana.gov.kz": ("Акимат города Астаны", "official_gov"),
     "inform.kz": ("МИА «Казинформ»", "state_media"),
     "kazinform.kz": ("МИА «Казинформ»", "state_media"),
@@ -54,8 +59,14 @@ def norm_url(url: str) -> str:
     return f"https://{parts.netloc.lower()}{parts.path.rstrip('/') or '/'}" + (f"?{query}" if query else "")
 
 
-def publisher_for(host: str):
+def publisher_for(host: str, path: str = ""):
     host = host.lower().removeprefix("www.").removeprefix("m.").removeprefix("kz.")
+    if host == "gov.kz":
+        m = re.match(r"^/memleket/entities/([a-z0-9_-]+)/", path)
+        if not m:
+            return ("Госорган (портал gov.kz)", "official_gov")
+        slug = m.group(1)
+        return (GOV_KZ_ENTITIES.get(slug, f"Госорган на gov.kz (раздел entities/{slug})"), "official_gov")
     for domain, value in PUBLISHERS.items():
         if host == domain or host.endswith("." + domain):
             return value
@@ -89,12 +100,27 @@ def main(argv=None) -> int:
     discovered_at = curation.get("discovered_at", "2026-10-07T10:16:00Z")
 
     sources, candidates, by_url = {}, [], {}
-    ordered = sorted(data["candidates"], key=lambda c: norm_url(c["url"]))
+    # Один URL — один кандидат: подсказки и срезы поиска сливаются, первый вердикт сохраняется.
+    merged: dict[str, dict] = {}
+    for cand in data["candidates"]:
+        key = norm_url(cand["url"])
+        if key not in merged:
+            merged[key] = dict(cand, claims=list(cand.get("claims") or []),
+                               also_found_by=list(cand.get("also_found_by") or []))
+            continue
+        prev = merged[key]
+        prev["also_found_by"] = sorted(set(prev["also_found_by"]) | {cand.get("sweep")} - {prev.get("sweep")})
+        for claim in cand.get("claims") or []:
+            if claim not in prev["claims"]:
+                prev["claims"].append(claim)
+        if not prev.get("verdict") and cand.get("verdict"):
+            prev["verdict"] = cand["verdict"]
+    ordered = [merged[k] for k in sorted(merged)]
     for cand in ordered:
         url = norm_url(cand["url"])
         sid = source_id(url)
         host = urlsplit(url).netloc
-        publisher, kind = publisher_for(host)
+        publisher, kind = publisher_for(host, urlsplit(url).path)
         m = URL_DATE.search(urlsplit(url).path)
         sources[sid] = {
             "id": sid, "url": url, "publisher": publisher, "publisher_kind": kind,
@@ -149,7 +175,7 @@ def main(argv=None) -> int:
                 "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)",
             ],
             "geocode": cur.get("geocode"),
-            "found_by_sweeps": sorted({cand.get("sweep")} | set(cand.get("also_found_by") or [])),
+            "found_by_sweeps": sorted({cand.get("sweep")} | set(cand.get("also_found_by") or []) - {None}),
         })
     # duplicate_of_url -> id кандидата
     url_to_cid = {}

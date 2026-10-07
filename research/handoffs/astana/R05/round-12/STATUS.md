@@ -7,7 +7,7 @@
   проверка выполняется в отдельном worktree от 56538a3, переносимый патч — в `research/round-12-results/R05/`.
 - Пути: `data/civic/astana/round12-verified/`, `tests/civic/R05/round12/`, `research/round-12-results/R05/`, этот файл.
 
-## Статус: PARTIAL — checkpoint 2
+## Статус: PARTIAL — checkpoint 4
 
 - Сеть: все KZ-источники, OSM и wikipedia.org закрыты политикой egress (proxy 403 / WebFetch EGRESS_BLOCKED),
   журнал `data/civic/astana/round12-verified/network_audit.json`. Работает только серверный WebSearch
@@ -20,6 +20,11 @@
 - Тесты `tests/civic/R05/round12/test_r12_pipeline.py` на FIXTURE: в worktree 56538a3 — 15 passed
   (профиль real валидатора R05, validate_content R02, dry-run импортера: create=1); в ветке без базы
   12 passed, 3 skipped (NOT_RUN: нет файлов базы). Весь tests/civic/R05 в 56538a3: 164 passed.
-- В работе: поиск кандидатов (workflow: 6 поисковых срезов + 3 скептика).
+- Поиск (workflow, 6 срезов WebSearch): 62 уникальных URL → `sources.json` (все not_fetched) и
+  `candidates.json` (62 к проверке; вердикты скептиков ещё в работе). Издатели: акимат Астаны 15, Казинформ 14,
+  Zakon.kz 7, «Казахстанская правда» 5 и др. Геометрия-предложение только у 4 кандидатов с перекрёстком в заголовке
+  (Бейсековой×Тлендиева, Акмешит×Алматы), остальные — null. Подтверждённых записей: 0.
+- `research/round-12-results/R05/VERIFY_SHEET.md` — лист проверки для человека; RUN.txt, INTEGRATION.txt.
+- Тесты в worktree 56538a3: 27 passed (pipeline, real data, search import, geocode).
 
-Следующий шаг: sources.json/candidates.json из результатов поиска (import_search_results.py), геокодирование кандидатов.
+Следующий шаг: пересобрать кандидатов с вердиктами скептиков, ревью инструмента, DELIVERY.json и патч путей.

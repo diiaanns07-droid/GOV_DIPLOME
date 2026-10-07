@@ -27,6 +27,10 @@ def test_publisher_mapping_is_by_domain_not_by_agent_label():
     m = load_module()
     assert m.publisher_for("www.inform.kz") == ("МИА «Казинформ»", "state_media")
     assert m.publisher_for("unknown-blog.example") == (None, "other")
+    # gov.kz — портал разных органов: не всё на нём — акимат Астаны
+    assert m.publisher_for("www.gov.kz", "/memleket/entities/astana/press/news/details/1")[0] == "Акимат города Астаны"
+    assert m.publisher_for("www.gov.kz", "/memleket/entities/tsm/press/news/details/1")[0] == "Министерство туризма и спорта РК"
+    assert "entities/astana-uvp" in m.publisher_for("www.gov.kz", "/memleket/entities/astana-uvp/press/1")[0]
 
 
 def run(m, tmp_path, monkeypatch, result):
