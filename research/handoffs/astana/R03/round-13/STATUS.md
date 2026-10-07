@@ -36,6 +36,24 @@ civic-scenarios:tool listeners, Г) idempotent style reload with styleimagemissi
   owner -> cancel -> select; detached editor does not lock; no listener growth over 3 remounts. Each test was
   mutation-checked (fails when the corresponding code is removed).
 
+### 3. Checkpoint 2 (f514ff3) — real neighbours, not fixtures
+- tests/civic/R03/r02_contract.test.mjs on R02's real CivicService bd7a911 (R02 round-12 code): 241 published
+  records (11 R03 fixtures + 230 explicitly synthetic test records in a temp DB) by cursor in pages of 100; slow
+  answer + filter chosen during loading; two refreshes in a row; object archived while its card is open; deep
+  link + reload + «больше не опубликован»; identical points; no request per map move — 4/4 PASS.
+- Chooser: records at exactly the same point no longer get «приблизьте карту» (zooming never separates them).
+- tests/civic/R03/app_acceptance.mjs on the real app (app.py, base R01/R02/R04/R06 + this module): render -> 3D ->
+  host style swap -> R04 editor draws a line over a public object -> Esc -> the same click selects; deep link ->
+  reload; not-published link; phone. Branch: 12 PASS / 0 FAIL / 1 NOT_RUN (OpenFreeMap). Same script on the base
+  module 56538a3: 2 FAIL (card opened and pointer cursor while drawing) — runs/ and screenshots before/after.
+
+### 4. Checkpoint 3 (1428b08)
+- onDetail(obj): the loaded card's public copy with geometry (R01's ask: deep link before the list) — no second
+  onSelect. 3D test: click-select at pitch 55, fly keeps the tilt; three quick style swaps + remount mid-swap ->
+  exactly 13 layers, demo ring symbol kept, no missing-image warning.
+- INTEGRATION.txt, RUN.txt (run-city.bat read: PORT 8611, CIVIC_DEMO init+seed-demo; cloud equivalent),
+  proposed_r01_shell.patch (to R01 223296e shell.js; R01's file untouched; `git apply --check` OK).
+
 ### Next
-Real-contract checks against R02 (next page, abort, filter during load, vanished object, identical points, deep link
-reload incl. «больше не опубликован»), real-app acceptance and screenshots, DELIVERY/RUN/INTEGRATION.
+R01's own browser checks on 223296e with this module (with/without the patch), an independent review of the
+round-13 diff, full suites on the final SHA, DELIVERY.json.

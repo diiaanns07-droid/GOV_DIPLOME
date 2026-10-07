@@ -1,0 +1,100 @@
+{
+  "base": "http://127.0.0.1:39869/",
+  "empty": true,
+  "started_at": "2026-10-07T17:34:59.496Z",
+  "checks": [
+    {
+      "name": "360x800: empty registry is stated (not \"no works\"), list agrees",
+      "status": "PASS",
+      "detail": {
+        "registry": "Реестр пуст: опубликованных записей пока нет. Пустая карта не значит, что в городе нет работ.",
+        "list": "Опубликованных объектов пока нет.",
+        "scrollW": 360
+      }
+    },
+    {
+      "name": "360x800: empty registry: no overlaps",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "360x800: \"К объектам\" on an empty registry says the registry is empty",
+      "status": "PASS",
+      "detail": "В реестре пока нет опубликованных записей."
+    },
+    {
+      "name": "360x800: district view on an empty registry says \"реестр пуст\"",
+      "status": "PASS",
+      "detail": "Район Есиль (граница OSM) · реестр пуст"
+    },
+    {
+      "name": "360x800: no page errors (empty registry)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "768x1024: empty registry is stated (not \"no works\"), list agrees",
+      "status": "PASS",
+      "detail": {
+        "registry": "Реестр пуст: опубликованных записей пока нет. Пустая карта не значит, что в городе нет работ.",
+        "list": "Опубликованных объектов пока нет.",
+        "scrollW": 768
+      }
+    },
+    {
+      "name": "768x1024: empty registry: no overlaps",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "768x1024: \"К объектам\" on an empty registry says the registry is empty",
+      "status": "PASS",
+      "detail": "В реестре пока нет опубликованных записей."
+    },
+    {
+      "name": "768x1024: district view on an empty registry says \"реестр пуст\"",
+      "status": "PASS",
+      "detail": "Район Есиль (граница OSM) · реестр пуст"
+    },
+    {
+      "name": "768x1024: no page errors (empty registry)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1440x900: empty registry is stated (not \"no works\"), list agrees",
+      "status": "PASS",
+      "detail": {
+        "registry": "Реестр пуст: опубликованных записей пока нет. Пустая карта не значит, что в городе нет работ.",
+        "list": "Опубликованных объектов пока нет.",
+        "scrollW": 1440
+      }
+    },
+    {
+      "name": "1440x900: empty registry: no overlaps",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1440x900: \"К объектам\" on an empty registry says the registry is empty",
+      "status": "PASS",
+      "detail": "В реестре пока нет опубликованных записей."
+    },
+    {
+      "name": "1440x900: district view on an empty registry says \"реестр пуст\"",
+      "status": "PASS",
+      "detail": "Район Есиль (граница OSM) · реестр пуст"
+    },
+    {
+      "name": "1440x900: no page errors (empty registry)",
+      "status": "PASS",
+      "detail": []
+    }
+  ],
+  "finished_at": "2026-10-07T17:35:17.808Z",
+  "summary": {
+    "pass": 15,
+    "fail": 0,
+    "not_run": 0
+  }
+}

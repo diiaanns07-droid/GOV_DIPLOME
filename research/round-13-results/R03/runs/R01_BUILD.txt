@@ -1,0 +1,9 @@
+Temporary integration builds used for R01's own browser checks (scratch git worktrees, not committed, removed after):
+  without_patch: R01 delivery code 223296ec02bb14568b7d5782dc7de473372d2aec (branch claude/affectionate-ride-bol5v8)
+                 + web/civic/map/{civic-map-core.js,civic-map.js,civic-map.css} from R03 1428b08 (byte-identical, cmp)
+  with_patch:    the same + research/round-13-results/R03/proposed_r01_shell.patch applied to web/civic/shell/shell.js
+Commands (from each worktree root): NODE_PATH=$(npm root -g) node tests/civic/R01/browser/p0_flow.cjs <out>
+                                    node tests/civic/R01/browser/r12_city.cjs <out> [--empty]
+Results: r01_223296e_{without,with}_patch_{p0,r12_city,r12_empty}.json
+  p0 59 PASS / 0 FAIL / 2 NOT_RUN (OpenFreeMap, attribution element absent offline); r12_city 81/0/0; r12_empty 15/0/0 — both builds.
+Environment: Linux container, Chromium via Playwright 1.56 (SwiftShader), OpenFreeMap blocked by the proxy (403).
