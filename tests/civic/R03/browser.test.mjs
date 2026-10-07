@@ -1496,3 +1496,88 @@ test("r13: onDetail gives the host the loaded card's geometry for a deep link op
   assert.deepEqual(errors, []);
   await ctx.close();
 });
+
+// ---------- round 13, independent review: regressions ----------
+test("r13 review: a window resize is not a host move (the phone fly still happens)", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" }, { viewport: MOBILE, touch: true });
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.36, 51.19], zoom: 13 }));
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-closure", { source: "list" }));
+  await page.setViewportSize({ width: 390, height: 800 });  // rotation/resize inside the 320 ms sheet delay
+  await page.waitForTimeout(900);
+  await settle(page);
+  const c = await page.evaluate(() => { const m = window.__stand.map.getCenter(); return [m.lng, m.lat]; });
+  assert.ok(Math.abs(c[0] - 71.36) > 0.01 || Math.abs(c[1] - 51.19) > 0.01, "the module flew to its selection: " + c);
+  await ctx.close();
+});
+
+test("r13 review: tight host padding — the visible part uses the same clamped window as the camera; click pan keeps the host's tilt", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" }, { viewport: { width: 390, height: 340 }, touch: true });
+  await remount(page, `{ getPadding: () => ({ top: 90, right: 0, bottom: 250, left: 0 }), getPitch: () => 0, getBearing: () => 0 }`);
+  // an object at the canvas centre lies below the ~60px free band the camera would use
+  await page.evaluate(() => { window.__stand.map.jumpTo({ center: [71.4511, 51.1209], zoom: 15 }); window.__stand.instance.setFilters({ area: true }); });
+  await page.waitForTimeout(500);
+  const centre = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(); return { h: c.height, y: m.project([71.4511, 51.1209]).y }; });
+  const shown = await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id));
+  assert.ok(centre.y > 74 + 61, JSON.stringify(centre));
+  assert.ok(!shown.includes("r03-demo-completed") && !shown.includes("r03-demo-shifted"), "objects under the host's sheet are not 'visible': " + shown.join());
+  await ctx.close();
+  // desktop: a click on an object outside the host's free area pans with the host's intended tilt
+  const o = await open({ persist: "0", fit: "0" });
+  await remount(o.page, `{ getPadding: () => ({ top: 120, right: 40, bottom: 40, left: 760 }), getPitch: () => 0, getBearing: () => 0 }`);
+  await o.page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4511, 51.1209], zoom: 15, pitch: 40 }));
+  await o.page.waitForTimeout(500);
+  const t = await o.page.evaluate(() => {
+    const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect();
+    const f = m.queryRenderedFeatures({ layers: ["civic-r03-point"] }).find((x) => { const p = m.project(x.geometry.coordinates); return p.x > 460 && p.x < 740 && p.y > 140 && p.y < c.height - 60; });
+    if (!f) return null;
+    const p = m.project(f.geometry.coordinates); return { x: c.left + p.x, y: c.top + p.y };
+  });
+  assert.ok(t, "an object between the R03 panel and the host's free area");
+  await o.page.mouse.click(t.x, t.y);
+  await o.page.waitForFunction(() => ["card", "pick"].includes(window.__stand.instance.getState().view));
+  await o.page.waitForTimeout(400);
+  await settle(o.page);
+  assert.equal(await o.page.evaluate(() => Math.round(window.__stand.map.getPitch())), 0);
+  await o.ctx.close();
+});
+
+test("r13 review: two separate stacks are not called 'the same point'; another owner's pointer cursor is left alone", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" });
+  const stack = (prefix, x) => Array.from({ length: 30 }, (_, i) => mkTest(prefix + i, { geometry: { type: "Point", coordinates: [x, 51.1800] } }));
+  await addItems(page, [...stack("st-p-", 71.3800), ...stack("st-q-", 71.3803)]);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.38015, 51.18], zoom: 14 }));
+  await page.waitForTimeout(500);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.38015, 51.18]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  const text = await page.locator(".civic-r03-card").innerText();
+  assert.match(text, /Ещё 10 — приблизьте карту/);
+  assert.doesNotMatch(text, /в этой же точке/);
+  // owner B (simulator) uses a pointer cursor; owner A (editor) finishing must not let the module clear it
+  await page.keyboard.press("Escape");
+  await page.evaluate(() => {
+    const i = window.__stand.instance;
+    i.setInteractionEnabled(false, "civic-scenarios");
+    i.setInteractionEnabled(false, "civic-editor");
+    window.__stand.map.getCanvas().style.cursor = "pointer";
+    i.setInteractionEnabled(true, "civic-editor");
+  });
+  await page.mouse.move(pt.x + 30, pt.y);
+  await page.mouse.move(pt.x, pt.y);
+  await page.mouse.move(200, 450, { steps: 5 });  // onto the R03 panel: the pointer leaves the map
+  await page.waitForTimeout(200);
+  assert.equal(await page.evaluate(() => window.__stand.map.getCanvas().style.cursor), "pointer");
+  await ctx.close();
+});
+
+test("r13 review: a host that moves the camera inside onSelect keeps its view (no module fly over it)", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" });
+  await remount(page, `{ onSelect: (o) => { if (o) window.__stand.map.jumpTo({ center: [71.36, 51.19], zoom: 14 }); } }`);
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-closure", { source: "list" }));
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.waitForTimeout(400);
+  await settle(page);
+  const c = await page.evaluate(() => { const m = window.__stand.map.getCenter(); return [m.lng, m.lat]; });
+  assert.ok(Math.abs(c[0] - 71.36) < 0.005 && Math.abs(c[1] - 51.19) < 0.005, "host's view kept: " + c);
+  await ctx.close();
+});

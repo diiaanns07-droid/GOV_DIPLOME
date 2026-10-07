@@ -862,13 +862,13 @@
       if (permalink) writeHash(id);
       // onSelect first: a host that resizes its own sheet does so before we measure the free area.
       if (onSelect) safeCall(onSelect, publicCopy(listed) || { id }, { source: opts.source || "api" });
-      if (listed && opts.fly !== false) afterLayout(() => (opts.source === "map" ? ensureVisible(listed) : flyTo(listed)), id);
+      if (listed && opts.fly !== false) afterLayout(() => (opts.source === "map" ? ensureVisible(listed) : flyTo(listed)), id, epoch);
       await loadDetail(id, Object.assign({}, opts, { epoch }));
     }
     // On phones the sheet animates its height; measure the free map area after it settles.
-    function afterLayout(fn, id) {
+    function afterLayout(fn, id, since) {
       clearTimeout(layoutTimer);
-      const epoch = camEpoch;
+      const epoch = since === undefined ? camEpoch : since;
       const run = () => {
         st.cameraPending = false;
         // Someone else (the resident or the host) moved the camera meanwhile: do not fly over that.
@@ -900,7 +900,7 @@
           // Round 13 (R01's ask): the loaded card's public copy, geometry included — for a deep link opened
           // before the list, onSelect only had {id}. Called once per loaded card; never instead of onSelect.
           if (typeof opt.onDetail === "function") safeCall(opt.onDetail, publicCopy(norm.item));
-          if (!hadItem && opts && opts.fly !== false && (opts.epoch === undefined || opts.epoch === camEpoch)) { const it = norm.item; afterLayout(() => (opts.source === "map" ? ensureVisible(it) : flyTo(it)), id); }
+          if (!hadItem && opts && opts.fly !== false && (opts.epoch === undefined || opts.epoch === camEpoch)) { const it = norm.item; afterLayout(() => (opts.source === "map" ? ensureVisible(it) : flyTo(it)), id, opts.epoch); }
         }
       } catch (err) {
         if (destroyed || !cardSeq.isCurrent(t) || st.selectedId !== id) return;
@@ -963,8 +963,7 @@
       // Records at exactly the same place never separate by zooming in: say so instead of «приблизьте».
       const shown = ids.slice(0, PICK_MAX), rest = ids.slice(PICK_MAX);
       const key = (id) => { const it = findItem(id); return it && it.bbox ? it.bbox.join(",") : "?"; };
-      const shownKeys = new Set(shown.map(key));
-      const sameSpot = rest.length > 0 && rest.every((id) => shownKeys.has(key(id)));
+      const sameSpot = rest.length > 0 && new Set(ids.map(key)).size === 1;
       st.pick = { ids: shown, more: rest.length, sameSpot, prevView: origin.prevView, prevId: origin.prevId };
       st.view = "pick";
       if (isMobile() && layout === "overlay" && st.sheet === "peek") setSheet("half");
@@ -1417,6 +1416,9 @@
     // One object -> open it. Several on top of each other -> let the resident choose in the panel.
     function onMoveStart(e) {
       if (e && e.civicR03) return;
+      // A container resize (phone rotation, window resize) fires movestart with ResizeObserver entries:
+      // nobody moved the camera, so pending module moves stay (same check as MapLibre's GeolocateControl).
+      if (e && typeof ResizeObserverEntry !== "undefined" && e[0] instanceof ResizeObserverEntry) return;
       camEpoch++;
       foreignMoved = true;
       if (st.cameraPending) { clearTimeout(layoutTimer); st.cameraPending = false; }
@@ -1446,8 +1448,9 @@
         cursorSet = false;
       } else if (enabled === true) {
         inputOwners.delete(key);
-        // An owner may restore the pointer it saw when it started: let the next hover clear it.
-        try { if (map && map.getCanvas().style.cursor === "pointer") cursorSet = true; } catch (e) { /* ignore */ }
+        // An owner may restore the pointer it saw when it started: let the next hover clear it — but only once
+        // nobody else holds the input (another owner's own pointer cursor is not ours to clear).
+        try { if (map && interactionEnabled() && map.getCanvas().style.cursor === "pointer") cursorSet = true; } catch (e) { /* ignore */ }
       }
       return interactionEnabled();
     }
@@ -1528,7 +1531,8 @@
       if (!map) { st.viewBox = null; return; }
       try {
         const c = map.getContainer().getBoundingClientRect();
-        const host = hostPadding();
+        const hp = hostPadding();
+        const host = hp ? clampPad(hp, c) : null;   // the same free window the camera frames into
         const ob = host ? null : obstruction();
         const r = ob ? ob.getBoundingClientRect() : null;
         let l = 0, t = 0, rt = c.width, b = c.height;
@@ -1554,7 +1558,7 @@
       try { p = map.project([(it.bbox[0] + it.bbox[2]) / 2, (it.bbox[1] + it.bbox[3]) / 2]); } catch (e) { return; }
       const x = c.left + p.x, y = c.top + p.y;
       if (x >= free.l && x <= free.r && y >= free.t && y <= free.b) return;
-      try { map.panBy([x - (free.l + free.r) / 2, y - (free.t + free.b) / 2], { duration: reducedMotion() ? 0 : 350 }, OWN_MOVE); } catch (e) { /* ignore */ }
+      try { map.panBy([x - (free.l + free.r) / 2, y - (free.t + free.b) / 2], { duration: reducedMotion() ? 0 : 350, pitch: camPitch(), bearing: camBearing() }, OWN_MOVE); } catch (e) { /* ignore */ }
     }
     // The panel that covers the map: our root in overlay mode, or the host's positioned
     // panel (outermost absolute/fixed ancestor) when embedded in the R01 shell.
@@ -1599,7 +1603,10 @@
         else if (r.left - c.left < c.width / 2) pad.left = Math.max(pad.left, r.right - c.left + 24);
         else pad.right = Math.max(pad.right, c.right - r.left + 24);
       }
-      // Never ask MapLibre for more padding than the map has (low or narrow screens included).
+      return clampPad(pad, c);
+    }
+    // Never ask MapLibre for more padding than the map has (low or narrow screens included): keep >= 60px.
+    function clampPad(pad, c) {
       const maxH = Math.max(0, c.width - 60), maxV = Math.max(0, c.height - 60);
       if (pad.left + pad.right > maxH) { const k = maxH / (pad.left + pad.right); pad.left = Math.floor(pad.left * k); pad.right = Math.floor(pad.right * k); }
       if (pad.top + pad.bottom > maxV) { const k = maxV / (pad.top + pad.bottom); pad.top = Math.floor(pad.top * k); pad.bottom = Math.floor(pad.bottom * k); }
