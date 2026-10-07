@@ -1,0 +1,68 @@
+{
+  "check": "R02 importer and validator accept the R05 package",
+  "r02_branch": "claude/trusting-ptolemy-6ms354",
+  "r02_sha": "7d5e39a45ce6070766dc61693e0b509df529d3a6",
+  "method": "git archive of ui/civic_store at r02_sha into a scratch dir (code diff 597ff2c..r02_sha read before running); python3 -B -m ui.civic_store --db <scratch>/.runtime/t.sqlite3 init; import <file> [--dry-run]",
+  "results": {
+    "dry_run:demo_synthetic.json": {
+      "status": "dry_run",
+      "counts": {
+        "create": 9,
+        "report_missing": 0
+      },
+      "demo": true,
+      "slice_version": "r05-astana-demo-2026-10-06-0063f1c38b60"
+    },
+    "dry_run:objects.json": {
+      "status": "dry_run",
+      "counts": {
+        "report_missing": 0
+      },
+      "demo": false,
+      "slice_version": "r05-astana-current-2026-10-06-be154531ff77"
+    },
+    "dry_run:historical.json": {
+      "status": "dry_run",
+      "counts": {
+        "report_missing": 0
+      },
+      "demo": false,
+      "slice_version": "r05-astana-historical-2026-10-06-3919bfc17c23"
+    },
+    "import_demo_real1": {
+      "status": "applied",
+      "counts": {
+        "create": 9,
+        "report_missing": 0
+      }
+    },
+    "import_demo_real2": {
+      "status": "applied",
+      "counts": {
+        "skip_unchanged": 9,
+        "report_missing": 0
+      }
+    }
+  },
+  "differential_fuzz": {
+    "scripts": [
+      "research/round-11-results/R05/evidence/r02_diff_fuzz_demo.py",
+      "research/round-11-results/R05/evidence/r02_diff_fuzz_real.py"
+    ],
+    "command": "python3 -I <script> data/civic/astana/tools <dir with R02 ui/civic_store>",
+    "demo_profile": {
+      "seed": 7,
+      "mutations": 6000,
+      "accepted_by_r05": 846,
+      "rejected_by_r02_among_accepted": 0
+    },
+    "real_profile": {
+      "seed": 11,
+      "mutations": 6000,
+      "accepted_by_r05": 1017,
+      "rejected_by_r02_among_accepted": 0
+    },
+    "meaning": "every mutated record that R05's demo/real profile accepts also passes R02 validate_content"
+  },
+  "conclusion": "PASS: 9 synthetic records created as drafts; re-import skip_unchanged 9; real slices empty; differential fuzz 0 mismatches."
+}

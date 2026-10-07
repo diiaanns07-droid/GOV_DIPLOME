@@ -65,6 +65,15 @@ if exist ".env" (
     echo [3/4] Создан .env из .env.example: советник работает офлайн, пока в .env не указан ключ OPENAI_API_KEY.
 )
 
+rem Городская платформа (civic-v1): база .runtime\civic.sqlite3 создаётся сервером при первом запросе.
+rem Демо-данные только по флагу: set CIVIC_DEMO=1 (синтетический срез Астаны, импорт идемпотентен).
+rem Редактор создаётся отдельно, пароль скрыто: .venv\Scripts\python -m ui.civic_store create-editor ЛОГИН
+if defined CIVIC_DEMO (
+    echo [civic] Загружаю синтетический демо-срез Астаны, не сведения о реальных работах...
+    "%VENV_PY%" -B -m ui.civic_store init >nul
+    "%VENV_PY%" -B -m ui.civic_store seed-demo --package data\civic\astana\demo_synthetic.json >nul
+)
+
 rem 4. app.py запускает Python-сервер (ui\web_server.py): HTML-интерфейс и API. Флаг --open открывает браузер.
 echo [4/4] Запускаю приложение: %URL%   остановить — Ctrl+C
 set "OPEN_BROWSER="

@@ -1,0 +1,276 @@
+{
+ "_comment": "Hostile/malformed inputs for R03 tests only. Not for display.",
+ "items": [
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-hostile-xss",
+   "city": "astana",
+   "kind": "event",
+   "title": "<img src=x onerror=\"window.__r03xss=1\">Демо-XSS",
+   "description": "<script>window.__r03xss=3</script> описание",
+   "status": "planned",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.43,
+     51.13
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": "2026-10-01",
+    "original_planned_end": "2026-10-02",
+    "current_planned_end": "2026-10-02",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [
+    {
+     "id": "s-js",
+     "url": "javascript:window.__r03xss=2",
+     "publisher": "<b>bold</b>",
+     "published_on": "2026-01-01",
+     "retrieved_at": null,
+     "access_status": "fetched",
+     "license": null,
+     "fields": []
+    },
+    {
+     "id": "s-data",
+     "url": "data:text/html,<script>1</script>",
+     "publisher": "data-url",
+     "published_on": null,
+     "retrieved_at": null,
+     "access_status": null,
+     "license": null,
+     "fields": []
+    }
+   ],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-hostile-draft",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Черновик, не должен быть виден",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "draft",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.43,
+     51.13
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": null,
+    "original_planned_end": null,
+    "current_planned_end": null,
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-hostile-swapped",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Перепутанные координаты",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     51.13,
+     71.43
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": null,
+    "original_planned_end": null,
+    "current_planned_end": null,
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-hostile-negative",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Отрицательная стоимость",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": null,
+   "geometry_precision": "unknown",
+   "schedule": {
+    "planned_start": null,
+    "original_planned_end": null,
+    "current_planned_end": null,
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": -5,
+    "basis": "planned",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-hostile-multi",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "MultiPoint вне контракта",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": {
+    "type": "MultiPoint",
+    "coordinates": [
+     [
+      71.43,
+      51.13
+     ]
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": null,
+    "original_planned_end": null,
+    "current_planned_end": null,
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-hostile-baddate",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Неверная дата",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": null,
+   "geometry_precision": "unknown",
+   "schedule": {
+    "planned_start": "2026-13-40",
+    "original_planned_end": "06.10.2026",
+    "current_planned_end": null,
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-hostile-othercity",
+   "city": "shymkent",
+   "kind": "roadworks",
+   "title": "Другой город",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": null,
+   "geometry_precision": "unknown",
+   "schedule": {
+    "planned_start": null,
+    "original_planned_end": null,
+    "current_planned_end": null,
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  }
+ ]
+}

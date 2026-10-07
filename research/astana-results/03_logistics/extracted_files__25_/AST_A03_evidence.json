@@ -1,0 +1,1128 @@
+{
+ "meta": {
+  "agent_id": "AST-A03",
+  "topic": "Муниципальная логистика: вывоз ТКО и снега, уборка, выезды бригад, обслуживание распределённых объектов (без пассажирского транспорта)",
+  "city": "astana",
+  "round": "astana-2026-10-05",
+  "searched_at": "2026-10-05T04:07:20Z",
+  "access_limitations": "Нет браузера и веб-поиска. HTTP 403 host_not_allowed: gov.kz, stat.gov.kz, data.egov.kz, adilet.zan.kz, overpass-api.de, nominatim, openstreetmap.org, Geofabrik; ikomek109.kz не разрешился. Доступны GitHub и PyPI. Официальные местные факты не проверены; научные ссылки по памяти."
+ },
+ "sources": [
+  {
+   "source_id": "AST-A03-S001",
+   "title": "АСТАНА. Второй исследовательский проход. Агент AST-A03",
+   "publisher": "владелец проекта",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "task_brief",
+   "access_status": "opened",
+   "notes": "Контекст задачи, не доказательство"
+  },
+  {
+   "source_id": "AST-A03-S002",
+   "title": "STUPITS «Аким на 5 часов», коммит 834a25f",
+   "publisher": "BAITC-Hacks / GitHub",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-05",
+   "source_type": "code_repository",
+   "access_status": "opened",
+   "notes": "Без изменений с первого прохода; использованы data/astana_districts.geojson, data/geo_sources/astana_districts_overpass.json, docs/GEO_SOURCES.md"
+  },
+  {
+   "source_id": "AST-A03-S003",
+   "title": "OpenStreetMap: административные отношения в рамке 50.90,71.0,51.5,72.0 (ответ Overpass)",
+   "publisher": "OpenStreetMap contributors (ODbL)",
+   "url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3Brel%5B%22boundary%22%3D%22administrative%22%5D%5B%22admin_level%22~%22%5E%285%7C6%7C7%7C8%7C9%29%24%22%5D%2850.90%2C71.0%2C51.5%2C72.0%29%3Bout+geom%3B",
+   "published_at": "2026-09-22",
+   "accessed_at": "2026-10-05",
+   "source_type": "community_geodata",
+   "access_status": "opened_via_cache",
+   "notes": "Открыт кэш ответа в STUPITS (osm_base 2026-09-22T08:45:51Z); прямой запрос к Overpass в среде заблокирован"
+  },
+  {
+   "source_id": "AST-A03-S004",
+   "title": "opengov-kz/data-egov-kz: зеркало каталога data.egov.kz",
+   "publisher": "opengov-kz (сторонний, MIT)",
+   "url": "https://github.com/opengov-kz/data-egov-kz",
+   "published_at": "2025-04-30",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_mirror",
+   "access_status": "opened",
+   "notes": "Тот же источник, что A03-S007; снимок 2025-03/04; не официальный"
+  },
+  {
+   "source_id": "AST-A03-S005",
+   "title": "Журнал проверки сетевого доступа AST-A03",
+   "publisher": "AST-A03",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "own_check",
+   "access_status": "opened",
+   "notes": "curl -D, 2026-10-05 04:07 UTC"
+  },
+  {
+   "source_id": "AST-A03-S006",
+   "title": "GitHub search API: astana snow/waste/garbage/osm/geojson, nur-sultan geojson, astana open data, ikomek, астана",
+   "publisher": "GitHub",
+   "url": "https://api.github.com/search/repositories",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "search_results",
+   "access_status": "opened",
+   "notes": "Данных города по теме не найдено"
+  },
+  {
+   "source_id": "AST-A03-S007",
+   "title": "ikomek/ikomek109: текст политики конфиденциальности мобильного приложения iKOMEK 109",
+   "publisher": "GitHub (владелец не установлен)",
+   "url": "https://github.com/ikomek/ikomek109",
+   "published_at": "2023-07-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_repository",
+   "access_status": "opened",
+   "notes": "Дата — последнее обновление репозитория; принадлежность официальному оператору не проверена"
+  },
+  {
+   "source_id": "AST-A03-S008",
+   "title": "argamegg/ikomek_platform: независимая платформа городских обращений «iKOMEK 109» для Астаны",
+   "publisher": "GitHub (частный разработчик)",
+   "url": "https://github.com/argamegg/ikomek_platform",
+   "published_at": "2026-06-09",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_repository",
+   "access_status": "opened",
+   "notes": "README: демо-данные (seed); не официальная система и не источник реальных обращений"
+  },
+  {
+   "source_id": "AST-A03-S009",
+   "title": "Эксперимент AST-A03-E003 (вывоз снега, данные смешанные)",
+   "publisher": "AST-A03",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "own_experiment",
+   "access_status": "opened",
+   "notes": "Файлы переданы: deliverables.files"
+  },
+  {
+   "source_id": "AST-A03-S010",
+   "title": "OR-Tools 9.15.6755 (ortools.graph.python.min_cost_flow)",
+   "publisher": "Google / PyPI",
+   "url": "https://pypi.org/project/ortools/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "package",
+   "access_status": "opened",
+   "notes": "Apache-2.0 (A03-F014)"
+  },
+  {
+   "source_id": "AST-A03-S011",
+   "title": "Акимат города Астаны (указатель координатора)",
+   "publisher": "gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_page",
+   "access_status": "blocked_in_env",
+   "notes": "Содержание не проверено"
+  },
+  {
+   "source_id": "AST-A03-S012",
+   "title": "БНС: динамические ряды по Астане (38)",
+   "publisher": "stat.gov.kz",
+   "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_statistics",
+   "access_status": "blocked_in_env",
+   "notes": null
+  },
+  {
+   "source_id": "AST-A03-S013",
+   "title": "Портал открытых данных",
+   "publisher": "data.egov.kz",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_env",
+   "notes": null
+  },
+  {
+   "source_id": "AST-A03-S014",
+   "title": "iKOMEK 109 (предполагаемый домен ikomek109.kz)",
+   "publisher": null,
+   "url": "https://ikomek109.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_page_candidate",
+   "access_status": "unavailable",
+   "notes": "Имя не разрешилось в среде (curl exit 6); существование и адрес официального сайта не установлены"
+  },
+  {
+   "source_id": "AST-A03-S015",
+   "title": "Campbell, Langevin. Operations management for urban snow removal and disposal. Transportation Research Part A 29(5)",
+   "publisher": "Elsevier",
+   "url": null,
+   "published_at": "1995",
+   "accessed_at": null,
+   "source_type": "paper",
+   "access_status": "not_opened_memory_citation",
+   "notes": "Перепроверить"
+  },
+  {
+   "source_id": "AST-A03-S016",
+   "title": "Perrier, Langevin, Campbell. A survey of models and algorithms for winter road maintenance. Part IV: Vehicle routing and fleet sizing for plowing and snow disposal. Computers & Operations Research",
+   "publisher": "Elsevier",
+   "url": null,
+   "published_at": "2007",
+   "accessed_at": null,
+   "source_type": "paper",
+   "access_status": "not_opened_memory_citation",
+   "notes": "Перепроверить номер тома и страницы"
+  },
+  {
+   "source_id": "AST-A03-S017",
+   "title": "Результаты первого прохода A03 по Шымкенту (A03_report.md, A03_evidence.json)",
+   "publisher": "A03",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-05",
+   "source_type": "prior_round_result",
+   "access_status": "opened",
+   "notes": "Используются для сопоставления; ID A03-* сохранены"
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "AST-A03-F001",
+   "statement": "Официальные сайты (акимат Астаны на gov.kz, stat.gov.kz, data.egov.kz, adilet.zan.kz) и сервисы OSM (Overpass, Nominatim, openstreetmap.org, Geofabrik) недоступны в среде AST-A03; ikomek109.kz не разрешился",
+   "kind": "observed",
+   "value": 403,
+   "unit": "HTTP status",
+   "geography": null,
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S005",
+     "locator": "x-deny-reason: host_not_allowed; curl exit 6 для ikomek109.kz"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение среды, не сайтов"
+  },
+  {
+   "fact_id": "AST-A03-F002",
+   "statement": "Репозиторий STUPITS не менялся с первого прохода (HEAD 834a25f от 2026-09-23)",
+   "kind": "observed",
+   "value": "834a25f",
+   "unit": "commit",
+   "geography": null,
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S002",
+     "locator": "git ls-remote / git log"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A03-F003",
+   "statement": "В OSM-кэше STUPITS шесть районов Астаны: Есиль (rel 3479876), Алматы (3482819), Сарыарка (3486954), Байконур (8593081), Нура (20593940) с admin_level 6 и Сарайшык (19733918) с admin_level 8",
+   "kind": "observed",
+   "value": 6,
+   "unit": "районов",
+   "geography": "г. Астана",
+   "period": "osm_base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S002",
+     "locator": "data/astana_districts.geojson, features[].properties"
+    },
+    {
+     "source_id": "AST-A03-S003",
+     "locator": "elements[].tags admin_level, name"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Общественный источник, не официальный состав районов; уровень admin_level — разметка OSM"
+  },
+  {
+   "fact_id": "AST-A03-F004",
+   "statement": "Приближённые площади районов по расчёту STUPITS: Есиль 193,0; Алматы 92,6; Сарыарка 67,3; Байконур 182,0; Нура 187,0; Сарайшык 60,9 км²",
+   "kind": "observed",
+   "value": null,
+   "unit": "км²",
+   "geography": "районы г. Астана",
+   "period": "osm_base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S002",
+     "locator": "data/astana_districts.geojson, properties.area_km2; docs/GEO_SOURCES.md"
+    }
+   ],
+   "derivation": "Значения из файла; сами являются приближённым геометрическим расчётом STUPITS",
+   "confidence": "medium",
+   "caveats": "Не официальная статистика площадей"
+  },
+  {
+   "fact_id": "AST-A03-F005",
+   "statement": "Сумма площадей шести полигонов 782,8 км²; рамка полигонов: долгота 71,218–71,785, широта 50,931–51,351",
+   "kind": "derived",
+   "value": 782.8,
+   "unit": "км²",
+   "geography": "г. Астана (OSM)",
+   "period": "osm_base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S002",
+     "locator": "data/astana_districts.geojson"
+    }
+   ],
+   "derivation": "193,0+92,6+67,3+182,0+187,0+60,9; рамка — min/max координат 2551 вершины",
+   "confidence": "medium",
+   "caveats": "Не официальная площадь города"
+  },
+  {
+   "fact_id": "AST-A03-F006",
+   "statement": "В том же ответе Overpass вне шести районов: Целиноградский, Аршалынский, Шортандинский районы (admin_level 6), «городская администрация Косшы» (6), «Тайтобинская сельская администрация» (8)",
+   "kind": "observed",
+   "value": 5,
+   "unit": "единиц",
+   "geography": "окрестности Астаны (агломерация)",
+   "period": "osm_base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S003",
+     "locator": "elements[] кроме шести relation районов"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Не включать в показатели города; официальный статус проверить по актам"
+  },
+  {
+   "fact_id": "AST-A03-F007",
+   "statement": "У «г. Астана» на портале открытых данных: placedDatasetsCount 54, actualPlacedDatasetsCount 54, allDatasetsCount 56",
+   "kind": "observed",
+   "value": 54,
+   "unit": "наборов",
+   "geography": "г. Астана",
+   "period": "снимок до 2025-04-30",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S004",
+     "locator": "datasources/getstatisticsbymiogovagencies.json, nameRu = г. Астана"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Сторонний снимок; перепроверить на портале"
+  },
+  {
+   "fact_id": "AST-A03-F008",
+   "statement": "Индексы с префиксом Астаны (astana_/nur-sultan_kalasy…) в зеркале найдены для шаблонов №119, 124, 125, 162, 304, 306, 307, 377–382, 675–677, 731, 734, 824; для №672/674 (вывоз мусора) и №680/681 (дороги) не найдены",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "снимок до 2025-04-30",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S004",
+     "locator": "data/byMIO.csv, колонки Version Name / Data Url"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Отсутствие в зеркале не доказывает отсутствие на портале; экземпляр Астаны может быть под непрефиксированным индексом"
+  },
+  {
+   "fact_id": "AST-A03-F009",
+   "statement": "В названиях 1042 наборов МИО в зеркале нет слов «снег»/«снеж»",
+   "kind": "observed",
+   "value": 0,
+   "unit": "наборов",
+   "geography": "Казахстан, МИО",
+   "period": "снимок до 2025-04-30",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S004",
+     "locator": "data/byMIO.csv, поиск по Version Name"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Только названия; описания не проверялись"
+  },
+  {
+   "fact_id": "AST-A03-F010",
+   "statement": "Сторонний репозиторий ikomek/ikomek109 содержит текст политики конфиденциальности «мобильного приложения iKOMEK 109»",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": "2023-07-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S007",
+     "locator": "README.md, начало документа"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Владелец репозитория и связь с официальным оператором не установлены"
+  },
+  {
+   "fact_id": "AST-A03-F011",
+   "statement": "Репозиторий argamegg/ikomek_platform — независимая full-stack платформа обращений «iKOMEK 109» для Астаны с демо-данными (seed), обновлена в июне 2026",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "2026-06",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S008",
+     "locator": "README.md: описание, раздел «Демо-Данные»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Не официальная система; не источник реальных обращений или API"
+  },
+  {
+   "fact_id": "AST-A03-F012",
+   "statement": "Поиск репозиториев GitHub не нашёл данных Астаны по снегу, отходам или OSM: 0 результатов для astana snow, astana garbage, astana osm, astana geojson, nur-sultan geojson; 1 нерелевантный для astana waste",
+   "kind": "observed",
+   "value": 0,
+   "unit": "релевантных репозиториев",
+   "geography": null,
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S006",
+     "locator": "ответы search/repositories"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Поиск только по репозиториям; поиск по коду требует авторизации"
+  },
+  {
+   "fact_id": "AST-A03-F013",
+   "statement": "E003, запас мощности 5×: три метода дают одинаковый результат — 0 м³ невывезено во всех 5 экземплярах; машино-часы на 1000 м³ поток против B-G: медиана 0,0% [−0,1; +2,3]",
+   "kind": "synthetic",
+   "value": 0.0,
+   "unit": "%",
+   "geography": "синтетика в границах районов OSM",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S009",
+     "locator": "AST_A03_E003_results.json, grid cap_ratio=5.0"
+    }
+   ],
+   "derivation": "медиана попарных отношений по 5 экземплярам",
+   "confidence": "high",
+   "caveats": "Свойство генератора"
+  },
+  {
+   "fact_id": "AST-A03-F014",
+   "statement": "E003, запас 2×: правило «ближайший» оставляет 0–440 м³ невывезенными (в 3 из 5 экземпляров больше 0), спрос на пункт до 1,33× его мощности",
+   "kind": "synthetic",
+   "value": 1.33,
+   "unit": "доля мощности",
+   "geography": "синтетика",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S009",
+     "locator": "grid cap_ratio=2.0, nearest: unserved_m3, dump_demand_over_capacity"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Решает мощность пункта рядом со спросом, а не общий запас"
+  },
+  {
+   "fact_id": "AST-A03-F015",
+   "statement": "E003, запас 1,3×/1,1×/1,0×: поток минимальной стоимости — 0 м³ невывезено во всех 15 экземплярах; B-G — до 40/399/520 м³; B-N — 226–1110 м³. Машино-часы на 1000 м³ поток против B-G: −6,0% [−9,7; −2,7], −8,3% [−9,9; −5,2], −9,2% [−9,7; −5,1]",
+   "kind": "synthetic",
+   "value": -8.3,
+   "unit": "% (запас 1,1×)",
+   "geography": "синтетика",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S009",
+     "locator": "grid cap_ratio 1.3/1.1/1.0"
+    }
+   ],
+   "derivation": "(h_flow/h_greedy − 1)·100, медиана попарных по 5 экземплярам",
+   "confidence": "high",
+   "caveats": "Не прогноз для Астаны"
+  },
+  {
+   "fact_id": "AST-A03-F016",
+   "statement": "Чувствительность к парку (запас 1,1×, 2380 м³): невывезено при 20/30/40/60 машинах — поток 690/170/0/0, B-G 790/356/120/0, B-N 926/866/866/866 м³",
+   "kind": "synthetic",
+   "value": null,
+   "unit": "м³",
+   "geography": "синтетика",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S009",
+     "locator": "fleet_sensitivity"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Один экземпляр"
+  },
+  {
+   "fact_id": "AST-A03-F017",
+   "statement": "При 15 км/ч (запас 1,1×) невывезено: B-N 866, B-G 256, поток 60 м³",
+   "kind": "synthetic",
+   "value": 60,
+   "unit": "м³",
+   "geography": "синтетика",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S009",
+     "locator": "speed_sensitivity speed_kmh=15"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Один экземпляр"
+  },
+  {
+   "fact_id": "AST-A03-F018",
+   "statement": "Поток минимальной стоимости решён точно (статус OPTIMAL); весь набор из 32 вариантов × 3 методов считается около 1,0 с; повторный запуск дал тождественный файл результатов (sha256 c2ca55e6…)",
+   "kind": "observed",
+   "value": 1.0,
+   "unit": "с",
+   "geography": null,
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S009",
+     "locator": "run_log, sha256 результатов"
+    },
+    {
+     "source_id": "AST-A03-S010",
+     "locator": "SimpleMinCostFlow"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A03-F019",
+   "statement": "Уборка и вывоз снега — значимый муниципальный процесс Астаны с владельцем «акимат + городское коммунальное предприятие»",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Не проверено: официальные сайты недоступны"
+  },
+  {
+   "fact_id": "AST-A03-F020",
+   "statement": "Места складирования и плавления снега могут быть определены и опубликованы актами акимата",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Проверить на adilet и gov.kz"
+  },
+  {
+   "fact_id": "AST-A03-F021",
+   "statement": "Река Есиль делит город, мосты ограничивают маршруты грузовиков; расстояние по прямой особенно искажает время между берегами",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Фоновое знание; граф OSM в этом проходе недоступен"
+  },
+  {
+   "fact_id": "AST-A03-F022",
+   "statement": "При запасе мощности поток бывает до 2,3% хуже B-G по машино-часам: он делит участок между пунктами, и после округления до целых рейсов появляются неполные рейсы",
+   "kind": "synthetic",
+   "value": 2.3,
+   "unit": "%",
+   "geography": "синтетика",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A03-S009",
+     "locator": "grid cap_ratio=5.0, максимум попарных отношений"
+    }
+   ],
+   "derivation": "max(h_flow/h_greedy − 1)·100",
+   "confidence": "high",
+   "caveats": "Нужна целочисленная постановка или запрет деления участка"
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "AST-A03-D001",
+   "title": "OSM: административные единицы Астаны и окрестностей (атрибуты; полигоны — во входном файле эксперимента)",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "AST-A03-S002",
+    "AST-A03-S003"
+   ],
+   "landing_url": "https://www.openstreetmap.org/relation/3479876",
+   "download_or_api_url": "https://overpass-api.de/api/interpreter",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана и соседние единицы Акмолинской области (по OSM)",
+   "granularity": "административная единица",
+   "period": "osm_base 2026-09-22",
+   "format": "JSON / GeoJSON",
+   "fields": [
+    "osm_relation",
+    "name_ru",
+    "name_kk",
+    "osm_admin_level",
+    "wikidata",
+    "area_km2_approx_stupits",
+    "in_astana_district_set"
+   ],
+   "units": "км² (приближённо)",
+   "update_frequency": "непрерывно (OSM)",
+   "license": "ODbL 1.0",
+   "auth_requirement": "нет",
+   "limitations": "Не официальные границы; образец взят из кэша STUPITS, а не прямым запросом",
+   "next_retrieval_step": "Сверить с актом об административном делении Астаны"
+  },
+  {
+   "dataset_id": "AST-A03-D002",
+   "title": "Наборы МИО «г. Астана» на data.egov.kz (в т.ч. возможные экземпляры №672/674/680/681)",
+   "publisher": "акимат г. Астаны",
+   "source_ids": [
+    "AST-A03-S004",
+    "AST-A03-S013"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": "JSON API",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "apiKey (по A03-F009)",
+   "limitations": "Экземпляры по вывозу мусора и дорогам с префиксом Астаны не найдены в зеркале",
+   "next_retrieval_step": "Открыть каталог по владельцу «г. Астана» и метаданные наборов"
+  },
+  {
+   "dataset_id": "AST-A03-D003",
+   "title": "Места складирования и плавления снега: адреса, мощность, часы работы",
+   "publisher": null,
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "объект",
+   "period": null,
+   "format": null,
+   "fields": [
+    "id",
+    "address",
+    "lon",
+    "lat",
+    "kind",
+    "cap_m3_per_shift",
+    "open_hours"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Источник не найден; владелец — гипотеза (акимат или коммунальное предприятие)",
+   "next_retrieval_step": "adilet и gov.kz: акты акимата о местах складирования снега"
+  },
+  {
+   "dataset_id": "AST-A03-D004",
+   "title": "OSM: дорожный граф, площадки ТКО (amenity=waste_disposal/recycling), landuse=landfill в Астане",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "AST-A03-S003"
+   ],
+   "landing_url": null,
+   "download_or_api_url": "https://overpass-api.de/api/interpreter",
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": "ODbL 1.0",
+   "auth_requirement": "нет",
+   "limitations": "Недоступно в среде; покрытие неизвестно",
+   "next_retrieval_step": "Выполнить запрос Overpass из отчёта §10"
+  },
+  {
+   "dataset_id": "AST-A03-D005",
+   "title": "Обращения iKOMEK 109 (категории, адреса, статусы)",
+   "publisher": null,
+   "source_ids": [
+    "AST-A03-S014"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "обращение",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "персональные данные",
+   "limitations": "Только агрегаты; сторонние репозитории не являются источником данных",
+   "next_retrieval_step": "Найти официальный сайт и открытую статистику"
+  },
+  {
+   "dataset_id": "AST-A03-D006",
+   "title": "БНС: динамические ряды по Астане (население, миграция)",
+   "publisher": "stat.gov.kz",
+   "source_ids": [
+    "AST-A03-S012"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Недоступно; для логистики — только контекст",
+   "next_retrieval_step": "Скачать файлы, записать год и единицы"
+  },
+  {
+   "dataset_id": "AST-A03-D007",
+   "title": "Синтетический экземпляр E003: 30 участков погрузки снега, 3 пункта приёма, депо",
+   "publisher": "AST-A03",
+   "source_ids": [
+    "AST-A03-S009"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05",
+   "geography": "рамка районов Астаны по OSM",
+   "granularity": "точка",
+   "period": null,
+   "format": "GeoJSON",
+   "fields": [
+    "id",
+    "role",
+    "volume_m3",
+    "district_from_real_osm_polygon",
+    "cap_m3",
+    "unload_min",
+    "kind"
+   ],
+   "units": "м³ за смену",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "SYNTHETIC: точки, объёмы, пункты и мощности придуманы; реальна только метка района",
+   "next_retrieval_step": "Заменить реальными пунктами и участками"
+  },
+  {
+   "dataset_id": "AST-A03-D008",
+   "title": "Метеоданные: снегопад и высота снежного покрова в Астане",
+   "publisher": "Казгидромет (предположительно)",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Источник не открыт; нужен для сценарных объёмов",
+   "next_retrieval_step": "Найти открытые ряды Казгидромета: год, станция, формат, лицензия"
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "AST-A03-O001",
+   "title": "Ночной план вывоза снега: распределение участков по пунктам приёма с учётом мощности",
+   "problem": "При ограниченной мощности пунктов правило «на ближайший» переполняет пункты, а перенаправление тратит лишние машино-часы (синтетика); реальная значимость — гипотеза",
+   "evidence_fact_ids": [
+    "AST-A03-F013",
+    "AST-A03-F014",
+    "AST-A03-F015",
+    "AST-A03-F016",
+    "AST-A03-F019"
+   ],
+   "primary_user": "Диспетчер ночной смены коммунального предприятия или подрядчика (гипотеза)",
+   "user_task": "Решить, какие участки везти на какой пункт и сколько машин нужно, чтобы вывезти всё до утра",
+   "existing_solution": "Неизвестно",
+   "proposed_addition": "Поток минимальной стоимости + расписание рейсов + карта с загрузкой пунктов + пересчёт при событии",
+   "required_dataset_ids": [
+    "AST-A03-D003",
+    "AST-A03-D001",
+    "AST-A03-D007",
+    "AST-A03-D008"
+   ],
+   "ai_role": "LLM разбирает сводки или обращения в участки и объёмы и объясняет изменения плана; распределение считает солвер",
+   "non_ai_baseline": "B-G: ближайший пункт с остатком мощности",
+   "success_metrics": [
+    "невывезенный объём",
+    "машино-часы на 1000 м³",
+    "км на м³",
+    "длительность смены",
+    "загрузка пунктов"
+   ],
+   "feasibility_10_days": "высокая на синтетике; зависит от публикации мест и мощностей",
+   "blockers": [
+    "нет мест и мощностей пунктов",
+    "нет объёмов",
+    "нет графа с мостами"
+   ],
+   "transfer_to_shymkent": "Не переносить без доказательства значимости снега в Шымкенте; общий компонент «приём с мощностью» применим к нескольким полигонам ТКО",
+   "next_action": "Найти официальный перечень мест складирования снега"
+  },
+  {
+   "idea_id": "AST-A03-O002",
+   "title": "Общий модуль маршрутов вывоза ТКО с профилями параметров городов",
+   "problem": "Двум городам нужен один код и разные данные; без профилей легко перенести шкалы и параметры Шымкента в Астану",
+   "evidence_fact_ids": [
+    "AST-A03-F007",
+    "AST-A03-F008"
+   ],
+   "primary_user": "Разработчик продукта; далее диспетчер ТКО (гипотеза)",
+   "user_task": "Построить маршруты ТКО по данным конкретного города",
+   "existing_solution": "Прототип A03 по Шымкенту на синтетике",
+   "proposed_addition": "Контракт a03.routing_instance.v0 + city_profile (сезонные скорости, смены, полигоны) + единый оценщик",
+   "required_dataset_ids": [
+    "AST-A03-D002",
+    "AST-A03-D004"
+   ],
+   "ai_role": "Объяснение различий; маршруты строит солвер",
+   "non_ai_baseline": "B2 ближайший сосед с окнами (A03)",
+   "success_metrics": [
+    "тот же оценщик даёт воспроизводимые хеши в обоих городах",
+    "км",
+    "длительность",
+    "опоздания",
+    "необслуженные"
+   ],
+   "feasibility_10_days": "высокая для контракта и профилей; данные городов — неизвестно",
+   "blockers": [
+    "нет площадок ТКО Астаны"
+   ],
+   "transfer_to_shymkent": "Прямо: общий код, отдельные данные",
+   "next_action": "Определить поля city_profile и тесты оценщика"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Где официальные места складирования и плавления снега в Астане, какова их мощность и часы работы?",
+   "why_important": "Без них Z2 остаётся методической демонстрацией",
+   "how_to_check": "adilet, gov.kz (акимат Астаны)"
+  },
+  {
+   "question": "Кто владелец процессов уборки и вывоза снега и вывоза ТКО в Астане?",
+   "why_important": "Определяет пользователя",
+   "how_to_check": "Страницы управлений акимата, госзакупки"
+  },
+  {
+   "question": "Есть ли на data.egov.kz экземпляры №672/674/680/681 с владельцем «г. Астана» и какие у них поля?",
+   "why_important": "Источник координат площадок и объектов ремонта",
+   "how_to_check": "Каталог по владельцу, метаданные"
+  },
+  {
+   "question": "Где ограничение при вывозе снега: мощность пунктов, погрузчики, машины или сроки?",
+   "why_important": "E003 показывает пользу только при ограниченной мощности пунктов",
+   "how_to_check": "Вопрос владельцу процесса; маршрутные листы одной ночи"
+  },
+  {
+   "question": "Какие сроки уборки установлены правилами благоустройства Астаны?",
+   "why_important": "Задают окна и приоритеты",
+   "how_to_check": "adilet: действующие правила благоустройства"
+  },
+  {
+   "question": "Есть ли открытые ряды Казгидромета о снегопаде в Астане?",
+   "why_important": "Сценарные объёмы снега",
+   "how_to_check": "Сайт Казгидромета: формат, лицензия"
+  },
+  {
+   "question": "Какой официальный адрес и есть ли открытая статистика у iKOMEK 109?",
+   "why_important": "Источник заявок для вставки в маршруты",
+   "how_to_check": "gov.kz, магазины приложений; персональные данные не собирать"
+  },
+  {
+   "question": "Как в OSM отмечены мосты, ограничения для грузовиков и места складирования снега в Астане?",
+   "why_important": "Сеть и точки для демонстрации",
+   "how_to_check": "Запрос Overpass §10 и запрос мостов"
+  },
+  {
+   "question": "Совпадает ли официальный состав районов с OSM (шесть районов, Сарайшык)?",
+   "why_important": "Агрегация по районам",
+   "how_to_check": "Акт об административном делении"
+  }
+ ],
+ "city_comparison": [
+  {
+   "topic": "Плановый вывоз ТКО (CVRPTW)",
+   "astana_fact_ids": [
+    "AST-A03-F007",
+    "AST-A03-F008"
+   ],
+   "shymkent_fact_ids": [
+    "A03-F006",
+    "A03-F007",
+    "A03-F021"
+   ],
+   "comparison_status": "both_pending_local_verification",
+   "shared_component": "Контракт a03.routing_instance.v0, независимый оценщик, baseline B2, цель «пробег + длительность»",
+   "city_specific_inputs": [
+    "площадки",
+    "парк",
+    "полигоны",
+    "смены",
+    "окна",
+    "сезонные скорости"
+   ],
+   "caveats": "Синтетические проценты A03 не переносятся"
+  },
+  {
+   "topic": "Вывоз снега: распределение и рейсы",
+   "astana_fact_ids": [
+    "AST-A03-F013",
+    "AST-A03-F014",
+    "AST-A03-F015",
+    "AST-A03-F016",
+    "AST-A03-F017"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "astana_only_shymkent_pending",
+   "shared_component": "Поток минимальной стоимости «приём с мощностью» и оценщик",
+   "city_specific_inputs": [
+    "пункты приёма",
+    "мощности",
+    "снегопад",
+    "парк",
+    "погрузчики"
+   ],
+   "caveats": "Значимость снега для Шымкента не исследована"
+  },
+  {
+   "topic": "Время в пути и дорожная сеть",
+   "astana_fact_ids": [
+    "AST-A03-F021"
+   ],
+   "shymkent_fact_ids": [
+    "A03-F019",
+    "A03-F012",
+    "A03-F013"
+   ],
+   "comparison_status": "method_shared_numbers_not_transferable",
+   "shared_component": "Метка matrix_source, OSRM-конвейер",
+   "city_specific_inputs": [
+    "выгрузка OSM",
+    "профиль грузовика",
+    "мосты",
+    "сезонный коэффициент скорости"
+   ],
+   "caveats": "Недооценка 29,8% — свойство синтетики Шымкента"
+  },
+  {
+   "topic": "Воспроизводимость расчётов",
+   "astana_fact_ids": [
+    "AST-A03-F018"
+   ],
+   "shymkent_fact_ids": [
+    "A03-F020"
+   ],
+   "comparison_status": "shared",
+   "shared_component": "Фиксированные лимиты солвера, версии, хеши",
+   "city_specific_inputs": [],
+   "caveats": null
+  },
+  {
+   "topic": "Обращения 109 → внеплановый выезд",
+   "astana_fact_ids": [
+    "AST-A03-F010",
+    "AST-A03-F011"
+   ],
+   "shymkent_fact_ids": [
+    "A03-F004"
+   ],
+   "comparison_status": "both_weak_evidence",
+   "shared_component": "Схема извлечения полей и подтверждение человеком",
+   "city_specific_inputs": [
+    "таксономия обращений",
+    "языки",
+    "доступ к агрегатам"
+   ],
+   "caveats": "Ни в одном городе нет официального подтверждённого источника"
+  },
+  {
+   "topic": "Районы и границы",
+   "astana_fact_ids": [
+    "AST-A03-F003",
+    "AST-A03-F005",
+    "AST-A03-F006"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "astana_osm_only_shymkent_pending",
+   "shared_component": "Паттерн происхождения геоданных (GEO_SOURCES.md)",
+   "city_specific_inputs": [
+    "акты о границах",
+    "relation OSM"
+   ],
+   "caveats": "OSM не является официальным источником"
+  },
+  {
+   "topic": "Портал открытых данных",
+   "astana_fact_ids": [
+    "AST-A03-F007",
+    "AST-A03-F008",
+    "AST-A03-F009"
+   ],
+   "shymkent_fact_ids": [
+    "A03-F007",
+    "A03-F009"
+   ],
+   "comparison_status": "shared_access_pattern",
+   "shared_component": "Клиент API с apiKey и проверка метаданных",
+   "city_specific_inputs": [
+    "индексы наборов"
+   ],
+   "caveats": "Наборы и их покрытие различаются по городам"
+  }
+ ],
+ "deliverables": {
+  "experiment": {
+   "id": "AST-A03-E003",
+   "status": "executed",
+   "kind": "mixed",
+   "env": "Python 3.12.3, ortools 9.15.6755, numpy 2.4.4, seed 20261005",
+   "hypothesis": "H5: оптимизатор распределения полезен только при ограниченной мощности пунктов",
+   "result": "Подтверждена на синтетике (F013–F016)"
+  },
+  "real_samples": [
+   {
+    "file": "AST_A03_sample_osm_admin_units.json",
+    "dataset_id": "AST-A03-D001",
+    "source_ids": [
+     "AST-A03-S002",
+     "AST-A03-S003"
+    ],
+    "license": "ODbL 1.0"
+   }
+  ],
+  "synthetic_samples": [
+   {
+    "file": "AST_A03_synthetic_snow_instance.geojson",
+    "dataset_id": "AST-A03-D007"
+   }
+  ],
+  "instance_contract": "a03.routing_instance.v0 + поля снега — отчёт §10",
+  "comparison_protocol": "отчёт §8",
+  "demo_script_2min": "отчёт §10",
+  "overpass_query": {
+   "status": "not_executed",
+   "location": "отчёт §10"
+  },
+  "next_pass_task": "отчёт §16",
+  "files": [
+   {
+    "name": "AST_A03_report.md",
+    "role": "report",
+    "command": null,
+    "sha256": "58b3879477592ffdd3946d05dc745e25f94cc9577d352bf519b6a8d50c33d430"
+   },
+   {
+    "name": "AST_A03_snow_experiment.py",
+    "role": "code",
+    "command": "python3 AST_A03_snow_experiment.py",
+    "sha256": "43ff3e3cdde7efd19b593ca71183fbde45cad2cb69ef74f14f7210138fb99a24"
+   },
+   {
+    "name": "AST_A03_input_astana_districts_osm.geojson",
+    "role": "real_input_osm",
+    "command": null,
+    "sha256": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e"
+   },
+   {
+    "name": "AST_A03_E003_results.json",
+    "role": "mixed_result",
+    "command": null,
+    "sha256": "c2ca55e6cce158d81e28162b58108a69358ce3f3c91d5be21fa7c107114e961d"
+   },
+   {
+    "name": "AST_A03_synthetic_snow_instance.geojson",
+    "role": "synthetic_data",
+    "command": null,
+    "sha256": "26e7a25ebe9f40489366f811352fb2e7a5367783ed4463959e7b01fc2a6a2000"
+   },
+   {
+    "name": "AST_A03_sample_osm_admin_units.json",
+    "role": "real_sample",
+    "command": null,
+    "sha256": "1054a0ad28ea7205031537944f102c63a9d8b3373e817d65bcb5ff3bb6a45b87"
+   },
+   {
+    "name": "AST_A03_run_log.txt",
+    "role": "log",
+    "command": null,
+    "sha256": "86f718f02496c3318e613d132d71008ea0ad886eea5bcb192f25bba1ba94882f"
+   }
+  ]
+ }
+}

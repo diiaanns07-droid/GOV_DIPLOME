@@ -1,0 +1,5 @@
+# SYNTHETIC — расширение паспорта здания для отопления (Астана). Значения выдуманы, это не реальные объекты.
+building_id,heat_supply,has_substation_ITP,weather_compensation,heat_meter,billing_basis,meter_interval,heated_area_m2,area_source,shifts,setback_policy,ventilation,heating_season_start,heating_season_end,notes
+SYN-AST-B001,district_heat,yes,yes,yes,metered,daily,6200,техпаспорт,2,night_and_holiday,natural,2025-09-25,2026-05-05,synthetic
+SYN-AST-B002,district_heat,no,no,yes,metered,monthly,4100,unknown,2,none,natural,2025-09-25,2026-05-05,synthetic
+SYN-AST-B003,district_heat,no,no,no,norm,monthly,2900,OSM_footprint_x_floors,1,unknown,unknown,,,synthetic

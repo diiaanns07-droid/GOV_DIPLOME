@@ -1,0 +1,8 @@
+Ты единственный сборщик BUILD раунда 4. Вместо задания по своему старому номеру выполни BUILD.
+Сохрани незакоммиченную работу, затем:
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-4/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-4/BUILD.txt
+Выполни задание из BUILD.txt в собственной ветке. Все обязательные входы уже сохранены по SHA, других агентов не жди.
+После первого запускаемого этапа сразу STATUS/HANDOFF → commit → push. Продолжай следующий этап по доступному лимиту.
+В конце дай команду запуска, ветку, SHA и фактический результат push.

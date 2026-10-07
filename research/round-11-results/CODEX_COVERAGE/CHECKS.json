@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-07",
+  "base_commit": "cdaee27",
+  "checkpoint_commit": "5f6b41c",
+  "branch": "codex/govtech-main-interface",
+  "coverage": {
+    "bbox": [
+      71.2079,
+      50.9206,
+      71.7953,
+      51.3612
+    ],
+    "nodes": 66027,
+    "edges": 94089,
+    "allowed_edges": 29236,
+    "unknown_edges": 63261,
+    "denied_edges": 1592,
+    "street_names": 1666,
+    "street_choices": 1939,
+    "snapshot_at": "2026-05-06T03:25:00Z",
+    "license": "ODbL-1.0"
+  },
+  "tests": {
+    "full_pytest": {
+      "passed": 862,
+      "failed": 1,
+      "skipped": 5,
+      "deselected": 1,
+      "seconds": 131.12,
+      "failure": "test_chunked_put_delete_and_frame_headers: Windows socket abort 10053; isolated retry passed; full gateway and R07 HTTP rerun 28/28 passed"
+    },
+    "targeted_final_osm_and_r07": "67 passed",
+    "final_casefold_search": "1 passed",
+    "final_r07_http_ui": "4 passed",
+    "gateway_and_r07_http_rerun": "28 passed",
+    "web_check": "14 passed",
+    "r03_r04_node": "51 passed",
+    "node_syntax": "passed"
+  },
+  "browser": {
+    "url": "http://127.0.0.1:8611/",
+    "viewport_observed": [
+      522,
+      911
+    ],
+    "checked": [
+      "six-district navigation",
+      "partial street search with ambiguous-name message",
+      "specific street selection",
+      "empty published-list state outside demo cluster",
+      "citywide graph default selection and load",
+      "A/B comparison with 18980.904m baseline, 18998.069m A, 18987.577m B",
+      "automatic route display on map",
+      "light basemap",
+      "3D toggle and extruded buildings; screenshot saved after camera settles"
+    ],
+    "not_checked": [
+      "desktop viewport in this turn",
+      "authenticated editor workflow in this turn",
+      "real-world route accuracy"
+    ]
+  },
+  "limitations": [
+    "7 published works/events remain synthetic; 0 verified real civic objects added",
+    "OSM snapshot is May 6, 2026, not live",
+    "walking length only; no traffic prediction",
+    "unknown-access edges excluded from valid routes",
+    "rectangular extract includes surroundings; not guaranteed complete",
+    "OSM relation-based foot restrictions are not interpreted; no field validation"
+  ],
+  "acl": "Attempt to reset ACL for two downloaded files rejected by automatic review. No ACL changes made. Open data read and built without changing permissions."
+}

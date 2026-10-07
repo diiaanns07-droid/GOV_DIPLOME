@@ -1,0 +1,14 @@
+{
+  "kind": "overpass_snapshot",
+  "url": "https://overpass.private.coffee/api/interpreter",
+  "query": "[out:json][timeout:90];way[highway](50.9206,71.2079,51.3612,71.7953);(._;>;);out body;",
+  "snapshot_at": "2026-05-06T03:25:00Z",
+  "retrieved_at": "2026-10-07",
+  "raw_sha256": "477bff5d1fa207aca2cc9df00288ebfcf152f890cceac3364af0404a63f80f0c",
+  "path": "data/civic/astana/osm-walking/overpass.json.gz",
+  "policy": "osm-conservative-walking-v1",
+  "docs": [
+    "https://wiki.openstreetmap.org/wiki/Key:foot",
+    "https://wiki.openstreetmap.org/wiki/Key:access"
+  ]
+}

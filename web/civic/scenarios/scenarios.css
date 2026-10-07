@@ -1,0 +1,45 @@
+/* R07 CivicScenarios — светлая панель; все классы с префиксом civic-r07-. */
+.civic-r07-panel { font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #212529; background: #fff; padding: 12px 14px; box-sizing: border-box; max-width: 100%; }
+.civic-r07-panel * { box-sizing: border-box; }
+.civic-r07-title { font-size: 16px; margin: 0 0 8px; }
+.civic-r07-notice { background: #fff9db; border: 1px solid #ffe066; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; font-size: 13px; }
+.civic-r07-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0; }
+.civic-r07-lbl { display: flex; flex-direction: column; font-size: 12px; color: #495057; gap: 2px; min-width: 0; flex: 1 1 160px; }
+.civic-r07-select, .civic-r07-input { font: inherit; padding: 5px 6px; border: 1px solid #ced4da; border-radius: 6px; background: #fff; min-width: 0; max-width: 100%; }
+.civic-r07-off { flex: 0 0 auto; align-self: flex-end; }
+.civic-r07-graphinfo { font-size: 12px; color: #495057; margin: 4px 0 8px; }
+.civic-r07-badge { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 11px; font-weight: 600; background: #e7f5ff; color: #1864ab; }
+.civic-r07-ev-synthetic { background: #ffe3e3; color: #c92a2a; }
+.civic-r07-ev-hypothesis { background: #f3f0ff; color: #5f3dc4; }
+.civic-r07-src { font-size: 11px; color: #868e96; word-break: break-all; }
+.civic-r07-tabs { display: flex; gap: 6px; margin-top: 8px; }
+.civic-r07-tab { flex: 1; font: inherit; padding: 6px; border: 2px solid; border-radius: 8px 8px 0 0; background: #f8f9fa; cursor: pointer; }
+.civic-r07-tab.civic-r07-active { background: #fff; font-weight: 600; }
+.civic-r07-modes { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
+.civic-r07-chip { font: inherit; font-size: 12px; padding: 3px 8px; border: 1px solid #ced4da; border-radius: 12px; background: #f8f9fa; cursor: pointer; margin: 2px; }
+.civic-r07-chip.civic-r07-active { background: #1971c2; color: #fff; border-color: #1971c2; }
+.civic-r07-closures { list-style: none; padding: 0; margin: 4px 0; }
+.civic-r07-closure { border: 1px solid #dee2e6; border-radius: 8px; padding: 6px 8px; margin-bottom: 6px; }
+.civic-r07-btn { font: inherit; font-size: 13px; padding: 5px 10px; border: 1px solid #ced4da; border-radius: 6px; background: #f8f9fa; cursor: pointer; }
+.civic-r07-primary { background: #1971c2; color: #fff; border-color: #1971c2; font-weight: 600; padding: 7px 18px; }
+.civic-r07-primary:disabled { opacity: .6; cursor: progress; }
+.civic-r07-hint { font-size: 11px; color: #868e96; }
+.civic-r07-error { background: #fff5f5; border: 1px solid #ffa8a8; color: #c92a2a; border-radius: 6px; padding: 6px 8px; margin: 6px 0; }
+.civic-r07-meta { font-size: 12px; color: #495057; margin: 10px 0 6px; }
+.civic-r07-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+.civic-r07-card { border: 1px solid #dee2e6; border-top: 4px solid; border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+.civic-r07-card h3 { margin: 0 0 4px; font-size: 14px; }
+.civic-r07-ab { margin: 8px 0; font-size: 13px; }
+.civic-r07-warn { font-size: 12px; color: #e67700; }
+.civic-r07-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+.civic-r07-table th, .civic-r07-table td { border-bottom: 1px solid #e9ecef; padding: 4px 6px; text-align: left; vertical-align: top; }
+.civic-r07-pair { cursor: pointer; }
+.civic-r07-pair:hover, .civic-r07-pair.civic-r07-active { background: #e7f5ff; }
+.civic-r07-delta { font-size: 11px; color: #2b8a3e; }
+.civic-r07-delta.civic-r07-up { color: #d9480f; font-weight: 600; }
+.civic-r07-st-unknown { color: #e67700; }
+.civic-r07-st-unreachable { color: #c92a2a; }
+.civic-r07-lim { font-size: 12px; color: #495057; padding-left: 18px; }
+.civic-r07-legend { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; color: #495057; margin: 4px 0 6px; }
+.civic-r07-lg { display: inline-flex; align-items: center; gap: 4px; }
+.civic-r07-lg i { display: inline-block; width: 18px; height: 0; }

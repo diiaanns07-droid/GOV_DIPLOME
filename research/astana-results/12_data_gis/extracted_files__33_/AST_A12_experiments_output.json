@@ -1,0 +1,178 @@
+{
+ "E101": {
+  "indicators": 10,
+  "districts": [
+   "esil",
+   "almaty",
+   "saryarka",
+   "baikonur",
+   "nura"
+  ],
+  "population_share_sum": 1.0,
+  "measures": 14,
+  "budget": 100,
+  "events": 8,
+  "events_with_district": 5,
+  "real_context_cells": 25,
+  "real_context_nonzero": 0,
+  "real_context_districts": [
+   "almaty",
+   "baikonur",
+   "esil",
+   "nura",
+   "saryarka"
+  ],
+  "real_context_meta": {
+   "status": "unavailable",
+   "generated_at": "2026-09-23T09:25:25+00:00",
+   "districts_source": "fallback_approx"
+  },
+  "real_context_referenced_by": []
+ },
+ "E102": {
+  "union_km2": 789.3,
+  "union_parts_km2": [
+   770.41,
+   9.021,
+   5.033,
+   4.794
+  ],
+  "neighbours": {
+   "3403760": {
+    "name": "Целиноград ауданы",
+    "area_km2": 7666.7,
+    "overlap_with_astana_km2": 9.021,
+    "shares_boundary": true
+   },
+   "3403782": {
+    "name": "Аршалы ауданы",
+    "area_km2": 5846.9,
+    "overlap_with_astana_km2": 0.0,
+    "shares_boundary": true
+   },
+   "3404061": {
+    "name": "Шортанды ауданы",
+    "area_km2": 4681.7,
+    "overlap_with_astana_km2": 0.0,
+    "shares_boundary": true
+   },
+   "15594335": {
+    "name": "Қосшы қалалық әкімдігі",
+    "area_km2": 141.2,
+    "overlap_with_astana_km2": 0.0,
+    "shares_boundary": true
+   },
+   "17952313": {
+    "name": "Тайтөбе ауылдық әкімдігі",
+    "area_km2": 89.3,
+    "overlap_with_astana_km2": 0.0,
+    "shares_boundary": true
+   }
+  },
+  "natural_earth": {
+   "astana_polygon_km2": 619.8,
+   "iou_with_osm_union": 0.675,
+   "osm_outside_ne_km2": 221.6,
+   "ne_outside_osm_km2": 52.2,
+   "populated_place": {
+    "name": "Nur-Sultan",
+    "nameascii": "Astana",
+    "adm1name": "Aqmola",
+    "pop_max": 345604
+   }
+  },
+  "saraishyk_relation": {
+   "id": 19733918,
+   "version": 17,
+   "timestamp": "2026-09-21T13:44:01Z",
+   "overpass_base": "2026-09-22T08:45:51Z",
+   "relation_edit_before_snapshot": true
+  }
+ },
+ "E103": {
+  "tri_point": [
+   71.447389,
+   51.1311552
+  ],
+  "contains": {
+   "esil": false,
+   "almaty": false,
+   "saraishyk": false
+  },
+  "covers": [
+   "almaty",
+   "esil",
+   "saraishyk"
+  ],
+  "rule_result": "almaty",
+  "exclave_point": [
+   71.66574,
+   51.33028
+  ],
+  "exclave_in_baikonur": true,
+  "exclave_in_tselinograd": true
+ },
+ "E104": {
+  "stops": 201,
+  "per_district": {
+   "saryarka": 80,
+   "nura": 24,
+   "esil": 88,
+   "baikonur": 7,
+   "almaty": 2
+  },
+  "ties": 0,
+  "outside": 0,
+  "routes": [
+   "46",
+   "10",
+   "12"
+  ],
+  "trips": 19769,
+  "service_dates": [
+   "2024-07-29",
+   "2024-09-21",
+   55
+  ]
+ },
+ "E105": {
+  "catalog_rows": 3882,
+  "crawled": [
+   "2026-02-01T14:16:20.126Z",
+   "2026-02-01T15:04:03.102Z"
+  ],
+  "akimat_astana": 52,
+  "akimat_akmola": 68,
+  "akimat_shymkent": 56,
+  "astana_frequency": {
+   "Ежегодно": 44,
+   "Ежеквартально": 5,
+   "Ежемесячно": 1,
+   "1 раз в полгода": 2
+  },
+  "astana_legacy_nur_sultan_slugs": 15,
+  "astana_in_opengov_list": 51
+ },
+ "E106": {
+  "tables": [
+   "boundary_crosswalk",
+   "boundary_versions",
+   "datasets",
+   "doc_chunks",
+   "game_mode_guard",
+   "geo_units",
+   "imports",
+   "indicators",
+   "observations",
+   "pip_assignments",
+   "sources",
+   "topology_conflicts"
+  ]
+ },
+ "versions": {
+  "python": "3.12.3",
+  "sqlite": "3.45.1",
+  "shapely": "2.1.2",
+  "pyproj": "3.8.0"
+ }
+}

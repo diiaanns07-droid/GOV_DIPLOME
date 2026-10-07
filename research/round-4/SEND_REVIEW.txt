@@ -1,0 +1,8 @@
+Продолжаем раунд 4. Ты выполняешь независимую проверку REVIEW; сборщик назначен отдельно.
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-4/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-4/REVIEW.txt
+По своей текущей ветке найди slot в snapshots.json и прочитай:
+git show origin/codex/research-import-2026-10-05:research/round-4/review/KXX.txt
+Подставь свой номер и выполни задание. Других агентов не жди. После первого полезного результата STATUS → commit → push собственной ветки.
+Если эта сессия уже назначена BUILD, продолжай BUILD и не переключайся на REVIEW.

@@ -1,0 +1,414 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "AST_A11_territory_card.schema.json",
+  "title": "Карточка территории (A11/AST-A11) v0.2: два города, юрисдикция, прежние названия",
+  "description": "Контракт v0.2 (2026-10-05), обратно совместим с A11 v0.1 (Шымкент). Добавлено: город Астана, проверка юрисдикции территории у границы города, юрисдикция органа, издавшего акт, название города на дату акта. Карточка НЕ является юридическим заключением, кадастровой справкой или решением уполномоченного органа.",
+  "type": "object",
+  "required": [
+    "card_id",
+    "data_kind",
+    "schema_version",
+    "generated_at",
+    "territory",
+    "disclaimer",
+    "items"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "card_id": {
+      "type": "string",
+      "pattern": "^(SYN|PUB)-[A-Z0-9-]{1,40}$",
+      "description": "SYN- для синтетики, PUB- для карточки на публичных сведениях. Кадастровый номер в id не используется."
+    },
+    "data_kind": {
+      "enum": [
+        "synthetic",
+        "real_public"
+      ]
+    },
+    "schema_version": {
+      "enum": [
+        "0.1",
+        "0.2"
+      ]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "disclaimer": {
+      "type": "string",
+      "minLength": 40
+    },
+    "territory": {
+      "type": "object",
+      "required": [
+        "level",
+        "name",
+        "city",
+        "geometry_ref"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "enum": [
+            "city",
+            "district",
+            "microdistrict",
+            "block",
+            "parcel"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "city": {
+          "enum": [
+            "Шымкент",
+            "Астана"
+          ]
+        },
+        "admin_district": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Район города по действующему акту; null, если не проверено."
+        },
+        "cadastral_number_user_supplied": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Только если пользователь сам ввёл номер. Система номера не генерирует и не угадывает."
+        },
+        "geometry_ref": {
+          "$ref": "#/$defs/geometry"
+        },
+        "jurisdiction_check": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "boundary_source_type",
+            "boundary_legal_weight"
+          ],
+          "properties": {
+            "result": {
+              "enum": [
+                "inside_city_context_only",
+                "outside_city_context_only",
+                "near_boundary_needs_official_check",
+                "boundary_data_inconsistent",
+                "not_checked"
+              ]
+            },
+            "boundary_source_type": {
+              "enum": [
+                "official_boundary_act",
+                "certified_cadastral",
+                "osm_context",
+                "none"
+              ]
+            },
+            "boundary_legal_weight": {
+              "enum": [
+                "legally_certified",
+                "context_only",
+                "none"
+              ]
+            },
+            "boundary_source_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "distance_to_boundary_m": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    }
+  },
+  "$defs": {
+    "topic": {
+      "enum": [
+        "land_category",
+        "target_purpose",
+        "cadastral_status",
+        "general_plan_zone",
+        "pdp_status",
+        "red_lines",
+        "power_line_protection_zone",
+        "gas_pipeline_protection_zone",
+        "other_utility_zones",
+        "water_protection_zone",
+        "sanitary_protection_zone",
+        "heritage_protection_zone",
+        "airport_restriction_zone",
+        "seismic_zone",
+        "flood_risk",
+        "auction_status",
+        "land_payment_zone",
+        "green_belt_or_forest_fund",
+        "special_architectural_regime"
+      ]
+    },
+    "geometry": {
+      "type": "object",
+      "required": [
+        "source_type",
+        "legal_weight"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source_type": {
+          "enum": [
+            "certified_cadastral",
+            "approved_plan_vector",
+            "approved_plan_raster_georef",
+            "derived_buffer",
+            "osm_context",
+            "none"
+          ]
+        },
+        "legal_weight": {
+          "enum": [
+            "legally_certified",
+            "illustrative",
+            "context_only",
+            "none"
+          ],
+          "description": "legally_certified допустим только для геометрии из заверенного официального источника (кадастр/утверждённый документ с координатами)."
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method_note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "act": {
+      "type": "object",
+      "required": [
+        "kind",
+        "issuer",
+        "document_status",
+        "official_url"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "code_or_law",
+            "government_resolution",
+            "akimat_resolution",
+            "maslikhat_decision",
+            "ministry_order",
+            "approved_plan",
+            "draft_act",
+            "news_or_announcement",
+            "technical_conditions",
+            "other"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "document_status": {
+          "enum": [
+            "in_force",
+            "approved_not_in_force",
+            "draft",
+            "superseded",
+            "news_or_announcement",
+            "unknown"
+          ]
+        },
+        "official_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "locator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Статья/пункт/страница/лист чертежа."
+        },
+        "text_checked_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "issuer_jurisdiction": {
+          "enum": [
+            "republic",
+            "city",
+            "former_region",
+            "neighbouring_region",
+            "unknown"
+          ],
+          "description": "Чей орган издал акт относительно города карточки. neighbouring_region: Акмолинская обл. для Астаны, Туркестанская обл. для Шымкента; former_region: Южно-Казахстанская обл. для Шымкента."
+        },
+        "city_name_at_issue": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Название города в тексте акта (например, Нур-Султан для 2019–2022)."
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": [
+        "item_id",
+        "topic",
+        "status",
+        "authority_for_binding_answer",
+        "provenance",
+        "geometry"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "type": "string"
+        },
+        "topic": {
+          "$ref": "#/$defs/topic"
+        },
+        "status": {
+          "enum": [
+            "found_official",
+            "found_official_draft",
+            "found_unofficial",
+            "not_public",
+            "not_found",
+            "not_checked",
+            "not_applicable_confirmed"
+          ]
+        },
+        "value_text": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Как сказано в источнике, без интерпретации."
+        },
+        "legal_basis": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/act"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Норма, на основании которой ограничение вообще существует."
+        },
+        "establishing_act": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/act"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Конкретный акт/документ, устанавливающий ограничение на этой территории."
+        },
+        "geometry": {
+          "$ref": "#/$defs/geometry"
+        },
+        "authority_for_binding_answer": {
+          "type": "string",
+          "description": "Кто даёт юридически значимый ответ."
+        },
+        "provenance": {
+          "type": "object",
+          "required": [
+            "source_ids",
+            "accessed_at",
+            "extracted_by"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "accessed_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "extracted_by": {
+              "enum": [
+                "human",
+                "rule",
+                "llm_human_checked",
+                "llm_unchecked"
+              ]
+            }
+          }
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,623 @@
+{
+  "date": "2026-10-06",
+  "status": "PASS",
+  "scope": "Prompt package consistency only; no application tests or Claude sessions run. Source SHA existence is not a claim of product correctness.",
+  "checks": [
+    {
+      "name": "ten_unique_roles",
+      "status": "PASS"
+    },
+    {
+      "name": "ten_prompts_and_send_messages",
+      "status": "PASS"
+    },
+    {
+      "name": "pack_ready",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:BASELINE.json",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:BRIEF.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:COMMON.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:CONTRACT.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:PACK_STATUS.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:REVIEW.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:ROLES.json",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:START_HERE.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:fixtures\\civic_object.json",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:fixtures\\DELIVERY.example.json",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R01.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R02.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R03.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R04.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R05.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R06.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R07.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R08.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R09.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:prompts\\R10.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R01.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R02.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R03.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R04.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R05.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R06.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R07.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R08.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R09.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "utf8:send\\R10.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "R01:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R01:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R01:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R01:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R01:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R02:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R02:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R02:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R02:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R02:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R02:isolated_path:ui/civic_store/",
+      "status": "PASS"
+    },
+    {
+      "name": "R02:isolated_path:tests/civic/R02/",
+      "status": "PASS"
+    },
+    {
+      "name": "R03:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R03:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R03:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R03:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R03:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R03:isolated_path:web/civic/map/",
+      "status": "PASS"
+    },
+    {
+      "name": "R03:isolated_path:tests/civic/R03/",
+      "status": "PASS"
+    },
+    {
+      "name": "R04:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R04:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R04:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R04:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R04:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R04:isolated_path:web/civic/editor/",
+      "status": "PASS"
+    },
+    {
+      "name": "R04:isolated_path:tests/civic/R04/",
+      "status": "PASS"
+    },
+    {
+      "name": "R05:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R05:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R05:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R05:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R05:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R05:isolated_path:data/civic/astana/",
+      "status": "PASS"
+    },
+    {
+      "name": "R05:isolated_path:tests/civic/R05/",
+      "status": "PASS"
+    },
+    {
+      "name": "R06:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R06:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R06:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R06:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R06:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R06:isolated_path:ui/civic_feedback/",
+      "status": "PASS"
+    },
+    {
+      "name": "R06:isolated_path:web/civic/feedback/",
+      "status": "PASS"
+    },
+    {
+      "name": "R06:isolated_path:tests/civic/R06/",
+      "status": "PASS"
+    },
+    {
+      "name": "R07:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R07:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R07:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R07:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R07:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R07:isolated_path:engine/civic_scenarios/",
+      "status": "PASS"
+    },
+    {
+      "name": "R07:isolated_path:web/civic/scenarios/",
+      "status": "PASS"
+    },
+    {
+      "name": "R07:isolated_path:tests/civic/R07/",
+      "status": "PASS"
+    },
+    {
+      "name": "R08:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R08:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R08:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R08:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R08:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R08:isolated_path:ml/civic_classifier/",
+      "status": "PASS"
+    },
+    {
+      "name": "R08:isolated_path:tests/civic/R08/",
+      "status": "PASS"
+    },
+    {
+      "name": "R09:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R09:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R09:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R09:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R09:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R09:isolated_path:agent/civic_assistant/",
+      "status": "PASS"
+    },
+    {
+      "name": "R09:isolated_path:web/civic/assistant/",
+      "status": "PASS"
+    },
+    {
+      "name": "R09:isolated_path:tests/civic/R09/",
+      "status": "PASS"
+    },
+    {
+      "name": "R10:complete_long_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R10:time_plan",
+      "status": "PASS"
+    },
+    {
+      "name": "R10:checkpoint_and_push",
+      "status": "PASS"
+    },
+    {
+      "name": "R10:paths_in_prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "R10:send_points_to_role",
+      "status": "PASS"
+    },
+    {
+      "name": "R10:isolated_path:tests/civic/R10/",
+      "status": "PASS"
+    },
+    {
+      "name": "fixture_honestly_synthetic",
+      "status": "PASS"
+    },
+    {
+      "name": "git_commit:3aea1afaa27a0e1f733a50a50357ecf7a4ff19e1",
+      "status": "PASS"
+    },
+    {
+      "name": "git_commit:b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+      "status": "PASS"
+    },
+    {
+      "name": "git_commit:6de3f253d8ec0743450259f9f13722c16cd36099",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline_path:ui/web_server.py",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline_path:web/index.html",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline_path:web/map.js",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline_path:agent/school_ai.py",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline_path:web/govtech/k03/astana.graph.json",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline_path:research/astana-results/04_infrastructure/extracted_files__26_/AST_A04_report.md",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline_path:research/astana-results/06_transport/extracted_files__28_/AST_A06_report.md",
+      "status": "PASS"
+    },
+    {
+      "name": "expected_origin",
+      "status": "PASS"
+    },
+    {
+      "name": "coordinator_branch",
+      "status": "PASS"
+    }
+  ],
+  "files": [
+    {
+      "path": "BASELINE.json",
+      "bytes": 1109,
+      "sha256": "11b1326d6199c7dfbfbdbe82c45bdb6858aec99ab6b3f46f2d37fb7e5be0a33b"
+    },
+    {
+      "path": "BRIEF.txt",
+      "bytes": 4657,
+      "sha256": "26cae1c5d3196c6413edebe417b8406d98686e7017eb5512dc653705c8dbe6f2"
+    },
+    {
+      "path": "COMMON.txt",
+      "bytes": 10404,
+      "sha256": "55ceef640f40dcb480e7a2e23186cbfbc6186bc24c386ad70d01e955a250fc05"
+    },
+    {
+      "path": "CONTRACT.txt",
+      "bytes": 13061,
+      "sha256": "2a055a56d22efca5a59fe37f64b3298cb08f1b69e0ae85c23a93863b7d6d60b6"
+    },
+    {
+      "path": "fixtures/civic_object.json",
+      "bytes": 1127,
+      "sha256": "e2ba1de7d263f69629d12c01dea35c774f0be321a1fb9f7685787c33caad88f2"
+    },
+    {
+      "path": "fixtures/DELIVERY.example.json",
+      "bytes": 742,
+      "sha256": "158d65a806a59fb7c22e1ccca6a97d20291f2fec84a7259c635491dd77bb96f3"
+    },
+    {
+      "path": "PACK_STATUS.txt",
+      "bytes": 385,
+      "sha256": "97f4435e42f81cbaa1237b0938dd34864ec65fa45b90c45fa12971d8ef34b693"
+    },
+    {
+      "path": "prompts/R01.txt",
+      "bytes": 19456,
+      "sha256": "6e32984edb98e05a59a6650064d95b038a90d29f8ea19412ff614ccd1b37e325"
+    },
+    {
+      "path": "prompts/R02.txt",
+      "bytes": 16833,
+      "sha256": "de91df577920923abac930359302f167e1635d1336407458934d7087b32b9288"
+    },
+    {
+      "path": "prompts/R03.txt",
+      "bytes": 16698,
+      "sha256": "8d009f27a59bdd8eaf88d3ebcf201b823166f68e7e8d52fb3499561cd2f80a9d"
+    },
+    {
+      "path": "prompts/R04.txt",
+      "bytes": 16305,
+      "sha256": "ab6cb9afe03d4712473d9cf54cc95188e30920272212d8810c152f8fc9fcc51f"
+    },
+    {
+      "path": "prompts/R05.txt",
+      "bytes": 17839,
+      "sha256": "5b05a927b11488cdcac3e4807ea98ad5b9d98dbf593c938d870ae936f47a1e69"
+    },
+    {
+      "path": "prompts/R06.txt",
+      "bytes": 16786,
+      "sha256": "fd92f67ca08874b71c7012bf5b3d281d79fb9a01c92892c9991e830493c18cce"
+    },
+    {
+      "path": "prompts/R07.txt",
+      "bytes": 16960,
+      "sha256": "54312467c1f23793bcb513a39e376545f99031723cbf08fbe7f28c17e8fdb4c1"
+    },
+    {
+      "path": "prompts/R08.txt",
+      "bytes": 17279,
+      "sha256": "1bcda0477a2c3fbde66e6872b4b0b9c663b92db6b146f4fa9e5be48c5b7af19e"
+    },
+    {
+      "path": "prompts/R09.txt",
+      "bytes": 16697,
+      "sha256": "5b02123b4624fd659799794a69f79a97160ad700306975bfda5ce9af823cd1d7"
+    },
+    {
+      "path": "prompts/R10.txt",
+      "bytes": 17888,
+      "sha256": "941b429b89847f7c88a7a0532e15ce8a33adc27b1d87ba417d7e0a8ae0fa8a69"
+    },
+    {
+      "path": "REVIEW.txt",
+      "bytes": 2313,
+      "sha256": "d61785b92151422fba8325ea52fcea1018045171dcf63d766862b5c432edef57"
+    },
+    {
+      "path": "ROLES.json",
+      "bytes": 5126,
+      "sha256": "bee5cdce8a9a0111c18f587861ae73613fedd60bb791f84536016c1f2d6d4a43"
+    },
+    {
+      "path": "send/R01.txt",
+      "bytes": 2098,
+      "sha256": "976d4124591937b5af5e8b84cbb52f0b04c3804add66845e1e396764ac45bc59"
+    },
+    {
+      "path": "send/R02.txt",
+      "bytes": 2112,
+      "sha256": "0593f3b291d1e80b0466406c62e48fd13bf49ba1125457a216b35354b6e03484"
+    },
+    {
+      "path": "send/R03.txt",
+      "bytes": 2122,
+      "sha256": "233bc0a51aa74a2c4a96841202c0fb680d5095105db69e97759ba2e68bdbadab"
+    },
+    {
+      "path": "send/R04.txt",
+      "bytes": 2114,
+      "sha256": "d2fca5ab265af9dc356fd296378701cb22d4e8e6b59c5700966dd51f4b4ded32"
+    },
+    {
+      "path": "send/R05.txt",
+      "bytes": 2116,
+      "sha256": "861c9e29118e5f27d5f30d0cf66587167a01017c2d5f5685893cf957ecd700c0"
+    },
+    {
+      "path": "send/R06.txt",
+      "bytes": 2108,
+      "sha256": "aba38233c98aa2a3d711f8fd7a279f25afb1612a4d6abb42d02088198f92b1af"
+    },
+    {
+      "path": "send/R07.txt",
+      "bytes": 2102,
+      "sha256": "6802c72de2355648a1ce0865806422a98e16633c907ece30d60b3fef08255920"
+    },
+    {
+      "path": "send/R08.txt",
+      "bytes": 2129,
+      "sha256": "80e1863ad7c93f92654df1ab015a3b47df089384446367d9eba2af147fcc0f54"
+    },
+    {
+      "path": "send/R09.txt",
+      "bytes": 2100,
+      "sha256": "2ca5861667f25c321b65aab7c867acb779ffeff606c4458650d8613d2e691c3e"
+    },
+    {
+      "path": "send/R10.txt",
+      "bytes": 2152,
+      "sha256": "f98df9b466cff7d006ece8387535f55bed55f022094d9416c3e69ed00976d177"
+    },
+    {
+      "path": "START_HERE.txt",
+      "bytes": 4701,
+      "sha256": "45ec00d6084b3d24dde2db4c0b747f8c635eeff688d54a7272a1b877b0b1a5e8"
+    }
+  ]
+}

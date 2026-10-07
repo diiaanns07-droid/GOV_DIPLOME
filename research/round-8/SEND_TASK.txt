@@ -1,0 +1,10 @@
+Начинаем большой восьмой раунд GOV_DIPLOME. Сборщик назначен отдельно.
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-8/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-8/CORE_SPEC.txt
+git show origin/codex/research-import-2026-10-05:research/round-8/TASK.txt
+Найди свой slot по текущей ветке, подставь номер:
+git show origin/codex/research-import-2026-10-05:research/round-8/tasks/KXX.txt
+Выполни ВСЕ этапы своего задания: нужен рабочий модуль/fixtures/тесты, а не только обзор.
+После каждого полезного этапа STATUS/HANDOFF → commit → push, затем продолжай.
+Общий прототип меняет только BUILD. Если уже назначен BUILD, выполняй BUILD.txt.

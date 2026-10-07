@@ -1,0 +1,42 @@
+{
+ "source_branch": "claude/epic-curie-iitc43",
+ "source_commit_at_install": "8d888685485df0a9571b72b08a70a423349ea471",
+ "installed_by": "BUILD r10 (equivalent of install_for_build.py, files via git show at the pinned commit)",
+ "files": [
+  {
+   "file": "routing.js",
+   "sha256": "11acd907636e70bd35f9997795487feabf3dbdf4e1d24634fe4ef88a100c9264",
+   "source": "research/round-10-results/K03/routing.js"
+  },
+  {
+   "file": "school-access-routing.js",
+   "sha256": "15ec6a201301cb8fdd8634bb6501c797ccd29404a66c7cf251027b9e462253ff",
+   "source": "research/round-10-results/K03/school-access-routing.js"
+  },
+  {
+   "file": "shymkent.graph.json",
+   "sha256": "49b539b1a5753fac41b0c19e6b47c8180b38ac0d67eb548c63b38ef691af8057",
+   "source": "research/round-10-results/K03/graph/shymkent.graph.json"
+  },
+  {
+   "file": "astana.graph.json",
+   "sha256": "a6f823292331713dc5eb314aff53fc3de0836bf9fdc95f310c21053d0c28aace",
+   "source": "research/round-10-results/K03/graph/astana.graph.json"
+  }
+ ],
+ "graphs": {
+  "shymkent": {
+   "graph_sha256": "b4a59a4c90b31b6b0685e5d949e81c0c87aee9580c7a3696bb416eca8033ec87",
+   "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+   "release": "2026-09-23.1",
+   "license": "ODbL-1.0"
+  },
+  "astana": {
+   "graph_sha256": "799d26e5155248cceb31eb67f76f92d453491770a73c387bf0371289ddcf0ae4",
+   "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+   "release": "2026-09-23.1",
+   "license": "ODbL-1.0"
+  }
+ },
+ "note": "Модуль K03 pedestrian-v1. Граф — производная база OSM (ODbL-1.0, © OpenStreetMap contributors, Overture Maps Foundation)."
+}

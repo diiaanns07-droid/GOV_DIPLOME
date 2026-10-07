@@ -1,0 +1,8 @@
+Начинаем пятый раунд GOV_DIPLOME. Ты REVIEW; сборщик назначен отдельно.
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-5/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-5/REVIEW.txt
+Найди свой slot по текущей ветке и прочитай, подставив номер:
+git show origin/codex/research-import-2026-10-05:research/round-5/review/KXX.txt
+Выполни задание: проверяй сам BUILD, а не повторно старые отчёты. После первого полезного результата STATUS → commit → push своей ветки.
+Если ты уже назначен BUILD, продолжай BUILD.

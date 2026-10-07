@@ -1,0 +1,62 @@
+R05 → R02/R01/R03/R10 INTEGRATION (раунд 11, civic-v1)
+PACK_SHA 9c2f5c0dae14b46c0697a9dfc7f854351bfd570d; ветка claude/intelligent-sagan-7shpeh.
+Импортировать только пути data/civic/astana/ (и тесты tests/civic/R05/) по закреплённому SHA.
+
+1. ЧТО ИМПОРТИРУЕТСЯ
+   data/civic/astana/objects.json        реальные, slice.demo=false (сейчас 0 записей — сеть закрыта)
+   data/civic/astana/historical.json     реальные исторические (сейчас 0)
+   data/civic/astana/demo_synthetic.json СИНТЕТИКА, slice.demo=true, 9 записей — только явным действием
+   Формат: {"schema_version":"civic-v1","city":"astana","slice":{name,version,as_of,demo,count,
+   status_max_age_days,content_sha256,inputs,notice},"items":[civic-v1 objects]}.
+
+2. ИМПОРТ ДЕЛАЕТ R02 СВОИМ ИМПОРТЁРОМ (проверено)
+   python -m ui.civic_store --db .runtime/civic.sqlite3 import data/civic/astana/demo_synthetic.json [--dry-run]
+   Проверено на R02 7d5e39a (research/round-11-results/R05/r02_import_check.json): демо — create 9 (draft),
+   повторный импорт — skip_unchanged 9; objects.json/historical.json — пустые, ошибок нет. Дифференциальный
+   fuzz (12 000 мутаций): всё, что принимают профили R05 demo/real, принимает и validate_content R02.
+   R02 сам назначает id/revision/updated_at/publication и считает свой import_digest по нормализованному
+   содержимому — это НЕ тот же хэш, что import_helper.content_digest. Не смешивать.
+   objects.json и historical.json имеют один source r05-astana-real: импортировать их вместе (или
+   считать report_missing по обоим файлам), иначе запись, перешедшая в historical, покажется «пропавшей».
+
+3. import_helper.py — ПРЕДВАРИТЕЛЬНАЯ ПРОВЕРКА ПАКЕТА (рекомендательно)
+   python3 -I data/civic/astana/tools/import_helper.py [--include-demo] [--include-historical]
+   Проверяет: срез не отредактирован вручную (content_sha256 покрывает items, входы и параметры среза
+   name/as_of/demo/status_max_age_days; version должен совпадать), входы сборки на диске
+   совпадают с записанными хэшами (если sources.json/intake лежат рядом), каждая запись проходит
+   civic_v1 в профиле real/demo с порогами из среза. Отказ — PackageError с причиной.
+   plan(): create | skip_unchanged | update_import_draft | editor_review | report_missing; публикации и
+   архивации нет. update_import_draft только при явном existing.edited_after_import == False и
+   publication == "draft"; если состояние неизвестно — editor_review. Если R02 захочет использовать
+   plan(), existing.digest должен быть import_helper.content_digest, а
+   edited_after_import = not (import_revision == revision and first_published_at is null)
+   (True — редактор правил или публиковал; plan() тогда даёт editor_review).
+
+4. ДЕМО
+   Демо-записи несут suggested_publication (published/draft/archived) как подсказку; импорт R02 всё равно
+   создаёт draft. Публиковать демо может только редактор/скрипт демо-окружения, сохраняя
+   evidence_type=synthetic и пометку «Демо» в заголовке. Бюджеты у демо всегда null.
+
+5. ДЛЯ R01 (общие файлы — правите вы)
+   a) Атрибуция: data/civic/astana/ATTRIBUTION.txt. MapLibre AttributionControl из стиля OpenFreeMap
+      не скрывать и не перекрывать bottom sheet. #gov-attribution сейчас виден только в govtech-режиме;
+      в civic-режиме при показе слоёв K03/K10 нужна строка «© OpenStreetMap contributors, Overture Maps
+      Foundation» (+ Meta, Foursquare для мест).
+   b) Тексты атрибуции в web/govtech/core/plan-ui.js:526 и resilience-ui.js:151 (b2cb2e02) называют путь
+      web/attribution/ATTRIBUTION.md, которого нет в дереве; файл лежит в
+      web/govtech/core/attribution/ATTRIBUTION.md (shell.js:53 ссылается правильно). Проверено git grep,
+      в браузере не проверялось.
+   c) Пилот: см. PILOT.md в этой папке — демо-объекты лежат в bbox графа K03; реальных объектов нет,
+      поэтому пилот по концентрации подтверждённых работ выбрать нельзя.
+
+6. ДЛЯ R03/R10
+   validation.json → public_readiness: для каждой реальной записи — можно ли показывать после проверки
+   редактором и что пометить (неизвестные условия источника, старый/недатированный источник, статус не
+   подтверждён). evidence_index.json — только для редактора; не отдавать в публичный DTO.
+   Тексты R05 проходят те же правила, что clean_text R02: без HTML-тегов и сущностей, без управляющих,
+   zero-width и bidi-символов, однострочные title/organization/public_contact/publisher, лимиты R02.
+
+7. ПРОВЕРКА ПОСЛЕ ИМПОРТА
+   python3 -m pytest tests/civic/R05 -q
+   python3 -I data/civic/astana/tools/build_slice.py --check
+   python3 -I data/civic/astana/tools/import_helper.py --include-demo

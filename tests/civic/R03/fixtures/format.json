@@ -1,0 +1,59 @@
+{
+ "_comment": "Test-only fixture for card formatting (money, basis, source link, status source date). It is labelled as a fixture in its title and source; it is not a real record and is never part of the default stand.",
+ "items": [
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-format-derived",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Тест форматирования карточки (fixture R03, не реальные работы)",
+   "description": "Запись для проверки отображения суммы, основания и источника. Не сведения о реальных работах.",
+   "status": "in_progress",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4188,
+     51.1475
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": "2026-09-20",
+    "original_planned_end": "2026-10-20",
+    "current_planned_end": "2026-11-05",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": 48500000,
+    "basis": "contract",
+    "source_id": "src-fixture-1"
+   },
+   "responsible": {
+    "organization": "Тестовая организация (fixture)",
+    "public_contact": null
+   },
+   "evidence_type": "derived",
+   "source_refs": [
+    {
+     "id": "src-fixture-1",
+     "url": "https://example.org/civic-fixture/notice-1",
+     "publisher": "Тестовый источник (fixture R03, не реальный)",
+     "published_on": "2026-09-15",
+     "retrieved_at": "2026-10-06T10:00:00+05:00",
+     "access_status": "not_fetched",
+     "license": null,
+     "fields": [
+      "status",
+      "schedule.current_planned_end",
+      "budget.amount_kzt",
+      "budget.basis"
+     ]
+    }
+   ],
+   "evidence_notes": "Fixture R03: проверка форматирования, не публиковать.",
+   "updated_at": "2026-10-05T11:40:00+00:00",
+   "revision": 3
+  }
+ ]
+}

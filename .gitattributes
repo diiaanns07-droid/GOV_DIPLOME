@@ -2,3 +2,14 @@
 *.sh        text eol=lf
 *.bat       text eol=crlf
 Dockerfile  text eol=lf
+# Pinned planner modules, data and golden fixtures are verified by SHA-256.
+web/govtech/core/** -text
+tests/govtech/** -text
+# Round 10 datasets and routing assets are also checked against byte hashes.
+web/govtech/school/cases/** -text
+web/govtech/k03/** -text
+# Civic graphs and source snapshots use byte digests too; Windows checkout must preserve them.
+engine/civic_scenarios/graphs/** -text
+engine/civic_scenarios/cases/** -text
+data/civic/** -text
+tests/civic/R05/fixtures/** -text

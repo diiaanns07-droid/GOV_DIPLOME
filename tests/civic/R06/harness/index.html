@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>R06 FIXTURE harness</title>
+    <link rel="stylesheet" href="/web/civic/feedback/feedback.css" />
+    <script defer src="/web/civic/feedback/feedback.js"></script>
+    <script defer src="/harness/harness.js"></script>
+  </head>
+  <body>
+    <p id="fixture-banner">FIXTURE: стенд R06 с синтетическими объектами и учётными записями. Не продукт.</p>
+    <div id="controls">
+      <label>Объект
+        <select id="target">
+          <option value="object:demo-astana-work-01">demo-astana-work-01 (опубликован)</option>
+          <option value="object:demo-astana-park-02">demo-astana-park-02 (опубликован)</option>
+          <option value="object:demo-astana-draft-04">demo-astana-draft-04 (черновик)</option>
+          <option value="point:71.45,51.16">Точка без объекта</option>
+        </select>
+      </label>
+      <button type="button" id="login-editor">Войти как fixture-редактор</button>
+      <button type="button" id="login-resident">Войти как fixture-житель</button>
+      <button type="button" id="logout">Выйти</button>
+      <button type="button" id="expire">Истечь сессию</button>
+      <span id="session"></span>
+    </div>
+    <main style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:24px;">
+      <div id="resident-root" style="max-width:440px"></div>
+      <div id="moderation-root"></div>
+    </main>
+  </body>
+</html>

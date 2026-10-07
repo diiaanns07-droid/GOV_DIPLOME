@@ -1,0 +1,31 @@
+{
+ "purpose": "Только тест tests/govtech/school_vs_k05.cjs: независимая сверка BUILD school/case.js с модулем K05 r10. В продукт не подключено.",
+ "source_branch": "claude/optimistic-davinci-1oiqs9",
+ "source_commit": "9c00e45576c3f32354d413fe9661ddc1ec3e3add",
+ "files": [
+  {
+   "file": "school-compare.js",
+   "sha256": "7da311da0ef9860954386be69728674ddbe18ff8ad755293992a00f12f4474d0",
+   "source": "research/round-10-results/K05/module/school-compare.js",
+   "note": "байт-в-байт"
+  },
+  {
+   "file": "core/plan.js",
+   "sha256": "3d0f7c421308b1af1ba0b4423a83be0d561147f9c03506bf03a60362117cc05c",
+   "source": "web/govtech/core/plan.js (3c0638e268ed69ad034ac9675228730b036a28a8b14193232cd32cb844945961) + research/round-10-results/K05/patch/plan_matrix.patch",
+   "note": "pinned plan.js в продукте НЕ изменён"
+  },
+  {
+   "file": "core/whatif.js",
+   "sha256": "46e3b042d2402a46ca34e454139e7744ba9d379866c500a7809546d0dab72a72",
+   "source": "web/govtech/core/whatif.js",
+   "note": "копия pinned core"
+  },
+  {
+   "file": "core/facts.js",
+   "sha256": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+   "source": "web/govtech/core/facts.js",
+   "note": "копия pinned core"
+  }
+ ]
+}

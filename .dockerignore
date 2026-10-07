@@ -14,3 +14,8 @@ __pycache__
 .claude
 *.zip
 *.log
+
+# Runtime civic SQLite (password hashes, sessions, private feedback) must not enter images
+.runtime
+*.sqlite
+*.sqlite3

@@ -1,0 +1,1758 @@
+{
+ "generator": "tools/whatif_ref.py",
+ "formula": "haversine:R=6371008.8",
+ "cases": [
+  {
+   "city": "astana",
+   "category": "school",
+   "name": "none",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 71.432686,
+     "lat": 51.172016
+    },
+    {
+     "id": "P2",
+     "lon": 71.421235,
+     "lat": 51.16483
+    },
+    {
+     "id": "P3",
+     "lon": 71.444137,
+     "lat": 51.179203
+    },
+    {
+     "id": "P4",
+     "lon": 71.421235,
+     "lat": 51.179203
+    },
+    {
+     "id": "P5",
+     "lon": 71.444137,
+     "lat": 51.16483
+    },
+    {
+     "id": "P6",
+     "lon": 71.42501,
+     "lat": 51.17087
+    }
+   ],
+   "proposed": null,
+   "result": {
+    "category": "school",
+    "candidates": 8,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 384.4382717461044,
+      "after": 384.4382717461044,
+      "delta": 0.0,
+      "nearest_before": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P2",
+      "before": 336.34862826736287,
+      "after": 336.34862826736287,
+      "delta": 0.0,
+      "nearest_before": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P3",
+      "before": 1217.4713408135833,
+      "after": 1217.4713408135833,
+      "delta": 0.0,
+      "nearest_before": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P4",
+      "before": 198.32170457834457,
+      "after": 198.32170457834457,
+      "delta": 0.0,
+      "nearest_before": "c97435da-cd05-4549-bec1-ff297e858554",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P5",
+      "before": 160.55192474986137,
+      "after": 160.55192474986137,
+      "delta": 0.0,
+      "nearest_before": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "nearest_after": "source",
+      "proposed_distance": null
+     }
+    ]
+   }
+  },
+  {
+   "city": "astana",
+   "category": "school",
+   "name": "near_P2",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 71.432686,
+     "lat": 51.172016
+    },
+    {
+     "id": "P2",
+     "lon": 71.421235,
+     "lat": 51.16483
+    },
+    {
+     "id": "P3",
+     "lon": 71.444137,
+     "lat": 51.179203
+    },
+    {
+     "id": "P4",
+     "lon": 71.421235,
+     "lat": 51.179203
+    },
+    {
+     "id": "P5",
+     "lon": 71.444137,
+     "lat": 51.16483
+    },
+    {
+     "id": "P6",
+     "lon": 71.42501,
+     "lat": 51.17087
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 71.421807,
+    "lat": 51.165189,
+    "category": "school",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "school",
+    "candidates": 8,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 384.4382717461044,
+      "after": 384.4382717461044,
+      "delta": 0.0,
+      "nearest_before": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_after": "source",
+      "proposed_distance": 1073.1353792215677
+     },
+     {
+      "id": "P2",
+      "before": 336.34862826736287,
+      "after": 56.42963472183743,
+      "delta": 279.91899354552544,
+      "nearest_before": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "nearest_after": "proposed",
+      "proposed_distance": 56.42963472183743
+     },
+     {
+      "id": "P3",
+      "before": 1217.4713408135833,
+      "after": 1217.4713408135833,
+      "delta": 0.0,
+      "nearest_before": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_after": "source",
+      "proposed_distance": 2202.69109910416
+     },
+     {
+      "id": "P4",
+      "before": 198.32170457834457,
+      "after": 198.32170457834457,
+      "delta": 0.0,
+      "nearest_before": "c97435da-cd05-4549-bec1-ff297e858554",
+      "nearest_after": "source",
+      "proposed_distance": 1558.7980356121054
+     },
+     {
+      "id": "P5",
+      "before": 160.55192474986137,
+      "after": 160.55192474986137,
+      "delta": 0.0,
+      "nearest_before": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+      "nearest_after": "source",
+      "proposed_distance": 1557.5416759590385
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "nearest_after": "source",
+      "proposed_distance": 670.0133339924847
+     }
+    ]
+   }
+  },
+  {
+   "city": "astana",
+   "category": "school",
+   "name": "far_corner",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 71.432686,
+     "lat": 51.172016
+    },
+    {
+     "id": "P2",
+     "lon": 71.421235,
+     "lat": 51.16483
+    },
+    {
+     "id": "P3",
+     "lon": 71.444137,
+     "lat": 51.179203
+    },
+    {
+     "id": "P4",
+     "lon": 71.421235,
+     "lat": 51.179203
+    },
+    {
+     "id": "P5",
+     "lon": 71.444137,
+     "lat": 51.16483
+    },
+    {
+     "id": "P6",
+     "lon": 71.42501,
+     "lat": 51.17087
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 71.446714,
+    "lat": 51.163213,
+    "category": "school",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "school",
+    "candidates": 8,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 384.4382717461044,
+      "after": 384.4382717461044,
+      "delta": 0.0,
+      "nearest_before": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_after": "source",
+      "proposed_distance": 1383.7669315597095
+     },
+     {
+      "id": "P2",
+      "before": 336.34862826736287,
+      "after": 336.34862826736287,
+      "delta": 0.0,
+      "nearest_before": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "nearest_after": "source",
+      "proposed_distance": 1785.7172422656577
+     },
+     {
+      "id": "P3",
+      "before": 1217.4713408135833,
+      "after": 1217.4713408135833,
+      "delta": 0.0,
+      "nearest_before": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_after": "source",
+      "proposed_distance": 1787.063743547019
+     },
+     {
+      "id": "P4",
+      "before": 198.32170457834457,
+      "after": 198.32170457834457,
+      "delta": 0.0,
+      "nearest_before": "c97435da-cd05-4549-bec1-ff297e858554",
+      "nearest_after": "source",
+      "proposed_distance": 2513.322640440809
+     },
+     {
+      "id": "P5",
+      "before": 160.55192474986137,
+      "after": 160.55192474986137,
+      "delta": 0.0,
+      "nearest_before": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+      "nearest_after": "source",
+      "proposed_distance": 254.20192177630673
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "nearest_after": "source",
+      "proposed_distance": 1736.385639134632
+     }
+    ]
+   }
+  },
+  {
+   "city": "astana",
+   "category": "school",
+   "name": "same_as_P1",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 71.432686,
+     "lat": 51.172016
+    },
+    {
+     "id": "P2",
+     "lon": 71.421235,
+     "lat": 51.16483
+    },
+    {
+     "id": "P3",
+     "lon": 71.444137,
+     "lat": 51.179203
+    },
+    {
+     "id": "P4",
+     "lon": 71.421235,
+     "lat": 51.179203
+    },
+    {
+     "id": "P5",
+     "lon": 71.444137,
+     "lat": 51.16483
+    },
+    {
+     "id": "P6",
+     "lon": 71.42501,
+     "lat": 51.17087
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 71.432686,
+    "lat": 51.172016,
+    "category": "school",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "school",
+    "candidates": 8,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 384.4382717461044,
+      "after": 0.0,
+      "delta": 384.4382717461044,
+      "nearest_before": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_after": "proposed",
+      "proposed_distance": 0.0
+     },
+     {
+      "id": "P2",
+      "before": 336.34862826736287,
+      "after": 336.34862826736287,
+      "delta": 0.0,
+      "nearest_before": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "nearest_after": "source",
+      "proposed_distance": 1129.5650138747706
+     },
+     {
+      "id": "P3",
+      "before": 1217.4713408135833,
+      "after": 1129.555744756517,
+      "delta": 87.9155960570663,
+      "nearest_before": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_after": "proposed",
+      "proposed_distance": 1129.555744756517
+     },
+     {
+      "id": "P4",
+      "before": 198.32170457834457,
+      "after": 198.32170457834457,
+      "delta": 0.0,
+      "nearest_before": "c97435da-cd05-4549-bec1-ff297e858554",
+      "nearest_after": "source",
+      "proposed_distance": 1129.555744757217
+     },
+     {
+      "id": "P5",
+      "before": 160.55192474986137,
+      "after": 160.55192474986137,
+      "delta": 0.0,
+      "nearest_before": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+      "nearest_after": "source",
+      "proposed_distance": 1129.5650138740702
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "nearest_after": "source",
+      "proposed_distance": 550.121087129949
+     }
+    ]
+   }
+  },
+  {
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "name": "none",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 71.432686,
+     "lat": 51.172016
+    },
+    {
+     "id": "P2",
+     "lon": 71.421235,
+     "lat": 51.16483
+    },
+    {
+     "id": "P3",
+     "lon": 71.444137,
+     "lat": 51.179203
+    },
+    {
+     "id": "P4",
+     "lon": 71.421235,
+     "lat": 51.179203
+    },
+    {
+     "id": "P5",
+     "lon": 71.444137,
+     "lat": 51.16483
+    },
+    {
+     "id": "P6",
+     "lon": 71.422483,
+     "lat": 51.169953
+    }
+   ],
+   "proposed": null,
+   "result": {
+    "category": "outpatient_clinic",
+    "candidates": 16,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 427.3538533313366,
+      "after": 427.3538533313366,
+      "delta": 0.0,
+      "nearest_before": "1d137305-49cd-450b-9626-9762db14d080",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P2",
+      "before": 336.0660751727578,
+      "after": 336.0660751727578,
+      "delta": 0.0,
+      "nearest_before": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P3",
+      "before": 608.1186940640506,
+      "after": 608.1186940640506,
+      "delta": 0.0,
+      "nearest_before": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P4",
+      "before": 246.652812471919,
+      "after": 246.652812471919,
+      "delta": 0.0,
+      "nearest_before": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P5",
+      "before": 291.211486302042,
+      "after": 291.211486302042,
+      "delta": 0.0,
+      "nearest_before": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "nearest_after": "source",
+      "proposed_distance": null
+     }
+    ]
+   }
+  },
+  {
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "name": "near_P2",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 71.432686,
+     "lat": 51.172016
+    },
+    {
+     "id": "P2",
+     "lon": 71.421235,
+     "lat": 51.16483
+    },
+    {
+     "id": "P3",
+     "lon": 71.444137,
+     "lat": 51.179203
+    },
+    {
+     "id": "P4",
+     "lon": 71.421235,
+     "lat": 51.179203
+    },
+    {
+     "id": "P5",
+     "lon": 71.444137,
+     "lat": 51.16483
+    },
+    {
+     "id": "P6",
+     "lon": 71.422483,
+     "lat": 51.169953
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 71.421807,
+    "lat": 51.165189,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "outpatient_clinic",
+    "candidates": 16,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 427.3538533313366,
+      "after": 427.3538533313366,
+      "delta": 0.0,
+      "nearest_before": "1d137305-49cd-450b-9626-9762db14d080",
+      "nearest_after": "source",
+      "proposed_distance": 1073.1353792215677
+     },
+     {
+      "id": "P2",
+      "before": 336.0660751727578,
+      "after": 56.42963472183743,
+      "delta": 279.63644045092036,
+      "nearest_before": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "nearest_after": "proposed",
+      "proposed_distance": 56.42963472183743
+     },
+     {
+      "id": "P3",
+      "before": 608.1186940640506,
+      "after": 608.1186940640506,
+      "delta": 0.0,
+      "nearest_before": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "nearest_after": "source",
+      "proposed_distance": 2202.69109910416
+     },
+     {
+      "id": "P4",
+      "before": 246.652812471919,
+      "after": 246.652812471919,
+      "delta": 0.0,
+      "nearest_before": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "nearest_after": "source",
+      "proposed_distance": 1558.7980356121054
+     },
+     {
+      "id": "P5",
+      "before": 291.211486302042,
+      "after": 291.211486302042,
+      "delta": 0.0,
+      "nearest_before": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "nearest_after": "source",
+      "proposed_distance": 1557.5416759590385
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "nearest_after": "source",
+      "proposed_distance": 531.8261122821041
+     }
+    ]
+   }
+  },
+  {
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "name": "far_corner",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 71.432686,
+     "lat": 51.172016
+    },
+    {
+     "id": "P2",
+     "lon": 71.421235,
+     "lat": 51.16483
+    },
+    {
+     "id": "P3",
+     "lon": 71.444137,
+     "lat": 51.179203
+    },
+    {
+     "id": "P4",
+     "lon": 71.421235,
+     "lat": 51.179203
+    },
+    {
+     "id": "P5",
+     "lon": 71.444137,
+     "lat": 51.16483
+    },
+    {
+     "id": "P6",
+     "lon": 71.422483,
+     "lat": 51.169953
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 71.446714,
+    "lat": 51.163213,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "outpatient_clinic",
+    "candidates": 16,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 427.3538533313366,
+      "after": 427.3538533313366,
+      "delta": 0.0,
+      "nearest_before": "1d137305-49cd-450b-9626-9762db14d080",
+      "nearest_after": "source",
+      "proposed_distance": 1383.7669315597095
+     },
+     {
+      "id": "P2",
+      "before": 336.0660751727578,
+      "after": 336.0660751727578,
+      "delta": 0.0,
+      "nearest_before": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "nearest_after": "source",
+      "proposed_distance": 1785.7172422656577
+     },
+     {
+      "id": "P3",
+      "before": 608.1186940640506,
+      "after": 608.1186940640506,
+      "delta": 0.0,
+      "nearest_before": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "nearest_after": "source",
+      "proposed_distance": 1787.063743547019
+     },
+     {
+      "id": "P4",
+      "before": 246.652812471919,
+      "after": 246.652812471919,
+      "delta": 0.0,
+      "nearest_before": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "nearest_after": "source",
+      "proposed_distance": 2513.322640440809
+     },
+     {
+      "id": "P5",
+      "before": 291.211486302042,
+      "after": 254.20192177630673,
+      "delta": 37.00956452573524,
+      "nearest_before": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "nearest_after": "proposed",
+      "proposed_distance": 254.20192177630673
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "nearest_after": "source",
+      "proposed_distance": 1848.2909572986039
+     }
+    ]
+   }
+  },
+  {
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "name": "same_as_P1",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 71.432686,
+     "lat": 51.172016
+    },
+    {
+     "id": "P2",
+     "lon": 71.421235,
+     "lat": 51.16483
+    },
+    {
+     "id": "P3",
+     "lon": 71.444137,
+     "lat": 51.179203
+    },
+    {
+     "id": "P4",
+     "lon": 71.421235,
+     "lat": 51.179203
+    },
+    {
+     "id": "P5",
+     "lon": 71.444137,
+     "lat": 51.16483
+    },
+    {
+     "id": "P6",
+     "lon": 71.422483,
+     "lat": 51.169953
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 71.432686,
+    "lat": 51.172016,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "outpatient_clinic",
+    "candidates": 16,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 427.3538533313366,
+      "after": 0.0,
+      "delta": 427.3538533313366,
+      "nearest_before": "1d137305-49cd-450b-9626-9762db14d080",
+      "nearest_after": "proposed",
+      "proposed_distance": 0.0
+     },
+     {
+      "id": "P2",
+      "before": 336.0660751727578,
+      "after": 336.0660751727578,
+      "delta": 0.0,
+      "nearest_before": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "nearest_after": "source",
+      "proposed_distance": 1129.5650138747706
+     },
+     {
+      "id": "P3",
+      "before": 608.1186940640506,
+      "after": 608.1186940640506,
+      "delta": 0.0,
+      "nearest_before": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "nearest_after": "source",
+      "proposed_distance": 1129.555744756517
+     },
+     {
+      "id": "P4",
+      "before": 246.652812471919,
+      "after": 246.652812471919,
+      "delta": 0.0,
+      "nearest_before": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "nearest_after": "source",
+      "proposed_distance": 1129.555744757217
+     },
+     {
+      "id": "P5",
+      "before": 291.211486302042,
+      "after": 291.211486302042,
+      "delta": 0.0,
+      "nearest_before": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "nearest_after": "source",
+      "proposed_distance": 1129.5650138740702
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "nearest_after": "source",
+      "proposed_distance": 747.417600008767
+     }
+    ]
+   }
+  },
+  {
+   "city": "shymkent",
+   "category": "school",
+   "name": "none",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 69.605512,
+     "lat": 42.315628
+    },
+    {
+     "id": "P2",
+     "lon": 69.595794,
+     "lat": 42.308442
+    },
+    {
+     "id": "P3",
+     "lon": 69.615229,
+     "lat": 42.322814
+    },
+    {
+     "id": "P4",
+     "lon": 69.595794,
+     "lat": 42.322814
+    },
+    {
+     "id": "P5",
+     "lon": 69.615229,
+     "lat": 42.308442
+    },
+    {
+     "id": "P6",
+     "lon": 69.5958,
+     "lat": 42.3167
+    },
+    {
+     "id": "P7",
+     "lon": 69.61052,
+     "lat": 42.32027
+    }
+   ],
+   "proposed": null,
+   "result": {
+    "category": "school",
+    "candidates": 15,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 243.85638190754193,
+      "after": 243.85638190754193,
+      "delta": 0.0,
+      "nearest_before": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P2",
+      "before": 736.906313499198,
+      "after": 736.906313499198,
+      "delta": 0.0,
+      "nearest_before": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P3",
+      "before": 37.6492944351312,
+      "after": 37.6492944351312,
+      "delta": 0.0,
+      "nearest_before": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P4",
+      "before": 105.07098065160993,
+      "after": 105.07098065160993,
+      "delta": 0.0,
+      "nearest_before": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P5",
+      "before": 481.31680214293533,
+      "after": 481.31680214293533,
+      "delta": 0.0,
+      "nearest_before": "18df815b-170a-437c-977f-0769690315d4",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P7",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_after": "source",
+      "proposed_distance": null
+     }
+    ]
+   }
+  },
+  {
+   "city": "shymkent",
+   "category": "school",
+   "name": "near_P2",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 69.605512,
+     "lat": 42.315628
+    },
+    {
+     "id": "P2",
+     "lon": 69.595794,
+     "lat": 42.308442
+    },
+    {
+     "id": "P3",
+     "lon": 69.615229,
+     "lat": 42.322814
+    },
+    {
+     "id": "P4",
+     "lon": 69.595794,
+     "lat": 42.322814
+    },
+    {
+     "id": "P5",
+     "lon": 69.615229,
+     "lat": 42.308442
+    },
+    {
+     "id": "P6",
+     "lon": 69.5958,
+     "lat": 42.3167
+    },
+    {
+     "id": "P7",
+     "lon": 69.61052,
+     "lat": 42.32027
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 69.59628,
+    "lat": 42.308801,
+    "category": "school",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "school",
+    "candidates": 15,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 243.85638190754193,
+      "after": 243.85638190754193,
+      "delta": 0.0,
+      "nearest_before": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_after": "source",
+      "proposed_distance": 1073.5662947045964
+     },
+     {
+      "id": "P2",
+      "before": 736.906313499198,
+      "after": 56.4864024537402,
+      "delta": 680.4199110454578,
+      "nearest_before": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_after": "proposed",
+      "proposed_distance": 56.4864024537402
+     },
+     {
+      "id": "P3",
+      "before": 37.6492944351312,
+      "after": 37.6492944351312,
+      "delta": 0.0,
+      "nearest_before": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "nearest_after": "source",
+      "proposed_distance": 2203.4963218648645
+     },
+     {
+      "id": "P4",
+      "before": 105.07098065160993,
+      "after": 105.07098065160993,
+      "delta": 0.0,
+      "nearest_before": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "nearest_after": "source",
+      "proposed_distance": 1558.6889751760466
+     },
+     {
+      "id": "P5",
+      "before": 481.31680214293533,
+      "after": 481.31680214293533,
+      "delta": 0.0,
+      "nearest_before": "18df815b-170a-437c-977f-0769690315d4",
+      "nearest_after": "source",
+      "proposed_distance": 1558.7268757108568
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "nearest_after": "source",
+      "proposed_distance": 879.2162806257476
+     },
+     {
+      "id": "P7",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_after": "source",
+      "proposed_distance": 1731.279448001737
+     }
+    ]
+   }
+  },
+  {
+   "city": "shymkent",
+   "category": "school",
+   "name": "far_corner",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 69.605512,
+     "lat": 42.315628
+    },
+    {
+     "id": "P2",
+     "lon": 69.595794,
+     "lat": 42.308442
+    },
+    {
+     "id": "P3",
+     "lon": 69.615229,
+     "lat": 42.322814
+    },
+    {
+     "id": "P4",
+     "lon": 69.595794,
+     "lat": 42.322814
+    },
+    {
+     "id": "P5",
+     "lon": 69.615229,
+     "lat": 42.308442
+    },
+    {
+     "id": "P6",
+     "lon": 69.5958,
+     "lat": 42.3167
+    },
+    {
+     "id": "P7",
+     "lon": 69.61052,
+     "lat": 42.32027
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 69.617415,
+    "lat": 42.306825,
+    "category": "school",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "school",
+    "candidates": 15,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 243.85638190754193,
+      "after": 243.85638190754193,
+      "delta": 0.0,
+      "nearest_before": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_after": "source",
+      "proposed_distance": 1384.245101962847
+     },
+     {
+      "id": "P2",
+      "before": 736.906313499198,
+      "after": 736.906313499198,
+      "delta": 0.0,
+      "nearest_before": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_after": "source",
+      "proposed_distance": 1787.036053140288
+     },
+     {
+      "id": "P3",
+      "before": 37.6492944351312,
+      "after": 37.6492944351312,
+      "delta": 0.0,
+      "nearest_before": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "nearest_after": "source",
+      "proposed_distance": 1786.96078242555
+     },
+     {
+      "id": "P4",
+      "before": 105.07098065160993,
+      "after": 105.07098065160993,
+      "delta": 0.0,
+      "nearest_before": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "nearest_after": "source",
+      "proposed_distance": 2514.2332686322134
+     },
+     {
+      "id": "P5",
+      "before": 481.31680214293533,
+      "after": 254.25055927187785,
+      "delta": 227.06624287105748,
+      "nearest_before": "18df815b-170a-437c-977f-0769690315d4",
+      "nearest_after": "proposed",
+      "proposed_distance": 254.25055927187785
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "nearest_after": "source",
+      "proposed_distance": 2089.190538365201
+     },
+     {
+      "id": "P7",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_after": "source",
+      "proposed_distance": 1598.9077267270222
+     }
+    ]
+   }
+  },
+  {
+   "city": "shymkent",
+   "category": "school",
+   "name": "same_as_P1",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 69.605512,
+     "lat": 42.315628
+    },
+    {
+     "id": "P2",
+     "lon": 69.595794,
+     "lat": 42.308442
+    },
+    {
+     "id": "P3",
+     "lon": 69.615229,
+     "lat": 42.322814
+    },
+    {
+     "id": "P4",
+     "lon": 69.595794,
+     "lat": 42.322814
+    },
+    {
+     "id": "P5",
+     "lon": 69.615229,
+     "lat": 42.308442
+    },
+    {
+     "id": "P6",
+     "lon": 69.5958,
+     "lat": 42.3167
+    },
+    {
+     "id": "P7",
+     "lon": 69.61052,
+     "lat": 42.32027
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 69.605512,
+    "lat": 42.315628,
+    "category": "school",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "school",
+    "candidates": 15,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 243.85638190754193,
+      "after": 0.0,
+      "delta": 243.85638190754193,
+      "nearest_before": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_after": "proposed",
+      "proposed_distance": 0.0
+     },
+     {
+      "id": "P2",
+      "before": 736.906313499198,
+      "after": 736.906313499198,
+      "delta": 0.0,
+      "nearest_before": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_after": "source",
+      "proposed_distance": 1130.0526863882394
+     },
+     {
+      "id": "P3",
+      "before": 37.6492944351312,
+      "after": 37.6492944351312,
+      "delta": 0.0,
+      "nearest_before": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "nearest_after": "source",
+      "proposed_distance": 1129.9300372078108
+     },
+     {
+      "id": "P4",
+      "before": 105.07098065160993,
+      "after": 105.07098065160993,
+      "delta": 0.0,
+      "nearest_before": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "nearest_after": "source",
+      "proposed_distance": 1129.9881709209951
+     },
+     {
+      "id": "P5",
+      "before": 481.31680214293533,
+      "after": 481.31680214293533,
+      "delta": 0.0,
+      "nearest_before": "18df815b-170a-437c-977f-0769690315d4",
+      "nearest_after": "source",
+      "proposed_distance": 1129.9945427169782
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "nearest_after": "source",
+      "proposed_distance": 807.3899966804356
+     },
+     {
+      "id": "P7",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_after": "source",
+      "proposed_distance": 660.2824822575033
+     }
+    ]
+   }
+  },
+  {
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "name": "none",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 69.605512,
+     "lat": 42.315628
+    },
+    {
+     "id": "P2",
+     "lon": 69.595794,
+     "lat": 42.308442
+    },
+    {
+     "id": "P3",
+     "lon": 69.615229,
+     "lat": 42.322814
+    },
+    {
+     "id": "P4",
+     "lon": 69.595794,
+     "lat": 42.322814
+    },
+    {
+     "id": "P5",
+     "lon": 69.615229,
+     "lat": 42.308442
+    },
+    {
+     "id": "P6",
+     "lon": 69.5958,
+     "lat": 42.3167
+    },
+    {
+     "id": "P7",
+     "lon": 69.5958,
+     "lat": 42.3167
+    }
+   ],
+   "proposed": null,
+   "result": {
+    "category": "outpatient_clinic",
+    "candidates": 16,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 249.00608913716383,
+      "after": 249.00608913716383,
+      "delta": 0.0,
+      "nearest_before": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P2",
+      "before": 918.2491051061653,
+      "after": 918.2491051061653,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P3",
+      "before": 676.5177076528648,
+      "after": 676.5177076528648,
+      "delta": 0.0,
+      "nearest_before": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P4",
+      "before": 163.23921464368826,
+      "after": 163.23921464368826,
+      "delta": 0.0,
+      "nearest_before": "6e92676a-1297-446d-9956-731023da6339",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P5",
+      "before": 572.7292393898073,
+      "after": 572.7292393898073,
+      "delta": 0.0,
+      "nearest_before": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": null
+     },
+     {
+      "id": "P7",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": null
+     }
+    ]
+   }
+  },
+  {
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "name": "near_P2",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 69.605512,
+     "lat": 42.315628
+    },
+    {
+     "id": "P2",
+     "lon": 69.595794,
+     "lat": 42.308442
+    },
+    {
+     "id": "P3",
+     "lon": 69.615229,
+     "lat": 42.322814
+    },
+    {
+     "id": "P4",
+     "lon": 69.595794,
+     "lat": 42.322814
+    },
+    {
+     "id": "P5",
+     "lon": 69.615229,
+     "lat": 42.308442
+    },
+    {
+     "id": "P6",
+     "lon": 69.5958,
+     "lat": 42.3167
+    },
+    {
+     "id": "P7",
+     "lon": 69.5958,
+     "lat": 42.3167
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 69.59628,
+    "lat": 42.308801,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "outpatient_clinic",
+    "candidates": 16,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 249.00608913716383,
+      "after": 249.00608913716383,
+      "delta": 0.0,
+      "nearest_before": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_after": "source",
+      "proposed_distance": 1073.5662947045964
+     },
+     {
+      "id": "P2",
+      "before": 918.2491051061653,
+      "after": 56.4864024537402,
+      "delta": 861.7627026524251,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "proposed",
+      "proposed_distance": 56.4864024537402
+     },
+     {
+      "id": "P3",
+      "before": 676.5177076528648,
+      "after": 676.5177076528648,
+      "delta": 0.0,
+      "nearest_before": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "nearest_after": "source",
+      "proposed_distance": 2203.4963218648645
+     },
+     {
+      "id": "P4",
+      "before": 163.23921464368826,
+      "after": 163.23921464368826,
+      "delta": 0.0,
+      "nearest_before": "6e92676a-1297-446d-9956-731023da6339",
+      "nearest_after": "source",
+      "proposed_distance": 1558.6889751760466
+     },
+     {
+      "id": "P5",
+      "before": 572.7292393898073,
+      "after": 572.7292393898073,
+      "delta": 0.0,
+      "nearest_before": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "nearest_after": "source",
+      "proposed_distance": 1558.7268757108568
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": 879.2162806257476
+     },
+     {
+      "id": "P7",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": 879.2162806257476
+     }
+    ]
+   }
+  },
+  {
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "name": "far_corner",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 69.605512,
+     "lat": 42.315628
+    },
+    {
+     "id": "P2",
+     "lon": 69.595794,
+     "lat": 42.308442
+    },
+    {
+     "id": "P3",
+     "lon": 69.615229,
+     "lat": 42.322814
+    },
+    {
+     "id": "P4",
+     "lon": 69.595794,
+     "lat": 42.322814
+    },
+    {
+     "id": "P5",
+     "lon": 69.615229,
+     "lat": 42.308442
+    },
+    {
+     "id": "P6",
+     "lon": 69.5958,
+     "lat": 42.3167
+    },
+    {
+     "id": "P7",
+     "lon": 69.5958,
+     "lat": 42.3167
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 69.617415,
+    "lat": 42.306825,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "outpatient_clinic",
+    "candidates": 16,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 249.00608913716383,
+      "after": 249.00608913716383,
+      "delta": 0.0,
+      "nearest_before": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_after": "source",
+      "proposed_distance": 1384.245101962847
+     },
+     {
+      "id": "P2",
+      "before": 918.2491051061653,
+      "after": 918.2491051061653,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": 1787.036053140288
+     },
+     {
+      "id": "P3",
+      "before": 676.5177076528648,
+      "after": 676.5177076528648,
+      "delta": 0.0,
+      "nearest_before": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "nearest_after": "source",
+      "proposed_distance": 1786.96078242555
+     },
+     {
+      "id": "P4",
+      "before": 163.23921464368826,
+      "after": 163.23921464368826,
+      "delta": 0.0,
+      "nearest_before": "6e92676a-1297-446d-9956-731023da6339",
+      "nearest_after": "source",
+      "proposed_distance": 2514.2332686322134
+     },
+     {
+      "id": "P5",
+      "before": 572.7292393898073,
+      "after": 254.25055927187785,
+      "delta": 318.47868011792946,
+      "nearest_before": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "nearest_after": "proposed",
+      "proposed_distance": 254.25055927187785
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": 2089.190538365201
+     },
+     {
+      "id": "P7",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": 2089.190538365201
+     }
+    ]
+   }
+  },
+  {
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "name": "same_as_P1",
+   "points": [
+    {
+     "id": "P1",
+     "lon": 69.605512,
+     "lat": 42.315628
+    },
+    {
+     "id": "P2",
+     "lon": 69.595794,
+     "lat": 42.308442
+    },
+    {
+     "id": "P3",
+     "lon": 69.615229,
+     "lat": 42.322814
+    },
+    {
+     "id": "P4",
+     "lon": 69.595794,
+     "lat": 42.322814
+    },
+    {
+     "id": "P5",
+     "lon": 69.615229,
+     "lat": 42.308442
+    },
+    {
+     "id": "P6",
+     "lon": 69.5958,
+     "lat": 42.3167
+    },
+    {
+     "id": "P7",
+     "lon": 69.5958,
+     "lat": 42.3167
+    }
+   ],
+   "proposed": {
+    "id": "X1",
+    "lon": 69.605512,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical"
+   },
+   "result": {
+    "category": "outpatient_clinic",
+    "candidates": 16,
+    "rows": [
+     {
+      "id": "P1",
+      "before": 249.00608913716383,
+      "after": 0.0,
+      "delta": 249.00608913716383,
+      "nearest_before": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_after": "proposed",
+      "proposed_distance": 0.0
+     },
+     {
+      "id": "P2",
+      "before": 918.2491051061653,
+      "after": 918.2491051061653,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": 1130.0526863882394
+     },
+     {
+      "id": "P3",
+      "before": 676.5177076528648,
+      "after": 676.5177076528648,
+      "delta": 0.0,
+      "nearest_before": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "nearest_after": "source",
+      "proposed_distance": 1129.9300372078108
+     },
+     {
+      "id": "P4",
+      "before": 163.23921464368826,
+      "after": 163.23921464368826,
+      "delta": 0.0,
+      "nearest_before": "6e92676a-1297-446d-9956-731023da6339",
+      "nearest_after": "source",
+      "proposed_distance": 1129.9881709209951
+     },
+     {
+      "id": "P5",
+      "before": 572.7292393898073,
+      "after": 572.7292393898073,
+      "delta": 0.0,
+      "nearest_before": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "nearest_after": "source",
+      "proposed_distance": 1129.9945427169782
+     },
+     {
+      "id": "P6",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": 807.3899966804356
+     },
+     {
+      "id": "P7",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "nearest_before": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after": "source",
+      "proposed_distance": 807.3899966804356
+     }
+    ]
+   }
+  }
+ ]
+}
