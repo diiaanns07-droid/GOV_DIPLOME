@@ -4,50 +4,57 @@
   "branch": "claude/trusting-ptolemy-6ms354",
   "base_sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-  "status": "partial",
+  "status": "ready",
   "owned_paths": [
     "ui/civic_store/",
     "tests/civic/R02/",
     "research/round-11-results/R02/",
     "research/handoffs/astana/R02/round-11/STATUS.md"
   ],
-  "integration_notes": "research/round-11-results/R02/INTEGRATION.txt (§0a — состояние стыковки с R01/R03/R04/R05/R06); MIGRATIONS.txt (feedback_* R06 в том же файле); PERF.txt; web_server.patch только для исходного Handler b2cb2e0 (у R01 свой CivicGateway, совместим)",
-  "code_commit": "3d2b8b9",
+  "integration_notes": "research/round-11-results/R02/INTEGRATION.txt (§0a — стыковка с R01/R03/R04/R05/R06/R09/R10 и маршруты для CIVIC_ROUTES); MIGRATIONS.txt (версии 1–4, feedback_* R06 в том же файле, backup/restore); PERF.txt (замеры, нагрузка); REVIEW.txt (независимое ревью и исправления); web_server.patch — только для исходного Handler b2cb2e0 (у R01 свой совместимый CivicGateway)",
+  "code_commit": "9b005be",
   "checks": [
     {
       "name": "r02-unit-and-integration",
       "status": "PASS",
       "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02",
-      "input": "temporary SQLite files in pytest tmp_path; real HTTP to 127.0.0.1:0 servers; code 3d2b8b9",
-      "reason": "168 passed, 1 skipped (skip: data/civic/astana/demo_synthetic.json is present only after R01 integrates R05)"
+      "input": "temporary SQLite in pytest tmp_path; real HTTP to 127.0.0.1:0 servers; code 9b005be",
+      "reason": "210 passed, 1 skipped (skip: data/civic/astana/demo_synthetic.json exists only in an integrated tree)"
     },
     {
       "name": "repository-suite-regression",
       "status": "PASS",
       "command": "python -m pytest -q -p no:cacheprovider",
-      "input": "whole R02 branch at 3d2b8b9 (base b2cb2e0 + R02 paths)",
-      "reason": "301 passed, 1 skipped; existing tests unaffected"
+      "input": "R02 branch at 9b005be (base b2cb2e0 + R02 paths)",
+      "reason": "343 passed, 1 skipped"
     },
     {
-      "name": "combined-tree-with-R01-gateway",
+      "name": "combined-tree-with-R01-build",
       "status": "PASS",
-      "command": "git worktree add <tmp> origin/claude/affectionate-ride-bol5v8 (beb0d87); copy ui/civic_store and tests/civic/R02 from R02 HEAD; python -m pytest -q -p no:cacheprovider tests",
-      "input": "R01 beb0d87 (CivicGateway, R06 eaa113d, R07 22fa413) + R02 HEAD",
-      "reason": "512 passed, 3 skipped: R01 P0 acceptance against the real R02, R06 compatibility tests, R02 suite (patch test skips: R01 has its own gateway)"
+      "command": "git worktree add <tmp> origin/claude/affectionate-ride-bol5v8 (889f537); replace ui/civic_store and tests/civic/R02 with R02 9b005be; python -m pytest -q -p no:cacheprovider tests",
+      "input": "R01 889f537 (CivicGateway; R03, R04, R05, R06, R07, R09 modules; R10 WIP acceptance suite) + R02 9b005be",
+      "reason": "806 passed, 2 skipped: R01 P0 acceptance and R10 checks against the real R02, R06 compatibility tests, R02 suite"
     },
     {
       "name": "web_server-patch-on-original-handler",
       "status": "PASS",
       "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02/test_r02_http.py -k patch",
       "input": "git apply research/round-11-results/R02/web_server.patch to a temp copy of ui/web_server.py (b2cb2e0)",
-      "reason": "legacy /api/health and /api/validate work; civic login/create/publish/public list work; OPTIONS/TRACE give JSON 405"
+      "reason": "legacy /api/health and /api/validate work; civic login/create/publish/public list work; OPTIONS/TRACE/BREW give JSON 405"
     },
     {
       "name": "http-stress-16-threads",
       "status": "PASS",
-      "command": "python tests/civic/R02/stress_http.py 20",
-      "input": "8 editor threads (create/publish/update), 6 public readers, 2 login threads; temp DB",
-      "reason": "5028 requests, 0x 5xx, p99 520 ms; revision/history and publication/projection invariants hold; 0 open connections"
+      "command": "python tests/civic/R02/stress_http.py 10",
+      "input": "8 editor threads (create/publish/update), 6 public readers, 2 login threads; temp DB; code 9b005be",
+      "reason": "2460 requests, 0x 5xx, p99 808 ms; revision/history and publication/projection invariants hold; 0 open connections (20 s run at 07ab190: 5028 requests, p99 520 ms)"
+    },
+    {
+      "name": "independent-adversarial-review",
+      "status": "PASS",
+      "command": "Workflow r02-civic-store-review: 4 reviewers (security, exposure/contract, integrity/concurrency, fuzz) + 4 refuting verifiers + interop",
+      "input": "R02 code 92f7aba..597ff2c; sibling branches R01/R03/R04/R06/R09/R10",
+      "reason": "28 findings, 17 confirmed; all confirmed findings fixed with regression tests or documented (keyset pagination). Details: REVIEW.txt"
     },
     {
       "name": "r05-demo-slice-compatibility",
@@ -57,27 +64,21 @@
       "reason": "9/9 pass R02 validation; dry-run plan create 9; nothing written"
     },
     {
-      "name": "independent-adversarial-review",
-      "status": "PASS",
-      "command": "Workflow r02-civic-store-review (security, exposure/contract, integrity/concurrency, fuzz, interop)",
-      "input": "R02 code during checkpoints 92f7aba..d78f7bf",
-      "reason": "partial at this checkpoint: security (4 low) and exposure/contract (1 medium, 6 low) findings fixed with regression tests; integrity and fuzz reviews still running"
-    },
-    {
       "name": "browser-walkthrough",
       "status": "NOT_RUN",
       "command": null,
       "input": null,
-      "reason": "R02 has no UI; browser checks belong to R03/R04/R01 after integration"
+      "reason": "R02 has no UI; browser checks belong to R03/R04/R01/R10 on the integrated build"
     }
   ],
   "limitations": [
-    "Local pilot auth (SQLite accounts, scrypt, cookie sessions); not production IAM/SSO, no MFA or e-mail recovery.",
-    "Default HTTP on loopback; network exposure needs a TLS proxy and explicit allowed_hosts.",
+    "Local pilot auth (SQLite accounts, scrypt, cookie sessions); not production IAM/SSO, no MFA, no e-mail recovery, no lockout notifications.",
+    "Default HTTP on loopback; network exposure needs a TLS proxy and explicit allowed_hosts; X-Forwarded-For is not trusted.",
     "Login rate limit is strict but keyed by client IP: behind NAT/proxy one client can lock others out for 15 minutes.",
-    "SQLite single writer with synchronous=FULL: about 27 write transactions/s in the test container; fine for tens of editors.",
+    "SQLite single writer with synchronous=FULL: about 27 write transactions/s in the test container; fine for tens of editors. A long CLI import holds the write lock (server writes may get 503 busy meanwhile).",
+    "Keyset pagination on (updated_at, id): an object edited during a page walk can be skipped; clients restart the walk after writes.",
     "Real Astana data: R05 reports 0 confirmed records (egress blocked); demo data is synthetic and labelled.",
-    "R01 imported R02 at 92f7aba; later fixes (validation, review fixes, writer queue, restore security) need a re-import at code_commit."
+    "R01 imported R02 at 3d2b8b9; review fixes and migration 4 after it need a re-import at code_commit."
   ],
-  "next_step": "R01 re-imports ui/civic_store/ and tests/civic/R02/ at code_commit; R02 finishes the remaining review findings (integrity, fuzz)."
+  "next_step": "R01 re-imports ui/civic_store/ and tests/civic/R02/ at code_commit 9b005be and adds the optional routes from INTEGRATION.txt §0a."
 }

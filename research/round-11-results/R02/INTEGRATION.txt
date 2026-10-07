@@ -12,34 +12,38 @@ requirements*.txt менять не нужно.
    python -B app.py --open                                # civic API на /api/civic/v1
    Без civic: python -B app.py --no-civic. Другая база: --civic-db PATH или $CIVIC_DB_PATH.
 
-0a. СОСТОЯНИЕ СТЫКОВКИ (проверено чтением веток 2026-10-06 ~16:05Z)
-   - R01 claude/affectionate-ride-bol5v8 @eef5a7b уже содержит собственный CivicGateway в ui/web_server.py:
-     полный путь /api/civic/v1/..., body уже dict, headers в нижнем регистре, host_allowed=True после своей
-     проверки Host, is_same_origin из Origin/Sec-Fetch-Site, пропускает Set-Cookie/Retry-After/Vary/Allow.
-     Это СОВМЕСТИМО с CivicService R02 — патч web_server.patch ниже тогда НЕ нужен (он остаётся эталоном
-     и проверен на исходном Handler). Двойник tests/civic/R01/contract_double.py следует модели R02
-     (правка опубликованного объекта видна после повторного publish).
-     Нужно добавить в CIVIC_ROUTES R01 (необязательно): ("GET", ("staff", "audit"), "store").
-     Рекомендация R01: do_OPTIONS/do_TRACE/do_PUT/do_PATCH/do_DELETE для /api/civic/v1 → JSON 405
-     (сейчас BaseHTTPRequestHandler отвечает HTML 501, что нарушает «ошибки — JSON»).
-     object_lookup для R06 можно заменить на civic.lookup_public_object (тот же публичный DTO).
-     ui/civic_store/__init__.py экспортирует CivicService с коммита 92f7aba (запасной импорт R01 больше не нужен).
-   - R04 claude/fervent-ritchie-1zih1y: в @2ff117c считал правку опубликованной записи сразу публичной;
-     в @da46e1c («verified against the real R02 service; pending-changes model») уже показывает
-     «Опубликовать» при staff.has_unpublished_changes и использует staff.public_item — СОВМЕСТИМО.
-     Остаётся мелочь: normalizeError R04 (строка ~475) распознаёт 403 только как "csrf"/"origin",
-     а R02 отдаёт "csrf_failed"/"cross_origin" — редактор увидит «Недостаточно прав» вместо подсказки
-     обновить сессию (shell R01 перед этим сам один раз повторяет запрос после csrf_failed).
-     Также: update без изменений → 200 с тем же item (не 422 no_changes); publish без изменений → 200
-     без новой ревизии; 409 бывает только stale_revision.
-   - Комбинированная проверка: ветка R01 @beb0d87 + ui/civic_store и tests/civic/R02 из HEAD R02 →
-     python -m pytest -q tests → 512 passed, 3 skipped (вкл. приёмку P0 R01 против настоящего R02 и
-     тесты совместимости R06). R01 импортировал R02 @92f7aba; более новые исправления R02 — см. DELIVERY.json.
-   - R03 claude/zen-mendel-e79iiv @9cb1a2e: читает GET /objects[?cursor] и /objects/{id}, history.changed_fields
-     как список путей и причину переноса по schedule.current_planned_end — совместимо.
-   - R06 claude/focused-hypatia-z8h0no @eaa113d: Principal R02 (role, username, csrf_token, expires_at epoch)
-     и require_staff подходят; feedback_* в том же файле проверены тестом R02 test_r02_migration_policy.py.
-   - R05 claude/intelligent-sagan-7shpeh: формат пакета и действия импорта совпадают с планом import_helper R05.
+0a. СОСТОЯНИЕ СТЫКОВКИ (проверено 2026-10-07 ~04:30Z)
+   - Сквозная проверка: ветка R01 @889f537 (CivicGateway + R03/R04/R05/R06/R07/R09 + приёмка R10 WIP) с
+     ui/civic_store и tests/civic/R02 из текущего HEAD R02 → python -m pytest -q tests → 806 passed, 2 skipped.
+     R01 импортировал R02 @3d2b8b9; исправления по независимому ревью после него (см. DELIVERY.json) нужно
+     доимпортировать: схема → миграция 4 (применится сама при старте CivicService).
+   - R01 CivicGateway совместим (полный путь, body-dict, headers в нижнем регистре, host_allowed=True после
+     своей проверки Host, is_same_origin, пропуск Set-Cookie/Retry-After/Vary/Allow). web_server.patch R02 нужен
+     только для исходного Handler b2cb2e0. Добавить в CIVIC_ROUTES R01 (необязательные маршруты R02):
+       ("GET",  ("staff", "audit"), "store"), ("GET", ("staff", "meta"), "store"),
+       ("GET",  ("staff", "objects", "{id}", "import-candidates"), "store"),
+       ("POST", ("staff", "objects", "{id}", "import-candidates", "{n}", "apply"|"dismiss"), "store").
+     Рекомендации R01: OPTIONS/TRACE/неизвестные методы на /api/civic/v1 → JSON 405 (сейчас HTML 501);
+     LOGIN_LOCK (D-07) можно убрать: лимит входа R02 атомарный с 3d2b8b9; шлюз переименовывает транспортные
+     коды (too_large/invalid_json/internal) — клиенты должны ветвиться по HTTP-статусу, а не по code.
+   - R04 @da46e1c: модель «ожидающих изменений» (staff.has_unpublished_changes/public_item) — совместимо.
+     Для фильтра «Только мои»: staff item теперь содержит created_by = {name, username}; name совпадает с
+     /session user.name. 403-коды R02: forbidden_host, cross_origin, csrf_failed, forbidden (normalizeError R04
+     ждёт "csrf"/"origin"). Пределы и рамку Астаны брать из GET /staff/meta (R04 сейчас строже: organization
+     200 vs 300, publisher 200 vs 300, license 100 vs 200, reason 500 vs 1000, internal_notes 2000 vs 5000,
+     рамка 70.9–72.0/50.9–51.4 vs 70.8–72.1/50.75–51.6 — запись из импорта может не пересохраниться в R04).
+     Вкладки по publication лучше грузить сервером (?publication=), а не фильтровать загруженные страницы.
+   - R06: integration.object_lookup_from_civic_service использует рабочую копию (objects.get_staff) — для
+     проверок жителя (location_conflict, публичный список) нужен civic.lookup_public_object, иначе
+     неопубликованная правка геометрии влияет на жителя; для карточки модератора — civic.lookup_staff_object
+     (без истории, дешевле). Роли R02: только editor и admin (moderator не выдаётся).
+   - R09: причина переноса срока — только запись публичной истории с changed_fields, содержащим
+     schedule.current_planned_end (не любое schedule.*). Публичная карточка+история без HTTP-контекста:
+     civic.public_detail(id) -> {item, history} | None.
+   - R10: лимит входа — 5 неудач за 15 мин на пару логин+IP и 20 на IP; при блокировке 429 даже для верного
+     пароля; успешный вход сбрасывает только свою пару. Брутфорс-сценарий запускать с другого client_ip
+     или с отдельным логином, иначе последующие входы редактора в том же прогоне получат 429.
+   - R03 @9cb1a2e — совместимо. R05 — формат пакета и действия импорта совпадают с import_helper R05.
 
 1. ЧТО МЕНЯЕТ R01 В ОБЩИХ ФАЙЛАХ (R02 их не редактировал)
    a) ui/web_server.py — research/round-11-results/R02/web_server.patch (≈40 строк, git apply --check OK
@@ -74,6 +78,10 @@ requirements*.txt менять не нужно.
    civic.resolve_principal(context) -> Principal | None    # только cookie-сессия; body не читается
      Principal: user_id, username, display_name, role ("editor"|"admin"), public_label,
                 is_staff, check_csrf(header_value) -> bool, public_user() -> {name, role}
+   civic.public_detail(id) -> {item, history} | None        # опубликованное, без HTTP-контекста
+   civic.lookup_public_object(id) -> public object | None   # для проверок, которые видит житель (R06, R09)
+   civic.lookup_staff_object(id) -> staff item | None       # рабочая копия без истории (контекст модератора)
+   civic.objects.* — внутренний API R02, может меняться; снаружи используйте методы выше.
    civic.require_staff(context, unsafe=True|False) -> (Principal, None) | (None, ответ-ошибка)
      unsafe=True дополнительно требует X-CSRF-Token и не-кросс-доменный запрос.
    CivicHttpAdapter(civic, extra_handlers=(), bind_host="127.0.0.1", allowed_hosts=())
@@ -106,10 +114,19 @@ requirements*.txt менять не нужно.
         schedule/budget/responsible сливаются по ключам; geometry/source_refs заменяются целиком.
    POST /staff/objects/{id}/publish    {expected_revision, reason} → {item}
    POST /staff/objects/{id}/archive    {expected_revision, reason} → {item}
+   GET  /staff/audit?since=ISO&object_id=&after=<id>&limit=1..500(200)  data = {entries:[staff history], next_after}
+   GET  /staff/meta                    data = {schema_version, enums, limits, astana_bbox, source_field_paths, roles}
+   GET  /staff/objects/{id}/import-candidates   data = {items:[{id, source, external_id, digest, created_at,
+                                       resolved_at, resolution, content, diff}]}
+   POST /staff/objects/{id}/import-candidates/{n}/apply    {expected_revision, reason} → {item} (как update)
+   POST /staff/objects/{id}/import-candidates/{n}/dismiss  {expected_revision, reason?} → {item}
    DELETE и прочие методы → 405 (Allow). Физического удаления нет.
+   Пагинация: cursor — keyset по (updated_at, id); объект, изменённый во время обхода страниц, может
+   «перепрыгнуть» уже пройденную границу — после записи начинайте обход заново. date_filter.incomplete_interval_ids
+   — по текущей странице. Для карты используйте limit=100. Недопустимый id в пути → 400 bad_request (не 404).
 
    staff item = public object (working copy) + {
-     internal_notes: str,
+     internal_notes: str, created_by: {name, username}|null,
      staff: {created_at, created_by, updated_by, first_published_at, published_revision,
              has_unpublished_changes: bool, public_item: public object|null (что видит житель сейчас),
              original_planned_end_locked: bool, import: {source, external_id}|null,
@@ -143,7 +160,8 @@ requirements*.txt менять не нужно.
 
 5. ПРОВЕРКА ДАННЫХ (422 validation_failed, error.fields: {путь: сообщение})
    title 1–200, description ≤5000, evidence_notes ≤2000, internal_notes ≤5000, reason ≤1000 символов;
-   простой текст: без HTML-тегов (<b>, <script>...), управляющих и bidi-символов.
+   простой текст: без HTML-тегов (<b>, <script>...), управляющих, bidi- и невидимых символов (Cf: ZWSP, LRM,
+   BOM, мягкий перенос); обязательное поле должно содержать видимый символ; тело с одиночными суррогатами → 400.
    Даты YYYY-MM-DD (1990–2100, реальные); окончания не раньше planned_start; actual_end только при
    status=completed и не в будущем (по Астане UTC+5); actual_end никогда не ставится автоматически.
    budget.amount_kzt: null или конечное число 0..1e13; при сумме нужны basis≠unknown и source_id из
@@ -151,13 +169,16 @@ requirements*.txt менять не нужно.
    geometry: null | Point | LineString | Polygon в WGS84 [lon,lat] внутри рамки Астаны
    (70.8–72.1 в.д., 50.75–51.6 с.ш.; ловит перепутанные lon/lat); без геометрии precision = unknown.
    source_refs ≤30: id уникален, url только http/https без логина, access_status=fetched требует
-   retrieved_at, fields — пути полей civic-v1. Неизвестные поля → 422; NaN/Infinity/битый JSON → 400.
+   retrieved_at, fields — только реальные пути civic-v1 (см. /staff/meta source_field_paths); url без
+   пробелов, bidi и невидимых символов. Неизвестные поля → 422; NaN/Infinity/битый JSON → 400; -0.0 → 0.
 
 6. КОДЫ ОШИБОК
+   has_unpublished_changes всегда true для draft/archived (public_item = null) — смысл имеет при publication=published;
+   published_revision = null, пока объект не публичен.
    400 bad_request · 401 unauthenticated / invalid_credentials · 403 forbidden_host / cross_origin /
    csrf_failed / forbidden · 404 not_found · 405 method_not_allowed (+Allow) · 409 stale_revision
    (+error.current_revision) · 411 length_required · 413 payload_too_large · 415 unsupported_media_type ·
-   422 validation_failed (+fields) · 429 rate_limited (+Retry-After, error.retry_after) ·
+   408 request_timeout (тело не дослано) · 422 validation_failed (+fields) · 429 rate_limited (+Retry-After, error.retry_after) ·
    503 busy (+Retry-After: 1; база занята дольше busy_timeout) · 500 internal_error (без traceback).
 
 7. ЗАГОЛОВКИ

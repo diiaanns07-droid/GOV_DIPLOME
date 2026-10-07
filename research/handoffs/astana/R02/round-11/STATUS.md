@@ -71,5 +71,25 @@
   (подробно INTEGRATION.txt §0a).
 - Проверка: tests/civic/R02 → 167 passed, 1 skipped (коммит e0ac1d7).
 
-## Следующий шаг
-Дождаться ревью целостности/fuzz и проверяющих, исправить подтверждённое, финальный DELIVERY.json.
+## Checkpoint 7 — ревью завершено, все подтверждённые находки исправлены (DONE, status ready)
+- Независимое ревью: 28 находок, 17 подтверждены проверяющими; все исправлены с регрессионными тестами
+  (кроме keyset-пагинации — задокументирована). Подробно: research/round-11-results/R02/REVIEW.txt.
+  Главное: гонка входа со сменой пароля; CLI больше не создаёт/мигрирует базу на командах чтения;
+  restore сначала полностью проверяет копию и готовит её во временном файле; суррогаты/невидимые
+  символы/подделка URL; 408 на обрыв тела; JSON 405 для неизвестных методов.
+- Новое (аддитивно): миграция 4 и API кандидатов импорта (list/apply/dismiss), GET /staff/meta,
+  CivicService.public_detail / lookup_staff_object, staff item created_by {name, username} (фильтр R04).
+- Проверки (код 9b005be): tests/civic/R02 → 210 passed, 1 skipped; весь репозиторий → 343 passed, 1 skipped;
+  ветка R01 @889f537 + R02 9b005be → 806 passed, 2 skipped; нагрузка 10 c → 2460 запросов, 0×5xx, инварианты целы.
+- Не запускалось: браузер (у R02 нет UI) — NOT_RUN.
+
+## ФИНАЛ СЕССИИ
+- Роль R02; ветка claude/trusting-ptolemy-6ms354 (GOV_DIPLOME); код 9b005be; push OK (итоговый SHA — в чате).
+- Пути: ui/civic_store/, tests/civic/R02/, research/round-11-results/R02/, этот файл.
+- Работает: CivicService(db_path, clock) + handle/resolve_principal/require_staff; SQLite в .runtime/ (WAL,
+  append-only история, публичная проекция по allowlist); draft→publish→archive с expected_revision/409 и
+  причинами; локальные редакторы (scrypt, cookie-сессии, CSRF, лимит входа); идемпотентный импорт R05 с
+  dry-run; CLI init/create-editor/import/seed-demo/backup/restore/export-audit; HTTP-адаптер и патч.
+- Риски: локальный пилот, не production IAM; HTTP loopback; лимит входа по IP; один писатель SQLite.
+- Следующий шаг: R01 доимпортирует ui/civic_store/ и tests/civic/R02/ на 9b005be и добавит необязательные
+  маршруты из INTEGRATION.txt §0a (audit, meta, import-candidates).

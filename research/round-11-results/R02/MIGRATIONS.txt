@@ -46,13 +46,21 @@ R02 — ПОЛИТИКА МИГРАЦИЙ SQLite И СОВМЕСТНОЕ ИСП�
       civic_public_objects (публичная проекция), civic_history (append-only), civic_imports,
       civic_import_candidates.
    2  civic_create_requests (Idempotency-Key создания черновика).
+   3  индекс civic_import_candidates(object_id) — по замеру (PERF.txt).
+   4  civic_import_candidates: resolved_at, resolution (applied|dismissed|superseded), resolved_by —
+      ALTER TABLE ADD COLUMN, строки кандидатов не удаляются.
+   Текущей считается база, где применены ВСЕ версии 1..N с совпадающим checksum; иначе сервис не стартует
+   с auto_migrate=False, а CLI (кроме init) просит выполнить init.
 
 6. РЕЗЕРВНАЯ КОПИЯ И ВОССТАНОВЛЕНИЕ (целиком файл, включая feedback_*)
    python -m ui.civic_store --db .runtime/civic.sqlite3 backup /path/outside/repo/civic-YYYYMMDD.sqlite3
    python -m ui.civic_store --db .runtime/civic.sqlite3 restore /path/civic-YYYYMMDD.sqlite3 --yes
-   - backup использует SQLite backup API (согласованный снимок вместе с WAL) и integrity_check.
-   - restore: сервер остановить; копия проверяется (integrity_check, версия схемы ≤ кода);
-     текущая база сначала сохраняется как civic.pre-restore-<время>.sqlite3, затем заменяется.
+   - backup использует SQLite backup API (согласованный снимок вместе с WAL) и integrity_check;
+     копирует базу как есть (без миграции) и не создаёт пустую базу при опечатке в --db.
+   - restore: сервер остановить. До любой записи копия проверяется (integrity_check, каждая миграция
+     известна коду и совпадает по checksum), затем готовится во временном civic.restore-staging-*.sqlite3
+     (миграции, перенос мер безопасности). Только после этого текущая база сохраняется как
+     civic.pre-restore-<время>[-n].sqlite3 (уникальное имя, O_EXCL) и заменяется через backup API.
      Данные откатываются, меры безопасности — нет: все сессии из копии отзываются, отключение
      редактора и более новая смена пароля из текущей базы переносятся в восстановленную.
    - База, копии и export-audit создаются сразу с правами 0600 (POSIX), без окна 0644.
