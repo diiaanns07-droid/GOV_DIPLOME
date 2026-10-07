@@ -5,6 +5,8 @@ R02 code is imported from --r02-root (e.g. a detached `git worktree` of the R02 
 The SQLite file lives in a fresh temporary directory; one editor account is created with a random password that
 exists only in this process and is printed once as JSON on stdout for the test runner. Loopback only.
 Static files: the R04 harness page, web/civic/editor/*, MapLibre from the pinned app snapshot (via `git show`).
+Stand-only control (not R02 API): POST /__stand/import with header X-Stand-Token=<token printed on stdout> runs R02's own
+importer (ui.civic_store.importer.import_package) on a civic-v1 package, so a test can create a changed-source candidate.
 """
 from __future__ import annotations
 
@@ -44,11 +46,15 @@ def main() -> None:
     args = ap.parse_args()
     sys.path.insert(0, str(Path(args.r02_root).resolve()))
     from ui.civic_store import CivicHttpAdapter, CivicService  # noqa: E402  (R02 code under test)
+    from ui.civic_store.importer import import_package  # noqa: E402
 
     tmp = tempfile.TemporaryDirectory(prefix="civic-r04-r02-")
     service = CivicService(Path(tmp.name) / "civic.sqlite3")
     username, password = "editor-test", secrets.token_urlsafe(18)
     service.accounts.create_user(username, password, display_name="Тестовый редактор")
+    username2, password2 = "editor-two", secrets.token_urlsafe(18)
+    service.accounts.create_user(username2, password2, display_name="Второй редактор")
+    control = secrets.token_urlsafe(18)
     adapter = CivicHttpAdapter(service, bind_host="127.0.0.1")
     vend = vendor_dir()
     static = {
@@ -93,11 +99,25 @@ def main() -> None:
         def do_POST(self):
             if adapter.handles(self.path):
                 return adapter.serve(self)
+            if self.path == "/__stand/import" and secrets.compare_digest(self.headers.get("X-Stand-Token", ""), control):
+                size = int(self.headers.get("Content-Length") or 0)
+                try:
+                    report = import_package(service.objects, json.loads(self.rfile.read(size).decode("utf-8")), actor_label="r04-stand")
+                    body, status = json.dumps(report, ensure_ascii=False, default=str).encode("utf-8"), 200
+                except Exception as exc:  # report the importer's refusal to the test
+                    body, status = json.dumps({"error": type(exc).__name__, "message": str(exc)}, ensure_ascii=False).encode("utf-8"), 400
+                self.send_response(status)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return None
             self.send_error(405)
 
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     port = server.server_address[1]
-    print(json.dumps({"url": f"http://127.0.0.1:{port}", "username": username, "password": password}), flush=True)
+    print(json.dumps({"url": f"http://127.0.0.1:{port}", "username": username, "password": password,
+                      "username2": username2, "password2": password2, "control": control}), flush=True)
     try:
         server.serve_forever()
     finally:

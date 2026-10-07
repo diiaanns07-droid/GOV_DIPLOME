@@ -146,4 +146,150 @@ describe("R04 round 13 (contract mock)", { skip: PW ? false : "playwright not in
     assert.equal(await p.evaluate(() => sessionStorage.getItem("civic-r04-unsaved:v1")), null);
     assert.equal(await p.evaluate(() => window.__map.getStyle().layers.filter((l) => l.id.startsWith("civic-r04-")).length), 0);
   });
+
+  const SRC = { id: "src-1", url: "https://www.gov.kz/memleket/entities/astana/press/news/details/1", publisher: "Акимат (тестовый источник)",
+    published_on: "2026-10-01", retrieved_at: "2026-10-02", access_status: "fetched", license: null, fields: ["schedule"] };
+
+  it("changed source: comparison with revision and provenance; 409 refreshes it and applies nothing; accept with a reason; dismiss", async () => {
+    K.H().reset();
+    const rec = await K.seedPublished({ source_refs: [SRC] });
+    K.H().addCandidate(rec.id, { schedule: { current_planned_end: "2026-11-30" }, source_refs: [Object.assign({}, SRC, { published_on: "2026-10-05" })] },
+      { source: "r05-astana-real", external_id: "ast-r05-trotuar" });
+    const p = await K.open(null, "", { keepState: true });
+    await K.loginToList(p);
+    await p.click(fk("filter-published"));
+    await p.click(fk("row-" + rec.id));
+    await p.waitForSelector(fk("srcreview"));
+    const box = await p.textContent(fk("srcreview"));
+    assert.match(box, /Источник изменился/);
+    assert.match(box, /ред\. 2/, "the comparison names the record revision");
+    assert.match(box, /Актуальный плановый срок окончания\s*20\.10\.2026\s*30\.11\.2026/);
+    assert.match(box, /Акимат \(тестовый источник\) · опубл\. 05\.10\.2026/, "provenance of the changed field");
+    assert.match(box, /Первоначальный срок зафиксирован/);
+    await K.shot(p, "r13-01-source-review");
+    // a local edit blocks accepting (it would be overwritten)
+    await p.fill(fk("description"), "Моя несохранённая правка");
+    assert.equal(await p.isDisabled(fk("cand-apply-0")), true);
+    await p.fill(fk("description"), rec.description);
+    assert.equal(await p.isDisabled(fk("cand-apply-0")), false);
+    // another editor saves first -> 409: comparison refreshed, nothing applied
+    K.H().mutate(rec.id, { description: "Другой редактор уточнил описание." });
+    await p.click(fk("cand-apply-0"));
+    await p.click(fk("chip-0"));
+    await p.click(fk("confirm"));
+    await p.waitForSelector('.civic-r04-msg-error:has-text("ничего не применено")');
+    assert.equal(K.objects()[0].schedule.current_planned_end, "2026-10-20");
+    const refreshed = await p.textContent(fk("srcreview"));
+    assert.match(refreshed, /ред\. 3/);
+    // R02 applies the source content as a whole: the refreshed comparison shows that the other editor's description would be replaced
+    assert.match(refreshed, /Описание\s*Другой редактор уточнил описание\.\s*Синтетическая запись для проверки интерфейса\./);
+    // accept: a published record needs a reason
+    await p.click(fk("cand-apply-0"));
+    await p.click(fk("confirm"));
+    assert.match(await p.textContent("#" + (await p.getAttribute(fk("reason"), "aria-describedby"))), /причину/);
+    await p.click(fk("chip-0"));
+    await p.click(fk("confirm"));
+    await p.waitForSelector('.civic-r04-msg-ok:has-text("Изменения источника приняты")');
+    const after = K.objects()[0];
+    assert.equal(after.schedule.current_planned_end, "2026-11-30");
+    assert.equal(after.schedule.original_planned_end, "2026-10-20", "the original promise stays");
+    assert.equal(after.description, "Синтетическая запись для проверки интерфейса.", "applied as shown in the comparison (whole source content, R02 semantics)");
+    assert.equal(await p.$(fk("srcreview")), null, "no pending candidate any more");
+    // a second change of the source is dismissed: the record stays as it is
+    K.H().addCandidate(rec.id, { title: "Название из источника" });
+    await p.click(fk("back"));
+    await p.click(fk("filter-published"));
+    await p.click(fk("row-" + rec.id));
+    await p.waitForSelector(fk("cand-dismiss-0"));
+    await p.click(fk("cand-dismiss-0"));
+    await p.click(fk("confirm"));
+    await p.waitForSelector('.civic-r04-msg-ok:has-text("отклонено")');
+    assert.equal(K.objects()[0].title, rec.title);
+    assert.deepEqual(p.errors, []);
+  });
+
+  it("changed source on a server that does not route /import-candidates: an honest note, nothing pretends to work", async () => {
+    K.H().reset();
+    const rec = await K.seedPublished();
+    K.H().addCandidate(rec.id, { schedule: { current_planned_end: "2026-12-01" } });
+    K.H().routeCandidates(false);
+    const p = await K.open(null, "", { keepState: true });
+    await K.loginToList(p);
+    await p.click(fk("filter-published"));
+    await p.click(fk("row-" + rec.id));
+    await p.waitForSelector(fk("srcreview"));
+    const box = await p.textContent(fk("srcreview"));
+    assert.match(box, /1 непросмотренное изменение/);
+    assert.match(box, /маршрут \/import-candidates не подключён/);
+    assert.equal(await p.$(fk("cand-apply-0")), null);
+  });
+
+  it("409 on save: a per-field comparison (opened / server / mine), my input stays, nothing overwritten until I choose", async () => {
+    K.H().reset();
+    const rec = await K.seedPublished();
+    const p = await K.open(null, "", { keepState: true });
+    await K.loginToList(p);
+    await p.click(fk("filter-published"));
+    await p.click(fk("row-" + rec.id));
+    await p.waitForSelector(fk("title"));
+    await p.fill(fk("title"), "Моё название");
+    K.H().mutate(rec.id, { title: "Название другого редактора", description: "Описание другого редактора." });
+    await p.click(fk("chip-1"));
+    await p.click(fk("save"));
+    await p.waitForSelector(fk("compare"));
+    const t = await p.textContent(fk("compare"));
+    assert.match(t, /Название — изменено обеими сторонами\s*Демонстрационный ремонт прохода\s*Название другого редактора\s*Моё название/);
+    assert.match(t, /Описание\s*Синтетическая запись для проверки интерфейса\.\s*Описание другого редактора\.\s*без изменений/);
+    assert.equal(await K.value(p, "title"), "Моё название", "my input stays in the form");
+    assert.equal(K.objects()[0].title, "Название другого редактора", "nothing was overwritten on the server");
+    await K.shot(p, "r13-02-conflict-compare");
+    await p.click(fk("rebase"));
+    await p.click(fk("chip-1"));
+    await K.saveOk(p, "Сохранено");
+    assert.equal(K.objects()[0].title, "Моё название");
+    assert.equal(K.objects()[0].description, "Описание другого редактора.", "the other editor's description is kept");
+  });
+
+  it("a deadline move residents see needs a reason they understand: a bare category is refused", async () => {
+    K.H().reset();
+    const rec = await K.seedPublished();
+    const p = await K.open(null, "", { keepState: true });
+    await K.loginToList(p);
+    await p.click(fk("filter-published"));
+    await p.click(fk("row-" + rec.id));
+    await p.waitForSelector(fk("current_planned_end"));
+    await p.fill(fk("current_planned_end"), "2026-11-15");
+    assert.match(await p.textContent(".civic-r04-reason label"), /видна жителям/);
+    await p.fill(fk("reason"), "Уточнение по источнику");
+    await p.click(fk("save"));
+    assert.match(await p.textContent("#" + (await p.getAttribute(fk("reason"), "aria-describedby"))), /почему срок перенесён/);
+    assert.equal(K.posts("/staff/objects/" + rec.id + "/update").length, 0);
+    await p.fill(fk("reason"), "Перенос срока: подрядчик сообщил о задержке поставки плитки");
+    await K.saveOk(p, "Сохранено");
+    const pub = await K.publicGet("/objects/" + rec.id);
+    assert.equal(pub.json.data.item.schedule.original_planned_end, "2026-10-20");
+    assert.equal(pub.json.data.item.schedule.current_planned_end, "2026-11-15");
+    assert.ok(pub.json.data.history.some((h) => /задержке поставки плитки/.test(h.reason || "")));
+  });
+
+  it("a local copy made on an older revision: the comparison is shown before restoring", async () => {
+    K.H().reset();
+    const rec = await K.seedDraft();
+    const p = await K.open(null, "", { keepState: true });
+    await K.loginToList(p);
+    await p.click(fk("row-" + rec.id));
+    await p.waitForSelector(fk("description"));
+    await p.fill(fk("description"), "Моё описание из копии");
+    await p.click(fk("back"));
+    K.H().mutate(rec.id, { description: "Описание, сохранённое другим редактором." });
+    await p.click(fk("row-" + rec.id));
+    await p.waitForSelector(fk("restore"));
+    const t = await p.textContent(fk("compare"));
+    assert.match(t, /Описание — изменено обеими сторонами/);
+    assert.match(t, /Описание, сохранённое другим редактором\./);
+    assert.match(t, /Моё описание из копии/);
+    assert.equal(await K.value(p, "description"), "Описание, сохранённое другим редактором.", "nothing restored before the user chooses");
+    await p.click(fk("restore"));
+    assert.equal(await K.value(p, "description"), "Моё описание из копии");
+  });
 });

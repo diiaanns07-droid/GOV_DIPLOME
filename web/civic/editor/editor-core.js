@@ -40,6 +40,11 @@
   const ACCESS = { not_fetched: "Не открывался", fetched: "Открыт и прочитан", unavailable: "Недоступен" };
   // Top-level paths a source can support (contract: source_refs[].fields).
   const SOURCE_FIELDS = { status: "Статус", schedule: "Сроки", geometry: "Место", budget: "Стоимость", responsible: "Ответственный", description: "Описание" };
+  // Every path R02 accepts in source_refs[].fields (validate.py SOURCE_FIELD_PATHS). The checkboxes show the groups
+  // above; other valid paths (title, schedule.current_planned_end, … from imports) are kept and shown, never dropped.
+  const SOURCE_FIELD_PATHS = ["budget", "budget.amount_kzt", "budget.basis", "budget.source_id", "description", "evidence_notes",
+    "evidence_type", "geometry", "geometry_precision", "kind", "responsible", "responsible.organization", "responsible.public_contact",
+    "schedule", "schedule.actual_end", "schedule.current_planned_end", "schedule.original_planned_end", "schedule.planned_start", "status", "title"];
   // Generous frame around Astana (WGS84 lon/lat). Round 11 covers Astana only.
   const ASTANA_BBOX = [70.8, 50.75, 72.1, 51.6];  // = R02 validate.py ASTANA_BBOX
   // = R02 validate.py MAX_TEXT / MAX_URL: a stricter client limit would block saving values the server already holds.
@@ -103,6 +108,13 @@
   function todayIso(now) {
     const t = new Date((now ? now.getTime() : Date.now()) + 5 * 3600 * 1000);
     return t.toISOString().slice(0, 10);
+  }
+  // Date (YYYY-MM-DD) or date-time with optional seconds/fraction and Z/±hh:mm, as R02 clean_timestamp accepts (≤ 40 chars).
+  function isIsoTimestamp(s) {
+    const v = str(s);
+    if (isIsoDate(v)) return true;
+    const m = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?(Z|[+-]\d{2}:\d{2})?$/.exec(v);
+    return !!m && v.length <= 40 && isIsoDate(m[1]) && +m[2] < 24 && +m[3] < 60 && (m[4] === undefined || +m[4] < 60);
   }
   function fmtDate(s) {
     if (!s) return "неизвестно";
@@ -328,15 +340,17 @@
       }
       for (const f of ["published_on", "retrieved_at"]) {
         const v = str(s[f]).trim();
-        if (v && !isIsoDate(v)) err(k(f), "Дата в формате ГГГГ-ММ-ДД.");
-        else if (v && v > today) err(k(f), "Дата не может быть в будущем.");
+        // R02: published_on is a date; retrieved_at a date or an ISO 8601 date-time (imports keep the exact time)
+        const ok = f === "retrieved_at" ? isIsoTimestamp(v) : isIsoDate(v);
+        if (v && !ok) err(k(f), "Дата в формате ГГГГ-ММ-ДД.");
+        else if (v && v.slice(0, 10) > today) err(k(f), "Дата не может быть в будущем.");
       }
       if (!has(ACCESS, s.access_status)) err(k("access_status"), "Выберите состояние доступа.");
       else if (s.access_status === "fetched" && !str(s.retrieved_at).trim() && !errors[k("retrieved_at")]) err(k("retrieved_at"), "Источник отмечен как открытый — укажите, когда вы его открыли.");
       if (str(s.publisher).length > LIMITS.publisher) err(k("publisher"), "Слишком длинно.");
       if (str(s.license).length > LIMITS.license) err(k("license"), "Слишком длинно.");
       if (s.publisher && !isPlain(str(s.publisher))) err(k("publisher"), "Только обычный текст.");
-      if ((s.fields || []).some((f) => !has(SOURCE_FIELDS, f))) err(k("fields"), "Неизвестное поле источника.");
+      if ((s.fields || []).some((f) => !SOURCE_FIELD_PATHS.includes(f))) err(k("fields"), "Неизвестное поле источника.");
       if (s.access_status === "unavailable" && (s.fields || []).length) warnings[k("fields")] = "Недоступный источник не подтверждает отмеченные поля — жители увидят, что он недоступен.";
     });
     return { errors, warnings };
@@ -415,6 +429,191 @@
     return null;
   }
 
+  // A deadline move that residents will see needs a reason a resident understands, not a bare category.
+  const GENERIC_REASONS = ["перенос срока", "уточнение по источнику", "исправление ошибки ввода", "первая публикация",
+    "сведения проверены по источнику", "работы завершены", "срок перенесён", "по данным источника"];
+  function validatePublicReason(text, ctx) {
+    const base = validateReason(text);
+    if (base) return base;
+    if (ctx && ctx.deadlineMoved) {
+      const v = str(text).trim().replace(/[.!\s]+$/, "").toLowerCase();
+      const rest = v.replace(/^перенос срока\s*[:—-]\s*/, "");
+      if (GENERIC_REASONS.includes(v) || textLength(rest) < 12)
+        return "Жители увидят перенос срока и эту причину в истории. Объясните понятно, почему срок перенесён — например, «подрядчик сообщил о задержке поставки плитки».";
+    }
+    return null;
+  }
+  // Does publishing (R02 pending model) or saving (contract without it) move the deadline residents see?
+  function publicDeadlineMove(item, fields) {
+    if (!item || item.publication !== "published") return null;
+    const pend = pendingInfo(item);
+    const pub = pend.publicItem && pend.publicItem.schedule ? pend.publicItem.schedule.current_planned_end || null : null;
+    const now = fields ? (fields.schedule || {}).current_planned_end || null : (item.schedule || {}).current_planned_end || null;
+    const was = pend.known && pend.publicItem ? pub : (item.schedule || {}).current_planned_end || null;
+    return was !== now ? { from: was, to: now } : null;
+  }
+
+  // ---------- resident card semantics (parity with R03) ----------
+  // The preview must mean the same as R03's resident card. In the app R03's pure window.CivicMapCore is loaded before
+  // the editor: then residentView() uses R03's own normalizer and rules (costView, responsibleView, provenanceLine,
+  // scheduleShift, labels). Without it (tests, a standalone editor) a minimal copy of those rules and words below,
+  // checked against R03 @ d5ee758 by tests/civic/R04/preview_parity.test.cjs. R03's renderer is not copied.
+  const NO_DATA = "нет данных";
+  const FB = (() => {
+    const K = { construction: "Строительство", roadworks: "Дорожные работы", landscaping: "Благоустройство", event: "Событие, перекрытие" };
+    const ST = { planned: "Запланировано", in_progress: "Идут работы", completed: "Завершено", cancelled: "Отменено", unknown: "Статус неизвестен" };
+    const EV = {
+      observed: { short: "По источнику", label: "Сведения из опубликованного источника" },
+      derived: { short: "Вывод", label: "Выведено из источников, не прямая цитата" },
+      hypothesis: { short: "Гипотеза", label: "Гипотеза — не подтверждено источником" },
+      synthetic: { short: "Демо", label: "Синтетическая демо-запись — не сведения о реальных работах" },
+    };
+    const EVU = { short: "Происхождение?", label: "Происхождение сведений не указано" };
+    const PR = { source: "Место указано по источнику", approximate: "Место примерное", unknown: "Точность места неизвестна" };
+    const BA = { planned: "плановая стоимость", contract: "сумма договора", spent: "фактически освоено", unknown: "основание суммы не указано" };
+    const AC = { fetched: "источник открывался", not_fetched: "источник не открывался", unavailable: "источник был недоступен" };
+    const en = (m, v, d) => (typeof v === "string" && has(m, v) ? v : d);
+    const s2 = (v) => (typeof v === "string" ? v.trim() : "");
+    const day = (v) => (isIsoDate(v) ? v : null);
+    const fmt = (v) => (isIsoDate(v) ? v.slice(8, 10) + "." + v.slice(5, 7) + "." + v.slice(0, 4) : NO_DATA);
+    const num = (n, d) => Number(n).toLocaleString("ru-RU", { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }).replace(/\s/g, "\u202f");
+    const safeUrl = (v) => { try { const u = new URL(String(v).trim()); return (u.protocol === "https:" || u.protocol === "http:") && !u.username && !u.password ? u.href : null; } catch (e) { return null; } };
+    const host = (v) => { const u = safeUrl(v); try { return u ? new URL(u).hostname.replace(/^www\./, "") : null; } catch (e) { return null; } };
+    const plural = (n, a, b, c) => { const m = Math.abs(n) % 100, k = m % 10; return m > 10 && m < 20 ? c : k > 1 && k < 5 ? b : k === 1 ? a : c; };
+    function budgetInfo(b, ev) {
+      const x = b && typeof b === "object" ? b : {}, basis = en(BA, x.basis, "unknown"), raw = x.amount_kzt;
+      let state = "missing";
+      if (typeof raw === "number" && Number.isFinite(raw) && raw >= 0) state = "ok"; else if (raw !== null && raw !== undefined) state = "invalid";
+      if (state === "ok" && ev === "synthetic") return { state: "suppressed", text: NO_DATA + " (у демо-записи сумма в тенге не показывается)", approx: null, basisLabel: BA[basis], sourceId: s2(x.source_id) };
+      let text = state === "invalid" ? NO_DATA + " (некорректное значение в записи)" : NO_DATA, approx = null;
+      if (state === "ok") { text = num(Math.round(raw)) + " ₸"; if (raw >= 1e9) approx = "≈ " + num(raw / 1e9, raw >= 1e11 ? 0 : 1) + " млрд ₸"; else if (raw >= 1e6) approx = "≈ " + num(raw / 1e6, raw >= 1e8 ? 0 : 1) + " млн ₸"; }
+      return { state, text, approx, basisLabel: BA[basis], sourceId: s2(x.source_id) };
+    }
+    function normalizeObject(raw) {
+      const sch = raw.schedule && typeof raw.schedule === "object" ? raw.schedule : {};
+      const resp = raw.responsible && typeof raw.responsible === "object" ? raw.responsible : {};
+      const refs = Array.isArray(raw.source_refs) ? raw.source_refs.filter((r) => r && typeof r === "object").map((r, i) => ({
+        id: s2(r.id) || "src-" + (i + 1), url: safeUrl(r.url), host: host(r.url), publisher: s2(r.publisher), published_on: day(r.published_on),
+        retrieved_at: s2(r.retrieved_at), access_status: en(AC, r.access_status, null), license: s2(r.license),
+        fields: Array.isArray(r.fields) ? r.fields.filter((f) => typeof f === "string") : [] })) : [];
+      const ev = en(EV, raw.evidence_type, null);
+      return { item: { id: raw.id, kind: en(K, raw.kind, "other"), title: s2(raw.title) || "Без названия", description: s2(raw.description),
+        status: en(ST, raw.status, "unknown"), geometry: raw.geometry || null, precision: en(PR, raw.geometry_precision, "unknown"),
+        schedule: { planned_start: day(sch.planned_start), original_planned_end: day(sch.original_planned_end), current_planned_end: day(sch.current_planned_end), actual_end: day(sch.actual_end) },
+        budget: budgetInfo(raw.budget, ev), responsible: { organization: s2(resp.organization), public_contact: s2(resp.public_contact) },
+        evidence: ev, sourceRefs: refs, evidenceNotes: s2(raw.evidence_notes), updatedAt: s2(raw.updated_at), revision: raw.revision || null } };
+    }
+    const sourceFor = (it, path) => it.sourceRefs.find((r) => r.fields.some((f) => f === path || path.startsWith(f + ".") || f.startsWith(path + "."))) || null;
+    return {
+      NO_DATA, STATUSES: ST, PRECISION: PR, ACCESS: AC, kindInfo: (k) => ({ label: K[k] || "Другое" }), evidenceInfo: (e) => EV[e] || EVU,
+      formatDay: fmt, normalizeObject, sourceFor,
+      daysText: (n) => num(Math.abs(n)) + " " + plural(n, "день", "дня", "дней"),
+      costView(it) {
+        const b = it.budget;
+        if (b.state !== "ok") return { show: false, state: b.state, text: b.text };
+        const src = (b.sourceId && it.sourceRefs.find((r) => r.id === b.sourceId)) || sourceFor(it, "budget.amount_kzt");
+        if (!src) return { show: false, state: "unsourced", text: "сумма в записи есть, но источник не указан — не показываем" };
+        return { show: true, state: "ok", text: b.text, approx: b.approx, basisLabel: b.basisLabel, source: src };
+      },
+      responsibleView(it) {
+        const r = it.responsible;
+        if (!r.organization && !r.public_contact) return { show: false, state: "missing" };
+        const o = r.organization ? sourceFor(it, "responsible.organization") : null, c = r.public_contact ? sourceFor(it, "responsible.public_contact") : null;
+        if (!o && !c) return { show: false, state: "unsourced" };
+        return { show: true, state: "ok", organization: o ? r.organization : null, contact: c ? r.public_contact : null, source: o || c };
+      },
+      provenanceLine(it) {
+        const refs = it.sourceRefs;
+        if (!refs.length) return it.evidence === "synthetic" ? { state: "demo", text: "Демонстрационная запись — источника нет." } : { state: "none", text: "Источник не указан — сведения нельзя проверить по документу." };
+        const r = refs[0];
+        return { state: "ok", text: (r.publisher || r.host || "источник без названия") + (r.published_on ? ", " + fmt(r.published_on) : "") + (refs.length > 1 ? " и ещё " + (refs.length - 1) : "") };
+      },
+      scheduleShift(it) {
+        const sc = it.schedule;
+        if (!sc.original_planned_end || !sc.current_planned_end) return null;
+        const days = Math.round((Date.parse(sc.current_planned_end) - Date.parse(sc.original_planned_end)) / 86400000);
+        return days ? { days, from: sc.original_planned_end, to: sc.current_planned_end } : null;
+      },
+    };
+  })();
+  // Rows of the resident card as R03 words them. mapCore: window.CivicMapCore or null (fallback above).
+  function residentView(dto, mapCore) {
+    const mc = mapCore && typeof mapCore.normalizeObject === "function" && typeof mapCore.costView === "function" ? mapCore : FB;
+    const raw = Object.assign({}, dto, { id: (dto && dto.id) || "preview", publication: "published" });  // a draft is previewed as if published
+    const norm = mc.normalizeObject(raw);
+    const it = norm && norm.item;
+    if (!it) return null;
+    const ND = mc.NO_DATA || NO_DATA, sc = it.schedule || {}, ev = mc.evidenceInfo(it.evidence);
+    const name = (r) => (r && (r.publisher || r.host || r.id)) || "источник";
+    const shift = mc.scheduleShift(it);
+    const cost = mc.costView(it), resp = mc.responsibleView(it), prov = mc.provenanceLine(it);
+    const gtype = it.geometry && it.geometry.type === "Point" ? "Точка" : it.geometry && it.geometry.type === "LineString" ? "Линия (участок)" : "Территория";
+    const rows = [
+      ["Сейчас", mc.STATUSES[it.status] || mc.STATUSES.unknown],
+      ["Начало по плану", sc.planned_start ? mc.formatDay(sc.planned_start) : ND],
+      ["Изначально — до", sc.original_planned_end ? mc.formatDay(sc.original_planned_end) : ND],
+      ["Сейчас — до", sc.current_planned_end ? mc.formatDay(sc.current_planned_end) : sc.original_planned_end ? "новый срок не опубликован" : ND],
+      ["Фактически", sc.actual_end ? "завершено " + mc.formatDay(sc.actual_end, "long") : ND],
+    ];
+    if (shift) rows.push(["Перенос срока", "Срок перенесён на " + mc.daysText(shift.days) + (shift.days > 0 ? " позже: " : " раньше: ") + mc.formatDay(shift.from) + " → " + mc.formatDay(shift.to)]);
+    rows.push(["Место", it.geometry ? (mc.PRECISION[it.precision] || mc.PRECISION.unknown) + ". " + gtype + "." : "Координаты не указаны — объект есть только в списке, точку не придумываем."]);
+    rows.push(["Ответственный", resp.show ? [resp.organization, resp.contact].filter(Boolean).join(" · ") + " — по источнику"
+      : resp.state === "unsourced" ? "в записи указан, но источник не подтверждает — не показываем" : ND]);
+    rows.push(["Стоимость", cost.show ? cost.text + (cost.approx ? " (" + cost.approx + ")" : "") + " · " + cost.basisLabel + " · источник: " + name(cost.source) : cost.text]);
+    rows.push(["Откуда сведения", prov.text]);
+    return {
+      banner: it.evidence === "observed" ? null : { demo: it.evidence === "synthetic", text: (it.evidence === "synthetic" ? "Демо. " : "") + ev.label + "." },
+      kind: mc.kindInfo(it.kind).label, title: it.title, description: it.description, rows,
+      sources: it.sourceRefs.map((r) => ({ name: name(r), href: r.url || null, published: r.published_on ? mc.formatDay(r.published_on) : null,
+        access: r.access_status && mc.ACCESS ? mc.ACCESS[r.access_status] || null : null })),
+      noSources: it.sourceRefs.length ? null : prov.text,
+      evidenceNotes: it.evidenceNotes || null,
+      engine: mc === FB ? "fallback" : "r03",
+    };
+  }
+
+  // ---------- source review (R02 import candidates) ----------
+  // Rows of "what the changed source would change": the current value (working copy, revision of the record), the
+  // value in the source, and which source refs of the candidate confirm that field (source_refs[].fields lists the
+  // field or its group). Provenance is per candidate in R02; nothing here is applied automatically.
+  function candidateRows(cand) {
+    const diff = cand && cand.diff && typeof cand.diff === "object" ? cand.diff : {};
+    const refs = cand && cand.content && Array.isArray(cand.content.source_refs) ? cand.content.source_refs : [];
+    const order = PATHS.map((x) => x[0]);
+    const pos = (p) => { const i = order.indexOf(p); return i < 0 ? 999 : i; };
+    return Object.keys(diff).sort((a, b) => pos(a) - pos(b)).map((path) => {
+      const d = diff[path] && typeof diff[path] === "object" ? diff[path] : {};
+      const top = path.split(".")[0];
+      const by = path === "source_refs" ? [] : refs.filter((r) => r && Array.isArray(r.fields) && (r.fields.includes(path) || r.fields.includes(top)));
+      return { path, label: PATH_LABEL[path] || path, before: d.before === undefined ? null : d.before, after: d.after === undefined ? null : d.after, by };
+    });
+  }
+  function describeRef(r) {
+    if (!r || typeof r !== "object") return "источник";
+    let host = "";
+    try { host = r.url ? new URL(r.url).hostname : ""; } catch (e) { host = ""; }
+    return [r.publisher || host || r.id || "источник",
+      r.published_on ? "опубл. " + fmtDate(r.published_on) : "дата публикации неизвестна",
+      r.retrieved_at ? "проверен " + fmtDate(String(r.retrieved_at).slice(0, 10)) : null,
+      ACCESS[r.access_status] ? "доступ: " + ACCESS[r.access_status].toLowerCase() : null].filter(Boolean).join(" · ");
+  }
+  // Form-level values for comparison tables (409, restoring a local copy over a newer revision).
+  function fmtFormValue(key, v) {
+    if (key === "geometry") return describeGeometry(v);
+    if (key === "sources") return Array.isArray(v) && v.length ? v.map((x) => x.url || x.id).join("; ") : "нет";
+    if (v === null || v === undefined || v === "") return key === "description" || key === "evidence_notes" || key === "internal_notes" ? "пусто" : "неизвестно";
+    if (/planned_start|planned_end|actual_end/.test(key)) return fmtDate(v);
+    if (key === "kind") return KINDS[v] || v;
+    if (key === "status") return STATUSES[v] || v;
+    if (key === "evidence_type") return EVIDENCE[v] || v;
+    if (key === "basis") return BASIS[v] || v;
+    if (key === "place") return PLACE[v] ? PLACE[v].split(" — ")[0] : v;
+    if (key === "amount") { const n = parseAmount(v); return Number.isFinite(n) ? fmtMoney(n) : String(v); }
+    if (typeof v === "boolean") return v ? "да" : "нет";
+    const t = String(v);
+    return t.length > 120 ? t.slice(0, 117) + "…" : t;
+  }
+
   // ---------- state matrix ----------
   // UI affordances only: the server decides. Session role is displayed, never used as a source of rights.
   const MATRIX = {
@@ -454,6 +653,12 @@
     if (action === "archive") return { required: true, title: "Причина переноса в архив", suggestions: ["Работы завершены, запись больше не актуальна", "Запись создана по ошибке", "Дубликат другой записи"] };
     if (action === "update" && item && item.publication !== "draft")
       return { required: true, title: "Причина изменения опубликованной записи", suggestions: ["Перенос срока", "Уточнение по источнику", "Исправление ошибки ввода", "Работы завершены"] };
+    // R02 import candidates: apply = an update with the source's content (reason after the first publication);
+    // dismiss = reason optional and not stored by the server.
+    if (action === "apply") return item && item.publication !== "draft"
+      ? { required: true, title: "Причина принятия (служебная история)", suggestions: ["Источник перенёс срок", "Уточнение по источнику"] }
+      : { required: false, title: "Причина принятия (необязательно)", suggestions: ["Уточнение по источнику"] };
+    if (action === "dismiss") return { required: false, optional: true, title: "Почему отклоняете (необязательно; сервер эту причину не сохраняет)", suggestions: ["Источник ошибается", "Уже учтено вручную"] };
     return { required: false, title: "", suggestions: [] };
   }
 
@@ -658,13 +863,14 @@
   }
 
   return {
-    KINDS, STATUSES, PUBLICATION, PRECISION, PLACE, GEOMETRY_KIND, BASIS, EVIDENCE, ACCESS, SOURCE_FIELDS, ASTANA_BBOX, LIMITS, REASON_MIN, PATHS, PATH_LABEL,
-    isIsoDate, todayIso, fmtDate, fmtMoney, parseAmount, parseCoord, inAstana, positionsOf,
+    KINDS, STATUSES, PUBLICATION, PRECISION, PLACE, GEOMETRY_KIND, BASIS, EVIDENCE, ACCESS, SOURCE_FIELDS, SOURCE_FIELD_PATHS, ASTANA_BBOX, LIMITS, REASON_MIN, PATHS, PATH_LABEL,
+    isIsoDate, isIsoTimestamp, todayIso, fmtDate, fmtMoney, parseAmount, parseCoord, inAstana, positionsOf,
     placeOf, placeFields, geometryProblem, polygonFromVertices, describeGeometry, pathLengthM, ringAreaM2,
     emptyForm, formFromItem, newSource, fieldsFromForm, validateForm, validateReason,
     allowedActions, isOriginalLocked, pendingInfo, reasonRule, diffFields, buildChanges, fmtValue,
     pickPublic, previewFromForm, scheduleShift, unwrap, normalizeError, fieldKeyFromPath, findPossibleDuplicate,
     publishProblems, scheduleNote, textLength, NEEDS_SOURCE,
+    validatePublicReason, publicDeadlineMove, candidateRows, describeRef, fmtFormValue, residentView, NO_DATA,
     rebaseForm, fmtDateTime,
   };
 });

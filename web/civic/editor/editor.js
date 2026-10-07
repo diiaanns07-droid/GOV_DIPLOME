@@ -157,11 +157,18 @@
     }
     function onMap(type, fn) { if (!map) return; map.on(type, fn); mapHandlers.push([type, fn]); }
     // The cabinet may open before the map is ready (R01 passes map=null then): look the map up again lazily.
+    let resolving = false;
     function resolveMap() {
-      if (map || !mapGetter || !S.alive) return map;
+      if (!mapGetter || !S.alive || resolving) return map;
       let m = null;
       try { m = mapGetter(); } catch (e) { m = null; }
-      if (m && typeof m.on === "function") { map = m; if (S.view === "edit" && S.form) attachMap(); }
+      if (!(m && typeof m.on === "function")) return map;  // not (yet) available: keep what we have
+      if (m === map) return map;
+      resolving = true;
+      try {
+        if (map) setMap(m);  // the host rebuilt its map: move layers and listeners to the new instance
+        else { map = m; if (S.view === "edit" && S.form) attachMap(); }
+      } finally { resolving = false; }
       return map;
     }
     function setMap(m) {
@@ -234,6 +241,7 @@
       const who = S.switchedFrom;
       S.switchedFrom = null;
       detachMap();
+      S.internalNotes = o.internalNotes === true;
       // drop the previous user's form from the page before anything can stash it into the new user's copy
       Object.assign(S, { view: "loading", item: null, form: null, saved: null, history: [], confirm: null, conflict: null, reauth: false,
         uncertain: null, createKey: null, dup: null, restore: null, preview: false, publicCopy: null, notice: null, logoutAsk: false,
@@ -514,13 +522,15 @@
       S.saved = clone(S.form);
       S.mirror = !item || (item.publication === "draft" && S.form.current_planned_end === S.form.original_planned_end);
       Object.assign(S, { errors: {}, warnings: {}, server: {}, touched: {}, tried: false, confirm: null, reason: "", reasonErr: null,
-        conflict: null, notice: null, preview: false, publicCopy: null, dup: null, lastDirty: false, alert: null, coordDraft: null });
+        conflict: null, notice: null, preview: false, publicCopy: null, dup: null, lastDirty: false, alert: null, coordDraft: null,
+        cands: { state: "idle", items: [] }, confirmCand: null });
       S.restore = RECOVERY.get(item ? item.id : "new") || null;
       S.view = "edit";
       renderHead();
       buildEditor();
       attachMap();
       focusKey("edit-h");
+      if (pendingCandidates(item)) loadCandidates();
     }
     function stashIfDirty(quiet) {
       if (S.view !== "edit" || !S.form || !isDirty()) return;
@@ -607,7 +617,7 @@
     function buildEditor() {
       const it = S.item, acts = C.allowedActions(it, S.session), locked = C.isOriginalLocked(it);
       for (const k of Object.keys(F)) delete F[k];
-      for (const k of ["reauth", "restore", "conflict", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history", "rare"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
+      for (const k of ["reauth", "restore", "conflict", "srcreview", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history", "rare"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
       V.msg.setAttribute("class", "civic-r04-slot-msg");
       const meta = it
         ? el("p", { class: "civic-r04-meta" }, [badge(C.PUBLICATION[it.publication] || String(it.publication), "pub-" + it.publication),
@@ -685,8 +695,8 @@
         el("div", { class: "civic-r04-bar" }, [
           btn("← Все записи", () => showList(true), "link", "back"),
           el("h3", { id: P + "edit-h", tabindex: "-1", "data-fk": "edit-h" }, it ? it.title || "(без названия)" : "Новый объект"), meta]),
-        V.reauth, V.restore, V.conflict, banner, form, V.preview, V.history, review, actions].filter(Boolean)));
-      renderGeometry(); renderSources(); renderSchedNote(); renderReauth(); renderRestore(); renderConflict(); renderPreview(); renderHistory();
+        V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.preview, V.history, review, actions].filter(Boolean)));
+      renderGeometry(); renderSources(); renderSchedNote(); renderSrcReview(); renderReauth(); renderRestore(); renderConflict(); renderPreview(); renderHistory();
       renderDiff(); renderReason(); renderButtons();
       V.msg.replaceChildren(...[msgBlock(S.notice)].filter(Boolean));
       revalidate();
@@ -747,7 +757,7 @@
     function refreshDirty() {
       scheduleLiveStash();
       const d = isDirty();
-      if (d !== S.lastDirty) { S.lastDirty = d; renderReason(); renderButtons(); }
+      if (d !== S.lastDirty) { S.lastDirty = d; renderReason(); renderButtons(); if (S.cands && S.cands.items && S.cands.items.length) renderSrcReview(); }
       renderDiff();
       if (S.preview) renderPreview();
     }
@@ -1049,8 +1059,10 @@
       const kids = list.map((s, i) => {
         const k = (f) => "sources." + i + "." + f;
         const bindSrc = (f, x) => {
-          x.value = s[f] || "";
-          const upd = () => { s[f] = x.value; changed(k(f)); };
+          // an imported date-time (retrieved_at) is shown as its date and kept exactly until the user picks another date
+          const stamped = x.type === "date" && typeof s[f] === "string" && s[f].length > 10 && C.isIsoTimestamp(s[f]);
+          x.value = stamped ? s[f].slice(0, 10) : s[f] || "";
+          const upd = () => { if (stamped && x.value === s[f].slice(0, 10)) return; s[f] = x.value; changed(k(f)); };
           x.addEventListener("input", upd); x.addEventListener("change", upd);
           x.addEventListener("blur", () => touch(k(f)));
           return x;
@@ -1059,11 +1071,15 @@
         const boxes = Object.entries(C.SOURCE_FIELDS).map(([v, l]) => {
           const cb = el("input", { type: "checkbox", value: v, "data-fk": k("fields") + "." + v, checked: (s.fields || []).includes(v) });
           cb.addEventListener("change", () => {
-            s.fields = Object.keys(C.SOURCE_FIELDS).filter((f) => (f === v ? cb.checked : (s.fields || []).includes(f)));
+            const others = (s.fields || []).filter((f) => !Object.prototype.hasOwnProperty.call(C.SOURCE_FIELDS, f));  // e.g. "title", "schedule.current_planned_end"
+            s.fields = Object.keys(C.SOURCE_FIELDS).filter((f) => (f === v ? cb.checked : (s.fields || []).includes(f))).concat(others);
             changed(k("fields"));
           });
           return el("label", { class: "civic-r04-check" }, [cb, " " + l]);
         });
+        const extra = (s.fields || []).filter((f) => !Object.prototype.hasOwnProperty.call(C.SOURCE_FIELDS, f));
+        if (extra.length) boxes.push(el("p", { class: "civic-r04-help", "data-fk": k("fields") + ".extra" },
+          "Также подтверждает (из импорта, сохраняется как есть): " + extra.map((f) => C.PATH_LABEL[f] || f).join(", ") + "."));
         const fe = el("p", { class: "civic-r04-err" }), fw = el("p", { class: "civic-r04-warn" });
         F[k("fields")] = { control: null, err: fe, warn: fw };
         return el("fieldset", { class: "civic-r04-source" }, [
@@ -1128,15 +1144,22 @@
       if (!V.restore) return;
       const r = S.restore;
       if (!r) { V.restore.replaceChildren(); return; }
+      // a copy made on an older revision: show what changed on the server meanwhile before anything is restored
+      const newer = r.revision && S.item && r.revision !== S.item.revision;
+      const rb = newer ? C.rebaseForm(r.base ? C.formFromItem(r.base) : C.emptyForm(), Object.assign(C.emptyForm(), r.form), S.saved) : null;
       V.restore.replaceChildren(el("div", { class: "civic-r04-msg civic-r04-msg-warn", role: "group", "aria-label": "Несохранённые правки" }, [
         el("p", {}, "В этой вкладке есть несохранённые правки этой записи от " + C.fmtDateTime(r.at) + (r.revision ? " (на основе ред. " + r.revision + ")" : "") + "."),
         el("p", { class: "civic-r04-help" }, "Это локальная копия в браузере, не запись на сервере: жители и другие редакторы её не видят, пока вы не сохраните."),
-        el("p", { class: "civic-r04-row-btns" }, [btn("Восстановить правки", restoreDraft, "primary", "restore"),
-          btn("Удалить из памяти", () => { dropRecovery(S.item ? S.item.id : "new"); S.restore = null; renderRestore(); focusKey("edit-h"); }, "ghost", "restore-drop")])]));
+        newer ? el("p", {}, "С тех пор запись изменилась на сервере (сейчас ред. " + S.item.revision + "). Сравните перед восстановлением"
+          + (rb.conflicts.length ? "; в полях, изменённых обеими сторонами, останется ваше значение." : ".")) : null,
+        newer ? compareTable(r.base ? C.formFromItem(r.base) : C.emptyForm(), S.saved, Object.assign(C.emptyForm(), r.form), rb, [r.revision, S.item.revision, "Ваша копия"]) : null,
+        el("p", { class: "civic-r04-row-btns" }, [btn(newer ? "Восстановить мои правки на новой версии" : "Восстановить правки", restoreDraft, "primary", "restore"),
+          btn("Удалить из памяти", () => { dropRecovery(S.item ? S.item.id : "new"); S.restore = null; renderRestore(); focusKey("edit-h"); }, "ghost", "restore-drop")])].filter(Boolean)));
     }
     function restoreDraft() {
       const r = S.restore;
       if (!r) return;
+      closeTool();
       const res = C.rebaseForm(r.base ? C.formFromItem(r.base) : C.emptyForm(), Object.assign(C.emptyForm(), r.form), S.saved);
       dropRecovery(S.item ? S.item.id : "new");
       S.restore = null;
@@ -1147,6 +1170,70 @@
         ? "Правки восстановлены. Эти поля за это время изменились и на сервере — оставлено ваше значение, проверьте: " + res.conflicts.map((k) => FORM_LABEL[k] || k).join(", ") + "."
         : "Правки восстановлены. Проверьте «было/станет» и сохраните.");
       focusKey("msg");
+    }
+    // ----- changed source (R02 import candidates): compare, then accept or dismiss — never applied automatically -----
+    const pendingCandidates = (it) => (it && it.staff && Number.isInteger(it.staff.pending_import_candidates) ? it.staff.pending_import_candidates : 0);
+    let candRoute = null;  // false after a 404: this server does not route /import-candidates (R01 gateway at 56538a3)
+    async function loadCandidates() {
+      const it = S.item;
+      if (!it) return;
+      if (candRoute === false) { S.cands = { state: "unavailable", items: [] }; renderSrcReview(); return; }
+      const my = navSeq;
+      S.cands = { state: "loading", items: [] };
+      renderSrcReview();
+      try {
+        const d = await call("GET", "/staff/objects/" + enc(it.id) + "/import-candidates");
+        if (my !== navSeq || !S.item || S.item.id !== it.id) return;
+        candRoute = true;
+        S.cands = { state: "ok", items: (d && Array.isArray(d.items) ? d.items : []).filter((c) => c && !c.resolved_at) };
+      } catch (e) {
+        if (e === STALE || my !== navSeq) return;
+        const n = C.normalizeError(e);
+        if (n.status === 404 || n.status === 405) { candRoute = false; S.cands = { state: "unavailable", items: [] }; }
+        else S.cands = { state: "error", items: [], text: n.text };
+      }
+      renderSrcReview();
+    }
+    function renderSrcReview() {
+      if (!V.srcreview) return;
+      const it = S.item, c = S.cands || { state: "idle" }, n = pendingCandidates(it);
+      if (!it || (c.state === "idle" && !n)) { V.srcreview.replaceChildren(); return; }
+      const box = (cls, kids) => el("div", { class: "civic-r04-msg civic-r04-msg-" + cls + " civic-r04-srcreview", role: "group", "aria-label": "Изменения источника", "data-fk": "srcreview" }, kids);
+      if (c.state === "loading" || c.state === "idle") { V.srcreview.replaceChildren(box("info", [el("p", {}, "Источник изменился — загружаем сравнение…")])); return; }
+      if (c.state === "unavailable") {
+        V.srcreview.replaceChildren(box("warn", [
+          el("p", {}, "По данным сервера есть " + n + " непросмотренн" + (n === 1 ? "ое изменение" : "ых изменения") + " источника для этой записи."),
+          el("p", { class: "civic-r04-help" }, "Посмотреть и принять их здесь нельзя: этот сервер не отдаёт сравнение (маршрут /import-candidates не подключён). Запись не меняется, пока изменения не приняты.")]));
+        return;
+      }
+      if (c.state === "error") {
+        V.srcreview.replaceChildren(box("warn", [el("p", {}, "Не удалось загрузить изменения источника: " + c.text),
+          el("p", { class: "civic-r04-row-btns" }, [btn("Повторить", loadCandidates, "", "srcreview-retry")])]));
+        return;
+      }
+      if (!c.items.length) { V.srcreview.replaceChildren(); return; }
+      const dirty = isDirty();
+      V.srcreview.replaceChildren(...c.items.map((cand, i) => {
+        const rows = C.candidateRows(cand);
+        const head = el("p", {}, [el("b", {}, "Источник изменился"), " · «" + (cand.source || "источник") + "»" + (cand.external_id ? ", " + cand.external_id : "")
+          + " · получено " + C.fmtDateTime(cand.created_at) + "."]);
+        const rev = el("p", { class: "civic-r04-help" }, "Сравнение с текущей версией записи (ред. " + it.revision + ", включая несохранённые для жителей правки). Ничего не применяется без вашего решения; принятие заменяет поля записи значениями источника целиком.");
+        const locked = cand.original_planned_end_locked ? el("p", { class: "civic-r04-help" }, "Первоначальный срок зафиксирован при первой публикации и не меняется: источник может изменить только актуальный срок.") : null;
+        const table = rows.length ? el("table", { class: "civic-r04-difftable civic-r04-candtable" }, [
+          el("thead", {}, el("tr", {}, [el("th", { scope: "col" }, "Поле"), el("th", { scope: "col" }, "Сейчас (ред. " + it.revision + ")"),
+            el("th", { scope: "col" }, "По источнику"), el("th", { scope: "col" }, "Что подтверждает")])),
+          el("tbody", {}, rows.map((r) => el("tr", { class: r.path === "schedule.current_planned_end" ? "civic-r04-shift" : null }, [
+            el("th", { scope: "row" }, r.label), el("td", {}, C.fmtValue(r.path, r.before)), el("td", {}, C.fmtValue(r.path, r.after)),
+            el("td", {}, r.by.length ? r.by.map((x) => C.describeRef(x)).join("; ") : r.path === "source_refs" ? "список источников" : "источник не указал это поле")])))])
+          : el("p", {}, "Источник совпадает с записью — изменений нет.");
+        return el("div", { class: "civic-r04-msg civic-r04-msg-warn civic-r04-srcreview", role: "group", "aria-label": "Изменения источника " + (i + 1), "data-fk": i === 0 ? "srcreview" : "srcreview-" + i }, [
+          head, rev, locked, table,
+          dirty ? el("p", { class: "civic-r04-help" }, "Сначала сохраните или отмените свои правки: принятие источника заменит поля записи.") : null,
+          el("p", { class: "civic-r04-row-btns" }, [
+            rows.length ? btn("Принять изменения источника…", () => askConfirm("apply", cand), "primary", "cand-apply-" + i, { disabled: !!S.busy || dirty || !!S.confirm }) : null,
+            btn("Отклонить…", () => askConfirm("dismiss", cand), "ghost", "cand-dismiss-" + i, { disabled: !!S.busy || !!S.confirm })].filter(Boolean)),
+        ].filter(Boolean));
+      }));
     }
     function renderConflict() {
       if (!V.conflict) return;
@@ -1169,10 +1256,13 @@
         c.rebase.theirs.length ? el("p", {}, "Изменено на сервере: " + names(c.rebase.theirs) + ".") : null,
         c.rebase.kept.length ? el("p", {}, "Ваши правки (сохранены в форме): " + names(c.rebase.kept) + ".") : el("p", {}, "У вас не было несохранённых правок."),
         c.rebase.conflicts.length ? el("p", { class: "civic-r04-err" }, "Изменены обеими сторонами: " + names(c.rebase.conflicts) + ". При переносе останется ваше значение — проверьте.") : null,
+        c.base ? compareTable(c.base, c.latestForm, S.form, c.rebase, [S.item ? S.item.revision : "?", L.revision]) : null,
+        el("p", { class: "civic-r04-help" }, "Ничего не перезаписано автоматически: ваш ввод остаётся в форме, пока вы не выберете вариант."),
         L.publication !== (S.item && S.item.publication) ? el("p", {}, "Состояние публикации теперь: " + (C.PUBLICATION[L.publication] || L.publication) + ".") : null,
         el("p", { class: "civic-r04-row-btns" }, [
           c.rebase.kept.length ? btn("Перенести мои правки на новую версию", applyRebase, "primary", "rebase") : null,
           c.dropAsk ? null : btn(c.rebase.kept.length ? "Отказаться от моих правок…" : "Открыть новую версию", () => {
+            if (c.base) c.rebase = C.rebaseForm(c.base, S.form, c.latestForm);  // typed after the conflict appeared counts too
             if (c.rebase.kept.length) { c.dropAsk = true; renderConflict(); focusKey("rebase-drop-yes"); return; }
             S.conflict = null; dropRecovery(L.id); openEditor(L, c.history); setNotice("info", "Открыта актуальная версия ред. " + L.revision + ".");
           }, "ghost", "rebase-drop"),
@@ -1183,9 +1273,24 @@
           btn("Нет, вернуться", () => { c.dropAsk = false; renderConflict(); focusKey("rebase"); }, "ghost", "rebase-drop-no")]) : null,
       ].filter(Boolean)));
     }
+    // Per-field comparison: what it was when the form was opened, what the server has now, what the user typed.
+    function compareTable(base, server, mine, rb, revs) {
+      const keys = [...new Set(rb.conflicts.concat(rb.theirs, rb.kept))].filter((k) => k !== "geometry_confirmed");
+      if (!keys.length) return null;
+      return el("table", { class: "civic-r04-difftable civic-r04-cmptable", "data-fk": "compare" }, [
+        el("thead", {}, el("tr", {}, [el("th", { scope: "col" }, "Поле"), el("th", { scope: "col" }, "Было (ред. " + revs[0] + ")"),
+          el("th", { scope: "col" }, "На сервере (ред. " + revs[1] + ")"), el("th", { scope: "col" }, revs[2] || "Ваша правка")])),
+        el("tbody", {}, keys.map((k) => el("tr", { class: rb.conflicts.includes(k) ? "civic-r04-both" : null }, [
+          el("th", { scope: "row" }, (FORM_LABEL[k] || k) + (rb.conflicts.includes(k) ? " — изменено обеими сторонами" : "")),
+          el("td", {}, C.fmtFormValue(k, base[k])),
+          el("td", {}, rb.theirs.includes(k) || rb.conflicts.includes(k) ? C.fmtFormValue(k, server[k]) : "без изменений"),
+          el("td", {}, rb.kept.includes(k) ? C.fmtFormValue(k, mine[k]) : "без изменений")])))]);
+    }
     function applyRebase() {
       const c = S.conflict;
       if (!c) return;
+      closeTool();
+      if (c.base) c.rebase = C.rebaseForm(c.base, S.form, c.latestForm);  // includes what was typed while the panel was open
       S.conflict = null;
       S.item = c.latest;
       S.history = c.history || [];
@@ -1333,7 +1438,7 @@
     function renderReason() {
       if (!V.reason) return;
       const rule = reasonNeeded();
-      if (!rule.required) { rebuild(V.reason, []); return; }
+      if (!rule.required && !S.confirm) { rebuild(V.reason, []); return; }
       const ta = el("textarea", { id: P + "reason", rows: 2, "data-fk": "reason", "aria-describedby": P + "reason-err" });
       ta.value = S.reason;
       ta.addEventListener("input", () => {
@@ -1343,7 +1448,8 @@
       });
       const err = el("p", { class: "civic-r04-err", id: P + "reason-err" }, S.reasonErr || "");
       if (S.reasonErr) ta.setAttribute("aria-invalid", "true");
-      const shifted = S.item && isDirty() && C.diffFields(S.item, currentFields()).some((x) => x.path === "schedule.current_planned_end");
+      const shifted = (S.item && isDirty() && C.diffFields(S.item, currentFields()).some((x) => x.path === "schedule.current_planned_end"))
+        || (S.confirm === "publish" && !!C.publicDeadlineMove(S.item));
       const chips = (shifted ? ["Перенос срока: "] : []).concat((rule.suggestions || []).filter((v) => !(shifted && /^Перенос срока/.test(v))))
         .filter((v, i, a) => a.indexOf(v) === i);
       const oe = S.form.original_planned_end, ce = S.form.current_planned_end;
@@ -1352,17 +1458,27 @@
         : "Сроки неизвестны — в карточке будет «неизвестно».";
       const pend = S.item ? C.pendingInfo(S.item) : { known: false };
       const republish = S.item && S.item.publication === "published";
-      const intro = S.confirm === "publish" && republish
+      const move = S.confirm === "publish" ? C.publicDeadlineMove(S.item) : !S.confirm && !pend.known && S.item ? C.publicDeadlineMove(S.item, currentFields()) : null;
+      const intro = S.confirm === "apply"
+        ? (republish && pend.known ? "Значения источника станут текущей версией записи. Жители увидят их только после «Опубликовать изменения…» — там понадобится понятная публичная причина."
+          : republish ? "Значения источника заменят поля опубликованной записи." : "Значения источника заменят поля черновика.")
+        : S.confirm === "dismiss" ? "Запись не изменится; предложение источника будет отмечено как отклонённое."
+        : S.confirm === "publish" && republish && move
+        ? "Жители увидят новый срок окончания " + C.fmtDate(move.to) + " (был " + C.fmtDate(move.from) + "), первоначальный срок и эту причину в публичной истории. Внутренняя заметка не публикуется."
+        : S.confirm === "publish" && republish
         ? "Жители сейчас видят прежнюю версию. После подтверждения они увидят изменения из таблицы ниже; причина попадёт в публичную историю."
         : S.confirm === "publish"
         ? "После публикации запись увидят жители" + (currentFields().geometry ? " на карте" : " в списке (без точки на карте)") + ". " + fixed
         : S.confirm === "archive" ? "Запись исчезнет из публичного списка. Физического удаления нет — история сохраняется."
         : pend.known ? "Запись опубликована. Причина останется в служебной истории; жители увидят правки после «Опубликовать изменения…»."
         : "Запись опубликована: причину увидят в истории изменений.";
+      const title = { publish: "Публикация", archive: "Перенос в архив", apply: "Принять изменения источника", dismiss: "Отклонить изменения источника" }[S.confirm];
+      const label = S.confirm === "publish" ? (move ? "Причина переноса срока для жителей (видна в публичной истории)" : rule.title + " (видна жителям в истории)")
+        : !S.confirm && move ? "Причина переноса срока (видна жителям в истории)" : rule.title;
       const kids = [
-        S.confirm ? el("h4", { id: P + "confirm-h" }, S.confirm === "publish" ? "Публикация" : "Перенос в архив") : null,
+        S.confirm ? el("h4", { id: P + "confirm-h" }, title) : null,
         el("p", { class: "civic-r04-help" }, intro),
-        el("label", { for: ta.id }, rule.title + " *"), ta,
+        el("label", { for: ta.id }, label + (rule.required ? " *" : "")), ta,
         el("p", { class: "civic-r04-chips", "aria-label": "Быстрый выбор причины" }, chips.map((c, i) => btn(c.trim(), () => {
           S.reason = c; ta.value = c; S.reasonErr = null; err.textContent = ""; ta.removeAttribute("aria-invalid");
           ta.focus(); ta.setSelectionRange(c.length, c.length);
@@ -1377,7 +1493,8 @@
       let kids;
       if (S.confirm) {
         if (V.rare) rebuild(V.rare, []);
-        kids = [btn(S.busy === S.confirm ? "Отправляем…" : S.confirm === "publish" ? "Подтвердить публикацию" : "Перенести в архив", () => doTransition(S.confirm), S.confirm === "publish" ? "primary" : "danger", "confirm", { disabled: busy, "aria-busy": S.busy ? "true" : null }),
+        const cl = { publish: "Подтвердить публикацию", archive: "Перенести в архив", apply: "Принять изменения источника", dismiss: "Отклонить предложение" }[S.confirm];
+        kids = [btn(S.busy === S.confirm ? "Отправляем…" : cl, () => doTransition(S.confirm), S.confirm === "archive" ? "danger" : "primary", "confirm", { disabled: busy, "aria-busy": S.busy ? "true" : null }),
           btn("Отмена", cancelConfirm, "ghost", "confirm-cancel", { disabled: !!S.busy })];
       } else {
         const saveLabel = S.busy === "save" ? "Сохраняем…" : !it ? "Создать черновик" : it.publication === "published" ? "Сохранить изменения" : "Сохранить черновик";
@@ -1399,8 +1516,18 @@
       shell.setAttribute("aria-busy", kind ? "true" : "false");
       if (S.view === "edit") renderButtons();
     }
-    function askConfirm(action) {
-      if (S.busy || isDirty() || !S.item) return;
+    function askConfirm(action, cand) {
+      if (S.busy || !S.item) return;
+      if (S.tool) {
+        setNotice("error", "Рисование не завершено: нажмите «Готово» или «Отмена» (Esc), затем повторите.");
+        focusKey(S.tool.mode !== "point" && S.tool.vertices.length ? "tool-done" : "tool-cancel");
+        return;
+      }
+      if (isDirty()) {
+        if (action === "apply") { setNotice("error", "Сначала сохраните или отмените свои правки: принятие источника заменит поля записи."); focusKey("msg"); }
+        return;
+      }
+      S.confirmCand = action === "apply" || action === "dismiss" ? cand || null : null;
       if (action === "publish") {
         const pp = C.publishProblems(currentFields());
         if (Object.keys(pp).length) {
@@ -1412,14 +1539,14 @@
         }
       }
       S.confirm = action; S.reason = ""; S.reasonErr = null;
-      renderPreview(); renderReason(); renderButtons();
+      renderPreview(); renderReason(); renderButtons(); renderSrcReview();
       focusKey("reason");
     }
     function cancelConfirm() {
       const a = S.confirm;
-      S.confirm = null; S.reason = ""; S.reasonErr = null;
-      renderPreview(); renderReason(); renderButtons();
-      focusKey(a || "save");
+      S.confirm = null; S.reason = ""; S.reasonErr = null; S.confirmCand = null;
+      renderPreview(); renderReason(); renderButtons(); renderSrcReview();
+      focusKey(a === "apply" ? "cand-apply-0" : a === "dismiss" ? "cand-dismiss-0" : a || "save");
     }
 
     // ---------- save / publish / archive ----------
@@ -1450,7 +1577,10 @@
         changes = C.buildChanges(it, fields);
         if (!Object.keys(changes).length) { setNotice("info", "Изменений нет — сохранять нечего."); return; }
       }
-      S.reasonErr = rule.required ? C.validateReason(S.reason) : S.reason.trim() ? C.validateReason(S.reason) : null;
+      // without R02's pending model the update of a published record is public at once: a deadline move needs a resident-readable reason
+      const pubMove = it && !C.pendingInfo(it).known ? C.publicDeadlineMove(it, fields) : null;
+      S.reasonErr = rule.required ? (pubMove ? C.validatePublicReason(S.reason, { deadlineMoved: true }) : C.validateReason(S.reason))
+        : S.reason.trim() ? C.validateReason(S.reason) : null;
       const bad = Object.keys(S.errors);
       if (bad.length || S.reasonErr) {
         renderReason();
@@ -1462,6 +1592,7 @@
         return;
       }
       setBusy("save");
+      const nav0 = navSeq;
       try {
         if (!(await sameUserBeforeWrite())) return;
         let item, ignored = [];
@@ -1492,15 +1623,17 @@
         const wasPublic = !!it && it.publication === "published";
         const pend = C.pendingInfo(item);
         S.reason = "";
-        await reloadDetail(item);
+        const fresh = await reloadDetail(item, nav0);
         const msg = !it ? "Черновик создан (ред. " + item.revision + "). Жители его не видят."
           : "Сохранено (ред. " + item.revision + ")." + (!wasPublic ? "" : pend.known
             ? " Жители пока видят опубликованную версию — чтобы показать правки, нажмите «Опубликовать изменения…»."
             : " Изменение видно жителям и записано в историю.");
-        if (ignored.length) setNotice("warn", msg + " Сервер не принял поля: " + ignored.join(", ") + " — они не сохранены.");
+        if (!fresh) say(msg);  // the user is elsewhere now: announce, do not repaint another record's message
+        else if (ignored.length) setNotice("warn", msg + " Сервер не принял поля: " + ignored.join(", ") + " — они не сохранены.");
         else setNotice("ok", msg);
-        focusKey("msg");
-        if (wasPublic && !pend.known) notifyPublished(item, "update");
+        if (fresh) focusKey("msg");
+        // only a change residents can see moves the public map (an internal note alone does not)
+        if (wasPublic && !pend.known && C.diffFields(it, item).some((d) => d.path !== "internal_notes")) notifyPublished(item, "update");
         updateListCache(item);
       } catch (e) {
         if (e === STALE) return;
@@ -1513,23 +1646,37 @@
     }
     async function doTransition(action) {
       if (S.busy || !S.item || isDirty()) return;
-      S.reasonErr = C.validateReason(S.reason);
+      const rule = C.reasonRule(S.item, action), cand = S.confirmCand;
+      if (action === "publish") S.reasonErr = C.validatePublicReason(S.reason, { deadlineMoved: !!C.publicDeadlineMove(S.item) });
+      else if (rule.required || S.reason.trim()) S.reasonErr = C.validateReason(S.reason);
+      else S.reasonErr = null;
       if (S.reasonErr) { renderReason(); focusKey("reason"); say(S.reasonErr, true); return; }
-      const it = S.item, wasPublic = it.publication === "published";
+      if ((action === "apply" || action === "dismiss") && (!cand || cand.id === undefined)) return;
+      const it = S.item, wasPublic = it.publication === "published", pendKnown = C.pendingInfo(it).known;
       setBusy(action);
+      const nav0 = navSeq;
       try {
         if (!(await sameUserBeforeWrite())) return;
-        const d = await call("POST", "/staff/objects/" + enc(it.id) + "/" + action, { expected_revision: it.revision, reason: S.reason.trim() });
+        const path = action === "apply" || action === "dismiss"
+          ? "/staff/objects/" + enc(it.id) + "/import-candidates/" + enc(String(cand.id)) + "/" + action
+          : "/staff/objects/" + enc(it.id) + "/" + action;
+        const d = await call("POST", path, { expected_revision: it.revision, reason: S.reason.trim() });
         const item = d && d.item;
         if (!item || !item.id) throw Object.assign(new Error("Сервер не вернул запись"), { status: 500 });
-        S.confirm = null; S.reason = "";
-        await reloadDetail(item);
-        setNotice("ok", action === "publish"
+        S.confirm = null; S.reason = ""; S.confirmCand = null;
+        const fresh = await reloadDetail(item, nav0);
+        const shown = fresh && S.item ? S.item : item;
+        (fresh ? (t) => setNotice("ok", t) : (t) => say(t))(action === "publish"
           ? (wasPublic ? "Изменения опубликованы (ред. " + item.revision + ")." : item.geometry ? "Опубликовано: жители видят запись на карте." : "Опубликовано: жители видят запись в списке, без точки на карте.")
+          : action === "apply"
+          ? (shown.revision === it.revision ? "Источник совпадал с записью — изменений нет; предложение закрыто."
+            : wasPublic && pendKnown ? "Изменения источника приняты (ред. " + shown.revision + "). Жители их пока не видят — нажмите «Опубликовать изменения…» и объясните причину."
+            : "Изменения источника приняты (ред. " + shown.revision + ").")
+          : action === "dismiss" ? "Предложение источника отклонено. Запись не изменилась."
           : "Запись в архиве и скрыта из публичного списка. История сохранена.");
-        focusKey("msg");
-        if (action === "publish" || wasPublic) notifyPublished(item, action);
-        updateListCache(item);
+        if (fresh) focusKey("msg");
+        if (action === "publish" || action === "archive" ? (action === "publish" || wasPublic) : action === "apply" && wasPublic && !pendKnown) notifyPublished(item, action === "apply" ? "update" : action);
+        updateListCache(item);  // the comparison is reloaded by openEditor() while candidates are pending
       } catch (e) {
         if (e === STALE) return;
         onActionError(e, action);
@@ -1537,7 +1684,10 @@
         if (S.alive && S.busy === action) setBusy(null);
       }
     }
-    async function reloadDetail(item) {
+    // nav0: navigation token taken when the action started; if the user has opened something else since, the finished
+    // action does not pull the old record back onto the screen (returns false; the caller only announces the result).
+    async function reloadDetail(item, nav0) {
+      if (nav0 !== undefined && nav0 !== navSeq) { if (S.busy) setBusy(null); return false; }
       let it = item, hist = S.history;
       try {
         const d = await call("GET", "/staff/objects/" + enc(item.id));
@@ -1546,10 +1696,12 @@
         if (e === STALE) throw e;
         /* the action itself succeeded; history refresh can wait */
       }
+      if (nav0 !== undefined && nav0 !== navSeq) { if (S.busy) setBusy(null); return false; }
       const notice = S.notice;
       setBusy(null);
       openEditor(it, hist);
       S.notice = notice;
+      return true;
     }
     function notifyPublished(item, action) {
       if (!onPublished) return;
@@ -1559,25 +1711,43 @@
       const it = S.item;
       try {
         const d = await call("GET", "/staff/objects/" + enc(it.id));
-        const latest = d.item;
-        S.conflict = { latest, history: d.history || [], rebase: C.rebaseForm(S.saved, S.form, C.formFromItem(latest)) };
+        const latest = d && d.item;
+        if (!latest || !latest.id) throw Object.assign(new Error("Сервер не вернул запись"), { status: 404 });
+        closeTool();
+        // publish/archive whose answer was lost: the server shows it happened -> tell the map anyway
+        if ((action === "publish" || action === "archive") && latest.publication !== it.publication
+          && (action === "publish" ? latest.publication === "published" : latest.publication === "archived")) notifyPublished(latest, action);
+        const latestForm = C.formFromItem(latest);
+        S.conflict = { latest, history: d.history || [], base: clone(S.saved), latestForm, rebase: C.rebaseForm(S.saved, S.form, latestForm) };
         S.confirm = null;
         renderConflict(); renderReason(); renderPreview(); renderButtons();
         setNotice("error", action === "save" ? n : { text: "Запись изменилась на сервере — возможно, действие уже выполнено при обрыве связи. Проверьте состояние ниже." });
         focusKey(S.conflict.rebase.kept.length ? "rebase" : "rebase-drop");
       } catch (e) {
         if (e === STALE) return;
-        setNotice("error", C.normalizeError(e));
+        const n = C.normalizeError(e);
+        if (n.kind === "auth") { closeTool(); S.reauth = true; renderReauth(); renderButtons(); setNotice("error", n); focusKey("relogin-user"); return; }
+        setNotice("error", n);
       }
     }
     function onActionError(e, action) {
       const n = C.normalizeError(e);
       const retry = { label: "Повторить", fk: "retry", fn: () => (action === "save" ? save() : action === "publish" || action === "archive" ? doTransition(action) : null) };
       if (n.kind === "auth") {
+        closeTool();
         S.reauth = true;
         renderReauth(); renderButtons();
         setNotice("error", n);
         focusKey("relogin-user");
+        return;
+      }
+      if (n.kind === "conflict" && (action === "apply" || action === "dismiss")) {
+        S.confirm = null; S.confirmCand = null; S.reason = "";
+        const it = S.item;
+        reloadDetail(it).then(() => {
+          setNotice("error", "Запись или предложение источника изменились (сейчас ред. " + (S.item ? S.item.revision : "?") + "). Сравнение обновлено, ничего не применено — проверьте и решите заново.");
+          focusKey("srcreview");
+        }, () => {});
         return;
       }
       if (n.kind === "conflict") { loadConflict(n, action); return; }
@@ -1611,7 +1781,7 @@
     function handleError(e) {
       const n = C.normalizeError(e);
       if (n.kind === "auth") {
-        if (S.view === "edit") { S.reauth = true; renderReauth(); renderButtons(); setNotice("error", n); focusKey("relogin-user"); }
+        if (S.view === "edit") { closeTool(); S.reauth = true; renderReauth(); renderButtons(); setNotice("error", n); focusKey("relogin-user"); }
         else { S.session = { authenticated: false, user: null }; showLogin(Object.assign({ type: "error", actions: [] }, n, { text: "Сессия истекла или не начата. Войдите снова." })); }
       } else if (S.view === "edit") setNotice("error", n);
       else { S.alert = Object.assign({ type: "error", actions: [] }, n); renderAlertOnly(); say(n.text, true); }
@@ -1629,6 +1799,7 @@
       if (pendingOpen) { pendingOpen.resolve(false); pendingOpen = null; }
       detachMap();
       clearRecovery();
+      S.internalNotes = o.internalNotes === true;
       Object.assign(S, { session: { authenticated: false, user: null }, view: "login", item: null, form: null, saved: null, history: [],
         list: { items: [], next: null, filter: "draft", mine: false, loaded: false, loading: false }, busy: null, confirm: null, reason: "",
         conflict: null, reauth: false, uncertain: null, createKey: null, dup: null, restore: null, preview: false, publicCopy: null, notice: null, alert: null, logoutAsk: false });

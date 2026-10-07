@@ -117,6 +117,25 @@
 .civic-r04-diff th, .civic-r04-diff td { text-align: left; vertical-align: top; padding: 6px 4px; border-bottom: 1px solid var(--r4-line); overflow-wrap: anywhere; }
 .civic-r04-diff thead th { color: var(--r4-muted); font-weight: 600; }
 .civic-r04-shift td:last-child { color: var(--r4-accent); font-weight: 700; }
+/* changed source and 409 comparisons: four columns that wrap instead of widening the drawer */
+.civic-r04-difftable { border-collapse: collapse; width: 100%; font-size: 13px; table-layout: fixed; margin: 6px 0; background: #fff; }
+.civic-r04-difftable th, .civic-r04-difftable td { text-align: left; vertical-align: top; padding: 6px 4px; border-bottom: 1px solid var(--r4-line); overflow-wrap: anywhere; }
+.civic-r04-difftable thead th { color: var(--r4-muted); font-weight: 600; }
+.civic-r04-candtable .civic-r04-shift td:nth-child(3) { color: var(--r4-accent); font-weight: 700; }
+.civic-r04-both th { color: var(--r4-red); }
+.civic-r04-srcreview { border-left: 4px solid var(--r4-amber); }
+@container r04 (max-width: 420px) {
+  .civic-r04-difftable, .civic-r04-difftable tbody, .civic-r04-difftable tr { display: block; width: 100%; }
+  .civic-r04-difftable thead { display: none; }
+  .civic-r04-difftable th[scope=row] { display: block; padding-top: 8px; }
+  .civic-r04-difftable td { display: block; border: 0; padding: 2px 4px; }
+  .civic-r04-candtable td:nth-of-type(1)::before { content: "Сейчас: "; color: var(--r4-muted); }
+  .civic-r04-candtable td:nth-of-type(2)::before { content: "По источнику: "; color: var(--r4-muted); }
+  .civic-r04-candtable td:nth-of-type(3)::before { content: "Подтверждает: "; color: var(--r4-muted); }
+  .civic-r04-cmptable td:nth-of-type(1)::before { content: "Было: "; color: var(--r4-muted); }
+  .civic-r04-cmptable td:nth-of-type(2)::before { content: "На сервере: "; color: var(--r4-muted); }
+  .civic-r04-cmptable td:nth-of-type(3)::before { content: "Ваше: "; color: var(--r4-muted); }
+}
 
 /* sticky action bar at the bottom of the scrolling body */
 /* only buttons and the current message are sticky; the diff and the reason are in the page flow (.civic-r04-review) */

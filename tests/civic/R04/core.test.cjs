@@ -405,3 +405,33 @@ test("round 12 (walkthrough): after a lost create answer, an edited title still 
   assert.equal(C.findPossibleDuplicate(items, Object.assign({}, f, { description: "Другой объект" }), since), null, "a different object is not offered");
   assert.equal(C.findPossibleDuplicate(items, f, null), null, "without an uncertain attempt only exact matches count");
 });
+
+test("round 13: retrieved_at accepts an ISO date-time as R02 does (imported sources); published_on stays a date", () => {
+  const form = validForm({ evidence_type: "observed" });
+  const s = withSource(form, ["schedule"]);
+  s.access_status = "fetched";
+  s.retrieved_at = "2026-10-05T10:00:00+05:00";
+  assert.deepEqual(check(form).errors, {}, "an R02/R05 timestamp does not block saving an imported record");
+  s.retrieved_at = "2026-10-05T25:00";
+  assert.ok(check(form).errors["sources.0.retrieved_at"]);
+  s.retrieved_at = "2026-10-05";
+  s.published_on = "2026-10-01T09:00:00Z";
+  assert.ok(check(form).errors["sources.0.published_on"], "R02 clean_date: published_on is a date only");
+});
+
+test("round 13: a deadline move residents see needs a resident-readable reason; source rows carry provenance", () => {
+  assert.match(C.validatePublicReason("Уточнение по источнику", { deadlineMoved: true }), /почему срок перенесён/);
+  assert.match(C.validatePublicReason("Перенос срока: задержка", { deadlineMoved: true }), /почему срок перенесён/);
+  assert.equal(C.validatePublicReason("Перенос срока: подрядчик сообщил о задержке поставки плитки", { deadlineMoved: true }), null);
+  assert.equal(C.validatePublicReason("Уточнение по источнику", { deadlineMoved: false }), null, "no extra rule without a deadline move");
+  const pub = { publication: "published", schedule: { current_planned_end: "2026-11-30" },
+    staff: { has_unpublished_changes: true, public_item: { schedule: { current_planned_end: "2026-10-20" } } } };
+  assert.deepEqual(C.publicDeadlineMove(pub), { from: "2026-10-20", to: "2026-11-30" });
+  assert.equal(C.publicDeadlineMove({ publication: "draft", schedule: {} }), null);
+  const rows = C.candidateRows({ diff: { "schedule.current_planned_end": { before: "2026-10-20", after: "2026-11-30" }, title: { before: "a", after: "b" } },
+    content: { source_refs: [{ id: "s1", url: "https://www.gov.kz/x", publisher: "Акимат", fields: ["schedule"], published_on: "2026-10-01", access_status: "fetched" }] } });
+  assert.deepEqual(rows.map((r) => [r.path, r.by.length]), [["title", 0], ["schedule.current_planned_end", 1]], "ordered as the form, provenance per field");
+  assert.match(C.describeRef(rows[1].by[0]), /^Акимат · опубл\. 01\.10\.2026 · доступ: открыт и прочитан$/);
+  assert.equal(C.fmtFormValue("amount", ""), "неизвестно", "an empty budget is unknown, never 0");
+  assert.equal(C.fmtFormValue("current_planned_end", "2026-11-30"), "30.11.2026");
+});
