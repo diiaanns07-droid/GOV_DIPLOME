@@ -1,0 +1,66 @@
+{
+ "passed": 12,
+ "failed": 0,
+ "results": [
+  {
+   "name": "feedback module ready in gateway",
+   "status": "PASS",
+   "detail": "{\"store\":{\"label\":\"Объекты и доступ редактора (R02)\",\"status\":\"ready\"},\"feedback\":{\"label\":\"Сообщения жителей (R06)\",\"status\":\"ready\"},\"scenarios\":{\"label\":\"Сравнение ограничений (R07)\",\"status\":\"ready\"},\"assistant\":{\"label\":\"Помощник по фактам (R09)\",\"status\":\"ready\"}}"
+  },
+  {
+   "name": "official notice in app form",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "receipt in app",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "moderation button hidden for anonymous",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "detail route served by gateway (history available)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "approved in app",
+   "status": "PASS",
+   "detail": "{\"h4\":\"Сообщение #1 · Проверено модератором платформы\",\"status\":\"\"}"
+  },
+  {
+   "name": "handling status answered in app",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "staff note saved in app",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "public card shows XSS as text",
+   "status": "PASS",
+   "detail": "{\"imgs\":0,\"flag\":null}"
+  },
+  {
+   "name": "public card has no staff note",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "staff queue refused after logout",
+   "status": "PASS",
+   "detail": "401"
+  },
+  {
+   "name": "no page errors",
+   "status": "PASS",
+   "detail": null
+  }
+ ]
+}
