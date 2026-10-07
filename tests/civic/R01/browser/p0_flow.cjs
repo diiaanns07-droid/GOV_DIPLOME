@@ -175,6 +175,9 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     check("card shows original and current deadline", /30 октября 2026/.test(cardText) && /15 ноября 2026/.test(cardText), cardText.slice(0, 300));
     check("card shows history reason", /задержке/.test(cardText));
     check("card shows synthetic label", /Демо|синтет/i.test(cardText));
+    const btnColors = await page.evaluate(() => { const b = document.querySelector("#civic-map-root [data-r03-action=feedback]"); const cs = b && getComputedStyle(b);
+      return cs ? { color: cs.color, bg: cs.backgroundColor, text: b.textContent.trim() } : null; });
+    check("card action button text is visible (color differs from background)", !!btnColors && btnColors.color !== btnColors.bg && /\S/.test(btnColors.text), btnColors);
     check("selected object permalink in URL", (await page.evaluate(() => location.hash)).includes(encodeURIComponent(createdId)));
     await page.screenshot({ path: path.join(OUT, "04_resident_card_1440.png") });
 

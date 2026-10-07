@@ -85,3 +85,8 @@
 @media (prefers-reduced-motion: reduce) {
   .civic-panel, .civic-mode .maplibregl-ctrl-bottom-right { transition: none; }
 }
+
+/* Adapter for R03 @1bc9c48 (not an R01 style): in civic-map.css `.civic-r03-root button { color: inherit }`
+ * outranks `.civic-r03-btn-primary { color: #fff }`, so the primary card button text («Задать вопрос
+ * по объекту») matched its dark background. Remove once R03 fixes the specificity. */
+.civic-r03-root .civic-r03-btn-primary { color: #fff; }
