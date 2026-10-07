@@ -155,7 +155,7 @@ def test_cli_export_and_restore_public(service, editor, tmp_path):
 
 
 def test_existing_older_schema_with_data_migrates_without_loss(tmp_path, monkeypatch):
-    """База кода с миграциями 1–3 (до решения по кандидатам) с данными обновляется до текущей."""
+    """База кода с миграциями 1–3 (до решения по кандидатам) с данными обновляется до текущей (4, 5)."""
     import ui.civic_store.db as dbmod
     path = tmp_path / "old.sqlite3"
     monkeypatch.setattr(dbmod, "MIGRATIONS", MIGRATIONS[:3])
@@ -182,7 +182,7 @@ def test_existing_older_schema_with_data_migrates_without_loss(tmp_path, monkeyp
     before = all_rows(path)
     with pytest.raises(Exception, match="миграц"):
         CivicService(path, auto_migrate=False)  # старая схема не используется молча
-    assert Database(path).migrate() == [4]
+    assert Database(path).migrate() == [4, 5]
     after = all_rows(path)
     assert after == before  # данные и история не потеряны и не переписаны
     service = CivicService(path, auto_migrate=False)
@@ -191,7 +191,7 @@ def test_existing_older_schema_with_data_migrates_without_loss(tmp_path, monkeyp
     assert Database(path).migrate() == []
     conn = sqlite3.connect(path)
     try:
-        assert [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")] == [1, 2, 3, 4]
+        assert [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")] == [1, 2, 3, 4, 5]
     finally:
         conn.close()
 

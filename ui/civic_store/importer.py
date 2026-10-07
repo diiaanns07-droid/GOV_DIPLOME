@@ -228,13 +228,27 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
                 (meta["source"], report["package_digest"], iso(utc_now(repo.clock)), actor.label,
                  _canonical(report)))
             import_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
+            now = iso(utc_now(repo.clock))
             for entry, candidate in candidates:
                 if candidate:
-                    conn.execute(
+                    if candidate.get("reopen"):
+                        conn.execute(
+                            """UPDATE civic_import_candidates SET resolved_at = NULL, resolution = NULL,
+                                   import_id = ?, created_at = ?
+                               WHERE source = ? AND external_id = ? AND digest = ?""",
+                            (import_id, now, meta["source"], entry["external_id"], candidate["digest"]))
+                    inserted = candidate.get("reopen") or conn.execute(
                         """INSERT OR IGNORE INTO civic_import_candidates(import_id, object_id, source,
                                external_id, digest, data_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)""",
                         (import_id, entry["object_id"], meta["source"], entry["external_id"],
-                         candidate["digest"], _canonical(candidate["content"]), iso(utc_now(repo.clock))))
+                         candidate["digest"], _canonical(candidate["content"]), now)).rowcount
+                    if inserted:
+                        # Источник изменился снова: прежняя нерассмотренная версия заменена. Форма,
+                        # открытая на ней, получит 409, а не применит устаревшие данные.
+                        conn.execute(
+                            """UPDATE civic_import_candidates SET resolved_at = ?, resolution = 'superseded'
+                               WHERE object_id = ? AND source = ? AND resolved_at IS NULL AND digest != ?""",
+                            (now, entry["object_id"], meta["source"], candidate["digest"]))
     except _DryRun as dry:
         if rejected:
             raise ImportRejected("Пакет содержит недопустимые записи; ничего не импортировано "
@@ -423,6 +437,10 @@ def _apply_one(repo, conn, actor, source, external_id, content, digest, reason) 
                              {"digest": digest, "content": content})
     elif previous["resolution"] is None:
         detail, candidate = "изменение уже ждёт редактора", None
+    elif previous["resolution"] == "superseded":
+        # Источник вернулся к версии, которую заменила более новая: актуальной снова становится она.
+        detail, candidate = ("источник вернулся к ранее заменённой версии; она снова ждёт решения",
+                             {"digest": digest, "content": content, "reopen": True})
     else:
         detail, candidate = f"эта версия уже рассмотрена редактором ({previous['resolution']})", None
     return {"action": "editor_review", "object_id": row["id"], "detail": detail, "_candidate": candidate,

@@ -1,6 +1,6 @@
 # R02 раунд 13 — импорт, источники и сохранность истории
 
-Статус: PARTIAL (checkpoint 1)
+Статус: PARTIAL (checkpoint 2)
 Ветка: claude/elegant-franklin-jbhprq, продолжение поставки 9366217 (код раунда 12 bd7a911).
 База сравнения: 56538a3. Поставка R05: ca0f06f8245e24adcae751acea321d19d9366576.
 
@@ -15,4 +15,17 @@
   observed_source_not_fetched. Ничего не исправляется автоматически.
 - Synthetic fixture (demo-срез, 2 записи) — отдельно: только черновики, остаются synthetic.
 
-Следующий шаг: контракт diff для проверки кандидата (поля, источники, частичное принятие) и устаревание кандидатов.
+- Миграция 5: след решения по кандидату (resolution_reason, resolution_fields_json, resolved_revision).
+- GET /staff/objects/{id}/import-candidates: прежние ключи сохранены; добавлены review.fields
+  (current/proposed/previous_import, changed_by_source/editor, conflict, proposed_sources/current_sources),
+  review.locked_fields, decision{by,reason,accepted_fields,resulting_revision}, pending.
+- POST .../apply принимает необязательный fields — частичное принятие (partially_applied);
+  отклонённые поля не предлагаются повторно тем же пакетом. Неверный список/недопустимый результат — 422 без записи.
+- Новая версия источника заменяет нерассмотренную (superseded) -> форма на старой версии получает 409;
+  возврат источника к заменённой версии снова делает её актуальной.
+- Два редактора на одном кандидате: один 200, второй 409; история непрерывна.
+- Приёмка create draft -> publish -> changed source -> review -> accepted update -> publish -> 409,
+  проверено после перезапуска сервиса на том же файле (test_r02_round13_review.py).
+Проверки: tests/civic — 769 passed, 2 skipped.
+
+Следующий шаг: export/restore и полный backup, метаданные /staff/meta для R04, fixtures, передача.

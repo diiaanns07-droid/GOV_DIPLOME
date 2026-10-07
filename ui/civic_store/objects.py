@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import base64
 from dataclasses import dataclass
+from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 import json
 import re
@@ -17,7 +18,7 @@ import secrets
 from . import dto
 from .db import Database
 from .validate import (CONTENT_FIELDS, KINDS, PUBLICATIONS, STATUSES, ValidationError,
-                       clean_internal_notes, clean_reason, diff, is_valid_id, merge_content,
+                       clean_internal_notes, clean_reason, diff, flatten, is_valid_id, merge_content,
                        parse_date, split_payload, validate_content, validate_for_publication)
 
 
@@ -456,34 +457,90 @@ class ObjectRepository:
                 _loads(row["data_json"])["schedule"]["original_planned_end"]
         return content
 
+    @staticmethod
+    def _field_sources(content, path) -> list[str]:
+        return [ref["id"] for ref in content.get("source_refs") or [] if path in (ref.get("fields") or [])]
+
+    def _review(self, conn, row, cand) -> dict:
+        """Поле за полем: что сейчас в карточке, что предлагает источник, что было в прошлой
+        принятой версии источника, кто изменил поле (источник/редактор) и какие ссылки его подтверждают."""
+        from .importer import last_imported_content, source_refs_change  # importer импортирует objects
+        current = _loads(row["data_json"])
+        proposed = self._candidate_content(row, cand["data_json"])
+        base = last_imported_content(conn, row)
+        flat_cur, flat_new = flatten(current), flatten(proposed)
+        flat_base = flatten(base) if base is not None else None
+        fields = []
+        for path in sorted(diff(current, proposed)):
+            entry = {"path": path, "current": flat_cur.get(path), "proposed": flat_new.get(path),
+                     "proposed_sources": self._field_sources(proposed, path),
+                     "current_sources": self._field_sources(current, path)}
+            if flat_base is not None:
+                entry["previous_import"] = flat_base.get(path)
+                entry["changed_by_source"] = flat_base.get(path) != flat_new.get(path)
+                entry["changed_by_editor"] = flat_base.get(path) != flat_cur.get(path)
+                entry["conflict"] = entry["changed_by_source"] and entry["changed_by_editor"]
+            fields.append(entry)
+        locked = row["first_published_at"] is not None
+        source_original = (_loads(cand["data_json"]).get("schedule") or {}).get("original_planned_end")
+        kept = (current.get("schedule") or {}).get("original_planned_end")
+        return {
+            "fields": fields,
+            "source_refs_change": source_refs_change(current.get("source_refs"), proposed.get("source_refs")),
+            "base_known": base is not None,
+            "locked_fields": ([{"path": "schedule.original_planned_end", "kept": kept, "source_value": source_original,
+                                "note": "Первоначальный срок зафиксирован первой публикацией и не меняется кандидатом."}]
+                              if locked and source_original != kept else []),
+        }
+
     def list_candidates(self, object_id) -> dict:
+        """Кандидаты импорта объекта. Ключи id/content/diff/... — прежний контракт; review — разбор по полям."""
         if not is_valid_id(object_id):
             raise BadRequest("Недопустимый ID объекта.", {"id": "Пустой или недопустимый ID."})
         with self.db.read() as conn:
-            row = conn.execute("SELECT data_json, first_published_at FROM civic_objects WHERE id = ?",
-                               (object_id,)).fetchone()
+            row = conn.execute("SELECT * FROM civic_objects WHERE id = ?", (object_id,)).fetchone()
             if row is None:
                 raise NotFound(object_id)
             current = _loads(row["data_json"])
             rows = conn.execute(
-                """SELECT id, source, external_id, digest, data_json, created_at, resolved_at, resolution
-                   FROM civic_import_candidates WHERE object_id = ? ORDER BY id DESC""", (object_id,)).fetchall()
-        return {"items": [{
-            "id": r["id"], "source": r["source"], "external_id": r["external_id"], "digest": r["digest"],
-            "created_at": r["created_at"], "resolved_at": r["resolved_at"], "resolution": r["resolution"],
-            "content": _loads(r["data_json"]),
-            "diff": diff(current, self._candidate_content(row, r["data_json"])),
-            "original_planned_end_locked": row["first_published_at"] is not None,
-        } for r in rows]}
+                """SELECT c.*, u.username AS resolved_by_name FROM civic_import_candidates c
+                   LEFT JOIN civic_users u ON u.id = c.resolved_by
+                   WHERE c.object_id = ? ORDER BY c.id DESC""", (object_id,)).fetchall()
+            items = []
+            for r in rows:
+                item = {
+                    "id": r["id"], "source": r["source"], "external_id": r["external_id"], "digest": r["digest"],
+                    "created_at": r["created_at"], "resolved_at": r["resolved_at"], "resolution": r["resolution"],
+                    "content": _loads(r["data_json"]),
+                    "diff": diff(current, self._candidate_content(row, r["data_json"])),
+                    "original_planned_end_locked": row["first_published_at"] is not None,
+                    "object_revision": row["revision"],
+                    "decision": ({"by": r["resolved_by_name"], "reason": r["resolution_reason"],
+                                  "accepted_fields": _loads(r["resolution_fields_json"]),
+                                  "resulting_revision": r["resolved_revision"]}
+                                 if r["resolved_at"] is not None else None),
+                }
+                if r["resolved_at"] is None:
+                    item["review"] = self._review(conn, row, r)
+                items.append(item)
+        return {"items": items, "pending": sum(1 for item in items if item["resolution"] is None)}
 
     def resolve_candidate(self, actor: Actor, object_id, candidate_id, *, action, expected_revision,
-                          reason) -> dict:
-        """apply — правка объекта содержимым кандидата (как обычный update: reason, 409); dismiss — отказ."""
+                          reason, fields=None) -> dict:
+        """apply — правка объекта содержимым кандидата (как обычный update: reason, 409); dismiss — отказ.
+
+        fields (необязательно) — принять только эти пути из review.fields; остальные изменения
+        источника отклоняются этим же решением (resolution=partially_applied). Всё в одной транзакции:
+        устаревшая ревизия, заменённый кандидат или недопустимый результат — отказ без частичной записи.
+        """
         if not is_valid_id(object_id):
             raise BadRequest("Недопустимый ID объекта.", {"id": "Пустой или недопустимый ID."})
         candidate_key = ascii_int(candidate_id)
         if candidate_key is None:
             raise BadRequest("Недопустимый ID кандидата.", {"candidate_id": "Целое число."})
+        if fields is not None and (action != "apply" or not isinstance(fields, list) or not fields
+                                   or len(fields) > 100 or not all(isinstance(f, str) for f in fields)):
+            raise ValidationError({"fields": "Непустой список путей из review.fields (только для apply)."})
         with self.db.write() as conn:
             row = self._locked_row(conn, object_id, expected_revision)
             cand = conn.execute(
@@ -492,17 +549,42 @@ class ObjectRepository:
             if cand is None:
                 raise NotFound(candidate_id)
             if cand["resolved_at"] is not None:
+                if cand["resolution"] == "superseded":
+                    raise Conflict("Источник изменился ещё раз: эта версия заменена новой. "
+                                   "Откройте актуального кандидата.", row["revision"])
                 raise Conflict("Кандидат уже рассмотрен.", row["revision"])
             now = iso(utc_now(self.clock))
+            reason_text = clean_reason(reason, required=False)
+            accepted = None
+            resolution = "dismissed"
             if action == "apply":
-                content = self._candidate_content(row, cand["data_json"])
+                current = self._content(row)
+                proposed = self._candidate_content(row, cand["data_json"])
+                changed = sorted(diff(current, proposed))
+                accepted = changed if fields is None else sorted(set(fields))
+                unknown = [f for f in accepted if f not in changed]
+                if unknown:
+                    raise ValidationError({"fields": "Нет среди изменений кандидата: " + ", ".join(unknown[:10])})
+                content = deepcopy(current)
+                flat = flatten(proposed)
+                for path in accepted:
+                    if "." in path:
+                        head, tail = path.split(".", 1)
+                        content[head][tail] = deepcopy(flat[path])
+                    else:
+                        content[path] = deepcopy(flat[path])
                 self._update(conn, actor, object_id, row["revision"], content, ..., [], reason, None)
+                # Эта версия источника рассмотрена: повторный импорт того же содержимого — skip_unchanged,
+                # отклонённые поля не предлагаются снова и не затирают выбор редактора.
                 conn.execute("UPDATE civic_objects SET import_digest = ? WHERE id = ?", (cand["digest"], object_id))
-            else:
-                clean_reason(reason, required=False)
+                resolution = "applied" if accepted == changed else "partially_applied"
+            revision = conn.execute("SELECT revision FROM civic_objects WHERE id = ?", (object_id,)).fetchone()[0]
             conn.execute(
-                """UPDATE civic_import_candidates SET resolved_at = ?, resolution = ?, resolved_by = ?
-                   WHERE id = ?""", (now, "applied" if action == "apply" else "dismissed", actor.user_id, cand["id"]))
+                """UPDATE civic_import_candidates SET resolved_at = ?, resolution = ?, resolved_by = ?,
+                       resolution_reason = ?, resolution_fields_json = ?, resolved_revision = ?
+                   WHERE id = ?""",
+                (now, resolution, actor.user_id, reason_text,
+                 _dumps(accepted) if accepted is not None else None, revision, cand["id"]))
             return self._staff_item(conn, object_id)
 
     def get_staff(self, object_id) -> dict:

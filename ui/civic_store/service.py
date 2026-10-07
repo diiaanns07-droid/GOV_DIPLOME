@@ -428,7 +428,7 @@ class CivicService:
             return denied
         item = self.objects.resolve_candidate(principal.actor(), object_id, candidate_id, action=action,
                                               expected_revision=payload.get("expected_revision"),
-                                              reason=payload.get("reason"))
+                                              reason=payload.get("reason"), fields=payload.get("fields"))
         return ok({"item": item})
 
     def _staff_audit(self, context, params, payload):
