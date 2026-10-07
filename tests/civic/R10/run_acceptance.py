@@ -15,6 +15,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import os
 from pathlib import Path
 import platform
 import re
@@ -133,6 +134,10 @@ def main():
         "command": " ".join([Path(sys.executable).name, "-I", "-B", *sys.argv]),
         "python": platform.python_version(), "platform": platform.platform(),
         "target": tgt.describe() if tgt else {"target": None, "note": "no test started a server"},
+        # Module checks start no server: record every checkout they were pointed at, with its SHA.
+        "code_roots": {k: {"path": v, "sha": target_mod.git_sha(Path(v)), "dirty": target_mod.git_dirty(Path(v))}
+                       for k, v in sorted(os.environ.items())
+                       if k.startswith("R10_") and k.endswith("_ROOT") and v and Path(v).is_dir()},
         "suite_files": suite_hashes(),
         "counts": counts,
         "acceptance": rollup(rows),

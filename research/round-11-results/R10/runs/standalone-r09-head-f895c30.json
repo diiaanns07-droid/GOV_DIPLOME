@@ -1,7 +1,7 @@
 {
  "label": "standalone-r09-head-f895c30",
- "started_utc": "2026-10-07T04:12:35+00:00",
- "seconds": 3.56,
+ "started_utc": "2026-10-07T04:16:37+00:00",
+ "seconds": 3.47,
  "command": "python3 -I -B tests/civic/R10/run_acceptance.py --start standalone --pattern standalone_r09.py --label standalone-r09-head-f895c30 --out research/round-11-results/R10/runs/standalone-r09-head-f895c30.json",
  "python": "3.13.16",
  "platform": "Linux-6.18.44-fc-v77-x86_64-with-glibc2.39",
@@ -9,17 +9,24 @@
   "target": null,
   "note": "no test started a server"
  },
+ "code_roots": {
+  "R10_R09_ROOT": {
+   "path": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r09-head",
+   "sha": "f895c3033a2985a600e929337c28fd9ba00f783f",
+   "dirty": false
+  }
+ },
  "suite_files": {
   "test_api_feedback.py": "8f90f7a570d6476f",
   "test_api_objects.py": "9b9b177d4c4aee4d",
   "test_api_security.py": "e1d012753d6c69f6",
   "test_fixture_contract.py": "6e7dcc1932484be4",
-  "test_scenarios_tinygraph.py": "dc5bc76d8cd3c955",
+  "test_scenarios_tinygraph.py": "318bfc610e99ad75",
   "r10lib/__init__.py": "e3b0c44298fc1c14",
   "r10lib/client.py": "f27011e116d61022",
   "r10lib/contract.py": "bfe34000e9edbffd",
   "r10lib/helpers.py": "e73f272fdb7b4633",
-  "r10lib/modrun.py": "3116b200792c0bc4",
+  "r10lib/modrun.py": "52eb8f5f41e17c42",
   "r10lib/oracle/server.py": "9862f8fd27f3ea6d",
   "r10lib/standalone_server.py": "9663021bedf286f8",
   "r10lib/target.py": "f5405f6a86c5ae5b"

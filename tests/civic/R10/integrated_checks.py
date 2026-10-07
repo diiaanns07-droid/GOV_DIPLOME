@@ -117,7 +117,7 @@ def main():
     checks.append({"id": "H6-routing", "status": "OBSERVED",
                    "evidence": {k: a["intent"] for k, a in answers.items()}})
 
-    out = {"generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+    out = {"label": Path(args.out).stem, "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
            "target": t.describe(), "object_id": item["id"], "checks": checks, "assistant_answers": answers,
            "journal": JOURNAL}
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)

@@ -1,13 +1,20 @@
 {
  "label": "r07-d77ec45-tinygraph",
- "started_utc": "2026-10-07T04:14:19+00:00",
- "seconds": 4.0,
+ "started_utc": "2026-10-07T04:16:28+00:00",
+ "seconds": 3.54,
  "command": "python3 -I -B tests/civic/R10/run_acceptance.py --pattern test_scenarios_tinygraph.py --label r07-d77ec45-tinygraph --out research/round-11-results/R10/runs/r07-d77ec45-tinygraph.json",
  "python": "3.13.16",
  "platform": "Linux-6.18.44-fc-v77-x86_64-with-glibc2.39",
  "target": {
   "target": null,
   "note": "no test started a server"
+ },
+ "code_roots": {
+  "R10_CODE_ROOT": {
+   "path": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r07-d77ec45",
+   "sha": "d77ec45c529af6529ea1ec0cc7189ff84fb6cd87",
+   "dirty": false
+  }
  },
  "suite_files": {
   "test_api_feedback.py": "8f90f7a570d6476f",
@@ -50,7 +57,7 @@
    ],
    "title": "permuting closures, edge_ids inside a closure, and plans leaves routes unchanged",
    "message": "",
-   "seconds": 0.26
+   "seconds": 0.324
   },
   {
    "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_closure_window_is_half_open",
@@ -60,7 +67,7 @@
    ],
    "title": "closure is active at start_at (inclusive) and inactive at end_at (exclusive)",
    "message": "",
-   "seconds": 0.125
+   "seconds": 0.151
   },
   {
    "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_input_objects_not_mutated",
@@ -70,7 +77,7 @@
    ],
    "title": "compare() must not mutate the caller's payload/graph (checked in-process inside the isolated child)",
    "message": "",
-   "seconds": 0.146
+   "seconds": 0.109
   },
   {
    "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_invalid_inputs_are_rejected_without_crash",
@@ -80,7 +87,7 @@
    ],
    "title": "unknown edge/node, negative/NaN/Infinity length, city mismatch, stale or wrong digest, duplicate plan ids -> validation error, never a result or crash",
    "message": "",
-   "seconds": 1.822
+   "seconds": 1.319
   },
   {
    "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_no_traffic_co2_or_congestion_claims",
@@ -90,7 +97,7 @@
    ],
    "title": "no result key claims traffic, congestion, CO2, emissions or travel time (contract: length only)",
    "message": "",
-   "seconds": 1.346
+   "seconds": 1.333
   },
   {
    "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_oneway_direction_is_respected",
@@ -110,7 +117,7 @@
    ],
    "title": "same payload and graph twice (fresh interpreters) -> identical result apart from timing fields",
    "message": "",
-   "seconds": 0.122
+   "seconds": 0.119
   },
   {
    "test": "test_scenarios_tinygraph.ScenarioEngineProduct.test_result_echoes_schema_version_input_digest_and_parameters",
@@ -230,7 +237,7 @@
    ],
    "title": "each hand-written path_edges is an open strict route of the stated length, and every derivation states its number",
    "message": "",
-   "seconds": 0.019
+   "seconds": 0.018
   }
  ],
  "journal": [],
