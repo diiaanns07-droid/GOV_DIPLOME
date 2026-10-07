@@ -1,0 +1,60 @@
+{
+  "role": "R04",
+  "round": 12,
+  "task": "Кабинет сотрудника: создание, проверка и публикация",
+  "status": "DONE",
+  "branch": "claude/intelligent-sagan-7shpeh",
+  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "base_note": "Base merged into the session branch with a normal merge (563282a), no reset or force push. The only file differing from 56538a3 outside R04 paths is research/handoffs/astana/R05/round-11/STATUS.md from this branch's earlier R05 round (not touched in round 12).",
+  "code_sha": "69d5691",
+  "push_status": "OK",
+  "checkpoints": ["47c4df5", "7ee120d", "1238d7b", "fa27303", "69d5691"],
+  "changed_paths": [
+    "web/civic/editor/editor.js",
+    "web/civic/editor/editor-core.js",
+    "web/civic/editor/editor.css",
+    "tests/civic/R04/core.test.cjs",
+    "tests/civic/R04/e2e.test.cjs",
+    "tests/civic/R04/e2e_r02.test.cjs",
+    "tests/civic/R04/app_acceptance.test.cjs",
+    "tests/civic/R04/harness/harness.js",
+    "tests/civic/R04/fixtures/editor_mount_contract.json",
+    "research/round-12-results/R04/DELIVERY.json",
+    "research/round-12-results/R04/RUN.txt",
+    "research/round-12-results/R04/INTEGRATION.txt",
+    "research/round-12-results/R04/screenshots/app-01..11-*.jpg",
+    "research/handoffs/astana/R04/round-12/STATUS.md"
+  ],
+  "tests": [
+    { "name": "node --test tests/civic/R04/core.test.cjs", "result": "PASS", "detail": "27/27 (pure logic: place modes, geometry checks, R02 limits/bbox, partial dates, schedule note, reason rules, 403 codes, duplicate lookup)" },
+    { "name": "node --test tests/civic/R04/contract_mock.test.cjs", "result": "PASS", "detail": "9/9" },
+    { "name": "node --test tests/civic/R04/e2e.test.cjs", "result": "PASS", "detail": "25/25, Chromium + contract mock: drawing point/line/area, Esc, degenerate shapes, save during drawing, partial date, unapplied coordinates, derived without source, Escape in a field, counter, deadline note, 440 px drawer, late map getter, setMap, reload survives, double click, 409, lost session, network drop, 390 px" },
+    { "name": "R04_R02_ROOT=<this tree> node --test tests/civic/R04/e2e_r02.test.cjs", "result": "PASS", "detail": "5/5, Chromium + the real R02 CivicService (ui/civic_store of base 56538a3), temporary SQLite" },
+    { "name": "R04_APP=1 node --test tests/civic/R04/app_acceptance.test.cjs", "result": "PASS", "detail": "4/4 in the real app.py (R01 shell + R02 + R03 map), temporary DB outside the repo: create draft, error at field, double click = 1 record, preview, publish with reason, move deadline with reason, history было→стало, network drop + retry, 390 px" },
+    { "name": "Live walkthrough of the base editor in app.py (Playwright, scratch DB)", "result": "PASS", "detail": "Run before the fixes; found 13 problems, all fixed in R04 paths except those owned by R01/R03 (see INTEGRATION.txt)" },
+    { "name": "run-city.bat on Windows", "result": "NOT_RUN", "detail": "cloud Linux container, no Windows; the same app.py path was run on Linux" },
+    { "name": "Real basemap with streets", "result": "NOT_RUN", "detail": "OpenFreeMap tiles are blocked by the environment proxy; the map ran on its plain background (drawing and clicks work)" },
+    { "name": "Real touch input / screen reader", "result": "NOT_RUN", "detail": "phone checked at 390x844 with mouse events; no assistive-technology run" },
+    { "name": "Dates typed in the ru-RU dd.mm.yyyy picker", "result": "NOT_RUN", "detail": "headless Chromium renders mm/dd/yyyy regardless of locale; partial-date detection uses validity.badInput, independent of format" }
+  ],
+  "acceptance": {
+    "create_draft": "PASS",
+    "fix_error": "PASS",
+    "publish_explicit_with_reason": "PASS",
+    "move_deadline_with_reason": "PASS",
+    "history_visible": "PASS",
+    "double_click_one_record": "PASS",
+    "errors_keep_filled_form": "PASS"
+  },
+  "known_limits": [
+    "R01 still mounts the editor with map=null if the cabinet is opened before the map is ready; drawing then stays off until reopen. Fixed on the editor side (map getter, setMap) but needs a one-line R01 change (INTEGRATION.txt 1a).",
+    "R03 still handles its own map clicks while the editor draws (a click on a public object also selects it) and its hover resets the crosshair cursor (INTEGRATION.txt 2).",
+    "One local 'new record' copy per tab; logout clears all local copies of this tab.",
+    "Existing lines/areas cannot be edited vertex by vertex; they are redrawn.",
+    "No address/street search inside the cabinet; the place is marked on the map or typed as coordinates.",
+    "The resident preview is the editor's own rendering; some labels differ from R03's resident card.",
+    "Status/date contradictions (e.g. 'in progress' with a past deadline) are warnings, not errors.",
+    "Client limits and enums duplicate R02's validate.py because /staff/meta is not routed by the R01 gateway."
+  ],
+  "next_step": "R01: pass the map to the editor as a getter (openEditor: map: () => currentMap()) or call S.mounted.editor?.setMap?.(currentMap()) in onMapReady, then re-run R04_APP=1 node --test tests/civic/R04/app_acceptance.test.cjs with the cabinet opened before the map loads."
+}
