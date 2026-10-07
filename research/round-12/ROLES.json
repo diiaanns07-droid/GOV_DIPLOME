@@ -1,0 +1,121 @@
+{
+  "round": 12,
+  "code_base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "coordinator": "Codex (integration after deliveries; no main merge)",
+  "roles": [
+    {
+      "id": "R01",
+      "title": "Общий интерфейс: удобная карта города и целостный продукт",
+      "paths": [
+        "web/civic/shell/",
+        "web/index.html",
+        "web/map.js",
+        "web/interface.js",
+        "web/style.css",
+        "ui/web_server.py",
+        "tests/civic/R01/"
+      ],
+      "results": "research/round-12-results/R01/",
+      "handoff": "research/handoffs/astana/R01/round-12/STATUS.md"
+    },
+    {
+      "id": "R02",
+      "title": "Надёжная база городских работ, импорт и история",
+      "paths": [
+        "ui/civic_store/",
+        "tests/civic/R02/"
+      ],
+      "results": "research/round-12-results/R02/",
+      "handoff": "research/handoffs/astana/R02/round-12/STATUS.md"
+    },
+    {
+      "id": "R03",
+      "title": "Публичная карта, полезные карточки и понятные фильтры",
+      "paths": [
+        "web/civic/map/",
+        "tests/civic/R03/"
+      ],
+      "exclude": [
+        "web/civic/map/streets.json"
+      ],
+      "results": "research/round-12-results/R03/",
+      "handoff": "research/handoffs/astana/R03/round-12/STATUS.md"
+    },
+    {
+      "id": "R04",
+      "title": "Кабинет сотрудника: создание, проверка и публикация",
+      "paths": [
+        "web/civic/editor/",
+        "tests/civic/R04/"
+      ],
+      "results": "research/round-12-results/R04/",
+      "handoff": "research/handoffs/astana/R04/round-12/STATUS.md"
+    },
+    {
+      "id": "R05",
+      "title": "Подтверждённые работы, стройки и события Астаны",
+      "paths": [
+        "data/civic/astana/round12-verified/",
+        "tests/civic/R05/round12/"
+      ],
+      "results": "research/round-12-results/R05/",
+      "handoff": "research/handoffs/astana/R05/round-12/STATUS.md"
+    },
+    {
+      "id": "R06",
+      "title": "Сообщения жителей и реальная очередь обработки",
+      "paths": [
+        "ui/civic_feedback/",
+        "web/civic/feedback/",
+        "tests/civic/R06/"
+      ],
+      "results": "research/round-12-results/R06/",
+      "handoff": "research/handoffs/astana/R06/round-12/STATUS.md"
+    },
+    {
+      "id": "R07",
+      "title": "Симулятор городских работ и масштабируемая сеть",
+      "paths": [
+        "engine/civic_scenarios/",
+        "web/civic/scenarios/",
+        "tests/civic/R07/",
+        "tests/civic/test_citywide_osm.py",
+        "data/civic/astana/osm-walking/",
+        "web/civic/map/streets.json"
+      ],
+      "results": "research/round-12-results/R07/",
+      "handoff": "research/handoffs/astana/R07/round-12/STATUS.md"
+    },
+    {
+      "id": "R08",
+      "title": "Обучаемая AI-модель и честный эксперимент для диплома",
+      "paths": [
+        "ml/civic_classifier/",
+        "tests/civic/R08/"
+      ],
+      "results": "research/round-12-results/R08/",
+      "handoff": "research/handoffs/astana/R08/round-12/STATUS.md"
+    },
+    {
+      "id": "R09",
+      "title": "Помощник, который объясняет городские данные без выдумок",
+      "paths": [
+        "agent/civic_assistant/",
+        "web/civic/assistant/",
+        "tests/civic/R09/"
+      ],
+      "results": "research/round-12-results/R09/",
+      "handoff": "research/handoffs/astana/R09/round-12/STATUS.md"
+    },
+    {
+      "id": "R10",
+      "title": "Независимая приёмка, производительность и доказательства диплома",
+      "paths": [
+        "tests/civic/R10/"
+      ],
+      "results": "research/round-12-results/R10/",
+      "handoff": "research/handoffs/astana/R10/round-12/STATUS.md"
+    }
+  ]
+}
+

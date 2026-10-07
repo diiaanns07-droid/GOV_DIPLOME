@@ -1,0 +1,19 @@
+{
+  "round": 12,
+  "code_base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "prompt_count": 10,
+  "all_prompts_standalone": true,
+  "ownership_conflicts": [],
+  "sizes": {
+    "R01": 9604,
+    "R02": 9277,
+    "R03": 9366,
+    "R04": 9186,
+    "R05": 9878,
+    "R06": 9407,
+    "R07": 10003,
+    "R08": 9952,
+    "R09": 9475,
+    "R10": 9873
+  }
+}
