@@ -137,7 +137,7 @@
   };
 
   // ---------------------------------------------------------------- page modes
-  const S = { keepSeq: 0, view: null, mode: null, mapState: "pending", modules: null, mounted: {}, selected: null, assistantSeq: 0, editorTool: false,
+  const S = { keepSeq: 0, frameSeq: 0, view: null, recordCount: null, mode: null, mapState: "pending", modules: null, mounted: {}, selected: null, assistantSeq: 0, editorTool: false,
     panelOpen: true, sheet: "half", started: false };
   const originalTitle = document.title;
   const brandTitle = document.querySelector(".brand-title");
@@ -275,7 +275,7 @@
     mount("map", $c("civic-map-root"), {
       map: currentMap(),
       fitOnLoad: false,  // Open the city; fitting the small demo list is an explicit action.
-      onData: (items) => S.mounted.explore?.updateRecords?.(items),
+      onData: (items) => { S.recordCount = items.length; S.mounted.explore?.updateRecords?.(items); },
       onSelect: (item) => onSelect(item),
       onFeedback: (target) => openFeedback(target),
     });
@@ -289,8 +289,18 @@
   function onSelect(item) {
     const id = item && typeof item === "object" ? item.id : item;
     S.selected = typeof id === "string" ? id : null;
-    const box = S.selected && item?.geometry && window.CivicExplore ? window.CivicExplore.bounds(item.geometry) : null;
-    if (box) keepVisible([(box[0] + box[2]) / 2, (box[1] + box[3]) / 2]);
+    if (S.selected && window.CivicExplore) {
+      // A permalink selects before R03's list has loaded ({id} only): read the public geometry then.
+      const id = S.selected;
+      const located = item?.geometry ? Promise.resolve(item)
+        : request("GET", "/objects/" + encodeURIComponent(id)).then((data) => data?.item || null, () => null);
+      located.then((it) => {
+        if (S.selected !== id) return;
+        if (!item?.title && it?.title) S.mounted.explore?.setView?.("Открыта запись: " + it.title, "object");
+        const box = it?.geometry ? window.CivicExplore.bounds(it.geometry) : null;
+        if (box) keepVisible([(box[0] + box[2]) / 2, (box[1] + box[3]) / 2]);
+      });
+    }
     if (S.selected) S.mounted.explore?.setView?.("Открыта запись" + (item?.title ? ": " + item.title : ""), "object");
     else S.mounted.explore?.setView?.(S.view?.text || "", S.view?.kind || "");
     const hash = S.selected ? "#object=" + encodeURIComponent(S.selected) : "";
@@ -536,6 +546,19 @@
   function mountExplore() {
     if (S.mounted.explore) { placeMapStatus(true); return; }
     if (!currentMap() || !window.CivicExplore) return;
+    // After a district/street is framed, say how many published records are in frame; zero in frame
+    // is stated as "none published here", never as "no works here".
+    const reportFrame = (label, kind) => {
+      const m = currentMap(), seq = ++S.frameSeq;
+      m?.once("moveend", () => setTimeout(() => {
+        if (seq !== S.frameSeq || S.view?.kind !== kind) return;
+        const layers = (S.mounted.map?.layerIds?.() || []).filter((id) => m.getLayer(id));
+        let n = 0;
+        try { n = new Set(m.queryRenderedFeatures({ layers }).map((f) => f.properties?.cid).filter(Boolean)).size; } catch { n = 0; }
+        if (S.recordCount === 0) showView(label + " · реестр пуст", kind);
+        else showView(label + (n ? ` · записей в кадре: ${n}` : " · в кадре опубликованных записей нет (это не значит, что работ нет)"), kind);
+      }, 120));
+    };
     const frame = (b, maxZoom) => {
       // Measure after the navigation box has updated its status line (its height changes).
       requestAnimationFrame(() => {
@@ -559,13 +582,16 @@
         S.mounted.map?.setFilters?.({ area: !!feature });
         if (!feature) { civicCamera(); return; }
         const b = window.CivicExplore.bounds(feature.geometry);
-        showView(`Район ${feature.properties.name}: границы OSM обведены`, "district");
+        const label = `Район ${feature.properties.name} (граница OSM)`;
+        showView(label, "district");
+        reportFrame(label, "district");
         roomy(() => frame(b, 13.7));
       },
       onStreet: (street) => {
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: true });
         showView(`Улица: ${street.name}`, "street");
+        reportFrame(`Улица: ${street.name}`, "street");
         roomy(() => frame(street.bbox, 16));
       },
       onObjects: () => {
@@ -574,7 +600,7 @@
         S.mounted.map?.setFilters?.({ area: false });
         roomy(() => {
           if (fitAllObjects()) showView("Все опубликованные записи на карте", "objects");
-          else toastSafe("Нет объектов с координатами для выбранных фильтров.");
+          else toastSafe(S.recordCount === 0 ? "В реестре пока нет опубликованных записей." : "Нет объектов с координатами для выбранных фильтров.");
         });
       },
     });

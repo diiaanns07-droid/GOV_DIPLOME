@@ -68,6 +68,111 @@ const layout = (page) => page.evaluate(() => {
     explore: boxes.explore && Math.round(boxes.explore.r - boxes.explore.l) };
 });
 
+
+// A resident opens a shared link to a record, then reloads: no account, no staff calls, card and view
+// line agree, the record is in the free map area.
+async function directLinkAndReload(browser, base, w, h, item) {
+  const tag = `${w}x${h}`;
+  const mobile = w < 761;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile });
+  const page = await ctx.newPage();
+  const staffCalls = [], errs = [];
+  page.on("request", (r) => { if (/\/api\/civic\/v1\/staff/.test(r.url())) staffCalls.push(r.url()); });
+  page.on("pageerror", (e) => errs.push(e.message));
+  page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errs.push(m.text()); });
+  const state = async () => page.evaluate((id) => {
+    const card = document.querySelector("#civic-map-root .civic-r03-card");
+    const feats = map.querySourceFeatures("civic-r03-objects", { filter: ["==", ["get", "cid"], id] });
+    const pts = []; const walk = (c) => { if (typeof c[0] === "number") pts.push(c); else c.forEach(walk); };
+    feats.forEach((f) => walk(f.geometry.coordinates));
+    let covered = null;
+    if (pts.length) {
+      const p = map.project([pts.reduce((a, q) => a + q[0], 0) / pts.length, pts.reduce((a, q) => a + q[1], 0) / pts.length]);
+      covered = ["#civic-panel", ".civic-explore", ".map-tools", ".topbar"].filter((sel) => {
+        const e = document.querySelector(sel); if (!e || !e.getClientRects().length || getComputedStyle(e).visibility === "hidden") return false;
+        const b = e.getBoundingClientRect(); return p.x >= b.left && p.x <= b.right && p.y >= b.top && p.y <= b.bottom; });
+      if (p.x < 0 || p.y < 0 || p.x > innerWidth || p.y > innerHeight) covered.push("off-screen");
+    }
+    return { selected: window.CivicShell.selected, hash: location.hash, cardTitle: card && !card.hidden ? (card.querySelector("h2, h3")?.textContent || "").trim() : null,
+      view: document.querySelector(".civic-explore-view")?.textContent || "", covered,
+      session: window.CivicShell.api.session.authenticated };
+  }, item.id);
+  await page.goto(base + "#object=" + encodeURIComponent(item.id));
+  await page.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined" && mapReady, null, { timeout: 40000 });
+  await page.waitForFunction((id) => window.CivicShell.selected === id && document.querySelector("#civic-map-root .civic-r03-card"), item.id, { timeout: 15000 }).catch(() => null);
+  await page.waitForTimeout(2600);
+  const first = await state();
+  check(`${tag}: direct link opens the record card for a resident without an account`, first.selected === item.id && !!first.cardTitle && first.session === false, first);
+  check(`${tag}: direct link: record in the free map area, view line names it`, Array.isArray(first.covered) && first.covered.length === 0 && /Открыта запись/.test(first.view), first);
+  await page.screenshot({ path: path.join(OUT, `06_direct_link_${tag}.png`) });
+  await page.reload();
+  await page.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined" && mapReady, null, { timeout: 40000 });
+  await page.waitForFunction((id) => window.CivicShell.selected === id && document.querySelector("#civic-map-root .civic-r03-card"), item.id, { timeout: 15000 }).catch(() => null);
+  await page.waitForTimeout(2600);
+  const again = await state();
+  check(`${tag}: F5 keeps the city mode, the record and its place`, again.selected === item.id && !!again.cardTitle && Array.isArray(again.covered) && again.covered.length === 0, again);
+  check(`${tag}: resident session makes no staff API calls`, staffCalls.length === 0, staffCalls.slice(0, 3));
+  check(`${tag}: no page errors on direct link / reload`, errs.length === 0, errs);
+  await ctx.close();
+}
+
+// City -> training -> civic and city -> school -> civic: the navigation box goes away and comes back,
+// the map notice is readable in every mode, training districts are hidden again in the city mode.
+async function modeRoundTrip(browser, base, w, h) {
+  const tag = `${w}x${h}`;
+  const { ctx, page } = await openPage(browser, base, w, h);
+  const probe = () => page.evaluate(() => {
+    const st = document.getElementById("map-status");
+    let readable = null;
+    if (st && !st.classList.contains("hidden") && st.getClientRects().length) {
+      const b = st.getBoundingClientRect(); const hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+      readable = !!hit && (hit === st || st.contains(hit));
+    }
+    return { mode: window.CivicShell.mode, explore: !!document.querySelector(".civic-explore"), statusInExplore: !!st?.closest(".civic-explore"), readable,
+      districts: map.getLayer("district-fill") ? map.getLayoutProperty("district-fill", "visibility") : "absent",
+      view: document.querySelector(".civic-explore-view")?.textContent || null, scrollW: document.documentElement.scrollWidth };
+  });
+  for (const other of ["training", "school"]) {
+    await page.click(`#civic-modes [data-mode=${other}]`);
+    await page.waitForTimeout(1500);
+    const away = await probe();
+    check(`${tag}: ${other} mode: no navigation box, map notice back in place and readable`, away.mode === other && !away.explore && !away.statusInExplore && away.readable !== false && away.scrollW <= w, away);
+    await page.click("#civic-modes [data-mode=civic]");
+    await page.waitForTimeout(1800);
+    const back = await probe();
+    check(`${tag}: back from ${other}: navigation box, notice inside it, city overview, training districts hidden`,
+      back.mode === "civic" && back.explore && (back.readable === null || (back.statusInExplore && back.readable)) && /Обзор: вся Астана/.test(back.view || "") && back.districts !== "visible", back);
+  }
+  check(`${tag}: no page errors across mode switches`, page.errs.length === 0, page.errs);
+  await ctx.close();
+}
+
+// Empty registry (no published records): stated at city level, distinct from "nothing in frame".
+async function emptyRegistry(browser, base) {
+  for (const [w, h] of VIEWPORTS) {
+    const tag = `${w}x${h}`;
+    const { ctx, page } = await openPage(browser, base, w, h);
+    await page.waitForSelector(".civic-explore-registry:not([hidden])", { timeout: 15000 }).catch(() => null);
+    const st = await page.evaluate(() => ({ registry: document.querySelector(".civic-explore-registry")?.hidden ? null : document.querySelector(".civic-explore-registry")?.textContent,
+      list: (document.getElementById("civic-map-root").textContent.replace(/\s+/g, " ").match(/Опубликованных объектов пока нет[^.]*\./) || [""])[0],
+      scrollW: document.documentElement.scrollWidth }));
+    check(`${tag}: empty registry is stated (not "no works"), list agrees`, /Реестр пуст/.test(st.registry || "") && /не значит/.test(st.registry || "") && /пока нет/.test(st.list) && st.scrollW <= w, st);
+    const lay = await layout(page);
+    check(`${tag}: empty registry: no overlaps`, lay.over.length === 0, lay.over);
+    await page.screenshot({ path: path.join(OUT, `07_empty_registry_${tag}.png`) });
+    await page.click(".civic-explore-objects");
+    await page.waitForTimeout(600);
+    const toastText = await page.evaluate(() => document.querySelector(".toast")?.textContent || "");
+    check(`${tag}: "К объектам" on an empty registry says the registry is empty`, /реестре пока нет/.test(toastText), toastText);
+    await page.selectOption(".civic-explore select", { index: 1 });
+    await page.waitForTimeout(2600);
+    const view = await page.textContent(".civic-explore-view");
+    check(`${tag}: district view on an empty registry says "реестр пуст"`, /реестр пуст/.test(view || ""), view);
+    check(`${tag}: no page errors (empty registry)`, page.errs.length === 0, page.errs);
+    await ctx.close();
+  }
+}
+
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const dbDir = fs.mkdtempSync(path.join(os.tmpdir(), "civic-r12-"));
@@ -76,7 +181,8 @@ const layout = (page) => page.evaluate(() => {
   const browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
   const result = { base, empty: EMPTY, started_at: new Date().toISOString(), checks };
   try {
-    for (const [w, h] of VIEWPORTS) {
+    if (EMPTY) await emptyRegistry(browser, base);
+    else for (const [w, h] of VIEWPORTS) {
       const tag = `${w}x${h}`;
       const { ctx, page } = await openPage(browser, base, w, h);
       const lay = await layout(page);
@@ -120,6 +226,9 @@ const layout = (page) => page.evaluate(() => {
         return { pin: true, rect: [p.left, p.top, p.right, p.bottom].map(Math.round), covered: hits, inView: p.left >= 0 && p.right <= innerWidth && p.top >= 0 && p.bottom <= innerHeight };
       });
       check(`${tag}: chosen street is marked in the free map area (not under panel/navigation/tools)`, pinFree.pin && pinFree.inView && pinFree.covered.length === 0, pinFree);
+      const streetView = await page.textContent(".civic-explore-view");
+      check(`${tag}: street view line says how many published records are in frame (zero is not "no works")`,
+        /Улица: .*(записей в кадре: \d+|в кадре опубликованных записей нет \(это не значит, что работ нет\))/.test(streetView || ""), streetView);
       await page.screenshot({ path: path.join(OUT, `03_street_${tag}.png`) });
       await input.fill("Егемен Қазақстан");
       await page.waitForSelector("#civic-explore-listbox:not([hidden]) [role=option]", { timeout: 8000 });
@@ -177,8 +286,14 @@ const layout = (page) => page.evaluate(() => {
       await ctx.close();
     }
 
+    if (!EMPTY) {
+      const items = (await (await fetch(base + "api/civic/v1/objects")).json()).data.items;
+      for (const [w, h] of VIEWPORTS) await directLinkAndReload(browser, base, w, h, items[0]);
+      for (const [w, h] of [[1440, 900], [360, 800]]) await modeRoundTrip(browser, base, w, h);
+    }
+
     // ---- street index loading and failure (phone): honest states, retry, district navigation still works
-    {
+    if (!EMPTY) {
       const mobile = { width: 360, height: 800 };
       const ctx = await browser.newContext({ viewport: mobile, isMobile: true, hasTouch: true });
       const page = await ctx.newPage();

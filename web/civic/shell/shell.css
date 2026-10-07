@@ -55,7 +55,8 @@ body[data-civic-drawer="open"] .civic-explore { display: none; }
 .civic-explore-notices:empty { display: none; }
 .civic-explore-view { margin: 4px 0 0; font-size: 11px; font-weight: 600; color: #2f6a52; }
 .civic-explore-view:empty { display: none; }
-.civic-explore-view { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.civic-explore-registry { margin: 7px 0 0; padding: 6px 9px; border-radius: 8px; background: #eef3ec; color: #2f4a3c; font-size: 11px; line-height: 1.35; }
+.civic-explore-view { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35; }
 /* Tablets (761–1100): the panel is 360px wide; the navigation box takes the rest and wraps its row. */
 @media (min-width: 761px) and (max-width: 1100px) {
   .civic-explore { left: 396px; right: 76px; max-width: none; }

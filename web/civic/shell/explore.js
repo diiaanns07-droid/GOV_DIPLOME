@@ -102,7 +102,12 @@
     // Host notices (e.g. "basemap unavailable") are placed here so they never sit under this box.
     const notices = document.createElement("div");
     notices.className = "civic-explore-notices";
-    box.append(notices);
+    // Empty registry is stated at city level: "nothing published" is not "nothing happening".
+    const registry = document.createElement("p");
+    registry.className = "civic-explore-registry";
+    registry.setAttribute("role", "status");
+    registry.hidden = true;
+    box.append(registry, notices);
     const input = search.querySelector("input"), clear = search.querySelector(".civic-explore-clear");
     const list = search.querySelector("ul"), status = search.querySelector(".civic-explore-status");
     const select = box.querySelector("select"), checkbox = box.querySelector("details input");
@@ -296,6 +301,8 @@
       updateRecords(items) {
         const demo = items.filter((x) => x.evidence === "synthetic").length;
         box.querySelector(".civic-explore-count").textContent = `Опубликовано записей: ${items.length}. Из них демонстрационных: ${demo}.`;
+        registry.hidden = items.length > 0;
+        registry.textContent = items.length ? "" : "Реестр пуст: опубликованных записей пока нет. Пустая карта не значит, что в городе нет работ.";
       },
       destroy() {
         destroyed = true; controller?.abort(); unpin(); map?.off("style.load", paint);
