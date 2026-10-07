@@ -274,7 +274,10 @@ class SnapshotSplitting(unittest.TestCase):
         text = " ".join(f"Участок {i} закрыт до {i % 28 + 1} октября 2026 года." for i in range(60))
         s = _snap(text)
         self.assertTrue(s["truncated"])
-        self.assertLessEqual(sum(len(e) for e in s["excerpts"]), len(text) // 2)
+        self.assertLessEqual(sum(len(e) for e in s["excerpts"]), sd.MAX_SNAPSHOT_CHARS)
+        self.assertLess(sum(len(e) for e in s["excerpts"]), len(text))
+        r = sd.diff(s, s)
+        self.assertTrue(any(f["kind"] == "snapshot_truncated" for f in r["findings"]))
 
     def test_contacts_redacted_in_excerpts(self):
         s = _snap("Работы завершат до 30 октября 2026 года, справки по тел. 8 (7172) 55-12-34.")
@@ -295,6 +298,262 @@ class RegistryHardening(unittest.TestCase):
         codes = {i["code"] for i in bs.registry_checks({"sources": [FETCHED, bad]})}
         self.assertIn("fetched_without_proof", codes)
         self.assertEqual(bs.registry_checks({"sources": [FETCHED]}), [])
+
+
+
+class Round2DateRegressions(unittest.TestCase):
+    """Second review round (fix diff e4ab1ff..01f89df): cases found by the dates finder."""
+
+    def _diff(self, old, new, record=None, pub="2026-10-05"):
+        r = sd.diff(_snap(old, pub), _snap(new, pub), record)
+        return [(f["kind"], f["field"], f["old"], f["new"]) for f in r["findings"]], r
+
+    def test_cue_does_not_leak_across_sentences(self):
+        f, _ = self._diff("Ремонт планируется начать 1 сентября 2026 г. Работы завершены 20 сентября 2026 г.",
+                          "Ремонт планируется начать 1 сентября 2026 г. Работы завершены 25 сентября 2026 г.")
+        self.assertIn(("candidate_actual", "schedule.actual_end", None, "2026-09-25"), f)
+        for text in ("Работы на первом участке завершены 15 сентября 2026 г. На втором участке приступят к работам 1 октября 2026 г.",
+                     "Работы на первом участке ул. Сарайшық завершены. 1 октября 2026 года начался ремонт второго участка.",
+                     "Ремонт завершён 30 сентября 2026 года. Қабанбай батыра проспект закроют с 3 октября 2026 года."):
+            roles = {d.get("value"): d["role"] for d in sd.extract_dates(text)}
+            self.assertNotEqual(roles.get("2026-10-01", roles.get("2026-10-03")), "reported_actual_end", text)
+
+    def test_deadline_of_ordinary_article_survives_snapshot(self):
+        tmpl = ("Акимат города Астаны сообщает о ремонте ул. Кенесары. Ремонт начнётся 1 октября 2026 года. "
+                "Движение на участке будет ограничено с 1 по 20 октября 2026 года, объезд по ул. Иманова. "
+                "Укладку покрытия выполнят с 21 октября по 5 ноября 2026 года. Работы планируется завершить до {} 2026 года.")
+        f, _ = self._diff(tmpl.format("15 ноября"), tmpl.format("15 декабря"))
+        self.assertIn(("changed", "schedule.current_planned_end", "2026-11-15", "2026-12-15"), f)
+
+    def test_hard_wrapped_text(self):
+        self.assertEqual(sd.split_sentences("Работы планируется завершить до 30\nоктября 2026 года."),
+                         ["Работы планируется завершить до 30 октября 2026 года."])
+        d = sd.extract_dates("Работы, которые должны\nбыли быть завершены 30 сентября 2026 года, продолжаются.")
+        self.assertEqual(d[0]["role"], "expected_end")
+
+    def test_other_postponement_wordings(self):
+        for verb in ("переносится", "сдвигается", "откладывается"):
+            text = f"Срок сдачи {verb} с 30 сентября 2026 года на 30 ноября 2026 года."
+            self.assertEqual([(d["role"], d["value"]) for d in sd.extract_dates(text)],
+                             [("previous_end", "2026-09-30"), ("expected_end", "2026-11-30")], text)
+
+    def test_adjectives_are_not_modal(self):
+        for text in ("Запланированный капитальный ремонт школы № 15 завершён 1 октября 2026 года.",
+                     "По словам должностных лиц акимата работы завершены 1 октября 2026 года.",
+                     "Ожидаемый жителями сквер открыт 2 октября 2026 года."):
+            self.assertEqual(sd.extract_dates(text)[0]["role"], "reported_actual_end", text)
+
+    def test_colon_dash_clauses(self):
+        d = sd.extract_dates("Работы завершены с опозданием на месяц: по контракту срок был 30 августа 2026 года.")
+        self.assertEqual(d[0]["role"], "previous_end")
+        d = sd.extract_dates("Сквер открыт для посещения — 15 октября 2026 года начнётся второй этап.")
+        self.assertEqual(d[0]["role"], "start")
+        d = sd.extract_dates("Срок начала работ — 5 октября 2026 года.")
+        self.assertEqual(d[0]["role"], "start")
+
+    def test_closure_with_clock_times_is_a_period(self):
+        d = sd.extract_dates("Движение будет перекрыто с 22:00 10 октября до 06:00 12 октября 2026 года.")
+        self.assertEqual((d[0]["role"], d[0]["start"], d[0]["end"]), ("range", "2026-10-10", "2026-10-12"))
+
+    def test_unclassified_change_reaches_editor(self):
+        f, r = self._diff("Городской фестиваль пройдёт 12 октября 2026 года на набережной.",
+                          "Городской фестиваль пройдёт 19 октября 2026 года на набережной.")
+        self.assertIn(("unclassified_changed", None, ["2026-10-12"], ["2026-10-19"]), f)
+
+    def test_quarter_and_half_year_are_imprecise(self):
+        d = sd.extract_dates("Строительство планируется завершить во II квартале 2027 года.")
+        self.assertEqual((d[0]["precision"], d[0]["month"]), ("quarter", "2027-Q2"))
+        d = sd.extract_dates("Работы завершат до конца первого полугодия 2027 года.")
+        self.assertEqual(d[0]["precision"], "half_year")
+        f, _ = self._diff("Работы планируется завершить в IV квартале 2026 года.",
+                          "Работы планируется завершить во II квартале 2027 года.")
+        self.assertTrue(any(k == "imprecise_date" for k, *_ in f))
+
+    def test_sloppy_range_is_invalid_not_a_year(self):
+        d = sd.extract_dates("Перекрытие с 28 по 3 октября 2026 года.")[0]
+        self.assertEqual(d["precision"], "invalid_date")
+
+    def test_suspension_is_not_a_start(self):
+        for text in ("Работы приостановлены с 1 октября 2026 года до особого распоряжения.",
+                     "Ограничения сняты с 3 октября 2026 года.",
+                     "Движение возобновлено с 3 октября 2026 года."):
+            self.assertEqual(sd.extract_dates(text)[0]["role"], "unclassified", text)
+
+    def test_odd_unicode_does_not_crash(self):
+        sd.extract_dates("Работы завершат до 30 \u1c82ктября 2026 года.")
+        sd.make_snapshot("Работы завершат до 30 \u1c82ктября 2026 года.", source_id="s", url="https://e.org/x",
+                         retrieved_at="2026-10-06T08:00:00Z", published_on=None)
+
+    def test_every_date_keeps_its_role_in_snapshot(self):
+        text = ("Акимат сообщает. " + "Вводный текст без дат. " * 30 +
+                "Ремонт начнётся 1 октября 2026 года, а завершить его планируется до 30 ноября 2026 года, "
+                "при этом движение будет ограничено с 1 по 20 октября 2026 года и объезд организуют по соседним "
+                "улицам района с учётом графика общественного транспорта и пожеланий жителей микрорайона.")
+        full = {(d["role"], d.get("value") or (d.get("start"), d.get("end"))) for d in sd.extract_dates(text)}
+        snap = _snap(text)
+        kept = {(d["role"], d.get("value") or (d.get("start"), d.get("end")))
+                for e in snap["excerpts"] for d in sd.extract_dates(e)}
+        self.assertEqual(full, kept)
+        self.assertFalse(snap["truncated"])
+
+
+
+import shutil  # noqa: E402
+import subprocess  # noqa: E402
+import tempfile  # noqa: E402
+
+import import_helper as ih  # noqa: E402
+
+
+class Round2ValidatorRegressions(unittest.TestCase):
+    def test_budgets_and_bins_are_not_pii(self):
+        for text in ("Стоимость строительства школы 7 500 000 000 тенге.", "Сумма договора 7 245 300 000 тг",
+                     "Выделено 77 400 000 000 тенге", "Сметная стоимость 125000000000 тенге", "БИН 123456789012",
+                     "до 7.10.2026 (120 календарных дней)"):
+            self.assertEqual(cv.find_pii(text), [], text)
+        self.assertTrue(cv.find_pii("IIN 900101300126"))  # unlabelled but a valid IIN checksum
+
+    def test_hole_touching_shell_is_valid_on_every_side(self):
+        shell = [[71.40, 51.10], [71.50, 51.10], [71.50, 51.20], [71.40, 51.20], [71.40, 51.10]]
+        for touch in ([71.40, 51.15], [71.50, 51.15], [71.45, 51.20], [71.45, 51.10]):
+            cx, cy = 71.45, 51.15
+            hole = [touch, [cx + 0.01, cy + 0.01], [cx - 0.01, cy + 0.01], touch]
+            if touch[1] == 51.20:
+                hole = [touch, [cx + 0.01, cy - 0.01], [cx - 0.01, cy - 0.01], touch]
+            geom = {"type": "Polygon", "coordinates": [shell, hole]}
+            self.assertNotIn("geometry_hole_outside", errors(dict(CONTRACT_FIXTURE, geometry=geom)), touch)
+
+    def test_company_names_with_ampersand_are_plain_text(self):
+        for title in ("Демо: аудит Ernst&Young; приёмка в ноябре", "Демо: спонсор Procter&Gamble; вход свободный"):
+            self.assertNotIn("text_html", errors(dict(CONTRACT_FIXTURE, title=title)), title)
+        self.assertIn("text_html", errors(dict(CONTRACT_FIXTURE, title="Демо &laquo;Парк&raquo;")))
+
+    def test_apostrophe_url_is_valid(self):
+        self.assertIsNone(cv.check_url("https://en.wikipedia.org/wiki/People's_Square"))
+
+    def test_out_of_window_timestamp_is_an_issue_not_a_crash(self):
+        obj = real_record()
+        obj["source_refs"][0]["retrieved_at"] = "0001-01-01T00:00:00+05:00"
+        codes = {i["code"] for i in cv.validate_object(obj, profile="real", as_of=AS_OF, fence=FENCE)}
+        self.assertIn("timestamp_format", codes)
+        self.assertNotIn("validator_exception", codes)
+
+    def test_long_line_is_warning_in_contract_profile(self):
+        line = {"type": "LineString", "coordinates": [[71.25, 51.00], [71.75, 51.30], [71.25, 51.01]]}  # ~96 km
+        self.assertIn(("geometry_too_long", "warning"), all_codes(dict(CONTRACT_FIXTURE, geometry=line), "contract"))
+        self.assertIn("geometry_too_long", errors(dict(CONTRACT_FIXTURE, geometry=line), "demo"))
+
+    def test_trailing_newline_id_rejected(self):
+        self.assertIn("id_format", errors(dict(real_record(), id="ast-r05-test\n"), "real"))
+
+    def test_r02_source_id_and_amount_limits(self):
+        obj = real_record()
+        obj["source_refs"][0]["id"] = "src:akimat/news#42"
+        self.assertIn("source_ref_id_format", errors(obj, "real"))
+        obj = real_record()
+        obj["budget"] = {"amount_kzt": 25 * 10 ** 12, "basis": "planned", "source_id": "src-test"}
+        obj["source_refs"][0]["fields"] += ["budget.amount_kzt", "budget.basis"]
+        self.assertIn("budget_amount_limit", errors(obj, "real"))
+
+    def test_cli_survives_surrogates_and_deep_nesting(self):
+        d = tempfile.mkdtemp(prefix="r05cli-")
+        try:
+            sur = os.path.join(d, "s.json")
+            open(sur, "w", encoding="utf-8").write(json.dumps(dict(CONTRACT_FIXTURE, id="demo-\ud800")))
+            deep = os.path.join(d, "d.json")
+            open(deep, "w", encoding="utf-8").write("[" * 100000 + "]" * 100000)
+            for path, rc in ((sur, (0, 1)), (deep, (2,))):
+                r = subprocess.run([sys.executable, "-I", os.path.join(PKG, "tools", "civic_v1.py"), path],
+                                   capture_output=True, text=True, timeout=60)
+                self.assertIn(r.returncode, rc, r.stderr[-300:])
+                self.assertNotIn("Traceback", r.stderr)
+        finally:
+            shutil.rmtree(d)
+
+
+def _copy_pkg():
+    d = tempfile.mkdtemp(prefix="r05pkg2-")
+    dst = os.path.join(d, "pkg")
+    shutil.copytree(PKG, dst, ignore=shutil.ignore_patterns("__pycache__"))
+    return d, dst
+
+
+class Round2PipelineRegressions(unittest.TestCase):
+    def test_r02_row_recipe_gives_editor_review(self):
+        it = ih.load_package(PKG, include_demo=True)["items"][0]
+        row = {"revision": 2, "import_revision": 1, "first_published_at": None, "publication": "draft"}
+        edited = not (row["import_revision"] == row["revision"] and row["first_published_at"] is None)
+        existing = {it["external_id"]: {"digest": "old", "publication": row["publication"],
+                                        "edited_after_import": edited, "source": it["source"]}}
+        self.assertEqual(ih.plan([it], existing)[0]["action"], "editor_review")
+
+    def test_hand_edited_status_age_refused(self):
+        d, pkg = _copy_pkg()
+        try:
+            path = os.path.join(pkg, "objects.json")
+            data = json.load(open(path, encoding="utf-8"))
+            data["slice"]["status_max_age_days"] = 100000
+            json.dump(data, open(path, "w", encoding="utf-8"), ensure_ascii=False)
+            with self.assertRaisesRegex(ih.PackageError, "does not match"):
+                ih.load_package(pkg)
+        finally:
+            shutil.rmtree(d)
+
+    def test_dot_files_are_ignored_and_new_demo_intake_is_stale(self):
+        d, pkg = _copy_pkg()
+        try:
+            open(os.path.join(pkg, "intake", "real", "._ast-r05-x.json"), "wb").write(b"\x00\x05\x16\x07")
+            ih.load_package(pkg, include_demo=True)  # AppleDouble file does not block the package
+            open(os.path.join(pkg, "intake", "demo", "extra.json"), "w", encoding="utf-8").write('{"records": []}')
+            with self.assertRaisesRegex(ih.PackageError, "intake/demo files differ"):
+                ih.load_package(pkg, include_demo=True)
+        finally:
+            shutil.rmtree(d)
+
+    def test_bad_historical_and_geofence_are_package_errors(self):
+        d, pkg = _copy_pkg()
+        try:
+            open(os.path.join(pkg, "historical.json"), "w").write("[]")
+            with self.assertRaises(ih.PackageError):
+                ih.load_package(pkg)
+        finally:
+            shutil.rmtree(d)
+        d, pkg = _copy_pkg()
+        try:
+            path = os.path.join(pkg, "geofence.json")
+            raw = open(path, "rb").read()
+            open(path, "wb").write(b"\xef\xbb\xbf" + raw)
+            ih.load_package(pkg)            # BOM tolerated
+            bs.build(pkg)
+            open(path, "w").write("{}")
+            with self.assertRaises(ih.PackageError):
+                ih.load_package(pkg)
+            with self.assertRaises(bs.IntakeError):
+                bs.build(pkg)
+        finally:
+            shutil.rmtree(d)
+
+
+
+class R02CharacterParity(unittest.TestCase):
+    """R02 7d5e39a clean_text/clean_url/SOURCE_FIELD_PATHS: R05-valid must stay R02-importable."""
+
+    def test_format_and_filler_characters(self):
+        for title in ("Демо со\u00adмягким переносом", "Демо\u200dтекст", "\u3164\u3164", "Демо \ue000"):
+            found = errors(dict(CONTRACT_FIXTURE, title=title))
+            self.assertTrue(found & {"text_control_chars", "text_invisible"}, repr(title))
+        self.assertNotIn("text_control_chars",
+                         errors(dict(CONTRACT_FIXTURE, description="Демо.\u2028Вторая строка в описании.")))
+
+    def test_invisible_characters_in_urls(self):
+        for url in ("https://www.gov.kz/x\u00a0", "https://www.gov.kz/\u2060x", "https://www.gov.kz/\u202ex"):
+            self.assertIsNotNone(cv.check_url(url), repr(url))
+
+    def test_contract_field_paths_match_r02(self):
+        obj = real_record()
+        for path, ok in (("budget.source_id", True), ("evidence_type", True), ("schedule.foo", False)):
+            obj["source_refs"][0]["fields"] = [path]
+            self.assertEqual("source_ref_field_path" not in errors(obj, "contract"), ok, path)
 
 
 if __name__ == "__main__":

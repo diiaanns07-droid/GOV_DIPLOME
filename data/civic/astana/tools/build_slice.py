@@ -56,6 +56,12 @@ def sha256_bytes(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
 
 
+def slice_digest(items: list, inputs: list, name: str, as_of: str, demo: bool, max_age: int) -> str:
+    """Integrity hash of a slice: items, builder inputs and every parameter that changes validation."""
+    return sha256_bytes(canonical({"items": items, "inputs": inputs, "params": {
+        "name": name, "as_of": as_of, "demo": demo, "status_max_age_days": max_age}}))
+
+
 def sha256_file(path: str) -> str:
     """Hash of the parsed JSON in canonical form: stable across CRLF/LF checkouts."""
     return sha256_bytes(canonical(load_json(path)))
@@ -314,6 +320,9 @@ def registry_checks(reg: dict) -> list[dict]:
         if sid in ids:
             issues.append({"code": "duplicate_source_id", "severity": "error", "path": sid, "message": "duplicate id"})
         ids.add(sid)
+        if not (isinstance(sid, str) and cv.R02_REF_ID_RE.match(sid)):
+            issues.append({"code": "source_id_format", "severity": "error", "path": str(sid),
+                           "message": "source id: Latin letters/digits/._- up to 64 chars (R02 format)"})
         if s.get("access_status") not in cv.ACCESS_STATUSES:
             issues.append({"code": "source_access_status", "severity": "error", "path": sid, "message": "bad access_status"})
         if s.get("access_status") == "fetched" and not (
@@ -344,7 +353,10 @@ def build(pkg: str = PKG) -> dict:
     sources_path = os.path.join(pkg, "sources.json")
     reg = load_json(sources_path)
     registry = {s["id"]: s for s in reg["sources"]}
-    fence = cv.load_geofence(os.path.join(pkg, "geofence.json"))
+    try:
+        fence = cv.load_geofence(os.path.join(pkg, "geofence.json"))
+    except (OSError, ValueError) as exc:
+        raise IntakeError(f"geofence.json: {exc}") from None
 
     inputs = [{"path": rel(sources_path), "sha256": sha256_file(sources_path)},
                 {"path": rel(os.path.join(pkg, "slice_config.json")),
@@ -368,7 +380,7 @@ def build(pkg: str = PKG) -> dict:
     evidence.sort(key=lambda e: (e["object_id"], e["field"], e["source_id"]))
 
     def envelope(items, name, is_demo, ins):
-        digest = sha256_bytes(canonical({"items": items, "inputs": ins}))
+        digest = slice_digest(items, ins, name, as_of, is_demo, max_age)
         return {
             "schema_version": cv.SCHEMA_VERSION,
             "city": cv.CITY,

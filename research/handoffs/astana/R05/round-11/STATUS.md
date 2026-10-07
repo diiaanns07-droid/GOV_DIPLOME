@@ -82,3 +82,17 @@ LICENSE_REGISTER/ATTRIBUTION, synthetic demo slice, импорт-хелпер д
 - Отчёты: `QA.md`, `REVIEW.md`, обновлённые `INTEGRATION.txt`, `schedule_diff_example.json`, README пакета.
 - Проверки: `python3 -m pytest tests/civic/R05 -q` → 120 passed; `python3 -m unittest discover -s tests/civic/R05` → 120 OK;
   `build_slice.py --check` → valid, без изменений.
+
+## Checkpoint 6 — раунд 2 проверки (diff e4ab1ff..01f89df) и паритет с R02 7d5e39a
+
+- Второй adversarial-раунд: 32 находки со скептиком (29 подтверждены, 3 опровергнуты) + 14 находок первого
+  прогона искателя dates. Все подтверждённые закрыты; подробности — раздел «Раунд 2» в REVIEW.md.
+- schedule_diff v3 (окна вокруг дат, корректное разбиение предложений и клауз, переносы начала/окончания,
+  периоды со временем и в цифровом виде, грубые сроки, snapshot_truncated, unclassified_changed).
+- civic_v1: PII без ложных срабатываний на суммах/БИН; символы, URL и пути fields — по политике R02 7d5e39a;
+  \Z в регулярных выражениях; лимиты R02 для id источника и суммы.
+- build_slice/import_helper: параметры среза в хэше (новые версии срезов), BOM/битый geofence, dot-файлы,
+  проверка списка demo-intake, historical через проверку целостности. INTEGRATION: исправлен рецепт edited_after_import.
+- Доказательства: r02_import_check.json (R02 7d5e39a: create 9 → skip_unchanged 9) и дифференциальный fuzz
+  (research/round-11-results/R05/evidence/*.py): 1863 принятых R05 записей — 0 отказов R02.
+- Проверки: pytest 149 passed; unittest 149 OK; build_slice --check valid.

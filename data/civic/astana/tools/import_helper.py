@@ -23,6 +23,7 @@ where existing.json maps external_id -> {"digest", "publication", "edited_after_
 from __future__ import annotations
 
 import argparse
+import glob
 import hashlib
 import json
 import os
@@ -32,6 +33,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PKG = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
+import build_slice as bs  # noqa: E402  (same slice digest and file hashing as the builder)
 import civic_v1 as cv  # noqa: E402
 
 SOURCE_REAL = "r05-astana-real"
@@ -79,7 +81,8 @@ def _load_slice(path: str, expect_demo: bool) -> dict:
     items = data.get("items")
     if not isinstance(items, list) or sl.get("count") != len(items):
         raise PackageError(f"{os.path.basename(path)}: item count does not match slice.count")
-    digest = hashlib.sha256(_canonical({"items": items, "inputs": sl.get("inputs")})).hexdigest()
+    digest = bs.slice_digest(items, sl.get("inputs"), sl.get("name"), sl.get("as_of"), sl.get("demo"),
+                             sl.get("status_max_age_days"))
     expected_version = f"r05-astana-{sl.get('name')}-{sl.get('as_of')}-{digest[:12]}"
     if (digest != sl.get("content_sha256") or sl.get("version") != expected_version
             or cv.parse_date(sl.get("as_of")) is None):
@@ -89,7 +92,6 @@ def _load_slice(path: str, expect_demo: bool) -> dict:
 
 def _check_inputs(pkg_dir: str, sl: dict, name: str, warnings: list) -> None:
     """Recorded builder inputs must match the files next to the slice, when those files are present."""
-    import build_slice as bs  # local import: only needed when sources/intake travel with the package
     recorded = {}
     for inp in sl.get("inputs") or []:
         path = inp.get("path", "") if isinstance(inp, dict) else ""
@@ -108,16 +110,21 @@ def _check_inputs(pkg_dir: str, sl: dict, name: str, warnings: list) -> None:
             raise PackageError(f"{name}: {exc}") from None
         if actual != sha:
             raise PackageError(f"{name}: input {local} changed since the slice was built; run build_slice.py")
-    if not sl.get("demo") and os.path.isdir(os.path.join(pkg_dir, "intake", "real")):
-        on_disk = {f"intake/real/{f}" for f in os.listdir(os.path.join(pkg_dir, "intake", "real")) if f.endswith(".json")}
-        listed = {k for k in recorded if k.startswith("intake/real/")}
+    sub = "demo" if sl.get("demo") else "real"
+    if os.path.isdir(os.path.join(pkg_dir, "intake", sub)):
+        # same enumeration as the builder (glob skips dot-files such as macOS ._ AppleDouble)
+        on_disk = {f"intake/{sub}/" + os.path.basename(p) for p in glob.glob(os.path.join(pkg_dir, "intake", sub, "*.json"))}
+        listed = {k for k in recorded if k.startswith(f"intake/{sub}/")}
         if on_disk != listed:
-            raise PackageError(f"{name}: intake/real files differ from the slice inputs; run build_slice.py")
+            raise PackageError(f"{name}: intake/{sub} files differ from the slice inputs; run build_slice.py")
 
 
 def load_package(pkg_dir: str = PKG, *, include_demo: bool = False, include_historical: bool = False) -> dict:
     """Validate the package and return {package, items, rejected}. Raises PackageError on tampering."""
-    fence = cv.load_geofence(os.path.join(pkg_dir, "geofence.json"))
+    try:
+        fence = cv.load_geofence(os.path.join(pkg_dir, "geofence.json"))
+    except (OSError, ValueError) as exc:
+        raise PackageError(f"geofence.json: {exc}") from None
     plan_items, rejected, slices, warnings = [], [], {}, []
     wanted = [("objects.json", False, False)]
     if include_historical:
@@ -166,7 +173,7 @@ def load_package(pkg_dir: str = PKG, *, include_demo: bool = False, include_hist
     for name in ("objects.json", "historical.json"):
         path = os.path.join(pkg_dir, name)
         if os.path.exists(path):
-            items = _read_json(path).get("items") or []
+            items = _load_slice(path, False)["items"]  # integrity-checked, raises PackageError
             package_ids |= {(SOURCE_REAL, o.get("id")) for o in items if isinstance(o, dict)}
     package_ids |= {(i["source"], i["external_id"]) for i in plan_items}
     return {"package": {"dir": os.path.abspath(pkg_dir), "slices": slices, "sources": sources,
