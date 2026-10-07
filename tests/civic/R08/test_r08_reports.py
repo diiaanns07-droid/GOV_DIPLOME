@@ -3,7 +3,12 @@
 import json
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[3]
+if not (ROOT / "research/round-12-results/R08/metrics.json").exists():
+    pytest.skip("NOT_RUN: каталог результатов R08 не перенесён (переносятся только ml/ и tests/)",
+                allow_module_level=True)
 CARD = (ROOT / "ml/civic_classifier/MODEL_CARD.md").read_text(encoding="utf-8").replace("\u2212", "-")
 METRICS = json.loads((ROOT / "research/round-12-results/R08/metrics.json").read_text(encoding="utf-8"))
 
