@@ -114,7 +114,7 @@ test("desktop 1440x900: list, layers, legend, no staff calls, no overflow", { sk
     rendered: window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point", "civic-r03-line", "civic-r03-line-approx", "civic-r03-area-fill"] }).map((f) => f.properties.cid),
   }));
   assert.equal(info.basemap, "offline-fallback");
-  assert.equal(info.layers.length, 12);
+  assert.equal(info.layers.length, 13);
   assert.deepEqual(info.sources, ["civic-r03-objects"]);
   assert.ok(info.calls.every((c) => c.startsWith("GET /objects")), info.calls.join());
   assert.ok(!info.calls.some((c) => c.includes("staff")));
@@ -383,7 +383,7 @@ test("mount/destroy twice: layers, sources, popup, root, map and window listener
     await page.evaluate(() => window.__stand.mount());
     await page.waitForFunction(() => window.__stand.instance.getState().list === "ready");
     const mid = await snap();
-    assert.equal(mid.layers, 12);
+    assert.equal(mid.layers, 13);
     await page.evaluate(() => { window.__stand.instance.destroy(); window.__stand.instance.destroy(); window.__stand.instance.selectObject("r03-demo-area"); window.__stand.instance.refresh(); window.__stand.instance = null; });
     await page.waitForTimeout(200);
     const s2 = await snap();
@@ -553,7 +553,7 @@ test("review: a second mount on the same root/map replaces the first cleanly", {
     return { mid, still, after: { children: root.childNodes.length, cls: root.getAttribute("class"), layers: window.__stand.map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03")).length } };
   });
   assert.equal(r.mid.items, 12);
-  assert.equal(r.mid.layers, 12);
+  assert.equal(r.mid.layers, 13);
   assert.equal(r.still, 12, "destroying the stale handle does not wipe the live UI");
   assert.deepEqual(r.after, { children: 0, cls: null, layers: 0 });
   assert.deepEqual(errors, []);
@@ -652,17 +652,157 @@ test("review: landscape phone 667x375 keeps 3D toggle and attribution reachable 
   await ctx.close();
 });
 
-test("review: on a phone, an object tapped low on the map ends up above the opened sheet", { skip: SKIP }, async () => {
-  const { ctx, page } = await open({ persist: "0", fit: "0" }, { viewport: MOBILE, touch: true });
-  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4511, 51.1255], zoom: 13 }));
-  await page.waitForTimeout(300);
-  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.4511, 51.1209]); return { x: c.left + p.x, y: c.top + p.y }; });
-  assert.ok(pt.y > 418 && pt.y < 640, "object starts where the half sheet will cover it: " + JSON.stringify(pt));
+// Waits until the overlay sheet stopped animating (its rect is stable for 3 frames).
+const sheetSettled = (page) => page.waitForFunction(() => new Promise((res) => {
+  const el = document.getElementById("civic-public"); let last = -1, same = 0;
+  const tick = () => { const t = Math.round(el.getBoundingClientRect().top); same = t === last ? same + 1 : 0; last = t; if (same >= 3) res(true); else requestAnimationFrame(tick); };
+  tick();
+}), null, { timeout: 5000 });
+for (const vp of [MOBILE, { width: 667, height: 375 }]) {
+  test("review: on a phone (" + vp.width + "x" + vp.height + "), an object tapped on the map ends up above the opened sheet", { skip: SKIP }, async () => {
+    const { ctx, page } = await open({ persist: "0", fit: "0" }, { viewport: vp, touch: true });
+    const target = [71.4511, 51.1209];
+    // put the object just above the peek sheet, where the half sheet will cover it
+    await page.evaluate(([t, h]) => {
+      const m = window.__stand.map; m.jumpTo({ center: t, zoom: 13 });
+      const sheetTop = document.getElementById("civic-public").getBoundingClientRect().top;
+      const p = m.project(t), c = m.getCanvas().getBoundingClientRect();
+      m.panBy([0, -((sheetTop - 30) - (c.top + p.y))], { duration: 0 });
+    }, [target, vp.height]);
+    await page.waitForTimeout(200);
+    const before = await page.evaluate(() => window.__stand.map.getCenter().toArray());
+    const pt = await page.evaluate((t) => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project(t); return { x: c.left + p.x, y: c.top + p.y }; }, target);
+    await page.touchscreen.tap(pt.x, pt.y);
+    await page.waitForFunction(() => window.__stand.instance.getState().selectedId === "r03-demo-completed");
+    await sheetSettled(page);
+    await settle(page);
+    await sheetSettled(page);
+    const after = await page.evaluate(() => window.__stand.map.getCenter().toArray());
+    assert.notDeepEqual(after, before, "the camera moved");
+    const pos = await objectClearOfPanel(page, target, true);
+    assert.ok(pos.inView && pos.clear, JSON.stringify(pos));
+    await ctx.close();
+  });
+}
+
+test("review: re-tapping the open object while the sheet peeks brings the card back up", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { viewport: MOBILE, touch: true });
+  await select(page, "r03-demo-shifted");
+  await sheetSettled(page);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.4304, 51.1282]); return { x: c.left + p.x, y: c.top + p.y }; });
+  for (let i = 0; i < 2; i++) { await page.click(".civic-r03-handle"); await page.waitForTimeout(320); }
+  assert.equal((await state(page)).sheet, "peek");
   await page.touchscreen.tap(pt.x, pt.y);
-  await page.waitForFunction(() => window.__stand.instance.getState().selectedId === "r03-demo-completed");
-  await settle(page);
-  const pos = await objectClearOfPanel(page, [71.4511, 51.1209], true);
-  assert.ok(pos.inView && pos.clear, JSON.stringify(pos));
+  await page.waitForTimeout(200);
+  assert.equal((await state(page)).sheet, "half");
+  assert.equal(await page.evaluate(() => window.__stand.selects.length), 1, "no second onSelect");
+  await ctx.close();
+});
+
+test("review: the module's own focus restores never reopen a sheet the user collapsed; keyboard focus does", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", delay: "1500" }, { viewport: MOBILE, touch: true });
+  // focus lands on the card title (as after a tap), the detail is still loading
+  // do not return the promise: the detail must still be loading during the drag
+  await page.evaluate(() => { window.__stand.instance.selectObject("r03-demo-shifted", { focus: true }); });
+  await page.waitForTimeout(100);
+  assert.equal((await state(page)).detail, "loading");
+  // a drag on the handle that does not move focus (synthetic pointer events) -> peek
+  await page.evaluate(() => {
+    const hd = document.querySelector(".civic-r03-handle"), r = hd.getBoundingClientRect(), y = r.top + 10;
+    const ev = (type, cy) => hd.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 7, clientX: r.left + 30, clientY: cy, pointerType: "touch" }));
+    ev("pointerdown", y); ev("pointermove", y + 80); ev("pointermove", y + 160); ev("pointerup", y + 160);
+  });
+  assert.equal((await state(page)).sheet, "peek");
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready", null, { timeout: 5000 });
+  await page.waitForTimeout(400);
+  assert.equal((await state(page)).sheet, "peek", "card arrival restored focus but did not reopen the sheet");
+  // keyboard: Tab from the handle into the peeking sheet opens it
+  await page.focus(".civic-r03-handle");
+  await page.keyboard.press("Tab");
+  await page.waitForTimeout(100);
+  assert.equal((await state(page)).sheet, "half");
+  await ctx.close();
+});
+
+test("review: sheet handle names the next action; aria-expanded only when full", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { viewport: MOBILE, touch: true });
+  const want = { peek: ["Развернуть панель наполовину", "false"], half: ["Развернуть панель полностью", "false"], full: ["Свернуть панель", "true"] };
+  for (let i = 0; i < 3; i++) {
+    const s = (await state(page)).sheet;
+    const got = await page.evaluate(() => { const h = document.querySelector(".civic-r03-handle"); return [h.getAttribute("aria-label"), h.getAttribute("aria-expanded"), !!document.getElementById(h.getAttribute("aria-controls"))]; });
+    assert.deepEqual(got, [...want[s], true], s);
+    await page.click(".civic-r03-handle");
+    await page.waitForTimeout(320);
+  }
+  await ctx.close();
+});
+
+test("review: stale-data error keeps the result count and the 'nothing found' reset", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await page.evaluate(async () => { window.__stand.api.options.failList = 1; await window.__stand.instance.refresh(); });
+  await page.fill('[data-r03-filter="q"]', "ремонт");
+  await page.waitForFunction(() => window.__stand.instance.getState().q === "ремонт");
+  assert.match(await page.locator(".civic-r03-count").innerText(), /^Показано \d+ из 12 · прежние данные$/);
+  await page.fill('[data-r03-filter="q"]', "zzzzqqq");
+  await page.waitForFunction(() => window.__stand.instance.getState().q === "zzzzqqq");
+  const box = await page.locator(".civic-r03-state").innerText();
+  assert.match(box, /Сервер не смог ответить \(500\)/);
+  assert.match(box, /По выбранным условиям ничего не найдено/);
+  assert.equal(await page.locator('.civic-r03-state [data-r03-action="reset-filters"]').count(), 1);
+  await ctx.close();
+});
+
+test("review: a failed re-read after refresh shows the fresh list copy, not the superseded revision", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await select(page, "r03-demo-shifted");
+  await page.evaluate(async () => {
+    const o = window.__stand.api.options, it = o.items.find((x) => x.id === "r03-demo-shifted");
+    it.revision = 4; it.status = "cancelled"; it.title = "Демо: отменённый ремонт прохода (ред. 4)";
+    o.failCard = 1;
+    await window.__stand.instance.refresh();
+  });
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "error");
+  const t = await page.locator(".civic-r03-card").innerText();
+  assert.match(t, /Демо: отменённый ремонт прохода \(ред\. 4\)/);
+  assert.match(t, /Отменено/);
+  assert.match(t, /редакция 4/);
+  await ctx.close();
+});
+
+test("review: a host setStyle (diff) re-adds R03 layers without MapLibre placement errors", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0" });
+  await page.evaluate(() => window.__stand.map.setStyle({ version: 8, sources: {}, layers: [{ id: "bg2", type: "background", paint: { "background-color": "#f1f3ee" } }] }));
+  await page.waitForFunction(() => window.__stand.map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 5000 });
+  await page.waitForTimeout(500);
+  assert.equal(await page.evaluate(() => window.__stand.map.hasImage("civic-r03-demo-ring")), true);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("review: 'visible part' excludes objects hidden under the desktop panel", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await page.evaluate(() => { const m = window.__stand.map; m.jumpTo({ center: [71.4511, 51.1209], zoom: 15.5 }); m.panBy([520, 0], { duration: 0 }); });
+  await page.waitForTimeout(200);
+  const x = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(); return c.left + m.project([71.4511, 51.1209]).x; });
+  const panelRight = await page.evaluate(() => document.getElementById("civic-public").getBoundingClientRect().right);
+  assert.ok(x < panelRight, "object is under the panel: " + x);
+  await page.check('[data-r03-filter="area"]');
+  await page.waitForTimeout(300);
+  const ids = await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id));
+  assert.ok(!ids.includes("r03-demo-completed"), ids.join());
+  await ctx.close();
+});
+
+test("review: lines and areas show status (hollow planned, solid in progress) and the legend says so", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  const r = await page.evaluate(() => {
+    const m = window.__stand.map, core = m.getStyle().layers.find((l) => l.id === "civic-r03-line-core");
+    return { core: !!core, fill: JSON.stringify(m.getPaintProperty("civic-r03-area-fill", "fill-opacity")), legend: document.querySelector(".civic-r03-legend").textContent };
+  });
+  assert.equal(r.core, true);
+  assert.match(r.fill, /"in_progress",0\.32/);
+  assert.match(r.legend, /Линии и участки — статус/);
+  assert.match(r.legend, /Запланировано — полая линия, участок без заливки/);
   await ctx.close();
 });
 
@@ -702,5 +842,18 @@ test("review: synthetic points carry a dashed ring symbol that the legend descri
   });
   assert.deepEqual([r.type, r.icon, r.image], ["symbol", "civic-r03-demo-ring", true]);
   assert.match(r.legend, /Серое пунктирное кольцо/);
+  await ctx.close();
+});
+
+test("review: field, chip and grip outlines reach 3:1 against white and the filter background", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { viewport: MOBILE });
+  const r = await page.evaluate(() => {
+    const hex = (rgb) => "#" + rgb.match(/\d+/g).slice(0, 3).map((n) => (+n).toString(16).padStart(2, "0")).join("");
+    const C = window.CivicMapCore;
+    const pick = (sel, prop) => { const el = document.querySelector(sel); return el ? hex(getComputedStyle(el)[prop]) : null; };
+    const colors = { search: pick(".civic-r03-search", "borderTopColor"), select: pick(".civic-r03-select", "borderTopColor"), chip: pick(".civic-r03-chip", "borderTopColor"), grip: pick(".civic-r03-grip", "backgroundColor") };
+    return Object.fromEntries(Object.entries(colors).map(([k, c]) => [k, c ? Math.min(C.contrast(c, "#ffffff"), C.contrast(c, "#f7f8f4")) : 0]));
+  });
+  for (const [k, v] of Object.entries(r)) assert.ok(v >= 3, k + " " + v.toFixed(2));
   await ctx.close();
 });

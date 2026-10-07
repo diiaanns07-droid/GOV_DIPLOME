@@ -141,7 +141,12 @@ test("period rule matches contract §2 / R02: unknown bound is open and flagged,
   // current end cleared after publication: the old original end is not used as the active end
   const cleared = { schedule: { planned_start: "2024-03-01", original_planned_end: "2024-11-30", current_planned_end: null, actual_end: null }, status: "in_progress" };
   assert.deepEqual(C.plannedInterval(cleared), { start: "2024-03-01", end: null, complete: false });
-  assert.equal(C.staleness(cleared, "2026-10-06"), null);
+  // ...but the historical mark still sees the passed first promise
+  const mark = C.staleness(cleared, "2026-10-06");
+  assert.deepEqual([mark.kind, mark.end, mark.original], ["plan_end_passed", "2024-11-30", true]);
+  const old = C.staleness({ schedule: { planned_start: "2019-05-01" }, status: "planned" }, "2026-10-06");
+  assert.equal(old.kind, "old_start_no_end");
+  assert.equal(C.staleness({ schedule: { planned_start: "2026-03-01" }, status: "planned" }, "2026-10-06"), null);
   assert.equal(C.matchPeriod(cleared, "2026-01-01", "2026-12-31").match, true);
   // one-sided custom period must not throw (regression: lo "0000-01-01" made parseDay null)
   assert.equal(C.matchPeriod({ schedule: { planned_start: "2026-03-01", current_planned_end: "2026-04-01" } }, null, "2026-10-31").match, true);
@@ -270,4 +275,21 @@ test("feature collection draws small polygons above large ones", () => {
   const poly = (id, w, s, e, n) => ({ id, title: id, publication: "published", geometry: { type: "Polygon", coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } });
   const { items } = C.normalizeList([poly("small", 71.44, 51.14, 71.444, 51.142), poly("big", 71.43, 51.13, 71.46, 51.15)]);
   assert.deepEqual(C.featureCollection(items).features.map((f) => f.properties.cid), ["big", "small"]);
+});
+
+test("draw order: polygons largest first even with points in between; area counters respect the period", () => {
+  const poly = (id, w, s, e, n, end) => ({ id, title: id, publication: "published", schedule: { planned_start: "2026-01-01", current_planned_end: end }, geometry: { type: "Polygon", coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } });
+  const pt = { id: "p1", title: "p1", publication: "published", schedule: { planned_start: "2026-01-01", current_planned_end: "2026-10-20" }, geometry: { type: "Point", coordinates: [71.45, 51.14] } };
+  const { items } = C.normalizeList([poly("small", 71.44, 51.14, 71.444, 51.142, "2026-10-10"), pt, poly("big", 71.43, 51.13, 71.46, 51.15, "2026-11-30")]);
+  assert.deepEqual(C.featureCollection(C.sortItems(items)).features.map((f) => f.properties.cid), ["big", "small", "p1"]);
+  const mk = (id, geo, dates) => ({ id, title: id, publication: "published", geometry: geo, schedule: dates });
+  const P = (x, y) => ({ type: "Point", coordinates: [x, y] });
+  const list = C.normalizeList([
+    mk("in-oct", P(71.43, 51.13), { planned_start: "2026-10-01", current_planned_end: "2026-10-20" }),
+    mk("out-2025", P(71.6, 51.3), { planned_start: "2025-01-01", current_planned_end: "2025-02-01" }),
+    mk("nogeo-2025", null, { planned_start: "2025-01-01", current_planned_end: "2025-02-01" }),
+    mk("nogeo-undated", null, {}),
+  ]).items;
+  const r = C.applyFilters(list, { period: "month", area: true }, { today: "2026-10-06", viewBox: [71.4, 51.1, 71.5, 51.2] });
+  assert.deepEqual([r.shown.length, r.counts.outsideArea, r.counts.noGeometry, r.counts.undated], [1, 0, 0, 0]);
 });
