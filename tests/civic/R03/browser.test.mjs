@@ -1317,3 +1317,129 @@ test("r12 review: a street pick is judged after the camera arrives — no false 
   assert.deepEqual(errors, []);
   await ctx.close();
 });
+
+// ---------- round 13: host camera, input ownership, style reload (research/round-13-results/R03/CONTRACT.txt) ----------
+async function remount(page, extra) {
+  // Re-mount the module on the stand's map with options a URL cannot carry (functions).
+  await page.evaluate(async (src) => {
+    const s = window.__stand;
+    s.destroy();
+    const extra = (0, eval)("(" + src + ")");
+    s.instance = window.CivicMap.mount(Object.assign({ root: document.getElementById("civic-public"), map: s.map, api: s.api, persistFilters: false, fitOnLoad: false,
+      onSelect: (obj, meta) => s.selects.push({ id: obj && obj.id, source: meta.source }) }, extra));
+  }, extra);
+  await page.waitForFunction(() => window.__stand.instance.getState().list === "ready");
+}
+const warnings = (page) => { const w = []; page.on("console", (m) => { if (m.type() === "warning") w.push(m.text()); }); return w; };
+
+test("r13: getPadding/getPitch steer the module's camera; invalid values fall back once with a warning", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" });
+  const warn = warnings(page);
+  await remount(page, `{ getPadding: () => ({ top: 520, right: 40, bottom: 40, left: 700 }), getPitch: () => 0, getBearing: () => 0 }`);
+  await page.evaluate(() => window.__stand.map.jumpTo({ pitch: 50, bearing: -20 }));
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-closure"));
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await settle(page);
+  const r = await page.evaluate(() => {
+    const m = window.__stand.map, it = window.__stand.api.options.items.find((x) => x.id === "r03-demo-closure"), g = it.geometry;
+    const pts = g.type === "Point" ? [g.coordinates] : g.type === "LineString" ? g.coordinates : g.coordinates[0];
+    const c = pts.reduce((a, p) => [a[0] + p[0] / pts.length, a[1] + p[1] / pts.length], [0, 0]);
+    const p = m.project(c), cv = m.getCanvas().getBoundingClientRect();
+    return { x: p.x, y: p.y, w: cv.width, h: cv.height, pitch: m.getPitch(), bearing: m.getBearing() };
+  });
+  assert.ok(r.x > 700 && r.x < r.w - 40 && r.y > 520 && r.y < r.h - 40, "object inside the host's free area: " + JSON.stringify(r));
+  assert.equal(Math.round(r.pitch), 0, "host's intended pitch, not the current 50°");
+  assert.equal(Math.round(r.bearing), 0);
+  // invalid: negative / NaN / throwing -> own padding, one warning per instance
+  await remount(page, `{ getPadding: () => ({ top: -5, right: NaN, bottom: 0, left: 0 }) }`);
+  await page.evaluate(() => { window.__stand.instance.selectObject("r03-demo-shifted"); });
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.evaluate(() => { window.__stand.instance.fitAll(); window.__stand.instance.fitAll(); });
+  await settle(page);
+  assert.equal(warn.filter((t) => /getPadding\(\) must return/.test(t)).length, 1, warn.join("\n"));
+  await remount(page, `{ getPadding: () => { throw new Error("host layout not ready"); } }`);
+  assert.equal(await page.evaluate(() => window.__stand.instance.fitAll()), true, "camera still works");
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r13: a host or resident camera move cancels the module's pending move (the chosen street stays)", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" }, { viewport: MOBILE, touch: true });
+  // phone: the module waits for its sheet (~320 ms) before flying to a selection
+  await page.evaluate(() => {
+    window.__stand.instance.selectObject("r03-demo-closure", { source: "list" });
+    // ...and the host frames a street right after (as R01 does on a street pick)
+    window.__stand.map.fitBounds([[71.355, 51.185], [71.365, 51.195]], { duration: 0 });
+  });
+  await page.waitForTimeout(900);
+  await settle(page);
+  const c = await page.evaluate(() => { const m = window.__stand.map.getCenter(); return [m.lng, m.lat]; });
+  assert.ok(Math.abs(c[0] - 71.36) < 0.01 && Math.abs(c[1] - 51.19) < 0.01, "camera stayed on the host's street: " + c);
+  assert.equal((await state(page)).cameraPending, false);
+  // without a foreign move the module still flies after the sheet settles
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-shifted", { source: "list" }));
+  await page.waitForTimeout(900);
+  await settle(page);
+  const c2 = await page.evaluate(() => { const m = window.__stand.map.getCenter(); return [m.lng, m.lat]; });
+  assert.ok(Math.abs(c2[0] - 71.36) > 0.01 || Math.abs(c2[1] - 51.19) > 0.01, "module flew to its selection: " + c2);
+  await ctx.close();
+});
+
+test("r13: render -> style change -> editor draws -> cancel -> select: input belongs to the editor while it draws", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" }, { probe: true });
+  const warn = warnings(page);
+  // style change (full replace, then a refresh during the swap — the race R01 saw once in 4 runs)
+  await page.evaluate(() => {
+    const m = window.__stand.map;
+    m.setStyle({ version: 8, sources: {}, layers: [{ id: "bg-r13", type: "background", paint: { "background-color": "#eef1ea" } }] }, { diff: false });
+    window.__stand.instance.refresh();
+  });
+  await page.waitForFunction(() => ((window.__stand.map.getStyle() || {}).layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 8000 });
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4511, 51.1209], zoom: 15 }));
+  await page.waitForTimeout(500);
+  assert.equal(await page.evaluate(() => window.__stand.map.hasImage("civic-r03-demo-ring")), true);
+  assert.ok(await page.evaluate(() => window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point-synthetic"] }).length) > 0, "demo marks still distinct after the swap");
+  const target = await page.evaluate(() => {
+    const m = window.__stand.map, f = m.queryRenderedFeatures({ layers: ["civic-r03-point"] })[0], c = m.getCanvas().getBoundingClientRect(), p = m.project(f.geometry.coordinates);
+    return { id: f.properties.cid, x: c.left + p.x, y: c.top + p.y };
+  });
+  // the editor starts drawing: it sets its crosshair, then announces (R04 civic-editor:tool, bubbling)
+  await page.evaluate(() => {
+    const ed = document.createElement("div"); ed.id = "fake-editor"; document.body.append(ed);
+    window.__stand.map.getCanvas().style.cursor = "crosshair";
+    ed.dispatchEvent(new CustomEvent("civic-editor:tool", { bubbles: true, detail: { active: true, mode: "point" } }));
+  });
+  const before = await page.evaluate(() => window.__stand.selects.length);
+  await page.mouse.move(target.x, target.y);
+  await page.waitForTimeout(150);
+  await page.mouse.click(target.x, target.y);
+  await page.waitForTimeout(300);
+  const during = await page.evaluate(() => ({ s: window.__stand.instance.getState(), n: window.__stand.selects.length, cursor: window.__stand.map.getCanvas().style.cursor, tip: !!document.querySelector(".civic-r03-tip") }));
+  assert.equal(during.s.selectedId, null, "a vertex click does not select a public object");
+  assert.equal(during.n, before, "no onSelect -> the host does not touch #object=");
+  assert.equal(during.cursor, "crosshair", "the editor keeps its cursor");
+  assert.equal(during.tip, false, "no hover tooltip while drawing");
+  assert.deepEqual(during.s.interaction, { enabled: false, owners: ["civic-editor"] });
+  // a second owner (simulator via the API) keeps the input after the editor cancels
+  await page.evaluate(() => window.__stand.instance.setInteractionEnabled(false, "civic-scenarios"));
+  await page.evaluate(() => { window.__stand.map.getCanvas().style.cursor = ""; document.getElementById("fake-editor").dispatchEvent(new CustomEvent("civic-editor:tool", { bubbles: true, detail: { active: false } })); });
+  assert.deepEqual((await state(page)).interaction, { enabled: false, owners: ["civic-scenarios"] });
+  await page.evaluate(() => window.__stand.instance.setInteractionEnabled(true, "civic-scenarios"));
+  // cancel -> the same click selects again
+  await page.mouse.click(target.x, target.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().selectedId !== null);
+  // an editor that disappears while drawing (closed/failed without active:false) does not lock the map
+  await page.evaluate(() => { window.__stand.instance.selectObject(null); const ed = document.getElementById("fake-editor"); ed.dispatchEvent(new CustomEvent("civic-editor:tool", { bubbles: true, detail: { active: true, mode: "line" } })); ed.remove(); });
+  await page.mouse.click(target.x, target.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().selectedId !== null);
+  assert.equal(warn.filter((t) => /could not be loaded|civic-r03-demo-ring/.test(t)).length, 0, warn.join("\n"));
+  // listeners do not pile up over remounts and are all released
+  for (let i = 0; i < 3; i++) await page.evaluate(() => { window.__stand.destroy(); window.__stand.mount(); });
+  await page.waitForFunction(() => window.__stand.instance.getState().list === "ready");
+  const net = await page.evaluate(() => { window.__stand.destroy(); return window.__r03net; });
+  assert.ok(!net["document:civic-editor:tool"] && !net["document:civic-scenarios:tool"], JSON.stringify(net));
+  const mapListeners = await page.evaluate(() => ["click", "styledata", "styleimagemissing", "movestart"].map((t) => (window.__stand.map._listeners[t] || []).length));
+  assert.deepEqual(mapListeners.slice(2), [0, 0], "module map listeners removed: " + mapListeners);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});

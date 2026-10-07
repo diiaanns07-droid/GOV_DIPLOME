@@ -181,6 +181,14 @@
     const title = typeof opt.title === "string" && opt.title ? opt.title : "Что делают рядом";
     const fitOnLoad = opt.fitOnLoad === true;
     let fitted = false;
+    // Camera ownership (round 13): the module's own moves carry OWN_MOVE; any other move start (a gesture or
+    // the host's fitBounds to a street) bumps camEpoch, which cancels the module's pending moves.
+    const OWN_MOVE = { civicR03: true };
+    let camEpoch = 0, foreignMoved = false;
+    // Input ownership (round 13): owners that took the public map input (editor drawing, simulator picking).
+    // Input is on only when none holds it. Value: the element that announced it (pruned once detached).
+    const inputOwners = new Map();
+    const warned = new Set();
 
     let map = null;
     let destroyed = false;
@@ -317,6 +325,12 @@
     // ---------- listeners on root (delegated; removed in destroy) ----------
     function on(target, type, fn, o) { target.addEventListener(type, fn, o); cleanups.push(() => target.removeEventListener(type, fn, o)); }
     on(root, "click", onRootClick);
+    // R04's editor (and R07's simulator, same shape) announce drawing with a bubbling event; the host may
+    // instead call handle.setInteractionEnabled itself and pass inputEvents:false.
+    if (opt.inputEvents !== false) {
+      on(document, "civic-editor:tool", onToolEvent("civic-editor"));
+      on(document, "civic-scenarios:tool", onToolEvent("civic-scenarios"));
+    }
     on(root, "change", onRootChange);
     on(root, "input", onRootInput);
     on(root, "keydown", onRootKey);
@@ -793,7 +807,7 @@
         if (typeof opt.onData === "function") safeCall(opt.onData, st.items.map((item) => ({ evidence: item.evidence })));
         renderList();
         updateMapData();
-        if (fitOnLoad && !fitted && !st.selectedId) fitted = fitAll();
+        if (fitOnLoad && !fitted && !st.selectedId && !foreignMoved) fitted = fitAll();
         // Keep an open card in sync with the fresh list. A changed revision or an object that
         // left the public list is re-read from GET /objects/{id} (404 -> "не найден"), so the
         // history and the reason for a moved date always match the shown record.
@@ -835,6 +849,7 @@
       }
       const prevFocus = opts.source === "list" ? id : null;
       saveListScroll();
+      const epoch = camEpoch;
       st.selectedId = id;
       st.view = "card";
       st.compare = { a: null, b: null };
@@ -847,14 +862,16 @@
       // onSelect first: a host that resizes its own sheet does so before we measure the free area.
       if (onSelect) safeCall(onSelect, publicCopy(listed) || { id }, { source: opts.source || "api" });
       if (listed && opts.fly !== false) afterLayout(() => (opts.source === "map" ? ensureVisible(listed) : flyTo(listed)), id);
-      await loadDetail(id, opts);
+      await loadDetail(id, Object.assign({}, opts, { epoch }));
     }
     // On phones the sheet animates its height; measure the free map area after it settles.
     function afterLayout(fn, id) {
       clearTimeout(layoutTimer);
+      const epoch = camEpoch;
       const run = () => {
         st.cameraPending = false;
-        if (!destroyed && st.selectedId === id) fn();
+        // Someone else (the resident or the host) moved the camera meanwhile: do not fly over that.
+        if (!destroyed && st.selectedId === id && epoch === camEpoch) fn();
       };
       if (!isMobile() || reducedMotion()) { st.cameraPending = false; run(); return; }
       st.cameraPending = true;
@@ -879,7 +896,7 @@
           st.detail.item = norm.item;
           st.detail.history = C.normalizeHistory(data.history);
           st.detail.state = "ready";
-          if (!hadItem && opts && opts.fly !== false) { const it = norm.item; afterLayout(() => (opts.source === "map" ? ensureVisible(it) : flyTo(it)), id); }
+          if (!hadItem && opts && opts.fly !== false && (opts.epoch === undefined || opts.epoch === camEpoch)) { const it = norm.item; afterLayout(() => (opts.source === "map" ? ensureVisible(it) : flyTo(it)), id); }
         }
       } catch (err) {
         if (destroyed || !cardSeq.isCurrent(t) || st.selectedId !== id) return;
@@ -948,7 +965,8 @@
       if (at && Number.isFinite(at.lng) && Number.isFinite(at.lat)) {
         const spot = { bbox: [at.lng, at.lat, at.lng, at.lat] };
         clearTimeout(layoutTimer);
-        const run = () => { if (!destroyed && st.view === "pick") ensureVisible(spot); };
+        const epoch = camEpoch;
+        const run = () => { if (!destroyed && st.view === "pick" && epoch === camEpoch) ensureVisible(spot); };
         if (!isMobile() || reducedMotion()) run(); else layoutTimer = setTimeout(run, 320);
       }
     }
@@ -985,7 +1003,7 @@
       const boxes = ids.map((id) => findItem(id)).filter((it) => it && it.bbox).map((it) => it.bbox);
       if (!boxes.length) return;
       const b = boxes.reduce((a, x) => [Math.min(a[0], x[0]), Math.min(a[1], x[1]), Math.max(a[2], x[2]), Math.max(a[3], x[3])]);
-      try { map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freePadding(), maxZoom: 17.5, duration: reducedMotion() ? 0 : 700, bearing: map.getBearing(), pitch: map.getPitch() }); } catch (e) { /* ignore */ }
+      try { map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freePadding(), maxZoom: 17.5, duration: reducedMotion() ? 0 : 700, bearing: camBearing(), pitch: camPitch() }, OWN_MOVE); } catch (e) { /* ignore */ }
     }
 
     function closeCard() {
@@ -1387,18 +1405,62 @@
     }
     function hitAt(point) { return hitIds(point)[0] || null; }
     // One object -> open it. Several on top of each other -> let the resident choose in the panel.
+    function onMoveStart(e) {
+      if (e && e.civicR03) return;
+      camEpoch++;
+      foreignMoved = true;
+      if (st.cameraPending) { clearTimeout(layoutTimer); st.cameraPending = false; }
+    }
+    // MapLibre asks for an image a layer needs (e.g. right after a host setStyle): add it at once.
+    function onImageMissing(e) {
+      if (destroyed || !map || !e || e.id !== DEMO_IMG) return;
+      try {
+        if (map.hasImage(DEMO_IMG)) return;
+        const img = demoRingImage();
+        if (img) map.addImage(DEMO_IMG, img.image, { pixelRatio: img.ratio });
+      } catch (err) { /* style switching again: the next request retries */ }
+    }
+    function interactionEnabled() {
+      for (const [k, el] of inputOwners) if (el && !el.isConnected) inputOwners.delete(k);
+      return inputOwners.size === 0;
+    }
+    function setInteractionEnabled(enabled, owner, el) {
+      const key = typeof owner === "string" && owner ? owner.slice(0, 40) : "host";
+      if (enabled === false) {
+        inputOwners.set(key, el && el.nodeType === 1 ? el : null);
+        hideTip();
+        lastHoverPoint = null;
+        if (hoverRaf) { cancelAnimationFrame(hoverRaf); hoverRaf = 0; }
+        // The cursor now belongs to the input owner: only undo our own pointer, never its crosshair.
+        if (cursorSet && map) { try { const cs = map.getCanvas().style; if (cs.cursor === "pointer") cs.cursor = ""; } catch (e) { /* ignore */ } }
+        cursorSet = false;
+      } else if (enabled === true) {
+        inputOwners.delete(key);
+        // An owner may restore the pointer it saw when it started: let the next hover clear it.
+        try { if (map && map.getCanvas().style.cursor === "pointer") cursorSet = true; } catch (e) { /* ignore */ }
+      }
+      return interactionEnabled();
+    }
+    function onToolEvent(owner) {
+      return (e) => {
+        const d = e && e.detail;
+        if (destroyed || !d || typeof d.active !== "boolean") return;
+        setInteractionEnabled(!d.active, owner, d.active && e.target && e.target.nodeType === 1 ? e.target : null);
+      };
+    }
     function onMapClick(e) {
-      if (destroyed) return;
+      if (destroyed || !interactionEnabled()) return;
       const ids = hitIds(e.point);
       if (ids.length === 1) selectObject(ids[0], { source: "map" });
       else if (ids.length > 1) openPick(ids, e.lngLat);
     }
     function onMapMove(e) {
+      if (!interactionEnabled()) { lastHoverPoint = null; return; }
       lastHoverPoint = e;
       if (hoverRaf) return;
       hoverRaf = requestAnimationFrame(() => {
         hoverRaf = 0;
-        if (destroyed || !lastHoverPoint) return;
+        if (destroyed || !lastHoverPoint || !interactionEnabled()) return;
         const ev = lastHoverPoint;
         const id = hitAt(ev.point);
         const canvas = map.getCanvas();
@@ -1456,10 +1518,12 @@
       if (!map) { st.viewBox = null; return; }
       try {
         const c = map.getContainer().getBoundingClientRect();
-        const ob = obstruction();
+        const host = hostPadding();
+        const ob = host ? null : obstruction();
         const r = ob ? ob.getBoundingClientRect() : null;
         let l = 0, t = 0, rt = c.width, b = c.height;
-        if (r && r.width && r.height) {
+        if (host) { l = host.left; t = host.top; rt = c.width - host.right; b = c.height - host.bottom; }
+        else if (r && r.width && r.height) {
           if (isMobile()) b = Math.min(b, Math.max(0, r.top - c.top));
           else if (r.left - c.left < c.width / 2) l = Math.max(l, r.right - c.left);
           else rt = Math.min(rt, r.left - c.left);
@@ -1480,7 +1544,7 @@
       try { p = map.project([(it.bbox[0] + it.bbox[2]) / 2, (it.bbox[1] + it.bbox[3]) / 2]); } catch (e) { return; }
       const x = c.left + p.x, y = c.top + p.y;
       if (x >= free.l && x <= free.r && y >= free.t && y <= free.b) return;
-      try { map.panBy([x - (free.l + free.r) / 2, y - (free.t + free.b) / 2], { duration: reducedMotion() ? 0 : 350 }); } catch (e) { /* ignore */ }
+      try { map.panBy([x - (free.l + free.r) / 2, y - (free.t + free.b) / 2], { duration: reducedMotion() ? 0 : 350 }, OWN_MOVE); } catch (e) { /* ignore */ }
     }
     // The panel that covers the map: our root in overlay mode, or the host's positioned
     // panel (outermost absolute/fixed ancestor) when embedded in the R01 shell.
@@ -1492,18 +1556,40 @@
       }
       return found;
     }
+    function warnOnce(key, text) { if (!warned.has(key)) { warned.add(key); console.warn("CivicMap: " + text); } }
+    // The host's free area (getPadding), checked: four finite numbers >= 0, else ignored as a whole.
+    function hostPadding() {
+      if (typeof opt.getPadding !== "function") return null;
+      let p = null;
+      try { p = opt.getPadding(); } catch (e) { p = null; }
+      const ok = p && typeof p === "object" && ["top", "right", "bottom", "left"].every((k) => typeof p[k] === "number" && Number.isFinite(p[k]) && p[k] >= 0);
+      if (!ok) { warnOnce("padding", "getPadding() must return {top,right,bottom,left} with finite numbers >= 0; using the module's own padding"); return null; }
+      return { top: p.top, right: p.right, bottom: p.bottom, left: p.left };
+    }
+    function hostNumber(fn, lo, hi, key) {
+      if (typeof fn !== "function") return null;
+      let v = null;
+      try { v = fn(); } catch (e) { v = null; }
+      if (typeof v === "number" && Number.isFinite(v) && v >= lo && v <= hi) return v;
+      warnOnce(key, key + "() must return a finite number in [" + lo + ", " + hi + "]; using the map's current value");
+      return null;
+    }
+    // Pitch/bearing for the module's camera moves: the host's intended 3D state, not a mid-animation value.
+    function camPitch() { const v = hostNumber(opt.getPitch, 0, 85, "getPitch"); return v === null ? map.getPitch() : v; }
+    function camBearing() { const v = hostNumber(opt.getBearing, -360, 360, "getBearing"); return v === null ? map.getBearing() : v; }
     function freePadding() {
-      // Phones: the topbar ends near 72-84px and the tool column is ~50px wide.
-      const pad = Object.assign({}, basePadding, isMobile() && !opt.mapPadding ? { top: 84, right: 60, left: 16 } : null);
       const c = map.getContainer().getBoundingClientRect();
-      const ob = obstruction();
+      const host = hostPadding();
+      // Phones: the topbar ends near 72-84px and the tool column is ~50px wide.
+      const pad = host || Object.assign({}, basePadding, isMobile() && !opt.mapPadding ? { top: 84, right: 60, left: 16 } : null);
+      const ob = host ? null : obstruction();
       const r = ob ? ob.getBoundingClientRect() : { width: 0, height: 0 };
       if (r.width && r.height && !opt.mapPadding) {
         if (isMobile()) pad.bottom = Math.max(pad.bottom, c.bottom - r.top + 16);
         else if (r.left - c.left < c.width / 2) pad.left = Math.max(pad.left, r.right - c.left + 24);
         else pad.right = Math.max(pad.right, c.right - r.left + 24);
       }
-      // Never ask MapLibre for more padding than the map has.
+      // Never ask MapLibre for more padding than the map has (low or narrow screens included).
       const maxH = Math.max(0, c.width - 60), maxV = Math.max(0, c.height - 60);
       if (pad.left + pad.right > maxH) { const k = maxH / (pad.left + pad.right); pad.left = Math.floor(pad.left * k); pad.right = Math.floor(pad.right * k); }
       if (pad.top + pad.bottom > maxV) { const k = maxV / (pad.top + pad.bottom); pad.top = Math.floor(pad.top * k); pad.bottom = Math.floor(pad.bottom * k); }
@@ -1518,10 +1604,10 @@
           padding: freePadding(),
           maxZoom: point ? (it.precision === "source" ? 16 : 14.5) : 16.5,
           duration: reducedMotion() ? 0 : 900,
-          bearing: map.getBearing(),
-          pitch: map.getPitch(),
+          bearing: camBearing(),
+          pitch: camPitch(),
           essential: false,
-        });
+        }, OWN_MOVE);
       } catch (e2) { /* camera can fail on a zero-size container; selection still works */ }
     }
     // Fit every mapped object (current filters) into the part of the map not covered by the panel.
@@ -1531,7 +1617,7 @@
       if (!boxes.length) return false;
       const b = boxes.reduce((a, x) => [Math.min(a[0], x[0]), Math.min(a[1], x[1]), Math.max(a[2], x[2]), Math.max(a[3], x[3])]);
       try {
-        map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freePadding(), maxZoom: 14, duration: reducedMotion() ? 0 : 700, bearing: map.getBearing(), pitch: map.getPitch() });
+        map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freePadding(), maxZoom: 14, duration: reducedMotion() ? 0 : 700, bearing: camBearing(), pitch: camPitch() }, OWN_MOVE);
       } catch (e) { return false; }
       return true;
     }
@@ -1548,6 +1634,8 @@
       onMap("mousemove", onMapMove);
       onMap("mouseout", onMapOut);
       onMap("styledata", onStyleData);
+      onMap("styleimagemissing", onImageMissing);
+      onMap("movestart", onMoveStart);
       onMap("moveend", onMoveEnd);
       ensureLayers();
       updateViewBox();
@@ -1574,6 +1662,7 @@
       clearTimeout(moveTimer);
       clearTimeout(areaTimer);
       clearTimeout(copyTimer);
+      inputOwners.clear();
       clearTimeout(searchTimer);
       clearTimeout(layoutTimer);
       detachMap();
@@ -1600,8 +1689,11 @@
       getLayout,
       layerIds: () => BELOW_LABELS.concat(ON_TOP),
       sourceId: SRC,
-      getState: () => ({ list: st.list, count: st.items.length, selectedId: st.selectedId, view: st.view, detail: st.detail.state, filters: C.sanitizeFilters(st.filters), q: st.q, sheet: st.sheet, cameraPending: st.cameraPending }),
+      getState: () => ({ list: st.list, count: st.items.length, selectedId: st.selectedId, view: st.view, detail: st.detail.state, filters: C.sanitizeFilters(st.filters), q: st.q, sheet: st.sheet, cameraPending: st.cameraPending,
+        interaction: { enabled: interactionEnabled(), owners: [...inputOwners.keys()] } }),
       setFilters: setFiltersFromHost,
+      // Round 13: who owns the public map input (see research/round-13-results/R03/CONTRACT.txt, part В).
+      setInteractionEnabled: (enabled, owner) => setInteractionEnabled(enabled, owner),
     };
 
     byRoot.set(root, instance);
