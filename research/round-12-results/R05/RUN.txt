@@ -28,7 +28,11 @@ R05 РАУНД 12 — КОМАНДЫ ЗАПУСКА И ПРОВЕРКИ
    d) python3 -I data/civic/astana/round12-verified/tools/r12.py verify data/civic/astana/round12-verified/drafts/<id>.json \
          --text <source_id>=/tmp/r05-pages/page.txt --published-on <source_id>=YYYY-MM-DD \
          --retrieved-at 2026-10-07T12:00:00Z --method human_saved_text
-      exit 0 -> запись в verified/, sha256 текста в sources.json; exit 1 -> список ненайденных выдержек, ничего не меняется.
+      exit 0 -> запись в verified/, sha256 текста в sources.json; exit 1 -> список проблем, НИЧЕГО не меняется;
+      exit 2 -> неверные аргументы/файлы. Запись с уже существующим id заменяется только с --replace.
+      Если источник уже подтверждал другие записи, другой текст или другая дата публикации отклоняются
+      с перечнем затронутых записей. retrieved_at должен быть не раньше публикации и не позже as_of+1
+      (иначе обновить as_of в config.json).
    e) python3 -I data/civic/astana/round12-verified/tools/r12.py build   -> package.civic-v1.json, historical..., summary.json
    f) шаг 2 (dry-run), затем обычный импорт и проверка редактором в кабинете.
 

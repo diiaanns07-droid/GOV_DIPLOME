@@ -5,8 +5,8 @@
   "branch": "claude/focused-hypatia-z8h0no",
   "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
   "base_mismatch": "Ветка назначена средой и содержит историю R06 раунда 11 (73f9576); перевод основы на 56538a3 merge-коммитом отклонён автоматической проверкой как разрушительная git-операция, force push запрещён. Коммиты раунда 12 трогают только пути R05; проверка — в отдельном worktree от 56538a3; перенос — по путям или патчем r05_round12_paths.patch (git apply --check на 56538a3: OK).",
-  "code_sha": "d94671b",
-  "push_status": "OK (один временный сбой GitHub 500 на checkpoint 6, повтор успешен)",
+  "code_sha": "1f9c339",
+  "push_status": "OK (checkpoint 6: 5 попыток GitHub 500 «remote rejected (Internal Server Error)» в 15:15Z, повтор в 15:16Z успешен)",
   "changed_paths": [
     "data/civic/astana/round12-verified/",
     "tests/civic/R05/round12/",
@@ -28,19 +28,19 @@
       "name": "round12 suite in worktree of CODE_BASE_SHA 56538a3",
       "status": "PASS",
       "command": "python3 -m pytest -q -p no:cacheprovider tests/civic/R05/round12",
-      "result": "45 passed, 1 skipped (skip: проверка только для дерева без валидатора)"
+      "result": "52 passed, 1 skipped (skip: проверка только для дерева без валидатора)"
     },
     {
       "name": "all tests/civic/R05 (round 11 + round 12) on 56538a3",
       "status": "PASS",
       "command": "python3 -m pytest -q -p no:cacheprovider tests/civic/R05",
-      "result": "194 passed, 1 skipped"
+      "result": "206 passed, 1 skipped"
     },
     {
       "name": "round12 suite on the branch tree without base files",
       "status": "PASS",
       "command": "python3 -m pytest -q -p no:cacheprovider tests/civic/R05/round12",
-      "result": "30 passed, 16 skipped (NOT_RUN: нет валидатора R05/импортера/OSM-снимка в этом дереве)"
+      "result": "39 passed, 19 skipped (NOT_RUN: нет валидатора R05/импортера/OSM-снимка в этом дереве)"
     },
     {
       "name": "FIXTURE pipeline: verify -> build -> R05 profile real + R02 validate_content + importer dry-run",
@@ -67,10 +67,10 @@
       "result": "OK"
     },
     {
-      "name": "adversarial review of r12.py (evidence + correctness lenses)",
+      "name": "adversarial review of r12.py (evidence, correctness, robustness lenses)",
       "status": "PASS",
       "command": "workflow r05-r12-tool-review",
-      "result": "12 находок с воспроизведением исправлены, регрессионные тесты добавлены; агентная перепроверка выполнилась для 1 находки (подтвердила исправление), 12 проверок не выполнились из-за лимита сессии"
+      "result": "18 находок с воспроизведением (evidence 6, correctness 6, robustness 6) исправлены в 11204eb/d94671b/1f9c339, на каждую — регрессионный тест. Агентная перепроверка: robustness — 3 подтверждены на коде до исправления, 3 опровергнуты как уже исправленные; evidence — 1 опровергнута как исправленная; остальные перепроверки evidence/correctness не выполнились (лимит сессии субагентов) — закрыты тестами, не агентами."
     },
     {
       "name": "independent human check of any accepted record",
@@ -93,5 +93,6 @@
     "Поиск дубликатов между кандидатами выполнен агентами-скептиками по заголовкам/URL; окончательно — после открытия страниц.",
     "Ветка не основана на 56538a3 (BASE_MISMATCH): переносить по путям/патчем, не сливать ветку целиком."
   ],
-  "next_step": "Открыть 19 текущих кандидатов из VERIFY_SHEET.md (официальные gov.kz первыми), сохранить тексты, заполнить drafts/ и выполнить r12.py verify → build → dry-run импорта."
+  "next_step": "Открыть 19 текущих кандидатов из VERIFY_SHEET.md (официальные gov.kz первыми), сохранить тексты, заполнить drafts/ и выполнить r12.py verify → build → dry-run импорта.",
+  "patch": "research/round-12-results/R05/r05_round12_paths.patch (только пути R05; собирается от последнего коммита с кодом, проверка git apply --check на чистом 56538a3)"
 }

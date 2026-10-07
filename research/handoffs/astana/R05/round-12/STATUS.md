@@ -7,7 +7,7 @@
   проверка выполняется в отдельном worktree от 56538a3, переносимый патч — в `research/round-12-results/R05/`.
 - Пути: `data/civic/astana/round12-verified/`, `tests/civic/R05/round12/`, `research/round-12-results/R05/`, этот файл.
 
-## Статус: PARTIAL — checkpoint 7
+## Статус: DONE (инструмент, реестр, кандидаты, проверки) / PARTIAL (0 подтверждённых записей — нет сети)
 
 - Сеть: все KZ-источники, OSM и wikipedia.org закрыты политикой egress (proxy 403 / WebFetch EGRESS_BLOCKED),
   журнал `data/civic/astana/round12-verified/network_audit.json`. Работает только серверный WebSearch
@@ -48,4 +48,15 @@
   config.json в slice.inputs, отсутствие summary.json = устаревание.
 - Тесты: 56538a3 — tests/civic/R05 206 passed, 1 skipped; ветка — round12 39 passed, 19 NOT_RUN.
 
-Следующий шаг: переносимый патч путей, финальный DELIVERY/handoff.
+- Перепроверка находок robustness агентами: 3 подтверждены на коде до исправления (закрыты в 1f9c339 тестами),
+  3 опровергнуты как уже исправленные.
+
+## Итог сессии
+- Завершено: схема пакета, журнал сети, реестр 73 источников, 44 кандидата к проверке + 20 отклонённых + 9 дубликатов,
+  лист проверки, инструмент r12.py (verify/build/check/geocode/sheet/fetch/summary), 18 исправленных находок ревью,
+  RUN.txt, INTEGRATION.txt, DELIVERY.json, переносимый патч путей.
+- Не завершено: подтверждённые записи (0) — ни одна страница-источник не открыта в этой среде.
+- Последний успешно отправленный SHA с кодом: 1f9c339 (итоговые SHA — в сообщении сессии).
+
+Следующий шаг (один): разрешить в Network access домены gov.kz, www.gov.kz, inform.kz, www.inform.kz, kazpravda.kz,
+vechastana.kz, zakon.kz (или открыть URL вручную) и пройти 19 текущих кандидатов из VERIFY_SHEET.md командой r12.py verify.
