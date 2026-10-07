@@ -970,6 +970,47 @@ def queue_markdown(queue: dict) -> str:
     return "\n".join(out).rstrip() + "\n"
 
 
+def coverage_markdown(summary: dict, queue: dict, packages: dict) -> str:
+    """Краткая таблица: проверенные факты, пустые поля, неподтверждённые цели; покрытие по видам и районам."""
+    items = packages["package.civic-v1.json"]["items"] + packages["historical.civic-v1.json"]["items"]
+    out = [f"# Покрытие R05 (раунд 13), срез {summary.get('as_of')}", "",
+           "| счётчик | значение |", "|---|---|"]
+    for key in ("verified_current", "verified_historical", "fetched_sources", "sources_with_attached_text"):
+        out.append(f"| {key} | {summary.get(key)} |")
+    for key, value in summary["candidates"].items():
+        out.append(f"| candidates.{key} | {value} |")
+    for key, value in summary["rejected"].items():
+        out.append(f"| rejected.{key} | {value} |")
+    out += ["", "## Проверенные факты", ""]
+    if not items:
+        out.append("Нет: ни одна цель не прошла attach + review (страницы источников в этой среде не открывались).")
+    for it in items:
+        filled = [f for f in ("status",) if it["status"] != "unknown"]
+        filled += [f"schedule.{k}" for k, v in it["schedule"].items() if v]
+        filled += ["budget.amount_kzt"] if it["budget"]["amount_kzt"] is not None else []
+        filled += [f"responsible.{k}" for k, v in it["responsible"].items() if v]
+        empty = sorted({"status", "schedule.planned_start", "schedule.original_planned_end", "schedule.current_planned_end",
+                        "schedule.actual_end", "budget.amount_kzt", "responsible.organization"} - set(filled))
+        out.append(f"- `{it['id']}` {it['title']}: подтверждено {', '.join(filled) or '—'}; пусто (неизвестно): {', '.join(empty)}")
+    out += ["", "## Покрытие по видам", "", "| вид | целей | на карте возможно | подтверждено |", "|---|---|---|---|"]
+    for kind, row in summary["coverage_by_kind"].items():
+        out.append(f"| {kind} | {row['queue_targets']} | {row['mappable']} | {row['verified']} |")
+    out += ["", "## Покрытие по районам (OSM-границы, не официальные; по подсказке геометрии очереди)", "",
+            "| район | целей | подтверждено |", "|---|---|---|"]
+    for name, row in summary["coverage_by_district"].items():
+        out.append(f"| {name} | {row['queue_targets']} | {row['verified']} |")
+    out += ["", "## Неподтверждённые цели (что не знаем)", "",
+            "| цель | вид | состояние | геометрия | актуальность на срез (подсказка) |", "|---|---|---|---|---|"]
+    for t in queue["targets"]:
+        if t["state"] == "draft_ready":
+            continue
+        geo = t["geometry_plan"]
+        out.append(f"| `{t['slug']}` | {t['kind']} | {t['state']} | {geo.get('level')}: {geo.get('result')} | "
+                   f"{(t.get('timing_hint') or {}).get('actuality_on_2026_10_07', '—')} |")
+    out += ["", "Неизвестное не равно нулю: пустая сумма/подрядчик/дата означают «источник не открыт или не говорит»."]
+    return "\n".join(out) + "\n"
+
+
 # ---------------------------------------------------------------- forms
 def evidence_form(slug: str, source_id: str | None, url: str | None, publisher: str | None, kind_pub: str | None) -> dict:
     tgts, reg = targets(), registry()
@@ -1247,6 +1288,8 @@ def main(argv=None) -> int:
     b = sub.add_parser("build")
     b.add_argument("--check", action="store_true")
     sub.add_parser("check")
+    rp = sub.add_parser("report")
+    rp.add_argument("--markdown", required=True, help="файл таблицы покрытия (вне каталога пакета)")
     g = sub.add_parser("geocode")
     g.add_argument("--street", required=True)
     g.add_argument("--cross")
@@ -1290,6 +1333,12 @@ def main(argv=None) -> int:
         return 0
     if args.cmd == "check":
         return cmd_check(args)
+    if args.cmd == "report":
+        packages, problems, _ = build(write=False)
+        Path(args.markdown).write_text(coverage_markdown(packages["summary.json"], build_queue(), packages),
+                                       encoding="utf-8")
+        print(dump_json({"status": "written", "file": args.markdown, "problems": problems}))
+        return 0
     if args.cmd == "geocode":
         print(dump_json(run_geocode({"street": args.street, "cross": args.cross, "from": args.frm, "to": args.to})))
         return 0
