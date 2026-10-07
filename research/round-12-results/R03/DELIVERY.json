@@ -1,36 +1,43 @@
 {
   "role": "R03",
+  "round": 12,
   "branch": "claude/zen-mendel-e79iiv",
   "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
-  "code_sha": null,
-  "push_status": "pending (see handoff)",
+  "code_sha": "b83df899b6eb2e6d9afcd3cb4a7fad23ffacfae1",
+  "tested_sha": "b83df899b6eb2e6d9afcd3cb4a7fad23ffacfae1",
+  "push_status": "see research/handoffs/astana/R03/round-12/STATUS.md (the commit carrying this file cannot name its own push result)",
   "changed_paths": [
+    "web/civic/map/civic-map-core.js",
     "web/civic/map/civic-map.js",
     "web/civic/map/civic-map.css",
-    "tests/civic/R03/"
+    "tests/civic/R03/",
+    "research/round-12-results/R03/",
+    "research/handoffs/astana/R03/round-12/STATUS.md"
   ],
+  "transfer_only": [
+    "web/civic/map/civic-map-core.js",
+    "web/civic/map/civic-map.js",
+    "web/civic/map/civic-map.css"
+  ],
+  "not_changed": ["web/civic/map/streets.json (R07)", "web/civic/shell/* (R01)", "web/index.html", "ui/web_server.py"],
+  "branch_note": "The branch also carries R03's own round-11 results (research/round-11-results/R03/**, research/handoffs/astana/R03/round-11/); they came with the merge 0b5bd2c of CODE_BASE into the round-11 session branch. Transfer by path only, never merge the branch.",
   "tests": [
-    {
-      "name": "core",
-      "status": "PASS",
-      "command": "node --test tests/civic/R03/core.test.mjs",
-      "result": "24/24"
-    },
-    {
-      "name": "browser-stand",
-      "status": "PASS",
-      "command": "node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs",
-      "result": "44/44"
-    },
-    {
-      "name": "r02-readonly",
-      "status": "PASS",
-      "command": "node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs",
-      "result": "2/2"
-    }
+    {"name": "core (node:test)", "status": "PASS", "command": "node --test tests/civic/R03/core.test.mjs", "result": "26/26", "sha": "b83df89"},
+    {"name": "browser stand (Playwright 1.56, Chromium SwiftShader, mock civic-v1 API)", "status": "PASS", "command": "node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs", "result": "60/60", "sha": "b83df89"},
+    {"name": "R02 CivicService read-only (git archive 6a28de2)", "status": "PASS", "command": "node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs", "result": "2/2", "sha": "b83df89"},
+    {"name": "R01 P0 flow on the integrated app with this module", "status": "FAIL", "command": "NODE_PATH=$(npm root -g) node tests/civic/R01/browser/p0_flow.cjs <out>", "result": "57 PASS / 2 FAIL / 2 NOT_RUN — identical to clean base 56538a3; both FAIL in R01 files (explore buttons tap size, attribution slot in full sheet)", "evidence": "research/round-12-results/R03/runs/r01_p0_flow_branch_b83df89.json, runs/r01_p0_flow_base_56538a3.json", "sha": "b83df89"},
+    {"name": "OpenFreeMap basemap and 3D buildings", "status": "NOT_RUN", "reason": "tiles.openfreemap.org answers 403 through the environment proxy; all checks ran on R01's offline basemap"},
+    {"name": "real (non-synthetic) Astana records in the card", "status": "NOT_RUN", "reason": "data/civic/astana/objects.json and historical.json hold 0 records; real-looking cards were checked with test fixtures only"},
+    {"name": "screen reader announcement (NVDA/VoiceOver)", "status": "NOT_RUN", "reason": "no screen reader in the container; live-region structure is checked in the browser tests"}
   ],
+  "adversarial_review": "research/round-12-results/R03/REVIEW_FINDINGS.json — 35 findings (25 confirmed by verifiers, 10 unverified because the verifier hit the session limit); all fixed or documented in b83df89",
+  "screenshots": "research/round-12-results/R03/screenshots/: before-app-* (real app at base 56538a3), after-app-* (real app with b83df89), r12-* (stand, mock API)",
   "known_limits": [
-    "checkpoint 1 only"
+    "All 7 published records in the app are synthetic (R05); the card's sourced cost/responsible paths are exercised only by test fixtures.",
+    "OpenFreeMap/3D not reachable in this environment (NOT_RUN); offline basemap only.",
+    "List is client-side over at most 20 pages x 100 = 2000 records; beyond that the list says not all records were loaded.",
+    "In the R01 embedded layout the bottom sheet height is R01's: on a 390x844 phone the overlap chooser shows its first candidate, the rest by scrolling.",
+    "Two R01 P0 checks fail identically on the clean base (R01-owned)."
   ],
-  "next_step": "card restructuring"
+  "next_step": "Round 13: getPadding() option, input ownership (setInteractionEnabled) with R04's civic-editor:tool, idempotent style reload."
 }
