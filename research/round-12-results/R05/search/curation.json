@@ -55,7 +55,7 @@
           ]
         },
         "geometry_precision": "approximate",
-        "geometry_basis": "OSM: пересечение «Шабал Бейсекова көшесі» и «проспект Нургисы Тлендиева», узлы 13418022861, снимок 2026-05-06, ODbL",
+        "geometry_basis": "OSM: пересечение «улица Шабал Бейсековой» и «проспект Нургисы Тлендиева», узлы 13418022861, снимок 2026-05-06, ODbL",
         "query": {
           "street": "Бейсековой",
           "cross": "Тлендиева",
@@ -63,10 +63,12 @@
           "to": null
         },
         "notes": [
-          "общего узла нет; ближайшие узлы улиц в 20 м"
+          "общего узла нет; ближайшие узлы улиц в 20 м (узел 12545777664)"
         ],
         "why": "пересечение названо в заголовке; точка — ближайшие узлы двух улиц в OSM, не проект развязки"
-      }
+      },
+      "decision": "to_verify",
+      "reason": "Куратор R05: заголовок называет конкретный объект (развязка Бейсековой — Тлендиева); скептик свёл его к общему обзору акимата 1233855, но обзор не заменяет предметную публикацию — проверять вместе, обзор как второй источник."
     },
     "https://bes.media/news/dvuhurovnevuyu-razvyazku-na-peresechenii-ulits-beysekovoy-i-tlendieva-v-astane-zavershat-do-kontsa-goda": {
       "geocode": {
@@ -78,7 +80,7 @@
           ]
         },
         "geometry_precision": "approximate",
-        "geometry_basis": "OSM: пересечение «Шабал Бейсекова көшесі» и «проспект Нургисы Тлендиева», узлы 13418022861, снимок 2026-05-06, ODbL",
+        "geometry_basis": "OSM: пересечение «улица Шабал Бейсековой» и «проспект Нургисы Тлендиева», узлы 13418022861, снимок 2026-05-06, ODbL",
         "query": {
           "street": "Бейсековой",
           "cross": "Тлендиева",
@@ -86,10 +88,25 @@
           "to": null
         },
         "notes": [
-          "общего узла нет; ближайшие узлы улиц в 20 м"
+          "общего узла нет; ближайшие узлы улиц в 20 м (узел 12545777664)"
         ],
         "why": "пересечение названо в заголовке; точка — ближайшие узлы двух улиц в OSM, не проект развязки"
       }
+    },
+    "https://www.inform.kz/ru/nachalis-raboti-poblagoustroystvu-ekoparka-namalom-taldikole-vastane-99e4dfb6": {
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL: «начались работы по благоустройству экопарка на Малом Талдыколе». Вердикт скептика: A specific Astana landscaping object (the Maly Taldykol eco-park). The URL slug states that works have begun; the listed title is unusable ('Национальный курултай'). The publication year is not visible. The phasing (filtration, wells, first walking routes this year; trails and recreation zones in 20"
+    },
+    "https://www.inform.kz/ru/novie-tochki-prityazheniya-v-astane-nachalos-stroitelstvo-allei-minzhildik-1b899d": {
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL: «новые точки притяжения в Астане: началось строительство аллеи Мынжылдык». Вердикт скептика: A specific Astana landscaping object (the Mynzhyldyk alley linear park). The URL slug states that construction has started; the listed title is unusable ('Национальный курултай'). No year is visible. The sections (square by the Kuanyshbaev theatre, the park by the station, the Nurly Zhol station are"
+    },
+    "https://www.inform.kz/ru/vodovod-dlya-80-predpriyatiy-rekonstruiruyut-v-astane-c3f1ae3d": {
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL: «водовод для 80 предприятий реконструируют». Вердикт скептика: The URL slug gives Astana and the object: a water main for 80 enterprises is being rebuilt in Astana. The listed title ('Национальный курултай…') is site navigation and must not be used as the record title. Per the summary: a ~3 km technical water main on Dosmukhameduly St from Akzhol St to Alash Av"
+    },
+    "https://bizmedia.kz/2026-05-12-lrt-v-astane-zapustyat-16-17-maya/md": {
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL: «LRT в Астане запустят 16–17 мая» (дата 2026-05-12 в URL). Вердикт скептика: The LRT launch is a major Astana infrastructure event, and the URL gives Astana, the article date (2026-05-12) and the planned launch (16-17 May). The listed title is only the domain name. The 'launched on 16 May with the President; 22.4 km, 18 stations' details come only from the summary. Prefer an"
+    },
+    "https://www.kt.kz/eng/government/government_allocates_over_16_billion_tenge_for_astana_1377994792.html": {
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL (англ. версия kt.kz): «правительство выделяет более 16 млрд»; о чём именно — неизвестно до открытия страницы. Вердикт скептика: Kept with caution. The listed title holds only a timestamp and view count (13.07.2026). Astana and 'over 16 billion tenge' come from the URL slug. All specifics are summary-only: 16.2 bn under a PM Bektenov decree, 8.7 bn for wastewater, a sewer collector from the Yesil-district treatment plant to L"
     }
   }
 }

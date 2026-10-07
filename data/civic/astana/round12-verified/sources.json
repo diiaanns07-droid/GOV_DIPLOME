@@ -5,6 +5,34 @@
   "note": "Все источники найдены серверным поиском; ни одна страница в среде R05 не открыта (network_audit.json). published_on заполнен только там, где дата есть в самом URL (published_on_basis=url).",
   "sources": [
     {
+      "id": "src-r12-24-2ebb2ffc",
+      "url": "https://24.kz/ru/news/social/790905-v-astane-polnostyu-perekroyut-dvizhenie-na-odnom-iz-perekrestkov-nazvany-daty",
+      "publisher": null,
+      "publisher_kind": "other",
+      "title_as_listed": "В Астане полностью перекроют движение на одном из перекрестков: названы даты",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
       "id": "src-r12-24-904669ed",
       "url": "https://24.kz/ru/news/culture/789305-kontsert-enrike-iglesiasa-gde-v-astane-ogranichat-dvizhenie-3-sentyabrya",
       "publisher": null,
@@ -145,6 +173,34 @@
       ]
     },
     {
+      "id": "src-r12-bes-f00bbba0",
+      "url": "https://bes.media/na-kakih-ulitsah-astani-perekroyut-dvizhenie-iz-za-remonta-setey",
+      "publisher": "Bes.media",
+      "publisher_kind": "news",
+      "title_as_listed": "На каких улицах Астаны перекроют движение из-за ремонта сетей",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
       "id": "src-r12-bes-fd21add9",
       "url": "https://bes.media/kakie-ulitsi-otremontiruyut-v-astane-v-2026-godu",
       "publisher": "Bes.media",
@@ -155,7 +211,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -201,6 +257,34 @@
       ]
     },
     {
+      "id": "src-r12-bizmedia-d3e5a1cf",
+      "url": "https://bizmedia.kz/2026-06-05-bolee-45-mlrd-tenge-napravyat-na-obnovlenie-teplovyh-elektricheskih-i-vodoprovodnyh-setej-astany",
+      "publisher": "Bizmedia.kz",
+      "publisher_kind": "news",
+      "title_as_listed": "Более 4,5 млрд тенге направят на обновление тепловых, электрических и водопроводных сетей Астаны",
+      "published_on": "2026-06-05",
+      "published_on_basis": "url",
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
       "id": "src-r12-digitalbusiness-b4fdfb12",
       "url": "https://digitalbusiness.kz/2026-06-05/v-astane-perekroyut-dorogi-iz-za-marafona-proverte-zatronet-li-eto-vash-marshrut",
       "publisher": "Digital Business",
@@ -211,7 +295,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -313,6 +397,34 @@
       ]
     },
     {
+      "id": "src-r12-gov-1c6d2bd8",
+      "url": "https://www.gov.kz/memleket/entities/astana-ue?lang=ru",
+      "publisher": "Госорган (портал gov.kz)",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Управление энергетики города Астаны - GOV.KZ",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
       "id": "src-r12-gov-2010a772",
       "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru",
       "publisher": "Акимат города Астаны",
@@ -351,7 +463,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -379,7 +491,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -519,7 +631,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -604,6 +716,34 @@
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
         "query": "workflow sweep: landscaping"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-gov-a3d489bc",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1261213?lang=ru",
+      "publisher": "Акимат города Астаны",
+      "publisher_kind": "official_gov",
+      "title_as_listed": "Подготовка к отопительному сезону: в Астане реализуют крупные проекты в сфере теплоснабжения",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -883,7 +1023,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -939,7 +1079,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -967,7 +1107,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -995,7 +1135,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1023,7 +1163,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1163,7 +1303,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1191,7 +1331,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1265,6 +1405,90 @@
       ]
     },
     {
+      "id": "src-r12-inform-efa48d7b",
+      "url": "https://www.inform.kz/ru/v-astane-pomenyayut-vse-potentsialno-defektnie-truboprovodi-f690ce",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "В Астане поменяют все потенциально дефектные трубопроводы",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-inform-f8f1ffc0",
+      "url": "https://www.inform.kz/ru/vodovod-dlya-80-predpriyatiy-rekonstruiruyut-v-astane-c3f1ae3d",
+      "publisher": "МИА «Казинформ»",
+      "publisher_kind": "state_media",
+      "title_as_listed": "Национальный курултай Национальный курултай",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-informburo-1ab7be83",
+      "url": "https://informburo.kz/novosti/perekrestok-zakroiut-na-levom-beregu-astany-bolee-cem-na-dve-nedeli",
+      "publisher": null,
+      "publisher_kind": "other",
+      "title_as_listed": "Перекрёсток закроют на левом берегу Астаны более чем на две недели",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
       "id": "src-r12-kapital-6bc0a124",
       "url": "https://kapital.kz/gosudarstvo/151149/v-astane-blagoustroyat-173-obshestvennyh-i-dvorovyh-prostranstva.html",
       "publisher": "Kapital.kz",
@@ -1303,7 +1527,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1331,7 +1555,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1387,7 +1611,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: closures"
+        "query": "workflow sweep: official-roadworks"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1433,6 +1657,62 @@
       ]
     },
     {
+      "id": "src-r12-kt-beff66d8",
+      "url": "https://www.kt.kz/eng/government/government_allocates_over_16_billion_tenge_for_astana_1377994792.html",
+      "publisher": null,
+      "publisher_kind": "other",
+      "title_as_listed": "13.07.2026, 10:40 16251",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-kz-ae2f2745",
+      "url": "https://kz.kursiv.media/kk/2026-06-15/astana-zhylytu-mausymyna-dajyndala-bastady",
+      "publisher": "Kursiv Media",
+      "publisher_kind": "news",
+      "title_as_listed": "kz.kursiv.media",
+      "published_on": "2026-06-15",
+      "published_on_basis": "url",
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
       "id": "src-r12-kz-ddff58c7",
       "url": "https://kz.kursiv.media/2026-09-04/svvo-srazu-50-ulicz-kasymbek-rasskazal-o-dorozhnyh-planah-astany",
       "publisher": "Kursiv Media",
@@ -1444,6 +1724,34 @@
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
         "query": "workflow sweep: construction"
+      },
+      "access_status": "not_fetched",
+      "retrieved_at": null,
+      "content_sha256": null,
+      "fetch_method": null,
+      "license": null,
+      "license_status": "unknown",
+      "access_attempts": [
+        {
+          "at": "2026-10-07T10:16:00Z",
+          "method": "WebSearch result (no page fetch)",
+          "outcome": "listed_in_search",
+          "detail": "страница не открыта: egress закрыт (network_audit.json)"
+        }
+      ]
+    },
+    {
+      "id": "src-r12-liter-4a6c1245",
+      "url": "https://liter.kz/v-astane-na-tri-dnia-perekroiut-uchastok-dorogi-iz-za-rabot-na-teplotrasse-1786718808",
+      "publisher": null,
+      "publisher_kind": "other",
+      "title_as_listed": "В Астане на три дня перекроют участок дороги из-за работ на теплотрассе",
+      "published_on": null,
+      "published_on_basis": null,
+      "discovered_via": {
+        "tool": "WebSearch (server-side)",
+        "at": "2026-10-07T10:16:00Z",
+        "query": "workflow sweep: utilities"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1499,7 +1807,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1555,7 +1863,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1583,7 +1891,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1639,7 +1947,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1667,7 +1975,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1695,7 +2003,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,
@@ -1723,7 +2031,7 @@
       "discovered_via": {
         "tool": "WebSearch (server-side)",
         "at": "2026-10-07T10:16:00Z",
-        "query": "workflow sweep: official-roadworks"
+        "query": "workflow sweep: closures"
       },
       "access_status": "not_fetched",
       "retrieved_at": null,

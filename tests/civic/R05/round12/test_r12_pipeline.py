@@ -194,17 +194,29 @@ def test_build_is_deterministic_and_check_detects_staleness(home):
 
 
 @needs_base
-def test_value_basis_makes_record_derived_and_old_end_goes_historical(home):
+def test_value_basis_makes_record_derived_and_flagged_historical_goes_to_historical(home):
     root, page = home
-    rec = draft()
-    rec["claims"][1].update(value="2024-11-30", value_basis="FIXTURE: проверка исторического среза")
-    rec["claims"][0].update(value="planned")
+    rec = draft(historical=True)
+    rec["claims"][1].update(value_basis="FIXTURE: проверка производного значения")
     assert verify(root, page, write_draft(root, rec)).returncode == 0
     assert run(root, "build").returncode == 0
     current = json.loads((root / "package.civic-v1.json").read_text())["items"]
     hist = json.loads((root / "historical.civic-v1.json").read_text())["items"]
     assert current == [] and hist[0]["evidence_type"] == "derived"
-    assert "FIXTURE: проверка исторического среза" in hist[0]["evidence_notes"]
+    assert "FIXTURE: проверка производного значения" in hist[0]["evidence_notes"]
+
+
+@needs_base
+def test_overdue_project_without_completion_stays_current(home):
+    """Регрессия ревью: план «до 2025» без сообщения о завершении — не повод уводить объект в историю."""
+    root, page = home
+    rec = draft()
+    rec["claims"][1].update(value="2024-11-30", value_basis="FIXTURE: старый плановый срок")
+    assert verify(root, page, write_draft(root, rec)).returncode == 0
+    assert run(root, "build").returncode == 0
+    assert json.loads((root / "historical.civic-v1.json").read_text())["items"] == []
+    current = json.loads((root / "package.civic-v1.json").read_text())["items"]
+    assert [i["id"] for i in current] == ["ast-r12-roadworks-fixture-primernaya"]
 
 
 @pytest.mark.skipif(not HAS_BASE, reason="NOT_RUN: нет валидатора R05 (дерево не от 56538a3)")
@@ -345,3 +357,15 @@ def test_fetch_refuses_to_store_text_inside_repo(home):
     root, _ = home
     result = run(root, "fetch", "src-r12-fixture-1", "--out", str(REPO / "data"))
     assert result.returncode == 2 and "вне репозитория" in result.stderr
+
+
+def test_summary_tolerates_candidates_without_freshness(home):
+    root, _ = home
+    (root / "candidates.json").write_text(json.dumps({"schema": "r05-r12-candidates-v1", "candidates": [
+        {"id": "cand-a", "decision": "to_verify", "reason": "r", "kind": "event", "source_ids": ["src-r12-fixture-1"],
+         "date_hint_origin": "none", "hints": [], "freshness": "past_2026"},
+        {"id": "cand-b", "decision": "to_verify", "reason": "r", "kind": "event", "source_ids": ["src-r12-fixture-1"],
+         "date_hint_origin": "none", "hints": []}]}), encoding="utf-8")
+    result = run(root, "summary")
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["unverified_by_freshness"] == {"past_2026": 1, "unknown": 1}

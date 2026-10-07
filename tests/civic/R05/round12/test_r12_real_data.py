@@ -131,3 +131,20 @@ def test_unknown_street_gives_null_not_district_centre():
 def test_disconnected_same_name_street_is_not_merged():
     res = geocode("--street", "Кайсенова")
     assert res["geometry"] is None and res["ambiguous"] is True
+
+
+@needs_osm
+@pytest.mark.parametrize("query,wrong", [("Мерей", "Мереке"), ("Актау", "Актап"), ("Коксу", "Коксай"),
+                                         ("Алматы", "Алмалы"), ("Омара Хаяма", "Омаров")])
+def test_short_names_match_only_case_endings(query, wrong):
+    res = geocode("--street", query)
+    assert not any(wrong in n for n in res["matched_names"]), res["matched_names"]
+
+
+@needs_osm
+def test_intersection_basis_names_streets_at_the_chosen_node():
+    res = geocode("--street", "Акмешит", "--cross", "Алматы")
+    assert res["geometry"]["type"] == "Point"
+    basis = res["geometry_basis"]
+    assert "Алматы" in basis and "Алмалы" not in basis
+    assert ("Ақмешіт" in basis) or ("Акмешит" in basis)

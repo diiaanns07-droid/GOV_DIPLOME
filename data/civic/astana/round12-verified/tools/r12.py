@@ -45,6 +45,7 @@ PUBLISHER_KINDS = ("official_gov", "city_utility_or_operator", "state_media", "c
 ACCESS = ("fetched", "not_fetched", "unavailable")
 DECISIONS = ("to_verify", "rejected", "duplicate")
 HINT_ORIGINS = ("url", "search_title", "search_summary", "none")
+FRESHNESS = ("current_or_upcoming_2026", "past_2026", "historical_before_2026", "unknown")
 PRECISIONS = ("approximate", "unknown")
 ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 RECORD_ID_RE = re.compile(r"^ast-r12-(construction|roadworks|landscaping|event)-[a-z0-9-]{3,40}$")
@@ -263,6 +264,8 @@ def check_candidates(doc: dict, sources: dict, issues: Issues) -> list:
         for sid in ids:
             if sid not in sources:
                 issues.add(here + ".source_ids", "unknown_source", f"{sid} нет в sources.json")
+        if cand.get("freshness", "unknown") not in FRESHNESS:
+            issues.add(here + ".freshness", "enum", " | ".join(FRESHNESS))
         if cand.get("date_hint_origin") not in HINT_ORIGINS:
             issues.add(here + ".date_hint_origin", "enum", "url | search_title | search_summary | none")
         if cand.get("decision") == "duplicate" and cand.get("duplicate_of") not in seen | {c.get("id") for c in items}:
@@ -461,6 +464,10 @@ def to_civic(rec: dict, sources: dict, as_of: str) -> dict:
 def is_historical(rec: dict, as_of: _dt.date, cutoff_days: int) -> bool:
     if rec.get("historical") is True:
         return True
+    claims = {c.get("field"): c.get("value") for c in rec.get("claims") or []}
+    # Затянувшийся объект в работе — текущий, даже если плановый срок давно прошёл.
+    if claims.get("status") not in ("completed", "cancelled") and not claims.get("schedule.actual_end"):
+        return False
     ends = [parse_date(c.get("value")) for c in rec.get("claims") or []
             if c.get("field") in ("schedule.actual_end", "schedule.current_planned_end")]
     ends = [e for e in ends if e]
@@ -648,13 +655,21 @@ def _same_word(q: str, w: str) -> bool:
     """Одно слово с точностью до падежного окончания: «Бейсековой» = «Бейсекова», но не «Бейсекбаева»."""
     if q.isdigit() or w.isdigit():
         return q == w
+    if q == w:
+        return True
     common = 0
     for a, b in zip(q, w):
         if a != b:
             break
         common += 1
-    # Падежное окончание — до 2 букв; и не меньше 3/4 более короткого слова («Алматы» ≠ «Алмалы»).
-    return common >= max(4, max(len(q), len(w)) - 2) and common * 4 >= 3 * min(len(q), len(w))
+    # Разница — только в падежном окончании: «Бейсековой»/«Бейсекова», «батыра»/«батыр»;
+    # но не «Мерей»/«Мереке», «Актау»/«Актап», «Омара»/«Омарова», «Алматы»/«Алмалы».
+    return (common >= 4 and common >= min(len(q), len(w)) - 2
+            and q[common:] in CASE_ENDINGS and w[common:] in CASE_ENDINGS)
+
+
+CASE_ENDINGS = frozenset({"", "а", "я", "ы", "и", "у", "ю", "е", "о", "й", "ой", "ей", "ий", "ый", "ая", "яя",
+                          "ом", "ем", "ым", "им", "ам", "ого", "его", "ому", "ему"})
 
 
 def name_matches(query: str, name: str) -> bool:
@@ -749,18 +764,26 @@ def geocode(osm: Osm, street: str, cross: str | None = None, frm: str | None = N
     adj = osm.graph(main)
     comps = osm.components(adj)
 
+    def names_at(ways, node):
+        return sorted({w.get("tags", {}).get("name", "?") for w in ways if node in w["nodes"]})
+
+    cross_names_at: dict[int, list] = {}
+
     def crossing_nodes(other_query):
         other = osm.street(other_query)
         other_nodes = {n for w in other for n in w["nodes"] if n in osm.nodes}
         shared = [n for n in adj if n in other_nodes]
+        for n in shared:
+            cross_names_at[n] = names_at(other, n)
         if shared or not other_nodes:
             return shared, _names(other)
         # Развязки/съезды: общего узла может не быть — ближайшая пара узлов не дальше 60 м.
-        best = min(((osm.length_m(a, b), a) for a in adj for b in other_nodes
+        best = min(((osm.length_m(a, b), a, b) for a in adj for b in other_nodes
                     if abs(osm.nodes[a][0] - osm.nodes[b][0]) < 0.002 and abs(osm.nodes[a][1] - osm.nodes[b][1]) < 0.002),
                    default=None)
         if best and best[0] <= 60:
-            result["notes"].append(f"общего узла нет; ближайшие узлы улиц в {round(best[0])} м")
+            result["notes"].append(f"общего узла нет; ближайшие узлы улиц в {round(best[0])} м (узел {best[2]})")
+            cross_names_at[best[1]] = names_at(other, best[2])
             return [best[1]], _names(other)
         return [], _names(other)
 
@@ -786,9 +809,11 @@ def geocode(osm: Osm, street: str, cross: str | None = None, frm: str | None = N
         cl = clusters[0]
         lon = sum(osm.nodes[n][0] for n in cl) / len(cl)
         lat = sum(osm.nodes[n][1] for n in cl) / len(cl)
+        here_main = sorted({n for node in cl for n in names_at(main, node)})
+        here_cross = sorted({n for node in cl for n in cross_names_at.get(node, [])})
         result.update(geometry={"type": "Point", "coordinates": [round(lon, 6), round(lat, 6)]},
                       geometry_precision="approximate",
-                      geometry_basis=f"OSM: пересечение «{result['matched_names'][0]}» и «{other_names[0]}», "
+                      geometry_basis=f"OSM: пересечение «{' / '.join(here_main)}» и «{' / '.join(here_cross)}», "
                                      f"узлы {','.join(map(str, sorted(cl)[:6]))}, снимок {snapshot}, ODbL")
         return result
     if frm and to:
@@ -837,7 +862,9 @@ def summary() -> dict:
     current = packages["package.civic-v1.json"]["items"]
     hist = packages["historical.civic-v1.json"]["items"]
     to_verify = [c for c in cands if c.get("decision") == "to_verify"]
-    by = lambda items, key: {k: sum(1 for i in items if i.get(key) == k) for k in sorted({i.get(key) for i in items})}
+    def by(items, key):
+        values = [i.get(key) or "unknown" for i in items]
+        return {k: values.count(k) for k in sorted(set(values))}
     return {
         "schema": "r05-r12-summary-v1", "as_of": cfg.get("as_of"),
         "confirmed_current": len(current),
@@ -947,6 +974,9 @@ def cmd_check(args) -> int:
         on_disk = (HERE / name).read_text(encoding="utf-8") if (HERE / name).exists() else None
         if on_disk != dump_json(value):
             stale.append(name)
+    summary_path = HERE / "summary.json"
+    if summary_path.exists() and summary_path.read_text(encoding="utf-8") != dump_json(summary()):
+        stale.append("summary.json")
     if load_records("verified") and "NOT_RUN" in ran.values():
         issues.add("check", "validator_not_run", "есть подтверждённые записи, но валидаторы R05/R02 не запускались")
     report = {"issues": issues.items, "civic_issues": civic, "validators": ran, "stale_packages": stale}
