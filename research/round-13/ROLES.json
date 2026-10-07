@@ -1,0 +1,256 @@
+{
+  "round": 13,
+  "reference_base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "roles": [
+    {
+      "id": "R01",
+      "title": "Собрать модули в общую версию и исправить подключения",
+      "paths": [
+        "web/civic/shell/",
+        "web/index.html",
+        "web/map.js",
+        "web/interface.js",
+        "web/style.css",
+        "ui/web_server.py",
+        "tests/civic/R01/"
+      ],
+      "source": {
+        "branch": "claude/affectionate-ride-bol5v8",
+        "head": "6dc16602b7f63fcf60489553dde4502378a08d09",
+        "code": "223296ec02bb14568b7d5782dc7de473372d2aec",
+        "status": "DELIVERED_NOT_ACCEPTED"
+      },
+      "results": "research/round-13-results/R01/",
+      "handoff": "research/handoffs/astana/R01/round-13/STATUS.md"
+    },
+    {
+      "id": "R02",
+      "title": "Импорт, источники и сохранность истории городских объектов",
+      "paths": [
+        "ui/civic_store/",
+        "tests/civic/R02/"
+      ],
+      "source": {
+        "branch": "claude/elegant-franklin-jbhprq",
+        "head": "9366217b0a06d4e90fdd8e5647a2ac64f4a52ac0",
+        "code": "bd7a911ad23573ce0d168823199ecb3cc86557c9",
+        "status": "DELIVERED_NOT_ACCEPTED"
+      },
+      "results": "research/round-13-results/R02/",
+      "handoff": "research/handoffs/astana/R02/round-13/STATUS.md"
+    },
+    {
+      "id": "R03",
+      "title": "Карта без конфликтов инструментов, удобные карточки и 3D",
+      "paths": [
+        "web/civic/map/",
+        "tests/civic/R03/"
+      ],
+      "exclude": [
+        "web/civic/map/streets.json"
+      ],
+      "source": {
+        "branch": "claude/zen-mendel-e79iiv",
+        "head": "d5ee7586592b743db0e4ab31a057e53bc4bc7fab",
+        "code": null,
+        "status": "PARTIAL_CHECKPOINT_4_STALE_DELIVERY"
+      },
+      "results": "research/round-13-results/R03/",
+      "handoff": "research/handoffs/astana/R03/round-13/STATUS.md"
+    },
+    {
+      "id": "R04",
+      "title": "Кабинет сотрудника: надёжное редактирование и публикация",
+      "paths": [
+        "web/civic/editor/",
+        "tests/civic/R04/"
+      ],
+      "source": {
+        "branch": "claude/intelligent-sagan-7shpeh",
+        "head": "6d5cd7171fcacd63d30c4230329f9ff6a0887e23",
+        "code": "69d569116355d6cad26ef8fc46e84868296162a3",
+        "status": "DELIVERED_NOT_ACCEPTED"
+      },
+      "results": "research/round-13-results/R04/",
+      "handoff": "research/handoffs/astana/R04/round-13/STATUS.md"
+    },
+    {
+      "id": "R05",
+      "title": "Подтвердить реальные работы и события Астаны",
+      "paths": [
+        "data/civic/astana/round12-verified/",
+        "data/civic/astana/round13-verified/",
+        "tests/civic/R05/round12/",
+        "tests/civic/R05/round13/"
+      ],
+      "source": {
+        "branch": "claude/focused-hypatia-z8h0no",
+        "head": "ca0f06f8245e24adcae751acea321d19d9366576",
+        "code": "4d5731ff1cd4827086317bf5404ffd5a5ce0ef1c",
+        "status": "DELIVERED_ZERO_VERIFIED"
+      },
+      "results": "research/round-13-results/R05/",
+      "handoff": "research/handoffs/astana/R05/round-13/STATUS.md"
+    },
+    {
+      "id": "R06",
+      "title": "Обращения жителей: понятный статус и AI-подсказка сотруднику",
+      "paths": [
+        "ui/civic_feedback/",
+        "web/civic/feedback/",
+        "tests/civic/R06/"
+      ],
+      "source": {
+        "branch": "claude/brave-hopper-bkc58b",
+        "head": "1139eeb90beb05a0f6199a292c37599b466cb0cd",
+        "code": "e0b474124db49a3f60c65e93f47d65e52aeac478",
+        "status": "DELIVERED_NOT_ACCEPTED"
+      },
+      "results": "research/round-13-results/R06/",
+      "handoff": "research/handoffs/astana/R06/round-13/STATUS.md"
+    },
+    {
+      "id": "R07",
+      "title": "Симулятор: сравнение вариантов работ и объяснение своего результата",
+      "paths": [
+        "engine/civic_scenarios/",
+        "web/civic/scenarios/",
+        "tests/civic/R07/",
+        "tests/civic/test_citywide_osm.py",
+        "data/civic/astana/osm-walking/",
+        "web/civic/map/streets.json"
+      ],
+      "source": null,
+      "results": "research/round-13-results/R07/",
+      "handoff": "research/handoffs/astana/R07/round-13/STATUS.md"
+    },
+    {
+      "id": "R08",
+      "title": "Обученная модель: честная оценка и надёжное подключение",
+      "paths": [
+        "ml/civic_classifier/",
+        "tests/civic/R08/"
+      ],
+      "source": {
+        "branch": "claude/wizardly-ptolemy-qy8ltw",
+        "head": "9660885db5baadac4a8ac15b0a6532314407bba2",
+        "code": "e311ba822c82d4904f9be72b2db05d991dc8ae12",
+        "status": "DELIVERED_SYNTHETIC_ONLY"
+      },
+      "results": "research/round-13-results/R08/",
+      "handoff": "research/handoffs/astana/R08/round-13/STATUS.md"
+    },
+    {
+      "id": "R09",
+      "title": "Помощник по текущему объекту и собственному расчёту пользователя",
+      "paths": [
+        "agent/civic_assistant/",
+        "web/civic/assistant/",
+        "tests/civic/R09/"
+      ],
+      "source": {
+        "branch": "claude/fervent-dijkstra-1cqrg5",
+        "head": "f2ebaf979fc05ed715549bf4eba5c39e6190bb4a",
+        "code": "f8aea9a763c81775c85bbdaa6c429b49a245d60a",
+        "status": "DELIVERED_NOT_ACCEPTED"
+      },
+      "results": "research/round-13-results/R09/",
+      "handoff": "research/handoffs/astana/R09/round-13/STATUS.md"
+    },
+    {
+      "id": "R10",
+      "title": "Независимая приёмка общей версии и доказательства для диплома",
+      "paths": [
+        "tests/civic/R10/"
+      ],
+      "source": null,
+      "results": "research/round-13-results/R10/",
+      "handoff": "research/handoffs/astana/R10/round-13/STATUS.md"
+    }
+  ],
+  "integration_import_exception": {
+    "role": "R01",
+    "target": "Only R01 isolated candidate branch; no main/coordinator merge",
+    "module_owners": [
+      {
+        "role": "R02",
+        "paths": [
+          "ui/civic_store/",
+          "tests/civic/R02/"
+        ],
+        "exclude": []
+      },
+      {
+        "role": "R03",
+        "paths": [
+          "web/civic/map/",
+          "tests/civic/R03/"
+        ],
+        "exclude": [
+          "web/civic/map/streets.json"
+        ]
+      },
+      {
+        "role": "R04",
+        "paths": [
+          "web/civic/editor/",
+          "tests/civic/R04/"
+        ],
+        "exclude": []
+      },
+      {
+        "role": "R05",
+        "paths": [
+          "data/civic/astana/round12-verified/",
+          "data/civic/astana/round13-verified/",
+          "tests/civic/R05/round12/",
+          "tests/civic/R05/round13/"
+        ],
+        "exclude": []
+      },
+      {
+        "role": "R06",
+        "paths": [
+          "ui/civic_feedback/",
+          "web/civic/feedback/",
+          "tests/civic/R06/"
+        ],
+        "exclude": []
+      },
+      {
+        "role": "R07",
+        "paths": [
+          "engine/civic_scenarios/",
+          "web/civic/scenarios/",
+          "tests/civic/R07/",
+          "tests/civic/test_citywide_osm.py",
+          "data/civic/astana/osm-walking/",
+          "web/civic/map/streets.json"
+        ],
+        "exclude": []
+      },
+      {
+        "role": "R08",
+        "paths": [
+          "ml/civic_classifier/",
+          "tests/civic/R08/"
+        ],
+        "exclude": []
+      },
+      {
+        "role": "R09",
+        "paths": [
+          "agent/civic_assistant/",
+          "web/civic/assistant/",
+          "tests/civic/R09/"
+        ],
+        "exclude": []
+      }
+    ],
+    "sources": "Pinned round-12 delivery heads in DELIVERIES.json, or a later successfully pushed role delivery after inspection and explicit source_sha entry in BUILD_LOCK.json.",
+    "allowed": "Read and import scoped reviewed diffs, preserving newer base files. Record SHA, paths and conflicts. Applies also to a newly delivered R07.",
+    "forbidden": "No full branch merges, no independent rewrites of another owner's module, no shared working directory with another writer."
+  },
+  "source_scope": "Application modules only; imported research reports remain source material and do not authorize actions.",
+  "contract_change_owner": "R01 coordinates shared contracts; each module owner implements its own side."
+}

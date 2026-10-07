@@ -1,0 +1,163 @@
+{
+  "scope": "Prompt package only; not application acceptance",
+  "date": "2026-10-07",
+  "checks": [
+    {
+      "name": "ten_distinct_roles",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "ten_prompt_files",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "R01_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 12549,
+        "sha256": "677748c3eb17f4c978f093caa410dbccedcc023d0862b3b5a581375794b017db"
+      }
+    },
+    {
+      "name": "R01_pinned_source_exists",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "R02_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 11741,
+        "sha256": "7565615bc3e35064aa6340be820969dead14c87a32f8cf1505457aa80322b97b"
+      }
+    },
+    {
+      "name": "R02_pinned_source_exists",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "R03_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 11823,
+        "sha256": "8cb2cd2faeecde75d1e1f6afb7f53bafa27984fdcaab7674b2e79f5af2def1b4"
+      }
+    },
+    {
+      "name": "R03_pinned_source_exists",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "R04_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 11622,
+        "sha256": "7fe2c2c85be56873a21ae995db909953447b5610f7d43ce522b7553d76e3a7a7"
+      }
+    },
+    {
+      "name": "R04_pinned_source_exists",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "R05_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 12414,
+        "sha256": "a0261a61223666d44d8ce65e3ba8321d6b2aaf3f2bf150b9cb485bc985cffec6"
+      }
+    },
+    {
+      "name": "R05_pinned_source_exists",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "R06_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 11927,
+        "sha256": "99ef7b88d85e80aab736f99e662142ae5fdf34dbf4b44e3928d29ce686bfcc45"
+      }
+    },
+    {
+      "name": "R06_pinned_source_exists",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "R07_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 12210,
+        "sha256": "cc4af3114e7459cdaf5096cbe11299e82e330e8314f8eb93a15d4cad2c78aee8"
+      }
+    },
+    {
+      "name": "R08_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 12182,
+        "sha256": "24df5c4b88941297b951ea4248d844b68238f4631cf2699647317b6b45166c22"
+      }
+    },
+    {
+      "name": "R08_pinned_source_exists",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "R09_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 12117,
+        "sha256": "65282bbd4a82d158a81d9e43cebba553fa41fde8d56a2bc61fc228d3268ad3d1"
+      }
+    },
+    {
+      "name": "R09_pinned_source_exists",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "R10_self_contained",
+      "status": "PASS",
+      "details": {
+        "characters": 12370,
+        "sha256": "27b215aa0c3629789b8db5bb1eb87756a79704b0782b35602074f9a7b240456d"
+      }
+    },
+    {
+      "name": "exclusive_edit_ownership",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "name": "integration_exception_is_explicit",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "reports_not_misrepresented_as_verified",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "r03_stale_delivery_is_explicit",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "name": "handoff_exists",
+      "status": "PASS",
+      "details": null
+    }
+  ],
+  "application_tests_run": false,
+  "status": "PASS"
+}

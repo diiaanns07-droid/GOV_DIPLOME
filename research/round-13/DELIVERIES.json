@@ -1,0 +1,94 @@
+{
+  "round": 12,
+  "snapshot_date": "2026-10-07",
+  "snapshot_kind": "git fetch origin followed by read-only inspection",
+  "imported_code_executed": false,
+  "tests_independently_verified": false,
+  "deliveries": [
+    {
+      "role": "R01",
+      "branch": "claude/affectionate-ride-bol5v8",
+      "head_sha": "6dc16602b7f63fcf60489553dde4502378a08d09",
+      "reported_code_sha": "223296ec02bb14568b7d5782dc7de473372d2aec",
+      "status": "DELIVERED_NOT_ACCEPTED",
+      "delivery": "research/round-12-results/R01/DELIVERY.json",
+      "handoff": "research/handoffs/astana/R01/round-12/STATUS.md",
+      "warning": "Author-reported checks; independent acceptance pending."
+    },
+    {
+      "role": "R02",
+      "branch": "claude/elegant-franklin-jbhprq",
+      "head_sha": "9366217b0a06d4e90fdd8e5647a2ac64f4a52ac0",
+      "reported_code_sha": "bd7a911ad23573ce0d168823199ecb3cc86557c9",
+      "status": "DELIVERED_NOT_ACCEPTED",
+      "delivery": "research/round-12-results/R02/DELIVERY.json",
+      "handoff": "research/handoffs/astana/R02/round-12/STATUS.md",
+      "warning": "Author-reported checks; independent acceptance pending."
+    },
+    {
+      "role": "R03",
+      "branch": "claude/zen-mendel-e79iiv",
+      "head_sha": "d5ee7586592b743db0e4ab31a057e53bc4bc7fab",
+      "reported_code_sha": null,
+      "status": "PARTIAL_CHECKPOINT_4_STALE_DELIVERY",
+      "delivery": "research/round-12-results/R03/DELIVERY.json",
+      "handoff": "research/handoffs/astana/R03/round-12/STATUS.md",
+      "warning": "Latest handoff is checkpoint 4 PARTIAL; DELIVERY is stale and lacks code_sha."
+    },
+    {
+      "role": "R04",
+      "branch": "claude/intelligent-sagan-7shpeh",
+      "head_sha": "6d5cd7171fcacd63d30c4230329f9ff6a0887e23",
+      "reported_code_sha": "69d569116355d6cad26ef8fc46e84868296162a3",
+      "status": "DELIVERED_NOT_ACCEPTED",
+      "delivery": "research/round-12-results/R04/DELIVERY.json",
+      "handoff": "research/handoffs/astana/R04/round-12/STATUS.md",
+      "warning": "Author-reported checks; independent acceptance pending."
+    },
+    {
+      "role": "R05",
+      "branch": "claude/focused-hypatia-z8h0no",
+      "head_sha": "ca0f06f8245e24adcae751acea321d19d9366576",
+      "reported_code_sha": "4d5731ff1cd4827086317bf5404ffd5a5ce0ef1c",
+      "status": "DELIVERED_ZERO_VERIFIED",
+      "delivery": "research/round-12-results/R05/DELIVERY.json",
+      "handoff": "research/handoffs/astana/R05/round-12/STATUS.md",
+      "warning": "0 confirmed objects; 44 candidates; 73 registered sources, 0 fetched."
+    },
+    {
+      "role": "R06",
+      "branch": "claude/brave-hopper-bkc58b",
+      "head_sha": "1139eeb90beb05a0f6199a292c37599b466cb0cd",
+      "reported_code_sha": "e0b474124db49a3f60c65e93f47d65e52aeac478",
+      "status": "DELIVERED_NOT_ACCEPTED",
+      "delivery": "research/round-12-results/R06/DELIVERY.json",
+      "handoff": "research/handoffs/astana/R06/round-12/STATUS.md",
+      "warning": "Author-reported checks; independent acceptance pending."
+    },
+    {
+      "role": "R08",
+      "branch": "claude/wizardly-ptolemy-qy8ltw",
+      "head_sha": "9660885db5baadac4a8ac15b0a6532314407bba2",
+      "reported_code_sha": "e311ba822c82d4904f9be72b2db05d991dc8ae12",
+      "status": "DELIVERED_SYNTHETIC_ONLY",
+      "delivery": "research/round-12-results/R08/DELIVERY.json",
+      "handoff": "research/handoffs/astana/R08/round-12/STATUS.md",
+      "warning": "Synthetic training/evaluation only; real-data performance NOT_EVALUATED."
+    },
+    {
+      "role": "R09",
+      "branch": "claude/fervent-dijkstra-1cqrg5",
+      "head_sha": "f2ebaf979fc05ed715549bf4eba5c39e6190bb4a",
+      "reported_code_sha": "f8aea9a763c81775c85bbdaa6c429b49a245d60a",
+      "status": "DELIVERED_NOT_ACCEPTED",
+      "delivery": "research/round-12-results/R09/DELIVERY.json",
+      "handoff": "research/handoffs/astana/R09/round-12/STATUS.md",
+      "warning": "Author-reported checks; independent acceptance pending."
+    }
+  ],
+  "not_found_in_snapshot": [
+    "R07",
+    "R10"
+  ],
+  "caution": "Role-to-branch mapping follows DELIVERY content, not earlier session nicknames. Not found does not mean no work exists."
+}
