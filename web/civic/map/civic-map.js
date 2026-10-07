@@ -897,6 +897,9 @@
           st.detail.item = norm.item;
           st.detail.history = C.normalizeHistory(data.history);
           st.detail.state = "ready";
+          // Round 13 (R01's ask): the loaded card's public copy, geometry included — for a deep link opened
+          // before the list, onSelect only had {id}. Called once per loaded card; never instead of onSelect.
+          if (typeof opt.onDetail === "function") safeCall(opt.onDetail, publicCopy(norm.item));
           if (!hadItem && opts && opts.fly !== false && (opts.epoch === undefined || opts.epoch === camEpoch)) { const it = norm.item; afterLayout(() => (opts.source === "map" ? ensureVisible(it) : flyTo(it)), id); }
         }
       } catch (err) {

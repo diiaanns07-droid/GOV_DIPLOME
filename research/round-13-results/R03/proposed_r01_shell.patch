@@ -1,0 +1,43 @@
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index bca599b..54189d5 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -278,6 +278,12 @@
+       onData: (items) => { S.recordCount = items.length; S.mounted.explore?.updateRecords?.(items); },
+       onSelect: (item) => onSelect(item),
+       onFeedback: (target) => openFeedback(target),
++      // R03 round 13 (research/round-13-results/R03/CONTRACT.txt): the module frames its camera into the
++      // shell's free area with the intended tilt, and reports the loaded card's geometry. Older modules ignore these.
++      getPadding: () => freeArea(),
++      getPitch: () => intendedPitch(),
++      getBearing: () => (intendedPitch() ? intendedBearing() : 0),
++      onDetail: (item) => onDetail(item),
+     });
+     if (S.selected) S.mounted.map?.selectObject?.(S.selected);
+   }
+@@ -286,10 +292,16 @@
+     mountPublic();
+   }
+ 
++  // R03 >= round 13 sends the loaded card (with geometry) here; no second GET /objects/{id} needed.
++  function onDetail(item) {
++    if (!item || item.id !== S.selected) return;
++    if (item.title) S.mounted.explore?.setView?.("Открыта запись: " + item.title, "object");
++  }
++  const r03Camera = () => typeof S.mounted.map?.setInteractionEnabled === "function";  // round-13 module
+   function onSelect(item) {
+     const id = item && typeof item === "object" ? item.id : item;
+     S.selected = typeof id === "string" ? id : null;
+-    if (S.selected && window.CivicExplore) {
++    if (S.selected && window.CivicExplore && !r03Camera()) {
+       // A permalink selects before R03's list has loaded ({id} only): read the public geometry then.
+       const id = S.selected;
+       const located = item?.geometry ? Promise.resolve(item)
+@@ -488,6 +500,7 @@
+   function fitAllObjects() {
+     const m = currentMap(), r03 = S.mounted.map;
+     if (!m || typeof r03?.fitAll !== "function") return false;
++    if (r03Camera()) return r03.fitAll();  // getPadding/getPitch already passed at mount: no fitBounds swap
+     const original = m.fitBounds;
+     m.fitBounds = function (bounds, options) {
+       const pitch = intendedPitch();

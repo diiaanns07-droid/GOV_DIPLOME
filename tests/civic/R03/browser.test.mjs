@@ -1443,3 +1443,56 @@ test("r13: render -> style change -> editor draws -> cancel -> select: input bel
   assert.deepEqual(errors, []);
   await ctx.close();
 });
+
+test("r13: 3D tilt keeps picking and flying; three quick style swaps and a remount mid-swap leave exactly one set of layers", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" });
+  const warn = warnings(page);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4511, 51.1209], zoom: 15, pitch: 55, bearing: -20 }));
+  await page.waitForTimeout(500);
+  const t = await page.evaluate(() => {
+    const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect();
+    const f = m.queryRenderedFeatures({ layers: ["civic-r03-point"] }).find((x) => { const p = m.project(x.geometry.coordinates); return p.x > 480 && p.x < c.width - 80 && p.y > 140 && p.y < c.height - 40; });
+    const p = m.project(f.geometry.coordinates);
+    return { id: f.properties.cid, x: c.left + p.x, y: c.top + p.y };
+  });
+  await page.mouse.click(t.x, t.y);
+  await page.waitForFunction(() => ["card", "pick"].includes(window.__stand.instance.getState().view));
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-area", { source: "list" }));
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await settle(page);
+  assert.equal(await page.evaluate(() => Math.round(window.__stand.map.getPitch())), 55, "the module keeps the resident's 3D tilt");
+  // three swaps in a row, then a remount while the last style is still loading
+  await page.evaluate(() => {
+    const m = window.__stand.map, bg = (c) => ({ version: 8, sources: {}, layers: [{ id: "bg-" + c, type: "background", paint: { "background-color": c } }] });
+    m.setStyle(bg("#eef1ea"), { diff: false }); m.setStyle(bg("#f1f3ee"), { diff: false }); m.setStyle(bg("#f4f5f0"));
+    window.__stand.destroy(); window.__stand.mount();
+  });
+  await page.waitForFunction(() => ((window.__stand.map.getStyle() || {}).layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 10000 });
+  await page.waitForTimeout(600);
+  const s = await page.evaluate(() => ({ ids: window.__stand.map.getStyle().layers.map((l) => l.id).filter((x) => x.startsWith("civic-r03")),
+    ring: window.__stand.map.hasImage("civic-r03-demo-ring"), synth: window.__stand.map.getLayer("civic-r03-point-synthetic").type }));
+  assert.equal(new Set(s.ids).size, 13);
+  assert.equal(s.ring, true);
+  assert.equal(s.synth, "symbol", "demo points keep their dashed-ring symbol");
+  assert.equal(warn.filter((x) => /could not be loaded|civic-r03/.test(x)).length, 0, warn.join("\n"));
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r13: onDetail gives the host the loaded card's geometry for a deep link opened before the list", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" });
+  const r = await page.evaluate(async () => {
+    const s = window.__stand, got = { select: [], detail: [] };
+    s.destroy();
+    s.api.options.slow["/objects"] = 1500;  // the list is late, the card is not
+    s.instance = window.CivicMap.mount({ root: document.getElementById("civic-public"), map: s.map, api: s.api, persistFilters: false,
+      onSelect: (o) => got.select.push(o && { id: o.id, geometry: !!o.geometry }), onDetail: (o) => got.detail.push({ id: o.id, geometry: o.geometry && o.geometry.type, frozen: Object.isFrozen(o) }) });
+    s.instance.selectObject("r03-demo-line", { source: "permalink" });
+    await new Promise((res) => { const t = setInterval(() => { if (s.instance.getState().detail === "ready") { clearInterval(t); res(); } }, 50); });
+    return got;
+  });
+  assert.deepEqual(r.select, [{ id: "r03-demo-line", geometry: false }], "onSelect once, before anything is known");
+  assert.deepEqual(r.detail, [{ id: "r03-demo-line", geometry: "LineString", frozen: true }]);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
