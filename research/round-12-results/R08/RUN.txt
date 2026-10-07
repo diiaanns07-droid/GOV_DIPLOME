@@ -1,0 +1,31 @@
+R08 — КАК ЗАПУСТИТЬ И ПРОВЕРИТЬ КЛАССИФИКАТОР ОБРАЩЕНИЙ (раунд 12)
+
+Требования: Python >= 3.10 (проверено на CPython 3.13.16, Linux). Сторонних пакетов нет; для тестов — pytest
+(уже в корневом requirements.txt). Сеть, GPU, API-ключи не нужны. Команды — из корня репозитория
+(на Windows вместо python3 — py).
+
+1. Что умеет модель прямо сейчас
+   python3 -m ml.civic_classifier info
+   python3 -m ml.civic_classifier predict "Во дворе не горят фонари"
+   python3 -m ml.civic_classifier predict "Аялдамадағы табло жұмыс істемейді" --language kk
+   -> JSON {label, score, score_kind, needs_review, model_version, training_data_status}
+
+2. Воспроизвести данные, обучение и метрики
+   python3 -m ml.civic_classifier build-corpus   # ~1 с; корпус и split побайтно совпадают с закоммиченными
+   python3 -m ml.civic_classifier train          # ~50 с; data/model.json.gz + train_report.json (тот же sha256)
+   python3 -m ml.civic_classifier evaluate       # ~5 с; metrics.json, EVAL_REPORT.md, probe_failures.json
+   Результаты пишутся в research/round-12-results/R08/ (параметр --out меняет каталог).
+
+3. Тесты
+   python3 -m pytest tests/civic/R08 -q          # ~55 с (включая переобучение и сравнение байтов модели)
+   Интеграционный тест с ui/civic_feedback выполняется только там, где этот пакет есть (CODE_BASE_SHA 56538a3);
+   на ветке без него — skip (NOT_RUN), а не PASS.
+
+4. Что сможет пользователь после подключения координатором
+   Житель отправляет сообщение как раньше; сотрудник в очереди модерации видит подсказку категории
+   «демо-модель (синтетические данные)» с needs_review=true. Категорию, выбранную жителем, подсказка не меняет.
+   Без файла модели работает эвристика по ключевым словам (score=null), сообщения не теряются.
+
+5. Ограничения, которые нужно видеть
+   Метрики — демонстрационные (синтетика и агентская разметка). Реальные обращения: NOT_EVALUATED.
+   Подробно: ml/civic_classifier/MODEL_CARD.md, research/round-12-results/R08/EVAL_REPORT.md.

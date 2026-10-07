@@ -49,3 +49,15 @@ def test_probe_set_is_separate_from_generator():
     corpus_norm = {normalize(r["text"]) for r in rows}
     assert len(probe) >= 100 and {p["label"] for p in probe} == set(LABELS)
     assert not any(normalize(p["text"]) in corpus_norm for p in probe)
+
+
+def test_crlf_checkout_keeps_corpus_hash(tmp_path):
+    """Windows autocrlf: хэш корпуса считается по каноническому LF; плюс ml/civic_classifier/.gitattributes -text."""
+    crlf_corpus = tmp_path / corpus.CORPUS_PATH.name
+    crlf_corpus.write_bytes(corpus.CORPUS_PATH.read_bytes().replace(b"\n", b"\r\n"))
+    crlf_split = tmp_path / corpus.SPLIT_PATH.name
+    crlf_split.write_bytes(corpus.SPLIT_PATH.read_bytes().replace(b"\n", b"\r\n"))
+    rows, manifest = corpus.load_corpus(crlf_corpus, crlf_split)
+    assert len(rows) == manifest["rows"]
+    attrs = (corpus.DATA_DIR.parent / ".gitattributes").read_text(encoding="utf-8")
+    assert "data/** -text" in attrs

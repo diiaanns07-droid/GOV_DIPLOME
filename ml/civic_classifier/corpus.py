@@ -353,7 +353,11 @@ def max_similarity(items_grams: list[frozenset], pool: list[frozenset]) -> list[
 
 
 def sha256_file(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    """sha256 файла; для текстовых данных — по каноническому LF (защита от CRLF при checkout на Windows)."""
+    data = path.read_bytes()
+    if path.suffix in (".jsonl", ".json"):
+        data = data.replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def build(out_dir: Path = DATA_DIR) -> dict:

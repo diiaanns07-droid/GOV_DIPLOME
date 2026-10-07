@@ -1372,11 +1372,11 @@
  },
  "perf": {
   "model_file_bytes": 104804,
-  "load_seconds": 0.157,
+  "load_seconds": 0.242,
   "peak_python_alloc_mb_load": 5.2,
   "peak_python_alloc_mb": 5.2,
-  "classify_ms_mean": 1.695,
-  "classify_ms_p95": 3.136,
+  "classify_ms_mean": 1.974,
+  "classify_ms_p95": 3.625,
   "n": 743,
   "note": "одно ядро CPU, CPython, без GPU/сети; время — в этой облачной среде"
  },

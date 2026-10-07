@@ -1,0 +1,39 @@
+R08 — ЧТО ПОДКЛЮЧИТЬ КООРДИНАТОРУ (раунд 12)
+
+1. ЧТО ПЕРЕНЕСТИ
+   Только пути R08 из ветки claude/wizardly-ptolemy-qy8ltw (SHA кода — в DELIVERY.json, code_sha):
+     ml/civic_classifier/        (код, data/ с корпусом, split, пробным набором и model.json.gz, .gitattributes)
+     tests/civic/R08/
+   BASE_MISMATCH: история этой ветки начинается от 834a25f (плюс работа R09 раунда 11), а не от 56538a3.
+   Не сливать ветку целиком. Варианты:
+     a) git checkout <code_sha> -- ml/civic_classifier tests/civic/R08   (на ветке от 56538a3)
+     b) git apply --binary research/round-12-results/R08/r08_paths.patch  (новые файлы; apply --check на 56538a3 — см. DELIVERY.json)
+   ml/__init__.py НЕ нужен: `ml` — пакет-пространство имён (PEP 420); адаптер R06 импортирует
+   ml.civic_classifier в 56538a3 без изменений (проверено).
+
+2. ЗАТРОНУТЫЕ СОСЕДНИЕ ИНТЕРФЕЙСЫ
+   Код backend/shell/feedback не меняется. ui/civic_feedback/classifier_adapter.py уже подключает модуль:
+     build_feedback_service(db_path, civic)            # classifier="auto" -> ml.civic_classifier.classify
+     build_feedback_service(db_path, civic, classifier=None)   # выключить подсказку
+   Поведенческое изменение после переноса: у новых сообщений classifier.status становится "ok" (была
+   "unavailable"), в очереди редактора появляется suggestion. Категория жителя не меняется.
+   Проверка в worktree 56538a3 с путями R08: pytest tests/civic (без R08) -> 735 passed, 2 skipped;
+   tests/civic/R08 -> 27 passed (включая 3 теста с настоящим FeedbackService).
+
+3. КОНТРАКТ (CONTRACT.txt раздел 6 и ui/civic_feedback/service.py _clean_suggestion)
+   classify(text: str, language: "ru"|"kk"|"unknown") ->
+     {label ∈ roads|sidewalks|transport_stops|lighting|landscaping|other, score: float|None,
+      score_kind: "softmax_max_uncalibrated"|"none", needs_review: bool, model_version: str,
+      training_data_status: "synthetic_demo_only;real_data_NOT_EVALUATED" | "no_trained_model:keyword_heuristic"}
+   Строки <= 80 символов (R06 обрезает до 80). TypeError на нестроковый text (R06 пишет status "error").
+   needs_review всегда True для синтетической модели. Первый вызов грузит модель ~0.15 с — в пределах
+   classifier_timeout_s=2.0 R06; далее ~2 мс на сообщение.
+
+4. ЗАВИСИМОСТИ И ДАННЫЕ
+   ml/civic_classifier/requirements.txt: сторонних пакетов нет. Импорт не обращается к сети, pickle не используется.
+   data/** помечены -text во вложенном ml/civic_classifier/.gitattributes (Windows autocrlf не меняет байты);
+   хэши текстовых данных считаются по каноническому LF.
+
+5. ДЛЯ ИНТЕРФЕЙСА (R04/R06, по желанию)
+   Показывать подсказку как «демо-модель, обучена на синтетических данных» (training_data_status), не как
+   решение. Реальные обращения из runtime SQLite не выгружать для обучения без правового основания и согласия.
