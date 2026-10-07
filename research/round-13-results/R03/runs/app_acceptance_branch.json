@@ -1,9 +1,9 @@
 {
- "sha": "1ef06d61aec2856f4b10f5491002614d4696b3f4",
- "web_civic_map_dirty": "M web/civic/map/civic-map.js",
+ "sha": "f0a52f795d646c355ae8bf1b8518ea807984d8cc",
+ "web_civic_map_dirty": null,
  "environment": "Linux container, Chromium (Playwright) with SwiftShader, OpenFreeMap blocked by proxy",
- "base": "http://127.0.0.1:36995/",
- "at": "2026-10-07T17:27:18.367Z",
+ "base": "http://127.0.0.1:38439/",
+ "at": "2026-10-07T17:53:44.411Z",
  "summary": {
   "pass": 12,
   "fail": 0,

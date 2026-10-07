@@ -1,0 +1,57 @@
+{
+  "role": "R03",
+  "round": 13,
+  "title": "Карта без конфликтов инструментов, удобные карточки и 3D",
+  "branch": "claude/zen-mendel-e79iiv",
+  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "start_sha": "d5ee7586592b743db0e4ab31a057e53bc4bc7fab",
+  "round12_code_sha": "b83df899b6eb2e6d9afcd3cb4a7fad23ffacfae1",
+  "code_sha": "f0a52f795d646c355ae8bf1b8518ea807984d8cc",
+  "tested_sha": "f0a52f795d646c355ae8bf1b8518ea807984d8cc",
+  "tested_tree": "clean for web/civic/map and tests/civic/R03 at test time (git status --porcelain empty)",
+  "push_status": "code_sha pushed (origin/claude/zen-mendel-e79iiv advanced to f0a52f7); the result of the commit carrying this file is in the final message / handoff",
+  "source_deliveries": [
+    {"role": "R03", "sha": "d5ee7586592b743db0e4ab31a057e53bc4bc7fab", "use": "own pinned start (round 12 checkpoint 5); continued, not reset"},
+    {"role": "R01", "branch": "claude/affectionate-ride-bol5v8", "head": "6dc16602b7f63fcf60489553dde4502378a08d09", "code": "223296ec02bb14568b7d5782dc7de473372d2aec", "use": "read (fitBounds adapter, keepVisible, civic-editor:tool listener); R01's own browser checks run on 223296e with this module, with and without the proposed patch; not merged"},
+    {"role": "R02", "branch": "claude/elegant-franklin-jbhprq", "head": "9366217b0a06d4e90fdd8e5647a2ac64f4a52ac0", "code": "bd7a911ad23573ce0d168823199ecb3cc86557c9", "use": "real CivicService for tests/civic/R03/r02_contract.test.mjs (git archive into a temp dir); not merged"},
+    {"role": "R02", "sha": "6a28de2", "use": "round-11 CivicService for tests/civic/R03/r02_readonly.test.mjs (unchanged regression)"},
+    {"role": "R04", "branch": "claude/intelligent-sagan-7shpeh", "head": "6d5cd7171fcacd63d30c4230329f9ff6a0887e23", "code": "69d569116355d6cad26ef8fc46e84868296162a3", "use": "read civic-editor:tool contract (editor_mount_contract.json); the live acceptance used the R04 editor already in base 56538a3, which sends the same event"}
+  ],
+  "changed_paths": [
+    "web/civic/map/civic-map.js",
+    "tests/civic/R03/browser.test.mjs",
+    "tests/civic/R03/r02_readonly_server.py",
+    "tests/civic/R03/r02_contract.test.mjs",
+    "tests/civic/R03/app_acceptance.mjs",
+    "research/round-13-results/R03/",
+    "research/handoffs/astana/R03/round-13/STATUS.md"
+  ],
+  "transfer_only": ["web/civic/map/civic-map-core.js", "web/civic/map/civic-map.js", "web/civic/map/civic-map.css"],
+  "not_changed": ["web/civic/map/streets.json (R07)", "web/civic/shell/* (R01; a proposed patch is in research/round-13-results/R03/proposed_r01_shell.patch)", "web/civic/editor/* (R04)", "web/index.html", "ui/web_server.py"],
+  "contract": "research/round-13-results/R03/CONTRACT.txt (fixed before implementation, checkpoint 1 1ef06d6)",
+  "tests": [
+    {"name": "core (node:test)", "status": "PASS", "result": "26/26", "command": "node --test tests/civic/R03/core.test.mjs", "sha": "f0a52f7"},
+    {"name": "browser stand (mock API) incl. 9 round-13 tests", "status": "PASS", "result": "69/69", "command": "node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs", "sha": "f0a52f7", "note": "7 of the 9 round-13 tests (input ownership, host camera, foreign move, style race, the 6 review fixes) were mutation-checked: each fails when its code is reverted; the 3D-tilt and onDetail tests were not"},
+    {"name": "R02 round-11 CivicService read-only", "status": "PASS", "result": "2/2", "command": "node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs", "sha": "f0a52f7"},
+    {"name": "R02 round-12 CivicService contract (bd7a911): paging by cursor, slow answer + filter, superseded refresh, archived while open, deep link + reload, identical points, no request per map move", "status": "PASS", "result": "4/4", "command": "node --test --test-concurrency=1 tests/civic/R03/r02_contract.test.mjs", "sha": "f0a52f7"},
+    {"name": "real app acceptance (app.py, base R01/R02/R04/R06 + this module)", "status": "PASS", "result": "12 PASS / 0 FAIL / 1 NOT_RUN", "command": "NODE_PATH=$(npm root -g) node tests/civic/R03/app_acceptance.mjs <out>", "evidence": "research/round-13-results/R03/runs/app_acceptance_branch.json", "sha": "f0a52f7"},
+    {"name": "same acceptance on the base module 56538a3 (before)", "status": "FAIL", "result": "10 PASS / 2 FAIL / 1 NOT_RUN — card opened and pointer cursor while the editor drew", "evidence": "research/round-13-results/R03/runs/app_acceptance_base_56538a3.json", "sha": "56538a3", "note": "expected: shows the conflict this round removes"},
+    {"name": "R01 p0_flow on the base shell (this branch)", "status": "FAIL", "result": "57 PASS / 2 FAIL / 2 NOT_RUN — the same 2 R01-owned FAIL as on clean base 56538a3 (explore tap size, attribution slot); fixed in R01's own 223296e", "evidence": "research/round-13-results/R03/runs/r01_p0_flow_base_shell_f0a52f7.json", "sha": "f0a52f7"},
+    {"name": "R01's own browser checks on R01 223296e with this module (without / with proposed patch)", "status": "PASS", "result": "p0 59/0/2, r12_city 81/0/0, r12_city --empty 15/0/0 — both builds", "evidence": "research/round-13-results/R03/runs/r01_223296e_*.json, runs/R01_BUILD.txt", "sha": "R03 1428b08 (checkpoint 3); f0a52f7 adds only the six review fixes, re-run on 223296e not done"},
+    {"name": "OpenFreeMap basemap and 3D buildings", "status": "NOT_RUN", "reason": "tiles.openfreemap.org answers 403 through the environment proxy; the light offline background of R01 was used; 3D = camera tilt only"},
+    {"name": "Windows run-city.bat", "status": "NOT_RUN", "reason": "Linux container; the launcher was read and its equivalent (PORT 8611, init + seed-demo into a separate temp DB, app.py) was used"},
+    {"name": "R07 simulator input ownership", "status": "NOT_RUN", "reason": "no R07 delivery found for round 12; civic-scenarios:tool is a proposal, exercised only through the API and a fake element"},
+    {"name": "screen reader", "status": "NOT_RUN", "reason": "no screen reader in the container"}
+  ],
+  "independent_review": "one read-only agent on the round-13 diff (MapLibre checked against web/vendor 5.6.2): 6 findings, all fixed in f0a52f7 with tests",
+  "screenshots": "research/round-13-results/R03/screenshots/: after-r13-app-* (real app with f0a52f7: light map 1440/390, 3D tilt, editor drawing, deep link card, not-published link, phone card), before-r13-app-1440-editor-drawing.png (base module: public tooltip/card over the editor's drawing)",
+  "known_limits": [
+    "All 7 published records in the app are synthetic (R05); real confirmed objects: 0.",
+    "OpenFreeMap/3D buildings NOT_RUN in this environment.",
+    "R01 still swaps map.fitBounds until it applies the proposed patch (or an equivalent); the module works with either.",
+    "civic-scenarios:tool event name is R03's proposal for R07, not yet agreed.",
+    "R01's own checks were run with R03 1428b08; the six later review fixes in f0a52f7 were verified by R03's suites, the live acceptance and the base-shell p0_flow, not by a second run on 223296e.",
+    "The list is client-side over at most 20 pages x 100 records; beyond that it says not all records were loaded."
+  ],
+  "next_step": "R01 (integration candidate): take the three web/civic/map files at f0a52f7, apply proposed_r01_shell.patch, and run tests/civic/R01/run_checks.sh plus tests/civic/R03/app_acceptance.mjs on the candidate."
+}

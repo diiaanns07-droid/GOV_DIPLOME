@@ -8,7 +8,7 @@
   keepVisible, civic-editor:tool listener; R04 code 69d5691 (head 6d5cd71) editor.js + editor_mount_contract.json.
 - Owned paths: web/civic/map/ (except streets.json), tests/civic/R03/, research/round-13-results/R03/, this file.
 
-## Status: PARTIAL — checkpoint 1
+## Status: DONE for the R03 scope — code f0a52f795d646c355ae8bf1b8518ea807984d8cc (open items named below)
 
 ### 0. Round 12 closed first (as the prompt asks)
 - Round-12 code after the adversarial review: b83df899b6eb2e6d9afcd3cb4a7fad23ffacfae1; docs c69a7c0 (DELIVERY with
@@ -54,6 +54,33 @@ civic-scenarios:tool listeners, Г) idempotent style reload with styleimagemissi
 - INTEGRATION.txt, RUN.txt (run-city.bat read: PORT 8611, CIVIC_DEMO init+seed-demo; cloud equivalent),
   proposed_r01_shell.patch (to R01 223296e shell.js; R01's file untouched; `git apply --check` OK).
 
-### Next
-R01's own browser checks on 223296e with this module (with/without the patch), an independent review of the
-round-13 diff, full suites on the final SHA, DELIVERY.json.
+### 5. R01's own checks with this module (e5c7fd1)
+- Scratch builds R01 223296e + R03 web/civic/map from 1428b08 (byte-identical), without and with
+  proposed_r01_shell.patch: p0_flow 59/0/2, r12_city 81/0/0, r12_city --empty 15/0/0 in both (runs/, R01_BUILD.txt).
+
+### 6. Checkpoint 4 (f0a52f7) — independent review of the round-13 diff
+- One read-only agent, MapLibre checked against web/vendor 5.6.2. Six findings, all fixed with tests (each fails
+  when reverted): resize counted as a host move; visible part without the 60px clamp; click pan without
+  getPitch/getBearing; «в этой же точке» for two stacks; host move inside onSelect overridden; another owner's
+  pointer cursor cleared.
+
+### 7. Final verification on f0a52f7 (clean tree)
+- core 26/26; browser 69/69 + R02 r11 read-only 2/2 + R02 r12 contract 4/4 = 75/75 PASS.
+- Real app acceptance: 12 PASS / 0 FAIL / 1 NOT_RUN (OpenFreeMap); before (base module): 2 FAIL.
+- R01 p0_flow on the base shell: 57/2/2 — same two R01-owned FAIL as on clean base; fixed in R01's 223296e.
+- DELIVERY.json, RUN.txt, INTEGRATION.txt, CONTRACT.txt, proposed_r01_shell.patch in research/round-13-results/R03/.
+
+### Open (not R03-done, named)
+- R01 has to apply the proposed patch (or pass getPadding/getPitch/getBearing/onDetail itself) and drop its fitBounds
+  swap; R01's checks were run with R03 1428b08, not yet with f0a52f7 (only the six small review fixes differ).
+- civic-scenarios:tool is R03's proposal for R07; not agreed or exercised with a real simulator.
+- OpenFreeMap / 3D buildings and Windows run-city.bat: NOT_RUN in this environment.
+- All published records are synthetic (R05: 0 confirmed real objects).
+
+### Push
+- Last pushed before the final docs commit: f0a52f795d646c355ae8bf1b8518ea807984d8cc (= code_sha).
+- The final docs commit's push result is in the final message.
+
+### Next step
+R01 (integration candidate): import the three web/civic/map files at f0a52f7, apply proposed_r01_shell.patch and run
+tests/civic/R01/run_checks.sh + tests/civic/R03/app_acceptance.mjs on the candidate.
