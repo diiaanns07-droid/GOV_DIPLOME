@@ -1,0 +1,80 @@
+--- a/web/civic/map/civic-map.js	2026-10-07 17:21:59.087390467 +0000
++++ b/web/civic/map/civic-map.js	2026-10-07 17:21:59.112171219 +0000
+@@ -1259,13 +1259,21 @@
+     }
+     function hitAt(point) { return hitIds(point)[0] || null; }
+     // One object -> open it. Several on top of each other -> let the resident choose in the panel.
++    // Host lock (R01 proposal): while a host tool owns map clicks (R04 drawing, R07 scenario picks),
++    // public objects are neither selected nor hovered.
++    let interactive = true;
++    function setInteractive(on) {
++      interactive = on !== false;
++      if (!interactive && map) onMapOut();
++    }
+     function onMapClick(e) {
+-      if (destroyed) return;
++      if (destroyed || !interactive) return;
+       const ids = hitIds(e.point);
+       if (ids.length === 1) selectObject(ids[0], { source: "map" });
+       else if (ids.length > 1) openPick(ids);
+     }
+     function onMapMove(e) {
++      if (!interactive) return;
+       lastHoverPoint = e;
+       if (hoverRaf) return;
+       hoverRaf = requestAnimationFrame(() => {
+@@ -1345,13 +1353,22 @@
+       }
+       return found;
+     }
++    function hostPadding() {
++      // R01 proposal: the host knows its own overlays (navigation box, sheet, drawers).
++      if (typeof opt.getPadding !== "function") return null;
++      let p = null;
++      try { p = opt.getPadding(); } catch (e) { p = null; }
++      const keys = ["top", "right", "bottom", "left"];
++      return p && keys.every((k) => Number.isFinite(p[k]) && p[k] >= 0) ? { top: p.top, right: p.right, bottom: p.bottom, left: p.left } : null;
++    }
+     function freePadding() {
++      const host = hostPadding();
+       // Phones: the topbar ends near 72-84px and the tool column is ~50px wide.
+-      const pad = Object.assign({}, basePadding, isMobile() && !opt.mapPadding ? { top: 84, right: 60, left: 16 } : null);
++      const pad = host || Object.assign({}, basePadding, isMobile() && !opt.mapPadding ? { top: 84, right: 60, left: 16 } : null);
+       const c = map.getContainer().getBoundingClientRect();
+       const ob = obstruction();
+       const r = ob ? ob.getBoundingClientRect() : { width: 0, height: 0 };
+-      if (r.width && r.height && !opt.mapPadding) {
++      if (r.width && r.height && !opt.mapPadding && !host) {
+         if (isMobile()) pad.bottom = Math.max(pad.bottom, c.bottom - r.top + 16);
+         else if (r.left - c.left < c.width / 2) pad.left = Math.max(pad.left, r.right - c.left + 24);
+         else pad.right = Math.max(pad.right, c.right - r.left + 24);
+@@ -1399,6 +1416,7 @@
+       byMap.set(m, instance);
+       onMap("click", onMapClick);
+       onMap("mousemove", onMapMove);
++      onMap("styleimagemissing", onImageMissing);
+       onMap("mouseout", onMapOut);
+       onMap("styledata", onStyleData);
+       onMap("moveend", onMoveEnd);
+@@ -1406,6 +1424,13 @@
+       updateViewBox();
+       syncFilterControls();
+     }
++    // After a style swap (e.g. offline basemap) hasImage can still see the old style while the new one
++    // asks for the demo ring: add it on demand instead of logging "could not be loaded".
++    function onImageMissing(e) {
++      if (!map || !e || e.id !== DEMO_IMG || map.hasImage(DEMO_IMG)) return;
++      const img = demoRingImage();
++      if (img) { try { map.addImage(DEMO_IMG, img.image, { pixelRatio: img.ratio }); } catch (err) { /* style gone */ } }
++    }
+     function detachMap() {
+       if (!map) return;
+       for (const [type, fn] of mapHandlers.splice(0)) { try { map.off(type, fn); } catch (e) { /* ignore */ } }
+@@ -1447,6 +1472,7 @@
+       destroy,
+       // Optional extras for R01 (not part of civic-v1): late map binding, layout and state probes.
+       setMap: attachMap,
++      setInteractive,
+       fitAll,
+       getLayout,
+       layerIds: () => BELOW_LABELS.concat(ON_TOP),
