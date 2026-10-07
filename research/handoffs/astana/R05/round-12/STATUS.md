@@ -7,7 +7,7 @@
   проверка выполняется в отдельном worktree от 56538a3, переносимый патч — в `research/round-12-results/R05/`.
 - Пути: `data/civic/astana/round12-verified/`, `tests/civic/R05/round12/`, `research/round-12-results/R05/`, этот файл.
 
-## Статус: PARTIAL — checkpoint 6
+## Статус: PARTIAL — checkpoint 7
 
 - Сеть: все KZ-источники, OSM и wikipedia.org закрыты политикой egress (proxy 403 / WebFetch EGRESS_BLOCKED),
   журнал `data/civic/astana/round12-verified/network_audit.json`. Работает только серверный WebSearch
@@ -40,4 +40,12 @@
   в 15:15Z (чтение ls-remote при этом работало); повтор в 15:16Z прошёл успешно.
 - `research/round-12-results/R05/DELIVERY.json` — состав поставки, проверки PASS/NOT_RUN, ограничения.
 
-Следующий шаг: линза robustness ревью (в работе), переносимый патч путей, финальный handoff.
+- Линза robustness (workflow после сброса лимита): 6 находок с воспроизведением, исправлены все —
+  verify не перезаписывает чужую запись с тем же id (--replace явно), дубликаты id/имя файла ловятся,
+  смена даты публикации общего источника (в т.ч. null → дата) — конфликт с перечнем затронутых записей,
+  retrieved_at проверяется против публикации и as_of до записи, профиль real применяется до записи,
+  битые черновики/аргументы — отчёт вместо traceback, свободные поля ограничены и проверяются на ПДн,
+  config.json в slice.inputs, отсутствие summary.json = устаревание.
+- Тесты: 56538a3 — tests/civic/R05 206 passed, 1 skipped; ветка — round12 39 passed, 19 NOT_RUN.
+
+Следующий шаг: переносимый патч путей, финальный DELIVERY/handoff.

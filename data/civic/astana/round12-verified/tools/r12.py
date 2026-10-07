@@ -64,6 +64,16 @@ def load_json(path: Path, default: Any = None) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def read_json(path: Path, issues: "Issues | None" = None, default: Any = None) -> Any:
+    """Как load_json, но битый файл (JSON, кодировка, доступ) — issue, а не traceback."""
+    try:
+        return load_json(path, default)
+    except (ValueError, UnicodeDecodeError, OSError) as exc:
+        if issues is not None:
+            issues.add(str(path.name), "unreadable", f"файл не читается как UTF-8 JSON: {type(exc).__name__}")
+        return default
+
+
 def dump_json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, indent=2) + "\n"
 
@@ -126,7 +136,7 @@ def date_in_quote(value: str, quote: str) -> bool:
 
 def amount_in_quote(value, quote: str) -> bool:
     """Сумма в тенге целиком записана цифрами в выдержке (разряды через пробел допустимы)."""
-    if not isinstance(value, (int, float)) or isinstance(value, bool) or value != int(value):
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value) or value != int(value):
         return False
     numbers = re.findall(r"(?<![\d.,])\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?![\d])|(?<![\d.,])\d+(?![\d.,])",
                          unicodedata.normalize("NFKC", quote))
@@ -308,9 +318,41 @@ def _check_location(loc: dict, where: str, issues: Issues) -> None:
             break
 
 
+RECORD_KEYS = frozenset({"schema", "id", "kind", "title", "description", "historical", "location", "claims",
+                         "not_confirmed", "evidence_notes", "verification"})
+CLAIM_KEYS = frozenset({"field", "value", "claim_type", "source_id", "quote", "locator", "value_basis"})
+LOCATION_KEYS = frozenset({"text", "geometry", "geometry_precision", "geometry_basis"})
+
+
 def check_record(rec: dict, sources: dict, issues: Issues, *, verified: bool, pii=None) -> None:
+    if not isinstance(rec, dict):
+        issues.add("record", "not_object", "запись — JSON-объект")
+        return
     rid = rec.get("id", "?")
     here = f"record:{rid}"
+    extra = sorted(set(rec) - RECORD_KEYS)
+    if extra:
+        issues.add(here, "unknown_keys", "лишние поля записи: " + ", ".join(map(str, extra[:10])))
+    if not isinstance(rec.get("claims", []), list) or not isinstance(rec.get("location", {}), dict) \
+            or not isinstance(rec.get("not_confirmed", []), list):
+        issues.add(here, "types", "claims и not_confirmed — списки, location — объект")
+        return
+    bad_nc = [x for x in rec.get("not_confirmed", []) if x not in CLAIM_FIELDS]
+    if bad_nc:
+        issues.add(here + ".not_confirmed", "enum", "not_confirmed — пути полей из списка CLAIM_FIELDS")
+    loc = rec.get("location") or {}
+    if set(loc) - LOCATION_KEYS:
+        issues.add(here + ".location", "unknown_keys", "лишние поля location")
+    _text_ok(loc.get("text"), here + ".location.text", issues, required=False, max_len=300)
+    _text_ok(loc.get("geometry_basis"), here + ".location.geometry_basis", issues, required=False, max_len=400)
+    if pii is not None:
+        for name, text in (("title", rec.get("title")), ("description", rec.get("description")),
+                           ("evidence_notes", rec.get("evidence_notes")), ("location.text", loc.get("text"))):
+            if isinstance(text, str) and pii(text):
+                issues.add(f"{here}.{name}", "pii", "персональные данные в тексте записи")
+    if not all(isinstance(c, dict) for c in rec.get("claims") or []):
+        issues.add(here + ".claims", "types", "каждый claim — объект")
+        return
     if rec.get("schema") != "r05-r12-record-v1":
         issues.add(here, "schema", "ожидается r05-r12-record-v1")
     if not isinstance(rid, str) or not RECORD_ID_RE.match(rid):
@@ -375,10 +417,15 @@ def check_record(rec: dict, sources: dict, issues: Issues, *, verified: bool, pi
                 issues.add(cw + ".value", "enum", "planned | contract | spent")
         else:
             _text_ok(value, cw + ".value", issues, required=True, max_len=300)
+        if set(claim) - CLAIM_KEYS:
+            issues.add(cw, "unknown_keys", "лишние поля claim (полный текст страницы в запись не копируется)")
+        _text_ok(claim.get("locator"), cw + ".locator", issues, required=False, max_len=200)
+        _text_ok(claim.get("value_basis"), cw + ".value_basis", issues, required=False, max_len=300)
         if pii is not None:
-            for text in (quote, claim.get("value") if isinstance(claim.get("value"), str) else None):
+            for text in (quote, claim.get("value") if isinstance(claim.get("value"), str) else None,
+                         claim.get("locator"), claim.get("value_basis")):
                 if isinstance(text, str) and pii(text):
-                    issues.add(cw, "pii", "персональные данные в выдержке/значении")
+                    issues.add(cw, "pii", "персональные данные в выдержке/значении/locator")
     fields = {c.get("field") for c in claims}
     if "budget.amount_kzt" in fields and "budget.basis" not in fields:
         issues.add(here + ".claims", "budget_basis", "сумма без основания (planned/contract/spent)")
@@ -474,9 +521,27 @@ def is_historical(rec: dict, as_of: _dt.date, cutoff_days: int) -> bool:
     return bool(ends) and max(ends) < as_of - _dt.timedelta(days=cutoff_days)
 
 
-def load_records(folder: str) -> list[dict]:
+def load_records(folder: str, issues: "Issues | None" = None) -> list[dict]:
+    """Записи каталога; битые файлы и несовпадение имени файла с id — issues, дубликаты id — error."""
     path = HERE / folder
-    return [load_json(p) for p in sorted(path.glob("*.json"))] if path.exists() else []
+    records, seen = [], {}
+    for file in sorted(path.glob("*.json")) if path.exists() else []:
+        rec = read_json(file, issues)
+        if not isinstance(rec, dict):
+            if issues is not None and file.exists():
+                issues.add(f"{folder}/{file.name}", "not_object", "запись — JSON-объект")
+            continue
+        rid = rec.get("id")
+        if issues is not None:
+            if file.stem != rid:
+                issues.add(f"{folder}/{file.name}", "file_name", "имя файла должно быть <id>.json")
+            if rid in seen:
+                issues.add(f"{folder}/{file.name}", "dup_id", f"id {rid} уже есть в {seen[rid]}")
+        if rid in seen:
+            continue
+        seen[rid] = file.name
+        records.append(rec)
+    return records
 
 
 def build(write: bool = True) -> tuple[dict, list[dict]]:
@@ -487,7 +552,7 @@ def build(write: bool = True) -> tuple[dict, list[dict]]:
     sources = check_sources(reg, issues)
     current, historical = [], []
     validator = base_validator()
-    records = load_records("verified")
+    records = load_records("verified", issues)
     if records and validator is None:
         issues.add("build", "validator_not_run",
                    "нет data/civic/astana/tools/civic_v1.py: без профиля real записи в пакет не попадают")
@@ -507,8 +572,9 @@ def build(write: bool = True) -> tuple[dict, list[dict]]:
 
     inputs = [{"path": f"verified/{p.name}", "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}
               for p in sorted((HERE / "verified").glob("*.json"))]
-    inputs.append({"path": "sources.json", "sha256": hashlib.sha256((HERE / "sources.json").read_bytes()).hexdigest()
-                   if (HERE / "sources.json").exists() else None})
+    # Валидатор базы сюда не входит: пакет должен собираться одинаково в любом дереве (записи без него не проходят).
+    for name, path in (("sources.json", HERE / "sources.json"), ("config.json", HERE / "config.json")):
+        inputs.append({"path": name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None})
 
     def package(items, name):
         items = sorted(items, key=lambda x: x["id"])
@@ -553,82 +619,127 @@ def civic_issues(packages: dict) -> tuple[list, dict]:
 
 
 # ---------------------------------------------------------------- verify
+def _fail(status: str, problems: list, code: int = 1) -> int:
+    print(dump_json({"status": status, "problems": problems}))
+    return code
+
+
+def _astana_date(ts: str) -> _dt.date:
+    moment = _dt.datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=_dt.timezone.utc)
+    return (moment + _dt.timedelta(hours=5)).date()          # Астана: UTC+5
+
+
 def cmd_verify(args) -> int:
+    """Всё проверяется до записи: реестр и verified/ меняются только при полном успехе."""
+    import copy
     draft_path = Path(args.draft)
-    rec = load_json(draft_path)
-    reg_path = HERE / "sources.json"
-    reg = load_json(reg_path)
+    if not draft_path.is_file():
+        return _fail("rejected", [{"problem": f"нет файла черновика {draft_path}"}], 2)
     issues = Issues()
+    rec = read_json(draft_path, issues)
+    reg_path = HERE / "sources.json"
+    reg = read_json(reg_path, issues, {})
+    if not isinstance(rec, dict) or not isinstance(reg, dict):
+        return _fail("rejected", issues.errors or [{"problem": "черновик и sources.json — JSON-объекты"}], 2)
+    if not isinstance(args.retrieved_at, str) or not TS_RE.match(args.retrieved_at):
+        return _fail("rejected", [{"problem": "--retrieved-at YYYY-MM-DDThh:mm:ssZ (UTC)"}], 2)
     sources = check_sources(reg, issues)
     validator = base_validator()
     check_record(rec, sources, issues, verified=False, pii=getattr(validator, "find_pii", None))
     if issues.errors:
-        print(dump_json({"status": "rejected", "issues": issues.errors}))
-        return 1
-    if not args.retrieved_at or not TS_RE.match(args.retrieved_at):
-        print("--retrieved-at YYYY-MM-DDThh:mm:ssZ обязателен", file=sys.stderr)
-        return 2
-    texts = {}
+        return _fail("rejected", issues.errors)
+
+    texts, problems = {}, []
     for item in args.text or []:
-        sid, _, file = item.partition("=")
-        raw = Path(file).read_bytes()
-        texts[sid] = (hashlib.sha256(raw).hexdigest(), norm_text(page_text(raw.decode("utf-8", "replace"))))
-    published = dict(item.partition("=")[::2] for item in args.published_on or [])
-    missing = []
+        sid, sep, file = item.partition("=")
+        path = Path(file)
+        if not sep or not sid or not file:
+            problems.append({"text": item, "problem": "--text ожидает SRC_ID=ФАЙЛ"})
+        elif not path.is_file():
+            problems.append({"source_id": sid, "problem": f"нет файла {file}"})
+        elif path.stat().st_size > 20 * 1024 * 1024:
+            problems.append({"source_id": sid, "problem": "файл больше 20 МиБ — сохраните только текст статьи"})
+        else:
+            raw = path.read_bytes()
+            texts[sid] = (hashlib.sha256(raw).hexdigest(), norm_text(page_text(raw.decode("utf-8", "replace"))))
+    published = {}
+    for item in args.published_on or []:
+        sid, sep, date = item.partition("=")
+        if not sep or parse_date(date) is None:
+            problems.append({"published_on": item, "problem": "--published-on ожидает SRC_ID=YYYY-MM-DD"})
+        else:
+            published[sid] = date
+    if problems:
+        return _fail("rejected", problems, 2)
     for claim in rec["claims"]:
         sid = claim["source_id"]
         if sid not in texts:
-            missing.append({"field": claim["field"], "source_id": sid, "problem": "нет текста источника (--text)"})
+            problems.append({"field": claim["field"], "source_id": sid, "problem": "нет текста источника (--text)"})
         elif not quote_found(claim["quote"], texts[sid][1]):
-            missing.append({"field": claim["field"], "source_id": sid, "problem": "выдержка не найдена дословно",
-                            "quote": claim["quote"]})
-    for sid, date in published.items():
-        if parse_date(date) is None:
-            missing.append({"source_id": sid, "problem": "--published-on не YYYY-MM-DD"})
-    if missing:
-        print(dump_json({"status": "not_verified", "problems": missing}))
-        return 1
+            problems.append({"field": claim["field"], "source_id": sid, "problem": "выдержка не найдена дословно",
+                             "quote": claim["quote"]})
+    if problems:
+        return _fail("not_verified", problems)
+
     used = sorted({c["source_id"] for c in rec["claims"]})
-    by_id = {s["id"]: s for s in reg["sources"]}
-    conflicts = []
+    existing = read_json(HERE / "verified" / f"{rec['id']}.json", issues)
+    if isinstance(existing, dict) and (existing.get("verification") or {}).get("claims_digest") != claims_digest(rec) \
+            and not args.replace:
+        return _fail("not_verified", [{"id": rec["id"], "problem": "уже есть другая проверенная запись с этим id; "
+                                                                "выберите другой id или явно --replace"}])
+    others = [r for r in load_records("verified") if r.get("id") != rec["id"]]
+    new_reg = copy.deepcopy(reg)
+    by_id = {s["id"]: s for s in new_reg["sources"]}
+    as_of = parse_date(config().get("as_of"))
     for sid in used:
         src = by_id[sid]
+        dependents = sorted(r["id"] for r in others if sid in ((r.get("verification") or {}).get("sources") or {}))
         if src.get("access_status") == "fetched":
-            # Источник уже подтверждал другие записи: другой текст или другая дата публикации их обесценили бы.
+            # Источник уже подтверждал записи: другой текст или дата публикации обесценили бы их.
             if src.get("content_sha256") != texts[sid][0]:
-                conflicts.append({"source_id": sid, "problem": "текст отличается от уже проверенного (sha256): "
-                                  "сохраните прежнюю версию или перепроверьте все записи этого источника"})
-            if sid in published and src.get("published_on") not in (None, published[sid]):
-                conflicts.append({"source_id": sid, "problem": "дата публикации отличается от уже записанной"})
-    if conflicts:
-        print(dump_json({"status": "not_verified", "problems": conflicts}))
-        return 1
-    for sid in used:
-        src = by_id[sid]
-        if src.get("access_status") != "fetched":
+                problems.append({"source_id": sid, "problem": "текст отличается от уже проверенного (sha256): сохраните "
+                                 "прежнюю версию или перепроверьте записи источника", "affected": dependents})
+            if sid in published and src.get("published_on") != published[sid]:
+                problems.append({"source_id": sid, "problem": "дата публикации отличается от уже записанной "
+                                 "(в т.ч. null → дата)", "affected": dependents})
+        else:
             src.update({"access_status": "fetched", "retrieved_at": args.retrieved_at,
                         "content_sha256": texts[sid][0], "fetch_method": args.method})
             src.setdefault("access_attempts", []).append(
                 {"at": args.retrieved_at, "method": args.method, "outcome": "fetched",
                  "detail": "все выдержки записи найдены целыми словами; текст страницы в Git не хранится"})
-        if sid in published:
-            src["published_on"], src["published_on_basis"] = published[sid], "page"
-        elif src.get("published_on_basis") not in ("page", "url"):
-            src["published_on"], src["published_on_basis"] = None, None   # дата без основания не используется
+            if sid in published:
+                src["published_on"], src["published_on_basis"] = published[sid], "page"
+            elif src.get("published_on_basis") not in ("page", "url"):
+                src["published_on"], src["published_on_basis"] = None, None   # дата без основания не используется
+        got = _astana_date(src["retrieved_at"])
+        pub = parse_date(src.get("published_on"))
+        if pub and got < pub:
+            problems.append({"source_id": sid, "problem": f"получено ({got}) раньше публикации ({pub})"})
+        if as_of and got > as_of + _dt.timedelta(days=1):
+            problems.append({"source_id": sid, "problem": f"получено ({got}) позже даты среза as_of={as_of}: "
+                             "обновите as_of в config.json"})
+    for claim in rec["claims"]:
+        if claim["field"] == "schedule.actual_end":
+            pub = parse_date(by_id[claim["source_id"]].get("published_on"))
+            if pub is None or parse_date(claim["value"]) > pub:
+                problems.append({"field": "schedule.actual_end",
+                                 "problem": "дата позже публикации или публикация без даты: это ожидание, не факт"})
+    if problems:
+        return _fail("not_verified", problems)
+    rec = dict(rec)
     rec["verification"] = {"method": "quote_match_saved_text", "verified_at": args.retrieved_at,
                            "claims_digest": claims_digest(rec),
                            "sources": {sid: {"content_sha256": by_id[sid]["content_sha256"],
                                              "published_on": by_id[sid].get("published_on"),
                                              "retrieved_at": by_id[sid].get("retrieved_at")} for sid in used}}
-    # actual_end не может быть позже публикации источника, сообщившего о нём
-    for claim in rec["claims"]:
-        if claim["field"] == "schedule.actual_end":
-            pub = parse_date(by_id[claim["source_id"]].get("published_on"))
-            if pub is None or parse_date(claim["value"]) > pub:
-                print(dump_json({"status": "not_verified", "problems": [
-                    {"field": "schedule.actual_end", "problem": "дата позже публикации или публикация без даты: это ожидание, не факт"}]}))
-                return 1
-    write_json(reg_path, reg)
+    if validator is not None:
+        item = to_civic(rec, by_id, config().get("as_of"))
+        bad = [i for i in validator.validate_object(item, profile="real", as_of=config().get("as_of"))
+               if i.get("severity", "error") == "error"]
+        if bad:
+            return _fail("not_verified", [{"problem": "профиль real R05 отклоняет запись", "issues": bad}])
+    write_json(reg_path, new_reg)
     write_json(HERE / "verified" / f"{rec['id']}.json", rec)
     if draft_path.resolve().parent == (HERE / "drafts").resolve():
         draft_path.unlink()
@@ -959,13 +1070,18 @@ def cmd_fetch(args) -> int:
 # ---------------------------------------------------------------- CLI
 def cmd_check(args) -> int:
     issues = Issues()
-    sources = check_sources(load_json(HERE / "sources.json", {}), issues)
-    check_candidates(load_json(HERE / "candidates.json", {}), sources, issues)
+    sources = check_sources(read_json(HERE / "sources.json", issues, {}), issues)
+    check_candidates(read_json(HERE / "candidates.json", issues, {}), sources, issues)
     validator = base_validator()
     pii = getattr(validator, "find_pii", None)
-    for rec in load_records("drafts"):
+    verified = load_records("verified", issues)
+    drafts = load_records("drafts", issues)
+    for rec in drafts:
         check_record(rec, sources, issues, verified=False, pii=pii)
-    for rec in load_records("verified"):
+        if rec.get("id") in {r.get("id") for r in verified}:
+            issues.add(f"drafts/{rec.get('id')}.json", "dup_id", "черновик с id уже проверенной записи (verify без --replace откажет)",
+                       "warning")
+    for rec in verified:
         check_record(rec, sources, issues, verified=True, pii=pii)
     packages, _ = build(write=False)
     civic, ran = civic_issues(packages)
@@ -975,7 +1091,7 @@ def cmd_check(args) -> int:
         if on_disk != dump_json(value):
             stale.append(name)
     summary_path = HERE / "summary.json"
-    if summary_path.exists() and summary_path.read_text(encoding="utf-8") != dump_json(summary()):
+    if not summary_path.exists() or summary_path.read_text(encoding="utf-8") != dump_json(summary()):
         stale.append("summary.json")
     if load_records("verified") and "NOT_RUN" in ran.values():
         issues.add("check", "validator_not_run", "есть подтверждённые записи, но валидаторы R05/R02 не запускались")
@@ -994,6 +1110,7 @@ def main(argv=None) -> int:
     v.add_argument("--published-on", action="append", help="SRC_ID=YYYY-MM-DD (дата на самой странице)")
     v.add_argument("--retrieved-at", required=True)
     v.add_argument("--method", choices=("human_saved_text", "agent_http"), default="human_saved_text")
+    v.add_argument("--replace", action="store_true", help="заменить уже проверенную запись с тем же id")
     b = sub.add_parser("build")
     b.add_argument("--check", action="store_true", help="не писать файлы, exit 1 если устарели")
     g = sub.add_parser("geocode")
@@ -1021,6 +1138,9 @@ def main(argv=None) -> int:
         if args.check:
             stale = [n for n, v in packages.items()
                      if not (HERE / n).exists() or (HERE / n).read_text(encoding="utf-8") != dump_json(v)]
+            if not (HERE / "summary.json").exists() or \
+                    (HERE / "summary.json").read_text(encoding="utf-8") != dump_json(summary()):
+                stale.append("summary.json")
             print(dump_json({"stale": stale, "issues": errors}))
             return 1 if stale or errors else 0
         write_json(HERE / "summary.json", summary())

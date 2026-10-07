@@ -369,3 +369,106 @@ def test_summary_tolerates_candidates_without_freshness(home):
     result = run(root, "summary")
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout)["unverified_by_freshness"] == {"past_2026": 1, "unknown": 1}
+
+
+# ---------------------------------------------------------------- регрессии ревью устойчивости (2026-10-07)
+def test_verify_does_not_overwrite_another_record_with_same_id(home):
+    root, page = home
+    assert verify(root, page, write_draft(root, draft())).returncode == 0
+    other = draft(title="FIXTURE: другой объект с тем же id")
+    other["claims"] = other["claims"][2:3]
+    path = root / "drafts" / "second-object.json"
+    path.write_text(json.dumps(other, ensure_ascii=False), encoding="utf-8")
+    refused = verify(root, page, path)
+    assert refused.returncode == 1 and "--replace" in refused.stdout
+    kept = json.loads((root / "verified" / "ast-r12-roadworks-fixture-primernaya.json").read_text())
+    assert len(kept["claims"]) == 5
+    assert verify(root, page, path, "--replace").returncode == 0
+
+
+@needs_base
+def test_duplicate_id_files_do_not_reach_the_package(home):
+    root, page = home
+    assert verify(root, page, write_draft(root, draft())).returncode == 0
+    src = root / "verified" / "ast-r12-roadworks-fixture-primernaya.json"
+    (root / "verified" / "copy-of-record.json").write_bytes(src.read_bytes())
+    result = run(root, "build")
+    assert result.returncode == 1 and "dup_id" in result.stdout and "file_name" in result.stdout
+    assert len(json.loads((root / "package.civic-v1.json").read_text())["items"]) == 1
+
+
+def test_published_on_null_to_date_on_fetched_source_is_a_conflict(home):
+    root, page = home
+    rec = draft()
+    rec["claims"] = rec["claims"][2:3]                                  # только организация
+    assert run(root, "verify", str(write_draft(root, rec)), "--text", f"src-r12-fixture-1={page}",
+               "--retrieved-at", "2026-10-07T10:30:00Z").returncode == 0
+    second = verify(root, page, write_draft(root, draft(id="ast-r12-roadworks-fixture-second")))
+    assert second.returncode == 1 and "null → дата" in second.stdout
+    assert "ast-r12-roadworks-fixture-primernaya" in second.stdout     # названы затронутые записи
+
+
+@pytest.mark.parametrize("retrieved,needle", [("2026-09-01T10:00:00Z", "раньше публикации"),
+                                              ("2026-11-01T10:00:00Z", "позже даты среза")])
+def test_retrieved_at_must_fit_publication_and_slice(home, retrieved, needle):
+    root, page = home
+    result = run(root, "verify", str(write_draft(root, draft())), "--text", f"src-r12-fixture-1={page}",
+                 "--published-on", "src-r12-fixture-1=2026-09-20", "--retrieved-at", retrieved)
+    assert result.returncode == 1 and needle in result.stdout
+    assert json.loads((root / "sources.json").read_text())["sources"][0]["access_status"] == "not_fetched"
+
+
+def test_malformed_inputs_give_reports_not_tracebacks(home, tmp_path):
+    root, page = home
+    (root / "drafts" / "broken.json").write_text('{"id": "x",}', encoding="utf-8")
+    check = run(root, "check")
+    assert "Traceback" not in check.stderr and "unreadable" in check.stdout
+    (root / "drafts" / "broken.json").unlink()
+    missing = run(root, "verify", str(root / "drafts" / "nope.json"), "--retrieved-at", "2026-10-07T10:30:00Z")
+    assert missing.returncode == 2 and "Traceback" not in missing.stderr
+    path = write_draft(root, draft())
+    no_eq = run(root, "verify", str(path), "--text", str(page), "--retrieved-at", "2026-10-07T10:30:00Z")
+    assert no_eq.returncode == 2 and "SRC_ID=" in no_eq.stdout
+    gone = run(root, "verify", str(path), "--text", "src-r12-fixture-1=/nonexistent/page.txt",
+               "--retrieved-at", "2026-10-07T10:30:00Z")
+    assert gone.returncode == 2 and "нет файла" in gone.stdout
+    inf = draft()
+    next(c for c in inf["claims"] if c["field"] == "budget.amount_kzt")["value"] = float("inf")
+    path.write_text(json.dumps(inf), encoding="utf-8")
+    res = verify(root, page, path)
+    assert res.returncode == 1 and "Traceback" not in res.stderr
+
+
+@pytest.mark.parametrize("mutate,code", [
+    (lambda r: r["claims"][0].update(locator="абзац: " + "длинный текст страницы " * 20), "bad_text"),
+    (lambda r: r["claims"][0].update(page_text="полный текст статьи"), "unknown_keys"),
+    (lambda r: r.update(full_article="..."), "unknown_keys"),
+    (lambda r: r["location"].update(text="место " * 80), "bad_text"),
+])
+def test_free_text_fields_are_limited_and_allowlisted(home, mutate, code):
+    root, page = home
+    rec = draft()
+    mutate(rec)
+    result = verify(root, page, write_draft(root, rec))
+    assert result.returncode == 1 and code in result.stdout
+
+
+@needs_base
+def test_pii_outside_quotes_is_rejected(home):
+    root, page = home
+    rec = draft()
+    rec["location"]["text"] = "прораб, телефон +7 701 234 56 78"
+    result = verify(root, page, write_draft(root, rec))
+    assert result.returncode == 1 and "pii" in result.stdout
+
+
+@needs_base
+def test_slice_inputs_record_config_and_missing_summary_is_stale(home):
+    root, page = home
+    assert verify(root, page, write_draft(root, draft())).returncode == 0
+    assert run(root, "build").returncode == 0
+    inputs = {i["path"] for i in json.loads((root / "package.civic-v1.json").read_text())["slice"]["inputs"]}
+    assert {"config.json", "sources.json"} <= inputs
+    (root / "summary.json").unlink()
+    assert run(root, "build", "--check").returncode == 1
+    assert "summary.json" in json.loads(run(root, "check").stdout)["stale_packages"]

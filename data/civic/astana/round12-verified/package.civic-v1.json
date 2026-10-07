@@ -12,6 +12,10 @@
       {
         "path": "sources.json",
         "sha256": "c55889388a2abfd467ce1e9efce6ec74330e6123c5a1e6442210293ce0066a33"
+      },
+      {
+        "path": "config.json",
+        "sha256": "ca1a8d3ebd43b970ee95cf9275ef9bae5d28969d1d77e707c628109fb1ecad51"
       }
     ],
     "source": "r05-astana-r12-verified",
