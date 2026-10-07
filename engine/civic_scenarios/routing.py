@@ -9,7 +9,12 @@ equal_cost_alternatives сообщает, что существует друго
 import heapq
 
 
-def dijkstra(adj, source):
+def dijkstra(adj, source, blocked=frozenset(), targets=None):
+    """blocked — ID рёбер, закрытых сценарием (пропускаются без перестройки смежности);
+    targets — узлы-цели: поиск останавливается, когда все они извлечены из кучи. При неотрицательных
+    весах их расстояние, предшественник и счётчик равных путей к этому моменту окончательны
+    (для рёбер нулевой длины счётчик и раньше мог недосчитать — см. README)."""
+    remaining = set(targets) if targets is not None else None
     dist = {source: 0}
     pred = {source: None}
     count = {source: 1}
@@ -20,8 +25,12 @@ def dijkstra(adj, source):
         if u in done or d > dist[u]:
             continue
         done.add(u)
+        if remaining is not None:
+            remaining.discard(u)
+            if not remaining:
+                break
         for eid, v, mm in adj.get(u, ()):
-            if v in done:
+            if v in done or eid in blocked:
                 continue
             nd = d + mm
             old = dist.get(v)
@@ -48,13 +57,13 @@ def path_to(pred, target):
     return nodes, edges
 
 
-def reachable(adj, source):
+def reachable(adj, source, blocked=frozenset()):
     seen = {source}
     stack = [source]
     while stack:
         u = stack.pop()
-        for _, v, _ in adj.get(u, ()):
-            if v not in seen:
+        for eid, v, _ in adj.get(u, ()):
+            if v not in seen and eid not in blocked:
                 seen.add(v)
                 stack.append(v)
     return seen

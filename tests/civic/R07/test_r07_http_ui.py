@@ -51,7 +51,12 @@ def test_cases_reference_known_graphs_with_current_digest():
 
 
 def test_ui_contract_and_safety():
-    assert "root.CivicScenarios = { mount }" in JS
+    assert re.search(r"root\.CivicScenarios = \{ mount[,}]", JS)
+    # round 13 lifecycle: клики только в явном режиме, Escape в capture с preventDefault, destroy снимает всё
+    assert 'document.addEventListener("keydown", onKey, true)' in JS and "e.preventDefault()" in JS
+    assert '"civic-scenarios:tool"' in JS and "if (!S.tool || !S.graph || S.destroyed) return;" in JS
+    assert "document.removeEventListener(ev, fn, cap)" in JS and "map.off(ev, fn)" in JS
+    assert "scenarioId" in JS and '"result:" + result.result_digest' in JS
     assert "innerHTML" not in JS and "insertAdjacentHTML" not in JS and "eval(" not in JS
     assert "document.body" not in JS                       # компонент не трогает body
     assert "new maplibregl.Map" not in JS                  # вторую карту не создаёт

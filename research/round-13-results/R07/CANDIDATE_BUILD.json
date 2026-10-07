@@ -1,0 +1,32 @@
+{
+ "purpose": "Изолированная сборка ТОЛЬКО для проверки R07 вместе с настоящими соседями; не поставка и не конкурирующая общая версия.",
+ "base": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6 (git archive)",
+ "applied_in_order": [
+  {
+   "what": "R07 scoped patch",
+   "file": "research/round-13-results/R07/r07_vs_56538a3.patch",
+   "sha256": "df9b34bb1f1a93e23abe3245726940f2fd1bc82db0fe5eb4d0f57bd9e3f9d263"
+  },
+  {
+   "what": "R09 delivery paths agent/civic_assistant/, web/civic/assistant/",
+   "source": "claude/fervent-dijkstra-1cqrg5 @ f2ebaf979fc05ed715549bf4eba5c39e6190bb4a (reported code f8aea9a)"
+  },
+  {
+   "what": "R09 proposed R01 patch (ScenarioResultCache in gateway)",
+   "source": "f2ebaf9:research/round-12-results/R09/r01_integration.patch",
+   "sha256": "6d6011b624d7306df8698955c11fc50ffeb813f47702cf44ec3693caa53652f9"
+  },
+  {
+   "what": "R07 proposed R03 patch pauseMapInput",
+   "file": "research/round-13-results/R07/proposed_patches/r03_pause_map_input.patch",
+   "sha256": "086a695e258f63cc4b88afdee4d261ce0ecc6a3b2f97c1f378f6a14182f0ccf9"
+  },
+  {
+   "what": "R07 proposed R01 patch civic-scenarios:tool",
+   "file": "research/round-13-results/R07/proposed_patches/r01_scenarios_tool.patch",
+   "sha256": "6e10cac176c9295dfa8a02e88eb262058c40d912372e71e3c57dd0798246373a"
+  }
+ ],
+ "launch": "CIVIC_DB_PATH=<new temp dir>/civic.sqlite3; python -m ui.civic_store init; python -m ui.civic_store seed-demo --package data/civic/astana/demo_synthetic.json; python app.py --host 127.0.0.1 --port 8631",
+ "browser": "Chromium (Playwright 1.56, /opt/pw-browsers), basemap OpenFreeMap blocked by proxy -> shell fallback background"
+}

@@ -40,3 +40,15 @@ destroy снимает слои/источники/курсор/слушател
 web/civic/assistant) + R09 r01_integration.patch + proposed_patches (R01 shell, R03 pauseMapInput).
 Браузер (Chromium/Playwright, app.py на временной БД с seed-demo): browser_r07_r13.cjs — 31/31 PASS.
 NEXT: проверка истёкшего кэша (перезапуск сервера) и паузы кликов R03; замер производительности; RUN/DELIVERY.
+
+## Checkpoint 3 — PARTIAL
+DONE: стык с оболочкой и картой (browser_r07_r13_shell.cjs, 8/8): без режима клик открывает карточку R03,
+в режиме выбора — нет (proposed_patches/ R03 pauseMapInput + R01 civic-scenarios:tool); пример из списка
+проходит ту же привязку; истёкший кэш проверен настоящим перезапуском сервера (PID сменился):
+ответ unavailable/scenario_not_found + просьба пересчитать, после «Сравнить» объяснение снова есть.
+Производительность: смежность без перекрытий кэшируется (≤3 варианта), перекрытия пропускаются в Дейкстре,
+ранняя остановка по целям. result_digest до/после совпали на 10 сценариях (optimization_digest_check.json).
+Город 66 027/94 089: compare примера 2.316 -> 0.327 с (первый), 2.669 -> 0.023 с (повтор); недостижимая
+цель 0.699 с; холодная загрузка графа 2.0 с (bench_r13.json, 4 CPU, Python 3.13, облачный контейнер).
+Браузер на финальном коде: browser_r07_r13.cjs 31/31, browser_r07_r13_shell.cjs 8/8. Состав кандидата: CANDIDATE_BUILD.json.
+NEXT: RUN.txt, INTEGRATION.txt, DELIVERY.json, итоговые проверки и push.

@@ -6,7 +6,7 @@
   {
    "name": "city graph loaded in browser",
    "status": "PASS",
-   "detail": "1879 ms (31 МБ JSON)"
+   "detail": "1906 ms (31 МБ JSON)"
   },
   {
    "name": "hypothesis + snapshot + no travel time stated",

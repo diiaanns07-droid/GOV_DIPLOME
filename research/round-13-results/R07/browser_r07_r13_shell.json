@@ -1,0 +1,58 @@
+{
+ "base": "http://127.0.0.1:8631",
+ "passed": 8,
+ "failed": 0,
+ "results": [
+  {
+   "name": "rendered R03 object found",
+   "status": "PASS",
+   "detail": {
+    "cid": "demo-astana-construction-unknown",
+    "c": [
+     71.42143249511719,
+     51.17891252968377
+    ]
+   }
+  },
+  {
+   "name": "control: public map click opens the object (no tool)",
+   "status": "PASS",
+   "detail": "demo-astana-construction-unknown"
+  },
+  {
+   "name": "pick mode: same click does NOT open the object card",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "example places go through the same snapping (shown distance)",
+   "status": "PASS",
+   "detail": "ОткудаОткудаубратьУказано: 51.12830, 71.43050 · у монумента БайтерекПривязано к узлу сети в 5,3 м (порог 150 м). Отрезок до сети не входит в длину и не проверен как путь — убедитесь, что точка на ваше"
+  },
+  {
+   "name": "example via UI = engine expected",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "expired cache: unavailable + ask to recompute (no substitute case)",
+   "status": "PASS",
+   "detail": {
+    "source": "unavailable",
+    "warnings": [
+     "scenario_not_found"
+    ]
+   }
+  },
+  {
+   "name": "after recompute the explanation is available again",
+   "status": "PASS",
+   "detail": "template"
+  },
+  {
+   "name": "no page errors",
+   "status": "PASS",
+   "detail": []
+  }
+ ]
+}

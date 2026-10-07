@@ -13,6 +13,93 @@ index 8601cc3..70f7e04 100644
  
 -__all__ = ["compare", "timeline", "prepare_graph", "ScenarioError", "canonical_json", "graph_digest", "sha256_hex"]
 +__all__ = ["compare", "timeline", "snap_point", "SNAP_MAX_M", "prepare_graph", "ScenarioError", "canonical_json", "graph_digest", "sha256_hex"]
+diff --git a/engine/civic_scenarios/bench.py b/engine/civic_scenarios/bench.py
+new file mode 100644
+index 0000000..f410fac
+--- /dev/null
++++ b/engine/civic_scenarios/bench.py
+@@ -0,0 +1,81 @@
++"""Замер производительности R07 на текущем графе (справочно: зависит от машины; не обещание real-time).
++
++    python -m engine.civic_scenarios.bench [--repeat 5] [--out FILE]
++
++Холодно = в новом процессе: чтение файла + проверка sha256/digest + индекс (prepare_graph).
++Тепло = повтор в том же процессе (граф и смежность уже в кэше). Пример — кейс RUN (1 пара, A/B).
++"""
++import argparse
++import copy
++import json
++import os
++import platform
++import statistics
++import subprocess
++import sys
++import time
++from pathlib import Path
++
++GRAPH_ID = "osm-astana-walking-20260506"
++
++
++def measure(repeat):
++    from .compare import compare
++    from .example import CASE
++    from .registry import load_graph, load_graph_dict, manifest
++    from .snap import snap_index, snap_point
++    out = {}
++    t = time.perf_counter(); g = load_graph_dict(GRAPH_ID); out["load_graph_dict_s"] = round(time.perf_counter() - t, 3)
++    t = time.perf_counter(); pg = load_graph(GRAPH_ID); out["prepare_graph_cold_s"] = round(time.perf_counter() - t, 3)
++    t = time.perf_counter(); snap_index(pg); out["snap_index_build_s"] = round(time.perf_counter() - t, 3)
++    case = json.loads(CASE.read_text("utf-8"))
++    t = time.perf_counter(); [snap_point(pg, *p["input"]) for p in case["places"].values()]; out["snap_2_points_ms"] = round((time.perf_counter() - t) * 1000, 2)
++    runs = []
++    for i in range(repeat):
++        p = copy.deepcopy(case["payload"])
++        if i == 0:
++            pg._adj_cache.clear()
++        t = time.perf_counter(); compare(p, pg); runs.append(time.perf_counter() - t)
++    out["compare_first_s"] = round(runs[0], 3)
++    out["compare_warm_median_s"] = round(statistics.median(runs[1:]), 3) if len(runs) > 1 else None
++    # Худший случай: цель во фрагменте сети (нет пути) — полный обход сети и проверка границы выгрузки.
++    station = snap_point(pg, 71.5330, 51.1105)["node_id"]
++    worst = []
++    for _ in range(max(2, repeat)):
++        p = copy.deepcopy(case["payload"]); p["destination_node_ids"] = p["destination_node_ids"] + [station]
++        t = time.perf_counter(); compare(p, pg); worst.append(time.perf_counter() - t)
++    out["compare_unreachable_target_median_s"] = round(statistics.median(worst), 3)
++    # граф целиком в браузер: сериализация ответа GET /scenarios/graphs/{id}
++    t = time.perf_counter(); body = json.dumps({"ok": True, "data": {"graph": g}}, ensure_ascii=False).encode("utf-8"); out["graph_response_serialize_s"] = round(time.perf_counter() - t, 3)
++    out["graph_response_bytes"] = len(body)
++    entry = next(x for x in manifest()["graphs"] if x["id"] == GRAPH_ID)
++    out.update(graph_id=GRAPH_ID, nodes=entry["nodes"], edges=entry["edges"], digest=entry["digest"], pairs=1, plans=2)
++    return out
++
++
++def main(argv=None):
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--repeat", type=int, default=5)
++    ap.add_argument("--out")
++    ap.add_argument("--child", action="store_true")
++    a = ap.parse_args(argv)
++    if a.child:
++        print(json.dumps(measure(a.repeat)))
++        return 0
++    cold = [json.loads(subprocess.run([sys.executable, "-m", "engine.civic_scenarios.bench", "--child", "--repeat", str(a.repeat)],
++                                      check=True, capture_output=True, text=True, cwd=Path(__file__).resolve().parents[2]).stdout) for _ in range(3)]
++    keys = [k for k, v in cold[0].items() if isinstance(v, float)]
++    res = {"runs_new_process": 3, "repeat_compare_per_process": a.repeat,
++           "median": {k: statistics.median(c[k] for c in cold) for k in keys},
++           "graph": {k: cold[0][k] for k in ("graph_id", "nodes", "edges", "digest", "graph_response_bytes", "pairs", "plans")},
++           "env": {"python": platform.python_version(), "machine": platform.machine(), "cpus": os.cpu_count(), "system": platform.system()},
++           "note": "Справочный замер в облачном контейнере; браузерная загрузка графа и отрисовка — отдельно (browser_r07_r13.json)."}
++    text = json.dumps(res, ensure_ascii=False, indent=1)
++    print(text)
++    if a.out:
++        Path(a.out).write_text(text + "\n", "utf-8")
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
 diff --git a/engine/civic_scenarios/cases/astana-baiterek-khanshatyr-v1.case.json b/engine/civic_scenarios/cases/astana-baiterek-khanshatyr-v1.case.json
 new file mode 100644
 index 0000000..ba2c0cb
@@ -122,7 +209,7 @@ index 0000000..ba2c0cb
 + }
 +}
 diff --git a/engine/civic_scenarios/compare.py b/engine/civic_scenarios/compare.py
-index b6321c6..61d550e 100644
+index b6321c6..3c5d7e7 100644
 --- a/engine/civic_scenarios/compare.py
 +++ b/engine/civic_scenarios/compare.py
 @@ -20,7 +20,7 @@ from .payload import SCHEMA, active_closed, utc_iso, validate_payload
@@ -134,7 +221,52 @@ index b6321c6..61d550e 100644
  STRICT = ("allowed",)
  EXPLORATORY = ("allowed", "unknown")
  
-@@ -165,11 +165,17 @@ def compare(payload, graph):
+@@ -41,13 +41,13 @@ LIMITATIONS = [
+ 
+ def _route_set(pg, origins, dests, closed):
+     """Маршруты для всех пар при заданном множестве закрытых рёбер."""
+-    strict = pg.adjacency(STRICT, closed)
+-    explo = pg.adjacency(EXPLORATORY, closed)
+-    explo_rev = pg.adjacency(EXPLORATORY, closed, reverse=True) if pg.boundary else None
++    # Базовая смежность строится один раз на граф; закрытые рёбра пропускаются в поиске (blocked).
++    strict = pg.adjacency(STRICT, frozenset())
++    explo = explo_rev = None
+     rows = []
+     back_cache = {}
+     for o in origins:
+-        dist, pred, count = dijkstra(strict, o)
++        dist, pred, count = dijkstra(strict, o, closed, targets=dests)
+         edist = None
+         fwd_boundary = None
+         for d in dests:
+@@ -57,8 +57,10 @@ def _route_set(pg, origins, dests, closed):
+                 row.update(status="ok", length_m=dist[d] / 1000, edge_ids=edges, node_ids=nodes,
+                            equal_cost_alternatives=count[d] > 1, reason=None)
+             else:
++                if explo is None:
++                    explo = pg.adjacency(EXPLORATORY, frozenset())
+                 if edist is None:
+-                    edist = dijkstra(explo, o)[0]
++                    edist = dijkstra(explo, o, closed, targets=dests)[0]
+                 row.update(status=None, length_m=None, edge_ids=[], node_ids=[], equal_cost_alternatives=False)
+                 if d in edist:
+                     row.update(status="unknown", reason="path_only_via_unknown_access",
+@@ -67,10 +69,12 @@ def _route_set(pg, origins, dests, closed):
+                     may_outside = False
+                     if pg.boundary:
+                         if fwd_boundary is None:
+-                            fwd_boundary = bool(reachable(explo, o) & pg.boundary)
++                            fwd_boundary = bool(reachable(explo, o, closed) & pg.boundary)
+                         if fwd_boundary:
++                            if explo_rev is None:
++                                explo_rev = pg.adjacency(EXPLORATORY, frozenset(), reverse=True)
+                             if d not in back_cache:
+-                                back_cache[d] = bool(reachable(explo_rev, d) & pg.boundary)
++                                back_cache[d] = bool(reachable(explo_rev, d, closed) & pg.boundary)
+                             may_outside = back_cache[d]
+                     if may_outside:
+                         row.update(status="unknown", reason="path_may_exist_outside_graph")
+@@ -165,11 +169,17 @@ def compare(payload, graph):
          plan_rows[p["id"]] = rows
          pairs, summary = _diff(base_rows, rows, closed)
          pw = _closure_warnings(pg, closed)
@@ -152,7 +284,7 @@ index b6321c6..61d550e 100644
              "inactive_closures": sorted(inactive, key=lambda c: (c["start_at"], c["end_at"], c["edge_ids"])),
              "routes": rows,
              "status_summary": _status_counts(rows),
-@@ -179,7 +185,13 @@ def compare(payload, graph):
+@@ -179,7 +189,13 @@ def compare(payload, graph):
      a_vs_b = None
      if "A" in plan_rows and "B" in plan_rows:
          pairs, summary = _diff(plan_rows["A"], plan_rows["B"])
@@ -237,10 +369,10 @@ index 0000000..636c8bf
 +if __name__ == "__main__":
 +    sys.exit(main())
 diff --git a/engine/civic_scenarios/graph.py b/engine/civic_scenarios/graph.py
-index 86706b6..570f358 100644
+index 86706b6..08a1cec 100644
 --- a/engine/civic_scenarios/graph.py
 +++ b/engine/civic_scenarios/graph.py
-@@ -53,7 +53,11 @@ class PreparedGraph:
+@@ -53,7 +53,12 @@ class PreparedGraph:
          self.edges = edges                # dict id -> (from, to, mm, access, oneway)
          self.warnings = warnings
          self.coverage = coverage
@@ -248,10 +380,52 @@ index 86706b6..570f358 100644
 +        self.coords = {n["id"]: (float(n["lon"]), float(n["lat"])) for n in graph["nodes"]}
 +        self.bbox = graph.get("bbox") if isinstance(graph.get("bbox"), list) and len(graph.get("bbox")) == 4 else None
          self._adj_cache = {}
++        self._base_adj = {}
 +        self._snap_cache = None
  
      def adjacency(self, accesses, closed, reverse=False):
          """Список смежности: node -> [(edge_id, neighbor, mm)], отсортированный по edge_id.
+@@ -61,9 +66,27 @@ class PreparedGraph:
+         accesses — допустимые значения access; closed — множество закрытых edge_id (обе стороны).
+         """
+         key = (tuple(sorted(accesses)), frozenset(closed), reverse)
++        if not closed:
++            # Базовая смежность (без перекрытий) — не больше трёх вариантов, хранится постоянно;
++            # перекрытия сценария compare пропускает в Дейкстре (routing.blocked).
++            base = self._base_adj.get(key)
++            if base is None:
++                base = self._build_adjacency(accesses, frozenset(), reverse)
++                self._base_adj[key] = base
++            return base
+         adj = self._adj_cache.get(key)
+         if adj is not None:
+             return adj
++        adj = self._build_adjacency(accesses, frozenset(closed), reverse)
++        # A city graph has ~100k edges: retaining 65 alternate closure indexes
++        # can exhaust memory. Bound the cache by graph size, not just requests.
++        cache_limit = max(2, min(64, 200_000 // max(1, len(self.edges))))
++        if len(self._adj_cache) >= cache_limit:
++            self._adj_cache.clear()
++        self._adj_cache[key] = adj
++        return adj
++
++    def _build_adjacency(self, accesses, closed, reverse):
+         adj = {}
+         for eid in sorted(self.edges):
+             frm, to, mm, access, oneway = self.edges[eid]
+@@ -74,12 +97,6 @@ class PreparedGraph:
+                 if reverse:
+                     a, b = b, a
+                 adj.setdefault(a, []).append((eid, b, mm))
+-        # A city graph has ~100k edges: retaining 65 alternate closure indexes
+-        # can exhaust memory. Bound the cache by graph size, not just requests.
+-        cache_limit = max(2, min(64, 200_000 // max(1, len(self.edges))))
+-        if len(self._adj_cache) >= cache_limit:
+-            self._adj_cache.clear()
+-        self._adj_cache[key] = adj
+         return adj
+ 
+ 
 diff --git a/engine/civic_scenarios/http.py b/engine/civic_scenarios/http.py
 index cb2446f..009547b 100644
 --- a/engine/civic_scenarios/http.py
@@ -298,6 +472,55 @@ index cb2446f..009547b 100644
          if sub in ("/graphs", "/cases", "/compare") or sub.startswith("/graphs/"):
              return _err(405, "method_not_allowed", "метод не поддерживается")
          return _err(404, "not_found", "неизвестный путь")
+diff --git a/engine/civic_scenarios/routing.py b/engine/civic_scenarios/routing.py
+index 77564cc..daabd0e 100644
+--- a/engine/civic_scenarios/routing.py
++++ b/engine/civic_scenarios/routing.py
+@@ -9,7 +9,12 @@ equal_cost_alternatives сообщает, что существует друго
+ import heapq
+ 
+ 
+-def dijkstra(adj, source):
++def dijkstra(adj, source, blocked=frozenset(), targets=None):
++    """blocked — ID рёбер, закрытых сценарием (пропускаются без перестройки смежности);
++    targets — узлы-цели: поиск останавливается, когда все они извлечены из кучи. При неотрицательных
++    весах их расстояние, предшественник и счётчик равных путей к этому моменту окончательны
++    (для рёбер нулевой длины счётчик и раньше мог недосчитать — см. README)."""
++    remaining = set(targets) if targets is not None else None
+     dist = {source: 0}
+     pred = {source: None}
+     count = {source: 1}
+@@ -20,8 +25,12 @@ def dijkstra(adj, source):
+         if u in done or d > dist[u]:
+             continue
+         done.add(u)
++        if remaining is not None:
++            remaining.discard(u)
++            if not remaining:
++                break
+         for eid, v, mm in adj.get(u, ()):
+-            if v in done:
++            if v in done or eid in blocked:
+                 continue
+             nd = d + mm
+             old = dist.get(v)
+@@ -48,13 +57,13 @@ def path_to(pred, target):
+     return nodes, edges
+ 
+ 
+-def reachable(adj, source):
++def reachable(adj, source, blocked=frozenset()):
+     seen = {source}
+     stack = [source]
+     while stack:
+         u = stack.pop()
+-        for _, v, _ in adj.get(u, ()):
+-            if v not in seen:
++        for eid, v, _ in adj.get(u, ()):
++            if v not in seen and eid not in blocked:
+                 seen.add(v)
+                 stack.append(v)
+     return seen
 diff --git a/engine/civic_scenarios/snap.py b/engine/civic_scenarios/snap.py
 new file mode 100644
 index 0000000..58966ea
@@ -658,6 +881,142 @@ index 0000000..d2e1e8d
 +  console.log(JSON.stringify({ base: BASE, passed: results.length - failed.length, failed: failed.length, results }, null, 1));
 +  process.exit(failed.length ? 1 : 0);
 +})();
+diff --git a/tests/civic/R07/browser_r07_r13_shell.cjs b/tests/civic/R07/browser_r07_r13_shell.cjs
+new file mode 100644
+index 0000000..df10eb4
+--- /dev/null
++++ b/tests/civic/R07/browser_r07_r13_shell.cjs
+@@ -0,0 +1,112 @@
++/* R07 round 13 — стык с оболочкой R01/картой R03 и истёкший кэш объяснения (Chromium/Playwright).
++ *
++ *   R07_RESTART_CMD="bash restart.sh" node tests/civic/R07/browser_r07_r13_shell.cjs http://127.0.0.1:8631
++ *
++ * 1) Без режима выбора клик по объекту открывает карточку R03; в режиме выбора — нет (нужен
++ *    proposed_patches/r03_pause_map_input.patch + r01_scenarios_tool.patch; без них проверка FAIL — это ожидаемо).
++ * 2) Пример из списка: места проходят ту же привязку, узлы = ожидания движка; расчёт.
++ * 3) Истёкший кэш: R07_RESTART_CMD перезапускает сервер на той же временной БД (кэш R09 в памяти
++ *    теряется); вопрос -> просьба пересчитать; после «Сравнить» объяснение снова есть.
++ *    Без R07_RESTART_CMD шаг 3 — NOT_RUN.
++ */
++"use strict";
++const fs = require("fs");
++const path = require("path");
++const { execSync } = require("child_process");
++const { chromium } = require(path.join(execSync("npm root -g").toString().trim(), "playwright"));
++
++const ROOT = path.resolve(__dirname, "..", "..", "..");
++const BASE = process.argv[2] || "http://127.0.0.1:8631";
++const RESTART = process.env.R07_RESTART_CMD || null;
++const CASE = JSON.parse(fs.readFileSync(path.join(ROOT, "engine/civic_scenarios/cases/astana-baiterek-khanshatyr-v1.case.json"), "utf8"));
++const PANEL = ".civic-r07-panel";
++const results = [];
++const check = (name, ok, detail) => { results.push({ name, status: ok ? "PASS" : "FAIL", detail: detail === undefined ? null : detail }); if (!ok) console.error("FAIL", name, detail || ""); };
++
++(async () => {
++  const browser = await chromium.launch();
++  const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
++  const errors = [];
++  page.on("pageerror", (e) => errors.push(String(e)));
++  async function clickMapAt(lon, lat, zoom) {
++    const pt = await page.evaluate(([lo, la, z]) => {
++      map.jumpTo({ center: [lo, la], zoom: z, pitch: 0, bearing: 0 });
++      // свободная полоса между левой панелью R03 (до ~440 px) и панелью сценариев (от ~760 px)
++      const p = map.project([lo, la]); map.panBy([p.x - 600, p.y - 560], { duration: 0 });
++      const q = map.project([lo, la]); const r = map.getCanvas().getBoundingClientRect();
++      return { x: r.left + q.x, y: r.top + q.y };
++    }, [lon, lat, zoom]);
++    await page.waitForTimeout(700);
++    await page.mouse.click(pt.x, pt.y);
++    await page.waitForTimeout(500);
++  }
++  try {
++    await page.goto(BASE + "/");
++    await page.waitForFunction(() => window.CivicShell && CivicShell.modules && CivicShell.modules.scenarios && typeof mapReady !== "undefined" && mapReady === true, null, { timeout: 40000 });
++    // Объект, который карта R03 действительно рисует сейчас (фильтры по умолчанию могут скрывать часть записей).
++    await page.waitForTimeout(2500);
++    const obj = await page.evaluate(() => {
++      const layers = (map.getStyle().layers || []).filter((l) => l.id.startsWith("civic-r03-") && l.type === "circle").map((l) => l.id);
++      const f = map.queryRenderedFeatures({ layers: ["civic-r03-point"].filter((l) => layers.includes(l)) }).find((x) => x.geometry && x.geometry.type === "Point");
++      return f ? { cid: f.properties.cid, c: f.geometry.coordinates } : null;
++    });
++    check("rendered R03 object found", !!obj, obj);
++
++    // 1. Контроль: без режима выбора клик открывает карточку объекта.
++    await page.waitForTimeout(1500);
++    await clickMapAt(obj.c[0], obj.c[1], 15);
++    const opened = await page.evaluate(() => CivicShell.selected);
++    check("control: public map click opens the object (no tool)", typeof opened === "string" && opened.length > 0, opened);
++    await page.evaluate(() => CivicShell.selectObject(null));
++    await page.keyboard.press("Escape");
++
++    await page.click("#civic-scenarios-button");
++    await page.waitForFunction(() => /участков/.test(document.querySelector(".civic-r07-graphinfo")?.textContent || "") && !/Загружаем/.test(document.querySelector(".civic-r07-graphinfo").textContent), null, { timeout: 90000 });
++    await page.evaluate(() => CivicShell.selectObject(null));
++    await page.locator(PANEL + " .civic-r07-placeblock[data-role=origins] button", { hasText: "Указать на карте" }).click();
++    await clickMapAt(obj.c[0], obj.c[1], 15);
++    const during = await page.evaluate(() => CivicShell.selected);
++    check("pick mode: same click does NOT open the object card", during === null || during === undefined, during);
++    // Удачный клик сам завершает режим; Escape без режима закрыл бы панель (это поведение оболочки).
++    if (await page.isVisible(PANEL + " .civic-r07-toolbar")) await page.keyboard.press("Escape");
++
++    // 2. Пример из списка.
++    await page.selectOption(PANEL + " select[aria-label='Пример']", CASE.case_id);
++    await page.waitForTimeout(500);
++    const placeText = await page.textContent(PANEL + " .civic-r07-places");
++    check("example places go through the same snapping (shown distance)", /5,3 м/.test(placeText) && /88,2 м/.test(placeText), placeText.slice(0, 200));
++    const wait = page.waitForResponse((r) => r.url().endsWith("/scenarios/compare"), { timeout: 60000 });
++    await page.click(PANEL + " .civic-r07-primary");
++    const res = (await (await wait).json()).data;
++    check("example via UI = engine expected", res.baseline.routes[0].length_m === CASE.expected.baseline_length_m && res.input.origin_node_ids[0] === CASE.expected.snap.origin.node_id);
++    await page.waitForSelector(PANEL + " .civic-r07-assistant .civic-r09");
++
++    // 3. Истёкший/потерянный кэш сервера.
++    if (!RESTART) { results.push({ name: "expired cache after server restart", status: "NOT_RUN", detail: "R07_RESTART_CMD не задан" }); throw new Error("skip-restart"); }
++    execSync(RESTART, { stdio: "ignore", timeout: 60000 });
++    const ask = async () => {
++      const a = page.waitForResponse((r) => r.url().endsWith("/assistant"), { timeout: 30000 });
++      await page.fill(PANEL + " .civic-r07-assistant .civic-r09 textarea", "Почему вариант B длиннее?");
++      await page.locator(PANEL + " .civic-r07-assistant .civic-r09 button[type=submit]").click();
++      return (await (await a).json()).data;
++    };
++    const lost = await ask();
++    await page.waitForTimeout(300);
++    const note = await page.textContent(PANEL + " .civic-r07-assistant");
++    check("expired cache: unavailable + ask to recompute (no substitute case)", lost.source === "unavailable" && (lost.warnings || []).includes("scenario_not_found") && /Сервер не нашёл расчёт/.test(note), { source: lost.source, warnings: lost.warnings });
++    const again = page.waitForResponse((r) => r.url().endsWith("/scenarios/compare"), { timeout: 60000 });
++    await page.click(PANEL + " .civic-r07-primary");
++    const res2 = (await (await again).json()).data;
++    await page.waitForTimeout(300);
++    const back = await ask();
++    check("after recompute the explanation is available again", res2.result_digest === res.result_digest && back.source !== "unavailable", back.source);
++    check("no page errors", errors.length === 0, errors);
++  } catch (error) {
++    if (!(error && error.message === "skip-restart")) check("run completed", false, String((error && error.stack) || error));
++  } finally {
++    await browser.close();
++  }
++  const failed = results.filter((r) => r.status === "FAIL");
++  console.log(JSON.stringify({ base: BASE, passed: results.length - failed.length, failed: failed.length, results }, null, 1));
++  process.exit(failed.length ? 1 : 0);
++})();
+diff --git a/tests/civic/R07/test_r07_http_ui.py b/tests/civic/R07/test_r07_http_ui.py
+index 1e44fa8..3ae0bf8 100644
+--- a/tests/civic/R07/test_r07_http_ui.py
++++ b/tests/civic/R07/test_r07_http_ui.py
+@@ -51,7 +51,12 @@ def test_cases_reference_known_graphs_with_current_digest():
+ 
+ 
+ def test_ui_contract_and_safety():
+-    assert "root.CivicScenarios = { mount }" in JS
++    assert re.search(r"root\.CivicScenarios = \{ mount[,}]", JS)
++    # round 13 lifecycle: клики только в явном режиме, Escape в capture с preventDefault, destroy снимает всё
++    assert 'document.addEventListener("keydown", onKey, true)' in JS and "e.preventDefault()" in JS
++    assert '"civic-scenarios:tool"' in JS and "if (!S.tool || !S.graph || S.destroyed) return;" in JS
++    assert "document.removeEventListener(ev, fn, cap)" in JS and "map.off(ev, fn)" in JS
++    assert "scenarioId" in JS and '"result:" + result.result_digest' in JS
+     assert "innerHTML" not in JS and "insertAdjacentHTML" not in JS and "eval(" not in JS
+     assert "document.body" not in JS                       # компонент не трогает body
+     assert "new maplibregl.Map" not in JS                  # вторую карту не создаёт
 diff --git a/tests/civic/R07/test_r07_r13_city.py b/tests/civic/R07/test_r07_r13_city.py
 new file mode 100644
 index 0000000..227ecca

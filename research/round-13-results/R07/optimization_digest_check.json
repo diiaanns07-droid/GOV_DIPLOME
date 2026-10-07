@@ -1,0 +1,36 @@
+{
+ "what": "result_digest before (checkpoint f166100) vs after Dijkstra blocked/early-stop optimization",
+ "identical": true,
+ "cases": 10,
+ "before": {
+  "digests": {
+   "astana-baiterek-khanshatyr-v1": "bc7751448c0d23231bf1286985133a867843ba62d49e6143d57dfa787ceeb62f",
+   "astana-citywide-north-south-v1": "9bea22ef5d2a1f31d0397cb97fc8dce2b43a52cb90b409ebc82455f017b485c1",
+   "k03-astana-demo-v1": "218570db888cd2e83272980eff87b8c2fd5d866040584b576512246b44e38435",
+   "synthetic-tiny-v1-demo": "12e2b10f1860165115113145cc60124f649fc21970198a4981a03cac7e691fc9",
+   "random0": "3f958dd821d282bd3a0cb6bcd433ba23b8a77cd9e9edc240081cf499c7ca5601",
+   "random1": "a8bb87262a667c34017f9021abd65724fdf7307b486ecd34b47cc37851a513d1",
+   "random2": "af2ad6d105ebeaf492aa25d12f0cc69724c73b9185074878d78c288e57c29032",
+   "random3": "827d2b4fbdd4650a1144f603715bcde227852654eb653049a0525fb9bfdf47da",
+   "random4": "4912b1b9a4b5903e5712d591abe3a37ce4fa985eeadd1a087f1d2ecafe058741",
+   "random5": "604cc815c4a59bd315a226dd75aed4ffd5f7c89ed2432aaa4600e0027d9cc236"
+  },
+  "seconds": 28.4
+ },
+ "after": {
+  "digests": {
+   "astana-baiterek-khanshatyr-v1": "bc7751448c0d23231bf1286985133a867843ba62d49e6143d57dfa787ceeb62f",
+   "astana-citywide-north-south-v1": "9bea22ef5d2a1f31d0397cb97fc8dce2b43a52cb90b409ebc82455f017b485c1",
+   "k03-astana-demo-v1": "218570db888cd2e83272980eff87b8c2fd5d866040584b576512246b44e38435",
+   "synthetic-tiny-v1-demo": "12e2b10f1860165115113145cc60124f649fc21970198a4981a03cac7e691fc9",
+   "random0": "3f958dd821d282bd3a0cb6bcd433ba23b8a77cd9e9edc240081cf499c7ca5601",
+   "random1": "a8bb87262a667c34017f9021abd65724fdf7307b486ecd34b47cc37851a513d1",
+   "random2": "af2ad6d105ebeaf492aa25d12f0cc69724c73b9185074878d78c288e57c29032",
+   "random3": "827d2b4fbdd4650a1144f603715bcde227852654eb653049a0525fb9bfdf47da",
+   "random4": "4912b1b9a4b5903e5712d591abe3a37ce4fa985eeadd1a087f1d2ecafe058741",
+   "random5": "604cc815c4a59bd315a226dd75aed4ffd5f7c89ed2432aaa4600e0027d9cc236"
+  },
+  "seconds": 7.3
+ },
+ "script": "research/round-13-results/R07/digest_cmp.py"
+}

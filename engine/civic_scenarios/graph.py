@@ -57,6 +57,7 @@ class PreparedGraph:
         self.coords = {n["id"]: (float(n["lon"]), float(n["lat"])) for n in graph["nodes"]}
         self.bbox = graph.get("bbox") if isinstance(graph.get("bbox"), list) and len(graph.get("bbox")) == 4 else None
         self._adj_cache = {}
+        self._base_adj = {}
         self._snap_cache = None
 
     def adjacency(self, accesses, closed, reverse=False):
@@ -65,9 +66,27 @@ class PreparedGraph:
         accesses — допустимые значения access; closed — множество закрытых edge_id (обе стороны).
         """
         key = (tuple(sorted(accesses)), frozenset(closed), reverse)
+        if not closed:
+            # Базовая смежность (без перекрытий) — не больше трёх вариантов, хранится постоянно;
+            # перекрытия сценария compare пропускает в Дейкстре (routing.blocked).
+            base = self._base_adj.get(key)
+            if base is None:
+                base = self._build_adjacency(accesses, frozenset(), reverse)
+                self._base_adj[key] = base
+            return base
         adj = self._adj_cache.get(key)
         if adj is not None:
             return adj
+        adj = self._build_adjacency(accesses, frozenset(closed), reverse)
+        # A city graph has ~100k edges: retaining 65 alternate closure indexes
+        # can exhaust memory. Bound the cache by graph size, not just requests.
+        cache_limit = max(2, min(64, 200_000 // max(1, len(self.edges))))
+        if len(self._adj_cache) >= cache_limit:
+            self._adj_cache.clear()
+        self._adj_cache[key] = adj
+        return adj
+
+    def _build_adjacency(self, accesses, closed, reverse):
         adj = {}
         for eid in sorted(self.edges):
             frm, to, mm, access, oneway = self.edges[eid]
@@ -78,12 +97,6 @@ class PreparedGraph:
                 if reverse:
                     a, b = b, a
                 adj.setdefault(a, []).append((eid, b, mm))
-        # A city graph has ~100k edges: retaining 65 alternate closure indexes
-        # can exhaust memory. Bound the cache by graph size, not just requests.
-        cache_limit = max(2, min(64, 200_000 // max(1, len(self.edges))))
-        if len(self._adj_cache) >= cache_limit:
-            self._adj_cache.clear()
-        self._adj_cache[key] = adj
         return adj
 
 

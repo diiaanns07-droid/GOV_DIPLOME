@@ -1,0 +1,30 @@
+{
+ "runs_new_process": 3,
+ "repeat_compare_per_process": 5,
+ "median": {
+  "load_graph_dict_s": 0.598,
+  "prepare_graph_cold_s": 2.049,
+  "snap_index_build_s": 0.255,
+  "snap_2_points_ms": 8.64,
+  "compare_first_s": 0.327,
+  "compare_warm_median_s": 0.023,
+  "compare_unreachable_target_median_s": 0.699,
+  "graph_response_serialize_s": 0.551
+ },
+ "graph": {
+  "graph_id": "osm-astana-walking-20260506",
+  "nodes": 66027,
+  "edges": 94089,
+  "digest": "a694be21cc08ef1bf8000387a5120e7e5ad810ee37a955a4c223c004aeba5e35",
+  "graph_response_bytes": 31476631,
+  "pairs": 1,
+  "plans": 2
+ },
+ "env": {
+  "python": "3.13.16",
+  "machine": "x86_64",
+  "cpus": 4,
+  "system": "Linux"
+ },
+ "note": "Справочный замер в облачном контейнере; браузерная загрузка графа и отрисовка — отдельно (browser_r07_r13.json)."
+}
