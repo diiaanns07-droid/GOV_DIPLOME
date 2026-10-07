@@ -252,3 +252,37 @@ def test_parallel_wrong_passwords_cannot_exceed_limit(service):
     assert statuses.count(401) == auth.MAX_FAILS_PER_USER_CLIENT  # ровно 5 проверок пароля
     assert statuses.count(429) == 12 - auth.MAX_FAILS_PER_USER_CLIENT
     assert login(service, client_ip="10.9.9.9")["status"] == 429
+
+
+def test_login_racing_password_change_does_not_create_session(service, monkeypatch):
+    """Ревью: пароль проверен по старому хэшу, а set-password успел раньше вставки сессии."""
+    original = auth.verify_password
+    calls = []
+
+    def verify_then_rotate(password, stored):
+        result = original(password, stored)
+        if not calls:
+            calls.append(1)
+            service.accounts.set_password("editor1", "Rotated-During-Login-1")
+        return result
+
+    monkeypatch.setattr(auth, "verify_password", verify_then_rotate)
+    assert login(service)["status"] == 401
+    monkeypatch.undo()
+    with sqlite3.connect(service.db.path) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM civic_sessions").fetchone()[0] == 0
+    assert login(service, password="Rotated-During-Login-1")["status"] == 200
+
+
+def test_session_touch_is_best_effort_when_db_is_busy(service, clock):
+    editor = Editor(service, "editor1", PASSWORD)
+    clock.advance(seconds=auth.TOUCH_INTERVAL + 1)
+    service.db.busy_timeout_ms = 200
+    blocker = sqlite3.connect(service.db.path, isolation_level=None)
+    blocker.execute("BEGIN IMMEDIATE")
+    try:
+        assert editor.get("/staff/objects")["status"] == 200  # чтение не падает из-за продления
+        assert call(service, "GET", "/session", ctx=editor.ctx())["body"]["data"]["authenticated"] is True
+    finally:
+        blocker.execute("ROLLBACK")
+        blocker.close()

@@ -38,7 +38,7 @@
          path = urlsplit(self.path).path
          if path not in POST_ROUTES:
              self.discard_body()
-@@ -319,16 +332,32 @@
+@@ -319,16 +332,41 @@
              LOGGER.exception("Ошибка обработчика %s", path)
              self.error_reply(500, "Не удалось выполнить запрос. Попробуйте ещё раз.")
  
@@ -49,6 +49,15 @@
 +            self.error_reply(405, "Метод не поддерживается.")
 +
 +    do_PUT = do_PATCH = do_DELETE = do_OPTIONS = do_TRACE = do_unsupported
++
++    def send_error(self, code, message=None, explain=None):
++        # Прочие методы (BREW, PROPFIND...) http.server отклоняет HTML 501; на civic-пути — JSON 405.
++        civic = getattr(self.server, "civic", None)
++        if code == 501 and civic is not None and civic.handles(getattr(self, "path", "")):
++            self.close_connection = True
++            civic.serve(self)
++            return
++        super().send_error(code, message, explain)
 +
  
  def _invalid_number(value):
@@ -72,7 +81,7 @@
      return server
  
  
-@@ -337,11 +366,19 @@
+@@ -337,11 +375,19 @@
      parser.add_argument("--port", type=int, default=8501)
      parser.add_argument("--host", default="127.0.0.1")
      parser.add_argument("--open", action="store_true", help="Открыть браузер после запуска")

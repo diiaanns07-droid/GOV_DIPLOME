@@ -280,7 +280,7 @@ def test_patch_applies_to_real_web_server_and_serves_both_apis(tmp_path):
         assert status == 405 and body["ok"] is False
         status, _, body = client.request("GET", "/feedback")
         assert status == 404 and body["error"]["code"] == "not_found"
-        for method in ("OPTIONS", "TRACE"):  # ревью: не HTML 501, а JSON 405
+        for method in ("OPTIONS", "TRACE", "BREW"):  # ревью: не HTML 501, а JSON 405
             status, headers, body = client.request(method, "/objects")
             assert status == 405 and body["ok"] is False and headers["Allow"] == "GET, HEAD"
     # Без civic_db сервер работает как раньше (существующие тесты не создают базу).
@@ -335,3 +335,38 @@ def test_adapter_guards_staff_routes_of_other_modules(tmp_path):
         assert status == 403 and body["error"]["code"] == "csrf_failed"
         assert editor.request("POST", "/staff/feedback/f1/moderate", {"action": "approve"})[0] == 200
     assert [c[2] for c in calls] == [None, "editor1", "editor1"]
+
+
+def raw_request(port, data, timeout=10):
+    import socket
+    sock = socket.create_connection(("127.0.0.1", port), timeout=timeout)
+    try:
+        sock.sendall(data)
+        chunks = []
+        while True:
+            try:
+                chunk = sock.recv(65536)
+            except socket.timeout:
+                break
+            if not chunk:
+                break
+            chunks.append(chunk)
+        return b"".join(chunks)
+    finally:
+        sock.close()
+
+
+def test_truncated_body_gets_408_and_unknown_methods_json(tmp_path):
+    service = CivicService(tmp_path / "raw.sqlite3")
+    server = ThreadingHTTPServer(("127.0.0.1", 0), make_reference_handler(CivicHttpAdapter(service), timeout=0.5))
+    server.daemon_threads = True
+    with running(server) as port:
+        host = f"Host: 127.0.0.1:{port}\r\n".encode()
+        reply = raw_request(port, b"POST /api/civic/v1/session/login HTTP/1.1\r\n" + host +
+                            b"Content-Type: application/json\r\nContent-Length: 100\r\n\r\n{\"user\":1")
+        assert b" 408 " in reply.split(b"\r\n", 1)[0] and b'"request_timeout"' in reply
+        for method in (b"BREW", b"PROPFIND"):
+            reply = raw_request(port, method + b" /api/civic/v1/objects HTTP/1.1\r\n" + host +
+                                b"Connection: close\r\n\r\n")
+            assert b" 405 " in reply.split(b"\r\n", 1)[0], reply[:200]
+            assert b"application/json" in reply and b'"method_not_allowed"' in reply

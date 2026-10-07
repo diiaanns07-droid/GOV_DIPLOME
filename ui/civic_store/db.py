@@ -202,18 +202,18 @@ def resolve_db_path(db_path) -> Path:
     return path
 
 
-def create_private_file(path: Path) -> None:
+def create_private_file(path: Path, *, exclusive: bool = False) -> bool:
     """Создаёт пустой файл с 0600 ДО того, как SQLite его откроет (без окна 0644).
 
     Пустой файл — корректная пустая база SQLite; -wal/-shm SQLite создаёт с правами основного файла.
+    exclusive=True: вернуть False, если файл уже есть (ничего не перезаписывать).
     """
-    if os.name != "posix":
-        return
     try:
         fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     except FileExistsError:
-        return
+        return not exclusive
     os.close(fd)
+    return True
 
 
 def restrict_permissions(path: Path) -> None:
