@@ -1,0 +1,7 @@
+# SYNTHETIC — шаблон ряда потребления (помесячные счета). Значения выдуманы. reading_type: actual|estimated|norm; quality_flag: ok|gap|outlier|meter_change
+meter_id,building_id,resource,unit,period_start,period_end,value,reading_type,source_doc,quality_flag
+SYN-M001,SYN-B001,electricity,kWh,2025-09-01,2025-09-30,21500,actual,synthetic,ok
+SYN-M001,SYN-B001,electricity,kWh,2025-10-01,2025-10-31,,,synthetic,gap
+SYN-M001,SYN-B001,electricity,kWh,2025-11-01,2025-11-30,24800,estimated,synthetic,ok
+SYN-M002,SYN-B001,heat,Gcal,2025-11-01,2025-11-30,96.4,norm,synthetic,ok
+SYN-M003,SYN-B002,electricity,kWh,2025-09-01,2025-09-30,7900,actual,synthetic,ok

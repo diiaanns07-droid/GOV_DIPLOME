@@ -1,0 +1,5677 @@
+{
+ "generator": "tools/plan_oracle.py",
+ "metric_version": "haversine-mm-v1",
+ "note": "SYNTHETIC fixtures: candidate sites, costs (conditional units) and weights are invented; source records are the real slices unchanged",
+ "cases": [
+  {
+   "name": "ties_equal_costs",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "clinic-1",
+     "group": "outpatient_clinic",
+     "lon": 0.0,
+     "lat": 0.05
+    }
+   ],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C2",
+      "lon": 0,
+      "lat": -0.005,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "C1",
+      "lon": 0,
+      "lat": 0.005,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     }
+    ],
+    "budget": 10,
+    "max_selected": 1,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "C2"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "C2"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": 1111951,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 555975,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "C2"
+       },
+       "delta_mm": 555976
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 555975,
+     "max_mm": 555975,
+     "covered_weight": 0,
+     "total_weight": 1,
+     "cost": 10
+    },
+    "optimize": {
+     "budget": 10,
+     "evaluated": 4,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 3,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "C1"
+       ],
+       "cost": 10,
+       "unknown_count": 0,
+       "weighted_sum_mm": 555975,
+       "max_mm": 555975,
+       "covered_weight": 0
+      },
+      "minimax": {
+       "ids": [
+        "C1"
+       ],
+       "cost": 10,
+       "unknown_count": 0,
+       "weighted_sum_mm": 555975,
+       "max_mm": 555975,
+       "covered_weight": 0
+      },
+      "coverage": {
+       "ids": [
+        "C1"
+       ],
+       "cost": 10,
+       "unknown_count": 0,
+       "weighted_sum_mm": 555975,
+       "max_mm": 555975,
+       "covered_weight": 0
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 1111951
+      },
+      {
+       "ids": [
+        "C1"
+       ],
+       "cost": 10,
+       "weighted_sum_mm": 555975
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 5,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 10,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 3,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "C1"
+        ],
+        "cost": 10,
+        "unknown_count": 0,
+        "weighted_sum_mm": 555975,
+        "max_mm": 555975,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [
+         "C1"
+        ],
+        "cost": 10,
+        "unknown_count": 0,
+        "weighted_sum_mm": 555975,
+        "max_mm": 555975,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [
+         "C1"
+        ],
+        "cost": 10,
+        "unknown_count": 0,
+        "weighted_sum_mm": 555975,
+        "max_mm": 555975,
+        "covered_weight": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "source_hyp_tie",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "clinic-1",
+     "group": "outpatient_clinic",
+     "lon": 0.0,
+     "lat": 0.05
+    }
+   ],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0,
+      "lat": 0.01,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 10,
+    "max_selected": 1,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "C1"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "C1"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": 1111951,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 1111951,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 1111951,
+     "max_mm": 1111951,
+     "covered_weight": 0,
+     "total_weight": 1,
+     "cost": 5
+    },
+    "optimize": {
+     "budget": 10,
+     "evaluated": 2,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 2,
+     "objectives": {
+      "mean": {
+       "ids": [],
+       "cost": 0,
+       "unknown_count": 0,
+       "weighted_sum_mm": 1111951,
+       "max_mm": 1111951,
+       "covered_weight": 0
+      },
+      "minimax": {
+       "ids": [],
+       "cost": 0,
+       "unknown_count": 0,
+       "weighted_sum_mm": 1111951,
+       "max_mm": 1111951,
+       "covered_weight": 0
+      },
+      "coverage": {
+       "ids": [],
+       "cost": 0,
+       "unknown_count": 0,
+       "weighted_sum_mm": 1111951,
+       "max_mm": 1111951,
+       "covered_weight": 0
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 1111951
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 5,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 2,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 10,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 2,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1111951,
+        "max_mm": 1111951,
+        "covered_weight": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "required_cost_over_budget",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "clinic-1",
+     "group": "outpatient_clinic",
+     "lon": 0.0,
+     "lat": 0.05
+    }
+   ],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 0.02,
+      "lat": 0.02,
+      "weight": 2
+     },
+     {
+      "id": "P03",
+      "lon": -0.03,
+      "lat": 0.0,
+      "weight": 3
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.02,
+      "lat": 0.02,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "C2",
+      "lon": -0.03,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 4
+     }
+    ],
+    "budget": 5,
+    "max_selected": 2,
+    "coverage_radius_m": 500,
+    "required_ids": [
+     "C1"
+    ],
+    "excluded_ids": [],
+    "selected_ids": [
+     "C1"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "C1"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": 1111951,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 1111951,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P02": {
+       "before_mm": 2486398,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 0,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "C1"
+       },
+       "delta_mm": 2486398
+      },
+      "P03": {
+       "before_mm": 2223902,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "after_mm": 2223902,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 7783657,
+     "max_mm": 2223902,
+     "covered_weight": 2,
+     "total_weight": 6,
+     "cost": 10
+    },
+    "optimize": {
+     "budget": 5,
+     "evaluated": 0,
+     "status": "infeasible",
+     "reasons": [
+      "required_cost_exceeds_budget"
+     ],
+     "feasible_count": 0,
+     "objectives": null,
+     "pareto": []
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "infeasible",
+      "reasons": [
+       "required_cost_exceeds_budget"
+      ],
+      "feasible_count": 0,
+      "objectives": null
+     },
+     {
+      "budget": 2,
+      "status": "infeasible",
+      "reasons": [
+       "required_cost_exceeds_budget"
+      ],
+      "feasible_count": 0,
+      "objectives": null
+     },
+     {
+      "budget": 5,
+      "status": "infeasible",
+      "reasons": [
+       "required_cost_exceeds_budget"
+      ],
+      "feasible_count": 0,
+      "objectives": null
+     }
+    ]
+   }
+  },
+  {
+   "name": "required_over_max_selected",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "clinic-1",
+     "group": "outpatient_clinic",
+     "lon": 0.0,
+     "lat": 0.05
+    }
+   ],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 0.02,
+      "lat": 0.02,
+      "weight": 2
+     },
+     {
+      "id": "P03",
+      "lon": -0.03,
+      "lat": 0.0,
+      "weight": 3
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.02,
+      "lat": 0.02,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1
+     },
+     {
+      "id": "C2",
+      "lon": -0.03,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1
+     }
+    ],
+    "budget": 10,
+    "max_selected": 1,
+    "coverage_radius_m": 500,
+    "required_ids": [
+     "C1",
+     "C2"
+    ],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "expected": {
+    "manual": {
+     "ids": [],
+     "rows": {
+      "P01": {
+       "before_mm": 1111951,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 1111951,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P02": {
+       "before_mm": 2486398,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 2486398,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P03": {
+       "before_mm": 2223902,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "after_mm": 2223902,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 12756453,
+     "max_mm": 2486398,
+     "covered_weight": 0,
+     "total_weight": 6,
+     "cost": 0
+    },
+    "optimize": {
+     "budget": 10,
+     "evaluated": 0,
+     "status": "infeasible",
+     "reasons": [
+      "required_exceeds_max_selected"
+     ],
+     "feasible_count": 0,
+     "objectives": null,
+     "pareto": []
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "infeasible",
+      "reasons": [
+       "required_exceeds_max_selected",
+       "required_cost_exceeds_budget"
+      ],
+      "feasible_count": 0,
+      "objectives": null
+     },
+     {
+      "budget": 5,
+      "status": "infeasible",
+      "reasons": [
+       "required_exceeds_max_selected"
+      ],
+      "feasible_count": 0,
+      "objectives": null
+     },
+     {
+      "budget": 10,
+      "status": "infeasible",
+      "reasons": [
+       "required_exceeds_max_selected"
+      ],
+      "feasible_count": 0,
+      "objectives": null
+     }
+    ]
+   }
+  },
+  {
+   "name": "zero_budget",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "clinic-1",
+     "group": "outpatient_clinic",
+     "lon": 0.0,
+     "lat": 0.05
+    }
+   ],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 0.02,
+      "lat": 0.02,
+      "weight": 2
+     },
+     {
+      "id": "P03",
+      "lon": -0.03,
+      "lat": 0.0,
+      "weight": 3
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.02,
+      "lat": 0.02,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1
+     },
+     {
+      "id": "C2",
+      "lon": -0.03,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1
+     }
+    ],
+    "budget": 0,
+    "max_selected": 2,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "expected": {
+    "manual": {
+     "ids": [],
+     "rows": {
+      "P01": {
+       "before_mm": 1111951,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 1111951,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P02": {
+       "before_mm": 2486398,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 2486398,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P03": {
+       "before_mm": 2223902,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "after_mm": 2223902,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 12756453,
+     "max_mm": 2486398,
+     "covered_weight": 0,
+     "total_weight": 6,
+     "cost": 0
+    },
+    "optimize": {
+     "budget": 0,
+     "evaluated": 4,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 1,
+     "objectives": {
+      "mean": {
+       "ids": [],
+       "cost": 0,
+       "unknown_count": 0,
+       "weighted_sum_mm": 12756453,
+       "max_mm": 2486398,
+       "covered_weight": 0
+      },
+      "minimax": {
+       "ids": [],
+       "cost": 0,
+       "unknown_count": 0,
+       "weighted_sum_mm": 12756453,
+       "max_mm": 2486398,
+       "covered_weight": 0
+      },
+      "coverage": {
+       "ids": [],
+       "cost": 0,
+       "unknown_count": 0,
+       "weighted_sum_mm": 12756453,
+       "max_mm": 2486398,
+       "covered_weight": 0
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 12756453
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "no_candidates",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "clinic-1",
+     "group": "outpatient_clinic",
+     "lon": 0.0,
+     "lat": 0.05
+    }
+   ],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 0.02,
+      "lat": 0.02,
+      "weight": 2
+     },
+     {
+      "id": "P03",
+      "lon": -0.03,
+      "lat": 0.0,
+      "weight": 3
+     }
+    ],
+    "candidates": [],
+    "budget": 100,
+    "max_selected": 3,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "expected": {
+    "manual": {
+     "ids": [],
+     "rows": {
+      "P01": {
+       "before_mm": 1111951,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 1111951,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P02": {
+       "before_mm": 2486398,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 2486398,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P03": {
+       "before_mm": 2223902,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "after_mm": 2223902,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 12756453,
+     "max_mm": 2486398,
+     "covered_weight": 0,
+     "total_weight": 6,
+     "cost": 0
+    },
+    "optimize": {
+     "budget": 100,
+     "evaluated": 1,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 1,
+     "objectives": {
+      "mean": {
+       "ids": [],
+       "cost": 0,
+       "unknown_count": 0,
+       "weighted_sum_mm": 12756453,
+       "max_mm": 2486398,
+       "covered_weight": 0
+      },
+      "minimax": {
+       "ids": [],
+       "cost": 0,
+       "unknown_count": 0,
+       "weighted_sum_mm": 12756453,
+       "max_mm": 2486398,
+       "covered_weight": 0
+      },
+      "coverage": {
+       "ids": [],
+       "cost": 0,
+       "unknown_count": 0,
+       "weighted_sum_mm": 12756453,
+       "max_mm": 2486398,
+       "covered_weight": 0
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 12756453
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 50,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 100,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "no_baseline",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    }
+   ],
+   "scenario": {
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 0.02,
+      "lat": 0.02,
+      "weight": 2
+     },
+     {
+      "id": "P03",
+      "lon": -0.03,
+      "lat": 0.0,
+      "weight": 3
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.02,
+      "lat": 0.02,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 3
+     },
+     {
+      "id": "C2",
+      "lon": -0.03,
+      "lat": 0,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 3
+     },
+     {
+      "id": "C3",
+      "lon": 0,
+      "lat": 0,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 2
+     }
+    ],
+    "budget": 6,
+    "max_selected": 2,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "C3"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "C3"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": null,
+       "nearest_before": null,
+       "after_mm": 0,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "C3"
+       },
+       "delta_mm": null
+      },
+      "P02": {
+       "before_mm": null,
+       "nearest_before": null,
+       "after_mm": 3145072,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "C3"
+       },
+       "delta_mm": null
+      },
+      "P03": {
+       "before_mm": null,
+       "nearest_before": null,
+       "after_mm": 3335852,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "C3"
+       },
+       "delta_mm": null
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 16297700,
+     "max_mm": 3335852,
+     "covered_weight": 1,
+     "total_weight": 6,
+     "cost": 2
+    },
+    "optimize": {
+     "budget": 6,
+     "evaluated": 8,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 7,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "C1",
+        "C2"
+       ],
+       "cost": 6,
+       "unknown_count": 0,
+       "weighted_sum_mm": 3145072,
+       "max_mm": 3145072,
+       "covered_weight": 5
+      },
+      "minimax": {
+       "ids": [
+        "C1",
+        "C2"
+       ],
+       "cost": 6,
+       "unknown_count": 0,
+       "weighted_sum_mm": 3145072,
+       "max_mm": 3145072,
+       "covered_weight": 5
+      },
+      "coverage": {
+       "ids": [
+        "C1",
+        "C2"
+       ],
+       "cost": 6,
+       "unknown_count": 0,
+       "weighted_sum_mm": 3145072,
+       "max_mm": 3145072,
+       "covered_weight": 5
+      }
+     },
+     "pareto": [
+      {
+       "ids": [
+        "C3"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 16297700
+      },
+      {
+       "ids": [
+        "C2"
+       ],
+       "cost": 3,
+       "weighted_sum_mm": 15311928
+      },
+      {
+       "ids": [
+        "C2",
+        "C3"
+       ],
+       "cost": 5,
+       "weighted_sum_mm": 6290144
+      },
+      {
+       "ids": [
+        "C1",
+        "C2"
+       ],
+       "cost": 6,
+       "weighted_sum_mm": 3145072
+      }
+     ],
+     "pareto_excluded_unknown": 1
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 3,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 3,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 3,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 3,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 4,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "C2"
+        ],
+        "cost": 3,
+        "unknown_count": 0,
+        "weighted_sum_mm": 15311928,
+        "max_mm": 5988038,
+        "covered_weight": 3
+       },
+       "minimax": {
+        "ids": [
+         "C3"
+        ],
+        "cost": 2,
+        "unknown_count": 0,
+        "weighted_sum_mm": 16297700,
+        "max_mm": 3335852,
+        "covered_weight": 1
+       },
+       "coverage": {
+        "ids": [
+         "C2"
+        ],
+        "cost": 3,
+        "unknown_count": 0,
+        "weighted_sum_mm": 15311928,
+        "max_mm": 5988038,
+        "covered_weight": 3
+       }
+      }
+     },
+     {
+      "budget": 6,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 7,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "C1",
+         "C2"
+        ],
+        "cost": 6,
+        "unknown_count": 0,
+        "weighted_sum_mm": 3145072,
+        "max_mm": 3145072,
+        "covered_weight": 5
+       },
+       "minimax": {
+        "ids": [
+         "C1",
+         "C2"
+        ],
+        "cost": 6,
+        "unknown_count": 0,
+        "weighted_sum_mm": 3145072,
+        "max_mm": 3145072,
+        "covered_weight": 5
+       },
+       "coverage": {
+        "ids": [
+         "C1",
+         "C2"
+        ],
+        "cost": 6,
+        "unknown_count": 0,
+        "weighted_sum_mm": 3145072,
+        "max_mm": 3145072,
+        "covered_weight": 5
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "no_baseline_no_source_at_all",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 0.02,
+      "lat": 0.02,
+      "weight": 2
+     },
+     {
+      "id": "P03",
+      "lon": -0.03,
+      "lat": 0.0,
+      "weight": 3
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.02,
+      "lat": 0.02,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 3
+     },
+     {
+      "id": "C2",
+      "lon": -0.03,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 3
+     }
+    ],
+    "budget": 3,
+    "max_selected": 2,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "expected": {
+    "manual": {
+     "ids": [],
+     "rows": {
+      "P01": {
+       "before_mm": null,
+       "nearest_before": null,
+       "after_mm": null,
+       "nearest_after": null,
+       "delta_mm": null
+      },
+      "P02": {
+       "before_mm": null,
+       "nearest_before": null,
+       "after_mm": null,
+       "nearest_after": null,
+       "delta_mm": null
+      },
+      "P03": {
+       "before_mm": null,
+       "nearest_before": null,
+       "after_mm": null,
+       "nearest_after": null,
+       "delta_mm": null
+      }
+     },
+     "unknown_count": 3,
+     "weighted_sum_mm": 0,
+     "max_mm": null,
+     "covered_weight": 0,
+     "total_weight": 6,
+     "cost": 0
+    },
+    "optimize": {
+     "budget": 3,
+     "evaluated": 4,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 3,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "C2"
+       ],
+       "cost": 3,
+       "unknown_count": 0,
+       "weighted_sum_mm": 15311928,
+       "max_mm": 5988038,
+       "covered_weight": 3
+      },
+      "minimax": {
+       "ids": [
+        "C2"
+       ],
+       "cost": 3,
+       "unknown_count": 0,
+       "weighted_sum_mm": 15311928,
+       "max_mm": 5988038,
+       "covered_weight": 3
+      },
+      "coverage": {
+       "ids": [
+        "C2"
+       ],
+       "cost": 3,
+       "unknown_count": 0,
+       "weighted_sum_mm": 15311928,
+       "max_mm": 5988038,
+       "covered_weight": 3
+      }
+     },
+     "pareto": [
+      {
+       "ids": [
+        "C2"
+       ],
+       "cost": 3,
+       "weighted_sum_mm": 15311928
+      }
+     ],
+     "pareto_excluded_unknown": 1
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 3,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 3,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 3,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 1,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 3,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 3,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 3,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 3,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 3,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "C2"
+        ],
+        "cost": 3,
+        "unknown_count": 0,
+        "weighted_sum_mm": 15311928,
+        "max_mm": 5988038,
+        "covered_weight": 3
+       },
+       "minimax": {
+        "ids": [
+         "C2"
+        ],
+        "cost": 3,
+        "unknown_count": 0,
+        "weighted_sum_mm": 15311928,
+        "max_mm": 5988038,
+        "covered_weight": 3
+       },
+       "coverage": {
+        "ids": [
+         "C2"
+        ],
+        "cost": 3,
+        "unknown_count": 0,
+        "weighted_sum_mm": 15311928,
+        "max_mm": 5988038,
+        "covered_weight": 3
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "dominated_plans",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "clinic-1",
+     "group": "outpatient_clinic",
+     "lon": 0.0,
+     "lat": 0.05
+    }
+   ],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 0.02,
+      "lat": 0.02,
+      "weight": 2
+     },
+     {
+      "id": "P03",
+      "lon": -0.03,
+      "lat": 0.0,
+      "weight": 3
+     }
+    ],
+    "candidates": [
+     {
+      "id": "Cheap",
+      "lon": 0.02,
+      "lat": 0.019,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 2
+     },
+     {
+      "id": "Dear",
+      "lon": 0.02,
+      "lat": 0.015,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 9
+     },
+     {
+      "id": "Mid",
+      "lon": -0.03,
+      "lat": 0.001,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 20,
+    "max_selected": 3,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "Dear"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "Dear"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": 1111951,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 1111951,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P02": {
+       "before_mm": 2486398,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 555975,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "Dear"
+       },
+       "delta_mm": 1930423
+      },
+      "P03": {
+       "before_mm": 2223902,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "after_mm": 2223902,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 8895607,
+     "max_mm": 2223902,
+     "covered_weight": 0,
+     "total_weight": 6,
+     "cost": 9
+    },
+    "optimize": {
+     "budget": 20,
+     "evaluated": 8,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 8,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "Cheap",
+        "Mid"
+       ],
+       "cost": 7,
+       "unknown_count": 0,
+       "weighted_sum_mm": 1667926,
+       "max_mm": 1111951,
+       "covered_weight": 5
+      },
+      "minimax": {
+       "ids": [
+        "Cheap",
+        "Mid"
+       ],
+       "cost": 7,
+       "unknown_count": 0,
+       "weighted_sum_mm": 1667926,
+       "max_mm": 1111951,
+       "covered_weight": 5
+      },
+      "coverage": {
+       "ids": [
+        "Cheap",
+        "Mid"
+       ],
+       "cost": 7,
+       "unknown_count": 0,
+       "weighted_sum_mm": 1667926,
+       "max_mm": 1111951,
+       "covered_weight": 5
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 12756453
+      },
+      {
+       "ids": [
+        "Cheap"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 8006047
+      },
+      {
+       "ids": [
+        "Mid"
+       ],
+       "cost": 5,
+       "weighted_sum_mm": 6418332
+      },
+      {
+       "ids": [
+        "Cheap",
+        "Mid"
+       ],
+       "cost": 7,
+       "weighted_sum_mm": 1667926
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 12756453,
+        "max_mm": 2486398,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 10,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 5,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "Cheap",
+         "Mid"
+        ],
+        "cost": 7,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1667926,
+        "max_mm": 1111951,
+        "covered_weight": 5
+       },
+       "minimax": {
+        "ids": [
+         "Cheap",
+         "Mid"
+        ],
+        "cost": 7,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1667926,
+        "max_mm": 1111951,
+        "covered_weight": 5
+       },
+       "coverage": {
+        "ids": [
+         "Cheap",
+         "Mid"
+        ],
+        "cost": 7,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1667926,
+        "max_mm": 1111951,
+        "covered_weight": 5
+       }
+      }
+     },
+     {
+      "budget": 20,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 8,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "Cheap",
+         "Mid"
+        ],
+        "cost": 7,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1667926,
+        "max_mm": 1111951,
+        "covered_weight": 5
+       },
+       "minimax": {
+        "ids": [
+         "Cheap",
+         "Mid"
+        ],
+        "cost": 7,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1667926,
+        "max_mm": 1111951,
+        "covered_weight": 5
+       },
+       "coverage": {
+        "ids": [
+         "Cheap",
+         "Mid"
+        ],
+        "cost": 7,
+        "unknown_count": 0,
+        "weighted_sum_mm": 1667926,
+        "max_mm": 1111951,
+        "covered_weight": 5
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "excluded_and_required",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "clinic-1",
+     "group": "outpatient_clinic",
+     "lon": 0.0,
+     "lat": 0.05
+    }
+   ],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 0.02,
+      "lat": 0.02,
+      "weight": 2
+     },
+     {
+      "id": "P03",
+      "lon": -0.03,
+      "lat": 0.0,
+      "weight": 3
+     }
+    ],
+    "candidates": [
+     {
+      "id": "A",
+      "lon": 0.02,
+      "lat": 0.02,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 3
+     },
+     {
+      "id": "B",
+      "lon": -0.03,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 3
+     },
+     {
+      "id": "D",
+      "lon": 0,
+      "lat": 0.001,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 3
+     }
+    ],
+    "budget": 6,
+    "max_selected": 2,
+    "coverage_radius_m": 500,
+    "required_ids": [
+     "D"
+    ],
+    "excluded_ids": [
+     "A"
+    ],
+    "selected_ids": [
+     "A",
+     "B"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "A",
+      "B"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": 1111951,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 1111951,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P02": {
+       "before_mm": 2486398,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 0,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "A"
+       },
+       "delta_mm": 2486398
+      },
+      "P03": {
+       "before_mm": 2223902,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "after_mm": 0,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "B"
+       },
+       "delta_mm": 2223902
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 1111951,
+     "max_mm": 1111951,
+     "covered_weight": 5,
+     "total_weight": 6,
+     "cost": 6
+    },
+    "optimize": {
+     "budget": 6,
+     "evaluated": 2,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 2,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "B",
+        "D"
+       ],
+       "cost": 6,
+       "unknown_count": 0,
+       "weighted_sum_mm": 5083991,
+       "max_mm": 2486398,
+       "covered_weight": 4
+      },
+      "minimax": {
+       "ids": [
+        "B",
+        "D"
+       ],
+       "cost": 6,
+       "unknown_count": 0,
+       "weighted_sum_mm": 5083991,
+       "max_mm": 2486398,
+       "covered_weight": 4
+      },
+      "coverage": {
+       "ids": [
+        "B",
+        "D"
+       ],
+       "cost": 6,
+       "unknown_count": 0,
+       "weighted_sum_mm": 5083991,
+       "max_mm": 2486398,
+       "covered_weight": 4
+      }
+     },
+     "pareto": [
+      {
+       "ids": [
+        "D"
+       ],
+       "cost": 3,
+       "weighted_sum_mm": 11755697
+      },
+      {
+       "ids": [
+        "B",
+        "D"
+       ],
+       "cost": 6,
+       "weighted_sum_mm": 5083991
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "infeasible",
+      "reasons": [
+       "required_cost_exceeds_budget"
+      ],
+      "feasible_count": 0,
+      "objectives": null
+     },
+     {
+      "budget": 3,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "D"
+        ],
+        "cost": 3,
+        "unknown_count": 0,
+        "weighted_sum_mm": 11755697,
+        "max_mm": 2486398,
+        "covered_weight": 1
+       },
+       "minimax": {
+        "ids": [
+         "D"
+        ],
+        "cost": 3,
+        "unknown_count": 0,
+        "weighted_sum_mm": 11755697,
+        "max_mm": 2486398,
+        "covered_weight": 1
+       },
+       "coverage": {
+        "ids": [
+         "D"
+        ],
+        "cost": 3,
+        "unknown_count": 0,
+        "weighted_sum_mm": 11755697,
+        "max_mm": 2486398,
+        "covered_weight": 1
+       }
+      }
+     },
+     {
+      "budget": 6,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 2,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "B",
+         "D"
+        ],
+        "cost": 6,
+        "unknown_count": 0,
+        "weighted_sum_mm": 5083991,
+        "max_mm": 2486398,
+        "covered_weight": 4
+       },
+       "minimax": {
+        "ids": [
+         "B",
+         "D"
+        ],
+        "cost": 6,
+        "unknown_count": 0,
+        "weighted_sum_mm": 5083991,
+        "max_mm": 2486398,
+        "covered_weight": 4
+       },
+       "coverage": {
+        "ids": [
+         "B",
+         "D"
+        ],
+        "cost": 6,
+        "unknown_count": 0,
+        "weighted_sum_mm": 5083991,
+        "max_mm": 2486398,
+        "covered_weight": 4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "coverage_vs_mean",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "places": [
+    {
+     "id": "src-a",
+     "group": "school",
+     "lon": 0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "src-b",
+     "group": "school",
+     "lon": -0.01,
+     "lat": 0.0
+    },
+    {
+     "id": "clinic-1",
+     "group": "outpatient_clinic",
+     "lon": 0.0,
+     "lat": 0.05
+    }
+   ],
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 0.05,
+      "lat": 0.05,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 0.051,
+      "lat": 0.05,
+      "weight": 1
+     },
+     {
+      "id": "P03",
+      "lon": -0.06,
+      "lat": -0.06,
+      "weight": 5
+     }
+    ],
+    "candidates": [
+     {
+      "id": "Near12",
+      "lon": 0.0505,
+      "lat": 0.05,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     },
+     {
+      "id": "Far3",
+      "lon": -0.058,
+      "lat": -0.058,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 5,
+    "max_selected": 1,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "expected": {
+    "manual": {
+     "ids": [],
+     "rows": {
+      "P01": {
+       "before_mm": 7119959,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 7119959,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P02": {
+       "before_mm": 7189946,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "after_mm": 7189946,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-a"
+       },
+       "delta_mm": 0
+      },
+      "P03": {
+       "before_mm": 8684613,
+       "nearest_before": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "after_mm": 8684613,
+       "nearest_after": {
+        "kind": "source",
+        "id": "src-b"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 57732970,
+     "max_mm": 8684613,
+     "covered_weight": 0,
+     "total_weight": 7,
+     "cost": 0
+    },
+    "optimize": {
+     "budget": 5,
+     "evaluated": 4,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 3,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "Far3"
+       ],
+       "cost": 5,
+       "unknown_count": 0,
+       "weighted_sum_mm": 15882440,
+       "max_mm": 7189946,
+       "covered_weight": 0
+      },
+      "minimax": {
+       "ids": [
+        "Far3"
+       ],
+       "cost": 5,
+       "unknown_count": 0,
+       "weighted_sum_mm": 15882440,
+       "max_mm": 7189946,
+       "covered_weight": 0
+      },
+      "coverage": {
+       "ids": [
+        "Near12"
+       ],
+       "cost": 5,
+       "unknown_count": 0,
+       "weighted_sum_mm": 43534261,
+       "max_mm": 8684613,
+       "covered_weight": 2
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 57732970
+      },
+      {
+       "ids": [
+        "Far3"
+       ],
+       "cost": 5,
+       "weighted_sum_mm": 15882440
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 57732970,
+        "max_mm": 8684613,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 57732970,
+        "max_mm": 8684613,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 57732970,
+        "max_mm": 8684613,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 2,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 57732970,
+        "max_mm": 8684613,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 57732970,
+        "max_mm": 8684613,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 57732970,
+        "max_mm": 8684613,
+        "covered_weight": 0
+       }
+      }
+     },
+     {
+      "budget": 5,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 3,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "Far3"
+        ],
+        "cost": 5,
+        "unknown_count": 0,
+        "weighted_sum_mm": 15882440,
+        "max_mm": 7189946,
+        "covered_weight": 0
+       },
+       "minimax": {
+        "ids": [
+         "Far3"
+        ],
+        "cost": 5,
+        "unknown_count": 0,
+        "weighted_sum_mm": 15882440,
+        "max_mm": 7189946,
+        "covered_weight": 0
+       },
+       "coverage": {
+        "ids": [
+         "Near12"
+        ],
+        "cost": 5,
+        "unknown_count": 0,
+        "weighted_sum_mm": 43534261,
+        "max_mm": 8684613,
+        "covered_weight": 2
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "astana_school_16x25",
+   "kind": "synthetic_on_real_slice",
+   "city": "astana",
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 71.421235,
+      "lat": 51.16483,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 71.42696,
+      "lat": 51.16483,
+      "weight": 8
+     },
+     {
+      "id": "P03",
+      "lon": 71.432686,
+      "lat": 51.16483,
+      "weight": 5
+     },
+     {
+      "id": "P04",
+      "lon": 71.438412,
+      "lat": 51.16483,
+      "weight": 2
+     },
+     {
+      "id": "P05",
+      "lon": 71.444137,
+      "lat": 51.16483,
+      "weight": 9
+     },
+     {
+      "id": "P06",
+      "lon": 71.421235,
+      "lat": 51.168423,
+      "weight": 6
+     },
+     {
+      "id": "P07",
+      "lon": 71.42696,
+      "lat": 51.168423,
+      "weight": 3
+     },
+     {
+      "id": "P08",
+      "lon": 71.432686,
+      "lat": 51.168423,
+      "weight": 10
+     },
+     {
+      "id": "P09",
+      "lon": 71.438412,
+      "lat": 51.168423,
+      "weight": 7
+     },
+     {
+      "id": "P10",
+      "lon": 71.444137,
+      "lat": 51.168423,
+      "weight": 4
+     },
+     {
+      "id": "P11",
+      "lon": 71.421235,
+      "lat": 51.172016,
+      "weight": 1
+     },
+     {
+      "id": "P12",
+      "lon": 71.42696,
+      "lat": 51.172016,
+      "weight": 8
+     },
+     {
+      "id": "P13",
+      "lon": 71.432686,
+      "lat": 51.172016,
+      "weight": 5
+     },
+     {
+      "id": "P14",
+      "lon": 71.438412,
+      "lat": 51.172016,
+      "weight": 2
+     },
+     {
+      "id": "P15",
+      "lon": 71.444137,
+      "lat": 51.172016,
+      "weight": 9
+     },
+     {
+      "id": "P16",
+      "lon": 71.421235,
+      "lat": 51.17561,
+      "weight": 6
+     },
+     {
+      "id": "P17",
+      "lon": 71.42696,
+      "lat": 51.17561,
+      "weight": 3
+     },
+     {
+      "id": "P18",
+      "lon": 71.432686,
+      "lat": 51.17561,
+      "weight": 10
+     },
+     {
+      "id": "P19",
+      "lon": 71.438412,
+      "lat": 51.17561,
+      "weight": 7
+     },
+     {
+      "id": "P20",
+      "lon": 71.444137,
+      "lat": 51.17561,
+      "weight": 4
+     },
+     {
+      "id": "P21",
+      "lon": 71.421235,
+      "lat": 51.179203,
+      "weight": 1
+     },
+     {
+      "id": "P22",
+      "lon": 71.42696,
+      "lat": 51.179203,
+      "weight": 8
+     },
+     {
+      "id": "P23",
+      "lon": 71.432686,
+      "lat": 51.179203,
+      "weight": 5
+     },
+     {
+      "id": "P24",
+      "lon": 71.438412,
+      "lat": 51.179203,
+      "weight": 2
+     },
+     {
+      "id": "P25",
+      "lon": 71.444137,
+      "lat": 51.179203,
+      "weight": 9
+     }
+    ],
+    "candidates": [
+     {
+      "id": "K01",
+      "lon": 71.422666,
+      "lat": 51.165728,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "K02",
+      "lon": 71.429346,
+      "lat": 51.165728,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 137
+     },
+     {
+      "id": "K03",
+      "lon": 71.436026,
+      "lat": 51.165728,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 174
+     },
+     {
+      "id": "K04",
+      "lon": 71.442706,
+      "lat": 51.165728,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "K05",
+      "lon": 71.422666,
+      "lat": 51.16992,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 248
+     },
+     {
+      "id": "K06",
+      "lon": 71.429346,
+      "lat": 51.16992,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 285
+     },
+     {
+      "id": "K07",
+      "lon": 71.436026,
+      "lat": 51.16992,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 322
+     },
+     {
+      "id": "K08",
+      "lon": 71.442706,
+      "lat": 51.16992,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 359
+     },
+     {
+      "id": "K09",
+      "lon": 71.422666,
+      "lat": 51.174113,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 396
+     },
+     {
+      "id": "K10",
+      "lon": 71.429346,
+      "lat": 51.174113,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 433
+     },
+     {
+      "id": "K11",
+      "lon": 71.436026,
+      "lat": 51.174113,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 470
+     },
+     {
+      "id": "K12",
+      "lon": 71.442706,
+      "lat": 51.174113,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 107
+     },
+     {
+      "id": "K13",
+      "lon": 71.422666,
+      "lat": 51.178305,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 144
+     },
+     {
+      "id": "K14",
+      "lon": 71.429346,
+      "lat": 51.178305,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 181
+     },
+     {
+      "id": "K15",
+      "lon": 71.436026,
+      "lat": 51.178305,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 218
+     },
+     {
+      "id": "K16",
+      "lon": 71.442706,
+      "lat": 51.178305,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 255
+     }
+    ],
+    "budget": 900,
+    "max_selected": 5,
+    "coverage_radius_m": 400,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "K01"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "K01"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": 336349,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       },
+       "after_mm": 141162,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 195187
+      },
+      "P02": {
+       "before_mm": 406970,
+       "nearest_before": {
+        "kind": "source",
+        "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+       },
+       "after_mm": 315623,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 91347
+      },
+      "P03": {
+       "before_mm": 427552,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "after_mm": 427552,
+       "nearest_after": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "delta_mm": 0
+      },
+      "P04": {
+       "before_mm": 239288,
+       "nearest_before": {
+        "kind": "source",
+        "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f"
+       },
+       "after_mm": 239288,
+       "nearest_after": {
+        "kind": "source",
+        "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f"
+       },
+       "delta_mm": 0
+      },
+      "P05": {
+       "before_mm": 160552,
+       "nearest_before": {
+        "kind": "source",
+        "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f"
+       },
+       "after_mm": 160552,
+       "nearest_after": {
+        "kind": "source",
+        "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f"
+       },
+       "delta_mm": 0
+      },
+      "P06": {
+       "before_mm": 148967,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       },
+       "after_mm": 148967,
+       "nearest_after": {
+        "kind": "source",
+        "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       },
+       "delta_mm": 0
+      },
+      "P07": {
+       "before_mm": 265026,
+       "nearest_before": {
+        "kind": "source",
+        "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+       },
+       "after_mm": 265026,
+       "nearest_after": {
+        "kind": "source",
+        "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+       },
+       "delta_mm": 0
+      },
+      "P08": {
+       "before_mm": 75348,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "after_mm": 75348,
+       "nearest_after": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "delta_mm": 0
+      },
+      "P09": {
+       "before_mm": 327872,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "after_mm": 327872,
+       "nearest_after": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "delta_mm": 0
+      },
+      "P10": {
+       "before_mm": 212074,
+       "nearest_before": {
+        "kind": "source",
+        "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       },
+       "after_mm": 212074,
+       "nearest_after": {
+        "kind": "source",
+        "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       },
+       "delta_mm": 0
+      },
+      "P11": {
+       "before_mm": 292414,
+       "nearest_before": {
+        "kind": "source",
+        "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+       },
+       "after_mm": 292414,
+       "nearest_after": {
+        "kind": "source",
+        "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+       },
+       "delta_mm": 0
+      },
+      "P12": {
+       "before_mm": 186336,
+       "nearest_before": {
+        "kind": "source",
+        "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+       },
+       "after_mm": 186336,
+       "nearest_after": {
+        "kind": "source",
+        "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+       },
+       "delta_mm": 0
+      },
+      "P13": {
+       "before_mm": 384438,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "after_mm": 384438,
+       "nearest_after": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "delta_mm": 0
+      },
+      "P14": {
+       "before_mm": 499608,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "after_mm": 499608,
+       "nearest_after": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "delta_mm": 0
+      },
+      "P15": {
+       "before_mm": 600882,
+       "nearest_before": {
+        "kind": "source",
+        "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       },
+       "after_mm": 600882,
+       "nearest_after": {
+        "kind": "source",
+        "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       },
+       "delta_mm": 0
+      },
+      "P16": {
+       "before_mm": 223692,
+       "nearest_before": {
+        "kind": "source",
+        "id": "c97435da-cd05-4549-bec1-ff297e858554"
+       },
+       "after_mm": 223692,
+       "nearest_after": {
+        "kind": "source",
+        "id": "c97435da-cd05-4549-bec1-ff297e858554"
+       },
+       "delta_mm": 0
+      },
+      "P17": {
+       "before_mm": 410468,
+       "nearest_before": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "after_mm": 410468,
+       "nearest_after": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "delta_mm": 0
+      },
+      "P18": {
+       "before_mm": 586375,
+       "nearest_before": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "after_mm": 586375,
+       "nearest_after": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "delta_mm": 0
+      },
+      "P19": {
+       "before_mm": 843283,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "after_mm": 843283,
+       "nearest_after": {
+        "kind": "source",
+        "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       },
+       "delta_mm": 0
+      },
+      "P20": {
+       "before_mm": 998300,
+       "nearest_before": {
+        "kind": "source",
+        "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       },
+       "after_mm": 998300,
+       "nearest_after": {
+        "kind": "source",
+        "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       },
+       "delta_mm": 0
+      },
+      "P21": {
+       "before_mm": 198322,
+       "nearest_before": {
+        "kind": "source",
+        "id": "c97435da-cd05-4549-bec1-ff297e858554"
+       },
+       "after_mm": 198322,
+       "nearest_after": {
+        "kind": "source",
+        "id": "c97435da-cd05-4549-bec1-ff297e858554"
+       },
+       "delta_mm": 0
+      },
+      "P22": {
+       "before_mm": 22634,
+       "nearest_before": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "after_mm": 22634,
+       "nearest_after": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "delta_mm": 0
+      },
+      "P23": {
+       "before_mm": 419346,
+       "nearest_before": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "after_mm": 419346,
+       "nearest_after": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "delta_mm": 0
+      },
+      "P24": {
+       "before_mm": 818423,
+       "nearest_before": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "after_mm": 818423,
+       "nearest_after": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "delta_mm": 0
+      },
+      "P25": {
+       "before_mm": 1217471,
+       "nearest_before": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "after_mm": 1217471,
+       "nearest_after": {
+        "kind": "source",
+        "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 55829352,
+     "max_mm": 1217471,
+     "covered_weight": 79,
+     "total_weight": 135,
+     "cost": 100
+    },
+    "optimize": {
+     "budget": 900,
+     "evaluated": 65536,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 1355,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "K02",
+        "K12",
+        "K14",
+        "K15",
+        "K16"
+       ],
+       "cost": 898,
+       "unknown_count": 0,
+       "weighted_sum_mm": 30055174,
+       "max_mm": 384438,
+       "covered_weight": 135
+      },
+      "minimax": {
+       "ids": [
+        "K02",
+        "K12",
+        "K14",
+        "K15",
+        "K16"
+       ],
+       "cost": 898,
+       "unknown_count": 0,
+       "weighted_sum_mm": 30055174,
+       "max_mm": 384438,
+       "covered_weight": 135
+      },
+      "coverage": {
+       "ids": [
+        "K02",
+        "K12",
+        "K14",
+        "K15",
+        "K16"
+       ],
+       "cost": 898,
+       "unknown_count": 0,
+       "weighted_sum_mm": 30055174,
+       "max_mm": 384438,
+       "covered_weight": 135
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 56755315
+      },
+      {
+       "ids": [
+        "K01"
+       ],
+       "cost": 100,
+       "weighted_sum_mm": 55829352
+      },
+      {
+       "ids": [
+        "K12"
+       ],
+       "cost": 107,
+       "weighted_sum_mm": 40526169
+      },
+      {
+       "ids": [
+        "K01",
+        "K12"
+       ],
+       "cost": 207,
+       "weighted_sum_mm": 39600206
+      },
+      {
+       "ids": [
+        "K02",
+        "K12"
+       ],
+       "cost": 244,
+       "weighted_sum_mm": 37951907
+      },
+      {
+       "ids": [
+        "K12",
+        "K14"
+       ],
+       "cost": 288,
+       "weighted_sum_mm": 37423147
+      },
+      {
+       "ids": [
+        "K12",
+        "K15"
+       ],
+       "cost": 325,
+       "weighted_sum_mm": 36729668
+      },
+      {
+       "ids": [
+        "K12",
+        "K16"
+       ],
+       "cost": 362,
+       "weighted_sum_mm": 35974634
+      },
+      {
+       "ids": [
+        "K02",
+        "K12",
+        "K14"
+       ],
+       "cost": 425,
+       "weighted_sum_mm": 34848885
+      },
+      {
+       "ids": [
+        "K02",
+        "K12",
+        "K15"
+       ],
+       "cost": 462,
+       "weighted_sum_mm": 34155406
+      },
+      {
+       "ids": [
+        "K02",
+        "K12",
+        "K16"
+       ],
+       "cost": 499,
+       "weighted_sum_mm": 33400372
+      },
+      {
+       "ids": [
+        "K12",
+        "K14",
+        "K16"
+       ],
+       "cost": 543,
+       "weighted_sum_mm": 32872528
+      },
+      {
+       "ids": [
+        "K12",
+        "K15",
+        "K16"
+       ],
+       "cost": 580,
+       "weighted_sum_mm": 32832632
+      },
+      {
+       "ids": [
+        "K01",
+        "K12",
+        "K14",
+        "K16"
+       ],
+       "cost": 643,
+       "weighted_sum_mm": 31946565
+      },
+      {
+       "ids": [
+        "K02",
+        "K12",
+        "K14",
+        "K16"
+       ],
+       "cost": 680,
+       "weighted_sum_mm": 30298266
+      },
+      {
+       "ids": [
+        "K02",
+        "K12",
+        "K15",
+        "K16"
+       ],
+       "cost": 717,
+       "weighted_sum_mm": 30258370
+      },
+      {
+       "ids": [
+        "K01",
+        "K02",
+        "K12",
+        "K14",
+        "K16"
+       ],
+       "cost": 780,
+       "weighted_sum_mm": 30103079
+      },
+      {
+       "ids": [
+        "K01",
+        "K02",
+        "K12",
+        "K15",
+        "K16"
+       ],
+       "cost": 817,
+       "weighted_sum_mm": 30063183
+      },
+      {
+       "ids": [
+        "K02",
+        "K12",
+        "K14",
+        "K15",
+        "K16"
+       ],
+       "cost": 898,
+       "weighted_sum_mm": 30055174
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 56755315,
+        "max_mm": 1217471,
+        "covered_weight": 71
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 56755315,
+        "max_mm": 1217471,
+        "covered_weight": 71
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 56755315,
+        "max_mm": 1217471,
+        "covered_weight": 71
+       }
+      }
+     },
+     {
+      "budget": 450,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 79,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "K02",
+         "K12",
+         "K14"
+        ],
+        "cost": 425,
+        "unknown_count": 0,
+        "weighted_sum_mm": 34848885,
+        "max_mm": 639807,
+        "covered_weight": 124
+       },
+       "minimax": {
+        "ids": [
+         "K01",
+         "K12",
+         "K15"
+        ],
+        "cost": 425,
+        "unknown_count": 0,
+        "weighted_sum_mm": 35803705,
+        "max_mm": 574146,
+        "covered_weight": 118
+       },
+       "coverage": {
+        "ids": [
+         "K02",
+         "K12",
+         "K14"
+        ],
+        "cost": 425,
+        "unknown_count": 0,
+        "weighted_sum_mm": 34848885,
+        "max_mm": 639807,
+        "covered_weight": 124
+       }
+      }
+     },
+     {
+      "budget": 900,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1355,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "K02",
+         "K12",
+         "K14",
+         "K15",
+         "K16"
+        ],
+        "cost": 898,
+        "unknown_count": 0,
+        "weighted_sum_mm": 30055174,
+        "max_mm": 384438,
+        "covered_weight": 135
+       },
+       "minimax": {
+        "ids": [
+         "K02",
+         "K12",
+         "K14",
+         "K15",
+         "K16"
+        ],
+        "cost": 898,
+        "unknown_count": 0,
+        "weighted_sum_mm": 30055174,
+        "max_mm": 384438,
+        "covered_weight": 135
+       },
+       "coverage": {
+        "ids": [
+         "K02",
+         "K12",
+         "K14",
+         "K15",
+         "K16"
+        ],
+        "cost": 898,
+        "unknown_count": 0,
+        "weighted_sum_mm": 30055174,
+        "max_mm": 384438,
+        "covered_weight": 135
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "astana_outpatient_clinic_8x10",
+   "kind": "synthetic_on_real_slice",
+   "city": "astana",
+   "scenario": {
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 71.421235,
+      "lat": 51.16483,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 71.42696,
+      "lat": 51.16483,
+      "weight": 8
+     },
+     {
+      "id": "P03",
+      "lon": 71.432686,
+      "lat": 51.16483,
+      "weight": 5
+     },
+     {
+      "id": "P04",
+      "lon": 71.438412,
+      "lat": 51.16483,
+      "weight": 2
+     },
+     {
+      "id": "P05",
+      "lon": 71.444137,
+      "lat": 51.16483,
+      "weight": 9
+     },
+     {
+      "id": "P06",
+      "lon": 71.421235,
+      "lat": 51.168423,
+      "weight": 6
+     },
+     {
+      "id": "P07",
+      "lon": 71.42696,
+      "lat": 51.168423,
+      "weight": 3
+     },
+     {
+      "id": "P08",
+      "lon": 71.432686,
+      "lat": 51.168423,
+      "weight": 10
+     },
+     {
+      "id": "P09",
+      "lon": 71.438412,
+      "lat": 51.168423,
+      "weight": 7
+     },
+     {
+      "id": "P10",
+      "lon": 71.444137,
+      "lat": 51.168423,
+      "weight": 4
+     }
+    ],
+    "candidates": [
+     {
+      "id": "K01",
+      "lon": 71.422666,
+      "lat": 51.165728,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "K02",
+      "lon": 71.429346,
+      "lat": 51.165728,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 137
+     },
+     {
+      "id": "K03",
+      "lon": 71.436026,
+      "lat": 51.165728,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 174
+     },
+     {
+      "id": "K04",
+      "lon": 71.442706,
+      "lat": 51.165728,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "K05",
+      "lon": 71.422666,
+      "lat": 51.16992,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 248
+     },
+     {
+      "id": "K06",
+      "lon": 71.429346,
+      "lat": 51.16992,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 285
+     },
+     {
+      "id": "K07",
+      "lon": 71.436026,
+      "lat": 51.16992,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 322
+     },
+     {
+      "id": "K08",
+      "lon": 71.442706,
+      "lat": 51.16992,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 359
+     }
+    ],
+    "budget": 500,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "K01"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "K01"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": 336066,
+       "nearest_before": {
+        "kind": "source",
+        "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+       },
+       "after_mm": 141162,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 194904
+      },
+      "P02": {
+       "before_mm": 235496,
+       "nearest_before": {
+        "kind": "source",
+        "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+       },
+       "after_mm": 235496,
+       "nearest_after": {
+        "kind": "source",
+        "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+       },
+       "delta_mm": 0
+      },
+      "P03": {
+       "before_mm": 276622,
+       "nearest_before": {
+        "kind": "source",
+        "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+       },
+       "after_mm": 276622,
+       "nearest_after": {
+        "kind": "source",
+        "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+       },
+       "delta_mm": 0
+      },
+      "P04": {
+       "before_mm": 75509,
+       "nearest_before": {
+        "kind": "source",
+        "id": "771c278a-af10-4c57-b9fc-52755437345d"
+       },
+       "after_mm": 75509,
+       "nearest_after": {
+        "kind": "source",
+        "id": "771c278a-af10-4c57-b9fc-52755437345d"
+       },
+       "delta_mm": 0
+      },
+      "P05": {
+       "before_mm": 291211,
+       "nearest_before": {
+        "kind": "source",
+        "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+       },
+       "after_mm": 291211,
+       "nearest_after": {
+        "kind": "source",
+        "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+       },
+       "delta_mm": 0
+      },
+      "P06": {
+       "before_mm": 191089,
+       "nearest_before": {
+        "kind": "source",
+        "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+       },
+       "after_mm": 191089,
+       "nearest_after": {
+        "kind": "source",
+        "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+       },
+       "delta_mm": 0
+      },
+      "P07": {
+       "before_mm": 240528,
+       "nearest_before": {
+        "kind": "source",
+        "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+       },
+       "after_mm": 240528,
+       "nearest_after": {
+        "kind": "source",
+        "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+       },
+       "delta_mm": 0
+      },
+      "P08": {
+       "before_mm": 215711,
+       "nearest_before": {
+        "kind": "source",
+        "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+       },
+       "after_mm": 215711,
+       "nearest_after": {
+        "kind": "source",
+        "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+       },
+       "delta_mm": 0
+      },
+      "P09": {
+       "before_mm": 132619,
+       "nearest_before": {
+        "kind": "source",
+        "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+       },
+       "after_mm": 132619,
+       "nearest_after": {
+        "kind": "source",
+        "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+       },
+       "delta_mm": 0
+      },
+      "P10": {
+       "before_mm": 136997,
+       "nearest_before": {
+        "kind": "source",
+        "id": "aca68551-4a03-47c2-813f-d13dceb85c62"
+       },
+       "after_mm": 136997,
+       "nearest_after": {
+        "kind": "source",
+        "id": "aca68551-4a03-47c2-813f-d13dceb85c62"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 11681706,
+     "max_mm": 291211,
+     "covered_weight": 55,
+     "total_weight": 55,
+     "cost": 100
+    },
+    "optimize": {
+     "budget": 500,
+     "evaluated": 256,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 32,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "K01",
+        "K02",
+        "K04"
+       ],
+       "cost": 448,
+       "unknown_count": 0,
+       "weighted_sum_mm": 9883445,
+       "max_mm": 253394,
+       "covered_weight": 55
+      },
+      "minimax": {
+       "ids": [
+        "K01",
+        "K02",
+        "K04"
+       ],
+       "cost": 448,
+       "unknown_count": 0,
+       "weighted_sum_mm": 9883445,
+       "max_mm": 253394,
+       "covered_weight": 55
+      },
+      "coverage": {
+       "ids": [
+        "K01",
+        "K02",
+        "K04"
+       ],
+       "cost": 448,
+       "unknown_count": 0,
+       "weighted_sum_mm": 9883445,
+       "max_mm": 253394,
+       "covered_weight": 55
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 11876610
+      },
+      {
+       "ids": [
+        "K01"
+       ],
+       "cost": 100,
+       "weighted_sum_mm": 11681706
+      },
+      {
+       "ids": [
+        "K02"
+       ],
+       "cost": 137,
+       "weighted_sum_mm": 11428790
+      },
+      {
+       "ids": [
+        "K04"
+       ],
+       "cost": 211,
+       "weighted_sum_mm": 10526169
+      },
+      {
+       "ids": [
+        "K01",
+        "K04"
+       ],
+       "cost": 311,
+       "weighted_sum_mm": 10331265
+      },
+      {
+       "ids": [
+        "K02",
+        "K04"
+       ],
+       "cost": 348,
+       "weighted_sum_mm": 10078349
+      },
+      {
+       "ids": [
+        "K01",
+        "K02",
+        "K04"
+       ],
+       "cost": 448,
+       "weighted_sum_mm": 9883445
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 11876610,
+        "max_mm": 336066,
+        "covered_weight": 54
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 11876610,
+        "max_mm": 336066,
+        "covered_weight": 54
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 11876610,
+        "max_mm": 336066,
+        "covered_weight": 54
+       }
+      }
+     },
+     {
+      "budget": 250,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 7,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "K04"
+        ],
+        "cost": 211,
+        "unknown_count": 0,
+        "weighted_sum_mm": 10526169,
+        "max_mm": 336066,
+        "covered_weight": 54
+       },
+       "minimax": {
+        "ids": [
+         "K01",
+         "K02"
+        ],
+        "cost": 237,
+        "unknown_count": 0,
+        "weighted_sum_mm": 11233886,
+        "max_mm": 291211,
+        "covered_weight": 55
+       },
+       "coverage": {
+        "ids": [
+         "K01",
+         "K02"
+        ],
+        "cost": 237,
+        "unknown_count": 0,
+        "weighted_sum_mm": 11233886,
+        "max_mm": 291211,
+        "covered_weight": 55
+       }
+      }
+     },
+     {
+      "budget": 500,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 32,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "K01",
+         "K02",
+         "K04"
+        ],
+        "cost": 448,
+        "unknown_count": 0,
+        "weighted_sum_mm": 9883445,
+        "max_mm": 253394,
+        "covered_weight": 55
+       },
+       "minimax": {
+        "ids": [
+         "K01",
+         "K02",
+         "K04"
+        ],
+        "cost": 448,
+        "unknown_count": 0,
+        "weighted_sum_mm": 9883445,
+        "max_mm": 253394,
+        "covered_weight": 55
+       },
+       "coverage": {
+        "ids": [
+         "K01",
+         "K02",
+         "K04"
+        ],
+        "cost": 448,
+        "unknown_count": 0,
+        "weighted_sum_mm": 9883445,
+        "max_mm": 253394,
+        "covered_weight": 55
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "shymkent_school_16x25",
+   "kind": "synthetic_on_real_slice",
+   "city": "shymkent",
+   "scenario": {
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 69.595794,
+      "lat": 42.308442,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 69.600653,
+      "lat": 42.308442,
+      "weight": 8
+     },
+     {
+      "id": "P03",
+      "lon": 69.605512,
+      "lat": 42.308442,
+      "weight": 5
+     },
+     {
+      "id": "P04",
+      "lon": 69.61037,
+      "lat": 42.308442,
+      "weight": 2
+     },
+     {
+      "id": "P05",
+      "lon": 69.615229,
+      "lat": 42.308442,
+      "weight": 9
+     },
+     {
+      "id": "P06",
+      "lon": 69.595794,
+      "lat": 42.312035,
+      "weight": 6
+     },
+     {
+      "id": "P07",
+      "lon": 69.600653,
+      "lat": 42.312035,
+      "weight": 3
+     },
+     {
+      "id": "P08",
+      "lon": 69.605512,
+      "lat": 42.312035,
+      "weight": 10
+     },
+     {
+      "id": "P09",
+      "lon": 69.61037,
+      "lat": 42.312035,
+      "weight": 7
+     },
+     {
+      "id": "P10",
+      "lon": 69.615229,
+      "lat": 42.312035,
+      "weight": 4
+     },
+     {
+      "id": "P11",
+      "lon": 69.595794,
+      "lat": 42.315628,
+      "weight": 1
+     },
+     {
+      "id": "P12",
+      "lon": 69.600653,
+      "lat": 42.315628,
+      "weight": 8
+     },
+     {
+      "id": "P13",
+      "lon": 69.605512,
+      "lat": 42.315628,
+      "weight": 5
+     },
+     {
+      "id": "P14",
+      "lon": 69.61037,
+      "lat": 42.315628,
+      "weight": 2
+     },
+     {
+      "id": "P15",
+      "lon": 69.615229,
+      "lat": 42.315628,
+      "weight": 9
+     },
+     {
+      "id": "P16",
+      "lon": 69.595794,
+      "lat": 42.319221,
+      "weight": 6
+     },
+     {
+      "id": "P17",
+      "lon": 69.600653,
+      "lat": 42.319221,
+      "weight": 3
+     },
+     {
+      "id": "P18",
+      "lon": 69.605512,
+      "lat": 42.319221,
+      "weight": 10
+     },
+     {
+      "id": "P19",
+      "lon": 69.61037,
+      "lat": 42.319221,
+      "weight": 7
+     },
+     {
+      "id": "P20",
+      "lon": 69.615229,
+      "lat": 42.319221,
+      "weight": 4
+     },
+     {
+      "id": "P21",
+      "lon": 69.595794,
+      "lat": 42.322814,
+      "weight": 1
+     },
+     {
+      "id": "P22",
+      "lon": 69.600653,
+      "lat": 42.322814,
+      "weight": 8
+     },
+     {
+      "id": "P23",
+      "lon": 69.605512,
+      "lat": 42.322814,
+      "weight": 5
+     },
+     {
+      "id": "P24",
+      "lon": 69.61037,
+      "lat": 42.322814,
+      "weight": 2
+     },
+     {
+      "id": "P25",
+      "lon": 69.615229,
+      "lat": 42.322814,
+      "weight": 9
+     }
+    ],
+    "candidates": [
+     {
+      "id": "K01",
+      "lon": 69.597009,
+      "lat": 42.30934,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "K02",
+      "lon": 69.602677,
+      "lat": 42.30934,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 137
+     },
+     {
+      "id": "K03",
+      "lon": 69.608346,
+      "lat": 42.30934,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 174
+     },
+     {
+      "id": "K04",
+      "lon": 69.614014,
+      "lat": 42.30934,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "K05",
+      "lon": 69.597009,
+      "lat": 42.313532,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 248
+     },
+     {
+      "id": "K06",
+      "lon": 69.602677,
+      "lat": 42.313532,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 285
+     },
+     {
+      "id": "K07",
+      "lon": 69.608346,
+      "lat": 42.313532,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 322
+     },
+     {
+      "id": "K08",
+      "lon": 69.614014,
+      "lat": 42.313532,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 359
+     },
+     {
+      "id": "K09",
+      "lon": 69.597009,
+      "lat": 42.317724,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 396
+     },
+     {
+      "id": "K10",
+      "lon": 69.602677,
+      "lat": 42.317724,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 433
+     },
+     {
+      "id": "K11",
+      "lon": 69.608346,
+      "lat": 42.317724,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 470
+     },
+     {
+      "id": "K12",
+      "lon": 69.614014,
+      "lat": 42.317724,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 107
+     },
+     {
+      "id": "K13",
+      "lon": 69.597009,
+      "lat": 42.321916,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 144
+     },
+     {
+      "id": "K14",
+      "lon": 69.602677,
+      "lat": 42.321916,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 181
+     },
+     {
+      "id": "K15",
+      "lon": 69.608346,
+      "lat": 42.321916,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 218
+     },
+     {
+      "id": "K16",
+      "lon": 69.614014,
+      "lat": 42.321916,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 255
+     }
+    ],
+    "budget": 900,
+    "max_selected": 5,
+    "coverage_radius_m": 400,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "K01"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "K01"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": 736906,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 141255,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 595651
+      },
+      "P02": {
+       "before_mm": 690624,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 315852,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 374772
+      },
+      "P03": {
+       "before_mm": 854499,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 706310,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 148189
+      },
+      "P04": {
+       "before_mm": 603683,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 603683,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      "P05": {
+       "before_mm": 481317,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 481317,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      "P06": {
+       "before_mm": 398489,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 315887,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 82602
+      },
+      "P07": {
+       "before_mm": 304513,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 304513,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      "P08": {
+       "before_mm": 562239,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 562239,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      "P09": {
+       "before_mm": 374686,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 374686,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      "P10": {
+       "before_mm": 87350,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 87350,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      "P11": {
+       "before_mm": 119202,
+       "nearest_before": {
+        "kind": "source",
+        "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+       },
+       "after_mm": 119202,
+       "nearest_after": {
+        "kind": "source",
+        "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+       },
+       "delta_mm": 0
+      },
+      "P12": {
+       "before_mm": 166533,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 166533,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      "P13": {
+       "before_mm": 243856,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      "P14": {
+       "before_mm": 485371,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 485371,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      "P15": {
+       "before_mm": 320676,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 320676,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      "P16": {
+       "before_mm": 260098,
+       "nearest_before": {
+        "kind": "source",
+        "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       },
+       "after_mm": 260098,
+       "nearest_after": {
+        "kind": "source",
+        "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       },
+       "delta_mm": 0
+      },
+      "P17": {
+       "before_mm": 141158,
+       "nearest_before": {
+        "kind": "source",
+        "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       },
+       "after_mm": 141158,
+       "nearest_after": {
+        "kind": "source",
+        "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       },
+       "delta_mm": 0
+      },
+      "P18": {
+       "before_mm": 281162,
+       "nearest_before": {
+        "kind": "source",
+        "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       },
+       "after_mm": 281162,
+       "nearest_after": {
+        "kind": "source",
+        "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       },
+       "delta_mm": 0
+      },
+      "P19": {
+       "before_mm": 117294,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "after_mm": 117294,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "delta_mm": 0
+      },
+      "P20": {
+       "before_mm": 404352,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "after_mm": 404352,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "delta_mm": 0
+      },
+      "P21": {
+       "before_mm": 105071,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 105071,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      "P22": {
+       "before_mm": 394835,
+       "nearest_before": {
+        "kind": "source",
+        "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       },
+       "after_mm": 394835,
+       "nearest_after": {
+        "kind": "source",
+        "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       },
+       "delta_mm": 0
+      },
+      "P23": {
+       "before_mm": 38252,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 38252,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      "P24": {
+       "before_mm": 283149,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "after_mm": 283149,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "delta_mm": 0
+      },
+      "P25": {
+       "before_mm": 37649,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 37649,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 41264163,
+     "max_mm": 706310,
+     "covered_weight": 103,
+     "total_weight": 135,
+     "cost": 100
+    },
+    "optimize": {
+     "budget": 900,
+     "evaluated": 65536,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 1355,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "K01",
+        "K02",
+        "K04",
+        "K07",
+        "K12"
+       ],
+       "cost": 877,
+       "unknown_count": 0,
+       "weighted_sum_mm": 28813888,
+       "max_mm": 394835,
+       "covered_weight": 135
+      },
+      "minimax": {
+       "ids": [
+        "K01",
+        "K03",
+        "K04",
+        "K12",
+        "K14"
+       ],
+       "cost": 773,
+       "unknown_count": 0,
+       "weighted_sum_mm": 29808490,
+       "max_mm": 379617,
+       "covered_weight": 135
+      },
+      "coverage": {
+       "ids": [
+        "K01",
+        "K02",
+        "K04",
+        "K07",
+        "K12"
+       ],
+       "cost": 877,
+       "unknown_count": 0,
+       "weighted_sum_mm": 28813888,
+       "max_mm": 394835,
+       "covered_weight": 135
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 46094547
+      },
+      {
+       "ids": [
+        "K01"
+       ],
+       "cost": 100,
+       "weighted_sum_mm": 41264163
+      },
+      {
+       "ids": [
+        "K02"
+       ],
+       "cost": 137,
+       "weighted_sum_mm": 37129989
+      },
+      {
+       "ids": [
+        "K01",
+        "K02"
+       ],
+       "cost": 237,
+       "weighted_sum_mm": 36200891
+      },
+      {
+       "ids": [
+        "K02",
+        "K12"
+       ],
+       "cost": 244,
+       "weighted_sum_mm": 35473628
+      },
+      {
+       "ids": [
+        "K01",
+        "K02",
+        "K12"
+       ],
+       "cost": 344,
+       "weighted_sum_mm": 34544530
+      },
+      {
+       "ids": [
+        "K02",
+        "K04"
+       ],
+       "cost": 348,
+       "weighted_sum_mm": 33493769
+      },
+      {
+       "ids": [
+        "K01",
+        "K02",
+        "K04"
+       ],
+       "cost": 448,
+       "weighted_sum_mm": 32564671
+      },
+      {
+       "ids": [
+        "K02",
+        "K04",
+        "K12"
+       ],
+       "cost": 455,
+       "weighted_sum_mm": 31837408
+      },
+      {
+       "ids": [
+        "K01",
+        "K02",
+        "K04",
+        "K12"
+       ],
+       "cost": 555,
+       "weighted_sum_mm": 30908310
+      },
+      {
+       "ids": [
+        "K02",
+        "K04",
+        "K12",
+        "K14"
+       ],
+       "cost": 636,
+       "weighted_sum_mm": 30231224
+      },
+      {
+       "ids": [
+        "K01",
+        "K02",
+        "K04",
+        "K12",
+        "K14"
+       ],
+       "cost": 736,
+       "weighted_sum_mm": 29302126
+      },
+      {
+       "ids": [
+        "K01",
+        "K02",
+        "K04",
+        "K07",
+        "K12"
+       ],
+       "cost": 877,
+       "weighted_sum_mm": 28813888
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 46094547,
+        "max_mm": 854499,
+        "covered_weight": 94
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 46094547,
+        "max_mm": 854499,
+        "covered_weight": 94
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 46094547,
+        "max_mm": 854499,
+        "covered_weight": 94
+       }
+      }
+     },
+     {
+      "budget": 450,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 79,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "K01",
+         "K02",
+         "K04"
+        ],
+        "cost": 448,
+        "unknown_count": 0,
+        "weighted_sum_mm": 32564671,
+        "max_mm": 485371,
+        "covered_weight": 129
+       },
+       "minimax": {
+        "ids": [
+         "K01",
+         "K03",
+         "K12"
+        ],
+        "cost": 381,
+        "unknown_count": 0,
+        "weighted_sum_mm": 34475232,
+        "max_mm": 481317,
+        "covered_weight": 126
+       },
+       "coverage": {
+        "ids": [
+         "K01",
+         "K02",
+         "K04"
+        ],
+        "cost": 448,
+        "unknown_count": 0,
+        "weighted_sum_mm": 32564671,
+        "max_mm": 485371,
+        "covered_weight": 129
+       }
+      }
+     },
+     {
+      "budget": 900,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1355,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "K01",
+         "K02",
+         "K04",
+         "K07",
+         "K12"
+        ],
+        "cost": 877,
+        "unknown_count": 0,
+        "weighted_sum_mm": 28813888,
+        "max_mm": 394835,
+        "covered_weight": 135
+       },
+       "minimax": {
+        "ids": [
+         "K01",
+         "K03",
+         "K04",
+         "K12",
+         "K14"
+        ],
+        "cost": 773,
+        "unknown_count": 0,
+        "weighted_sum_mm": 29808490,
+        "max_mm": 379617,
+        "covered_weight": 135
+       },
+       "coverage": {
+        "ids": [
+         "K01",
+         "K02",
+         "K04",
+         "K07",
+         "K12"
+        ],
+        "cost": 877,
+        "unknown_count": 0,
+        "weighted_sum_mm": 28813888,
+        "max_mm": 394835,
+        "covered_weight": 135
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "shymkent_outpatient_clinic_8x10",
+   "kind": "synthetic_on_real_slice",
+   "city": "shymkent",
+   "scenario": {
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "P01",
+      "lon": 69.595794,
+      "lat": 42.308442,
+      "weight": 1
+     },
+     {
+      "id": "P02",
+      "lon": 69.600653,
+      "lat": 42.308442,
+      "weight": 8
+     },
+     {
+      "id": "P03",
+      "lon": 69.605512,
+      "lat": 42.308442,
+      "weight": 5
+     },
+     {
+      "id": "P04",
+      "lon": 69.61037,
+      "lat": 42.308442,
+      "weight": 2
+     },
+     {
+      "id": "P05",
+      "lon": 69.615229,
+      "lat": 42.308442,
+      "weight": 9
+     },
+     {
+      "id": "P06",
+      "lon": 69.595794,
+      "lat": 42.312035,
+      "weight": 6
+     },
+     {
+      "id": "P07",
+      "lon": 69.600653,
+      "lat": 42.312035,
+      "weight": 3
+     },
+     {
+      "id": "P08",
+      "lon": 69.605512,
+      "lat": 42.312035,
+      "weight": 10
+     },
+     {
+      "id": "P09",
+      "lon": 69.61037,
+      "lat": 42.312035,
+      "weight": 7
+     },
+     {
+      "id": "P10",
+      "lon": 69.615229,
+      "lat": 42.312035,
+      "weight": 4
+     }
+    ],
+    "candidates": [
+     {
+      "id": "K01",
+      "lon": 69.597009,
+      "lat": 42.30934,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "K02",
+      "lon": 69.602677,
+      "lat": 42.30934,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 137
+     },
+     {
+      "id": "K03",
+      "lon": 69.608346,
+      "lat": 42.30934,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 174
+     },
+     {
+      "id": "K04",
+      "lon": 69.614014,
+      "lat": 42.30934,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "K05",
+      "lon": 69.597009,
+      "lat": 42.313532,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 248
+     },
+     {
+      "id": "K06",
+      "lon": 69.602677,
+      "lat": 42.313532,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 285
+     },
+     {
+      "id": "K07",
+      "lon": 69.608346,
+      "lat": 42.313532,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 322
+     },
+     {
+      "id": "K08",
+      "lon": 69.614014,
+      "lat": 42.313532,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 359
+     }
+    ],
+    "budget": 500,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "K01"
+    ]
+   },
+   "expected": {
+    "manual": {
+     "ids": [
+      "K01"
+     ],
+     "rows": {
+      "P01": {
+       "before_mm": 918249,
+       "nearest_before": {
+        "kind": "source",
+        "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+       },
+       "after_mm": 141255,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 776994
+      },
+      "P02": {
+       "before_mm": 607774,
+       "nearest_before": {
+        "kind": "source",
+        "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       },
+       "after_mm": 315852,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 291922
+      },
+      "P03": {
+       "before_mm": 249398,
+       "nearest_before": {
+        "kind": "source",
+        "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       },
+       "after_mm": 249398,
+       "nearest_after": {
+        "kind": "source",
+        "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       },
+       "delta_mm": 0
+      },
+      "P04": {
+       "before_mm": 272560,
+       "nearest_before": {
+        "kind": "source",
+        "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       },
+       "after_mm": 272560,
+       "nearest_after": {
+        "kind": "source",
+        "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       },
+       "delta_mm": 0
+      },
+      "P05": {
+       "before_mm": 572729,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       },
+       "after_mm": 572729,
+       "nearest_after": {
+        "kind": "source",
+        "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       },
+       "delta_mm": 0
+      },
+      "P06": {
+       "before_mm": 518725,
+       "nearest_before": {
+        "kind": "source",
+        "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+       },
+       "after_mm": 315887,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 202838
+      },
+      "P07": {
+       "before_mm": 647216,
+       "nearest_before": {
+        "kind": "source",
+        "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+       },
+       "after_mm": 423779,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "K01"
+       },
+       "delta_mm": 223437
+      },
+      "P08": {
+       "before_mm": 411592,
+       "nearest_before": {
+        "kind": "source",
+        "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       },
+       "after_mm": 411592,
+       "nearest_after": {
+        "kind": "source",
+        "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       },
+       "delta_mm": 0
+      },
+      "P09": {
+       "before_mm": 271712,
+       "nearest_before": {
+        "kind": "source",
+        "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       },
+       "after_mm": 271712,
+       "nearest_after": {
+        "kind": "source",
+        "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       },
+       "delta_mm": 0
+      },
+      "P10": {
+       "before_mm": 205934,
+       "nearest_before": {
+        "kind": "source",
+        "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       },
+       "after_mm": 205934,
+       "nearest_after": {
+        "kind": "source",
+        "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       },
+       "delta_mm": 0
+      }
+     },
+     "unknown_count": 0,
+     "weighted_sum_mm": 19623041,
+     "max_mm": 572729,
+     "covered_weight": 19,
+     "total_weight": 55,
+     "cost": 100
+    },
+    "optimize": {
+     "budget": 500,
+     "evaluated": 256,
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 32,
+     "objectives": {
+      "mean": {
+       "ids": [
+        "K01",
+        "K02",
+        "K04"
+       ],
+       "cost": 448,
+       "unknown_count": 0,
+       "weighted_sum_mm": 14203484,
+       "max_mm": 379668,
+       "covered_weight": 36
+      },
+      "minimax": {
+       "ids": [
+        "K01",
+        "K02",
+        "K04"
+       ],
+       "cost": 448,
+       "unknown_count": 0,
+       "weighted_sum_mm": 14203484,
+       "max_mm": 379668,
+       "covered_weight": 36
+      },
+      "coverage": {
+       "ids": [
+        "K04",
+        "K06"
+       ],
+       "cost": 496,
+       "unknown_count": 0,
+       "weighted_sum_mm": 17992061,
+       "max_mm": 800420,
+       "covered_weight": 40
+      }
+     },
+     "pareto": [
+      {
+       "ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 24622750
+      },
+      {
+       "ids": [
+        "K01"
+       ],
+       "cost": 100,
+       "weighted_sum_mm": 19623041
+      },
+      {
+       "ids": [
+        "K01",
+        "K02"
+       ],
+       "cost": 237,
+       "weighted_sum_mm": 18086750
+      },
+      {
+       "ids": [
+        "K01",
+        "K04"
+       ],
+       "cost": 311,
+       "weighted_sum_mm": 15739775
+      },
+      {
+       "ids": [
+        "K01",
+        "K02",
+        "K04"
+       ],
+       "cost": 448,
+       "weighted_sum_mm": 14203484
+      }
+     ],
+     "pareto_excluded_unknown": 0
+    },
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 1,
+      "objectives": {
+       "mean": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 24622750,
+        "max_mm": 918249,
+        "covered_weight": 18
+       },
+       "minimax": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 24622750,
+        "max_mm": 918249,
+        "covered_weight": 18
+       },
+       "coverage": {
+        "ids": [],
+        "cost": 0,
+        "unknown_count": 0,
+        "weighted_sum_mm": 24622750,
+        "max_mm": 918249,
+        "covered_weight": 18
+       }
+      }
+     },
+     {
+      "budget": 250,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 7,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "K01",
+         "K02"
+        ],
+        "cost": 237,
+        "unknown_count": 0,
+        "weighted_sum_mm": 18086750,
+        "max_mm": 572729,
+        "covered_weight": 27
+       },
+       "minimax": {
+        "ids": [
+         "K01",
+         "K02"
+        ],
+        "cost": 237,
+        "unknown_count": 0,
+        "weighted_sum_mm": 18086750,
+        "max_mm": 572729,
+        "covered_weight": 27
+       },
+       "coverage": {
+        "ids": [
+         "K01",
+         "K02"
+        ],
+        "cost": 237,
+        "unknown_count": 0,
+        "weighted_sum_mm": 18086750,
+        "max_mm": 572729,
+        "covered_weight": 27
+       }
+      }
+     },
+     {
+      "budget": 500,
+      "status": "optimal",
+      "reasons": [],
+      "feasible_count": 32,
+      "objectives": {
+       "mean": {
+        "ids": [
+         "K01",
+         "K02",
+         "K04"
+        ],
+        "cost": 448,
+        "unknown_count": 0,
+        "weighted_sum_mm": 14203484,
+        "max_mm": 379668,
+        "covered_weight": 36
+       },
+       "minimax": {
+        "ids": [
+         "K01",
+         "K02",
+         "K04"
+        ],
+        "cost": 448,
+        "unknown_count": 0,
+        "weighted_sum_mm": 14203484,
+        "max_mm": 379668,
+        "covered_weight": 36
+       },
+       "coverage": {
+        "ids": [
+         "K04",
+         "K06"
+        ],
+        "cost": 496,
+        "unknown_count": 0,
+        "weighted_sum_mm": 17992061,
+        "max_mm": 800420,
+        "covered_weight": 40
+       }
+      }
+     }
+    ]
+   }
+  }
+ ]
+}

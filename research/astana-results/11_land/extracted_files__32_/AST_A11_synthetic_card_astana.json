@@ -1,0 +1,70 @@
+{
+  "card_id": "SYN-AST-Q1",
+  "data_kind": "synthetic",
+  "schema_version": "0.2",
+  "generated_at": "2026-10-05T05:00:00Z",
+  "disclaimer": "SYNTHETIC. Вымышленный квартал Астаны, вымышленные акты (SYN-AST-ACT-*), ссылки на example.invalid. Не описывает реальную территорию. Не юридическое заключение.",
+  "territory": {
+    "level": "block",
+    "name": "Синтетический квартал AST-Q1 (не существует)",
+    "city": "Астана",
+    "admin_district": null,
+    "cadastral_number_user_supplied": null,
+    "geometry_ref": {"source_type": "none", "legal_weight": "none", "source_id": null, "method_note": "Синтетика не размещается на реальной карте."},
+    "jurisdiction_check": {"result": "inside_city_context_only", "boundary_source_type": "osm_context", "boundary_legal_weight": "context_only", "boundary_source_id": "SYN-AST-S00", "distance_to_boundary_m": null, "note": "Синтетический пример"}
+  },
+  "items": [
+    {
+      "item_id": "SYN-AST-Q1-I01", "topic": "general_plan_zone", "status": "found_official",
+      "value_text": "Зона общественно-деловой застройки (синтетика)",
+      "legal_basis": null,
+      "establishing_act": {"kind": "approved_plan", "title": "SYN: генеральный план (синтетика)", "issuer": "SYN-орган республиканского уровня", "number": "SYN-AST-ACT-01", "date": "2020-01-01", "document_status": "in_force", "official_url": "https://example.invalid/ast-gp", "locator": "лист SYN-2", "text_checked_at": "2026-10-05", "issuer_jurisdiction": "republic", "city_name_at_issue": "Нур-Султан"},
+      "geometry": {"source_type": "approved_plan_raster_georef", "legal_weight": "illustrative", "source_id": "SYN-AST-S01", "method_note": null},
+      "authority_for_binding_answer": "Уполномоченный орган по архитектуре и градостроительству (SYN)",
+      "provenance": {"source_ids": ["SYN-AST-S01"], "accessed_at": "2026-10-05", "extracted_by": "human"}, "notes": "Акт под прежним названием города"
+    },
+    {
+      "item_id": "SYN-AST-Q1-I02", "topic": "water_protection_zone", "status": "found_official",
+      "value_text": "Водоохранная полоса реки SYN (синтетика)",
+      "legal_basis": null,
+      "establishing_act": {"kind": "akimat_resolution", "title": "SYN: постановление акимата соседней области", "issuer": "SYN-акимат области", "number": "SYN-AST-ACT-02", "date": "2021-06-01", "document_status": "in_force", "official_url": "https://example.invalid/ast-wpz", "locator": "приложение SYN", "text_checked_at": "2026-10-05", "issuer_jurisdiction": "neighbouring_region", "city_name_at_issue": null},
+      "geometry": {"source_type": "derived_buffer", "legal_weight": "illustrative", "source_id": "SYN-AST-S02", "method_note": null},
+      "authority_for_binding_answer": "Акимат города / бассейновая инспекция (SYN)",
+      "provenance": {"source_ids": ["SYN-AST-S02"], "accessed_at": "2026-10-05", "extracted_by": "human"}, "notes": "Акт соседнего региона"
+    },
+    {
+      "item_id": "SYN-AST-Q1-I03", "topic": "flood_risk", "status": "found_unofficial",
+      "value_text": "Сообщение СМИ о подтоплении (синтетика)",
+      "legal_basis": null,
+      "establishing_act": {"kind": "news_or_announcement", "title": "SYN: новость", "issuer": "SYN-СМИ", "number": null, "date": "2026-04-01", "document_status": "news_or_announcement", "official_url": null, "locator": null, "text_checked_at": null, "issuer_jurisdiction": "unknown", "city_name_at_issue": null},
+      "geometry": {"source_type": "none", "legal_weight": "none", "source_id": null, "method_note": null},
+      "authority_for_binding_answer": "Орган по чрезвычайным ситуациям / акимат (SYN)",
+      "provenance": {"source_ids": ["SYN-AST-S03"], "accessed_at": "2026-10-05", "extracted_by": "human"}, "notes": null
+    },
+    {
+      "item_id": "SYN-AST-Q1-I04", "topic": "green_belt_or_forest_fund", "status": "not_public",
+      "value_text": null, "legal_basis": null, "establishing_act": null,
+      "geometry": {"source_type": "none", "legal_weight": "none", "source_id": null, "method_note": null},
+      "authority_for_binding_answer": "Уполномоченный орган лесного хозяйства / акимат (SYN)",
+      "provenance": {"source_ids": [], "accessed_at": "2026-10-05", "extracted_by": "human"}, "notes": null
+    },
+    {
+      "item_id": "SYN-AST-Q1-I05", "topic": "airport_restriction_zone", "status": "found_official",
+      "value_text": "Ограничение высоты (синтетика)",
+      "legal_basis": null,
+      "establishing_act": {"kind": "ministry_order", "title": "SYN: приказ", "issuer": "SYN-министерство", "number": "SYN-AST-ACT-03", "date": "2024-01-01", "document_status": "in_force", "official_url": "https://example.invalid/ast-air", "locator": "п. SYN", "text_checked_at": "2026-10-05", "issuer_jurisdiction": "republic", "city_name_at_issue": null},
+      "geometry": {"source_type": "derived_buffer", "legal_weight": "illustrative", "source_id": "SYN-AST-S04", "method_note": "Буфер от точки, не граница приаэродромной территории"},
+      "authority_for_binding_answer": "Уполномоченный орган гражданской авиации (SYN)",
+      "provenance": {"source_ids": ["SYN-AST-S04"], "accessed_at": "2026-10-05", "extracted_by": "human"}, "notes": null
+    },
+    {
+      "item_id": "SYN-AST-Q1-I06", "topic": "pdp_status", "status": "found_official",
+      "value_text": "ПДП утверждён (синтетика)",
+      "legal_basis": null,
+      "establishing_act": {"kind": "akimat_resolution", "title": "SYN: постановление об утверждении ПДП", "issuer": "SYN-акимат города", "number": "SYN-AST-ACT-04", "date": "2025-03-03", "document_status": "in_force", "official_url": "https://example.invalid/ast-pdp", "locator": "п. 1", "text_checked_at": "2026-10-05", "issuer_jurisdiction": "city", "city_name_at_issue": "Астана"},
+      "geometry": {"source_type": "none", "legal_weight": "none", "source_id": null, "method_note": null},
+      "authority_for_binding_answer": "Уполномоченный орган по архитектуре и градостроительству (SYN)",
+      "provenance": {"source_ids": ["SYN-AST-S05"], "accessed_at": "2026-10-05", "extracted_by": "llm_human_checked"}, "notes": null
+    }
+  ]
+}

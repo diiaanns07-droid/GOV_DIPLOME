@@ -1,0 +1,38 @@
+{
+ "dataset_id": "AST-A06-D001",
+ "source_id": "AST-A06-S003",
+ "attribution": "Mansurova, Mussina, Aubakirov, Nugumanova, Yedilkhan; Zenodo record 15769359; licence CC BY 4.0 as stated by mirror README (not verified on Zenodo)",
+ "note": "first 5 rows of stops.txt, unmodified values",
+ "rows": [
+  {
+   "stop_id": "69d3a2a0-c1c5-4c40-9930-6f7f2fa2ae2a",
+   "stop_name": "Kafe Sulukol'",
+   "stop_lat": "51.18512276135868",
+   "stop_lon": "71.3528443759532"
+  },
+  {
+   "stop_id": "18e751ea-9e23-49dd-9275-4559c1ed40b0",
+   "stop_name": "Shugyla",
+   "stop_lat": "51.186013677553625",
+   "stop_lon": "71.35458807996658"
+  },
+  {
+   "stop_id": "77be7d79-bc6c-4c3d-a629-42529171f5da",
+   "stop_name": "Kladbishche",
+   "stop_lat": "51.1848232789926",
+   "stop_lon": "71.35934473401416"
+  },
+  {
+   "stop_id": "439de39e-eed6-49be-9fc7-e232cc3c3f84",
+   "stop_name": "Medeu",
+   "stop_lat": "51.1834920085524",
+   "stop_lon": "71.3647279589701"
+  },
+  {
+   "stop_id": "cb356626-5f8b-4acd-82b4-d01a06d43b3f",
+   "stop_name": "K'artaly",
+   "stop_lat": "51.18221342546384",
+   "stop_lon": "71.37000604315571"
+  }
+ ]
+}

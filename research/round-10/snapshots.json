@@ -1,0 +1,122 @@
+{
+  "checked_on": "2026-10-06",
+  "prompt_branch": "codex/govtech-main-interface",
+  "code_base": {
+    "sha": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+    "branch": "codex/govtech-main-interface",
+    "paths": [
+      "web/",
+      "ui/",
+      "agent/",
+      "tests/govtech/"
+    ],
+    "entrypoint": "app.py",
+    "port": 8501
+  },
+  "historical_donor": {
+    "sha": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+    "path": "prototypes/city-evidence/"
+  },
+  "build": {
+    "slot": "K04",
+    "branch": "claude/beautiful-clarke-sbzomj"
+  },
+  "sources": [
+    {
+      "slot": "K01",
+      "branch": "claude/loving-thompson-nmajdo",
+      "sha": "4ebb2b2cef6f333f2d22663d988a61e283f183ea",
+      "title": "Шымкент: проверенные школы и готовый городской кейс",
+      "prompt": "prompts/K01.txt",
+      "new_results": "research/round-10-results/K01/"
+    },
+    {
+      "slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "45bbec91472187851923ec0ee820cf5a415f5e75",
+      "title": "Настоящий AI-помощник для нового режима",
+      "prompt": "prompts/K02.txt",
+      "new_results": "research/round-10-results/K02/"
+    },
+    {
+      "slot": "K03",
+      "branch": "claude/epic-curie-iitc43",
+      "sha": "4b5d00ca4f54af1d9689acca19bfd3bc453c7f3d",
+      "title": "Пешеходные маршруты вместо неподписанной прямой",
+      "prompt": "prompts/K03.txt",
+      "new_results": "research/round-10-results/K03/"
+    },
+    {
+      "slot": "K04",
+      "branch": "claude/beautiful-clarke-sbzomj",
+      "sha": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+      "title": "BUILD: собрать один понятный продукт в исходном дизайне",
+      "prompt": "prompts/K04.txt",
+      "new_results": "research/round-10-results/BUILD/"
+    },
+    {
+      "slot": "K05",
+      "branch": "claude/optimistic-davinci-1oiqs9",
+      "sha": "eb4ad7bdacc96d0207a5b17f9ee59eb0db7e6724",
+      "title": "Сравнение мест и понятное обоснование результата",
+      "prompt": "prompts/K05.txt",
+      "new_results": "research/round-10-results/K05/"
+    },
+    {
+      "slot": "K06",
+      "branch": "claude/ecstatic-curie-hzfzn0",
+      "sha": "b9b8145515795c5dd90ccddc61a0de3c2d97b695",
+      "title": "Независимо проверить новые расчёты",
+      "prompt": "prompts/K06.txt",
+      "new_results": "research/round-10-results/K06/"
+    },
+    {
+      "slot": "K07",
+      "branch": "claude/save-work-handoff-ku3ej3",
+      "sha": "3e0b7e4cc7f3f50629d223804b41cac496aae774",
+      "title": "Сделать интерфейс понятным, сохранить светлый 3D-город",
+      "prompt": "prompts/K07.txt",
+      "new_results": "research/round-10-results/K07/"
+    },
+    {
+      "slot": "K08",
+      "branch": "claude/dazzling-mayer-drhsxk",
+      "sha": "ad8d341684be0fd7adfe61b8de1b2ec20cada9a9",
+      "title": "Понятная записка по решению и сохранение результата",
+      "prompt": "prompts/K08.txt",
+      "new_results": "research/round-10-results/K08/"
+    },
+    {
+      "slot": "K09",
+      "branch": "claude/save-work-handoff-qho6eq",
+      "sha": "9be85115394b5f80c948affa08647f5c7d7c1571",
+      "title": "Проверить полезность и подготовить доказательства для диплома",
+      "prompt": "prompts/K09.txt",
+      "new_results": "research/round-10-results/K09/"
+    },
+    {
+      "slot": "K10",
+      "branch": "claude/save-work-handoff-j7pc05",
+      "sha": "657db5207a2c92d1f64fd94f39ba98f56cc30fa8",
+      "title": "Астана: отдельные реальные данные и проверка переноса",
+      "prompt": "prompts/K10.txt",
+      "new_results": "research/round-10-results/K10/"
+    },
+    {
+      "slot": "K11",
+      "branch": "claude/save-work-handoff-fmjw6r",
+      "sha": "50b15bdd3987beb78878f521be3dedd02671eca8",
+      "title": "Реальные ограничения: стоимость, вместимость и допустимость",
+      "prompt": "prompts/K11.txt",
+      "new_results": "research/round-10-results/K11/"
+    },
+    {
+      "slot": "K12",
+      "branch": "claude/save-work-handoff-xuav3q",
+      "sha": "3f966a1e429b95bed1a81a1a0c73d0272f8c98ec",
+      "title": "Приёмка готового сайта глазами пользователя",
+      "prompt": "prompts/K12.txt",
+      "new_results": "research/round-10-results/K12/"
+    }
+  ]
+}

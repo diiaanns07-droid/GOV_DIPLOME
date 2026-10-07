@@ -1,0 +1,429 @@
+{
+  "round": 11,
+  "role": "R01",
+  "branch": "claude/affectionate-ride-bol5v8",
+  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+  "updated_at": "2026-10-07T04:21:18Z",
+  "application_snapshot": {
+    "source_branch": "claude/beautiful-clarke-sbzomj",
+    "source_sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+    "code_sha": "6de3f253d8ec0743450259f9f13722c16cd36099",
+    "imported_paths": [
+      ".gitattributes",
+      "CLAUDE.md",
+      "PROJECT_CONTEXT.md",
+      "agent/school_ai.py",
+      "tests/govtech/",
+      "tests/test_govtech_integration.py",
+      "tests/test_k03_routing_assets.py",
+      "tests/test_school_ai.py",
+      "ui/web_server.py",
+      "web/govtech/",
+      "web/index.html",
+      "web/map.js"
+    ],
+    "integrated": true,
+    "checks": [
+      {
+        "name": "pytest",
+        "status": "PASS",
+        "command": "python -m pytest -q -p no:cacheprovider",
+        "result": "133 passed"
+      },
+      {
+        "name": "ui.web_check",
+        "status": "PASS",
+        "command": "python -B -m ui.web_check",
+        "result": "14 OK"
+      },
+      {
+        "name": "node govtech suites",
+        "status": "PASS",
+        "command": "node tests/govtech/{plan,resilience,whatif,school_case,school_vs_k05}.cjs",
+        "result": "PASS; school_case 3621; school_vs_k05 7560"
+      }
+    ],
+    "status": "imported",
+    "reason": "Reviewed path import (git checkout <sha> -- <paths>), no branch merge; .gitattributes + coordinator LF/CRLF fix from PACK_SHA."
+  },
+  "roles": {
+    "R02": {
+      "title": "Сервер, база объектов и доступ редактора",
+      "expected_paths": "ui/civic_store/",
+      "source_branch": "claude/trusting-ptolemy-6ms354",
+      "source_sha": "3d2b8b9",
+      "imported_paths": [
+        "ui/civic_store/",
+        "tests/civic/R02/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R02 tests in integrated tree @3d2b8b9",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R02",
+          "result": "part of full run 717 passed, 2 skipped (patch test skips itself in the R01 tree)"
+        },
+        {
+          "name": "R02 own tests in integrated tree",
+          "status": "PASS",
+          "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02 --deselect tests/civic/R02/test_r02_http.py::test_patch_applies_to_real_web_server_and_serves_both_apis",
+          "result": "145 passed, 1 skipped"
+        },
+        {
+          "name": "R01 P0 HTTP acceptance on R02 SQLite (incl. restart)",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R01/test_r01_p0_api.py",
+          "result": "r02 params 8/8 PASS"
+        },
+        {
+          "name": "R01 browser P0 flow on R02+R06",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/p0_flow.cjs <out> --backend=real",
+          "result": "39 PASS / 0 FAIL / 2 NOT_RUN (basemap, attribution: host blocked)"
+        },
+        {
+          "name": "Independent review workflow (security, persistence, interface) @6a28de2",
+          "status": "PASS",
+          "result": "no blockers; M1 login rate race -> gateway lock; M3/M4 fixed in 92f7aba"
+        }
+      ],
+      "status": "integrated",
+      "reason": "Reviewed and imported by path at pinned SHA. Delta 6a28de2..92f7aba (cli, importer, http_adapter, demo_package) read before import. CivicHttpAdapter imported with the package but NOT used: R01 keeps one transport (CivicGateway) and adopted its checks (411 chunked, strict Origin, X-Frame-Options/CORP). Re-imported at code_commit 3d2b8b9 (atomic login limit, writer queue, 0600 DB/backup, re-validation before publish, restore hardening); delta scanned before import."
+    },
+    "R03": {
+      "title": "Публичная карта и карточки",
+      "expected_paths": "web/civic/map/",
+      "source_branch": "claude/zen-mendel-e79iiv",
+      "source_sha": "1bc9c48",
+      "imported_paths": [
+        "web/civic/map/",
+        "tests/civic/R03/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R03 core unit tests",
+          "status": "PASS",
+          "command": "node --test tests/civic/R03/core.test.mjs",
+          "result": "23 pass"
+        },
+        {
+          "name": "R01 integrated browser P0 (card, history reason, synthetic label, permalink, F5, mobile sheet)",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/p0_flow.cjs <out>",
+          "result": "41 PASS / 0 FAIL / 2 NOT_RUN"
+        },
+        {
+          "name": "R03 own browser suite (stand)",
+          "status": "NOT_RUN",
+          "reason": "stand-only suite; integrated behaviour covered by R01 p0_flow"
+        }
+      ],
+      "status": "integrated",
+      "reason": "Re-imported 1bc9c48 (25 review findings fixed: bbox, period rule, Astana time, search->map, demo ring, remount, a11y, mobile camera; R03 verified itself inside R01 build 8c6add9). Mounted embedded in the R01 panel; fitOnLoad when no permalink.",
+      "open_defects": [
+        {
+          "id": "R01-F-R03-1",
+          "severity": "major (visual)",
+          "where": "web/civic/map/civic-map.css: `.civic-r03-root button { color: inherit }` outranks `.civic-r03-btn-primary { color: #fff }`",
+          "effect": "primary card button «Задать вопрос по объекту» text equals its dark background (measured rgb(21,44,38) on rgb(21,44,38))",
+          "r01_handling": "compatible CSS adapter in web/civic/shell/shell.css (.civic-r03-root .civic-r03-btn-primary {color:#fff}); browser check 'card action button text is visible'",
+          "status": "open for R03"
+        }
+      ]
+    },
+    "R04": {
+      "title": "Кабинет редактора",
+      "expected_paths": "web/civic/editor/",
+      "source_branch": "claude/fervent-ritchie-1zih1y",
+      "source_sha": "da46e1c",
+      "imported_paths": [
+        "web/civic/editor/",
+        "tests/civic/R04/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R04 core + contract mock tests",
+          "status": "PASS",
+          "command": "node --test tests/civic/R04/core.test.cjs tests/civic/R04/contract_mock.test.cjs",
+          "result": "27 pass"
+        },
+        {
+          "name": "R01 integrated browser P0 (login, draft, point on map, publish with reason, pending change + publish changes)",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/p0_flow.cjs <out>"
+        }
+      ],
+      "status": "integrated",
+      "reason": "DELIVERY partial (code_commit null) but verified by R04 against real R02 92f7aba (5 e2e). Shell api.request forwards options.idempotencyKey as Idempotency-Key (R02 accepts). Re-import when R04 finalises."
+    },
+    "R05": {
+      "title": "Реальные объекты Астаны",
+      "expected_paths": "data/civic/astana/",
+      "source_branch": "claude/intelligent-sagan-7shpeh",
+      "source_sha": "ee7516f",
+      "imported_paths": [
+        "data/civic/astana/",
+        "tests/civic/R05/",
+        "research/round-11-results/R05/ (evidence referenced by sources.json and tests)"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R05 tests in integrated tree",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R05",
+          "result": "120 passed"
+        },
+        {
+          "name": "slice reproducibility",
+          "status": "PASS",
+          "command": "python3 -I data/civic/astana/tools/build_slice.py --check",
+          "result": "valid, unchanged; counts real 0, historical 0, demo 9"
+        },
+        {
+          "name": "real slice import via R02 (drafts only)",
+          "status": "PASS",
+          "command": "python -m ui.civic_store import data/civic/astana/objects.json",
+          "result": "0 records (no confirmed real Astana works fetched in R05 environment)"
+        },
+        {
+          "name": "demo slice via R02 seed-demo + browser",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/p0_flow.cjs <out>",
+          "result": "7 published synthetic, draft/archived hidden; 45 PASS / 0 FAIL / 2 NOT_RUN"
+        },
+        {
+          "name": "official source fetch",
+          "status": "FAIL",
+          "reason": "reported by R05: official gov.kz announcements not fetchable from its environment; no real objects. probe_sources.py (network) not run by R01."
+        }
+      ],
+      "status": "integrated_data_synthetic_only",
+      "reason": "Re-imported checkpoint 5 (33 review findings fixed, aligned with R02 importer). Real and synthetic sets are separate files and separate import sources; the import never publishes. Open R05 notes for R01: plan-ui.js/resilience-ui.js attribution path text (pinned core, not changed).",
+      "code_commit": "01f89df"
+    },
+    "R06": {
+      "title": "Обращения жителей",
+      "expected_paths": "ui/civic_feedback/ + web/civic/feedback/",
+      "source_branch": "claude/focused-hypatia-z8h0no",
+      "source_sha": "91f2508",
+      "imported_paths": [
+        "ui/civic_feedback/",
+        "web/civic/feedback/",
+        "tests/civic/R06/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R06 own tests in integrated tree (incl. gateway smoke and R02 compat)",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R06",
+          "result": "PASS (part of 440 passed full run)"
+        },
+        {
+          "name": "R01 browser P0 flow: resident message, moderation tab, public reply, XSS as text",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/p0_flow.cjs <out> --backend=real"
+        },
+        {
+          "name": "R06 independent app e2e against the integrated build",
+          "status": "PASS",
+          "command": "R06_BASE=... node tests/civic/R06/app_e2e_r06.cjs",
+          "result": "9/9 PASS"
+        }
+      ],
+      "status": "integrated",
+      "reason": "DELIVERY ready (code 36a0604); imported latest checkpoint eaa113d (maintenance CLI, R03 geometry guard). Wired via ui.civic_feedback.integration.build_feedback_service(db, CivicService, classifier=None) on the same SQLite file; R06 contract_delta routes accepted (GET /staff/feedback/{id}, POST /feedback/receipt, POST /feedback/withdraw-consent). Moderation mounted as a staff-drawer tab. Re-imported final code 91f2508. Moderation moved to R06-proposed staff-only drawer (#civic-moderation-button)."
+    },
+    "R07": {
+      "title": "Симулятор ограничений",
+      "expected_paths": "engine/civic_scenarios/ + web/civic/scenarios/",
+      "source_branch": "claude/brave-hopper-bkc58b",
+      "source_sha": "22fa413",
+      "imported_paths": [
+        "engine/civic_scenarios/ (runtime, graphs, cases, adapters, build_graphs.py, README.md)",
+        "web/civic/scenarios/scenarios.js",
+        "web/civic/scenarios/scenarios.css",
+        "tests/civic/R07/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R07 tests in integrated tree",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R07",
+          "result": "51 passed (K03 reproducibility runs: b2cb2e0 present)"
+        },
+        {
+          "name": "Independent review workflow (http-security, correctness, data-licence-ui)",
+          "status": "PASS",
+          "result": "no blockers; adapter fixes applied: GET routes, graph_id type guard 422, OverflowError 422, 2-slot semaphore, apiPrefix '', visible ODbL attribution and limits"
+        },
+        {
+          "name": "Browser: scenario drawer on the same map 1440/390",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/scenarios_smoke.cjs <out>",
+          "result": "16 PASS / 0 FAIL"
+        }
+      ],
+      "status": "integrated",
+      "reason": "DELIVERY ready (code d77ec45, head 22fa413). Walking graph K03 only; driving NOT_READY shown disabled. Open R07 items: legend says 'доступ подтверждён' (should be 'разрешён по данным OSM'), addSource attribution, graph bytes caching, nested fields in payload errors.",
+      "not_imported": [
+        "web/civic/scenarios/demo.html (global styles, external tiles)",
+        "engine/civic_scenarios/devserver.py (serves whole web/, no Host check)"
+      ]
+    },
+    "R08": {
+      "title": "Обучаемая модель обращений",
+      "expected_paths": "ml/civic_classifier/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No R08 branch or artefacts (ml/civic_classifier, tests/civic/R08, results) in any origin branch at 2026-10-07T04:21:18Z. R06 runs with classifier=None."
+    },
+    "R09": {
+      "title": "AI-помощник",
+      "expected_paths": "agent/civic_assistant/ + web/civic/assistant/",
+      "source_branch": "claude/wizardly-ptolemy-qy8ltw",
+      "source_sha": "f895c30",
+      "imported_paths": [
+        "agent/civic_assistant/",
+        "web/civic/assistant/ (assistant.js, assistant.css served; demo.html in repo for R09 tests only, not in ASSETS)",
+        "tests/civic/R09/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R09 tests in integrated tree",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R09",
+          "result": "119 passed"
+        },
+        {
+          "name": "R01 browser: assistant under the card, template answer from public facts, staff reason not leaked, client facts -> 400",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/p0_flow.cjs <out>"
+        },
+        {
+          "name": "live LLM",
+          "status": "NOT_RUN",
+          "reason": "no provider configured; template mode only (no paid calls)"
+        }
+      ],
+      "status": "integrated",
+      "reason": "DELIVERY ready (code 5d1e251, head f895c30 = verified R01 patch notes). Wired manually (R09 patch targets be8cb79): AssistantEndpoint(r02_public_loader, r07_case_loader, provider=None, extractor=None); /staff/assistant/extract requires R02 require_staff (session+CSRF+origin) in the gateway. Draft-review panel for R04 not mounted yet."
+    },
+    "R10": {
+      "title": "Независимая приёмка",
+      "expected_paths": "tests/civic/R10/",
+      "source_branch": "claude/fervent-dijkstra-1cqrg5",
+      "source_sha": "13de522",
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [
+        {
+          "name": "R10-D001 .runtime not ignored",
+          "status": "PASS",
+          "reason": "fixed: .gitignore (.runtime/, *.sqlite*, wal/shm) and .dockerignore (.runtime, *.sqlite, *.sqlite3)"
+        },
+        {
+          "name": "R10-D002 non-string graph_id -> 500",
+          "status": "PASS",
+          "reason": "fixed in gateway (422 before R07); regression tests/civic/R01/test_r01_integrated_routes.py"
+        },
+        {
+          "name": "R10 WIP acceptance suite run by R01 against its build",
+          "status": "PASS",
+          "command": "R10_TARGET=command ... python3 -I -B tests/civic/R10/run_acceptance.py --pattern 'test_*.py'",
+          "result": "63 PASS / 1 NOT_RUN (by design) / 0 FAIL on f0724b7 (code eb7b0cd); runs/r10_suite_13de522_against_r01_f0724b7/",
+          "reason": "R10 suite is WIP; this is not R10's verdict"
+        }
+      ],
+      "status": "review_received_wip",
+      "reason": "R10 is an acceptance role (no runtime code to import). WIP at 9123af0; defects addressed in R01."
+    }
+  },
+  "decisions": [
+    {
+      "id": "D-01",
+      "decision": "Single transport: R01 CivicGateway with an explicit route table for all roles; unknown -> 404 JSON, undelivered module -> 503 module_unavailable."
+    },
+    {
+      "id": "D-02",
+      "decision": "Services receive the full path /api/civic/v1/..., raw query string, context {headers, cookies, client_ip, host_allowed=True, is_same_origin True/False/None, is_https=False} (R02 convention). R02 CivicHttpAdapter not used."
+    },
+    {
+      "id": "D-03",
+      "decision": "Publication model follows R02: edits of a published object stay in the staff copy until 'publish' with a public reason; residents never see unpublished edits."
+    },
+    {
+      "id": "D-04",
+      "decision": "R06 contract_delta routes accepted as compatible additions."
+    },
+    {
+      "id": "D-05",
+      "decision": "Mode switch Город (default) / Школы / Учебная модель on the same MapLibre instance; training and school modes unchanged."
+    },
+    {
+      "id": "D-06",
+      "decision": "R07 read-only GET /scenarios/graphs, /scenarios/graphs/{id}, /scenarios/cases accepted; graph files never served as static assets; compare limited to 2 concurrent runs."
+    },
+    {
+      "id": "D-07",
+      "decision": "Login requests are serialised in the gateway until R02 makes the rate-limit check atomic (R02 review M1); DB file chmod 0600, .runtime 0700."
+    },
+    {
+      "id": "D-08",
+      "decision": "R01 fallback modules (fallback.js) removed after R03/R04/R06 integration: one implementation per function; a missing module is shown as such."
+    },
+    {
+      "id": "D-09",
+      "decision": "R09 POST /staff/assistant/extract accepted; gateway enforces staff session+CSRF before R09. Assistant facts only from R02 public view and R07 prepared cases; no LLM provider configured."
+    },
+    {
+      "id": "D-10",
+      "decision": "Resident-message moderation is a separate staff-only drawer (button visible only with an editor session), per R06 r01_integration.patch; editor, moderation and scenario drawers are mutually exclusive."
+    },
+    {
+      "id": "D-11",
+      "decision": ".dockerignore edited by R01 (outside the listed R01 paths) to keep runtime SQLite with password hashes out of images (R10-D001, R02 review). Coordinator may move this to the owner of deployment files."
+    },
+    {
+      "id": "D-12",
+      "decision": "Gateway service registry uses an RLock: dependent factories (feedback/assistant need store) no longer deadlock on lazy start (found by tests/civic/R01/test_r01_integrated_routes.py)."
+    }
+  ],
+  "self_review": [
+    {
+      "finding": "deeply nested JSON (RecursionError) dropped the connection with a traceback",
+      "severity": "minor",
+      "status": "fixed",
+      "test": "test_deeply_nested_json_is_400_json_not_a_dropped_connection"
+    },
+    {
+      "finding": "OPTIONS/TRACE/unknown methods and protocol errors on civic paths answered HTML",
+      "severity": "minor",
+      "status": "fixed",
+      "test": "test_other_methods_on_civic_paths_answer_json, test_protocol_error_on_civic_path_is_json"
+    },
+    {
+      "finding": "PUT/PATCH/DELETE 405 without Allow and without 404 for unknown civic paths",
+      "severity": "minor",
+      "status": "fixed",
+      "test": "test_put_delete_follow_route_table"
+    },
+    {
+      "finding": "HTML shell could be framed by a neighbour loopback origin (clickjacking of staff actions)",
+      "severity": "minor",
+      "status": "fixed (X-Frame-Options DENY + CSP frame-ancestors 'none')",
+      "test": "test_html_shell_cannot_be_framed"
+    }
+  ],
+  "code_sha": "a5d184b4f5aa7df608a2ae9124408201b14ecb67"
+}

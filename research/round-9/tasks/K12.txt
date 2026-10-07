@@ -1,0 +1,13 @@
+РАУНД 9 · K12 · Негативная проверка и границы API
+Прочитай TASK.txt, CORE_SPEC.txt, REVIEW.txt и snapshots.json. Выход: research/round-9-results/K12/; общий прототип меняет только BUILD.
+
+ЭТАП 1
+Вновь проверь исправление r8 F1 на новом BUILD если опубликован: direct createSearch/optimize/evaluate валидируют до тяжёлой работы. Начни с 17/20 кандидатов и watchdog, не гоняй 2^30 без нужды. Старый d865dd4 исходный известный repro, не новая регрессия.
+
+ЭТАП 2
+Расширь corpus для resilience: поддельные source IDs, reserved/duplicate case ID, >7 случаев, 13 кандидатов, другие category/snapshot, Unicode/HTML label, deep JSON/256KiB, мутация входа после валидации. Atomic import/state, no external requests, source immutability.
+
+ЭТАП 3
+Fuzz bounded seed/cases/time на actual BUILD через adapter, независимый oracle, минимальные repro. UI поздний результат после изменения cases/selected/города не применяется. BAD/NOT_RUN/SKIP честно, собственный reference PASS не успех BUILD. Маленькие патчи по находкам с regression tests.
+
+После каждого этапа: STATUS/HANDOFF, точный tested SHA и команды, commit выбранных путей + push своей ветки, затем продолжить. Итог — рабочие проверки/модуль/патч, а не только рекомендации. Прочитать чужой код до исполнения.

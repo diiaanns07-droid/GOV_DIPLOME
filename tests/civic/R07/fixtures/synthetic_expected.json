@@ -1,0 +1,20 @@
+{
+ "_comment": "Ожидания рассчитаны вручную по рисунку графа synthetic-tiny-v1 (до запуска движка). Длины в метрах. null = нет длины.",
+ "_graph": "A-B 100, B-C 100, C-D 100, B-E 80, E-F 100, F-C 80, F-G 100, G-D 80, D->H 150 (oneway), D-U 200 unknown, A-X 50 denied",
+ "baseline": {
+  "n_a>n_c": ["ok", 200], "n_a>n_d": ["ok", 300], "n_a>n_h": ["ok", 450], "n_a>n_u": ["unknown", null],
+  "n_a>n_x": ["unreachable", null], "n_a>n_a": ["ok", 0],
+  "n_h>n_a": ["unreachable", null], "n_h>n_h": ["ok", 0], "n_h>n_c": ["unreachable", null]
+ },
+ "baseline_unknown_upper_m": {"n_a>n_u": 500},
+ "plan_A": {
+  "n_a>n_c": ["ok", 360], "n_a>n_d": ["ok", 460], "n_a>n_h": ["ok", 610], "n_a>n_u": ["unknown", null],
+  "n_a>n_x": ["unreachable", null]
+ },
+ "plan_A_equal_cost": {"n_a>n_d": true, "n_a>n_c": false},
+ "plan_A_delta_m": {"n_a>n_c": 160, "n_a>n_d": 160, "n_a>n_h": 160},
+ "plan_B": {
+  "n_a>n_c": ["ok", 200], "n_a>n_d": ["unreachable", null], "n_a>n_h": ["unreachable", null], "n_a>n_u": ["unreachable", null]
+ },
+ "a_vs_b_change": {"n_a>n_c": "shorter", "n_a>n_d": "lost_within_model", "n_a>n_h": "lost_within_model"}
+}

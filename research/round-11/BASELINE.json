@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-06",
+  "timezone": "Asia/Bishkek",
+  "prompt_branch": "codex/govtech-main-interface",
+  "coordinator_base": "3aea1afaa27a0e1f733a50a50357ecf7a4ff19e1",
+  "application": {
+    "branch": "claude/beautiful-clarke-sbzomj",
+    "sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+    "code_sha": "6de3f253d8ec0743450259f9f13722c16cd36099"
+  },
+  "city": "astana",
+  "round": 11,
+  "slots": 10,
+  "old_account_numbers_are_not_role_assignments": true,
+  "existing_preview": {
+    "url": "http://127.0.0.1:8502/",
+    "source_sha": "d546c7dc7b2cc0dd41c301738e6d2cdbc75cc4a8",
+    "note": "Local ignored preview, not available to cloud agents; port 8501 can run older code."
+  },
+  "scope": "One usable Astana civic workflow: objects/events -> editor publish -> public map -> linked feedback; first scenario-comparison and ML modules as staged extensions.",
+  "exclusions": [
+    "main merge",
+    "deployment",
+    "sending messages to residents or officials",
+    "reading .env/token files",
+    "rewriting whole app",
+    "building photorealistic Astana",
+    "all-city traffic forecasts"
+  ]
+}

@@ -1829,6 +1829,8 @@ async function bootstrap(event = null, options = {}) {
     state.errors = [errorText(error)];
     state.live = false;
     connection(false, "Движок недоступен");
+    // The civic list still works without the training bootstrap (no map then).
+    if (!map) window.CivicShell?.onMapUnavailable?.();
     if (!catalog)
       $("panel").innerHTML =
         `<div class="error-box"><b>Не удалось загрузить город</b><p>${esc(errorText(error))}</p><p>Запустите Python-сервер приложения. Без API расчёты недоступны.</p></div><button class="btn lime" id="retry-bootstrap">Повторить подключение</button>`;

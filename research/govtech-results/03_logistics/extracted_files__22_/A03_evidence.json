@@ -1,0 +1,973 @@
+{
+ "meta": {
+  "agent_id": "A03",
+  "topic": "Муниципальная логистика: вывоз ТКО, уборка, выезды бригад, обслуживание распределённых объектов (без пассажирского транспорта)",
+  "city": "Шымкент (город республиканского значения)",
+  "searched_at": "2026-10-04T17:15:00Z",
+  "access_limitations": "Нет браузера и веб-поиска. HTTP 403 host_not_allowed: gov.kz, stat.gov.kz, data.egov.kz, adilet.zan.kz, overpass-api.de, download.geofabrik.de, router.project-osrm.org. Доступны GitHub и PyPI. Местные официальные факты не проверены; научные ссылки по памяти."
+ },
+ "sources": [
+  {
+   "source_id": "A03-S001",
+   "title": "ПРОМПТ 03. Муниципальная логистика и маршруты служб",
+   "publisher": "владелец проекта",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04",
+   "source_type": "task_brief",
+   "access_status": "opened",
+   "notes": "Контекст задачи, не доказательство"
+  },
+  {
+   "source_id": "A03-S002",
+   "title": "STUPITS «Аким на 5 часов», коммит 834a25f",
+   "publisher": "BAITC-Hacks / GitHub",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-04",
+   "source_type": "code_repository",
+   "access_status": "opened",
+   "notes": "Shallow clone только для чтения"
+  },
+  {
+   "source_id": "A03-S003",
+   "title": "VROOM API.md",
+   "publisher": "VROOM-Project",
+   "url": "https://github.com/VROOM-Project/vroom/blob/master/docs/API.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "documentation",
+   "access_status": "opened",
+   "notes": "Ветка master"
+  },
+  {
+   "source_id": "A03-S004",
+   "title": "OSRM HTTP API (docs/http.md)",
+   "publisher": "Project-OSRM",
+   "url": "https://github.com/Project-OSRM/osrm-backend/blob/master/docs/http.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "documentation",
+   "access_status": "opened",
+   "notes": null
+  },
+  {
+   "source_id": "A03-S005",
+   "title": "OSRM profiles/car.lua",
+   "publisher": "Project-OSRM",
+   "url": "https://github.com/Project-OSRM/osrm-backend/blob/master/profiles/car.lua",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "source_code",
+   "access_status": "opened",
+   "notes": null
+  },
+  {
+   "source_id": "A03-S006",
+   "title": "Лицензии VROOM, OSRM, OR-Tools",
+   "publisher": "GitHub",
+   "url": "https://github.com/google/or-tools/blob/stable/LICENSE",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "license",
+   "access_status": "opened",
+   "notes": "Также VROOM LICENSE и OSRM LICENSE.TXT"
+  },
+  {
+   "source_id": "A03-S007",
+   "title": "opengov-kz/data-egov-kz: зеркало каталога data.egov.kz",
+   "publisher": "opengov-kz (сторонний, MIT)",
+   "url": "https://github.com/opengov-kz/data-egov-kz",
+   "published_at": "2025-04-30",
+   "accessed_at": "2026-10-04",
+   "source_type": "third_party_mirror",
+   "access_status": "opened",
+   "notes": "Не официальный источник; снимок 2025-03/04"
+  },
+  {
+   "source_id": "A03-S008",
+   "title": "Журнал проверки сетевого доступа A03",
+   "publisher": "A03",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04",
+   "source_type": "own_check",
+   "access_status": "opened",
+   "notes": "curl -D, 17:15 UTC"
+  },
+  {
+   "source_id": "A03-S009",
+   "title": "Эксперименты A03-E001/E002 (синтетика)",
+   "publisher": "A03",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04",
+   "source_type": "own_experiment",
+   "access_status": "opened",
+   "notes": "Файлы переданы: см. deliverables.files"
+  },
+  {
+   "source_id": "A03-S010",
+   "title": "PyPI: ortools 9.15.6755, pyvroom 1.15.2",
+   "publisher": "PyPI",
+   "url": "https://pypi.org/project/ortools/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "package",
+   "access_status": "opened",
+   "notes": "Также https://pypi.org/project/pyvroom/"
+  },
+  {
+   "source_id": "A03-S011",
+   "title": "Управление цифровизации г. Шымкент (указатель координатора)",
+   "publisher": "gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_page",
+   "access_status": "blocked_in_env",
+   "notes": "Содержание не проверено"
+  },
+  {
+   "source_id": "A03-S012",
+   "title": "БНС: динамические ряды Шымкент (38)",
+   "publisher": "stat.gov.kz",
+   "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_statistics",
+   "access_status": "blocked_in_env",
+   "notes": null
+  },
+  {
+   "source_id": "A03-S013",
+   "title": "Портал открытых данных",
+   "publisher": "data.egov.kz",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_env",
+   "notes": null
+  },
+  {
+   "source_id": "A03-S014",
+   "title": "Kim, Kim, Sahoo. Waste collection vehicle routing problem with time windows. Computers & Operations Research 33(12)",
+   "publisher": "Elsevier",
+   "url": null,
+   "published_at": "2006",
+   "accessed_at": null,
+   "source_type": "paper",
+   "access_status": "not_opened_memory_citation",
+   "notes": "Перепроверить"
+  },
+  {
+   "source_id": "A03-S015",
+   "title": "Beliën, De Boeck, Van Ackere. Municipal solid waste collection and management problems: a literature review. Transportation Science 48(1)",
+   "publisher": "INFORMS",
+   "url": null,
+   "published_at": "2014",
+   "accessed_at": null,
+   "source_type": "paper",
+   "access_status": "not_opened_memory_citation",
+   "notes": "Перепроверить"
+  },
+  {
+   "source_id": "A03-S016",
+   "title": "Golden, Wong. Capacitated arc routing problems. Networks 11(3)",
+   "publisher": "Wiley",
+   "url": null,
+   "published_at": "1981",
+   "accessed_at": null,
+   "source_type": "paper",
+   "access_status": "not_opened_memory_citation",
+   "notes": "Перепроверить"
+  },
+  {
+   "source_id": "A03-S017",
+   "title": "Vidal. Hybrid genetic search for the CVRP: open-source implementation and SWAP* neighborhood. Computers & Operations Research 140",
+   "publisher": "Elsevier",
+   "url": null,
+   "published_at": "2022",
+   "accessed_at": null,
+   "source_type": "paper",
+   "access_status": "not_opened_memory_citation",
+   "notes": "Перепроверить"
+  },
+  {
+   "source_id": "A03-S018",
+   "title": "GitHub search API: shymkent, shymkent waste, kazakhstan waste, data.egov.kz",
+   "publisher": "GitHub",
+   "url": "https://api.github.com/search/repositories",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "search_results",
+   "access_status": "opened",
+   "notes": "Наборов вывоза отходов Шымкента не найдено"
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "A03-F001",
+   "statement": "Официальные домены РК и сервисы OSM/OSRM недоступны в среде A03",
+   "kind": "observed",
+   "value": 403,
+   "unit": "HTTP status",
+   "geography": null,
+   "period": "2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A03-S008",
+     "locator": "заголовок x-deny-reason: host_not_allowed"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение среды, не сайтов"
+  },
+  {
+   "fact_id": "A03-F002",
+   "statement": "Ядро STUPITS требует только numpy и pytest; локальный HTTP API с маршрутами validate, simulate, plan-status, optimize, robustness, compare, advisor; оптимизатор — полный перебор",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Астана (учебная модель)",
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "A03-S002",
+     "locator": "requirements.txt; ui/web_server.py стр. 38-40; engine/optimizer.py docstring"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A03-F003",
+   "statement": "Попытка STUPITS загрузить объекты OSM завершилась status unavailable (ReadTimeout Overpass)",
+   "kind": "observed",
+   "value": "unavailable",
+   "unit": null,
+   "geography": "Астана",
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "A03-S002",
+     "locator": "data/real_context_meta.json"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Риск зависимости от Overpass"
+  },
+  {
+   "fact_id": "A03-F004",
+   "statement": "Классификация обращений iKomek 109 / eOtinish указана в README STUPITS как план развития, не как реализованная функция",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "A03-S002",
+     "locator": "README.md, раздел «Планы развития», стр. 651-655"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A03-F005",
+   "statement": "В корне репозитория STUPITS нет файла LICENSE (у вендорного MapLibre лицензия есть)",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "A03-S002",
+     "locator": "дерево файлов коммита 834a25f"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Важно для публикации в GovTech и open source"
+  },
+  {
+   "fact_id": "A03-F006",
+   "statement": "В каталоге МИО есть типовые наборы №672 «Сведения об объектах вывоза мусора в разрезе регионов», №674 тарифы, №680/681 строительство/ремонт дорог, «Местоположения электронных табло на остановках»; у каждого несколько региональных экземпляров",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Казахстан, регионы",
+   "period": "снимок до 2025-04-30",
+   "source_refs": [
+    {
+     "source_id": "A03-S007",
+     "locator": "data/byMIO.csv, колонки Version Name / Data Url"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Сторонний снимок; принадлежность экземпляров регионам не указана"
+  },
+  {
+   "fact_id": "A03-F007",
+   "statement": "У «г. Шымкент» на портале: placedDatasetsCount 54, actualPlacedDatasetsCount 49, allDatasetsCount 61",
+   "kind": "observed",
+   "value": 54,
+   "unit": "наборов",
+   "geography": "г. Шымкент",
+   "period": "снимок до 2025-04-30",
+   "source_refs": [
+    {
+     "source_id": "A03-S007",
+     "locator": "datasources/getstatisticsbymiogovagencies.json, nameRu = г. Шымкент"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Перепроверить на портале"
+  },
+  {
+   "fact_id": "A03-F008",
+   "statement": "Набор «Объекты вывоза мусора по Туркестанской области» (index turkistan_oblysyndagy_kokys_sh) относится к области, не к Шымкенту",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Туркестанская область",
+   "period": "снимок до 2025-04-30",
+   "source_refs": [
+    {
+     "source_id": "A03-S007",
+     "locator": "data/byMIO.csv"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Не приписывать городу"
+  },
+  {
+   "fact_id": "A03-F009",
+   "statement": "Шаблон API: https://data.egov.kz/api/v4/{index}/v{n}?apiKey=...; метаданные: /meta/{index}/v{n}?pretty",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": "снимок до 2025-04-30",
+   "source_refs": [
+    {
+     "source_id": "A03-S007",
+     "locator": "byMIO.csv Data Link / Meta Link; README"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Только документировано, запрос не выполнен"
+  },
+  {
+   "fact_id": "A03-F010",
+   "statement": "VROOM поддерживает service/setup, time_windows, pickup/delivery, skills, priority, capacity, breaks, max_tasks, max_travel_time, max_distance и plan mode для оценки заданного маршрута",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S003",
+     "locator": "разделы Solving mode, Jobs, Vehicles"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A03-F011",
+   "statement": "В VROOM API.md не найдено описания повторных рейсов или промежуточной разгрузки",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S003",
+     "locator": "поиск по trip, multi"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Отсутствие упоминания; проверить issues"
+  },
+  {
+   "fact_id": "A03-F012",
+   "statement": "OSRM table возвращает матрицы duration и distance; параметры fallback_speed и scale_factor",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S004",
+     "locator": "Table service"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A03-F013",
+   "statement": "Профиль car.lua использует статические скорости: residential 25, service 15, motorway 90 км/ч; пробок нет",
+   "kind": "observed",
+   "value": 25,
+   "unit": "км/ч (residential)",
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S005",
+     "locator": "строки 175-190"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Профиля мусоровоза нет"
+  },
+  {
+   "fact_id": "A03-F014",
+   "statement": "Лицензии: OR-Tools Apache-2.0; VROOM и OSRM BSD-2-Clause",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S006",
+     "locator": "файлы LICENSE"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A03-F015",
+   "statement": "Установленный размер: ortools 82,5 МБ (+absl-py, pandas, protobuf); pyvroom 3,6 МБ (+numpy, pandas)",
+   "kind": "observed",
+   "value": 82.5,
+   "unit": "МБ",
+   "geography": null,
+   "period": "2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A03-S010",
+     "locator": "измерение в среде A03"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A03-F016",
+   "statement": "E001: OR-Tools с целью «пробег» против B2: км −20,6%, суммарная длительность смен +10,1%",
+   "kind": "synthetic",
+   "value": -20.6,
+   "unit": "%",
+   "geography": "синтетическая рамка",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S009",
+     "locator": "A03_experiment_results.json, runs"
+    }
+   ],
+   "derivation": "(126,47-159,35)/159,35; (846,3-768,6)/768,6",
+   "confidence": "high",
+   "caveats": "Не экономия Шымкента"
+  },
+  {
+   "fact_id": "A03-F017",
+   "statement": "E001: цель «пробег + длительность»: км −13,7%, длительность −7,9% к B2",
+   "kind": "synthetic",
+   "value": -7.9,
+   "unit": "%",
+   "geography": "синтетическая рамка",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S009",
+     "locator": "runs.OR_gls_5s_cost_travel_plus_duration"
+    }
+   ],
+   "derivation": "(137,46-159,35)/159,35; (708,1-768,6)/768,6",
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A03-F018",
+   "statement": "Балансировка (span 20): разброс смен 106,0 → 5,5 мин ценой +2,6% км",
+   "kind": "synthetic",
+   "value": 5.5,
+   "unit": "мин",
+   "geography": "синтетическая рамка",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S009",
+     "locator": "runs.OR_gls_5s_balance_span20"
+    }
+   ],
+   "derivation": "(129,78-126,47)/126,47",
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A03-F019",
+   "statement": "План по прямым предсказал 87,2 км, оценка на «сетевой» матрице дала 124,18 км (недооценка 29,8%); порядок обхода не ухудшился",
+   "kind": "synthetic",
+   "value": -29.8,
+   "unit": "%",
+   "geography": "синтетическая рамка",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S009",
+     "locator": "runs.OR_planned_on_crowfly_eval_on_network"
+    }
+   ],
+   "derivation": "87,2/124,18-1",
+   "confidence": "high",
+   "caveats": "Синтетический барьер слабый"
+  },
+  {
+   "fact_id": "A03-F020",
+   "statement": "Лимит 1 с ×2 — одинаково (128,92 км); 10 с — иначе (126,47 км); solution_limit 3000 ×2 — тождественно (124,38 км, хеш a3c9d37d3391)",
+   "kind": "synthetic",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S009",
+     "locator": "determinism"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Зависимость от машины выведена косвенно"
+  },
+  {
+   "fact_id": "A03-F021",
+   "statement": "E002, 10 экземпляров: цель «пробег» км −27,8% [−38,3; −19,0], длительность +13,0% [−13,8; +25,3]; цель «пробег + длительность» км −20,5% [−25,9; −9,5], длительность −19,9% [−30,7; −6,9], лучше B2 в 10/10; VROOM км −28,2%, длительность +3,4%",
+   "kind": "synthetic",
+   "value": 10,
+   "unit": "экземпляров из 10",
+   "geography": "синтетическая рамка",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S009",
+     "locator": "A03_multiseed_results.json, summary"
+    }
+   ],
+   "derivation": "медиана относительных изменений к B2",
+   "confidence": "high",
+   "caveats": "Проценты зависят от генератора"
+  },
+  {
+   "fact_id": "A03-F022",
+   "statement": "200 площадок, 16 машин: OR-Tools 20 с — км −26,1%, 15 машин, длительность +19,0%; VROOM 18,25 с — км −29,4%",
+   "kind": "synthetic",
+   "value": 20,
+   "unit": "с",
+   "geography": "синтетическая рамка",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A03-S009",
+     "locator": "scale.200_sites_16_veh"
+    }
+   ],
+   "derivation": "(404,26-546,86)/546,86",
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A03-F023",
+   "statement": "Владелец процесса вывоза ТКО: профильное управление акимата как заказчик и перевозчик(и) как исполнитель",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Проверить на gov.kz и в госзакупках"
+  },
+  {
+   "fact_id": "A03-F024",
+   "statement": "Фактические маршруты диспетчеров лучше ближайшего соседа, поэтому реальный выигрыш меньше синтетического",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Нужен baseline B0"
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "A03-D001",
+   "title": "№672 Сведения об объектах вывоза мусора (экземпляр г. Шымкент)",
+   "publisher": "акимат г. Шымкент (предположительно)",
+   "source_ids": [
+    "A03-S007"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": "JSON API",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "apiKey",
+   "limitations": "Экземпляр не идентифицирован. Кандидаты без установленного владельца: kokys_shygaru_obektileri1, obiektyvyvozamusora, kokys_zhinau_nysandary, t46, zhergilikti_atkarushy_organ11, onirler_bolinisinde_kokys_shyg3, information_about_waste_collec, 698__kokys_shygaru_obektiler, 672_svedeniya_ob_obektah_vyv2, kokys_shygaru_obektileri_tura",
+   "next_retrieval_step": "Открыть /meta/{index}/v{n}?pretty для кандидатов и найти владельца «г. Шымкент»"
+  },
+  {
+   "dataset_id": "A03-D002",
+   "title": "№674 Информация о тарифах на вывоз мусора (Шымкент)",
+   "publisher": null,
+   "source_ids": [
+    "A03-S007"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": "JSON API",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "apiKey",
+   "limitations": "Экземпляр не идентифицирован",
+   "next_retrieval_step": "То же, что для A03-D001"
+  },
+  {
+   "dataset_id": "A03-D003",
+   "title": "№681 Перечень объектов ремонта дорог (Шымкент)",
+   "publisher": null,
+   "source_ids": [
+    "A03-S007"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": "JSON API",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "apiKey",
+   "limitations": "Возможный источник перекрытий; экземпляр не идентифицирован",
+   "next_retrieval_step": "Открыть метаданные кандидатов"
+  },
+  {
+   "dataset_id": "A03-D004",
+   "title": "OSM: amenity=waste_disposal/recycling, landuse=landfill, дорожный граф",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [],
+   "landing_url": "https://www.openstreetmap.org",
+   "download_or_api_url": "https://overpass-api.de/api/interpreter",
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": "объект",
+   "period": null,
+   "format": "JSON",
+   "fields": [],
+   "units": null,
+   "update_frequency": "непрерывно",
+   "license": "ODbL",
+   "auth_requirement": "нет",
+   "limitations": "Недоступно в среде; покрытие неизвестно",
+   "next_retrieval_step": "Выполнить запрос Overpass из отчёта §13"
+  },
+  {
+   "dataset_id": "A03-D005",
+   "title": "Синтетический экземпляр A03-E001 (40 площадок, депо, полигон, барьер)",
+   "publisher": "A03",
+   "source_ids": [
+    "A03-S009"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04",
+   "geography": "синтетическая рамка 42,26-42,38 с.ш., 69,52-69,70 в.д.",
+   "granularity": "точка",
+   "period": null,
+   "format": "GeoJSON",
+   "fields": [
+    "id",
+    "containers",
+    "fill",
+    "demand",
+    "service_s",
+    "tw",
+    "tw_reason",
+    "kind"
+   ],
+   "units": "demand: 0,1 контейнера 1,1 м³",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "SYNTHETIC — не реальные данные; файл A03_synthetic_instance.geojson",
+   "next_retrieval_step": "Заменить реальными точками одного района"
+  },
+  {
+   "dataset_id": "A03-D006",
+   "title": "БНС: динамические ряды по Шымкенту",
+   "publisher": "stat.gov.kz",
+   "source_ids": [
+    "A03-S012"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": "город",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Недоступно; только контекст",
+   "next_retrieval_step": "Найти показатели сбора коммунальных отходов"
+  },
+  {
+   "dataset_id": "A03-D007",
+   "title": "Обращения 109 / eOtinish",
+   "publisher": null,
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": null,
+   "geography": "г. Шымкент",
+   "granularity": "обращение",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "персональные данные",
+   "limitations": "Только агрегаты; до доступа — синтетические тексты",
+   "next_retrieval_step": "Агент цифровизации выясняет условия"
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "A03-O001",
+   "title": "План вывоза ТКО для района: простой маршрут против оптимизатора на карте",
+   "problem": "Маршруты вывоза не сравниваются прозрачно по км, длительности, опозданиям и необслуженным площадкам (гипотеза)",
+   "evidence_fact_ids": [
+    "A03-F006",
+    "A03-F017",
+    "A03-F021"
+   ],
+   "primary_user": "Диспетчер перевозчика или специалист профильного управления (гипотеза)",
+   "user_task": "Построить и проверить дневные маршруты, учесть окна и перекрытия",
+   "existing_solution": "Неизвестно",
+   "proposed_addition": "Контракт экземпляра, независимый оценщик, baseline B2, цель «пробег + длительность», карта MapLibre",
+   "required_dataset_ids": [
+    "A03-D001",
+    "A03-D004",
+    "A03-D005"
+   ],
+   "ai_role": "LLM объясняет различия маршрутов и переводит фразы диспетчера в ограничения; маршруты строит солвер",
+   "non_ai_baseline": "B2 — ближайший сосед с окнами; при наличии B0 — фактический маршрут",
+   "success_metrics": [
+    "км",
+    "суммарная длительность смен",
+    "опоздания",
+    "необслуженные площадки",
+    "баланс",
+    "воспроизводимость (хеш)"
+   ],
+   "feasibility_10_days": "высокая на синтетике, средняя на реальных точках",
+   "blockers": [
+    "нет координат площадок",
+    "нет парка и смен",
+    "нет реального времени в пути"
+   ],
+   "transfer_to_astana": "Тот же контракт; другие данные",
+   "next_action": "Открыть экземпляр №672 Шымкента"
+  },
+  {
+   "idea_id": "A03-O002",
+   "title": "Заявка 109 → внеплановый выезд",
+   "problem": "Текст обращения нужно превратить в точку и вставить в маршрут (гипотеза)",
+   "evidence_fact_ids": [
+    "A03-F004"
+   ],
+   "primary_user": "Оператор или диспетчер",
+   "user_task": "Разобрать обращение и назначить выезд",
+   "existing_solution": "Неизвестно",
+   "proposed_addition": "LLM извлекает тип, адрес и срочность, человек подтверждает, геокодер ставит точку, солвер вставляет её в маршрут",
+   "required_dataset_ids": [
+    "A03-D007"
+   ],
+   "ai_role": "Извлечение полей и объяснение",
+   "non_ai_baseline": "Ручной ввод в форму и правила по ключевым словам",
+   "success_metrics": [
+    "F1 по полям на ≥50 текстах",
+    "время обработки",
+    "доля ответов без чужих чисел"
+   ],
+   "feasibility_10_days": "средняя на синтетических текстах; низкая на реальных",
+   "blockers": [
+    "персональные данные",
+    "геокодирование"
+   ],
+   "transfer_to_astana": "Да",
+   "next_action": "Собрать 50 синтетических обращений на русском и казахском"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Какой экземпляр №672 принадлежит Шымкенту и есть ли в нём координаты или адреса площадок?",
+   "why_important": "От этого зависит выбор Z1",
+   "how_to_check": "data.egov.kz, метаданные кандидатов"
+  },
+  {
+   "question": "Кто вывозит ТКО в Шымкенте и как разделены зоны?",
+   "why_important": "Определяет пользователя продукта",
+   "how_to_check": "gov.kz, сайт акимата, госзакупки"
+  },
+  {
+   "question": "Есть ли реестр или карта площадок и на каких условиях?",
+   "why_important": "Лицензия и полнота данных",
+   "how_to_check": "Сайт акимата, условия использования"
+  },
+  {
+   "question": "Какова периодичность вывоза по санитарным правилам РК?",
+   "why_important": "Нужна для периодической постановки",
+   "how_to_check": "adilet.zan.kz"
+  },
+  {
+   "question": "Где полигон или сортировка и какие часы разгрузки?",
+   "why_important": "Конечная точка и окна",
+   "how_to_check": "Официальные страницы, OSM landuse=landfill"
+  },
+  {
+   "question": "Существуют ли маршрутные листы или GPS-треки?",
+   "why_important": "Нужны для baseline B0 и калибровки времени",
+   "how_to_check": "Вопрос владельцу процесса (задаёт владелец проекта)"
+  },
+  {
+   "question": "Насколько OSM покрывает площадки и ограничения дорог в Шымкенте?",
+   "why_important": "Резервный источник точек и графа",
+   "how_to_check": "Запрос Overpass §13"
+  }
+ ],
+ "deliverables": {
+  "experiment": {
+   "id": "A03-E001/E002",
+   "status": "executed",
+   "env": "Python 3.12.3, ortools 9.15.6755, pyvroom 1.15.2, numpy 2.4.4, seed 20261004",
+   "files_delivered": true,
+   "note": "E002: экземпляры K=0..4 посчитаны первым фоновым прогоном (остановлен средой после 5 экземпляров; строки перенесены из его лога), K=5..9 — командой run K; код и solution_limit=500 одинаковы"
+  },
+  "instance_contract": "a03.routing_instance.v0 — отчёт §9",
+  "comparison_protocol": "отчёт §7",
+  "demo_script_2min": "отчёт §9",
+  "overpass_query": {
+   "status": "not_executed",
+   "location": "отчёт §13"
+  },
+  "second_pass_task": "отчёт §15",
+  "files": [
+   {
+    "name": "A03_report.md",
+    "role": "report",
+    "command": null,
+    "sha256": "1455925ab5e3d3088fc5d5f50d9aa0cab4896615adceb66cdd3ec4ff85585c88"
+   },
+   {
+    "name": "A03_vrp_experiment.py",
+    "role": "code",
+    "command": "python3 A03_vrp_experiment.py",
+    "sha256": "a651df4ef38632e3089fea746a52f7d558e8f29c1a8694de89fd946c7cfbda13"
+   },
+   {
+    "name": "A03_multiseed.py",
+    "role": "code",
+    "command": "python3 A03_multiseed.py run K (K=0..9); python3 A03_multiseed.py summary",
+    "sha256": "f0b90b22e071f3142847f65302bba64e4563d65de3247b9ab64a36d973ea7478"
+   },
+   {
+    "name": "A03_experiment_results.json",
+    "role": "synthetic_result",
+    "command": null,
+    "sha256": "aa7249331058efa2593ddcd061eb80d50f2342dac0e651908ba81d9748b1617b"
+   },
+   {
+    "name": "A03_multiseed_results.json",
+    "role": "synthetic_result",
+    "command": null,
+    "sha256": "a860b8590dead01b24de5464cb22fbf81d8f3fe1cdd2f5bf87b24d1940423961"
+   },
+   {
+    "name": "A03_multiseed_rows.jsonl",
+    "role": "synthetic_result",
+    "command": null,
+    "sha256": "194c1518b2b03dba3580cfb33939d8a5e9ebd058ecaa3821966bae85e88c0689"
+   },
+   {
+    "name": "A03_synthetic_instance.geojson",
+    "role": "synthetic_data",
+    "command": null,
+    "sha256": "5897d628e9829ede93da2ddd691a61f5e8e31be49789395bc9a0ca23bb62875a"
+   },
+   {
+    "name": "A03_run_log.txt",
+    "role": "log",
+    "command": null,
+    "sha256": "1dd755f0e0c27981ab59f337b2af1b4aea3345940eef49b05d4aa5c420b28c69"
+   }
+  ]
+ }
+}

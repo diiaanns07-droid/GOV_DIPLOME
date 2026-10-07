@@ -1,0 +1,17 @@
+# A05 network probe, executed 2026-10-04T17:23:28Z from sandbox; first run at 2026-10-04T17:17:01Z
+https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/ -> HTTP 403  x-deny-reason: host_not_allowed
+https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru -> HTTP 403  x-deny-reason: host_not_allowed
+https://data.egov.kz/ -> HTTP 403  x-deny-reason: host_not_allowed
+https://iac.kz/ -> HTTP 403  x-deny-reason: host_not_allowed
+https://overpass-api.de/api/status -> HTTP 403  x-deny-reason: host_not_allowed
+https://nominatim.openstreetmap.org/ -> HTTP 403  x-deny-reason: host_not_allowed
+https://download.geofabrik.de/asia/kazakhstan.html -> HTTP 403  x-deny-reason: host_not_allowed
+https://api.github.com/ -> HTTP 200  
+https://raw.githubusercontent.com/ -> HTTP 301  
+
+# STUPITS archive: codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main -> HTTP 200, 9404339 bytes; api.github.com repo endpoint -> rate limit exceeded (shared IP)
+
+# commands
+python3 A05_experiment.py  # Python 3.12.3, numpy 2.4.4, scipy 1.17.1, networkx 3.6.1
+7214a0b300f5c8b3a094ac2792ba7679c8c705feb03b853f58d06a016b69b447  A05_experiment.py
+0bd3548eeef0ac71f354c708f1cb3ef891acecb9d4d9e3dde07973e24335fe2c  A05_synthetic_results.json
