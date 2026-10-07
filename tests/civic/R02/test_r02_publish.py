@@ -283,3 +283,20 @@ def test_public_history_ids_do_not_reveal_global_activity(editor, service):
     history = public(service, second["id"])["body"]["data"]["history"]
     assert [h["id"] for h in history] == [f"{second['id']}@2"]
     assert public(service, first["id"])["body"]["data"]["history"][0]["id"] == f"{first['id']}@2"
+
+
+def test_interop_helpers_and_meta(editor, service):
+    item = editor.create()
+    assert item["created_by"] == {"name": "Редактор Один", "username": "editor1"}
+    session = editor.get("/session")["body"]["data"]
+    assert item["created_by"]["name"] == session["user"]["name"]  # фильтр «мои» R04
+    assert service.public_detail(item["id"]) is None
+    assert service.lookup_staff_object(item["id"])["id"] == item["id"]
+    assert service.lookup_staff_object("../x") is None and service.public_detail("") is None
+    item_of(editor.publish(item))
+    detail = service.public_detail(item["id"])
+    assert set(detail) == {"item", "history"} and "created_by" not in detail["item"]
+    meta = editor.get("/staff/meta")["body"]["data"]
+    assert meta["limits"]["text"]["title"] == 200 and meta["astana_bbox"] == [70.8, 50.75, 72.1, 51.6]
+    assert "schedule.current_planned_end" in meta["source_field_paths"] and meta["roles"] == ["editor", "admin"]
+    assert call(service, "GET", "/staff/meta")["status"] == 401

@@ -172,6 +172,12 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
     (3, "index import candidates by object", (
         "CREATE INDEX civic_import_candidates_object ON civic_import_candidates(object_id)",
     )),
+    # Решение редактора по кандидату импорта: applied | dismissed | superseded (строки не удаляются).
+    (4, "import candidate resolution", (
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolved_at TEXT",
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolution TEXT",
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolved_by INTEGER REFERENCES civic_users(id)",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 
@@ -381,9 +387,11 @@ class Database:
         if not applied:
             raise StorageError("База civic не инициализирована: выполните "
                                "python -m ui.civic_store init")
-        if max(applied) != SCHEMA_VERSION:
-            raise StorageError(f"Схема базы {max(applied)}, код ожидает {SCHEMA_VERSION}: "
-                               "выполните python -m ui.civic_store init (миграция).")
+        expected = {version for version, _, _ in MIGRATIONS}
+        if set(applied) != expected:
+            missing = sorted(expected - set(applied))
+            raise StorageError(f"Схема базы не совпадает с кодом (нет миграций {missing or '—'}, "
+                               f"ожидается {SCHEMA_VERSION}): выполните python -m ui.civic_store init.")
 
     def checkpoint(self) -> None:
         """Переносит WAL в основной файл (для резервной копии и чистого закрытия)."""

@@ -331,7 +331,7 @@ def test_read_only_commands_do_not_create_or_migrate(tmp_path):
     result = run_cli("--db", str(old), "status")
     assert result.returncode == 2 and "init" in result.stderr
     with sqlite3.connect(old) as conn:
-        assert conn.execute("SELECT MAX(version) FROM civic_schema_migrations").fetchone()[0] == 2
+        assert conn.execute("SELECT COUNT(*) FROM civic_schema_migrations WHERE version = 3").fetchone()[0] == 0
 
 
 def test_restore_refuses_foreign_schema_before_touching_live_db(tmp_path, service, editor, db_path):
@@ -371,3 +371,45 @@ def test_restore_into_new_location(tmp_path, service, editor, db_path):
     args = cli.build_parser().parse_args(["--db", str(target), "restore", str(copy), "--yes"])
     args.func(args)
     assert call(CivicService(target), "GET", f"/objects/{item['id']}")["status"] == 200
+
+
+def test_editor_resolves_import_candidates(service, editor):
+    import_package(service.objects, package([real_item("ast-r05-a")]))
+    item = editor.get("/staff/objects/ast-r05-a")["body"]["data"]["item"]
+    editor.update(item, {"title": "Уточнено редактором"})
+    import_package(service.objects, package([real_item("ast-r05-a", title="Версия 2 из источника")], version="v2"))
+    listing = editor.get("/staff/objects/ast-r05-a/import-candidates")["body"]["data"]["items"]
+    assert len(listing) == 1 and listing[0]["resolution"] is None
+    assert listing[0]["diff"]["title"] == {"before": "Уточнено редактором", "after": "Версия 2 из источника"}
+    item = editor.get("/staff/objects/ast-r05-a")["body"]["data"]["item"]
+    assert item["staff"]["pending_import_candidates"] == 1
+    stale = editor.post(f"/staff/objects/ast-r05-a/import-candidates/{listing[0]['id']}/apply",
+                        {"expected_revision": item["revision"] - 1, "reason": "Принята версия источника"})
+    assert stale["status"] == 409
+    applied = editor.post(f"/staff/objects/ast-r05-a/import-candidates/{listing[0]['id']}/apply",
+                          {"expected_revision": item["revision"], "reason": "Принята версия источника"})
+    assert applied["status"] == 200, applied
+    item = applied["body"]["data"]["item"]
+    assert item["title"] == "Версия 2 из источника" and item["staff"]["pending_import_candidates"] == 0
+    again = import_package(service.objects, package([real_item("ast-r05-a", title="Версия 2 из источника")], version="v2"))
+    assert again["items"][0]["action"] == "skip_unchanged"
+    # Новая версия → отклонить → повтор той же версии не создаёт нового кандидата.
+    import_package(service.objects, package([real_item("ast-r05-a", title="Версия 3")], version="v3"))
+    cid = editor.get("/staff/objects/ast-r05-a/import-candidates")["body"]["data"]["items"][0]["id"]
+    dismissed = editor.post(f"/staff/objects/ast-r05-a/import-candidates/{cid}/dismiss",
+                            {"expected_revision": item["revision"], "reason": "Источник ошибочен"})
+    assert dismissed["body"]["data"]["item"]["staff"]["pending_import_candidates"] == 0
+    third = import_package(service.objects, package([real_item("ast-r05-a", title="Версия 3")], version="v3"))
+    assert third["items"][0]["action"] == "editor_review" and "dismissed" in third["items"][0]["detail"]
+    assert editor.post(f"/staff/objects/ast-r05-a/import-candidates/{cid}/apply",
+                       {"expected_revision": item["revision"], "reason": "x"})["status"] == 409
+    assert call(service, "GET", "/staff/objects/ast-r05-a/import-candidates")["status"] == 401
+
+
+def test_manual_edit_matching_import_is_superseded(service, editor):
+    import_package(service.objects, package([real_item("ast-r05-m")]))
+    item = editor.get("/staff/objects/ast-r05-m")["body"]["data"]["item"]
+    editor.update(item, {"title": "Совпадёт с v2"})
+    report = import_package(service.objects, package([real_item("ast-r05-m", title="Совпадёт с v2")], version="v2"))
+    assert report["items"][0]["action"] == "skip_unchanged"
+    assert editor.get("/staff/objects/ast-r05-m")["body"]["data"]["item"]["staff"]["pending_import_candidates"] == 0
