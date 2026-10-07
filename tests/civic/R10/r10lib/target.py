@@ -289,9 +289,10 @@ class OracleTarget(ProcessTarget):
         oracle = HERE / "oracle" / "server.py"
         super().__init__(R10_DIR, f"{{python}} -I -B {oracle} serve --db {{db}} --port {{port}}",
                          f"{{python}} -I -B {oracle} create-editor --db {{db}} --username {{username}}")
-        mutant = os.environ.get("R10_ORACLE_MUTANT")
-        if mutant:
-            self.extra_env["R10_ORACLE_MUTANT"] = mutant
+        # clean_env() drops R10_* for products; the oracle's own knobs are passed explicitly.
+        for key, value in os.environ.items():
+            if key.startswith("R10_ORACLE_"):
+                self.extra_env[key] = value
         self.notes.append("Reference oracle written by R10 for suite self-test; not product code.")
 
     def describe(self):
