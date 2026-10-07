@@ -807,6 +807,20 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     await p.check(fk("geometry_confirmed"));
     await saveOk(p, "Черновик создан");
     assert.equal(objects()[0].geometry.type, "Point");
+    // the handle matches the contract fixture given to R01/R03; setMap(null) / setMap(map) switch drawing off and on
+    const contract = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures/editor_mount_contract.json"), "utf8"));
+    assert.deepEqual(await p.evaluate(() => Object.keys(window.__editor).sort()), contract.handle);
     assert.deepEqual(p.errors, []);
+    // without a getter, setMap() is how the shell hands over a (new) map
+    const q = await open();
+    await login(q);
+    await fillDraft(q, { title: "Смена карты" });
+    await q.check(fk("place-approximate"));
+    await q.evaluate(() => window.__editor.setMap(null));
+    assert.equal(await q.isDisabled(fk("tool-point")), true);
+    assert.equal(await q.evaluate(() => window.__map.getStyle().layers.filter((l) => l.id.startsWith("civic-r04-")).length), 0, "layers leave the old map");
+    await q.evaluate(() => window.__editor.setMap(window.__map));
+    assert.equal(await q.isDisabled(fk("tool-point")), false);
+    assert.deepEqual(q.errors, []);
   });
 });
