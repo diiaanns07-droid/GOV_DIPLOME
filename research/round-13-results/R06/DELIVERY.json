@@ -1,0 +1,141 @@
+{
+  "role": "R06",
+  "round": 13,
+  "title": "Обращения жителей: понятный статус и AI-подсказка сотруднику",
+  "status": "DONE",
+  "branch": "claude/focused-hypatia-z8h0no",
+  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "base_note": "BASE_MISMATCH: история ветки не содержит 56538a3; проверка в изолированной сборке 56538a3 + пути R06 + R08; перенос — r06_vs_56538a3.patch",
+  "source_deliveries": [
+    {
+      "role": "R06",
+      "branch": "claude/brave-hopper-bkc58b",
+      "sha": "1139eeb90beb05a0f6199a292c37599b466cb0cd",
+      "code_sha": "e0b474124db49a3f60c65e93f47d65e52aeac478",
+      "used_as": "исходная версия модуля (восстановлена побайтно в a072ce0)"
+    },
+    {
+      "role": "R08",
+      "sha": "9660885db5baadac4a8ac15b0a6532314407bba2",
+      "code_sha": "e311ba8",
+      "used_as": "настоящий ml/civic_classifier и tests/civic/R08 в изолированной сборке; файлы R08 не менялись"
+    }
+  ],
+  "code_sha": "12b3170d60267a5d40d0ceb68e113b4cfa9c853c",
+  "tested_sha": {
+    "isolated_build": "56538a3 + ui/civic_feedback, web/civic/feedback, tests/civic/R06 @ 12b3170d60267a5d40d0ceb68e113b4cfa9c853c + ml/civic_classifier, tests/civic/R08 @ 9660885",
+    "isolated_app_with_r01_patch": "то же + research/round-13-results/R06/r01_r13_integration.patch (ui/web_server.py, web/civic/shell/shell.js)",
+    "branch_alone": "12b3170d60267a5d40d0ceb68e113b4cfa9c853c"
+  },
+  "scoped_patch": {
+    "file": "research/round-13-results/R06/r06_vs_56538a3.patch",
+    "sha256": "12f285531b8e6d2bbb120604e2a7478afeff0dfb103156c4f5c01186e0f58b01",
+    "check": "git apply поверх 56538a3 воспроизводит пути R06 побайтно"
+  },
+  "push_status": "OK: код 12b3170 и патч в origin/claude/focused-hypatia-z8h0no (2e98f48); этот файл — в следующем коммите, его SHA в handoff/итоговом сообщении",
+  "changed_paths": [
+    "research/handoffs/astana/R06/round-13/STATUS.md",
+    "research/round-13-results/R06/DATASET_CONSENT_SPEC.md",
+    "research/round-13-results/R06/DELIVERY.json",
+    "research/round-13-results/R06/INTEGRATION.txt",
+    "research/round-13-results/R06/RUN.txt",
+    "research/round-13-results/R06/r01_r13_integration.patch",
+    "research/round-13-results/R06/r06_vs_56538a3.patch",
+    "research/round-13-results/R06/r08_test_score_hidden.patch",
+    "research/round-13-results/R06/screenshots/README.txt",
+    "research/round-13-results/R06/screenshots/app_r13_receipt_link_360.png",
+    "research/round-13-results/R06/screenshots/harness_r13_conflict.png",
+    "research/round-13-results/R06/screenshots/harness_r13_link_reply_360.png",
+    "research/round-13-results/R06/screenshots/harness_r13_receipt_360.png",
+    "research/round-13-results/R06/screenshots/harness_r13_staff_360.png",
+    "research/round-13-results/R06/screenshots/harness_r13_staff_hint_r08.png",
+    "tests/civic/R06/app_e2e_r06.cjs",
+    "tests/civic/R06/browser_r06.cjs",
+    "tests/civic/R06/browser_r13_r06.cjs",
+    "tests/civic/R06/harness/harness.css",
+    "tests/civic/R06/harness/harness.js",
+    "tests/civic/R06/harness/index.html",
+    "tests/civic/R06/harness/serve_r06.py",
+    "tests/civic/R06/test_r06_handling.py",
+    "tests/civic/R06/test_r06_r13_access_conflicts.py",
+    "tests/civic/R06/test_r06_r13_frontend.py",
+    "tests/civic/R06/test_r06_r13_network.py",
+    "tests/civic/R06/test_r06_r13_r08_pair.py",
+    "tests/civic/R06/test_r06_r13_receipt_lifecycle.py",
+    "tests/civic/R06/test_r06_submit.py",
+    "ui/civic_feedback/fixtures.py",
+    "ui/civic_feedback/integration.py",
+    "ui/civic_feedback/service.py",
+    "web/civic/feedback/feedback.css",
+    "web/civic/feedback/feedback.js"
+  ],
+  "tests": [
+    {
+      "name": "pytest tests/civic/R06 (изолированная сборка, с R08)",
+      "result": "PASS",
+      "detail": "221 passed"
+    },
+    {
+      "name": "pytest tests/civic/R06 (ветка без ml/ и R02)",
+      "result": "PASS",
+      "detail": "205 passed, 4 skipped: 3 без ui.civic_store (R02), 1 без ml.civic_classifier — пропуск с причиной"
+    },
+    {
+      "name": "pytest tests/civic/R06/test_r06_r13_r08_pair.py — настоящий R08: ok/выключен/ошибка/таймаут/busy/неизвестный язык/kk/некорректный ответ",
+      "result": "PASS",
+      "detail": "11 passed"
+    },
+    {
+      "name": "pytest tests/civic (вся civic-сборка, изолированная)",
+      "result": "FAIL",
+      "detail": "851 passed, 1 failed, 3 skipped; failed: [tests/civic/R08/test_r08_feedback_integration.py::test_suggestion_stored_category_untouched (assert на строке 59: 0 <= score <= 1)]. Ожидаемо: тест R08 требует показа некалиброванного score; патч теста r08_test_score_hidden.patch -> 3/3 PASS"
+    },
+    {
+      "name": "R08 test_r08_feedback_integration.py с r08_test_score_hidden.patch",
+      "result": "PASS",
+      "detail": "3 passed (во временной копии, файлы R08 не менялись)"
+    },
+    {
+      "name": "node tests/civic/R06/browser_r13_r06.cjs --classifier r08 (Chromium; 360 px, kk, ссылка, конфликт, 429, выход)",
+      "result": "PASS",
+      "detail": "24/24, дважды"
+    },
+    {
+      "name": "node tests/civic/R06/browser_r06.cjs (round 11–12)",
+      "result": "PASS",
+      "detail": "41/41, дважды"
+    },
+    {
+      "name": "app_e2e_r06.cjs — настоящее приложение + R08 + r01_r13_integration.patch",
+      "result": "PASS",
+      "detail": "18/18, временная БД, seed-demo R02"
+    },
+    {
+      "name": "app_e2e_r06.cjs — настоящее приложение без патча R01",
+      "result": "PASS",
+      "detail": "15 PASS, 2 NOT_RUN (ссылка квитанции и очистка при выходе требуют патча R01), source=disabled"
+    },
+    {
+      "name": "Публикация продукта / проверка на реальных обращениях",
+      "result": "NOT_RUN",
+      "detail": "не входит в задачу; реальных обращений нет"
+    }
+  ],
+  "ai_hint_provenance": {
+    "isolated_build_and_app": "настоящая модель R08 ml.civic_classifier (civic-clf-logreg-kw-cf4464341-pe9ba054a), обучена только на синтетике",
+    "harness_default": "выключена (--classifier none); fixture — только в тестах с пометкой FIXTURE",
+    "branch_alone": "модели нет: подсказка выключена, тесты пары пропускаются",
+    "product_r01_base": "выключена (classifier=None) до решения R01 о CIVIC_R08_CLASSIFIER=1"
+  },
+  "known_limits": [
+    "Квитанция — секрет-носитель: кто знает номер или ссылку, видит статус и может отозвать согласие; аккаунтов жителей нет намеренно.",
+    "Открытие ссылки #civic-receipt=… и очистка черновиков при выходе в приложении требуют патча R01 (shell.js); без него ссылка открывает обычную карту.",
+    "Подсказка R08 обучена на синтетике: score не хранится и не показывается; проверка сотрудником обязательна всегда.",
+    "Совпадение client_request_id — единственный признак повтора; IP используется только как грубый лимит потока и не определяет автора.",
+    "Снимок объекта есть только у сообщений с v3; у старых строк изменения объекта — «неизвестно».",
+    "Карта в облаке не загружается (нет доступа к тайлам) — на скриншотах приложения карта пустая.",
+    "BASE_MISMATCH: ветка не содержит 56538a3; приложение целиком собирается из 56538a3 + r06_vs_56538a3.patch."
+  ],
+  "next_step": "R01: применить r06_vs_56538a3.patch и r01_r13_integration.patch в кандидате интеграции; R08: принять r08_test_score_hidden.patch.",
+  "pr": "не создавался (не запрошен); при необходимости — только draft в codex/govtech-main-interface без merge"
+}
