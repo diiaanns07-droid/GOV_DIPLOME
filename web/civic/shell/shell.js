@@ -137,7 +137,7 @@
   };
 
   // ---------------------------------------------------------------- page modes
-  const S = { mode: null, mapState: "pending", modules: null, mounted: {}, selected: null, assistantSeq: 0, editorTool: false,
+  const S = { keepSeq: 0, view: null, mode: null, mapState: "pending", modules: null, mounted: {}, selected: null, assistantSeq: 0, editorTool: false,
     panelOpen: true, sheet: "half", started: false };
   const originalTitle = document.title;
   const brandTitle = document.querySelector(".brand-title");
@@ -289,6 +289,10 @@
   function onSelect(item) {
     const id = item && typeof item === "object" ? item.id : item;
     S.selected = typeof id === "string" ? id : null;
+    const box = S.selected && item?.geometry && window.CivicExplore ? window.CivicExplore.bounds(item.geometry) : null;
+    if (box) keepVisible([(box[0] + box[2]) / 2, (box[1] + box[3]) / 2]);
+    if (S.selected) S.mounted.explore?.setView?.("Открыта запись" + (item?.title ? ": " + item.title : ""), "object");
+    else S.mounted.explore?.setView?.(S.view?.text || "", S.view?.kind || "");
     const hash = S.selected ? "#object=" + encodeURIComponent(S.selected) : "";
     if (location.hash !== hash) history.replaceState(null, "", location.pathname + location.search + hash);
     closeFeedback();
@@ -468,9 +472,47 @@
   const intendedPitch = () => (typeof state !== "undefined" && state?.threeD ? 45 : 0);
   const intendedBearing = () => (typeof state !== "undefined" && state?.threeD ? -14 : 0);
 
+  // R03's fitAll frames with its own padding (it does not know the navigation box) and the current,
+  // possibly mid-animation pitch. Until R03 accepts a padding callback (see INTEGRATION.txt), its one
+  // synchronous fitBounds call gets the shell's free area and intended tilt; the map is restored after.
+  function fitAllObjects() {
+    const m = currentMap(), r03 = S.mounted.map;
+    if (!m || typeof r03?.fitAll !== "function") return false;
+    const original = m.fitBounds;
+    m.fitBounds = function (bounds, options) {
+      const pitch = intendedPitch();
+      return original.call(this, bounds, Object.assign({}, options, { padding: freeArea(), pitch, bearing: pitch ? intendedBearing() : 0 }));
+    };
+    try { return r03.fitAll(); } finally { m.fitBounds = original; }
+  }
+  // After R03's own selection camera settles, the selected place must not sit under the shell's
+  // overlays (navigation box, sheet, drawers); if it does, pan it into the free area.
+  function keepVisible(lngLat) {
+    const m = currentMap();
+    if (!m || !lngLat) return;
+    const seq = ++S.keepSeq;
+    const run = () => {
+      if (seq !== S.keepSeq || m.isMoving()) return;
+      const pad = freeArea(), c = m.getContainer().getBoundingClientRect();
+      let p;
+      try { p = m.project(lngLat); } catch { return; }
+      const free = { l: pad.left, t: pad.top, r: c.width - pad.right, b: c.height - pad.bottom };
+      if (p.x >= free.l && p.x <= free.r && p.y >= free.t && p.y <= free.b) return;
+      m.panBy([p.x - (free.l + free.r) / 2, p.y - (free.t + free.b) / 2], { duration: motionSafe() ? 350 : 0 });
+    };
+    m.once("moveend", () => setTimeout(run, 60));
+    setTimeout(run, 1600);  // R03 may not move the camera at all
+  }
+
+  // The navigation box names what the camera shows; an open record overrides it until the card closes.
+  function showView(text, kind) {
+    S.view = { text, kind };
+    if (!S.selected) S.mounted.explore?.setView?.(text, kind);
+  }
   function civicCamera() {
     const m = currentMap();
     if (!m) return;
+    showView("Обзор: вся Астана", "city");
     const padding = freeArea();
     try {
       const bounds = typeof cityBounds === "function" ? cityBounds() : null;
@@ -517,18 +559,23 @@
         S.mounted.map?.setFilters?.({ area: !!feature });
         if (!feature) { civicCamera(); return; }
         const b = window.CivicExplore.bounds(feature.geometry);
+        showView(`Район ${feature.properties.name}: границы OSM обведены`, "district");
         roomy(() => frame(b, 13.7));
       },
       onStreet: (street) => {
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: true });
+        showView(`Улица: ${street.name}`, "street");
         roomy(() => frame(street.bbox, 16));
       },
       onObjects: () => {
         S.mounted.explore?.reset?.();
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: false });
-        if (!S.mounted.map?.fitAll?.()) toastSafe("Нет объектов с координатами для выбранных фильтров.");
+        roomy(() => {
+          if (fitAllObjects()) showView("Все опубликованные записи на карте", "objects");
+          else toastSafe("Нет объектов с координатами для выбранных фильтров.");
+        });
       },
     });
     placeMapStatus(true);

@@ -92,7 +92,7 @@
     const box = document.createElement("section");
     box.className = "civic-explore";
     box.setAttribute("aria-label", "Навигация по Астане");
-    box.innerHTML = `<div class="civic-explore-row"><label><span>Территория</span><select aria-label="Район Астаны"><option value="">Вся Астана</option></select></label><button type="button" class="civic-explore-objects">К объектам</button><details><summary aria-label="Покрытие и слои карты">Слои</summary><div class="civic-explore-details"><label><input type="checkbox"> Границы районов</label><p>Карта доступна по всей Астане. Пустое место означает отсутствие опубликованных записей, а не отсутствие работ.</p><p class="civic-explore-count" role="status"></p><p>Границы: OpenStreetMap, снимок 23.09.2026. Это общественная карта, не кадастровые границы.</p></div></details></div>`;
+    box.innerHTML = `<div class="civic-explore-row"><label><span>Территория</span><select aria-label="Район Астаны"><option value="">Вся Астана</option></select></label><button type="button" class="civic-explore-objects">К объектам</button><details><summary aria-label="Покрытие и слои карты">Слои</summary><div class="civic-explore-details"><label><input type="checkbox"> Границы районов</label><p>Карта доступна по всей Астане. Пустое место означает отсутствие опубликованных записей, а не отсутствие работ.</p><p class="civic-explore-count" role="status"></p><p>Границы: OpenStreetMap, снимок 23.09.2026. Это общественная карта, не кадастровые границы.</p></div></details></div><p class="civic-explore-view" aria-live="polite"></p>`;
     root.append(box);
     const search = document.createElement("form");
     search.className = "civic-explore-search";
@@ -286,8 +286,12 @@
     map?.on("style.load", paint);
     paint();
     loadIndex();
+    const view = box.querySelector(".civic-explore-view");
     return {
       noticeSlot: notices,
+      // What the camera shows now (city overview / district / street / all records), so the three
+      // look different even when the map itself is plain (offline basemap).
+      setView(text, kind) { view.textContent = text || ""; view.dataset.kind = kind || ""; },
       reset() { selected = ""; select.value = ""; input.value = ""; clear.hidden = true; close(); quiet(); unpin(); paint(); },
       updateRecords(items) {
         const demo = items.filter((x) => x.evidence === "synthetic").length;

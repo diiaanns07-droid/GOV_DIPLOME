@@ -234,6 +234,7 @@ async function loadMap() {
         );
       console.warn("Map:", e.error?.message || "Ошибка ресурса");
     });
+    map.on("moveend", () => { if (typeof syncThreeD === "function") syncThreeD(); });
     map.on("load", () => {
       try {
         const layers = map.getStyle().layers,

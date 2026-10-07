@@ -30,6 +30,27 @@ const directionIcon = {
 };
 const motion = () =>
   matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1;
+
+// 3D button = the map's real tilt. A tilt animation can be interrupted (zoom, "К объектам",
+// a district jump); afterwards the button follows the pitch the map actually has.
+const THREE_D_PITCH = 52;
+function showThreeD(on) {
+  state.threeD = !!on;
+  const button = document.getElementById("toggle-3d");
+  button?.classList.toggle("active", state.threeD);
+  button?.setAttribute("aria-pressed", String(state.threeD));
+}
+function syncThreeD() {
+  if (!map || map.isMoving()) return;
+  const on = map.getPitch() >= 15;
+  if (on !== state.threeD) showThreeD(on);
+}
+// Zoom buttons keep the intended tilt when they interrupt a running camera animation.
+function zoomBy(delta) {
+  if (!map) return;
+  const intent = map.isMoving() ? { pitch: state.threeD ? THREE_D_PITCH : 0, bearing: state.threeD ? -16 : 0 } : {};
+  map.easeTo({ zoom: map.getZoom() + delta, ...intent, duration: 450 * motion() });
+}
 const clone = (value) => structuredClone(value);
 let catalog = null,
   baseline = null,
@@ -1953,16 +1974,14 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
     flyOverview();
   };
-  $("zoom-in").onclick = () => map?.zoomIn({ duration: 450 * motion() });
-  $("zoom-out").onclick = () => map?.zoomOut({ duration: 450 * motion() });
+  $("zoom-in").onclick = () => zoomBy(1);
+  $("zoom-out").onclick = () => zoomBy(-1);
   $("rotate-map").onclick = () =>
     map?.easeTo({ bearing: map.getBearing() + 35, duration: 1000 * motion() });
   $("toggle-3d").onclick = () => {
-    state.threeD = !state.threeD;
-    $("toggle-3d").classList.toggle("active", state.threeD);
-    $("toggle-3d").setAttribute("aria-pressed", String(state.threeD));
+    showThreeD(!state.threeD);
     map?.easeTo({
-      pitch: state.threeD ? 52 : 0,
+      pitch: state.threeD ? THREE_D_PITCH : 0,
       bearing: state.threeD ? -16 : 0,
       duration: 1100 * motion(),
     });

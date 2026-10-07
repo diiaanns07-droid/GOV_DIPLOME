@@ -86,6 +86,8 @@ const layout = (page) => page.evaluate(() => {
       else notRun(`${tag}: map notice readable`, "no map notice shown (basemap loaded)");
       check(`${tag}: navigation box wide enough for the district name and search (≥ 280px)`, (lay.explore || 0) >= 280, lay.explore);
       await page.screenshot({ path: path.join(OUT, `01_start_${tag}.png`) });
+      const startView = await page.textContent(".civic-explore-view");
+      check(`${tag}: city overview is named as such`, /Обзор: вся Астана/.test(startView || ""), startView);
 
       // ---- street search: same-name streets are labelled by district; keyboard and touch both work
       const input = page.locator(".civic-explore-field input");
@@ -135,6 +137,42 @@ const layout = (page) => page.evaluate(() => {
       const cleared = await page.evaluate(() => ({ value: document.querySelector(".civic-explore-field input").value, focused: document.activeElement === document.querySelector(".civic-explore-field input"),
         clearHidden: document.querySelector(".civic-explore-clear").hidden }));
       check(`${tag}: clear button empties the field and keeps focus`, cleared.value === "" && cleared.focused && cleared.clearHidden, cleared);
+
+      // ---- camera: a fast 3D -> zoom -> "К объектам" sequence ends in a consistent 3D state
+      await page.click("#toggle-3d"); await page.waitForTimeout(120);
+      await page.click("#zoom-in"); await page.waitForTimeout(80);
+      await page.click(".civic-explore-objects"); await page.waitForTimeout(2600);
+      const cam = await page.evaluate(() => ({ pitch: Math.round(map.getPitch()), pressed: document.getElementById("toggle-3d").getAttribute("aria-pressed") === "true",
+        moving: map.isMoving() }));
+      const viewLine = await page.textContent(".civic-explore-view");
+      check(`${tag}: the view line says what is shown (all records)`, /Все опубликованные записи/.test(viewLine || ""), viewLine);
+      check(`${tag}: 3D button matches the real tilt after an interrupted 3D -> zoom -> objects sequence`,
+        !cam.moving && (cam.pressed ? cam.pitch >= 35 : cam.pitch <= 5), cam);
+      // ---- the selected object is framed in the free map area, not under the navigation box/panel/tools
+      const item = page.locator("#civic-map-root .civic-r03-item").first();
+      await item.scrollIntoViewIfNeeded();
+      await item.click();
+      await page.waitForTimeout(2800);
+      const sel = await page.evaluate(() => {
+        const id = window.CivicShell.selected;
+        const feats = id ? map.querySourceFeatures("civic-r03-objects", { filter: ["==", ["get", "cid"], id] }) : [];
+        const pts = [];
+        const walk = (c) => { if (typeof c[0] === "number") pts.push(c); else c.forEach(walk); };
+        feats.forEach((f) => walk(f.geometry.coordinates));
+        if (!pts.length) return { id, found: false };
+        const lon = pts.reduce((a, p) => a + p[0], 0) / pts.length, lat = pts.reduce((a, p) => a + p[1], 0) / pts.length;
+        const p = map.project([lon, lat]);
+        const c = map.getContainer().getBoundingClientRect();
+        const x = c.left + p.x, y = c.top + p.y;
+        const covered = ["#civic-panel", ".civic-explore", ".map-tools", ".topbar"].filter((sel) => {
+          const e = document.querySelector(sel); if (!e || !e.getClientRects().length || getComputedStyle(e).visibility === "hidden") return false;
+          const b = e.getBoundingClientRect(); return x >= b.left && x <= b.right && y >= b.top && y <= b.bottom; });
+        return { id, found: true, xy: [Math.round(x), Math.round(y)], covered, inView: x >= 0 && x <= innerWidth && y >= 0 && y <= innerHeight };
+      });
+      check(`${tag}: selected object is shown in the free map area (not under navigation/panel/tools)`, sel.found && sel.inView && sel.covered.length === 0, sel);
+      const selView = await page.textContent(".civic-explore-view");
+      check(`${tag}: the view line names the open record`, /Открыта запись/.test(selView || ""), selView);
+      await page.screenshot({ path: path.join(OUT, `05_selected_${tag}.png`) });
       check(`${tag}: no page errors`, page.errs.length === 0, page.errs);
       await ctx.close();
     }
