@@ -1,7 +1,7 @@
 /* R04 editor against the REAL R02 CivicService (python3 tests/civic/R04/r02_stand.py), not the contract mock.
  * Run:  R04_R02_ROOT=<checkout of the R02 branch> node --test tests/civic/R04/e2e_r02.test.cjs
  *   e.g. git worktree add --detach /tmp/r02 92f7abae8184516c9bf6bd89367a63692402cc1b
- * Screenshots: add R04_SCREENSHOTS=1 -> research/round-11-results/R04/screenshots/r02-*.png
+ * Screenshots: add R04_SCREENSHOTS=1 -> research/round-12-results/R04/screenshots/r02-*.png
  * Without R04_R02_ROOT or Playwright the suite is skipped (NOT_RUN), never reported as passed.
  */
 "use strict";
@@ -18,7 +18,7 @@ function loadPlaywright() {
 }
 const PW = loadPlaywright();
 const R02 = process.env.R04_R02_ROOT;
-const SHOTS = path.resolve(__dirname, "../../../research/round-11-results/R04/screenshots");
+const SHOTS = path.resolve(__dirname, "../../../research/round-12-results/R04/screenshots");
 const fk = (k) => `[data-fk="${k}"]`;
 const skip = !PW ? "playwright not installed" : !R02 ? "R04_R02_ROOT not set (path to an R02 checkout)" : false;
 
@@ -89,6 +89,7 @@ describe("R04 editor against the real R02 service", { skip }, () => {
     await p.fill(fk("planned_start"), "2026-10-14");
     await p.fill(fk("original_planned_end"), "2026-10-20");
     assert.equal(await value(p, "current_planned_end"), "2026-10-20", "current end follows the original while they match (visible)");
+    await p.check(fk("place-approximate"));
     await p.click(fk("tool-point"));
     const b = await p.locator("#map").boundingBox();
     await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2);

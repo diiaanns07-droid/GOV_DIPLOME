@@ -442,11 +442,26 @@ class ObjectRepository:
 
     # --- кандидаты импорта (ручное решение редактора) --------------------------------
 
+    @staticmethod
+    def _candidate_content(row, data_json) -> dict:
+        """Содержимое кандидата в применимом виде.
+
+        После первой публикации первоначальный срок — исторический факт этой карточки:
+        источник обычно не знает его (null) или называет иначе. Такое поле кандидата не
+        применяется, иначе перенос срока из источника нельзя было бы принять вовсе (422).
+        """
+        content = _loads(data_json)
+        if row["first_published_at"] is not None:
+            content["schedule"]["original_planned_end"] = \
+                _loads(row["data_json"])["schedule"]["original_planned_end"]
+        return content
+
     def list_candidates(self, object_id) -> dict:
         if not is_valid_id(object_id):
             raise BadRequest("Недопустимый ID объекта.", {"id": "Пустой или недопустимый ID."})
         with self.db.read() as conn:
-            row = conn.execute("SELECT data_json FROM civic_objects WHERE id = ?", (object_id,)).fetchone()
+            row = conn.execute("SELECT data_json, first_published_at FROM civic_objects WHERE id = ?",
+                               (object_id,)).fetchone()
             if row is None:
                 raise NotFound(object_id)
             current = _loads(row["data_json"])
@@ -456,7 +471,9 @@ class ObjectRepository:
         return {"items": [{
             "id": r["id"], "source": r["source"], "external_id": r["external_id"], "digest": r["digest"],
             "created_at": r["created_at"], "resolved_at": r["resolved_at"], "resolution": r["resolution"],
-            "content": _loads(r["data_json"]), "diff": diff(current, _loads(r["data_json"])),
+            "content": _loads(r["data_json"]),
+            "diff": diff(current, self._candidate_content(row, r["data_json"])),
+            "original_planned_end_locked": row["first_published_at"] is not None,
         } for r in rows]}
 
     def resolve_candidate(self, actor: Actor, object_id, candidate_id, *, action, expected_revision,
@@ -478,7 +495,7 @@ class ObjectRepository:
                 raise Conflict("Кандидат уже рассмотрен.", row["revision"])
             now = iso(utc_now(self.clock))
             if action == "apply":
-                content = _loads(cand["data_json"])
+                content = self._candidate_content(row, cand["data_json"])
                 self._update(conn, actor, object_id, row["revision"], content, ..., [], reason, None)
                 conn.execute("UPDATE civic_objects SET import_digest = ? WHERE id = ?", (cand["digest"], object_id))
             else:

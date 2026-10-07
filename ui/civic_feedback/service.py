@@ -35,7 +35,7 @@ from . import text as textutil
 LOGGER = logging.getLogger(__name__)
 
 API_PREFIX = "/api/civic/v1"
-SCHEMA_VERSION = "civic-feedback-v1"
+SCHEMA_VERSION = "civic-feedback-v2"
 CITY = "astana"
 CATEGORIES = ("roads", "sidewalks", "transport_stops", "lighting", "landscaping", "other")
 CATEGORY_LABELS = {
@@ -62,6 +62,25 @@ RECEIPT_NOTICE = ("Сообщение сохранено на платформе
                   "Официальная регистрация обращения не выполняется; городские службы "
                   "автоматически не уведомляются.")
 PUBLIC_ACTOR_LABEL = "Модератор платформы"
+# Статус ОБРАБОТКИ на платформе (round 12) — отдельная ось от публикации (moderation).
+# Описывает работу сотрудников этого сервиса, не статус eOtinish/iKOMEK и не работы города.
+HANDLING = ("new", "in_review", "answered", "duplicate", "closed")
+HANDLING_LABELS = {
+    "new": "Новое — ещё не рассмотрено на платформе",
+    "in_review": "На рассмотрении у сотрудника платформы",
+    "answered": "Дан ответ платформы",
+    "duplicate": "Объединено с похожим сообщением",
+    "closed": "Рассмотрено на платформе, закрыто",
+}
+# Допустимые переходы; повторное открытие всегда через in_review.
+HANDLING_TRANSITIONS = {
+    "new": frozenset({"in_review", "answered", "duplicate", "closed"}),
+    "in_review": frozenset({"answered", "duplicate", "closed"}),
+    "answered": frozenset({"in_review", "closed"}),
+    "duplicate": frozenset({"in_review"}),
+    "closed": frozenset({"in_review"}),
+}
+MODERATE_ACTIONS = ("approve", "reject", "status", "note", "recategorize")
 DEFAULT_STAFF_ROLES = frozenset({"editor", "moderator", "admin"})
 # Широкая рамка вокруг Астаны (lon_min, lat_min, lon_max, lat_max), WGS84.
 ASTANA_BBOX = (70.9, 50.8, 72.0, 51.5)
@@ -88,13 +107,26 @@ DEFAULT_LIMITS = {
     "similar_window_days": 180,
     "similar_threshold": 0.35,
     "classifier_timeout_s": 2.0,
+    "note_max": 1000,
+    "search_max": 100,
+    "text_min_letters": 5,
+    "text_max_links": 3,
     "page_size": 20,
     "page_max": 50,
 }
 
 SUBMIT_FIELDS = frozenset({"object_id", "geometry", "category", "text", "consent_public",
                            "kind", "client_request_id", "confirm_duplicate"})
-MODERATE_FIELDS = frozenset({"expected_revision", "action", "reason", "public_reply", "public_text"})
+MODERATE_FIELDS = frozenset({"expected_revision", "action", "reason", "public_reply", "public_text",
+                             "status", "duplicate_of", "internal_note", "category"})
+# Какие поля допустимы для каждого действия (кроме action/expected_revision).
+ACTION_FIELDS = {
+    "approve": frozenset({"reason", "public_reply", "public_text", "status", "duplicate_of"}),
+    "reject": frozenset({"reason", "public_reply", "status", "duplicate_of"}),
+    "status": frozenset({"reason", "public_reply", "status", "duplicate_of"}),
+    "note": frozenset({"internal_note"}),
+    "recategorize": frozenset({"reason", "category"}),
+}
 RECEIPT_FIELDS = frozenset({"receipt_id"})
 
 SCHEMA_SQL = """
@@ -132,7 +164,12 @@ CREATE TABLE IF NOT EXISTS feedback_messages (
   client_request_id TEXT,
   duplicate_confirmed INTEGER NOT NULL DEFAULT 0,
   classifier_status TEXT NOT NULL DEFAULT 'not_run',
-  classifier_json TEXT
+  classifier_json TEXT,
+  handling_status TEXT NOT NULL DEFAULT 'new',
+  duplicate_of INTEGER,
+  staff_category TEXT,
+  handled_by TEXT,
+  handled_at TEXT
 );
 CREATE INDEX IF NOT EXISTS feedback_messages_object
   ON feedback_messages (object_id, moderation, consent_public);
@@ -154,6 +191,16 @@ CREATE TABLE IF NOT EXISTS feedback_events (
 );
 CREATE INDEX IF NOT EXISTS feedback_events_message ON feedback_events (feedback_id, id);
 """
+
+# Колонки round 12: старая runtime-БД (civic-feedback-v1) дополняется ALTER TABLE без потери строк.
+MIGRATION_COLUMNS = (
+    ("handling_status", "TEXT NOT NULL DEFAULT 'new'"),
+    ("duplicate_of", "INTEGER"),
+    ("staff_category", "TEXT"),
+    ("handled_by", "TEXT"),
+    ("handled_at", "TEXT"),
+)
+EFFECTIVE_CATEGORY = "COALESCE(staff_category, category)"
 
 # Видимость в публичной проекции — единственное место, где она определяется.
 PUBLIC_WHERE = ("moderation = 'approved' AND consent_public = 1 "
@@ -265,13 +312,45 @@ class FeedbackService:
         with self._lock:
             self._db.execute("PRAGMA foreign_keys = ON")
             self._db.executescript(SCHEMA_SQL)
-            self._db.execute("INSERT OR IGNORE INTO feedback_meta (key, value) VALUES (?, ?)",
+            self._migrate()
+            self._db.execute("INSERT OR REPLACE INTO feedback_meta (key, value) VALUES (?, ?)",
                              ("schema_version", SCHEMA_VERSION))
             # Соль для хэша адреса клиента живёт только в runtime-БД, не в Git.
             self._db.execute("INSERT OR IGNORE INTO feedback_meta (key, value) VALUES (?, ?)",
                              ("client_salt", secrets.token_hex(32)))
             self._salt = self._db.execute(
                 "SELECT value FROM feedback_meta WHERE key = 'client_salt'").fetchone()[0].encode()
+
+    def _migrate(self) -> None:
+        """civic-feedback-v1 -> v2: добавить колонки обработки, не трогая существующие данные.
+
+        Старым строкам статус обработки выводится из решения модерации: pending -> new;
+        решение с ответом -> answered; решение без ответа -> closed. Это консервативно:
+        сотрудник может снова открыть сообщение (in_review).
+        """
+        db = self._db
+        db.create_function("r06_norm", 1, lambda value: textutil.normalize_for_match(value or ""),
+                           deterministic=True)
+        have = {row[1] for row in db.execute("PRAGMA table_info(feedback_messages)")}
+        added = [name for name, _ in MIGRATION_COLUMNS if name not in have]
+        if added:
+            db.execute("BEGIN IMMEDIATE")
+            try:
+                for name, ddl in MIGRATION_COLUMNS:
+                    if name in added:
+                        db.execute(f"ALTER TABLE feedback_messages ADD COLUMN {name} {ddl}")
+                if "handling_status" in added:
+                    db.execute("UPDATE feedback_messages SET handling_status = CASE "
+                               "WHEN moderation = 'pending' THEN 'new' "
+                               "WHEN public_reply IS NOT NULL THEN 'answered' ELSE 'closed' END")
+                db.execute("INSERT OR REPLACE INTO feedback_meta (key, value) VALUES (?, ?)",
+                           ("migrated_v2_columns", ",".join(added)))
+                db.execute("COMMIT")
+            except BaseException:
+                db.execute("ROLLBACK")
+                raise
+        db.execute("CREATE INDEX IF NOT EXISTS feedback_messages_handling "
+                   "ON feedback_messages (handling_status, id)")
 
     def close(self) -> None:
         with self._lock:
@@ -533,6 +612,13 @@ class FeedbackService:
             fields["text"] = f"Опишите подробнее: не меньше {limits['text_min']} символов."
         elif len(text) > limits["text_max"]:
             fields["text"] = f"Слишком длинный текст: не больше {limits['text_max']} символов."
+        else:
+            # Простая защита от мусора: не CAPTCHA и не аккаунт, а проверка, что это текст.
+            letters = [ch for ch in text if ch.isalpha()]
+            if len(letters) < limits["text_min_letters"] or len(set(ch.casefold() for ch in letters)) < 3:
+                fields["text"] = "Опишите ситуацию словами — сообщение должно содержать текст, а не только символы."
+            elif len(textutil.links(text)) > limits["text_max_links"]:
+                fields["text"] = f"Слишком много ссылок: не больше {limits['text_max_links']}. Опишите ситуацию текстом."
 
         object_id = body.get("object_id")
         if object_id is not None and not (isinstance(object_id, str) and OBJECT_ID.match(object_id)):
@@ -608,8 +694,12 @@ class FeedbackService:
                                             now_ts - limits["duplicate_window_s"])).fetchone()
                 if previous is not None:
                     if previous["text_fingerprint"] != fingerprint or previous["object_id"] != object_id:
+                        # Тот же client_request_id и то же устройство: прежняя версия уже сохранена
+                        # (ответ мог потеряться в сети). Возвращаем её квитанцию, чтобы автор её не потерял.
                         raise ApiError(409, "request_id_conflict",
-                                       "Идентификатор отправки уже использован для другого сообщения.")
+                                       "Предыдущая версия этого сообщения уже сохранена. Изменённый текст "
+                                       "можно отправить отдельным сообщением.",
+                                       extra={"previous_receipt": self._receipt(previous)})
                     # Повтор той же отправки (например, после обрыва сети) — тот же receipt.
                     return _ok(200, self._receipt(previous, replayed=True))
 
@@ -675,6 +765,9 @@ class FeedbackService:
             "official_registration": False,
             "notice": RECEIPT_NOTICE,
             "warnings": warnings,
+            # Статус обработки на платформе (round 12); номер исходного сообщения автору не раскрывается.
+            "handling_status": row["handling_status"],
+            "handling_label": HANDLING_LABELS[row["handling_status"]],
         }
         if replayed:
             result["replayed"] = True
@@ -759,6 +852,8 @@ class FeedbackService:
             "submitted_on": row["created_at"][:10],
             "published_at": row["published_at"],
             "moderation_label": MODERATION_LABELS["approved"],
+            "handling_status": row["handling_status"],
+            "handling_label": HANDLING_LABELS[row["handling_status"]],
             "official_registration": False,
             "history": [{"revision": event["revision"], "at": event["at"], "event": event["action"],
                          "changed_fields": json.loads(event["changed_fields"]),
@@ -780,6 +875,16 @@ class FeedbackService:
             "kind": row["kind"],
             "category": row["category"],
             "category_label": CATEGORY_LABELS[row["category"]],
+            # Категория жителя не перезаписывается; сотрудник может указать свою (staff_category).
+            "staff_category": row["staff_category"],
+            "effective_category": row["staff_category"] or row["category"],
+            "effective_category_label": CATEGORY_LABELS[row["staff_category"] or row["category"]],
+            "handling_status": row["handling_status"],
+            "handling_label": HANDLING_LABELS[row["handling_status"]],
+            "handling_next": sorted(HANDLING_TRANSITIONS[row["handling_status"]]),
+            "duplicate_of": str(row["duplicate_of"]) if row["duplicate_of"] is not None else None,
+            "handled_by": row["handled_by"],
+            "handled_at": row["handled_at"],
             "text": row["text"],
             "language": row["language"],
             "consent_public": bool(row["consent_public"]),
@@ -820,37 +925,71 @@ class FeedbackService:
 
     # ---------------------------------------------------------------- staff API
     def _queue(self, *, query, body, principal, context):
+        """Очередь сотрудника. Фильтры: moderation, status (обработка), category (с учётом
+        исправления сотрудником), kind, consent, object_id, q (поиск по тексту/номеру), order.
+
+        Обратная совместимость: без moderation и status показывается moderation=pending, как в
+        civic-v1; если задан только status — moderation по умолчанию all.
+        """
         self._staff(principal, context, write=False)
         clauses, params = [], []
-        moderation = query.get("moderation") or "pending"
+        moderation = query.get("moderation") or ("all" if query.get("status") else "pending")
         if moderation != "all":
             if moderation not in MODERATION:
                 raise ApiError(400, "invalid_query", "moderation: pending|approved|rejected|all.")
             clauses.append("moderation = ?")
             params.append(moderation)
+        status = query.get("status") or ""
+        if status and status != "all":
+            wanted = status.split(",")
+            if not all(item in HANDLING for item in wanted) or len(wanted) > len(HANDLING):
+                raise ApiError(400, "invalid_query", "status: " + "|".join(HANDLING) + " (через запятую) или all.")
+            clauses.append("handling_status IN (" + ",".join("?" * len(wanted)) + ")")
+            params.extend(wanted)
         if query.get("object_id"):
             if not OBJECT_ID.match(query["object_id"]):
                 raise ApiError(400, "invalid_query", "Некорректный object_id.")
             clauses.append("object_id = ?")
             params.append(query["object_id"])
-        for key, allowed in (("category", CATEGORIES), ("kind", KINDS)):
-            if query.get(key):
-                if query[key] not in allowed:
-                    raise ApiError(400, "invalid_query", f"Недопустимое значение {key}.")
-                clauses.append(f"{key} = ?")
-                params.append(query[key])
+        if query.get("category"):
+            if query["category"] not in CATEGORIES:
+                raise ApiError(400, "invalid_query", "Недопустимое значение category.")
+            clauses.append(f"{EFFECTIVE_CATEGORY} = ?")
+            params.append(query["category"])
+        if query.get("kind"):
+            if query["kind"] not in KINDS:
+                raise ApiError(400, "invalid_query", "Недопустимое значение kind.")
+            clauses.append("kind = ?")
+            params.append(query["kind"])
         if query.get("consent"):
             if query["consent"] not in ("true", "false"):
                 raise ApiError(400, "invalid_query", "consent: true|false.")
             clauses.append("consent_public = ? AND consent_withdrawn_at IS NULL"
                            if query["consent"] == "true" else "(consent_public = ? OR consent_withdrawn_at IS NOT NULL)")
             params.append(1 if query["consent"] == "true" else 0)
+        search = (query.get("q") or "").strip()
+        if search:
+            if len(search) > self.limits["search_max"]:
+                raise ApiError(400, "invalid_query", f"Поиск — не длиннее {self.limits['search_max']} символов.")
+            number = search.lstrip("#")
+            needle = textutil.normalize_for_match(search)
+            if number.isdigit() and len(number) <= 12:
+                clauses.append("(id = ? OR instr(r06_norm(text), ?) > 0)")
+                params.extend([int(number), needle])
+            elif needle:
+                clauses.append("instr(r06_norm(text), ?) > 0")
+                params.append(needle)
         limit, offset = self._paging(query)
         where = ("WHERE " + " AND ".join(clauses)) if clauses else ""
-        # Очередь pending — старые первыми, остальные — новые первыми.
-        order = "ASC" if moderation == "pending" else "DESC"
+        order = query.get("order") or ""
+        if order not in ("", "oldest", "newest"):
+            raise ApiError(400, "invalid_query", "order: oldest|newest.")
+        # По умолчанию необработанное (pending/new) — старые первыми, остальное — новые первыми.
+        if not order:
+            order = "oldest" if moderation == "pending" or status in ("new", "in_review", "new,in_review") else "newest"
+        direction = "ASC" if order == "oldest" else "DESC"
         with self._lock:
-            rows = self._db.execute(f"SELECT * FROM feedback_messages {where} ORDER BY id {order} LIMIT ? OFFSET ?",
+            rows = self._db.execute(f"SELECT * FROM feedback_messages {where} ORDER BY id {direction} LIMIT ? OFFSET ?",
                                     (*params, limit + 1, offset)).fetchall()
             items = []
             for row in rows[:limit]:
@@ -862,8 +1001,13 @@ class FeedbackService:
             for name, count in self._db.execute(
                     "SELECT moderation, COUNT(*) FROM feedback_messages GROUP BY moderation"):
                 counts[name] = count
+            handling_counts = {name: 0 for name in HANDLING}
+            for name, count in self._db.execute(
+                    "SELECT handling_status, COUNT(*) FROM feedback_messages GROUP BY handling_status"):
+                handling_counts[name] = count
         return _ok(200, {"items": items, "next_cursor": str(offset + limit) if len(rows) > limit else None,
-                         "counts": counts})
+                         "counts": counts, "handling_counts": handling_counts,
+                         "filters": {"moderation": moderation, "status": status or "all", "order": order}})
 
     def _message_by_staff_id(self, message_id: str):
         if not STAFF_ID.match(message_id):
@@ -894,9 +1038,22 @@ class FeedbackService:
             item = self._staff_dto(row)
             history = self._staff_history(row["id"])
             similar = self._similar(row)
+            duplicates = [self._brief(other) for other in self._db.execute(
+                "SELECT * FROM feedback_messages WHERE duplicate_of = ? AND handling_status = 'duplicate' ORDER BY id",
+                (row["id"],)).fetchall()]
+            original = None
+            if row["duplicate_of"] is not None:
+                target = self._db.execute("SELECT * FROM feedback_messages WHERE id = ?", (row["duplicate_of"],)).fetchone()
+                original = self._brief(target) if target is not None else None
         return _ok(200, {"item": item, "history": history, "object": self._object_summary(row["object_id"]),
-                         "similar": similar,
+                         "similar": similar, "duplicate_of": original, "duplicates": duplicates,
                          "similar_note": "Похожие сообщения — подсказка. Система не объединяет и не отклоняет их сама."})
+
+    @staticmethod
+    def _brief(row) -> dict:
+        return {"id": str(row["id"]), "moderation": row["moderation"], "handling_status": row["handling_status"],
+                "handling_label": HANDLING_LABELS[row["handling_status"]], "created_at": row["created_at"],
+                "category": row["staff_category"] or row["category"], "excerpt": row["text"][:160]}
 
     def _similar(self, row, limit: int = 5) -> list[dict]:
         """Похожие сообщения по объекту/месту и нормализованному тексту (только для редактора)."""
@@ -922,27 +1079,41 @@ class FeedbackService:
             score = 1.0 if exact else textutil.similarity(row["text"], other["text"])
             if score >= self.limits["similar_threshold"]:
                 scored.append({"id": str(other["id"]), "score": round(score, 2), "exact_text": exact,
-                               "moderation": other["moderation"], "created_at": other["created_at"],
+                               "score_kind": "word_overlap",
+                               "moderation": other["moderation"], "handling_status": other["handling_status"],
+                               "created_at": other["created_at"],
                                "category": other["category"], "excerpt": other["text"][:160]})
         scored.sort(key=lambda item: (-item["score"], item["id"]))
         return scored[:limit]
 
     def _moderate(self, message_id, *, query, body, principal, context):
+        """Действия сотрудника над сообщением (один маршрут, обратно совместимое тело).
+
+        approve/reject — решение о публикации (как в civic-v1) и, при необходимости, статус обработки;
+        status — только статус обработки (+ ответ платформы); note — служебная заметка (не публична,
+        ревизию не меняет); recategorize — категория сотрудника (категория жителя сохраняется).
+        """
         actor = self._staff(principal, context, write=True)
         data = self._json_body(body)
         self._reject_unknown(data, MODERATE_FIELDS)
-        fields: dict[str, str] = {}
         limits = self.limits
-        expected = data.get("expected_revision")
-        if not (isinstance(expected, int) and not isinstance(expected, bool) and expected >= 1):
-            fields["expected_revision"] = "Нужна текущая ревизия сообщения (целое число ≥ 1)."
+        fields: dict[str, str] = {}
         action = data.get("action")
-        if action not in ("approve", "reject"):
-            fields["action"] = "Действие: approve или reject."
-        reason = data.get("reason")
-        reason = textutil.clean_text(reason) if isinstance(reason, str) else None
-        if not reason or not limits["reason_min"] <= len(reason) <= limits["reason_max"]:
-            fields["reason"] = f"Укажите причину решения ({limits['reason_min']}–{limits['reason_max']} символов)."
+        if action not in MODERATE_ACTIONS:
+            fields["action"] = "Действие: approve, reject, status, note или recategorize."
+        else:
+            for key in sorted(data):
+                if key not in ("action", "expected_revision") and key not in ACTION_FIELDS[action]:
+                    fields[key] = f"Поле не используется с action={action}."
+        expected = data.get("expected_revision")
+        if action != "note" and not (isinstance(expected, int) and not isinstance(expected, bool) and expected >= 1):
+            fields["expected_revision"] = "Нужна текущая ревизия сообщения (целое число ≥ 1)."
+        reason = None
+        if action != "note":
+            reason = data.get("reason")
+            reason = textutil.clean_text(reason) if isinstance(reason, str) else None
+            if not reason or not limits["reason_min"] <= len(reason) <= limits["reason_max"]:
+                fields["reason"] = f"Укажите обоснование ({limits['reason_min']}–{limits['reason_max']} символов)."
         # Отсутствующий public_reply сохраняет прежний ответ; null — удаляет его.
         reply_given = "public_reply" in data
         reply = data.get("public_reply")
@@ -957,63 +1128,112 @@ class FeedbackService:
             public_text = textutil.clean_text(public_text) if isinstance(public_text, str) else False
             if public_text is False or not limits["text_min"] <= len(public_text) <= limits["text_max"]:
                 fields["public_text"] = "Публичный текст — от 10 до 2000 символов или null."
+        status = data.get("status")
+        if "status" in data and status not in HANDLING:
+            fields["status"] = "Статус: " + ", ".join(HANDLING) + "."
+        if action == "status" and status is None and "status" not in fields:
+            fields["status"] = "Выберите статус обработки."
+        duplicate_of = data.get("duplicate_of")
+        if duplicate_of is not None:
+            if isinstance(duplicate_of, int) and not isinstance(duplicate_of, bool) and duplicate_of >= 1:
+                duplicate_of = str(duplicate_of)
+            if not (isinstance(duplicate_of, str) and STAFF_ID.match(duplicate_of)):
+                fields["duplicate_of"] = "Номер исходного сообщения — целое число."
+        note = None
+        if action == "note":
+            note = data.get("internal_note")
+            note = textutil.clean_text(note) if isinstance(note, str) else None
+            if not note or len(note) > limits["note_max"]:
+                fields["internal_note"] = f"Заметка — текст от 1 до {limits['note_max']} символов."
+        category = data.get("category")
+        if action == "recategorize" and category not in CATEGORIES:
+            fields["category"] = "Выберите категорию из списка."
         if fields:
             raise ApiError(422, "validation_failed", "Проверьте поля решения.", fields=fields)
 
         with self._transaction() as db:
             row = self._message_by_staff_id(message_id)
+            now = _iso(self._now())
+            if action == "note":
+                # Служебная заметка: только для сотрудников, не меняет сообщение и его ревизию.
+                self._event(row["id"], row["revision"], now, "note", "staff", actor, note, [], False)
+                return _ok(200, {"item": self._staff_dto(row), "history": self._staff_history(row["id"])})
             if row["revision"] != expected:
                 raise ApiError(409, "stale_revision",
                                "Сообщение изменено другим действием. Обновите карточку.",
                                extra={"current_revision": row["revision"]})
+            revision = row["revision"] + 1
+            if action == "recategorize":
+                effective = row["staff_category"] or row["category"]
+                if category == effective:
+                    raise ApiError(422, "no_change", "Категория уже такая.", fields={"category": "Без изменений."})
+                staff_category = None if category == row["category"] else category
+                db.execute("UPDATE feedback_messages SET staff_category = ?, revision = ?, updated_at = ? "
+                           "WHERE id = ? AND revision = ?", (staff_category, revision, now, row["id"], row["revision"]))
+                self._event(row["id"], revision, now, "recategorized", "staff", actor,
+                            f"{effective} -> {category}: {reason}", ["staff_category"], False)
+                row = db.execute("SELECT * FROM feedback_messages WHERE id = ?", (row["id"],)).fetchone()
+                return _ok(200, {"item": self._staff_dto(row), "history": self._staff_history(row["id"])})
+
             consent = bool(row["consent_public"]) and row["consent_withdrawn_at"] is None
             if not reply_given:
                 reply = row["public_reply"]
-            if public_text is not None and not consent:
-                raise ApiError(422, "no_consent",
-                               "Автор не разрешил публиковать текст — публичная версия текста недоступна.",
-                               fields={"public_text": "Нет согласия автора на публикацию."})
-            if public_text is not None and action != "approve":
-                raise ApiError(422, "validation_failed", "Публичную версию текста задают только при approve.",
-                               fields={"public_text": "Только вместе с action=approve."})
-            # При reject редакторская версия сохраняется, но не видна публично.
-            new_public_text = row["public_text"] if action == "reject" else None
-            if action == "approve" and consent:
-                new_public_text = public_text or row["public_text"] or row["text"]
-                leaked = textutil.blocking_hints(new_public_text)
-                if leaked:
-                    raise ApiError(422, "personal_data_suspected",
-                                   "В публичном тексте похоже есть персональные данные. Скройте их перед публикацией.",
-                                   fields={"public_text": ", ".join(sorted({h["label"] for h in leaked}))},
-                                   extra={"hints": leaked})
+            if action == "status":
+                moderation, new_public_text = row["moderation"], row["public_text"]
+            else:
+                if public_text is not None and not consent:
+                    raise ApiError(422, "no_consent",
+                                   "Автор не разрешил публиковать текст — публичная версия текста недоступна.",
+                                   fields={"public_text": "Нет согласия автора на публикацию."})
+                moderation = "approved" if action == "approve" else "rejected"
+                # При reject редакторская версия сохраняется, но не видна публично.
+                new_public_text = row["public_text"] if action == "reject" else None
+                if action == "approve" and consent:
+                    new_public_text = public_text or row["public_text"] or row["text"]
+                    leaked = textutil.blocking_hints(new_public_text)
+                    if leaked:
+                        raise ApiError(422, "personal_data_suspected",
+                                       "В публичном тексте похоже есть персональные данные. Скройте их перед публикацией.",
+                                       fields={"public_text": ", ".join(sorted({h["label"] for h in leaked}))},
+                                       extra={"hints": leaked})
+            visible = moderation == "approved" and consent and new_public_text is not None
             if reply:
                 if textutil.blocking_hints(reply):
                     raise ApiError(422, "personal_data_suspected",
                                    "Ответ похоже содержит персональные данные.",
                                    fields={"public_reply": "Уберите контакты/номера из ответа."})
-                hidden_source = new_public_text if action == "approve" and new_public_text else ""
+                hidden_source = new_public_text if visible else ""
                 quoted = textutil.mentions_any(reply, textutil.hidden_fragments(row["text"], hidden_source))
                 if quoted:
                     raise ApiError(422, "reply_reveals_hidden_text",
                                    "Ответ цитирует фрагменты, которые не публикуются. Перефразируйте ответ.",
                                    fields={"public_reply": "Скрытые фрагменты: " + ", ".join(quoted[:5])})
+            handling, dup = self._resolve_handling(db, row, action, status, duplicate_of, reply)
 
-            now = _iso(self._now())
-            revision = row["revision"] + 1
-            moderation = "approved" if action == "approve" else "rejected"
-            visible = moderation == "approved" and new_public_text is not None
             was_visible = self._row_is_public(row)
             published_at = row["published_at"] or (now if visible else None)
-            changed = ["moderation", "moderation_reason"]
+            changed = ["moderation", "moderation_reason"] if action != "status" else []
             if reply != row["public_reply"]:
                 changed.append("public_reply")
             if new_public_text != row["public_text"]:
                 changed.append("public_text")
+            if handling != row["handling_status"]:
+                changed.append("handling_status")
+            if dup != row["duplicate_of"]:
+                changed.append("duplicate_of")
+            if action == "status" and not changed:
+                raise ApiError(422, "no_change", "Статус и ответ не изменились.",
+                               fields={"status": "Без изменений."})
+            handled = handling != row["handling_status"] or dup != row["duplicate_of"]
             db.execute(
                 "UPDATE feedback_messages SET moderation = ?, moderation_reason = ?, public_reply = ?, "
                 "public_text = ?, moderated_by = ?, moderated_at = ?, published_at = ?, revision = ?, "
-                "updated_at = ? WHERE id = ? AND revision = ?",
-                (moderation, reason, reply, new_public_text, actor, now, published_at, revision, now,
+                "updated_at = ?, handling_status = ?, duplicate_of = ?, handled_by = ?, handled_at = ? "
+                "WHERE id = ? AND revision = ?",
+                (moderation, reason if action != "status" else row["moderation_reason"], reply, new_public_text,
+                 actor if action != "status" else row["moderated_by"],
+                 now if action != "status" else row["moderated_at"], published_at, revision, now,
+                 handling, dup, actor if handled else row["handled_by"], now if handled else row["handled_at"],
                  row["id"], row["revision"]))
             if visible and not was_visible:
                 public_event, public_fields = "published", ["text"] + (["public_reply"] if reply else [])
@@ -1023,11 +1243,65 @@ class FeedbackService:
                                  if f in ("public_reply", "public_text")]
             else:
                 public_event, public_fields = None, []
-            self._event(row["id"], revision, now, moderation, "staff", actor, reason, changed, False)
+            event_action = moderation if action != "status" else "status_changed"
+            self._event(row["id"], revision, now, event_action, "staff", actor, reason, changed, False)
             if public_event and public_fields:
                 self._event(row["id"], revision, now, public_event, "staff", actor, None, public_fields, True)
             row = db.execute("SELECT * FROM feedback_messages WHERE id = ?", (row["id"],)).fetchone()
             return _ok(200, {"item": self._staff_dto(row), "history": self._staff_history(row["id"])})
+
+    def _resolve_handling(self, db, row, action, requested, duplicate_of, reply):
+        """Следующий статус обработки и ссылка на исходное сообщение для дубля.
+
+        Без явного status действие approve/reject над новым сообщением переводит его в
+        in_review (или answered, если дан ответ); иначе статус обработки не меняется.
+        """
+        current = row["handling_status"]
+        if requested is None:
+            if duplicate_of is not None:
+                raise ApiError(422, "validation_failed", "duplicate_of задаётся вместе со status=duplicate.",
+                               fields={"duplicate_of": "Только со статусом duplicate."})
+            if current != "new":
+                if current == "answered" and not reply:
+                    raise ApiError(422, "reply_required",
+                                   "У сообщения статус «Дан ответ платформы»: ответ нельзя удалить без смены статуса.",
+                                   fields={"public_reply": "Сначала смените статус обработки."})
+                return current, row["duplicate_of"]
+            requested = "answered" if reply else "in_review"
+        if requested != current and requested not in HANDLING_TRANSITIONS[current]:
+            allowed = sorted(HANDLING_TRANSITIONS[current])
+            raise ApiError(422, "invalid_transition",
+                           f"Из статуса «{HANDLING_LABELS[current]}» нельзя перейти в «{HANDLING_LABELS[requested]}».",
+                           fields={"status": "Допустимо: " + ", ".join(allowed) + "."}, extra={"allowed": allowed})
+        if requested == "answered" and not reply:
+            raise ApiError(422, "reply_required", "Для статуса «Дан ответ платформы» нужен текст ответа.",
+                           fields={"public_reply": "Напишите ответ платформы."})
+        if requested != "duplicate":
+            if duplicate_of is not None:
+                raise ApiError(422, "validation_failed", "duplicate_of задаётся вместе со status=duplicate.",
+                               fields={"duplicate_of": "Только со статусом duplicate."})
+            return requested, None
+        if duplicate_of is None:
+            if current == "duplicate" and row["duplicate_of"] is not None:
+                return requested, row["duplicate_of"]
+            raise ApiError(422, "validation_failed", "Укажите номер исходного сообщения.",
+                           fields={"duplicate_of": "Номер исходного сообщения обязателен."})
+        target = db.execute("SELECT id, handling_status, duplicate_of FROM feedback_messages WHERE id = ?",
+                            (int(duplicate_of),)).fetchone()
+        if target is None or target["id"] == row["id"]:
+            raise ApiError(422, "validation_failed", "Исходное сообщение не найдено.",
+                           fields={"duplicate_of": "Нет такого другого сообщения."})
+        if target["handling_status"] == "duplicate":
+            raise ApiError(422, "duplicate_chain",
+                           f"Сообщение #{target['id']} само отмечено как дубль #{target['duplicate_of']}. Укажите исходное.",
+                           fields={"duplicate_of": f"Укажите #{target['duplicate_of']}."})
+        children = db.execute("SELECT COUNT(*) FROM feedback_messages WHERE duplicate_of = ? AND handling_status = 'duplicate'",
+                              (row["id"],)).fetchone()[0]
+        if children:
+            raise ApiError(422, "has_duplicates",
+                           "На это сообщение уже ссылаются дубли. Оставьте его исходным или сначала откройте дубли.",
+                           fields={"duplicate_of": f"Связанных дублей: {children}."})
+        return requested, target["id"]
 
     # --------------------------------------------------------------- classifier
     def _classify(self, message_id: int, text: str) -> None:
@@ -1091,7 +1365,10 @@ class FeedbackService:
                 "SELECT COUNT(*) FROM feedback_messages WHERE consent_withdrawn_at IS NOT NULL").fetchone()[0]
             classifier = dict(db.execute(
                 "SELECT classifier_status, COUNT(*) FROM feedback_messages GROUP BY classifier_status").fetchall())
-        return {"schema_version": SCHEMA_VERSION, "moderation": by_status, "public": public,
+            handling = {name: 0 for name in HANDLING}
+            for name, count in db.execute("SELECT handling_status, COUNT(*) FROM feedback_messages GROUP BY handling_status"):
+                handling[name] = count
+        return {"schema_version": SCHEMA_VERSION, "moderation": by_status, "handling": handling, "public": public,
                 "consent_withdrawn": withdrawn, "classifier_status": classifier}
 
     def purge_antispam(self, older_than_days: int = 30) -> int:

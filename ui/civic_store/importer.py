@@ -11,8 +11,14 @@
   если редактор уже правил или публиковал объект — изменение ложится в
   civic_import_candidates (editor_review), ручные/опубликованные данные не затираются;
 - запись, исчезнувшая из пакета, не удаляется и не архивируется (report_missing);
-- dry-run выполняет ту же логику в транзакции и откатывает её;
-- при ошибках проверки по умолчанию не применяется ничего (allow_partial=False).
+- dry-run выполняет ту же логику в транзакции и откатывает её; при недопустимых записях
+  dry-run всё равно показывает, что произошло бы с допустимыми (статус rejected);
+- при ошибках проверки по умолчанию не применяется ничего (allow_partial=False);
+- отчёт по записи: changed_fields (чем пакет отличается от текущей карточки),
+  source_changed_fields / source_refs_change (что изменилось в самом источнике с прошлого
+  импорта), ignored_fields (серверные поля из пакета, например publication) и
+  possible_duplicates (тот же URL источника или то же название у объекта другого
+  происхождения) — предупреждение, объект не сливается автоматически.
 """
 
 from __future__ import annotations
@@ -22,7 +28,7 @@ import json
 from pathlib import Path
 
 from .objects import Actor, ObjectRepository, iso, utc_now
-from .validate import (CITY, ID_RE, SCHEMA_VERSION, ValidationError, clean_reason, is_valid_id,
+from .validate import (CITY, ID_RE, SCHEMA_VERSION, ValidationError, clean_reason, diff, is_valid_id,
                        split_payload, validate_content)
 
 
@@ -101,6 +107,24 @@ def describe_package(package, source=None) -> dict:
             "slice_version": version if isinstance(version, str) else None}
 
 
+def _validate_record(payload, today):
+    """Все ошибки записи сразу: неизвестные поля не скрывают ошибки остальных полей."""
+    unknown = {}
+    try:
+        content_raw, _, ignored = split_payload(payload, allow_internal=False)
+    except ValidationError as exc:
+        unknown = exc.fields
+        known = {key: value for key, value in payload.items() if key not in unknown}
+        content_raw, _, ignored = split_payload(known, allow_internal=False)  # иначе — исходная ошибка
+    try:
+        content = validate_content(content_raw, today=today)
+    except ValidationError as exc:
+        raise ValidationError({**unknown, **exc.fields})
+    if unknown:
+        raise ValidationError(unknown)
+    return content, ignored
+
+
 def import_package(repo: ObjectRepository, package, *, source=None, dry_run=False,
                    allow_partial=False, actor_label="cli") -> dict:
     meta = describe_package(package, source)
@@ -136,8 +160,12 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
             if raw.get("city", CITY) != CITY:
                 raise ValidationError({"city": "Только astana."})
             payload = {key: value for key, value in raw.items() if key not in IMPORT_HINT_FIELDS}
-            content_raw, _, ignored = split_payload(payload, allow_internal=False)
-            content = validate_content(content_raw, today=today)
+            content, ignored = _validate_record(payload, today)
+            # id/city/schema_version — опознавательные поля пакета; остальное серверное
+            # (publication, revision...) не применяется, и отчёт это показывает.
+            ignored = [key for key in ignored if key not in ("id", "city", "schema_version")]
+            if ignored:
+                entry["ignored_fields"] = ignored
             if meta["demo"] and content["evidence_type"] != "synthetic":
                 raise ValidationError({"evidence_type": "Демо-срез содержит только synthetic."})
             if not meta["demo"] and content["evidence_type"] == "synthetic":
@@ -151,16 +179,24 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
             entry.update({"action": "invalid", "fields": {"item": "Запись не является корректным объектом civic-v1."}})
             report["items"].append(entry)
     invalid = len(report["items"])
-    if invalid and not allow_partial:
+    rejected = bool(invalid and not allow_partial)
+    if rejected and not dry_run:
         report["status"] = "rejected"
         report["counts"] = {"invalid": invalid, "valid": len(prepared)}
         raise ImportRejected("Пакет содержит недопустимые записи; ничего не импортировано.", report)
 
     try:
         with repo.db.write() as conn:
+            duplicates = _DuplicateIndex(conn, meta["source"]) if prepared else None
             for entry, content, digest in prepared:
                 entry.update(_apply_one(repo, conn, actor, meta["source"], entry["external_id"], content,
                                         digest, reason))
+                if entry["action"] in ("create", "id_conflict"):
+                    found = duplicates.find(content, exclude=entry["object_id"])
+                    if found:
+                        entry["possible_duplicates"] = found
+                if entry["action"] in ("create", "update_import_draft"):
+                    duplicates.add(entry["object_id"], meta["source"], content)
                 report["items"].append(entry)
             present = {entry["external_id"] for entry, _, _ in prepared}
             for row in conn.execute(
@@ -176,7 +212,9 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
                 counts[item["action"]] = counts.get(item["action"], 0) + 1
             counts["report_missing"] = len(report["missing"])
             report["counts"] = counts
-            report["status"] = "dry_run" if dry_run else "applied"
+            report["status"] = "rejected" if rejected else ("dry_run" if dry_run else "applied")
+            if rejected:
+                report["counts"]["valid"] = len(prepared)
             candidates = [(entry, entry.pop("_candidate", None)) for entry in report["items"]]
             if dry_run:
                 raise _DryRun(report)
@@ -193,8 +231,93 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
                         (import_id, entry["object_id"], meta["source"], entry["external_id"],
                          candidate["digest"], _canonical(candidate["content"]), iso(utc_now(repo.clock))))
     except _DryRun as dry:
+        if rejected:
+            raise ImportRejected("Пакет содержит недопустимые записи; ничего не импортировано "
+                                 "(dry-run показал и допустимые записи).", dry.report)
         return dry.report
     return report
+
+
+def _norm_title(text) -> str:
+    return " ".join(str(text or "").casefold().replace("ё", "е").split())
+
+
+class _DuplicateIndex:
+    """Подсказка редактору о возможных дублях: тот же URL источника или то же kind+название.
+
+    Сравниваются объекты другого происхождения (ручные, другой source) и записи своего source
+    с другим external_id и тем же kind+названием.
+    """
+
+    def __init__(self, conn, source):
+        self.source = source
+        self.by_url, self.by_title = {}, {}
+        for row in conn.execute("SELECT id, import_source, data_json FROM civic_objects"):
+            self.add(row["id"], row["import_source"], json.loads(row["data_json"]))
+
+    def add(self, object_id, source, content):
+        for ref in content.get("source_refs") or []:
+            if ref.get("url"):
+                self.by_url.setdefault(ref["url"], []).append((object_id, source))
+        key = (content.get("kind"), _norm_title(content.get("title")))
+        self.by_title.setdefault(key, []).append((object_id, source))
+
+    def find(self, content, *, exclude) -> list[dict]:
+        hits = {}
+        for ref in content.get("source_refs") or []:
+            for object_id, source in self.by_url.get(ref.get("url"), []):
+                hits.setdefault(object_id, (source, set()))[1].add("source_url")
+        for object_id, source in self.by_title.get((content.get("kind"), _norm_title(content.get("title"))), []):
+            hits.setdefault(object_id, (source, set()))[1].add("kind_title")
+        # Внутри своего source общий URL — норма (одна публикация о нескольких работах),
+        # а то же kind+название под другим id — вероятный повтор записи в пакете.
+        return [{"object_id": object_id, "import_source": source, "match": sorted(match)}
+                for object_id, (source, match) in sorted(hits.items())
+                if object_id != exclude and (source != self.source or "kind_title" in match)][:5]
+
+
+def _ref_summary(refs) -> dict:
+    return {ref["id"]: ref for ref in refs or []}
+
+
+def source_refs_change(before, after) -> dict | None:
+    """Какие ссылки на источники добавлены/убраны/изменены (по id ссылки)."""
+    old, new = _ref_summary(before), _ref_summary(after)
+    out = {"added": sorted(set(new) - set(old)), "removed": sorted(set(old) - set(new)),
+           "changed": {ref_id: sorted(key for key in set(old[ref_id]) | set(new[ref_id])
+                                      if old[ref_id].get(key) != new[ref_id].get(key))
+                       for ref_id in sorted(set(old) & set(new)) if old[ref_id] != new[ref_id]}}
+    return out if any(out.values()) else None
+
+
+def last_imported_content(conn, row) -> dict | None:
+    """Содержимое последней принятой версии источника (отпечаток import_digest)."""
+    target = row["import_digest"]
+    if target is None:
+        return None
+    cand = conn.execute(
+        "SELECT data_json FROM civic_import_candidates WHERE object_id = ? AND digest = ? ORDER BY id DESC LIMIT 1",
+        (row["id"], target)).fetchone()
+    if cand is not None:
+        return json.loads(cand["data_json"])
+    for hist in conn.execute("SELECT snapshot_json FROM civic_history WHERE object_id = ? ORDER BY revision DESC",
+                             (row["id"],)):
+        content = json.loads(hist["snapshot_json"]).get("content")
+        if content is not None and digest_of(content) == target:
+            return content
+    return None
+
+
+def _change_details(conn, row, content) -> dict:
+    current = json.loads(row["data_json"])
+    details = {"changed_fields": sorted(diff(current, content))}
+    imported = last_imported_content(conn, row)
+    if imported is not None:
+        details["source_changed_fields"] = sorted(diff(imported, content))
+        refs = source_refs_change(imported.get("source_refs"), content.get("source_refs"))
+        if refs:
+            details["source_refs_change"] = refs
+    return details
 
 
 def _apply_one(repo, conn, actor, source, external_id, content, digest, reason) -> dict:
@@ -215,10 +338,11 @@ def _apply_one(repo, conn, actor, source, external_id, content, digest, reason) 
     untouched = (row["publication"] == "draft" and row["first_published_at"] is None
                  and row["import_revision"] == row["revision"])
     if untouched:
+        details = _change_details(conn, row, content)
         repo.update(actor, row["id"], expected_revision=row["revision"], changes=content,
                     reason=reason, conn=conn, import_meta={"digest": digest})
-        return {"action": "update_import_draft", "object_id": row["id"]}
-    if json.loads(row["data_json"]) == content:
+        return {"action": "update_import_draft", "object_id": row["id"], **details}
+    if json.loads(row["data_json"]) == ObjectRepository._candidate_content(row, _canonical(content)):
         # Редактор уже привёл объект к этой версии вручную: запоминаем отпечаток, кандидаты закрываем.
         conn.execute("UPDATE civic_objects SET import_digest = ? WHERE id = ?", (digest, row["id"]))
         conn.execute(
@@ -236,4 +360,5 @@ def _apply_one(repo, conn, actor, source, external_id, content, digest, reason) 
         detail, candidate = "изменение уже ждёт редактора", None
     else:
         detail, candidate = f"эта версия уже рассмотрена редактором ({previous['resolution']})", None
-    return {"action": "editor_review", "object_id": row["id"], "detail": detail, "_candidate": candidate}
+    return {"action": "editor_review", "object_id": row["id"], "detail": detail, "_candidate": candidate,
+            **_change_details(conn, row, content)}

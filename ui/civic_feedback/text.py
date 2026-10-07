@@ -77,6 +77,13 @@ def detect_language(value: str) -> str:
     return "ru" if cyrillic >= len(letters) / 2 else "unknown"
 
 
+_LINK = re.compile(r"(?:https?://|www\.)\S+", re.IGNORECASE)
+
+
+def links(value: str) -> list[str]:
+    return _LINK.findall(value)
+
+
 def personal_hints(value: str) -> list[dict]:
     """Найденные фрагменты, похожие на контакты/идентификаторы. Не гарантия полноты."""
     found: list[dict] = []

@@ -90,6 +90,15 @@ const check = (name, ok, detail) => {
       h4: document.querySelector("#civic-moderation-root .civic-r06-detail h4")?.textContent || "",
       status: document.querySelector("#civic-moderation-root .civic-r06-decision .civic-r06-status")?.textContent || "" }));
     check("approved in app", /Проверено модератором/.test(decisionStatus.h4), JSON.stringify(decisionStatus));
+    // Round 12: решение с ответом переводит новое сообщение в «Дан ответ»; заметка видна только сотруднику.
+    await page.waitForFunction(() => /Дан ответ/.test(document.querySelector("#civic-moderation-root .civic-r06-handling-line")?.textContent || ""), null, { timeout: 10000 });
+    check("handling status answered in app", true);
+    const note = marker + " служебная заметка";
+    await mod.locator(".civic-r06-note textarea").fill(note);
+    await mod.locator(".civic-r06-note button[type=submit]").click();
+    await page.waitForFunction((n) => (document.querySelector("#civic-moderation-root .civic-r06-history")?.textContent || "").includes(n), note, { timeout: 10000 });
+    check("staff note saved in app", true);
+    if (shotDir) await page.locator("#civic-moderation").screenshot({ path: path.join(shotDir, "r06_app_moderation_r12.png") });
 
     // Публичная карточка: XSS как текст.
     await page.click("#civic-moderation [data-close=moderation]");
@@ -98,6 +107,8 @@ const check = (name, ok, detail) => {
     const injected = await page.evaluate(() => ({
       imgs: document.querySelectorAll("#civic-feedback-root img").length, flag: window.__r06xss || null }));
     check("public card shows XSS as text", injected.imgs === 0 && injected.flag === null, JSON.stringify(injected));
+    const publicText = await root.locator(".civic-r06-public-item", { hasText: marker }).innerText();
+    check("public card has no staff note", !publicText.includes("служебная заметка"));
 
     // Выход: кнопка модерации скрывается, staff-запрос отклоняется.
     await page.evaluate(() => window.CivicShell.api.logout());

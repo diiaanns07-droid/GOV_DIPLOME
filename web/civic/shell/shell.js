@@ -22,13 +22,28 @@
   };
 
   // ---------------------------------------------------------------- api.request
+  // Safe, structured error details modules may rely on (R04 conflict merge, R06 receipts, rate limits).
+  // Only these keys, type-checked; server text beyond `message` (stack traces, SQL) is never copied.
+  const ERROR_DETAILS = {
+    current_revision: (v) => Number.isInteger(v) && v >= 0,
+    retry_after: (v) => Number.isInteger(v) && v >= 0 && v <= 86400,
+    can_confirm: (v) => typeof v === "boolean",
+    allowed: (v) => Array.isArray(v) && v.length <= 20 && v.every((x) => typeof x === "string" && x.length <= 40),
+    previous_receipt: (v) => v && typeof v === "object" && !Array.isArray(v) && JSON.stringify(v).length <= 2000,
+  };
   class CivicApiError extends Error {
-    constructor(status, code, message, fields) {
+    constructor(status, code, message, fields, details) {
       super(message || "Запрос не выполнен.");
       this.name = "CivicApiError";
       this.status = status;
       this.code = code || "error";
       this.fields = fields || null;
+      // Same facts in both shapes modules read: err.current_revision and err.error.current_revision.
+      const error = { code: this.code, message: this.message, fields: this.fields };
+      for (const [key, ok] of Object.entries(ERROR_DETAILS)) {
+        if (details && Object.prototype.hasOwnProperty.call(details, key) && ok(details[key])) error[key] = this[key] = details[key];
+      }
+      this.error = error;
     }
   }
   const session = { checked: false, authenticated: false, user: null, csrfToken: null };
@@ -90,9 +105,13 @@
       throw new CivicApiError(response.status, "bad_response", "Сервер вернул нечитаемый ответ.");
     if (!envelope.ok || !response.ok) {
       const error = envelope.error && typeof envelope.error === "object" ? envelope.error : {};
+      const details = { ...error };
+      // Retry-After header (seconds) when the body does not carry retry_after itself.
+      const header = Number.parseInt(response.headers.get("Retry-After") || "", 10);
+      if (!Number.isInteger(details.retry_after) && Number.isInteger(header)) details.retry_after = header;
       throw new CivicApiError(response.status, String(error.code || "error"),
         typeof error.message === "string" ? error.message : "Запрос не выполнен.",
-        error.fields && typeof error.fields === "object" ? error.fields : null);
+        error.fields && typeof error.fields === "object" ? error.fields : null, details);
     }
     return envelope.data;
   }

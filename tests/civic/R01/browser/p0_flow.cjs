@@ -112,6 +112,8 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await page.check("#civic-editor-root input[type=radio][value=synthetic]");
     await page.fill(fk("planned_start"), "2026-10-14");
     await page.fill(fk("original_planned_end"), "2026-10-30");
+    // R04 >= 69d5691: the place precision is chosen first; the drawing tools appear after it.
+    if (await page.locator(fk("place-approximate")).count()) await page.check(fk("place-approximate"));
     await page.click(fk("tool-point"));
     await page.evaluate(() => document.activeElement?.blur());
     await page.keyboard.press("Escape");

@@ -26,7 +26,7 @@ if str(ROOT) not in sys.path:
 
 from ui.civic_feedback import FeedbackService  # noqa: E402
 from ui.civic_feedback.fixtures import (FIXTURE_EDITOR, FIXTURE_NOTICE, FIXTURE_RESIDENT,  # noqa: E402
-                                        fixture_object_lookup)
+                                        broken_classifier, fixture_keyword_classifier, fixture_object_lookup)
 
 HERE = Path(__file__).resolve().parent
 STATIC = {
@@ -39,9 +39,13 @@ MAX_BODY = 64 * 1024
 FIXTURE_USERS = {"editor": FIXTURE_EDITOR, "resident": FIXTURE_RESIDENT}
 
 
+CLASSIFIERS = {"none": None, "fixture": fixture_keyword_classifier, "broken": broken_classifier}
+
+
 class Harness:
-    def __init__(self, db_path: str):
-        self.service = FeedbackService(db_path, fixture_object_lookup)
+    def __init__(self, db_path: str, *, limits: dict | None = None, classifier: str = "none"):
+        self.service = FeedbackService(db_path, fixture_object_lookup, classifier=CLASSIFIERS[classifier],
+                                       limits=limits)
         self.sessions: dict[str, dict] = {}
 
     def principal(self, handler) -> dict | None:
@@ -159,10 +163,12 @@ class Handler(BaseHTTPRequestHandler):
                 "csrf_token": principal["csrf_token"], "fixture_notice": FIXTURE_NOTICE}
 
 
-def create_server(port: int, db_path: str | None = None):
+def create_server(port: int, db_path: str | None = None, *, per_sender_max: int | None = None,
+                  classifier: str = "none"):
     if db_path is None:
         db_path = str(Path(tempfile.mkdtemp(prefix="r06-harness-")) / "feedback.sqlite3")
-    Handler.harness = Harness(db_path)
+    limits = {"per_sender_max": per_sender_max} if per_sender_max else None
+    Handler.harness = Harness(db_path, limits=limits, classifier=classifier)
     return ThreadingHTTPServer(("127.0.0.1", port), Handler)
 
 
@@ -170,8 +176,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8766)
     parser.add_argument("--db", default=None)
+    parser.add_argument("--per-sender-max", type=int, default=None,
+                        help="лимит сообщений с одного адреса за 10 минут (по умолчанию как в сервисе: 5)")
+    parser.add_argument("--classifier", choices=sorted(CLASSIFIERS), default="none",
+                        help="none — без модели; fixture — FIXTURE-подсказка по ключевым словам (не R08); broken — ошибка модели")
     args = parser.parse_args()
-    server = create_server(args.port, args.db)
+    server = create_server(args.port, args.db, per_sender_max=args.per_sender_max, classifier=args.classifier)
     print(f"R06 FIXTURE harness: http://127.0.0.1:{server.server_address[1]}/harness/", flush=True)
     try:
         server.serve_forever()

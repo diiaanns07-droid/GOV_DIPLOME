@@ -71,3 +71,6 @@
   .civic-r09-table td { border: 0; padding: 2px 4px; }
   .civic-r09-table td:first-child { grid-row: span 4; width: auto; }
 }
+/* Раунд 12: подпись редакции карточки и ссылки на источник */
+.civic-r09-version { margin: 6px 0 0; font-size: 11px; color: var(--civic-r09-ink); }
+.civic-r09-src-link { color: var(--civic-r09-green); text-decoration: underline; }

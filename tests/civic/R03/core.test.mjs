@@ -293,3 +293,25 @@ test("draw order: polygons largest first even with points in between; area count
   const r = C.applyFilters(list, { period: "month", area: true }, { today: "2026-10-06", viewBox: [71.4, 51.1, 71.5, 51.2] });
   assert.deepEqual([r.shown.length, r.counts.outsideArea, r.counts.noGeometry, r.counts.undated], [1, 0, 0, 0]);
 });
+
+test("r12: cost and responsible are shown only when a source covers them; provenance in plain words", () => {
+  const base = { id: "x", title: "x", publication: "published", evidence_type: "derived",
+    budget: { amount_kzt: 1000000, basis: "contract", source_id: null }, responsible: { organization: "ТОО Пример", public_contact: "+7 700" } };
+  const none = C.normalizeObject({ ...base, source_refs: [] }).item;
+  assert.deepEqual([C.costView(none).show, C.costView(none).state], [false, "unsourced"]);
+  assert.deepEqual([C.responsibleView(none).show, C.responsibleView(none).state], [false, "unsourced"]);
+  assert.equal(C.provenanceLine(none).text, "Источник не указан — сведения нельзя проверить по документу.");
+  const ref = { id: "s1", url: "https://example.org/a", publisher: "Акимат (тест)", published_on: "2026-09-01", fields: ["responsible.organization"] };
+  const org = C.normalizeObject({ ...base, source_refs: [ref] }).item;
+  const rv = C.responsibleView(org);
+  assert.deepEqual([rv.show, rv.organization, rv.contact], [true, "ТОО Пример", null], "contact is not covered by the source");
+  assert.equal(C.costView(org).show, false, "a source for the organisation does not vouch for the money");
+  const money = C.normalizeObject({ ...base, budget: { amount_kzt: 1000000, basis: "contract", source_id: "s1" }, source_refs: [ref] }).item;
+  assert.equal(C.costView(money).show, true);
+  const parent = C.normalizeObject({ ...base, source_refs: [{ ...ref, fields: ["responsible"] }] }).item;
+  assert.equal(C.responsibleView(parent).contact, "+7 700", "a parent field covers its children");
+  assert.equal(C.provenanceLine(org).text, "Акимат (тест), 01.09.2026");
+  const demo = C.normalizeObject({ id: "d", title: "d", evidence_type: "synthetic", budget: { amount_kzt: 5, basis: "planned", source_id: null } }).item;
+  assert.equal(C.costView(demo).state, "suppressed");
+  assert.equal(C.provenanceLine(demo).state, "demo");
+});

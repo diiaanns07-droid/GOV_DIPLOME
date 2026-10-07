@@ -114,6 +114,19 @@ T = {
         "unavailable": "Помощник сейчас не может ответить: опубликованные сведения по этому объекту недоступны.",
         "unknown_value": "нет данных",
         "unknown_actor": "",
+        "missing_list": "В опубликованной карточке не указано: {fields}.",
+        "missing_none": "Основные поля карточки заполнены: сроки, ответственный, сумма с источником, место и источники.",
+        "missing_reason": "Срок сдвинут, но причина в публичной истории не указана.",
+        "missing_note": "Пустое поле означает, что сведений нет, а не ноль и не «всё в порядке».",
+        "missing_labels": {"schedule.current_planned_end": "текущий плановый срок окончания",
+                           "schedule.original_planned_end": "первоначальный срок окончания",
+                           "schedule.planned_start": "плановое начало",
+                           "schedule.actual_end": "фактическая дата окончания",
+                           "budget.amount_kzt": "сумма", "budget.source_id": "источник суммы",
+                           "responsible.organization": "ответственная организация",
+                           "responsible.public_contact": "публичный контакт",
+                           "object.geometry_type": "место на карте", "sources": "источники сведений",
+                           "object.description": "описание"},
     },
     "kk": {
         "synthetic": "Бұл демонстрациялық (синтетикалық) жазба, нақты жұмыстар туралы мәлімет емес.",
@@ -167,6 +180,19 @@ T = {
         "unavailable": "Көмекші қазір жауап бере алмайды: бұл нысан бойынша жарияланған мәліметтер қолжетімсіз.",
         "unknown_value": "деректер жоқ",
         "unknown_actor": "",
+        "missing_list": "Жарияланған карточкада көрсетілмеген: {fields}.",
+        "missing_none": "Карточканың негізгі өрістері толтырылған: мерзімдер, жауапты ұйым, дереккөзі бар сома, орны және дереккөздер.",
+        "missing_reason": "Мерзім жылжыған, бірақ себебі жария тарихта көрсетілмеген.",
+        "missing_note": "Бос өріс мәлімет жоқ дегенді білдіреді, нөл немесе «бәрі дұрыс» дегенді емес.",
+        "missing_labels": {"schedule.current_planned_end": "ағымдағы жоспарлы аяқталу мерзімі",
+                           "schedule.original_planned_end": "бастапқы аяқталу мерзімі",
+                           "schedule.planned_start": "жоспарлы басталуы",
+                           "schedule.actual_end": "нақты аяқталу күні",
+                           "budget.amount_kzt": "сома", "budget.source_id": "соманың дереккөзі",
+                           "responsible.organization": "жауапты ұйым",
+                           "responsible.public_contact": "жария байланыс",
+                           "object.geometry_type": "картадағы орны", "sources": "мәліметтер дереккөздері",
+                           "object.description": "сипаттама"},
     },
 }
 
@@ -447,6 +473,41 @@ def r_scenario_compare(facts, lang):
     return out or [_st(T[lang]["scenario_none"], [], kind="missing")]
 
 
+# Поля, отсутствие которых важно жителю. actual_end ожидаемо пуст у незавершённых работ,
+# поэтому его отсутствие называем только при статусе «завершено».
+MISSING_FIELDS = ("schedule.current_planned_end", "schedule.original_planned_end", "schedule.planned_start",
+                  "budget.amount_kzt", "budget.source_id", "responsible.organization",
+                  "responsible.public_contact", "object.geometry_type", "object.description")
+
+
+def r_missing_data(facts, lang):
+    """Какие сведения в опубликованной карточке отсутствуют (known=False), без догадок о значениях."""
+    t = T[lang]
+    missing = [fid for fid in MISSING_FIELDS if fid in facts and not facts[fid]["known"]]
+    if _v(facts, "object.status") == "completed" and "schedule.actual_end" in facts \
+            and not facts["schedule.actual_end"]["known"]:
+        missing.append("schedule.actual_end")
+    has_sources = any(fid.startswith("source.") for fid in facts)
+    labels = [t["missing_labels"][fid] for fid in missing]
+    if not has_sources:
+        labels.append(t["missing_labels"]["sources"])
+    out = []
+    if labels:
+        out.append(_req(_st(t["missing_list"].format(fields=", ".join(labels)), missing, kind="missing")))
+    else:
+        out.append(_st(t["missing_none"], [], kind="notice"))
+    shift = _v(facts, "schedule.shift_days")
+    hist = _history(facts)
+    has_reason = any(h["value"]["reason"] and any(c == "schedule" or c.startswith("schedule.")
+                                                  for c in h["value"]["changed_fields"])
+                     and "publication" not in h["value"]["changed_fields"] for h in hist)
+    if shift and not has_reason:
+        out.append(_req(_st(t["missing_reason"], ["schedule.shift_days"] + [h["id"] for h in hist][-3:],
+                            kind="missing")))
+    out.append(_st(t["missing_note"], [], kind="notice"))
+    return out
+
+
 def r_unsupported(facts, lang):
     return [_st(T[lang]["unsupported"], [], kind="notice")]
 
@@ -463,6 +524,7 @@ RENDERERS = {
     "location": r_location,
     "access_impact": r_access_impact,
     "scenario_compare": r_scenario_compare,
+    "missing_data": r_missing_data,
     "unsupported": r_unsupported,
 }
 INTENTS = tuple(RENDERERS)
@@ -480,6 +542,7 @@ INTENT_FACT_PREFIXES = {
     "location": ("object.geometry_type", "object.geometry_precision"),
     "access_impact": ("scenario.",),
     "scenario_compare": ("scenario.",),
+    "missing_data": ("schedule.", "budget.", "responsible.", "object.", "source.", "history."),
     "unsupported": (),
 }
 

@@ -1,6 +1,6 @@
 // R03 browser tests on the verification stand (mock API, real MapLibre 5.6.2, real Chromium).
 //   node --test tests/civic/R03/browser.test.mjs
-//   R03_SHOTS=research/round-11-results/R03/screenshots node --test tests/civic/R03/browser.test.mjs
+//   R03_SHOTS=research/round-12-results/R03/screenshots node --test tests/civic/R03/browser.test.mjs
 // External hosts are blocked on purpose: OpenFreeMap is unreachable in the sandbox and
 // the stand must show its honest fallback. Results here are about the module, not R01/R02.
 import { test, before, after } from "node:test";
@@ -55,8 +55,10 @@ async function open(params, o = {}) {
   if (o.probe) await page.addInitScript(LISTENER_PROBE);
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
   const qs = new URLSearchParams(Object.assign({ today: TODAY }, params || {}));
-  await page.goto(base + "/research/round-11-results/R03/stand/?" + qs + (o.hash || ""));
+  await page.goto(base + "/tests/civic/R03/stand/?" + qs + (o.hash || ""));
   await page.waitForFunction(() => window.__stand && window.__stand.instance && ["ready", "error"].includes(window.__stand.instance.getState().list), null, { timeout: 30000 });
+  // r12: the filter box is folded by default; most tests drive its controls, so unfold it here.
+  if (!o.folded) await page.evaluate(() => { const d = document.querySelector(".civic-r03-filters"); if (d) d.open = true; });
   return { ctx, page, errors };
 }
 const state = (page) => page.evaluate(() => window.__stand.instance.getState());
@@ -137,7 +139,13 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   assert.match(demo, /Стоимость\s+нет данных/);
   assert.doesNotMatch(demo, /₸/, "no tenge on a synthetic record");
   assert.match(demo, /Демо\. Синтетическая демо-запись/);
-  assert.match(demo, /запись обновлена 5 октября 2026, 16:40 \(время Астаны\)/);
+  // r12: the short answer comes first; technical provenance is folded away
+  assert.match(demo, /Сейчас\s+Идут работы по записи/);
+  assert.match(demo, /Когда закончат\s+до 5 ноября 2026 \(по плану\)\s*перенесён на 16 дней/);
+  assert.match(demo, /Кто отвечает\s+не подтверждено источником/);
+  assert.match(demo, /Откуда сведения\s+Тестовый источник \(fixture R03\), 15\.09\.2026/);
+  assert.doesNotMatch(demo, /Демо-подрядчик/, "an unsourced organisation name is not shown");
+  assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /Запись обновлена: 5 октября 2026, 16:40 \(время Астаны\)/);
   assert.doesNotMatch(demo, /по данным на/);
   await select(page, "r03-format-derived");
   const card = await page.evaluate(() => {
@@ -151,10 +159,12 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   assert.match(card.text, /Причина: «Демо: перенос из-за поставки материалов/);
   assert.match(card.text, /48\u202f500\u202f000 ₸/);
   assert.match(card.text, /сумма договора · источник: Тестовый источник/);
-  assert.match(card.text, /Тестовая организация \(fixture\)/);
+  assert.match(card.text, /Кто отвечает\s+Тестовая организация \(fixture\) — по источнику/);
   assert.match(card.text, /Выведено из источников/);
-  assert.match(card.text, /статус по источнику от 15\.09\.2026 · запись обновлена 5 октября 2026, 16:40 \(время Астаны\)/);
-  assert.match(card.text, /подтверждает: статус, текущий срок, стоимость, основание стоимости/);
+  assert.match(card.text, /Сейчас\s+Идут работы по источнику от 15\.09\.2026/);
+  assert.match(card.text, /Откуда сведения\s+Тестовый источник \(fixture R03, не реальный\), 15\.09\.2026/);
+  assert.match(card.text, /Изначально — до\s+20 октября 2026\s+Сейчас — до\s+5 ноября 2026\s+Фактически\s+нет данных/);
+  assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /подтверждает: статус, текущий срок, стоимость, основание стоимости, организация/);
   assert.equal(card.href, "https://example.org/civic-fixture/notice-1");
   assert.equal(card.target, "_blank");
   assert.match(card.rel, /noopener/);
@@ -175,11 +185,12 @@ test("card without data: every missing value reads 'нет данных', no inv
   const { ctx, page } = await open();
   await select(page, "r03-demo-nodata");
   const text = await page.locator(".civic-r03-card").innerText();
-  assert.match(text, /Организация\s+нет данных/);
-  assert.match(text, /Публичный контакт\s+нет данных/);
+  assert.match(text, /Ответственный\s+нет данных/);
+  assert.match(text, /Кто отвечает\s+не указано/);
+  assert.match(text, /Когда закончат\s+срок окончания не указан/);
   assert.match(text, /Стоимость\s+нет данных/);
   assert.match(text, /Начало по плану\s+нет данных/);
-  assert.match(text, /Текущий срок\s+нет данных/);
+  assert.match(text, /Сейчас — до\s+нет данных/);
   assert.match(text, /Место примерное/);
   assert.match(text, /Плановый интервал неполный/);
   assert.doesNotMatch(text, /0 ₸/);
@@ -495,7 +506,7 @@ test("filters persist across reload without private data", { skip: SKIP }, async
   await page.waitForFunction(() => window.__stand && window.__stand.instance && window.__stand.instance.getState().list === "ready");
   assert.equal(await page.getAttribute('[data-kind="roadworks"]', "aria-pressed"), "true");
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("civic-r03:filters:v1")));
-  assert.deepEqual(Object.keys(stored).sort(), ["area", "from", "kinds", "period", "statuses", "to"]);
+  assert.deepEqual(Object.keys(stored).sort(), ["area", "evidence", "from", "hidePast", "kinds", "period", "statuses", "to"]);
   assert.deepEqual(stored.kinds, ["roadworks"]);
   await ctx.close();
 });
@@ -600,6 +611,10 @@ test("review: a small polygon inside a big one is selectable on the map", { skip
   await page.waitForTimeout(400);
   const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.372, 51.171]); return { x: c.left + p.x, y: c.top + p.y }; });
   await page.mouse.click(pt.x, pt.y);
+  // r12: both areas are under the pointer -> the chooser lists the small one first
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll(".civic-r03-card .civic-r03-item")].map((b) => b.dataset.id)), ["small", "big"]);
+  await page.click('.civic-r03-card [data-id="small"]');
   await page.waitForFunction(() => window.__stand.instance.getState().selectedId !== null);
   assert.equal((await state(page)).selectedId, "small");
   await ctx.close();
@@ -765,7 +780,7 @@ test("review: a failed re-read after refresh shows the fresh list copy, not the 
   const t = await page.locator(".civic-r03-card").innerText();
   assert.match(t, /Демо: отменённый ремонт прохода \(ред\. 4\)/);
   assert.match(t, /Отменено/);
-  assert.match(t, /редакция 4/);
+  assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /редакция 4/);
   await ctx.close();
 });
 
@@ -873,5 +888,202 @@ test("buttons keep their own colours: primary text readable on its dark fill, li
   await page.selectOption('[data-r03-filter="period"]', "next30");
   const link = await page.evaluate(() => getComputedStyle(document.querySelector(".civic-r03-link-btn")).color);
   assert.equal(link, "rgb(23, 107, 74)");
+  await ctx.close();
+});
+
+// ---------- round 12 ----------
+test("r12: a street or district with no records does not read as 'no works here'", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  // what the R01 shell does on a street pick: frame an empty part of the city, then setFilters({area:true})
+  await page.evaluate(() => { window.__stand.map.jumpTo({ center: [71.36, 51.19], zoom: 16 }); window.__stand.instance.setFilters({ area: true }); });
+  await page.waitForTimeout(300);
+  const t = await page.locator(".civic-r03-state").innerText();
+  assert.match(t, /В видимой части карты нет опубликованных записей/);
+  assert.match(t, /Это не значит, что здесь не ведутся работы: реестр неполный/);
+  assert.match(t, /Подтверждённых реальных работ в нём пока нет, опубликовано 12 записей, все демонстрационные/);
+  assert.doesNotMatch(t, /ничего не найдено/);
+  assert.match(await page.locator(".civic-r03-demo-note").innerText(), /Подтверждённых реальных работ в реестре пока нет: все 12 записей — демонстрационные/);
+  await shot(page, "r12-desktop-1440-empty-street");
+  await page.click('[data-r03-action="area-off"]');
+  assert.equal(await page.locator(".civic-r03-item").count(), 12);
+  assert.equal((await state(page)).filters.area, false);
+  await ctx.close();
+});
+
+test("r12: filters are folded by default, objects are visible at once; active filters show as removable pills with counts", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { folded: true });
+  const r = await page.evaluate(() => {
+    const items = [...document.querySelectorAll(".civic-r03-item")].filter((b) => { const x = b.getBoundingClientRect(); return x.bottom <= innerHeight && x.top >= 0; });
+    return { open: document.querySelector(".civic-r03-filters").open, visibleItems: items.length, pills: document.querySelector(".civic-r03-pills").hidden };
+  });
+  assert.equal(r.open, false);
+  assert.ok(r.visibleItems >= 3, "at least three objects visible without scrolling at 1440x900: " + r.visibleItems);
+  assert.equal(r.pills, true, "no pills without filters");
+  await page.evaluate(() => window.__stand.instance.setFilters({ kinds: ["roadworks"], hidePast: true }));
+  const pills = await page.locator(".civic-r03-pill").allInnerTexts();
+  assert.deepEqual(pills.map((t) => t.replace(/\s*×\s*$/, "")), ["Дорожные работы", "без прошедших планов"]);
+  // counts in the status select follow the other filters (roadworks, no past plans)
+  const opts = await page.evaluate(() => [...document.querySelector('[data-r03-filter="status"]').options].map((o) => o.textContent));
+  assert.ok(opts.includes("Запланировано (1)") || opts.some((t) => /^Запланировано \(\d+\)$/.test(t)), opts.join("|"));
+  const shown = await page.locator(".civic-r03-item").count();
+  const sum = opts.slice(1).reduce((a, t) => a + Number((t.match(/\((\d+)\)$/) || [0, 0])[1]), 0);
+  assert.equal(sum, shown, "status counts add up to the shown list");
+  await page.click('.civic-r03-pill[data-key="kind"]');
+  assert.equal(await page.locator(".civic-r03-pill").count(), 1);
+  assert.notEqual(await page.evaluate(() => document.activeElement.className), "", "focus stays in the panel");
+  await shot(page, "r12-desktop-1440-list-folded-filters");
+  await ctx.close();
+});
+
+test("r12: 'Сведения' separates demo, sourced and unsourced records; past plans can be hidden", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", extra: "format" });
+  await page.selectOption('[data-r03-filter="evidence"]', "sourced");
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id)), ["r03-format-derived"]);
+  await page.selectOption('[data-r03-filter="evidence"]', "demo");
+  assert.equal(await page.locator(".civic-r03-item").count(), 12);
+  const opt = await page.evaluate(() => [...document.querySelector('[data-r03-filter="evidence"]').options].map((o) => o.textContent));
+  assert.deepEqual(opt, ["Все записи", "С источником (1)", "Демонстрационные (12)", "Без источника (0)"]);
+  await page.selectOption('[data-r03-filter="evidence"]', "all");
+  await page.check('[data-r03-filter="hidePast"]');
+  const ids = await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id));
+  assert.ok(!ids.includes("r03-demo-historical"));
+  assert.match(await page.locator(".civic-r03-list-notes").innerText(), /Скрыто планов с прошедшим сроком: 1/);
+  await ctx.close();
+});
+
+test("r12: overlapping objects: one click offers a choice, keyboard picks one, cancel goes back; copy link works", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" }, { viewport: DESKTOP });
+  await page.evaluate(async () => {
+    // three synthetic objects at the same spot (test-only, never in the registry)
+    const mk = (id, kind, geometry) => ({ schema_version: "civic-v1", id, city: "astana", kind, title: "Тест перекрытия " + id, status: "planned", publication: "published",
+      geometry, geometry_precision: "source", schedule: {}, budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 });
+    const o = window.__stand.api.options;
+    o.items.push(mk("ov-point", "event", { type: "Point", coordinates: [71.3800, 51.1800] }),
+      mk("ov-line", "roadworks", { type: "LineString", coordinates: [[71.3790, 51.1800], [71.3810, 51.1800]] }),
+      mk("ov-area", "landscaping", { type: "Polygon", coordinates: [[[71.3795, 51.1797], [71.3805, 51.1797], [71.3805, 51.1803], [71.3795, 51.1803], [71.3795, 51.1797]]] }));
+    await window.__stand.instance.refresh();
+    window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 });
+  });
+  await page.waitForTimeout(400);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.38, 51.18]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  assert.match(await page.locator(".civic-r03-card-title").innerText(), /Здесь 3 объекта рядом/);
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll(".civic-r03-card .civic-r03-item")].map((b) => b.dataset.id)), ["ov-point", "ov-line", "ov-area"]);
+  assert.equal(await page.evaluate(() => document.activeElement.className), "civic-r03-card-title");
+  assert.equal(await page.evaluate(() => window.__stand.selects.length), 0, "choosing is not a selection yet");
+  await shot(page, "r12-desktop-1440-overlap-chooser");
+  // keyboard: Tab to the area entry and open it
+  await page.focus('.civic-r03-card [data-id="ov-area"]');
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__stand.instance.getState().selectedId === "ov-area" && window.__stand.instance.getState().view === "card");
+  // copy link: clipboard may be unavailable headless -> a selectable field with the R01 link format appears
+  await page.click('[data-r03-action="copy-link"]');
+  await page.waitForSelector(".civic-r03-copy-note");
+  const note = await page.evaluate(() => { const n = document.querySelector(".civic-r03-copy-note"); const f = n.querySelector("input"); return { text: n.textContent, url: f ? f.value : null }; });
+  assert.ok(/Ссылка скопирована/.test(note.text) || /#object=ov-area$/.test(note.url), JSON.stringify(note));
+  // pick again, then cancel -> back to the open card
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "card");
+  assert.equal((await state(page)).selectedId, "ov-area");
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r12: back to the list restores its scroll position and the focused item", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { viewport: MOBILE, folded: true });
+  await page.click(".civic-r03-handle"); await page.waitForTimeout(320);
+  await page.click(".civic-r03-handle"); await page.waitForTimeout(320);
+  const before = await page.evaluate(() => { const sc = document.querySelector(".civic-r03-scroll"); sc.scrollTop = 400; return sc.scrollTop; });
+  const id = await page.evaluate(() => { const r = document.querySelector(".civic-r03-scroll").getBoundingClientRect(); return [...document.querySelectorAll(".civic-r03-item")].find((b) => b.getBoundingClientRect().top > r.top).dataset.id; });
+  await page.focus(`[data-id="${id}"]`);
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.keyboard.press("Escape");
+  const after = await page.evaluate(() => ({ top: document.querySelector(".civic-r03-scroll").scrollTop, focused: document.activeElement.dataset.id }));
+  assert.equal(after.focused, id);
+  assert.ok(Math.abs(after.top - before) < 60, JSON.stringify({ before, after }));
+  await ctx.close();
+});
+
+// Performance on a dense city: 500 and 2000 EXPLICITLY SYNTHETIC objects generated inside the test only
+// (never written to fixtures or any registry). Timings are recorded, thresholds are generous sanity bounds.
+for (const N of [500, 2000]) {
+  test(`r12: ${N} synthetic objects (test-only): loads in pages of 100, list capped, filters and map stay responsive`, { skip: SKIP }, async () => {
+    const { ctx, page, errors } = await open({ persist: "0", fit: "0", maxpage: "100", delay: "5" });
+    const r = await page.evaluate(async (n) => {
+      const kinds = ["construction", "roadworks", "landscaping", "event"], statuses = ["planned", "in_progress", "completed", "cancelled", "unknown"];
+      const o = window.__stand.api.options;
+      const gen = [];
+      for (let i = 0; i < n; i++) {
+        const lon = 71.33 + (i % 50) * 0.0045, lat = 51.08 + Math.floor(i / 50) * (0.12 / Math.ceil(n / 50));
+        const geometry = i % 10 === 0 ? { type: "LineString", coordinates: [[lon, lat], [lon + 0.002, lat + 0.001]] } : i % 25 === 0 ? null : { type: "Point", coordinates: [lon, lat] };
+        gen.push({ schema_version: "civic-v1", id: "perf-" + i, city: "astana", kind: kinds[i % 4], title: "Синтетический тестовый объект плотности №" + i, status: statuses[i % 5],
+          publication: "published", geometry, geometry_precision: i % 3 ? "source" : "approximate",
+          schedule: { planned_start: "2026-0" + (1 + (i % 9)) + "-01", original_planned_end: null, current_planned_end: "2026-1" + (i % 3) + "-15", actual_end: null },
+          budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 });
+      }
+      o.items = gen;
+      const t0 = performance.now();
+      await window.__stand.instance.refresh();
+      const loadMs = performance.now() - t0;
+      const st = window.__stand.instance.getState();
+      const pages = window.__stand.api.calls.filter((c) => c.path.startsWith("/objects?") && c.path.includes("limit=100")).length;
+      const rendered = document.querySelectorAll(".civic-r03-item").length;
+      const features = (await window.__stand.map.getSource("civic-r03-objects").getData()).features.length;
+      const t1 = performance.now();
+      document.querySelector('[data-kind="roadworks"]').click();
+      const filterMs = performance.now() - t1;
+      const afterFilter = document.querySelector(".civic-r03-count").textContent;
+      const t2 = performance.now();
+      window.__stand.instance.setFilters({ kinds: [], period: "month", hidePast: true });
+      const filter2Ms = performance.now() - t2;
+      return { loadMs, count: st.count, pages, rendered, features, filterMs, filter2Ms, afterFilter, more: !!document.querySelector('[data-r03-action="more"]') };
+    }, N);
+    assert.equal(r.count, N);
+    assert.ok(r.pages >= Math.ceil(N / 100), JSON.stringify(r));
+    assert.equal(r.rendered, 200, "list renders 200 rows at a time");
+    assert.equal(r.more, true);
+    let noGeo = 0; for (let i = 0; i < N; i++) if (i % 25 === 0 && i % 10 !== 0) noGeo++;
+    assert.equal(r.features, N - noGeo, "every object with geometry is drawn, none invented for the rest");
+    assert.match(r.afterFilter, /^Показано \d+ из \d+$/);
+    assert.ok(r.loadMs < 4000 && r.filterMs < 600 && r.filter2Ms < 600, JSON.stringify(r));
+    // a click in the dense grid still resolves (single object or chooser)
+    await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.33 + 10 * 0.0045, 51.08], zoom: 17 }));
+    await page.waitForFunction(() => window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point", "civic-r03-line"] }).length > 0, null, { timeout: 15000 });
+    // the object at the centre of the view (grid column 10, a line start) must be pickable
+    const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.33 + 10 * 0.0045, 51.08]); return { x: c.left + p.x, y: c.top + p.y }; });
+    await page.mouse.click(pt.x, pt.y);
+    await page.waitForFunction(() => { const s = window.__stand.instance.getState(); return s.view === "card" || s.view === "pick"; }, null, { timeout: 5000 });
+    console.log("PERF", N, JSON.stringify(r));
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+}
+
+test("r12: onData keeps the base contract (one call per successful load, evidence only), not on errors", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  let d = await page.evaluate(() => window.__stand.data.map((x) => x.length));
+  assert.deepEqual(d, [12]);
+  const first = await page.evaluate(() => window.__stand.data[0][0]);
+  assert.deepEqual(Object.keys(first), ["evidence"]);
+  await page.evaluate(async () => { window.__stand.api.options.failList = 1; await window.__stand.instance.refresh(); await window.__stand.instance.refresh(); });
+  d = await page.evaluate(() => window.__stand.data.map((x) => x.length));
+  assert.deepEqual(d, [12, 12], "failed refresh does not report data; the next success does");
+  await ctx.close();
+});
+
+test("r12: narrow 320x640 phone: no horizontal scroll in list, pills, card and chooser", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0" }, { viewport: { width: 320, height: 640 }, touch: true });
+  await page.evaluate(() => window.__stand.instance.setFilters({ kinds: ["roadworks", "landscaping"], hidePast: true, evidence: "demo" }));
+  for (let i = 0; i < 2; i++) { await page.click(".civic-r03-handle"); await page.waitForTimeout(320); }
+  assert.deepEqual(await noHorizontalOverflow(page), []);
+  await select(page, "r03-demo-long-kk");
+  assert.deepEqual(await noHorizontalOverflow(page), []);
+  assert.equal(await reachable(page, "#toggle-3d"), true);
+  await shot(page, "r12-mobile-320-card-long-kk");
+  assert.deepEqual(errors, []);
   await ctx.close();
 });

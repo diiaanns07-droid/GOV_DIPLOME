@@ -12,6 +12,8 @@
   backup DEST                   согласованная копия через SQLite backup API
   restore SRC --yes             восстановление с предварительной копией текущей базы
   export-audit [--since ISO]    служебная история изменений (JSON Lines) для редактора
+  export-public [--out FILE]    только опубликованные карточки + публичная история (без сессий/секретов)
+  restore-public FILE [--dry-run]  восстановить публичную выгрузку в базу без объектов
 
 Пароль никогда не принимается аргументом командной строки (он остался бы в истории shell
 и в списке процессов). Без терминала используйте --password-stdin (одна строка stdin).
@@ -33,6 +35,7 @@ from .db import (DEFAULT_DB_PATH, MIGRATIONS, SCHEMA_VERSION, Database, StorageE
                  create_private_file, resolve_db_path, restrict_permissions)
 from .importer import ImportRejected, describe_package, import_package, load_package
 from .objects import Actor, BadRequest, Conflict, NotFound
+from .public_export import PublicRestoreRejected, export_public, restore_public
 from .service import CivicService
 from .validate import ValidationError
 
@@ -379,6 +382,28 @@ def cmd_export_audit(args, service):
             out.close()
 
 
+def cmd_export_public(args, service):
+    text = json.dumps(export_public(service.objects), ensure_ascii=False, indent=1) + "\n"
+    if not args.out:
+        sys.stdout.write(text)
+        return
+    try:
+        # Данные публичные, но существующий файл не перезаписываем молча.
+        with open(args.out, "x", encoding="utf-8") as out:
+            out.write(text)
+    except FileExistsError:
+        raise SystemExit("Файл уже существует — выберите новое имя.")
+    print(f"Публичная выгрузка: {args.out}", file=sys.stderr)
+
+
+def cmd_restore_public(args, service):
+    try:
+        export = json.loads(Path(args.file).read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError, UnicodeDecodeError) as exc:
+        raise PublicRestoreRejected(f"Не удалось прочитать выгрузку: {exc.__class__.__name__}.")
+    _print(restore_public(service.objects, export, dry_run=args.dry_run))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="python -m ui.civic_store",
                                      description="R02 civic_store: база объектов и доступ редактора")
@@ -424,6 +449,13 @@ def build_parser() -> argparse.ArgumentParser:
     cmd.add_argument("--since", help="ISO-время, с которого выгружать")
     cmd.add_argument("--out")
     cmd.set_defaults(func=cmd_export_audit)
+    cmd = sub.add_parser("export-public")
+    cmd.add_argument("--out")
+    cmd.set_defaults(func=cmd_export_public)
+    cmd = sub.add_parser("restore-public")
+    cmd.add_argument("file")
+    cmd.add_argument("--dry-run", action="store_true")
+    cmd.set_defaults(func=cmd_restore_public)
     return parser
 
 
@@ -439,7 +471,7 @@ def main(argv=None) -> int:
             # не создаёт новую пустую базу, status/export/dry-run ничего не мигрируют.
             args.func(args, CivicService(_existing_db(args), auto_migrate=False))
     except (StorageError, PasswordPolicyError, ImportRejected, ValidationError, BadRequest,
-            NotFound, Conflict) as exc:
+            NotFound, Conflict, PublicRestoreRejected) as exc:
         report = getattr(exc, "report", None)
         if report:
             _print(report)
