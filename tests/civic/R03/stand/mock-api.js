@@ -30,8 +30,12 @@
         if (o.failList > 0) { o.failList--; throw err(o.status, "server_error", "Internal error"); }
         const all = published();
         const start = Number(url.searchParams.get("cursor") || 0);
-        const page = all.slice(start, start + o.pageSize);
-        const next = start + o.pageSize < all.length ? String(start + o.pageSize) : null;
+        // Like R02: optional limit 1-100 (else 400); default page size from options.
+        const lim = url.searchParams.get("limit");
+        if (lim !== null && (o.rejectLimit || !/^\d+$/.test(lim) || +lim < 1 || +lim > 100)) throw err(400, "validation_failed", "Недопустимый limit.");
+        const size = lim !== null ? Math.min(+lim, o.maxPage || 100) : o.pageSize;
+        const page = all.slice(start, start + size);
+        const next = start + size < all.length ? String(start + size) : null;
         return { items: JSON.parse(JSON.stringify(page)), next_cursor: next };
       }
       const m = /^\/objects\/([^/]+)$/.exec(url.pathname);

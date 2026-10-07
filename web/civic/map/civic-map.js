@@ -32,6 +32,7 @@
   const SVGNS = "http://www.w3.org/2000/svg";
   const MOBILE_QUERY = "(max-width: 760px)";
   const MAX_PAGES = 20;
+  const PAGE_LIMIT = 100;
   const LIST_STEP = 200;
   const DEMO_IMG = P + "demo-ring";
   const byMap = new WeakMap();
@@ -729,8 +730,19 @@
       try {
         const raw = [];
         let cursor = null, pages = 0, truncated = false;
+        // Ask for R02's largest page (limit 1-100, default 50) so 20 pages cover 2000 records; a server that
+        // rejects the parameter (400/422 on the first page) is asked again without it.
+        let limit = PAGE_LIMIT;
         do {
-          const data = await request("GET", "/objects" + (cursor ? "?cursor=" + encodeURIComponent(cursor) : ""), signal);
+          const qs = [cursor ? "cursor=" + encodeURIComponent(cursor) : null, limit ? "limit=" + limit : null].filter(Boolean).join("&");
+          let data;
+          try {
+            data = await request("GET", "/objects" + (qs ? "?" + qs : ""), signal);
+          } catch (err) {
+            const info = C.errorInfo(err);
+            if (limit && !cursor && (info.status === 400 || info.status === 422)) { limit = 0; continue; }
+            throw err;
+          }
           if (destroyed || !listSeq.isCurrent(t)) return;
           const items = data && Array.isArray(data.items) ? data.items : Array.isArray(data) ? data : null;
           if (!items) throw Object.assign(new Error("bad payload"), { code: "bad_payload" });

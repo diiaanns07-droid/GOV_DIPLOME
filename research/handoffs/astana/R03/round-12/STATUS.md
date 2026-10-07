@@ -8,7 +8,7 @@
   result files; the round-12 patch is `git diff 56538a3a -- web/civic/map tests/civic/R03`.
 - Owned paths: web/civic/map/ (except streets.json), tests/civic/R03/, research/round-12-results/R03/, this file.
 
-## Status: PARTIAL — checkpoint 3
+## Status: PARTIAL — checkpoint 4
 
 Done:
 - Checkpoint 1 (d72058a): honest empty state for a street/district without records; area filter measured on setFilters; stand in tests/civic/R03/stand/.
@@ -32,5 +32,13 @@ Done:
   back to the list restores scroll position and focus.
 - Tests: core 25/25, browser 49/49, R02 read-only 2/2.
 
-Next step: 500–2000 synthetic objects (test fixture only) performance check; a11y pass (narrow screen, screen reader,
-quick double selection, late response), then after-screenshots of the real app.
+- Checkpoint 4: list requests limit=100 (R02 max; retried without it on 400/422) — before, R02's default 50 × 20 pages
+  silently truncated the list at 1000 records. Density (synthetic, generated inside the test only, never in a registry):
+  500 objects load 69 ms, 2000 objects 380 ms (21 pages incl. initial load); filter change 11–29 ms; list renders 200 rows
+  with «Показать ещё»; every object with geometry is drawn and stays clickable. onData contract kept (one call per
+  successful load, {evidence} only). 320x640 phone: no horizontal scroll.
+- R01's own P0 flow in this branch (= base + R03): 57 PASS / 2 FAIL / 2 NOT_RUN — identical to the clean base 56538a3
+  (same 2 FAIL in R01-owned explore buttons / attribution slot): research/round-12-results/R03/runs/.
+- Tests: core 25/25, browser 53/53, R02 read-only 2/2.
+
+Next step: adversarial review of the round-12 diff; after-screenshots of the real app; RUN.txt, INTEGRATION.txt, DELIVERY.

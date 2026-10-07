@@ -35,10 +35,12 @@
     failList: fail === "list" || fail === "all" ? 1 : 0,
     failCard: fail === "card" || fail === "all" ? 1 : 0,
     leakDrafts: q.get("leak") === "1",
+    // server-side page cap (R02: 100); small by default so paging stays exercised
+    maxPage: Number(q.get("maxpage") || 5),
   });
 
   if (real) document.getElementById("stand-flag").textContent = "СТЕНД · R02 CivicService (read-only) · без оболочки R01";
-  const stand = { api, instance: null, map: null, mounts: 0, destroys: 0, basemap: "pending", feedback: [], selects: [] };
+  const stand = { api, instance: null, map: null, mounts: 0, destroys: 0, basemap: "pending", feedback: [], selects: [], data: [] };
   window.__stand = stand;
 
   // host=r01: imitate the R01 shell panel (positioned host + own scroll), module embedded in a slot.
@@ -68,6 +70,7 @@
       persistFilters: q.get("persist") !== "0",
       fitOnLoad: q.get("fit") !== "0",
       onSelect: (obj, meta) => stand.selects.push({ id: obj && obj.id, source: meta.source }),
+      onData: (items) => stand.data.push(items),
       onFeedback: (payload) => { stand.feedback.push(payload); say("onFeedback вызван для «" + payload.title + "» — форму обращения подключает R06/R01."); },
     });
     stand.mounts++;

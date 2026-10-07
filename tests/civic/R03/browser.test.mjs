@@ -1007,3 +1007,83 @@ test("r12: back to the list restores its scroll position and the focused item", 
   assert.ok(Math.abs(after.top - before) < 60, JSON.stringify({ before, after }));
   await ctx.close();
 });
+
+// Performance on a dense city: 500 and 2000 EXPLICITLY SYNTHETIC objects generated inside the test only
+// (never written to fixtures or any registry). Timings are recorded, thresholds are generous sanity bounds.
+for (const N of [500, 2000]) {
+  test(`r12: ${N} synthetic objects (test-only): loads in pages of 100, list capped, filters and map stay responsive`, { skip: SKIP }, async () => {
+    const { ctx, page, errors } = await open({ persist: "0", fit: "0", maxpage: "100", delay: "5" });
+    const r = await page.evaluate(async (n) => {
+      const kinds = ["construction", "roadworks", "landscaping", "event"], statuses = ["planned", "in_progress", "completed", "cancelled", "unknown"];
+      const o = window.__stand.api.options;
+      const gen = [];
+      for (let i = 0; i < n; i++) {
+        const lon = 71.33 + (i % 50) * 0.0045, lat = 51.08 + Math.floor(i / 50) * (0.12 / Math.ceil(n / 50));
+        const geometry = i % 10 === 0 ? { type: "LineString", coordinates: [[lon, lat], [lon + 0.002, lat + 0.001]] } : i % 25 === 0 ? null : { type: "Point", coordinates: [lon, lat] };
+        gen.push({ schema_version: "civic-v1", id: "perf-" + i, city: "astana", kind: kinds[i % 4], title: "Синтетический тестовый объект плотности №" + i, status: statuses[i % 5],
+          publication: "published", geometry, geometry_precision: i % 3 ? "source" : "approximate",
+          schedule: { planned_start: "2026-0" + (1 + (i % 9)) + "-01", original_planned_end: null, current_planned_end: "2026-1" + (i % 3) + "-15", actual_end: null },
+          budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 });
+      }
+      o.items = gen;
+      const t0 = performance.now();
+      await window.__stand.instance.refresh();
+      const loadMs = performance.now() - t0;
+      const st = window.__stand.instance.getState();
+      const pages = window.__stand.api.calls.filter((c) => c.path.startsWith("/objects?") && c.path.includes("limit=100")).length;
+      const rendered = document.querySelectorAll(".civic-r03-item").length;
+      const features = (await window.__stand.map.getSource("civic-r03-objects").getData()).features.length;
+      const t1 = performance.now();
+      document.querySelector('[data-kind="roadworks"]').click();
+      const filterMs = performance.now() - t1;
+      const afterFilter = document.querySelector(".civic-r03-count").textContent;
+      const t2 = performance.now();
+      window.__stand.instance.setFilters({ kinds: [], period: "month", hidePast: true });
+      const filter2Ms = performance.now() - t2;
+      return { loadMs, count: st.count, pages, rendered, features, filterMs, filter2Ms, afterFilter, more: !!document.querySelector('[data-r03-action="more"]') };
+    }, N);
+    assert.equal(r.count, N);
+    assert.ok(r.pages >= Math.ceil(N / 100), JSON.stringify(r));
+    assert.equal(r.rendered, 200, "list renders 200 rows at a time");
+    assert.equal(r.more, true);
+    let noGeo = 0; for (let i = 0; i < N; i++) if (i % 25 === 0 && i % 10 !== 0) noGeo++;
+    assert.equal(r.features, N - noGeo, "every object with geometry is drawn, none invented for the rest");
+    assert.match(r.afterFilter, /^Показано \d+ из \d+$/);
+    assert.ok(r.loadMs < 4000 && r.filterMs < 600 && r.filter2Ms < 600, JSON.stringify(r));
+    // a click in the dense grid still resolves (single object or chooser)
+    await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.33 + 10 * 0.0045, 51.08], zoom: 17 }));
+    await page.waitForFunction(() => window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point", "civic-r03-line"] }).length > 0, null, { timeout: 15000 });
+    // the object at the centre of the view (grid column 10, a line start) must be pickable
+    const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.33 + 10 * 0.0045, 51.08]); return { x: c.left + p.x, y: c.top + p.y }; });
+    await page.mouse.click(pt.x, pt.y);
+    await page.waitForFunction(() => { const s = window.__stand.instance.getState(); return s.view === "card" || s.view === "pick"; }, null, { timeout: 5000 });
+    console.log("PERF", N, JSON.stringify(r));
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+}
+
+test("r12: onData keeps the base contract (one call per successful load, evidence only), not on errors", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  let d = await page.evaluate(() => window.__stand.data.map((x) => x.length));
+  assert.deepEqual(d, [12]);
+  const first = await page.evaluate(() => window.__stand.data[0][0]);
+  assert.deepEqual(Object.keys(first), ["evidence"]);
+  await page.evaluate(async () => { window.__stand.api.options.failList = 1; await window.__stand.instance.refresh(); await window.__stand.instance.refresh(); });
+  d = await page.evaluate(() => window.__stand.data.map((x) => x.length));
+  assert.deepEqual(d, [12, 12], "failed refresh does not report data; the next success does");
+  await ctx.close();
+});
+
+test("r12: narrow 320x640 phone: no horizontal scroll in list, pills, card and chooser", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0" }, { viewport: { width: 320, height: 640 }, touch: true });
+  await page.evaluate(() => window.__stand.instance.setFilters({ kinds: ["roadworks", "landscaping"], hidePast: true, evidence: "demo" }));
+  for (let i = 0; i < 2; i++) { await page.click(".civic-r03-handle"); await page.waitForTimeout(320); }
+  assert.deepEqual(await noHorizontalOverflow(page), []);
+  await select(page, "r03-demo-long-kk");
+  assert.deepEqual(await noHorizontalOverflow(page), []);
+  assert.equal(await reachable(page, "#toggle-3d"), true);
+  await shot(page, "r12-mobile-320-card-long-kk");
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
