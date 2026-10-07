@@ -925,36 +925,39 @@ class FiltersAndPagination(unittest.TestCase):
         if lst["pages"] == 1 and full["pages"] == 1:
             NOTES.add("all public lists fit in one page; cursor continuation not exercised")
 
-    def test_a10_pagination_stable_when_objects_published_mid_walk(self):
-        """[A10] objects published between page requests cause no loss/duplication of already-existing ones."""
+    def test_a10_pagination_stable_when_objects_change_mid_walk(self):
+        """[A10] publish/archive between page requests: no other pre-existing object is lost or duplicated."""
         ed = editor(0)
         first, last = fresh_window()
-        mine = [publish(self, ed, create_draft(self, ed, schedule=schedule(first + i * DAY, first + i * DAY)))["id"]
-                for i in range(5)]
+        mine = {}
+        for i in range(5):
+            obj = publish(self, ed, create_draft(self, ed, schedule=schedule(first + i * DAY, first + i * DAY)))
+            mine[obj["id"]] = obj
         anon = get_target().client()
         window = {"from": first, "to": last}
         limit = self._limit(anon, window)
         if not limit:
             raise unittest.SkipTest("server ignores ?limit= and a 5-object window fits one page: "
-                                    "insert-between-pages cannot be exercised")
-        q = dict(window, limit=limit)
-        r = anon.get("/objects", query={k: iso(v) for k, v in q.items()})
-        page = expect_ok(self, r, "first page", statuses=(200,))
+                                    "changes between pages cannot be exercised")
+        q = {k: iso(v) for k, v in dict(window, limit=limit).items()}
+        page = expect_ok(self, anon.get("/objects", query=q), "first page", statuses=(200,))
         seen = [it.get("id") for it in page["items"]]
-        for i in range(2):  # new objects that sort anywhere (same dates as existing ones)
+        on_first = [oid for oid in seen if oid in mine]
+        archived = on_first[0] if on_first else None
+        if archived:  # an already-delivered object leaves the result set
+            expect_ok(self, helpers.archive(ed, mine[archived]), "archive between pages")
+        for i in range(2):  # new objects with the same dates as existing ones (sort anywhere)
             publish(self, ed, create_draft(self, ed, schedule=schedule(first + i * DAY, first + i * DAY)))
-        cursor = page.get("next_cursor")
-        pages = 1
+        cursor, pages = page.get("next_cursor"), 1
         while cursor:
-            r = anon.get("/objects", query=dict({k: iso(v) for k, v in q.items()}, cursor=cursor))
-            page = expect_ok(self, r, "next page", statuses=(200,))
+            page = expect_ok(self, anon.get("/objects", query=dict(q, cursor=cursor)), "next page", statuses=(200,))
             seen += [it.get("id") for it in page["items"]]
             cursor = page.get("next_cursor")
             pages += 1
             self.assertLess(pages, 100, "pagination does not end")
         for oid in mine:
-            self.assertEqual(seen.count(oid), 1, f"pre-existing object {oid} seen {seen.count(oid)}x "
-                                                 f"after inserts mid-walk")
+            self.assertEqual(seen.count(oid), 1, f"pre-existing object {oid} seen {seen.count(oid)}x after "
+                                                 f"publish{'/archive' if archived else ''} between pages")
 
 
 # ================================================================ A06 restart

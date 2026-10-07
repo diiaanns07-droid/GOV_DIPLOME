@@ -1,0 +1,64 @@
+{
+ "about": "R10 synthetic tiny graphs for civic-scenario-v1 acceptance (CONTRACT section 5). Not real streets: node coordinates are placed inside Astana only so that city/bbox checks pass; edge lengths are invented round numbers (each >= the straight-line distance between its nodes). Written by R10, independent of R07 code.",
+ "digest_rule": "digest = lowercase hex SHA-256 of the UTF-8 bytes of json.dumps(G, sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False), where G is the graph object exactly as parsed from this file minus its 'digest' key. Keys are sorted at every level, no whitespace, list order is kept (nodes/edges order matters), integers are written without '.0', floats as shortest round-trip repr. Implemented in scenarios/bruteforce.py canonical_digest(). Only for patched error-case graphs with NaN/Infinity (which cannot be encoded with allow_nan=False) the same rule is applied with allow_nan=True.",
+ "graphs": [
+  {
+   "id": "r10-tiny-detour-v1",
+   "city": "astana",
+   "digest": "2d5428eef04f2fe319b699d0391bc916f81a8e51148c7c0884ed33cba63baee9",
+   "mode": "walking",
+   "evidence_type": "synthetic",
+   "nodes": [
+    {"id": "g1_s", "lon": 71.41, "lat": 51.14},
+    {"id": "g1_m", "lon": 71.411, "lat": 51.1397},
+    {"id": "g1_n", "lon": 71.4115, "lat": 51.141},
+    {"id": "g1_t", "lon": 71.413, "lat": 51.14},
+    {"id": "g1_b", "lon": 71.414, "lat": 51.14},
+    {"id": "g1_l", "lon": 71.4146, "lat": 51.1403},
+    {"id": "g1_p", "lon": 71.4138, "lat": 51.1394},
+    {"id": "g1_q", "lon": 71.414, "lat": 51.1389},
+    {"id": "g1_w", "lon": 71.4155, "lat": 51.1385}
+   ],
+   "edges": [
+    {"id": "g1_e_sm", "from": "g1_s", "to": "g1_m", "length_m": 100, "access": "allowed", "oneway": false},
+    {"id": "g1_e_mt", "from": "g1_m", "to": "g1_t", "length_m": 150, "access": "allowed", "oneway": false},
+    {"id": "g1_e_sn", "from": "g1_s", "to": "g1_n", "length_m": 200, "access": "allowed", "oneway": false},
+    {"id": "g1_e_nt", "from": "g1_n", "to": "g1_t", "length_m": 220, "access": "allowed", "oneway": false},
+    {"id": "g1_e_tb", "from": "g1_t", "to": "g1_b", "length_m": 80, "access": "allowed", "oneway": false},
+    {"id": "g1_e_bl", "from": "g1_b", "to": "g1_l", "length_m": 60, "access": "allowed", "oneway": false},
+    {"id": "g1_e_tp", "from": "g1_t", "to": "g1_p", "length_m": 100.1, "access": "allowed", "oneway": false},
+    {"id": "g1_e_pw", "from": "g1_p", "to": "g1_w", "length_m": 200.2, "access": "allowed", "oneway": false},
+    {"id": "g1_e_tq", "from": "g1_t", "to": "g1_q", "length_m": 150.15, "access": "allowed", "oneway": false},
+    {"id": "g1_e_qw", "from": "g1_q", "to": "g1_w", "length_m": 150.15, "access": "allowed", "oneway": false}
+   ]
+  },
+  {
+   "id": "r10-tiny-access-v1",
+   "city": "astana",
+   "digest": "bf29729bc4b88cbba1a95b79b41db4d72c368bf4e046b790aaae86fab4914763",
+   "mode": "walking",
+   "evidence_type": "synthetic",
+   "nodes": [
+    {"id": "g2_h0", "lon": 71.44, "lat": 51.16},
+    {"id": "g2_h1", "lon": 71.4406, "lat": 51.16},
+    {"id": "g2_h2", "lon": 71.4415, "lat": 51.16},
+    {"id": "g2_h3", "lon": 71.4406, "lat": 51.1603},
+    {"id": "g2_h4", "lon": 71.4408, "lat": 51.1598},
+    {"id": "g2_o1", "lon": 71.4395, "lat": 51.1596},
+    {"id": "g2_o2", "lon": 71.4395, "lat": 51.15925},
+    {"id": "g2_o3", "lon": 71.4389, "lat": 51.15945}
+   ],
+   "edges": [
+    {"id": "g2_k_h0h1", "from": "g2_h0", "to": "g2_h1", "length_m": 50, "access": "allowed", "oneway": false},
+    {"id": "g2_k_h1h2", "from": "g2_h1", "to": "g2_h2", "length_m": 70, "access": "unknown", "oneway": false},
+    {"id": "g2_k_h1h3", "from": "g2_h1", "to": "g2_h3", "length_m": 40, "access": "denied", "oneway": false},
+    {"id": "g2_k_h1h4", "from": "g2_h1", "to": "g2_h4", "length_m": 30, "access": "unknown", "oneway": false},
+    {"id": "g2_k_h0h4", "from": "g2_h0", "to": "g2_h4", "length_m": 300, "access": "allowed", "oneway": false},
+    {"id": "g2_k_h0o1", "from": "g2_h0", "to": "g2_o1", "length_m": 60, "access": "allowed", "oneway": false},
+    {"id": "g2_k_o1o2", "from": "g2_o1", "to": "g2_o2", "length_m": 45, "access": "allowed", "oneway": true},
+    {"id": "g2_k_o2o3", "from": "g2_o2", "to": "g2_o3", "length_m": 55, "access": "allowed", "oneway": false},
+    {"id": "g2_k_o3o1", "from": "g2_o3", "to": "g2_o1", "length_m": 65, "access": "allowed", "oneway": false}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,583 @@
+{
+ "schema": "r10-civic-scenario-expected-v1",
+ "about": "R10 hand-computed expectations for engine.civic_scenarios compare(payload, graph) on scenarios/tiny_graphs.json. Every number was derived by hand from the edge list (see 'derivation'); scenarios/bruteforce.py (exhaustive simple-path DFS, not Dijkstra) re-derives them in test_scenarios_tinygraph.py self-checks.",
+ "graphs_file": "tiny_graphs.json",
+ "length_tolerance_m": 0.01,
+ "placeholders": {"$GRAPH_DIGEST": "replaced by the 'digest' field of the graph object actually passed to compare() (after graph_patch)"},
+ "pair_key": "'<origin_node_id>>' + '<destination_node_id>'",
+ "entry_fields": {
+  "status": "ok | unreachable | unknown (strict policy: only access=allowed edges make an ok route)",
+  "length_m": "network length in metres for ok, null otherwise",
+  "path_edges": "one shortest path written by hand (edge ids in travel order); for tie=true any equal-length path is acceptable",
+  "tie": "true when two or more different paths share the minimal length: assert the length only, never the path",
+  "also_acceptable": "extra statuses the contract does not exclude (denied-only target may be reported unknown, never ok)"
+ },
+ "window_note": "Unless stated otherwise closures use [2026-10-15T08:00:00+05:00, 2026-10-15T18:00:00+05:00) and analysis_at 2026-10-15T09:00:00+05:00 (Astana is UTC+05:00 since 2024; offsets are always explicit).",
+ "same_result_groups": [
+  {"cases": ["g1-offset-plus05", "g1-offset-z", "g1-offset-plus06"], "why": "the same analysis instant written as +05:00, Z and +06:00 must give identical routes"},
+  {"cases": ["g1-permutation-1", "g1-permutation-2"], "why": "order of closures, of edge_ids inside a closure and of plans must not change routes"}
+ ],
+ "repeat_case": {"case": "g1-detour", "why": "two independent calls with identical input must return identical output (input mutation itself is only observable in-process; R10 runs compare() in a fresh subprocess per call, so mutation is NOT_RUN here)"},
+ "cases": [
+  {
+   "id": "g1-zero-closure",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "plan A has no closures, plan B has only a closure that ended 1 h before analysis_at: both must equal baseline exactly",
+   "equal_states": [["baseline", "A", "B"]],
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "A", "closures": []},
+     {"id": "B", "closures": [{"edge_ids": ["g1_e_sm"], "start_at": "2026-10-14T08:00:00+05:00", "end_at": "2026-10-15T08:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "g1_s -g1_e_sm 100-> g1_m -g1_e_mt 150-> g1_t = 100+150 = 250; the only other simple path g1_e_sn+g1_e_nt = 200+220 = 420 is longer"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "g1_l hangs off g1_b which hangs off bridge g1_e_tb: 250 (s->t) + 80 + 60 = 390; via g1_n: 420+80+60 = 560"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250 (s->t) + t->w; t-p-w = 100.1+200.2 = 300.3 and t-q-w = 150.15+150.15 = 300.3 tie; 250+300.3 = 550.3"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "no closures -> baseline 100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "baseline 100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tq", "g1_e_qw"], "derivation": "baseline 250+300.3 = 550.3 (tie p/q)"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "closure of g1_e_sm ended at 08:00+05:00 < analysis 09:00+05:00 -> inactive -> 100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "closure inactive -> 100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "closure inactive -> 250+300.3 = 550.3 (tie p/q)"}
+    }
+   }
+  },
+  {
+   "id": "g1-detour",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "closing the short route forces the long alternative with an exact delta of +170 m; closing an edge that is not on any shortest path changes nothing",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]},
+     {"id": "B", "closures": [{"edge_ids": ["g1_e_sn"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3 (tie p/q)"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 420, "path_edges": ["g1_e_sn", "g1_e_nt"], "derivation": "g1_e_mt closed -> g1_s -g1_e_sn 200-> g1_n -g1_e_nt 220-> g1_t = 420; delta 420-250 = +170"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 560, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tb", "g1_e_bl"], "derivation": "200+220+80+60 = 560; delta +170"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 720.3, "tie": true, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tp", "g1_e_pw"], "derivation": "200+220+300.3 = 720.3 (tie p/q); delta +170"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "g1_e_sn (long route) closed, short route open: 100+150 = 250, delta 0"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390, delta 0"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3, delta 0"}
+    }
+   }
+  },
+  {
+   "id": "g1-bridge",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "closing the bridge g1_e_tb disconnects g1_b/g1_l (unreachable within the model, never a 0 or straight-line length); closing both approaches to g1_t disconnects everything beyond",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_tb"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]},
+     {"id": "B", "closures": [{"edge_ids": ["g1_e_mt", "g1_e_nt"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3 (tie p/q)"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "bridge not on this path: 100+150 = 250"},
+     "g1_s>g1_l": {"status": "unreachable", "length_m": null, "derivation": "g1_l's only edge g1_e_bl leads to g1_b, whose only other edge is the closed bridge g1_e_tb -> no path in the model"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tq", "g1_e_qw"], "derivation": "250+300.3 = 550.3 (tie p/q), bridge irrelevant"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "unreachable", "length_m": null, "derivation": "g1_t is entered from the g1_s side only via g1_e_mt or g1_e_nt, both closed; component of g1_s = {g1_s, g1_m, g1_n}"},
+     "g1_s>g1_l": {"status": "unreachable", "length_m": null, "derivation": "g1_l lies beyond g1_t, which is cut off"},
+     "g1_s>g1_w": {"status": "unreachable", "length_m": null, "derivation": "g1_w lies beyond g1_t, which is cut off"}
+    }
+   }
+  },
+  {
+   "id": "g1-tie-branch",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "closing one branch of a tie keeps the length (550.3) but forces the other branch; closing both branches disconnects g1_w",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_tp"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]},
+     {"id": "B", "closures": [{"edge_ids": ["g1_e_tp", "g1_e_tq"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250 + (100.1+200.2 = 150.15+150.15 = 300.3) = 550.3 tie"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tq", "g1_e_qw"], "derivation": "g1_e_tp closed -> only t-q-w: 100+150+150.15+150.15 = 550.3 (unique now; delta 0 although the route changed)"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "unreachable", "length_m": null, "derivation": "g1_w's edges g1_e_pw/g1_e_qw lead to g1_p/g1_q whose only other edges g1_e_tp/g1_e_tq are both closed"}
+    }
+   }
+  },
+  {
+   "id": "g1-window-boundaries",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "closure window is [start_at, end_at): A starts exactly at analysis_at (active), B ends exactly at analysis_at (inactive)",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T09:00:00+05:00", "end_at": "2026-10-15T12:00:00+05:00"}]},
+     {"id": "B", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T06:00:00+05:00", "end_at": "2026-10-15T09:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 420, "path_edges": ["g1_e_sn", "g1_e_nt"], "derivation": "start_at == analysis_at is inclusive -> g1_e_mt closed -> 200+220 = 420"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 560, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tb", "g1_e_bl"], "derivation": "200+220+80+60 = 560"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 720.3, "tie": true, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tp", "g1_e_pw"], "derivation": "420+300.3 = 720.3"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "end_at == analysis_at is exclusive -> closure over -> 100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3"}
+    }
+   }
+  },
+  {
+   "id": "g1-offset-plus05",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "reference for the same-instant group: analysis_at 09:00+05:00 = 04:00Z; A starts at 04:00Z (inclusive -> active), B ends at 10:00+06:00 = 04:00Z (exclusive -> inactive). A naive string comparison of timestamps gets both wrong.",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T04:00:00Z", "end_at": "2026-10-15T07:00:00Z"}]},
+     {"id": "B", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T07:00:00+05:00", "end_at": "2026-10-15T10:00:00+06:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 420, "path_edges": ["g1_e_sn", "g1_e_nt"], "derivation": "04:00Z <= 04:00Z < 07:00Z -> g1_e_mt closed -> 200+220 = 420"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 560, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tb", "g1_e_bl"], "derivation": "200+220+80+60 = 560"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 720.3, "tie": true, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tp", "g1_e_pw"], "derivation": "420+300.3 = 720.3"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "window 02:00Z..04:00Z, analysis 04:00Z is not < end -> inactive -> 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "550.3"}
+    }
+   }
+  },
+  {
+   "id": "g1-offset-z",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "same as g1-offset-plus05 with analysis_at written as 2026-10-15T04:00:00Z",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T04:00:00Z",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T04:00:00Z", "end_at": "2026-10-15T07:00:00Z"}]},
+     {"id": "B", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T07:00:00+05:00", "end_at": "2026-10-15T10:00:00+06:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 420, "path_edges": ["g1_e_sn", "g1_e_nt"], "derivation": "same instant -> active -> 200+220 = 420"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 560, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tb", "g1_e_bl"], "derivation": "200+220+80+60 = 560"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 720.3, "tie": true, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tp", "g1_e_pw"], "derivation": "420+300.3 = 720.3"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "end == analysis instant -> inactive -> 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "550.3"}
+    }
+   }
+  },
+  {
+   "id": "g1-offset-plus06",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "same as g1-offset-plus05 with analysis_at written with the pre-2024 Astana offset: 2026-10-15T10:00:00+06:00",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T10:00:00+06:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T04:00:00Z", "end_at": "2026-10-15T07:00:00Z"}]},
+     {"id": "B", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T07:00:00+05:00", "end_at": "2026-10-15T10:00:00+06:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 420, "path_edges": ["g1_e_sn", "g1_e_nt"], "derivation": "10:00+06:00 = 04:00Z = start -> active -> 200+220 = 420"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 560, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tb", "g1_e_bl"], "derivation": "200+220+80+60 = 560"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 720.3, "tie": true, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tp", "g1_e_pw"], "derivation": "420+300.3 = 720.3"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "end == analysis instant -> inactive -> 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "550.3"}
+    }
+   }
+  },
+  {
+   "id": "g1-permutation-1",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "A and B hold the same two closures in opposite order: results must be identical",
+   "equal_states": [["A", "B"]],
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "A", "closures": [
+      {"edge_ids": ["g1_e_tb"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"},
+      {"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T08:30:00+05:00", "end_at": "2026-10-15T12:00:00+05:00"}]},
+     {"id": "B", "closures": [
+      {"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T08:30:00+05:00", "end_at": "2026-10-15T12:00:00+05:00"},
+      {"edge_ids": ["g1_e_tb"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 420, "path_edges": ["g1_e_sn", "g1_e_nt"], "derivation": "both closures active (09:00 inside both windows); g1_e_mt closed -> 200+220 = 420"},
+     "g1_s>g1_l": {"status": "unreachable", "length_m": null, "derivation": "bridge g1_e_tb closed -> g1_l cut off"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 720.3, "tie": true, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tp", "g1_e_pw"], "derivation": "420+300.3 = 720.3"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 420, "path_edges": ["g1_e_sn", "g1_e_nt"], "derivation": "same closures as A -> 420"},
+     "g1_s>g1_l": {"status": "unreachable", "length_m": null, "derivation": "same closures as A -> unreachable"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 720.3, "tie": true, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tq", "g1_e_qw"], "derivation": "same closures as A -> 720.3"}
+    }
+   }
+  },
+  {
+   "id": "g1-permutation-2",
+   "graph_id": "r10-tiny-detour-v1",
+   "expect": "result",
+   "purpose": "plans listed B before A, both closures merged into one closure with edge_ids in opposite order: same routes as g1-permutation-1",
+   "equal_states": [["A", "B"]],
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t", "g1_l", "g1_w"],
+    "plans": [
+     {"id": "B", "closures": [{"edge_ids": ["g1_e_mt", "g1_e_tb"], "start_at": "2026-10-15T08:30:00+05:00", "end_at": "2026-10-15T12:00:00+05:00"}]},
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_tb", "g1_e_mt"], "start_at": "2026-10-15T08:30:00+05:00", "end_at": "2026-10-15T12:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 250, "path_edges": ["g1_e_sm", "g1_e_mt"], "derivation": "100+150 = 250"},
+     "g1_s>g1_l": {"status": "ok", "length_m": 390, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tb", "g1_e_bl"], "derivation": "100+150+80+60 = 390"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 550.3, "tie": true, "path_edges": ["g1_e_sm", "g1_e_mt", "g1_e_tp", "g1_e_pw"], "derivation": "250+300.3 = 550.3"}
+    },
+    "A": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 420, "path_edges": ["g1_e_sn", "g1_e_nt"], "derivation": "g1_e_mt and g1_e_tb closed -> 200+220 = 420"},
+     "g1_s>g1_l": {"status": "unreachable", "length_m": null, "derivation": "bridge closed -> cut off"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 720.3, "tie": true, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tp", "g1_e_pw"], "derivation": "420+300.3 = 720.3"}
+    },
+    "B": {
+     "g1_s>g1_t": {"status": "ok", "length_m": 420, "path_edges": ["g1_e_sn", "g1_e_nt"], "derivation": "same edge set -> 420"},
+     "g1_s>g1_l": {"status": "unreachable", "length_m": null, "derivation": "same edge set -> unreachable"},
+     "g1_s>g1_w": {"status": "ok", "length_m": 720.3, "tie": true, "path_edges": ["g1_e_sn", "g1_e_nt", "g1_e_tq", "g1_e_qw"], "derivation": "same edge set -> 720.3"}
+    }
+   }
+  },
+  {
+   "id": "g2-access",
+   "graph_id": "r10-tiny-access-v1",
+   "expect": "result",
+   "purpose": "strict access: unknown-only target -> unknown (not ok, not unreachable); denied-only target never ok; an unknown shortcut (80 m) must not replace the allowed 300 m route; when the allowed route is closed the target becomes unknown",
+   "equal_states": [["baseline", "A"]],
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-access-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g2_h0"], "destination_node_ids": ["g2_h2", "g2_h3", "g2_h4", "g2_o2"],
+    "plans": [
+     {"id": "A", "closures": []},
+     {"id": "B", "closures": [{"edge_ids": ["g2_k_h0h4"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g2_h0>g2_h2": {"status": "unknown", "length_m": null, "derivation": "g2_h2's only edge g2_k_h1h2 has access unknown: no allowed-only path; with unknown h0-h1-h2 = 50+70 = 120 exists -> unknown"},
+     "g2_h0>g2_h3": {"status": "unreachable", "also_acceptable": ["unknown"], "length_m": null, "derivation": "g2_h3's only edge g2_k_h1h3 is denied -> no path even with unknown edges; must never be ok"},
+     "g2_h0>g2_h4": {"status": "ok", "length_m": 300, "path_edges": ["g2_k_h0h4"], "derivation": "allowed direct edge 300; h0-h1-h4 = 50+30 = 80 uses unknown g2_k_h1h4 and is not an ok route"},
+     "g2_h0>g2_o2": {"status": "ok", "length_m": 105, "path_edges": ["g2_k_h0o1", "g2_k_o1o2"], "derivation": "h0 -g2_k_h0o1 60-> o1 -g2_k_o1o2 45 (oneway, forward)-> o2 = 105; h0-o1-o3-o2 = 60+65+55 = 180"}
+    },
+    "A": {
+     "g2_h0>g2_h2": {"status": "unknown", "length_m": null, "derivation": "no closures -> as baseline"},
+     "g2_h0>g2_h3": {"status": "unreachable", "also_acceptable": ["unknown"], "length_m": null, "derivation": "no closures -> as baseline"},
+     "g2_h0>g2_h4": {"status": "ok", "length_m": 300, "path_edges": ["g2_k_h0h4"], "derivation": "no closures -> 300"},
+     "g2_h0>g2_o2": {"status": "ok", "length_m": 105, "path_edges": ["g2_k_h0o1", "g2_k_o1o2"], "derivation": "no closures -> 60+45 = 105"}
+    },
+    "B": {
+     "g2_h0>g2_h2": {"status": "unknown", "length_m": null, "derivation": "g2_k_h0h4 not involved: still only via unknown g2_k_h1h2"},
+     "g2_h0>g2_h3": {"status": "unreachable", "also_acceptable": ["unknown"], "length_m": null, "derivation": "still only via denied edge"},
+     "g2_h0>g2_h4": {"status": "unknown", "length_m": null, "derivation": "allowed g2_k_h0h4 closed; remaining path h0-h1-h4 = 50+30 = 80 uses unknown g2_k_h1h4 -> unknown, not unreachable, not ok"},
+     "g2_h0>g2_o2": {"status": "ok", "length_m": 105, "path_edges": ["g2_k_h0o1", "g2_k_o1o2"], "derivation": "60+45 = 105"}
+    }
+   }
+  },
+  {
+   "id": "g2-unknown-closed",
+   "graph_id": "r10-tiny-access-v1",
+   "expect": "result",
+   "purpose": "closing the unknown edge itself leaves no path at all (unreachable within the model); closing h0-h1 still leaves an unknown-only detour (unknown)",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-access-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g2_h0"], "destination_node_ids": ["g2_h2", "g2_h4"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g2_k_h1h2"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]},
+     {"id": "B", "closures": [{"edge_ids": ["g2_k_h0h1"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g2_h0>g2_h2": {"status": "unknown", "length_m": null, "derivation": "only via unknown g2_k_h1h2"},
+     "g2_h0>g2_h4": {"status": "ok", "length_m": 300, "path_edges": ["g2_k_h0h4"], "derivation": "allowed direct edge 300"}
+    },
+    "A": {
+     "g2_h0>g2_h2": {"status": "unreachable", "length_m": null, "derivation": "g2_k_h1h2, the only edge of g2_h2, is closed -> no path even with unknown edges"},
+     "g2_h0>g2_h4": {"status": "ok", "length_m": 300, "path_edges": ["g2_k_h0h4"], "derivation": "300"}
+    },
+    "B": {
+     "g2_h0>g2_h2": {"status": "unknown", "length_m": null, "derivation": "g2_k_h0h1 closed; h0 -g2_k_h0h4 300-> h4 -g2_k_h1h4 30 (unknown)-> h1 -g2_k_h1h2 70 (unknown)-> h2 = 400 exists only with unknown edges -> unknown"},
+     "g2_h0>g2_h4": {"status": "ok", "length_m": 300, "path_edges": ["g2_k_h0h4"], "derivation": "direct edge 300 open"}
+    }
+   }
+  },
+  {
+   "id": "g2-oneway-reverse",
+   "graph_id": "r10-tiny-access-v1",
+   "expect": "result",
+   "purpose": "oneway g2_k_o1o2 (o1 -> o2) cannot be used from o2; closing o2's only outgoing edge isolates it",
+   "equal_states": [["baseline", "A"]],
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-access-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g2_o2"], "destination_node_ids": ["g2_h0", "g2_o1"],
+    "plans": [
+     {"id": "A", "closures": []},
+     {"id": "B", "closures": [{"edge_ids": ["g2_k_o2o3"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g2_o2>g2_h0": {"status": "ok", "length_m": 180, "path_edges": ["g2_k_o2o3", "g2_k_o3o1", "g2_k_h0o1"], "derivation": "o2 -g2_k_o2o3 55-> o3 -g2_k_o3o1 65-> o1 -g2_k_h0o1 60-> h0 = 180 (reverse use of oneway o1->o2 would give 45+60 = 105: forbidden)"},
+     "g2_o2>g2_o1": {"status": "ok", "length_m": 120, "path_edges": ["g2_k_o2o3", "g2_k_o3o1"], "derivation": "55+65 = 120 (not 45: oneway runs o1->o2 only)"}
+    },
+    "A": {
+     "g2_o2>g2_h0": {"status": "ok", "length_m": 180, "path_edges": ["g2_k_o2o3", "g2_k_o3o1", "g2_k_h0o1"], "derivation": "no closures -> 55+65+60 = 180"},
+     "g2_o2>g2_o1": {"status": "ok", "length_m": 120, "path_edges": ["g2_k_o2o3", "g2_k_o3o1"], "derivation": "no closures -> 55+65 = 120"}
+    },
+    "B": {
+     "g2_o2>g2_h0": {"status": "unreachable", "length_m": null, "derivation": "o2's edges: g2_k_o2o3 (closed) and oneway g2_k_o1o2 (inbound only) -> o2 cannot leave"},
+     "g2_o2>g2_o1": {"status": "unreachable", "length_m": null, "derivation": "same: o2 isolated in the outbound direction"}
+    }
+   }
+  },
+  {
+   "id": "g2-oneway-forward",
+   "graph_id": "r10-tiny-access-v1",
+   "expect": "result",
+   "purpose": "forward along the oneway is 45 m; closing it forces o1-o3-o2 = 120 m (delta +75); closing an edge off the route changes nothing",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-access-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g2_o1"], "destination_node_ids": ["g2_o2"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g2_k_o1o2"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]},
+     {"id": "B", "closures": [{"edge_ids": ["g2_k_o2o3"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]}
+    ]
+   },
+   "expected": {
+    "baseline": {
+     "g2_o1>g2_o2": {"status": "ok", "length_m": 45, "path_edges": ["g2_k_o1o2"], "derivation": "forward along oneway: 45; o1-o3-o2 = 65+55 = 120"}
+    },
+    "A": {
+     "g2_o1>g2_o2": {"status": "ok", "length_m": 120, "path_edges": ["g2_k_o3o1", "g2_k_o2o3"], "derivation": "g2_k_o1o2 closed -> o1 -g2_k_o3o1 65-> o3 -g2_k_o2o3 55-> o2 = 120; delta +75"}
+    },
+    "B": {
+     "g2_o1>g2_o2": {"status": "ok", "length_m": 45, "path_edges": ["g2_k_o1o2"], "derivation": "g2_k_o2o3 is not on the route -> 45, delta 0"}
+    }
+   }
+  },
+  {
+   "id": "g1-err-unknown-closure-edge", "graph_id": "r10-tiny-detour-v1", "expect": "error", "error_kind": "validation",
+   "purpose": "closure references an edge id absent from the graph: must be rejected, not silently ignored (a silently ignored closure looks like 'no impact')",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t"],
+    "plans": [
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_missing"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]},
+     {"id": "B", "closures": []}
+    ]
+   }
+  },
+  {
+   "id": "g1-err-unknown-origin", "graph_id": "r10-tiny-detour-v1", "expect": "error", "error_kind": "validation",
+   "purpose": "origin node id absent from the graph",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_zz"], "destination_node_ids": ["g1_t"],
+    "plans": [{"id": "A", "closures": []}, {"id": "B", "closures": []}]
+   }
+  },
+  {
+   "id": "g2-err-unknown-destination", "graph_id": "r10-tiny-access-v1", "expect": "error", "error_kind": "validation",
+   "purpose": "one destination node id absent from the graph (next to a valid one): must not be reported as unreachable",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-access-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g2_h0"], "destination_node_ids": ["g2_h4", "g2_zz"],
+    "plans": [{"id": "A", "closures": []}, {"id": "B", "closures": []}]
+   }
+  },
+  {
+   "id": "g1-err-negative-length", "graph_id": "r10-tiny-detour-v1", "expect": "error", "error_kind": "graph_validation",
+   "purpose": "g1_e_nt length -300 (digest recomputed so only the length is wrong): naive routing would report s->t = 200-300 = -100",
+   "graph_patch": {"edges": {"g1_e_nt": {"length_m": -300}}, "digest": "recompute"},
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t"],
+    "plans": [{"id": "A", "closures": []}, {"id": "B", "closures": []}]
+   }
+  },
+  {
+   "id": "g1-err-nan-length", "graph_id": "r10-tiny-detour-v1", "expect": "error", "error_kind": "graph_validation",
+   "purpose": "g1_e_sm length NaN (digest recomputed with allow_nan=True)",
+   "graph_patch": {"edges": {"g1_e_sm": {"length_m": {"$float": "nan"}}}, "digest": "recompute"},
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t"],
+    "plans": [{"id": "A", "closures": []}, {"id": "B", "closures": []}]
+   }
+  },
+  {
+   "id": "g1-err-inf-length", "graph_id": "r10-tiny-detour-v1", "expect": "error", "error_kind": "graph_validation",
+   "purpose": "g1_e_mt length Infinity (digest recomputed with allow_nan=True)",
+   "graph_patch": {"edges": {"g1_e_mt": {"length_m": {"$float": "inf"}}}, "digest": "recompute"},
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t"],
+    "plans": [{"id": "A", "closures": []}, {"id": "B", "closures": []}]
+   }
+  },
+  {
+   "id": "g1-err-city-mismatch", "graph_id": "r10-tiny-detour-v1", "expect": "error", "error_kind": "mismatch",
+   "purpose": "payload city astana, graph city shymkent (digest recomputed so only the city differs)",
+   "graph_patch": {"graph": {"city": "shymkent"}, "digest": "recompute"},
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t"],
+    "plans": [{"id": "A", "closures": []}, {"id": "B", "closures": []}]
+   }
+  },
+  {
+   "id": "g1-err-graph-tampered", "graph_id": "r10-tiny-detour-v1", "expect": "error", "error_kind": "digest",
+   "purpose": "graph content changed (g1_e_nt 220 -> 22, which would make s->t = 222) but its digest field is the stale one; payload carries the same stale digest",
+   "graph_patch": {"edges": {"g1_e_nt": {"length_m": 22}}, "digest": "keep"},
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t"],
+    "plans": [{"id": "A", "closures": []}, {"id": "B", "closures": []}]
+   }
+  },
+  {
+   "id": "g1-err-payload-digest", "graph_id": "r10-tiny-detour-v1", "expect": "error", "error_kind": "digest",
+   "purpose": "valid graph, payload.graph_digest names another graph version",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1",
+    "graph_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t"],
+    "plans": [{"id": "A", "closures": []}, {"id": "B", "closures": []}]
+   }
+  },
+  {
+   "id": "g1-err-duplicate-plan-ids", "graph_id": "r10-tiny-detour-v1", "expect": "error", "error_kind": "validation",
+   "purpose": "two plans with id A (contract: A and B are unique ids); otherwise one plan silently overwrites the other",
+   "payload": {
+    "schema_version": "civic-scenario-v1", "city": "astana", "graph_id": "r10-tiny-detour-v1", "graph_digest": "$GRAPH_DIGEST",
+    "mode": "walking", "analysis_at": "2026-10-15T09:00:00+05:00",
+    "origin_node_ids": ["g1_s"], "destination_node_ids": ["g1_t"],
+    "plans": [
+     {"id": "A", "closures": []},
+     {"id": "A", "closures": [{"edge_ids": ["g1_e_mt"], "start_at": "2026-10-15T08:00:00+05:00", "end_at": "2026-10-15T18:00:00+05:00"}]}
+    ]
+   }
+  }
+ ]
+}
