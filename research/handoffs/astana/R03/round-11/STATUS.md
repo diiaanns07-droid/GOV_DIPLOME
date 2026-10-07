@@ -7,18 +7,29 @@
 - Source app compared: `b2cb2e02c602c166ba6d47c02d8e902e5478c791` (claude/beautiful-clarke-sbzomj) — read via `git show`, not checked out.
 - Owned paths: `web/civic/map/`, `tests/civic/R03/`, `research/round-11-results/R03/`, this file.
 
-## Status: PARTIAL — checkpoint 5 (review fixes)
+## Status: DONE (ready for R01 re-import) — checkpoint 8
 
-Done:
-- Module `web/civic/map/` (core + mount/destroy + CSS); auto layout (overlay in the stand, embedded in R01 `#civic-map-root`).
-- Adversarial review (workflow wf_a5038205-b19, 8 agents) on 9cb1a2e: 25 confirmed findings, all fixed, each with a regression check — `research/round-11-results/R03/REVIEW_FINDINGS.json`.
-  Notable: bbox aligned with R02; period rule aligned with contract §2/R02 (open unknown bound, flagged); timestamps in Astana time (R02 sends UTC);
-  synthetic records never show tenge (same rule as R02); search updates the map; dashed demo ring on points matches the legend;
-  same-root remount safe; landscape phones keep the 3D toggle reachable; focus/live-region fixes.
-- Tests (all PASS): `node --test tests/civic/R03/core.test.mjs` 23/23; `node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs` 32/32;
-  `node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs` 2/2 (R02 CivicService @ 6a28de2, read-only).
-- Screenshots (stand; mock or R02 read-only; offline basemap): `research/round-11-results/R03/screenshots/`.
+Code: `web/civic/map/` @ **3cea09c** (DELIVERY `code_commit`). The documentation commit after it changes no code.
 
-NOT_RUN: OpenFreeMap basemap + 3D buildings (proxy 403); integration inside R01 app (R01 has not imported yet).
+What works (module):
+- `window.CivicMap.mount({root,map,api,onSelect,onFeedback}) -> {refresh,selectObject,destroy}` on the one MapLibre map; auto layout:
+  overlay (own side panel / bottom sheet) when root is a child of <body>, embedded inside R01's `#civic-map-root`.
+- Find an object: map (Point/LineString/Polygon; null geometry list-only) or list with search, kind chips, status, planned period, visible part.
+- What changed with the deadline: first vs current planned end, shift in days, reason from the published history, history timeline,
+  comparison of two revisions; historical plans and synthetic records marked in list, card and map.
+- Card: purpose, status (with source date if a source covers it), dates, organisation/contact, money with basis and source (never for
+  synthetic records), place precision, safe source links, notes, «запись обновлена» in Astana time, «Задать вопрос» -> onFeedback.
+- States: loading / error + retry / empty / reset; stale responses dropped and superseded requests aborted; mount/destroy leak-free.
 
-Next step: R01 imports the 3 files per `research/round-11-results/R03/INTEGRATION.txt`.
+Verified (all PASS, commands in DELIVERY.json):
+- core 24/24, browser stand 43/43, R02 CivicService read-only 2/2 (`node --test ... tests/civic/R03/*.test.mjs`).
+- R01's own P0 flow on R01's final build 5c47a85 with these files: 49 PASS / 0 FAIL / 2 NOT_RUN, also without R01's CSS adapter.
+- Two adversarial review passes (14 agents): 46 confirmed findings fixed; which ones have discriminating tests is measured in
+  `research/round-11-results/R03/REVIEW_FINDINGS.json`.
+
+NOT_RUN: OpenFreeMap basemap, attribution text and 3D buildings (sandbox proxy 403).
+Remaining risk: R01 currently ships R03 1bc9c48 (before the second pass) until it re-imports 3cea09c; real Astana data not shown
+(all synthetic); client-side filtering is sized for city-level lists (≤ 20 API pages).
+
+Next step: R01 re-imports the three files @3cea09c per `research/round-11-results/R03/INTEGRATION.txt` §0 and removes its
+`.civic-r03-btn-primary` adapter; R10 checks the integrated CODE_SHA.

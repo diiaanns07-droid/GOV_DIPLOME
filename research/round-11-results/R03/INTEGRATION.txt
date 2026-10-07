@@ -3,15 +3,22 @@ R03 -> R01 INTEGRATION — public map, object cards (civic-v1, round 11, Astana)
 Source of truth: branch claude/zen-mendel-e79iiv; take the SHA named in DELIVERY.json "code_commit"
 (or the final head reported in the R03 handoff). Import by path, no branch merge.
 
-0. RE-IMPORT NOTE FOR R01 (you integrated f73745c at checkpoint 7)
-   Replace the same three files with the code_commit version. Delta = fixes for 25 confirmed review findings
-   (REVIEW_FINDINGS.json): R02-equal Astana bbox; period rule = contract §2/R02 (open unknown bound, flagged;
-   original_planned_end is history only); timestamps shown in Astana time (R02 sends UTC); synthetic records never
-   show tenge; search also filters the map; dashed demo ring on points (symbol layer + image, see §7); safe second
-   mount on the same root; focus/live-region fixes; camera waits for the phone sheet; landscape phones keep the
-   tool column free (overlay only); "visible part" excludes the panel. No API/option/callback changed.
-   Verified: R01's own tests/civic/R01/browser/p0_flow.cjs on R01 8c6add9 with these files = 47 PASS / 0 FAIL /
-   2 NOT_RUN (runs/r01_build_8c6add9_with_r03_161467d/). The same counts as R01's run with f73745c.
+0. RE-IMPORT NOTE FOR R01 (your final 5c47a85 ships R03 1bc9c48)
+   Replace the same three files with the code_commit version (3cea09c). Delta 1bc9c48 -> 3cea09c, all from the
+   second adversarial pass and R01's MATRIX defect (REVIEW_FINDINGS.json, review_2):
+   - R01-F-R03-1: CSS resets now under :where(); «Задать вопрос по объекту» is white on dark again and button
+     font sizes apply. Your shell.css adapter `.civic-r03-root .civic-r03-btn-primary {color:#fff}` can be removed
+     (your p0_flow passes 49/0/2 with it removed: runs/r01_final_5c47a85_with_r03_3cea09c/).
+   - a map tap now pans the object out from under the panel/sheet (phones: after the sheet settles);
+   - the module's own focus restores no longer reopen a sheet the user collapsed (overlay layout only);
+   - lines and areas show status (planned hollow / in progress solid / completed pale) + legend section;
+   - historical mark also for plans whose only end is the original one or whose start is > 1 year old;
+   - stale-data error keeps the result count and the 'nothing found' reset; refresh re-read errors show the fresh copy;
+   - host setStyle (diff) re-adds R03 layers without MapLibre placement errors;
+   - kind chips in a two-column grid. One more layer: civic-r03-line-core (13 civic-r03-* layers in total).
+   No API, option or callback changed. Earlier delta f73745c -> 1bc9c48 = review 1 (25 findings).
+   Verified: R01's own tests/civic/R01/browser/p0_flow.cjs on your final 5c47a85 with these files = 49 PASS /
+   0 FAIL / 2 NOT_RUN, with and without the adapter.
 
 1. FILES TO IMPORT (only these three are product code)
    web/civic/map/civic-map-core.js   pure civic-v1 logic, window.CivicMapCore (also Node-requirable for tests)
@@ -77,7 +84,7 @@ Source of truth: branch claude/zen-mendel-e79iiv; take the SHA named in DELIVERY
 
 7. MAP (the one MapLibre instance; never creates a map)
    Source  civic-r03-objects (GeoJSON, promoteId cid)
-   Layers  civic-r03-area-fill, -area-line, -area-line-approx, -line-casing, -line, -line-approx,
+   Layers  civic-r03-area-fill, -area-line, -area-line-approx, -line-casing, -line, -line-approx, -line-core,
            -synthetic-outline, -selected-line           (inserted before the first basemap label layer)
            civic-r03-point-halo, -point-synthetic (symbol, icon only, no glyphs), -point, -selected-point (on top)
    Image   civic-r03-demo-ring (map.addImage, canvas-drawn dashed ring; removed in destroy, re-added after setStyle)
@@ -87,10 +94,14 @@ Source of truth: branch claude/zen-mendel-e79iiv; take the SHA named in DELIVERY
    the root element (children, class, role, aria-label) exactly. Verified twice in a row in the browser suite.
    Null geometry -> list only. Approximate geometry -> dashed line/halo, never mixed with source geometry.
    Coordinates outside the R02 Astana envelope [70.8,50.75,72.1,51.6] -> list only with a reason.
+   Status   points: planned ring, in progress filled, completed pale, cancelled grey, unknown grey ring;
+            lines: planned/unknown hollow (white core), in progress solid, completed thin and pale, cancelled grey;
+            areas: planned/unknown outline only, in progress filled, completed pale. The legend lists all three.
    Synthetic -> dashed grey ring (points) / dotted outline (lines, areas), «Демо» badge in the list, banner in
    the card, note in the tooltip; no tenge amount is shown for a synthetic record.
    Among overlapping areas a click picks the smallest; a small polygon is drawn above a large one.
-   Camera: selection fits the object into the part of the map not covered by the host panel (outermost
+   Camera: a map tap only pans when the object would sit under the panel/sheet (after the phone sheet settles);
+   a list/API selection fits the object into the part of the map not covered by the host panel (outermost
    absolute/fixed ancestor of root), keeps the user's pitch/bearing (2D/3D), duration 0 with prefers-reduced-motion.
    No extrusions, heights or traffic are drawn.
 

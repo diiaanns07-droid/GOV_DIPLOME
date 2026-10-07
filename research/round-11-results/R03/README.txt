@@ -19,10 +19,13 @@ VERIFICATION STAND (not the product; contract mock or R02 read-only)
 EVIDENCE INDEX
   DELIVERY.json                    checks PASS/NOT_RUN with commands
   INTEGRATION.txt                  files, server allowlist, index.html order, hook, events, API, map layers, styles
-  REVIEW_FINDINGS.json             25 confirmed adversarial-review findings, how each was fixed, regression check
+  REVIEW_FINDINGS.json             46 confirmed findings from two adversarial passes + R01 defect: fix, regression check,
+                                   and whether that check fails on the pre-fix module (measured)
   screenshots/                     real Chromium screenshots of the stand (mock data or R02 read-only; OpenFreeMap blocked
                                    -> honest plain fallback). They show the module, not the integrated product.
-  runs/r01_build_8c6add9_with_r03_161467d/   R01's own P0 flow on R01's integrated build with these R03 files (47/0/2)
+  runs/r01_final_5c47a85_with_r03_3cea09c/   R01's own P0 flow on R01's final build with the final R03 files (49/0/2,
+                                   also without R01's CSS adapter)
+  runs/r01_build_8c6add9_with_r03_161467d/   earlier trial on R01 8c6add9 (47/0/2)
   ../../handoffs/astana/R03/round-11/STATUS.md   handoff
 
 TESTS

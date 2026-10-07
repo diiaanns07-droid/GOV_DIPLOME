@@ -4,70 +4,72 @@
   "branch": "claude/zen-mendel-e79iiv",
   "base_sha": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-  "status": "partial",
+  "status": "ready",
   "owned_paths": [
     "web/civic/map/",
     "tests/civic/R03/",
     "research/round-11-results/R03/",
     "research/handoffs/astana/R03/round-11/STATUS.md"
   ],
-  "integration_notes": "research/round-11-results/R03/INTEGRATION.txt",
-  "code_commit": "9cb1a2e0d0373922419897060951264a17221f27",
+  "integration_notes": "research/round-11-results/R03/INTEGRATION.txt. Import web/civic/map/{civic-map-core.js,civic-map.js,civic-map.css} @3cea09c (R01 ships 1bc9c48: re-import; then the shell.css adapter for .civic-r03-btn-primary can go). Order: <link civic-map.css> after /style.css; <script defer> civic-map-core.js -> civic-map.js -> /civic/shell/fallback.js -> /civic/shell/shell.js; server allowlist CIVIC_ASSETS += map/civic-map-core.js, map/civic-map.js, map/civic-map.css. Mount: CivicMap.mount({root,map,api,onSelect,onFeedback}) -> {refresh,selectObject,destroy} (+ setMap, fitAll, getState, getLayout, layerIds, setFilters). Events: onSelect(obj|null,{source:list|map|api|permalink|close}) once per selection; onFeedback({objectId,title,geometry,object}); root CustomEvent 'civic-r03:layout' {mobile,sheet,view,rect}. API: GET /objects[?cursor] (<=20 pages), GET /objects/{id}; api.request(method,path,undefined,{signal}); never /staff. Map: source civic-r03-objects, 13 civic-r03-* layers, image civic-r03-demo-ring; all removed by destroy().",
+  "code_commit": "3cea09c0d6de6bca6e3f36af64c48cce52dafa1a",
   "checks": [
     {
       "name": "core-unit-tests",
       "status": "PASS",
       "command": "node --test tests/civic/R03/core.test.mjs",
-      "input": "tests/civic/R03/fixtures/{objects,history,hostile,pack_civic_object}.json",
-      "reason": "23/23 pass (incl. regressions for review findings)"
+      "input": "web/civic/map @3cea09c0d6de6bca6e3f36af64c48cce52dafa1a; tests/civic/R03/fixtures/*.json",
+      "reason": "24/24"
     },
     {
       "name": "browser-suite-stand",
       "status": "PASS",
       "command": "node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs",
-      "input": "research/round-11-results/R03/stand/ (mock api.request, MapLibre 5.6.2 from web/vendor, Chromium 1194 headless/SwiftShader, external hosts blocked)",
-      "reason": "32/32 pass: 21 functional checks (1440x900, 390x844, card data/no-data, long ru/kk, historical, hostile/XSS, 500 list/card + retry, empty server/filter, period filter, stale responses, single map click, mount/destroy x2 leak check, keyboard, onFeedback, bottom sheet keeps 3D toggle + attribution, offline basemap, reduced motion, permalink, persistence, area filter, embedded R01-like host) + 11 regressions for confirmed review findings (same-root remount, search->map, unpublished card on refresh, nested polygon pick, focus retention, no re-announced error, 667x375 landscape tools, mobile tap visibility, reselect, one-sided period, dashed demo ring)"
+      "input": "web/civic/map @3cea09c0d6de6bca6e3f36af64c48cce52dafa1a; stand research/round-11-results/R03/stand/ with contract mock api.request; MapLibre 5.6.2 (web/vendor); Chromium 1194 headless/SwiftShader; external hosts blocked",
+      "reason": "43/43: 1440x900, 390x844, 667x375; card data/no-data/format fixture; long ru/kk; historical plans; hostile/XSS; 500 list/card + retry; empty server/filter; period rule; stale card/list responses; single map click and re-tap; mount/destroy x2 leak check; second mount on same root; keyboard and focus retention; live region; onFeedback; bottom sheet keeps 3D toggle + attribution; phone tap pans clear of the sheet; collapsed sheet stays collapsed; offline basemap; host setStyle; reduced motion; permalink; persistence; area filter excludes the panel; embedded R01-like host; contrast of outlines and buttons"
+    },
+    {
+      "name": "r02-civicservice-readonly",
+      "status": "PASS",
+      "command": "node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs",
+      "input": "R02 ui/civic_store @6a28de2 via git archive into a temp dir; seeded through R02 staff API with R03 synthetic fixtures; web/civic/map @3cea09c0d6de6bca6e3f36af64c48cce52dafa1a",
+      "reason": "2/2: published only (draft+archived hidden), R02 history reason, real 404, null geometry list-only, browser made only GET /objects*, 390x844 no overflow"
+    },
+    {
+      "name": "r01-integrated-p0-flow",
+      "status": "PASS",
+      "command": "NODE_PATH=$(npm root -g) node tests/civic/R01/browser/p0_flow.cjs <out>  (in a scratch worktree of R01)",
+      "input": "R01 claude/affectionate-ride-bol5v8 @5c47a85 (CODE_SHA a5d184b) with only web/civic/map replaced by @3cea09c0d6de6bca6e3f36af64c48cce52dafa1a",
+      "reason": "49 PASS/0 FAIL/2 NOT_RUN, also with R01's CSS adapter removed; runs/r01_final_5c47a85_with_r03_3cea09c/. Earlier: R01 8c6add9 + 161467d/1c75a96 47/0/2"
+    },
+    {
+      "name": "adversarial-review",
+      "status": "PASS",
+      "command": "Workflows wf_a5038205-b19 (8 agents) and wf_a7151be5-5e0 (6 agents)",
+      "input": "9cb1a2e (review 1), 1c75a96 (review 2) + R01 defect R01-F-R03-1",
+      "reason": "46 confirmed findings fixed; 22/25 of review 1 and 16/21 of review 2 have an automated check that fails on the pre-fix module (measured); the rest are documentation or manual (REVIEW_FINDINGS.json)"
     },
     {
       "name": "openfreemap-basemap",
       "status": "NOT_RUN",
       "command": "curl https://tiles.openfreemap.org/styles/liberty",
       "input": null,
-      "reason": "Sandbox proxy answers CONNECT 403; only the honest offline fallback could be verified"
+      "reason": "Sandbox proxy answers CONNECT 403; only the honest plain fallback was verified"
     },
     {
       "name": "3d-buildings",
       "status": "NOT_RUN",
       "command": null,
       "input": null,
-      "reason": "Needs OpenFreeMap vector tiles; camera tilt verified, buildings not"
-    },
-    {
-      "name": "r02-civicservice-readonly",
-      "status": "PASS",
-      "command": "node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs",
-      "input": "R02 ui/civic_store @ 6a28de2 (git archive into temp dir), seeded via R02 staff API with R03 synthetic fixtures; browser reads only",
-      "reason": "2/2: 11 published of 13 seeded (draft+archived hidden), card shows R02 history reschedule reason, real 404, null geometry list-only, browser made only GET /objects*, 390x844 no overflow"
-    },
-    {
-      "name": "r01-shell-integration",
-      "status": "NOT_RUN",
-      "command": null,
-      "input": "origin/claude/affectionate-ride-bol5v8 @ f639a4b (read only)",
-      "reason": "NOT_INTEGRATED: R01 has not imported web/civic/map yet; compatibility reviewed from its shell.js and an R01-like host panel test in the stand"
-    },
-    {
-      "name": "adversarial-review",
-      "status": "PASS",
-      "command": "Workflow wf_a5038205-b19 (4 reviewers + 4 verifiers)",
-      "input": "web/civic/map @ 9cb1a2e",
-      "reason": "25 findings confirmed by verifiers, 25 fixed with regression checks; see research/round-11-results/R03/REVIEW_FINDINGS.json"
+      "reason": "Needs OpenFreeMap vector tiles; camera tilt with R03 layers verified, buildings not. R03 draws no extrusions, heights or traffic."
     }
   ],
   "limitations": [
-    "NOT_INTEGRATED: verified only on the R03 stand with a contract mock of api.request; screenshots show the stand, not the final product",
-    "OpenFreeMap blocked in sandbox: basemap streets and 3D buildings NOT_RUN",
-    "Client-side filtering over all published objects (cursor pages up to 20); very large datasets would need server-side filters"
+    "R01's final build (5c47a85) ships R03 1bc9c48; the fixes after it (map tap pans, collapsed sheet, line/area status, historical mark, button colours, setStyle) arrive only when R01 re-imports 3cea09c",
+    "Screenshots under screenshots/ are of the R03 stand (mock or R02 read-only); integrated screenshots are under runs/ (R01 build, synthetic data, offline basemap)",
+    "OpenFreeMap blocked in sandbox: basemap streets, attribution text and 3D buildings NOT_RUN",
+    "All data shown is synthetic (R03 fixtures, R01/R05 demo slices); no real Astana works were displayed or verified",
+    "Client-side filtering over the published list (cursor pages up to 20, list rendered 200 rows at a time); a very large city dataset would need server-side filters"
   ],
-  "next_step": "Final INTEGRATION/DELIVERY update; R01 imports web/civic/map (3 files) per INTEGRATION.txt."
+  "next_step": "R01: re-import the three files @3cea09c and drop the .civic-r03-btn-primary adapter in shell.css; R10: check the integrated CODE_SHA with tests/civic/R03 and R01 p0_flow."
 }
