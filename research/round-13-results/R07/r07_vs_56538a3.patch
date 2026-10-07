@@ -1,3 +1,40 @@
+diff --git a/engine/civic_scenarios/README.md b/engine/civic_scenarios/README.md
+index 6252316..6021329 100644
+--- a/engine/civic_scenarios/README.md
++++ b/engine/civic_scenarios/README.md
+@@ -65,5 +65,30 @@ result = compare(payload, load_graph(payload["graph_id"]))
+ 
+ ## HTTP (для R01) и демо
+ `http.handle(method, path, query, body)` — `/api/civic/v1/scenarios/{graphs,graphs/{id},cases,compare}`.
+-Демо: `python3 -m engine.civic_scenarios.devserver` → `http://127.0.0.1:8517/civic/scenarios/demo.html`
+-(`?basemap=none` — без внешней подложки).
++Интерфейс — в приложении (`app.py`, кнопка «Сравнить ограничения»); отдельного demo/devserver больше нет.
++
++## Раунд 13: путь пользователя без node ID и объяснение своего расчёта (engine 1.1.0)
++
++**Привязка места к сети** (`snap.py`, повтор в `web/civic/scenarios/scenarios.js` — паритет проверяется тестом
++в Node). Кандидаты — только узлы на рёбрах `access=allowed`; ближайший по гаверсинусу, ничья по ID узла;
++порог `SNAP_MAX_M = 150` м — дальше отказ `too_far` (точка не переносится); вне bbox — `outside_graph`.
++Возвращаются исходная точка, узел, расстояние (подход к сети в длину пути не входит и не проверен как путь),
++`nearer_unverified_m` (ближе есть линия с неизвестным доступом — не используется), размер компоненты и
++`main_component`; для узла во фрагменте — `main_alternative` (узел основной сети в пределах порога) только как
++явный выбор пользователя. Мосты/уровни: связность только через общие узлы OSM, поэтому экранное пересечение
++линий не соединяет их; в UI при наложении линий участок выбирается из списка.
++
++**Новые поля результата** (обратно совместимы): `plans[].closed_on_baseline_routes`, предупреждение
++`closure_not_on_baseline_routes`; `a_vs_b.identical_active_closures` и `plans_identical_at_analysis_at`.
++
++**Кэш объяснений R09.** `http.handle(..., on_result=cb)` вызывает `cb(payload, result)` только после
++успешного compare (ошибка колбэка не ломает ответ); равнозначно — патч R09 для шлюза R01 вызывает
++`ScenarioResultCache.remember` после ответа 200. Браузер передаёт помощнику только
++`scenario_id = "result:" + result_digest`, цифр не передаёт.
++
++**Производительность** (`python -m engine.civic_scenarios.bench`): смежность без перекрытий строится один раз
++на граф (≤3 варианта), перекрытия пропускаются в Дейкстре, поиск останавливается после всех целей;
++результаты побайтно совпадают с прежней реализацией. Справочные числа — в research/round-13-results/R07/bench_r13.json.
++
++**Пример для проверки** — `python -m engine.civic_scenarios.example --check` (Байтерек → Хан Шатыр, ожидания в
++`cases/astana-baiterek-khanshatyr-v1.case.json`).
 diff --git a/engine/civic_scenarios/__init__.py b/engine/civic_scenarios/__init__.py
 index 8601cc3..70f7e04 100644
 --- a/engine/civic_scenarios/__init__.py
