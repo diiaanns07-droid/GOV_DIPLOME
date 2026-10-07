@@ -1,0 +1,211 @@
+[
+ {
+  "id": "probe-000",
+  "text": "Колдобины такие, что подвеску разбил, когда уже заделают?",
+  "true": "roads",
+  "pred": "other",
+  "score": 0.745,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "slang",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-002",
+  "text": "Светофор на пересечении у торгового центра показывает зелёный сразу и пешеходам и машинам",
+  "true": "roads",
+  "pred": "sidewalks",
+  "score": 0.94,
+  "heuristic": "sidewalks",
+  "language": "ru",
+  "style": "narrative",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-003",
+  "text": "Прошу проверить состояние дорожного покрытия на въезде в жилой комплекс, образовалась глубокая колея",
+  "true": "roads",
+  "pred": "other",
+  "score": 0.452,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "formal",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-006",
+  "text": "зебру возле садика совсем не видно, дети переходят где попало",
+  "true": "roads",
+  "pred": "sidewalks",
+  "score": 0.993,
+  "heuristic": "sidewalks",
+  "language": "ru",
+  "style": "narrative",
+  "ambiguous": true
+ },
+ {
+  "id": "probe-016",
+  "text": "yama na doroge vozle shkoly, opasno",
+  "true": "roads",
+  "pred": "other",
+  "score": 0.694,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "translit",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-017",
+  "text": "Ямища!",
+  "true": "roads",
+  "pred": "other",
+  "score": 0.763,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "short",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-021",
+  "text": "лежачих полицейских понаставили слишком высоких, днищем цепляем",
+  "true": "roads",
+  "pred": "other",
+  "score": 0.403,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "slang",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-036",
+  "text": "net trotuara vdol ulicy, hodim po doroge",
+  "true": "sidewalks",
+  "pred": "other",
+  "score": 0.685,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "translit",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-039",
+  "text": "Жер асты өтпесінде жарық бар, бірақ еден су",
+  "true": "sidewalks",
+  "pred": "lighting",
+  "score": 0.994,
+  "heuristic": "lighting",
+  "language": "kk",
+  "style": "narrative",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-054",
+  "text": "na ostanovke net navesa",
+  "true": "transport_stops",
+  "pred": "other",
+  "score": 0.688,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "translit",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-059",
+  "text": "Прошу восстановить уличное освещение вдоль пешеходной аллеи",
+  "true": "lighting",
+  "pred": "sidewalks",
+  "score": 0.605,
+  "heuristic": "lighting",
+  "language": "ru",
+  "style": "formal",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-061",
+  "text": "нет света на улице",
+  "true": "lighting",
+  "pred": "other",
+  "score": 0.391,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "short",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-072",
+  "text": "fonari ne goryat vo dvore",
+  "true": "lighting",
+  "pred": "other",
+  "score": 0.682,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "translit",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-076",
+  "text": "Во дворе спилили все старые тополя, остались одни пни, дети играют на солнцепёке",
+  "true": "landscaping",
+  "pred": "other",
+  "score": 0.454,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "narrative",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-090",
+  "text": "detskaya ploshadka slomana",
+  "true": "landscaping",
+  "pred": "other",
+  "score": 0.696,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "translit",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-092",
+  "text": "Көше бойына жасыл желек отырғызу қажет",
+  "true": "landscaping",
+  "pred": "lighting",
+  "score": 0.647,
+  "heuristic": "other",
+  "language": "kk",
+  "style": "formal",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-093",
+  "text": "Посадили саженцы, но их никто не поливает, половина засохла",
+  "true": "landscaping",
+  "pred": "roads",
+  "score": 0.29,
+  "heuristic": "other",
+  "language": "ru",
+  "style": "narrative",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-095",
+  "text": "Прошу принять меры в отношении строительной площадки, работы ведутся после 23:00",
+  "true": "other",
+  "pred": "landscaping",
+  "score": 0.974,
+  "heuristic": "landscaping",
+  "language": "ru",
+  "style": "formal",
+  "ambiguous": false
+ },
+ {
+  "id": "probe-098",
+  "text": "Хочу поблагодарить за отремонтированную дорогу, ездить стало приятно",
+  "true": "other",
+  "pred": "roads",
+  "score": 0.87,
+  "heuristic": "roads",
+  "language": "ru",
+  "style": "narrative",
+  "ambiguous": true
+ }
+]

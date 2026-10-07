@@ -20,6 +20,7 @@ from ml.civic_classifier.text import features
 
 MODEL_FORMAT = "civic-clf-model-v1"
 DEFAULT_MODEL_PATH = Path(__file__).resolve().parent / "data" / "model.json.gz"
+MAX_MODEL_BYTES = 32 * 1024 * 1024
 
 
 class ModelError(ValueError):
@@ -48,9 +49,15 @@ def save_model(model: dict, path: Path) -> str:
 def load_model(path: Path | None = None) -> dict:
     path = DEFAULT_MODEL_PATH if path is None else path  # читаем модульный атрибут в момент вызова
     try:
+        chunks, size = [], 0
         with gzip.open(path, "rb") as gz:
-            raw = gz.read(64 * 1024 * 1024)
-        model = json.loads(raw.decode("utf-8"))
+            # Читаем частями с лимитом: защита от gzip-бомбы без предварительного буфера на весь лимит.
+            while chunk := gz.read(1 << 20):
+                size += len(chunk)
+                if size > MAX_MODEL_BYTES:
+                    raise ModelError("model too large")
+                chunks.append(chunk)
+        model = json.loads(b"".join(chunks).decode("utf-8"))
     except (OSError, ValueError, EOFError) as exc:
         raise ModelError(f"model unreadable: {type(exc).__name__}") from exc
     if not isinstance(model, dict) or model.get("format") != MODEL_FORMAT:
@@ -79,7 +86,19 @@ def vectorize(text: str, model: dict) -> dict[int, float]:
         vec = {i: math.log1p(v) for i, v in vec.items()}
         norm = math.sqrt(sum(v * v for v in vec.values())) or 1.0
         vec = {i: v / norm for i, v in vec.items()}
+    if fp.get("keyword_features"):
+        vec.update(keyword_vector(text, index, fp["keyword_scale"]))
     return vec
+
+
+def keyword_vector(text: str, index: dict, scale: float) -> dict[int, float]:
+    """Гибрид: совпадения словаря эвристики как отдельные признаки (вне L2-нормировки n-грамм)."""
+    from ml.civic_classifier.heuristic import keyword_hits
+    hits = keyword_hits(text)
+    out = {index["k:" + lab]: min(h, 3) * scale for lab, h in hits.items() if h and "k:" + lab in index}
+    if not out and "k:none" in index:
+        out[index["k:none"]] = scale
+    return out
 
 
 def softmax(scores: list[float]) -> list[float]:

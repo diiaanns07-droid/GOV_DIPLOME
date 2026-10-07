@@ -1,0 +1,1430 @@
+{
+ "note": "DEMONSTRATION: synthetic/agent-authored data; real-data quality NOT_EVALUATED",
+ "test_look": "experiment 2: test viewed for the 2nd time (experiment 1 = plain logreg, see exp1/); selection still on validation only",
+ "model_version": "civic-clf-logreg-kw-cf4464341-pe9ba054a",
+ "model_kind": "logreg",
+ "keyword_features": true,
+ "alt_model": "civic-clf-nb-cf4464341-p378f4882",
+ "corpus_sha256": "f446434196768da0146ba84ca95449ee1b50a409c5256eeacc4a3d3eeb9cc45b",
+ "threshold_from_validation": 0.3,
+ "sets": {
+  "test": {
+   "n": 631,
+   "methods": {
+    "logreg+keywords (selected)": {
+     "n": 631,
+     "accuracy": 0.8796,
+     "macro_f1": 0.8707,
+     "per_class": {
+      "roads": {
+       "precision": 0.9921,
+       "recall": 0.8803,
+       "f1": 0.9328,
+       "support": 142
+      },
+      "sidewalks": {
+       "precision": 0.984,
+       "recall": 0.9762,
+       "f1": 0.9801,
+       "support": 126
+      },
+      "transport_stops": {
+       "precision": 1.0,
+       "recall": 0.9897,
+       "f1": 0.9948,
+       "support": 97
+      },
+      "lighting": {
+       "precision": 0.7021,
+       "recall": 0.9851,
+       "f1": 0.8199,
+       "support": 67
+      },
+      "landscaping": {
+       "precision": 0.8182,
+       "recall": 0.766,
+       "f1": 0.7912,
+       "support": 94
+      },
+      "other": {
+       "precision": 0.7157,
+       "recall": 0.6952,
+       "f1": 0.7053,
+       "support": 105
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "sidewalks",
+       "transport_stops",
+       "lighting",
+       "landscaping",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        125,
+        1,
+        0,
+        4,
+        1,
+        11
+       ],
+       [
+        1,
+        123,
+        0,
+        0,
+        0,
+        2
+       ],
+       [
+        0,
+        0,
+        96,
+        0,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        66,
+        0,
+        1
+       ],
+       [
+        0,
+        1,
+        0,
+        7,
+        72,
+        14
+       ],
+       [
+        0,
+        0,
+        0,
+        17,
+        15,
+        73
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci_macro_f1": {
+      "low": 0.7803,
+      "high": 0.9275,
+      "n_boot": 1000,
+      "level": 0.95,
+      "unit": "template clusters (n=44)"
+     }
+    },
+    "keyword_heuristic": {
+     "n": 631,
+     "accuracy": 0.8526,
+     "macro_f1": 0.8482,
+     "per_class": {
+      "roads": {
+       "precision": 0.9906,
+       "recall": 0.7394,
+       "f1": 0.8468,
+       "support": 142
+      },
+      "sidewalks": {
+       "precision": 1.0,
+       "recall": 0.9603,
+       "f1": 0.9798,
+       "support": 126
+      },
+      "transport_stops": {
+       "precision": 1.0,
+       "recall": 0.9794,
+       "f1": 0.9896,
+       "support": 97
+      },
+      "lighting": {
+       "precision": 0.6706,
+       "recall": 0.8507,
+       "f1": 0.75,
+       "support": 67
+      },
+      "landscaping": {
+       "precision": 0.8353,
+       "recall": 0.7553,
+       "f1": 0.7933,
+       "support": 94
+      },
+      "other": {
+       "precision": 0.6403,
+       "recall": 0.8476,
+       "f1": 0.7295,
+       "support": 105
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "sidewalks",
+       "transport_stops",
+       "lighting",
+       "landscaping",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        105,
+        0,
+        0,
+        21,
+        0,
+        16
+       ],
+       [
+        1,
+        121,
+        0,
+        0,
+        0,
+        4
+       ],
+       [
+        0,
+        0,
+        95,
+        0,
+        1,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        57,
+        0,
+        10
+       ],
+       [
+        0,
+        0,
+        0,
+        4,
+        71,
+        19
+       ],
+       [
+        0,
+        0,
+        0,
+        3,
+        13,
+        89
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci_macro_f1": {
+      "low": 0.7446,
+      "high": 0.9123,
+      "n_boot": 1000,
+      "level": 0.95,
+      "unit": "template clusters (n=44)"
+     }
+    },
+    "nb (alternative)": {
+     "n": 631,
+     "accuracy": 0.5674,
+     "macro_f1": 0.5567,
+     "per_class": {
+      "roads": {
+       "precision": 0.7263,
+       "recall": 0.4859,
+       "f1": 0.5823,
+       "support": 142
+      },
+      "sidewalks": {
+       "precision": 0.6074,
+       "recall": 0.6508,
+       "f1": 0.6284,
+       "support": 126
+      },
+      "transport_stops": {
+       "precision": 0.7647,
+       "recall": 0.8041,
+       "f1": 0.7839,
+       "support": 97
+      },
+      "lighting": {
+       "precision": 0.4848,
+       "recall": 0.7164,
+       "f1": 0.5783,
+       "support": 67
+      },
+      "landscaping": {
+       "precision": 0.4,
+       "recall": 0.234,
+       "f1": 0.2953,
+       "support": 94
+      },
+      "other": {
+       "precision": 0.4069,
+       "recall": 0.5619,
+       "f1": 0.472,
+       "support": 105
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "sidewalks",
+       "transport_stops",
+       "lighting",
+       "landscaping",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        69,
+        20,
+        15,
+        12,
+        13,
+        13
+       ],
+       [
+        15,
+        82,
+        0,
+        3,
+        1,
+        25
+       ],
+       [
+        5,
+        0,
+        78,
+        13,
+        0,
+        1
+       ],
+       [
+        5,
+        0,
+        0,
+        48,
+        2,
+        12
+       ],
+       [
+        0,
+        15,
+        8,
+        14,
+        22,
+        35
+       ],
+       [
+        1,
+        18,
+        1,
+        9,
+        17,
+        59
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci_macro_f1": {
+      "low": 0.4351,
+      "high": 0.6477,
+      "n_boot": 1000,
+      "level": 0.95,
+      "unit": "template clusters (n=44)"
+     }
+    }
+   },
+   "paired_delta_selected_minus_heuristic": {
+    "delta": 0.0225,
+    "low": -0.0484,
+    "high": 0.0959,
+    "share_boot_delta_gt_0": 0.732,
+    "unit": "template clusters"
+   },
+   "slices_selected": {
+    "language": {
+     "kk": {
+      "n": 249,
+      "accuracy": 0.8193,
+      "macro_f1": 0.8017
+     },
+     "mixed": {
+      "n": 79,
+      "accuracy": 0.9114,
+      "macro_f1": 0.9258
+     },
+     "ru": {
+      "n": 303,
+      "accuracy": 0.9208,
+      "macro_f1": 0.9143
+     }
+    },
+    "short_le_3_words": {
+     "False": {
+      "n": 620,
+      "accuracy": 0.879,
+      "macro_f1": 0.8682
+     },
+     "True": {
+      "n": 11,
+      "accuracy": 0.9091,
+      "macro_f1": 0.881
+     }
+    },
+    "ambiguous": {
+     "False": {
+      "n": 572,
+      "accuracy": 0.8934,
+      "macro_f1": 0.8846
+     },
+     "True": {
+      "n": 59,
+      "accuracy": 0.7458,
+      "macro_f1": 0.8726
+     }
+    },
+    "max_train_jaccard": {
+     "0.4-0.6": {
+      "n": 275,
+      "accuracy": 0.9091,
+      "macro_f1": 0.8878
+     },
+     "<0.4": {
+      "n": 316,
+      "accuracy": 0.8671,
+      "macro_f1": 0.8702
+     },
+     ">=0.6": {
+      "n": 40,
+      "accuracy": 0.775,
+      "macro_f1": 0.7978
+     }
+    }
+   },
+   "slices_heuristic": {
+    "language": {
+     "kk": {
+      "n": 249,
+      "accuracy": 0.8434,
+      "macro_f1": 0.8057
+     },
+     "mixed": {
+      "n": 79,
+      "accuracy": 0.7089,
+      "macro_f1": 0.6778
+     },
+     "ru": {
+      "n": 303,
+      "accuracy": 0.8977,
+      "macro_f1": 0.8917
+     }
+    }
+   },
+   "near_duplicates": {
+    "max_train_jaccard_mean": 0.41,
+    "share_ge_0.6": 0.063
+   },
+   "calibration_ece_selected": 0.0313,
+   "threshold_effect": {
+    "threshold": 0.3,
+    "auto_share": 0.8368,
+    "precision_auto": 0.9129,
+    "note": "что дал бы порог, если бы ему доверяли; в runtime для синтетической модели needs_review=True всегда"
+   }
+  },
+  "probe": {
+   "n": 112,
+   "methods": {
+    "logreg+keywords (selected)": {
+     "n": 112,
+     "accuracy": 0.8304,
+     "macro_f1": 0.837,
+     "per_class": {
+      "roads": {
+       "precision": 0.8824,
+       "recall": 0.6818,
+       "f1": 0.7692,
+       "support": 22
+      },
+      "sidewalks": {
+       "precision": 0.8421,
+       "recall": 0.8889,
+       "f1": 0.8649,
+       "support": 18
+      },
+      "transport_stops": {
+       "precision": 1.0,
+       "recall": 0.9444,
+       "f1": 0.9714,
+       "support": 18
+      },
+      "lighting": {
+       "precision": 0.8824,
+       "recall": 0.8333,
+       "f1": 0.8571,
+       "support": 18
+      },
+      "landscaping": {
+       "precision": 0.9333,
+       "recall": 0.7778,
+       "f1": 0.8485,
+       "support": 18
+      },
+      "other": {
+       "precision": 0.5926,
+       "recall": 0.8889,
+       "f1": 0.7111,
+       "support": 18
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "sidewalks",
+       "transport_stops",
+       "lighting",
+       "landscaping",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        15,
+        2,
+        0,
+        0,
+        0,
+        5
+       ],
+       [
+        0,
+        16,
+        0,
+        1,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        17,
+        0,
+        0,
+        1
+       ],
+       [
+        0,
+        1,
+        0,
+        15,
+        0,
+        2
+       ],
+       [
+        1,
+        0,
+        0,
+        1,
+        14,
+        2
+       ],
+       [
+        1,
+        0,
+        0,
+        0,
+        1,
+        16
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci_macro_f1": {
+      "low": 0.7671,
+      "high": 0.8962,
+      "n_boot": 1000,
+      "level": 0.95
+     }
+    },
+    "keyword_heuristic": {
+     "n": 112,
+     "accuracy": 0.8214,
+     "macro_f1": 0.8316,
+     "per_class": {
+      "roads": {
+       "precision": 0.9333,
+       "recall": 0.6364,
+       "f1": 0.7568,
+       "support": 22
+      },
+      "sidewalks": {
+       "precision": 0.8889,
+       "recall": 0.8889,
+       "f1": 0.8889,
+       "support": 18
+      },
+      "transport_stops": {
+       "precision": 1.0,
+       "recall": 0.9444,
+       "f1": 0.9714,
+       "support": 18
+      },
+      "lighting": {
+       "precision": 0.8824,
+       "recall": 0.8333,
+       "f1": 0.8571,
+       "support": 18
+      },
+      "landscaping": {
+       "precision": 0.9333,
+       "recall": 0.7778,
+       "f1": 0.8485,
+       "support": 18
+      },
+      "other": {
+       "precision": 0.5333,
+       "recall": 0.8889,
+       "f1": 0.6667,
+       "support": 18
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "sidewalks",
+       "transport_stops",
+       "lighting",
+       "landscaping",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        14,
+        2,
+        0,
+        1,
+        0,
+        5
+       ],
+       [
+        0,
+        16,
+        0,
+        1,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        17,
+        0,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        15,
+        0,
+        3
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        14,
+        4
+       ],
+       [
+        1,
+        0,
+        0,
+        0,
+        1,
+        16
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci_macro_f1": {
+      "low": 0.7563,
+      "high": 0.891,
+      "n_boot": 1000,
+      "level": 0.95
+     }
+    },
+    "nb (alternative)": {
+     "n": 112,
+     "accuracy": 0.7679,
+     "macro_f1": 0.7697,
+     "per_class": {
+      "roads": {
+       "precision": 0.6538,
+       "recall": 0.7727,
+       "f1": 0.7083,
+       "support": 22
+      },
+      "sidewalks": {
+       "precision": 0.8421,
+       "recall": 0.8889,
+       "f1": 0.8649,
+       "support": 18
+      },
+      "transport_stops": {
+       "precision": 0.8889,
+       "recall": 0.8889,
+       "f1": 0.8889,
+       "support": 18
+      },
+      "lighting": {
+       "precision": 0.7778,
+       "recall": 0.7778,
+       "f1": 0.7778,
+       "support": 18
+      },
+      "landscaping": {
+       "precision": 0.6471,
+       "recall": 0.6111,
+       "f1": 0.6286,
+       "support": 18
+      },
+      "other": {
+       "precision": 0.8571,
+       "recall": 0.6667,
+       "f1": 0.75,
+       "support": 18
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "sidewalks",
+       "transport_stops",
+       "lighting",
+       "landscaping",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        17,
+        3,
+        0,
+        1,
+        0,
+        1
+       ],
+       [
+        1,
+        16,
+        0,
+        0,
+        1,
+        0
+       ],
+       [
+        1,
+        0,
+        16,
+        0,
+        1,
+        0
+       ],
+       [
+        1,
+        0,
+        1,
+        14,
+        2,
+        0
+       ],
+       [
+        3,
+        0,
+        1,
+        2,
+        11,
+        1
+       ],
+       [
+        3,
+        0,
+        0,
+        1,
+        2,
+        12
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci_macro_f1": {
+      "low": 0.6821,
+      "high": 0.8375,
+      "n_boot": 1000,
+      "level": 0.95
+     }
+    }
+   },
+   "paired_delta_selected_minus_heuristic": {
+    "delta": 0.0054,
+    "low": -0.024,
+    "high": 0.0374,
+    "share_boot_delta_gt_0": 0.599,
+    "unit": "items"
+   },
+   "slices_selected": {
+    "language": {
+     "kk": {
+      "n": 31,
+      "accuracy": 0.9355,
+      "macro_f1": 0.9352
+     },
+     "mixed": {
+      "n": 12,
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+     },
+     "ru": {
+      "n": 69,
+      "accuracy": 0.7536,
+      "macro_f1": 0.7695
+     }
+    },
+    "short_le_3_words": {
+     "False": {
+      "n": 98,
+      "accuracy": 0.8265,
+      "macro_f1": 0.8315
+     },
+     "True": {
+      "n": 14,
+      "accuracy": 0.8571,
+      "macro_f1": 0.8917
+     }
+    },
+    "ambiguous": {
+     "False": {
+      "n": 101,
+      "accuracy": 0.8317,
+      "macro_f1": 0.837
+     },
+     "True": {
+      "n": 11,
+      "accuracy": 0.8182,
+      "macro_f1": 0.85
+     }
+    },
+    "max_train_jaccard": {
+     "0.4-0.6": {
+      "n": 1,
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+     },
+     "<0.4": {
+      "n": 110,
+      "accuracy": 0.8273,
+      "macro_f1": 0.8327
+     },
+     ">=0.6": {
+      "n": 1,
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+     }
+    },
+    "style": {
+     "formal": {
+      "n": 31,
+      "accuracy": 0.871,
+      "macro_f1": 0.8697
+     },
+     "mixed": {
+      "n": 13,
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+     },
+     "narrative": {
+      "n": 36,
+      "accuracy": 0.8333,
+      "macro_f1": 0.8321
+     },
+     "short": {
+      "n": 13,
+      "accuracy": 0.8462,
+      "macro_f1": 0.8556
+     },
+     "slang": {
+      "n": 13,
+      "accuracy": 0.8462,
+      "macro_f1": 0.8611
+     },
+     "translit": {
+      "n": 6,
+      "accuracy": 0.1667,
+      "macro_f1": 0.0476
+     }
+    }
+   },
+   "slices_heuristic": {
+    "language": {
+     "kk": {
+      "n": 31,
+      "accuracy": 0.871,
+      "macro_f1": 0.8746
+     },
+     "mixed": {
+      "n": 12,
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+     },
+     "ru": {
+      "n": 69,
+      "accuracy": 0.7681,
+      "macro_f1": 0.7868
+     }
+    },
+    "style": {
+     "formal": {
+      "n": 31,
+      "accuracy": 0.871,
+      "macro_f1": 0.8774
+     },
+     "mixed": {
+      "n": 13,
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+     },
+     "narrative": {
+      "n": 36,
+      "accuracy": 0.8056,
+      "macro_f1": 0.7993
+     },
+     "short": {
+      "n": 13,
+      "accuracy": 0.8462,
+      "macro_f1": 0.8556
+     },
+     "slang": {
+      "n": 13,
+      "accuracy": 0.8462,
+      "macro_f1": 0.8611
+     },
+     "translit": {
+      "n": 6,
+      "accuracy": 0.1667,
+      "macro_f1": 0.0476
+     }
+    }
+   },
+   "near_duplicates": {
+    "max_train_jaccard_mean": 0.196,
+    "share_ge_0.6": 0.009
+   },
+   "calibration_ece_selected": 0.0936,
+   "threshold_effect": {
+    "threshold": 0.3,
+    "auto_share": 0.75,
+    "precision_auto": 0.9167,
+    "note": "что дал бы порог, если бы ему доверяли; в runtime для синтетической модели needs_review=True всегда"
+   }
+  },
+  "val_reference_only": {
+   "n": 581,
+   "methods": {
+    "logreg+keywords (selected)": {
+     "n": 581,
+     "accuracy": 0.8898,
+     "macro_f1": 0.8883,
+     "per_class": {
+      "roads": {
+       "precision": 0.9903,
+       "recall": 0.7969,
+       "f1": 0.8831,
+       "support": 128
+      },
+      "sidewalks": {
+       "precision": 0.8689,
+       "recall": 0.9464,
+       "f1": 0.906,
+       "support": 112
+      },
+      "transport_stops": {
+       "precision": 0.9787,
+       "recall": 1.0,
+       "f1": 0.9892,
+       "support": 92
+      },
+      "lighting": {
+       "precision": 0.8193,
+       "recall": 0.8718,
+       "f1": 0.8447,
+       "support": 78
+      },
+      "landscaping": {
+       "precision": 0.8846,
+       "recall": 0.8625,
+       "f1": 0.8734,
+       "support": 80
+      },
+      "other": {
+       "precision": 0.7921,
+       "recall": 0.8791,
+       "f1": 0.8333,
+       "support": 91
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "sidewalks",
+       "transport_stops",
+       "lighting",
+       "landscaping",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        102,
+        16,
+        0,
+        6,
+        0,
+        4
+       ],
+       [
+        0,
+        106,
+        2,
+        3,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        92,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        68,
+        2,
+        8
+       ],
+       [
+        0,
+        0,
+        0,
+        3,
+        69,
+        8
+       ],
+       [
+        1,
+        0,
+        0,
+        3,
+        7,
+        80
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci_macro_f1": {
+      "low": 0.8036,
+      "high": 0.9413,
+      "n_boot": 1000,
+      "level": 0.95,
+      "unit": "template clusters (n=37)"
+     }
+    },
+    "keyword_heuristic": {
+     "n": 581,
+     "accuracy": 0.8468,
+     "macro_f1": 0.8452,
+     "per_class": {
+      "roads": {
+       "precision": 1.0,
+       "recall": 0.6953,
+       "f1": 0.8203,
+       "support": 128
+      },
+      "sidewalks": {
+       "precision": 0.8655,
+       "recall": 0.9196,
+       "f1": 0.8918,
+       "support": 112
+      },
+      "transport_stops": {
+       "precision": 0.9681,
+       "recall": 0.9891,
+       "f1": 0.9785,
+       "support": 92
+      },
+      "lighting": {
+       "precision": 0.7143,
+       "recall": 0.7051,
+       "f1": 0.7097,
+       "support": 78
+      },
+      "landscaping": {
+       "precision": 0.9437,
+       "recall": 0.8375,
+       "f1": 0.8874,
+       "support": 80
+      },
+      "other": {
+       "precision": 0.6641,
+       "recall": 0.956,
+       "f1": 0.7838,
+       "support": 91
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "sidewalks",
+       "transport_stops",
+       "lighting",
+       "landscaping",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        89,
+        16,
+        0,
+        18,
+        0,
+        5
+       ],
+       [
+        0,
+        103,
+        3,
+        4,
+        0,
+        2
+       ],
+       [
+        0,
+        0,
+        91,
+        0,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        55,
+        0,
+        23
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        67,
+        13
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        4,
+        87
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci_macro_f1": {
+      "low": 0.7459,
+      "high": 0.9145,
+      "n_boot": 1000,
+      "level": 0.95,
+      "unit": "template clusters (n=37)"
+     }
+    },
+    "nb (alternative)": {
+     "n": 581,
+     "accuracy": 0.5904,
+     "macro_f1": 0.5888,
+     "per_class": {
+      "roads": {
+       "precision": 0.5043,
+       "recall": 0.4609,
+       "f1": 0.4816,
+       "support": 128
+      },
+      "sidewalks": {
+       "precision": 0.7295,
+       "recall": 0.7946,
+       "f1": 0.7607,
+       "support": 112
+      },
+      "transport_stops": {
+       "precision": 0.7821,
+       "recall": 0.663,
+       "f1": 0.7176,
+       "support": 92
+      },
+      "lighting": {
+       "precision": 0.4673,
+       "recall": 0.641,
+       "f1": 0.5405,
+       "support": 78
+      },
+      "landscaping": {
+       "precision": 0.6333,
+       "recall": 0.475,
+       "f1": 0.5429,
+       "support": 80
+      },
+      "other": {
+       "precision": 0.4742,
+       "recall": 0.5055,
+       "f1": 0.4894,
+       "support": 91
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "sidewalks",
+       "transport_stops",
+       "lighting",
+       "landscaping",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        59,
+        25,
+        2,
+        10,
+        6,
+        26
+       ],
+       [
+        13,
+        89,
+        7,
+        0,
+        1,
+        2
+       ],
+       [
+        3,
+        0,
+        61,
+        22,
+        0,
+        6
+       ],
+       [
+        24,
+        0,
+        1,
+        50,
+        0,
+        3
+       ],
+       [
+        17,
+        1,
+        0,
+        10,
+        38,
+        14
+       ],
+       [
+        1,
+        7,
+        7,
+        15,
+        15,
+        46
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci_macro_f1": {
+      "low": 0.4458,
+      "high": 0.6816,
+      "n_boot": 1000,
+      "level": 0.95,
+      "unit": "template clusters (n=37)"
+     }
+    }
+   },
+   "paired_delta_selected_minus_heuristic": {
+    "delta": 0.0431,
+    "low": -0.002,
+    "high": 0.0897,
+    "share_boot_delta_gt_0": 0.968,
+    "unit": "template clusters"
+   },
+   "slices_selected": {
+    "language": {
+     "kk": {
+      "n": 200,
+      "accuracy": 0.905,
+      "macro_f1": 0.9079
+     },
+     "mixed": {
+      "n": 48,
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+     },
+     "ru": {
+      "n": 333,
+      "accuracy": 0.8649,
+      "macro_f1": 0.8684
+     }
+    },
+    "short_le_3_words": {
+     "False": {
+      "n": 581,
+      "accuracy": 0.8898,
+      "macro_f1": 0.8883
+     }
+    },
+    "ambiguous": {
+     "False": {
+      "n": 517,
+      "accuracy": 0.911,
+      "macro_f1": 0.9113
+     },
+     "True": {
+      "n": 64,
+      "accuracy": 0.7188,
+      "macro_f1": 0.4182
+     }
+    },
+    "max_train_jaccard": {
+     "0.4-0.6": {
+      "n": 199,
+      "accuracy": 0.8945,
+      "macro_f1": 0.8815
+     },
+     "<0.4": {
+      "n": 367,
+      "accuracy": 0.8883,
+      "macro_f1": 0.887
+     },
+     ">=0.6": {
+      "n": 15,
+      "accuracy": 0.8667,
+      "macro_f1": 0.8472
+     }
+    }
+   },
+   "slices_heuristic": {
+    "language": {
+     "kk": {
+      "n": 200,
+      "accuracy": 0.825,
+      "macro_f1": 0.8365
+     },
+     "mixed": {
+      "n": 48,
+      "accuracy": 0.9792,
+      "macro_f1": 0.9892
+     },
+     "ru": {
+      "n": 333,
+      "accuracy": 0.8408,
+      "macro_f1": 0.844
+     }
+    }
+   },
+   "near_duplicates": {
+    "max_train_jaccard_mean": 0.372,
+    "share_ge_0.6": 0.026
+   },
+   "calibration_ece_selected": 0.0388,
+   "threshold_effect": {
+    "threshold": 0.3,
+    "auto_share": 0.8262,
+    "precision_auto": 0.9104,
+    "note": "что дал бы порог, если бы ему доверяли; в runtime для синтетической модели needs_review=True всегда"
+   }
+  }
+ },
+ "perf": {
+  "model_file_bytes": 104804,
+  "load_seconds": 0.157,
+  "peak_python_alloc_mb_load": 5.2,
+  "peak_python_alloc_mb": 5.2,
+  "classify_ms_mean": 1.695,
+  "classify_ms_p95": 3.136,
+  "n": 743,
+  "note": "одно ядро CPU, CPython, без GPU/сети; время — в этой облачной среде"
+ },
+ "real_data": {
+  "status": "NOT_EVALUATED",
+  "reason": "нет легально доступного корпуса реальных обращений с метками; источники в research/round-12-results/R08/DATA_SOURCES.json"
+ },
+ "headline": {
+  "note": "DEMONSTRATION: synthetic/agent-authored data; real-data quality NOT_EVALUATED",
+  "test_look": "experiment 2: test viewed for the 2nd time (experiment 1 = plain logreg, see exp1/); selection still on validation only",
+  "model_version": "civic-clf-logreg-kw-cf4464341-pe9ba054a",
+  "test_macro_f1": {
+   "logreg+keywords (selected)": 0.8707,
+   "keyword_heuristic": 0.8482,
+   "nb (alternative)": 0.5567
+  },
+  "test_ci_selected": {
+   "low": 0.7803,
+   "high": 0.9275,
+   "n_boot": 1000,
+   "level": 0.95,
+   "unit": "template clusters (n=44)"
+  },
+  "probe_macro_f1": {
+   "logreg+keywords (selected)": 0.837,
+   "keyword_heuristic": 0.8316,
+   "nb (alternative)": 0.7697
+  },
+  "probe_ci_selected": {
+   "low": 0.7671,
+   "high": 0.8962,
+   "n_boot": 1000,
+   "level": 0.95
+  },
+  "test_delta_vs_heuristic": {
+   "delta": 0.0225,
+   "low": -0.0484,
+   "high": 0.0959,
+   "share_boot_delta_gt_0": 0.732,
+   "unit": "template clusters"
+  },
+  "probe_delta_vs_heuristic": {
+   "delta": 0.0054,
+   "low": -0.024,
+   "high": 0.0374,
+   "share_boot_delta_gt_0": 0.599,
+   "unit": "items"
+  },
+  "real_data": "NOT_EVALUATED"
+ }
+}

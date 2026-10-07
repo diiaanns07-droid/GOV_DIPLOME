@@ -25,6 +25,12 @@ MIN_DF = 2
 NB_GRID = (0.05, 0.1, 0.3, 1.0)
 LR_GRID = ({"l2": 1e-5, "epochs": 12, "lr0": 0.5}, {"l2": 1e-4, "epochs": 12, "lr0": 0.5},
            {"l2": 1e-5, "epochs": 24, "lr0": 0.5})
+# Эксперимент 2 (после эксперимента 1, см. research/round-12-results/R08/EXPERIMENT_LOG.md): логистическая
+# регрессия + признаки совпадений словаря эвристики. Отбор по-прежнему только по validation.
+HYBRID_GRID = ({"l2": 1e-4, "epochs": 12, "lr0": 0.5, "keyword_scale": 0.5},
+               {"l2": 1e-4, "epochs": 12, "lr0": 0.5, "keyword_scale": 1.0},
+               {"l2": 1e-4, "epochs": 12, "lr0": 0.5, "keyword_scale": 2.0})
+KW_FEATURES = ["k:" + lab for lab in LABELS] + ["k:none"]
 REVIEW_TARGET_PRECISION = 0.90
 THRESHOLD_GRID = tuple(round(0.30 + 0.05 * i, 2) for i in range(14))  # 0.30 … 0.95
 TRAINING_DATA_STATUS = "synthetic_demo_only;real_data_NOT_EVALUATED"
@@ -45,10 +51,14 @@ def build_vocab(raw_docs) -> list[str]:
     return sorted(f for f, n in df.items() if n >= MIN_DF)
 
 
-def _lr_vec(doc, index):
+def _lr_vec(doc, index, text=None, keyword_scale=None):
     vec = {index[f]: math.log1p(v) for f, v in doc.items() if f in index}
     norm = math.sqrt(sum(v * v for v in vec.values())) or 1.0
-    return [(i, v / norm) for i, v in sorted(vec.items())]
+    vec = {i: v / norm for i, v in vec.items()}
+    if keyword_scale is not None:
+        from ml.civic_classifier.model import keyword_vector
+        vec.update(keyword_vector(text, index, keyword_scale))
+    return sorted(vec.items())
 
 
 def train_nb(raw_docs, y, vocab, alpha) -> dict:
@@ -71,10 +81,10 @@ def train_nb(raw_docs, y, vocab, alpha) -> dict:
     return {"log_prior": log_prior, "log_prob": log_prob}
 
 
-def train_lr(raw_docs, y, vocab, l2, epochs, lr0, seed=SEED) -> dict:
+def train_lr(raw_docs, y, vocab, l2, epochs, lr0, seed=SEED, texts=None, keyword_scale=None) -> dict:
     K, V = len(LABELS), len(vocab)
     index = {f: i for i, f in enumerate(vocab)}
-    X = [_lr_vec(d, index) for d in raw_docs]
+    X = [_lr_vec(d, index, t, keyword_scale) for d, t in zip(raw_docs, texts or [None] * len(raw_docs))]
     w = [[0.0] * K for _ in range(V)]
     u = [[0.0] * K for _ in range(V)]  # накопитель для усреднения весов
     b, ub = [0.0] * K, [0.0] * K
@@ -109,14 +119,16 @@ def train_lr(raw_docs, y, vocab, l2, epochs, lr0, seed=SEED) -> dict:
     return {"weights": weights, "bias": bias}
 
 
-def _model_dict(kind, vocab, params, hyper, corpus_sha, split_sha, threshold=0.5) -> dict:
-    cfg = {"kind": kind, "hyper": hyper, "feature_params": FEATURE_PARAMS, "min_df": MIN_DF, "seed": SEED}
+def _model_dict(kind, vocab, params, hyper, corpus_sha, split_sha, threshold=0.5, feature_params=None) -> dict:
+    fp = feature_params or FEATURE_PARAMS
+    cfg = {"kind": kind, "hyper": hyper, "feature_params": fp, "min_df": MIN_DF, "seed": SEED}
     cfg_hash = hashlib.sha256(canonical(cfg)).hexdigest()
+    tag = kind + ("-kw" if fp.get("keyword_features") else "")
     return {
-        "format": MODEL_FORMAT, "kind": kind, "labels": list(LABELS), "feature_params": FEATURE_PARAMS,
+        "format": MODEL_FORMAT, "kind": kind, "labels": list(LABELS), "feature_params": fp,
         "features": vocab, "params": params, "threshold": threshold, "score_kind": SCORE_KIND,
         "training_data_status": TRAINING_DATA_STATUS,
-        "version": f"civic-clf-{kind}-c{corpus_sha[:8]}-p{cfg_hash[:8]}",
+        "version": f"civic-clf-{tag}-c{corpus_sha[:8]}-p{cfg_hash[:8]}",
         "corpus_sha256": corpus_sha, "split_sha256": split_sha, "train_config": cfg,
         "trained_on": "train split only (group split by template)",
         "evidence_type": "synthetic",
@@ -174,6 +186,21 @@ def train(model_path: Path = DEFAULT_MODEL_PATH, report_path: Path | None = None
         preds = _predict_labels(m, [r["text"] for r in va])
         rep = classification_report(y_va, [k for k, _ in preds])
         candidates.append({"kind": "logreg", "hyper": hyper, "val_macro_f1": rep["macro_f1"], "model": m, "preds": preds})
+    texts_tr = [r["text"] for r in tr]
+    vocab_kw = sorted(set(vocab) | set(KW_FEATURES))
+    for hyper in HYBRID_GRID:
+        scale = hyper["keyword_scale"]
+        fp = dict(FEATURE_PARAMS, keyword_features=True, keyword_scale=scale)
+        lr_h = {k: v for k, v in hyper.items() if k != "keyword_scale"}
+        params = train_lr(raw_tr, y_tr, vocab_kw, **lr_h, texts=texts_tr, keyword_scale=scale)
+        m = _model_dict("logreg", vocab_kw, params, hyper, corpus_sha, split_sha, feature_params=fp)
+        preds = _predict_labels(m, [r["text"] for r in va])
+        rep = classification_report(y_va, [k for k, _ in preds])
+        candidates.append({"kind": "logreg+keywords", "hyper": hyper, "val_macro_f1": rep["macro_f1"], "model": m,
+                           "preds": preds})
+    # Справка (не кандидат для runtime): эвристика на том же validation.
+    from ml.civic_classifier.heuristic import heuristic_label
+    heur_val = classification_report(y_va, [LABELS.index(heuristic_label(r["text"])[0]) for r in va])["macro_f1"]
     # Лучший по val macro-F1; при равенстве — первый в списке (NB проще, затем меньшее число эпох).
     best = max(candidates, key=lambda c: c["val_macro_f1"])
     thr = choose_threshold(best["preds"], y_va)
@@ -181,18 +208,20 @@ def train(model_path: Path = DEFAULT_MODEL_PATH, report_path: Path | None = None
     model["selection"] = {"metric": "validation macro-F1", "chosen": {"kind": best["kind"], "hyper": best["hyper"]},
                           "candidates": [{"kind": c["kind"], "hyper": c["hyper"], "val_macro_f1": c["val_macro_f1"]}
                                          for c in candidates],
-                          "threshold": {k: v for k, v in thr.items()}}
+                          "threshold": {k: v for k, v in thr.items()},
+                          "reference_keyword_heuristic_val_macro_f1": heur_val}
     payload = save_model(model, model_path)
     load_model(model_path)  # проверка, что артефакт читается
     # Второй (не выбранный) метод тоже сохраняется для сравнения в отчёте, рядом с основной моделью.
-    other_kind = "nb" if best["kind"] == "logreg" else "logreg"
+    # Альтернатива для отчёта: лучший кандидат другого семейства (NB, если выбран логрег/гибрид).
+    other_kind = "nb" if best["kind"] != "nb" else "logreg"
     alt = max((c for c in candidates if c["kind"] == other_kind), key=lambda c: c["val_macro_f1"])
     alt_model = dict(alt["model"], threshold=choose_threshold(alt["preds"], y_va)["chosen"],
                      selection={"note": "альтернативный метод для сравнения; в runtime не используется"})
     alt_path = model_path.with_name(f"model_alt_{other_kind}.json.gz")
     save_model(alt_model, alt_path)
     summary = {"model_path": str(model_path.name), "payload_sha256": payload, "version": model["version"],
-               "kind": model["kind"], "threshold": model["threshold"], "vocab_size": len(vocab),
+               "kind": model["kind"], "threshold": model["threshold"], "vocab_size": len(model["features"]),
                "train_rows": len(tr), "val_rows": len(va), "corpus_sha256": corpus_sha, "split_sha256": split_sha,
                "file_sha256": sha256_file(model_path), "alt_model": alt_path.name, "selection": model["selection"]}
     if report_path:

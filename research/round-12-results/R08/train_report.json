@@ -1,0 +1,192 @@
+{
+ "model_path": "model.json.gz",
+ "payload_sha256": "104c46a6f972bd48ceae47cb1736caeeada1f1a5cd91e5dce444f941462e4ff7",
+ "version": "civic-clf-logreg-kw-cf4464341-pe9ba054a",
+ "kind": "logreg",
+ "threshold": 0.3,
+ "vocab_size": 7173,
+ "train_rows": 1512,
+ "val_rows": 581,
+ "corpus_sha256": "f446434196768da0146ba84ca95449ee1b50a409c5256eeacc4a3d3eeb9cc45b",
+ "split_sha256": "75758b620bc6bafea0d4f6956ef201b28a639d76a11bf5b20fd2e53b515e9dff",
+ "file_sha256": "79cfee3e0f575b13ba24e0a82aa9edfbe8d773f4ac0df39c644299ff0e0fb429",
+ "alt_model": "model_alt_nb.json.gz",
+ "selection": {
+  "metric": "validation macro-F1",
+  "chosen": {
+   "kind": "logreg+keywords",
+   "hyper": {
+    "l2": 0.0001,
+    "epochs": 12,
+    "lr0": 0.5,
+    "keyword_scale": 1.0
+   }
+  },
+  "candidates": [
+   {
+    "kind": "nb",
+    "hyper": {
+     "alpha": 0.05
+    },
+    "val_macro_f1": 0.5785
+   },
+   {
+    "kind": "nb",
+    "hyper": {
+     "alpha": 0.1
+    },
+    "val_macro_f1": 0.5888
+   },
+   {
+    "kind": "nb",
+    "hyper": {
+     "alpha": 0.3
+    },
+    "val_macro_f1": 0.582
+   },
+   {
+    "kind": "nb",
+    "hyper": {
+     "alpha": 1.0
+    },
+    "val_macro_f1": 0.5711
+   },
+   {
+    "kind": "logreg",
+    "hyper": {
+     "l2": 1e-05,
+     "epochs": 12,
+     "lr0": 0.5
+    },
+    "val_macro_f1": 0.7096
+   },
+   {
+    "kind": "logreg",
+    "hyper": {
+     "l2": 0.0001,
+     "epochs": 12,
+     "lr0": 0.5
+    },
+    "val_macro_f1": 0.7113
+   },
+   {
+    "kind": "logreg",
+    "hyper": {
+     "l2": 1e-05,
+     "epochs": 24,
+     "lr0": 0.5
+    },
+    "val_macro_f1": 0.725
+   },
+   {
+    "kind": "logreg+keywords",
+    "hyper": {
+     "l2": 0.0001,
+     "epochs": 12,
+     "lr0": 0.5,
+     "keyword_scale": 0.5
+    },
+    "val_macro_f1": 0.8866
+   },
+   {
+    "kind": "logreg+keywords",
+    "hyper": {
+     "l2": 0.0001,
+     "epochs": 12,
+     "lr0": 0.5,
+     "keyword_scale": 1.0
+    },
+    "val_macro_f1": 0.8883
+   },
+   {
+    "kind": "logreg+keywords",
+    "hyper": {
+     "l2": 0.0001,
+     "epochs": 12,
+     "lr0": 0.5,
+     "keyword_scale": 2.0
+    },
+    "val_macro_f1": 0.8788
+   }
+  ],
+  "threshold": {
+   "chosen": 0.3,
+   "target_precision": 0.9,
+   "target_met": true,
+   "grid": [
+    {
+     "threshold": 0.3,
+     "auto_share": 0.8262,
+     "precision_auto": 0.9104
+    },
+    {
+     "threshold": 0.35,
+     "auto_share": 0.8193,
+     "precision_auto": 0.9139
+    },
+    {
+     "threshold": 0.4,
+     "auto_share": 0.8124,
+     "precision_auto": 0.9195
+    },
+    {
+     "threshold": 0.45,
+     "auto_share": 0.8107,
+     "precision_auto": 0.9214
+    },
+    {
+     "threshold": 0.5,
+     "auto_share": 0.8038,
+     "precision_auto": 0.9293
+    },
+    {
+     "threshold": 0.55,
+     "auto_share": 0.8003,
+     "precision_auto": 0.9333
+    },
+    {
+     "threshold": 0.6,
+     "auto_share": 0.7969,
+     "precision_auto": 0.9352
+    },
+    {
+     "threshold": 0.65,
+     "auto_share": 0.7917,
+     "precision_auto": 0.9391
+    },
+    {
+     "threshold": 0.7,
+     "auto_share": 0.7866,
+     "precision_auto": 0.9409
+    },
+    {
+     "threshold": 0.75,
+     "auto_share": 0.7831,
+     "precision_auto": 0.9407
+    },
+    {
+     "threshold": 0.8,
+     "auto_share": 0.7728,
+     "precision_auto": 0.9421
+    },
+    {
+     "threshold": 0.85,
+     "auto_share": 0.7573,
+     "precision_auto": 0.9432
+    },
+    {
+     "threshold": 0.9,
+     "auto_share": 0.7315,
+     "precision_auto": 0.9459
+    },
+    {
+     "threshold": 0.95,
+     "auto_share": 0.6661,
+     "precision_auto": 0.9406
+    }
+   ],
+   "note": "подобран только на validation; если цель недостижима — порог с максимальной точностью"
+  },
+  "reference_keyword_heuristic_val_macro_f1": 0.8452
+ }
+}

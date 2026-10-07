@@ -24,12 +24,17 @@ STEMS = {
 PRIORITY = ("lighting", "transport_stops", "sidewalks", "roads", "landscaping", "other")
 
 
+def keyword_hits(text: str) -> dict[str, int]:
+    """Число совпавших основ по каждой метке (используется и эвристикой, и гибридной моделью)."""
+    t = " " + normalize(text) + " "
+    return {label: sum(1 for stem in STEMS[label] if stem in t) for label in PRIORITY}
+
+
 def heuristic_label(text: str) -> tuple[str, int]:
     """(метка, число совпадений). 0 совпадений -> ('other', 0)."""
-    t = " " + normalize(text) + " "
+    hits = keyword_hits(text)
     best, best_hits = "other", 0
     for label in PRIORITY:
-        hits = sum(1 for stem in STEMS[label] if stem in t)
-        if hits > best_hits:
-            best, best_hits = label, hits
+        if hits[label] > best_hits:
+            best, best_hits = label, hits[label]
     return best, best_hits
