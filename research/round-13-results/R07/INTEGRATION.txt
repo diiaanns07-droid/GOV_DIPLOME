@@ -1,0 +1,55 @@
+R07 РАУНД 13 -> R01 (сборщик кандидата) / КООРДИНАТОР
+
+ЧТО ЗАБРАТЬ
+Пути R07 из claude/brave-hopper-bkc58b @ 1197f7d или r07_vs_56538a3.patch на 56538a3:
+  engine/civic_scenarios/  web/civic/scenarios/  tests/civic/R07/
+  (tests/civic/test_citywide_osm.py, data/civic/astana/osm-walking/, web/civic/map/streets.json — без изменений)
+НЕ сливать ветку целиком: её остальное дерево — старый main, R07 r11 и R06 r12 (BASE_MISMATCH).
+Новые файлы: engine/civic_scenarios/{snap.py, example.py, bench.py}, cases/astana-baiterek-khanshatyr-v1.case.json,
+tests/civic/R07/{test_r07_r13_engine.py, test_r07_r13_city.py, test_r07_r13_snap_parity.py,
+browser_r07_r13.cjs, browser_r07_r13_shell.cjs}.
+
+КОНТРАКТЫ (совместимо с civic-v1 и дополнениями R07 r11)
+- POST /scenarios/compare: вход civic-scenario-v1 не менялся. Результат civic-scenario-result-v1, engine 1.1.0,
+  добавлены поля plans[].closed_on_baseline_routes, a_vs_b.identical_active_closures и коды предупреждений
+  closure_not_on_baseline_routes, plans_identical_at_analysis_at. result_digest для одного входа детерминирован;
+  от версии 1.0.0 отличается (новые поля) — кэши объяснений после обновления просто пересчитываются.
+- Маршруты шлюза: новых НЕТ. Привязка места к сети выполняется в браузере на уже загружаемом графе
+  (GET /scenarios/graphs/{id}); эталон — engine/civic_scenarios/snap.py, паритет — test_r07_r13_snap_parity.py.
+- window.CivicScenarios.mount({root, map, api, apiPrefix?}) -> {destroy, cancelTool}; оболочка уже передаёт
+  apiPrefix: "". api.request(method, path, body, {signal}) — отмена расчёта через AbortController.
+- Событие "civic-scenarios:tool" {active, kind} (bubbles) — модуль в явном режиме выбора на карте; Escape в
+  capture-фазе с preventDefault завершает только режим (оболочка уже уважает defaultPrevented).
+
+ТОЧКИ ПОДКЛЮЧЕНИЯ СОСЕДЕЙ (не мои файлы — только предложения/проверки)
+1. R09 + R01 — объяснение своего расчёта (ОБЯЗАТЕЛЬНО для пункта «объяснение»):
+   - R09 claude/fervent-dijkstra-1cqrg5 @ f2ebaf9 (agent/civic_assistant, web/civic/assistant);
+   - патч R09 для R01 f2ebaf9:research/round-12-results/R09/r01_integration.patch (ScenarioResultCache в шлюзе,
+     remember после ответа 200 на /scenarios/compare). Проверен с R07 r13 в кандидате (CANDIDATE_BUILD.json).
+   - Альтернатива без правки _scenarios: engine.civic_scenarios.http.handle(..., on_result=cache.remember).
+   - R07 монтирует CivicAssistant.mount({root, api, scenarioId: "result:" + result.result_digest}); клиент
+     передаёт только {question, object_id: null, scenario_id}. Ответ unavailable + warnings scenario_not_found
+     (кэш 1 ч / 64 записи истёк или не подключён) -> R07 просит пересчитать, ничего не подставляет.
+   - Замечание для R09: шапка панели «Спросить о проекте / по сведениям карточки» не про сценарий; лучше
+     показывать заголовок для scenarioId без objectId (их текст, не правлю).
+2. R01 + R03 — публичная карта не перехватывает клики во время выбора (proposed_patches/):
+   - r03_pause_map_input.patch: CivicMap handle.pauseMapInput(flag) — onMapClick/onMapMove пропускаются;
+   - r01_scenarios_tool.patch: оболочка слушает "civic-scenarios:tool" и вызывает pauseMapInput.
+   Оба применяются к 56538a3 (git apply --check) и поверх патча R09. Проверено: без режима клик открывает
+   карточку объекта, в режиме выбора — нет (browser_r07_r13_shell.cjs). Без патчей клик в режиме выбора
+   ставит точку R07 И может открыть карточку R03 — расчёт от этого не портится, но это неудобно.
+   Тот же механизм подходит инструменту рисования R04 ("civic-editor:tool").
+3. R01 — производительность сети в браузере: GET /scenarios/graphs/osm-… отдаёт 31,5 МБ JSON (~0,6 с
+   сериализации на сервере, ~3 с до готовности в браузере в облаке). Работает, но для слабых устройств
+   стоит кэшировать ответ/сжимать (gzip) на стороне шлюза — это транспорт R01, не изменение данных.
+
+СОВМЕСТИМОСТЬ И ОГРАНИЧЕНИЯ
+- Привязка: порог 150 м, только подтверждённый пеший доступ. На 400 случайных точках центра в порог
+  попали 56 %; 29 % удачных привязок — во фрагментах, не связанных с основной сетью (свойство
+  консервативной модели OSM: улицы без тегов foot исключены). Отрезок до сети не проверен как путь
+  (может пересекать реку/ограду) — показывается пунктиром, пользователь видит обе точки.
+- Выбор участков — только явными рёбрами графа; произвольная нарисованная область не поддерживается,
+  уровни (мост/тоннель) различаются только через общие узлы OSM. Выбор на карте мышью/касанием; с клавиатуры
+  места и участки на карте не выбираются (можно загрузить пример из списка).
+- Длина пешего пути по снимку OSM 2026-05-06 (получен 2026-10-07); не время, не пробки, не live-данные.
+- Все объекты в демо-сборке синтетические; перекрытия сценариев — гипотезы пользователя.

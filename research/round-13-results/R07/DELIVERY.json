@@ -1,0 +1,143 @@
+{
+ "round": 13,
+ "role": "R07",
+ "title": "Симулятор: сравнение вариантов работ и объяснение своего результата",
+ "branch": "claude/brave-hopper-bkc58b",
+ "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+ "base_note": "BASE_MISMATCH: ветка сессии на старом main (+R07 r11, +R06 r12). Брать только пути R07 или r07_vs_56538a3.patch. R07 r12 не было (сессия в r12 выполняла R06).",
+ "source_deliveries": [
+  {
+   "role": "R07",
+   "sha": "56538a3 (модуль в REFERENCE_BASE: R07 r11 @22fa413 + городской граф координатора)",
+   "use": "основа"
+  },
+  {
+   "role": "R09",
+   "branch": "claude/fervent-dijkstra-1cqrg5",
+   "sha": "f2ebaf979fc05ed715549bf4eba5c39e6190bb4a",
+   "code": "f8aea9a763c81775c85bbdaa6c429b49a245d60a",
+   "use": "контракт ScenarioResultCache/CivicAssistant.mount; код в кандидате проверки"
+  },
+  {
+   "role": "R01",
+   "branch": "claude/affectionate-ride-bol5v8",
+   "sha": "6dc16602b7f63fcf60489553dde4502378a08d09",
+   "code": "223296ec02bb14568b7d5782dc7de473372d2aec",
+   "use": "прочитан: кэш результатов не подключён; INTEGRATION/patch — предложения R07"
+  }
+ ],
+ "code_sha": "1197f7dca6611dab551f6401205236072f7ef879",
+ "tested_sha": {
+  "unit_and_full_suite": "56538a3 + research/round-13-results/R07/r07_vs_56538a3.patch (sha256 2297adb4564fd5c8e257b09ca26352d470502c0532b7e158b8b752f8a95474bd) = пути R07 @ 1197f7d",
+  "browser": "кандидат CANDIDATE_BUILD.json: 56538a3 + тот же код R07 (README позже, код идентичен) + R09 f2ebaf9 + R09 r01_integration.patch + proposed_patches R01/R03"
+ },
+ "push_status": "OK (checkpoints d221913, f166100, f1650b5, 1197f7d pushed; итоговый SHA — в handoff/сообщении)",
+ "changed_paths": [
+  "engine/civic_scenarios/",
+  "web/civic/scenarios/",
+  "tests/civic/R07/",
+  "research/round-13-results/R07/",
+  "research/handoffs/astana/R07/round-13/STATUS.md"
+ ],
+ "unchanged_assigned_paths": [
+  "tests/civic/test_citywide_osm.py",
+  "data/civic/astana/osm-walking/",
+  "web/civic/map/streets.json"
+ ],
+ "portable_patch": "research/round-13-results/R07/r07_vs_56538a3.patch",
+ "proposed_shared_patches": [
+  "research/round-13-results/R07/proposed_patches/r01_scenarios_tool.patch",
+  "research/round-13-results/R07/proposed_patches/r03_pause_map_input.patch",
+  "R09: f2ebaf9:research/round-12-results/R09/r01_integration.patch (чужой, проверен с R07)"
+ ],
+ "tests": [
+  {
+   "name": "R07 + city graph",
+   "status": "PASS",
+   "command": "python -m pytest -q tests/civic/R07 tests/civic/test_citywide_osm.py",
+   "input": "worktree 56538a3 + R07",
+   "result": "87 passed"
+  },
+  {
+   "name": "whole civic suite with R07 patch",
+   "status": "PASS",
+   "command": "python -m pytest -q tests/civic",
+   "input": "чистая распаковка 56538a3 + r07 patch (без .git)",
+   "result": "752 passed, 5 skipped (git-объекты/снимок недоступны в копии без .git)"
+  },
+  {
+   "name": "run example",
+   "status": "PASS",
+   "command": "python -m engine.civic_scenarios.example --check",
+   "input": "cases/astana-baiterek-khanshatyr-v1.case.json",
+   "result": "base 2230.228 / A 2290.625 / B 2387.062 м"
+  },
+  {
+   "name": "independent Dijkstra cross-check",
+   "status": "PASS",
+   "command": "pytest tests/civic/R07/test_r07_r13_city.py",
+   "input": "JSON графа, float, без engine.routing",
+   "result": "±0.05 м"
+  },
+  {
+   "name": "browser snapping parity JS=Python",
+   "status": "PASS",
+   "command": "pytest tests/civic/R07/test_r07_r13_snap_parity.py",
+   "input": "155 точек города + синтетика, node 22",
+   "result": "узлы/статусы/фрагменты совпали"
+  },
+  {
+   "name": "optimization keeps results",
+   "status": "PASS",
+   "command": "python research/round-13-results/R07/digest_cmp.py <tree>",
+   "input": "10 сценариев (кейсы + случайные перекрытия, нет пути)",
+   "result": "result_digest идентичны; 28.4 -> 7.3 с"
+  },
+  {
+   "name": "browser user path",
+   "status": "PASS",
+   "command": "node tests/civic/R07/browser_r07_r13.cjs http://127.0.0.1:8631",
+   "input": "app.py кандидата, временная БД, seed-demo",
+   "result": "31/31"
+  },
+  {
+   "name": "browser shell/R03/expired cache",
+   "status": "PASS",
+   "command": "R07_RESTART_CMD=... node tests/civic/R07/browser_r07_r13_shell.cjs",
+   "input": "то же + настоящий перезапуск сервера",
+   "result": "8/8"
+  },
+  {
+   "name": "basemap OpenFreeMap / 3D",
+   "status": "NOT_RUN",
+   "command": null,
+   "input": null,
+   "reason": "tiles.openfreemap.org закрыт прокси облака; оболочка показала упрощённый фон"
+  },
+  {
+   "name": "Windows run-city.bat",
+   "status": "NOT_RUN",
+   "command": null,
+   "input": null,
+   "reason": "облачная Linux-среда; эквивалент init/seed-demo/app.py проверен"
+  },
+  {
+   "name": "keyboard-only place/segment picking",
+   "status": "NOT_RUN",
+   "command": null,
+   "input": null,
+   "reason": "не реализовано: выбор на карте мышью/касанием; пример доступен из списка"
+  }
+ ],
+ "performance": "bench_r13.json: граф 66027/94089, холодная загрузка 2.0 с, индекс привязки 0.26 с, compare примера 0.33 с первый / 0.023 с повтор, недостижимая цель 0.70 с, ответ графа 31.5 МБ (4 CPU, Python 3.13, контейнер). До оптимизации: bench_r13_before_optimization.json.",
+ "known_limits": [
+  "Объяснение своего расчёта требует в сборке R09 и кэша результатов в шлюзе (патч R09 для R01); без них — просьба пересчитать.",
+  "Без proposed_patches R01/R03 клик в режиме выбора может одновременно открыть карточку объекта R03.",
+  "Порог привязки 150 м; 44 % случайных точек центра дальше порога, 29 % удачных — во фрагментах сети (консервативный доступ OSM).",
+  "Отрезок от точки до сети не проверен как путь (река/ограда) — показан пользователю пунктиром.",
+  "Участки выбираются только явными рёбрами графа; произвольная область не поддерживается.",
+  "Пешая длина по снимку OSM 2026-05-06 (получен 2026-10-07); не время, не пробки, не live.",
+  "Граф 31.5 МБ загружается в браузер целиком (~3 с в облаке); сжатие/кэш — транспорт R01."
+ ],
+ "next_step": "R01: взять пути R07 @ 1197f7d (или патч), применить патч R09 r01_integration.patch и proposed_patches R01/R03, затем прогнать browser_r07_r13.cjs и browser_r07_r13_shell.cjs на сборке кандидата."
+}
