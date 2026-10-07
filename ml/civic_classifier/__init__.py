@@ -77,7 +77,10 @@ def classify(text, language=None) -> dict:
     probs = predict_scores(text, model)
     best = max(range(len(LABELS)), key=lambda k: (probs[k], -k))
     score = round(probs[best], 4)
-    needs_review = (score < model["threshold"] or LABELS[best] == "other"
+    # Пока модель обучена только на синтетике, порог (подобран на синтетической validation) не переносится
+    # на реальных жителей: подсказка всегда требует проверки. Порог работает для модели с реальной оценкой.
+    synthetic_only = model["training_data_status"].startswith("synthetic")
+    needs_review = (synthetic_only or score < model["threshold"] or LABELS[best] == "other"
                     or language not in ("ru", "kk"))
     return {"label": LABELS[best], "score": score, "score_kind": model["score_kind"],
             "needs_review": bool(needs_review), "model_version": model["version"],

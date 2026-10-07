@@ -4,7 +4,7 @@
 это не экспертная человеческая разметка. Названия улиц — публичные топонимы Астаны, использованы
 только как значения слотов; сообщения о них выдуманы.
 
-Сборка: python -m ml.civic_classifier build-corpus  ->  data/corpus_synthetic_v1.jsonl + data/split_v1.json
+Сборка: python -m ml.civic_classifier build-corpus  ->  data/corpus_synthetic_v2.jsonl + data/split_v2.json
 Защита от утечки:
   1) обезличивание (text.anonymize) до сохранения; в корпус попадает только обезличенный текст;
   2) точные дубликаты после нормализации удаляются ДО split (при разных метках — удаляются все копии);
@@ -17,19 +17,20 @@ from __future__ import annotations
 import hashlib
 import json
 import random
+import re
 from pathlib import Path
 
 from ml.civic_classifier.labels import LABELS
 from ml.civic_classifier.text import anonymize, normalize
 
-CORPUS_VERSION = "synthetic_v1"
+CORPUS_VERSION = "synthetic_v2"
 SEED = 20261007
 EXPANSIONS = 16
 SHORT_EXPANSIONS = 4
 NEAR_DUP = 0.8
 DATA_DIR = Path(__file__).resolve().parent / "data"
-CORPUS_PATH = DATA_DIR / "corpus_synthetic_v1.jsonl"
-SPLIT_PATH = DATA_DIR / "split_v1.json"
+CORPUS_PATH = DATA_DIR / "corpus_synthetic_v2.jsonl"
+SPLIT_PATH = DATA_DIR / "split_v2.json"
 SPLIT_PATTERN = ("train", "test", "val", "train", "train")
 
 STREETS = ("Кабанбай батыра", "Туран", "Сыганак", "Достык", "Мангилик Ел", "Абая", "Республики", "Кенесары",
@@ -50,146 +51,212 @@ SUFFIX_KK = ("Шара қолдануды сұраймыз.", "Түзетуді 
 CONTACT_RU = ("Мой телефон +7 70{d} {a} {b} {c}.", "Пишите на resident{n}@mail.kz.", "Тел. 8 777 {a} {b} {c}.")
 
 # (template_id, label, language, family, text, ambiguous). Слоты: {street} {street2} {street_kk} {place}
-# {place_kk} {time} {time_kk}. Короткие шаблоны (family *_short) без префиксов/суффиксов.
+# {place_kk} {time} {time_kk}; [a|b|c] — случайный выбор варианта (парафразы внутри шаблона).
+# Короткие шаблоны (family *_short) без префиксов/суффиксов. v2: общие глаголы состояния («не чистят»,
+# «сломан», «не работает») встречаются у разных меток — модель должна опираться на объект, а не на глагол.
 T = [
     # --- roads
-    ("rd-pot-ru1", "roads", "ru", "pothole", "На улице {street} огромная яма на дороге {place}.", False),
-    ("rd-pot-ru2", "roads", "ru", "pothole", "{Place} на проезжей части выбоины, машины объезжают по встречке.", False),
-    ("rd-pot-ru3", "roads", "ru", "pothole", "Дорогу на {street} всю разбило, ямы {time}.", False),
-    ("rd-pot-kk1", "roads", "kk", "pothole", "{street_kk} жолда үлкен шұңқыр бар.", False),
-    ("rd-pot-kk2", "roads", "kk", "pothole", "{Place_kk} жол бұзылып, шұңқырлар пайда болды.", False),
-    ("rd-pot-mx1", "roads", "mixed", "pothole", "{street_kk} жолда яма, машины объезжают.", False),
-    ("rd-asp-ru1", "roads", "ru", "asphalt", "После раскопок на {street} не восстановили асфальт {time}.", False),
-    ("rd-asp-ru2", "roads", "ru", "asphalt", "Разрыли дорогу {place} и так и оставили.", False),
-    ("rd-asp-kk1", "roads", "kk", "asphalt", "Жөндеуден кейін {street_kk} асфальт төселмеді.", False),
-    ("rd-mrk-ru1", "roads", "ru", "marking", "Стерлась разметка пешеходного перехода {place}.", True),
-    ("rd-mrk-ru2", "roads", "ru", "marking", "На {street} не видно разметки, водители путаются в полосах.", False),
-    ("rd-mrk-kk1", "roads", "kk", "marking", "{Place_kk} жол таңбасы өшіп қалған.", False),
+    ("rd-pot-ru1", "roads", "ru", "pothole", "На улице {street} [огромная яма|глубокие ямы|провал] на [дороге|проезжей части] {place}.", False),
+    ("rd-pot-ru2", "roads", "ru", "pothole", "{Place} на [проезжей части|дороге] [выбоины|ямы|колея], машины [объезжают по встречке|бьют колёса].", False),
+    ("rd-pot-ru3", "roads", "ru", "pothole", "[Дорогу|Асфальт|Покрытие дороги] на {street} [всю разбило|разбит|в ужасном состоянии], ямы {time}.", False),
+    ("rd-pot-kk1", "roads", "kk", "pothole", "{street_kk} [жолда|жол үстінде] [үлкен шұңқыр бар|шұңқырлар көп|асфальт ойылып кетті].", False),
+    ("rd-pot-kk2", "roads", "kk", "pothole", "{Place_kk} жол [бұзылып|қирап], шұңқырлар пайда болды.", False),
+    ("rd-pot-mx1", "roads", "mixed", "pothole", "{street_kk} [жолда|жол үстінде] [яма|ямы], машины [объезжают|бьют колёса].", False),
+    ("rd-asp-ru1", "roads", "ru", "asphalt", "После [раскопок|ремонта труб|работ] на {street} не [восстановили|положили] асфальт {time}.", False),
+    ("rd-asp-ru2", "roads", "ru", "asphalt", "[Разрыли|Раскопали] [дорогу|проезжую часть] {place} и так и [оставили|бросили].", False),
+    ("rd-asp-kk1", "roads", "kk", "asphalt", "[Жөндеуден|Қазудан] кейін {street_kk} [жолға асфальт төселмеді|жол қалпына келтірілмеді].", False),
+    ("rd-mrk-ru1", "roads", "ru", "marking", "[Стерлась|Не видно] разметк[а|и] пешеходного перехода {place}.", True),
+    ("rd-mrk-ru2", "roads", "ru", "marking", "На {street} [не видно разметки|стёрлась разметка на дороге], водители путаются в полосах.", False),
+    ("rd-mrk-kk1", "roads", "kk", "marking", "{Place_kk} [жол таңбасы өшіп қалған|жолдағы сызықтар көрінбейді].", False),
     ("rd-tl-ru1", "roads", "ru", "traffic_light", "Не работает светофор на перекрёстке {street} и {street2}.", False),
-    ("rd-tl-ru2", "roads", "ru", "traffic_light", "Светофор {place} мигает жёлтым {time}, опасно.", False),
-    ("rd-tl-kk1", "roads", "kk", "traffic_light", "{street_kk} қиылысындағы бағдаршам жұмыс істемейді.", False),
-    ("rd-tl-mx1", "roads", "mixed", "traffic_light", "Бағдаршам не работает {place}.", False),
-    ("rd-snw-ru1", "roads", "ru", "snow_water", "Проезжую часть на {street} не чистят от снега.", False),
-    ("rd-snw-ru2", "roads", "ru", "snow_water", "После дождя на дороге {place} стоит огромная лужа, ливнёвка забита.", False),
-    ("rd-snw-kk1", "roads", "kk", "snow_water", "{street_kk} жолдағы қар тазаланбаған.", False),
-    ("rd-snw-kk2", "roads", "kk", "snow_water", "Жаңбырдан кейін жолда су тұрып қалды {place_kk}.", False),
-    ("rd-sgn-ru1", "roads", "ru", "signs", "Перекрыли дорогу {place} без знаков объезда.", False),
-    ("rd-sgn-ru2", "roads", "ru", "signs", "Упал дорожный знак на {street}.", False),
-    ("rd-sgn-kk1", "roads", "kk", "signs", "Жол белгісі құлап қалған {place_kk}.", False),
-    ("rd-bmp-ru1", "roads", "ru", "speed_bump", "Просим установить лежачий полицейский {place}, машины гоняют.", False),
+    ("rd-tl-ru2", "roads", "ru", "traffic_light", "Светофор {place} [мигает жёлтым|не переключается|сломан] {time}, опасно.", False),
+    ("rd-tl-kk1", "roads", "kk", "traffic_light", "{street_kk} қиылысындағы бағдаршам [жұмыс істемейді|сынған|жанбайды].", False),
+    ("rd-tl-mx1", "roads", "mixed", "traffic_light", "Бағдаршам [не работает|сломан] {place}.", False),
+    ("rd-snw-ru1", "roads", "ru", "snow_water", "[Проезжую часть|Дорогу|Улицу] на {street} [не чистят|не убирают|плохо чистят] от [снега|наледи|сугробов].", False),
+    ("rd-snw-ru2", "roads", "ru", "snow_water", "После дождя на [дороге|проезжей части] {place} [стоит огромная лужа|вода по колено], ливнёвка [забита|не работает].", False),
+    ("rd-snw-kk1", "roads", "kk", "snow_water", "{street_kk} [жолдағы қар тазаланбаған|жолда көктайғақ, құм себілмеген].", False),
+    ("rd-snw-kk2", "roads", "kk", "snow_water", "Жаңбырдан кейін [жолда|жол үстінде] су тұрып қалды {place_kk}.", False),
+    ("rd-sgn-ru1", "roads", "ru", "signs", "[Перекрыли|Закрыли] [дорогу|проезд] {place} без знаков объезда.", False),
+    ("rd-sgn-ru2", "roads", "ru", "signs", "[Упал|Сломан|Повернули] дорожный знак на {street}.", False),
+    ("rd-sgn-kk1", "roads", "kk", "signs", "Жол белгісі [құлап қалған|сынған|жоқ] {place_kk}.", False),
+    ("rd-bmp-ru1", "roads", "ru", "speed_bump", "Просим установить [лежачий полицейский|искусственную неровность] {place}, машины гоняют.", False),
     ("rd-bmp-kk1", "roads", "kk", "speed_bump", "{Place_kk} жылдамдықты азайтатын кедергі қою керек.", False),
+    ("rd-frm-ru1", "roads", "ru", "frame", "[Дорога|Проезжая часть|Асфальт|Дорожное покрытие] {place} [в ужасном состоянии|разрушено|требует ремонта|сломано], [не работает ничего|никто не чинит|опасно].", False),
+    ("rd-frm-kk1", "roads", "kk", "frame", "{Place_kk} [жол|көлік жолы|асфальт] [бұзылған|жөндеуді қажет етеді|нашар күйде].", False),
     ("rd-sh1", "roads", "ru", "roads_short", "яма", False),
-    ("rd-sh2", "roads", "ru", "roads_short", "ямы на дороге", False),
+    ("rd-sh2", "roads", "ru", "roads_short", "[ямы|выбоины] на дороге", False),
     ("rd-sh3", "roads", "kk", "roads_short", "жолда шұңқыр", False),
     ("rd-sh4", "roads", "ru", "roads_short", "светофор не работает", False),
     # --- sidewalks
-    ("sw-til-ru1", "sidewalks", "ru", "tiles", "На тротуаре {place} разбита плитка, люди спотыкаются.", False),
-    ("sw-til-ru2", "sidewalks", "ru", "tiles", "Тротуарная плитка на {street} провалилась {time}.", False),
-    ("sw-til-kk1", "sidewalks", "kk", "tiles", "Тротуардағы плитка сынған {place_kk}.", False),
-    ("sw-til-mx1", "sidewalks", "mixed", "tiles", "Тротуарда плитка разбита {time}.", False),
+    ("sw-til-ru1", "sidewalks", "ru", "tiles", "На тротуаре {place} [разбита|вывернута|провалилась] плитка, люди спотыкаются.", False),
+    ("sw-til-ru2", "sidewalks", "ru", "tiles", "[Тротуарная плитка|Покрытие тротуара] на {street} [провалилась|разрушилась|сломано] {time}.", False),
+    ("sw-til-kk1", "sidewalks", "kk", "tiles", "Тротуардағы плитка [сынған|бұзылған|ойылып кеткен] {place_kk}.", False),
+    ("sw-til-mx1", "sidewalks", "mixed", "tiles", "Тротуарда плитка [разбита|сломана] {time}.", False),
     ("sw-no-ru1", "sidewalks", "ru", "no_sidewalk", "Вдоль {street} нет тротуара, ходим по проезжей части.", True),
-    ("sw-no-ru2", "sidewalks", "ru", "no_sidewalk", "Нет пешеходной дорожки до остановки {place}.", True),
+    ("sw-no-ru2", "sidewalks", "ru", "no_sidewalk", "Нет [пешеходной дорожки|тротуара] до [остановки|школы|поликлиники] {place}.", True),
     ("sw-no-kk1", "sidewalks", "kk", "no_sidewalk", "{street_kk} бойында тротуар жоқ, жолмен жүруге тура келеді.", True),
-    ("sw-no-kk2", "sidewalks", "kk", "no_sidewalk", "Жаяу жүргіншілер жолы жоқ {place_kk}.", False),
-    ("sw-rmp-ru1", "sidewalks", "ru", "ramp", "Нет пандуса у перехода {place}, с коляской не проехать.", True),
-    ("sw-rmp-ru2", "sidewalks", "ru", "ramp", "Слишком высокий бордюр на {street}, инвалидная коляска не заезжает.", False),
-    ("sw-rmp-kk1", "sidewalks", "kk", "ramp", "Пандус жоқ, арбамен өту мүмкін емес {place_kk}.", False),
+    ("sw-no-kk2", "sidewalks", "kk", "no_sidewalk", "Жаяу жүргіншілер [жолы|соқпағы] жоқ {place_kk}.", False),
+    ("sw-rmp-ru1", "sidewalks", "ru", "ramp", "Нет пандуса у [перехода|тротуара] {place}, с коляской не проехать.", True),
+    ("sw-rmp-ru2", "sidewalks", "ru", "ramp", "Слишком высокий бордюр на {street}, [инвалидная коляска|детская коляска] не заезжает.", False),
+    ("sw-rmp-kk1", "sidewalks", "kk", "ramp", "Пандус жоқ, [арбамен|мүгедектер арбасымен] өту мүмкін емес {place_kk}.", False),
     ("sw-fnc-ru1", "sidewalks", "ru", "fence", "Забор стройки перекрыл тротуар на {street}, приходится выходить на дорогу.", True),
     ("sw-fnc-kk1", "sidewalks", "kk", "fence", "Құрылыс қоршауы тротуарды жауып тастады {place_kk}.", False),
-    ("sw-ice-ru1", "sidewalks", "ru", "ice_water", "На тротуаре {place} гололёд, никто не посыпает.", False),
-    ("sw-ice-ru2", "sidewalks", "ru", "ice_water", "Пешеходная дорожка {place} затоплена водой.", False),
-    ("sw-ice-kk1", "sidewalks", "kk", "ice_water", "Тротуарда көктайғақ, құм себілмеген.", False),
-    ("sw-ice-mx1", "sidewalks", "mixed", "ice_water", "Тротуарда гололёд {time}, адамдар құлап жатыр.", False),
-    ("sw-und-ru1", "sidewalks", "ru", "underpass", "В подземном переходе на {street} вода и грязь.", False),
-    ("sw-und-ru2", "sidewalks", "ru", "underpass", "Не работает лифт в надземном переходе {place}.", False),
-    ("sw-und-kk1", "sidewalks", "kk", "underpass", "Жер асты өткелінде су тұр {place_kk}.", False),
+    ("sw-ice-ru1", "sidewalks", "ru", "ice_water", "[Тротуар|Пешеходную дорожку] {place} [не чистят|не убирают|не посыпают], гололёд.", False),
+    ("sw-ice-ru2", "sidewalks", "ru", "ice_water", "[Пешеходная дорожка|Тротуар] {place} [затоплен[а|] водой|в лужах].", False),
+    ("sw-ice-kk1", "sidewalks", "kk", "ice_water", "Тротуарда [көктайғақ, құм себілмеген|қар тазаланбаған|су тұр].", False),
+    ("sw-ice-mx1", "sidewalks", "mixed", "ice_water", "Тротуарда [гололёд|снег не убирают] {time}, адамдар құлап жатыр.", False),
+    ("sw-und-ru1", "sidewalks", "ru", "underpass", "В [подземном|пешеходном] переходе на {street} [вода и грязь|не работает освещение лестниц|сломаны ступени].", False),
+    ("sw-und-ru2", "sidewalks", "ru", "underpass", "Не работает [лифт|эскалатор] в надземном переходе {place}.", False),
+    ("sw-und-kk1", "sidewalks", "kk", "underpass", "Жер асты өткелінде [су тұр|баспалдақ сынған] {place_kk}.", False),
+    ("sw-frm-ru1", "sidewalks", "ru", "frame", "[Тротуар|Пешеходная дорожка|Пешеходный путь] {place} [в ужасном состоянии|разрушен|требует ремонта|сломан], [никто не чинит|опасно ходить].", False),
+    ("sw-frm-kk1", "sidewalks", "kk", "frame", "{Place_kk} [тротуар|жаяу жүргіншілер жолы] [бұзылған|жөндеуді қажет етеді|нашар күйде].", False),
     ("sw-sh1", "sidewalks", "ru", "sidewalks_short", "плитка разбита", False),
     ("sw-sh2", "sidewalks", "ru", "sidewalks_short", "нет тротуара", False),
     ("sw-sh3", "sidewalks", "kk", "sidewalks_short", "тротуар жоқ", False),
     # --- transport_stops
-    ("ts-pav-ru1", "transport_stops", "ru", "pavilion", "На остановке {place} разбито стекло павильона.", False),
-    ("ts-pav-ru2", "transport_stops", "ru", "pavilion", "Павильон остановки на {street} весь сломан.", False),
-    ("ts-pav-kk1", "transport_stops", "kk", "pavilion", "Аялдамадағы павильонның әйнегі сынған {place_kk}.", False),
-    ("ts-pav-mx1", "transport_stops", "mixed", "pavilion", "Аялдамада павильон сломан {time}.", False),
+    ("ts-pav-ru1", "transport_stops", "ru", "pavilion", "На остановке {place} [разбито стекло павильона|сломан павильон|сорвало крышу павильона].", False),
+    ("ts-pav-ru2", "transport_stops", "ru", "pavilion", "Павильон остановки на {street} [весь сломан|в ужасном состоянии|разрушен].", False),
+    ("ts-pav-kk1", "transport_stops", "kk", "pavilion", "Аялдамадағы павильон[ның әйнегі сынған| бұзылған] {place_kk}.", False),
+    ("ts-pav-mx1", "transport_stops", "mixed", "pavilion", "Аялдамада павильон [сломан|разбит] {time}.", False),
     ("ts-shl-ru1", "transport_stops", "ru", "shelter", "На остановке {place} нет навеса, люди мокнут под дождём.", False),
-    ("ts-shl-ru2", "transport_stops", "ru", "shelter", "На остановке на {street} нет ни одной скамейки.", True),
-    ("ts-shl-kk1", "transport_stops", "kk", "shelter", "Аялдамада орындық жоқ, қарттарға отыратын жер жоқ.", True),
-    ("ts-shl-kk2", "transport_stops", "kk", "shelter", "{street_kk} аялдамасында шатыр жоқ.", False),
-    ("ts-brd-ru1", "transport_stops", "ru", "board", "Электронное табло на остановке {place} не работает {time}.", False),
-    ("ts-brd-kk1", "transport_stops", "kk", "board", "Аялдамадағы электронды табло жұмыс істемейді.", False),
-    ("ts-brd-mx1", "transport_stops", "mixed", "board", "Табло на аялдама не работает {time}.", False),
-    ("ts-mov-ru1", "transport_stops", "ru", "moved", "Остановку на {street} перенесли из-за ремонта, указателей нет.", False),
-    ("ts-mov-kk1", "transport_stops", "kk", "moved", "Жөндеуге байланысты аялдаманы ауыстырды, жаңасы қайда екені белгісіз.", False),
+    ("ts-shl-ru2", "transport_stops", "ru", "shelter", "На остановке на {street} нет [ни одной скамейки|лавочки|навеса].", True),
+    ("ts-shl-kk1", "transport_stops", "kk", "shelter", "Аялдамада [орындық|шатыр] жоқ, қарттарға отыратын жер жоқ.", True),
+    ("ts-shl-kk2", "transport_stops", "kk", "shelter", "{street_kk} аялдамасында [шатыр|орындық] жоқ.", False),
+    ("ts-brd-ru1", "transport_stops", "ru", "board", "Электронное табло на остановке {place} [не работает|показывает неправильно|не горит] {time}.", False),
+    ("ts-brd-kk1", "transport_stops", "kk", "board", "Аялдамадағы [электронды|ақпараттық] табло жұмыс істемейді.", False),
+    ("ts-brd-mx1", "transport_stops", "mixed", "board", "Табло на аялдама [не работает|сломано] {time}.", False),
+    ("ts-mov-ru1", "transport_stops", "ru", "moved", "Остановку на {street} [перенесли|закрыли] из-за ремонта, указателей нет.", False),
+    ("ts-mov-kk1", "transport_stops", "kk", "moved", "Жөндеуге байланысты аялдаманы [ауыстырды|жапты], жаңасы қайда екені белгісіз.", False),
     ("ts-bus-ru1", "transport_stops", "ru", "bus_skips", "Автобусы проезжают мимо остановки {place}, не останавливаются.", False),
     ("ts-bus-kk1", "transport_stops", "kk", "bus_skips", "Автобус {place_kk} аялдамаға тоқтамай өтіп кетеді.", False),
-    ("ts-snw-ru1", "transport_stops", "ru", "stop_snow", "Посадочную площадку на остановке {place} не чистят от снега.", True),
-    ("ts-snw-kk1", "transport_stops", "kk", "stop_snow", "Аялдамада қар тазаланбаған {place_kk}.", True),
+    ("ts-snw-ru1", "transport_stops", "ru", "stop_snow", "[Посадочную площадку на остановке|Остановку|Площадку у остановки] {place} [не чистят|не убирают] от [снега|наледи].", True),
+    ("ts-snw-kk1", "transport_stops", "kk", "stop_snow", "Аялдамада [қар тазаланбаған|көктайғақ|су тұр] {place_kk}.", True),
+    ("ts-frm-ru1", "transport_stops", "ru", "frame", "[Остановка|Остановочный павильон|Автобусная остановка] {place} [в ужасном состоянии|разрушена|требует ремонта|сломана], [никто не чинит|опасно].", False),
+    ("ts-frm-kk1", "transport_stops", "kk", "frame", "{Place_kk} [аялдама|автобус аялдамасы] [бұзылған|жөндеуді қажет етеді|нашар күйде].", False),
     ("ts-sh1", "transport_stops", "ru", "stops_short", "нет остановки", False),
     ("ts-sh2", "transport_stops", "ru", "stops_short", "табло не работает", False),
     ("ts-sh3", "transport_stops", "kk", "stops_short", "аялдама сынған", False),
     # --- lighting
-    ("lt-off-ru1", "lighting", "ru", "lamps_off", "Не горят фонари на улице {street} {time}.", False),
-    ("lt-off-ru2", "lighting", "ru", "lamps_off", "Вся улица {street} без освещения.", False),
-    ("lt-off-kk1", "lighting", "kk", "lamps_off", "{street_kk} көше шамдары жанбайды.", False),
-    ("lt-off-mx1", "lighting", "mixed", "lamps_off", "Көше шамдары не горят {time}.", False),
-    ("lt-drk-ru1", "lighting", "ru", "dark", "Во дворе {place} очень темно, нет ни одного фонаря.", False),
-    ("lt-drk-ru2", "lighting", "ru", "dark", "Дорожка в парке не освещена, вечером страшно идти.", True),
-    ("lt-drk-kk1", "lighting", "kk", "dark", "Аулада қараңғы, шам жоқ {place_kk}.", False),
-    ("lt-day-ru1", "lighting", "ru", "day_burning", "Фонари на {street} горят днём, зря тратится электричество.", False),
+    ("lt-off-ru1", "lighting", "ru", "lamps_off", "Не горят [фонари|светильники|лампы уличного освещения] на улице {street} {time}.", False),
+    ("lt-off-ru2", "lighting", "ru", "lamps_off", "[Вся улица|Весь квартал] {street} без [освещения|света].", False),
+    ("lt-off-kk1", "lighting", "kk", "lamps_off", "{street_kk} көше [шамдары|жарығы] [жанбайды|жоқ].", False),
+    ("lt-off-mx1", "lighting", "mixed", "lamps_off", "Көше шамдары [не горят|не работают] {time}.", False),
+    ("lt-drk-ru1", "lighting", "ru", "dark", "Во дворе {place} очень темно, нет ни одного [фонаря|светильника].", False),
+    ("lt-drk-ru2", "lighting", "ru", "dark", "[Дорожка в парке|Аллея] не освещена, вечером страшно идти.", True),
+    ("lt-drk-kk1", "lighting", "kk", "dark", "Аулада қараңғы, [шам|жарық] жоқ {place_kk}.", False),
+    ("lt-day-ru1", "lighting", "ru", "day_burning", "[Фонари|Светильники] на {street} горят днём, зря тратится электричество.", False),
     ("lt-day-kk1", "lighting", "kk", "day_burning", "Шамдар күндіз жанып тұр {street_kk}.", False),
-    ("lt-flk-ru1", "lighting", "ru", "flicker", "Фонарь {place} постоянно мигает.", False),
-    ("lt-flk-kk1", "lighting", "kk", "flicker", "Шам жыпылықтап тұр {place_kk}.", False),
-    ("lt-pol-ru1", "lighting", "ru", "pole", "Покосилась опора освещения {place}, может упасть.", False),
+    ("lt-flk-ru1", "lighting", "ru", "flicker", "[Фонарь|Светильник] {place} постоянно [мигает|гаснет].", False),
+    ("lt-flk-kk1", "lighting", "kk", "flicker", "Шам [жыпылықтап тұр|сөніп қалады] {place_kk}.", False),
+    ("lt-pol-ru1", "lighting", "ru", "pole", "[Покосилась|Сломана] опора освещения {place}, может упасть.", False),
     ("lt-pol-ru2", "lighting", "ru", "pole", "У фонарного столба на {street} торчат провода.", False),
-    ("lt-pol-kk1", "lighting", "kk", "pole", "Шам бағанасы қисайып тұр {place_kk}.", False),
+    ("lt-pol-kk1", "lighting", "kk", "pole", "Шам бағанасы [қисайып тұр|сынған] {place_kk}.", False),
     ("lt-stp-ru1", "lighting", "ru", "stop_lamp", "На остановке {place} не горит фонарь, ждём автобус в темноте.", True),
     ("lt-stp-kk1", "lighting", "kk", "stop_lamp", "Аялдамадағы шам жанбайды, қараңғыда күтеміз.", True),
+    ("lt-frm-ru1", "lighting", "ru", "frame", "[Уличное освещение|Фонарь|Освещение] {place} [не работает|сломано|требует ремонта], [никто не чинит|опасно].", False),
+    ("lt-frm-kk1", "lighting", "kk", "frame", "{Place_kk} [көше жарығы|шам] [жұмыс істемейді|бұзылған|жөндеуді қажет етеді].", False),
     ("lt-sh1", "lighting", "ru", "lighting_short", "фонари не горят", False),
     ("lt-sh2", "lighting", "ru", "lighting_short", "темно во дворе", False),
     ("lt-sh3", "lighting", "kk", "lighting_short", "шам жанбайды", False),
     # --- landscaping
-    ("ls-tre-ru1", "landscaping", "ru", "trees", "Во дворе {place} вырубили деревья без объяснений.", False),
-    ("ls-tre-ru2", "landscaping", "ru", "trees", "Просим посадить деревья вдоль {street}.", False),
-    ("ls-tre-kk1", "landscaping", "kk", "trees", "Аулада ағаштарды кесіп тастады {place_kk}.", False),
-    ("ls-tre-kk2", "landscaping", "kk", "trees", "{street_kk} бойына ағаш отырғызу керек.", False),
-    ("ls-pla-ru1", "landscaping", "ru", "playground", "Детская площадка {place} сломана, качели опасные.", False),
-    ("ls-pla-kk1", "landscaping", "kk", "playground", "Балалар алаңы сынған {place_kk}.", False),
-    ("ls-pla-mx1", "landscaping", "mixed", "playground", "Балалар алаңында качели сломаны {time}.", False),
-    ("ls-ben-ru1", "landscaping", "ru", "benches", "В сквере на {street} не хватает скамеек и урн.", True),
+    ("ls-tre-ru1", "landscaping", "ru", "trees", "Во дворе {place} [вырубили|спилили] деревья без объяснений.", False),
+    ("ls-tre-ru2", "landscaping", "ru", "trees", "Просим посадить [деревья|кустарники|зелень] вдоль {street}.", False),
+    ("ls-tre-kk1", "landscaping", "kk", "trees", "Аулада ағаштарды [кесіп тастады|құлатты] {place_kk}.", False),
+    ("ls-tre-kk2", "landscaping", "kk", "trees", "{street_kk} бойына [ағаш|жасыл желек] отырғызу керек.", False),
+    ("ls-pla-ru1", "landscaping", "ru", "playground", "Детская площадка {place} [сломана|в ужасном состоянии], [качели опасные|горка ржавая].", False),
+    ("ls-pla-kk1", "landscaping", "kk", "playground", "Балалар алаңы [сынған|бұзылған] {place_kk}.", False),
+    ("ls-pla-mx1", "landscaping", "mixed", "playground", "Балалар алаңында [качели сломаны|горка разбита] {time}.", False),
+    ("ls-ben-ru1", "landscaping", "ru", "benches", "В [сквере|парке] на {street} не хватает скамеек и урн.", True),
     ("ls-ben-kk1", "landscaping", "kk", "benches", "Саябақта орындықтар мен қоқыс жәшіктері жоқ.", True),
     ("ls-lwn-ru1", "landscaping", "ru", "lawn", "После ремонта теплотрассы {place} не восстановили газон.", False),
     ("ls-lwn-kk1", "landscaping", "kk", "lawn", "Жөндеуден кейін көгал қалпына келтірілмеді {place_kk}.", False),
-    ("ls-yrd-ru1", "landscaping", "ru", "yard", "Просим провести благоустройство двора {place}.", False),
+    ("ls-yrd-ru1", "landscaping", "ru", "yard", "Просим провести благоустройство [двора|придомовой территории] {place}.", False),
     ("ls-yrd-kk1", "landscaping", "kk", "yard", "Аулаға абаттандыру жұмыстарын жүргізуді сұраймыз.", False),
-    ("ls-flw-ru1", "landscaping", "ru", "flowers", "Фонтан в парке не работает {time}.", False),
-    ("ls-flw-ru2", "landscaping", "ru", "flowers", "Клумбы на {street} заброшены.", False),
+    ("ls-flw-ru1", "landscaping", "ru", "flowers", "Фонтан в [парке|сквере] не работает {time}.", False),
+    ("ls-flw-ru2", "landscaping", "ru", "flowers", "Клумбы на {street} [заброшены|не поливают].", False),
     ("ls-flw-kk1", "landscaping", "kk", "flowers", "Гүлзарлар күтімсіз қалған {place_kk}.", False),
+    ("ls-frm-ru1", "landscaping", "ru", "frame", "[Сквер|Парк|Детская площадка|Газон] {place} [в ужасном состоянии|разрушен|требует ремонта|сломан], [никто не чинит|опасно].", False),
+    ("ls-frm-kk1", "landscaping", "kk", "frame", "{Place_kk} [саябақ|балалар алаңы|көгал] [бұзылған|жөндеуді қажет етеді|нашар күйде].", False),
     ("ls-sh1", "landscaping", "ru", "landscaping_short", "вырубили деревья", False),
     ("ls-sh2", "landscaping", "ru", "landscaping_short", "площадка сломана", False),
     ("ls-sh3", "landscaping", "kk", "landscaping_short", "ағаш кесілді", False),
     # --- other
-    ("ot-grb-ru1", "other", "ru", "garbage", "Мусор во дворе {place} не вывозят {time}.", False),
+    ("ot-grb-ru1", "other", "ru", "garbage", "[Мусор|Контейнеры] во дворе {place} не [вывозят|убирают] {time}.", False),
     ("ot-grb-kk1", "other", "kk", "garbage", "Аулада қоқыс шығарылмайды {time_kk}.", False),
-    ("ot-nse-ru1", "other", "ru", "noise", "Стройка {place} шумит по ночам.", False),
+    ("ot-nse-ru1", "other", "ru", "noise", "Стройка {place} [шумит по ночам|работает ночью], [невозможно спать|дети не спят].", False),
     ("ot-nse-kk1", "other", "kk", "noise", "Түнде құрылыс шуы ұйықтатпайды {place_kk}.", False),
-    ("ot-dog-ru1", "other", "ru", "dogs", "Во дворе {place} стая бездомных собак.", False),
+    ("ot-dog-ru1", "other", "ru", "dogs", "Во дворе {place} [стая бездомных собак|бродячие собаки].", False),
     ("ot-dog-kk1", "other", "kk", "dogs", "Аулада иесіз иттер көп.", False),
-    ("ot-utl-ru1", "other", "ru", "utilities", "Нет горячей воды {time}.", False),
-    ("ot-utl-ru2", "other", "ru", "utilities", "В доме холодно, отопление не включили.", False),
-    ("ot-utl-kk1", "other", "kk", "utilities", "Ыстық су жоқ {time_kk}.", False),
+    ("ot-utl-ru1", "other", "ru", "utilities", "Нет [горячей|холодной] воды {time}.", False),
+    ("ot-utl-ru2", "other", "ru", "utilities", "В доме холодно, отопление не [включили|работает].", False),
+    ("ot-utl-kk1", "other", "kk", "utilities", "[Ыстық су|Жылу] жоқ {time_kk}.", False),
     ("ot-qst-ru1", "other", "ru", "question", "Когда закончат ремонт на {street}?", True),
     ("ot-qst-ru2", "other", "ru", "question", "Подскажите, до какого числа продлятся работы {place}?", True),
-    ("ot-qst-kk1", "other", "kk", "question", "Жөндеу қашан бітеді?", True),
-    ("ot-thx-ru1", "other", "ru", "thanks", "Спасибо за новый сквер, очень красиво!", True),
-    ("ot-thx-ru2", "other", "ru", "thanks", "Благодарим за быстрый ремонт дороги на {street}.", True),
-    ("ot-thx-kk1", "other", "kk", "thanks", "Жаңа саябақ үшін рақмет!", True),
+    ("ot-qst-kk1", "other", "kk", "question", "Жөндеу қашан [бітеді|аяқталады]?", True),
+    ("ot-thx-ru1", "other", "ru", "thanks", "Спасибо за [новый сквер|новую площадку], очень красиво!", True),
+    ("ot-thx-ru2", "other", "ru", "thanks", "Благодарим за быстрый ремонт [дороги|тротуара] на {street}.", True),
+    ("ot-thx-kk1", "other", "kk", "thanks", "Жаңа [саябақ|жол] үшін рақмет!", True),
     ("ot-irr-ru1", "other", "ru", "irrelevant", "Где можно оплатить штраф за парковку?", False),
     ("ot-irr-ru2", "other", "ru", "irrelevant", "Как записаться к врачу в поликлинику?", False),
     ("ot-irr-kk1", "other", "kk", "irrelevant", "Емханаға қалай жазылуға болады?", False),
+    ("ot-frm-ru1", "other", "ru", "frame", "[Мусорная площадка|Подвал дома|Лифт в доме] {place} [в ужасном состоянии|сломан|требует ремонта], [никто не чинит|опасно].", False),
+    ("ot-frm-kk1", "other", "kk", "frame", "{Place_kk} [қоқыс алаңы|үйдегі лифт] [бұзылған|жөндеуді қажет етеді|нашар күйде].", False),
     ("ot-sh1", "other", "ru", "other_short", "мусор", False),
     ("ot-sh2", "other", "ru", "other_short", "шум ночью", False),
     ("ot-sh3", "other", "kk", "other_short", "рақмет", False),
 ]
+# Лексикон объектов по меткам (v2): общие рамки ниже подставляют объект; предикаты одинаковы для всех меток.
+OBJ_RU = {
+    "roads": ("дорога", "проезжая часть", "асфальт на дороге", "выбоина на дороге", "дорожная разметка", "светофор",
+              "дорожный знак", "перекрёсток", "лежачий полицейский", "ливнёвка на дороге", "обочина дороги",
+              "колея на дороге", "съезд с дороги"),
+    "sidewalks": ("тротуар", "тротуарная плитка", "бордюр", "пандус", "пешеходная дорожка", "подземный переход",
+                  "надземный переход", "лестница в переходе", "пешеходный путь", "спуск с тротуара"),
+    "transport_stops": ("остановка", "остановочный павильон", "навес на остановке", "табло на остановке",
+                        "посадочная площадка", "скамейка на остановке", "автобусная остановка", "карман остановки",
+                        "расписание на остановке"),
+    "lighting": ("фонарь", "фонарный столб", "опора освещения", "уличный светильник", "лампа фонаря",
+                 "уличное освещение", "освещение во дворе", "прожектор", "освещение аллеи"),
+    "landscaping": ("дерево", "газон", "клумба", "сквер", "парк", "детская площадка", "качели", "скамейка в сквере",
+                    "фонтан", "кусты", "урна в парке", "спортивная площадка во дворе", "аллея в парке"),
+    "other": ("мусорный контейнер", "мусорка", "лифт в подъезде", "подвал", "отопление", "горячая вода", "квитанция",
+              "парковка во дворе", "шумная стройка", "бездомные собаки", "крыша дома", "подъезд"),
+}
+OBJ_KK = {
+    "roads": ("жол", "көлік жолы", "жолдағы асфальт", "жолдағы шұңқыр", "жол таңбасы", "бағдаршам", "жол белгісі",
+              "қиылыс", "жол жиегі"),
+    "sidewalks": ("тротуар", "тротуар плиткасы", "жиек тас", "пандус", "жаяу жүргіншілер жолы", "жер асты өткелі",
+                  "жерүсті өткелі", "өткелдің баспалдағы"),
+    "transport_stops": ("аялдама", "аялдама павильоны", "аялдамадағы шатыр", "аялдамадағы табло",
+                        "аялдамадағы орындық", "автобус аялдамасы"),
+    "lighting": ("көше шамы", "шам бағанасы", "көше жарығы", "аула жарығы", "шам", "прожектор"),
+    "landscaping": ("ағаш", "көгал", "гүлзар", "саябақ", "балалар алаңы", "әткеншек", "саябақтағы орындық",
+                    "субұрқақ", "бұталар", "спорт алаңы"),
+    "other": ("қоқыс жәшігі", "лифт", "жертөле", "жылу", "ыстық су", "түбіртек", "аула тұрағы", "үйдің шатыры", "подъезд"),
+}
+FRAMES = (
+    ("ru1", "ru", "{Obj} {place}: [в плохом состоянии|нужен ремонт|давно не обслуживается|сломано]."),
+    ("ru2", "ru", "Жалоба: {obj} {place}, [никто не реагирует|обращались уже несколько раз|просим проверить]."),
+    ("ru3", "ru", "{Place}: {obj} — [требует ремонта|в ужасном виде|проблема {time}]."),
+    ("ru4", "ru", "Проблема — {obj}, {place}. [Просим разобраться|Нужно исправить|Сколько можно ждать]?"),
+    ("kk1", "kk", "{Place_kk}: {obj_kk} [нашар күйде|жөндеу керек|бұзылған]."),
+    ("kk2", "kk", "{Obj_kk} [жөнделмеген|күтімсіз қалған|бұзылған] {time_kk}, шара қолдануды сұраймыз."),
+    ("kk3", "kk", "Шағым: {obj_kk}, {place_kk}. [Жөндеуді сұраймыз|Тексеруді сұраймыз]."),
+    ("mx1", "mixed", "{Obj_kk} {place_kk} [в плохом состоянии|требует ремонта|сломано]."),
+)
+T += [(f"fx-{label}-{fid}", label, lang, "lexicon_frame", text, False)
+      for label in LABELS for fid, lang, text in FRAMES]
+
+_ALT = re.compile(r"\[([^\[\]]*)\]")
+
+
+def _alternatives(text: str, rng: random.Random) -> str:
+    """[a|b|c] -> один вариант; вложенность не поддерживается (разворачиваем изнутри наружу)."""
+    while True:
+        m = _ALT.search(text)
+        if not m:
+            return text
+        text = text[:m.start()] + rng.choice(m.group(1).split("|")) + text[m.end():]
 
 
 def _kk_street(street: str, rng: random.Random) -> str:
@@ -215,7 +282,7 @@ def _typo(text: str, rng: random.Random) -> str:
     return " ".join(words)
 
 
-def _fill(template: str, rng: random.Random) -> str:
+def _fill(template: str, rng: random.Random, label: str = "other") -> str:
     n = rng.randint(2, 120)
     s1, s2 = rng.sample(STREETS, 2)
     place = rng.choice(PLACE_RU).format(n=n)
@@ -224,7 +291,9 @@ def _fill(template: str, rng: random.Random) -> str:
               "Place": place[:1].upper() + place[1:], "place_kk": place_kk,
               "Place_kk": place_kk[:1].upper() + place_kk[1:],
               "time": rng.choice(TIME_RU), "time_kk": rng.choice(TIME_KK)}
-    text = template.format(**values)
+    obj, obj_kk = rng.choice(OBJ_RU[label]), rng.choice(OBJ_KK[label])
+    values.update(obj=obj, Obj=obj[:1].upper() + obj[1:], obj_kk=obj_kk, Obj_kk=obj_kk[:1].upper() + obj_kk[1:])
+    text = _alternatives(template, rng).format(**values)
     return " ".join(text.split()).replace(" .", ".").replace(" ,", ",").replace(" ?", "?")
 
 
@@ -233,7 +302,7 @@ def _expand(tpl, rng: random.Random) -> list[str]:
     short = family.endswith("_short")
     out = []
     for _ in range(SHORT_EXPANSIONS if short else EXPANSIONS):
-        msg = _fill(text, rng)
+        msg = _fill(text, rng, label)
         if not short:
             ru_side = lang in ("ru", "mixed")
             prefix = rng.choice(PREFIX_RU if ru_side else PREFIX_KK)
