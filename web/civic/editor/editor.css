@@ -122,6 +122,10 @@
 /* only buttons and the current message are sticky; the diff and the reason are in the page flow (.civic-r04-review) */
 .civic-r04-actions { position: sticky; bottom: 0; z-index: 1; margin: 0 -16px; padding: 8px 16px 10px; background: #fffffff7; border-top: 1px solid var(--r4-line); box-shadow: 0 -6px 18px #19362810; max-height: 40vh; overflow-y: auto; }
 .civic-r04-review { margin: 8px 0 0; }
+/* a focused or error-jumped control is never left under the sticky bar */
+.civic-r04-body input, .civic-r04-body select, .civic-r04-body textarea, .civic-r04-body button { scroll-margin: 72px 0 200px; }
+.civic-r04-grid > .civic-r04-slot-sched { grid-column: 1 / -1; }
+.civic-r04-rare { justify-content: flex-end; }
 .civic-r04-count { margin: 0; font-size: 12px; color: var(--r4-muted); text-align: right; min-height: 0; }
 .civic-r04-count:empty { display: none; }
 .civic-r04-count-over { color: var(--r4-red); font-weight: 700; }

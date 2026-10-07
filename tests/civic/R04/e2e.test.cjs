@@ -707,6 +707,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     assert.match(await errorText(p, "original_planned_end"), /не полностью/);
     assert.equal(posts("/staff/objects").length, 0, "a partial date is never sent as «unknown»");
     await p.click(fk("clear-original_planned_end"));
+    await p.waitForSelector('.civic-r04-msg-info:has-text("Отмеченные ошибки исправлены")');  // no stale "Не сохранено"
     // coordinates typed into the specialist panel but not applied
     await p.check(fk("place-approximate"));
     await p.click(fk("coords-open"));

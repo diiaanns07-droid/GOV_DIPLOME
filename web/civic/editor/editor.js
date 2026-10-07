@@ -473,7 +473,7 @@
         control.addEventListener("input", upd);
         upd();
       }
-      return el("div", { class: "civic-r04-field" }, [el("label", { for: id }, label), extra ? el("div", { class: "civic-r04-inline" }, [control, extra]) : control, count, helpEl, err, warn]);
+      return el("div", { class: "civic-r04-field" }, [el("label", { for: id }, label), extra ? el("div", { class: "civic-r04-inline" }, [control, extra]) : control, err, warn, count, helpEl]);  // the error right under the input
     }
     function input(key, attrs) {
       const x = el("input", Object.assign({ type: "text", autocomplete: "off" }, attrs || {}));
@@ -512,7 +512,7 @@
     function buildEditor() {
       const it = S.item, acts = C.allowedActions(it, S.session), locked = C.isOriginalLocked(it);
       for (const k of Object.keys(F)) delete F[k];
-      for (const k of ["reauth", "restore", "conflict", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
+      for (const k of ["reauth", "restore", "conflict", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history", "rare"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
       V.msg.setAttribute("class", "civic-r04-slot-msg");
       const meta = it
         ? el("p", { class: "civic-r04-meta" }, [badge(C.PUBLICATION[it.publication] || String(it.publication), "pub-" + it.publication),
@@ -541,9 +541,9 @@
           dateField("original_planned_end", "Плановое окончание — первоначальное", origHelp, locked),
           dateField("current_planned_end", "Плановое окончание — актуальное",
             locked ? "Перенос опубликованного срока сохраняется в истории вместе с причиной." : "Пока даты совпадают, поле повторяет первоначальное; измените его, если срок уже перенесён."),
+          V.sched,
           dateField("actual_end", "Фактически завершено", "Только при статусе «Завершено» и только по факту. Будущая дата не принимается."),
         ]),
-        V.sched,
       ]);
       const sec2 = section("2. Место на карте", [V.geom]);
       const amountCtl = input("amount", { inputmode: "decimal", placeholder: "неизвестно" });
@@ -584,7 +584,7 @@
         el("fieldset", { class: "civic-r04-plain", disabled: ro }, [sec1, sec2, sec3, sec4, sec5])]);
       form.addEventListener("submit", (e) => { e.preventDefault(); save(); });
       // Diff and reason sit in the page flow; the sticky bar keeps only messages and buttons, so it never hides the form.
-      const review = el("div", { class: "civic-r04-review" }, [V.diff, V.reason]);
+      const review = el("div", { class: "civic-r04-review" }, [V.diff, V.reason, V.rare]);
       const actions = el("div", { class: "civic-r04-actions", role: "region", "aria-label": "Сохранение и публикация" }, [V.buttons, V.msg]);  // buttons first: always reachable in a capped bar
       body.replaceChildren(el("div", { class: "civic-r04-edit" }, [
         el("div", { class: "civic-r04-bar" }, [
@@ -632,6 +632,16 @@
         f.warn.textContent = msg ? "" : S.warnings[k] || "";
         if (f.control) { if (msg) f.control.setAttribute("aria-invalid", "true"); else f.control.removeAttribute("aria-invalid"); }
       }
+      refreshFixNotice();
+    }
+    // A "Не сохранено: исправьте …" message must not outlive the problems it lists.
+    function refreshFixNotice() {
+      const n = S.notice;
+      if (!n || !n.fixKeys || S.view !== "edit" || !V.msg) return;
+      const left = n.fixKeys.filter((k) => (k === "reason" ? reasonNeeded().required && !!C.validateReason(S.reason) : !!errorOf(k)));
+      if (left.length) return;
+      S.notice = { type: "info", text: "Отмеченные ошибки исправлены — можно сохранять.", detail: "", actions: [] };
+      V.msg.replaceChildren(msgBlock(S.notice));
     }
     function renderSchedNote() {
       if (!V.sched || !S.form) return;
@@ -1197,6 +1207,7 @@
       ta.addEventListener("input", () => {
         S.reason = ta.value;
         if (S.reasonErr) { S.reasonErr = null; err.textContent = ""; ta.removeAttribute("aria-invalid"); }
+        refreshFixNotice();
       });
       const err = el("p", { class: "civic-r04-err", id: P + "reason-err" }, S.reasonErr || "");
       if (S.reasonErr) ta.setAttribute("aria-invalid", "true");
@@ -1233,6 +1244,7 @@
       const it = S.item, acts = C.allowedActions(it, S.session), dirty = isDirty(), busy = !!S.busy || S.reauth || !!S.conflict;
       let kids;
       if (S.confirm) {
+        if (V.rare) rebuild(V.rare, []);
         kids = [btn(S.busy === S.confirm ? "Отправляем…" : S.confirm === "publish" ? "Подтвердить публикацию" : "Перенести в архив", () => doTransition(S.confirm), S.confirm === "publish" ? "primary" : "danger", "confirm", { disabled: busy, "aria-busy": S.busy ? "true" : null }),
           btn("Отмена", cancelConfirm, "ghost", "confirm-cancel", { disabled: !!S.busy })];
       } else {
@@ -1242,8 +1254,9 @@
           btn(S.preview ? "Скрыть предпросмотр" : "Как увидят жители", () => { S.preview = !S.preview; renderPreview(); renderButtons(); focusKey("preview"); }, "", "preview", { "aria-expanded": String(!!S.preview) }),
           // with unsaved edits these are hidden (not just disabled): the line below explains, and the sticky bar stays short
           acts.publish && it && !dirty ? btn(it.publication === "published" ? "Опубликовать изменения…" : "Опубликовать…", () => askConfirm("publish"), "", "publish", { disabled: busy }) : null,
-          acts.archive && it && !dirty ? btn("В архив…", () => askConfirm("archive"), "ghost", "archive", { disabled: busy }) : null,
         ].filter(Boolean);
+        rebuild(V.rare, acts.archive && it && !dirty ? [el("p", { class: "civic-r04-row-btns civic-r04-rare" }, [
+          btn("В архив…", () => askConfirm("archive"), "ghost", "archive", { disabled: busy })])] : []);
         if (S.conflict) kids.push(el("p", { class: "civic-r04-help" }, "Сначала выберите вариант в блоке «Запись уже изменена» выше."));
         else if (dirty && it && (acts.publish || acts.archive)) kids.push(el("p", { class: "civic-r04-help" }, "Публикация и архив доступны после сохранения изменений."));
       }
@@ -1312,6 +1325,7 @@
         const keys = bad.concat(S.reasonErr ? ["reason"] : []);
         setNotice("error", "Не сохранено: исправьте отмеченные поля (" + keys.length + "). Введённый текст на месте.", keys.slice(0, 6).map((k) => ({
           label: FORM_LABEL[k] || FORM_LABEL[k.split(".")[0]] || k, fk: "goto-" + k, cls: "link", fn: () => (k === "reason" ? focusKey("reason") : focusField(k)) })));
+        S.notice.fixKeys = keys;
         if (bad.length) focusField(firstErrorKey() || bad[0]); else focusKey("reason");
         return;
       }
