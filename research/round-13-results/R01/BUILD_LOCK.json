@@ -1,0 +1,636 @@
+{
+ "round": 13,
+ "role": "R01",
+ "branch": "claude/affectionate-ride-bol5v8",
+ "base": {
+  "reference_base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "r01_round12_code_sha": "223296ec02bb14568b7d5782dc7de473372d2aec",
+  "r01_round12_head": "6dc16602b7f63fcf60489553dde4502378a08d09"
+ },
+ "method": "Path-scoped import: for each role, files with status A/M in `git diff --name-status <base> <source_sha> -- <allowed paths>` were taken with `git checkout <source_sha> -- <files>`; no branch merge; files present only in the base were kept; no deletions occurred. Each file's blob SHA is recorded.",
+ "sources": [
+  {
+   "role": "R02",
+   "branch": "claude/elegant-franklin-jbhprq",
+   "pinned_head": "9366217b0a06d4e90fdd8e5647a2ac64f4a52ac0",
+   "reported_code_sha": "bd7a911ad23573ce0d168823199ecb3cc86557c9",
+   "source_sha": "bd7a911ad23573ce0d168823199ecb3cc86557c9",
+   "paths": [
+    "ui/civic_store/",
+    "tests/civic/R02/"
+   ],
+   "exclude": [],
+   "files": [
+    {
+     "path": "tests/civic/R02/test_r02_round12_export.py",
+     "status": "A",
+     "blob": "c63ba278d12b5ee0800bf6aecdb9a90eb028a4fe"
+    },
+    {
+     "path": "tests/civic/R02/test_r02_round12_history.py",
+     "status": "A",
+     "blob": "f4c274be19cd9e961d03a6c7dc88a6801e40ec92"
+    },
+    {
+     "path": "tests/civic/R02/test_r02_round12_import.py",
+     "status": "A",
+     "blob": "cbe8d30a77e54f44415f1c021cb89ee696d71dab"
+    },
+    {
+     "path": "tests/civic/R02/test_r02_round12_public.py",
+     "status": "A",
+     "blob": "eb0d22a8f2d6441b724c75176845cdf9b8dc4c4a"
+    },
+    {
+     "path": "ui/civic_store/cli.py",
+     "status": "M",
+     "blob": "a1a188ce8d1bab06f79f4ba4588601aa860567a5"
+    },
+    {
+     "path": "ui/civic_store/importer.py",
+     "status": "M",
+     "blob": "03a93b0c2a8ea02bd64638fc9c53f815c3136645"
+    },
+    {
+     "path": "ui/civic_store/objects.py",
+     "status": "M",
+     "blob": "a846275de4700a7085f44b4f1076330b9ba3f051"
+    },
+    {
+     "path": "ui/civic_store/public_export.py",
+     "status": "A",
+     "blob": "0c44afefd58a2d452cbde0eed186358032aca542"
+    }
+   ],
+   "note": "DELIVERED_NOT_ACCEPTED; code bd7a911 = paths on head 9366217."
+  },
+  {
+   "role": "R03",
+   "branch": "claude/zen-mendel-e79iiv",
+   "pinned_head": "d5ee7586592b743db0e4ab31a057e53bc4bc7fab",
+   "reported_code_sha": null,
+   "source_sha": "71c4e1be589d31b913a2649578e5ce45fa02c4e8",
+   "paths": [
+    "web/civic/map/",
+    "tests/civic/R03/"
+   ],
+   "exclude": [
+    "web/civic/map/streets.json"
+   ],
+   "files": [
+    {
+     "path": "tests/civic/R03/browser.test.mjs",
+     "status": "M",
+     "blob": "eef6d1ed25b6d92678abf58a05a4792322ed0d5f"
+    },
+    {
+     "path": "tests/civic/R03/core.test.mjs",
+     "status": "M",
+     "blob": "a1188ddfe96173f7f2eadad1856f11cfa8d6ec2a"
+    },
+    {
+     "path": "tests/civic/R03/fixtures/format.json",
+     "status": "M",
+     "blob": "12818e3199ad1aa9b08d07b117e46cc9d6323eca"
+    },
+    {
+     "path": "tests/civic/R03/r02_readonly.test.mjs",
+     "status": "M",
+     "blob": "0ddb8ba097fde6a21fae0b3674b5e1ab0ef1152f"
+    },
+    {
+     "path": "tests/civic/R03/r02_readonly_server.py",
+     "status": "M",
+     "blob": "9812b3a97d0085033e82e4a3f0f3550108bd9da0"
+    },
+    {
+     "path": "tests/civic/R03/serve.mjs",
+     "status": "M",
+     "blob": "8c2932c8802c8661b03346d786b28fcf9020a914"
+    },
+    {
+     "path": "tests/civic/R03/stand/fetch-api.js",
+     "status": "A",
+     "blob": "867022421b132b1a9265d56ae996fcda070dd7ff"
+    },
+    {
+     "path": "tests/civic/R03/stand/index.html",
+     "status": "A",
+     "blob": "05c119b9a16529ccc68cda741ae17210f8c504e5"
+    },
+    {
+     "path": "tests/civic/R03/stand/mock-api.js",
+     "status": "A",
+     "blob": "f1d0b32c14e1f488a180c9677e06c2b1cecbc9df"
+    },
+    {
+     "path": "tests/civic/R03/stand/stand.js",
+     "status": "A",
+     "blob": "da955f1e238216fc4d60142f62cfd742ffcbe5b3"
+    },
+    {
+     "path": "web/civic/map/civic-map-core.js",
+     "status": "M",
+     "blob": "269bbf7364a5ebd73a5716e6bf2d23f0b5ca223d"
+    },
+    {
+     "path": "web/civic/map/civic-map.css",
+     "status": "M",
+     "blob": "d58bac2d1a0a736fb575d31c0d9f799833908de1"
+    },
+    {
+     "path": "web/civic/map/civic-map.js",
+     "status": "M",
+     "blob": "ff112dd9ce2e064b6c8489d2438f462469da3451"
+    }
+   ],
+   "note": "PARTIAL: DELIVERY.json stale without code_sha; source_sha = last commit changing R03 paths on pinned head (checkpoint 4); streets.json excluded (R07)."
+  },
+  {
+   "role": "R04",
+   "branch": "claude/intelligent-sagan-7shpeh",
+   "pinned_head": "6d5cd7171fcacd63d30c4230329f9ff6a0887e23",
+   "reported_code_sha": "69d569116355d6cad26ef8fc46e84868296162a3",
+   "source_sha": "69d569116355d6cad26ef8fc46e84868296162a3",
+   "paths": [
+    "web/civic/editor/",
+    "tests/civic/R04/"
+   ],
+   "exclude": [],
+   "files": [
+    {
+     "path": "tests/civic/R04/app_acceptance.test.cjs",
+     "status": "A",
+     "blob": "5f64ff6c566bc10d97b4f4936ec314c4619f6033"
+    },
+    {
+     "path": "tests/civic/R04/core.test.cjs",
+     "status": "M",
+     "blob": "9064394f3f59920862d5ca72700750653c2a0c62"
+    },
+    {
+     "path": "tests/civic/R04/e2e.test.cjs",
+     "status": "M",
+     "blob": "109f992ed3fdece0b45aec4950998a0201b4f19e"
+    },
+    {
+     "path": "tests/civic/R04/e2e_r02.test.cjs",
+     "status": "M",
+     "blob": "ea5b3aca24f8cd1b9cec0c83df47e5514c5a625e"
+    },
+    {
+     "path": "tests/civic/R04/fixtures/editor_mount_contract.json",
+     "status": "A",
+     "blob": "401bbf298c930c24210ddd51997129911b8c3394"
+    },
+    {
+     "path": "tests/civic/R04/harness/harness.js",
+     "status": "M",
+     "blob": "c846ab80aa14709b77ddfff7cc499aa0d1008d2e"
+    },
+    {
+     "path": "web/civic/editor/editor-core.js",
+     "status": "M",
+     "blob": "6fda2f05e6e26cea0981509d807f04c6f8f4a277"
+    },
+    {
+     "path": "web/civic/editor/editor.css",
+     "status": "M",
+     "blob": "4ec9bdaeb10fdece54e611d5bcb20b45506426d6"
+    },
+    {
+     "path": "web/civic/editor/editor.js",
+     "status": "M",
+     "blob": "dcd7edfe98532bf2781b486af9c375d86a5954a7"
+    }
+   ],
+   "note": "DELIVERED_NOT_ACCEPTED."
+  },
+  {
+   "role": "R05",
+   "branch": "claude/focused-hypatia-z8h0no",
+   "pinned_head": "ca0f06f8245e24adcae751acea321d19d9366576",
+   "reported_code_sha": "4d5731ff1cd4827086317bf5404ffd5a5ce0ef1c",
+   "source_sha": "4d5731ff1cd4827086317bf5404ffd5a5ce0ef1c",
+   "paths": [
+    "data/civic/astana/round12-verified/",
+    "data/civic/astana/round13-verified/",
+    "tests/civic/R05/round12/",
+    "tests/civic/R05/round13/"
+   ],
+   "exclude": [],
+   "files": [
+    {
+     "path": "data/civic/astana/round12-verified/README.md",
+     "status": "A",
+     "blob": "48913413ed39a0dd0f432707a031c643882bc617"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/SCHEMA.md",
+     "status": "A",
+     "blob": "ea89245d5c563a3fba97ad91cc4e1ee0f48019a1"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/candidates.json",
+     "status": "A",
+     "blob": "d6bc7508e9fc35c87d3fe20f845d9e8af79b379b"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/config.json",
+     "status": "A",
+     "blob": "f1239025f4ef45b5de5b71b024c2235c5566e4a8"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/drafts/.gitkeep",
+     "status": "A",
+     "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/historical.civic-v1.json",
+     "status": "A",
+     "blob": "6d6920c26bb1d58106bc0b5d9a62b59789e9c622"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/network_audit.json",
+     "status": "A",
+     "blob": "44c16d72d061ebbf68a75af37560ea49d349d2bb"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/package.civic-v1.json",
+     "status": "A",
+     "blob": "42676717e187f0c0a5dd357358720f52c2d2c9ac"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/sources.json",
+     "status": "A",
+     "blob": "044ed30bda9410f4914003a282ba6cd2b3f94ad4"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/summary.json",
+     "status": "A",
+     "blob": "a8633300b379d1313e6ce2ed53756e9d611ba3a3"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/tools/r12.py",
+     "status": "A",
+     "blob": "340aeab8703ab1912f5132dc4702b050a5834ec7"
+    },
+    {
+     "path": "data/civic/astana/round12-verified/verified/.gitkeep",
+     "status": "A",
+     "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+     "path": "tests/civic/R05/round12/test_r12_pipeline.py",
+     "status": "A",
+     "blob": "e2f0864875ccf2c8143ade21c5031068a18d5c58"
+    },
+    {
+     "path": "tests/civic/R05/round12/test_r12_real_data.py",
+     "status": "A",
+     "blob": "74dd18908db9f3728bce03176cfc908cfb9466d3"
+    },
+    {
+     "path": "tests/civic/R05/round12/test_r12_search_import.py",
+     "status": "A",
+     "blob": "efa6c132bbffbd5b8288b56305a64b19b5686026"
+    }
+   ],
+   "note": "DELIVERED_ZERO_VERIFIED: 0 confirmed objects, 44 candidates; package is NOT imported into the public registry. tests/civic/R05/round12/test_r12_search_import.py needs research/round-12-results/R05/import_search_results.py (outside allowed paths, not imported) -> 3 FAIL in this candidate."
+  },
+  {
+   "role": "R06",
+   "branch": "claude/brave-hopper-bkc58b",
+   "pinned_head": "1139eeb90beb05a0f6199a292c37599b466cb0cd",
+   "reported_code_sha": "e0b474124db49a3f60c65e93f47d65e52aeac478",
+   "source_sha": "e0b474124db49a3f60c65e93f47d65e52aeac478",
+   "paths": [
+    "ui/civic_feedback/",
+    "web/civic/feedback/",
+    "tests/civic/R06/"
+   ],
+   "exclude": [],
+   "files": [
+    {
+     "path": "tests/civic/R06/app_e2e_r06.cjs",
+     "status": "M",
+     "blob": "07936b4bbd505c9c0cdf4399bd17ad45d722add2"
+    },
+    {
+     "path": "tests/civic/R06/browser_r06.cjs",
+     "status": "M",
+     "blob": "e819a9346825f00037432844197927b369f8585d"
+    },
+    {
+     "path": "tests/civic/R06/harness/serve_r06.py",
+     "status": "M",
+     "blob": "22c38635e577758edf621b0a18e468c0067b2c1f"
+    },
+    {
+     "path": "tests/civic/R06/test_r06_frontend_http.py",
+     "status": "M",
+     "blob": "ae946ed1e6225a5af6e5c05c77210a7b85b8eafa"
+    },
+    {
+     "path": "tests/civic/R06/test_r06_handling.py",
+     "status": "A",
+     "blob": "cdbb8aa4435a4a2d2762538ec390e6e8a7da25e0"
+    },
+    {
+     "path": "tests/civic/R06/test_r06_moderation.py",
+     "status": "M",
+     "blob": "65c55996383469e296f927e8e092311271a860d3"
+    },
+    {
+     "path": "tests/civic/R06/test_r06_r08_adapter.py",
+     "status": "A",
+     "blob": "de5d4878aa2ba2942c16da1b28ddd3b940351219"
+    },
+    {
+     "path": "tests/civic/R06/test_r06_r12_acceptance.py",
+     "status": "A",
+     "blob": "fe9f3d7869c0f1c5309dd4a174b2f54b02576ac5"
+    },
+    {
+     "path": "ui/civic_feedback/__init__.py",
+     "status": "M",
+     "blob": "e9a10ea3dceacaa9a6adf6da2abaa5d4f9842389"
+    },
+    {
+     "path": "ui/civic_feedback/classifier_adapter.py",
+     "status": "M",
+     "blob": "2d75b0c182f88557a6898485f9b8e92a2d18fa6e"
+    },
+    {
+     "path": "ui/civic_feedback/fixtures.py",
+     "status": "M",
+     "blob": "380c0939b6a5c1a4986dec1570383b05db48cfb6"
+    },
+    {
+     "path": "ui/civic_feedback/service.py",
+     "status": "M",
+     "blob": "32b301d37090f13d33bc695566841c73ddafeb83"
+    },
+    {
+     "path": "ui/civic_feedback/text.py",
+     "status": "M",
+     "blob": "30d7ec14c0e65fa5b799cce401bce8af2dfb8ffe"
+    },
+    {
+     "path": "web/civic/feedback/feedback.css",
+     "status": "M",
+     "blob": "f2613c79ae90f1a2612f4e9ba331404519253196"
+    },
+    {
+     "path": "web/civic/feedback/feedback.js",
+     "status": "M",
+     "blob": "8d88dd88e9b168a5b02d65d1abfbf87604481937"
+    }
+   ],
+   "note": "Branch forked from old main; R06 files added whole in f422e24 after development at the base (BASE_MISMATCH patch r06_vs_56538a3.patch). No deletions vs base."
+  },
+  {
+   "role": "R08",
+   "branch": "claude/wizardly-ptolemy-qy8ltw",
+   "pinned_head": "9660885db5baadac4a8ac15b0a6532314407bba2",
+   "reported_code_sha": "e311ba822c82d4904f9be72b2db05d991dc8ae12",
+   "source_sha": "e311ba822c82d4904f9be72b2db05d991dc8ae12",
+   "paths": [
+    "ml/civic_classifier/",
+    "tests/civic/R08/"
+   ],
+   "exclude": [],
+   "files": [
+    {
+     "path": "ml/civic_classifier/.gitattributes",
+     "status": "A",
+     "blob": "68d86dc4728d4e41a3f691214fd212699038cc55"
+    },
+    {
+     "path": "ml/civic_classifier/LABELING_GUIDE.md",
+     "status": "A",
+     "blob": "8d9dc142fa593cb5156ddbcd92776f4bff370e7b"
+    },
+    {
+     "path": "ml/civic_classifier/MODEL_CARD.md",
+     "status": "A",
+     "blob": "6bd3d12db7ab6585dc6475222381d738d4b3d73f"
+    },
+    {
+     "path": "ml/civic_classifier/__init__.py",
+     "status": "A",
+     "blob": "9781f0485417785c0b78237fce92143ec8fa2759"
+    },
+    {
+     "path": "ml/civic_classifier/__main__.py",
+     "status": "A",
+     "blob": "502e6463ab2c4b7cec1ee95e154b72379db3d3e4"
+    },
+    {
+     "path": "ml/civic_classifier/corpus.py",
+     "status": "A",
+     "blob": "d4e94e64c5506459b10d76f8819362b6de213159"
+    },
+    {
+     "path": "ml/civic_classifier/data/corpus_synthetic_v2.jsonl",
+     "status": "A",
+     "blob": "75f8ad6b7652be6623465b5e24e4c476806ca49d"
+    },
+    {
+     "path": "ml/civic_classifier/data/model.json.gz",
+     "status": "A",
+     "blob": "34f05110b2c04487f3856c0b486f797ee6704d3b"
+    },
+    {
+     "path": "ml/civic_classifier/data/model_alt_nb.json.gz",
+     "status": "A",
+     "blob": "25cb39dab7497a1e62b16c9fdfd860037e8072c7"
+    },
+    {
+     "path": "ml/civic_classifier/data/probe_agent_v1.jsonl",
+     "status": "A",
+     "blob": "3fb70e90da48bc506da04279047c1b6443fd3b78"
+    },
+    {
+     "path": "ml/civic_classifier/data/split_v2.json",
+     "status": "A",
+     "blob": "43bf463aa3ccdb2bebc78bd163537d6c1f4f5740"
+    },
+    {
+     "path": "ml/civic_classifier/evaluate.py",
+     "status": "A",
+     "blob": "ad37451bb32f8ef2e5a464696f95295caa1cbca7"
+    },
+    {
+     "path": "ml/civic_classifier/heuristic.py",
+     "status": "A",
+     "blob": "aa7390318656d59c3a86198093af9db8cd3772ed"
+    },
+    {
+     "path": "ml/civic_classifier/labels.py",
+     "status": "A",
+     "blob": "d6d01f7884f7ed4a280a14c7b7ed21c931b08fbc"
+    },
+    {
+     "path": "ml/civic_classifier/metrics.py",
+     "status": "A",
+     "blob": "2b8d380a08b02f16a3a9864a78a41d6be76f0bff"
+    },
+    {
+     "path": "ml/civic_classifier/model.py",
+     "status": "A",
+     "blob": "5aebb6f7d74881c9f49253aa09c3bab09fd8610d"
+    },
+    {
+     "path": "ml/civic_classifier/requirements.txt",
+     "status": "A",
+     "blob": "a680e5d7eafb66598b93a838e0ba391b75040320"
+    },
+    {
+     "path": "ml/civic_classifier/text.py",
+     "status": "A",
+     "blob": "1d3b8b52becd3d929852c71cfe38eb07d54bb9a6"
+    },
+    {
+     "path": "ml/civic_classifier/train.py",
+     "status": "A",
+     "blob": "2fa8f0cbc2c9989e5bdc53a6af285b9cb5e82a7d"
+    },
+    {
+     "path": "tests/civic/R08/test_r08_contract.py",
+     "status": "A",
+     "blob": "f89e4d628213eb1da78daaf4b9b18680a95d4601"
+    },
+    {
+     "path": "tests/civic/R08/test_r08_corpus.py",
+     "status": "A",
+     "blob": "6a817935d859afcc7431b6ad615403daa3bc546a"
+    },
+    {
+     "path": "tests/civic/R08/test_r08_feedback_integration.py",
+     "status": "A",
+     "blob": "52a1b11b8047baa10ba96811cb78eb46822715fc"
+    },
+    {
+     "path": "tests/civic/R08/test_r08_reports.py",
+     "status": "A",
+     "blob": "b5c2e5db5b62518cbc9b62675a687260b5dfae4c"
+    },
+    {
+     "path": "tests/civic/R08/test_r08_train.py",
+     "status": "A",
+     "blob": "d460ef0dd9a1af08b01f62ebad40e6fd01042455"
+    }
+   ],
+   "note": "DELIVERED_SYNTHETIC_ONLY: model trained/evaluated on synthetic data only; real-data quality NOT_EVALUATED. Not wired into R06 in this checkpoint."
+  },
+  {
+   "role": "R09",
+   "branch": "claude/fervent-dijkstra-1cqrg5",
+   "pinned_head": "f2ebaf979fc05ed715549bf4eba5c39e6190bb4a",
+   "reported_code_sha": "f8aea9a763c81775c85bbdaa6c429b49a245d60a",
+   "source_sha": "f8aea9a763c81775c85bbdaa6c429b49a245d60a",
+   "paths": [
+    "agent/civic_assistant/",
+    "web/civic/assistant/",
+    "tests/civic/R09/"
+   ],
+   "exclude": [],
+   "files": [
+    {
+     "path": "agent/civic_assistant/answer.py",
+     "status": "M",
+     "blob": "999d2cb6f36eac666317246603262e7107f35bcf"
+    },
+    {
+     "path": "agent/civic_assistant/api.py",
+     "status": "M",
+     "blob": "fe7a360dcf8ac152f46d9006c7b7ad1ebaf7fbf0"
+    },
+    {
+     "path": "agent/civic_assistant/render.py",
+     "status": "M",
+     "blob": "55514b1da907bc1f136a1ec04f3a3d669de639d0"
+    },
+    {
+     "path": "agent/civic_assistant/scenario.py",
+     "status": "M",
+     "blob": "85fc84982648d92d1ec7f0dd72e581563330a4f6"
+    },
+    {
+     "path": "tests/civic/R09/eval_r12_live.py",
+     "status": "A",
+     "blob": "050a54ff709349fcde3d516a9bc3d78681af08e4"
+    },
+    {
+     "path": "tests/civic/R09/test_r09_facts_template.py",
+     "status": "M",
+     "blob": "11fd621ebe7b9b1febc577a712bcbed0ca80524f"
+    },
+    {
+     "path": "tests/civic/R09/test_r09_round12_questions.py",
+     "status": "A",
+     "blob": "335cba5441bb748032a9ef09e7755c189c9f9f02"
+    },
+    {
+     "path": "tests/civic/R09/test_r09_round12_robustness.py",
+     "status": "A",
+     "blob": "a71dde7e6a82f5f3245d9250c93dc7a165fbb894"
+    },
+    {
+     "path": "tests/civic/R09/test_r09_round12_scenario.py",
+     "status": "A",
+     "blob": "f16c8cc1d39219a09e58991950f5a805bf48f090"
+    },
+    {
+     "path": "tests/civic/R09/test_r09_scenario_api.py",
+     "status": "M",
+     "blob": "05d18c6215ea51ef46d1f1cf13bfecb3180f847f"
+    },
+    {
+     "path": "tests/civic/R09/ui_check.cjs",
+     "status": "M",
+     "blob": "0eec8cf546f955b1ac1d3c2290c260ed80d169ce"
+    },
+    {
+     "path": "web/civic/assistant/assistant.css",
+     "status": "M",
+     "blob": "504545106b38bc26b46de51d76084b8d654f37b1"
+    },
+    {
+     "path": "web/civic/assistant/assistant.js",
+     "status": "M",
+     "blob": "5d38527479b6a81b7b016227635d8ad5d74bbb3d"
+    },
+    {
+     "path": "web/civic/assistant/demo.html",
+     "status": "M",
+     "blob": "aa01033ad7434a65ddfd08376271b5b49ba0c513"
+    }
+   ],
+   "note": "DELIVERED_NOT_ACCEPTED."
+  }
+ ],
+ "applied_patches": [],
+ "excluded": [
+  {
+   "role": "R07",
+   "reason": "No round-12 delivery found (DELIVERIES.json not_found_in_snapshot; no new branch on origin at checkpoint 1). The base R07 code (engine/civic_scenarios, web/civic/scenarios, streets.json, osm-walking) is used as is."
+  },
+  {
+   "role": "R10",
+   "reason": "Acceptance role, no runtime paths; no round-12 delivery found."
+  },
+  {
+   "role": "R05/research",
+   "reason": "research/round-12-results/R05/import_search_results.py is outside R05 import paths; not imported (3 R05 tests fail without it)."
+  }
+ ],
+ "integration_code_sha": "acb948d87ff7828be6d64dddff9b8163b99772d9",
+ "integration_code_note": "Checkpoint 1: imports + R01 CivicApiError details + P0 flow update. Later checkpoints add R01 wiring; the final integration_code_sha is updated in this file and in DELIVERY.json.",
+ "commands": {
+  "rebuild_from_lock": "for each source: git checkout <source_sha> -- <files[].path>; verify `git rev-parse HEAD:<path>` == blob",
+  "verify_blobs": "python3 - <<'EOF' (see RUN.txt)",
+  "checks": "bash tests/civic/R01/run_checks.sh <out_dir>"
+ }
+}
