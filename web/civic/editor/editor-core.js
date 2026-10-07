@@ -1,4 +1,4 @@
-/* civic-v1 staff editor (R04, round 11): pure logic without DOM or network.
+/* civic-v1 staff editor (R04, rounds 11-12): pure logic without DOM or network.
  * Form model <-> contract object, field validation, "было/станет" diff, reason rules,
  * draft/published/archived action matrix, public preview allowlist, API error normalization.
  * Browser: attaches to window.CivicEditor.core (the only global of this role is CivicEditor).
@@ -21,6 +21,15 @@
   const STATUSES = { planned: "Запланировано", in_progress: "Идут работы", completed: "Завершено", cancelled: "Отменено", unknown: "Статус неизвестен" };
   const PUBLICATION = { draft: "Черновик", published: "Опубликовано", archived: "В архиве" };
   const PRECISION = { approximate: "Приблизительно (указано на карте)", source: "Точно по источнику", unknown: "Точность неизвестна" };
+  // What the staff member knows about the place (round 12). Maps onto geometry + geometry_precision:
+  // unknown -> no geometry; approximate -> geometry, "approximate"; exact -> geometry, "source".
+  // "unspecified" only describes a stored record with geometry but precision "unknown" (kept as is until changed).
+  const PLACE = {
+    unknown: "Место неизвестно — запись будет только в списке, без точки на карте",
+    approximate: "Место известно приблизительно — отмечу на карте сам",
+    exact: "Место точно указано в источнике (адрес, координаты, схема)",
+  };
+  const GEOMETRY_KIND = { Point: "точка", LineString: "линия (участок улицы)", Polygon: "площадь (двор, сквер, участок)" };
   const BASIS = { unknown: "Неизвестно", planned: "Плановая смета", contract: "Сумма контракта", spent: "Фактически израсходовано" };
   const EVIDENCE = {
     observed: "Наблюдаемо — подтверждено источником",
@@ -66,7 +75,7 @@
     "schedule.current_planned_end": "current_planned_end", "schedule.actual_end": "actual_end",
     "budget.amount_kzt": "amount", "budget.basis": "basis", "budget.source_id": "budget_source_id", budget: "amount",
     "responsible.organization": "organization", "responsible.public_contact": "public_contact",
-    schedule: "current_planned_end", responsible: "organization",
+    schedule: "current_planned_end", responsible: "organization", geometry_precision: "place",
   };
 
   // ---------- small helpers ----------
@@ -125,7 +134,7 @@
     return {
       title: "", kind: "", status: "unknown", description: "",
       planned_start: "", original_planned_end: "", current_planned_end: "", actual_end: "",
-      geometry: null, geometry_confirmed: false, geometry_precision: "unknown",
+      geometry: null, geometry_confirmed: false, geometry_precision: "unknown", place: null,  // null: derived from geometry
       organization: "", public_contact: "",
       amount: "", basis: "unknown", budget_source_id: "",
       evidence_type: "", evidence_notes: "", internal_notes: "",
@@ -141,6 +150,7 @@
       planned_start: str(sc.planned_start), original_planned_end: str(sc.original_planned_end),
       current_planned_end: str(sc.current_planned_end), actual_end: str(sc.actual_end),
       geometry: clone(item.geometry || null), geometry_confirmed: !!item.geometry, geometry_precision: str(item.geometry_precision) || "unknown",
+      place: placeOf(item.geometry, item.geometry_precision),
       organization: str(r.organization), public_contact: str(r.public_contact),
       amount: b.amount_kzt === null || b.amount_kzt === undefined ? "" : String(b.amount_kzt).replace(".", ","),
       basis: str(b.basis) || "unknown", budget_source_id: str(b.source_id),
@@ -152,6 +162,18 @@
       })),
     });
     return f;
+  }
+  function placeOf(geometry, precision) {
+    if (!geometry) return "unknown";
+    return precision === "source" ? "exact" : precision === "approximate" ? "approximate" : "unspecified";
+  }
+  // Contract geometry/precision from the form: "unknown" place sends no geometry even if one is drawn
+  // (the drawing stays in the form, so switching back restores it).
+  function placeFields(form) {
+    const place = form.place || placeOf(form.geometry, form.geometry_precision);
+    if (place === "unknown" || !form.geometry) return { geometry: null, geometry_precision: "unknown" };
+    const precision = place === "exact" ? "source" : place === "approximate" ? "approximate" : "unknown";
+    return { geometry: clone(form.geometry), geometry_precision: precision };
   }
   function nextSourceId(sources) {
     let n = 1;
@@ -167,14 +189,14 @@
   function fieldsFromForm(form, opts) {
     const o = opts || {};
     const amount = parseAmount(form.amount);
-    const geometry = form.geometry ? clone(form.geometry) : null;
+    const { geometry, geometry_precision } = placeFields(form);
     const out = {
       title: str(form.title).trim(),
       description: str(form.description).trim(),
       kind: form.kind || null,
       status: form.status || "unknown",
       geometry,
-      geometry_precision: geometry ? form.geometry_precision || "unknown" : "unknown",
+      geometry_precision,
       schedule: {
         planned_start: blankToNull(form.planned_start), original_planned_end: blankToNull(form.original_planned_end),
         current_planned_end: blankToNull(form.current_planned_end), actual_end: blankToNull(form.actual_end),
@@ -248,18 +270,19 @@
     if (oe && !ce && !errors.original_planned_end) warnings.current_planned_end = "Актуальный срок пуст — жители увидят «неизвестно».";
 
     // place
-    const g = form.geometry;
+    const place = form.place || placeOf(form.geometry, form.geometry_precision);
+    const g = place === "unknown" ? null : form.geometry;
+    if (!has(PLACE, place) && place !== "unspecified") err("place", "Выберите, что известно о месте.");
+    else if (place !== "unknown" && !g) err("geometry", "Отметьте место на карте (точка, линия или площадь) или выберите «Место неизвестно».");
     if (g) {
-      const pos = positionsOf(g);
-      const bad = pos.some((p) => !Array.isArray(p) || p.length < 2 || !Number.isFinite(p[0]) || !Number.isFinite(p[1]) || Math.abs(p[0]) > 180 || Math.abs(p[1]) > 90);
-      if (!pos.length || bad) err("geometry", "Координаты некорректны: долгота −180…180, широта −90…90.");
-      else if (pos.some((p) => !inAstana(p[0], p[1]))) err("geometry", "Точка за пределами Астаны. Проверьте порядок: долгота ≈ 71.4, широта ≈ 51.1.");
-      else if (g.type === "LineString" && (pos.length < 2 || new Set(pos.map((p) => p[0] + "," + p[1])).size < 2)) err("geometry", "Участок работ — минимум две разные точки.");
-      else if (!form.geometry_confirmed) err("geometry", "Подтвердите расположение или удалите место. Без достоверного места запись можно сохранить без координат.");
-      if (!has(PRECISION, form.geometry_precision)) err("geometry_precision", "Выберите точность места.");
-      else if (form.geometry_precision === "source" && !(form.sources || []).some((s) => (s.fields || []).includes("geometry")))
-        err("geometry_precision", "«Точно по источнику» требует источник, у которого отмечено «Место».");
+      const problem = geometryProblem(g);
+      if (problem) err("geometry", problem);
+      else if (!form.geometry_confirmed) err("geometry", "Подтвердите расположение галочкой ниже или выберите «Место неизвестно».");
+      if (place === "unspecified") warnings.place = "Точность места не указана. Выберите «приблизительно» или «точно по источнику».";
+      if (place === "exact" && !(form.sources || []).some((s) => (s.fields || []).includes("geometry")))
+        err("place", "«Точно по источнику» требует источник, у которого отмечено «Место» (раздел «Источники»).");
     }
+    if (place === "unknown" && form.geometry) warnings.place = "Отмеченное место не будет сохранено, пока выбрано «Место неизвестно».";
 
     // money: unknown is empty, never 0
     const amount = parseAmount(form.amount);
@@ -301,6 +324,70 @@
       if (s.access_status === "unavailable" && (s.fields || []).length) warnings[k("fields")] = "Недоступный источник не подтверждает отмеченные поля — жители увидят, что он недоступен.";
     });
     return { errors, warnings };
+  }
+
+  // Geometry sanity for a person drawing on a map: Astana only, no degenerate or self-crossing shapes.
+  function geometryProblem(g) {
+    const pos = positionsOf(g);
+    const bad = pos.some((p) => !Array.isArray(p) || p.length < 2 || !Number.isFinite(p[0]) || !Number.isFinite(p[1]) || Math.abs(p[0]) > 180 || Math.abs(p[1]) > 90);
+    if (!["Point", "LineString", "Polygon"].includes(g && g.type)) return "Неизвестный тип места.";
+    if (!pos.length || bad) return "Координаты некорректны: долгота −180…180, широта −90…90.";
+    if (pos.some((p) => !inAstana(p[0], p[1]))) return "Место за пределами Астаны. Проверьте порядок: долгота ≈ 71.4, широта ≈ 51.1.";
+    const distinct = (arr) => new Set(arr.map((p) => p[0] + "," + p[1])).size;
+    if (g.type === "LineString") {
+      if (pos.length < 2 || distinct(pos) < 2) return "Линия — минимум две разные точки.";
+      if (pathLengthM(pos) < 5) return "Линия короче 5 м — поставьте точку вместо линии.";
+    }
+    if (g.type === "Polygon") {
+      const ring = (g.coordinates || [])[0] || [];
+      if ((g.coordinates || []).length !== 1) return "Площадь — один контур без вырезов.";
+      if (ring.length < 4 || distinct(ring) < 3) return "Площадь — минимум три разные точки.";
+      if (ring[0][0] !== ring[ring.length - 1][0] || ring[0][1] !== ring[ring.length - 1][1]) return "Контур площади не замкнут.";
+      if (ringSelfIntersects(ring)) return "Контур пересекает сам себя — отметьте точки по порядку обхода.";
+      if (Math.abs(ringAreaM2(ring)) < 10) return "Площадь почти нулевая (точки на одной линии) — поставьте линию или точку.";
+    }
+    return null;
+  }
+  // Local metric approximations near Astana (51.1N): fine for "too small / degenerate" checks, not for surveying.
+  const M_PER_DEG_LAT = 111320, M_PER_DEG_LON = 111320 * Math.cos(51.15 * Math.PI / 180);
+  function pathLengthM(pos) {
+    let m = 0;
+    for (let i = 1; i < pos.length; i++) m += Math.hypot((pos[i][0] - pos[i - 1][0]) * M_PER_DEG_LON, (pos[i][1] - pos[i - 1][1]) * M_PER_DEG_LAT);
+    return m;
+  }
+  function ringAreaM2(ring) {
+    let a = 0;
+    for (let i = 0; i < ring.length - 1; i++) a += ring[i][0] * M_PER_DEG_LON * ring[i + 1][1] * M_PER_DEG_LAT - ring[i + 1][0] * M_PER_DEG_LON * ring[i][1] * M_PER_DEG_LAT;
+    return a / 2;
+  }
+  function segmentsCross(a, b, c, d) {
+    const o = (p, q, r) => Math.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]));
+    const o1 = o(a, b, c), o2 = o(a, b, d), o3 = o(c, d, a), o4 = o(c, d, b);
+    return o1 !== o2 && o3 !== o4 && o1 !== 0 && o2 !== 0 && o3 !== 0 && o4 !== 0;
+  }
+  function ringSelfIntersects(ring) {
+    const n = ring.length - 1;
+    for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) {
+      if (i === 0 && j === n - 1) continue;
+      if (segmentsCross(ring[i], ring[i + 1], ring[j], ring[j + 1])) return true;
+    }
+    return false;
+  }
+  // A polygon from clicked vertices: closed ring, counter-clockwise (RFC 7946 right-hand rule for the exterior).
+  function polygonFromVertices(vertices) {
+    const v = (vertices || []).slice();
+    if (v.length && (v[0][0] !== v[v.length - 1][0] || v[0][1] !== v[v.length - 1][1])) v.push(v[0].slice());
+    if (v.length >= 4 && ringAreaM2(v) < 0) v.reverse();
+    return { type: "Polygon", coordinates: [v] };
+  }
+  function describeGeometry(g) {
+    if (!g) return "без места на карте";
+    const pos = positionsOf(g);
+    if (g.type === "Point") return "точка " + pos[0][1].toFixed(5) + ", " + pos[0][0].toFixed(5);
+    if (g.type === "LineString") return "линия, точек: " + pos.length + ", ≈ " + Math.round(pathLengthM(pos)) + " м";
+    const ring = (g.coordinates || [])[0] || [];
+    const area = Math.abs(ringAreaM2(ring));
+    return "площадь, вершин: " + Math.max(ring.length - 1, 0) + ", ≈ " + (area >= 10000 ? (area / 10000).toFixed(2) + " га" : Math.round(area) + " м²");
   }
 
   function validateReason(text) {
@@ -391,11 +478,7 @@
     if (path === "geometry_precision") return PRECISION[v] || v;
     if (path === "budget.basis") return BASIS[v] || v;
     if (path === "evidence_type") return EVIDENCE[v] || v;
-    if (path === "geometry") {
-      const p = positionsOf(v);
-      if (v.type === "Point") return "точка " + p[0][1].toFixed(5) + ", " + p[0][0].toFixed(5);
-      return (v.type === "LineString" ? "участок, точек: " : "контур, точек: ") + p.length;
-    }
+    if (path === "geometry") return describeGeometry(v);
     if (path === "source_refs") return v.length + " " + (v.length === 1 ? "источник" : v.length >= 2 && v.length <= 4 ? "источника" : "источников");
     return String(v);
   }
@@ -443,7 +526,7 @@
     if (has(PATH_TO_FIELD, p)) return PATH_TO_FIELD[p];
     const m = /^source_refs\.(\d+)\.(\w+)/.exec(p);
     if (m) return "sources." + m[1] + "." + m[2];
-    if (p.startsWith("geometry")) return p === "geometry_precision" ? "geometry_precision" : "geometry";
+    if (p.startsWith("geometry")) return p === "geometry_precision" ? "place" : "geometry";
     if (p.startsWith("source_refs")) return "sources";
     const top = p.split(".")[0];
     return ["title", "kind", "status", "description", "evidence_type", "evidence_notes", "internal_notes", "reason", "expected_revision"].includes(top) ? top : "_form";
@@ -526,8 +609,9 @@
   }
 
   return {
-    KINDS, STATUSES, PUBLICATION, PRECISION, BASIS, EVIDENCE, ACCESS, SOURCE_FIELDS, ASTANA_BBOX, LIMITS, REASON_MIN, PATHS, PATH_LABEL,
+    KINDS, STATUSES, PUBLICATION, PRECISION, PLACE, GEOMETRY_KIND, BASIS, EVIDENCE, ACCESS, SOURCE_FIELDS, ASTANA_BBOX, LIMITS, REASON_MIN, PATHS, PATH_LABEL,
     isIsoDate, todayIso, fmtDate, fmtMoney, parseAmount, parseCoord, inAstana, positionsOf,
+    placeOf, placeFields, geometryProblem, polygonFromVertices, describeGeometry, pathLengthM, ringAreaM2,
     emptyForm, formFromItem, newSource, fieldsFromForm, validateForm, validateReason,
     allowedActions, isOriginalLocked, pendingInfo, reasonRule, diffFields, buildChanges, fmtValue,
     pickPublic, previewFromForm, scheduleShift, unwrap, normalizeError, fieldKeyFromPath, findPossibleDuplicate,

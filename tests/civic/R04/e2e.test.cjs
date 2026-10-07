@@ -156,6 +156,8 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     await login(p);
     await fillDraft(p, { title: "Точка на карте" });
     const base = await p.evaluate(() => Object.assign({}, window.__mapCounts));
+    assert.equal(await p.$(fk("tool-point")), null, "a new record starts as «место неизвестно»: no drawing tools until the user says the place is known");
+    await p.check(fk("place-approximate"));
     await p.click(fk("tool-point"));
     assert.equal(await p.evaluate(() => window.__mapCounts.click), (base.click || 0) + 1);
     const box = await p.locator("#map").boundingBox();
@@ -173,7 +175,8 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     assert.ok(Math.abs(rec.geometry.coordinates[0] - 71.43) < 0.02 && Math.abs(rec.geometry.coordinates[1] - 51.13) < 0.02, "map centre ≈ [71.43, 51.13]: " + rec.geometry.coordinates);
     assert.equal(rec.geometry_precision, "approximate");
     assert.ok(await p.evaluate(() => window.__map.getStyle().layers.some((l) => l.id.startsWith("civic-r04-"))));
-    // keyboard: type coordinates (comma decimal), Enter applies
+    // keyboard: type coordinates (comma decimal), Enter applies; the specialist panel stays open after redraws
+    await p.click(fk("coords-open"));
     await p.fill(fk("geometry"), "51,128");
     await p.fill(fk("geo-lon"), "71.4301");
     await p.press(fk("geo-lon"), "Enter");
@@ -181,13 +184,20 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     await saveOk(p, "Сохранено");
     rec = objects()[0];
     assert.deepEqual(rec.geometry.coordinates, [71.4301, 51.128]);
-    // remove the place: the record stays valid without coordinates
+    assert.equal(await p.isVisible(fk("geometry")), true, "coordinates panel still open after save");
+    // remove the mark: «приблизительно» without a mark is an error at the place, nothing is sent
     await p.click(fk("geo-remove"));
+    await p.click(fk("save"));
+    assert.match(await p.textContent("[id$=\"-geo-err\"]"), /Отметьте место на карте/);
+    assert.equal(await p.evaluate(() => document.activeElement.dataset.fk), "geometry", "the coordinates panel is open, so focus goes to the latitude field");
+    // the user says the place is unknown -> the record stays valid without coordinates
+    await p.check(fk("place-unknown"));
     await saveOk(p, "Сохранено");
     rec = objects()[0];
     assert.equal(rec.geometry, null);
     assert.equal(rec.geometry_precision, "unknown");
     // Esc cancels an active tool and removes its listener
+    await p.check(fk("place-approximate"));
     await p.click(fk("tool-point"));
     await p.keyboard.press("Escape");
     assert.equal(await p.evaluate(() => window.__mapCounts.click), base.click || 0);
@@ -199,6 +209,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     const p = await open();
     await login(p);
     await fillDraft(p, { title: "Участок работ" });
+    await p.check(fk("place-approximate"));
     await p.click(fk("tool-line"));
     const b = await p.locator("#map").boundingBox();
     for (const [dx, dy] of [[-120, 0], [0, 30], [140, 10]]) await p.mouse.click(b.x + b.width / 2 + dx, b.y + b.height / 2 + dy);
@@ -458,6 +469,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     await login(p);
     const base = await p.evaluate(() => Object.assign({}, window.__mapCounts));
     await p.click(fk("new"));
+    await p.check(fk("place-approximate"));
     await p.click(fk("tool-line"));
     const during = await p.evaluate(() => Object.assign({}, window.__mapCounts));
     assert.ok(during.click > (base.click || 0) && during.styledata > (base.styledata || 0));
@@ -533,8 +545,10 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     assert.ok(m.saveH >= 44);
     assert.ok(m.saveBottom <= m.vh, "sticky save button visible");
     await shot(p, "12-form-390");
+    await p.check(fk("place-approximate"));
     await p.locator(fk("tool-point")).scrollIntoViewIfNeeded();
     await shot(p, "13-place-section-390");
+    await p.check(fk("place-unknown"));
     await p.click(fk("save"));
     await p.waitForSelector('.civic-r04-msg-ok:has-text("Черновик создан")');
     await p.click(fk("publish"));
@@ -555,6 +569,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     await sleep(200);
     assert.equal(await p.evaluate(() => window.__xss), undefined);
     assert.match(await p.textContent(".civic-r04-preview"), /<img src=x/);
+    await p.check(fk("place-approximate"));
     assert.equal(await p.isDisabled(fk("tool-point")), true);
     await p.fill(fk("description"), "Безопасное описание");
     await p.fill(fk("geometry"), "51.1694");
@@ -596,6 +611,88 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     if (confirm) await confirm.click();
     await p.waitForSelector(fk("login-user"));
     assert.equal(await p.evaluate(() => sessionStorage.getItem("civic-r04-unsaved:v1")), null, "logout clears the tab copy");
+    assert.deepEqual(p.errors, []);
+  });
+
+  it("round 12: drawing — Esc cancels and returns to the form; a flat area is refused; Backspace fixes it; Save waits for an unfinished drawing", async () => {
+    const p = await open();
+    await login(p);
+    await fillDraft(p, { title: "Благоустройство двора" });
+    await p.check(fk("place-approximate"));
+    const base = await p.evaluate(() => Object.assign({}, window.__mapCounts));
+    const b = await p.locator("#map").boundingBox();
+    const at = (dx, dy) => p.mouse.click(b.x + b.width / 2 + dx, b.y + b.height / 2 + dy);
+    // Esc on an unfinished line: nothing is kept, focus is back on the form, the map listener is gone
+    await p.click(fk("tool-line"));
+    await at(-80, 0);
+    await at(80, 0);
+    await p.keyboard.press("Escape");
+    assert.equal(await p.$(fk("tool-done")), null);
+    assert.equal(await p.evaluate(() => document.activeElement.dataset.fk), "tool-point");
+    assert.equal(await p.evaluate(() => window.__mapCounts.click), base.click || 0);
+    assert.match(await p.textContent(".civic-r04-slot-geom"), /Выберите, как отметить место/);
+    assert.doesNotMatch(await p.textContent(".civic-r04-slot-geom"), /"type"|coordinates/, "no raw GeoJSON in the form");
+    // area: three points on one line have no area -> refused, the tool stays open with the points
+    await p.click(fk("tool-area"));
+    await at(-100, 0);
+    await at(0, 0);
+    assert.equal(await p.isDisabled(fk("tool-done")), true, "«Готово» needs three points");
+    await at(100, 0);
+    await p.click(fk("tool-done"));
+    assert.match(await p.textContent(".civic-r04-slot-geom [role=alert]"), /Уберите лишнюю точку/);
+    assert.match(await p.textContent(".civic-r04-tool"), /Точек: 3/);
+    // Save while drawing sends nothing and says why
+    await p.click(fk("save"));
+    await p.waitForSelector('.civic-r04-msg-error:has-text("Рисование не завершено")');
+    assert.equal(posts("/staff/objects").length, 0);
+    // Backspace removes the last point; a real corner makes an area; the outline closes itself
+    await p.keyboard.press("Backspace");
+    assert.match(await p.textContent(".civic-r04-tool"), /Точек: 2/);
+    await at(0, 90);
+    await shot(p, "15-area-drawing-desktop");
+    await p.click(fk("tool-done"));
+    await p.waitForSelector(fk("geometry_confirmed"));
+    assert.match(await p.textContent(".civic-r04-slot-geom"), /Отмечено: площадь, вершин: 3, ≈ \d/);
+    assert.equal(await p.evaluate(() => window.__mapCounts.click), base.click || 0, "map click listener removed after «Готово»");
+    await p.check(fk("geometry_confirmed"));
+    await saveOk(p, "Черновик создан");
+    const [rec] = objects();
+    assert.equal(rec.geometry.type, "Polygon");
+    const ring = rec.geometry.coordinates[0];
+    assert.equal(ring.length, 4, "three corners + closing point");
+    assert.deepEqual(ring[0], ring[3]);
+    assert.equal(rec.geometry_precision, "approximate");
+    assert.ok(await p.evaluate(() => window.__map.getStyle().layers.some((l) => l.id.endsWith("geom-fill"))));
+    assert.deepEqual(p.errors, []);
+  });
+
+  it("round 12: «точно по источнику» needs a source marked «Место»; «место неизвестно» keeps the drawing out of the request", async () => {
+    const p = await open();
+    await login(p);
+    await fillDraft(p, { title: "Место по схеме из извещения" });
+    await p.check(fk("place-exact"));
+    await p.click(fk("tool-point"));
+    const b = await p.locator("#map").boundingBox();
+    await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
+    await p.check(fk("geometry_confirmed"));
+    await p.click(fk("save"));
+    assert.match(await p.textContent('[id$="-f-place-err"]'), /источник, у которого отмечено «Место»/);
+    assert.equal(posts("/staff/objects").length, 0);
+    await p.click(fk("src-add"));
+    await p.fill(fk("sources.0.url"), "https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru");
+    await p.check(fk("sources.0.fields.geometry"));
+    await saveOk(p, "Черновик создан");
+    let [rec] = objects();
+    assert.equal(rec.geometry_precision, "source");
+    assert.equal(rec.geometry.type, "Point");
+    // the place turns out to be unknown: the mark stays in the form, with a warning, but is not sent
+    await p.check(fk("place-unknown"));
+    assert.equal(await p.$(fk("tool-point")), null);
+    assert.match(await p.textContent(".civic-r04-slot-geom"), /осталось в форме, но не будет отправлено/);
+    await saveOk(p, "Сохранено");
+    rec = objects()[0];
+    assert.equal(rec.geometry, null);
+    assert.equal(rec.geometry_precision, "unknown");
     assert.deepEqual(p.errors, []);
   });
 });

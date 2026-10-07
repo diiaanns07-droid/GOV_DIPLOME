@@ -89,6 +89,7 @@ describe("R04 editor against the real R02 service", { skip }, () => {
     await p.fill(fk("planned_start"), "2026-10-14");
     await p.fill(fk("original_planned_end"), "2026-10-20");
     assert.equal(await value(p, "current_planned_end"), "2026-10-20", "current end follows the original while they match (visible)");
+    await p.check(fk("place-approximate"));
     await p.click(fk("tool-point"));
     const b = await p.locator("#map").boundingBox();
     await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2);

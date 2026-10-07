@@ -131,7 +131,7 @@ test("place: confirm before save, Astana only, line needs two points, 'source' p
   const line1 = { type: "LineString", coordinates: [[71.43, 51.13], [71.43, 51.13]] };
   assert.match(check(validForm({ geometry: line1, geometry_confirmed: true, geometry_precision: "approximate" })).errors.geometry, /две/);
   const form = validForm({ geometry: pt, geometry_confirmed: true, geometry_precision: "source" });
-  assert.ok(check(form).errors.geometry_precision);
+  assert.ok(check(form).errors.place, "exact place needs a source marked 'Место' (shown at the place choice)");
   withSource(form, ["geometry"]);
   assert.deepEqual(check(form).errors, {});
   const none = C.fieldsFromForm(validForm({ geometry: null, geometry_precision: "source" }));
@@ -273,4 +273,54 @@ test("formatting helpers: unknown never renders as zero or today", () => {
   assert.equal(C.fmtDate("2026-10-14"), "14.10.2026");
   assert.equal(C.todayIso(new Date("2026-10-06T20:30:00Z")), "2026-10-07", "Astana calendar day (UTC+5)");
   assert.match(C.fmtMoney(1250000), /^1\s250\s000 ₸$/);
+});
+
+// ---------- round 12 ----------
+const SQ = [[71.430, 51.130], [71.432, 51.130], [71.432, 51.131], [71.430, 51.131]];
+
+test("round 12 place: unknown / approximate / exact map onto geometry + precision; unknown keeps the drawing but sends none", () => {
+  const pt = { type: "Point", coordinates: [71.43, 51.13] };
+  const unknown = validForm({ place: "unknown", geometry: pt, geometry_confirmed: true });
+  assert.deepEqual(C.placeFields(unknown), { geometry: null, geometry_precision: "unknown" });
+  assert.equal(unknown.geometry.type, "Point", "the drawing stays in the form");
+  assert.match(check(unknown).warnings.place, /не будет сохранено/);
+  assert.deepEqual(check(unknown).errors, {});
+  const approx = validForm({ place: "approximate", geometry: pt, geometry_confirmed: true });
+  assert.deepEqual(C.fieldsFromForm(approx).geometry_precision, "approximate");
+  const exact = validForm({ place: "exact", geometry: pt, geometry_confirmed: true });
+  assert.match(check(exact).errors.place, /источник/);
+  withSource(exact, ["geometry"]);
+  assert.deepEqual(check(exact).errors, {});
+  assert.equal(C.fieldsFromForm(exact).geometry_precision, "source");
+  const chosenButEmpty = validForm({ place: "approximate" });
+  assert.match(check(chosenButEmpty).errors.geometry, /Отметьте место/);
+});
+
+test("round 12 place: a stored geometry with unknown precision opens as 'unspecified' and round-trips unchanged", () => {
+  const item = Object.assign(clone(FIXTURE), { geometry_precision: "unknown" });
+  const form = C.formFromItem(item);
+  assert.equal(form.place, "unspecified");
+  assert.match(check(form, item).warnings.place, /Точность места не указана/);
+  assert.deepEqual(C.buildChanges(item, C.fieldsFromForm(form)), {}, "opening and saving does not rewrite precision");
+  assert.equal(C.formFromItem(FIXTURE).place, "approximate");
+  assert.equal(C.formFromItem(Object.assign(clone(FIXTURE), { geometry: null, geometry_precision: "unknown" })).place, "unknown");
+});
+
+test("round 12 geometry: polygons are closed, counter-clockwise and checked for degenerate or self-crossing outlines", () => {
+  const poly = C.polygonFromVertices(SQ.slice().reverse());  // clockwise clicks
+  const ring = poly.coordinates[0];
+  assert.deepEqual(ring[0], ring[ring.length - 1], "ring is closed");
+  assert.ok(C.ringAreaM2(ring) > 0, "exterior ring is counter-clockwise (RFC 7946)");
+  assert.equal(C.geometryProblem(poly), null);
+  assert.match(C.describeGeometry(poly), /площадь, вершин: 4, ≈ 1[.,]5\d га/);
+  const flat = C.polygonFromVertices([[71.43, 51.13], [71.431, 51.13], [71.432, 51.13]]);
+  assert.match(C.geometryProblem(flat), /почти нулевая/);
+  const bow = C.polygonFromVertices([SQ[0], SQ[2], SQ[1], SQ[3]]);
+  assert.match(C.geometryProblem(bow), /пересекает/);
+  assert.match(C.geometryProblem(C.polygonFromVertices(SQ.slice(0, 2))), /три разные/);
+  assert.match(C.geometryProblem({ type: "LineString", coordinates: [[71.43, 51.13], [71.43001, 51.13]] }), /короче 5 м/);
+  assert.match(C.geometryProblem({ type: "Polygon", coordinates: [[[71.43, 51.13], [71.44, 51.13], [71.44, 51.14], [71.43, 51.13]], [[71.431, 51.131], [71.432, 51.131], [71.432, 51.132], [71.431, 51.131]]] }), /без вырезов/);
+  const form = validForm({ place: "approximate", geometry: poly, geometry_confirmed: true });
+  assert.deepEqual(check(form).errors, {});
+  assert.deepEqual(C.fieldsFromForm(form).geometry, poly, "drawn shape is sent as drawn: no snapping to the route graph");
 });

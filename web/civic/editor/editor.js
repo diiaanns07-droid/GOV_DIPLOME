@@ -46,7 +46,7 @@
   const FORM_LABEL = {
     title: "Название", kind: "Тип", status: "Статус работ", description: "Описание",
     planned_start: "Плановое начало", original_planned_end: "Первоначальный плановый срок", current_planned_end: "Актуальный плановый срок",
-    actual_end: "Фактически завершено", geometry: "Место", geometry_precision: "Точность места", organization: "Организация",
+    actual_end: "Фактически завершено", geometry: "Место", geometry_precision: "Точность места", place: "Что известно о месте", organization: "Организация",
     public_contact: "Публичный контакт", amount: "Стоимость", basis: "Основание суммы", budget_source_id: "Источник суммы",
     evidence_type: "Достоверность", evidence_notes: "Пояснение к достоверности", internal_notes: "Внутренняя заметка", sources: "Источники",
     reason: "Причина",
@@ -93,7 +93,7 @@
     const onPublished = typeof o.onPublished === "function" ? o.onPublished : null;
     const now = typeof o.now === "function" ? o.now : () => new Date();
     const STALE = Object.freeze({ stale: true });
-    const SRC = P + "geom", LAYERS = [P + "geom-line", P + "geom-pt"];
+    const SRC = P + "geom", LAYERS = [P + "geom-line", P + "geom-pt", P + "geom-fill"];
     const S = {
       epoch: 0, alive: true, session: null, view: "loading", alert: null,
       list: { items: [], next: null, filter: "draft", mine: false, loaded: false, loading: false },
@@ -496,7 +496,7 @@
       const origHelp = locked
         ? "Зафиксирован при первой публикации" + (S.form.original_planned_end ? " (" + C.fmtDate(S.form.original_planned_end) + ")" : "") + " и не меняется. Переносите актуальный срок."
         : "Обещанная дата окончания. После первой публикации останется в карточке как исходное обещание.";
-      const sec2 = section("2. Сроки", [
+      const sec3 = section("3. Сроки", [
         el("p", { class: "civic-r04-help" }, "Плановый срок — дата по плану. «Фактически завершено» — только когда работы действительно закончены. Пустое поле = «неизвестно»: сегодняшняя дата сама не подставляется."),
         el("div", { class: "civic-r04-grid" }, [
           dateField("planned_start", "Плановое начало"),
@@ -506,7 +506,7 @@
           dateField("actual_end", "Фактически завершено", "Только при статусе «Завершено» и только по факту. Будущая дата не принимается."),
         ]),
       ]);
-      const sec3 = section("3. Место на карте", [V.geom]);
+      const sec2 = section("2. Место на карте", [V.geom]);
       const amountCtl = input("amount", { inputmode: "decimal", placeholder: "неизвестно" });
       const srcSel = select("budget_source_id", {}, "— нет источника —");
       const sec4 = section("4. Ответственный и стоимость", [
@@ -593,29 +593,64 @@
       if (S.preview) renderPreview();
     }
 
-    // ----- place (Point / LineString on the shared map) -----
+    // ----- place: what is known, then Point / LineString / Polygon on the shared map -----
+    const TOOL_TEXT = {
+      point: "Щёлкните по карте в месте работ. Esc — отмена.",
+      line: "Щёлкайте по карте вдоль участка улицы (не обязательно по каждому повороту). «Готово» — от двух точек. Esc — отмена.",
+      area: "Щёлкайте по карте по углам двора, сквера или площадки — по порядку обхода. «Готово» — от трёх точек, контур замкнётся сам. Esc — отмена.",
+    };
+    function placeNow() { return S.form.place || C.placeOf(S.form.geometry, S.form.geometry_precision); }
+    function setPlace(v) {
+      S.form.place = v;
+      delete S.server.place; delete S.server.geometry;
+      if (v !== "unknown" && S.form.geometry && !S.form.geometry_confirmed) S.form.geometry_confirmed = false;
+      if (v === "unknown") closeTool();
+      renderGeometry(); syncMap(); revalidate(); refreshDirty();
+    }
     function renderGeometry() {
       if (!V.geom) return;
-      const g = S.form.geometry, t = S.tool, ro = !C.allowedActions(S.item, S.session).edit;
-      delete F.geometry; delete F.geometry_precision; delete F.geometry_confirmed;
-      const kids = [el("p", { class: "civic-r04-help" }, "Нет достоверного места — оставьте пустым: запись сохранится и будет показана жителям списком, без точки на карте.")];
-      if (!map) kids.push(el("p", { class: "civic-r04-warn" }, "Карта недоступна — введите координаты вручную."));
+      const g = S.form.geometry, t = S.tool, ro = !C.allowedActions(S.item, S.session).edit, place = placeNow();
+      delete F.geometry; delete F.geometry_precision; delete F.geometry_confirmed; delete F.place;
+      const kids = [];
+      // 1) What is known about the place: explicit, never guessed.
+      const radios = el("fieldset", { class: "civic-r04-radios civic-r04-place", id: P + "f-place", "aria-describedby": P + "f-place-err " + P + "f-place-warn" },
+        [el("legend", {}, "Что известно о месте *")].concat(Object.entries(C.PLACE).map(([v, l], i) => {
+          const r = el("input", { type: "radio", name: P + "place", value: v, id: P + "pl-" + v, "data-fk": "place-" + v, checked: place === v, disabled: ro });
+          r.addEventListener("change", () => { if (r.checked) { setPlace(v); touch("place"); } });
+          return el("label", { class: "civic-r04-radio", for: r.id }, [r, " ", l]);
+        })));
+      const placeErr = el("p", { class: "civic-r04-err", id: P + "f-place-err" }), placeWarn = el("p", { class: "civic-r04-warn", id: P + "f-place-warn" });
+      F.place = { control: radios.querySelector("input"), err: placeErr, warn: placeWarn };
+      kids.push(radios, placeErr, placeWarn);
+      if (place === "unknown") {
+        kids.push(el("p", { class: "civic-r04-help" }, "Запись сохранится и будет показана жителям списком, без точки на карте. Точку можно добавить позже, когда место станет известно."));
+        if (g) kids.push(el("p", { class: "civic-r04-help" }, "Ранее отмеченное место (" + C.describeGeometry(g) + ") осталось в форме, но не будет отправлено. Выберите другой вариант, чтобы вернуть его."));
+        rebuild(V.geom, kids); paintErrors(); return;
+      }
+      if (place === "exact") kids.push(el("p", { class: "civic-r04-help" }, "Отметьте место так, как оно указано в источнике, и отметьте у этого источника «Место» в разделе «Источники»."));
+      if (!map) kids.push(el("p", { class: "civic-r04-warn" }, "Карта недоступна — введите координаты точки вручную ниже."));
+      // 2) Drawing on the map.
       if (t) {
-        kids.push(el("p", { class: "civic-r04-tool", role: "status" }, t.mode === "point"
-          ? "Щёлкните по карте в месте работ. Esc — отмена."
-          : "Щёлкайте по карте вдоль участка работ. Точек: " + t.vertices.length + ". «Готово» — минимум две. Esc — отмена."));
+        const n = t.vertices.length;
+        const need = t.mode === "area" ? 3 : 2;
+        kids.push(el("p", { class: "civic-r04-tool", role: "status" }, [TOOL_TEXT[t.mode], t.mode === "point" ? "" : " Точек: " + n + "."]));
+        if (t.problem) kids.push(el("p", { class: "civic-r04-err", role: "alert" }, t.problem));
         kids.push(el("p", { class: "civic-r04-row-btns" }, [
-          t.mode === "line" ? btn("Готово", finishLine, "primary", "tool-done", { disabled: t.vertices.length < 2 }) : null,
-          t.mode === "line" ? btn("Убрать последнюю точку", () => { t.vertices.pop(); renderGeometry(); syncMap(); }, "", "tool-undo", { disabled: !t.vertices.length }) : null,
+          t.mode !== "point" ? btn("Готово", finishShape, "primary", "tool-done", { disabled: n < need }) : null,
+          t.mode !== "point" ? btn("Убрать последнюю точку", () => { t.vertices.pop(); t.problem = null; renderGeometry(); syncMap(); }, "", "tool-undo", { disabled: !n }) : null,
           btn("Отмена", () => { closeTool(); focusKey("tool-point"); }, "ghost", "tool-cancel")].filter(Boolean)));
       } else {
+        kids.push(el("p", { class: "civic-r04-help" }, g ? "Отмечено: " + C.describeGeometry(g) + "." : "Выберите, как отметить место:"));
         kids.push(el("p", { class: "civic-r04-row-btns" }, [
-          btn(g ? "Поставить точку заново" : "Указать точку на карте", () => startTool("point"), "", "tool-point", { disabled: !map || ro }),
-          btn("Отметить участок (линия)", () => startTool("line"), "", "tool-line", { disabled: !map || ro }),
+          btn(g && g.type === "Point" ? "Поставить точку заново" : "Точка", () => startTool("point"), "", "tool-point", { disabled: !map || ro, title: "Объект в одном месте: здание, остановка, перекрёсток" }),
+          btn(g && g.type === "LineString" ? "Отметить линию заново" : "Линия (участок улицы)", () => startTool("line"), "", "tool-line", { disabled: !map || ro, title: "Ремонт вдоль улицы или тротуара" }),
+          btn(g && g.type === "Polygon" ? "Отметить площадь заново" : "Площадь (двор, сквер)", () => startTool("area"), "", "tool-area", { disabled: !map || ro, title: "Благоустройство двора, сквера, площадки" }),
           g ? btn("Показать на карте", fitToGeometry, "ghost", "geo-show", { disabled: !map }) : null,
-          g ? btn("Удалить место", () => { setGeometry(null); say("Место удалено: запись будет без координат."); focusKey("tool-point"); }, "danger", "geo-remove", { disabled: ro }) : null,
+          g ? btn("Удалить отметку", () => { setGeometry(null); say("Отметка удалена."); focusKey("tool-point"); }, "danger", "geo-remove", { disabled: ro }) : null,
         ].filter(Boolean)));
+        kids.push(el("p", { class: "civic-r04-help" }, "Нарисованная линия — только отметка для жителей: она не привязывается к улицам и не меняет маршруты симулятора."));
       }
+      // 3) Manual coordinates for specialists (collapsed by default).
       const pt = g && g.type === "Point" ? g.coordinates : null;
       const lat = el("input", { type: "text", inputmode: "decimal", autocomplete: "off", id: P + "lat", "data-fk": "geometry", placeholder: "51.12825" });
       const lon = el("input", { type: "text", inputmode: "decimal", autocomplete: "off", id: P + "lon", "data-fk": "geo-lon", placeholder: "71.43042" });
@@ -631,23 +666,30 @@
         focusKey("geometry_confirmed");
       };
       for (const x of [lat, lon]) x.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); apply(); } });
-      kids.push(el("fieldset", { class: "civic-r04-coords" }, [
-        el("legend", {}, g && g.type !== "Point" ? "Задать вместо участка одну точку (WGS84)" : "Координаты точки (WGS84)"),
-        el("div", { class: "civic-r04-grid" }, [
-          el("div", { class: "civic-r04-field" }, [el("label", { for: lat.id }, "Широта"), lat]),
-          el("div", { class: "civic-r04-field" }, [el("label", { for: lon.id }, "Долгота"), lon])]),
-        el("p", { class: "civic-r04-row-btns" }, [btn("Применить координаты", apply, "", "geo-apply", { disabled: ro })]),
-        err, warn]));
-      F.geometry = { control: lat, err, warn };
+      const manualOpen = !map || S.coordsOpen || (S.server.geometry && /числа/.test(S.server.geometry));
+      const coords = el("details", { class: "civic-r04-coords-wrap", open: manualOpen ? true : null }, [
+        el("summary", { "data-fk": "coords-open" }, "Ввести координаты точки вручную (для специалистов)"),
+        el("fieldset", { class: "civic-r04-coords" }, [
+          el("legend", {}, g && g.type !== "Point" ? "Заменить отметку одной точкой (WGS84)" : "Координаты точки (WGS84)"),
+          el("div", { class: "civic-r04-grid" }, [
+            el("div", { class: "civic-r04-field" }, [el("label", { for: lat.id }, "Широта"), lat]),
+            el("div", { class: "civic-r04-field" }, [el("label", { for: lon.id }, "Долгота"), lon])]),
+          el("p", { class: "civic-r04-row-btns" }, [btn("Применить координаты", apply, "", "geo-apply", { disabled: ro })])])]);
+      coords.addEventListener("toggle", () => { S.coordsOpen = coords.open; });  // survives redraws of this block
+      kids.push(coords, err, warn);
+      F.geometry = { control: lat, err, warn };  // focus target refined below: never a control hidden in the collapsed panel
       if (g && g.type !== "Point") {
-        kids.push(el("p", { class: "civic-r04-help" }, (g.type === "LineString" ? "Участок работ" : "Контур") + ", точек: " + C.positionsOf(g).length + ". Чтобы изменить — отметьте участок заново."));
-        kids.push(el("ol", { class: "civic-r04-vertices" }, C.positionsOf(g).map((p) => el("li", {}, p[1].toFixed(5) + ", " + p[0].toFixed(5)))));
+        kids.push(el("details", { class: "civic-r04-hint" }, [el("summary", {}, "Вершины (" + C.positionsOf(g).length + ")"),
+          el("ol", { class: "civic-r04-vertices" }, C.positionsOf(g).map((p) => el("li", {}, p[1].toFixed(5) + ", " + p[0].toFixed(5))))]));
       }
       if (g) {
-        const cb = el("input", { type: "checkbox", id: P + "f-geometry_confirmed", "data-fk": "geometry_confirmed", checked: S.form.geometry_confirmed });
+        const cb = el("input", { type: "checkbox", id: P + "f-geometry_confirmed", "data-fk": "geometry_confirmed", checked: S.form.geometry_confirmed, disabled: ro });
         cb.addEventListener("change", () => { S.form.geometry_confirmed = cb.checked; delete S.server.geometry; revalidate(); refreshDirty(); });
-        kids.push(el("label", { class: "civic-r04-check civic-r04-confirm", for: cb.id }, [cb, " Расположение проверено: место на карте соответствует источнику или осмотру"]));
-        kids.push(field("geometry_precision", "Точность места", select("geometry_precision", C.PRECISION), "«Точно по источнику» — только если источник даёт координаты или адрес; поставленная вручную точка — «Приблизительно»."));
+        kids.push(el("label", { class: "civic-r04-check civic-r04-confirm", for: cb.id }, [cb, " Расположение проверено: отметка соответствует источнику или осмотру"]));
+        if (!coords.open) F.geometry.control = cb;
+      } else if (!coords.open) {
+        const first = kids.map((k) => k.querySelector && k.querySelector('[data-fk="tool-point"]')).find(Boolean);
+        if (first && !first.disabled) F.geometry.control = first;
       }
       rebuild(V.geom, kids);
       paintErrors();
@@ -655,18 +697,19 @@
     function setGeometry(g) {
       S.form.geometry = g;
       S.form.geometry_confirmed = false;
-      if (g && S.form.geometry_precision === "unknown") S.form.geometry_precision = "approximate";
-      if (!g) S.form.geometry_precision = "unknown";
-      delete S.server.geometry; delete S.server.geometry_precision;
+      if (g && placeNow() === "unknown") S.form.place = "approximate";
+      delete S.server.geometry; delete S.server.place;
       renderGeometry(); syncMap(); revalidate(); refreshDirty();
     }
     function toolGeometry() {
-      const v = S.tool.vertices;
+      const t = S.tool, v = t.vertices;
       if (!v.length) return null;
-      return S.tool.mode === "point" || v.length === 1 ? { type: "Point", coordinates: v[v.length - 1] } : { type: "LineString", coordinates: v.slice() };
+      if (t.mode === "point" || v.length === 1) return { type: "Point", coordinates: v[v.length - 1] };
+      if (t.mode === "area" && v.length >= 3) return C.polygonFromVertices(v);
+      return { type: "LineString", coordinates: v.slice() };
     }
     function geomData() {
-      const g = S.tool ? toolGeometry() : S.form && S.form.geometry;
+      const g = S.tool ? toolGeometry() : S.form && placeNow() !== "unknown" ? S.form.geometry : null;
       const features = [];
       if (g) {
         features.push({ type: "Feature", geometry: g, properties: {} });
@@ -680,10 +723,12 @@
         const src = map.getSource(SRC);
         if (src) { src.setData(geomData()); return; }
         map.addSource(SRC, { type: "geojson", data: geomData() });
-        map.addLayer({ id: LAYERS[0], type: "line", source: SRC, filter: ["==", ["geometry-type"], "LineString"],
-          paint: { "line-color": "#c17238", "line-width": 5, "line-opacity": 0.9 } });
+        map.addLayer({ id: LAYERS[2], type: "fill", source: SRC, filter: ["==", ["geometry-type"], "Polygon"],
+          paint: { "fill-color": "#c17238", "fill-opacity": 0.18 } });
+        map.addLayer({ id: LAYERS[0], type: "line", source: SRC, filter: ["in", ["geometry-type"], ["literal", ["LineString", "Polygon"]]],
+          paint: { "line-color": "#c17238", "line-width": 4, "line-opacity": 0.9 } });
         map.addLayer({ id: LAYERS[1], type: "circle", source: SRC, filter: ["==", ["geometry-type"], "Point"],
-          paint: { "circle-radius": 7, "circle-color": "#c17238", "circle-stroke-color": "#ffffff", "circle-stroke-width": 2 } });
+          paint: { "circle-radius": ["case", ["has", "vertex"], 4, 7], "circle-color": "#c17238", "circle-stroke-color": "#ffffff", "circle-stroke-width": 2 } });
       } catch (e) { /* style not ready: the styledata handler retries */ }
     }
     function attachMap() {
@@ -705,18 +750,20 @@
     function startTool(mode) {
       if (!map || S.busy || !C.allowedActions(S.item, S.session).edit) return;
       closeTool();
-      S.tool = { mode, vertices: [] };
+      if (placeNow() === "unknown") S.form.place = "approximate";
+      S.tool = { mode, vertices: [], problem: null };
       try { S.cursor = map.getCanvas().style.cursor; map.getCanvas().style.cursor = "crosshair"; } catch (e) { S.cursor = ""; }
       onMap("click", onMapClick);
       onDom(document, "keydown", onToolKey);
       shell.dispatchEvent(new CustomEvent("civic-editor:tool", { bubbles: true, detail: { active: true, mode } }));
       renderGeometry(); syncMap();
-      focusKey(mode === "line" ? "tool-cancel" : "tool-cancel");
-      say(mode === "point" ? "Режим точки: щёлкните по карте. Esc — отмена." : "Режим участка: щёлкайте по карте вдоль участка. Esc — отмена.");
+      focusKey("tool-cancel");
+      say(TOOL_TEXT[mode]);
     }
     function onMapClick(e) {
       if (!S.tool || !e || !e.lngLat) return;
       const p = [round6(e.lngLat.lng), round6(e.lngLat.lat)];
+      if (!C.inAstana(p[0], p[1])) { S.tool.problem = "Эта точка за пределами Астаны — щёлкните внутри города."; renderGeometry(); say(S.tool.problem, true); return; }
       if (S.tool.mode === "point") {
         closeTool(true);
         setGeometry({ type: "Point", coordinates: p });
@@ -724,18 +771,33 @@
         focusKey("geometry_confirmed");
         return;
       }
+      const last = S.tool.vertices[S.tool.vertices.length - 1];
+      if (last && last[0] === p[0] && last[1] === p[1]) return;  // a double click adds no zero-length segment
       S.tool.vertices.push(p);
+      S.tool.problem = null;
       renderGeometry(); syncMap();
+      say("Точек: " + S.tool.vertices.length + ".");
     }
-    function finishLine() {
-      if (!S.tool || S.tool.vertices.length < 2) return;
-      const v = S.tool.vertices.slice();
+    function finishShape() {
+      const t = S.tool;
+      if (!t || t.mode === "point") return;
+      const v = t.vertices.slice();
+      const g = t.mode === "area" ? C.polygonFromVertices(v) : { type: "LineString", coordinates: v };
+      const problem = C.geometryProblem(g);
+      if (problem) { t.problem = problem + " Уберите лишнюю точку или нажмите «Отмена»."; renderGeometry(); focusKey("tool-undo"); say(t.problem, true); return; }
       closeTool(true);
-      setGeometry({ type: "LineString", coordinates: v });
-      say("Участок отмечен, точек: " + v.length + ". Подтвердите расположение.");
+      setGeometry(g);
+      say("Отмечено: " + C.describeGeometry(g) + ". Подтвердите расположение.");
       focusKey("geometry_confirmed");
     }
-    function onToolKey(e) { if (e.key === "Escape" && S.tool) { e.preventDefault(); closeTool(); focusKey("tool-point"); } }
+    function onToolKey(e) {
+      if (!S.tool) return;
+      if (e.key === "Escape") { e.preventDefault(); closeTool(); focusKey("tool-point"); }
+      else if (e.key === "Enter" && S.tool.mode !== "point" && !(e.target && /^(TEXTAREA|INPUT|SELECT)$/.test(e.target.tagName))) { e.preventDefault(); finishShape(); }
+      else if ((e.key === "Backspace" || (e.key === "z" && (e.ctrlKey || e.metaKey))) && S.tool.vertices.length && !(e.target && /^(TEXTAREA|INPUT|SELECT)$/.test(e.target.tagName))) {
+        e.preventDefault(); S.tool.vertices.pop(); S.tool.problem = null; renderGeometry(); syncMap();
+      }
+    }
     function closeTool(quiet) {
       if (!S.tool) return;
       S.tool = null;
@@ -1103,7 +1165,11 @@
     }
 
     // ---------- save / publish / archive ----------
-    function firstErrorKey() { return Object.keys(F).find((k) => errorOf(k)); }
+    function firstErrorKey() {  // in screen order, not in the order the blocks were built
+      const ks = Object.keys(F).filter((k) => errorOf(k) && F[k].control);
+      ks.sort((a, b) => (F[a].control.compareDocumentPosition(F[b].control) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+      return ks[0] || Object.keys(F).find((k) => errorOf(k));
+    }
     function focusField(k) {
       const f = F[k];
       if (f && f.control && !f.control.disabled) { f.control.focus(); if (f.control.scrollIntoView) f.control.scrollIntoView({ block: "center", behavior: reduced() ? "auto" : "smooth" }); }
@@ -1112,6 +1178,11 @@
       if (S.busy || !S.form || S.view !== "edit") return;
       const it = S.item;
       if (!C.allowedActions(it, S.session).edit) return;
+      if (S.tool) {  // an unfinished drawing is neither saved silently nor thrown away silently
+        setNotice("error", "Рисование не завершено: нажмите «Готово», чтобы принять отметку, или «Отмена» (Esc), чтобы её не менять. Ничего не отправлено.");
+        focusKey(S.tool.mode !== "point" && S.tool.vertices.length ? "tool-done" : "tool-cancel");
+        return;
+      }
       S.tried = true;
       revalidate();
       const fields = currentFields();
