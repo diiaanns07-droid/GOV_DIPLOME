@@ -1,0 +1,72 @@
+{
+ "closed_edges": [
+  "C2D2",
+  "D2C2"
+ ],
+ "runs": [
+  {
+   "period_s": 3.0,
+   "veh_per_h": 1200,
+   "static_graph": {
+    "trips": 1200,
+    "affected_trips": 391,
+    "mean_added_freeflow_s_affected": 51.9,
+    "total_added_freeflow_veh_h": 5.64
+   },
+   "dynamic": {
+    "baseline": {
+     "loaded": 1200,
+     "inserted": 1200,
+     "running_end": 0,
+     "waiting_end": 0,
+     "teleports": 0,
+     "mean_duration_s": 156.5,
+     "mean_timeLoss_s": 24.5,
+     "entered_closed_edges": 476
+    },
+    "closure": {
+     "loaded": 1200,
+     "inserted": 1200,
+     "running_end": 0,
+     "waiting_end": 0,
+     "teleports": 0,
+     "mean_duration_s": 182.5,
+     "mean_timeLoss_s": 33.4,
+     "entered_closed_edges": 0
+    }
+   }
+  },
+  {
+   "period_s": 1.2,
+   "veh_per_h": 3000,
+   "static_graph": {
+    "trips": 3001,
+    "affected_trips": 952,
+    "mean_added_freeflow_s_affected": 52.5,
+    "total_added_freeflow_veh_h": 13.88
+   },
+   "dynamic": {
+    "baseline": {
+     "loaded": 3001,
+     "inserted": 2991,
+     "running_end": 255,
+     "waiting_end": 10,
+     "teleports": 59,
+     "mean_duration_s": 624.2,
+     "mean_timeLoss_s": 471.6,
+     "entered_closed_edges": 858
+    },
+    "closure": {
+     "loaded": 3001,
+     "inserted": 2825,
+     "running_end": 1122,
+     "waiting_end": 176,
+     "teleports": 195,
+     "mean_duration_s": 857.1,
+     "mean_timeLoss_s": 675.1,
+     "entered_closed_edges": 0
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,115 @@
+{
+  "round": 11,
+  "role": "CODEX_LOCAL",
+  "branch": "codex/govtech-main-interface",
+  "code_sha": "991af83a60719a26bc305363011b89c76f699830",
+  "source_r01_sha": "85b2aeb66e20415fac661aedd1bfb60782353cdc",
+  "checked_at": "2026-10-07T09:09:25.129693+00:00",
+  "level": "local-demo",
+  "url": "http://127.0.0.1:8611/",
+  "checks": [
+    {
+      "name": "pytest",
+      "status": "PASS",
+      "passed": 848,
+      "skipped": [
+        {
+          "test": "tests.civic.R01.test_r01_gateway_hardening.test_existing_parent_folder_keeps_its_mode",
+          "reason": "POSIX permission bits are not Windows ACLs"
+        },
+        {
+          "test": "tests.civic.R01.test_r01_p0_api.test_data_survives_restart[double]",
+          "reason": "restart persistence applies to the SQLite backend only"
+        },
+        {
+          "test": "tests.civic.R02.test_r02_http.test_patch_applies_to_real_web_server_and_serves_both_apis",
+          "reason": "web_server.patch не импортирован (он нужен только для исходного Handler b2cb2e0)"
+        },
+        {
+          "test": "tests.civic.R02.test_r02_import_cli.test_export_audit_file_is_private_and_not_overwritten",
+          "reason": "права POSIX"
+        },
+        {
+          "test": "tests.civic.R02.test_r02_schema.test_database_file_is_private",
+          "reason": "права POSIX"
+        }
+      ],
+      "deselected": [
+        "tests/civic/R09/test_r09_ui.py::test_ui_in_real_chromium"
+      ],
+      "reason_deselected": "Use installed Codex Browser; standalone browser runner not executed.",
+      "seconds": 118.25,
+      "command": ".venv/Scripts/python.exe -X utf8 -B -m pytest -q -p no:cacheprovider tests --deselect tests/civic/R09/test_r09_ui.py::test_ui_in_real_chromium --basetemp=.runtime/round11-pytest-verified"
+    },
+    {
+      "name": "ui.web_check",
+      "status": "PASS",
+      "passed": 14
+    },
+    {
+      "name": "node civic R03/R04",
+      "status": "PASS",
+      "passed": 51
+    },
+    {
+      "name": "node govtech regression suites",
+      "status": "PASS",
+      "suites": [
+        "plan",
+        "resilience",
+        "whatif",
+        "school_case",
+        "school_vs_k05"
+      ]
+    },
+    {
+      "name": "browser desktop with live OpenFreeMap",
+      "status": "PASS",
+      "observed": [
+        "Light map and attribution",
+        "3D extruded buildings after 3D button",
+        "Published card, original/current deadline and reason",
+        "History question answered from published facts, labelled template",
+        "Resident feedback form opens",
+        "Staff login form opens",
+        "K03 closure comparison calculates A/B on same map"
+      ],
+      "scenario": {
+        "pairs": 18,
+        "plan_a_mean_delta_m_displayed": 65.9,
+        "plan_b_mean_delta_m_displayed": 153.2
+      }
+    },
+    {
+      "name": "restart and normal Windows user",
+      "status": "PASS",
+      "modules": {
+        "store": "ready",
+        "feedback": "ready",
+        "scenarios": "ready",
+        "assistant": "ready"
+      },
+      "retained_public_objects": 7
+    },
+    {
+      "name": "node --check web/civic/scenarios/scenarios.js",
+      "status": "PASS"
+    }
+  ],
+  "limitations": [
+    "No verified real Astana works; 9 synthetic objects, 7 public.",
+    "R08 model not delivered.",
+    "Assistant template only; live LLM not tested.",
+    "Walking routes for a limited area; not traffic/time/CO2 forecasts.",
+    "Staff publish/moderate/restart covered by Python/HTTP tests, not a complete authenticated browser flow this session.",
+    "Mobile not rechecked this session.",
+    "Three POSIX permission tests do not validate Windows ACL security.",
+    "R10 old verdict applies to 8c6add9 only, not this code."
+  ],
+  "local_runtime": {
+    "db": ".runtime/round11-local.sqlite3",
+    "launcher": "run-city.bat",
+    "editor_accounts_created": 0,
+    "credentials": "Create a personal editor via CLI; instructions in RUN.txt."
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "as_of": "2026-10-06",
+  "city": "astana",
+  "evidence_rows": 0,
+  "ids_shared_between_real_and_demo": [],
+  "public_readiness": [],
+  "schema": "r05-validation-v1",
+  "slices": {
+    "demo_synthetic.json": {
+      "collection_issues": [],
+      "contract_profile_errors": 0,
+      "errors": 0,
+      "issues": {},
+      "profile": "demo",
+      "qa": {
+        "by_evidence_type": {
+          "synthetic": 9
+        },
+        "by_geometry_precision": {
+          "approximate": 8,
+          "unknown": 1
+        },
+        "by_kind": {
+          "construction": 2,
+          "event": 2,
+          "landscaping": 2,
+          "roadworks": 3
+        },
+        "by_publication": {
+          "archived": 1,
+          "draft": 1,
+          "published": 7
+        },
+        "by_status": {
+          "cancelled": 1,
+          "completed": 2,
+          "in_progress": 1,
+          "planned": 4,
+          "unknown": 1
+        },
+        "count": 9,
+        "geometry_types": {
+          "LineString": 2,
+          "Point": 5,
+          "Polygon": 1
+        },
+        "unknown_fields": {
+          "budget_amount_null": 9,
+          "geometry_null": 1,
+          "organization_null": 9,
+          "schedule_actual_end_null": 7,
+          "schedule_current_planned_end_null": 3,
+          "schedule_original_planned_end_null": 3,
+          "schedule_planned_start_null": 2,
+          "status_unknown": 1
+        }
+      },
+      "valid": true,
+      "version": "r05-astana-demo-2026-10-06-0063f1c38b60",
+      "warnings": 0
+    },
+    "historical.json": {
+      "collection_issues": [],
+      "contract_profile_errors": 0,
+      "errors": 0,
+      "issues": {},
+      "profile": "real",
+      "qa": {
+        "by_evidence_type": {},
+        "by_geometry_precision": {},
+        "by_kind": {},
+        "by_publication": {},
+        "by_status": {},
+        "count": 0,
+        "geometry_types": {
+          "LineString": 0,
+          "Point": 0,
+          "Polygon": 0
+        },
+        "unknown_fields": {
+          "budget_amount_null": 0,
+          "geometry_null": 0,
+          "organization_null": 0,
+          "schedule_actual_end_null": 0,
+          "schedule_current_planned_end_null": 0,
+          "schedule_original_planned_end_null": 0,
+          "schedule_planned_start_null": 0,
+          "status_unknown": 0
+        }
+      },
+      "valid": true,
+      "version": "r05-astana-historical-2026-10-06-3919bfc17c23",
+      "warnings": 0
+    },
+    "objects.json": {
+      "collection_issues": [],
+      "contract_profile_errors": 0,
+      "errors": 0,
+      "issues": {},
+      "profile": "real",
+      "qa": {
+        "by_evidence_type": {},
+        "by_geometry_precision": {},
+        "by_kind": {},
+        "by_publication": {},
+        "by_status": {},
+        "count": 0,
+        "geometry_types": {
+          "LineString": 0,
+          "Point": 0,
+          "Polygon": 0
+        },
+        "unknown_fields": {
+          "budget_amount_null": 0,
+          "geometry_null": 0,
+          "organization_null": 0,
+          "schedule_actual_end_null": 0,
+          "schedule_current_planned_end_null": 0,
+          "schedule_original_planned_end_null": 0,
+          "schedule_planned_start_null": 0,
+          "status_unknown": 0
+        }
+      },
+      "valid": true,
+      "version": "r05-astana-current-2026-10-06-be154531ff77",
+      "warnings": 0
+    }
+  },
+  "sources": {
+    "fetched": 7,
+    "not_fetched": 21,
+    "registry_issues": [],
+    "total": 28,
+    "unavailable": 0,
+    "used_by_objects": []
+  },
+  "valid": true,
+  "validator": "data/civic/astana/tools/civic_v1.py"
+}

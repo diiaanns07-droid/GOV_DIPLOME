@@ -1,0 +1,8 @@
+{
+  "schema": "r05-slice-config-v1",
+  "city": "astana",
+  "as_of": "2026-10-06",
+  "historical_cutoff_days": 365,
+  "status_max_age_days": 45,
+  "notes": "as_of — дата среза, а не время сборки; сборка не читает часы, поэтому повторный запуск даёт те же байты. Время в данных хранится в UTC (Z)."
+}

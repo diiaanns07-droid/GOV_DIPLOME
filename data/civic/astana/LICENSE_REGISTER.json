@@ -1,0 +1,359 @@
+{
+  "schema": "r05-license-register-v1",
+  "city": "astana",
+  "as_of": "2026-10-06",
+  "principles": [
+    "Условия данных и условия серверов различаются: лицензия данных OSM (ODbL) не даёт права нагружать чужой тайловый сервер, а бесплатный публичный сервер подложки не меняет лицензию данных.",
+    "Право смотреть веб-карту не равно праву выгружать из неё геометрию: геометрию Google/2GIS/Yandex не копировать.",
+    "Каждая запись ниже говорит, откуда взяты условия: полученный в этом раунде официальный текст (fetched), сохранённая в репозитории копия или неполученная страница (not_fetched). Not_fetched = перепроверить до публичного запуска.",
+    "Это рабочий реестр дипломного прототипа, не юридическое заключение."
+  ],
+  "entries": [
+    {
+      "id": "lic-osm-data",
+      "component": "Данные OpenStreetMap",
+      "kind": "data",
+      "used_in": [
+        "data/civic/astana/geofence.json (производная от data/astana_districts.geojson, OSM relations районов)",
+        "подложка OpenFreeMap (данные OSM в векторных тайлах) — подключает R01",
+        "граф K03 и сегменты K10 Overture/OSM — использует R07"
+      ],
+      "license": "ODbL-1.0",
+      "terms_evidence": [
+        {
+          "source_id": "src-osm-copyright",
+          "access_status": "not_fetched",
+          "note": "страница авторских прав OSM недоступна из среды (egress 403)"
+        },
+        {
+          "local_copy": "web/govtech/core/attribution/LICENSES/ODbL-1.0.txt @ b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+          "sha256": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1",
+          "access_status": "saved_copy"
+        },
+        {
+          "source_id": "src-openmaptiles-license",
+          "access_status": "fetched",
+          "note": "пример строки атрибуции «© OpenStreetMap contributors» со ссылкой на openstreetmap.org/copyright"
+        },
+        {
+          "source_id": "src-openfreemap-readme",
+          "access_status": "fetched",
+          "note": "строка «Data from OpenStreetMap» со ссылкой на openstreetmap.org/copyright"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "notice_produced_work",
+          "basis": "ODbL-1.0 §4.3 (сохранённая копия)",
+          "text": "При публичном использовании карты/производной работы — заметное уведомление, что содержимое получено из базы OSM и доступно по ODbL. На веб-карте: «© OpenStreetMap contributors» со ссылкой https://www.openstreetmap.org/copyright."
+        },
+        {
+          "id": "notice_convey_database",
+          "basis": "ODbL-1.0 §4.2",
+          "text": "При публичной передаче базы или производной базы (например geofence.json, граф K03) — только по ODbL, с текстом/URI лицензии и сохранением уведомлений."
+        },
+        {
+          "id": "share_alike",
+          "basis": "ODbL-1.0 §4.4",
+          "text": "Публично используемая производная база (граф, полигоны) распространяется по ODbL или совместимой лицензии. Не смешивать её с несовместимыми закрытыми данными."
+        },
+        {
+          "id": "access_to_derivative",
+          "basis": "ODbL-1.0 §4.6",
+          "text": "При публичном использовании производной базы — предложить машиночитаемую копию базы или файл/алгоритм изменений. В репозитории это builder + исходные файлы с хэшами."
+        }
+      ],
+      "required_notice": "© OpenStreetMap contributors",
+      "notice_link": "https://www.openstreetmap.org/copyright",
+      "verification": "partial",
+      "verification_note": "Текст ODbL — сохранённая копия; актуальную редакцию страницы openstreetmap.org/copyright перепроверить при доступе к сети.",
+      "public_display": "allowed_with_notice"
+    },
+    {
+      "id": "lic-osmf-tile-servers",
+      "component": "Тайловые серверы OSMF (tile.openstreetmap.org)",
+      "kind": "service",
+      "used_in": [
+        "не используется проектом: подложка — OpenFreeMap"
+      ],
+      "license": null,
+      "terms_evidence": [
+        {
+          "source_id": "src-osmf-tile-policy",
+          "access_status": "not_fetched"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "no_bulk_scrape",
+          "basis": "задание R05 (BRIEF/R05.txt); текст политики OSMF в этом раунде не получен",
+          "text": "Не делать массовую выгрузку/предзагрузку тайлов tile.openstreetmap.org и не использовать его как подложку продукта без проверки действующей политики."
+        }
+      ],
+      "required_notice": null,
+      "verification": "not_verified",
+      "verification_note": "Политика использования тайлов не получена (egress 403). Сервис не используется, поэтому прототип от неё не зависит.",
+      "public_display": "not_applicable"
+    },
+    {
+      "id": "lic-openfreemap",
+      "component": "OpenFreeMap — публичный сервер векторных тайлов и стилей (tiles.openfreemap.org, стиль liberty)",
+      "kind": "service",
+      "used_in": [
+        "web/map.js @ b2cb2e02c602c166ba6d47c02d8e902e5478c791: style https://tiles.openfreemap.org/styles/liberty, источник 3D-зданий https://tiles.openfreemap.org/planet — файл R01"
+      ],
+      "license": "Код проекта MIT; данные OpenStreetMap (ODbL); схема OpenMapTiles; стили Bright/Liberty/Positron: код BSD-3-Clause, дизайн CC-BY-4.0",
+      "terms_evidence": [
+        {
+          "source_id": "src-openfreemap-readme",
+          "access_status": "fetched",
+          "sha256": "d53a9172a251017bafc2cca1d2646939514809e01653a0b855f240e65ae9fdac",
+          "excerpt": "Attribution is required. If you are using MapLibre, they are automatically added, you have nothing to do."
+        },
+        {
+          "source_id": "src-openfreemap-license",
+          "access_status": "fetched",
+          "sha256": "d1754e5d291e4e8b9b0047ddba0a6ec75e1046ccd61a02c2cea3dac58f3fe355"
+        },
+        {
+          "source_id": "src-openfreemap-site",
+          "access_status": "not_fetched"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "attribution",
+          "basis": "OpenFreeMap README, раздел Attribution (fetched)",
+          "text": "Атрибуция обязательна. В MapLibre она добавляется автоматически из стиля — элемент AttributionControl нельзя скрывать или перекрывать. Для печати/видео/других клиентов: «OpenFreeMap © OpenMapTiles Data from OpenStreetMap» со ссылками."
+        },
+        {
+          "id": "no_service_guarantee",
+          "basis": "README (fetched): публичный инстанс бесплатен и существует на пожертвования",
+          "text": "Нет гарантии доступности: продукт должен честно работать без подложки (offline fallback), а проверка 3D при недоступном сервере = NOT_RUN."
+        },
+        {
+          "id": "offline_copy",
+          "basis": "README (fetched): опубликованы полные планетарные выгрузки для self-hosting",
+          "text": "Для офлайн-демо не выкачивать тайлы с публичного сервера; при необходимости — официальная выгрузка/self-hosting с теми же атрибуциями. В этом раунде не делалось."
+        }
+      ],
+      "required_notice": "OpenFreeMap © OpenMapTiles Data from OpenStreetMap",
+      "notice_link": "https://openfreemap.org",
+      "verification": "fetched_official_text",
+      "verification_note": "Условия взяты из официального репозитория проекта (ветка main, не закреплена коммитом; сверять sha256). Сайт openfreemap.org из среды недоступен. Фактическая строка атрибуции в стиле liberty не проверена (стиль не загружается из среды).",
+      "public_display": "allowed_with_notice"
+    },
+    {
+      "id": "lic-openmaptiles-schema",
+      "component": "OpenMapTiles — схема векторных тайлов и дизайн стилей, используемые OpenFreeMap",
+      "kind": "schema_and_design",
+      "used_in": [
+        "подложка OpenFreeMap; слой building/render_height для 3D (по названию полей — вывод, не проверено по стилю)"
+      ],
+      "license": "BSD-3-Clause (код), CC-BY-4.0 (дизайн/«look and feel»)",
+      "terms_evidence": [
+        {
+          "source_id": "src-openmaptiles-license",
+          "access_status": "fetched",
+          "sha256": "6b7862d9537cd3160f10034b8bb0b8d68165da134ea2001080166aa0b624e15c",
+          "excerpt": "Products or services using maps derived from OpenMapTiles schema need to visibly credit \"OpenMapTiles.org\" or reference \"OpenMapTiles\" with a link to http://openmaptiles.org/."
+        }
+      ],
+      "obligations": [
+        {
+          "id": "visible_credit",
+          "basis": "OpenMapTiles LICENSE.md (fetched)",
+          "text": "Видимая ссылка «© OpenMapTiles» на openmaptiles.org в углу интерактивной карты; для статичных изображений — подпись рядом."
+        }
+      ],
+      "required_notice": "© OpenMapTiles",
+      "notice_link": "https://openmaptiles.org/",
+      "verification": "fetched_official_text",
+      "verification_note": "Текст с GitHub openmaptiles/openmaptiles (ветка master). Сайт openmaptiles.org недоступен из среды.",
+      "public_display": "allowed_with_notice"
+    },
+    {
+      "id": "lic-overture",
+      "component": "Overture Maps, выпуск 2026-09-23.1 (сегменты/коннекторы K10, граф K03, социальные места K10)",
+      "kind": "data",
+      "used_in": [
+        "R07 (граф K03 → сценарии); R05 только сравнивает bbox, данные Overture в пакет R05 не копирует"
+      ],
+      "license": "transportation (из OSM): ODbL-1.0; places: CDLA-Permissive-2.0 (Overture, Meta) и Apache-2.0 (Foursquare) — по метаданным сохранённых файлов",
+      "terms_evidence": [
+        {
+          "source_id": "src-overture-attribution-mdx",
+          "access_status": "fetched",
+          "sha256": "1572e735c167d0bbbd6611cbda42dc3897431a8100a0330808e1c193ebedda1b",
+          "excerpt": "© OpenStreetMap contributors, Overture Maps Foundation"
+        },
+        {
+          "local_copy": "web/govtech/core/attribution/attribution.json @ b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+          "access_status": "saved_copy",
+          "note": "поштучная разбивка провайдеров и лицензий по файлам K10"
+        },
+        {
+          "source_id": "src-overture-attribution-site",
+          "access_status": "not_fetched"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "osm_derived_notice",
+          "basis": "Overture docs attribution.mdx (fetched) + ODbL",
+          "text": "Для слоёв, сделанных полностью или частично из OSM: «© OpenStreetMap contributors, Overture Maps Foundation»."
+        },
+        {
+          "id": "places_licenses",
+          "basis": "attribution.json @ b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+          "text": "Места K10 содержат записи Meta/Overture (CDLA-Permissive-2.0) и Foursquare (Apache-2.0): при показе слоя мест — указать этих поставщиков и приложить тексты лицензий."
+        }
+      ],
+      "required_notice": "© OpenStreetMap contributors, Overture Maps Foundation",
+      "notice_link": "https://docs.overturemaps.org/attribution/",
+      "verification": "partial",
+      "verification_note": "Сгенерированная таблица лицензий по темам (_generated_attribution.mdx) не получена; лицензии по темам взяты из метаданных сохранённых файлов. У сегментов K10 среди источников есть TomTom (8 записей, ODbL по метаданным) — отражено в существующей строке #gov-attribution.",
+      "public_display": "allowed_with_notice"
+    },
+    {
+      "id": "lic-maplibre",
+      "component": "MapLibre GL JS (клиентская библиотека карты)",
+      "kind": "code",
+      "used_in": [
+        "web/map.js и web/index.html — R01"
+      ],
+      "license": "BSD-3-Clause",
+      "terms_evidence": [
+        {
+          "source_id": "src-maplibre-license",
+          "access_status": "fetched",
+          "sha256": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "keep_notice",
+          "basis": "BSD-3-Clause",
+          "text": "Сохранять уведомление об авторских правах при распространении библиотеки (сборки/копии в репозитории)."
+        }
+      ],
+      "required_notice": null,
+      "verification": "fetched_official_text",
+      "verification_note": "Версия библиотеки в приложении R05 не проверял.",
+      "public_display": "not_applicable"
+    },
+    {
+      "id": "lic-r05-geofence",
+      "component": "data/civic/astana/geofence.json",
+      "kind": "derived_data",
+      "used_in": [
+        "civic_v1.py: проверка координат (другой город, перепутанные lon/lat)"
+      ],
+      "license": "ODbL-1.0 (производная база от OSM)",
+      "terms_evidence": [
+        {
+          "see": "lic-osm-data"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "odbl_notice_in_file",
+          "basis": "ODbL §4.2",
+          "text": "Файл содержит поле license и атрибуцию входа; при передаче — вместе с текстом/URI ODbL."
+        }
+      ],
+      "required_notice": "© OpenStreetMap contributors",
+      "verification": "partial",
+      "verification_note": "Границы районов OSM не являются официальным юридическим описанием.",
+      "public_display": "internal_check_only"
+    },
+    {
+      "id": "lic-r05-demo",
+      "component": "data/civic/astana/demo_synthetic.json",
+      "kind": "synthetic_data",
+      "used_in": [
+        "демо-режим интерфейса и e2e-проверки R01/R03/R04/R10"
+      ],
+      "license": "Создано R05 для прототипа; сторонних данных не содержит (геометрия схематичная, не из OSM)",
+      "terms_evidence": [],
+      "obligations": [
+        {
+          "id": "visible_synthetic_label",
+          "basis": "CONTRACT civic-v1 §1",
+          "text": "Пометка synthetic видна в каждом отображении: на карте, в карточке, в списке."
+        }
+      ],
+      "required_notice": "Демонстрационные данные (синтетические)",
+      "verification": "not_applicable",
+      "public_display": "allowed_only_with_demo_label"
+    },
+    {
+      "id": "lic-r05-real-objects",
+      "component": "data/civic/astana/objects.json / historical.json (реальные записи)",
+      "kind": "facts_with_citations",
+      "used_in": [
+        "импорт R02 → редактор R04 → публичная карта R03"
+      ],
+      "license": null,
+      "terms_evidence": [
+        {
+          "source_id": "src-govkz-astana-news-1193903",
+          "access_status": "not_fetched"
+        },
+        {
+          "source_id": "src-govkz-astana-article-99399",
+          "access_status": "not_fetched"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "cite_dont_copy",
+          "basis": "осторожное правило R05 при неизвестных условиях gov.kz/СМИ",
+          "text": "Хранить факты (сроки, суммы, организация) со ссылкой на источник и короткой выдержкой ≤300 символов для редактора; не копировать тексты статей целиком, фото и вложения; подрядные документы — только с разрешения."
+        },
+        {
+          "id": "freshness",
+          "basis": "CONTRACT/R05",
+          "text": "Старое объявление не подтверждает текущее состояние: статус без свежего источника — unknown, на карточке видна дата источника."
+        }
+      ],
+      "required_notice": "Источник: <издатель>, <дата публикации>, ссылка",
+      "verification": "not_verified",
+      "verification_note": "Условия повторного использования материалов gov.kz и СМИ не получены (egress 403). На 2026-10-06 реальных записей 0.",
+      "public_display": "needs_rights_check"
+    },
+    {
+      "id": "lic-proprietary-web-maps",
+      "component": "Google Maps / 2GIS / Yandex Maps",
+      "kind": "prohibited_source",
+      "used_in": [],
+      "license": "проприетарные условия",
+      "terms_evidence": [],
+      "obligations": [
+        {
+          "id": "no_extraction",
+          "basis": "задание R05; правило валидатора proprietary_geometry",
+          "text": "Не копировать геометрию, адреса-точки и тексты карточек с этих карт; просмотр не даёт права на выгрузку."
+        }
+      ],
+      "required_notice": null,
+      "verification": "not_applicable",
+      "public_display": "prohibited"
+    },
+    {
+      "id": "lic-repository-code",
+      "component": "Код R05 (data/civic/astana/tools/*.py, tests/civic/R05)",
+      "kind": "code",
+      "used_in": [
+        "валидатор, сборка, импорт-хелпер"
+      ],
+      "license": null,
+      "terms_evidence": [],
+      "obligations": [],
+      "required_notice": null,
+      "verification": "not_applicable",
+      "verification_note": "В корне репозитория нет файла LICENSE; лицензию кода определяет владелец репозитория.",
+      "public_display": "not_applicable"
+    }
+  ]
+}

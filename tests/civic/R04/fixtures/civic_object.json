@@ -1,0 +1,38 @@
+{
+  "schema_version": "civic-v1",
+  "id": "demo-astana-work-01",
+  "city": "astana",
+  "kind": "roadworks",
+  "title": "Демонстрационный ремонт прохода",
+  "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах.",
+  "status": "planned",
+  "publication": "published",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      71.43,
+      51.17
+    ]
+  },
+  "geometry_precision": "approximate",
+  "schedule": {
+    "planned_start": "2026-10-14",
+    "original_planned_end": "2026-10-20",
+    "current_planned_end": "2026-10-22",
+    "actual_end": null
+  },
+  "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+  },
+  "responsible": {
+    "organization": null,
+    "public_contact": null
+  },
+  "evidence_type": "synthetic",
+  "source_refs": [],
+  "evidence_notes": "Создано координатором для теста; не публиковать как реальный ремонт.",
+  "updated_at": "2026-10-06T12:00:00+06:00",
+  "revision": 2
+}

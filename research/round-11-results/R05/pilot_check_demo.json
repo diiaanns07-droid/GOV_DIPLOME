@@ -1,0 +1,119 @@
+{
+  "by_district": {
+    "baikonur": 6,
+    "saryarka": 3
+  },
+  "graph": {
+    "at_commit": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+    "declared_bbox": [
+      71.418372,
+      51.163033,
+      71.447,
+      51.181
+    ],
+    "graph_sha256": "799d26e5155248cceb31eb67f76f92d453491770a73c387bf0371289ddcf0ae4",
+    "node_extent": [
+      71.4138133,
+      51.158798,
+      71.4504406,
+      51.189521
+    ],
+    "path": "web/govtech/k03/astana.graph.json",
+    "policy_family": "pedestrian-v1"
+  },
+  "items": 9,
+  "pilot_by_confirmed_concentration": "not_possible: no confirmed real objects in this slice",
+  "placement_counts": {
+    "inside_graph_bbox": 8,
+    "list_only": 1
+  },
+  "real_items": 0,
+  "rows": [
+    {
+      "districts": [
+        "saryarka"
+      ],
+      "evidence_type": "synthetic",
+      "geometry": "Point",
+      "id": "demo-astana-archived",
+      "placement": "inside_graph_bbox",
+      "precision": "approximate"
+    },
+    {
+      "districts": [
+        "saryarka"
+      ],
+      "evidence_type": "synthetic",
+      "geometry": "Point",
+      "id": "demo-astana-construction-unknown",
+      "placement": "inside_graph_bbox",
+      "precision": "approximate"
+    },
+    {
+      "districts": [
+        "baikonur"
+      ],
+      "evidence_type": "synthetic",
+      "geometry": "Point",
+      "id": "demo-astana-draft-hidden",
+      "placement": "inside_graph_bbox",
+      "precision": "approximate"
+    },
+    {
+      "districts": [
+        "baikonur"
+      ],
+      "evidence_type": "synthetic",
+      "geometry": "Point",
+      "id": "demo-astana-event-weekend",
+      "placement": "inside_graph_bbox",
+      "precision": "approximate"
+    },
+    {
+      "districts": [
+        "baikonur"
+      ],
+      "evidence_type": "synthetic",
+      "geometry": "Polygon",
+      "id": "demo-astana-landscaping-yard",
+      "placement": "inside_graph_bbox",
+      "precision": "approximate"
+    },
+    {
+      "geometry": null,
+      "id": "demo-astana-list-only",
+      "placement": "list_only"
+    },
+    {
+      "districts": [
+        "baikonur"
+      ],
+      "evidence_type": "synthetic",
+      "geometry": "Point",
+      "id": "demo-astana-roadworks-cancelled",
+      "placement": "inside_graph_bbox",
+      "precision": "approximate"
+    },
+    {
+      "districts": [
+        "baikonur"
+      ],
+      "evidence_type": "synthetic",
+      "geometry": "LineString",
+      "id": "demo-astana-roadworks-completed",
+      "placement": "inside_graph_bbox",
+      "precision": "approximate"
+    },
+    {
+      "districts": [
+        "baikonur",
+        "saryarka"
+      ],
+      "evidence_type": "synthetic",
+      "geometry": "LineString",
+      "id": "demo-astana-roadworks-delay",
+      "placement": "inside_graph_bbox",
+      "precision": "approximate"
+    }
+  ]
+}

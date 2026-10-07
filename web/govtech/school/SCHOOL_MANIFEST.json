@@ -1,0 +1,44 @@
+{
+ "note": "Подготовленные кейсы school-access-case-v1, подаются браузеру байт-в-байт. Код web/govtech/school/*.js — BUILD r10.",
+ "cases": [
+  {
+   "file": "cases/shymkent.case.json",
+   "sha256": "5899cd73a9ba553e3fefb8bc7c2b3fd6e5200e34b1737ba1c8424f5c161dac07",
+   "source_branch": "claude/clever-mccarthy-pywscu",
+   "source_commit": "996bbbcc67e88bb432dddf0c1b1292390ff63853",
+   "source_path": "research/round-10-results/K01/shymkent.case.json",
+   "producer": "K01 r10 (выполнено в ветке K02, см. его STATUS)"
+  },
+  {
+   "file": "cases/shymkent.case.meta.json",
+   "sha256": "18f7883388ba549d49701eb098fcc4a5a0d0e5826984b5b1358768ca779a65df",
+   "source_branch": "claude/clever-mccarthy-pywscu",
+   "source_commit": "996bbbcc67e88bb432dddf0c1b1292390ff63853",
+   "source_path": "research/round-10-results/K01/shymkent.case.meta.json",
+   "producer": "K01 r10 (выполнено в ветке K02, см. его STATUS)"
+  },
+  {
+   "file": "cases/astana.case.json",
+   "sha256": "03485d2e79e9b882f6dda62a2a97c550a093c85d51325750a8b6ed2a05e04d11",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "75d2f10e5c200569f9e2d21491d8e6a313649591",
+   "source_path": "research/round-10-results/K10/package/astana.case.json",
+   "producer": "K10 r10"
+  },
+  {
+   "file": "cases/astana.match-review.json",
+   "sha256": "b5ccd2aa0e7a511782b22f69504de9720d2ef39cbcca2c0c1268924837c79782",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "75d2f10e5c200569f9e2d21491d8e6a313649591",
+   "source_path": "research/round-10-results/K10/package/match-review.json",
+   "producer": "K10 r10"
+  }
+ ],
+ "build_extensions": {
+  "variants": "{A,B}: id мест, сравниваемых по отдельности; при импорте пакета без поля берутся из selected_candidate_ids[0..1]",
+  "parameters.target_policy": "overture-school-category-v1 (кейс из среза) | case-package-v1 (пакет перечисляет только целевые школы)",
+  "parameters.routing": "для pedestrian-v1: {graph_sha256, policy_sha256, max_snap_m} графа K03; входит в case_digest",
+  "canonicalization": "sac-canon-v1: ключи по возрастанию, записи по id, списки id отсортированы; title/label/field_provenance не входят в digest"
+ },
+ "runtime_check": "school-ui.js загружает этот манифест и сверяет sha256 каждого пакета перед использованием; несовпадение → пакет не принимается, используется кейс из среза"
+}

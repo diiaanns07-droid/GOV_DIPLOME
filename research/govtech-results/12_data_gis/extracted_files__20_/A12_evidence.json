@@ -1,0 +1,2732 @@
+{
+ "meta": {
+  "agent_id": "A12",
+  "topic": "Общая база данных, знаний и география Шымкента и Астаны",
+  "city": "Шымкент (основной), Астана (второй)",
+  "searched_at": "2026-10-04T17:20Z–2026-10-04 (UTC)",
+  "access_limitations": "Нет веб-поиска и браузера. Сеть песочницы ограничена allowlist (GitHub, PyPI, npm и др.). Все казахстанские госисточники, OSM-сервисы, HDX и geoboundaries.org вернули 403 host_not_allowed (A12-F001). Проверены только: репозиторий STUPITS (через codeload, commit 834a25f), Natural Earth (GitHub), указатель geoBoundaries. Остальные наборы — кандидаты из памяти модели и стартовых URL координатора; их существование, поля и условия НЕ проверены."
+ },
+ "sources": [
+  {
+   "source_id": "A12-S001",
+   "title": "ПРОМПТ 12. Общая база данных, знаний и география двух городов (задание A12)",
+   "publisher": "Владелец проекта / координатор",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "task_brief",
+   "access_status": "opened",
+   "notes": "Постановка задачи; содержит стартовые URL координатора. Не является доказательством фактов о городе."
+  },
+  {
+   "source_id": "A12-S002",
+   "title": "STUPITS «Аким на 5 часов» — снимок репозитория (ветка main)",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "repo_snapshot",
+   "access_status": "opened",
+   "notes": "commit 834a25fb860dd5514d02c9274b70d7bf8a53a79c; zip sha256 497921e48e58af5ccbedaa6ee3fc12f7bf6b214e95ec09e5ad5a23b8d77d0357, 9 404 339 байт. GitHub REST API в момент проверки вернул rate limit, поэтому снимок взят через codeload. Только чтение."
+  },
+  {
+   "source_id": "A12-S003",
+   "title": "data/astana_districts.geojson",
+   "publisher": "BAITC-Hacks / команда STUPITS (данные © OpenStreetMap contributors)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/astana_districts.geojson",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "sha256 9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e; metadata.generated_at 2026-09-23T11:32:42Z; ODbL."
+  },
+  {
+   "source_id": "A12-S004",
+   "title": "docs/GEO_SOURCES.md — Источники границ районов Астаны",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/docs/GEO_SOURCES.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "sha256 bf44c92d…; описывает relation ID, проверки Shapely, контракт полей."
+  },
+  {
+   "source_id": "A12-S005",
+   "title": "data/geo_sources/astana_districts_overpass.json — сохранённый ответ Overpass",
+   "publisher": "OpenStreetMap contributors через Overpass API (сохранено командой STUPITS)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/geo_sources/astana_districts_overpass.json",
+   "published_at": "2026-09-22",
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "osm",
+   "access_status": "opened",
+   "notes": "osm3s.timestamp_osm_base 2026-09-22T08:45:51Z; 11 relations; ODbL."
+  },
+  {
+   "source_id": "A12-S006",
+   "title": "data/geo_sources/sara_nominatim.json — Nominatim lookup R19733918",
+   "publisher": "OpenStreetMap / Nominatim (сохранено командой STUPITS)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/geo_sources/sara_nominatim.json",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "osm",
+   "access_status": "opened",
+   "notes": "Поле address содержит ISO3166-2 коды."
+  },
+  {
+   "source_id": "A12-S007",
+   "title": "data/real_context.json и data/real_context_meta.json — справочный слой объектов OSM",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/real_context.json",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "meta.status='unavailable', ошибка ReadTimeout Overpass; все значения 0."
+  },
+  {
+   "source_id": "A12-S008",
+   "title": "docs/tz/tz_task.txt и tz_data_and_rules.txt — исходное ТЗ хакатона",
+   "publisher": "Организаторы хакатона (копия в репозитории STUPITS)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/docs/tz/tz_task.txt",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "Явно указывает синтетический датасет условных районов."
+  },
+  {
+   "source_id": "A12-S009",
+   "title": "README.md репозитория STUPITS",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/README.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "Строки 617–625 (география), 653–655 (планы реальных данных)."
+  },
+  {
+   "source_id": "A12-S010",
+   "title": "Natural Earth 1:10m Admin 1 – States, Provinces (GeoJSON)",
+   "publisher": "Natural Earth (зеркало nvkelso/natural-earth-vector на GitHub)",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "dataset_file",
+   "access_status": "opened",
+   "notes": "Файл VERSION ветки master = 5.2.0-pre; sha256 22d0e3ad…; 40 726 851 байт; лицензия public domain (README репозитория)."
+  },
+  {
+   "source_id": "A12-S011",
+   "title": "Natural Earth 1:10m Populated Places (simple, GeoJSON)",
+   "publisher": "Natural Earth (зеркало на GitHub)",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_populated_places_simple.geojson",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "dataset_file",
+   "access_status": "opened",
+   "notes": "sha256 fd3fa867…; 4 932 147 байт; public domain."
+  },
+  {
+   "source_id": "A12-S012",
+   "title": "geoBoundaries gbOpen KAZ ADM1/ADM2 metaData.json",
+   "publisher": "William & Mary geoLab (GitHub wmgeolab/geoBoundaries)",
+   "url": "https://raw.githubusercontent.com/wmgeolab/geoBoundaries/main/releaseData/gbOpen/KAZ/ADM2/geoBoundaries-KAZ-ADM2-metaData.json",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "dataset_file",
+   "access_status": "pointer_only",
+   "notes": "Получен только указатель Git LFS (128 байт); содержимое на github-cloud.githubusercontent.com заблокировано allowlist. Лицензия и источник границ не проверены."
+  },
+  {
+   "source_id": "A12-S013",
+   "title": "Журнал проверки сетевого доступа A12 (curl, 16 URL)",
+   "publisher": "A12 (собственный эксперимент)",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "experiment_log",
+   "access_status": "opened",
+   "notes": "curl 8.5.0; все 16 хостов вернули 403 host_not_allowed прокси песочницы. Это ограничение среды A12, а не недоступность источников."
+  },
+  {
+   "source_id": "A12-S014",
+   "title": "Эксперимент A12: схема SQLite + QC на реальных файлах (a12_experiment.py)",
+   "publisher": "A12 (собственный эксперимент)",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04T17:20:46Z",
+   "source_type": "experiment_log",
+   "access_status": "opened",
+   "notes": "Python 3.12.3, SQLite 3.45.1, shapely 2.1.2, pyproj 3.8.0. Вывод в A12_manifest.json/experiments."
+  },
+  {
+   "source_id": "A12-S020",
+   "title": "БНС: динамические таблицы региона Шымкент (стартовый URL координатора)",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "official_stat",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S021",
+   "title": "Портал открытых данных data.egov.kz",
+   "publisher": "Электронное правительство РК",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S022",
+   "title": "Управление цифровизации г. Шымкент на gov.kz (стартовый URL координатора)",
+   "publisher": "Акимат г. Шымкент",
+   "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "official_page",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S023",
+   "title": "ИАС «Талдау» БНС",
+   "publisher": "Бюро национальной статистики",
+   "url": "https://taldau.stat.gov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "official_stat",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S024",
+   "title": "ИПС «Әділет» — тексты НПА",
+   "publisher": "Институт законодательства и правовой информации РК / Минюст",
+   "url": "https://adilet.zan.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "legal_db",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S025",
+   "title": "РГП «Казгидромет»",
+   "publisher": "Казгидромет (МЭПР РК)",
+   "url": "https://www.kazhydromet.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "official_page",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S026",
+   "title": "Портал государственных закупок",
+   "publisher": "АО «Центр электронных финансов» / Минфин РК",
+   "url": "https://goszakup.gov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "registry",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S027",
+   "title": "Открытые бюджеты",
+   "publisher": "Электронное правительство РК",
+   "url": "https://budget.egov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S028",
+   "title": "Overpass API (основной сервер)",
+   "publisher": "OpenStreetMap community",
+   "url": "https://overpass-api.de/api/status",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "api",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S029",
+   "title": "Nominatim",
+   "publisher": "OpenStreetMap Foundation",
+   "url": "https://nominatim.openstreetmap.org/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "api",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S030",
+   "title": "Geofabrik: выгрузка OSM Kazakhstan",
+   "publisher": "Geofabrik GmbH (данные OSM, ODbL)",
+   "url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_file",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S031",
+   "title": "Humanitarian Data Exchange",
+   "publisher": "UN OCHA",
+   "url": "https://data.humdata.org/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S032",
+   "title": "geoBoundaries (сайт)",
+   "publisher": "William & Mary geoLab",
+   "url": "https://www.geoboundaries.org/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S033",
+   "title": "SUMO Rerouter (стартовый URL координатора, транспорт)",
+   "publisher": "DLR / Eclipse SUMO",
+   "url": "https://sumo.dlr.de/docs/Simulation/Rerouter.html",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "documentation",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; содержимое A12 НЕ видел. blocked_in_sandbox (HTTP 403, x-deny-reason: host_not_allowed, 2026-10-04T17:20Z)"
+  },
+  {
+   "source_id": "A12-S040",
+   "title": "Открытые НПА",
+   "publisher": "Электронное правительство РК",
+   "url": "https://legalacts.egov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "legal_db",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12 URL домена взят из памяти модели и требует проверки."
+  },
+  {
+   "source_id": "A12-S041",
+   "title": "e-Otinish — обращения физических и юридических лиц",
+   "publisher": "Электронное правительство РК",
+   "url": "https://eotinish.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "service_portal",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12 URL домена взят из памяти модели и требует проверки."
+  },
+  {
+   "source_id": "A12-S042",
+   "title": "Портал правовой статистики КПСиСУ Генпрокуратуры",
+   "publisher": "КПСиСУ ГП РК",
+   "url": "https://qamqor.gov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "official_stat",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12 URL домена взят из памяти модели и требует проверки."
+  },
+  {
+   "source_id": "A12-S043",
+   "title": "Реестр государственного имущества / электронные аукционы",
+   "publisher": "Минфин РК / ИАЦ",
+   "url": "https://gosreestr.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "registry",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12 URL домена взят из памяти модели и требует проверки."
+  },
+  {
+   "source_id": "A12-S044",
+   "title": "Overture Maps Foundation",
+   "publisher": "Overture Maps Foundation",
+   "url": "https://overturemaps.org/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_portal",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12 URL домена взят из памяти модели и требует проверки."
+  },
+  {
+   "source_id": "A12-S045",
+   "title": "GHSL — Global Human Settlement Layer",
+   "publisher": "European Commission JRC",
+   "url": "https://ghsl.jrc.ec.europa.eu/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_portal",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12 URL домена взят из памяти модели и требует проверки."
+  },
+  {
+   "source_id": "A12-S046",
+   "title": "WorldPop",
+   "publisher": "University of Southampton / WorldPop",
+   "url": "https://www.worldpop.org/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_portal",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12 URL домена взят из памяти модели и требует проверки."
+  },
+  {
+   "source_id": "A12-S047",
+   "title": "Copernicus Data Space (Sentinel-5P) и CAMS",
+   "publisher": "European Commission / ECMWF",
+   "url": "https://dataspace.copernicus.eu/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_portal",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12 URL домена взят из памяти модели и требует проверки."
+  },
+  {
+   "source_id": "A12-S048",
+   "title": "MapLibre: add a 3D model using three.js (стартовый URL координатора)",
+   "publisher": "MapLibre",
+   "url": "https://maplibre.org/maplibre-gl-js/docs/examples/add-a-3d-model-using-threejs/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "documentation",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12"
+  },
+  {
+   "source_id": "A12-S049",
+   "title": "SUMO Dynamic User Assignment (стартовый URL координатора)",
+   "publisher": "DLR / Eclipse SUMO",
+   "url": "https://sumo.dlr.de/docs/Demand/Dynamic_User_Assignment.html",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "documentation",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; содержимое A12 НЕ видел. not_attempted: host is outside the sandbox allowlist; content not seen by A12"
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "A12-F001",
+   "statement": "Из среды A12 все 16 проверенных стартовых и геоисточников (stat.gov.kz, data.egov.kz, gov.kz, taldau, adilet, kazhydromet, goszakup, budget.egov, Overpass, Nominatim, Geofabrik, openstreetmap.org, HDX, geoboundaries.org, sumo.dlr.de, google.com) недоступны: прокси вернул 403 host_not_allowed.",
+   "kind": "observed",
+   "value": 16,
+   "unit": "URL",
+   "geography": null,
+   "period": "2026-10-04T17:20Z",
+   "source_refs": [
+    {
+     "source_id": "A12-S013",
+     "locator": "curl log, все строки"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение песочницы A12; ничего не говорит о доступности источников для владельца проекта."
+  },
+  {
+   "fact_id": "A12-F002",
+   "statement": "В продукте STUPITS география Астаны — 6 полигонов районов OSM с id esil, almaty, saryarka, baikonur, nura, saraishyk и relation 3479876, 3482819, 3486954, 8593081, 20593940, 19733918.",
+   "kind": "observed",
+   "value": 6,
+   "unit": "районов",
+   "geography": "г. Астана",
+   "period": "OSM base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "A12-S003",
+     "locator": "features[*].properties.id, osm_id"
+    },
+    {
+     "source_id": "A12-S004",
+     "locator": "таблица «ID в приложении»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Границы OSM — общественный источник, не юридически заверенные (S004)."
+  },
+  {
+   "fact_id": "A12-F003",
+   "statement": "У района Сарайшык в OSM admin_level=8, у остальных пяти районов Астаны — 6.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "OSM base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "A12-S003",
+     "locator": "properties.osm_admin_level"
+    },
+    {
+     "source_id": "A12-S004",
+     "locator": "абзац после таблицы"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Выборка по одному admin_level потеряет район; выбирать по явным relation ID."
+  },
+  {
+   "fact_id": "A12-F004",
+   "statement": "Ответ Overpass по bbox Астаны (50.90,71.0,51.5,72.0) содержит 11 отношений, включая районы Акмолинской области (Целиноградский, Аршалынский, Шортандинский) и городскую администрацию Косшы (relation 15594335).",
+   "kind": "observed",
+   "value": 11,
+   "unit": "relations",
+   "geography": "bbox Астаны",
+   "period": "OSM base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "A12-S005",
+     "locator": "elements[*].tags.name"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "bbox-запрос нельзя считать списком районов города; Косшы не входит в Астану как район (подтвердить правовым актом)."
+  },
+  {
+   "fact_id": "A12-F005",
+   "statement": "Nominatim для R19733918 возвращает address.ISO3166-2-lvl4='KZ-71', state='Астана', postcode='010000'.",
+   "kind": "observed",
+   "value": "KZ-71",
+   "unit": "ISO 3166-2",
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S006",
+     "locator": "[0].address"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Код получен из OSM/Nominatim, не из ISO или БНС; сверить с классификатором КАТО."
+  },
+  {
+   "fact_id": "A12-F006",
+   "statement": "Файл real_context.json хранит 0 по всем 25 ячейкам (5 категорий × 5 районов), хотя real_context_meta.json имеет status='unavailable' и ошибку ReadTimeout Overpass: нули обозначают отсутствие данных.",
+   "kind": "observed",
+   "value": 25,
+   "unit": "ячеек",
+   "geography": "г. Астана",
+   "period": "generated_at 2026-09-23T09:25:25Z",
+   "source_refs": [
+    {
+     "source_id": "A12-S007",
+     "locator": "real_context.json $.*.*; real_context_meta.json $.status, $.error"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Слой справочный и, по meta.usage, не влияет на индекс; но при переносе на Шымкент такой 0 исказит любой расчёт."
+  },
+  {
+   "fact_id": "A12-F007",
+   "statement": "ТЗ хакатона прямо допускает «заранее подготовленный синтетический датасет» и описывает «условные районы» и «условную стоимость» мер.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "условный город",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S008",
+     "locator": "tz_task.txt, разделы «Задача» и «Данные»; tz_data_and_rules.txt «Бюджет: 100 условных единиц»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Показатели, цены, лаги и формула Score — учебные; переносить на Шымкент без калибровки нельзя."
+  },
+  {
+   "fact_id": "A12-F008",
+   "statement": "README STUPITS: в ТЗ 5 районов, а на карте 6; Сарайшык показан без оценки (scoring_enabled=false), «выделенный из Есильского района».",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S009",
+     "locator": "README.md строка 625"
+    },
+    {
+     "source_id": "A12-S003",
+     "locator": "saraishyk.properties.scoring_enabled"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Утверждение о происхождении Сарайшыка — слова авторов README; правовой акт A12 не открывал."
+  },
+  {
+   "fact_id": "A12-F009",
+   "statement": "Приближённая площадь area_km2 в репозитории отличается от геодезической (WGS84, pyproj.Geod) на 0,6–0,9%: esil 193,0/194,6; almaty 92,6/93,4; saryarka 67,3/67,8; baikonur 182,0/183,5; nura 187,0/188,6; saraishyk 60,9/61,4 км².",
+   "kind": "derived",
+   "value": null,
+   "unit": "км²",
+   "geography": "г. Астана",
+   "period": "OSM base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "A12-S003",
+     "locator": "geometry + properties.area_km2"
+    }
+   ],
+   "derivation": "pyproj.Geod(ellps='WGS84').geometry_area_perimeter(geom); сравнение с area_km2",
+   "confidence": "high",
+   "caveats": "Площадь геометрии OSM, не официальная площадь района."
+  },
+  {
+   "fact_id": "A12-F010",
+   "statement": "Natural Earth 10m admin-1 (ветка master, VERSION 5.2.0-pre) содержит 16 единиц Казахстана; отдельной единицы Шымкент нет; «South Kazakhstan» подписан name_ru='Туркестанская область' (ISO KZ-YUZ); Астана подписана 'Нур-Султан'.",
+   "kind": "observed",
+   "value": 16,
+   "unit": "единиц",
+   "geography": "Казахстан",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S010",
+     "locator": "features где adm0_a3='KAZ': name, name_ru, iso_3166_2"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Для городского уровня набор непригоден; полезен как отрицательный контроль."
+  },
+  {
+   "fact_id": "A12-F011",
+   "statement": "Natural Earth populated places: точка Shymkent lon 69.595018, lat 42.320012, pop_max 465392, adm1name 'South Kazakhstan'.",
+   "kind": "observed",
+   "value": null,
+   "unit": "градусы WGS84",
+   "geography": "г. Шымкент (точка)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S011",
+     "locator": "feature name='Shymkent', adm0_a3='KAZ'"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Точка-центроид; численность устаревшая и без года — не использовать как население."
+  },
+  {
+   "fact_id": "A12-F012",
+   "statement": "Наивный spatial join точки Шымкента с Natural Earth admin-1 относит город к 'South Kazakhstan' / 'Туркестанская область' (KZ-YUZ).",
+   "kind": "derived",
+   "value": null,
+   "unit": null,
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S010",
+     "locator": "polygon South Kazakhstan"
+    },
+    {
+     "source_id": "A12-S011",
+     "locator": "point Shymkent"
+    }
+   ],
+   "derivation": "shapely 2.1.2: polygon.contains(Point(69.595018, 42.320012))",
+   "confidence": "high",
+   "caveats": "Демонстрирует риск приписать город области при использовании устаревших границ."
+  },
+  {
+   "fact_id": "A12-F013",
+   "statement": "Для обоих городов подходит зона UTM 42N (EPSG:32642) для метрических операций: zone = floor((lon+180)/6)+1 = 42 при lon 69.60 (Шымкент) и 71.48 (центр подписи района Есиль).",
+   "kind": "derived",
+   "value": 42,
+   "unit": "номер зоны UTM",
+   "geography": "Шымкент, Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S011",
+     "locator": "Shymkent lon"
+    },
+    {
+     "source_id": "A12-S003",
+     "locator": "esil.center_lon"
+    }
+   ],
+   "derivation": "floor((69.595+180)/6)+1=42; floor((71.483+180)/6)+1=42",
+   "confidence": "high",
+   "caveats": "Для площадей лучше геодезический расчёт; официальные кадастровые данные могут прийти в местной СК — требовать метаданные CRS."
+  },
+  {
+   "fact_id": "A12-F014",
+   "statement": "В GitHub-репозитории geoBoundaries метаданные KAZ ADM1/ADM2 хранятся как указатели Git LFS; содержимое из среды A12 недоступно.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Казахстан",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S012",
+     "locator": "ответ raw.githubusercontent: 'version https://git-lfs.github.com/spec/v1'"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Источник и год границ geoBoundaries не проверены."
+  },
+  {
+   "fact_id": "A12-F015",
+   "statement": "Справочный слой STUPITS использует теги OSM amenity=school, amenity=kindergarten, amenity|healthcare=clinic|hospital, highway=bus_stop / public_transport=platform, leisure=park и радиусы удаления дублей 150/100/100/25/150 м.",
+   "kind": "observed",
+   "value": null,
+   "unit": "м",
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S007",
+     "locator": "real_context_meta.json $.category_tags, $.dedup_radius_m"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Готовый метод можно повторить для Шымкента; полнота OSM там не проверена."
+  },
+  {
+   "fact_id": "A12-F016",
+   "statement": "Шымкент состоит из 5 районов: Абайский, Аль-Фарабийский, Енбекшинский, Каратауский, Туранский; Туранский создан позже остальных (по памяти модели — около 2021 г.).",
+   "kind": "hypothesis",
+   "value": 5,
+   "unit": "районов",
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Память модели; источник не открыт",
+   "confidence": "low",
+   "caveats": "Проверить на сайте акимата, в adilet.zan.kz и в OSM; при подтверждении — ряды по районам до/после создания Турана несопоставимы."
+  },
+  {
+   "fact_id": "A12-F017",
+   "statement": "Шымкент имеет статус города республиканского значения с 2018 г. и не входит в Туркестанскую область.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Шымкент",
+   "period": "2018–",
+   "source_refs": [],
+   "derivation": "Память модели; указ не открыт",
+   "confidence": "medium",
+   "caveats": "Открыть официальный текст указа на adilet.zan.kz и записать реквизиты."
+  },
+  {
+   "fact_id": "A12-F018",
+   "statement": "Код ISO 3166-2 / префикс КАТО Шымкента — 79 (KZ-79) по аналогии с KZ-71 для Астаны.",
+   "kind": "hypothesis",
+   "value": "KZ-79",
+   "unit": null,
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A12-S006",
+     "locator": "аналогия с ISO3166-2-lvl4 KZ-71"
+    }
+   ],
+   "derivation": "Аналогия + память модели",
+   "confidence": "low",
+   "caveats": "Не использовать как ключ до сверки с классификатором КАТО БНС."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "A12-D001",
+   "title": "Границы 6 районов Астаны (OSM, сборка STUPITS)",
+   "publisher": "OpenStreetMap contributors / команда STUPITS",
+   "source_ids": [
+    "A12-S003",
+    "A12-S004"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/astana_districts.geojson",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04T17:20:46Z",
+   "geography": "г. Астана",
+   "granularity": "район (admin_level 6 и 8)",
+   "period": "OSM base 2026-09-22",
+   "format": "GeoJSON RFC 7946, EPSG:4326, [lon,lat]",
+   "fields": [
+    "id",
+    "name",
+    "name_full",
+    "source",
+    "osm_id",
+    "source_url",
+    "scoring_enabled",
+    "geometry_status",
+    "osm_names",
+    "area_km2",
+    "area_method",
+    "center_lon",
+    "center_lat",
+    "retrieved_at",
+    "osm_timestamp",
+    "osm_version",
+    "osm_admin_level"
+   ],
+   "units": {
+    "area_km2": "км², приближённо"
+   },
+   "update_frequency": "по запуску fetch_districts.py",
+   "license": "ODbL 1.0",
+   "auth_requirement": "нет",
+   "limitations": [
+    "не юридические границы",
+    "osm_timestamp/osm_version = null"
+   ],
+   "next_retrieval_step": "Повторно использовать как эталон контракта geo_units для Шымкента.",
+   "directions": [
+    "все"
+   ],
+   "needed_fields": [],
+   "a12_access_test": "файл открыт и проверен (Shapely, pyproj)"
+  },
+  {
+   "dataset_id": "A12-D002",
+   "title": "Сырой ответ Overpass по bbox Астаны",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "A12-S005"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/geo_sources/astana_districts_overpass.json",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04T17:20:46Z",
+   "geography": "bbox Астаны + соседи",
+   "granularity": "relation",
+   "period": "2026-09-22T08:45:51Z",
+   "format": "Overpass JSON (out geom) + _provenance",
+   "fields": [
+    "type",
+    "id",
+    "tags",
+    "members/geometry"
+   ],
+   "units": null,
+   "update_frequency": "снимок",
+   "license": "ODbL 1.0",
+   "auth_requirement": "нет",
+   "limitations": [
+    "в ответе есть единицы вне города (Косшы, районы Акмолинской обл.)"
+   ],
+   "next_retrieval_step": "Шаблон кэша сырого ответа для Шымкента.",
+   "directions": [
+    "география"
+   ],
+   "needed_fields": [],
+   "a12_access_test": "файл открыт"
+  },
+  {
+   "dataset_id": "A12-D003",
+   "title": "Синтетический датасет ТЗ (city_data.json)",
+   "publisher": "Организаторы хакатона / STUPITS",
+   "source_ids": [
+    "A12-S008",
+    "A12-S002"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/city_data.json",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04T17:20:46Z",
+   "geography": "условный город (имена районов Астаны)",
+   "granularity": "район",
+   "period": "условный горизонт 8 кварталов",
+   "format": "JSON",
+   "fields": [
+    "budget",
+    "directions",
+    "indicators",
+    "districts",
+    "measures",
+    "synergies",
+    "incompatibilities",
+    "rules",
+    "reference_checks"
+   ],
+   "units": {
+    "budget": "у.е.",
+    "indicators": "шкала 0–100"
+   },
+   "update_frequency": "нет",
+   "license": "не указана",
+   "auth_requirement": "нет",
+   "limitations": [
+    "synthetic: нельзя использовать как реальные показатели Шымкента или Астаны"
+   ],
+   "next_retrieval_step": "Хранить с kind=synthetic; использовать только для регрессионных тестов движка.",
+   "directions": [
+    "все (учебно)"
+   ],
+   "needed_fields": [],
+   "a12_access_test": "файл открыт"
+  },
+  {
+   "dataset_id": "A12-D004",
+   "title": "Natural Earth 10m admin-1",
+   "publisher": "Natural Earth",
+   "source_ids": [
+    "A12-S010"
+   ],
+   "landing_url": "https://github.com/nvkelso/natural-earth-vector",
+   "download_or_api_url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04T17:20:46Z",
+   "geography": "мир; Казахстан 16 единиц",
+   "granularity": "область/город респ. значения (устаревшее деление)",
+   "period": "не указан; VERSION 5.2.0-pre",
+   "format": "GeoJSON",
+   "fields": [
+    "name",
+    "name_ru",
+    "iso_3166_2",
+    "type_en",
+    "code_hasc",
+    "adm0_a3"
+   ],
+   "units": null,
+   "update_frequency": "нерегулярно",
+   "license": "Public domain",
+   "auth_requirement": "нет",
+   "limitations": [
+    "нет Шымкента как отдельной единицы",
+    "Туркестанская обл. в старых границах (South Kazakhstan)",
+    "Астана = 'Нур-Султан'"
+   ],
+   "next_retrieval_step": "Не использовать для городов; оставить как отрицательный контроль в тестах QC.",
+   "directions": [
+    "география"
+   ],
+   "needed_fields": [],
+   "a12_access_test": "файл скачан, 40,7 МБ"
+  },
+  {
+   "dataset_id": "A12-D005",
+   "title": "Natural Earth 10m populated places",
+   "publisher": "Natural Earth",
+   "source_ids": [
+    "A12-S011"
+   ],
+   "landing_url": "https://github.com/nvkelso/natural-earth-vector",
+   "download_or_api_url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_populated_places_simple.geojson",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04T17:20:46Z",
+   "geography": "мир",
+   "granularity": "точка города",
+   "period": null,
+   "format": "GeoJSON",
+   "fields": [
+    "name",
+    "adm0_a3",
+    "adm1name",
+    "pop_max"
+   ],
+   "units": {
+    "pop_max": "человек, год не указан"
+   },
+   "update_frequency": "нерегулярно",
+   "license": "Public domain",
+   "auth_requirement": "нет",
+   "limitations": [
+    "численность устаревшая и без года"
+   ],
+   "next_retrieval_step": "Только как грубая точка подписи до получения границы города.",
+   "directions": [
+    "география"
+   ],
+   "needed_fields": [],
+   "a12_access_test": "файл скачан"
+  },
+  {
+   "dataset_id": "A12-D006",
+   "title": "geoBoundaries gbOpen KAZ ADM1/ADM2",
+   "publisher": "William & Mary geoLab",
+   "source_ids": [
+    "A12-S012",
+    "A12-S032"
+   ],
+   "landing_url": "https://www.geoboundaries.org/",
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": "2026-10-04T17:20:46Z",
+   "geography": "Казахстан",
+   "granularity": "ADM1/ADM2",
+   "period": null,
+   "format": "GeoJSON/shapefile (по документации проекта, не проверено)",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "нет (ожидается)",
+   "limitations": [
+    "содержимое не получено; источник/год границ неизвестны"
+   ],
+   "next_retrieval_step": "Скачать metaData.json через браузер/LFS, проверить boundarySource, boundaryYear, licence, наличие Шымкента.",
+   "directions": [
+    "география"
+   ],
+   "needed_fields": [],
+   "a12_access_test": "получен только LFS-указатель"
+  },
+  {
+   "dataset_id": "A12-D010",
+   "title": "БНС: динамические таблицы по г. Шымкент",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "source_ids": [
+    "A12-S020"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Шымкент (возможна разбивка по районам — проверить)",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Открыть страницу, скачать 2–3 таблицы (XLSX), записать URL файла, период, единицы, наличие районов; занести в manifest.",
+   "directions": [
+    "инфраструктура",
+    "ЖКХ",
+    "логистика",
+    "транспорт",
+    "туризм",
+    "энергетика",
+    "образование"
+   ],
+   "needed_fields": [
+    "indicator_name",
+    "unit",
+    "period",
+    "value",
+    "geography(KATO)",
+    "methodology_note"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D011",
+   "title": "ИАС «Талдау»: ряды показателей по регионам",
+   "publisher": "БНС",
+   "source_ids": [
+    "A12-S023"
+   ],
+   "landing_url": "https://taldau.stat.gov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "регионы РК, г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Проверить, есть ли машинная выгрузка/API; сделать 1 запрос по одному показателю Шымкента; сохранить ответ.",
+   "directions": [
+    "все"
+   ],
+   "needed_fields": [
+    "index_id",
+    "period",
+    "region_kato",
+    "value",
+    "unit"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D012",
+   "title": "Классификатор КАТО",
+   "publisher": "БНС",
+   "source_ids": [
+    "A12-S020",
+    "A12-S023"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "РК",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Найти официальный файл КАТО на stat.gov.kz; извлечь коды Шымкента, его районов, Астаны и районов (включая Нура, Сарайшык).",
+   "directions": [
+    "география"
+   ],
+   "needed_fields": [
+    "kato_code",
+    "name_kk",
+    "name_ru",
+    "parent_code",
+    "valid_from",
+    "valid_to"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D013",
+   "title": "Каталог data.egov.kz: наборы акимата Шымкента и Астаны",
+   "publisher": "Электронное правительство РК; поставщики — акиматы",
+   "source_ids": [
+    "A12-S021"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "города",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "возможно, ключ API (не проверено)",
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Поиск по «Шымкент», «Шымкент қаласы»; для 3 наборов зафиксировать поля, дату обновления и условия; проверить, нужен ли API-ключ (гипотеза).",
+   "directions": [
+    "цифровизация",
+    "образование",
+    "ЖКХ",
+    "транспорт"
+   ],
+   "needed_fields": [
+    "dataset_name",
+    "owner",
+    "update_date",
+    "fields",
+    "api_endpoint",
+    "license/terms"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D014",
+   "title": "Управление цифровизации Шымкента: служба 109 и цифровые проекты",
+   "publisher": "Акимат г. Шымкент",
+   "source_ids": [
+    "A12-S022"
+   ],
+   "landing_url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Открыть страницу, найти отчёты/статистику 109; если только тексты — внести в doc_chunks с locator.",
+   "directions": [
+    "цифровизация",
+    "ЖКХ"
+   ],
+   "needed_fields": [
+    "category",
+    "district",
+    "month",
+    "count",
+    "median_resolution_time"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D015",
+   "title": "e-Otinish: публичная статистика обращений",
+   "publisher": "Электронное правительство РК",
+   "source_ids": [
+    "A12-S041"
+   ],
+   "landing_url": "https://eotinish.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "РК / регионы (проверить)",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Проверить наличие публичной агрегированной статистики без персональных данных.",
+   "directions": [
+    "цифровизация",
+    "ЖКХ",
+    "безопасность"
+   ],
+   "needed_fields": [
+    "region",
+    "authority",
+    "category",
+    "month",
+    "count"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D016",
+   "title": "Открытые бюджеты: бюджет г. Шымкент",
+   "publisher": "Электронное правительство РК; Управление финансов акимата",
+   "source_ids": [
+    "A12-S027"
+   ],
+   "landing_url": "https://budget.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Найти исполнение местного бюджета Шымкента по программам за последний год.",
+   "directions": [
+    "все (стоимость мер)"
+   ],
+   "needed_fields": [
+    "year",
+    "program_code",
+    "program_name",
+    "administrator",
+    "plan_kzt",
+    "fact_kzt"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D017",
+   "title": "Госзакупки: договоры заказчиков г. Шымкент",
+   "publisher": "Минфин РК / ЦЭФ",
+   "source_ids": [
+    "A12-S026"
+   ],
+   "landing_url": "https://goszakup.gov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "заказчики (БИН)",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "по памяти модели — токен для API (не проверено)",
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Проверить публичный поиск и документацию OWS API (по памяти — нужен токен); 5 договоров одной категории мер.",
+   "directions": [
+    "все (реальные цены)"
+   ],
+   "needed_fields": [
+    "customer_bin",
+    "lot_name",
+    "ktru_code",
+    "amount_kzt",
+    "contract_date",
+    "status"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D018",
+   "title": "Әділет: акты о районах, тарифах, правилах",
+   "publisher": "Минюст / ИЗПИ",
+   "source_ids": [
+    "A12-S024"
+   ],
+   "landing_url": "https://adilet.zan.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "РК",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Найти акты об образовании районов Шымкента и Астаны; занести реквизиты в geo_units.valid_from.",
+   "directions": [
+    "земельные отношения",
+    "ЖКХ",
+    "география"
+   ],
+   "needed_fields": [
+    "act_id",
+    "title",
+    "date",
+    "status",
+    "article_text"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D019",
+   "title": "Открытые НПА: проекты актов",
+   "publisher": "Электронное правительство РК",
+   "source_ids": [
+    "A12-S040"
+   ],
+   "landing_url": "https://legalacts.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "РК / местные органы",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Поиск проектов акимата Шымкента по 11 сферам (только как сигнал о планах).",
+   "directions": [
+    "все"
+   ],
+   "needed_fields": [
+    "draft_id",
+    "authority",
+    "title",
+    "date",
+    "status"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D020",
+   "title": "Казгидромет: бюллетени о состоянии окружающей среды (Шымкент)",
+   "publisher": "РГП «Казгидромет»",
+   "source_ids": [
+    "A12-S025"
+   ],
+   "landing_url": "https://www.kazhydromet.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "посты наблюдения г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Скачать последний месячный бюллетень (PDF), найти раздел Шымкента, извлечь 5 строк с номером страницы.",
+   "directions": [
+    "экология"
+   ],
+   "needed_fields": [
+    "post_id",
+    "pollutant",
+    "period",
+    "mean",
+    "max",
+    "unit",
+    "pdk_multiple"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D021",
+   "title": "Казгидромет: метеонаблюдения",
+   "publisher": "РГП «Казгидромет»",
+   "source_ids": [
+    "A12-S025"
+   ],
+   "landing_url": "https://www.kazhydromet.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "метеостанции",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "неизвестно",
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Выяснить условия доступа (возможно, платно/по запросу).",
+   "directions": [
+    "экология",
+    "энергетика"
+   ],
+   "needed_fields": [
+    "station_id",
+    "timestamp",
+    "temperature_c",
+    "precip_mm",
+    "wind_ms"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D022",
+   "title": "Тарифы субъектов естественных монополий (вода, тепло, электроэнергия) для Шымкента",
+   "publisher": "КРЕМ МНЭ РК / поставщики",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "поставщики г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Найти реестр/приказы тарифов; фиксировать единицы (тг/м³, тг/кВт·ч, тг/Гкал) и НДС.",
+   "directions": [
+    "ЖКХ",
+    "энергетика"
+   ],
+   "needed_fields": [
+    "supplier",
+    "service",
+    "consumer_group",
+    "tariff",
+    "unit",
+    "vat_included",
+    "valid_from"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D023",
+   "title": "Правовая статистика: преступления и ДТП",
+   "publisher": "КПСиСУ ГП РК",
+   "source_ids": [
+    "A12-S042"
+   ],
+   "landing_url": "https://qamqor.gov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "регион / район (проверить)",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Проверить публичные отчёты/карту и уровень детализации.",
+   "directions": [
+    "безопасность",
+    "транспорт"
+   ],
+   "needed_fields": [
+    "region_kato",
+    "district",
+    "month",
+    "category",
+    "count"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D024",
+   "title": "Адресный регистр (РКА)",
+   "publisher": "Минюст / Gov4c (по памяти модели)",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "адрес",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Проверить условия доступа; вероятно ограничен.",
+   "directions": [
+    "земельные отношения",
+    "ЖКХ",
+    "география"
+   ],
+   "needed_fields": [
+    "rka_code",
+    "address_kk",
+    "address_ru",
+    "building_type",
+    "district"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D025",
+   "title": "ЕГКН / публичная кадастровая карта",
+   "publisher": "Gov4c (НАО «Правительство для граждан»)",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "земельный участок",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "вероятно restricted; персональные данные правообладателей не собирать"
+   ],
+   "next_retrieval_step": "Найти официальную публичную карту и условия; массовое копирование, вероятно, не разрешено.",
+   "directions": [
+    "земельные отношения"
+   ],
+   "needed_fields": [
+    "cadastral_number",
+    "purpose",
+    "area_ha",
+    "district",
+    "right_type"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D026",
+   "title": "Электронные торги земельными участками и госимуществом",
+   "publisher": "Минфин РК / gosreestr",
+   "source_ids": [
+    "A12-S043"
+   ],
+   "landing_url": "https://gosreestr.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "лот",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Проверить поиск лотов Шымкента и допустимость небольшой выборки.",
+   "directions": [
+    "земельные отношения"
+   ],
+   "needed_fields": [
+    "lot_id",
+    "object_type",
+    "purpose",
+    "area_ha",
+    "district",
+    "start_price_kzt",
+    "result",
+    "date"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D027",
+   "title": "OSM: выгрузка Kazakhstan (Geofabrik)",
+   "publisher": "Geofabrik / OSM contributors",
+   "source_ids": [
+    "A12-S030"
+   ],
+   "landing_url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "Казахстан",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "полнота неизвестна",
+    "ODbL: атрибуция и share-alike для производной БД"
+   ],
+   "next_retrieval_step": "Скачать .osm.pbf, вырезать bbox Шымкента (osmium), сохранить дату состояния и sha256.",
+   "directions": [
+    "транспорт",
+    "инфраструктура",
+    "образование",
+    "туризм",
+    "логистика"
+   ],
+   "needed_fields": [
+    "osm_id",
+    "tags",
+    "geometry"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D028",
+   "title": "OSM: Overpass (точечные запросы границ и POI Шымкента)",
+   "publisher": "OSM contributors",
+   "source_ids": [
+    "A12-S028",
+    "A12-S029"
+   ],
+   "landing_url": "https://overpass-api.de/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Выполнить запросы из A12_report.md §4.3, сохранить сырые ответы как в STUPITS.",
+   "directions": [
+    "все"
+   ],
+   "needed_fields": [
+    "relation_id",
+    "admin_level",
+    "name",
+    "name:kk",
+    "name:ru",
+    "geometry"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D029",
+   "title": "Overture Maps: places, buildings, transportation",
+   "publisher": "Overture Maps Foundation",
+   "source_ids": [
+    "A12-S044"
+   ],
+   "landing_url": "https://overturemaps.org/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "мир",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Проверить покрытие Шымкента и лицензии по темам.",
+   "directions": [
+    "инфраструктура",
+    "туризм",
+    "транспорт"
+   ],
+   "needed_fields": [
+    "gers_id",
+    "category",
+    "geometry",
+    "sources"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D030",
+   "title": "GHSL: сетка населения/застройки",
+   "publisher": "EC JRC",
+   "source_ids": [
+    "A12-S045"
+   ],
+   "landing_url": "https://ghsl.jrc.ec.europa.eu/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "сетка",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Скачать тайл, покрывающий Шымкент; использовать только как модельную оценку (kind=derived).",
+   "directions": [
+    "образование",
+    "транспорт",
+    "экология"
+   ],
+   "needed_fields": [
+    "cell_id",
+    "epoch",
+    "population_est"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D031",
+   "title": "WorldPop: сетка населения",
+   "publisher": "WorldPop",
+   "source_ids": [
+    "A12-S046"
+   ],
+   "landing_url": "https://www.worldpop.org/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "сетка 100 м (ожидается)",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Альтернатива GHSL; сравнить суммы с БНС по городу.",
+   "directions": [
+    "образование",
+    "транспорт"
+   ],
+   "needed_fields": [
+    "cell",
+    "year",
+    "population_est"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D032",
+   "title": "Sentinel-5P / CAMS: NO2, аэрозоли",
+   "publisher": "EC / ECMWF",
+   "source_ids": [
+    "A12-S047"
+   ],
+   "landing_url": "https://dataspace.copernicus.eu/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "сетка (км)",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "учётная запись (по памяти модели)",
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Только как дополнение к постам Казгидромета; требуется учётная запись.",
+   "directions": [
+    "экология"
+   ],
+   "needed_fields": [
+    "time",
+    "lat",
+    "lon",
+    "no2_column",
+    "qa_value"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D033",
+   "title": "БНС: деятельность мест размещения по г. Шымкент",
+   "publisher": "БНС",
+   "source_ids": [
+    "A12-S020"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Найти в разделе статистики туризма; зафиксировать период (часто нарастающим итогом).",
+   "directions": [
+    "туризм"
+   ],
+   "needed_fields": [
+    "period",
+    "accommodation_units",
+    "visitors_served",
+    "resident/nonresident"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D034",
+   "title": "НОБД: национальная образовательная база данных",
+   "publisher": "Министерство просвещения РК",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "организация образования",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "restricted (ожидается)"
+   ],
+   "next_retrieval_step": "Только запросом у владельца; публично — агрегаты.",
+   "directions": [
+    "образование"
+   ],
+   "needed_fields": [
+    "org_id",
+    "bin",
+    "address",
+    "design_capacity",
+    "students",
+    "shifts"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D035",
+   "title": "Маршруты и остановки общественного транспорта Шымкента (GTFS или аналог)",
+   "publisher": "Управление пассажирского транспорта акимата / оператор (уточнить)",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "маршрут/остановка",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Выяснить, существует ли публикация; до этого — остановки OSM (с оговоркой полноты).",
+   "directions": [
+    "транспорт"
+   ],
+   "needed_fields": [
+    "route_id",
+    "stop_id",
+    "lat",
+    "lon",
+    "headway_peak_min"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  },
+  {
+   "dataset_id": "A12-D036",
+   "title": "Аварии и отключения на сетях водо-, тепло-, электро-, газоснабжения",
+   "publisher": "Городские операторы сетей (перечень уточнить)",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "район / объект",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не проверено A12"
+   ],
+   "next_retrieval_step": "Искать публичные сводки/отчёты; без них — запрос владельцу (не отправлять сейчас).",
+   "directions": [
+    "ЖКХ",
+    "энергетика"
+   ],
+   "needed_fields": [
+    "incident_id",
+    "date",
+    "utility",
+    "district",
+    "duration_h",
+    "customers_affected"
+   ],
+   "a12_access_test": "не открыт: хост вне allowlist"
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "A12-O001",
+   "level": "prototype_1_10_days",
+   "title": "Слой происхождения данных и матрица покрытия «сфера × район × период» для Шымкента и Астаны",
+   "problem": "Числа на карте не различают учебные, реальные и отсутствующие значения; 0 используется вместо «нет данных» (A12-F006), учебный датасет синтетический (A12-F007).",
+   "evidence_fact_ids": [
+    "A12-F006",
+    "A12-F007",
+    "A12-F010",
+    "A12-F012"
+   ],
+   "primary_user": "Разработчик и аналитик проекта; далее — эксперт GovTech/жюри, проверяющий происхождение цифр",
+   "user_task": "Понять, каким цифрам по Шымкенту можно доверять, откуда они и чего не хватает, прежде чем строить меры/сценарии",
+   "existing_solution": "В STUPITS есть провенанс только для границ Астаны (GEO_SOURCES.md) и метаданные справочного слоя",
+   "proposed_addition": "Реестр sources/datasets/geo_units/observations (A12_schema.sql), карточка источника у каждого числа, value_status вместо нулей, матрица покрытия по 11 сферам",
+   "required_dataset_ids": [
+    "A12-D001",
+    "A12-D010",
+    "A12-D012",
+    "A12-D028",
+    "A12-D020"
+   ],
+   "ai_role": "Не обязателен для ядра. Опционально: LLM предлагает строки observations из PDF/XLSX с locator, человек подтверждает; советник отвечает только из doc_chunks/observations с цитатой.",
+   "non_ai_baseline": "Ручной ввод + pandas/camelot для таблиц; SQL-проверки QC",
+   "success_metrics": [
+    "доля отображаемых чисел с source_id+locator (цель — все)",
+    "число ложных нулей = 0 по QC",
+    "время добавления нового набора (мин) по manifest",
+    "точность извлечения LLM на 50 вручную проверенных ячейках (если используется)"
+   ],
+   "feasibility_10_days": "высокая для схемы, QC и Астаны; для Шымкента зависит от получения D010/D028",
+   "blockers": [
+    "доступ A12 к stat.gov.kz/OSM заблокирован — нужен второй проход с браузером",
+    "условия повторного использования данных БНС/egov не проверены"
+   ],
+   "transfer_to_astana": "прямой: тот же контракт, Астана уже имеет D001",
+   "next_action": "Принять A12_schema.sql как контракт; в своей среде загрузить D001 и первую таблицу БНС Шымкента"
+  },
+  {
+   "idea_id": "A12-O002",
+   "level": "product_1_3_months",
+   "title": "Доступность школ, детсадов, поликлиник и остановок по районам Шымкента с явной оценкой полноты OSM",
+   "problem": "Нет проверенной пространственной базы социальных объектов Шымкента; OSM-полнота неизвестна, официальные списки не сопоставлены с координатами (гипотеза, требует проверки D013/D034).",
+   "evidence_fact_ids": [
+    "A12-F015",
+    "A12-F002",
+    "A12-F013"
+   ],
+   "primary_user": "Аналитик управления образования/здравоохранения или градостроительства; дипломник",
+   "user_task": "Найти районы и кварталы, где жители дальше норматива от школы/поликлиники/остановки, и понять, ошибка ли это данных",
+   "existing_solution": "fetch_real_context.py для Астаны (теги и радиусы дублей A12-F015) — подсчёт по районам без населения",
+   "proposed_addition": "Шымкент: границы + POI OSM + модельная сетка населения (GHSL/WorldPop) → доля населения в пешей доступности; сверка OSM с официальным списком школ; карта «данных не хватает»",
+   "required_dataset_ids": [
+    "A12-D027",
+    "A12-D028",
+    "A12-D030",
+    "A12-D013",
+    "A12-D010"
+   ],
+   "ai_role": "Сопоставление названий OSM ↔ официальный реестр (казахские/русские варианты, сокращения «ОСШ №…») как entity resolution; расчёт доступности — обычный алгоритм, AI не нужен",
+   "non_ai_baseline": "Правила нормализации названий + расстояние ≤ X м; ручная проверка выборки",
+   "success_metrics": [
+    "precision/recall сопоставления на 100 размеченных парах",
+    "доля официальных школ, найденных в OSM",
+    "разброс показателя доступности при ±полноте OSM (анализ чувствительности)"
+   ],
+   "feasibility_10_days": "частично: OSM-часть за 2–3 дня после доступа; официальные списки и население — неизвестно",
+   "blockers": [
+    "официальный список с адресами может быть недоступен",
+    "радиусы/нормативы доступности требуют правового источника"
+   ],
+   "transfer_to_astana": "прямой; для Астаны часть пайплайна уже есть",
+   "next_action": "Во втором проходе выполнить Overpass-запросы §4.3 и посчитать объекты по районам Шымкента без выводов о нехватке"
+  },
+  {
+   "idea_id": "A12-O003",
+   "level": "research_ambitious",
+   "title": "Сопоставимые ряды показателей при изменении границ районов (Шымкент — Туран; Астана — Нура, Сарайшык)",
+   "problem": "Новые районы ломают временные ряды по районам (A12-F008; для Шымкента гипотеза A12-F016).",
+   "evidence_fact_ids": [
+    "A12-F008",
+    "A12-F003",
+    "A12-F016"
+   ],
+   "primary_user": "Аналитик/исследователь (диплом), которому нужен ряд 2018–2026 в текущих границах",
+   "user_task": "Оценить показатель в новых границах для лет до реформы с указанием неопределённости",
+   "existing_solution": "Нет; в STUPITS Сарайшык честно исключён из расчёта",
+   "proposed_addition": "Дазиметрическая интерполяция (здания/сетка населения как вспомогательный слой) + интервалы неопределённости; таблица boundary_crosswalk",
+   "required_dataset_ids": [
+    "A12-D010",
+    "A12-D012",
+    "A12-D018",
+    "A12-D030",
+    "A12-D028"
+   ],
+   "ai_role": "Не нужен для метода; LLM только для поиска и разметки правовых актов о границах",
+   "non_ai_baseline": "Площадная интерполяция (area weighting)",
+   "success_metrics": [
+    "ошибка интерполяции на году, где БНС публикует обе разбивки (если найдётся)",
+    "ширина интервала"
+   ],
+   "feasibility_10_days": "низкая: только проверка предпосылки (найти год с двумя разбивками)",
+   "blockers": [
+    "возможно, БНС не публикует пересчёт",
+    "официальные полигоны старых границ могут отсутствовать"
+   ],
+   "transfer_to_astana": "Астана — первый полигон проверки (Нура/Сарайшык есть в OSM)",
+   "next_action": "Найти в БНС таблицу численности населения Астаны по районам за годы до и после выделения Сарайшыка"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Какие районы, названия (рус./каз.) и правовые акты образования действуют в Шымкенте на 2026 г.?",
+   "why": "Ключ всех связей показателей с картой; гипотеза A12-F016 не проверена",
+   "how": "Сайт акимата + adilet.zan.kz + OSM relation; сверить три источника"
+  },
+  {
+   "question": "Публикует ли БНС показатели Шымкента по районам, с какого года и в каких единицах?",
+   "why": "Определяет, возможна ли районная модель вообще",
+   "how": "Открыть D010/D011, записать 5 таблиц с районной разбивкой"
+  },
+  {
+   "question": "Нужен ли API-ключ data.egov.kz, каковы условия повторного использования и есть ли наборы акимата Шымкента с датой обновления 2024–2026?",
+   "why": "Координатор получил ошибку прямого открытия",
+   "how": "Открыть каталог в браузере, документацию API, 1 тестовый запрос"
+  },
+  {
+   "question": "Каковы коды КАТО Шымкента, его районов, Астаны и её 6 районов?",
+   "why": "Устойчивый внешний ключ вместо slug",
+   "how": "Официальный файл КАТО БНС"
+  },
+  {
+   "question": "Насколько полон OSM в Шымкенте по школам, поликлиникам и остановкам?",
+   "why": "Отсутствие объекта в OSM не доказывает его отсутствие",
+   "how": "Сравнить с официальным списком на выборке 30–50 объектов"
+  },
+  {
+   "question": "Какие посты Казгидромета работают в Шымкенте и в каких единицах публикуются концентрации?",
+   "why": "Экология — вероятно, самый доступный ряд; риск путаницы мг/м³ и мкг/м³",
+   "how": "Последний месячный бюллетень, раздел Шымкента"
+  },
+  {
+   "question": "Можно ли машинно получать договоры заказчиков Шымкента из госзакупок без нарушения условий?",
+   "why": "Реальные цены мер вместо учебных",
+   "how": "Документация OWS и пользовательское соглашение портала"
+  },
+  {
+   "question": "Что в OSM обозначает Косшы относительно Астаны и не попадает ли он в городские агрегаты?",
+   "why": "bbox-запрос возвращает Косшы (A12-F004)",
+   "how": "Правовой статус по adilet; правило исключения по relation ID"
+  }
+ ],
+ "deliverables": {
+  "geo_rules": {
+   "city_id": {
+    "kz.shymkent": {
+     "name_ru": "Шымкент",
+     "name_kk": "Шымкент",
+     "iso_3166_2": null,
+     "iso_3166_2_hypothesis": "KZ-79 (A12-F018, не использовать до проверки)",
+     "kato_code": null,
+     "osm_relation_id": null
+    },
+    "kz.astana": {
+     "name_ru": "Астана",
+     "name_kk": "Астана",
+     "iso_3166_2": "KZ-71 (из Nominatim, A12-F005; сверить)",
+     "kato_code": null,
+     "osm_relation_id": null
+    }
+   },
+   "unit_id_pattern": "kz.<city_slug>.<level>.<unit_slug>; slug — латиница из устоявшегося id продукта (esil, nura…); legacy_id хранит исходный id и никогда не переименовывается; при слиянии/разделении района создаётся новый unit_id, старый получает valid_to",
+   "names": "name_kk из официального акта или OSM name:kk (fallback OSM name с флагом name_kk_source='osm_name'); name_ru — официальное написание; name_en — только справочно",
+   "boundary_version": "<source>:<snapshot>; примеры osm:2026-09-22T08:45:51Z, official:<реквизиты акта>:<дата>; каждое наблюдение хранит boundary_version, по которой оно агрегировано",
+   "crs": "хранение и обмен EPSG:4326 (GeoJSON RFC 7946, порядок [lon, lat], внешнее кольцо против часовой); метрические операции — EPSG:32642 (UTM 42N) или геодезически (pyproj.Geod); официальные кадастровые файлы принимать только с явными метаданными СК",
+   "coordinate_order_check": "lon в [46.5, 87.5], lat в [40.5, 55.5] для РК; для Шымкента грубая проверка по точке NE (69.595, 42.320) ± 0.5° до появления границы; если первые координаты попадают в широту 40–56 как lon — флаг swapped",
+   "official_vs_osm": "geometry_source ∈ {official, osm_community, derived, none}; OSM-полигон не выдаётся за юридическую границу; отсутствие объекта в OSM = unknown",
+   "selection_rule": "районы выбирать по явному списку relation ID/КАТО, а не по admin_level или bbox (A12-F003, A12-F004)",
+   "linking": "observation.unit_id + boundary_version + period; показатель уровня city нельзя раздавать районам без derived-формулы; областной (Туркестанская обл.) — никогда не присваивать Шымкенту"
+  },
+  "indicator_dictionary": [
+   {
+    "indicator_id": "DIG.appeals_count",
+    "direction": "цифровизация",
+    "name_ru": "Обращения в 109 / e-Otinish",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D014",
+     "A12-D015"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "DIG.appeals_resolution_median_days",
+    "direction": "цифровизация",
+    "name_ru": "Медианный срок рассмотрения обращения",
+    "canonical_unit": "day",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D014",
+     "A12-D015"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "HCS.water_tariff_household",
+    "direction": "ЖКХ",
+    "name_ru": "Тариф на питьевую воду для населения",
+    "canonical_unit": "KZT/m3",
+    "better": "neutral",
+    "expected_frequency": "irregular",
+    "max_age_days": 550,
+    "candidate_dataset_ids": [
+     "A12-D022"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "HCS.utility_incidents",
+    "direction": "ЖКХ",
+    "name_ru": "Аварии/отключения на сетях",
+    "canonical_unit": "count",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D036"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "LOG.freight_transported",
+    "direction": "логистика",
+    "name_ru": "Перевезено грузов всеми видами транспорта",
+    "canonical_unit": "t",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D010",
+     "A12-D011"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "LOG.freight_turnover",
+    "direction": "логистика",
+    "name_ru": "Грузооборот",
+    "canonical_unit": "t*km",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D010",
+     "A12-D011"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "INF.housing_commissioned",
+    "direction": "инфраструктура",
+    "name_ru": "Ввод жилья",
+    "canonical_unit": "m2",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D010"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "INF.capital_investment",
+    "direction": "инфраструктура",
+    "name_ru": "Инвестиции в основной капитал",
+    "canonical_unit": "KZT",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D010"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "EDU.schools_count",
+    "direction": "образование",
+    "name_ru": "Число дневных общеобразовательных школ",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "candidate_dataset_ids": [
+     "A12-D010",
+     "A12-D013"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "EDU.capacity_deficit_places",
+    "direction": "образование",
+    "name_ru": "Дефицит ученических мест / многосменность",
+    "canonical_unit": "places",
+    "better": "lower",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "candidate_dataset_ids": [
+     "A12-D034"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "TRN.road_accidents_injury",
+    "direction": "транспорт",
+    "name_ru": "ДТП с пострадавшими",
+    "canonical_unit": "count",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D023"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "TRN.pop_share_500m_stop",
+    "direction": "транспорт",
+    "name_ru": "Доля населения в 500 м от остановки (модельная)",
+    "canonical_unit": "share",
+    "better": "higher",
+    "expected_frequency": "snapshot",
+    "max_age_days": 180,
+    "candidate_dataset_ids": [
+     "A12-D028",
+     "A12-D030"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "TOU.visitors_served",
+    "direction": "туризм",
+    "name_ru": "Обслужено посетителей местами размещения",
+    "canonical_unit": "persons",
+    "better": "neutral",
+    "expected_frequency": "quarter",
+    "max_age_days": 200,
+    "candidate_dataset_ids": [
+     "A12-D033"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "TOU.accommodation_units",
+    "direction": "туризм",
+    "name_ru": "Число мест размещения",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "candidate_dataset_ids": [
+     "A12-D033"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "ECO.pm25_monthly_mean",
+    "direction": "экология",
+    "name_ru": "Среднемесячная концентрация PM2.5 по посту",
+    "canonical_unit": "ug/m3",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D020"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "ECO.no2_monthly_mean",
+    "direction": "экология",
+    "name_ru": "Среднемесячная концентрация NO2 по посту",
+    "canonical_unit": "ug/m3",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D020"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "ENR.electricity_tariff_household",
+    "direction": "энергетика",
+    "name_ru": "Тариф на электроэнергию для населения",
+    "canonical_unit": "KZT/kWh",
+    "better": "neutral",
+    "expected_frequency": "irregular",
+    "max_age_days": 550,
+    "candidate_dataset_ids": [
+     "A12-D022"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "ENR.electricity_consumption",
+    "direction": "энергетика",
+    "name_ru": "Потребление электроэнергии",
+    "canonical_unit": "kWh",
+    "better": "neutral",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "candidate_dataset_ids": [
+     "A12-D010",
+     "A12-D036"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "SEC.registered_crimes",
+    "direction": "безопасность",
+    "name_ru": "Зарегистрированные уголовные правонарушения",
+    "canonical_unit": "count",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D023"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "SEC.crimes_per_10k",
+    "direction": "безопасность",
+    "name_ru": "Правонарушения на 10 тыс. жителей",
+    "canonical_unit": "per_10k",
+    "better": "lower",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "candidate_dataset_ids": [
+     "A12-D023",
+     "A12-D010"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "LND.land_auction_lots",
+    "direction": "земельные отношения",
+    "name_ru": "Лоты земельных торгов",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D026"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   },
+   {
+    "indicator_id": "LND.land_auction_area",
+    "direction": "земельные отношения",
+    "name_ru": "Площадь выставленных участков",
+    "canonical_unit": "ha",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "candidate_dataset_ids": [
+     "A12-D026"
+    ],
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных"
+   }
+  ],
+  "dedup_plan": [
+   "Источники: нормализовать URL (https, нижний регистр хоста, без utm/fbclid, без завершающего /, lang как отдельное поле) + sha256 содержимого файла; одинаковый хеш → один canonical_id; перепечатки одного сообщения связывать same_as, считать одним основанием",
+   "Наборы: ключ (publisher, нормализованное название, geography, period, format); разные версии одного набора — версии, не дубли",
+   "Географические объекты: OSM element type+id; официальные — КАТО/РКА/кадастровый номер; кросс-ссылки в таблице id_crosswalk",
+   "POI: повторить радиусы STUPITS (A12-F015) + нормализация названия (казах./рус. варианты, «№», «ОСШ», «КГУ»); кандидаты-дубли — в очередь ручной проверки, не удалять автоматически",
+   "Наблюдения: ключ (indicator_id, unit_id, boundary_version, period_start, period_end, period_type); при конфликте хранить обе строки, выбирать по приоритету official_stat > registry > operator > osm > modeled; расхождение > 1% — флаг conflict"
+  ],
+  "qc_rules": [
+   "value_status обязателен; 0 допустим только как reported_zero со ссылкой на место в источнике; meta.status!='ok' → все значения missing (проверено экспериментом A12-E002)",
+   "Давность: stale, если retrieved_at − period_end > max_age_days индикатора (месяц 120, квартал 200, год 550, снимок OSM 180)",
+   "Единицы: хранить native_value/native_unit и canonical unit; таблица конверсий (тыс.→×1000, млн тг→тг, мг/м³→мкг/м³ ×1000, Гкал, кВт·ч); флаг unit_converted",
+   "Период: БНС часто публикует нарастающим итогом (январь–N) → period_type=ytd, не сравнивать с месячными без разности",
+   "Пространство: уровень наблюдения ≥ уровня запроса; city→district только derived с формулой; boundary_version наблюдения ≠ текущей → флаг boundary_mismatch",
+   "География: spatial join только с границами из geo_units, никогда с глобальными устаревшими слоями (A12-F012)",
+   "Синтетика: kind=synthetic не смешивается с observed в одном запросе отображения без явной подписи"
+  ],
+  "kb_chunk_format": {
+   "description": "Текст и правовые нормы — в doc_chunks с точным locator; числа и таблицы — строки observations, связанные через linked_obs_ids. Embeddings — только индекс над chunk_id, а не хранилище фактов.",
+   "fields": [
+    "chunk_id",
+    "source_id",
+    "locator",
+    "lang",
+    "chunk_kind",
+    "text",
+    "char_start",
+    "char_end",
+    "geography",
+    "period",
+    "valid_from",
+    "valid_to",
+    "source_sha256",
+    "extractor",
+    "extracted_at",
+    "linked_obs_ids"
+   ],
+   "answer_rule": "Советник цитирует chunk_id/source_id+locator; число в ответе берётся из observations через код, не из текста модели"
+  },
+  "top5_datasets_for_development": [
+   {
+    "dataset_id": "A12-D028",
+    "why": "Границы и объекты Шымкента; пайплайн уже есть в STUPITS для Астаны",
+    "supports": [
+     "A12-O001",
+     "A12-O002",
+     "A12-O003"
+    ],
+    "status": "не проверен A12"
+   },
+   {
+    "dataset_id": "A12-D010",
+    "why": "Официальные ряды города; калибровка вместо учебных значений",
+    "supports": [
+     "A12-O001",
+     "A12-O003"
+    ],
+    "status": "не проверен A12"
+   },
+   {
+    "dataset_id": "A12-D012",
+    "why": "Устойчивые ключи КАТО для связи статистики и карты",
+    "supports": [
+     "A12-O001",
+     "A12-O003"
+    ],
+    "status": "не проверен A12"
+   },
+   {
+    "dataset_id": "A12-D020",
+    "why": "Экология — вероятно, регулярный публичный ряд по городу",
+    "supports": [
+     "A12-O001"
+    ],
+    "status": "не проверен A12"
+   },
+   {
+    "dataset_id": "A12-D017",
+    "why": "Реальные цены мер вместо условных у.е. (A12-F007)",
+    "supports": [
+     "A12-O001"
+    ],
+    "status": "не проверен A12; условия API неизвестны"
+   }
+  ],
+  "unavailable_data_requests_not_sent": [
+   {
+    "data": "Официальные границы районов Шымкента",
+    "owner": "Акимат г. Шымкент (управление архитектуры/земельных отношений — уточнить); Gov4c",
+    "minimal_fields": [
+     "district_id/KATO",
+     "name_kk",
+     "name_ru",
+     "act_reference",
+     "valid_from",
+     "geometry",
+     "crs"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Численность населения по районам и возрасту",
+    "owner": "БНС; акимат",
+    "minimal_fields": [
+     "kato",
+     "year",
+     "age_group",
+     "sex",
+     "persons"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Школы: проектная мощность, контингент, сменность",
+    "owner": "Управление образования г. Шымкент; МП РК (НОБД)",
+    "minimal_fields": [
+     "org_bin_or_id",
+     "name",
+     "address",
+     "lat",
+     "lon",
+     "design_capacity",
+     "students",
+     "shifts",
+     "year"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Маршруты, остановки, интервалы ОТ",
+    "owner": "Управление пассажирского транспорта и автодорог акимата / перевозчик (уточнить)",
+    "minimal_fields": [
+     "route_id",
+     "stop_id",
+     "stop_name",
+     "lat",
+     "lon",
+     "headway_peak_min",
+     "valid_from"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Аварии на сетях ЖКХ (агрегаты)",
+    "owner": "Операторы водо-, тепло-, электро-, газоснабжения г. Шымкент (перечень уточнить)",
+    "minimal_fields": [
+     "date",
+     "utility",
+     "district",
+     "incident_type",
+     "duration_h",
+     "customers_affected_bucket"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Обращения 109 / e-Otinish (агрегаты, без ПДн)",
+    "owner": "Управление цифровизации г. Шымкент; оператор e-Otinish",
+    "minimal_fields": [
+     "month",
+     "district",
+     "category",
+     "count",
+     "median_resolution_days"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Почасовые/суточные концентрации по постам",
+    "owner": "РГП «Казгидромет»",
+    "minimal_fields": [
+     "post_id",
+     "lat",
+     "lon",
+     "pollutant",
+     "timestamp",
+     "value",
+     "unit"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Земельные торги и цели использования (агрегаты)",
+    "owner": "Акимат / Минфин (gosreestr)",
+    "minimal_fields": [
+     "lot_id",
+     "purpose",
+     "area_ha",
+     "district",
+     "start_price_kzt",
+     "result",
+     "date"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Преступления и ДТП по районам",
+    "owner": "КПСиСУ ГП РК",
+    "minimal_fields": [
+     "month",
+     "district_kato",
+     "category",
+     "count"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Потребление электроэнергии по районам/подстанциям",
+    "owner": "Энергопередающая организация г. Шымкент (уточнить)",
+    "minimal_fields": [
+     "month",
+     "district_or_substation",
+     "kwh",
+     "consumer_group"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Исполнение бюджета по программам",
+    "owner": "Управление финансов акимата г. Шымкент",
+    "minimal_fields": [
+     "year",
+     "program_code",
+     "program_name",
+     "administrator",
+     "plan_kzt",
+     "fact_kzt"
+    ],
+    "purpose": "калибровка/проверка идей A12-O001–O003",
+    "status": "запрос НЕ отправлялся; владелец частично по памяти модели — уточнить"
+   }
+  ],
+  "merge_procedure_01_11": [
+   "Принять evidence.json каждого агента без изменений в raw/; проверить JSON-схему и уникальность префиксов",
+   "Сшить sources по правилам dedup_plan; заполнить canonical_id; исходные source_id не менять",
+   "Для каждого факта с kind=observed проверить, что source.access_status='opened' и locator непустой; иначе понизить до hypothesis с пометкой",
+   "Сопоставить datasets с A12-D0xx через id_crosswalk; конфликты статусов доступа решать по более свежему tested_at с реальным запросом",
+   "Перевести географию фактов в unit_id/boundary_version; областные/городские несоответствия — флаг",
+   "Отчёт о слиянии: число дублей, конфликтов, понижений уверенности"
+  ],
+  "second_pass_task": "Агенту с работающим браузером: (1) открыть A12-S020…S027 и записать реальный access_status, дату и URL файлов; (2) скачать 3–5 таблиц БНС по Шымкенту (D010/D011) и выдержку КАТО (D012), сохранить 3–10 строк + sha256 в manifest; (3) выполнить Overpass-запросы из отчёта §4.3, сохранить сырые ответы, проверить районы Шымкента и admin_level; (4) открыть последний бюллетень Казгидромета, извлечь 5 строк по Шымкенту с номером страницы и единицами; (5) проверить условия data.egov.kz API и goszakup OWS (документация vs реальный запрос); (6) после получения evidence.json агентов 01–11 выполнить merge_procedure_01_11 и обновить top5."
+ }
+}

@@ -1,0 +1,72 @@
+{
+  "checked_on": "2026-10-06",
+  "build": {
+    "branch": "claude/beautiful-clarke-sbzomj",
+    "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+    "code_candidate": "3e1302aa583594b0bf674090ac9c2d49ac424dae",
+    "path": "prototypes/city-evidence/"
+  },
+  "coordinator_review": "Read r8 BUILD and selected independent agent reports, read selected source/API, confirmed empty app-tree diff 3e1302a..d865dd4. Tests not independently rerun by coordinator in this scheduling turn. Independent r8 K07/K12/K10 explicitly tested d865dd4; most other modules tested old a5b5e2d and themselves.",
+  "sources": [
+    {
+      "slot": "K01",
+      "branch": "claude/loving-thompson-nmajdo",
+      "sha": "e717082c51c68361529952722bc06aa9a86b7473"
+    },
+    {
+      "slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "eedbf9da9cc845104cb0484cfd871bc538df1bca"
+    },
+    {
+      "slot": "K03",
+      "branch": "claude/epic-curie-iitc43",
+      "sha": "9b39f0f34f6086a20d8a6359352a9dfe30300d80"
+    },
+    {
+      "slot": "K04",
+      "branch": "claude/beautiful-clarke-sbzomj",
+      "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268"
+    },
+    {
+      "slot": "K05",
+      "branch": "claude/optimistic-davinci-1oiqs9",
+      "sha": "1804f5b94640092a52fc04a20cb3433572aaa817"
+    },
+    {
+      "slot": "K06",
+      "branch": "claude/ecstatic-curie-hzfzn0",
+      "sha": "58cf89973cf3578620e016329139697becaf860f"
+    },
+    {
+      "slot": "K07",
+      "branch": "claude/save-work-handoff-ku3ej3",
+      "sha": "ab71b735e5300ec4bd1d267b01b9d7b67603e6b0"
+    },
+    {
+      "slot": "K08",
+      "branch": "claude/dazzling-mayer-drhsxk",
+      "sha": "7fb81b9b2823dc91edc286249dbaa7c6b8942a8f"
+    },
+    {
+      "slot": "K09",
+      "branch": "claude/save-work-handoff-qho6eq",
+      "sha": "e953ddc0bbee6589ca461407c3689064a45e99a1"
+    },
+    {
+      "slot": "K10",
+      "branch": "claude/save-work-handoff-j7pc05",
+      "sha": "c8df74b500dd1d1c1ea39496307062e6c2db1ba3"
+    },
+    {
+      "slot": "K11",
+      "branch": "claude/save-work-handoff-fmjw6r",
+      "sha": "50b15bdd3987beb78878f521be3dedd02671eca8"
+    },
+    {
+      "slot": "K12",
+      "branch": "claude/save-work-handoff-xuav3q",
+      "sha": "c7dfafb9a756b7315c5fa62e6dc3dd56f897650e"
+    }
+  ]
+}

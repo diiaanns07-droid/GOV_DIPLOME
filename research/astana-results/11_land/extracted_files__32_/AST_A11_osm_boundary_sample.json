@@ -1,0 +1,128 @@
+{
+  "sample_id": "AST-A11-SMP001",
+  "dataset_id": "AST-A11-D001",
+  "kind": "derived_from_real_open_data",
+  "source": {
+    "source_id": "AST-A11-S001",
+    "repo_files": [
+      "data/geo_sources/astana_districts_overpass.json",
+      "data/astana_districts.geojson"
+    ],
+    "repo_archive": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+    "repo_accessed_at": "2026-10-05",
+    "osm_base_timestamp": "2026-09-22T08:45:51Z",
+    "attribution": "© OpenStreetMap contributors",
+    "license": "ODbL 1.0 (https://www.openstreetmap.org/copyright)"
+  },
+  "method": "shapely 2.1.2 / pyproj 3.8.0; объединение 6 relation районов; проекция LAEA с центром в центроиде объединения; соседние relation собраны polygonize(linemerge(outer)) минус inner; близость = длина границы Астаны в пределах 5 м от полигона соседа. Скрипт: AST_A11_boundary_check.py",
+  "legal_weight": "context_only — OSM не кадастр и не официальный акт о границах",
+  "astana_union": {
+    "area_km2": 789.3,
+    "parts": [
+      {
+        "area_km2": 770.41,
+        "district": "несколько районов (основная часть)"
+      },
+      {
+        "area_km2": 9.021,
+        "district": "Байконур",
+        "centroid_lat": 51.333,
+        "centroid_lon": 71.674,
+        "overlap_with_tselinograd_km2": 9.021
+      },
+      {
+        "area_km2": 5.033,
+        "district": "Байконур",
+        "centroid_lat": 51.278,
+        "centroid_lon": 71.317,
+        "overlap_with_tselinograd_km2": 0.0
+      },
+      {
+        "area_km2": 4.794,
+        "district": "Алматы",
+        "centroid_lat": 51.157,
+        "centroid_lon": 71.767,
+        "overlap_with_tselinograd_km2": 0.0
+      }
+    ]
+  },
+  "districts_osm": [
+    {
+      "name": "Есиль",
+      "osm_id": 3479876,
+      "admin_level": "6"
+    },
+    {
+      "name": "Алматы",
+      "osm_id": 3482819,
+      "admin_level": "6"
+    },
+    {
+      "name": "Сарыарка",
+      "osm_id": 3486954,
+      "admin_level": "6"
+    },
+    {
+      "name": "Байконур",
+      "osm_id": 8593081,
+      "admin_level": "6"
+    },
+    {
+      "name": "Нура",
+      "osm_id": 20593940,
+      "admin_level": "6"
+    },
+    {
+      "name": "Сарайшык",
+      "osm_id": 19733918,
+      "admin_level": "8"
+    }
+  ],
+  "neighbours_osm": [
+    {
+      "name_ru": "Целиноградский район",
+      "osm_id": 3403760,
+      "addr_region": "Ақмола облысы",
+      "admin_level": "6",
+      "astana_boundary_within_5m_km": 159.0,
+      "overlap_km2": 9.021
+    },
+    {
+      "name_ru": "Аршалынский район",
+      "osm_id": 3403782,
+      "addr_region": "Ақмола облысы",
+      "admin_level": "6",
+      "astana_boundary_within_5m_km": 10.9,
+      "overlap_km2": 0.0
+    },
+    {
+      "name_ru": "Шортандинский район",
+      "osm_id": 3404061,
+      "addr_region": "Ақмола облысы",
+      "admin_level": "6",
+      "astana_boundary_within_5m_km": 22.2,
+      "overlap_km2": 0.0
+    },
+    {
+      "name_ru": "городская администрация Косшы",
+      "osm_id": 15594335,
+      "addr_region": "Ақмола облысы",
+      "admin_level": "6",
+      "astana_boundary_within_5m_km": 12.5,
+      "overlap_km2": 0.0
+    },
+    {
+      "name_ru": "Тайтобинская сельская администрация",
+      "osm_id": 17952313,
+      "addr_region": null,
+      "admin_level": "8",
+      "astana_boundary_within_5m_km": 7.4,
+      "overlap_km2": 0.0
+    }
+  ],
+  "caveats": [
+    "Метод сборки мультиполигонов упрощённый; перекрытие 9.021 км² нужно подтвердить на openstreetmap.org (relation 3403760 и 8593081) и официальным актом о границах.",
+    "Отсоединённые части могут быть реальными эксклавами города или артефактами разметки OSM — статус unknown.",
+    "Центроиды округлены и даны только для ручной проверки на карте; это не координаты участков."
+  ]
+}

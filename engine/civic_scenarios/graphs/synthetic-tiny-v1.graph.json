@@ -1,0 +1,269 @@
+{
+ "id": "synthetic-tiny-v1",
+ "city": "astana",
+ "mode": "walking",
+ "evidence_type": "synthetic",
+ "label": "СИНТЕТИЧЕСКИЙ эталонный граф (10 узлов) — не реальная улица Астаны",
+ "limitations": [
+  "Координаты условные, длины заданы вручную и не равны геодезическим.",
+  "Используется только для проверки семантики движка."
+ ],
+ "source": {
+  "kind": "hand_made",
+  "author": "R07 round 11"
+ },
+ "license": null,
+ "nodes": [
+  {
+   "id": "n_a",
+   "lon": 71.4,
+   "lat": 51.1
+  },
+  {
+   "id": "n_b",
+   "lon": 71.402,
+   "lat": 51.1
+  },
+  {
+   "id": "n_c",
+   "lon": 71.404,
+   "lat": 51.1
+  },
+  {
+   "id": "n_d",
+   "lon": 71.406,
+   "lat": 51.1
+  },
+  {
+   "id": "n_h",
+   "lon": 71.408,
+   "lat": 51.1
+  },
+  {
+   "id": "n_e",
+   "lon": 71.402,
+   "lat": 51.1015
+  },
+  {
+   "id": "n_f",
+   "lon": 71.404,
+   "lat": 51.1015
+  },
+  {
+   "id": "n_g",
+   "lon": 71.406,
+   "lat": 51.1015
+  },
+  {
+   "id": "n_u",
+   "lon": 71.406,
+   "lat": 51.0985
+  },
+  {
+   "id": "n_x",
+   "lon": 71.4,
+   "lat": 51.0985
+  }
+ ],
+ "edges": [
+  {
+   "id": "e_ab",
+   "from": "n_a",
+   "to": "n_b",
+   "length_m": 100,
+   "access": "allowed",
+   "oneway": false,
+   "geometry": [
+    [
+     71.4,
+     51.1
+    ],
+    [
+     71.402,
+     51.1
+    ]
+   ]
+  },
+  {
+   "id": "e_bc",
+   "from": "n_b",
+   "to": "n_c",
+   "length_m": 100,
+   "access": "allowed",
+   "oneway": false,
+   "geometry": [
+    [
+     71.402,
+     51.1
+    ],
+    [
+     71.404,
+     51.1
+    ]
+   ]
+  },
+  {
+   "id": "e_cd",
+   "from": "n_c",
+   "to": "n_d",
+   "length_m": 100,
+   "access": "allowed",
+   "oneway": false,
+   "geometry": [
+    [
+     71.404,
+     51.1
+    ],
+    [
+     71.406,
+     51.1
+    ]
+   ]
+  },
+  {
+   "id": "e_be",
+   "from": "n_b",
+   "to": "n_e",
+   "length_m": 80,
+   "access": "allowed",
+   "oneway": false,
+   "geometry": [
+    [
+     71.402,
+     51.1
+    ],
+    [
+     71.402,
+     51.1015
+    ]
+   ]
+  },
+  {
+   "id": "e_ef",
+   "from": "n_e",
+   "to": "n_f",
+   "length_m": 100,
+   "access": "allowed",
+   "oneway": false,
+   "geometry": [
+    [
+     71.402,
+     51.1015
+    ],
+    [
+     71.404,
+     51.1015
+    ]
+   ]
+  },
+  {
+   "id": "e_fc",
+   "from": "n_f",
+   "to": "n_c",
+   "length_m": 80,
+   "access": "allowed",
+   "oneway": false,
+   "geometry": [
+    [
+     71.404,
+     51.1015
+    ],
+    [
+     71.404,
+     51.1
+    ]
+   ]
+  },
+  {
+   "id": "e_fg",
+   "from": "n_f",
+   "to": "n_g",
+   "length_m": 100,
+   "access": "allowed",
+   "oneway": false,
+   "geometry": [
+    [
+     71.404,
+     51.1015
+    ],
+    [
+     71.406,
+     51.1015
+    ]
+   ]
+  },
+  {
+   "id": "e_gd",
+   "from": "n_g",
+   "to": "n_d",
+   "length_m": 80,
+   "access": "allowed",
+   "oneway": false,
+   "geometry": [
+    [
+     71.406,
+     51.1015
+    ],
+    [
+     71.406,
+     51.1
+    ]
+   ]
+  },
+  {
+   "id": "e_dh",
+   "from": "n_d",
+   "to": "n_h",
+   "length_m": 150,
+   "access": "allowed",
+   "oneway": true,
+   "geometry": [
+    [
+     71.406,
+     51.1
+    ],
+    [
+     71.408,
+     51.1
+    ]
+   ]
+  },
+  {
+   "id": "e_du",
+   "from": "n_d",
+   "to": "n_u",
+   "length_m": 200,
+   "access": "unknown",
+   "oneway": false,
+   "geometry": [
+    [
+     71.406,
+     51.1
+    ],
+    [
+     71.406,
+     51.0985
+    ]
+   ]
+  },
+  {
+   "id": "e_ax",
+   "from": "n_a",
+   "to": "n_x",
+   "length_m": 50,
+   "access": "denied",
+   "oneway": false,
+   "geometry": [
+    [
+     71.4,
+     51.1
+    ],
+    [
+     71.4,
+     51.0985
+    ]
+   ]
+  }
+ ],
+ "digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf"
+}

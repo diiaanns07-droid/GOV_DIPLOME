@@ -1,0 +1,79 @@
+{
+  "checked_on": "2026-10-05",
+  "coordinator_review": "Read Git inventory and selected STATUS/reports; no independent execution of agent experiments in this scheduling turn.",
+  "availability": "unknown; user assigns exactly one available session BUILD; other sessions optional REVIEW",
+  "sources": [
+    {
+      "slot": "K01",
+      "branch": "claude/loving-thompson-nmajdo",
+      "sha": "50df8ebc8fb4cb9f2f95ed53ad10c7fe04b2f522",
+      "result_dir": "research/round-3-results/K01/"
+    },
+    {
+      "slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "24c1750f70d9e444ae551030d116bb6aa8ce5b7b",
+      "result_dir": "research/round-3-results/K02/"
+    },
+    {
+      "slot": "K03",
+      "branch": "claude/epic-curie-iitc43",
+      "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+      "result_dir": "research/round-3-results/K03/"
+    },
+    {
+      "slot": "K04",
+      "branch": "claude/beautiful-clarke-sbzomj",
+      "sha": "7fb8bb897dc80150c85fef9e68ac7183d323e6c3",
+      "result_dir": "research/round-3-results/K04/"
+    },
+    {
+      "slot": "K05",
+      "branch": "claude/optimistic-davinci-1oiqs9",
+      "sha": "d913554bf2617a74d921af260ab8c22743ccb4b5",
+      "result_dir": "research/round-3-results/K05/"
+    },
+    {
+      "slot": "K06",
+      "branch": "claude/ecstatic-curie-hzfzn0",
+      "sha": "a49e3c88acee60c60a8ff495194f25fef7a01128",
+      "result_dir": "research/round-3-results/K06/"
+    },
+    {
+      "slot": "K07",
+      "branch": "claude/save-work-handoff-ku3ej3",
+      "sha": "6778deda6d3f3a7f27698f651c1b0046d2a9aae9",
+      "result_dir": "research/round-3-results/K07/"
+    },
+    {
+      "slot": "K08",
+      "branch": "claude/dazzling-mayer-drhsxk",
+      "sha": "e1e3c7170f827550948afc0448695ecb8e9bc464",
+      "result_dir": "research/round-3-results/K08/"
+    },
+    {
+      "slot": "K09",
+      "branch": "claude/save-work-handoff-qho6eq",
+      "sha": "a155a4f7cbdb507401bd5b32439fbca776a3f4ff",
+      "result_dir": "research/round-3-results/K09/"
+    },
+    {
+      "slot": "K10",
+      "branch": "claude/save-work-handoff-j7pc05",
+      "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+      "result_dir": "research/round-3-results/K10/"
+    },
+    {
+      "slot": "K11",
+      "branch": "claude/save-work-handoff-fmjw6r",
+      "sha": "bbf3eee817085b8446a939455de90bb1e82278c3",
+      "result_dir": "research/round-3-results/K11/"
+    },
+    {
+      "slot": "K12",
+      "branch": "claude/save-work-handoff-xuav3q",
+      "sha": "70faa0f52f21115454e2a9c4c71c5fb7a24dbcb2",
+      "result_dir": "research/round-3-results/K12/"
+    }
+  ]
+}

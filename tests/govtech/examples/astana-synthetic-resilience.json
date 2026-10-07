@@ -1,0 +1,201 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "P1",
+    "lon": 71.421235,
+    "lat": 51.16483,
+    "weight": 1
+   },
+   {
+    "id": "P2",
+    "lon": 71.428869,
+    "lat": 51.16483,
+    "weight": 8
+   },
+   {
+    "id": "P3",
+    "lon": 71.436503,
+    "lat": 51.16483,
+    "weight": 6
+   },
+   {
+    "id": "P4",
+    "lon": 71.444137,
+    "lat": 51.16483,
+    "weight": 4
+   },
+   {
+    "id": "P5",
+    "lon": 71.421235,
+    "lat": 51.169621,
+    "weight": 2
+   },
+   {
+    "id": "P6",
+    "lon": 71.428869,
+    "lat": 51.169621,
+    "weight": 9
+   },
+   {
+    "id": "P7",
+    "lon": 71.436503,
+    "lat": 51.169621,
+    "weight": 7
+   },
+   {
+    "id": "P8",
+    "lon": 71.444137,
+    "lat": 51.169621,
+    "weight": 5
+   },
+   {
+    "id": "P9",
+    "lon": 71.421235,
+    "lat": 51.174412,
+    "weight": 3
+   },
+   {
+    "id": "P10",
+    "lon": 71.428869,
+    "lat": 51.174412,
+    "weight": 1
+   },
+   {
+    "id": "P11",
+    "lon": 71.436503,
+    "lat": 51.174412,
+    "weight": 8
+   },
+   {
+    "id": "P12",
+    "lon": 71.444137,
+    "lat": 51.174412,
+    "weight": 6
+   }
+  ],
+  "candidates": [
+   {
+    "id": "K01",
+    "lon": 71.422666,
+    "lat": 51.166626,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "K02",
+    "lon": 71.429346,
+    "lat": 51.166626,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 137
+   },
+   {
+    "id": "K03",
+    "lon": 71.436026,
+    "lat": 51.166626,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 174
+   },
+   {
+    "id": "K04",
+    "lon": 71.442706,
+    "lat": 51.166626,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 211
+   },
+   {
+    "id": "K05",
+    "lon": 71.422666,
+    "lat": 51.172016,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 248
+   },
+   {
+    "id": "K06",
+    "lon": 71.429346,
+    "lat": 51.172016,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 285
+   },
+   {
+    "id": "K07",
+    "lon": 71.436026,
+    "lat": 51.172016,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 322
+   },
+   {
+    "id": "K08",
+    "lon": 71.442706,
+    "lat": 51.172016,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 359
+   }
+  ],
+  "budget": 600,
+  "max_selected": 3,
+  "coverage_radius_m": 400,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "K01"
+  ]
+ },
+ "cases": [
+  {
+   "id": "every2",
+   "label": "Каждая вторая запись",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+    "c97435da-cd05-4549-bec1-ff297e858554"
+   ]
+  },
+  {
+   "id": "first3",
+   "label": "Первые три записи по ID",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+   ]
+  },
+  {
+   "id": "all",
+   "label": "Все записи категории",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+    "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+    "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+    "c97435da-cd05-4549-bec1-ff297e858554",
+    "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+   ]
+  },
+  {
+   "id": "first3dup",
+   "label": "Повтор первых трёх",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+   ]
+  }
+ ]
+}

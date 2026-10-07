@@ -1,0 +1,342 @@
+[
+  {
+    "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:15Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://www.gov.kz/memleket/entities/astana/press/article/details/99399?lang=ru",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:15Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://astana.gov.kz/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:16Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://data.egov.kz/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:16Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://egov.kz/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:17Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://www.openstreetmap.org/copyright/en",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:18Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://openfreemap.org/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:18Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://operations.osmfoundation.org/policies/tiles/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:18Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://osmfoundation.org/wiki/Licence/Attribution_Guidelines",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:18Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://opendatacommons.org/licenses/odbl/1-0/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:19Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://openmaptiles.org/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:19Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://docs.overturemaps.org/attribution/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:19Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://overpass-api.de/api/status",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:19Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:20Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "http_error",
+        "http_status": 400,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Bad Request"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/openmaptiles/openmaptiles/master/LICENSE.md",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:20Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "fetched",
+        "http_status": 200,
+        "bytes": 3054,
+        "sha256": "6b7862d9537cd3160f10034b8bb0b8d68165da134ea2001080166aa0b624e15c",
+        "detail": null,
+        "final_url": "https://raw.githubusercontent.com/openmaptiles/openmaptiles/master/LICENSE.md",
+        "content_type": "text/plain; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/hyperknot/openfreemap/main/README.md",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:20Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "fetched",
+        "http_status": 200,
+        "bytes": 12049,
+        "sha256": "d53a9172a251017bafc2cca1d2646939514809e01653a0b855f240e65ae9fdac",
+        "detail": null,
+        "final_url": "https://raw.githubusercontent.com/hyperknot/openfreemap/main/README.md",
+        "content_type": "text/plain; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "url": "https://www.inform.kz/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:21Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://astanatimes.com/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:21Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://tengrinews.kz/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:21Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://ru.wikipedia.org/wiki/Астана",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:21Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://www.wikidata.org/wiki/Q1520",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:21Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://primeminister.kz/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:22Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://stat.gov.kz/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:22Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  },
+  {
+    "url": "https://tiles.openfreemap.org/styles/liberty",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:22Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "egress_denied",
+        "http_status": null,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Tunnel connection failed: 403 Forbidden"
+      }
+    ]
+  }
+]

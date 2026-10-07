@@ -1,0 +1,402 @@
+{
+ "districts_osm": {
+  "esil": {
+   "name": "Есиль",
+   "area_km2": 194.5
+  },
+  "almaty": {
+   "name": "Алматы",
+   "area_km2": 93.4
+  },
+  "saryarka": {
+   "name": "Сарыарка",
+   "area_km2": 67.8
+  },
+  "baikonur": {
+   "name": "Байконур",
+   "area_km2": 183.5
+  },
+  "nura": {
+   "name": "Нура",
+   "area_km2": 188.5
+  },
+  "saraishyk": {
+   "name": "Сарайшык",
+   "area_km2": 61.4
+  }
+ },
+ "city_union_area_km2": 789.2,
+ "posts": [
+  {
+   "sId": "k4",
+   "pnz": "ПНЗ №7",
+   "address": "ул. Туркестан, 2/1, РФМШ",
+   "lat": 51.1192229515954,
+   "lng": 71.4323355265776,
+   "district": "esil",
+   "nn_km": 3.6
+  },
+  {
+   "sId": "k7",
+   "pnz": "ПНЗ №9",
+   "address": "ул. А. Байтурсынова, 25",
+   "lat": 51.1231205946689,
+   "lng": 71.4833709591998,
+   "district": "saraishyk",
+   "nn_km": 3.6
+  },
+  {
+   "sId": "k8",
+   "pnz": "ПНЗ №8",
+   "address": "ул. Бабатайулы, д. 24 Коктал -1",
+   "lat": 51.1861129897398,
+   "lng": 71.3437228509127,
+   "district": "saryarka",
+   "nn_km": 5.93
+  },
+  {
+   "sId": "k9",
+   "pnz": "ПНЗ №10",
+   "address": "ул. К. Мунайтпасова, 13",
+   "lat": 51.158413811147,
+   "lng": 71.4674600136422,
+   "district": "almaty",
+   "nn_km": 2.55
+  },
+  {
+   "sId": "k12",
+   "pnz": "ПНЗ №6",
+   "address": "ул. Акжол, район отстойника сточных вод «Астана Тазалык»",
+   "lat": 51.1812871163873,
+   "lng": 71.465806955972,
+   "district": "baikonur",
+   "nn_km": 2.55
+  },
+  {
+   "sId": "k14",
+   "pnz": "ПНЗ №5",
+   "address": "пр.Туран, 2/1 центральная спасательная станция",
+   "lat": 51.1573714718456,
+   "lng": 71.4150581848067,
+   "district": "nura",
+   "nn_km": 3.67
+  }
+ ],
+ "posts_per_district": {
+  "esil": 1,
+  "almaty": 1,
+  "saryarka": 1,
+  "baikonur": 1,
+  "nura": 1,
+  "saraishyk": 1
+ },
+ "monitoring_gap_area_weighted": {
+  "esil": {
+   "share_area_gt_2km": 0.945,
+   "share_area_gt_5km": 0.808
+  },
+  "almaty": {
+   "share_area_gt_2km": 0.882,
+   "share_area_gt_5km": 0.684
+  },
+  "saryarka": {
+   "share_area_gt_2km": 0.761,
+   "share_area_gt_5km": 0.262
+  },
+  "baikonur": {
+   "share_area_gt_2km": 0.91,
+   "share_area_gt_5km": 0.701
+  },
+  "nura": {
+   "share_area_gt_2km": 0.962,
+   "share_area_gt_5km": 0.729
+  },
+  "saraishyk": {
+   "share_area_gt_2km": 0.843,
+   "share_area_gt_5km": 0.624
+  },
+  "city": {
+   "share_area_gt_2km": 0.91,
+   "share_area_gt_5km": 0.688
+  }
+ },
+ "series_period_utc": [
+  "2021-03-24 13:00:00+00:00",
+  "2022-03-24 23:00:00+00:00"
+ ],
+ "completeness_2021_pct": {
+  "k4": {
+   "PM2.5": 67.6,
+   "PM10": 7.8,
+   "NO2": 7.8,
+   "SO2": 7.8,
+   "CO": 7.8
+  },
+  "k7": {
+   "PM2.5": 75.1,
+   "PM10": 7.9,
+   "NO2": 7.9,
+   "SO2": 7.9,
+   "CO": 7.9
+  },
+  "k8": {
+   "PM2.5": 75.1,
+   "PM10": 7.9,
+   "NO2": 7.9,
+   "SO2": 7.9,
+   "CO": 7.9
+  },
+  "k9": {
+   "PM2.5": 74.8,
+   "PM10": 7.9,
+   "NO2": 7.9,
+   "SO2": 7.9,
+   "CO": 7.9
+  },
+  "k12": {
+   "PM2.5": 62.6,
+   "PM10": 7.8,
+   "NO2": 7.8,
+   "SO2": 7.8,
+   "CO": 7.8
+  },
+  "k14": {
+   "PM2.5": 19.3,
+   "PM10": 0.0,
+   "NO2": 7.9,
+   "SO2": 7.9,
+   "CO": 7.9
+  }
+ },
+ "pm25_seasonal_daily": {
+  "k12": {
+   "valid_days_DJF": 74,
+   "median_DJF": 122.4,
+   "valid_days_JJA": 78,
+   "median_JJA": 28.9,
+   "days_gt_35_if_ugm3_all": 189,
+   "valid_days_all": 286
+  },
+  "k14": {
+   "valid_days_DJF": 0,
+   "median_DJF": null,
+   "valid_days_JJA": 28,
+   "median_JJA": 4.4,
+   "days_gt_35_if_ugm3_all": 2,
+   "valid_days_all": 71
+  },
+  "k4": {
+   "valid_days_DJF": 79,
+   "median_DJF": 144.1,
+   "valid_days_JJA": 75,
+   "median_JJA": 33.3,
+   "days_gt_35_if_ugm3_all": 227,
+   "valid_days_all": 309
+  },
+  "k7": {
+   "valid_days_DJF": 81,
+   "median_DJF": 43.9,
+   "valid_days_JJA": 91,
+   "median_JJA": 9.5,
+   "days_gt_35_if_ugm3_all": 91,
+   "valid_days_all": 351
+  },
+  "k8": {
+   "valid_days_DJF": 81,
+   "median_DJF": 4.0,
+   "valid_days_JJA": 91,
+   "median_JJA": 4.3,
+   "days_gt_35_if_ugm3_all": 6,
+   "valid_days_all": 351
+  },
+  "k9": {
+   "valid_days_DJF": 79,
+   "median_DJF": 0.7,
+   "valid_days_JJA": 91,
+   "median_JJA": 1.4,
+   "days_gt_35_if_ugm3_all": 0,
+   "valid_days_all": 346
+  }
+ },
+ "pm25_pairwise": [
+  {
+   "pair": "k12-k14",
+   "n_days": 42,
+   "spearman": 0.69,
+   "median_abs_diff": 24.9
+  },
+  {
+   "pair": "k12-k4",
+   "n_days": 250,
+   "spearman": 0.8,
+   "median_abs_diff": 19.7
+  },
+  {
+   "pair": "k12-k7",
+   "n_days": 286,
+   "spearman": 0.84,
+   "median_abs_diff": 29.1
+  },
+  {
+   "pair": "k12-k8",
+   "n_days": 286,
+   "spearman": 0.35,
+   "median_abs_diff": 41.2
+  },
+  {
+   "pair": "k12-k9",
+   "n_days": 282,
+   "spearman": -0.52,
+   "median_abs_diff": 44.7
+  },
+  {
+   "pair": "k14-k4",
+   "n_days": 67,
+   "spearman": 0.63,
+   "median_abs_diff": 25.6
+  },
+  {
+   "pair": "k14-k7",
+   "n_days": 71,
+   "spearman": 0.79,
+   "median_abs_diff": 4.0
+  },
+  {
+   "pair": "k14-k8",
+   "n_days": 71,
+   "spearman": 0.86,
+   "median_abs_diff": 1.7
+  },
+  {
+   "pair": "k14-k9",
+   "n_days": 71,
+   "spearman": 0.84,
+   "median_abs_diff": 4.5
+  },
+  {
+   "pair": "k4-k7",
+   "n_days": 309,
+   "spearman": 0.7,
+   "median_abs_diff": 28.7
+  },
+  {
+   "pair": "k4-k8",
+   "n_days": 309,
+   "spearman": -0.04,
+   "median_abs_diff": 40.0
+  },
+  {
+   "pair": "k4-k9",
+   "n_days": 304,
+   "spearman": -0.76,
+   "median_abs_diff": 47.3
+  },
+  {
+   "pair": "k7-k8",
+   "n_days": 351,
+   "spearman": 0.38,
+   "median_abs_diff": 12.7
+  },
+  {
+   "pair": "k7-k9",
+   "n_days": 346,
+   "spearman": -0.35,
+   "median_abs_diff": 16.6
+  },
+  {
+   "pair": "k8-k9",
+   "n_days": 346,
+   "spearman": 0.43,
+   "median_abs_diff": 3.2
+  }
+ ],
+ "pm25_qc_flags": {
+  "k12": {
+   "spearman_vs_network": 0.79,
+   "share_below_low": 0.0,
+   "flags": []
+  },
+  "k14": {
+   "spearman_vs_network": 0.77,
+   "share_below_low": 0.0,
+   "flags": []
+  },
+  "k4": {
+   "spearman_vs_network": 0.58,
+   "share_below_low": 0.0,
+   "flags": []
+  },
+  "k7": {
+   "spearman_vs_network": 0.67,
+   "share_below_low": 0.0,
+   "flags": []
+  },
+  "k8": {
+   "spearman_vs_network": 0.2,
+   "share_below_low": 0.06,
+   "flags": [
+    "season_inverted"
+   ]
+  },
+  "k9": {
+   "spearman_vs_network": -0.52,
+   "share_below_low": 0.766,
+   "flags": [
+    "neg_corr_network",
+    "season_inverted",
+    "share_below_low>30%"
+   ]
+  }
+ },
+ "third_party_unit_test": {
+  "overlap_days": 0,
+  "status": "not_testable_no_overlap",
+  "ailaris_rows_by_year": {
+   "2019": 317,
+   "2022": 69,
+   "2023": 296,
+   "2024": 363
+  },
+  "ailaris_pm25_non_null": 895,
+  "ailaris_period": [
+   "2019-01-01",
+   "2024-12-31"
+  ]
+ },
+ "station_astana": {
+  "rows": 8490,
+  "period": [
+   "2000-01-01",
+   "2023-04-30"
+  ],
+  "days_ge7_terms_share": 1.0,
+  "full_years": [
+   2000,
+   2022
+  ],
+  "mean_2000_2009": {
+   "days": 365.3,
+   "d_ge30": 15.8,
+   "d_ge35": 0.6,
+   "d_le_m30": 3.9,
+   "d_le_m35": 1.0
+  },
+  "mean_2010_2019": {
+   "days": 362.1,
+   "d_ge30": 17.9,
+   "d_ge35": 2.1,
+   "d_le_m30": 6.2,
+   "d_le_m35": 0.9
+  },
+  "mean_2020_2022": {
+   "days": 365.3,
+   "d_ge30": 24.3,
+   "d_ge35": 1.3,
+   "d_le_m30": 1.3,
+   "d_le_m35": 0.0
+  },
+  "max_tmax8": 38.6,
+  "min_tmin8": -40.6,
+  "region_code_in_source": "KZ-AKM"
+ }
+}

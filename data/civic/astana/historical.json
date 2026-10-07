@@ -1,0 +1,26 @@
+{
+  "city": "astana",
+  "items": [],
+  "schema_version": "civic-v1",
+  "slice": {
+    "as_of": "2026-10-06",
+    "builder": "data/civic/astana/tools/build_slice.py",
+    "content_sha256": "3919bfc17c23627f09247d2a51d97f77642326d7523b25bdb348f8e17dfb6fa9",
+    "count": 0,
+    "demo": false,
+    "inputs": [
+      {
+        "path": "data/civic/astana/sources.json",
+        "sha256": "22454396c2fa2a25c107941443b1c83c752fbd55d13b8d0323b234b6c99f3dbd"
+      },
+      {
+        "path": "data/civic/astana/slice_config.json",
+        "sha256": "f93e7576407f14e510b0902df72cd13d39659825044fb999b2fa95796f771415"
+      }
+    ],
+    "name": "historical",
+    "notice": "Реальные записи только с подтверждением полученным источником; publication=draft до проверки редактором.",
+    "status_max_age_days": 45,
+    "version": "r05-astana-historical-2026-10-06-3919bfc17c23"
+  }
+}
