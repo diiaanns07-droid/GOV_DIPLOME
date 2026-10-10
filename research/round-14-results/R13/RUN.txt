@@ -1,0 +1,31 @@
+R13 · раунд 14 · команды и что теперь можно сделать
+Проверено: Linux (облачный контейнер), Python 3.13.16, scikit-learn 1.9.1, numpy 2.5.3. Сети не нужно.
+Без scikit-learn всё работает на запасной модели (fallback) — так же отвечает API и строится backtest.
+
+1. Зависимости (только для бустинга)
+   python3 -m pip install scikit-learn pytest      # на ноутбуке владельца уже есть (LOCAL-3, venv birge-ml)
+
+2. Тесты
+   python3 -m pytest -q tests/civic/R13
+   Через шлюз R01 (его ветка claude/sharp-dijkstra-0t87gl), patch накладывается в тесте сам:
+   git show origin/claude/sharp-dijkstra-0t87gl:ui/web_server.py > /tmp/r01_web_server.py
+   R13_R01_WEB_SERVER=/tmp/r01_web_server.py python3 -m pytest -q tests/civic/R13/test_r13_gateway_r01.py
+
+3. Конвейер
+   python3 -m ml.civic_forecast history                       # сводка синтетической истории (JSON)
+   python3 -m ml.civic_forecast backtest --seeds 2026,2027,2028   # ~2–4 мин → ml/civic_forecast/RESULTS.md, results.json
+   python3 -m ml.civic_forecast report                        # перестроить RESULTS.md из results.json
+   python3 -m ml.civic_forecast build-cache                   # ~6 с на месяц → ui/civic_forecast/data/forecast_cache.json
+   python3 -m ml.civic_forecast build-targets --geo-dir data/civic/astana/geo   # после обновления данных R12
+   python3 -m ml.civic_forecast weather-fixture               # пересоздать синтетическую погоду (если нет LOCAL-9)
+
+4. Прогноз из Python (для R01 и R08)
+   python3 -c "from ui.civic_forecast import forecast; import json; print(json.dumps(forecast('2026-11','nura',5), ensure_ascii=False, indent=1))"
+   python3 -c "from ui.civic_forecast import attention_next_month; from datetime import date; print(attention_next_month(None, 5, date(2026,10,11)))"
+
+Что теперь может пользователь (после подключения R01/R08)
+- Аким в «Картине дня» видит 5–30 мест, где в следующем месяце вероятны жалобы, с причинами простыми словами:
+  «Снег и гололёд: 6 жалоб в ноябре прошлого года», «Проблема держится 5 месяцев подряд», «В ноябре обычно снег: 24 см».
+  Фильтр по району; клик — то же место на карте. Всё с пометкой «прототип на синтетике».
+- Для прошлого месяца видно, подтвердился ли прогноз (на синтетике): например, 2026-10 — 4 из 10.
+- Для диплома и Gton: методика проверки «как будто в прошлом» с честной таблицей precision@10/20/30 против простых прогнозов.

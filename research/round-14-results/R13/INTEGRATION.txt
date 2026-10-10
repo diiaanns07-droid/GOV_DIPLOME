@@ -1,0 +1,105 @@
+R13 · раунд 14 · INTEGRATION — прогноз проблемных территорий (ПРОТОТИП НА СИНТЕТИКЕ)
+Ветка поставки: claude/r14-R13 (SHA — DELIVERY.json). Пути R13: ml/civic_forecast/, ui/civic_forecast/, tests/civic/R13/,
+research/round-14-results/R13/, research/handoffs/astana/R13/round14/STATUS.md.
+Основа: claude/round-14-package @ 46f2308. Чужие модули не менялись.
+
+ГЛАВНОЕ ДЛЯ ВСЕХ: история жалоб — синтетика (ml/civic_forecast/history.py). Территории — реальные объекты OSM (данные R12).
+Каждый ответ API несёт evidence_type: "synthetic", demo: true и note_ru/note_kk. Экран обязан показать «Пример»/«прототип».
+Точность (ml/civic_forecast/RESULTS.md) — точность на синтетике, не на реальных обращениях.
+
+=====================================================================
+1. ДЛЯ R01 · шлюз v2: GET /api/civic/v2/forecast?month=ГГГГ-ММ&district=<id>&k=1..50
+=====================================================================
+Patch к ui/web_server.py вашей ветки claude/sharp-dijkstra-0t87gl @ d3c33d9 — research/round-14-results/R13/r01_forecast_route.patch
+(12 строк: строка в V2_ROUTES, строка в V2_HANDLERS, разбор month/district/k в arguments()). git apply OK.
+Проверено вашим настоящим CivicV2Gateway с этим patch: tests/civic/R13/test_r13_gateway_r01.py — 7 PASS
+(R13_R01_WEB_SERVER=<ваш web_server.py> python3 -m pytest tests/civic/R13/test_r13_gateway_r01.py).
+Функция: ui.civic_forecast.forecast_response(month=None, district=None, k=10) — сразу JSON без обёртки ok/data;
+ошибки параметров — ForecastError(status=400, code="bad_request") — ваш шлюз превращает её в 400.
+По умолчанию month = следующий месяц по времени Астаны (если он в кэше, иначе последний в кэше).
+Статику раздавать не нужно: у R13 нет своих страниц (блок показывает R08).
+
+Скорость: кэш ui/civic_forecast/data/forecast_cache.json (2026-10 и 2026-11) → первый вызов ~30 мс (чтение файла),
+дальше < 1 мс. Месяц не из кэша считается на лету ~3–4 с и запоминается в памяти процесса. Чтобы этого не было на демо:
+    python3 -m ml.civic_forecast build-cache --months 2026-10,2026-11,2026-12
+(сборка ~6 с на месяц; на месяцы после конца истории 2026-11 прогноз невозможен — 400 с понятным текстом).
+
+Ответ:
+  {month, asof, district, k, model: "gbm"|"fallback", threshold: 4, evidence_type: "synthetic", demo: true,
+   note_ru, note_kk, generated_at, computed_now, check: {precision_at_10,…} | null,
+   items: [{target: {kind, id, label_ru, label_kk}, territory_kind, point: [lon, lat], district, risk: 0..1,
+            level: high|medium|low, main_category: id категории v2, actual_complaints?, confirmed?,
+            top_reasons: [{key, params, ru, kk}] (1–3)}]}
+  target — CONTRACT §4 (object | segment | area, id как у R12: osm-node-…, osm-w<way>-<n>, yard-…) → карта R12/R07
+  подсветит ту же цель. check и confirmed — только для прошедшего месяца (видно, подтвердился ли прогноз; синтетика).
+
+=====================================================================
+2. ДЛЯ R08 · «Картина дня»: блок «На что обратить внимание в следующем месяце»
+=====================================================================
+    from ui.civic_forecast import attention_next_month
+    block = attention_next_month(district=None | "nura" | …, k=5, today=date)   # today — дата «Картины дня»
+    → {month, evidence_type: "synthetic", demo: true,
+       items: [{target:{kind,id,label_ru,label_kk}, risk, level, main_category, district, reasons:[{key,params,ru,kk}] ×≤2}]}
+Как у вас для R06 (sources.py): try: from ui.civic_forecast import attention_next_month / except ImportError: блок не
+показывать (или «Прогноз не подключён»). Подпись блока — обязательно с пометкой «прототип на синтетике» (ключи ниже).
+Клик по пункту — открыть target на карте (как «Горячие места»). Числа «Картины дня» прогноз НЕ меняет: это отдельный блок.
+
+=====================================================================
+3. ДЛЯ R12 · территории
+=====================================================================
+ml/civic_forecast/data/targets.json собран из ваших data/civic/astana/geo/{objects,yards,way_tags,SOURCE}.json
+(claude/tender-brahmagupta-ef5ztl @ d13f49a, built_at из SOURCE.json — в файле) + пешеходный граф OSM.
+2334 территории: дворы 538, остановки 940, площадки 334, парки 177, места для мусора 136, участки крупных улиц 209
+(одно ребро на название улицы классов primary/secondary/tertiary). У безымянных — ориентир OSM («Двор рядом: улица …»).
+Когда ваши файлы изменятся: python3 -m ml.civic_forecast build-targets && python3 -m ml.civic_forecast build-cache.
+
+=====================================================================
+4. LOCAL-9 · погода
+=====================================================================
+Сейчас — синтетическая фикстура ml/civic_forecast/data/weather_fixture.csv (первая строка помечена SYNTHETIC).
+Как только в сборке появится data/civic/astana/weather/openmeteo_daily.csv, загрузчик (ml/civic_forecast/weather.py)
+возьмёт его сам: понимает и «чистый» CSV (date,temperature_2m_max,…), и CSV с сайта Open-Meteo (метаданные сверху,
+колонка time, единицы в скобках). После этого: build-cache и backtest заново; в RESULTS.md строка «Погода: real».
+Проверка: python3 -c "from ml.civic_forecast.weather import load_daily; print(load_daily()[1])"
+
+=====================================================================
+5. ДЛЯ R11 · ключи перевода (формат вашего INTEGRATION §4)
+=====================================================================
+Тексты причин API отдаёт готовыми (ru и kk) — их можно показывать как есть по текущему языку. Ниже ключи для подписей
+блока и шаблоны причин (для вычитки казахского владельцем; в коде — ml/civic_forecast/reasons.py, правки — туда).
+
+I18N-KEYS R13
+{"forecast.title": {"ru": "На что обратить внимание в следующем месяце", "kk": "Келесі айда назар аударатын жерлер", "where": "R08 · заголовок блока"},
+ "forecast.prototype": {"ru": "Прототип: прогноз обучен на синтетической истории, не реальная оценка", "kk": "Прототип: болжам синтетикалық тарихта оқытылған, нақты баға емес", "where": "R08 · подпись под заголовком, всегда видна"},
+ "forecast.risk": {"ru": "Риск {pct} %", "kk": "Тәуекел {pct} %", "where": "R08 · у пункта"},
+ "forecast.level.high": {"ru": "высокий риск", "kk": "жоғары тәуекел", "where": "значок уровня (цвет + слово)"},
+ "forecast.level.medium": {"ru": "средний риск", "kk": "орташа тәуекел", "where": "то же"},
+ "forecast.level.low": {"ru": "низкий риск", "kk": "төмен тәуекел", "where": "то же"},
+ "forecast.empty": {"ru": "Прогноз на этот месяц пока не готов", "kk": "Бұл айға болжам әлі дайын емес", "where": "пустое состояние"},
+ "forecast.check": {"ru": "Прогноз прошлого месяца подтвердился: {n} из {k}", "kk": "Өткен айдағы болжам расталды: {k} ішінен {n}", "where": "R08 · под списком (только синтетика сейчас)"}}
+
+Шаблоны причин (ru | kk), {category} — название категории v2 в кавычках, {month_loc} — месяц в предложном/жатыс септігі:
+ forecast.reason.same_month_ly  «{category}»: {n} жалоб(а/ы) в {month_loc} прошлого года | «{category}»: өткен жылы {month_loc} {n} шағым
+ forecast.reason.recent_3m      За последние 3 месяца — {n} жалоб(а/ы)                  | Соңғы 3 айда — {n} шағым
+ forecast.reason.growth         Жалоб стало больше: {now} за 3 месяца против {before} до этого | Шағым көбейді: соңғы 3 айда {now}, оның алдындағы 3 айда {before}
+ forecast.reason.streak         Проблема держится {n} месяц(а/ев) подряд                | Мәселе {n} ай қатарынан сақталып тұр
+ forecast.reason.construction   Рядом стройка по плану: {период}                        | Жанында жоспарлы құрылыс: {кезең}
+ forecast.reason.climate_snow   В {month_loc} обычно снег: {cm} см за месяц (норма за {years} г.) | {Month_loc} әдетте қар жауады: айына {cm} см ({years} жылдың нормасы)
+ forecast.reason.climate_thaw   В {month_loc} обычно {n} дн. с оттепелью — гололёд и ямы | {Month_loc} әдетте {n} күн жылымық болады — көктайғақ пен шұңқыр көбейеді
+ forecast.reason.thaw_last      В прошлом месяце {n} дн. с оттепелью — весной растут ямы | Өткен айда {n} күн жылымық болды — көктемде шұңқыр көбейеді
+ forecast.reason.heating        В {month_loc} начинается отопительный сезон — больше жалоб на тепло и воду | {Month_loc} жылыту маусымы басталады — жылу мен су бойынша шағым көбейеді
+ forecast.reason.heat           В {month_loc} обычно {n} жарких дн. (выше +28 °C) — мусор и запахи | {Month_loc} әдетте {n} ыстық күн (+28 °C жоғары) — қоқыс пен иіс
+ Подписи территорий: «Двор рядом: улица …» | «Аула, жанында: … көшесі»; если у OSM нет kk-имени — русское имя (как в OSM).
+Казахский — черновик R13: просьба вычитать (особенно «жылымық» для оттепели и «жоспарлы құрылыс»).
+
+=====================================================================
+6. ДЛЯ R10 · приёмка
+=====================================================================
+- python3 -m pytest tests/civic/R13 (37; 7 из них — через шлюз R01 при R13_R01_WEB_SERVER, иначе SKIP).
+- Проверить в интерфейсе R08: пометка «прототип на синтетике» видна в обеих локалях; клик по пункту ведёт на ту же цель.
+- RESULTS.md: precision@10/20/30 против базовых — на синтетике; ориентир Gton 60–70 % НЕ достигнут (честно в выводе).
+
+=====================================================================
+7. LOCAL-задачи
+=====================================================================
+Нет новых. Ждём LOCAL-9 (погода); после неё — build-cache и backtest (команды — RUN.txt), ~4 мин на ноутбуке.

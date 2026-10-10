@@ -2,17 +2,27 @@
 
 Задача: R13 — прогноз проблемных кварталов (прототип), prompts/R13.txt.
 Агент / город: Claude Code (облачная сессия), Астана, Birge.
-Статус: partial (checkpoint 2)
-Рабочая ветка: claude/r14-R13 (от claude/round-14-package @ 46f2308)
+Статус: DONE по объёму роли (подключение — R01 и R08 по INTEGRATION.txt; реальная погода — после LOCAL-9)
+Рабочая ветка: claude/r14-R13 (от claude/round-14-package @ 46f2308). Код: 8705829 (проверен).
 Назначенные пути: ml/civic_forecast/, ui/civic_forecast/, tests/civic/R13/, research/round-14-results/R13/, этот файл.
 
-## Сделано
-- [x] targets.py + data/targets.json: 2334 реальные территории OSM из данных R12 (claude/tender-brahmagupta-ef5ztl @ d13f49a).
-- [x] weather.py: загрузчик LOCAL-9 (оба вида CSV Open-Meteo) + синтетическая фикстура data/weather_fixture.csv (пометка SYNTHETIC).
-- [x] history.py: синтетическая история 2024-01…2026-10 (сезонность от погоды, горячие места, всплески, стройки), seed 2026.
-- [x] features.py, model.py (gbm + fallback + 2 базовых), backtest.py, RESULTS.md (3 seed, 48 прогнозов)
-- [x] ui/civic_forecast forecast() + кэш, причины ru/kk, tests/civic/R13 (29)
-- [ ] DELIVERY/RUN/INTEGRATION, ключи для R11
+## Сделано (по задачам промпта)
+1. history.py — синтетическая история 2024-01…2026-10 по 2334 реальным территориям R12 (дворы, участки, остановки,
+   площадки, парки, мусор): сезонность от погоды, горячие места месяцами, всплески, стройки; seed 2026, demo; README. ✔
+2. weather.py — загрузчик LOCAL-9 (оба вида CSV Open-Meteo) + синтетическая фикстура того же формата. ✔ (реальный файл ждём)
+3. features.py + model.py — признаки «территория × месяц» без заглядывания в будущее; бустинг (scikit-learn) и
+   запасная модель без зависимостей; цель — ≥ 4 жалоб в следующем месяце. ✔
+4. backtest.py — precision@10/20/30 против «как в прошлом месяце» и «как год назад», 3 seed × 16 месяцев,
+   RESULTS.md с честным выводом (ориентир Gton на синтетике не достигнут). ✔
+5. ui/civic_forecast — forecast(month, district, k), forecast_response для R01, attention_next_month для R08;
+   причины ru/kk; кэш → < 300 мс; patch маршрута для R01 проверен его шлюзом. ✔
 
-## Следующий шаг
-features.py + model.py (HistGradientBoosting + запасная модель без зависимостей), затем backtest.
+## Результат (на синтетике)
+precision@10/20/30: бустинг 0,58/0,49/0,44; запасная 0,55/0,49/0,44; «как в прошлом месяце» 0,47/0,40/0,35;
+«как год назад» 0,38/0,33/0,31; случайно 0,03. Погодные признаки ≈ 0.
+
+## Следующий шаг (для того, кто продолжит R13)
+- После LOCAL-9: python3 -m ml.civic_forecast backtest --seeds 2026,2027,2028 && python3 -m ml.civic_forecast build-cache;
+  проверить в RESULTS.md «Погода: real».
+- Когда R01 подключит маршрут и R08 блок — проверить на общей сборке пометку «прототип» в обеих локалях.
+- Пилот: заменить history.py выгрузкой реальных обращений (те же агрегаты), стройки — из реестра R06.

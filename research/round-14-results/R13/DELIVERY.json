@@ -1,0 +1,88 @@
+{
+ "role": "R13",
+ "title": "Прогноз проблемных территорий (прототип)",
+ "branch": "claude/r14-R13",
+ "base_sha": "46f2308 (claude/round-14-package)",
+ "restored_from": null,
+ "inputs_read_only": {
+  "data/civic/astana/geo/ (R12)": "claude/tender-brahmagupta-ef5ztl @ d13f49a — objects/yards/way_tags/SOURCE.json, ODbL; в ветку R13 не копировались, собран ml/civic_forecast/data/targets.json",
+  "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json": "только чтение (участки улиц)",
+  "data/civic/astana/geofence.json": "только чтение (районы)",
+  "research/round-14/categories_v2.json": "только чтение (12 категорий)",
+  "ui/web_server.py R01": "claude/sharp-dijkstra-0t87gl @ d3c33d9 — только для patch и теста шлюза",
+  "LOCAL-9 погода": "ещё нет в claude/round-14-package — работает синтетическая фикстура того же формата"
+ },
+ "evidence": {
+  "territories": "real (OSM через R12), 2334",
+  "complaint_history": "synthetic, demo: true (history.py, seed 2026)",
+  "weather": "synthetic fixture (weather_fixture.csv) до LOCAL-9",
+  "results": "на синтетике — не реальная точность"
+ },
+ "code_sha": "8705829",
+ "tested_sha": "8705829 (Linux, Python 3.13.16, scikit-learn 1.9.1, numpy 2.5.3)",
+ "push_status": "см. финальный коммит; checkpoints 754de0c, e79cf4f отправлены",
+ "changed_paths": [
+  "ml/civic_forecast/ (targets, weather, history, features, model, reasons, backtest, CLI, README, RESULTS, data/)",
+  "ui/civic_forecast/ (forecast, forecast_response, attention_next_month, build, data/forecast_cache.json)",
+  "tests/civic/R13/",
+  "research/round-14-results/R13/",
+  "research/handoffs/astana/R13/round14/STATUS.md"
+ ],
+ "results_on_synthetic": {
+  "precision_at_10_20_30": {
+   "gbm": [
+    0.58,
+    0.49,
+    0.44
+   ],
+   "gbm_no_weather": [
+    0.58,
+    0.5,
+    0.44
+   ],
+   "fallback": [
+    0.55,
+    0.49,
+    0.44
+   ],
+   "last_month": [
+    0.47,
+    0.4,
+    0.35
+   ],
+   "same_month_ly": [
+    0.38,
+    0.33,
+    0.31
+   ]
+  },
+  "random_choice": 0.033,
+  "month_runs": 48,
+  "seeds": [
+   2026,
+   2027,
+   2028
+  ],
+  "forecast_months": "2025-07 … 2026-10",
+  "verdict": "бустинг лучше лучшего базового прогноза при K=10/20/30 (+0,06 в среднем), запасная модель почти так же; погодные признаки ≈ 0 (норма месяца дублирует сезон); ориентир Gton 60–70 % НЕ достигнут (0,58/0,49/0,44)"
+ },
+ "tests": {
+  "pytest tests/civic/R13 @8705829": "PASS 30 passed, 7 skipped (без шлюза R01)",
+  "pytest tests/civic/R13 c R13_R01_WEB_SERVER (шлюз R01 @d3c33d9 + r01_forecast_route.patch)": "PASS 37/37",
+  "backtest 3 seed × 16 месяцев": "PASS — таблица в RESULTS.md",
+  "forecast() < 300 мс": "PASS: холодная загрузка кэша ~30 мс, дальше < 1 мс; месяц не из кэша — 3,45 с один раз (записано в known_limits)",
+  "без scikit-learn": "PASS (тесты с отключённым sklearn: fallback и сборка кэша fallback)",
+  "реальная погода LOCAL-9": "NOT_RUN: файла ещё нет; формат проверен тестом на CSV Open-Meteo",
+  "интерфейс R08": "NOT_RUN: блок показывает R08; функция attention_next_month готова"
+ },
+ "known_limits": [
+  "История жалоб синтетическая: модель учит закономерности, заложенные генератором. Реальная точность — только в пилоте.",
+  "Ориентир Gton 60–70 % на синтетике не достигнут (precision@10 0,58, @20 0,49, @30 0,44 при доле проблемных 3,3 %).",
+  "Погода — синтетическая фикстура до LOCAL-9; погодные признаки на синтетике ничего не добавили.",
+  "Месяц вне кэша считается ~3–4 с при первом запросе (дальше из памяти). Прогноз возможен на 2025-02 … 2026-11.",
+  "Территории — снимок данных R12 @ d13f49a; при их обновлении нужно build-targets + build-cache.",
+  "Безымянные территории подписаны ориентиром OSM; 138 из 1307 — без ориентира в 800 м (просто «Двор»/«Аялдама»).",
+  "Казахские тексты причин — черновик R13, нужна вычитка (KK_REVIEW R11)."
+ ],
+ "next_step": "R01: наложить r01_forecast_route.patch; R08: блок attention_next_month с пометкой «прототип»; R11: ключи I18N-KEYS R13; после LOCAL-9 — build-cache и backtest заново."
+}
