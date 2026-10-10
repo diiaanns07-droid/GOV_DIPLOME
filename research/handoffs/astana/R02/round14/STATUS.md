@@ -4,9 +4,10 @@
 Агент / город: Claude Code (облачная сессия), Астана, Birge.
 Обновлено: 2026-10-10, Asia/Almaty (точное время — у коммита).
 Статус: partial
-Рабочая ветка: claude/round-14-package (эта ветка назначена облачной сессии; другие роли пишут в неё же
-только свои пути, поэтому перед push делается fetch + rebase своих локальных коммитов, без force).
-Исходный коммит: c75a9ac
+Рабочая ветка: claude/r14-R02 (по новому правилу COMMON.txt; создана от claude/round-14-package @ 887ef4b).
+Первый checkpoint 887ef4b до появления правила ушёл и в claude/round-14-package — там только пути R02;
+решение об откате — за координатором. Дальше пушу только в claude/r14-R02.
+Исходный коммит: c75a9ac (база пакета), затем 7ff639a (пакет с правилом о ветках)
 Назначенные пути: ml/datasets/, ml/labeling/, web/labeling/, tests/civic/R02/round14/,
 research/round-14-results/R02/, этот файл. Старые тесты tests/civic/R02/*.py (раунд 13, другой модуль) не трогаю.
 
@@ -16,8 +17,12 @@ research/round-14-results/R02/, этот файл. Старые тесты tests
       «Пропустить», «Отменить», ← →, смена языка текста (L), Ctrl+S — экспорт JSONL; клавиши по event.code
       (работают в казахской и русской раскладке); автосохранение и «Продолжить»; режим второго разметчика
       (детерминированный поднабор по ключу, чужие метки не загружаются); ru/kk интерфейс; 375 и 1366 px.
-- [ ] 2. ml/labeling/anonymize.py, import_form.py
-- [ ] 3. ml/labeling/agreement.py
+- [x] 2. ml/labeling/anonymize.py (телефон, email, ИИН, ссылки, карты/длинные номера, госномера, дом/квартира/подъезд
+      ru+kk, улица+номер, имена по явным шаблонам; отчёт только из чисел) и import_form.py (согласие, обезличивание,
+      повторы, язык форма/авто, дата без времени, стабильный id f-…, перемешивание, вывод только в private/ +
+      private/.gitignore '*', файл .review.txt для ручной проверки). text_utils.py — общие функции.
+- [x] 3. ml/labeling/agreement.py — Cohen's kappa, бутстрэп-ДИ, по категориям, macro-F1 B относительно A, матрица,
+      частые несогласия, Markdown/JSON; тексты в отчёте только с --with-texts и только в private/.
 - [ ] 4. ml/datasets/LABELING_GUIDE_v2.md
 - [ ] 5. ml/datasets/synth_v3/ + перевод v1 → v2 + пары перефразов для R04
 - [ ] 6. ml/datasets/llm_synth.py, ml/labeling/llm_label.py (проверка на подставном клиенте)
@@ -26,8 +31,9 @@ research/round-14-results/R02/, этот файл. Старые тесты tests
 ## Проверки (Linux, Python 3.13, Node 22, Chromium из /opt/pw-browsers через playwright 1.56)
 - node --test tests/civic/R02/round14/labeling_core.test.mjs — 12 PASS
 - node --test tests/civic/R02/round14/labeling_browser.test.mjs — 7 PASS (file://, без сети, 1366×768 и 375×812)
-- python -m pytest tests/civic/R02/round14 — 4 PASS
+- python -m pytest tests/civic/R02/round14 — 51 PASS (категории, офлайн, обезличивание 31 случай, импорт, kappa)
+- сквозная проверка: экспорт страницы (первый и второй разметчик) → agreement.py — PASS (в labeling_browser.test.mjs)
 - Скриншоты: research/round-14-results/R02/screens/ (реально запущенная страница, синтетические фикстуры).
 
 ## Следующий шаг
-Задача 2: anonymize.py + import_form.py (вывод только в private/).
+Задача 4: ml/datasets/LABELING_GUIDE_v2.md, затем задача 5 (synth_v3).

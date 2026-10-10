@@ -173,6 +173,11 @@ test("второй разметчик: детерминированный под
   const rows = readFileSync(await dl2.path(), "utf8").trim().split("\n").map((l) => JSON.parse(l));
   assert.equal(rows.length, 5);
   assert.ok(rows.every((r) => r.role === "second" && r.annotator === "B" && r.label === "snow_ice" && r.subset.seed === "test-seed"));
+  // Сквозная проверка: оба экспорта читаются ml/labeling/agreement.py (5 общих текстов, все — несогласие).
+  const py = process.env.PYTHON || "python3";
+  const report = execSync(`${py} -m ml.labeling.agreement "${exported}" "${await dl2.path()}" --bootstrap 50`, { cwd: ROOT, encoding: "utf8" });
+  assert.match(report, /общих текстов: 5/);
+  assert.match(report, /roads ↔ snow_ice ×5/);
   // Тот же файл + тот же ключ → тот же поднабор (сравниваем с исходным JSONL — id одинаковые).
   await page.click("#closeBtn");
   await page.check('input[name="role"][value="second"]');
