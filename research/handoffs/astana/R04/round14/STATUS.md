@@ -7,7 +7,7 @@
 
 ## Статус: ready_for_review — запасные пути готовы (цель «12 октября» выполнена); e5 и v2 ждут LOCAL
 
-Код: `c0b9fad` (= code_sha = tested_sha в DELIVERY.json). Документы — следующим коммитом поверх.
+Код: `deeb1de` (= code_sha = tested_sha в DELIVERY.json). Документы — следующим коммитом поверх.
 
 ## Что сделано (проверено)
 - `ui/civic_ml_api/`: `classify(text)` и `similar(text, point, days, target)` по CONTRACT §7, имена совпадают с
@@ -21,7 +21,7 @@
   тесты на крошечной модели и LOCAL-скрипт export_e5; tune (порог на dev R02, отчёт на test), bench, fixtures.
 - Метрики (синтетика R02): дубли test geo P 0.880 / R 0.906 / F1 0.893; classify test 0.784 (v1 одна 0.518);
   скорость (облако): classify p95 0.4 мс, similar p95 8 мс (город) / 39–67 мс (5 000 жалоб в одном круге).
-- Тесты: 96 PASS в tests/civic/R04/round14; весь `pytest tests` 966 passed / 4 skipped; R03+R04 вместе 137/6 skipped.
+- Тесты: 97 PASS в tests/civic/R04/round14; весь `pytest tests` 967 passed / 4 skipped; R03+R04 вместе 137/6 skipped.
 - Стык со шлюзом R01 (@ 2eaeacb) проверен во временной папке: 200 / 400 / 503; patch для target — в результатах.
 - Документы: research/round-14-results/R04/{RESULTS.md, INTEGRATION.txt, RUN.txt, DELIVERY.json,
   classify_eval.json, r01_similar_target.patch}.

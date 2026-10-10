@@ -45,7 +45,7 @@ R01 (интегратор)
                                            "notes", "source"}}
    Пути в причинах — относительно репозитория (абсолютные пути сервера наружу не уходят).
 
-6. Тесты: python -m pytest -q tests/civic/R04/round14   (96 тестов; без torch; e5-тесты на крошечной ONNX-модели
+6. Тесты: python -m pytest -q tests/civic/R04/round14   (97 тестов; без torch; e5-тесты на крошечной ONNX-модели
    пропускаются, если нет onnx/tokenizers).
    ВАЖНО для общей сборки: в tests/civic/R04/round14 НАРОЧНО нет conftest.py. Тесты R03 делают
    `from conftest import needs_ml`; все conftest.py без пакета импортируются под одним именем «conftest», и любой

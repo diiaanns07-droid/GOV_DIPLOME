@@ -12,8 +12,8 @@
   "ui/civic_feedback/v2 (R09)": "claude/modest-shannon-0ki93p @ 4021818 (локальная копия, не в ветке R04)",
   "ui/web_server.py (R01)": "claude/sharp-dijkstra-0t87gl @ 2eaeacb (временная папка, проверка стыка шлюза)"
  },
- "code_sha": "c0b9fad21ee86722e3512a340670223058a3abb3",
- "tested_sha": "c0b9fad21ee86722e3512a340670223058a3abb3",
+ "code_sha": "deeb1dec0d4215fde3580411a7af477393b19b06",
+ "tested_sha": "deeb1dec0d4215fde3580411a7af477393b19b06",
  "push_status": "OK — ветка claude/r14-R04 на GitHub (проверяется git ls-remote после каждого push; итог — в STATUS.md)",
  "status": "ready_for_review (запасные пути); e5 и v2 — ждут LOCAL",
  "changed_paths": [
@@ -59,16 +59,16 @@
  ],
  "environment": "облачная сессия Claude Code: Linux, Intel Xeon 2.80 GHz ×4, Python 3.13.16, numpy 2.5.3, onnxruntime 1.29.0, onnx 1.23.2, tokenizers 0.23.3, без torch",
  "tests": {
-  "tests/civic/R04/round14 (96)": "PASS",
   "совместно tests/civic/R03/round14 + tests/civic/R04/round14": "PASS (137 passed, 6 skipped; на коде 0f196a8)",
-  "весь набор pytest tests (с локальными копиями v1, R03, R02, R09 v2)": "PASS (966 passed, 4 skipped)",
+  "весь набор pytest tests (с локальными копиями v1, R03, R02, R09 v2)": "PASS (967 passed, 4 skipped)",
   "шлюз R01 @ 2eaeacb: /classify, /similar, 503 source_not_connected, 400 на плохой ввод": "PASS (временная папка)",
   "патч r01_similar_target.patch: target доходит до similar, плохой target -> 400": "PASS (временная папка)",
   "e5: рантайм на настоящих onnxruntime + tokenizers, крошечная ONNX-модель, int8, оркестровка export_e5": "PASS",
   "e5: экспорт настоящей multilingual-e5 из PyTorch и порог на dev": "NOT_RUN — веса только на ноутбуке, download.pytorch.org закрыт (LOCAL-R04-1)",
   "classify на модели v2 R03 (ONNX)": "NOT_RUN — нет artifacts/onnx до LOCAL-4; путь проверен подставной моделью",
   "скорость на CPU ноутбука": "NOT_RUN — облако; команда в RUN.txt",
-  "качество на текстах жителей": "NOT_EVALUATED — текстов людей нет"
+  "качество на текстах жителей": "NOT_EVALUATED — текстов людей нет",
+  "tests/civic/R04/round14 (97)": "PASS"
  },
  "metrics": {
   "dedup_test_geo": {

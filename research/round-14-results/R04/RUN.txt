@@ -10,7 +10,7 @@ R04 · раунд 14 · RUN — как запустить и проверить 
 Все команды — из корня репозитория. Python 3.10+; для запасных путей нужна только стандартная библиотека.
 На ноутбуке владельца вместо python: C:\Users\LEGION\venvs\birge-ml\Scripts\python.exe
 
-1. Тесты R04 (96; без torch; e5-тесты на крошечной ONNX-модели идут, если есть numpy, onnx, onnxruntime, tokenizers):
+1. Тесты R04 (97; без torch; e5-тесты на крошечной ONNX-модели идут, если есть numpy, onnx, onnxruntime, tokenizers):
      python -m pytest -q tests/civic/R04/round14
 
 2. Проверка без сервера:
