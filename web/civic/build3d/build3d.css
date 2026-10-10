@@ -381,11 +381,41 @@
 }
 /* Сжатая подпись (подписи перекрываются или карта далеко): точка цвета «проект» в той же зоне 48 px.
    Текст не обнуляется по размеру, а прячется как для экранного диктора — его по-прежнему читает aria. */
+.b3d-label__icon,
+.b3d-label__count {
+  display: none;
+}
+/* Точка 32 px со значком вида проекта (UX_SPEC §5: значки на карте ≥ 24 px; R10 B-026). */
 .b3d-label--dot .b3d-label__pill {
-  width: 20px;
-  min-height: 20px;
-  height: 20px;
+  justify-content: center;
+  width: 32px;
+  min-height: 32px;
+  height: 32px;
   padding: 0;
+}
+.b3d-label--dot .b3d-label__icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  color: var(--c-ink, #152c26);
+}
+/* Несколько проектов в одной точке — одна метка с числом; нажатие приближает к ним. */
+.b3d-label--cluster .b3d-label__pill {
+  width: auto;
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0 10px;
+  gap: 4px;
+}
+.b3d-label--cluster .b3d-label__icon {
+  display: none;
+}
+.b3d-label--cluster .b3d-label__count {
+  display: inline;
+  font-size: var(--fs-body, 16px);
+  font-weight: var(--fw-bold, 700);
+  line-height: 1;
 }
 .b3d-label--dot .b3d-label__text {
   position: absolute;

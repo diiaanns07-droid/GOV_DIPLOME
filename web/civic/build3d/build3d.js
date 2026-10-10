@@ -59,6 +59,8 @@
       "build3d.hint.segment_end": "Теперь выберите конец участка: {street}",
       "build3d.hint.segment_ready": "{street}, {length} м · {poles}. Нажмите «Поставить»",
       "build3d.poles": { one: "{n} фонарь", few: "{n} фонаря", many: "{n} фонарей" },
+      "build3d.cluster": { one: "{n} проект", few: "{n} проекта", many: "{n} проектов" },
+      "build3d.cluster.open": "{count} рядом — показать ближе",
       "build3d.err.far_from_street": "Нажмите ближе к улице",
       "build3d.err.other_street": "Выберите конец на той же улице: {street}",
       "build3d.err.too_short": "Участок слишком короткий. Выберите точки дальше друг от друга",
@@ -104,6 +106,8 @@
       "build3d.hint.segment_end": "Енді бөліктің соңын таңдаңыз: {street}",
       "build3d.hint.segment_ready": "{street}, {length} м · {poles}. «Орнату» түймесін басыңыз",
       "build3d.poles": "{n} шам",
+      "build3d.cluster": "{n} жоба",
+      "build3d.cluster.open": "Қатар {count} — жақыннан көрсету",
       "build3d.err.far_from_street": "Көшеге жақынырақ басыңыз",
       "build3d.err.other_street": "Соңын сол көшеден таңдаңыз: {street}",
       "build3d.err.too_short": "Бөлік тым қысқа. Нүктелерді бір-бірінен алысырақ таңдаңыз",
@@ -305,6 +309,7 @@
   var ROTATE_STEP = 15;
   var PLACE_ZOOM = 17.5; // масштаб, на котором модели хорошо видны (UX_REVIEW день 3 #20)
   var VIEW_ZOOM = 17.4; // «показать проекты» — тот же крупный план
+  var DOT_PX = 32; // сжатая подпись-точка: ≥ 24 px (UX_SPEC §5, R10 B-026), зона нажатия — 48 px
   var LAYER_ID = "civic-build3d";
   var OUTLINE_COLOR = 0x176b4a; // пунктир границы проекта (бренд)
   var OUTLINE_SELECTED = 0x2f7fd6; // выбранный проект — цвет фокуса ui-kit
@@ -1240,11 +1245,17 @@
       // Кнопка — прозрачная зона нажатия ≥ 48 px; видимая «таблетка» внутри — 40 px (UX_REVIEW день 3 #21).
       var b = el("button", "b3d-label", { type: "button", "data-id": obj.p.id });
       var pill = el("span", "b3d-label__pill bk-tag bk-tag--project");
+      // Значок вида — виден в сжатой подписи-точке; число — у группы рядом стоящих проектов (R10 B-026).
+      var ic = icon(Core.KINDS[obj.p.kind].icon, o.iconsUrl);
+      ic.setAttribute("class", "ic b3d-label__icon");
+      pill.appendChild(ic);
       pill.appendChild(el("span", "b3d-label__text"));
+      pill.appendChild(el("span", "b3d-label__count", { "aria-hidden": "true" }));
       b.appendChild(pill);
       b.addEventListener("click", function (ev) {
         ev.stopPropagation();
         if (S.mode === "placing") return;
+        if (b._cluster && b._cluster.length > 1) return zoomToCluster(b._cluster);
         select(obj.p.id);
       });
       labelsLayer.appendChild(b);
@@ -1257,6 +1268,7 @@
       if (!b) return;
       var name = t(Core.KINDS[obj.p.kind].key);
       b.querySelector(".b3d-label__text").textContent = projectLabel(obj.p);
+      b._clusterKey = null; // группу (число, aria) пересоберёт updateLabels
       obj.labelSize = null; // текст сменился — размер измерим заново (один раз, не в каждом кадре)
       b.setAttribute("aria-label", t("build3d.card.open", { kind: name, year: String(obj.p.year || "") }).replace(/\s+,/, ","));
       b.setAttribute("aria-pressed", S.selected === obj.p.id ? "true" : "false");
@@ -1436,7 +1448,7 @@
       items.forEach(function (it) {
         if (it.obj.labelSize) return;
         var lab = it.obj.label;
-        lab.classList.remove("b3d-label--dot");
+        lab.classList.remove("b3d-label--dot", "b3d-label--cluster");
         var pill = lab.firstChild || lab; // наложение считаем по видимой таблетке, а не по зоне нажатия
         it.obj.labelSize = { w: pill.offsetWidth || 120, h: pill.offsetHeight || 40 };
       });
@@ -1445,12 +1457,13 @@
         return b.sp.y - a.sp.y;
       });
       var placed = [];
+      var groups = [];
       items.forEach(function (it) {
         var lab = it.obj.label;
         var compact = zoom < 14;
         var hiddenNow = lab.classList.contains("b3d-label--hidden"); // строится/удаляется — места не занимает
-        var lw = compact ? 20 : it.obj.labelSize.w,
-          lh = compact ? 20 : it.obj.labelSize.h;
+        var lw = compact ? DOT_PX : it.obj.labelSize.w,
+          lh = compact ? DOT_PX : it.obj.labelSize.h;
         var rect = { x: it.sp.x - lw / 2, y: it.sp.y - lh, w: lw, h: lh };
         if (!compact && !hiddenNow) {
           for (var i = 0; i < placed.length; i++) {
@@ -1463,9 +1476,93 @@
         }
         lab.classList.toggle("b3d-label--dot", compact);
         if (!compact && !hiddenNow) placed.push(rect);
-        lab.style.transform = "translate(" + Math.round(it.sp.x) + "px," + Math.round(it.sp.y) + "px) translate(-50%,-100%)";
-        lab.style.zIndex = String(1000 + Math.round(it.sp.y));
+        it.pos = it.sp;
+        // Точки, которые легли друг на друга (пять проектов у одного сквера на виде «вся Астана»), — одна метка
+        // с числом (R10 B-026). Выбранный проект в группу не прячем.
+        if (compact && !hiddenNow && it.obj.p.id !== S.selected) {
+          var g = null;
+          for (var k = 0; k < groups.length; k++) {
+            if (Math.abs(groups[k].x - it.sp.x) < DOT_PX + 8 && Math.abs(groups[k].y - it.sp.y) < DOT_PX + 8) {
+              g = groups[k];
+              break;
+            }
+          }
+          if (g) g.members.push(it);
+          else groups.push({ x: it.sp.x, y: it.sp.y, members: [it] });
+        } else setCluster(it, null);
       });
+      groups.forEach(function (g) {
+        if (g.members.length < 2) return setCluster(g.members[0], null);
+        var cx = 0,
+          cy = 0;
+        g.members.forEach(function (m) {
+          cx += m.sp.x / g.members.length;
+          cy += m.sp.y / g.members.length;
+        });
+        g.members.forEach(function (m, idx) {
+          if (idx === 0) {
+            setCluster(m, g.members.map(function (x) {
+              return x.obj.p.id;
+            }));
+            m.pos = { x: cx, y: cy };
+          } else {
+            setCluster(m, null);
+            m.obj.label.style.visibility = "hidden"; // показана общей меткой группы
+          }
+        });
+      });
+      items.forEach(function (it) {
+        var lab = it.obj.label;
+        lab.style.transform = "translate(" + Math.round(it.pos.x) + "px," + Math.round(it.pos.y) + "px) translate(-50%,-100%)";
+        lab.style.zIndex = String(1000 + Math.round(it.pos.y) + (lab._cluster ? 2000 : 0));
+      });
+    }
+
+    // Метка группы: число проектов, aria «5 проектов рядом — показать ближе»; нажатие приближает к ним.
+    // DOM трогаем только при смене состава группы (updateLabels идёт в каждом кадре).
+    function setCluster(it, ids) {
+      var lab = it.obj.label;
+      var key = ids ? ids.join(",") + "|" + t.lang() : null;
+      if (lab._clusterKey === key) return;
+      lab._clusterKey = key;
+      lab._cluster = ids;
+      lab.classList.toggle("b3d-label--cluster", !!ids);
+      if (ids) {
+        lab.querySelector(".b3d-label__count").textContent = String(ids.length);
+        lab.setAttribute("aria-label", t("build3d.cluster.open", { count: t("build3d.cluster", { n: ids.length }) }));
+      } else {
+        lab.querySelector(".b3d-label__count").textContent = "";
+        var name = t(Core.KINDS[it.obj.p.kind].key);
+        lab.setAttribute("aria-label", t("build3d.card.open", { kind: name, year: String(it.obj.p.year || "") }).replace(/\s+,/, ","));
+      }
+    }
+    function zoomToCluster(ids) {
+      var pts = ids
+        .map(function (id) {
+          var p = S.objects[id] && S.objects[id].p;
+          if (!p) return null;
+          return p.kind === "lighting" ? p.geometry.coordinates[Math.floor(p.geometry.coordinates.length / 2)] : p.geometry.coordinates;
+        })
+        .filter(Boolean);
+      if (!pts.length) return;
+      var w = pts[0][0],
+        sth = pts[0][1],
+        e = pts[0][0],
+        n = pts[0][1];
+      pts.forEach(function (q) {
+        w = Math.min(w, q[0]);
+        e = Math.max(e, q[0]);
+        sth = Math.min(sth, q[1]);
+        n = Math.max(n, q[1]);
+      });
+      var dh = dock.getBoundingClientRect().height || 0;
+      map.fitBounds(
+        [
+          [w, sth],
+          [e, n],
+        ],
+        { padding: { top: 80, right: 60, bottom: Math.round(dh) + 40, left: 60 }, maxZoom: VIEW_ZOOM, duration: reducedMotion() ? 0 : 700 }
+      );
     }
 
     // ───────────── Размещение ─────────────

@@ -860,6 +860,39 @@ await check("catalog_labels_fit_cards_in_narrow_host", async () => {
   assert(bad.length === 0, JSON.stringify(out));
   return { status: "PASS", detail: out };
 });
+await check("r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk", async () => {
+  // R10 B-026: на виде «вся Астана» таблички сжимались в точки 18 px и пять проектов ложились в одну точку.
+  // Теперь: точка 32 px со значком вида; совпавшие точки — одна метка с числом; нажатие приближает к ним.
+  const out = [];
+  for (const vp of [{ width: 1366, height: 768 }, { width: 375, height: 812 }]) {
+    for (const lang of ["ru", "kk"]) {
+      const touch = vp.width < 640 ? { hasTouch: true, isMobile: true } : {};
+      const p = await openPage(Object.assign({ viewport: vp }, touch), `?reset=1&store=local&lang=${lang}&center=71.4012,51.1278&zoom=12&pitch=0`);
+      await p.waitForTimeout(300);
+      const far = await p.evaluate(() => {
+        const vis = [...document.querySelectorAll(".b3d-label")].filter((b) => b.style.visibility !== "hidden");
+        const pills = vis.map((b) => b.querySelector(".b3d-label__pill").getBoundingClientRect());
+        const cl = document.querySelector(".b3d-label--cluster");
+        return { visible: vis.length, minPill: Math.round(Math.min(...pills.map((r) => Math.min(r.width, r.height)))),
+          zone: Math.round(Math.min(...vis.map((b) => b.getBoundingClientRect().height))),
+          count: cl ? cl.querySelector(".b3d-label__count").textContent : null, aria: cl ? cl.getAttribute("aria-label") : null };
+      });
+      if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `b026_cluster_${vp.width}_${lang}.png`) });
+      const z0 = await p.evaluate(() => __map.getZoom());
+      await (touch.hasTouch ? p.tap(".b3d-label--cluster") : p.click(".b3d-label--cluster"));
+      await p.waitForTimeout(200);
+      await idle(p);
+      const near = await p.evaluate(() => ({ zoom: +__map.getZoom().toFixed(2), full: document.querySelectorAll(".b3d-label:not(.b3d-label--dot)").length,
+        clusters: document.querySelectorAll(".b3d-label--cluster").length }));
+      out.push({ vp: vp.width, lang, far, z0: +z0.toFixed(1), near });
+      await p.context().close();
+    }
+  }
+  const kkAria = out.find((o) => o.lang === "kk").far.aria || "";
+  assert(out.every((o) => o.far.count === "4" && o.far.minPill >= 24 && o.far.zone >= 48 && o.near.zoom >= o.z0 + 3 && o.near.clusters === 0 && o.near.full >= 3) && /жоба/.test(kkAria),
+    JSON.stringify(out));
+  return { status: "PASS", detail: out.map((o) => `${o.vp} ${o.lang}: метка «${o.far.count}» (${o.far.aria}), точка ≥ ${o.far.minPill} px, зона ${o.far.zone} → масштаб ${o.near.zoom}, полных подписей ${o.near.full}`).join("; ") };
+});
 await check("r01_map_getter_waits_for_map", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   const r = await p.evaluate(async () => {
