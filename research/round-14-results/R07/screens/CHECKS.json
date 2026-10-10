@@ -13,7 +13,7 @@
   "size": "phone",
   "query": "?lang=ru&role=akimat&view=nura",
   "problems": [],
-  "badges": 13,
+  "badges": 12,
   "primary": [],
   "extra": {}
  },
@@ -133,7 +133,7 @@
   "size": "phone",
   "query": "?lang=kk&role=akimat&view=nura",
   "problems": [],
-  "badges": 13,
+  "badges": 12,
   "primary": [],
   "extra": {}
  },
@@ -377,11 +377,11 @@
   "size": "phone",
   "query": "?lang=ru&role=resident&view=nura",
   "problems": [],
-  "badges": 13,
+  "badges": 12,
   "primary": [],
   "extra": {
-   "x": 224.7,
-   "y": 308,
+   "x": 228.7,
+   "y": 299,
    "anchor": [
     71.406054,
     51.126603
@@ -402,11 +402,11 @@
   "size": "phone",
   "query": "?lang=kk&role=resident&view=nura",
   "problems": [],
-  "badges": 13,
+  "badges": 12,
   "primary": [],
   "extra": {
-   "x": 224.7,
-   "y": 308,
+   "x": 228.7,
+   "y": 299,
    "anchor": [
     71.406054,
     51.126603
@@ -471,14 +471,14 @@
   "size": "phone",
   "query": "?lang=kk&role=akimat&view=nura",
   "problems": [],
-  "badges": 6,
+  "badges": 5,
   "primary": [],
   "extra": {
    "pitch": 60,
    "bearing": -30,
-   "visible": 6,
+   "visible": 5,
    "overlaps": 0,
-   "checked": 6,
+   "checked": 5,
    "far": []
   }
  },
@@ -550,6 +550,62 @@
    "text": "Сақталмады. Байланысты тексеріп, қайталап көріңіз\nҚайталау",
    "action": "Қайталау",
    "btnEnabled": true
+  }
+ },
+ {
+  "name": "action-429-375-ru",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 1,
+  "extra": {
+   "text": "Слишком много действий подряд. Повторите позже.",
+   "action": false
+  }
+ },
+ {
+  "name": "action-403-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 1,
+  "extra": {
+   "text": "Әкімдік қызметкері ретінде кіріп, қайталаңыз.",
+   "action": false
+  }
+ },
+ {
+  "name": "legend-phone-375-ru",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 6,
+  "extra": {
+   "h": 33,
+   "rows": 1,
+   "right": 304,
+   "zoomInLegend": false,
+   "under": false,
+   "toasts": [
+    "Приблизьте карту, чтобы увидеть улицы, дворы и остановки"
+   ]
+  }
+ },
+ {
+  "name": "legend-phone-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 6,
+  "extra": {
+   "h": 33,
+   "rows": 1,
+   "right": 281,
+   "zoomInLegend": false,
+   "under": false,
+   "toasts": [
+    "Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз"
+   ]
   }
  },
  {

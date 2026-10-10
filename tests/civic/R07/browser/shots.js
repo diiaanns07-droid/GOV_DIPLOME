@@ -486,6 +486,48 @@ async function colorOnlyCheck(page) {
     await finish(page, errors, "action-error-toast-375-kk", "phone", problems, x);
   }
 
+  // R15 U1: лимит (429) и нет входа (403) — понятный текст без «Повторить» (повтор не поможет)
+  for (const [code, lang, act, want] of [[429, "ru", "metoo", "Слишком много действий подряд"], [403, "kk", "take", "қызметкері ретінде кіріп"]]) {
+    const role = act === "metoo" ? "resident" : "akimat";
+    const { page, errors } = await rawPage("phone", `?lang=${lang}&role=${role}&view=nura&sheet=full`, (pg) =>
+      pg.route(act === "metoo" ? /\/complaints\/[^/]+\/metoo/ : /\/complaints\/[^/]+\/status/, (r) => r.fulfill({ status: code, contentType: "application/json", body: '{"error":"x"}' })));
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.evaluate(() => localStorage.removeItem("birge.heat.metoo"));
+    await page.click(".r07-item");
+    const sel = act === "metoo" ? '[data-act="metoo"]' : '[data-act="take"], [data-act="fixed"]';
+    await page.waitForSelector(sel);
+    await page.click(sel);
+    await page.waitForSelector(".r07-toast--error", { timeout: 10000 }).catch(() => {});
+    const x = await page.evaluate(() => { const t = document.querySelector(".r07-toast--error"); return { text: t && t.innerText, action: !!(t && t.querySelector(".r07-toast__action")) }; });
+    const problems = [];
+    if (!x.text || !x.text.includes(want)) problems.push(code + ": непонятный текст: " + JSON.stringify(x));
+    if (x.action) problems.push(code + ": «Повторить» не должно быть");
+    await finish(page, errors, `action-${code}-375-${lang}`, "phone", problems, x);
+  }
+
+  // R11 ночь 4 п.1: на телефоне легенда — одна строка, подсказка о масштабе — один тост, а не строка поверх карты
+  for (const lang of ["ru", "kk"]) {
+    const { page, errors } = await rawPage("phone", `?lang=${lang}&role=akimat&view=city`);
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.waitForTimeout(700);
+    const x = await page.evaluate(() => {
+      const l = document.querySelector(".r07-maplegend");
+      const r = l.getBoundingClientRect();
+      const tops = new Set([...l.querySelectorAll("li")].map((li) => Math.round(li.getBoundingClientRect().top)));
+      const zoomInLegend = [...l.querySelectorAll(".r07-legend__zoom")].some((z) => z.offsetParent !== null);
+      const btns = [...document.querySelectorAll(".mapbtns button")].map((b) => b.getBoundingClientRect());
+      const under = btns.some((b) => !(r.right <= b.left || b.right <= r.left || r.bottom <= b.top || b.bottom <= r.top));
+      const toasts = [...document.querySelectorAll(".r07-toast")].map((t) => t.innerText);
+      return { h: Math.round(r.height), rows: tops.size, right: Math.round(r.right), zoomInLegend, under, toasts };
+    });
+    const problems = [];
+    if (x.rows !== 1 || x.h > 40) problems.push("легенда не в одну строку: " + JSON.stringify(x));
+    if (x.zoomInLegend) problems.push("подсказка о масштабе строкой в легенде");
+    if (x.under) problems.push("легенда под кнопками карты");
+    if (x.toasts.length !== 1) problems.push("подсказка о масштабе не одним тостом: " + JSON.stringify(x.toasts));
+    await finish(page, errors, `legend-phone-375-${lang}`, "phone", problems, x);
+  }
+
   // «Примерное место»: в карточке «Область на карте» + пометка, а не «Двор или квартал»
   for (const [size, lang] of [["desktop", "ru"], ["phone", "kk"]]) {
     const { page, errors } = await rawPage(size, `?lang=${lang}&role=akimat&view=nura&sheet=full`, (pg) =>
