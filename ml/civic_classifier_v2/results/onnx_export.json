@@ -1,0 +1,229 @@
+{
+ "model_dir": "final",
+ "out_dir": "onnx",
+ "export": {
+  "exporter": "torchscript",
+  "opset": 17,
+  "torch": "2.14.1+cu126",
+  "errors_before_success": [],
+  "seconds": 23.7
+ },
+ "quantize": {
+  "method": "onnxruntime.quantization.quantize_dynamic",
+  "weight_type": "QInt8",
+  "preprocessed": true,
+  "onnxruntime": "1.31.0",
+  "seconds": 35.2
+ },
+ "sizes_mb": {
+  "model.onnx": 1060.9,
+  "model.int8.onnx": 265.8
+ },
+ "model_version": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011",
+ "check": {
+  "n_texts": 200,
+  "texts_source": "corpus_v3.jsonl",
+  "onnx_fp32_vs_torch": {
+   "argmax_agreement": 1.0,
+   "argmax_agreement_confident": 1.0,
+   "n_confident": 200,
+   "confident_margin": 0.05,
+   "max_abs_diff_prob": 9e-06,
+   "mean_abs_diff_prob": 0.0
+  },
+  "onnx_int8_vs_torch": {
+   "argmax_agreement": 0.965,
+   "argmax_agreement_confident": 0.965,
+   "n_confident": 200,
+   "confident_margin": 0.05,
+   "max_abs_diff_prob": 0.983318,
+   "mean_abs_diff_prob": 0.00648
+  },
+  "onnx_fp32_vs_torch_batch1": {
+   "argmax_agreement": 1.0,
+   "argmax_agreement_confident": 1.0,
+   "n_confident": 50,
+   "confident_margin": 0.05,
+   "max_abs_diff_prob": 9e-06,
+   "mean_abs_diff_prob": 0.0
+  }
+ },
+ "latency_cpu": {
+  "cpu": {
+   "machine": "AMD64",
+   "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+   "cpu_count": 24,
+   "system": "Windows"
+  },
+  "unit": "один текст за вызов, включая токенизацию",
+  "int8_all_threads": {
+   "n": 200,
+   "mean_ms": 102.86,
+   "p50_ms": 99.82,
+   "p95_ms": 158.34,
+   "max_ms": 185.6
+  },
+  "int8_1_thread": {
+   "n": 200,
+   "mean_ms": 80.05,
+   "p50_ms": 76.15,
+   "p95_ms": 135.15,
+   "max_ms": 241.61
+  },
+  "fp32_all_threads": {
+   "n": 200,
+   "mean_ms": 172.27,
+   "p50_ms": 173.02,
+   "p95_ms": 226.69,
+   "max_ms": 253.63
+  }
+ },
+ "verdict": {
+  "fp32_matches_torch": "PASS",
+  "int8_agreement": "FAIL",
+  "int8_mean_lt_50ms": "FAIL"
+ },
+ "note": "model.onnx (fp32) удалён после проверки; R04 использует model.int8.onnx",
+ "diagnostics": {
+  "n_texts": 200,
+  "texts_source": "corpus_v3.jsonl",
+  "reason": "Default RUN export: agreement 0.965 < 0.97 and latency 102.86 ms >= 50 ms.",
+  "thresholds_unchanged": true,
+  "latency_protocol": "One ONNX session alive at a time, fresh process; unlike default export benchmark retaining multiple sessions.",
+  "original": {
+   "batch32_vs_torch": {
+    "argmax_agreement": 0.965,
+    "argmax_agreement_confident": 0.965,
+    "n_confident": 200,
+    "confident_margin": 0.05,
+    "max_abs_diff_prob": 0.983318,
+    "mean_abs_diff_prob": 0.00648
+   },
+   "batch1_vs_torch": {
+    "argmax_agreement": 0.98,
+    "argmax_agreement_confident": 0.98,
+    "n_confident": 200,
+    "confident_margin": 0.05,
+    "max_abs_diff_prob": 0.987108,
+    "mean_abs_diff_prob": 0.004026
+   },
+   "isolated_default_threads": {
+    "n": 200,
+    "mean_ms": 101.65,
+    "p50_ms": 101.58,
+    "p95_ms": 149.15,
+    "max_ms": 231.0
+   },
+   "isolated_1_threads": {
+    "n": 200,
+    "mean_ms": 75.78,
+    "p50_ms": 69.82,
+    "p95_ms": 124.2,
+    "max_ms": 239.57
+   },
+   "isolated_4_threads": {
+    "n": 200,
+    "mean_ms": 21.24,
+    "p50_ms": 20.59,
+    "p95_ms": 31.58,
+    "max_ms": 48.1
+   }
+  },
+  "export": {
+   "exporter": "torchscript",
+   "opset": 17,
+   "torch": "2.14.1+cu126",
+   "errors_before_success": []
+  },
+  "candidate_quantization": {
+   "method": "onnxruntime.quantization.quantize_dynamic",
+   "per_channel": true,
+   "reduce_range": false,
+   "weight_type": "QInt8",
+   "preprocessed": true,
+   "seconds": 26.15,
+   "reference": "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html"
+  },
+  "per_channel": {
+   "batch32_vs_torch": {
+    "argmax_agreement": 0.98,
+    "argmax_agreement_confident": 0.98,
+    "n_confident": 200,
+    "confident_margin": 0.05,
+    "max_abs_diff_prob": 0.960269,
+    "mean_abs_diff_prob": 0.003626
+   },
+   "batch1_vs_torch": {
+    "argmax_agreement": 0.98,
+    "argmax_agreement_confident": 0.98,
+    "n_confident": 200,
+    "confident_margin": 0.05,
+    "max_abs_diff_prob": 0.971326,
+    "mean_abs_diff_prob": 0.00343
+   },
+   "isolated_default_threads": {
+    "n": 200,
+    "mean_ms": 104.14,
+    "p50_ms": 102.34,
+    "p95_ms": 158.77,
+    "max_ms": 215.71
+   },
+   "isolated_1_threads": {
+    "n": 200,
+    "mean_ms": 91.77,
+    "p50_ms": 86.52,
+    "p95_ms": 154.38,
+    "max_ms": 271.75
+   },
+   "isolated_4_threads": {
+    "n": 200,
+    "mean_ms": 22.68,
+    "p50_ms": 21.96,
+    "p95_ms": 32.89,
+    "max_ms": 75.69
+   }
+  },
+  "candidate_bytes": 279147957,
+  "candidate_sha256": "a5c91b5fe8283fe0988a1253d8130201dc6d15e848d58ce4b53794402f3ddeab",
+  "candidate_dir": "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r03\\ml\\civic_classifier_v2\\artifacts\\onnx_per_channel",
+  "candidate_acceptance": {
+   "batch32_agreement_ge_0.97": "PASS",
+   "batch1_agreement_ge_0.97": "PASS",
+   "mean_4_threads_lt_50ms": "PASS"
+  },
+  "reproduce": [
+   "Use the same FP32 export and quant_pre_process(skip_symbolic_shape=True) as export_onnx.py.",
+   "quantize_dynamic(preprocessed_fp32, output_int8, per_channel=True, weight_type=QuantType.QInt8)",
+   "Copy tokenizer and birge_meta.json from the final model; load the candidate with Classifier.load(Path('ml/civic_classifier_v2/artifacts/onnx_per_channel'), backend='onnx', threads=4).",
+   "Original artifacts/onnx and source code are unchanged. Acceptance thresholds were not relaxed."
+  ],
+  "candidate_prediction_smoke": {
+   "status": "PASS",
+   "categories": [
+    "lighting",
+    "lighting",
+    "waste"
+   ],
+   "needs_review": [
+    true,
+    true,
+    true
+   ],
+   "threads": 4
+  }
+ },
+ "artifact_status": "Default RUN export created but fails two checks; separate per-channel candidate passes measured agreement and 4-thread latency checks.",
+ "prediction_smoke": {
+  "status": "PASS",
+  "categories": [
+   "lighting",
+   "lighting",
+   "waste"
+  ],
+  "needs_review": [
+   true,
+   true,
+   true
+  ]
+ }
+}

@@ -199,7 +199,8 @@ def test_onnx_export_matches_pytorch(exported):
     assert rep["verdict"]["fp32_matches_torch"] == "PASS"
     assert rep["check"]["onnx_fp32_vs_torch"]["argmax_agreement"] == 1.0
     assert rep["check"]["onnx_int8_vs_torch"]["max_abs_diff_prob"] < 0.2
-    assert rep["latency_cpu"]["int8_all_threads"]["n"] == 60
+    assert rep["latency_cpu"]["int8_default_threads"]["n"] == 60 and rep["latency_cpu"]["int8_all_threads"]["n"] == 60
+    assert rep["quantize"]["per_channel"] is True and rep["latency_cpu"]["default_threads"] >= 1
     assert not (out / "onnx" / "model.onnx").exists() and (out / "onnx" / "model.int8.onnx").exists()
     assert not (out / "onnx" / "model.onnx.data").exists()
     assert rep["check"]["onnx_fp32_vs_torch_batch1"]["argmax_agreement"] == 1.0
@@ -272,6 +273,17 @@ def test_class_weights():
     w = class_weights([0, 0, 0, 1], 3, "sqrt_inv")
     assert w[2] == 0 and w[1] > w[0] and abs((w[0] + w[1]) / 2 - 1) < 1e-3
     assert class_weights([0, 1], 3, "none") == [1.0, 1.0, 0.0]
+
+
+def test_resolve_threads(monkeypatch):
+    from ml.civic_classifier_v2 import predict as P
+    monkeypatch.delenv(P.ENV_THREADS, raising=False)
+    assert 1 <= P.resolve_threads(None) <= P.DEFAULT_THREADS
+    assert P.resolve_threads(0) == 0 and P.resolve_threads(2) == 2   # 0 = решает onnxruntime
+    monkeypatch.setenv(P.ENV_THREADS, "6")
+    assert P.resolve_threads(None) == 6
+    monkeypatch.setenv(P.ENV_THREADS, "много")                         # мусор -> умолчание, не падение
+    assert 1 <= P.resolve_threads(None) <= P.DEFAULT_THREADS
 
 
 def test_env_dir_overrides_default(tmp_path, monkeypatch):

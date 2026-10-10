@@ -8,10 +8,12 @@
   2. model.int8.onnx: onnxruntime.quantization.quantize_dynamic (веса int8);
   3. проверка на N текстах (по умолчанию 200 из синтетики v3 test/val — тексты людей не нужны):
      совпадение argmax и разница вероятностей PyTorch vs ONNX fp32 vs ONNX int8;
-  4. скорость на CPU: один текст за вызов (как в /classify), прогрев, mean/p50/p95, 1 поток и все потоки.
+  4. скорость на CPU: один текст за вызов (как в /classify), прогрев, mean/p50/p95 — потоки по умолчанию
+     (min(4, ядер), как у predict), все потоки и один.
   5. рядом кладутся токенизатор и birge_meta.json — папку целиком подключает R04 (predict.Classifier).
 Отчёт: <out>/export_report.json и ml/civic_classifier_v2/results/onnx_export.json (только числа).
-Критерии: fp32 argmax 100% и max|Δp| < 1e-3; int8 argmax ≥ --min-int8-agreement (0.97); mean < 50 мс.
+Критерии: fp32 argmax 100% и max|Δp| < 1e-3; int8 argmax ≥ --min-int8-agreement (0.97); mean < 50 мс
+(потоки по умолчанию). Квантование по умолчанию per-channel (--no-per-channel — одна шкала на матрицу).
 """
 
 from __future__ import annotations
@@ -32,7 +34,7 @@ import numpy as np
 
 from ml.civic_classifier_v2 import data as D
 from ml.civic_classifier_v2.config import ARTIFACTS_DIR, RESULTS_DIR, SYNTH_V3_DIR
-from ml.civic_classifier_v2.predict import META_NAME, Classifier
+from ml.civic_classifier_v2.predict import META_NAME, Classifier, resolve_threads
 
 OPSET = 17
 TOKENIZER_FILES = ("tokenizer.json", "tokenizer_config.json", "special_tokens_map.json",
@@ -105,7 +107,9 @@ def _clean_copy(src: Path, dst: Path) -> None:
     onnx.save(model, str(dst), save_as_external_data=big, location=dst.name + ".data" if big else None)
 
 
-def quantize(fp32: Path, int8: Path) -> dict:
+def quantize(fp32: Path, int8: Path, per_channel: bool = True) -> dict:
+    """Динамическое int8. per_channel=True (шкала на каждый выходной канал матрицы): на итоговой модели
+    synth_all совпадение top-1 с PyTorch 98% против 96.5% у одной шкалы на матрицу (диагностика LOCAL-4)."""
     from onnxruntime.quantization import QuantType, quantize_dynamic
     import onnxruntime
     clean = fp32.with_name("model.clean.onnx")
@@ -118,12 +122,12 @@ def quantize(fp32: Path, int8: Path) -> dict:
         src, preprocessed = pre, True
     except Exception:
         pass
-    quantize_dynamic(str(src), str(int8), weight_type=QuantType.QInt8)
+    quantize_dynamic(str(src), str(int8), weight_type=QuantType.QInt8, per_channel=per_channel)
     for f in (clean, pre, clean.with_name(clean.name + ".data")):
         if f.exists():
             f.unlink()
     return {"method": "onnxruntime.quantization.quantize_dynamic", "weight_type": "QInt8",
-            "preprocessed": preprocessed, "onnxruntime": onnxruntime.__version__}
+            "per_channel": per_channel, "preprocessed": preprocessed, "onnxruntime": onnxruntime.__version__}
 
 
 def load_texts(path: str | None, n: int) -> tuple[list[str], str]:
@@ -187,6 +191,8 @@ def main(argv=None) -> int:
     ap.add_argument("--min-int8-agreement", type=float, default=0.97)
     ap.add_argument("--max-mean-ms", type=float, default=50.0)
     ap.add_argument("--keep-fp32", action="store_true", help="оставить model.onnx (fp32) рядом с int8")
+    ap.add_argument("--no-per-channel", action="store_true",
+                    help="квантование одной шкалой на матрицу (старый вариант; по умолчанию per-channel)")
     ap.add_argument("--exporter", choices=("auto", "torchscript", "dynamo"), default="auto",
                     help="auto: классический, при ошибке — dynamo (для новых версий torch)")
     ap.add_argument("--results", default=str(RESULTS_DIR / "onnx_export.json"))
@@ -204,7 +210,7 @@ def main(argv=None) -> int:
     report["export"] = export_fp32(model_dir, fp32, args.exporter)
     report["export"]["seconds"] = round(time.time() - t0, 1)
     t0 = time.time()
-    report["quantize"] = quantize(fp32, int8)
+    report["quantize"] = quantize(fp32, int8, per_channel=not args.no_per_channel)
     report["quantize"]["seconds"] = round(time.time() - t0, 1)
     for name in TOKENIZER_FILES:
         if (model_dir / name).exists():
@@ -239,11 +245,14 @@ def main(argv=None) -> int:
 
     cpu = {"machine": platform.machine(), "processor": platform.processor() or platform.machine(),
            "cpu_count": os.cpu_count(), "system": platform.system()}
-    report["latency_cpu"] = {"cpu": cpu, "unit": "один текст за вызов, включая токенизацию"}
-    report["latency_cpu"]["int8_all_threads"] = bench(clf8, texts)
+    report["latency_cpu"] = {"cpu": cpu, "unit": "один текст за вызов, включая токенизацию",
+                             "default_threads": resolve_threads(None)}
+    # По умолчанию (как получит R04) — min(4, ядер) потоков; для сравнения — все потоки и один.
+    report["latency_cpu"]["int8_default_threads"] = bench(clf8, texts)
+    report["latency_cpu"]["int8_all_threads"] = bench(Classifier.load(out, backend="onnx", threads=0), texts)
     report["latency_cpu"]["int8_1_thread"] = bench(Classifier.load(out, backend="onnx", threads=1), texts)
-    report["latency_cpu"]["fp32_all_threads"] = bench(tmp_fp32, texts)
-    fast = report["latency_cpu"]["int8_all_threads"]["mean_ms"] < args.max_mean_ms
+    report["latency_cpu"]["fp32_default_threads"] = bench(tmp_fp32, texts)
+    fast = report["latency_cpu"]["int8_default_threads"]["mean_ms"] < args.max_mean_ms
     report["verdict"] = {"fp32_matches_torch": "PASS" if ok32 else "FAIL",
                          "int8_agreement": "PASS" if ok8 else "FAIL",
                          f"int8_mean_lt_{int(args.max_mean_ms)}ms": "PASS" if fast else "FAIL"}
