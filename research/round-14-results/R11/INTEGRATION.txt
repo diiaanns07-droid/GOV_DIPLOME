@@ -118,8 +118,8 @@ LOCAL-7 (скриншоты сборок): снимать и в ?lang=kk — п�
   - ui-kit: .bk-legend на телефоне — одна строка 32 px (заголовок и .bk-legend__note скрыты); размер иконки только число.
     Витрина работает под строгой CSP R15 (проверено на 13ae790).
 Патч для чужого модуля (R11 его не применяет — решает владелец или R01 по правилу «патчи ролей»):
-    research/round-14-results/R11/patches/R12_staff_i18n.patch — кабинет сотрудника (web/civic/editor/editor.js) на ключах
-    staff.* / works.*; git apply --check проходит на R12 8bb7bf8 и R01 daec72a; тесты редактора R12 78/78 с ним (R10 B-021).
+    research/round-14-results/R11/patches/R12_staff_i18n.patch — кабинет сотрудника на ключах staff.* / works.* (R10 B-021).
+    УЖЕ НЕ НУЖЕН: R12 сдал то же самое в своей поставке 2 (claude/r14-R12, d6c788e9; в сборке R01 85c16e2).
     (patches/R09_formatDate.patch больше не нужен — R09 сам исправил даты в 6beaa4a.)
     research/round-14-results/R11/patches/R01_map_lang.patch — web/map.js (R01): подписи онлайн-подложки на языке интерфейса
     (+ birge:lang) и 6 сообщений об ошибке карты через ключи shell.map.error.*; git apply --check на 6096be8; сценарий 44/44.
