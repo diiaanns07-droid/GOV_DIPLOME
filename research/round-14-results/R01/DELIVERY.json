@@ -1,7 +1,7 @@
 {
   "role": "R01",
   "title": "Интегратор: одна работающая версия Birge",
-  "branch": "claude/sharp-dijkstra-0t87gl",
+  "branch": "claude/r14-R01 (с B3; до B2 включительно — claude/sharp-dijkstra-0t87gl @ f54361d, история та же)",
   "base_sha": "af77b78 (claude/round-14-package), влиты обновления пакета до 4bbf456 (merge 7e0a424)",
   "restored_from": {
     "shell_and_gateway": "claude/affectionate-ride-bol5v8@cb9d60a",
@@ -13,17 +13,19 @@
     "agent/civic_assistant, web/civic/assistant, tests/civic/R09": "claude/wizardly-ptolemy-qy8ltw@14c3384 (код c46b2ed)",
     "ml/civic_classifier, tests/civic/R08": "claude/wizardly-ptolemy-qy8ltw@14c3384",
     "data/civic/astana/round12-verified, round13-verified, tests/civic/R05": "claude/fervent-dijkstra-1cqrg5@a995f9f",
-    "web/civic/ui-kit, web/civic/i18n, tests/civic/R11": "claude/r14-R11@6102dfb (B2; прежде ba8758b, cc77761)",
-    "ml/datasets, ml/labeling, web/labeling, tests/civic/R02/round14": "claude/r14-R02@229f1aa",
-    "ui/civic_heat, web/civic/heat, tests/civic/R07 (новые)": "claude/upbeat-knuth-i0rqaa@5a97636",
+    "web/civic/ui-kit, web/civic/i18n, tests/civic/R11": "claude/r14-R11@52d7c59 (B3; прежде 6102dfb, cc77761, ba8758b)",
+    "ml/datasets, ml/labeling, web/labeling, tests/civic/R02/round14": "claude/r14-R02@f62cc93 (B3; прежде 229f1aa)",
+    "ui/civic_heat, web/civic/heat, tests/civic/R07 (новые)": "claude/upbeat-knuth-i0rqaa@306074b (B3, день 3; прежде 5a97636)",
     "ui/civic_akim, web/civic/akim, tests/civic/R08 (новые)": "claude/r14-R08@4ce8f08 (B2, поставка 2; прежде 9f1d9c0)",
     "ui/civic_feedback/v2, web/civic/feedback (новые), tests/civic/R09 (новые)": "claude/modest-shannon-0ki93p@fa49fc9 (B2; прежде da295be, a4ab5a4)",
     "engine/civic_geo, data/civic/astana/geo, web/civic/map, web/civic/editor, tests/civic/R12": "claude/tender-brahmagupta-ef5ztl@d13f49a (tested; code 8810221 — предок)",
-    "ui/civic_store, web/civic/proposals, tests/civic/R06": "claude/round-14-r06@7031afa (+ патч R06 r02_old_store_tests.patch к tests/civic/R02)",
+    "ui/civic_store, web/civic/proposals, tests/civic/R06": "claude/round-14-r06@b42e790 (B3, поставка 2; + r01_b2_r02_tests.patch к tests/civic/R02; прежде 7031afa)",
     "web/civic/build3d, tests/civic/R05": "claude/r14-R05@b0353ee",
     "ml/civic_forecast, ui/civic_forecast, tests/civic/R13": "claude/r14-R13@8705829",
     "ml/civic_dedup, ui/civic_ml_api, tests/civic/R04/round14": "claude/r14-R04@deeb1de",
-    "ml/civic_classifier_v2, tests/civic/R03/round14": "claude/r14-R03@252913e (без весов — LOCAL)"
+    "ml/civic_classifier_v2, tests/civic/R03/round14": "claude/r14-R03@d472baf (B3; без весов — LOCAL; прежде 252913e)",
+    "tests/civic/R10, tests/e2e": "claude/r14-R10@9c364c7 (B3)",
+    "docs/birge, docs/diploma": "claude/r14-R14@8e106a9 (B3)"
   },
   "builds": {
     "I0": "3adabe3",
@@ -36,11 +38,16 @@
     "merge_package_4bbf456": "7e0a424",
     "b2_step1": "915143f",
     "b2_step2": "b5c153d",
-    "b2_candidate": "коммит с этим файлом (код = b5c153d; после него только проверки и документы)"
+    "b2_candidate": "f54361d (код = b5c153d)",
+    "b3_step1_r06_r07": "a8fabce",
+    "b3_step2_r11_r02_r10_r14": "be82fa8",
+    "b3_step3_basemap_demo_ux": "7227fce",
+    "b3_step4_r03": "d9a8895",
+    "b3_candidate": "3160db3 (код; после — только документы)"
   },
-  "code_sha": "b5c153d",
-  "tested_sha": "b5c153d (полный run_checks.sh в отдельной рабочей копии); r14_b2.cjs 20 проверок — рабочее дерево поверх b5c153d",
-  "push_status": "OK: 915143f и b5c153d в origin/claude/sharp-dijkstra-0t87gl; этот файл — в следующем коммите (SHA — в итоговом сообщении)",
+  "code_sha": "3160db3",
+  "tested_sha": "3160db3 (полный run_checks.sh в отдельной рабочей копии — итог в BUILD_LOG «B3»); 7227fce — полный прогон",
+  "push_status": "OK: a8fabce, be82fa8, 7227fce, d9a8895, 3160db3 в origin/claude/r14-R01 (git ls-remote); этот файл — следующим коммитом",
   "changed_paths": [
     "ui/web_server.py",
     "web/index.html",
@@ -61,12 +68,18 @@
     "research/handoffs/astana/R01/round14/STATUS.md",
     "ui/civic_store/auth.py (COOKIE_PATH /api/civic — передано R06)",
     "tests/civic/R02/test_r02_auth.py",
-    "ui/civic_heat/service.py (records()/generation — патч R08)",
     ".gitignore (private/ — патч R02)",
     "tests/civic/R01/browser/r14_b1.cjs",
     "web/civic/shell/birge.css (3D-корень)",
     "tests/civic/R01/browser/r14_b2.cjs",
-    "tests/civic/R02/test_r02_schema.py, test_r02_round12_export.py (патч R06, миграция 6)"
+    "tests/civic/R02/test_r02_schema.py, test_r02_round12_export.py (патч R06, миграция 6)",
+    "web/map.js (запасной фон OSM)",
+    "web/civic/shell/explore.js (кнопка «Территория» на телефоне)",
+    "tests/civic/R01/browser/r14_shots.cjs",
+    "research/round-14-results/R01/BUGS.md",
+    ".gitignore (ml/civic_classifier_v2/artifacts/ — R03)",
+    "tests/civic/R02 (r01_b2_r02_tests.patch R06, 3 файла)",
+    "ui/civic_heat/service.py — патч R08 снят в B3 (взята версия R07 306074b)"
   ],
   "tests": {
     "I0 3adabe3: pytest tests": "PASS 1384 passed, 12 skipped (все skip с причиной)",
@@ -84,17 +97,25 @@
     "d3c33d9: full run_checks.sh": "pytest 1793 passed / 11 skipped; web_check, node ×8 PASS; браузер: сценарии 16/0, город 81/0, пустой реестр 15/0, шапка 38/0, путь демо B1 15/0, P0 62/1/2 (1 FAIL = гонка demo-ring модуля карты R12, есть и на I0)",
     "b5c153d: full run_checks.sh": "pytest 2377 passed / 20 skipped / 1 xfailed; web_check, node govtech ×5, R04, R01 explore PASS; node R03 core FAIL 24/2 — устаревший тест карты раунда 13 (карта теперь R12), шаг заменён на R12 map core 29/0 и R12 editor 40/0; браузер: сценарии 16/0, город 81/0, пустой реестр 15/0, шапка 38/0, путь B1 15/0, путь B2 17/0, P0 62/1/2 (demo-ring R12, есть на I0)",
     "рабочее дерево поверх b5c153d: r14_b2.cjs": "PASS 20/0 (добавлен путь жителя: место R12, подсказка R04)",
-    "live app.py (CIVIC_DEMO=1)": "PASS: civic-v2: ready R04, R06, R07, R08, R09, R12, R13; seed-r14-demo при работающем сервере — 4 отстающих объекта, 5 предложений"
+    "live app.py (CIVIC_DEMO=1)": "PASS: civic-v2: ready R04, R06, R07, R08, R09, R12, R13; seed-r14-demo при работающем сервере — 4 отстающих объекта, 5 предложений",
+    "7227fce: pytest tests (--continue-on-collection-errors)": "FAIL 2434 passed / 21 skipped / 7 failed / 1 error — все вне путей R01 и объяснены: R07 I-01, I-03, замер 300 мс под нагрузкой (отдельно 3/3 PASS); R10 accuracy ×4 (данные R12/R05); R08 I-02 (BUILD_LOG «B3»)",
+    "7227fce: ui.web_check, node ×9": "PASS",
+    "7227fce: browser P0": "63/1/1 — FAIL = давняя гонка demo-ring модуля карты (R12/R03)",
+    "7227fce: browser scenarios / r14 header / r14 B1 / r14 B2": "PASS 16/0 · 38/0 · 15/0 · 22/0",
+    "3160db3: browser r12 city / empty registry": "PASS 82/0 · 15/0 (после правки теста под свёрнутую «Территорию» и кнопки 48 px)",
+    "3160db3: tests/civic/R01/test_r01_api_v2.py": "PASS 89/89 (+ staff для /heat/target, демо-проекты R06, файлы запасного фона)"
   },
   "known_limits": [
     "Все жалобы, объекты-с-отставанием и предложения на демо — синтетика (demo: true, «Пример»), реальных обращений нет.",
-    "R05 и R06 расходятся в контракте предложений: в оболочке временный адаптер build3dFetch (INTEGRATION §9); убрать, когда сдана R05 7f42cb3 или R06 d043e7b.",
-    "R07, R06, R05: на ветках есть UX-правки после DELIVERY (9bc25e6, d043e7b, 7f42cb3) — в B2 не вошли, ждут обновления DELIVERY.json.",
-    "R03 без весов модели (LOCAL): категорию подсказывают словари R03/R04 и v1; тесты R03 не запускать списком папок с другими (INTEGRATION §9).",
-    "seed-r14-demo (демо-этапы и предложения R06) — ручной шаг 4 в RUN.txt; run.bat не путь R01.",
+    "Адаптер build3dFetch в shell.js остался только для клиента R05 @ b0353ee (DELETE -> withdraw, device_id); убрать после поставки R05 под R06 п.2.",
+    "R07 I-01: часть подписей объектов на карте без имени («Двор или квартал», в ҚАЗ «Нысан») — реестр R12 главнее слоя OSM R07; ждёт R07.",
+    "Красные тесты вне путей R01: R07 I-01/I-03, R08 I-02, R10 accuracy ×4 (данные R12/R05) — BUGS.md и BUILD_LOG «B3».",
+    "R15: patch R01 (CSP, лимит частоты v2, журнал) ещё не сдан — не применён.",
+    "R03 без весов модели (LOCAL): категорию подсказывают словари R03/R04 и v1.",
     "R13 /forecast — только API, прототип на синтетике; на экран не выведен.",
-    "Модуль карты (R12): изредка предупреждение demo-ring после смены режима (есть на I0).",
-    "Подложка OpenFreeMap и 3D-здания в облаке недоступны — NOT_RUN; проверить на ноутбуке (LOCAL-7)."
+    "Модуль карты (R12): изредка предупреждение demo-ring после смены режима (есть с I0).",
+    "Без интернета: оси улиц OSM без подписей и без 3D-зданий; настоящую подложку проверить на ноутбуке (LOCAL-7).",
+    "Блок «городские работы» (R12): счётчик и пояснение по-русски в ҚАЗ, 12–13 px — просьба R12 (INTEGRATION §10)."
   ],
-  "next_step": "FINAL 15 окт 18:00: повторные поставки R07/R06/R05 по DELIVERY, убрать адаптер R05->R06, run_checks.sh + r14_b1 + r14_b2, DEMO_SCRIPT, DELIVERY, STATUS; R10 — приёмка на B2."
+  "next_step": "Новые DELIVERY R05/R15/R07/R08/R12 -> перенос по SHA, убрать build3dFetch после R05, patch R15; run_checks.sh без параллельной нагрузки + r14_shots.cjs; FINAL 15 окт 18:00 (DEMO_SCRIPT, DELIVERY, STATUS); R10 — приёмка на B3."
 }
