@@ -1,0 +1,4 @@
+# R03 · classifier v2 — что нужно R04 для /classify (CPU, без torch): папка artifacts/onnx + эти пакеты.
+onnxruntime>=1.18
+tokenizers>=0.19
+numpy>=1.26
