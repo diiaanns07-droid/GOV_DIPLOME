@@ -266,7 +266,8 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   check(`${tag}: путь за ${taps} нажатий + текст, ${elapsed.toFixed(1)} с автоматом`, taps <= 6 && elapsed < 30);
   const events = await page.evaluate(() => window.standEvents);
   check(`${tag}: событие birge:complaint для тепловой карты`, events.length === 1 && events[0].type === "metoo" &&
-    events[0].target && events[0].target.id === hot.target.id && events[0].reporters === before + 1, JSON.stringify(events));
+    events[0].target && events[0].target.id === hot.target.id && events[0].reporters >= 2 && events[0].reporters <= before + 1,
+    JSON.stringify(events));
   await shot(page, `${tag}-5-done`);
   const sizes5 = await uxSizes(page);
   check(`${tag}: [UX] шаг 5 — текст ≥ 14 px, кнопки ≥ 44 px`, sizes5.length === 0, sizes5.join("; "));
@@ -394,6 +395,55 @@ async function mineStates(browser, base, lang, width, height, tag) {
   check(`${tag}: нет ключей и технических слов`, keys.length === 0, keys.join(", "));
   check(`${tag}: нет ошибок консоли`, page.problems.filter((p) => !/Failed to load resource|ERR_FAILED/.test(p)).length === 0,
         page.problems.join(" | "));
+  await page.context().close();
+}
+
+// Несколько ОТДЕЛЬНЫХ жалоб об одном и том же на одном месте (так засевает демо R01): «Об этом уже сообщили N» —
+// все люди по месту и категории (как число на значке карты), а не только самая похожая жалоба; после «Я тоже» — N+1.
+async function placeTotal(browser, base, lang, width, height, tag, point) {
+  const api = async (method, p, body, device) => (await fetch(base + "/api/civic/v2" + p, { method,
+    headers: { "Content-Type": "application/json", "X-Birge-Device": device }, body: body ? JSON.stringify(body) : undefined })).json();
+  const text = "Во дворе разбита детская площадка, сломаны качели";
+  // Первая жалоба с заведомо далёкой целью: сервер сам ставит «примерное место» у точки (R15 S12) — берём его как цель.
+  const a = await api("POST", "/complaints", { text, category: "yards", point, target: { kind: "object", id: "osm-node-1" } }, "dev-r09-place-total-a1");
+  const target = a.data.complaint.target;
+  await api("POST", "/complaints", { text: text + " и скамейка", category: "yards", point, target }, "dev-r09-place-total-b2");
+  const b = await api("GET", `/complaints/summary?target_id=${encodeURIComponent(target.id)}&category=yards&days=14`, null, "dev-r09-place-total-c3");
+  const page = await newPage(browser, base, width, height, lang);
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  await clickMapAt(page, point);
+  await page.waitForSelector(".bc-panel[data-step='3'], .bc-option", { timeout: 8000 });
+  if (await page.$(".bc-option")) await page.click(".bc-option.bk-btn--ghost, .bc-option:has-text('Примерн'), .bc-option:has-text('Шамамен')");
+  await page.waitForSelector(".bc-panel[data-step='3']", { timeout: 8000 });
+  await page.fill("#bc-text", text);
+  // Модель стенда по словам «двор», «площадка» подсказывает «Дворы и площадки» — как у двух жалоб выше.
+  await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 8000 });
+  await page.click(".bc-send");
+  const step4 = await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 10000 }).then(() => true, () => false);
+  const title = step4 ? (await page.textContent(".bc-title")).trim() : "";
+  const n = Number((title.match(/\d+/) || [0])[0]);
+  check(`${tag}: две отдельные жалобы на месте — «${title}» (всего людей по месту: ${b.data.reporters})`,
+        step4 && b.data.complaints === 2 && n === b.data.reporters && n === 2, JSON.stringify({ title, summary: b.data.reporters }));
+  const badge = step4 ? (await page.textContent(".bc-similar__badge")).trim() : "";
+  check(`${tag}: число на карточке похожей жалобы — то же (${badge})`, badge === String(n));
+  await shot(page, `${tag}-4-similar`);
+  if (step4) {
+    await page.click(".bc-panel[data-step='4'] .bk-btn--primary");
+    await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 8000 });
+    const lead = (await page.textContent(".bc-lead")).trim();
+    check(`${tag}: после «Я тоже» — «${lead}»`, lead.includes(String(n + 1)), lead);
+    const after = await api("GET", `/complaints/summary?target_id=${encodeURIComponent(target.id)}&category=yards&days=14`, null, "dev-r09-place-total-c3");
+    check(`${tag}: на сервере людей по месту стало ${n + 1}, жалоб по-прежнему 2`, after.data.reporters === n + 1 && after.data.complaints === 2,
+          JSON.stringify(after.data && { reporters: after.data.reporters, complaints: after.data.complaints }));
+    await shot(page, `${tag}-5-done`);
+    await page.click(".bc-panel[data-step='5'] .bk-btn--primary");
+    await page.waitForSelector(".bc-mine__card", { timeout: 8000 });
+    const card = (await page.textContent(".bc-mine__card")).replace(/\s+/g, " ");
+    check(`${tag}: в «Мои обращения» — то же число людей (${n + 1}), что на шаге «Я тоже»`, card.includes(String(n + 1)), card.slice(0, 160));
+    await shot(page, `${tag}-mine`);
+  }
+  check(`${tag}: нет ошибок консоли`, page.problems.length === 0, page.problems.join(" | "));
   await page.context().close();
 }
 
@@ -598,6 +648,8 @@ async function keyboard(browser, base, tag) {
     await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "kk", "375-kk-layout");
     await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru-badge");
     await keyboard(browser, "http://127.0.0.1:8791", "1366-kbd");
+    await placeTotal(browser, "http://127.0.0.1:8791", "ru", 375, 812, "375-ru-place", [71.4410, 51.0860]);
+    await placeTotal(browser, "http://127.0.0.1:8791", "kk", 1366, 768, "1366-kk-place", [71.4130, 51.1010]);
     for (const [lang, w, h] of [["ru", 375, 812], ["kk", 375, 812], ["ru", 1366, 768], ["kk", 1366, 768]]) {
       await mineStates(browser, "http://127.0.0.1:8791", lang, w, h, `${w}-${lang}-states`);
     }

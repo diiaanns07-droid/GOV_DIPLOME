@@ -731,22 +731,46 @@
           });
         });
       return byText.then(function (found) {
-        if (found && found.status !== "fixed" && found.status !== "rejected") return found;
+        if (found && found.status !== "fixed" && found.status !== "rejected") return withPlaceCount(found);
         if (!state.target || !state.target.id) return null;
-        var q = "/complaints/summary?target_id=" + encodeURIComponent(state.target.id) +
-                "&category=" + encodeURIComponent(state.category) + "&days=14";
-        return request("GET", q, undefined, ML_TIMEOUT_MS).then(function (res) {
-          return res.ok && res.data && res.data.top ? res.data.top : null;
+        return placeSummary(state.target.id, state.category).then(function (sum) {
+          return sum && sum.top ? withCount(sum.top, sum.reporters) : null;
         });
       }).catch(function () { return null; });
+    }
+
+    // «Об этом уже сообщили N человек» — все люди, сообщившие о том же на этом месте: открытые жалобы той же цели
+    // и категории за 14 дней (как число на значке карты). Так N честный, даже если о проблеме подали несколько
+    // отдельных жалоб, а не одну с «Я тоже». «Я тоже» присоединяет к самой похожей из них.
+    function placeSummary(targetId, category) {
+      var q = "/complaints/summary?target_id=" + encodeURIComponent(targetId) +
+              "&category=" + encodeURIComponent(category || "") + "&days=14";
+      return request("GET", q, undefined, ML_TIMEOUT_MS).then(function (res) {
+        return res.ok && res.data ? res.data : null;
+      });
+    }
+
+    function withCount(match, placeReporters) {
+      match.placeReporters = Math.max(match.reporters || 0, Number(placeReporters) || 0);
+      return match;
+    }
+
+    function withPlaceCount(match) {
+      if (!match.target || !match.target.id || !match.category) return match;
+      return placeSummary(match.target.id, match.category)
+        .then(function (sum) { return withCount(match, sum && sum.reporters); }, function () { return match; });
+    }
+
+    function placeCount(match) {
+      return match.placeReporters || match.reporters;
     }
 
     function renderSimilar(body) {
       var match = state.similar;
       var ago = daysAgo(match.created_at);
       body.appendChild(h("div", { "class": "bc-similar" }, [
-        h("p", { "class": "bc-similar__count" }, [h("span", { "class": "bk-heat bc-similar__badge", "data-level": String(heatLevel(match.reporters)) },
-          String(match.reporters)), h("span", {}, categoryLabel(match.category))]),
+        h("p", { "class": "bc-similar__count" }, [h("span", { "class": "bk-heat bc-similar__badge", "data-level": String(heatLevel(placeCount(match))) },
+          formatNumber(placeCount(match))), h("span", {}, categoryLabel(match.category))]),
         h("p", { "class": "bc-meta" }, [targetLabel(match.target),
           " · ", ago === 0 ? t("complaint.step4.today") : t("complaint.step4.ago_days", { n: ago })]),
         h("div", { "class": "bc-similar__status" }, [statusBadge(match.status),
@@ -776,7 +800,9 @@
         // Лимит (429, R15): повтор снова упрётся в лимит — сообщаем без «Повторить», как при отправке жалобы.
         if (!res.ok && res.status === 429) { toast(t("complaint.error.too_many")); return; }
         if (!res.ok) { toast(t("complaint.error.send"), function () { metoo(match); }); return; }
-        state.result = { kind: "metoo", outcome: res.data.result, complaint: res.data.complaint };
+        // Сколько людей теперь сообщили об этом на месте: прежнее N + этот житель (если «Я тоже» засчитан).
+        var joined = res.data.complaint, place = placeCount(match) + Math.max(0, (joined.reporters || 0) - (match.reporters || 0));
+        state.result = { kind: "metoo", outcome: res.data.result, complaint: joined, place: place };
         if (res.data.result === "added") announce("metoo", res.data.complaint);
         clearDraft();
         state.step = 5; render();
@@ -829,7 +855,7 @@
       var result = state.result, complaint = result.complaint;
       if (result.kind === "metoo") {
         var message = result.outcome === "added"
-          ? t("complaint.step5.metoo_count", { n: complaint.reporters })
+          ? t("complaint.step5.metoo_count", { n: result.place || complaint.reporters })
           : (result.outcome === "author" ? t("complaint.step5.author") : t("complaint.step5.already"));
         body.appendChild(h("p", { "class": "bc-lead" }, message));
       } else {
@@ -893,7 +919,8 @@
             item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null]),
           item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
           item.relation === "metoo" ? h("p", { "class": "bc-meta" }, t("mine.metoo_badge")) : null,
-          h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.reporters || 1 })),
+          // Все люди, сообщившие о том же на этом месте (как на шаге «Я тоже»), а не только по этой жалобе.
+          h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || item.reporters || 1 })),
           overdue ? h("p", { "class": "bc-overdue" }, [icon("clock"), h("span", {}, t("mine.overdue"))]) : null,
           stepsBar(item)]));
       });
@@ -931,7 +958,7 @@
       }
       var titles = { 2: "complaint.step2.title", 3: "complaint.step3.title", 4: "complaint.step4.title", 5: "complaint.step5.title" };
       var title = mine ? (state.mine && state.mine.length ? t("mine.count", { n: state.mine.length }) : t("mine.title"))
-        : (state.step === 4 ? t("complaint.step4.title", { n: state.similar.reporters })
+        : (state.step === 4 ? t("complaint.step4.title", { n: placeCount(state.similar) })
           : (state.step === 5 && state.result.kind === "metoo" ? t("complaint.step5.metoo_title") : t(titles[state.step])));
       panel.appendChild(h("h2", { id: "bc-title", "class": "bc-title", tabindex: "-1" }, title));
       var body = h("div", { "class": "bc-body" });

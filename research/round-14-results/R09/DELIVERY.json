@@ -2,9 +2,9 @@
  "role": "R09",
  "round": 14,
  "title": "Жалоба жителя v2: место, «Я тоже», статус",
- "status": "READY_FOR_FINAL (ночь 10→11 окт: исправлены все замечания R15/R10/R11/LOCAL/R01 к R09, кроме стыков R01)",
+ "status": "READY_FOR_FINAL (ночь 10→11 окт: исправлены все замечания к R09; проверено на FINAL R01 4ca9aef — R01 нужно взять пути R09 из этой ветки, INTEGRATION.txt N0)",
  "branch": "claude/wizardly-ptolemy-qy8ltw",
- "branch_note": "Среда ночной сессии разрешает push только в эту ветку; claude/modest-shannon-0ki93p (BRANCHES.md) продолжена здесь: пути R09 взяты из неё @ 5dd6465 побайтно, без merge её истории. R01 забирает пути R09 отсюда: git checkout <code_sha> -- ui/civic_feedback web/civic/feedback tests/civic/R09",
+ "branch_note": "Среда ночной сессии разрешает push только в эту ветку; claude/modest-shannon-0ki93p (BRANCHES.md) продолжена здесь: пути R09 взяты из неё @ 5dd6465 побайтно, без merge её истории. FINAL R01 4ca9aef содержит R09 fa49fc9 из modest-shannon; ночные исправления R01 забирает отсюда: git checkout <code_sha> -- ui/civic_feedback web/civic/feedback tests/civic/R09 (надмножество путей R09 в 4ca9aef).",
  "base_sha": "a38da114 (claude/round-14-package; рабочее дерево проверки = пакет + пути R09)",
  "restored_from": {
   "branch": "claude/modest-shannon-0ki93p",
@@ -172,12 +172,32 @@
   {
    "name": "node tests/civic/R09/browser_r09.cjs (стенд, запасные стили)",
    "status": "PASS",
-   "detail": "186/186 (вкл. состояния «Мои обращения»: загрузка, пусто, нет связи — 375/1366 ru/kk)"
+   "detail": "198/198 (вкл. состояния «Мои обращения» и «несколько отдельных жалоб на месте» — 375/1366 ru/kk)"
   },
   {
    "name": "node tests/civic/R09/browser_r09.cjs --r11 <папка web R11 c03a6c5/52d7c59> (настоящий ui-kit и словарь R11)",
    "status": "PASS",
-   "detail": "186/186 (вкл. состояния «Мои обращения»: загрузка, пусто, нет связи — 375/1366 ru/kk)"
+   "detail": "198/198 (вкл. состояния «Мои обращения» и «несколько отдельных жалоб на месте» — 375/1366 ru/kk)"
+  },
+  {
+   "name": "FINAL R01 4ca9aef + пути R09 этой ветки (без патча засева — засев R01 0a7a346): node tests/civic/R09/app_demo_r09.cjs",
+   "status": "PASS",
+   "detail": "42/42: «Об этом уже сообщили 3 человека» (3 отдельные жалобы R01) -> «Я тоже» -> 4; надписи = реплики ведущего; шаг 6 — у жителя «Исправлено»"
+  },
+  {
+   "name": "тот же FINAL + R09: pytest tests/civic/R09 R15 R01 R07 R04",
+   "status": "PASS",
+   "detail": "983 passed, 2 skipped"
+  },
+  {
+   "name": "тот же FINAL + R09: R01 browser r14_b1.cjs / r14_b2.cjs",
+   "status": "PASS",
+   "detail": "15/15 и 25/25"
+  },
+  {
+   "name": "tests/civic/R09/test_r09v2_place_count.py",
+   "status": "PASS",
+   "detail": "3 passed: люди по месту и категории в «Мои обращения» (place_reporters), без отклонённых, дублей и старых"
   },
   {
    "name": "node tests/civic/R09/app_demo_r09.cjs на FINAL-кандидате R01 ef1ef44 + R09 + r01_seed_r09_demo.patch",
@@ -231,13 +251,10 @@
   }
  ],
  "known_limits": [
-  "Демо-жалобы R09 появятся в сборке только после вставки R01 (r01_seed_r09_demo.patch) или команды seed-demo.",
-  "Приёмка R10 demo_flow.cjs с демо-жалобами R09 показывает шаг 6 UI как NOT_RUN/FAIL: её слой API заранее закрывает свою жалобу у той же остановки (R07 считает закрытым всё поданное раньше). В настоящем демо шаг 6 проходит; предложение R10 — в INTEGRATION.txt.",
+  "FINAL R01 4ca9aef содержит R09 fa49fc9 (modest-shannon): ночные исправления R09 попадут в показ только после шага R01 (INTEGRATION.txt N0).",
   "DEMO_SCRIPT R01 и DEMO_PHRASES_KK R11: на шаге 1–2 текст стоит раньше места и есть кнопка «Да», которой нет на экране — правка текста предложена в INTEGRATION.txt (N6).",
-  "Первый /similar сразу после старта сервера R01 даёт 503 source_not_connected, пока шлюз лениво не связал модули (wire) — стык R01.",
-  "Ключ complaint.step2.here («Вы здесь / Сіз осындасыз») — новый: до словаря R11 берётся запасной текст R09.",
   "«Один голос/«Я тоже» на устройство» без входа — по-прежнему накручивается сменой device_id; лимит по адресу — в шлюзе R01 (S08).",
   "Срок хранения жалоб и удаление автором не сделаны (R15, раздел для жюри) — решение владельца."
  ],
- "next_step": "R01: взять пути R09 @ code_sha и применить r01_seed_r09_demo.patch, поправить DEMO_SCRIPT шаг 1–2 (N6); R10 — повторить B-019, B-030 на FINAL (слой API — на отдельной базе); R11 — поменять строки 2 и 3 в DEMO_PHRASES_KK."
+ "next_step": "R01: взять пути R09 @ code_sha (INTEGRATION.txt N0), патч засева НЕ нужен; поправить DEMO_SCRIPT шаг 1–2 (N6). R11 — поменять строки 2 и 3 в DEMO_PHRASES_KK. R07 — B-036 (зелёный при открытых жалобах)."
 }

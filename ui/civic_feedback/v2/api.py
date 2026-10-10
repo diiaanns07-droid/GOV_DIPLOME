@@ -247,6 +247,7 @@ class ComplaintsV2Service:
             relation = record.pop("relation")
             view = rec.author_view(record) if relation == "author" else rec.public_view(record)
             view["relation"] = relation
+            view["place_reporters"] = self.store.place_reporters(record)
             if relation == "metoo":
                 view["steps"] = rec.resident_steps(record)
                 view["metoo_at"] = record.get("metoo_at")
