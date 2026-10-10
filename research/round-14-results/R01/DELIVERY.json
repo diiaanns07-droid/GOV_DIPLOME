@@ -17,7 +17,7 @@
     "ml/datasets, ml/labeling, web/labeling, tests/civic/R02/round14": "claude/r14-R02@f62cc93 (+ P-R02 R15)",
     "ui/civic_heat, web/civic/heat, tests/civic/R07 (новые)": "claude/upbeat-knuth-i0rqaa@9411dee",
     "ui/civic_akim, web/civic/akim, tests/civic/R08 (новые)": "claude/r14-R08@bedb753 (+ tests/civic/R08 51fdbcd5)",
-    "ui/civic_feedback/v2, web/civic/feedback (новые), tests/civic/R09 (новые)": "claude/wizardly-ptolemy-qy8ltw@b6cadb3 (новая ветка R09)",
+    "ui/civic_feedback/v2, web/civic/feedback (новые), tests/civic/R09 (новые)": "claude/wizardly-ptolemy-qy8ltw@f4fb7b9 (новая ветка R09)",
     "engine/civic_geo, data/civic/astana/geo, web/civic/map, web/civic/editor, tests/civic/R12": "claude/r14-R12@d6c788e9 (новая ветка R12, поставка 2)",
     "ui/civic_store, web/civic/proposals, tests/civic/R06": "claude/round-14-r06@d707efc (round14/store; тесты раунда 13 не тронуты)",
     "web/civic/build3d, tests/civic/R05": "claude/r14-R05@b38654a",
@@ -53,11 +53,12 @@
     "night_4a_final_candidate": "85c16e2",
     "night_4a": "85c16e2",
     "night_5a_final_candidate": "1dd5b53",
-    "night_6_final_candidate": "e6d9d80"
+    "night_6_final_candidate": "e6d9d80",
+    "night_6c_final_candidate": "d99c8c2"
   },
-  "code_sha": "e6d9d80",
-  "tested_sha": "e6d9d80 (pytest и браузер на рабочем дереве = b6d9ecf + тест города e6d9d80; приёмка R10 — в BUILD_LOG)",
-  "push_status": "OK: e6d9d80 в origin/claude/sharp-dijkstra-0t87gl; документы — следующим коммитом",
+  "code_sha": "d99c8c2",
+  "tested_sha": "d99c8c2 (pytest и браузер на рабочем дереве = d99c8c2; приёмка R10 — в BUILD_LOG)",
+  "push_status": "OK: d99c8c2 в origin/claude/sharp-dijkstra-0t87gl; документы — следующим коммитом",
   "changed_paths": [
     "ui/web_server.py",
     "web/index.html",
@@ -110,7 +111,9 @@
     "1dd5b53: pytest tests": "PASS 2688 passed, 21 skipped, 1 xfailed; 1 failed под двойной нагрузкой (R04 прогрев кэша, join 10 с) — отдельно 23/23 PASS",
     "1dd5b53: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 26/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0 (повтор; в общем прогоне 80/1 под нагрузкой)",
     "e6d9d80: pytest tests": "PASS 2690 passed, 21 skipped",
-    "e6d9d80: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 26/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0"
+    "e6d9d80: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 26/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0",
+    "d99c8c2: pytest tests": "PASS 2693 passed, 21 skipped",
+    "d99c8c2: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 26/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0"
   },
   "known_limits": [
     "Все жалобы, объекты и предложения на демо — синтетика (demo: true, «Пример»); реальных обращений нет.",
