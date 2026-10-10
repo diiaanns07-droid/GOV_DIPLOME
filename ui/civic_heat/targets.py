@@ -1,0 +1,175 @@
+"""Где находится цель жалобы и как её назвать (CONTRACT §4).
+
+Тепловая карта сама цели не выбирает (это R12, engine/civic_geo) — она только достаёт форму
+и подпись цели по её id. Источники по порядку:
+  1. реестр готовых целей (fixtures/targets_demo.json и данные R12 data/civic/astana/geo/*.json);
+  2. модуль R12 engine.civic_geo, если в нём есть функция target_geometry(target);
+  3. участок улицы osm-w<way>-<n> — настоящая форма ребра из пешеходного графа OSM;
+  4. ячейка cell-<ix>-<iy> — квадрат ~150 м по формуле из geo.py;
+  5. иначе — «примерное место»: круг 60 м вокруг точки жалобы (никаких уверенных линий).
+"""
+from __future__ import annotations
+
+import json
+import re
+import threading
+from pathlib import Path
+
+from . import geo
+from .config import GRAPH_PATH, ROOT
+
+FIXTURE_TARGETS = Path(__file__).resolve().parent / "fixtures" / "targets_demo.json"
+R12_GEO_DIR = ROOT / "data" / "civic" / "astana" / "geo"
+APPROX_RADIUS_M = 60.0
+_EDGE_RE = re.compile(r"^osm-w(\d+)-(\d+)$")
+
+KIND_WORD = {
+    "object": ("Объект", "Нысан"),
+    "segment": ("Участок улицы", "Көше бөлігі"),
+    "area": ("Двор или квартал", "Аула немесе орам"),
+    "district": ("Район", "Аудан"),
+}
+
+
+def short_street_ru(name: str) -> str:
+    """«улица Сыганак» → «ул. Сыганак», «проспект Туран» → «пр. Туран» (для подписей)."""
+    for full, short in (("улица ", "ул. "), ("проспект ", "пр. "), ("переулок ", "пер. "), ("шоссе ", "ш. "), ("бульвар ", "бул. ")):
+        if name.startswith(full):
+            return short + name[len(full):]
+    return name
+
+
+def segment_labels(street_ru: str | None, street_kk: str | None, from_ru=None, to_ru=None, from_kk=None, to_kk=None) -> tuple[str, str]:
+    """Подпись участка: «Участок ул. Сыганак от ул. X до ул. Y».
+
+    По-казахски падежные окончания зависят от последнего звука названия, поэтому
+    названия улиц не склоняем, а ставим через тире: «Сығанақ көшесі: X – Y аралығы».
+    """
+    if not street_ru:
+        return "Участок улицы", "Көше бөлігі"
+    ru = "Участок " + short_street_ru(street_ru)
+    if from_ru and to_ru and from_ru != to_ru:
+        ru += f" от {short_street_ru(from_ru)} до {short_street_ru(to_ru)}"
+    kk_street = street_kk or street_ru
+    kk = f"{kk_street}: көше бөлігі"
+    if from_kk and to_kk and from_kk != to_kk:
+        kk = f"{kk_street}: {from_kk} – {to_kk} аралығы"
+    return ru, kk
+
+
+class TargetResolver:
+    """Ищет форму и подпись цели. Потокобезопасен; граф грузится один раз и только при нужде."""
+
+    def __init__(self, registry: dict | None = None, *, graph_path: Path | None = GRAPH_PATH, use_r12: bool = True):
+        self._registry: dict = {}
+        self._lock = threading.Lock()
+        self._graph_path = graph_path
+        self._edges: dict | None = None
+        self._r12 = None
+        self._cache: dict = {}
+        self.add_registry(_load_json_targets(FIXTURE_TARGETS))
+        for name in ("objects.json", "yards.json", "targets.json"):
+            self.add_registry(_load_json_targets(R12_GEO_DIR / name))
+        if registry:
+            self.add_registry(registry)
+        if use_r12:
+            try:  # R12 ещё может не быть — это нормально.
+                from engine import civic_geo  # type: ignore
+
+                if hasattr(civic_geo, "target_geometry"):
+                    self._r12 = civic_geo
+            except Exception:
+                self._r12 = None
+
+    def add_registry(self, items: dict) -> None:
+        for tid, item in (items or {}).items():
+            if isinstance(item, dict) and item.get("geometry"):
+                self._registry[tid] = item
+        self._cache.clear()
+
+    # ---- граф улиц ----
+    def _edge_index(self) -> dict:
+        with self._lock:
+            if self._edges is None:
+                self._edges = {}
+                if self._graph_path and Path(self._graph_path).exists():
+                    raw = json.loads(Path(self._graph_path).read_text("utf-8"))
+                    for e in raw.get("edges", []):
+                        self._edges[e["id"]] = (e.get("geometry"), e.get("name"))
+            return self._edges
+
+    def resolve(self, target: dict | None, point=None) -> dict | None:
+        """→ {geometry, label_ru, label_kk, approximate, anchor, source} или None, если нечего показать."""
+        target = target or {}
+        tid = str(target.get("id") or "")
+        kind = target.get("kind") or "area"
+        key = (kind, tid) if tid else ("point", tuple(point) if point else None)
+        if key in self._cache:
+            return self._cache[key]
+        found = self._resolve(kind, tid, target, point)
+        if found:
+            found.setdefault("anchor", geo.anchor_of(found["geometry"]))
+            # Подписи из записи жалобы (label_ru/label_kk) главнее автоматических.
+            if target.get("label_ru"):
+                found["label_ru"] = target["label_ru"]
+            if target.get("label_kk"):
+                found["label_kk"] = target["label_kk"]
+        if tid:
+            self._cache[key] = found
+        return found
+
+    def _resolve(self, kind, tid, target, point):
+        if tid in self._registry:
+            item = self._registry[tid]
+            return {"geometry": item["geometry"], "label_ru": item.get("label_ru") or KIND_WORD.get(kind, KIND_WORD["area"])[0],
+                    "label_kk": item.get("label_kk") or KIND_WORD.get(kind, KIND_WORD["area"])[1],
+                    "approximate": bool(item.get("approximate")), "source": item.get("source", "registry")}
+        if self._r12 is not None and tid:
+            try:
+                got = self._r12.target_geometry({"kind": kind, "id": tid})
+                if got and got.get("geometry"):
+                    return {"geometry": got["geometry"], "label_ru": got.get("label_ru") or KIND_WORD[kind][0],
+                            "label_kk": got.get("label_kk") or KIND_WORD[kind][1],
+                            "approximate": bool(got.get("approximate")), "source": "r12"}
+            except Exception:
+                pass
+        if kind == "segment" and _EDGE_RE.match(tid):
+            edge = self._edge_index().get(tid)
+            if edge and edge[0] and len(edge[0]) >= 2:
+                ru, kk = segment_labels(edge[1], None)
+                return {"geometry": {"type": "LineString", "coordinates": edge[0]}, "label_ru": ru, "label_kk": kk,
+                        "approximate": False, "source": "osm-walking-graph"}
+        if kind == "area" and tid.startswith("cell-"):
+            poly = geo.cell_polygon(tid)
+            if poly:
+                return {"geometry": poly, "label_ru": "Квартал", "label_kk": "Орам", "approximate": False, "source": "cell-grid"}
+        if point and len(point) == 2:
+            return {"geometry": geo.circle_polygon(point, APPROX_RADIUS_M), "label_ru": "Примерное место",
+                    "label_kk": "Шамамен көрсетілген орын", "approximate": True, "source": "complaint-point"}
+        return None
+
+
+def _load_json_targets(path: Path) -> dict:
+    """Читает реестр целей: {"targets": {id: {...}}} или {"items": [{id, geometry, ...}]}; иначе пусто."""
+    try:
+        raw = json.loads(Path(path).read_text("utf-8"))
+    except (OSError, ValueError):
+        return {}
+    if isinstance(raw, dict) and isinstance(raw.get("targets"), dict):
+        return raw["targets"]
+    items = raw.get("items") if isinstance(raw, dict) else raw
+    out = {}
+    for it in items or []:
+        if not isinstance(it, dict) or not it.get("id"):
+            continue
+        it = dict(it)
+        if not it.get("geometry"):
+            # Точечные объекты R12 могут прийти как {lon, lat} или {coordinates: [lon, lat]}.
+            c = it.get("coordinates") or ([it["lon"], it["lat"]] if "lon" in it and "lat" in it else None)
+            if c and len(c) == 2 and all(isinstance(v, (int, float)) for v in c):
+                it["geometry"] = {"type": "Point", "coordinates": [float(c[0]), float(c[1])]}
+        it.setdefault("label_ru", it.get("name_ru") or it.get("name"))
+        it.setdefault("label_kk", it.get("name_kk"))
+        if it.get("geometry"):
+            out[str(it["id"])] = it
+    return out
