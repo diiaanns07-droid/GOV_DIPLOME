@@ -159,14 +159,16 @@ def _enu(lon, lat, lon0, lat0):
 def test_similar_distance_does_not_reveal_resident_point(srv):
     """distance_m с точностью 0,1 м: три запроса /similar из разных точек -> точка жителя до метра (трилатерация).
 
-    Огрубление точки в публичной выдаче (S03) без этого ничего не даёт.
+    Огрубление точки в публичной выдаче (S03) без этого ничего не даёт. Огрубить только distance_m мало: точку
+    запроса можно двигать, пока ступень (или граница радиуса 200 м) не переключится. Исправлено, когда /similar
+    раскрывает не больше публичной точки: секрет ниже — в ~53 м от своей точки с 3 знаками.
     """
     ready(srv, "complaints.create", "similar")
-    secret_point = [71.432519, 51.127311]
+    secret_point = [71.4314, 51.1274]
     text = "Во дворе не горят фонари, вечером темно и опасно"
     status, data = create_complaint(srv, "device-r15-tri-00000001", text=text, point=secret_point)
     assert status in (200, 201), data
-    probes = [[71.4310, 51.1268], [71.4340, 51.1268], [71.4325, 51.1285]]
+    probes = [[71.4305, 51.1268], [71.4325, 51.1268], [71.4315, 51.1285]]
     dists = []
     for probe in probes:
         status, body = call(srv, "POST", "/similar", {"text": text, "point": probe})
@@ -252,23 +254,50 @@ def test_r06_vote_burst_from_one_address_is_limited(srv):
     assert 429 in statuses, statuses[-5:]
 
 
-@xfail("S08")
-def test_r06_votes_with_new_device_ids_are_capped_per_address_per_day(monkeypatch, tmp_path):
-    """30 голосов в минуту с адреса — это 1800 «новых жителей» в час для одного скрипта.
+def _seed_proposal(srv):
+    """Предложение создаёт вошедший сотрудник (сессия R02 + CSRF), как в интерфейсе акимата. -> id или skip."""
+    store = srv.civic.service("store")
+    if store is None or not hasattr(store, "accounts"):
+        pytest.skip("в этой сборке нет входа сотрудника (ui.civic_store)")
+    store.accounts.create_user("r15-akimat", "R15-Strong-Pass-2026", display_name="R15", role="editor")
+    status, headers, data = request(srv, "POST", "/api/civic/v1/session/login",
+                                    {"username": "r15-akimat", "password": "R15-Strong-Pass-2026"},
+                                    headers={"Origin": origin(srv)})
+    assert status == 200, data
+    session = json.loads(data)
+    token = (session.get("data") or session).get("csrf_token")
+    cookie = headers.get("set-cookie", "").split(";")[0]
+    status, body = call(srv, "POST", "/proposals", {"kind": "square", "title_ru": "Сквер R15",
+                                                    "geometry": {"type": "Point", "coordinates": list(NEAR)}},
+                        headers={"Cookie": cookie, "X-CSRF-Token": token or ""})
+    if status not in (200, 201):
+        pytest.skip(f"R06 не создал предложение: {status} {body}")
+    return (body.get("item") or body.get("proposal") or body)["id"]
 
-    Время подменяется (time.monotonic в модуле R06): 2 часа голосования за 2 секунды теста.
+
+@xfail("S08")
+def test_votes_for_one_proposal_from_one_address_are_capped(srv):
+    """25 «жителей» за 25 секунд с одного адреса за одно предложение — всё принято (лимит R06 — 30 в минуту).
+
+    Должно быть: не больше 20 голосов в сутки с одного адреса за одно предложение (семья, офис — хватает).
     """
-    proposals = need_module("ui.civic_store.proposals")
-    clock = {"t": 1000.0}
-    monkeypatch.setattr(proposals.time, "monotonic", lambda: clock["t"])
-    limiter = proposals.RateLimiter(proposals.VOTES_PER_MINUTE)
-    accepted = 0
-    for minute in range(120):
-        clock["t"] += 61
-        for i in range(40):
-            if limiter.allow("198.51.100.7"):
-                accepted += 1
-    assert accepted <= 200, "с одного адреса за 2 часа принято %d голосов с новыми device_id" % accepted
+    ready(srv, "proposals.vote")
+    proposal_id = _seed_proposal(srv)
+    statuses = [call(srv, "POST", "/proposals/%s/vote" % proposal_id,
+                     {"value": 1, "device_id": "device-r15-pvote-%06d" % i})[0] for i in range(25)]
+    assert 429 in statuses, "принято %d голосов с одного адреса" % statuses.count(200)
+
+
+@xfail("S08")
+def test_metoo_for_one_complaint_from_one_address_is_capped(srv):
+    """25 «Я тоже» с новыми device_id на одну жалобу с одного адреса — цвет цели на карте меняется скриптом."""
+    ready(srv, "complaints.create", "complaints.metoo")
+    status, data = create_complaint(srv, "device-r15-cap-author01")
+    assert status in (200, 201), data
+    complaint_id = data["data"]["complaint"]["id"]
+    statuses = [call(srv, "POST", "/complaints/%s/metoo" % complaint_id, {},
+                     device="device-r15-cap-%010d" % i)[0] for i in range(25)]
+    assert 429 in statuses, "принято %d «Я тоже» с одного адреса" % statuses.count(200)
 
 
 # --- 4. R13 прогноз: только синтетика и агрегаты --------------------------------------------------
