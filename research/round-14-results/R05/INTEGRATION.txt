@@ -1,7 +1,20 @@
-R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14, поставка 2 (для сборки B2)
+R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14, поставка 3 (ночь 1, для FINAL)
 3D-превью предложений: акимат ставит объект на карту, он «строится», жители голосуют
 
-Источник: ветка claude/r14-R05. Код — code_sha из DELIVERY.json (169c56b), проверен на нём же.
+Источник: ветка claude/r14-R05. Код — code_sha из DELIVERY.json (fc03e19), проверен на нём же.
+
+НОЧЬ 1 (поставка 3) — что нового с поставки 2 (169c56b):
+- R10 B-007 (важно): ж/д и трамвайные платформы больше не «остановки» (41 из 1017); B-008: объекты и дворы вне районов
+  Астаны убраны (остановок 1017 → 956, дворов 560 → 536). R10 accuracy.py для R05: 8/8 PASS (было 3 FAIL) —
+  runs/r10_accuracy_r05.json. Данные — web/civic/build3d/data/astana-existing.json (генератор make_fixtures.py).
+- R10 B-026 (и LOCAL_B2 №9): на мелком масштабе таблички — точка 32 px со значком вида (было 18–20 px); проекты в одной
+  точке — одна метка с числом («4», aria «4 проекта рядом — показать ближе»), нажатие приближает к ним.
+- В kk названия улиц — казахские из OSM (name:kk; есть у 13 из 59 улиц Нуры, иначе русское — как label_kk у R12):
+  «Жанында: Сығанақ көшесі», подсказки освещения.
+- R01: патч перенесён на голову R01 2b9e837 (B3 + ночь 1: каталог свёрнут в кнопку, R06 b42e790) —
+  research/round-14-results/R05/proposed_r01_b3.patch (§1.2а). proposed_r01_b2.patch — только для f54361d.
+- R11: 2 новых ключа build3d.cluster, build3d.cluster.open (остальные 43 уже в словаре R11 ночи 1 — сверено).
+Поставка 2 (169c56b) — ниже, без изменений по сути.
 Переносить ТОЛЬКО по путям:
   web/civic/build3d/              модуль (build3d-core.js, build3d-models.js, build3d.js, build3d.css, data/*.json)
   web/vendor/three/               three.js 0.169.0 — тот же файл, что у LOCAL-2 (sha256 f7cee3c7…), не менялся
@@ -37,6 +50,15 @@ web/civic/build3d/demo.html и data/demo-basemap.json — только для д
     tests/civic/R01/browser/r14_b2.cjs — ожидания под поставку 2: у жителя dock "hint" или "empty" (не только "empty");
       «За» — в карточке R06 (.r06-vote__btn[data-value="1"]) или в своей ([data-action=vote-up]); «Поставить» ждёт
       успешный POST (с R06 7031afa первый POST с контекстом 3D получает 422, R05 повторяет базовым телом).
+1.2а На голове R01 2b9e837 (B3 + ночь 1) — patch research/round-14-results/R05/proposed_r01_b3.patch (git apply --check: OK):
+    shell.js — убрать остаток адаптера build3dFetch (DELETE→withdraw и device_id R05 делает сам), mount({mode, api:
+      window.BirgeShell?.api, avoid, onToolChange}); при «Акимат/Житель» — не пересоздавать модуль, только свернуть ваш
+      каталог (setBuild3dCatalog(false)); ваша кнопка «Что построить?» и [data-catalog] работают как есть;
+    birge.css — подсказка жителя (data-state="hint") скрыта над полуоткрытой шторкой телефона, как каталог;
+    r14_b2.cjs — ожидания поставки 2 (подсказка жителя, голос в карточке R06, успешный POST).
+    Проверено (app.py, CIVIC_DEMO=1, временная база): ваш r14_b2.cjs 25/25 с патчем, 23/25 без (те же две проверки
+    ожиданий b0353ee) — runs/r01_b3_with_patch.txt, runs/r01_b3_without_patch.txt; мой app_b2_smoke.mjs (раскрывает
+    ваш свёрнутый каталог) — runs/app_b2_smoke.json, screens/b2_*.png.
 1.3 Проверено на f54361d + файлы R05 + патч (app.py, CIVIC_DEMO=1, временная база, seed-demo + seed-r14-demo):
       ваш tests/civic/R01/browser/r14_b2.cjs ........ 20/20 PASS  (runs/r01_b2_with_patch.txt)
       он же без патча (адаптер и пересоздание) ...... 18/20       (runs/r01_b2_without_patch.txt; обе FAIL —
@@ -90,6 +112,10 @@ web/civic/build3d/demo.html и data/demo-basemap.json — только для д
 ────────────────────────────────────────────────────────────────────────────
 3. R11 (UX и казахский)
 ────────────────────────────────────────────────────────────────────────────
+3.0 Ночь 1: в словаре R11 (8451468) все 43 ключа R05 есть, kk совпадает. НОВЫЕ 2 (метка группы проектов, R10 B-026):
+      build3d.cluster        ru {one:"{n} проект", few:"{n} проекта", many:"{n} проектов"} | kk "{n} жоба"
+      build3d.cluster.open   «{count} рядом — показать ближе» | «Қатар {count} — жақыннан көрсету» (aria; вычитать kk)
+    Файл i18n_build3d.json — 45 ключей; i18n_tools add добавит только эти 2.
 3.1 Ключи: research/round-14-results/R05/i18n_build3d.json — 43 ключа build3d.* в вашем формате
     {key:{ru, kk, where}} (i18n_tools add/check — PASS). В вашей 6102dfb — 40; НОВЫЕ 3 (вычитать kk):
       build3d.resident.hint   Нажмите на проект, чтобы проголосовать | Дауыс беру үшін жобаны басыңыз
