@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import importlib.util
 import sys
 from pathlib import Path
 
@@ -14,18 +13,8 @@ for p in (str(ROOT), str(HERE)):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-import fixtures as F  # noqa: E402
-
-
-def has(*mods: str) -> bool:
-    return all(importlib.util.find_spec(m) is not None for m in mods)
-
-
-needs_ml = pytest.mark.skipif(not has("torch", "transformers", "tokenizers"),
-                              reason="NOT_RUN: нет torch/transformers (ставятся по RUN.txt)")
-needs_onnx = pytest.mark.skipif(not has("torch", "transformers", "onnx", "onnxruntime"),
-                                reason="NOT_RUN: нет onnx/onnxruntime")
-needs_sklearn = pytest.mark.skipif(not has("sklearn", "scipy"), reason="NOT_RUN: нет scikit-learn")
+import r03_fixtures as F  # noqa: E402
+from r03_markers import has  # noqa: E402
 
 
 @pytest.fixture(scope="session")

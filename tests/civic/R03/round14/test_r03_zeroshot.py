@@ -7,7 +7,7 @@ import urllib.error
 
 import pytest
 
-import fixtures as F
+import r03_fixtures as F
 from ml.civic_classifier_v2 import data as D
 from ml.civic_classifier_v2 import labels as L
 from ml.civic_classifier_v2 import zeroshot as Z

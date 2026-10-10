@@ -29,10 +29,20 @@ R01 (интегратор)
    namespace-пакет, как у ml/labeling R02).
 6. Тесты для общей сборки: python -m pytest tests/civic/R03/round14 -q
    Без torch/transformers/onnx тесты пайплайна помечаются skipped (NOT_RUN), ядро (данные, метрики, словарь) идёт всегда.
+   По просьбе R01 (INTEGRATION §9, B2): маркеры вынесены в tests/civic/R03/round14/r03_markers.py, фикстуры —
+   в r03_fixtures.py; `from conftest import …` больше нет. Проверено: `pytest tests/civic/R03/round14 tests/civic/R09`
+   и `pytest tests/civic/R06 tests/civic/R03/round14 tests/civic/R09` собираются без ImportError.
+7. Старые tests/civic/R03/*.mjs (карта раунда 13, прежняя роль R03) не трогаю: решение — у владельца
+   (вопрос в STATUS.md R03). R01 уже запускает копию R12.
 
 ──────────────────────────────────────────────────────────────────────────────
 R04 (ML-API: POST /api/civic/v2/classify)
 ──────────────────────────────────────────────────────────────────────────────
+Словарь (запасной уровень цепочки R04 «kw»): heuristic.STEMS / keyword_hits() / heuristic_label() по умолчанию —
+версия "product" = замороженная v1 + PRODUCT_ADDITIONS. В ней исправлен B-004 (R10): «машины стоят на газоне во
+дворе», «двор заставлен машинами», «көліктер көгалға тұрып алды» → parking. Код R04 менять не нужно: проверено на
+claude/r14-R04 @ 94bd9ac с этим словарём — tests/civic/R04/round14 74 passed, 1 skipped; classify_chain → parking
+(source kw, suggest true). Эксперимент диплома считает по v1 (version="v1"), его числа не меняются.
 Код:
     from ml.civic_classifier_v2.predict import ModelUnavailable, get_default
     try:
