@@ -1,7 +1,22 @@
-R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14, поставка 7 (ночь 8, для FINAL)
+R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14, поставка 7 (ночь 9, для FINAL)
 3D-превью предложений: акимат ставит объект на карту, он «строится», жители голосуют
 
-Источник: ветка claude/r14-R05. Код — code_sha из DELIVERY.json (b38654a), проверен на нём же.
+Источник: ветка claude/r14-R05. Код — code_sha из DELIVERY.json (a331db0), проверен на нём же.
+
+НОЧЬ 9 — что нового (код a331db0):
+- R01 (FINAL 1dd5b53: R05 05f8e52, патч легенды уже у вас — спасибо): заменить web/civic/build3d на a331db0 и применить
+  research/round-14-results/R05/proposed_r01_final2.patch (git apply --check на 1dd5b53: OK) — 5 строк:
+    shell.js  — onSelect в mount R05: на телефоне у акимата выбор проекта опускает шторку (как ваша кнопка каталога);
+    birge.css — на телефоне легенда R07 скрыта, пока открыта карточка проекта 3D (она закрывала бы объект).
+  Почему: 375, акимат, шторка «half», нажатие на проект — карточка R06 (391 px) росла вверх, закрывала шапку («Мәзір»,
+  ҚАЗ/РУС) и сам объект (screens/phone_akimat_half_card_375_kk_before.png). R05 a331db0 сам не заходит на шапку
+  (высота панели — до нижнего края верхних полос из avoid, прокрутка внутри); с патчем — карточка целиком, объект над ней.
+  Проверено на 1dd5b53 + a331db0 + патч 2: ваш r14_shell 38/38, r14_b2 26/26, мой smoke 17/17
+  (runs/r01_final_1dd5b53_with_patch2.txt).
+- R10 B-033 («улица по-русски в kk-карточке») — в вашем ACCEPTANCE_FINAL перенесён с ef1ef44; в R01 1dd5b53 КАК ЕСТЬ:
+  «Жанында: Керей және Жәнібек хандар көшесі» 1366/375 (runs/final_kk_street.json, screens/final_kk_street_*_kk.png;
+  проверка tests/civic/R05/build3d/final_kk_street_check.mjs). Можно закрыть.
+- R11: строки R05 = ваш словарь 1958634 (i18n_sync_check: 0 расхождений из 244).
 
 НОЧЬ 8 (поставка 7) — что нового с поставки 6 (38cfc4a); код 05f8e52 → b38654a:
 - R11: все 47 ключей R05 уже в вашем словаре (61cfea6). Запасные строки модуля приведены к нему: kk build3d.cluster.open
@@ -86,12 +101,10 @@ web/civic/build3d/demo.html и data/demo-basemap.json — только для д
     tests/civic/R01/browser/r14_b2.cjs — ожидания под поставку 2: у жителя dock "hint" или "empty" (не только "empty");
       «За» — в карточке R06 (.r06-vote__btn[data-value="1"]) или в своей ([data-action=vote-up]); «Поставить» ждёт
       успешный POST (с R06 7031afa первый POST с контекстом 3D получает 422, R05 повторяет базовым телом).
-1.2б FINAL R01 4ca9aef (R05 f946157): заменить web/civic/build3d/ на b38654a (поставка 7) и применить
-    research/round-14-results/R05/proposed_r01_final.patch — одна строка birge.css (легенда R07 скрыта, пока открыта
-    карточка 3D; R11 ночь B3 п. 9). git apply --check на 4ca9aef: OK (и на 0a7a346, ef1ef44). Проверено на 4ca9aef + b38654a +
-    патч: ваш r14_shell.cjs 38/38, r14_b2.cjs 25/25, мой app_b2_smoke 16/16 (runs/r01_final_4ca9aef_with_patch.txt).
-    Что добавится к f946157: регистр kk-названий улиц (38cfc4a), без console.error при перезагрузке (I-05), строки = словарь R11, легенда (патч).
-    Раньше: ef1ef44 + a9d256d — 25/25 и 15/15, B-033 kk-карточка (runs/final_b033_kk.json); закрыты R10 B-007, B-008, B-033.
+1.2б FINAL R01 1dd5b53 (R05 05f8e52, proposed_r01_final.patch уже внутри): заменить web/civic/build3d/ на a331db0 и применить
+    research/round-14-results/R05/proposed_r01_final2.patch (см. «НОЧЬ 9» выше). git apply --check на 1dd5b53: OK.
+    Проверено на 1dd5b53 + a331db0 + патч 2: r14_shell 38/38, r14_b2 26/26, app_b2_smoke 17/17, B-033 4/4.
+    Раньше: 4ca9aef + b38654a + патч легенды — 38/38, 25/25, 16/16; ef1ef44 + a9d256d — 25/25, 15/15 (B-007, B-008, B-033).
 1.2а На голове R01 2b9e837 и 13ae790 (B3 + ночь 1; файлы оболочки одинаковые) — patch
     research/round-14-results/R05/proposed_r01_b3.patch (git apply --check на обеих: OK):
     shell.js — убрать остаток адаптера build3dFetch (DELETE→withdraw и device_id R05 делает сам), mount({mode, api:

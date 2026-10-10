@@ -2,13 +2,13 @@
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
  "delivery": 7,
- "for_build": "FINAL (R01 claude/sharp-dijkstra-0t87gl @ 4ca9aef содержит R05 f946157)",
+ "for_build": "FINAL (R01 claude/sharp-dijkstra-0t87gl @ 1dd5b53 содержит R05 05f8e52 и патч легенды)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "b38654a",
- "tested_sha": "b38654a",
- "tested_note": "На b38654a полностью (ui-kit/i18n R11 @ 61cfea6): browser_check 42 PASS / 1 NOT_RUN (GPU), R11 день 3 29/29, Node 32/32, Python 12/12, строки = словарь R11 (i18n_sync_check 244 сравнения, 0 расхождений); внутри R01 FINAL 4ca9aef + proposed_r01_final.patch: r14_shell.cjs R01 38/38 (и 3 из 3 на 05f8e52), r14_b2.cjs R01 25/25, app_b2_smoke 16/16. Стенды R06 (18/18, 16/16, 17/17), R11 measure (24/24) и R12 (5/5) — последний прогон на a9d256d; с тех пор в web/ — строки names_kk (38cfc4a), запись ошибок в консоль (05f8e52) и 3 запасные строки (b38654a): клиент API и вид экранов не менялись.",
+ "code_sha": "a331db0",
+ "tested_sha": "a331db0",
+ "tested_note": "На a331db0 (ui-kit/i18n R11 @ 61cfea6, словарь сверен и с 1958634): browser_check 43 PASS / 1 NOT_RUN (GPU), R11 день 3 29/29, Node 32/32, Python 12/12, i18n_sync 0 расхождений; внутри R01 FINAL 1dd5b53 + proposed_r01_final2.patch: B-033 kk-строка улицы 4/4, app_b2_smoke 17/17, r14_b2.cjs R01 26/26, r14_shell.cjs R01 38/38 (runs/r01_final_1dd5b53_with_patch2.txt). Стенды R06/R12 и measure R11 — на a9d256d; клиент API с тех пор не менялся.",
  "previous_delivery": {
   "code_sha": "38cfc4a",
   "delivery_commit": "7c6bbce",
@@ -66,7 +66,7 @@
  ],
  "owned_paths_only": true,
  "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, ветки R01/R06/R11/R12 — изменения оболочки R01 только патчем research/round-14-results/R05/proposed_r01_b3.patch (к 2b9e837) и proposed_r01_b2.patch (к f54361d), git apply --check: OK",
- "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3, Chromium 141.0.7390.37 headless, WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2, SwiftShader без GPU; ui-kit/i18n R11 @ 61cfea6 (--kit)",
+ "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3, Chromium 141.0.7390.37 headless, WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2, SwiftShader без GPU; ui-kit/i18n R11 @ 1958634 (--kit)",
  "ux_review_r11_day3": {
   "source": "claude/r14-R11 @ 52d7c59, research/round-14-results/R11/UX_REVIEW.md, «День 3», пп. 20–26 (и «День 4» — пунктов для R05 нет, кроме правок kk)",
   "table": "research/round-14-results/R05/UX_REVIEW_DAY3.md",
@@ -173,7 +173,7 @@
   },
   "browser_check": {
    "status": "PASS",
-   "detail": "42 PASS, 0 FAIL, 1 NOT_RUN — runs/browser_check.json (ui-kit/i18n R11 @ 61cfea6), прогон на b38654a"
+   "detail": "43 PASS, 0 FAIL, 1 NOT_RUN — runs/browser_check.json (ui-kit/i18n R11 @ 1958634), прогон на a331db0"
   },
   "browser_checks": {
    "load_auto_falls_back_to_local_store": "PASS",
@@ -214,6 +214,7 @@
    "kk_no_russian_street_names_in_card_and_hint": "PASS",
    "rate_limit_429_says_too_many_without_retry_ru_kk": "PASS",
    "reload_during_list_request_logs_no_console_error": "PASS",
+   "card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk": "PASS",
    "r01_map_getter_waits_for_map": "PASS",
    "lighting_outside_nura_without_r12_says_so": "PASS",
    "screenshots_1366_375_pitch_0_60_ru_kk": "PASS",
@@ -282,7 +283,7 @@
   },
   "i18n_sync_r11": {
    "status": "PASS",
-   "detail": "47 ключей build3d + 28 общих запасных = словарь R11 @ 61cfea6, 244 сравнения, 0 расхождений — runs/i18n_sync_r11.json (на R11 8451468 видит 8 расхождений)"
+   "detail": "47 ключей build3d + 28 общих запасных = словарь R11 @ 1958634, 244 сравнения, 0 расхождений — runs/i18n_sync_r11.json"
   }
  },
  "screenshots": {
@@ -370,7 +371,7 @@
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: в FINAL 4ca9aef заменить web/civic/build3d на b38654a и применить proposed_r01_final.patch (INTEGRATION §1.2б); R06: заголовок нового проекта из near_street (R11 ночь 7 п. 3); LOCAL: LOCAL-R05-1/2/3.",
+ "next_step": "R01: в FINAL 1dd5b53 заменить web/civic/build3d на a331db0 и применить proposed_r01_final2.patch (INTEGRATION §1.2б); R10: B-033 закрыть (проверено на 1dd5b53 как есть, runs/final_kk_street.json); LOCAL: LOCAL-R05-1/2/3.",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -455,17 +456,18 @@
   "r01_patch_for_head": "research/round-14-results/R05/proposed_r01_b3.patch (к 2b9e837 и 13ae790; git apply --check OK)"
  },
  "final_candidate": {
-  "r01": "claude/sharp-dijkstra-0t87gl @ 4ca9aef (FINAL night 3a: R05 f946157)",
-  "take": "web/civic/build3d/ из b38654a + research/round-14-results/R05/proposed_r01_final.patch (одна строка birge.css: легенда R07 скрыта под карточкой 3D; git apply --check на 4ca9aef: OK)",
+  "r01": "claude/sharp-dijkstra-0t87gl @ 1dd5b53 (FINAL night 5a: R05 05f8e52; proposed_r01_final.patch уже внутри)",
+  "take": "web/civic/build3d/ из a331db0 + research/round-14-results/R05/proposed_r01_final2.patch (shell.js: на телефоне у акимата карточка проекта опускает шторку; birge.css: легенда R07 скрыта под карточкой 3D на телефоне; git apply --check на 1dd5b53: OK)",
   "closes_in_final": [
-   "R01 I-05 (console.error при перезагрузке)",
-   "регистр kk-названий улиц (R11 ночь 7 п. 2)",
-   "R11 ночь B3 п. 9 (легенда под карточкой)"
+   "телефон, акимат, шторка half: карточка проекта закрывала шапку и сам объект (ночь 9)",
+   "строки модуля = словарь R11"
   ],
   "checked": {
-   "r01_r14_shell": "38/38 PASS, сообщений build3d в консоли 0 (на 05f8e52 — 3 прогона из 3) — runs/r01_final_4ca9aef_with_patch.txt",
-   "r01_r14_b2": "25/25 PASS — runs/r01_final_4ca9aef_with_patch.txt",
-   "r05_shell_smoke": "16/16 PASS (в т. ч. перезагрузка во время запроса списка, 1366 ru и 375 kk) — runs/app_b2_smoke.json"
+   "r01_r14_shell": "38/38",
+   "r01_r14_b2": "26/26",
+   "r05_shell_smoke": "17/17",
+   "r10_b033_kk_card": "4/4 — runs/final_kk_street.json",
+   "log": "runs/r01_final_1dd5b53_with_patch2.txt"
   }
  },
  "night_4": {
@@ -519,5 +521,33 @@
    }
   },
   "code": "05f8e52 (I-05) → b38654a (строки = словарь R11, тест кластера)"
+ },
+ "night_9": {
+  "sources_checked": "R10 1664193 (B-033 ещё «открыт (ef1ef44)» — перенос, не перепроверка), R11 1958634 (замечаний к R05 нет), R15 066fd02, R06 18af65b (заметка R05: улица вне Нуры), R01 1dd5b53 (взял R05 05f8e52 и патч легенды)",
+  "B033_evidence": {
+   "status": "FIXED в сборке",
+   "detail": "R01 1dd5b53 как есть: «Жанында: Керей және Жәнібек хандар көшесі» 1366/375, ru «Рядом: улица Керей и Жанибек хандар»",
+   "check": "final_kk_street_check.mjs (новый)",
+   "screens": [
+    "screens/final_kk_street_1366_kk.png",
+    "screens/final_kk_street_375_kk.png",
+    "screens/final_kk_street_1366_ru.png",
+    "screens/final_kk_street_375_ru.png"
+   ]
+  },
+  "fixed": {
+   "phone_card_over_header": {
+    "status": "FIXED",
+    "detail": "375, акимат, шторка half: карточка R06 (391 px) росла вверх над шапкой (Мәзір, ҚАЗ/РУС) и закрывала объект. R05 a331db0: панель не выше нижнего края верхних полос хозяина (opts.avoid), прокрутка внутри, пересчёт при смене шторки; патч R01 2: шторка опускается при выборе проекта, легенда R07 скрыта",
+    "check": "browser_check card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk (FAIL на старом коде); app_b2_smoke phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
+    "screens": [
+     "screens/phone_akimat_half_card_375_kk_before.png",
+     "screens/phone_akimat_half_card_375_kk.png",
+     "screens/phone_akimat_half_card_375_ru.png",
+     "screens/fit_header_375_kk_half.png",
+     "screens/fit_header_375_kk_peek.png"
+    ]
+   }
+  }
  }
 }

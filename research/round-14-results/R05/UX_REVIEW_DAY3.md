@@ -60,3 +60,10 @@
 | Замечание | Что сделано | Проверка (PASS) | Скриншоты |
 |---|---|---|---|
 | R01 I-05: «[build3d] предложения не загрузились TypeError: Failed to fetch» в консоли, когда перезагрузка обрывает запрос списка | По `pagehide` модуль помечен «уходит»: оборванные запросы списка и сохранения не пишутся в консоль, тоста нет. Настоящий обрыв связи без ухода — тост «Повторить» и `console.warn`, а не `console.error` | `browser_check`: `reload_during_list_request_logs_no_console_error` (1366/375 × ru/kk; до правки FAIL — воспроизводит I-05 каждый раз); `app_b2_smoke` п. 9 внутри R01 4ca9aef; `r14_shell.cjs` R01 3 из 3 без сообщений build3d | `net_toast_{1366,375}_{ru,kk}.png` (тост при настоящем обрыве) |
+
+## Ночь 9 · самопроверка в сборке R01 1dd5b53, R10 B-033
+
+| Замечание | Что сделано | Проверка (PASS) | Скриншоты |
+|---|---|---|---|
+| Самопроверка (UX_BRIEF: шапка всегда доступна, объект не под карточкой): 375, акимат, шторка «half» — карточка проекта (391 px) закрывала шапку оболочки и сам объект | R05: высота панели — до нижнего края верхних полос хозяина (`avoid`), прокрутка внутри, пересчёт при смене шторки. Патч R01 2: выбор проекта на телефоне у акимата опускает шторку; легенда R07 скрыта под карточкой | `browser_check`: `card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk` (на старом коде FAIL); `app_b2_smoke`: `phone_akimat_card_with_half_sheet_does_not_cover_shell_header` (kk, ru) | `phone_akimat_half_card_375_{kk,ru}_before.png` → `phone_akimat_half_card_375_{kk,ru}.png`; `fit_header_375_{ru,kk}_{half,peek}.png` |
+| R10 B-033 (в ACCEPTANCE_FINAL перенесён с ef1ef44) | Уже исправлено в R05 f946157/38cfc4a; проверено в R01 1dd5b53 как есть | `final_kk_street_check.mjs`: 1366/375 × kk/ru 4/4 | `final_kk_street_{1366,375}_{kk,ru}.png` |
