@@ -4,15 +4,15 @@
  "branch": "claude/r14-R08",
  "base_sha": "2131c15 (claude/round-14-package)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "6159e32",
- "tested_sha": "6159e32",
+ "code_sha": "828ee0d",
+ "tested_sha": "828ee0d",
  "tested_with": {
-  "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 35e6feb (код 306074b: records()/generation, 5-недельный демо-поток, metoo_times) — временная копия, в git R08 не входит",
+  "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 328e793 (код 597ec4f) — временная копия, в git R08 не входит; также проверено с 35e6feb",
   "r11_ui_kit_i18n": "web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 8451468 — demo_server.py --kit-dir",
-  "r06_store": "claude/round-14-r06 @ 6b9da27 (код b42e790) — отдельная рабочая копия, init + seed-r14-demo, demo_server --r06-db",
+  "r06_store": "claude/round-14-r06 @ 224075b (код 681a4ef) и 6b9da27 — рабочие копии, init + seed-r14-demo",
   "environment": "облачная сессия Claude Code, Linux, Python 3.13.16, Node 22.22.0, Playwright 1.56.1 + Chromium 1194",
   "date": "2026-10-10 (ночь)",
-  "r01_build": "claude/r14-R01 @ d9a8895 — рабочая копия + R08 этой поставки + R07 35e6feb (+ patch r07_registry_labels.patch), CIVIC_DEMO=1, база init + seed-demo + seed-r14-demo"
+  "r01_build": "claude/r14-R01 @ d9a8895 — рабочая копия + R08 этой поставки + R07 597ec4f, CIVIC_DEMO=1, база init + seed-demo + seed-r14-demo"
  },
  "push_status": "OK — claude/r14-R08; DELIVERY и STATUS отдельным коммитом поверх code_sha",
  "changed_paths": [
@@ -42,7 +42,6 @@
  ],
  "api": "GET /api/civic/v2/akim/summary?date=YYYY-MM-DD&district=<id|all> → ui.civic_akim.api.handle_get (подключает R01)",
  "tests": {
-  "pytest tests/civic/R08 (с R07 35e6feb)": "132 PASS + 1 SKIP (test_r08_hot_labels — нет данных R12 в ветке R08; в сборке R01: без patch FAIL, с patch PASS)",
   "pytest tests/civic/R08 без ui/civic_heat": "117 PASS + 3 SKIP с причиной",
   "pytest tests/civic/R08 в рабочей копии R06 6b9da27": "129 PASS",
   "test_r08_heat_match.py": "без assert при сборе (R15: «ошибка сбора, assert 0 >= 3» на 5-недельном наборе R07); новые проверки: «неделю назад» не пустое, снимок отбрасывает «Я тоже», нажатые позже",
@@ -52,7 +51,9 @@
   "map_link_target_opening": "PASS (shell_check): оболочка R01 ловит birge:open-target, focusTarget R07 открывает карточку",
   "test_r08_cli.py": "3 PASS — python -m ui.civic_akim --lang kk и --json не падают при PYTHONIOENCODING=cp1251 (как R10 B-028), JSON верный, казахские буквы не теряются",
   "node tests/civic/R08/shell_check.cjs (сборка R01 d9a8895)": "28/28 PASS — экран в оболочке 1366/375 × ru/kk, ҚАЗ без русских названий, клик «горячее место → карточка цели» с тем же числом и 7 днями, печать из оболочки — только «Картина дня» на 2 листа A4 (screens/shell/shell-print.pdf)",
-  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 35e6feb)": "101/101 PASS — прежние 97 + печать (метки ставятся перед печатью и снимаются после) + тихое обновление (новые числа без скелетона, фокус на месте, нет связи — числа остаются)"
+  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 597ec4f)": "102/102 PASS — 1366/375 × ru/kk, состояния, клавиатура, печать, тихое обновление, B-018, пустой реестр объектов",
+  "pytest tests/civic/R08 (с R07 597ec4f)": "132 PASS + 1 SKIP (test_r08_hot_labels — нет данных R12 в ветке R08; в сборке R01: с R07 597ec4f PASS, с R07 306074b FAIL)",
+  "pytest tests/civic/R08 в сборке R01": "161 PASS + 1 SKIP за 107 с — 98 с из них старый тест классификатора v1 раунда 13 test_r08_train.py (восстановлен R01 в эту папку, не «Картина дня»)"
  },
  "known_limits": [
   "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
@@ -62,10 +63,10 @@
   "Формат поля даты (10/10/2026 или 10.10.2026) задаёт браузер по языку системы.",
   "У настоящих объектов R06 без казахского названия в ҚАЗ показывается вид объекта («Жол жөндеу»), а не название — точнее назвать нельзя без перевода данных.",
   "Ветка R08 одна, без словаря R11 покажет ключи вместо текста — стенд предупреждает; в сборке словарь R11.",
-  "В сборке R01 без patch r07_registry_labels.patch подписи горячих мест общие («Двор или квартал», «Нысан») — данные R12 стирают подписи R07 (INTEGRATION 4б)."
+  "В папке tests/civic/R08 сборки R01 лежат тесты классификатора v1 раунда 13 (test_r08_train/corpus/contract/reports/feedback_integration) — не мои, R08 их не трогает (INTEGRATION п. 8)."
  ],
- "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 35e6feb + patch research/round-14-results/R08/patches/r07_registry_labels.patch (или R07 возьмёт его к себе), R06 @ 6b9da27, R11 @ последний; прогнать pytest tests/civic/R08 и shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, п. 13 R11 на FINAL.",
- "delivery": "3 (ночь, круги 1–3): R15 ошибка сбора, B-018, п. 13 R11, консоль CP1251, проверка в сборке R01, patch подписей R07, печать из оболочки, тихое обновление",
+ "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 328e793 (код 597ec4f: правдоподобные числа и подписи мест), R06 @ 224075b, R11 @ последний; прогнать pytest tests/civic/R08 и node tests/civic/R08/shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, B-029 и п. 13 R11 на FINAL.",
+ "delivery": "3 (ночь, круги 1–4): R15/R01 I-02 ошибка сбора, B-018, п. 13 R11, консоль CP1251, проверка в сборке R01, печать из оболочки, тихое обновление, пустой реестр объектов",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -100,11 +101,15 @@
   "night_r2": {
    "R10 B-028 (по аналогии): казахский вывод в консоли CP1251": "R08 CLI исправлен 23702ad, test_r08_cli.py",
    "Проверка R08 в сборке R01 (раньше NOT_RUN)": "PASS 26/26 (shell_check.cjs)",
-   "Новая находка: общие подписи горячих мест в сборке": "patch для R07 + тест (INTEGRATION 4б) — ОТКРЫТО до применения R01/R07"
+   "Новая находка: общие подписи горячих мест в сборке": "ЗАКРЫТО у R07 597ec4f (R01 I-01, R10 B-029); patch R08 удалён, тест-сторож test_r08_hot_labels.py PASS"
   },
   "night_r3": {
    "Своя находка: печать из оболочки R01 обрезала экран и печатала шапку с картой": "исправлено — akim.js помечает свою ветку DOM перед печатью, akim.css прячет остальное (shell_check: 2 листа A4)",
    "Своя находка: «Данные на …» устаревали, пока аким смотрит экран": "тихое обновление раз в 2 мин и при возврате на вкладку (opts.refreshMs, 0 — выкл.)"
+  },
+  "night_r4": {
+   "R01 BUGS I-02: test_r08_heat_match падает при сборе": "исправлено ещё в 463901f (круг 1); в сборке с R07 597ec4f — PASS",
+   "Своя находка: пустой реестр объектов района → «Все объекты идут по графику»": "теперь «Пока пусто» (828ee0d), ui_check"
   }
  }
 }

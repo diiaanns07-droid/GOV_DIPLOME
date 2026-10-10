@@ -125,6 +125,15 @@ R08 · «Картина дня» для акима — как подключит
   раньше many (так и сказано в комментарии там). До правки akim.js обходит это сам (ratioText), проверка
   ui_check «в N,N раза больше» — PASS.
 
+7а. R01 · старые тесты в tests/civic/R08 (ночь 10 окт) — к сведению
+------------------------------------------------------------------
+  В сборке в tests/civic/R08 рядом с тестами «Картины дня» лежат тесты классификатора v1 раунда 13
+  (test_r08_train.py, test_r08_corpus.py, test_r08_contract.py, test_r08_reports.py, test_r08_feedback_integration.py),
+  восстановленные R01 (checkpoint 0121238). Это не код R08 раунда 14; R08 их не меняет и не удаляет.
+  test_r08_train.py идёт 98 с из 107 с всей папки. Если мешает — R01 может перенести их в папку R03/R04 (v1)
+  или пометить медленными; тесты «Картины дня»: r08_helpers.py и test_r08_{api,cli,demo_plausible,heat_match,
+  hot_labels,r06_sources,summary,text}.py, ui_check.cjs, shell_check.cjs, demo_server.py.
+
 8. R10 · приёмка
 ----------------
   pytest tests/civic/R08 (126 + 1 XFAIL; test_r08_heat_match.py и test_r08_demo_plausible.py нужен ui/civic_heat)
