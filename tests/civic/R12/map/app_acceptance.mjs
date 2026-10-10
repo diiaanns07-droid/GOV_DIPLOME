@@ -99,7 +99,7 @@ try {
   await page.waitForSelector(fk("new"), { timeout: 10000 });
   await page.click(fk("new"));
   await page.fill(fk("title"), "Проверка R03: рисование поверх публичных объектов (синтетика)");
-  await page.click(fk("tool-line"));
+  await page.click(fk("tool-segment"));  // R12: линии только по улице
   await sleep(300);
   const obj = await visibleObject(page);
   if (!obj) notRun("editor drawing over a public object", "no public object visible outside the panels at 1440x900");
@@ -112,7 +112,7 @@ try {
     await sleep(500);
     const during = await view(page);
     await page.screenshot({ path: path.join(OUT, "r13-app-1440-editor-drawing.png") });
-    check("while the editor draws: a click on a public object adds a vertex, does not open its card or change #object=",
+    check("while the editor draws: a click on a public object goes to the street tool, does not open its card or change #object=",
       during.view === before.view && during.hash === before.hash && !/object=/.test(during.hash), { before, during });
     check("while the editor draws: the crosshair stays (no public hover cursor/tooltip)", hover.cursor === "crosshair" && !(await page.$(".civic-r03-tip")), hover);
     await page.evaluate(() => document.activeElement?.blur());

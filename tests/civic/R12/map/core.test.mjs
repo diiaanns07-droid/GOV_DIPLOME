@@ -398,3 +398,14 @@ test("r12: approximate point -> 120 m area plus its marker; exact point -> marke
   assert.equal(C.placeText(items[0]), "Примерное место — показано областью");
   assert.equal(C.placeText(items[1]), null);
 });
+
+test("r12: new strings go through BirgeI18n keys when the dictionary has them, Russian text otherwise", () => {
+  const it = { snap: { display: "street_line", street: "улица Сакена Сейфуллина" }, precision: "approximate", geometry: { type: "LineString", coordinates: [[71.4, 51.1], [71.41, 51.1]] } };
+  assert.equal(C.placeText(it), "Участок улицы по карте OSM: улица Сакена Сейфуллина");
+  const prev = globalThis.self;
+  globalThis.self = { BirgeI18n: { has: (k) => k === "geo.place.street_line", t: (k, p) => "OSM картасы бойынша көше учаскесі: " + p.street } };
+  try {
+    assert.equal(C.placeText(it), "OSM картасы бойынша көше учаскесі: улица Сакена Сейфуллина");
+    assert.equal(C.tr("geo.badge.street", "По улице"), "По улице", "нет ключа — русский текст, не сам ключ");
+  } finally { if (prev === undefined) delete globalThis.self; else globalThis.self = prev; }
+});

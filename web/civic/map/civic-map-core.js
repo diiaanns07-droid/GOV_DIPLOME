@@ -629,6 +629,14 @@
     });
   }
 
+  // R11 i18n (раунд 14): новые строки R12 идут через ключи BirgeI18n, если словарь подключён и ключ в нём есть
+  // (ключи и черновик kk — research/round-14-results/R12/INTEGRATION.txt §7); иначе — русский текст как раньше.
+  function tr(key, ru, params) {
+    const B = typeof self !== "undefined" ? self.BirgeI18n : null;
+    if (B && typeof B.t === "function" && typeof B.has === "function" && (B.has(key) || B.has(key, "ru"))) return B.t(key, params);
+    return params ? String(ru).replace(/\{(\w+)\}/g, (w, n) => (params[n] == null ? w : String(params[n]))) : ru;
+  }
+
   // ---------- R12: точность карты (линии по улицам OSM, «примерное место» областью) ----------
   const APPROX_RADIUS_M = 120;   // радиус области «примерное место» вокруг примерной точки
   const M_PER_DEG = Math.PI / 180 * 6371008.8;
@@ -690,9 +698,10 @@
     return "exact";
   }
   function placeText(it) {
-    if (it.snap && it.snap.display === "street_line") return "Участок улицы по карте OSM" + (it.snap.street ? ": " + it.snap.street : "");
-    if (it.snap && it.snap.display === "yard") return "Двор по карте OSM";
-    if (displayMode(it) === "approx") return "Примерное место — показано областью";
+    if (it.snap && it.snap.display === "street_line") return it.snap.street
+      ? tr("geo.place.street_line", "Участок улицы по карте OSM: {street}", { street: it.snap.street }) : tr("geo.place.street_line_noname", "Участок улицы по карте OSM");
+    if (it.snap && it.snap.display === "yard") return tr("geo.place.yard", "Двор по карте OSM");
+    if (displayMode(it) === "approx") return tr("geo.place.approx", "Примерное место — показано областью");
     return null;
   }
 
@@ -796,6 +805,6 @@
     plannedInterval, matchPeriod, scheduleShift, staleness, plural, daysText, normalizeHistory, fieldLabel,
     shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters, EVIDENCE_FILTERS, evidenceGroup, pastPlan,
     applyFilters, sortItems, featureCollection, createSequence, unwrap, errorInfo, contrast,
-    APPROX_RADIUS_M, circlePolygon, approxArea, applySnapped, displayMode, placeText, haversineM,
+    APPROX_RADIUS_M, circlePolygon, approxArea, applySnapped, displayMode, placeText, haversineM, tr,
   };
 });

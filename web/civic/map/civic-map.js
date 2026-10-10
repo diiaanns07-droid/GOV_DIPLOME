@@ -774,7 +774,7 @@
       if (shift) meta.push(shift.days > 0 ? "срок перенесён" : "срок сдвинут раньше");
       const badges = [...evidenceBadges(it),
         stale ? badge(stale.kind === "old_start_no_end" ? "Старый план без срока" : "Срок по плану прошёл", "b-warn") : null,
-        !it.geometry ? badge("Нет на карте", "b-muted", it.geoIssue ? it.issues.find((x) => /координат|геометр/.test(x)) : "Координаты не указаны") : it.snap ? badge(it.snap.display === "yard" ? "Двор по карте" : "По улице", "b-muted", C.placeText(it)) : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
+        !it.geometry ? badge("Нет на карте", "b-muted", it.geoIssue ? it.issues.find((x) => /координат|геометр/.test(x)) : "Координаты не указаны") : it.snap ? badge(it.snap.display === "yard" ? C.tr("geo.badge.yard", "Двор по карте") : C.tr("geo.badge.street", "По улице"), "b-muted", C.placeText(it)) : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
         missing === "end" ? badge("Окончание неизвестно", "b-muted", "Плановая дата окончания не указана") : missing === "start" ? badge("Начало неизвестно", "b-muted", "Плановая дата начала не указана") : null].filter(Boolean);
       const btn = h("button", { type: "button", class: P + "item", "data-r03-action": "select", "data-id": it.id, "aria-current": st.selectedId === it.id ? "true" : null, style: { "--civic-r03-k": k.color } },
         h("span", { class: P + "item-kind" }, h("i", { class: P + "dot " + P + "st-" + it.status, "aria-hidden": "true" }), k.label),
