@@ -1,4 +1,4 @@
-// R06 раунд 14 · R10 B-006: страница и карточки R06, если не загрузились ui-kit.js и/или i18n.js.
+// R06 раунд 14 · R10 B-006: страница и карточки R06, если не загрузились ui-kit.js и/или i18n.js; медленная сеть.
 //
 //   python3 tests/civic/R06/round14/serve_r14.py --port 8616 --kit-dir <R11> > stand.json &
 //   NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/browser_nokit.cjs stand.json [папка-скриншотов]
@@ -76,6 +76,23 @@ async function open(browser, width, block) {
     check(width + ": ошибка без ui-kit — текст и рабочая «Повторить»", /Не получилось загрузить/.test(n.error) && /Повторить/.test(n.error) && n.retried === 1,
           n.error + " retried=" + n.retried);
     await b.page.close();
+
+    // 3. Медленная сеть (ui-kit на месте): пока API отвечает, в блоках видна загрузка, а не пустота (UX_BRIEF, правило 7).
+    const c = await browser.newPage({ viewport: { width, height: width < 600 ? 812 : 768 } });
+    const cErrors = [];
+    c.on("pageerror", (e) => cErrors.push(String(e)));
+    await c.route(/\/api\/civic\/v2\/(proposals|objects)(\?|$)/, async (route) => { await new Promise((r) => setTimeout(r, 1500)); return route.continue(); });
+    await c.goto(stand.url, { waitUntil: "domcontentloaded" });
+    await c.waitForTimeout(500);
+    const loading = await c.evaluate(() => ["proposals", "objects"].map((id) => {
+      const box = document.getElementById(id);
+      const st = box.querySelector("[role=status], [aria-busy=true], .bk-skeleton");
+      return st ? (st.textContent || "").trim() || "skeleton" : "";
+    }));
+    check(width + ": медленная сеть — в обоих блоках загрузка", loading.every(Boolean), JSON.stringify(loading));
+    await c.waitForSelector(".r06-card[data-proposal]", { timeout: 10000 });
+    check(width + ": медленная сеть — после ответа карточки на месте, без ошибок", cErrors.length === 0, cErrors.join(" | "));
+    await c.close();
   }
   await browser.close();
   const failed = results.filter((r) => !r.ok).length;

@@ -66,6 +66,50 @@ async function layoutChecks(page, label, warnings) {
       titles: Array.from(document.querySelectorAll(".r06-card[data-proposal] .bk-card__title")).map((e) => e.textContent),
       objectTitles: Array.from(document.querySelectorAll(".r06-card[data-object] .bk-card__title")).map((e) => e.getAttribute("lang") + ":" + e.textContent),
       htmlLang: document.documentElement.lang,
+      // UX_BRIEF «Восемь правил» и чек-лист: технические слова, кегль ≥ 14 px, контраст ≥ 4.5:1, анимации ≤ 800 мс.
+      techWords: (text.match(/\b(ребр[оа]|рёбра|граф[а-я]*|геометри[а-я]*|сценари[а-я]*|payload|demo-ring|bbox|device_id|undefined|null|NaN)\b/gi) || []),
+      small: (() => {
+        const out = [];
+        document.querySelectorAll(".r06-card *").forEach((el) => {
+          const own = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
+          if (!own || !el.offsetParent) return;
+          const fs = parseFloat(getComputedStyle(el).fontSize);
+          if (fs < 14) out.push(fs + "px «" + el.textContent.trim().slice(0, 24) + "»");
+        });
+        return out;
+      })(),
+      lowContrast: (() => {
+        const rgb = (c) => (c.match(/[\d.]+/g) || []).map(Number);
+        const lum = ([r, g, b]) => [r, g, b].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); })
+          .reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0);
+        const bgOf = (el) => {
+          for (let e = el; e; e = e.parentElement) {
+            const c = rgb(getComputedStyle(e).backgroundColor);
+            if (c.length >= 3 && (c.length < 4 || c[3] > 0.5)) return c;
+          }
+          return [255, 255, 255];
+        };
+        const out = [];
+        document.querySelectorAll(".r06-card *").forEach((el) => {
+          const own = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
+          if (!own || !el.offsetParent) return;
+          const st = getComputedStyle(el);
+          const a = lum(rgb(st.color)), b = lum(bgOf(el));
+          const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+          const large = parseFloat(st.fontSize) >= 24 || (parseFloat(st.fontSize) >= 18.66 && Number(st.fontWeight) >= 700);
+          if (ratio < (large ? 3 : 4.5)) out.push(ratio.toFixed(2) + " «" + el.textContent.trim().slice(0, 24) + "»");
+        });
+        return out;
+      })(),
+      slowMotion: (() => {
+        const out = [];
+        document.querySelectorAll(".r06-card, .r06-card *").forEach((el) => {
+          const st = getComputedStyle(el);
+          const longest = Math.max(...(st.transitionDuration + "," + st.animationDuration).split(",").map((v) => parseFloat(v) * (v.indexOf("ms") > 0 ? 0.001 : 1) || 0));
+          if (longest > 0.8) out.push(el.className + " " + longest + "s");
+        });
+        return out;
+      })(),
     };
   });
   check(label + ": нет горизонтальной прокрутки", m.scroll <= 0, "scrollWidth−width=" + m.scroll);
@@ -81,6 +125,10 @@ async function layoutChecks(page, label, warnings) {
   if (buildSet) console.log("NOT_RUN " + label + ": «давно не обновлялось» — набор сборки без сдвига часов");
   else check(label + ": «давно не обновлялось» видно", m.stale.length > 0, String(m.stale.length));
   check(label + ": п.15 — в названиях нет «Демо»/«синтетика»", m.techTitles.length === 0, m.techTitles.join(" | "));
+  check(label + ": UX_BRIEF — нет технических слов", m.techWords.length === 0, m.techWords.slice(0, 5).join(", "));
+  check(label + ": UX_BRIEF — текст карточек не мельче 14 px", m.small.length === 0, m.small.slice(0, 4).join(" | "));
+  check(label + ": UX_BRIEF — контраст текста ≥ 4.5:1 (крупный ≥ 3:1)", m.lowContrast.length === 0, m.lowContrast.slice(0, 4).join(" | "));
+  check(label + ": UX_BRIEF — анимации не длиннее 800 мс", m.slowMotion.length === 0, m.slowMotion.slice(0, 3).join(" | "));
   check(label + ": п.17 — «Отстают» только с «Отстаёт на…», «Давно не обновлялись» без него, без повторов",
         m.lateCardsWithoutWarn === 0 && m.staleCardsWithWarn === 0 && (buildSet || m.staleGroup > 0) && m.dup === 0,
         JSON.stringify({ lateNoWarn: m.lateCardsWithoutWarn, staleWarn: m.staleCardsWithWarn, stale: m.staleGroup, dup: m.dup }));
@@ -96,6 +144,22 @@ async function layoutChecks(page, label, warnings) {
     check(label + ": ru-названия объектов (lang=ru)", m.objectTitles.length > 0 && m.objectTitles.every((t) => t.indexOf("ru:") === 0),
           m.objectTitles.join(" | "));
   }
+}
+
+async function tabTo(page, selectorTest, max) {
+  // Нажимает Tab, пока фокус не встанет на нужный элемент; возвращает {steps, ring, text} или null.
+  for (let steps = 1; steps <= (max || 40); steps++) {
+    await page.keyboard.press("Tab");
+    const info = await page.evaluate((test) => {
+      const a = document.activeElement;
+      if (!a || !a.matches(test)) return null;
+      const st = getComputedStyle(a);
+      const ring = (st.outlineStyle !== "none" && parseFloat(st.outlineWidth) > 0) || (st.boxShadow && st.boxShadow !== "none");
+      return { ring: !!ring, text: a.textContent.trim().replace(/\s+/g, " ").slice(0, 40), visible: a.getBoundingClientRect().height >= 44 };
+    }, selectorTest);
+    if (info) return { steps, ...info };
+  }
+  return null;
 }
 
 async function counts(page, id) {
@@ -162,6 +226,22 @@ async function clickVote(page, id, value) {
       await other.context.close();
     }
 
+    // UX_BRIEF чек-лист «Клавиатура»: Tab доходит до кнопки голоса, видна рамка фокуса, Space голосует.
+    for (const lang of ["ru", "kk"]) {
+      const { context, page } = await openPage(browser, { width: 1366, height: 768 }, lang);
+      const got = await tabTo(page, ".r06-vote__btn:not([disabled])", 40);
+      check("клавиатура " + lang + ": Tab до «За/Против», видна рамка фокуса", got && got.ring && got.visible, JSON.stringify(got));
+      if (got) {
+        const id = await page.evaluate(() => document.activeElement.closest("[data-proposal]").getAttribute("data-proposal"));
+        const before = await counts(page, id);
+        await page.keyboard.press("Space");
+        await page.waitForTimeout(400);
+        const after = await counts(page, id);
+        check("клавиатура " + lang + ": Space на кнопке — голос учтён", after.up + after.down === before.up + before.down + 1, JSON.stringify({ before, after }));
+      }
+      await context.close();
+    }
+
     // Акимат (UX_REVIEW R11, день 3, п. 16): голоса — только чтение, одна главная кнопка «Одобрить»; затем «Одобрить».
     async function staffPage(viewport, lang) {
       const opened = await openPage(browser, viewport, lang);
@@ -215,6 +295,14 @@ async function clickVote(page, id, value) {
         }
         await context.close();
       }
+    }
+
+    // Клавиатура у акимата: Tab до главной кнопки «Одобрить», рамка фокуса видна.
+    {
+      const { context, page } = await staffPage({ width: 1366, height: 768 }, "ru");
+      const got = await tabTo(page, '[data-action="approve"]', 60);
+      check("клавиатура акимат: Tab до «Одобрить», видна рамка фокуса", got && got.ring && got.visible, JSON.stringify(got));
+      await context.close();
     }
 
     // UX_REVIEW п. 18: формат даты в поле этапа на ru/kk (Chromium берёт его из языка браузера).
