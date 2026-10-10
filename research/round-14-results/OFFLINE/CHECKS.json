@@ -1,0 +1,170 @@
+{
+  "tested_code_sha": "afbc6ee7e22fdf000364bbdca26d0a60dc6421c6",
+  "base_sha": "13ae79007e592ea45dba69a8ae41e0fc23d1c6c9",
+  "generated_utc": "2026-10-10T18:19:22.508908+00:00",
+  "browser": "Chromium 153.0.8010.12 / Playwright 1.63.0",
+  "transport_tests": 13,
+  "asset_files_verified": 261,
+  "kazakh_glyphs_with_bitmap": 18,
+  "profiles": [
+    {
+      "profile": "1366-ru",
+      "ready_seconds": 1.505,
+      "load_ms": 163.6,
+      "building_parts_rendered": 38,
+      "local_labels_rendered": 28,
+      "screenshots": 13
+    },
+    {
+      "profile": "1366-kk",
+      "ready_seconds": 2.644,
+      "load_ms": 272.8,
+      "building_parts_rendered": 38,
+      "local_labels_rendered": 28,
+      "screenshots": 13
+    },
+    {
+      "profile": "375-ru",
+      "ready_seconds": 2.245,
+      "load_ms": 305.1,
+      "building_parts_rendered": 11,
+      "local_labels_rendered": 10,
+      "screenshots": 13
+    },
+    {
+      "profile": "375-kk",
+      "ready_seconds": 2.623,
+      "load_ms": 254.3,
+      "building_parts_rendered": 11,
+      "local_labels_rendered": 10,
+      "screenshots": 13
+    }
+  ],
+  "r10_counts": {
+    "PASS": 79,
+    "FAIL": 18,
+    "NOT_RUN": 4
+  },
+  "r10_api": {
+    "PASS": 19
+  },
+  "browser_requests": 3625,
+  "external_requests": 0,
+  "failed_or_error_http_requests": 0,
+  "new_projects": 4,
+  "anchor_checks": 12,
+  "anchor_max_error_px": 2.7377329875939224e-08,
+  "heat": {
+    "before_count": 5,
+    "after_count": 17,
+    "before_color": "#EF9F27",
+    "after_color": "#A32D2D",
+    "metoo_statuses": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ]
+  },
+  "screenshots_final": 162,
+  "screenshots_bytes": 12862345,
+  "modes": [
+    {
+      "mode": "automatic-online",
+      "pass": true,
+      "state": {
+        "offline": false,
+        "basemap": {
+          "active": true,
+          "reason": "installed-local-first"
+        },
+        "mapReady": true,
+        "sources": [
+          "protomaps",
+          "districts",
+          "gov-records",
+          "gov-box",
+          "sc-links",
+          "sc-schools",
+          "civic-explore-districts",
+          "civic-r03-objects",
+          "r07-heat",
+          "r07-heat-pts"
+        ],
+        "status": "Загружаем карту Астаны…",
+        "buildings": 48
+      }
+    },
+    {
+      "mode": "automatic-offline",
+      "pass": true,
+      "state": {
+        "offline": true,
+        "basemap": {
+          "active": true,
+          "reason": "forced-or-network-offline"
+        },
+        "mapReady": true,
+        "sources": [
+          "protomaps",
+          "districts",
+          "gov-records",
+          "gov-box",
+          "sc-links",
+          "sc-schools",
+          "civic-explore-districts",
+          "civic-r03-objects",
+          "r07-heat",
+          "r07-heat-pts"
+        ],
+        "status": "Загружаем карту Астаны…",
+        "buildings": 48
+      }
+    },
+    {
+      "mode": "missing-archive",
+      "pass": true,
+      "state": {
+        "offline": true,
+        "basemap": {
+          "active": false,
+          "reason": "archive-missing"
+        },
+        "mapReady": true,
+        "sources": [
+          "offline-city",
+          "offline-nura",
+          "districts",
+          "gov-records",
+          "gov-box",
+          "sc-links",
+          "sc-schools",
+          "civic-explore-districts",
+          "civic-r03-objects",
+          "r07-heat",
+          "r07-heat-pts"
+        ],
+        "status": "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте.",
+        "buildings": 0
+      }
+    }
+  ],
+  "javascript_errors": {
+    "maplibre": 0,
+    "r10": 0,
+    "visual": 0,
+    "extra_r09_mobile": 2,
+    "targeted_r09_reproduction": 2,
+    "stack": "complaint.js:534:52"
+  },
+  "r09_repro_browser_requests": 232,
+  "diagnostic_screenshots": 2
+}

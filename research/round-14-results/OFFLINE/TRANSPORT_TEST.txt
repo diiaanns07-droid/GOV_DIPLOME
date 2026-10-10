@@ -1,0 +1,18 @@
+test_404_no_paths_leaked (__main__.Transport.test_404_no_paths_leaked) ... ok
+test_clamped_end (__main__.Transport.test_clamped_end) ... ok
+test_etag_if_range (__main__.Transport.test_etag_if_range) ... ok
+test_full_archive (__main__.Transport.test_full_archive) ... ok
+test_glyph_allowlist (__main__.Transport.test_glyph_allowlist) ... ok
+test_head_no_body (__main__.Transport.test_head_no_body) ... ok
+test_header_range (__main__.Transport.test_header_range) ... ok
+test_invalid_ranges (__main__.Transport.test_invalid_ranges) ... ok
+test_open_end (__main__.Transport.test_open_end) ... ok
+test_range_head (__main__.Transport.test_range_head) ... ok
+test_status (__main__.Transport.test_status) ... ok
+test_suffix (__main__.Transport.test_suffix) ... ok
+test_unsatisfiable (__main__.Transport.test_unsatisfiable) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.728s
+
+OK

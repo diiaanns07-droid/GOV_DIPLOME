@@ -1,11 +1,11 @@
 {
   "role": "OFFLINE",
   "branch": "claude/r14-offline",
-  "base_sha": "d9a889520048e69aa0d1ae6e167457e9e729a3d8",
+  "base_sha": "13ae79007e592ea45dba69a8ae41e0fc23d1c6c9",
   "restored_from": null,
-  "code_sha": null,
-  "tested_sha": "working tree based on d9a8895",
-  "push_status": "PENDING_CHECKPOINT",
+  "code_sha": "afbc6ee7e22fdf000364bbdca26d0a60dc6421c6",
+  "tested_sha": "afbc6ee7e22fdf000364bbdca26d0a60dc6421c6",
+  "push_status": "OK (code afbc6ee confirmed on origin; final evidence commit follows)",
   "changed_paths": [
     "web/civic/offline/",
     "web/vendor/pmtiles/",
@@ -18,29 +18,52 @@
   ],
   "tests": [
     {
+      "name": "offline map 4 profiles, forced and automatic",
+      "status": "PASS"
+    },
+    {
       "name": "HTTP transport",
       "status": "PASS",
       "count": 13
     },
     {
-      "name": "R10 offline UI/API",
-      "status": "FAIL",
-      "counts": {
-        "PASS": 75,
-        "FAIL": 22,
-        "NOT_RUN": 4
-      }
+      "name": "assets/glyph verification",
+      "status": "PASS",
+      "files": 261
     },
     {
-      "name": "additional visual/3D/heat acceptance",
-      "status": "NOT_RUN",
-      "reason": "in progress"
+      "name": "actual placement/rotation/anchor 4 profiles",
+      "status": "PASS",
+      "checks": 12
+    },
+    {
+      "name": "heat colour and count",
+      "status": "PASS"
+    },
+    {
+      "name": "R10 complete UI/API",
+      "status": "FAIL",
+      "counts": {
+        "PASS": 79,
+        "FAIL": 18,
+        "NOT_RUN": 4
+      },
+      "note": "existing UI issues and harness limitations; see OFFLINE.md"
+    },
+    {
+      "name": "R09 rapid close after separate complaint",
+      "status": "FAIL",
+      "reason": "existing debounce timer reads null state; R09_ISSUE.md"
     }
   ],
   "known_limits": [
-    "PMTiles archive local-only, reproduce/copy before running",
-    "Protomaps omits name:kk, local name used",
-    "Existing shared UI acceptance failures; see R10 results"
+    "Local server and archive required; not a service-worker PWA",
+    "Protomaps omits name:kk; native name used",
+    "Archive bounded to graph bbox + 3 km, z0-15",
+    "Existing shared UX issues; raw R10 failures are qualified in OFFLINE.md",
+    "Use a fresh synthetic DB for presentation, not acceptance records",
+    "R09 mobile close-after-send race: 2 JS errors; reproduced online/offline, complaint.js:534:52"
   ],
-  "next_step": "Finish visual/3D/heat and final report"
+  "next_step": "R01: import offline files + INTEGRATION patch, copy/recreate PMTiles, run demo with clean seeded DB",
+  "requested_base_sha": "d9a889520048e69aa0d1ae6e167457e9e729a3d8"
 }

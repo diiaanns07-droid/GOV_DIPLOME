@@ -1,5 +1,7 @@
 OFFLINE · локальная карта Астаны для Birge
-Основа: d9a889520048e69aa0d1ae6e167457e9e729a3d8 (R01 B3).
+Первоначальная основа: d9a889520048e69aa0d1ae6e167457e9e729a3d8 (R01 B3).
+После обязательного rebase: 13ae79007e592ea45dba69a8ae41e0fc23d1c6c9.
+Код и окончательные браузерные проверки: afbc6ee7e22fdf000364bbdca26d0a60dc6421c6.
 Рабочая папка: C:\Users\LEGION\Desktop\hackalem\birge-offline
 Ветка: claude/r14-offline. Основную папку проекта не использовать.
 
@@ -42,7 +44,7 @@ $env:PYTHONUTF8='1'
 $env:PYTHONIOENCODING='utf-8'
 $env:PYTHONDONTWRITEBYTECODE='1'
 $env:CIVIC_DEMO='1'
-$env:CIVIC_DB_PATH="$PWD\.runtime\offline-demo.sqlite3"
+$env:CIVIC_DB_PATH="$PWD\.runtime\offline-final.sqlite3"
 $env:BIRGE_CLF_V2_DIR='C:\Users\LEGION\Desktop\hackalem\birge-r03\ml\civic_classifier_v2\artifacts\onnx_per_channel'
 $env:HF_HUB_OFFLINE='1'
 $env:TRANSFORMERS_OFFLINE='1'
@@ -102,3 +104,47 @@ APIRequestContext (не фикстуры, не перехваченный кэш
 ошибок/ограничений самой приёмки. Дополнительные реальные UI-проходы проверяют
 смешанный текст, подложку, подписи, фактическую постановку и якорь 3D.
 Все жалобы/голоса в проверке синтетические; SQLite и учётная запись локальные.
+
+Повторить браузерные проверки (после запуска сервера по пункту 2):
+$env:BIRGE_SERVER_PY=$OfflinePython
+$OfflineTestPython='C:\Users\LEGION\venvs\birge-ml\Scripts\python.exe'
+& $OfflineTestPython research\round-14-results\OFFLINE\tests\run_r10.py
+& $OfflineTestPython research\round-14-results\OFFLINE\tests\visual.py
+& $OfflineTestPython research\round-14-results\OFFLINE\tests\extra.py
+& $OfflineTestPython research\round-14-results\OFFLINE\tests\anchors.py
+& $OfflineTestPython research\round-14-results\OFFLINE\tests\modes.py
+& $OfflineTestPython research\round-14-results\OFFLINE\tests\heat.py
+& $OfflineTestPython research\round-14-results\OFFLINE\tests\r09_repro.py
+& $OfflineTestPython research\round-14-results\OFFLINE\tests\verify_assets.py
+
+r09_repro.py намеренно воспроизводит известную ошибку R09 после быстрого
+закрытия отправленного отдельного обращения; ожидаемый стек описан в R09_ISSUE.md.
+
+Запускать последовательно: иначе времена загрузки сравниваются при конкурирующем
+рендеринге. R10 возвращает exit 1, пока остаются перечисленные в OFFLINE.md
+замечания к интерфейсу; JSON сохраняет все PASS/FAIL/NOT_RUN. Тесты extra и heat
+добавляют синтетические записи в .runtime/offline-final.sqlite3. Сценарий R10
+сам создаёт временный локальный пароль в памяти, не печатает и не сохраняет его.
+Для новой полной репетиции используйте новую синтетическую базу/перезапуск
+сервера, чтобы старые записи и лимиты частоты не влияли на результаты.
+Тесты не отключают CSP: ожидания используют DevTools evaluate вместо
+запрещённого политикой страницы eval внутри Playwright wait_for_function.
+
+5. Перед настоящим показом — чистая демо-база (старую приёмочную не удалять)
+
+# Остановить сервер проверки. Затем в этом worktree:
+$env:CIVIC_DB_PATH="$PWD\.runtime\offline-presentation.sqlite3"
+& $OfflinePython -B -m ui.civic_store init
+& $OfflinePython -B -m ui.civic_store seed-demo --package data\civic\astana\demo_synthetic.json
+& $OfflinePython -B -m ui.civic_store seed-r14-demo
+# Для входа в новой базе при необходимости создать своего сотрудника:
+& $OfflinePython -B -m ui.civic_store create-editor operator
+# Пароль вводится скрыто в терминале владельцем и не попадает в этот отчёт.
+& $OfflinePython -B app.py --host 127.0.0.1 --port 8613
+
+Обращения приёмки введены тестом, но сервер R15 игнорирует клиентский demo:true
+и сохраняет их как обычные записи. Поэтому финальный показ должен использовать
+эту отдельную чистую seeded DB. Это не наблюдения или тексты жителей.
+При -Latest verify_assets.py сравнивает архив с исходным 20261010 и ожидаемо
+обнаружит другой SHA: новую карту отдельно проверяют pmtiles verify и фиксируют
+новую дату/размер/SHA в ASSETS.json, сохраняя исходные сведения как историю.

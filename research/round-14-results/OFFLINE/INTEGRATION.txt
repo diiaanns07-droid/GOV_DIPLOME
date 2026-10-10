@@ -1,5 +1,5 @@
-OFFLINE → R01. Минимальные подключения к B3 d9a889520048e69aa0d1ae6e167457e9e729a3d8.
-В этой ветке patch уже применён и тестируется. Для общей сборки:
+OFFLINE → R01. Минимальные подключения к B3 / night 1 13ae79007e592ea45dba69a8ae41e0fc23d1c6c9.
+В этой ветке patch уже применён; проверенный код afbc6ee7e22fdf000364bbdca26d0a60dc6421c6. Для общей сборки:
 1. Перенести web/civic/offline/ и web/vendor/pmtiles/ из поставки OFFLINE.
 2. git apply --check research/round-14-results/OFFLINE/INTEGRATION.txt
 3. git apply research/round-14-results/OFFLINE/INTEGRATION.txt
@@ -29,10 +29,10 @@ index 1a1f94a..ad7c9f0 100644
 +# OFFLINE: local Protomaps archive, reproduce with OFFLINE/RUN.txt
 +data/civic/astana/tiles/
 diff --git a/ui/web_server.py b/ui/web_server.py
-index ecc6d46..28608a5 100644
+index 6277d58..c267f05 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
-@@ -22,6 +22,7 @@ from urllib.parse import parse_qs, urlsplit
+@@ -26,6 +26,7 @@ from urllib.parse import parse_qs, urlsplit
  import webbrowser
  
  import engine
@@ -40,7 +40,7 @@ index ecc6d46..28608a5 100644
  
  
  ROOT = Path(__file__).resolve().parents[1]
-@@ -37,6 +38,7 @@ ASSETS = {
+@@ -41,6 +42,7 @@ ASSETS = {
      "/style.css": ("style.css", "text/css; charset=utf-8"),
      "/favicon.svg": ("favicon.svg", "image/svg+xml"),
      "/vendor/maplibre-gl.js": ("vendor/maplibre-gl.js", "text/javascript; charset=utf-8"),
@@ -48,7 +48,7 @@ index ecc6d46..28608a5 100644
      "/vendor/maplibre-gl.css": ("vendor/maplibre-gl.css", "text/css; charset=utf-8"),
      # B2: three.js 0.169.0 (LOCAL-2) для 3D-превью R05; грузится модулем build3d только при монтировании.
      "/vendor/three/three.module.min.js": ("vendor/three/three.module.min.js", "text/javascript; charset=utf-8"),
-@@ -1478,6 +1480,8 @@ class Handler(BaseHTTPRequestHandler):
+@@ -1576,6 +1578,8 @@ class Handler(BaseHTTPRequestHandler):
      def do_GET(self):
          parsed = urlsplit(self.path)
          path = parsed.path

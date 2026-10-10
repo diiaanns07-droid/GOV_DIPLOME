@@ -1,0 +1,1 @@
+{"status": "PASS", "verified_asset_files": 261, "kazakh_glyphs_with_bitmap": 18, "archive_bytes": 10146737, "archive_sha256": "7c8343ad3866374ca17cba4cb62e1e82033dd839d0bcfd4d6623773ac4807949", "local_style_urls": true}
