@@ -62,7 +62,16 @@ function uiScreen(page) {
       }
       if (seen && hidden) clipped.push(`«${own.slice(0, 28)}» под «${(by.innerText || by.getAttribute("aria-label") || by.tagName).trim().replace(/\s+/g, " ").slice(0, 28)}»`);
     }
+    // Короткая надпись, обрезанная многоточием (text-overflow: ellipsis): «Bir…» вместо «Birge» (B-042). Строки длиннее
+    // 24 знаков (адрес, название места в списке) обрезать можно — это приём вёрстки, смысл виден в карточке.
+    const cut = [];
+    for (const el of document.querySelectorAll("body *")) {
+      if (el.scrollWidth <= el.clientWidth + 1 || getComputedStyle(el).textOverflow !== "ellipsis" || !vis(el)) continue;
+      const t = (el.textContent || "").trim().replace(/\s+/g, " ");
+      if (t && t.length <= 24) cut.push(`«${t}» видно ${el.clientWidth} из ${el.scrollWidth} px`);
+    }
     return {
+      cut: cut.slice(0, 6), cutN: cut.length,
       clipped: clipped.slice(0, 6), clippedN: clipped.length,
       scrollW: document.documentElement.scrollWidth, innerW: innerWidth, lang: document.documentElement.lang,
       tech: (text.match(new RegExp(tech, "igu")) || []).slice(0, 8), raw: (text.match(new RegExp(raw, "g")) || []).slice(0, 8),
