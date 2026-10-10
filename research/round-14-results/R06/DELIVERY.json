@@ -16,9 +16,9 @@
   "ui/civic_akim R08": "claude/r14-R08 @ 7101f46 — только для теста с R06_R08_ROOT",
   "engine/civic_geo R12": "из дерева R01 915143f — только для отчёта точности линий демо-пакета"
  },
- "code_sha": "681a4ef",
- "tested_sha": "681a4ef (Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright)",
- "push_status": "681a4ef и документы поставки — в origin/claude/round-14-r06 (см. git log)",
+ "code_sha": "d20c7e2",
+ "tested_sha": "d20c7e2 (Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright)",
+ "push_status": "d20c7e2 и документы поставки — в origin/claude/round-14-r06 (см. git log)",
  "changed_paths": [
   "ui/civic_store/db.py (миграции 6 и 7)",
   "ui/civic_store/auth.py (COOKIE_PATH=/api/civic)",
@@ -42,13 +42,15 @@
  "tests": {
   "pytest tests/civic/R06 @681a4ef": "PASS 476 passed, 7 skipped (без R06_R01_WEB_SERVER / R06_R08_ROOT — их тесты SKIP; 1 — унаследован из R02)",
   "дерево R01 d9a8895 + ui/civic_store, web/civic/proposals, tests/civic/R06/round14, tests/civic/R06/store: pytest tests/civic/R01 R02 R06 R08": "PASS 1117 passed, 5 skipped (без R02/round14 — нужен ml.labeling; без R08 test_r08_heat_match — падает при сборе и без R06)",
-  "браузер browser_r14.cjs, свой демо-набор (--age-days 16), ui-kit R11 6102dfb": "PASS 83/83",
   "браузер browser_r14.cjs --build-set, набор сборки data/civic/astana/demo_synthetic.json": "PASS 79/79, NOT_RUN 4 («давно не обновлялось»: без сдвига часов показать нечем)",
-  "браузер browser_nokit.cjs (без ui-kit / без словаря), 375 и 1366": "PASS 16/16",
   "клиент R05 createApiStore @7f42cb3 (r05_client_r14.cjs)": "PASS 17/17 @681a4ef; и с головой R05 169c56b — 17/17",
   "через CivicV2Gateway R01 @915143f (R06_R01_WEB_SERVER)": "PASS 5/5 @681a4ef; с web_server.py R01 d9a8895 — 5/5",
   "с настоящим кодом R08 @7101f46 (R06_R08_ROOT)": "PASS @681a4ef (test_r06r14_neighbors + gateway: 19 passed)",
-  "Windows run-city.bat и вид поля даты в Chrome ru/kk": "NOT_RUN: облачный Linux (LOCAL-R06-1)"
+  "Windows run-city.bat и вид поля даты в Chrome ru/kk": "NOT_RUN: облачный Linux (LOCAL-R06-1)",
+  "браузер browser_r14.cjs, свой демо-набор (--age-days 16), ui-kit R11 6102dfb: 375/1366 ru/kk, голос, акимат, п.15–19, дата, этап, нет связи + UX_BRIEF (технические слова, ≥ 14 px, контраст ≥ 4.5:1, анимации ≤ 800 мс) + клавиатура (Tab, рамка фокуса, Space)": "PASS 104/104",
+  "браузер browser_nokit.cjs: без ui-kit, без словаря, медленная сеть — 375 и 1366": "PASS 20/20",
+  "приложение R01 d9a8895 + пути R06 (CIVIC_DEMO=1): app_r01_day_kk.cjs — «Картина дня» ҚАЗ/РУС 1366/375": "PASS 7/7 (screens/app/)",
+  "демо-путь R01 tests/civic/R01/browser/r14_b2.cjs на дереве d9a8895 + пути R06": "PASS 22/22"
  },
  "known_limits": [
   "Голос — один с устройства (localStorage + хэш с солью), а не один на человека. Защита: 30 голосов/мин с адреса и 20 новых голосов в сутки за одно предложение с адреса (R15 S08). Без eGov/SMS накрутку можно усложнить, но не исключить: голоса — «мнение жителей».",
@@ -60,7 +62,7 @@
   "stale считается от более свежего из (обновление этапа, обновление карточки); для работающих и без этапа — false.",
   "Код раунда 13 и поставки 1 не откроет базу после миграции 7 — перед обновлением backup."
  ],
- "next_step": "R01 (FINAL): взять R06 по путям на code_sha 681a4ef — ui/civic_store/, web/civic/proposals/, tests/civic/R06/round14/, tests/civic/R06/store/ (НЕ трогать тесты раунда 13 в tests/civic/R06/*.py). R11: вычитать kk-названия демо (INTEGRATION §5). LOCAL: LOCAL-R06-1.",
+ "next_step": "R01 (FINAL): взять R06 по путям на code_sha d20c7e2 — ui/civic_store/, web/civic/proposals/, tests/civic/R06/round14/, tests/civic/R06/store/ (НЕ трогать тесты раунда 13 в tests/civic/R06/*.py). R11: вычитать kk-названия демо (INTEGRATION §5). LOCAL: LOCAL-R06-1.",
  "delivery": 3,
  "delivery_note": "Поставка 3 (ночь 10→11 окт) для FINAL R01: R10 B-018/B-006, LOCAL_B2 (CP1251), R15 S08, правдоподобные демо-этапы. Поставка 2: b42e790 (в B3 R01 a8fabce). Поставка 1: 7031afa.",
  "ux_review_day3": {
@@ -98,5 +100,6 @@
   "LOCAL_B2 CP1251": "CLI печатает JSON с \\u-экранированием в консоли без казахских букв — test_r06r14_cli_encoding.py (cp1251, cp866), исходная ошибка воспроизведена",
   "R15 S08": "≤ 20 новых голосов в сутки за одно предложение с одного адреса → 429 + Retry-After; V2Error.retry_after для шлюза — test_votes_per_target_per_address_are_limited, test_module_vote_limit_reaches_gateway_as_429",
   "UX_BRIEF (свой проход)": "демо-этапы по статусу записи — test_demo_stages_agree_with_record_status (оба набора)"
- }
+ },
+ "code_note": "Код модуля не менялся с 681a4ef; d20c7e2 добавляет проверки (tests/civic/R06/round14) — брать d20c7e2."
 }
