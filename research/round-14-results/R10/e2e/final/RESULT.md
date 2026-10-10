@@ -1,10 +1,10 @@
-# R10 e2e · сценарий демо · a8e05d0
+# R10 e2e · сценарий демо · 3b3e4f2
 
 ```
-{"root":"<worktree a8e05d0>","sha":"a8e05d0","base":"http://127.0.0.1:<порт>/","seeds":[],"sizes":["1366x768","375x812"],"langs":["ru","kk"],"when":"2026-10-10T19:50:10.248Z","node":"v22.22.0"}
+{"root":"<worktree 3b3e4f2>","sha":"3b3e4f2","base":"http://127.0.0.1:<порт>/","seeds":[],"sizes":["1366x768","375x812"],"langs":["ru","kk"],"when":"2026-10-10T20:03:18.613Z","node":"v22.22.0"}
 ```
 
-Итого: PASS 131, FAIL 5, NOT_RUN 0
+Итого: PASS 133, FAIL 2, NOT_RUN 1
 
 | Слой | Шаг | Проверка | Итог | Подробно | Кадр |
 |---|---|---|---|---|---|
@@ -16,8 +16,8 @@
 | API | 2 | /classify (ru) → «Остановки и транспорт», ответ по §7 | **PASS** | {"status":200,"category":"transport","score":1,"needs_review":true,"model":"civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"} |  |
 | API | 2 | /classify (kk) → «Остановки и транспорт», ответ по §7 | **PASS** | {"status":200,"category":"transport","score":1,"needs_review":true,"model":"civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"} |  |
 | API | 2 | /classify (mixed) → «Остановки и транспорт», ответ по §7 | **PASS** | {"status":200,"category":"transport","score":1,"needs_review":true,"model":"civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"} |  |
-| API | 1 | POST /complaints: запись §5 (id c-…, status new, target сохранён) | **PASS** | {"status":201,"id":"c-601c235707222598","st":"new"} |  |
-| API | 2 | /similar находит только что поданную жалобу на ту же остановку | **PASS** | {"status":200,"n":1,"top":{"complaint_id":"c-601c235707222598","score":0.798,"target":{"id":"osm-node-13394597038","kind":"object","label_kk":"«Республиканский диагностический центр» аялдамасы","label_ru":"Остановка «Рес |  |
+| API | 1 | POST /complaints: запись §5 (id c-…, status new, target сохранён) | **PASS** | {"status":201,"id":"c-d99d96c44c36f33c","st":"new"} |  |
+| API | 2 | /similar находит только что поданную жалобу на ту же остановку | **PASS** | {"status":200,"n":1,"top":{"complaint_id":"c-d99d96c44c36f33c","score":0.798,"target":{"id":"osm-node-13394597038","kind":"object","label_kk":"«Республиканский диагностический центр» аялдамасы","label_ru":"Остановка «Рес |  |
 | API | 2 | «Я тоже» другим устройством: metoo +1 | **PASS** | {"status":200,"metoo":1} |  |
 | API | 2 | повторное «Я тоже» с того же устройства не увеличивает счёт | **PASS** | {"status":200,"metoo":1} |  |
 | API | 3 | /heat (Нура, 30 дней, z16): цель жалобы есть, level ≥ 1, count ≥ 1, форма есть | **PASS** | {"status":200,"items":31,"target":{"level":4,"count":21,"weight":15.609,"kind":"object"}} |  |
@@ -25,10 +25,10 @@
 | API | 4 | /akim/summary: KPI, темы, районы, горячие места, просрочки, отставание, текст ru/kk | **PASS** | {"status":200,"complaints_available":true,"sources":{"complaints":"r07","objects":"r06","proposals":"r06","heat":"r07"},"hot":10} |  |
 | API | 5 | вход сотрудника акимата (сессия + CSRF) | **PASS** | {"ok":true,"status":200} |  |
 | API | 5 | GET /proposals: демо-предложения (seed-r14-demo) со статусом | **PASS** | {"status":200,"n":5,"statuses":["proposal"]} |  |
-| API | 5 | POST /proposals (сквер) от сотрудника | **PASS** | {"status":201,"id":"p-eb18b87b0b5f","st":"proposal"} |  |
+| API | 5 | POST /proposals (сквер) от сотрудника | **PASS** | {"status":201,"id":"p-a8fe7620763a","st":"proposal"} |  |
 | API | 5 | голос «За» +1, повтор с того же устройства не удваивает | **PASS** | {"first":[200,1],"second":[200,1]} |  |
 | API | 6 | сотрудник: «Взять в работу» → «Исправлено» | **PASS** | {"in_progress":200,"fixed":200} |  |
-| API | 6 | после «исправлено» цель зелёная (fixed_until задан, вес обнулён) | **PASS** | {"item":{"level":"fixed","weight":0,"fixed_until":"2026-10-18T00:41:04+05:00"}} |  |
+| API | 6 | после «исправлено» цель зелёная (fixed_until задан, вес обнулён) | **PASS** | {"item":{"level":"fixed","weight":0,"fixed_until":"2026-10-18T00:54:13+05:00"}} |  |
 | API | 6 | GET /complaints: статус fixed и история статусов | **PASS** | {"status":200,"st":"fixed","history":3} |  |
 | UI 1366-ru | 0 | шапка: ҚАЗ/РУС на виду, язык страницы переключился | **PASS** | {"lang":"ru"} | 1366-ru-0-start.jpg |
 | UI 1366-ru | 0 | нет горизонтальной прокрутки | **PASS** | {"scrollW":1366,"w":1366} |  |
@@ -82,7 +82,7 @@
 | UI 1366-kk | 5 | «Гүлзар» → нажать на карту → «Поставить»: «Проект поставлен», на карте табличка проекта 2027 | **PASS** | {"hint":true,"placedClick":true,"placedMsg":true,"label_px_from_place":26} | 1366-kk-5-placed.jpg |
 | UI 1366-kk | 5 | житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за» | **PASS** | {"label":true,"voted":true,"saved":true} | 1366-kk-5-vote.jpg |
 | UI 1366-kk | 5 | акимат: карточка проекта → «Удалить» → «Проект удалён» | **PASS** | {"label":true,"delClick":true,"deleted":true} |  |
-| UI 1366-kk | 6 | акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Түзетілді», зелёным на карте | **FAIL** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":true,"fix":true,"fixedShown":true,"green":false} | 1366-kk-6-fixed.jpg |
+| UI 1366-kk | 6 | акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Түзетілді», зелёным на карте | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":true,"fix":true,"fixedShown":true,"green":true} | 1366-kk-6-fixed.jpg |
 | UI 1366-kk | 6 | клавиатура: Esc закрывает карточку остановки | **PASS** | {"stillOpen":false} |  |
 | UI 1366-kk | 6 | житель: «Менің өтініштерім» → у обращения статус «Түзетілді» | **PASS** | {"mineOpen":true,"mineFixed":true} | 1366-kk-6-mine.jpg |
 | UI 1366-kk | * | консоль без ошибок (кроме шума среды: подложка, WebGL) | **PASS** | [] |  |
@@ -109,7 +109,7 @@
 | UI 375-ru | 5 | «Сквер» → нажать на карту → «Поставить»: «Проект поставлен», на карте табличка проекта 2027 | **PASS** | {"hint":false,"placedClick":true,"placedMsg":true,"label_px_from_place":26} | 375-ru-5-placed.jpg |
 | UI 375-ru | 5 | житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за» | **PASS** | {"label":true,"voted":true,"saved":true} | 375-ru-5-vote.jpg |
 | UI 375-ru | 5 | акимат: карточка проекта → «Удалить» → «Проект удалён» | **PASS** | {"label":true,"delClick":true,"deleted":true} |  |
-| UI 375-ru | 6 | акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Исправлено», зелёным на карте | **FAIL** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":false,"fix":true,"fixedShown":false,"green":false} | 375-ru-6-fixed.jpg |
+| UI 375-ru | 6 | акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Исправлено», зелёным на карте | **NOT_RUN** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":false,"fix":true,"fixedShown":true,"green":true,"note":"у остановки нет новых жалоб — шаг 2 не отправил жалобу"} | 375-ru-6-fixed.jpg |
 | UI 375-ru | 6 | житель: «Мои обращения» → у обращения статус «Исправлено» | **PASS** | {"mineOpen":true,"mineFixed":true} | 375-ru-6-mine.jpg |
 | UI 375-ru | * | консоль без ошибок (кроме шума среды: подложка, WebGL) | **PASS** | [] |  |
 | UI 375-ru | E | нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 375-ru-E-heat.jpg |
@@ -138,7 +138,7 @@
 | UI 375-kk | 5 | «Гүлзар» → нажать на карту → «Поставить»: «Проект поставлен», на карте табличка проекта 2027 | **PASS** | {"hint":false,"placedClick":true,"placedMsg":true,"label_px_from_place":26} | 375-kk-5-placed.jpg |
 | UI 375-kk | 5 | житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за» | **PASS** | {"label":true,"voted":true,"saved":true} | 375-kk-5-vote.jpg |
 | UI 375-kk | 5 | акимат: карточка проекта → «Удалить» → «Проект удалён» | **PASS** | {"label":true,"delClick":true,"deleted":true} |  |
-| UI 375-kk | 6 | акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Түзетілді», зелёным на карте | **FAIL** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":true,"fix":true,"fixedShown":true,"green":false} | 375-kk-6-fixed.jpg |
+| UI 375-kk | 6 | акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Түзетілді», зелёным на карте | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":true,"fix":true,"fixedShown":true,"green":true} | 375-kk-6-fixed.jpg |
 | UI 375-kk | 6 | житель: «Менің өтініштерім» → у обращения статус «Түзетілді» | **PASS** | {"mineOpen":true,"mineFixed":true} | 375-kk-6-mine.jpg |
 | UI 375-kk | * | консоль без ошибок (кроме шума среды: подложка, WebGL) | **PASS** | [] |  |
 | UI 375-kk | E | нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 375-kk-E-heat.jpg |

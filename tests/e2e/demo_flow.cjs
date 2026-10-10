@@ -630,11 +630,13 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     // С заглавной буквы и без флага i: в легенде карты то же слово строчными («исправлено») — его не считаем.
     const fixedShown = await visibleText(page, new RegExp(esc(fixedWord)));
     const green = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
-    // Нет «Взять в работу», а цель уже «Исправлено» — новых жалоб у неё нет (шаг 2 не дошёл до отправки): проверять нечего.
-    const nothingNew = !take && fixedShown;
-    step("6", `акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «${fixedWord}», зелёным на карте`,
-      nothingNew ? null : take && fix && fixedShown && green,
-      { under: s && s.under, take, fix, fixedShown, green, note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : undefined }, await shot("6-fixed"));
+    // Нет ни «Взять в работу», ни «Отметить исправленным», а цель уже «Исправлено» — новых жалоб нет: проверять нечего.
+    // Нет «Взять в работу», но есть «Отметить исправленным» — место уже «В работе» (так бывает в демо-наборе R07): верно.
+    const nothingNew = !take && !fix && fixedShown;
+    step("6", `акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «${fixedWord}», зелёным на карте`,
+      nothingNew ? null : fix && fixedShown && green,
+      { under: s && s.under, take, fix, fixedShown, green,
+        note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : (!take && fix ? "место уже «В работе» — кнопки «Взять в работу» нет" : undefined) }, await shot("6-fixed"));
     if (!mobile && fixedShown) {
       await page.keyboard.press("Escape"); await sleep(800);
       const stillOpen = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
