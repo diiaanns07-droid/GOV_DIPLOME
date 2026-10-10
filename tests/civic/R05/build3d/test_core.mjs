@@ -133,6 +133,14 @@ test("казахская подпись улицы без name:kk — прави
   assert.deepEqual(missing, []);
 });
 
+test("опоры освещения — у края проезжей части (отступ по lanes/width OSM), а не на полосах", () => {
+  const idx = new C.StreetIndex(STREETS);
+  const line = (name, minOffset) => STREETS.edges.find((row) => STREETS.names[row[1]] === name && row[6] >= minOffset)[5];
+  assert.equal(idx.poleOffset(line("проспект Туран", 12)), 12.9, "7 полос — 12,9 м от оси");
+  assert.equal(idx.poleOffset(line("улица Сыганак", 0)), 8, "4 полосы — 8 м");
+  assert.equal(idx.poleOffset([[71.0, 51.0], [71.001, 51.0]]), C.LIGHT_OFFSET_M, "вне индекса — 5 м");
+});
+
 test("ближайшая улица и направление для остановки", () => {
   const idx = new C.StreetIndex(STREETS);
   const stop = FIXTURE.proposals.find((p) => p.kind === "stop");

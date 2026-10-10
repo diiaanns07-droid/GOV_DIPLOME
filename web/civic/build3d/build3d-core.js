@@ -209,6 +209,7 @@
         id: row[0],
         name: data.names[row[1]] || "",
         name_kk: (data.names_kk && data.names_kk[row[1]]) || null, // name:kk из OSM, если есть
+        offset: row[6] > 0 ? row[6] : LIGHT_OFFSET_M, // опоры освещения — у края проезжей части (по lanes/width OSM)
         from: row[2],
         to: row[3],
         geom: geom,
@@ -244,6 +245,19 @@
   // Участок улицы между двумя точками: по рёбрам ОДНОЙ улицы (одно имя), кратчайший путь (Дейкстра).
   // Возврат: {ok:true, name, coords:[[lon,lat]…], length_m, edge_ids:[…]} или {ok:false, reason}.
   // reason: "far_from_street" | "other_street" | "no_path" | "too_short" | "too_long".
+  // Отступ опор освещения от оси для линии участка: наибольший у ближайших рёбер в начале, середине и конце
+  // (опоры не должны встать на проезжую часть ни в одной точке). Вне индекса улиц — LIGHT_OFFSET_M.
+  StreetIndex.prototype.poleOffset = function (coords) {
+    if (!coords || coords.length < 2) return LIGHT_OFFSET_M;
+    var picks = [coords[0], coords[Math.floor(coords.length / 2)], coords[coords.length - 1]];
+    var best = 0;
+    for (var i = 0; i < picks.length; i++) {
+      var n = this.nearest(picks[i], 30);
+      if (n && n.edge.offset > best) best = n.edge.offset;
+    }
+    return best || LIGHT_OFFSET_M;
+  };
+
   // Казахская подпись улицы, когда в OSM нет name:kk — как у R07 (ui/civic_heat/targets.py kk_street_from_ru):
   // тип улицы по-казахски ПОСЛЕ имени, имя собственное как есть («улица Сыганак» → «Сыганак көшесі»).
   // Уже казахское («Култегін көшесі») и номер дороги («E 12») — как есть. Тип не знаем — null: интерфейс в kk
