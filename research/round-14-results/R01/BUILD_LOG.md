@@ -280,3 +280,12 @@ start» за 60 с под нагрузкой параллельного прог
 - **6096be8** (3в): офлайн-подложка Codex OFFLINE afbc6ee (web/civic/offline, web/vendor/pmtiles, патч к .gitignore,
   index.html, map.js, web_server.py; архив тайлов — LOCAL, RUN.txt 3б). pytest 1/2665; B1 15/0, B2 25/0, шапка 38/0;
   P0 63/1/1 и город 80/1 — только гонка demo-ring модуля карты R12. Транспортный тест OFFLINE требует архив (LOCAL).
+
+## Ночь, круг 4
+
+- **85c16e2** (4а): R12 d6c788e9 из новой ветки R12 `claude/r14-R12` (двор B-009 и гонка demo-ring закрыты),
+  R05 38cfc4a, R06 d707efc, R07 2575e11, R09 b6cadb3, R11 f1805c9. Правило `.civic-r04-who` в birge.css снято
+  (R04 сам прячет строку). run_checks: тест офлайн-глифов R12 вместо устаревшего ядра R03.
+  pytest **0 failed / 2675 passed**; браузер: P0 63/0/1 (NOT_RUN — OpenFreeMap, нет сети), город 81/0, B1 15/0,
+  B2 25/0, шапка 38/0. Патчи R15 на месте (CSP, лимиты, log без query).
+- Полный run_checks на 6096be8 (копия wt-n4): pytest 1 failed (двор R12 — закрыт в 4а), P0 63/1/1 (demo-ring — закрыт в 4а).
