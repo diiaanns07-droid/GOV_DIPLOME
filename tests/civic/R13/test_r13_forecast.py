@@ -268,3 +268,13 @@ def test_attention_block_for_r08(api):
     block = api.attention_next_month(None, 5, today=date(2026, 10, 11))
     assert block["month"] == "2026-11" and len(block["items"]) == 5 and block["demo"] is True
     assert all(len(i["reasons"]) <= 2 for i in block["items"])
+
+
+def test_score_month_fallback_without_sklearn(small):
+    from ui.civic_forecast.build import score_month
+    block = score_month(small, "2026-10", model_kind="fallback")
+    assert block["model"] == "fallback" and block["check"] is not None
+    assert len(block["rank_city"]) == 60 and set(block["rank_district"]) == {
+        "almaty", "baikonur", "esil", "nura", "saraishyk", "saryarka"}
+    first = block["items"][block["rank_city"][0]]
+    assert "confirmed" in first and first["reasons"]

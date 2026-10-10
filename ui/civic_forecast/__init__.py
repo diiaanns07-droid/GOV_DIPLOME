@@ -117,6 +117,8 @@ def forecast_response(month=None, district=None, k=10, context=None):
         "note_ru": "Прототип: модель обучена на синтетической истории. Не реальная оценка риска.",
         "note_kk": "Прототип: модель синтетикалық тарихта оқытылған. Нақты тәуекел бағасы емес.",
         "generated_at": data.get("generated_at"), "computed_now": computed,
+        # Для прошедшего месяца: доля подтвердившихся в top-10/20/30 (на синтетике); для будущего — null.
+        "check": block.get("check"),
         "items": forecast(month, district, k),
     }
 

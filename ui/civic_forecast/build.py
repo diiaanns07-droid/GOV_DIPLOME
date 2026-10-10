@@ -57,7 +57,17 @@ def score_month(history: History, month: str, model_kind: str | None = None) -> 
             "risk": round(scores[tid], 3), "level": level_of(scores[tid]), "main_category": main_cat,
             "reasons": reasons,
         }
-    return {"month": month, "asof": history.months[asof], "model": kind, "threshold": THRESHOLD,
+    # Прошедший месяц (есть в истории): сколько жалоб было на самом деле и подтвердился ли прогноз (синтетика).
+    check = None
+    if month in history.months:
+        fi = history.months.index(month)
+        for tid, item in items.items():
+            actual = sum(history.counts[tid][fi])
+            item["actual_complaints"] = actual
+            item["confirmed"] = actual >= THRESHOLD
+        check = {f"precision_at_{k}": round(sum(sum(history.counts[t][fi]) >= THRESHOLD for t in city[:k]) / k, 2)
+                 for k in (10, 20, 30)}
+    return {"month": month, "asof": history.months[asof], "model": kind, "threshold": THRESHOLD, "check": check,
             "rank_city": city, "rank_district": districts, "items": items,
             "weather_normals": {k: normals.get(k) for k in ("snowfall_cm", "thaw_days", "hot_days", "years")}}
 
