@@ -398,6 +398,7 @@ def render_errors(exp: dict, preds: dict[str, dict[str, dict]], probe: dict[str,
             out.append("")
         out += _hard_rules_section(preds, probe)
         out += _suggest_section(preds, probe)
+        out += _lang_section(preds, probe)
     elif not preds:
         out += ["## 4. Примеры ошибок", "",
                 "Нет файлов прогнозов по текстам. Для трансформера их даёт ноутбук: RUN.txt шаг 8б "
@@ -445,6 +446,58 @@ def _suggest_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) 
     for name, t, cov, prec, n in rows:
         out.append(f"| `{name}` | {t} | {cov:.0%} | {'—' if prec is None else f'{prec:.0%}'} | {n} |")
     return out + [""]
+
+
+LANGS = ("ru", "kk", "mixed")
+
+
+def _lang_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict], weak_n: int = 4,
+                  weak_acc: float = 0.6) -> list[str]:
+    """Категории × язык: macro-F1 по языку, разрыв kk − ru с 95% ДИ и «верно / всего» по ячейкам."""
+    from ml.civic_classifier_v2.metrics import report, unpaired_delta
+    labs = L.labels()
+    idx = {lab: i for i, lab in enumerate(labs)}
+    names_ru = L.names("ru")
+    out = ["## 7. Категории и языки на probe_v2", "",
+           "Macro-F1 внутри языка и разрыв kk − ru. Тексты на разных языках разные, поэтому ДИ — бутстрэп отдельно "
+           "внутри каждого языка (не парный). Ниже — «верно / всего» по категориям: в ячейке {cell_n} текстов, "
+           "отдельная ячейка — пример, а не закономерность.", "",
+           "| Прогнозы | " + " | ".join(f"{g} (n)" for g in LANGS) + " | kk − ru [95% ДИ] |", "|---|" + "---|" * (len(LANGS) + 1)]
+    cells = {}
+    for name, pr in preds.items():
+        ids = [i for i in probe if i in pr]
+        if not ids:
+            continue
+        by = {g: [i for i in ids if probe[i].get("lang") == g] for g in LANGS}
+        row = []
+        for g in LANGS:
+            y = [idx[pr[i]["true"]] for i in by[g]]
+            p = [idx[pr[i]["pred"]] for i in by[g]]
+            row.append(f"{_f(report(y, p, labs)['macro_f1'])} ({len(y)})" if y else "—")
+        yk, pk = [idx[pr[i]["true"]] for i in by["kk"]], [idx[pr[i]["pred"]] for i in by["kk"]]
+        yr, prr = [idx[pr[i]["true"]] for i in by["ru"]], [idx[pr[i]["pred"]] for i in by["ru"]]
+        d = unpaired_delta(yk, pk, yr, prr, len(labs))
+        gap = "—" if d["delta"] is None else (f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}] — "
+                                               f"{'доказано' if d['low'] > 0 or d['high'] < 0 else 'не доказано'}")
+        out.append(f"| `{name}` | " + " | ".join(row) + f" | {gap} |")
+        cells[name] = {(lab, g): (sum(pr[i]["pred"] == pr[i]["true"] for i in by[g] if pr[i]["true"] == lab),
+                                  sum(1 for i in by[g] if pr[i]["true"] == lab)) for lab in labs for g in LANGS}
+    if not cells:
+        return []
+    sizes = [b for c in cells.values() for (_, b) in c.values() if b]
+    out[2] = out[2].replace("{cell_n}", f"{min(sizes)}–{max(sizes)}" if min(sizes) != max(sizes) else str(min(sizes)))
+    out.append("")
+    for name, c in cells.items():
+        out += [f"### `{name}`: верно / всего по категориям и языкам", "",
+                "| Категория | " + " | ".join(LANGS) + " | всего |", "|---|" + "---|" * (len(LANGS) + 1)]
+        for lab in labs:
+            parts = [c[(lab, g)] for g in LANGS]
+            ok, n = sum(a for a, _ in parts), sum(b for _, b in parts)
+            out.append(f"| {names_ru[lab]} | " + " | ".join(f"{a} / {b}" if b else "—" for a, b in parts) + f" | {ok} / {n} |")
+        weak = sorted(((a / b, lab, g, a, b) for (lab, g), (a, b) in c.items() if b >= weak_n and a / b < weak_acc))
+        out += ["", "Слабые ячейки (n ≥ %d, верно < %d %%): " % (weak_n, round(weak_acc * 100)) +
+                ("; ".join(f"{names_ru[lab]} / {g} — {a} из {b}" for _, lab, g, a, b in weak) if weak else "нет") + ".", ""]
+    return out
 
 
 def _hard_rules_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:

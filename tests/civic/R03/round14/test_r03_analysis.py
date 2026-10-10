@@ -206,3 +206,27 @@ def test_load_table_from_bench_files(tmp_path):
     (tmp_path / "classify_load_broken.json").write_text("{}", encoding="utf-8")       # без замеров — пропускается
     t = next(t for t in A.extra_tables(tmp_path) if t.slug == "t10_classify_load")
     assert t.rows == [["cloud", "4 / 4", "10.9", "34.9 / 43.5", "1 → 1653; 8 → 2342", "292", "509"]]
+
+
+def test_unpaired_delta_between_language_groups():
+    from ml.civic_classifier_v2 import metrics as M
+    y = [0, 1, 2, 3] * 10
+    d_same = M.unpaired_delta(y, y, y, y, 4)
+    assert d_same["delta"] == 0 and d_same["low"] == 0 and d_same["high"] == 0
+    bad = [(v + 1) % 4 if i % 2 else v for i, v in enumerate(y)]          # половина ошибок
+    d = M.unpaired_delta(y, bad, y, y, 4)
+    assert d["delta"] < 0 and d["high"] < 0 and d["share_delta_gt_0"] == 0.0     # хуже — доказано
+    assert M.unpaired_delta([], [], y, y, 4)["delta"] is None
+
+
+def test_lang_section_counts_and_weak_cells():
+    probe = {f"r{i}": {"id": f"r{i}", "lang": "ru"} for i in range(8)}
+    probe.update({f"k{i}": {"id": f"k{i}", "lang": "kk"} for i in range(8)})
+    rows = {i: {"true": "roads", "pred": "roads"} for i in probe}
+    for i in ("k0", "k1", "k2", "k3", "k4"):
+        rows[i] = {"true": "roads", "pred": "other"}                     # kk: 3 из 8 верно -> слабая ячейка
+    md = "\n".join(A._lang_section({"m": rows}, probe))
+    assert "| Дороги | 8 / 8 | 3 / 8 | — | 11 / 16 |" in md
+    assert "Дороги / kk — 3 из 8" in md and "в ячейке 8 текстов" in md
+    row = next(line for line in md.splitlines() if line.startswith("| `m` |"))
+    assert row.startswith("| `m` | 1.000 (8) | 0.545 (8) | — | -0.455 [") and row.endswith("— доказано |")

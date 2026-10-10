@@ -72,8 +72,8 @@
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 105, xfailed 1 (известное ограничение словаря: благодарность с темой)",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 97, NOT_RUN 8 (skipped с причиной), xfailed 1",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 107, xfailed 1 (известное ограничение словаря: благодарность с темой)",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 99, NOT_RUN 8 (skipped с причиной), xfailed 1",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
@@ -107,7 +107,8 @@
   "FINAL R01 ef1ef44 + пути R03 @ c1654aa: tests R03/R04/R09/R01": "PASS 794, skipped 1",
   "демо-фразы R02/R10 → продуктовый словарь (запасной путь R04 без модели)": "PASS 11 из 11; «Спасибо за новый сквер!» → yards вместо other — strict xfail, ограничение в MODEL_CARD",
   "нагрузка /classify (bench.py, облако 4 vCPU, модель размера xlm-roberta-base, случайные веса, int8 per-channel)": "PASS — 5000 знаков: mean 35–37 мс, p95 ≤ 49 мс; 8 одновременных: 2300–2900 запросов/мин; память ≈ 510 МБ (3 прогона)",
-  "нагрузка /classify настоящей моделью на ноутбуке": "NOT_RUN — по желанию, RUN.txt (bench, ≈ 1 мин)"
+  "нагрузка /classify настоящей моделью на ноутбуке": "NOT_RUN — по желанию, RUN.txt (bench, ≈ 1 мин)",
+  "разрыв kk − ru на probe_v2 (бутстрэп отдельно по языкам, ERROR_ANALYSIS раздел 7)": "PASS — логрегрессия −0.049 [−0.167; +0.052], словарь +0.001 [−0.131; +0.108]: не доказано; трансформер — NOT_RUN (утро, шаг 8б)"
  },
  "results_so_far": {
   "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",

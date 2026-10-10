@@ -1,4 +1,4 @@
-"""Метрики: accuracy, macro-F1, P/R/F1 по классам, матрица ошибок, бутстрэп 95% ДИ, парная разница, ECE.
+"""Метрики: accuracy, macro-F1, P/R/F1 по классам, матрица ошибок, бутстрэп 95% ДИ, парная и непарная разница, ECE.
 
 Только numpy (без sklearn) — одинаково считается в облаке, на ноутбуке и в тестах.
 Macro-F1 усредняется по классам, которые есть в истинных метках (support > 0) — как в v1
@@ -115,6 +115,25 @@ def paired_delta(y_true, pred_a, pred_b, k: int, groups: list | None = None, n_b
             "high": round(float(np.percentile(deltas, 97.5)), 4),
             "share_delta_gt_0": round(float((deltas > 0).mean()), 3), "n_boot": n_boot,
             "unit": "groups" if groups else "texts"}
+
+
+def unpaired_delta(y_a, pred_a, y_b, pred_b, k: int, n_boot: int = N_BOOT, seed: int = BOOT_SEED) -> dict:
+    """Разница macro-F1 двух РАЗНЫХ наборов текстов (a − b), например kk − ru: бутстрэп отдельно внутри каждого."""
+    ya, pa = np.asarray(y_a, dtype=int), np.asarray(pred_a, dtype=int)
+    yb, pb = np.asarray(y_b, dtype=int), np.asarray(pred_b, dtype=int)
+    if len(ya) == 0 or len(yb) == 0:
+        return {"delta": None, "low": None, "high": None}
+    rng = np.random.default_rng(seed)
+    deltas = np.empty(n_boot)
+    for i in range(n_boot):
+        ia = rng.integers(0, len(ya), size=len(ya))
+        ib = rng.integers(0, len(yb), size=len(yb))
+        deltas[i] = macro_f1_cm(_cm(ya[ia], pa[ia], k)) - macro_f1_cm(_cm(yb[ib], pb[ib], k))
+    point = macro_f1_cm(_cm(ya, pa, k)) - macro_f1_cm(_cm(yb, pb, k))
+    return {"delta": round(float(point), 4), "low": round(float(np.percentile(deltas, 2.5)), 4),
+            "high": round(float(np.percentile(deltas, 97.5)), 4),
+            "share_delta_gt_0": round(float((deltas > 0).mean()), 3), "n_boot": n_boot,
+            "unit": f"texts, независимо (n_a={len(ya)}, n_b={len(yb)})"}
 
 
 def ece(correct: list[int], scores: list[float], bins: int = 10) -> float | None:
