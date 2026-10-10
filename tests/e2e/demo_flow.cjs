@@ -337,6 +337,19 @@ async function selectedPlace(page) {
   });
 }
 
+// Что человек видит в точке экрана: карту (холст, значки и таблички на ней) или панель / сообщение поверх неё.
+async function mapAt(page, x, y) {
+  return page.evaluate(([px, py]) => {
+    const inView = px >= 0 && py >= 0 && px <= innerWidth && py <= innerHeight;
+    const over = inView ? document.elementFromPoint(px, py) : null;
+    if (!over) return { inView, map: false, covered: null };
+    const map = !!over.closest(".maplibregl-canvas-container, .maplibregl-marker, .b3d-labels") || over.tagName === "CANVAS";
+    const who = ((over.closest("button, [role=button], [role=status], [role=dialog], section, aside") || over).textContent || "").trim().replace(/\s+/g, " ").slice(0, 40)
+      || over.getAttribute("class") || over.tagName;
+    return { inView, map, covered: map ? null : who };
+  }, [x, y]);
+}
+
 // Показать точку на карте и вернуть её место на экране: что лежит поверх (холст или значок) и ближайшую
 // свободную точку холста рядом. Панель (ноутбук) или шторка (телефон) может закрывать точку — тогда карта
 // сдвигается так, чтобы точка оказалась на открытой части карты.
@@ -610,6 +623,8 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     const hint = await visibleText(page, textRe(T(dict, "proposal.place_hint", "Нажмите на карту, где поставить")));
     let pt = await showPoint(page, place, 17);
     if (pt && !pt.onCanvas && pt.near) pt = { ...pt, x: pt.near.x, y: pt.near.y };
+    // Место нажатия в координатах карты — после «Поставить» камера может сдвинуться, экранная точка тогда другая.
+    const tapLL = pt ? await page.evaluate(([x, y]) => { try { const q = map.unproject([x, y]); return [q.lng, q.lat]; } catch { return null; } }, [pt.x, pt.y]) : null;
     if (pt) { if (!mobile) await page.mouse.move(pt.x, pt.y); await tap(page, pt.x, pt.y); await sleep(1200); }
     // DEMO_SCRIPT 5.2: «повернуть ↺ ↻ при желании» — кнопки поворота есть, пока объект не поставлен.
     const rotR = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.rotate_right", lang === "kk" ? "Оңға бұру" : "Повернуть вправо")) + "$", "i"), { wait: 500 });
@@ -619,8 +634,24 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     const placedMsg = await visibleText(page, textRe(T(dict, "build3d.placed", "Проект поставлен")));
     const projRe = new RegExp("^" + esc(kindName) + ":.*2027", "i");
     const near = pt ? await nearestVisible(page.getByRole("button", { name: projRe }), pt) : null;
+    const placedShot = await shot("5-placed");
     step("5", `«${kindName}» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027`, placedClick && placedMsg && !!near && near.d < 80 && rotR && rotL,
-      { hint, rotate: [rotL, rotR], placedClick, placedMsg, label_px_from_place: near && near.d }, await shot("5-placed"));
+      { hint, rotate: [rotL, rotR], placedClick, placedMsg, label_px_from_place: near && near.d }, placedShot);
+    // Сразу после «Поставить» поставленный проект виден: место и табличку не закрывают сообщение «Проект поставлен»
+    // и каталог «Что построить?» (то, что человек видит в эту секунду; кадр — тот же).
+    if (placedClick && pt) {
+      const now = tapLL ? await page.evaluate((ll) => { try { const q = map.project(ll); return { x: q.x, y: q.y }; } catch { return null; } }, tapLL) : null;
+      const at = now || pt;
+      const atPlace = await mapAt(page, at.x, at.y);
+      const lb = near ? await near.loc.boundingBox().catch(() => null) : null;
+      const atLabel = lb ? await mapAt(page, lb.x + lb.width / 2, lb.y + lb.height / 2) : null;
+      // Если закрыто — посмотреть ещё раз, когда сообщение уйдёт (R05: 6 с): закрыто ли место и после него.
+      let later = null;
+      if (!(atPlace.inView && atPlace.map)) { await sleep(6500); later = (await mapAt(page, at.x, at.y)).covered; await shot("5-placed-later"); }
+      step("5", "после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом", atPlace.inView && atPlace.map,
+        { place: [Math.round(at.x), Math.round(at.y)], at_place: atPlace.covered, at_label: atLabel && atLabel.covered,
+          ...(later !== null || !(atPlace.inView && atPlace.map) ? { after_6s: later } : {}) }, placedShot);
+    }
     // DEMO_SCRIPT 5.2: «кнопка 3D справа — наклон».
     const pitch0 = await page.evaluate(() => (typeof map !== "undefined" && map.getPitch ? map.getPitch() : null));
     // У кнопки видимый текст «3D», а имя для экранного диктора — «Объёмный вид» (ключ common.map.view3d).

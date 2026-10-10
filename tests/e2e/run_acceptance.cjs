@@ -1,6 +1,7 @@
 // R10 · раунд 14 · полная приёмка сборки одной командой (B1 / B2 / FINAL; повтор Codex на ноутбуке владельца).
 //
 //   node tests/e2e/run_acceptance.cjs --root <папка сборки> --out <папка отчёта> [--label FINAL]
+//        [--sizes 360x800,375x667] [--langs ru,kk]   (по умолчанию 1366x768,375x812 и ru,kk)
 //
 // Что делает (ничего не пишет в репозиторий, база — временная):
 //   1. точность карты:  <PY> tests/civic/R10/accuracy.py --root <сборка> --json <out>/accuracy.json  (+ pytest tests/civic/R10)
@@ -82,11 +83,13 @@ function run(cmd, argv, opts = {}) {
   if (up) {
     // 3. Сценарий демо
     const nodeEnv = { NODE_PATH: process.env.NODE_PATH || "", PYTHON: PY };
-    run(process.execPath, [path.join(HERE, "demo_flow.cjs"), "--root", ROOT, "--url", base, "--user", user, "--pass", pass, "--out", path.join(OUT, "e2e")],
+    // --sizes / --langs — те же размеры и языки для сценария и UX (например, малые телефоны: --sizes 360x800,375x667).
+    const pass_ = [...(args.sizes ? ["--sizes", String(args.sizes)] : []), ...(args.langs ? ["--langs", String(args.langs)] : [])];
+    run(process.execPath, [path.join(HERE, "demo_flow.cjs"), "--root", ROOT, "--url", base, "--user", user, "--pass", pass, "--out", path.join(OUT, "e2e"), ...pass_],
       { log: "e2e.log", env: nodeEnv });
     // 4. UX по экранам
-    run(process.execPath, [path.join(HERE, "ux_screens.cjs"), "--screens", path.join(HERE, "screens_build.json"), "--base", base, "--out", path.join(OUT, "ux")],
-      { log: "ux.log", env: nodeEnv });
+    run(process.execPath, [path.join(HERE, "ux_screens.cjs"), "--screens", path.join(HERE, "screens_build.json"), "--base", base, "--out", path.join(OUT, "ux"),
+      ...(args.sizes ? ["--sizes", String(args.sizes)] : [])], { log: "ux.log", env: nodeEnv });
   }
   srv.kill();
   await sleep(500);
