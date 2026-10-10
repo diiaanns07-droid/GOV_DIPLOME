@@ -1082,6 +1082,47 @@ await check("card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_k
   }
   return { status: "PASS", detail: out };
 });
+await check("resident_hint_moves_off_host_legend_1366_1100_ru_kk", async () => {
+  // R10 B-039 (R01 8807b28, 1366, житель): подсказка «Нажмите на проект…» лежала на заголовке легенды R07 внизу слева.
+  // Теперь подсказка по ширине текста; узкая панель хозяина из avoid под ней — сдвиг вбок в той же строке, если хватает
+  // места, иначе подъём над ней. Легенда скрыта хозяином (visibility: hidden) — подсказка возвращается на место.
+  const out = {};
+  for (const [w, h, lang, rootRight] of [[1366, 768, "ru", 432], [1366, 768, "kk", 432], [1100, 700, "kk", 392]]) {
+    const p = await openPage({ viewport: { width: w, height: h } }, `?reset=1&store=local&lang=${lang}&role=resident&` + MAIN_Q.slice(1));
+    const r = await p.evaluate(async (rootRight) => {
+      __b3d.destroy();
+      const css = document.createElement("style");
+      css.textContent = `#t-root{position:fixed;left:20px;right:${rootRight}px;bottom:96px;z-index:6;display:flex;justify-content:center;pointer-events:none}
+        #t-root>.b3d{width:min(720px,100%);display:flex;flex-direction:column;align-items:center}
+        #t-legend{position:fixed;left:12px;bottom:34px;width:360px;height:95px;background:#fff;z-index:5}`;
+      document.head.appendChild(css);
+      const legend = Object.assign(document.createElement("div"), { id: "t-legend" });
+      const root = Object.assign(document.createElement("div"), { id: "t-root" });
+      document.body.append(legend, root);
+      const hnd = CivicBuild3D.mount({ map: __map, root, mode: "resident", store: "local", avoid: () => [legend] });
+      await hnd.ready;
+      window.__t = hnd;
+      return true;
+    }, rootRight);
+    await p.waitForTimeout(600);
+    const m = () => p.evaluate(() => {
+      const R = (n) => { const r = n.getBoundingClientRect(); return { l: Math.round(r.left), t: Math.round(r.top), r: Math.round(r.right), b: Math.round(r.bottom) }; };
+      const d = document.querySelector("#t-root .b3d-dock"), hint = R(d), lg = R(document.getElementById("t-legend"));
+      return { state: d.dataset.state, hint, legend: lg, overlap: hint.l < lg.r && hint.r > lg.l && hint.t < lg.b && hint.b > lg.t, transform: d.style.transform || "" };
+    });
+    const withLegend = await m();
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `hint_legend_${w}_${lang}.png`) });
+    await p.evaluate(() => { document.getElementById("t-legend").style.visibility = "hidden"; });
+    await p.waitForTimeout(300);
+    const hidden = await m();
+    await p.evaluate(() => __t.destroy());
+    await p.context().close();
+    out[`${w}_${lang}`] = { withLegend, hidden };
+    const sideways = /translate\((\d+)px, 0px\)/.test(withLegend.transform), lifted = /translate\(0px, -\d+px\)/.test(withLegend.transform);
+    assert(withLegend.state === "hint" && !withLegend.overlap && (w === 1366 ? sideways : lifted) && hidden.transform === "", JSON.stringify(out));
+  }
+  return { status: "PASS", detail: out };
+});
 await check("r01_map_getter_waits_for_map", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   const r = await p.evaluate(async () => {

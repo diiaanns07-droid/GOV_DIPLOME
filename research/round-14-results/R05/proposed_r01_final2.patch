@@ -12,11 +12,19 @@ index 4378198..effed50 100644
    html.bc-open .civic-mode .civic-explore, html.bc-open .civic-mode .r07-maplegend { display: none; }
    /* «Сообщить о проблеме» — во всю ширину в одну строку (kk не в три строки); пока открыта карточка места со своей
 diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
-index e8f90f0..07ff47a 100644
+index d054891..e206443 100644
 --- a/web/civic/shell/shell.js
 +++ b/web/civic/shell/shell.js
-@@ -471,6 +471,9 @@
-         avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools"),
+@@ -466,11 +466,14 @@
+         map: m, root: $c("birge-build3d-root"), mode: birgeMode() === "resident" ? "resident" : "akimat",
+         // Запросы к R06 — клиентом оболочки (CSRF сотрудника, куки). Нет R06 (404/503) — заглушка этого устройства.
+         api: window.BirgeShell?.api,
+-        // Шапка, «Территория», панель/шторка и кнопки карты лежат поверх карты: открыв карточку проекта, R05 ставит
+-        // объект в свободную часть карты, а не под них.
+-        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools"),
++        // Шапка, «Территория», панель/шторка, кнопки карты и легенда R07 лежат поверх карты: открыв карточку проекта,
++        // R05 ставит объект в свободную часть карты, а подсказку жителя поднимает над легендой (R10 B-039).
++        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools, .r07-maplegend"),
          // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
          onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
 +        // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —
