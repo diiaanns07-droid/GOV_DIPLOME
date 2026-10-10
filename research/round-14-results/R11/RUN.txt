@@ -21,3 +21,7 @@ R11 · RUN — как посмотреть и проверить ui-kit и пе�
      python3 tests/civic/R11/i18n_tools.py review             # пересобрать KK_REVIEW.md для владельца
      python3 tests/civic/R11/i18n_tools.py sync               # если изменился research/round-14/categories_v2.json
    Правки владельца по казахскому — прямо в web/civic/i18n/kk.json, затем check и review.
+
+4. Разбор сборки R01 (B1/B2/FINAL) — сценарий демо 375/1366 × ru/kk, скриншоты и замеры:
+     NODE_PATH="$(npm root -g)" node tests/civic/R11/review/build_shots.cjs http://127.0.0.1:<порт> <папка> <метка> <файл-пароля>
+   Сервер сборки поднимается заранее из её worktree (CIVIC_DEMO=1, временная база, сотрудник — см. r14_b1.cjs R01).

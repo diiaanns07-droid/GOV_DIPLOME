@@ -300,5 +300,11 @@
  "forecast.level.medium": "R13 · блок прогноза в «Картине дня»",
  "forecast.level.low": "R13 · блок прогноза в «Картине дня»",
  "forecast.empty": "R13 · пустое состояние",
- "forecast.check": "R13 · R08 · под списком (только синтетика сейчас)"
+ "forecast.check": "R13 · R08 · под списком (только синтетика сейчас)",
+ "shell.map.fit_city": "R01 · кнопка карты ⌖ (aria-label, web/index.html)",
+ "shell.map.zoom_in": "R01 · кнопка карты + (aria-label)",
+ "shell.map.zoom_out": "R01 · кнопка карты − (aria-label)",
+ "shell.map.view3d": "R01 · кнопка карты «3D» (aria-label; на кнопке видна подпись 3D)",
+ "shell.map.rotate": "R01 · кнопка карты ↻ (aria-label)",
+ "shell.map.basemap_offline": "R01 · web/map.js:474, плашка #map-status (вместо «Подложка OpenFreeMap недоступна…»)"
 }

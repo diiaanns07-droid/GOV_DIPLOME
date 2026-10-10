@@ -4,8 +4,8 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "последний коммит ветки claude/r14-R11 (день 4: словари +48 ключей; ui-kit без изменений)",
-  "tested_sha": "cc77761 — ui-kit/i18n подложены в стенды R05, R06, R07, R08 (день 3)",
+  "code_sha": "последний коммит ветки claude/r14-R11 (день 4: словари 563 ключа — +48 R05/R13, +6 shell.map.* для R01; ui-kit без изменений)",
+  "tested_sha": "6102dfb + словари этого коммита — ui-kit/i18n подложены в сборку B1 R01 (вариант «kit», 38/38 шагов); cc77761 — в стенды R05–R08 (день 3)",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
     "c75a9ac UX_SPEC.md v1",
@@ -19,6 +19,7 @@
     "research/round-14-results/R11/kk_review_extra.md",
     "tests/civic/R11/",
     "tests/civic/R11/review/",
+    "tests/civic/R11/review/build_shots.cjs",
     "tests/civic/R11/review/measure.cjs",
     "tests/civic/R11/tools/make_proto_streets.py",
     "web/civic/i18n/i18n.js",
@@ -43,7 +44,8 @@
     "проверка казахского владельцем": "NOT_RUN — KK_REVIEW.md отправлен",
     "реальный телефон": "NOT_RUN — LOCAL-7",
     "день 3: ui-kit/i18n @cc77761 в стендах R05/R06/R07/R08, 122 кадра 375/1366 × ru/kk: 0 ключей вместо текста, 0 прокрутки вбок, 0 ошибок JS": "PASS",
-    "i18n_tools check (557 ключей ru=kk, параметры, формы, категории)": "PASS"
+    "i18n_tools check (563 ключа ru=kk, параметры, формы, категории)": "PASS",
+    "день 4: сборка B1 R01 @ e9b34a6 по сценарию демо (build_shots.cjs), 1366/375 × ru/kk, как в B1 и с ui-kit/i18n R11 @ 6102dfb: 38/38 шагов, 0 ключей вместо текста, 0 прокрутки вбок, 0 ошибок JS (только ожидаемые 503 targets/classify/similar)": "PASS"
   },
   "known_limits": [
     "Казахский перевод — R11 и черновики ролей, не проверен носителем; 29 мест ⚑ в KK_REVIEW.md",
@@ -51,5 +53,5 @@
     "Скриншоты — headless Chromium с программным WebGL; бледная карта после выбора точки у R09 не подтверждена (п. 12 дня 2)",
     "cat.sidewalks kk («Жаяу жүргіншілер жолы») длинный — ждёт решения владельца"
   ],
-  "next_step": "14.10: правки владельца в kk.json; ключи R05; проверка сборки B1 по UX_REVIEW дня 3"
+  "next_step": "Разбор B2 (R01 @ 915143f, шаг 1) тем же build_shots.cjs; правки владельца в kk.json; ключи R12 (civic-map.js) по мере прихода"
 }
