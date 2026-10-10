@@ -16,7 +16,7 @@ cd $WT; git pull origin claude/r14-R03
 & $PY -m ml.civic_classifier_v2.export_onnx --texts "$R02\ml\datasets\synth_v3\data\corpus_v3.jsonl" --n 200
 Шаг 8б (int8 на probe_v2 + разбор ошибок трансформера + таблицы):
 & $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2.json --preds-out ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl
-& $PY -m ml.civic_classifier_v2.analysis errors --preds ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_logreg.jsonl --probe "$PROBE\probe_v2.jsonl"
+& $PY -m ml.civic_classifier_v2.analysis errors --preds ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_logreg.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_heuristic.jsonl --probe "$PROBE\probe_v2.jsonl"
 & $PY -m ml.civic_classifier_v2.analysis tables
 Шаг 8в (перевод транслита перед трансформером):
 & $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --to-cyrillic --normalize-ref origin/claude/r14-R04 --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2_to_cyrillic.json
@@ -160,7 +160,7 @@ foreach ($f in 0.25, 0.5) { & $PY -m ml.civic_classifier_v2.experiments --synth-
 & $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2.json --preds-out ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl
 Сравнить macro-F1 с probe_v2_eval в results\final_model_meta.json (PyTorch: 0.828). Ожидается разница в пределах ~0.01–0.02.
 Затем разбор ошибок с примерами текстов трансформера (≈ 5 с):
-& $PY -m ml.civic_classifier_v2.analysis errors --preds ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_logreg.jsonl --probe "$PROBE\probe_v2.jsonl"
+& $PY -m ml.civic_classifier_v2.analysis errors --preds ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_logreg.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_heuristic.jsonl --probe "$PROBE\probe_v2.jsonl"
 & $PY -m ml.civic_classifier_v2.analysis tables
 
 8в. (≈ 1 мин) Поможет ли трансформеру перевод транслита в кириллицу (to_cyrillic R04), как словарю и логрегрессии:
