@@ -207,10 +207,15 @@ def _objects_kk(s: dict) -> str:
     return " ".join(parts)
 
 
+def render_parts(summary: dict, lang: str = "ru") -> list[dict]:
+    """Фразы сводки с ролью: new, main (главная проблема — интерфейс выделяет её), overdue, objects."""
+    if lang == "kk":
+        fns = (("new", _new_kk), ("main", _main_kk), ("overdue", _overdue_kk), ("objects", _objects_kk))
+    else:
+        fns = (("new", _new_ru), ("main", _main_ru), ("overdue", _overdue_ru), ("objects", _objects_ru))
+    return [{"role": role, "text": t} for role, fn in fns if (t := fn(summary))]
+
+
 def render(summary: dict, lang: str = "ru") -> str:
     """Сводка одним абзацем. lang: ru | kk."""
-    if lang == "kk":
-        parts = [_new_kk(summary), _main_kk(summary), _overdue_kk(summary), _objects_kk(summary)]
-    else:
-        parts = [_new_ru(summary), _main_ru(summary), _overdue_ru(summary), _objects_ru(summary)]
-    return " ".join(p for p in parts if p)
+    return " ".join(p["text"] for p in render_parts(summary, lang))

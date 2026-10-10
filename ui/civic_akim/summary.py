@@ -293,6 +293,7 @@ class AkimService:
         }
         result["demo"]["any"] = any(result["demo"].values())
         result["text"] = {"ru": text.render(result, "ru"), "kk": text.render(result, "kk")}
+        result["text_parts"] = {"ru": text.render_parts(result, "ru"), "kk": text.render_parts(result, "kk")}
         result["compute_ms"] = round((time.perf_counter() - started) * 1000, 1)
         return result
 

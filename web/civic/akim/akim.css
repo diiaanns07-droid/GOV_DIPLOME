@@ -1,0 +1,390 @@
+/*
+ * Birge · «Картина дня» (R08). Только раскладка поверх ui-kit R11: цвета, размеры и компоненты —
+ * из web/civic/ui-kit (tokens.css, components.css). Своих цветов нет.
+ * Главный размер — ноутбук 1366×768: заголовок, 4 числа, сводка и начало «Горячих мест» видны без прокрутки.
+ */
+
+.akim {
+  display: block;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--s-5) var(--s-6) var(--s-8);
+}
+
+/* ── шапка страницы ── */
+.akim__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-5);
+  margin-bottom: var(--s-4);
+}
+.akim__title {
+  margin: 0;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-head);
+  font-weight: var(--fw-bold);
+}
+.akim__title-date {
+  white-space: nowrap;
+}
+.akim__meta {
+  margin: var(--s-1) 0 0;
+}
+.akim__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-3);
+}
+.akim__field {
+  display: grid;
+  gap: 2px;
+}
+.akim__field-label {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  color: var(--c-text-2);
+}
+.akim__field input,
+.akim__field select {
+  min-height: 48px;
+  min-width: 168px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+}
+
+/* ── пометка «Пример» ── */
+.akim-demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-3);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+
+/* ── 4 крупных числа ── */
+.akim-kpis {
+  margin-bottom: var(--s-3);
+}
+.akim-kpi {
+  align-content: start;
+  min-height: 132px;
+}
+.akim-kpi .bk-kpi__delta {
+  font-size: var(--fs-body);
+}
+.akim-kpi__vs,
+.akim-kpi__extra {
+  font-size: var(--fs-caption);
+  color: var(--c-text-2);
+}
+.akim-kpi__extra {
+  margin-top: var(--s-1);
+}
+.akim-kpi__extra .bk-kpi__delta {
+  font-size: var(--fs-caption);
+}
+.akim-skel-kpi {
+  height: 96px;
+}
+
+/* ── карточки ── */
+.akim-card {
+  min-width: 0;
+}
+.akim-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
+  margin-bottom: var(--s-3);
+}
+.akim-card__hint {
+  flex-basis: 100%;
+  margin: 0;
+}
+.akim-card__sub {
+  margin: var(--s-4) 0 var(--s-2);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+}
+.akim-loading {
+  display: grid;
+  gap: var(--s-2);
+}
+
+/* ── сводка текстом ── */
+.akim-summary {
+  margin-bottom: var(--s-3);
+}
+.akim-summary__title {
+  margin: 0 0 var(--s-1);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  color: var(--c-text-2);
+}
+.akim-summary__text {
+  margin: 0;
+  max-width: 80ch;
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+}
+
+/* ── сетка блоков: слева «Горячие места», справа темы и районы, ниже объекты и предложения ── */
+.akim-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: var(--s-3);
+  align-items: start;
+}
+.akim-col {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+}
+.akim-summary__main {
+  font-weight: var(--fw-bold);
+}
+.akim-print-bottom {
+  display: none;
+  margin-top: var(--s-4);
+}
+
+/* ── горячие места ── */
+.akim-hot__list {
+  margin: 0 calc(-1 * var(--s-3));
+}
+.akim-hot__item {
+  color: inherit;
+}
+.akim-hot__rank {
+  flex: none;
+  width: 1.5em;
+  text-align: right;
+  color: var(--c-text-2);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+}
+.akim-hot__item .bk-heat {
+  flex: none;
+  min-width: 36px;
+  height: 32px;
+  font-size: var(--fs-body);
+}
+.akim-hot__sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--s-2);
+}
+.akim-hot__sub .bk-status {
+  padding: 1px 8px;
+}
+
+/* ── полосы тем и районов: подпись переносится, а не обрезается (казахский длиннее) ── */
+.akim-bars .bk-bar {
+  grid-template-columns: minmax(0, 13em) 1fr 3ch;
+}
+.akim-bars .bk-bar__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: normal;
+  overflow: visible;
+  line-height: 1.25;
+}
+.akim-bars .bk-bar__value {
+  text-align: right;
+}
+.akim-bar-btn {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--s-2);
+  margin: 0 calc(-1 * var(--s-2));
+  box-sizing: content-box;
+  border: 0;
+  border-radius: var(--r-s);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.akim-bar-btn:hover {
+  background: var(--c-paper);
+}
+.akim-bar-btn[aria-pressed="true"] {
+  background: var(--c-accent-soft);
+  font-weight: var(--fw-semi);
+}
+.akim-selected {
+  background: var(--c-accent);
+  color: var(--c-ink);
+}
+
+/* ── объекты и предложения ── */
+.akim-obj__list {
+  margin: 0 calc(-1 * var(--s-3));
+}
+.akim-obj {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  min-height: 56px;
+  padding: var(--s-2) var(--s-3);
+}
+.akim-obj > .bk-list__main {
+  flex: 1 1 14em; /* узко — метки уходят на следующую строку, а не сжимают название */
+}
+.akim-obj__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}
+.akim-stale {
+  background: var(--c-paper);
+  color: var(--c-text-2);
+}
+.akim-new {
+  margin-left: var(--s-2);
+  vertical-align: 2px;
+}
+.akim-proposals__new {
+  margin: 0 0 var(--s-2);
+  font-weight: var(--fw-semi);
+}
+
+/* ── «нет данных» и «пусто» внутри блока ── */
+.akim-unavailable {
+  display: flex;
+  gap: var(--s-2);
+  align-items: flex-start;
+  padding: var(--s-3);
+  border-radius: var(--r-m);
+  background: var(--c-warn-soft);
+  color: var(--c-warn);
+}
+.akim-empty {
+  padding: var(--s-4) var(--s-2);
+}
+.akim-empty .bk-empty__title {
+  font-size: var(--fs-body);
+}
+
+/* ── узкий экран: всё в одну колонку, числа 2×2 ── */
+@media (max-width: 1023px) {
+  .akim-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* колонки растворяются: порядок — горячие места, темы, районы, объекты, предложения */
+  .akim-col {
+    display: contents;
+  }
+  .akim-hot { order: 1; }
+  .akim-topics { order: 2; }
+  .akim-districts { order: 3; }
+  .akim-objects { order: 4; }
+  .akim-proposals { order: 5; }
+}
+@media (max-width: 720px) {
+  .akim {
+    padding: var(--s-3) var(--s-4) var(--s-6);
+  }
+  .akim__top {
+    align-items: stretch;
+  }
+  /* дата и район — каждый во всю ширину: «Барлық аудандар» не обрезается */
+  .akim__controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+  .akim__print {
+    display: none;
+  }
+  .akim-print-bottom {
+    display: flex;
+  }
+  /* дату сравнения уже показывает строка под заголовком — на телефоне не повторяем в каждой карточке */
+  .akim-kpi__vs {
+    display: none;
+  }
+  .akim__field input,
+  .akim__field select {
+    min-width: 0;
+    width: 100%;
+  }
+  .akim__today {
+    width: 100%;
+  }
+  .akim-kpi {
+    min-height: 0;
+    padding: var(--s-3);
+  }
+  .akim-bars .bk-bar {
+    grid-template-columns: minmax(0, 9.5em) 1fr 3ch;
+    gap: var(--s-2);
+  }
+  .akim-summary__text {
+    font-size: var(--fs-body);
+  }
+}
+
+/* ── печать: белый лист, без кнопок, блоки не рвутся ── */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  body,
+  .bk-app {
+    background: #fff !important;
+  }
+  .akim-print-hide,
+  .akim__controls,
+  .akim-print-bottom,
+  .bk-list__item > .ic,
+  .akim-skip {
+    display: none !important;
+  }
+  .akim {
+    max-width: none;
+    padding: 0;
+  }
+  .bk-kpi,
+  .akim-card {
+    box-shadow: none !important;
+    border: 1px solid #c9d3cb;
+    break-inside: avoid;
+  }
+  .akim-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .akim-hot {
+    grid-column: 1 / -1;
+  }
+  .bk-kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .bk-list__item,
+  .akim-bar-btn {
+    min-height: 0;
+  }
+  .bk-bar__fill,
+  .bk-heat,
+  .bk-tag,
+  .bk-status {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
