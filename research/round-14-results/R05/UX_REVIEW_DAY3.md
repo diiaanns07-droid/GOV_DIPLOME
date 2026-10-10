@@ -43,3 +43,14 @@
 | R10 B-022, LOCAL_B2 №3 (R01 + R05): на 375 у акимата нет каталога | Сделал R01 (кнопка «Что построить?» опускает шторку); со стороны R05 — патч `proposed_r01_b3.patch` (подсказка жителя не закрывает шторку) | `app_b2_smoke` на R01 2b9e837 + патч: `phone_ru_akimat_catalog_above_peek_sheet`, `phone_kk_resident_hint_*`; `r14_b2.cjs` R01 25/25 | `b2_375_ru_akimat.png`, `b2_375_kk_resident.png` |
 | R10 B-023 (R01 + R05 + R07): каталог закрывает низ карты | Каталог свёрнут в кнопку у R01; остаток — кнопка R01 над тостом R07 (не код R05) | — | — |
 | Самопроверка по UX_BRIEF п. 6: в kk названия улиц были русскими («Жанында: улица Сыганак») | Казахское название из OSM (`name:kk`, 13 из 59 улиц Нуры), иначе русское (как R12) | `browser_check`: `kk_street_names_from_osm_card_and_lighting_hint_1366_375`; `test_street_names_kk_only_from_osm` | `kk_street_{1366,375}_card.png` |
+
+## Ночь 2 · UX_REVIEW R11 (ночь, круги 1–4), R15 U1
+
+| Замечание | Что сделано | Проверка (PASS) | Скриншоты |
+|---|---|---|---|
+| R11 ночь B3 п. 5: «Жанында: улица Керей и Жанибек хандар» — по-русски в kk; «без kk — без улицы» | name:kk из OSM → правило R07 («… көшесі», «… даңғылы») → без улицы; язык подсказки освещения меняется при ҚАЗ/РУС | `browser_check`: `kk_no_russian_street_names_in_card_and_hint`, `kk_street_names_from_osm_card_and_lighting_hint_1366_375`; `test_core`: правило R07, все 59 улиц Нуры | `kk_street_rule_1366_card.png`, `kk_street_{1366,375}_card.png` |
+| R11 ночь B3 п. 6 (= R10 B-026) | см. «Ночь 1» | `r10_b026_*` | `b026_cluster_*` |
+| R11 ночь B3 п. 7: «Спортплощадка» упирается в края карточки 116 px | сделано в поставке 2 (`@container`, 14 px в узкой оболочке) | `catalog_labels_fit_cards_in_narrow_host`; `app_b2_smoke`: `catalog_labels_inside_cards_ru` | `b2_1366_ru_akimat.png` |
+| R11 ночь B3 п. 9: карточка проекта у жителя закрывает легенду R07 | строка в патче R01 b3: легенда скрыта, пока открыта карточка 3D | `app_b2_smoke`: `r07_legend_hidden_while_3d_card_open` | `b2_1366_ru_card.png` |
+| R11 ночь круг 4 п. 1: две разные карточки проекта у жителя | в FINAL с R06 — одна, карточка R06 внутри панели 3D (так уже работает поставка R05; своя — только без R06) | `r06_stand_check`: `r06_card_inside_3d_panel`, `resident_r06_card_no_staff_actions` | `r06_375_kk_resident_card.png` |
+| R15 U1: 429 показывается как сбой связи | «Слишком много действий подряд…» без «Повторить» (голос, «Поставить», «Удалить») | `browser_check`: `rate_limit_429_says_too_many_without_retry_ru_kk` | `toast_429_1366_kk.png` |
