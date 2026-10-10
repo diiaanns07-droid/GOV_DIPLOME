@@ -399,6 +399,7 @@ def render_errors(exp: dict, preds: dict[str, dict[str, dict]], probe: dict[str,
         out += _hard_rules_section(preds, probe)
         out += _suggest_section(preds, probe)
         out += _lang_section(preds, probe)
+        out += _calibration_section(preds, probe)
     elif not preds:
         out += ["## 4. Примеры ошибок", "",
                 "Нет файлов прогнозов по текстам. Для трансформера их даёт ноутбук: RUN.txt шаг 8б "
@@ -445,6 +446,37 @@ def _suggest_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) 
            "| Прогнозы | Порог | Доля текстов с предвыбором | Точность предвыбора | n |", "|---|---|---|---|---|"]
     for name, t, cov, prec, n in rows:
         out.append(f"| `{name}` | {t} | {cov:.0%} | {'—' if prec is None else f'{prec:.0%}'} | {n} |")
+    return out + [""]
+
+
+CALIB_BINS = (0.0, 0.5, 0.7, 0.9, 0.97, 1.0)
+
+
+def _calibration_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:
+    """Насколько score (softmax top-1) похож на вероятность верного ответа: по корзинам score — доля верных."""
+    from ml.civic_classifier_v2.metrics import ece
+    rows = []
+    for name, pr in preds.items():
+        items = [r for i, r in pr.items() if i in probe and r.get("score") is not None]
+        if not items:
+            continue
+        e = ece([int(r["pred"] == r["true"]) for r in items], [float(r["score"]) for r in items])
+        for lo, hi in zip(CALIB_BINS[:-1], CALIB_BINS[1:]):
+            b = [r for r in items if lo <= r["score"] < hi or (hi == 1.0 and r["score"] == 1.0)]
+            if b:
+                sc = sum(r["score"] for r in b) / len(b)
+                acc = sum(r["pred"] == r["true"] for r in b) / len(b)
+                rows.append((name, f"{lo:.2f}–{hi:.2f}", len(b), sc, acc, e))
+    if not rows:
+        return []
+    out = ["## 8. Калибровка score на probe_v2", "",
+           "score — softmax top-1. Если он калиброван, в корзине «0.90–0.97» верны около 93 % ответов. Разница «score − "
+           "доля верных» > 0 — модель самоуверенна. ECE — средняя по 10 равным корзинам разница, взвешенная по числу "
+           "текстов. Это тексты агента, не жителей: на людях калибровка не проверена.", "",
+           "| Прогнозы | score | n | Средний score | Доля верных | score − доля | ECE (10 корзин) |",
+           "|---|---|---|---|---|---|---|"]
+    for name, rng, n, sc, acc, e in rows:
+        out.append(f"| `{name}` | {rng} | {n} | {sc:.2f} | {acc:.0%} | {sc - acc:+.2f} | {_f(e)} |")
     return out + [""]
 
 

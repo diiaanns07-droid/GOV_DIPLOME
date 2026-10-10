@@ -112,7 +112,9 @@ smell_air, noise_safety, parking, other`). Используется в `POST /ap
    - Ранжирование моделей на синтетическом test и на probe не совпадает. Поэтому выбор рецепта нужно делать по
      независимому набору: сейчас это probe_v2, затем — тексты людей.
 7. **Калибровка:** ECE 0.144 на probe — score завышен; порог 0.3 подобран на синтетической validation
-   и на реальные тексты не переносится. `needs_review` = true всегда.
+   и на реальные тексты не переносится. `needs_review` = true всегда. У логрегрессии ECE 0.071; по корзинам
+   (ERROR_ANALYSIS.md, раздел 8): при score 0.90–0.97 верны 79 %, при ≥ 0.97 — 96 %. Таблица для трансформера
+   посчитается из прогнозов утреннего шага 8б.
 8. **Независимость probe проверена.** Сходство Jaccard символьных 3-грамм каждого текста probe с ближайшим
    обучающим текстом: llm_v1 train — медиана 0.17, максимум 0.37; synth_v3 train — медиана 0.17, максимум 0.56.
    Почти-дублей (≥ 0.6) нет.
@@ -214,5 +216,5 @@ smell_air, noise_safety, parking, other`). Используется в `POST /ap
 
 ## Воспроизведение
 `research/round-14-results/R03/RUN.txt` (ноутбук: тесты → проверка GPU → zero-shot (люди + probe_v2) → эксперимент → итоговая модель →
-ONNX → predict → commit результатов). Облако/CPU: `python -m pytest tests/civic/R03/round14 -q` (107 passed + 1 xfailed,
+ONNX → predict → commit результатов). Облако/CPU: `python -m pytest tests/civic/R03/round14 -q` (108 passed + 1 xfailed,
 крошечная случайная модель). Перегенерация таблицы: `python -m ml.civic_classifier_v2.evaluate render`.

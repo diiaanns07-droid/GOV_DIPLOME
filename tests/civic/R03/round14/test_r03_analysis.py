@@ -230,3 +230,12 @@ def test_lang_section_counts_and_weak_cells():
     assert "Дороги / kk — 3 из 8" in md and "в ячейке 8 текстов" in md
     row = next(line for line in md.splitlines() if line.startswith("| `m` |"))
     assert row.startswith("| `m` | 1.000 (8) | 0.545 (8) | — | -0.455 [") and row.endswith("— доказано |")
+
+
+def test_calibration_section_bins_and_ece():
+    probe = {str(i): {"id": str(i)} for i in range(10)}
+    rows = {str(i): {"true": "roads", "pred": "roads" if i < 5 else "waste", "score": 0.99} for i in range(10)}
+    rows["9"] = {"true": "roads", "pred": "roads", "score": 1.0}                 # 1.0 попадает в последнюю корзину
+    md = "\n".join(A._calibration_section({"m": rows}, probe))
+    assert "| `m` | 0.97–1.00 | 10 | 0.99 | 60% | +0.39 | 0.391 |" in md       # самоуверенна: 0.99 против 60 %
+    assert A._calibration_section({"h": {"0": {"true": "roads", "pred": "roads"}}}, {"0": {}}) == []   # без score
