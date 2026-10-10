@@ -1,0 +1,268 @@
+// R05 · 3D-превью · ядро (build3d-core.js) — без браузера.
+// Запуск из корня репозитория:  node --test tests/civic/R05/build3d/
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+
+const require = createRequire(import.meta.url);
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
+const C = require(path.join(ROOT, "web/civic/build3d/build3d-core.js"));
+const STREETS = JSON.parse(readFileSync(path.join(ROOT, "web/civic/build3d/data/nura-streets.json"), "utf8"));
+const DISTRICTS = JSON.parse(readFileSync(path.join(ROOT, "web/civic/build3d/data/astana-districts.json"), "utf8"));
+const FIXTURE = JSON.parse(readFileSync(path.join(ROOT, "web/civic/build3d/data/proposals.fixture.json"), "utf8"));
+const NURA = [71.3995, 51.1268];
+
+// Расстояние (м) от точки до ломаной в lon/lat — через локальные метры вокруг точки.
+function distToLine(pt, coords) {
+  const local = coords.map((c) => C.toLocal(pt, c));
+  return C.projectOnPolyline([0, 0], local).dist;
+}
+
+test("меркатор: туда-обратно без потерь, метры совпадают с расстоянием по Земле", () => {
+  for (const d of [[10, 0], [0, 10], [350, -420], [-1200, 800]]) {
+    const ll = C.fromLocal(NURA, d);
+    const back = C.toLocal(NURA, ll);
+    assert.ok(Math.hypot(back[0] - d[0], back[1] - d[1]) < 1e-6, "round trip " + d);
+    const h = C.haversineM(NURA, ll);
+    const e = Math.hypot(d[0], d[1]);
+    assert.ok(Math.abs(h - e) / e < 0.002, `масштаб: ${h} vs ${e}`);
+  }
+  // Коэффициент как у MapLibre: 1 / (2π·6371008.8·cos φ)
+  assert.equal(C.meterInMerc(0), 1 / (2 * Math.PI * 6371008.8));
+});
+
+test("точки через ~30 м: оба конца, равный шаг, единичное направление", () => {
+  const pts = C.sampleAlong([[0, 0], [100, 0]], 30);
+  assert.equal(pts.length, 4); // 100 / 30 ≈ 3 промежутка по 33.3 м
+  assert.deepEqual(pts[0].p, [0, 0]);
+  assert.ok(Math.abs(pts[3].p[0] - 100) < 1e-9);
+  assert.ok(Math.abs(pts[1].p[0] - 100 / 3) < 1e-9);
+  const bent = C.sampleAlong([[0, 0], [60, 0], [60, 60]], 30);
+  assert.equal(bent.length, 5);
+  for (const s of bent) assert.ok(Math.abs(Math.hypot(...s.dir) - 1) < 1e-9);
+  assert.deepEqual(bent[3].p, [60, 30]);
+  assert.deepEqual(C.sampleAlong([[5, 5], [5, 5]], 30), []);
+  assert.equal(C.sampleAlong([[0, 0], [10, 0]], 30).length, 2); // короче шага — два столба по концам
+});
+
+test("проекция на ломаную и вырезка участка", () => {
+  const line = [[0, 0], [10, 0], [10, 10]];
+  const pr = C.projectOnPolyline([12, 4], line);
+  assert.equal(pr.seg, 1);
+  assert.ok(Math.abs(pr.dist - 2) < 1e-9);
+  assert.ok(Math.abs(pr.along - 14) < 1e-9);
+  const part = C.sliceAlong(line, 5, 15);
+  assert.deepEqual(part, [[5, 0], [10, 0], [10, 5]]);
+});
+
+test("участок улицы: по настоящим рёбрам OSM, отклонение от формы ребра ≤ 5 м (CONTRACT §8)", () => {
+  const idx = new C.StreetIndex(STREETS);
+  const byId = Object.fromEntries(idx.edges.map((e) => [e.id, e]));
+  // Две точки на ул. Сыганак (рёбра osm-w1328815797-6 и -8), чуть в стороне от оси.
+  const a = byId["osm-w1328815797-6"].geom[0];
+  const b = byId["osm-w1328815797-8"].geom[1];
+  const sec = idx.section([a[0] + 0.00003, a[1] + 0.00002], b);
+  assert.equal(sec.ok, true, JSON.stringify(sec));
+  assert.equal(sec.name, "улица Сыганак");
+  assert.ok(sec.length_m > 150 && sec.length_m < 260, "длина " + sec.length_m);
+  assert.ok(sec.edge_ids.every((id) => /^osm-w\d+-\d+$/.test(id)));
+  // Каждая вершина и точки через 5 м — не дальше 0.5 м от рёбер графа (допуск контракта — 5 м).
+  const edgesGeom = sec.edge_ids.map((id) => byId[id].geom);
+  const near = (p) => Math.min(...edgesGeom.map((g) => distToLine(p, g)));
+  for (const p of sec.coords) assert.ok(near(p) < 0.5, "вершина " + near(p));
+  const local = sec.coords.map((c) => C.toLocal(sec.coords[0], c));
+  for (const s of C.sampleAlong(local, 5)) {
+    const ll = C.fromLocal(sec.coords[0], s.p);
+    assert.ok(near(ll) < 0.5, "точка " + near(ll));
+  }
+  // В обратную сторону — та же длина.
+  const back = idx.section(b, [a[0] + 0.00003, a[1] + 0.00002]);
+  assert.equal(back.ok, true);
+  assert.ok(Math.abs(back.length_m - sec.length_m) < 1);
+});
+
+test("участок улицы: понятные отказы", () => {
+  const idx = new C.StreetIndex(STREETS);
+  const e = idx.edges.find((x) => x.id === "osm-w1189551423-0");
+  assert.equal(idx.section(e.geom[0], C.fromLocal(e.geom[0], [3, 0])).reason, "too_short");
+  assert.equal(idx.section([71.2, 51.0], e.geom[1]).reason, "far_from_street");
+  const far = idx.section(e.geom[0], [71.3, 51.0]);
+  assert.deepEqual([far.ok, far.reason, far.end], [false, "far_from_street", "b"]);
+  // Конец на другой улице.
+  const other = idx.edges.find((x) => x.name && x.name !== e.name && C.haversineM(x.geom[0], e.geom[0]) < 600);
+  const r = idx.section(e.geom[0], other.geom[0]);
+  if (!r.ok) assert.ok(["other_street", "no_path", "too_long"].includes(r.reason), r.reason);
+  // Слишком длинный участок (> 900 м) по одной улице.
+  const same = idx.edges.filter((x) => x.name === "проспект Туран");
+  let A = same[0].geom[0], B = null;
+  for (const x of same) for (const c of x.geom) if (C.haversineM(A, c) > 1300) B = c;
+  if (B) {
+    const long = idx.section(A, B);
+    assert.equal(long.ok, false);
+    assert.ok(["too_long", "no_path"].includes(long.reason), long.reason);
+  }
+});
+
+test("ближайшая улица и направление для остановки", () => {
+  const idx = new C.StreetIndex(STREETS);
+  const stop = FIXTURE.proposals.find((p) => p.kind === "stop");
+  const n = idx.nearest(stop.geometry.coordinates, 60);
+  assert.ok(n, "улица рядом с остановкой");
+  assert.ok(n.dist <= 60, "остановка не дальше 60 м от улицы (CONTRACT §8): " + n.dist);
+  assert.ok(n.bearing >= 0 && n.bearing < 360);
+});
+
+test("районы: точка в Нуре, за городом — null", () => {
+  assert.equal(C.districtAt(DISTRICTS, NURA), "nura");
+  assert.equal(C.districtAt(DISTRICTS, [71.0, 51.1]), null);
+  assert.equal(C.districtAt(DISTRICTS, [51.1268, 71.3995]), null); // перепутаны lon/lat
+});
+
+test("проверка места: наложение с учётом поворота, за городом, лимит 20", () => {
+  const sq = (id, c, r = 0) => ({ id, kind: "square", geometry: { type: "Point", coordinates: c }, rotation_deg: r });
+  const a = sq("a", NURA);
+  assert.equal(C.checkPlacement(sq("b", C.fromLocal(NURA, [30, 0])), [a], DISTRICTS).reason, "overlap");
+  assert.equal(C.checkPlacement(sq("b", C.fromLocal(NURA, [41, 0])), [a], DISTRICTS).ok, true);
+  // Повернутый на 90° сквер 40×30 занимает 30 по x: в 36 м уже не задевает.
+  assert.equal(C.checkPlacement(sq("b", C.fromLocal(NURA, [36, 0]), 90), [sq("a", NURA, 90)], DISTRICTS).ok, true);
+  assert.equal(C.checkPlacement(sq("b", C.fromLocal(NURA, [36, 0]), 0), [sq("a", NURA, 0)], DISTRICTS).reason, "overlap");
+  assert.equal(C.checkPlacement(sq("b", [71.0, 51.1]), [], DISTRICTS).reason, "outside_city");
+  const many = Array.from({ length: 20 }, (_, i) => sq("x" + i, C.fromLocal(NURA, [i * 100, 500])));
+  assert.equal(C.checkPlacement(sq("b", NURA), many, DISTRICTS).reason, "limit");
+  // Освещение не мешает объектам (оно вдоль улицы), но тоже считается в лимит.
+  const light = { id: "l", kind: "lighting", geometry: { type: "LineString", coordinates: [NURA, C.fromLocal(NURA, [100, 0])] } };
+  assert.equal(C.checkPlacement(sq("b", NURA), [light], DISTRICTS).ok, true);
+});
+
+test("запись предложения: неверные данные не рисуются", () => {
+  assert.equal(C.normalizeProposal({ kind: "tower", geometry: { type: "Point", coordinates: NURA } }), null);
+  assert.equal(C.normalizeProposal({ kind: "square", geometry: { type: "Point", coordinates: [NaN, 51] } }), null);
+  assert.equal(C.normalizeProposal({ kind: "square", geometry: { type: "Point", coordinates: [71, 95] } }), null);
+  assert.equal(C.normalizeProposal({ kind: "lighting", geometry: { type: "Point", coordinates: NURA } }), null);
+  assert.equal(C.normalizeProposal({ kind: "lighting", geometry: { type: "LineString", coordinates: [NURA] } }), null);
+  assert.equal(C.normalizeProposal(null), null);
+  const p = C.normalizeProposal({ id: 5, kind: "stop", geometry: { type: "Point", coordinates: ["71.4", "51.12"] }, rotation_deg: -30, votes_up: "3" });
+  assert.equal(p.id, "5");
+  assert.equal(p.rotation_deg, 330);
+  assert.equal(p.votes_up, 3);
+  assert.equal(p.status, "proposal");
+  assert.equal(p.year, 2027);
+  assert.deepEqual(p.geometry.coordinates, [71.4, 51.12]);
+});
+
+test("фикстура предложений по CONTRACT §7: обязательные поля, примеры помечены demo", () => {
+  assert.ok(FIXTURE.proposals.length >= 1);
+  for (const raw of FIXTURE.proposals) {
+    for (const k of ["id", "kind", "geometry", "status", "votes_up", "votes_down"]) assert.ok(k in raw, k);
+    assert.equal(raw.status, "proposal");
+    assert.equal(raw.demo, true);
+    assert.ok(C.normalizeProposal(raw), raw.id);
+    const pts = raw.geometry.type === "Point" ? [raw.geometry.coordinates] : raw.geometry.coordinates;
+    for (const c of pts) assert.ok(C.districtAt(DISTRICTS, c), "внутри Астаны " + c);
+  }
+});
+
+function memStorage() {
+  const m = {};
+  return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => (m[k] = String(v)), _m: m };
+}
+
+test("локальная заглушка: примеры, создание, удаление, возврат, голос с устройства", async () => {
+  const storage = memStorage();
+  const s = C.createLocalStore({ storage, fixture: FIXTURE });
+  assert.equal(s.mode, "local");
+  const first = await s.list();
+  assert.equal(first.length, FIXTURE.proposals.length);
+  const created = await s.create({ kind: "square", geometry: { type: "Point", coordinates: NURA }, rotation_deg: 15, votes_up: 99 });
+  assert.equal(created.votes_up, 0, "новое предложение начинает с нуля голосов");
+  assert.ok(created.created_at);
+  // Вторая «вкладка» читает то же хранилище — после перезагрузки объект на месте.
+  const s2 = C.createLocalStore({ storage, fixture: FIXTURE });
+  assert.equal((await s2.list()).length, FIXTURE.proposals.length + 1);
+  let v = await s.vote(created.id, 1, "dev-1");
+  assert.deepEqual([v.votes_up, v.votes_down, v.my_vote], [1, 0, 1]);
+  v = await s.vote(created.id, 1, "dev-1");
+  assert.deepEqual([v.votes_up, v.votes_down], [1, 0], "повторный голос «за» не добавляет");
+  v = await s.vote(created.id, -1, "dev-1");
+  assert.deepEqual([v.votes_up, v.votes_down, v.my_vote], [0, 1, -1], "голос переносится");
+  await assert.rejects(s.vote(created.id, 2), /invalid/);
+  await s.remove(created.id);
+  assert.equal((await s.list()).length, FIXTURE.proposals.length);
+  const back = await s.restore(v);
+  assert.equal(back.id, created.id);
+  assert.equal(back.my_vote, -1);
+  // Испорченные данные в хранилище → снова примеры, без падения.
+  storage.setItem(C.LOCAL_KEY, "{oops");
+  assert.equal((await C.createLocalStore({ storage, fixture: FIXTURE }).list()).length, FIXTURE.proposals.length);
+});
+
+test("локальная заглушка: не больше 20 объектов", async () => {
+  const s = C.createLocalStore({ storage: memStorage(), fixture: { proposals: [] } });
+  for (let i = 0; i < 20; i++) await s.create({ kind: "stop", geometry: { type: "Point", coordinates: C.fromLocal(NURA, [i * 20, 0]) } });
+  await assert.rejects(s.create({ kind: "stop", geometry: { type: "Point", coordinates: NURA } }), /limit/);
+});
+
+function fakeFetch(routes, log) {
+  return async (url, init) => {
+    log.push([init.method, url, init.body ? JSON.parse(init.body) : null]);
+    const key = init.method + " " + url.replace(/\?.*$/, "");
+    const r = routes[key] || routes["*"];
+    if (r === "network") throw new TypeError("Failed to fetch");
+    const [status, body] = typeof r === "function" ? r(init) : r;
+    return { ok: status >= 200 && status < 300, status, text: async () => (body == null ? "" : typeof body === "string" ? body : JSON.stringify(body)) };
+  };
+}
+
+test("API R06: список, создание, голос с device_id, удаление; ошибки с кодом", async () => {
+  const log = [];
+  const item = { id: "p1", kind: "square", geometry: { type: "Point", coordinates: NURA }, status: "proposal", votes_up: 2, votes_down: 0 };
+  const api = C.createApiStore({
+    fetch: fakeFetch(
+      {
+        "GET /api/civic/v2/proposals": [200, { items: [item, { kind: "bad" }] }],
+        "POST /api/civic/v2/proposals": (init) => [201, Object.assign({ id: "p2", votes_up: 0, votes_down: 0 }, JSON.parse(init.body))],
+        "POST /api/civic/v2/proposals/p1/vote": [200, { proposal: Object.assign({}, item, { votes_up: 3 }) }],
+        "DELETE /api/civic/v2/proposals/p1": [204, null],
+        "DELETE /api/civic/v2/proposals/zz": [404, { error: { code: "not_found" } }],
+      },
+      log
+    ),
+  });
+  const list = await api.list([71.3, 51.1, 71.5, 51.2]);
+  assert.equal(list.length, 1, "неверная запись отброшена");
+  assert.match(log[0][1], /bbox=71\.300000,51\.100000,71\.500000,51\.200000/);
+  const created = await api.create({ kind: "stop", geometry: { type: "Point", coordinates: NURA }, rotation_deg: 30 });
+  assert.equal(created.id, "p2");
+  assert.equal(log[1][2].rotation_deg, 30);
+  const voted = await api.vote("p1", 1, "dev-9");
+  assert.equal(voted.votes_up, 3);
+  assert.deepEqual(log[2][2], { value: 1, device_id: "dev-9" });
+  assert.equal(await api.remove("p1"), true);
+  await assert.rejects(api.remove("zz"), (e) => e.code === "not_found" && e.status === 404);
+});
+
+test("авто: нет адреса /proposals (404/503) или сервера — честно переходим на заглушку; 500 — ошибка", async () => {
+  for (const r of [[404, "not found"], [503, { error: { code: "module_unavailable" } }], "network", [200, "<html>"]]) {
+    const s = C.createAutoStore({ fetch: fakeFetch({ "*": r }, []), storage: memStorage(), fixture: FIXTURE });
+    const items = await s.list();
+    assert.equal(s.mode, "local", JSON.stringify(r));
+    assert.equal(items.length, FIXTURE.proposals.length);
+    const c = await s.create({ kind: "square", geometry: { type: "Point", coordinates: NURA } });
+    assert.ok(c.id);
+  }
+  const bad = C.createAutoStore({ fetch: fakeFetch({ "*": [500, { error: { code: "internal" } }] }, []), storage: memStorage(), fixture: FIXTURE });
+  await assert.rejects(bad.list(), (e) => e.status === 500);
+  const ok = C.createAutoStore({ fetch: fakeFetch({ "*": [200, { items: [] }] }, []), storage: memStorage(), fixture: FIXTURE });
+  assert.deepEqual(await ok.list(), []);
+  assert.equal(ok.mode, "api");
+});
+
+test("устройство: один id на браузер", () => {
+  const st = memStorage();
+  const a = C.getDeviceId(st);
+  assert.match(a, /^dev-/);
+  assert.equal(C.getDeviceId(st), a);
+});

@@ -10,6 +10,7 @@
       Запуск: python -m http.server 8765 -d web  →  http://127.0.0.1:8765/civic/build3d/demo.html
       Параметры адреса: ?lang=kk · ?role=resident · ?pitch=0|60 · ?bearing=-20 · ?zoom=16.4
                         ?center=71.398,51.1275 · ?store=local|api|auto · ?reset=1 (стереть сохранённое)
+                        для проверок: ?build_ms=6000 (медленная постройка) · ?three=/нет.js (ошибка загрузки 3D)
     -->
     <link rel="stylesheet" href="/vendor/maplibre-gl.css" />
     <link rel="stylesheet" href="/civic/ui-kit/tokens.css" />
@@ -182,6 +183,8 @@
                 map: map,
                 role: role,
                 store: q.get("store") || "auto",
+                buildMs: num("build_ms", 0) || undefined, // только для проверок: замедлить анимацию постройки
+                threeUrl: q.get("three") || undefined, // только для проверок: состояние «не загрузилось»
                 onToolChange: function (active, kind) {
                   document.body.setAttribute("data-tool", active ? kind : "");
                 },

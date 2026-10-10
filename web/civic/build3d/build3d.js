@@ -20,7 +20,8 @@
  *   apiPrefix  — "/api/civic/v2";  threeUrl — "/vendor/three/three.module.min.js";
  *   dataUrl    — папка data/ модуля ("/civic/build3d/data/");
  *   streets    — свой источник улиц {nearest(lngLat, maxM, name?), section(a, b)} (например, R12 /targets);
- *   year       — год на табличке (2027);  autoZoom — приблизить карту до 15.5, если она дальше (true);
+ *   year       — год на табличке (2027);  autoZoom — приблизить карту, если она дальше 15.5 (true);
+ *   buildMs    — длительность анимации постройки (1200 мс);
  *   onToolChange(active, kind) — модуль взял/отдал щелчки по карте (R01: map.setInteractionEnabled);
  *   onSelect(proposal|null)    — выбрано предложение (R06 может показать свою карточку);
  *   renderCard: false          — не показывать встроенную карточку (её рисует R06).
@@ -278,6 +279,7 @@
       dataUrl: (opts.dataUrl || "/civic/build3d/data/").replace(/\/?$/, "/"),
       iconsUrl: opts.iconsUrl || "/civic/ui-kit/icons.svg",
       year: opts.year || 2027,
+      buildMs: opts.buildMs > 0 ? opts.buildMs : BUILD_MS,
       autoZoom: opts.autoZoom !== false,
       renderCard: opts.renderCard !== false,
       storage: opts.storage || safeLocalStorage(),
@@ -972,7 +974,7 @@
       obj.dust = makeDust(obj);
       anims.push({
         update: function (now) {
-          var k = Math.min(1, (now - t0) / BUILD_MS);
+          var k = Math.min(1, (now - t0) / o.buildMs);
           var reveal = easeInOutCubic(Math.min(1, k / 0.85)) * H;
           revealMats.forEach(function (m) {
             m.userData.reveal.value = k >= 1 ? 1e4 : reveal;
@@ -1116,10 +1118,11 @@
       items.forEach(function (it) {
         var lab = it.obj.label;
         var compact = zoom < 14;
+        var hiddenNow = lab.classList.contains("b3d-label--hidden"); // строится/удаляется — места не занимает
         var lw = compact ? 18 : lab.offsetWidth || 110,
           lh = compact ? 18 : lab.offsetHeight || 26;
         var rect = { x: it.sp.x - lw / 2, y: it.sp.y - lh, w: lw, h: lh };
-        if (!compact) {
+        if (!compact && !hiddenNow) {
           for (var i = 0; i < placed.length; i++) {
             var r = placed[i];
             if (rect.x < r.x + r.w + 4 && rect.x + rect.w + 4 > r.x && rect.y < r.y + r.h + 2 && rect.y + rect.h + 2 > r.y) {
@@ -1129,7 +1132,7 @@
           }
         }
         lab.classList.toggle("b3d-label--dot", compact);
-        if (!compact) placed.push(rect);
+        if (!compact && !hiddenNow) placed.push(rect);
         lab.style.transform = "translate(" + Math.round(it.sp.x) + "px," + Math.round(it.sp.y) + "px) translate(-50%,-100%)";
         lab.style.zIndex = String(1000 + Math.round(it.sp.y));
       });

@@ -30,7 +30,7 @@
     sports: { id: "sports", icon: "ball", key: "proposal.kind.sports", w: 32, d: 20, h: 3.2 },
     stop: { id: "stop", icon: "bus", key: "proposal.kind.stop", w: 12, d: 4.5, h: 3.2 },
     // Освещение — не прямоугольник, а линия вдоль участка улицы: столбы примерно через 30 м.
-    lighting: { id: "lighting", icon: "bulb", key: "proposal.kind.lighting", line: true, step: 30, h: 8 },
+    lighting: { id: "lighting", icon: "bulb", key: "proposal.kind.lighting", line: true, step: 30, h: 9 },
   };
   var KIND_ORDER = ["square", "playground", "sports", "stop", "lighting"];
   var MAX_OBJECTS = 20;

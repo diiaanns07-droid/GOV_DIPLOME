@@ -152,6 +152,14 @@
 .b3d-act {
   flex: 1 1 auto;
 }
+/* Слова переносятся целиком (казахские длиннее), число голосов не разрывается. */
+.b3d .bk-btn {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.b3d .bk-btn__count {
+  white-space: nowrap;
+}
 .b3d-act[data-action="place"] {
   flex: 1 1 160px;
 }
@@ -230,6 +238,7 @@
 .b3d-labels {
   position: absolute;
   inset: 0;
+  z-index: 0; /* свой контекст наложения: подписи всегда под панелью и тостами модуля */
   overflow: hidden;
   pointer-events: none;
 }
@@ -324,6 +333,11 @@
     grid-template-columns: 1fr 1fr;
   }
   .b3d-actions .bk-btn {
+    min-height: var(--tap-lg);
+    padding-inline: var(--s-3);
+  }
+  .b3d-vote {
+    flex-basis: 100%;
     min-height: var(--tap-lg);
   }
   .b3d-act[data-action="place"] {

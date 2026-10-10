@@ -87,16 +87,18 @@ def simplify(ring, tol_m):
     return [[r(ring[i][0]), r(ring[i][1])] for i in range(len(ring)) if keep[i]]
 
 
-def dump(name, data):
-    path = os.path.join(OUT, name)
+def dump(name, data, out_dir=None):
+    path = os.path.join(out_dir or OUT, name)
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False, separators=(",", ":"))
         fh.write("\n")
     return path, os.path.getsize(path)
 
 
-def main():
-    os.makedirs(OUT, exist_ok=True)
+def main(out_dir=None):
+    """out_dir — куда писать (по умолчанию web/civic/build3d/data; тест пишет во временную папку)."""
+    out_dir = out_dir or OUT
+    os.makedirs(out_dir, exist_ok=True)
     with open(GRAPH, encoding="utf-8") as fh:
         graph = json.load(fh)
     with open(GEOFENCE, encoding="utf-8") as fh:
@@ -141,7 +143,7 @@ def main():
         "nodes": nodes,
         "edges": edges,
     }
-    print(dump("nura-streets.json", streets), len(edges), "edges", len(names), "names")
+    print(dump("nura-streets.json", streets, out_dir), len(edges), "edges", len(names), "names")
 
     # 2. Районы: упрощённые кольца + bbox города.
     districts = []
@@ -157,7 +159,7 @@ def main():
         "source": {"path": "data/civic/astana/geofence.json", "license": "ODbL-1.0", "attribution": ATTRIBUTION},
         "districts": districts,
     }
-    print(dump("astana-districts.json", dump_d), sum(len(rg) for d in districts for rg in d["rings"]), "points")
+    print(dump("astana-districts.json", dump_d, out_dir), sum(len(rg) for d in districts for rg in d["rings"]), "points")
 
     # 3. Подложка demo.html: все рёбра фокус-области (без имён) + именованные отдельно.
     named, other = [], []
@@ -176,8 +178,8 @@ def main():
         "other": other,
         "nura": nura[0]["rings"] if nura else [],
     }
-    print(dump("demo-basemap.json", basemap), len(named), "named", len(other), "other")
-    print(write_demo_proposals(graph))
+    print(dump("demo-basemap.json", basemap, out_dir), len(named), "named", len(other), "other")
+    print(write_demo_proposals(graph, out_dir))
 
 
 # ── Примеры предложений ──
@@ -247,7 +249,7 @@ def demo_proposals(graph):
     ]
 
 
-def write_demo_proposals(graph):
+def write_demo_proposals(graph, out_dir=None):
     data = {
         "schema": "birge-proposals-fixture-v1",
         "purpose": "Заглушка GET /api/civic/v2/proposals (CONTRACT §7) до подключения R06. Только примеры (demo: true).",
@@ -255,7 +257,7 @@ def write_demo_proposals(graph):
                    "edges": LIGHT_EDGES + [STOP_EDGE], "license": "ODbL-1.0", "attribution": ATTRIBUTION},
         "proposals": demo_proposals(graph),
     }
-    path = os.path.join(OUT, "proposals.fixture.json")
+    path = os.path.join(out_dir or OUT, "proposals.fixture.json")
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False, indent=1)
         fh.write("\n")
