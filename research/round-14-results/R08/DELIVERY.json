@@ -4,8 +4,8 @@
  "branch": "claude/r14-R08",
  "base_sha": "2131c15 (claude/round-14-package)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "828ee0d",
- "tested_sha": "828ee0d",
+ "code_sha": "53ec68d",
+ "tested_sha": "53ec68d",
  "tested_with": {
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 328e793 (код 597ec4f) — временная копия, в git R08 не входит; также проверено с 35e6feb",
   "r11_ui_kit_i18n": "web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 8451468 — demo_server.py --kit-dir",
@@ -66,7 +66,7 @@
   "В папке tests/civic/R08 сборки R01 лежат тесты классификатора v1 раунда 13 (test_r08_train/corpus/contract/reports/feedback_integration) — не мои, R08 их не трогает (INTEGRATION п. 8)."
  ],
  "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 328e793 (код 597ec4f: правдоподобные числа и подписи мест), R06 @ 224075b, R11 @ последний; прогнать pytest tests/civic/R08 и node tests/civic/R08/shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, B-029 и п. 13 R11 на FINAL.",
- "delivery": "3 (ночь, круги 1–4): R15/R01 I-02 ошибка сбора, B-018, п. 13 R11, консоль CP1251, проверка в сборке R01, печать из оболочки, тихое обновление, пустой реестр объектов",
+ "delivery": "3 (ночь, круги 1–5): + телефон — числа на первом экране, опция titleTag для оболочки",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -110,6 +110,10 @@
   "night_r4": {
    "R01 BUGS I-02: test_r08_heat_match падает при сборе": "исправлено ещё в 463901f (круг 1); в сборке с R07 597ec4f — PASS",
    "Своя находка: пустой реестр объектов района → «Все объекты идут по графику»": "теперь «Пока пусто» (828ee0d), ui_check"
+  },
+  "night_r5": {
+   "Своя находка: на телефоне до чисел ~170 px полей даты и района": "подписи полей — только для диктора, 4 числа на первом экране 375 px",
+   "Своя находка: в оболочке три h1": "опция titleTag; R01 — одна строка (INTEGRATION 4д), проверено в сборке"
   }
  }
 }
