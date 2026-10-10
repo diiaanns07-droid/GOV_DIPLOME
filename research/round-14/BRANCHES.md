@@ -16,6 +16,7 @@ research/handoffs/astana/<роль>/round14/STATUS.md в этой ветке и 
 | R09 Жалоба жителя v2 | claude/modest-shannon-0ki93p | ГОТОВО (код da295be, реальные объекты OSM): ждёт R01, R04, R12 /targets |
 | R10 Приёмка | — | запуск 13 окт |
 | R11 UX и казахский | claude/r14-R11 | день 1 закрыт: UX_SPEC v1.1, ui-kit, 257 ключей ru/kk, KK_REVIEW |
+| R13 Прогноз (прототип) | claude/r14-R13 | запуск 10 окт, b4 (новая сессия) |
 | R12 Точность карты | claude/tender-brahmagupta-ef5ztl | geo-данные из реальных OSM (940 остановок, 334 площадки…), карта по OSM |
 
 Входные данные LOCAL готовы в claude/round-14-package @ bdf12c8: data/civic/astana/osm-objects/ (12 наборов OSM, 3513 объектов), web/vendor/three/ (three.js 0.169.0), research/round-14-results/LOCAL/ENV.md (Python 3.12 + CUDA, модели в кэше). Забрать в свою ветку: git fetch origin claude/round-14-package && git checkout origin/claude/round-14-package -- <путь>
