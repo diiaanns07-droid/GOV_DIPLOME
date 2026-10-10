@@ -323,6 +323,20 @@ const tap = async (page, x, y) => { if (page.viewportSize().width < 1024) await 
 // 3D-проектов двигаются вместе с картой — обычный click Playwright ждёт «неподвижности» и не срабатывает.
 const tapEl = async (page, loc) => { const b = await loc.boundingBox().catch(() => null); if (!b) return false; await tap(page, b.x + b.width / 2, b.y + b.height / 2); return true; };
 
+// Значок выбранного места (R07 помечает его, пока открыта карточка): на экране и ничем не закрыт — ни шторкой,
+// ни шапкой, ни кнопкой поверх карты (R11 ночь, круг 16: на телефоне «Что построить?» вставала ровно на него).
+async function selectedPlace(page) {
+  return page.evaluate(() => {
+    const el = document.querySelector(".r07-badge--selected");
+    if (!el || !el.getClientRects().length) return { badge: false };
+    const b = el.getBoundingClientRect(), cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+    const inView = cx >= 0 && cy >= 0 && cx <= innerWidth && cy <= innerHeight;
+    const over = inView ? document.elementFromPoint(cx, cy) : null;
+    const who = (n) => ((n.closest("button, [role=button], a") || n).textContent || "").trim().slice(0, 40) || n.getAttribute("class") || n.tagName;
+    return { badge: true, inView, at: [Math.round(cx), Math.round(cy)], covered: over && !el.contains(over) ? who(over) : null };
+  });
+}
+
 // Показать точку на карте и вернуть её место на экране: что лежит поверх (холст или значок) и ближайшую
 // свободную точку холста рядом. Панель (ноутбук) или шторка (телефон) может закрывать точку — тогда карта
 // сдвигается так, чтобы точка оказалась на открытой части карты.
@@ -515,6 +529,28 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const back = !!(await firstVisible(page.getByRole("button", { name: allCatRe })));
   step("3", "фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории»", opened && !!chip && reset && back, { opened, chip: !!chip, reset, back });
 
+  // 3в. «Горячие места» → место из списка: камера летит к нему, открывается карточка — значок места остаётся видно
+  //     (так ведущий открывает место в шаге 3; R11 ночь, круг 16 — на телефоне его закрывала «Что построить?»).
+  const hotRe = new RegExp("^" + esc(T(dict, "heat.hot_title", lang === "kk" ? "Шағымы көп орындар" : "Горячие места")), "i");
+  const hotItems = page.locator("section").filter({ has: page.getByRole("heading", { name: hotRe }) }).getByRole("listitem").getByRole("button");
+  const hot = [];
+  let hotShot;
+  // Число пунктов — до первого нажатия: пока открыта карточка, списка на экране нет.
+  const nHot = Math.min(await hotItems.count().catch(() => 0), 3);
+  for (let i = 0; i < nHot; i++) {
+    await page.keyboard.press("Escape"); await sleep(700);
+    const it = hotItems.nth(i);
+    const title = ((await it.innerText().catch(() => "")) || "").replace(/\s+/g, " ").trim().slice(0, 50);
+    if (!(await it.click({ timeout: 3000 }).then(() => true, () => false))) { hot.push({ title, clicked: false }); continue; }
+    await sleep(2500);
+    hot.push({ title, ...(await selectedPlace(page)) });
+    if (i === 0) hotShot = await shot("3-hot");
+  }
+  const hotSeen = hot.filter((h) => h.badge);  // район в списке — без значка, его не считаем
+  step("3", "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+    hotSeen.length ? hotSeen.every((h) => h.inView && !h.covered) : null, hot.length ? hot : "список «Горячие места» не найден", hotShot);
+  await page.keyboard.press("Escape"); await sleep(700);
+
   // 4. «Картина дня».
   const dayRe = new RegExp("^" + esc(T(dict, ["common.nav.day", "shell.section.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня")) + "$", "i");
   const day = await header(dayRe, 2500);
@@ -641,8 +677,11 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     await setMode("akimat");
     const s = await showPoint(page, st.point, 17);
     if (s) await tap(page, s.x, s.y);  // в виде «Акимат» нажатие по значку остановки открывает её карточку
-    await sleep(2000);
-    const take = await clickText(page, textRe(T(dict, ["target.take", "heat.take"], lang === "kk" ? "Жұмысқа алу" : "Взять в работу")), { wait: 2000 });
+    await sleep(2500);
+    const sel = await selectedPlace(page);
+    step("6", "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+      sel.badge ? sel.inView && !sel.covered : null, sel.badge ? sel : "значок выбранного места не найден (.r07-badge--selected)");
+    const take =await clickText(page, textRe(T(dict, ["target.take", "heat.take"], lang === "kk" ? "Жұмысқа алу" : "Взять в работу")), { wait: 2000 });
     const fix = await clickText(page, textRe(T(dict, ["target.mark_fixed", "heat.mark_fixed"], "Отметить исправленным")), { wait: 2500 });
     // С заглавной буквы и без флага i: в легенде карты то же слово строчными («исправлено») — его не считаем.
     const fixedShown = await visibleText(page, new RegExp(esc(fixedWord)));
