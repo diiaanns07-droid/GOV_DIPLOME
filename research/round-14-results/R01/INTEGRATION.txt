@@ -269,3 +269,9 @@ R12/R03: старый tests/civic/R03/core.test.mjs (карта раунда 13)
   web_server.py (раздача /civic/offline/* — явный список, Range для архива). R01 добавил: map.js работает и без boot.js
   (window.BirgeOffline?.…). Сам архив data/civic/astana/tiles/astana.pmtiles — не в Git (LOCAL, RUN.txt шаг 3б).
   Папку результатов OFFLINE в сборку не переносил (она в их ветке). Их находка про таймер R09 — BUGS I-06.
+- Круг 5а (1dd5b53): R11 — ваш patches/R01_map_lang.patch применён к web/map.js как есть (git apply). R10 B-035 —
+  кнопка «Сообщения жителей» (модерация обратной связи раунда 13, v1) скрыта в Birge вместе с ящиком
+  (body[data-birge-tools="off"], ?tools=all возвращает), статус жалоб Birge меняют в карточке цели R07.
+  R06: ваш tests/civic/R06/app_e2e_r06.cjs (раунд 13, вне run_checks) открывает "/" и ждёт эту кнопку — запускать
+  с BASE + "/?tools=all" (p0_flow R01 уже так делает). R07: B-038 (подсказка «Приблизьте карту…» на старом языке
+  после ҚАЗ ↔ РУС) — ваш heat.js, жду в поставке.
