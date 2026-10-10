@@ -15,7 +15,7 @@
 // Итог: <out>/RESULT.json и RESULT.md; скриншоты <out>/<размер>-<язык>-<шаг>.jpg.
 // Статусы: PASS, FAIL (с причиной), NOT_RUN (нечего проверять: модуль не подключён и это уже FAIL шага API).
 // UI-шаги 5–6 меняют данные временной базы так же, как ведущий демо: вход сотрудника («Для сотрудников»),
-// проект сквера (в конце удаляется), «Взять в работу» → «Отметить исправленным» по остановке STOP.
+// проект сквера (в конце удаляется), «Взять в работу» → «Отметить исправленным» по остановке варианта (UI_STOPS).
 "use strict";
 const { chromium } = require("playwright");
 const { spawn, execFileSync } = require("child_process");
@@ -34,6 +34,16 @@ const LANGS = String(args.langs || "ru,kk").split(",");
 // --stop "lon,lat,id,Имя" — другая остановка (например, для стенда роли с узкой областью данных).
 const STOP = args.stop ? (([lon, lat, id, ...name]) => ({ id, name: name.join(","), point: [Number(lon), Number(lat)] }))(String(args.stop).split(","))
   : { id: "osm-node-4109037549", name: "Хан Шатыр", point: [71.406553, 51.131155] };
+// Остановки — реальные OSM (data/civic/astana/geo/objects.json R12), все в Нуре.
+// STOP — остановка DEMO_SCRIPT: на ней при CIVIC_DEMO=1 есть демо-жалобы «Освещение» (путь «Я тоже»), её API-шаг не трогает.
+// API_STOP — для API-шага (подать → «Я тоже» → «исправлено»), чтобы не менять состояние остановки сценария.
+// UI_STOPS — у каждого варианта экрана своя остановка: вариант 1 повторяет DEMO_SCRIPT («Хан Шатыр», «Я тоже»),
+// остальные начинают с чистой остановки (новая жалоба → «Взять в работу» → «Исправлено»).
+const API_STOP = args.stop ? STOP : { id: "osm-node-13394597038", name: "Республиканский диагностический центр", point: [71.4060541, 51.1266034] };
+const UI_STOPS = args.stop ? [STOP] : [STOP,
+  { id: "osm-node-5756851369", name: "Центр материнства и детства", point: [71.40432, 51.1251454] },
+  { id: "osm-node-5756882393", name: "Жилой комплекс Зелёный Квартал", point: [71.3966837, 51.1278101] },
+  { id: "osm-node-2716977767", name: "Национальный кардиологический центр", name_kk: "Ұлттық кардиохирургиялық орталық", point: [71.4131502, 51.1276695] }];
 const NURA_BBOX = "71.375,51.115,71.420,51.140";
 const DEVICE = "r10-e2e-device-" + Date.now();
 const { NOISE, TAB_LIMIT, uiScreen, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
@@ -162,7 +172,7 @@ async function apiFlow(A, staffInfo) {
     s0.status === 200 && m0.length > 0 ? "PASS" : "FAIL", { status: s0.status, n: m0.length, stop: STOP.name });
 
   // 1. Место на карте → «Это остановка «…»?» (R12 /targets).
-  const [lon, lat] = STOP.point;
+  const [lon, lat] = API_STOP.point;
   const t = await A.call("GET", `/api/civic/v2/targets?lon=${lon}&lat=${lat}&category=transport`);
   const cands = (A.data(t) || {}).candidates || [];
   const first = cands[0];
@@ -170,7 +180,7 @@ async function apiFlow(A, staffInfo) {
     && typeof first.distance_m === "number" && first.distance_m <= 60;
   add("API", "1", "/targets у остановки: первый кандидат — реальный объект OSM ≤ 60 м с подписью", okT ? "PASS" : "FAIL",
     { status: t.status, first: first ? { id: first.target && first.target.id, label: first.target && (first.target.label_ru || first.label_ru), d: first.distance_m } : null, n: cands.length });
-  ctx.target = okT ? first.target : { kind: "object", id: STOP.id, label_ru: `Остановка «${STOP.name}»` };
+  ctx.target = okT ? first.target : { kind: "object", id: API_STOP.id, label_ru: `Остановка «${API_STOP.name}»` };
 
   // 2. Категория и похожие (R04).
   const texts = { ru: "На остановке сломан павильон, нет крыши", kk: "Аялдамада павильон сынған, шатыры жоқ", mixed: "Бекетте павильон сынған, крыши нет" };
@@ -183,7 +193,7 @@ async function apiFlow(A, staffInfo) {
   }
 
   // 1б. Жалоба на цель (R09), затем «Я тоже» другим устройством.
-  const body = { text: texts.mixed, lang: "mixed", category: "transport", category_source: "resident", point: STOP.point,
+  const body = { text: texts.mixed, lang: "mixed", category: "transport", category_source: "resident", point: API_STOP.point,
     target: ctx.target, device_id: DEVICE, demo: true };
   const cr = await A.call("POST", "/api/civic/v2/complaints", body);
   const rec = (A.data(cr) || {}).complaint || A.data(cr) || {};
@@ -192,7 +202,7 @@ async function apiFlow(A, staffInfo) {
     { status: cr.status, id: rec.id, st: rec.status, err: cr.body && cr.body.error });
   ctx.complaint = okC ? rec : null;
 
-  const sim = await A.call("POST", "/api/civic/v2/similar", { text: "Павильон на остановке сломан", point: STOP.point, days: 30 });
+  const sim = await A.call("POST", "/api/civic/v2/similar", { text: "Павильон на остановке сломан", point: API_STOP.point, days: 30 });
   const matches = (A.data(sim) || {}).matches || [];
   const okS = sim.status === 200 && Array.isArray(matches) && (!ctx.complaint || matches.some((x) => x.complaint_id === ctx.complaint.id));
   add("API", "2", "/similar находит только что поданную жалобу на ту же остановку", okS ? "PASS" : "FAIL",
@@ -346,6 +356,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const dict = loadDict(lang);
   const tag = `${w}-${lang}`;
   const mobile = w < 761;
+  const st = UI_STOPS[vi % UI_STOPS.length];  // остановка этого варианта (шаги 1–2 и 6)
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
     locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
   const page = await ctx.newPage();
@@ -419,11 +430,10 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   step("1", `главная кнопка «${startLabel}» есть и открывает шаг «Где проблема?»`, started && !!form, { resident_view: toResident }, await shot("1-start"));
   let picked = false;
   if (form) {
-    const t = apiCtx && apiCtx.target;
-    const names = [STOP.name, t && t.label_ru, t && t.label_kk].filter(Boolean).map((x) => esc(x.replace(/^.*«(.+)».*$/, "$1")));
+    const names = [st.name, st.name_kk].filter(Boolean).map((x) => esc(x));
     const nameRe = new RegExp(names.join("|"), "i");
     const offered = async () => { await sleep(2500); return !!(await firstVisible(form.getByRole("button", { name: nameRe }))); };
-    const pt = await showPoint(page, STOP.point, 17);
+    const pt = await showPoint(page, st.point, 17);
     let q = false;
     if (pt && !pt.onCanvas) {
       // Над остановкой — значок тепловой карты. Житель нажмёт именно на него: форма должна это принять.
@@ -432,14 +442,14 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
       step("1", "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)", q, { under: pt.under });
       if (!q && pt.near) { await tap(page, pt.near.x, pt.near.y); q = await offered(); }  // обход для демо: нажать рядом
     } else if (pt) { await tap(page, pt.x, pt.y); q = await offered(); }
-    step("1", `после нажатия на карту в форме предложена остановка «${STOP.name}»`, q, { point: pt, names }, await shot("1-target"));
+    step("1", `после нажатия на карту в форме предложена остановка «${st.name}»`, q, { point: pt, names }, await shot("1-target"));
     if (q) picked = await clickText(form, nameRe, { wait: 1500 });
     else {
       // Остановки в списке нет (например, R12 /targets не подключён) — берём «Примерное место», чтобы проверить шаг 2.
       picked = await clickText(form, textRe(T(dict, "complaint.step2.approximate", lang === "kk" ? "Шамамен орны" : "Примерное место")), { wait: 1500 });
       if (picked) add(`UI ${tag}`, "1", "обход: выбрано «Примерное место», шаг 2 проверяется дальше", "NOT_RUN", null);
     }
-  } else step("1", `предложена остановка «${STOP.name}»`, null, "форма жалобы не открылась");
+  } else step("1", `предложена остановка «${st.name}»`, null, "форма жалобы не открылась");
 
   // 2. Текст → категория от модели → «Отправить» → «Я тоже» (если уже сообщали) или «Обращение отправлено».
   if (picked) {
@@ -612,7 +622,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const fixedWord = T(dict, ["heat.fixed_word", "status.fixed"], lang === "kk" ? "Түзетілді" : "Исправлено");
   if (login.ok) {
     await setMode("akimat");
-    const s = await showPoint(page, STOP.point, 17);
+    const s = await showPoint(page, st.point, 17);
     if (s) await tap(page, s.x, s.y);  // в виде «Акимат» нажатие по значку остановки открывает её карточку
     await sleep(2000);
     const take = await clickText(page, textRe(T(dict, ["target.take", "heat.take"], lang === "kk" ? "Жұмысқа алу" : "Взять в работу")), { wait: 2000 });
