@@ -101,12 +101,15 @@ def test_fixed_disappears_after_7_days():
     assert svc_for(rs).heat(days=30)["items"] == []
 
 
-def test_new_complaint_after_fix_makes_target_red_again_counting_only_new():
-    old_open = rec(1, age_days=6)                                # не закрыта, но пришла ДО ремонта
+def test_new_complaint_after_fix_makes_target_red_again_and_open_ones_stay_open():
+    # R10 B-036 / R09: статус каждой жалобы честный — «исправлено» у одной не закрывает остальные открытые
+    old_open = rec(1, age_days=6)                                # не закрыта, пришла ДО ремонта — остаётся открытой
     fixed = rec(2, age_days=6, status="fixed", history=fixed_history(6, 3))
     fresh = rec(3, age_days=0.5)
     item = svc_for([old_open, fixed, fresh]).heat(days=30)["items"][0]
-    assert item["state"] == "active" and item["count"] == 1 and item["open_ids"] == ["c-t-3"]
+    assert item["state"] == "active" and item["count"] == 2 and item["open_ids"] == ["c-t-3", "c-t-1"]
+    # без открытых жалоб после ремонта — зелёная «исправлено»
+    assert svc_for([fixed]).heat(days=30)["items"][0]["state"] == "fixed"
 
 
 # ---------- фильтры, районы, приблизительные цели ----------

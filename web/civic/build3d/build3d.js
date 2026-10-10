@@ -493,6 +493,7 @@
       }
       applyInsets();
       renderDock();
+      fitDock();
       labelsLayer.classList.toggle("b3d-labels--passive", S.mode === "placing");
       if (focusSel) {
         var again = dock.querySelector(focusSel);
@@ -531,6 +532,62 @@
       ui.style.right = ins.right + "px";
       ui.style.top = ins.top + "px";
       ui.style.bottom = ins.bottom + "px";
+    }
+
+    // Панель не заходит на верхние полосы хозяина (шапка оболочки R01). Хозяин ставит корень модуля над своей шторкой;
+    // на телефоне у акимата при шторке «half» высокая карточка проекта росла вверх и закрывала шапку («Мәзір», ҚАЗ/РУС)
+    // и сам объект. Высота панели — до нижнего края верхних полос из opts.avoid, остальное прокручивается внутри.
+    var fitObserver = null;
+    var fitWatched = [];
+    var fitFrame = 0;
+    function topLimit() {
+      var cr = map.getCanvas().getBoundingClientRect();
+      var lim = Math.max(0, cr.top);
+      avoidRects().forEach(function (r) {
+        // полоса во всю ширину у верхнего края карты (шапка), а не шторка или колонка
+        if (r.width > cr.width * 0.6 && r.top - cr.top < cr.height * 0.2 && r.bottom - cr.top < cr.height * 0.4) lim = Math.max(lim, r.bottom);
+      });
+      return lim + 8;
+    }
+    function fitDock() {
+      if (S.destroyed) return;
+      watchHost();
+      dock.style.maxHeight = "";
+      dock.classList.remove("b3d-dock--fit");
+      var st = dock.getAttribute("data-state");
+      if (!st || st === "empty" || ui.hidden) return;
+      var r = dock.getBoundingClientRect();
+      if (!r.height) return;
+      var top = topLimit();
+      if (r.top >= top - 0.5) return;
+      var avail = Math.floor(r.bottom - top);
+      if (avail < 160) return; // места почти нет — не превращать панель в щель
+      dock.style.maxHeight = avail + "px";
+      dock.classList.add("b3d-dock--fit");
+    }
+    function refitSoon() {
+      if (fitFrame || S.destroyed) return;
+      var run = function () {
+        fitFrame = 0;
+        fitDock();
+      };
+      fitFrame = root.requestAnimationFrame ? root.requestAnimationFrame(run) : setTimeout(run, 16);
+    }
+    // Хозяин меняет свои панели (шторка R01: data-sheet) — место для панели меняется без событий модуля.
+    function watchHost() {
+      if (typeof opts.avoid !== "function" || typeof root.MutationObserver !== "function") return;
+      var list = [];
+      try {
+        list = Array.prototype.slice.call(opts.avoid() || []);
+      } catch (e) {
+        list = [];
+      }
+      if (!fitObserver) fitObserver = new root.MutationObserver(refitSoon);
+      list.forEach(function (node) {
+        if (!node || fitWatched.indexOf(node) >= 0 || typeof node.nodeType !== "number") return;
+        fitWatched.push(node);
+        fitObserver.observe(node, { attributes: true });
+      });
     }
 
     function renderDock() {
@@ -2397,6 +2454,7 @@
         // над карточкой (оболочка R01 ставит тосты над панелью). Ошибки с «Повторить» остаются.
         if (!toastIsError) clearToast();
         focusDock("[data-action=vote-up]");
+        fitDock(); // хозяин мог опустить шторку в onSelect — место для карточки уже другое
         keepAboveDock(S.objects[id]);
       }
       repaint();
@@ -2573,6 +2631,7 @@
     if (opts.followShellMode !== false) doc.addEventListener("birge:mode", onShellMode);
     var onResize = function () {
       applyInsets();
+      fitDock();
     };
     root.addEventListener("resize", onResize);
     var onPageHide = function () {
@@ -2683,6 +2742,7 @@
         root.removeEventListener("resize", onResize);
         root.removeEventListener("pagehide", onPageHide);
         root.removeEventListener("pageshow", onPageShow);
+        if (fitObserver) fitObserver.disconnect();
         if (unsubLang) unsubLang();
         clearTimeout(toastTimer);
         Object.keys(S.objects).forEach(disposeObject);

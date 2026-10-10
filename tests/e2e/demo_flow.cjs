@@ -569,13 +569,24 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     let pt = await showPoint(page, place, 17);
     if (pt && !pt.onCanvas && pt.near) pt = { ...pt, x: pt.near.x, y: pt.near.y };
     if (pt) { if (!mobile) await page.mouse.move(pt.x, pt.y); await tap(page, pt.x, pt.y); await sleep(1200); }
+    // DEMO_SCRIPT 5.2: «повернуть ↺ ↻ при желании» — кнопки поворота есть, пока объект не поставлен.
+    const rotR = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.rotate_right", lang === "kk" ? "Оңға бұру" : "Повернуть вправо")) + "$", "i"), { wait: 500 });
+    const rotL = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.rotate_left", lang === "kk" ? "Солға бұру" : "Повернуть влево")) + "$", "i"), { wait: 500 });
     const placeRe = new RegExp("^" + esc(T(dict, "proposal.place", lang === "kk" ? "Орнату" : "Поставить")) + "$", "i");
     const placedClick = await clickText(page, placeRe, { wait: 4000 });
     const placedMsg = await visibleText(page, textRe(T(dict, "build3d.placed", "Проект поставлен")));
     const projRe = new RegExp("^" + esc(kindName) + ":.*2027", "i");
     const near = pt ? await nearestVisible(page.getByRole("button", { name: projRe }), pt) : null;
-    step("5", `«${kindName}» → нажать на карту → «Поставить»: «Проект поставлен», на карте табличка проекта 2027`, placedClick && placedMsg && !!near && near.d < 80,
-      { hint, placedClick, placedMsg, label_px_from_place: near && near.d }, await shot("5-placed"));
+    step("5", `«${kindName}» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027`, placedClick && placedMsg && !!near && near.d < 80 && rotR && rotL,
+      { hint, rotate: [rotL, rotR], placedClick, placedMsg, label_px_from_place: near && near.d }, await shot("5-placed"));
+    // DEMO_SCRIPT 5.2: «кнопка 3D справа — наклон».
+    const pitch0 = await page.evaluate(() => (typeof map !== "undefined" && map.getPitch ? map.getPitch() : null));
+    // У кнопки видимый текст «3D», а имя для экранного диктора — «Объёмный вид» (ключ common.map.view3d).
+    const view3dRe = new RegExp("^(3D|" + esc(T(dict, ["common.map.view3d", "shell.map.view3d"], lang === "kk" ? "Көлемді көрініс" : "Объёмный вид")) + ")$", "i");
+    const b3d = await clickText(page, view3dRe, { wait: 1500 });
+    const pitch1 = await page.evaluate(() => (typeof map !== "undefined" && map.getPitch ? map.getPitch() : null));
+    step("5", "кнопка «3D» наклоняет карту", b3d && pitch1 !== null && pitch1 > 20 && pitch1 > pitch0, { b3d, pitch0, pitch1 }, await shot("5-3d"));
+    if (b3d && pitch1 > 20) { await clickText(page, view3dRe, { wait: 800 }); }  // вернуть плоский вид для следующих шагов
 
     // Житель: карточка проекта → «За».
     await setMode("resident");
@@ -630,11 +641,13 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     // С заглавной буквы и без флага i: в легенде карты то же слово строчными («исправлено») — его не считаем.
     const fixedShown = await visibleText(page, new RegExp(esc(fixedWord)));
     const green = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
-    // Нет «Взять в работу», а цель уже «Исправлено» — новых жалоб у неё нет (шаг 2 не дошёл до отправки): проверять нечего.
-    const nothingNew = !take && fixedShown;
-    step("6", `акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «${fixedWord}», зелёным на карте`,
-      nothingNew ? null : take && fix && fixedShown && green,
-      { under: s && s.under, take, fix, fixedShown, green, note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : undefined }, await shot("6-fixed"));
+    // Нет ни «Взять в работу», ни «Отметить исправленным», а цель уже «Исправлено» — новых жалоб нет: проверять нечего.
+    // Нет «Взять в работу», но есть «Отметить исправленным» — место уже «В работе» (так бывает в демо-наборе R07): верно.
+    const nothingNew = !take && !fix && fixedShown;
+    step("6", `акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «${fixedWord}», зелёным на карте`,
+      nothingNew ? null : fix && fixedShown && green,
+      { under: s && s.under, take, fix, fixedShown, green,
+        note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : (!take && fix ? "место уже «В работе» — кнопки «Взять в работу» нет" : undefined) }, await shot("6-fixed"));
     if (!mobile && fixedShown) {
       await page.keyboard.press("Escape"); await sleep(800);
       const stillOpen = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));

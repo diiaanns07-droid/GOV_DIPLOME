@@ -155,8 +155,12 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
             f = fixed_at(c)
             if f and (t_fixed is None or f > t_fixed):
                 t_fixed = f
+        # Открыта жалоба со статусом new / accepted / in_progress (R10 B-036, R09: статус каждой жалобы честный —
+        # «исправлено» у одной не закрывает остальные). Только примеры R07, статус которых не поменять (общая сборка),
+        # закрывает более поздний ремонт места — иначе цель с примерами никогда не стала бы зелёной.
         active = [(c, cr) for c, cr in rows
-                  if c.get("status", "new") in OPEN_STATUSES and (t_fixed is None or cr > t_fixed)]
+                  if c.get("status", "new") in OPEN_STATUSES
+                  and (actionable is None or actionable(c) or t_fixed is None or cr > t_fixed)]
         latest = now + timedelta(minutes=5)   # небольшой запас на расхождение часов
         weight = 0.0
         count = 0

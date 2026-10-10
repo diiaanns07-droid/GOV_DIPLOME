@@ -370,11 +370,19 @@ async function colorOnlyCheck(page) {
     return page.evaluate(async () => {
       const map = window.__map;
       const b = window.__heat.badges().find((x) => x.mode === "full");
-      const el = document.createElement("div");
+      // как R05 (build3d.js): контейнер .b3d-labels в контейнере холста и кнопки button.b3d-label, место — через transform
+      const box = document.createElement("div");
+      box.className = "b3d-labels";
+      box.style.cssText = "position:absolute;left:0;top:0;pointer-events:none";
+      map.getCanvasContainer().append(box);
+      const el = document.createElement("button");
       el.className = "b3d-label";
       el.textContent = "Проект · 2027";
-      el.style.cssText = "padding:10px 16px;background:#e8f5c8;border-radius:999px;font:600 16px system-ui";
-      new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(b.spot).addTo(map);
+      el.style.cssText = "position:absolute;left:0;top:0;min-height:48px;padding:0 16px;background:#e8f5c8;border:0;border-radius:999px;font:600 16px system-ui;white-space:nowrap";
+      box.append(el);
+      const place = () => { const p = map.project(b.spot); el.style.transform = `translate(${p.x - el.offsetWidth / 2}px, ${p.y - el.offsetHeight / 2}px)`; };
+      place();
+      map.on("move", place);
       await new Promise((ok) => { map.once("moveend", ok); map.panBy([3, 0], { duration: 0 }); });
       await new Promise((ok) => setTimeout(ok, 200));
       const fr = el.getBoundingClientRect();

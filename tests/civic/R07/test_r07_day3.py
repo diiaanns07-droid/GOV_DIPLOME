@@ -262,6 +262,28 @@ def test_r07_examples_are_not_actionable_with_a_live_source_but_are_on_the_demo_
     assert hot["open_ids"] and all(x.startswith("c-demo-") for x in hot["open_ids"]) and hot["examples_open"] == 0
 
 
+# ---------- R10 B-036 / R09: цель зелёная, только когда исправлены все её открытые жалобы ----------
+
+def _fixed(i, age_created, age_fixed, **kw):
+    created, fixed = NOW - timedelta(days=age_created), NOW - timedelta(days=age_fixed)
+    return dict(rec(i, age=age_created, status="fixed", **kw),
+                status_history=[{"at": created.isoformat(), "status": "new"}, {"at": fixed.isoformat(), "status": "fixed"}])
+
+
+def test_one_fixed_complaint_does_not_paint_the_whole_target_green():
+    older_open = dict(rec(1, age=3), id="c-aaaaaaaaaaaaaaaa", demo=False)
+    fixed_one = dict(_fixed(2, 2, 1), id="c-bbbbbbbbbbbbbbbb", demo=False)
+    item = svc([older_open, fixed_one]).heat()["items"][0]
+    assert item["state"] == "active" and item["open_ids"] == ["c-aaaaaaaaaaaaaaaa"]
+
+
+def test_a_later_repair_still_closes_r07_examples_that_cannot_be_changed():
+    example = dict(rec(1, age=3), id="c-demo-0001", demo=True)               # пример R07: его статус не поменять
+    repaired = dict(_fixed(2, 2, 1), id="c-cccccccccccccccc", demo=True)   # жалоба R09 у той же цели — исправлена
+    item = svc([example, repaired]).heat()["items"][0]
+    assert item["state"] == "fixed" and item["level"] == "fixed"           # шаг 6 демо: место зеленеет
+
+
 # ---------- R07 №4: «Что пишут жители» — тексты только примеров или сотруднику ----------
 
 def test_text_groups_show_demo_texts_and_hide_real_ones_from_public():

@@ -215,6 +215,40 @@ try {
     await ctx.close();
   }
   check("shell_reload_during_list_request_no_console_error", Object.values(reloads).every((r) => r.heldBefore >= 1 && r.count >= 1 && r.console_errors.length === 0), reloads);
+
+  // 10. Ночь 9: телефон, акимат, шторка «half» — нажать проект над шторкой. Карточка не закрывает шапку оболочки (R05
+  // fitDock); с proposed_r01_final2.patch оболочка опускает шторку — карточка целиком и объект над ней виден.
+  const halfCards = {};
+  for (const lang of ["kk", "ru"]) {
+    const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true });
+    await ctx.addInitScript((l) => { try { localStorage.setItem("birge.mode", "akimat"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
+    const q = await ctx.newPage();
+    q.on("pageerror", (e) => errors.push(e.message));
+    await q.goto(URL0);
+    await q.waitForFunction(() => window.CivicShell?.build3d?.getState?.().phase === "ready", null, { timeout: 60000 });
+    const ll = await q.evaluate(() => CivicShell.build3d.getState().proposals.find((x) => x.kind !== "lighting").geometry.coordinates);
+    await q.evaluate((c) => map.jumpTo({ center: c, zoom: 17.4, pitch: 50, bearing: -20 }), ll);
+    await q.waitForTimeout(500);
+    await q.evaluate((c) => { const s = map.project(c); map.panBy([s.x - map.getCanvas().clientWidth / 2, s.y - 230], { duration: 0 }); }, ll);
+    await q.waitForTimeout(1200);
+    const sheet0 = await q.evaluate(() => document.querySelector(".civic-panel").dataset.sheet);
+    const lab = await q.evaluate(() => { for (const b of document.querySelectorAll(".b3d-label")) { if (b.style.visibility === "hidden") continue; const r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, t = document.elementFromPoint(x, y); if (t && b.contains(t) && y < 420) return [Math.round(x), Math.round(y)]; } return null; });
+    if (lab) {
+      await q.touchscreen.tap(lab[0], lab[1]);
+      await q.waitForTimeout(1500);
+    }
+    const m = await q.evaluate(() => {
+      const st = CivicShell.build3d.getState(), d = document.querySelector("#birge-build3d-root .b3d-dock"), dr = d.getBoundingClientRect(), h = document.querySelector("header.topbar").getBoundingClientRect();
+      const o = st.selected ? CivicShell.build3d._project(st.selected) : null, top = document.elementFromPoint(h.left + 40, h.bottom - 6);
+      return { state: d.dataset.state, sheet: document.querySelector(".civic-panel").dataset.sheet, dock: [Math.round(dr.top), Math.round(dr.bottom)], header_bottom: Math.round(h.bottom),
+        header_free: !!(top && top.closest("header.topbar")), object: o ? [Math.round(o.x), Math.round(o.y)] : null, object_above_card: !!o && o.y > h.bottom && o.y < dr.top };
+    });
+    await shot(q, `phone_akimat_half_card_375_${lang}.png`);
+    halfCards[lang] = Object.assign({ sheet_before: sheet0, tapped: lab }, m);
+    await ctx.close();
+  }
+  check("phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
+    Object.values(halfCards).every((r) => r.tapped && r.state === "card" && r.header_free && r.dock[0] >= r.header_bottom && (r.sheet !== "peek" || r.object_above_card)), halfCards);
 } catch (e) {
   check("run", false, e.message.split("\n")[0]);
 }
