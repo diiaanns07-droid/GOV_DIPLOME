@@ -1,58 +1,83 @@
-R05 · раунд 14 · 3D-превью предложений — как запустить и что можно сделать
+R05 · раунд 14 · 3D-превью предложений — как запустить и что можно сделать (поставка 2)
 
 1. ДЕМО БЕЗ ИНТЕРНЕТА (сразу, без сборки R01)
    Из корня репозитория:
      Windows:  py -m http.server 8765 -d web
      Linux/Mac: python3 -m http.server 8765 -d web
    Открыть: http://127.0.0.1:8765/civic/build3d/demo.html
-   Подложка — настоящие улицы OSM фокус-области Нуры (без зданий). Полезные параметры адреса:
+   Подложка — настоящие улицы и дворы OSM фокус-области Нуры (без зданий: LOCAL-R05-3). Камера сразу у проектов
+   (масштаб 17.4). Полезные параметры адреса:
      ?lang=kk                казахский (или кнопки ҚАЗ / РУС в шапке; выбор запоминается)
-     ?role=resident          вид жителя (только просмотр и голос)
-     ?pitch=0 | ?pitch=60    наклон; ?bearing=-20 поворот; ?zoom=17.5; ?center=71.4008,51.1272
-     ?reset=1                стереть поставленное на этом устройстве (вернутся 2 примера)
+     ?role=resident          вид жителя (только просмотр и голос; подсказка «Нажмите на проект, чтобы проголосовать»)
+     ?pitch=0 | ?pitch=60    наклон; ?bearing=-20 поворот; ?zoom=17.5; ?center=71.4008,51.1272 (без center — к проектам)
+     ?reset=1                стереть поставленное на этом устройстве (вернутся 4 примера)
      ?store=local            не спрашивать сервер предложений (для статического сервера это и так происходит)
+     ?r06=1                  подключить карточку R06 (/civic/proposals/proposals.js) — нужен сервер R06 (п. 3)
 
 2. ЧТО МОЖЕТ СДЕЛАТЬ ПОЛЬЗОВАТЕЛЬ
    Акимат (ноутбук 1366 px):
    - внизу «Что построить?» — 5 карточек: Сквер, Детская площадка, Спортплощадка, Остановка, Освещение улицы;
-   - выбрать карточку → полупрозрачный зелёный «призрак» идёт за курсором; щелчок по карте ставит его в точку;
-   - ↺ / ↻ (или клавиша R, Shift+R) — поворот на 15°; остановка сама встаёт вдоль ближайшей улицы
-     открытой стороной к дороге, пока её не повернули вручную;
-   - «Поставить» → объект вырастает снизу вверх за ~1.2 с с лёгкой пылью → над ним табличка «Проект · 2027»;
-     внизу тост «Проект поставлен…» с кнопкой «Отменить»;
-   - освещение: щелчок по улице — начало участка, второй щелчок по той же улице — конец; подсказка
-     «улица Сыганак, 187 м · 7 фонарей»; опоры через ~30 м вдоль настоящей формы улицы;
-   - если рядом уже есть такой объект в OpenStreetMap — синяя подсказка «Рядом уже есть остановка: «БЦ Саад», 35 м»
-     (не мешает поставить); объект во дворе получает привязку «Двор: Evolution»;
+     выбор карточки плавно приближает карту до 17.5, если она дальше;
+   - полупрозрачный зелёный «призрак» идёт за курсором; щелчок по карте ставит его в точку;
+   - ↺ / ↻ (или клавиша R, Shift+R) — поворот на 15°; остановка сама встаёт вдоль ближайшей улицы;
+   - «Поставить» → объект вырастает снизу вверх за ~1.2 с → табличка «Проект · 2027»; тост «Проект поставлен» с
+     «Отменить» (закрывается сам через 6 с, при открытии карточки и при переходе в «Житель»);
+   - освещение: щелчок по улице — начало участка, второй щелчок по той же улице — конец; «улица Сыганак, 187 м ·
+     7 фонарей»; в Нуре — без сервера, по всему городу — через маршруты улиц R12 (в сборке R01 или на стенде п. 3);
+   - «Рядом уже есть остановка: «БЦ Саад», 60 м · по данным OpenStreetMap»; объект во дворе — «Двор: Evolution»;
    - нельзя поставить поверх другого проекта и за пределами Астаны — красная подсказка, «Поставить» неактивна;
-   - щелчок по объекту или табличке → карточка: «За · N», «Против · M», «Один голос с устройства», «Удалить»
-     (после удаления — «Отменить»); Escape — отменить размещение; не больше 20 объектов.
-   Житель (телефон 375 px): видит объекты с табличками «Проект», открывает карточку и голосует.
-   На телефоне призрак стоит в центре карты: двигайте карту пальцем или коснитесь места, затем «Поставить».
-   После перезагрузки страницы всё поставленное на месте, без повторной анимации.
+   - щелчок по самой модели или по табличке → карточка (справа на ноутбуке, снизу на телефоне); камера сдвигает
+     объект так, чтобы он был виден рядом с карточкой; «За · N», «Против · M», «Удалить» (после — «Отменить»);
+     с сервером R06 — карточка R06 (у акимата голоса числами и «Одобрить / Отклонить») + «Рядом / Двор / Удалить»;
+   - Escape — отменить размещение; не больше 20 объектов.
+   Житель (телефон 375 px): видит объекты с табличками «Проект», подсказку «Нажмите на проект, чтобы проголосовать»,
+   открывает карточку и голосует (один голос с устройства). После перезагрузки всё на месте, без повторной анимации.
 
-3. ТЕСТЫ (из корня репозитория)
-   node --test tests/civic/R05/build3d/test_core.mjs tests/civic/R05/build3d/test_models.mjs
-   python -m unittest discover -s tests/civic/R05/build3d -p "test_*.py"
-   node tests/civic/R05/build3d/browser_check.mjs            (нужен пакет playwright и Chromium; --no-shots — быстрее)
-     → research/round-14-results/R05/runs/browser_check.json и screens/*.png
-   Приложение R01 + патчи (см. INTEGRATION.txt §1):
-     git worktree add --detach ../r05-app HEAD && cd ../r05-app
-     git apply <репозиторий>/research/round-14-results/R05/proposed_r01.patch
-     git apply <репозиторий>/research/round-14-results/R05/proposed_r01_uikit.patch   (если ui-kit ещё не подключён)
-     python -m ui.web_server --port 8799
-     (в первом окне, из этой ветки) node tests/civic/R05/build3d/app_smoke.mjs http://127.0.0.1:8799/
+3. ПРОВЕРКИ (из корня репозитория; Node 20+, Python 3, пакет playwright и Chromium)
+   node --test tests/civic/R05/build3d/test_core.mjs tests/civic/R05/build3d/test_models.mjs      (29)
+   python -m unittest discover -s tests/civic/R05/build3d -p "test_*.py"                           (10)
+   node tests/civic/R05/build3d/browser_check.mjs [--kit <выгрузка R11>] [--no-shots] [--only <regexp>]
+        → runs/browser_check.json, screens/*.png (сам поднимает сервер; --kit — ui-kit/i18n из ветки R11)
+   node tests/civic/R05/build3d/ux_day3_check.mjs [--kit <выгрузка R11>]
+        → runs/ux_day3_check.json, screens/d3_*.png — пункты 20–26 разбора R11, 1366/375 × ru/kk
+   Выгрузка R11: mkdir /tmp/r11kit && git archive origin/claude/r14-R11 web/civic/ui-kit web/civic/i18n | tar -x -C /tmp/r11kit
+
+   Стенд R06 (их сервер предложений; пароль сотрудника стенд печатает в первую строку файла — не публиковать):
+     git worktree add --detach ../r06 origin/claude/round-14-r06
+     cp -r web/civic/build3d ../r06/web/civic/ && mkdir -p ../r06/web/vendor/three && cp web/vendor/three/* ../r06/web/vendor/three/
+     (cd ../r06 && python3 tests/civic/R06/round14/serve_r14.py --port 8616 > /tmp/stand.json &)
+     R06_SHA=<код R06> node tests/civic/R05/build3d/r06_stand_check.mjs /tmp/stand.json
+        → runs/r06_stand_check.json (R06 поставки 2) или runs/r06_stand_check_r06d1.json (поставки 1) — по ответу сервера
+   Движок улиц R12 (освещение вне Нуры):
+     git worktree add --detach ../r12 origin/claude/tender-brahmagupta-ef5ztl
+     python3 tests/civic/R05/build3d/geo_stand.py --r12 ../r12 --port 8617 &
+     node tests/civic/R05/build3d/geo_check.mjs http://127.0.0.1:8617          → runs/geo_check.json
+   Внутри оболочки R01 (сборка B2):
+     git worktree add --detach ../r01 origin/claude/sharp-dijkstra-0t87gl && cd ../r01   (B2 — f54361d)
+     git apply <эта ветка>/research/round-14-results/R05/proposed_r01_b2.patch
+     cp -r <эта ветка>/web/civic/build3d/. web/civic/build3d/
+     export CIVIC_DB_PATH=/tmp/b2.sqlite3 CIVIC_DEMO=1
+     python3 -B -m ui.civic_store --db /tmp/b2.sqlite3 init
+     python3 -B -m ui.civic_store --db /tmp/b2.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
+     python3 -B -m ui.civic_store --db /tmp/b2.sqlite3 seed-r14-demo
+     python3 -B -m ui.civic_store --db /tmp/b2.sqlite3 create-editor operator --password-stdin < <файл с паролем>
+     python3 -B app.py --host 127.0.0.1 --port 8801 &
+     (из этой ветки) node tests/civic/R05/build3d/app_b2_smoke.mjs http://127.0.0.1:8801/ <файл с паролем>
+     (в ../r01)      node tests/civic/R01/browser/r14_b2.cjs <папка>     — тест самого R01 (20/20 с патчем)
 
 4. ПЕРЕСОБРАТЬ ДАННЫЕ МОДУЛЯ (детерминированно, без сети)
    python tests/civic/R05/build3d/make_fixtures.py
    Источники: engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json (улицы),
-   data/civic/astana/geofence.json (районы), data/civic/astana/osm-objects/ (LOCAL-1: реальные объекты).
+   data/civic/astana/geofence.json (районы), data/civic/astana/osm-objects/ (LOCAL-1: остановки, площадки, дворы).
+   Есть data/civic/astana/osm-objects/raw/buildings_nura.json.gz (LOCAL-R05-3) — добавятся здания для демо.
    Тест test_regeneration_is_byte_identical проверяет, что файлы в web/civic/build3d/data/ совпадают с генератором.
 
 5. В КОДЕ (для следующего ИИ)
    web/civic/build3d/build3d-core.js    — без DOM: каталог, меркатор как в MapLibre, улицы, районы, объекты OSM,
-                                          проверка места, хранилища (API R06 / заглушка)
+                                          проверка места, хранилища (клиент API R06 обеих поставок / заглушка)
    web/civic/build3d/build3d-models.js  — процедурные модели (слитые геометрии с цветом в вершинах)
-   web/civic/build3d/build3d.js         — custom layer MapLibre + three.js, интерфейс, подписи, анимации
+   web/civic/build3d/build3d.js         — custom layer MapLibre + three.js, интерфейс, подписи, анимации,
+                                          карточка (своя или R06), освещение через R12, вид акимата/жителя
    web/civic/build3d/build3d.css        — панель, карточка, подписи (токены ui-kit с запасными значениями)
-   Комментарии по-русски в сложных местах: привязка сцены к карте, «постройка» шейдером, подписи над объектами.
+   Комментарии по-русски в сложных местах: привязка сцены к карте, «постройка» шейдером, подписи над объектами,
+   свободная часть карты для объекта открытой карточки (freeArea/cutBest), запасной путь к R06 поставки 1.

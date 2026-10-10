@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-10T15:14:00.695Z",
+ "generated_at": "2026-10-10T15:55:14.640Z",
  "stand": {
   "url": "http://127.0.0.1:8616/civic/proposals/demo.html",
   "r06_sha": "3d10f7d",
@@ -14,10 +14,10 @@
     "count": 5,
     "kinds": [
      "playground:2027:demo",
-     "sports:2027:demo",
      "stop:2027:demo",
      "square:2027:demo",
-     "lighting:2027:demo"
+     "lighting:2027:demo",
+     "sports:2027:demo"
     ]
    }
   },
@@ -25,7 +25,7 @@
    "id": "list_sends_device_id_no_bbox",
    "status": "PASS",
    "detail": [
-    "/api/civic/v2/proposals?device_id=dev-b5ca46a745fa6663957ac6a9383f8bc9"
+    "/api/civic/v2/proposals?device_id=dev-0626d421dbea146bf8671f9d4895594a"
    ]
   },
   {
@@ -94,7 +94,7 @@
    "id": "created_on_server_with_year_and_rotation",
    "status": "PASS",
    "detail": {
-    "id": "p-3f4302561d5e",
+    "id": "p-a997a0752019",
     "kind": "stop",
     "geometry": {
      "type": "Point",
@@ -115,7 +115,7 @@
     "district": "nura",
     "near_street": null,
     "target": null,
-    "created_at": "2026-10-10T15:13:38+00:00",
+    "created_at": "2026-10-10T15:54:51+00:00",
     "demo": false
    }
   },
@@ -127,7 +127,7 @@
   {
    "id": "vote_through_r06_card_with_device_id",
    "status": "PASS",
-   "detail": "{\"value\":1,\"device_id\":\"dev-ecd6944210d34c6bc6691b7e5286ddcc\"}"
+   "detail": "{\"value\":1,\"device_id\":\"dev-12e5a2d594a96e85383b48836b11212c\"}"
   },
   {
    "id": "vote_synced_to_3d_object",
@@ -144,15 +144,15 @@
     "POST /api/civic/v1/session/login",
     "POST /api/civic/v2/proposals",
     "POST /api/civic/v2/proposals",
-    "POST /api/civic/v2/proposals/p-3f4302561d5e/vote",
-    "POST /api/civic/v2/proposals/p-3f4302561d5e/withdraw"
+    "POST /api/civic/v2/proposals/p-a997a0752019/vote",
+    "POST /api/civic/v2/proposals/p-a997a0752019/withdraw"
    ]
   },
   {
    "id": "undo_recreates_on_old_r06",
    "status": "PASS",
    "detail": {
-    "id": "p-8af514c5bceb",
+    "id": "p-c81ecbe6ce90",
     "votes_up": 0
    }
   },

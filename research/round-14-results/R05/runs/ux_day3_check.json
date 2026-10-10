@@ -1,0 +1,279 @@
+{
+ "generated_at": "2026-10-10T15:51:36.882Z",
+ "ui_kit_i18n": "выгрузка --kit",
+ "checks": [
+  {
+   "id": "r11_20_start_close_up_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "zoom": 17.4,
+    "projects_on_screen": 3,
+    "need": 2
+   }
+  },
+  {
+   "id": "r11_22_23_header_title_and_3d_label_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "title": "3D-превью",
+    "btn3d": "3D",
+    "size": [
+     76,
+     48
+    ],
+    "tags_in_header": 0
+   }
+  },
+  {
+   "id": "r11_25_offline_basemap_osm_yards_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "yards_rendered": 11
+   }
+  },
+  {
+   "id": "r11_20_catalog_pick_zooms_to_17_5_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "zoom": 17.5,
+    "mode": "placing"
+   }
+  },
+  {
+   "id": "r11_21_model_click_opens_card_object_visible_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "clicked": "stop",
+    "cursor": "pointer",
+    "label": {
+     "zone": 48,
+     "pill": 40
+    },
+    "object": {
+     "x": 683,
+     "y": 351,
+     "under_card": false
+    }
+   }
+  },
+  {
+   "id": "r11_24_resident_hint_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "hint": "Нажмите на проект, чтобы проголосовать",
+    "catalog_cards": 0
+   }
+  },
+  {
+   "id": "r11_26_no_raw_keys_1366_ru",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "id": "r11_20_start_close_up_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "zoom": 17.4,
+    "projects_on_screen": 3,
+    "need": 2
+   }
+  },
+  {
+   "id": "r11_22_23_header_title_and_3d_label_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "title": "3D-көрініс",
+    "btn3d": "3D",
+    "size": [
+     76,
+     48
+    ],
+    "tags_in_header": 0
+   }
+  },
+  {
+   "id": "r11_25_offline_basemap_osm_yards_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "yards_rendered": 11
+   }
+  },
+  {
+   "id": "r11_20_catalog_pick_zooms_to_17_5_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "zoom": 17.5,
+    "mode": "placing"
+   }
+  },
+  {
+   "id": "r11_21_model_click_opens_card_object_visible_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "clicked": "stop",
+    "cursor": "pointer",
+    "label": {
+     "zone": 48,
+     "pill": 40
+    },
+    "object": {
+     "x": 683,
+     "y": 352,
+     "under_card": false
+    }
+   }
+  },
+  {
+   "id": "r11_24_resident_hint_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "hint": "Дауыс беру үшін жобаны басыңыз",
+    "catalog_cards": 0
+   }
+  },
+  {
+   "id": "r11_26_no_raw_keys_1366_kk",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "id": "r11_20_start_close_up_375_ru",
+   "status": "PASS",
+   "detail": {
+    "zoom": 17.4,
+    "projects_on_screen": 1,
+    "need": 1
+   }
+  },
+  {
+   "id": "r11_22_23_header_title_and_3d_label_375_ru",
+   "status": "PASS",
+   "detail": {
+    "title": "3D-превью",
+    "btn3d": "3D",
+    "size": [
+     76,
+     48
+    ],
+    "tags_in_header": 0
+   }
+  },
+  {
+   "id": "r11_25_offline_basemap_osm_yards_375_ru",
+   "status": "PASS",
+   "detail": {
+    "yards_rendered": 5
+   }
+  },
+  {
+   "id": "r11_20_catalog_pick_zooms_to_17_5_375_ru",
+   "status": "PASS",
+   "detail": {
+    "zoom": 17.5,
+    "mode": "placing"
+   }
+  },
+  {
+   "id": "r11_21_model_click_opens_card_object_visible_375_ru",
+   "status": "PASS",
+   "detail": {
+    "clicked": "stop",
+    "cursor": "n/a",
+    "label": {
+     "zone": 48,
+     "pill": 40
+    },
+    "object": {
+     "x": 188,
+     "y": 363,
+     "under_card": false
+    }
+   }
+  },
+  {
+   "id": "r11_24_resident_hint_375_ru",
+   "status": "PASS",
+   "detail": {
+    "hint": "Нажмите на проект, чтобы проголосовать",
+    "catalog_cards": 0
+   }
+  },
+  {
+   "id": "r11_26_no_raw_keys_375_ru",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "id": "r11_20_start_close_up_375_kk",
+   "status": "PASS",
+   "detail": {
+    "zoom": 17.4,
+    "projects_on_screen": 1,
+    "need": 1
+   }
+  },
+  {
+   "id": "r11_22_23_header_title_and_3d_label_375_kk",
+   "status": "PASS",
+   "detail": {
+    "title": "3D-көрініс",
+    "btn3d": "3D",
+    "size": [
+     76,
+     48
+    ],
+    "tags_in_header": 0
+   }
+  },
+  {
+   "id": "r11_25_offline_basemap_osm_yards_375_kk",
+   "status": "PASS",
+   "detail": {
+    "yards_rendered": 5
+   }
+  },
+  {
+   "id": "r11_20_catalog_pick_zooms_to_17_5_375_kk",
+   "status": "PASS",
+   "detail": {
+    "zoom": 17.5,
+    "mode": "placing"
+   }
+  },
+  {
+   "id": "r11_21_model_click_opens_card_object_visible_375_kk",
+   "status": "PASS",
+   "detail": {
+    "clicked": "stop",
+    "cursor": "n/a",
+    "label": {
+     "zone": 48,
+     "pill": 40
+    },
+    "object": {
+     "x": 188,
+     "y": 366,
+     "under_card": false
+    }
+   }
+  },
+  {
+   "id": "r11_24_resident_hint_375_kk",
+   "status": "PASS",
+   "detail": {
+    "hint": "Дауыс беру үшін жобаны басыңыз",
+    "catalog_cards": 0
+   }
+  },
+  {
+   "id": "r11_26_no_raw_keys_375_kk",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "id": "no_page_errors",
+   "status": "PASS",
+   "detail": []
+  }
+ ]
+}

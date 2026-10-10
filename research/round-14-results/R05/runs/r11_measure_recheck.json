@@ -1,0 +1,228 @@
+{
+ "generated_at": "2026-10-10T15:54:26Z",
+ "script": "claude/r14-R11 @ 52d7c59: tests/civic/R11/review/r05_build3d_shots.cjs + measure.cjs (запуск без изменений)",
+ "r05_code": "web/civic/build3d этой ветки = code_sha 169c56b; ui-kit/i18n — выгрузка claude/r14-R11 @ 52d7c59",
+ "what_is_measured": "шрифт < 14 px, кнопки < 44 px, ключи вместо текста, запрещённые слова, прокрутка вбок (measure.cjs R11)",
+ "scenarios": {
+  "start-1366-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "start-1366-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "start-375-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "start-375-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "ghost-1366-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "placing"
+   },
+   "console": []
+  },
+  "ghost-1366-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "placing"
+   },
+   "console": []
+  },
+  "ghost-375-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "placing"
+   },
+   "console": []
+  },
+  "ghost-375-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "placing"
+   },
+   "console": []
+  },
+  "built-1366-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 6,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "built-1366-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 6,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "built-375-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 6,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "built-375-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 6,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "lighting-1366-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "placing"
+   },
+   "console": [
+    "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+   ]
+  },
+  "lighting-375-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "placing"
+   },
+   "console": []
+  },
+  "card-1366-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 5,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "card-1366-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 5,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "card-375-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 5,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "card-375-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 5,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "resident-1366-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "resident-1366-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "resident-375-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "resident-375-kk": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "pitch0-1366-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  },
+  "pitch0-375-ru": {
+   "result": "чисто",
+   "state": {
+    "phase": "ready",
+    "count": 4,
+    "mode": "idle"
+   },
+   "console": []
+  }
+ },
+ "summary": "24 из 24 — «чисто»",
+ "note": "lighting-1366-ru: в консоли 404 — модуль спрашивает маршрут R12 /street-snap, которого нет на статическом сервере R11; освещение в Нуре работает без него (ожидаемо)."
+}

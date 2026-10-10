@@ -1,0 +1,7 @@
+# R11 tests/civic/R11/i18n_tools.py @ 52d7c59 (выгрузка ветки claude/r14-R11 во временную папку; словари R11 не менялись в репозитории); 2026-10-10T15:48:28Z
+$ i18n_tools.py check   (до)
+PASS
+$ i18n_tools.py add research/round-14-results/R05/i18n_build3d.json
+добавлено ключей: 3
+$ i18n_tools.py check   (после)
+PASS

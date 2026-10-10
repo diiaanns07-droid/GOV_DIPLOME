@@ -1,21 +1,21 @@
 {
  "role": "R05",
- "generated_at": "2026-10-10T15:05:32.927Z",
- "tested_sha": "e0ca0304e955e78f6faf543d566bdd23e7e0fa77",
+ "generated_at": "2026-10-10T15:48:06.879Z",
+ "tested_sha": "169c56b4572c6abff9552e3d6d608068e3240de2",
  "dirty": true,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
-  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit",
+  "ui_kit_i18n": "выгрузка claude/r14-R11 @ 52d7c59 (git archive web/civic/ui-kit web/civic/i18n), флаг --kit",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 6.4,
-  "fps_20_objects_swiftshader": 2.4,
+  "fps_0_objects_swiftshader": 6,
+  "fps_20_objects_swiftshader": 2.7,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 35,
+  "pass": 37,
   "fail": 0,
   "not_run": 1
  },
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.4 кадр/с (без объектов 6.4)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.7 кадр/с (без объектов 6)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -174,6 +174,7 @@
      "demo",
      "geometry",
      "kind",
+     "near_street",
      "planned_year",
      "rotation_deg"
     ]
@@ -246,6 +247,47 @@
    "id": "r01_birge_mode_event_update_dock",
    "status": "PASS",
    "detail": "birge:mode → житель без каталога; update({dock:false}) прячет каталог, объекты остаются; update({dock:true}) возвращает"
+  },
+  {
+   "id": "mode_switch_clears_akimat_undo_toast",
+   "status": "PASS",
+   "detail": "после «Житель» тоста акимата с «Отменить» нет, каталога нет"
+  },
+  {
+   "id": "catalog_labels_fit_cards_in_narrow_host",
+   "status": "PASS",
+   "detail": {
+    "ru800": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 16
+    },
+    "ru720": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 14
+    },
+    "ru600": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 14
+    },
+    "kk800": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 16
+    },
+    "kk720": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 14
+    },
+    "kk600": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 14
+    }
+   }
   },
   {
    "id": "r01_map_getter_waits_for_map",
