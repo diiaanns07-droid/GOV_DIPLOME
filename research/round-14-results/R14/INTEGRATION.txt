@@ -1,0 +1,37 @@
+R14 · раунд 14 · INTEGRATION
+
+1. Подключение к общей сборке
+   R14 владеет только docs/birge/, docs/diploma/, research/round-14-results/R14/. Кода нет — R01 ничего
+   не подключает. Чтобы документы попали в итоговую сборку, R01 переносит их по путям:
+       git checkout <sha R14> -- docs/birge docs/diploma research/round-14-results/R14
+   (конфликтов быть не может: эти пути больше никто не меняет).
+   Предложение (решает R01/владелец, не R14): в README.md корня добавить ссылку «Birge: docs/birge/README.md».
+
+2. Несостыковки, найденные при чтении веток (для владельцев модулей; R14 их не правит)
+   Подробно — docs/birge/ARCHITECTURE.md §8.
+   2.1 R01: V2_HANDLERS ждёт функцию на маршрут, а R07/R08 отдают api.handle_get(path, query), R09 — список ROUTES,
+       R06 — функции после bind(service); нужны адаптеры. На bc7c961 через v2 работает только /akim/summary.
+   2.2 R01 ↔ R08: birge.js вызывает akim.mount({root, api, lang, mode}), а BirgeAkim.mount(rootEl, options).
+   2.3 R01: файлы web/civic/akim/*, heat/*, feedback/complaint*.js перенесены, но не в CIVIC_ASSETS и index.html
+       (проверено: /civic/akim/akim.js → 404 на bc7c961).
+   2.4 R05 ↔ R06: лишние поля в POST /proposals (422), DELETE вместо POST …/withdraw, ответ {item} вместо ожидаемого.
+   2.5 R09 ↔ R05/R06/R07: ключ устройства в localStorage — "birge.device" (R09) против "birge.device_id" (остальные).
+       «Я тоже» и голоса одного телефона будут считаться по разным идентификаторам.
+   2.6 R08 ↔ R09: два справочника сроков с разными числами — DEADLINE_DAYS (исправление, R08) и RESPONSE_DAYS
+       (первый ответ, R09). Оба — демо-нормативы; на защите называть их так.
+   2.7 R09 → R07: после новой жалобы нет ui.civic_heat.invalidate() (кэш R07 60 с).
+   2.8 R01 RUN.txt: «set PORT=8612 && run-city.bat» не меняет порт — run-city.bat безусловно ставит PORT=8611.
+       Рабочий вариант описан в docs/birge/RUNBOOK.md §3.
+   2.9 R13: history.to_records считает день записи через встроенный hash() — зависит от PYTHONHASHSEED,
+       даты невоспроизводимы между процессами; нужен hashlib.
+   2.10 Отчёты: у R04 и R13 нет DELIVERY.json; DELIVERY R01 отстаёт от головы (code_sha 2eaeacb при голове bc7c961);
+        в DELIVERY R11 нет точного SHA; в STATUS R09 устаревшая строка о code_sha; R07 DELIVERY 97 тестов — повтор R14 дал 98.
+
+3. LOCAL-задачи (ноутбук владельца / ChatGPT с поиском)
+   LOCAL-R14-1. Проверка источников (ChatGPT с поиском в интернете). Промпт — docs/birge/CONTINUE_WITH_GPT.md §3.8:
+       пройти все [ПРОВЕРИТЬ ИСТОЧНИК] в docs/diploma/01_analiz.md, 00_vvedenie.md, 99_literatura.md;
+       особенно: АППК РК (номер, дата, статьи о сроках обращений), закон РК о персональных данных, iKOMEK 109
+       (gov.kz article 99399), eOtinish, Smart Astana, официальный текст кейсов Gton 2026, статьи по 311,
+       XLM-R, multilingual-E5, KazNERD/KazParC. Вернуть таблицу «как записано / как правильно / ссылка».
+   LOCAL-R14-2. Требования вуза: владелец присылает методичку кафедры → заменить метки [ТРЕБОВАНИЕ ВУЗА].
+   LOCAL-R14-3. Скриншоты итоговой сборки (это LOCAL-7) → вставить в главы 2, 3, 5 вместо [РИСУНОК …].
