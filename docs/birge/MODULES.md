@@ -1,30 +1,34 @@
 # Birge · модули
 
-> Документ R14 (раунд 14) по **фактическому коду и отчётам веток ролей** на 10 октября 2026.
+> Документ R14 (раунд 14) по **фактическому коду и отчётам веток ролей** на 10 октября 2026 (обновлено ночью 10→11.10:
+> сборка B2 R01, обучение классификатора LOCAL-4, приёмка R10, ревью R15).
 > Читалось через `git show` по веткам (код не запускался, если не сказано иное). Числа тестов — из `DELIVERY.json` ролей.
 > Каждая роль сдаёт `research/round-14-results/<роль>/DELIVERY.json`, `RUN.txt`, `INTEGRATION.txt` и handoff
 > `research/handoffs/astana/<роль>/round14/STATUS.md` — **это первоисточник**; здесь — сводка, чтобы быстро найти, где что менять.
-> После каждой сборки R01 (B1 13.10, B2 14.10, FINAL 15.10) таблицу §0 нужно обновить.
+> После каждой сборки R01 таблицу §0 нужно обновить. Фактически B1 и B2 собраны 10.10 (раньше плана), FINAL — 15.10.
 
 ## 0. Сводная таблица
 
-| Роль | Модуль | Ветка | Голова | code_sha / tested_sha | Статус на 10.10 |
-|---|---|---|---|---|---|
-| R01 | Интегратор: сервер, шлюзы, оболочка | `claude/sharp-dijkstra-0t87gl` | e9b34a6 | d3c33d9 / d3c33d9 | кандидат B1: подключены R07, R08, R09; путь демо B1 15/0 |
-| R02 | Данные, синтетика, разметка | `claude/r14-R02` | 73b97d2 | f62cc93 / f62cc93 | ready_for_review |
-| R03 | Классификатор v2 | `claude/r14-R03` | 1d0edd7 | 847bf31 / 847bf31 | код готов; обучение на GPU (LOCAL-4) не выполнено |
-| R04 | Дубли и ML-API | `claude/r14-R04` | 94bd9ac | deeb1de / deeb1de | ready_for_review (запасные пути); E5 и v2 ждут LOCAL |
-| R05 | 3D-превью | `claude/r14-R05` | e533e67 | b0353ee / b0353ee | сдан |
-| R06 | Предложения, голоса, этапы | `claude/round-14-r06` | 3d10f7d | 7031afa / 7031afa | сдан |
-| R07 | Тепловая карта | `claude/upbeat-knuth-i0rqaa` | 3eb3f9d | 5a97636 / 5a97636 | сдан на демо-данных |
-| R08 | Картина дня | `claude/r14-R08` | a4189ba | 9f1d9c0 / 9f1d9c0 | поставка 1 |
-| R09 | Жалоба жителя v2 | `claude/modest-shannon-0ki93p` | e012f73 | a4ab5a4 / a4ab5a4 | сдан |
-| R10 | Приёмка | `claude/r14-R10` | e73f1e8 | нет DELIVERY | partial: проверка поставок, точность §8, дефекты B-001…B-010 |
-| R11 | UX и казахский | `claude/r14-R11` | f025241 | в DELIVERY нет точного SHA («последний коммит ветки») | день 2 |
-| R12 | Точность карты | `claude/tender-brahmagupta-ef5ztl` | 8bb7bf8 | 8810221 / d13f49a | сдан |
-| R13 | Прогноз (прототип) | `claude/r14-R13` | 8746927 | 8705829 / 8705829 | сдан: backtest на синтетике, `forecast()` |
-| R14 | Документация и диплом | `claude/r14-R14` | см. STATUS | — | этот документ |
-| R15 | Ревью безопасности | `claude/r14-R15` | 1c12b32 | — | checkpoint 1 (тесты транспорта R01) |
+Срез — ночь 10→11.10. «В B2» — версия, которую интегратор R01 взял в сборку B2 (f54361d). Голова ветки может быть новее:
+это правки после поставки (их забирает R01 в FINAL только по новому DELIVERY.json).
+
+| Роль | Модуль | Ветка | Голова | code_sha (DELIVERY) | В B2 | Статус |
+|---|---|---|---|---|---|---|
+| R01 | Интегратор: сервер, шлюзы, оболочка | `claude/sharp-dijkstra-0t87gl` (= `claude/r14-R01`) | d9a8895 | b5c153d (B2) | — | **B2-кандидат f54361d**; после него шаги B3 до d9a8895 (без DELIVERY) |
+| R02 | Данные, синтетика, разметка | `claude/r14-R02` | 2a95286 | f62cc93 | 229f1aa | сдан; llm_v1 (3 979 текстов) — 2a95286 |
+| R03 | Классификатор v2 | `claude/r14-R03` | c2b4dda | d472baf | 252913e (без весов) | **обучен (LOCAL-4, c19b889)**; probe_v2 0.828; повторный ONNX-экспорт — ноутбук |
+| R04 | Дубли и ML-API | `claude/r14-R04` | 94bd9ac | deeb1de | deeb1de | сдан (запасные пути); E5 ждёт LOCAL |
+| R05 | 3D-превью | `claude/r14-R05` | 169c56b | b0353ee | b0353ee | сдан; на ветке правки после поставки (без нового DELIVERY) |
+| R06 | Предложения, голоса, этапы | `claude/round-14-r06` | 6b9da27 | b42e790 | 7031afa | поставка 2 (b42e790) — в B3 |
+| R07 | Тепловая карта | `claude/upbeat-knuth-i0rqaa` | 35e6feb | 306074b | 5a97636 | поставка 306074b — в B3 |
+| R08 | Картина дня | `claude/r14-R08` | 7101f46 | 4ce8f08 | 4ce8f08 | поставка 2 |
+| R09 | Жалоба жителя v2 | `claude/modest-shannon-0ki93p` | 5dd6465 | fa49fc9 | fa49fc9 | сдан; проверен с настоящими R12 и R04 |
+| R10 | Приёмка | `claude/r14-R10` | ac8508e | 08392e7 (тесты) | тесты 9c364c7 — в B3 | B1 и B2 приняты: в B2 сценарий проходит, блокеров нет |
+| R11 | UX и казахский | `claude/r14-R11` | 8451468 | «последний коммит ветки» | 6102dfb | словари 665 ключей ru = kk; UX_REVIEW по B1/B2 |
+| R12 | Точность карты | `claude/tender-brahmagupta-ef5ztl` | 8bb7bf8 | 8810221 / tested d13f49a | d13f49a | сдан |
+| R13 | Прогноз (прототип) | `claude/r14-R13` | 8746927 | 8705829 | 8705829 | сдан; повтор с реальной погодой — не выполнен |
+| R14 | Документация и диплом | `claude/r14-R14` | см. STATUS | см. DELIVERY | 8e106a9 — в B3 | этот документ |
+| R15 | Ревью безопасности | `claude/r14-R15` | 77bd744 | c5b98a0 (тесты), patch b892532 | — | поставка 1: критичных нет, 11 важных с patch |
 
 Общее для всех модулей:
 - категории — только из `research/round-14/categories_v2.json` (12 штук);
@@ -36,7 +40,7 @@
 
 ## R01 · Интегратор: сервер, шлюзы, оболочка
 
-- **Ветка:** `claude/sharp-dijkstra-0t87gl`, голова e9b34a6; DELIVERY: code/tested d3c33d9 — кандидат B1 (сборки: I0 3adabe3, api_v2 caf2cff, shell_ru_kk 2eaeacb, b1_import bc7c961, b1_candidate d3c33d9). Актуальный SHA сборки — в `research/handoffs/astana/R01/round14/STATUS.md`.
+- **Ветка:** `claude/sharp-dijkstra-0t87gl` (то же, что `claude/r14-R01`), голова d9a8895; DELIVERY: code b5c153d — **кандидат B2 f54361d** (сборки: I0 3adabe3, api_v2 caf2cff, shell_ru_kk 2eaeacb, b1_import bc7c961, b1_candidate d3c33d9, b2_step1 915143f, b2_step2 b5c153d, b2_candidate f54361d; после B2 — шаги B3 a8fabce, be82fa8, 7227fce, d9a8895). Актуальный SHA сборки — в `research/handoffs/astana/R01/round14/STATUS.md`.
 - **Назначение:** собрать одну работающую версию Birge — перенести поставки ролей по закреплённым SHA (без merge, по путям), держать HTTP-шлюзы v1/v2 и оболочку страницы (шапка Birge, ҚАЗ/РУС, Акимат/Житель, Карта/Картина дня).
 - **Файлы:**
   - `ui/web_server.py` (1437 строк) — сервер, шлюзы `CivicGateway` (v1) и `CivicV2Gateway` (v2), статика по белому списку `ASSETS`/`CIVIC_ASSETS`;
@@ -47,22 +51,23 @@
   - `web/civic/shell/shell-text.js` (241) — запасной словарь ru/kk (79 ключей `shell.*`);
   - `web/civic/shell/explore.js` (356) — районы и поиск улицы по `/civic/map/streets.json` без внешнего геокодера;
   - `web/civic/shell/shell.css`, `birge.css` — раскладка, панель справа 400 px, телефонная шапка.
-- **Маршруты:** старое API симулятора (`/api/health`, `/api/bootstrap`, `/api/simulate`, `/api/optimize`, `/api/advisor`, …); `/api/civic/v1/*` — 30 маршрутов (объекты, редактор, сообщения, модерация, сценарии, помощник, staff); `/api/civic/v2/*` — 14 маршрутов CONTRACT §7 + `GET /modules`. Таблица `V2_HANDLERS` и правила проверки входа — `ARCHITECTURE.md` §5.
+- **Маршруты:** старое API симулятора (`/api/health`, `/api/bootstrap`, `/api/simulate`, `/api/optimize`, `/api/advisor`, …); `/api/civic/v1/*` — 30 маршрутов (объекты, редактор, сообщения, модерация, сценарии, помощник, staff); `/api/civic/v2/*` — 14 маршрутов CONTRACT §7 + геоданные R12, предложения и этапы R06, прогноз R13 + `GET /modules`; в B2 — **37 маршрутов v2, все `ready`** (проверка R14). Таблица `V2_HANDLERS` и правила проверки входа — `ARCHITECTURE.md` §5.
 - **Аргументы и переменные:** `--port` (8501), `--host` (127.0.0.1), `--open`, `--civic-db` (или `CIVIC_DB_PATH` / `CIVIC_DB`, иначе `.runtime/civic.sqlite3`), `--civic-classifier off|r08` (`CIVIC_R08_CLASSIFIER=1`).
 - **Тесты:**
   - всё сразу: `bash tests/civic/R01/run_checks.sh <папка>` (pytest, `python -B -m ui.web_check`, node, браузер Playwright);
   - шлюз v2: `python -m pytest -q tests/civic/R01/test_r01_api_v2.py`;
   - шапка: `node tests/civic/R01/browser/r14_shell.cjs <папка>`;
   - результаты (DELIVERY/BUILD_LOG): на 2eaeacb весь pytest 1458 passed / 11 skipped; `test_r01_api_v2` 61/61; браузер: шапка 35/0 (38/0 после правой панели), город 81/0, сценарии 16/0, P0 62 PASS / 1 FAIL / 2 NOT_RUN (FAIL — гонка `civic-r03-demo-ring` в модуле карты, есть и на I0); B1 шаг 1 (bc7c961): наборы R02/R07/R08/R09 — 784 passed / 1 skipped; **кандидат B1 (d3c33d9): весь pytest 1 793 passed / 11 skipped, путь демо `node tests/civic/R01/browser/r14_b1.cjs <папка>` — 15/0** (жалоба → +1 на карте → «Мои обращения» → «Картина дня» → горячее место → «Взять в работу» → «Исправлено»); Windows `run-city.bat` — NOT_RUN.
-- **Ограничения (d3c33d9):** v2-модули R03, R04, R05, R06, R12, R13 ещё не перенесены → 503 `module_not_ready` (место жителя — «примерное», категория — вручную, шаг 5 сценария не работает); в сборке адаптеры R01 для сетки ячеек R07/R09 и ключа устройства; тексты модулей раунда 13 в панели только на русском; подложка OpenFreeMap в облаке недоступна. Подробно — `ARCHITECTURE.md` §8.
-- **Следующий шаг (DELIVERY):** вечером 13.10 B1 = d3c33d9 + сданные R06/R12/R04/R05/R03; приёмка R10 на B1; B2 14.10; FINAL 15.10 18:00.
+- **Проверки B2 (f54361d, код b5c153d):** весь pytest **2 377 passed / 20 skipped / 1 xfailed**; путь демо B1 15/0, путь B2 `node tests/civic/R01/browser/r14_b2.cjs <папка>` — 17/0 (20/0 с путём жителя через R12/R04); шапка 38/0, город 81/0, сценарии 16/0; P0 62/1/2 (гонка demo-ring). Приёмка R10 на B2: сценарий проходит целиком, блокеров нет.
+- **Ограничения (B2):** веса модели R03 в Git нет — без них `/classify` отвечает словарём (`source: kw`); в оболочке временный адаптер R05 → R06 (после поставки 2 R06 сокращён в B3); R13 `/forecast` — только API; тексты модулей раунда 13 (лента работ, кабинет сотрудника) в ҚАЗ по-русски (B-012, B-021); подложка OpenFreeMap в облаке недоступна — после B3 (7227fce) карта рисует оси улиц OSM офлайн. Подробно — `ARCHITECTURE.md` §8.
+- **Следующий шаг (DELIVERY B2):** FINAL 15.10 18:00 — повторные поставки R07/R06/R05 по DELIVERY, убрать адаптер R05 → R06, патчи R15 (INTEGRATION R15), CSS-правки B-019/B-020 (INTEGRATION R10 §3), `run_checks.sh` + r14_b1 + r14_b2, DEMO_SCRIPT, DELIVERY, STATUS.
 - **Документы роли:** `research/round-14-results/R01/{DELIVERY.json, BUILD_LOG.md, RUN.txt, INTEGRATION.txt, DEMO_SCRIPT.md}`.
 
 ---
 
 ## R02 · Данные, синтетика, разметка
 
-- **Ветка:** `claude/r14-R02`, голова 73b97d2; code/tested f62cc93; часть (инструмент разметки) также в `claude/round-14-package` @ 887ef4b.
+- **Ветка:** `claude/r14-R02`, голова 2a95286 (llm_v1: `ml/datasets/llm_v1/` — 3 979 текстов gpt-4.1-mini, $0.28, сгенерировано на ноутбуке); code/tested f62cc93; в B2 — 229f1aa; часть (инструмент разметки) также в `claude/round-14-package` @ 887ef4b.
 - **Назначение:** корпуса для обучения и проверки классификатора (12 категорий, ru/kk/mixed), офлайн-инструмент ручной разметки, импорт и обезличивание ответов Google-формы, согласие разметчиков, скрипты LLM-синтетики и LLM-разметчика (запуск только локально с ключом).
 - **Файлы:**
   - `ml/datasets/DATASHEET.md` (430) — описание всех корпусов, схема экспериментов A–E; `LABELING_GUIDE_v2.md` (245) — правила разметки, 25 спорных случаев;
@@ -87,21 +92,22 @@
 
 ## R03 · Классификатор v2
 
-- **Ветка:** `claude/r14-R03`, голова 1d0edd7; code/tested 847bf31; данные из R02 @ 05b789e (читаются по путям).
+- **Ветка:** `claude/r14-R03`, голова c2b4dda; code/tested d472baf; результаты обучения LOCAL-4 — коммит **c19b889** (Codex на ноутбуке, код 477f97b); данные из R02 (synth_v3, v1_in_v2, probe_v2 @ 73b97d2; llm_v1 @ 2a95286) — читаются по путям.
 - **Назначение:** конвейер классификатора 12 категорий: три модели (словарная эвристика, логрегрессия метода v1, `FacebookAI/xlm-roberta-base`), сравнение режимов обучения с бутстрэпом, итоговая модель, экспорт ONNX int8, `Classifier.classify()` для `/classify`.
-- **Файлы (`ml/civic_classifier_v2/`):** `config.py` (гиперпараметры), `labels.py` (категории из JSON), `data.py` (корпуса и разбиения), `heuristic.py` (словарь основ ru/kk), `logreg.py` (символьные 2–5-граммы + словарь), `transformer.py` (цикл PyTorch), `metrics.py` (macro-F1, бутстрэп, парная Δ, ECE, порог), `evaluate.py`, `experiments.py`, `train.py`, `export_onnx.py`, `predict.py`, `zeroshot.py`, `MODEL_CARD.md`, `results/RESULTS.md`, `results/experiments.json`, `results/cloud_check_2026-10-10.json`; `artifacts/` — вне Git.
-- **Команды** (полный порядок для ноутбука — `research/round-14-results/R03/RUN.txt`):
-  - `python -m ml.civic_classifier_v2.experiments --human private/labels_owner.jsonl [--seeds 3] [--models …] [--regimes …] [--human-fraction …] [--smoke]`;
+- **Файлы (`ml/civic_classifier_v2/`):** `config.py` (гиперпараметры), `labels.py` (категории из JSON), `data.py` (корпуса и разбиения), `heuristic.py` (словарь основ ru/kk), `logreg.py` (символьные 2–5-граммы + словарь), `transformer.py` (цикл PyTorch), `metrics.py` (macro-F1, бутстрэп, парная Δ, ECE, порог), `evaluate.py`, `experiments.py`, `train.py`, `export_onnx.py`, `predict.py`, `zeroshot.py`, `MODEL_CARD.md`; `results/` — `RESULTS.md` (генерируется, руками не править), `experiments.json`, `final_model_meta.json`, `onnx_export.json`, `train_log_*.jsonl`, `cloud_check_2026-10-10.json`; `artifacts/` (веса, ONNX) — **вне Git**, только на ноутбуке.
+- **Команды** (полный порядок для ноутбука — `research/round-14-results/R03/RUN.txt`, шаги 0–9):
+  - `python -m ml.civic_classifier_v2.experiments --probe-v2 … [--human private/labels_owner.jsonl] [--seeds 3] [--models …] [--regimes …] [--human-fraction …] [--smoke]`;
   - `python -m ml.civic_classifier_v2.train [--regime synth_template|synth_llm|synth_all|human|mix]`;
-  - `python -m ml.civic_classifier_v2.export_onnx`;
+  - `python -m ml.civic_classifier_v2.export_onnx` (по умолчанию int8 per-channel);
   - `python -m ml.civic_classifier_v2.predict "текст" [--backend onnx|torch]`;
-  - `python -m ml.civic_classifier_v2.zeroshot --human … --model gpt-4o-mini --max-usd 1`.
-- **API для R04:** `predict.Classifier.load()` (ищет `artifacts/onnx`, затем `artifacts/final`, иначе `ModelUnavailable`; путь можно задать `BIRGE_CLF_V2_DIR`), `.classify(text) → {category, score, needs_review, model_version, top3}`.
-- **Ключевые решения:** оценка только на текстах людей (≥ 200, иначе `NOT_EVALUATED`); синтетический test — справочно, бутстрэп по шаблонам; тексты людей не участвуют в подборе для синтетических режимов; в режимах human/mix — k-fold с прогнозами вне фолда; порог `needs_review` — минимальный t (0.30…0.95), при котором точность автоподсказок на val ≥ 0.90; **пока модель не проверена на людях, `needs_review = true` всегда**.
-- **Результаты на 10.10 (RESULTS.md, облако, без GPU):** синтетический test v3 — словарь 0.731 [0.570–0.857], логрегрессия на v3 0.632 [0.494–0.771], логрегрессия на v1→v2 0.548 [0.424–0.675]; трансформер — NOT_RUN; люди — NOT_EVALUATED.
-- **Тесты (DELIVERY):** `python -m pytest tests/civic/R03/round14 -q` — 65/65 (полная среда: torch CPU, transformers, onnx, sklearn); без тяжёлых библиотек — 58 PASS + 7 NOT_RUN.
-- **Ограничения:** веса xlm-roberta-base в облаке недоступны — все числа трансформера после LOCAL-4; пиковая память GPU 4–6 ГБ — оценка (при нехватке: `batch_size=8 grad_accum=4`, затем `freeze_embeddings=true`); на синтетике казахский ≈ 0.5, транслит 0.02–0.29 macro-F1 у базовых моделей; 200–400 текстов людей → широкие интервалы, один разметчик; в R03 нет режима «+ v1_in_v2», абляции `label_table` и оценки на probe_v2, которые предлагал DATASHEET R02.
-- **Следующий шаг:** LOCAL-4 по `RUN.txt` → пуш `results/*.json` + `RESULTS.md` → ONNX передать R04.
+  - `python -m ml.civic_classifier_v2.evaluate render` — перегенерировать `RESULTS.md` из `experiments.json`;
+  - `python -m ml.civic_classifier_v2.zeroshot --human … --model gpt-4o-mini --max-usd 1` (только с согласия владельца).
+- **API для R04:** `predict.Classifier.load()` (ищет `artifacts/onnx`, затем `artifacts/final`, иначе `ModelUnavailable`; путь — `BIRGE_CLF_V2_DIR`, потоки — `BIRGE_CLF_V2_THREADS`, по умолчанию `min(4, ядер)`), `.classify(text) → {category, score, needs_review, model_version, top3}`.
+- **Ключевые решения:** главный оценочный набор — тексты людей (≥ 200, иначе `NOT_EVALUATED`); до них — независимый тест вне шаблонов probe_v2 (не входит в обучение и выбор); синтетический test — справочно, бутстрэп по шаблонам; режим итоговой модели выбирается правилом (`synth_all` без людей, `mix` с людьми), не по probe; порог `needs_review` — минимальный t (0.30…0.95), при котором точность автоподсказок на val ≥ 0.90; **пока модель не проверена на людях, `needs_review = true` всегда**.
+- **Результаты LOCAL-4 (RESULTS.md, MODEL_CARD.md):** итоговая модель `civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011` — probe_v2 **0.828 [0.778–0.865]**, kk 0.81 / ru 0.83 / mixed 0.85, транслит 0.61; эксперимент на probe_v2: трансформер v3 + LLM 0.812, логрегрессия 0.797, словарь 0.684; трансформер − логрегрессия +0.015 [−0.034; +0.068] (не доказано); люди — NOT_EVALUATED. ONNX: штатный int8 — 96.5 % / 103 мс (FAIL), per-channel + 4 потока — 98 % / 22.7 мс (PASS, умолчание с d472baf). На Windows в сборке B2 модель работала (`source=v2`, `LOCAL_B2.md`).
+- **Тесты (DELIVERY):** `python -m pytest tests/civic/R03/round14 -q` — 66/66 (полная среда: torch CPU, transformers, onnx, sklearn); без тяжёлых библиотек — 59 PASS + 7 NOT_RUN. **Не запускать вместе с другими папками одной командой** (`pytest A B C`): тесты делают `from conftest import …` и берут чужой conftest (INTEGRATION §9 R01); полный `pytest tests` и папка отдельно — работают.
+- **Ограничения:** только синтетика; один seed; метки llm_v1 не проверены людьми; ECE 0.144; слабые места — транслит, трудные случаи, noise_safety/roads; повторный экспорт с d472baf на ноутбуке и качество int8 на probe_v2 — NOT_RUN (RUN.txt шаги 8, 8б).
+- **Следующий шаг:** ноутбук — RUN.txt шаги 8 и 8б, передать `artifacts/onnx` R04; после разметки ≥ 200 текстов людей — шаг 6 с `--human`, затем итоговая модель `mix` и шаг 8 заново.
 
 ---
 
@@ -122,7 +128,7 @@
 
 ## R05 · 3D-превью предложений
 
-- **Ветка:** `claude/r14-R05`, голова e533e67; code/tested b0353ee.
+- **Ветка:** `claude/r14-R05`, голова 169c56b; code/tested b0353ee (в B2). На ветке после поставки — клиент под контракт R06, правила монтажа R01, зоны нажатия 48 px (7f42cb3, b268dea); в FINAL — только по новому DELIVERY.json.
 - **Назначение:** акимат выбирает в каталоге один из 5 объектов (сквер, детская площадка, спортплощадка, остановка, освещение), «призрак» следует за курсором, «Поставить» — объект «строится» в 3D на карте с меткой «Проект · 2027»; жители видят объекты и голосуют.
 - **Файлы:** `web/civic/build3d/build3d.js` (1968, `window.CivicBuild3D`), `build3d-core.js` (931, логика без DOM, работает в Node), `build3d-models.js` (656, процедурные low-poly модели без внешних 3D-файлов), `build3d.css`, `demo.html`, `data/{nura-streets.json, astana-existing.json, astana-districts.json, demo-basemap.json, proposals.fixture.json}`; `web/vendor/three/three.module.min.js` (three.js 0.169.0, MIT, загружается лениво через `import()`).
 - **Как стоит на карте:** custom layer MapLibre (`renderingMode: "3d"`, WebGL2), камера получает матрицу проекции карты × переход «метры сцены → меркатор»; проверено: смещение якоря 0.000 px при наклоне 0–60° и повороте; слой под подписями улиц; после смены стиля добавляется заново.
@@ -136,7 +142,7 @@
 
 ## R06 · Предложения, голоса, этапы объектов
 
-- **Ветка:** `claude/round-14-r06`, голова 3d10f7d; code/tested 7031afa; восстановлено из `claude/elegant-franklin-jbhprq` @ 26793c8 (R02 раунда 13).
+- **Ветка:** `claude/round-14-r06`, голова 6b9da27; в B2 — 7031afa; **поставка 2 — code/tested b42e790** (год проекта, DELETE для R05, функции akim_* для R08, миграция 7; в сборке с шага B3 a8fabce); восстановлено из `claude/elegant-franklin-jbhprq` @ 26793c8 (R02 раунда 13).
 - **Назначение:** хранить предложения акимата (5 видов R05) и голоса жителей (один с устройства), 6 этапов объекта с автоматическим расчётом отставания и «давно не обновлялось»; API v2 и функции для R01/R08; карточки проекта и объекта.
 - **Файлы:** `ui/civic_store/{db.py (миграция 6), proposals.py, stages.py, v2.py, districts.py, demo_r14.py, cli.py}`; `web/civic/proposals/{proposals.js (BirgeProposals), stage-editor.js (BirgeStageEditor), proposals.css, demo.html}`.
 - **База (миграция 6, только новые таблицы):** `civic_object_stages`, `civic_stage_history` (только дополняется), `civic_proposals` (удаление запрещено триггером, статус `withdrawn`), `civic_proposal_history`, `civic_votes` (PK предложение + хэш устройства), `civic_v2_settings` (соль).
@@ -152,7 +158,7 @@
 
 ## R07 · Тепловая карта объектов
 
-- **Ветка:** `claude/upbeat-knuth-i0rqaa`, голова 3eb3f9d; code/tested 5a97636.
+- **Ветка:** `claude/upbeat-knuth-i0rqaa`, голова 35e6feb; в B2 — 5a97636; **повторная поставка — code/tested 306074b** (правдоподобный 5-недельный демо-поток, `records()`/`generation` для R08, значки с числом в стартовом виде, зоны 48 px; в сборке с шага B3 a8fabce). Тесты 306074b: pytest 108 passed / 3 skipped, браузер 29/29.
 - **Назначение:** главный экран акимата — какой объект, участок улицы или двор «краснеет» и сколько человек сообщили; свежие жалобы ярче, со временем «остывают»; после ремонта цель 7 дней зелёная «исправлено». Тот же расчёт отдаётся R08.
 - **Файлы:** `ui/civic_heat/{engine.py (вес, уровни, «исправлено», районы), service.py (HeatService, кэш, зум), targets.py (форма и подпись цели по id), geo.py (ячейки 150 м, районы), osm_objects.py, config.py (всё из categories_v2.json), api.py (handle_get), build_fixtures.py, demo_seed.py, devserver.py (порт 8617)}`; `web/civic/heat/{heat.js (CivicHeat), heat.css, demo.html, fixtures/}`.
 - **Формулы:** вклад жалобы = `(1 + metoo) · 0.5^(возраст_дней / 14)`; учитываются статусы `new|accepted|in_progress`; `count` — число людей без затухания (на значке); уровни по весу 1/3/6/10 (вес > 0 всегда даёт уровень ≥ 1 — отступление от `min_weight`, описано в INTEGRATION §5); районы — пороги × 5; «исправлено»: жалобы до последнего `fixed` закрыты, вес 0, `fixed_until = t_fixed + 7 дней`.
@@ -168,7 +174,7 @@
 
 ## R08 · Картина дня
 
-- **Ветка:** `claude/r14-R08`, голова a4189ba; code/tested 9f1d9c0.
+- **Ветка:** `claude/r14-R08`, голова 7101f46; **поставка 2 — code/tested 4ce8f08** (в B2): UX-правки R11, источники R06 (отстающие объекты и предложения), без собственного словаря. Тесты 4ce8f08: pytest 126 PASS + 1 XFAIL (ждёт демо-набор R07), UI 95/95.
 - **Назначение:** одна функция `summary(date, district)` — всё, что аким должен понять за 10 секунд: 4 KPI, горячие места, темы, районы, объекты с отставанием, предложения; текстовая сводка ru/kk по шаблону без LLM.
 - **Файлы:** `ui/civic_akim/{summary.py (AkimService, кэш 30 с), text.py (склонения ru/kk, «1 666», «40 %», «в 2,5 раза»), sources.py (R07, R06 или фикстуры), deadlines.py (DEADLINE_DAYS), api.py, __main__.py, fixtures/}`; `web/civic/akim/{index.html, akim.js (BirgeAkim), akim.css (+ печать), akim.i18n.json}`.
 - **Что считает:** время Астаны UTC+5; дубли исключены; «новые за день» сравниваются с тем же отрезком суток неделю назад; «в работе» = accepted + in_progress; «просрочено» = открыта дольше срока исправления категории (`DEADLINE_DAYS`: roads 7, snow_ice 2, sidewalks 10, transport 5, lighting 3, yards 14, waste 2, utilities 1, smell_air 3, noise_safety 3, parking 14, other 10 — демо-норматив); «исправлено за неделю»; статус на любую дату восстанавливается по `status_history`; горячие места, темы и районы — **та же тепловая карта R07 за 7 дней**, топ-10; изменение < 10 — в штуках, ≥ 10 — в процентах, рост вдвое — «в N раз».
@@ -181,7 +187,7 @@
 
 ## R09 · Жалоба жителя v2
 
-- **Ветка:** `claude/modest-shannon-0ki93p`, голова e012f73; code/tested a4ab5a4; v1 восстановлен из `claude/focused-hypatia-z8h0no` @ 933cd90 побайтно.
+- **Ветка:** `claude/modest-shannon-0ki93p`, голова 5dd6465; **code/tested fa49fc9** (в B2; совместный прогон с настоящими R12 `/targets` и R04 `/classify`, `/similar` — браузер 107/107); v1 восстановлен из `claude/focused-hypatia-z8h0no` @ 933cd90 побайтно.
 - **Назначение:** запись жалобы по CONTRACT §5, «Я тоже» (одно на устройство), статусы с историей, дубли, миграция v1 → v2; мастер жителя из 5 шагов и «Мои обращения».
 - **Файлы:** `ui/civic_feedback/v2/{store.py (ComplaintStore, SQLite), record.py (проверка записи, язык, ячейка 150 м, публичный/служебный вид), api.py (ComplaintsV2Service), migrate.py, categories.py (RESPONSE_DAYS), integration.py (make_service, ROUTES), web_assets.py, __main__.py}`; `web/civic/feedback/{complaint.js (BirgeComplaint), complaint-strings.js (81 ключ ru/kk), complaint.css, categories_v2.js (генерируется)}`; стенд `tests/civic/R09/stand/serve_r09.py`.
 - **Маршруты (11, `/api/civic/v2`):** `GET /categories`; `POST /complaints` (201, повтор с тем же `request_id` → 200 `replayed`; устройство — заголовок `X-Birge-Device`); `GET /complaints?bbox&since&days&category&status` (без текстов); `GET /complaints/mine`; `GET /complaints/events?after=N`; `GET /complaints/summary?target_id&category&days`; `GET /complaints/place?lon&lat`; `GET /complaints/{id|B-код}`; `POST /complaints/{id}/metoo` (`added|already|author`); `POST /complaints/{id}/status` и `POST /complaints/{id}/duplicate` (только сотрудник + CSRF).
@@ -197,7 +203,7 @@
 
 ## R11 · UX и казахский язык
 
-- **Ветка:** `claude/r14-R11`, голова cc77761 (в DELIVERY нет точного SHA). Ранние версии ui-kit/i18n уже в пакете (608e367) и в сборке R01 (022787b).
+- **Ветка:** `claude/r14-R11`, голова 8451468 (в DELIVERY нет точного SHA — «последний коммит ветки»); в B2 — 6102dfb, в B3 — 52d7c59. Словари: 557 ключей в B2, 665 на голове ветки (ночь 10→11.10: +102 ключа из сборки — оболочка R01, R07, R12, R05, вход сотрудника). Ранние версии ui-kit/i18n — в пакете (608e367). `UX_REVIEW.md` — разбор B1 и B2 по сценарию демо с правками по ролям.
 - **Назначение:** UX-спецификация (`research/round-14-results/R11/UX_SPEC.md`, версия 1.2 в ветке), дизайн-токены и компоненты, словари ru/kk, проверка казахского, ежедневное UX-ревью модулей.
 - **Файлы:** `web/civic/ui-kit/{tokens.css, components.css (префикс bk-, ~48 компонентов), icons.svg (49 иконок: 12 категорий + интерфейс), ui-kit.js (window.BirgeUI), index.html (витрина), fonts/ (Inter 4.0, OFL 1.1, «Birge Sans»), prototypes/}`; `web/civic/i18n/{i18n.js (window.BirgeI18n), ru.json, kk.json}`; `tests/civic/R11/{i18n_tools.py, test_r11_ui_kit.py, i18n.test.cjs, browser_check.cjs}`.
 - **Токены:** текст `#152c26`, вторичный `#5b6a64`, бренд `#176b4a`, акцент `#d7f57c`, тепловая карта `#FAC775/#EF9F27/#E24B4A/#A32D2D`, «исправлено» `#639922` (значки уровня 3 и «исправлено» темнее для контраста ≥ 4.5); шрифт 14 (только мета)/16/18/20/24/32; зона нажатия 48 (56 у главной кнопки на телефоне); шапка 64/56 px, панель 400 px, шторка 120 px / 50 vh / 92 vh; анимации 200–800 мс.
@@ -240,16 +246,21 @@
 
 ## R10 · Приёмка
 
-- **Ветка:** `claude/r14-R10`, голова e73f1e8 (partial); пути `tests/civic/R10/`, `tests/e2e/`, `research/round-14-results/R10/`.
-- **Сделано:** проверка поставок ролей по отдельности (`DELIVERIES_CHECK.md`: владение путями чисто, повтор тестов R03, R05–R09, R11, R12 совпал с DELIVERY); независимая проверка точности CONTRACT §8 по веткам (`python3 tests/civic/R10/accuracy.py --root <worktree> --json <роль>.json`, отчёты `accuracy/*.json`); дефекты B-001…B-010 (`BUGS.md`).
-- **Главные дефекты:** B-001 (блокер для B1 на bc7c961: сценарий не проходит — частично снят кандидатом d3c33d9), B-002 (R07/R09 не видны шлюзу — решено в d3c33d9), B-003 (`needs_review` всегда true → категория никогда не выбирается моделью), B-007 (R05: 41 ж/д платформа как «остановка»), B-008 (R05: 55 точек и 22 двора за границей), B-009 (R12: двор частично за границей — проверяется только центр), B-010 (`osm-relation-` нет в CONTRACT §4).
-- **Дальше:** `tests/e2e/demo_flow.cjs` (6 шагов, 1366/375 × ru/kk), приёмка B1 (13.10), B2, FINAL.
+- **Ветка:** `claude/r14-R10`, голова ac8508e; тесты — code 08392e7 (в сборке с шага B3 be82fa8 как 9c364c7); пути `tests/civic/R10/`, `tests/e2e/`, `research/round-14-results/R10/`.
+- **Инструменты:** `tests/e2e/run_acceptance.cjs --root <рабочая копия сборки> --out <папка> --label B2` — одной командой поднимает сервер сборки как `run-city.bat` (`CIVIC_DEMO=1`, временная база, демо-данные, сотрудник) и прогоняет: сценарий `demo_flow.cjs` (API + интерфейс, 1366×768 и 375×812, ҚАЗ/РУС, только видимые слова), UX-чек-лист `ux_screens.cjs`, точность `tests/civic/R10/accuracy.py`. Для Windows — `CODEX_ACCEPTANCE_PROMPT.txt`.
+- **Сделано:** приёмка B1 (d3c33d9) и **B2 (f54361d)** — `ACCEPTANCE_B1.md`, `ACCEPTANCE_B2.md`, протоколы и кадры `e2e/b1/`, `e2e/b2/`; проверка поставок ролей (`DELIVERIES_CHECK.md`); независимая точность CONTRACT §8 (`accuracy/*.json`); дефекты B-001…B-026 (`BUGS.md`, у каждого — владелец, статус, обход для демо, часто готовая правка).
+- **Итог B2:** сценарий проходит целиком, блокеров нет (B-001 закрыт); API 19/19; интерфейс 1366 ru/kk — все 6 шагов, 375 — кроме постановки проекта (B-022); точность 24 PASS / 4 FAIL (B-007…B-009, данные R05 и R12).
+- **Открытые важные:** B-019 (нажатие по значку остановки в «Где проблема?»), B-020 (панель «Территория» над шторкой на 375), B-021 (кабинет сотрудника: тех. слова, русский в ҚАЗ), B-012 (лента работ раунда 13 по-русски в ҚАЗ), B-013/B-014 (надписи < 14 px, кнопки < 40 px), B-016 (значки без числа ниже z15 — R07 306074b заявляет исправление), B-007 (ж/д платформы как остановки).
+- **Дальше:** приёмка FINAL (15.10) и Codex на Windows по `CODEX_ACCEPTANCE_PROMPT.txt`.
 
 ---
 
 ## R15 · Ревью безопасности
 
-- **Ветка:** `claude/r14-R15`, голова 1c12b32 (checkpoint 1: тесты транспорта R01 — статика, Origin/CSRF, доступ, cookie). Пути: `tests/civic/R15/`, `research/round-14-results/R15/`. Чужой код не меняет — исправления отдаёт patch в INTEGRATION.txt. Темы: XSS, CSRF, права сотрудника, персональные данные (закон РК «О персональных данных и их защите»), лимиты.
+- **Ветка:** `claude/r14-R15`, голова 77bd744; тесты — c5b98a0 (`tests/civic/R15/`), patch — b892532 (`research/round-14-results/R15/patches/P-R01|R02|R04|R07|R09.diff`). Проверена сборка R01 be82fa8 (шаг B3) и ветки ролей; только локально, своя временная база.
+- **Как проверить:** `R15_ROOT=<рабочая копия сборки> python -m pytest tests/civic/R15 -q -rxX` — на be82fa8: 80 passed, 19 xfailed (каждая открытая находка воспроизводится); после всех patch — 19 XPASS (strict: pytest покажет их как failed с пометкой XPASS — это сигнал «исправлено», снять пометку и перенести ID в `FIXED` в `tests/civic/R15/r15_common.py`).
+- **Итог:** критичных нет; важных 11 (S09 исправлена ещё в B1), мелочей 3. Главные: S04+S11 подпись цели из запроса жителя видна всем; S03+S13 точка жителя восстанавливается до метра; S02+S08+S12 накрутки; S07+S14 ФИО с отчеством проходят обезличивание и уходят в LLM. Раздел для жюри «как Birge защищает данные» — `SECURITY_REVIEW.md`.
+- **Кому что:** patch P-R01 (CSP, лимиты v2 по адресу, журнал без строки запроса), P-R09 (огрубление точки, подписи с карты, сверка цели с точкой, CSRF, цифры), P-R07 (подпись из OSM), P-R04 (`/similar` от огрублённой точки), P-R02 (отчества, не слать в LLM тексты с подозрением на ПДн) — применяет R01 к FINAL.
 
 ---
 

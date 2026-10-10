@@ -188,6 +188,7 @@ DELIVERY R01 описывает B2, для B3 — только сообщени�
 | Маршрутов API | civic v1 — 30; civic v2 — 14 по CONTRACT §7 на B1; **на B2 — 37 маршрутов v2, все `ready`** | `ui/web_server.py`; `GET /api/civic/v2/modules` — запуск R14 на f54361d |
 | Состав B2 | R11 6102dfb, R02 229f1aa, R07 5a97636, R08 4ce8f08, R09 fa49fc9, R12 d13f49a, R06 7031afa, R05 b0353ee, R13 8705829, R04 deeb1de, R03 252913e (без весов) | `research/round-14-results/R01/DELIVERY.json` (`restored_from`), R01 @ f54361d |
 | B2: весь pytest | **2 377 passed / 20 skipped / 1 xfailed** (skip — нет torch/sklearn/onnx в облаке и одна устаревшая копия теста; xfail — ждёт демо-набор R07) | `research/round-14-results/R01/BUILD_LOG.md` «B2 — проверки», DELIVERY R01 |
+| B2: весь pytest, повтор R14 | **2 377 passed / 20 skipped / 1 xfailed за 256 с** — совпадает с отчётом R01 | `python3 -m pytest -q tests` в рабочей копии f54361d, Linux, Python 3.13.16, pytest 9.1.1 |
 | B2: браузер | путь демо B1 15/0; путь демо B2 17/0 на b5c153d и **20/0** с путём жителя через R12/R04; шапка 38/0, город 81/0, сценарии 16/0, пустой реестр 15/0; P0 62/1/2 (1 FAIL — давняя гонка `demo-ring` модуля карты, есть и на I0) | там же |
 | B2: запуск R14 | `civic-v2: ready R04, R06, R07, R08, R09, R12, R13`; 37/37 маршрутов ready; `/targets` 2.6 мс, `/heat` 25 мс, `/akim/summary` 27 мс, `/forecast` 23 мс, `/proposals` 2 мс (первые вызовы); `/classify` без весов — `source: kw` (словарь), `needs_review: true` | запуск R14 на f54361d, Linux, Python 3.13.16, `CIVIC_DEMO=1` |
 | Голова R01 d9a8895 (B3 шаг 4): запуск R14 | 37/37 маршрутов ready; при `CIVIC_DEMO=1` сервер сам создаёт 5 синтетических демо-проектов R06 (ручной шаг `seed-r14-demo` больше не нужен) | запуск R14 на d9a8895 |
@@ -236,8 +237,10 @@ DELIVERY R01 описывает B2, для B3 — только сообщени�
 | R11 @ cc77761 | `python3 tests/civic/R11/i18n_tools.py check`; `pytest tests/civic/R11/test_r11_ui_kit.py` | PASS; 14 passed | PASS |
 | R12 @ d13f49a | `python3 -m pytest -q tests/civic/R12/test_civic_geo.py`; `python3 -m engine.civic_geo report` | 29 passed; 954/954 PASS | 29/29; 954/954 |
 | R01 @ bc7c961 | `python3 -B app.py --port 8711 --civic-db <tmp>` | старт OK, см. §10 | — |
+| **R01 B2 @ f54361d** | `python3 -m pytest -q tests` | **2 377 passed, 20 skipped, 1 xfailed** (256 с) | 2 377 / 20 / 1 xfailed |
+| R01 B2 @ f54361d и d9a8895 | `CIVIC_DEMO=1 python3 -B app.py --port 872x --civic-db <tmp>` | старт OK; v2 37/37 ready (R04, R06, R07, R08, R09, R12, R13) | — |
 
-NOT_RUN в этой сессии: браузерные проверки ролей (Playwright), R04 (тесты в работе), R13 (тестов нет), Windows `run-city.bat`.
+NOT_RUN в сессиях R14: браузерные проверки ролей (Playwright) — числа из DELIVERY и протоколов R10; Windows `run-city.bat` — выполнен Codex (LOCAL B2, §13). R04 и R13 входят в полный прогон B2 (0 FAIL).
 
 ## 13. Приёмка, безопасность, проверка на Windows
 
