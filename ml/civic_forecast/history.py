@@ -11,8 +11,9 @@
   - сезон: снег и гололёд — снегопад и оттепели (ноябрь–март); отопление — начало сезона (октябрь–ноябрь) и мороз;
     ямы — весна после оттепелей (март–май, сильнее после «качелей» февраля–марта); мусор и запахи — летняя жара;
     освещение — длинные ночи; дворы и площадки — тёплый сезон.
-  - горячие места: эпизод начинается с вероятностью 2 % в месяц, длится в среднем 4 месяца, ×4 на 1–2 категориях.
-  - всплески: 1 % территорий-месяцев, одна категория ×6 (авария, разовое событие).
+  - склонность места: логнормальная, σ = 0.55 (есть «вечные» проблемные дворы, но их немного);
+  - горячие места: эпизод начинается с вероятностью 3 % в месяц, длится в среднем 3 месяца, ×5 на 1–2 категориях.
+  - всплески: 1,5 % территорий-месяцев, одна категория ×6 (авария, разовое событие).
   - стройки: 40 синтетических строек (3–9 месяцев) у случайных улиц и дворов; в радиусе 400 м растут
     дороги, тротуары, шум, пыль. План строек известен заранее — это законный признак прогноза.
 """
@@ -34,8 +35,11 @@ CATEGORIES_PATH = REPO / "research" / "round-14" / "categories_v2.json"
 SEED = 2026
 FIRST_MONTH = "2024-01"
 LAST_MONTH = "2026-10"
-HOT_START, HOT_MEAN_MONTHS, HOT_FACTOR = 0.02, 4.0, 4.0
-BURST_P, BURST_FACTOR = 0.01, 6.0
+# Параметры подобраны так, чтобы задача не была тривиальной: в первой версии (склонность σ=0.8, эпизоды 2 %/мес ×4,
+# порог 3) даже прогноз «как в прошлом месяце» давал ~90 % на top-30 — такая проверка ничего не различает.
+PROPENSITY_SD = 0.55
+HOT_START, HOT_MEAN_MONTHS, HOT_FACTOR = 0.03, 3.0, 5.0
+BURST_P, BURST_FACTOR = 0.015, 6.0
 N_CONSTRUCTIONS, CONSTRUCTION_RADIUS_M = 40, 400.0
 
 # Базовая частота жалоб в месяц на территорию по виду и категории (до сезонных множителей).
@@ -162,6 +166,7 @@ class History:
     counts: dict            # target_id → [[count по категориям] по месяцам]
     weather: dict           # month → месячные показатели (фактические, для генерации)
     weather_meta: dict
+    weather_table: dict     # 'YYYY-MM' → показатели из дневного ряда (для норм месяца в признаках)
     constructions: list
     hot: dict               # target_id → [bool по месяцам] (служебно, для README и тестов)
     seed: int
@@ -187,7 +192,7 @@ class History:
 
 
 def generate(targets=None, *, seed: int = SEED, first: str = FIRST_MONTH, last: str = LAST_MONTH,
-             weather_rows=None, weather_meta=None) -> History:
+             weather_rows=None, weather_meta=None, prop_sd: float = PROPENSITY_SD) -> History:
     """Детерминированная история. targets — подмножество (для быстрых тестов) или все из data/targets.json."""
     targets = list(targets if targets is not None else load_targets())
     categories, _ = load_categories()
@@ -199,7 +204,13 @@ def generate(targets=None, *, seed: int = SEED, first: str = FIRST_MONTH, last: 
 
     # Стройки: у случайных участков улиц и дворов (синтетика), список известен заранее.
     rng_c = _rng(seed, "constructions")
-    anchors = sorted((t for t in targets if t["kind"] in ("segment", "yard")), key=lambda t: t["id"])
+    # Места строек выбираются из ПОЛНОГО списка территорий, а не из переданного подмножества: тогда у любой
+    # территории одни и те же жалобы и в полной истории, и в быстрой тестовой выборке.
+    try:
+        universe = load_targets()
+    except OSError:
+        universe = targets
+    anchors = sorted((t for t in universe if t["kind"] in ("segment", "yard")), key=lambda t: t["id"])
     constructions = []
     for i in range(min(N_CONSTRUCTIONS, len(anchors))):
         anchor = anchors[rng_c.randrange(len(anchors))]
@@ -219,7 +230,7 @@ def generate(targets=None, *, seed: int = SEED, first: str = FIRST_MONTH, last: 
     for t in targets:
         rng = _rng(seed, t["id"])
         base = BASE[t["kind"]]
-        propensity = math.exp(rng.gauss(0, 0.8))
+        propensity = math.exp(rng.gauss(0, prop_sd))
         hot_cats = rng.sample(sorted(base), k=min(len(base), rng.randint(1, 2)))
         hot_left = 0
         rows, flags = [], []
@@ -252,7 +263,7 @@ def generate(targets=None, *, seed: int = SEED, first: str = FIRST_MONTH, last: 
         hot_flags[t["id"]] = flags
     meta = dict(weather_meta or {})
     return History(months=months, categories=categories, targets=targets, counts=counts, weather=wmonth,
-                   weather_meta=meta, constructions=constructions, hot=hot_flags, seed=seed)
+                   weather_meta=meta, weather_table=table, constructions=constructions, hot=hot_flags, seed=seed)
 
 
 def to_records(history: History, month: str, limit: int | None = None) -> list[dict]:
