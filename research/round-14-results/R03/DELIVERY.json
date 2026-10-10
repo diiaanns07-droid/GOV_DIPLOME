@@ -72,8 +72,8 @@
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 108, xfailed 1 (известное ограничение словаря: благодарность с темой)",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 100, NOT_RUN 8 (skipped с причиной), xfailed 1",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 109, xfailed 1 (известное ограничение словаря: благодарность с темой)",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 101, NOT_RUN 8 (skipped с причиной), xfailed 1",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
@@ -110,7 +110,8 @@
   "нагрузка /classify настоящей моделью на ноутбуке": "NOT_RUN — по желанию, RUN.txt (bench, ≈ 1 мин)",
   "разрыв kk − ru на probe_v2 (бутстрэп отдельно по языкам, ERROR_ANALYSIS раздел 7)": "PASS — логрегрессия −0.049 [−0.167; +0.052], словарь +0.001 [−0.131; +0.108]: не доказано; трансформер — NOT_RUN (утро, шаг 8б)",
   "FINAL R01 ef1ef44 + пути R03 @ b86563c: tests R03/R04/R09/R01": "PASS 811, skipped 1, xfailed 1",
-  "калибровка score по корзинам на probe_v2 (ERROR_ANALYSIS раздел 8)": "PASS — логрегрессия ECE 0.071 (совпадает с experiments.json); трансформер — NOT_RUN (утро, шаг 8б)"
+  "калибровка score по корзинам на probe_v2 (ERROR_ANALYSIS раздел 8)": "PASS — логрегрессия ECE 0.071 (совпадает с experiments.json); трансформер — NOT_RUN (утро, шаг 8б)",
+  "утренние шаги 8б/8в/tables на крошечной модели (облако, сухой прогон)": "PASS — команды работают; таблицы 3/7/8 берут файлы утра, чужая модель помечается"
  },
  "results_so_far": {
   "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",

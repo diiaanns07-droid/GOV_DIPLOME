@@ -33,7 +33,7 @@ def _fake_exp() -> dict:
 
 def test_tables_structure_and_csv(tmp_path):
     exp = _fake_exp()
-    tables = A.build_tables(exp, {}, {})
+    tables = A.build_tables(exp, {}, {}, tmp_path / "нет")              # без файлов results/ репозитория
     slugs = [t.slug for t in tables]
     assert {"t1_probe_v2_macro_f1", "t3_paired_probe_v2", "t4_per_class_probe_v2", "t5_slices_probe_v2"} <= set(slugs)
     t3 = next(t for t in tables if t.slug == "t3_paired_probe_v2")
@@ -239,3 +239,26 @@ def test_calibration_section_bins_and_ece():
     md = "\n".join(A._calibration_section({"m": rows}, probe))
     assert "| `m` | 0.97–1.00 | 10 | 0.99 | 60% | +0.39 | 0.391 |" in md       # самоуверенна: 0.99 против 60 %
     assert A._calibration_section({"h": {"0": {"true": "roads", "pred": "roads"}}}, {"0": {}}) == []   # без score
+
+
+def test_morning_files_reach_tables(tmp_path):
+    """Файлы утреннего шага (int8 на probe, перевод транслита, парная Δ) попадают в таблицы 3, 7 и 8."""
+    ci = {"macro_f1": {"low": 0.75, "high": 0.86}}
+    final = {"model_version": "M", "probe_v2_eval": {"macro_f1": 0.828, "ci": ci}}
+    (tmp_path / "final_model_meta.json").write_text(json.dumps(final), encoding="utf-8")
+    (tmp_path / "onnx_int8_on_probe_v2.json").write_text(json.dumps(
+        {"model": "M", "human": {"macro_f1": 0.82, "ci": ci}}), encoding="utf-8")
+    cmp_ = {"raw": {"macro_f1": 0.8, "translit_accuracy": 0.5}, "to_cyrillic": {"macro_f1": 0.81, "translit_accuracy": 0.7},
+            "paired_delta_cyr_minus_raw": {"delta": 0.01, "low": -0.01, "high": 0.03}, "texts_changed": 24}
+    (tmp_path / "onnx_int8_on_probe_v2_to_cyrillic.json").write_text(json.dumps(
+        {"model": "other", "to_cyrillic": cmp_}), encoding="utf-8")
+    (tmp_path / "paired_transformer_synth_all_vs_template.json").write_text(json.dumps(
+        {"set": "probe_v2", "delta": {"delta": 0.127, "low": 0.07, "high": 0.18, "share_delta_gt_0": 1.0}}), encoding="utf-8")
+    onnx = {"check": {}, "latency_cpu": {}, "verdict": {}}
+    tables = {t.slug: t for t in A.build_tables(_fake_exp(), final, onnx, tmp_path)}
+    assert ["трансформер: v3 + LLM − шаблонная v3", "+0.127", "[+0.070; +0.180]", "1.0", "доказано"] in tables["t3_paired_probe_v2"].rows
+    t7 = {r[0]: r[1] for r in tables["t7_onnx"].rows}
+    assert t7["probe_v2: macro-F1 int8 (ONNX)"] == "0.820 [0.750–0.860]"
+    assert t7["probe_v2: macro-F1 PyTorch (итоговая модель)"] == "0.828 [0.750–0.860]"
+    t8 = tables["t8_translit_to_cyrillic"].rows
+    assert len(t8) == 1 and t8[0][0] == "трансформер (итоговая, int8) — другая модель other"   # чужая модель помечена

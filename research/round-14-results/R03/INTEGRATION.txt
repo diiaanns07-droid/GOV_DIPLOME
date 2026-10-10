@@ -100,12 +100,12 @@ R14 (диплом) — что появилось ночью
 - results/ERROR_ANALYSIS.md: где путаются модели, точность по правилам трудных случаев гайда, примеры текстов probe.
 - results/LLM_LABEL_AUDIT.md, llm_label_cleaning_effect.json, translit_to_cyrillic_probe_v2.json.
 - Новое для главы 4: «v3 + LLM против одной v3» теперь есть парно для логрегрессии: +0.046 [+0.004; +0.089], доказано
-  (results/paired_logreg_synth_all_vs_template.json). Для трансформера — утром на ноутбуке (analysis paired по
+  (results/paired_logreg_synth_all_vs_template.json; строка в таблице 3 DIPLOMA_TABLES.md). Для трансформера — утром на ноутбуке (analysis paired по
   прогнозам LOCAL-4) → results/paired_transformer_synth_all_vs_template.json. Фразу «парного сравнения нет» (04, ~стр. 151)
   после этого можно заменить. Точность предвыбора «Похоже на» на probe — ERROR_ANALYSIS.md, раздел 6.
 - Уточнение к главе 4 (44663ab, уже учтено R14): итоговая модель обучена на 5440 текстах (в эксперименте — 5435: убраны 5 совпадений
   с тестом v1→v2), лучшая эпоха 7 (в эксперименте 5); 0.828 против 0.812 — не только разброс двух обучений.
-- FACTS.md (d06d143), строка «Тесты R03 66/66»: устарело. Сейчас 108 passed + 1 xfailed (полная среда), 100 passed +
+- FACTS.md (d06d143), строка «Тесты R03 66/66»: устарело. Сейчас 109 passed + 1 xfailed (полная среда), 101 passed +
   8 skipped + 1 xfailed без torch/sklearn/onnx. xfailed — известное ограничение запасного словаря («Спасибо за новый
   сквер!» → «Дворы»), см. MODEL_CARD «Ограничения».
 - ПРАВКА ЧЕСТНОСТИ (глава 4, docs/diploma/04_eksperimenty.md ~стр. 292, d06d143): «Разрыв между языками у трансформера

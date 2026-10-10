@@ -216,5 +216,5 @@ smell_air, noise_safety, parking, other`). Используется в `POST /ap
 
 ## Воспроизведение
 `research/round-14-results/R03/RUN.txt` (ноутбук: тесты → проверка GPU → zero-shot (люди + probe_v2) → эксперимент → итоговая модель →
-ONNX → predict → commit результатов). Облако/CPU: `python -m pytest tests/civic/R03/round14 -q` (108 passed + 1 xfailed,
+ONNX → predict → commit результатов). Облако/CPU: `python -m pytest tests/civic/R03/round14 -q` (109 passed + 1 xfailed,
 крошечная случайная модель). Перегенерация таблицы: `python -m ml.civic_classifier_v2.evaluate render`.

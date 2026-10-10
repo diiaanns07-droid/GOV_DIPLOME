@@ -131,6 +131,11 @@ def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None)
         d = c["delta"]
         verdict = "доказано" if (d["low"] > 0 or d["high"] < 0) else "не доказано"
         t.add(_ru_title(c["title"]), f"{d['delta']:+.3f}", f"[{d['low']:+.3f}; {d['high']:+.3f}]", d["share_delta_gt_0"], verdict)
+    have = {r[0] for r in t.rows}
+    for title, d in paired_files(Path(folder) if folder else RESULTS_DIR):
+        if title not in have:
+            verdict = "доказано" if (d["low"] > 0 or d["high"] < 0) else "не доказано"
+            t.add(title, f"{d['delta']:+.3f}", f"[{d['low']:+.3f}; {d['high']:+.3f}]", d["share_delta_gt_0"], verdict)
     tables.append(t)
 
     keys = [f"synth_all/{m}" for m in MODELS]
@@ -190,6 +195,13 @@ def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None)
                 t.add(f"Время на текст, {key}", f"{lat[key]['mean_ms']} мс (p95 {lat[key]['p95_ms']})")
         for k, v in (onnx.get("verdict") or {}).items():
             t.add(f"Проверка {k}", v)
+        probe8 = _load((Path(folder) if folder else RESULTS_DIR) / "onnx_int8_on_probe_v2.json")
+        if probe8.get("human", {}).get("macro_f1") is not None:
+            same = not final.get("model_version") or probe8.get("model") == final.get("model_version")
+            t.add("probe_v2: macro-F1 int8 (ONNX)" + ("" if same else f" — другая модель {probe8.get('model')}"),
+                  _ci(probe8["human"]))
+            if final.get("probe_v2_eval", {}).get("macro_f1") is not None:
+                t.add("probe_v2: macro-F1 PyTorch (итоговая модель)", _ci(final["probe_v2_eval"]))
         diag = (onnx.get("diagnostics") or {}).get("per_channel")
         if diag:
             t.add("Диагностика LOCAL-4: per-channel, совпадение", f"{diag['batch32_vs_torch']['argmax_agreement'] * 100:.1f} %")
@@ -200,19 +212,41 @@ def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None)
     return tables
 
 
+def paired_files(folder: Path) -> list[tuple[str, dict]]:
+    """Строки таблицы 3 из файлов `analysis paired`: results/paired_<модель>_<режим a>_vs_<режим b>.json."""
+    out = []
+    for f in sorted(Path(folder).glob("paired_*_vs_*.json")):
+        r = _load(f)
+        if r.get("set") != "probe_v2" or not r.get("delta"):
+            continue
+        left, right = f.stem[len("paired_"):].split("_vs_", 1)
+        model, _, reg_a = left.partition("_")
+        reg = lambda x: REGIME_RU.get(x) or REGIME_RU.get(f"synth_{x}") or x  # noqa: E731 — «template» = synth_template
+        title = (f"{MODEL_RU[model]}: {reg(reg_a)} − {reg(right)}" if model in MODEL_RU else f"{r.get('a')} − {r.get('b')}")
+        out.append((title, r["delta"]))
+    return out
+
+
 def extra_tables(folder: Path) -> list[Table]:
     """Дополнительные опыты (если файлы есть): перевод транслита, чистка шумных меток llm_v1, нагрузка /classify."""
     out = []
-    tr = _load(folder / "translit_to_cyrillic_probe_v2.json")
+    tr = dict(_load(folder / "translit_to_cyrillic_probe_v2.json"))
+    cyr8 = _load(folder / "onnx_int8_on_probe_v2_to_cyrillic.json")
+    if cyr8.get("to_cyrillic"):
+        final_version = _load(folder / "final_model_meta.json").get("model_version")
+        tr["transformer_int8"] = dict(cyr8["to_cyrillic"], other_model=bool(final_version) and cyr8.get("model") != final_version,
+                                      model=cyr8.get("model"))
     if tr:
         t = Table("t8_translit_to_cyrillic", "Таблица 8. Перевод транслита в кириллицу перед моделью (probe_v2)",
                   ["Модель", "macro-F1 без / с переводом", "Δ [95% ДИ]", "Транслит: accuracy без / с", "Текстов изменено"],
-                  "to_cyrillic — функция R04; меняет только тексты, где латиницы ≥ 50 % (24 текста стиля translit). "
-                  "Обучение как synth_all.")
-        for key, name in (("heuristic_v1", "словарь (v1)"), ("logreg", "логрегрессия")):
+                  "to_cyrillic — функция R04; меняет только тексты, где латиницы ≥ 50 % (их число — в последней колонке). "
+                  "Словарь и логрегрессия обучены как synth_all; трансформер — итоговая модель (ONNX int8).")
+        for key, name in (("heuristic_v1", "словарь (v1)"), ("logreg", "логрегрессия"),
+                          ("transformer_int8", "трансформер (итоговая, int8)")):
             r = tr.get(key)
             if r:
                 d = r["paired_delta_cyr_minus_raw"]
+                name = name + (f" — другая модель {r['model']}" if r.get("other_model") else "")
                 t.add(name, f"{_f(r['raw']['macro_f1'])} / {_f(r['to_cyrillic']['macro_f1'])}",
                       f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}]",
                       f"{_f(r['raw']['translit_accuracy'], 2)} / {_f(r['to_cyrillic']['translit_accuracy'], 2)}",

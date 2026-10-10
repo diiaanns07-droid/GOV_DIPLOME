@@ -11,19 +11,20 @@ Python 3.12.10, torch 2.14.1+cu126, transformers 5.19.0, onnxruntime 1.31.0; м�
 Шаг 0 (переменные) — как ниже, затем:
 cd $REPO; git fetch origin claude/r14-R03 claude/r14-R02 claude/r14-R04
 cd $WT; git pull origin claude/r14-R03
-& $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider                 (ожидается 108 passed, 1 xfailed)
+& $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider                 (ожидается 109 passed, 1 xfailed)
 Шаг 8 (повторный экспорт ONNX per-channel; ожидаются три PASS):
 & $PY -m ml.civic_classifier_v2.export_onnx --texts "$R02\ml\datasets\synth_v3\data\corpus_v3.jsonl" --n 200
-Шаг 8б (int8 на probe_v2 + разбор ошибок трансформера + таблицы):
+Шаг 8б (int8 на probe_v2 + разбор ошибок трансформера):
 & $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2.json --preds-out ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl
 & $PY -m ml.civic_classifier_v2.analysis errors --preds ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_logreg.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_heuristic.jsonl --probe "$PROBE\probe_v2.jsonl"
-& $PY -m ml.civic_classifier_v2.analysis tables
 Шаг 8в (перевод транслита перед трансформером):
 & $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --to-cyrillic --normalize-ref origin/claude/r14-R04 --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2_to_cyrillic.json
 (по желанию, 5 с) Парный вклад LLM-синтетики для трансформера — из прогнозов LOCAL-4, без переобучения:
 & $PY -m ml.civic_classifier_v2.analysis paired --a ml\civic_classifier_v2\artifacts\experiments\synth_all__transformer.jsonl --b ml\civic_classifier_v2\artifacts\experiments\synth_template__transformer.jsonl --out ml\civic_classifier_v2\results\paired_transformer_synth_all_vs_template.json
 (по желанию, ≈ 1 мин) Нагрузка на /classify настоящей моделью: 5000 знаков, 1/4/8 запросов одновременно (для R15):
 & $PY -m ml.civic_classifier_v2.bench --label laptop --note "ноутбук владельца, настоящая модель"
+Таблицы для диплома — последними (берут файлы 8б, 8в и парного сравнения):
+& $PY -m ml.civic_classifier_v2.analysis tables
 Сохранить (только числа и id; без artifacts\, private\, *.onnx):
 git add ml/civic_classifier_v2/results/paired_transformer_synth_all_vs_template.json      (если был шаг выше)
 git add ml/civic_classifier_v2/results/classify_load_laptop.json                          (если был шаг bench)
@@ -79,7 +80,7 @@ $HUMAN = "$REPO\private\labels_owner.jsonl"      # <- подставьте фа�
 & $PY -c "from transformers import AutoTokenizer, AutoModelForSequenceClassification as M; AutoTokenizer.from_pretrained('FacebookAI/xlm-roberta-base'); M.from_pretrained('FacebookAI/xlm-roberta-base', num_labels=12); print('OK: веса из кэша')"
 
 -----------------------------------------------------------------
-3. Тесты R03 (CPU, крошечная модель, без сети) — ~1–3 мин, ожидается 108 passed, 1 xfailed
+3. Тесты R03 (CPU, крошечная модель, без сети) — ~1–3 мин, ожидается 109 passed, 1 xfailed
 -----------------------------------------------------------------
 & $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider
 
@@ -161,13 +162,15 @@ foreach ($f in 0.25, 0.5) { & $PY -m ml.civic_classifier_v2.experiments --synth-
 Сравнить macro-F1 с probe_v2_eval в results\final_model_meta.json (PyTorch: 0.828). Ожидается разница в пределах ~0.01–0.02.
 Затем разбор ошибок с примерами текстов трансформера (≈ 5 с):
 & $PY -m ml.civic_classifier_v2.analysis errors --preds ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_logreg.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_heuristic.jsonl --probe "$PROBE\probe_v2.jsonl"
-& $PY -m ml.civic_classifier_v2.analysis tables
+(таблицы для диплома — после шага 8в, см. ниже)
 
 8в. (≈ 1 мин) Поможет ли трансформеру перевод транслита в кириллицу (to_cyrillic R04), как словарю и логрегрессии:
 git -C $REPO fetch origin claude/r14-R04
 & $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --to-cyrillic --normalize-ref origin/claude/r14-R04 --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2_to_cyrillic.json
 (код R04 читается через git show внутри Python — не через «>» PowerShell, который пишет UTF-16)
 В конце строка «to_cyrillic: macro-F1 A -> B (Δ …)» — её и файл передать R04 (решает, звать ли v2 на to_cyrillic).
+Таблицы для диплома (берут файлы 8б и 8в; ≈ 5 с):
+& $PY -m ml.civic_classifier_v2.analysis tables
 Проверка как у R04:
 & $PY -m ml.civic_classifier_v2.predict "Во дворе не горят фонари уже неделю" "Аулада шам жанбайды, қараңғы" "Не вывозят мусор, баки переполнены"
 Результат: ml\civic_classifier_v2\artifacts\onnx\ — эту папку целиком передать R04 / в сборку (в Git НЕ коммитить, > 50 МБ).
