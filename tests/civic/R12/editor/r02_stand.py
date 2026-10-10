@@ -21,7 +21,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-REPO = HERE.parents[2]
+REPO = HERE.parents[3]  # tests/civic/R12/editor -> корень репозитория
 APP_SNAPSHOT = "6de3f253d8ec0743450259f9f13722c16cd36099"
 
 
