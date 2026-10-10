@@ -1,0 +1,23 @@
+{
+  "round": 14,
+  "product": "Birge",
+  "package_branch": "claude/round-14-package",
+  "base_sha": "c076569",
+  "days": ["2026-10-11", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15"],
+  "roles": [
+    {"id": "R01", "title": "Интегратор", "account": "b1 s10 → b12 s4", "days": "11-15", "paths": ["web/index.html", "web/style.css", "web/map.js", "web/interface.js", "web/civic/shell/", "ui/web_server.py", "tests/civic/R01/"], "restore_from": "claude/affectionate-ride-bol5v8@cb9d60a + все модули CONTRACT §1"},
+    {"id": "R02", "title": "Данные, синтетика, разметка", "account": "b11 zaana1", "days": "11-12", "paths": ["ml/datasets/", "ml/labeling/", "web/labeling/", "tests/civic/R02/"], "restore_from": null},
+    {"id": "R03", "title": "Классификатор v2", "account": "b5 s5", "days": "11-14", "paths": ["ml/civic_classifier_v2/", "tests/civic/R03/"], "restore_from": null},
+    {"id": "R04", "title": "Дубли и ML-API", "account": "b9 s12", "days": "12-14", "paths": ["ml/civic_dedup/", "ui/civic_ml_api/", "tests/civic/R04/"], "restore_from": null},
+    {"id": "R05", "title": "3D-превью", "account": "b8 andr", "days": "11-14", "paths": ["web/civic/build3d/", "web/vendor/three/", "tests/civic/R05/"], "restore_from": null},
+    {"id": "R06", "title": "Предложения, голоса, этапы", "account": "b4 s2", "days": "11-14", "paths": ["ui/civic_store/", "web/civic/proposals/", "tests/civic/R06/"], "restore_from": "claude/elegant-franklin-jbhprq@26793c8"},
+    {"id": "R07", "title": "Тепловая карта объектов", "account": "b14 s9", "days": "11-14", "paths": ["ui/civic_heat/", "web/civic/heat/", "tests/civic/R07/"], "restore_from": null},
+    {"id": "R08", "title": "Картина дня", "account": "b2 s7", "days": "12-14", "paths": ["ui/civic_akim/", "web/civic/akim/", "tests/civic/R08/"], "restore_from": null},
+    {"id": "R09", "title": "Жалоба жителя v2", "account": "b7 zana", "days": "11-14", "paths": ["ui/civic_feedback/", "web/civic/feedback/", "tests/civic/R09/"], "restore_from": "claude/focused-hypatia-z8h0no@933cd90"},
+    {"id": "R10", "title": "Приёмка", "account": "b10 s11 + Codex", "days": "13-15", "paths": ["tests/civic/R10/", "tests/e2e/"], "restore_from": null},
+    {"id": "R11", "title": "UX и казахский язык", "account": "b3 s3", "days": "11-15", "paths": ["web/civic/ui-kit/", "web/civic/i18n/", "tests/civic/R11/"], "restore_from": null},
+    {"id": "R12", "title": "Точность карты", "account": "b6 s8", "days": "11-13", "paths": ["engine/civic_geo/", "data/civic/astana/geo/", "web/civic/map/", "web/civic/editor/", "tests/civic/R12/"], "restore_from": "map: claude/zen-mendel-e79iiv@7de5e0b; editor: claude/intelligent-sagan-7shpeh@9c996c6"}
+  ],
+  "local": ["LOCAL-1 OSM objects", "LOCAL-2 three.js", "LOCAL-3 ML env", "LOCAL-4 GPU training", "LOCAL-5 Nura real works", "LOCAL-6 Google Form", "LOCAL-7 builds and screenshots", "LOCAL-8 LLM synth and labeling"],
+  "coordinator": "S1 (desktop session)"
+}
