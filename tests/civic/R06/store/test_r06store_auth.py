@@ -286,3 +286,18 @@ def test_session_touch_is_best_effort_when_db_is_busy(service, clock):
     finally:
         blocker.execute("ROLLBACK")
         blocker.close()
+
+
+# R15 S15 (SECURITY_REVIEW, ночь 10→11 окт): распространённая основа + цифры и знаки — тоже простой пароль.
+@pytest.mark.parametrize("password", ["password12345", "Astana2026!!!", "akimat123456", "Qwerty-2026-!!", "Пароль2026!!",
+                                      "operator_2026", "Birge-2026-2026"])
+def test_common_base_with_digits_is_refused(password):
+    from ui.civic_store.auth import PasswordPolicyError, check_password_policy
+    with pytest.raises(PasswordPolicyError):
+        check_password_policy("staff-r06", password)
+
+
+@pytest.mark.parametrize("password", ["Tulpar-Bayterek-2026", "Tz7-qerB-91vk-Lmsd", "Demo-n9i9aACq6epOyZ0o"])
+def test_strong_passwords_still_accepted(password):
+    from ui.civic_store.auth import check_password_policy
+    check_password_policy("staff-r06", password)  # в том числе пароль стенда serve_r14.py и тестов R01

@@ -49,6 +49,11 @@ COMMON_PASSWORDS = frozenset({
     "password1234", "123456789012", "qwertyuiopas", "admin1234567", "administrator",
     "passwordpassword", "111111111111", "000000000000", "astana123456", "qwerty123456",
 })
+# R15-S15: распространённая основа + цифры и знаки («password12345», «Astana2026!!!», «akimat123456») — тоже простой
+# пароль: его первым пробуют при подборе. Проверяется основа без цифр и знаков.
+COMMON_BASES = frozenset({"password", "passw", "parol", "пароль", "qwerty", "qwertyuiop", "йцукен", "admin",
+                          "administrator", "astana", "астана", "akimat", "акимат", "birge", "бирге", "letmein",
+                          "welcome", "operator", "editor", "user", "test"})
 # Ограничение параллельных scrypt (по 16 МиБ) — защита памяти от потока входов.
 _KDF_SLOTS = threading.BoundedSemaphore(4)
 
@@ -118,7 +123,9 @@ def check_password_policy(username: str, password: str) -> None:
     if not isinstance(password, str) or not MIN_PASSWORD <= len(password) <= MAX_PASSWORD:
         raise PasswordPolicyError(f"Пароль: от {MIN_PASSWORD} до {MAX_PASSWORD} символов.")
     lowered = password.lower()
-    if lowered in COMMON_PASSWORDS or username.lower() in lowered or len(set(password)) < 5:
+    base = re.sub(r"[\d\W_]+", "", lowered)
+    if (lowered in COMMON_PASSWORDS or username.lower() in lowered or len(set(password)) < 5
+            or base in COMMON_BASES):
         raise PasswordPolicyError("Слишком простой пароль: не используйте логин и распространённые пароли.")
 
 

@@ -138,3 +138,23 @@ def test_demo_yard_is_real_osm_residential():
     residential = [r for t, r in shapes("residential") if t == "way" and len(r) > 3]
     best = min(max(min(metres(p, q) for q in r) for p in ring) for r in residential)
     assert yard["geometry_source"] == "osm-area" and best <= 5.0  # каждая вершина ≤ 5 м от контура двора OSM
+
+
+@pytest.mark.skipif(not GRAPH.is_file(), reason="нет пешеходного графа OSM")
+def test_demo_proposal_streets_are_the_nearest_named_streets():
+    """Улица в названии и в near_street (ru/kk) — ближайшая улица с названием по графу OSM, не дальше 100 м.
+    Ночь 10→11 окт: «Сквер у улицы Ильяса Омарова» стоял в 308 м от Омарова и в 68 м от Айтматова — исправлено."""
+    graph = json.loads(GRAPH.read_text(encoding="utf-8"))
+    named = [(e["name"], e["geometry"]["coordinates"] if isinstance(e["geometry"], dict) else e["geometry"])
+             for e in graph["edges"] if e.get("name")]
+    for kind, geom, title_ru, title_kk, *_rest, street in DEMO_PROPOSALS:
+        coords = geom["coordinates"]
+        p = coords if geom["type"] == "Point" else coords[len(coords) // 2]
+        street_ru, street_kk = street
+        assert street_kk and "улица" not in street_kk and street_kk.endswith("көшесі"), street_kk
+        own = min(to_segment(p, line) for name, line in named if name == street_ru)
+        nearest = min(to_segment(p, line) for _name, line in named)
+        assert own <= 100 and own - nearest <= 30, (kind, street_ru, round(own), round(nearest))
+        if "улиц" in title_ru:  # «… у улицы X» / «Освещение улицы X» — та же улица, что рядом
+            assert street_ru.split(" ", 1)[1] in title_ru, (title_ru, street_ru)
+            assert street_kk.replace(" көшесі", "") in title_kk, (title_kk, street_kk)

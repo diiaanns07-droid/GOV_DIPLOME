@@ -186,3 +186,43 @@ def test_module_vote_limit_reaches_gateway_as_429(staff, bound):
     with pytest.raises(v2mod.V2Error) as exc:
         v2mod.vote_proposal(p["id"], 1, device(77), context=ctx)
     assert exc.value.status == 429 and exc.value.retry_after > 3600
+
+
+# --- UX_REVIEW R11 (ночь, п. 5): улица рядом по-казахски -----------------------------------------
+
+def test_near_street_kk_is_stored_and_returned(staff):
+    body = {**R05_DRAFT, "near_street_kk": "Ілияс Омаров көшесі"}
+    p = r05_one(staff.call("POST", "/proposals", body)["body"]["data"])
+    assert p["near_street"] == "улица Ильяса Омарова" and p["near_street_kk"] == "Ілияс Омаров көшесі"
+    listed = call(staff.v2, "GET", "/proposals")["body"]["data"]["items"]
+    assert listed[0]["near_street_kk"] == "Ілияс Омаров көшесі"
+    bad = staff.call("POST", "/proposals", {**R05_DRAFT, "near_street_kk": "<b>x</b>"})
+    assert bad["status"] == 422 and "near_street_kk" in bad["body"]["error"]["fields"]
+    # «Отменить»: копия целиком (с near_street_kk) принимается и возвращает то же предложение.
+    staff.call("DELETE", f"/proposals/{p['id']}")
+    undo = staff.call("POST", "/proposals", {k: v for k, v in p.items() if k != "my_vote"})["body"]["data"]
+    assert undo["restored"] is True and undo["proposal"]["near_street_kk"] == "Ілияс Омаров көшесі"
+
+
+def test_seed_refreshes_outdated_demo_texts_but_keeps_votes(tmp_path, clock, capsys):
+    import sqlite3
+    from ui.civic_store import cli
+    path = tmp_path / "old.sqlite3"
+    assert cli.main(["--db", str(path), "init"]) == 0
+    assert cli.main(["--db", str(path), "seed-r14-demo"]) == 0
+    conn = sqlite3.connect(path)
+    with conn:  # база ноутбука, засеянная до исправления: старое название сквера, улиц нет
+        conn.execute("""UPDATE civic_proposals SET title_ru = 'Сквер у улицы Ильяса Омарова',
+                        near_street = NULL, near_street_kk = NULL WHERE demo = 1 AND kind = 'square'""")
+    votes_before = conn.execute("SELECT COUNT(*) FROM civic_votes").fetchone()[0]
+    conn.close()
+    capsys.readouterr()
+    assert cli.main(["--db", str(path), "seed-r14-demo"]) == 0
+    report = __import__("json").loads(capsys.readouterr().out)
+    actions = {p["kind"]: p["action"] for p in report["proposals"]}
+    assert actions["square"] == "updated" and actions["stop"] == "kept"
+    conn = sqlite3.connect(path)
+    row = conn.execute("SELECT title_ru, near_street, near_street_kk FROM civic_proposals WHERE kind = 'square'").fetchone()
+    assert row == ("Сквер у улицы Чингиза Айтматова", "улица Чингиза Айтматова", "Шыңғыс Айтматов көшесі")
+    assert conn.execute("SELECT COUNT(*) FROM civic_votes").fetchone()[0] == votes_before
+    conn.close()

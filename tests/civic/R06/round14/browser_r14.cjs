@@ -134,7 +134,7 @@ async function layoutChecks(page, label, warnings) {
         JSON.stringify({ lateNoWarn: m.lateCardsWithoutWarn, staleWarn: m.staleCardsWithWarn, stale: m.staleGroup, dup: m.dup }));
   if (m.htmlLang === "kk") {
     check(label + ": п.19 — kk-название сквера без «шағын аудандағы»",
-          m.titles.indexOf("Ілияс Омаров көшесі маңындағы гүлзар") >= 0 && !m.titles.some((t) => /шағын аудандағы гүлзар/.test(t)), m.titles.join(" | "));
+          m.titles.indexOf("Шыңғыс Айтматов көшесі маңындағы гүлзар") >= 0 && !m.titles.some((t) => /шағын аудандағы гүлзар/.test(t)), m.titles.join(" | "));
     // Просьба R08 (день 3): у демо-объектов казахское название, lang="kk".
     // Набор R06 (demo_package) или сборки R01 (demo_synthetic.json, --package): у всех демо-объектов есть title_kk.
     check(label + ": kk-названия демо-объектов (title_kk, lang=kk)",

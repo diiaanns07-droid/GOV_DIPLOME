@@ -297,6 +297,10 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
         "ALTER TABLE civic_proposals ADD COLUMN near_street TEXT",
         "ALTER TABLE civic_proposals ADD COLUMN target_json TEXT",
     )),
+    # UX_REVIEW R11 (ночь, п. 5): улица рядом по-казахски — иначе в ҚАЗ «Жанында: улица …» по-русски.
+    (8, "round 14 proposal street in kazakh", (
+        "ALTER TABLE civic_proposals ADD COLUMN near_street_kk TEXT",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 

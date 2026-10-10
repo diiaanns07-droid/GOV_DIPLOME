@@ -1,18 +1,18 @@
 PASS вход сотрудника на стенде — 200
 PASS r06: list(bbox) → предложения в Нуре — 5
 PASS r06: create без входа → 401 — 401 unauthenticated
-PASS r06: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-009ec05afa73","year":2027,"rot":90}
+PASS r06: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-8bda82644609","year":2027,"rot":90}
 PASS r06: vote → my_vote и счётчик — {"up":1,"my":1}
 PASS r06: list с device_id → «мой голос» после перезагрузки — 1
 PASS r06: remove (withdraw) → в списке нет
-PASS r06: restore («Отменить») → предложение снова в списке — p-57600221e1cf (новый id)
+PASS r06: restore («Отменить») → предложение снова в списке — p-8bda82644609 (тот же id)
 PASS r06: remove без маршрута withdraw → запасной DELETE
 PASS r01: list(bbox) → предложения в Нуре — 5
 PASS r01: create без входа → 401 — 401 unauthenticated
-PASS r01: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-88db9dd5ca60","year":2027,"rot":90}
+PASS r01: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-dc3c150e4ab8","year":2027,"rot":90}
 PASS r01: vote → my_vote и счётчик — {"up":1,"my":1}
 PASS r01: list с device_id → «мой голос» после перезагрузки — 1
 PASS r01: remove (withdraw) → в списке нет
-PASS r01: restore («Отменить») → предложение снова в списке — p-7eb5735724e1 (новый id)
+PASS r01: restore («Отменить») → предложение снова в списке — p-dc3c150e4ab8 (тот же id)
 PASS r01: remove без маршрута withdraw → запасной DELETE
 {"total":17,"failed":0}

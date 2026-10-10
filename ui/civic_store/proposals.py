@@ -131,7 +131,8 @@ class ProposalRepository:
             "votes_up": up, "votes_down": down, "my_vote": my_vote,
             "voting_open": row["status"] == "proposal", "demo": bool(row["demo"]),
             "year": row["planned_year"],  # имя поля у R05 (табличка «Проект · 2027»)
-            "near_street": row["near_street"], "target": _loads(row["target_json"]),
+            "near_street": row["near_street"], "near_street_kk": row["near_street_kk"],
+            "target": _loads(row["target_json"]),
             "created_at": row["created_at"], "updated_at": row["updated_at"], "decided_at": row["decided_at"],
         }
 
@@ -222,7 +223,7 @@ class ProposalRepository:
         с id снятого предложения: оно возвращается со своими голосами, новое не создаётся."""
         errors = _Errors()
         allowed = {"kind", "geometry", "title_ru", "title_kk", "rotation_deg", "planned_year", "year", "demo",
-                   "status", "near_street", "target"}
+                   "status", "near_street", "near_street_kk", "target"}
         unknown = sorted(set(payload) - allowed - SERVER_KEYS)
         if unknown:
             errors.add(unknown[0] if isinstance(unknown[0], str) and len(unknown[0]) <= 64 else "body",
@@ -247,6 +248,8 @@ class ProposalRepository:
         title_ru = clean_text(payload.get("title_ru"), "title_ru", errors, max_len=MAX_TITLE, nullable=True)
         title_kk = clean_text(payload.get("title_kk"), "title_kk", errors, max_len=MAX_TITLE, nullable=True)
         near_street = clean_text(payload.get("near_street"), "near_street", errors, max_len=MAX_TITLE, nullable=True)
+        near_street_kk = clean_text(payload.get("near_street_kk"), "near_street_kk", errors, max_len=MAX_TITLE,
+                                    nullable=True)
         target = self._clean_target(payload.get("target"), errors)
         rotation = payload.get("rotation_deg", 0)
         if isinstance(rotation, bool) or not isinstance(rotation, (int, float)) or rotation != rotation \
@@ -276,11 +279,13 @@ class ProposalRepository:
             proposal_id = "p-" + secrets.token_hex(6)
             conn.execute(
                 """INSERT INTO civic_proposals(id, kind, geometry_json, rotation_deg, title_ru, title_kk, status,
-                       district, planned_year, demo, created_at, updated_at, created_by, near_street, target_json)
-                   VALUES (?, ?, ?, ?, ?, ?, 'proposal', ?, ?, ?, ?, ?, ?, ?, ?)""",
+                       district, planned_year, demo, created_at, updated_at, created_by, near_street, near_street_kk,
+                       target_json)
+                   VALUES (?, ?, ?, ?, ?, ?, 'proposal', ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (proposal_id, kind, _dumps(geometry), float(rotation) % 360, title_ru or default_ru,
                  title_kk if title_kk else (default_kk if not title_ru else None), district, year,
-                 int(demo), now, now, actor.user_id, near_street, _dumps(target) if target else None))
+                 int(demo), now, now, actor.user_id, near_street, near_street_kk,
+                 _dumps(target) if target else None))
             conn.execute(
                 """INSERT INTO civic_proposal_history(proposal_id, at, action, status, reason, actor_user_id,
                        actor_label) VALUES (?, ?, 'create', 'proposal', '', ?, ?)""",
