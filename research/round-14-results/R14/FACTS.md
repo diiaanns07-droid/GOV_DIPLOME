@@ -126,7 +126,11 @@
 | Модель в сборке на Windows (LOCAL B2) | `source=v2`, per-channel int8: текст «Аялдамада жарық жоқ, вечером на остановке темно» → lighting, score 0.9939; один HTTP-замер 155 мс | `research/round-14-results/LOCAL/LOCAL_B2.md`, pkg @ a38da11 |
 | Повторный экспорт с d472baf на ноутбуке; int8 на probe_v2 | **NOT_RUN** (RUN.txt R03 шаги 8 и 8б) | `research/round-14-results/R03/DELIVERY.json` @ c2b4dda |
 | Качество на текстах людей | **NOT_EVALUATED** — шаги с текстами людей не запускались | там же |
-| Тесты R03 | 66/66 (полная среда, torch CPU); 59 PASS + 7 NOT_RUN без torch/sklearn/onnx; на ноутбуке перед LOCAL-4 — 65 PASS | там же |
+| Тесты R03 | на d472baf — 66/66 (полная среда, torch CPU); 59 PASS + 7 NOT_RUN без torch/sklearn/onnx; на ноутбуке перед LOCAL-4 — 65 PASS. **Ночью (R03 @ cc04b1f): 109 passed + 1 xfailed** в полной среде, 101 passed + 8 skipped + 1 xfailed без torch/sklearn/onnx (xfail — словарь: «Спасибо за новый сквер!» → «Дворы»); поверх 0a7a346 — 814 passed (R03) | `research/round-14-results/R03/DELIVERY.json`, R03 @ cc04b1f |
+| Логрегрессия: v3 + LLM − только v3 (парно, probe_v2) | **+0.046 [+0.004; +0.089]**, доля Δ > 0 0.986 — доказано | `ml/civic_classifier_v2/results/paired_logreg_synth_all_vs_template.json`, R03 @ cc04b1f |
+| Логрегрессия: kk − ru (бутстрэп внутри языков) | −0.049 [−0.167; +0.052] — не доказано (kk 0.767, n = 97; ru 0.816, n = 155) | `results/ERROR_ANALYSIS.md`, раздел 7, R03 @ cc04b1f |
+| Подсказка «Похоже на» (логрегрессия, probe_v2) | порог 0.3 — предвыбор 88 %, точность 81 %; 0.7 — 75 % / 89 %; 0.9 — 64 % / 93 %; ECE 0.071 | `ERROR_ANALYSIS.md`, разделы 6 и 8 |
+| Нагрузка `/classify` (размер XLM-R base, int8 per-channel, случайные веса, облако 4 vCPU) | 40 знаков — 10.9 мс; 5 000 знаков (128 токенов) — 34.9 мс, p95 43.5; 8 одновременных — 2 342 в минуту, p95 292 мс (три прогона 2 342–2 925); 509 МБ | `results/classify_load_cloud.json`, R03 @ cc04b1f |
 
 ## 6. Поиск дублей и ML-API (R04) — сдан (code deeb1de), числа на синтетике
 
