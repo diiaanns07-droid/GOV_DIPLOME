@@ -374,14 +374,15 @@ describe("R04 round 13 (contract mock)", { skip: PW ? false : "playwright not in
     const note = await p.textContent(fk("street-note"));
     assert.match(note, /Это не адрес и не точка работ/);
     assert.match(note, /© участники OpenStreetMap, ODbL-1\.0; снимок 06\.05\.2026/);
-    const c1 = await p.evaluate(() => window.__map.getCenter().toArray());
-    assert.ok(Math.abs(c1[0] - c0[0]) + Math.abs(c1[1] - c0[1]) > 1e-4, "the map moved to the street");
+    // Перелёт к улице анимирован (600 мс): ждём, пока камера сдвинется, а не читаем центр в тот же миг (R12: было нестабильно под нагрузкой).
+    const moved = await p.waitForFunction((c) => { const x = window.__map.getCenter().toArray(); return Math.abs(x[0] - c[0]) + Math.abs(x[1] - c[1]) > 1e-4; }, c0, { timeout: 5000 }).then(() => true, () => false);
+    assert.ok(moved, "the map moved to the street");
     assert.equal(await p.isChecked(fk("place-unknown")), true, "choosing a street does not set a place");
     assert.equal(await p.$(fk("geometry_confirmed")), null, "no point was created");
     assert.ok(await p.evaluate(() => window.__map.getStyle().layers.some((l) => l.id.endsWith("street-box"))), "dashed frame of the street on the map");
     await K.shot(p, "r13-04-street-search");
     await p.fill(fk("street-q"), "Несуществующая улица Ыыы");
-    assert.match(await p.textContent(fk("street-note")), /Улица не найдена в снимке OSM/);
+    await p.waitForSelector('[data-fk="street-note"]:has-text("Улица не найдена в снимке OSM")', { timeout: 5000 });
     // a server without streets.json
     const q = await K.newPage();
     await q.route("**/civic/map/streets.json", (r) => r.fulfill({ status: 404, body: "" }));
