@@ -15,8 +15,7 @@
 3. Дефекты → `research/round-14-results/R10/BUGS.md` (B-001…B-006).
 
 ## Следующий шаг
-1. `tests/civic/R10/accuracy.py` + `test_r10_accuracy.py` — независимая проверка CONTRACT §8 по данным всех модулей
-   (граф OSM как эталон, граница — `data/civic/astana/geofence.json`).
+1. (сделано, checkpoint 2) `tests/civic/R10/accuracy.py` — точность §8; отчёты `research/round-14-results/R10/accuracy/`.
 2. `tests/e2e/demo_flow.cjs` — 6 шагов сценария, 1366/375 × ru/kk, скриншоты; прогон на текущей R01 → `ACCEPTANCE_PRE_B1.md`.
 3. UX-чек-лист по экранам; `CODEX_ACCEPTANCE_PROMPT.txt`; DELIVERY.json, RUN.txt, INTEGRATION.txt.
 4. 13 окт вечер — B1 (SHA в STATUS.md R01) → `ACCEPTANCE_B1.md`; 14-го B2; 15-го FINAL.

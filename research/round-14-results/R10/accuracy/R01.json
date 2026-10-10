@@ -1,0 +1,167 @@
+{
+ "root": "claude/sharp-dijkstra-0t87gl @ bc7c961",
+ "counts": {
+  "PASS": 6,
+  "FAIL": 0,
+  "NOT_RUN": 16
+ },
+ "checks": [
+  {
+   "name": "граница Астаны · R12 geo/objects.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R12 geo/yards.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R12 geo/demo_snapped.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R12 map/demo_snapped.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R07 targets_demo.json",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "coords": 217,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R05 proposals.fixture.json",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R05 nura-streets.json",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R05 astana-existing.json",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R06 demo_r14.py",
+   "status": "NOT_RUN",
+   "owner": "R06",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R13 forecast targets.json",
+   "status": "NOT_RUN",
+   "owner": "R13",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "участки = рёбра OSM · R07 targets",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "segments": 26,
+    "worst_m": 0.066,
+    "bad": []
+   }
+  },
+  {
+   "name": "улицы Нуры R05 = рёбра OSM",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет"
+  },
+  {
+   "name": "линии R05 proposals.fixture на улице",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет"
+  },
+  {
+   "name": "линии R06 demo_r14 на улице",
+   "status": "NOT_RUN",
+   "owner": "R06",
+   "detail": "набора нет"
+  },
+  {
+   "name": "нет линий «от руки» · R12 geo/demo_snapped.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет"
+  },
+  {
+   "name": "нет линий «от руки» · R12 map/demo_snapped.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет"
+  },
+  {
+   "name": "остановки — не ж/д платформы · R07",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "stops": 5,
+    "railway": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "остановки ≤ 60 м от улицы · R07",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "stops": 5,
+    "far_from_any_line": [],
+    "far_from_road": 0,
+    "far_road_examples": [],
+    "max_road_m": 10.4
+   }
+  },
+  {
+   "name": "объекты R12 = точки OSM",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет"
+  },
+  {
+   "name": "объекты R05 = точки OSM",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет"
+  },
+  {
+   "name": "объекты R07 = точки OSM",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "objects": 9,
+    "missing": [],
+    "moved": []
+   }
+  },
+  {
+   "name": "id целей R07 по контракту §4",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "targets": 45,
+    "bad": []
+   }
+  }
+ ]
+}

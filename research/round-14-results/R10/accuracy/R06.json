@@ -1,0 +1,145 @@
+{
+ "root": "claude/round-14-r06 @ 3d10f7d",
+ "counts": {
+  "PASS": 2,
+  "FAIL": 0,
+  "NOT_RUN": 19
+ },
+ "checks": [
+  {
+   "name": "граница Астаны · R12 geo/objects.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R12 geo/yards.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R12 geo/demo_snapped.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R12 map/demo_snapped.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R07 targets_demo.json",
+   "status": "NOT_RUN",
+   "owner": "R07",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R05 proposals.fixture.json",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R05 nura-streets.json",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R05 astana-existing.json",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "граница Астаны · R06 demo_r14.py",
+   "status": "PASS",
+   "owner": "R06",
+   "detail": {
+    "coords": 15,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R13 forecast targets.json",
+   "status": "NOT_RUN",
+   "owner": "R13",
+   "detail": "набора нет в этой сборке"
+  },
+  {
+   "name": "участки = рёбра OSM · R07 targets",
+   "status": "NOT_RUN",
+   "owner": "R07",
+   "detail": "набора нет"
+  },
+  {
+   "name": "улицы Нуры R05 = рёбра OSM",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет"
+  },
+  {
+   "name": "линии R05 proposals.fixture на улице",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет"
+  },
+  {
+   "name": "линии R06 demo_r14 на улице",
+   "status": "PASS",
+   "owner": "R06",
+   "detail": {
+    "lines": 1,
+    "dev_m": [
+     0.0
+    ]
+   }
+  },
+  {
+   "name": "нет линий «от руки» · R12 geo/demo_snapped.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет"
+  },
+  {
+   "name": "нет линий «от руки» · R12 map/demo_snapped.json",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет"
+  },
+  {
+   "name": "остановки ≤ 60 м от улицы",
+   "status": "NOT_RUN",
+   "owner": null,
+   "detail": "остановок в сборке нет"
+  },
+  {
+   "name": "объекты R12 = точки OSM",
+   "status": "NOT_RUN",
+   "owner": "R12",
+   "detail": "набора нет"
+  },
+  {
+   "name": "объекты R05 = точки OSM",
+   "status": "NOT_RUN",
+   "owner": "R05",
+   "detail": "набора нет"
+  },
+  {
+   "name": "объекты R07 = точки OSM",
+   "status": "NOT_RUN",
+   "owner": "R07",
+   "detail": "набора нет"
+  },
+  {
+   "name": "id целей R07 по контракту §4",
+   "status": "NOT_RUN",
+   "owner": "R07",
+   "detail": "набора нет"
+  }
+ ]
+}
