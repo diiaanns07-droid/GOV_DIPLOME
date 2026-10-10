@@ -339,7 +339,8 @@
    "what": "шаг 6 демо падает у остановок с демо-записями R07: heat.js setStatus обрывается на 404 по c-demo-* (нет в хранилище R09)",
    "evidence": "research/round-14-results/R12/tools/repro_step6.py; R10 свежий тест 131/5 → с правкой 133/2/1",
    "patch": "research/round-14-results/R12/patches/R07_heat_open_ids.patch",
-   "details": "INTEGRATION.txt §0в"
+   "details": "INTEGRATION.txt §0в",
+   "status": "уже исправлено R07 7518bc2 (в R01 с 8807b28e); проверено на R01 d5a300fb; остаётся мелочь 422 при повторном статусе (patch по желанию R07)"
   }
  ]
 }
