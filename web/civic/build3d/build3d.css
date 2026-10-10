@@ -1,0 +1,339 @@
+/*
+ * Birge · 3D-превью (R05, раунд 14) — нижняя панель (каталог, размещение, карточка), тосты, подписи.
+ * Только токены ui-kit (tokens.css) и классы bk-*; свои цвета не вводим.
+ * Ноутбук: панель по центру снизу, до 720 px. Телефон (< 640 px): панель во всю ширину, крупные кнопки 56 px.
+ */
+
+.b3d {
+  font-family: var(--font);
+  color: var(--c-ink);
+}
+/* bk-app нужен ради общих правил фокуса ui-kit, но фон корня должен быть прозрачным — под ним карта. */
+.b3d.bk-app {
+  background: transparent;
+}
+.b3d[hidden] {
+  display: none;
+}
+
+/* Без своего корня модуль кладёт панель поверх карты, внизу по центру. */
+.b3d--overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-map-ui);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 var(--gap-edge) calc(var(--gap-edge) + env(safe-area-inset-bottom));
+  pointer-events: none; /* карта под пустыми краями остаётся доступной */
+}
+
+.b3d-dock {
+  pointer-events: auto;
+  display: grid;
+  gap: var(--s-3);
+  width: min(800px, 100%);
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-l);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-2);
+}
+.b3d-dock[data-state="empty"] {
+  display: none;
+}
+
+.b3d-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  min-height: 32px;
+}
+.b3d-title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-head);
+}
+.b3d-title .ic {
+  color: var(--c-brand);
+}
+.b3d-note {
+  margin: 0;
+}
+
+/* ── Каталог: 5 карточек с иконкой и подписью ── */
+.b3d-cards {
+  display: flex;
+  gap: var(--s-3);
+  overflow-x: auto; /* прокрутка внутри строки, а не страницы */
+  scrollbar-width: none;
+  padding: 4px 2px;
+  -webkit-overflow-scrolling: touch;
+}
+.b3d-cards::-webkit-scrollbar {
+  display: none;
+}
+.b3d-card {
+  flex: 1 0 96px;
+  min-width: 96px;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: var(--s-2);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    border-color var(--t-fast) var(--ease),
+    background var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+.b3d-card .ic {
+  width: 32px;
+  height: 32px;
+  color: var(--c-brand);
+}
+.b3d-card:hover {
+  border-color: var(--c-brand);
+  background: var(--c-brand-soft);
+}
+.b3d-card:active {
+  transform: translateY(1px);
+}
+.b3d-card:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.b3d-card--skel {
+  border: 0;
+}
+.b3d-card__label {
+  overflow-wrap: normal;
+  hyphens: auto;
+}
+
+/* ── Размещение ── */
+.b3d-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  margin: 0;
+  font-size: var(--fs-body);
+  min-height: 1.4em;
+}
+.b3d-hint .ic {
+  margin-top: 1px;
+}
+.b3d-hint--error {
+  color: var(--c-danger);
+}
+.b3d-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.b3d-act {
+  flex: 1 1 auto;
+}
+.b3d-act[data-action="place"] {
+  flex: 1 1 160px;
+}
+
+/* ── Карточка предложения ── */
+.b3d-pcard {
+  display: grid;
+  gap: var(--s-3);
+}
+.b3d-pcard__title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-head);
+}
+.b3d-pcard__title .ic {
+  color: var(--c-brand);
+}
+.b3d-pcard p {
+  margin: 0;
+}
+.b3d-votes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.b3d-vote {
+  flex: 1 1 140px;
+}
+.b3d-vote[aria-pressed="true"] {
+  border-color: var(--c-brand);
+  background: var(--c-brand-soft);
+  box-shadow: inset 0 0 0 1px var(--c-brand);
+}
+
+/* ── Состояния: ошибка, нет 3D ── */
+.b3d-message {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+.b3d-message > .ic {
+  width: 32px;
+  height: 32px;
+  color: var(--c-text-2);
+}
+.b3d-message__text {
+  flex: 1 1 200px;
+}
+.b3d-message__title {
+  margin: 0;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
+}
+.b3d-message .bk-meta {
+  margin: var(--s-1) 0 0;
+}
+
+/* ── Тосты над панелью ── */
+.b3d-toasts {
+  display: grid;
+  gap: var(--s-2);
+  width: min(480px, 100%);
+  margin-bottom: var(--s-3);
+  pointer-events: auto;
+}
+.b3d-toasts:empty {
+  display: none;
+}
+
+/* ── Подписи «Проект · 2027» над объектами ── */
+.b3d-labels {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.b3d-labels[hidden] {
+  display: none;
+}
+.b3d-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-height: 28px;
+  padding: 3px 10px;
+  border: 2px solid var(--c-surface);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-1);
+  font: inherit;
+  font-family: var(--font);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  line-height: 1.4;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity var(--t-fast) var(--ease);
+}
+/* Невидимое расширение зоны нажатия до ~48 px (телефон). */
+.b3d-label::before {
+  content: "";
+  position: absolute;
+  inset: -10px -6px;
+}
+/* «Хвостик» вниз — к объекту. */
+.b3d-label::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border-right: 2px solid var(--c-surface);
+  border-bottom: 2px solid var(--c-surface);
+  transform: translateX(-50%) rotate(45deg);
+}
+.b3d-label[aria-pressed="true"] {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+}
+.b3d-label:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+}
+/* Сжатая подпись (подписи перекрываются или карта далеко): точка цвета «проект». */
+.b3d-label--dot {
+  width: 18px;
+  min-height: 18px;
+  height: 18px;
+  padding: 0;
+  font-size: 0;
+  color: transparent;
+}
+.b3d-label--dot::after {
+  display: none;
+}
+.b3d-label--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.b3d-labels--passive .b3d-label {
+  pointer-events: none;
+}
+
+/* ── Телефон ── */
+@media (max-width: 639px) {
+  .b3d--overlay {
+    padding: 0 0 env(safe-area-inset-bottom);
+  }
+  .b3d--overlay .b3d-toasts {
+    width: calc(100% - 2 * var(--gutter-phone));
+  }
+  .b3d-dock {
+    width: 100%;
+    padding: var(--s-3) var(--gutter-phone) var(--s-4);
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+  }
+  .b3d-card {
+    flex: 0 0 120px;
+    min-width: 120px;
+    min-height: 88px;
+  }
+  .b3d-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .b3d-actions .bk-btn {
+    min-height: var(--tap-lg);
+  }
+  .b3d-act[data-action="place"] {
+    grid-column: span 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .b3d-card,
+  .b3d-label {
+    transition: none;
+  }
+}

@@ -12,6 +12,9 @@
      (data/civic/astana/geofence.json): проверка «внутри Астаны» и район предложения.
   3. web/civic/build3d/data/demo-basemap.json — ВСЕ рёбра графа в фокус-области: только для
      demo.html (подложка без интернета). В общую сборку не нужен.
+  4. web/civic/build3d/data/proposals.fixture.json — два ПРИМЕРА предложений (demo: true) для
+     заглушки R06 по CONTRACT §7: освещение по настоящим рёбрам ул. Сыганак и остановка у её края.
+     Голоса — синтетические числа для показа карточки (помечены demo).
 
 Данные © OpenStreetMap contributors, ODbL 1.0 (производные).
 """
@@ -174,6 +177,89 @@ def main():
         "nura": nura[0]["rings"] if nura else [],
     }
     print(dump("demo-basemap.json", basemap), len(named), "named", len(other), "other")
+    print(write_demo_proposals(graph))
+
+
+# ── Примеры предложений ──
+LIGHT_EDGES = ["osm-w1328815797-6", "osm-w1328815797-7", "osm-w1328815797-8"]  # ул. Сыганак, ~208 м
+STOP_EDGE = "osm-w1189551423-0"  # ул. Сыганак, другая проезжая часть, 182 м
+STOP_OFFSET_M = 8.0  # центр остановки от оси проезжей части (пятно 4.5 м + тротуар)
+EARTH_R = 6371008.8  # как в MapLibre и build3d-core.js
+
+
+def merc(lon, lat):
+    return (180 + lon) / 360, (180 - 180 / math.pi * math.log(math.tan(math.pi / 4 + lat * math.pi / 360))) / 360
+
+
+def to_local(origin, p):
+    s = 1 / (2 * math.pi * EARTH_R) / math.cos(origin[1] * math.pi / 180)
+    ox, oy = merc(*origin)
+    x, y = merc(*p)
+    return (x - ox) / s, -(y - oy) / s
+
+
+def from_local(origin, xy):
+    s = 1 / (2 * math.pi * EARTH_R) / math.cos(origin[1] * math.pi / 180)
+    ox, oy = merc(*origin)
+    x, y = ox + xy[0] * s, oy - xy[1] * s
+    lon = x * 360 - 180
+    lat = 360 / math.pi * math.atan(math.exp((180 - y * 360) * math.pi / 180)) - 90
+    return lon, lat
+
+
+def bearing(dx, dy):
+    return (math.degrees(math.atan2(dx, dy)) + 360) % 360
+
+
+def demo_proposals(graph):
+    by_id = {e["id"]: e for e in graph["edges"]}
+    # Освещение: цепочка рёбер одной улицы, проверяем, что они соединены.
+    chain = [by_id[i] for i in LIGHT_EDGES]
+    coords = [list(p) for p in chain[0]["geometry"]]
+    for prev, e in zip(chain, chain[1:]):
+        assert prev["to"] == e["from"], (prev["id"], e["id"])
+        coords.extend(list(p) for p in e["geometry"][1:])
+    light = [[r(x), r(y)] for x, y in coords]
+    name = chain[0]["name"]
+    # Остановка: середина ребра, сдвиг от оси на внешнюю сторону (дальше от второй проезжей части).
+    e = by_id[STOP_EDGE]
+    a, b = e["geometry"][0], e["geometry"][-1]
+    mid = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+    ax, ay = to_local(mid, a)
+    bx, by = to_local(mid, b)
+    L = math.hypot(bx - ax, by - ay)
+    dx, dy = (bx - ax) / L, (by - ay) / L
+    nx, ny = dy, -dx  # правая нормаль
+    other = to_local(mid, light[len(light) // 2])
+    side = -1 if other[0] * nx + other[1] * ny > 0 else 1  # от второй проезжей части
+    center = from_local(mid, (nx * STOP_OFFSET_M * side, ny * STOP_OFFSET_M * side))
+    to_street = bearing(-nx * side, -ny * side)
+    rot = round((to_street - 180) % 360)  # «открытая» сторона павильона (−y модели) — к дороге
+    common = {"status": "proposal", "year": 2027, "district": "nura", "demo": True, "created_at": "2026-10-10T12:00:00+05:00"}
+    return [
+        dict(common, id="p-demo-light-syganak", kind="lighting",
+             geometry={"type": "LineString", "coordinates": light}, rotation_deg=0,
+             votes_up=128, votes_down=12, near_street=name,
+             target={"kind": "segment", "id": LIGHT_EDGES[0], "ids": LIGHT_EDGES, "label_ru": name, "label_kk": name}),
+        dict(common, id="p-demo-stop-syganak", kind="stop",
+             geometry={"type": "Point", "coordinates": [r(center[0]), r(center[1])]}, rotation_deg=rot,
+             votes_up=64, votes_down=5, near_street=e["name"]),
+    ]
+
+
+def write_demo_proposals(graph):
+    data = {
+        "schema": "birge-proposals-fixture-v1",
+        "purpose": "Заглушка GET /api/civic/v2/proposals (CONTRACT §7) до подключения R06. Только примеры (demo: true).",
+        "source": {"streets": "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json",
+                   "edges": LIGHT_EDGES + [STOP_EDGE], "license": "ODbL-1.0", "attribution": ATTRIBUTION},
+        "proposals": demo_proposals(graph),
+    }
+    path = os.path.join(OUT, "proposals.fixture.json")
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(data, fh, ensure_ascii=False, indent=1)
+        fh.write("\n")
+    return path
 
 
 if __name__ == "__main__":

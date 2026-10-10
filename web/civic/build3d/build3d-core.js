@@ -188,6 +188,7 @@
   function StreetIndex(data) {
     if (!data || !Array.isArray(data.edges)) throw new Error("street data: нет edges");
     var bbox = data.bbox || [71.4, 51.12, 71.4, 51.12];
+    this.bbox = bbox;
     this.origin = [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2];
     this.names = data.names || [];
     var origin = this.origin;
