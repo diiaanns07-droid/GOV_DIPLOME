@@ -94,6 +94,29 @@ async function open(browser, width, block) {
     check(width + ": медленная сеть — после ответа карточки на месте, без ошибок", cErrors.length === 0, cErrors.join(" | "));
     await c.close();
   }
+
+  // 4. Лимит голосов с адреса (R15 S08): сервер отвечает 429 — понятный текст ru/kk, без «Повторить», без [i18n].
+  for (const lang of ["ru", "kk"]) {
+    const d = await browser.newPage({ viewport: { width: 375, height: 812 } });
+    const warns = [];
+    d.on("console", (m) => { if (/\[i18n\]/.test(m.text())) warns.push(m.text()); });
+    await d.route(/\/api\/civic\/v2\/proposals\/[^/]+\/vote$/, (route) => route.fulfill({
+      status: 429, headers: { "Content-Type": "application/json", "Retry-After": "86000" },
+      body: JSON.stringify({ ok: false, error: { code: "rate_limited", message: "С этого адреса уже много голосов за этот проект. Повторите завтра." } }),
+    }));
+    await d.goto(stand.url + "?lang=" + lang, { waitUntil: "load" });
+    await d.waitForSelector(".r06-vote__btn:not([disabled])");
+    await d.click(".r06-vote__btn:not([disabled])");
+    await d.waitForTimeout(700);
+    const toast = await d.evaluate(() => {
+      const el = document.querySelector(".bk-toast");
+      return el ? { text: (el.querySelector(".bk-toast__text") || el).textContent.trim(), retry: !!el.querySelector(".bk-btn") } : null;
+    });
+    const want = lang === "kk" ? /дауыс көп берілді/ : /много голосов/;
+    check("лимит голосов " + lang + ": понятный текст без «Повторить», без [i18n]", toast && want.test(toast.text) && !toast.retry && warns.length === 0,
+          JSON.stringify({ toast, warns }));
+    await d.close();
+  }
   await browser.close();
   const failed = results.filter((r) => !r.ok).length;
   console.log(JSON.stringify({ total: results.length, failed }));
