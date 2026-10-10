@@ -7,8 +7,9 @@
 Правила расчёта (их же проверяют tests/civic/R06/round14/):
   stage         planned → design → procurement → construction → acceptance → operating; None — неизвестен.
   planned_end   плановый срок окончания (по умолчанию — исходный срок объекта original_planned_end).
-  forecast_end  прогноз окончания от сотрудника. Если его нет, но срок объекта перенесён
-                (current_planned_end ≠ planned_end), прогнозом считается перенесённый срок.
+  forecast_end  прогноз окончания от сотрудника. Если его нет, план взят из карточки (миграция или
+                значение по умолчанию), а срок объекта перенесён (current_planned_end ≠ planned_end),
+                прогнозом считается перенесённый срок.
   delay_days    на сколько дней объект отстаёт от плана СЕЙЧАС:
                 - не работает и сегодня позже плана → не меньше (сегодня − план), даже если старый
                   прогноз обещал раньше (прогноз в прошлом уже не прогноз);
@@ -156,9 +157,12 @@ class StageRepository:
             forecast_end, source, stage_updated = None, "default", None
         moments = [m for m in (_parse_ts(stage_updated), _parse_ts(public_item.get("updated_at"))) if m]
         last = max(moments) if moments else None
+        # Перенесённый срок карточки — прогноз, только если и план взят из карточки (migrated/default).
+        # Если план задал сотрудник (editor/demo), прогноз — только его forecast_end.
+        moved = schedule.get("current_planned_end") if source in ("migrated", "default") else None
         life = compute_lifecycle(
             stage=stage, planned_end=planned_end, forecast_end=forecast_end,
-            current_planned_end=schedule.get("current_planned_end"), actual_end=schedule.get("actual_end"),
+            current_planned_end=moved, actual_end=schedule.get("actual_end"),
             last_update=last.astimezone(ASTANA_TZ).date() if last else None, today=today)
         district = district_of(public_item.get("geometry"))
         return {

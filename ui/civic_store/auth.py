@@ -2,7 +2,8 @@
 
 - Пароль: hashlib.scrypt (стандартная библиотека; параметры OWASP-эквивалент
   N=2^14, r=8, p=5), соль 16 байт, формат scrypt$N$r$p$salt$hash. Plaintext не хранится.
-- Сессия: случайный токен 256 бит в cookie HttpOnly; SameSite=Strict; Path=/api/civic/v1
+- Сессия: случайный токен 256 бит в cookie HttpOnly; SameSite=Strict; Path=/api/civic
+  (раунд 14: путь расширен с /api/civic/v1, чтобы сессия сотрудника работала и в /api/civic/v2)
   (+ Secure по HTTPS). В базе только SHA-256 токена. Простой и абсолютный срок жизни,
   logout отзывает запись на сервере.
 - CSRF: отдельный токен сессии, отдаётся в GET /session и сверяется с X-CSRF-Token.
@@ -35,7 +36,7 @@ MAX_PASSWORD = 1024
 USERNAME_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{2,31}\Z")
 TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{43}\Z")
 COOKIE_NAME = "civic_session"
-COOKIE_PATH = "/api/civic/v1"
+COOKIE_PATH = "/api/civic"  # v1 и v2 (R06 раунд 14); статика и чужие пути cookie не получают
 IDLE_SECONDS = 60 * 60
 ABSOLUTE_SECONDS = 8 * 60 * 60
 FAIL_WINDOW = 15 * 60

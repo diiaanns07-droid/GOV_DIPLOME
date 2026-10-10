@@ -285,3 +285,12 @@ def test_stage_history_is_append_only(staff, db_path):
             conn.execute("DELETE FROM civic_stage_history")
     finally:
         conn.close()
+
+
+def test_editor_plan_ignores_unrelated_schedule_end(staff):
+    # Карточка: current_planned_end 2026-10-20. Сотрудник задал свой план 2027-03-01 без прогноза:
+    # срок карточки не должен превращаться в «прогноз» и давать ложное отставание.
+    item = staff.create_object()
+    staff.set_stage(item["id"], 0, stage="design", planned_end="2027-03-01")
+    obj = call(staff.v2, "GET", f"/objects/{item['id']}")["body"]["data"]["item"]
+    assert obj["forecast_end"] is None and obj["delay_days"] == 0 and obj["late"] is False

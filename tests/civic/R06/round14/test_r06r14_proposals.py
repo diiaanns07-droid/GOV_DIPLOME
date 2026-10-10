@@ -244,3 +244,13 @@ def test_seed_r14_demo_is_marked_and_idempotent(tmp_path, clock, capsys):
     assert all(i["district"] == "nura" for i in items)
     objects = v2.list_objects()["items"]
     assert objects and all(o["demo"] and o["stage_source"] == "demo" for o in objects)
+
+
+def test_session_cookie_reaches_v2_routes(stack):
+    # Браузер отправляет cookie только на пути внутри Path. Раньше было /api/civic/v1 → v2 получал 401.
+    svc, _ = stack
+    from r06r14_helpers import PASSWORD
+    result = call(svc, "POST", "/session/login", {"username": "editor1", "password": PASSWORD}, prefix="/api/civic/v1")
+    path = [p.strip()[5:] for p in result["headers"]["Set-Cookie"].split(";") if p.strip().startswith("Path=")][0]
+    assert "/api/civic/v2/proposals".startswith(path + "/") and "/api/civic/v1/session".startswith(path + "/")
+    assert not "/civic/proposals/demo.html".startswith(path)

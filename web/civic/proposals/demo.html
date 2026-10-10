@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Birge · проекты и этапы (R06)</title>
+    <!-- Стенд R06 для проверки карточек на настоящем API (tests/civic/R06/round14/serve_r14.py).
+         В общую сборку не входит: R01 подключает только proposals.js и proposals.css.
+         ?role=akimat — кнопки «Одобрить / Отклонить» (нужна сессия сотрудника); ?lang=kk — казахский. -->
+    <link rel="stylesheet" href="/civic/ui-kit/tokens.css" />
+    <link rel="stylesheet" href="/civic/ui-kit/components.css" />
+    <link rel="stylesheet" href="/civic/proposals/proposals.css" />
+    <style>
+      body {
+        margin: 0;
+      }
+      .r06-demo {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: var(--s-5) var(--gutter-phone) 120px;
+        display: grid;
+        gap: var(--s-6);
+      }
+      .r06-demo__head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-3);
+      }
+      .r06-demo__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
+        gap: var(--s-4);
+        align-items: start;
+      }
+    </style>
+  </head>
+  <body class="bk-app">
+    <main class="r06-demo">
+      <div class="r06-demo__head">
+        <h1 class="bk-h1" data-i18n="proposal.catalog.title"></h1>
+        <div id="lang"></div>
+      </div>
+      <p class="bk-meta" data-i18n="common.tag.demo_hint"></p>
+      <section>
+        <h2 class="bk-h2" data-i18n="akim.proposals.title"></h2>
+        <div class="r06-demo__grid" id="proposals"></div>
+      </section>
+      <section>
+        <h2 class="bk-h2" data-i18n="akim.late.title"></h2>
+        <div class="r06-demo__grid" id="objects"></div>
+      </section>
+    </main>
+    <script src="/civic/i18n/i18n.js"></script>
+    <script src="/civic/ui-kit/ui-kit.js"></script>
+    <script src="/civic/proposals/proposals.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        var P = window.BirgeProposals;
+        var role = new URLSearchParams(location.search).get("role") === "akimat" ? "akimat" : "resident";
+        window.BirgeUI.langSwitch(document.getElementById("lang"));
+
+        function cell(parent) {
+          var el = document.createElement("div");
+          parent.appendChild(el);
+          return el;
+        }
+
+        function load() {
+          var box = document.getElementById("proposals");
+          window.BirgeUI.state(box, "loading");
+          P.api.proposals().then(
+            function (data) {
+              box.innerHTML = "";
+              if (!data.items.length) {
+                window.BirgeUI.state(box, "empty");
+                return;
+              }
+              data.items.forEach(function (p) {
+                P.renderProposal(cell(box), p, { role: role });
+              });
+            },
+            function () {
+              window.BirgeUI.state(box, "error", { action: { onClick: load } });
+            }
+          );
+          var objects = document.getElementById("objects");
+          window.BirgeUI.state(objects, "loading");
+          P.api.objects().then(
+            function (data) {
+              objects.innerHTML = "";
+              data.items.forEach(function (o) {
+                P.renderObject(cell(objects), o);
+              });
+              // Состояния «нет такого объекта» и «нет связи» — тоже на стенде.
+              P.mountObject(cell(objects), "no-such-object");
+            },
+            function () {
+              window.BirgeUI.state(objects, "error", { action: { onClick: load } });
+            }
+          );
+        }
+        window.BirgeI18n.ready.then(load);
+      })();
+    </script>
+  </body>
+</html>
