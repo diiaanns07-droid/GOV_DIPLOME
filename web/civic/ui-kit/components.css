@@ -129,7 +129,7 @@
   line-height: 1.25;
   text-align: center;
   white-space: normal; /* перенос, а не обрезка */
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word; /* не рвать слова посередине */
   cursor: pointer;
   text-decoration: none;
   touch-action: manipulation;
@@ -305,6 +305,10 @@
   font-weight: var(--fw-bold);
 }
 .bk-chip--suggest {
+  flex: 0 1 auto; /* может сжиматься и переносить строку: */
+  min-width: 0;
+  white-space: normal; /* «Қар және көктайғақ санатына ұқсайды» длиннее экрана телефона */
+  text-align: left;
   border-style: dashed;
   border-color: var(--c-brand);
   background: var(--c-brand-soft);
@@ -384,6 +388,7 @@
 /* Поле ввода с подписью и подсказкой */
 .bk-field {
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* колонка не растягивается по длинному слову (важно для kk на 375 px) */
   gap: 6px;
 }
 .bk-field__label {
@@ -447,20 +452,19 @@
   color: var(--c-text-2);
 }
 
-/* Сетка 12 категорий: 3 колонки на телефоне, 4 на широкой панели */
+/* Сетка 12 категорий: иконка слева + подпись. Колонки ≥ 150 px (2 на телефоне), чтобы казахские
+   слова («Жарықтандыру», «жүргіншілер») помещались целиком и не рвались посередине. */
 .bk-catgrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
   gap: var(--s-2);
 }
 .bk-catgrid > button {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-height: 88px;
-  padding: var(--s-2);
+  gap: var(--s-2);
+  min-height: 56px;
+  padding: var(--s-2) var(--s-3);
   border: 1px solid var(--c-line-strong);
   border-radius: var(--r-m);
   background: var(--c-surface);
@@ -469,14 +473,13 @@
   font-size: var(--fs-caption);
   font-weight: var(--fw-semi);
   line-height: 1.2;
-  text-align: center;
-  overflow-wrap: anywhere;
-  hyphens: auto;
+  text-align: left;
+  overflow-wrap: break-word; /* перенос только по пробелам; слово рвётся, лишь если не влезает совсем */
   cursor: pointer;
 }
 .bk-catgrid > button .ic {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 .bk-catgrid > button[aria-pressed="true"] {
   border: 2px solid var(--c-ink);
@@ -487,11 +490,15 @@
 
 .bk-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* колонка не растягивается по длинному слову (важно для kk на 375 px) */
   gap: var(--s-3);
   padding: var(--s-5);
   border-radius: var(--r-l);
   background: var(--c-surface);
   box-shadow: var(--shadow-1);
+}
+.bk-card p {
+  margin: 0; /* расстояния задаёт gap карточки */
 }
 .bk-card__eyebrow {
   display: flex;
@@ -506,7 +513,7 @@
   font-size: var(--fs-title);
   line-height: var(--lh-head);
   font-weight: var(--fw-bold);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word; /* не рвать слова посередине */
 }
 .bk-card__row {
   display: flex;
@@ -637,6 +644,7 @@
   overscroll-behavior: contain;
   padding: var(--s-5);
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* колонка не растягивается по длинному слову (важно для kk на 375 px) */
   align-content: start;
   gap: var(--s-4);
 }
@@ -713,6 +721,7 @@
   overscroll-behavior: contain;
   padding: 0 var(--gutter-phone) var(--s-4);
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* колонка не растягивается по длинному слову (важно для kk на 375 px) */
   align-content: start;
   gap: var(--s-4);
 }
@@ -1330,7 +1339,7 @@
 .bk-list__title {
   display: block;
   font-weight: var(--fw-semi);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word; /* не рвать слова посередине */
 }
 .bk-list__sub {
   display: block;

@@ -1,0 +1,29 @@
+{
+  "version": "civic-categories-v2",
+  "created": "2026-10-10",
+  "note": "Единственный источник списка категорий для раунда 14. Порядок важен для интерфейса. target_kinds — к чему по умолчанию привязывается жалоба: object, segment, area.",
+  "categories": [
+    {"id": "roads", "ru": "Дороги", "kk": "Жолдар", "examples_ru": "яма, разбитый асфальт, стёртая разметка", "target_kinds": ["segment"], "icon": "road"},
+    {"id": "snow_ice", "ru": "Снег и гололёд", "kk": "Қар және көктайғақ", "examples_ru": "не убран снег, наледь, сосульки", "target_kinds": ["segment", "area"], "icon": "snowflake"},
+    {"id": "sidewalks", "ru": "Тротуары", "kk": "Жаяу жүргіншілер жолы", "examples_ru": "разбит тротуар, нет пандуса, бордюр", "target_kinds": ["segment"], "icon": "walk"},
+    {"id": "transport", "ru": "Остановки и транспорт", "kk": "Аялдамалар мен көлік", "examples_ru": "сломан павильон, нет расписания, автобус не ходит", "target_kinds": ["object"], "icon": "bus"},
+    {"id": "lighting", "ru": "Освещение", "kk": "Жарықтандыру", "examples_ru": "не горят фонари, темно во дворе", "target_kinds": ["segment", "area"], "icon": "bulb"},
+    {"id": "yards", "ru": "Дворы и площадки", "kk": "Аулалар мен алаңдар", "examples_ru": "сломана площадка, деревья, благоустройство двора", "target_kinds": ["object", "area"], "icon": "trees"},
+    {"id": "waste", "ru": "Мусор", "kk": "Қоқыс", "examples_ru": "переполнены баки, свалка, не вывозят", "target_kinds": ["area", "object"], "icon": "trash"},
+    {"id": "utilities", "ru": "ЖКХ: тепло и вода", "kk": "ТКШ: жылу мен су", "examples_ru": "нет отопления, нет воды, канализация", "target_kinds": ["area"], "icon": "droplet"},
+    {"id": "smell_air", "ru": "Запахи и воздух", "kk": "Иіс және ауа", "examples_ru": "вонь, дым, пыль, выбросы", "target_kinds": ["area"], "icon": "wind"},
+    {"id": "noise_safety", "ru": "Шум и безопасность", "kk": "Шу және қауіпсіздік", "examples_ru": "шум ночью, опасное место, нет перехода", "target_kinds": ["area", "segment"], "icon": "shield"},
+    {"id": "parking", "ru": "Парковки", "kk": "Тұрақтар", "examples_ru": "заставлены дворы, нет мест, парковка на газоне", "target_kinds": ["segment", "area"], "icon": "parking"},
+    {"id": "other", "ru": "Другое", "kk": "Басқа", "examples_ru": "всё, что не подошло", "target_kinds": ["area"], "icon": "dots"}
+  ],
+  "v1_to_v2": {"roads": "roads", "sidewalks": "sidewalks", "transport_stops": "transport", "lighting": "lighting", "landscaping": "yards", "other": "other"},
+  "heat_levels": [
+    {"min_weight": 0, "level": 0, "ru": "нет жалоб", "kk": "шағым жоқ", "color": null},
+    {"min_weight": 1, "level": 1, "ru": "1–2", "kk": "1–2", "color": "#FAC775"},
+    {"min_weight": 3, "level": 2, "ru": "3–5", "kk": "3–5", "color": "#EF9F27"},
+    {"min_weight": 6, "level": 3, "ru": "6–9", "kk": "6–9", "color": "#E24B4A"},
+    {"min_weight": 10, "level": 4, "ru": "10+", "kk": "10+", "color": "#A32D2D"}
+  ],
+  "fixed_state": {"color": "#639922", "ru": "исправлено", "kk": "түзетілді", "days_visible": 7},
+  "weight_half_life_days": 14
+}

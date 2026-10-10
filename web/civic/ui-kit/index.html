@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Birge · ui-kit</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="components.css" />
+    <!-- Витрина ui-kit (R11). Все тексты — ключи i18n; ?lang=kk открывает сразу казахский. -->
+    <style>
+      body {
+        margin: 0;
+      }
+      .kit-main {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: var(--s-6) var(--gutter-phone) 120px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr); /* иначе колонка растягивается по самому широкому блоку */
+        gap: var(--s-8);
+      }
+      .kit-section {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--s-4);
+      }
+      .kit-section > h2 {
+        padding-bottom: var(--s-2);
+        border-bottom: 1px solid var(--c-line);
+      }
+      .kit-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--s-3);
+      }
+      .kit-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+        gap: var(--s-4);
+        align-items: start;
+      }
+      .kit-swatch {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: var(--s-2) var(--s-3);
+        align-items: center;
+        font-size: var(--fs-caption);
+      }
+      .kit-swatch i {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--r-m);
+        border: 1px solid var(--c-line);
+      }
+      .kit-swatches {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--s-3);
+      }
+      .kit-icons {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+        gap: var(--s-2);
+      }
+      .kit-icons figure {
+        display: grid;
+        justify-items: center;
+        gap: 6px;
+        margin: 0;
+        padding: var(--s-3) var(--s-1);
+        border-radius: var(--r-m);
+        background: var(--c-surface);
+        font-size: 12px;
+        color: var(--c-text-2);
+      }
+      .kit-icons .ic {
+        width: 28px;
+        height: 28px;
+        color: var(--c-ink);
+      }
+      code {
+        font-family: ui-monospace, Consolas, monospace;
+        font-size: 13px;
+      }
+      .kit-map {
+        position: relative;
+        min-height: 220px;
+        border-radius: var(--r-l);
+        background:
+          linear-gradient(90deg, transparent 47%, #fff 47%, #fff 53%, transparent 53%),
+          linear-gradient(0deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%),
+          #e8ede4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--s-6);
+        flex-wrap: wrap;
+        padding: var(--s-6);
+      }
+      .kit-map .bk-legend {
+        position: absolute;
+        left: var(--s-3);
+        bottom: var(--s-3);
+      }
+      .kit-map .bk-maptools {
+        position: absolute;
+        right: var(--s-3);
+        top: var(--s-3);
+      }
+      .kit-phone {
+        width: 375px;
+        max-width: 100%;
+        height: 560px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        border: 8px solid var(--c-ink);
+        background: #e8ede4;
+      }
+      .kit-phone .bk-sheet {
+        position: absolute;
+        --sheet-full: 500px;
+        --sheet-half: 272px;
+        --sheet-peek: 120px;
+      }
+      @media (max-width: 1023px) {
+        .bk-header__search {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="bk-app">
+    <a class="bk-skip" href="#kit-primary" data-i18n="common.action.skip_to_main"></a>
+
+    <header class="bk-header">
+      <div class="bk-header__brand">
+        <span class="bk-header__mark" id="kit-mark"></span><span class="bk-header__brand-text" data-i18n="common.app_name"></span>
+      </div>
+      <div class="bk-search bk-header__search">
+        <span id="kit-search-ic"></span>
+        <input type="search" data-i18n-attr="placeholder:common.search.placeholder;aria-label:common.search.label" />
+      </div>
+      <div class="bk-header__end">
+        <div class="bk-seg bk-header__wide" id="kit-role" role="group" data-i18n-attr="aria-label:common.role.label">
+          <button type="button" value="akimat" aria-pressed="true" data-i18n="common.role.akimat"></button>
+          <button type="button" value="resident" aria-pressed="false" data-i18n="common.role.resident"></button>
+        </div>
+        <div id="kit-lang"></div>
+      </div>
+    </header>
+
+    <main class="kit-main">
+      <section class="kit-section">
+        <h1 class="bk-h1" data-i18n="uikit.title"></h1>
+        <p class="bk-lead" data-i18n="uikit.intro"></p>
+      </section>
+
+      <!-- Цвета -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.colors"></h2>
+        <div class="kit-swatches" id="kit-colors"></div>
+      </section>
+
+      <!-- Шрифт -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.type"></h2>
+        <div class="bk-card">
+          <p class="bk-h1" data-i18n="akim.title"></p>
+          <p class="bk-h2" data-i18n="complaint.step2.title"></p>
+          <p class="bk-lead" data-i18n="uikit.type.letters"></p>
+          <p data-i18n="uikit.type.body"></p>
+          <p class="bk-meta"><span id="kit-date"></span> · <span data-i18n="common.tag.demo"></span></p>
+          <p class="bk-kpi__value bk-num" id="kit-number"></p>
+        </div>
+      </section>
+
+      <!-- Иконки -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.icons"></h2>
+        <div class="kit-icons" id="kit-icons"></div>
+      </section>
+
+      <!-- Кнопки -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.buttons"></h2>
+        <div class="kit-row">
+          <button class="bk-btn bk-btn--primary" id="kit-primary" type="button" data-kit-icon="plus"><span data-i18n="complaint.cta"></span></button>
+          <button class="bk-btn" type="button" data-kit-icon="users"><span data-i18n="target.metoo"></span></button>
+          <button class="bk-btn bk-btn--dark" type="button"><span data-i18n="target.take"></span></button>
+          <button class="bk-btn bk-btn--ghost" type="button" data-kit-icon="back"><span data-i18n="common.action.back"></span></button>
+          <button class="bk-btn bk-btn--danger" type="button"><span data-i18n="proposal.reject"></span></button>
+          <button class="bk-btn" type="button" disabled><span data-i18n="complaint.send"></span></button>
+          <button class="bk-btn bk-btn--primary" type="button" aria-busy="true" disabled><span data-i18n="complaint.sending"></span></button>
+        </div>
+        <div class="kit-row">
+          <button class="bk-btn" type="button" data-kit-icon="thumb-up"><span data-i18n="proposal.vote_up"></span> <span class="bk-btn__count">128</span></button>
+          <button class="bk-btn" type="button" data-kit-icon="thumb-down"><span data-i18n="proposal.vote_down"></span> <span class="bk-btn__count">12</span></button>
+          <span class="bk-meta" data-i18n="proposal.one_vote"></span>
+        </div>
+        <div style="max-width: 375px">
+          <button class="bk-btn bk-btn--primary bk-btn--block bk-btn--lg" type="button" data-kit-icon="plus"><span data-i18n="complaint.cta"></span></button>
+        </div>
+      </section>
+
+      <!-- Чипы и переключатели -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.chips"></h2>
+        <div class="bk-chips" id="kit-cat-chips" role="group" data-i18n-attr="aria-label:heat.filter.category"></div>
+        <div class="kit-row">
+          <div class="bk-seg" id="kit-period" role="group" data-i18n-attr="aria-label:heat.filter.period">
+            <button type="button" value="7" aria-pressed="true" data-i18n="common.period.days" data-i18n-params='{"n":7}'></button>
+            <button type="button" value="30" aria-pressed="false" data-i18n="common.period.days" data-i18n-params='{"n":30}'></button>
+            <button type="button" value="90" aria-pressed="false" data-i18n="common.period.days" data-i18n-params='{"n":90}'></button>
+          </div>
+          <div class="bk-field" style="min-width: 200px">
+            <select data-i18n-attr="aria-label:heat.filter.district" id="kit-district"></select>
+          </div>
+          <button class="bk-btn bk-btn--ghost" type="button" data-kit-icon="close"><span data-i18n="heat.filter.reset"></span></button>
+        </div>
+      </section>
+
+      <!-- Тепловая карта -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.heat"></h2>
+        <div class="kit-map">
+          <span class="bk-heat" data-level="1">2</span>
+          <span class="bk-heat" data-level="2">4</span>
+          <span class="bk-heat" data-level="3">7</span>
+          <span class="bk-heat bk-heat--lg bk-pulse" data-level="4" id="kit-pulse">12</span>
+          <span class="bk-heat" data-level="fixed">5</span>
+          <div class="bk-maptools">
+            <button class="bk-mapbtn" type="button" data-kit-icon="plus" data-i18n-attr="aria-label:common.map.zoom_in;title:common.map.zoom_in"></button>
+            <button class="bk-mapbtn" type="button" data-kit-icon="minus" data-i18n-attr="aria-label:common.map.zoom_out;title:common.map.zoom_out"></button>
+            <button class="bk-mapbtn" type="button" data-kit-icon="locate" data-i18n-attr="aria-label:common.map.locate;title:common.map.locate"></button>
+            <button class="bk-mapbtn" type="button" aria-pressed="false" data-i18n-attr="aria-label:common.map.view3d;title:common.map.view3d">3D</button>
+          </div>
+          <div class="bk-legend" id="kit-legend"></div>
+        </div>
+        <div class="kit-row">
+          <button class="bk-btn" type="button" id="kit-pulse-btn" data-kit-icon="refresh"><span data-i18n="heat.new_complaint"></span></button>
+          <span class="bk-tag bk-tag--approx" data-kit-icon="pin"><span data-i18n="common.tag.approx"></span></span>
+        </div>
+      </section>
+
+      <!-- Статусы и метки -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.status"></h2>
+        <div class="kit-row">
+          <span class="bk-status" data-status="new" data-i18n="status.new"></span>
+          <span class="bk-status" data-status="accepted" data-i18n="status.accepted"></span>
+          <span class="bk-status" data-status="in_progress" data-i18n="status.in_progress"></span>
+          <span class="bk-status" data-status="fixed" data-i18n="status.fixed"></span>
+          <span class="bk-status" data-status="rejected" data-i18n="status.rejected"></span>
+        </div>
+        <div class="kit-row">
+          <span class="bk-tag bk-tag--demo" data-i18n="common.tag.demo" data-i18n-attr="title:common.tag.demo_hint"></span>
+          <span class="bk-tag bk-tag--project" data-i18n="common.tag.project"></span>
+          <span class="bk-tag bk-tag--warn" data-kit-icon="clock"><span data-i18n="object.late" data-i18n-params='{"n":23}'></span></span>
+          <span class="bk-tag" data-kit-icon="alert"><span data-i18n="object.stale"></span></span>
+        </div>
+      </section>
+
+      <!-- Карточка цели -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.card"></h2>
+        <div class="kit-grid">
+          <article class="bk-card" aria-labelledby="kit-card-title">
+            <div class="bk-card__row">
+              <span class="bk-card__eyebrow" data-kit-icon="bus"><span data-i18n="cat.transport"></span></span>
+              <span class="bk-tag bk-tag--demo" data-i18n="common.tag.demo"></span>
+            </div>
+            <h3 class="bk-card__title" id="kit-card-title"></h3>
+            <p class="bk-meta" style="margin: 0" data-i18n="uikit.demo.street"></p>
+            <div class="bk-card__row">
+              <span class="bk-heat bk-heat--lg" data-level="4">12</span>
+              <span><b data-i18n="target.reported" data-i18n-params='{"n":12}'></b> · <span data-i18n="common.period.last_days" data-i18n-params='{"n":14}'></span></span>
+            </div>
+            <div class="bk-card__row">
+              <span class="bk-meta" data-i18n="status.label"></span>
+              <span class="bk-status" data-status="in_progress" data-i18n="status.in_progress"></span>
+            </div>
+            <div class="bk-spark" aria-hidden="true">
+              <i style="height: 10%"></i><i style="height: 20%"></i><i style="height: 15%"></i><i style="height: 40%"></i><i style="height: 35%"></i><i style="height: 70%"></i><i style="height: 100%"></i>
+            </div>
+            <hr class="bk-divider" />
+            <p class="bk-section-title" data-i18n="target.what_people_write"></p>
+            <p style="margin: 0">«<span data-i18n="uikit.demo.complaint_text"></span>» · <span class="bk-meta" data-i18n="target.similar_more" data-i18n-params='{"n":8}'></span></p>
+            <div class="bk-actions">
+              <button class="bk-btn bk-btn--primary" type="button" data-kit-icon="users"><span data-i18n="target.metoo"></span></button>
+              <button class="bk-btn" type="button" data-kit-icon="check"><span data-i18n="target.mark_fixed"></span></button>
+            </div>
+          </article>
+          <div class="bk-panel bk-panel--static" aria-labelledby="kit-panel-title">
+            <div class="bk-panel__head">
+              <button class="bk-iconbtn" type="button" data-kit-icon="back" data-i18n-attr="aria-label:common.action.back"></button>
+              <h3 class="bk-panel__title" id="kit-panel-title" data-i18n="cat.transport"></h3>
+              <button class="bk-iconbtn" type="button" data-kit-icon="close" data-i18n-attr="aria-label:common.action.close"></button>
+            </div>
+            <div class="bk-panel__body">
+              <p class="bk-section-title" data-i18n="stage.title"></p>
+              <ol class="bk-stages bk-stages--late" id="kit-stages"></ol>
+              <div class="kit-row">
+                <span class="bk-tag bk-tag--warn" data-kit-icon="clock"><span data-i18n="object.late" data-i18n-params='{"n":23}'></span></span>
+                <span class="bk-tag" data-kit-icon="alert"><span data-i18n="object.stale_days" data-i18n-params='{"n":16}'></span></span>
+              </div>
+            </div>
+            <div class="bk-panel__foot">
+              <button class="bk-btn bk-btn--primary bk-btn--block" type="button"><span data-i18n="target.take"></span></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Этапы и шаги -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.stages"></h2>
+        <div class="kit-grid">
+          <div class="bk-card">
+            <ol class="bk-stages bk-stages--compact" id="kit-stages-compact"></ol>
+            <p class="bk-stages__caption" id="kit-stages-caption"></p>
+          </div>
+          <div class="bk-card">
+            <ol class="bk-steps">
+              <li data-state="done"><span data-i18n="status.accepted"></span></li>
+              <li data-state="current"><span data-i18n="status.in_progress"></span></li>
+              <li data-state="todo"><span data-i18n="status.fixed"></span></li>
+            </ol>
+          </div>
+          <div class="bk-card">
+            <div class="bk-wizard">
+              <span class="bk-wizard__label" data-i18n="complaint.step_of" data-i18n-params='{"i":3,"total":5}'></span>
+              <span class="bk-wizard__dots" aria-hidden="true"><i data-state="done"></i><i data-state="done"></i><i data-state="current"></i><i></i><i></i></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Форма жалобы -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.form"></h2>
+        <div class="kit-grid">
+          <div class="bk-card" role="radiogroup" aria-labelledby="kit-q2">
+            <h3 class="bk-card__title" id="kit-q2" data-i18n="complaint.step2.is_this"></h3>
+            <button class="bk-option" type="button" role="radio" aria-checked="true" data-kit-icon="bus"><span><span id="kit-opt-stop"></span><span class="bk-option__sub">40 м</span></span></button>
+            <button class="bk-option" type="button" role="radio" aria-checked="false" data-kit-icon="road"><span id="kit-opt-seg"></span></button>
+            <button class="bk-option" type="button" role="radio" aria-checked="false" data-kit-icon="pin"><span data-i18n="complaint.step2.other_place"></span></button>
+          </div>
+          <div class="bk-card">
+            <label class="bk-field">
+              <span class="bk-field__label" data-i18n="complaint.step3.title"></span>
+              <textarea data-i18n-attr="placeholder:complaint.step3.placeholder"></textarea>
+              <span class="bk-field__hint" data-i18n="complaint.step3.hint"></span>
+            </label>
+            <div class="bk-card__row">
+              <span class="bk-chip bk-chip--suggest" data-kit-icon="snowflake"><span id="kit-suggest"></span></span>
+              <button class="bk-btn bk-btn--ghost" type="button"><span data-i18n="complaint.step3.change_cat"></span></button>
+            </div>
+            <p class="bk-field__hint" data-i18n="complaint.step3.privacy"></p>
+          </div>
+          <div class="bk-card">
+            <h3 class="bk-card__title" data-i18n="complaint.step3.choose_cat"></h3>
+            <div class="bk-catgrid" id="kit-catgrid"></div>
+          </div>
+          <div class="bk-card">
+            <h3 class="bk-card__title" data-i18n="complaint.step4.title" data-i18n-params='{"n":7}'></h3>
+            <div class="bk-actions">
+              <button class="bk-btn bk-btn--primary" type="button" data-kit-icon="users"><span data-i18n="complaint.step4.metoo"></span></button>
+              <button class="bk-btn" type="button"><span data-i18n="complaint.step4.different"></span></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Картина дня -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.kpi"></h2>
+        <div class="bk-kpis">
+          <div class="bk-kpi"><span class="bk-kpi__value">34</span><span class="bk-kpi__label" data-i18n="akim.kpi.new"></span><span class="bk-kpi__delta" data-trend="up" data-good="false" data-i18n="akim.delta.more" data-i18n-params='{"v":"40 %"}'></span></div>
+          <div class="bk-kpi"><span class="bk-kpi__value">18</span><span class="bk-kpi__label" data-i18n="akim.kpi.in_progress"></span><span class="bk-kpi__delta" data-trend="down" data-good="true" data-i18n="akim.delta.less" data-i18n-params='{"v":2}'></span></div>
+          <div class="bk-kpi"><span class="bk-kpi__value">5</span><span class="bk-kpi__label" data-i18n="akim.kpi.overdue"></span><span class="bk-kpi__delta" data-trend="up" data-good="false" data-i18n="akim.delta.more" data-i18n-params='{"v":1}'></span></div>
+          <div class="bk-kpi"><span class="bk-kpi__value">9</span><span class="bk-kpi__label" data-i18n="akim.kpi.fixed_week"></span><span class="bk-kpi__delta" data-trend="flat" data-i18n="akim.delta.same"></span></div>
+        </div>
+        <p class="bk-lead" data-i18n="uikit.demo.summary"></p>
+        <div class="kit-grid">
+          <div class="bk-card">
+            <p class="bk-section-title" data-i18n="akim.hot.title"></p>
+            <ul class="bk-list" id="kit-hot"></ul>
+          </div>
+          <div class="bk-card">
+            <p class="bk-section-title" data-i18n="akim.topics.title"></p>
+            <ul class="bk-bars" id="kit-bars"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Загрузка, пусто, ошибка, тост -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.feedback"></h2>
+        <div class="kit-grid">
+          <div class="bk-card" id="kit-loading"></div>
+          <div class="bk-card" id="kit-empty"></div>
+          <div class="bk-card" id="kit-error"></div>
+        </div>
+        <div class="kit-row">
+          <button class="bk-btn" type="button" id="kit-toast-ok"><span data-i18n="uikit.toast.show"></span> · <span data-i18n="common.state.saved"></span></button>
+          <button class="bk-btn" type="button" id="kit-toast-err"><span data-i18n="uikit.toast.show"></span> · <span data-i18n="common.state.network_title"></span></button>
+        </div>
+      </section>
+
+      <!-- Панель и шторка -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.panel"></h2>
+        <div class="kit-row">
+          <button class="bk-btn" type="button" data-snap="peek"><span data-i18n="uikit.sheet.peek"></span></button>
+          <button class="bk-btn" type="button" data-snap="half"><span data-i18n="uikit.sheet.half"></span></button>
+          <button class="bk-btn" type="button" data-snap="full"><span data-i18n="uikit.sheet.full"></span></button>
+        </div>
+        <div class="kit-phone">
+          <div class="bk-sheet" id="kit-sheet" data-snap="half">
+            <button class="bk-sheet__handle" type="button"></button>
+            <div class="bk-sheet__body">
+              <div class="bk-card__row">
+                <span class="bk-heat bk-heat--lg" data-level="3">7</span>
+                <h3 class="bk-card__title" id="kit-sheet-title"></h3>
+              </div>
+              <p style="margin: 0"><span data-i18n="target.reported" data-i18n-params='{"n":7}'></span> · <span data-i18n="common.period.last_days" data-i18n-params='{"n":14}'></span></p>
+              <button class="bk-btn bk-btn--primary bk-btn--block" type="button" data-kit-icon="users"><span data-i18n="target.metoo"></span></button>
+              <p class="bk-meta" data-i18n="target.metoo_hint"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../i18n/i18n.js"></script>
+    <script src="ui-kit.js"></script>
+    <script>
+      // Витрина: динамические части (категории из categories_v2.json, иконки, легенда) перерисовываются при смене языка.
+      (function () {
+        var I = BirgeI18n;
+        var UI = BirgeUI;
+        var categories = [];
+        var ICONS = ("road snowflake walk bus bulb trees trash droplet wind shield parking dots search close back forward " +
+          "chevron-right chevron-down plus minus locate layers filter pin check alert info refresh user users thumb-up " +
+          "thumb-down calendar clock cube rotate-left rotate-right globe menu chart list edit building wifi-off send copy " +
+          "print playground ball").split(" ");
+        var COLORS = ["--c-ink", "--c-text-2", "--c-paper", "--c-brand", "--c-accent", "--c-focus", "--c-danger", "--c-warn",
+          "--c-info", "--c-ok", "--c-demo", "--heat-1", "--heat-2", "--heat-3", "--heat-4", "--fixed", "--heat-3-badge", "--fixed-badge"];
+        var STAGES = ["planned", "design", "procurement", "construction", "acceptance", "operating"];
+        var DISTRICTS = ["all", "almaty", "baikonur", "esil", "nura", "saraishyk", "saryarka"];
+
+        function $(id) { return document.getElementById(id); }
+
+        // Иконки внутри кнопок: data-kit-icon добавляет <svg> перед подписью (один раз).
+        function decorate() {
+          document.querySelectorAll("[data-kit-icon]").forEach(function (el) {
+            if (el.querySelector(":scope > svg.ic")) return;
+            el.insertAdjacentHTML("afterbegin", UI.icon(el.getAttribute("data-kit-icon")));
+          });
+          $("kit-mark").innerHTML = UI.icon("building");
+          $("kit-search-ic").outerHTML = UI.icon("search");
+        }
+
+        function renderStatic() {
+          var css = getComputedStyle(document.documentElement);
+          $("kit-colors").innerHTML = COLORS.map(function (name) {
+            var v = css.getPropertyValue(name).trim();
+            return '<div class="kit-swatch"><i style="background:' + v + '"></i><span><code>' + name + "</code><br>" + v + "</span></div>";
+          }).join("");
+          $("kit-icons").innerHTML = ICONS.map(function (n) {
+            return "<figure>" + UI.icon(n) + "<figcaption><code>" + n + "</code></figcaption></figure>";
+          }).join("");
+        }
+
+        function stagesHtml(current) {
+          return STAGES.map(function (s, i) {
+            var st = i < current ? "done" : i === current ? "current" : "todo";
+            return '<li data-state="' + st + '"' + (st === "current" ? ' aria-current="step"' : "") + "><span>" + UI.esc(I.t("stage." + s)) + "</span></li>";
+          }).join("");
+        }
+
+        function render() {
+          var t = I.t;
+          $("kit-cat-chips").innerHTML =
+            '<button class="bk-chip" type="button" aria-pressed="true">' + UI.esc(t("heat.filter.all_categories")) + "</button>" +
+            categories.map(function (c) {
+              return '<button class="bk-chip" type="button" aria-pressed="false" value="' + c.id + '">' + UI.icon(c.icon, { size: 18 }) + "<span>" + UI.esc(I.cat(c.id)) + "</span></button>";
+            }).join("");
+          $("kit-catgrid").innerHTML = categories.map(function (c, i) {
+            return '<button type="button" aria-pressed="' + (c.id === "snow_ice") + '" title="' + UI.esc(t("cat." + c.id + ".examples")) + '">' + UI.icon(c.icon) + "<span>" + UI.esc(I.cat(c.id)) + "</span></button>";
+          }).join("");
+          $("kit-legend").innerHTML =
+            '<span class="bk-legend__title">' + UI.esc(t("heat.legend.title")) + "</span>" +
+            [1, 2, 3, 4].map(function (l) {
+              return '<span class="bk-legend__item"><i class="bk-legend__swatch" data-level="' + l + '"></i>' + UI.esc(t("heat.level." + l)) + "</span>";
+            }).join("") +
+            '<span class="bk-legend__item"><i class="bk-legend__swatch" data-level="fixed"></i>' + UI.esc(t("heat.fixed")) + "</span>";
+          $("kit-district").innerHTML = DISTRICTS.map(function (d) {
+            return '<option value="' + d + '">' + UI.esc(t("district." + d)) + "</option>";
+          }).join("");
+          var stop = t("target.kind.stop", { name: t("uikit.demo.stop_name") });
+          $("kit-card-title").textContent = stop;
+          $("kit-sheet-title").textContent = stop;
+          $("kit-opt-stop").textContent = stop;
+          var street = I.getLang() === "kk" ? "Тұран" : "Туран"; // демо-название улицы
+          $("kit-opt-seg").textContent = t("target.kind.segment_short", { street: street });
+          $("kit-suggest").textContent = t("complaint.step3.suggest", { category: I.cat("snow_ice") });
+          $("kit-stages").innerHTML = stagesHtml(2);
+          $("kit-stages-compact").innerHTML = stagesHtml(3);
+          $("kit-stages-caption").textContent = t("stage.caption", { i: 4, total: 6, name: t("stage.construction") });
+          $("kit-date").textContent = I.formatDateTime("2026-10-11T13:51:00+05:00");
+          $("kit-number").textContent = I.formatNumber(1666);
+          $("kit-hot").innerHTML = [[4, 14, stop], [4, 11, t("target.kind.segment_short", { street: street })], [3, 7, t("target.kind.yard", { address: "Сауран, 3" })]].map(function (r) {
+            return '<li><button class="bk-list__item" type="button"><span class="bk-heat" data-level="' + r[0] + '">' + r[1] + '</span><span class="bk-list__main"><span class="bk-list__title">' + UI.esc(r[2]) + '</span><span class="bk-list__sub">' + UI.esc(t("common.complaints", { n: r[1] })) + "</span></span>" + UI.icon("chevron-right") + "</button></li>";
+          }).join("");
+          var bars = [["snow_ice", 12], ["roads", 7], ["transport", 5], ["waste", 3]];
+          $("kit-bars").innerHTML = bars.map(function (b) {
+            return '<li class="bk-bar"><span class="bk-bar__label">' + UI.esc(I.cat(b[0])) + '</span><span class="bk-bar__track"><i class="bk-bar__fill" style="width:' + (b[1] / 12) * 100 + '%"></i></span><span class="bk-bar__value">' + b[1] + "</span></li>";
+          }).join("");
+          UI.state($("kit-loading"), "loading");
+          UI.state($("kit-empty"), "empty", { title: t("heat.empty.title", { n: 7 }), text: t("heat.empty.hint"), action: { label: t("common.period.days", { n: 30 }) } });
+          UI.state($("kit-error"), "error", { action: { onClick: function () { UI.state($("kit-error"), "loading"); } } });
+        }
+
+        decorate();
+        renderStatic();
+        UI.langSwitch($("kit-lang"));
+        UI.seg($("kit-role"));
+        UI.seg($("kit-period"));
+        $("kit-cat-chips").addEventListener("click", function (e) {
+          var b = e.target.closest(".bk-chip");
+          if (b) b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") === "true" ? "false" : "true");
+        });
+        var sheet = UI.sheet($("kit-sheet"));
+        document.querySelectorAll("[data-snap]").forEach(function (b) {
+          if (b.tagName === "BUTTON") b.addEventListener("click", function () { sheet.set(b.getAttribute("data-snap")); });
+        });
+        $("kit-pulse-btn").addEventListener("click", function () {
+          var p = $("kit-pulse");
+          p.classList.remove("bk-pulse");
+          void p.offsetWidth; // перезапуск анимации
+          p.classList.add("bk-pulse");
+        });
+        $("kit-toast-ok").addEventListener("click", function () { UI.toast(I.t("common.state.saved"), { type: "ok" }); });
+        $("kit-toast-err").addEventListener("click", function () {
+          UI.toast(I.t("complaint.send_error"), { type: "error", action: { label: I.t("common.action.retry") } });
+        });
+
+        Promise.all([
+          I.ready,
+          fetch("categories_v2.json").then(function (r) { return r.json(); }).then(function (d) { categories = d.categories; }),
+        ]).then(render, function (err) {
+          console.error(err);
+          render();
+        });
+        I.onChange(render);
+      })();
+    </script>
+  </body>
+</html>

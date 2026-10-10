@@ -4,7 +4,7 @@
 Агент / город: Claude Code (облачная сессия), Астана, Birge.
 Обновлено: 2026-10-11 (см. время коммита), Asia/Almaty.
 Статус: partial
-Рабочая ветка: claude/round-14-package (ветка, назначенная этой сессии)
+Рабочая ветка: claude/r14-R11 (по указанию владельца 11.10; UX_SPEC.md v1 и коммит 608e367 также лежат в claude/round-14-package)
 Исходный коммит: af77b78
 Назначенные пути: web/civic/ui-kit/, web/civic/i18n/, tests/civic/R11/, research/round-14-results/R11/, этот файл.
 
