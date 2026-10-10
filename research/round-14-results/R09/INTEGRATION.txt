@@ -1,0 +1,95 @@
+R09 · РАУНД 14 · INTEGRATION — как подключить жалобы v2 и что нужно от соседей
+Ветка R09: claude/modest-shannon-0ki93p. Пути R09: ui/civic_feedback/, web/civic/feedback/, tests/civic/R09/.
+Модуль v1 (раунды 11–13, модерация и квитанции, /api/civic/v1/feedback...) восстановлен из 933cd90 побайтно и
+НЕ изменён; v2 — отдельный пакет ui/civic_feedback/v2 со своими таблицами complaint_*_v2.
+
+=== R01 (интегратор) ===
+1) Бэкенд /api/civic/v2 (жалобы):
+     from ui.civic_feedback.v2.integration import make_service, ROUTES
+     complaints = make_service(<тот же civic.sqlite3, что у v1>)
+     reply = complaints.handle(method, "/api/civic/v2" + rel_path, raw_query, body_bytes, principal, context)
+   - ROUTES — список (метод, путь) для таблицы маршрутов шлюза v2 (11 маршрутов).
+   - principal = store.resolve_principal(context) (R02) или None; status/duplicate требуют principal.is_staff
+     и X-CSRF-Token (проверяется principal.check_csrf, если метод есть).
+   - context: {"headers": заголовки запроса, "host_allowed": bool, "is_same_origin": bool|None} — как у v1.
+     Заголовок X-Birge-Device должен доходить до сервиса (идентификатор устройства для «Я тоже» и «Мои обращения»).
+   - Ответ — тот же конверт {"status","headers","body":{"ok","data"|"error"}}; handle() -> None для чужих путей.
+   - Миграция при развёртывании: python -m ui.civic_feedback.v2 migrate --v1 <civic.sqlite3> (demo=true по умолчанию).
+2) Фронтенд (ASSETS/CIVIC_ASSETS + index.html), порядок важен:
+     /civic/feedback/categories_v2.js      (сгенерирован из categories_v2.json)
+     /civic/feedback/complaint-strings.js  (запасные тексты, пока ключей нет у R11)
+     /civic/feedback/complaint.js
+     /civic/feedback/complaint.css
+     /civic/feedback/kit-fallback.css      — ТОЛЬКО пока не подключён web/civic/ui-kit/components.css (R11)
+   Монтирование (одна главная кнопка жителя на экран):
+     const complaintUi = BirgeComplaint.mount({ root: <контейнер приложения>,
+                                                map: BirgeComplaint.maplibreAdapter(<экземпляр maplibregl.Map>),
+                                                fab: <true в режиме «Житель», false у акимата> });
+     complaintUi.open(); complaintUi.openMine();   // «Мои обращения» — в меню ≡ на телефоне (UX_SPEC §1)
+     Язык: BirgeComplaint.setLang("kk"|"ru") или событие window "birge:lang" (если язык меняет i18n R11 —
+     пусть он тоже шлёт "birge:lang"; R09 перечитает тексты).
+   Адаптер карты не двигает карту сам; flyTo только по «Моё местоположение» (со смещением от панели).
+3) Устаревшие тесты: в базе пакета tests/civic/R06/ лежат версии раунда 12 для модуля жалоб v1; с кодом 933cd90
+   падают 3 из них (test_r06_frontend_http::test_component_does_not_touch_body_or_storage..., test_r06_moderation::
+   test_approve_with_consent_publishes_allowlisted_card, test_r06_submit::test_same_client_request_id_replays_receipt).
+   Версии из 933cd90 (tests/civic/R06 той ветки) на этом коде: 210 PASS, 1 SKIP (проверено в облаке).
+   Предложение: git checkout 933cd90 -- <файлы тестов жалоб v1 в tests/civic/R06> (это путь R06 раунда 14 —
+   согласовать с R06), либо перенести их в tests/civic/R09/v1/ при сборке.
+
+=== R07 (тепловая карта) — события для пульса и данные для веса ===
+- В браузере: window "birge:complaint" (CustomEvent) сразу после успешной отправки или «Я тоже»:
+    detail = {type: "created"|"metoo", complaint_id, target: {kind, id, label_ru?, label_kk?}, category,
+              reporters (автор + «Я тоже»), status, demo}
+  -> показать .bk-pulse на detail.target.id и плавно пересчитать цвет (~0.8 с).
+- На сервере: GET /api/civic/v2/complaints/events?after=<seq> -> {events:[{seq, type, at, complaint_id, target,
+  category, status, reporters, demo}], last}; type: created | metoo | status | duplicate. Без текстов.
+  В Python: ComplaintStore.subscribe(callback) (вызывается после COMMIT) и events_since(after).
+- Для веса (CONTRACT §6): ComplaintStore.list(bbox, since, category) — записи без дублей по умолчанию;
+  вес = 0.5^(возраст жалобы/14) + Σ 0.5^(возраст каждого «Я тоже»/14); даты «Я тоже» —
+  ComplaintStore.metoo_times([complaint_id, ...]) -> {id: [ISO, ...]}.
+  status_history: момент fixed -> 7 дней зелёный «исправлено». Дубли (duplicate_of != null) НЕ считать:
+  их люди уже перенесены в «Я тоже» исходной записи.
+- Цель «примерное место»: target {kind: "area", id: "cell-<col>-<row>", approximate: true}; контур ячейки —
+  GET /api/civic/v2/complaints/place?lon&lat или ui.civic_feedback.v2.record.cell_polygon(id) (сетка 150 м от
+  угла ASTANA_BBOX 70.9, 50.8). Рисовать мягкой областью с подписью «примерное место».
+
+=== R08 («Картина дня») ===
+- Просрочки: ComplaintStore.overdue() — статус new и прошёл due_at. Срок ответа по категории —
+  ui/civic_feedback/v2/categories.py RESPONSE_DAYS (ДЕМО-норматив R09: снег/ЖКХ 1 день, освещение/мусор/запахи/
+  безопасность 3, транспорт 5, парковки 7, остальное 10). Отдаётся в GET /categories (response_days).
+- Темы/районы: list(since=..., category=...) — поле district заполняется, если его прислал клиент (R12 /targets
+  может вернуть district в цели — тогда передам его в запись; сейчас null).
+
+=== R12 (точность карты) — что ожидает путь жителя от GET /api/civic/v2/targets?lon&lat[&category] ===
+- {candidates: [{target: {kind, id, label_ru, label_kk}, distance_m, geometry}]}, 1–3 штуки, ближайший первым.
+  Подпись показывается как есть в кнопке («Остановка «Нура»», «Участок: ул. Туран»), поэтому — человеческим
+  языком, с заглавной буквы, без id. geometry — GeoJSON (LineString по форме улицы / Point / Polygon двора).
+- Вызывается без category (житель выбирает место до текста). Таймаут на клиенте 2.5 с; при ошибке/пустом списке —
+  «примерное место» (ячейка R09), жалоба всё равно имеет цель.
+- НАХОДКА стенда: соседние рёбра одной улицы (osm-w503812669-26 и -27) — разные цели. Если два жителя ткнули
+  в 20 м друг от друга по разные стороны узла, «Я тоже» по цели не сработает и тепло разделится. Предложение:
+  участок = несколько рёбер одной улицы между перекрёстками (или ≥ 100 м), один id на участок.
+
+=== R04 (ML-API) ===
+- POST /classify {text} -> {category, score, needs_review, model_version, top3}. Клиент: дебаунс 0.7 с, от 8 символов,
+  таймаут 2.5 с. needs_review=true -> категория не подставляется, открыта сетка 12 категорий.
+- POST /similar {text, point, days:14} -> {matches:[{complaint_id, score, target, metoo}]}. Клиент берёт первое
+  совпадение с той же целью или score ≥ 0.6, затем GET /complaints/{id} (публичная проекция без текста).
+  Источник данных для /similar: ComplaintStore.list(since=...) (поле text есть только на сервере).
+- Без R04 работает: категория вручную, «Я тоже» — по той же цели и категории (GET /complaints/summary).
+
+=== R11 (UX и казахский) ===
+- Ключи и черновые переводы: research/round-14-results/R09/I18N_KEYS.md (81 ключ: complaint.*, mine.*, status.*,
+  common.demo, common.lang.*). Сомнительные места казахского отмечены в столбце «комментарий».
+- complaint.js сначала спрашивает BirgeI18n.t(key, params) (и BirgeI18n.has(key), если есть), потом свой словарь.
+  Формы ru — объект {one, few, many}, как в UX_SPEC §7. Категории — cat.<id>, если есть у R11, иначе из JSON.
+- Классы: используются bk-btn(--primary|--ghost|--block), bk-chip[aria-pressed], bk-status[data-status],
+  bk-steps/__item[data-state]/__dot/__label, bk-wizard/__label/__dots, bk-heat[data-level], bk-tag--demo, bk-skel,
+  bk-empty(__title), bk-error(__title), bk-toast, bk-card; иконки /civic/ui-kit/icons.svg#i-<имя>:
+  plus locate pin road trees send users list back close clock refresh wifi-off + 12 иконок категорий.
+- UX-замечание к UX_SPEC §6.4: в схеме шага ④ цитата чужой жалобы («Не убран снег на остановке…»). Промпт R09
+  запрещает показывать жителям чужие тексты (личные данные) — показываю категорию, место, «сегодня/N дней назад»,
+  статус и число людей. Просьба поправить схему.
+
+=== LOCAL ===
+Нет. Всё работает офлайн: шрифт системный (или «Birge Sans» R11), карта — web/vendor/maplibre-gl.js.

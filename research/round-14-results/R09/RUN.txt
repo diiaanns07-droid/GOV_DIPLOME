@@ -1,0 +1,40 @@
+R09 · РАУНД 14 · ЖАЛОБА ЖИТЕЛЯ v2 — ЗАПУСК И ПРОВЕРКА
+Ветка: claude/modest-shannon-0ki93p (база claude/round-14-package @ c75a9ac). Python 3.11+, Node 18+, Chromium (Playwright).
+
+1. ТЕСТЫ (без сети; временные SQLite в tmp_path)
+   python -m pytest -q tests/civic/R09/test_r09v2_store.py tests/civic/R09/test_r09v2_migrate.py \
+                       tests/civic/R09/test_r09v2_api.py tests/civic/R09/test_r09v2_frontend.py
+   (вся папка tests/civic/R09 включает и старые тесты помощника раунда 12: python -m pytest -q tests/civic/R09)
+
+2. БРАУЗЕР (сам поднимает два стенда: с FIXTURE-ML и без ML)
+   node tests/civic/R09/browser_r09.cjs --screenshots <папка>
+   Проверяет: 375 px ru/kk и 1366 px; путь «кнопка → карта → участок улицы → текст → подсказка категории →
+   «уже сообщили N» → «Я тоже» → статус»; новая жалоба без объекта рядом («примерное место»); сетка 12 категорий;
+   обрыв сети при отправке (тост «Повторить», текст сохранён); «Мои обращения»; без /classify и /similar;
+   клавиатура (Tab до главной кнопки, рамка фокуса, Escape); событие birge:complaint; нет ключей и тех. слов.
+
+3. СТЕНД ДЛЯ ПОКАЗА ВЛАДЕЛЬЦУ
+   python tests/civic/R09/stand/serve_r09.py --port 8790 --seed            -> http://127.0.0.1:8790/stand/
+   python tests/civic/R09/stand/serve_r09.py --port 8790 --seed --no-ml    (форма без модели)
+   python tests/civic/R09/stand/serve_r09.py --port 8790 --no-targets      (без R12: только «примерное место»)
+   Настоящее: модуль жалоб R09 и реальные рёбра OSM-графа (engine/civic_scenarios/graphs/osm-astana-walking-20260506).
+   FIXTURE: /targets (вместо R12), /classify и /similar (вместо R04). Демо-записи помечены «Пример».
+   Демо-цель с 7 сообщившими: GET /stand/info -> hot.point (участок «проспект Туран»).
+
+4. МИГРАЦИЯ v1 -> v2 (сообщения раундов 11–13 из той же базы, что использует приложение)
+   python -m ui.civic_feedback.v2 migrate --v1 <civic.sqlite3>              # записи помечаются demo=true
+   python -m ui.civic_feedback.v2 migrate --v1 <civic.sqlite3> --real       # только если владелец подтвердил
+   python -m ui.civic_feedback.v2 stats --db <civic.sqlite3>
+   python -m ui.civic_feedback.v2 events --db <civic.sqlite3> --after 0
+   Таблицы v1 только читаются; повторный запуск ничего не дублирует; строки без места перечислены в отчёте.
+
+5. КАТЕГОРИИ ДЛЯ ИНТЕРФЕЙСА (после правки research/round-14/categories_v2.json)
+   python -m ui.civic_feedback.v2.web_assets        # пересобрать web/civic/feedback/categories_v2.js
+   python -m ui.civic_feedback.v2.web_assets --check
+
+ЧТО ТЕПЕРЬ МОЖЕТ ЖИТЕЛЬ (на стенде; в приложении — после подключения R01)
+   Нажать «Сообщить о проблеме», ткнуть в карту или «Моё местоположение», выбрать участок улицы/объект (подсветка
+   точно по форме улицы) или «Другое место» (пунктирная область «примерное место»), написать текст на русском,
+   казахском или вперемешку, принять подсказку категории или выбрать из 12, увидеть «Об этом уже сообщили N человек»
+   и нажать «Я тоже» (одно на устройство) или «У меня другое», получить номер B-0001 и шкалу
+   «Принято → В работе → Исправлено», открыть «Мои обращения». Чужие тексты житель не видит — только число людей.

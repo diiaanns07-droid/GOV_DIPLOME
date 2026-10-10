@@ -1,0 +1,132 @@
+{
+  "role": "R09",
+  "round": 14,
+  "title": "Жалоба жителя v2: место, «Я тоже», статус",
+  "status": "DONE_DAY1 (основной объём; дальше — подключение соседей и правки по ревью)",
+  "branch": "claude/modest-shannon-0ki93p",
+  "base_sha": "c75a9ac1fd15be9f2ff36a90ee011c5c598fbf43 (claude/round-14-package)",
+  "restored_from": {
+    "branch": "claude/focused-hypatia-z8h0no",
+    "sha": "933cd9011853c717a3011c4c9a4dc940cd7a570f",
+    "code_sha": "12b3170",
+    "paths": [
+      "ui/civic_feedback",
+      "web/civic/feedback"
+    ],
+    "how": "git checkout 933cd90 -- ui/civic_feedback web/civic/feedback (побайтно, v1 не менялся)"
+  },
+  "code_sha": "cca386edb668abb0c0b8bf1f55f1e197754e2da7",
+  "tested_sha": "cca386edb668abb0c0b8bf1f55f1e197754e2da7",
+  "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22.0, Playwright 1.56.1 + Chromium (headless, software WebGL), без интернета",
+  "push_status": "см. итоговое сообщение и STATUS.md (этот файл коммитится после code_sha)",
+  "changed_paths": [
+    "research/handoffs/astana/R09/round14/STATUS.md",
+    "research/round-14-results/R09/BROWSER_RESULT.txt",
+    "research/round-14-results/R09/DELIVERY.json",
+    "research/round-14-results/R09/I18N_KEYS.md",
+    "research/round-14-results/R09/INTEGRATION.txt",
+    "research/round-14-results/R09/RUN.txt",
+    "research/round-14-results/R09/screens/1366-ru-1-place.png",
+    "research/round-14-results/R09/screens/1366-ru-2-candidates.png",
+    "research/round-14-results/R09/screens/1366-ru-3-text.png",
+    "research/round-14-results/R09/screens/1366-ru-4-similar.png",
+    "research/round-14-results/R09/screens/1366-ru-5-done.png",
+    "research/round-14-results/R09/screens/1366-ru-new-grid.png",
+    "research/round-14-results/R09/screens/1366-ru-new-mine.png",
+    "research/round-14-results/R09/screens/1366-ru-new-offline.png",
+    "research/round-14-results/R09/screens/1366-ru-new-sent.png",
+    "research/round-14-results/R09/screens/375-kk-1-place.png",
+    "research/round-14-results/R09/screens/375-kk-2-candidates.png",
+    "research/round-14-results/R09/screens/375-kk-3-text.png",
+    "research/round-14-results/R09/screens/375-kk-4-similar.png",
+    "research/round-14-results/R09/screens/375-kk-5-done.png",
+    "research/round-14-results/R09/screens/375-kk-new-grid.png",
+    "research/round-14-results/R09/screens/375-kk-new-mine.png",
+    "research/round-14-results/R09/screens/375-kk-new-offline.png",
+    "research/round-14-results/R09/screens/375-kk-new-sent.png",
+    "research/round-14-results/R09/screens/375-noml-done.png",
+    "research/round-14-results/R09/screens/375-ru-1-place.png",
+    "research/round-14-results/R09/screens/375-ru-2-candidates.png",
+    "research/round-14-results/R09/screens/375-ru-3-text.png",
+    "research/round-14-results/R09/screens/375-ru-4-similar.png",
+    "research/round-14-results/R09/screens/375-ru-5-done.png",
+    "tests/civic/R09/browser_r09.cjs",
+    "tests/civic/R09/stand/index.html",
+    "tests/civic/R09/stand/serve_r09.py",
+    "tests/civic/R09/test_r09v2_api.py",
+    "tests/civic/R09/test_r09v2_frontend.py",
+    "tests/civic/R09/test_r09v2_migrate.py",
+    "tests/civic/R09/test_r09v2_store.py",
+    "ui/civic_feedback/__init__.py",
+    "ui/civic_feedback/classifier_adapter.py",
+    "ui/civic_feedback/fixtures.py",
+    "ui/civic_feedback/integration.py",
+    "ui/civic_feedback/service.py",
+    "ui/civic_feedback/text.py",
+    "ui/civic_feedback/v2/__init__.py",
+    "ui/civic_feedback/v2/__main__.py",
+    "ui/civic_feedback/v2/api.py",
+    "ui/civic_feedback/v2/categories.py",
+    "ui/civic_feedback/v2/integration.py",
+    "ui/civic_feedback/v2/migrate.py",
+    "ui/civic_feedback/v2/record.py",
+    "ui/civic_feedback/v2/store.py",
+    "ui/civic_feedback/v2/web_assets.py",
+    "web/civic/feedback/categories_v2.js",
+    "web/civic/feedback/complaint-strings.js",
+    "web/civic/feedback/complaint.css",
+    "web/civic/feedback/complaint.js",
+    "web/civic/feedback/feedback.css",
+    "web/civic/feedback/feedback.js",
+    "web/civic/feedback/kit-fallback.css"
+  ],
+  "tests": [
+    {
+      "name": "pytest tests/civic/R09/test_r09v2_*.py (store, migrate, api, frontend)",
+      "result": "PASS",
+      "detail": "72 passed"
+    },
+    {
+      "name": "pytest tests/civic/R09 (вместе со старыми тестами помощника раунда 12)",
+      "result": "PASS",
+      "detail": "194 passed"
+    },
+    {
+      "name": "node tests/civic/R09/browser_r09.cjs (Chromium; 375 ru/kk, 1366 ru; без ML; обрыв сети; клавиатура)",
+      "result": "PASS",
+      "detail": "66/66 на code_sha; до этого три прогона подряд 66/66 (BROWSER_RESULT.txt)"
+    },
+    {
+      "name": "pytest tests/civic (вся civic-сборка пакета)",
+      "result": "FAIL",
+      "detail": "802 passed, 3 failed, 4 skipped: 3 устаревших теста раунда 12 в tests/civic/R06 для модуля v1 (путь R06). Их версии из 933cd90 на этом коде: 210 passed, 1 skipped. См. INTEGRATION.txt, R01 п.3"
+    },
+    {
+      "name": "Подключение к ui/web_server.py и приложению",
+      "result": "NOT_RUN",
+      "detail": "файл R01; рецепт в INTEGRATION.txt"
+    },
+    {
+      "name": "Пара с настоящими R04 /classify,/similar и R12 /targets",
+      "result": "NOT_RUN",
+      "detail": "соседей ещё нет; на стенде FIXTURE (помечено), реальные рёбра OSM-графа"
+    },
+    {
+      "name": "Проверка казахского владельцем",
+      "result": "NOT_RUN",
+      "detail": "черновик R09 в I18N_KEYS.md, передан R11"
+    }
+  ],
+  "known_limits": [
+    "Сервисы R12 /targets и R04 /classify,/similar ещё не готовы: на стенде FIXTURE (ближайшие реальные рёбра OSM без объектов; ключевые слова; пересечение слов).",
+    "Иконки ui-kit R11 ещё нет: на кнопках пустое место под иконкой, подпись есть всегда; временные стили kit-fallback.css.",
+    "Сроки ответа по категориям — демо-норматив R09, не утверждён акиматом.",
+    "Устройство = случайный id в localStorage: очистка браузера = новое устройство (новое «Я тоже», пустые «Мои обращения»). Аккаунтов жителей нет намеренно.",
+    "«Примерное место» — ячейка 150 м фиксированной сетки: точка может быть у края ячейки (подсвечивается ячейка, а не круг вокруг точки).",
+    "Соседние рёбра одной улицы — разные цели (находка стенда, передано R12): «Я тоже» по цели может не сработать в 20 м.",
+    "Синтетическое нажатие по карте в headless-Chromium проверено; на реальном телефоне путь не проверялся.",
+    "Миграция v1 помечает записи demo=true (происхождение старых строк неизвестно); --real — только по решению владельца."
+  ],
+  "next_step": "R01: подключить /api/civic/v2 жалоб и фронтенд по INTEGRATION.txt; R11: перенести ключи I18N_KEYS.md; R12/R04: отдать /targets, /classify, /similar по контракту — R09 проверит пару на стенде без FIXTURE; R07: слушать birge:complaint и events.",
+  "pr": "не создавался (не запрошен)"
+}

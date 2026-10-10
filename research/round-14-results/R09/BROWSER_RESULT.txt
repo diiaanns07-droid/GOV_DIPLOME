@@ -4,8 +4,8 @@ PASS 375-ru: подсказка категории чипом — Похоже �
 PASS 375-ru: шаг 4 «уже сообщили N» (N ≥ 7 по демо-цели) — Об этом уже сообщили 7 человек
 PASS 375-ru: чужой текст жалобы не показан
 PASS 375-ru: «Я тоже» засчитан — стало 8 — Теперь сообщили 8 человек
-PASS 375-ru: путь за 5 нажатий + текст, 2.3 с автоматом
-PASS 375-ru: событие birge:complaint для тепловой карты — [{"type":"metoo","complaint_id":"c-5c3441b68387c97c","target":{"id":"osm-w503812669-27","kind":"segment","label_kk":"Көше бөлігі: проспект Туран","label_ru":"Участок: проспект Туран"},"category":"snow_ice","reporters":8,"status":"new","demo":true}]
+PASS 375-ru: путь за 5 нажатий + текст, 1.9 с автоматом
+PASS 375-ru: событие birge:complaint для тепловой карты — [{"type":"metoo","complaint_id":"c-55188524cd74a1f6","target":{"id":"osm-w503812669-27","kind":"segment","label_kk":"Көше бөлігі: проспект Туран","label_ru":"Участок: проспект Туран"},"category":"snow_ice","reporters":8,"status":"new","demo":true}]
 PASS 375-ru: нет горизонтальной прокрутки
 PASS 375-ru: нет ключей и технических слов
 PASS 375-ru: нет ошибок консоли и [i18n]
@@ -16,8 +16,8 @@ PASS 375-kk: подсказка категории чипом — Ұқсайды
 PASS 375-kk: шаг 4 «уже сообщили N» (N ≥ 7 по демо-цели) — Бұл туралы 8 адам хабарлаған
 PASS 375-kk: чужой текст жалобы не показан
 PASS 375-kk: «Я тоже» засчитан — стало 9 — Енді 9 адам хабарлады
-PASS 375-kk: путь за 5 нажатий + текст, 2.3 с автоматом
-PASS 375-kk: событие birge:complaint для тепловой карты — [{"type":"metoo","complaint_id":"c-5c3441b68387c97c","target":{"id":"osm-w503812669-27","kind":"segment","label_kk":"Көше бөлігі: проспект Туран","label_ru":"Участок: проспект Туран"},"category":"snow_ice","reporters":9,"status":"new","demo":true}]
+PASS 375-kk: путь за 5 нажатий + текст, 2.0 с автоматом
+PASS 375-kk: событие birge:complaint для тепловой карты — [{"type":"metoo","complaint_id":"c-55188524cd74a1f6","target":{"id":"osm-w503812669-27","kind":"segment","label_kk":"Көше бөлігі: проспект Туран","label_ru":"Участок: проспект Туран"},"category":"snow_ice","reporters":9,"status":"new","demo":true}]
 PASS 375-kk: нет горизонтальной прокрутки
 PASS 375-kk: нет ключей и технических слов
 PASS 375-kk: нет ошибок консоли и [i18n]
@@ -28,8 +28,8 @@ PASS 1366-ru: подсказка категории чипом — Похоже 
 PASS 1366-ru: шаг 4 «уже сообщили N» (N ≥ 7 по демо-цели) — Об этом уже сообщили 9 человек
 PASS 1366-ru: чужой текст жалобы не показан
 PASS 1366-ru: «Я тоже» засчитан — стало 10 — Теперь сообщили 10 человек
-PASS 1366-ru: путь за 5 нажатий + текст, 2.4 с автоматом
-PASS 1366-ru: событие birge:complaint для тепловой карты — [{"type":"metoo","complaint_id":"c-5c3441b68387c97c","target":{"id":"osm-w503812669-27","kind":"segment","label_kk":"Көше бөлігі: проспект Туран","label_ru":"Участок: проспект Туран"},"category":"snow_ice","reporters":10,"status":"new","demo":true}]
+PASS 1366-ru: путь за 5 нажатий + текст, 2.0 с автоматом
+PASS 1366-ru: событие birge:complaint для тепловой карты — [{"type":"metoo","complaint_id":"c-55188524cd74a1f6","target":{"id":"osm-w503812669-27","kind":"segment","label_kk":"Көше бөлігі: проспект Туран","label_ru":"Участок: проспект Туран"},"category":"snow_ice","reporters":10,"status":"new","demo":true}]
 PASS 1366-ru: нет горизонтальной прокрутки
 PASS 1366-ru: нет ключей и технических слов
 PASS 1366-ru: нет ошибок консоли и [i18n]
