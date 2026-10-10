@@ -4,8 +4,8 @@
  "branch": "claude/r14-R08",
  "base_sha": "2131c15 (claude/round-14-package)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "bedb753",
- "tested_sha": "bedb753",
+ "code_sha": "51fdbcd5",
+ "tested_sha": "51fdbcd5",
  "tested_with": {
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 328e793 (код 597ec4f) — временная копия, в git R08 не входит; также проверено с 35e6feb",
   "r11_ui_kit_i18n": "web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 8451468 — demo_server.py --kit-dir",
@@ -55,7 +55,8 @@
   "pytest tests/civic/R08 в сборке R01": "161 PASS + 1 SKIP за 107 с — 98 с из них старый тест классификатора v1 раунда 13 test_r08_train.py (восстановлен R01 в эту папку, не «Картина дня»)",
   "R10 ux_screens.cjs (инструмент R10 3623f65) по «Картине дня» — оболочка d9a8895 + R08 15276be и отдельная страница": "56/56 PASS (1366/375 × ru/kk: прокрутка, ключи, тех. слова, шрифт, зоны нажатия, русские строки в kk, консоль) — research/round-14-results/R08/r10_ux/",
   "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 597ec4f)": "108/108 PASS — + объекты: по умолчанию не ссылки, с objectHref — ссылка и событие; телефон: подписи тем и районов в одну строку",
-  "FINAL-кандидат R01 0a7a346 (R08 c7646a1)": "pytest tests/civic/R08 — 163 PASS + 1 SKIP (вместе со старыми тестами v1); shell_check 28/28; с файлами R08 bedb753 — 28/28 (с objectHref — 30/30)"
+  "FINAL-кандидат R01 0a7a346 (R08 c7646a1)": "pytest tests/civic/R08 — 163 PASS + 1 SKIP (вместе со старыми тестами v1); shell_check 28/28; с файлами R08 bedb753 — 28/28 (с objectHref — 30/30)",
+  "FINAL-кандидат R01 85c16e2 (R08 bedb753)": "pytest tests/civic/R08 — 162 PASS + 1 SKIP + 1 XFAIL (демо-правдоподобие в 00:38 по Астане: новых за день 0) → тест исправлен в 51fdbcd5 (фиксированный полдень), на FINAL с ним — PASS; shell_check 28/28; объекты: карточки объекта в оболочке по-прежнему нет — objectHref не включать"
  },
  "known_limits": [
   "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
@@ -68,7 +69,7 @@
   "В папке tests/civic/R08 сборки R01 лежат тесты классификатора v1 раунда 13 (test_r08_train/corpus/contract/reports/feedback_integration) — не мои, R08 их не трогает (INTEGRATION п. 8)."
  ],
  "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 328e793 (код 597ec4f: правдоподобные числа и подписи мест), R06 @ 224075b, R11 @ последний; прогнать pytest tests/civic/R08 и node tests/civic/R08/shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, B-029 и п. 13 R11 на FINAL.",
- "delivery": "3 (ночь, круги 1–9)",
+ "delivery": "3 (ночь, круги 1–10)",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -128,11 +129,14 @@
    "R11 ночь 6 п. 4: строки «Объекты с отставанием» не нажимаются": "сделано, включается опцией objectHref (INTEGRATION 4е) — в FINAL оболочка пока не показывает карточку объекта",
    "R11 ночь 5: «Жаяу жүргіншілер жолы» в 3 строки в «Тақырыптар» (телефон)": "до 480 px подпись и число строкой, полоса под ними — 1 строка (ui_check)",
    "RUN.txt: устаревшие цифры и фраза про «аварийные» демо-числа": "обновлено"
+  },
+  "night_r10": {
+   "Своя находка: test_r08_demo_plausible зависел от часа запуска (XFAIL после полуночи)": "фиксированный полдень, PASS в любое время (51fdbcd5)"
   }
  },
  "for_r01_final": {
-  "take": "claude/r14-R08 @ код bedb753 (последний коммит ветки — документы поверх)",
-  "replaces": "R08 c7646a1 в FINAL-кандидате R01 0a7a346 (там всё проходит: pytest R08 163 + 1 skip, shell_check 28/28)",
+  "take": "claude/r14-R08 @ код 51fdbcd5: изменился только тест test_r08_demo_plausible.py (модуль и страница = bedb753, уже в FINAL)",
+  "replaces": "R08 bedb753 в FINAL R01 85c16e2 (pytest R08 162 + 1 skip + 1 xfail ночью; shell_check 28/28)",
   "fixes_in_build": [
    "R01 I-02 / R15: test_r08_heat_match — ошибка сбора исчезает (проверено с R07 306074b и 597ec4f)",
    "R10 B-018: в ҚАЗ нет русских названий объектов (вместе с R06 ≥ 6b9da27)",
