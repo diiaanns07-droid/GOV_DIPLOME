@@ -83,8 +83,9 @@ def snap_item(item: dict, graph, yards) -> dict | None:
             return {"status": "snapped", "original_coordinates": g["coordinates"],
                     "geometry": {"type": "Polygon", "coordinates": y.polygon}, "geometry_source": "osm-yard",
                     "yard_id": y.id, "display": "yard"}
-        return {"status": "not_snapped", "reason": "нет данных о дворах OSM (LOCAL-1) — показываем как примерное место",
-                "original_coordinates": g["coordinates"], "display": "approximate_area"}
+        reason = ("нет данных о дворах OSM (LOCAL-1) — показываем как примерное место" if not yards.items
+                  else "центр условного участка не попадает ни в один двор OSM — показываем как примерное место")
+        return {"status": "not_snapped", "reason": reason, "original_coordinates": g["coordinates"], "display": "approximate_area"}
     return None
 
 

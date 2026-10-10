@@ -7,8 +7,8 @@
  "inputs": {
   "demo": "data/civic/astana/demo_synthetic.json",
   "snapped": "data/civic/astana/geo/demo_snapped.json",
-  "objects": 20,
-  "yards": 0
+  "objects": 2283,
+  "yards": 538
  },
  "rules": {
   "line_tolerance_m": 5.0,
@@ -33,7 +33,7 @@
    "FAIL": 0
   },
   "stop_within_60m_of_street": {
-   "PASS": 20,
+   "PASS": 940,
    "FAIL": 0
   },
   "scenario_closure_on_graph": {
@@ -41,7 +41,7 @@
    "FAIL": 0
   }
  },
- "total": 34,
+ "total": 954,
  "failed": 0,
  "result": "PASS",
  "rows": [
@@ -131,6 +131,881 @@
   },
   {
    "check": "stop_within_60m_of_street",
+   "id": "osm-node-10272524280",
+   "status": "PASS",
+   "value": 12.62,
+   "detail": "до улицы 12.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10272539370",
+   "status": "PASS",
+   "value": 15.25,
+   "detail": "до улицы 15.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10272581347",
+   "status": "PASS",
+   "value": 14.47,
+   "detail": "до улицы 14.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10538431142",
+   "status": "PASS",
+   "value": 3.35,
+   "detail": "до улицы 3.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10570316636",
+   "status": "PASS",
+   "value": 5.56,
+   "detail": "до улицы 5.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10570316637",
+   "status": "PASS",
+   "value": 9.56,
+   "detail": "до улицы 9.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10578164957",
+   "status": "PASS",
+   "value": 3.99,
+   "detail": "до улицы 4.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10578167650",
+   "status": "PASS",
+   "value": 11.44,
+   "detail": "до улицы 11.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208671",
+   "status": "PASS",
+   "value": 9.69,
+   "detail": "до улицы 9.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208674",
+   "status": "PASS",
+   "value": 10.82,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208675",
+   "status": "PASS",
+   "value": 8.95,
+   "detail": "до улицы 9.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208677",
+   "status": "PASS",
+   "value": 9.51,
+   "detail": "до улицы 9.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208678",
+   "status": "PASS",
+   "value": 8.32,
+   "detail": "до улицы 8.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208679",
+   "status": "PASS",
+   "value": 9.1,
+   "detail": "до улицы 9.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208680",
+   "status": "PASS",
+   "value": 12.39,
+   "detail": "до улицы 12.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208683",
+   "status": "PASS",
+   "value": 13.75,
+   "detail": "до улицы 13.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208684",
+   "status": "PASS",
+   "value": 15.98,
+   "detail": "до улицы 16.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208685",
+   "status": "PASS",
+   "value": 15.03,
+   "detail": "до улицы 15.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208686",
+   "status": "PASS",
+   "value": 12.31,
+   "detail": "до улицы 12.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208687",
+   "status": "PASS",
+   "value": 14.39,
+   "detail": "до улицы 14.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208688",
+   "status": "PASS",
+   "value": 17.71,
+   "detail": "до улицы 17.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208689",
+   "status": "PASS",
+   "value": 13.18,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208690",
+   "status": "PASS",
+   "value": 14.97,
+   "detail": "до улицы 15.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208691",
+   "status": "PASS",
+   "value": 12.69,
+   "detail": "до улицы 12.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208692",
+   "status": "PASS",
+   "value": 3.16,
+   "detail": "до улицы 3.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208693",
+   "status": "PASS",
+   "value": 11.5,
+   "detail": "до улицы 11.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208694",
+   "status": "PASS",
+   "value": 19.14,
+   "detail": "до улицы 19.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208695",
+   "status": "PASS",
+   "value": 9.25,
+   "detail": "до улицы 9.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208696",
+   "status": "PASS",
+   "value": 9.32,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208697",
+   "status": "PASS",
+   "value": 9.07,
+   "detail": "до улицы 9.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208698",
+   "status": "PASS",
+   "value": 7.23,
+   "detail": "до улицы 7.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208699",
+   "status": "PASS",
+   "value": 8.68,
+   "detail": "до улицы 8.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208700",
+   "status": "PASS",
+   "value": 9.01,
+   "detail": "до улицы 9.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666208704",
+   "status": "PASS",
+   "value": 8.62,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666252405",
+   "status": "PASS",
+   "value": 12.98,
+   "detail": "до улицы 13.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666252411",
+   "status": "PASS",
+   "value": 8.55,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666252420",
+   "status": "PASS",
+   "value": 6.66,
+   "detail": "до улицы 6.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666252422",
+   "status": "PASS",
+   "value": 8.53,
+   "detail": "до улицы 8.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666252424",
+   "status": "PASS",
+   "value": 11.03,
+   "detail": "до улицы 11.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666252425",
+   "status": "PASS",
+   "value": 5.18,
+   "detail": "до улицы 5.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666252426",
+   "status": "PASS",
+   "value": 5.61,
+   "detail": "до улицы 5.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10666252427",
+   "status": "PASS",
+   "value": 8.43,
+   "detail": "до улицы 8.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10677613224",
+   "status": "PASS",
+   "value": 12.63,
+   "detail": "до улицы 12.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10677632238",
+   "status": "PASS",
+   "value": 10.86,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10677632239",
+   "status": "PASS",
+   "value": 12.76,
+   "detail": "до улицы 12.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10677632248",
+   "status": "PASS",
+   "value": 11.36,
+   "detail": "до улицы 11.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10677632253",
+   "status": "PASS",
+   "value": 5.56,
+   "detail": "до улицы 5.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10677632254",
+   "status": "PASS",
+   "value": 9.5,
+   "detail": "до улицы 9.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10679861647",
+   "status": "PASS",
+   "value": 17.03,
+   "detail": "до улицы 17.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10679861696",
+   "status": "PASS",
+   "value": 21.14,
+   "detail": "до улицы 21.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10679885321",
+   "status": "PASS",
+   "value": 20.74,
+   "detail": "до улицы 20.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10907534335",
+   "status": "PASS",
+   "value": 5.5,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10907534336",
+   "status": "PASS",
+   "value": 4.03,
+   "detail": "до улицы 4.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10956813181",
+   "status": "PASS",
+   "value": 10.02,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524215",
+   "status": "PASS",
+   "value": 6.11,
+   "detail": "до улицы 6.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524216",
+   "status": "PASS",
+   "value": 4.96,
+   "detail": "до улицы 5.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524217",
+   "status": "PASS",
+   "value": 6.93,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524290",
+   "status": "PASS",
+   "value": 17.5,
+   "detail": "до улицы 17.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524350",
+   "status": "PASS",
+   "value": 5.16,
+   "detail": "до улицы 5.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524630",
+   "status": "PASS",
+   "value": 7.26,
+   "detail": "до улицы 7.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524631",
+   "status": "PASS",
+   "value": 8.18,
+   "detail": "до улицы 8.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524686",
+   "status": "PASS",
+   "value": 9.1,
+   "detail": "до улицы 9.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524687",
+   "status": "PASS",
+   "value": 13.23,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524696",
+   "status": "PASS",
+   "value": 10.98,
+   "detail": "до улицы 11.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10957524697",
+   "status": "PASS",
+   "value": 11.18,
+   "detail": "до улицы 11.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959336626",
+   "status": "PASS",
+   "value": 14.86,
+   "detail": "до улицы 14.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347239",
+   "status": "PASS",
+   "value": 5.08,
+   "detail": "до улицы 5.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347244",
+   "status": "PASS",
+   "value": 18.17,
+   "detail": "до улицы 18.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347398",
+   "status": "PASS",
+   "value": 4.11,
+   "detail": "до улицы 4.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347441",
+   "status": "PASS",
+   "value": 6.68,
+   "detail": "до улицы 6.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347694",
+   "status": "PASS",
+   "value": 21.45,
+   "detail": "до улицы 21.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347695",
+   "status": "PASS",
+   "value": 23.75,
+   "detail": "до улицы 23.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347810",
+   "status": "PASS",
+   "value": 2.35,
+   "detail": "до улицы 2.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347811",
+   "status": "PASS",
+   "value": 5.28,
+   "detail": "до улицы 5.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347922",
+   "status": "PASS",
+   "value": 24.73,
+   "detail": "до улицы 24.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10959347923",
+   "status": "PASS",
+   "value": 3.37,
+   "detail": "до улицы 3.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964845846",
+   "status": "PASS",
+   "value": 6.51,
+   "detail": "до улицы 6.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964845847",
+   "status": "PASS",
+   "value": 8.76,
+   "detail": "до улицы 8.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964846012",
+   "status": "PASS",
+   "value": 7.81,
+   "detail": "до улицы 7.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964846206",
+   "status": "PASS",
+   "value": 13.02,
+   "detail": "до улицы 13.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964846207",
+   "status": "PASS",
+   "value": 17.03,
+   "detail": "до улицы 17.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964846570",
+   "status": "PASS",
+   "value": 6.15,
+   "detail": "до улицы 6.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964846726",
+   "status": "PASS",
+   "value": 6.27,
+   "detail": "до улицы 6.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964846727",
+   "status": "PASS",
+   "value": 7.59,
+   "detail": "до улицы 7.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964846816",
+   "status": "PASS",
+   "value": 10.37,
+   "detail": "до улицы 10.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964846817",
+   "status": "PASS",
+   "value": 29.02,
+   "detail": "до улицы 29.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964846961",
+   "status": "PASS",
+   "value": 5.06,
+   "detail": "до улицы 5.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10964847084",
+   "status": "PASS",
+   "value": 8.92,
+   "detail": "до улицы 8.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10970411902",
+   "status": "PASS",
+   "value": 3.09,
+   "detail": "до улицы 3.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10972819086",
+   "status": "PASS",
+   "value": 13.32,
+   "detail": "до улицы 13.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10972819087",
+   "status": "PASS",
+   "value": 3.94,
+   "detail": "до улицы 3.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10972819179",
+   "status": "PASS",
+   "value": 8.55,
+   "detail": "до улицы 8.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-10972819180",
+   "status": "PASS",
+   "value": 10.04,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11054393689",
+   "status": "PASS",
+   "value": 18.71,
+   "detail": "до улицы 18.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11054443553",
+   "status": "PASS",
+   "value": 13.26,
+   "detail": "до улицы 13.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11054443841",
+   "status": "PASS",
+   "value": 14.16,
+   "detail": "до улицы 14.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11109429963",
+   "status": "PASS",
+   "value": 11.3,
+   "detail": "до улицы 11.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11109477265",
+   "status": "PASS",
+   "value": 1.65,
+   "detail": "до улицы 1.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11109477266",
+   "status": "PASS",
+   "value": 9.32,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11109477267",
+   "status": "PASS",
+   "value": 4.42,
+   "detail": "до улицы 4.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11109477268",
+   "status": "PASS",
+   "value": 1.2,
+   "detail": "до улицы 1.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11664928622",
+   "status": "PASS",
+   "value": 10.06,
+   "detail": "до улицы 10.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11664928623",
+   "status": "PASS",
+   "value": 9.69,
+   "detail": "до улицы 9.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11783594737",
+   "status": "PASS",
+   "value": 8.88,
+   "detail": "до улицы 8.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11901731469",
+   "status": "PASS",
+   "value": 6.83,
+   "detail": "до улицы 6.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11951889072",
+   "status": "PASS",
+   "value": 5.18,
+   "detail": "до улицы 5.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-11951953469",
+   "status": "PASS",
+   "value": 10.85,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12039049169",
+   "status": "PASS",
+   "value": 5.0,
+   "detail": "до улицы 5.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12039049269",
+   "status": "PASS",
+   "value": 17.05,
+   "detail": "до улицы 17.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12039049369",
+   "status": "PASS",
+   "value": 7.04,
+   "detail": "до улицы 7.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12076853769",
+   "status": "PASS",
+   "value": 13.72,
+   "detail": "до улицы 13.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12076853869",
+   "status": "PASS",
+   "value": 17.93,
+   "detail": "до улицы 17.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12090018769",
+   "status": "PASS",
+   "value": 9.96,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12090018770",
+   "status": "PASS",
+   "value": 3.68,
+   "detail": "до улицы 3.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12090018869",
+   "status": "PASS",
+   "value": 7.9,
+   "detail": "до улицы 7.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12090018969",
+   "status": "PASS",
+   "value": 9.86,
+   "detail": "до улицы 9.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12090118269",
+   "status": "PASS",
+   "value": 5.46,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12090120469",
+   "status": "PASS",
+   "value": 8.75,
+   "detail": "до улицы 8.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12090125369",
+   "status": "PASS",
+   "value": 6.46,
+   "detail": "до улицы 6.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12090195069",
+   "status": "PASS",
+   "value": 9.58,
+   "detail": "до улицы 9.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12090249369",
+   "status": "PASS",
+   "value": 9.04,
+   "detail": "до улицы 9.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12091804669",
+   "status": "PASS",
+   "value": 4.56,
+   "detail": "до улицы 4.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12091811069",
+   "status": "PASS",
+   "value": 12.48,
+   "detail": "до улицы 12.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12104378508",
+   "status": "PASS",
+   "value": 5.86,
+   "detail": "до улицы 5.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12539815447",
+   "status": "PASS",
+   "value": 5.95,
+   "detail": "до улицы 5.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
    "id": "osm-node-12702383598",
    "status": "PASS",
    "value": 13.16,
@@ -159,17 +1034,31 @@
   },
   {
    "check": "stop_within_60m_of_street",
+   "id": "osm-node-12702462558",
+   "status": "PASS",
+   "value": 10.2,
+   "detail": "до улицы 10.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12704573500",
+   "status": "PASS",
+   "value": 9.79,
+   "detail": "до улицы 9.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
    "id": "osm-node-12709822069",
    "status": "PASS",
-   "value": 11.67,
-   "detail": "до улицы 11.7 м (допуск 60 м)"
+   "value": 9.94,
+   "detail": "до улицы 9.9 м (допуск 60 м)"
   },
   {
    "check": "stop_within_60m_of_street",
    "id": "osm-node-12709822085",
    "status": "PASS",
-   "value": 11.76,
-   "detail": "до улицы 11.8 м (допуск 60 м)"
+   "value": 11.47,
+   "detail": "до улицы 11.5 м (допуск 60 м)"
   },
   {
    "check": "stop_within_60m_of_street",
@@ -194,17 +1083,2621 @@
   },
   {
    "check": "stop_within_60m_of_street",
+   "id": "osm-node-12725611629",
+   "status": "PASS",
+   "value": 9.51,
+   "detail": "до улицы 9.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12725611631",
+   "status": "PASS",
+   "value": 6.24,
+   "detail": "до улицы 6.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12745109433",
+   "status": "PASS",
+   "value": 17.29,
+   "detail": "до улицы 17.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12745109434",
+   "status": "PASS",
+   "value": 11.97,
+   "detail": "до улицы 12.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275726676",
+   "status": "PASS",
+   "value": 10.98,
+   "detail": "до улицы 11.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275733182",
+   "status": "PASS",
+   "value": 8.95,
+   "detail": "до улицы 8.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275733188",
+   "status": "PASS",
+   "value": 6.45,
+   "detail": "до улицы 6.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275733189",
+   "status": "PASS",
+   "value": 6.73,
+   "detail": "до улицы 6.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275773202",
+   "status": "PASS",
+   "value": 16.84,
+   "detail": "до улицы 16.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275773207",
+   "status": "PASS",
+   "value": 34.69,
+   "detail": "до улицы 34.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275773208",
+   "status": "PASS",
+   "value": 7.84,
+   "detail": "до улицы 7.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275773224",
+   "status": "PASS",
+   "value": 11.42,
+   "detail": "до улицы 11.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275773237",
+   "status": "PASS",
+   "value": 9.19,
+   "detail": "до улицы 9.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275878989",
+   "status": "PASS",
+   "value": 3.18,
+   "detail": "до улицы 3.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1275879031",
+   "status": "PASS",
+   "value": 10.4,
+   "detail": "до улицы 10.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12788622174",
+   "status": "PASS",
+   "value": 4.76,
+   "detail": "до улицы 4.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12788622186",
+   "status": "PASS",
+   "value": 4.56,
+   "detail": "до улицы 4.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12788622465",
+   "status": "PASS",
+   "value": 11.65,
+   "detail": "до улицы 11.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12789122374",
+   "status": "PASS",
+   "value": 10.32,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12893538094",
+   "status": "PASS",
+   "value": 5.93,
+   "detail": "до улицы 5.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12893557707",
+   "status": "PASS",
+   "value": 3.9,
+   "detail": "до улицы 3.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12908875398",
+   "status": "PASS",
+   "value": 4.77,
+   "detail": "до улицы 4.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12908945639",
+   "status": "PASS",
+   "value": 9.65,
+   "detail": "до улицы 9.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12908945675",
+   "status": "PASS",
+   "value": 10.79,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12908945676",
+   "status": "PASS",
+   "value": 10.94,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12908945677",
+   "status": "PASS",
+   "value": 13.68,
+   "detail": "до улицы 13.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12908945772",
+   "status": "PASS",
+   "value": 5.9,
+   "detail": "до улицы 5.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12908945773",
+   "status": "PASS",
+   "value": 13.0,
+   "detail": "до улицы 13.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12917050171",
+   "status": "PASS",
+   "value": 9.72,
+   "detail": "до улицы 9.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12917050451",
+   "status": "PASS",
+   "value": 11.1,
+   "detail": "до улицы 11.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12917113724",
+   "status": "PASS",
+   "value": 3.8,
+   "detail": "до улицы 3.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12947062314",
+   "status": "PASS",
+   "value": 13.1,
+   "detail": "до улицы 13.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12947071409",
+   "status": "PASS",
+   "value": 4.16,
+   "detail": "до улицы 4.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12947071804",
+   "status": "PASS",
+   "value": 2.2,
+   "detail": "до улицы 2.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12947074609",
+   "status": "PASS",
+   "value": 13.43,
+   "detail": "до улицы 13.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12947077365",
+   "status": "PASS",
+   "value": 11.68,
+   "detail": "до улицы 11.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12948776699",
+   "status": "PASS",
+   "value": 10.81,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12953082523",
+   "status": "PASS",
+   "value": 6.35,
+   "detail": "до улицы 6.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12953084508",
+   "status": "PASS",
+   "value": 5.68,
+   "detail": "до улицы 5.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12953086715",
+   "status": "PASS",
+   "value": 5.74,
+   "detail": "до улицы 5.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12953093825",
+   "status": "PASS",
+   "value": 8.24,
+   "detail": "до улицы 8.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12973401936",
+   "status": "PASS",
+   "value": 6.18,
+   "detail": "до улицы 6.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12973411720",
+   "status": "PASS",
+   "value": 20.64,
+   "detail": "до улицы 20.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12973415624",
+   "status": "PASS",
+   "value": 7.24,
+   "detail": "до улицы 7.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12993933348",
+   "status": "PASS",
+   "value": 3.54,
+   "detail": "до улицы 3.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12993945823",
+   "status": "PASS",
+   "value": 13.79,
+   "detail": "до улицы 13.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12993952738",
+   "status": "PASS",
+   "value": 16.71,
+   "detail": "до улицы 16.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13048842254",
+   "status": "PASS",
+   "value": 16.91,
+   "detail": "до улицы 16.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13057624564",
+   "status": "PASS",
+   "value": 5.89,
+   "detail": "до улицы 5.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13148687736",
+   "status": "PASS",
+   "value": 3.63,
+   "detail": "до улицы 3.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13251087579",
+   "status": "PASS",
+   "value": 13.28,
+   "detail": "до улицы 13.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1330059599",
+   "status": "PASS",
+   "value": 10.05,
+   "detail": "до улицы 10.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1330059601",
+   "status": "PASS",
+   "value": 13.26,
+   "detail": "до улицы 13.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13335403754",
+   "status": "PASS",
+   "value": 10.79,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13339039375",
+   "status": "PASS",
+   "value": 10.81,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13339110433",
+   "status": "PASS",
+   "value": 15.95,
+   "detail": "до улицы 16.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13339110444",
+   "status": "PASS",
+   "value": 13.19,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13390040562",
+   "status": "PASS",
+   "value": 8.13,
+   "detail": "до улицы 8.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13390076070",
+   "status": "PASS",
+   "value": 3.79,
+   "detail": "до улицы 3.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13394458918",
+   "status": "PASS",
+   "value": 6.19,
+   "detail": "до улицы 6.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13394597038",
+   "status": "PASS",
+   "value": 12.14,
+   "detail": "до улицы 12.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13394597341",
+   "status": "PASS",
+   "value": 7.99,
+   "detail": "до улицы 8.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13397082925",
+   "status": "PASS",
+   "value": 4.44,
+   "detail": "до улицы 4.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13397083031",
+   "status": "PASS",
+   "value": 6.13,
+   "detail": "до улицы 6.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13397083141",
+   "status": "PASS",
+   "value": 12.15,
+   "detail": "до улицы 12.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13397843688",
+   "status": "PASS",
+   "value": 16.91,
+   "detail": "до улицы 16.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13397896431",
+   "status": "PASS",
+   "value": 9.29,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13397896432",
+   "status": "PASS",
+   "value": 5.39,
+   "detail": "до улицы 5.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13399380694",
+   "status": "PASS",
+   "value": 4.97,
+   "detail": "до улицы 5.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13399415425",
+   "status": "PASS",
+   "value": 4.27,
+   "detail": "до улицы 4.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13399415498",
+   "status": "PASS",
+   "value": 5.5,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13399415527",
+   "status": "PASS",
+   "value": 4.15,
+   "detail": "до улицы 4.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13399415532",
+   "status": "PASS",
+   "value": 7.4,
+   "detail": "до улицы 7.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13399415537",
+   "status": "PASS",
+   "value": 11.61,
+   "detail": "до улицы 11.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13399554753",
+   "status": "PASS",
+   "value": 3.22,
+   "detail": "до улицы 3.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13399561984",
+   "status": "PASS",
+   "value": 3.98,
+   "detail": "до улицы 4.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13403759101",
+   "status": "PASS",
+   "value": 6.9,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13403759106",
+   "status": "PASS",
+   "value": 10.13,
+   "detail": "до улицы 10.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13403759276",
+   "status": "PASS",
+   "value": 10.79,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13408002512",
+   "status": "PASS",
+   "value": 3.07,
+   "detail": "до улицы 3.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13408002516",
+   "status": "PASS",
+   "value": 4.93,
+   "detail": "до улицы 4.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13411166695",
+   "status": "PASS",
+   "value": 12.09,
+   "detail": "до улицы 12.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13412540647",
+   "status": "PASS",
+   "value": 15.42,
+   "detail": "до улицы 15.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13412540688",
+   "status": "PASS",
+   "value": 16.03,
+   "detail": "до улицы 16.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13412540722",
+   "status": "PASS",
+   "value": 14.24,
+   "detail": "до улицы 14.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13412540723",
+   "status": "PASS",
+   "value": 8.72,
+   "detail": "до улицы 8.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13412540779",
+   "status": "PASS",
+   "value": 11.5,
+   "detail": "до улицы 11.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13412540807",
+   "status": "PASS",
+   "value": 14.55,
+   "detail": "до улицы 14.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13458590788",
+   "status": "PASS",
+   "value": 4.56,
+   "detail": "до улицы 4.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13458590789",
+   "status": "PASS",
+   "value": 6.89,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13461731472",
+   "status": "PASS",
+   "value": 9.1,
+   "detail": "до улицы 9.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13509952415",
+   "status": "PASS",
+   "value": 11.14,
+   "detail": "до улицы 11.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13509952416",
+   "status": "PASS",
+   "value": 13.41,
+   "detail": "до улицы 13.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13509952417",
+   "status": "PASS",
+   "value": 12.23,
+   "detail": "до улицы 12.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13509952418",
+   "status": "PASS",
+   "value": 14.01,
+   "detail": "до улицы 14.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13509952419",
+   "status": "PASS",
+   "value": 10.25,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13509952420",
+   "status": "PASS",
+   "value": 5.93,
+   "detail": "до улицы 5.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13623691547",
+   "status": "PASS",
+   "value": 11.06,
+   "detail": "до улицы 11.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13623691548",
+   "status": "PASS",
+   "value": 16.11,
+   "detail": "до улицы 16.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646970205",
+   "status": "PASS",
+   "value": 7.59,
+   "detail": "до улицы 7.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646970301",
+   "status": "PASS",
+   "value": 3.69,
+   "detail": "до улицы 3.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646970340",
+   "status": "PASS",
+   "value": 5.8,
+   "detail": "до улицы 5.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646970393",
+   "status": "PASS",
+   "value": 6.04,
+   "detail": "до улицы 6.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646970450",
+   "status": "PASS",
+   "value": 12.14,
+   "detail": "до улицы 12.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646970493",
+   "status": "PASS",
+   "value": 10.75,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646970723",
+   "status": "PASS",
+   "value": 8.86,
+   "detail": "до улицы 8.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646970836",
+   "status": "PASS",
+   "value": 11.58,
+   "detail": "до улицы 11.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646970849",
+   "status": "PASS",
+   "value": 14.81,
+   "detail": "до улицы 14.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13646971141",
+   "status": "PASS",
+   "value": 8.95,
+   "detail": "до улицы 8.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13647506531",
+   "status": "PASS",
+   "value": 13.13,
+   "detail": "до улицы 13.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13666225902",
+   "status": "PASS",
+   "value": 9.42,
+   "detail": "до улицы 9.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13760741038",
+   "status": "PASS",
+   "value": 10.26,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13760741039",
+   "status": "PASS",
+   "value": 17.53,
+   "detail": "до улицы 17.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13760746104",
+   "status": "PASS",
+   "value": 6.86,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13808570581",
+   "status": "PASS",
+   "value": 9.59,
+   "detail": "до улицы 9.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13808607042",
+   "status": "PASS",
+   "value": 4.86,
+   "detail": "до улицы 4.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13808607161",
+   "status": "PASS",
+   "value": 6.41,
+   "detail": "до улицы 6.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13808607207",
+   "status": "PASS",
+   "value": 7.19,
+   "detail": "до улицы 7.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13825632902",
+   "status": "PASS",
+   "value": 10.94,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13825636801",
+   "status": "PASS",
+   "value": 3.42,
+   "detail": "до улицы 3.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13825636901",
+   "status": "PASS",
+   "value": 0.81,
+   "detail": "до улицы 0.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13896300711",
+   "status": "PASS",
+   "value": 2.53,
+   "detail": "до улицы 2.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13896300718",
+   "status": "PASS",
+   "value": 9.21,
+   "detail": "до улицы 9.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13896300724",
+   "status": "PASS",
+   "value": 17.01,
+   "detail": "до улицы 17.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13896300743",
+   "status": "PASS",
+   "value": 10.24,
+   "detail": "до улицы 10.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13896300747",
+   "status": "PASS",
+   "value": 6.39,
+   "detail": "до улицы 6.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13896300748",
+   "status": "PASS",
+   "value": 1.83,
+   "detail": "до улицы 1.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13896300749",
+   "status": "PASS",
+   "value": 8.19,
+   "detail": "до улицы 8.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13904226705",
+   "status": "PASS",
+   "value": 3.71,
+   "detail": "до улицы 3.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13904226732",
+   "status": "PASS",
+   "value": 7.2,
+   "detail": "до улицы 7.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13904226745",
+   "status": "PASS",
+   "value": 6.41,
+   "detail": "до улицы 6.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13904226746",
+   "status": "PASS",
+   "value": 7.68,
+   "detail": "до улицы 7.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13904226747",
+   "status": "PASS",
+   "value": 11.65,
+   "detail": "до улицы 11.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13909010006",
+   "status": "PASS",
+   "value": 13.39,
+   "detail": "до улицы 13.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13909010007",
+   "status": "PASS",
+   "value": 7.63,
+   "detail": "до улицы 7.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13915790157",
+   "status": "PASS",
+   "value": 16.15,
+   "detail": "до улицы 16.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13915790320",
+   "status": "PASS",
+   "value": 10.47,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13915790396",
+   "status": "PASS",
+   "value": 16.73,
+   "detail": "до улицы 16.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13915790397",
+   "status": "PASS",
+   "value": 18.81,
+   "detail": "до улицы 18.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13915790398",
+   "status": "PASS",
+   "value": 4.4,
+   "detail": "до улицы 4.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13915791288",
+   "status": "PASS",
+   "value": 8.48,
+   "detail": "до улицы 8.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13923198415",
+   "status": "PASS",
+   "value": 6.48,
+   "detail": "до улицы 6.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13923198416",
+   "status": "PASS",
+   "value": 12.32,
+   "detail": "до улицы 12.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13923198971",
+   "status": "PASS",
+   "value": 9.77,
+   "detail": "до улицы 9.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13923199013",
+   "status": "PASS",
+   "value": 14.42,
+   "detail": "до улицы 14.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13926684562",
+   "status": "PASS",
+   "value": 8.67,
+   "detail": "до улицы 8.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13926684563",
+   "status": "PASS",
+   "value": 8.25,
+   "detail": "до улицы 8.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13928144588",
+   "status": "PASS",
+   "value": 10.02,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13928189619",
+   "status": "PASS",
+   "value": 8.97,
+   "detail": "до улицы 9.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13928189745",
+   "status": "PASS",
+   "value": 10.76,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13928189746",
+   "status": "PASS",
+   "value": 6.92,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13931030303",
+   "status": "PASS",
+   "value": 10.68,
+   "detail": "до улицы 10.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13931030318",
+   "status": "PASS",
+   "value": 13.07,
+   "detail": "до улицы 13.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13931030340",
+   "status": "PASS",
+   "value": 14.45,
+   "detail": "до улицы 14.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13931030550",
+   "status": "PASS",
+   "value": 7.35,
+   "detail": "до улицы 7.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13931030581",
+   "status": "PASS",
+   "value": 14.13,
+   "detail": "до улицы 14.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13931030734",
+   "status": "PASS",
+   "value": 4.03,
+   "detail": "до улицы 4.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13931030797",
+   "status": "PASS",
+   "value": 10.85,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13931030900",
+   "status": "PASS",
+   "value": 8.72,
+   "detail": "до улицы 8.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13931031191",
+   "status": "PASS",
+   "value": 17.03,
+   "detail": "до улицы 17.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13938793822",
+   "status": "PASS",
+   "value": 12.32,
+   "detail": "до улицы 12.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13938793884",
+   "status": "PASS",
+   "value": 7.42,
+   "detail": "до улицы 7.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13938827023",
+   "status": "PASS",
+   "value": 15.06,
+   "detail": "до улицы 15.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13938827148",
+   "status": "PASS",
+   "value": 3.77,
+   "detail": "до улицы 3.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13947918410",
+   "status": "PASS",
+   "value": 3.09,
+   "detail": "до улицы 3.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13947918428",
+   "status": "PASS",
+   "value": 0.01,
+   "detail": "до улицы 0.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13947918518",
+   "status": "PASS",
+   "value": 15.59,
+   "detail": "до улицы 15.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13947918520",
+   "status": "PASS",
+   "value": 15.24,
+   "detail": "до улицы 15.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13947918548",
+   "status": "PASS",
+   "value": 10.11,
+   "detail": "до улицы 10.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13947918550",
+   "status": "PASS",
+   "value": 9.32,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13947918558",
+   "status": "PASS",
+   "value": 9.9,
+   "detail": "до улицы 9.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13947918560",
+   "status": "PASS",
+   "value": 9.04,
+   "detail": "до улицы 9.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13969046123",
+   "status": "PASS",
+   "value": 7.38,
+   "detail": "до улицы 7.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970343082",
+   "status": "PASS",
+   "value": 10.82,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970457206",
+   "status": "PASS",
+   "value": 5.99,
+   "detail": "до улицы 6.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459963",
+   "status": "PASS",
+   "value": 14.76,
+   "detail": "до улицы 14.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459965",
+   "status": "PASS",
+   "value": 12.89,
+   "detail": "до улицы 12.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459967",
+   "status": "PASS",
+   "value": 12.92,
+   "detail": "до улицы 12.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459969",
+   "status": "PASS",
+   "value": 13.76,
+   "detail": "до улицы 13.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459971",
+   "status": "PASS",
+   "value": 11.52,
+   "detail": "до улицы 11.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459973",
+   "status": "PASS",
+   "value": 11.55,
+   "detail": "до улицы 11.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459974",
+   "status": "PASS",
+   "value": 10.98,
+   "detail": "до улицы 11.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459986",
+   "status": "PASS",
+   "value": 12.34,
+   "detail": "до улицы 12.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459988",
+   "status": "PASS",
+   "value": 12.34,
+   "detail": "до улицы 12.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459990",
+   "status": "PASS",
+   "value": 14.78,
+   "detail": "до улицы 14.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970459992",
+   "status": "PASS",
+   "value": 13.92,
+   "detail": "до улицы 13.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482110",
+   "status": "PASS",
+   "value": 12.73,
+   "detail": "до улицы 12.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482111",
+   "status": "PASS",
+   "value": 20.27,
+   "detail": "до улицы 20.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482122",
+   "status": "PASS",
+   "value": 8.76,
+   "detail": "до улицы 8.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482125",
+   "status": "PASS",
+   "value": 10.28,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482127",
+   "status": "PASS",
+   "value": 16.43,
+   "detail": "до улицы 16.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482129",
+   "status": "PASS",
+   "value": 11.8,
+   "detail": "до улицы 11.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482131",
+   "status": "PASS",
+   "value": 17.03,
+   "detail": "до улицы 17.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482137",
+   "status": "PASS",
+   "value": 13.1,
+   "detail": "до улицы 13.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482139",
+   "status": "PASS",
+   "value": 16.03,
+   "detail": "до улицы 16.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970482141",
+   "status": "PASS",
+   "value": 14.44,
+   "detail": "до улицы 14.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970491924",
+   "status": "PASS",
+   "value": 17.64,
+   "detail": "до улицы 17.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970496034",
+   "status": "PASS",
+   "value": 15.52,
+   "detail": "до улицы 15.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970496042",
+   "status": "PASS",
+   "value": 25.02,
+   "detail": "до улицы 25.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970496043",
+   "status": "PASS",
+   "value": 15.96,
+   "detail": "до улицы 16.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970496063",
+   "status": "PASS",
+   "value": 8.68,
+   "detail": "до улицы 8.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970496065",
+   "status": "PASS",
+   "value": 9.69,
+   "detail": "до улицы 9.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970501608",
+   "status": "PASS",
+   "value": 20.97,
+   "detail": "до улицы 21.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970501610",
+   "status": "PASS",
+   "value": 19.25,
+   "detail": "до улицы 19.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970502044",
+   "status": "PASS",
+   "value": 9.89,
+   "detail": "до улицы 9.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970502046",
+   "status": "PASS",
+   "value": 11.51,
+   "detail": "до улицы 11.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970502048",
+   "status": "PASS",
+   "value": 12.53,
+   "detail": "до улицы 12.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970502050",
+   "status": "PASS",
+   "value": 10.46,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970518232",
+   "status": "PASS",
+   "value": 19.86,
+   "detail": "до улицы 19.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970518234",
+   "status": "PASS",
+   "value": 8.14,
+   "detail": "до улицы 8.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970518236",
+   "status": "PASS",
+   "value": 13.49,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970518238",
+   "status": "PASS",
+   "value": 16.63,
+   "detail": "до улицы 16.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970518240",
+   "status": "PASS",
+   "value": 3.51,
+   "detail": "до улицы 3.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970518244",
+   "status": "PASS",
+   "value": 14.18,
+   "detail": "до улицы 14.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970518251",
+   "status": "PASS",
+   "value": 13.49,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970518254",
+   "status": "PASS",
+   "value": 16.36,
+   "detail": "до улицы 16.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970523853",
+   "status": "PASS",
+   "value": 11.75,
+   "detail": "до улицы 11.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970523872",
+   "status": "PASS",
+   "value": 14.32,
+   "detail": "до улицы 14.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970523874",
+   "status": "PASS",
+   "value": 9.83,
+   "detail": "до улицы 9.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970523876",
+   "status": "PASS",
+   "value": 12.09,
+   "detail": "до улицы 12.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970561242",
+   "status": "PASS",
+   "value": 10.81,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970561276",
+   "status": "PASS",
+   "value": 11.42,
+   "detail": "до улицы 11.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970561278",
+   "status": "PASS",
+   "value": 7.94,
+   "detail": "до улицы 7.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970561280",
+   "status": "PASS",
+   "value": 8.44,
+   "detail": "до улицы 8.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970561282",
+   "status": "PASS",
+   "value": 9.14,
+   "detail": "до улицы 9.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970580819",
+   "status": "PASS",
+   "value": 9.26,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970609639",
+   "status": "PASS",
+   "value": 6.56,
+   "detail": "до улицы 6.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970632415",
+   "status": "PASS",
+   "value": 3.8,
+   "detail": "до улицы 3.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970644096",
+   "status": "PASS",
+   "value": 3.51,
+   "detail": "до улицы 3.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970682064",
+   "status": "PASS",
+   "value": 13.52,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970682066",
+   "status": "PASS",
+   "value": 9.17,
+   "detail": "до улицы 9.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970682070",
+   "status": "PASS",
+   "value": 8.84,
+   "detail": "до улицы 8.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970682072",
+   "status": "PASS",
+   "value": 10.15,
+   "detail": "до улицы 10.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970682076",
+   "status": "PASS",
+   "value": 16.82,
+   "detail": "до улицы 16.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970682078",
+   "status": "PASS",
+   "value": 16.53,
+   "detail": "до улицы 16.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970682098",
+   "status": "PASS",
+   "value": 5.24,
+   "detail": "до улицы 5.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970682100",
+   "status": "PASS",
+   "value": 5.68,
+   "detail": "до улицы 5.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970764279",
+   "status": "PASS",
+   "value": 8.28,
+   "detail": "до улицы 8.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970765924",
+   "status": "PASS",
+   "value": 5.7,
+   "detail": "до улицы 5.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970765926",
+   "status": "PASS",
+   "value": 7.23,
+   "detail": "до улицы 7.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970789257",
+   "status": "PASS",
+   "value": 2.53,
+   "detail": "до улицы 2.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970789259",
+   "status": "PASS",
+   "value": 12.54,
+   "detail": "до улицы 12.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970789267",
+   "status": "PASS",
+   "value": 14.56,
+   "detail": "до улицы 14.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970789269",
+   "status": "PASS",
+   "value": 14.6,
+   "detail": "до улицы 14.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970789287",
+   "status": "PASS",
+   "value": 13.24,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970789289",
+   "status": "PASS",
+   "value": 14.95,
+   "detail": "до улицы 14.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970789291",
+   "status": "PASS",
+   "value": 16.41,
+   "detail": "до улицы 16.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970789293",
+   "status": "PASS",
+   "value": 13.47,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970810936",
+   "status": "PASS",
+   "value": 17.6,
+   "detail": "до улицы 17.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970810938",
+   "status": "PASS",
+   "value": 20.77,
+   "detail": "до улицы 20.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970837201",
+   "status": "PASS",
+   "value": 16.43,
+   "detail": "до улицы 16.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970837203",
+   "status": "PASS",
+   "value": 15.78,
+   "detail": "до улицы 15.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970837221",
+   "status": "PASS",
+   "value": 14.61,
+   "detail": "до улицы 14.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970837225",
+   "status": "PASS",
+   "value": 15.41,
+   "detail": "до улицы 15.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970837227",
+   "status": "PASS",
+   "value": 15.44,
+   "detail": "до улицы 15.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970837229",
+   "status": "PASS",
+   "value": 15.26,
+   "detail": "до улицы 15.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970837232",
+   "status": "PASS",
+   "value": 15.46,
+   "detail": "до улицы 15.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970841571",
+   "status": "PASS",
+   "value": 14.94,
+   "detail": "до улицы 14.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970841573",
+   "status": "PASS",
+   "value": 9.63,
+   "detail": "до улицы 9.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970841594",
+   "status": "PASS",
+   "value": 11.24,
+   "detail": "до улицы 11.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-13970841595",
+   "status": "PASS",
+   "value": 13.99,
+   "detail": "до улицы 14.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14000236820",
+   "status": "PASS",
+   "value": 5.52,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14000236891",
+   "status": "PASS",
+   "value": 11.93,
+   "detail": "до улицы 11.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14000236894",
+   "status": "PASS",
+   "value": 12.74,
+   "detail": "до улицы 12.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14000236914",
+   "status": "PASS",
+   "value": 11.92,
+   "detail": "до улицы 11.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14000236916",
+   "status": "PASS",
+   "value": 9.66,
+   "detail": "до улицы 9.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14000236918",
+   "status": "PASS",
+   "value": 3.87,
+   "detail": "до улицы 3.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14000236920",
+   "status": "PASS",
+   "value": 13.51,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14006174983",
+   "status": "PASS",
+   "value": 9.8,
+   "detail": "до улицы 9.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14006175074",
+   "status": "PASS",
+   "value": 9.62,
+   "detail": "до улицы 9.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14006763391",
+   "status": "PASS",
+   "value": 8.87,
+   "detail": "до улицы 8.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14006763392",
+   "status": "PASS",
+   "value": 10.95,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14006763454",
+   "status": "PASS",
+   "value": 12.51,
+   "detail": "до улицы 12.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14006763455",
+   "status": "PASS",
+   "value": 3.81,
+   "detail": "до улицы 3.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14006763463",
+   "status": "PASS",
+   "value": 16.96,
+   "detail": "до улицы 17.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14006763464",
+   "status": "PASS",
+   "value": 8.34,
+   "detail": "до улицы 8.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14007925168",
+   "status": "PASS",
+   "value": 10.48,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14007962519",
+   "status": "PASS",
+   "value": 9.48,
+   "detail": "до улицы 9.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14007962531",
+   "status": "PASS",
+   "value": 10.02,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14007962532",
+   "status": "PASS",
+   "value": 8.05,
+   "detail": "до улицы 8.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14007962533",
+   "status": "PASS",
+   "value": 7.11,
+   "detail": "до улицы 7.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14007962580",
+   "status": "PASS",
+   "value": 13.19,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14007962794",
+   "status": "PASS",
+   "value": 15.99,
+   "detail": "до улицы 16.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016378187",
+   "status": "PASS",
+   "value": 6.57,
+   "detail": "до улицы 6.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016439963",
+   "status": "PASS",
+   "value": 4.0,
+   "detail": "до улицы 4.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016439964",
+   "status": "PASS",
+   "value": 18.62,
+   "detail": "до улицы 18.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016440078",
+   "status": "PASS",
+   "value": 15.39,
+   "detail": "до улицы 15.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016440539",
+   "status": "PASS",
+   "value": 20.03,
+   "detail": "до улицы 20.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016440773",
+   "status": "PASS",
+   "value": 6.99,
+   "detail": "до улицы 7.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016440774",
+   "status": "PASS",
+   "value": 5.14,
+   "detail": "до улицы 5.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016440933",
+   "status": "PASS",
+   "value": 14.54,
+   "detail": "до улицы 14.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016440996",
+   "status": "PASS",
+   "value": 0.19,
+   "detail": "до улицы 0.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016581190",
+   "status": "PASS",
+   "value": 8.19,
+   "detail": "до улицы 8.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016581308",
+   "status": "PASS",
+   "value": 1.78,
+   "detail": "до улицы 1.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016581309",
+   "status": "PASS",
+   "value": 5.92,
+   "detail": "до улицы 5.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016581449",
+   "status": "PASS",
+   "value": 4.77,
+   "detail": "до улицы 4.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14016581450",
+   "status": "PASS",
+   "value": 5.29,
+   "detail": "до улицы 5.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14019838253",
+   "status": "PASS",
+   "value": 7.03,
+   "detail": "до улицы 7.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14019841612",
+   "status": "PASS",
+   "value": 5.81,
+   "detail": "до улицы 5.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14019841681",
+   "status": "PASS",
+   "value": 7.22,
+   "detail": "до улицы 7.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14019841682",
+   "status": "PASS",
+   "value": 11.23,
+   "detail": "до улицы 11.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14019841683",
+   "status": "PASS",
+   "value": 8.63,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14019841684",
+   "status": "PASS",
+   "value": 9.14,
+   "detail": "до улицы 9.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14019841821",
+   "status": "PASS",
+   "value": 7.73,
+   "detail": "до улицы 7.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14019841822",
+   "status": "PASS",
+   "value": 6.79,
+   "detail": "до улицы 6.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14021721180",
+   "status": "PASS",
+   "value": 13.23,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14021721181",
+   "status": "PASS",
+   "value": 8.42,
+   "detail": "до улицы 8.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14022167689",
+   "status": "PASS",
+   "value": 10.64,
+   "detail": "до улицы 10.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14022167691",
+   "status": "PASS",
+   "value": 6.6,
+   "detail": "до улицы 6.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14022167692",
+   "status": "PASS",
+   "value": 16.61,
+   "detail": "до улицы 16.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14022167899",
+   "status": "PASS",
+   "value": 9.27,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14075049401",
+   "status": "PASS",
+   "value": 1.61,
+   "detail": "до улицы 1.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14089441231",
+   "status": "PASS",
+   "value": 8.89,
+   "detail": "до улицы 8.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14089441236",
+   "status": "PASS",
+   "value": 4.74,
+   "detail": "до улицы 4.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14089441237",
+   "status": "PASS",
+   "value": 6.06,
+   "detail": "до улицы 6.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14089488864",
+   "status": "PASS",
+   "value": 6.12,
+   "detail": "до улицы 6.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14092488634",
+   "status": "PASS",
+   "value": 1.39,
+   "detail": "до улицы 1.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14115621985",
+   "status": "PASS",
+   "value": 4.0,
+   "detail": "до улицы 4.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157688791",
+   "status": "PASS",
+   "value": 15.25,
+   "detail": "до улицы 15.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157688794",
+   "status": "PASS",
+   "value": 8.77,
+   "detail": "до улицы 8.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157689313",
+   "status": "PASS",
+   "value": 16.47,
+   "detail": "до улицы 16.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157716561",
+   "status": "PASS",
+   "value": 5.25,
+   "detail": "до улицы 5.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157716563",
+   "status": "PASS",
+   "value": 5.54,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157716569",
+   "status": "PASS",
+   "value": 8.09,
+   "detail": "до улицы 8.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157716586",
+   "status": "PASS",
+   "value": 7.1,
+   "detail": "до улицы 7.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157716591",
+   "status": "PASS",
+   "value": 11.95,
+   "detail": "до улицы 11.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157728443",
+   "status": "PASS",
+   "value": 1.24,
+   "detail": "до улицы 1.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157728450",
+   "status": "PASS",
+   "value": 10.17,
+   "detail": "до улицы 10.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14157888154",
+   "status": "PASS",
+   "value": 18.45,
+   "detail": "до улицы 18.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14158036995",
+   "status": "PASS",
+   "value": 19.19,
+   "detail": "до улицы 19.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163001945",
+   "status": "PASS",
+   "value": 15.01,
+   "detail": "до улицы 15.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163001953",
+   "status": "PASS",
+   "value": 6.05,
+   "detail": "до улицы 6.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163001979",
+   "status": "PASS",
+   "value": 22.04,
+   "detail": "до улицы 22.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163001981",
+   "status": "PASS",
+   "value": 18.91,
+   "detail": "до улицы 18.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163002000",
+   "status": "PASS",
+   "value": 22.32,
+   "detail": "до улицы 22.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163016960",
+   "status": "PASS",
+   "value": 20.97,
+   "detail": "до улицы 21.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163041042",
+   "status": "PASS",
+   "value": 1.71,
+   "detail": "до улицы 1.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163041060",
+   "status": "PASS",
+   "value": 2.65,
+   "detail": "до улицы 2.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163041070",
+   "status": "PASS",
+   "value": 3.5,
+   "detail": "до улицы 3.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163041086",
+   "status": "PASS",
+   "value": 6.86,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163041094",
+   "status": "PASS",
+   "value": 14.29,
+   "detail": "до улицы 14.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163041095",
+   "status": "PASS",
+   "value": 6.55,
+   "detail": "до улицы 6.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163041104",
+   "status": "PASS",
+   "value": 5.62,
+   "detail": "до улицы 5.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-14163041106",
+   "status": "PASS",
+   "value": 15.51,
+   "detail": "до улицы 15.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1749578959",
+   "status": "PASS",
+   "value": 18.66,
+   "detail": "до улицы 18.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1764303936",
+   "status": "PASS",
+   "value": 3.6,
+   "detail": "до улицы 3.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1764305098",
+   "status": "PASS",
+   "value": 10.25,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-1764308011",
+   "status": "PASS",
+   "value": 3.19,
+   "detail": "до улицы 3.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2196574179",
+   "status": "PASS",
+   "value": 4.09,
+   "detail": "до улицы 4.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2196574180",
+   "status": "PASS",
+   "value": 2.81,
+   "detail": "до улицы 2.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2196585088",
+   "status": "PASS",
+   "value": 5.2,
+   "detail": "до улицы 5.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
    "id": "osm-node-2196619764",
    "status": "PASS",
-   "value": 12.61,
-   "detail": "до улицы 12.6 м (допуск 60 м)"
+   "value": 9.88,
+   "detail": "до улицы 9.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2196651864",
+   "status": "PASS",
+   "value": 8.07,
+   "detail": "до улицы 8.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2196651883",
+   "status": "PASS",
+   "value": 11.38,
+   "detail": "до улицы 11.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2259684195",
+   "status": "PASS",
+   "value": 7.59,
+   "detail": "до улицы 7.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2482158928",
+   "status": "PASS",
+   "value": 3.84,
+   "detail": "до улицы 3.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2546787333",
+   "status": "PASS",
+   "value": 10.92,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2616721263",
+   "status": "PASS",
+   "value": 15.86,
+   "detail": "до улицы 15.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635023737",
+   "status": "PASS",
+   "value": 15.0,
+   "detail": "до улицы 15.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635612478",
+   "status": "PASS",
+   "value": 19.58,
+   "detail": "до улицы 19.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635612488",
+   "status": "PASS",
+   "value": 11.94,
+   "detail": "до улицы 11.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635634075",
+   "status": "PASS",
+   "value": 11.75,
+   "detail": "до улицы 11.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635634078",
+   "status": "PASS",
+   "value": 14.69,
+   "detail": "до улицы 14.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635643324",
+   "status": "PASS",
+   "value": 5.25,
+   "detail": "до улицы 5.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635643327",
+   "status": "PASS",
+   "value": 7.87,
+   "detail": "до улицы 7.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635644951",
+   "status": "PASS",
+   "value": 15.52,
+   "detail": "до улицы 15.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635746075",
+   "status": "PASS",
+   "value": 12.25,
+   "detail": "до улицы 12.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635978680",
+   "status": "PASS",
+   "value": 5.51,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2635978785",
+   "status": "PASS",
+   "value": 14.13,
+   "detail": "до улицы 14.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2636792614",
+   "status": "PASS",
+   "value": 11.91,
+   "detail": "до улицы 11.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2636792628",
+   "status": "PASS",
+   "value": 6.91,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2638472206",
+   "status": "PASS",
+   "value": 13.58,
+   "detail": "до улицы 13.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2638940274",
+   "status": "PASS",
+   "value": 14.93,
+   "detail": "до улицы 14.9 м (допуск 60 м)"
   },
   {
    "check": "stop_within_60m_of_street",
    "id": "osm-node-2641004139",
    "status": "PASS",
-   "value": 14.12,
-   "detail": "до улицы 14.1 м (допуск 60 м)"
+   "value": 9.53,
+   "detail": "до улицы 9.5 м (допуск 60 м)"
   },
   {
    "check": "stop_within_60m_of_street",
@@ -215,10 +3708,24 @@
   },
   {
    "check": "stop_within_60m_of_street",
+   "id": "osm-node-2641042141",
+   "status": "PASS",
+   "value": 5.79,
+   "detail": "до улицы 5.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
    "id": "osm-node-2641042146",
    "status": "PASS",
    "value": 4.68,
    "detail": "до улицы 4.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2641042147",
+   "status": "PASS",
+   "value": 5.34,
+   "detail": "до улицы 5.3 м (допуск 60 м)"
   },
   {
    "check": "stop_within_60m_of_street",
@@ -229,10 +3736,1123 @@
   },
   {
    "check": "stop_within_60m_of_street",
+   "id": "osm-node-2641042168",
+   "status": "PASS",
+   "value": 4.64,
+   "detail": "до улицы 4.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
    "id": "osm-node-2641042195",
    "status": "PASS",
    "value": 4.39,
    "detail": "до улицы 4.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715047787",
+   "status": "PASS",
+   "value": 8.85,
+   "detail": "до улицы 8.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715047788",
+   "status": "PASS",
+   "value": 7.14,
+   "detail": "до улицы 7.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715048707",
+   "status": "PASS",
+   "value": 1.72,
+   "detail": "до улицы 1.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715048893",
+   "status": "PASS",
+   "value": 14.29,
+   "detail": "до улицы 14.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715048959",
+   "status": "PASS",
+   "value": 4.79,
+   "detail": "до улицы 4.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715048960",
+   "status": "PASS",
+   "value": 8.01,
+   "detail": "до улицы 8.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715049258",
+   "status": "PASS",
+   "value": 9.83,
+   "detail": "до улицы 9.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715049259",
+   "status": "PASS",
+   "value": 12.21,
+   "detail": "до улицы 12.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715050051",
+   "status": "PASS",
+   "value": 4.43,
+   "detail": "до улицы 4.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715050052",
+   "status": "PASS",
+   "value": 5.76,
+   "detail": "до улицы 5.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715298255",
+   "status": "PASS",
+   "value": 11.76,
+   "detail": "до улицы 11.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715298259",
+   "status": "PASS",
+   "value": 15.08,
+   "detail": "до улицы 15.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715312519",
+   "status": "PASS",
+   "value": 11.29,
+   "detail": "до улицы 11.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715312525",
+   "status": "PASS",
+   "value": 15.07,
+   "detail": "до улицы 15.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715317207",
+   "status": "PASS",
+   "value": 8.94,
+   "detail": "до улицы 8.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715317212",
+   "status": "PASS",
+   "value": 10.47,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2715319141",
+   "status": "PASS",
+   "value": 5.2,
+   "detail": "до улицы 5.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716976980",
+   "status": "PASS",
+   "value": 14.17,
+   "detail": "до улицы 14.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716976981",
+   "status": "PASS",
+   "value": 11.02,
+   "detail": "до улицы 11.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716977766",
+   "status": "PASS",
+   "value": 6.51,
+   "detail": "до улицы 6.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716977767",
+   "status": "PASS",
+   "value": 4.26,
+   "detail": "до улицы 4.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716979079",
+   "status": "PASS",
+   "value": 9.96,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716979080",
+   "status": "PASS",
+   "value": 9.84,
+   "detail": "до улицы 9.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716984156",
+   "status": "PASS",
+   "value": 10.64,
+   "detail": "до улицы 10.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716984157",
+   "status": "PASS",
+   "value": 14.6,
+   "detail": "до улицы 14.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716987061",
+   "status": "PASS",
+   "value": 10.39,
+   "detail": "до улицы 10.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716998624",
+   "status": "PASS",
+   "value": 10.86,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716998625",
+   "status": "PASS",
+   "value": 18.3,
+   "detail": "до улицы 18.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716998626",
+   "status": "PASS",
+   "value": 16.03,
+   "detail": "до улицы 16.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716999638",
+   "status": "PASS",
+   "value": 16.79,
+   "detail": "до улицы 16.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2716999639",
+   "status": "PASS",
+   "value": 16.15,
+   "detail": "до улицы 16.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2717000227",
+   "status": "PASS",
+   "value": 20.44,
+   "detail": "до улицы 20.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2717001191",
+   "status": "PASS",
+   "value": 20.31,
+   "detail": "до улицы 20.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2717002095",
+   "status": "PASS",
+   "value": 6.34,
+   "detail": "до улицы 6.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2717002096",
+   "status": "PASS",
+   "value": 8.29,
+   "detail": "до улицы 8.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2717007175",
+   "status": "PASS",
+   "value": 4.25,
+   "detail": "до улицы 4.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2717007179",
+   "status": "PASS",
+   "value": 13.43,
+   "detail": "до улицы 13.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2717008083",
+   "status": "PASS",
+   "value": 17.39,
+   "detail": "до улицы 17.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849801023",
+   "status": "PASS",
+   "value": 4.68,
+   "detail": "до улицы 4.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849801024",
+   "status": "PASS",
+   "value": 11.32,
+   "detail": "до улицы 11.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849801221",
+   "status": "PASS",
+   "value": 4.12,
+   "detail": "до улицы 4.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849802959",
+   "status": "PASS",
+   "value": 3.08,
+   "detail": "до улицы 3.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849802960",
+   "status": "PASS",
+   "value": 2.12,
+   "detail": "до улицы 2.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849821007",
+   "status": "PASS",
+   "value": 7.86,
+   "detail": "до улицы 7.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849821009",
+   "status": "PASS",
+   "value": 9.45,
+   "detail": "до улицы 9.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849821010",
+   "status": "PASS",
+   "value": 14.02,
+   "detail": "до улицы 14.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849822259",
+   "status": "PASS",
+   "value": 14.28,
+   "detail": "до улицы 14.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849822260",
+   "status": "PASS",
+   "value": 4.55,
+   "detail": "до улицы 4.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849834090",
+   "status": "PASS",
+   "value": 5.42,
+   "detail": "до улицы 5.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849849664",
+   "status": "PASS",
+   "value": 11.02,
+   "detail": "до улицы 11.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849851765",
+   "status": "PASS",
+   "value": 9.52,
+   "detail": "до улицы 9.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849854857",
+   "status": "PASS",
+   "value": 18.32,
+   "detail": "до улицы 18.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849861672",
+   "status": "PASS",
+   "value": 8.46,
+   "detail": "до улицы 8.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849868008",
+   "status": "PASS",
+   "value": 13.48,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2849880912",
+   "status": "PASS",
+   "value": 10.15,
+   "detail": "до улицы 10.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2854435898",
+   "status": "PASS",
+   "value": 10.63,
+   "detail": "до улицы 10.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3193985455",
+   "status": "PASS",
+   "value": 18.96,
+   "detail": "до улицы 19.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-319526012",
+   "status": "PASS",
+   "value": 12.25,
+   "detail": "до улицы 12.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-319526382",
+   "status": "PASS",
+   "value": 10.16,
+   "detail": "до улицы 10.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-319526436",
+   "status": "PASS",
+   "value": 9.63,
+   "detail": "до улицы 9.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-319526508",
+   "status": "PASS",
+   "value": 10.46,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-319526598",
+   "status": "PASS",
+   "value": 5.26,
+   "detail": "до улицы 5.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-319526724",
+   "status": "PASS",
+   "value": 12.07,
+   "detail": "до улицы 12.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-319527117",
+   "status": "PASS",
+   "value": 14.48,
+   "detail": "до улицы 14.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3214315071",
+   "status": "PASS",
+   "value": 2.67,
+   "detail": "до улицы 2.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3215308590",
+   "status": "PASS",
+   "value": 14.1,
+   "detail": "до улицы 14.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3222869680",
+   "status": "PASS",
+   "value": 9.36,
+   "detail": "до улицы 9.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3222869748",
+   "status": "PASS",
+   "value": 11.08,
+   "detail": "до улицы 11.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3222869765",
+   "status": "PASS",
+   "value": 12.27,
+   "detail": "до улицы 12.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3222870763",
+   "status": "PASS",
+   "value": 24.15,
+   "detail": "до улицы 24.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3222870865",
+   "status": "PASS",
+   "value": 16.63,
+   "detail": "до улицы 16.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3222870866",
+   "status": "PASS",
+   "value": 20.6,
+   "detail": "до улицы 20.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3252092659",
+   "status": "PASS",
+   "value": 13.74,
+   "detail": "до улицы 13.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3252099920",
+   "status": "PASS",
+   "value": 12.17,
+   "detail": "до улицы 12.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3252277047",
+   "status": "PASS",
+   "value": 3.87,
+   "detail": "до улицы 3.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3252288829",
+   "status": "PASS",
+   "value": 5.2,
+   "detail": "до улицы 5.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3269462570",
+   "status": "PASS",
+   "value": 8.73,
+   "detail": "до улицы 8.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3269466061",
+   "status": "PASS",
+   "value": 8.51,
+   "detail": "до улицы 8.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3269945679",
+   "status": "PASS",
+   "value": 5.83,
+   "detail": "до улицы 5.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3269945680",
+   "status": "PASS",
+   "value": 7.34,
+   "detail": "до улицы 7.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277063",
+   "status": "PASS",
+   "value": 15.59,
+   "detail": "до улицы 15.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277064",
+   "status": "PASS",
+   "value": 13.53,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277065",
+   "status": "PASS",
+   "value": 17.34,
+   "detail": "до улицы 17.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277066",
+   "status": "PASS",
+   "value": 17.58,
+   "detail": "до улицы 17.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277067",
+   "status": "PASS",
+   "value": 13.48,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277068",
+   "status": "PASS",
+   "value": 17.85,
+   "detail": "до улицы 17.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277069",
+   "status": "PASS",
+   "value": 13.83,
+   "detail": "до улицы 13.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277070",
+   "status": "PASS",
+   "value": 16.77,
+   "detail": "до улицы 16.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277071",
+   "status": "PASS",
+   "value": 12.82,
+   "detail": "до улицы 12.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277072",
+   "status": "PASS",
+   "value": 15.79,
+   "detail": "до улицы 15.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3273277073",
+   "status": "PASS",
+   "value": 10.76,
+   "detail": "до улицы 10.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3274070732",
+   "status": "PASS",
+   "value": 12.56,
+   "detail": "до улицы 12.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3306036818",
+   "status": "PASS",
+   "value": 16.42,
+   "detail": "до улицы 16.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3306041404",
+   "status": "PASS",
+   "value": 12.32,
+   "detail": "до улицы 12.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3306045315",
+   "status": "PASS",
+   "value": 13.2,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3306045602",
+   "status": "PASS",
+   "value": 16.78,
+   "detail": "до улицы 16.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3306047663",
+   "status": "PASS",
+   "value": 8.83,
+   "detail": "до улицы 8.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3306048927",
+   "status": "PASS",
+   "value": 6.69,
+   "detail": "до улицы 6.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3306054473",
+   "status": "PASS",
+   "value": 18.81,
+   "detail": "до улицы 18.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3306060561",
+   "status": "PASS",
+   "value": 2.38,
+   "detail": "до улицы 2.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3404935742",
+   "status": "PASS",
+   "value": 10.13,
+   "detail": "до улицы 10.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3404935967",
+   "status": "PASS",
+   "value": 12.48,
+   "detail": "до улицы 12.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3404937509",
+   "status": "PASS",
+   "value": 1.86,
+   "detail": "до улицы 1.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3421288328",
+   "status": "PASS",
+   "value": 8.51,
+   "detail": "до улицы 8.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3421288329",
+   "status": "PASS",
+   "value": 7.7,
+   "detail": "до улицы 7.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3421288330",
+   "status": "PASS",
+   "value": 5.26,
+   "detail": "до улицы 5.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3421288331",
+   "status": "PASS",
+   "value": 3.52,
+   "detail": "до улицы 3.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3697085603",
+   "status": "PASS",
+   "value": 6.26,
+   "detail": "до улицы 6.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3697085604",
+   "status": "PASS",
+   "value": 10.31,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-3697085605",
+   "status": "PASS",
+   "value": 10.94,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107228540",
+   "status": "PASS",
+   "value": 13.31,
+   "detail": "до улицы 13.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107228550",
+   "status": "PASS",
+   "value": 8.97,
+   "detail": "до улицы 9.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107228562",
+   "status": "PASS",
+   "value": 4.34,
+   "detail": "до улицы 4.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107228563",
+   "status": "PASS",
+   "value": 11.28,
+   "detail": "до улицы 11.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107228575",
+   "status": "PASS",
+   "value": 12.38,
+   "detail": "до улицы 12.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107228576",
+   "status": "PASS",
+   "value": 3.33,
+   "detail": "до улицы 3.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107300841",
+   "status": "PASS",
+   "value": 19.64,
+   "detail": "до улицы 19.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107300842",
+   "status": "PASS",
+   "value": 14.37,
+   "detail": "до улицы 14.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107301218",
+   "status": "PASS",
+   "value": 16.78,
+   "detail": "до улицы 16.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107301219",
+   "status": "PASS",
+   "value": 17.24,
+   "detail": "до улицы 17.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107301220",
+   "status": "PASS",
+   "value": 17.91,
+   "detail": "до улицы 17.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107301221",
+   "status": "PASS",
+   "value": 15.07,
+   "detail": "до улицы 15.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107301222",
+   "status": "PASS",
+   "value": 7.79,
+   "detail": "до улицы 7.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107301245",
+   "status": "PASS",
+   "value": 14.54,
+   "detail": "до улицы 14.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4107301246",
+   "status": "PASS",
+   "value": 9.68,
+   "detail": "до улицы 9.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4108293389",
+   "status": "PASS",
+   "value": 13.52,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4109037546",
+   "status": "PASS",
+   "value": 16.65,
+   "detail": "до улицы 16.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4109037547",
+   "status": "PASS",
+   "value": 13.8,
+   "detail": "до улицы 13.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4109037548",
+   "status": "PASS",
+   "value": 3.2,
+   "detail": "до улицы 3.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4109037549",
+   "status": "PASS",
+   "value": 9.88,
+   "detail": "до улицы 9.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4113163100",
+   "status": "PASS",
+   "value": 13.22,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4113163307",
+   "status": "PASS",
+   "value": 17.28,
+   "detail": "до улицы 17.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4113163308",
+   "status": "PASS",
+   "value": 19.04,
+   "detail": "до улицы 19.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4113163327",
+   "status": "PASS",
+   "value": 15.05,
+   "detail": "до улицы 15.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4113163359",
+   "status": "PASS",
+   "value": 9.65,
+   "detail": "до улицы 9.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4113163360",
+   "status": "PASS",
+   "value": 18.02,
+   "detail": "до улицы 18.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4113550362",
+   "status": "PASS",
+   "value": 5.05,
+   "detail": "до улицы 5.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4113550363",
+   "status": "PASS",
+   "value": 6.29,
+   "detail": "до улицы 6.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4133836290",
+   "status": "PASS",
+   "value": 6.08,
+   "detail": "до улицы 6.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4133836391",
+   "status": "PASS",
+   "value": 1.07,
+   "detail": "до улицы 1.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4165952589",
+   "status": "PASS",
+   "value": 7.04,
+   "detail": "до улицы 7.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4165952990",
+   "status": "PASS",
+   "value": 10.21,
+   "detail": "до улицы 10.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166010089",
+   "status": "PASS",
+   "value": 11.3,
+   "detail": "до улицы 11.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166020789",
+   "status": "PASS",
+   "value": 6.03,
+   "detail": "до улицы 6.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166108589",
+   "status": "PASS",
+   "value": 9.52,
+   "detail": "до улицы 9.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166909990",
+   "status": "PASS",
+   "value": 12.75,
+   "detail": "до улицы 12.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166930695",
+   "status": "PASS",
+   "value": 16.27,
+   "detail": "до улицы 16.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166949892",
+   "status": "PASS",
+   "value": 8.41,
+   "detail": "до улицы 8.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166950191",
+   "status": "PASS",
+   "value": 15.93,
+   "detail": "до улицы 15.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166950192",
+   "status": "PASS",
+   "value": 6.87,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166999989",
+   "status": "PASS",
+   "value": 18.89,
+   "detail": "до улицы 18.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4166999990",
+   "status": "PASS",
+   "value": 2.85,
+   "detail": "до улицы 2.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4167001189",
+   "status": "PASS",
+   "value": 13.18,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4167001190",
+   "status": "PASS",
+   "value": 16.71,
+   "detail": "до улицы 16.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4167003289",
+   "status": "PASS",
+   "value": 6.28,
+   "detail": "до улицы 6.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4167003290",
+   "status": "PASS",
+   "value": 5.63,
+   "detail": "до улицы 5.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4167007790",
+   "status": "PASS",
+   "value": 13.54,
+   "detail": "до улицы 13.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4167009189",
+   "status": "PASS",
+   "value": 8.51,
+   "detail": "до улицы 8.5 м (допуск 60 м)"
   },
   {
    "check": "stop_within_60m_of_street",
@@ -243,10 +4863,1032 @@
   },
   {
    "check": "stop_within_60m_of_street",
+   "id": "osm-node-4209555464",
+   "status": "PASS",
+   "value": 10.49,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4209560546",
+   "status": "PASS",
+   "value": 17.96,
+   "detail": "до улицы 18.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4209561827",
+   "status": "PASS",
+   "value": 13.09,
+   "detail": "до улицы 13.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4209591196",
+   "status": "PASS",
+   "value": 15.09,
+   "detail": "до улицы 15.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4209591197",
+   "status": "PASS",
+   "value": 13.86,
+   "detail": "до улицы 13.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4234159792",
+   "status": "PASS",
+   "value": 9.42,
+   "detail": "до улицы 9.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4234195293",
+   "status": "PASS",
+   "value": 7.87,
+   "detail": "до улицы 7.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4234196190",
+   "status": "PASS",
+   "value": 6.07,
+   "detail": "до улицы 6.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4234252689",
+   "status": "PASS",
+   "value": 9.3,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4234282689",
+   "status": "PASS",
+   "value": 5.05,
+   "detail": "до улицы 5.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4256939506",
+   "status": "PASS",
+   "value": 7.69,
+   "detail": "до улицы 7.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913525",
+   "status": "PASS",
+   "value": 4.15,
+   "detail": "до улицы 4.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913526",
+   "status": "PASS",
+   "value": 3.9,
+   "detail": "до улицы 3.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913527",
+   "status": "PASS",
+   "value": 9.9,
+   "detail": "до улицы 9.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913528",
+   "status": "PASS",
+   "value": 5.55,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913529",
+   "status": "PASS",
+   "value": 4.01,
+   "detail": "до улицы 4.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913530",
+   "status": "PASS",
+   "value": 3.44,
+   "detail": "до улицы 3.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913531",
+   "status": "PASS",
+   "value": 10.1,
+   "detail": "до улицы 10.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913532",
+   "status": "PASS",
+   "value": 4.23,
+   "detail": "до улицы 4.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913533",
+   "status": "PASS",
+   "value": 15.32,
+   "detail": "до улицы 15.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4259913534",
+   "status": "PASS",
+   "value": 13.82,
+   "detail": "до улицы 13.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4382153547",
+   "status": "PASS",
+   "value": 9.38,
+   "detail": "до улицы 9.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4382153548",
+   "status": "PASS",
+   "value": 10.46,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4509832891",
+   "status": "PASS",
+   "value": 9.32,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4509832991",
+   "status": "PASS",
+   "value": 3.19,
+   "detail": "до улицы 3.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4509843691",
+   "status": "PASS",
+   "value": 2.44,
+   "detail": "до улицы 2.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4509865490",
+   "status": "PASS",
+   "value": 5.09,
+   "detail": "до улицы 5.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4509865491",
+   "status": "PASS",
+   "value": 8.27,
+   "detail": "до улицы 8.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4510066290",
+   "status": "PASS",
+   "value": 3.34,
+   "detail": "до улицы 3.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4519222389",
+   "status": "PASS",
+   "value": 13.15,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4581702994",
+   "status": "PASS",
+   "value": 6.31,
+   "detail": "до улицы 6.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4581839089",
+   "status": "PASS",
+   "value": 14.44,
+   "detail": "до улицы 14.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4620189991",
+   "status": "PASS",
+   "value": 13.75,
+   "detail": "до улицы 13.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4620774594",
+   "status": "PASS",
+   "value": 10.45,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4621581289",
+   "status": "PASS",
+   "value": 12.52,
+   "detail": "до улицы 12.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-465212640",
+   "status": "PASS",
+   "value": 7.36,
+   "detail": "до улицы 7.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-465212648",
+   "status": "PASS",
+   "value": 10.59,
+   "detail": "до улицы 10.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4666728592",
+   "status": "PASS",
+   "value": 9.98,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4713687906",
+   "status": "PASS",
+   "value": 10.02,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4713687908",
+   "status": "PASS",
+   "value": 12.46,
+   "detail": "до улицы 12.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4713688608",
+   "status": "PASS",
+   "value": 4.39,
+   "detail": "до улицы 4.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4713688694",
+   "status": "PASS",
+   "value": 14.07,
+   "detail": "до улицы 14.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4713688695",
+   "status": "PASS",
+   "value": 5.77,
+   "detail": "до улицы 5.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4713688696",
+   "status": "PASS",
+   "value": 8.36,
+   "detail": "до улицы 8.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4713689515",
+   "status": "PASS",
+   "value": 10.33,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4713702899",
+   "status": "PASS",
+   "value": 14.6,
+   "detail": "до улицы 14.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4734669372",
+   "status": "PASS",
+   "value": 10.85,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4734669373",
+   "status": "PASS",
+   "value": 13.44,
+   "detail": "до улицы 13.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4892204727",
+   "status": "PASS",
+   "value": 5.51,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4892345882",
+   "status": "PASS",
+   "value": 7.43,
+   "detail": "до улицы 7.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4892345886",
+   "status": "PASS",
+   "value": 11.84,
+   "detail": "до улицы 11.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4894180327",
+   "status": "PASS",
+   "value": 10.54,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4894180329",
+   "status": "PASS",
+   "value": 12.44,
+   "detail": "до улицы 12.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4894180330",
+   "status": "PASS",
+   "value": 9.41,
+   "detail": "до улицы 9.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4894180331",
+   "status": "PASS",
+   "value": 7.36,
+   "detail": "до улицы 7.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4895484425",
+   "status": "PASS",
+   "value": 9.98,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4895560223",
+   "status": "PASS",
+   "value": 16.47,
+   "detail": "до улицы 16.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4908858058",
+   "status": "PASS",
+   "value": 7.73,
+   "detail": "до улицы 7.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4915087525",
+   "status": "PASS",
+   "value": 8.55,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4915087526",
+   "status": "PASS",
+   "value": 10.19,
+   "detail": "до улицы 10.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4920177021",
+   "status": "PASS",
+   "value": 11.18,
+   "detail": "до улицы 11.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4924095561",
+   "status": "PASS",
+   "value": 7.88,
+   "detail": "до улицы 7.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4924514929",
+   "status": "PASS",
+   "value": 8.27,
+   "detail": "до улицы 8.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4924514930",
+   "status": "PASS",
+   "value": 9.99,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4924514931",
+   "status": "PASS",
+   "value": 12.79,
+   "detail": "до улицы 12.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4924616233",
+   "status": "PASS",
+   "value": 9.08,
+   "detail": "до улицы 9.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4926412911",
+   "status": "PASS",
+   "value": 10.98,
+   "detail": "до улицы 11.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4926412912",
+   "status": "PASS",
+   "value": 9.27,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4931058971",
+   "status": "PASS",
+   "value": 6.24,
+   "detail": "до улицы 6.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698328",
+   "status": "PASS",
+   "value": 12.08,
+   "detail": "до улицы 12.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698331",
+   "status": "PASS",
+   "value": 16.53,
+   "detail": "до улицы 16.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698337",
+   "status": "PASS",
+   "value": 2.65,
+   "detail": "до улицы 2.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698338",
+   "status": "PASS",
+   "value": 2.91,
+   "detail": "до улицы 2.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698339",
+   "status": "PASS",
+   "value": 5.23,
+   "detail": "до улицы 5.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698340",
+   "status": "PASS",
+   "value": 8.8,
+   "detail": "до улицы 8.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698341",
+   "status": "PASS",
+   "value": 10.12,
+   "detail": "до улицы 10.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698342",
+   "status": "PASS",
+   "value": 8.48,
+   "detail": "до улицы 8.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698386",
+   "status": "PASS",
+   "value": 13.35,
+   "detail": "до улицы 13.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698409",
+   "status": "PASS",
+   "value": 8.17,
+   "detail": "до улицы 8.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698411",
+   "status": "PASS",
+   "value": 6.94,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4932698412",
+   "status": "PASS",
+   "value": 15.21,
+   "detail": "до улицы 15.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4933998222",
+   "status": "PASS",
+   "value": 8.18,
+   "detail": "до улицы 8.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4933998226",
+   "status": "PASS",
+   "value": 5.85,
+   "detail": "до улицы 5.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4933998231",
+   "status": "PASS",
+   "value": 5.11,
+   "detail": "до улицы 5.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4933998232",
+   "status": "PASS",
+   "value": 4.72,
+   "detail": "до улицы 4.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4933998233",
+   "status": "PASS",
+   "value": 5.47,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4933998234",
+   "status": "PASS",
+   "value": 11.87,
+   "detail": "до улицы 11.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4938764804",
+   "status": "PASS",
+   "value": 9.98,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4942181410",
+   "status": "PASS",
+   "value": 8.69,
+   "detail": "до улицы 8.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4942181411",
+   "status": "PASS",
+   "value": 13.21,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965741513",
+   "status": "PASS",
+   "value": 5.82,
+   "detail": "до улицы 5.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965741517",
+   "status": "PASS",
+   "value": 3.45,
+   "detail": "до улицы 3.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763125",
+   "status": "PASS",
+   "value": 8.61,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763126",
+   "status": "PASS",
+   "value": 4.16,
+   "detail": "до улицы 4.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763127",
+   "status": "PASS",
+   "value": 12.23,
+   "detail": "до улицы 12.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763129",
+   "status": "PASS",
+   "value": 12.41,
+   "detail": "до улицы 12.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763141",
+   "status": "PASS",
+   "value": 11.35,
+   "detail": "до улицы 11.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763150",
+   "status": "PASS",
+   "value": 11.73,
+   "detail": "до улицы 11.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763163",
+   "status": "PASS",
+   "value": 16.09,
+   "detail": "до улицы 16.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763164",
+   "status": "PASS",
+   "value": 14.81,
+   "detail": "до улицы 14.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763176",
+   "status": "PASS",
+   "value": 7.5,
+   "detail": "до улицы 7.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763183",
+   "status": "PASS",
+   "value": 15.4,
+   "detail": "до улицы 15.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763202",
+   "status": "PASS",
+   "value": 14.5,
+   "detail": "до улицы 14.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4965763203",
+   "status": "PASS",
+   "value": 12.07,
+   "detail": "до улицы 12.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4968805559",
+   "status": "PASS",
+   "value": 11.6,
+   "detail": "до улицы 11.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
    "id": "osm-node-4975687943",
    "status": "PASS",
    "value": 6.91,
    "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4975687944",
+   "status": "PASS",
+   "value": 11.83,
+   "detail": "до улицы 11.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4975766949",
+   "status": "PASS",
+   "value": 11.8,
+   "detail": "до улицы 11.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4975766950",
+   "status": "PASS",
+   "value": 11.49,
+   "detail": "до улицы 11.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151144",
+   "status": "PASS",
+   "value": 4.37,
+   "detail": "до улицы 4.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151184",
+   "status": "PASS",
+   "value": 9.0,
+   "detail": "до улицы 9.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151185",
+   "status": "PASS",
+   "value": 10.52,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151327",
+   "status": "PASS",
+   "value": 12.5,
+   "detail": "до улицы 12.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151329",
+   "status": "PASS",
+   "value": 0.96,
+   "detail": "до улицы 1.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151330",
+   "status": "PASS",
+   "value": 18.27,
+   "detail": "до улицы 18.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151331",
+   "status": "PASS",
+   "value": 13.15,
+   "detail": "до улицы 13.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151332",
+   "status": "PASS",
+   "value": 8.6,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151553",
+   "status": "PASS",
+   "value": 8.31,
+   "detail": "до улицы 8.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151554",
+   "status": "PASS",
+   "value": 10.27,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4985151556",
+   "status": "PASS",
+   "value": 10.57,
+   "detail": "до улицы 10.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986870867",
+   "status": "PASS",
+   "value": 3.99,
+   "detail": "до улицы 4.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986871024",
+   "status": "PASS",
+   "value": 9.72,
+   "detail": "до улицы 9.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986871025",
+   "status": "PASS",
+   "value": 9.2,
+   "detail": "до улицы 9.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986871028",
+   "status": "PASS",
+   "value": 7.16,
+   "detail": "до улицы 7.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986871029",
+   "status": "PASS",
+   "value": 7.65,
+   "detail": "до улицы 7.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986871035",
+   "status": "PASS",
+   "value": 8.0,
+   "detail": "до улицы 8.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986871036",
+   "status": "PASS",
+   "value": 4.85,
+   "detail": "до улицы 4.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986871037",
+   "status": "PASS",
+   "value": 1.55,
+   "detail": "до улицы 1.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986871038",
+   "status": "PASS",
+   "value": 5.26,
+   "detail": "до улицы 5.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986963303",
+   "status": "PASS",
+   "value": 9.11,
+   "detail": "до улицы 9.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986963304",
+   "status": "PASS",
+   "value": 8.98,
+   "detail": "до улицы 9.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4986963306",
+   "status": "PASS",
+   "value": 10.49,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5041052909",
+   "status": "PASS",
+   "value": 11.37,
+   "detail": "до улицы 11.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5078375576",
+   "status": "PASS",
+   "value": 3.06,
+   "detail": "до улицы 3.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5078375580",
+   "status": "PASS",
+   "value": 5.01,
+   "detail": "до улицы 5.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5078375581",
+   "status": "PASS",
+   "value": 5.07,
+   "detail": "до улицы 5.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5078375589",
+   "status": "PASS",
+   "value": 4.37,
+   "detail": "до улицы 4.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5078375590",
+   "status": "PASS",
+   "value": 3.57,
+   "detail": "до улицы 3.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5078375591",
+   "status": "PASS",
+   "value": 4.15,
+   "detail": "до улицы 4.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5078375605",
+   "status": "PASS",
+   "value": 11.94,
+   "detail": "до улицы 11.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5078375606",
+   "status": "PASS",
+   "value": 9.8,
+   "detail": "до улицы 9.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5078375607",
+   "status": "PASS",
+   "value": 4.6,
+   "detail": "до улицы 4.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5101532655",
+   "status": "PASS",
+   "value": 13.15,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5114794708",
+   "status": "PASS",
+   "value": 16.41,
+   "detail": "до улицы 16.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5126423954",
+   "status": "PASS",
+   "value": 14.27,
+   "detail": "до улицы 14.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5126423955",
+   "status": "PASS",
+   "value": 8.78,
+   "detail": "до улицы 8.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5126423956",
+   "status": "PASS",
+   "value": 8.01,
+   "detail": "до улицы 8.0 м (допуск 60 м)"
   },
   {
    "check": "stop_within_60m_of_street",
@@ -264,10 +5906,808 @@
   },
   {
    "check": "stop_within_60m_of_street",
+   "id": "osm-node-5153453322",
+   "status": "PASS",
+   "value": 11.58,
+   "detail": "до улицы 11.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5153453323",
+   "status": "PASS",
+   "value": 3.01,
+   "detail": "до улицы 3.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5153483421",
+   "status": "PASS",
+   "value": 3.64,
+   "detail": "до улицы 3.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5153483422",
+   "status": "PASS",
+   "value": 4.57,
+   "detail": "до улицы 4.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5154608429",
+   "status": "PASS",
+   "value": 0.07,
+   "detail": "до улицы 0.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5195519109",
+   "status": "PASS",
+   "value": 10.59,
+   "detail": "до улицы 10.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5195707462",
+   "status": "PASS",
+   "value": 3.0,
+   "detail": "до улицы 3.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5206897024",
+   "status": "PASS",
+   "value": 4.16,
+   "detail": "до улицы 4.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5206938221",
+   "status": "PASS",
+   "value": 1.47,
+   "detail": "до улицы 1.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5206939121",
+   "status": "PASS",
+   "value": 6.39,
+   "detail": "до улицы 6.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5206986321",
+   "status": "PASS",
+   "value": 1.19,
+   "detail": "до улицы 1.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5206997221",
+   "status": "PASS",
+   "value": 12.05,
+   "detail": "до улицы 12.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207006824",
+   "status": "PASS",
+   "value": 14.97,
+   "detail": "до улицы 15.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207006829",
+   "status": "PASS",
+   "value": 0.42,
+   "detail": "до улицы 0.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207046927",
+   "status": "PASS",
+   "value": 4.97,
+   "detail": "до улицы 5.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207067521",
+   "status": "PASS",
+   "value": 3.03,
+   "detail": "до улицы 3.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207112922",
+   "status": "PASS",
+   "value": 3.67,
+   "detail": "до улицы 3.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207113123",
+   "status": "PASS",
+   "value": 8.62,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207226122",
+   "status": "PASS",
+   "value": 8.4,
+   "detail": "до улицы 8.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207227123",
+   "status": "PASS",
+   "value": 10.96,
+   "detail": "до улицы 11.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207940223",
+   "status": "PASS",
+   "value": 6.98,
+   "detail": "до улицы 7.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5207973221",
+   "status": "PASS",
+   "value": 5.62,
+   "detail": "до улицы 5.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5228154522",
+   "status": "PASS",
+   "value": 8.64,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5244190256",
+   "status": "PASS",
+   "value": 1.7,
+   "detail": "до улицы 1.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5254203835",
+   "status": "PASS",
+   "value": 13.13,
+   "detail": "до улицы 13.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5259599422",
+   "status": "PASS",
+   "value": 11.43,
+   "detail": "до улицы 11.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5295731365",
+   "status": "PASS",
+   "value": 18.83,
+   "detail": "до улицы 18.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5744091177",
+   "status": "PASS",
+   "value": 21.08,
+   "detail": "до улицы 21.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5744091192",
+   "status": "PASS",
+   "value": 15.39,
+   "detail": "до улицы 15.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5744091194",
+   "status": "PASS",
+   "value": 4.28,
+   "detail": "до улицы 4.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5744091195",
+   "status": "PASS",
+   "value": 18.37,
+   "detail": "до улицы 18.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5744091337",
+   "status": "PASS",
+   "value": 15.64,
+   "detail": "до улицы 15.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5749529574",
+   "status": "PASS",
+   "value": 17.45,
+   "detail": "до улицы 17.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5756851369",
+   "status": "PASS",
+   "value": 18.84,
+   "detail": "до улицы 18.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5756851370",
+   "status": "PASS",
+   "value": 16.31,
+   "detail": "до улицы 16.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5756882393",
+   "status": "PASS",
+   "value": 2.88,
+   "detail": "до улицы 2.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5761275779",
+   "status": "PASS",
+   "value": 6.04,
+   "detail": "до улицы 6.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5761276100",
+   "status": "PASS",
+   "value": 9.96,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5761276101",
+   "status": "PASS",
+   "value": 8.55,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5761276104",
+   "status": "PASS",
+   "value": 15.62,
+   "detail": "до улицы 15.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5761276260",
+   "status": "PASS",
+   "value": 14.55,
+   "detail": "до улицы 14.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5771239668",
+   "status": "PASS",
+   "value": 19.76,
+   "detail": "до улицы 19.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5771331883",
+   "status": "PASS",
+   "value": 16.27,
+   "detail": "до улицы 16.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5771377479",
+   "status": "PASS",
+   "value": 15.51,
+   "detail": "до улицы 15.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5775306278",
+   "status": "PASS",
+   "value": 10.86,
+   "detail": "до улицы 10.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5778951213",
+   "status": "PASS",
+   "value": 4.99,
+   "detail": "до улицы 5.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5778951214",
+   "status": "PASS",
+   "value": 10.27,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5778968119",
+   "status": "PASS",
+   "value": 11.67,
+   "detail": "до улицы 11.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5851574955",
+   "status": "PASS",
+   "value": 13.12,
+   "detail": "до улицы 13.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5880996077",
+   "status": "PASS",
+   "value": 8.61,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5880996078",
+   "status": "PASS",
+   "value": 16.54,
+   "detail": "до улицы 16.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5880996079",
+   "status": "PASS",
+   "value": 12.35,
+   "detail": "до улицы 12.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5880996080",
+   "status": "PASS",
+   "value": 2.43,
+   "detail": "до улицы 2.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5880996939",
+   "status": "PASS",
+   "value": 10.23,
+   "detail": "до улицы 10.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5887665608",
+   "status": "PASS",
+   "value": 11.85,
+   "detail": "до улицы 11.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5913646172",
+   "status": "PASS",
+   "value": 13.94,
+   "detail": "до улицы 13.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6079704885",
+   "status": "PASS",
+   "value": 5.8,
+   "detail": "до улицы 5.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6495181293",
+   "status": "PASS",
+   "value": 10.09,
+   "detail": "до улицы 10.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6497362387",
+   "status": "PASS",
+   "value": 11.71,
+   "detail": "до улицы 11.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531590413",
+   "status": "PASS",
+   "value": 3.23,
+   "detail": "до улицы 3.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531590884",
+   "status": "PASS",
+   "value": 3.53,
+   "detail": "до улицы 3.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531612942",
+   "status": "PASS",
+   "value": 6.6,
+   "detail": "до улицы 6.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531623439",
+   "status": "PASS",
+   "value": 7.63,
+   "detail": "до улицы 7.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531623440",
+   "status": "PASS",
+   "value": 7.38,
+   "detail": "до улицы 7.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531625330",
+   "status": "PASS",
+   "value": 7.93,
+   "detail": "до улицы 7.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531628193",
+   "status": "PASS",
+   "value": 4.81,
+   "detail": "до улицы 4.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531634247",
+   "status": "PASS",
+   "value": 4.72,
+   "detail": "до улицы 4.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531637554",
+   "status": "PASS",
+   "value": 4.77,
+   "detail": "до улицы 4.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531640785",
+   "status": "PASS",
+   "value": 8.54,
+   "detail": "до улицы 8.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531653829",
+   "status": "PASS",
+   "value": 2.51,
+   "detail": "до улицы 2.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531657118",
+   "status": "PASS",
+   "value": 7.46,
+   "detail": "до улицы 7.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6531735721",
+   "status": "PASS",
+   "value": 1.3,
+   "detail": "до улицы 1.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6536618668",
+   "status": "PASS",
+   "value": 2.53,
+   "detail": "до улицы 2.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6536624223",
+   "status": "PASS",
+   "value": 6.99,
+   "detail": "до улицы 7.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6536624224",
+   "status": "PASS",
+   "value": 10.46,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6539218247",
+   "status": "PASS",
+   "value": 9.26,
+   "detail": "до улицы 9.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6539220004",
+   "status": "PASS",
+   "value": 6.24,
+   "detail": "до улицы 6.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6539220005",
+   "status": "PASS",
+   "value": 7.81,
+   "detail": "до улицы 7.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6539230014",
+   "status": "PASS",
+   "value": 4.35,
+   "detail": "до улицы 4.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6539232235",
+   "status": "PASS",
+   "value": 9.81,
+   "detail": "до улицы 9.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6539365592",
+   "status": "PASS",
+   "value": 8.09,
+   "detail": "до улицы 8.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6541861855",
+   "status": "PASS",
+   "value": 7.96,
+   "detail": "до улицы 8.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547486640",
+   "status": "PASS",
+   "value": 3.6,
+   "detail": "до улицы 3.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547514506",
+   "status": "PASS",
+   "value": 4.85,
+   "detail": "до улицы 4.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547531592",
+   "status": "PASS",
+   "value": 16.06,
+   "detail": "до улицы 16.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547531599",
+   "status": "PASS",
+   "value": 11.7,
+   "detail": "до улицы 11.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547547139",
+   "status": "PASS",
+   "value": 6.2,
+   "detail": "до улицы 6.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547547140",
+   "status": "PASS",
+   "value": 13.93,
+   "detail": "до улицы 13.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547547141",
+   "status": "PASS",
+   "value": 15.31,
+   "detail": "до улицы 15.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547563993",
+   "status": "PASS",
+   "value": 14.64,
+   "detail": "до улицы 14.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547569303",
+   "status": "PASS",
+   "value": 3.12,
+   "detail": "до улицы 3.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6547569304",
+   "status": "PASS",
+   "value": 7.77,
+   "detail": "до улицы 7.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6552674872",
+   "status": "PASS",
+   "value": 10.56,
+   "detail": "до улицы 10.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6552715260",
+   "status": "PASS",
+   "value": 7.41,
+   "detail": "до улицы 7.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6552724167",
+   "status": "PASS",
+   "value": 8.27,
+   "detail": "до улицы 8.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6552724168",
+   "status": "PASS",
+   "value": 8.58,
+   "detail": "до улицы 8.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6552728587",
+   "status": "PASS",
+   "value": 10.49,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
    "id": "osm-node-6552728605",
    "status": "PASS",
    "value": 1.89,
    "detail": "до улицы 1.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6556992263",
+   "status": "PASS",
+   "value": 1.72,
+   "detail": "до улицы 1.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6556992264",
+   "status": "PASS",
+   "value": 18.89,
+   "detail": "до улицы 18.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6556992265",
+   "status": "PASS",
+   "value": 14.63,
+   "detail": "до улицы 14.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6790534711",
+   "status": "PASS",
+   "value": 9.42,
+   "detail": "до улицы 9.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6790623730",
+   "status": "PASS",
+   "value": 19.25,
+   "detail": "до улицы 19.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6790623782",
+   "status": "PASS",
+   "value": 5.57,
+   "detail": "до улицы 5.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6790623783",
+   "status": "PASS",
+   "value": 17.3,
+   "detail": "до улицы 17.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-8516133627",
+   "status": "PASS",
+   "value": 11.93,
+   "detail": "до улицы 11.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-8590079262",
+   "status": "PASS",
+   "value": 10.31,
+   "detail": "до улицы 10.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-9732003948",
+   "status": "PASS",
+   "value": 9.82,
+   "detail": "до улицы 9.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-984465156",
+   "status": "PASS",
+   "value": 15.35,
+   "detail": "до улицы 15.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-984465170",
+   "status": "PASS",
+   "value": 10.49,
+   "detail": "до улицы 10.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-9942639239",
+   "status": "PASS",
+   "value": 7.92,
+   "detail": "до улицы 7.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-9942639240",
+   "status": "PASS",
+   "value": 3.11,
+   "detail": "до улицы 3.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-9942688217",
+   "status": "PASS",
+   "value": 3.27,
+   "detail": "до улицы 3.3 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-9942688218",
+   "status": "PASS",
+   "value": 1.6,
+   "detail": "до улицы 1.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-way-1373480765",
+   "status": "PASS",
+   "value": 5.64,
+   "detail": "до улицы 5.6 м (допуск 60 м)"
   },
   {
    "check": "scenario_closure_on_graph",

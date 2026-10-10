@@ -20,7 +20,7 @@
  "items": {
   "demo-astana-landscaping-yard": {
    "status": "not_snapped",
-   "reason": "нет данных о дворах OSM (LOCAL-1) — показываем как примерное место",
+   "reason": "центр условного участка не попадает ни в один двор OSM — показываем как примерное место",
    "original_coordinates": [
     [
      [
