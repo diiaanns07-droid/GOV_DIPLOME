@@ -397,7 +397,8 @@
  "akim.delta.ratio": {
   "one": "в {n} раз больше",
   "few": "в {n} раза больше",
-  "many": "в {n} раз больше"
+  "many": "в {n} раз больше",
+  "other": "в {n} раза больше"
  },
  "akim.kpi.week": "За 7 дней: {n}",
  "akim.kpi.waiting": {
@@ -519,6 +520,7 @@
  "complaint.example.noise_safety": "Нет пешеходного перехода у школы",
  "complaint.example.parking": "Машины стоят на газоне во дворе",
  "complaint.example.other": "Опишите своими словами",
+ "complaint.step2.here": "Вы здесь",
  "mine.title": "Мои обращения",
  "mine.empty.title": "Вы ещё ничего не отправляли",
  "mine.empty.hint": "Сообщите о проблеме — здесь появится её статус.",

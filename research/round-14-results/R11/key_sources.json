@@ -474,5 +474,6 @@
  "works.legend.exact": "R12 · лента работ раунда 13 «Что меняется в городе» (web/civic/map/civic-map.js / civic-map-core.js) — R10 B-012",
  "works.legend.approx": "R12 · лента работ раунда 13 «Что меняется в городе» (web/civic/map/civic-map.js / civic-map-core.js) — R10 B-012",
  "works.legend.demo": "R12 · лента работ раунда 13 «Что меняется в городе» (web/civic/map/civic-map.js / civic-map-core.js) — R10 B-012",
- "works.legend.no_coords": "R12 · лента работ раунда 13 «Что меняется в городе» (web/civic/map/civic-map.js / civic-map-core.js) — R10 B-012"
+ "works.legend.no_coords": "R12 · лента работ раунда 13 «Что меняется в городе» (web/civic/map/civic-map.js / civic-map-core.js) — R10 B-012",
+ "complaint.step2.here": "R09 · шаг ②, у цели, внутри которой стоит точка (вместо расстояния)"
 }
