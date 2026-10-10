@@ -2,9 +2,9 @@
  "role": "R09",
  "round": 14,
  "title": "Жалоба жителя v2: место, «Я тоже», статус",
- "status": "READY_FOR_FINAL (ночь 10→11 окт: исправлены все замечания к R09; проверено на FINAL R01 4ca9aef — R01 нужно взять пути R09 из этой ветки, INTEGRATION.txt N0)",
+ "status": "READY_FOR_FINAL (ночь 10→11 окт: исправлены все замечания к R09; FINAL R01 уже с R09 b6cadb3, осталось взять f4fb7b9 — INTEGRATION.txt N0)",
  "branch": "claude/wizardly-ptolemy-qy8ltw",
- "branch_note": "Среда ночной сессии разрешает push только в эту ветку; claude/modest-shannon-0ki93p (BRANCHES.md) продолжена здесь: пути R09 взяты из неё @ 5dd6465 побайтно, без merge её истории. FINAL R01 4ca9aef содержит R09 fa49fc9 из modest-shannon; ночные исправления R01 забирает отсюда: git checkout <code_sha> -- ui/civic_feedback web/civic/feedback tests/civic/R09 (надмножество путей R09 в 4ca9aef).",
+ "branch_note": "Среда ночной сессии разрешает push только в эту ветку; claude/modest-shannon-0ki93p (BRANCHES.md) продолжена здесь: пути R09 взяты из неё @ 5dd6465 побайтно, без merge её истории. R01 берёт R09 отсюда с 85c16e2 (b6cadb3): git checkout <code_sha> -- ui/civic_feedback web/civic/feedback tests/civic/R09.",
  "base_sha": "a38da114 (claude/round-14-package; рабочее дерево проверки = пакет + пути R09)",
  "restored_from": {
   "branch": "claude/modest-shannon-0ki93p",
@@ -180,6 +180,21 @@
    "detail": "198/198 (вкл. состояния «Мои обращения» и «несколько отдельных жалоб на месте» — 375/1366 ru/kk)"
   },
   {
+   "name": "FINAL R01 b6d9ecf (R09 b6cadb3, засев модулем R09) + R09 f4fb7b9: node tests/civic/R09/app_demo_r09.cjs",
+   "status": "PASS",
+   "detail": "42/42: 375/1366 ru/kk, «Об этом уже сообщили 3 человека» -> «Я тоже» -> 4, надписи = реплики ведущего, шаг 6 — у жителя «Исправлено»"
+  },
+  {
+   "name": "тот же b6d9ecf + f4fb7b9: R01 r14_b1.cjs / r14_b2.cjs",
+   "status": "PASS",
+   "detail": "15/15 и 26/26"
+  },
+  {
+   "name": "тот же b6d9ecf + f4fb7b9: pytest tests/civic/R09 R15 R01 R07 R04",
+   "status": "PASS (1 случайное падение в 1 из 3 прогонов)",
+   "detail": "1001 passed, 2 skipped во 2-м и 3-м прогонах; в 1-м — 1 failed, имя не сохранилось, не повторилось; R09+R04 трижды подряд 570 passed"
+  },
+  {
    "name": "FINAL R01 4ca9aef + пути R09 этой ветки (без патча засева — засев R01 0a7a346): node tests/civic/R09/app_demo_r09.cjs",
    "status": "PASS",
    "detail": "42/42: «Об этом уже сообщили 3 человека» (3 отдельные жалобы R01) -> «Я тоже» -> 4; надписи = реплики ведущего; шаг 6 — у жителя «Исправлено»"
@@ -251,10 +266,10 @@
   }
  ],
  "known_limits": [
-  "FINAL R01 4ca9aef содержит R09 fa49fc9 (modest-shannon): ночные исправления R09 попадут в показ только после шага R01 (INTEGRATION.txt N0).",
+  "FINAL R01 b6d9ecf содержит R09 b6cadb3; последний круг f4fb7b9 (люди по месту) — после шага R01 (INTEGRATION.txt N0).",
   "DEMO_SCRIPT R01 и DEMO_PHRASES_KK R11: на шаге 1–2 текст стоит раньше места и есть кнопка «Да», которой нет на экране — правка текста предложена в INTEGRATION.txt (N6).",
   "«Один голос/«Я тоже» на устройство» без входа — по-прежнему накручивается сменой device_id; лимит по адресу — в шлюзе R01 (S08).",
   "Срок хранения жалоб и удаление автором не сделаны (R15, раздел для жюри) — решение владельца."
  ],
- "next_step": "R01: взять пути R09 @ code_sha (INTEGRATION.txt N0), патч засева НЕ нужен; поправить DEMO_SCRIPT шаг 1–2 (N6). R11 — поменять строки 2 и 3 в DEMO_PHRASES_KK. R07 — B-036 (зелёный при открытых жалобах)."
+ "next_step": "R01: взять f4fb7b9 (INTEGRATION.txt N0), поправить DEMO_SCRIPT шаг 1–2 (N6). R11 — строки 2 и 3 в DEMO_PHRASES_KK. Координатор — реестр R09 = claude/wizardly-ptolemy-qy8ltw."
 }
