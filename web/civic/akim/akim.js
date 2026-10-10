@@ -6,7 +6,8 @@
  *   <script src="/civic/i18n/i18n.js"></script>
  *   <script src="/civic/akim/akim.js"></script>
  *   BirgeAkim.mount(document.getElementById("akim"), { apiBase: "/api/civic/v2" });
- *   Опции: mapHref, syncUrl, refreshMs (тихое обновление, 0 — выкл.), titleTag ("h1"; в оболочке со своим h1 — "h2").
+ *   Опции: mapHref, syncUrl, refreshMs (тихое обновление, 0 — выкл.), titleTag ("h1"; в оболочке со своим h1 — "h2"),
+ *   objectHref (null — строки объектов не ссылки; "/#object={id}" — открыть объект на карте, событие "birge:open-object").
  *
  * Данные: GET {apiBase}/akim/summary?date=YYYY-MM-DD&district=<id> (ui/civic_akim, R08). Все числа
  * считает сервер; здесь только показ. Текст сводки приходит сразу на ru и kk — смена языка без запроса.
@@ -24,6 +25,10 @@
   var DEFAULTS = {
     apiBase: "/api/civic/v2",
     mapHref: "/#target={kind}:{id}&days={days}",
+    // Объект R06 → карта с его карточкой и этапами, напр. "/#object={id}". По умолчанию выключено: в оболочке Birge
+    // (FINAL 0a7a346) выбор по #object= не показывает карточку с этапами — переход был бы «в никуда». R01 включит,
+    // когда карточка объекта будет видна (INTEGRATION 4е).
+    objectHref: null,
     syncUrl: true, // хранить дату и район в адресе: F5, печать и ссылка показывают то же
     refreshMs: 120000, // тихое обновление, пока вкладка видна (0 — выключить)
     titleTag: "h1", // в оболочке со своим h1 передайте "h2" — на странице будет один заголовок первого уровня
@@ -590,10 +595,36 @@
       if (o.delay_days > 0) tags.push(h("span", { class: "bk-tag bk-tag--warn", text: tr("object.late", { n: o.delay_days }) }));
       if (o.stale && o.days_since_update != null)
         tags.push(h("span", { class: "bk-tag akim-stale", text: tr("object.stale_days", { n: o.days_since_update }) }));
-      var main = [h("span", { class: "bk-list__title", text: label(o, "title", "object.kind.") })];
+      var title = label(o, "title", "object.kind.");
+      var main = [h("span", { class: "bk-list__title", text: title })];
       if (o.district) main.push(h("span", { class: "bk-list__sub", text: tr("district." + o.district) }));
       main.push(stagesEl(o));
-      return h("li", { class: "akim-obj" }, [h("span", { class: "bk-list__main" }, main), h("span", { class: "akim-obj__tags" }, tags)]);
+      var inner = [h("span", { class: "bk-list__main" }, main), h("span", { class: "akim-obj__tags" }, tags)];
+      // Нет места на карте или оболочка не умеет показать объект — обычная строка.
+      if (!opts.objectHref || !o.has_place || !o.id) return h("li", { class: "akim-obj" }, inner);
+      // R11 (ночь 6, п. 4): строка нажимается, как «Горячие места», — карта с карточкой объекта и этапами.
+      inner.push(icon("chevron-right"));
+      return h("li", null, [
+        h(
+          "a",
+          {
+            class: "akim-obj akim-obj--link",
+            "data-key": "object:" + o.id,
+            href: opts.objectHref.replace("{id}", encodeURIComponent(o.id)),
+            "aria-label": tr("akim.hot.open", { name: title }),
+            onclick: function (e) {
+              var ev = new CustomEvent("birge:open-object", { cancelable: true, detail: { id: o.id, from: "akim" } });
+              if (!doc.dispatchEvent(ev)) {
+                e.preventDefault(); // оболочка открыла объект сама
+                return;
+              }
+              // Оболочка R01 разбирает #object=<id> (выбор на карте), но раздел «Картина дня» сама не закрывает.
+              if (root.BirgeShell && typeof root.BirgeShell.setSection === "function") root.BirgeShell.setSection("map");
+            },
+          },
+          inner
+        ),
+      ]);
     }
     // Полоса 6 этапов ui-kit (.bk-stages--compact) + «Этап 4 из 6: Строительство» — как в макете day.html.
     function stagesEl(o) {
