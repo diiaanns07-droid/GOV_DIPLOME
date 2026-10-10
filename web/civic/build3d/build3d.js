@@ -25,13 +25,15 @@
  *   onToolChange(active, kind) — модуль взял/отдал щелчки по карте (R01: map.setInteractionEnabled);
  *   onSelect(proposal|null)    — выбрано предложение (R06 может показать свою карточку);
  *   renderCard: false          — не показывать встроенную карточку (её рисует R06).
- *   avoid: () => [элементы]    — элементы хозяина поверх карты (панель R01): модуль ставит свою панель, карточку
- *                                и сдвиг камеры в свободную часть карты (справа от панели / над шторкой);
+ *   avoid: () => [элементы]    — элементы хозяина поверх карты (шапка, панели, кнопки карты R01): модуль ставит
+ *                                объект при открытой карточке в свободную часть карты, а в режиме overlay — и свою
+ *                                панель (справа от панели / над шторкой);
  *   dock: false                — спрятать каталог/подсказку (объекты, подписи и карточка по нажатию — видны);
  *   mode                       — "akimat" | "resident" (как у оболочки R01; role — старое имя), событие "birge:mode";
  *   api                        — клиент оболочки R01 ({v2(method, path, body)}); map — карта или функция map().
  *
- * Handle: start(kind), cancel(), select(id), refresh(), setVisible(bool), getState(), destroy().
+ * Handle: start(kind), cancel(), select(id), flyToProposals(), setMode(mode), update({mode, dock, visible}), refresh(),
+ *         setVisible(bool), getState(), destroy().
  * Событие для соседей: document "civic-build3d:tool" {active, kind} — как "civic-editor:tool" у редактора.
  */
 (function (root) {
@@ -436,6 +438,7 @@
     var layerAdded = false;
     var unsubLang = null;
     var toastTimer = null;
+    var toastIsError = false;
 
     // ── DOM: корень, нижняя панель, тосты, подписи ──
     var hostRoot = opts.root || map.getContainer();
@@ -831,6 +834,7 @@
       opts2 = opts2 || {};
       toasts.textContent = "";
       clearTimeout(toastTimer);
+      toastIsError = !!opts2.error;
       var n = el("div", "bk-toast" + (opts2.error ? " bk-toast--error" : " bk-toast--ok"), { role: opts2.error ? "alert" : "status" });
       if (!opts2.error) n.appendChild(icon("check", o.iconsUrl));
       n.appendChild(el("span", "bk-toast__text", { text: text }));
@@ -847,6 +851,10 @@
       toastTimer = setTimeout(function () {
         if (n.parentNode) n.parentNode.removeChild(n);
       }, opts2.error ? 8000 : 6000);
+    }
+    function clearToast() {
+      clearTimeout(toastTimer);
+      toasts.textContent = "";
     }
 
     // ───────────── Загрузка ─────────────
@@ -2248,36 +2256,83 @@
       render();
       emitSelect(id ? S.objects[id].p : null);
       if (id) {
+        // «Проект поставлен · Отменить» больше не нужен: в карточке есть «Удалить», а тост закрывал бы объект
+        // над карточкой (оболочка R01 ставит тосты над панелью). Ошибки с «Повторить» остаются.
+        if (!toastIsError) clearToast();
         focusDock("[data-action=vote-up]");
         keepAboveDock(S.objects[id]);
       }
       repaint();
     }
 
-    // Выбранный объект не должен прятаться под карточкой (UX_REVIEW день 3 #21): считаем свободную часть карты
-    // (слева от карточки на ноутбуке, над панелью на телефоне) и, если объект вне её, плавно ставим его в её
-    // центр. Это ответ на нажатие пользователя, поэтому правило «карта сама не двигается» не нарушается.
+    // Прямоугольники панелей хозяина поверх карты (шапка, шторка, колонки, кнопки), видимые сейчас.
+    function avoidRects() {
+      if (typeof opts.avoid !== "function") return [];
+      var list = [];
+      try {
+        list = opts.avoid() || [];
+      } catch (e) {
+        list = [];
+      }
+      return Array.prototype.slice.call(list).map(function (node) {
+        return node && node.getBoundingClientRect && !node.hidden ? node.getBoundingClientRect() : null;
+      }).filter(function (r) {
+        return r && r.width && r.height;
+      });
+    }
+    // Вычесть из свободной области панель r: отрезаем ту сторону, после которой остаётся больше места
+    // (шапка — сверху, колонка справа — справа, плашка «Территория» в углу — слева). Панель вне области — без изменений.
+    function cutBest(a, r) {
+      var g = 12;
+      if (r.x1 <= a.x0 || r.x0 >= a.x1 || r.y1 <= a.y0 || r.y0 >= a.y1) return a;
+      var opts2 = [
+        { x0: Math.max(a.x0, r.x1 + g), y0: a.y0, x1: a.x1, y1: a.y1 },
+        { x0: a.x0, y0: a.y0, x1: Math.min(a.x1, r.x0 - g), y1: a.y1 },
+        { x0: a.x0, y0: Math.max(a.y0, r.y1 + g), x1: a.x1, y1: a.y1 },
+        { x0: a.x0, y0: a.y0, x1: a.x1, y1: Math.min(a.y1, r.y0 - g) },
+      ];
+      var best = null,
+        bestArea = 0;
+      opts2.forEach(function (b) {
+        var ar = Math.max(0, b.x1 - b.x0) * Math.max(0, b.y1 - b.y0);
+        if (ar > bestArea) {
+          best = b;
+          bestArea = ar;
+        }
+      });
+      // Слишком мало места (панели закрывают почти всё) — оставляем как было: лучше частично, чем никак.
+      return best && best.x1 - best.x0 >= 160 && best.y1 - best.y0 >= 120 ? best : a;
+    }
     function freeArea() {
       var canvas = map.getCanvas();
       var cr = canvas.getBoundingClientRect();
       var w = canvas.clientWidth,
         h = canvas.clientHeight;
-      // Начинаем с области корня модуля (она уже без панелей хозяина, см. applyInsets), затем вычитаем свою панель.
+      // Режим overlay: начинаем с области корня модуля (она уже без панелей хозяина, см. applyInsets).
+      // Корень, который ставит хозяин (оболочка R01: полоса внизу по размеру панели), — не область карты:
+      // тогда начинаем со всего холста. Порядок: своя панель → панели хозяина (opts.avoid) → тост.
       var ur = ui.getBoundingClientRect();
-      var a = ur.width && ur.height
+      var a = ui.classList.contains("b3d--overlay") && ur.width && ur.height
         ? { x0: Math.max(0, ur.left - cr.left), y0: Math.max(0, ur.top - cr.top), x1: Math.min(w, ur.right - cr.left), y1: Math.min(h, ur.bottom - cr.top) }
         : { x0: 0, y0: 0, x1: w, y1: h };
       var dr = dock.getBoundingClientRect();
-      if (!dr.width || !dr.height || ui.hidden) return a;
-      var left = dr.left - cr.left,
-        top = dr.top - cr.top;
-      if (left > a.x0 + (a.x1 - a.x0) * 0.45 && top < a.y0 + (a.y1 - a.y0) * 0.3) a.x1 = Math.max(a.x0 + 120, left); // карточка справа
-      else a.y1 = Math.max(a.y0 + 120, top); // панель снизу
+      if (dr.width && dr.height && !ui.hidden) {
+        var left = dr.left - cr.left,
+          top = dr.top - cr.top;
+        if (left > a.x0 + (a.x1 - a.x0) * 0.45 && top < a.y0 + (a.y1 - a.y0) * 0.3) a.x1 = Math.max(a.x0 + 120, left); // карточка справа
+        else a.y1 = Math.max(a.y0 + 120, top); // панель снизу
+      }
+      avoidRects().forEach(function (r) {
+        a = cutBest(a, { x0: r.left - cr.left, y0: r.top - cr.top, x1: r.right - cr.left, y1: r.bottom - cr.top });
+      });
       // Видимый тост («Проект поставлен… Отменить») тоже занимает место над панелью — объект ставим выше него.
       var tr = toasts.getBoundingClientRect();
       if (tr.height && tr.top - cr.top < a.y1 && tr.left - cr.left < a.x1) a.y1 = Math.max(a.y0 + 120, tr.top - cr.top);
       return a;
     }
+    // Выбранный объект не должен прятаться под карточкой (UX_REVIEW день 3 #21): считаем свободную часть карты
+    // (слева от карточки на ноутбуке, над панелью на телефоне) и, если объект вне её, плавно ставим его в её
+    // центр. Это ответ на нажатие пользователя, поэтому правило «карта сама не двигается» не нарушается.
     function keepAboveDock(obj) {
       if (!obj || !lastMatrix) return;
       var ground = worldOf(obj, obj.p.kind === "lighting" ? [obj.labelPoint[0], obj.labelPoint[1], 0] : [0, 0, 0]);
@@ -2359,6 +2414,8 @@
       var r = mode === "resident" ? "resident" : "akimat";
       if (r === o.role) return;
       if (S.mode === "placing") cancel();
+      // «Проект поставлен · Отменить» акимата — не для жителя (и закрывал бы объект над карточкой).
+      clearToast();
       o.role = r;
       ui.setAttribute("data-b3d-role", r);
       render(true);

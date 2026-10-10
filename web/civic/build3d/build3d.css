@@ -118,6 +118,10 @@
 .b3d-cards {
   display: flex;
   gap: var(--s-3, 12px);
+  /* Ширину строки задаёт панель, а не карточки — тогда по ней можно мерить (@container ниже). */
+  width: 100%;
+  box-sizing: border-box;
+  container-type: inline-size;
   overflow-x: auto; /* прокрутка внутри строки, а не страницы */
   scrollbar-width: none;
   padding: 4px 2px;
@@ -128,7 +132,7 @@
 }
 .b3d-card {
   flex: 1 0 96px;
-  min-width: 96px;
+  min-width: auto; /* не уже самого длинного слова подписи: в узкой строке — прокрутка, а не текст за рамкой */
   min-height: 96px;
   display: flex;
   flex-direction: column;
@@ -174,6 +178,14 @@
 .b3d-card__label {
   overflow-wrap: normal;
   hyphens: auto;
+}
+/* Узкая панель на ноутбуке (оболочка R01 даёт 720 px): все 5 карточек в строку, «Спортплощадка» 14 px без выхода
+   за рамку. Карточки телефона (≤ 639 px) — свои, 144 px, 16 px (ниже). */
+@container (max-width: 700px) {
+  .b3d-card {
+    padding-inline: 4px;
+    font-size: 14px; /* не меньше 14 px (UX_BRIEF); токена «14 для подписей» у ui-kit нет — --fs-caption только для мета */
+  }
 }
 
 /* ── Размещение ── */
@@ -412,6 +424,7 @@
     min-width: 144px;
     min-height: 88px;
     padding: var(--s-2, 8px) 6px;
+    font-size: var(--fs-body, 16px);
   }
   .b3d-actions {
     display: grid;

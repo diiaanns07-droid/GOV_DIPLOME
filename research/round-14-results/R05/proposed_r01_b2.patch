@@ -1,81 +1,164 @@
-diff --git a/ui/web_server.py b/ui/web_server.py
-index f354f20..7c86e18 100644
---- a/ui/web_server.py
-+++ b/ui/web_server.py
-@@ -38,6 +38,8 @@ ASSETS = {
-     "/favicon.svg": ("favicon.svg", "image/svg+xml"),
-     "/vendor/maplibre-gl.js": ("vendor/maplibre-gl.js", "text/javascript; charset=utf-8"),
-     "/vendor/maplibre-gl.css": ("vendor/maplibre-gl.css", "text/css; charset=utf-8"),
-+    # R05 r14: three.js 0.169.0 для 3D-превью (грузится модулем build3d только при монтировании).
-+    "/vendor/three/three.module.min.js": ("vendor/three/three.module.min.js", "text/javascript; charset=utf-8"),
+diff --git a/tests/civic/R01/browser/r14_b2.cjs b/tests/civic/R01/browser/r14_b2.cjs
+index 62eeff2..f9a7378 100644
+--- a/tests/civic/R01/browser/r14_b2.cjs
++++ b/tests/civic/R01/browser/r14_b2.cjs
+@@ -2,9 +2,9 @@
+ //   API:      R12 /targets and street routes, R04 /classify and /similar, R06 proposals and stages, R13 /forecast
+ //   resident: «Сообщить о проблеме» -> «Это здесь?» offers a real R12 place -> R04 suggests the category -> sent
+ //   akimat:   R05 3D catalog over the map (left of the panel) -> «Сквер» -> place on the left bank -> «Поставить»
+-//             -> R06 stores the proposal (planned_year from R05 year, via the shell adapter)
++//             -> R06 stores the proposal (planned_year from R05 year; R05 speaks the R06 contract itself)
+ //   resident: the same proposal card has «За / Против» -> vote counted by R06 (my_vote of this device)
+-//   akimat:   «Удалить» (R05 DELETE -> R06 withdraw via the adapter); «Картина дня» hides the 3D dock
++//   akimat:   «Удалить» (R05 -> R06 POST …/withdraw); «Картина дня» hides the 3D dock
+ // Usage: node tests/civic/R01/browser/r14_b2.cjs <out_dir>
+ // Starts `python3 -B app.py` with CIVIC_DEMO=1 on a temporary SQLite file seeded with seed-demo + seed-r14-demo
+ // (synthetic objects, stages and proposals, all flagged demo).
+@@ -149,13 +149,16 @@ async function main() {
+     await page.mouse.click(xy[0], xy[1]);
+     await page.waitForTimeout(400);
+     const ghost = (await b3dState(page))?.ghost;
+-    const createResp = page.waitForResponse((r) => /\/api\/civic\/v2\/proposals$/.test(new URL(r.url()).pathname) && r.request().method() === "POST", { timeout: 15000 }).catch(() => null);
++    // R05 сначала шлёт контекст 3D (near_street, target); R06 поставки 1 (7031afa) отвечает 422, и R05 один раз
++    // повторяет базовыми полями. Ждём успешный ответ; R06 поставки 2 (b42e790) принимает с первого раза.
++    const createResp = page.waitForResponse((r) => /\/api\/civic\/v2\/proposals$/.test(new URL(r.url()).pathname) && r.request().method() === "POST"
++      && r.status() < 300, { timeout: 15000 }).catch(() => null);
+     await page.click("#birge-build3d-root [data-action=place]");
+     const created = await createResp;
+     await page.waitForFunction((n) => (window.CivicShell.build3d?.getState?.().count || 0) > n && !window.CivicShell.build3d.getState().animating, st.count, { timeout: 30000 }).catch(() => {});
+     const createdBody = created ? await created.json().catch(() => null) : null;
+     const newItem = createdBody?.item || createdBody?.proposal || null;
+-    check("«Поставить»: R06 stores the proposal (201, year 2027 -> planned_year via the shell adapter)",
++    check("«Поставить»: R06 stores the proposal (201, year 2027 -> planned_year)",
+       created?.status() === 201 && newItem?.kind === "square" && newItem?.planned_year === 2027,
+       { status: created?.status(), item: newItem && { id: newItem.id, kind: newItem.kind, planned_year: newItem.planned_year, district: newItem.district }, ghost: ghost && { valid: ghost.valid } });
+     await page.waitForTimeout(500);
+@@ -168,12 +171,17 @@ async function main() {
+     await page.waitForTimeout(300);
+     await b3dReady(page);
+     st = await b3dState(page);
+-    const emptyDock = await page.evaluate(() => document.querySelector("#birge-build3d-root .b3d-dock")?.dataset.state || null);
+-    check("resident: no catalog (view and vote only)", st?.phase === "ready" && emptyDock === "empty", { phase: st?.phase, dock: emptyDock });
++    // R05 поставки 2: у жителя вместо каталога — подсказка «Нажмите на проект, чтобы проголосовать» (UX_REVIEW день 3, п. 24).
++    const residentDock = await page.evaluate(() => { const d = document.querySelector("#birge-build3d-root .b3d-dock");
++      return d ? { state: d.dataset.state || null, cards: d.querySelectorAll(".b3d-card[data-kind]").length } : null; });
++    check("resident: no catalog (view and vote only)", st?.phase === "ready" && residentDock && residentDock.cards === 0
++      && ["empty", "hint"].includes(residentDock.state), { phase: st?.phase, dock: residentDock });
+     if (newItem) await page.evaluate((id) => window.CivicShell.build3d.select(id), newItem.id);
+-    await page.waitForSelector("#birge-build3d-root [data-action=vote-up]", { timeout: 10000 }).catch(() => {});
++    // Голос — в карточке R06 внутри панели 3D (BirgeProposals) или в своей карточке R05, если R06 карточки нет.
++    const VOTE_UP = '#birge-build3d-root .r06-vote__btn[data-value="1"], #birge-build3d-root [data-action=vote-up]';
++    await page.waitForSelector(VOTE_UP, { timeout: 10000 }).catch(() => {});
+     const voteResp = page.waitForResponse((r) => /\/vote$/.test(new URL(r.url()).pathname), { timeout: 15000 }).catch(() => null);
+-    await page.click("#birge-build3d-root [data-action=vote-up]").catch(() => {});
++    await page.click(VOTE_UP).catch(() => {});
+     const voted = await voteResp;
+     await page.waitForTimeout(500);
+     const dev = await deviceId(page);
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index f119e53..46e1228 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -86,7 +86,8 @@ body[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
+   /* Телефон: панель — нижняя шторка; каталог и карточка поверх неё во всю ширину. */
+   .birge-build3d-root { left: 0; right: 0; bottom: 0; z-index: 7; }
+   body[data-birge-mode="resident"] .birge-build3d-root { bottom: 84px; }
+-  /* Каталог акимата не закрывает шторку: он виден, когда шторка свёрнута (над ней); карточка и размещение — всегда. */
+-  body:has(.civic-panel:not([data-sheet="peek"])) .birge-build3d-root .b3d-dock:is([data-state="catalog"], [data-state="loading"]) { display: none; }
++  /* Каталог акимата и подсказка жителя («Нажмите на проект…», R05) не закрывают шторку: видны, когда шторка свёрнута
++     (над ней); карточка и размещение — всегда. */
++  body:has(.civic-panel:not([data-sheet="peek"])) .birge-build3d-root .b3d-dock:is([data-state="catalog"], [data-state="loading"], [data-state="hint"]) { display: none; }
+   body:has(.civic-panel[data-sheet="peek"]) .birge-build3d-root { bottom: calc(24% + 8px); }
  }
- POST_ROUTES = {
-     "/api/validate", "/api/simulate", "/api/plan-status", "/api/optimize",
-@@ -78,7 +80,11 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
-                 "heat/heat.js", "heat/heat.css",
-                 "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
-                 "feedback/complaint.css",
--                "akim/index.html", "akim/akim.js", "akim/akim.css", "akim/akim.i18n.json")
-+                "akim/index.html", "akim/akim.js", "akim/akim.css", "akim/akim.i18n.json",
-+                # B2: R05 3D-превью предложений (demo.html и data/demo-basemap.json НЕ отдаём).
-+                "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
-+                "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
-+                "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json")
- # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
- CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
-               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
 diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
-index c0b2a66..f34af8c 100644
+index f825a05..3af4415 100644
 --- a/web/civic/shell/shell.js
 +++ b/web/civic/shell/shell.js
-@@ -262,6 +262,7 @@
-     map: window.CivicMap, editor: window.CivicEditor, feedback: window.CivicFeedback,
-     scenarios: window.CivicScenarios, assistant: window.CivicAssistant, scenarioAssistant: window.CivicAssistant,
-     heat: window.CivicHeat, complaint: window.BirgeComplaint,  // B1: R07, R09 (раунд 14)
-+    build3d: window.CivicBuild3D,                              // B2: R05 3D-превью (раунд 14)
-   })[name] || null;
-   const isFallback = () => false;
-   // Нет файла модуля / модуль упал при запуске: без технических слов (UX_BRIEF правило 4); подробности — в консоли.
-@@ -403,6 +404,20 @@
-         console.error("birge complaint mount", error);
-       }
-     }
-+    // R05 3D-превью: проекты акимата на карте («Проект · 2027»), каталог «Что построить?» у акимата, голос у жителя.
-+    // Свою панель модуль ставит в свободную часть карты (avoid — панель оболочки); пока ставят объект, щелчки по
-+    // карте у модуля записей выключены. «Акимат / Житель» модуль слушает сам (событие birge:mode).
-+    if (!S.mounted.build3d && moduleFor("build3d")) {
-+      try {
-+        S.mounted.build3d = window.CivicBuild3D.mount({
-+          map: () => currentMap(), mode: birgeMode(), api: window.BirgeShell?.api,
-+          avoid: () => [$c("civic-panel"), document.getElementById("birge-header"), document.querySelector(".map-tools")],
-+          onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "civic-build3d"),
-+        }) || {};
-+      } catch (error) {
-+        console.error("birge build3d mount", error);
-+      }
-+    }
+@@ -408,55 +408,19 @@
+     mountBuild3d();
    }
+   // ---------------------------------------------------------------- 3D-превью предложений (B2: R05 + R06)
+-  // Клиент R05 (build3d-core createApiStore) и R06 @ 7031afa расходятся в мелочах: R05 шлёт year/near_street/target
+-  // и DELETE /proposals/{id}, ждёт ответ {proposal} с полем year; R06 принимает planned_year, снимает предложение
+-  // через POST …/withdraw и отвечает {item}. Переводим здесь (INTEGRATION.txt §9); R06, который сам понимает
+-  // year/DELETE/proposal (ветка R06 d043e7b), адаптер не ломает: лишнее он отбрасывает, {proposal} не трогает.
+-  const B3D_CREATE_FIELDS = ["kind", "geometry", "rotation_deg", "title_ru", "title_kk", "planned_year", "demo"];
+-  const B3D_PROPOSALS = /\/api\/civic\/v2\/proposals$/;
+-  const B3D_ONE = /\/api\/civic\/v2\/proposals\/[^/]+$/;
+-  function build3dDevice() {
+-    try { return localStorage.getItem("birge.device_id"); } catch { return null; }  // ключ R05/R06 (голос «За/Против»)
+-  }
+-  async function build3dFetch(url, init = {}) {
+-    const target = new URL(url, location.href);
+-    let method = String(init.method || "GET").toUpperCase(), body = init.body;
+-    if (method === "GET" && B3D_PROPOSALS.test(target.pathname) && !target.searchParams.has("device_id")) {
+-      const device = build3dDevice();
+-      if (device) target.searchParams.set("device_id", device);  // R06 вернёт my_vote этого устройства
+-    } else if (method === "DELETE" && B3D_ONE.test(target.pathname)) {
+-      method = "POST"; target.pathname += "/withdraw"; body = "{}";
+-    } else if (method === "POST" && B3D_PROPOSALS.test(target.pathname) && typeof body === "string") {
+-      try {
+-        const draft = JSON.parse(body), out = {};
+-        for (const key of B3D_CREATE_FIELDS) if (draft[key] !== undefined && draft[key] !== null) out[key] = draft[key];
+-        if (out.planned_year === undefined && Number.isInteger(draft.year)) out.planned_year = draft.year;
+-        body = JSON.stringify(out);
+-      } catch { /* не JSON — пусть ответит сервер */ }
+-    }
+-    const headers = new Headers(init.headers || {});
+-    if (body !== undefined) headers.set("Content-Type", "application/json");
+-    const response = await birgeFetch(target.toString(), { ...init, method, body, headers });
+-    const text = await response.text();
+-    let data;
+-    try { data = text ? JSON.parse(text) : null; } catch { data = undefined; }
+-    if (data && typeof data === "object") {
+-      const withYear = (p) => (p && typeof p === "object" && p.year == null && Number.isInteger(p.planned_year) ? { ...p, year: p.planned_year } : p);
+-      if (data.item && !data.proposal) data.proposal = data.item;
+-      if (data.proposal) data.proposal = withYear(data.proposal);
+-      if (Array.isArray(data.items)) data.items = data.items.map(withYear);
+-    }
+-    return new Response(data === undefined ? text : (data === null ? "" : JSON.stringify(data)),
+-      { status: response.status, statusText: response.statusText, headers: { "Content-Type": "application/json" } });
+-  }
++  // R05 (claude/r14-R05, поставка 2) сам говорит на контракте R06 — поставки 1 (7031afa) и 2 (b42e790) — через клиент
++  // оболочки BirgeShell.api.v2 (CSRF сотрудника, куки) и сам следует «Акимат / Житель» (событие birge:mode):
++  // адаптер build3dFetch и пересоздание модуля больше не нужны. Нет R06 (404/503) — R05 переходит на заглушку устройства.
+   function mountBuild3d() {
+-    const lib = window.CivicBuild3D, core = window.CivicBuild3DCore, m = currentMap();
++    const lib = window.CivicBuild3D, m = currentMap();
+     if (S.mounted.build3d || !lib || typeof lib.mount !== "function" || !m) return;
+     try {
+       S.mounted.build3d = lib.mount({
+-        map: m, root: $c("birge-build3d-root"), role: birgeMode() === "resident" ? "resident" : "akimat",
+-        // Хранилище — API R06 через адаптер; нет R06 (404/503) — R05 сам переходит на заглушку этого устройства.
+-        store: typeof core?.createAutoStore === "function" ? core.createAutoStore({ prefix: "/api/civic/v2", fetch: build3dFetch }) : "auto",
++        map: m, root: $c("birge-build3d-root"), mode: birgeMode() === "resident" ? "resident" : "akimat",
++        api: window.BirgeShell?.api,
++        // Шапка, «Территория», панель/шторка и кнопки карты лежат поверх карты: открыв карточку проекта, R05 ставит
++        // объект в свободную часть карты, а не под них.
++        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools"),
+         // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
+         onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
+       }) || null;
+@@ -465,13 +429,6 @@
+       S.mounted.build3d = null;
+     }
+   }
+-  function remountBuild3d() {
+-    if (!S.mounted.build3d) return;
+-    try { S.mounted.build3d.destroy?.(); } catch { /* модуль R05 не ломает оболочку */ }
+-    S.mounted.map?.setInteractionEnabled?.(true, "birge-build3d");
+-    S.mounted.build3d = null;
+-    mountBuild3d();
+-  }
    // Ссылка «#target=<kind>:<id>&days=N» (R08 «Картина дня», R07): открыть цель на тепловой карте.
    function openTargetFromLink(hash = location.hash) {
-diff --git a/web/index.html b/web/index.html
-index 8822975..781f829 100644
---- a/web/index.html
-+++ b/web/index.html
-@@ -22,6 +22,7 @@
-     <link rel="stylesheet" href="/civic/heat/heat.css" />
-     <link rel="stylesheet" href="/civic/feedback/complaint.css" />
-     <link rel="stylesheet" href="/civic/akim/akim.css" />
-+    <link rel="stylesheet" href="/civic/build3d/build3d.css" />
-     <link rel="stylesheet" href="/civic/shell/shell.css" />
-     <link rel="stylesheet" href="/civic/shell/birge.css" />
-   </head>
-@@ -227,6 +228,9 @@
-     <script defer src="/civic/feedback/complaint-strings.js"></script>
-     <script defer src="/civic/feedback/complaint.js"></script>
-     <script defer src="/civic/akim/akim.js"></script>
-+    <script defer src="/civic/build3d/build3d-core.js"></script>
-+    <script defer src="/civic/build3d/build3d-models.js"></script>
-+    <script defer src="/civic/build3d/build3d.js"></script>
-     <script defer src="/civic/shell/shell-text.js"></script>
-     <script defer src="/civic/shell/birge.js"></script>
-     <script defer src="/civic/shell/explore.js"></script>
+     const m = /^#target=([a-z]+):([^&]+)(?:&days=(\d+))?$/.exec(hash || "");
+@@ -1022,7 +979,7 @@
+   });
+   document.addEventListener("birge:mode", (event) => {
+     S.mounted.heat?.setRole?.(event.detail?.mode);
+-    remountBuild3d();  // у R05 нет setRole: каталог акимата ↔ только просмотр и голос жителя
++    // R05 сам слушает birge:mode (каталог акимата ↔ подсказка и голос жителя); размещение при смене вида отменяет сам.
+     // Вид «Акимат»: панель жителя (форма жалобы, «Мои обращения») закрывается — она перекрыла бы карточку цели.
+     if (event.detail?.mode === "akimat") S.mounted.complaint?.close?.();
+     if (event.detail?.mode !== "resident") return;

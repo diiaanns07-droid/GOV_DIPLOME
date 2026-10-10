@@ -1,0 +1,179 @@
+{
+ "generated_at": "2026-10-10T15:39:30.995Z",
+ "url": "http://127.0.0.1:8801/",
+ "r01": "claude/sharp-dijkstra-0t87gl@f54361d + proposed_r01_b2.patch",
+ "r06_in_b2": "7031afa",
+ "checks": [
+  {
+   "id": "shell_mounted_module_with_projects",
+   "status": "PASS",
+   "detail": [
+    "Проект · 2027",
+    "Проект · 2027",
+    "Проект · 2027",
+    "Проект · 2027",
+    "Проект · 2027"
+   ]
+  },
+  {
+   "id": "akimat_catalog_not_under_shell_panel",
+   "status": "PASS",
+   "detail": {
+    "dock": {
+     "left": 117,
+     "top": 554,
+     "right": 837,
+     "bottom": 734,
+     "w": 720,
+     "h": 180
+    },
+    "panel": {
+     "left": 946,
+     "top": 112,
+     "right": 1346,
+     "bottom": 734,
+     "w": 400,
+     "h": 622
+    }
+   }
+  },
+  {
+   "id": "catalog_labels_inside_cards_ru",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "id": "staff_login_through_shell",
+   "status": "PASS",
+   "detail": true
+  },
+  {
+   "id": "place_square_stored_by_r06_via_shell_client",
+   "status": "PASS",
+   "detail": {
+    "posts": [
+     422,
+     201
+    ],
+    "id": "p-0e4125299977",
+    "year": 2027
+   }
+  },
+  {
+   "id": "card_not_over_shell_panel",
+   "status": "PASS",
+   "detail": {
+    "card": {
+     "left": 117,
+     "top": 284.03125,
+     "right": 837,
+     "bottom": 734,
+     "w": 720,
+     "h": 449.96875
+    },
+    "panel": {
+     "left": 946,
+     "top": 112,
+     "right": 1346,
+     "bottom": 734,
+     "w": 400,
+     "h": 622
+    }
+   }
+  },
+  {
+   "id": "selected_object_visible_in_free_part_of_shell_map",
+   "status": "PASS",
+   "detail": {
+    "object": {
+     "x": 676.9925410582482,
+     "y": 159.1150811203177
+    },
+    "under": []
+   }
+  },
+  {
+   "id": "shell_mode_switch_to_resident_without_remount",
+   "status": "PASS",
+   "detail": {
+    "cards": 0,
+    "toasts": 0,
+    "hint": "Нажмите на проект, чтобы проголосовать",
+    "same": true
+   }
+  },
+  {
+   "id": "delete_is_withdraw_in_shell",
+   "status": "PASS",
+   "detail": 200
+  },
+  {
+   "id": "kk_catalog_in_shell",
+   "status": "PASS",
+   "detail": [
+    "Гүлзар",
+    "Балалар алаңы",
+    "Спорт алаңы",
+    "Аялдама",
+    "Көше жарығы"
+   ]
+  },
+  {
+   "id": "phone_kk_resident_hint_does_not_cover_open_sheet",
+   "status": "PASS",
+   "detail": {
+    "hint": null,
+    "sheet": {
+     "left": 0,
+     "top": 438.484375,
+     "right": 375,
+     "bottom": 812,
+     "w": 375,
+     "h": 373.515625
+    }
+   }
+  },
+  {
+   "id": "phone_kk_resident_hint_above_lowered_sheet",
+   "status": "PASS",
+   "detail": {
+    "hint": {
+     "left": 0,
+     "top": 534.75,
+     "right": 375,
+     "bottom": 609.125,
+     "w": 375,
+     "h": 74.375
+    },
+    "sheet": {
+     "left": 0,
+     "top": 617.125,
+     "right": 375,
+     "bottom": 812,
+     "w": 375,
+     "h": 194.875
+    },
+    "text": "Дауыс беру үшін жобаны басыңыз"
+   }
+  },
+  {
+   "id": "phone_ru_akimat_catalog_above_peek_sheet",
+   "status": "PASS",
+   "detail": {
+    "sheet": "peek",
+    "state": "catalog",
+    "shown": true,
+    "left": 0,
+    "right": 375,
+    "bottom": 609,
+    "sheetTop": 617,
+    "scrollX": false
+   }
+  },
+  {
+   "id": "no_page_errors",
+   "status": "PASS",
+   "detail": []
+  }
+ ]
+}

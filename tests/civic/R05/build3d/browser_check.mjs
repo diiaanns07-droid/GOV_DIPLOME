@@ -120,7 +120,13 @@ function record(id, ok, detail, status) {
   results.push({ id, status: status || (ok ? "PASS" : "FAIL"), detail });
   console.log(`${status || (ok ? "PASS" : "FAIL")}  ${id}${detail ? "  — " + (typeof detail === "string" ? detail : JSON.stringify(detail)) : ""}`);
 }
+// --only <regexp> — только эти проверки (отладка; отчёт runs/browser_check.json тогда не пишется).
+const ONLY = (() => {
+  const i = process.argv.indexOf("--only");
+  return i > 0 && process.argv[i + 1] ? new RegExp(process.argv[i + 1]) : null;
+})();
 async function check(id, fn) {
+  if (ONLY && !ONLY.test(id)) return;
   try {
     const r = await fn();
     if (r && r.status) record(id, r.status === "PASS", r.detail, r.status);
@@ -810,6 +816,50 @@ await check("r01_birge_mode_event_update_dock", async () => {
   assert(residentCards === 0 && /проголосовать/.test(hint) && hidden === "empty" && labels >= 4 && back === 5, JSON.stringify({ residentCards, hint, hidden, labels, back }));
   return { status: "PASS", detail: "birge:mode → житель без каталога; update({dock:false}) прячет каталог, объекты остаются; update({dock:true}) возвращает" };
 });
+await check("mode_switch_clears_akimat_undo_toast", async () => {
+  // Сборка B2 R01: акимат поставил объект → «Житель». Тост «Проект поставлен · Отменить» не должен остаться у жителя.
+  const p = await openPage({}, "?reset=1&store=local&" + MAIN_Q.slice(1));
+  await placePoint(p, "sports", [71.3998, 51.1268]);
+  await p.waitForSelector(".bk-toast [data-action=undo]", { timeout: 10000 });
+  await p.evaluate(() => document.dispatchEvent(new CustomEvent("birge:mode", { detail: { mode: "resident" } })));
+  await p.waitForTimeout(150);
+  const toastsResident = await p.$$eval(".b3d .bk-toast", (e) => e.length);
+  const cards = await p.$$eval(".b3d-card", (e) => e.length);
+  await p.context().close();
+  assert(toastsResident === 0 && cards === 0, JSON.stringify({ toastsResident, cards }));
+  return { status: "PASS", detail: "после «Житель» тоста акимата с «Отменить» нет, каталога нет" };
+});
+await check("catalog_labels_fit_cards_in_narrow_host", async () => {
+  // Оболочка R01 даёт модулю 720 px (B2): «Спортплощадка» не должна выходить за рамку карточки; все 5 — в строку.
+  const p = await openPage({}, "?reset=1&store=local&" + MAIN_Q.slice(1));
+  const out = {};
+  for (const lang of ["ru", "kk"]) {
+    if (lang === "kk") await p.click(".bk-seg [data-lang=kk]").catch(() => p.evaluate(() => window.BirgeI18n && BirgeI18n.setLang("kk")));
+    await p.waitForTimeout(200);
+    for (const w of [800, 720, 600]) {
+      out[lang + w] = await p.evaluate((w) => {
+        const dock = document.querySelector(".b3d-dock");
+        dock.style.width = w + "px";
+        const row = document.querySelector(".b3d-cards");
+        const cards = [...document.querySelectorAll(".b3d-card")];
+        const res = cards.map((c) => {
+          const l = c.querySelector(".b3d-card__label") || c;
+          const rc = c.getBoundingClientRect();
+          const range = document.createRange();
+          range.selectNodeContents(l);
+          const rt = range.getBoundingClientRect();
+          return { text: l.textContent, inside: rt.left >= rc.left + 1 && rt.right <= rc.right - 1, fs: parseFloat(getComputedStyle(c).fontSize) };
+        });
+        dock.style.width = "";
+        return { allInRow: row.scrollWidth <= row.clientWidth + 1, bad: res.filter((r) => !r.inside).map((r) => r.text), minFs: Math.min(...res.map((r) => r.fs)) };
+      }, w);
+    }
+  }
+  await p.context().close();
+  const bad = Object.entries(out).filter(([k, v]) => v.bad.length || v.minFs < 14 || (!k.endsWith("600") && !v.allInRow));
+  assert(bad.length === 0, JSON.stringify(out));
+  return { status: "PASS", detail: out };
+});
 await check("r01_map_getter_waits_for_map", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   const r = await p.evaluate(async () => {
@@ -920,6 +970,6 @@ const report = {
   },
   checks: results,
 };
-await writeFile(path.join(OUT, "runs", "browser_check.json"), JSON.stringify(report, null, 1) + "\n");
+if (!ONLY) await writeFile(path.join(OUT, "runs", "browser_check.json"), JSON.stringify(report, null, 1) + "\n");
 console.log(`\nИтого: ${report.summary.pass} PASS, ${report.summary.fail} FAIL, ${report.summary.not_run} NOT_RUN → research/round-14-results/R05/runs/browser_check.json`);
 process.exit(report.summary.fail ? 1 : 0);
