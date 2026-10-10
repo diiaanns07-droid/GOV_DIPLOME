@@ -112,7 +112,7 @@ describe("R04 round 13 in the real app (" + LABEL + (PATCHED ? ", R01 patch appl
     await p.reload({ waitUntil: "domcontentloaded" });
     await openApp(p);
     await p.waitForSelector(fk("rec-new"));
-    assert.match(await p.textContent(ed(".civic-r04-listview")), /локальная копия, не на сервере/);
+    assert.match(await p.textContent(ed(".civic-r04-listview")), /копия на этом устройстве, не на сервере/);
     await p.click(fk("rec-new"));
     await p.click(fk("restore"));
     assert.equal(await p.inputValue(fk("title")), "ТЕСТ R04 (синтетика): ремонт тротуара, раунд 13");

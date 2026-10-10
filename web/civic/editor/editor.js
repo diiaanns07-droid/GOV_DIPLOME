@@ -122,6 +122,10 @@
     return fill(lang === "kk" && KK_DRAFT[key] ? KK_DRAFT[key] : ru, params);
   }
   const metres = (n) => Math.round(Number(n) || 0).toLocaleString("ru-RU");  // «1 666», как просит UX_BRIEF
+  // Названия улиц и объектов OSM на языке интерфейса: kk из ответа привязки (street_kk / label_kk), иначе ru.
+  const inKk = () => { const B = typeof window !== "undefined" ? window.BirgeI18n : null; return !!(B && typeof B.getLang === "function" && B.getLang() === "kk"); };
+  const streetName = (r) => (r ? (inKk() && r.street_kk) || r.street_ru || null : null);
+  const labelOf = (x) => (x ? (inKk() && x.label_kk) || x.label_ru || "" : "");
   // Кабинет сотрудника (I-04, R10 B-021): подписи списка — через ключи R11 (staff.*, works.kind.*, works.status.*).
   const pubLabel = (p) => tr("staff.pub." + p, C.PUBLICATION[p] || String(p));
   const kindLabel = (k) => (k ? tr("works.kind." + k, C.KINDS[k] || String(k)) : tr("staff.row.no_kind", "Тип не указан"));
@@ -1006,14 +1010,14 @@
           kids.push(el("p", { class: "civic-r04-row-btns", role: "group", "aria-label": tr("editor.seg.kind.label", "Что ремонтируют") },
             [kindBtn("road", tr("editor.seg.kind.road", "Проезжая часть")), kindBtn("foot", tr("editor.seg.kind.foot", "Тротуар"))]));
           const step = t.pending ? tr("editor.seg.pending", "Строим участок по улице…") : t.result
-            ? tr("editor.seg.done", "Участок: {street}, {n} м. Можно нажать на другой конец — участок перестроится.", { street: t.result.street_ru || tr("editor.seg.noname", "улица без названия"), n: metres(t.result.length_m) })
-            : t.start ? tr("editor.seg.start", "Начало: {street}. Теперь нажмите на конец участка.", { street: t.start.street_ru || t.start.label_ru })
+            ? tr("editor.seg.done", "Участок: {street}, {n} м. Можно нажать на другой конец — участок перестроится.", { street: streetName(t.result) || tr("editor.seg.noname", "улица без названия"), n: metres(t.result.length_m) })
+            : t.start ? tr("editor.seg.start", "Начало: {street}. Теперь нажмите на конец участка.", { street: streetName(t.start) || labelOf(t.start) })
               : tr("editor.seg.first", "Нажмите на начало участка.");
           kids.push(el("p", { class: "civic-r04-step", "data-fk": "seg-step", "aria-live": "polite" }, step));
           if (t.result && !t.result.same_street && t.result.names && t.result.names.length > 1)
             kids.push(el("p", { class: "civic-r04-warn" }, tr("editor.seg.many_streets", "Участок проходит по нескольким улицам: {list}. Проверьте концы.", { list: t.result.names.join(", ") })));
         } else {
-          kids.push(el("p", { class: "civic-r04-step", "data-fk": "yard-step", "aria-live": "polite" }, t.pending ? tr("editor.yard.pending", "Ищем двор…") : t.yard ? tr("editor.yard.picked", "Выбран: {name}.", { name: t.yard.label_ru }) : tr("editor.yard.first", "Нажмите внутри двора.")));
+          kids.push(el("p", { class: "civic-r04-step", "data-fk": "yard-step", "aria-live": "polite" }, t.pending ? tr("editor.yard.pending", "Ищем двор…") : t.yard ? tr("editor.yard.picked", "Выбран: {name}.", { name: labelOf(t.yard) }) : tr("editor.yard.first", "Нажмите внутри двора.")));
         }
         if (t.problem) kids.push(el("p", { class: "civic-r04-err", role: "alert" }, t.problem));
         kids.push(el("p", { class: "civic-r04-row-btns" }, [
@@ -1036,10 +1040,10 @@
         const near = nearFor(g);
         if (near && !ro) kids.push(el("div", { class: "civic-r04-near", "data-fk": "near" }, [
           el("p", {}, tr("editor.near.title", "Рядом есть объект на карте OSM:")),
-          el("ul", { class: "civic-r04-near-list" }, near.map((x, i) => el("li", {}, btn(x.label_ru + " — " + Math.round(x.distance_m) + " м", () => linkObject(x), "link", "near-" + i)))),
+          el("ul", { class: "civic-r04-near-list" }, near.map((x, i) => el("li", {}, btn(labelOf(x) + " — " + Math.round(x.distance_m) + " м", () => linkObject(x), "link", "near-" + i)))),
           el("p", { class: "civic-r04-muted" }, "Нажмите, чтобы поставить точку точно на этот объект. © участники OpenStreetMap.")]));
         if (S.linked && g && g.type === "Point" && S.linked.point[0] === g.coordinates[0] && S.linked.point[1] === g.coordinates[1])
-          kids.push(el("p", { class: "civic-r04-ok", "data-fk": "linked" }, tr("editor.near.linked", "Точка стоит на объекте OSM: {name}.", { name: S.linked.label_ru })));
+          kids.push(el("p", { class: "civic-r04-ok", "data-fk": "linked" }, tr("editor.near.linked", "Точка стоит на объекте OSM: {name}.", { name: labelOf(S.linked) })));
       }
       // 3) Manual coordinates for specialists (collapsed by default).
       const pt = g && g.type === "Point" ? g.coordinates : null;
@@ -1267,12 +1271,13 @@
           const r = await geoApi.snap(p, S.segKind);
           if (S.tool !== t || t.seq !== my) return;
           t.start = r;
-          say("Начало участка: " + (r.street_ru || r.label_ru) + ". Нажмите на конец участка.");
+          say(tr("editor.seg.start", "Начало: {street}. Теперь нажмите на конец участка.", { street: streetName(r) || labelOf(r) }));
         } else {
           const r = await geoApi.segment(t.start.point, p, S.segKind);
           if (S.tool !== t || t.seq !== my) return;
           t.result = r;
-          say("Участок построен по улице: " + (r.street_ru || "без названия") + ", " + metres(r.length_m) + " м. «Готово» — сохранить.");
+          say(tr("editor.seg.done", "Участок: {street}, {n} м. Можно нажать на другой конец — участок перестроится.",
+            { street: streetName(r) || tr("editor.seg.noname", "улица без названия"), n: metres(r.length_m) }));
         }
       } catch (err) {
         if (S.tool !== t || t.seq !== my) return;
@@ -1288,7 +1293,7 @@
       try {
         const r = await geoApi.yard(p);
         if (S.tool !== t || t.seq !== my) return;
-        if (r && r.yard) { t.yard = r.yard; say("Выбран двор: " + r.yard.label_ru + ". «Готово» — сохранить."); }
+        if (r && r.yard) { t.yard = r.yard; say(tr("editor.yard.picked", "Выбран: {name}.", { name: labelOf(r.yard) })); }
         else {
           t.yard = null;
           t.problem = r && r.reason === "no_yards_data"
@@ -1321,9 +1326,9 @@
     }
     function linkObject(x) {
       S.near = null;
-      S.linked = { label_ru: x.label_ru, point: [round6(x.point[0]), round6(x.point[1])] };
+      S.linked = { label_ru: x.label_ru, label_kk: x.label_kk || null, point: [round6(x.point[0]), round6(x.point[1])] };
       setGeometry({ type: "Point", coordinates: S.linked.point });
-      say("Точка поставлена на объект: " + x.label_ru + ". Подтвердите расположение.");
+      say(tr("editor.near.linked", "Точка стоит на объекте OSM: {name}.", { name: labelOf(x) }));
       focusKey("geometry_confirmed");
     }
     function finishShape() {

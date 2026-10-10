@@ -409,9 +409,27 @@ test("r12: new strings go through BirgeI18n keys when the dictionary has them, R
   const it = { snap: { display: "street_line", street: "улица Сакена Сейфуллина" }, precision: "approximate", geometry: { type: "LineString", coordinates: [[71.4, 51.1], [71.41, 51.1]] } };
   assert.equal(C.placeText(it), "Участок улицы по карте OSM: улица Сакена Сейфуллина");
   const prev = globalThis.self;
-  globalThis.self = { BirgeI18n: { has: (k) => k === "geo.place.street_line", t: (k, p) => "OSM картасы бойынша көше учаскесі: " + p.street } };
+  globalThis.self = { BirgeI18n: { has: (k) => k === "geo.place.street_line", t: (k, p) => "OSM картасы бойынша көше бөлігі: " + p.street } };
   try {
-    assert.equal(C.placeText(it), "OSM картасы бойынша көше учаскесі: улица Сакена Сейфуллина");
+    assert.equal(C.placeText(it), "OSM картасы бойынша көше бөлігі: улица Сакена Сейфуллина");
     assert.equal(C.tr("geo.badge.street", "По улице"), "По улице", "нет ключа — русский текст, не сам ключ");
+  } finally { if (prev === undefined) delete globalThis.self; else globalThis.self = prev; }
+});
+
+test("r12: in ҚАЗ the street name on the map and in the card is the Kazakh one from OSM (street_kk), else Russian", () => {
+  const it = { id: "s", kind: "roadworks", status: "planned", title: "Перекрытие", evidence: "synthetic", precision: "approximate",
+    snap: { display: "street_line", street: "улица Сакена Сейфуллина", streetKk: "Сәкен Сейфуллин көшесі" },
+    geometry: { type: "LineString", coordinates: [[71.4, 51.1], [71.41, 51.1]] }, bbox: [71.4, 51.1, 71.41, 51.1] };
+  const prev = globalThis.self;
+  try {
+    globalThis.self = { BirgeI18n: { getLang: () => "kk", has: () => false, t: () => "" } };
+    assert.equal(C.snapStreet(it), "Сәкен Сейфуллин көшесі");
+    assert.equal(C.placeText(it), "Участок улицы по карте OSM: Сәкен Сейфуллин көшесі");
+    const f = C.featureCollection([it]).features.find((x) => x.geometry.type === "LineString");
+    assert.equal(f.properties.street, "Сәкен Сейфуллин көшесі");
+    globalThis.self = { BirgeI18n: { getLang: () => "ru", has: () => false, t: () => "" } };
+    assert.equal(C.snapStreet(it), "улица Сакена Сейфуллина");
+    globalThis.self = { BirgeI18n: { getLang: () => "kk", has: () => false, t: () => "" } };
+    assert.equal(C.snapStreet({ snap: { street: "улица Без Казахского" } }), "улица Без Казахского", "нет street_kk — русское имя, не пусто");
   } finally { if (prev === undefined) delete globalThis.self; else globalThis.self = prev; }
 });

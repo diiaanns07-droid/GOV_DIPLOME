@@ -20,7 +20,7 @@ from .graph import get_graph
 from .objects import get_layers
 from . import geo
 from .segment import DEFAULT_SNAP_M, GeoError, snap, street_segment
-from .targets import OBJECT_RADIUS_M, TargetError, load_categories, object_target, segment_target, targets, yard_target, _street_near
+from .targets import OBJECT_RADIUS_M, TargetError, load_categories, object_target, segment_street, segment_target, targets, yard_target, _street_near
 
 LOGGER = logging.getLogger(__name__)
 # Граница запросов — bbox графа OSM (Астана и окрестности); точная граница города проверяется отчётом точности.
@@ -105,7 +105,7 @@ def snap_response(query: dict):
         if not found:
             raise GeoError("not_on_street", f"Рядом нет улицы (дальше {int(DEFAULT_SNAP_M)} м). Нажмите на саму улицу.")
         d, e, pr = found[0]
-        t = segment_target(e)
+        t = segment_target(e, segment_street(get_graph(), e))
         return 200, {"point": geo.round_coord(pr.point), "edge_id": e.id, "distance_m": round(d, 1),
                      "street_ru": e.name, "street_kk": e.label_kk() if e.name else None,
                      "label_ru": t["label_ru"], "label_kk": t["label_kk"]}

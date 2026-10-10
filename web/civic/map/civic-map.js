@@ -358,6 +358,12 @@
       on(document, "civic-editor:tool", onToolEvent("civic-editor"));
       on(document, "civic-scenarios:tool", onToolEvent("civic-scenarios"));
     }
+    // ҚАЗ / РУС (R11): подписи улиц на карте и текст места в карточке — на языке интерфейса.
+    on(document, "birge:lang", () => {
+      if (destroyed) return;
+      updateMapData();
+      if (st.view === "list") renderList(); else renderCard(false);
+    });
     on(root, "change", onRootChange);
     on(root, "input", onRootInput);
     on(root, "keydown", onRootKey);
