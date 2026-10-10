@@ -284,6 +284,20 @@
     return null;
   }
 
+  // Улица рядом с безымянным проездом по подписи R12 (engine/civic_geo/names.py unnamed_labels):
+  // «Проезд у улицы Сауран» / «Тротуар или дорожка — Абая» и «Сауран көшесі маңындағы өтпе жол» → {ru, kk}.
+  // R12 /street-snap отдаёт street_ru только у улиц с названием; у проезда во дворе улица есть лишь в подписи.
+  var RU_NEAR_TYPES = { улицы: "улица", проспекта: "проспект", переулка: "переулок", шоссе: "шоссе", бульвара: "бульвар", площади: "площадь", набережной: "набережная" };
+  function streetFromR12Label(labelRu, labelKk) {
+    var m = /^(?:Тротуар или дорожка|Проезд|Улица без названия) (?:у (\S+) (.+)|— (.+))$/.exec(String(labelRu || "").trim());
+    var ru = null;
+    if (m && m[1] && RU_NEAR_TYPES[m[1]]) ru = RU_NEAR_TYPES[m[1]] + " " + m[2].trim();
+    else if (m && m[3]) ru = m[3].trim();
+    if (!ru) return null;
+    var k = /^(.+) маңындағы (?:жаяу жол|өтпе жол|атауы жоқ көше)$/.exec(String(labelKk || "").trim());
+    return { ru: ru, kk: k ? k[1].trim() : null };
+  }
+
   // Казахское название улицы из OSM по русскому (null — в OSM его нет).
   StreetIndex.prototype.kkOf = function (name) {
     var i = this.names.indexOf(name);
@@ -661,6 +675,7 @@
       title_kk: typeof raw.title_kk === "string" ? raw.title_kk : null,
       district: typeof raw.district === "string" ? raw.district : null,
       near_street: typeof raw.near_street === "string" ? raw.near_street : null,
+      near_street_kk: typeof raw.near_street_kk === "string" ? raw.near_street_kk : null,
       target: raw.target && typeof raw.target === "object" ? raw.target : null,
       created_at: typeof raw.created_at === "string" ? raw.created_at : null,
       demo: raw.demo === true,
@@ -874,7 +889,8 @@
     return out;
   }
   // Тело POST /proposals. Без rich — только поля R06 поставки 1 (3d10f7d/7031afa);
-  // rich — плюс near_street и target (R06 ≥ d043e7b хранит их и отдаёт обратно).
+  // rich — плюс near_street и target (R06 ≥ d043e7b хранит их и отдаёт обратно) и near_street_kk — имя улицы из OSM
+  // name:kk (R06 ≥ d707efc собирает из него казахский заголовок нового проекта; без него — правило R07 по-русскому).
   function toServerProposal(p, rich) {
     var body = { kind: p.kind, geometry: p.geometry, rotation_deg: Math.round(p.rotation_deg || 0), demo: p.demo === true };
     var year = p.year != null ? p.year : p.planned_year;
@@ -884,7 +900,9 @@
     if (rich) {
       var street = shortText(p.near_street);
       var target = toServerTarget(p.target);
+      var streetKk = shortText(p.near_street_kk);
       if (street) body.near_street = street;
+      if (street && streetKk) body.near_street_kk = streetKk;
       if (target) body.target = target;
     }
     return body;
@@ -991,20 +1009,32 @@
       if (!p) throw storeError("bad_response");
       return p;
     }
-    // Старый R06 (поставка 1) не знает near_street/target/id: после первого 422 шлём только базовое тело.
-    var basicOnly = opts.basicFields === true;
+    // Уровни тела POST: 2 — контекст 3D и near_street_kk (R06 ≥ d707efc), 1 — без near_street_kk (R06 b42e790),
+    // 0 — базовое (R06 поставки 1 не знает near_street/target/id). 422/400 → уровень ниже; дошедший — запоминаем.
+    var level = opts.basicFields === true ? 0 : 2;
+    function bodyAt(p, withId, lv) {
+      var body = toServerProposal(p, lv > 0);
+      if (lv < 2) delete body.near_street_kk;
+      if (lv > 0 && withId && typeof p.id === "string" && TARGET_ID_RE.test(p.id)) body.id = p.id;
+      return body;
+    }
     function post(p, withId) {
-      if (basicOnly) return call("POST", "/proposals", toServerProposal(p), true).then(one);
-      var body = toServerProposal(p, true);
-      if (withId && typeof p.id === "string" && TARGET_ID_RE.test(p.id)) body.id = p.id;
-      var extra = body.near_street || body.target || body.id;
-      return call("POST", "/proposals", body, true).then(one, function (err) {
-        if (!extra || (err.status !== 422 && err.status !== 400)) throw err;
-        return call("POST", "/proposals", toServerProposal(p), true).then(function (data) {
-          basicOnly = true;
-          return one(data);
-        });
-      });
+      function attempt(lv) {
+        var body = bodyAt(p, withId, lv);
+        return call("POST", "/proposals", body, true).then(
+          function (data) {
+            level = Math.min(level, lv);
+            return one(data);
+          },
+          function (err) {
+            if (lv === 0 || (err.status !== 422 && err.status !== 400)) throw err;
+            var next = lv === 2 && !body.near_street_kk ? 0 : lv - 1;
+            if (next === 0 && !(body.near_street || body.target || body.id)) throw err; // базовое тело было бы тем же
+            return attempt(next);
+          }
+        );
+      }
+      return attempt(level);
     }
     var deviceId = opts.deviceId || null;
     return {
@@ -1148,6 +1178,7 @@
     toServerProposal: toServerProposal,
     toServerTarget: toServerTarget,
     kkStreetFromRu: kkStreetFromRu,
+    streetFromR12Label: streetFromR12Label,
     isMissingApi: isMissingApi,
     LOCAL_KEY: LOCAL_KEY,
   };

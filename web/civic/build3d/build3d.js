@@ -911,7 +911,7 @@
           return segName ? t("build3d.card.segment", { street: segName, length: Math.round(L) }) : t("build3d.card.segment_plain", { length: Math.round(L) });
         }
       }
-      var shown = streetName(street);
+      var shown = streetName(street, street && street === p.near_street ? p.near_street_kk : null);
       return shown ? t("build3d.card.near", { street: shown }) : "";
     }
 
@@ -1809,6 +1809,7 @@
           year: o.year,
           district: districts ? Core.districtAt(districts, g.section.coords[0]) : null,
           near_street: g.section.name,
+          near_street_kk: g.section.name_kk || null,
           target: { kind: "segment", id: g.section.edge_ids[0], ids: g.section.edge_ids, label_ru: g.section.name, label_kk: g.section.name_kk || g.section.name },
           demo: false,
         };
@@ -1824,6 +1825,7 @@
         year: o.year,
         district: districts ? Core.districtAt(districts, g.pos) : null,
         near_street: near ? near.edge.name : null,
+        near_street_kk: near ? near.edge.name_kk || null : null, // только name:kk из OSM; правило R07 R06 применит сам
         demo: false,
       };
     }
@@ -2288,6 +2290,38 @@
 
     // ───────────── Действия с предложениями ─────────────
 
+    // Улица для названия нового проекта (R06 строит «Сквер у улицы X» / «Гүлзар · X маңында»). Свой индекс — только Нура;
+    // вне его спрашиваем R12 /street-snap (просьба R06, ночь 7: на левом берегу проект назывался просто «Сквер»).
+    // Только для сервера (заголовок строит он); не ответил за 2 с — сохраняем без улицы.
+    function withStreet(draft) {
+      if (!draft || draft.kind === "lighting" || draft.near_street || geo.state === "off" || (store && store.mode) !== "api") return Promise.resolve(draft);
+      var c = draft.geometry.coordinates;
+      var ask = geoGet("/street-snap?lon=" + c[0].toFixed(7) + "&lat=" + c[1].toFixed(7) + "&kind=road").then(
+        function (sn) {
+          if (!sn) return draft;
+          // Безымянный проезд во дворе: улица — из подписи R12 («Проезд у улицы Сауран»), пока R12 не отдаёт её полем.
+          var near = sn.street_ru
+            ? { ru: sn.street_ru, kk: sn.street_kk || null }
+            : sn.near_street_ru
+              ? { ru: sn.near_street_ru, kk: sn.near_street_kk || null }
+              : Core.streetFromR12Label(sn.label_ru, sn.label_kk);
+          if (!near || !near.ru) return draft;
+          return Object.assign({}, draft, { near_street: near.ru, near_street_kk: near.kk || null });
+        },
+        function () {
+          return draft; // «рядом нет улицы» (дальше 60 м) и прочие отказы — без улицы
+        }
+      );
+      return Promise.race([
+        ask,
+        new Promise(function (done) {
+          setTimeout(function () {
+            done(draft);
+          }, 2000);
+        }),
+      ]);
+    }
+
     function place_() {
       if (S.mode !== "placing" || !S.ghost) return;
       var draft = draftFromGhost();
@@ -2309,7 +2343,9 @@
       var obj = addObject(provisional, { animate: true, pending: true });
       render();
       focusDock(".b3d-card");
-      store.create(draft).then(
+      withStreet(draft).then(function (d) {
+        return store.create(d);
+      }).then(
         function (saved) {
           if (S.destroyed) return;
           S.storeMode = store.mode || S.storeMode;
@@ -2341,7 +2377,9 @@
             actionId: "retry-save",
             onAction: function () {
               delete draft.id;
-              store.create(draft).then(function (saved) {
+              withStreet(draft).then(function (d) {
+                return store.create(d);
+              }).then(function (saved) {
                 addObject(saved, { animate: true });
                 render();
               }, function () {
