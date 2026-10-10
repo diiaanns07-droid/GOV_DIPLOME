@@ -31,6 +31,12 @@ F.2б FINAL-кандидат 0a7a346 (R06 efafee9) проверен как ес�
     Круг 6 (d707efc) поверх — две мелочи: (1) проект без названия, но с near_street получает «вид + улица»
     («Сквер у улицы X» / «Гүлзар · X көшесі маңында») — R11 ночь п. 3; (2) текст лимита голосов как в словаре R11.
     Миграций и новых маршрутов нет. Ваше дерево cb6d336 + d707efc: R01 R02 R06 R08 R15 — 1258 passed; r14_b2 25/25.
+F.2в Ваша просьба (INTEGRATION R01, круг 5а): тест раунда 13 tests/civic/R06/app_e2e_r06.cjs ждёт «Сообщения жителей»,
+    которые Birge теперь прячет. Patch против ВАШЕЙ версии файла: research/round-14-results/R06/r01_app_e2e_r06_tools_all.patch
+    (2 строки: BASE + "/?tools=all" и "/?tools=all#civic-receipt=…"; git apply --check на eb9bb59 — OK).
+    Проверено на вашей сборке eb9bb59 (app.py, CIVIC_DEMO=1, сотрудник, R06_OBJECT_ID=demo-astana-roadworks-delay):
+    без patch — FAIL «#civic-moderation-button … hidden»; с patch — 14 PASS, 3 NOT_RUN (нужны R06_EXPECT_CLASSIFIER и
+    patch раунда 13 r01_r13_integration — к Birge не относятся).
 F.3 Адаптер build3dFetch (R05 → R06) можно убирать: клиент R05 7f42cb3 и 169c56b проверен против R06 без адаптера
     (r05_client_r14.cjs 17/17, оба вида ответа).
 
