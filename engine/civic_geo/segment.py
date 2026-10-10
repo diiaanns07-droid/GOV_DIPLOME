@@ -78,10 +78,17 @@ def _weight(edge: Edge, street: str | None, group: str | None) -> float:
 
 
 def street_segment(graph: StreetGraph, a, b, snap_radius_m: float = DEFAULT_SNAP_M,
-                   groups: Sequence[str] | None = None) -> dict:
-    """Участок улицы от точки a до точки b ([lon, lat]) по форме OSM."""
-    cands_a = snap(graph, a, snap_radius_m, groups)
-    cands_b = snap(graph, b, snap_radius_m, groups)
+                   groups: Sequence[str] | None = None, only: Callable[[Edge], bool] | None = None) -> dict:
+    """Участок улицы от точки a до точки b ([lon, lat]) по форме OSM.
+
+    only — необязательный фильтр рёбер: участок строится только по ним (например, по одной линии OSM).
+    """
+    if only is not None:
+        cands_a = [r for r in graph.nearest(a, snap_radius_m, limit=8, accept=only)]
+        cands_b = [r for r in graph.nearest(b, snap_radius_m, limit=8, accept=only)]
+    else:
+        cands_a = snap(graph, a, snap_radius_m, groups)
+        cands_b = snap(graph, b, snap_radius_m, groups)
     if not cands_a or not cands_b:
         raise GeoError("not_on_street", f"Точка дальше {int(snap_radius_m)} м от улицы. Нажмите ближе к улице.")
     (da, ea, pa), (db, eb, pb) = _choose_pair(cands_a, cands_b)
@@ -97,7 +104,7 @@ def street_segment(graph: StreetGraph, a, b, snap_radius_m: float = DEFAULT_SNAP
         group = ea.group if ea.group == eb.group else None
         straight = geo.haversine_m(pa.point, pb.point)
         limit = min(MAX_SEGMENT_M, 3.0 * straight + 400.0)
-        path = _dijkstra(graph, ea, pa, eb, pb, street, group, limit)
+        path = _dijkstra(graph, ea, pa, eb, pb, street, group, limit, only)
         if path is None:
             raise GeoError("no_path", "Между этими точками нет связанного участка улицы. Выберите точки на одной улице.")
         exit_node, middle, entry_node = path
@@ -135,7 +142,7 @@ def street_segment(graph: StreetGraph, a, b, snap_radius_m: float = DEFAULT_SNAP
     }
 
 
-def _dijkstra(graph: StreetGraph, ea: Edge, pa, eb: Edge, pb, street, group, limit_m):
+def _dijkstra(graph: StreetGraph, ea: Edge, pa, eb: Edge, pb, street, group, limit_m, only=None):
     """Путь от проекции на ea до проекции на eb: (узел выхода с ea, рёбра между, узел входа на eb)."""
     # Стартовые узлы: концы первого ребра, стоимость — остаток ребра от проекции.
     dist: dict[str, float] = {}
@@ -161,7 +168,7 @@ def _dijkstra(graph: StreetGraph, ea: Edge, pa, eb: Edge, pb, street, group, lim
             best_total, best_node = c + targets[node], node
         for idx in graph.adj.get(node, ()):
             e = graph.edges[idx]
-            if e is ea or e is eb:
+            if e is ea or e is eb or (only is not None and not only(e)):
                 continue
             nxt = graph.other_end(e, node)
             r = real[node] + e.length_m
@@ -216,3 +223,41 @@ def snap_polyline(graph: StreetGraph, coords, snap_radius_m: float = DEFAULT_SNA
         "same_street": len(names) == 1 and all(p["same_street"] for p in parts),
         "max_snap_m": max(max(p["from"]["snap_m"], p["to"]["snap_m"]) for p in parts),
     }
+
+
+ONE_STREET_RADIUS_M = 40.0  # «линия идёт вдоль улицы»: каждая точка исходной линии не дальше 40 м от неё
+
+
+def snap_along_one_street(graph: StreetGraph, coords, groups: Sequence[str] | None = None, samples: int = 24) -> dict | None:
+    """Привязка линии «от руки» к ОДНОЙ улице или дорожке OSM, вдоль которой она нарисована.
+
+    Ключ улицы — название (или id линии OSM, если названия нет). Подходит ключ, рёбра которого есть рядом
+    (≤ 40 м) с каждой точкой исходной линии; из подходящих берётся с наименьшим средним расстоянием.
+    Участок строится только по рёбрам этого ключа. Нет такой улицы — None (тогда snap_polyline).
+    """
+    if len(coords) < 2:
+        return None
+    total = geo.polyline_length_m(coords)
+    pts = [geo.point_at_along(coords, total * k / (samples - 1))[1] for k in range(samples)]
+    keyf = lambda e: ("name", e.name) if e.name else ("way", e.way_id)  # noqa: E731
+    allowed = _group_filter(groups)
+    sums: dict = {}
+    hits: dict = {}
+    for p in pts:
+        best: dict = {}
+        for d, e, _ in graph.nearest(p, ONE_STREET_RADIUS_M, accept=allowed):
+            k = keyf(e)
+            if k not in best or d < best[k]:
+                best[k] = d
+        for k, d in best.items():
+            sums[k] = sums.get(k, 0.0) + d
+            hits[k] = hits.get(k, 0) + 1
+    full = [k for k, n in hits.items() if n == samples]
+    if not full:
+        return None
+    key = min(full, key=lambda k: (sums[k] / samples, str(k)))
+    r = street_segment(graph, coords[0], coords[-1], ONE_STREET_RADIUS_M, groups, only=lambda e: keyf(e) == key)
+    r["max_snap_m"] = max(r["from"]["snap_m"], r["to"]["snap_m"])
+    r["mean_offset_m"] = round(sums[key] / samples, 1)
+    r["one_street"] = True
+    return r

@@ -237,7 +237,9 @@ def test_real_accuracy_report_all_pass(real):
     o.clear_cache()
     r = accuracy.report(real)
     assert r["result"] == "PASS", accuracy.format_report(r)
-    assert r["summary"]["line_within_5m_of_street"]["PASS"] >= 2
+    assert r["summary"]["line_within_5m_of_street"]["PASS"] >= 1
+    # линия, которую нельзя честно положить на одну улицу, показывается «примерным местом», а не крюком
+    assert r["summary"]["no_freehand_line"]["FAIL"] == 0
 
 
 def test_freehand_line_fails_the_check(real):
@@ -291,3 +293,14 @@ def test_r01_style_functions_raise_status_code_message():
         g.street_snap(71.30, 51.30)
     assert e2.value.status == 400 and e2.value.code == "not_on_street" and "улиц" in e2.value.message
     assert g.segment_between([71.4251, 51.1712], "71.4326,51.1719", "road")["names"] == ["улица Сакена Сейфуллина"]
+
+
+def test_snap_demo_refuses_a_detour_and_keeps_the_closure(real):
+    from engine.civic_geo import snap_demo
+    from engine.civic_geo import objects as o
+    o.clear_cache()
+    items = snap_demo.build()["items"]
+    assert items["demo-astana-roadworks-delay"]["status"] == "snapped"
+    assert items["demo-astana-roadworks-delay"]["length_ratio"] < 1.05
+    side = items["demo-astana-roadworks-completed"]
+    assert side["status"] == "not_snapped" and side["display"] == "approximate_area", side.get("reason")

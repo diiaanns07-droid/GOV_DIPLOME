@@ -65,19 +65,19 @@ def report(graph: StreetGraph | None = None, geo_dir: Path = GEO_DIR, demo_path:
             continue
         s = snapped.get(it["id"])
         if g["type"] == "LineString":
+            coords = g["coordinates"]
             if not s or s.get("status") != "snapped":
                 shown_as_area = bool(s) and s.get("display") == "approximate_area"
                 rows.append(_row("no_freehand_line", it["id"], shown_as_area, None,
                                  "линия не привязана; карта показывает её областью «примерное место»" if shown_as_area
                                  else "линия от руки: нет привязки к улице в demo_snapped.json"))
-                continue
-            if s.get("original_coordinates") != g["coordinates"]:
+            elif s.get("original_coordinates") != g["coordinates"]:
                 rows.append(_row("no_freehand_line", it["id"], False, None,
                                  "исходная линия изменилась после привязки — запустите snap_demo заново"))
-                continue
-            ok, off, detail = check_line_on_edges(graph, s["geometry"]["coordinates"], s["edge_ids"])
-            rows.append(_row("line_within_5m_of_street", it["id"], ok, off, detail))
-            coords = s["geometry"]["coordinates"]
+            else:
+                ok, off, detail = check_line_on_edges(graph, s["geometry"]["coordinates"], s["edge_ids"])
+                rows.append(_row("line_within_5m_of_street", it["id"], ok, off, detail))
+                coords = s["geometry"]["coordinates"]
         elif g["type"] == "Polygon":
             coords = (s or {}).get("geometry", g)["coordinates"][0]
             if not s or s.get("status") != "snapped":

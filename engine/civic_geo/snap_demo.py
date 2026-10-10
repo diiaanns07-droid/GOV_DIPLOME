@@ -22,13 +22,17 @@ from . import geo
 from .graph import get_graph
 from .objects import get_layers
 from .paths import DEMO_SYNTHETIC, GEO_DIR, ROOT, WEB_MAP_DIR
-from .segment import GeoError, snap_polyline
+from .segment import GeoError, snap_along_one_street, snap_polyline
 
 # Какие улицы брать для демо-линии: ремонт тротуара — тротуар/дорожка, остальное — проезжая часть.
 GROUP_HINTS = {
     "demo-astana-roadworks-completed": ("foot",),
 }
 DEFAULT_GROUPS = ("road", "service")
+# Путь по улицам, который сильно длиннее нарисованной линии или уходит от неё, значит: неизвестно, какую улицу
+# имели в виду. Тогда не выдумываем — показываем «примерное место» областью (CONTRACT §8.4).
+MAX_LENGTH_RATIO = 1.2
+MAX_DEVIATION_M = 40.0
 
 
 def snap_item(item: dict, graph, yards) -> dict | None:
@@ -38,10 +42,23 @@ def snap_item(item: dict, graph, yards) -> dict | None:
     if g["type"] == "LineString":
         groups = GROUP_HINTS.get(item["id"], DEFAULT_GROUPS)
         try:
-            r = snap_polyline(graph, g["coordinates"], groups=groups)
+            # Сначала — вдоль одной улицы/дорожки (без крюков на соседние улицы); не вышло — через все точки.
+            try:
+                r = snap_along_one_street(graph, g["coordinates"], groups=groups)
+            except GeoError:
+                r = None
+            r = r or snap_polyline(graph, g["coordinates"], groups=groups)
         except GeoError as exc:
             return {"status": "not_snapped", "reason": exc.message, "original_coordinates": g["coordinates"],
                     "display": "approximate_area"}
+        drawn = geo.polyline_length_m(g["coordinates"])
+        ratio = r["length_m"] / drawn if drawn > 0 else float("inf")
+        deviation = geo.max_offset_m(r["geometry"]["coordinates"], [g["coordinates"]])
+        if ratio > MAX_LENGTH_RATIO or deviation > MAX_DEVIATION_M:
+            return {"status": "not_snapped", "original_coordinates": g["coordinates"], "display": "approximate_area",
+                    "reason": f"линия от руки не идёт вдоль одной улицы (путь по улицам в {ratio:.2f} раза длиннее, "
+                              f"отходит на {deviation:.0f} м) — показываем примерное место",
+                    "candidate_names": r["names"]}
         return {
             "status": "snapped",
             "original_coordinates": g["coordinates"],
@@ -54,6 +71,8 @@ def snap_item(item: dict, graph, yards) -> dict | None:
             "same_street": r["same_street"],
             "length_m": r["length_m"],
             "max_snap_m": r["max_snap_m"],
+            "length_ratio": round(ratio, 3),
+            "max_deviation_from_drawn_m": round(deviation, 1),
             "display": "street_line",
         }
     if g["type"] == "Polygon":

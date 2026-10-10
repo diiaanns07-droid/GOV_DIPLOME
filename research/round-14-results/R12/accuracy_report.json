@@ -24,8 +24,12 @@
    "PASS": 6,
    "FAIL": 0
   },
+  "no_freehand_line": {
+   "PASS": 1,
+   "FAIL": 0
+  },
   "line_within_5m_of_street": {
-   "PASS": 2,
+   "PASS": 1,
    "FAIL": 0
   },
   "stop_within_60m_of_street": {
@@ -98,11 +102,11 @@
    "detail": "все координаты внутри Астаны"
   },
   {
-   "check": "line_within_5m_of_street",
+   "check": "no_freehand_line",
    "id": "demo-astana-roadworks-completed",
    "status": "PASS",
-   "value": 0.0,
-   "detail": "отклонение от формы улицы 0.00 м (допуск 5 м)"
+   "value": null,
+   "detail": "линия не привязана; карта показывает её областью «примерное место»"
   },
   {
    "check": "inside_astana",
@@ -115,8 +119,8 @@
    "check": "line_within_5m_of_street",
    "id": "demo-astana-roadworks-delay",
    "status": "PASS",
-   "value": 0.01,
-   "detail": "отклонение от формы улицы 0.01 м (допуск 5 м)"
+   "value": 0.0,
+   "detail": "отклонение от формы улицы 0.00 м (допуск 5 м)"
   },
   {
    "check": "inside_astana",
