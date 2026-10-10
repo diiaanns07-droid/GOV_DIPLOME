@@ -94,6 +94,8 @@
       "heat.retry": "Повторить",
       "heat.zoom_hint": "Приблизьте карту, чтобы увидеть улицы, дворы и остановки",
       "heat.too_many": "Слишком много действий подряд. Повторите позже.",
+      "heat.example_readonly": "Это пример: статус примеров не меняется. Действия — у настоящих обращений.",
+      "heat.not_found": "Обращение не найдено, карта обновлена.",
       "heat.need_login": "Войдите как сотрудник акимата и повторите.",
       "heat.badge_label": "{target}: {reported}",
       "heat.open_on_map": "Показать на карте",
@@ -165,6 +167,8 @@
       "heat.retry": "Қайталау",
       "heat.zoom_hint": "Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз",
       "heat.too_many": "Қатарынан тым көп әрекет жасалды. Кейінірек қайталаңыз.",
+      "heat.example_readonly": "Бұл — үлгі: үлгілердің мәртебесі өзгермейді. Әрекеттер нақты өтініштерде ғана.",
+      "heat.not_found": "Өтініш табылмады, карта жаңартылды.",
       "heat.need_login": "Әкімдік қызметкері ретінде кіріп, қайталаңыз.",
       "heat.badge_label": "{target}: {reported}",
       "heat.open_on_map": "Картадан көрсету",
@@ -963,6 +967,7 @@
     // (R15 U1). Остальное — «Проверьте связь» с кнопкой «Повторить».
     // retry — повтор того же действия с ТЕКУЩЕЙ кнопкой: панель могла перерисоваться (язык, Esc, новая жалоба).
     function actionFailed(e, retry) {
+      if (e && e.status === 404) { toast(t("heat.not_found"), "error"); void load("event"); return; }   // не «проверьте связь»
       if (e && e.status === 429) toast(t("heat.too_many"), "error");
       else if (e && (e.status === 401 || e.status === 403)) toast(t("heat.need_login"), "error");
       else toast(t("heat.action_failed"), "error", { label: t("heat.retry"), onClick: retry });
@@ -1127,7 +1132,11 @@
       const topics = Object.entries(it.by_category || {}).map(([c, n]) =>
         "<li>" + svgIcon(catIcon(c), 20) + "<span>" + esc(catName(c)) + "</span><b>" + fmtNum(n) + "</b></li>").join("");
       let actions = "";
-      if (!fixed && S.role === "akimat") {
+      // Только примеры R07 (в общей сборке их нет в хранилище жалоб R09): кнопок нет — честная пометка (R10 B-037).
+      const examplesOnly = !fixed && !(it.open_ids || []).length && Number(it.examples_open) > 0;
+      if (examplesOnly) {
+        actions = '<p class="r07-note r07-note--demo">' + esc(t("heat.example_readonly")) + "</p>";
+      } else if (!fixed && S.role === "akimat") {
         actions = (it.status !== "in_progress" ? '<button type="button" class="r07-btn r07-btn--primary" data-act="take">' + esc(t("heat.take")) + "</button>" : "") +
           '<button type="button" class="r07-btn' + (it.status === "in_progress" ? " r07-btn--primary" : "") + '" data-act="fixed">' + svgIcon("check", 20) + esc(t("heat.mark_fixed")) + "</button>";
       } else if (!fixed && S.role === "resident") {

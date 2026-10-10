@@ -28,18 +28,23 @@ class HeatError(ValueError):
 
 
 class HeatService:
-    def __init__(self, source=None, *, config=None, resolver: TargetResolver | None = None, clock=None, metoo_times=None):
+    def __init__(self, source=None, *, config=None, resolver: TargetResolver | None = None, clock=None, metoo_times=None,
+                 examples_actionable: bool | None = None):
         """source: функция (since: datetime) -> список жалоб v2, или объект с методом list(since=...).
         metoo_times: функция ([complaint_id, …]) -> {id: [ISO, …]} — время каждого «Я тоже» (R09
         ComplaintStore.metoo_times); тогда «Я тоже» остывает от своего момента, а не от момента жалобы.
 
         Без source берётся демо-набор (synthetic, demo: true), сдвинутый к текущему времени.
+        examples_actionable: можно ли менять статус примеров R07 (c-demo-…). По умолчанию — только без source
+        (чистое демо); стенд R07 (devserver) включает явно — у него свои маршруты статуса; в оболочке R01 примеров
+        нет в хранилище R09, поэтому кнопок у них нет (R10 B-037).
         """
         self.config = config or load_config()
         self.resolver = resolver or TargetResolver()
         self._clock = clock or (lambda: datetime.now(timezone.utc))
         self._source = source
         self._metoo_times = metoo_times
+        self._examples_actionable = examples_actionable
         self._demo_records = None
         self._lock = threading.Lock()
         self._cache: dict = {}
@@ -179,8 +184,12 @@ class HeatService:
 
     def _compute(self, *, now, days, category, district, bbox):
         records = self._records(now - timedelta(days=max(days, self.config.fixed_days + days)))
+        # Чистое демо (свой стенд, source=None): примеры R07 — сами жалобы, действия с ними работают. С живым источником
+        # (оболочка R01: жалобы R09 + примеры R07 при CIVIC_DEMO=1) у примеров R07 кнопок нет — их нет в R09 (B-037).
+        examples_ok = self.is_demo if self._examples_actionable is None else self._examples_actionable
+        actionable = None if examples_ok else (lambda c: not engine.is_r07_example(c))
         return engine.compute(records, now=now, days=days, config=self.config, resolver=self.resolver,
-                              category=category, district=district, bbox=bbox)
+                              category=category, district=district, bbox=bbox, actionable=actionable)
 
     # ---------- для «Картины дня» (R08) и карточки ----------
     def top(self, n: int = 10, *, days=None, district=None, category=None, now=None) -> list:

@@ -715,6 +715,38 @@
   }
  },
  {
+  "name": "card-examples-only-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 14,
+  "extra": {
+   "note": "Это пример: статус примеров не меняется. Действия — у настоящих обращений.",
+   "buttons": 0
+  }
+ },
+ {
+  "name": "card-examples-only-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 1,
+  "extra": {
+   "note": "Бұл — үлгі: үлгілердің мәртебесі өзгермейді. Әрекеттер нақты өтініштерде ғана.",
+   "buttons": 0
+  }
+ },
+ {
+  "name": "action-404-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "text": "Обращение не найдено, карта обновлена."
+  }
+ },
+ {
   "name": "card-approximate-1366-ru",
   "size": "desktop",
   "query": "",

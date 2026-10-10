@@ -247,6 +247,21 @@ def test_r12_placeholder_names_are_not_wrapped_as_real_names(tmp_path, monkeypat
     assert (stop["label_ru"], stop["label_kk"]) == ("Остановка", "Аялдама")
 
 
+# ---------- R10 B-037: в общей сборке у примеров R07 нет кнопок (их нет в хранилище R09) ----------
+
+def test_r07_examples_are_not_actionable_with_a_live_source_but_are_on_the_demo_stand():
+    example = dict(rec(1), id="c-demo-0001", demo=True)
+    r09_demo = dict(rec(2), id="c-5a1b2c3d4e5f6a7b", demo=True)      # демо-жалоба самого R09 — настоящая запись
+    item = svc([example, r09_demo]).heat()["items"][0]
+    assert item["open_ids"] == ["c-5a1b2c3d4e5f6a7b"] and item["examples_open"] == 1
+    only_examples = svc([example]).heat()["items"][0]
+    assert only_examples["open_ids"] == [] and only_examples["examples_open"] == 1
+    # свой стенд (source=None, чистое демо): примеры — сами жалобы, действия с ними работают
+    stand = HeatService(resolver=TargetResolver(graph_path=None, use_r12=False), clock=lambda: demo_seed.ANCHOR)
+    hot = next(i for i in stand.heat()["items"] if i["state"] == "active")
+    assert hot["open_ids"] and all(x.startswith("c-demo-") for x in hot["open_ids"]) and hot["examples_open"] == 0
+
+
 # ---------- R07 №4: «Что пишут жители» — тексты только примеров или сотруднику ----------
 
 def test_text_groups_show_demo_texts_and_hide_real_ones_from_public():

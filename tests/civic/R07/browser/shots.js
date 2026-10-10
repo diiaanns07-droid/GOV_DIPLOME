@@ -148,8 +148,10 @@ async function colorOnlyCheck(page) {
       const out = [];
       const q = await page.evaluate(() => ({ quotes: document.querySelectorAll(".r07-quotes li").length,
         tag: [...document.querySelectorAll(".r07-quotes .r07-tag")].map((t) => t.innerText),
-        actionTop: (document.querySelector('[data-act]') || {}).getBoundingClientRect?.().bottom || 9999 }));
+        actionTop: (document.querySelector('[data-act]') || {}).getBoundingClientRect?.().bottom || 9999,
+        acts: document.querySelectorAll('.r07-card [data-act="take"], .r07-card [data-act="fixed"]').length }));
       if (!q.quotes) out.push("нет «Что пишут жители» (№4)");
+      if (!q.acts) out.push("у акимата нет кнопок «Взять в работу» / «Отметить исправленным» на стенде");
       if (!q.tag.length) out.push("у примеров нет метки «Пример»/«Үлгі»");
       if (q.actionTop > 768) out.push("главная кнопка ниже экрана");
       return out;
@@ -684,6 +686,42 @@ async function colorOnlyCheck(page) {
     if (posts <= firstPosts) problems.push("«Повторить» после перерисовки ничего не отправил");
     if (!/алынды|белгіленді/.test(ok)) problems.push("нет сообщения об успехе после повтора: " + ok);
     results.push({ name: "retry-after-rerender-1366-kk", size: "desktop", query: "", problems: problems.concat(errors), badges: 0, extra: { posts, ok } });
+    await page.close();
+  }
+
+  // R10 B-037: у цели только с примерами R07 (общая сборка, CIVIC_DEMO) — пометка вместо кнопок; 404 — не «проверьте связь»
+  for (const [size, lang] of [["desktop", "ru"], ["phone", "kk"]]) {
+    const { page, errors } = await rawPage(size, `?lang=${lang}&role=akimat&view=nura&sheet=full`, (pg) =>
+      pg.route(HEAT_GET, async (r) => {
+        const res = await r.fetch();
+        const d = await res.json();
+        const it = d.items.find((x) => x.state === "active");
+        if (it) { it.examples_open = it.open_ids.length; it.open_ids = []; }
+        await r.fulfill({ response: res, json: d });
+      }));
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.click(".r07-item");
+    await page.waitForSelector(".r07-card");
+    await page.waitForTimeout(400);
+    const x = await page.evaluate(() => ({ note: document.querySelector(".r07-card .r07-note--demo")?.innerText || "",
+      buttons: document.querySelectorAll('.r07-card [data-act="take"], .r07-card [data-act="fixed"]').length }));
+    const problems = [];
+    if (x.buttons) problems.push("у цели только с примерами есть кнопки статуса");
+    if (!(lang === "kk" ? /үлгі/i : /пример/i).test(x.note)) problems.push("нет пометки о примере: " + JSON.stringify(x));
+    await finish(page, errors, `card-examples-only-${size === "phone" ? 375 : 1366}-${lang}`, size, problems, x);
+  }
+  {
+    const { page, errors } = await rawPage("desktop", "?lang=ru&role=akimat&view=nura", (pg) =>
+      pg.route(/\/complaints\/[^/]+\/status/, (r) => r.fulfill({ status: 404, contentType: "application/json", body: '{"error":"not_found"}' })));
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.click(".r07-item");
+    await page.waitForSelector('[data-act="take"], [data-act="fixed"]');
+    await page.click('[data-act="take"], [data-act="fixed"]');
+    await page.waitForSelector(".r07-toast--error", { timeout: 10000 }).catch(() => {});
+    const text = await page.evaluate(() => document.querySelector(".r07-toast--error")?.innerText || "");
+    const problems = [];
+    if (!/не найдено/.test(text) || /связь/.test(text)) problems.push("404 показан не так: " + text);
+    results.push({ name: "action-404-1366-ru", size: "desktop", query: "", problems: problems.concat(errors), badges: 0, extra: { text } });
     await page.close();
   }
 

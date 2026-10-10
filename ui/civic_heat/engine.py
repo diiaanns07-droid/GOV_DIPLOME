@@ -102,9 +102,17 @@ def _astana_day(dt: datetime):
     return dt.astimezone(ASTANA_TZ).date()
 
 
+def is_r07_example(c: dict) -> bool:
+    """Синтетическая жалоба демо-набора R07 (demo_seed: id c-demo-…). В общей сборке её нет в хранилище R09 —
+    поменять ей статус или нажать «Я тоже» нельзя (R10 B-037). Демо-жалобы самого R09 (demo: true, другие id) — можно."""
+    return bool(c.get("demo")) and str(c.get("id") or "").startswith("c-demo-")
+
+
 def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolver, category: str | None = None,
-            district: str | None = None, bbox=None) -> dict:
-    """Все цели с жалобами → {items, stats}. Порядок items: сначала самые горячие."""
+            district: str | None = None, bbox=None, actionable=None) -> dict:
+    """Все цели с жалобами → {items, stats}. Порядок items: сначала самые горячие.
+    actionable(запись) → можно ли менять её статус / жать «Я тоже» (None — все): в open_ids только такие,
+    остальные открытые — числом examples_open (карточка покажет «Пример: статус не меняется»)."""
     period_start = now - timedelta(days=days)
     fixed_span = timedelta(days=config.fixed_days)
     today = _astana_day(now)
@@ -225,7 +233,8 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
             "by_category": dict(sorted(by_cat.items(), key=lambda kv: -kv[1])),
             "daily": daily,
             "last_at": iso(m["last"]),
-            "open_ids": [c.get("id") for c, _ in open_sorted[:MAX_OPEN_IDS] if c.get("id")],
+            "open_ids": [c.get("id") for c, _ in open_sorted if c.get("id") and (actionable is None or actionable(c))][:MAX_OPEN_IDS],
+            "examples_open": 0 if actionable is None else sum(1 for c, _ in open_sorted if not actionable(c)),
             "demo": all(bool(c.get("demo")) for c, _ in rows),
         })
 
