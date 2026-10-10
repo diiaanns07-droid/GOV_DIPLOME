@@ -1,9 +1,24 @@
 {
  "bug": "R10 BUGS B-033: «Жанында: улица Керей и Жанибек хандар» — улица по-русски в казахской карточке проекта (FINAL ef1ef44 с R05 169c56b)",
- "where": "FINAL-кандидат R01 ef1ef44 + web/civic/build3d R05 @ f946157 + proposed_r01_final.patch; app.py, CIVIC_DEMO=1, временная база; ҚАЗ, вид «Тұрғын»",
+ "where": "FINAL-кандидат R01 0a7a346 + web/civic/build3d R05 @ 38cfc4a + proposed_r01_final.patch; app.py, CIVIC_DEMO=1, свежая база; ҚАЗ, вид «Тұрғын»",
  "how": "сотрудник ставит сквер в 30 м от улицы Керей и Жанибек хандар [71.402341, 51.117181], житель открывает карточку",
- "result": [{"vp": 1366, "line": "Жанында: Керей Және Жәнібек Хандар көшесі", "russian": false}, {"vp": 375, "line": "Жанында: Керей Және Жәнібек Хандар көшесі", "russian": false}],
+ "result": [
+  {
+   "vp": 1366,
+   "line": "Жанында: Керей және Жәнібек хандар көшесі",
+   "russian": false
+  },
+  {
+   "vp": 375,
+   "line": "Жанында: Керей және Жәнібек хандар көшесі",
+   "russian": false
+  }
+ ],
  "status": "PASS",
- "screens": ["screens/final_b033_1366_kk_card.png", "screens/final_b033_375_kk_card.png"],
- "generated_at": "2026-10-10T18:38:45Z"
+ "screens": [
+  "screens/final_b033_1366_kk_card.png",
+  "screens/final_b033_375_kk_card.png"
+ ],
+ "generated_at": "2026-10-10T19:06:10Z",
+ "note": "регистр по правилам казахского письма (R11 ночь 7 п. 2): «және», «хандар» — строчные"
 }
