@@ -365,6 +365,27 @@ async function colorOnlyCheck(page) {
     return out;
   });
 
+  // Кадр Codex OFFLINE: табличка проекта R05 (свой маркер MapLibre) закрывала значок R07 — значки обходят чужие маркеры
+  await shot(browser, "foreign-marker-1366-ru", "desktop", "?lang=ru&role=akimat&view=nura", async (page) => {
+    return page.evaluate(async () => {
+      const map = window.__map;
+      const b = window.__heat.badges().find((x) => x.mode === "full");
+      const el = document.createElement("div");
+      el.className = "b3d-label";
+      el.textContent = "Проект · 2027";
+      el.style.cssText = "padding:10px 16px;background:#e8f5c8;border-radius:999px;font:600 16px system-ui";
+      new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(b.spot).addTo(map);
+      await new Promise((ok) => { map.once("moveend", ok); map.panBy([3, 0], { duration: 0 }); });
+      await new Promise((ok) => setTimeout(ok, 200));
+      const fr = el.getBoundingClientRect();
+      const hit = [...document.querySelectorAll(".r07-badge")].filter((x) => !x.hidden).filter((x) => {
+        const r = x.getBoundingClientRect();
+        return Math.min(r.right, fr.right) - Math.max(r.left, fr.left) > 2 && Math.min(r.bottom, fr.bottom) - Math.max(r.top, fr.top) > 2;
+      }).map((x) => x.title);
+      return { key: b.key, overlapping: hit };
+    });
+  }, async (page, m, x) => (x.overlapping.length ? ["значок R07 поверх чужой таблички: " + x.overlapping.join(", ")] : []));
+
   // R10 B-025: значки — одна остановка Tab, между ними — стрелки; Enter открывает карточку
   {
     const { page, errors } = await open(browser, "desktop", "?lang=ru&role=akimat&view=nura");
@@ -571,13 +592,26 @@ async function colorOnlyCheck(page) {
       const btns = [...document.querySelectorAll(".mapbtns button")].map((b) => b.getBoundingClientRect());
       const under = btns.some((b) => !(r.right <= b.left || b.right <= r.left || r.bottom <= b.top || b.bottom <= r.top));
       const toasts = [...document.querySelectorAll(".r07-toast")].map((t) => t.innerText);
-      return { h: Math.round(r.height), rows: tops.size, right: Math.round(r.right), zoomInLegend, under, toasts };
+      const hint = document.querySelector(".r07-zoomhint");
+      return { h: Math.round(r.height), rows: tops.size, right: Math.round(r.right), zoomInLegend, under, toasts,
+               hint: hint && hint.offsetParent !== null ? hint.innerText : "" };
     });
+    // R10 B-038: смена языка — подсказка сразу на новом языке (она в шторке, а не тостом поверх главной кнопки)
+    const other = lang === "ru" ? "kk" : "ru";
+    await page.evaluate((l) => document.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang: l } })), other);
+    await page.waitForTimeout(50);
+    const after = await page.evaluate(() => document.querySelector(".r07-zoomhint")?.innerText || "");
+    await page.evaluate((l) => document.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang: l } })), lang);
+    await page.waitForTimeout(200);
+    x.hintAfterSwitch = after;
     const problems = [];
+    const want = { ru: /Приблизьте карту/, kk: /картаны жақындатыңыз/ };
     if (x.rows !== 1 || x.h > 40) problems.push("легенда не в одну строку: " + JSON.stringify(x));
     if (x.zoomInLegend) problems.push("подсказка о масштабе строкой в легенде");
     if (x.under) problems.push("легенда под кнопками карты");
-    if (x.toasts.length !== 1) problems.push("подсказка о масштабе не одним тостом: " + JSON.stringify(x.toasts));
+    if (x.toasts.length) problems.push("подсказка о масштабе тостом (над главной кнопкой): " + JSON.stringify(x.toasts));
+    if (!want[lang].test(x.hint)) problems.push("нет подсказки о масштабе в шторке: " + x.hint);
+    if (!want[other].test(after)) problems.push("после смены языка подсказка не на новом языке (B-038): " + after);
     await finish(page, errors, `legend-phone-375-${lang}`, "phone", problems, x);
   }
 
@@ -717,8 +751,9 @@ async function colorOnlyCheck(page) {
     await page.click(".r07-item");
     await page.waitForSelector('[data-act="take"], [data-act="fixed"]');
     await page.click('[data-act="take"], [data-act="fixed"]');
-    await page.waitForSelector(".r07-toast--error", { timeout: 10000 }).catch(() => {});
-    const text = await page.evaluate(() => document.querySelector(".r07-toast--error")?.innerText || "");
+    await page.waitForSelector(".r07-toast", { timeout: 10000 }).catch(() => {});
+    await page.waitForTimeout(600);   // после перезагрузки карты сообщение остаётся
+    const text = await page.evaluate(() => [...document.querySelectorAll(".r07-toast")].map((t) => t.innerText).join(" | "));
     const problems = [];
     if (!/не найдено/.test(text) || /связь/.test(text)) problems.push("404 показан не так: " + text);
     results.push({ name: "action-404-1366-ru", size: "desktop", query: "", problems: problems.concat(errors), badges: 0, extra: { text } });

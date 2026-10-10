@@ -14,6 +14,7 @@
 перечнем нарушений — так видно, что именно не так. Для приёмки B2: BIRGE_STRICT_DEMO=1 делает его обычным FAIL.
 """
 import os
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -55,9 +56,15 @@ def test_rules_catch_the_case_from_ux_review():
     assert violations(ok) == []
 
 
+# Момент проверки зафиксирован — полдень понедельника по Астане. С настоящими часами тест зависел от часа запуска:
+# сразу после полуночи «новых за день» ещё 0 и тест уходил в XFAIL (найдено ночью в FINAL R01 85c16e2, 00:38).
+# Демо-набор R07 строится относительно часов сервиса, поэтому полдень даёт тот же «обычный день», что и на показе.
+NOON = datetime(2026, 10, 12, 12, 0, tzinfo=timezone(timedelta(hours=5)))
+
+
 def test_demo_numbers_look_like_a_normal_day():
-    svc = AkimService(heat=civic_heat.HeatService(), objects=None, proposals=None)
-    s = svc.summary()
+    svc = AkimService(heat=civic_heat.HeatService(clock=lambda: NOON), objects=None, proposals=None, clock=lambda: NOON)
+    s = svc.summary(now=NOON)
     assert s["demo"]["complaints"] is True, "проверяем именно демо-набор"
     bad = violations(s)
     if bad and os.environ.get("BIRGE_STRICT_DEMO") != "1":
