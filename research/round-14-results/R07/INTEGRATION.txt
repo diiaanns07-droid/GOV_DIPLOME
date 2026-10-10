@@ -1,0 +1,185 @@
+R07 · Тепловая карта объектов — как подключить к общей сборке (раунд 14)
+Ветка: claude/upbeat-knuth-i0rqaa. Пути R07: ui/civic_heat/, web/civic/heat/, tests/civic/R07/.
+Модуль сам ничего в чужих файлах не меняет. Ниже — минимальные правки для владельцев других путей.
+
+======================================================================
+1. R01 · ui/web_server.py — маршруты /api/civic/v2/heat* и файлы интерфейса
+======================================================================
+1а) Файлы интерфейса — в белый список CIVIC_ASSETS (папки целиком сервер не отдаёт):
+
+-                "assistant/assistant.js", "assistant/assistant.css")  # R09 @f895c30 (demo.html not served)
++                "assistant/assistant.js", "assistant/assistant.css",  # R09 @f895c30 (demo.html not served)
++                "heat/heat.js", "heat/heat.css")                      # R07 round 14 (тепловая карта)
+
+1б) Маршрут GET в do_GET, ПЕРЕД строкой «if path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/"):»
+    (или внутри вашего общего шлюза v2, если он уже есть — функция та же):
+
++        if path == "/api/civic/v2/heat" or path.startswith("/api/civic/v2/heat/"):
++            from ui.civic_heat.api import handle_get as civic_heat_get   # R07: ответ строго по CONTRACT §7
++            status, body = civic_heat_get(path, parse_qs(parsed.query))
++            self.json_reply(status, body)
++            return
+
+    handle_get никогда не бросает исключение: неверные параметры → 400 {"error":"bad_request","field":…},
+    сбой источника жалоб → 500 {"error":"heat_failed"}; сервер не падает.
+    Если шлюз заворачивает ответ в {"ok": true, "data": …}, интерфейс это понимает.
+    Маршруты:  GET /api/civic/v2/heat?bbox&days&category&district&zoom
+               GET /api/civic/v2/heat/meta            (категории, легенда, районы — из categories_v2.json и geofence.json)
+               GET /api/civic/v2/heat/target?kind&id&days
+
+1в) Источник жалоб. Без подключения модуль показывает ДЕМО-набор (synthetic, demo: true) и пишет об этом в ответе ("demo": true).
+    Когда у R09 есть функция списка записей v2, при старте сервера:
+        import ui.civic_heat as civic_heat
+        civic_heat.configure(source=lambda since: <модуль R09>.list(bbox=None, since=since, category=None))
+    Автоматически подхватываются ui.civic_feedback.list_complaints_v2 или ui.civic_feedback.list_v2 (если R09 так назовёт).
+
+1г) Оболочка (web/civic/shell/ или web/interface.js):
+    <link rel="stylesheet" href="/civic/heat/heat.css">  <script src="/civic/heat/heat.js"></script>
+    const heat = window.CivicHeat.mount({
+      root: <элемент правой панели / шторки>,   // модуль рисует внутрь фильтры, легенду, «Горячие места», карточку
+      map,                                     // экземпляр MapLibre (window.map у web/map.js)
+      role: "akimat" | "resident",             // переключатель «Акимат / Житель»
+      lang: Birge.i18n.lang(),                 // смена языка — событие window "birge:lang" {detail:{lang}}, модуль слушает сам
+      beforeId: <id слоя>,                     // необязательно: под каким слоем рисовать (по умолчанию — под первыми подписями)
+    });
+    heat.setRole("resident");  heat.focusTarget("segment", "osm-w…-n");  heat.refresh();  heat.destroy();
+    Модуль сам НЕ двигает карту, пока пользователь не нажал строку в списке (UX_BRIEF, правило 8).
+    Выбор цели генерирует событие "birge:heat-select" {detail:{target}} (всплывает от root) — для соседних модулей.
+    Демо-страница модуля (web/civic/heat/demo.html) и fixtures/basemap-*.geojson в общую сборку не нужны.
+
+======================================================================
+2. R09 · жалобы v2 — сброс кэша и событие для пульса
+======================================================================
+2а) Сервер: после create / metoo / set_status вызвать   import ui.civic_heat; ui.civic_heat.invalidate()
+    (иначе новая жалоба появится на карте через ≤ 60 с — кэш живёт минуту).
+2б) Браузер: после отправки жалобы или «Я тоже»
+        window.dispatchEvent(new CustomEvent("birge:complaint", { detail: { type: "created" | "metoo" | "status", complaint_id, target: { kind, id } } }));
+    Тепловая карта перезагрузит данные, плавно перекрасит цель (~0.8 с) и покажет пульс-кольцо (для status — без пульса).
+2в) Кнопки карточки цели вызывают ваш API (CONTRACT §7):
+        «Взять в работу»          → POST /api/civic/v2/complaints/{id}/status {"status":"in_progress"} для каждого id из item.open_ids
+        «Отметить исправленным»   → то же с {"status":"fixed"}
+        «Я тоже» (житель)         → POST /api/civic/v2/complaints/{open_ids[0]}/metoo {"device_id": localStorage["birge.device_id"]}
+    Ключ устройства "birge.device_id" — предлагаю этот же в форме жалобы (одно «Я тоже» с устройства).
+    Доступ сотрудника (сессия/CSRF) — на стороне шлюза R01; модуль отправляет обычный JSON с того же origin.
+2г) Правила веса, которые зависят от ваших полей: человек = жалоба + каждое «Я тоже» (metoo); статусы fixed и rejected
+    в вес не идут; всё, что пришло ДО последнего статуса fixed у цели, считается закрытым. duplicate_of на вес не влияет
+    (дубль — это отдельный человек; «Я тоже» дублей не создаёт — так в CONTRACT).
+
+======================================================================
+3. R08 · «Картина дня» — те же числа, что на карте
+======================================================================
+    from ui.civic_heat import default_service
+    svc = default_service()
+    svc.top(10, days=7, district=None)      # горячие места: target, count, weight, level, color, by_category, daily, last_at
+    svc.districts(days=7)                   # районы: count, weight, level, targets
+    svc.target("segment", "osm-w…-n", days=30)
+    Клик по горячему месту → открыть карту и вызвать heat.focusTarget(kind, id) (или ?target=kind:id на демо-странице).
+
+======================================================================
+4. R12 · цели и геометрия
+======================================================================
+    Модуль берёт форму цели по id (ui/civic_heat/targets.py), по порядку:
+      а) реестр: ui/civic_heat/fixtures/targets_demo.json и ваши data/civic/astana/geo/objects.json | yards.json | targets.json
+         (форматы {"targets": {id: {geometry, label_ru, label_kk}}} или {"items": [{id, geometry | coordinates | lon/lat, name_ru, name_kk}]});
+      б) если в engine.civic_geo есть функция target_geometry({"kind","id"}) → {"geometry","label_ru","label_kk","approximate"?} — берётся она;
+      в) участок osm-w<way>-<n> — ребро пешеходного графа как есть; г) cell-<ix>-<iy> — квадрат по формуле ui/civic_heat/geo.py
+         (CELL_M=150, начало 71.0/50.8, широта 51.15). Просьба: ваши ячейки — по той же формуле, или отдавайте их через target_geometry.
+      д) иначе — «примерное место»: круг 60 м у точки жалобы, пунктирный контур и надпись в карточке.
+    Порядок слоёв относительно 3D-зданий решаете вы: передайте нужный id в mount({ beforeId }).
+
+======================================================================
+5. Координатор · research/round-14/categories_v2.json (предложение, сам файл не менял)
+======================================================================
+    а) У уровня 1 min_weight = 1, а вес одной жалобы через час уже < 1 (0.5 ** (возраст/14)) — одиночная жалоба пропала бы.
+       В коде: вес > 0 всегда даёт уровень ≥ 1, а с порогами сравнивается вес, округлённый до целого человека
+       (10 свежих жалоб = «10+», а не «6–9»). Предложение: в JSON у уровня 1 поставить min_weight 0.01 и записать правило округления.
+    б) fixed_state.kk = «түзетілді». Для ремонта (яма, фонарь) естественнее «жөнделді». Модуль везде пишет как в JSON —
+       если владелец выберет «жөнделді», поменять в JSON и в словаре heat.js (5 строк с «Түзетілді»).
+
+======================================================================
+6. R11 · тексты и ui-kit
+======================================================================
+    Стили модуля используют токены ui-kit (--b-ink, --b-ink-2, --b-green, --b-lime, --b-focus, --b-ok-ink …) с запасными значениями —
+    после подключения tokens.css цвета совпадут сами. Иконки нарисованы внутри heat.js теми же контурами, что в icons.svg R11.
+    Если общий Birge.i18n подключён и знает ключ heat.*, модуль берёт его перевод; иначе — свой словарь (window.CivicHeat.messages).
+    Множественное число: ru — one/few/many, kk — одна форма other. Подстановки: {count} {target} {people} {period} {date}.
+    I18N_KEYS (ключ | рус | қаз) — 66 ключей, казахский на проверку владельцу:
+    heat.title | Карта жалоб | Шағымдар картасы
+    heat.subtitle | Где жители сообщают о проблемах | Тұрғындар қай жерде мәселе туралы хабарлайды
+    heat.top_line | Больше всего жалоб: {target} · {people} | Ең көп шағым: {target} · {people}
+    heat.demo_note | Демо-данные: жалобы придуманы, улицы и остановки настоящие (OpenStreetMap). | Демо-деректер: шағымдар ойдан жасалған, көшелер мен аялдамалар нақты (OpenStreetMap).
+    heat.demo_tag | Демо | Демо
+    heat.filters | Фильтры | Сүзгілер
+    heat.category_all | Все категории | Барлық санат
+    heat.period | Период | Кезең
+    heat.days | one: {count} день / few: {count} дня / many: {count} дней | other: {count} күн
+    heat.district | Район | Аудан
+    heat.district_all | Все районы | Барлық аудан
+    heat.reset | Сбросить | Тазарту
+    heat.legend | Сколько человек сообщили | Қанша адам хабарлады
+    heat.legend_hint | Свежие жалобы ярче: за 2 недели жалоба «остывает» вдвое. | Жаңа шағымдар ашығырақ: 2 аптада шағымның салмағы екі есе азаяды.
+    heat.fixed | исправлено | түзетілді
+    heat.hot_title | Горячие места | Шағымы көп орындар
+    heat.people_short | one: {count} чел. / few: {count} чел. / many: {count} чел. | other: {count} адам
+    heat.reported | one: Сообщил {count} человек / few: Сообщили {count} человека / many: Сообщили {count} человек | other: {count} адам хабарлады
+    heat.reported_fixed | one: Сообщал {count} человек / few: Сообщали {count} человека / many: Сообщали {count} человек | other: {count} адам хабарлаған
+    heat.for_days | one: за {count} день / few: за {count} дня / many: за {count} дней | other: соңғы {count} күнде
+    heat.level_word.1 | Немного жалоб | Шағым аз
+    heat.level_word.2 | Заметно | Шағым бар
+    heat.level_word.3 | Много жалоб | Шағым көп
+    heat.level_word.4 | Очень много жалоб | Шағым өте көп
+    heat.fixed_word | Исправлено | Түзетілді
+    heat.fixed_until | На карте зелёным до {date} | Картада жасыл түспен көрсетіледі (соңғы күні: {date})
+    heat.chart | Жалобы по дням | Күндер бойынша шағымдар
+    heat.chart_from | 14 дн. назад | 14 күн бұрын
+    heat.chart_to | сегодня | бүгін
+    heat.topics | О чём сообщают | Не туралы хабарлайды
+    heat.status | Статус | Мәртебесі
+    heat.status.new | Новое | Жаңа
+    heat.status.accepted | Принято | Қабылданды
+    heat.status.in_progress | В работе | Орындалуда
+    heat.status.fixed | Исправлено | Түзетілді
+    heat.kind.object | Объект | Нысан
+    heat.kind.segment | Участок улицы | Көше бөлігі
+    heat.kind.area | Двор или квартал | Аула немесе орам
+    heat.kind.district | Район | Аудан
+    heat.approximate | Примерное место: точный объект не выбран, показана область. | Шамамен көрсетілген орын: нақты нысан таңдалмаған, аумақ көрсетілген.
+    heat.take | Взять в работу | Жұмысқа алу
+    heat.mark_fixed | Отметить исправленным | Түзетілді деп белгілеу
+    heat.metoo | Я тоже | Мен де
+    heat.metoo_done | one: Вы с нами. Сообщил {count} человек / few: Вы с нами. Сообщили {count} человека / many: Вы с нами. Сообщили {count} человек | other: Сіз бізбен біргесіз. {count} адам хабарлады
+    heat.metoo_already | Вы уже отметились | Сіз белгі қойдыңыз
+    heat.toast_taken | Взято в работу | Жұмысқа алынды
+    heat.toast_fixed | Отмечено как исправленное | Түзетілді деп белгіленді
+    heat.toast_metoo | Спасибо. Ваш голос учтён | Рақмет. Даусыңыз есептелді
+    heat.toast_new | Новая жалоба: {target} | Жаңа шағым: {target}
+    heat.action_failed | Не получилось сохранить. Проверьте связь и попробуйте ещё раз | Сақталмады. Байланысты тексеріп, қайталап көріңіз
+    heat.back | Горячие места | Шағымы көп орындар
+    heat.close | Закрыть | Жабу
+    heat.loading | Загружаем карту жалоб… | Шағымдар картасы жүктеліп жатыр…
+    heat.empty_title | Жалоб нет | Шағым жоқ
+    heat.empty_hint | Здесь жалоб нет {period}. Измените период или район. | Бұл жерде {period} шағым түспеген. Кезеңді немесе ауданды өзгертіңіз.
+    heat.error_title | Нет связи с сервером | Сервермен байланыс жоқ
+    heat.error_hint | Проверьте интернет и нажмите «Повторить». | Интернетті тексеріп, «Қайталау» түймесін басыңыз.
+    heat.not_ready | Тепловая карта ещё не подключена к серверу | Шағымдар картасы серверге әлі қосылмаған
+    heat.retry | Повторить | Қайталау
+    heat.zoom_hint | Приблизьте карту, чтобы увидеть улицы, дворы и остановки | Көшелерді, аулалар мен аялдамаларды көру үшін картаны жақындатыңыз
+    heat.badge_label | {target}: {reported} | {target}: {reported}
+    heat.open_on_map | Показать на карте | Картадан көрсету
+    heat.district_targets | one: {count} место с жалобами / few: {count} места с жалобами / many: {count} мест с жалобами | other: {count} орында шағым бар
+    heat.kind.bus_stop | Остановка | Аялдама
+    heat.role.akimat | Акимат | Әкімдік
+    heat.role.resident | Житель | Тұрғын
+    Сомнительные места в казахском (для KK_REVIEW): «Мен де» (Я тоже), «Шағымы көп орындар» (Горячие места; вариант «Ыстық нүктелер»),
+    «түзетілді / жөнделді», «Орындалуда» (В работе), подписи улиц без name:kk собраны автоматически («Центральная көшесі»).
+
+======================================================================
+7. LOCAL-задачи (Codex на ноутбуке владельца)
+======================================================================
+    LOCAL-1 (OSM-объекты) → после появления data/civic/astana/osm-objects/ и data/civic/astana/geo/ от R12:
+        python -m ui.civic_heat.build_fixtures      # пересобрать цели демо: остановки В НУРЕ, дворы (landuse=residential) вместо ячеек
+        python -m pytest tests/civic/R07 -q
+      Сейчас в снимке графа нет ни одной остановки в Нуре — демо-остановки взяты настоящие из соседних районов.
+      Запахи сейчас — кварталы у Коргалжинского шоссе; где реальная промзона, не проверено (нужен landuse=industrial).
+    LOCAL-7 (скриншоты сборки) → снять карту с настоящей подложкой: demo.html?basemap=online или общую сборку R01;
+      в облаке тайлы OpenFreeMap закрыты (403), поэтому скриншоты R07 сделаны на офлайн-подложке из улиц OSM.

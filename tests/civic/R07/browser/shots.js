@@ -81,6 +81,25 @@ async function shot(browser, name, size, query, after) {
     await page.click('[data-days="7"]');
     await page.waitForTimeout(700);
   });
+  // Клавиатура: из карточки цели Tab доходит до главной кнопки, рамка фокуса видна, Esc закрывает карточку.
+  {
+    const page = await browser.newPage({ viewport: SIZES.desktop });
+    await page.goto(BASE + "?lang=ru&view=nura", { waitUntil: "networkidle" });
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.focus(".r07-item");
+    await page.keyboard.press("Enter");
+    await page.waitForSelector(".r07-card");
+    let reached = false, outline = "";
+    for (let i = 0; i < 15 && !reached; i++) {
+      await page.keyboard.press("Tab");
+      reached = await page.evaluate(() => document.activeElement && document.activeElement.dataset.act === "take");
+    }
+    if (reached) outline = await page.evaluate(() => getComputedStyle(document.activeElement).outlineStyle + " " + getComputedStyle(document.activeElement).outlineWidth);
+    await page.keyboard.press("Escape");
+    const closed = await page.evaluate(() => !document.querySelector(".r07-card"));
+    results.push({ name: "keyboard-card-1366-ru", size: "desktop", query: "", errors: reached && closed && outline.startsWith("solid") ? [] : ["Tab/Esc: reached=" + reached + " outline=" + outline + " closed=" + closed], hscroll: false, rawKeys: [], smallButtons: [], badges: 0 });
+    await page.close();
+  }
   await browser.close();
   fs.writeFileSync(path.join(OUT, "CHECKS.json"), JSON.stringify(results, null, 1));
   let bad = 0;

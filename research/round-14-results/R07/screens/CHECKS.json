@@ -320,5 +320,15 @@
    "status": "ready",
    "items": 12
   }
+ },
+ {
+  "name": "keyboard-card-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 0
  }
 ]

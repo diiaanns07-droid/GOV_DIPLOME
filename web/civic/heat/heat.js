@@ -99,30 +99,30 @@
       "heat.reset": "Тазарту",
       "heat.legend": "Қанша адам хабарлады",
       "heat.legend_hint": "Жаңа шағымдар ашығырақ: 2 аптада шағымның салмағы екі есе азаяды.",
-      "heat.fixed": "жөнделді",
+      "heat.fixed": "түзетілді",
       "heat.hot_title": "Шағымы көп орындар",
       "heat.people_short": { other: "{count} адам" },
       "heat.reported": { other: "{count} адам хабарлады" },
       "heat.reported_fixed": { other: "{count} адам хабарлаған" },
       "heat.for_days": { other: "соңғы {count} күнде" },
       "heat.level_word.1": "Шағым аз", "heat.level_word.2": "Шағым бар", "heat.level_word.3": "Шағым көп", "heat.level_word.4": "Шағым өте көп",
-      "heat.fixed_word": "Жөнделді",
+      "heat.fixed_word": "Түзетілді",
       "heat.fixed_until": "Картада жасыл түспен көрсетіледі (соңғы күні: {date})",
       "heat.chart": "Күндер бойынша шағымдар",
       "heat.chart_from": "14 күн бұрын",
       "heat.chart_to": "бүгін",
       "heat.topics": "Не туралы хабарлайды",
       "heat.status": "Мәртебесі",
-      "heat.status.new": "Жаңа", "heat.status.accepted": "Қабылданды", "heat.status.in_progress": "Орындалуда", "heat.status.fixed": "Жөнделді",
+      "heat.status.new": "Жаңа", "heat.status.accepted": "Қабылданды", "heat.status.in_progress": "Орындалуда", "heat.status.fixed": "Түзетілді",
       "heat.kind.object": "Нысан", "heat.kind.segment": "Көше бөлігі", "heat.kind.area": "Аула немесе орам", "heat.kind.district": "Аудан",
       "heat.approximate": "Шамамен көрсетілген орын: нақты нысан таңдалмаған, аумақ көрсетілген.",
       "heat.take": "Жұмысқа алу",
-      "heat.mark_fixed": "Жөнделді деп белгілеу",
+      "heat.mark_fixed": "Түзетілді деп белгілеу",
       "heat.metoo": "Мен де",
       "heat.metoo_done": { other: "Сіз бізбен біргесіз. {count} адам хабарлады" },
       "heat.metoo_already": "Сіз белгі қойдыңыз",
       "heat.toast_taken": "Жұмысқа алынды",
-      "heat.toast_fixed": "Жөнделді деп белгіленді",
+      "heat.toast_fixed": "Түзетілді деп белгіленді",
       "heat.toast_metoo": "Рақмет. Даусыңыз есептелді",
       "heat.toast_new": "Жаңа шағым: {target}",
       "heat.action_failed": "Сақталмады. Байланысты тексеріп, қайталап көріңіз",
@@ -302,11 +302,13 @@
       let body = null;
       try { body = await res.json(); } catch (e) { body = null; }
       if (!res.ok) {
-        const err = new Error((body && body.message) || "HTTP " + res.status);
+        const err = new Error((body && (body.message || (body.error && body.error.message))) || "HTTP " + res.status);
         err.status = res.status;
         err.body = body;
         throw err;
       }
+      // Шлюз R01 может завернуть ответ в конверт {ok, data} (как в civic-v1) — принимаем оба вида.
+      if (body && body.ok === true && body.data && !body.items && !body.categories) return body.data;
       return body;
     }
 
@@ -866,5 +868,6 @@
     }
   }
 
-  window.CivicHeat = { mount, version: VERSION, schema: "civic-v2" };
+  // messages — запасной словарь ru/kk (R11 переносит ключи heat.* в общие ru.json / kk.json).
+  window.CivicHeat = { mount, version: VERSION, schema: "civic-v2", messages: DICT };
 })();
