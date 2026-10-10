@@ -101,6 +101,8 @@ class ComplaintStore:
     def __init__(self, db_path, *, clock: Callable[[], datetime] | None = None, limits: dict | None = None):
         self.clock = clock or (lambda: datetime.now(rec.ASTANA_TZ))
         self.limits = {**DEFAULT_LIMITS, **(limits or {})}
+        # R15-S04/S12: target_lookup(target) -> форма и подписи цели с карты R12 (подключает R01) или None.
+        self.target_lookup = None
         self._lock = threading.RLock()
         self._listeners: list[Callable[[dict], None]] = []
         self.db_path = str(db_path)
@@ -235,8 +237,8 @@ class ComplaintStore:
             source = "resident"
         point = rec.parse_point(payload.get("point"))
         # Жалоба всегда имеет цель: нет выбранной цели -> ячейка «примерное место».
-        target = rec.parse_target(payload["target"]) if payload.get("target") is not None \
-            else rec.cell_target(*point)
+        target = rec.checked_target(rec.parse_target(payload["target"]), point, self.target_lookup) \
+            if payload.get("target") is not None else rec.cell_target(*point)
         district = payload.get("district")
         if district is not None and (not isinstance(district, str) or not rec.DISTRICT.match(district)):
             district = None

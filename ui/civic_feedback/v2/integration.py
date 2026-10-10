@@ -5,6 +5,10 @@
     # в шлюзе /api/civic/v2: для маршрутов из ROUTES
     reply = complaints.handle(method, "/api/civic/v2" + rel_path, query, body, principal, context)
 
+Цель жалобы (R15 S04/S12): подписи берутся только с карты R12, а цель дальше 300 м от точки жителя становится
+«примерным местом». make_service по умолчанию сам подключает engine.civic_geo.target_geometry, если R12 есть в
+сборке (target_lookup="auto"); без R12 подписи из запроса не сохраняются. Явно: make_service(db, target_lookup=f|None).
+
 principal — store.resolve_principal(context) (R02) или None; context — как у v1:
 {"headers": заголовки запроса (нужен X-Birge-Device, для сотрудника X-CSRF-Token),
  "host_allowed": bool, "is_same_origin": bool|None}.
@@ -31,5 +35,16 @@ ROUTES = (
 )
 
 
-def make_service(db_path, **store_options) -> ComplaintsV2Service:
-    return ComplaintsV2Service(ComplaintStore(db_path, **store_options))
+def geo_target_lookup():
+    """engine.civic_geo.target_geometry (R12), если модуль есть в сборке; иначе None."""
+    try:
+        from engine.civic_geo import target_geometry
+    except ImportError:
+        return None
+    return target_geometry
+
+
+def make_service(db_path, *, target_lookup="auto", **store_options) -> ComplaintsV2Service:
+    store = ComplaintStore(db_path, **store_options)
+    store.target_lookup = geo_target_lookup() if target_lookup == "auto" else target_lookup
+    return ComplaintsV2Service(store)
