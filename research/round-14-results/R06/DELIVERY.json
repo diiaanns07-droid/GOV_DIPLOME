@@ -3,34 +3,35 @@
  "title": "Предложения, голоса жителей, этапы и отставание объектов",
  "branch": "claude/round-14-r06",
  "branch_note": "Отдельная ветка с разрешения пользователя: claude/round-14-package уже вела сессия R11; по COMMON (обновлён позже) имя было бы claude/r14-R06 — координатору внести claude/round-14-r06 в BRANCHES.md.",
- "base_sha": "608e367 (claude/round-14-package)",
+ "base_sha": "608e367 (claude/round-14-package); соседи на 10.10: R01 915143f, R05 7f42cb3, R08 7101f46, R11 6102dfb, package 4bbf456",
  "restored_from": {
   "ui/civic_store/": "claude/elegant-franklin-jbhprq @ 26793c8 (R02 раунда 13, код b9eb180)",
-  "tests/civic/R06/store/": "tests/civic/R02 @ 26793c8, переименованы в r06store_*; 3 теста схемы/cookie обновлены под миграцию 6"
+  "tests/civic/R06/store/": "tests/civic/R02 @ 26793c8, переименованы в r06store_*; тесты схемы/cookie/выгрузки/seed-demo/проекции обновлены под миграции 6–7, geometry_source и названия демо без служебных слов"
  },
  "inputs_read_only": {
   "data/civic/astana/osm-objects/": "claude/round-14-package @ a29428a (LOCAL-1, real, ODbL) — без изменений",
-  "web/civic/ui-kit, web/civic/i18n": "R11 claude/r14-R11 @ ba8758b — только для стенда/скриншотов (--kit-dir), в ветку R06 не копировались",
-  "ui/web_server.py R01": "claude/sharp-dijkstra-0t87gl @ 022787b — только для теста шлюза",
-  "web/civic/editor R12": "claude/tender-brahmagupta-ef5ztl @ f48e578 — только для patch и прогона его тестов"
+  "web/civic/ui-kit, web/civic/i18n": "R11 claude/r14-R11 @ 6102dfb (и проверка ключей на cc77761, f025241) — только для стенда (--kit-dir), в ветку R06 не копировались",
+  "ui/web_server.py R01": "claude/sharp-dijkstra-0t87gl @ 915143f (B2 step 1) и d3c33d9 (B1) — только для теста шлюза и прогона дерева R01",
+  "web/civic/build3d/build3d-core.js R05": "claude/r14-R05 @ 7f42cb3 — только для r05_client_r14.cjs",
+  "ui/civic_akim R08": "claude/r14-R08 @ 7101f46 — только для теста с R06_R08_ROOT",
+  "engine/civic_geo R12": "из дерева R01 915143f — только для отчёта точности линий демо-пакета"
  },
- "code_sha": "7031afa",
- "tested_sha": "7031afa (Linux, Python 3.13.16, SQLite 3.45.1, Node 22.22.0, Chromium Playwright)",
- "push_status": "см. финальный коммит передачи; checkpoints 25796fa, f5f1e94, ef35fb6, 18d5182, c3cd15d, 7031afa отправлены",
+ "code_sha": "b42e790",
+ "tested_sha": "b42e790 (Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright)",
+ "push_status": "b42e790 отправлен в origin/claude/round-14-r06 (d043e7b..b42e790); документы поставки — следующий коммит той же ветки",
  "changed_paths": [
-  "ui/civic_store/db.py (миграция 6)",
+  "ui/civic_store/db.py (миграции 6 и 7)",
   "ui/civic_store/auth.py (COOKIE_PATH=/api/civic)",
-  "ui/civic_store/stages.py",
-  "ui/civic_store/proposals.py",
+  "ui/civic_store/validate.py, dto.py, objects.py, public_export.py, service.py (geometry_source в civic-v1)",
+  "ui/civic_store/stages.py (title_kk демо-объектов)",
+  "ui/civic_store/proposals.py (поля 3D R05, восстановление по id, лимит района)",
+  "ui/civic_store/v2.py (DELETE, delete_proposal, akim_objects, akim_proposals)",
   "ui/civic_store/districts.py",
-  "ui/civic_store/v2.py",
-  "ui/civic_store/demo_r14.py",
+  "ui/civic_store/demo_r14.py, demo_package.json (названия без служебных слов, формы по OSM)",
   "ui/civic_store/cli.py (seed-r14-demo)",
   "ui/civic_store/__init__.py",
   "ui/civic_store/* остальное — восстановлено из 26793c8 без изменений",
-  "web/civic/proposals/proposals.js",
-  "web/civic/proposals/proposals.css",
-  "web/civic/proposals/stage-editor.js",
+  "web/civic/proposals/proposals.js, proposals.css, stage-editor.js",
   "web/civic/proposals/demo.html (стенд, не раздаётся)",
   "tests/civic/R06/round14/",
   "tests/civic/R06/store/",
@@ -39,26 +40,59 @@
   "research/handoffs/astana/R06/round14/STATUS.md"
  ],
  "tests": {
-  "pytest tests/civic/R06 @7031afa": "PASS 445 passed, 5 skipped (4 — тест шлюза R01 без R06_R01_WEB_SERVER, 1 — унаследован из R02)",
-  "pytest tests/civic/R06/round14 (этапы, миграция без потерь, предложения, голоса, демо, места по OSM)": "PASS 66 passed, 4 skipped",
-  "через настоящий CivicV2Gateway R01 @022787b (R06_R01_WEB_SERVER)": "PASS 4/4",
-  "pytest tests/civic (весь) @c3cd15d": "1036 passed, 9 skipped, 3 FAIL — старые тесты хранилища tests/civic/R02 (номер схемы, таблицы, путь cookie); patch r02_old_store_tests.patch → tests/civic/R02 210 passed",
-  "браузер browser_r14.cjs на свежем стенде serve_r14.py (375/1366, ru/kk, голос/повтор/смена/перезагрузка/другое устройство, акимат «Одобрить», этап сотрудника + 409 + 422, нет связи)": "PASS 48/48, скриншоты screens/",
-  "голос сохраняется, повтор не удваивает, переживает перезапуск сервера": "PASS (pytest test_votes_survive_restart + браузер)",
-  "R12 редактор с r12_editor_stage.patch на моём хранилище": "80 pass / 8 fail / 1 skip — ТО ЖЕ, что без patch на хранилище раунда 13 (80/8/1): падения есть в ветке R12 до patch (поиск улиц, e2e с реальным R02), регрессии нет",
-  "весь tests/ репозитория": "NOT_RUN: вне роли",
-  "Windows run-city.bat": "NOT_RUN: облачный Linux"
+  "pytest tests/civic/R06 @b42e790": "PASS 467 passed, 7 skipped (без R06_R01_WEB_SERVER / R06_R08_ROOT — их тесты SKIP; 1 — унаследован из R02)",
+  "через настоящий CivicV2Gateway R01 @915143f (R06_R01_WEB_SERVER)": "PASS 5/5 (вкл. маршруты B2: get, approve/reject/withdraw, summary, lagging, staff stage, «Отменить» с id)",
+  "через CivicV2Gateway R01 @d3c33d9 (B1)": "PASS 4, SKIP 1 (маршрутов B2 там нет)",
+  "с настоящим кодом R08 @7101f46 (R06_R08_ROOT) test_r06r14_neighbors.py": "PASS 12/12",
+  "клиент R05 createApiStore @7f42cb3 против стенда (r05_client_r14.cjs)": "PASS 17/17 (конверт R06 и «голый» JSON R01)",
+  "дерево R01 915143f + пути R06 + r01_b2_r02_tests.patch: pytest tests/civic/R01 tests/civic/R02 (без R02/round14)": "PASS 400 passed, 2 skipped",
+  "tests/civic/R02 дерева R01 915143f с patch": "PASS 247 passed, 1 skipped",
+  "отчёт точности R12 engine.civic_geo report --objects demo_package.json": "PASS 959/959, store_line_on_street 1/0",
+  "браузер browser_r14.cjs на свежем стенде, ui-kit R11 6102dfb (375/1366, ru/kk, голос, акимат, п.15–19, дата, этап, нет связи)": "PASS 83/83, screens/ (browser_r14.txt, browser_r14.json)",
+  "tests/civic/R02/round14 дерева R01": "NOT_RUN: тесты данных R02, нужен ml.labeling — вне роли R06",
+  "app-тест в собранной оболочке R01 B2": "NOT_RUN: index.html B2 ещё не подключает proposals.js (INTEGRATION §1.3)",
+  "Windows run-city.bat и вид поля даты в Chrome ru/kk": "NOT_RUN: облачный Linux (LOCAL-R06-1)"
  },
  "known_limits": [
   "Голос — один с устройства (localStorage + хэш с солью), а не один на человека: очистка браузера даёт новое «устройство». Ограничение частоты 30 голосов/мин с адреса.",
-  "Шлюз R01 ещё не вызывает bind(service) и не знает маршрутов approve/reject/withdraw, GET по id, lagging, summary, staff stage — INTEGRATION §1.",
-  "Через шлюз R01 сейчас теряются fields у 422 (форма этапа покажет общее сообщение) — INTEGRATION §1.4.",
-  "Названия объектов civic-v1 одноязычные (ru): в kk карточка объекта показывает русское название с lang=ru.",
-  "Новые ключи перевода (32) пока живут в запасных списках R06; казахский — черновик R06 до вычитки R11/владельцем.",
-  "Демо: объекты — синтетика R02; проекты помечены demo, их голоса синтетические. Места подобраны по OSM, но слоя зданий нет — попадание в дом не проверено.",
+  "Названия объектов civic-v1 одноязычные (ru): title_kk есть только у синтетических демо-записей; у настоящих — русское название с lang=ru.",
+  "Казахский в данных (название сквера, демо-объекты) — черновик R06/R11 до вычитки владельцем.",
+  "Клиент R05 @7f42cb3 при «Отменить» создаёт новое предложение без голосов (id в теле не шлёт) — сервер умеет вернуть то же с голосами (INTEGRATION §2).",
+  "Демо: объекты — синтетика; проекты помечены demo, их голоса синтетические. Места по OSM, слоя зданий нет — попадание в дом не проверено.",
   "Район — по полигонам OSM (не юридическая граница); объект без геометрии — district null.",
   "stale считается от более свежего из (обновление этапа, обновление карточки); для работающих и без этапа — false.",
-  "Код раунда 13 не откроет базу после миграции 6 — перед обновлением backup."
+  "Код раунда 13 и поставки 1 не откроет базу после миграции 7 — перед обновлением backup."
  ],
- "next_step": "R01: bind(service) + маршруты/статика по INTEGRATION §1; R12: наложить r12_editor_stage.patch; R11: забрать I18N-KEYS R06; R08: lagging_objects()/proposals_summary(); R05: POST /proposals."
+ "next_step": "R01 (B2): взять R06 по путям на code_sha, наложить r01_b2_r02_tests.patch, подключить proposals.css/proposals.js/stage-editor.js в web/index.html до editor.js (INTEGRATION §1). R05: по желанию id в restore. R11: вычитать kk в данных (INTEGRATION §5). LOCAL: LOCAL-R06-1.",
+ "delivery": 2,
+ "delivery_note": "Поставка 2 для сборки B2 R01: UX_REVIEW R11 день 3 (п. 15–19), запросы R05/R08/R11/R12. Поставка 1: 3d10f7d (код 7031afa) — её взял R01 в 915143f.",
+ "ux_review_day3": {
+  "15": {
+   "fix": "названия демо без «Демо:»/«(синтетика)», синтетика — в evidence_type/описании, метка «Пример»",
+   "check": "браузер п.15 ×4 PASS; pytest test_demo_package_titles_have_no_tech_words_but_stay_synthetic PASS"
+  },
+  "16": {
+   "fix": "акимат: голоса числами (только чтение), «Одобрить» primary, «Отклонить» danger",
+   "check": "браузер ru/kk × 375/1366: нет кнопок голосования, счёт, одна главная кнопка PASS; screens/r06-*-akimat*.png"
+  },
+  "17": {
+   "fix": "два подраздела: «Отстают» (late) и «Давно не обновлялись» (stale без late), без повторов",
+   "check": "браузер п.17 ×4 PASS"
+  },
+  "18": {
+   "fix": "дата словами под полями даты (по языку страницы), ISO в значении",
+   "check": "браузер: ввод 2026-11-23 → «23 ноя 2026» / «23 қараша 2026» PASS; screens/r06-date-ru.png, r06-date-kk.png; вид поля на Windows ru/kk — NOT_RUN (облако), LOCAL-R06-1"
+  },
+  "19": {
+   "fix": "kk: «Ілияс Омаров көшесі маңындағы гүлзар»",
+   "check": "браузер п.19 kk ×2 PASS"
+  }
+ },
+ "neighbor_requests": {
+  "R01": "закрыто в 915143f: bind, маршруты B2, аргументы, fields, статика (тест шлюза 5/5). Осталось у R01: взять code_sha, r01_b2_r02_tests.patch, подключить proposals.*/stage-editor.js в web/index.html (INTEGRATION §1)",
+  "R05": "закрыто: поля 3D, ответ {item, proposal}, DELETE и withdraw, «Отменить» с id сохраняет голоса, лимит 409 limit; CSRF закрыт самим R05 (7f42cb3). Клиент R05 17/17. Предложение: id в restore (INTEGRATION §2)",
+  "R08": "закрыто: akim_objects/akim_proposals в пакете (12/12 с кодом R08 7101f46), названия без служебных слов, title_kk демо-объектов",
+  "R11": "закрыто: PENDING удалён, новых ключей не нужно; kk в данных — на вычитку (INTEGRATION §5)",
+  "R12": "закрыто: geometry_source в civic-v1; демо-линии по графу (отчёт R12 store_line_on_street PASS)"
+ }
 }

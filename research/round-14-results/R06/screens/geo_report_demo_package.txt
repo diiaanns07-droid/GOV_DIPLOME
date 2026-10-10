@@ -1,0 +1,9 @@
+# python3 -m engine.civic_geo report --objects ui/civic_store/demo_package.json (код R12 из дерева R01 B2 915143f), R06 b42e790
+Проверка точности карты: PASS — 959 из 959 PASS
+  approximate_place_as_area        PASS    4   FAIL    0
+  inside_astana                    PASS    6   FAIL    0
+  no_freehand_line                 PASS    1   FAIL    0
+  line_within_5m_of_street         PASS    1   FAIL    0
+  stop_within_60m_of_street        PASS  940   FAIL    0
+  store_line_on_street             PASS    1   FAIL    0
+  scenario_closure_on_graph        PASS    6   FAIL    0
