@@ -23,17 +23,23 @@ research/round-14-results/R02/, этот файл. Старые тесты tests
       private/.gitignore '*', файл .review.txt для ручной проверки). text_utils.py — общие функции.
 - [x] 3. ml/labeling/agreement.py — Cohen's kappa, бутстрэп-ДИ, по категориям, macro-F1 B относительно A, матрица,
       частые несогласия, Markdown/JSON; тексты в отчёте только с --with-texts и только в private/.
-- [ ] 4. ml/datasets/LABELING_GUIDE_v2.md
-- [ ] 5. ml/datasets/synth_v3/ + перевод v1 → v2 + пары перефразов для R04
+- [x] 4. ml/datasets/LABELING_GUIDE_v2.md — 12 категорий, 6 примеров ru+kk на каждую, сводная таблица 25 спорных случаев,
+      «Не жалоба» и «Сомневаюсь». Казахские примеры ждут проверки владельцем.
+- [x] 5. ml/datasets/synth_v3/ (slots.py, templates.py — 221 шаблон, build.py, seed 20261011):
+      corpus_v3.jsonl — 4260 сообщений (train 2659 / val 945 / test 656),
+      все 12 категорий в каждом split, ru/kk/mixed, 9 стилей, 1067 трудных случаев; обезличено; split по шаблонам.
+      paraphrase_pairs_v3.jsonl — 781 пар для R04. ml/datasets/v1_in_v2/ — v1 (2725) → v2: label (уточнённая)
+      и label_table (строго v1_to_v2), 393 строки отличаются.
 - [ ] 6. ml/datasets/llm_synth.py, ml/labeling/llm_label.py (проверка на подставном клиенте)
 - [ ] 7. ml/datasets/README.md, DELIVERY.json, RUN.txt, INTEGRATION.txt
 
 ## Проверки (Linux, Python 3.13, Node 22, Chromium из /opt/pw-browsers через playwright 1.56)
 - node --test tests/civic/R02/round14/labeling_core.test.mjs — 12 PASS
 - node --test tests/civic/R02/round14/labeling_browser.test.mjs — 7 PASS (file://, без сети, 1366×768 и 375×812)
-- python -m pytest tests/civic/R02/round14 — 51 PASS (категории, офлайн, обезличивание 31 случай, импорт, kappa)
+- python -m pytest tests/civic/R02/round14 — 62 PASS (категории, офлайн, обезличивание, импорт, kappa, synth_v3, v1→v2)
 - сквозная проверка: экспорт страницы (первый и второй разметчик) → agreement.py — PASS (в labeling_browser.test.mjs)
 - Скриншоты: research/round-14-results/R02/screens/ (реально запущенная страница, синтетические фикстуры).
 
 ## Следующий шаг
-Задача 4: ml/datasets/LABELING_GUIDE_v2.md, затем задача 5 (synth_v3).
+Задача 6: ml/datasets/llm_synth.py и ml/labeling/llm_label.py (OpenAI-совместимый API, ключ из окружения, кэш,
+повторы, --max-usd), проверка на подставном клиенте. Затем README.md, DELIVERY.json, RUN.txt, INTEGRATION.txt.
