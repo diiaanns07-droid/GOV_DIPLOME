@@ -39,6 +39,12 @@
     animation-name: bc-in-up;
   }
   .bc-panel[data-snap="half"] { height: 50vh; height: 50dvh; }
+  /* Шаг 2, место ещё не выбрано: только вопрос и «Моё местоположение» — шторка по содержимому (R11 B1 №2). */
+  .bc-panel[data-snap="peek"] { height: auto; max-height: 50vh; max-height: 50dvh; }
+  /* Главная кнопка на телефоне — во всю ширину, одна строка, 56 px (R11 день 2 №7, B1 №8; UX_SPEC §1). */
+  .bc-fab { left: 16px; right: 16px; transform: none; max-width: none; white-space: nowrap; justify-content: center; }
+  /* Открыта карточка места R07 со своей «Я тоже» — главную кнопку не показываем поверх неё (R11 B1 №8). */
+  body:has(.r07-card) .bc-fab { display: none; }
   .bc-handle { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--c-line, #e4e9e3);
                margin: 8px auto 0; flex: none; }
 }
@@ -93,16 +99,19 @@
 .bc-similar__count { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 600; }
 
 .bc-code { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; font-size: var(--fs-lead, 18px); }
-.bc-code__value { font-size: 24px; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.bc-code__value { font-size: 24px; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bc-nowrap { white-space: nowrap; }   /* номер «B-0007» не рвётся на дефисе */
 
 .bc-mine { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 .bc-mine__card { display: flex; flex-direction: column; gap: 6px; }
+.bc-mine__card > .bk-tag { align-self: flex-start; }   /* метка «Пример» — по тексту, не на всю ширину (R11 день 2 №9) */
 .bc-mine__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .bc-mine__cat { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
 .bc-overdue { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--c-danger, #b3362e); font-weight: 600; }
 
-.bc-toast { position: fixed; z-index: 60; left: 50%; transform: translateX(-50%);
-            bottom: calc(88px + env(safe-area-inset-bottom, 0px)); max-width: min(480px, calc(100vw - 32px)); }
+/* Центр без transform: анимация появления ui-kit (bk-rise) сама задаёт transform и сдвигала тост вправо. */
+.bc-toast { position: fixed; z-index: 60; left: 0; right: 0; margin-inline: auto; box-sizing: border-box;
+            bottom: calc(88px + env(safe-area-inset-bottom, 0px)); width: min(480px, calc(100vw - 32px)); }
 .bc-toast[hidden] { display: none; }
 
 @media (prefers-reduced-motion: reduce) {

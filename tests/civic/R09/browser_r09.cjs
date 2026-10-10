@@ -156,7 +156,8 @@ async function checkGridWords(page, tag) {
 }
 
 async function shot(page, name) {
-  if (shotDir) await page.screenshot({ path: path.join(shotDir, name + ".png") });
+  // Дать закончиться анимациям шторки и тоста (240–300 мс), иначе кадр ловит полупрозрачное промежуточное состояние.
+  if (shotDir) { await page.waitForTimeout(450); await page.screenshot({ path: path.join(shotDir, name + ".png") }); }
 }
 
 async function residentPath(browser, base, hot, lang, width, height, tag) {
@@ -386,6 +387,77 @@ async function badgeTap(browser, base, hot, lang, width, height, tag) {
   await page.context().close();
 }
 
+// Ночь раунда 14: раскладка на телефоне по UX_REVIEW R11 (день 2 №7–10, B1 №2 и №8, B2 №3).
+async function phoneLayout(browser, base, hot, lang, tag) {
+  const page = await newPage(browser, base, 375, 812, lang);
+  const fab = await page.$eval(".bc-fab", (b) => { const r = b.getBoundingClientRect();
+    return { w: Math.round(r.width), h: Math.round(r.height), left: Math.round(r.left), text: b.textContent.trim() }; });
+  check(`${tag}: [R11 №7/B1 №8] «Сообщить о проблеме» во всю ширину, одна строка, 56 px`,
+        fab.w >= 340 && fab.left === 16 && fab.h >= 56 && fab.h <= 60, JSON.stringify(fab));
+  await page.evaluate(() => { const c = document.createElement("article"); c.className = "r07-card"; c.id = "fake-r07";
+    document.body.appendChild(c); });
+  const hiddenWithCard = await page.$eval(".bc-fab", (b) => getComputedStyle(b).display === "none");
+  await page.evaluate(() => document.getElementById("fake-r07").remove());
+  const backAfter = await page.$eval(".bc-fab", (b) => getComputedStyle(b).display !== "none");
+  check(`${tag}: [R11 B1 №8] кнопка спрятана, пока открыта карточка места R07`, hiddenWithCard && backAfter);
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  const peek = await page.$eval(".bc-panel", (p) => ({ snap: p.dataset.snap, h: Math.round(p.getBoundingClientRect().height) }));
+  check(`${tag}: [R11 B1 №2] шаг 2 до выбора места — низкая шторка (${peek.h} px), карта видна`,
+        peek.snap === "peek" && peek.h <= 300, JSON.stringify(peek));
+  // Точка внутри двора (0 м) — «Вы здесь», а не метры.
+  await page.route("**/api/civic/v2/targets**", (route) => route.fulfill({ status: 200, contentType: "application/json",
+    body: JSON.stringify({ ok: true, data: { candidates: [
+      { target: { kind: "area", id: "yard-123", label_ru: "Двор — улица Сауран", label_kk: "Аула — Сауран көшесі" }, distance_m: 0,
+        geometry: { type: "Polygon", coordinates: [[[hot.point[0] - 0.0005, hot.point[1] - 0.0003], [hot.point[0] + 0.0005, hot.point[1] - 0.0003],
+          [hot.point[0] + 0.0005, hot.point[1] + 0.0003], [hot.point[0] - 0.0005, hot.point[1] - 0.0003]]] } },
+      { target: hot.target, distance_m: 12.4, geometry: { type: "Point", coordinates: hot.point } }] } }) }));
+  await clickMapAt(page, hot.point);
+  await page.waitForSelector(".bc-option--first");
+  const metas = await page.$$eval(".bc-option .bc-option__meta", (n) => n.map((x) => x.textContent.trim()));
+  const half = await page.$eval(".bc-panel", (p) => p.dataset.snap);
+  check(`${tag}: [R11 B2 №3] точка внутри двора — «${metas[0]}», рядом — метры`,
+        metas[0] === (lang === "kk" ? "Сіз осындасыз" : "Вы здесь") && /12\s?м/.test(metas[1] || "") && half === "half",
+        JSON.stringify({ metas, half }));
+  await page.unroute("**/api/civic/v2/targets**");
+  await page.click(".bc-option--first");
+  await page.fill("#bc-text", lang === "kk" ? "Аулада шамдар жанбайды, түнде қараңғы" : "Во дворе не горят фонари, ночью темно");
+  await page.waitForTimeout(900);
+  if (!(await page.$(".bc-cat-row .bk-chip[aria-pressed='true']"))) await page.click(".bk-catgrid > button:nth-child(5)").catch(() => {});
+  await page.route("**/api/civic/v2/complaints", (route) => route.request().method() === "POST" ? route.abort() : route.continue());
+  await page.click(".bc-send");
+  await page.waitForSelector(".bc-toast:not([hidden])", { timeout: 15000 });
+  await page.waitForTimeout(400);  // замер после анимации появления
+  const toast = await page.$eval(".bc-toast", (t) => { const r = t.getBoundingClientRect(); const b = t.querySelector(".bk-btn");
+    const br = b.getBoundingClientRect(); const x = t.querySelector(".bk-iconbtn");
+    return { w: Math.round(r.width), inside: br.right <= r.right + 0.5 && br.left >= r.left - 0.5, close: !!x,
+             centred: Math.abs((r.left + r.right) / 2 - window.innerWidth / 2) < 2,
+             lines: Math.round(t.querySelector(".bk-toast__text").getBoundingClientRect().height / 20) }; });
+  check(`${tag}: [R11 №8] тост ошибки широкий (${toast.w} px), «Повторить» внутри, есть ✕`,
+        toast.w >= 330 && toast.inside && toast.close && toast.centred && toast.lines <= 3, JSON.stringify(toast));
+  await shot(page, `${tag}-toast`);
+  await page.unroute("**/api/civic/v2/complaints");
+  await page.click(".bc-toast .bk-btn");
+  await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
+  const due = await page.$$eval(".bc-panel .bc-meta", (n) => n.map((x) => x.textContent).join(" | "));
+  const months = lang === "kk" ? /Жауап мерзімі: \d{1,2}\u00a0(қаңтар|ақпан|наурыз|сәуір|мамыр|маусым|шілде|тамыз|қыркүйек|қазан|қараша|желтоқсан)/
+    : /Ответ до \d{1,2}\u00a0(янв|фев|мар|апр|мая|июн|июл|авг|сен|окт|ноя|дек)/;
+  check(`${tag}: [R11 №10/B1 №10] срок ответа — ключ complaint.step5.due и общий формат даты`, months.test(due), due);
+  const ticks = await page.$eval(".bc-panel .bk-steps", (l) => (l.textContent.match(/✓/g) || []).length);
+  check(`${tag}: [R11 №9] в шкале статуса нет своей «✓»`, ticks === 0);
+  await page.click(".bc-panel[data-step='5'] .bk-btn--primary");
+  await page.waitForSelector(".bc-mine__card");
+  const date = await page.$eval(".bc-mine__card .bc-meta", (m) => m.textContent);
+  check(`${tag}: [R11 №10] дата в «Мои обращения» — не «қаз»/«10 қаз»`, !/\bқаз\b/.test(date) && /\u00a0/.test(date), date);
+  const code = await page.$eval(".bc-mine__card .bc-nowrap", (c) => c.getClientRects().length);
+  check(`${tag}: номер обращения в «Мои обращения» не рвётся на две строки`, code === 1, String(code));
+  await shot(page, `${tag}-mine`);
+  check(`${tag}: нет ключей и технических слов`, (await visibleKeys(page)).length === 0);
+  check(`${tag}: нет ошибок консоли`, page.problems.filter((p) => !/Failed to load resource|ERR_FAILED/.test(p)).length === 0,
+        page.problems.join(" | "));
+  await page.context().close();
+}
+
 async function keyboard(browser, base, tag) {
   const page = await newPage(browser, base, 1366, 768, "ru");
   let reached = false;
@@ -433,6 +505,8 @@ async function keyboard(browser, base, tag) {
     await newComplaintAndMine(browser, "http://127.0.0.1:8791", "ru", 1366, 768, "1366-ru-new", [71.3965, 51.0765]);
     await withoutMl(browser, "http://127.0.0.1:8792", info2.hot, "375-noml");
     await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk-badge");
+    await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "ru", "375-ru-layout");
+    await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "kk", "375-kk-layout");
     await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru-badge");
     await keyboard(browser, "http://127.0.0.1:8791", "1366-kbd");
     await browser.close();

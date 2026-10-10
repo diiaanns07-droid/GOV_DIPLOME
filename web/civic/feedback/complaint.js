@@ -40,10 +40,12 @@
   var DRAFT_KEY = "birge.complaint.draft";
   var TOTAL_STEPS = 5;
   var MOBILE_QUERY = "(max-width: 1023px)";
+  // Запасные названия месяцев (основной формат — BirgeI18n.formatDate R11). kk — полные: «қаз» читается как «гусь».
   var MONTHS = {
     ru: ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"],
-    kk: ["қаң", "ақп", "нау", "сәу", "мам", "мау", "шіл", "там", "қыр", "қаз", "қар", "жел"]
+    kk: ["қаңтар", "ақпан", "наурыз", "сәуір", "мамыр", "маусым", "шілде", "тамыз", "қыркүйек", "қазан", "қараша", "желтоқсан"]
   };
+  var NBSP = "\u00a0";
   // Подписи ячейки «примерное место» без уточнения (record.cell_target R09 и R12 без улицы рядом).
   var GENERIC_APPROX = { "Примерное место": true, "Шамамен орны": true };
   var KIND_FALLBACK = {
@@ -78,8 +80,10 @@
   }
 
   function formatNumber(n) {
-    // «1 666» с неразрывным пробелом (UX_BRIEF «Тексты»)
-    return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    // «1 666» с неразрывным пробелом (UX_BRIEF «Тексты»); общий формат — BirgeI18n.formatNumber R11.
+    var i18n = window.BirgeI18n;
+    if (i18n && typeof i18n.formatNumber === "function") return i18n.formatNumber(Math.round(n));
+    return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, NBSP);
   }
 
   function fill(template, params) {
@@ -113,9 +117,17 @@
   function formatDate(iso) {
     var d = new Date(iso);
     if (isNaN(d.getTime())) return "";
-    // Даты показываем по Астане (UTC+5), а не по часовому поясу браузера.
+    // Один формат дат во всём продукте — BirgeI18n.formatDate R11 («11 окт», «11 қазан»; год — если не текущий).
+    var i18n = window.BirgeI18n;
+    if (i18n && typeof i18n.formatDate === "function") {
+      var shared = i18n.formatDate(iso);
+      if (shared && shared !== "—") return shared;
+    }
+    // Запасной путь: по Астане (UTC+5), а не по часовому поясу браузера.
     var local = new Date(d.getTime() + 5 * 3600 * 1000);
-    return local.getUTCDate() + " " + MONTHS[currentLang()][local.getUTCMonth()];
+    var now = new Date(Date.now() + 5 * 3600 * 1000);
+    var year = local.getUTCFullYear() !== now.getUTCFullYear() ? NBSP + local.getUTCFullYear() : "";
+    return local.getUTCDate() + NBSP + MONTHS[currentLang()][local.getUTCMonth()] + year;
   }
 
   function daysAgo(iso) {
@@ -250,12 +262,14 @@
   }
 
   function stepsBar(complaint) {
-    var list = h("ol", { "class": "bk-steps", "aria-label": t("status." + complaint.status) });
+    // Точки шкалы рисует ui-kit (li::before, пройденные закрашены) — своей «✓» нет (R11 день 2 №9):
+    // лишний значок сдвигал подписи вниз.
+    var list = h("ol", { "class": "bk-steps" + (complaint.status === "fixed" ? " bk-steps--fixed" : ""),
+                         "aria-label": t("status." + complaint.status) });
     residentSteps(complaint).forEach(function (step) {
       list.appendChild(h("li", { "class": "bk-steps__item", "data-state": step.state, "data-status": step.status,
                                  "aria-current": step.state === "current" ? "step" : null },
-        [h("span", { "class": "bk-steps__dot", "aria-hidden": "true" }, step.state === "done" ? "✓" : ""),
-         h("span", { "class": "bk-steps__label" }, t("status." + step.status))]));
+        h("span", { "class": "bk-steps__label" }, t("status." + step.status))));
     });
     return list;
   }
@@ -417,14 +431,20 @@
         ? JSON.stringify({ text: state.text, requestId: state.requestId }) : null);
     }
 
+    // Тост по разметке ui-kit R11 (.bk-toast: текст | ✕, «Повторить» под текстом; ширина до 480 px):
+    // ошибка с «Повторить» висит, пока житель не нажмёт «Повторить» или ✕ (R11 день 2 №8).
     function toast(message, retry) {
       els.toast.innerHTML = "";
+      els.toast.className = "bk-toast bc-toast" + (retry ? " bk-toast--error" : "");
       els.toast.setAttribute("role", retry ? "alert" : "status");
-      els.toast.appendChild(h("span", { text: message }));
+      if (retry) els.toast.appendChild(icon("wifi-off"));
+      els.toast.appendChild(h("span", { "class": "bk-toast__text", text: message }));
       if (retry) {
         els.toast.appendChild(h("button", { "class": "bk-btn bk-btn--ghost", type: "button",
           onclick: function () { els.toast.hidden = true; retry(); } }, t("complaint.error.retry")));
       }
+      els.toast.appendChild(h("button", { "class": "bk-iconbtn bc-toast__close", type: "button",
+        "aria-label": t("complaint.wizard.close"), onclick: function () { els.toast.hidden = true; } }, icon("close")));
       els.toast.hidden = false;
       clearTimeout(els.toastTimer);
       if (!retry) els.toastTimer = setTimeout(function () { els.toast.hidden = true; }, 4000);
@@ -539,11 +559,14 @@
         var d = candidate.distance_m;
         var same = labelCount[targetLabel(candidate.target)] > 1;
         var meters = typeof d === "number" && (d >= 5 || same) ? Math.max(1, Math.round(d)) : null;
+        // Точка внутри двора/площадки (0 м) — «Вы здесь», а не «0 м» и не пусто (R11 B2 №3).
+        var here = typeof d === "number" && d < 1;
         list.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-option" + (index === 0 ? " bc-option--first" : ""),
                                        type: "button", onclick: function () { chooseCandidate(candidate); } },
           [icon(candidate.approximate ? "pin" : (candidate.target.kind === "segment" ? "road" : (candidate.target.kind === "area" ? "trees" : "pin"))),
            h("span", { "class": "bc-option__label" }, targetLabel(candidate.target)),
-           meters !== null ? h("span", { "class": "bc-option__meta" }, t("complaint.step2.distance", { n: meters })) : null]));
+           here ? h("span", { "class": "bc-option__meta" }, t("complaint.step2.here"))
+             : (meters !== null ? h("span", { "class": "bc-option__meta" }, t("complaint.step2.distance", { n: meters })) : null)]));
       });
       // «Другое место» = примерная область. Если R12 уже предложил её своим вариантом (с улицей в подписи),
       // вторую такую кнопку не показываем.
@@ -861,7 +884,7 @@
             h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, categoryLabel(item.category))]),
             statusBadge(item.status)]),
           h("p", { "class": "bc-meta" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
-            item.code ? " · " + item.code : ""]),
+            item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null]),
           item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
           item.relation === "metoo" ? h("p", { "class": "bc-meta" }, t("mine.metoo_badge")) : null,
           h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.reporters || 1 })),
@@ -877,8 +900,10 @@
       var panel = els.panel;
       panel.innerHTML = "";
       var mine = state.view === "mine";
-      // Шаг 2 на телефоне — шторка до половины: карта должна быть видна, чтобы на неё нажать.
-      panel.setAttribute("data-snap", !mine && state.step === 2 ? "half" : "full");
+      // Шаг 2 на телефоне: пока места нет — низкая шторка (вопрос и «Моё местоположение»), карта почти вся видна
+      // (R11 B1 №2); когда пришли варианты — до половины; дальше — полная.
+      var snap = mine || state.step !== 2 ? "full" : (state.candidates || state.candidatesLoading ? "half" : "peek");
+      panel.setAttribute("data-snap", snap);
       panel.setAttribute("data-step", mine ? "mine" : String(state.step));
       var canBack = !mine && state.step > 2 && state.step < 5;
       var head = h("header", { "class": "bc-head" }, [

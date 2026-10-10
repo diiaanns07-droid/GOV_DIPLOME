@@ -47,18 +47,19 @@
 .bk-heat[data-level="4"] { background: var(--heat-4); color: #fff; }
 .bk-tag { display: inline-block; align-self: flex-start; padding: 2px 8px; border-radius: 6px; font-size: 14px; }
 .bk-tag--demo { background: #e6ecf3; color: #2d4a66; }
-.bk-steps { list-style: none; display: flex; gap: 0; margin: 4px 0; padding: 0; }
-.bk-steps__item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative;
+/* Шкала статуса — как ui-kit R11: точка рисуется li::before, линия — li::after, пройденные закрашены. */
+.bk-steps { list-style: none; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); margin: 4px 0; padding: 0; }
+.bk-steps__item { position: relative; display: grid; justify-items: center; gap: 6px;
                   font-size: 14px; text-align: center; color: var(--c-text-2); }
-.bk-steps__item + .bk-steps__item::before { content: ""; position: absolute; top: 13px; right: 50%; width: 100%; height: 2px;
-                                            background: var(--c-line); z-index: 0; }
-.bk-steps__dot { position: relative; z-index: 1; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
-                 border: 2px solid var(--c-line); background: var(--c-surface); font-size: 14px; color: #fff; }
-.bk-steps__item[data-state="done"] .bk-steps__dot { background: var(--c-brand); border-color: var(--c-brand); }
+.bk-steps__item::before { content: ""; z-index: 1; width: 16px; height: 16px; border-radius: 50%;
+                          border: 2px solid var(--c-line); background: var(--c-surface); }
+.bk-steps__item:not(:first-child)::after { content: ""; position: absolute; top: 8px; right: 50%; width: 100%; height: 2px;
+                                            background: var(--c-line); }
+.bk-steps__item[data-state="done"]::before, .bk-steps__item[data-state="current"]::before { border-color: var(--c-brand); background: var(--c-brand); }
+.bk-steps__item[data-state="done"]::after, .bk-steps__item[data-state="current"]::after { background: var(--c-brand); }
 .bk-steps__item[data-state="current"] { color: var(--c-ink); font-weight: 700; }
-.bk-steps__item[data-state="current"] .bk-steps__dot { border: 3px solid var(--c-brand); box-shadow: 0 0 0 3px var(--c-accent); }
 .bk-steps__item[data-status="rejected"][data-state="current"] { color: var(--c-danger); }
-.bk-steps__item[data-status="rejected"] .bk-steps__dot { border-color: var(--c-danger); }
+.bk-steps__item[data-status="rejected"][data-state="current"]::before { border-color: var(--c-danger); background: var(--c-danger); }
 .bk-wizard { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; color: var(--c-text-2); }
 .bk-wizard__dots { display: inline-flex; gap: 6px; }
 .bk-wizard__dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--c-line); }
@@ -71,7 +72,17 @@
 .bk-empty .ic, .bk-error .ic { width: 48px; height: 48px; color: var(--c-text-2); }
 .bk-empty__title, .bk-error__title { font-size: 18px; font-weight: 700; margin: 0; }
 .bk-empty p, .bk-error p { margin: 0; }
-.bk-toast { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: var(--c-ink); color: #fff;
+/* Тост — сетка как в ui-kit: иконка | текст | ✕, «Повторить» под текстом. */
+.bk-toast { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 12px;
+            min-height: 56px; padding: 8px 8px 8px 16px; border-radius: 12px; background: var(--c-ink); color: #fff;
             box-shadow: 0 10px 30px rgba(0,0,0,.25); font-size: 16px; }
-.bk-toast .bk-btn--ghost { color: var(--c-accent); min-height: 40px; padding: 0 8px; }
+.bk-toast > .ic { grid-column: 1; grid-row: 1; }
+.bk-toast__text { grid-column: 2; grid-row: 1; min-width: 0; }
+.bk-toast > .bk-btn { grid-column: 2; grid-row: 2; justify-self: start; margin-left: -12px; }
+.bk-toast > .bk-iconbtn { grid-column: 3; grid-row: 1; }
+.bk-toast--error { background: var(--c-danger, #b3362e); }
+.bk-toast .bk-btn--ghost { color: var(--c-accent); min-height: 40px; padding: 0 8px; background: transparent; border-color: transparent; }
+.bk-toast--error .bk-btn--ghost { color: #fff; text-decoration: underline; }
+.bk-iconbtn { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 12px;
+              background: transparent; color: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .bk-skel { animation: none; } }
