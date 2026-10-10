@@ -1,0 +1,27 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index 4378198..effed50 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -149,6 +149,8 @@ body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-pic
+   .civic-mode .civic-explore[data-open="true"] .civic-explore-toggle::after { margin-top: 4px; transform: rotate(-135deg); }
+   /* Легенда R07 на телефоне — под кнопкой «Территория», а не на шапке (закрывала «Меню»). */
+   .civic-mode .r07-maplegend { top: 138px; left: 10px; right: 66px; }
++  /* Открыта карточка проекта 3D — объект стоит над ней, под шапкой; легенда жалоб закрывала бы его (R05, ночь 9). */
++  body:has(.birge-build3d-root .b3d-dock[data-state="card"]) .r07-maplegend { visibility: hidden; }
+   /* Мастер жалобы открыт — панель «Территория» не нужна (R11 B1 п. 1–2). */
+   html.bc-open .civic-mode .civic-explore, html.bc-open .civic-mode .r07-maplegend { display: none; }
+   /* «Сообщить о проблеме» — во всю ширину в одну строку (kk не в три строки); пока открыта карточка места со своей
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index e8f90f0..07ff47a 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -471,6 +471,9 @@
+         avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools"),
+         // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
+         onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
++        // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —
++        // опускаем, как для каталога (R10 B-022). У жителя карточка лежит поверх шторки — там не трогаем.
++        onSelect: (p) => { if (p && innerWidth < 761 && birgeMode() !== "resident" && S.sheet !== "peek") setSheet("peek"); },
+       }) || null;
+     } catch (error) {
+       console.error("birge build3d mount", error);

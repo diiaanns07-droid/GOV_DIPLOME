@@ -1033,6 +1033,55 @@ await check("reload_during_list_request_logs_no_console_error", async () => {
   }
   return { status: "PASS", detail: out };
 });
+await check("card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk", async () => {
+  // Ночь 9 (сборка R01 1dd5b53, 375, акимат, шторка «half»): хозяин ставит корень модуля над шторкой, высокая карточка
+  // проекта росла вверх и закрывала шапку. Теперь панель — до нижнего края шапки (opts.avoid) с прокруткой внутри;
+  // хозяин опустил шторку (атрибут на его панели) — ограничение снимается само.
+  const out = {};
+  for (const lang of ["ru", "kk"]) {
+    const p = await openPage({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true }, `?reset=1&store=local&lang=${lang}&` + MAIN_Q.slice(1));
+    const r = await p.evaluate(async () => {
+      __b3d.destroy();
+      const css = document.createElement("style");
+      css.textContent = `#t-head{position:fixed;top:10px;left:10px;right:10px;height:62px;background:#fff;z-index:9}
+        #t-sheet{position:fixed;left:0;right:0;bottom:0;height:46%;background:#eee;z-index:6}
+        #t-sheet[data-sheet=peek]{height:24%}
+        #t-root{position:fixed;left:0;right:0;bottom:calc(46% + 8px);z-index:7;display:flex;flex-direction:column-reverse;align-items:center}
+        body:has(#t-sheet[data-sheet=peek]) #t-root{bottom:calc(24% + 8px)}`;
+      document.head.appendChild(css);
+      const head = Object.assign(document.createElement("header"), { id: "t-head" });
+      const sheet = Object.assign(document.createElement("div"), { id: "t-sheet" });
+      sheet.dataset.sheet = "half";
+      const root = Object.assign(document.createElement("div"), { id: "t-root" });
+      document.body.append(head, sheet, root);
+      const h = CivicBuild3D.mount({ map: __map, root, mode: "akimat", store: "local", avoid: () => [head, sheet] });
+      await h.ready;
+      window.__t = h;
+      return { count: h.getState().count };
+    });
+    await p.waitForTimeout(400);
+    const id = await p.evaluate(() => __t.getState().proposals.find((q) => q.kind !== "lighting").id);
+    await p.evaluate((id) => __t.select(id), id);
+    await p.waitForTimeout(700);
+    const m = () => p.evaluate(() => {
+      const d = document.querySelector("#t-root .b3d-dock"), r = d.getBoundingClientRect(), hb = document.getElementById("t-head").getBoundingClientRect().bottom;
+      return { state: d.dataset.state, top: Math.round(r.top), bottom: Math.round(r.bottom), headBottom: Math.round(hb), capped: !!d.style.maxHeight,
+        scrolls: d.scrollHeight > d.clientHeight + 1, headTop: document.elementFromPoint(40, hb - 6)?.id === "t-head" };
+    });
+    const half = await m();
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `fit_header_375_${lang}_half.png`) });
+    await p.evaluate(() => { document.getElementById("t-sheet").dataset.sheet = "peek"; });
+    await p.waitForTimeout(400);
+    const peek = await m();
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `fit_header_375_${lang}_peek.png`) });
+    await p.evaluate(() => __t.destroy());
+    await p.context().close();
+    out[lang] = { half, peek };
+    assert(half.state === "card" && half.top >= half.headBottom && half.headTop && half.capped && half.scrolls, JSON.stringify(out));
+    assert(peek.state === "card" && peek.top >= peek.headBottom && peek.headTop && peek.bottom > half.bottom + 100, JSON.stringify(out));
+  }
+  return { status: "PASS", detail: out };
+});
 await check("r01_map_getter_waits_for_map", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   const r = await p.evaluate(async () => {
