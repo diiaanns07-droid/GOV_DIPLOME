@@ -271,6 +271,14 @@ async function loadMap() {
         );
       console.warn("Map:", e.error?.message || "Ошибка ресурса");
     });
+    // Стиль OpenFreeMap ссылается на значки POI, которых нет в его спрайте (office, atm, gate, theme_park…): MapLibre
+    // пишет предупреждение на каждый тайл (LOCAL_B2 №10). Такие значки заменяем прозрачной точкой. Свои значки
+    // модулей (civic-*, r07-*, b3d-*) не трогаем: их модули добавляют сами, заглушка спрятала бы гонку загрузки.
+    map.on("styleimagemissing", (e) => {
+      const id = e && e.id;
+      if (!id || /^(civic|r0\d|r1\d|b3d|bk)-/.test(id) || map.hasImage(id)) return;
+      try { map.addImage(id, { width: 1, height: 1, data: new Uint8Array(4) }); } catch (err) { /* уже добавлен */ }
+    });
     map.on("moveend", () => { if (typeof syncThreeD === "function") syncThreeD(); });
     map.on("load", () => {
       try {

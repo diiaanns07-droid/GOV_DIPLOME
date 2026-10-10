@@ -231,6 +231,12 @@
       <p class="civic-attribution">© участники OpenStreetMap (ODbL-1.0). Дата и источник — у выбранной сети. Старый срез K03: Overture Maps Foundation, выпуск 2026-09-23.1.</p>
     </section>`;
   document.body.append(root);
+  // Порядок Tab: корень формы жалобы R09 стоял в самом конце страницы — после значков карты, шапки, кнопок карты и
+  // всей панели (> 40 нажатий, R10 B-025). Ставим его сразу за картой (#map): «Сообщить о проблеме» идёт следом за
+  // значками на карте и раньше шапки и панели; с начала страницы — ссылка «Перейти к главной кнопке» (birge.js).
+  // Положение на экране не меняется (position: fixed); вне режима civic корень скрыт (birge.css).
+  const complaintRootNode = $c("birge-complaint-root");
+  if (complaintRootNode && $c("map")) $c("map").after(complaintRootNode);
 
   // ---------------------------------------------------------------- тексты на языке интерфейса (раунд 14)
   // Строка «Открыта запись: …» на текущем языке.
@@ -533,6 +539,8 @@
     }
     const id = item && typeof item === "object" ? item.id : item;
     S.selected = typeof id === "string" ? id : null;
+    // Лента работ раунда 13 в Birge скрыта (birge.css), карточку выбранного на карте объекта работ — показываем.
+    document.body.dataset.birgeWorks = S.selected ? "card" : "list";
     if (S.selected && window.CivicExplore && !r03Camera()) {
       // A permalink selects before R03's list has loaded ({id} only): read the public geometry then.
       const id = S.selected;

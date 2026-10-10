@@ -170,3 +170,29 @@ body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-pic
 /* Кабинет сотрудника (редактор R12, раунд 13): служебная строка «роль по данным сервера: editor · правила проверки
    с сервера (/staff/meta)» — техническая (UX_BRIEF правило 4, R10 B-021). В Birge скрыта; ?tools=all — видна. */
 body[data-birge-tools="off"] .civic-r04-who { display: none; }
+
+/* Лента работ раунда 13 («Что меняется в городе», модуль карты R12) в сценарий демо Birge не входит, а в ҚАЗ она
+   по-русски (R10 B-012, R11 UX_REVIEW B1 п. 11): в Birge панель — только «Карта жалоб» R07. Объекты работ остаются
+   на карте; нажали на объект — его карточка видна (body[data-birge-works="card"], shell.js onSelect). ?tools=all — всё. */
+body[data-birge-tools="off"]:not([data-birge-works="card"]) .civic-works,
+body[data-birge-tools="off"] .civic-explore-objects { display: none; }
+
+/* Корень формы жалобы R09 стоит в начале body (порядок Tab, shell.js): вне режима карты Birge он не виден. */
+body:not(.civic-mode) .birge-complaint-root { display: none; }
+
+/* Ночь, круг 1 — остатки R10 B-013/B-014 и UX_RESULT (2b9e837): шрифт ≥ 14 px, зоны нажатия ≥ 44 px. */
+.civic-mode .civic-foot .btn { font-size: 14px; min-height: 44px; }                      /* «Для сотрудников», модерация */
+.civic-mode .civic-explore select { min-height: 44px; font-size: 16px; }                  /* список районов (был 23 px) */
+.civic-mode .civic-explore-details, .civic-mode .civic-explore-details p,
+.civic-mode .civic-explore-details label { font-size: 14px; }                             /* «Слои»: границы, охват, источник */
+.civic-mode .civic-explore-details label { min-height: 44px; }
+.civic-mode .civic-explore-details input[type="checkbox"] { flex: 0 0 20px; width: 20px; height: 20px; }
+@media (max-width: 760px) {
+  .civic-mode .civic-sheet-handle { height: 48px; }                                       /* «Развернуть панель» (был 36 px) */
+}
+@media (max-width: 760px) {
+  /* Раскрытая «Территория» на телефоне — только над полуоткрытой шторкой (46 %): длинный текст прокручивается внутри,
+     а не наезжает на «Карту жалоб» (r12_city «пустой реестр»: explore×panel). */
+  body:has(.civic-panel[data-sheet="half"]) .civic-mode .civic-explore[data-open="true"],
+  body.civic-mode:has(.civic-panel[data-sheet="half"]) .civic-explore[data-open="true"] { max-height: calc(54% - 100px); overflow-y: auto; }
+}

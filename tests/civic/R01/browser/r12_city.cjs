@@ -21,6 +21,8 @@ const notRun = (name, reason) => { checks.push({ name, status: "NOT_RUN", detail
 // swap; R03-owned, fix proposed in research/round-13-results/R01/proposed/r03_r01_proposal.patch) is
 // reported as its own FAIL so it neither hides other page errors nor masquerades as an R01 error.
 const R03_RING = /Image "civic-r03-demo-ring" could not be loaded/;
+// Лента работ раунда 13 («К объектам», список) в Birge скрыта; этот тест проверяет именно её — открываем с ?tools=all.
+const TOOLS = "?tools=all";
 function checkPageErrors(name, errs) {
   const ring = errs.filter((e) => R03_RING.test(e)), other = errs.filter((e) => !R03_RING.test(e));
   check(name, other.length === 0, other);
@@ -40,6 +42,13 @@ async function startServer(port, db) {
   throw new Error("server did not start: " + srv.log.slice(-1500));
 }
 
+// Телефон: раскрыть свёрнутую панель «Территория» (после выбора улицы она сворачивается сама — карта свободна).
+async function openExplore(page) {
+  await page.evaluate(() => { const b = document.querySelector(".civic-explore-toggle"), box = document.querySelector(".civic-explore");
+    if (b && box && box.dataset.open !== "true" && getComputedStyle(b).display !== "none") b.click(); });
+  await page.waitForTimeout(300);
+}
+
 async function openPage(browser, base, w, h, hash = "") {
   const mobile = w < 761;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 });
@@ -47,10 +56,12 @@ async function openPage(browser, base, w, h, hash = "") {
   page.errs = [];
   page.on("pageerror", (e) => page.errs.push("pageerror: " + e.message));
   page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) page.errs.push(m.type() + ": " + m.text()); });
-  await page.goto(base + hash);
+  await page.goto(base + TOOLS + hash);
   await page.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined" && mapReady, null, { timeout: 40000 });
   await page.waitForSelector(".civic-explore", { timeout: 15000 });
   await page.waitForTimeout(1200);
+  // B3: на телефоне панель «Территория» свёрнута в кнопку 48 px — этот тест проверяет саму панель, раскрываем её.
+  if (mobile) await openExplore(page);
   return { ctx, page };
 }
 
@@ -106,7 +117,7 @@ async function directLinkAndReload(browser, base, w, h, item) {
       view: document.querySelector(".civic-explore-view")?.textContent || "", covered,
       session: window.CivicShell.api.session.authenticated };
   }, item.id);
-  await page.goto(base + "#object=" + encodeURIComponent(item.id));
+  await page.goto(base + TOOLS + "#object=" + encodeURIComponent(item.id));
   await page.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined" && mapReady, null, { timeout: 40000 });
   await page.waitForFunction((id) => window.CivicShell.selected === id && document.querySelector("#civic-map-root .civic-r03-card"), item.id, { timeout: 15000 }).catch(() => null);
   await page.waitForTimeout(2600);
@@ -247,6 +258,7 @@ async function emptyRegistry(browser, base) {
       check(`${tag}: street view line says how many published records are in frame (zero is not "no works")`,
         /Улица: .*(записей в кадре: \d+|в кадре опубликованных записей нет \(это не значит, что работ нет\))/.test(streetView || ""), streetView);
       await page.screenshot({ path: path.join(OUT, `03_street_${tag}.png`) });
+      await openExplore(page);
       await input.fill("Егемен Қазақстан");
       await page.waitForSelector("#civic-explore-listbox:not([hidden]) [role=option]", { timeout: 8000 });
       const longName = await page.evaluate(() => { const l = document.getElementById("civic-explore-listbox"), b = l.getBoundingClientRect();
@@ -320,9 +332,10 @@ async function emptyRegistry(browser, base) {
         if (failNext) { failNext = false; await gate; return route.fulfill({ status: 503, body: "unavailable" }); }
         return route.continue();
       });
-      await page.goto(base);
+      await page.goto(base + TOOLS);
       await page.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined" && mapReady, null, { timeout: 40000 });
       await page.waitForSelector(".civic-explore", { timeout: 15000 });
+      await openExplore(page);
       const input = page.locator(".civic-explore-field input");
       await input.fill("Кабанбай");
       const loading = await page.textContent(".civic-explore-status");
@@ -337,6 +350,7 @@ async function emptyRegistry(browser, base) {
         retryKept: !!document.querySelector(".civic-explore-retry") }));
       check("360x800: district navigation works while street search is down (retry stays offered)",
         !!district.value && district.zoom > cityZoom + 0.3 && district.retryKept, { cityZoom, ...district });
+      await openExplore(page);
       await page.click(".civic-explore-retry");
       await input.fill("Кабанбай");
       const recovered = await page.waitForSelector("#civic-explore-listbox:not([hidden]) [role=option]", { timeout: 8000 }).then(() => true).catch(() => false);
