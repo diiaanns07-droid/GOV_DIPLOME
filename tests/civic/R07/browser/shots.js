@@ -40,6 +40,9 @@ async function measure(page) {
     const buttons = [...document.querySelectorAll("button, select")].filter(visible);
     const small = buttons.map((b) => ({ t: (b.innerText || b.getAttribute("aria-label") || "").trim().slice(0, 30), h: Math.round(hitHeight(b)) }))
       .filter((b) => b.h < 48);
+    // R11 (ночь 5): видимый размер кнопок и переключателей ≥ 44 px (значки на карте — отдельно: ≥ 24 px + кайма 48)
+    const smallVisible = buttons.filter((b) => !b.closest(".r07-badge") && b.getBoundingClientRect().height < 43.5)
+      .map((b) => ({ t: (b.innerText || b.getAttribute("aria-label") || "").trim().slice(0, 30), h: Math.round(b.getBoundingClientRect().height) }));
     const primary = [...document.querySelectorAll(".r07-btn--primary")].filter(visible).map((b) => {
       const cs = getComputedStyle(b);
       return { t: b.innerText.trim().slice(0, 30), ratio: Math.round(contrast(cs.color, cs.backgroundColor) * 100) / 100 };
@@ -51,6 +54,7 @@ async function measure(page) {
       rawKeys: text.match(/heat\.[a-z_.0-9]+/g) || [],
       demoWord: /демо/i.test(text),
       smallButtons: small,
+      smallVisible,
       primary,
       badges: [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden).length,
       legendOnMap: (() => { const l = document.querySelector(".r07-maplegend"); if (!l || !visible(l)) return false; const r = l.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight && r.left >= 0; })(),
@@ -82,6 +86,7 @@ async function shot(browser, name, size, query, after, check) {
   if (m.rawKeys.length) problems.push("ключи без перевода: " + m.rawKeys.join(","));
   if (m.demoWord) problems.push("слово «демо» в интерфейсе (№7)");
   if (m.smallButtons.length) problems.push("зона нажатия < 48 (№6): " + JSON.stringify(m.smallButtons));
+  if (m.smallVisible.length) problems.push("видимая высота < 44 (R11): " + JSON.stringify(m.smallVisible));
   const lowContrast = m.primary.filter((b) => b.ratio < 4.5);
   if (lowContrast.length) problems.push("контраст главной кнопки < 4,5 (№1): " + JSON.stringify(lowContrast));
   if (m.state && m.state.mode === "targets" && !m.legendOnMap) problems.push("легенды нет на карте (№3)");
@@ -413,6 +418,7 @@ async function colorOnlyCheck(page) {
     if (m.rawKeys.length) problems.push("ключи без перевода: " + m.rawKeys.join(","));
     if (m.demoWord) problems.push("слово «демо» в интерфейсе");
     if (m.smallButtons.length) problems.push("зона нажатия < 48: " + JSON.stringify(m.smallButtons));
+    if (m.smallVisible.length) problems.push("видимая высота < 44 (R11): " + JSON.stringify(m.smallVisible));
     await page.screenshot({ path: path.join(OUT, name + ".jpg"), type: "jpeg", quality: 82 });
     results.push({ name, size, query: "", problems, badges: m.badges, extra });
     await page.close();

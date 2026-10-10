@@ -54,7 +54,7 @@
       "heat.fixed_word": "Исправлено",
       "heat.fixed_until": "На карте зелёным до {date}",
       "heat.chart": "Жалобы по дням",
-      "heat.chart_from": "14 дн. назад",
+      "heat.chart_from": "14 дней назад",
       "heat.chart_to": "сегодня",
       "heat.topics": "О чём сообщают",
       "heat.status": "Статус",
