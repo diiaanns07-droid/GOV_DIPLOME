@@ -3,12 +3,12 @@
 Задача: R02 — данные: 12 категорий, синтетика v3, инструмент разметки, LLM-скрипты (prompts/R02.txt).
 Агент / город: Claude Code (облачная сессия), Астана, Birge.
 Обновлено: 2026-10-10, Asia/Almaty (точное время — у коммита).
-Статус: ready_for_review (все 7 задач промпта сделаны; LLM-скрипты с настоящим API — NOT_RUN, запуск у владельца)
+Статус: ready_for_review (7 задач промпта + probe_v2 и DATASHEET; LLM-скрипты с настоящим API — NOT_RUN, запуск у владельца)
 Рабочая ветка: claude/r14-R02 (по правилу COMMON.txt; создана от claude/round-14-package @ 887ef4b).
 Первый checkpoint 887ef4b до появления правила ушёл и в claude/round-14-package — там только пути R02;
 решение об откате — за координатором (см. research/round-14-results/R02/INTEGRATION.txt).
 Исходный коммит: c75a9ac (база пакета при старте), пакет с правилом о ветках — 7ff639a.
-Код проверен на: 229f1aa. После него — только документация (84319ad и этот файл).
+Код проверен на: 229f1aa (основная работа) и f62cc93 (probe_v2); затем — DATASHEET и документация.
 Назначенные пути: ml/datasets/, ml/labeling/, web/labeling/, tests/civic/R02/round14/,
 research/round-14-results/R02/, этот файл. Старые тесты tests/civic/R02/*.py (раунд 13, другой модуль) не трогал.
 
@@ -48,7 +48,12 @@ agreement.py; корпус v3 лежит в ветке, R03 может обуч�
 - [x] П. 1. ml/datasets/probe_v2/ — 300 проверочных сообщений, написанных вручную вне шаблонов (25 × 12),
       ru 155 / kk 97 / mixed 48, 9 стилей, 94 спорных случая; source="agent_probe_v2"; split=test.
       Близость к synth_v3 по Jaccard 3-грамм: медиана 0.18, максимум 0.61 (< 0.8). Сборка: python -m ml.datasets.probe_v2.build.
-- [ ] П. 2. ml/datasets/DATASHEET.md
+- [x] П. 2. ml/datasets/DATASHEET.md — описание пяти корпусов по схеме «Datasheets for Datasets» (мотивация, состав,
+      сбор, разметка, обезличивание, использование, ограничения, лицензии, сопровождение) + схема экспериментов
+      A–E для R03: synth_v3, v1_in_v2, llm_v1 (будущий), probe_v2, human_form (будущий, только private/).
+      Числа взяты из манифестов. README.md дополнен разделом probe_v2.
+      Тест pytest для probe_v2 не добавлен (задание ограничило пути ml/datasets/ и ml/labeling/); все проверки
+      встроены в build.py (сборка падает при нарушении) и build.py --check.
 
 ## Проверки (Linux, Python 3.13.16, pytest 9.1.1, Node 22.22.0, playwright 1.56.1 + Chromium /opt/pw-browsers)
 - python -m pytest tests/civic/R02/round14 — 89 PASS

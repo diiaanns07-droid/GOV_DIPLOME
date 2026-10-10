@@ -5,9 +5,9 @@
   "base_sha": "c75a9ac",
   "package_sha_with_branch_rule": "7ff639a",
   "restored_from": null,
-  "code_sha": "229f1aa",
-  "tested_sha": "229f1aa",
-  "push_status": "OK: claude/r14-R02 (checkpoints 887ef4b, 8e84b25, ff23ed5, 229f1aa и коммит с документацией); 887ef4b также в claude/round-14-package — см. INTEGRATION.txt",
+  "code_sha": "f62cc93",
+  "tested_sha": "f62cc93",
+  "push_status": "OK: claude/r14-R02 (checkpoints 887ef4b, 8e84b25, ff23ed5, 229f1aa, 84319ad, 05b789e, f62cc93 и коммит с DATASHEET); 887ef4b также в claude/round-14-package — см. INTEGRATION.txt",
   "environment": "облачная сессия Claude Code, Linux, Python 3.13.16, pytest 9.1.1, Node 22.22.0, playwright 1.56.1 + Chromium /opt/pw-browsers; без доступа к внешним API",
   "changed_paths": [
     "web/labeling/",
@@ -29,7 +29,9 @@
     "llm_synth": "ml/datasets/llm_synth.py → ml/datasets/llm_v1/ (запуск у владельца)",
     "llm_label": "ml/labeling/llm_label.py",
     "llm_client": "ml/labeling/llm_client.py, ml/labeling/guide.py",
-    "readme": "ml/datasets/README.md"
+    "readme": "ml/datasets/README.md",
+    "probe_v2": "ml/datasets/probe_v2/probe_v2.jsonl (300, написаны агентом вручную вне шаблонов, 25 на категорию, split=test) + source.py, build.py, manifest_probe_v2.json",
+    "datasheet": "ml/datasets/DATASHEET.md (Datasheets for Datasets: synth_v3, v1_in_v2, llm_v1, probe_v2, human_form)"
   },
   "tests": {
     "pytest tests/civic/R02/round14 (89)": "PASS",
@@ -40,7 +42,9 @@
     "gen_categories_js --check": "PASS",
     "llm_synth / llm_label с настоящим OpenAI/NVIDIA API": "NOT_RUN (облако без доступа к API; проверено на подставном транспорте: повторы 429/5xx, 401, бюджет, кэш, ключ не пишется в файлы)",
     "страница разметки в Firefox/Safari": "NOT_RUN (проверен только Chromium)",
-    "реальная разметка 300 текстов владельцем": "NOT_RUN (тексты формы ещё собираются, LOCAL-6)"
+    "реальная разметка 300 текстов владельцем": "NOT_RUN (тексты формы ещё собираются, LOCAL-6)",
+    "probe_v2 build (25×12, без повторов и ПДн, max Jaccard к synth_v3/v1 = 0.611 < 0.8) и --check": "PASS",
+    "pytest после добавления probe_v2 (89)": "PASS"
   },
   "screens": "research/round-14-results/R02/screens/ (7 скриншотов реально запущенной страницы на синтетических фикстурах)",
   "known_limits": [
@@ -50,7 +54,9 @@
     "Прогресс разметки хранится в localStorage браузера: очистка данных браузера без экспорта теряет метки (кнопка экспорта подсвечивается каждые 50 меток; свой экспорт можно открыть снова и продолжить).",
     "v1_in_v2: уточнение меток по ключевым словам (393 строки отличаются от таблицы v1_to_v2).",
     "Цены моделей в llm_client.PRICES — по состоянию знаний агента; перед запуском сверить с прайсом провайдера (или передать --price-in/--price-out).",
-    "near_dup_val_test = 0: шаблоны v3 различаются сильнее порога 0.8; улицы и места общие для всех split (не несут информации о категории)."
+    "near_dup_val_test = 0: шаблоны v3 различаются сильнее порога 0.8; улицы и места общие для всех split (не несут информации о категории).",
+    "probe_v2 написан тем же автором (агентом), что и шаблоны и правила v2: это «другие слова того же человека», не другой человек; метки — агентские, казахский не проверен носителем.",
+    "v1_in_v2 не содержит ни одного примера smell_air и всего 5 parking — категории v1 их не различали."
   ],
-  "next_step": "Владелец: R01 применяет patch private/ в .gitignore; после формы — import_form → разметка 300 текстов → второй разметчик (100) → agreement; LOCAL-8: llm_label и llm_synth по RUN.txt; R03 обучает на corpus_v3 с 12 октября; если останется лимит — R02 помогает R03 с экспериментами."
+  "next_step": "Владелец: R01 применяет patch private/ в .gitignore; после формы — import_form → разметка 300 текстов → второй разметчик (100) → agreement; LOCAL-8: llm_label и llm_synth по RUN.txt; проверка казахского (KK_STRINGS.md, probe_v2/source.py, шаблоны). R03: эксперименты A–E из DATASHEET.md §7, probe_v2 — только как test."
 }
