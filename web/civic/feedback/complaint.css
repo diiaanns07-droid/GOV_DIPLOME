@@ -84,6 +84,7 @@
 .bc-category { display: flex; flex-direction: column; gap: 8px; }
 .bc-cat-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .bc-cat-row__label { font-weight: 600; }
+.bc-cat-row .bk-chip { min-height: 48px; }   /* подсказанная категория — кнопка: зона нажатия 48 px (UX_BRIEF №2) */
 .bc-change { align-self: flex-start; }
 /* Сетка категорий — .bk-catgrid ui-kit R11 (своей сетки нет). Подсказанная моделью категория — рамкой бренда. */
 .bk-catgrid > button[data-suggested="true"] { border-color: var(--c-brand, #176b4a); }

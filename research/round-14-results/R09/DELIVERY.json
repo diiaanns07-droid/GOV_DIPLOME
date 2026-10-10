@@ -167,12 +167,12 @@
   {
    "name": "node tests/civic/R09/browser_r09.cjs (стенд, запасные стили)",
    "status": "PASS",
-   "detail": "143/143"
+   "detail": "152/152"
   },
   {
    "name": "node tests/civic/R09/browser_r09.cjs --r11 <R11 52d7c59 web> (настоящий ui-kit и словарь R11)",
    "status": "PASS",
-   "detail": "143/143"
+   "detail": "152/152"
   },
   {
    "name": "node tests/civic/R09/app_demo_r09.cjs на сборке R01 13ae790 + R09 + r01_seed_r09_demo.patch",

@@ -155,6 +155,21 @@ async function checkGridWords(page, tag) {
         res.count === 12 && res.broken.length === 0 && res.columns >= 1 && res.columns <= 3, res.broken.join(", "));
 }
 
+// UX_BRIEF №2: в панели жалобы текст не мельче 14 px, кнопки и поля не ниже 44 px (ui-kit даёт 48).
+async function uxSizes(page) {
+  return page.evaluate(() => {
+    const bad = [];
+    document.querySelectorAll(".bc-panel:not([hidden]) *, .bc-fab").forEach((n) => {
+      const r = n.getBoundingClientRect();
+      if (!r.width || getComputedStyle(n).visibility === "hidden") return;
+      const own = [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim());
+      if (own && parseFloat(getComputedStyle(n).fontSize) < 14) bad.push("text " + n.textContent.trim().slice(0, 24) + " " + getComputedStyle(n).fontSize);
+      if (/^(BUTTON|A|INPUT|TEXTAREA)$/.test(n.tagName) && r.height < 44) bad.push("tap " + n.textContent.trim().slice(0, 24) + " " + Math.round(r.height));
+    });
+    return bad;
+  });
+}
+
 async function shot(page, name) {
   // Дать закончиться анимациям шторки и тоста (240–300 мс), иначе кадр ловит полупрозрачное промежуточное состояние.
   if (shotDir) { await page.waitForTimeout(450); await page.screenshot({ path: path.join(shotDir, name + ".png") }); }
@@ -214,6 +229,8 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   const ticks = await page.$eval(".bc-cat-row .bk-chip[aria-pressed='true']", (c) => ({
     inText: (c.textContent.match(/✓/g) || []).length, before: getComputedStyle(c, "::before").content }));
   check(`${tag}: [R11-6] одна галочка в чипе категории`, ticks.inText === 0 && /✓/.test(ticks.before), JSON.stringify(ticks));
+  const sizes3 = await uxSizes(page);
+  check(`${tag}: [UX] шаг 3 — текст ≥ 14 px, кнопки ≥ 44 px`, sizes3.length === 0, sizes3.join("; "));
   const chip = await page.textContent(".bc-cat-row");
   check(`${tag}: подсказка категории чипом`, lang === "kk" ? /Аялдамалар мен көлік/.test(chip) : /Остановки и транспорт/.test(chip), chip.trim());
   await shot(page, `${tag}-3-text`);
@@ -228,6 +245,19 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
     !document.querySelector("#bc-text"));
   check(`${tag}: чужой текст жалобы не показан`, !leak);
   await shot(page, `${tag}-4-similar`);
+  if (tag === "375-ru") {
+    // R15 (ночь): лимит «Я тоже» (429) — понятное сообщение без «Повторить» (повтор снова упрётся в лимит).
+    await page.route("**/metoo", (route) => route.fulfill({ status: 429, contentType: "application/json",
+      body: JSON.stringify({ ok: false, error: { code: "too_many_requests" }, retry_after: 60 }) }));
+    await page.click(".bc-panel[data-step='4'] .bk-btn--primary");
+    await page.waitForSelector(".bc-toast:not([hidden])", { timeout: 8000 });
+    const limited = await page.$eval(".bc-toast", (t) => ({ text: t.textContent, retry: !!t.querySelector(".bk-btn") }));
+    check(`${tag}: [R15] «Я тоже» при лимите — сообщение без «Повторить»`, !limited.retry && /много|көп/.test(limited.text),
+          JSON.stringify(limited));
+    await page.unroute("**/metoo");
+    page.problems = page.problems.filter((p) => !/^429 .*\/metoo$/.test(p));   // 429 подставлен тестом намеренно
+    await page.click(".bc-toast .bc-toast__close");
+  }
   await page.click(".bc-panel[data-step='4'] .bk-btn--primary"); taps++;
   await page.waitForSelector(".bc-panel[data-step='5']");
   const done = await page.textContent(".bc-panel");
@@ -238,6 +268,8 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   check(`${tag}: событие birge:complaint для тепловой карты`, events.length === 1 && events[0].type === "metoo" &&
     events[0].target && events[0].target.id === hot.target.id && events[0].reporters === before + 1, JSON.stringify(events));
   await shot(page, `${tag}-5-done`);
+  const sizes5 = await uxSizes(page);
+  check(`${tag}: [UX] шаг 5 — текст ≥ 14 px, кнопки ≥ 44 px`, sizes5.length === 0, sizes5.join("; "));
   check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(page));
   const keys = await visibleKeys(page);
   check(`${tag}: нет ключей и технических слов`, keys.length === 0, keys.join(", "));

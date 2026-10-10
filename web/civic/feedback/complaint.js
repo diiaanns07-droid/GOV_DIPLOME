@@ -773,6 +773,8 @@
       if (button) button.disabled = true;
       request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", {}).then(function (res) {
         if (button) button.disabled = false;
+        // Лимит (429, R15): повтор снова упрётся в лимит — сообщаем без «Повторить», как при отправке жалобы.
+        if (!res.ok && res.status === 429) { toast(t("complaint.error.too_many")); return; }
         if (!res.ok) { toast(t("complaint.error.send"), function () { metoo(match); }); return; }
         state.result = { kind: "metoo", outcome: res.data.result, complaint: res.data.complaint };
         if (res.data.result === "added") announce("metoo", res.data.complaint);
