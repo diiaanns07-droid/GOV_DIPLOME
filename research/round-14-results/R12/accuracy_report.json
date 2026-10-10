@@ -7,8 +7,9 @@
  "inputs": {
   "demo": "data/civic/astana/demo_synthetic.json",
   "snapped": "data/civic/astana/geo/demo_snapped.json",
+  "store_export": null,
   "objects": 2283,
-  "yards": 538
+  "yards": 537
  },
  "rules": {
   "line_tolerance_m": 5.0,
@@ -21,7 +22,7 @@
    "FAIL": 0
   },
   "inside_astana": {
-   "PASS": 6,
+   "PASS": 8,
    "FAIL": 0
   },
   "no_freehand_line": {
@@ -41,7 +42,7 @@
    "FAIL": 0
   }
  },
- "total": 954,
+ "total": 956,
  "failed": 0,
  "result": "PASS",
  "rows": [
@@ -6708,6 +6709,20 @@
    "status": "PASS",
    "value": 5.64,
    "detail": "до улицы 5.6 м (допуск 60 м)"
+  },
+  {
+   "check": "inside_astana",
+   "id": "geo/objects.json",
+   "status": "PASS",
+   "value": 0,
+   "detail": "проверено координат: 9488, вне границы: 0"
+  },
+  {
+   "check": "inside_astana",
+   "id": "geo/yards.json",
+   "status": "PASS",
+   "value": 0,
+   "detail": "проверено координат: 4473, вне границы: 0"
   },
   {
    "check": "scenario_closure_on_graph",
