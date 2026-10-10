@@ -112,13 +112,17 @@
 Задача: переобучить классификатор категорий обращений v2 (ml/civic_classifier_v2/) на <новых данных: путь>.
 Окружение: venv C:\Users\LEGION\venvs\birge-ml (Python 3.12, torch с CUDA), модель FacebookAI/xlm-roberta-base из кэша HuggingFace.
 Порядок:
-1) Прочитай ml/civic_classifier_v2/README.md и research/round-14-results/R03/RUN.txt — там команды и режимы обучения.
+1) Прочитай ml/civic_classifier_v2/MODEL_CARD.md и research/round-14-results/R03/RUN.txt — там команды, режимы обучения,
+   протокол (probe_v2 и тексты людей не участвуют в выборе параметров) и прошлые числа (probe_v2 0.828 у модели LOCAL-4).
 2) Проверь, что новые тексты не содержат персональных данных и что тестовый набор людей не пересекается с обучением
-   (близкие дубликаты исключаются скриптом подготовки данных R02).
-3) Запусти обучение и оценку теми же командами, что в RUN.txt. Большие файлы модели НЕ коммить (artifacts/).
-4) Закоммить только results/*.json и обнови RESULTS.md: macro-F1, F1 по языкам ru/kk/mixed, доверительные интервалы,
-   сравнение с прошлой версией. Если стало хуже — так и напиши.
-5) Обнови версию модели в ответе /classify (model_version), чтобы было видно, какая модель работает.
+   (близкие дубликаты исключаются скриптом подготовки данных R02). Тексты людей — только в private/, в Git не попадают.
+3) Сначала тесты: python -m pytest tests/civic/R03/round14 -q (ожидается 66 passed). Затем обучение и оценка теми же
+   командами, что в RUN.txt (с $PROBE). Большие файлы модели НЕ коммить (artifacts/).
+4) RESULTS.md руками не править: он генерируется из results/experiments.json (python -m ml.civic_classifier_v2.evaluate
+   render). Закоммить results/*.json и RESULTS.md; в MODEL_CARD.md — выводы: macro-F1 на людях и на probe_v2 с ДИ,
+   по языкам ru/kk/mixed, сравнение с прошлой версией парной разностью. Если стало хуже — так и напиши.
+5) ONNX: python -m ml.civic_classifier_v2.export_onnx — критерии fp32 = PyTorch, int8 ≥ 97 %, < 50 мс; версия модели
+   (model_version) меняется автоматически по режиму, данным и seed. needs_review не выключать, пока нет оценки на людях.
 ```
 
 ### 3.4. Обновить данные (OSM, погода, реальные работы)
@@ -177,25 +181,27 @@
 
 ## 4. Открытые задачи по модулям
 
-Список собран из `STATUS.md` и `DELIVERY.json` ролей на 10 октября 2026 (см. `MODULES.md`, раздел каждого модуля, где указаны ветка и SHA). Обновлять по мере сборок B1/B2/FINAL.
+Список собран из `STATUS.md`, `DELIVERY.json`, `BUGS.md` (R10), `SECURITY_REVIEW.md` (R15), `UX_REVIEW.md` (R11) и
+`LOCAL_B2.md` на ночь 10→11 октября 2026 — после сборки **B2** (R01 f54361d: сценарий демо проходит, блокеров нет).
+Ветка и SHA каждого модуля — `MODULES.md` §0. Обновлять после FINAL.
 
-| Модуль | Открытые задачи (по STATUS/DELIVERY ролей, 10.10) | Где подробности |
+| Модуль | Открытые задачи | Где подробности |
 |---|---|---|
-| **R01 сборка** | Кандидат B1 d3c33d9 уже подключает R07, R08, R09 (путь демо 15/0). Осталось: перенести и подключить R03 (ONNX после LOCAL-4), R04 (+ `r01_similar_target.patch`), R05 (`proposed_r01.patch`), R06 (`bind(service)`, маршруты предложений/этапов), R12 (`/targets` + 5 геомаршрутов), R13 (`r01_forecast_route.patch`); решить B-003 (`needs_review` всегда true → категория только подсказкой); сборки B1 (13.10) → B2 (14.10) → FINAL (15.10 18:00) | `ARCHITECTURE.md` §8; `research/round-14-results/R01/` |
-| **R02 данные** | Форма → `import_form` → разметка 300 текстов владельцем → второй разметчик (100) → `agreement` → LOCAL-8 (`llm_synth`, `llm_label`) → проверка казахского | `research/round-14-results/R02/RUN.txt` |
-| **R03 модель** | LOCAL-4: обучение на GPU по `RUN.txt`, пуш `results/*.json` + `RESULTS.md`; ONNX передать в сборку; по желанию — оценка на `probe_v2`, режим «+ v1_in_v2» | `research/round-14-results/R03/RUN.txt`, `MODEL_CARD.md` |
-| **R04 дубли/ML-API** | Сдан (deeb1de). LOCAL-R04-1: экспорт E5 в ONNX на ноутбуке и подбор порога на dev; после LOCAL-4 — скорость с моделью v2 на ноутбуке; после формы — пары дублей из настоящих обращений и повтор `tune` | `research/round-14-results/R04/RUN.txt`, `INTEGRATION.txt` |
-| **R05 3D** | R01 применяет `proposed_r01.patch`; согласовать с R06 поля `POST /proposals`, удаление (`withdraw` вместо `DELETE`) и формат ответа `{item}`; ключи `build3d.*` в словари R11; проверить плавность и пересечения со зданиями на ноутбуке с GPU | `research/round-14-results/R05/INTEGRATION.txt` |
-| **R06 предложения/этапы** | R01: `bind(service)`, маршруты approve/reject/withdraw/summary/lagging/по id, статика; R08 перейти на `lagging_objects` и `proposals_summary`; перед обновлением базы — резервная копия | `research/round-14-results/R06/INTEGRATION.txt` |
-| **R07 тепловая карта** | Подключение в шлюз R01 (INTEGRATION §1); R09 после новой жалобы вызывает `invalidate()` и шлёт `birge:complaint`; цели — те же id, что у R12; передавать bbox в запросе; скриншоты с настоящей подложкой (LOCAL-7); проверка казахских строк | `research/round-14-results/R07/INTEGRATION.txt` |
-| **R08 картина дня** | Маршрут и адаптер `mount` у R01; функции R06 вместо фикстур; ключи в R11; R10 прогоняет `ui_check.cjs` на сборке; проверка казахской сводки | `research/round-14-results/R08/INTEGRATION.txt` |
-| **R09 жалоба** | Пункты 7–12 ревью R11 (`UX_REVIEW.md`); подключение у R01; живые `/targets` (R12) и `/classify`, `/similar` (R04) вместо фикстур; ключ устройства `birge.device` → общий `birge.device_id`; район записи на сервере | `research/round-14-results/R09/INTEGRATION.txt` |
-| **R11 UX/казахский** | Владелец проверяет `kk.json` (29 мест ⚑ в `KK_REVIEW.md`); перенос ключей модулей в общие словари; patch `CIVIC_ASSETS` у R01; скрыть или перевести тексты сравнения перекрытий и помощника (в них запрещённые слова «граф», «сценарий») | `research/round-14-results/R11/` |
-| **R12 карта** | R01 подключает 5 маршрутов (`/street-segment`, `/street-snap`, `/objects-near`, `/yard`, `/geo/status`) и `demo_snapped.json`; прогон `app_acceptance.mjs` и `e2e_r12_real` на сборке; соседние рёбра одной улицы — сейчас разные цели (подумать о группировке «Я тоже» по улице) | `research/round-14-results/R12/INTEGRATION.txt` |
-| **R13 прогноз** | Сдан (8705829, backtest на синтетике). R01 — `r01_forecast_route.patch`; R08 — блок `attention_next_month` с пометкой «прототип»; R11 — ключи; после LOCAL-9 — `build-cache` и backtest заново; заменить `hash()` в `history.to_records` на sha256 (даты демо-записей) | `research/round-14-results/R13/` |
-| **R10 приёмка** | Идёт (e73f1e8): дефекты B-001…B-010 (`research/round-14-results/R10/BUGS.md`) — исправляют владельцы (B-007/B-008 — данные R05, B-009 — дворы R12 по всем вершинам, B-010 — `osm-relation-` в CONTRACT); `tests/e2e/demo_flow.cjs`; приёмка B1/B2/FINAL | ветка `claude/r14-R10` |
-| **R15 безопасность** | Отчёт и patch по XSS, CSRF, правам сотрудника, персональным данным | ветка `claude/r14-R15` |
-| **Диплом (R14)** | Заменить `[РЕЗУЛЬТАТ R03]`/`[РЕЗУЛЬТАТ R13]` числами из `RESULTS.md`; проверить источники `[ПРОВЕРИТЬ ИСТОЧНИК]` (шаблон 3.8); вставить требования вуза `[ТРЕБОВАНИЕ ВУЗА]`; обновить `FACTS.md` по сборке FINAL | `docs/diploma/`, `research/round-14-results/R14/FACTS.md` |
+| **R01 сборка** | FINAL 15.10 18:00: повторные поставки R05 (после b0353ee), R06 b42e790 и R07 306074b уже в шагах B3 — закрыть стыки I-01…I-03 (7 падений pytest на be82fa8); убрать адаптер R05 → R06; CSS-правки B-019 и B-020 (`INTEGRATION.txt` R10 §3, проверены); кабинет сотрудника без «editor», «/staff/meta» и с ҚАЗ (B-021); лента работ раунда 13 — скрыть или перевести (B-012); надписи ≥ 14 px и кнопки ≥ 40–48 px (B-013, B-014); патчи безопасности R15 (P-R01, P-R02, P-R04, P-R07, P-R09); `RUN.txt`: `set PORT` не меняет порт `run-city.bat` | `ARCHITECTURE.md` §8; `research/round-14-results/R01/`, `R10/BUGS.md`, `R15/INTEGRATION.txt` |
+| **R02 данные** | Форма → `import_form` → разметка ≥ 200 текстов владельцем → второй разметчик (100) → `agreement`; выборочно проверить метки llm_v1 человеком; patch P-R02 (отчества в обезличивании, не отправлять в LLM тексты с подозрением на ПДн — S07, S14) | `research/round-14-results/R02/RUN.txt`, `R15/SECURITY_REVIEW.md` |
+| **R03 модель** | Обучена (LOCAL-4, c19b889; probe_v2 0.828). Ноутбук: `RUN.txt` шаг 8 (повторный ONNX с умолчаниями d472baf — ожидаются три PASS) и шаг 8б (int8 на probe_v2), затем отдать `artifacts/onnx` R04/R01; после ≥ 200 текстов людей — шаг 6 с `--human`, итоговая модель `mix`, шаг 8 заново; по желанию `--seeds 3` | `research/round-14-results/R03/RUN.txt`, `MODEL_CARD.md` |
+| **R04 дубли/ML-API** | LOCAL-R04-1: экспорт E5 в ONNX и порог на dev; скорость `/classify` с моделью v2 на ноутбуке; patch P-R04 (`/similar` считать от огрублённой точки — S13); B-004 («машины на газоне» → парковки) | `research/round-14-results/R04/RUN.txt`, `R15/INTEGRATION.txt` |
+| **R05 3D** | Данные `astana-existing.json`: убрать ж/д платформы из «остановок» (B-007) и точки за границей (B-008) — лучше брать остановки из `geo/objects.json` R12; таблички проектов ≥ 24 px и 5 демо-проектов не в одной точке (B-026); каталог на телефоне (B-022); новый DELIVERY.json, чтобы R01 взял правки после b0353ee | `R10/BUGS.md`, `research/round-14-results/R05/` |
+| **R06 предложения/этапы** | Поставка 2 b42e790 в B3. Названия демо-объектов на казахском (B-018); `seed-r14-demo` не печатать казахский в консоль CP1251 (или документировать `PYTHONUTF8=1`); `proposals/demo.html` без ui-kit падает (B-006) | `R10/BUGS.md`, `LOCAL_B2.md` |
+| **R07 тепловая карта** | Поставка 306074b в B3 — R10 проверить B-016 (значки без числа ниже z15) и B-017 (ручка шторки 28 px); кнопка «Взять в работу» — белый текст на зелёном (UX_REVIEW R11, п. 1); значок не должен перехватывать нажатие при выборе места (B-019, стык с R09); patch P-R07 (подпись реального объекта — только из OSM, S11) | `R11/UX_REVIEW.md`, `R10/BUGS.md`, `R15/INTEGRATION.txt` |
+| **R08 картина дня** | xfail `test_r08_demo_plausible` снять после демо-набора R07 306074b; проверить казахскую сводку носителем | `research/round-14-results/R08/` |
+| **R09 жалоба** | patch P-R09: точка жителя для других — 3 знака (≈ 100 м), подписи цели только с карты R12, цель не дальше 300 м от точки, CSRF без `check_csrf` → 403, только ASCII-цифры в `days` (S03, S04, S05, S06, S12); «Вы здесь» для цели с расстоянием 0 (UX_REVIEW R11, п. 3) | `R15/SECURITY_REVIEW.md`, `R11/UX_REVIEW.md` |
+| **R11 UX/казахский** | Владелец проверяет `kk.json` (⚑ места в `KK_REVIEW.md`); +102 ключа ночи 10→11.10 передать R01 (словари 665 ключей); повторный разбор FINAL | `research/round-14-results/R11/` |
+| **R12 карта** | Двор `yard-619707707` — проверять все вершины, а не центр (B-009); безымянные проезды и дворы подписывать по ближайшему названию (UX_REVIEW R11, п. 2); надписи и кнопки панели «Территория» (B-013, B-014); гонка `demo-ring`; предупреждения стиля о недостающих значках (LOCAL_B2, п. 10) | `R10/BUGS.md`, `R11/UX_REVIEW.md`, `LOCAL_B2.md` |
+| **R13 прогноз** | Реальная погода уже есть (`data/civic/astana/weather/`, pkg @ a2ff96e) — `build-cache` и backtest заново, обновить `RESULTS.md` и главу 4.3; R08 — блок `attention_next_month` с пометкой «прототип»; заменить `hash()` в `history.to_records` на sha256 | `research/round-14-results/R13/` |
+| **R10 приёмка** | B1, B2 приняты; FINAL 15.10 — полный `run_acceptance.cjs`, закрытие исправленных B-xxx; Codex на Windows по `CODEX_ACCEPTANCE_PROMPT.txt` | ветка `claude/r14-R10` |
+| **R15 безопасность** | Поставка 1 сдана (критичных нет, 11 важных с patch). После FINAL: прогнать `tests/civic/R15` на сборке — применённые patch дадут XPASS, снять пометки и перенести ID в `FIXED` | ветка `claude/r14-R15` |
+| **Диплом (R14)** | Ждут: тексты людей (глава 4, таблица 4.7, ответы В1/В3), backtest R13 с реальной погодой (таблицы 4.11–4.13), FINAL R01 и приёмка R10 (главы 3.12, 5.8), проверка источников `[ПРОВЕРИТЬ ИСТОЧНИК]` (шаблон 3.8), требования вуза `[ТРЕБОВАНИЕ ВУЗА]`; после каждой поставки — `FACTS.md` | `docs/diploma/README.md`, `research/round-14-results/R14/FACTS.md` |
 
 ## 5. Как понять, что задача сделана
 
