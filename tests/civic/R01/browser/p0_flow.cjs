@@ -295,8 +295,11 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     const f5 = await page.waitForFunction(() => document.querySelector("#civic-map-root .civic-r03-card")?.textContent.includes("Проверочный ремонт тротуара R01"), null, { timeout: 15000 }).then(() => true).catch(() => false);
     check("F5 restores civic mode and the selected card", f5);
 
-    // ---- modes on the same map
-    await page.click("#civic-modes [data-mode=training]");
+    // ---- modes on the same map (round 14: «Учебная модель» и «Школы» убраны из меню карты — только по ссылке)
+    const menu = await page.evaluate(() => ({ modes: getComputedStyle(document.getElementById("civic-modes")).display,
+      birge: !!document.querySelector("#birge-header") && getComputedStyle(document.querySelector("#birge-header")).display !== "none" }));
+    check("civic map: old mode switch hidden, Birge header shown", menu.modes === "none" && menu.birge, menu);
+    await page.evaluate(() => { location.hash = "#training"; });
     await page.waitForTimeout(900);
     const training = await page.evaluate(() => ({ district: map.getLayoutProperty("district-fill", "visibility"), score: document.getElementById("city-score").textContent,
       civicLayers: map.getStyle().layers.filter((l) => l.id.startsWith("civic-")).length, canvases: document.querySelectorAll("canvas").length }));
@@ -351,6 +354,16 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     check("mobile: bottom sheet leaves the map visible", mob.panelTop > 844 * 0.4, mob.panelTop);
     check("mobile: tap targets ≥36px", mob.small.length === 0, mob.small);
     await m.page.screenshot({ path: path.join(OUT, "09_civic_start_390.png") });
+    // Round 14: a phone opens in the resident view — akimat tools hidden, sign-in kept; the ≡ menu switches to «Акимат».
+    const resident = await m.page.evaluate(() => ({ mode: window.BirgeShell?.mode,
+      scen: getComputedStyle(document.getElementById("civic-scenarios-button")).display,
+      staff: getComputedStyle(document.getElementById("civic-staff-button")).display }));
+    check("mobile: resident view by default, akimat tools hidden, sign-in kept", resident.mode === "resident" && resident.scen === "none" && resident.staff !== "none", resident);
+    await m.page.click("#birge-header .birge-menu-btn");
+    await m.page.click("#birge-header [data-mode=akimat]");
+    const akimat = await m.page.evaluate(() => ({ mode: window.BirgeShell.mode, menu: document.getElementById("birge-header").dataset.menu,
+      scen: getComputedStyle(document.getElementById("civic-scenarios-button")).display }));
+    check("mobile: ≡ menu switches to the akimat view and closes", akimat.mode === "akimat" && akimat.menu === "closed" && akimat.scen !== "none", akimat);
     const attribSlot = () => m.page.evaluate(() => {
       const holder = document.querySelector(".maplibregl-ctrl-bottom-right");
       if (!holder) return { ok: false, reason: "no control container" };

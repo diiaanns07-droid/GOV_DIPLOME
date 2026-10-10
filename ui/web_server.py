@@ -66,9 +66,14 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "scenarios/scenarios.js", "scenarios/scenarios.css",  # R07 @22fa413 (graphs only via API)
                 "map/civic-map-core.js", "map/civic-map.js", "map/civic-map.css",  # R03 @f73745c
                 "editor/editor-core.js", "editor/editor.js", "editor/editor.css",  # R04 @da46e1c
-                "assistant/assistant.js", "assistant/assistant.css")  # R09 @f895c30 (demo.html not served)
+                "assistant/assistant.js", "assistant/assistant.css",  # R09 @f895c30 (demo.html not served)
+                # Раунд 14: шапка Birge (R01) и ui-kit / переводы R11 (база пакета 608e367).
+                "shell/birge.js", "shell/birge.css",
+                "ui-kit/tokens.css", "ui-kit/components.css", "ui-kit/icons.svg",
+                "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json")
 for _asset in CIVIC_ASSETS:
-    _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
+    _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json",
+             ".svg": "image/svg+xml"}.get(Path(_asset).suffix, "text/plain")
     ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
 
 
@@ -1381,7 +1386,7 @@ def create_server(project: Path = ROOT, port: int = 8501, host: str = "127.0.0.1
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Аким на 5 часов — городской симулятор")
+    parser = argparse.ArgumentParser(description="Birge — обратная связь жителей и акимата Астаны")
     parser.add_argument("--port", type=int, default=8501)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--open", action="store_true", help="Открыть браузер после запуска")
@@ -1410,7 +1415,7 @@ def main():
     print("classifier: " + ("off" if not cls["enabled"] else
           f"r08 {'connected' if cls['available'] else 'unavailable: ' + str(cls['reason'])}"
           + (f" ({cls.get('model_version')}, {cls.get('training_data_status')})" if cls["available"] else "")), flush=True)
-    print(f"Аким на 5 часов: {url}\nОстановить — Ctrl+C", flush=True)
+    print(f"Birge: {url}\nОстановить — Ctrl+C", flush=True)
     if args.open:
         opener = threading.Timer(0.3, webbrowser.open, args=(url,))
         opener.daemon = True

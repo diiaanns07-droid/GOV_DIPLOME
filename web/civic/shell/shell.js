@@ -775,10 +775,14 @@
   function activateCivic() {
     document.body.classList.add("civic-mode");
     root.hidden = false;
-    if (brandTitle) brandTitle.textContent = "Астана.";
-    if (brandSub) brandSub.textContent = "Городские работы, сроки и сообщения жителей";
-    document.title = "Астана · городские работы и события";
-    $c("map")?.setAttribute("aria-label", "Карта городских работ и событий Астаны");
+    // Раунд 14: бренд Birge, подпись и заголовок вкладки на выбранном языке — их ставит birge.js (BirgeShell).
+    const birge = window.BirgeShell;
+    if (brandTitle) brandTitle.textContent = "Birge";
+    if (brandSub) brandSub.textContent = birge ? birge.t("shell.brand.tagline") : "Город и жители вместе";
+    document.title = birge ? birge.t("shell.title") : "Birge · Астана";
+    $c("map")?.setAttribute("aria-label", birge ? birge.t("shell.map.label") : "Карта Астаны");
+    // Возврат кнопкой «Город» из #training/#school: убираем старую ссылку, чтобы F5 открыл карту.
+    if (location.hash === "#training" || location.hash === "#school") history.replaceState(null, "", location.pathname + location.search);
     trainingLayers(false);
     mountExplore();
     civicCamera();
@@ -827,12 +831,19 @@
     if (options?.persist !== false) {
       try { localStorage.setItem(MODE_KEY, mode); } catch { /* per-viewer convenience only */ }
     }
+    document.dispatchEvent(new CustomEvent("civic:mode", { detail: { mode } }));  // birge.js перерисует шапку
   }
   document.querySelectorAll("#civic-modes [data-mode]").forEach((button) =>
     button.addEventListener("click", () => setMode(button.dataset.mode)));
   // GOVTECH's own "back to simulator" button leaves school mode for training.
   $c("govtech-toggle")?.addEventListener("click", () => {
     setTimeout(() => { if (!window.GOVTECH?.active && S.mode === "school") { S.mode = "training"; syncModeButtons(); } }, 0);
+  });
+  // Раунд 14: в виде «Житель» инструменты акимата скрыты (birge.css) — открытые ящики тоже закрываем.
+  document.addEventListener("birge:mode", (event) => {
+    if (event.detail?.mode !== "resident") return;
+    if (!$c("civic-scenarios").hidden) closeScenarios();
+    if (!$c("civic-moderation").hidden) closeModeration();
   });
   // R04 announces its map drawing tool; while it is active, Escape cancels the tool, not the cabinet.
   root.addEventListener("civic-editor:tool", (event) => { S.editorTool = !!event.detail?.active; if (S.editorTool) syncMapInteractive(); else clearToolPick(); });
@@ -857,10 +868,8 @@
       try { S.selected = decodeURIComponent(hash.slice(7)) || null; } catch { S.selected = null; }
       return "civic";
     }
-    try {
-      const saved = localStorage.getItem(MODE_KEY);
-      if (MODES.includes(saved)) return saved;
-    } catch { /* storage may be blocked */ }
+    // Раунд 14: «Школы» и «Учебная модель» убраны из главного меню — открываются только ссылкой
+    // #school / #training. Сохранённый когда-то старый режим больше не открывается сам при запуске.
     return "civic";
   }
 
@@ -885,6 +894,8 @@
     get selected() { return S.selected; },
     get mapView() { return S.mounted.map?.getState?.().view || null; },  // R03 view: list | card | pick (read-only)
     get modules() { return S.modules ? JSON.parse(JSON.stringify(S.modules)) : null; },
+    // Раунд 14: CSRF-токен вошедшего сотрудника для клиента API v2 (birge.js); null, если не вошёл.
+    csrfToken() { return session.authenticated ? session.csrfToken : null; },
     isFallback,
     setMode, openEditor, closeEditor, openFeedback, closeFeedback, onMapReady, onMapUnavailable,
     selectObject(id) { S.selected = id; S.mounted.map?.selectObject?.(id); },

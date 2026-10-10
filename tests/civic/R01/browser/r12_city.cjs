@@ -142,7 +142,8 @@ async function modeRoundTrip(browser, base, w, h) {
       view: document.querySelector(".civic-explore-view")?.textContent || null, scrollW: document.documentElement.scrollWidth };
   });
   for (const other of ["training", "school"]) {
-    await page.click(`#civic-modes [data-mode=${other}]`);
+    // Round 14: old modes are reachable only by link (#training / #school); «Город» returns to the map.
+    await page.evaluate((m) => { location.hash = "#" + m; }, other);
     await page.waitForTimeout(1500);
     if (other === "training") {
       // The training district view keeps its soft 22° tilt without switching the 3D button on.

@@ -1,0 +1,51 @@
+/* Birge · шапка и раздел «Картина дня» (R01, раунд 14). Размеры и цвета — токены ui-kit R11 (tokens.css),
+ * с запасными значениями на случай, если ui-kit не загрузился. */
+
+/* Старые режимы («Школы», «Учебная модель») убраны из главного меню: в режиме карты переключатель не виден.
+ * Код и ссылки #school / #training остаются; оттуда кнопка «Город» возвращает на карту. */
+.civic-mode #civic-modes { display: none !important; }
+#birge-header { display: none; }
+.civic-mode #birge-header { display: flex; align-items: center; gap: var(--s-3, 12px); }
+.civic-mode .top-actions > #birge-header { display: flex !important; } /* сильнее правила shell.css для старых кнопок */
+#birge-header .bk-seg > button { min-width: 48px; white-space: nowrap; }
+/* Ноутбук: меню раскрыто в строку, кнопки ≡ нет. */
+.birge-menu { display: contents; }
+#birge-header .birge-menu-btn { display: none; }
+.civic-mode .brand-title { font-weight: 700; letter-spacing: 0.01em; }
+
+/* Вид «Житель»: инструменты акимата (сравнение перекрытий, модерация) скрыты; вход «Для сотрудников» остаётся. */
+body[data-birge-mode="resident"] #civic-scenarios-button,
+body[data-birge-mode="resident"] #civic-moderation-button { display: none !important; }
+
+/* «Картина дня»: экран поверх карты под шапкой (карта остаётся живой под ним). */
+.birge-day {
+  position: fixed; z-index: 30; top: 112px; left: 20px; right: 20px; bottom: 20px;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--s-6, 24px); border-radius: var(--r-l, 16px);
+  background: var(--c-surface, #fff); color: var(--c-ink, #152c26);
+  box-shadow: var(--shadow-2, 0 8px 28px #15362824);
+}
+.birge-day[hidden] { display: none; }
+.birge-day-title { margin: 0 0 var(--s-4, 16px); font-size: var(--fs-h1, 24px); line-height: 1.2; outline: none; }
+.birge-day-empty { max-width: 560px; margin: var(--s-8, 32px) auto; text-align: center; }
+.birge-day-empty .bk-btn { margin-top: var(--s-4, 16px); }
+body[data-birge-section="day"].civic-mode #civic-root { visibility: hidden; }
+
+/* Телефон (UX_SPEC §1): [логотип] [≡ Меню] [ҚАЗ|РУС]; разделы и «Акимат / Житель» — в выпадающем листе. */
+@media (max-width: 760px) {
+  .civic-mode #birge-header { gap: var(--s-2, 8px); }
+  #birge-header .birge-menu-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 12px; }
+  #birge-header .bk-seg > button { padding-left: 10px; padding-right: 10px; }
+  .birge-menu { display: none; }
+  /* .topbar — свой слой (z-index 4) ниже панелей карты; пока меню открыто, шапка выше них. */
+  body[data-birge-menu="open"] .topbar { z-index: 45; }
+  #birge-header[data-menu="open"] .birge-menu {
+    display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3, 12px);
+    position: fixed; z-index: 40; top: 80px; left: 8px; right: 8px; padding: var(--s-4, 16px);
+    border-radius: var(--r-l, 16px); background: var(--c-surface, #fff); box-shadow: var(--shadow-3, 0 12px 36px #15362833);
+  }
+  #birge-header[data-menu="open"] .birge-menu .bk-seg { display: flex; }
+  #birge-header[data-menu="open"] .birge-menu .bk-seg > button { flex: 1; white-space: normal; } /* казахский длиннее */
+  .birge-day { top: 80px; left: 8px; right: 8px; bottom: 8px; padding: var(--s-4, 16px); }
+}
+@media (prefers-reduced-motion: reduce) { .birge-day { scroll-behavior: auto; } }
