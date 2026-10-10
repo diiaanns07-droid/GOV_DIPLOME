@@ -330,9 +330,10 @@
     border-radius: var(--r-xl) var(--r-xl) 0 0;
   }
   .b3d-card {
-    flex: 0 0 120px;
-    min-width: 120px;
+    flex: 0 0 144px; /* «Спортплощадка» одним словом — 16 px без переноса */
+    min-width: 144px;
     min-height: 88px;
+    padding: var(--s-2) 6px;
   }
   .b3d-actions {
     display: grid;

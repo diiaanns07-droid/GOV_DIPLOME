@@ -581,7 +581,9 @@ await check("phone_375_touch_layout", async () => {
     p.evaluate(() => ({
       scroll: document.documentElement.scrollWidth - innerWidth,
       small: [...document.querySelectorAll(".b3d-dock button")].filter((b) => b.getBoundingClientRect().height < 47.5 && b.offsetParent).map((b) => b.textContent),
-      cut: [...document.querySelectorAll(".b3d-dock .bk-btn")].filter((b) => b.scrollWidth > b.clientWidth + 1).map((b) => b.textContent),
+      cut: [...document.querySelectorAll(".b3d-dock .bk-btn, .b3d-card")]
+        .filter((b) => b.scrollWidth > b.clientWidth + 1 || [...b.querySelectorAll("span")].some((s) => s.scrollWidth > b.clientWidth))
+        .map((b) => b.textContent),
     }));
   const m1 = await metrics();
   await p.tap(".b3d-card[data-kind=square]");
@@ -597,6 +599,21 @@ await check("phone_375_touch_layout", async () => {
   for (const m of [m1, m2, m3]) assert(m.scroll <= 0 && m.small.length === 0 && m.cut.length === 0, JSON.stringify(m));
   assert(g.follow === "center", "на телефоне призрак за центром карты: " + g.follow);
   return { status: "PASS", detail: "нет горизонтальной прокрутки, все кнопки ≥ 48 px, текст не обрезан; призрак идёт за центром карты" };
+});
+await check("catalog_labels_fit_ru_kk_1366_375", async () => {
+  const bad = [];
+  for (const lang of ["ru", "kk"]) {
+    for (const vp of [{ width: 1366, height: 768 }, { width: 375, height: 812 }, { width: 360, height: 740 }]) {
+      const p = await openPage({ viewport: vp }, `?reset=1&store=local&lang=${lang}`);
+      const cut = await p.evaluate(() =>
+        [...document.querySelectorAll(".b3d-card")].filter((c) => c.querySelector(".b3d-card__label").scrollWidth > c.clientWidth - 4).map((c) => c.textContent)
+      );
+      await p.context().close();
+      if (cut.length) bad.push(`${lang} ${vp.width}: ${cut.join(", ")}`);
+    }
+  }
+  assert(!bad.length, bad.join("; "));
+  return { status: "PASS", detail: "подписи 5 карточек помещаются: ru и kk, 1366 / 375 / 360 px" };
 });
 await check("keyboard_tab_enter_escape", async () => {
   const p = await openPage({}, "?reset=1&store=local");
