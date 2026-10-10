@@ -1,0 +1,2 @@
+# Большие файлы v2 (веса, ONNX, кэш LLM, прогнозы) — не в Git. Общий .gitignore дополнит R01 (INTEGRATION.txt).
+artifacts/

@@ -321,5 +321,5 @@ def test_no_complaint_source_is_not_zero():
     s = AkimService(heat=False, records=None, objects=None, proposals=None, clock=lambda: NOW).summary(now=NOW)
     assert s["complaints_available"] is False and s["empty"] is False
     assert s["text"]["ru"] == "Данные об обращениях пока не подключены."
-    assert s["text"]["kk"] == "Өтініштер туралы дерек әлі қосылмаған."
+    assert s["text"]["kk"] == "Өтініштер туралы деректер әлі қосылмаған."
     assert summary([])["complaints_available"] is True

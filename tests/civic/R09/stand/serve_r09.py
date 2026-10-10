@@ -13,12 +13,16 @@
                                    --no-ml: оба отвечают 503 (проверка «форма работает без ML»).
   * Карта — MapLibre из web/vendor, без тайлов (в облаке их нет): фон + реальные улицы из того же графа.
   * --seed — демо-записи (demo=true, «Пример») на реальной остановке (7 человек) и реальных участках улиц.
+  * --real-geo / --real-ml — НАСТОЯЩИЕ R12 engine.civic_geo.targets и R04 ui.civic_ml_api.classify/similar
+                                   (если эти пакеты лежат в дереве; R09 их не коммитит — см. RUN.txt «интеграционное
+                                   дерево»). Вызов и ответ — как в шлюзе R01; R04 подключается к хранилищу connect_store.
 Ничего не пишет в репозиторий: БД во временной папке, если не указан --db.
 """
 
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import math
 import mimetypes
@@ -86,10 +90,19 @@ def point_segment_m(p, a, b):
 
 
 class Stand:
-    def __init__(self, db_path, *, ml=True, targets=True):
+    def __init__(self, db_path, *, ml=True, targets=True, real_geo=False, real_ml=False):
         self.store = ComplaintStore(db_path)
         self.api = ComplaintsV2Service(self.store)
         self.ml, self.targets_on = ml, targets
+        # Настоящие модули соседей (если лежат в дереве): R12 engine.civic_geo, R04 ui.civic_ml_api.
+        # Вызываются так же, как в шлюзе R01 (ui/web_server.py, CivicV2Gateway): функция -> тело ответа как есть.
+        self.geo = importlib.import_module("engine.civic_geo") if real_geo else None
+        self.mlapi = importlib.import_module("ui.civic_ml_api") if real_ml and ml else None
+        if self.geo is not None:
+            self.geo.targets(71.43, 51.13, None)          # прогрев графа (~2–4 с), как должен делать R01 при старте
+        if self.mlapi is not None:
+            self.mlapi.connect_store(self.api)            # R04 INTEGRATION п.4: подписка на события R09
+            self.mlapi.warmup()
         self.lock = threading.Lock()
         graph = json.loads(GRAPH.read_text(encoding="utf-8"))
         lon0, lat0, lon1, lat1 = STAND_BBOX
@@ -224,6 +237,16 @@ class Handler(BaseHTTPRequestHandler):
         body = self.rfile.read(length) if length else None
         path, query = parts.path, parse_qs(parts.query)
         stand = self.stand
+        if path == "/api/civic/v2/targets" and stand.geo is not None and stand.targets_on:
+            return self._real("targets", lambda: stand.geo.targets(
+                float(query["lon"][0]), float(query["lat"][0]), (query.get("category") or [None])[0] or None))
+        if path in ("/api/civic/v2/classify", "/api/civic/v2/similar") and stand.mlapi is not None:
+            data = json.loads(body or b"{}")
+            if path.endswith("classify"):
+                return self._real("classify", lambda: stand.mlapi.classify(data.get("text")))
+            # Как R01 B1: text, point, days. target R01 пока не передаёт (patch R04 r01_similar_target.patch).
+            return self._real("similar", lambda: stand.mlapi.similar(data.get("text"), point=data.get("point"),
+                                                                    days=data.get("days")))
         if path == "/api/civic/v2/targets":
             if not stand.targets_on:
                 return self._send(503, {"ok": False, "error": {"code": "module_unavailable"}})
@@ -245,12 +268,30 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/stand/objects.geojson":
             return self._send(200, stand.objects.geojson(), "application/geo+json")
         if path == "/stand/info":
-            return self._send(200, {"hot": getattr(stand, "hot", None), "ml": stand.ml, "targets": stand.targets_on})
+            return self._send(200, {"hot": getattr(stand, "hot", None), "ml": stand.ml, "targets": stand.targets_on,
+                                    "real_geo": stand.geo is not None, "real_ml": stand.mlapi is not None})
         reply = stand.api.handle(method, self.path, None, body, None, self._context())
         if reply is None:
             return self._send(404, {"ok": False, "error": {"code": "not_found"}})
         return self._send(reply["status"], reply["body"], headers={k: v for k, v in reply["headers"].items()
                                                                      if k.lower() != "cache-control"})
+
+    def _real(self, name, call):
+        """Ответ настоящего модуля как в шлюзе R01: тело без конверта; исключение со status -> этот код."""
+        try:
+            result = call()
+        except (KeyError, ValueError) as exc:
+            status = getattr(exc, "status", 400)
+            return self._send(status, {"error": getattr(exc, "code", "bad_request"), "message": str(exc)[:300]})
+        except Exception as exc:  # MLServiceUnavailable (503) и т. п.
+            status = getattr(exc, "status", None)
+            if isinstance(status, int) and 400 <= status <= 599:
+                return self._send(status, {"error": getattr(exc, "code", "error"),
+                                           "message": str(getattr(exc, "message", None) or exc)[:300]})
+            raise
+        if isinstance(result, tuple) and len(result) == 2 and isinstance(result[0], int):
+            return self._send(result[0], result[1])
+        return self._send(200, result)
 
     def do_GET(self):
         path = urlsplit(self.path).path
@@ -294,17 +335,21 @@ def main(argv=None):
     parser.add_argument("--seed", action="store_true")
     parser.add_argument("--no-ml", action="store_true")
     parser.add_argument("--no-targets", action="store_true")
+    parser.add_argument("--real-geo", action="store_true", help="настоящий R12 engine.civic_geo вместо FIXTURE /targets")
+    parser.add_argument("--real-ml", action="store_true", help="настоящий R04 ui.civic_ml_api вместо FIXTURE /classify, /similar")
     parser.add_argument("--r11", help="папка с web/civic/ui-kit и web/civic/i18n R11 (распакованная ветка R11) — "
                                       "стенд подключает их вместо kit-fallback.css, как будет в сборке R01")
     args = parser.parse_args(argv)
     db = args.db or str(Path(tempfile.mkdtemp(prefix="r09-stand-")) / "complaints.sqlite3")
-    Handler.stand = Stand(db, ml=not args.no_ml, targets=not args.no_targets)
+    Handler.stand = Stand(db, ml=not args.no_ml, targets=not args.no_targets,
+                          real_geo=args.real_geo, real_ml=args.real_ml)
     Handler.r11_dir = Path(args.r11) if args.r11 else None
     if args.seed:
         Handler.stand.seed()
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     print(f"R09 stand: http://127.0.0.1:{args.port}/stand/  db={db}  ml={not args.no_ml} "
-          f"targets={not args.no_targets} categories={len(categories.ids())}", flush=True)
+          f"targets={not args.no_targets} real_geo={args.real_geo} real_ml={args.real_ml} "
+          f"categories={len(categories.ids())}", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

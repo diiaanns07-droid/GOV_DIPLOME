@@ -30,6 +30,7 @@ if node -e "require('playwright')" >/dev/null 2>&1; then
     step "browser r12 empty registry" node tests/civic/R01/browser/r12_city.cjs "$OUT/r12_empty" --empty
     step "browser r14 Birge header" node tests/civic/R01/browser/r14_shell.cjs "$OUT/r14_shell"
     step "browser r14 B1 demo path" node tests/civic/R01/browser/r14_b1.cjs "$OUT/r14_b1"
+    step "browser r14 B2 demo path" node tests/civic/R01/browser/r14_b2.cjs "$OUT/r14_b2"
 else
     echo "NOT_RUN browser smokes (playwright not installed)"
 fi

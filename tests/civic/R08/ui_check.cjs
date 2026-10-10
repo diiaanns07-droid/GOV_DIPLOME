@@ -10,6 +10,9 @@
  *  состояния (загрузка, нет связи, ошибка сервера, пусто, карта жалоб не отвечает, неверная дата),
  *  клик по горячему месту → событие для карты, фильтр района и даты в адресе, смена языка без запроса,
  *  клавиатура (Tab до кнопки печати, видна рамка фокуса), вид для печати (PDF A4).
+ *  UX_REVIEW R11 день 3: одна метка «Пример» (п. 11), одно изменение в карточке на телефоне (п. 10),
+ *  полоса этапов у объектов (п. 14), снимок поля даты в ru-RU/kk-KZ (п. 13).
+ * Как в сборке (ui-kit и i18n R11): demo_server.py --kit-dir <папка с web/civic/ui-kit и web/civic/i18n R11>.
  * Итог — ui_check.json в папке скриншотов; код выхода 1, если есть FAIL.
  */
 "use strict";
@@ -119,6 +122,41 @@ async function shot(page, name, full) {
       check(`${tag}: сводка текстом совпадает с сервером`, summary.trim() === (expected || "").trim(), summary.slice(0, 80));
       check(`${tag}: главная проблема выделена`, (await page.$$(".akim-summary__main")).length === 1);
       check(`${tag}: пометка «Пример» у демо-данных`, (await page.$$(".bk-tag--demo")).length >= 1);
+      // UX_REVIEW день 3, п. 11: метка «Пример» одна — в заголовке страницы; в карточках её нет; строка сверху — словами.
+      const demo = await page.evaluate(() => ({
+        tags: document.querySelectorAll("#akim .bk-tag--demo").length,
+        inTitle: document.querySelectorAll(".akim__title .bk-tag--demo").length,
+        inCards: document.querySelectorAll(".akim-card .bk-tag--demo, .akim-kpi .bk-tag--demo").length,
+        note: (document.querySelector(".akim-demo") || {}).textContent || "",
+      }));
+      check(`${tag}: «Пример» — одна метка в заголовке, в карточках нет (п. 11)`, demo.tags === 1 && demo.inTitle === 1 && demo.inCards === 0, demo);
+      check(`${tag}: строка сверху начинается с «${lang === "kk" ? "Үлгі" : "Пример"}:»`, demo.note.startsWith(lang === "kk" ? "Үлгі: " : "Пример: "), demo.note.slice(0, 40));
+      // П. 10: на телефоне в каждой карточке одно изменение (к прошлой неделе); на ноутбуке у «Новых» ещё «за 7 дней».
+      const perCard = await page.$$eval(".akim-kpi", (cards) => cards.map((c) =>
+        Array.from(c.querySelectorAll(".bk-kpi__delta")).filter((d) => d.getClientRects().length > 0).length));
+      const lines = await page.$$eval(".akim-kpi", (cards) => cards.map((c) => {
+        const lh = parseFloat(getComputedStyle(c.querySelector(".bk-kpi__label")).lineHeight) || 20;
+        return Math.round((c.getBoundingClientRect().height - 24) / lh);
+      }));
+      if (width < 480) check(`${tag}: на телефоне одно изменение в карточке, без «за 7 дней» (п. 10)`, perCard.every((n) => n === 1), { perCard, lines });
+      else check(`${tag}: на ноутбуке у «Новых» видно и «за 7 дней»`, perCard[0] === 2 && perCard.slice(1).every((n) => n === 1), perCard);
+      // П. 14: у объектов полоса из 6 этапов (ui-kit .bk-stages--compact) и подпись «Этап N из 6: …».
+      const stages = await page.$$eval(".akim-objects .akim-obj", (rows) => rows.map((r) => {
+        const ol = r.querySelector(".bk-stages--compact");
+        return ol ? { n: ol.children.length, cur: ol.querySelectorAll('[data-state="current"]').length,
+                      late: ol.classList.contains("bk-stages--late"), cap: (r.querySelector(".bk-stages__caption") || {}).textContent || "" } : null;
+      }));
+      const capRe = lang === "kk" ? /^Кезең [1-6]\/6: / : /^Этап [1-6] из 6: /;
+      check(`${tag}: объекты — полоса 6 этапов и «Этап N из 6» (п. 14)`, stages.length > 0 && stages.every((x) => x && x.n === 6 && x.cur === 1 && capRe.test(x.cap)), stages.slice(0, 3));
+      // Дробная кратность по-русски — «в 6,9 раза», не «в 6,9 раз».
+      if (lang === "ru") {
+        const fr = (text.match(/в \d+,\d+ раз[а]? больше/g) || []);
+        check(`${tag}: «в N,N раза больше» для дробных`, fr.every((x) => /раза больше$/.test(x)), fr);
+      }
+      if (width === 1366) {
+        const box = await page.$(".akim__controls");
+        if (box) await box.screenshot({ path: path.join(OUT, `akim-date-${lang}.png`) });
+      }
       if (width === 1366) {
         const fold = await page.evaluate(() => {
           const r = (s) => document.querySelector(s).getBoundingClientRect();

@@ -1,0 +1,212 @@
+// R01 round 14, build B2: what B2 adds to the demo path in one app (CONTRACT §0, steps 2 and 5, «Картина дня»).
+//   API:      R12 /targets and street routes, R04 /classify and /similar, R06 proposals and stages, R13 /forecast
+//   akimat:   R05 3D catalog over the map (left of the panel) -> «Сквер» -> place on the left bank -> «Поставить»
+//             -> R06 stores the proposal (planned_year from R05 year, via the shell adapter)
+//   resident: the same proposal card has «За / Против» -> vote counted by R06 (my_vote of this device)
+//   akimat:   «Удалить» (R05 DELETE -> R06 withdraw via the adapter); «Картина дня» hides the 3D dock
+// Usage: node tests/civic/R01/browser/r14_b2.cjs <out_dir>
+// Starts `python3 -B app.py` with CIVIC_DEMO=1 on a temporary SQLite file seeded with seed-demo + seed-r14-demo
+// (synthetic objects, stages and proposals, all flagged demo).
+"use strict";
+const { chromium } = require("playwright");
+const { spawn, execSync } = require("child_process");
+const net = require("net"), fs = require("fs"), path = require("path"), os = require("os");
+
+const REPO = path.resolve(__dirname, "../../../..");
+const OUT = path.resolve(process.argv[2] || "r14-b2-out");
+const NOISE = /openfreemap|Failed to load resource|GL Driver|style diff|swiftshader|GroupMarkerNotSet|GPU stall|WebGL/i;
+const R03_RING = /civic-r03-demo-ring/;  // known R12/R03 map race, reported separately (BUILD_LOG)
+const USER = "operator", PASSWORD = "Tz7-qerB-91vk-Lmsd";
+const PLACE = [71.4148, 51.1131];  // left bank (R06 district: esil), away from the seeded demo proposals (Zhagalau)
+const checks = [];
+const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null });
+  console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined && detail !== null ? " — " + JSON.stringify(detail).slice(0, 400) : "")); };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
+
+async function startServer(port, db) {
+  const env = { ...process.env, CIVIC_DB_PATH: db, CIVIC_DEMO: "1", PYTHONDONTWRITEBYTECODE: "1" };
+  const run = (args, input) => execSync(`python3 -B -m ui.civic_store --db "${db}" ${args}`, { cwd: REPO, env, input, stdio: ["pipe", "ignore", "inherit"] });
+  run("init");
+  run("seed-demo --package data/civic/astana/demo_synthetic.json");
+  run("seed-r14-demo");
+  run(`create-editor ${USER} --password-stdin`, PASSWORD + "\n");
+  const srv = spawn("python3", ["-B", "app.py", "--host", "127.0.0.1", "--port", String(port)], { cwd: REPO, env, stdio: ["ignore", "pipe", "pipe"] });
+  srv.log = ""; srv.stdout.on("data", (d) => (srv.log += d)); srv.stderr.on("data", (d) => (srv.log += d));
+  for (let i = 0; i < 100; i++) { try { if ((await fetch(`http://127.0.0.1:${port}/api/health`)).ok) return srv; } catch {} await sleep(200); }
+  throw new Error("server did not start: " + srv.log.slice(-1500));
+}
+const ready = (page) => page.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined" && mapReady
+  && window.CivicShell.heat?.state?.().status === "ready", null, { timeout: 45000 }).then(() => page.waitForTimeout(800));
+const b3dReady = (page) => page.waitForFunction(() => {
+  const h = window.CivicShell?.build3d; const s = h?.getState?.();
+  return s && s.phase !== "loading" && s.storeMode !== "pending";
+}, null, { timeout: 60000 });
+const b3dState = (page) => page.evaluate(() => window.CivicShell.build3d?.getState?.() || null);
+const api = (page, url, init) => page.evaluate(async ([u, i]) => {
+  const r = await fetch(u, i || undefined); let body = null; try { body = await r.json(); } catch { /* пусто */ }
+  return { status: r.status, body };
+}, [url, init || null]);
+const deviceId = (page) => page.evaluate(() => localStorage.getItem("birge.device_id"));
+
+async function main() {
+  fs.mkdirSync(OUT, { recursive: true });
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r01-b2-"));
+  const port = await freePort();
+  const srv = await startServer(port, path.join(tmp, "civic.sqlite3"));
+  const base = `http://127.0.0.1:${port}/`;
+  const browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+  const errs = [];
+  try {
+    const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+    const page = await ctx.newPage();
+    page.on("pageerror", (e) => errs.push("pageerror: " + e.message));
+    page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errs.push(m.type() + ": " + m.text()); });
+    await page.addInitScript(() => { try { if (!localStorage.getItem("birge.mode")) localStorage.setItem("birge.mode", "akimat"); } catch (e) {} });
+    await page.goto(base);
+    await ready(page);
+
+    // ---- what B2 connects
+    const modules = (await api(page, "/api/civic/v2/modules")).body.modules;
+    const b2 = ["targets", "classify", "similar", "geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status",
+      "proposals.list", "proposals.create", "proposals.vote", "proposals.withdraw", "proposals.summary",
+      "objects.list", "objects.lagging", "objects.stage", "forecast"];
+    check("B2: R12, R04, R06, R13 routes are connected", b2.every((k) => modules[k]?.status === "ready"),
+      Object.fromEntries(b2.map((k) => [k, modules[k]?.status])));
+    const targets = await api(page, `/api/civic/v2/targets?lon=${PLACE[0]}&lat=${PLACE[1]}`);
+    const cands = targets.body && (targets.body.candidates || targets.body.items);
+    check("step 2 (R12): /targets offers places near a point on the left bank", targets.status === 200 && Array.isArray(cands) && cands.length > 0,
+      { status: targets.status, n: cands?.length, first: cands?.[0] && { kind: cands[0].kind ?? cands[0].target?.kind, label: cands[0].label_ru ?? cands[0].target?.label_ru } });
+    const cls = await api(page, "/api/civic/v2/classify", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: "Аялдамада жарық жоқ, вечером на остановке темно" }) });
+    check("step 2 (R04): /classify suggests a category for mixed kk/ru text", cls.status === 200 && !!cls.body?.category && Array.isArray(cls.body?.top3),
+      cls.body && { category: cls.body.category, suggest: cls.body.suggest, source: cls.body.source });
+    const fc = await api(page, "/api/civic/v2/forecast?k=5");
+    check("R13: /forecast answers and is marked synthetic (prototype)", fc.status === 200 && fc.body?.evidence_type === "synthetic"
+      && fc.body?.demo === true && Array.isArray(fc.body?.items), fc.body && { month: fc.body.month, n: fc.body.items?.length, evidence: fc.body.evidence_type });
+    const lagging = await api(page, "/api/civic/v2/objects/lagging");
+    check("R06: lagging objects for «Картина дня» come from the store (seed-r14-demo)", lagging.status === 200
+      && (lagging.body?.late?.length || 0) + (lagging.body?.stale?.length || 0) > 0, lagging.body && { late: lagging.body.late?.length, stale: lagging.body.stale?.length });
+
+    // ---- step 5: akimat places a proposal in 3D
+    await b3dReady(page);
+    let st = await b3dState(page);
+    check("akimat: 3D catalog (R05) is mounted over the map with the R06 store", st?.phase === "ready" && st?.storeMode === "api", st && { phase: st.phase, storeMode: st.storeMode, count: st.count });
+    const dock = await page.evaluate(() => {
+      const d = document.querySelector("#birge-build3d-root .b3d-dock"), p = document.querySelector(".civic-panel");
+      if (!d) return null;
+      const r = d.getBoundingClientRect(), q = p.getBoundingClientRect();
+      return { state: d.dataset.state, kinds: d.querySelectorAll(".b3d-card[data-kind]").length, right: Math.round(r.right), panelLeft: Math.round(q.left),
+        bottom: Math.round(r.bottom), vh: innerHeight };
+    });
+    check("akimat: catalog shows 5 kinds and does not cover the right panel", dock?.state === "catalog" && dock.kinds === 5 && dock.right <= dock.panelLeft, dock);
+    await page.screenshot({ path: path.join(OUT, "b2-1366-akimat-catalog.png") });
+
+    const seeded = (await api(page, "/api/civic/v2/proposals")).body?.items || [];
+    await page.evaluate(([u, p]) => window.CivicShell.api.login(u, p), [USER, PASSWORD]);
+    await page.evaluate((p) => map.jumpTo({ center: p, zoom: 17.2, pitch: 50, bearing: -20 }), PLACE);
+    await page.waitForTimeout(600);
+    await page.click("#birge-build3d-root .b3d-card[data-kind=square]");
+    await page.waitForTimeout(800);  // autoZoom / ghost
+    const xy = await page.evaluate((p) => { const c = map.getCanvas().getBoundingClientRect(), q = map.project(p); return [c.left + q.x, c.top + q.y]; }, PLACE);
+    await page.mouse.move(xy[0], xy[1]);
+    await page.mouse.click(xy[0], xy[1]);
+    await page.waitForTimeout(400);
+    const ghost = (await b3dState(page))?.ghost;
+    const createResp = page.waitForResponse((r) => /\/api\/civic\/v2\/proposals$/.test(new URL(r.url()).pathname) && r.request().method() === "POST", { timeout: 15000 }).catch(() => null);
+    await page.click("#birge-build3d-root [data-action=place]");
+    const created = await createResp;
+    await page.waitForFunction((n) => (window.CivicShell.build3d?.getState?.().count || 0) > n && !window.CivicShell.build3d.getState().animating, st.count, { timeout: 30000 }).catch(() => {});
+    const createdBody = created ? await created.json().catch(() => null) : null;
+    const newItem = createdBody?.item || createdBody?.proposal || null;
+    check("«Поставить»: R06 stores the proposal (201, year 2027 -> planned_year via the shell adapter)",
+      created?.status() === 201 && newItem?.kind === "square" && newItem?.planned_year === 2027,
+      { status: created?.status(), item: newItem && { id: newItem.id, kind: newItem.kind, planned_year: newItem.planned_year, district: newItem.district }, ghost: ghost && { valid: ghost.valid } });
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: path.join(OUT, "b2-1366-akimat-placed.png") });
+    const after = (await api(page, "/api/civic/v2/proposals")).body?.items || [];
+    check("the new proposal is in the public list (+1)", after.length === seeded.length + 1 && after.some((p) => p.id === newItem?.id), { before: seeded.length, after: after.length });
+
+    // ---- resident votes «За»
+    await page.click("#birge-header [data-mode=resident]");
+    await page.waitForTimeout(300);
+    await b3dReady(page);
+    st = await b3dState(page);
+    const emptyDock = await page.evaluate(() => document.querySelector("#birge-build3d-root .b3d-dock")?.dataset.state || null);
+    check("resident: no catalog (view and vote only)", st?.phase === "ready" && emptyDock === "empty", { phase: st?.phase, dock: emptyDock });
+    if (newItem) await page.evaluate((id) => window.CivicShell.build3d.select(id), newItem.id);
+    await page.waitForSelector("#birge-build3d-root [data-action=vote-up]", { timeout: 10000 }).catch(() => {});
+    const voteResp = page.waitForResponse((r) => /\/vote$/.test(new URL(r.url()).pathname), { timeout: 15000 }).catch(() => null);
+    await page.click("#birge-build3d-root [data-action=vote-up]").catch(() => {});
+    const voted = await voteResp;
+    await page.waitForTimeout(500);
+    const dev = await deviceId(page);
+    const one = newItem ? (await api(page, `/api/civic/v2/proposals/${encodeURIComponent(newItem.id)}?device_id=${encodeURIComponent(dev || "")}`)).body?.item : null;
+    check("resident «За»: R06 counts one vote of this device", voted?.status() === 200 && one?.votes_up === 1 && one?.my_vote === 1,
+      { status: voted?.status(), votes_up: one?.votes_up, my_vote: one?.my_vote });
+    const fab = await page.evaluate(() => { const f = document.querySelector(".bc-fab"), d = document.querySelector("#birge-build3d-root .b3d-dock");
+      if (!f || !d || getComputedStyle(f).display === "none") return null; const a = f.getBoundingClientRect(), b = d.getBoundingClientRect();
+      return { overlap: !(a.bottom <= b.top || a.top >= b.bottom || a.right <= b.left || a.left >= b.right) }; });
+    check("resident: the proposal card does not cover «Сообщить о проблеме»", fab && !fab.overlap, fab);
+    await page.screenshot({ path: path.join(OUT, "b2-1366-resident-vote.png") });
+
+    // ---- akimat deletes it (R05 DELETE -> R06 withdraw)
+    await page.click("#birge-header [data-mode=akimat]");
+    await page.waitForTimeout(300);
+    await b3dReady(page);
+    if (newItem) await page.evaluate((id) => window.CivicShell.build3d.select(id), newItem.id);
+    await page.waitForSelector("#birge-build3d-root [data-action=delete]", { timeout: 10000 }).catch(() => {});
+    const delResp = page.waitForResponse((r) => /\/proposals\/[^/]+(\/withdraw)?$/.test(new URL(r.url()).pathname) && r.request().method() !== "GET", { timeout: 15000 }).catch(() => null);
+    await page.click("#birge-build3d-root [data-action=delete]").catch(() => {});
+    const deleted = await delResp;
+    await page.waitForTimeout(600);
+    const gone = newItem ? (await api(page, `/api/civic/v2/proposals/${encodeURIComponent(newItem.id)}`)).status : null;
+    check("akimat «Удалить»: the proposal is withdrawn in R06 (404 afterwards)", deleted?.status() === 200 && gone === 404,
+      { request: deleted && `${deleted.request().method()} ${new URL(deleted.url()).pathname}`, status: deleted?.status(), get_after: gone });
+
+    // ---- «Картина дня» hides the 3D dock
+    await page.click("#birge-header [data-section=day]");
+    await page.waitForTimeout(800);
+    const hidden = await page.evaluate(() => { const r = document.getElementById("birge-build3d-root"); return r ? getComputedStyle(r).visibility : null; });
+    check("«Картина дня»: the 3D dock is not shown over the day screen", hidden === "hidden", hidden);
+    await page.click("#birge-header [data-section=map]");
+    await page.waitForTimeout(300);
+
+    // ---- phone
+    const phone = await browser.newContext({ viewport: { width: 375, height: 760 }, isMobile: true, hasTouch: true });
+    const p2 = await phone.newPage();
+    p2.on("pageerror", (e) => errs.push("pageerror(375): " + e.message));
+    await p2.addInitScript(() => { try { localStorage.setItem("birge.mode", "akimat"); } catch (e) {} });
+    await p2.goto(base);
+    await ready(p2);
+    await b3dReady(p2);
+    const phoneDock = () => p2.evaluate(() => { const d = document.querySelector("#birge-build3d-root .b3d-dock"), s = document.querySelector(".civic-panel");
+      if (!d) return null; const r = d.getBoundingClientRect(), q = s.getBoundingClientRect();
+      return { sheet: s.dataset.sheet, state: d.dataset.state, shown: getComputedStyle(d).display !== "none", left: Math.round(r.left), right: Math.round(r.right),
+        bottom: Math.round(r.bottom), sheetTop: Math.round(q.top), w: innerWidth, scrollX: document.documentElement.scrollWidth > innerWidth }; });
+    const half = await phoneDock();
+    check("375 px akimat: the catalog does not cover the open «Карта жалоб» sheet", half && half.sheet !== "peek" && !half.shown && !half.scrollX, half);
+    // Акимат идёт к месту (выбор района в навигации) — шторка опускается (peek), каталог появляется над ней.
+    await p2.evaluate(() => { const sel = document.querySelector(".civic-explore select"); const opt = [...sel.options].find((o) => o.value);
+      sel.value = opt.value; sel.dispatchEvent(new Event("change", { bubbles: true })); });
+    await p2.waitForTimeout(1200);
+    const peek = await phoneDock();
+    check("375 px akimat: sheet collapsed -> catalog above it, within the screen", peek && peek.sheet === "peek" && peek.shown
+      && peek.left >= 0 && peek.right <= peek.w && peek.bottom <= peek.sheetTop + 1 && !peek.scrollX, peek);
+    await p2.screenshot({ path: path.join(OUT, "b2-375-akimat-catalog.png") });
+    await phone.close();
+
+    const real = errs.filter((e) => !R03_RING.test(e));
+    check("no page errors or unexpected console errors", real.length === 0, real.slice(0, 6));
+    if (errs.length !== real.length) console.log("NOTE known R03 demo-ring race seen:", errs.length - real.length);
+  } finally {
+    await browser.close();
+    srv.kill();
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+  const summary = { pass: checks.filter((c) => c.status === "PASS").length, fail: checks.filter((c) => c.status === "FAIL").length };
+  fs.writeFileSync(path.join(OUT, "r14_b2.json"), JSON.stringify({ summary, checks }, null, 1));
+  console.log(JSON.stringify(summary));
+  process.exit(summary.fail ? 1 : 0);
+}
+main().catch((e) => { console.error(e); process.exit(2); });

@@ -1,0 +1,15 @@
+# R03 · classifier v2 — ноутбук владельца (RTX 4060 Laptop, Windows, Python 3.12, venv C:\Users\LEGION\venvs\birge-ml).
+# torch ставится ОТДЕЛЬНОЙ командой с индексом CUDA (см. research/round-14-results/R03/RUN.txt):
+#   pip install torch --index-url https://download.pytorch.org/whl/cu124
+# Затем:  pip install -r ml/civic_classifier_v2/requirements-gpu.txt
+transformers>=4.44,<6
+tokenizers>=0.19
+sentencepiece>=0.2
+safetensors>=0.4
+scikit-learn>=1.4
+scipy>=1.11
+numpy>=1.26
+onnx>=1.16
+onnxruntime>=1.18
+onnxscript>=0.1     # нужен только если классический экспортёр ONNX недоступен в новой версии torch
+protobuf>=4.25

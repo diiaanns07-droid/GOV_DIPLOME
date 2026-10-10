@@ -80,7 +80,7 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "heat/heat.js", "heat/heat.css",
                 "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
                 "feedback/complaint.css",
-                "akim/index.html", "akim/akim.js", "akim/akim.css", "akim/akim.i18n.json",
+                "akim/index.html", "akim/akim.js", "akim/akim.css",  # B2: akim.i18n.json удалён R08 (ключи у R11)
                 "map/demo_snapped.json",  # B2: R12 демо-линии, привязанные к улицам OSM
                 "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
                 # B2: R05 3D-превью @ b0353ee. demo.html и data/demo-basemap.json не отдаём (только для демо R05).
@@ -820,6 +820,18 @@ class CivicV2Gateway:
                 akim.configure()
         except Exception:
             LOGGER.exception("API v2: «Картина дня» (R08) не настроилась")
+        if store is not None:
+            # R04 (INTEGRATION п. 4): «Я тоже» ищет в том же хранилище R09; модели грузятся в фоне.
+            # Без R04 или до подключения /similar отвечает 503 — форма R09 работает без подсказки.
+            try:
+                ml = self._import("ui.civic_ml_api")
+                if ml is not None and hasattr(ml, "connect_store"):
+                    ml.connect_store(store)
+                    if hasattr(ml, "warmup"):
+                        ml.warmup()
+                    LOGGER.info("civic-v2: similar <- R09 complaints")
+            except Exception:
+                LOGGER.exception("API v2: поиск похожих (R04) не подключился")
 
     def _cell_resolver(self):
         """Ячейки «примерного места» R09 рисуются там, где их посчитал R09.
@@ -881,6 +893,9 @@ class CivicV2Gateway:
             args = {"text": _v2_text(body.get("text"))}
             args["point"] = _v2_point(body["point"]) if body.get("point") is not None else None
             args["days"] = _v2_int(body["days"], "days", 1, 365) if body.get("days") is not None else None
+            if body.get("target") is not None:
+                # R04: «та же цель» ({kind, id} или id) — проверяет сама ui.civic_ml_api.similar (ValueError -> 400)
+                args["target"] = body["target"]
             return args
         if key == "targets":
             if not (opt("lon") and opt("lat")):

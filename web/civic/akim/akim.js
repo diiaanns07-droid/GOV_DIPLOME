@@ -14,8 +14,8 @@
  * оболочка R01 может открыть цель у себя и вызвать preventDefault). Иначе — ссылка opts.mapHref
  * (по умолчанию "/#target={kind}:{id}&days={days}").
  *
- * Тексты: ключи общего словаря R11 (web/civic/i18n). Новые ключи, которых там ещё нет, лежат в
- * akim.i18n.json рядом; общий перевод всегда главнее (когда R11 перенесёт ключи — файл не нужен).
+ * Тексты: только ключи общего словаря R11 (web/civic/i18n, ветка claude/r14-R11) — свой akim.i18n.json
+ * больше не нужен, все ключи akim.* перенесены R11 (UX_REVIEW, день 2).
  */
 (function (root) {
   "use strict";
@@ -33,8 +33,7 @@
   var doc = root.document;
   var scriptBase = ((doc.currentScript && doc.currentScript.src) || "").replace(/[^/]*$/, "");
   var ICONS = scriptBase + "../ui-kit/icons.svg";
-  var local = { ru: {}, kk: {} };
-  var localReady = null;
+  var STAGES = ["planned", "design", "procurement", "construction", "acceptance", "operating"];
 
   // ───────────── перевод ─────────────
 
@@ -53,36 +52,9 @@
       return typeof params[name] === "number" ? num(params[name]) : String(params[name]);
     });
   }
-  // Ключ из общего словаря R11, иначе из akim.i18n.json, иначе — как решит BirgeI18n (покажет ключ).
   function tr(key, params) {
     var i18n = I();
-    if (i18n && i18n.has(key)) return i18n.t(key, params);
-    var l = lang();
-    var v = local[l] && local[l][key];
-    if (v === undefined) v = local.ru[key];
-    if (v === undefined) return i18n ? i18n.t(key, params) : key;
-    if (v && typeof v === "object") {
-      var n = params && params.n != null ? Number(params.n) : 0;
-      var form = i18n ? i18n.plural(l, n) : "many";
-      v = v[form] != null ? v[form] : v.other != null ? v.other : v.many;
-    }
-    return interpolate(v, params);
-  }
-  function loadLocal() {
-    if (!localReady) {
-      localReady = fetch(scriptBase + "akim.i18n.json", { cache: "no-cache" })
-        .then(function (r) {
-          return r.ok ? r.json() : {};
-        })
-        .then(function (d) {
-          local.ru = (d && d.ru) || {};
-          local.kk = (d && d.kk) || {};
-        })
-        .catch(function () {
-          /* без своего словаря покажем общий — не повод ломать страницу */
-        });
-    }
-    return localReady;
+    return i18n ? i18n.t(key, params) : interpolate(key, params);
   }
 
   // ───────────── мелкие помощники ─────────────
@@ -125,15 +97,26 @@
   function districtName(id) {
     return id ? tr("district." + id) : tr("akim.district.all_city");
   }
+  function lowerFirst(text) {
+    return text ? text.charAt(0).toLocaleLowerCase(lang()) + text.slice(1) : text;
+  }
   function demoTag() {
     return h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") });
   }
 
   // Изменение к прошлой неделе: стрелка (CSS) + слово. Цвет никогда не один.
+  // «в 6,9 раза»: у дробных по-русски форма как у 2–4. В словаре R11 у akim.delta.ratio нет формы other,
+  // а i18n.js для дробных берёт many («раз») — поэтому форму выбираем по 2 и подставляем настоящее число.
+  // Когда R11 добавит ru other «в {n} раза больше» (INTEGRATION.txt п. 7), обход ничего не меняет.
+  function ratioText(n) {
+    if (n % 1 === 0 || lang() !== "ru") return tr("akim.delta.ratio", { n: n });
+    var probe = tr("akim.delta.ratio", { n: 2 });
+    return probe.indexOf(num(2)) >= 0 ? probe.replace(num(2), num(n)) : tr("akim.delta.ratio", { n: n });
+  }
   function deltaText(ch) {
     if (!ch || ch.trend === "flat") return tr("akim.delta.same");
     if (ch.mode === "new") return tr("akim.delta.new");
-    if (ch.mode === "ratio") return tr("akim.delta.ratio", { n: ch.ratio });
+    if (ch.mode === "ratio") return ratioText(ch.ratio);
     var v = ch.mode === "pct" ? I().formatPercent(ch.pct) : num(ch.abs);
     return tr(ch.trend === "up" ? "akim.delta.more" : "akim.delta.less", { v: v });
   }
@@ -260,6 +243,8 @@
         h("h1", { class: "akim__title" }, [
           tr("akim.title"),
           h("span", { class: "akim__title-date", text: " · " + I().formatDate(date) }),
+          // Метка «Пример» — одна на страницу, здесь; в карточках её нет (UX_REVIEW день 3, п. 11).
+          d && state.status === "ok" && d.demo && d.demo.any ? demoTag() : null,
         ]),
         h("p", { class: "akim__meta bk-meta", text: meta.join(" · ") }),
       ]);
@@ -375,9 +360,9 @@
       var k = d.kpi;
       var week = k.new_week;
       return h("section", { class: "bk-kpis akim-kpis", "aria-label": tr("akim.title") }, [
+        // «За 7 дней» — вторая стрелка в карточке; на телефоне скрыта (akim.css, < 480 px), там одно изменение.
         kpiCard("new", k.new_day, "akim.kpi.new", false, [
-          tr("akim.kpi.week", { n: week.value }) + " · ",
-          deltaEl(week, false),
+          h("span", { class: "akim-kpi__week" }, [tr("akim.kpi.week", { n: week.value }) + " · ", deltaEl(week, false)]),
         ]),
         kpiCard("in_progress", k.in_progress, "akim.kpi.in_progress", null,
           k.in_progress.waiting ? [tr("akim.kpi.waiting", { n: k.in_progress.waiting })] : null),
@@ -386,10 +371,9 @@
       ]);
     }
 
-    function cardHead(titleKey, hintKey, demo, extra) {
+    function cardHead(titleKey, hintKey, extra) {
       return h("div", { class: "akim-card__head" }, [
         h("h2", { class: "bk-h2", text: tr(titleKey) }),
-        demo ? demoTag() : null,
         extra || null,
         hintKey ? h("p", { class: "akim-card__hint bk-meta", text: tr(hintKey) }) : null,
       ]);
@@ -409,8 +393,7 @@
         .replace("{days}", String(days));
     }
     function renderHot(d) {
-      var demo = d.demo && d.demo.complaints;
-      var card = h("section", { class: "bk-card akim-card akim-hot", "aria-labelledby": "akim-hot-title" }, [cardHead("akim.hot.title", "akim.hot.hint", demo)]);
+      var card = h("section", { class: "bk-card akim-card akim-hot", "aria-labelledby": "akim-hot-title" }, [cardHead("akim.hot.title", "akim.hot.hint")]);
       card.firstChild.firstChild.id = "akim-hot-title";
       if (!d.hot.available) {
         card.appendChild(unavailable());
@@ -493,7 +476,7 @@
       return ul;
     }
     function renderTopics(d) {
-      var card = h("section", { class: "bk-card akim-card akim-topics" }, [cardHead("akim.topics.title", "akim.topics.hint", d.demo && d.demo.complaints)]);
+      var card = h("section", { class: "bk-card akim-card akim-topics" }, [cardHead("akim.topics.title", "akim.topics.hint")]);
       if (!d.topics.available) card.appendChild(unavailable());
       else if (!d.topics.items.length) card.appendChild(emptyBlock("akim.topics.empty"));
       else
@@ -507,7 +490,7 @@
       return card;
     }
     function renderDistricts(d) {
-      var card = h("section", { class: "bk-card akim-card akim-districts" }, [cardHead("akim.districts.title", "akim.districts.hint", d.demo && d.demo.complaints)]);
+      var card = h("section", { class: "bk-card akim-card akim-districts" }, [cardHead("akim.districts.title", "akim.districts.hint")]);
       if (!d.districts.available) {
         card.appendChild(unavailable());
         return card;
@@ -540,17 +523,31 @@
       if (o.delay_days > 0) tags.push(h("span", { class: "bk-tag bk-tag--warn", text: tr("object.late", { n: o.delay_days }) }));
       if (o.stale && o.days_since_update != null)
         tags.push(h("span", { class: "bk-tag akim-stale", text: tr("object.stale_days", { n: o.days_since_update }) }));
-      var sub = [o.district ? tr("district." + o.district) : null, o.stage ? tr("akim.late.stage", { name: tr("stage." + o.stage) }) : null]
-        .filter(Boolean)
-        .join(" · ");
-      return h("li", { class: "akim-obj" }, [
-        h("span", { class: "bk-list__main" }, [h("span", { class: "bk-list__title", text: label(o, "title") }), h("span", { class: "bk-list__sub", text: sub })]),
-        h("span", { class: "akim-obj__tags" }, tags),
+      var main = [h("span", { class: "bk-list__title", text: label(o, "title") })];
+      if (o.district) main.push(h("span", { class: "bk-list__sub", text: tr("district." + o.district) }));
+      main.push(stagesEl(o));
+      return h("li", { class: "akim-obj" }, [h("span", { class: "bk-list__main" }, main), h("span", { class: "akim-obj__tags" }, tags)]);
+    }
+    // Полоса 6 этапов ui-kit (.bk-stages--compact) + «Этап 4 из 6: Строительство» — как в макете day.html.
+    function stagesEl(o) {
+      var at = STAGES.indexOf(o.stage);
+      if (at < 0) return o.stage ? h("span", { class: "bk-list__sub", text: tr("akim.late.stage", { name: tr("stage." + o.stage) }) }) : null;
+      var caption = tr("stage.caption", { i: at + 1, total: STAGES.length, name: tr("stage." + o.stage) });
+      return h("span", { class: "akim-obj__stages" }, [
+        h(
+          "ol",
+          { class: "bk-stages bk-stages--compact" + (o.delay_days > 0 ? " bk-stages--late" : ""), "aria-hidden": "true" },
+          // Точки без скрытых подписей: полоса только для глаз (aria-hidden), этап словами — в подписи ниже.
+          STAGES.map(function (st, i) {
+            return h("li", { "data-state": i < at ? "done" : i === at ? "current" : "todo" });
+          })
+        ),
+        h("span", { class: "bk-stages__caption", text: caption }),
       ]);
     }
     function renderObjects(d) {
       var o = d.objects || {};
-      var card = h("section", { class: "bk-card akim-card akim-objects" }, [cardHead("akim.late.title", null, o.demo)]);
+      var card = h("section", { class: "bk-card akim-card akim-objects" }, [cardHead("akim.late.title", null)]);
       if (!o.available) {
         card.appendChild(unavailable());
         return card;
@@ -583,7 +580,7 @@
     // ── предложения и голоса (R06) ──
     function renderProposals(d) {
       var p = d.proposals || {};
-      var card = h("section", { class: "bk-card akim-card akim-proposals" }, [cardHead("akim.proposals.title", null, p.demo)]);
+      var card = h("section", { class: "bk-card akim-card akim-proposals" }, [cardHead("akim.proposals.title", null)]);
       if (!p.available) {
         card.appendChild(unavailable());
         return card;
@@ -613,7 +610,7 @@
 
     function renderOk(d) {
       if (d.demo && d.demo.any) {
-        body.appendChild(h("p", { class: "akim-demo" }, [demoTag(), h("span", { text: tr("akim.demo_note") })]));
+        body.appendChild(h("p", { class: "akim-demo", text: tr("common.tag.demo") + ": " + lowerFirst(tr("akim.demo_note")) }));
       }
       if (d.complaints_available === false) {
         // Нет источника жалоб: показываем это прямо, а не четыре нуля.
@@ -671,9 +668,8 @@
 
     var off = null;
     (I() ? I().ready : Promise.resolve())
-      .then(loadLocal)
       .then(function () {
-        // Подписка на смену языка — после загрузки своего словаря, иначе первый кадр покажет ключи.
+        // Подписка на смену языка — после загрузки словаря, иначе первый кадр покажет ключи.
         if (I()) off = I().onChange(render);
         syncUrl();
         load();
@@ -694,5 +690,5 @@
     };
   }
 
-  root.BirgeAkim = { mount: mount, version: "akim-r14-1" };
+  root.BirgeAkim = { mount: mount, version: "akim-r14-2" };
 })(window);

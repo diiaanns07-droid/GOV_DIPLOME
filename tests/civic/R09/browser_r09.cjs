@@ -21,6 +21,8 @@ const ROOT = path.resolve(__dirname, "../../..");
 const args = process.argv.slice(2);
 // --r11 <папка с web/civic/ui-kit и web/civic/i18n R11>: стенд подключает настоящий ui-kit и словари R11.
 const r11Dir = args.includes("--r11") ? path.resolve(args[args.indexOf("--r11") + 1]) : null;
+// --real: стенд вызывает настоящие R12 engine.civic_geo и R04 ui.civic_ml_api (их пакеты должны лежать в дереве).
+const real = args.includes("--real");
 const shotDir = args.includes("--screenshots") ? path.resolve(args[args.indexOf("--screenshots") + 1]) : null;
 if (shotDir) fs.mkdirSync(shotDir, { recursive: true });
 
@@ -35,7 +37,7 @@ function startStand(port, extra) {
     const proc = spawn("python3", [path.join(__dirname, "stand", "serve_r09.py"), "--port", String(port), "--seed", ...extra],
       { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"] });
     let out = "";
-    const timer = setTimeout(() => reject(new Error("stand did not start: " + out)), 30000);
+    const timer = setTimeout(() => reject(new Error("stand did not start: " + out)), 90000);
     proc.stdout.on("data", (d) => { out += d; if (out.includes("R09 stand:")) { clearTimeout(timer); resolve(proc); } });
     proc.stderr.on("data", (d) => { out += d; });
     proc.on("exit", (code) => { clearTimeout(timer); reject(new Error("stand exited " + code + ": " + out)); });
@@ -244,7 +246,13 @@ async function newComplaintAndMine(browser, base, lang, width, height, tag, poin
   // Место без кандидатов (поле без улиц) -> «примерное место», цель всё равно есть.
   await clickMapAt(page, point);
   await page.waitForSelector(".bc-panel[data-step='3'], .bc-option", { timeout: 8000 });
-  if (await page.$(".bc-option")) await page.click(".bc-option.bk-btn--ghost");  // «Другое место»
+  if (await page.$(".bc-option")) {
+    // Ровно один способ выбрать «примерное место»: вариант R12 (с улицей в подписи) или своя кнопка «Другое место».
+    const approx = await page.$$eval(".bc-option", (n) => n.map((x) => x.textContent.trim())
+      .filter((t) => /Примерн|Шамамен|Другое место|Басқа орын/.test(t)));
+    check(`${tag}: одна кнопка «примерного места», без дублей`, approx.length === 1, approx.join(" | "));
+    await page.click(".bc-option.bk-btn--ghost, .bc-option:has-text('Примерн'), .bc-option:has-text('Шамамен')");
+  }
   await page.waitForSelector(".bc-panel[data-step='3']", { timeout: 8000 });
   const place = await page.textContent(".bc-place");
   check(`${tag}: нет объекта рядом — «примерное место»`, lang === "kk" ? /Шамамен/.test(place) : /Примерное место/.test(place), place);
@@ -343,12 +351,15 @@ async function keyboard(browser, base, tag) {
   const procs = [];
   let exitCode = 0;
   try {
-    const kit = r11Dir ? ["--r11", r11Dir] : [];
+    const kit = (r11Dir ? ["--r11", r11Dir] : []).concat(real ? ["--real-geo", "--real-ml"] : []);
     procs.push(await startStand(8791, kit));
     procs.push(await startStand(8792, ["--no-ml"].concat(kit)));
     const browser = await chromium.launch();
     const info1 = await (await fetch("http://127.0.0.1:8791/stand/info")).json();
     const info2 = await (await fetch("http://127.0.0.1:8792/stand/info")).json();
+    if (real) check("стенд вызывает настоящие R12 /targets и R04 /classify, /similar (не FIXTURE)",
+                    info1.real_geo && info1.real_ml && info2.real_geo && !info2.real_ml, JSON.stringify([info1, info2].map(
+                      (i) => ({ geo: i.real_geo, ml: i.real_ml }))));
     await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 375, 812, "375-ru");
     await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk");
     await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru");

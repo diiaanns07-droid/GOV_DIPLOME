@@ -71,3 +71,22 @@ body[data-birge-section="day"].civic-mode #civic-root { visibility: hidden; }
   .birge-day { top: 80px; left: 8px; right: 8px; bottom: 8px; padding: var(--s-4, 16px); }
 }
 @media (prefers-reduced-motion: reduce) { .birge-day { scroll-behavior: auto; } }
+
+/* B2: 3D-превью предложений (R05) — над картой внизу, в свободной от панели части (как .map-tools: 20 + 400 + 12).
+   Пустые края пропускают щелчки к карте; на «Картине дня» скрыт вместе с #civic-root. */
+.birge-build3d-root {
+  position: absolute; z-index: 6; left: 20px; right: 432px; bottom: 34px;
+  display: flex; justify-content: center; pointer-events: none;
+}
+.birge-build3d-root > .b3d:not([hidden]) { width: min(720px, 100%); display: flex; flex-direction: column; align-items: center; }
+/* Житель: внизу по центру кнопка «Сообщить о проблеме» (R09) — карточку проекта ставим над ней. */
+body[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
+@media (min-width: 761px) and (max-width: 1100px) { .birge-build3d-root { right: 392px; } }
+@media (max-width: 760px) {
+  /* Телефон: панель — нижняя шторка; каталог и карточка поверх неё во всю ширину. */
+  .birge-build3d-root { left: 0; right: 0; bottom: 0; z-index: 7; }
+  body[data-birge-mode="resident"] .birge-build3d-root { bottom: 84px; }
+  /* Каталог акимата не закрывает шторку: он виден, когда шторка свёрнута (над ней); карточка и размещение — всегда. */
+  body:has(.civic-panel:not([data-sheet="peek"])) .birge-build3d-root .b3d-dock:is([data-state="catalog"], [data-state="loading"]) { display: none; }
+  body:has(.civic-panel[data-sheet="peek"]) .birge-build3d-root { bottom: calc(24% + 8px); }
+}

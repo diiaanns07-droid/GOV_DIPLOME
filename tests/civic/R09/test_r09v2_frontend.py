@@ -134,3 +134,30 @@ def test_r11_6_single_check_mark_in_chip():
     assert '" ✓"' not in JS                                  # галочку рисует ui-kit через ::before
     fallback = (WEB / "kit-fallback.css").read_text(encoding="utf-8")
     assert '.bk-chip[aria-pressed="true"]::before { content: "✓"' in fallback
+
+
+# ---- Стык с настоящими R12 /targets и R04 /classify, /similar ----
+
+def test_r04_suggest_drives_the_chip():
+    # R04: needs_review всегда true (пометка для сотрудника); подсказку жителю показываем по suggest.
+    assert 'typeof data.suggest === "boolean" ? data.suggest : !data.needs_review' in JS
+
+
+def test_r04_similar_threshold_not_refiltered_and_target_sent():
+    assert "SIMILAR_MIN_SCORE" not in JS and "m.score >=" not in JS
+    assert "body.target = { kind: state.target.kind, id: state.target.id }" in JS
+
+
+def test_r12_candidate_approximate_flag_is_kept():
+    assert "candidate.approximate ? { approximate: true } : {}" in JS
+
+
+def test_r12_targets_timeout_covers_cold_graph_load():
+    assert re.search(r"TARGETS_TIMEOUT_MS = (\d+)", JS) and int(re.search(r"TARGETS_TIMEOUT_MS = (\d+)", JS).group(1)) >= 5000
+    assert '"/targets?lon=" + state.point[0] + "&lat=" + state.point[1], undefined, TARGETS_TIMEOUT_MS' in JS
+
+
+def test_r12_approximate_only_skips_question_and_no_duplicate_other_place():
+    assert "state.candidates.every(function (c) { return c.approximate" in JS
+    assert "if (!hasApprox) {" in JS
+    assert "GENERIC_APPROX[label]" in JS   # подробная подпись R12 не затирается общей

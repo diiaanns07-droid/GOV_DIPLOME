@@ -205,6 +205,8 @@
         <button type="button" id="civic-moderation-button" class="btn" hidden data-t="shell.moderation.open"></button>
       </footer>
     </div>
+    <!-- B2: 3D-превью предложений (R05) — каталог акимата и карточка «За/Против» над картой, слева от панели. -->
+    <div id="birge-build3d-root" class="birge-build3d-root"></div>
     <section id="civic-editor" class="civic-drawer" hidden data-t-attr="aria-label:shell.editor.title">
       <div class="civic-box-head"><h2 data-t="shell.editor.title"></h2><button type="button" class="civic-close" data-close="editor" data-t-attr="aria-label:shell.editor.close">×</button></div>
       <div id="civic-editor-root" class="civic-slot civic-drawer-body"></div>
@@ -403,6 +405,72 @@
         console.error("birge complaint mount", error);
       }
     }
+    mountBuild3d();
+  }
+  // ---------------------------------------------------------------- 3D-превью предложений (B2: R05 + R06)
+  // Клиент R05 (build3d-core createApiStore) и R06 @ 7031afa расходятся в мелочах: R05 шлёт year/near_street/target
+  // и DELETE /proposals/{id}, ждёт ответ {proposal} с полем year; R06 принимает planned_year, снимает предложение
+  // через POST …/withdraw и отвечает {item}. Переводим здесь (INTEGRATION.txt §9); R06, который сам понимает
+  // year/DELETE/proposal (ветка R06 d043e7b), адаптер не ломает: лишнее он отбрасывает, {proposal} не трогает.
+  const B3D_CREATE_FIELDS = ["kind", "geometry", "rotation_deg", "title_ru", "title_kk", "planned_year", "demo"];
+  const B3D_PROPOSALS = /\/api\/civic\/v2\/proposals$/;
+  const B3D_ONE = /\/api\/civic\/v2\/proposals\/[^/]+$/;
+  function build3dDevice() {
+    try { return localStorage.getItem("birge.device_id"); } catch { return null; }  // ключ R05/R06 (голос «За/Против»)
+  }
+  async function build3dFetch(url, init = {}) {
+    const target = new URL(url, location.href);
+    let method = String(init.method || "GET").toUpperCase(), body = init.body;
+    if (method === "GET" && B3D_PROPOSALS.test(target.pathname) && !target.searchParams.has("device_id")) {
+      const device = build3dDevice();
+      if (device) target.searchParams.set("device_id", device);  // R06 вернёт my_vote этого устройства
+    } else if (method === "DELETE" && B3D_ONE.test(target.pathname)) {
+      method = "POST"; target.pathname += "/withdraw"; body = "{}";
+    } else if (method === "POST" && B3D_PROPOSALS.test(target.pathname) && typeof body === "string") {
+      try {
+        const draft = JSON.parse(body), out = {};
+        for (const key of B3D_CREATE_FIELDS) if (draft[key] !== undefined && draft[key] !== null) out[key] = draft[key];
+        if (out.planned_year === undefined && Number.isInteger(draft.year)) out.planned_year = draft.year;
+        body = JSON.stringify(out);
+      } catch { /* не JSON — пусть ответит сервер */ }
+    }
+    const headers = new Headers(init.headers || {});
+    if (body !== undefined) headers.set("Content-Type", "application/json");
+    const response = await birgeFetch(target.toString(), { ...init, method, body, headers });
+    const text = await response.text();
+    let data;
+    try { data = text ? JSON.parse(text) : null; } catch { data = undefined; }
+    if (data && typeof data === "object") {
+      const withYear = (p) => (p && typeof p === "object" && p.year == null && Number.isInteger(p.planned_year) ? { ...p, year: p.planned_year } : p);
+      if (data.item && !data.proposal) data.proposal = data.item;
+      if (data.proposal) data.proposal = withYear(data.proposal);
+      if (Array.isArray(data.items)) data.items = data.items.map(withYear);
+    }
+    return new Response(data === undefined ? text : (data === null ? "" : JSON.stringify(data)),
+      { status: response.status, statusText: response.statusText, headers: { "Content-Type": "application/json" } });
+  }
+  function mountBuild3d() {
+    const lib = window.CivicBuild3D, core = window.CivicBuild3DCore, m = currentMap();
+    if (S.mounted.build3d || !lib || typeof lib.mount !== "function" || !m) return;
+    try {
+      S.mounted.build3d = lib.mount({
+        map: m, root: $c("birge-build3d-root"), role: birgeMode() === "resident" ? "resident" : "akimat",
+        // Хранилище — API R06 через адаптер; нет R06 (404/503) — R05 сам переходит на заглушку этого устройства.
+        store: typeof core?.createAutoStore === "function" ? core.createAutoStore({ prefix: "/api/civic/v2", fetch: build3dFetch }) : "auto",
+        // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
+        onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
+      }) || null;
+    } catch (error) {
+      console.error("birge build3d mount", error);
+      S.mounted.build3d = null;
+    }
+  }
+  function remountBuild3d() {
+    if (!S.mounted.build3d) return;
+    try { S.mounted.build3d.destroy?.(); } catch { /* модуль R05 не ломает оболочку */ }
+    S.mounted.map?.setInteractionEnabled?.(true, "birge-build3d");
+    S.mounted.build3d = null;
+    mountBuild3d();
   }
   // Ссылка «#target=<kind>:<id>&days=N» (R08 «Картина дня», R07): открыть цель на тепловой карте.
   function openTargetFromLink(hash = location.hash) {
@@ -954,6 +1022,7 @@
   });
   document.addEventListener("birge:mode", (event) => {
     S.mounted.heat?.setRole?.(event.detail?.mode);
+    remountBuild3d();  // у R05 нет setRole: каталог акимата ↔ только просмотр и голос жителя
     // Вид «Акимат»: панель жителя (форма жалобы, «Мои обращения») закрывается — она перекрыла бы карточку цели.
     if (event.detail?.mode === "akimat") S.mounted.complaint?.close?.();
     if (event.detail?.mode !== "resident") return;
@@ -1013,6 +1082,7 @@
     // B1: «Мои обращения» жителя (R09) — из шапки Birge.
     openMine() { S.mounted.complaint?.openMine?.(); },
     get heat() { return S.mounted.heat || null; },
+    get build3d() { return S.mounted.build3d || null; },  // B2: R05 3D-превью (приёмка R10, проверки R01)
     // Раунд 14: CSRF-токен вошедшего сотрудника для клиента API v2 (birge.js); null, если не вошёл.
     csrfToken() { return session.authenticated ? session.csrfToken : null; },
     isFallback,
