@@ -4,20 +4,22 @@
  "branch": "claude/upbeat-knuth-i0rqaa",
  "base_sha": "af77b78",
  "restored_from": null,
- "delivery": "день 3: исправления по UX_REVIEW R11 (claude/r14-R11 @ f025241, раздел «День 3») + закрытые запросы соседей — для сборки B2 (R01)",
- "code_sha": "306074b",
+ "delivery": "ночь, круг 1: замечания R10 (BUGS), R11 (UX_REVIEW день 4), R15 (S11), Codex (LOCAL_B2), R01 (I-01, I-03) — для FINAL (R01)",
+ "code_sha": "597ec4f",
  "code_commits": {
   "9bc25e6": "сервер: демо-поток 5 недель, ячейки и «Я тоже» R09, тексты жителей только сотруднику, records()/generation для R08, остановки только автобусные",
-  "306074b": "интерфейс: исправления R11 № 1–8 и 12, ключ устройства R09, birge:lang на document, скриншоты"
+  "306074b": "интерфейс: исправления R11 № 1–8 и 12, ключ устройства R09, birge:lang на document, скриншоты",
+  "597ec4f": "ночь 1: S11 подписи жителя только у ячеек, OSM-подписи главнее файлов R12 (I-01), общая сетка R09 (I-03), значок в режиме выбора места = цель (B-019), одна остановка Tab (B-025), тост ui-kit (B-023)"
  },
- "tested_sha": "306074b",
- "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документация поверх 306074b; в коде только исправлена ссылка на тест в docstring tune_demo_seed.py)",
+ "tested_sha": "597ec4f",
+ "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документы поверх 597ec4f)",
  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Node 22, Playwright 1.56.1 + Chromium 1194 (программный WebGL); интернет-тайлы закрыты (403) — офлайн-подложка из улиц OSM",
  "note_on_session": "В начале сессии по ошибке выполнялась роль R11; её черновики сохранены в 9cf80fc и 0cf32c5 и удалены из головы ветки (bcb3b6b).",
  "changed_paths": [
   "research/handoffs/astana/R07/round14/STATUS.md",
   "research/round-14-results/R07/DELIVERY.json",
   "research/round-14-results/R07/INTEGRATION.txt",
+  "research/round-14-results/R07/NIGHT_FIXES.md",
   "research/round-14-results/R07/RUN.txt",
   "research/round-14-results/R07/UX_FIXES_DAY3.md",
   "research/round-14-results/R07/screens/CHECKS.json",
@@ -45,6 +47,10 @@
   "research/round-14-results/R07/screens/nura-akimat-1366-ru.jpg",
   "research/round-14-results/R07/screens/nura-akimat-375-kk.jpg",
   "research/round-14-results/R07/screens/nura-akimat-375-ru.jpg",
+  "research/round-14-results/R07/screens/pick-badge-1366-kk.jpg",
+  "research/round-14-results/R07/screens/pick-badge-1366-ru.jpg",
+  "research/round-14-results/R07/screens/pick-badge-375-kk.jpg",
+  "research/round-14-results/R07/screens/pick-badge-375-ru.jpg",
   "research/round-14-results/R07/screens/playground-real-osm-1366-kk.jpg",
   "research/round-14-results/R07/screens/pulse-new-complaint-1366-ru.jpg",
   "research/round-14-results/R07/screens/stop-fixed-1366-kk.jpg",
@@ -100,34 +106,48 @@
   "«түзетілді» или «жөнделді» — решение владельца и координатора (categories_v2.json)."
  ],
  "tests": {
-  "pytest tests/civic/R07 (108 passed, 3 skipped: вес и уровни, «исправлено», фильтры, районы, API, приватность текстов, дубли, время «Я тоже», ячейки R09, остановки только автобусные, поля R12, records()/generation, правдоподобие демо-чисел, скорость, словарь ru/kk)": "PASS",
-  "pytest tests/civic (791 passed, 6 skipped — остальные модули не сломаны)": "PASS",
-  "skipped в R07 (3)": "NOT_RUN: формула ячейки R09 и проверка чисел кодом R08 — модулей R09 v2 и R08 нет в этой ветке; число R08 проверено отдельно (строка ниже)",
+  "pytest tests/civic/R07 (112 passed, 3 skipped)": "PASS",
+  "pytest tests/civic (795 passed, 6 skipped)": "PASS",
+  "skipped в R07 (3)": "NOT_RUN в ветке: формула ячейки R09 и сверка с R08 — модулей нет; в сборке R01 те же тесты PASS",
+  "browser tests/civic/R07/browser/shots.js (35 сценариев, 1366/375 ru/kk; +pick-badge ×4, keyboard-badges-roving, toast-ui-kit)": "PASS 35/35 (screens/CHECKS.json)",
+  "сборка R01 @ d9a8895 + R07 597ec4f (копия во временной папке): r14_b1.cjs": "PASS 15/15",
+  "сборка R01 @ d9a8895 + R07 597ec4f: r14_b2.cjs": "PASS 22/22",
+  "сборка R01 @ d9a8895 + R07 597ec4f: pytest tests/civic/R07 tests/civic/R15": "R07 PASS; R15 S11 ×2 XPASS (= исправлено, R01/R15 переносят в FIXED); остальные xfail R15 — чужие",
   "tests/civic/R07/tune_demo_seed.py с кодом R08 @ a4189ba (копия во временной папке, не в ветке)": "PASS: OK seed 20261014",
-  "browser tests/civic/R07/browser/shots.js (29 сценариев: 1366 и 375 px, ru и kk, акимат и житель, районы, карточка с текстами, пустой фильтр, исправленная остановка, глубокая ссылка days=7, клавиатура Tab/Esc, birge:lang на document + заголовок устройства; в каждом кадре: нет ошибок консоли, нет гориз. прокрутки, нет ключей heat.*, нет «демо», нажатие ≥ 48 px, контраст главных кнопок ≥ 4,5, легенда на карте)": "PASS 29/29 (screens/CHECKS.json)",
-  "интеграция в настоящий ui/web_server.py на 306074b (временный патч INTEGRATION §1, затем откат): /heat 200, /heat/target 200 (19 человек, 3 группы текстов), модуль на карте основного приложения — 13 слоёв, 42 значка, 0 ошибок": "PASS",
   "реальная подложка OpenFreeMap (тайлы из интернета)": "NOT_RUN: в облаке 403, задача LOCAL-7",
   "живые данные R09 v2": "NOT_RUN: модуля в этой ветке нет — демо-набор по CONTRACT §5; подключение configure(source, metoo_times) — INTEGRATION §1в",
   "цели R12 (engine.civic_geo)": "NOT_RUN: модуля в этой ветке нет — реальные объекты LOCAL-1 читаются напрямую"
  },
- "screenshots": "research/round-14-results/R07/screens/ — 28 кадров 1366×768 и 375×812, ru и kk, только из реально запущенного интерфейса; замеры каждого кадра — CHECKS.json; integrated-main-app-1366-ru.jpg — модуль внутри основного приложения",
+ "screenshots": "research/round-14-results/R07/screens/ — 32 кадра 1366×768 и 375×812, ru и kk, только из реально запущенного интерфейса (новые: pick-badge-*); замеры — CHECKS.json",
  "known_limits": [
   "Жалобы демо (synthetic, demo: true): 483 жалобы, 952 человека с «Я тоже», 54 цели. Цели настоящие (OSM/LOCAL-1): 26 участков улиц (рёбра графа OSM), остановки и дворы ЖК Нуры, детские и контейнерные площадки, в каждом районе — настоящая остановка и двор.",
   "Демо-числа подобраны под критерии R08 (seed 20261014), но это не статистика Астаны.",
   "«Запахи» — 3 ячейки 150 м у Коргалжинского шоссе: промзон в LOCAL-1 нет, место не проверено.",
   "Подписи безымянных объектов («Остановка у ул. …») — по ближайшей улице до 250 м, заранее в fixtures/osm_street_labels.json.",
   "Уровень: вес > 0 даёт уровень ≥ 1, вес округляется до целого человека — отступление от буквального min_weight (INTEGRATION §5).",
-  "Тексты настоящих жалоб видит только сотрудник, если шлюз R01 передаёт staff=True; без этого — только примеры и число скрытых людей.",
   "Заголовок на казахском на 375 px в шрифте программного рендеринга выглядит строчным — в DOM заглавные (U+0428), артефакт шрифта среды; на устройстве не проверено.",
   "Офлайн-подложка демо без подписей улиц; в общей сборке подписи даёт стиль R01/R12.",
   "Казахские строки (83 ключа) и спорные варианты — на проверку владельцу (INTEGRATION, таблица I18N).",
-  "Демо-сервер ui/civic_heat/devserver.py — только для показа; status/metoo в нём подставные, настоящие — у R09."
+  "Демо-сервер ui/civic_heat/devserver.py — только для показа; status/metoo в нём подставные, настоящие — у R09.",
+  "Тексты настоящих жалоб видит только сотрудник, если шлюз R01 передаёт staff=True; без этого — только примеры и число скрытых людей.",
+  "11 id из файлов R12 нет в слое OSM R07 (части мультиполигонов yard-r…-N, платформа «Мерей» без bus=yes) — берутся у R12."
  ],
- "next_step": "R01 (B2): взять ветку на этом коммите; INTEGRATION §1 — маршрут /api/civic/v2/heat* с staff=True только после проверки входа, configure(source, metoo_times) от R09, mount с fitPadding/avoidRects/hash/handleOpenTarget; переключение вкладки по birge:open-target. Адаптеры сетки ячеек, ключа устройства и birge:lang больше не нужны. R08: svc.records()/generation. LOCAL-7: скриншоты с настоящей подложкой.",
+ "next_step": "R01 (FINAL): взять R07 @ 597ec4f; убрать адаптер R09CellResolver (модуль подписывает «примерное место» сам); правило birge.css для .r07-badge можно оставить (INTEGRATION §1е); ссылка «к главному действию» — B-025. R08: I-02 в своём тесте. R15/R01: S11 → FIXED.",
  "inputs": {
   "data/civic/astana/osm-objects/": "LOCAL-1, claude/round-14-package @ bdf12c8, без изменений (git diff с пакетом пуст), real, ODbL",
   "research/round-14-results/R11/UX_REVIEW.md": "claude/r14-R11 @ f025241, только чтение",
   "ru/kk.json R11": "claude/r14-R11 @ f025241, сверка ключей heat.*, только чтение",
-  "код R08 для проверки чисел": "R08 @ a4189ba, копия во временной папке сессии, в ветку не добавлялся"
+  "код R08 для проверки чисел": "R08 @ a4189ba, копия во временной папке сессии, в ветку не добавлялся",
+  "замечания (ночь, круг 1)": "R10 ac8508e, R11 52d7c59, R15 77bd744, Codex claude/round-14-package a38da11, R01 d9a8895 — только чтение"
+ },
+ "night_items": {
+  "R15 S11 (важно)": "FIXED — подпись из записи жалобы только у ячеек; тесты R07 + R15 XPASS в сборке R01",
+  "R01 I-01 (важно)": "FIXED — свой слой OSM главнее файлов R12 для osm-*/yard-*; R12-объекты с подписью по типу на ru/kk",
+  "R01 I-03 (мелочь)": "FIXED — тест по record.cell_id R09; «примерное место» модуль подписывает сам; старые id 70.9 у точки",
+  "замер скорости R07 (плавал)": "FIXED — лучший из трёх, порог 300 мс",
+  "R10 B-019 / R11 B1 п.3 / LOCAL_B2 P1 (важно)": "FIXED — в режиме выбора места значок передаёт карте щелчок в точку цели; shots.js pick-badge ×4 PASS",
+  "R10 B-025 (мелочь)": "FIXED (часть R07) — значки = одна остановка Tab, стрелки между ними; ссылка «к главному действию» — R01",
+  "R10 B-023 (мелочь)": "FIXED (часть R07) — тосты через BirgeUI.toast; сворачивание каталога — R01/R05",
+  "R10 B-016, B-017; R11 день 4 п.1": "уже FIXED в 306074b (в B3) — повторно проверено на стенде R07"
  }
 }
