@@ -1,0 +1,87 @@
+{
+  "role": "R12",
+  "round": 14,
+  "title": "Точность карты: привязка к улицам и объектам OSM",
+  "branch": "claude/tender-brahmagupta-ef5ztl",
+  "base_sha": "af77b78186c0cc1c805e066e7bfe37b33d9b5534",
+  "base_note": "claude/round-14-package @ af77b78 (ветка сессии переставлена на неё до работы). Данные LOCAL-1 — из claude/round-14-package @ a29428a63c8be292aee83cc9abb097eb3756958f (data/civic/astana/osm-objects скопированы без изменений).",
+  "restored_from": [
+    {"paths": ["web/civic/map/civic-map-core.js", "web/civic/map/civic-map.js", "web/civic/map/civic-map.css"], "branch": "claude/zen-mendel-e79iiv", "head": "7de5e0b", "code": "f0a52f795d646c355ae8bf1b8518ea807984d8cc"},
+    {"paths": ["web/civic/editor/"], "branch": "claude/intelligent-sagan-7shpeh", "sha": "9c996c677cbfe66a553900cb6d0dee7da1fdc3a6"},
+    {"paths": ["tests/civic/R12/map/"], "from": "tests/civic/R03 @ f0a52f7", "note": "пути к репозиторию поправлены на одну папку глубже"},
+    {"paths": ["tests/civic/R12/editor/"], "from": "tests/civic/R04 @ 9c996c6", "note": "то же; tool-line -> tool-segment в 5 тестах"}
+  ],
+  "applied_patches": [
+    {"from": "R06", "file": "research/round-14-results/R06/r12_editor_stage.patch", "branch": "claude/round-14-r06", "sha": "3d10f7db0bd07366f7c2fd04c029c2b4c27c1c10", "into": "web/civic/editor/editor.js"}
+  ],
+  "code_sha": "881022148be6f9f86b2971dda28aa5d11c96af89",
+  "tested_sha": "d13f49a1c9480ecae0cda9ae4b4e908ed3a01d6d",
+  "tested_note": "между code_sha и tested_sha менялись только тесты (r02_stand.py, r02_readonly_server.py — пути; e2e_r13 — ожидание анимации) и targets_bench.json. Среда: Linux-контейнер Claude Code, Python 3.13, Node 22.22, Playwright (глобально) + Chromium /opt/pw-browsers, без сети к OpenFreeMap.",
+  "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl = tested_sha; коммит с этим файлом — в финальном сообщении",
+  "changed_paths": [
+    "engine/civic_geo/",
+    "data/civic/astana/geo/",
+    "data/civic/astana/osm-objects/ (копия LOCAL-1, без изменений)",
+    "web/civic/map/civic-map-core.js", "web/civic/map/civic-map.js", "web/civic/map/demo_snapped.json",
+    "web/civic/editor/editor.js",
+    "tests/civic/R12/",
+    "research/round-14-results/R12/",
+    "research/handoffs/astana/R12/round14/STATUS.md"
+  ],
+  "not_changed": ["engine/civic_scenarios/ (граф только читается)", "web/civic/map/streets.json", "web/civic/map/civic-map.css (восстановлен как есть)", "web/civic/editor/editor-core.js, editor.css (восстановлены как есть)", "ui/web_server.py, web/index.html, web/civic/shell/ (R01: INTEGRATION.txt)"],
+  "api": {
+    "targets": "engine.civic_geo.targets(lon, lat, category=None) -> {candidates:[{target:{kind,id,label_ru,label_kk}, distance_m, geometry, point, approximate}]} — в шлюзе R01 уже подключено",
+    "street_segment": "engine.civic_geo.segment_between(from_point, to_point, kind=None)",
+    "street_snap": "engine.civic_geo.street_snap(lon, lat, kind=None)",
+    "objects_near": "engine.civic_geo.objects_near(lon, lat)",
+    "yard": "engine.civic_geo.yard_at(lon, lat)",
+    "status": "engine.civic_geo.geo_status()",
+    "for_neighbours": "engine.civic_geo.target_geometry({kind,id}) (R07, R08); api.handle(path, query) — один вход"
+  },
+  "data": {
+    "objects": {"bus_stop": 940, "playground": 334, "pitch": 696, "park": 177, "waste": 136},
+    "yards": 538,
+    "way_tags": 34380,
+    "skipped": {"outside_city": 108, "no_geometry": 13, "duplicate": 697},
+    "evidence_type": "real (OSM, ODbL); демо-записи R05 остаются synthetic"
+  },
+  "accuracy": {
+    "report": "research/round-14-results/R12/accuracy_report.json",
+    "result": "PASS 954/954",
+    "rules": "линия ≤ 5 м от своих рёбер (каждые 2 м); остановка ≤ 60 м от улицы; координаты внутри полигонов районов; ни одной линии «от руки»; перекрытия сценариев — на рёбрах графа",
+    "before_after": "перекрытие на ул. Сакена Сейфуллина: было — 3 точки от руки, конец уходит с оси на ~32 м; стало — 15 вершин OSM, отклонение 0,00 м, длина 0,999 от нарисованной",
+    "honest_area": "«завершённый ремонт тротуара» не идёт вдоль одной улицы (путь по улицам в 1,26 раза длиннее, отходит на 88 м) — показан «примерным местом», не крюком; условный двор не попадает ни в один двор OSM — «примерное место»"
+  },
+  "tests": [
+    {"name": "engine/civic_geo (pytest): фикстура + настоящий граф и данные", "status": "PASS", "result": "29/29", "command": "python3 -m pytest -q tests/civic/R12/test_civic_geo.py", "sha": "d13f49a"},
+    {"name": "отчёт точности по всем объектам карты", "status": "PASS", "result": "954/954", "command": "python3 -m engine.civic_geo report", "sha": "d13f49a"},
+    {"name": "/targets быстрее 50 мс", "status": "PASS", "result": "p50 0,23 мс, p95 0,61 мс, max 3,6 мс на 3000 точках (загрузка 1,9 с один раз)", "command": "python3 -m engine.civic_geo bench 3000", "evidence": "research/round-14-results/R12/targets_bench.json"},
+    {"name": "карта: ядро (node:test)", "status": "PASS", "result": "29/29", "command": "node --test tests/civic/R12/map/core.test.mjs", "sha": "d13f49a"},
+    {"name": "карта: стенд раундов 11–13 (mock API, MapLibre 5.6.2)", "status": "PASS", "result": "69/69", "command": "node --test --test-concurrency=1 tests/civic/R12/map/browser.test.mjs", "sha": "8810221"},
+    {"name": "карта: точность R12 (линия по улице, область, порядок слоёв под 3D, 375 px)", "status": "PASS", "result": "4/4", "command": "node --test --test-concurrency=1 tests/civic/R12/map/r12_accuracy.test.mjs", "sha": "8810221"},
+    {"name": "карта против настоящего CivicService R02 (bd7a911)", "status": "PASS", "result": "4/4", "command": "node --test --test-concurrency=1 tests/civic/R12/map/r02_contract.test.mjs", "sha": "8810221"},
+    {"name": "карта против CivicService R02 раунда 11 (6a28de2)", "status": "NOT_RUN", "reason": "коммит 6a28de2 недоступен в этом клоне (тест пропускается сам)"},
+    {"name": "карта: приёмка в настоящем приложении app.py (оболочка базы + хранилище + редактор)", "status": "PASS", "result": "12 PASS / 0 FAIL / 1 NOT_RUN (OpenFreeMap)", "command": "NODE_PATH=$(npm root -g) node tests/civic/R12/map/app_acceptance.mjs <out>", "sha": "d13f49a"},
+    {"name": "редактор: ядро + контрактный mock + предпросмотр", "status": "PASS", "result": "31 + 9 + 3", "sha": "8810221"},
+    {"name": "редактор: e2e раундов 12–13 + совместный с картой", "status": "PASS", "result": "25 + 14 + 2", "sha": "d13f49a"},
+    {"name": "редактор: новые инструменты R12 (тестовый клиент геоданных)", "status": "PASS", "result": "8/8", "command": "node --test --test-concurrency=1 tests/civic/R12/editor/e2e_r12.test.cjs", "sha": "8810221"},
+    {"name": "редактор на НАСТОЯЩЕМ графе: два нажатия на ул. Сакена Сейфуллина -> линия ≤ 5 м от улицы", "status": "PASS", "result": "1/1", "command": "node --test tests/civic/R12/editor/e2e_r12_real.test.cjs", "sha": "8810221"},
+    {"name": "редактор против настоящего R02 (bd7a911 и дерево базы)", "status": "PASS", "result": "2/2 + 5/5", "command": "R04_R02_ROOT=<дерево R02> node --test tests/civic/R12/editor/e2e_r02_r13.test.cjs | e2e_r02.test.cjs", "sha": "d13f49a", "note": "до d13f49a падали из-за пути в r02_stand.py (R06 видел 8 FAIL) — не из-за patch R06"},
+    {"name": "редактор: приёмка в app.py", "status": "PASS", "result": "3 PASS / 1 skipped (нужен patch R01 раунда 13)", "command": "R04_APP=1 node --test tests/civic/R12/editor/app_acceptance_r13.test.cjs", "sha": "8810221"},
+    {"name": "OpenFreeMap и настоящие 3D-здания", "status": "NOT_RUN", "reason": "tiles.openfreemap.org — 403 через прокси среды; порядок слоёв проверен на искусственном fill-extrusion хоста; подписи улиц (нужен glyphs) не видны на офлайн-стиле"},
+    {"name": "блок «Этап работ» R06 внутри редактора", "status": "NOT_RUN", "reason": "stage-editor.js — путь R06, не в этой ветке; без него блок не появляется (проверено, что редактор работает); R06 проверил блок на своём стенде"},
+    {"name": "Windows / run-city.bat", "status": "NOT_RUN", "reason": "Linux-контейнер"}
+  ],
+  "independent_review": "отдельный агент (только чтение) по диффу к af77b78/f0a52f7/9c996c6: 6 находок — разрыв между частями ломаной через промежуточную точку (до 60 м), рёбра-петли, примерная линия редактора превращалась в круг, гонка смены «Проезжая часть/Тротуар», «Начать заново» оставлял «Строим…», якорь на скрытом 3D-слое. Все исправлены в 8810221, на каждую — тест (Python-тесты проверены откатом).",
+  "screenshots": "research/round-14-results/R12/screenshots/: before-closure-1366.png / after-closure-1366.png (было/стало, подложка — оси улиц OSM), after-closure-375.png, editor-segment-preview-1280.png, editor-segment-saved-1280.png, editor-segment-tool-375.png, editor-point-near-object-1280.png, editor-real-seifullin-1280.png",
+  "known_limits": [
+    "Маршруты /street-segment, /street-snap, /objects-near, /yard, /geo/status ещё не подключены R01 (INTEGRATION §1); до этого кнопки «Участок улицы» и «Выбрать двор» честно пишут, что привязка не подключена. /targets у R01 уже работает.",
+    "Хранилище (R06) не знает признака «линия построена по OSM» (422 на новое поле): примерная линия из хранилища показывается пунктиром по своей форме; предложение geometry_source — INTEGRATION §6.",
+    "Остальные строки модулей карты и редактора (раунд 13) — только по-русски; новые строки R12 — через ключи BirgeI18n (30 ключей, i18n_keys.json), kk — черновик на проверку владельцу.",
+    "Скриншоты сделаны без OpenFreeMap и без домов: подложка — оси улиц OSM из графа. Скриншоты с 3D-зданиями — LOCAL-7.",
+    "Фонарей в OSM 217 на всю Астану: освещение привязывается к участку улицы, фонари объектами не предлагаются.",
+    "403 остановки OSM без названия — подпись «Остановка без названия».",
+    "Демо-записи R05 синтетические; две из трёх демо-геометрий (тротуар, условный двор) показаны «примерным местом», потому что честно положить их на одну улицу/двор нельзя."
+  ],
+  "next_step": "R01: подключить 5 маршрутов и map/demo_snapped.json по INTEGRATION §1–2, взять web/civic/map и web/civic/editor из code_sha, подключить stage-editor.js R06 до editor.js; затем прогнать tests/civic/R12/map/app_acceptance.mjs и e2e_r12_real на сборке. R11: ключи i18n_keys.json в словари."
+}

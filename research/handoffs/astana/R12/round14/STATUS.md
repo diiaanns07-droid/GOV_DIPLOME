@@ -6,6 +6,7 @@
   COMMON.txt («номера противоречат — роль из первой строки») и по ROLES.json (аккаунт s8 — R12).
 - Мои пути: engine/civic_geo/, data/civic/astana/geo/, web/civic/map/, web/civic/editor/, tests/civic/R12/,
   research/round-14-results/R12/, этот файл. Граф и engine/civic_scenarios/ — только чтение.
+- Код: 881022148be6f9f86b2971dda28aa5d11c96af89 (8810221). Проверено на d13f49a (после кода — только правки тестов).
 - Точные SHA, тесты и ограничения — research/round-14-results/R12/DELIVERY.json.
 
 ## Статус: день 1 (10–11 окт) — задачи 1–5 промпта сделаны; осталось — по списку «Дальше»
