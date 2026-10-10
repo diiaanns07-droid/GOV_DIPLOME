@@ -200,7 +200,7 @@ sequenceDiagram
 | Категории | `research/round-14/categories_v2.json` (сервер), копия `web/civic/ui-kit/categories_v2.json` (браузер) | владелец пакета | все |
 | Переводы | `web/civic/i18n/ru.json`, `kk.json` (+ свои словари модулей до переноса ключей) | R11 | все экраны, R08 на сервере |
 | Модели ML | вне Git: `ml/civic_classifier_v2/artifacts/` (ONNX), `ml/civic_dedup/artifacts/e5/`, кэш HuggingFace на ноутбуке | обучение на ноутбуке (LOCAL-4) | R04 |
-| Состояние браузера | `localStorage`: `birge.lang`, `birge.mode`, `birge.device_id` (R05/R06/R07), `birge.device` (R09), `birge.heat.metoo`, `birge.build3d.proposals.v1`; `sessionStorage`: черновик жалобы | модули | модули |
+| Состояние браузера | `localStorage`: `birge.lang`, `birge.mode`, `birge.device_id` (R05/R06/R07), `birge.device` (R09; в сборке B1 R01 свёл R07/R09 к одному ключу), `birge.heat.metoo`, `birge.build3d.proposals.v1`; `sessionStorage`: черновик жалобы | модули | модули |
 
 Соль для хэшей устройств хранится только в базе (у R06 и у R09 своя). Персональные данные в Git не попадают: сырые ответы формы — в `private/` (в `.gitignore`).
 
@@ -219,19 +219,22 @@ sequenceDiagram
 
 Общий контракт монтирования: `window.<Модуль>.mount({root, map, api, lang, mode, ...}) → {update?, refresh?, destroy?}`. Модуль без своего экрана карты не создаёт карту, а получает объект MapLibre хоста.
 
-## 8. Состояние интеграции на 10 октября 2026 (сборка R01 `claude/sharp-dijkstra-0t87gl` @ bc7c961)
+## 8. Состояние интеграции на 10 октября 2026 (кандидат B1 — R01 `claude/sharp-dijkstra-0t87gl` @ d3c33d9)
 
-- Перенесены модули раунда 13 (I0), ui-kit/i18n R11, поставки R02, R07, R08, R09 (B1 шаг 1). R03, R04, R05, R06, R12, R13 в сборку ещё не перенесены.
-- `GET /api/civic/v2/*`: модули R04, R06 (`ui.civic_store.v2`), R12 в дереве сборки отсутствуют → 503 `module_not_ready`. Файлы фронтенда R07/R08/R09 перенесены, но ещё не добавлены в `CIVIC_ASSETS` и `index.html`.
-- Известные несостыковки (их решает R01 на шаге 2 сборки B1; подробности и patch — в `research/round-14-results/<роль>/INTEGRATION.txt`):
-  1. `V2_HANDLERS` ждёт «одну функцию на маршрут», а R07 и R08 отдают `api.handle_get(path, query)`, R09 — список `ROUTES` из 11 маршрутов, R06 — функции после `bind(service)`. Нужны адаптеры.
-  2. `BirgeAkim.mount(rootEl, options)` (R08) и вызов `akim.mount({root, api, lang, mode})` в `birge.js` (R01) не совпадают по сигнатуре.
-  3. R05 → R06: R05 шлёт лишние поля в `POST /proposals` (R06 отвечает 422), вызывает `DELETE /proposals/{id}` (у R06 — `POST …/withdraw`) и ждёт другой формат ответа (`{item}` у R06).
-  4. Идентификатор устройства: R05/R06/R07 используют `birge.device_id`, R09 — `birge.device`. Нужно одно значение, иначе «Я тоже» и голоса считаются по разным идентификаторам.
-  5. Два разных справочника сроков: R09 `RESPONSE_DAYS` (срок первого ответа) и R08 `DEADLINE_DAYS` (срок исправления) с разными числами — оба демо-нормативы, не утверждены акиматом.
-  6. R09 не вызывает `ui.civic_heat.invalidate()` после новой жалобы (кэш R07 — 60 с).
-  7. Маршруты R12 кроме `/targets` (`/street-segment`, `/street-snap`, `/objects-near`, `/yard`, `/geo/status`) в шлюзе не объявлены.
-  8. `categories_v2.json` существует в двух копиях (сервер и ui-kit) — при изменении категорий обновлять обе (лучше генерировать вторую из первой).
+- В сборке: модули раунда 13 (I0), ui-kit/i18n R11, поставки R02 (229f1aa), R07 (5a97636), R08 (9f1d9c0), R09 (da295be). **Не включены** (на момент сборки не было DELIVERY): R03, R04, R05, R06, R12, R13.
+- Проверено R14 запуском (Linux, Python 3.13.16, `CIVIC_DEMO=1`): `civic-v2: ready R07, R08, R09`; маршруты жалоб (11), тепловой карты (`/heat`, `/heat/meta`, `/heat/target`) и `/akim/summary` — `ready`; `/classify`, `/similar`, `/targets`, `/proposals*`, `/objects*` — 503 `module_not_ready`; файлы `akim.js`, `heat.js`, `complaint.js` отдаются (200); `/heat` — 43 цели за 14 мс; жалоба создаётся и видна в «Моих обращениях» (без `/targets` — с пометкой «Примерное место»).
+- Браузерный путь демо B1 у R01 (`r14_b1.cjs`): 15/0 — жалоба `B-0001`, +1 на карте, «Мои обращения», «Картина дня», горячее место → цель на карте, «Взять в работу» → «Исправлено» (зелёная). Весь pytest — 1 793 passed / 11 skipped.
+- Что R01 уже решил в сборке (адаптеры и минимальные правки, переданы владельцам): подключение R07/R08 через `handle_get` и R09 через его 11 маршрутов; общий ключ устройства R07/R09; событие `birge:lang` на `window` и `document`; cookie сотрудника для `/api/civic/v2` (`COOKIE_PATH = "/api/civic"`); адаптер сетки ячеек «примерного места» (сетки R07 и R09 разные — место жителя смещалось на ~7 км); сброс кэша тепловой карты по событиям R09.
+- Остаётся (по INTEGRATION ролей, BUGS R10 и чтению R14):
+  1. Подключить R04 (`/classify`, `/similar` + patch `r01_similar_target.patch`), R12 (`/targets` и 5 геомаршрутов), R06 (`bind(service)` и маршруты предложений/этапов), R05 (`proposed_r01.patch`), R13 (`r01_forecast_route.patch`), ONNX-модель R03 после LOCAL-4.
+  2. R05 → R06: лишние поля в `POST /proposals` (R06 отвечает 422), `DELETE` вместо `POST …/withdraw`, другой формат ответа (`{item}`).
+  3. R04 + R09: `needs_review` всегда `true`, поэтому категорию никогда не выбирает модель — житель видит только подсказку (`suggest`); решение — у R01 (R10 B-003).
+  4. Два справочника сроков: R09 `RESPONSE_DAYS` (первый ответ) и R08 `DEADLINE_DAYS` (исправление) — оба демо-нормативы.
+  5. Сетки ячеек R07 и R09 разные — в сборке работает адаптер; роли должны договориться об одной.
+  6. `categories_v2.json` в двух копиях (сервер и ui-kit) — при изменении категорий обновлять обе.
+  7. Данные: R05 `astana-existing.json` содержит 41 ж/д платформу как «остановки» и 55 точек / 22 двора за границей города (R10 B-007, B-008); двор `yard-619707707` R12 частично за границей (проверяется только центр, B-009); CONTRACT §4 не называет `osm-relation-` (B-010).
+  8. Гонка `civic-r03-demo-ring` в модуле карты (1 FAIL в P0, есть и на I0) — у R12.
+- План: B1 вечером 13.10 (= d3c33d9 + сданные к тому времени R06/R12/R04/R05/R03), приёмка R10; B2 14.10; FINAL 15.10 18:00. Актуальный SHA — `research/handoffs/astana/R01/round14/STATUS.md`.
 
 ## 9. ML-контур
 

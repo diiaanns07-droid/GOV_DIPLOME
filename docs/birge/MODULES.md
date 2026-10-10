@@ -10,21 +10,21 @@
 
 | Роль | Модуль | Ветка | Голова | code_sha / tested_sha | Статус на 10.10 |
 |---|---|---|---|---|---|
-| R01 | Интегратор: сервер, шлюзы, оболочка | `claude/sharp-dijkstra-0t87gl` | bc7c961 | 2eaeacb / 2eaeacb (DELIVERY отстаёт от головы) | I0 готова; B1 шаг 1 — перенесены R02, R07, R08, R09 |
+| R01 | Интегратор: сервер, шлюзы, оболочка | `claude/sharp-dijkstra-0t87gl` | e9b34a6 | d3c33d9 / d3c33d9 | кандидат B1: подключены R07, R08, R09; путь демо B1 15/0 |
 | R02 | Данные, синтетика, разметка | `claude/r14-R02` | 73b97d2 | f62cc93 / f62cc93 | ready_for_review |
 | R03 | Классификатор v2 | `claude/r14-R03` | 1d0edd7 | 847bf31 / 847bf31 | код готов; обучение на GPU (LOCAL-4) не выполнено |
-| R04 | Дубли и ML-API | `claude/r14-R04` | 243526f | нет DELIVERY | partial (checkpoint 3) |
+| R04 | Дубли и ML-API | `claude/r14-R04` | 94bd9ac | deeb1de / deeb1de | ready_for_review (запасные пути); E5 и v2 ждут LOCAL |
 | R05 | 3D-превью | `claude/r14-R05` | e533e67 | b0353ee / b0353ee | сдан |
 | R06 | Предложения, голоса, этапы | `claude/round-14-r06` | 3d10f7d | 7031afa / 7031afa | сдан |
 | R07 | Тепловая карта | `claude/upbeat-knuth-i0rqaa` | 3eb3f9d | 5a97636 / 5a97636 | сдан на демо-данных |
 | R08 | Картина дня | `claude/r14-R08` | a4189ba | 9f1d9c0 / 9f1d9c0 | поставка 1 |
 | R09 | Жалоба жителя v2 | `claude/modest-shannon-0ki93p` | e012f73 | a4ab5a4 / a4ab5a4 | сдан |
-| R10 | Приёмка | — | — | — | старт 13.10 |
-| R11 | UX и казахский | `claude/r14-R11` | cc77761 | в DELIVERY нет точного SHA («последний коммит ветки») | день 2 |
+| R10 | Приёмка | `claude/r14-R10` | e73f1e8 | нет DELIVERY | partial: проверка поставок, точность §8, дефекты B-001…B-010 |
+| R11 | UX и казахский | `claude/r14-R11` | f025241 | в DELIVERY нет точного SHA («последний коммит ветки») | день 2 |
 | R12 | Точность карты | `claude/tender-brahmagupta-ef5ztl` | 8bb7bf8 | 8810221 / d13f49a | сдан |
-| R13 | Прогноз (прототип) | `claude/r14-R13` | 754de0c | нет DELIVERY | checkpoint 1 |
+| R13 | Прогноз (прототип) | `claude/r14-R13` | 8746927 | 8705829 / 8705829 | сдан: backtest на синтетике, `forecast()` |
 | R14 | Документация и диплом | `claude/r14-R14` | см. STATUS | — | этот документ |
-| R15 | Ревью безопасности | `claude/r14-R15` | 479d948 | — | старт |
+| R15 | Ревью безопасности | `claude/r14-R15` | 1c12b32 | — | checkpoint 1 (тесты транспорта R01) |
 
 Общее для всех модулей:
 - категории — только из `research/round-14/categories_v2.json` (12 штук);
@@ -36,7 +36,7 @@
 
 ## R01 · Интегратор: сервер, шлюзы, оболочка
 
-- **Ветка:** `claude/sharp-dijkstra-0t87gl`, голова bc7c961; DELIVERY: code 2eaeacb, tested 2eaeacb (I0 — 3adabe3). Актуальный SHA сборки — в `research/handoffs/astana/R01/round14/STATUS.md`.
+- **Ветка:** `claude/sharp-dijkstra-0t87gl`, голова e9b34a6; DELIVERY: code/tested d3c33d9 — кандидат B1 (сборки: I0 3adabe3, api_v2 caf2cff, shell_ru_kk 2eaeacb, b1_import bc7c961, b1_candidate d3c33d9). Актуальный SHA сборки — в `research/handoffs/astana/R01/round14/STATUS.md`.
 - **Назначение:** собрать одну работающую версию Birge — перенести поставки ролей по закреплённым SHA (без merge, по путям), держать HTTP-шлюзы v1/v2 и оболочку страницы (шапка Birge, ҚАЗ/РУС, Акимат/Житель, Карта/Картина дня).
 - **Файлы:**
   - `ui/web_server.py` (1437 строк) — сервер, шлюзы `CivicGateway` (v1) и `CivicV2Gateway` (v2), статика по белому списку `ASSETS`/`CIVIC_ASSETS`;
@@ -53,9 +53,9 @@
   - всё сразу: `bash tests/civic/R01/run_checks.sh <папка>` (pytest, `python -B -m ui.web_check`, node, браузер Playwright);
   - шлюз v2: `python -m pytest -q tests/civic/R01/test_r01_api_v2.py`;
   - шапка: `node tests/civic/R01/browser/r14_shell.cjs <папка>`;
-  - результаты (DELIVERY/BUILD_LOG): на 2eaeacb весь pytest 1458 passed / 11 skipped; `test_r01_api_v2` 61/61; браузер: шапка 35/0 (38/0 после правой панели), город 81/0, сценарии 16/0, P0 62 PASS / 1 FAIL / 2 NOT_RUN (FAIL — гонка `civic-r03-demo-ring` в модуле карты, есть и на I0); B1 шаг 1 (bc7c961): наборы R02/R07/R08/R09 — 784 passed / 1 skipped, полный набор NOT_RUN; Windows `run-city.bat` — NOT_RUN.
-- **Ограничения:** v2-модули R04, R06, R12 ещё не перенесены → 503 `module_not_ready`; фронтенд R07/R08/R09 перенесён, но не добавлен в `CIVIC_ASSETS`/`index.html`; несостыковки сигнатур — `ARCHITECTURE.md` §8; тексты модулей раунда 13 в панели только на русском; подложка OpenFreeMap в облаке недоступна.
-- **Следующий шаг (STATUS):** подключение функций v2 и статики модулей, B1 вечером 13.10, B2 14.10, FINAL 15.10 18:00.
+  - результаты (DELIVERY/BUILD_LOG): на 2eaeacb весь pytest 1458 passed / 11 skipped; `test_r01_api_v2` 61/61; браузер: шапка 35/0 (38/0 после правой панели), город 81/0, сценарии 16/0, P0 62 PASS / 1 FAIL / 2 NOT_RUN (FAIL — гонка `civic-r03-demo-ring` в модуле карты, есть и на I0); B1 шаг 1 (bc7c961): наборы R02/R07/R08/R09 — 784 passed / 1 skipped; **кандидат B1 (d3c33d9): весь pytest 1 793 passed / 11 skipped, путь демо `node tests/civic/R01/browser/r14_b1.cjs <папка>` — 15/0** (жалоба → +1 на карте → «Мои обращения» → «Картина дня» → горячее место → «Взять в работу» → «Исправлено»); Windows `run-city.bat` — NOT_RUN.
+- **Ограничения (d3c33d9):** v2-модули R03, R04, R05, R06, R12, R13 ещё не перенесены → 503 `module_not_ready` (место жителя — «примерное», категория — вручную, шаг 5 сценария не работает); в сборке адаптеры R01 для сетки ячеек R07/R09 и ключа устройства; тексты модулей раунда 13 в панели только на русском; подложка OpenFreeMap в облаке недоступна. Подробно — `ARCHITECTURE.md` §8.
+- **Следующий шаг (DELIVERY):** вечером 13.10 B1 = d3c33d9 + сданные R06/R12/R04/R05/R03; приёмка R10 на B1; B2 14.10; FINAL 15.10 18:00.
 - **Документы роли:** `research/round-14-results/R01/{DELIVERY.json, BUILD_LOG.md, RUN.txt, INTEGRATION.txt, DEMO_SCRIPT.md}`.
 
 ---
@@ -107,16 +107,16 @@
 
 ## R04 · Дубли и ML-API
 
-- **Ветка:** `claude/r14-R04`, голова 243526f (checkpoint 3); DELIVERY, RUN, INTEGRATION ещё нет.
+- **Ветка:** `claude/r14-R04`, голова 94bd9ac; code/tested deeb1de; статус ready_for_review (запасные пути), E5 и модель v2 ждут LOCAL.
 - **Назначение:** `ml/civic_dedup/` — поиск похожих открытых жалоб рядом для «Я тоже»; `ui/civic_ml_api/` — функции для шлюза R01: `classify(text)` → `POST /classify`, `similar(text, point, days)` → `POST /similar`.
-- **Файлы:** `ml/civic_dedup/{normalize.py (латиница → кириллица, казахские буквы → русские двойники), concepts.py (двуязычный словарь понятий), scorers.py (n-граммы + понятия), e5.py (E5 в ONNX), search.py (Deduper), geo.py, config.py, loader.py, dedup_config.json, tune.py, bench.py, fixtures.py}`, `results/{dedup_eval_ngram.json, bench.json}`; `ui/civic_ml_api/{__init__.py, classify_chain.py, similar_search.py, evaluate.py, categories.py, errors.py}`; `tests/civic/R04/round14/` (первые тесты).
-- **Правило «похоже»:** сходство ≥ порога И (та же цель ИЛИ ≤ 200 м) И не старше `days` (14 по умолчанию, 1…365) И статус `new|accepted|in_progress`; без точки и цели совпадений нет; тексты чужих жалоб в ответ не попадают.
-- **Метод:** основной — эмбеддинги `intfloat/multilingual-e5-base` в ONNX (включается, только если есть веса в `ml/civic_dedup/artifacts/e5/` и подобран порог — сейчас `null`); запасной, работает всегда — `ngram-concept-v1` (символьные n-граммы 3–5 + словарь понятий, α = 0.3, порог 0.18 с геофильтром / 0.40 только по тексту — `dedup_config.json` @ 243526f).
-- **Цепочка classify:** v2 R03 (ONNX; после 3 сбоев подряд отключается) → транслит в кириллицу → словарь R03 (≥ 1 совпадение), иначе v1 (6 меток → v2) → словарь v1 → `other`. В запасном пути `needs_review` всегда true. Сверх контракта в ответе поля `suggest`, `source`, `score_kind`.
-- **Команды:** `python -m ml.civic_dedup.tune [--method e5|all] [--write-config]`; `python -m ml.civic_dedup.bench`; тесты — `python -m pytest -q tests/civic/R04/round14`.
-- **Результаты (синтетика, предварительно):** пары test с геофильтром P 0.880 / R 0.906 / F1 0.893; цепочка classify без v2 — accuracy 0.784 на synth_v3 test; скорость similar p95 10.0–12.7 мс по городу на 5 000 жалоб (`results/bench.json`).
-- **Ограничения:** нет DELIVERY; e5 без весов (экспорт E5 — задача LOCAL); оценка только на синтетических парах (у пар нет координат — допущение «разные названные места дальше 200 м»); классификатор v1 и R03 в ветке R04 не закоммичены (в сборке R01 они есть).
-- **Зависимости:** R02 (пары, маркеры обезличивания), R03 (`predict`, `heuristic`), v1 `ml/civic_classifier`, R09 (`ComplaintStore` через `connect_store`), R01 (`V2_HANDLERS`).
+- **Файлы:** `ml/civic_dedup/{normalize.py (латиница → кириллица, казахские буквы → русские двойники), concepts.py (двуязычный словарь понятий, 48 тем), scorers.py (n-граммы + понятия), e5.py (E5 в ONNX), export_e5.py (экспорт E5 — на ноутбуке), search.py (Deduper), geo.py, config.py, loader.py, dedup_config.json, tune.py, bench.py, fixtures.py}`, `results/{dedup_eval_ngram.json, bench.json}`; `ui/civic_ml_api/{__init__.py, classify_chain.py, similar_search.py, evaluate.py, categories.py, errors.py}` (CLI `python -m ui.civic_ml_api`); `tests/civic/R04/round14/`; отчёты `research/round-14-results/R04/{DELIVERY.json, RESULTS.md, RUN.txt, INTEGRATION.txt, classify_eval.json, r01_similar_target.patch}`.
+- **Правило «похоже»:** сходство ≥ порога И (та же цель ИЛИ ≤ 200 м) И не старше `days` (14 по умолчанию, 1…365) И статус `new|accepted|in_progress`; без точки и цели совпадений нет; тексты чужих жалоб в ответ не попадают. Без patch R01 условие «та же цель» работает только через точку ≤ 200 м.
+- **Метод:** основной — эмбеддинги `intfloat/multilingual-e5-base` в ONNX (включается, только если есть веса в `ml/civic_dedup/artifacts/e5/` и порог подобран на dev с нужной точностью — LOCAL-R04-1); запасной, работает всегда — `ngram-concept-v1` (символьные n-граммы 3–5 + словарь понятий, α = 0.3, порог 0.18 с геофильтром / 0.40 только по тексту — `dedup_config.json`).
+- **Цепочка classify:** v2 R03 (ONNX; после 3 сбоев подряд отключается) → транслит в кириллицу → словарь R03 (≥ 1 совпадение), иначе v1 (6 меток → v2) → словарь v1 → `other`. В запасном пути `needs_review` всегда true; для чипа подсказки жителю — поле `suggest` (≥ 2 совпадения словаря).
+- **Команды:** `python -m ml.civic_dedup.tune [--method e5|all] [--write-config]`; `python -m ml.civic_dedup.bench`; `python -m ml.civic_dedup.export_e5` (ноутбук, LOCAL-R04-1); тесты — `python -m pytest -q tests/civic/R04/round14` (вместе с R03 — 137 passed / 6 skipped по DELIVERY; весь `tests` с локальными копиями соседей — 967 passed / 4 skipped).
+- **Результаты (синтетика R02):** пары test с геофильтром — P 0.880 [0.833; 0.922], R 0.906 [0.863; 0.945], F1 0.893; только по тексту — P 0.616; цепочка classify без v2 — accuracy 0.784 на synth_v3 test (v1 одна — 0.518); скорость (облако, 4 vCPU) — classify p95 0.36 мс, similar p95 8.2 мс по городу, 39.3 мс в «горячей точке» на 5 000 жалоб, первый запрос без прогрева ~155 мс.
+- **Ограничения:** все метрики на синтетике, test-пары просмотрены 5 раз за журнал экспериментов (`RESULTS.md`); E5 не подключён; словарь понятий — 48 тем; две разные проблемы одного понятия в 200 м (две ямы) считаются одной — житель жмёт «У меня другое».
+- **Зависимости:** R02 (пары, маркеры обезличивания), R03 (`predict`, `heuristic`), v1 `ml/civic_classifier`, R09 (`ComplaintStore` через `connect_store`, прогрев кэша по событиям), R01 (`V2_HANDLERS`, patch target).
 
 ---
 
@@ -227,17 +227,29 @@
 
 ## R13 · Прогноз проблем (прототип)
 
-- **Ветка:** `claude/r14-R13`, голова 754de0c (checkpoint 1); DELIVERY, RUN, тестов, `ui/civic_forecast/` ещё нет.
-- **Назначение:** ежемесячный прогноз 10–30 территорий с риском жалоб (кейс Gton «Предиктивная аналитика»); для диплома — вторая модель. Реальной истории обращений нет → честный прототип на синтетической истории с пометкой synthetic.
-- **Сделано:** `ml/civic_forecast/targets.py` (2 334 территории из данных R12: остановки, площадки, парки, мусор, дворы, 209 участков крупных улиц; район по `geofence.json`), `weather.py` (загрузчик CSV Open-Meteo; месячные признаки: снегопад, дни оттепели, мороз < −20 °C, жара > 28 °C, осадки, средняя температура; нормы только по прошлым месяцам), `history.py` (синтетическая история 2024-01…2026-10 × 12 категорий, Пуассон с сезонностью, «горячими» эпизодами, всплесками, синтетическими стройками; seed 2026), `data/targets.json`, `data/weather_fixture.csv` (синтетическая фикстура 1 378 дней, **не Open-Meteo**).
-- **Не сделано (план из задания):** `features.py`, `model.py` (HistGradientBoosting + запасная сезонная наивная модель), `backtest.py` (обучение до месяца M, прогноз топ-K на M+1, K = 10/20/30, precision@K против базовых «прошлый месяц» и «тот же месяц год назад»), `forecast(month, district, k)` и маршрут `GET /api/civic/v2/forecast`.
-- **Известные дефекты:** в `history.to_records` день записи считается через встроенный `hash()` строки — зависит от `PYTHONHASHSEED`, даты записей невоспроизводимы между процессами (счётчики детерминированы); в докстрингах команда `python3 -m ml.civic_forecast build-targets`, но `__main__.py` нет.
+- **Ветка:** `claude/r14-R13`, голова 8746927; code/tested 8705829 (Linux, Python 3.13.16, scikit-learn 1.9.1).
+- **Назначение:** ежемесячный прогноз территорий с риском жалоб (кейс Gton «Предиктивная аналитика»); для диплома — вторая модель. Реальной истории обращений нет → честный прототип на синтетической истории с пометкой synthetic.
+- **Файлы:** `ml/civic_forecast/{targets.py (2 334 территории из данных R12), weather.py (CSV Open-Meteo → месячные признаки), history.py (синтетическая история), features.py, model.py (градиентный бустинг + запасная модель без зависимостей), reasons.py (причины ru/kk), backtest.py, README.md, RESULTS.md, results.json, data/}`; `ui/civic_forecast/` (`forecast`, `forecast_response`, `attention_next_month`, кэш `data/forecast_cache.json`); `tests/civic/R13/`; patch маршрута для R01 — `research/round-14-results/R13/r01_forecast_route.patch`.
+- **Модель:** признаки «территория × месяц» (жалобы за 1/3/12 месяцев по категориям, тот же месяц год назад, тренд, погода месяца, тип территории); цель — ≥ 4 жалоб в следующем месяце (в среднем 3.3 % территорий); `HistGradientBoosting` и запасная «сезонная наивная + взвешенная частота».
+- **Backtest (синтетика, 3 seed × 16 месяцев 2025-07…2026-10):** precision@10/20/30 — бустинг 0.58 / 0.49 / 0.44; запасная 0.55 / 0.49 / 0.44; «как в прошлом месяце» 0.47 / 0.40 / 0.35; «тот же месяц год назад» 0.38 / 0.33 / 0.31; случайный выбор 0.03. Ориентир Gton 60–70 % не достигнут; погодные признаки ≈ 0 (норма месяца дублирует сезон). Команда: `python3 -m ml.civic_forecast backtest --seeds 2026,2027,2028`.
+- **API:** `forecast(month, district, k)` — из кэша < 1 мс (холодная загрузка ~30 мс; месяц вне кэша — ~3.5 с один раз); маршрут `GET /api/civic/v2/forecast` — после patch R01; блок «Внимание в следующем месяце» для R08 — `attention_next_month`.
+- **Тесты (DELIVERY):** `python3 -m pytest tests/civic/R13` — 30 passed / 7 skipped (без шлюза R01); с `R13_R01_WEB_SERVER` (шлюз R01 @ d3c33d9 + patch) — 37/37; без scikit-learn — PASS (запасная модель).
+- **Ограничения:** история и погода синтетические (LOCAL-9 не выполнена); территории — снимок данных R12 @ d13f49a (при обновлении — `build-targets` + `build-cache`); 138 из 1 307 безымянных территорий без ориентира в 800 м; казахские тексты причин — черновик; день записи в `history.to_records` считается через встроенный `hash()` (строка 276 на 8705829 — не исправлено): даты демо-записей зависят от `PYTHONHASHSEED`; счётчики и backtest от этого не зависят.
+
+---
+
+## R10 · Приёмка
+
+- **Ветка:** `claude/r14-R10`, голова e73f1e8 (partial); пути `tests/civic/R10/`, `tests/e2e/`, `research/round-14-results/R10/`.
+- **Сделано:** проверка поставок ролей по отдельности (`DELIVERIES_CHECK.md`: владение путями чисто, повтор тестов R03, R05–R09, R11, R12 совпал с DELIVERY); независимая проверка точности CONTRACT §8 по веткам (`python3 tests/civic/R10/accuracy.py --root <worktree> --json <роль>.json`, отчёты `accuracy/*.json`); дефекты B-001…B-010 (`BUGS.md`).
+- **Главные дефекты:** B-001 (блокер для B1 на bc7c961: сценарий не проходит — частично снят кандидатом d3c33d9), B-002 (R07/R09 не видны шлюзу — решено в d3c33d9), B-003 (`needs_review` всегда true → категория никогда не выбирается моделью), B-007 (R05: 41 ж/д платформа как «остановка»), B-008 (R05: 55 точек и 22 двора за границей), B-009 (R12: двор частично за границей — проверяется только центр), B-010 (`osm-relation-` нет в CONTRACT §4).
+- **Дальше:** `tests/e2e/demo_flow.cjs` (6 шагов, 1366/375 × ru/kk), приёмка B1 (13.10), B2, FINAL.
 
 ---
 
 ## R15 · Ревью безопасности
 
-- **Ветка:** `claude/r14-R15`, голова 479d948 (старт). Пути: `tests/civic/R15/`, `research/round-14-results/R15/`. Чужой код не меняет — исправления отдаёт patch в INTEGRATION.txt. Темы: XSS, CSRF, права сотрудника, персональные данные (закон РК «О персональных данных и их защите»), лимиты.
+- **Ветка:** `claude/r14-R15`, голова 1c12b32 (checkpoint 1: тесты транспорта R01 — статика, Origin/CSRF, доступ, cookie). Пути: `tests/civic/R15/`, `research/round-14-results/R15/`. Чужой код не меняет — исправления отдаёт patch в INTEGRATION.txt. Темы: XSS, CSRF, права сотрудника, персональные данные (закон РК «О персональных данных и их защите»), лимиты.
 
 ---
 
