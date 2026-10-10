@@ -32,6 +32,9 @@ DEFAULT_DAYS = 14
 MAX_DAYS = 365
 DEFAULT_RADIUS_M = 200.0
 MIN_LETTERS = 3
+# Длиннее не сравниваем: смысл жалобы в начале, а признаки растут с длиной. Одна обрезка и для запроса,
+# и для записей, и для фонового прогрева — иначе ключи кэша (sha1 текста) не совпадут.
+MAX_TEXT = 2000
 
 
 def target_id(target) -> str | None:
@@ -187,8 +190,8 @@ class Deduper:
         cands = self.eligible(records, point=point, target=target, days=days, now=now)
         if not cands:
             return []
-        query = self.scorer.encode_many([text])[0]
-        feats = self.cache.get_many(self.scorer, [(rec["id"], rec["text"]) for rec, _d, _s in cands])
+        query = self.scorer.encode_many([text[:MAX_TEXT]])[0]
+        feats = self.cache.get_many(self.scorer, [(rec["id"], rec["text"][:MAX_TEXT]) for rec, _d, _s in cands])
         threshold_for = getattr(self.scorer, "threshold_for", None)
         matches = []
         for (rec, dist, same), f in zip(cands, feats):

@@ -175,3 +175,16 @@ def test_r09_cache_warming_on_connect_and_on_create(store):
 
 def test_warm_cache_without_source_is_noop():
     assert api.warm_cache() == 0
+
+
+def test_long_record_text_warm_cache_key_matches_search(store):
+    """Прогрев и поиск обрезают текст одинаково: длинная жалоба после прогрева не считается заново."""
+    from ml.civic_dedup import get_deduper
+    from ui.civic_ml_api.similar_search import WARMER
+    long = SNOW + " " + "подробности " * 400            # > 2000 символов (у R09 предел 2000 — через import_record)
+    rec = record("c-long0001", long)
+    store.import_record(dict(rec, due_at=rec["created_at"], schema="civic-complaint-v2", target={"kind": "object", "id": "osm-node-1001"}))
+    api.connect_store(store)
+    assert WARMER.join(10) and len(get_deduper().cache) == 1
+    assert api.similar(SNOW, point=list(STOP))["matches"]
+    assert len(get_deduper().cache) == 1                 # тот же ключ — запись не пересчитана

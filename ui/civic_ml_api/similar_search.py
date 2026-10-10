@@ -20,11 +20,10 @@ from datetime import datetime, timedelta
 
 from ml.civic_dedup import OPEN_STATUSES, get_deduper
 from ml.civic_dedup.geo import bbox_around, distance_m, parse_point
-from ml.civic_dedup.search import ASTANA_TZ, clamp_days, parse_time, target_id
+from ml.civic_dedup.search import ASTANA_TZ, MAX_TEXT, clamp_days, parse_time, target_id
 from ui.civic_ml_api.errors import MLServiceUnavailable
 
 LOGGER = logging.getLogger(__name__)
-MAX_TEXT = 2000          # длиннее не сравниваем: смысл жалобы в начале, а n-граммы растут с длиной
 DEFAULT_LIMIT = 5
 BBOX_MARGIN_M = 25.0     # запас к радиусу: округления координат в БД
 # Граница Астаны с запасом (как ASTANA_BBOX у R09) — для прогрева кэша всеми открытыми жалобами.
