@@ -55,7 +55,8 @@ const freePort = () => new Promise((ok, no) => { const s = net.createServer().on
 async function startServer() {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r10-e2e-"));
   const db = path.join(tmp, "civic.sqlite3");
-  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1" };
+  // CIVIC_DEMO=1 — как run-city.bat на демо (синтетический набор R07 на карте); --no-demo — без него.
+  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1", CIVIC_DEMO: args["no-demo"] ? "" : "1" };
   const cli = (argv, input) => execFileSync(PY, ["-B", "-m", "ui.civic_store", "--db", db, ...argv],
     { cwd: ROOT, env, input, stdio: [input ? "pipe" : "ignore", "pipe", "pipe"] }).toString();
   cli(["init"]);
@@ -405,7 +406,12 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
       if (!q && pt.near) { await tap(page, pt.near.x, pt.near.y); q = await offered(); }  // обход для демо: нажать рядом
     } else if (pt) { await tap(page, pt.x, pt.y); q = await offered(); }
     step("1", `после нажатия на карту в форме предложена остановка «${STOP.name}»`, q, { point: pt, names }, await shot("1-target"));
-    if (q) { picked = await clickText(form, nameRe, { wait: 1500 }); }
+    if (q) picked = await clickText(form, nameRe, { wait: 1500 });
+    else {
+      // Остановки в списке нет (например, R12 /targets не подключён) — берём «Примерное место», чтобы проверить шаг 2.
+      picked = await clickText(form, textRe(T(dict, "complaint.step2.approximate", lang === "kk" ? "Шамамен орны" : "Примерное место")), { wait: 1500 });
+      if (picked) add(`UI ${tag}`, "1", "обход: выбрано «Примерное место», шаг 2 проверяется дальше", "NOT_RUN", null);
+    }
   } else step("1", `предложена остановка «${STOP.name}»`, null, "форма жалобы не открылась");
 
   // 2. Текст → категория от модели → «Отправить» → «Я тоже» (если уже сообщали) или «Обращение отправлено».
@@ -442,7 +448,10 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     const badges = [...document.querySelectorAll(".maplibregl-marker")].filter((e) => e.getBoundingClientRect().width > 0 && /\d/.test(e.innerText)).length;
     return { map: true, layers: layers.length, rendered, badges };
   }, STOP.point);
-  const legend = await visibleText(page, textRe(T(dict, ["heat.legend", "heat.legend.title"], lang === "kk" ? "Қанша адам хабарлады" : "Сколько человек сообщили")));
+  // Легенда: подпись из словаря R11 или запасная R07 (в ранних словарях ключа heat.legend ещё нет).
+  let legend = false;
+  for (const txt of [T(dict, "heat.legend", null), T(dict, "heat.legend.title", null), lang === "kk" ? "Қанша адам хабарлады" : "Сколько человек сообщили"])
+    if (txt && !legend) legend = await visibleText(page, textRe(txt));
   step("3", "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна", heat.map && heat.rendered > 0 && heat.badges > 0 && legend, { ...heat, legend }, await shot("3-heat"));
 
   // 4. «Картина дня».
@@ -556,15 +565,22 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     await sleep(2000);
     const take = await clickText(page, textRe(T(dict, ["target.take", "heat.take"], lang === "kk" ? "Жұмысқа алу" : "Взять в работу")), { wait: 2000 });
     const fix = await clickText(page, textRe(T(dict, ["target.mark_fixed", "heat.mark_fixed"], "Отметить исправленным")), { wait: 2500 });
-    const fixedShown = await visibleText(page, new RegExp(esc(fixedWord), "i"));
+    // С заглавной буквы и без флага i: в легенде карты то же слово строчными («исправлено») — его не считаем.
+    const fixedShown = await visibleText(page, new RegExp(esc(fixedWord)));
     const green = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
-    step("6", `акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «${fixedWord}», зелёным на карте`, take && fix && fixedShown && green,
-      { under: s && s.under, take, fix, fixedShown, green }, await shot("6-fixed"));
+    // Нет «Взять в работу», а цель уже «Исправлено» — новых жалоб у неё нет (шаг 2 не дошёл до отправки): проверять нечего.
+    const nothingNew = !take && fixedShown;
+    step("6", `акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «${fixedWord}», зелёным на карте`,
+      nothingNew ? null : take && fix && fixedShown && green,
+      { under: s && s.under, take, fix, fixedShown, green, note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : undefined }, await shot("6-fixed"));
   } else step("6", "акимат отмечает исправленным", null, "нет входа сотрудника");
   const mineLabel = T(dict, ["common.nav.mine", "mine.title", "complaint.step5.to_mine"], lang === "kk" ? "Менің өтініштерім" : "Мои обращения");
   await setMode("resident");
   const mineOpen = await header(textRe(mineLabel), 1800);
-  const mineFixed = mineOpen ? await visibleText(page, new RegExp(esc(T(dict, "status.fixed", fixedWord)), "i")) : false;
+  // Статус — в окне «Мои обращения»: шкала этапов обращения — список, его имя для экранного диктора = текущий статус
+  // (у новой жалобы на шкале тоже написано «Исправлено», но имя списка — «Новое»; легенда карты не в счёт).
+  const mineBox = mineOpen ? (await firstVisible(page.getByRole("dialog").filter({ hasText: textRe(mineLabel) }))) || page : null;
+  const mineFixed = mineBox ? !!(await firstVisible(mineBox.getByRole("list", { name: new RegExp("^" + esc(T(dict, "status.fixed", fixedWord)) + "$") }))) : false;
   step("6", `житель: «${mineLabel}» → у обращения статус «${T(dict, "status.fixed", fixedWord)}»`, mineOpen && mineFixed, { mineOpen, mineFixed }, await shot("6-mine"));
 
   step("*", "консоль без ошибок (кроме шума среды: подложка, WebGL)", errors.length === 0, errors.slice(0, 6));

@@ -5,6 +5,7 @@
 // Что делает (ничего не пишет в репозиторий, база — временная):
 //   1. точность карты:  <PY> tests/civic/R10/accuracy.py --root <сборка> --json <out>/accuracy.json  (+ pytest tests/civic/R10)
 //   2. сервер сборки:   init → seed-demo → seed-r14-demo (если есть) → сотрудник r10-operator → app.py на свободном порту
+//                       с CIVIC_DEMO=1, как run-city.bat (--no-demo — без синтетического набора R07)
 //   3. сценарий демо:   tests/e2e/demo_flow.cjs --url <сервер> (API + UI, 1366/375 × ru/kk) → <out>/e2e/
 //   4. UX по экранам:   tests/e2e/ux_screens.cjs --screens tests/e2e/screens_build.json → <out>/ux/
 //   5. сводка:          <out>/SUMMARY.md — числа PASS/FAIL/NOT_RUN по каждому блоку и список FAIL
@@ -53,7 +54,10 @@ function run(cmd, argv, opts = {}) {
   // 2. Сервер сборки с временной базой
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r10-acc-"));
   const db = path.join(tmp, "civic.sqlite3");
-  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1" };
+  // Как на демо (run-city.bat): CIVIC_DEMO=1 — к жалобам добавляется синтетический набор R07 (помечен «Пример»).
+  // --no-demo — чистая база без него.
+  const DEMO = args["no-demo"] ? "" : "1";
+  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1", CIVIC_DEMO: DEMO };
   const cli = (argv, input) => spawnSync(PY, ["-B", "-m", "ui.civic_store", "--db", db, ...argv], { cwd: ROOT, env, input, encoding: "utf8" });
   const seeds = [];
   for (const step of [["init"], ["seed-demo", "--package", "data/civic/astana/demo_synthetic.json"]]) { const r = cli(step); seeds.push(`${step[0]}:${r.status}`); }
@@ -68,7 +72,7 @@ function run(cmd, argv, opts = {}) {
   const srv = spawn(PY, ["-B", "app.py", "--host", "127.0.0.1", "--port", String(port)], { cwd: ROOT, env, stdio: ["ignore", srvFd, srvFd] });
   let up = false;
   for (let i = 0; i < 150 && !up; i++) { try { up = (await fetch(base + "api/health")).ok; } catch {} if (!up) await sleep(200); }
-  summary.push("", "## 2. Сервер сборки", "", `${up ? "запущен" : "НЕ ЗАПУСТИЛСЯ"} на ${base}; база: ${seeds.join(", ")}; сотрудник: ${ed.status === 0 ? "создан" : "ошибка " + (ed.stderr || "").slice(0, 120)}`);
+  summary.push("", "## 2. Сервер сборки", "", `${up ? "запущен" : "НЕ ЗАПУСТИЛСЯ"} на ${base}; CIVIC_DEMO=${DEMO || "(нет)"}; база: ${seeds.join(", ")}; сотрудник: ${ed.status === 0 ? "создан" : "ошибка " + (ed.stderr || "").slice(0, 120)}`);
   try {
     const m = await (await fetch(base + "api/civic/v2/modules")).json();
     const mods = (m.data || m).modules || {};

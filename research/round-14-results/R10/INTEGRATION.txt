@@ -15,7 +15,12 @@ R10 · раунд 14 · INTEGRATION — как подключить приёмк
    - Интерфейс: глобальная `map` (MapLibre, web/interface.js) или `window.standMap` (стенд R09); тексты кнопок —
      из web/civic/i18n/{ru,kk}.json (ключи complaint.start.button, complaint.step3.suggested, complaint.send,
      complaint.step4.metoo, complaint.step5.title, common.role.resident, common.nav.day, common.nav.menu,
-     heat.legend, akim.kpi.in_progress, proposal.catalog.title, proposal.kind.*, mine.title, status.fixed).
+     heat.legend, akim.kpi.in_progress, proposal.catalog.title, proposal.kind.*, mine.title, status.fixed,
+     common.role.akimat, common.nav.mine, proposal.place, proposal.vote_up, proposal.delete, build3d.placed,
+     build3d.deleted, build3d.catalog.place, build3d.card.open, target.take, target.mark_fixed, heat.fixed_until).
+     Шаги 5–6: вход «Для сотрудников» (поля autocomplete=username и type=password, кнопка «Выйти» после входа,
+     «Закрыть кабинет»); таблички 3D-проектов — кнопки «{вид}: проект {год}, открыть карточку».
+     Слои тепловой карты — id с «r07-» или «heat»; значки — .maplibregl-marker с числом.
      Если ключа нет — тест берёт русский/казахский запасной текст. Переименовали ключ — добавьте синоним в T(...).
    - Данные точности: engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json,
      data/civic/astana/geofence.json, data/civic/astana/geo/{objects,yards,demo_snapped,way_tags}.json,
@@ -30,6 +35,16 @@ R10 · раунд 14 · INTEGRATION — как подключить приёмк
    R05: остановки брать из data/civic/astana/geo/objects.json R12 (там нет ж/д платформ и всё внутри Астаны) (B-007, B-008).
    R07: вид «Нура» открывать с масштаба 15 или не рисовать кружки объектов без значка ниже 15 (B-016).
    R12: проверять все вершины двора, а не центр (B-009). Координатор: добавить osm-relation- в CONTRACT §4 (B-010).
+
+   Две правки для R01 после B2 (проверены R10 на B2 f54361d вставкой стиля в браузере теста, сборку R10 не менял):
+   R01 · B-019 — значок R07 перехватывает нажатие в «Где проблема?». В web/civic/shell/birge.css:
+       /* Пока открыта форма жалобы R09, нажатие по значку тепловой карты — это нажатие по карте в той же точке. */
+       html.bc-open .r07-badge { pointer-events: none; }
+     Проверка: «Сообщить о проблеме» → нажать ровно на значок остановки «Хан Шатыр» → «Это здесь? Остановка «Хан Шатыр»».
+   R01 · B-020 — на телефоне панель «Территория» (.civic-explore, z-index 6) лежит поверх шторки жалобы, потому что
+     шторка R09 (z-index 40) вложена в #civic-panel (z-index 5). В web/civic/shell/birge.css:
+       @media (max-width: 760px) { html.bc-open .civic-explore { display: none; } }
+     Проверка: 375×812, «Житель» → отправить жалобу → видны «Закрыть», «Обращение отправлено» и номер; то же в «Мои обращения».
 
 4. LOCAL-задачи (Codex на ноутбуке владельца)
    LOCAL-R10-1 (после FINAL, 15–16 окт): полная приёмка FINAL по CODEX_ACCEPTANCE_PROMPT.txt — автоматическая часть

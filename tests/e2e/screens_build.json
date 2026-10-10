@@ -1,5 +1,6 @@
 [
- {"name": "Главная карта", "owner": "R01", "url": "{base}", "primary": "Сообщить о проблеме|Мәселе туралы хабарлау|Взять в работу|Жұмысқа алу"},
+ {"name": "Главная карта · житель", "owner": "R01", "url": "{base}", "primary": "Сообщить о проблеме|Мәселе туралы хабарлау", "storage": {"birge.mode": "resident"}},
+ {"name": "Главная карта · акимат", "owner": "R01", "url": "{base}", "storage": {"birge.mode": "akimat"}},
  {"name": "Картина дня (в оболочке)", "owner": "R01+R08", "url": "{base}#day"},
  {"name": "Тепловая карта · страница модуля", "owner": "R07", "url": "{base}civic/heat/demo.html?lang={lang}&role=akimat&view=nura", "optional": true},
  {"name": "Картина дня · страница модуля", "owner": "R08", "url": "{base}civic/akim/?lang={lang}", "optional": true},

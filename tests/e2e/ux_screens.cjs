@@ -34,11 +34,13 @@ const add = (screen, size, lang, check, status, detail, shot) => {
   console.log(`${status.padEnd(7)} ${screen.owner} ${screen.name} ${size} ${lang} · ${check}` + (status === "FAIL" && detail ? " — " + JSON.stringify(detail).slice(0, 240) : ""));
 };
 
-async function open(browser, url, w, h, lang) {
+async function open(browser, url, w, h, lang, storage) {
   const mobile = w < 761;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
     locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
   const page = await ctx.newPage();
+  // "storage": {"birge.mode": "resident"} — что записать в localStorage до загрузки (например, вид «Житель»).
+  if (storage) await page.addInitScript((kv) => { try { for (const [k, v] of Object.entries(kv)) localStorage.setItem(k, v); } catch (e) { /* пусто */ } }, storage);
   page.errs = [];
   page.on("pageerror", (e) => page.errs.push("pageerror: " + e.message));
   page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) page.errs.push(m.type() + ": " + m.text().slice(0, 200)); });
@@ -58,7 +60,7 @@ async function open(browser, url, w, h, lang) {
     for (const screen of SCREENS) for (const [w, h] of SIZES) {
       const size = `${w}`;
       // Сначала ru (эталон строк), затем kk.
-      const ru = await open(browser, screen.url, w, h, "ru");
+      const ru = await open(browser, screen.url, w, h, "ru", screen.storage);
       // "optional": true — страницы может не быть в этой сборке (404) → NOT_RUN, а не FAIL.
       if (screen.optional && ru.page.httpStatus >= 400) {
         add(screen, size, "ru+kk", "страница есть в сборке", "NOT_RUN", { http: ru.page.httpStatus });
@@ -68,7 +70,7 @@ async function open(browser, url, w, h, lang) {
       const ruLines = await cyrLines(ru.page);
       await ru.ctx.close();
       for (const lang of ["ru", "kk"]) {
-        const { ctx, page } = await open(browser, screen.url, w, h, lang);
+        const { ctx, page } = await open(browser, screen.url, w, h, lang, screen.storage);
         const shot = `${slug(screen.owner + "-" + screen.name)}-${w}-${lang}.jpg`;
         await page.screenshot({ path: path.join(OUT, shot), type: "jpeg", quality: 70 }).catch(() => null);
         const s = await uiScreen(page);
