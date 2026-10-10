@@ -1,0 +1,193 @@
+{
+ "role": "R05",
+ "generated_at": "2026-10-10T13:33:45.728Z",
+ "tested_sha": "43b80c5a7e67c374d33814aaf9126fc3fb632eee",
+ "dirty": true,
+ "environment": {
+  "node": "v22.22.0",
+  "chromium": "141.0.7390.37",
+  "renderer": "SwiftShader (без GPU)",
+  "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
+  "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+  "fps_0_objects_swiftshader": 8.3,
+  "fps_20_objects_swiftshader": 2.9,
+  "gpu_geometries_20_objects": 75
+ },
+ "summary": {
+  "pass": 24,
+  "fail": 0,
+  "not_run": 1
+ },
+ "checks": [
+  {
+   "id": "load_auto_falls_back_to_local_store",
+   "status": "PASS",
+   "detail": "storeMode=local после 404 /proposals; примеров 2; подписи [\"Проект · 2027\",\"Проект · 2027\"]"
+  },
+  {
+   "id": "maplibre_mercator_matches_core",
+   "status": "PASS",
+   "detail": "макс. расхождение 5.00e-16"
+  },
+  {
+   "id": "place_all_five_kinds",
+   "status": "PASS",
+   "detail": {
+    "count": 7,
+    "stop_auto_rotation_deg": 11,
+    "lighting_hint": "улица Сыганак, 187 м · 7 фонарей. Нажмите «Поставить»",
+    "near": [
+     "square: улица Сыганак",
+     "playground: улица Сыганак",
+     "sports: улица Е-67",
+     "stop: улица Сыганак",
+     "lighting: улица Сыганак"
+    ]
+   }
+  },
+  {
+   "id": "labels_project_on_every_object",
+   "status": "PASS",
+   "detail": "7 подписей «Проект · 2027» на 7 объектах"
+  },
+  {
+   "id": "anchor_precision_pitch_0_60_rotation",
+   "status": "PASS",
+   "detail": "0°/0°: 0.000 px; 60°/-35°: 0.000 px; 60°/120°: 0.000 px; 45°/250°: 0.000 px"
+  },
+  {
+   "id": "labels_follow_objects_when_tilted",
+   "status": "PASS",
+   "detail": "6 подписей над объектами, макс. смещение по x 7.1 px (60°, поворот −35°)"
+  },
+  {
+   "id": "reload_keeps_objects_without_animation",
+   "status": "PASS",
+   "detail": "7 объектов, animating=false, скрытых подписей 0"
+  },
+  {
+   "id": "vote_in_card_one_per_device",
+   "status": "PASS",
+   "detail": "за 64→65 (повтор не добавил), затем голос перенесён: против 5→6"
+  },
+  {
+   "id": "delete_frees_gpu_memory_and_undo_restores",
+   "status": "PASS",
+   "detail": "геометрий на GPU: 27 → 31 → 27 (освобождены); «Отменить» вернул объект, всего 8"
+  },
+  {
+   "id": "undo_after_place_removes_object",
+   "status": "PASS",
+   "detail": "после «Поставить» → «Отменить» объектов снова 8"
+  },
+  {
+   "id": "overlap_is_blocked_with_message",
+   "status": "PASS",
+   "detail": "Здесь уже стоит другой проект. Сдвиньте объект"
+  },
+  {
+   "id": "outside_astana_is_blocked",
+   "status": "PASS",
+   "detail": "Это место за пределами Астаны. Выберите место в городе"
+  },
+  {
+   "id": "style_swap_keeps_layer_and_objects",
+   "status": "PASS",
+   "detail": "слой вернулся, объектов 8"
+  },
+  {
+   "id": "real_osm_nearby_hint_and_yard_target",
+   "status": "PASS",
+   "detail": {
+    "hint": "Рядом уже есть остановка: «БЦ Саад», 60 м · по данным OpenStreetMap",
+    "target": {
+     "kind": "area",
+     "id": "yard-1148721825",
+     "label_ru": "Evolution",
+     "label_kk": "Evolution"
+    },
+    "card": "Двор: Evolution"
+   }
+  },
+  {
+   "id": "limit_20_objects",
+   "status": "PASS",
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.9 кадр/с (без объектов 8.3)"
+  },
+  {
+   "id": "build_animation_grows_then_shows_label",
+   "status": "PASS",
+   "detail": "во время постройки animating=true и подпись скрыта; после — подпись видна"
+  },
+  {
+   "id": "resident_sees_objects_and_votes_no_catalog",
+   "status": "PASS",
+   "detail": "нет каталога и «Удалить», есть «За/Против»"
+  },
+  {
+   "id": "kk_locale_no_raw_keys_no_i18n_warnings",
+   "status": "PASS",
+   "detail": {
+    "title": "Не салайық?",
+    "label": "Жоба · 2027",
+    "hint": "Көшені басыңыз — бөліктің басы",
+    "card": "АялдамаЖоба · 2027ҮлгіҰсынысЖанында: улица СыганакЖақтаймын64Қарсымын5Бір құрылғыдан бір дауысЖою"
+   }
+  },
+  {
+   "id": "phone_375_touch_layout",
+   "status": "PASS",
+   "detail": "нет горизонтальной прокрутки, все кнопки ≥ 48 px, текст не обрезан; призрак идёт за центром карты"
+  },
+  {
+   "id": "keyboard_tab_enter_escape",
+   "status": "PASS",
+   "detail": "Tab → каталог (рамка solid), Enter → размещение, фокус на «place», R → 15°, Escape → отмена"
+  },
+  {
+   "id": "three_load_error_state",
+   "status": "PASS",
+   "detail": "Не получилось загрузить 3D. Проверьте связь и повторите.Повторить"
+  },
+  {
+   "id": "api_store_contract_roundtrip",
+   "status": "PASS",
+   "detail": {
+    "requests": [
+     "GET /proposals",
+     "POST /proposals",
+     "POST /proposals/srv-1/vote",
+     "DELETE /proposals/srv-1",
+     "GET /proposals"
+    ],
+    "post_fields": [
+     "demo",
+     "district",
+     "geometry",
+     "id",
+     "kind",
+     "near_street",
+     "rotation_deg",
+     "status",
+     "target",
+     "year"
+    ]
+   }
+  },
+  {
+   "id": "screenshots_1366_375_pitch_0_60_ru_kk",
+   "status": "PASS",
+   "detail": "1366_ru_p60.png, 375_ru_p60.png, 1366_ru_p0.png, 375_ru_p0.png, 1366_kk_p60.png, 375_kk_p60.png, 1366_kk_p0.png, 375_kk_p0.png, 1366_ru_ghost_stop.png, 1366_ru_lighting_ghost.png"
+  },
+  {
+   "id": "no_page_errors",
+   "status": "PASS",
+   "detail": "0 ошибок страницы во всех проверках"
+  },
+  {
+   "id": "smooth_on_laptop_gpu",
+   "status": "NOT_RUN",
+   "detail": "В облаке нет GPU (WebGL через SwiftShader). Плавность 20 объектов на ноутбуке проверить локально: RUN.txt, шаг LOCAL."
+  }
+ ]
+}

@@ -13,6 +13,7 @@ const C = require(path.join(ROOT, "web/civic/build3d/build3d-core.js"));
 const STREETS = JSON.parse(readFileSync(path.join(ROOT, "web/civic/build3d/data/nura-streets.json"), "utf8"));
 const DISTRICTS = JSON.parse(readFileSync(path.join(ROOT, "web/civic/build3d/data/astana-districts.json"), "utf8"));
 const FIXTURE = JSON.parse(readFileSync(path.join(ROOT, "web/civic/build3d/data/proposals.fixture.json"), "utf8"));
+const EXISTING = JSON.parse(readFileSync(path.join(ROOT, "web/civic/build3d/data/astana-existing.json"), "utf8"));
 const NURA = [71.3995, 51.1268];
 
 // Расстояние (м) от точки до ломаной в lon/lat — через локальные метры вокруг точки.
@@ -113,6 +114,30 @@ test("ближайшая улица и направление для остан�
   assert.ok(n, "улица рядом с остановкой");
   assert.ok(n.dist <= 60, "остановка не дальше 60 м от улицы (CONTRACT §8): " + n.dist);
   assert.ok(n.bearing >= 0 && n.bearing < 360);
+});
+
+test("настоящие объекты OSM: «рядом уже есть», двор, фонари вдоль участка", () => {
+  const E = new C.ExistingIndex(EXISTING);
+  // Пример-остановка из фикстуры стоит рядом с настоящей остановкой «БЦ Саад» (OSM node 5744091177).
+  const stop = FIXTURE.proposals.find((p) => p.kind === "stop");
+  const near = E.nearestSame("stop", stop.geometry.coordinates);
+  assert.equal(near.id, "osm-node-5744091177");
+  assert.ok(near.dist_m > 20 && near.dist_m < 45, String(near.dist_m));
+  assert.equal(E.nearestSame("stop", [71.0, 51.0]), null);
+  // Центр двора «Evolution» (OSM way 1148721825) — внутри его кольца.
+  const yard = EXISTING.yards.find((y) => y[0] === "yard-1148721825");
+  const ring = yard[4];
+  const c = [(Math.min(...ring.map((p) => p[0])) + Math.max(...ring.map((p) => p[0]))) / 2, (Math.min(...ring.map((p) => p[1])) + Math.max(...ring.map((p) => p[1]))) / 2];
+  if (C.pointInRing(c[0], c[1], ring)) assert.equal(E.yardAt(c).id, "yard-1148721825");
+  assert.equal(E.yardAt([71.0, 51.0]), null);
+  // Фонари: линия через настоящий фонарь OSM находит его; далеко — ноль.
+  const lamp = EXISTING.points.lamp[0];
+  const line = [C.fromLocal(lamp, [-40, 3]), C.fromLocal(lamp, [40, 3])];
+  assert.ok(E.lampsAlong(line) >= 1);
+  assert.equal(E.lampsAlong([[71.0, 51.0], [71.001, 51.0]]), 0);
+  // Сквер внутри парка — расстояние 0 (от края пятна).
+  const park = EXISTING.points.square.find((r) => r[5] > 50);
+  assert.equal(E.nearestSame("square", [park[0], park[1]]).dist_m, 0);
 });
 
 test("районы: точка в Нуре, за городом — null", () => {

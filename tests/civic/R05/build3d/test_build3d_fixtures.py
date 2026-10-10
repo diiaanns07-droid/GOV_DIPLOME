@@ -68,7 +68,8 @@ class Fixtures(unittest.TestCase):
         tmp = tempfile.mkdtemp(prefix="r05b3d-")
         try:
             mf.main(tmp)
-            for name in ("nura-streets.json", "astana-districts.json", "demo-basemap.json", "proposals.fixture.json"):
+            for name in ("nura-streets.json", "astana-districts.json", "demo-basemap.json", "proposals.fixture.json",
+                         "astana-existing.json"):
                 with open(os.path.join(tmp, name), "rb") as a, open(os.path.join(DATA, name), "rb") as b:
                     self.assertEqual(a.read(), b.read(), name + " отличается от генератора")
         finally:
@@ -136,6 +137,27 @@ class Fixtures(unittest.TestCase):
             self.assertEqual(p["status"], "proposal")
             self.assertIs(p["demo"], True, "примеры помечены demo")
             self.assertIn(p["kind"], ("square", "playground", "sports", "stop", "lighting"))
+
+    def test_existing_objects_are_real_osm(self):
+        ex = load(os.path.join(DATA, "astana-existing.json"))
+        self.assertEqual(ex["evidence_type"], "real (OSM)")
+        # Остановки = остановки ∪ платформы без повторов по (type, id), как требует README LOCAL-1.
+        keys = set()
+        for name in ("bus_stops", "platforms"):
+            keys |= {(e["type"], e["id"]) for e in mf.osm_elements(name)}
+        self.assertEqual(len(ex["points"]["stop"]), len(keys))
+        self.assertEqual(len(ex["points"]["playground"]), len(mf.osm_elements("playgrounds")))
+        self.assertEqual(len(ex["points"]["sports"]), len(mf.osm_elements("pitches")))
+        self.assertEqual(len(ex["points"]["lamp"]), len(mf.osm_elements("street_lamps")))
+        lo, la, hi_lo, hi_la = 71.2079 - 0.05, 50.9206 - 0.05, 71.7953 + 0.05, 51.3612 + 0.05
+        for kind, rows in ex["points"].items():
+            for row in rows:
+                self.assertRegex(row[2], r"^osm-(node|way|relation)-\d+$")
+                self.assertTrue(lo <= row[0] <= hi_lo and la <= row[1] <= hi_la, (kind, row[:3]))
+        for y in ex["yards"]:
+            self.assertRegex(y[0], r"^yard-\d+$")
+            self.assertGreaterEqual(len(y[4]), 4)
+            self.assertEqual(y[4][0], y[4][-1], "кольцо двора замкнуто")
 
     def test_license_and_attribution(self):
         for data in (self.streets, self.proposals):

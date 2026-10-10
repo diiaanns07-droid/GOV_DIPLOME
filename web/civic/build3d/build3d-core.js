@@ -361,6 +361,76 @@
     });
   }
 
+  // ───────────── Настоящие объекты OSM (рядом уже есть …, двор) ─────────────
+  // data — web/civic/build3d/data/astana-existing.json (из data/civic/astana/osm-objects, LOCAL-1).
+  // Это СУЩЕСТВУЮЩИЕ объекты: модуль их не рисует, а только подсказывает акимату «рядом уже есть остановка»
+  // и привязывает предложение к двору (yard-<id>, CONTRACT §4), чтобы оно связалось с жалобами на этот двор.
+  var EXISTING_KIND = { stop: "stop", playground: "playground", sports: "sports", square: "square", lighting: "lamp" };
+  var NEAR_M = { stop: 80, playground: 60, sports: 60, square: 60 };
+  var LAMP_NEAR_M = 15;
+
+  function ExistingIndex(data) {
+    this.points = (data && data.points) || {};
+    this.yards = ((data && data.yards) || []).map(function (row) {
+      var ring = row[4] || [];
+      var xs = ring.map(function (p) {
+        return p[0];
+      });
+      var ys = ring.map(function (p) {
+        return p[1];
+      });
+      return { id: row[0], name_ru: row[2] || null, name_kk: row[3] || null, ring: ring, box: [Math.min.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, xs), Math.max.apply(null, ys)] };
+    });
+  }
+
+  // Ближайший настоящий объект того же вида, что и проект: {id, name_ru, name_kk, dist_m} или null.
+  // Расстояние — от края пятна (у парков и площадок есть радиус), не меньше 0.
+  ExistingIndex.prototype.nearestSame = function (kind, lngLat, maxM) {
+    var list = this.points[EXISTING_KIND[kind]] || [];
+    maxM = maxM || NEAR_M[kind] || 60;
+    var best = null;
+    var kx = 111320 * Math.cos(lngLat[1] * DEG),
+      ky = 110540;
+    for (var i = 0; i < list.length; i++) {
+      var row = list[i];
+      var dx = (row[0] - lngLat[0]) * kx,
+        dy = (row[1] - lngLat[1]) * ky;
+      if (Math.abs(dx) > maxM + 600 || Math.abs(dy) > maxM + 600) continue;
+      var d = Math.max(0, Math.hypot(dx, dy) - (row[5] || 0));
+      if (d <= maxM && (!best || d < best.dist_m)) best = { id: row[2], name_ru: row[3] || null, name_kk: row[4] || null, dist_m: d };
+    }
+    return best;
+  };
+
+  // Сколько настоящих фонарей OSM стоит вдоль участка (не дальше 15 м от оси). Ноль ничего не доказывает:
+  // в OSM отмечена малая часть фонарей, поэтому интерфейс говорит только о найденных.
+  ExistingIndex.prototype.lampsAlong = function (coords, maxM) {
+    var list = this.points.lamp || [];
+    maxM = maxM || LAMP_NEAR_M;
+    if (!coords || coords.length < 2) return 0;
+    var origin = coords[0];
+    var line = coords.map(function (c) {
+      return toLocal(origin, c);
+    });
+    var n = 0;
+    for (var i = 0; i < list.length; i++) {
+      if (haversineM(origin, list[i]) > 2000) continue;
+      var pr = projectOnPolyline(toLocal(origin, list[i]), line);
+      if (pr && pr.dist <= maxM) n++;
+    }
+    return n;
+  };
+
+  // Двор (жилой квартал OSM), в котором стоит точка: {id: "yard-<id>", name_ru, name_kk} или null.
+  ExistingIndex.prototype.yardAt = function (lngLat) {
+    for (var i = 0; i < this.yards.length; i++) {
+      var y = this.yards[i];
+      if (lngLat[0] < y.box[0] || lngLat[0] > y.box[2] || lngLat[1] < y.box[1] || lngLat[1] > y.box[3]) continue;
+      if (pointInRing(lngLat[0], lngLat[1], y.ring)) return { id: y.id, name_ru: y.name_ru, name_kk: y.name_kk };
+    }
+    return null;
+  };
+
   // ───────────── Районы ─────────────
 
   function pointInRing(x, y, ring) {
@@ -841,6 +911,8 @@
     bearingDeg: bearingDeg,
     normDeg: normDeg,
     StreetIndex: StreetIndex,
+    ExistingIndex: ExistingIndex,
+    NEAR_M: NEAR_M,
     pointInRing: pointInRing,
     districtAt: districtAt,
     footprintCorners: footprintCorners,

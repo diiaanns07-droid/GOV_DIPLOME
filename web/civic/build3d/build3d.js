@@ -72,6 +72,16 @@
       "build3d.card.open": "{kind}: проект {year}, открыть карточку",
       "build3d.catalog.place": "{kind}: поставить на карту",
       "build3d.local_note": "Сохраняется только на этом устройстве, пока не подключён сервер предложений",
+      "build3d.near.stop": "Рядом уже есть остановка, {m} м",
+      "build3d.near.stop_named": "Рядом уже есть остановка: «{name}», {m} м",
+      "build3d.near.playground": "Рядом уже есть детская площадка, {m} м",
+      "build3d.near.sports": "Рядом уже есть спортплощадка, {m} м",
+      "build3d.near.square": "Рядом уже есть парк или сквер, {m} м",
+      "build3d.near.square_named": "Рядом уже есть парк или сквер: «{name}», {m} м",
+      "build3d.near.square_inside": "Это место внутри существующего парка или сквера",
+      "build3d.near.lamps": "На участке уже отмечены фонари: {n}",
+      "build3d.near.source": "по данным OpenStreetMap",
+      "build3d.card.yard": "Двор: {name}",
     },
     kk: {
       "build3d.loading": "3D жүктеліп жатыр…",
@@ -104,6 +114,16 @@
       "build3d.card.open": "{kind}: {year} жылғы жоба, карточканы ашу",
       "build3d.catalog.place": "{kind}: картаға қою",
       "build3d.local_note": "Ұсыныстар сервері қосылғанша тек осы құрылғыда сақталады",
+      "build3d.near.stop": "Жанында аялдама бар, {m} м",
+      "build3d.near.stop_named": "Жанында аялдама бар: «{name}», {m} м",
+      "build3d.near.playground": "Жанында балалар алаңы бар, {m} м",
+      "build3d.near.sports": "Жанында спорт алаңы бар, {m} м",
+      "build3d.near.square": "Жанында саябақ немесе гүлзар бар, {m} м",
+      "build3d.near.square_named": "Жанында саябақ немесе гүлзар бар: «{name}», {m} м",
+      "build3d.near.square_inside": "Бұл орын бұрыннан бар саябақ немесе гүлзардың ішінде",
+      "build3d.near.lamps": "Бөлікте шамдар белгіленген: {n}",
+      "build3d.near.source": "OpenStreetMap деректері бойынша",
+      "build3d.card.yard": "Аула: {name}",
     },
   };
 
@@ -309,6 +329,8 @@
       camera = null,
       ghostGroup = null;
     var streets = opts.streets || null,
+      existing = null, // настоящие объекты OSM (грузятся при первом размещении)
+      existingLoading = null,
       districts = null,
       fixture = null,
       store = null;
@@ -342,7 +364,7 @@
       var g = S.ghost;
       return JSON.stringify([
         S.phase, S.mode, S.kind, S.hint, S.visible, S.storeMode, S.cardBusy, t.lang(), Object.keys(S.objects).length,
-        g ? [g.valid && g.valid.ok, !!(g.section && g.section.ok)] : null,
+        g ? [g.valid && g.valid.ok, !!(g.section && g.section.ok), nearInfo()] : null,
         sel ? [sel.p.id, sel.p.votes_up, sel.p.votes_down, sel.p.my_vote, sel.pending] : null,
       ]);
     }
@@ -445,6 +467,16 @@
       if (S.hint && S.hint.error) hint.appendChild(icon("alert", o.iconsUrl));
       hint.appendChild(el("span", "", { text: S.hint ? t(S.hint.key, S.hint.params) : "" }));
       dock.appendChild(hint);
+      var info = nearInfo();
+      if (info) {
+        var line = el("p", "b3d-hint b3d-hint--info", { "data-near": info.id || "lamps" });
+        line.appendChild(icon("info", o.iconsUrl));
+        var txt = el("span", "");
+        txt.appendChild(doc.createTextNode(t(info.key, info.params) + " "));
+        txt.appendChild(el("span", "bk-meta", { text: "· " + t("build3d.near.source") }));
+        line.appendChild(txt);
+        dock.appendChild(line);
+      }
       var actions = el("div", "b3d-actions");
       if (!k.line) {
         actions.appendChild(actionBtn("rotate-left", t("proposal.rotate_left"), "", function () {
@@ -495,6 +527,10 @@
       card.appendChild(tags);
       var where = placeText(p);
       if (where) card.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
+      if (p.target && p.target.kind === "area" && (p.target.label_ru || p.target.label_kk)) {
+        var yardName = t.lang() === "kk" ? p.target.label_kk || p.target.label_ru : p.target.label_ru || p.target.label_kk;
+        card.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
+      }
       var votes = el("div", "b3d-votes", { role: "group", "aria-label": t("proposal.one_vote") });
       votes.appendChild(voteBtn(p, 1));
       votes.appendChild(voteBtn(p, -1));
@@ -643,21 +679,32 @@
       return Core.createAutoStore(cfg);
     }
 
+    // Стиль готов принять слой, когда загружен сам JSON стиля (источники могут ещё грузиться —
+    // map.isStyleLoaded() в это время false, поэтому ждём ещё и «load»/«idle»).
+    function styleJsonReady() {
+      try {
+        return !!(map.style && map.style._loaded) || (map.isStyleLoaded && map.isStyleLoaded());
+      } catch (e) {
+        return false;
+      }
+    }
     function whenStyleReady() {
       return new Promise(function (resolve) {
-        if (map.isStyleLoaded && map.isStyleLoaded()) return resolve();
+        if (styleJsonReady()) return resolve();
         var done = false;
         var finish = function () {
           if (done) return;
           done = true;
           map.off("load", finish);
+          map.off("idle", finish);
           map.off("styledata", check);
           resolve();
         };
         var check = function () {
-          if (map.isStyleLoaded()) finish();
+          if (styleJsonReady()) finish();
         };
         map.on("load", finish);
+        map.on("idle", finish);
         map.on("styledata", check);
       });
     }
@@ -787,10 +834,14 @@
 
     // После смены стиля карты (map.setStyle) MapLibre убирает все слои — возвращаем свой.
     function onStyleData() {
-      if (!THREE || S.destroyed || S.phase === "unsupported") return;
-      if (!map.getLayer(LAYER_ID)) {
-        layerAdded = false;
-        if (map.isStyleLoaded()) addLayer();
+      if (!THREE || !renderer || S.destroyed || S.phase === "unsupported") return;
+      if (map.getLayer(LAYER_ID)) return;
+      layerAdded = false;
+      try {
+        addLayer();
+      } catch (e) {
+        // JSON стиля ещё не разобран — попробуем, когда карта успокоится.
+        map.once("idle", onStyleData);
       }
     }
 
@@ -938,6 +989,7 @@
       if (!b) return;
       var name = t(Core.KINDS[obj.p.kind].key);
       b.textContent = t("proposal.label", { year: String(obj.p.year) });
+      obj.labelSize = null; // текст сменился — размер измерим заново (один раз, не в каждом кадре)
       b.setAttribute("aria-label", t("build3d.card.open", { kind: name, year: String(obj.p.year) }));
       b.setAttribute("aria-pressed", S.selected === obj.p.id ? "true" : "false");
     }
@@ -1110,6 +1162,14 @@
         obj.label.style.visibility = "";
         items.push({ obj: obj, sp: sp });
       });
+      // Размеры подписей меряем только после смены текста: чтение offsetWidth в каждом кадре
+      // заставляло браузер пересчитывать раскладку на каждый объект.
+      items.forEach(function (it) {
+        if (it.obj.labelSize) return;
+        var lab = it.obj.label;
+        lab.classList.remove("b3d-label--dot");
+        it.obj.labelSize = { w: lab.offsetWidth || 110, h: lab.offsetHeight || 26 };
+      });
       // Ближние к зрителю (ниже на экране) — первыми; они и остаются полными подписями.
       items.sort(function (a, b) {
         return b.sp.y - a.sp.y;
@@ -1119,8 +1179,8 @@
         var lab = it.obj.label;
         var compact = zoom < 14;
         var hiddenNow = lab.classList.contains("b3d-label--hidden"); // строится/удаляется — места не занимает
-        var lw = compact ? 18 : lab.offsetWidth || 110,
-          lh = compact ? 18 : lab.offsetHeight || 26;
+        var lw = compact ? 18 : it.obj.labelSize.w,
+          lh = compact ? 18 : it.obj.labelSize.h;
         var rect = { x: it.sp.x - lw / 2, y: it.sp.y - lh, w: lw, h: lh };
         if (!compact && !hiddenNow) {
           for (var i = 0; i < placed.length; i++) {
@@ -1139,6 +1199,45 @@
     }
 
     // ───────────── Размещение ─────────────
+
+    // Настоящие объекты OSM нужны только при размещении — грузим их при первом выборе в каталоге.
+    function ensureExisting() {
+      if (existing || existingLoading) return existingLoading || Promise.resolve(existing);
+      existingLoading = fetchJson(o.dataUrl + "astana-existing.json").then(
+        function (d) {
+          existing = new Core.ExistingIndex(d);
+          if (S.mode === "placing") {
+            updateGhost(false);
+            render();
+          }
+          return existing;
+        },
+        function (err) {
+          console.warn("[build3d] объекты OSM не загрузились:", err.message);
+          existingLoading = null;
+          return null;
+        }
+      );
+      return existingLoading;
+    }
+
+    // Подсказка «рядом уже есть …» по настоящим объектам OSM (не блокирует «Поставить»).
+    function nearInfo() {
+      var g = S.ghost;
+      if (!g || !existing) return null;
+      if (S.kind === "lighting") {
+        var sec = g.section && g.section.ok ? g.section : g.preview && g.preview.ok ? g.preview : null;
+        var n = sec ? existing.lampsAlong(sec.coords) : 0;
+        return n ? { key: "build3d.near.lamps", params: { n: n } } : null;
+      }
+      var near = existing.nearestSame(S.kind, g.pos);
+      if (!near) return null;
+      var name = t.lang() === "kk" ? near.name_kk || near.name_ru : near.name_ru || near.name_kk;
+      var m = Math.max(5, Math.round(near.dist_m / 5) * 5);
+      if (S.kind === "square" && near.dist_m === 0) return { key: "build3d.near.square_inside", params: null, id: near.id };
+      var named = name && (S.kind === "stop" || S.kind === "square");
+      return { key: "build3d.near." + S.kind + (named ? "_named" : ""), params: { m: m, name: name }, id: near.id };
+    }
 
     function start(kind, how) {
       how = how || {};
@@ -1170,6 +1269,7 @@
         setHint(streets ? "build3d.hint.segment_start" : "build3d.err.no_streets", null, !streets);
       } else setHint(touch ? "build3d.hint.touch" : "proposal.place_hint");
       setTool(true);
+      ensureExisting();
       if (o.autoZoom && map.getZoom() < 15.5) {
         map.easeTo({ zoom: 16.2, duration: reducedMotion() ? 0 : 700 });
       }
@@ -1252,8 +1352,10 @@
         };
       }
       var near = streets ? streets.nearest(g.pos, 120) : null;
+      var yard = existing ? existing.yardAt(g.pos) : null; // двор OSM → цель «area» (CONTRACT §4)
       return {
         kind: S.kind,
+        target: yard ? { kind: "area", id: yard.id, label_ru: yard.name_ru, label_kk: yard.name_kk } : null,
         geometry: { type: "Point", coordinates: [round6(g.pos[0]), round6(g.pos[1])] },
         rotation_deg: Math.round(g.rot),
         status: "proposal",

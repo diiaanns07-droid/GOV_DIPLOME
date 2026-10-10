@@ -144,6 +144,12 @@
 .b3d-hint--error {
   color: var(--c-danger);
 }
+.b3d-hint--info {
+  color: var(--c-info);
+}
+.b3d-hint--info .bk-meta {
+  white-space: nowrap;
+}
 .b3d-actions {
   display: flex;
   flex-wrap: wrap;

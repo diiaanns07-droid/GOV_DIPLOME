@@ -12,6 +12,10 @@
      (data/civic/astana/geofence.json): проверка «внутри Астаны» и район предложения.
   3. web/civic/build3d/data/demo-basemap.json — ВСЕ рёбра графа в фокус-области: только для
      demo.html (подложка без интернета). В общую сборку не нужен.
+  5. web/civic/build3d/data/astana-existing.json — реальные объекты OSM всей Астаны из
+     data/civic/astana/osm-objects/ (LOCAL-1): остановки, площадки, спортплощадки, парки/скверы,
+     фонари — для подсказки «рядом уже есть …»; жилые кварталы (landuse=residential) — для привязки
+     предложения к двору yard-<id> (CONTRACT §4).
   4. web/civic/build3d/data/proposals.fixture.json — два ПРИМЕРА предложений (demo: true) для
      заглушки R06 по CONTRACT §7: освещение по настоящим рёбрам ул. Сыганак и остановка у её края.
      Голоса — синтетические числа для показа карточки (помечены demo).
@@ -19,6 +23,7 @@
 Данные © OpenStreetMap contributors, ODbL 1.0 (производные).
 """
 
+import gzip
 import json
 import math
 import os
@@ -180,6 +185,124 @@ def main(out_dir=None):
     }
     print(dump("demo-basemap.json", basemap, out_dir), len(named), "named", len(other), "other")
     print(write_demo_proposals(graph, out_dir))
+    existing = build_existing()
+    print(dump("astana-existing.json", existing, out_dir), {k: len(v) for k, v in existing["points"].items()}, len(existing["yards"]), "yards")
+
+
+# ── Реальные объекты OSM (LOCAL-1) ──
+OSM_OBJECTS = os.path.join(REPO, "data", "civic", "astana", "osm-objects")
+USED_SETS = ("bus_stops", "platforms", "playgrounds", "pitches", "parks", "gardens", "street_lamps", "residential")
+YARD_SIMPLIFY_M = 2.0
+
+
+def osm_elements(name):
+    with gzip.open(os.path.join(OSM_OBJECTS, "raw", name + ".json.gz"), "rt", encoding="utf-8") as fh:
+        return json.load(fh)["elements"]
+
+
+def element_points(el):
+    """Все точки геометрии элемента Overpass (out geom): узел, путь или внешние члены отношения."""
+    if el["type"] == "node":
+        return [(el["lon"], el["lat"])]
+    if el.get("geometry"):
+        return [(g["lon"], g["lat"]) for g in el["geometry"] if g]
+    pts = []
+    for m in el.get("members", []):
+        if m.get("role", "outer") in ("outer", "") and m.get("geometry"):
+            pts.extend((g["lon"], g["lat"]) for g in m["geometry"] if g)
+    return pts
+
+
+def center(el):
+    pts = element_points(el)
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    return (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
+
+
+def osm_id(el):
+    return "osm-%s-%d" % (el["type"], el["id"])  # как у R12: osm-node-<id> / osm-way-<id>
+
+
+def names(el):
+    t = el.get("tags", {})
+    ru = t.get("name:ru") or t.get("name") or None
+    kk = t.get("name:kk") or t.get("name") or None
+    return ru, kk
+
+
+def outer_rings(el):
+    """Кольца жилого квартала: путь — одно кольцо; отношение — склеиваем внешние члены, если получится."""
+    if el["type"] == "way":
+        ring = [(g["lon"], g["lat"]) for g in el.get("geometry", []) if g]
+        return [ring] if len(ring) >= 4 and ring[0] == ring[-1] else []
+    rings = []
+    for m in el.get("members", []):
+        if m.get("role") == "outer" and m.get("geometry"):
+            ring = [(g["lon"], g["lat"]) for g in m["geometry"] if g]
+            if len(ring) >= 4 and ring[0] == ring[-1]:
+                rings.append(ring)
+    return rings
+
+
+def build_existing():
+    seen = set()
+    stops = []
+    for name in ("bus_stops", "platforms"):  # одна остановка бывает в обоих наборах — убираем повтор по (type, id)
+        for el in osm_elements(name):
+            key = (el["type"], el["id"])
+            if key in seen:
+                continue
+            seen.add(key)
+            x, y = center(el)
+            stops.append([r(x), r(y), osm_id(el)] + list(names(el)))
+    points = {"stop": sorted(stops, key=lambda row: row[2])}
+    for kind, sets in (("playground", ("playgrounds",)), ("sports", ("pitches",)), ("square", ("parks", "gardens")), ("lamp", ("street_lamps",))):
+        rows, ids = [], set()
+        for name in sets:
+            for el in osm_elements(name):
+                if (el["type"], el["id"]) in ids:
+                    continue
+                ids.add((el["type"], el["id"]))
+                x, y = center(el)
+                pts = element_points(el)
+                # Радиус пятна (м) — для парков и площадок: «рядом» считаем от края, а не от центра.
+                rad = max(mf_dist((x, y), p) for p in pts) if len(pts) > 1 else 0.0
+                rows.append([r(x), r(y), osm_id(el)] + list(names(el)) + [round(rad, 1)])
+        points[kind] = sorted(rows, key=lambda row: row[2])
+    yards = []
+    for el in osm_elements("residential"):
+        for ring in outer_rings(el):
+            simple = simplify([list(p) for p in ring], YARD_SIMPLIFY_M)
+            yards.append(["yard-%d" % el["id"], el["type"]] + list(names(el)) + [simple])
+    yards.sort(key=lambda row: (row[0], len(row[-1])))
+    with open(os.path.join(OSM_OBJECTS, "SOURCE.json"), encoding="utf-8") as fh:
+        src = json.load(fh)
+    return {
+        "schema": "birge-build3d-existing-v1",
+        "purpose": "Настоящие объекты OSM для подсказки «рядом уже есть …» при размещении проекта и привязки к двору "
+                   "(yard-<id>, CONTRACT §4). Это существующие объекты, не предложения.",
+        "evidence_type": "real (OSM)",
+        "source": {"path": "data/civic/astana/osm-objects/", "source_json_sha256": sha256_file(os.path.join(OSM_OBJECTS, "SOURCE.json")),
+                   "sets": {x["name"]: {"file": x.get("file"), "osm_base": x.get("osm_base"), "sha256_gzip": x.get("sha256_gzip")}
+                            for x in src.get("sets", []) if x["name"] in USED_SETS},
+                   "license": "ODbL-1.0", "attribution": ATTRIBUTION},
+        "point_fields": ["lon", "lat", "id", "name_ru", "name_kk", "radius_m"],
+        "yard_fields": ["id", "osm_type", "name_ru", "name_kk", "ring"],
+        "points": points,
+        "yards": yards,
+    }
+
+
+def mf_dist(a, b):
+    x, y = to_local(a, b)
+    return math.hypot(x, y)
+
+
+def sha256_file(path):
+    import hashlib
+    with open(path, "rb") as fh:
+        return hashlib.sha256(fh.read()).hexdigest()
 
 
 # ── Примеры предложений ──
