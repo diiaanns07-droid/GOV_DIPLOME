@@ -137,3 +137,42 @@
 @media (max-width: 720px) {
   .civic-r06-primary { width: 100%; justify-self: stretch; }
 }
+
+/* round 12: обработка на платформе, заметки, категория сотрудника, поиск */
+.civic-r06-filters input[type="search"] { flex: 2 1 220px; width: auto; }
+.civic-r06-handling, .civic-r06-recat, .civic-r06-note { display: grid; gap: 6px; margin-top: 12px; }
+.civic-r06-handling fieldset { display: grid; gap: 6px; }
+.civic-r06-handling-line { margin: 2px 0 6px; }
+.civic-r06-handling-new { background: #fbefd9; color: var(--r06-amber); }
+.civic-r06-handling-in_review { background: #e3eefb; color: #1d4f91; }
+.civic-r06-handling-answered { background: #e9f3dc; color: var(--r06-green); }
+.civic-r06-handling-duplicate, .civic-r06-handling-closed { background: #eef1ec; color: var(--r06-muted); }
+.civic-r06-classifier { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; margin: 6px 0; }
+.civic-r06-history-note { background: #fbf8ee; }
+.civic-r06-draft-note { display: block; }
+.civic-r06-recat input[type="text"] { width: 100%; }
+.civic-r06-more-filters { margin: 4px 0 8px; font-size: 13px; }
+.civic-r06-more-filters > summary { cursor: pointer; color: var(--r06-muted); }
+.civic-r06-more-filters .civic-r06-filters { margin-top: 6px; }
+/* round 13: квитанция по ссылке, хронология автора, привязка к объекту, конфликт ревизий */
+.civic-r06-receipt-link-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 8px; }
+.civic-r06-receipt-link-row .civic-r06-receipt-link { flex: 1 1 200px; min-width: 0; width: auto; font-size: 12px; }
+.civic-r06-receipt-status,
+.civic-r06-receipt-handling { margin: 4px 0; font-weight: 600; overflow-wrap: anywhere; }
+.civic-r06-receipt-reply { margin: 8px 0; padding: 8px; border-left: 3px solid var(--r06-line); overflow-wrap: anywhere; }
+.civic-r06-timeline { margin: 4px 0 8px; padding-left: 20px; font-size: 12px; }
+.civic-r06-timeline li { margin: 2px 0; overflow-wrap: anywhere; }
+.civic-r06-own { margin: 0 0 8px; font-size: 12px; }
+.civic-r06-own-receipts { margin: 4px 0; padding-left: 18px; }
+.civic-r06-receipt-form input[type="text"] { width: 100%; box-sizing: border-box; }
+.civic-r06-conflict,
+.civic-r06-binding { overflow-wrap: anywhere; }
+.civic-r06-receipt-link,
+.civic-r06-receipt-form input[type="text"] {
+  border: 1px solid #d9e2d4;
+  border-radius: 8px;
+  padding: 7px 8px;
+  background: #fff;
+  color: var(--r06-ink);
+  font: inherit;
+}

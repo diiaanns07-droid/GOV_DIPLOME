@@ -49,13 +49,18 @@ def object_lookup_from_civic_service(civic):
 def build_feedback_service(db_path, civic, *, classifier="auto", clock=None, **options) -> FeedbackService:
     """FeedbackService на той же SQLite-базе, что и R02 (свои таблицы feedback_*).
 
-    classifier="auto" — подключить R08 (ml.civic_classifier.classify), если модуль есть;
-    None — без классификатора; либо готовая функция classify(text, language).
+    classifier="auto" — подключить R08 (ml.civic_classifier.classify), если модуль есть и отвечает
+    по контракту (источник подсказок записывается как r08); None — без классификатора;
+    либо готовая функция classify(text, language) (источник external/fixture).
     """
+    source = options.pop("classifier_source", None)
     if classifier == "auto":
         classifier = load_r08_classifier()
+        # Источник «r08» ставится только здесь: модуль ml.civic_classifier импортирован и прошёл пробный
+        # вызов по контракту. Подменная функция, переданная явно, остаётся external/fixture.
+        source = "r08" if classifier is not None else None
     return FeedbackService(db_path, object_lookup_from_civic_service(civic), clock or getattr(civic, "clock", None),
-                           classifier=classifier, **options)
+                           classifier=classifier, classifier_source=source, **options)
 
 
 def dispatch_civic(feedback: FeedbackService, civic, method, path, query, body, context):
