@@ -40,9 +40,9 @@ R08 · «Картина дня» — как запустить и что мож�
   python -m pytest tests/civic/R08 -q                               # 132 PASS + 1 SKIP (с R07 @ 35e6feb; SKIP — подписи в сборке, см. ниже)
   BIRGE_STRICT_DEMO=1 python -m pytest tests/civic/R08 -q           # для приёмки: правдоподобие демо-чисел — обычный FAIL
   python tests/civic/R08/demo_server.py --kit-dir /tmp/r11kit &
-  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 97 проверок, скриншоты в research/round-14-results/R08/screens
+  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 101 проверка, скриншоты в research/round-14-results/R08/screens
   В общей сборке R01 (сервер CIVIC_DEMO=1, база init + seed-demo + seed-r14-demo, порт 8611):
-  NODE_PATH=$(npm root -g) node tests/civic/R08/shell_check.cjs http://127.0.0.1:8611   # 26 проверок: экран в оболочке
+  NODE_PATH=$(npm root -g) node tests/civic/R08/shell_check.cjs http://127.0.0.1:8611   # 28 проверок: экран в оболочке
       1366/375 × ru/kk, ҚАЗ без русских названий объектов, клик «горячее место → карточка цели» с тем же числом
   python -m pytest tests/civic/R08/test_r08_hot_labels.py           # в сборке: подписи мест не стёрты данными R12
 

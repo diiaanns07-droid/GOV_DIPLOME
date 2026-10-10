@@ -4,8 +4,8 @@
  "branch": "claude/r14-R08",
  "base_sha": "2131c15 (claude/round-14-package)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "23702ad",
- "tested_sha": "23702ad",
+ "code_sha": "6159e32",
+ "tested_sha": "6159e32",
  "tested_with": {
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 35e6feb (код 306074b: records()/generation, 5-недельный демо-поток, metoo_times) — временная копия, в git R08 не входит",
   "r11_ui_kit_i18n": "web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 8451468 — demo_server.py --kit-dir",
@@ -46,13 +46,13 @@
   "pytest tests/civic/R08 без ui/civic_heat": "117 PASS + 3 SKIP с причиной",
   "pytest tests/civic/R08 в рабочей копии R06 6b9da27": "129 PASS",
   "test_r08_heat_match.py": "без assert при сборе (R15: «ошибка сбора, assert 0 >= 3» на 5-недельном наборе R07); новые проверки: «неделю назад» не пустое, снимок отбрасывает «Я тоже», нажатые позже",
-  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 35e6feb)": "97/97 PASS — прежние 95 + B-018: объект и предложение без казахского названия → в ҚАЗ вид объекта по-казахски, в РУС — название",
   "живой R06 6b9da27": "PASS — объекты и предложения из базы R06, в ҚАЗ названия казахские («Тротуарды жөндеу», «Ілияс Омаров көшесі маңындағы гүлзар»); кадры akim-1366-ru/kk-r06-objects.png, akim-375-kk-r06-objects.png",
   "screenshots": "research/round-14-results/R08/screens/: akim-1366-ru/kk, akim-375-ru/kk (.png и -full.jpg), состояния, печать PDF, *-r06-objects.png — пересняты в эту ночь",
   "integration_with_R01_server": "PASS в рабочей копии сборки d9a8895 с этой поставкой (shell_check 26/26); в самой сборке R01 эта поставка ещё не взята",
   "map_link_target_opening": "PASS (shell_check): оболочка R01 ловит birge:open-target, focusTarget R07 открывает карточку",
   "test_r08_cli.py": "3 PASS — python -m ui.civic_akim --lang kk и --json не падают при PYTHONIOENCODING=cp1251 (как R10 B-028), JSON верный, казахские буквы не теряются",
-  "node tests/civic/R08/shell_check.cjs (сборка R01 d9a8895)": "26/26 PASS — «Картина дня» в оболочке 1366/375 × ru/kk, ҚАЗ без русских названий, клик «горячее место → карточка цели» с тем же числом и 7 днями; ошибки сети подложки (нет интернета) не считаются; кадры screens/shell/"
+  "node tests/civic/R08/shell_check.cjs (сборка R01 d9a8895)": "28/28 PASS — экран в оболочке 1366/375 × ru/kk, ҚАЗ без русских названий, клик «горячее место → карточка цели» с тем же числом и 7 днями, печать из оболочки — только «Картина дня» на 2 листа A4 (screens/shell/shell-print.pdf)",
+  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 35e6feb)": "101/101 PASS — прежние 97 + печать (метки ставятся перед печатью и снимаются после) + тихое обновление (новые числа без скелетона, фокус на месте, нет связи — числа остаются)"
  },
  "known_limits": [
   "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
@@ -65,7 +65,7 @@
   "В сборке R01 без patch r07_registry_labels.patch подписи горячих мест общие («Двор или квартал», «Нысан») — данные R12 стирают подписи R07 (INTEGRATION 4б)."
  ],
  "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 35e6feb + patch research/round-14-results/R08/patches/r07_registry_labels.patch (или R07 возьмёт его к себе), R06 @ 6b9da27, R11 @ последний; прогнать pytest tests/civic/R08 и shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, п. 13 R11 на FINAL.",
- "delivery": "3 (ночь, круги 1–2): R15 ошибка сбора, B-018, п. 13 R11, консоль CP1251, проверка в сборке R01, patch подписей R07",
+ "delivery": "3 (ночь, круги 1–3): R15 ошибка сбора, B-018, п. 13 R11, консоль CP1251, проверка в сборке R01, patch подписей R07, печать из оболочки, тихое обновление",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -101,6 +101,10 @@
    "R10 B-028 (по аналогии): казахский вывод в консоли CP1251": "R08 CLI исправлен 23702ad, test_r08_cli.py",
    "Проверка R08 в сборке R01 (раньше NOT_RUN)": "PASS 26/26 (shell_check.cjs)",
    "Новая находка: общие подписи горячих мест в сборке": "patch для R07 + тест (INTEGRATION 4б) — ОТКРЫТО до применения R01/R07"
+  },
+  "night_r3": {
+   "Своя находка: печать из оболочки R01 обрезала экран и печатала шапку с картой": "исправлено — akim.js помечает свою ветку DOM перед печатью, akim.css прячет остальное (shell_check: 2 листа A4)",
+   "Своя находка: «Данные на …» устаревали, пока аким смотрит экран": "тихое обновление раз в 2 мин и при возврате на вкладку (opts.refreshMs, 0 — выкл.)"
   }
  }
 }
