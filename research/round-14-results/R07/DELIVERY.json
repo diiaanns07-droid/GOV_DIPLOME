@@ -4,8 +4,8 @@
  "branch": "claude/upbeat-knuth-i0rqaa",
  "base_sha": "af77b78",
  "restored_from": null,
- "delivery": "ночь, круги 1–6: замечания R10, R11, R15, Codex, R01, R08 + самопроверка по UX_BRIEF — для FINAL (R01)",
- "code_sha": "13042af",
+ "delivery": "ночь, круги 1–7: замечания R10, R11, R15, Codex, R01, R08 + самопроверка по UX_BRIEF — для FINAL (R01)",
+ "code_sha": "51935b6",
  "code_commits": {
   "9bc25e6": "сервер: демо-поток 5 недель, ячейки и «Я тоже» R09, тексты жителей только сотруднику, records()/generation для R08, остановки только автобусные",
   "306074b": "интерфейс: исправления R11 № 1–8 и 12, ключ устройства R09, birge:lang на document, скриншоты",
@@ -14,10 +14,11 @@
   "b28268b": "ночь 3: не перенимать слабый id R05 (S16), значки только целиком внутри карты и не под панелью/кнопками, проверка наклона 3D, badges() для проверок",
   "934740e": "ночь 4: легенда на телефоне в одну строку + подсказка о масштабе тостом (R11 ночь 4), понятные 429/401/403 без «Повторить» (R15 U1)",
   "190266e": "ночь 5: кнопки и переключатели ≥ 44 px видимые (R11 ночь 5), «14 дней назад» на оси графика",
-  "13042af": "ночь 6: без пустой плашки легенды при обрыве связи (R10 B-034)"
+  "13042af": "ночь 6: без пустой плашки легенды при обрыве связи (R10 B-034)",
+  "51935b6": "ночь 7: «меньше движения» для всех перемещений карты, проверка объявления новой жалобы для экранного диктора"
  },
- "tested_sha": "13042af",
- "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документы поверх 13042af)",
+ "tested_sha": "51935b6",
+ "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документы поверх 51935b6)",
  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Node 22, Playwright 1.56.1 + Chromium 1194 (программный WebGL); интернет-тайлы закрыты (403) — офлайн-подложка из улиц OSM",
  "note_on_session": "В начале сессии по ошибке выполнялась роль R11; её черновики сохранены в 9cf80fc и 0cf32c5 и удалены из головы ветки (bcb3b6b).",
  "changed_paths": [
@@ -65,6 +66,7 @@
   "research/round-14-results/R07/screens/pick-badge-375-ru.jpg",
   "research/round-14-results/R07/screens/playground-real-osm-1366-kk.jpg",
   "research/round-14-results/R07/screens/pulse-new-complaint-1366-ru.jpg",
+  "research/round-14-results/R07/screens/reduced-motion-1366-ru.jpg",
   "research/round-14-results/R07/screens/refresh-error-toast-1366-ru.jpg",
   "research/round-14-results/R07/screens/state-error-1366-ru.jpg",
   "research/round-14-results/R07/screens/state-error-375-kk.jpg",
@@ -127,9 +129,9 @@
  "tests": {
   "pytest tests/civic/R07 (112 passed, 3 skipped)": "PASS",
   "pytest tests/civic (795 passed, 6 skipped) на 190266e; 13042af — только легенда интерфейса": "PASS",
-  "browser tests/civic/R07/browser/shots.js (49 сценариев, 1366/375 ru/kk; в каждом кадре — зона нажатия ≥ 48 и видимая высота ≥ 44)": "PASS 49/49 на 13042af (screens/CHECKS.json)",
-  "сборка R01 @ ef1ef44 + R07 934740e (копия во временной папке): pytest R07+R08+R15": "PASS 394 passed, 2 skipped",
-  "сборка R01 @ ef1ef44 + R07 13042af: r14_b1.cjs / r14_b2.cjs": "PASS 15/15 и 25/25",
+  "browser tests/civic/R07/browser/shots.js (50 сценариев, 1366/375 ru/kk; в каждом кадре — зона нажатия ≥ 48 и видимая высота ≥ 44)": "PASS 50/50 на 51935b6 (screens/CHECKS.json)",
+  "сборка R01 @ 0a7a346 + R07 13042af (копия во временной папке): pytest R07+R08+R15": "PASS 418 passed, 2 skipped",
+  "сборка R01 @ 0a7a346 + R07 13042af: r14_b1.cjs / r14_b2.cjs": "PASS 15/15 и 25/25",
   "skipped в R07 (3)": "NOT_RUN в ветке: формула ячейки R09 и сверка с R08 — модулей нет; в сборке R01 те же тесты PASS",
   "реальная подложка OpenFreeMap (тайлы из интернета)": "NOT_RUN: в облаке 403, задача LOCAL-7",
   "живые данные R09 v2": "NOT_RUN: модуля в этой ветке нет — демо-набор по CONTRACT §5; подключение configure(source, metoo_times) — INTEGRATION §1в",
@@ -137,7 +139,7 @@
   "живой сервер сборки R01 13ae790 + R07 (CIVIC_DEMO=1): /heat — 53 цели, подписей «Нысан/Двор или квартал» 0": "PASS",
   "R10 tests/civic/R10/accuracy.py на ветке R07 и на сборке R01 ef1ef44 + R07": "PASS 7/7 по R07 (в сборке 4 FAIL — чужие: R12/R05)"
  },
- "screenshots": "research/round-14-results/R07/screens/ — 46 кадров 1366×768 и 375×812, ru и kk, только из реально запущенного интерфейса; замеры — CHECKS.json",
+ "screenshots": "research/round-14-results/R07/screens/ — 47 кадров 1366×768 и 375×812, ru и kk, только из реально запущенного интерфейса; замеры — CHECKS.json",
  "known_limits": [
   "Жалобы демо (synthetic, demo: true): 483 жалобы, 952 человека с «Я тоже», 54 цели. Цели настоящие (OSM/LOCAL-1): 26 участков улиц (рёбра графа OSM), остановки и дворы ЖК Нуры, детские и контейнерные площадки, в каждом районе — настоящая остановка и двор.",
   "Демо-числа подобраны под критерии R08 (seed 20261014), но это не статистика Астаны.",
@@ -151,7 +153,7 @@
   "Тексты настоящих жалоб видит только сотрудник, если шлюз R01 передаёт staff=True; без этого — только примеры и число скрытых людей.",
   "11 id из файлов R12 нет в слое OSM R07 (части мультиполигонов yard-r…-N, платформа «Мерей» без bus=yes) — берутся у R12."
  ],
- "next_step": "R01 (FINAL): взять R07 @ 13042af; убрать адаптер R09CellResolver; patch R08 4б не нужен (то же сделано в R07); правило birge.css для .r07-badge можно оставить (INTEGRATION §1е); B-017 — ручка шторки оболочки. R11: 10 новых ключей (heat.kind.*, heat.too_many, heat.need_login) (INTEGRATION §6).",
+ "next_step": "R01 (FINAL): взять R07 @ 51935b6; убрать адаптер R09CellResolver; patch R08 4б не нужен (то же сделано в R07); правило birge.css для .r07-badge можно оставить (INTEGRATION §1е); B-017 — ручка шторки оболочки. R11: 10 новых ключей (heat.kind.*, heat.too_many, heat.need_login) (INTEGRATION §6).",
  "inputs": {
   "data/civic/astana/osm-objects/": "LOCAL-1, claude/round-14-package @ bdf12c8, без изменений (git diff с пакетом пуст), real, ODbL",
   "research/round-14-results/R11/UX_REVIEW.md": "claude/r14-R11 @ f025241, только чтение",
