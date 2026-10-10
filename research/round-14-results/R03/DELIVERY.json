@@ -4,13 +4,14 @@
  "base_sha": "3c5ac25 (claude/round-14-package)",
  "restored_from": "нет: v1 (claude/wizardly-ptolemy-qy8ltw @ 14c3384, ml/civic_classifier/) только прочитан; признаки v1 повторены в logreg.py",
  "data_from": "R02 claude/r14-R02: synth_v3, v1_in_v2, probe_v2 (@ 73b97d2), llm_v1 (@ 2a95286, gpt-4.1-mini, 3979 текстов) — читаются по путям, в ветку R03 не копировались",
- "code_sha": "d472baf",
- "tested_sha": "d472baf",
+ "code_sha": "3291133",
+ "tested_sha": "3291133",
  "push_status": "OK (claude/r14-R03)",
  "changed_paths": [
   "ml/civic_classifier_v2/.gitignore",
   "ml/civic_classifier_v2/MODEL_CARD.md",
   "ml/civic_classifier_v2/__init__.py",
+  "ml/civic_classifier_v2/analysis.py",
   "ml/civic_classifier_v2/config.py",
   "ml/civic_classifier_v2/data.py",
   "ml/civic_classifier_v2/evaluate.py",
@@ -24,11 +25,22 @@
   "ml/civic_classifier_v2/requirements-gpu.txt",
   "ml/civic_classifier_v2/requirements-runtime.txt",
   "ml/civic_classifier_v2/results/.gitkeep",
+  "ml/civic_classifier_v2/results/DIPLOMA_TABLES.md",
+  "ml/civic_classifier_v2/results/ERROR_ANALYSIS.md",
   "ml/civic_classifier_v2/results/RESULTS.md",
   "ml/civic_classifier_v2/results/cloud_check_2026-10-10.json",
   "ml/civic_classifier_v2/results/experiments.json",
   "ml/civic_classifier_v2/results/final_model_meta.json",
   "ml/civic_classifier_v2/results/onnx_export.json",
+  "ml/civic_classifier_v2/results/preds_probe_v2_synth_all_heuristic.jsonl",
+  "ml/civic_classifier_v2/results/preds_probe_v2_synth_all_logreg.jsonl",
+  "ml/civic_classifier_v2/results/tables/t1_probe_v2_macro_f1.csv",
+  "ml/civic_classifier_v2/results/tables/t2_template_vs_probe.csv",
+  "ml/civic_classifier_v2/results/tables/t3_paired_probe_v2.csv",
+  "ml/civic_classifier_v2/results/tables/t4_per_class_probe_v2.csv",
+  "ml/civic_classifier_v2/results/tables/t5_slices_probe_v2.csv",
+  "ml/civic_classifier_v2/results/tables/t6_training_cost.csv",
+  "ml/civic_classifier_v2/results/tables/t7_onnx.csv",
   "ml/civic_classifier_v2/results/train_log_experiments.jsonl",
   "ml/civic_classifier_v2/results/train_log_final.jsonl",
   "ml/civic_classifier_v2/train.py",
@@ -39,14 +51,16 @@
   "research/round-14-results/R03/INTEGRATION.txt",
   "research/round-14-results/R03/RUN.txt",
   "tests/civic/R03/round14/conftest.py",
-  "tests/civic/R03/round14/fixtures.py",
+  "tests/civic/R03/round14/r03_fixtures.py",
+  "tests/civic/R03/round14/r03_markers.py",
+  "tests/civic/R03/round14/test_r03_analysis.py",
   "tests/civic/R03/round14/test_r03_core.py",
   "tests/civic/R03/round14/test_r03_pipeline.py",
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 66/66",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 59, NOT_RUN 7 (skipped с причиной)",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 78/78",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 71, NOT_RUN 7 (skipped с причиной)",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
@@ -64,7 +78,12 @@
   "LOCAL-4: ONNX штатный экспорт: < 50 мс на текст": "FAIL — 102.9 мс при 24 потоках; 4 потока — 21.2 мс (диагностика)",
   "исправление ONNX (d472baf): per-channel + 4 потока, облако, модель размера xlm-r-base со случайными весами": "PASS — 266 МБ, 17.8 мс, три PASS",
   "повторный экспорт на ноутбуке с d472baf (RUN.txt шаг 8) и int8 на probe_v2 (шаг 8б)": "NOT_RUN — ждёт ноутбук",
-  "независимость probe_v2 от обучающих корпусов (Jaccard 3-грамм)": "PASS — максимум 0.37 к llm_v1 train, 0.56 к synth_v3 train; ≥ 0.6 нет"
+  "независимость probe_v2 от обучающих корпусов (Jaccard 3-грамм)": "PASS — максимум 0.37 к llm_v1 train, 0.56 к synth_v3 train; ≥ 0.6 нет",
+  "B-004 (R10): парковка на газоне → parking в продуктовом словаре; v1 эксперимента заморожен (sha256)": "PASS",
+  "совместимость с R04 @ 94bd9ac (tests/civic/R04/round14 с новым словарём)": "PASS 74, skipped 1",
+  "сбор тестов вместе с R06/R09 (просьба R01 §9)": "PASS — без ImportError",
+  "воспроизводимость: synth_all словарь и логрегрессия, облако против ноутбука": "PASS — матрицы ошибок совпадают на 4 наборах",
+  "analysis.py: таблицы для диплома и разбор ошибок; строки human не печатаются": "PASS"
  },
  "results_so_far": {
   "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",
@@ -103,5 +122,10 @@
   "guess_lang считает казахский без специфических букв русским — срезы берут язык из записи."
  ],
  "next_step": "Ноутбук: git pull claude/r14-R03, RUN.txt шаг 8 (повторный экспорт, ожидаются три PASS) и шаг 8б (int8 на probe_v2), commit results/onnx_export.json и onnx_int8_on_probe_v2.json. Затем передать artifacts/onnx R04. Когда будет ≥ 200 размеченных текстов людей — шаг 6 с --human (таблица на людях, режимы human/mix).",
- "local4_results_sha": "c19b889 (Codex на ноутбуке владельца: experiments.json, RESULTS.md, final_model_meta.json, onnx_export.json, train_log_*.jsonl; код 477f97b)"
+ "local4_results_sha": "c19b889 (Codex на ноутбуке владельца: experiments.json, RESULTS.md, final_model_meta.json, onnx_export.json, train_log_*.jsonl; код 477f97b)",
+ "deliverables_night": {
+  "DIPLOMA_TABLES.md": "ml/civic_classifier_v2/results/DIPLOMA_TABLES.md (+ results/tables/*.csv)",
+  "ERROR_ANALYSIS.md": "ml/civic_classifier_v2/results/ERROR_ANALYSIS.md",
+  "per-text predictions": "results/preds_probe_v2_synth_all_{heuristic,logreg}.jsonl (id и метки)"
+ }
 }
