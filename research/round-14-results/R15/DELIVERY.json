@@ -4,7 +4,7 @@
  "base_sha": "4bbf456",
  "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
  "code_sha": "c5b98a0 (tests/civic/R15); patches — b892532",
- "tested_sha": "d99c8c2 (FINAL-кандидат R01, ветка claude/sharp-dijkstra-0t87gl); раньше e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
+ "tested_sha": "8807b28 (FINAL-кандидат R01, ветка claude/sharp-dijkstra-0t87gl); раньше d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
  "push_status": "OK — claude/r14-R15 запушена (последний коммит — в финальном сообщении роли)",
  "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
  "changed_paths": [
@@ -121,7 +121,8 @@
   "r15_on_final_85c16e2": "PASS — 134 passed; браузер B1 15/15, B2 25/25; CSP-страницы PASS",
   "r15_on_final_1dd5b53": "PASS — 134 passed (копия tests/civic/R15 в сборке совпадает с веткой R15); браузер B1 15/15, B2 26/26; CSP PASS",
   "r15_on_final_e6d9d80": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS; U1 (429) сделан у R05/R06/R07/R09",
-  "r15_on_final_d99c8c2": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS"
+  "r15_on_final_d99c8c2": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS",
+  "r15_on_final_8807b28": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
