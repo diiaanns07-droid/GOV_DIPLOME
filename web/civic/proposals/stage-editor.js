@@ -15,46 +15,14 @@
   "use strict";
 
   var STAGES = ["planned", "design", "procurement", "construction", "acceptance", "operating"];
-  // Ключи, которых ещё нет у R11 (список — в INTEGRATION.txt R06). Словарь R11 главнее.
-  var PENDING = {
-    "stage.editor.title": { ru: "Этап работ", kk: "Жұмыс кезеңі" },
-    "stage.editor.stage": { ru: "Текущий этап", kk: "Ағымдағы кезең" },
-    "stage.editor.planned_end": { ru: "Плановое окончание", kk: "Жоспарлы аяқталу күні" },
-    "stage.editor.planned_hint": { ru: "Дата по плану. От неё считается отставание.", kk: "Жоспар бойынша күн. Кешігу осы күннен есептеледі." },
-    "stage.editor.forecast_end": { ru: "Прогноз окончания", kk: "Аяқталу болжамы" },
-    "stage.editor.forecast_hint": { ru: "Когда реально закончат. Пусто — прогноза нет.", kk: "Нақты қашан аяқталады. Бос болса — болжам жоқ." },
-    "stage.editor.reason": { ru: "Что изменилось (видно только сотрудникам)", kk: "Не өзгерді (тек қызметкерлерге көрінеді)" },
-    "stage.editor.save": { ru: "Сохранить этап", kk: "Кезеңді сақтау" },
-    "stage.editor.saving": { ru: "Сохраняем…", kk: "Сақталуда…" },
-    "stage.editor.saved": { ru: "Этап сохранён", kk: "Кезең сақталды" },
-    "stage.editor.unchanged": { ru: "Изменений нет", kk: "Өзгеріс жоқ" },
-    "stage.editor.conflict": {
-      ru: "Этап уже изменил другой сотрудник. Показана новая версия — проверьте и сохраните ещё раз.",
-      kk: "Кезеңді басқа қызметкер өзгертіп қойған. Жаңа нұсқа көрсетілді — тексеріп, қайта сақтаңыз.",
-    },
-    "stage.editor.login": { ru: "Сессия закончилась. Войдите заново и повторите.", kk: "Сессия аяқталды. Қайта кіріп, қайталаңыз." },
-    "stage.editor.error": { ru: "Не удалось сохранить. Проверьте связь и повторите.", kk: "Сақталмады. Байланысты тексеріп, қайталаңыз." },
-    "stage.editor.fix": { ru: "Исправьте выделенные поля", kk: "Белгіленген өрістерді түзетіңіз" },
-    "stage.editor.draft_note": {
-      ru: "Запись ещё не опубликована: жители увидят этап после публикации.",
-      kk: "Жазба әлі жарияланбаған: тұрғындар кезеңді жарияланғаннан кейін көреді.",
-    },
-    "stage.editor.select": { ru: "— выберите этап —", kk: "— кезеңді таңдаңыз —" },
-  };
+  // Все тексты — из словарей R11 (web/civic/i18n, ветка claude/r14-R11): 33 ключа R06 там с 12 октября.
+  // Запасной список PENDING убран (STATUS R06, «следующий шаг»): нет ключа — i18n покажет ключ и предупредит.
 
   function I() {
     return root.BirgeI18n;
   }
   function t(key, params) {
     var i18n = I();
-    if (i18n && i18n.has(key)) return i18n.t(key, params);
-    var p = PENDING[key];
-    var lang = i18n ? i18n.getLang() : "ru";
-    if (p) {
-      return String(p[lang] || p.ru).replace(/\{(\w+)\}/g, function (m, n) {
-        return params && params[n] != null ? String(params[n]) : m;
-      });
-    }
     return i18n ? i18n.t(key, params) : key;
   }
   function esc(s) {
@@ -88,6 +56,13 @@
         throw err;
       }
     );
+  }
+
+  // Дата словами под полем: «23 ноя 2026» / «23 қараша 2026». Формат самого поля type="date" задаёт язык
+  // браузера (в облачном Chromium — 11/23/2026 при любом языке страницы), поэтому подпись снимает двусмысленность
+  // «11/23 или 23.11» независимо от браузера (UX_REVIEW R11, день 3, п. 18).
+  function words(iso) {
+    return iso && I() ? I().formatDate(iso, { year: true }) : "";
   }
 
   var seq = 0;
@@ -125,10 +100,10 @@
         '</label><select class="bk-field__input" id="' + P + 'stage" name="stage"' + invalid("stage") + ">" + options + "</select>" + err("stage") + "</div>" +
         '<div class="bk-field' + (S.errors.planned_end ? " bk-field--error" : "") + '"><label class="bk-field__label" for="' + P + 'planned">' + esc(t("stage.editor.planned_end")) +
         '</label><input class="bk-field__input" type="date" id="' + P + 'planned" name="planned_end" value="' + esc(d.planned_end || "") + '"' + invalid("planned_end") +
-        ' /><p class="bk-field__hint">' + esc(t("stage.editor.planned_hint")) + "</p>" + err("planned_end") + "</div>" +
+        ' /><p class="bk-field__hint r06-date-words" data-words-for="planned_end">' + esc(words(d.planned_end)) + "</p>" + '<p class="bk-field__hint">' + esc(t("stage.editor.planned_hint")) + "</p>" + err("planned_end") + "</div>" +
         '<div class="bk-field' + (S.errors.forecast_end ? " bk-field--error" : "") + '"><label class="bk-field__label" for="' + P + 'forecast">' + esc(t("stage.editor.forecast_end")) +
         '</label><input class="bk-field__input" type="date" id="' + P + 'forecast" name="forecast_end" value="' + esc(d.forecast_end || "") + '"' + invalid("forecast_end") +
-        ' /><p class="bk-field__hint">' + esc(t("stage.editor.forecast_hint")) + "</p>" + err("forecast_end") + "</div>" +
+        ' /><p class="bk-field__hint r06-date-words" data-words-for="forecast_end">' + esc(words(d.forecast_end)) + "</p>" + '<p class="bk-field__hint">' + esc(t("stage.editor.forecast_hint")) + "</p>" + err("forecast_end") + "</div>" +
         '<div class="bk-field"><label class="bk-field__label" for="' + P + 'reason">' + esc(t("stage.editor.reason")) +
         '</label><textarea class="bk-field__input" rows="2" id="' + P + 'reason" name="reason"' + invalid("reason") + ">" + esc(d.reason || "") + "</textarea>" + err("reason") + "</div>" +
         '<button class="bk-btn bk-btn--primary" type="button" data-save' + (S.busy ? ' aria-busy="true" disabled' : "") + ">" +
@@ -219,6 +194,11 @@
         );
     }
 
+    el.addEventListener("input", function (e) {
+      var name = e.target && e.target.getAttribute("name");
+      var out = name && el.querySelector('[data-words-for="' + name + '"]');
+      if (out) out.textContent = words(e.target.value);
+    });
     el.addEventListener("click", function (e) {
       var b = e.target.closest && e.target.closest("[data-save]");
       if (b && !b.disabled) save();
@@ -233,5 +213,5 @@
     return { reload: load, ready: ready };
   }
 
-  root.BirgeStageEditor = { mount: mount, PENDING_KEYS: Object.keys(PENDING) };
+  root.BirgeStageEditor = { mount: mount };
 })(typeof self !== "undefined" ? self : this);

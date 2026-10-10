@@ -55,6 +55,13 @@ async function layoutChecks(page, label, warnings) {
       stages: document.querySelectorAll(".r06-card[data-object] .bk-stages > li").length,
       late: Array.from(document.querySelectorAll(".bk-tag--warn")).map((e) => e.textContent.trim()),
       stale: document.body.innerText.match(/Не обновлялось|жаңартылмаған/g) || [],
+      techTitles: Array.from(document.querySelectorAll(".bk-card__title")).map((e) => e.textContent).filter((t) => /Демо|синтетик/i.test(t)),
+      lateCardsWithoutWarn: Array.from(document.querySelectorAll('[data-group="late"] .r06-card')).filter((c) => !c.querySelector(".bk-tag--warn")).length,
+      staleCardsWithWarn: Array.from(document.querySelectorAll('[data-group="stale"] .r06-card')).filter((c) => c.querySelector(".bk-tag--warn")).length,
+      staleGroup: document.querySelectorAll('[data-group="stale"] .r06-card').length,
+      dup: (() => { const ids = Array.from(document.querySelectorAll("[data-group] .r06-card[data-object]")).map((c) => c.getAttribute("data-object")); return ids.length - new Set(ids).size; })(),
+      titles: Array.from(document.querySelectorAll(".r06-card[data-proposal] .bk-card__title")).map((e) => e.textContent),
+      objectTitles: Array.from(document.querySelectorAll(".r06-card[data-object] .bk-card__title")).map((e) => e.getAttribute("lang") + ":" + e.textContent),
       htmlLang: document.documentElement.lang,
     };
   });
@@ -69,6 +76,21 @@ async function layoutChecks(page, label, warnings) {
   check(label + ": полоса 6 этапов у каждого объекта", m.stages > 0 && m.stages % 6 === 0, "li=" + m.stages);
   check(label + ": значок «Отстаёт на N…» (цвет + слова)", m.late.length > 0 && /\d/.test(m.late[0]), m.late[0] || "");
   check(label + ": «давно не обновлялось» видно", m.stale.length > 0, String(m.stale.length));
+  check(label + ": п.15 — в названиях нет «Демо»/«синтетика»", m.techTitles.length === 0, m.techTitles.join(" | "));
+  check(label + ": п.17 — «Отстают» только с «Отстаёт на…», «Давно не обновлялись» без него, без повторов",
+        m.lateCardsWithoutWarn === 0 && m.staleCardsWithWarn === 0 && m.staleGroup > 0 && m.dup === 0,
+        JSON.stringify({ lateNoWarn: m.lateCardsWithoutWarn, staleWarn: m.staleCardsWithWarn, stale: m.staleGroup, dup: m.dup }));
+  if (m.htmlLang === "kk") {
+    check(label + ": п.19 — kk-название сквера без «шағын аудандағы»",
+          m.titles.indexOf("Ілияс Омаров көшесі маңындағы гүлзар") >= 0 && !m.titles.some((t) => /шағын аудандағы гүлзар/.test(t)), m.titles.join(" | "));
+    // Просьба R08 (день 3): у демо-объектов казахское название, lang="kk".
+    check(label + ": kk-названия демо-объектов (title_kk, lang=kk)",
+          m.objectTitles.length > 0 && m.objectTitles.every((t) => t.indexOf("kk:") === 0) && m.objectTitles.indexOf("kk:Тротуарды жөндеу") >= 0,
+          m.objectTitles.join(" | "));
+  } else {
+    check(label + ": ru-названия объектов (lang=ru)", m.objectTitles.length > 0 && m.objectTitles.every((t) => t.indexOf("ru:") === 0),
+          m.objectTitles.join(" | "));
+  }
 }
 
 async function counts(page, id) {
@@ -135,29 +157,77 @@ async function clickVote(page, id, value) {
       await other.context.close();
     }
 
-    // Акимат: вход сотрудника, «Одобрить».
-    {
-      const { context, page } = await openPage(browser, { width: 1366, height: 768 }, "kk");
-      const login = await page.evaluate(async (cred) => {
+    // Акимат (UX_REVIEW R11, день 3, п. 16): голоса — только чтение, одна главная кнопка «Одобрить»; затем «Одобрить».
+    async function staffPage(viewport, lang) {
+      const opened = await openPage(browser, viewport, lang);
+      const login = await opened.page.evaluate(async (cred) => {
         const r = await fetch("/api/civic/v1/session/login", {
           method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cred), credentials: "same-origin",
         });
         return r.status;
       }, { username: stand.username, password: stand.password });
-      check("вход сотрудника акимата", login === 200, String(login));
-      await page.goto(URL + "?lang=kk&role=akimat");
-      await page.waitForSelector('.r06-card[data-proposal] [data-action="approve"]');
-      const id = await page.getAttribute('.r06-card[data-proposal]:has([data-action="approve"])', "data-proposal");
-      if (shots) await page.screenshot({ path: path.join(shots, "r06-1366-kk-akimat.png") });
-      const respond = page.waitForResponse((r) => r.url().indexOf("/approve") > 0);
-      await page.click('.r06-card[data-proposal="' + id + '"] [data-action="approve"]');
-      const res = await respond;
-      await page.waitForTimeout(200);
-      const st = await page.evaluate((pid) => {
-        const card = document.querySelector('.r06-card[data-proposal="' + pid + '"]');
-        return { status: card.querySelector(".bk-status").textContent, disabled: card.querySelector(".r06-vote__btn").disabled, actions: card.querySelectorAll("[data-action]").length };
-      }, id);
-      check("«Мақұлдау» → статус «Мақұлданды», голосование закрыто", res.status() === 200 && st.status === "Мақұлданды" && st.disabled && st.actions === 0, JSON.stringify(st));
+      await opened.page.goto(URL + "?lang=" + lang + "&role=akimat");
+      await opened.page.waitForSelector('.r06-card[data-proposal] [data-action="approve"]');
+      await opened.page.waitForSelector(".r06-stage-editor select");
+      await opened.page.waitForTimeout(300);
+      return { ...opened, login };
+    }
+    for (const lang of ["ru", "kk"]) {
+      for (const vp of [{ width: 375, height: 812 }, { width: 1366, height: 768 }]) {
+        const { context, page, login } = await staffPage(vp, lang);
+        const label = "акимат " + lang + " " + vp.width;
+        const m = await page.evaluate(() => {
+          const cards = Array.from(document.querySelectorAll(".r06-card[data-proposal]"));
+          const open = cards.filter((c) => c.querySelector('[data-action="approve"]'));
+          return {
+            cards: cards.length,
+            voteButtons: document.querySelectorAll(".r06-card[data-proposal] .r06-vote__btn").length,
+            primaryPerOpen: open.map((c) => c.querySelectorAll(".bk-btn--primary").length),
+            tally: cards.map((c) => (c.querySelector(".r06-tally") || {}).textContent || ""),
+            scroll: document.documentElement.scrollWidth - window.innerWidth,
+          };
+        });
+        check(label + ": вход сотрудника", login === 200, String(login));
+        check(label + ": у акимата нет кнопок голосования (голоса — числами)", m.voteButtons === 0 && m.tally.every((x) => /\d/.test(x)), m.tally[0]);
+        check(label + ": одна главная кнопка в карточке («Одобрить»)", m.primaryPerOpen.length > 0 && m.primaryPerOpen.every((n) => n === 1), JSON.stringify(m.primaryPerOpen));
+        check(label + ": нет горизонтальной прокрутки", m.scroll <= 0, String(m.scroll));
+        if (shots) {
+          await page.screenshot({ path: path.join(shots, "r06-" + vp.width + "-" + lang + "-akimat.png") });
+          await page.screenshot({ path: path.join(shots, "r06-" + vp.width + "-" + lang + "-akimat-full.png"), fullPage: true });
+        }
+        if (lang === "kk" && vp.width === 1366) {
+          const id = await page.getAttribute('.r06-card[data-proposal]:has([data-action="approve"])', "data-proposal");
+          const respond = page.waitForResponse((r) => r.url().indexOf("/approve") > 0);
+          await page.click('.r06-card[data-proposal="' + id + '"] [data-action="approve"]');
+          const res = await respond;
+          await page.waitForTimeout(200);
+          const st = await page.evaluate((pid) => {
+            const card = document.querySelector('.r06-card[data-proposal="' + pid + '"]');
+            return { status: card.querySelector(".bk-status").textContent, actions: card.querySelectorAll("[data-action]").length,
+                     closed: card.textContent.indexOf("дауыс беру аяқталды") >= 0 };
+          }, id);
+          check("«Мақұлдау» → «Мақұлданды», голосование закрыто, кнопок решения нет", res.status() === 200 && st.status === "Мақұлданды" && st.actions === 0 && st.closed, JSON.stringify(st));
+        }
+        await context.close();
+      }
+    }
+
+    // UX_REVIEW п. 18: формат даты в поле этапа на ru/kk (Chromium берёт его из языка браузера).
+    for (const lang of ["ru", "kk"]) {
+      const { context, page } = await staffPage({ width: 1366, height: 768 }, lang);
+      const field = page.locator('.r06-stage-editor .bk-field:has(input[name="planned_end"])').first();
+      await field.scrollIntoViewIfNeeded();
+      const value = await page.locator('.r06-stage-editor input[name="planned_end"]').first().inputValue();
+      check("дата этапа " + lang + ": значение ISO в поле", /^\d{4}-\d{2}-\d{2}$/.test(value), value);
+      // п.18: формат самого поля задаёт браузер (в облаке — 11/23/2026), поэтому под полем — дата словами.
+      const words = await page.locator('.r06-stage-editor [data-words-for="planned_end"]').first().textContent();
+      const monthRe = lang === "kk" ? /^\d{1,2}\s(қаңтар|ақпан|наурыз|сәуір|мамыр|маусым|шілде|тамыз|қыркүйек|қазан|қараша|желтоқсан)\s20\d\d$/
+                                    : /^\d{1,2}\s(янв|фев|мар|апр|мая|июн|июл|авг|сен|окт|ноя|дек)\s20\d\d$/;
+      check("дата этапа " + lang + ": под полем дата словами («" + words + "»)", monthRe.test(words.replace(/\u00a0/g, " ")), words);
+      await page.locator('.r06-stage-editor input[name="planned_end"]').first().fill("2026-11-23");
+      const after = await page.locator('.r06-stage-editor [data-words-for="planned_end"]').first().textContent();
+      check("дата этапа " + lang + ": подпись обновляется при выборе (23 ноября)", /^23\s(ноя|қараша)\s2026$/.test(after.replace(/\u00a0/g, " ")), after);
+      if (shots) await field.screenshot({ path: path.join(shots, "r06-date-" + lang + ".png") });
       await context.close();
     }
 

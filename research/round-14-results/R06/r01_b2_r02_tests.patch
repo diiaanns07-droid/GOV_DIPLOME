@@ -1,0 +1,59 @@
+diff --git a/tests/civic/R02/test_r02_import_cli.py b/tests/civic/R02/test_r02_import_cli.py
+index 649ca8c..00eb0fc 100644
+--- a/tests/civic/R02/test_r02_import_cli.py
++++ b/tests/civic/R02/test_r02_import_cli.py
+@@ -144,7 +144,8 @@ def test_seed_demo_publishes_only_synthetic_with_visible_history(service):
+     assert report["source"] == "r02-demo"
+     items = call(service, "GET", "/objects")["body"]["data"]["items"]
+     assert len(items) == 3
+-    assert all(item["evidence_type"] == "synthetic" and "синтетика" in item["title"] for item in items)
++    # R06 раунд 14 (UX_REVIEW R11, день 3, п. 15): «синтетика» — в типе данных и описании, не в названии.
++    assert all(item["evidence_type"] == "synthetic" and "интетическ" in item["description"] for item in items)
+     assert all(item["budget"]["amount_kzt"] is None for item in items)
+     delayed = call(service, "GET", "/objects/demo-r02-sidewalk-delay")["body"]["data"]
+     assert delayed["item"]["schedule"]["original_planned_end"] == "2026-10-20"
+diff --git a/tests/civic/R02/test_r02_objects.py b/tests/civic/R02/test_r02_objects.py
+index a5cd6f6..62b6be5 100644
+--- a/tests/civic/R02/test_r02_objects.py
++++ b/tests/civic/R02/test_r02_objects.py
+@@ -193,7 +193,8 @@ def test_internal_notes_and_staff_meta_never_reach_public_projection(editor, ser
+     assert set(detail["item"]) == {
+         "schema_version", "id", "city", "kind", "title", "description", "status", "publication",
+         "geometry", "geometry_precision", "schedule", "budget", "responsible", "evidence_type",
+-        "source_refs", "evidence_notes", "updated_at", "revision"}
++        "source_refs", "evidence_notes", "updated_at", "revision",
++        "geometry_source"}  # R06 раунд 14: источник формы места (просьба R12)
+     for entry in detail["history"]:
+         assert set(entry) == {"id", "object_id", "revision", "at", "changed_fields", "reason",
+                               "public_actor_label"}
+diff --git a/tests/civic/R02/test_r02_round12_export.py b/tests/civic/R02/test_r02_round12_export.py
+index a3af5fd..139e2ac 100644
+--- a/tests/civic/R02/test_r02_round12_export.py
++++ b/tests/civic/R02/test_r02_round12_export.py
+@@ -12,7 +12,7 @@ import sys
+ import pytest
+ 
+ from ui.civic_store import cli
+-from ui.civic_store.db import MIGRATIONS, REPO_ROOT, Database
++from ui.civic_store.db import MIGRATIONS, REPO_ROOT, SCHEMA_VERSION, Database
+ from ui.civic_store.importer import import_package
+ from ui.civic_store.public_export import (PublicRestoreRejected, _digest, export_public,
+                                           restore_public)
+@@ -182,7 +182,7 @@ def test_existing_older_schema_with_data_migrates_without_loss(tmp_path, monkeyp
+     before = all_rows(path)
+     with pytest.raises(Exception, match="миграц"):
+         CivicService(path, auto_migrate=False)  # старая схема не используется молча
+-    assert Database(path).migrate() == [4, 5, 6]  # раунд 14: миграция 6 R06 (как в tests/civic/R06/store)
++    assert Database(path).migrate() == list(range(4, SCHEMA_VERSION + 1))  # раунд 14: миграции R06 6–7 (как в tests/civic/R06/store)
+     after = all_rows(path)
+     assert {k: v for k, v in after.items() if k in before} == before  # данные и история не потеряны и не переписаны
+     service = CivicService(path, auto_migrate=False)
+@@ -191,7 +191,7 @@ def test_existing_older_schema_with_data_migrates_without_loss(tmp_path, monkeyp
+     assert Database(path).migrate() == []
+     conn = sqlite3.connect(path)
+     try:
+-        assert [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")] == [1, 2, 3, 4, 5, 6]
++        assert [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")] == list(range(1, SCHEMA_VERSION + 1))
+     finally:
+         conn.close()
+ 

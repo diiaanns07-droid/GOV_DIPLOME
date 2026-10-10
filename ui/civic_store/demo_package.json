@@ -61,7 +61,7 @@
      ]
     ]
    },
-   "geometry_precision": "approximate",
+   "geometry_precision": "source",
    "schedule": {
     "planned_start": "2026-10-01",
     "original_planned_end": "2026-10-20",
@@ -116,7 +116,7 @@
      ]
     ]
    },
-   "geometry_precision": "approximate",
+   "geometry_precision": "source",
    "schedule": {
     "planned_start": "2026-11-02",
     "original_planned_end": null,

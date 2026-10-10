@@ -124,7 +124,7 @@ def test_demo_package_lines_follow_osm_graph_within_5m():
     graph = json.loads(GRAPH.read_text(encoding="utf-8"))
     pkg = json.loads(DEMO_PACKAGE.read_text(encoding="utf-8"))
     lines = [i for i in pkg["items"] if i["geometry"] and i["geometry"]["type"] == "LineString"]
-    assert lines and all(i["geometry_source"] == "osm-graph" for i in lines)
+    assert lines and all(i["geometry_source"] == "osm-graph" and i["geometry_precision"] == "source" for i in lines)
     edges = [e["geometry"] for e in graph["edges"] if e.get("osm_way_id") == 409391547]
     for item in lines:
         for p in item["geometry"]["coordinates"]:

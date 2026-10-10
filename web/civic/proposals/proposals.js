@@ -25,32 +25,8 @@
   // Статус предложения → цвет значка ui-kit (слово рядом всегда своё).
   var STATUS_LOOK = { proposal: "accepted", approved: "fixed", rejected: "rejected" };
 
-  // Ключи, которых ещё нет в словарях R11 (переданы в research/round-14-results/R06/INTEGRATION.txt).
-  // Пока R11 их не добавил, берём текст отсюда; как только ключ есть в ru.json/kk.json — побеждает словарь.
-  var PENDING = {
-    "proposal.your_vote_up": { ru: "Вы проголосовали «за»", kk: "Сіз «жақтаймын» деп дауыс бердіңіз" },
-    "proposal.your_vote_down": { ru: "Вы проголосовали «против»", kk: "Сіз «қарсымын» деп дауыс бердіңіз" },
-    "proposal.vote_saved": { ru: "Голос учтён", kk: "Дауысыңыз есепке алынды" },
-    "proposal.vote_changed": { ru: "Голос изменён", kk: "Дауысыңыз өзгертілді" },
-    "proposal.vote_error": {
-      ru: "Не удалось отправить голос. Проверьте связь и повторите.",
-      kk: "Дауыс жіберілмеді. Байланысты тексеріп, қайталаңыз.",
-    },
-    "proposal.voting_closed": { ru: "Голосование по этому проекту закрыто", kk: "Бұл жоба бойынша дауыс беру аяқталды" },
-    "proposal.votes_aria": { ru: "За: {up}, против: {down}", kk: "Жақтағандар: {up}, қарсылар: {down}" },
-    "proposal.need_staff": { ru: "Войдите как сотрудник акимата", kk: "Әкімдік қызметкері ретінде кіріңіз" },
-    "proposal.already_decided": {
-      ru: "Решение по проекту уже принято. Карточка обновлена.",
-      kk: "Жоба бойынша шешім қабылданып қойған. Ақпарат жаңартылды.",
-    },
-    "proposal.not_found": { ru: "Проект не найден или снят", kk: "Жоба табылмады немесе алынып тасталды" },
-    "object.stage_unknown": { ru: "Этап работ не указан", kk: "Жұмыс кезеңі көрсетілмеген" },
-    "object.not_found": { ru: "Объект не найден или снят с публикации", kk: "Нысан табылмады немесе жариялаудан алынды" },
-    "object.kind.construction": { ru: "Строительство", kk: "Құрылыс" },
-    "object.kind.roadworks": { ru: "Ремонт дороги", kk: "Жол жөндеу" },
-    "object.kind.landscaping": { ru: "Благоустройство", kk: "Абаттандыру" },
-    "object.kind.event": { ru: "Мероприятие", kk: "Іс-шара" },
-  };
+  // Все тексты — из словарей R11 (web/civic/i18n, ветка claude/r14-R11): 33 ключа R06 там с 12 октября.
+  // Запасной список PENDING убран (STATUS R06, «следующий шаг»): нет ключа — i18n покажет ключ и предупредит.
 
   function I() {
     return root.BirgeI18n;
@@ -58,19 +34,9 @@
   function lang() {
     return I() ? I().getLang() : "ru";
   }
-  function fill(text, params) {
-    return String(text).replace(/\{(\w+)\}/g, function (m, name) {
-      if (!params || params[name] === undefined || params[name] === null) return m;
-      var v = params[name];
-      return typeof v === "number" && I() ? I().formatNumber(v) : String(v);
-    });
-  }
   function t(key, params) {
     var i18n = I();
-    if (i18n && i18n.has(key)) return i18n.t(key, params);
-    var p = PENDING[key];
-    if (p) return fill(p[lang()] || p.ru, params);
-    return i18n ? i18n.t(key, params) : key; // покажет ключ и предупредит в консоли — видно на проверке
+    return i18n ? i18n.t(key, params) : key;
   }
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -201,6 +167,7 @@
   }
 
   function proposalHtml(p, opts) {
+    var akimat = opts.role === "akimat";
     var id = "r06-p-" + esc(p.id);
     var ttl = title(p);
     var total = p.votes_up + p.votes_down;
@@ -226,12 +193,17 @@
       (p.district ? '<p class="bk-meta" style="margin:0">' + esc(t("district.name", { name: t("district." + p.district) })) + "</p>" : "") +
       '<div class="bk-card__row"><span class="bk-meta">' + esc(t("status.label")) + '</span><span class="bk-status" data-status="' +
       (STATUS_LOOK[p.status] || "new") + '">' + esc(t("proposal.status." + p.status)) + "</span></div>" +
-      '<div class="r06-vote" role="group" aria-label="' + esc(t("proposal.votes_aria", { up: p.votes_up, down: p.votes_down })) + '">' +
-      voteBtn(1, "proposal.vote_up", "thumb-up", p.votes_up) + voteBtn(-1, "proposal.vote_down", "thumb-down", p.votes_down) + "</div>" +
+      (akimat
+        ? // Акимат голосует не здесь: голоса — числами (только чтение), одна главная кнопка — «Одобрить»
+          // (UX_REVIEW R11, день 3, п. 16). Текст — тот же, что в «Картине дня» R08 (akim.proposals.votes).
+          '<p class="r06-tally">' + icon("users") + "<span>" + esc(t("akim.proposals.votes", { up: p.votes_up, down: p.votes_down })) + "</span></p>"
+        : '<div class="r06-vote" role="group" aria-label="' + esc(t("proposal.votes_aria", { up: p.votes_up, down: p.votes_down })) + '">' +
+          voteBtn(1, "proposal.vote_up", "thumb-up", p.votes_up) + voteBtn(-1, "proposal.vote_down", "thumb-down", p.votes_down) + "</div>") +
       '<div class="r06-share" aria-hidden="true"><i class="r06-share__up" style="width:' + upShare + '%"></i><i class="r06-share__down" style="width:' +
       (total ? 100 - upShare : 0) + '%"></i></div>' +
-      '<p class="bk-meta r06-vote__note" aria-live="polite">' + esc(note) + "</p>";
-    if (opts.role === "akimat" && p.status === "proposal") {
+      (akimat ? (p.voting_open ? "" : '<p class="bk-meta r06-vote__note">' + esc(t("proposal.voting_closed")) + "</p>")
+        : '<p class="bk-meta r06-vote__note" aria-live="polite">' + esc(note) + "</p>");
+    if (akimat && p.status === "proposal") {
       html +=
         '<div class="bk-actions"><button class="bk-btn bk-btn--primary" type="button" data-action="approve">' + icon("check") +
         "<span>" + esc(t("proposal.approve")) + '</span></button><button class="bk-btn bk-btn--danger" type="button" data-action="reject">' +
@@ -375,8 +347,10 @@
       (o.demo ? '<span class="bk-tag bk-tag--demo" title="' + esc(t("common.tag.demo_hint")) + '">' + esc(t("common.tag.demo")) + "</span>" : "") +
       (o.geometry_precision === "approximate" ? '<span class="bk-tag bk-tag--approx">' + esc(t("common.tag.approx")) + "</span>" : "") +
       "</div>" +
-      // Название объекта в civic-v1 одно (на языке источника) — помечаем lang="ru".
-      '<h3 class="bk-card__title" id="' + id + '" lang="ru">' + esc(o.title) + "</h3>" +
+      // Название объекта в civic-v1 одно (на языке источника, lang="ru"); title_kk есть только у демо-записей.
+      (lang() === "kk" && o.title_kk
+        ? '<h3 class="bk-card__title" id="' + id + '" lang="kk">' + esc(o.title_kk) + "</h3>"
+        : '<h3 class="bk-card__title" id="' + id + '" lang="ru">' + esc(o.title) + "</h3>") +
       (o.district ? '<p class="bk-meta" style="margin:0">' + esc(t("district.name", { name: t("district." + o.district) })) + "</p>" : "") +
       '<hr class="bk-divider" /><div class="r06-stages">' + stagesHtml(o) + "</div></article>"
     );
@@ -405,7 +379,6 @@
     mountObject: mountObject,
     renderStages: renderStages,
     stagesHtml: stagesHtml,
-    PENDING_KEYS: Object.keys(PENDING),
     STAGES: STAGES.slice(),
   };
 })(typeof self !== "undefined" ? self : this);

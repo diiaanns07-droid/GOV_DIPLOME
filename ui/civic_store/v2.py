@@ -364,7 +364,7 @@ def akim_objects(district=None):
     data = _run(_v2().stages.list_public, _query(None, district))
     out = []
     for item in data["items"]:
-        out.append({"id": item["id"], "kind": item["kind"], "title_ru": item["title"], "title_kk": None,
+        out.append({"id": item["id"], "kind": item["kind"], "title_ru": item["title"], "title_kk": item.get("title_kk"),
                     "district": item["district"], "stage": item["stage"], "planned_end": item["planned_end"],
                     "forecast_end": item["forecast_end"], "delay_days": item["delay_days"] or 0,
                     "late": item["late"], "stale": item["stale"], "stale_days": item["stale_days"],

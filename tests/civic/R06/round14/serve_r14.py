@@ -116,6 +116,9 @@ def make_handler(service, v2, web_root: Path, kit_root: Path | None, port: int):
         def do_PUT(self):
             self._api("PUT")
 
+        def do_DELETE(self):
+            self._api("DELETE")
+
     return Handler
 
 
