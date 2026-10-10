@@ -204,12 +204,16 @@ class Fixtures(unittest.TestCase):
         self.assertEqual(len(kk), len(names))
         self.assertEqual(kk[names.index("улица Сыганак")], "Сығанақ көшесі")
         self.assertEqual(kk[names.index("проспект Туран")], "Тұран даңғылы")
+        # Регистр по правилам казахского письма (R11 ночь 7 п. 2): «және», «хандар», «батыр» — строчные.
+        self.assertEqual(kk[names.index("улица Керей и Жанибек хандар")], "Керей және Жәнібек хандар көшесі")
+        self.assertEqual(kk[names.index("проспект Кабанбай Батыра")], "Қабанбай батыр даңғылы")
         import gzip
         with gzip.open(mf.OSM_WALKING, "rt", encoding="utf-8") as fh:
             osm_kk = {(el.get("tags") or {}).get("name:kk") for el in json.load(fh)["elements"] if el.get("type") == "way"}
+        osm_kk_norm = {mf.kk_case(x) for x in osm_kk if x}
         for name in kk:
             if name is not None:
-                self.assertIn(name, osm_kk, "название не из OSM")
+                self.assertIn(name, osm_kk_norm, "название не из OSM")
         self.assertEqual(self.streets["names_kk_source"]["found"], sum(1 for x in kk if x))
 
     def test_pole_offset_from_osm_lanes_and_width(self):

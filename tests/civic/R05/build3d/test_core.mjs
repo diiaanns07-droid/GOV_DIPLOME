@@ -110,6 +110,7 @@ test("участок улицы: понятные отказы", () => {
 test("казахские названия улиц — из OSM (name:kk), иначе нет", () => {
   const idx = new C.StreetIndex(STREETS);
   assert.equal(idx.kkOf("улица Сыганак"), "Сығанақ көшесі");
+  assert.equal(idx.kkOf("улица Керей и Жанибек хандар"), "Керей және Жәнібек хандар көшесі", "регистр по правилам казахского письма");
   assert.equal(idx.kkOf("нет такой улицы"), null);
   const noKk = STREETS.names.find((n, i) => !STREETS.names_kk[i]);
   assert.equal(idx.kkOf(noKk), null, "нет в OSM — null (интерфейс покажет русское)");
