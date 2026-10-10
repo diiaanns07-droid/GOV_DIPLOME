@@ -1,8 +1,8 @@
 R09 · РАУНД 14 · INTEGRATION — НОЧЬ 10→11 ОКТ (сначала этот раздел)
-Ветка R09 этой ночи: claude/wizardly-ptolemy-qy8ltw, код 14a75c6 (см. DELIVERY.json, NIGHT_FIXES.md).
+Ветка R09 этой ночи: claude/wizardly-ptolemy-qy8ltw, код b6cadb3 (см. DELIVERY.json, NIGHT_FIXES.md).
 Забрать в сборку (пути R09 целиком; в них уже есть патч R15 P-R09 с доработками):
     git fetch origin claude/wizardly-ptolemy-qy8ltw
-    git checkout 14a75c6 -- ui/civic_feedback web/civic/feedback tests/civic/R09
+    git checkout b6cadb3 -- ui/civic_feedback web/civic/feedback tests/civic/R09
 
 === R01 — нужно сделать ===
 N1) B-030 («Я тоже» на чистой демо-базе): research/round-14-results/R09/r01_seed_r09_demo.patch — метод
@@ -31,7 +31,7 @@ N6) DEMO_SCRIPT, шаг 1–2, расходится с экраном жалоб
     Шаг 6 с демо-жалобами R09 проходит: «Взять в работу» → «Отметить исправленным» закрывают и жалобу, к которой
     житель присоединился, — в «Мои обращения» у него «Исправлено» (app_demo_r09.cjs, вариант 1366-kk).
 N7) Проверено на вашем FINAL-кандидате ef1ef44 + пути R09 этой ночи + патч N1: приложение 42/42 (шаги 1–2 и 6),
-    ваши r14_b1 15/15 и r14_b2 25/25, pytest R09 + R15 + R01 — 731 passed, 1 skipped.
+    ваши r14_b1 15/15 и r14_b2 25/25, pytest R09 + R15 + R01 — 732 passed, 1 skipped.
 
 === R11 ===
 - Новый ключ: complaint.step2.here — ru «Вы здесь», kk «Сіз осындасыз» (цель с расстоянием 0, R11 B2 №3).

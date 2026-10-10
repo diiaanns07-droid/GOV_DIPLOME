@@ -21,10 +21,10 @@
    "how": "git checkout 933cd90 -- ui/civic_feedback web/civic/feedback (побайтно, v1 не менялся)"
   }
  },
- "code_sha": "14a75c655e1f5dee8a7fb1e2df59d2a890a193f3",
- "tested_sha": "14a75c655e1f5dee8a7fb1e2df59d2a890a193f3",
+ "code_sha": "b6cadb35ed21d76a13b35908334ea35fdd434123",
+ "tested_sha": "b6cadb35ed21d76a13b35908334ea35fdd434123",
  "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22, Playwright + Chromium headless (программный WebGL), без интернета",
- "push_status": "OK (код и проверки 14a75c6; этот файл — следующим коммитом, SHA в STATUS.md)",
+ "push_status": "OK (код и проверки b6cadb3; этот файл — следующим коммитом, SHA в STATUS.md)",
  "changed_paths": {
   "code_and_tests": [
    "tests/civic/R09/app_demo_r09.cjs",
@@ -192,7 +192,7 @@
   {
    "name": "та же сборка ef1ef44: pytest tests/civic/R09 tests/civic/R15 tests/civic/R01",
    "status": "PASS",
-   "detail": "731 passed, 1 skipped"
+   "detail": "732 passed, 1 skipped"
   },
   {
    "name": "та же сборка ef1ef44: приёмка R10 tests/e2e/demo_flow.cjs (R10 068f36e)",

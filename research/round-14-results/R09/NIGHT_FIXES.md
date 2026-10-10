@@ -1,6 +1,6 @@
 # R09 · ночь 10→11 октября · замечания к жалобе жителя и что сделано
 
-Ветка `claude/wizardly-ptolemy-qy8ltw`, код `14a75c6` (пути R09 продолжены с `claude/modest-shannon-0ki93p` @ 5dd6465).
+Ветка `claude/wizardly-ptolemy-qy8ltw`, код `b6cadb3` (пути R09 продолжены с `claude/modest-shannon-0ki93p` @ 5dd6465).
 Среда: облачный Linux, Python 3.13, Chromium headless (программный WebGL), без интернета.
 
 | Источник | Замечание | Что сделано | Проверка |
@@ -33,5 +33,5 @@
 
 Итог проверок: pytest `tests/civic/R09` 474 passed / 2 skipped; стенд 186/186 (запасные стили) и 186/186 (ui-kit R11) — `BROWSER_RESULT_NIGHT*.txt`;
 приложение (R01 13ae790 + R09 + патч) 36/36, R01 B1 15/15, B2 20/20; тесты R15 по R09 — XPASS.
-FINAL-кандидат R01 ef1ef44 + R09 + патч: приложение 42/42 (шаги 1–2 и 6), R01 B1 15/15, B2 25/25, pytest R09+R15+R01 731 passed;
+FINAL-кандидат R01 ef1ef44 + R09 + патч: приложение 42/42 (шаги 1–2 и 6), R01 B1 15/15, B2 25/25, pytest R09+R15+R01 732 passed;
 приёмка R10 demo_flow 107/7/4 — шаг 6 UI мешает порядок её теста (см. INTEGRATION.txt, R10).
