@@ -311,35 +311,40 @@
   display: none;
 }
 .b3d-label {
+  /* Прозрачная зона нажатия ≥ 48 px вокруг видимой таблички (UX_REVIEW день 3 #21). */
   position: absolute;
   left: 0;
   top: 0;
-  min-height: 40px; /* UX_REVIEW день 3 #21: подпись ≥ 40 px, зона нажатия 48 (::before) */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.b3d-label__pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
   padding: 7px 14px;
   border: 2px solid var(--c-surface, #ffffff);
   border-radius: var(--r-pill, 999px);
   box-shadow: var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
-  font: inherit;
   font-family: var(--font, "Birge Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif);
   font-size: var(--fs-body, 16px);
   font-weight: var(--fw-semi, 600);
   line-height: 1.4;
   white-space: nowrap;
-  cursor: pointer;
-  pointer-events: auto;
-  transition: opacity var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
-}
-/* Невидимое расширение зоны нажатия до 48 px (телефон). */
-.b3d-label::before {
-  content: "";
-  position: absolute;
-  inset: -6px -4px;
-}
-.b3d-label--hover {
-  box-shadow: 0 0 0 3px var(--c-brand, #176b4a), var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
 }
 /* «Хвостик» вниз — к объекту. */
-.b3d-label::after {
+.b3d-label__pill::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -351,27 +356,34 @@
   border-bottom: 2px solid var(--c-surface, #ffffff);
   transform: translateX(-50%) rotate(45deg);
 }
-.b3d-label[aria-pressed="true"] {
-  outline: 3px solid var(--c-focus, #2f7fd6);
-  outline-offset: 2px;
+.b3d-label--hover .b3d-label__pill {
+  box-shadow: 0 0 0 3px var(--c-brand, #176b4a), var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
 }
 .b3d-label:focus-visible {
+  outline: none;
+}
+.b3d-label[aria-pressed="true"] .b3d-label__pill,
+.b3d-label:focus-visible .b3d-label__pill {
   outline: 3px solid var(--c-focus, #2f7fd6);
   outline-offset: 2px;
 }
-/* Сжатая подпись (подписи перекрываются или карта далеко): точка цвета «проект». */
-.b3d-label--dot {
+/* Сжатая подпись (подписи перекрываются или карта далеко): точка цвета «проект» в той же зоне 48 px.
+   Текст не обнуляется по размеру, а прячется как для экранного диктора — его по-прежнему читает aria. */
+.b3d-label--dot .b3d-label__pill {
   width: 20px;
   min-height: 20px;
   height: 20px;
   padding: 0;
-  font-size: 0;
-  color: transparent;
 }
-.b3d-label--dot::before {
-  inset: -14px; /* у точки зона нажатия тоже 48 px */
+.b3d-label--dot .b3d-label__text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
-.b3d-label--dot::after {
+.b3d-label--dot .b3d-label__pill::after {
   display: none;
 }
 .b3d-label--hidden {

@@ -1228,7 +1228,11 @@
     }
 
     function makeLabel(obj) {
-      var b = el("button", "b3d-label bk-tag bk-tag--project", { type: "button", "data-id": obj.p.id });
+      // Кнопка — прозрачная зона нажатия ≥ 48 px; видимая «таблетка» внутри — 40 px (UX_REVIEW день 3 #21).
+      var b = el("button", "b3d-label", { type: "button", "data-id": obj.p.id });
+      var pill = el("span", "b3d-label__pill bk-tag bk-tag--project");
+      pill.appendChild(el("span", "b3d-label__text"));
+      b.appendChild(pill);
       b.addEventListener("click", function (ev) {
         ev.stopPropagation();
         if (S.mode === "placing") return;
@@ -1243,7 +1247,7 @@
       b = b || obj.label;
       if (!b) return;
       var name = t(Core.KINDS[obj.p.kind].key);
-      b.textContent = projectLabel(obj.p);
+      b.querySelector(".b3d-label__text").textContent = projectLabel(obj.p);
       obj.labelSize = null; // текст сменился — размер измерим заново (один раз, не в каждом кадре)
       b.setAttribute("aria-label", t("build3d.card.open", { kind: name, year: String(obj.p.year || "") }).replace(/\s+,/, ","));
       b.setAttribute("aria-pressed", S.selected === obj.p.id ? "true" : "false");
@@ -1423,7 +1427,8 @@
         if (it.obj.labelSize) return;
         var lab = it.obj.label;
         lab.classList.remove("b3d-label--dot");
-        it.obj.labelSize = { w: lab.offsetWidth || 110, h: lab.offsetHeight || 26 };
+        var pill = lab.firstChild || lab; // наложение считаем по видимой таблетке, а не по зоне нажатия
+        it.obj.labelSize = { w: pill.offsetWidth || 120, h: pill.offsetHeight || 40 };
       });
       // Ближние к зрителю (ниже на экране) — первыми; они и остаются полными подписями.
       items.sort(function (a, b) {
@@ -2266,6 +2271,9 @@
         top = dr.top - cr.top;
       if (left > a.x0 + (a.x1 - a.x0) * 0.45 && top < a.y0 + (a.y1 - a.y0) * 0.3) a.x1 = Math.max(a.x0 + 120, left); // карточка справа
       else a.y1 = Math.max(a.y0 + 120, top); // панель снизу
+      // Видимый тост («Проект поставлен… Отменить») тоже занимает место над панелью — объект ставим выше него.
+      var tr = toasts.getBoundingClientRect();
+      if (tr.height && tr.top - cr.top < a.y1 && tr.left - cr.left < a.x1) a.y1 = Math.max(a.y0 + 120, tr.top - cr.top);
       return a;
     }
     function keepAboveDock(obj) {

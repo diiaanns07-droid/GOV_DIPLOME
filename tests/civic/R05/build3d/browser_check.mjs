@@ -722,9 +722,9 @@ await check("r11_21_model_clickable_pointer_label_40_zone_48", async () => {
     els
       .filter((e) => !e.classList.contains("b3d-label--dot") && e.style.visibility !== "hidden")
       .map((e) => {
-        const r = e.getBoundingClientRect();
-        const b = getComputedStyle(e, "::before");
-        return { h: r.height, zoneH: r.height - parseFloat(b.top) - parseFloat(b.bottom), zoneW: r.width - parseFloat(b.left) - parseFloat(b.right) };
+        const zone = e.getBoundingClientRect(); // кнопка — зона нажатия
+        const pill = e.querySelector(".b3d-label__pill").getBoundingClientRect(); // видимая табличка
+        return { h: pill.height, zoneH: zone.height, zoneW: zone.width };
       })
   );
   await p.context().close();

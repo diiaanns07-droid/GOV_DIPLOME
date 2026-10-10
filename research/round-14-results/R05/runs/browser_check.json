@@ -1,7 +1,7 @@
 {
  "role": "R05",
- "generated_at": "2026-10-10T14:52:52.416Z",
- "tested_sha": "7f42cb335b464b44948bd1009d651c0244613b3b",
+ "generated_at": "2026-10-10T15:05:32.927Z",
+ "tested_sha": "e0ca0304e955e78f6faf543d566bdd23e7e0fa77",
  "dirty": true,
  "environment": {
   "node": "v22.22.0",
@@ -11,12 +11,12 @@
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
   "fps_0_objects_swiftshader": 6.4,
-  "fps_20_objects_swiftshader": 2.6,
+  "fps_20_objects_swiftshader": 2.4,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 33,
-  "fail": 1,
+  "pass": 35,
+  "fail": 0,
   "not_run": 1
  },
  "checks": [
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.6 кадр/с (без объектов 6.4)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.4 кадр/с (без объектов 6.4)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -127,8 +127,13 @@
   },
   {
    "id": "kk_locale_no_raw_keys_no_i18n_warnings",
-   "status": "FAIL",
-   "detail": "ключ на экране: build3d.demo.title"
+   "status": "PASS",
+   "detail": {
+    "title": "Не салайық?",
+    "label": "Жоба · 2027",
+    "hint": "Көшені басыңыз — бөліктің басы",
+    "card": "АялдамаЖоба · 2027ҮлгіҰсынысЖанында: улица СыганакЖақтаймын64Қарсымын5Бір құрылғыдан бір дауысЖою"
+   }
   },
   {
    "id": "phone_375_touch_layout",
@@ -191,7 +196,7 @@
     "cursor_over_model": "pointer",
     "opened_by_model_click": "p-demo-square-yard-1148721825",
     "label_height_px": 40.390625,
-    "tap_zone_px": 52.390625
+    "tap_zone_px": 48.390625
    }
   },
   {
@@ -255,6 +260,11 @@
    "id": "lighting_outside_nura_without_r12_says_so",
    "status": "PASS",
    "detail": "Освещение пока можно предложить только в районе Нура (маршрутов R12 нет на этом сервере; с R12 — geo_check.mjs)"
+  },
+  {
+   "id": "screenshots_1366_375_pitch_0_60_ru_kk",
+   "status": "PASS",
+   "detail": "1366_ru_p60.png, 375_ru_p60.png, 1366_ru_p0.png, 375_ru_p0.png, 1366_kk_p60.png, 375_kk_p60.png, 1366_kk_p0.png, 375_kk_p0.png, 1366_ru_ghost_stop.png, 1366_ru_lighting_ghost.png"
   },
   {
    "id": "no_page_errors",
