@@ -209,7 +209,9 @@ def review():
         "cat": "Категории", "common": "Общее", "dates": "Даты", "district": "Районы", "status": "Статусы обращения",
         "stage": "Этапы объекта", "object": "Объект и сроки", "heat": "Тепловая карта", "target": "Карточка места",
         "akim": "Картина дня", "complaint": "Путь жителя", "mine": "Мои обращения", "proposal": "Предложения и 3D",
-        "uikit": "Витрина ui-kit (только для разработчиков)",
+        "uikit": "Витрина ui-kit (только для разработчиков)", "proto": "Макеты R11 (только для сверки вида)",
+        "shell": "Оболочка (R01)", "editor": "Редактор карты (R12)", "geo": "Точность карты (R12)",
+        "build3d": "3D-превью предложений (R05)", "forecast": "Прогноз на месяц — прототип (R13)",
     }
     for k in ru:
         g = k.split(".")[0]
@@ -218,6 +220,9 @@ def review():
             lines += ["", f"### {titles.get(g, g)}", "", "| ключ | рус | қаз | комментарий |", "|---|---|---|---|"]
         mark = " ".join(x for x in ("⚑ " + esc(notes[k]) if k in notes else "", "<sub>" + esc(sources[k]) + "</sub>" if k in sources else "") if x)
         lines.append(f"| `{k}` | {esc(fmt(ru[k]))} | {esc(fmt(kk.get(k, '')))} | {mark} |")
+    extra = REVIEW.parent / "kk_review_extra.md"  # тексты вне словаря (код и данные ролей), ведётся вручную
+    if extra.exists():
+        lines += ["", extra.read_text("utf-8").rstrip()]
     REVIEW.write_text("\n".join(lines) + "\n", "utf-8")
     print(f"{REVIEW.relative_to(ROOT)}: {len(ru)} ключей, ⚑ {len(flagged)}")
 

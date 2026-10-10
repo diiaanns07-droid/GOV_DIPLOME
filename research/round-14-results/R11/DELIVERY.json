@@ -4,7 +4,7 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "cc77761 (код ui-kit/i18n не менялся в день 3); отчёты дня 3 — последний коммит ветки claude/r14-R11",
+  "code_sha": "последний коммит ветки claude/r14-R11 (день 4: словари +48 ключей; ui-kit без изменений)",
   "tested_sha": "cc77761 — ui-kit/i18n подложены в стенды R05, R06, R07, R08 (день 3)",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
@@ -16,6 +16,7 @@
     "research/handoffs/astana/R11/round14/STATUS.md",
     "research/round-14-results/R11/",
     "research/round-14-results/R11/key_sources.json",
+    "research/round-14-results/R11/kk_review_extra.md",
     "tests/civic/R11/",
     "tests/civic/R11/review/",
     "tests/civic/R11/review/measure.cjs",
@@ -33,7 +34,6 @@
     "web/civic/ui-kit/ui-kit.js"
   ],
   "tests": {
-    "i18n_tools check (509 ключей ru=kk, параметры, формы, категории)": "PASS",
     "test_r11_ui_kit.py (14 проверок, в т.ч. ключи макетов и участки из рёбер OSM)": "PASS",
     "i18n.test.cjs (склонения, даты UTC+5, запасной ru, явный язык для Birge.i18n)": "PASS",
     "browser_check: витрина + prototypes/{index,akimat-map,complaint,day} × 375/1366 × ru/kk": "PASS",
@@ -42,7 +42,8 @@
     "живой запуск ui/web_server.py с патчем": "NOT_RUN — применяет R01 (по его INTEGRATION §6 п.8 уже применён в его ветке)",
     "проверка казахского владельцем": "NOT_RUN — KK_REVIEW.md отправлен",
     "реальный телефон": "NOT_RUN — LOCAL-7",
-    "день 3: ui-kit/i18n @cc77761 в стендах R05/R06/R07/R08, 122 кадра 375/1366 × ru/kk: 0 ключей вместо текста, 0 прокрутки вбок, 0 ошибок JS": "PASS"
+    "день 3: ui-kit/i18n @cc77761 в стендах R05/R06/R07/R08, 122 кадра 375/1366 × ru/kk: 0 ключей вместо текста, 0 прокрутки вбок, 0 ошибок JS": "PASS",
+    "i18n_tools check (557 ключей ru=kk, параметры, формы, категории)": "PASS"
   },
   "known_limits": [
     "Казахский перевод — R11 и черновики ролей, не проверен носителем; 29 мест ⚑ в KK_REVIEW.md",
