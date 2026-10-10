@@ -1,19 +1,21 @@
 {
- "generated_at": "2026-10-10T15:39:30.995Z",
- "url": "http://127.0.0.1:8801/",
- "r01": "claude/sharp-dijkstra-0t87gl@f54361d + proposed_r01_b2.patch",
- "r06_in_b2": "7031afa",
+ "generated_at": "2026-10-10T17:56:37.902Z",
+ "url": "http://127.0.0.1:8802/",
+ "r01": "claude/sharp-dijkstra-0t87gl@2b9e837 (night 1, R06 b42e790) + proposed_r01_b3.patch",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
    "status": "PASS",
-   "detail": [
-    "Проект · 2027",
-    "Проект · 2027",
-    "Проект · 2027",
-    "Проект · 2027",
-    "Проект · 2027"
-   ]
+   "detail": {
+    "labels": [
+     "Проект · 2027",
+     "Проект · 20275",
+     "Проект · 2027",
+     "Проект · 2027",
+     "Проект · 2027"
+    ],
+    "catalog_folded_by_shell": true
+   }
   },
   {
    "id": "akimat_catalog_not_under_shell_panel",
@@ -21,9 +23,9 @@
    "detail": {
     "dock": {
      "left": 117,
-     "top": 554,
+     "top": 498,
      "right": 837,
-     "bottom": 734,
+     "bottom": 678,
      "w": 720,
      "h": 180
     },
@@ -52,10 +54,9 @@
    "status": "PASS",
    "detail": {
     "posts": [
-     422,
      201
     ],
-    "id": "p-0e4125299977",
+    "id": "p-3f896e67026c",
     "year": 2027
    }
   },
@@ -65,11 +66,11 @@
    "detail": {
     "card": {
      "left": 117,
-     "top": 284.03125,
+     "top": 362.4375,
      "right": 837,
      "bottom": 734,
      "w": 720,
-     "h": 449.96875
+     "h": 371.5625
     },
     "panel": {
      "left": 946,
@@ -86,8 +87,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 676.9925410582482,
-     "y": 159.1150811203177
+     "x": 674.9891964312151,
+     "y": 278.00629455922814
     },
     "under": []
    }
@@ -165,7 +166,7 @@
     "shown": true,
     "left": 0,
     "right": 375,
-    "bottom": 609,
+    "bottom": 553,
     "sheetTop": 617,
     "scrollX": false
    }

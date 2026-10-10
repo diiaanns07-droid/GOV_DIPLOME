@@ -10,6 +10,7 @@
 //   node tests/civic/R05/build3d/app_b2_smoke.mjs http://127.0.0.1:8801/ <файл с паролем сотрудника>
 // Модуль монтирует оболочка (shell.js); тест нажимает, как человек. Пароль не печатается и не попадает в отчёт.
 // Отчёт: research/round-14-results/R05/runs/app_b2_smoke.json, скриншоты screens/b2_*.png (1366/375 × ru/kk).
+// На голове R01 (B3+, каталог свёрнут в кнопку) — патч proposed_r01_b3.patch; R01_LABEL=<сборка> — подпись в отчёте.
 import { writeFile, mkdir, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
@@ -63,6 +64,15 @@ async function open(vp, mode, lang, extra) {
   await p.waitForTimeout(800);
   return p;
 }
+// Сборка B3+ R01 сворачивает каталог в кнопку «Что построить?» (.birge-b3d-toggle): раскрыть, если свёрнут.
+const openCatalog = async (p) => {
+  const closed = await p.evaluate(() => document.getElementById("birge-build3d-root")?.dataset.catalog === "closed");
+  if (closed) {
+    await p.click(".birge-b3d-toggle");
+    await p.waitForSelector('#birge-build3d-root .b3d-dock[data-state="catalog"] .b3d-card', { state: "visible", timeout: 5000 });
+  }
+  return closed;
+};
 const settle = (p) =>
   p.waitForFunction(() => !document.getAnimations().some((a) => a.playState === "running" || a.pending), null, { timeout: 5000 }).catch(() => {});
 const shot = async (p, name) => {
@@ -81,8 +91,9 @@ await mkdir(path.join(OUT, "screens"), { recursive: true });
 try {
   // 1. Ноутбук, «Акимат», ru: каталог слева от панели «Карта жалоб», подписи в рамке.
   let p = await open({ width: 1366, height: 768 }, "akimat", "ru");
+  const folded = await openCatalog(p);
   const labels = await p.$$eval(".b3d-label", (els) => els.map((e) => e.textContent));
-  check("shell_mounted_module_with_projects", labels.length >= 2 && labels.every((t) => /2027|Проект/.test(t)), labels);
+  check("shell_mounted_module_with_projects", labels.length >= 2 && labels.every((t) => /2027|Проект/.test(t)), { labels, catalog_folded_by_shell: folded });
   const dockR = await rect(p, "#birge-build3d-root .b3d-dock"), panelR = await rect(p, ".civic-panel");
   check("akimat_catalog_not_under_shell_panel", (await p.$$(".b3d-card")).length === 5 && !overlap(dockR, panelR), { dock: dockR, panel: panelR });
   check("catalog_labels_inside_cards_ru", (await labelsFit(p)).length === 0, await labelsFit(p));
@@ -95,6 +106,7 @@ try {
   // Свободное место в Нуре (вдали от демо-проектов R06) — там ставим сквер.
   await p.evaluate(() => map.jumpTo({ center: [71.4009, 51.1279], zoom: 17.4, pitch: 58, bearing: -20 }));
   await p.waitForTimeout(600);
+  await openCatalog(p);
   await p.click("#birge-build3d-root .b3d-card[data-kind=square]");
   const pt = await p.evaluate(() => { const r = map.getCanvas().getBoundingClientRect(); return [r.left + r.width * 0.42, r.top + r.height * 0.42]; });
   await p.mouse.move(pt[0], pt[1]);
@@ -139,6 +151,7 @@ try {
 
   // 6. Ноутбук, kk, «Акимат»: каталог по-казахски, подписи в рамке.
   p = await open({ width: 1366, height: 768 }, "akimat", "kk");
+  await openCatalog(p);
   const kkCards = await p.$$eval("#birge-build3d-root .b3d-card", (els) => els.map((e) => e.innerText.trim()));
   check("kk_catalog_in_shell", kkCards.length === 5 && kkCards.includes("Гүлзар") && (await labelsFit(p)).length === 0, kkCards);
   await shot(p, "b2_1366_kk_akimat.png");
@@ -161,7 +174,8 @@ try {
 
   // 8. Телефон 375, акимат, ru: шторка опущена (выбор района) → каталог над ней, в пределах экрана.
   p = await open({ width: 375, height: 812 }, "akimat", "ru", { hasTouch: true, isMobile: true });
-  await p.evaluate(() => { const sel = document.querySelector(".civic-explore select"); const opt = [...sel.options].find((o) => o.value); sel.value = opt.value; sel.dispatchEvent(new Event("change", { bubbles: true })); });
+  if (await p.$(".birge-b3d-toggle")) await p.tap(".birge-b3d-toggle"); // B3+: кнопка сама опускает шторку (R10 B-022)
+  else await p.evaluate(() => { const sel = document.querySelector(".civic-explore select"); const opt = [...sel.options].find((o) => o.value); sel.value = opt.value; sel.dispatchEvent(new Event("change", { bubbles: true })); });
   await p.waitForTimeout(1200);
   await p.evaluate(() => { map.jumpTo({ pitch: 55, bearing: -20 }); CivicShell.build3d.flyToProposals({ duration: 0 }); });
   await p.waitForTimeout(800);
@@ -177,5 +191,5 @@ check("no_page_errors", errors.length === 0, errors.slice(0, 3));
 await browser.close();
 await mkdir(path.join(OUT, "runs"), { recursive: true });
 await writeFile(path.join(OUT, "runs", "app_b2_smoke.json"), JSON.stringify({ generated_at: new Date().toISOString(), url: URL0,
-  r01: "claude/sharp-dijkstra-0t87gl@f54361d + proposed_r01_b2.patch", r06_in_b2: "7031afa", checks: results }, null, 1) + "\n");
+  r01: process.env.R01_LABEL || "claude/sharp-dijkstra-0t87gl@f54361d + proposed_r01_b2.patch", checks: results }, null, 1) + "\n");
 process.exit(results.every((r) => r.status === "PASS") ? 0 : 1);
