@@ -1,0 +1,16 @@
+three.js для 3D-превью Birge (R05, раунд 14)
+
+Версия: three@0.169.0 (REVISION "169"), лицензия MIT — файл LICENSE рядом.
+Источник: npm-реестр, пакет three@0.169.0
+  https://registry.npmjs.org/three/-/three-0.169.0.tgz
+  получен командой `npm pack three@0.169.0` в облачной сессии R05 10.10.2026.
+Проверка целостности tarball (совпадает с dist.integrity / dist.shasum реестра):
+  sha512-Ed906MA3dR4TS5riErd4QBsRGPcx+HBDX2O5yYE5GqJeFQTPU+M56Va/f/Oph9X7uZo3W3o4l2ZhBZ6f6qUv0w==
+  sha1   4a62114988ad9728d73526d1f1de6760c56b4adc
+Взят один файл из пакета: build/three.module.min.js (687 458 байт, ES-модуль без внешних import)
+  sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee
+Ни одного аддона (examples/jsm) не используется: вся геометрия 3D-превью процедурная.
+
+LOCAL-2 (LOCAL_TASKS.md) просит тот же файл той же версии. Если Codex положит его в
+claude/round-14-package — содержимое должно совпасть байт в байт (сверить sha256 выше);
+SOURCE.txt можно оставить любой из двух.
