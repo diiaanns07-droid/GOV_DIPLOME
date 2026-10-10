@@ -2,7 +2,8 @@ R15 (раунд 14) — INTEGRATION: исправления безопаснос
 ================================================================================
 
 Кто применяет: R01 (интегратор) в общую сборку; владельцы модулей — в свои ветки, если хотят у себя.
-Все patch сделаны и проверены на сборке R01 B3 шаг 2 = be82fa8 (ветка claude/r14-R01).
+Все patch сделаны на сборке R01 B3 шаг 2 = be82fa8 и перепроверены на B3 шаг 4 = d9a8895 (ветка claude/r14-R01):
+накладываются без правок, тесты R15 на d9a8895: без patch 88 passed + 23 xfailed, со всеми шестью — 88 passed + 23 XPASS.
 Подробности и как воспроизвести каждую находку — SECURITY_REVIEW.md. Тесты — tests/civic/R15/ (ветка claude/r14-R15).
 
 Файлы patch (в этой папке, patches/):
@@ -11,10 +12,11 @@ R15 (раунд 14) — INTEGRATION: исправления безопаснос
   P-R07.diff  ui/civic_heat/targets.py                          S11
   P-R04.diff  ui/civic_ml_api/similar_search.py                 S13
   P-R02.diff  ml/labeling/{anonymize,llm_label}.py              S07 S14
+  P-R06.diff  ui/civic_store/auth.py                            S15 (мелочь; добавлен ночью 10→11 окт)
 
 Как применить (из корня рабочей копии сборки R01):
   git fetch origin claude/r14-R15
-  for p in P-R01 P-R09 P-R07 P-R04 P-R02; do
+  for p in P-R01 P-R09 P-R07 P-R04 P-R02 P-R06; do
       git show origin/claude/r14-R15:research/round-14-results/R15/patches/$p.diff | git apply --check - && \
       git show origin/claude/r14-R15:research/round-14-results/R15/patches/$p.diff | git apply -
   done
@@ -103,6 +105,16 @@ S14  llm_label.py: настоящий текст (evidence не synthetic), у �
      во внешний API не отправляется (stats.skipped_review) — его размечает владелец.
      Вне кода (владельцу): в форме согласия прямо написать, что тексты без имён и телефонов могут обрабатываться
      внешним сервисом ИИ за пределами РК, — или не запускать llm_label на настоящих текстах.
+
+
+--------------------------------------------------------------------------------
+P-R06  ui/civic_store/auth.py  (R06)
+--------------------------------------------------------------------------------
+S15  check_password_policy: кроме 10 точных строк — отказ, если основа пароля без цифр и знаков — распространённое
+     слово (COMMON_BASES: password, qwerty, admin, astana, akimat, birge, operator, editor, test…).
+     «password12345», «Astana2026!!!», «akimat123456», «Qwerty-2026-10» -> «Слишком простой пароль».
+     Пароли из тестов ролей («Tulpar-Bayterek-2026», «Tz7-qerB-91vk-Lmsd», «Esil-…») проходят, как раньше.
+     Уже созданные учётки не меняются: правило — только для новых паролей (create-editor, set_password).
 
 
 --------------------------------------------------------------------------------

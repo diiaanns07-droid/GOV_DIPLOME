@@ -4,7 +4,7 @@
  "base_sha": "4bbf456",
  "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
  "code_sha": "c5b98a0 (tests/civic/R15); patches — b892532",
- "tested_sha": "be82fa8 (сборка R01 B3 шаг 2, ветка claude/r14-R01); раньше — e9b34a6/d3c33d9 (B1)",
+ "tested_sha": "d9a8895 (сборка R01 B3 шаг 4, ветка claude/r14-R01) — ночь 10→11 окт; раньше be82fa8 (B3 шаг 2), e9b34a6 (B1)",
  "push_status": "OK — claude/r14-R15 запушена (последний коммит — в финальном сообщении роли)",
  "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
  "changed_paths": [
@@ -22,27 +22,13 @@
   "research/round-14-results/R15/patches/P-R07.diff",
   "research/round-14-results/R15/patches/P-R04.diff",
   "research/round-14-results/R15/patches/P-R02.diff",
-  "research/handoffs/astana/R15/round14/STATUS.md"
+  "research/handoffs/astana/R15/round14/STATUS.md",
+  "research/round-14-results/R15/patches/P-R06.diff"
  ],
  "findings": {
   "critical": 0,
   "important": 11,
-  "minor": 3,
-  "open_on_be82fa8": [
-   "S01",
-   "S02",
-   "S03",
-   "S04",
-   "S05",
-   "S06",
-   "S07",
-   "S08",
-   "S10",
-   "S11",
-   "S12",
-   "S13",
-   "S14"
-  ],
+  "minor": 4,
   "fixed": {
    "S09": "R06 ef35fb6, R01 d3c33d9"
   },
@@ -70,8 +56,42 @@
    "P-R02": [
     "S07",
     "S14"
+   ],
+   "P-R06": [
+    "S15"
    ]
-  }
+  },
+  "open_on_be82fa8": [
+   "S01",
+   "S02",
+   "S03",
+   "S04",
+   "S05",
+   "S06",
+   "S07",
+   "S08",
+   "S10",
+   "S11",
+   "S12",
+   "S13",
+   "S14"
+  ],
+  "open_on_d9a8895": [
+   "S01",
+   "S02",
+   "S03",
+   "S04",
+   "S05",
+   "S06",
+   "S07",
+   "S08",
+   "S10",
+   "S11",
+   "S12",
+   "S13",
+   "S14",
+   "S15"
+  ]
  },
  "tests": {
   "r15_on_be82fa8": "PASS — 80 passed, 19 xfailed (каждая открытая находка воспроизводится)",
@@ -93,7 +113,10 @@
   "browser_csp_inline_pages": "PASS — /civic/ui-kit/index.html, /civic/akim/index.html, / под строгой CSP: скрипты работают, нарушений нет",
   "supply_chain": "PASS — three.js 0.169.0 = SOURCE.txt sha256; maplibre-gl 5.6.2 js/css = npm-пакет (sha256 1525f971…, 43c1d886…)",
   "git_history_secrets": "PASS — 187 коммитов веток раунда 14: ключей API нет; телефоны/ИИН — только тестовые образцы",
-  "model_load_classify_similar": "NOT_RUN — моделей R03/R04 в облаке нет (классификатор на словарях: 2–3 мс)"
+  "model_load_classify_similar": "NOT_RUN — моделей R03/R04 в облаке нет (классификатор на словарях: 2–3 мс)",
+  "r15_on_d9a8895": "PASS — 88 passed, 23 xfailed (все открытые находки воспроизводятся; патчи R15 в сборку ещё не применены)",
+  "r15_on_d9a8895_all_6_patches": "PASS — 88 passed, 23 XPASS(strict): все открытые находки закрыты",
+  "roles_R01_R06_d9a8895_all_6_patches": "PASS — 717 passed, 3 skipped, 0 failed"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
@@ -103,5 +126,5 @@
   "согласие в форме сбора текстов не упоминает внешний ИИ-сервис за рубежом (S14) — решение владельца",
   "patch не применены в сборку R01 — это делает R01; статусы обновлю на B3/FINAL 13–15 окт"
  ],
- "next_step": "R01 применяет patches/*.diff; R15 перепроверяет на B3/FINAL (R15_ROOT=<сборка> pytest tests/civic/R15), переносит ID в FIXED и обновляет SECURITY_REVIEW.md"
+ "next_step": "R01 применяет patches/*.diff (6 файлов, накладываются на d9a8895 без правок); R15 на каждой новой сборке R01: R15_ROOT=<сборка> pytest tests/civic/R15 -> XPASS переносит в FIXED и обновляет SECURITY_REVIEW.md"
 }

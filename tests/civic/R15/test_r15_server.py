@@ -265,3 +265,46 @@ def test_server_log_has_no_resident_coordinates(srv, capsys):
     logged = capsys.readouterr().err
     assert "/api/civic/v2/complaints/place" in logged or "/api/civic/v2/targets" in logged, "журнал не перехвачен"
     assert "51.123456" not in logged and "71.412345" not in logged
+
+
+# --- 2. вход сотрудника: перебор паролей и слабые пароли (регрессия, R06 ui/civic_store/auth.py) ---------
+
+def test_staff_login_bruteforce_is_throttled(srv, tmp_path):
+    """Подбор пароля: после нескольких неверных попыток с одного адреса — 429, а не бесконечные попытки."""
+    store = srv.civic.service("store")
+    if store is None:
+        pytest.skip("в этой сборке нет хранилища сотрудников (ui.civic_store)")
+    store.accounts.create_user("r15-victim", "R15-Strong-Pass-2026", display_name="R15", role="editor")
+    origin = "http://127.0.0.1:%d" % srv.server_address[1]
+    statuses = []
+    for i in range(30):
+        status, _h, _data = request(srv, "POST", "/api/civic/v1/session/login",
+                                    {"username": "r15-victim", "password": "wrong-password-%04d" % i},
+                                    headers={"Origin": origin})
+        statuses.append(status)
+        if status == 429:
+            break
+    assert 429 in statuses, statuses
+    assert statuses.count(429) == 1 and all(s in (401, 403) for s in statuses[:-1]), statuses
+
+
+@pytest.mark.parametrize("password", ["short-pass", "password1234", "r15-editor-2026-x", "aaaaaaaaaaaaaa"])
+def test_weak_staff_password_is_refused(tmp_path, password):
+    auth = need_module("ui.civic_store.auth")
+    with pytest.raises(auth.PasswordPolicyError):
+        auth.check_password_policy("r15-editor", password)
+
+
+@xfail("S15")
+@pytest.mark.parametrize("password", ["password12345", "Astana2026!!!", "akimat123456", "Qwerty-2026-10"])
+def test_common_base_with_digits_is_refused(password):
+    """Список простых паролей — 10 точных строк: «password12345» и «Astana2026!!!» проходят (подбираются первыми)."""
+    auth = need_module("ui.civic_store.auth")
+    with pytest.raises(auth.PasswordPolicyError):
+        auth.check_password_policy("r15-editor", password)
+
+
+@pytest.mark.parametrize("password", ["R15-Strong-Pass-2026", "Tulpar-Bayterek-2026", "Tz7-qerB-91vk-Lmsd"])
+def test_strong_staff_password_is_accepted(password):
+    auth = need_module("ui.civic_store.auth")
+    auth.check_password_policy("r15-editor", password)
