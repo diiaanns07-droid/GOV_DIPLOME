@@ -4,16 +4,17 @@
  "branch": "claude/upbeat-knuth-i0rqaa",
  "base_sha": "af77b78",
  "restored_from": null,
- "delivery": "ночь, круги 1–2: замечания R10, R11, R15, Codex, R01, R08 + самопроверка по UX_BRIEF — для FINAL (R01)",
- "code_sha": "e465cdd",
+ "delivery": "ночь, круги 1–3: замечания R10, R11, R15, Codex, R01, R08 + самопроверка по UX_BRIEF — для FINAL (R01)",
+ "code_sha": "b28268b",
  "code_commits": {
   "9bc25e6": "сервер: демо-поток 5 недель, ячейки и «Я тоже» R09, тексты жителей только сотруднику, records()/generation для R08, остановки только автобусные",
   "306074b": "интерфейс: исправления R11 № 1–8 и 12, ключ устройства R09, birge:lang на document, скриншоты",
   "597ec4f": "ночь 1: S11 подписи жителя только у ячеек, OSM-подписи главнее файлов R12 (I-01), общая сетка R09 (I-03), значок в режиме выбора места = цель (B-019), одна остановка Tab (B-025), тост ui-kit (B-023)",
-  "e465cdd": "ночь 2: цели фикстуры не стираются файлами R12 (B-029, R08 4б), «Повторить» у каждой ошибки, загрузка/ошибка видны на телефоне, «Область на карте» у примерного места, слово R11 для вторсырья, чипы 16 px"
+  "e465cdd": "ночь 2: цели фикстуры не стираются файлами R12 (B-029, R08 4б), «Повторить» у каждой ошибки, загрузка/ошибка видны на телефоне, «Область на карте» у примерного места, слово R11 для вторсырья, чипы 16 px",
+  "b28268b": "ночь 3: не перенимать слабый id R05 (S16), значки только целиком внутри карты и не под панелью/кнопками, проверка наклона 3D, badges() для проверок"
  },
- "tested_sha": "e465cdd",
- "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документы поверх e465cdd)",
+ "tested_sha": "b28268b",
+ "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документы поверх b28268b)",
  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Node 22, Playwright 1.56.1 + Chromium 1194 (программный WebGL); интернет-тайлы закрыты (403) — офлайн-подложка из улиц OSM",
  "note_on_session": "В начале сессии по ошибке выполнялась роль R11; её черновики сохранены в 9cf80fc и 0cf32c5 и удалены из головы ветки (bcb3b6b).",
  "changed_paths": [
@@ -64,6 +65,8 @@
   "research/round-14-results/R07/screens/state-loading-375-kk.jpg",
   "research/round-14-results/R07/screens/stop-fixed-1366-kk.jpg",
   "research/round-14-results/R07/screens/stop-fixed-1366-ru.jpg",
+  "research/round-14-results/R07/screens/tilt-3d-1366-ru.jpg",
+  "research/round-14-results/R07/screens/tilt-3d-375-kk.jpg",
   "tests/civic/R07/browser/shots.js",
   "tests/civic/R07/test_r07_day3.py",
   "tests/civic/R07/test_r07_heat.py",
@@ -116,16 +119,17 @@
  ],
  "tests": {
   "pytest tests/civic/R07 (112 passed, 3 skipped)": "PASS",
-  "pytest tests/civic (795 passed, 6 skipped) на e465cdd": "PASS",
-  "browser tests/civic/R07/browser/shots.js (43 сценария, 1366/375 ru/kk; состояния загрузки/ошибки, «Повторить», выбор места, клавиатура)": "PASS 43/43 (screens/CHECKS.json)",
-  "сборка R01 @ 13ae790 + R07 e465cdd (копия во временной папке): r14_b1.cjs / r14_b2.cjs": "PASS 15/15 и 25/25",
+  "pytest tests/civic (795 passed, 6 skipped) на e465cdd; b28268b меняет только интерфейс": "PASS",
+  "browser tests/civic/R07/browser/shots.js (45 сценариев, 1366/375 ru/kk; + наклон 3D, слабый id R05)": "PASS 45/45 (screens/CHECKS.json)",
+  "сборка R01 @ 13ae790 + R07 b28268b (копия во временной папке): r14_b1.cjs / r14_b2.cjs": "PASS 15/15 и 25/25",
   "сборка R01 @ 13ae790 + R07 e465cdd: pytest tests/civic/R07 + R08/test_r08_hot_labels.py + R15": "PASS 234 passed, 1 skipped",
   "skipped в R07 (3)": "NOT_RUN в ветке: формула ячейки R09 и сверка с R08 — модулей нет; в сборке R01 те же тесты PASS",
   "реальная подложка OpenFreeMap (тайлы из интернета)": "NOT_RUN: в облаке 403, задача LOCAL-7",
   "живые данные R09 v2": "NOT_RUN: модуля в этой ветке нет — демо-набор по CONTRACT §5; подключение configure(source, metoo_times) — INTEGRATION §1в",
-  "цели R12 (engine.civic_geo)": "NOT_RUN: модуля в этой ветке нет — реальные объекты LOCAL-1 читаются напрямую"
+  "цели R12 (engine.civic_geo)": "NOT_RUN: модуля в этой ветке нет — реальные объекты LOCAL-1 читаются напрямую",
+  "живой сервер сборки R01 13ae790 + R07 (CIVIC_DEMO=1): /heat — 53 цели, подписей «Нысан/Двор или квартал» 0": "PASS"
  },
- "screenshots": "research/round-14-results/R07/screens/ — 40 кадров 1366×768 и 375×812, ru и kk, только из реально запущенного интерфейса; замеры — CHECKS.json",
+ "screenshots": "research/round-14-results/R07/screens/ — 42 кадра 1366×768 и 375×812, ru и kk, только из реально запущенного интерфейса; замеры — CHECKS.json",
  "known_limits": [
   "Жалобы демо (synthetic, demo: true): 483 жалобы, 952 человека с «Я тоже», 54 цели. Цели настоящие (OSM/LOCAL-1): 26 участков улиц (рёбра графа OSM), остановки и дворы ЖК Нуры, детские и контейнерные площадки, в каждом районе — настоящая остановка и двор.",
   "Демо-числа подобраны под критерии R08 (seed 20261014), но это не статистика Астаны.",
@@ -139,7 +143,7 @@
   "Тексты настоящих жалоб видит только сотрудник, если шлюз R01 передаёт staff=True; без этого — только примеры и число скрытых людей.",
   "11 id из файлов R12 нет в слое OSM R07 (части мультиполигонов yard-r…-N, платформа «Мерей» без bus=yes) — берутся у R12."
  ],
- "next_step": "R01 (FINAL): взять R07 @ e465cdd; убрать адаптер R09CellResolver; patch R08 4б не нужен (то же сделано в R07); правило birge.css для .r07-badge можно оставить (INTEGRATION §1е); B-017 — ручка шторки оболочки. R11: 8 новых ключей heat.kind.* (INTEGRATION §6).",
+ "next_step": "R01 (FINAL): взять R07 @ b28268b; убрать адаптер R09CellResolver; patch R08 4б не нужен (то же сделано в R07); правило birge.css для .r07-badge можно оставить (INTEGRATION §1е); B-017 — ручка шторки оболочки. R11: 8 новых ключей heat.kind.* (INTEGRATION §6).",
  "inputs": {
   "data/civic/astana/osm-objects/": "LOCAL-1, claude/round-14-package @ bdf12c8, без изменений (git diff с пакетом пуст), real, ODbL",
   "research/round-14-results/R11/UX_REVIEW.md": "claude/r14-R11 @ f025241, только чтение",
@@ -158,6 +162,9 @@
   "R10 B-016, B-017; R11 день 4 п.1": "уже FIXED в 306074b (в B3) — повторно проверено на стенде R07",
   "R10 B-029 (важно) / R08 4б": "FIXED — 597ec4f + e465cdd; test_r08_hot_labels PASS в сборке R01 13ae790",
   "R10 B-017 (B3)": "не R07: ручка шторки оболочки R01 (shell.sheet.expand); у стенда R07 — 48 px",
-  "UX_BRIEF самопроверка": "FIXED — «Повторить» у ошибок, состояния загрузки/ошибки на телефоне, примерное место, чипы 16 px"
+  "UX_BRIEF самопроверка": "FIXED — «Повторить» у ошибок, состояния загрузки/ошибки на телефоне, примерное место, чипы 16 px",
+  "R15 S16 (касается R07)": "FIXED — birge.device только из crypto, старый ключ birge.device_id не переносится",
+  "UX_BRIEF «Точность» (наклон 3D)": "проверено: tilt-3d ×2 PASS; значки не обрезаются краем и не лежат под панелью",
+  "R10 B-030": "не код R07 — предложение R01 в NIGHT_FIXES (засев R09 из demo_seed при CIVIC_DEMO=1)"
  }
 }
