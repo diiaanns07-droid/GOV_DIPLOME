@@ -1,0 +1,216 @@
+/* R07 · Тепловая карта объектов — стили панели и значков на карте.
+ * Цвета и размеры берутся из токенов ui-kit R11 (--b-…), а пока ui-kit не подключён — из запасных значений.
+ * Правила: текст ≥ 16 px (мелкие подписи 14), кнопки и зоны нажатия ≥ 48 px, цвет всегда с числом или словом. */
+
+.r07-root {
+  --r07-ink: var(--b-ink, #152c26);
+  --r07-ink-2: var(--b-ink-2, #55655e);
+  --r07-line: var(--b-line, #e1e7df);
+  --r07-paper: var(--b-paper, #f7f8f4);
+  --r07-green: var(--b-green, #176b4a);
+  --r07-green-50: var(--b-green-50, #eaf4ee);
+  --r07-lime: var(--b-lime, #d7f57c);
+  --r07-focus: var(--b-focus, #2f7de1);
+  --r07-ok-ink: var(--b-ok-ink, #3f6f14);
+  --r07-ok-bg: var(--b-ok-bg, #eef6e4);
+  --r07-warn-ink: var(--b-warn-ink, #7a531a);
+  --r07-warn-bg: var(--b-warn-bg, #faf5e7);
+  --r07-danger-ink: var(--b-danger-ink, #a33a2f);
+  --r07-ease: var(--b-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  font-family: var(--b-font, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--r07-ink);
+}
+.r07-root *, .r07-root *::before, .r07-root *::after { box-sizing: border-box; }
+.r07-root button, .r07-root select { font: inherit; color: inherit; }
+.r07-root :focus-visible, .r07-badge:focus-visible { outline: 3px solid var(--r07-focus); outline-offset: 2px; }
+.r07-ic { flex-shrink: 0; vertical-align: middle; }
+.r07-ic--flip { transform: scaleX(-1); color: var(--r07-ink-2); }
+.r07-vh, .r07-sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.r07-muted { color: var(--r07-ink-2); font-weight: 500; font-size: 14px; }
+
+.r07-panel { display: flex; flex-direction: column; gap: 14px; }
+.r07-head { display: flex; align-items: flex-start; gap: 8px; }
+.r07-h { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 750; letter-spacing: -0.01em; }
+.r07-sub { margin: 2px 0 0; color: var(--r07-ink-2); font-size: 14px; }
+.r07-h3 { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
+.r07-h4 { margin: 4px 0 6px; font-size: 16px; font-weight: 700; }
+
+.r07-note { margin: 0; padding: 10px 12px; border-radius: 12px; font-size: 14px; background: #eaf2fb; color: #1f5f9e; }
+.r07-note--demo { background: #f1efe6; color: #5b5442; }
+.r07-note--ok { background: var(--r07-ok-bg); color: var(--r07-ok-ink); }
+.r07-note--warn { background: var(--r07-warn-bg); color: var(--r07-warn-ink); }
+
+/* ---- Фильтры ---- */
+.r07-filters { display: flex; flex-direction: column; gap: 10px; }
+.r07-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.r07-chip {
+  position: relative; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 0 12px;
+  border: 1px solid #c9d4c5; border-radius: 999px; background: #fff;
+  font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer;
+  transition: background 0.2s var(--r07-ease), border-color 0.2s var(--r07-ease);
+}
+.r07-chip::after { content: ""; position: absolute; inset: -4px 0; } /* зона нажатия 48 px */
+.r07-chip:hover { border-color: #9fb59c; }
+.r07-chip .r07-ic { color: var(--r07-green); }
+.r07-chip[aria-pressed="true"] { background: var(--r07-lime); border-color: #b6d65a; }
+.r07-chip[aria-pressed="true"] .r07-ic { color: var(--r07-ink); }
+.r07-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.r07-cat-toggle { flex: 1 1 auto; justify-content: space-between; min-width: 0; }
+.r07-cat-toggle > span { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.r07-cat-toggle .r07-ic { color: var(--r07-green); }
+.r07-cat-toggle--on { background: var(--r07-lime); border-color: #b6d65a; }
+.r07-cat-toggle--on .r07-ic { color: var(--r07-ink); }
+.r07-ic--down { transform: rotate(-90deg); color: var(--r07-ink-2) !important; }
+.r07-cat-toggle[aria-expanded="true"] .r07-ic--down { transform: rotate(90deg); }
+.r07-chips[hidden] { display: none; }
+.r07-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 12px; background: #eef2ea; }
+.r07-seg > button {
+  min-height: 42px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 9px;
+  background: transparent; color: var(--r07-ink-2); font-weight: 650; white-space: nowrap; cursor: pointer;
+}
+.r07-seg > button[aria-pressed="true"] { background: #fff; color: var(--r07-ink); box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; }
+.r07-select select {
+  min-height: 48px; max-width: 100%; padding: 0 36px 0 12px; border: 1px solid #c9d4c5; border-radius: 12px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23152c26' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center / 18px;
+  appearance: none; font-weight: 600; cursor: pointer;
+}
+
+/* ---- Кнопки ---- */
+.r07-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 18px; border: 1px solid #c9d4c5; border-radius: 12px;
+  background: #fff; font-size: 16px; font-weight: 650; line-height: 1.2; text-align: center; cursor: pointer;
+  transition: background 0.2s var(--r07-ease), border-color 0.2s var(--r07-ease);
+}
+.r07-btn:hover:not(:disabled) { background: var(--r07-green-50); }
+.r07-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.r07-btn--primary { background: var(--r07-green); border-color: var(--r07-green); color: #fff; }
+.r07-btn--primary:hover:not(:disabled) { background: #0f5137; border-color: #0f5137; }
+.r07-btn--ghost { border-color: transparent; background: transparent; color: var(--r07-green); padding: 0 10px; }
+.r07-btn--lg { min-height: 56px; font-size: 18px; }
+.r07-btn[aria-busy="true"]::before { content: ""; width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: r07-spin 0.8s linear infinite; }
+.r07-icon-btn { display: inline-grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; cursor: pointer; }
+.r07-icon-btn:hover { background: var(--r07-paper); }
+@keyframes r07-spin { to { transform: rotate(360deg); } }
+
+/* ---- Список «Горячие места» ---- */
+.r07-list { list-style: none; margin: 0; padding: 0; }
+.r07-list > li + li { border-top: 1px solid var(--r07-line); }
+.r07-item {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 60px;
+  padding: 8px 4px; border: 0; background: transparent; text-align: left; cursor: pointer; border-radius: 10px;
+}
+.r07-item:hover { background: var(--r07-paper); }
+.r07-item__rank { min-width: 1.6em; font-weight: 800; color: var(--r07-ink-2); font-variant-numeric: tabular-nums; }
+.r07-item__text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.r07-item__title { font-weight: 650; overflow-wrap: anywhere; }
+.r07-item__meta { font-size: 14px; color: var(--r07-ink-2); }
+
+/* Число на цветной плашке: на светлых уровнях тёмный текст, на тёмных — белый.
+ * Уровень 3 (#E24B4A) с белым текстом даёт 3.9:1, поэтому там число крупное и жирное (≥ 18.7 px bold — норма 3:1). */
+.r07-mini {
+  display: inline-grid; place-items: center; min-width: 40px; height: 32px; padding: 0 8px;
+  border-radius: 10px; background: var(--r07-c, #ccc); color: var(--r07-ink);
+  font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; flex-shrink: 0;
+}
+.r07-mini[data-level="3"] { color: #fff; font-size: 19px; }
+.r07-mini[data-level="4"], .r07-mini[data-level="fixed"] { color: #fff; }
+
+/* ---- Карточка цели ---- */
+.r07-card { display: flex; flex-direction: column; gap: 10px; }
+.r07-card__nav { display: flex; justify-content: space-between; align-items: center; margin: -6px -6px 0 -10px; }
+.r07-eyebrow { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--r07-ink-2); }
+.r07-card__title { margin: 0; font-size: 22px; line-height: 1.25; font-weight: 750; overflow-wrap: anywhere; }
+.r07-root .r07-card__title:focus, .r07-root .r07-card__title:focus-visible { outline: none; } /* фокус ставится программно — рамка не нужна */
+.r07-tag { margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: #f1efe6; color: #5b5442; font-size: 13px; letter-spacing: 0; text-transform: none; }
+.r07-level { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; }
+.r07-card__reported { margin: 0; font-size: 17px; }
+.r07-spark { display: flex; align-items: flex-end; gap: 3px; height: 56px; padding: 4px; border-radius: 10px; background: var(--r07-paper); }
+.r07-spark > i { flex: 1; border-radius: 3px 3px 0 0; background: #EF9F27; min-height: 2px; }
+.r07-axis { display: flex; justify-content: space-between; font-size: 14px; color: var(--r07-ink-2); }
+.r07-topics { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.r07-topics li { display: flex; align-items: center; gap: 10px; }
+.r07-topics li .r07-ic { color: var(--r07-green); }
+.r07-topics li span { flex: 1; }
+.r07-card__status { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.r07-status { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 14px; font-weight: 650; background: #eaf2fb; color: #1f5f9e; }
+.r07-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.r07-status[data-status="accepted"] { background: #efedfa; color: #5a4bb0; }
+.r07-status[data-status="in_progress"] { background: var(--r07-warn-bg); color: #8a5a12; }
+.r07-status[data-status="fixed"] { background: var(--r07-ok-bg); color: var(--r07-ok-ink); }
+.r07-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.r07-actions > .r07-btn { flex: 1 1 160px; }
+
+/* ---- Легенда ---- */
+.r07-legend { padding: 12px; border: 1px solid var(--r07-line); border-radius: 14px; background: #fff; }
+.r07-legend__title { margin: 0 0 8px; font-size: 16px; font-weight: 700; }
+.r07-legend ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.r07-legend li { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-variant-numeric: tabular-nums; }
+.r07-sw { display: inline-block; width: 18px; height: 18px; border-radius: 5px; border: 1px solid #0000001f; }
+.r07-legend__hint { margin: 8px 0 0; font-size: 14px; color: var(--r07-ink-2); }
+
+/* ---- Состояния ---- */
+.r07-skeleton { display: flex; flex-direction: column; gap: 10px; }
+.r07-skeleton i { display: block; height: 52px; border-radius: 12px; background: linear-gradient(90deg, #eef2ea, #f8faf6, #eef2ea); background-size: 200% 100%; animation: r07-shimmer 1.2s linear infinite; }
+@keyframes r07-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.r07-empty, .r07-error { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 20px 12px; text-align: center; border-radius: 14px; }
+.r07-empty .r07-ic { color: var(--r07-ok-ink); }
+.r07-error { background: #fbeceb; }
+.r07-error .r07-ic { color: var(--r07-danger-ink); }
+.r07-empty__title, .r07-error__title { margin: 0; font-size: 18px; font-weight: 700; }
+.r07-error__title { color: var(--r07-danger-ink); }
+.r07-empty__hint, .r07-error__hint { margin: 0; color: var(--r07-ink-2); max-width: 34ch; }
+
+/* ---- Тосты ---- */
+.r07-toasts { position: fixed; z-index: 50; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; width: min(420px, calc(100vw - 24px)); pointer-events: none; }
+.r07-toast { min-height: 48px; display: flex; align-items: center; padding: 10px 16px; border-radius: 12px; background: #152c26; color: #fff; box-shadow: 0 12px 40px #19362818; animation: r07-in 0.4s var(--r07-ease); transition: opacity 0.3s; }
+.r07-toast--error { background: #a33a2f; }
+.r07-toast--out { opacity: 0; }
+@keyframes r07-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ---- Значок цели на карте: кружок цвета уровня с иконкой + белая плашка с числом ---- */
+.r07-badge {
+  display: inline-flex; align-items: center; padding: 0; border: 0; background: transparent; cursor: pointer;
+  font-family: var(--b-font, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
+  filter: drop-shadow(0 1px 3px #19362840);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.r07-badge[hidden] { display: none; }
+.r07-badge:hover, .r07-badge--selected { transform: scale(1.12); z-index: 3; }
+.r07-badge__dot {
+  display: grid; place-items: center; width: 34px; height: 34px; border: 2px solid #fff; border-radius: 50%;
+  background: var(--r07-c, #ccc); color: #152c26; transition: background 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.r07-badge[data-level="3"] .r07-badge__dot, .r07-badge[data-level="4"] .r07-badge__dot, .r07-badge[data-level="fixed"] .r07-badge__dot { color: #fff; }
+.r07-badge__count {
+  min-width: 28px; height: 24px; margin-left: -8px; padding: 0 8px 0 11px;
+  border: 1px solid #15302626; border-radius: 0 12px 12px 0; background: #fff; color: #152c26;
+  font-size: 15px; font-weight: 800; line-height: 22px; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.r07-badge--selected .r07-badge__dot { box-shadow: 0 0 0 3px #152c26; }
+.r07-badge[data-kind="district"] .r07-badge__count { font-size: 16px; height: 28px; line-height: 26px; }
+
+/* Пульс при новой жалобе: два расходящихся кольца цвета уровня */
+.r07-pulse { width: 24px; height: 24px; border-radius: 50%; pointer-events: none; }
+.r07-pulse::before, .r07-pulse::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--r07-c, #E24B4A);
+  animation: r07-ring 1.3s cubic-bezier(0.22, 1, 0.36, 1) 2 both;
+}
+.r07-pulse::after { animation-delay: 0.35s; }
+@keyframes r07-ring { from { transform: scale(0.6); opacity: 0.95; } to { transform: scale(4.2); opacity: 0; } }
+
+/* Житель видит то же, но спокойнее */
+.r07-root[data-role="resident"] .r07-legend__hint { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .r07-pulse::before, .r07-pulse::after, .r07-skeleton i, .r07-toast { animation: none; }
+  .r07-badge, .r07-badge__dot { transition: none; }
+}
+@media (max-width: 760px) {
+  .r07-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; margin: 0 -2px; }
+  .r07-chips::-webkit-scrollbar { display: none; }
+  .r07-h { font-size: 20px; }
+}

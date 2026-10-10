@@ -1,0 +1,324 @@
+[
+ {
+  "name": "nura-akimat-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=akimat&view=nura",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 37,
+  "state": {
+   "role": "akimat",
+   "lang": "ru",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": null,
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "nura-akimat-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&role=akimat&view=nura&sheet=peek",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 37,
+  "state": {
+   "role": "akimat",
+   "lang": "ru",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": null,
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "city-districts-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=city",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 6,
+  "state": {
+   "role": "akimat",
+   "lang": "ru",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": null,
+   "mode": "districts",
+   "status": "ready",
+   "items": 6
+  }
+ },
+ {
+  "name": "card-segment-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=nura",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 40,
+  "state": {
+   "role": "akimat",
+   "lang": "ru",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": "segment:osm-w1181261286-8",
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "card-resident-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&role=resident&view=nura&sheet=full",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 40,
+  "state": {
+   "role": "resident",
+   "lang": "ru",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": "segment:osm-w1181261286-8",
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "nura-akimat-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&role=akimat&view=nura",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 37,
+  "state": {
+   "role": "akimat",
+   "lang": "kk",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": null,
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "nura-akimat-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&role=akimat&view=nura&sheet=peek",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 37,
+  "state": {
+   "role": "akimat",
+   "lang": "kk",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": null,
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "city-districts-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=city",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 6,
+  "state": {
+   "role": "akimat",
+   "lang": "kk",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": null,
+   "mode": "districts",
+   "status": "ready",
+   "items": 6
+  }
+ },
+ {
+  "name": "card-segment-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=nura",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 40,
+  "state": {
+   "role": "akimat",
+   "lang": "kk",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": "segment:osm-w1181261286-8",
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "card-resident-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&role=resident&view=nura&sheet=full",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 40,
+  "state": {
+   "role": "resident",
+   "lang": "kk",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": "segment:osm-w1181261286-8",
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "stop-fixed-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=stops&target=object:osm-node-4975687943",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 41,
+  "state": {
+   "role": "akimat",
+   "lang": "ru",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": "object:osm-node-4975687943",
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "stop-fixed-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=stops&target=object:osm-node-4975687943",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 41,
+  "state": {
+   "role": "akimat",
+   "lang": "kk",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": "object:osm-node-4975687943",
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "pulse-new-complaint-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=nura",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 40,
+  "state": {
+   "role": "akimat",
+   "lang": "ru",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": "segment:osm-w1181261286-8",
+   "mode": "targets",
+   "status": "ready",
+   "items": 41
+  }
+ },
+ {
+  "name": "filter-snow-7days-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=nura",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 12,
+  "state": {
+   "role": "akimat",
+   "lang": "kk",
+   "filters": {
+    "category": "snow_ice",
+    "days": 7,
+    "district": null
+   },
+   "selected": null,
+   "mode": "targets",
+   "status": "ready",
+   "items": 12
+  }
+ }
+]

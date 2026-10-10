@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Birge · Карта жалоб (демо R07)</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="/vendor/maplibre-gl.css" />
+  <link rel="stylesheet" href="/civic/heat/heat.css" />
+  <!-- Демо-страница R07: тепловая карта отдельно от общей сборки (её собирает R01).
+       Запуск: python -m ui.civic_heat.devserver → http://127.0.0.1:8617/civic/heat/demo.html
+       Параметры: ?lang=kk|ru &role=akimat|resident &view=nura|city &target=segment:osm-w…-n &sheet=peek|half|full
+       Подложка офлайн: настоящие улицы OSM из fixtures/ (тайлы из интернета не нужны). ?basemap=online — OpenFreeMap. -->
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #f4f2ec; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif; color: #152c26; }
+    .bar { position: absolute; z-index: 40; top: 0; left: 0; right: 0; height: 64px; display: flex; align-items: center; gap: 12px;
+      padding: 0 16px; background: #fff; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; }
+    .brand { display: flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    .logo { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: #152c26; color: #d7f57c; font-size: 20px; }
+    .spacer { flex: 1; }
+    .seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 12px; background: #eef2ea; }
+    .seg button { min-height: 42px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; color: #55655e; font: inherit; font-weight: 650; cursor: pointer; white-space: nowrap; }
+    .seg button[aria-pressed="true"] { background: #fff; color: #152c26; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; }
+    .demo-btn { min-height: 48px; padding: 0 14px; border: 1px dashed #b07823; border-radius: 12px; background: #faf5e7; color: #7a531a; font: inherit; font-weight: 650; cursor: pointer; white-space: nowrap; }
+    :focus-visible { outline: 3px solid #2f7de1; outline-offset: 2px; }
+    #map { position: absolute; top: 64px; left: 0; right: 0; bottom: 0; }
+    .panel { box-sizing: border-box; position: absolute; z-index: 30; top: 76px; right: 12px; bottom: 12px; width: 400px; overflow-y: auto; overscroll-behavior: contain;
+      padding: 16px; border: 1px solid #e1e7df; border-radius: 20px; background: #fff; box-shadow: 0 12px 40px #19362818, 0 2px 8px #1936280f; }
+    .handle { display: none; }
+    .mapbtns { position: absolute; z-index: 20; top: 76px; right: 424px; display: flex; flex-direction: column; gap: 8px; }
+    .mapbtns button { width: 48px; height: 48px; border: 1px solid #e1e7df; border-radius: 12px; background: #fff; font-size: 24px; line-height: 1; cursor: pointer; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; color: #152c26; }
+    .attr { position: absolute; z-index: 20; left: 8px; bottom: 6px; font-size: 12px; color: #55655e; background: #ffffffcc; padding: 2px 6px; border-radius: 6px; }
+    .maplibregl-ctrl-attrib { display: none; }
+    @media (max-width: 760px) {
+      .bar { height: 56px; gap: 8px; padding: 0 10px; }
+      .brand span.txt { display: none; }
+      /* На телефоне демо-кнопка уходит к кнопкам карты, чтобы шапка не была шире экрана */
+      .demo-btn { position: absolute; top: 176px; right: 10px; width: 48px; padding: 0; z-index: 20; }
+      .demo-btn .long { display: none; }
+      .seg button { padding: 0 10px; }
+      #map { top: 56px; }
+      .panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 46dvh; border-radius: 20px 20px 0 0; border-bottom: 0; padding: 0 16px 16px; transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+      .panel[data-state="peek"] { height: 112px; overflow: hidden; }
+      .panel[data-state="full"] { height: calc(100dvh - 56px); }
+      .handle { position: sticky; top: 0; z-index: 2; display: flex; justify-content: center; align-items: center; width: calc(100% + 32px); height: 28px; margin: 0 -16px 4px; border: 0; background: #fff; cursor: pointer; }
+      .handle::after { content: ""; width: 40px; height: 4px; border-radius: 2px; background: #b9c4b6; }
+      .mapbtns { top: 64px; right: 10px; }
+      .attr { bottom: auto; top: 62px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <div class="brand"><span class="logo" aria-hidden="true">B</span><span class="txt">Birge</span></div>
+    <div class="spacer"></div>
+    <div class="seg" id="role" role="group" aria-label="Режим">
+      <button type="button" data-role="akimat" aria-pressed="true">Акимат</button><button type="button" data-role="resident" aria-pressed="false">Житель</button>
+    </div>
+    <div class="seg" id="lang" role="group" aria-label="Язык">
+      <button type="button" data-lang="kk" aria-pressed="false">ҚАЗ</button><button type="button" data-lang="ru" aria-pressed="true">РУС</button>
+    </div>
+    <button type="button" class="demo-btn" id="demo-new"><span aria-hidden="true">＋</span> <span class="long" data-t="demo_new">Новая жалоба (демо)</span></button>
+  </header>
+  <div id="map" role="region" aria-label="Карта жалоб"></div>
+  <div class="mapbtns">
+    <button type="button" id="zin" aria-label="Приблизить" title="Приблизить">＋</button>
+    <button type="button" id="zout" aria-label="Отдалить" title="Отдалить">－</button>
+  </div>
+  <div class="attr">© OpenStreetMap contributors (ODbL)</div>
+  <aside class="panel" id="panel" data-state="half" aria-label="Карта жалоб">
+    <button type="button" class="handle" id="handle" aria-label="Развернуть или свернуть панель"></button>
+    <div id="heat-root"></div>
+  </aside>
+
+  <script src="/vendor/maplibre-gl.js"></script>
+  <script src="/civic/heat/heat.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    const P = new URLSearchParams(location.search);
+    const PAGE = {
+      ru: { role: "Режим", lang: "Язык", akimat: "Акимат", resident: "Житель", demo_new: "Новая жалоба (демо)", zin: "Приблизить", zout: "Отдалить", map: "Карта жалоб", handle: "Развернуть или свернуть панель" },
+      kk: { role: "Режим", lang: "Тіл", akimat: "Әкімдік", resident: "Тұрғын", demo_new: "Жаңа шағым (демо)", zin: "Жақындату", zout: "Алыстату", map: "Шағымдар картасы", handle: "Панельді ашу немесе жабу" },
+    };
+    let lang = P.get("lang") || (function () { try { return localStorage.getItem("birge.lang"); } catch (e) { return null; } })() || "ru";
+    lang = lang === "kk" ? "kk" : "ru";
+    const role = P.get("role") === "resident" ? "resident" : "akimat";
+    const view = P.get("view") || "nura";
+    const VIEWS = { nura: { center: [71.4045, 51.1285], zoom: 14.6 }, city: { center: [71.43, 51.135], zoom: 10.6 }, stops: { center: [71.468, 51.13], zoom: 15.6 } };
+    const v = VIEWS[view] || VIEWS.nura;
+    if (P.get("z")) v.zoom = Number(P.get("z"));
+    if (P.get("c")) v.center = P.get("c").split(",").map(Number);
+
+    // Офлайн-подложка: настоящие улицы OSM (без подписей — для подписей нужны шрифты карты из сети).
+    const offline = {
+      version: 8,
+      sources: {
+        city: { type: "geojson", data: "/civic/heat/fixtures/basemap-city.geojson" },
+        nura: { type: "geojson", data: "/civic/heat/fixtures/basemap-nura.geojson" },
+      },
+      layers: [
+        { id: "bg", type: "background", paint: { "background-color": "#f4f2ec" } },
+        { id: "nura-minor", type: "line", source: "nura", filter: ["==", ["get", "c"], "minor"], minzoom: 13, paint: { "line-color": "#e6e2d6", "line-width": ["interpolate", ["linear"], ["zoom"], 13, 0.8, 17, 4] } },
+        { id: "nura-street-case", type: "line", source: "nura", filter: ["==", ["get", "c"], "street"], minzoom: 12, layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#d9d4c5", "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1.5, 17, 12] } },
+        { id: "nura-street", type: "line", source: "nura", filter: ["==", ["get", "c"], "street"], minzoom: 12, layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#ffffff", "line-width": ["interpolate", ["linear"], ["zoom"], 12, 0.8, 17, 9] } },
+        { id: "city-major-case", type: "line", source: "city", filter: ["==", ["get", "c"], "major"], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#e3cf8f", "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1.2, 17, 16] } },
+        { id: "city-major", type: "line", source: "city", filter: ["==", ["get", "c"], "major"], layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#fff3c8", "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.6, 17, 12] } },
+        { id: "city-district", type: "line", source: "city", filter: ["==", ["get", "c"], "district"], paint: { "line-color": "#9aa79a", "line-width": 1.5, "line-dasharray": [3, 2] } },
+      ],
+    };
+    const style = P.get("basemap") === "online" ? "https://tiles.openfreemap.org/styles/liberty" : offline;
+    const map = new maplibregl.Map({ container: "map", style, center: v.center, zoom: v.zoom, minZoom: 9, maxZoom: 18, attributionControl: false, fadeDuration: 0 });
+    window.__map = map;
+
+    const panel = document.getElementById("panel");
+    if (P.get("sheet")) panel.dataset.state = P.get("sheet");
+    document.getElementById("handle").addEventListener("click", () => {
+      const order = ["peek", "half", "full"];
+      panel.dataset.state = order[(order.indexOf(panel.dataset.state) + 1) % order.length];
+    });
+    document.getElementById("zin").addEventListener("click", () => map.zoomIn({ duration: 300 }));
+    document.getElementById("zout").addEventListener("click", () => map.zoomOut({ duration: 300 }));
+
+    function applyPageLang() {
+      document.documentElement.lang = lang;
+      const D = PAGE[lang];
+      document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = D[el.dataset.t]; });
+      document.querySelector('#role [data-role="akimat"]').textContent = D.akimat;
+      document.querySelector('#role [data-role="resident"]').textContent = D.resident;
+      document.getElementById("role").setAttribute("aria-label", D.role);
+      document.getElementById("lang").setAttribute("aria-label", D.lang);
+      document.getElementById("zin").setAttribute("aria-label", D.zin); document.getElementById("zin").title = D.zin;
+      document.getElementById("zout").setAttribute("aria-label", D.zout); document.getElementById("zout").title = D.zout;
+      document.getElementById("map").setAttribute("aria-label", D.map);
+      document.getElementById("handle").setAttribute("aria-label", D.handle);
+      document.querySelectorAll("#lang [data-lang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+    }
+    applyPageLang();
+
+    const heat = window.CivicHeat.mount({ root: document.getElementById("heat-root"), map, role, lang });
+    window.__heat = heat;
+    document.querySelectorAll("#role [data-role]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.role === role)));
+
+    document.getElementById("role").addEventListener("click", (ev) => {
+      const b = ev.target.closest("[data-role]");
+      if (!b) return;
+      document.querySelectorAll("#role [data-role]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      heat.setRole(b.dataset.role);
+    });
+    document.getElementById("lang").addEventListener("click", (ev) => {
+      const b = ev.target.closest("[data-lang]");
+      if (!b) return;
+      lang = b.dataset.lang;
+      try { localStorage.setItem("birge.lang", lang); } catch (e) { /* приватный режим */ }
+      applyPageLang();
+      window.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang } }));
+    });
+
+    // Демо: новая жалоба на выбранную цель (или самую горячую) → сервер пересчитывает → пульс и перетекание цвета.
+    document.getElementById("demo-new").addEventListener("click", async () => {
+      const st = heat.state();
+      let targetId = st.selected ? st.selected.split(":").slice(1).join(":") : P.get("demo_target") || null;
+      if (!targetId) {
+        const r = await fetch("/api/civic/v2/heat?days=30");
+        const d = await r.json();
+        const it = d.items.find((x) => x.state === "active" && x.target.kind !== "district");
+        targetId = it && it.target.id;
+      }
+      if (!targetId) return;
+      const res = await fetch("/api/civic/v2/heat/demo/complaint", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ target_id: targetId }) });
+      if (!res.ok) return;
+      const rec = await res.json();
+      window.dispatchEvent(new CustomEvent("birge:complaint", { detail: { type: "created", complaint_id: rec.id, target: rec.target } }));
+    });
+
+    if (P.get("target")) {
+      const [kind, ...rest] = P.get("target").split(":");
+      const wait = setInterval(() => { if (heat.state().status === "ready") { clearInterval(wait); heat.focusTarget(kind, rest.join(":")); } }, 100);
+    }
+  })();
+  </script>
+</body>
+</html>

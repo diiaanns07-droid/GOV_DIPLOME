@@ -185,8 +185,11 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
         open_sorted = sorted(in_period, key=lambda x: x[1], reverse=True)
         label_ru = "Примерное место" if m["missing"] else resolved["label_ru"]
         label_kk = "Шамамен көрсетілген орын" if m["missing"] else resolved["label_kk"]
+        target_out = {"kind": key[0], "id": key[1], "label_ru": label_ru, "label_kk": label_kk}
+        if resolved.get("subtype"):
+            target_out["subtype"] = resolved["subtype"]   # например bus_stop → в карточке «Остановка»
         items.append({
-            "target": {"kind": key[0], "id": key[1], "label_ru": label_ru, "label_kk": label_kk},
+            "target": target_out,
             "geometry": resolved["geometry"],
             "anchor": [round(v, 6) for v in resolved["anchor"]] if resolved.get("anchor") else None,
             "weight": round(weight, 3),

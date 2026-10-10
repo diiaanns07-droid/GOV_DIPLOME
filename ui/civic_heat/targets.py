@@ -56,11 +56,26 @@ def kk_street_from_ru(name_ru: str | None) -> str | None:
     return name_ru
 
 
+# Родительный падеж для типов улиц: окончание у слова-типа всегда одно и то же, имя собственное не трогаем.
+_KK_GENITIVE = (("көшесі", "нің"), ("даңғылы", "ның"), ("жолы", "ның"), ("бульвары", "ның"), ("алаңы", "ның"))
+
+
+def kk_genitive(name_kk: str | None) -> str | None:
+    """«Сығанақ көшесі» → «Сығанақ көшесінің». Неизвестное окончание → None (тогда подпись через двоеточие)."""
+    if not name_kk:
+        return None
+    for ending, suffix in _KK_GENITIVE:
+        if name_kk.endswith(ending):
+            return name_kk + suffix
+    return None
+
+
 def segment_labels(street_ru: str | None, street_kk: str | None, from_ru=None, to_ru=None, from_kk=None, to_kk=None) -> tuple[str, str]:
     """Подпись участка: «Участок ул. Сыганак от ул. X до ул. Y».
 
-    По-казахски падежные окончания зависят от последнего звука названия, поэтому
-    названия улиц не склоняем, а ставим через тире: «Сығанақ көшесі: X – Y аралығы».
+    По-казахски окончание зависит от последнего звука слова. Склоняем только слово-тип улицы
+    («көшесі» → «көшесінің»), у которого окончание известно заранее; имена собственные не трогаем:
+    «Сығанақ көшесінің бөлігі», «Сығанақ көшесінің Тұран даңғылы – Достық көшесі аралығы».
     """
     if not street_ru:
         return "Участок улицы", "Көше бөлігі"
@@ -72,9 +87,10 @@ def segment_labels(street_ru: str | None, street_kk: str | None, from_ru=None, t
     kk_street = street_kk or kk_street_from_ru(street_ru)
     from_kk = from_kk or kk_street_from_ru(from_ru)
     to_kk = to_kk or kk_street_from_ru(to_ru)
-    kk = f"{kk_street}: көше бөлігі"
+    gen = kk_genitive(kk_street)
+    kk = f"{gen} бөлігі" if gen else f"{kk_street}: көше бөлігі"
     if from_kk and to_kk and from_kk != to_kk:
-        kk = f"{kk_street}: {from_kk} – {to_kk} аралығы"
+        kk = f"{gen} {from_kk} – {to_kk} аралығы" if gen else f"{kk_street}: {from_kk} – {to_kk} аралығы"
     return ru, kk
 
 
@@ -144,7 +160,8 @@ class TargetResolver:
             item = self._registry[tid]
             return {"geometry": item["geometry"], "label_ru": item.get("label_ru") or KIND_WORD.get(kind, KIND_WORD["area"])[0],
                     "label_kk": item.get("label_kk") or KIND_WORD.get(kind, KIND_WORD["area"])[1],
-                    "approximate": bool(item.get("approximate")), "source": item.get("source", "registry")}
+                    "approximate": bool(item.get("approximate")), "source": item.get("source", "registry"),
+                    "subtype": item.get("subtype")}
         if self._r12 is not None and tid:
             try:
                 got = self._r12.target_geometry({"kind": kind, "id": tid})

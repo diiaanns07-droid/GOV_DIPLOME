@@ -285,7 +285,9 @@ def test_daily_series_uses_astana_days():
 def test_kazakh_labels_do_not_inflect_variable_names():
     ru, kk = segment_labels("улица Сыганак", "Сығанақ көшесі", "проспект Туран", "улица Достык", "Тұран даңғылы", None)
     assert ru == "Участок ул. Сыганак от пр. Туран до ул. Достык"
-    assert kk == "Сығанақ көшесі: Тұран даңғылы – Достык көшесі аралығы"
+    assert kk == "Сығанақ көшесінің Тұран даңғылы – Достык көшесі аралығы"
+    assert segment_labels("улица Е-308", "Е-308 көшесі")[1] == "Е-308 көшесінің бөлігі"
+    assert segment_labels("E-900", None)[1] == "E-900: көше бөлігі"
     assert kk_street_from_ru("Центральная улица") == "Центральная көшесі"
     assert segment_labels("Объездная Астаны", None)[0] == "Участок: Объездная Астаны"
 

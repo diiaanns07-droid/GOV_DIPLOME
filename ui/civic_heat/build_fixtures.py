@@ -224,7 +224,7 @@ def build():
                 ru, kk = "Остановка", "Аялдама"
         if any(v.get("label_ru") == ru for v in targets.values()):
             continue  # одинаковые подписи в списке «Горячие места» сбивают с толку — берём следующую остановку
-        targets[f"osm-node-{n['id']}"] = {"kind": "object", "role": "transport", "geometry": {"type": "Point", "coordinates": pt},
+        targets[f"osm-node-{n['id']}"] = {"kind": "object", "subtype": "bus_stop", "role": "transport", "geometry": {"type": "Point", "coordinates": pt},
                                           "label_ru": ru, "label_kk": kk, "district": geo.district_of(pt), "source": "osm-node-bus_stop"}
         if sum(1 for v in targets.values() if v["role"] == "transport") == 4:
             break
