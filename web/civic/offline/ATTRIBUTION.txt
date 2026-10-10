@@ -1,0 +1,10 @@
+Birge offline basemap
+OpenStreetMap contributors, ODbL 1.0: https://www.openstreetmap.org/copyright
+Natural Earth: public domain, https://www.naturalearthdata.com/about/terms-of-use/
+Protomaps build: https://build.protomaps.com/20261010.pmtiles, schema 4.15.2
+Archive is an unmodified spatial/zoom extract, bbox from walking graph plus >=3 km, z0-15.
+Extraction is tile-granular; tiles intersecting the bbox can include features outside it.
+Fonts: Noto Sans Regular, SIL OFL 1.1 (fonts/OFL.txt).
+Sprites: Protomaps basemaps-assets v4/light, derived from Tangram icons, MIT (sprites/LICENSE-MIT.txt).
+PMTiles JS 4.5.0: BSD-3-Clause, bundled fflate MIT; see web/vendor/pmtiles/.
+Original light style: Birge OFFLINE. No geocoding or external telemetry.

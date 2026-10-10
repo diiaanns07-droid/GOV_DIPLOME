@@ -22,6 +22,12 @@ R01 · раунд 14 · RUN — как запустить Birge на Windows с 
        Birge: http://127.0.0.1:8611
    Остановить — Ctrl+C. Порт занят — закрыть прежнее окно или:  set PORT=8612 && run-city.bat
 
+3б) Карта без интернета (офлайн-подложка Codex/OFFLINE, в сборке с ночи 10→11 окт): положите архив тайлов Астаны
+   (10 МБ, не в Git) в  <папка сборки>\data\civic\astana\tiles\astana.pmtiles
+   — на ноутбуке он уже есть: C:\Users\LEGION\Desktop\hackalem\birge-offline\data\civic\astana\tiles\astana.pmtiles
+   (SHA256 7c8343ad…07949). Скачать заново — download_tiles.ps1 из ветки claude/r14-offline (research/round-14-results/
+   OFFLINE/RUN.txt). Есть архив — карта всегда локальная (улицы, подписи, 3D-здания); нет — OpenFreeMap из интернета,
+   без интернета — упрощённый фон с осями улиц. Проверка: http://127.0.0.1:8611/civic/offline/status.json → available: true.
 4) Демо-данные сервер готовит сам при CIVIC_DEMO=1 (run-city.bat): этапы демо-объектов и 5 демо-предложений R06,
    3 синтетические жалобы «Освещение» у остановки «Хан Шатыр» (для шага «Я тоже»). Всё помечено «Пример»; повторный
    запуск ничего не дублирует. Поэтому первая жалоба на показе получит номер B-0004. Ручной seed-r14-demo не нужен.

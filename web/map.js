@@ -238,9 +238,13 @@ async function loadMap() {
     return;
   }
   try {
+    // OFFLINE (Codex, afbc6ee): локальный архив PMTiles, если установлен; нет boot.js или архива — подложка OpenFreeMap.
+    const onlineStyle = "https://tiles.openfreemap.org/styles/liberty";
+    const basemap = window.BirgeOffline ? await window.BirgeOffline.choose(onlineStyle) : { style: onlineStyle, schematic: false };
+    offlineBasemap = basemap.schematic;
     map = new maplibregl.Map({
       container: "map",
-      style: "https://tiles.openfreemap.org/styles/liberty",
+      style: basemap.style || offlineStyle(),
       center: cityBounds().getCenter(),
       zoom: 10.7,
       pitch: 0,
@@ -292,7 +296,7 @@ async function loadMap() {
           if (
             l.type === "symbol" &&
             l.layout?.["text-field"] &&
-            /name/.test(JSON.stringify(l.layout["text-field"]))
+            !window.BirgeOffline?.active && /name/.test(JSON.stringify(l.layout["text-field"]))
           ) {
             try {
               map.setLayoutProperty(l.id, "text-field", [
@@ -369,6 +373,7 @@ async function loadMap() {
           },
           label,
         );
+        if (!offlineBasemap) {
         const sourceId =
           Object.keys(map.getStyle().sources).find(
             (k) => map.getStyle().sources[k].type === "vector",
@@ -379,7 +384,7 @@ async function loadMap() {
             url: "https://tiles.openfreemap.org/planet",
           });
         map.addLayer(
-          {
+          window.BirgeOffline?.active ? window.BirgeOffline.buildingLayer() : {
             id: "akim-3d",
             type: "fill-extrusion",
             source: sourceId,
@@ -421,6 +426,8 @@ async function loadMap() {
           },
           label,
         );
+        }
+        window.BirgeOffline?.attach?.(map);
         map.setLight({
           anchor: "viewport",
           color: "#fff9e8",

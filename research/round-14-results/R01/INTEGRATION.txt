@@ -264,3 +264,8 @@ R12/R03: старый tests/civic/R03/core.test.mjs (карта раунда 13)
 - Круг 3: R12 — в сборке применён патч R11 research/round-14-results/R11/patches/R12_staff_i18n.patch к вашему
   web/civic/editor/editor.js (кабинет сотрудника на ключах staff.* / works.*; R10 B-021). Включите его в свою поставку —
   иначе при переносе вашего следующего code_sha R01 наложит патч снова (git apply --check проходит на 8bb7bf8).
+- Круг 3в: OFFLINE (Codex, ветка claude/r14-offline, DELIVERY code_sha afbc6ee): взяты web/civic/offline/ и
+  web/vendor/pmtiles/ (6,4 МБ: стиль, спрайты, глифы Noto Sans, pmtiles.js) и их патч к .gitignore, index.html, map.js,
+  web_server.py (раздача /civic/offline/* — явный список, Range для архива). R01 добавил: map.js работает и без boot.js
+  (window.BirgeOffline?.…). Сам архив data/civic/astana/tiles/astana.pmtiles — не в Git (LOCAL, RUN.txt шаг 3б).
+  Папку результатов OFFLINE в сборку не переносил (она в их ветке). Их находка про таймер R09 — BUGS I-06.

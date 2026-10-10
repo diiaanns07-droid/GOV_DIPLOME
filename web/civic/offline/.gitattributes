@@ -1,0 +1,3 @@
+# Upstream asset hashes are byte-exact across Windows checkouts.
+fonts/** -text
+sprites/** -text

@@ -1,0 +1,4 @@
+# Keep vendored bytes identical to the verified upstream package.
+pmtiles.js -text
+LICENSE -text
+FFLATE-LICENSE -text

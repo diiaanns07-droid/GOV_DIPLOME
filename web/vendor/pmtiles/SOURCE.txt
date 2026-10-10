@@ -1,0 +1,9 @@
+PMTiles JavaScript 4.5.0 (BSD-3-Clause)
+Published: 2026-08-10T20:12:24.430Z; selected 2026-10-10, older than 14 days.
+Source: https://github.com/protomaps/PMTiles/tree/main/js
+Download: https://registry.npmjs.org/pmtiles/-/pmtiles-4.5.0.tgz
+Integrity: sha512-CBeD4SoUluFziGdy/8k7FOjQxQy486n+929W/tWophauvMICpkZ26vGBWhDt/6b1FZQWNaf4jFdT/5+q0Wii5w==
+Standalone dist/pmtiles.js; bundled fflate is MIT licensed, notice in FFLATE-LICENSE.
+Source revision: 3b10e67edb65c6b04549f74c0279cef8328d859c
+LICENSE downloaded from this pinned revision (npm package omits it).
+Bundled JS SHA256: caf981bc46f6327ee7e65d5dc964d89d38a69f60edca2bd4c5c890c21b554c6c
