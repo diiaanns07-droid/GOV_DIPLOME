@@ -1,0 +1,80 @@
+R02 · раунд 14 · как запускать (ноутбук владельца, Windows PowerShell; всё — из корня репозитория)
+
+Python: любой 3.10+ (скрипты R02 используют только стандартную библиотеку). Можно venv из LOCAL-3:
+    C:\Users\LEGION\venvs\birge-ml\Scripts\Activate.ps1
+Ветка: claude/r14-R02  (git fetch origin; git switch claude/r14-R02)
+
+──────────────────────────────────────────────────────────────────────────────
+1. РАЗМЕТКА 300 ТЕКСТОВ (без мыши, ~2 часа)
+──────────────────────────────────────────────────────────────────────────────
+a) CSV из Google-формы положить в private\  (папка не попадает в Git):
+       private\form.csv
+b) Импорт с обезличиванием:
+       python -m ml.labeling.import_form private\form.csv
+   → private\form_<дата>.jsonl, .report.json (только числа), .review.txt
+   Откройте .review.txt и посмотрите строки глазами: там после обезличивания остались подозрительные числа или
+   латиница. Если видите телефон/имя/номер квартиры — исправьте текст в .jsonl вручную (id не трогайте).
+c) Двойной щелчок по web\labeling\index.html (Chrome/Edge). «Первый разметчик» → «Открыть файл» → form_<дата>.jsonl.
+   Клавиши (работают и в казахской, и в русской раскладке):
+       1 … 9, 0, -, =   — 12 категорий (порядок как на экране)
+       N — не жалоба    F — сомневаюсь    Пробел — пропустить    Backspace или Z — отменить
+       ← → — назад/вперёд    L — сменить язык текста    Ctrl+S — скачать JSONL    ? — справка
+   Всё сохраняется в браузере после каждого нажатия; закрыли вкладку — на стартовом экране «Продолжить».
+   Каждые 50 меток кнопка «Скачать JSONL» подсвечивается — скачайте и переложите файл в private\.
+   Итог: private\birge-labels_A_first_form_<…>.jsonl (с текстами — только в private\!).
+d) Второй разметчик (одногруппник) — тот же файл form_<дата>.jsonl, «Второй разметчик», 100 текстов,
+   ключ поднабора birge-2026 (одинаковый ключ → одинаковый поднабор на любом компьютере). Его экспорт:
+   birge-labels_B_second_….jsonl.
+e) Согласие:
+       python -m ml.labeling.agreement private\birge-labels_A_first_….jsonl private\birge-labels_B_second_….jsonl --md private\agreement_AB.md
+   (--exclude not_complaint — без «Не жалоба»; --drop-unsure — без «Сомневаюсь»; --with-texts — тексты в отчёте)
+
+──────────────────────────────────────────────────────────────────────────────
+2. LLM-РАЗМЕТЧИК (согласие «человек–LLM»), LOCAL-8
+──────────────────────────────────────────────────────────────────────────────
+Ключ — только в этом окне терминала, не в файлах:
+       $env:OPENAI_API_KEY="sk-…"          # или $env:NVIDIA_API_KEY="nvapi-…"
+Сначала оценка (ничего не отправляет):
+       python -m ml.labeling.llm_label private\birge-labels_A_first_….jsonl --model gpt-4o-mini --dry-run
+Пробно 20 текстов, затем все:
+       python -m ml.labeling.llm_label private\birge-labels_A_first_….jsonl --model gpt-4o-mini --max-usd 1 --confirm-external --limit 20
+       python -m ml.labeling.llm_label private\birge-labels_A_first_….jsonl --model gpt-4o-mini --max-usd 1 --confirm-external
+       python -m ml.labeling.agreement private\birge-labels_A_first_….jsonl private\labels_llm_gpt-4o-mini.jsonl --md private\agreement_A_llm.md
+Метки владельца модели не показываются (берутся только id и text); каждый текст перед отправкой ещё раз обезличивается.
+--confirm-external обязателен: тексты людей уходят во внешний API — делайте это, только если это покрывается
+согласием из формы. NVIDIA (OpenAI-совместимый, base_url https://integrate.api.nvidia.com/v1):
+       python -m ml.labeling.llm_label <файл> --provider nvidia --model meta/llama-3.3-70b-instruct --price-in 0.5 --price-out 0.5 --max-usd 1 --confirm-external
+(цены NVIDIA укажите из личного кабинета; если там кредиты, а не доллары, поставьте осторожные значения и следите за балансом).
+
+Оценка стоимости, 300 текстов (верхняя граница, расчёт --dry-run, промпт правил ≈ 5.7 тыс. символов):
+       gpt-4o-mini ≤ 0.11 $   gpt-4.1-mini ≤ 0.29 $   gpt-4.1 ≤ 1.43 $
+Повторный запуск берёт ответы из private\llm_cache\label\ — 0 $.
+
+──────────────────────────────────────────────────────────────────────────────
+3. LLM-СИНТЕТИКА llm_v1 (сравнение «шаблоны против LLM»), LOCAL-8
+──────────────────────────────────────────────────────────────────────────────
+       python -m ml.datasets.llm_synth --model gpt-4o-mini --n-total 4000 --dry-run
+       python -m ml.datasets.llm_synth --model gpt-4o-mini --n-total 200 --max-usd 0.5        # проба: посмотреть тексты
+       python -m ml.datasets.llm_synth --model gpt-4.1-mini --n-total 4000 --max-usd 3          # основной запуск
+→ ml\datasets\llm_v1\corpus_llm_v1.jsonl + manifest_llm_v1.json (их можно коммитить и пушить в claude/r14-R02).
+Кэш private\llm_cache\synth\ — не коммитить. Оценка на 4000 запрошенных сообщений (200 запросов по 20):
+       gpt-4o-mini ≤ 0.31 $   gpt-4.1-mini ≤ 0.84 $   gpt-4.1 ≤ 4.18 $
+Для казахского качество выше у более сильной модели: при бюджете 40 $ разумно gpt-4.1-mini или gpt-4.1.
+Перед основным запуском откройте пробный корпус и проверьте казахские тексты глазами.
+Без сети и ключа (проверка конвейера): python -m ml.datasets.llm_synth --mock --n-total 120  → private\llm_mock\
+
+──────────────────────────────────────────────────────────────────────────────
+4. ПЕРЕСБОРКА И ПРОВЕРКИ (облако и ноутбук)
+──────────────────────────────────────────────────────────────────────────────
+       python -m ml.datasets.synth_v3.build --check     # синтетика v3 воспроизводится (sha256)
+       python -m ml.labeling.gen_categories_js --check  # web\labeling\categories.js совпадает с categories_v2.json
+       python -m pytest tests\civic\R02\round14          # 89 тестов (нужен pytest)
+       node --test tests\civic\R02\round14\labeling_core.test.mjs tests\civic\R02\round14\labeling_browser.test.mjs
+       (браузерные тесты — нужен playwright; без него помечаются skipped/NOT_RUN)
+       python -m ml.labeling.anonymize "Звоните +7 701 123 45 67, ул. Кенесары 40, кв. 5"   # быстрый просмотр
+
+ЧТО ТЕПЕРЬ МОЖЕТ ПОЛЬЗОВАТЕЛЬ
+- Владелец: импортировать ответы формы, разметить 300 текстов только клавиатурой, позвать второго разметчика,
+  получить kappa и матрицу несогласий, запустить LLM-разметчик и LLM-синтетику с контролем бюджета.
+- R03: обучать v2 на synth_v3 (train/val/test), сравнивать с llm_v1, добавлять v1_in_v2 (поле label).
+- R04: проверять поиск дублей на paraphrase_pairs_v3.jsonl (в т. ч. ru ↔ kk).

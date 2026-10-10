@@ -1,0 +1,70 @@
+R02 · раунд 14 · как подключить к общей сборке
+
+Ветка: claude/r14-R02. Пути R02: ml/datasets/, ml/labeling/, web/labeling/, tests/civic/R02/round14/,
+research/round-14-results/R02/, research/handoffs/astana/R02/round14/. Чужие файлы R02 не менял.
+Старые tests/civic/R02/*.py (раунд 11–13, модуль публикации объектов) не трогал — это другой модуль.
+
+ВАЖНО КООРДИНАТОРУ (S1)
+- Первый checkpoint R02 (887ef4b) ушёл в claude/round-14-package ДО того, как в COMMON.txt появилось правило
+  «в пакет не пушить». В нём только пути R02 (web/labeling/, ml/labeling/__init__.py, gen_categories_js.py,
+  tests/civic/R02/round14/, скриншоты, STATUS.md). Дальше всё — только в claude/r14-R02 (там тот же коммит в истории).
+  Откатывать или оставить — решение координатора; для сборки достаточно взять claude/r14-R02.
+
+──────────────────────────────────────────────────────────────────────────────
+R01 (интегратор) — один обязательный patch
+──────────────────────────────────────────────────────────────────────────────
+Реальные тексты жителей пишутся только в private/. Скрипты R02 сами создают private/.gitignore со «*»,
+но в корневом .gitignore папки нет. Patch (добавить в конец .gitignore):
+
+--- a/.gitignore
++++ b/.gitignore
+@@
++
++# Раунд 14, R02: реальные тексты жителей, кэш LLM-ответов, подставные прогоны — никогда в Git
++private/
+
+Необязательно: web/labeling/ — самостоятельная офлайн-страница (file://), сервер ей не нужен. Если ui/web_server.py
+раздаёт web/ статикой, она будет доступна и как /labeling/index.html; ссылку в интерфейс акимата не добавлять —
+это инструмент исследования, а не часть продукта.
+
+──────────────────────────────────────────────────────────────────────────────
+R03 (модель v2) — данные для обучения и честной проверки
+──────────────────────────────────────────────────────────────────────────────
+- ml/datasets/synth_v3/data/corpus_v3.jsonl — 4260 сообщений, поля text, label, lang, split (train/val/test/
+  excluded_near_dup), style, hard, template_id. Выбор модели и порога — только по val; test — шаблоны, которых нет в train.
+- ml/datasets/v1_in_v2/corpus_v1_in_v2.jsonl — v1 (2725) в категориях v2: обучать по полю label (уточнённое);
+  label_table — механический перевод (для абляции «сколько шума даёт таблица»). split — исходный split v1.
+- ml/datasets/llm_v1/corpus_llm_v1.jsonl — появится после LOCAL-8 (владелец), split по запросам.
+- Тексты людей: private/… у владельца (экспорт web/labeling, schema birge-labels-v1, поле label; not_complaint
+  исключать из обучения/оценки 12 классов; unsure — отдельный разрез).
+- Предлагаемые эксперименты диплома: (1) train v3 → test v3 и test людей; (2) train llm_v1 → test людей;
+  (3) v3 + llm_v1; (4) + v1_in_v2; разрезы по lang (ru/kk/mixed), style (translit, typos, short) и hard.
+- Категории — research/round-14/categories_v2.json (12); порядок списка = порядок в интерфейсе.
+
+──────────────────────────────────────────────────────────────────────────────
+R04 (дубли и ML-API)
+──────────────────────────────────────────────────────────────────────────────
+- ml/datasets/synth_v3/data/paraphrase_pairs_v3.jsonl — 781 пара: a, b, same_incident (true/false), kind
+  (paraphrase / paraphrase_same_template / paraphrase_crosslingual ru↔kk / same_place_other_problem /
+  same_problem_other_place), category_a/b, lang_a/b, split dev/test (по семейству). Порог подбирать на dev, отчёт на test.
+- Тексты уже обезличены теми же маркерами, что и /classify получит после ml/labeling/anonymize.py.
+  Если ML-API хочет обезличивать вход — можно импортировать ml.labeling.anonymize.anonymize (stdlib, без зависимостей).
+
+──────────────────────────────────────────────────────────────────────────────
+R11 (UX и казахский)
+──────────────────────────────────────────────────────────────────────────────
+- research/round-14-results/R02/KK_STRINGS.md — 84 строки интерфейса разметки + 9 строк справки, ru/қаз,
+  со списком сомнительных мест. Страница офлайн и не использует web/civic/i18n/ (file:// не даёт fetch JSON);
+  правки владельца вносит R02 в web/labeling/app.js (STR.kk / CASES.kk).
+- Иконки страницы — свой небольшой набор в app.js (12 категорий + интерфейс), нарисован заново, без загрузок.
+  Палитра совпадает с tokens.css R11 по основным цветам (#152c26, #176b4a, #d7f57c, #f7f8f4).
+- Казахские примеры в ml/datasets/LABELING_GUIDE_v2.md и шаблоны synth_v3/templates.py тоже ждут проверки.
+
+──────────────────────────────────────────────────────────────────────────────
+LOCAL-задачи (ноутбук владельца; команды — RUN.txt)
+──────────────────────────────────────────────────────────────────────────────
+- LOCAL-6 → после формы: python -m ml.labeling.import_form private\form.csv, затем разметка web/labeling.
+- LOCAL-8 → python -m ml.labeling.llm_label … --confirm-external и python -m ml.datasets.llm_synth … --max-usd …;
+  закоммитить только ml/datasets/llm_v1/corpus_llm_v1.jsonl и manifest_llm_v1.json в claude/r14-R02
+  (private/ и кэш — нет). Ключи — только переменные окружения.
+- Сеть в облаке R02 не использовалась: ни моделей, ни шрифтов, ни библиотек не скачивалось.

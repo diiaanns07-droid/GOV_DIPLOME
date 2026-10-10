@@ -1,0 +1,56 @@
+{
+  "role": "R02",
+  "title": "Данные: 12 категорий, синтетика v3, инструмент разметки, LLM-скрипты",
+  "branch": "claude/r14-R02",
+  "base_sha": "c75a9ac",
+  "package_sha_with_branch_rule": "7ff639a",
+  "restored_from": null,
+  "code_sha": "229f1aa",
+  "tested_sha": "229f1aa",
+  "push_status": "OK: claude/r14-R02 (checkpoints 887ef4b, 8e84b25, ff23ed5, 229f1aa и коммит с документацией); 887ef4b также в claude/round-14-package — см. INTEGRATION.txt",
+  "environment": "облачная сессия Claude Code, Linux, Python 3.13.16, pytest 9.1.1, Node 22.22.0, playwright 1.56.1 + Chromium /opt/pw-browsers; без доступа к внешним API",
+  "changed_paths": [
+    "web/labeling/",
+    "ml/labeling/",
+    "ml/datasets/",
+    "tests/civic/R02/round14/",
+    "research/round-14-results/R02/",
+    "research/handoffs/astana/R02/round14/STATUS.md"
+  ],
+  "deliverables": {
+    "labeling_tool": "web/labeling/index.html (+ app.js, core.js, style.css, categories.js из categories_v2.json)",
+    "anonymize": "ml/labeling/anonymize.py",
+    "google_form_import": "ml/labeling/import_form.py",
+    "agreement": "ml/labeling/agreement.py",
+    "guide_v2": "ml/datasets/LABELING_GUIDE_v2.md",
+    "synth_v3": "ml/datasets/synth_v3/data/corpus_v3.jsonl (4260), manifest_v3.json",
+    "paraphrase_pairs": "ml/datasets/synth_v3/data/paraphrase_pairs_v3.jsonl (781)",
+    "v1_in_v2": "ml/datasets/v1_in_v2/corpus_v1_in_v2.jsonl (2725)",
+    "llm_synth": "ml/datasets/llm_synth.py → ml/datasets/llm_v1/ (запуск у владельца)",
+    "llm_label": "ml/labeling/llm_label.py",
+    "llm_client": "ml/labeling/llm_client.py, ml/labeling/guide.py",
+    "readme": "ml/datasets/README.md"
+  },
+  "tests": {
+    "pytest tests/civic/R02/round14 (89)": "PASS",
+    "node labeling_core.test.mjs (12)": "PASS",
+    "node labeling_browser.test.mjs (7, Chromium, file://, 1366x768 и 375x812, ru и kk, без сетевых запросов)": "PASS",
+    "сквозной: экспорт страницы (A и B) → agreement.py": "PASS",
+    "synth_v3 build --check (sha256 воспроизводится)": "PASS",
+    "gen_categories_js --check": "PASS",
+    "llm_synth / llm_label с настоящим OpenAI/NVIDIA API": "NOT_RUN (облако без доступа к API; проверено на подставном транспорте: повторы 429/5xx, 401, бюджет, кэш, ключ не пишется в файлы)",
+    "страница разметки в Firefox/Safari": "NOT_RUN (проверен только Chromium)",
+    "реальная разметка 300 текстов владельцем": "NOT_RUN (тексты формы ещё собираются, LOCAL-6)"
+  },
+  "screens": "research/round-14-results/R02/screens/ (7 скриншотов реально запущенной страницы на синтетических фикстурах)",
+  "known_limits": [
+    "Казахские шаблоны, примеры правил и строки интерфейса написаны агентом и не проверены носителем (KK_STRINGS.md, ⚠ в LABELING_GUIDE_v2.md).",
+    "Шаблоны, правила и синтетику писал один автор — синтетический test оптимистичен; главная проверка — тексты людей.",
+    "Обезличивание на регулярных выражениях: имена — только по явным шаблонам; адрес без ключевого слова и без известной улицы может остаться → .review.txt для ручной проверки.",
+    "Прогресс разметки хранится в localStorage браузера: очистка данных браузера без экспорта теряет метки (кнопка экспорта подсвечивается каждые 50 меток; свой экспорт можно открыть снова и продолжить).",
+    "v1_in_v2: уточнение меток по ключевым словам (393 строки отличаются от таблицы v1_to_v2).",
+    "Цены моделей в llm_client.PRICES — по состоянию знаний агента; перед запуском сверить с прайсом провайдера (или передать --price-in/--price-out).",
+    "near_dup_val_test = 0: шаблоны v3 различаются сильнее порога 0.8; улицы и места общие для всех split (не несут информации о категории)."
+  ],
+  "next_step": "Владелец: R01 применяет patch private/ в .gitignore; после формы — import_form → разметка 300 текстов → второй разметчик (100) → agreement; LOCAL-8: llm_label и llm_synth по RUN.txt; R03 обучает на corpus_v3 с 12 октября; если останется лимит — R02 помогает R03 с экспериментами."
+}
