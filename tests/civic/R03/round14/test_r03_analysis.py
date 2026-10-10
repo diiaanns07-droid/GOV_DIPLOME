@@ -135,3 +135,23 @@ def test_load_human_keeps_style_for_probe(tmp_path):
     from ml.civic_classifier_v2 import data as D
     recs, _ = D.load_human([F.write_jsonl(tmp_path / "p.jsonl", F.probe_like())])
     assert {r["style"] for r in recs} == {"colloquial"} and any(r["hard"] for r in recs)
+
+
+# ---------- аудит меток llm_v1 ----------
+
+def test_label_audit_flags_confident_disagreement():
+    import numpy as np
+    from ml.civic_classifier_v2 import label_audit as LA
+    labs = L.labels()
+    recs = [{"id": f"x{i}", "text": f"t{i}", "label": "other", "split": "train", "lang": "ru"} for i in range(4)]
+    proba = np.full((4, 12), 0.01)
+    proba[0, labs.index("noise_safety")] = 0.85                         # уверенно другая тема -> кандидат
+    proba[1, labs.index("noise_safety")] = 0.55                         # не уверенно -> нет
+    proba[2, labs.index("other")] = 0.9                                 # согласна с меткой -> нет
+    proba[3, labs.index("waste")] = 0.7
+    proba[3, labs.index("other")] = 0.25                                # p(метки) не низкая -> нет
+    v3 = proba.copy()
+    res = LA.audit(recs, proba, v3, low=0.2, high=0.6)
+    assert res["candidates"] == 1 and res["items"][0]["id"] == "x0"
+    assert res["items"][0]["suggested"] == "noise_safety" and res["items"][0]["v3_agrees"] is True
+    assert res["by_label"]["other"] == {"candidates": 1, "n": 4, "share": 0.25}
