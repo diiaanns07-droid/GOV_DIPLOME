@@ -43,6 +43,10 @@ R04 (ML-API: POST /api/civic/v2/classify)
 дворе», «двор заставлен машинами», «көліктер көгалға тұрып алды» → parking. Код R04 менять не нужно: проверено на
 claude/r14-R04 @ 94bd9ac с этим словарём — tests/civic/R04/round14 74 passed, 1 skipped; classify_chain → parking
 (source kw, suggest true). Эксперимент диплома считает по v1 (version="v1"), его числа не меняются.
+Транслит: R04 переводит латиницу в кириллицу (to_cyrillic) перед словарём и v1, но не перед v2. Замер R03 на
+probe_v2 (results/translit_to_cyrillic_probe_v2.json): логрегрессия +0.020 [−0.001; +0.042], транслит accuracy
+0.50 → 0.75; словарь +0.029 [+0.012; +0.050]. Для трансформера замер — на ноутбуке (RUN.txt шаг 8в). Предложение R04:
+если 8в покажет Δ ≥ 0, вызывать v2 на to_cyrillic(text) (меняет только тексты, где латиницы ≥ 50 %). Решение — R04.
 Код:
     from ml.civic_classifier_v2.predict import ModelUnavailable, get_default
     try:

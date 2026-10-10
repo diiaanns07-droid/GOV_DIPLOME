@@ -333,11 +333,38 @@ def render_errors(exp: dict, preds: dict[str, dict[str, dict]], probe: dict[str,
                 out.append(f"| {i} | {text} | {r['true']} | {r['pred']} | {pr.get('lang', '')} / {pr.get('style', '')} | "
                            f"{pr.get('hard_rule') or ''} |")
             out.append("")
+        out += _hard_rules_section(preds, probe)
     elif not preds:
         out += ["## 4. Примеры ошибок", "",
                 "Нет файлов прогнозов по текстам. Для трансформера их даёт ноутбук: RUN.txt шаг 8б "
                 "(`--preds-out`), для словаря и логрегрессии — `experiments.py` (artifacts/experiments/*.jsonl).", ""]
     return "\n".join(out)
+
+
+def _hard_rules_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:
+    """Точность по правилам трудных случаев гайда R02 (поле hard_rule в probe_v2): какие правила модели не усвоили."""
+    rules: dict[str, list[str]] = {}
+    for i, r in probe.items():
+        if r.get("hard_rule"):
+            rules.setdefault(r["hard_rule"], []).append(i)
+    if not rules:
+        return []
+    names = list(preds)
+    out = ["## 5. Трудные случаи по правилам гайда (LABELING_GUIDE_v2)", "",
+           "Доля верных ответов на текстах probe_v2 с данным правилом; n — число таких текстов. Правила с n ≤ 2 "
+           "показывают отдельные примеры, а не закономерность.", "",
+           "| Правило | n | " + " | ".join(f"`{n}`" for n in names) + " |", "|---|---|" + "---|" * len(names)]
+    rows = []
+    for rule, ids in rules.items():
+        accs = []
+        for n in names:
+            have = [i for i in ids if i in preds[n]]
+            accs.append(sum(preds[n][i]["pred"] == preds[n][i]["true"] for i in have) / len(have) if have else None)
+        rows.append((rule, len(ids), accs))
+    for rule, n, accs in sorted(rows, key=lambda x: (min(a for a in x[2] if a is not None) if any(
+            a is not None for a in x[2]) else 1, -x[1])):
+        out.append(f"| {rule} | {n} | " + " | ".join("—" if a is None else f"{a:.0%}" for a in accs) + " |")
+    return out + [""]
 
 
 def load_probe(path: Path | None) -> dict[str, dict]:

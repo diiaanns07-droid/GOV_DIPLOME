@@ -1,0 +1,70 @@
+{
+ "what": "to_cyrillic (R04) перед моделью; probe_v2, обучение как synth_all (v3 + LLM)",
+ "not_human": "probe_v2 — тексты агента R02, не жителей",
+ "train": {
+  "n_train": 5435,
+  "n_val": 1664,
+  "dropped_leaks": 5,
+  "logreg_selection": {
+   "C": 64.0,
+   "class_weight": null,
+   "keyword_scale": 1.0
+  }
+ },
+ "heuristic_v1": {
+  "raw": {
+   "macro_f1": 0.6839,
+   "accuracy": 0.6667,
+   "translit_n": 24,
+   "translit_accuracy": 0.0833,
+   "translit_macro_f1": 0.0128
+  },
+  "to_cyrillic": {
+   "macro_f1": 0.7134,
+   "accuracy": 0.7133,
+   "translit_n": 24,
+   "translit_accuracy": 0.6667,
+   "translit_macro_f1": 0.6083
+  },
+  "paired_delta_cyr_minus_raw": {
+   "delta": 0.0294,
+   "low": 0.0122,
+   "high": 0.0501,
+   "share_delta_gt_0": 1.0,
+   "n_boot": 2000,
+   "unit": "texts"
+  },
+  "texts_changed": 24,
+  "changed_by_style": {
+   "translit": 24
+  }
+ },
+ "logreg": {
+  "raw": {
+   "macro_f1": 0.7966,
+   "accuracy": 0.7967,
+   "translit_n": 24,
+   "translit_accuracy": 0.5,
+   "translit_macro_f1": 0.4583
+  },
+  "to_cyrillic": {
+   "macro_f1": 0.8163,
+   "accuracy": 0.8167,
+   "translit_n": 24,
+   "translit_accuracy": 0.75,
+   "translit_macro_f1": 0.6917
+  },
+  "paired_delta_cyr_minus_raw": {
+   "delta": 0.0198,
+   "low": -0.0009,
+   "high": 0.0421,
+   "share_delta_gt_0": 0.969,
+   "n_boot": 2000,
+   "unit": "texts"
+  },
+  "texts_changed": 24,
+  "changed_by_style": {
+   "translit": 24
+  }
+ }
+}

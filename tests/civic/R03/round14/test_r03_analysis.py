@@ -82,3 +82,56 @@ def test_real_results_render_if_present(tmp_path):
     assert A.main(["tables", "--out", str(tmp_path / "t.md"), "--csv-dir", str(tmp_path / "csv")]) == 0
     assert A.main(["errors", "--out", str(tmp_path / "e.md")]) == 0
     assert "Таблица 1" in (tmp_path / "t.md").read_text(encoding="utf-8")
+
+
+# ---------- перевод транслита (translit.py) ----------
+
+FAKE_NORMALIZE = '''
+def to_cyrillic(text, min_share=0.5):
+    letters = [c for c in text.lower() if c.isalpha()]
+    latin = [c for c in letters if "a" <= c <= "z"]
+    if not letters or len(latin) < min_share * len(letters):
+        return text
+    return text.lower().replace("yama", "яма").replace("fonar", "фонар")
+'''
+
+
+def test_translit_compare_with_fake_normalize(tmp_path):
+    from ml.civic_classifier_v2 import heuristic as H
+    from ml.civic_classifier_v2 import translit as T
+    f = tmp_path / "normalize.py"
+    f.write_text(FAKE_NORMALIZE, encoding="utf-8")
+    to_cyr = T.load_to_cyrillic(str(f))
+    recs = [{"id": "1", "text": "na doroge yama", "label": "roads", "style": "translit"},
+            {"id": "2", "text": "Во дворе не горят фонари", "label": "lighting", "style": "colloquial"},
+            {"id": "3", "text": "fonar ne gorit", "label": "lighting", "style": "translit"}]
+    labs = L.labels()
+    raw = [labs.index(x) for x in H.predict([r["text"] for r in recs], "v1")]
+    cyr_texts = [to_cyr(r["text"]) for r in recs]
+    cyr = [labs.index(x) for x in H.predict(cyr_texts, "v1")]
+    res = T.compare(recs, raw, cyr, [a != r["text"] for a, r in zip(cyr_texts, recs)])
+    assert res["texts_changed"] == 2 and res["changed_by_style"] == {"translit": 2}   # кириллицу не трогает
+    assert res["raw"]["translit_accuracy"] == 0.0 and res["to_cyrillic"]["translit_accuracy"] == 1.0
+    assert res["paired_delta_cyr_minus_raw"]["delta"] > 0
+
+
+def test_load_to_cyrillic_without_r04_gives_clear_error(monkeypatch):
+    import builtins
+    import pytest
+    from ml.civic_classifier_v2 import translit as T
+    real_import = builtins.__import__
+
+    def fake_import(name, *a, **k):
+        if name.startswith("ml.civic_dedup"):
+            raise ImportError("нет")
+        return real_import(name, *a, **k)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+    with pytest.raises(ModuleNotFoundError, match="normalize-file"):
+        T.load_to_cyrillic(None)
+
+
+def test_load_human_keeps_style_for_probe(tmp_path):
+    from ml.civic_classifier_v2 import data as D
+    recs, _ = D.load_human([F.write_jsonl(tmp_path / "p.jsonl", F.probe_like())])
+    assert {r["style"] for r in recs} == {"colloquial"} and any(r["hard"] for r in recs)
