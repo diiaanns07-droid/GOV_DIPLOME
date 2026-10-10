@@ -156,3 +156,22 @@ def test_r09_old_complaints_outside_window(store):
     api.set_complaint_source(src)
     assert api.similar(SNOW, point=list(STOP), days=14)["matches"] == []
     assert api.similar(SNOW, point=list(STOP), days=30)["matches"]
+
+
+def test_r09_cache_warming_on_connect_and_on_create(store):
+    from ml.civic_dedup import get_deduper
+    from ui.civic_ml_api.similar_search import WARMER
+    create(store, SNOW, STOP, "dev-aaaaaaaaaaaaaaaa")
+    api.connect_store(store)                      # прогрев открытых жалоб за 30 дней
+    assert WARMER.join(10)
+    assert len(get_deduper().cache) == 1
+    create(store, "Во дворе не горят фонари", STOP, "dev-bbbbbbbbbbbbbbbb", category="lighting")  # событие created
+    assert WARMER.join(10)
+    assert len(get_deduper().cache) == 2
+    api.set_complaint_source(None)                # отписка: новые жалобы больше не греются
+    create(store, "Мусор не вывозят", STOP, "dev-cccccccccccccccc", category="waste")
+    assert WARMER.join(10) and len(get_deduper().cache) == 2
+
+
+def test_warm_cache_without_source_is_noop():
+    assert api.warm_cache() == 0

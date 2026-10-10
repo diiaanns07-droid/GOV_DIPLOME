@@ -1,0 +1,12 @@
+--- a/ui/web_server.py	2026-10-10 13:58:51.582767845 +0000
++++ b/ui/web_server.py	2026-10-10 13:58:51.602812046 +0000
+@@ -717,6 +717,9 @@
+             args = {"text": _v2_text(body.get("text"))}
+             args["point"] = _v2_point(body["point"]) if body.get("point") is not None else None
+             args["days"] = _v2_int(body["days"], "days", 1, 365) if body.get("days") is not None else None
++            if body.get("target") is not None:
++                # R04: «та же цель» ({kind, id} или id) — проверяет сама ui.civic_ml_api.similar (ValueError -> 400)
++                args["target"] = body["target"]
+             return args
+         if key == "targets":
+             if not (opt("lon") and opt("lat")):

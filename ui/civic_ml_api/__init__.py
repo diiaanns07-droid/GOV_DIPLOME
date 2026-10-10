@@ -4,7 +4,7 @@
     classify(text)                         -> POST /api/civic/v2/classify
     similar(text, point=None, days=None)   -> POST /api/civic/v2/similar
 Подключение при старте сервера (INTEGRATION.txt):
-    connect_store(store)    — хранилище жалоб R09 для similar();
+    connect_store(store)    — хранилище жалоб R09 для similar() (+ фоновый прогрев кэша признаков);
     warmup()                — загрузить модели заранее (в фоне), чтобы первый запрос жителя был быстрым.
 Диагностика: status() — какие модели загружены и почему нет остальных.
 """
@@ -18,10 +18,11 @@ from ml.civic_dedup import reset as _reset_dedup
 from ui.civic_ml_api import classify_chain as _classify_mod
 from ui.civic_ml_api.classify_chain import classify
 from ui.civic_ml_api.errors import MLServiceUnavailable
-from ui.civic_ml_api.similar_search import connect_store, records_source, set_complaint_source, similar, source_kind
+from ui.civic_ml_api.similar_search import (connect_store, records_source, set_complaint_source, similar,
+                                            source_kind, warm_cache)
 
 __all__ = ["MLServiceUnavailable", "classify", "connect_store", "records_source", "reset", "set_complaint_source",
-           "similar", "status", "warmup"]
+           "similar", "status", "warm_cache", "warmup"]
 
 
 def status() -> dict:
@@ -35,6 +36,7 @@ def warmup(background: bool = True):
     def run():
         classify("Во дворе не горят фонари")
         deduper_info()
+        warm_cache()  # если хранилище уже подключено
 
     if not background:
         run()

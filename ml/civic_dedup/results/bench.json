@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-10T13:51:28+00:00",
+ "generated_at": "2026-10-10T13:59:09+00:00",
  "env": {
   "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
   "cpus": 4,
@@ -17,89 +17,89 @@
     "v2": "unavailable: ModelUnavailable: ml/civic_classifier_v2/artifacts/onnx: нет birge_meta.json; ml/civic_classifier_v2/artifacts/final: нет birge_meta.json"
    }
   },
-  "first_call_ms": 110.57,
+  "first_call_ms": 79.33,
   "sources": {
    "kw": 450,
    "v1": 50
   },
   "n": 500,
   "p50_ms": 0.08,
-  "p95_ms": 0.41,
-  "max_ms": 1.53,
+  "p95_ms": 0.36,
+  "max_ms": 1.19,
   "mean_ms": 0.12
  },
  "similar_city": {
-  "first_query_ms": 9.93,
+  "first_query_ms": 12.36,
   "cold": {
    "n": 300,
-   "p50_ms": 8.16,
-   "p95_ms": 12.73,
-   "max_ms": 15.97,
-   "mean_ms": 8.68
+   "p50_ms": 8.01,
+   "p95_ms": 8.78,
+   "max_ms": 10.03,
+   "mean_ms": 7.94
   },
   "warm": {
    "n": 300,
-   "p50_ms": 7.94,
-   "p95_ms": 9.97,
-   "max_ms": 20.17,
-   "mean_ms": 8.2
+   "p50_ms": 7.7,
+   "p95_ms": 8.23,
+   "max_ms": 12.47,
+   "mean_ms": 7.65
   },
   "mean_matches": 0.13,
   "method": "ngram-concept-v1-a0.3-n35-t0.18"
  },
  "similar_hotspot": {
-  "first_query_ms": 142.7,
+  "first_query_ms": 141.39,
   "cold": {
    "n": 60,
-   "p50_ms": 32.3,
-   "p95_ms": 39.52,
-   "max_ms": 137.32,
-   "mean_ms": 34.56
+   "p50_ms": 32.38,
+   "p95_ms": 40.71,
+   "max_ms": 138.5,
+   "mean_ms": 34.6
   },
   "warm": {
    "n": 60,
-   "p50_ms": 33.58,
-   "p95_ms": 45.08,
-   "max_ms": 52.94,
-   "mean_ms": 34.19
+   "p50_ms": 32.41,
+   "p95_ms": 39.27,
+   "max_ms": 41.03,
+   "mean_ms": 32.42
   },
   "mean_matches": 5.0,
   "method": "ngram-concept-v1-a0.3-n35-t0.18"
  },
  "similar_r09_store": {
-  "first_query_ms": 1.15,
+  "first_query_ms": 0.99,
   "cold": {
    "n": 300,
-   "p50_ms": 0.4,
-   "p95_ms": 0.95,
-   "max_ms": 1.6,
-   "mean_ms": 0.45
+   "p50_ms": 0.38,
+   "p95_ms": 0.92,
+   "max_ms": 1.51,
+   "mean_ms": 0.43
   },
   "warm": {
    "n": 300,
-   "p50_ms": 0.26,
-   "p95_ms": 0.48,
-   "max_ms": 2.54,
-   "mean_ms": 0.28
+   "p50_ms": 0.25,
+   "p95_ms": 0.43,
+   "max_ms": 0.57,
+   "mean_ms": 0.25
   },
   "mean_matches": 0.13,
   "method": "ngram-concept-v1-a0.3-n35-t0.18"
  },
  "similar_r09_store_hotspot": {
-  "first_query_ms": 162.98,
+  "first_query_ms": 155.09,
   "cold": {
    "n": 60,
-   "p50_ms": 45.86,
-   "p95_ms": 82.47,
-   "max_ms": 157.48,
-   "mean_ms": 49.78
+   "p50_ms": 46.03,
+   "p95_ms": 76.51,
+   "max_ms": 151.92,
+   "mean_ms": 48.39
   },
   "warm": {
    "n": 60,
-   "p50_ms": 48.63,
-   "p95_ms": 64.26,
-   "max_ms": 79.64,
-   "mean_ms": 48.91
+   "p50_ms": 49.2,
+   "p95_ms": 67.2,
+   "max_ms": 73.68,
+   "mean_ms": 49.29
   },
   "mean_matches": 5.0,
   "method": "ngram-concept-v1-a0.3-n35-t0.18"
