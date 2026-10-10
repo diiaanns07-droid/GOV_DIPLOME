@@ -42,7 +42,9 @@
   "ml/civic_classifier_v2/results/preds_probe_v2_synth_all_heuristic.jsonl",
   "ml/civic_classifier_v2/results/preds_probe_v2_synth_all_logreg.jsonl",
   "ml/civic_classifier_v2/results/preds_probe_v2_synth_template_logreg.jsonl",
+  "ml/civic_classifier_v2/results/synth_curve_probe_v2.json",
   "ml/civic_classifier_v2/results/tables/t10_classify_load.csv",
+  "ml/civic_classifier_v2/results/tables/t11_synth_curve.csv",
   "ml/civic_classifier_v2/results/tables/t1_probe_v2_macro_f1.csv",
   "ml/civic_classifier_v2/results/tables/t2_template_vs_probe.csv",
   "ml/civic_classifier_v2/results/tables/t3_paired_probe_v2.csv",
@@ -113,7 +115,9 @@
   "FINAL R01 ef1ef44 + пути R03 @ b86563c: tests R03/R04/R09/R01": "PASS 811, skipped 1, xfailed 1",
   "калибровка score по корзинам на probe_v2 (ERROR_ANALYSIS раздел 8)": "PASS — логрегрессия ECE 0.071 (совпадает с experiments.json); трансформер — NOT_RUN (утро, шаг 8б)",
   "утренние шаги 8б/8в/tables на крошечной модели (облако, сухой прогон)": "PASS — команды работают; таблицы 3/7/8 берут файлы утра, чужая модель помечается",
-  "FINAL R01 0a7a346 + пути R03 @ 68393f1: tests R03/R04/R09/R01": "PASS 814, skipped 1, xfailed 1"
+  "FINAL R01 0a7a346 + пути R03 @ 68393f1: tests R03/R04/R09/R01": "PASS 814, skipped 1, xfailed 1",
+  "кривая по объёму синтетики, логрегрессия на probe_v2 (synth_curve.py, облако, 20 мин)": "PASS — v3 0.751; +25 % LLM 0.790; +50 % 0.799; +100 % 0.797; вторая половина LLM +0.003 [−0.020; +0.024], не доказано",
+  "кривая по объёму синтетики для трансформера": "NOT_RUN — нужен GPU (ноутбук), по желанию"
  },
  "results_so_far": {
   "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",
@@ -159,7 +163,8 @@
   "per-text predictions": "results/preds_probe_v2_synth_all_{heuristic,logreg}.jsonl (id и метки)",
   "translit": "ml/civic_classifier_v2/results/translit_to_cyrillic_probe_v2.json",
   "label_audit": "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.md (+ .json), llm_label_cleaning_effect.json",
-  "classify_load": "ml/civic_classifier_v2/bench.py → results/classify_load_cloud.json, таблица 10 в DIPLOMA_TABLES.md (для R15/R04/R14)"
+  "classify_load": "ml/civic_classifier_v2/bench.py → results/classify_load_cloud.json, таблица 10 в DIPLOMA_TABLES.md (для R15/R04/R14)",
+  "synth_curve": "ml/civic_classifier_v2/synth_curve.py → results/synth_curve_probe_v2.json, таблица 11 (для R02/R14)"
  },
  "for_R01": "В FINAL-кандидате 0a7a346 уже R03 ac0e954 — рантайм актуален (B-004, гонка get_default, запасной torch). После ac0e954 — только инструменты (bench.py, analysis), отчёты и тесты; брать по желанию последний SHA ветки. Проверено: 0a7a346 + пути R03 @ 68393f1 — 814 passed, 1 skipped, 1 xfailed."
 }
