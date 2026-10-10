@@ -14,6 +14,7 @@ R01 может подключить всё явно: ui.civic_akim.configure(hea
 from __future__ import annotations
 
 import json
+import re
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -211,6 +212,19 @@ def _parse_time(value) -> datetime | None:
     return dt if dt.tzinfo else dt.replace(tzinfo=ASTANA_TZ)
 
 
+_DEMO_PREFIX = re.compile(r"^\s*(Демо|Demo|Үлгі)\s*[:·—-]\s*", re.I)
+_DEMO_SUFFIX = re.compile(r"\s*\((синтетика|synthetic|демо|demo)\)\s*$", re.I)
+
+
+def demo_title(title):
+    """«Демо: ремонт тротуара (синтетика)» → «Ремонт тротуара». Только для записей demo: true —
+    пометку «Пример» страница ставит сама, служебные слова в названии не нужны (UX_BRIEF: без технических слов)."""
+    if not isinstance(title, str):
+        return title
+    clean = _DEMO_SUFFIX.sub("", _DEMO_PREFIX.sub("", title)).strip()
+    return (clean[:1].upper() + clean[1:]) if clean else title
+
+
 def normalize_object(o: dict, as_of: datetime) -> dict:
     """Объект в виде для «Картины дня». delay_days и stale берём у R06; нет — считаем по CONTRACT §7."""
     planned, forecast = _parse_day(o.get("planned_end")), _parse_day(o.get("forecast_end"))
@@ -231,6 +245,8 @@ def normalize_object(o: dict, as_of: datetime) -> dict:
     else:
         title_ru = o.get("title_ru") or title or o.get("name") or o.get("id")
         title_kk = o.get("title_kk") or title_ru
+    if o.get("demo"):
+        title_ru, title_kk = demo_title(title_ru), demo_title(title_kk)
     return {
         "id": o.get("id"),
         "kind": o.get("kind"),

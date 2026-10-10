@@ -7,15 +7,23 @@ R08 · «Картина дня» — как запустить и что мож�
   ниже — сводка одним абзацем на русском или казахском (главная проблема выделена жирным), «Горячие места»
   (10 мест с карты, клик открывает место на карте), темы и районы полосами, объекты с отставанием,
   новые предложения и голоса. Выбор даты и района, кнопка «Распечатать» (2 листа A4), ҚАЗ/РУС.
+  У объектов — полоса из 6 этапов и «Этап 4 из 6: Строительство». Метка «Пример» — одна, у заголовка.
 
 Быстрый запуск (без общей сборки)
   1. Нужен модуль тепловой карты R07 ui/civic_heat. В общей сборке он есть. В ветке R08 его нет —
      для проверки взять копию (в git не добавлять):
         git fetch origin claude/upbeat-knuth-i0rqaa
         git archive origin/claude/upbeat-knuth-i0rqaa ui/civic_heat | tar -x
-  2. python tests/civic/R08/demo_server.py
+  2. Нужен словарь и ui-kit R11 (ключи akim.* живут только там; свой akim.i18n.json удалён в день 3):
+        mkdir -p /tmp/r11kit && git fetch origin claude/r14-R11 &&
+        git archive origin/claude/r14-R11 web/civic/ui-kit web/civic/i18n | tar -x -C /tmp/r11kit
+  3. python tests/civic/R08/demo_server.py --kit-dir /tmp/r11kit
      открыть http://127.0.0.1:8508/civic/akim/       (казахский: …/civic/akim/?lang=kk)
      Параметры адреса: ?date=2026-10-09 (прошлый день), ?district=nura (район).
+     Если чего-то из п. 1–2 нет, сервер при запуске пишет «ВНИМАНИЕ: …» и как это взять (R10 B-005).
+  4. (необязательно) объекты и предложения из базы R06 вместо фикстур — в ветке/сборке с ui/civic_store/v2.py:
+        python -m ui.civic_store --db /tmp/r06.sqlite init && python -m ui.civic_store --db /tmp/r06.sqlite seed-r14-demo
+        python tests/civic/R08/demo_server.py --kit-dir /tmp/r11kit --r06-db /tmp/r06.sqlite
 
 В терминале (без браузера)
   python -m ui.civic_akim                       # сводка на сегодня, весь город
@@ -27,9 +35,10 @@ R08 · «Картина дня» — как запустить и что мож�
   summary(date="2026-10-12", district="nura")   # dict, как ответ GET /api/civic/v2/akim/summary
 
 Тесты
-  python -m pytest tests/civic/R08 -q                               # 112 тестов
-  python tests/civic/R08/demo_server.py &
-  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 77 проверок, скриншоты в research/round-14-results/R08/screens
+  python -m pytest tests/civic/R08 -q                               # 126 PASS + 1 XFAIL (демо-набор R07, см. ниже)
+  BIRGE_STRICT_DEMO=1 python -m pytest tests/civic/R08 -q           # для приёмки: правдоподобие демо-чисел — обычный FAIL
+  python tests/civic/R08/demo_server.py --kit-dir /tmp/r11kit &
+  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 95 проверок, скриншоты в research/round-14-results/R08/screens
 
 Что считается (подробно — в начале ui/civic_akim/summary.py)
   - «Новые» за день — с полуночи до текущего момента; сравнение — с тем же отрезком неделю назад.
@@ -37,5 +46,7 @@ R08 · «Картина дня» — как запустить и что мож�
     ДЕМО-норматив, не утверждён акиматом).
   - «Горячие места», «Темы», «Районы» — ровно тепловая карта R07 за 7 дней (сколько человек сообщили о
     нерешённом). Тест test_r08_heat_match.py сверяет это число в число.
-  - Данные сейчас — пример (demo): жалобы из демо-набора R07, объекты и предложения — фикстуры R08.
-    На странице это помечено «Пример».
+  - Данные сейчас — пример (demo): жалобы из демо-набора R07; объекты и предложения — R06
+    (ui.civic_store.v2, когда шлюз R01 вызвал bind) или фикстуры R08. На странице помечено «Пример».
+  - Демо-числа R07 пока «как авария» (просрочено 56, за 7 дней 104 против 15): тест
+    test_r08_demo_plausible.py это показывает (XFAIL с перечнем) — исправляет R07 в demo_seed.py.

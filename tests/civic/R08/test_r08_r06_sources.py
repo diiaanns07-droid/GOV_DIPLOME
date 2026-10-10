@@ -125,3 +125,15 @@ def test_without_r06_module_fixture_is_used(monkeypatch):
     monkeypatch.setattr(sources, "_r06", lambda names: None)
     svc = service()
     assert svc.source_names["objects"] == "fixture" and svc.source_names["proposals"] == "fixture"
+
+
+@pytest.mark.parametrize("title, demo, shown", [
+    ("Демо: ремонт тротуара (синтетика)", True, "Ремонт тротуара"),
+    ("Демо: городское мероприятие без точного места (синтетика)", True, "Городское мероприятие без точного места"),
+    ("Школа на 1200 мест", True, "Школа на 1200 мест"),
+    ("Демо: ремонт тротуара (синтетика)", False, "Демо: ремонт тротуара (синтетика)"),  # не demo — не трогаем
+])
+def test_demo_titles_lose_service_words(title, demo, shown):
+    """Демо-объекты R06 (seed-r14-demo) называются «Демо: … (синтетика)»; «Пример» страница ставит сама."""
+    o = sources.normalize_object({"id": "x", "title": title, "demo": demo}, NOW)
+    assert o["title_ru"] == shown and o["title_kk"] == shown

@@ -105,10 +105,18 @@
   }
 
   // Изменение к прошлой неделе: стрелка (CSS) + слово. Цвет никогда не один.
+  // «в 6,9 раза»: у дробных по-русски форма как у 2–4. В словаре R11 у akim.delta.ratio нет формы other,
+  // а i18n.js для дробных берёт many («раз») — поэтому форму выбираем по 2 и подставляем настоящее число.
+  // Когда R11 добавит ru other «в {n} раза больше» (INTEGRATION.txt п. 7), обход ничего не меняет.
+  function ratioText(n) {
+    if (n % 1 === 0 || lang() !== "ru") return tr("akim.delta.ratio", { n: n });
+    var probe = tr("akim.delta.ratio", { n: 2 });
+    return probe.indexOf(num(2)) >= 0 ? probe.replace(num(2), num(n)) : tr("akim.delta.ratio", { n: n });
+  }
   function deltaText(ch) {
     if (!ch || ch.trend === "flat") return tr("akim.delta.same");
     if (ch.mode === "new") return tr("akim.delta.new");
-    if (ch.mode === "ratio") return tr("akim.delta.ratio", { n: ch.ratio });
+    if (ch.mode === "ratio") return ratioText(ch.ratio);
     var v = ch.mode === "pct" ? I().formatPercent(ch.pct) : num(ch.abs);
     return tr(ch.trend === "up" ? "akim.delta.more" : "akim.delta.less", { v: v });
   }
@@ -529,8 +537,9 @@
         h(
           "ol",
           { class: "bk-stages bk-stages--compact" + (o.delay_days > 0 ? " bk-stages--late" : ""), "aria-hidden": "true" },
+          // Точки без скрытых подписей: полоса только для глаз (aria-hidden), этап словами — в подписи ниже.
           STAGES.map(function (st, i) {
-            return h("li", { "data-state": i < at ? "done" : i === at ? "current" : "todo" }, [h("span", { text: tr("stage." + st) })]);
+            return h("li", { "data-state": i < at ? "done" : i === at ? "current" : "todo" });
           })
         ),
         h("span", { class: "bk-stages__caption", text: caption }),

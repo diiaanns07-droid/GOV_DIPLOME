@@ -26,7 +26,8 @@ R08 · «Картина дня» для акима — как подключит
 
 2. R01 · ui/web_server.py — файлы страницы (явный список CIVIC_ASSETS, без листинга папок)
 ------------------------------------------------------------------------------------------
-    CIVIC_ASSETS += ("akim/index.html", "akim/akim.js", "akim/akim.css", "akim/akim.i18n.json")
+    CIVIC_ASSETS += ("akim/index.html", "akim/akim.js", "akim/akim.css")
+  (день 3: akim/akim.i18n.json удалён — все ключи в общем словаре R11; если он есть в списке B1 — убрать.)
   .html нет в словаре типов — добавить ".html": "text/html". Страница ссылается на ../ui-kit/tokens.css,
   ../ui-kit/components.css, ../ui-kit/icons.svg, ../i18n/i18n.js, ../i18n/ru.json, ../i18n/kk.json —
   они должны быть в CIVIC_ASSETS (их уже добавляет R11/R01).
@@ -68,6 +69,17 @@ R08 · «Картина дня» для акима — как подключит
   Код R08 уже сначала ищет публичный records(), а _records — запасной путь (ui/civic_akim/sources.py).
   Если R07 поменяет порядок/фильтры в heat() — тест tests/civic/R08/test_r08_heat_match.py это поймает.
 
+4а. R07 · демо-набор правдоподобнее (UX_REVIEW R11, день 3, п. 9) — ОТКРЫТО
+-----------------------------------------------------------------------
+  Сейчас (R07 @ 3eb3f9d) «Картина дня» на демо-наборе: просрочено 56, новых за 7 дней 104 против 15 неделю
+  назад («в 6,9 раза»), районы Нура 149 / Есиль 1. Жюри прочтёт это как аварию.
+  Просьба к ui/civic_heat/demo_seed.py: растянуть набор на 3 недели (неделю назад — сопоставимо, ±40 %),
+  большую часть жалоб старше 2–3 дней провести по статусам accepted → in_progress → fixed (тогда «Просрочено»
+  ≈ 5–8), районы ближе друг к другу (самый тихий ≥ 1/10 самого громкого).
+  Проверка готова: python -m pytest tests/civic/R08/test_r08_demo_plausible.py -rxX
+  (сейчас XFAIL с перечнем нарушений; когда набор исправлен — PASS; BIRGE_STRICT_DEMO=1 — строгий режим).
+  Уровни на карте R07 при этом сохраняются их собственными тестами; test_r08_heat_match.py проверит совпадение.
+
 5. R09 · новые жалобы
 ---------------------
   После create / metoo / set_status R09 уже вызывает (или должен вызывать) ui.civic_heat.invalidate().
@@ -76,67 +88,37 @@ R08 · «Картина дня» для акима — как подключит
   (ui/civic_akim/deadlines.py) — срок ИСПРАВЛЕНИЯ, по нему «Просрочено» у акима. Оба — демо-нормативы.
   Если владелец решит, что «просрочено» = «нет первого ответа», поменять одну функцию _kpi() → at().
 
-6. R06 · объекты с отставанием и предложения (prompt R06 п.5)
--------------------------------------------------------------
-  Пока функций R06 нет, «Картина дня» показывает фикстуры ui/civic_akim/fixtures/objects_demo.json и
-  proposals_demo.json (synthetic, demo: true, без координат). Как только в ui/civic_store появятся
-  функции, они подхватятся сами (ищутся по именам по порядку):
-     объекты:      akim_objects | lagging_objects | late_objects | objects_for_akim   (district=None) -> list[dict]
-     предложения:  akim_proposals | list_proposals | proposals_for_akim               (district=None) -> list[dict]
-  Поля объекта (CONTRACT §7): id, kind, title_ru, title_kk, district, stage, planned_end, forecast_end,
-     delay_days, stale, updated_at, demo (+ geometry, если есть реальное место).
-     delay_days и stale R08 досчитает сам, если их нет (forecast_end − planned_end; > 14 дней без обновления).
-  Поля предложения: id, kind, title_ru, title_kk, district, status ("proposal"), created_at, votes_up, votes_down, demo.
-  Можно и явно: civic_akim.configure(objects=lambda district, today: …, proposals=lambda district, today: …).
+6. R06 · объекты с отставанием и предложения — ЗАКРЫТО (день 3)
+----------------------------------------------------------------
+  Подключено к ui/civic_store/v2.py ветки claude/round-14-r06 @ 3d10f7d:
+     lagging_objects(district)                 → {late:[…], stale:[…]} (объект в обоих списках — один раз)
+     list_proposals(district=…, status="proposal") → {items:[…]}
+  Ищется сначала ui.civic_store.v2, потом ui.civic_store (старые имена akim_objects/… тоже понимаются).
+  Пока шлюз R01 не вызвал civic_store.v2.bind(service), R06 отвечает 503 module_not_ready — тогда
+  показываются фикстуры R08 (с «Пример»), не пустота. Любая другая ошибка R06 — блок «не отвечает», без подмены.
+  Проверено вживую на базе R06 (init + seed-r14-demo): 2 отстающих объекта, 5 предложений, фильтр района —
+  скриншоты screens/akim-1366-ru-r06-objects.png, akim-375-kk-r06-objects.png. Тесты: test_r08_r06_sources.py.
+  R01: ничего дополнительно — достаточно bind(), который шлюз и так делает для v2.
+  Просьбы к R06 (мелочь): у демо-объектов нет казахского названия (title — одна строка ru), а название
+  «Демо: … (синтетика)» — служебные слова R08 при показе убирает сам (demo_title), но лучше title_kk и
+  чистые названия в demo_r14/seed-demo.
 
-7. R11 · новые ключи перевода (сейчас лежат в web/civic/akim/akim.i18n.json)
---------------------------------------------------------------------------
-  Общий словарь всегда главнее: перенесите ключи в web/civic/i18n/ru.json и kk.json, и файл можно удалить.
-  ключ | ru | где на экране
-  akim.updated | Данные на {time} | строка под заголовком (сегодня)
-  akim.updated_end | Данные на конец дня | строка под заголовком (прошлый день)
-  akim.compare_to | сравнение с {date} | строка под заголовком
-  akim.date.today | Сегодня | кнопка возврата к сегодняшнему дню; кнопка в ошибке «дата в будущем»
-  akim.district.all_city | Весь город | строка под заголовком без фильтра района
-  akim.delta.new | неделю назад не было | изменение в карточке числа, если неделю назад было 0
-  akim.delta.ratio | в {n} раз(а) больше (формы) | изменение ×2 и больше
-  akim.kpi.week | За 7 дней: {n} | карточка «Новые обращения», нижняя строка
-  akim.kpi.waiting | Ещё {n} ждёт/ждут ответа (формы) | карточка «В работе», нижняя строка
-  akim.kpi.overdue_hint | Не исправлено в срок | карточка «Просрочено»
-  akim.kpi.fixed_hint | Жители видят статус «исправлено» | карточка «Исправлено за неделю»
-  akim.summary.title | Коротко о дне | заголовок блока сводки
-  akim.hot.hint | За 7 дней · сколько человек сообщили, как на карте | под «Горячие места»
-  akim.hot.empty | За 7 дней нерешённых жалоб нет | пустой список горячих мест
-  akim.hot.open | Открыть на карте: {name} | aria-label строки горячего места
-  akim.topics.hint | За 7 дней · человек | под «Темы»
-  akim.topics.empty | За 7 дней жалоб нет | пустые темы
-  akim.districts.hint | Весь город за 7 дней · человек | под «Районы»
-  akim.districts.selected | выбран | метка у выбранного района
-  akim.districts.pick | Показать район {name} | aria-label полосы района
-  akim.late.empty | Все объекты идут по графику | пустой список отстающих
-  akim.late.stale_title | Давно не обновлялись | подзаголовок в блоке объектов
-  akim.late.stage | Этап: {name} | строка объекта
-  akim.proposals.new | {n} новое/новых за неделю (формы) | блок предложений
-  akim.proposals.votes | За: {up} · Против: {down} | строка предложения
-  akim.proposals.empty | Новых предложений нет | пустой блок предложений
-  akim.proposals.new_badge | новое | метка нового предложения
-  akim.unavailable | Карта жалоб пока не отвечает. Числа появятся, когда она заработает. | блоки без R07
-  akim.demo_note | Числа посчитаны по примерам жалоб и объектов, а не по настоящим обращениям | рядом с меткой «Пример»
-  akim.bad_date | За этот день картины ещё нет. Выберите сегодня или прошлый день. | ошибка 400 по дате
-  Уже существующие ключи R11, которые использует страница: akim.title, akim.date, akim.kpi.*, akim.delta.more/less/same/vs_week,
-  akim.hot.title, akim.topics.title, akim.districts.title, akim.late.title, akim.proposals.title, akim.loading,
-  common.*, district.*, cat.*, status.*, stage.*, object.late, object.stale_days, heat.filter.district.
-
-  Казахский на проверку владельцу (KK_REVIEW): все kk-строки в akim.i18n.json и фразы сводки в
-  ui/civic_akim/text.py (_new_kk, _main_kk, _overdue_kk, _objects_kk, delta_kk). Пример:
-    «Бүгін 34 жаңа өтініш түсті. Ең көп шағым — «Қар және көктайғақ», Нұра ауданында: соңғы 7 күнде
-     14 адам хабарлады, бұл бір апта бұрынғыдан 40 % көп. Мерзімі өткен өтініш: 5. Кестеден қалып жатқан нысан: 3.»
-  Сознательно: разницу в штуках по-казахски пишем «(бір апта бұрын — 9)», чтобы не склонять число (3-ке, 10-ға).
+7. R11 · ключи перевода — ЗАКРЫТО (день 3), одна просьба осталась
+-----------------------------------------------------------------
+  Все 31 ключ akim.* в общем словаре R11 (claude/r14-R11 @ 6102dfb, проверено скриптом: 0 отсутствующих),
+  akim.i18n.json удалён, akim.js берёт тексты только из BirgeI18n. Правки kk R11 приняты
+  («Жақтайтындар/Қарсылар» — из словаря; «дерек» → «деректер» в сводке text.py).
+  Новых ключей нет: полоса этапов использует stage.caption и stage.* R11.
+  ПРОСЬБА к R11: akim.delta.ratio (ru) — добавить форму other «в {n} раза больше». i18n.js для дробных
+  выбирает other, а без неё — many («в 6,9 раз больше», ошибка). Либо в pickForm для ru дробных брать few
+  раньше many (так и сказано в комментарии там). До правки akim.js обходит это сам (ratioText), проверка
+  ui_check «в N,N раза больше» — PASS.
 
 8. R10 · приёмка
 ----------------
-  pytest tests/civic/R08 (112 тестов; test_r08_heat_match.py нужен ui/civic_heat в сборке)
-  python tests/civic/R08/demo_server.py & NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs
+  pytest tests/civic/R08 (126 + 1 XFAIL; test_r08_heat_match.py и test_r08_demo_plausible.py нужен ui/civic_heat)
+  python tests/civic/R08/demo_server.py --kit-dir <R11> & NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs
+  R10 B-005 (стенд без R07) — закрыт: RUN.txt п. 1–3, сервер печатает «ВНИМАНИЕ», если нет R07 или словаря R11.
   В общей сборке ui_check.cjs можно направить на сервер R01: node ui_check.cjs http://127.0.0.1:8501
 
 9. LOCAL-задачи
