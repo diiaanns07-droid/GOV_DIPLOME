@@ -1,6 +1,6 @@
 # R09 · ночь 10→11 октября · замечания к жалобе жителя и что сделано
 
-Ветка `claude/wizardly-ptolemy-qy8ltw`, код `1b3b639` (пути R09 продолжены с `claude/modest-shannon-0ki93p` @ 5dd6465).
+Ветка `claude/wizardly-ptolemy-qy8ltw`, код `14a75c6` (пути R09 продолжены с `claude/modest-shannon-0ki93p` @ 5dd6465).
 Среда: облачный Linux, Python 3.13, Chromium headless (программный WebGL), без интернета.
 
 | Источник | Замечание | Что сделано | Проверка |

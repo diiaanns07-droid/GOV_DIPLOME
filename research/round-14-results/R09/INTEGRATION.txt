@@ -1,8 +1,8 @@
 R09 · РАУНД 14 · INTEGRATION — НОЧЬ 10→11 ОКТ (сначала этот раздел)
-Ветка R09 этой ночи: claude/wizardly-ptolemy-qy8ltw, код 1b3b639 (см. DELIVERY.json, NIGHT_FIXES.md).
+Ветка R09 этой ночи: claude/wizardly-ptolemy-qy8ltw, код 14a75c6 (см. DELIVERY.json, NIGHT_FIXES.md).
 Забрать в сборку (пути R09 целиком; в них уже есть патч R15 P-R09 с доработками):
     git fetch origin claude/wizardly-ptolemy-qy8ltw
-    git checkout 1b3b639 -- ui/civic_feedback web/civic/feedback tests/civic/R09
+    git checkout 14a75c6 -- ui/civic_feedback web/civic/feedback tests/civic/R09
 
 === R01 — нужно сделать ===
 N1) B-030 («Я тоже» на чистой демо-базе): research/round-14-results/R09/r01_seed_r09_demo.patch — метод
