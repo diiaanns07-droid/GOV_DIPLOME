@@ -24,6 +24,8 @@
   const BADGE_W = 64, BADGE_H = 40;   // полный значок: кружок с иконкой + число
   const MINI_W = 34, MINI_H = 26;     // маленькая плашка с числом, когда полному значку тесно
   const DISTRICT_ZOOM = 12;      // меньше — районы (CONTRACT §6); сервер присылает то же значение в meta
+  // «Меньше движения» в системе: карта не пролетает, а сразу встаёт на место (UX_BRIEF правило 8).
+  const moveMs = (ms) => (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : ms);
 
   // ---------- Тексты ru / kk ----------
   // Ключи heat.* переданы R11 (INTEGRATION.txt, блок I18N_KEYS). Если общий Birge.i18n уже подключён
@@ -532,7 +534,7 @@
         if (map && item && item.anchor) {
           const zoom = Math.max(map.getZoom(), kind === "object" ? 16 : 15);
           // ждём конца перелёта (если камера уже на месте, moveend может не прийти — страховка 1,2 с)
-          await new Promise((done) => { map.once("moveend", done); setTimeout(done, 1200); map.easeTo({ center: item.anchor, zoom, duration: 600 }); });
+          await new Promise((done) => { map.once("moveend", done); setTimeout(done, 1200); map.easeTo({ center: item.anchor, zoom, duration: moveMs(600) }); });
         }
       } catch (err) { /* цели за период нет или сеть — ниже честно скажем */ }
       S.pendingMoving = false;
@@ -644,7 +646,7 @@
       if (f.properties.kind === "district") {
         // По району: приблизить к нему (это действие пользователя, не самопроизвольный прыжок).
         const it = findItem(key);
-        if (it && it.anchor) map.easeTo({ center: it.anchor, zoom: 13, duration: 700 });
+        if (it && it.anchor) map.easeTo({ center: it.anchor, zoom: 13, duration: moveMs(700) });
         return;
       }
       select(key, false);
@@ -882,7 +884,7 @@
       const it = findItem(key);
       if (!it) return;
       if (it.target.kind === "district") {
-        map.easeTo({ center: it.anchor, zoom: 13, duration: 700 });
+        map.easeTo({ center: it.anchor, zoom: 13, duration: moveMs(700) });
         return;
       }
       select(key, false);
@@ -895,7 +897,7 @@
       const it = findItem(key);
       if (it && moveMap && map && it.anchor) {
         // Плавно и только по просьбе пользователя (клик в списке). Наклон и поворот не трогаем.
-        map.easeTo({ center: it.anchor, zoom: Math.max(map.getZoom(), it.target.kind === "object" ? 16 : 15), duration: 600 });
+        map.easeTo({ center: it.anchor, zoom: Math.max(map.getZoom(), it.target.kind === "object" ? 16 : 15), duration: moveMs(600) });
       }
       render();
       declutter();
@@ -1170,7 +1172,7 @@
       if (sel) sel.addEventListener("change", () => {
         S.filters.district = sel.value || null; S.selected = null; void load();
         const d = S.meta && S.meta.districts.find((x) => x.id === sel.value);
-        if (d && map && d.bbox) map.fitBounds([[d.bbox[0], d.bbox[1]], [d.bbox[2], d.bbox[3]]], { padding: 40, duration: 700 });
+        if (d && map && d.bbox) map.fitBounds([[d.bbox[0], d.bbox[1]], [d.bbox[2], d.bbox[3]]], { padding: 40, duration: moveMs(700) });
       });
       panel.querySelectorAll("[data-days-next]").forEach((b) => b.addEventListener("click", () => {
         S.filters.days = Number(b.dataset.daysNext); void load();
@@ -1181,7 +1183,7 @@
       panel.querySelectorAll("[data-retry]").forEach((b) => b.addEventListener("click", () => { S.meta = null; void load(); }));
       panel.querySelectorAll(".r07-item").forEach((b) => b.addEventListener("click", () => {
         const it = findItem(b.dataset.key);
-        if (it && it.target.kind === "district") { map && map.easeTo({ center: it.anchor, zoom: 13, duration: 700 }); return; }
+        if (it && it.target.kind === "district") { map && map.easeTo({ center: it.anchor, zoom: 13, duration: moveMs(700) }); return; }
         select(b.dataset.key, true);
       }));
       panel.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => {

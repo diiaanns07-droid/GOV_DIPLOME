@@ -545,6 +545,37 @@ async function colorOnlyCheck(page) {
     await finish(page, errors, `legend-phone-375-${lang}`, "phone", problems, x);
   }
 
+  // UX_BRIEF правило 8: «меньше движения» в системе — карта не пролетает, пульса и анимаций нет
+  {
+    const page = await browser.newPage({ viewport: SIZES.desktop, deviceScaleFactor: 1, reducedMotion: "reduce" });
+    const errors = [];
+    page.on("pageerror", (e) => errors.push(String(e)));
+    page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    await page.goto(BASE + "?lang=ru&role=akimat&view=nura", { waitUntil: "networkidle" });
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.waitForTimeout(600);
+    await page.click(".r07-item");
+    await page.waitForTimeout(80);
+    const x = await page.evaluate(async () => {
+      const map = window.__map;
+      const moving = map.isMoving();
+      const key = window.__heat.state().selected;
+      window.__heat.pulse(key);
+      await new Promise((ok) => setTimeout(ok, 50));
+      const pulse = document.querySelector(".r07-pulse");
+      const anim = pulse ? getComputedStyle(pulse, "::before").animationName + "/" + getComputedStyle(pulse, "::after").animationName : "нет пульса";
+      return { moving, key, anim, sr: document.querySelector(".r07-sr").textContent };
+    });
+    const problems = [];
+    if (x.moving) problems.push("карта ещё летит при «меньше движения»");
+    if (!x.key) problems.push("цель не выбрана");
+    if (x.anim !== "none/none" && x.anim !== "нет пульса") problems.push("пульс анимируется: " + x.anim);
+    if (!/^Новая жалоба: .+\. Сообщил/.test(x.sr || "")) problems.push("экранный диктор не услышит новую жалобу: " + x.sr);
+    await page.screenshot({ path: path.join(OUT, "reduced-motion-1366-ru.jpg"), type: "jpeg", quality: 82 });
+    results.push({ name: "reduced-motion-1366-ru", size: "desktop", query: "", problems: problems.concat(errors), badges: 0, extra: x });
+    await page.close();
+  }
+
   // «Примерное место»: в карточке «Область на карте» + пометка, а не «Двор или квартал»
   for (const [size, lang] of [["desktop", "ru"], ["phone", "kk"]]) {
     const { page, errors } = await rawPage(size, `?lang=${lang}&role=akimat&view=nura&sheet=full`, (pg) =>

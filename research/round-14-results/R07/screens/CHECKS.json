@@ -615,6 +615,19 @@
   }
  },
  {
+  "name": "reduced-motion-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "moving": false,
+   "key": "area:yard-1071933339",
+   "anim": "none/none",
+   "sr": "Новая жалоба: Двор у ул. Коксенгир. Сообщили 11 человек"
+  }
+ },
+ {
   "name": "card-approximate-1366-ru",
   "size": "desktop",
   "query": "",
