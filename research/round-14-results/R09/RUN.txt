@@ -38,3 +38,15 @@ R09 · РАУНД 14 · ЖАЛОБА ЖИТЕЛЯ v2 — ЗАПУСК И ПРО�
    казахском или вперемешку, принять подсказку категории или выбрать из 12, увидеть «Об этом уже сообщили N человек»
    и нажать «Я тоже» (одно на устройство) или «У меня другое», получить номер B-0001 и шкалу
    «Принято → В работе → Исправлено», открыть «Мои обращения». Чужие тексты житель не видит — только число людей.
+
+6. СТЕНД С НАСТОЯЩИМИ R12 /targets И R04 /classify, /similar (интеграционное дерево, в ветку R09 не коммитится)
+   git worktree add --detach ../r09-integ <SHA R09>
+   cd ../r09-integ
+   git checkout 8810221 -- engine/civic_geo data/civic/astana/geo                 # R12
+   git checkout deeb1de -- ml/civic_dedup ui/civic_ml_api                         # R04
+   git checkout 14c3384 -- ml/civic_classifier                                    # v1 (нужен цепочке R04)
+   git checkout origin/claude/r14-R03 -- ml/civic_classifier_v2                   # R03 (без весов -> запасной путь)
+   python tests/civic/R09/stand/serve_r09.py --port 8790 --seed --real-geo --real-ml
+   node tests/civic/R09/browser_r09.cjs --real --screenshots <папка>
+   python -m pytest -q tests/civic/R09/test_r09v2_neighbours.py                   # стык R09+R12+R04 (в ветке R09 — skip)
+   Отчёт: research/round-14-results/R09/NEIGHBOURS_RUN.md

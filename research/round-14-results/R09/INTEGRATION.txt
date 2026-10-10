@@ -98,3 +98,14 @@ R09 · РАУНД 14 · INTEGRATION — как подключить жалобы
 
 === LOCAL ===
 Нет. Всё работает офлайн: шрифт системный (или «Birge Sans» R11), карта — web/vendor/maplibre-gl.js.
+
+=== Совместный прогон с настоящими R12 и R04 (NEIGHBOURS_RUN.md, R09 @ fa49fc9) ===
+R01:
+- Прогрейте R12 при старте сервера (первая загрузка графа 2–4 с): например, вызов engine.civic_geo.targets(71.43, 51.13)
+  в фоне. Клиент R09 ждёт /targets 5 с, дольше — «примерное место».
+- R04: ui.civic_ml_api.connect_store(make_service(db)) — тот же сервис, что отвечает на /complaints (у него есть .store).
+- Patch R04 r01_similar_target.patch: R09 отправляет target {kind, id} в /similar; без patch шлюз его отбрасывает.
+R07/R12: ячейки «примерного места» R09 теперь в ОБЩЕЙ сетке (origin 71.0/50.8, 150/110574, ref_lat 51.15) —
+  record.cell_id/cell_polygon совпадают с engine.civic_geo Cells и ui/civic_heat/geo.py (проверено на 5000 точках).
+R12: признак approximate R09 берёт с кандидата и кладёт в target записи; удобнее, если R12 будет класть его и в target.
+R04: R09 показывает подсказку по suggest (не по needs_review) и не фильтрует matches повторно — берёт matches[0].
