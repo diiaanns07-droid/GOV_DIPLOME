@@ -1,7 +1,7 @@
-# R10 · приёмка FINAL-candidate-daec72a · сборка daec72a
+# R10 · приёмка FINAL-candidate-ef1ef44 · сборка ef1ef44
 
-Папка сборки: <worktree daec72a>
-Когда: 2026-10-10T18:10:52.736Z · Node v22.22.0 · Python: python3
+Папка сборки: <worktree ef1ef44>
+Когда: 2026-10-10T18:22:06.549Z · Node v22.22.0 · Python: python3
 
 ## 1. Точность карты (CONTRACT §8)
 
@@ -58,13 +58,13 @@ PASS 25 · FAIL 4 · NOT_RUN 0 (pytest код 1)
 
 ## 3. Сценарий демо (tests/e2e/demo_flow.cjs)
 
-PASS 110 · FAIL 4 · NOT_RUN 0 — подробно e2e/RESULT.md
+PASS 114 · FAIL 4 · NOT_RUN 0 — подробно e2e/RESULT.md
 
 | Шаг | PASS | FAIL | NOT_RUN |
 |---|---|---|---|
 | * | 4 | 0 | 0 |
 | 0 | 25 | 0 | 0 |
-| 1 | 12 | 0 | 0 |
+| 1 | 16 | 0 | 0 |
 | 2 | 15 | 2 | 0 |
 | 3 | 10 | 0 | 0 |
 | 4 | 5 | 0 | 0 |
@@ -77,11 +77,4 @@ PASS 110 · FAIL 4 · NOT_RUN 0 — подробно e2e/RESULT.md
 
 ## 4. UX по экранам (tests/e2e/ux_screens.cjs)
 
-PASS 87 · FAIL 7 · NOT_RUN 8 — подробно ux/UX_RESULT.md
-- FAIL [R01] Главная карта · житель 1366 ru: значки на карте ≥ 24 px (UX_SPEC §5)
-- FAIL [R01] Главная карта · житель 1366 kk: значки на карте ≥ 24 px (UX_SPEC §5)
-- FAIL [R01] Главная карта · акимат 1366 ru: значки на карте ≥ 24 px (UX_SPEC §5)
-- FAIL [R01] Главная карта · акимат 1366 kk: значки на карте ≥ 24 px (UX_SPEC §5)
-- FAIL [R01] Главная карта · акимат 375 kk: значки на карте ≥ 24 px (UX_SPEC §5)
-- FAIL [R01+R08] Картина дня (в оболочке) 1366 kk: казахский полный — вся страница с прокруткой панелей
-- FAIL [R01+R08] Картина дня (в оболочке) 375 kk: казахский полный — вся страница с прокруткой панелей
+PASS 94 · FAIL 0 · NOT_RUN 8 — подробно ux/UX_RESULT.md
