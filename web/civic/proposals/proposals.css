@@ -94,3 +94,16 @@
   margin: 0;
   color: var(--c-text-2);
 }
+
+/* Блок «Этап работ» в кабинете сотрудника (stage-editor.js). */
+.r06-stage-editor__fields {
+  display: grid;
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.r06-stage-editor__fields .bk-btn {
+  justify-self: start;
+}

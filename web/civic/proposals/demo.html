@@ -55,6 +55,7 @@
     <script src="/civic/i18n/i18n.js"></script>
     <script src="/civic/ui-kit/ui-kit.js"></script>
     <script src="/civic/proposals/proposals.js"></script>
+    <script src="/civic/proposals/stage-editor.js"></script>
     <script>
       (function () {
         "use strict";
@@ -92,7 +93,24 @@
             function (data) {
               objects.innerHTML = "";
               data.items.forEach(function (o) {
-                P.renderObject(cell(objects), o);
+                var card = cell(objects);
+                var objEl = document.createElement("div");
+                card.appendChild(objEl);
+                P.renderObject(objEl, o);
+                // Акимат: под карточкой — блок «Этап работ», как он встанет в редактор R12.
+                if (role === "akimat") {
+                  var editor = document.createElement("div");
+                  editor.style.marginTop = "var(--s-3)";
+                  card.appendChild(editor);
+                  window.BirgeStageEditor.mount(editor, {
+                    objectId: o.id,
+                    onSaved: function () {
+                      P.api.object(o.id).then(function (d) {
+                        P.renderObject(objEl, d.item);
+                      });
+                    },
+                  });
+                }
               });
               // Состояния «нет такого объекта» и «нет связи» — тоже на стенде.
               P.mountObject(cell(objects), "no-such-object");

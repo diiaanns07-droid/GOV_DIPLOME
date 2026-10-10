@@ -161,6 +161,50 @@ async function clickVote(page, id, value) {
       await context.close();
     }
 
+    // Сотрудник меняет этап объекта (блок «Этап работ», будущая вставка в редактор R12) + конфликт двух вкладок.
+    {
+      const context = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+      const page = await context.newPage();
+      await page.goto(URL + "?lang=ru");
+      await page.evaluate(async (cred) => {
+        await fetch("/api/civic/v1/session/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cred) });
+      }, { username: stand.username, password: stand.password });
+      await page.goto(URL + "?lang=ru&role=akimat");
+      await page.waitForSelector(".r06-stage-editor select");
+      const second = await context.newPage(); // вторая вкладка того же сотрудника со старой формой
+      await second.goto(URL + "?lang=ru&role=akimat");
+      await second.waitForSelector(".r06-stage-editor select");
+      const editor = page.locator(".r06-stage-editor").first();
+      await editor.locator("select").selectOption("acceptance");
+      await editor.locator('input[name="forecast_end"]').fill("");
+      const saved = page.waitForResponse((r) => r.url().endsWith("/stage") && r.request().method() === "POST");
+      await editor.locator("[data-save]").click();
+      const res = await saved;
+      await page.waitForTimeout(400);
+      const msg = await editor.locator("[data-msg]").textContent();
+      const caption = await page.locator(".r06-card[data-object] .bk-stages__caption").first().textContent();
+      check("сотрудник сохраняет этап → карточка объекта обновилась", res.status() === 200 && /сохранён/.test(msg) && /Приёмка/.test(caption), msg + " | " + caption);
+      if (shots) await page.screenshot({ path: path.join(shots, "r06-1366-ru-stage-editor.png") });
+      const ed2 = second.locator(".r06-stage-editor").first();
+      await ed2.locator("select").selectOption("design");
+      const conflict = second.waitForResponse((r) => r.url().endsWith("/stage") && r.request().method() === "POST");
+      await ed2.locator("[data-save]").click();
+      const res2 = await conflict;
+      await second.waitForTimeout(400);
+      const msg2 = await ed2.locator("[data-msg]").textContent();
+      const sel2 = await ed2.locator("select").inputValue();
+      check("старая вкладка: 409 → понятное сообщение и свежая версия", res2.status() === 409 && /другой сотрудник/.test(msg2) && sel2 === "acceptance", res2.status() + " " + msg2 + " " + sel2);
+      // Пустой этап → ошибка у поля, фокус на нём.
+      await ed2.locator("select").selectOption("");
+      const bad = second.waitForResponse((r) => r.url().endsWith("/stage") && r.request().method() === "POST");
+      await ed2.locator("[data-save]").click();
+      const res3 = await bad;
+      await second.waitForTimeout(300);
+      const focusedName = await second.evaluate(() => document.activeElement && document.activeElement.getAttribute("name"));
+      check("пустой этап → 422, ошибка у поля, фокус на поле", res3.status() === 422 && focusedName === "stage", res3.status() + " focus=" + focusedName);
+      await context.close();
+    }
+
     // Нет связи с API.
     {
       const context = await browser.newContext({ viewport: { width: 375, height: 812 } });
