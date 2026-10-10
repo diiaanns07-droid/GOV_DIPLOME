@@ -1,0 +1,757 @@
+{
+ "n4-1-akimat-map-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "161×34 «Байконур · 25»",
+    "170×34 «Сарайшык · 16»",
+    "131×34 «Есиль · 14»",
+    "165×34 «Сарыарка · 12»",
+    "138×34 «Алматы · 6»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 6",
+  "console": [
+   "error: Failed to load resource: net::ERR_FAILED",
+   "warning: Unable to perform style diff: Style is not done loading..  Rebuilding the style from scratch.",
+   "warning: Map: AJAXError: Failed to fetch (0): https://tiles.openfreemap.org/planet"
+  ]
+ },
+ "n4-2-akimat-card-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": []
+ },
+ "n4-3-day-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": []
+ },
+ "n4-4-hot-to-map-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "66×34 «11»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-5-resident-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "66×34 «11»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-6-wizard-place-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": [
+   "R11: над мастером (до y=768) свободно 70% карты, самый длинный отрезок 516 px"
+  ]
+ },
+ "n4-7-wizard-text-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": [
+   "R11: место — Спортплощадка"
+  ]
+ },
+ "n4-8-wizard-done-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-9-mine-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-10-fixed-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-11-catalog-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-12-placed-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-13-vote-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "28×22 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [
+   "R11: карточка голоса — R06"
+  ]
+ },
+ "n4-1-akimat-map-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "166×34 «Байқоңыр · 25»",
+    "171×34 «Сарайшық · 16»",
+    "116×34 «Есіл · 14»",
+    "166×34 «Сарыарқа · 12»",
+    "138×34 «Алматы · 6»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 6",
+  "console": [
+   "error: Failed to load resource: net::ERR_FAILED",
+   "warning: Unable to perform style diff: Style is not done loading..  Rebuilding the style from scratch.",
+   "warning: Map: AJAXError: Failed to fetch (0): https://tiles.openfreemap.org/planet"
+  ]
+ },
+ "n4-2-akimat-card-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": []
+ },
+ "n4-3-day-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": []
+ },
+ "n4-4-hot-to-map-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "66×34 «11»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-5-resident-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "66×34 «11»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-6-wizard-place-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [
+   "R11: над мастером (до y=768) свободно 70% карты, самый длинный отрезок 516 px"
+  ]
+ },
+ "n4-7-wizard-text-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [
+   "R11: место — «ЖК Арман Делюкс2» аялдамасы"
+  ]
+ },
+ "n4-8-wizard-done-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-9-mine-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-10-fixed-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-11-catalog-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": []
+ },
+ "n4-12-placed-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»",
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [
+   "R11: «Поставить» неактивна — Гүлзар ·  · Жоба"
+  ]
+ },
+ "n4-13-vote-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "20×20 «»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": [
+   "R11: карточка голоса — R06"
+  ]
+ },
+ "n4-1-akimat-map-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "124×34 «Нура · 71»",
+    "161×34 «Байконур · 25»",
+    "40×28 «16»",
+    "131×34 «Есиль · 14»",
+    "165×34 «Сарыарка · 12»",
+    "29×28 «6»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 6",
+  "console": [
+   "error: Failed to load resource: net::ERR_FAILED",
+   "warning: Unable to perform style diff: Style is not done loading..  Rebuilding the style from scratch.",
+   "warning: Map: AJAXError: Failed to fetch (0): https://tiles.openfreemap.org/planet"
+  ]
+ },
+ "n4-2-akimat-card-375-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": []
+ },
+ "n4-3-day-375-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": []
+ },
+ "n4-4-hot-to-map-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "66×34 «11»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": []
+ },
+ "n4-5-resident-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "66×34 «11»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": []
+ },
+ "n4-6-wizard-place-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": [
+   "R11: над мастером (до y=406) свободно 85% карты, самый длинный отрезок 318 px"
+  ]
+ },
+ "n4-7-wizard-text-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "57×34 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": [
+   "R11: место — Проезд без названия"
+  ]
+ },
+ "n4-8-wizard-done-375-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": []
+ },
+ "n4-9-mine-375-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": []
+ },
+ "n4-1-akimat-map-375-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "124×34 «Нұра · 71»",
+    "166×34 «Байқоңыр · 25»",
+    "116×34 «Есіл · 15»",
+    "40×28 «16»",
+    "166×34 «Сарыарқа · 12»",
+    "29×28 «6»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 6",
+  "console": [
+   "error: Failed to load resource: net::ERR_FAILED",
+   "warning: Unable to perform style diff: Style is not done loading..  Rebuilding the style from scratch.",
+   "warning: Map: AJAXError: Failed to fetch (0): https://tiles.openfreemap.org/planet"
+  ]
+ },
+ "n4-2-akimat-card-375-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": []
+ },
+ "n4-3-day-375-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": []
+ },
+ "n4-4-hot-to-map-375-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "66×34 «11»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": []
+ },
+ "n4-5-resident-375-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "66×34 «11»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 1",
+  "console": []
+ },
+ "n4-6-wizard-place-375-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": [
+   "R11: над мастером (до y=406) свободно 85% карты, самый длинный отрезок 318 px"
+  ]
+ },
+ "n4-7-wizard-text-375-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": [
+   "R11: место — Спорт алаңы"
+  ]
+ },
+ "n4-8-wizard-done-375-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": []
+ },
+ "n4-9-mine-375-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": []
+ }
+}
