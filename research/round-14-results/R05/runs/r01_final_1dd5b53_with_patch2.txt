@@ -1,0 +1,63 @@
+# R05 a331db0 внутри R01 claude/sharp-dijkstra-0t87gl @ 1dd5b53 (FINAL night 5a; в ней R05 05f8e52 и патч легенды) + web/civic/build3d из a331db0 + proposed_r01_final2.patch; 2026-10-10T20:13:02Z
+# Chromium headless, SwiftShader
+
+## tests/civic/R01/browser/r14_shell.cjs: PASS 38, FAIL 0, сообщений build3d в консоли: 0
+
+## tests/civic/R01/browser/r14_b2.cjs: PASS 26, FAIL 0
+PASS keyboard (akimat): first Tab = «Перейти к главной кнопке», Enter -> «Карта жалоб» panel — {"first":{"skip":true,"text":"Перейти к главной кнопке","top":12},"target":{"fab":false
+PASS B2: R12, R04, R06, R13 routes are connected — {"targets":"ready","classify":"ready","similar":"ready","geo.segment":"ready","geo.snap":"ready","geo.objects":"ready","geo.yard":"ready","geo.status":"ready","proposals.list":"ready","pr
+PASS step 2 (R12): /targets offers places near a point on the left bank — {"status":200,"n":3,"first":{"kind":"object","label":"Спортплощадка"}}
+PASS step 2 (R04): /classify suggests a category for mixed kk/ru text — {"category":"lighting","suggest":true,"source":"kw"}
+PASS R13: /forecast answers and is marked synthetic (prototype) — {"month":"2026-11","n":5,"evidence":"synthetic"}
+PASS R06: lagging objects for «Картина дня» come from the store (seed-r14-demo) — {"late":2,"stale":0}
+PASS keyboard (resident): first Tab = «Перейти к главной кнопке», Enter -> «Сообщить о проблеме» — {"first":{"skip":true,"text":"Перейти к главной кнопке","top":12},"target":{
+PASS step 2 (R12 in the form): «Это здесь?» offers a real place first — "Спортплощадка14 м"
+PASS step 2 (R04 in the form): the category is suggested by the model — {"label":"Похоже на:","chip":"Освещение"}
+PASS the complaint is attached to the R12 place (not the approximate cell) — {"id":"c-b9de1605fda38d75","target":{"id":"osm-way-1076806056","kind":"object","label_kk":"Спорт алаңы","label_ru":"Спортплощадка"},"categ
+PASS akimat: 3D catalog (R05) is mounted over the map with the R06 store — {"phase":"ready","storeMode":"api","count":5}
+PASS akimat: catalog folded into one «Что построить?» button, the heat legend is free — {"toggle":"Что построить?","expanded":"false","catalogShown":false,"legendShown":true,"overlap":false}
+PASS akimat: catalog shows 5 kinds and does not cover the right panel — {"state":"catalog","kinds":5,"right":837,"panelLeft":946,"bottom":678,"vh":768}
+PASS akimat: while the catalog is open the legend steps aside (no overlap at the bottom of the map) — "hidden"
+PASS akimat staff: round-13 «Сообщения жителей» (empty v1 list, B-035) is hidden in Birge — "none"
+PASS «Поставить»: R06 stores the proposal (201, planned_year 2027) — {"status":201,"item":{"id":"p-5360784cc645","kind":"square","planned_year":2027,"district":"esil"},"ghost":{"valid":{"ok":true}}}
+PASS the new proposal is in the public list (+1) — {"before":5,"after":6}
+PASS resident: no catalog (view and vote only) — {"phase":"ready","dock":{"state":"hint","cards":0}}
+PASS resident «За»: R06 counts one vote of this device — {"status":200,"votes_up":1,"my_vote":1}
+PASS resident: the proposal card does not cover «Сообщить о проблеме» — {"overlap":false}
+PASS akimat «Удалить»: the proposal is withdrawn in R06 (404 afterwards) — {"request":"POST /api/civic/v2/proposals/p-5360784cc645/withdraw","status":200,"get_after":404}
+PASS «Картина дня»: the 3D dock is not shown over the day screen — "hidden"
+PASS 375 px akimat: the catalog does not cover the open «Карта жалоб» sheet — {"sheet":"half","state":"catalog","shown":false,"left":0,"right":0,"bottom":0,"sheetTop":410,"w":375,"scrollX":false}
+PASS 375 px akimat: «Что построить?» is reachable above the half-open sheet (48 px) — {"text":"Что построить?","h":48,"bottom":402,"sheetTop":410}
+PASS 375 px akimat: sheet collapsed -> catalog above it, within the screen — {"sheet":"peek","state":"catalog","shown":true,"left":0,"right":375,"bottom":514,"sheetTop":578,"w":375,"scrollX":false}
+PASS no page errors or unexpected console errors — []
+
+## R05 app_b2_smoke.mjs: PASS 17, FAIL 0
+PASS shell_mounted_module_with_projects — {"labels":["Проект · 20276","Проект · 2027","Проект · 2027","Проект · 2027","Проект · 2027","Проект · 2027"],"catalog_folded_by_shell":true}
+PASS akimat_catalog_not_under_shell_panel — {"dock":{"left":117,"top":498,"right":837,"bottom":678,"w":720,"h":180},"panel":{"left":946,"top":112,"right":1346,"bottom":734,"w":400,"h":622}}
+PASS catalog_labels_inside_cards_ru — []
+PASS staff_login_through_shell — true
+PASS place_square_stored_by_r06_via_shell_client — {"posts":[201],"id":"p-209e7a16df8f","year":2027}
+PASS card_not_over_shell_panel — {"card":{"left":117,"top":362.4375,"right":837,"bottom":734,"w":720,"h":371.5625},"panel":{"left":946,"top":112,"right":1346,"bottom":734,"w":400,"h":622}}
+PASS r07_legend_hidden_while_3d_card_open — "hidden"
+PASS selected_object_visible_in_free_part_of_shell_map — {"object":{"x":674.9891918489977,"y":278.00518381943584},"under":[]}
+PASS shell_mode_switch_to_resident_without_remount — {"cards":0,"toasts":0,"hint":"Нажмите на проект, чтобы проголосовать","same":true}
+PASS delete_is_withdraw_in_shell — 200
+PASS kk_catalog_in_shell — ["Гүлзар","Балалар алаңы","Спорт алаңы","Аялдама","Көше жарығы"]
+PASS phone_kk_resident_hint_does_not_cover_open_sheet — {"hint":null,"sheet":{"left":0,"top":438.484375,"right":375,"bottom":812,"w":375,"h":373.515625}}
+PASS phone_kk_resident_hint_above_lowered_sheet — {"hint":{"left":0,"top":534.75,"right":375,"bottom":609.125,"w":375,"h":74.375},"sheet":{"left":0,"top":617.125,"right":375,"bottom":812,"w":375,"h":194.875},"text":"Дауыс беру үшін жобаны басыңыз"}
+PASS phone_ru_akimat_catalog_above_peek_sheet — {"sheet":"peek","state":"catalog","shown":true,"left":0,"right":375,"bottom":553,"sheetTop":617,"scrollX":false}
+PASS shell_reload_during_list_request_no_console_error — {"1366_ru":{"heldBefore":1,"count":6,"console_errors":[]},"375_kk":{"heldBefore":1,"count":6,"console_errors":[]}}
+PASS phone_akimat_card_with_half_sheet_does_not_cover_shell_header — {"kk":{"sheet_before":"half","tapped":[187,186],"state":"card","sheet":"peek","dock":[218,609],"header_bottom":72,"header_free":true,"object":[204,164],"object_above_card":true},"ru":{"sheet_before":"half","tapped":[187,186],"sta
+PASS no_page_errors — []
+
+## R05 final_kk_street_check.mjs (R10 B-033)
+PASS 1366 kk: Жанында: Керей және Жәнібек хандар көшесі
+PASS 1366 ru: Рядом: улица Керей и Жанибек хандар
+PASS 375 kk: Жанында: Керей және Жәнібек хандар көшесі
+PASS 375 ru: Рядом: улица Керей и Жанибек хандар
+PASS
+
+## R01 1dd5b53 КАК ЕСТЬ (R05 05f8e52, без патча 2), телефон 375, акимат, шторка half, нажатие на проект:
+карточка 39–430 px при шапке 10–72 px: шапка закрыта карточкой (elementFromPoint у низа шапки — build3d) — kk и ru
+с R05 a331db0 без патча 2: карточка 80–430 px, шапка свободна, карточка прокручивается внутри
+с R05 a331db0 + патч 2: шторка опущена (peek), карточка 218–609 px целиком, объект над карточкой (y 164)

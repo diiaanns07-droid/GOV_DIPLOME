@@ -1,18 +1,19 @@
 {
- "generated_at": "2026-10-10T19:46:37.351Z",
- "url": "http://127.0.0.1:8804/",
- "r01": "claude/sharp-dijkstra-0t87gl@4ca9aef (FINAL, ночь 3a) + R05 b38654a + proposed_r01_final.patch",
+ "generated_at": "2026-10-10T20:11:12.909Z",
+ "url": "http://127.0.0.1:8805/",
+ "r01": "claude/sharp-dijkstra-0t87gl@1dd5b53 (FINAL night 5a) + R05 a331db0 + proposed_r01_final2.patch",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
    "status": "PASS",
    "detail": {
     "labels": [
+     "Проект · 20276",
      "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027",
-     "Проект · 20275"
+     "Проект · 2027"
     ],
     "catalog_folded_by_shell": true
    }
@@ -56,7 +57,7 @@
     "posts": [
      201
     ],
-    "id": "p-db79b1c7a692",
+    "id": "p-209e7a16df8f",
     "year": 2027
    }
   },
@@ -92,8 +93,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 674.9891919520591,
-     "y": 278.0051837839085
+     "x": 674.9891918489977,
+     "y": 278.00518381943584
     },
     "under": []
    }
@@ -182,13 +183,59 @@
    "detail": {
     "1366_ru": {
      "heldBefore": 1,
-     "count": 5,
+     "count": 6,
      "console_errors": []
     },
     "375_kk": {
      "heldBefore": 1,
-     "count": 5,
+     "count": 6,
      "console_errors": []
+    }
+   }
+  },
+  {
+   "id": "phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
+   "status": "PASS",
+   "detail": {
+    "kk": {
+     "sheet_before": "half",
+     "tapped": [
+      187,
+      186
+     ],
+     "state": "card",
+     "sheet": "peek",
+     "dock": [
+      218,
+      609
+     ],
+     "header_bottom": 72,
+     "header_free": true,
+     "object": [
+      204,
+      164
+     ],
+     "object_above_card": true
+    },
+    "ru": {
+     "sheet_before": "half",
+     "tapped": [
+      187,
+      186
+     ],
+     "state": "card",
+     "sheet": "peek",
+     "dock": [
+      218,
+      609
+     ],
+     "header_bottom": 72,
+     "header_free": true,
+     "object": [
+      152,
+      164
+     ],
+     "object_above_card": true
     }
    }
   },

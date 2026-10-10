@@ -1,0 +1,44 @@
+{
+ "generated_at": "2026-10-10T20:09:49.354Z",
+ "build": "claude/sharp-dijkstra-0t87gl@1dd5b53 (FINAL night 5a) + R05 a331db0 + proposed_r01_final2.patch",
+ "place": [
+  71.402341,
+  51.117181
+ ],
+ "proposal": "p-1e69c2f054af",
+ "status": "PASS",
+ "checks": [
+  {
+   "vp": 1366,
+   "lang": "kk",
+   "line": "Жанында: Керей және Жәнібек хандар көшесі",
+   "ok": true,
+   "shot": "screens/final_kk_street_1366_kk.png",
+   "page_errors": []
+  },
+  {
+   "vp": 1366,
+   "lang": "ru",
+   "line": "Рядом: улица Керей и Жанибек хандар",
+   "ok": true,
+   "shot": "screens/final_kk_street_1366_ru.png",
+   "page_errors": []
+  },
+  {
+   "vp": 375,
+   "lang": "kk",
+   "line": "Жанында: Керей және Жәнібек хандар көшесі",
+   "ok": true,
+   "shot": "screens/final_kk_street_375_kk.png",
+   "page_errors": []
+  },
+  {
+   "vp": 375,
+   "lang": "ru",
+   "line": "Рядом: улица Керей и Жанибек хандар",
+   "ok": true,
+   "shot": "screens/final_kk_street_375_ru.png",
+   "page_errors": []
+  }
+ ]
+}
