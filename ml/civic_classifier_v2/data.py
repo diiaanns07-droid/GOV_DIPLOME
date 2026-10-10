@@ -284,6 +284,22 @@ def stratified_split(records: list[dict], val_ratio: float, seed: int) -> tuple[
     return tr, va
 
 
+def stratified_subsample(records: list[dict], fraction: float, seed: int) -> list[dict]:
+    """Доля записей по каждой категории (не меньше одной), детерминированно — для кривой обучения."""
+    if fraction >= 1.0:
+        return list(records)
+    by_label: dict[str, list[dict]] = {}
+    for r in records:
+        by_label.setdefault(r["label"], []).append(r)
+    rng = random.Random(seed)
+    out = []
+    for lab in sorted(by_label):
+        items = by_label[lab][:]
+        rng.shuffle(items)
+        out.extend(items[:max(1, round(len(items) * fraction))])
+    return out
+
+
 def drop_leaks(train: list[dict], evaluation: list[dict]) -> tuple[list[dict], int]:
     """Убирает из обучения тексты, совпадающие (после norm_key) с оценочными. Возвращает (train, сколько убрано)."""
     keys = {norm_key(r["text"]) for r in evaluation}

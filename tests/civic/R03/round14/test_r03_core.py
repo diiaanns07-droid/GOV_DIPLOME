@@ -212,3 +212,13 @@ def test_choose_threshold_prefers_lowest_meeting_target():
 def test_ece_bounds():
     assert M.ece([1, 1, 0, 0], [0.9, 0.8, 0.2, 0.1]) == pytest.approx(0.15, abs=1e-6)
     assert M.ece([], []) is None
+
+
+def test_stratified_subsample_keeps_every_class():
+    recs = [dict(id=str(i), label=L.labels()[i % 12]) for i in range(120)] + [dict(id="x", label="parking")]
+    half = D.stratified_subsample(recs, 0.5, seed=2)
+    assert {r["label"] for r in half} == {r["label"] for r in recs}
+    assert 55 <= len(half) <= 66
+    assert D.stratified_subsample(recs, 1.0, seed=2) == recs
+    tiny = D.stratified_subsample(recs, 0.01, seed=2)
+    assert len(tiny) == 12                                   # по одному на категорию

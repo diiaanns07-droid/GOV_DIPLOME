@@ -89,6 +89,11 @@ human 5-fold ≈ 5–10 мин (на ~200 текстах до 30 эпох — т
 Не давать ноутбуку уснуть: питание от сети, режим «Высокая производительность».
 Результат: ml\civic_classifier_v2\results\experiments.json и RESULTS.md (таблица для диплома).
 
+6б. (по желанию, ~1 ч) Кривая обучения: сколько текстов людей нужно. Те же фолды, в обучение — только доля людей,
+    оценка — на всех текстах людей (100% = главный эксперимент шага 6):
+foreach ($f in 0.25, 0.5) { & $PY -m ml.civic_classifier_v2.experiments --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM --human $HUMAN --regimes human mix --models logreg transformer --human-fraction $f --name "lc_$f" }
+Результат: ml\civic_classifier_v2\results\lc_0.25.json/.md, lc_0.5.json/.md (в шаге 9 добавить в git add).
+
 -----------------------------------------------------------------
 7. Итоговая модель для продукта — ~10–15 мин
 -----------------------------------------------------------------
@@ -116,6 +121,7 @@ Copy-Item ml\civic_classifier_v2\artifacts\experiments\train_log.jsonl ml\civic_
 Copy-Item ml\civic_classifier_v2\artifacts\final\train_log.jsonl ml\civic_classifier_v2\results\train_log_final.jsonl
 Copy-Item ml\civic_classifier_v2\artifacts\final\birge_meta.json ml\civic_classifier_v2\results\final_model_meta.json
 git status --short          (НЕ должно быть artifacts\, private\, *.onnx, *.safetensors)
+git add ml/civic_classifier_v2/results/lc_*      (только если был шаг 6б)
 git add ml/civic_classifier_v2/results/experiments.json ml/civic_classifier_v2/results/RESULTS.md ml/civic_classifier_v2/results/onnx_export.json ml/civic_classifier_v2/results/train_log_experiments.jsonl ml/civic_classifier_v2/results/train_log_final.jsonl ml/civic_classifier_v2/results/final_model_meta.json
 git commit -m "R03: LOCAL-4 results (RTX 4060): experiments, final model meta, ONNX export"
 git push origin claude/r14-R03

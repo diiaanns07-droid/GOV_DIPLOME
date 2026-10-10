@@ -172,6 +172,7 @@ def run(args) -> dict:
         "meta": {"created_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
                  "git_sha": git_sha(), "model_name": cfg.model_name, "seed": cfg.seed, "seeds": args.seeds,
                  "mode": "smoke" if args.smoke else "full", "k_folds": args.folds, "val_ratio": args.val_ratio,
+                 "human_fraction": args.human_fraction,
                  "env_note": args.env_note, "train_config": cfg.to_dict()},
         "data": {}, "notes": notes,
     }
@@ -246,6 +247,8 @@ def run(args) -> dict:
                             test_set = set(test_idx)
                             rest = [eval_human[i] for i in range(len(eval_human)) if i not in test_set]
                             tr_h, va_h = D.stratified_split(rest, args.val_ratio, seed + f)
+                            # Кривая обучения: в обучение идёт только доля текстов людей; val и оценка — полные.
+                            tr_h = D.stratified_subsample(tr_h, args.human_fraction, seed + f)
                             tr = tr_h + (syn_train if regime == "mix" else [])
                             # validation — только люди (целевая область); синтетика лишь в обучении.
                             fold_eval = {"human": [eval_human[i] for i in test_idx]}
@@ -403,6 +406,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--seeds", type=int, default=1, help="повторы трансформера с seed, seed+1, …")
     ap.add_argument("--min-human", type=int, default=MIN_HUMAN)
     ap.add_argument("--max-human", type=int, default=0, help="для отладки: взять первые N текстов людей")
+    ap.add_argument("--human-fraction", type=float, default=1.0,
+                    help="кривая обучения: доля текстов людей в обучении фолда (0.25, 0.5…); оценка — на всех. "
+                         "Запускать с --regimes human mix и своим --name (например lc_050)")
     ap.add_argument("--not-complaint", choices=("drop", "other"), default="drop")
     ap.add_argument("--drop-unsure", action="store_true", help="исключить тексты, где разметчик сомневался")
     ap.add_argument("--model-name", help="трансформер: имя HF или путь (по умолчанию FacebookAI/xlm-roberta-base)")

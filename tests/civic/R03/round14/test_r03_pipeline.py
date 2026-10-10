@@ -63,6 +63,28 @@ def test_protocol_no_leak(data_dir, tmp_path, monkeypatch):
     assert any("mix: синтетика только" in n for n in res["notes"])
 
 
+def test_human_fraction_limits_only_training(data_dir, tmp_path, monkeypatch):
+    seen = []
+
+    def spy(name, train, val, eval_sets, cfg, labels, log_path, tag):
+        seen.append((sum(r["source"] == "human" for r in train), len(val), len(eval_sets["human"])))
+        return {s: ([0] * len(r), None) for s, r in eval_sets.items()}, {"n_train": len(train), "n_val": len(val)}
+
+    monkeypatch.setattr(E, "run_model", spy)
+    E.main(_args(data_dir, tmp_path, "--min-human", "50", "--folds", "3", "--models", "heuristic",
+                 "--regimes", "human", "--human-fraction", "0.5", "--name", "lc"))
+    full = []
+    monkeypatch.setattr(E, "run_model", lambda name, train, val, sets, *a, **k: (
+        full.append(len(train)) or {s: ([0] * len(r), None) for s, r in sets.items()},
+        {"n_train": len(train), "n_val": len(val)}))
+    E.main(_args(data_dir, tmp_path, "--min-human", "50", "--folds", "3", "--models", "heuristic",
+                 "--regimes", "human", "--name", "full"))
+    assert all(h < f for (h, _, _), f in zip(seen, full))           # обучающих людей меньше
+    assert sum(n for _, _, n in seen) == 60                          # оценка — по всем текстам
+    res = json.loads((tmp_path / "results" / "lc.json").read_text(encoding="utf-8"))
+    assert res["meta"]["human_fraction"] == 0.5
+
+
 def test_human_eval_not_evaluated_below_200(data_dir, tmp_path, monkeypatch):
     monkeypatch.setattr(E, "run_model", lambda name, train, val, sets, *a, **k: (
         {s: ([0] * len(r), None) for s, r in sets.items()}, {"n_train": len(train), "n_val": len(val)}))

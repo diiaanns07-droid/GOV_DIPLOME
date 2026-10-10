@@ -102,7 +102,9 @@ def render(results: dict) -> str:
     lines += [f"- Дата прогона: {meta.get('created_at', '—')}; git: `{meta.get('git_sha', '—')}`; "
               f"среда: {meta.get('env_note', '—')}",
               f"- Трансформер: `{meta.get('model_name', '—')}`; seed {meta.get('seed', '—')}; "
-              f"повторов с разными seed: {meta.get('seeds', 1)}",
+              f"повторов с разными seed: {meta.get('seeds', 1)}"
+              + (f"; **доля текстов людей в обучении: {meta['human_fraction']}** (кривая обучения)"
+                 if meta.get("human_fraction", 1.0) < 1.0 else ""),
               f"- Режим запуска: **{meta.get('mode', 'full')}**" +
               (" — ПРОВЕРКА КОНВЕЙЕРА на крошечной модели, числа не являются результатом" if meta.get("mode") == "smoke" else ""),
               ""]
