@@ -977,6 +977,59 @@ await check("rate_limit_429_says_too_many_without_retry_ru_kk", async () => {
   assert(/Слишком много/.test(out.ru.text) && /тым көп/.test(out.kk.text) && !out.ru.retry && !out.kk.retry && !/связ|Байланыс/.test(out.ru.text + out.kk.text), JSON.stringify(out));
   return { status: "PASS", detail: out };
 });
+await check("reload_during_list_request_logs_no_console_error", async () => {
+  // R01 I-05: перезагрузка страницы обрывает запрос списка («TypeError: Failed to fetch») — это не ошибка модуля:
+  // ни console.error, ни тоста. Настоящий обрыв связи без ухода со страницы — тост «Повторить» и console.warn.
+  const out = {};
+  for (const [w, h, lang] of [[1366, 768, "ru"], [1366, 768, "kk"], [375, 812, "ru"], [375, 812, "kk"]]) {
+    const phone = w < 700;
+    const ctx = await browser.newContext(phone ? { viewport: { width: w, height: h }, hasTouch: true, isMobile: true } : { viewport: { width: w, height: h } });
+    const p = await ctx.newPage();
+    const errors = [];
+    const warns = [];
+    p.on("console", (m) => {
+      if (m.type() === "error") errors.push(m.text());
+      if (m.type() === "warning" && /\[build3d\]/.test(m.text())) warns.push(m.text());
+    });
+    let hold = true;
+    let held = 0;
+    await p.route("**/api/civic/v2/proposals**", (route) => {
+      if (hold && route.request().method() === "GET") {
+        held++;
+        return; // не отвечаем: запрос висит, пока страницу не перезагрузят
+      }
+      return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ items: FIXTURE.proposals }) });
+    });
+    await p.goto(BASE + `?store=api&lang=${lang}&` + MAIN_Q.slice(1));
+    for (let i = 0; i < 600 && !held; i++) await p.waitForTimeout(100); // ждём, пока запрос списка уйдёт и повиснет
+    const heldBefore = held;
+    hold = false;
+    await p.reload();
+    await waitReady(p);
+    await p.waitForTimeout(500);
+    const afterReload = { errors: errors.filter((e) => /build3d|Failed to fetch/.test(e)), count: (await state(p)).count };
+    // Обрыв без ухода со страницы: соединение сброшено — тост с «Повторить», в консоли предупреждение, не ошибка.
+    await p.unroute("**/api/civic/v2/proposals**");
+    await p.route("**/api/civic/v2/proposals**", (route) => route.abort("connectionreset"));
+    const n0 = errors.length;
+    await p.evaluate(() => __b3d.refresh());
+    await p.waitForSelector(".bk-toast--error", { timeout: 10000 });
+    const net = await p.evaluate(() => ({
+      toast: document.querySelector(".bk-toast--error").innerText.trim(),
+      retry: !!document.querySelector(".bk-toast [data-action=retry-load]"),
+    }));
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `net_toast_${w}_${lang}.png`) });
+    const netErrors = errors.slice(n0).filter((e) => /build3d/.test(e));
+    await ctx.close();
+    const d = { heldBefore, afterReload, net, netErrors, warns: warns.slice(-1) };
+    out[`${w}_${lang}`] = d;
+    assert(heldBefore >= 1, "запрос списка не был в полёте: " + JSON.stringify(d));
+    assert(afterReload.errors.length === 0 && afterReload.count >= 1, JSON.stringify(d));
+    assert(net.retry && netErrors.length === 0 && warns.length >= 1, JSON.stringify(d));
+    assert(lang === "ru" ? /Повторить/.test(net.toast) : /Қайталау/.test(net.toast) && !/Повторить/.test(net.toast), JSON.stringify(d));
+  }
+  return { status: "PASS", detail: out };
+});
 await check("r01_map_getter_waits_for_map", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   const r = await p.evaluate(async () => {

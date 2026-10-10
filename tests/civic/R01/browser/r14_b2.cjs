@@ -174,6 +174,11 @@ async function main() {
 
     const seeded = (await api(page, "/api/civic/v2/proposals")).body?.items || [];
     await page.evaluate(([u, p]) => window.CivicShell.api.login(u, p), [USER, PASSWORD]);
+    // R10 B-035: «Сообщения жителей» раунда 13 (v1, без жалоб Birge) у сотрудника не видны без ?tools=all.
+    await page.waitForTimeout(500);
+    const moderation = await page.evaluate(() => { const b = document.getElementById("civic-moderation-button");
+      return b ? getComputedStyle(b).display : "absent"; });
+    check("akimat staff: round-13 «Сообщения жителей» (empty v1 list, B-035) is hidden in Birge", moderation === "none" || moderation === "absent", moderation);
     await page.evaluate((p) => map.jumpTo({ center: p, zoom: 17.2, pitch: 50, bearing: -20 }), PLACE);
     await page.waitForTimeout(600);
     await page.click("#birge-build3d-root .b3d-card[data-kind=square]");

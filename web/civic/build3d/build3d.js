@@ -425,6 +425,7 @@
       selected: null,
       visible: true,
       destroyed: false,
+      leaving: false, // страница уходит (перезагрузка, переход): обрыв запросов — не сбой
       storeMode: "pending",
       error: null,
       hint: null, // {key, params, error:true}
@@ -804,6 +805,18 @@
     function isStaffError(err) {
       return !!err && (err.status === 401 || err.status === 403 || /unauth|csrf|forbidden|staff/.test(String(err.code || "")));
     }
+    // Перезагрузка или переход обрывают запросы старой страницы («TypeError: Failed to fetch», «network») — это не
+    // ошибка модуля: в консоль не пишем (R01 I-05). Обрыв связи без ухода — тост и предупреждение, не console.error.
+    function isNetworkError(err) {
+      if (!err) return false;
+      if (err.code === "network" || err.code === "timeout" || err.name === "AbortError") return true;
+      return err.name === "TypeError" && /fetch|network|load failed/i.test(String(err.message || ""));
+    }
+    function logFail(label, err) {
+      if (S.leaving) return;
+      if (isNetworkError(err)) console.warn(label + ":", err.code || err.message);
+      else console.error(label, err);
+    }
 
     function formatNum(n) {
       return i18n && i18n.formatNumber ? i18n.formatNumber(n) : formatNumberLocal(n);
@@ -1016,9 +1029,11 @@
           repaint();
         },
         function (err) {
-          console.error("[build3d] предложения не загрузились", err);
+          if (S.destroyed) return;
+          logFail("[build3d] предложения не загрузились", err);
           S.phase = "ready";
           render();
+          if (S.leaving) return;
           toast(t("build3d.load_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -2259,7 +2274,7 @@
           render();
         },
         function (err) {
-          console.error("[build3d] не сохранилось", err);
+          logFail("[build3d] не сохранилось", err);
           animateRemove(tempId);
           if (isStaffError(err)) return toast(t("proposal.need_staff"), { error: true });
           if (isTooMany(err)) return toast(t("common.error.too_many"), { error: true });
@@ -2560,6 +2575,14 @@
       applyInsets();
     };
     root.addEventListener("resize", onResize);
+    var onPageHide = function () {
+      S.leaving = true;
+    };
+    var onPageShow = function () {
+      S.leaving = false; // вернулись из кэша страниц
+    };
+    root.addEventListener("pagehide", onPageHide);
+    root.addEventListener("pageshow", onPageShow);
     if (i18n && typeof i18n.onChange === "function") unsubLang = i18n.onChange(onLang);
 
     render();
@@ -2658,6 +2681,8 @@
         doc.removeEventListener("keydown", onKey);
         doc.removeEventListener("birge:mode", onShellMode);
         root.removeEventListener("resize", onResize);
+        root.removeEventListener("pagehide", onPageHide);
+        root.removeEventListener("pageshow", onPageShow);
         if (unsubLang) unsubLang();
         clearTimeout(toastTimer);
         Object.keys(S.objects).forEach(disposeObject);

@@ -37,7 +37,8 @@ class DemoStore:
         self.lock = threading.Lock()
         self.records = demo_seed.demo_records(now=now)
         self.metoo_devices: dict[str, set] = {}
-        self.service = HeatService(source=lambda since: self.snapshot())
+        # стенд сам отвечает на статус и «Я тоже» примеров — действия с ними работают
+        self.service = HeatService(source=lambda since: self.snapshot(), examples_actionable=True)
 
     def snapshot(self):
         with self.lock:

@@ -20,10 +20,13 @@ body[data-birge-section="day"] .bc-fab { display: none !important; }
 #birge-header .birge-menu-btn { display: none; }
 .civic-mode .brand-title { font-weight: 700; letter-spacing: 0.01em; }
 
-/* Модули раунда 13 вне сценария демо Birge (решение R01, INTEGRATION §6): сравнение перекрытий и помощник по объекту.
- * Скрыты всегда; ?tools=all в адресе возвращает их (body[data-birge-tools="all"]). */
+/* Модули раунда 13 вне сценария демо Birge (решение R01, INTEGRATION §6): сравнение перекрытий, помощник по объекту
+ * и «Сообщения жителей» обратной связи v1 (жалоб Birge v2 там нет — пустой список, R10 B-035; статус жалоб меняют
+ * в карточке цели R07). Скрыты всегда; ?tools=all в адресе возвращает их (body[data-birge-tools="all"]). */
 body[data-birge-tools="off"] #civic-scenarios-button,
 body[data-birge-tools="off"] #civic-scenarios,
+body[data-birge-tools="off"] #civic-moderation-button,
+body[data-birge-tools="off"] #civic-moderation,
 body[data-birge-tools="off"] #civic-assistant-box { display: none !important; }
 
 /* Вид «Житель»: инструменты акимата (сравнение перекрытий, модерация) скрыты; вход «Для сотрудников» остаётся. */
