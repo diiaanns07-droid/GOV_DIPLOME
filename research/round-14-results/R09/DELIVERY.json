@@ -15,11 +15,25 @@
     ],
     "how": "git checkout 933cd90 -- ui/civic_feedback web/civic/feedback (побайтно, v1 не менялся)"
   },
-  "code_sha": "cca386edb668abb0c0b8bf1f55f1e197754e2da7",
-  "tested_sha": "cca386edb668abb0c0b8bf1f55f1e197754e2da7",
+  "code_sha": "da295bec57bc99882b2750d2aea786137fba58c5",
+  "tested_sha": "da295bec57bc99882b2750d2aea786137fba58c5",
   "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22.0, Playwright 1.56.1 + Chromium (headless, software WebGL), без интернета",
   "push_status": "см. итоговое сообщение и STATUS.md (этот файл коммитится после code_sha)",
   "changed_paths": [
+    "data/civic/astana/osm-objects/README.md",
+    "data/civic/astana/osm-objects/SOURCE.json",
+    "data/civic/astana/osm-objects/raw/bus_stops.json.gz",
+    "data/civic/astana/osm-objects/raw/gardens.json.gz",
+    "data/civic/astana/osm-objects/raw/kindergartens.json.gz",
+    "data/civic/astana/osm-objects/raw/parks.json.gz",
+    "data/civic/astana/osm-objects/raw/pitches.json.gz",
+    "data/civic/astana/osm-objects/raw/platforms.json.gz",
+    "data/civic/astana/osm-objects/raw/playgrounds.json.gz",
+    "data/civic/astana/osm-objects/raw/recycling.json.gz",
+    "data/civic/astana/osm-objects/raw/residential.json.gz",
+    "data/civic/astana/osm-objects/raw/schools.json.gz",
+    "data/civic/astana/osm-objects/raw/street_lamps.json.gz",
+    "data/civic/astana/osm-objects/raw/waste_disposal.json.gz",
     "research/handoffs/astana/R09/round14/STATUS.md",
     "research/round-14-results/R09/BROWSER_RESULT.txt",
     "research/round-14-results/R09/DELIVERY.json",
@@ -52,10 +66,12 @@
     "research/round-14-results/R09/screens/375-ru-5-done.png",
     "tests/civic/R09/browser_r09.cjs",
     "tests/civic/R09/stand/index.html",
+    "tests/civic/R09/stand/osm_objects.py",
     "tests/civic/R09/stand/serve_r09.py",
     "tests/civic/R09/test_r09v2_api.py",
     "tests/civic/R09/test_r09v2_frontend.py",
     "tests/civic/R09/test_r09v2_migrate.py",
+    "tests/civic/R09/test_r09v2_stand_osm.py",
     "tests/civic/R09/test_r09v2_store.py",
     "ui/civic_feedback/__init__.py",
     "ui/civic_feedback/classifier_adapter.py",
@@ -82,19 +98,19 @@
   ],
   "tests": [
     {
-      "name": "pytest tests/civic/R09/test_r09v2_*.py (store, migrate, api, frontend)",
+      "name": "pytest tests/civic/R09/test_r09v2_*.py (store, migrate, api, frontend, stand_osm)",
       "result": "PASS",
-      "detail": "72 passed"
+      "detail": "77 passed"
     },
     {
       "name": "pytest tests/civic/R09 (вместе со старыми тестами помощника раунда 12)",
       "result": "PASS",
-      "detail": "194 passed"
+      "detail": "199 passed"
     },
     {
       "name": "node tests/civic/R09/browser_r09.cjs (Chromium; 375 ru/kk, 1366 ru; без ML; обрыв сети; клавиатура)",
       "result": "PASS",
-      "detail": "66/66 на code_sha; до этого три прогона подряд 66/66 (BROWSER_RESULT.txt)"
+      "detail": "69/69 на code_sha (+2 прогона 69/69 до коммита); первая предложенная цель — реальная остановка OSM"
     },
     {
       "name": "pytest tests/civic (вся civic-сборка пакета)",
@@ -109,7 +125,7 @@
     {
       "name": "Пара с настоящими R04 /classify,/similar и R12 /targets",
       "result": "NOT_RUN",
-      "detail": "соседей ещё нет; на стенде FIXTURE (помечено), реальные рёбра OSM-графа"
+      "detail": "R04/R12 ещё нет. /targets на стенде — FIXTURE-логика выбора R09, но на реальных данных: объекты OSM LOCAL-1 (остановки, площадки, спортплощадки, парки, скверы, дворы, школы, детсады, мусорные площадки) + рёбра OSM-графа"
     },
     {
       "name": "Проверка казахского владельцем",
@@ -118,7 +134,7 @@
     }
   ],
   "known_limits": [
-    "Сервисы R12 /targets и R04 /classify,/similar ещё не готовы: на стенде FIXTURE (ближайшие реальные рёбра OSM без объектов; ключевые слова; пересечение слов).",
+    "Сервисы R12 /targets и R04 /classify,/similar ещё не готовы: на стенде /targets выбирает R09 по реальным объектам OSM (LOCAL-1) и рёбрам графа (радиус 60 м для точек, внутри/30 м для площадей); /classify — ключевые слова; /similar — пересечение слов.",
     "Иконки ui-kit R11 ещё нет: на кнопках пустое место под иконкой, подпись есть всегда; временные стили kit-fallback.css.",
     "Сроки ответа по категориям — демо-норматив R09, не утверждён акиматом.",
     "Устройство = случайный id в localStorage: очистка браузера = новое устройство (новое «Я тоже», пустые «Мои обращения»). Аккаунтов жителей нет намеренно.",
@@ -128,5 +144,8 @@
     "Миграция v1 помечает записи demo=true (происхождение старых строк неизвестно); --real — только по решению владельца."
   ],
   "next_step": "R01: подключить /api/civic/v2 жалоб и фронтенд по INTEGRATION.txt; R11: перенести ключи I18N_KEYS.md; R12/R04: отдать /targets, /classify, /similar по контракту — R09 проверит пару на стенде без FIXTURE; R07: слушать birge:complaint и events.",
-  "pr": "не создавался (не запрошен)"
+  "pr": "не создавался (не запрошен)",
+  "inputs": {
+    "osm_objects": "data/civic/astana/osm-objects из claude/round-14-package @ bdf12c8 (LOCAL-1, real, ODbL), копия без изменений, только чтение"
+  }
 }

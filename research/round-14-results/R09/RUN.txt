@@ -17,9 +17,9 @@ R09 · РАУНД 14 · ЖАЛОБА ЖИТЕЛЯ v2 — ЗАПУСК И ПРО�
    python tests/civic/R09/stand/serve_r09.py --port 8790 --seed            -> http://127.0.0.1:8790/stand/
    python tests/civic/R09/stand/serve_r09.py --port 8790 --seed --no-ml    (форма без модели)
    python tests/civic/R09/stand/serve_r09.py --port 8790 --no-targets      (без R12: только «примерное место»)
-   Настоящее: модуль жалоб R09 и реальные рёбра OSM-графа (engine/civic_scenarios/graphs/osm-astana-walking-20260506).
-   FIXTURE: /targets (вместо R12), /classify и /similar (вместо R04). Демо-записи помечены «Пример».
-   Демо-цель с 7 сообщившими: GET /stand/info -> hot.point (участок «проспект Туран»).
+   Настоящее: модуль жалоб R09; реальные объекты OSM (data/civic/astana/osm-objects, LOCAL-1) и рёбра OSM-графа.
+   FIXTURE: логика выбора /targets (вместо R12), /classify и /similar (вместо R04). Демо-записи помечены «Пример».
+   Демо-цель с 7 сообщившими: GET /stand/info -> hot (реальная остановка, например «Бухар жырау»).
 
 4. МИГРАЦИЯ v1 -> v2 (сообщения раундов 11–13 из той же базы, что использует приложение)
    python -m ui.civic_feedback.v2 migrate --v1 <civic.sqlite3>              # записи помечаются demo=true
