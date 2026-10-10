@@ -112,7 +112,8 @@
   "r15_on_d9a8895_all_7_patches": "PASS — 96 passed, 24 XPASS(strict): все открытые находки закрыты",
   "r05_core_with_P-R05": "PASS — node --test tests/civic/R05/build3d/test_core.mjs 16/16",
   "r15_on_final_approx": "PASS — d9a8895 + ночные R05 f350787, R06 224075b, R07 328e793, R08 b9c089a, R13 7d60222: 96 passed, 20 xfailed, 4 xpassed (S11×2, S08 голоса, S16)",
-  "r15_on_final_candidate_13ae790": "PASS — 115 passed, 5 xfailed (S15 ×4, S16)"
+  "r15_on_final_candidate_13ae790": "PASS — 115 passed, 5 xfailed (S15 ×4, S16)",
+  "browser_final_candidate_13ae790": "PASS — R01 r14_b1 15/15, r14_b2 25/25; страницы ui-kit, akim и главная под строгой CSP: скрипты работают, нарушений CSP нет (проверено R15)"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
