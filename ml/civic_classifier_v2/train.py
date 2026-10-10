@@ -27,7 +27,8 @@ from pathlib import Path
 
 from ml.civic_classifier_v2 import data as D
 from ml.civic_classifier_v2 import labels as L
-from ml.civic_classifier_v2.config import ARTIFACTS_DIR, LLM_V1_DIR, SMOKE_OVERRIDES, SYNTH_V3_DIR, TrainConfig
+from ml.civic_classifier_v2.config import (ARTIFACTS_DIR, LLM_V1_DIR, PROBE_V2_DIR, SMOKE_OVERRIDES, SYNTH_V3_DIR,
+                                           TrainConfig)
 
 REGIMES = ("synth_template", "synth_llm", "synth_all", "human", "mix")
 TRAINING_DATA = {
@@ -79,6 +80,7 @@ def main(argv=None) -> int:
     ap.add_argument("--synth-v3", default=str(SYNTH_V3_DIR))
     ap.add_argument("--llm-v1", default=str(LLM_V1_DIR))
     ap.add_argument("--human", nargs="*")
+    ap.add_argument("--probe-v2", default=str(PROBE_V2_DIR), help="независимый тест вне шаблонов — только оценка")
     ap.add_argument("--not-complaint", choices=("drop", "other"), default="drop")
     ap.add_argument("--val-ratio", type=float, default=0.15)
     ap.add_argument("--min-human", type=int, default=200)
@@ -119,6 +121,15 @@ def main(argv=None) -> int:
                              else "human" if len(human) >= args.min_human
                              else "synth_all" if synth["synth_v3"] and synth["llm_v1"] else "synth_template")
     train, val = assemble(regime, synth, human, args.val_ratio, cfg.seed, notes)
+    probe = []
+    try:
+        probe, _ = D.load_corpus(Path(args.probe_v2), source="probe_v2", evidence="synthetic_agent_written",
+                                 not_complaint=args.not_complaint)
+        train, leaked = D.drop_leaks(train, probe)
+        if leaked:
+            notes.append(f"из train убрано {leaked} текстов, совпавших с probe_v2")
+    except FileNotFoundError:
+        pass
     print(f"режим {regime}: train {len(train)}, val {len(val)}; модель {cfg.model_name}", file=sys.stderr)
 
     out = Path(args.out)
@@ -149,16 +160,26 @@ def main(argv=None) -> int:
     elif human:
         human_eval = {"status": "NOT_EVALUATED", "reason": f"текстов людей {len(human)} < {args.min_human}"}
 
+    # probe_v2 (R02, вне шаблонов) — только оценка итоговой модели, в обучение не входит.
+    probe_eval: dict = {"status": "NOT_AVAILABLE"}
+    if probe:
+        proba = T.predict_proba(tm, [r["text"] for r in probe])
+        ev = evaluate_set(probe, [int(i) for i in proba.argmax(axis=1)], proba, labels, grouped=False)
+        probe_eval = {"status": "EVALUATED", "n": ev["n"], "macro_f1": ev["macro_f1"], "accuracy": ev["accuracy"],
+                      "ci": ev["ci"], "slices": ev.get("slices"),
+                      "note": "synthetic_agent_written (R02), вне шаблонов; не качество на людях"}
+
     meta = {"model_version": version, "regime": regime, "training_data": TRAINING_DATA[regime],
             "data_sha256": data_sha, "n_train": len(train), "n_val": len(val),
-            "train_by_source": D.summary(train)["by_source"], "human_eval": human_eval,
+            "train_by_source": D.summary(train)["by_source"], "human_eval": human_eval, "probe_v2_eval": probe_eval,
             # Без текстов людей в обучении подсказка всегда требует проверки (как у v1).
             "review_policy": "threshold" if regime in ("human", "mix") else "always",
             "smoke": bool(args.smoke), "notes": notes}
     T.save(tm, out, meta)
     print(json.dumps({"saved": str(out), "model_version": version, "best_epoch": tm.best_epoch,
                       "best_val_macro_f1": tm.best_val_macro_f1, "threshold": tm.threshold.get("chosen"),
-                      "human_eval": human_eval.get("status"), "gpu_peak_gb": tm.info.get("gpu_peak_gb")},
+                      "human_eval": human_eval.get("status"), "probe_v2_macro_f1": probe_eval.get("macro_f1"),
+                      "gpu_peak_gb": tm.info.get("gpu_peak_gb")},
                      ensure_ascii=False, indent=1))
     return 0
 

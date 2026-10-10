@@ -93,6 +93,41 @@ def human_like(n: int = 60, seed: int = 11) -> list[dict]:
     return rows
 
 
+PROBE_TEXTS = [  # фразы вне TEMPLATES — как probe_v2 у R02 (синтетика, написано вручную)
+    ("roads", "ru", "После дождя на перекрёстке асфальт провалился, колесо попало в дыру"),
+    ("roads", "kk", "Көпірдің алдында жол ойылып кетті"),
+    ("snow_ice", "ru", "Дворники не посыпают дорожки, я вчера упала у подъезда"),
+    ("snow_ice", "kk", "Аулада қар үйіліп жатыр, өту мүмкін емес"),
+    ("sidewalks", "ru", "Бордюр слишком высокий, коляска не заезжает"),
+    ("sidewalks", "kk", "Тротуардағы плиталар сынып қалған"),
+    ("transport", "ru", "Сорок минут ждали автобус, табло показывает неправду"),
+    ("transport", "kk", "Аялдамада орындық жоқ, қарттар тұрып күтеді"),
+    ("lighting", "ru", "Вечером у школы ни одного работающего фонаря"),
+    ("lighting", "kk", "Көшеде шамдар жанбайды, түнде қорқынышты"),
+    ("yards", "ru", "Горку во дворе разобрали и бросили, детям негде играть"),
+    ("yards", "kk", "Аулада ағаштар кесілді, көгал жоқ"),
+    ("waste", "ru", "Контейнеры стоят открытые, мусор разносит ветер"),
+    ("waste", "kk", "Қоқыс жәшіктері толып кетті"),
+    ("utilities", "ru", "Третий день из крана течёт только холодная"),
+    ("utilities", "kk", "Үйде жылу жоқ, балалар ауырып жатыр"),
+    ("smell_air", "ru", "От канала по вечерам стоит тяжёлый запах"),
+    ("smell_air", "kk", "Түнде түтін иісі шығады, терезені ашу мүмкін емес"),
+    ("noise_safety", "ru", "Компания под окнами шумит до трёх ночи"),
+    ("noise_safety", "kk", "Бұл қиылыста балаларға қауіпті"),
+    ("parking", "ru", "Машины встали на газон, весь двор в колеях"),
+    ("parking", "kk", "Көліктер жаяу жолға тұрып алды"),
+    ("other", "ru", "Благодарю коммунальщиков за оперативную работу"),
+    ("other", "kk", "Рақмет, мәселе шешілді"),
+]
+
+
+def probe_like() -> list[dict]:
+    """Независимый тест вне шаблонов в формате probe_v2 R02 (split=test, style, hard)."""
+    return [{"id": f"probe-fx-{i:02d}", "text": t, "label": lab, "lang": lang, "style": "colloquial",
+             "hard": i % 5 == 0, "split": "test", "source": "agent_probe_fixture", "evidence": "synthetic_test_fixture"}
+            for i, (lab, lang, t) in enumerate(PROBE_TEXTS)]
+
+
 def write_jsonl(path: Path, rows: list[dict]) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")

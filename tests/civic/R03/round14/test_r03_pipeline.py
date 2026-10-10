@@ -17,6 +17,7 @@ from ml.civic_classifier_v2 import labels as L
 def _args(data_dir: Path, tmp: Path, *extra: str) -> list[str]:
     # Явные пути: тесты не должны зависеть от того, лежат ли настоящие корпуса R02 в ml/datasets/.
     return ["--synth-v3", str(data_dir / "synth_v3"), "--llm-v1", str(tmp / "no_llm"), "--v1-in-v2", str(tmp / "no_v1"),
+            "--probe-v2", str(data_dir / "probe_v2"),
             "--human", str(data_dir / "human.jsonl"), "--results", str(tmp / "results"),
             "--artifacts", str(tmp / "art"), *extra]
 
@@ -37,7 +38,11 @@ def test_protocol_no_leak(data_dir, tmp_path, monkeypatch):
     E.main(_args(data_dir, tmp_path, "--min-human", "50", "--folds", "3", "--models", "heuristic",
                  "--regimes", "synth_template", "synth_llm", "human", "mix"))
     human_ids = {r["id"] for r in F.human_like()}
+    probe_ids = {r["id"] for r in F.probe_like()}
     synth = {r["id"]: r for r in F.synth_corpus()}
+    for c in calls:                                                     # probe_v2 — только оценка, везде
+        assert not (c["train"] | c["val"]) & probe_ids
+        assert set(c["eval"]["probe_v2"]) == probe_ids
     syn_calls = [c for c in calls if c["tag"].startswith("synth_template")]
     assert len(syn_calls) == 1
     c = syn_calls[0]
@@ -61,6 +66,11 @@ def test_protocol_no_leak(data_dir, tmp_path, monkeypatch):
     res = json.loads((tmp_path / "results" / "experiments.json").read_text(encoding="utf-8"))
     assert res["runs"]["synth_llm/heuristic"]["status"] == "NOT_RUN"  # llm_v1 нет -> честно NOT_RUN
     assert any("mix: синтетика только" in n for n in res["notes"])
+    assert res["data"]["probe_v2"]["n"] == len(probe_ids)
+    for regime in ("synth_template", "human", "mix"):                   # probe оценён во всех режимах
+        assert res["runs"][f"{regime}/heuristic"]["eval"]["probe_v2"]["n"] == len(probe_ids)
+    assert "ансамбль 3 моделей" in res["runs"]["mix/heuristic"]["train"]["probe_v2_prediction"]
+    assert res["best_on_probe"]
 
 
 def test_human_fraction_limits_only_training(data_dir, tmp_path, monkeypatch):
@@ -139,9 +149,15 @@ def test_experiments_end_to_end_smoke(data_dir, tiny_model, tmp_path):
             assert ev["n"] == 60 and ev["ci"]["macro_f1"]["low"] is not None
             assert len(ev["confusion"]["rows_true_cols_pred"]) == 12
     assert res["runs"]["synth_template/transformer"]["eval"]["synth_test_template"]["ci"]["unit"].startswith("groups")
-    assert res["comparisons"] and res["best_on_human"]
+    assert res["comparisons"] and res["best_on_human"] and res["best_on_probe"]
+    for regime in ("synth_template", "human", "mix"):
+        pv = res["runs"][f"{regime}/transformer"]["eval"]["probe_v2"]
+        assert pv["n"] == len(F.probe_like()) and pv["ci"]["unit"].startswith("texts")
+    assert any(c["set"] == "probe_v2" for c in res["comparisons"])
     md = (tmp_path / "results" / "smoke.md").read_text(encoding="utf-8")
     assert "ПРОВЕРКА КОНВЕЙЕРА" in md and "| v2: трансформер |" in md
+    assert "## 1б. Независимый тест вне шаблонов: probe_v2" in md and "## 4б." in md
+    assert "Потеря: шаблоны → probe" in md
     # Приватность: тексты людей не попадают ни в results/, ни в файлы прогнозов.
     blobs = [p.read_text(encoding="utf-8") for p in (tmp_path / "results").iterdir()]
     preds = list((tmp_path / "art" / "experiments" / "smoke").glob("*__*.jsonl"))
@@ -163,6 +179,7 @@ def exported(data_dir, tiny_model, tmp_path_factory):
     # (В фикстуре синтетики val — невиданные казахские шаблоны: там крошечная модель не обобщает,
     # и ранняя остановка честно возвращает веса 1-й эпохи.)
     rc = train.main(["--smoke", "--regime", "human", "--human", str(data_dir / "human.jsonl"), "--min-human", "50",
+                     "--probe-v2", str(data_dir / "probe_v2"),
                      "--synth-v3", str(out / "none"), "--llm-v1", str(out / "none"),
                      "--model-name", str(tiny_model), "--out", str(out / "final"),
                      "--set", "epochs=30", "--set", "patience=30", "--set", "lr=0.003"])
@@ -225,6 +242,7 @@ def test_learned_model_beats_chance_on_synthetic_val(exported):
     assert meta["review_policy"] == "threshold" and meta["training_data"] == "real_human_labeled"
     assert meta["human_eval"]["status"] == "NOT_EVALUATED"
     assert meta["history"] and meta["best_epoch"] >= 1 and 0.3 <= meta["threshold"] <= 1.0
+    assert meta["probe_v2_eval"]["status"] == "EVALUATED" and meta["probe_v2_eval"]["n"] == len(F.probe_like())
 
 
 def test_review_policy_from_meta(tmp_path):

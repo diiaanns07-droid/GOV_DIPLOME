@@ -10,11 +10,16 @@
 Модели: heuristic (словарь, не обучается), logreg (метод v1), transformer (v2, xlm-roberta-base).
 Плюс без обучения: LLM zero-shot (файл прогнозов от zeroshot.py) и v1 как есть (если пакет v1 доступен).
 
+Оценочные наборы: тексты людей (главный), probe_v2 — независимый тест вне шаблонов (300 текстов, написаны
+агентом R02 вручную, ml/datasets/probe_v2/), синтетический test каждого корпуса (справочно).
+
 Протокол честности:
   * тексты людей = оценочный набор; в режимах synth_* они не участвуют ни в обучении, ни в выборе;
   * в human/mix для фолда f: обучение на остальных фолдах, ВНУТРИ них — стратифицированная validation
     (val_ratio) для ранней остановки, порога и гиперпараметров логрегрессии; фолд f только предсказывается;
   * из обучения удаляются тексты, совпадающие с оценочными (после нормализации);
+  * probe_v2 — только оценка во всех режимах; в human/mix его предсказывает ансамбль моделей фолдов
+    (среднее вероятностей), потому что «одной» модели в k-fold нет;
   * синтетический test — справочно, отдельной таблицей.
 
 Запуск (ноутбук, venv с CUDA; точные команды — research/round-14-results/R03/RUN.txt):
@@ -41,7 +46,7 @@ from ml.civic_classifier_v2 import data as D
 from ml.civic_classifier_v2 import heuristic
 from ml.civic_classifier_v2 import labels as L
 from ml.civic_classifier_v2.config import (ARTIFACTS_DIR, LLM_V1_DIR, REPO_ROOT, RESULTS_DIR, SMOKE_OVERRIDES,
-                                           SYNTH_V3_DIR, V1_IN_V2_DIR, TrainConfig)
+                                           PROBE_V2_DIR, SYNTH_V3_DIR, V1_IN_V2_DIR, TrainConfig)
 from ml.civic_classifier_v2.evaluate import evaluate_set, write_results
 from ml.civic_classifier_v2.metrics import paired_delta
 
@@ -115,6 +120,14 @@ def load_sources(args, notes: list[str]) -> dict:
             src[key] = {"records": recs, "load_report": rep}
         except FileNotFoundError as exc:
             src[key] = {"records": [], "status": "NOT_AVAILABLE", "reason": str(exc)}
+    try:
+        recs, rep = D.load_corpus(Path(args.probe_v2), source="probe_v2", evidence="synthetic_agent_written",
+                                  not_complaint=args.not_complaint)
+        for r in recs:
+            r["split"] = "test"  # набор только для проверки, что бы ни стояло в файле
+        src["probe_v2"] = {"records": recs, "load_report": rep}
+    except FileNotFoundError as exc:
+        src["probe_v2"] = {"records": [], "status": "NOT_AVAILABLE", "reason": str(exc)}
     humans = [Path(p) for p in (args.human or [])]
     if humans:
         recs, rep = D.load_human(humans, not_complaint=args.not_complaint, drop_unsure=args.drop_unsure)
@@ -166,6 +179,9 @@ def run(args) -> dict:
     eval_sets_common = {}
     if eval_human:
         eval_sets_common["human"] = eval_human
+    probe = src["probe_v2"]["records"]
+    if probe:
+        eval_sets_common["probe_v2"] = probe
     for key, set_name in TEST_SET_OF.items():
         if syn[key]:
             eval_sets_common[set_name] = _split(syn[key], "test")
@@ -180,7 +196,7 @@ def run(args) -> dict:
                  "env_note": args.env_note, "train_config": cfg.to_dict()},
         "data": {}, "notes": notes,
     }
-    for key in ("synth_v3", "llm_v1", "v1_in_v2", "human"):
+    for key in ("synth_v3", "llm_v1", "v1_in_v2", "probe_v2", "human"):
         s = src[key]
         results["data"][key] = (D.summary(s["records"]) | {"load_report": s.get("load_report")}
                                 if s["records"] else {"status": s.get("status", "EMPTY"), "reason": s.get("reason", "")})
@@ -247,6 +263,10 @@ def run(args) -> dict:
                         oof_proba = np.zeros((len(eval_human), len(labels)))
                         has_proba = True
                         fold_infos = []
+                        # probe_v2: каждый фолд предсказывает весь набор; итог — среднее вероятностей
+                        # (или голосование, если вероятностей нет — у словаря все фолды одинаковы).
+                        probe_proba = np.zeros((len(probe), len(labels)))
+                        probe_votes = np.zeros((len(probe), len(labels)))
                         for f, test_idx in enumerate(folds):
                             test_set = set(test_idx)
                             rest = [eval_human[i] for i in range(len(eval_human)) if i not in test_set]
@@ -256,6 +276,8 @@ def run(args) -> dict:
                             tr = tr_h + (syn_train if regime == "mix" else [])
                             # validation — только люди (целевая область); синтетика лишь в обучении.
                             fold_eval = {"human": [eval_human[i] for i in test_idx]}
+                            if probe:
+                                fold_eval["probe_v2"] = probe
                             p, info = run_model(m, tr, va_h, fold_eval, cfg_s, labels, log_path,
                                                 f"{key}/s{seed}/fold{f}")
                             pr, pb = p["human"]
@@ -264,20 +286,35 @@ def run(args) -> dict:
                                 if pb is not None:
                                     oof_proba[i] = pb[j]
                             has_proba = has_proba and pb is not None
+                            if probe:
+                                ppr, ppb = p["probe_v2"]
+                                probe_votes[np.arange(len(probe)), ppr] += 1
+                                if ppb is not None:
+                                    probe_proba += ppb
                             fold_infos.append(info)
                         preds["human"] = (oof_pred, oof_proba if has_proba else None)
+                        if probe:
+                            if has_proba:
+                                pp = probe_proba / len(folds)
+                                preds["probe_v2"] = ([int(i) for i in pp.argmax(axis=1)], pp)
+                            else:
+                                preds["probe_v2"] = ([int(i) for i in probe_votes.argmax(axis=1)], None)
                         train_info = {"folds": fold_infos, "n_train_mean": round(float(np.mean(
                             [fi["n_train"] for fi in fold_infos])), 1)}
+                        if probe:
+                            train_info["probe_v2_prediction"] = (f"ансамбль {len(folds)} моделей фолдов "
+                                                                 "(среднее вероятностей)")
                     evals = {}
                     for s, (pr, pb) in preds.items():
                         recs = eval_sets_common.get(s) or []
-                        evals[s] = evaluate_set(recs, pr, pb, labels, grouped=s != "human")
+                        evals[s] = evaluate_set(recs, pr, pb, labels, grouped=s.startswith("synth_test"))
                     if si == 0:
                         entry["eval"] = evals
                         entry["train"] = train_info | {"synthetic_sources": avail}
                         store[key] = {s: pr for s, (pr, _) in preds.items()}
                         _save_preds(out_art / f"{key.replace('/', '__')}.jsonl", preds, eval_sets_common, labels)
                     seed_runs.append({"seed": seed, "human_macro_f1": (evals.get("human") or {}).get("macro_f1"),
+                                      "probe_v2_macro_f1": (evals.get("probe_v2") or {}).get("macro_f1"),
                                       "synth_test_template_macro_f1":
                                           (evals.get("synth_test_template") or {}).get("macro_f1")})
                 if len(seeds) > 1:
@@ -292,15 +329,16 @@ def run(args) -> dict:
             write_results(results, Path(args.results), args.name)
 
     # Модели без обучения: zero-shot LLM (файл прогнозов) и v1 как есть.
-    if eval_human:
+    no_train_sets = {s: eval_sets_common[s] for s in ("human", "probe_v2") if eval_sets_common.get(s)}
+    if no_train_sets:
         if args.zeroshot_preds:
-            results["runs"]["none/zeroshot_llm"] = _external_preds(Path(args.zeroshot_preds), eval_human, labels,
+            results["runs"]["none/zeroshot_llm"] = _external_preds(Path(args.zeroshot_preds), no_train_sets, labels,
                                                                    store, "none/zeroshot_llm")
         else:
             results["runs"]["none/zeroshot_llm"] = {"status": "NOT_RUN", "reason": "нет --zeroshot-preds "
                                                     "(запуск zeroshot.py только локально с ключом API)"}
         if args.v1:
-            results["runs"]["none/v1_shipped"] = _v1_shipped(eval_human, labels, store)
+            results["runs"]["none/v1_shipped"] = _v1_shipped(no_train_sets, labels, store)
 
     # Модели, которые в этом прогоне не запускались (например, трансформер в облаке без весов), — явно NOT_RUN.
     for regime in results["regimes"]:
@@ -311,6 +349,9 @@ def run(args) -> dict:
     best = [(k, v["eval"]["human"]["macro_f1"]) for k, v in results["runs"].items()
             if v.get("status") == "OK" and (v.get("eval") or {}).get("human")]
     results["best_on_human"] = max(best, key=lambda kv: kv[1])[0] if best else None
+    best_p = [(k, v["eval"]["probe_v2"]["macro_f1"]) for k, v in results["runs"].items()
+              if v.get("status") == "OK" and (v.get("eval") or {}).get("probe_v2")]
+    results["best_on_probe"] = max(best_p, key=lambda kv: kv[1])[0] if best_p else None
     write_results(results, Path(args.results), args.name)
     return results
 
@@ -326,8 +367,9 @@ def _save_preds(path: Path, preds: dict, sets: dict, labels) -> None:
                 fh.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
-def _external_preds(path: Path, human: list[dict], labels, store: dict, key: str) -> dict:
-    """Прогнозы из файла {id, label}. Оценка на пересечении id; покрытие указывается."""
+def _external_preds(path: Path, sets: dict[str, list[dict]], labels, store: dict, key: str) -> dict:
+    """Прогнозы из файла {id, label} (zeroshot.py / llm_label.py R02) на людях и probe_v2.
+    Оценка на пересечении id; покрытие указывается; в парных сравнениях — только при полном покрытии."""
     if not path.exists():
         return {"status": "NOT_RUN", "reason": f"нет файла {path.name}"}
     rows, _ = D.read_rows(path)
@@ -335,22 +377,28 @@ def _external_preds(path: Path, human: list[dict], labels, store: dict, key: str
     for r in rows:
         lab = L.normalize_label(r.get("label") or r.get("pred"))
         by_id[str(r.get("id"))] = lab if lab else L.OTHER  # нераспознанный ответ LLM = other
-    idx = [i for i, r in enumerate(human) if r["id"] in by_id]
-    if not idx:
-        return {"status": "NOT_RUN", "reason": "в файле нет id из набора людей"}
     index = {lab: i for i, lab in enumerate(labels)}
-    recs = [human[i] for i in idx]
-    pred = [index[by_id[r["id"]]] for r in recs]
-    entry = {"regime": "none", "status": "OK", "eval": {"human": evaluate_set(recs, pred, None, labels, False)},
-             "coverage": f"{len(idx)}/{len(human)}", "source_file": path.name}
-    if len(idx) == len(human):
-        store[key] = {"human": pred}
-    else:
-        entry["note"] = f"покрытие {len(idx)}/{len(human)} — в парных сравнениях не участвует"
+    entry: dict = {"regime": "none", "status": "OK", "eval": {}, "coverage": {}, "source_file": path.name}
+    notes = []
+    for set_name, recs_all in sets.items():
+        recs = [r for r in recs_all if r["id"] in by_id]
+        entry["coverage"][set_name] = f"{len(recs)}/{len(recs_all)}"
+        if not recs:
+            continue
+        pred = [index[by_id[r["id"]]] for r in recs]
+        entry["eval"][set_name] = evaluate_set(recs, pred, None, labels, False)
+        if len(recs) == len(recs_all):
+            store.setdefault(key, {})[set_name] = pred
+        else:
+            notes.append(f"{set_name}: покрытие {len(recs)}/{len(recs_all)} — в парных сравнениях не участвует")
+    if not entry["eval"]:
+        return {"status": "NOT_RUN", "reason": "в файле нет id из оценочных наборов", "coverage": entry["coverage"]}
+    if notes:
+        entry["note"] = "; ".join(notes)
     return entry
 
 
-def _v1_shipped(human: list[dict], labels, store: dict) -> dict:
+def _v1_shipped(sets: dict[str, list[dict]], labels, store: dict) -> dict:
     """v1 (6 категорий) как есть: метка v1 -> v2. Нужен пакет ml/civic_classifier (ветка wizardly-ptolemy @ 14c3384)."""
     try:
         from ml.civic_classifier import classify  # noqa: WPS433 — необязательная зависимость
@@ -358,10 +406,13 @@ def _v1_shipped(human: list[dict], labels, store: dict) -> dict:
         return {"status": "NOT_RUN", "reason": f"пакет v1 недоступен ({type(exc).__name__})"}
     m = L.v1_to_v2()
     index = {lab: i for i, lab in enumerate(labels)}
-    pred = [index[m.get(classify(r["text"]).get("label"), L.OTHER)] for r in human]
-    store["none/v1_shipped"] = {"human": pred}
-    return {"regime": "none", "status": "OK", "eval": {"human": evaluate_set(human, pred, None, labels, False)},
-            "note": "v1 умеет только 6 категорий; snow_ice, waste, utilities, smell_air, noise_safety, parking недостижимы"}
+    entry = {"regime": "none", "status": "OK", "eval": {},
+             "note": "v1 умеет только 6 категорий; snow_ice, waste, utilities, smell_air, noise_safety, parking недостижимы"}
+    for set_name, recs in sets.items():
+        pred = [index[m.get(classify(r["text"]).get("label"), L.OTHER)] for r in recs]
+        store.setdefault("none/v1_shipped", {})[set_name] = pred
+        entry["eval"][set_name] = evaluate_set(recs, pred, None, labels, False)
+    return entry
 
 
 def _comparisons(store: dict, sets: dict[str, list[dict]], labels, regimes) -> list[dict]:
@@ -374,7 +425,7 @@ def _comparisons(store: dict, sets: dict[str, list[dict]], labels, regimes) -> l
         if not recs:
             continue
         y = [index[r["label"]] for r in recs]
-        groups = None if set_name == "human" else [r["group"] for r in recs]
+        groups = [r["group"] for r in recs] if set_name.startswith("synth_test") else None
 
         def add(a: str, b: str, title: str):
             pa, pb = (store.get(a) or {}).get(set_name), (store.get(b) or {}).get(set_name)
@@ -392,6 +443,8 @@ def _comparisons(store: dict, sets: dict[str, list[dict]], labels, regimes) -> l
             add(f"mix/{m}", f"synth_all/{m}", f"{m}: смесь − только синтетика (вклад текстов людей)")
             add(f"mix/{m}", f"human/{m}", f"{m}: смесь − только люди (вклад синтетики)")
         add("none/zeroshot_llm", "mix/transformer", "LLM zero-shot − трансформер (смесь)")
+        add("none/zeroshot_llm", "synth_all/transformer", "LLM zero-shot − трансформер (только синтетика)")
+        add("none/zeroshot_llm", "synth_template/transformer", "LLM zero-shot − трансформер (синтетика v3)")
     return out
 
 
@@ -401,6 +454,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--synth-v3", default=str(SYNTH_V3_DIR), help="файл или папка шаблонной синтетики v3")
     ap.add_argument("--llm-v1", default=str(LLM_V1_DIR), help="файл или папка LLM-синтетики llm_v1")
     ap.add_argument("--v1-in-v2", default=str(V1_IN_V2_DIR), help="корпус v1, переразмеченный в 12 категорий")
+    ap.add_argument("--probe-v2", default=str(PROBE_V2_DIR),
+                    help="независимый тест вне шаблонов (R02, 300 текстов) — только оценка")
     ap.add_argument("--human", nargs="*", help="JSONL разметки людей (первым — файл владельца)")
     ap.add_argument("--regimes", nargs="+", default=list(REGIMES), choices=REGIMES)
     ap.add_argument("--models", nargs="+", default=list(MODELS), choices=MODELS)
@@ -435,7 +490,8 @@ def main(argv=None) -> int:
     if args.smoke and args.name == "experiments":
         args.name = "smoke"  # проверка конвейера не перезаписывает настоящие результаты
     res = run(args)
-    print(json.dumps({"best_on_human": res.get("best_on_human"), "human_eval": res["human_eval"]["status"],
+    print(json.dumps({"best_on_human": res.get("best_on_human"), "best_on_probe": res.get("best_on_probe"),
+                      "human_eval": res["human_eval"]["status"],
                       "runs": {k: v.get("status") for k, v in res["runs"].items()}}, ensure_ascii=False, indent=1))
     return 0
 

@@ -103,7 +103,12 @@ def test_zeroshot_preds_feed_experiments(tmp_path):
     preds = [{"id": r["id"], "label": r["label"]} for r in recs[:20]]
     path = tmp_path / "zs.jsonl"
     path.write_text("".join(json.dumps(p) + "\n" for p in preds), encoding="utf-8")
+    probe, _ = D.load_corpus(F.write_jsonl(tmp_path / "p.jsonl", F.probe_like()), source="probe_v2", evidence="x")
+    path.write_text(path.read_text(encoding="utf-8") + "".join(
+        json.dumps({"id": r["id"], "label": r["label"]}) + "\n" for r in probe), encoding="utf-8")
     store = {}
-    entry = E._external_preds(path, recs, L.labels(), store, "none/zeroshot_llm")
-    assert entry["status"] == "OK" and entry["coverage"] == "20/24" and "none/zeroshot_llm" not in store
-    assert entry["eval"]["human"]["accuracy"] == 1.0
+    entry = E._external_preds(path, {"human": recs, "probe_v2": probe}, L.labels(), store, "none/zeroshot_llm")
+    assert entry["status"] == "OK" and entry["coverage"] == {"human": "20/24", "probe_v2": f"{len(probe)}/{len(probe)}"}
+    assert entry["eval"]["human"]["accuracy"] == 1.0 and entry["eval"]["probe_v2"]["accuracy"] == 1.0
+    # полное покрытие -> в парных сравнениях участвует только probe_v2
+    assert set(store["none/zeroshot_llm"]) == {"probe_v2"} and "покрытие 20/24" in entry["note"]

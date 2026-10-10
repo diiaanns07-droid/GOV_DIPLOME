@@ -35,6 +35,7 @@ def data_dir(tmp_path_factory) -> Path:
     # Рядом — файл пар перефразов (как у R02 для R04): загрузчик не должен брать его в корпус.
     F.write_jsonl(d / "synth_v3" / "pairs_v3.jsonl", [{"a": "x", "b": "y", "same": True}])
     F.write_jsonl(d / "human.jsonl", F.human_like())
+    F.write_jsonl(d / "probe_v2" / "probe_v2.jsonl", F.probe_like())
     return d
 
 

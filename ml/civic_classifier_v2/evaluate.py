@@ -43,6 +43,7 @@ SET_TITLES = {
     "synth_test_template": "Синтетика v3 — test (невиданные шаблоны)",
     "synth_test_llm": "LLM-синтетика — test",
     "synth_test_v1": "Синтетика v1→v2 — test",
+    "probe_v2": "probe_v2 — вне шаблонов (300 текстов агента R02)",
 }
 
 
@@ -125,25 +126,48 @@ def render(results: dict) -> str:
             cells = [_cell(runs.get(f"{r}/{m}"), "human") for r in regimes]
             lines.append(f"| {MODEL_TITLES[m]} | " + " | ".join(cells) + " |")
         lines.append("")
-        extra = [(m, runs.get(f"none/{m}")) for m in ("zeroshot_llm", "v1_shipped") if runs.get(f"none/{m}")]
-        if extra:
-            lines += ["Без обучения на наших данных (тот же набор людей):", "",
-                      "| Модель | Macro-F1 [95% ДИ] | Accuracy | Покрытие | Примечание |", "|---|---|---|---|---|"]
-            for m, e in extra:
-                ev = (e.get("eval") or {}).get("human") or {}
-                note = e.get("reason", "") if e.get("status") != "OK" else e.get("note", "")
-                lines.append(f"| {MODEL_TITLES[m]} | {_cell(e, 'human')} | {_f(ev.get('accuracy'))} | "
-                             f"{e.get('coverage', '—')} | {note} |")
-            lines.append("")
     else:
         lines += ["NOT_EVALUATED — таблица появится после разметки ≥ 200 текстов людей.", ""]
+
+    # 1б. Независимый тест вне шаблонов — probe_v2.
+    probe = (results.get("data") or {}).get("probe_v2") or {}
+    lines += ["## 1б. Независимый тест вне шаблонов: probe_v2 (95% ДИ, бутстрэп по текстам)", "",
+              "300 сообщений (25 на категорию; ru/kk/mixed; разговорный, официальный, сленг, транслит, опечатки, "
+              "трудные случаи), написаны агентом R02 вручную **вне шаблонов** synth_v3 и размечены по "
+              "LABELING_GUIDE_v2. Это `synthetic_agent_written`, не тексты жителей: метрика показывает перенос "
+              "за пределы шаблонов, а не качество на людях. Ни в обучении, ни в выборе эпохи/порога/гиперпараметров "
+              "не участвует. В режимах с людьми прогноз даёт ансамбль моделей k фолдов (среднее вероятностей).", ""]
+    if probe.get("n"):
+        lines.append("| Модель \\ обучение | " + " | ".join(REGIME_TITLES[r] for r in regimes) + " |")
+        lines.append("|---" * (len(regimes) + 1) + "|")
+        for m in ("heuristic", "logreg", "transformer"):
+            cells = [_cell(runs.get(f"{r}/{m}"), "probe_v2") for r in regimes]
+            lines.append(f"| {MODEL_TITLES[m]} | " + " | ".join(cells) + " |")
+        lines.append("")
+    else:
+        lines += [f"NOT_AVAILABLE — {probe.get('reason', 'набор probe_v2 не найден')}", ""]
+
+    extra = [(m, runs.get(f"none/{m}")) for m in ("zeroshot_llm", "v1_shipped") if runs.get(f"none/{m}")]
+    if extra:
+        lines += ["Без обучения на наших данных:", "",
+                  "| Модель | Люди: macro-F1 [95% ДИ] | probe_v2: macro-F1 [95% ДИ] | Покрытие | Примечание |",
+                  "|---|---|---|---|---|"]
+        for m, e in extra:
+            note = e.get("reason", "") if e.get("status") != "OK" else e.get("note", "")
+            cov = e.get("coverage", "—")
+            if isinstance(cov, dict):
+                cov = "; ".join(f"{k}: {v}" for k, v in cov.items())
+            lines.append(f"| {MODEL_TITLES[m]} | {_cell(e, 'human')} | {_cell(e, 'probe_v2')} | {cov} | {note} |")
+        lines.append("")
 
     # 2. Синтетический test — справочно и «потеря на людях».
     lines += ["## 2. Синтетический test (справочно, НЕ качество на людях)", "",
               "Test синтетики — шаблоны, которых не было в обучении (ДИ — бутстрэп по шаблонам). "
-              "«Потеря» = macro-F1 на синтетическом test − macro-F1 на людях (разные наборы, не парная разница).", "",
-              "| Режим | Модель | Синтетика v3 test | LLM test | v1→v2 test | Люди | Потеря на людях |",
-              "|---|---|---|---|---|---|---|"]
+              "«Потеря» = macro-F1 на test своего корпуса − macro-F1 на probe_v2 (вне шаблонов) или на людях "
+              "(разные наборы, не парная разница).", "",
+              "| Режим | Модель | Синтетика v3 test | LLM test | v1→v2 test | probe_v2 | Люди | "
+              "Потеря: шаблоны → probe | Потеря: шаблоны → люди |",
+              "|---|---|---|---|---|---|---|---|---|"]
     for r in regimes:
         if not r.startswith("synth"):
             continue
@@ -154,63 +178,48 @@ def render(results: dict) -> str:
             ev = e.get("eval") or {}
             own_set = {"synth_llm": "synth_test_llm", "synth_v1": "synth_test_v1"}.get(r, "synth_test_template")
             own = ev.get(own_set, {}).get("macro_f1")
-            hum = ev.get("human", {}).get("macro_f1")
-            gap = (own - hum) if (own is not None and hum is not None) else None
+
+            def gap(other):
+                val = ev.get(other, {}).get("macro_f1")
+                return "—" if own is None or val is None else f"{own - val:+.3f}"
+
             lines.append(f"| {REGIME_TITLES[r]} | {MODEL_TITLES[m]} | {_cell(e, 'synth_test_template')} | "
-                         f"{_cell(e, 'synth_test_llm')} | {_cell(e, 'synth_test_v1')} | {_cell(e, 'human')} | "
-                         f"{'—' if gap is None else f'{gap:+.3f}'} |")
+                         f"{_cell(e, 'synth_test_llm')} | {_cell(e, 'synth_test_v1')} | {_cell(e, 'probe_v2')} | "
+                         f"{_cell(e, 'human')} | {gap('probe_v2')} | {gap('human')} |")
     lines.append("")
 
     # 3. Парные сравнения.
     comps = results.get("comparisons") or []
     if comps:
         lines += ["## 3. Парные сравнения (Δ macro-F1 = a − b, парный бутстрэп на одном наборе)", "",
-                  "Главные — на текстах людей (ресэмплинг текстов); на синтетическом test — справочно "
-                  "(ресэмплинг шаблонов).", "",
+                  "Главные — на текстах людей и на probe_v2 (ресэмплинг текстов); на синтетическом test — "
+                  "справочно (ресэмплинг шаблонов).", "",
                   "| Набор | Сравнение | Δ | 95% ДИ | доля ресэмплов Δ>0 | n |", "|---|---|---|---|---|---|"]
-        order = {"human": 0}
-        for c in sorted(comps, key=lambda c: order.get(c.get("set", "human"), 1)):
+        order = {"human": 0, "probe_v2": 1}
+        for c in sorted(comps, key=lambda c: order.get(c.get("set", "human"), 2)):
             d = c["delta"]
             set_title = SET_TITLES.get(c.get("set", "human"), c.get("set", "human"))
             lines.append(f"| {set_title} | {c['title']} | {d['delta']:+.3f} | [{d['low']:+.3f}; {d['high']:+.3f}] | "
                          f"{d['share_delta_gt_0']} | {c['n']} |")
         lines += ["", "Если 95% ДИ разницы содержит 0 — преимущество не доказано на этом объёме данных.", ""]
 
-    # 4. Лучшая модель: по классам и матрица.
-    best_key = results.get("best_on_human")
-    if best_key and runs.get(best_key, {}).get("status") == "OK":
-        ev = runs[best_key]["eval"]["human"]
-        lines += [f"## 4. Лучшая на людях: {best_key} — по категориям", "",
-                  "| Категория | Precision | Recall | F1 | Support | Предсказано |", "|---|---|---|---|---|---|"]
-        names = L.names("ru")
-        for lab in labels:
-            v = ev["per_class"].get(lab, {})
-            lines.append(f"| {lab} ({names.get(lab, lab)}) | {_f(v.get('precision'))} | {_f(v.get('recall'))} | "
-                         f"{_f(v.get('f1'))} | {v.get('support', 0)} | {v.get('predicted', 0)} |")
-        cm = ev["confusion"]
-        lines += ["", "Матрица ошибок (строки — истина, столбцы — прогноз):", "",
-                  "| истина \\ прогноз | " + " | ".join(cm["labels"]) + " |", "|---" * (len(cm["labels"]) + 1) + "|"]
-        for lab, row in zip(cm["labels"], cm["rows_true_cols_pred"]):
-            lines.append(f"| {lab} | " + " | ".join(str(x) for x in row) + " |")
-        if ev.get("slices"):
-            lines += ["", "Срезы:", ""]
-            for key, sl in ev["slices"].items():
-                parts = [f"{k}: n={v['n']}, macro-F1 {_f(v['macro_f1'])}" for k, v in sl.items()]
-                lines.append(f"- **{key}** — " + "; ".join(parts))
-        if ev.get("ece") is not None:
-            lines.append(f"- Калибровка (ECE): {ev['ece']} — score модели не является точной вероятностью.")
-        lines.append("")
+    # 4. Лучшая модель: по классам, матрица, срезы — на людях и на probe_v2.
+    for set_name, best_key, num in (("human", results.get("best_on_human"), "4"),
+                                    ("probe_v2", results.get("best_on_probe"), "4б")):
+        if best_key and ((runs.get(best_key) or {}).get("eval") or {}).get(set_name):
+            lines += _best_section(runs[best_key]["eval"][set_name], best_key, SET_TITLES[set_name], num, labels)
 
     # 5. Разброс по seed.
     seeds = {k: v["seed_runs"] for k, v in runs.items() if v.get("seed_runs")}
     if seeds:
-        lines += ["## 5. Разброс трансформера по seed (macro-F1 на людях)", "", "| Прогон | по seed | среднее ± sd |",
-                  "|---|---|---|"]
-        for k, s in seeds.items():
-            vals = [x["human_macro_f1"] for x in s if x.get("human_macro_f1") is not None]
-            if vals:
-                lines.append(f"| {k} | {', '.join(f'{v:.3f}' for v in vals)} | "
-                             f"{np.mean(vals):.3f} ± {np.std(vals, ddof=1) if len(vals) > 1 else 0:.3f} |")
+        lines += ["## 5. Разброс трансформера по seed (macro-F1)", "", "| Прогон | Набор | по seed | среднее ± sd |",
+                  "|---|---|---|---|"]
+        for k, sr in seeds.items():
+            for field, title in (("human_macro_f1", "люди"), ("probe_v2_macro_f1", "probe_v2")):
+                vals = [x[field] for x in sr if x.get(field) is not None]
+                if vals:
+                    lines.append(f"| {k} | {title} | {', '.join(f'{v:.3f}' for v in vals)} | "
+                                 f"{np.mean(vals):.3f} ± {np.std(vals, ddof=1) if len(vals) > 1 else 0:.3f} |")
         lines.append("")
 
     # 6. Данные и честность.
@@ -224,7 +233,8 @@ def render(results: dict) -> str:
     lines += ["", "## Честность", "",
               "- Синтетика (шаблонная v3 и LLM llm_v1) — synthetic; тексты людей — из Google-формы, "
               "обезличены (ml/labeling/import_form.py), в Git не попадают.",
-              "- Метрики на синтетическом test не являются качеством на людях.",
+              "- Метрики на синтетическом test и на probe_v2 не являются качеством на людях: probe_v2 тоже написан "
+              "агентом (R02), хоть и вне шаблонов; он отвечает на вопрос «переносится ли модель за пределы шаблонов».",
               "- Тексты людей не использовались для подбора параметров: эпоха, порог и гиперпараметры логрегрессии "
               "выбираются на validation внутри обучающей части фолда; для режимов без людей — на синтетической validation.",
               "- Словарь эвристики написан до появления текстов людей и после не менялся.",
@@ -241,6 +251,31 @@ def render(results: dict) -> str:
     if notes:
         lines += ["## Замечания прогона", ""] + [f"- {n}" for n in notes] + [""]
     return "\n".join(lines)
+
+
+def _best_section(ev: dict, key: str, set_title: str, num: str, labels) -> list[str]:
+    """Разбор лучшего прогона на наборе: P/R/F1 по категориям, матрица ошибок, срезы, калибровка."""
+    out = [f"## {num}. Лучшая на наборе «{set_title}»: {key} — по категориям", "",
+           "| Категория | Precision | Recall | F1 | Support | Предсказано |", "|---|---|---|---|---|---|"]
+    names = L.names("ru")
+    for lab in labels:
+        v = ev["per_class"].get(lab, {})
+        out.append(f"| {lab} ({names.get(lab, lab)}) | {_f(v.get('precision'))} | {_f(v.get('recall'))} | "
+                   f"{_f(v.get('f1'))} | {v.get('support', 0)} | {v.get('predicted', 0)} |")
+    cm = ev["confusion"]
+    out += ["", "Матрица ошибок (строки — истина, столбцы — прогноз):", "",
+            "| истина \\ прогноз | " + " | ".join(cm["labels"]) + " |", "|---" * (len(cm["labels"]) + 1) + "|"]
+    for lab, row in zip(cm["labels"], cm["rows_true_cols_pred"]):
+        out.append(f"| {lab} | " + " | ".join(str(x) for x in row) + " |")
+    if ev.get("slices"):
+        out += ["", "Срезы (macro-F1):", ""]
+        for skey, sl in ev["slices"].items():
+            parts = [f"{k}: n={v['n']}, {_f(v['macro_f1'])}" for k, v in sl.items()]
+            out.append(f"- **{skey}** — " + "; ".join(parts))
+    if ev.get("ece") is not None:
+        out.append(f"- Калибровка (ECE): {ev['ece']} — score модели не является точной вероятностью.")
+    out.append("")
+    return out
 
 
 def write_results(results: dict, out_dir: Path = RESULTS_DIR, name: str = "experiments") -> tuple[Path, Path]:

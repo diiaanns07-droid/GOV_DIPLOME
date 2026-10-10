@@ -29,6 +29,9 @@ PRIVATE_DIR = REPO_ROOT / "private"
 SYNTH_V3_DIR = REPO_ROOT / "ml" / "datasets" / "synth_v3" / "data"     # corpus_v3.jsonl
 LLM_V1_DIR = REPO_ROOT / "ml" / "datasets" / "llm_v1"                  # corpus_llm_v1.jsonl (после LOCAL-8)
 V1_IN_V2_DIR = REPO_ROOT / "ml" / "datasets" / "v1_in_v2"              # corpus_v1_in_v2.jsonl (корпус R08 в 12 кат.)
+# Независимый тест вне шаблонов: 300 текстов, написанных агентом R02 вручную (25 на категорию, ru/kk/mixed,
+# трудные случаи). Только оценка: ни в обучение, ни в выбор эпохи/порога/гиперпараметров не идёт.
+PROBE_V2_DIR = REPO_ROOT / "ml" / "datasets" / "probe_v2"              # probe_v2.jsonl
 
 DEFAULT_SEED = 20261011
 
