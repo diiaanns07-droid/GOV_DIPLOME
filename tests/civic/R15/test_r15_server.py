@@ -21,6 +21,14 @@ def srv(tmp_path):
         yield server
 
 
+@pytest.fixture()
+def v2srv(srv):
+    """Сервер со шлюзом API v2 (раунд 14, R01); в старой оболочке без v2 — skip, а не ложное падение."""
+    if not hasattr(srv, "civic_v2"):
+        pytest.skip("в этой сборке нет шлюза /api/civic/v2 (R01)")
+    return srv
+
+
 # --- 5. статика: только белый список, выхода за web/ нет ---------------------------------
 
 TRAVERSAL = [
@@ -71,19 +79,22 @@ V2_WRITES = [
 
 
 @pytest.mark.parametrize("method,path,body", V2_WRITES)
-def test_cross_origin_write_is_rejected(srv, method, path, body):
+def test_cross_origin_write_is_rejected(v2srv, method, path, body):
+    srv = v2srv
     status, _h, data = request(srv, method, path, body, headers={"Origin": EVIL})
     assert status == 403, data
     assert json.loads(data)["error"] == "cross_origin"
 
 
 @pytest.mark.parametrize("method,path,body", V2_WRITES)
-def test_cross_site_fetch_metadata_is_rejected(srv, method, path, body):
+def test_cross_site_fetch_metadata_is_rejected(v2srv, method, path, body):
+    srv = v2srv
     status, _h, _data = request(srv, method, path, body, headers={"Sec-Fetch-Site": "cross-site"})
     assert status == 403
 
 
-def test_simple_form_post_cannot_reach_api(srv):
+def test_simple_form_post_cannot_reach_api(v2srv):
+    srv = v2srv
     # Чужая страница без preflight может послать только text/plain / form — шлюз требует JSON.
     status, _h, _ = request(srv, "POST", "/api/civic/v2/proposals/p-1/vote",
                             raw=b'{"value":1,"device_id":"device-r15-000001"}',
@@ -100,9 +111,10 @@ def test_preflight_gets_no_cors_permission(srv):
 
 def test_foreign_host_header_is_rejected(srv):
     # Защита от DNS rebinding: имя чужого сайта в Host -> 403 даже для чтения.
-    status, _h, _ = request(srv, "GET", "/api/civic/v2/complaints",
-                            headers={"Host": "evil.example:%d" % srv.server_address[1]})
-    assert status == 403
+    paths = ["/api/civic/v1/modules"] + (["/api/civic/v2/complaints"] if hasattr(srv, "civic_v2") else [])
+    for path in paths:
+        status, _h, _ = request(srv, "GET", path, headers={"Host": "evil.example:%d" % srv.server_address[1]})
+        assert status == 403, path
 
 
 # --- 2. действия сотрудника недоступны анониму -------------------------------------------
@@ -119,9 +131,13 @@ STAFF_ONLY = [
 
 @pytest.mark.parametrize("method,path,body", STAFF_ONLY)
 def test_staff_actions_need_session(srv, method, path, body):
+    if "/api/civic/v2/" in path and not hasattr(srv, "civic_v2"):
+        pytest.skip("в этой сборке нет шлюза /api/civic/v2 (R01)")
     status, _h, data = request(srv, method, path, body,
                                headers={"Origin": "http://127.0.0.1:%d" % srv.server_address[1]})
     payload = json.loads(data)
+    if status == 404 and error_code(payload) == "not_found":
+        pytest.skip(f"маршрута {path} нет в этой сборке")
     if status == 503:
         # Модуль ещё не подключён в этой сборке — значит, и действие недоступно.
         assert error_code(payload) in ("module_not_ready", "module_unavailable"), payload
@@ -159,8 +175,9 @@ def test_csrf_token_is_required_for_staff_write(srv, tmp_path):
     assert status == 403 and json.loads(data)["error"]["code"] == "csrf_failed"
 
 
-@xfail("S09")
-def test_session_cookie_reaches_api_v2(srv, tmp_path):
+def test_session_cookie_reaches_api_v2(v2srv, tmp_path):
+    """R15-S09 исправлено (R06 ef35fb6, сборка R01 d3c33d9): Path=/api/civic — cookie доходит и до v1, и до v2."""
+    srv = v2srv
     cookie, _ = _staff_login(srv, tmp_path)
     path = next((a.split("=", 1)[1] for a in (p.strip() for p in cookie.split(";")) if a.lower().startswith("path=")), "/")
     assert "/api/civic/v2/complaints/c-1/status".startswith(path.rstrip("/") + "/")
@@ -191,3 +208,60 @@ def test_public_akim_summary_has_no_resident_texts(srv):
     found = set(keys(payload)) & {"text", "texts", "quote", "quotes", "point", "device_id", "device_hash",
                                   "phone", "username", "author"}
     assert not found, found
+
+
+# --- 3. частота запросов: накрутки и отказ в обслуживании --------------------------------
+
+def _v2_ready(srv, key):
+    status, _h, data = request(srv, "GET", "/api/civic/v2/modules")
+    modules = json.loads(data).get("modules", {}) if status == 200 else {}
+    if (modules.get(key) or {}).get("status") != "ready":
+        pytest.skip(f"маршрут {key} не подключён в этой сборке")
+
+
+def _burst(srv, method, path, bodies, headers=None):
+    origin = "http://127.0.0.1:%d" % srv.server_address[1]
+    statuses = []
+    for body, extra in bodies:
+        status, hdrs, data = request(srv, method, path, body, headers={"Origin": origin, **(headers or {}), **extra})
+        statuses.append(status)
+        if status == 429:
+            assert hdrs.get("retry-after"), "429 без Retry-After"
+            break
+    return statuses
+
+
+@xfail("S02")
+def test_complaint_spam_from_one_address_is_limited(srv):
+    """Лимит R09 — 20 жалоб в час на device_id; новый device_id на каждый запрос обходит его."""
+    _v2_ready(srv, "complaints.create")
+    bodies = [({"text": "Спам %d: яма у дома" % i, "category": "roads", "point": [71.41, 51.11]},
+               {"X-Birge-Device": "device-r15-spam-%010d" % i}) for i in range(60)]
+    assert 429 in _burst(srv, "POST", "/api/civic/v2/complaints", bodies)
+
+
+@xfail("S08")
+def test_metoo_with_new_device_ids_is_limited(srv):
+    """«Я тоже» — одно на устройство, но устройство — любая строка: 60 новых id = +60 человек."""
+    _v2_ready(srv, "complaints.metoo")
+    origin = "http://127.0.0.1:%d" % srv.server_address[1]
+    status, _h, data = request(srv, "POST", "/api/civic/v2/complaints",
+                               {"text": "Не горят фонари во дворе", "category": "lighting", "point": [71.41, 51.11]},
+                               headers={"Origin": origin, "X-Birge-Device": "device-r15-author-0000001"})
+    assert status in (200, 201), data
+    complaint_id = json.loads(data)["data"]["complaint"]["id"]
+    bodies = [({}, {"X-Birge-Device": "device-r15-voter-%010d" % i}) for i in range(60)]
+    statuses = _burst(srv, "POST", "/api/civic/v2/complaints/%s/metoo" % complaint_id, bodies)
+    assert 429 in statuses, "накручено %d «Я тоже» за секунды" % statuses.count(200)
+
+
+# --- 4. персональные данные в журнале сервера ---------------------------------------------
+
+@xfail("S10")
+def test_server_log_has_no_resident_coordinates(srv, capsys):
+    """Строка запроса /targets?lon&lat и /complaints/place?lon&lat попадает в журнал вместе с адресом и временем."""
+    request(srv, "GET", "/api/civic/v2/complaints/place?lon=71.412345&lat=51.123456")
+    request(srv, "GET", "/api/civic/v2/targets?lon=71.412345&lat=51.123456&category=roads")
+    logged = capsys.readouterr().err
+    assert "/api/civic/v2/complaints/place" in logged or "/api/civic/v2/targets" in logged, "журнал не перехвачен"
+    assert "51.123456" not in logged and "71.412345" not in logged
