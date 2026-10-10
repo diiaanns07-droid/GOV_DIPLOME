@@ -4,6 +4,8 @@
  *   <link rel="stylesheet" href="/civic/heat/heat.css">  <script src="/civic/heat/heat.js"></script>
  *   const heat = window.CivicHeat.mount({ root, map, role: "akimat" | "resident" });
  *   heat.destroy();
+ *   heat.setPickMode(true|false) — пока житель выбирает место (или класс body.birge-picking от оболочки):
+ *     нажатие на значок = щелчок по карте в точке цели (мастер жалобы получает саму остановку), карточка не открывается.
  *
  * Что рисуется на карте MapLibre:
  *   объект (остановка) — кружок-ореол, растущий с весом, и значок «иконка + число»;
@@ -16,7 +18,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "r07-round14-1";
+  const VERSION = "r07-round14-2";
   const NBSP = " ";
   const ANIM_MS = 800;           // перетекание цвета при новой жалобе (UX_BRIEF: ~0.8 с)
   const BADGE_W = 64, BADGE_H = 40;   // полный значок: кружок с иконкой + число
@@ -369,6 +371,11 @@
     const toastBox = root.querySelector(".r07-toasts");
 
     function toast(text, kind) {
+      // В оболочке — общий тост ui-kit R11 (body, z-toast 60): не прячется под каталогом R05 и шторками (R10 B-023).
+      const ui = window.BirgeUI;
+      if (ui && typeof ui.toast === "function") {
+        try { ui.toast(text, { type: kind === "error" ? "error" : "ok" }); return; } catch (e) { /* свой запасной */ }
+      }
       const el = document.createElement("div");
       el.className = "r07-toast" + (kind === "error" ? " r07-toast--error" : "");
       el.textContent = text;
@@ -603,6 +610,7 @@
     }
 
     function onFeatureClick(e) {
+      if (isPicking()) return;   // щелчок — для мастера жалобы, карточка цели под ним не открывается
       const f = e.features && e.features[0];
       if (!f) return;
       const key = f.properties.key;
@@ -691,7 +699,9 @@
           const el = document.createElement("button");
           el.type = "button";
           el.className = "r07-badge";
-          el.addEventListener("click", (ev) => { ev.stopPropagation(); onBadgeClick(key); });
+          el.tabIndex = -1;
+          el.addEventListener("click", (ev) => { ev.stopPropagation(); onBadgeClick(key, ev); });
+          el.addEventListener("keydown", (ev) => onBadgeKey(key, ev));
           const marker = new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(it.anchor).addTo(map);
           m = { marker, el, item: it, spot: it.anchor };
           S.markers.set(key, m);
@@ -700,6 +710,7 @@
         m.marker.setLngLat(it.anchor);
         m.spot = it.anchor;
         fillBadge(m.el, it);
+        m.el.classList.toggle("r07-badge--pick", !!S.picking);
         // Настоящий размер значка (у района с названием ~130 px, а не 64) — для честной проверки наложений.
         m.el.hidden = false;
         m.el.classList.remove("r07-badge--mini");
@@ -797,12 +808,45 @@
         if (mode !== "hidden" && (spot[0] !== m.spot?.[0] || spot[1] !== m.spot?.[1])) { m.marker.setLngLat(spot); m.spot = spot; }
         m.el.hidden = mode === "hidden";
         m.el.classList.toggle("r07-badge--mini", mode === "mini");
-        m.el.tabIndex = mode === "hidden" ? -1 : 0;
+        m.el.tabIndex = -1;
         m.el.dataset.mode = mode;
       });
+      // Значки — одна остановка Tab (R10 B-025): внутрь входит Tab, между значками — стрелки (самый горячий первый).
+      S.badgeOrder = list.filter((m) => m.el.dataset.mode !== "hidden").map((m) => keyOf(m.item.target));
+      const roving = S.badgeOrder.includes(S.rovingKey) ? S.rovingKey : S.badgeOrder[0];
+      if (roving && S.markers.get(roving)) S.markers.get(roving).el.tabIndex = 0;
     }
 
-    function onBadgeClick(key) {
+    function onBadgeKey(key, ev) {
+      const order = S.badgeOrder || [];
+      const i = order.indexOf(key);
+      if (i < 0) return;
+      const moves = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: order.length - 1 };
+      if (!(ev.key in moves)) return;
+      ev.preventDefault();
+      ev.stopPropagation();   // стрелки не двигают карту
+      const next = order[(moves[ev.key] + order.length) % order.length];
+      order.forEach((k) => { const m = S.markers.get(k); if (m) m.el.tabIndex = k === next ? 0 : -1; });
+      S.rovingKey = next;
+      S.markers.get(next)?.el.focus({ preventScroll: true });
+    }
+
+    // Житель выбирает место для жалобы (оболочка ставит body.birge-picking, R09 слушает щелчок по карте).
+    // Тогда значок не открывает карточку, а передаёт карте щелчок в точке своей цели: житель нажал на «13»
+    // у остановки — мастер получает саму остановку (UX_REVIEW R11 B1 п. 3, R10 B-019, LOCAL_B2 P1).
+    const isPicking = () => S.picking || document.body.classList.contains("birge-picking");
+
+    function forwardPick(key, ev) {
+      const m = S.markers.get(key);
+      const it = m && m.item;
+      if (!it || !map || !window.maplibregl) return;
+      const ll = it.target.kind === "object" ? it.anchor : (m.spot || it.anchor);   // участок, двор — место значка
+      const lngLat = new window.maplibregl.LngLat(ll[0], ll[1]);
+      map.fire("click", { lngLat, point: map.project(lngLat), originalEvent: ev });
+    }
+
+    function onBadgeClick(key, ev) {
+      if (isPicking()) { forwardPick(key, ev); return; }
       const it = findItem(key);
       if (!it) return;
       if (it.target.kind === "district") {
@@ -1172,6 +1216,8 @@
       setRole: (role) => { S.role = role === "resident" ? "resident" : "akimat"; if (map && layersReady) { removeLayers(); } draw(false); render(); },
       setLang: (lang) => { S.lang = lang === "kk" ? "kk" : "ru"; render(); drawBadges(); },
       setFilters: (f) => { Object.assign(S.filters, f || {}); void load(); },
+      // Режим выбора места жалобой без класса body.birge-picking (другая оболочка): значки передают щелчок карте.
+      setPickMode: (on) => { S.picking = !!on; for (const m of S.markers.values()) m.el.classList.toggle("r07-badge--pick", !!on); },
       state: () => ({ role: S.role, lang: S.lang, filters: { ...S.filters }, selected: S.selected, mode: S.mode, status: S.status,
         items: S.data ? S.data.items.length : 0, pending: S.pendingSelect, fittedKeys: S.fittedKeys || [] }),
       destroy,

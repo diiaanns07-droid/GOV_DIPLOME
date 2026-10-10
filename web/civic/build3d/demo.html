@@ -11,6 +11,7 @@
       Параметры адреса: ?lang=kk · ?role=resident · ?pitch=0|60 · ?bearing=-20 · ?zoom=16.4
                         ?center=71.398,51.1275 · ?store=local|api|auto · ?reset=1 (стереть сохранённое)
                         для проверок: ?build_ms=6000 (медленная постройка) · ?three=/нет.js (ошибка загрузки 3D)
+                        ?r06=1 — карточка проекта R06 (если web/civic/proposals/ есть в сборке; с ?store=api)
     -->
     <link rel="stylesheet" href="/vendor/maplibre-gl.css" />
     <link rel="stylesheet" href="/civic/ui-kit/tokens.css" />
@@ -47,14 +48,25 @@
         padding: 2px 8px;
         border-radius: var(--r-s);
         background: rgba(255, 255, 255, 0.86);
-        font-size: 12px;
+        font-size: var(--fs-caption); /* 14 px: мета-текст, не меньше (UX_SPEC §3) */
         color: var(--c-text-2);
       }
-      .demo-badge {
-        font-size: var(--fs-caption);
+      /* Название экрана рядом с Birge (UX_REVIEW день 3 #22: метка «Проект» в шапке была непонятной). */
+      .demo-title {
+        font-size: var(--fs-lead);
+        font-weight: var(--fw-semi);
+        color: var(--c-text-2);
+        white-space: nowrap;
+      }
+      /* Кнопка 3D — иконка и видимая подпись «3D» (UX_REVIEW день 3 #23, правило 3 UX_BRIEF). */
+      .demo-3d {
+        width: auto;
+        gap: 6px;
+        padding: 0 14px;
+        font-size: var(--fs-body);
       }
       @media (max-width: 1023px) {
-        .demo-badge {
+        .demo-title {
           display: none;
         }
       }
@@ -66,7 +78,7 @@
         <span class="bk-header__mark" aria-hidden="true">B</span>
         <span class="bk-header__brand-text">Birge</span>
       </div>
-      <span class="bk-tag bk-tag--project demo-badge" data-i18n="common.tag.project">Проект</span>
+      <span class="demo-title" id="demo-title">3D-превью</span>
       <div class="bk-header__end">
         <div class="bk-seg" role="group" data-i18n-attr="aria-label:common.role.label" aria-label="Чей вид">
           <button type="button" data-role="akimat" data-i18n="common.role.akimat">Акимат</button>
@@ -81,8 +93,8 @@
     <main id="map" data-i18n-attr="aria-label:common.map.label" aria-label="Карта Астаны">
       <p class="demo-attrib">© OpenStreetMap contributors</p>
       <div class="demo-maptools bk-maptools">
-        <button type="button" class="bk-mapbtn" id="demo-3d" aria-pressed="true" data-i18n-attr="aria-label:common.map.view3d;title:common.map.view3d" aria-label="Объёмный вид" title="Объёмный вид">
-          <svg class="ic" aria-hidden="true"><use href="/civic/ui-kit/icons.svg#i-cube"></use></svg>
+        <button type="button" class="bk-mapbtn demo-3d" id="demo-3d" aria-pressed="true" data-i18n-attr="aria-label:common.map.view3d;title:common.map.view3d" aria-label="Объёмный вид" title="Объёмный вид">
+          <svg class="ic" aria-hidden="true"><use href="/civic/ui-kit/icons.svg#i-cube"></use></svg><span>3D</span>
         </button>
       </div>
     </main>
@@ -100,12 +112,23 @@
           var v = parseFloat(q.get(k));
           return isFinite(v) ? v : d;
         };
+        // ?r06=1 — подключить карточку проекта R06 (web/civic/proposals/), если она есть в этой сборке.
+        if (q.get("r06") === "1") {
+          var css = document.createElement("link");
+          css.rel = "stylesheet";
+          css.href = "/civic/proposals/proposals.css";
+          document.head.appendChild(css);
+          var js = document.createElement("script");
+          js.src = "/civic/proposals/proposals.js";
+          document.head.appendChild(js);
+        }
         if (q.get("reset") === "1") {
           try {
             localStorage.removeItem(CivicBuild3DCore.LOCAL_KEY);
           } catch (e) {}
         }
-        var center = (q.get("center") || "71.3995,51.1268").split(",").map(Number);
+        // Старт — крупный план у примеров на ул. Сыганак: на 16-м масштабе модели почти не видны (UX_REVIEW #20).
+        var center = (q.get("center") || "71.4009,51.1276").split(",").map(Number);
         var pitch = num("pitch", 58);
         var role = q.get("role") === "resident" ? "resident" : "akimat";
 
@@ -115,15 +138,33 @@
             return { type: "Feature", properties: { kind: kind }, geometry: { type: "LineString", coordinates: coords } };
           });
         }
-        fetch("/civic/build3d/data/demo-basemap.json")
-          .then(function (r) {
+        // Дворы — настоящие полигоны landuse=residential OSM из data/astana-existing.json: без интернета
+        // и без 3D-домов кварталы всё равно видны (UX_REVIEW день 3 #25). Здания — только если LOCAL их скачал.
+        function json(url) {
+          return fetch(url).then(function (r) {
             return r.json();
+          });
+        }
+        Promise.all([json("/civic/build3d/data/demo-basemap.json"), json("/civic/build3d/data/astana-existing.json")])
+          .then(function (res) {
+            var base = res[0];
+            var yards = res[1].yards.map(function (y) {
+              return { type: "Feature", properties: { id: y[0] }, geometry: { type: "Polygon", coordinates: [y[4]] } };
+            });
+            return base.buildings
+              ? json("/civic/build3d/data/" + base.buildings).then(function (b) {
+                  return [base, yards, b];
+                })
+              : [base, yards, null];
           })
-          .then(function (base) {
+          .then(function (res) {
+            var base = res[0],
+              yards = res[1],
+              buildings = res[2];
             var map = new maplibregl.Map({
               container: "map",
               center: center,
-              zoom: num("zoom", 16.4),
+              zoom: num("zoom", 17.4),
               pitch: pitch,
               bearing: num("bearing", -18),
               maxPitch: 70,
@@ -140,10 +181,14 @@
                     type: "geojson",
                     data: { type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: base.nura } },
                   },
+                  yards: { type: "geojson", data: { type: "FeatureCollection", features: yards } },
+                  buildings: { type: "geojson", data: buildings || { type: "FeatureCollection", features: [] } },
                 },
                 layers: [
                   { id: "bg", type: "background", paint: { "background-color": "#e9ece4" } },
                   { id: "nura-fill", type: "fill", source: "nura", paint: { "fill-color": "#f1f2ec" } },
+                  { id: "yards", type: "fill", source: "yards", paint: { "fill-color": "#e3e8dc" } },
+                  { id: "yards-line", type: "line", source: "yards", paint: { "line-color": "#d2d9cb", "line-width": 1 } },
                   {
                     id: "paths",
                     type: "line",
@@ -169,6 +214,16 @@
                     paint: { "line-color": "#ffffff", "line-width": ["interpolate", ["exponential", 1.6], ["zoom"], 13, 1.2, 18, 18] },
                   },
                   {
+                    id: "buildings-3d",
+                    type: "fill-extrusion",
+                    source: "buildings",
+                    paint: {
+                      "fill-extrusion-color": "#e1e6d9",
+                      "fill-extrusion-height": ["coalesce", ["get", "height"], 9],
+                      "fill-extrusion-opacity": 0.9,
+                    },
+                  },
+                  {
                     id: "nura-line",
                     type: "line",
                     source: "nura",
@@ -190,6 +245,11 @@
                 },
               });
               window.__b3d = handle;
+              // Без ?center — крупный план всех проектов над панелью (UX_REVIEW день 3 #20).
+              if (!q.get("center"))
+                handle.ready.then(function () {
+                  handle.flyToProposals({ duration: 0 });
+                });
               document.querySelectorAll(".bk-seg [data-role]").forEach(function (b) {
                 b.setAttribute("aria-pressed", b.getAttribute("data-role") === role ? "true" : "false");
                 b.addEventListener("click", function () {
@@ -214,6 +274,7 @@
             b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
           });
           BirgeI18n.apply(document);
+          document.getElementById("demo-title").textContent = CivicBuild3D.t("build3d.demo.title");
         }
         BirgeI18n.ready.then(syncLang);
         BirgeI18n.onChange(syncLang);

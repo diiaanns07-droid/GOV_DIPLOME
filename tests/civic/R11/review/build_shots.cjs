@@ -62,8 +62,8 @@ async function clickMapAt(p, ll) {
 (async () => {
   const browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
   const report = {};
-  for (const size of [1366, 375]) {
-    for (const lang of ["ru", "kk"]) {
+  for (const size of (process.env.SIZES || "1366,375").split(",").map(Number)) { // SIZES=375 — только телефон
+    for (const lang of (process.env.LANGS || "ru,kk").split(",")) {
       const ctx = await browser.newContext({ viewport: size === 1366 ? { width: 1366, height: 768 } : { width: 375, height: 812 } });
       const p = await ctx.newPage();
       const logs = consoleCollector(p);
@@ -76,7 +76,10 @@ async function clickMapAt(p, ll) {
         const m = await measure(p, null);
         report[tag] = { m, brief: brief(m), console: [...new Set(logs.splice(0))].slice(0, 8) };
       };
-      const step = async (name, fn, full) => { try { await fn(); await shot(name, full); } catch (e) { report[`${TAG}-${name}-${size}-${lang}`] = { brief: "НЕ ПРОШЛО: " + e.message.split("\n")[0].slice(0, 160), console: [...new Set(logs.splice(0))].slice(0, 8) }; } };
+      const step = async (name, fn, full) => { try { await fn(); await shot(name, full); } catch (e) {
+        await p.screenshot({ path: path.join(OUT, `b-${TAG}-${name}-${size}-${lang}-FAIL.png`) }).catch(() => {});
+        const why = e.message.split("\n").filter((l) => /intercepts|not visible|not stable|disabled|outside|НЕ |«/.test(l)).slice(0, 2).join(" | ");
+        report[`${TAG}-${name}-${size}-${lang}`] = { brief: "НЕ ПРОШЛО: " + e.message.split("\n")[0].slice(0, 160) + (why ? " · " + why.slice(0, 200) : ""), console: [...new Set(logs.splice(0))].slice(0, 8) }; } };
       await p.goto(BASE + "/");
       try { await ready(p); } catch (e) { logs.push("не дождались готовности карты"); }
       await step("1-akimat-map", async () => {});
@@ -85,6 +88,8 @@ async function clickMapAt(p, ll) {
       await step("4-hot-to-map", async () => { await p.click("#birge-day .akim-hot__item"); await p.waitForTimeout(1200); });
       await step("5-resident", async () => { await clickHidden(p, "#birge-header [data-mode=resident]"); await p.waitForTimeout(1200); });
       await step("6-wizard-place", async () => {
+        // С B3 на телефоне кнопка скрыта, пока открыта карточка места (у карточки своя «Я тоже») — закрываем карточку.
+        if (!(await p.isVisible(".bc-fab"))) { await p.keyboard.press("Escape"); await p.waitForTimeout(700); }
         await p.click(".bc-fab"); await p.waitForSelector(".bc-panel[data-step='2']", { timeout: 8000 }); await p.waitForTimeout(500);
         const w = await clickMapAt(p, NURA); logs.push(`R11: над мастером (до y=${w.top}) свободно ${w.share}% карты, самый длинный отрезок ${w.h} px`); await p.waitForSelector(".bc-panel[data-step='3'], .bc-option", { timeout: 10000 }); await p.waitForTimeout(600);
       });
@@ -116,6 +121,48 @@ async function clickMapAt(p, ll) {
           await p.waitForSelector("[data-act='take'], [data-act='fixed']", { timeout: 10000 });
           if (await p.$("[data-act='take']")) { await p.click("[data-act='take']"); await p.waitForTimeout(1200); }
           await p.click("[data-act='fixed']"); await p.waitForTimeout(1500);
+        });
+      }
+      // Шаг 5 демо (с B2): каталог «Что построить?» → сквер → «Поставить» → житель голосует (ноутбук, сотрудник уже вошёл).
+      if (size === 1366 && PASSWORD && !process.env.NO3D) {
+        await step("11-catalog", async () => {
+          await p.keyboard.press("Escape");
+          await clickHidden(p, "#birge-header [data-mode=akimat]"); await p.waitForTimeout(900);
+          if (!(await p.$(".birge-b3d-toggle"))) throw new Error("нет кнопки «Что построить?»");
+          await p.click(".birge-b3d-toggle"); await p.waitForSelector(".b3d-card[data-kind=square]", { timeout: 10000 });
+        });
+        await step("12-placed", async () => {
+          await p.click(".b3d-card[data-kind=square]"); await p.waitForTimeout(500);
+          // Место, где проект уже стоит (прошлый прогон на той же базе), R05 честно не даёт занять — сдвигаемся восточнее.
+          let st = null;
+          for (let k = 0; k < 5; k++) {
+            await clickMapAt(p, [71.4185 + k * 0.0016, 51.1150 - k * 0.0006]); await p.waitForSelector("[data-action=place]", { timeout: 8000 });
+            await p.waitForTimeout(300);
+            st = await p.evaluate(() => { const b = document.querySelector("[data-action=place]");
+              return { disabled: b.disabled || b.getAttribute("aria-disabled") === "true", hint: ((document.querySelector(".b3d-dock") || {}).innerText || "").split("\n").slice(0, 3).join(" · ") }; });
+            if (!st.disabled) break;
+            logs.push("R11: «Поставить» неактивна — " + st.hint.slice(0, 120));
+          }
+          if (st.disabled) throw new Error("«Поставить» неактивна: " + st.hint.slice(0, 120));
+          await p.click("[data-action=place]", { timeout: 8000 }); await p.waitForTimeout(4500);
+        });
+        await step("13-vote", async () => {
+          await clickHidden(p, "#birge-header [data-mode=resident]"); await p.waitForTimeout(1500);
+          // Подпись «Проект · 2027» у только что поставленного проекта; на мелком масштабе — точка (b3d-label--dot).
+          await p.waitForSelector(".b3d-label", { timeout: 10000 }).catch(() => {});
+          const ok = await p.evaluate(() => {
+            const labs = [...document.querySelectorAll(".b3d-label:not(.b3d-label--hidden)")].filter((b) => b.getBoundingClientRect().width > 0);
+            if (labs.length) { labs[labs.length - 1].click(); return "label"; }
+            const h = window.CivicShell && window.CivicShell.build3d, st = h && h.getState && h.getState();
+            const list = st && (Array.isArray(st.items) ? st.items : Array.isArray(st.proposals) ? st.proposals : []);
+            const it = list && list[list.length - 1];
+            if (it) { h.select(it.id); return "select"; }
+            return null;
+          });
+          if (!ok) throw new Error("нет проекта ни на карте, ни в getState()");
+          if (ok === "select") logs.push("R11: подписи проекта на карте нет — карточка открыта через select()");
+          await p.waitForSelector("[data-action=vote-up]", { timeout: 8000 });
+          await p.click("[data-action=vote-up]"); await p.waitForTimeout(1200);
         });
       }
       await ctx.close();

@@ -127,3 +127,15 @@
 .r06-date-words:empty {
   display: none;
 }
+/* Запасное состояние без ui-kit (R10 B-006): обычный текст и кнопка, без зависимостей. */
+.r06-bare {
+  margin: 0;
+  padding: 16px;
+  font: 16px/1.4 system-ui, sans-serif;
+}
+.r06-bare__btn {
+  min-height: 48px;
+  margin: 0 16px 16px;
+  padding: 0 20px;
+  font: 600 16px system-ui, sans-serif;
+}

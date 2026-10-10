@@ -243,11 +243,66 @@ def test_seed_r14_demo_is_marked_and_idempotent(tmp_path, clock, capsys):
     assert light["geometry"]["type"] == "LineString" and light["district"] == "nura"
     assert all(i["district"] == "nura" for i in items)
     objects = v2.list_objects()["items"]
-    assert objects and all(o["demo"] and o["stage_source"] == "demo" for o in objects)
+    assert objects and all(o["demo"] for o in objects)
+    assert {o["id"] for o in objects if o["stage_source"] == "demo"} == {"demo-r02-sidewalk-delay",
+                                                                         "demo-r02-yard-landscaping"}
     # Просьба R08 (день 3): у демо-объектов есть казахское название; у остальных записей title_kk = None.
     from ui.civic_store.stages import DEMO_TITLES_KK
     assert all(o["title_kk"] == DEMO_TITLES_KK[o["id"]] for o in objects)
     assert all(i["title_kk"] for i in v2.stages.lagging(None)["late"])
+
+
+def test_build_demo_set_has_kk_titles(tmp_path, clock, capsys):
+    """R10 B-018: сборка R01 засевает data/civic/astana/demo_synthetic.json (CIVIC_DEMO=1) — у каждого публичного
+    демо-объекта должно быть казахское название, иначе «Картина дня» в ҚАЗ показывает русские строки."""
+    from pathlib import Path
+    from ui.civic_store import cli
+    from ui.civic_store.stages import DEMO_TITLES_KK
+    package = Path(__file__).resolve().parents[4] / "data" / "civic" / "astana" / "demo_synthetic.json"
+    if not package.is_file():
+        pytest.skip("нет data/civic/astana/demo_synthetic.json")
+    path = tmp_path / "build.sqlite3"
+    assert cli.main(["--db", str(path), "init"]) == 0
+    assert cli.main(["--db", str(path), "seed-demo", "--package", str(package)]) == 0
+    assert cli.main(["--db", str(path), "seed-r14-demo"]) == 0
+    capsys.readouterr()
+    _, v2 = make_service(path, clock)
+    objects = v2.list_objects()["items"]
+    assert len(objects) >= 5 and all(o["demo"] for o in objects)
+    missing = [o["id"] for o in objects if not o["title_kk"]]
+    assert missing == [], missing
+    assert all("Демо" not in DEMO_TITLES_KK[o["id"]] for o in objects)
+    late = v2.stages.lagging(None)["late"]
+    assert late and all(i["title_kk"] for i in late)
+
+
+@pytest.mark.parametrize("package", [None, "data/civic/astana/demo_synthetic.json"])
+def test_demo_stages_agree_with_record_status(tmp_path, clock, capsys, package):
+    """Свой проход UX_BRIEF: этап демо-объекта не спорит с его статусом и названием (оба демо-набора)."""
+    from pathlib import Path
+    from ui.civic_store import cli
+    path = tmp_path / "plausible.sqlite3"
+    args = ["--db", str(path), "seed-demo"]
+    if package:
+        full = Path(__file__).resolve().parents[4] / package
+        if not full.is_file():
+            pytest.skip(f"нет {package}")
+        args += ["--package", str(full)]
+    assert cli.main(["--db", str(path), "init"]) == 0
+    assert cli.main(args) == 0
+    assert cli.main(["--db", str(path), "seed-r14-demo"]) == 0
+    capsys.readouterr()
+    _, v2 = make_service(path, clock)
+    objects = v2.list_objects()["items"]
+    for o in objects:
+        if o["status"] == "completed":
+            assert o["stage"] == "operating" and not o["late"], o["id"]
+        if o["status"] == "in_progress":
+            assert o["stage"] == "construction" and o["late"] and o["delay_days"] == 23, o["id"]
+        if o["status"] in ("cancelled", "unknown") or o["kind"] == "event":
+            assert o["stage_source"] != "demo", o["id"]
+    late = [o for o in objects if o["late"]]
+    assert 1 <= len(late) <= len(objects) // 2  # отстаёт часть, а не всё (правдоподобно для показа)
 
 
 def test_title_kk_only_for_known_demo_records(staff):

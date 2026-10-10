@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-import fixtures as F
-from conftest import needs_ml, needs_onnx, needs_sklearn
+import r03_fixtures as F
+from r03_markers import needs_ml, needs_onnx, needs_sklearn
 from ml.civic_classifier_v2 import experiments as E
 from ml.civic_classifier_v2 import labels as L
 
@@ -67,6 +67,7 @@ def test_protocol_no_leak(data_dir, tmp_path, monkeypatch):
     assert res["runs"]["synth_llm/heuristic"]["status"] == "NOT_RUN"  # llm_v1 нет -> честно NOT_RUN
     assert any("mix: синтетика только" in n for n in res["notes"])
     assert res["data"]["probe_v2"]["n"] == len(probe_ids)
+    assert res["meta"]["heuristic_dict"] == "v1"                         # эксперимент — замороженный словарь
     for regime in ("synth_template", "human", "mix"):                   # probe оценён во всех режимах
         assert res["runs"][f"{regime}/heuristic"]["eval"]["probe_v2"]["n"] == len(probe_ids)
     assert "ансамбль 3 моделей" in res["runs"]["mix/heuristic"]["train"]["probe_v2_prediction"]

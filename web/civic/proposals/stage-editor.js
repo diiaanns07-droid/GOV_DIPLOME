@@ -67,6 +67,11 @@
 
   var seq = 0;
   function mount(el, opts) {
+    // Без ui-kit — простой текст (общая функция карточек R06, если подключена), а не пустой блок (R10 B-006).
+    function state(kind, o) {
+      if (root.BirgeUI) root.BirgeUI.state(el, kind, o);
+      else if (root.BirgeProposals && root.BirgeProposals.stateBox) root.BirgeProposals.stateBox(el, kind, o);
+    }
     opts = opts || {};
     var id = opts.objectId;
     var P = "r06-se-" + ++seq + "-";
@@ -126,14 +131,14 @@
     }
 
     function load() {
-      if (root.BirgeUI) root.BirgeUI.state(el, "loading");
+      state("loading");
       return request("GET", "/api/civic/v2/staff/objects/" + encodeURIComponent(id) + "/stage").then(
         function (data) {
           fromItem(data.item);
           draw();
         },
         function (e) {
-          if (root.BirgeUI) root.BirgeUI.state(el, "error", { text: t(e.status === 401 ? "stage.editor.login" : "stage.editor.error"), action: { onClick: load } });
+          state("error", { text: t(e.status === 401 ? "stage.editor.login" : "stage.editor.error"), action: { onClick: load } });
         }
       );
     }

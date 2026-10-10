@@ -115,7 +115,7 @@ def forecast_response(month=None, district=None, k=10, context=None):
         "model": block["model"], "threshold": block["threshold"],
         "evidence_type": "synthetic", "demo": True,
         "note_ru": "Прототип: модель обучена на синтетической истории. Не реальная оценка риска.",
-        "note_kk": "Прототип: модель синтетикалық тарихта оқытылған. Нақты тәуекел бағасы емес.",
+        "note_kk": "Прототип: модель синтетикалық тарихи деректерде оқытылған. Нақты тәуекел бағасы емес.",
         "generated_at": data.get("generated_at"), "computed_now": computed,
         # Для прошедшего месяца: доля подтвердившихся в top-10/20/30 (на синтетике); для будущего — null.
         "check": block.get("check"),

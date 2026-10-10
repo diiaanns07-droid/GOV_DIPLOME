@@ -67,14 +67,14 @@ def render(reason: dict, lang: str = "ru") -> str:
         return f"Жалоб стало больше: {_num(p['now'])} за 3 месяца против {_num(p['before'])} до этого"
     if k == "forecast.reason.streak":
         if kk:
-            return f"Мәселе {_num(n)} ай қатарынан сақталып тұр"
+            return f"Мәселе {_num(n)} ай қатарынан шешілмей тұр"  # R11 KK_REVIEW: «сақталып тұр» — как о хорошем
         return f"Проблема держится {_num(n)} {_plural_ru(n, 'месяц', 'месяца', 'месяцев')} подряд"
     if k == "forecast.reason.construction":
         period = _month_period(p["start"], p["end"], lang)
         return f"Жанында жоспарлы құрылыс: {period}" if kk else f"Рядом стройка по плану: {period}"
     if k == "forecast.reason.climate_snow":
         if kk:
-            return f"{MONTH_LOC_KK[mi].capitalize()} әдетте қар жауады: айына {p['cm']} см ({p['years']} жылдың нормасы)"
+            return f"{MONTH_LOC_KK[mi].capitalize()} әдетте қар жауады: айына {p['cm']} см ({p['years']} жылдық норма)"
         return f"В {MONTH_LOC_RU[mi]} обычно снег: {p['cm']} см за месяц (норма за {p['years']} г.)"
     if k == "forecast.reason.climate_thaw":
         if kk:
@@ -86,7 +86,7 @@ def render(reason: dict, lang: str = "ru") -> str:
         return f"В {MONTH_LOC_RU[mi]} начинается отопительный сезон — больше жалоб на тепло и воду"
     if k == "forecast.reason.heat":
         if kk:
-            return f"{MONTH_LOC_KK[mi].capitalize()} әдетте {_num(n)} ыстық күн (+28 °C жоғары) — қоқыс пен иіс"
+            return f"{MONTH_LOC_KK[mi].capitalize()} әдетте {_num(n)} ыстық күн (+28 °C және одан жоғары) — қоқыс пен жағымсыз иіс"
         return f"В {MONTH_LOC_RU[mi]} обычно {_num(n)} {_plural_ru(n, 'жаркий день', 'жарких дня', 'жарких дней')} (выше +28 °C) — мусор и запахи"
     if k == "forecast.reason.thaw_last":
         if kk:

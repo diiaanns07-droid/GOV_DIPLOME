@@ -21,12 +21,11 @@
 /* Без своего корня модуль кладёт панель поверх карты, внизу по центру. */
 .b3d--overlay {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0; /* вся площадь карты: панель внизу (flex), карточка на ноутбуке — справа (absolute) */
   z-index: var(--z-map-ui, 10);
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
   padding: 0 var(--gap-edge, 12px) calc(var(--gap-edge, 12px) + env(safe-area-inset-bottom));
   pointer-events: none; /* карта под пустыми краями остаётся доступной */
@@ -44,6 +43,52 @@
 }
 .b3d-dock[data-state="empty"] {
   display: none;
+}
+.b3d-dock[data-state="card"] {
+  position: relative;
+}
+/* Ноутбук (≥ 1024 px): карточка проекта выезжает справа, 400 px, как карточки целей (UX_SPEC §1);
+   каталог и размещение остаются внизу по центру. Телефон и узкие окна — карточка снизу. */
+@media (min-width: 1024px) {
+  .b3d--overlay:not(.b3d--host-right) .b3d-dock[data-state="card"] {
+    position: absolute;
+    top: var(--gap-edge, 12px);
+    right: var(--gap-edge, 12px);
+    width: min(var(--panel-w, 400px), calc(100% - 2 * var(--gap-edge, 12px)));
+    max-height: calc(100% - 2 * var(--gap-edge, 12px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    animation: b3d-slide-in var(--t-base, 240ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  }
+}
+@keyframes b3d-slide-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d--overlay:not(.b3d--host-right) .b3d-dock[data-state="card"] {
+    animation: none;
+  }
+}
+.b3d-pcard__where,
+.b3d-pcard__yard {
+  margin: 0;
+}
+/* Карточка R06 внутри панели: без второй тени и полей, «Закрыть» — в углу панели. */
+.b3d-head--end {
+  position: absolute;
+  top: var(--s-2, 8px);
+  right: var(--s-2, 8px);
+  min-height: 0;
+}
+.b3d-r06 .bk-card {
+  padding: 0;
+  box-shadow: none;
+}
+.b3d-r06 .bk-card > .bk-card__row:first-child {
+  padding-right: 48px;
 }
 
 .b3d-head {
@@ -73,6 +118,10 @@
 .b3d-cards {
   display: flex;
   gap: var(--s-3, 12px);
+  /* Ширину строки задаёт панель, а не карточки — тогда по ней можно мерить (@container ниже). */
+  width: 100%;
+  box-sizing: border-box;
+  container-type: inline-size;
   overflow-x: auto; /* прокрутка внутри строки, а не страницы */
   scrollbar-width: none;
   padding: 4px 2px;
@@ -83,7 +132,7 @@
 }
 .b3d-card {
   flex: 1 0 96px;
-  min-width: 96px;
+  min-width: auto; /* не уже самого длинного слова подписи: в узкой строке — прокрутка, а не текст за рамкой */
   min-height: 96px;
   display: flex;
   flex-direction: column;
@@ -130,6 +179,14 @@
   overflow-wrap: normal;
   hyphens: auto;
 }
+/* Узкая панель на ноутбуке (оболочка R01 даёт 720 px): все 5 карточек в строку, «Спортплощадка» 14 px без выхода
+   за рамку. Карточки телефона (≤ 639 px) — свои, 144 px, 16 px (ниже). */
+@container (max-width: 700px) {
+  .b3d-card {
+    padding-inline: 4px;
+    font-size: 14px; /* не меньше 14 px (UX_BRIEF); токена «14 для подписей» у ui-kit нет — --fs-caption только для мета */
+  }
+}
 
 /* ── Размещение ── */
 .b3d-hint {
@@ -145,6 +202,18 @@
 }
 .b3d-hint--error {
   color: var(--c-danger, #b3362e);
+}
+/* Подсказка жителю — единственная строка панели, крупно (UX_REVIEW день 3 #24). */
+.b3d-dock[data-state="hint"] {
+  padding-block: var(--s-3, 12px);
+}
+.b3d-hint--lead {
+  align-items: center;
+  font-size: var(--fs-lead, 18px);
+  font-weight: var(--fw-semi, 600);
+}
+.b3d-hint--lead .ic {
+  color: var(--c-brand, #176b4a);
 }
 .b3d-hint--info {
   color: var(--c-info, #1f5fa8);
@@ -254,31 +323,40 @@
   display: none;
 }
 .b3d-label {
+  /* Прозрачная зона нажатия ≥ 48 px вокруг видимой таблички (UX_REVIEW день 3 #21). */
   position: absolute;
   left: 0;
   top: 0;
-  min-height: 28px;
-  padding: 3px 10px;
-  border: 2px solid var(--c-surface, #ffffff);
-  border-radius: var(--r-pill, 999px);
-  box-shadow: var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
   font: inherit;
-  font-family: var(--font, "Birge Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif);
-  font-size: var(--fs-caption, 14px);
-  font-weight: var(--fw-semi, 600);
-  line-height: 1.4;
   cursor: pointer;
   pointer-events: auto;
   transition: opacity var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
-/* Невидимое расширение зоны нажатия до ~48 px (телефон). */
-.b3d-label::before {
-  content: "";
-  position: absolute;
-  inset: -10px -6px;
+.b3d-label__pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 7px 14px;
+  border: 2px solid var(--c-surface, #ffffff);
+  border-radius: var(--r-pill, 999px);
+  box-shadow: var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
+  font-family: var(--font, "Birge Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--fs-body, 16px);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1.4;
+  white-space: nowrap;
 }
 /* «Хвостик» вниз — к объекту. */
-.b3d-label::after {
+.b3d-label__pill::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -290,24 +368,34 @@
   border-bottom: 2px solid var(--c-surface, #ffffff);
   transform: translateX(-50%) rotate(45deg);
 }
-.b3d-label[aria-pressed="true"] {
-  outline: 3px solid var(--c-focus, #2f7fd6);
-  outline-offset: 2px;
+.b3d-label--hover .b3d-label__pill {
+  box-shadow: 0 0 0 3px var(--c-brand, #176b4a), var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
 }
 .b3d-label:focus-visible {
+  outline: none;
+}
+.b3d-label[aria-pressed="true"] .b3d-label__pill,
+.b3d-label:focus-visible .b3d-label__pill {
   outline: 3px solid var(--c-focus, #2f7fd6);
   outline-offset: 2px;
 }
-/* Сжатая подпись (подписи перекрываются или карта далеко): точка цвета «проект». */
-.b3d-label--dot {
-  width: 18px;
-  min-height: 18px;
-  height: 18px;
+/* Сжатая подпись (подписи перекрываются или карта далеко): точка цвета «проект» в той же зоне 48 px.
+   Текст не обнуляется по размеру, а прячется как для экранного диктора — его по-прежнему читает aria. */
+.b3d-label--dot .b3d-label__pill {
+  width: 20px;
+  min-height: 20px;
+  height: 20px;
   padding: 0;
-  font-size: 0;
-  color: transparent;
 }
-.b3d-label--dot::after {
+.b3d-label--dot .b3d-label__text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.b3d-label--dot .b3d-label__pill::after {
   display: none;
 }
 .b3d-label--hidden {
@@ -336,6 +424,7 @@
     min-width: 144px;
     min-height: 88px;
     padding: var(--s-2, 8px) 6px;
+    font-size: var(--fs-body, 16px);
   }
   .b3d-actions {
     display: grid;

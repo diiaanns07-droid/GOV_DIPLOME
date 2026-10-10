@@ -2,9 +2,9 @@
 //   API:      R12 /targets and street routes, R04 /classify and /similar, R06 proposals and stages, R13 /forecast
 //   resident: «Сообщить о проблеме» -> «Это здесь?» offers a real R12 place -> R04 suggests the category -> sent
 //   akimat:   R05 3D catalog over the map (left of the panel) -> «Сквер» -> place on the left bank -> «Поставить»
-//             -> R06 stores the proposal (planned_year from R05 year, via the shell adapter)
+//             -> R06 stores the proposal (R05 speaks the R06 contract itself)
 //   resident: the same proposal card has «За / Против» -> vote counted by R06 (my_vote of this device)
-//   akimat:   «Удалить» (R05 DELETE -> R06 withdraw via the adapter); «Картина дня» hides the 3D dock
+//   akimat:   «Удалить» (R05 -> R06 POST …/withdraw); «Картина дня» hides the 3D dock
 // Usage: node tests/civic/R01/browser/r14_b2.cjs <out_dir>
 // Starts `python3 -B app.py` with CIVIC_DEMO=1 on a temporary SQLite file seeded with seed-demo + seed-r14-demo
 // (synthetic objects, stages and proposals, all flagged demo).
@@ -183,13 +183,15 @@ async function main() {
     await page.mouse.click(xy[0], xy[1]);
     await page.waitForTimeout(400);
     const ghost = (await b3dState(page))?.ghost;
-    const createResp = page.waitForResponse((r) => /\/api\/civic\/v2\/proposals$/.test(new URL(r.url()).pathname) && r.request().method() === "POST", { timeout: 15000 }).catch(() => null);
+    // Ждём успешный POST (R05 поставки 2 при 422 повторяет базовым телом; R06 поставки 2/3 принимает с первого раза).
+    const createResp = page.waitForResponse((r) => /\/api\/civic\/v2\/proposals$/.test(new URL(r.url()).pathname) && r.request().method() === "POST"
+      && r.status() < 300, { timeout: 15000 }).catch(() => null);
     await page.click("#birge-build3d-root [data-action=place]");
     const created = await createResp;
     await page.waitForFunction((n) => (window.CivicShell.build3d?.getState?.().count || 0) > n && !window.CivicShell.build3d.getState().animating, st.count, { timeout: 30000 }).catch(() => {});
     const createdBody = created ? await created.json().catch(() => null) : null;
     const newItem = createdBody?.item || createdBody?.proposal || null;
-    check("«Поставить»: R06 stores the proposal (201, year 2027 -> planned_year via the shell adapter)",
+    check("«Поставить»: R06 stores the proposal (201, planned_year 2027)",
       created?.status() === 201 && newItem?.kind === "square" && newItem?.planned_year === 2027,
       { status: created?.status(), item: newItem && { id: newItem.id, kind: newItem.kind, planned_year: newItem.planned_year, district: newItem.district }, ghost: ghost && { valid: ghost.valid } });
     await page.waitForTimeout(500);
@@ -202,12 +204,17 @@ async function main() {
     await page.waitForTimeout(300);
     await b3dReady(page);
     st = await b3dState(page);
-    const emptyDock = await page.evaluate(() => document.querySelector("#birge-build3d-root .b3d-dock")?.dataset.state || null);
-    check("resident: no catalog (view and vote only)", st?.phase === "ready" && emptyDock === "empty", { phase: st?.phase, dock: emptyDock });
+    // R05 поставки 2: у жителя вместо каталога — подсказка «Нажмите на проект, чтобы проголосовать».
+    const residentDock = await page.evaluate(() => { const d = document.querySelector("#birge-build3d-root .b3d-dock");
+      return d ? { state: d.dataset.state || null, cards: d.querySelectorAll(".b3d-card[data-kind]").length } : null; });
+    check("resident: no catalog (view and vote only)", st?.phase === "ready" && residentDock && residentDock.cards === 0
+      && ["empty", "hint"].includes(residentDock.state), { phase: st?.phase, dock: residentDock });
     if (newItem) await page.evaluate((id) => window.CivicShell.build3d.select(id), newItem.id);
-    await page.waitForSelector("#birge-build3d-root [data-action=vote-up]", { timeout: 10000 }).catch(() => {});
+    // Голос — в карточке R06 внутри панели 3D (BirgeProposals) или в своей карточке R05, если карточки R06 нет.
+    const VOTE_UP = '#birge-build3d-root .r06-vote__btn[data-value="1"], #birge-build3d-root [data-action=vote-up]';
+    await page.waitForSelector(VOTE_UP, { timeout: 10000 }).catch(() => {});
     const voteResp = page.waitForResponse((r) => /\/vote$/.test(new URL(r.url()).pathname), { timeout: 15000 }).catch(() => null);
-    await page.click("#birge-build3d-root [data-action=vote-up]").catch(() => {});
+    await page.click(VOTE_UP).catch(() => {});
     const voted = await voteResp;
     await page.waitForTimeout(500);
     const dev = await deviceId(page);

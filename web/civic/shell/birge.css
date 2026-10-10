@@ -86,8 +86,9 @@ body[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
   /* Телефон: панель — нижняя шторка; каталог и карточка поверх неё во всю ширину. */
   .birge-build3d-root { left: 0; right: 0; bottom: 0; z-index: 7; }
   body[data-birge-mode="resident"] .birge-build3d-root { bottom: 84px; }
-  /* Каталог акимата не закрывает шторку: он виден, когда шторка свёрнута (над ней); карточка и размещение — всегда. */
-  body:has(.civic-panel:not([data-sheet="peek"])) .birge-build3d-root .b3d-dock:is([data-state="catalog"], [data-state="loading"]) { display: none; }
+  /* Каталог акимата и подсказка жителя («Нажмите на проект…», R05) не закрывают шторку: видны, когда шторка
+     свёрнута (над ней); карточка и размещение — всегда. */
+  body:has(.civic-panel:not([data-sheet="peek"])) .birge-build3d-root .b3d-dock:is([data-state="catalog"], [data-state="loading"], [data-state="hint"]) { display: none; }
   body:has(.civic-panel[data-sheet="peek"]) .birge-build3d-root { bottom: calc(24% + 8px); }
 }
 

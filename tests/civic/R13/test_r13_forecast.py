@@ -93,12 +93,19 @@ def test_subset_values_match_full_history(targets, small):
     assert full_one.counts[small.targets[5]["id"]] == small.counts[small.targets[5]["id"]]
 
 
-def test_seasonality_snow_winter_waste_summer_heating_october(small):
+@pytest.fixture(scope="module")
+def full():
+    # Вся история (2334 территории, < 1 с): сезонность проверяем на полных суммах — на выборке по 60 территорий
+    # счётчики малы, и с реальной погодой LOCAL-9 октябрь/август «коммуналки» выходил 16 против 12 (шум, не сезон).
+    return generate()
+
+
+def test_seasonality_snow_winter_waste_summer_heating_october(full):
     cats, _ = load_categories()
     ci = {c: i for i, c in enumerate(cats)}
 
     def by_month(cat, months):
-        return sum(small.counts[t["id"]][small.months.index(m)][ci[cat]] for t in small.targets for m in months)
+        return sum(full.counts[t["id"]][full.months.index(m)][ci[cat]] for t in full.targets for m in months)
 
     assert by_month("snow_ice", ["2025-01", "2025-02"]) > 5 * by_month("snow_ice", ["2025-07", "2025-08"])
     assert by_month("waste", ["2025-07", "2025-08"]) > 1.5 * by_month("waste", ["2025-01", "2025-02"])
@@ -205,12 +212,16 @@ def test_backtest_table_and_honest_markdown(small):
     ({"key": "forecast.reason.same_month_ly", "params": {"category": "roads", "n": 1, "month": "2025-04"}},
      "«Дороги»: 1 жалоба в апреле прошлого года", "«Жолдар»: өткен жылы сәуірде 1 шағым"),
     ({"key": "forecast.reason.streak", "params": {"n": 3}}, "Проблема держится 3 месяца подряд",
-     "Мәселе 3 ай қатарынан сақталып тұр"),
+     "Мәселе 3 ай қатарынан шешілмей тұр"),
     ({"key": "forecast.reason.recent_3m", "params": {"n": 21}}, "За последние 3 месяца — 21 жалоба", "Соңғы 3 айда — 21 шағым"),
     ({"key": "forecast.reason.climate_snow", "params": {"month": "2026-11", "cm": 24, "years": 3}},
-     "В ноябре обычно снег: 24 см за месяц (норма за 3 г.)", "Қарашада әдетте қар жауады: айына 24 см (3 жылдың нормасы)"),
+     "В ноябре обычно снег: 24 см за месяц (норма за 3 г.)", "Қарашада әдетте қар жауады: айына 24 см (3 жылдық норма)"),
     ({"key": "forecast.reason.construction", "params": {"start": "2026-09", "end": "2027-03"}},
      "Рядом стройка по плану: сентябрь 2026 — март 2027", "Жанында жоспарлы құрылыс: қыркүйек 2026 — наурыз 2027"),
+    # R11 KK_REVIEW (день 4): «+28 °C жоғары» без падежа — «+28 °C және одан жоғары»; «иіс» — «жағымсыз иіс».
+    ({"key": "forecast.reason.heat", "params": {"month": "2026-07", "n": 9}},
+     "В июле обычно 9 жарких дней (выше +28 °C) — мусор и запахи",
+     "Шілдеде әдетте 9 ыстық күн (+28 °C және одан жоғары) — қоқыс пен жағымсыз иіс"),
 ])
 def test_reason_texts_ru_kk(reason, ru, kk):
     assert render(reason, "ru") == ru

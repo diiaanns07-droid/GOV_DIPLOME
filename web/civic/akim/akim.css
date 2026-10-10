@@ -372,6 +372,34 @@
     size: A4;
     margin: 12mm;
   }
+  /* Печать из оболочки R01 (akim.js ставит метки перед печатью): только «Картина дня», без шапки, карты и панелей,
+     и без ограничений высоты/прокрутки у контейнеров на пути к ней. */
+  html.akim-printing,
+  html.akim-printing body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  html.akim-printing body > :not(.akim-print-path):not(.akim),
+  html.akim-printing .akim-print-path > :not(.akim-print-path):not(.akim) {
+    display: none !important;
+  }
+  html.akim-printing .akim-print-path,
+  html.akim-printing .akim {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
   body,
   .bk-app {
     background: #fff !important;

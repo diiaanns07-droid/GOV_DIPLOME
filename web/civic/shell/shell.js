@@ -428,30 +428,9 @@
     mountBuild3d();
   }
   // ---------------------------------------------------------------- 3D-превью предложений (R05 + R06)
-  // R06 @ b42e790 (поставка 2) сам понимает тело клиента R05: year/near_street/target/status, служебные поля
-  // игнорирует, отвечает {item, proposal} с полем year — поэтому тело и ответ больше не переводятся.
-  // Остаток адаптера нужен только клиенту R05 @ b0353ee (INTEGRATION.txt §10): он снимает предложение через
-  // DELETE /proposals/{id} (в CONTRACT §7 и в шлюзе нет — переводим в POST …/withdraw) и не передаёт device_id
-  // в список (без него R06 не вернёт my_vote этого устройства). Клиент R05 под R06 поставки 2 делает это сам —
-  // тогда build3dFetch убирается целиком.
-  const B3D_PROPOSALS = /\/api\/civic\/v2\/proposals$/;
-  const B3D_ONE = /\/api\/civic\/v2\/proposals\/[^/]+$/;
-  function build3dDevice() {
-    try { return localStorage.getItem("birge.device_id"); } catch { return null; }  // ключ R05/R06 (голос «За/Против»)
-  }
-  function build3dFetch(url, init = {}) {
-    const target = new URL(url, location.href);
-    let method = String(init.method || "GET").toUpperCase(), body = init.body;
-    if (method === "GET" && B3D_PROPOSALS.test(target.pathname) && !target.searchParams.has("device_id")) {
-      const device = build3dDevice();
-      if (device) target.searchParams.set("device_id", device);  // R06 вернёт my_vote этого устройства
-    } else if (method === "DELETE" && B3D_ONE.test(target.pathname)) {
-      method = "POST"; target.pathname += "/withdraw"; body = "{}";
-    }
-    const headers = new Headers(init.headers || {});
-    if (body !== undefined) headers.set("Content-Type", "application/json");
-    return birgeFetch(target.toString(), { ...init, method, body, headers });
-  }
+  // R05 поставки 2 (169c56b) сам говорит на контракте R06 через клиент оболочки BirgeShell.api.v2 (CSRF сотрудника,
+  // куки; device_id для «моего голоса» добавляет сам) и сам следует «Акимат / Житель» (событие birge:mode).
+  // Адаптер build3dFetch и пересоздание модуля при смене вида убраны (R05 INTEGRATION §1.2, R01 INTEGRATION §9).
   // Каталог «Что построить?» акимата свёрнут в одну кнопку: открытый постоянно, он закрывал легенду тепловой карты
   // и спорил с главной кнопкой экрана (UX_BRIEF правила 1 и 3). Размещение и карточку проекта R05 показывает всегда —
   // скрывается только сам каталог (birge.css, [data-catalog="closed"]).
@@ -479,14 +458,17 @@
     if (open && focus) requestAnimationFrame(() => root.querySelector('.b3d-dock[data-state="catalog"] .b3d-card')?.focus?.({ preventScroll: true }));
   }
   function mountBuild3d() {
-    const lib = window.CivicBuild3D, core = window.CivicBuild3DCore, m = currentMap();
+    const lib = window.CivicBuild3D, m = currentMap();
     if (S.mounted.build3d || !lib || typeof lib.mount !== "function" || !m) return;
     setBuild3dCatalog(false);
     try {
       S.mounted.build3d = lib.mount({
-        map: m, root: $c("birge-build3d-root"), role: birgeMode() === "resident" ? "resident" : "akimat",
-        // Хранилище — API R06 через адаптер; нет R06 (404/503) — R05 сам переходит на заглушку этого устройства.
-        store: typeof core?.createAutoStore === "function" ? core.createAutoStore({ prefix: "/api/civic/v2", fetch: build3dFetch }) : "auto",
+        map: m, root: $c("birge-build3d-root"), mode: birgeMode() === "resident" ? "resident" : "akimat",
+        // Запросы к R06 — клиентом оболочки (CSRF сотрудника, куки). Нет R06 (404/503) — заглушка этого устройства.
+        api: window.BirgeShell?.api,
+        // Шапка, «Территория», панель/шторка и кнопки карты лежат поверх карты: открыв карточку проекта, R05 ставит
+        // объект в свободную часть карты, а не под них.
+        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools"),
         // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
         onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
       }) || null;
@@ -494,13 +476,6 @@
       console.error("birge build3d mount", error);
       S.mounted.build3d = null;
     }
-  }
-  function remountBuild3d() {
-    if (!S.mounted.build3d) return;
-    try { S.mounted.build3d.destroy?.(); } catch { /* модуль R05 не ломает оболочку */ }
-    S.mounted.map?.setInteractionEnabled?.(true, "birge-build3d");
-    S.mounted.build3d = null;
-    mountBuild3d();
   }
   // Ссылка «#target=<kind>:<id>&days=N» (R08 «Картина дня», R07): открыть цель на тепловой карте.
   function openTargetFromLink(hash = location.hash) {
@@ -1053,7 +1028,8 @@
   });
   document.addEventListener("birge:mode", (event) => {
     S.mounted.heat?.setRole?.(event.detail?.mode);
-    remountBuild3d();  // у R05 нет setRole: каталог акимата ↔ только просмотр и голос жителя
+    // R05 сам слушает birge:mode (каталог акимата ↔ подсказка и голос жителя); каталог при смене вида сворачиваем.
+    setBuild3dCatalog(false);
     // Вид «Акимат»: панель жителя (форма жалобы, «Мои обращения») закрывается — она перекрыла бы карточку цели.
     if (event.detail?.mode === "akimat") S.mounted.complaint?.close?.();
     if (event.detail?.mode !== "resident") return;

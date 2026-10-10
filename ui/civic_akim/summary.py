@@ -117,7 +117,8 @@ def fixed_moment(record: dict, moment: datetime) -> datetime | None:
 def snapshot(record: dict, moment: datetime) -> dict | None:
     """Запись такой, какой она была в момент moment (для расчёта карты «неделю назад»).
 
-    Ограничение: у записи v2 нет времени каждого «Я тоже», поэтому metoo берётся текущим.
+    «Я тоже»: если у записи есть metoo_times (время каждого нажатия, R09 → R07), нажатия после moment
+    отбрасываются и metoo уменьшается. «Я тоже» без времени (старые записи) считаются нажатыми при подаче.
     """
     st = status_at(record, moment)
     if st is None:
@@ -126,6 +127,17 @@ def snapshot(record: dict, moment: datetime) -> dict | None:
     copy["status"] = st
     copy["status_history"] = [h for h in record.get("status_history") or []
                               if isinstance(h, dict) and (parse_time(h.get("at")) or moment) <= moment]
+    times = record.get("metoo_times")
+    if isinstance(times, (list, tuple)) and times:
+        parsed = [(x, parse_time(x)) for x in times]
+        kept = [x for x, t in parsed if t is not None and t <= moment]
+        later = sum(1 for _, t in parsed if t is not None and t > moment)
+        try:
+            metoo = int(record.get("metoo") or 0)
+        except (TypeError, ValueError):
+            metoo = 0
+        copy["metoo_times"] = kept
+        copy["metoo"] = max(0, metoo - later)
     return copy
 
 
@@ -497,6 +509,7 @@ class AkimService:
             "top": [{"id": p.get("id"), "kind": p.get("kind"),
                      "title_ru": p.get("title_ru") or p.get("title") or p.get("id"),
                      "title_kk": p.get("title_kk") or p.get("title_ru") or p.get("title") or p.get("id"),
+                     "title_kk_missing": not p.get("title_kk"),
                      "votes_up": int(p.get("votes_up") or 0), "votes_down": int(p.get("votes_down") or 0),
                      "is_new": p in new, "demo": bool(p.get("demo"))} for p in top],
             "demo": any(p.get("demo") for p in props),

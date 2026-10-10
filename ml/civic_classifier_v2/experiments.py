@@ -78,7 +78,8 @@ def run_model(name: str, train: list[dict], val: list[dict], eval_sets: dict[str
     t0 = time.time()
     if name == "heuristic":
         for s, recs in eval_sets.items():
-            out[s] = ([index[x] for x in heuristic.predict([r["text"] for r in recs])], None)
+            # Базовая модель эксперимента — замороженный словарь v1 (результаты c19b889 воспроизводимы).
+            out[s] = ([index[x] for x in heuristic.predict([r["text"] for r in recs], version="v1")], None)
     elif name == "logreg":
         from ml.civic_classifier_v2 import logreg
         model, sel = logreg.fit(train, val, cfg.seed, labels=labels)
@@ -192,7 +193,7 @@ def run(args) -> dict:
         "meta": {"created_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
                  "git_sha": git_sha(), "model_name": cfg.model_name, "seed": cfg.seed, "seeds": args.seeds,
                  "mode": "smoke" if args.smoke else "full", "k_folds": args.folds, "val_ratio": args.val_ratio,
-                 "human_fraction": args.human_fraction,
+                 "human_fraction": args.human_fraction, "heuristic_dict": "v1", "heuristic_dict_sha256": heuristic.DICT_V1_SHA256,
                  "env_note": args.env_note, "train_config": cfg.to_dict()},
         "data": {}, "notes": notes,
     }

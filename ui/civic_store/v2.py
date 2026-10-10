@@ -114,7 +114,7 @@ class CivicV2:
             extra = {"current_revision": exc.current_revision} if exc.current_revision is not None else {}
             return error(409, exc.code, str(exc), **extra)
         except _VoteRateLimited as exc:
-            return error(429, "rate_limited", "Слишком много голосов подряд. Повторите через минуту.",
+            return error(429, "rate_limited", exc.message,
                          headers={"Retry-After": str(exc.retry_after)}, retry_after=exc.retry_after)
         except sqlite3.OperationalError as exc:
             if "locked" in str(exc) or "busy" in str(exc):
@@ -248,11 +248,12 @@ class CivicV2:
 class V2Error(Exception):
     """Ошибка для шлюза R01: status (HTTP), code (строка), message (по-русски), fields (по полям)."""
 
-    def __init__(self, status: int, code: str, message: str, fields=None, current_revision=None):
+    def __init__(self, status: int, code: str, message: str, fields=None, current_revision=None, retry_after=None):
         super().__init__(message)
         self.status, self.code, self.message = status, code, message
         self.fields = fields or {}
         self.current_revision = current_revision
+        self.retry_after = retry_after  # секунды для заголовка Retry-After (429)
 
 
 _BOUND: CivicV2 | None = None
@@ -284,8 +285,8 @@ def _run(fn, *args, **kwargs):
         raise V2Error(404, "not_found", "Не найдено.")
     except Conflict as exc:
         raise V2Error(409, exc.code, str(exc), current_revision=exc.current_revision)
-    except _VoteRateLimited:
-        raise V2Error(429, "rate_limited", "Слишком много голосов подряд. Повторите через минуту.")
+    except _VoteRateLimited as exc:
+        raise V2Error(429, "rate_limited", exc.message, retry_after=exc.retry_after)
 
 
 def _query(bbox=None, district=None, status=None):

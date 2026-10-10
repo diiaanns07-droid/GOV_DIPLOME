@@ -2,6 +2,8 @@
  * R11 · браузерная проверка витрины ui-kit (и любой страницы web/ по пути из аргумента).
  * Запуск (нужен Playwright с Chromium):
  *   NODE_PATH="$(npm root -g)" node tests/civic/R11/browser_check.cjs [--shots DIR] [--page /civic/ui-kit/index.html]
+ *     [--base http://127.0.0.1:8611] — проверить страницу на запущенном сервере сборки (его заголовки, в том числе CSP R15);
+ *     нарушения CSP попадают в консоль как ошибки и проверку валят.
  * Проверяет на 375×812 и 1366×768, в ru и kk:
  *   - нет горизонтальной прокрутки страницы;
  *   - нет предупреждений [i18n] и ошибок в консоли;
@@ -26,6 +28,7 @@ const opt = (name, def) => {
 };
 const SHOTS = opt("--shots", null);
 const PAGE = opt("--page", "/civic/ui-kit/index.html");
+const BASE = opt("--base", null);
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
 
 function serve() {
@@ -111,8 +114,8 @@ async function check(browser, base, width, height, lang) {
 }
 
 (async () => {
-  const server = await serve();
-  const base = "http://127.0.0.1:" + server.address().port;
+  const server = BASE ? null : await serve();
+  const base = BASE || "http://127.0.0.1:" + server.address().port;
   const browser = await chromium.launch();
   let failed = 0;
   for (const [w, h] of [[375, 812], [1366, 768]]) {
@@ -124,7 +127,7 @@ async function check(browser, base, width, height, lang) {
     }
   }
   await browser.close();
-  server.close();
+  if (server) server.close();
   process.exit(failed ? 1 : 0);
 })().catch((e) => {
   console.error(e);

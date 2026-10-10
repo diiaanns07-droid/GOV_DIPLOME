@@ -77,6 +77,28 @@ def labels(set_name: str, tags: dict) -> tuple[str, str] | None:
     return tpl_ru.format(n=ru), tpl_kk.format(n=kk or ru)
 
 
+_SET_BY_SUBTYPE = {}
+for _name in SET_ORDER:
+    _SET_BY_SUBTYPE.setdefault(SETS[_name][1], _name)
+
+
+def plain_labels(subtype: str | None) -> tuple[str, str] | None:
+    """Подпись без имени по подтипу: ('Остановка', 'Аялдама'); None — подтип неизвестен."""
+    name = _SET_BY_SUBTYPE.get(subtype or "")
+    return (SETS[name][2], SETS[name][3]) if name else None
+
+
+def labels_for_subtype(subtype: str | None, name_ru: str | None, name_kk: str | None = None) -> tuple[str, str] | None:
+    """Подпись по подтипу и имени из чужого реестра (R12: name_ru, name_kk) — так же, как у своих объектов OSM."""
+    name = _SET_BY_SUBTYPE.get(subtype or "")
+    if not name or not name_ru:
+        return None
+    tags = {"name": name_ru, "name:ru": name_ru}
+    if name_kk:
+        tags["name:kk"] = name_kk
+    return labels(name, tags)
+
+
 def _ring(points) -> list | None:
     ring = [[round(p["lon"], 7), round(p["lat"], 7)] for p in points or [] if "lon" in p and "lat" in p]
     if len(ring) < 2:

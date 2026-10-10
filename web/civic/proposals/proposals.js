@@ -159,6 +159,16 @@
     },
   };
 
+  // Служебные слова в названии демо-записи («Демо: …», «… (синтетика)») не показываем: метка «Пример» уже стоит
+  // (UX_REVIEW R11 день 3 п. 15; то же делает «Картина дня» R08). Только для demo: true.
+  function demoTitle(text) {
+    var clean = String(text || "")
+      .replace(/^\s*(Демо|Demo|Үлгі)\s*[:·—-]\s*/i, "")
+      .replace(/\s*\((синтетика|synthetic|демо|demo)\)\s*$/i, "")
+      .trim();
+    return clean ? clean.charAt(0).toUpperCase() + clean.slice(1) : text;
+  }
+
   // ── Предложение ──
   function title(p) {
     // Казахское название, если акимат его ввёл; иначе русское с lang="ru" (экранный диктор прочтёт верно).
@@ -282,11 +292,42 @@
     return { get: function () { return state.p; }, redraw: draw };
   }
 
+  // Запасные тексты, если не загрузился даже словарь (i18n.js): ru + kk в одной строке (R10 B-006).
+  var BARE = {
+    loading: "Загружаем… / Жүктелуде…",
+    error: "Не получилось загрузить. / Жүктелмеді.",
+    empty: "Пока пусто / Әзірге бос",
+    retry: "Повторить / Қайталау",
+    kit: "Не загрузились файлы интерфейса. Обновите страницу. / Интерфейс файлдары жүктелмеді. Бетті жаңартыңыз.",
+  };
+  function bare(key, text) {
+    var i18n = I();
+    return i18n && i18n.has && i18n.has(key) ? i18n.t(key) : text;
+  }
+
+  // Состояние блока: ui-kit (BirgeUI.state), а если он не загрузился — простой текст и «Повторить»,
+  // чтобы не было пустого экрана (UX_BRIEF, правило 7; R10 B-006).
   function stateBox(el, kind, opts) {
-    if (root.BirgeUI) root.BirgeUI.state(el, kind, opts);
+    opts = opts || {};
+    if (root.BirgeUI) {
+      root.BirgeUI.state(el, kind, opts);
+      return;
+    }
+    var text = opts.text || opts.title || (kind === "loading" ? bare("common.state.loading", BARE.loading)
+      : kind === "error" ? bare("common.state.error_title", BARE.error) : bare("common.state.empty_title", BARE.empty));
+    el.innerHTML = '<p class="r06-bare" role="' + (kind === "error" ? "alert" : "status") + '">' + esc(text) + "</p>" +
+      (kind === "error" && opts.action ? '<button class="r06-bare__btn" type="button">' +
+        esc(bare("common.action.retry", BARE.retry)) + "</button>" : "");
+    var btn = el.querySelector(".r06-bare__btn");
+    if (btn) btn.addEventListener("click", opts.action.onClick);
   }
 
   function mount(el, load, render, notFoundKey) {
+    if (!I()) {
+      // Без словаря карточка показала бы сырые ключи — честно говорим, что интерфейс не загрузился.
+      stateBox(el, "error", { title: BARE.kit, action: { onClick: function () { root.location.reload(); } } });
+      return Promise.resolve();
+    }
     function go() {
       stateBox(el, "loading");
       return load().then(render, function (err) {
@@ -350,7 +391,7 @@
       // Название объекта в civic-v1 одно (на языке источника, lang="ru"); title_kk есть только у демо-записей.
       (lang() === "kk" && o.title_kk
         ? '<h3 class="bk-card__title" id="' + id + '" lang="kk">' + esc(o.title_kk) + "</h3>"
-        : '<h3 class="bk-card__title" id="' + id + '" lang="ru">' + esc(o.title) + "</h3>") +
+        : '<h3 class="bk-card__title" id="' + id + '" lang="ru">' + esc(o.demo ? demoTitle(o.title) : o.title) + "</h3>") +
       (o.district ? '<p class="bk-meta" style="margin:0">' + esc(t("district.name", { name: t("district." + o.district) })) + "</p>" : "") +
       '<hr class="bk-divider" /><div class="r06-stages">' + stagesHtml(o) + "</div></article>"
     );
@@ -379,6 +420,9 @@
     mountObject: mountObject,
     renderStages: renderStages,
     stagesHtml: stagesHtml,
+    demoTitle: demoTitle,
+    stateBox: stateBox,
+    KIT_MISSING: BARE.kit,
     STAGES: STAGES.slice(),
   };
 })(typeof self !== "undefined" ? self : this);

@@ -8,16 +8,25 @@
 
 Совпадение — подстрока в " " + normalize(text) + " ", поэтому основа с ведущим пробелом
 (" лед") ловит только начало слова, а без пробела — любое место слова.
+
+Две версии словаря:
+  * "v1" (STEMS_V1) — базовая модель эксперимента диплома. Заморожена с коммита 66f9ed8 (10.10, до просмотра
+    корпусов); по ней посчитаны таблицы LOCAL-4 (c19b889). Отпечаток DICT_V1_SHA256 проверяет тест — правка v1
+    сделала бы прежние результаты невоспроизводимыми. experiments.py и logreg.py берут только v1.
+  * "product" (STEMS, по умолчанию) — v1 + PRODUCT_ADDITIONS: правки по ошибкам, найденным в приёмке продукта
+    (не по тестовым наборам). Это запасной вариант R04, когда нет файла модели v2. Каждая добавка — с номером бага.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 import unicodedata
 
 from ml.civic_classifier_v2 import labels as L
 
-STEMS: dict[str, tuple[str, ...]] = {
+STEMS_V1: dict[str, tuple[str, ...]] = {
     "snow_ice": ("снег", "снеж", "сугроб", "наледь", "наледи", "гололед", "скольз", " лед ", " льд", "сосульк",
                  "посыпа", "песком", "реагент", "не чистят снег", "уборка снега", "қар", "көктайғақ", " мұз",
                  "тайғақ", "сүңгі", "тайғанақ"),
@@ -53,14 +62,34 @@ STEMS: dict[str, tuple[str, ...]] = {
 # фонарь у остановки -> lighting, машины на тротуаре -> parking, яма во дворе -> roads).
 PRIORITY = ("snow_ice", "lighting", "utilities", "smell_air", "waste", "parking", "transport", "sidewalks",
             "roads", "noise_safety", "yards", "other")
+DICT_V1_SHA256 = "ce6e0fdd3a4bd3c15c1be4dfe3b2c7fd72f8f031fd59fda8afb83f2fb9ee81d2"
+
+# Добавки продуктовой версии. B-004 (R10, приёмка B2): «машины стоят на газоне во дворе» -> yards вместо parking
+# («парковка на газоне» — пример parking в categories_v2.json); то же для «двор заставлен машинами» и kk-фраз.
+# Слова «газон»/«двор» остаются у yards: машина + газон/двор даёт parking два совпадения, и при равенстве
+# побеждает parking (он раньше yards в PRIORITY); «скосите траву на газоне» по-прежнему yards.
+PRODUCT_ADDITIONS: dict[str, tuple[str, ...]] = {
+    "parking": ("стоят на газоне", "на газоне стоят", "машины на газоне", "машин на газоне", "паркуются на газоне",
+                "заставлен машин", "заставлены машин", "заставили машин", "заставлен автомобил", "машинами заставлен",
+                "ставят машины", "бросают машины", "автомобили на газоне",
+                "көліктер көгал", "көлікті көгал", "көгалға тұр", "көгалда тұр", "көлікпен толы"),
+}
+STEMS: dict[str, tuple[str, ...]] = {lab: STEMS_V1[lab] + PRODUCT_ADDITIONS.get(lab, ()) for lab in STEMS_V1}
+VERSIONS = {"v1": STEMS_V1, "product": STEMS}
 
 _PUNCT = re.compile(r"[^\w\s]", re.U)
 _SPACE = re.compile(r"\s+")
 
 
+def dict_sha256(stems: dict) -> str:
+    """Отпечаток словаря (для проверки, что версия v1 не менялась)."""
+    return hashlib.sha256(json.dumps({"stems": stems, "priority": list(PRIORITY)}, ensure_ascii=False,
+                                     sort_keys=True).encode("utf-8")).hexdigest()
+
+
 def _check() -> None:
     labs = set(L.labels())
-    if set(STEMS) != labs or set(PRIORITY) != labs:
+    if set(STEMS) != labs or set(STEMS_V1) != labs or set(PRIORITY) != labs:
         raise ValueError("heuristic.STEMS/PRIORITY не совпадают с categories_v2.json")
 
 
@@ -73,15 +102,16 @@ def normalize(text: str) -> str:
     return _SPACE.sub(" ", t).strip()
 
 
-def keyword_hits(text: str) -> dict[str, int]:
-    """Число совпавших основ по каждой категории (используется и в гибридной логрегрессии)."""
+def keyword_hits(text: str, version: str = "product") -> dict[str, int]:
+    """Число совпавших основ по каждой категории (используется и в гибридной логрегрессии — там версия v1)."""
+    stems = VERSIONS[version]
     t = " " + normalize(text) + " "
-    return {lab: sum(1 for stem in STEMS[lab] if stem in t) for lab in PRIORITY}
+    return {lab: sum(1 for stem in stems[lab] if stem in t) for lab in PRIORITY}
 
 
-def heuristic_label(text: str) -> tuple[str, int]:
+def heuristic_label(text: str, version: str = "product") -> tuple[str, int]:
     """(категория, число совпадений). Нет совпадений -> ('other', 0)."""
-    hits = keyword_hits(text)
+    hits = keyword_hits(text, version)
     best, best_hits = L.OTHER, 0
     for lab in PRIORITY:
         if hits[lab] > best_hits:
@@ -89,5 +119,5 @@ def heuristic_label(text: str) -> tuple[str, int]:
     return best, best_hits
 
 
-def predict(texts: list[str]) -> list[str]:
-    return [heuristic_label(t)[0] for t in texts]
+def predict(texts: list[str], version: str = "product") -> list[str]:
+    return [heuristic_label(t, version)[0] for t in texts]

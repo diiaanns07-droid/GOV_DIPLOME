@@ -24,7 +24,9 @@
     apiBase: "/api/civic/v2",
     mapHref: "/#target={kind}:{id}&days={days}",
     syncUrl: true, // хранить дату и район в адресе: F5, печать и ссылка показывают то же
+    refreshMs: 120000, // тихое обновление, пока вкладка видна (0 — выключить)
   };
+  var STALE_ON_RETURN_MS = 60000; // вернулись на вкладку, а данным больше минуты — обновить
   var TIMEOUT_MS = 15000;
   var LATE_VISIBLE = 5;
   var ASTANA_OFFSET_MS = 5 * 3600 * 1000; // весь Казахстан — UTC+5 с 1 марта 2024
@@ -89,10 +91,16 @@
   function todayAstana() {
     return new Date(Date.now() + ASTANA_OFFSET_MS).toISOString().slice(0, 10);
   }
-  function label(obj, base) {
-    // Подпись на текущем языке: label_kk / title_kk, если есть, иначе русская.
+  // Подпись на текущем языке: label_kk / title_kk, если есть, иначе русская.
+  // kindPrefix: если казахского названия нет (сервер ставит title_kk_missing), в ҚАЗ показываем вид объекта
+  // по-казахски из словаря R11 («object.kind.roadworks» → «Жол жөндеу»), а не русскую строку (R10 B-018).
+  function label(obj, base, kindPrefix) {
     var l = lang();
-    return (obj && (obj[base + "_" + l] || obj[base + "_ru"])) || "";
+    if (!obj) return "";
+    if (l !== "ru" && obj[base + "_" + l + "_missing"] && kindPrefix && obj.kind && I() && I().has(kindPrefix + obj.kind)) {
+      return tr(kindPrefix + obj.kind);
+    }
+    return obj[base + "_" + l] || obj[base + "_ru"] || "";
   }
   function districtName(id) {
     return id ? tr("district." + id) : tr("akim.district.all_city");
@@ -170,10 +178,14 @@
       root.history.replaceState(root.history.state, "", root.location.pathname + (s ? "?" + s : "") + root.location.hash);
     }
 
-    function load() {
+    // silent: тихое обновление поверх показанных данных — без скелетона; при ошибке старые числа остаются.
+    function load(silent) {
+      silent = silent === true && state.status === "ok";
       var id = ++state.request;
-      state.status = "loading";
-      render();
+      if (!silent) {
+        state.status = "loading";
+        render();
+      }
       var q = new URLSearchParams();
       if (state.date) q.set("date", state.date);
       if (state.district) q.set("district", state.district);
@@ -197,24 +209,74 @@
         })
         .then(function (res) {
           if (id !== state.request) return; // пришёл ответ на старый запрос
+          if (silent) {
+            if (res.ok && res.body && res.body.kpi) applySilent(res.body);
+            return;
+          }
           if (res.ok && res.body && res.body.kpi) {
             state.status = "ok";
             state.data = res.body;
+            state.loadedAt = Date.now();
           } else {
             state.status = "error";
             state.error = res.status === 400 && res.body && res.body.field === "date" ? "date" : "server";
           }
         })
         .catch(function () {
-          if (id !== state.request) return;
+          if (id !== state.request || silent) return; // тихое обновление не сменяет числа ошибкой
           state.status = "error";
           state.error = "network";
         })
         .then(function () {
           clearTimeout(timer);
-          if (id === state.request) render();
+          if (id === state.request && !silent) render();
         });
     }
+
+    // Новые данные при тихом обновлении: перерисовываем, только если что-то изменилось (иначе — лишь «Данные на …»),
+    // и возвращаем фокус туда же — экран не прыгает под руками.
+    function sameData(a, b) {
+      function strip(d) {
+        var c = {};
+        Object.keys(d || {}).forEach(function (k) {
+          if (["generated_at", "as_of", "compare_to", "compute_ms"].indexOf(k) < 0) c[k] = d[k];
+        });
+        return JSON.stringify(c);
+      }
+      return strip(a) === strip(b);
+    }
+    function focusKey() {
+      var el = doc.activeElement;
+      if (!el || el === doc.body || !rootEl.contains(el)) return null;
+      return el.id ? "#" + el.id : el.getAttribute("data-key") ? '[data-key="' + el.getAttribute("data-key") + '"]' : null;
+    }
+    function applySilent(data) {
+      var changed = !sameData(state.data, data);
+      state.data = data;
+      state.loadedAt = Date.now();
+      if (!changed) {
+        renderTop();
+        return;
+      }
+      var key = focusKey();
+      var y = root.scrollY;
+      render();
+      if (key) {
+        var again = rootEl.querySelector(key);
+        if (again) again.focus({ preventScroll: true });
+      }
+      if (root.scrollY !== y) root.scrollTo(root.scrollX, y);
+    }
+    function refreshIfVisible() {
+      if (doc.visibilityState === "hidden" || state.status !== "ok") return;
+      load(true);
+    }
+    function onVisible() {
+      if (doc.visibilityState === "visible" && state.status === "ok" && Date.now() - (state.loadedAt || 0) > STALE_ON_RETURN_MS)
+        load(true);
+    }
+    var refreshTimer = opts.refreshMs > 0 ? setInterval(refreshIfVisible, opts.refreshMs) : null;
+    doc.addEventListener("visibilitychange", onVisible);
 
     function setDate(value) {
       var today = todayAstana();
@@ -294,7 +356,7 @@
             type: "button",
             class: "bk-btn akim__print",
             onclick: function () {
-              root.print();
+              printPage();
             },
           },
           [icon("print"), tr("common.action.print")]
@@ -411,6 +473,7 @@
           "a",
           {
             class: "bk-list__item akim-hot__item",
+            "data-key": "hot:" + it.target.kind + ":" + it.target.id,
             href: mapLink(it.target, d.hot.days),
             "aria-label": tr("akim.hot.open", { name: name }) + ". " + tr("common.people", { n: it.count }),
             onclick: function (e) {
@@ -459,6 +522,7 @@
                 {
                   type: "button",
                   class: "bk-bar akim-bar-btn",
+                  "data-key": "district:" + r.id,
                   "aria-pressed": r.selected ? "true" : "false",
                   "aria-label": tr("akim.districts.pick", { name: r.name }) + ": " + tr("common.people", { n: r.value }),
                   onclick: function () {
@@ -523,7 +587,7 @@
       if (o.delay_days > 0) tags.push(h("span", { class: "bk-tag bk-tag--warn", text: tr("object.late", { n: o.delay_days }) }));
       if (o.stale && o.days_since_update != null)
         tags.push(h("span", { class: "bk-tag akim-stale", text: tr("object.stale_days", { n: o.days_since_update }) }));
-      var main = [h("span", { class: "bk-list__title", text: label(o, "title") })];
+      var main = [h("span", { class: "bk-list__title", text: label(o, "title", "object.kind.") })];
       if (o.district) main.push(h("span", { class: "bk-list__sub", text: tr("district." + o.district) }));
       main.push(stagesEl(o));
       return h("li", { class: "akim-obj" }, [h("span", { class: "bk-list__main" }, main), h("span", { class: "akim-obj__tags" }, tags)]);
@@ -552,7 +616,9 @@
         card.appendChild(unavailable());
         return card;
       }
-      if (!o.late.length) card.appendChild(emptyBlock("akim.late.empty"));
+      // Нет ни одного объекта в реестре (район без работ) — «Пока пусто», а не «Все объекты идут по графику».
+      if (!o.total) card.appendChild(emptyBlock("common.state.empty_title", "building"));
+      else if (!o.late.length) card.appendChild(emptyBlock("akim.late.empty"));
       else {
         var ul = h("ul", { class: "bk-list akim-obj__list" });
         o.late.slice(0, LATE_VISIBLE).forEach(function (x) {
@@ -596,7 +662,7 @@
           h("li", { class: "akim-obj" }, [
             h("span", { class: "bk-list__main" }, [
               h("span", { class: "bk-list__title" }, [
-                label(x, "title"),
+                label(x, "title", "proposal.kind."),
                 x.is_new ? h("span", { class: "bk-tag bk-tag--project akim-new", text: tr("akim.proposals.new_badge") }) : null,
               ]),
               h("span", { class: "bk-list__sub", text: tr("akim.proposals.votes", { up: x.votes_up, down: x.votes_down }) }),
@@ -633,7 +699,7 @@
         ])
       );
       body.appendChild(
-        h("button", { type: "button", class: "bk-btn bk-btn--block akim-print-bottom", onclick: function () { root.print(); } }, [
+        h("button", { type: "button", class: "bk-btn bk-btn--block akim-print-bottom", onclick: function () { printPage(); } }, [
           icon("print"),
           tr("common.action.print"),
         ])
@@ -666,6 +732,28 @@
       rootEl.setAttribute("data-state", state.status);
     }
 
+    // ── печать ──
+    // В оболочке R01 «Картина дня» — прокручиваемая панель фиксированной высоты поверх карты: браузер напечатал бы
+    // только видимую часть и шапку с картой. Перед печатью помечаем свою ветку DOM (от элемента до body), а печатные
+    // стили akim.css прячут всё остальное и снимают ограничения высоты. После печати метки снимаются.
+    function preparePrint() {
+      if (!rootEl.isConnected || !rootEl.getClientRects().length) return; // экран скрыт — печатает тот, кто на виду
+      doc.documentElement.classList.add("akim-printing");
+      for (var el = rootEl.parentElement; el && el !== doc.documentElement; el = el.parentElement) el.classList.add("akim-print-path");
+    }
+    function cleanupPrint() {
+      doc.documentElement.classList.remove("akim-printing");
+      Array.prototype.forEach.call(doc.querySelectorAll(".akim-print-path"), function (el) {
+        el.classList.remove("akim-print-path");
+      });
+    }
+    function printPage() {
+      preparePrint();
+      root.print();
+    }
+    root.addEventListener("beforeprint", preparePrint); // Ctrl+P тоже
+    root.addEventListener("afterprint", cleanupPrint);
+
     var off = null;
     (I() ? I().ready : Promise.resolve())
       .then(function () {
@@ -675,20 +763,32 @@
         load();
       });
 
-    return {
+    var handle = {
       reload: load,
       setDate: setDate,
       setDistrict: setDistrict,
       get state() {
         return { date: state.date, district: state.district, status: state.status };
       },
+      print: printPage,
+      refresh: function () {
+        load(true);
+      },
       destroy: function () {
         if (off) off();
+        if (refreshTimer) clearInterval(refreshTimer);
+        doc.removeEventListener("visibilitychange", onVisible);
+        root.removeEventListener("beforeprint", preparePrint);
+        root.removeEventListener("afterprint", cleanupPrint);
+        cleanupPrint();
         state.request++;
         rootEl.textContent = "";
+        delete rootEl.birgeAkim;
       },
     };
+    rootEl.birgeAkim = handle; // для оболочки и тестов: document.getElementById("akim").birgeAkim.refresh()
+    return handle;
   }
 
-  root.BirgeAkim = { mount: mount, version: "akim-r14-2" };
+  root.BirgeAkim = { mount: mount, version: "akim-r14-3" };
 })(window);

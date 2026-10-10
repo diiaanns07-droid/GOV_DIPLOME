@@ -198,6 +198,9 @@
 .r07-toast { min-height: 48px; display: flex; align-items: center; padding: 10px 16px; border-radius: 12px; background: #152c26; color: #fff; box-shadow: 0 12px 40px #19362818; animation: r07-in 0.4s var(--r07-ease); transition: opacity 0.3s; }
 .r07-toast--error { background: #a33a2f; }
 .r07-toast--out { opacity: 0; }
+/* Выбор места жалобой (оболочка: body.birge-picking; без неё — heat.setPickMode). Оболочка B3 гасит нажатия
+   на значках (birge.css: pointer-events: none) — здесь возвращаем: значок сам передаёт карте щелчок точно в цель. */
+body.birge-picking .r07-badge[data-mode], .r07-badge.r07-badge--pick { pointer-events: auto; cursor: crosshair; }
 @keyframes r07-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 /* ---- Значок цели на карте: кружок цвета уровня с иконкой + белая плашка с числом ---- */

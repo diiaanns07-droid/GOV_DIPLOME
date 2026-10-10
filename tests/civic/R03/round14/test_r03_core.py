@@ -7,7 +7,7 @@ import json
 import numpy as np
 import pytest
 
-import fixtures as F
+import r03_fixtures as F
 from ml.civic_classifier_v2 import data as D
 from ml.civic_classifier_v2 import heuristic as H
 from ml.civic_classifier_v2 import labels as L
@@ -222,3 +222,28 @@ def test_stratified_subsample_keeps_every_class():
     assert D.stratified_subsample(recs, 1.0, seed=2) == recs
     tiny = D.stratified_subsample(recs, 0.01, seed=2)
     assert len(tiny) == 12                                   # по одному на категорию
+
+
+# ---------- версии словаря ----------
+
+def test_dict_v1_frozen():
+    """Словарь v1 — базовая модель эксперимента (c19b889); правка сделала бы результаты невоспроизводимыми."""
+    assert H.dict_sha256(H.STEMS_V1) == H.DICT_V1_SHA256
+    for lab in L.labels():                                   # product = v1 + добавки, ничего не удалено
+        assert H.STEMS[lab][:len(H.STEMS_V1[lab])] == H.STEMS_V1[lab]
+
+
+@pytest.mark.parametrize("text,label", [
+    ("машины стоят на газоне во дворе", "parking"),          # B-004 (R10, приёмка B2)
+    ("Двор заставлен машинами, не проехать скорой", "parking"),
+    ("Көліктер көгалға тұрып алды", "parking"),
+    ("Скосите траву на газоне во дворе", "yards"),           # без машин — по-прежнему двор
+    ("На газоне мусор", "waste"),
+])
+def test_product_dict_b004(text, label):
+    assert H.heuristic_label(text)[0] == label
+
+
+def test_v1_dict_still_has_b004_error():
+    # Эксперимент считает по v1: ошибка B-004 там остаётся — это честная базовая модель, не исправленная по тесту.
+    assert H.heuristic_label("машины стоят на газоне во дворе", "v1")[0] == "yards"

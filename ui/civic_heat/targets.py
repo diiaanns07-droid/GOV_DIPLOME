@@ -3,6 +3,8 @@
 Тепловая карта сама цели не выбирает (это R12, engine/civic_geo) — она только достаёт форму
 и подпись цели по её id. Источники по порядку:
   1. реестр готовых целей (fixtures/targets_demo.json и данные R12 data/civic/astana/geo/*.json);
+     для id osm-…/yard-… свой слой OSM (2а) главнее файлов R12: у R12 голое имя («Хан Шатыр») и name_kk = null,
+     а слой R07 подписывает тип объекта на двух языках (I-01 R01); выверенные подписи демо-фикстуры — главнее всех;
   2. модуль R12 engine.civic_geo, если в нём есть функция target_geometry(target);
   2а. реальные объекты OSM (LOCAL-1, data/civic/astana/osm-objects/): osm-node-…, osm-way-…, yard-…;
   3. участок улицы osm-w<way>-<n> — настоящая форма ребра из пешеходного графа OSM;
@@ -51,6 +53,11 @@ def near_street_labels(subtype: str, street_ru: str | None, street_kk: str | Non
     # «у ул. …» читается правильно только с сокращённым типом улицы; без типа — через запятую.
     ru = f"{word_ru} у {short}" if short != street_ru else f"{word_ru}, {street_ru}"
     return ru, f"{street_kk or kk_street_from_ru(street_ru)} {tail_kk}"
+
+APPROX_LABELS = ("Примерное место", "Шамамен көрсетілген орын")
+_APPROX_KK_SHORT = "Шамамен орны"
+# Источники формы без собственного названия: только здесь подпись из записи жалобы допустима (R15-S11).
+RECORD_LABEL_SOURCES = frozenset({"cell-grid", "cell-grid-r09"})
 
 KIND_WORD = {
     "object": ("Объект", "Нысан"),
@@ -123,10 +130,6 @@ def segment_labels(street_ru: str | None, street_kk: str | None, from_ru=None, t
     return ru, kk
 
 
-# Источники формы без собственного названия: только здесь подпись из записи жалобы допустима (R15-S11).
-RECORD_LABEL_SOURCES = frozenset({"cell-grid", "cell-grid-r09"})
-
-
 class TargetResolver:
     """Ищет форму и подпись цели. Потокобезопасен; граф грузится один раз и только при нужде."""
 
@@ -140,9 +143,9 @@ class TargetResolver:
         self._r12 = None
         self._use_osm_objects = use_osm_objects
         self._cache: dict = {}
-        self.add_registry(_load_json_targets(FIXTURE_TARGETS))
+        self.add_registry(_load_json_targets(FIXTURE_TARGETS, origin="r07"))
         for name in ("objects.json", "yards.json", "targets.json"):
-            self.add_registry(_load_json_targets(R12_GEO_DIR / name))
+            self.add_registry(_load_json_targets(R12_GEO_DIR / name, origin="r12"))
         if registry:
             self.add_registry(registry)
         if use_r12:
@@ -215,21 +218,19 @@ class TargetResolver:
                 "source": item["source"], "subtype": item["subtype"]}
 
     def _cell(self, tid: str, target: dict, point) -> dict | None:
-        """Ячейка cell-<x>-<y>. Сеток две с одинаковыми id (CONTRACT не задал формулу):
-          общая R07/R12 (geo.py: угол 71.0/50.8) — «Квартал», и «примерное место» формы R09
-          (ui/civic_feedback/v2/record.py: угол 70.9/50.8) — одна и та же id там в ~7 км.
+        """Ячейка cell-<x>-<y>. С R09 fa49fc9 сетка общая (угол 71.0/50.8, geo.py = ui/civic_feedback/v2/record.py),
+        но записи R09 до fa49fc9 считали id от угла 70.9/50.8 — та же id там в ~7 км.
         Решает точка жалобы: какая ячейка её содержит, та и правильная. Без точки — флаг approximate
-        в цели (его ставит только запасная цель R09)."""
+        (его ставит только запасная цель R09). Ячейка с approximate — «примерное место» (пунктир), иначе «Квартал»."""
         family = cell_family(tid, point, target)
-        if family == "r09":
-            poly = r09_cell_polygon(tid)
-            return {"geometry": poly, "label_ru": "Примерное место", "label_kk": "Шамамен көрсетілген орын",
-                    "approximate": True, "source": "cell-grid-r09"} if poly else None
-        poly = geo.cell_polygon(tid)
+        approx = family != "r07" or bool(target.get("approximate"))
+        poly = geo.cell_polygon(tid) if family == "r07" else r09_cell_polygon(tid, legacy=(family == "r09-legacy"))
         if not poly:
             return None
-        return {"geometry": poly, "label_ru": "Квартал", "label_kk": "Орам",
-                "approximate": bool(target.get("approximate")), "source": "cell-grid"}
+        if approx:
+            return {"geometry": poly, "label_ru": APPROX_LABELS[0], "label_kk": APPROX_LABELS[1],
+                    "approximate": True, "source": "cell-grid" if family == "r07" else "cell-grid-r09"}
+        return {"geometry": poly, "label_ru": "Квартал", "label_kk": "Орам", "approximate": False, "source": "cell-grid"}
 
     def resolve(self, target: dict | None, point=None) -> dict | None:
         """→ {geometry, label_ru, label_kk, approximate, anchor, source} или None, если нечего показать."""
@@ -244,14 +245,17 @@ class TargetResolver:
         found = self._resolve(kind, tid, target, point)
         if found:
             found.setdefault("anchor", geo.anchor_of(found["geometry"]))
-            # R15-S11: подпись из записи жалобы — только для ячейки «примерного места», где своего названия у карты
-            # нет. Реальный объект, участок улицы, двор подписываются по OSM/R12: запись приходит от жителя, и её
-            # подпись («Остановка «…»» с любым текстом) иначе показывалась бы всем на карте и в «Картине дня».
+            # R15-S11: подпись из записи жалобы — только у ячейки «примерного места», где своего названия у карты нет.
+            # Объект, участок улицы, двор подписываются по OSM/R12: запись приходит от жителя, и её подпись иначе
+            # показывалась бы всем на карте и в «Картине дня» (подмена названия любым текстом).
             if found.get("source") in RECORD_LABEL_SOURCES:
                 if target.get("label_ru"):
-                    found["label_ru"] = target["label_ru"]
+                    found["label_ru"] = str(target["label_ru"])[:80]
                 if target.get("label_kk"):
-                    found["label_kk"] = target["label_kk"]
+                    found["label_kk"] = str(target["label_kk"])[:80]
+                # R09/R12 пишут «Шамамен орны»; в словаре R11 (target.kind.cell, common.tag.approx) — «Шамамен көрсетілген орын».
+                if found["label_kk"].startswith(_APPROX_KK_SHORT):
+                    found["label_kk"] = APPROX_LABELS[1] + found["label_kk"][len(_APPROX_KK_SHORT):]
         if tid:
             self._cache[key] = found
         return found
@@ -259,18 +263,28 @@ class TargetResolver:
     def _resolve(self, kind, tid, target, point):
         if tid.startswith("cell-") and tid not in self._registry:
             return self._cell(tid, target, point)
-        if tid in self._registry:
-            item = self._registry[tid]
-            return {"geometry": item["geometry"], "label_ru": item.get("label_ru") or KIND_WORD.get(kind, KIND_WORD["area"])[0],
-                    "label_kk": item.get("label_kk") or KIND_WORD.get(kind, KIND_WORD["area"])[1],
+        item = self._registry.get(tid)
+        if _OSM_RE.match(tid) and (item is None or item.get("_origin") != "r07"):
+            real = self._osm_object(tid)      # I-01: свой слой OSM главнее голых имён из файлов R12
+            if real:
+                return real
+        if item is not None:
+            label_ru, label_kk = item.get("label_ru"), item.get("label_kk")
+            if not label_ru and item.get("subtype") in _NEAR_WORDS:
+                anchor = geo.anchor_of(item["geometry"])
+                near = near_street_labels(item["subtype"], self.nearest_street(anchor)) if anchor else None
+                label_ru, label_kk = near or (None, None)
+            plain = osm_objects.plain_labels(item.get("subtype")) or KIND_WORD.get(kind, KIND_WORD["area"])
+            return {"geometry": item["geometry"], "label_ru": label_ru or plain[0], "label_kk": label_kk or plain[1],
                     "approximate": bool(item.get("approximate")), "source": item.get("source", "registry"),
                     "subtype": item.get("subtype")}
         if self._r12 is not None and tid:
             try:
                 got = self._r12.target_geometry({"kind": kind, "id": tid})
                 if got and got.get("geometry"):
-                    return {"geometry": got["geometry"], "label_ru": got.get("label_ru") or KIND_WORD[kind][0],
-                            "label_kk": got.get("label_kk") or KIND_WORD[kind][1],
+                    plain = KIND_WORD.get(kind, KIND_WORD["area"])
+                    return {"geometry": got["geometry"], "label_ru": got.get("label_ru") or plain[0],
+                            "label_kk": got.get("label_kk") or plain[1],
                             "approximate": bool(got.get("approximate")), "source": "r12"}
             except Exception:
                 pass
@@ -284,28 +298,31 @@ class TargetResolver:
                 return {"geometry": {"type": "LineString", "coordinates": edge[0]}, "label_ru": ru, "label_kk": kk,
                         "approximate": False, "source": "osm-walking-graph"}
         if point and len(point) == 2:
-            return {"geometry": geo.circle_polygon(point, APPROX_RADIUS_M), "label_ru": "Примерное место",
-                    "label_kk": "Шамамен көрсетілген орын", "approximate": True, "source": "complaint-point"}
+            return {"geometry": geo.circle_polygon(point, APPROX_RADIUS_M), "label_ru": APPROX_LABELS[0],
+                    "label_kk": APPROX_LABELS[1], "approximate": True, "source": "complaint-point"}
         return None
 
 
 # ---------- Сетка «примерного места» R09 ----------
-# Копия формулы ui/civic_feedback/v2/record.py (R09): если модуль R09 доступен — берём его функцию.
+# Сейчас R09 считает ячейки по общей сетке (ui/civic_feedback/v2/record.py, угол 71.0/50.8) — берём его функцию.
+# Записи R09 до fa49fc9 считали id от угла 70.9/50.8 («старая» формула ниже) — их тоже рисуем там, где нажал житель.
 R09_CELL_ORIGIN = (70.9, 50.8)
 R09_DLAT = 150.0 / 111320.0
 R09_DLON = 150.0 / (111320.0 * math.cos(math.radians(51.15)))
 _CELL_ID_RE = re.compile(r"^cell-(-?\d+)-(-?\d+)$")
 
 
-def r09_cell_polygon(cell_id: str) -> dict | None:
-    try:
-        from ui.civic_feedback.v2 import record as r09_record  # type: ignore
+def r09_cell_polygon(cell_id: str, *, legacy: bool = False) -> dict | None:
+    """Контур ячейки R09: функция модуля R09, если он есть (и legacy=False), иначе «старая» формула 70.9/50.8."""
+    if not legacy:
+        try:
+            from ui.civic_feedback.v2 import record as r09_record  # type: ignore
 
-        ring = r09_record.cell_polygon(cell_id)
-        if ring:
-            return {"type": "Polygon", "coordinates": [ring]}
-    except Exception:
-        pass
+            ring = r09_record.cell_polygon(cell_id)
+            if ring:
+                return {"type": "Polygon", "coordinates": [ring]}
+        except Exception:
+            pass
     m = _CELL_ID_RE.match(cell_id or "")
     if not m:
         return None
@@ -325,12 +342,15 @@ def _in_box(point, polygon: dict | None, pad: float = 1e-6) -> bool:
 
 
 def cell_family(cell_id: str, point, target: dict | None) -> str:
-    """'r07' (общая сетка R07/R12) или 'r09' (примерное место R09) — по точке жалобы, иначе по флагу."""
+    """'r07' (общая сетка R07/R12/R09), 'r09' (контур модуля R09) или 'r09-legacy' (старая формула R09) —
+    по точке жалобы: какая ячейка её содержит. Без точки — по флагу approximate."""
     if point and len(point) == 2:
         if _in_box(point, geo.cell_polygon(cell_id)):
             return "r07"
         if _in_box(point, r09_cell_polygon(cell_id)):
             return "r09"
+        if _in_box(point, r09_cell_polygon(cell_id, legacy=True)):
+            return "r09-legacy"
     return "r09" if (target or {}).get("approximate") else "r07"
 
 
@@ -348,14 +368,15 @@ def _street_labels() -> dict:
     return _street_labels_cache
 
 
-def _load_json_targets(path: Path) -> dict:
-    """Читает реестр целей: {"targets": {id: {...}}} или {"items": [{id, geometry, ...}]}; иначе пусто."""
+def _load_json_targets(path: Path, origin: str | None = None) -> dict:
+    """Читает реестр целей: {"targets": {id: {...}}} или {"items": [{id, geometry, ...}]}; иначе пусто.
+    origin: "r07" — своя демо-фикстура (подписи выверены), "r12" — файлы R12 (kind = подтип, имя без типа)."""
     try:
         raw = json.loads(Path(path).read_text("utf-8"))
     except (OSError, ValueError):
         return {}
     if isinstance(raw, dict) and isinstance(raw.get("targets"), dict):
-        return raw["targets"]
+        return {tid: (dict(it, _origin=origin) if isinstance(it, dict) and origin else it) for tid, it in raw["targets"].items()}
     items = raw.get("items") if isinstance(raw, dict) else raw
     out = {}
     for it in items or []:
@@ -371,8 +392,16 @@ def _load_json_targets(path: Path) -> dict:
             c = it.get("point") or it.get("coordinates") or ([it["lon"], it["lat"]] if "lon" in it and "lat" in it else None)
             if not it.get("geometry") and c and len(c) == 2 and all(isinstance(v, (int, float)) for v in c):
                 it["geometry"] = {"type": "Point", "coordinates": [float(c[0]), float(c[1])]}
+        if origin == "r12" and not it.get("subtype") and osm_objects.plain_labels(it.get("kind")):
+            it["subtype"] = it["kind"]             # у R12 kind = bus_stop / playground / yard …
+        made = osm_objects.labels_for_subtype(it.get("subtype"), it.get("name_ru") or it.get("name"), it.get("name_kk")) \
+            if origin == "r12" and not it.get("label_ru") else None
+        if made:
+            it["label_ru"], it["label_kk"] = made
         it.setdefault("label_ru", it.get("name_ru") or it.get("name"))
         it.setdefault("label_kk", it.get("name_kk"))
+        if origin:
+            it["_origin"] = origin
         if it.get("geometry"):
             out[str(it["id"])] = it
     return out

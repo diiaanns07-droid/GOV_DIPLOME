@@ -1,0 +1,12 @@
+﻿Показатель;Значение
+Размер fp32 / int8, МБ;1060.9 / 265.8
+Квантование;QInt8, per-channel = False
+Совпадение top-1 fp32 с PyTorch;100.0 % (n = 200)
+Совпадение top-1 int8 с PyTorch;96.5 % (n = 200)
+Время на текст, int8_all_threads;102.86 мс (p95 158.34)
+Время на текст, int8_1_thread;80.05 мс (p95 135.15)
+Проверка fp32_matches_torch;PASS
+Проверка int8_agreement;FAIL
+Проверка int8_mean_lt_50ms;FAIL
+Диагностика LOCAL-4: per-channel, совпадение;98.0 %
+Диагностика LOCAL-4: per-channel, 4 потока;22.68 мс (p95 32.89)

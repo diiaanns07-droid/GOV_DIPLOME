@@ -210,9 +210,10 @@ def load_human(paths: list[Path], *, not_complaint: str = "drop", drop_unsure: b
                 if by_id[rid]["label"] != label:
                     report["duplicate_id_label_conflict"] += 1
                 continue
+            # style/hard есть только у размеченных синтетических наборов (probe_v2) — для срезов в отчёте.
             by_id[rid] = {"id": rid, "text": text, "label": label, "lang": _lang(row, text), "group": rid,
-                          "split": None, "source": "human", "evidence": "real_human_text", "unsure": unsure,
-                          "style": ""}
+                          "split": None, "source": "human", "evidence": str(row.get("evidence") or "real_human_text"),
+                          "unsure": unsure, "style": str(row.get("style") or ""), "hard": bool(row.get("hard"))}
     records = list(by_id.values())
     # Точные дубли текста среди людей (один человек отправил дважды) — оставляем первый.
     seen, uniq = set(), []

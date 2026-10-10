@@ -244,6 +244,8 @@ def obj(i, **kw):
 def test_normalize_object_counts_delay_and_stale_by_contract():
     n = sources.normalize_object(obj(1, forecast_end="2026-11-24"), NOW)
     assert n["delay_days"] == 23 and n["stale"] is False and n["title_kk"] == "Объект 1"
+    assert n["title_kk_missing"] is True, "нет title_kk — интерфейс в ҚАЗ покажет вид объекта (B-018)"
+    assert sources.normalize_object(obj(9, title_kk="Нысан 9"), NOW)["title_kk_missing"] is False
     assert sources.normalize_object(obj(2, delay_days=5), NOW)["delay_days"] == 5, "число R06 главнее"
     assert sources.normalize_object(obj(3, forecast_end="2026-10-20"), NOW)["delay_days"] == 0, "раньше срока — не отставание"
     assert sources.normalize_object(obj(4, updated_at="2026-09-27T10:00:00+05:00"), NOW)["stale"] is True   # 15 дней

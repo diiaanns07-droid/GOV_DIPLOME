@@ -1,0 +1,137 @@
+"""R03 v2: таблицы для диплома и разбор ошибок (analysis.py) — без torch, на готовых результатах."""
+
+from __future__ import annotations
+
+import json
+
+import r03_fixtures as F
+from ml.civic_classifier_v2 import analysis as A
+from ml.civic_classifier_v2 import labels as L
+from ml.civic_classifier_v2.config import RESULTS_DIR
+from ml.civic_classifier_v2.evaluate import evaluate_set
+
+
+def _fake_exp() -> dict:
+    """Маленький experiments.json: 3 модели × режим synth_all на «probe» из фикстуры."""
+    labs = L.labels()
+    probe = [dict(r, group=r["id"]) for r in F.probe_like()]
+    y = [labs.index(r["label"]) for r in probe]
+    wrong = [(i + 1) % 12 for i in y]
+    preds = {"heuristic": [labs.index("other")] * len(y), "logreg": y[:-4] + wrong[-4:], "transformer": y[:-2] + wrong[-2:]}
+    runs = {}
+    for m, p in preds.items():
+        runs[f"synth_all/{m}"] = {"status": "OK", "eval": {"probe_v2": evaluate_set(probe, p, None, labs, False)},
+                                  "train": {"n_train": 10, "n_val": 5, "epochs_run": 3, "best_epoch": 2,
+                                            "best_val_macro_f1": 0.5, "seconds": 1.0, "gpu_peak_gb": None}}
+    return {"labels": list(labs), "runs": runs, "meta": {"created_at": "t", "git_sha": "x"},
+            "human_eval": {"status": "NOT_EVALUATED"},
+            "comparisons": [{"set": "probe_v2", "title": "synth_all: трансформер − эвристика",
+                             "delta": {"delta": 0.1, "low": 0.02, "high": 0.2, "share_delta_gt_0": 0.99}},
+                            {"set": "human", "title": "mix: x", "delta": {"delta": 0, "low": -1, "high": 1,
+                                                                         "share_delta_gt_0": 0.5}}]}
+
+
+def test_tables_structure_and_csv(tmp_path):
+    exp = _fake_exp()
+    tables = A.build_tables(exp, {}, {})
+    slugs = [t.slug for t in tables]
+    assert {"t1_probe_v2_macro_f1", "t3_paired_probe_v2", "t4_per_class_probe_v2", "t5_slices_probe_v2"} <= set(slugs)
+    t3 = next(t for t in tables if t.slug == "t3_paired_probe_v2")
+    assert t3.rows == [["v3 + LLM: трансформер − словарь", "+0.100", "[+0.020; +0.200]", "0.99", "доказано"]]
+    t4 = next(t for t in tables if t.slug == "t4_per_class_probe_v2")
+    assert len(t4.rows) == 13 and t4.rows[-1][0] == "macro-F1"
+    md = A.render_tables(tables, exp)
+    assert "Таблица 1" in md and "NOT_EVALUATED" in md
+    for t in tables:
+        path = t.write_csv(tmp_path)
+        assert path.read_bytes().startswith(b"\xef\xbb\xbf")             # BOM: Excel читает кириллицу
+        assert all(len(r) == len(t.header) for r in t.rows)
+
+
+def test_confusions_and_magnets():
+    exp = _fake_exp()
+    ev = exp["runs"]["synth_all/heuristic"]["eval"]["probe_v2"]
+    pairs = A.confusions(ev, L.labels(), top=3)
+    assert all(p[1] == "other" and p[0] != "other" for p in pairs)
+    mg = A.magnets(ev, L.labels())
+    assert mg[0][0] == "other" and mg[0][1] == 24 and mg[0][2] == 2
+
+
+def test_errors_never_show_human_texts(tmp_path):
+    exp = _fake_exp()
+    probe_rows = F.probe_like()
+    preds = tmp_path / "preds.jsonl"
+    rows = [{"set": "probe_v2", "id": r["id"], "true": r["label"], "pred": "other"} for r in probe_rows[:3]]
+    rows.append({"set": "human", "id": probe_rows[3]["id"], "true": probe_rows[3]["label"], "pred": "other"})
+    preds.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
+    probe_file = F.write_jsonl(tmp_path / "probe.jsonl", probe_rows)
+    md = A.render_errors(exp, A.read_preds([preds]), A.load_probe(probe_file))
+    assert probe_rows[0]["text"][:40] in md                              # текст probe — можно
+    assert probe_rows[3]["text"][:40] not in md                          # строка human — никогда
+
+
+def test_ru_title():
+    assert A._ru_title("synth_template: логрегрессия − эвристика") == "шаблонная v3: логрегрессия − словарь"
+    assert A._ru_title("transformer: LLM-синтетика − шаблонная синтетика").startswith("трансформер:")
+
+
+def test_real_results_render_if_present(tmp_path):
+    """Если в ветке есть результаты LOCAL-4 — команды отрабатывают на них без ошибок."""
+    if not (RESULTS_DIR / "experiments.json").exists():
+        return
+    assert A.main(["tables", "--out", str(tmp_path / "t.md"), "--csv-dir", str(tmp_path / "csv")]) == 0
+    assert A.main(["errors", "--out", str(tmp_path / "e.md")]) == 0
+    assert "Таблица 1" in (tmp_path / "t.md").read_text(encoding="utf-8")
+
+
+# ---------- перевод транслита (translit.py) ----------
+
+FAKE_NORMALIZE = '''
+def to_cyrillic(text, min_share=0.5):
+    letters = [c for c in text.lower() if c.isalpha()]
+    latin = [c for c in letters if "a" <= c <= "z"]
+    if not letters or len(latin) < min_share * len(letters):
+        return text
+    return text.lower().replace("yama", "яма").replace("fonar", "фонар")
+'''
+
+
+def test_translit_compare_with_fake_normalize(tmp_path):
+    from ml.civic_classifier_v2 import heuristic as H
+    from ml.civic_classifier_v2 import translit as T
+    f = tmp_path / "normalize.py"
+    f.write_text(FAKE_NORMALIZE, encoding="utf-8")
+    to_cyr = T.load_to_cyrillic(str(f))
+    recs = [{"id": "1", "text": "na doroge yama", "label": "roads", "style": "translit"},
+            {"id": "2", "text": "Во дворе не горят фонари", "label": "lighting", "style": "colloquial"},
+            {"id": "3", "text": "fonar ne gorit", "label": "lighting", "style": "translit"}]
+    labs = L.labels()
+    raw = [labs.index(x) for x in H.predict([r["text"] for r in recs], "v1")]
+    cyr_texts = [to_cyr(r["text"]) for r in recs]
+    cyr = [labs.index(x) for x in H.predict(cyr_texts, "v1")]
+    res = T.compare(recs, raw, cyr, [a != r["text"] for a, r in zip(cyr_texts, recs)])
+    assert res["texts_changed"] == 2 and res["changed_by_style"] == {"translit": 2}   # кириллицу не трогает
+    assert res["raw"]["translit_accuracy"] == 0.0 and res["to_cyrillic"]["translit_accuracy"] == 1.0
+    assert res["paired_delta_cyr_minus_raw"]["delta"] > 0
+
+
+def test_load_to_cyrillic_without_r04_gives_clear_error(monkeypatch):
+    import builtins
+    import pytest
+    from ml.civic_classifier_v2 import translit as T
+    real_import = builtins.__import__
+
+    def fake_import(name, *a, **k):
+        if name.startswith("ml.civic_dedup"):
+            raise ImportError("нет")
+        return real_import(name, *a, **k)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+    with pytest.raises(ModuleNotFoundError, match="normalize-file"):
+        T.load_to_cyrillic(None)
+
+
+def test_load_human_keeps_style_for_probe(tmp_path):
+    from ml.civic_classifier_v2 import data as D
+    recs, _ = D.load_human([F.write_jsonl(tmp_path / "p.jsonl", F.probe_like())])
+    assert {r["style"] for r in recs} == {"colloquial"} and any(r["hard"] for r in recs)

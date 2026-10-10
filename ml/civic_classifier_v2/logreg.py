@@ -88,7 +88,7 @@ class LogRegModel:
                 cols.append(c)
                 vals.append(v / norm)
             if n_kw:
-                hits = heuristic.keyword_hits(t)
+                hits = heuristic.keyword_hits(t, version="v1")  # признаки словаря — замороженная v1
                 any_hit = False
                 for j, lab in enumerate(self.labels):
                     h = hits.get(lab, 0)

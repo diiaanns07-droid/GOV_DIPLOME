@@ -25,8 +25,15 @@
  *   onToolChange(active, kind) — модуль взял/отдал щелчки по карте (R01: map.setInteractionEnabled);
  *   onSelect(proposal|null)    — выбрано предложение (R06 может показать свою карточку);
  *   renderCard: false          — не показывать встроенную карточку (её рисует R06).
+ *   avoid: () => [элементы]    — элементы хозяина поверх карты (шапка, панели, кнопки карты R01): модуль ставит
+ *                                объект при открытой карточке в свободную часть карты, а в режиме overlay — и свою
+ *                                панель (справа от панели / над шторкой);
+ *   dock: false                — спрятать каталог/подсказку (объекты, подписи и карточка по нажатию — видны);
+ *   mode                       — "akimat" | "resident" (как у оболочки R01; role — старое имя), событие "birge:mode";
+ *   api                        — клиент оболочки R01 ({v2(method, path, body)}); map — карта или функция map().
  *
- * Handle: start(kind), cancel(), select(id), refresh(), setVisible(bool), getState(), destroy().
+ * Handle: start(kind), cancel(), select(id), flyToProposals(), setMode(mode), update({mode, dock, visible}), refresh(),
+ *         setVisible(bool), getState(), destroy().
  * Событие для соседей: document "civic-build3d:tool" {active, kind} — как "civic-editor:tool" у редактора.
  */
 (function (root) {
@@ -82,12 +89,15 @@
       "build3d.near.lamps": "На участке уже отмечены фонари: {n}",
       "build3d.near.source": "по данным OpenStreetMap",
       "build3d.card.yard": "Двор: {name}",
+      "build3d.resident.hint": "Нажмите на проект, чтобы проголосовать",
+      "build3d.resident.empty": "Здесь пока нет проектов",
+      "build3d.demo.title": "3D-превью",
     },
     kk: {
       "build3d.loading": "3D жүктеліп жатыр…",
       "build3d.unsupported_title": "Көлемді көрініс қолжетімсіз",
-      "build3d.unsupported_text": "Браузер 3D-ді қолдамайды. Картаны Chrome, Edge немесе Firefox-та ашыңыз.",
-      "build3d.load_failed": "3D жүктелмеді. Байланысты тексеріп, қайталаңыз.",
+      "build3d.unsupported_text": "Браузер көлемді көріністі қолдамайды. Картаны Chrome, Edge немесе Firefox-та ашыңыз.",
+      "build3d.load_failed": "3D көрініс жүктелмеді. Байланысты тексеріп, қайталаңыз.",
       "build3d.hint.rotate": "Бұрып, «Орнату» түймесін басыңыз",
       "build3d.hint.touch": "Картаны жылжытыңыз немесе орынды түртіңіз. Содан кейін «Орнату» түймесін басыңыз",
       "build3d.hint.segment_start": "Көшені басыңыз — бөліктің басы",
@@ -100,7 +110,7 @@
       "build3d.err.too_long": "Бөлік 900 м-ден ұзын. Нүктелерді жақынырақ таңдаңыз",
       "build3d.err.no_path": "Осы көше бойымен жол табылмады. Басқа нүктелерді таңдаңыз",
       "build3d.err.no_streets": "Жарықтандыруды әзірге тек Нұра ауданында ұсынуға болады",
-      "build3d.err.outside_city": "Бұл жер Астанаға кірмейді. Қаладан орын таңдаңыз",
+      "build3d.err.outside_city": "Бұл жер Астанаға кірмейді. Қала ішінен орын таңдаңыз",
       "build3d.err.overlap": "Бұл жерде басқа жоба тұр. Нысанды жылжытыңыз",
       "build3d.placed": "Жоба орнатылды",
       "build3d.placed_local": "Жоба орнатылып, осы құрылғыда сақталды",
@@ -120,10 +130,13 @@
       "build3d.near.sports": "Жанында спорт алаңы бар, {m} м",
       "build3d.near.square": "Жанында саябақ немесе гүлзар бар, {m} м",
       "build3d.near.square_named": "Жанында саябақ немесе гүлзар бар: «{name}», {m} м",
-      "build3d.near.square_inside": "Бұл орын бұрыннан бар саябақ немесе гүлзардың ішінде",
-      "build3d.near.lamps": "Бөлікте шамдар белгіленген: {n}",
+      "build3d.near.square_inside": "Бұл орын бұрыннан бар саябақтың немесе гүлзардың ішінде",
+      "build3d.near.lamps": "Бұл бөлікте шамдар бұрыннан белгіленген: {n}",
       "build3d.near.source": "OpenStreetMap деректері бойынша",
       "build3d.card.yard": "Аула: {name}",
+      "build3d.resident.hint": "Дауыс беру үшін жобаны басыңыз",
+      "build3d.resident.empty": "Мұнда әзірге жоба жоқ",
+      "build3d.demo.title": "3D-көрініс",
     },
   };
 
@@ -153,6 +166,11 @@
       "common.tag.project": "Проект",
       "common.tag.demo": "Пример",
       "common.tag.demo_hint": "Пример для показа, не настоящее обращение",
+      "common.tag.project": "Проект",
+      "proposal.status.approved": "Одобрено",
+      "proposal.status.rejected": "Отклонено",
+      "proposal.voting_closed": "Голосование по этому проекту закрыто",
+      "proposal.need_staff": "Войдите как сотрудник акимата",
     },
     kk: {
       "proposal.catalog.title": "Не салайық?",
@@ -178,6 +196,11 @@
       "common.tag.project": "Жоба",
       "common.tag.demo": "Үлгі",
       "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты өтініш емес",
+      "common.tag.project": "Жоба",
+      "proposal.status.approved": "Мақұлданды",
+      "proposal.status.rejected": "Қабылданбады",
+      "proposal.voting_closed": "Бұл жоба бойынша дауыс беру аяқталды",
+      "proposal.need_staff": "Әкімдік қызметкері ретінде кіріңіз",
     },
   };
 
@@ -280,21 +303,92 @@
   var BUILD_MS = 1200; // анимация постройки
   var REMOVE_MS = 320;
   var ROTATE_STEP = 15;
+  var PLACE_ZOOM = 17.5; // масштаб, на котором модели хорошо видны (UX_REVIEW день 3 #20)
+  var VIEW_ZOOM = 17.4; // «показать проекты» — тот же крупный план
   var LAYER_ID = "civic-build3d";
   var OUTLINE_COLOR = 0x176b4a; // пунктир границы проекта (бренд)
   var OUTLINE_SELECTED = 0x2f7fd6; // выбранный проект — цвет фокуса ui-kit
 
   // ───────────── mount ─────────────
 
+  // R01 передаёт карту функцией map() (null, пока карта грузится — как у R04 в раунде 13): ждём её до минуты
+  // и только потом монтируем; до этого handle отвечает phase "waiting_map" и запоминает setVisible/setMode.
   function mount(opts) {
+    opts = opts || {};
+    if (typeof opts.map !== "function") return mountWithMap(opts);
+    var getter = opts.map;
+    var get = function () {
+      try {
+        return getter() || null;
+      } catch (e) {
+        return null;
+      }
+    };
+    var now = get();
+    if (now) return mountWithMap(Object.assign({}, opts, { map: now }));
+    var inner = null,
+      dead = false,
+      queued = [],
+      tries = 0,
+      resolveReady;
+    var ready = new Promise(function (r) {
+      resolveReady = r;
+    });
+    var timer = setInterval(function () {
+      var m = get();
+      if (dead || (!m && ++tries < 240)) return;
+      clearInterval(timer);
+      if (dead || !m) return resolveReady(null);
+      inner = mountWithMap(Object.assign({}, opts, { map: m }));
+      queued.forEach(function (fn) {
+        fn(inner);
+      });
+      inner.ready.then(resolveReady, resolveReady);
+    }, 250);
+    function later(name) {
+      return function () {
+        var args = arguments;
+        if (inner) return inner[name].apply(inner, args);
+        if (name === "update" || name === "setVisible" || name === "setMode")
+          queued.push(function (h) {
+            h[name].apply(h, args);
+          });
+        return name === "start" || name === "flyToProposals" ? false : undefined;
+      };
+    }
+    return {
+      ready: ready,
+      start: later("start"),
+      cancel: later("cancel"),
+      select: later("select"),
+      flyToProposals: later("flyToProposals"),
+      refresh: later("refresh"),
+      setVisible: later("setVisible"),
+      setMode: later("setMode"),
+      update: later("update"),
+      getState: function () {
+        return inner ? inner.getState() : { phase: "waiting_map", mode: "idle", count: 0, proposals: [], items: [] };
+      },
+      _project: later("_project"),
+      destroy: function () {
+        dead = true;
+        clearInterval(timer);
+        if (inner) inner.destroy();
+      },
+    };
+  }
+
+  function mountWithMap(opts) {
     opts = opts || {};
     var map = opts.map;
     if (!map || typeof map.addLayer !== "function") throw new Error("CivicBuild3D.mount: нужна карта MapLibre (opts.map)");
     if (!Core || !ModelsLib) throw new Error("CivicBuild3D: подключите build3d-core.js и build3d-models.js раньше build3d.js");
 
     var o = {
-      role: opts.role === "resident" ? "resident" : "akimat",
+      // R01: «mode» — "akimat" | "resident" (переключатель в шапке); «role» — старое имя того же.
+      role: (opts.mode || opts.role) === "resident" ? "resident" : "akimat",
       apiPrefix: opts.apiPrefix || "/api/civic/v2",
+      geoPrefix: opts.geoPrefix || opts.apiPrefix || "/api/civic/v2", // маршруты R12 /street-snap, /street-segment
       threeUrl: opts.threeUrl || "/vendor/three/three.module.min.js",
       dataUrl: (opts.dataUrl || "/civic/build3d/data/").replace(/\/?$/, "/"),
       iconsUrl: opts.iconsUrl || "/civic/ui-kit/icons.svg",
@@ -302,6 +396,8 @@
       buildMs: opts.buildMs > 0 ? opts.buildMs : BUILD_MS,
       autoZoom: opts.autoZoom !== false,
       renderCard: opts.renderCard !== false,
+      useR06Card: opts.useR06Card !== false, // карточка R06 при настоящем API (если её модуль подключён)
+      dock: opts.dock !== false, // каталог/подсказка видны (карточка и размещение — всегда)
       storage: opts.storage || safeLocalStorage(),
     };
     var i18n = opts.i18n || root.BirgeI18n || null;
@@ -342,10 +438,13 @@
     var layerAdded = false;
     var unsubLang = null;
     var toastTimer = null;
+    var toastIsError = false;
 
     // ── DOM: корень, нижняя панель, тосты, подписи ──
     var hostRoot = opts.root || map.getContainer();
-    var ui = el("div", "b3d bk-app" + (opts.root ? "" : " b3d--overlay"), { "data-b3d-role": o.role });
+    // overlay: панель внизу, карточка на ноутбуке справа. Без своего root — всегда; с root хозяина — по opts.overlay
+    // (корень хозяина тогда должен покрывать свободную часть карты, см. INTEGRATION.txt).
+    var ui = el("div", "b3d bk-app" + (!opts.root || opts.overlay ? " b3d--overlay" : ""), { "data-b3d-role": o.role });
     var dock = el("section", "b3d-dock", { "aria-live": "polite" });
     var toasts = el("div", "b3d-toasts");
     ui.appendChild(toasts);
@@ -363,7 +462,7 @@
       var sel = S.selected && S.objects[S.selected] ? S.objects[S.selected] : null;
       var g = S.ghost;
       return JSON.stringify([
-        S.phase, S.mode, S.kind, S.hint, S.visible, S.storeMode, S.cardBusy, t.lang(), Object.keys(S.objects).length,
+        S.phase, S.mode, S.kind, S.hint, S.visible, S.storeMode, S.cardBusy, t.lang(), Object.keys(S.objects).length, o.dock, o.role,
         g ? [g.valid && g.valid.ok, !!(g.section && g.section.ok), nearInfo()] : null,
         sel ? [sel.p.id, sel.p.votes_up, sel.p.votes_down, sel.p.my_vote, sel.pending] : null,
       ]);
@@ -379,6 +478,7 @@
         if (active.getAttribute("data-action")) focusSel = '[data-action="' + active.getAttribute("data-action") + '"]';
         else if (active.getAttribute("data-kind")) focusSel = '[data-kind="' + active.getAttribute("data-kind") + '"]';
       }
+      applyInsets();
       renderDock();
       labelsLayer.classList.toggle("b3d-labels--passive", S.mode === "placing");
       if (focusSel) {
@@ -386,6 +486,40 @@
         if (again) again.focus({ preventScroll: true });
       }
     }
+    // Свободная часть карты: не заходим под элементы хозяина (панель R01 слева, шторка снизу на телефоне).
+    function applyInsets() {
+      if (typeof opts.avoid !== "function" || !ui.classList.contains("b3d--overlay")) return;
+      var host = ui.parentNode;
+      if (!host || !host.getBoundingClientRect) return;
+      var c = host.getBoundingClientRect();
+      var ins = { left: 0, right: 0, top: 0, bottom: 0 };
+      var gap = 12;
+      var list = [];
+      try {
+        list = opts.avoid() || [];
+      } catch (e) {
+        list = [];
+      }
+      list.forEach(function (node) {
+        if (!node || !node.getBoundingClientRect || node.hidden) return;
+        var r = node.getBoundingClientRect();
+        if (!r.width || !r.height || r.right <= c.left || r.left >= c.right || r.bottom <= c.top || r.top >= c.bottom) return;
+        var wide = r.width > c.width * 0.6,
+          tall = r.height > c.height * 0.25;
+        // Полосы во всю ширину: шапка сверху, шторка снизу. Колонки: панель/кнопки слева или справа.
+        if (wide && r.bottom >= c.bottom - 4) ins.bottom = Math.max(ins.bottom, c.bottom - r.top + gap);
+        else if (wide && r.top - c.top < c.height * 0.2) ins.top = Math.max(ins.top, r.bottom - c.top + gap);
+        else if (tall && r.right - c.left < c.width * 0.5) ins.left = Math.max(ins.left, r.right - c.left + gap);
+        else if (tall && r.left - c.left > c.width * 0.5) ins.right = Math.max(ins.right, c.right - r.left + gap);
+      });
+      // Справа у хозяина своя панель (карточки целей R07): карточка проекта остаётся внизу, как каталог.
+      ui.classList.toggle("b3d--host-right", ins.right > 0);
+      ui.style.left = ins.left + "px";
+      ui.style.right = ins.right + "px";
+      ui.style.top = ins.top + "px";
+      ui.style.bottom = ins.bottom + "px";
+    }
+
     function renderDock() {
       ui.hidden = !S.visible;
       dock.textContent = "";
@@ -395,8 +529,22 @@
       if (S.phase === "error") return renderMessage("wifi-off", t("build3d.load_failed"), "", true);
       if (S.mode === "placing") return renderPlacing();
       if (S.selected && S.objects[S.selected] && o.renderCard) return renderCard(S.objects[S.selected].p);
+      if (!o.dock) {
+        dock.setAttribute("data-state", "empty"); // хозяин спрятал каталог; объекты и карточки работают
+        return;
+      }
       if (o.role === "akimat") return renderCatalog();
-      dock.setAttribute("data-state", "empty");
+      renderResidentHint();
+    }
+
+    // Житель: каталога нет, но есть понятная подсказка, что делать (UX_REVIEW день 3 #24).
+    function renderResidentHint() {
+      var count = Object.keys(S.objects).length;
+      dock.setAttribute("data-state", "hint");
+      var line = el("p", "b3d-hint b3d-hint--lead", { role: "status" });
+      line.appendChild(icon(count ? "thumb-up" : "info", o.iconsUrl));
+      line.appendChild(el("span", "", { text: t(count ? "build3d.resident.hint" : "build3d.resident.empty") }));
+      dock.appendChild(line);
     }
 
     function renderLoading() {
@@ -505,7 +653,75 @@
       return b;
     }
 
+    // С настоящим сервером R06 карточку проекта рисует сам R06 (BirgeProposals.renderProposal): одна карточка
+    // во всей сборке — голоса, статус, «Одобрить / Отклонить» для акимата. От 3D-модуля — «Рядом / Двор» и «Удалить».
+    function useR06Card() {
+      return o.useR06Card && S.storeMode === "api" && root.BirgeProposals && typeof root.BirgeProposals.renderProposal === "function";
+    }
+    function toR06Item(p) {
+      var name = Core.KINDS[p.kind] ? COMMON_FALLBACK.ru[Core.KINDS[p.kind].key] : p.kind;
+      return {
+        id: p.id, kind: p.kind, geometry: p.geometry, rotation_deg: p.rotation_deg, status: p.status,
+        title_ru: p.title_ru || name, title_kk: p.title_kk || null, district: p.district, planned_year: p.year,
+        votes_up: p.votes_up, votes_down: p.votes_down, my_vote: p.my_vote || null,
+        voting_open: p.voting_open !== false, demo: p.demo,
+      };
+    }
+    function renderR06Card(p) {
+      dock.setAttribute("data-state", "card");
+      var head = el("div", "b3d-head b3d-head--end");
+      var close = el("button", "bk-iconbtn", { type: "button", "aria-label": t("common.action.close"), title: t("common.action.close"), "data-action": "close-card" });
+      close.appendChild(icon("close", o.iconsUrl));
+      close.addEventListener("click", function () {
+        select(null);
+      });
+      head.appendChild(close);
+      dock.appendChild(head);
+      var host = el("div", "b3d-r06");
+      dock.appendChild(host);
+      try {
+        root.BirgeProposals.renderProposal(host, toR06Item(p), {
+          role: o.role,
+          onChange: function (np) {
+            // Голос/решение уже показаны карточкой R06 — обновляем только свои данные и подпись, без перерисовки.
+            var obj = S.objects[p.id];
+            var fresh = Core.normalizeProposal(np);
+            if (!obj || !fresh) return;
+            obj.p = Object.assign({}, obj.p, fresh);
+            updateLabelText(obj);
+            emitSelect(obj.p);
+          },
+        });
+      } catch (e) {
+        console.error("[build3d] карточка R06", e);
+        dock.textContent = "";
+        return renderOwnCard(p);
+      }
+      var where = placeText(p);
+      if (where) dock.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
+      var yard = yardOf(p);
+      if (yard) {
+        var yardName = t.lang() === "kk" ? yard.label_kk || yard.label_ru : yard.label_ru || yard.label_kk;
+        dock.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
+      }
+      if (o.role === "akimat") dock.appendChild(deleteBtn(p));
+    }
+
+    function deleteBtn(p) {
+      var del = actionBtn("close", t("proposal.delete"), "bk-btn--danger b3d-delete", function () {
+        removeProposal(p.id);
+      }, "delete");
+      if (S.cardBusy === "delete") del.setAttribute("aria-busy", "true");
+      if (S.objects[p.id] && S.objects[p.id].pending) del.setAttribute("aria-disabled", "true");
+      return del;
+    }
+
     function renderCard(p) {
+      if (useR06Card()) return renderR06Card(p);
+      return renderOwnCard(p);
+    }
+
+    function renderOwnCard(p) {
       dock.setAttribute("data-state", "card");
       var card = el("article", "b3d-pcard", { "aria-labelledby": "b3d-pcard-title" });
       var head = el("div", "b3d-head");
@@ -521,14 +737,17 @@
       head.appendChild(close);
       card.appendChild(head);
       var tags = el("div", "bk-card__row");
-      tags.appendChild(el("span", "bk-tag bk-tag--project", { text: t("proposal.label", { year: String(p.year) }) }));
+      tags.appendChild(el("span", "bk-tag bk-tag--project", { text: projectLabel(p) }));
       if (p.demo) tags.appendChild(el("span", "bk-tag bk-tag--demo", { text: t("common.tag.demo"), title: t("common.tag.demo_hint") }));
-      tags.appendChild(el("span", "bk-meta", { text: t("proposal.status.proposal") }));
+      // Статус словом и цветом (R06: proposal | approved | rejected).
+      var st = p.status === "approved" || p.status === "rejected" ? p.status : "proposal";
+      tags.appendChild(el("span", "bk-status", { "data-status": st === "approved" ? "fixed" : st === "rejected" ? "rejected" : "accepted", text: t("proposal.status." + st) }));
       card.appendChild(tags);
       var where = placeText(p);
       if (where) card.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
-      if (p.target && p.target.kind === "area" && (p.target.label_ru || p.target.label_kk)) {
-        var yardName = t.lang() === "kk" ? p.target.label_kk || p.target.label_ru : p.target.label_ru || p.target.label_kk;
+      var yard = yardOf(p);
+      if (yard) {
+        var yardName = t.lang() === "kk" ? yard.label_kk || yard.label_ru : yard.label_ru || yard.label_kk;
         card.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
       }
       var votes = el("div", "b3d-votes", { role: "group", "aria-label": t("proposal.one_vote") });
@@ -536,15 +755,9 @@
       votes.appendChild(voteBtn(p, -1));
       card.appendChild(votes);
       var note = p.my_vote === 1 ? t("build3d.card.your_vote_up") : p.my_vote === -1 ? t("build3d.card.your_vote_down") : t("proposal.one_vote");
+      if (p.voting_open === false) note = t("proposal.voting_closed");
       card.appendChild(el("p", "bk-meta", { text: note }));
-      if (o.role === "akimat") {
-        var del = actionBtn("close", t("proposal.delete"), "bk-btn--danger", function () {
-          removeProposal(p.id);
-        }, "delete");
-        if (S.cardBusy === "delete") del.setAttribute("aria-busy", "true");
-        if (S.objects[p.id] && S.objects[p.id].pending) del.setAttribute("aria-disabled", "true");
-        card.appendChild(del);
-      }
+      if (o.role === "akimat") card.appendChild(deleteBtn(p));
       dock.appendChild(card);
     }
 
@@ -559,10 +772,21 @@
       b.appendChild(el("span", "", { text: t(up ? "proposal.vote_up" : "proposal.vote_down") }));
       b.appendChild(el("span", "bk-btn__count", { text: formatNum(up ? p.votes_up : p.votes_down) }));
       if (S.cardBusy === "vote" + value) b.setAttribute("aria-busy", "true");
+      if (p.voting_open === false) b.disabled = true; // проект одобрен или отклонён — голосование закрыто
       b.addEventListener("click", function () {
         vote(p.id, value);
       });
       return b;
+    }
+
+    // «Проект · 2027»; без года (у R06 planned_year может быть пустым) — просто «Проект». Пометка есть всегда.
+    function projectLabel(p) {
+      return p.year ? t("proposal.label", { year: String(p.year) }) : t("common.tag.project");
+    }
+
+    // Создавать и снимать проекты может только вошедший сотрудник (шлюз R01/R06: 401, 403, csrf_failed).
+    function isStaffError(err) {
+      return !!err && (err.status === 401 || err.status === 403 || /unauth|csrf|forbidden|staff/.test(String(err.code || "")));
     }
 
     function formatNum(n) {
@@ -574,9 +798,35 @@
         var len = Core.polylineLength(p.geometry.coordinates.map(function (c) {
           return Core.toLocal(p.geometry.coordinates[0], c);
         }));
-        return t("build3d.card.segment", { street: p.target.label_ru, length: Math.round(len) });
+        var sname = t.lang() === "kk" && p.target.label_kk ? p.target.label_kk : p.target.label_ru;
+        return t("build3d.card.segment", { street: sname, length: Math.round(len) });
       }
-      return p.near_street ? t("build3d.card.near", { street: p.near_street }) : "";
+      // У R06 нет полей улицы и двора — вычисляем по геометрии (настоящие улицы OSM), одинаково на любом устройстве.
+      var street = p.near_street;
+      if (!street && streets && p.kind !== "lighting") {
+        var n = streets.nearest(p.geometry.coordinates, 120);
+        street = n ? n.edge.name : null;
+      }
+      if (!street && p.kind === "lighting" && streets) {
+        var c = p.geometry.coordinates;
+        var m = streets.nearest(c[Math.floor(c.length / 2)], 30);
+        if (m) {
+          var L = Core.polylineLength(c.map(function (q) {
+            return Core.toLocal(c[0], q);
+          }));
+          return t("build3d.card.segment", { street: m.edge.name, length: Math.round(L) });
+        }
+      }
+      return street ? t("build3d.card.near", { street: street }) : "";
+    }
+
+    function yardOf(p) {
+      if (p.target && p.target.kind === "area" && (p.target.label_ru || p.target.label_kk)) return p.target;
+      if (existing && p.kind !== "lighting") {
+        var y = existing.yardAt(p.geometry.coordinates);
+        if (y && (y.name_ru || y.name_kk)) return { kind: "area", id: y.id, label_ru: y.name_ru, label_kk: y.name_kk };
+      }
+      return null;
     }
 
     // ── Тосты: что случилось + действие (Отменить / Повторить), 6 с ──
@@ -584,6 +834,7 @@
       opts2 = opts2 || {};
       toasts.textContent = "";
       clearTimeout(toastTimer);
+      toastIsError = !!opts2.error;
       var n = el("div", "bk-toast" + (opts2.error ? " bk-toast--error" : " bk-toast--ok"), { role: opts2.error ? "alert" : "status" });
       if (!opts2.error) n.appendChild(icon("check", o.iconsUrl));
       n.appendChild(el("span", "bk-toast__text", { text: text }));
@@ -600,6 +851,10 @@
       toastTimer = setTimeout(function () {
         if (n.parentNode) n.parentNode.removeChild(n);
       }, opts2.error ? 8000 : 6000);
+    }
+    function clearToast() {
+      clearTimeout(toastTimer);
+      toasts.textContent = "";
     }
 
     // ───────────── Загрузка ─────────────
@@ -673,7 +928,13 @@
     function makeStore() {
       var s = opts.store;
       if (s && typeof s === "object") return s;
-      var cfg = { prefix: o.apiPrefix, storage: o.storage, fixture: fixture };
+      var cfg = {
+        prefix: o.apiPrefix,
+        storage: o.storage,
+        fixture: fixture,
+        deviceId: deviceId,
+        v2: opts.api && typeof opts.api.v2 === "function" ? opts.api.v2 : null, // клиент оболочки R01
+      };
       if (s === "api") return Core.createApiStore(cfg);
       if (s === "local") return Core.createLocalStore(cfg);
       return Core.createAutoStore(cfg);
@@ -710,7 +971,9 @@
     }
 
     function loadProposals() {
-      return store.list(currentBbox()).then(
+      // Все проекты сразу, без bbox: их десятки, а запрос «по видимой части» терял бы проекты, к которым
+      // пользователь потом прокрутит карту (найдено проверкой на стенде R06).
+      return store.list(null).then(
         function (items) {
           if (S.destroyed) return;
           S.storeMode = store.mode || "api";
@@ -948,6 +1211,7 @@
     function addObject(p, flags) {
       flags = flags || {};
       if (!scene) return null;
+      if (S.objects[p.id]) disposeObject(p.id); // тот же id ещё исчезает после «Удалить» — убрать сразу
       var geos = buildGeos(p);
       var mats = makeMaterials(false);
       var group = makeMeshes(geos, mats);
@@ -973,7 +1237,11 @@
     }
 
     function makeLabel(obj) {
-      var b = el("button", "b3d-label bk-tag bk-tag--project", { type: "button", "data-id": obj.p.id });
+      // Кнопка — прозрачная зона нажатия ≥ 48 px; видимая «таблетка» внутри — 40 px (UX_REVIEW день 3 #21).
+      var b = el("button", "b3d-label", { type: "button", "data-id": obj.p.id });
+      var pill = el("span", "b3d-label__pill bk-tag bk-tag--project");
+      pill.appendChild(el("span", "b3d-label__text"));
+      b.appendChild(pill);
       b.addEventListener("click", function (ev) {
         ev.stopPropagation();
         if (S.mode === "placing") return;
@@ -988,9 +1256,9 @@
       b = b || obj.label;
       if (!b) return;
       var name = t(Core.KINDS[obj.p.kind].key);
-      b.textContent = t("proposal.label", { year: String(obj.p.year) });
+      b.querySelector(".b3d-label__text").textContent = projectLabel(obj.p);
       obj.labelSize = null; // текст сменился — размер измерим заново (один раз, не в каждом кадре)
-      b.setAttribute("aria-label", t("build3d.card.open", { kind: name, year: String(obj.p.year) }));
+      b.setAttribute("aria-label", t("build3d.card.open", { kind: name, year: String(obj.p.year || "") }).replace(/\s+,/, ","));
       b.setAttribute("aria-pressed", S.selected === obj.p.id ? "true" : "false");
     }
 
@@ -1113,7 +1381,8 @@
             m.userData.reveal.value = (1 - easeInOutCubic(k)) * H;
           });
           if (k >= 1) {
-            disposeObject(id);
+            // «Отменить» могло уже вернуть объект с тем же id (R06 ≥ d043e7b, заглушка) — новый не трогаем.
+            if (S.objects[id] === obj) disposeObject(id);
             if (done) done();
             return false;
           }
@@ -1168,7 +1437,8 @@
         if (it.obj.labelSize) return;
         var lab = it.obj.label;
         lab.classList.remove("b3d-label--dot");
-        it.obj.labelSize = { w: lab.offsetWidth || 110, h: lab.offsetHeight || 26 };
+        var pill = lab.firstChild || lab; // наложение считаем по видимой таблетке, а не по зоне нажатия
+        it.obj.labelSize = { w: pill.offsetWidth || 120, h: pill.offsetHeight || 40 };
       });
       // Ближние к зрителю (ниже на экране) — первыми; они и остаются полными подписями.
       items.sort(function (a, b) {
@@ -1179,8 +1449,8 @@
         var lab = it.obj.label;
         var compact = zoom < 14;
         var hiddenNow = lab.classList.contains("b3d-label--hidden"); // строится/удаляется — места не занимает
-        var lw = compact ? 18 : it.obj.labelSize.w,
-          lh = compact ? 18 : it.obj.labelSize.h;
+        var lw = compact ? 20 : it.obj.labelSize.w,
+          lh = compact ? 20 : it.obj.labelSize.h;
         var rect = { x: it.sp.x - lw / 2, y: it.sp.y - lh, w: lw, h: lh };
         if (!compact && !hiddenNow) {
           for (var i = 0; i < placed.length; i++) {
@@ -1266,12 +1536,14 @@
       };
       if (kind === "lighting") {
         S.ghost.follow = "pinned";
-        setHint(streets ? "build3d.hint.segment_start" : "build3d.err.no_streets", null, !streets);
+        setHint("build3d.hint.segment_start"); // улицы: R12 по всему городу или свой индекс Нуры
       } else setHint(touch ? "build3d.hint.touch" : "proposal.place_hint");
       setTool(true);
       ensureExisting();
-      if (o.autoZoom && map.getZoom() < 15.5) {
-        map.easeTo({ zoom: 16.2, duration: reducedMotion() ? 0 : 700 });
+      // UX_REVIEW день 3 #20: на 16-м масштабе сквер — 70 px, фонари — штрихи. Выбрав объект в каталоге,
+      // пользователь сам просит размещение, поэтому плавно приближаем до 17.5 (наклон и поворот не трогаем).
+      if (o.autoZoom && map.getZoom() < PLACE_ZOOM - 0.5) {
+        map.easeTo({ zoom: PLACE_ZOOM, duration: reducedMotion() ? 0 : 700 });
       }
       updateGhost(true);
       render();
@@ -1347,7 +1619,7 @@
           year: o.year,
           district: districts ? Core.districtAt(districts, g.section.coords[0]) : null,
           near_street: g.section.name,
-          target: { kind: "segment", id: g.section.edge_ids[0], ids: g.section.edge_ids, label_ru: g.section.name, label_kk: g.section.name },
+          target: { kind: "segment", id: g.section.edge_ids[0], ids: g.section.edge_ids, label_ru: g.section.name, label_kk: g.section.name_kk || g.section.name },
           demo: false,
         };
       }
@@ -1505,8 +1777,35 @@
 
     // ── Ввод на карте ──
 
+    // Подсказка, что модель можно нажать: курсор-указатель над объектом (UX_REVIEW день 3 #21).
+    var hoverScheduled = false,
+      hoverPoint = null,
+      cursorOwned = false;
+    function onHover(e) {
+      hoverPoint = e.point;
+      if (hoverScheduled) return;
+      hoverScheduled = true;
+      (root.requestAnimationFrame || setTimeout)(function () {
+        hoverScheduled = false;
+        if (S.mode === "placing" || !hoverPoint) return;
+        var hit = hitTest(hoverPoint);
+        var cv = map.getCanvas();
+        if (hit) {
+          cv.style.cursor = "pointer";
+          cursorOwned = true;
+        } else if (cursorOwned) {
+          cv.style.cursor = ""; // возвращаем только свой курсор, чужой (например, перекрестие редактора) не трогаем
+          cursorOwned = false;
+        }
+        Object.keys(S.objects).forEach(function (id) {
+          if (S.objects[id].label) S.objects[id].label.classList.toggle("b3d-label--hover", id === hit);
+        });
+      });
+    }
+
     function onMouseMove(e) {
-      if (S.mode !== "placing" || !S.ghost) return;
+      if (S.mode !== "placing") return onHover(e);
+      if (!S.ghost) return;
       var g = S.ghost;
       var ll = [e.lngLat.lng, e.lngLat.lat];
       if (S.kind === "lighting") {
@@ -1570,40 +1869,151 @@
       } else if (S.selected) select(null);
     }
 
+    // ── Участок улицы для освещения ──
+    // Основной источник — R12 (engine.civic_geo через шлюз R01): GET /street-snap и /street-segment, весь город,
+    // с казахским названием улицы. Пока маршрутов нет (404/405/501/503 или нет сервера) — свой индекс улиц Нуры
+    // (data/nura-streets.json): та же форма OSM, тот же расчёт (проверено: ул. Сыганак 184.3 м у обоих).
+    var geo = { state: "unknown" }; // unknown | ok | off
+    function geoGet(path) {
+      if (geo.state === "off") return Promise.resolve(null);
+      var req =
+        opts.api && typeof opts.api.v2 === "function" && o.geoPrefix === o.apiPrefix
+          ? Promise.resolve().then(function () {
+              return opts.api.v2("GET", path);
+            })
+          : fetch(o.geoPrefix + path, { credentials: "same-origin", headers: { Accept: "application/json" } }).then(function (res) {
+              return res.json().then(
+                function (data) {
+                  return { res: res, data: data };
+                },
+                function () {
+                  return { res: res, data: null };
+                }
+              ).then(function (r) {
+                if (!r.res.ok) {
+                  var e = new Error("geo");
+                  e.status = r.res.status;
+                  e.error = r.data && (typeof r.data.error === "string" ? r.data.error : (r.data.error && r.data.error.code) || r.data.code);
+                  throw e;
+                }
+                return r.data;
+              });
+            });
+      return req.then(
+        function (data) {
+          geo.state = "ok";
+          return data && data.ok === true && data.data ? data.data : data;
+        },
+        function (err) {
+          var st = err && err.status;
+          if (!st || st === 404 || st === 405 || st === 501 || st === 503) {
+            geo.state = "off"; // маршрутов R12 на этом сервере нет — дальше только свой индекс
+            return null;
+          }
+          var e = new Error("geo");
+          e.status = st;
+          e.code = err.error || err.code;
+          throw e;
+        }
+      );
+    }
+    function ll2(q) {
+      return q[0].toFixed(7) + "," + q[1].toFixed(7);
+    }
+    // Ответ R12 segment_between → участок в формате модуля (как у StreetIndex.section).
+    function fromR12Segment(seg, fallbackName, fallbackKk) {
+      if (!seg || !seg.geometry || seg.geometry.type !== "LineString" || seg.geometry.coordinates.length < 2) return null;
+      // Отказ — только если путь идёт по двум и более РАЗНЫМ названным улицам. Безымянные проезды R12 отдаёт
+      // с same_street:false (у них нет имени) — это всё ещё один участок, его можно осветить.
+      var names = (seg.names || []).filter(function (n, i, all) {
+        return n && all.indexOf(n) === i;
+      });
+      var name = seg.street_ru || names[0] || seg.label_ru || fallbackName || null;
+      if (names.length > 1) return { ok: false, reason: "other_street", name: name };
+      var L = seg.length_m;
+      if (L < Core.LIGHT_MIN_M) return { ok: false, reason: "too_short", name: name };
+      if (L > Core.LIGHT_MAX_M) return { ok: false, reason: "too_long", name: name };
+      var nameKk = seg.street_kk || seg.label_kk || (!seg.street_ru && !names.length ? fallbackKk : null) || null;
+      return { ok: true, name: name, name_kk: nameKk, coords: seg.geometry.coordinates, length_m: L, edge_ids: seg.edge_ids || [], source: "r12" };
+    }
+    function geoReason(code) {
+      return code === "not_on_street" ? "far_from_street" : code === "too_long" ? "too_long" : "no_path";
+    }
+    function streetLabel(sec) {
+      return t.lang() === "kk" && sec.name_kk ? sec.name_kk : sec.name;
+    }
+    function applySection(g, sec, ll) {
+      if (sec && sec.ok) {
+        g.section = sec;
+        g.b = ll;
+        var n = Core.sampleAlong(lightingOpts(sec.coords).line, Core.LIGHT_STEP_M).length;
+        setHint("build3d.hint.segment_ready", { street: streetLabel(sec), length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
+      } else {
+        g.section = null;
+        setHint("build3d.err." + ((sec && sec.reason) || "no_path"), { street: (sec && sec.name) || g.aStreet || "" }, true);
+      }
+      updateGhost(true);
+      render();
+    }
+
     function clickLighting(ll) {
       var g = S.ghost;
-      if (!streets) {
-        setHint("build3d.err.no_streets", null, true);
-        return render();
-      }
+      var seq = (g.seq = (g.seq || 0) + 1);
+      var stale = function () {
+        return S.ghost !== g || g.seq !== seq;
+      };
       if (!g.a || (g.section && g.section.ok && g.b)) {
-        var snap = streets.nearest(ll, Core.SNAP_STREET_M);
+        var snap = streets ? streets.nearest(ll, Core.SNAP_STREET_M) : null;
         g.section = null;
         g.preview = null;
         g.b = null;
-        if (!snap) {
-          g.a = null;
-          setHint(inStreetArea(ll) ? "build3d.err.far_from_street" : "build3d.err.no_streets", null, true);
-        } else {
+        g.a = null;
+        if (snap) {
           g.a = snap.lngLat;
           g.aStreet = snap.edge.name;
           g.dirHint = [Math.sin(snap.bearing * DEG), Math.cos(snap.bearing * DEG)];
           setHint("build3d.hint.segment_end", { street: snap.edge.name });
-        }
-      } else {
-        var sec = streets.section(g.a, ll);
-        if (sec.ok) {
-          g.section = sec;
-          g.b = ll;
-          var n = Core.sampleAlong(lightingOpts(sec.coords).line, Core.LIGHT_STEP_M).length;
-          setHint("build3d.hint.segment_ready", { street: sec.name, length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
         } else {
-          g.section = null;
-          setHint("build3d.err." + sec.reason, { street: sec.name || g.aStreet }, true);
+          setHint(streets && inStreetArea(ll) ? "build3d.err.far_from_street" : "build3d.err.no_streets", null, true);
+          // Вне своего индекса — спросим привязку к улице у R12.
+          geoGet("/street-snap?lon=" + ll[0].toFixed(7) + "&lat=" + ll[1].toFixed(7) + "&kind=road").then(
+            function (sn) {
+              if (stale() || !sn) return;
+              if (sn.point && sn.distance_m <= Core.SNAP_STREET_M + 15) {
+                g.a = sn.point;
+                g.aStreet = sn.street_ru || sn.label_ru;
+                g.aStreetKk = sn.street_kk || sn.label_kk || null;
+                setHint("build3d.hint.segment_end", { street: t.lang() === "kk" ? sn.street_kk || sn.label_kk || g.aStreet : g.aStreet });
+              } else setHint("build3d.err.far_from_street", null, true);
+              updateGhost(true);
+              render();
+            },
+            function (err) {
+              if (stale()) return;
+              setHint("build3d.err." + geoReason(err.code), null, true);
+              render();
+            }
+          );
         }
+        updateGhost(true);
+        return render();
       }
-      updateGhost(true);
-      render();
+      var a = g.a;
+      var local = streets ? streets.section(a, ll) : { ok: false, reason: "no_streets" };
+      if (local.ok || geo.state === "off") applySection(g, local, ll);
+      // Участок от R12 точнее и с казахским названием — заменяет свой, когда приходит.
+      geoGet("/street-segment?from=" + ll2(a) + "&to=" + ll2(ll) + "&kind=road").then(
+        function (seg) {
+          if (stale()) return;
+          var sec = fromR12Segment(seg, g.aStreet, g.aStreetKk);
+          if (sec && (sec.ok || !local.ok)) applySection(g, sec, ll);
+          else if (!sec && !local.ok) applySection(g, local, ll);
+        },
+        function (err) {
+          if (stale() || local.ok) return;
+          applySection(g, { ok: false, reason: geoReason(err.code), name: g.aStreet }, ll);
+        }
+      );
     }
 
     function inStreetArea(ll) {
@@ -1732,6 +2142,7 @@
         function (err) {
           console.error("[build3d] не сохранилось", err);
           animateRemove(tempId);
+          if (isStaffError(err)) return toast(t("proposal.need_staff"), { error: true });
           toast(t(err && err.code === "limit" ? "proposal.limit" : "build3d.save_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -1811,9 +2222,13 @@
           render();
           focusDock("[data-action=" + (value === 1 ? "vote-up" : "vote-down") + "]");
         },
-        function () {
+        function (err) {
           S.cardBusy = null;
           render();
+          if (err && (err.code === "voting_closed" || err.code === "already_decided")) {
+            toast(t("proposal.voting_closed"), { error: true });
+            return loadProposals();
+          }
           toast(t("build3d.vote_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -1840,8 +2255,134 @@
       });
       render();
       emitSelect(id ? S.objects[id].p : null);
-      if (id) focusDock("[data-action=vote-up]");
+      if (id) {
+        // «Проект поставлен · Отменить» больше не нужен: в карточке есть «Удалить», а тост закрывал бы объект
+        // над карточкой (оболочка R01 ставит тосты над панелью). Ошибки с «Повторить» остаются.
+        if (!toastIsError) clearToast();
+        focusDock("[data-action=vote-up]");
+        keepAboveDock(S.objects[id]);
+      }
       repaint();
+    }
+
+    // Прямоугольники панелей хозяина поверх карты (шапка, шторка, колонки, кнопки), видимые сейчас.
+    function avoidRects() {
+      if (typeof opts.avoid !== "function") return [];
+      var list = [];
+      try {
+        list = opts.avoid() || [];
+      } catch (e) {
+        list = [];
+      }
+      return Array.prototype.slice.call(list).map(function (node) {
+        return node && node.getBoundingClientRect && !node.hidden ? node.getBoundingClientRect() : null;
+      }).filter(function (r) {
+        return r && r.width && r.height;
+      });
+    }
+    // Вычесть из свободной области панель r: отрезаем ту сторону, после которой остаётся больше места
+    // (шапка — сверху, колонка справа — справа, плашка «Территория» в углу — слева). Панель вне области — без изменений.
+    function cutBest(a, r) {
+      var g = 12;
+      if (r.x1 <= a.x0 || r.x0 >= a.x1 || r.y1 <= a.y0 || r.y0 >= a.y1) return a;
+      var opts2 = [
+        { x0: Math.max(a.x0, r.x1 + g), y0: a.y0, x1: a.x1, y1: a.y1 },
+        { x0: a.x0, y0: a.y0, x1: Math.min(a.x1, r.x0 - g), y1: a.y1 },
+        { x0: a.x0, y0: Math.max(a.y0, r.y1 + g), x1: a.x1, y1: a.y1 },
+        { x0: a.x0, y0: a.y0, x1: a.x1, y1: Math.min(a.y1, r.y0 - g) },
+      ];
+      var best = null,
+        bestArea = 0;
+      opts2.forEach(function (b) {
+        var ar = Math.max(0, b.x1 - b.x0) * Math.max(0, b.y1 - b.y0);
+        if (ar > bestArea) {
+          best = b;
+          bestArea = ar;
+        }
+      });
+      // Слишком мало места (панели закрывают почти всё) — оставляем как было: лучше частично, чем никак.
+      return best && best.x1 - best.x0 >= 160 && best.y1 - best.y0 >= 120 ? best : a;
+    }
+    function freeArea() {
+      var canvas = map.getCanvas();
+      var cr = canvas.getBoundingClientRect();
+      var w = canvas.clientWidth,
+        h = canvas.clientHeight;
+      // Режим overlay: начинаем с области корня модуля (она уже без панелей хозяина, см. applyInsets).
+      // Корень, который ставит хозяин (оболочка R01: полоса внизу по размеру панели), — не область карты:
+      // тогда начинаем со всего холста. Порядок: своя панель → панели хозяина (opts.avoid) → тост.
+      var ur = ui.getBoundingClientRect();
+      var a = ui.classList.contains("b3d--overlay") && ur.width && ur.height
+        ? { x0: Math.max(0, ur.left - cr.left), y0: Math.max(0, ur.top - cr.top), x1: Math.min(w, ur.right - cr.left), y1: Math.min(h, ur.bottom - cr.top) }
+        : { x0: 0, y0: 0, x1: w, y1: h };
+      var dr = dock.getBoundingClientRect();
+      if (dr.width && dr.height && !ui.hidden) {
+        var left = dr.left - cr.left,
+          top = dr.top - cr.top;
+        if (left > a.x0 + (a.x1 - a.x0) * 0.45 && top < a.y0 + (a.y1 - a.y0) * 0.3) a.x1 = Math.max(a.x0 + 120, left); // карточка справа
+        else a.y1 = Math.max(a.y0 + 120, top); // панель снизу
+      }
+      avoidRects().forEach(function (r) {
+        a = cutBest(a, { x0: r.left - cr.left, y0: r.top - cr.top, x1: r.right - cr.left, y1: r.bottom - cr.top });
+      });
+      // Видимый тост («Проект поставлен… Отменить») тоже занимает место над панелью — объект ставим выше него.
+      var tr = toasts.getBoundingClientRect();
+      if (tr.height && tr.top - cr.top < a.y1 && tr.left - cr.left < a.x1) a.y1 = Math.max(a.y0 + 120, tr.top - cr.top);
+      return a;
+    }
+    // Выбранный объект не должен прятаться под карточкой (UX_REVIEW день 3 #21): считаем свободную часть карты
+    // (слева от карточки на ноутбуке, над панелью на телефоне) и, если объект вне её, плавно ставим его в её
+    // центр. Это ответ на нажатие пользователя, поэтому правило «карта сама не двигается» не нарушается.
+    function keepAboveDock(obj) {
+      if (!obj || !lastMatrix) return;
+      var ground = worldOf(obj, obj.p.kind === "lighting" ? [obj.labelPoint[0], obj.labelPoint[1], 0] : [0, 0, 0]);
+      var sp = projectLocal(ground.x, ground.y, 0);
+      if (!sp) return;
+      var f = freeArea();
+      var m = 48; // запас: подпись над объектом тоже должна быть видна
+      var inside = sp.x > f.x0 + m && sp.x < f.x1 - m && sp.y > f.y0 + m + 60 && sp.y < f.y1 - m;
+      if (inside) return;
+      var tx = (f.x0 + f.x1) / 2,
+        ty = f.y0 + (f.y1 - f.y0) * 0.6;
+      // easeTo с offset: MapLibre ставит точку объекта в нужное место экрана с учётом наклона
+      // (panBy двигает центр, а при наклоне точки у края экрана смещаются на другое расстояние).
+      var canvas = map.getCanvas();
+      var anchor = obj.p.kind === "lighting" ? obj.p.geometry.coordinates[Math.floor(obj.p.geometry.coordinates.length / 2)] : obj.p.geometry.coordinates;
+      map.easeTo({
+        center: anchor,
+        offset: [tx - canvas.clientWidth / 2, ty - canvas.clientHeight / 2],
+        duration: reducedMotion() ? 0 : 450,
+      });
+    }
+
+    // Крупный план проектов (для оболочки: открыли «3D-превью» — камера к проектам; UX_REVIEW день 3 #20).
+    // Не «вписать всё»: с наклоном 60° это даёт масштаб ~16, где модели не видны. Берём проект, ближайший
+    // к центру группы, и ставим его над панелью на масштабе 17.4; соседние проекты остаются в кадре.
+    function flyToProposals(how) {
+      how = how || {};
+      var anchors = Object.keys(S.objects).map(function (id) {
+        var p = S.objects[id].p;
+        return p.kind === "lighting" ? p.geometry.coordinates[Math.floor(p.geometry.coordinates.length / 2)] : p.geometry.coordinates;
+      });
+      if (!anchors.length) return false;
+      var cx = 0,
+        cy = 0;
+      anchors.forEach(function (a) {
+        cx += a[0] / anchors.length;
+        cy += a[1] / anchors.length;
+      });
+      var best = anchors[0];
+      anchors.forEach(function (a) {
+        if (Core.haversineM(a, [cx, cy]) < Core.haversineM(best, [cx, cy])) best = a;
+      });
+      var dh = dock.getBoundingClientRect().height || 0;
+      map.easeTo({
+        center: best,
+        zoom: how.zoom || VIEW_ZOOM,
+        padding: { top: 40, right: 0, bottom: Math.round(dh * 0.8), left: 0 },
+        duration: how.duration != null ? how.duration : reducedMotion() ? 0 : 900,
+      });
+      return true;
     }
 
     function emitSelect(p) {
@@ -1862,10 +2403,25 @@
       if (S.mode === "placing" && S.kind === "lighting" && S.ghost && S.ghost.section && S.ghost.section.ok) {
         var sec = S.ghost.section;
         var n = Core.sampleAlong(lightingOpts(sec.coords).line, Core.LIGHT_STEP_M).length;
-        setHint("build3d.hint.segment_ready", { street: sec.name, length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
+        setHint("build3d.hint.segment_ready", { street: streetLabel(sec), length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
       }
       render(true);
       repaint();
+    }
+
+    // «Акимат / Житель» без пересоздания модуля: событие оболочки R01 document "birge:mode" {detail:{mode}}.
+    function setMode(mode) {
+      var r = mode === "resident" ? "resident" : "akimat";
+      if (r === o.role) return;
+      if (S.mode === "placing") cancel();
+      // «Проект поставлен · Отменить» акимата — не для жителя (и закрывал бы объект над карточкой).
+      clearToast();
+      o.role = r;
+      ui.setAttribute("data-b3d-role", r);
+      render(true);
+    }
+    function onShellMode(e) {
+      if (e && e.detail && e.detail.mode) setMode(e.detail.mode);
     }
 
     // ───────────── Подписки ─────────────
@@ -1874,6 +2430,11 @@
     map.on("move", onMapMove);
     map.on("styledata", onStyleData);
     doc.addEventListener("keydown", onKey);
+    if (opts.followShellMode !== false) doc.addEventListener("birge:mode", onShellMode);
+    var onResize = function () {
+      applyInsets();
+    };
+    root.addEventListener("resize", onResize);
     if (i18n && typeof i18n.onChange === "function") unsubLang = i18n.onChange(onLang);
 
     render();
@@ -1890,6 +2451,20 @@
       },
       cancel: cancel,
       select: select,
+      flyToProposals: flyToProposals,
+      setMode: setMode,
+      // R01: update({mode, visible}) — то же, что setMode / setVisible.
+      update: function (u) {
+        u = u || {};
+        if (u.mode || u.role) setMode(u.mode || u.role);
+        if (typeof u.visible === "boolean") handle.setVisible(u.visible);
+        if (typeof u.dock === "boolean" && u.dock !== o.dock) {
+          o.dock = u.dock;
+          render(true);
+        }
+        if (u.insets === true) applyInsets(); // хозяин передвинул свою панель — пересчитать свободную часть
+        return handle;
+      },
       refresh: function () {
         return store ? loadProposals() : ready;
       },
@@ -1916,7 +2491,15 @@
                 valid: S.ghost.valid,
                 a: S.ghost.a ? S.ghost.a.slice() : null,
                 section: S.ghost.section
-                  ? { ok: S.ghost.section.ok, length_m: S.ghost.section.length_m, name: S.ghost.section.name, coords: S.ghost.section.coords, edge_ids: S.ghost.section.edge_ids }
+                  ? {
+                      ok: S.ghost.section.ok,
+                      length_m: S.ghost.section.length_m,
+                      name: S.ghost.section.name,
+                      name_kk: S.ghost.section.name_kk || null,
+                      source: S.ghost.section.source || "local",
+                      coords: S.ghost.section.coords,
+                      edge_ids: S.ghost.section.edge_ids,
+                    }
                   : null,
               }
             : null,
@@ -1924,6 +2507,9 @@
           proposals: Object.keys(S.objects).map(function (id) {
             return JSON.parse(JSON.stringify(S.objects[id].p));
           }),
+          get items() {
+            return this.proposals; // то же под именем items (так их ищет сценарий R11)
+          },
           animating: anims.length > 0,
           memory: renderer ? { geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs ? renderer.info.programs.length : null } : null,
           origin: origin ? origin.slice() : null,
@@ -1945,6 +2531,8 @@
         map.off("move", onMapMove);
         map.off("styledata", onStyleData);
         doc.removeEventListener("keydown", onKey);
+        doc.removeEventListener("birge:mode", onShellMode);
+        root.removeEventListener("resize", onResize);
         if (unsubLang) unsubLang();
         clearTimeout(toastTimer);
         Object.keys(S.objects).forEach(disposeObject);
@@ -1964,5 +2552,13 @@
     return handle;
   }
 
-  root.CivicBuild3D = { mount: mount, STRINGS: STRINGS, version: "r14-1" };
+  root.CivicBuild3D = {
+    mount: mount,
+    STRINGS: STRINGS,
+    // Перевод ключей модуля для страницы-хозяина (демо): словарь R11, если ключ уже там, иначе строки модуля.
+    t: function (key, params) {
+      return makeT(root.BirgeI18n || null)(key, params);
+    },
+    version: "r14-2",
+  };
 })(typeof self !== "undefined" ? self : this);
