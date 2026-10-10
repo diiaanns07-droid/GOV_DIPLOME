@@ -2,7 +2,7 @@
 //
 //   node tests/e2e/demo_flow.cjs --root <папка сборки> --out <папка отчёта>
 //        [--sizes 1366x768,375x812] [--langs ru,kk] [--url http://127.0.0.1:8611/ --user U --pass P]
-//        [--stop "lon,lat,osm-node-…,Имя"]
+//        [--stop "lon,lat,osm-node-…,Имя"] [--inject-css <файл>  — проверка предлагаемой правки CSS, не приёмка]
 //
 // Без --url тест сам поднимает сервер сборки (python3 app.py) на свободном порту с ВРЕМЕННОЙ базой:
 // init → seed-demo (синтетика R02) → seed-r14-demo (если есть у R06) → сотрудник «r10-operator».
@@ -30,6 +30,9 @@ const ROOT = path.resolve(args.root || path.join(__dirname, "../.."));
 const OUT = path.resolve(args.out || path.join(os.tmpdir(), "r10-e2e"));
 const SIZES = String(args.sizes || "1366x768,375x812").split(",").map((s) => s.split("x").map(Number));
 const LANGS = String(args.langs || "ru,kk").split(",");
+// --inject-css <файл> — проверить ПРЕДЛАГАЕМУЮ правку CSS (для INTEGRATION.txt): стиль добавляется на каждую загрузку
+// страницы. Такой прогон — не приёмка сборки: в RESULT пометка «С ПРАВКОЙ CSS».
+const INJECT_CSS = args["inject-css"] ? fs.readFileSync(path.resolve(String(args["inject-css"])), "utf8") : null;
 // Реальная остановка Нуры из OSM (есть в целях R07 и в geo/objects.json R12).
 // --stop "lon,lat,id,Имя" — другая остановка (например, для стенда роли с узкой областью данных).
 const STOP = args.stop ? (([lon, lat, id, ...name]) => ({ id, name: name.join(","), point: [Number(lon), Number(lat)] }))(String(args.stop).split(","))
@@ -386,6 +389,8 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const st = UI_STOPS[vi % UI_STOPS.length];  // остановка этого варианта (шаги 1–2 и 6)
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
     locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+  if (INJECT_CSS) await ctx.addInitScript((css) => { document.addEventListener("DOMContentLoaded", () => {
+    const s = document.createElement("style"); s.setAttribute("data-r10-patch", ""); s.textContent = css; document.head.appendChild(s); }); }, INJECT_CSS);
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
@@ -819,9 +824,9 @@ async function networkErrors(browser, base, [w, h], lang) {
   const counts = { PASS: 0, FAIL: 0, NOT_RUN: 0 };
   results.forEach((r) => counts[r.status]++);
   const meta = { root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
-    when: new Date().toISOString(), node: process.version };
+    when: new Date().toISOString(), node: process.version, ...(INJECT_CSS ? { inject_css: String(args["inject-css"]) } : {}) };
   fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, results }, null, 1));
-  const md = [`# R10 e2e · сценарий демо · ${sha}`, "", "```", JSON.stringify(meta), "```", "",
+  const md = [`# R10 e2e · сценарий демо · ${sha}${INJECT_CSS ? " · С ПРАВКОЙ CSS (не приёмка сборки)" : ""}`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, NOT_RUN ${counts.NOT_RUN}`, "", "| Слой | Шаг | Проверка | Итог | Подробно | Кадр |", "|---|---|---|---|---|---|",
     ...results.map((r) => `| ${r.layer} | ${r.step} | ${r.name} | **${r.status}** | ${r.detail ? JSON.stringify(r.detail).replace(/\|/g, "/").slice(0, 220) : ""} | ${r.shot || ""} |`)];
   fs.writeFileSync(path.join(OUT, "RESULT.md"), md.join("\n") + "\n");

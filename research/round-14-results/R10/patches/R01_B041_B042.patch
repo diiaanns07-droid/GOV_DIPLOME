@@ -1,0 +1,17 @@
+--- a/web/civic/shell/birge.css	2026-10-10 23:05:22.964700405 +0000
++++ b/web/civic/shell/birge.css	2026-10-10 23:05:22.968249761 +0000
+@@ -216,3 +216,14 @@
+ /* Открыт кабинет сотрудника или другой ящик (body[data-civic-drawer="open"]): кнопка «Что построить?» и каталог R05
+    не лежат поверх его заголовка (R10 B-031, телефон). */
+ body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
++
++/* R10 B-041: телефон — сообщение R05 («Проект поставлен · Отменить») внизу экрана поверх шторки, а не над каталогом,
++   где камера держит только что поставленный проект (иначе 6 с проект и кнопку «3D» не видно). */
++@media (max-width: 760px) {
++  .birge-build3d-root .b3d-toasts { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom));
++    width: auto; margin: 0; z-index: 60; }
++}
++/* R10 B-042: на 360 px «Birge» в шапке не помещался на 2–3 px («Bir…»). */
++@media (max-width: 370px) {
++  .civic-mode .topbar { padding-left: 8px; padding-right: 8px; }
++}
