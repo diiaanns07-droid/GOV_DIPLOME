@@ -1,0 +1,72 @@
+{
+  "provider": "Open-Meteo Historical Weather API",
+  "request_url": "https://archive-api.open-meteo.com/v1/archive?latitude=51.13&longitude=71.43&timezone=Asia%2FAlmaty&start_date=2023-01-01&end_date=2026-10-09&daily=temperature_2m_max%2Ctemperature_2m_min%2Cprecipitation_sum%2Csnowfall_sum%2Crain_sum%2Cwind_speed_10m_max%2Csnow_depth_mean",
+  "downloaded_at_utc": "2026-10-10T15:48:40+00:00",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "Weather data by Open-Meteo.com",
+  "documentation_url": "https://open-meteo.com/en/docs/historical-weather-api",
+  "requested": {
+    "latitude": 51.13,
+    "longitude": 71.43,
+    "timezone": "Asia/Almaty",
+    "start_date": "2023-01-01",
+    "end_date": "2026-10-09"
+  },
+  "daily_variables": [
+    "temperature_2m_max",
+    "temperature_2m_min",
+    "precipitation_sum",
+    "snowfall_sum",
+    "rain_sum",
+    "wind_speed_10m_max",
+    "snow_depth_mean"
+  ],
+  "units": {
+    "time": "iso8601",
+    "temperature_2m_max": "°C",
+    "temperature_2m_min": "°C",
+    "precipitation_sum": "mm",
+    "snowfall_sum": "cm",
+    "rain_sum": "mm",
+    "wind_speed_10m_max": "km/h",
+    "snow_depth_mean": "m"
+  },
+  "response_metadata": {
+    "latitude": 51.142353,
+    "longitude": 71.41831,
+    "generationtime_ms": 497.7017641067505,
+    "utc_offset_seconds": 18000,
+    "timezone": "Asia/Almaty",
+    "timezone_abbreviation": "GMT+5",
+    "elevation": 347.0
+  },
+  "days": 1378,
+  "first_day": "2023-01-01",
+  "last_day": "2026-10-09",
+  "missing_values_by_column": {
+    "temperature_2m_max": 0,
+    "temperature_2m_min": 0,
+    "precipitation_sum": 0,
+    "snowfall_sum": 0,
+    "rain_sum": 0,
+    "wind_speed_10m_max": 0,
+    "snow_depth_mean": 0
+  },
+  "evidence_type": "weather_reanalysis",
+  "synthetic_demo": false,
+  "note": "Historical API reanalysis/model data, not direct station observations. Missing API values are empty CSV cells, never zero-filled.",
+  "snow_depth_mean_status": "AVAILABLE",
+  "requests": [
+    {
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=51.13&longitude=71.43&timezone=Asia%2FAlmaty&start_date=2023-01-01&end_date=2026-10-09&daily=temperature_2m_max%2Ctemperature_2m_min%2Cprecipitation_sum%2Csnowfall_sum%2Crain_sum%2Cwind_speed_10m_max%2Csnow_depth_mean",
+      "status": 200
+    }
+  ],
+  "csv": {
+    "file": "openmeteo_daily.csv",
+    "bytes": 58557,
+    "sha256": "1bee097b2924009a42f394a942baa524e2a90f586894825097ae299128ec50bc"
+  },
+  "raw_response_sha256": "476240098ca38c838f318a525273d5c51657a59fe262b37a9402bf1707c1090f"
+}

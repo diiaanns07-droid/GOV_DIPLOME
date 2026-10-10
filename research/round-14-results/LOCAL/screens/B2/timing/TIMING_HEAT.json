@@ -1,0 +1,444 @@
+{
+  "timings": [
+    {
+      "profile": "1366-ru",
+      "shell_and_city_tiles_seconds": 1.8,
+      "zoomed_tiles_seconds": 0.267,
+      "performance": {
+        "navigation": {
+          "name": "http://127.0.0.1:8611/",
+          "entryType": "navigation",
+          "startTime": 0,
+          "duration": 83.69999998807907,
+          "navigationId": 110,
+          "initiatorType": "navigation",
+          "deliveryType": "",
+          "nextHopProtocol": "http/1.0",
+          "renderBlockingStatus": "non-blocking",
+          "contentType": "text/html",
+          "contentEncoding": "",
+          "workerStart": 0,
+          "workerRouterEvaluationStart": 0,
+          "workerCacheLookupStart": 0,
+          "workerMatchedSourceType": "",
+          "workerFinalSourceType": "",
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 0.09999999403953552,
+          "domainLookupStart": 0.8999999910593033,
+          "domainLookupEnd": 2,
+          "connectStart": 2,
+          "secureConnectionStart": 0,
+          "connectEnd": 2.5999999940395355,
+          "requestStart": 2.699999988079071,
+          "responseStart": 3.699999988079071,
+          "firstInterimResponseStart": 0,
+          "finalResponseHeadersStart": 3.699999988079071,
+          "responseEnd": 4.199999988079071,
+          "transferSize": 13008,
+          "encodedBodySize": 12708,
+          "decodedBodySize": 12708,
+          "responseStatus": 200,
+          "serverTiming": [],
+          "unloadEventStart": 0,
+          "unloadEventEnd": 0,
+          "domInteractive": 11.099999994039536,
+          "domContentLoadedEventStart": 71.29999999701977,
+          "domContentLoadedEventEnd": 72.3999999910593,
+          "domComplete": 83.59999999403954,
+          "loadEventStart": 83.69999998807907,
+          "loadEventEnd": 83.69999998807907,
+          "type": "navigate",
+          "redirectCount": 0,
+          "activationStart": 0,
+          "criticalCHRestart": 0,
+          "notRestoredReasons": null,
+          "confidence": {
+            "randomizedTriggerRate": 0.4994798,
+            "value": "high"
+          }
+        },
+        "paints": [
+          {
+            "name": "first-paint",
+            "ms": 60
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 60
+          }
+        ]
+      },
+      "rendering": {
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "raf_fps": 60.004959087527915,
+        "frame_p95_ms": 16.799999999999272,
+        "building_features": 16
+      },
+      "screenshot": "1366-ru-loaded.jpg"
+    },
+    {
+      "profile": "1366-kk",
+      "shell_and_city_tiles_seconds": 2.599,
+      "zoomed_tiles_seconds": 0.215,
+      "performance": {
+        "navigation": {
+          "name": "http://127.0.0.1:8611/",
+          "entryType": "navigation",
+          "startTime": 0,
+          "duration": 243.8999999910593,
+          "navigationId": 4527,
+          "initiatorType": "navigation",
+          "deliveryType": "",
+          "nextHopProtocol": "http/1.0",
+          "renderBlockingStatus": "non-blocking",
+          "contentType": "text/html",
+          "contentEncoding": "",
+          "workerStart": 0,
+          "workerRouterEvaluationStart": 0,
+          "workerCacheLookupStart": 0,
+          "workerMatchedSourceType": "",
+          "workerFinalSourceType": "",
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 0.19999998807907104,
+          "domainLookupStart": 0.8999999910593033,
+          "domainLookupEnd": 1.3999999910593033,
+          "connectStart": 1.3999999910593033,
+          "secureConnectionStart": 0,
+          "connectEnd": 2.2999999970197678,
+          "requestStart": 2.3999999910593033,
+          "responseStart": 4.399999991059303,
+          "firstInterimResponseStart": 0,
+          "finalResponseHeadersStart": 4.399999991059303,
+          "responseEnd": 4.799999997019768,
+          "transferSize": 13008,
+          "encodedBodySize": 12708,
+          "decodedBodySize": 12708,
+          "responseStatus": 200,
+          "serverTiming": [],
+          "unloadEventStart": 0,
+          "unloadEventEnd": 0,
+          "domInteractive": 11.799999997019768,
+          "domContentLoadedEventStart": 145.29999999701977,
+          "domContentLoadedEventEnd": 146.3999999910593,
+          "domComplete": 243.8999999910593,
+          "loadEventStart": 243.8999999910593,
+          "loadEventEnd": 243.8999999910593,
+          "type": "navigate",
+          "redirectCount": 0,
+          "activationStart": 0,
+          "criticalCHRestart": 0,
+          "notRestoredReasons": null,
+          "confidence": {
+            "randomizedTriggerRate": 0.4994798,
+            "value": "high"
+          }
+        },
+        "paints": [
+          {
+            "name": "first-paint",
+            "ms": 136
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 136
+          }
+        ]
+      },
+      "rendering": {
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "raf_fps": 60.00198353664583,
+        "frame_p95_ms": 16.700000000000728,
+        "building_features": 16
+      },
+      "screenshot": "1366-kk-loaded.jpg"
+    },
+    {
+      "profile": "375-ru",
+      "shell_and_city_tiles_seconds": 2.498,
+      "zoomed_tiles_seconds": 0.265,
+      "performance": {
+        "navigation": {
+          "name": "http://127.0.0.1:8611/",
+          "entryType": "navigation",
+          "startTime": 0,
+          "duration": 165.79999999701977,
+          "navigationId": 593,
+          "initiatorType": "navigation",
+          "deliveryType": "",
+          "nextHopProtocol": "http/1.0",
+          "renderBlockingStatus": "non-blocking",
+          "contentType": "text/html",
+          "contentEncoding": "",
+          "workerStart": 0,
+          "workerRouterEvaluationStart": 0,
+          "workerCacheLookupStart": 0,
+          "workerMatchedSourceType": "",
+          "workerFinalSourceType": "",
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 0.29999999701976776,
+          "domainLookupStart": 0.7999999970197678,
+          "domainLookupEnd": 1.2000000029802322,
+          "connectStart": 1.2000000029802322,
+          "secureConnectionStart": 0,
+          "connectEnd": 1.7999999970197678,
+          "requestStart": 1.8999999910593033,
+          "responseStart": 3,
+          "firstInterimResponseStart": 0,
+          "finalResponseHeadersStart": 3,
+          "responseEnd": 3.5999999940395355,
+          "transferSize": 13008,
+          "encodedBodySize": 12708,
+          "decodedBodySize": 12708,
+          "responseStatus": 200,
+          "serverTiming": [],
+          "unloadEventStart": 0,
+          "unloadEventEnd": 0,
+          "domInteractive": 11.899999991059303,
+          "domContentLoadedEventStart": 156.20000000298023,
+          "domContentLoadedEventEnd": 157.09999999403954,
+          "domComplete": 165.79999999701977,
+          "loadEventStart": 165.79999999701977,
+          "loadEventEnd": 165.79999999701977,
+          "type": "navigate",
+          "redirectCount": 0,
+          "activationStart": 0,
+          "criticalCHRestart": 0,
+          "notRestoredReasons": null,
+          "confidence": {
+            "randomizedTriggerRate": 0.4994798,
+            "value": "high"
+          }
+        },
+        "paints": [
+          {
+            "name": "first-paint",
+            "ms": 120
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 120
+          }
+        ]
+      },
+      "rendering": {
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "raf_fps": 60.00198353664585,
+        "frame_p95_ms": 16.700000000000728,
+        "building_features": 7
+      },
+      "screenshot": "375-ru-loaded.jpg"
+    },
+    {
+      "profile": "375-kk",
+      "shell_and_city_tiles_seconds": 2.907,
+      "zoomed_tiles_seconds": 0.255,
+      "performance": {
+        "navigation": {
+          "name": "http://127.0.0.1:8611/",
+          "entryType": "navigation",
+          "startTime": 0,
+          "duration": 179.20000000298023,
+          "navigationId": 2113,
+          "initiatorType": "navigation",
+          "deliveryType": "",
+          "nextHopProtocol": "http/1.0",
+          "renderBlockingStatus": "non-blocking",
+          "contentType": "text/html",
+          "contentEncoding": "",
+          "workerStart": 0,
+          "workerRouterEvaluationStart": 0,
+          "workerCacheLookupStart": 0,
+          "workerMatchedSourceType": "",
+          "workerFinalSourceType": "",
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 0.29999999701976776,
+          "domainLookupStart": 1.7000000029802322,
+          "domainLookupEnd": 2,
+          "connectStart": 2,
+          "secureConnectionStart": 0,
+          "connectEnd": 2.5999999940395355,
+          "requestStart": 2.7999999970197678,
+          "responseStart": 3.7999999970197678,
+          "firstInterimResponseStart": 0,
+          "finalResponseHeadersStart": 3.7999999970197678,
+          "responseEnd": 4.5999999940395355,
+          "transferSize": 13008,
+          "encodedBodySize": 12708,
+          "decodedBodySize": 12708,
+          "responseStatus": 200,
+          "serverTiming": [],
+          "unloadEventStart": 0,
+          "unloadEventEnd": 0,
+          "domInteractive": 10.5,
+          "domContentLoadedEventStart": 162.09999999403954,
+          "domContentLoadedEventEnd": 163.09999999403954,
+          "domComplete": 179.20000000298023,
+          "loadEventStart": 179.20000000298023,
+          "loadEventEnd": 179.20000000298023,
+          "type": "navigate",
+          "redirectCount": 0,
+          "activationStart": 0,
+          "criticalCHRestart": 0,
+          "notRestoredReasons": null,
+          "confidence": {
+            "randomizedTriggerRate": 0.4994798,
+            "value": "high"
+          }
+        },
+        "paints": [
+          {
+            "name": "first-paint",
+            "ms": 152
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 152
+          }
+        ]
+      },
+      "rendering": {
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "raf_fps": 60.00495908752789,
+        "frame_p95_ms": 16.799999999999272,
+        "building_features": 7
+      },
+      "screenshot": "375-kk-loaded.jpg"
+    }
+  ],
+  "heat": {
+    "create_status": 201,
+    "heat-before": {
+      "target": {
+        "kind": "object",
+        "id": "osm-node-4109037549",
+        "label_ru": "Остановка «Хан Шатыр»",
+        "label_kk": "«Хан Шатыр» аялдамасы",
+        "subtype": "bus_stop"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          71.406553,
+          51.131155
+        ]
+      },
+      "anchor": [
+        71.406553,
+        51.131155
+      ],
+      "weight": 4.999,
+      "level": 2,
+      "color": "#EF9F27",
+      "count": 5,
+      "fixed_until": null,
+      "state": "active",
+      "status": "new",
+      "approximate": false,
+      "district": "nura",
+      "by_category": {
+        "lighting": 5
+      },
+      "daily": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5
+      ],
+      "last_at": "2026-10-10T22:02:39+05:00",
+      "open_ids": [
+        "c-2464b56ddf64498b",
+        "c-164252bd2b6e05d0",
+        "c-55e658ecf4315601",
+        "c-40fefd2960064d81",
+        "c-9996fa361e44801c"
+      ],
+      "demo": false
+    },
+    "metoo_http": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "heat-after": {
+      "target": {
+        "kind": "object",
+        "id": "osm-node-4109037549",
+        "label_ru": "Остановка «Хан Шатыр»",
+        "label_kk": "«Хан Шатыр» аялдамасы",
+        "subtype": "bus_stop"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          71.406553,
+          51.131155
+        ]
+      },
+      "anchor": [
+        71.406553,
+        51.131155
+      ],
+      "weight": 16.999,
+      "level": 4,
+      "color": "#A32D2D",
+      "count": 17,
+      "fixed_until": null,
+      "state": "active",
+      "status": "new",
+      "approximate": false,
+      "district": "nura",
+      "by_category": {
+        "lighting": 17
+      },
+      "daily": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        17
+      ],
+      "last_at": "2026-10-10T22:02:39+05:00",
+      "open_ids": [
+        "c-2464b56ddf64498b",
+        "c-164252bd2b6e05d0",
+        "c-55e658ecf4315601",
+        "c-40fefd2960064d81",
+        "c-9996fa361e44801c"
+      ],
+      "demo": false
+    }
+  },
+  "browser": "153.0.8010.12"
+}

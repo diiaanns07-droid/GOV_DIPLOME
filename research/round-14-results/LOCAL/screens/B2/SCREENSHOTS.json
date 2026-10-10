@@ -1,0 +1,1147 @@
+{
+  "count": 163,
+  "bytes": 12818205,
+  "screenshots": [
+    {
+      "path": "extra/1366-kk-01-mixed-location.jpg",
+      "bytes": 146885,
+      "width": 1366,
+      "height": 768,
+      "sha256": "82d64651658feabe809a5d3a2fcef8d5dda37aca76a253d7d8688ee13e77d0fb"
+    },
+    {
+      "path": "extra/1366-kk-02-mixed-target.jpg",
+      "bytes": 110402,
+      "width": 1366,
+      "height": 768,
+      "sha256": "ab7ce467bf50dfc88b966d347dcd582d4d14a4bd704a43906d6d02fe42ed995f"
+    },
+    {
+      "path": "extra/1366-kk-03-mixed-category.jpg",
+      "bytes": 119410,
+      "width": 1366,
+      "height": 768,
+      "sha256": "4990df95aa9719cd0b0cd3115ed32ffe3e0eb76ca13dfd515888f809e5fe2aa1"
+    },
+    {
+      "path": "extra/1366-kk-04-mixed-similar.jpg",
+      "bytes": 109330,
+      "width": 1366,
+      "height": 768,
+      "sha256": "571ac204bc56b39c12c95b1ddcc9e2e03d73ccba6f6c61c316cadaa803e50a62"
+    },
+    {
+      "path": "extra/1366-kk-05-mixed-sent.jpg",
+      "bytes": 109631,
+      "width": 1366,
+      "height": 768,
+      "sha256": "861ee29bb7f87d9b92b1795b00d6828e3c4b18a02eaff63569a7df90340a6643"
+    },
+    {
+      "path": "extra/1366-kk-06-catalog-after-district.jpg",
+      "bytes": 153827,
+      "width": 1366,
+      "height": 768,
+      "sha256": "4b718fd36ae598ca394e5461125954be020638e9a5f9b425922bc9a7f56a393c"
+    },
+    {
+      "path": "extra/1366-kk-07-project-rotate.jpg",
+      "bytes": 136211,
+      "width": 1366,
+      "height": 768,
+      "sha256": "09c7be6a31a2c319ff609087f192340e245a1597b62898848954dc1d4d86c6dc"
+    },
+    {
+      "path": "extra/1366-kk-08-project-placed.jpg",
+      "bytes": 138493,
+      "width": 1366,
+      "height": 768,
+      "sha256": "9d7e67e184fd60ed76b756123cc1d97c49182b05a709da99dccdaef235698bfe"
+    },
+    {
+      "path": "extra/1366-kk-09-placed-pitch-0.jpg",
+      "bytes": 124285,
+      "width": 1366,
+      "height": 768,
+      "sha256": "106943905cd5ef3b34bb2e0726cc157e7a66e413b9c4a40979894a33eb3ce85d"
+    },
+    {
+      "path": "extra/1366-kk-09-placed-pitch-45.jpg",
+      "bytes": 125787,
+      "width": 1366,
+      "height": 768,
+      "sha256": "c979c70370fe4bd5f7cfe50391a9037ff97689cd7555a2cbec757b3a756e55f2"
+    },
+    {
+      "path": "extra/1366-kk-09-placed-pitch-60.jpg",
+      "bytes": 124392,
+      "width": 1366,
+      "height": 768,
+      "sha256": "adb7b822dfd6e528385d6149bf085a7286b3d5febdc6cf50c039620e30c215a5"
+    },
+    {
+      "path": "extra/1366-ru-01-mixed-location.jpg",
+      "bytes": 136490,
+      "width": 1366,
+      "height": 768,
+      "sha256": "4922a1a2db2409c7974762d0efda6563f59b69587415501ae7fbf9feb1977c7e"
+    },
+    {
+      "path": "extra/1366-ru-02-mixed-target.jpg",
+      "bytes": 109394,
+      "width": 1366,
+      "height": 768,
+      "sha256": "9bb0b62f393fa6c7ecc5bc4cc7819cd2aad975976d5cb7050fcf3ee18a811c4a"
+    },
+    {
+      "path": "extra/1366-ru-03-mixed-category.jpg",
+      "bytes": 117800,
+      "width": 1366,
+      "height": 768,
+      "sha256": "18df1b50a793d2fec70d3e28c37a7c1fc5b8969383c2d306cd32fb67f9869695"
+    },
+    {
+      "path": "extra/1366-ru-05-mixed-sent.jpg",
+      "bytes": 107649,
+      "width": 1366,
+      "height": 768,
+      "sha256": "a3269aab8ee490a994684ddae169befe65e9d4344b338b6d496a8c877cf6bbdd"
+    },
+    {
+      "path": "extra/1366-ru-06-catalog-after-district.jpg",
+      "bytes": 153064,
+      "width": 1366,
+      "height": 768,
+      "sha256": "a0c17dda567295366b721fb81a6ea2d27c30918363b0d24d6d840eac946d7f5f"
+    },
+    {
+      "path": "extra/1366-ru-07-project-rotate.jpg",
+      "bytes": 133296,
+      "width": 1366,
+      "height": 768,
+      "sha256": "8c464bf92a15c9cf26820dca304bb188c81efe0db870589f23f993cfb2dd4300"
+    },
+    {
+      "path": "extra/1366-ru-08-project-placed.jpg",
+      "bytes": 135441,
+      "width": 1366,
+      "height": 768,
+      "sha256": "ea9dfbd6b9a0626ddbb5af39e73a959b887932fff5db73a241f7fed507a3a467"
+    },
+    {
+      "path": "extra/1366-ru-09-placed-pitch-0.jpg",
+      "bytes": 118549,
+      "width": 1366,
+      "height": 768,
+      "sha256": "285e35e35998bfb7020cc70c2148cf3c0c15dd2bfeff336a47cbca1338777b06"
+    },
+    {
+      "path": "extra/1366-ru-09-placed-pitch-45.jpg",
+      "bytes": 122404,
+      "width": 1366,
+      "height": 768,
+      "sha256": "04732a3c592ee7fd996fc533a5693bee1c08404a60016145378c4024a9d6eed0"
+    },
+    {
+      "path": "extra/1366-ru-09-placed-pitch-60.jpg",
+      "bytes": 125952,
+      "width": 1366,
+      "height": 768,
+      "sha256": "191080d3b2f686a1981748a72afd6582d9654780698a94b199f0e57d93ecb0e7"
+    },
+    {
+      "path": "extra/375-kk-01-mixed-location.jpg",
+      "bytes": 51463,
+      "width": 375,
+      "height": 812,
+      "sha256": "ef4aa31e9a83c2ff2e713b83b5dfdd63956c70cb2b971793b0fb0b2a8538da9b"
+    },
+    {
+      "path": "extra/375-kk-02-mixed-target.jpg",
+      "bytes": 41272,
+      "width": 375,
+      "height": 812,
+      "sha256": "9f606fa7acd25b3fa5bef3f6aa6849ff471c8f3f71949240b0d1388da39cc8f3"
+    },
+    {
+      "path": "extra/375-kk-03-mixed-category.jpg",
+      "bytes": 40165,
+      "width": 375,
+      "height": 812,
+      "sha256": "a8046fd727ed6d6692c2b69b8e2f4b849bf383ffdf844eab4c1347c0327941bd"
+    },
+    {
+      "path": "extra/375-kk-04-mixed-similar.jpg",
+      "bytes": 31123,
+      "width": 375,
+      "height": 812,
+      "sha256": "52d4944796f6c9e5b266e4849759ef4fbb0c9937df31e3cab7aac107e02cbfec"
+    },
+    {
+      "path": "extra/375-kk-05-mixed-sent.jpg",
+      "bytes": 30782,
+      "width": 375,
+      "height": 812,
+      "sha256": "a3202666f222a706f542a0088f1d1f8d46de59a693fd9dd9685dcf9253a29fa3"
+    },
+    {
+      "path": "extra/375-kk-06-catalog-after-district.jpg",
+      "bytes": 54562,
+      "width": 375,
+      "height": 812,
+      "sha256": "a472d78c6fe37d7f26fcf2728eef1c6f3e16d30ebc47bf0fcb93ac70c5c17e16"
+    },
+    {
+      "path": "extra/375-kk-07-project-rotate.jpg",
+      "bytes": 49940,
+      "width": 375,
+      "height": 812,
+      "sha256": "be7fd46e55518fb9b402168b8fc1d77811374899620b517b17eeb8819f94bca9"
+    },
+    {
+      "path": "extra/375-kk-08-project-placed.jpg",
+      "bytes": 46788,
+      "width": 375,
+      "height": 812,
+      "sha256": "0b1f858806c66569968dde5d68677c6ca43d6261247bff651973e2fd1a810fd4"
+    },
+    {
+      "path": "extra/375-kk-09-placed-pitch-0.jpg",
+      "bytes": 45348,
+      "width": 375,
+      "height": 812,
+      "sha256": "0467b5c2e47e98d92f0fd09357b8f7b20f896871a5060afafe8866e27e8340c2"
+    },
+    {
+      "path": "extra/375-kk-09-placed-pitch-45.jpg",
+      "bytes": 47054,
+      "width": 375,
+      "height": 812,
+      "sha256": "e0449cea548a9dade78532ae3174d2a31a0ced506d3919fc547c9d643d15ab20"
+    },
+    {
+      "path": "extra/375-kk-09-placed-pitch-60.jpg",
+      "bytes": 45919,
+      "width": 375,
+      "height": 812,
+      "sha256": "d033eb10a9c0e1a825d06546a436754a6e6ccf7337bb05ce4a7b70022a44977e"
+    },
+    {
+      "path": "extra/375-ru-01-mixed-location.jpg",
+      "bytes": 50624,
+      "width": 375,
+      "height": 812,
+      "sha256": "4c051af3a0bffb484bac4dabf2e7da6a47fb1225b905645dec42c2776e77c244"
+    },
+    {
+      "path": "extra/375-ru-02-mixed-target.jpg",
+      "bytes": 40682,
+      "width": 375,
+      "height": 812,
+      "sha256": "3bda44e095251a42f76d97c628f8fe6861cc61a9ead849420b2aa0a65fd10766"
+    },
+    {
+      "path": "extra/375-ru-03-mixed-category.jpg",
+      "bytes": 37554,
+      "width": 375,
+      "height": 812,
+      "sha256": "fd88a67e4634aa4d1ce4fa09a9bbeefde191dfef643a63407c0e3241d8227f6e"
+    },
+    {
+      "path": "extra/375-ru-04-mixed-similar.jpg",
+      "bytes": 30296,
+      "width": 375,
+      "height": 812,
+      "sha256": "d4196dcd3eaea48838ddf6f0384ee485b41be8f9daa8438cc55be9bd979fe798"
+    },
+    {
+      "path": "extra/375-ru-05-mixed-sent.jpg",
+      "bytes": 27288,
+      "width": 375,
+      "height": 812,
+      "sha256": "588f3e6630f3646951c473b82647d637bb1ee8761a062d2f93a7db568995ab59"
+    },
+    {
+      "path": "extra/375-ru-06-catalog-after-district.jpg",
+      "bytes": 53959,
+      "width": 375,
+      "height": 812,
+      "sha256": "1f4d602f46d0ede0b9aeb55dd58962fe80309a7ad825ecfced0b3ad3cffbaedd"
+    },
+    {
+      "path": "extra/375-ru-07-project-rotate.jpg",
+      "bytes": 49634,
+      "width": 375,
+      "height": 812,
+      "sha256": "f61d31ab3c2b85f3cda8c6a3dcd9a9f7924ecb04fdb23574a9729c1ed346fe04"
+    },
+    {
+      "path": "extra/375-ru-08-project-placed.jpg",
+      "bytes": 45547,
+      "width": 375,
+      "height": 812,
+      "sha256": "f78cc0ac1afe9be4787cf17cb69d0cc6da4db2c902ab39aa4ff63f1628faa958"
+    },
+    {
+      "path": "extra/375-ru-09-placed-pitch-0.jpg",
+      "bytes": 41673,
+      "width": 375,
+      "height": 812,
+      "sha256": "32d0b607efa0bc1fc119c49146a93b9d0b4226e241813af2637ebf39430c0e05"
+    },
+    {
+      "path": "extra/375-ru-09-placed-pitch-45.jpg",
+      "bytes": 41845,
+      "width": 375,
+      "height": 812,
+      "sha256": "7f61128cba9a5d07e73bd29b1023f203c2b51b1885281b16ef185b96a474d9a3"
+    },
+    {
+      "path": "extra/375-ru-09-placed-pitch-60.jpg",
+      "bytes": 42985,
+      "width": 375,
+      "height": 812,
+      "sha256": "757e79ef86f6eb2726259dee1c7540892e3420298c2cc5ff368a203ad9ccfd77"
+    },
+    {
+      "path": "timing/1366-kk-loaded.jpg",
+      "bytes": 144124,
+      "width": 1366,
+      "height": 768,
+      "sha256": "88e117a5b96d5e28cc0b02ade47623d41d878a2f9fc98b5e383abaebcae94bab"
+    },
+    {
+      "path": "timing/1366-ru-loaded.jpg",
+      "bytes": 145663,
+      "width": 1366,
+      "height": 768,
+      "sha256": "381852375fd5264b63c2328c9a10f75825db5e3b419108e03486166ea1497e90"
+    },
+    {
+      "path": "timing/375-kk-loaded.jpg",
+      "bytes": 50619,
+      "width": 375,
+      "height": 812,
+      "sha256": "c4194a439eb409db55fca532c8a7ed8e789027d2d687e0d167d5f3c336be8469"
+    },
+    {
+      "path": "timing/375-ru-loaded.jpg",
+      "bytes": 51439,
+      "width": 375,
+      "height": 812,
+      "sha256": "708273d7af75450e6440017d78869312ae982d001b7e712403477eb3335c1617"
+    },
+    {
+      "path": "timing/heat-after.jpg",
+      "bytes": 124172,
+      "width": 1366,
+      "height": 768,
+      "sha256": "55f150872deb452752be24d8ce607618e55af9c96384bd81314940960a7600b3"
+    },
+    {
+      "path": "timing/heat-before.jpg",
+      "bytes": 124708,
+      "width": 1366,
+      "height": 768,
+      "sha256": "b0ec9e46822639341b15b50660cf2115663a31bfaf8b95edb41a1e7e52c9b267"
+    },
+    {
+      "path": "visual/1366-kk-00-initial.jpg",
+      "bytes": 138913,
+      "width": 1366,
+      "height": 768,
+      "sha256": "4f04f40a8373077ec2371127f7a522a8f43dfcce6dfd15ac18b210bf67426417"
+    },
+    {
+      "path": "visual/1366-kk-01-real-basemap.jpg",
+      "bytes": 130040,
+      "width": 1366,
+      "height": 768,
+      "sha256": "e7b035fd727554e3fafda17177f1c9ae27a9a4b25ba9b3c345e3f62f7858d4d1"
+    },
+    {
+      "path": "visual/1366-kk-02-real-buildings-3d.jpg",
+      "bytes": 145032,
+      "width": 1366,
+      "height": 768,
+      "sha256": "651029f321ef7202527c9589abd968801d39e822a1ea3ab2eec8f6982504a4fd"
+    },
+    {
+      "path": "visual/1366-kk-03-street-1.jpg",
+      "bytes": 142203,
+      "width": 1366,
+      "height": 768,
+      "sha256": "c0f500a130feaeca22c18d3f76df38b128dba4c4f94913d90f55e46600ca644d"
+    },
+    {
+      "path": "visual/1366-kk-03-street-2.jpg",
+      "bytes": 150944,
+      "width": 1366,
+      "height": 768,
+      "sha256": "645bb1611768448f381339102b3d3b690dbd773ff7029973799203b8cf7dec93"
+    },
+    {
+      "path": "visual/1366-kk-03-street-3.jpg",
+      "bytes": 152075,
+      "width": 1366,
+      "height": 768,
+      "sha256": "3f6dadb38d85ab5746c35a4fcb336b030b202c993e5e1eb7a1d2890c772064d1"
+    },
+    {
+      "path": "visual/1366-kk-04-anchor-0.jpg",
+      "bytes": 110868,
+      "width": 1366,
+      "height": 768,
+      "sha256": "078775f01af26717a2f5acb6b447faa2c01481616c404de63702fc93975987e5"
+    },
+    {
+      "path": "visual/1366-kk-04-anchor-45.jpg",
+      "bytes": 117663,
+      "width": 1366,
+      "height": 768,
+      "sha256": "4220b1e0127ffc1b927b2013d737f75485e012074add96170b02b936e27f317d"
+    },
+    {
+      "path": "visual/1366-kk-04-anchor-60.jpg",
+      "bytes": 114499,
+      "width": 1366,
+      "height": 768,
+      "sha256": "426ff85fc126cc665f398eb2726b9b4e6245a87766859ac8122f151a9244024d"
+    },
+    {
+      "path": "visual/1366-kk-05-lighting-30days.jpg",
+      "bytes": 113342,
+      "width": 1366,
+      "height": 768,
+      "sha256": "c0566210c99b2e327141552e68823b1fedf442c7e05ab8fd8f14d1d86efe958c"
+    },
+    {
+      "path": "visual/1366-kk-06-filters-reset.jpg",
+      "bytes": 114513,
+      "width": 1366,
+      "height": 768,
+      "sha256": "8ed17b83e635e00304264f498c240e49e7bde6964497deedff531bcade08fdfb"
+    },
+    {
+      "path": "visual/1366-kk-07-day-top.jpg",
+      "bytes": 129760,
+      "width": 1366,
+      "height": 768,
+      "sha256": "bd063016a04df13c981b49c5d8e89ce6c2fd0fe5edcbb6b2504d27619a2d1774"
+    },
+    {
+      "path": "visual/1366-kk-08-day-bottom.jpg",
+      "bytes": 132668,
+      "width": 1366,
+      "height": 768,
+      "sha256": "9b51aeca3a053bee5faebc44941b98bdf292e53f9982ffb1d14965fe40c1ae96"
+    },
+    {
+      "path": "visual/1366-ru-00-initial.jpg",
+      "bytes": 139342,
+      "width": 1366,
+      "height": 768,
+      "sha256": "d1b8f5183ca39826d1e11c76dbd4e5744c9148ef8c2d7e523b9507cb9927ea3a"
+    },
+    {
+      "path": "visual/1366-ru-01-real-basemap.jpg",
+      "bytes": 131566,
+      "width": 1366,
+      "height": 768,
+      "sha256": "e3286b8201202a9954a03711389500ebf3afa2ffee09f61b7a7496f5f81f7a75"
+    },
+    {
+      "path": "visual/1366-ru-02-real-buildings-3d.jpg",
+      "bytes": 146458,
+      "width": 1366,
+      "height": 768,
+      "sha256": "d5a9e98089cc6f951c7f422633effb4c81687736e9534a644f11bcf4e7d8cac9"
+    },
+    {
+      "path": "visual/1366-ru-03-street-1.jpg",
+      "bytes": 143615,
+      "width": 1366,
+      "height": 768,
+      "sha256": "84e8a1828265d0c357c025a6e21136a3712db7d2b24cbddefc11ed1b16024ded"
+    },
+    {
+      "path": "visual/1366-ru-03-street-2.jpg",
+      "bytes": 152320,
+      "width": 1366,
+      "height": 768,
+      "sha256": "752dc57b4dd6191055010fa2f6ca3e7c7b53191cd4c0f6d0175be19001d3e548"
+    },
+    {
+      "path": "visual/1366-ru-03-street-3.jpg",
+      "bytes": 153464,
+      "width": 1366,
+      "height": 768,
+      "sha256": "a3870c8069a9530e92758d3a36bb970eb22ed6eae9d37e6ada4e4f04cde1e8b4"
+    },
+    {
+      "path": "visual/1366-ru-04-anchor-0.jpg",
+      "bytes": 112352,
+      "width": 1366,
+      "height": 768,
+      "sha256": "8315cd5c0b86fbadd36f843656c6767a1689425eb407e0ed690ff88f60308f8c"
+    },
+    {
+      "path": "visual/1366-ru-04-anchor-45.jpg",
+      "bytes": 118873,
+      "width": 1366,
+      "height": 768,
+      "sha256": "89789b6fcf711ae45d2105f37d554814113d584c73585990c42ad6d0fc41ecbb"
+    },
+    {
+      "path": "visual/1366-ru-04-anchor-60.jpg",
+      "bytes": 115946,
+      "width": 1366,
+      "height": 768,
+      "sha256": "5393d9b94f82bc0a848f22fda59671faaaf6a5a2530c5f01fc494f124d527f8b"
+    },
+    {
+      "path": "visual/1366-ru-05-lighting-30days.jpg",
+      "bytes": 113050,
+      "width": 1366,
+      "height": 768,
+      "sha256": "2eefce62f1ce9d638fd281e7ae0f1d6bfa13c09f2e5534fe9ddb723fac474f1a"
+    },
+    {
+      "path": "visual/1366-ru-06-filters-reset.jpg",
+      "bytes": 115976,
+      "width": 1366,
+      "height": 768,
+      "sha256": "c5eb8227580a0b0e3c7598e7f1f6e8a34acd64ebced670b1d95f225f3c0d2d89"
+    },
+    {
+      "path": "visual/1366-ru-07-day-top.jpg",
+      "bytes": 117616,
+      "width": 1366,
+      "height": 768,
+      "sha256": "beba91062ac1efa57c767107c1291d916539723e651ef0fe69138fc2910543aa"
+    },
+    {
+      "path": "visual/1366-ru-08-day-bottom.jpg",
+      "bytes": 122676,
+      "width": 1366,
+      "height": 768,
+      "sha256": "34d209b55d0d06c313b98093a6e928e9fafddd62ab499303634f6aa366f3190f"
+    },
+    {
+      "path": "visual/375-kk-00-initial.jpg",
+      "bytes": 55202,
+      "width": 375,
+      "height": 812,
+      "sha256": "0af32b7de0f1d68a0bb7acf49d73caf42ef7525042ddffbdeeae6c9b30e2aa5c"
+    },
+    {
+      "path": "visual/375-kk-01-real-basemap.jpg",
+      "bytes": 46967,
+      "width": 375,
+      "height": 812,
+      "sha256": "a190767bec7ccfae35c1ec3761524467cf7f9d948f9e17d1f19cb58747495c87"
+    },
+    {
+      "path": "visual/375-kk-02-real-buildings-3d.jpg",
+      "bytes": 49986,
+      "width": 375,
+      "height": 812,
+      "sha256": "9f2ec621679fc3ca24fc1ccd83b4adacba112062c19862fe7006d45313bbba7b"
+    },
+    {
+      "path": "visual/375-kk-03-street-1.jpg",
+      "bytes": 50868,
+      "width": 375,
+      "height": 812,
+      "sha256": "eb16f8f4f29fcf94b83672b3d18dfa7975ea7173c351c23ff91006a0c5c71787"
+    },
+    {
+      "path": "visual/375-kk-03-street-2.jpg",
+      "bytes": 50024,
+      "width": 375,
+      "height": 812,
+      "sha256": "b5411f01e2b0fdca2b0ea018c6ab738890dba593db730cda3048420739a9f57a"
+    },
+    {
+      "path": "visual/375-kk-03-street-3.jpg",
+      "bytes": 50067,
+      "width": 375,
+      "height": 812,
+      "sha256": "8bb6a8423c7f7c86c604997b13246cdee2991f93ea5eb3f2057e36267c0ca1e4"
+    },
+    {
+      "path": "visual/375-kk-04-anchor-0.jpg",
+      "bytes": 42946,
+      "width": 375,
+      "height": 812,
+      "sha256": "2b679aa328aadb22fa5632b1d5fa16d4b51a6272e5a69211d8a930f97809f69a"
+    },
+    {
+      "path": "visual/375-kk-04-anchor-45.jpg",
+      "bytes": 44733,
+      "width": 375,
+      "height": 812,
+      "sha256": "51c9f286420ec69ebe0bef00d79f5975a2105f47899ef0c049ef224569e0440b"
+    },
+    {
+      "path": "visual/375-kk-04-anchor-60.jpg",
+      "bytes": 44500,
+      "width": 375,
+      "height": 812,
+      "sha256": "394fc10330fc27168601d9d4112a1f684aafdad976d35aa4591c99db2072b3e9"
+    },
+    {
+      "path": "visual/375-kk-05-lighting-30days.jpg",
+      "bytes": 43697,
+      "width": 375,
+      "height": 812,
+      "sha256": "38dda66c4c0957058eb145cdbc0990e732e85346de993dc2bbf55019b573d851"
+    },
+    {
+      "path": "visual/375-kk-06-filters-reset.jpg",
+      "bytes": 43304,
+      "width": 375,
+      "height": 812,
+      "sha256": "ec613ecf5f8105ae04e16ea527d271c8f6b891e22205beb02bd73500544cb046"
+    },
+    {
+      "path": "visual/375-kk-07-day-top.jpg",
+      "bytes": 49623,
+      "width": 375,
+      "height": 812,
+      "sha256": "436a6b14400b2d91b23e81ee82a0d7f872feac54e574b73674123d2b7e68210a"
+    },
+    {
+      "path": "visual/375-kk-08-day-bottom.jpg",
+      "bytes": 56044,
+      "width": 375,
+      "height": 812,
+      "sha256": "a65289a6fb2ede034c4f021206ac2b6921ffa5668072f75f484946baf2daf722"
+    },
+    {
+      "path": "visual/375-ru-00-initial.jpg",
+      "bytes": 56069,
+      "width": 375,
+      "height": 812,
+      "sha256": "834b005673d366df11b94dbf703e528aad5d3e76fcc403bb750cf3f5109980fb"
+    },
+    {
+      "path": "visual/375-ru-01-real-basemap.jpg",
+      "bytes": 46743,
+      "width": 375,
+      "height": 812,
+      "sha256": "ce137e56fb57ca143ec430d869081f705925b6c7703d1d1f2ddf3b4f8cceca29"
+    },
+    {
+      "path": "visual/375-ru-02-real-buildings-3d.jpg",
+      "bytes": 49797,
+      "width": 375,
+      "height": 812,
+      "sha256": "f341453fedb666b064595f11c0834dcd3421f5c476b90d0708db422360f6bfb1"
+    },
+    {
+      "path": "visual/375-ru-03-street-1.jpg",
+      "bytes": 50934,
+      "width": 375,
+      "height": 812,
+      "sha256": "af9b360856fd536af964bd459680320f525390d4bab3543b620abbdb3505e9bf"
+    },
+    {
+      "path": "visual/375-ru-03-street-2.jpg",
+      "bytes": 49816,
+      "width": 375,
+      "height": 812,
+      "sha256": "6f1163f1a9a029af81cf6bf70d60dcde4123c806c3e442170338e54d86cba220"
+    },
+    {
+      "path": "visual/375-ru-03-street-3.jpg",
+      "bytes": 49914,
+      "width": 375,
+      "height": 812,
+      "sha256": "217c86f5e1b61f9e034d54bfa4b16f035d0e4489096b50be64cdd9c36fb7fe2a"
+    },
+    {
+      "path": "visual/375-ru-04-anchor-0.jpg",
+      "bytes": 42859,
+      "width": 375,
+      "height": 812,
+      "sha256": "e5c198cacf96189db1f950238341de1cf2576da540f46ff7241defa9dc9a7338"
+    },
+    {
+      "path": "visual/375-ru-04-anchor-45.jpg",
+      "bytes": 44608,
+      "width": 375,
+      "height": 812,
+      "sha256": "7dd380f75bf9a8008fb27b908577d387b1b7d5351ac3f062169c8464a76212f3"
+    },
+    {
+      "path": "visual/375-ru-04-anchor-60.jpg",
+      "bytes": 44255,
+      "width": 375,
+      "height": 812,
+      "sha256": "eca51cb4138150ab8b3832f3ae75494632c1694d8f26fea2a6cd28b18cb8b2f4"
+    },
+    {
+      "path": "visual/375-ru-05-lighting-30days.jpg",
+      "bytes": 43577,
+      "width": 375,
+      "height": 812,
+      "sha256": "d16f1e41a507ad5013319903e7d1c55bceec5656ccd307a05a9582d986d30a4a"
+    },
+    {
+      "path": "visual/375-ru-06-filters-reset.jpg",
+      "bytes": 44145,
+      "width": 375,
+      "height": 812,
+      "sha256": "1ec8aa5f91f3c29feac61c0b33847aa5244077d49ddf82c8e2dd2009c6f85741"
+    },
+    {
+      "path": "visual/375-ru-07-day-top.jpg",
+      "bytes": 48934,
+      "width": 375,
+      "height": 812,
+      "sha256": "2c20953352b6e5d4285c16f07aa5f9846961c38b791e76a2b0cbc5db40565735"
+    },
+    {
+      "path": "visual/375-ru-08-day-bottom.jpg",
+      "bytes": 54964,
+      "width": 375,
+      "height": 812,
+      "sha256": "d2913723a427bfefecaee4834c897153e30a1dc360f6b868cf99321185c7521d"
+    },
+    {
+      "path": "r10/e2e/1366-kk-0-start.jpg",
+      "bytes": 97610,
+      "width": 1366,
+      "height": 768,
+      "sha256": "627d94c4f399711768c2f1a6183764b6808e2d43b7be90b910a2167da32775ed"
+    },
+    {
+      "path": "r10/e2e/1366-kk-1-start.jpg",
+      "bytes": 84668,
+      "width": 1366,
+      "height": 768,
+      "sha256": "8bc1ba5507d69e940c4fdb758807b7fd5bf1af310b049f33a49fbe1e0bac3ac5"
+    },
+    {
+      "path": "r10/e2e/1366-kk-1-target.jpg",
+      "bytes": 76193,
+      "width": 1366,
+      "height": 768,
+      "sha256": "c9e42a01c78cd04412299adc665a912c49f9aa80afcf633e00c8aad64cdb74d0"
+    },
+    {
+      "path": "r10/e2e/1366-kk-2-category.jpg",
+      "bytes": 82282,
+      "width": 1366,
+      "height": 768,
+      "sha256": "1013efb182175b4f1c6460cf0bc6b90b7c2b9b49351eb2e9cef3c46e7857750f"
+    },
+    {
+      "path": "r10/e2e/1366-kk-2-sent.jpg",
+      "bytes": 74557,
+      "width": 1366,
+      "height": 768,
+      "sha256": "791db86aff1bc26ccade6f680eb13f2aa0728dee684d809d55d58d813149a51f"
+    },
+    {
+      "path": "r10/e2e/1366-kk-3-heat.jpg",
+      "bytes": 128837,
+      "width": 1366,
+      "height": 768,
+      "sha256": "4397f4462a9ddccb7d3b24aac3095902148ba7fde85d19c8238a307614a7a846"
+    },
+    {
+      "path": "r10/e2e/1366-kk-4-day.jpg",
+      "bytes": 101668,
+      "width": 1366,
+      "height": 768,
+      "sha256": "e800bab4c2b04d05cd090608b909d8b890bbb97f9c25af3dc8a6d1a29d2e9b98"
+    },
+    {
+      "path": "r10/e2e/1366-kk-5-catalog.jpg",
+      "bytes": 99314,
+      "width": 1366,
+      "height": 768,
+      "sha256": "d801369d831b74b5eedbc39a2145cd8dd1b8d235866363c53427c8a74861925a"
+    },
+    {
+      "path": "r10/e2e/1366-kk-5-login.jpg",
+      "bytes": 89538,
+      "width": 1366,
+      "height": 768,
+      "sha256": "005c180da8c3408fee66bcb6d007f8b80a4e913e93f37c5eaabe6e8338d168f1"
+    },
+    {
+      "path": "r10/e2e/1366-kk-5-placed.jpg",
+      "bytes": 100631,
+      "width": 1366,
+      "height": 768,
+      "sha256": "2f12d5c90046f88a29b33e74389d3c29b3fe98aacabff4b20526818db2079e90"
+    },
+    {
+      "path": "r10/e2e/1366-kk-5-vote.jpg",
+      "bytes": 98180,
+      "width": 1366,
+      "height": 768,
+      "sha256": "241e7ba79f90e6b884166880cd09a88777f214a5e0b6fb9a533c7f6477317aec"
+    },
+    {
+      "path": "r10/e2e/1366-kk-6-fixed.jpg",
+      "bytes": 91294,
+      "width": 1366,
+      "height": 768,
+      "sha256": "b1f83c07680c59d8f9279a5843e892ffc8b5b85a6e3e4e5889b0c5c1517d0a55"
+    },
+    {
+      "path": "r10/e2e/1366-kk-6-mine.jpg",
+      "bytes": 70136,
+      "width": 1366,
+      "height": 768,
+      "sha256": "2f4c97b3b0a483f5d84a3e438e67af0235d78254bb1658448e37cf7d6dbe5396"
+    },
+    {
+      "path": "r10/e2e/1366-ru-0-start.jpg",
+      "bytes": 97809,
+      "width": 1366,
+      "height": 768,
+      "sha256": "5a0a1f2c1f0ddb863dc850cef15e0ce4e6f9d7d155b818b3c67bdcbb42b7b4f3"
+    },
+    {
+      "path": "r10/e2e/1366-ru-1-start.jpg",
+      "bytes": 84425,
+      "width": 1366,
+      "height": 768,
+      "sha256": "24e5a8ccb5175e6ba9c614242f03ad24dad295ea75bd7cca85759a1fd45a1dd3"
+    },
+    {
+      "path": "r10/e2e/1366-ru-1-target.jpg",
+      "bytes": 75368,
+      "width": 1366,
+      "height": 768,
+      "sha256": "7f9975e0f427cfd38037e3723dee6de9d86de0e2c05afd16f7696825268d788e"
+    },
+    {
+      "path": "r10/e2e/1366-ru-2-category.jpg",
+      "bytes": 81847,
+      "width": 1366,
+      "height": 768,
+      "sha256": "194d7474536e1459e608fbb85daaeac8013863d134564c23b4ce906fd0dd3326"
+    },
+    {
+      "path": "r10/e2e/1366-ru-2-sent.jpg",
+      "bytes": 73833,
+      "width": 1366,
+      "height": 768,
+      "sha256": "0f30c716b3104c97e2c0d648590b00bf3a0a10da3dfe510fdbce4d948c810353"
+    },
+    {
+      "path": "r10/e2e/1366-ru-3-heat.jpg",
+      "bytes": 130014,
+      "width": 1366,
+      "height": 768,
+      "sha256": "eb2720c5c684c6238eaa8b38c53e93a1b3a7d16bf9fb8c68e846bea89b6eba2d"
+    },
+    {
+      "path": "r10/e2e/1366-ru-4-day.jpg",
+      "bytes": 92927,
+      "width": 1366,
+      "height": 768,
+      "sha256": "86fa7f028503ee8947214d9678ccd50b807cee883af94d5b00fa2aee1ef96e09"
+    },
+    {
+      "path": "r10/e2e/1366-ru-5-catalog.jpg",
+      "bytes": 98873,
+      "width": 1366,
+      "height": 768,
+      "sha256": "9738ebdc555bcb0859fee2f9487964f8b2d3bc4f559a1df10770b6ac456899c1"
+    },
+    {
+      "path": "r10/e2e/1366-ru-5-login.jpg",
+      "bytes": 89737,
+      "width": 1366,
+      "height": 768,
+      "sha256": "aa287a28c746b7e97f938324c33e1ed19a6a382866421ba5989a6f6b01ddeb39"
+    },
+    {
+      "path": "r10/e2e/1366-ru-5-placed.jpg",
+      "bytes": 98068,
+      "width": 1366,
+      "height": 768,
+      "sha256": "19910087fd62353af5f0132c1c9e04e48d3caf8e58f17950957c2ab3f13884df"
+    },
+    {
+      "path": "r10/e2e/1366-ru-5-vote.jpg",
+      "bytes": 92941,
+      "width": 1366,
+      "height": 768,
+      "sha256": "08684630d499c7cf16544ca376106423a1818838a1de43b77ea79aa5c12ca75d"
+    },
+    {
+      "path": "r10/e2e/1366-ru-6-fixed.jpg",
+      "bytes": 89039,
+      "width": 1366,
+      "height": 768,
+      "sha256": "0ade70f47628f074266c877808c2c4852b75b05b263c3fd1bf9bdb6510255b33"
+    },
+    {
+      "path": "r10/e2e/1366-ru-6-mine.jpg",
+      "bytes": 69569,
+      "width": 1366,
+      "height": 768,
+      "sha256": "9812f108587a4ad52698fe19e57559341b75a97ffac9954bf230f57eac829f12"
+    },
+    {
+      "path": "r10/e2e/375-kk-0-start.jpg",
+      "bytes": 39894,
+      "width": 375,
+      "height": 812,
+      "sha256": "280dd9e698ffb82df0c2880046ceed5b147b8a6a3bac110380b959f1d73a5a83"
+    },
+    {
+      "path": "r10/e2e/375-kk-1-start.jpg",
+      "bytes": 30553,
+      "width": 375,
+      "height": 812,
+      "sha256": "f30564b00b2b31c9ea572bf9b4cdc9ab004e4e00cc2a6a3b97a4d06c4ddbff6b"
+    },
+    {
+      "path": "r10/e2e/375-kk-1-target.jpg",
+      "bytes": 31007,
+      "width": 375,
+      "height": 812,
+      "sha256": "31fe667a2503c20af4e5ce2c169bf1682792c224f7bda40f7ac94e60fed23e9d"
+    },
+    {
+      "path": "r10/e2e/375-kk-2-category.jpg",
+      "bytes": 30692,
+      "width": 375,
+      "height": 812,
+      "sha256": "343f89b9ed4fa88e3d908ddaee99f1f356981eb6bd9b03c0d5be011e07f41482"
+    },
+    {
+      "path": "r10/e2e/375-kk-2-sent.jpg",
+      "bytes": 23037,
+      "width": 375,
+      "height": 812,
+      "sha256": "da49ec4f03768d66c1fbc9d28746d2d5fc176089f7e8227a266c7966372d1724"
+    },
+    {
+      "path": "r10/e2e/375-kk-3-heat.jpg",
+      "bytes": 37100,
+      "width": 375,
+      "height": 812,
+      "sha256": "d38dc5dce9de6ff159748df6260019d55ae1c5b3f3314cdb3800609509bbb456"
+    },
+    {
+      "path": "r10/e2e/375-kk-4-day.jpg",
+      "bytes": 37498,
+      "width": 375,
+      "height": 812,
+      "sha256": "0e82142c9837d03d68550766833e057d9572275272c6563b8449e54e055b49c6"
+    },
+    {
+      "path": "r10/e2e/375-kk-5-catalog.jpg",
+      "bytes": 39257,
+      "width": 375,
+      "height": 812,
+      "sha256": "8320d2ab177418d114290d932502f21c95b9dbc3b7ee57670156c49983936a34"
+    },
+    {
+      "path": "r10/e2e/375-kk-5-login.jpg",
+      "bytes": 29881,
+      "width": 375,
+      "height": 812,
+      "sha256": "3d9bfccc98c7422a278334cbc8c882f5f841290a858ffbf77b03482a6406a169"
+    },
+    {
+      "path": "r10/e2e/375-kk-5-vote.jpg",
+      "bytes": 32216,
+      "width": 375,
+      "height": 812,
+      "sha256": "cb0472cdbd7b8cf7dbb23470e303c10cafa4755b6dcc81c666212865583367e5"
+    },
+    {
+      "path": "r10/e2e/375-kk-6-fixed.jpg",
+      "bytes": 36082,
+      "width": 375,
+      "height": 812,
+      "sha256": "376642b31bd1f2e872253b7d6f479a6385d74ab1407f32a3241aace8400fb7f2"
+    },
+    {
+      "path": "r10/e2e/375-kk-6-mine.jpg",
+      "bytes": 18638,
+      "width": 375,
+      "height": 812,
+      "sha256": "571dd9ec176168b0300753fe58aba67a3c6acff2f7a2b5db353828f104b9149a"
+    },
+    {
+      "path": "r10/e2e/375-ru-0-start.jpg",
+      "bytes": 40399,
+      "width": 375,
+      "height": 812,
+      "sha256": "b2d626fed43ede841e1791f509899904c2025dea2d6433d32f0a2fde51e04751"
+    },
+    {
+      "path": "r10/e2e/375-ru-1-start.jpg",
+      "bytes": 30411,
+      "width": 375,
+      "height": 812,
+      "sha256": "3efb95ef29cf596f606f3adf9cb961cca5ae2834a911196569be4d57bde6c9f5"
+    },
+    {
+      "path": "r10/e2e/375-ru-1-target.jpg",
+      "bytes": 30543,
+      "width": 375,
+      "height": 812,
+      "sha256": "497a658afdc1e6087eae58538dfb6e0da02a5c578e4e1d4d142857bcad298ecc"
+    },
+    {
+      "path": "r10/e2e/375-ru-2-category.jpg",
+      "bytes": 28732,
+      "width": 375,
+      "height": 812,
+      "sha256": "a1ea4510ce36c20946b7bbd0e8218a7170d4ce0b4e2a2e3b14830008f2bdd0db"
+    },
+    {
+      "path": "r10/e2e/375-ru-2-sent.jpg",
+      "bytes": 20633,
+      "width": 375,
+      "height": 812,
+      "sha256": "0cf8c8b964e8ff7c19447e5d40e43bf3fcaf6fe1dd1f02158e8151b21c1bbd46"
+    },
+    {
+      "path": "r10/e2e/375-ru-3-heat.jpg",
+      "bytes": 37141,
+      "width": 375,
+      "height": 812,
+      "sha256": "3d4b4cc859695e37c513960a60fbed7ab6b0d3ec87efa6530639805af248d889"
+    },
+    {
+      "path": "r10/e2e/375-ru-4-day.jpg",
+      "bytes": 37085,
+      "width": 375,
+      "height": 812,
+      "sha256": "04840e1485c573f5f9c8ebe17dd82bfe32540a0739cd6d900570f88c418910a4"
+    },
+    {
+      "path": "r10/e2e/375-ru-5-catalog.jpg",
+      "bytes": 39021,
+      "width": 375,
+      "height": 812,
+      "sha256": "5255ee1deaf5a607c63076be89f77381ecc6e09064a590acdac7d5762ed6c1cf"
+    },
+    {
+      "path": "r10/e2e/375-ru-5-login.jpg",
+      "bytes": 29862,
+      "width": 375,
+      "height": 812,
+      "sha256": "7a930c171efd2c95361d529e2ec98ff7f50b92cf41e18f67d132f5899386a7fb"
+    },
+    {
+      "path": "r10/e2e/375-ru-5-vote.jpg",
+      "bytes": 30807,
+      "width": 375,
+      "height": 812,
+      "sha256": "e3db8238957b5d575c22a5d167bc6be14185a129b9f89a2a44525c47bcb4d91d"
+    },
+    {
+      "path": "r10/e2e/375-ru-6-fixed.jpg",
+      "bytes": 35220,
+      "width": 375,
+      "height": 812,
+      "sha256": "0e4d037fa29d77bd335cd1337e4ae329d655e1a86f4215be1062c6a426b1a9fd"
+    },
+    {
+      "path": "r10/e2e/375-ru-6-mine.jpg",
+      "bytes": 18294,
+      "width": 375,
+      "height": 812,
+      "sha256": "19e242fde071c60f662a21fbf222dbf7dbe45482a8cfd3f66be2c657f43bb702"
+    },
+    {
+      "path": "r10/ux/r01-r08-картина-дня-в-оболочке-1366-kk.jpg",
+      "bytes": 94054,
+      "width": 1366,
+      "height": 768,
+      "sha256": "e6ca92e04fc3bf1e175dfe5f18aabf2addfbefd56d07bfbf4c4ff8402e01e859"
+    },
+    {
+      "path": "r10/ux/r01-r08-картина-дня-в-оболочке-1366-ru.jpg",
+      "bytes": 85467,
+      "width": 1366,
+      "height": 768,
+      "sha256": "35a630e1f56fca2033c2e185c7d06f8f91d0f781387a5ec9d5327527521f5418"
+    },
+    {
+      "path": "r10/ux/r01-r08-картина-дня-в-оболочке-375-kk.jpg",
+      "bytes": 36479,
+      "width": 375,
+      "height": 812,
+      "sha256": "7a8c36fabe1b512a0defe455965989d4e19a4a9f025be8628794c4dd3763d2cd"
+    },
+    {
+      "path": "r10/ux/r01-r08-картина-дня-в-оболочке-375-ru.jpg",
+      "bytes": 35864,
+      "width": 375,
+      "height": 812,
+      "sha256": "cb8bd65c5826b0cd1aeb995acba4656c3f6ba98c1aaeeaa050b55652a3a9fe93"
+    },
+    {
+      "path": "r10/ux/r01-главная-карта-акимат-1366-kk.jpg",
+      "bytes": 97610,
+      "width": 1366,
+      "height": 768,
+      "sha256": "627d94c4f399711768c2f1a6183764b6808e2d43b7be90b910a2167da32775ed"
+    },
+    {
+      "path": "r10/ux/r01-главная-карта-акимат-1366-ru.jpg",
+      "bytes": 97809,
+      "width": 1366,
+      "height": 768,
+      "sha256": "5a0a1f2c1f0ddb863dc850cef15e0ce4e6f9d7d155b818b3c67bdcbb42b7b4f3"
+    },
+    {
+      "path": "r10/ux/r01-главная-карта-акимат-375-kk.jpg",
+      "bytes": 37773,
+      "width": 375,
+      "height": 812,
+      "sha256": "24e6a37eae7d5eba5b62b978db670abf73b921331ff24562b8177ce63fe81f94"
+    },
+    {
+      "path": "r10/ux/r01-главная-карта-акимат-375-ru.jpg",
+      "bytes": 38130,
+      "width": 375,
+      "height": 812,
+      "sha256": "99cf4e3178de0d6457118c7e635767e839ecc6a62cbe27ae8243674e928c52ef"
+    },
+    {
+      "path": "r10/ux/r01-главная-карта-житель-1366-kk.jpg",
+      "bytes": 102888,
+      "width": 1366,
+      "height": 768,
+      "sha256": "76d78c456c6186ea9dd1558dba933f928802713168cd61071dcde777f485d728"
+    },
+    {
+      "path": "r10/ux/r01-главная-карта-житель-1366-ru.jpg",
+      "bytes": 102207,
+      "width": 1366,
+      "height": 768,
+      "sha256": "18229d37e766259de84befe3ee5951523c1724fc97217351ce36734d882770ef"
+    },
+    {
+      "path": "r10/ux/r01-главная-карта-житель-375-kk.jpg",
+      "bytes": 39894,
+      "width": 375,
+      "height": 812,
+      "sha256": "280dd9e698ffb82df0c2880046ceed5b147b8a6a3bac110380b959f1d73a5a83"
+    },
+    {
+      "path": "r10/ux/r01-главная-карта-житель-375-ru.jpg",
+      "bytes": 40399,
+      "width": 375,
+      "height": 812,
+      "sha256": "b2d626fed43ede841e1791f509899904c2025dea2d6433d32f0a2fde51e04751"
+    }
+  ]
+}
