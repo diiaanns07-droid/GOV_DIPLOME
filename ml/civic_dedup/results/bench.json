@@ -1,0 +1,107 @@
+{
+ "generated_at": "2026-10-10T13:44:55+00:00",
+ "env": {
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+  "cpus": 4,
+  "python": "3.13.16",
+  "platform": "Linux-6.18.44-fc-v114-x86_64-with-glibc2.39"
+ },
+ "data": "5000 synthetic demo complaints (ml/civic_dedup/fixtures.py), seed 20261011",
+ "classify": {
+  "chain": {
+   "model_version": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03",
+   "models": {
+    "kw": "ready",
+    "v1": "ready",
+    "v1_heuristic": "ready",
+    "v2": "unavailable: ModelUnavailable: ml/civic_classifier_v2/artifacts/onnx: нет birge_meta.json; ml/civic_classifier_v2/artifacts/final: нет birge_meta.json"
+   }
+  },
+  "first_call_ms": 101.33,
+  "sources": {
+   "kw": 450,
+   "v1": 50
+  },
+  "n": 500,
+  "p50_ms": 0.06,
+  "p95_ms": 0.36,
+  "max_ms": 1.89,
+  "mean_ms": 0.11
+ },
+ "similar_city": {
+  "first_query_ms": 10.61,
+  "cold": {
+   "n": 300,
+   "p50_ms": 8.31,
+   "p95_ms": 11.34,
+   "max_ms": 15.37,
+   "mean_ms": 8.56
+  },
+  "warm": {
+   "n": 300,
+   "p50_ms": 8.06,
+   "p95_ms": 10.41,
+   "max_ms": 18.45,
+   "mean_ms": 8.32
+  },
+  "mean_matches": 0.11,
+  "method": "ngram-concept-v1-a0.3-n24-t0.43"
+ },
+ "similar_hotspot": {
+  "first_query_ms": 152.47,
+  "cold": {
+   "n": 60,
+   "p50_ms": 32.19,
+   "p95_ms": 44.2,
+   "max_ms": 149.38,
+   "mean_ms": 35.71
+  },
+  "warm": {
+   "n": 60,
+   "p50_ms": 32.63,
+   "p95_ms": 43.64,
+   "max_ms": 51.7,
+   "mean_ms": 33.49
+  },
+  "mean_matches": 5.0,
+  "method": "ngram-concept-v1-a0.3-n24-t0.43"
+ },
+ "similar_r09_store": {
+  "first_query_ms": 0.99,
+  "cold": {
+   "n": 300,
+   "p50_ms": 0.39,
+   "p95_ms": 0.95,
+   "max_ms": 2.77,
+   "mean_ms": 0.45
+  },
+  "warm": {
+   "n": 300,
+   "p50_ms": 0.24,
+   "p95_ms": 0.43,
+   "max_ms": 0.84,
+   "mean_ms": 0.25
+  },
+  "mean_matches": 0.11,
+  "method": "ngram-concept-v1-a0.3-n24-t0.43"
+ },
+ "similar_r09_store_hotspot": {
+  "first_query_ms": 209.02,
+  "cold": {
+   "n": 60,
+   "p50_ms": 46.85,
+   "p95_ms": 76.2,
+   "max_ms": 172.31,
+   "mean_ms": 51.98
+  },
+  "warm": {
+   "n": 60,
+   "p50_ms": 45.85,
+   "p95_ms": 61.33,
+   "max_ms": 84.48,
+   "mean_ms": 46.58
+  },
+  "mean_matches": 5.0,
+  "method": "ngram-concept-v1-a0.3-n24-t0.43"
+ }
+}

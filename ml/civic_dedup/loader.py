@@ -40,9 +40,10 @@ def _build(conf: dict) -> tuple[Deduper, list[str]]:
                 continue
             return Deduper(scorer, float(thr), radius_m=radius), notes
         if method == C.FALLBACK_METHOD:
-            lo, hi = (mconf.get("ngram_range") or [3, 5])[:2]
-            scorer = NgramConceptScorer(alpha=float(mconf.get("alpha", 0.5)), ngram_range=(int(lo), int(hi)))
-            return Deduper(scorer, float(thr if thr is not None else 0.31), radius_m=radius), notes
+            d = C.DEFAULTS["methods"][C.FALLBACK_METHOD]
+            lo, hi = (mconf.get("ngram_range") or d["ngram_range"])[:2]
+            scorer = NgramConceptScorer(alpha=float(mconf.get("alpha", d["alpha"])), ngram_range=(int(lo), int(hi)))
+            return Deduper(scorer, float(thr if thr is not None else d["threshold"]), radius_m=radius), notes
         notes.append(f"{method}: неизвестный метод")
     # prefer испорчен — запасной путь всё равно работает.
     d = C.DEFAULTS["methods"][C.FALLBACK_METHOD]

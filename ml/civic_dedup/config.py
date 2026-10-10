@@ -18,13 +18,13 @@ RESULTS_DIR = PKG_DIR / "results"
 PAIRS_PATH = REPO_ROOT / "ml" / "datasets" / "synth_v3" / "data" / "paraphrase_pairs_v3.jsonl"
 
 FALLBACK_METHOD = "ngram-concept-v1"
-# Если файла нет или он испорчен — безопасные значения запасного пути (подобраны 10 окт., см. RESULTS.md).
+# Если файла нет или он испорчен — те же значения запасного пути, что подобрал tune.py 10 окт. (RESULTS.md).
 DEFAULTS = {
     "version": "civic-dedup-config-v1",
     "radius_m": 200,
     "default_days": 14,
     "methods": {
-        FALLBACK_METHOD: {"threshold": 0.31, "alpha": 0.5, "ngram_range": [3, 5]},
+        FALLBACK_METHOD: {"threshold": 0.43, "alpha": 0.3, "ngram_range": [2, 4]},
         "e5-onnx": {"threshold": None, "alpha": 1.0},
     },
     "prefer": ["e5-onnx", FALLBACK_METHOD],
