@@ -3,7 +3,7 @@
  "title": "Предложения, голоса жителей, этапы и отставание объектов",
  "branch": "claude/round-14-r06",
  "branch_note": "Отдельная ветка с разрешения пользователя: claude/round-14-package уже вела сессия R11; по COMMON (обновлён позже) имя было бы claude/r14-R06 — координатору внести claude/round-14-r06 в BRANCHES.md.",
- "base_sha": "608e367 (claude/round-14-package); соседи ночью: R01 13ae790, R05 f350787, R08 b9c089a, R10 25b2dde, R11 a62a67c, R15 68c92a2",
+ "base_sha": "608e367 (claude/round-14-package); соседи: R01 cb6d336 (FINAL-кандидат 0a7a346), R05 a9d256d, R10 b6303bb, R11 3120520, R15 8b3717a",
  "restored_from": {
   "ui/civic_store/": "claude/elegant-franklin-jbhprq @ 26793c8 (R02 раунда 13, код b9eb180)",
   "tests/civic/R06/store/": "tests/civic/R02 @ 26793c8, переименованы в r06store_*; тесты схемы/cookie/выгрузки/seed-demo/проекции обновлены под миграции 6–7, geometry_source и названия демо без служебных слов"
@@ -16,9 +16,9 @@
   "ui/civic_akim R08": "claude/r14-R08 @ 7101f46 — только для теста с R06_R08_ROOT",
   "engine/civic_geo R12": "из дерева R01 915143f — только для отчёта точности линий демо-пакета"
  },
- "code_sha": "efafee9",
- "tested_sha": "efafee9 (Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright)",
- "push_status": "efafee9 и документы поставки — в origin/claude/round-14-r06 (см. git log)",
+ "code_sha": "d707efc",
+ "tested_sha": "d707efc (Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright)",
+ "push_status": "d707efc и документы поставки — в origin/claude/round-14-r06 (см. git log)",
  "changed_paths": [
   "ui/civic_store/db.py (миграции 6 и 7)",
   "ui/civic_store/auth.py (COOKIE_PATH=/api/civic)",
@@ -40,18 +40,17 @@
   "research/handoffs/astana/R06/round14/STATUS.md"
  ],
  "tests": {
-  "дерево R01 13ae790 + ui/civic_store, web/civic/proposals, tests/civic/R06/round14, tests/civic/R06/store: pytest tests/civic/R01 R02 R06 R08": "PASS 1130 passed, 5 skipped (без R02/round14 — нужен ml.labeling; без R08 test_r08_heat_match — падает при сборе и без R06)",
-  "tests/civic/R15 (R15 68c92a2) на том же дереве": "PASS 99/99 (S08, S15 и остальные)",
-  "браузер browser_r14.cjs, свой демо-набор (--age-days 16), ui-kit R11 a62a67c: 375/1366 ru/kk, голос, акимат, п.15–19, дата, этап, нет связи + UX_BRIEF (технические слова, ≥ 14 px, контраст ≥ 4.5:1, анимации ≤ 800 мс) + клавиатура": "PASS 104/104",
   "браузер browser_r14.cjs --build-set, набор сборки data/civic/astana/demo_synthetic.json": "PASS 79/79, NOT_RUN 4 («давно не обновлялось»: без сдвига часов показать нечем) @681a4ef",
-  "демо-путь R01 tests/civic/R01/browser/r14_b2.cjs на дереве 13ae790 + пути R06": "PASS 25/25",
-  "клиент R05 createApiStore @f350787 (голова R05) против стенда (r05_client_r14.cjs)": "PASS 17/17",
   "через CivicV2Gateway R01 (R06_R01_WEB_SERVER) d9a8895 / 915143f": "PASS 5/5 @681a4ef",
   "с настоящим кодом R08 @7101f46 (R06_R08_ROOT)": "PASS @681a4ef",
   "Windows run-city.bat и вид поля даты в Chrome ru/kk": "NOT_RUN: облачный Linux (LOCAL-R06-1)",
+  "pytest tests/civic/R06 @d707efc": "PASS 490 passed, 7 skipped (без R06_R01_WEB_SERVER / R06_R08_ROOT — их тесты SKIP; 1 — унаследован из R02)",
+  "FINAL-кандидат R01 cb6d336 (0a7a346, внутри R06 efafee9, R13 a0133e9) как есть": "PASS: app_r01_day_kk.cjs 7/7, r14_b2.cjs 25/25, pytest tests/civic/R06 tests/civic/R13 622 passed",
+  "FINAL-кандидат R01 cb6d336 + пути R06 @d707efc: pytest R01 R02 R06 R08 R15": "PASS 1258 passed, 5 skipped, 1 xfailed (без R02/round14 — ml.labeling; без R08 test_r08_heat_match — падает при сборе и без R06)",
+  "FINAL-кандидат + пути R06 @d707efc: r14_b2.cjs и app_r01_day_kk.cjs": "PASS 25/25 и 7/7",
+  "браузер browser_r14.cjs, ui-kit R11 3120520: 375/1366 ru/kk, голос, акимат, п.15–19, дата, этап, нет связи, UX_BRIEF, клавиатура, новый проект «вид + улица»": "PASS 107/107",
   "браузер browser_nokit.cjs: без ui-kit, без словаря, медленная сеть, лимит голосов 429 (ru/kk) — 375 и 1366": "PASS 22/22",
-  "pytest tests/civic/R06 @efafee9": "PASS 489 passed, 7 skipped (без R06_R01_WEB_SERVER / R06_R08_ROOT — их тесты SKIP; 1 — унаследован из R02)",
-  "приложение R01 daec72a + пути R06 (CIVIC_DEMO=1): app_r01_day_kk.cjs — «Картина дня» ҚАЗ/РУС 1366/375": "PASS 7/7 (screens/app/)"
+  "клиент R05 createApiStore @a9d256d (голова R05) против стенда": "PASS 17/17"
  },
  "known_limits": [
   "Голос — один с устройства (localStorage + хэш с солью), а не один на человека. Защита: 30 голосов/мин с адреса и 20 новых голосов в сутки за одно предложение с адреса (R15 S08). Без eGov/SMS накрутку можно усложнить, но не исключить: голоса — «мнение жителей».",
@@ -63,7 +62,7 @@
   "stale считается от более свежего из (обновление этапа, обновление карточки); для работающих и без этапа — false.",
   "Код раунда 13 и поставок 1–2 не откроет базу после миграции 8 — перед обновлением backup."
  ],
- "next_step": "R01 (FINAL): взять R06 по путям на code_sha efafee9 — ui/civic_store/, web/civic/proposals/, tests/civic/R06/round14/, tests/civic/R06/store/ (НЕ трогать тесты раунда 13 в tests/civic/R06/*.py). P-R06 R15 уже внутри — не накладывать второй раз. R05: можно слать near_street_kk. R11: вычитать kk-названия демо (INTEGRATION §5). LOCAL: LOCAL-R06-1.",
+ "next_step": "R01 (FINAL): взять R06 по путям на code_sha d707efc — ui/civic_store/, web/civic/proposals/, tests/civic/R06/round14/, tests/civic/R06/store/ (НЕ трогать тесты раунда 13 в tests/civic/R06/*.py). P-R06 R15 уже внутри — не накладывать второй раз. R05: можно слать near_street_kk. R11: вычитать kk-названия демо (INTEGRATION §5). LOCAL: LOCAL-R06-1.",
  "delivery": 3,
  "delivery_note": "Поставка 3 (ночь 10→11 окт) для FINAL R01: R10 B-018/B-006, LOCAL_B2 (CP1251), R15 S08, правдоподобные демо-этапы. Поставка 2: b42e790 (в B3 R01 a8fabce). Поставка 1: 7031afa.",
  "ux_review_day3": {
@@ -105,7 +104,9 @@
   "точность (свой проход)": "улицы демо-проектов — ближайшие по графу OSM (≤ 100 м), название сквера исправлено (был в 308 м от Омарова) — test_demo_proposal_streets_are_the_nearest_named_streets; засеянные базы обновляются (только demo, голоса целы) — test_seed_refreshes_outdated_demo_texts_but_keeps_votes",
   "R15 S15": "patch P-R06 применён (основа пароля без цифр — распространённое слово → отказ) + свои тесты test_common_base_with_digits_is_refused",
   "R15 S08 (интерфейс)": "на 429 карточка пишет «С этого адреса уже много голосов за этот проект. Попробуйте завтра.» (ru/kk) без «Повторить»; новый ключ proposal.vote_limit — для R11 (INTEGRATION §5)",
-  "R11 UX_REVIEW ночь круг 2 п. 2 / KK_REVIEW раздел 3": "title_kk demo-astana-* — дословно по таблице R11"
+  "R11 UX_REVIEW ночь круг 2 п. 2 / KK_REVIEW раздел 3": "title_kk demo-astana-* — дословно по таблице R11",
+  "R11 ночь круг 2 п. 3": "проект без названия, с улицей: «Сквер у улицы X» / «Гүлзар · X көшесі маңында»; освещение «Освещение улицы X» / «X көшесін жарықтандыру» — test_new_project_without_title_gets_kind_and_street + браузер",
+  "R11 KK_REVIEW (vote_limit)": "текст лимита «С этого устройства или сети…» — как в словаре R11 3120520 (ключ уже в словаре)"
  },
- "code_note": "Ночные круги 1–4: 681a4ef, d20c7e2, 7b99e6c, 6a7dcc9 (текст лимита голосов). efafee9 (kk-названия демо по KK_REVIEW R11). Брать efafee9."
+ "code_note": "В FINAL-кандидате R01 0a7a346 — efafee9 (проверен как есть: «Картина дня» kk 7/7, r14_b2 25/25, тесты R06+R13 622). d707efc — круг 6 поверх: название нового проекта «вид + улица» (R11 ночь п. 3) и текст лимита голосов как в словаре R11. Брать d707efc."
 }
