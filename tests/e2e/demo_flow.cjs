@@ -36,6 +36,9 @@ const NURA_BBOX = "71.375,51.115,71.420,51.140";
 const DEVICE = "r10-e2e-device-" + Date.now();
 const { NOISE, uiScreen, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
 
+// Python: переменная PYTHON (например .venv\Scripts\python на Windows), иначе python3 / python.
+const PY = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
+
 const results = [];
 const add = (layer, step, name, status, detail, shot) => {
   results.push({ layer, step, name, status, detail: detail ?? null, shot: shot || null });
@@ -51,7 +54,7 @@ async function startServer() {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r10-e2e-"));
   const db = path.join(tmp, "civic.sqlite3");
   const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1" };
-  const cli = (argv, input) => execFileSync("python3", ["-B", "-m", "ui.civic_store", "--db", db, ...argv],
+  const cli = (argv, input) => execFileSync(PY, ["-B", "-m", "ui.civic_store", "--db", db, ...argv],
     { cwd: ROOT, env, input, stdio: [input ? "pipe" : "ignore", "pipe", "pipe"] }).toString();
   cli(["init"]);
   cli(["seed-demo", "--package", "data/civic/astana/demo_synthetic.json"]);
@@ -63,7 +66,7 @@ async function startServer() {
   try { cli(["create-editor", user, "--password-stdin"], pass + "\n"); staff = { user, pass }; }
   catch (e) { staff = { error: String(e.stderr || e.message).slice(0, 300) }; }
   const port = await freePort();
-  const srv = spawn("python3", ["-B", "app.py", "--host", "127.0.0.1", "--port", String(port)],
+  const srv = spawn(PY, ["-B", "app.py", "--host", "127.0.0.1", "--port", String(port)],
     { cwd: ROOT, env, stdio: ["ignore", "pipe", "pipe"] });
   srv.log = ""; srv.stdout.on("data", (d) => (srv.log += d)); srv.stderr.on("data", (d) => (srv.log += d));
   for (let i = 0; i < 150; i++) {

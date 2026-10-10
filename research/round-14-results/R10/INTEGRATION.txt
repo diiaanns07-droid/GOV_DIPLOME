@@ -1,0 +1,39 @@
+R10 · раунд 14 · INTEGRATION — как подключить приёмку к общей сборке
+
+1. Что переносит R01 в сборку (по желанию; приёмка работает и из отдельной ветки claude/r14-R10)
+   tests/e2e/demo_flow.cjs, ux_lib.cjs, ux_screens.cjs, run_acceptance.cjs, screens_build.json, README.md
+   tests/civic/R10/accuracy.py, test_r10_accuracy.py
+   Чужой код R10 не меняет. tests/civic/R10 — обычный pytest: в сборке `python -m pytest tests` его подхватит
+   (без данных модулей проверки дают skip = NOT_RUN, не FAIL). Время ~5 с (загрузка графа OSM 28 МБ).
+
+2. Точки, на которые опираются тесты R10 (если R01 или роль меняет их — сообщите R10 / обновите тест)
+   - Сервер: `python app.py --host --port`, `GET /api/health`, CLI `python -m ui.civic_store --db X init | seed-demo
+     --package data/civic/astana/demo_synthetic.json | seed-r14-demo | create-editor U --password-stdin`.
+   - Вход сотрудника: `POST /api/civic/v1/session/login {username,password}` → Set-Cookie + data.csrf_token;
+     дальше заголовки Cookie, X-CSRF-Token, Origin.
+   - API v2 (CONTRACT §7), шлюз `GET /api/civic/v2/modules`.
+   - Интерфейс: глобальная `map` (MapLibre, web/interface.js) или `window.standMap` (стенд R09); тексты кнопок —
+     из web/civic/i18n/{ru,kk}.json (ключи complaint.start.button, complaint.step3.suggested, complaint.send,
+     complaint.step4.metoo, complaint.step5.title, common.role.resident, common.nav.day, common.nav.menu,
+     heat.legend, akim.kpi.in_progress, proposal.catalog.title, proposal.kind.*, mine.title, status.fixed).
+     Если ключа нет — тест берёт русский/казахский запасной текст. Переименовали ключ — добавьте синоним в T(...).
+   - Данные точности: engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json,
+     data/civic/astana/geofence.json, data/civic/astana/geo/{objects,yards,demo_snapped,way_tags}.json,
+     data/civic/astana/osm-objects/raw/*.json.gz, ui/civic_heat/fixtures/targets_demo.json,
+     web/civic/build3d/data/*.json, ui/civic_store/demo_r14.py (только литералы через ast, без выполнения),
+     ml/civic_forecast/data/targets.json. Новый набор координат → добавьте его в collect_sources() accuracy.py.
+
+3. Предложения владельцам (минимальные; подробности и шаги — BUGS.md)
+   R01: шлюз v2 → адаптер к HeatService R07 и ComplaintsV2Service R09 (B-002); подключить akim.js R08 к #day (B-011);
+        скрыть ленту работ раунда 13 из демо или перевести её (B-012); шрифт ≥ 14/16 и кнопки ≥ 48 (B-013, B-014).
+   R04 + R09: предвыбор категории по `suggest`/score, а `needs_review` — только сотруднику (B-003).
+   R05: остановки брать из data/civic/astana/geo/objects.json R12 (там нет ж/д платформ и всё внутри Астаны) (B-007, B-008).
+   R07: вид «Нура» открывать с масштаба 15 или не рисовать кружки объектов без значка ниже 15 (B-016).
+   R12: проверять все вершины двора, а не центр (B-009). Координатор: добавить osm-relation- в CONTRACT §4 (B-010).
+
+4. LOCAL-задачи (Codex на ноутбуке владельца)
+   LOCAL-R10-1 (после FINAL, 15–16 окт): полная приёмка FINAL по CODEX_ACCEPTANCE_PROMPT.txt — автоматическая часть
+     (run_acceptance.cjs) + ручная с интернетом: подложка и линии по улицам (М1), 3D-наклон и 20 проектов (М2),
+     сценарий за 3 минуты с секундомером (М3), телефон (М4), казахский владельцем (М5), обрыв сети (М6), клавиатура (М7).
+   LOCAL-R10-2 (по желанию, до FINAL): тот же run_acceptance.cjs на B2 с интернетом — чтобы увидеть кадры с настоящей
+     подложкой до защиты.

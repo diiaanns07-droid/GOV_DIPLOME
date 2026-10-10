@@ -1,20 +1,22 @@
-# tests/e2e — сквозная приёмка сценария демо Birge (R10, раунд 14)
+# tests/e2e — приёмка Birge (R10, раунд 14)
 
-`demo_flow.cjs` проходит 6 шагов CONTRACT §0 на сборке R01 двумя слоями:
-- **API** — те же шаги через HTTP API v2 (CONTRACT §7): видно, какой модуль не подключён;
-- **UI** — глазами жителя и акимата в Chromium, 1366×768 и 375×812, ҚАЗ и РУС. Элементы ищутся по видимым словам из
-  словарей R11 (`web/civic/i18n/*.json`), поэтому тест не ломается от смены вёрстки. Плюс правила UX_BRIEF на каждом экране:
-  прокрутка вбок, ключи перевода, технические слова, шрифт < 14 px, зоны нажатия < 40 px, русские строки в ҚАЗ, ошибки консоли.
+| Файл | Что делает |
+|---|---|
+| `run_acceptance.cjs` | **всё одной командой** для сборки R01 (B1/B2/FINAL): сервер с временной базой → точность карты → сценарий демо → UX по экранам → `SUMMARY.md` |
+| `demo_flow.cjs` | 6 шагов CONTRACT §0 двумя слоями: **API** v2 (какой модуль не подключён) и **UI** в Chromium, 1366×768 и 375×812, ҚАЗ и РУС |
+| `ux_screens.cjs` | UX-чек-лист UX_BRIEF по списку экранов (`screens_build.json` для сборки; для стендов ролей — свой JSON) |
+| `ux_lib.cjs` | общие правила экрана: прокрутка вбок, ключи перевода, технические слова, шрифт < 14 px, зоны нажатия < 40 px (значки на карте ≥ 24 px), русские строки в ҚАЗ, Tab до главной кнопки |
+| `screens_build.json` | экраны сборки: главная карта, «Картина дня» (`#day`), страницы модулей (если сервер их отдаёт; иначе NOT_RUN) |
 
-Запуск (из корня репозитория; Python 3.11+, Node 20+, Playwright с Chromium):
+Элементы ищутся по видимым словам из словарей R11 (`web/civic/i18n/*.json`), а не по классам — тест не ломается от
+вёрстки. Реальная точка сценария — остановка «Хан Шатыр» (`osm-node-4109037549`, Нура); тексты жалоб синтетические.
 
-    NODE_PATH="$(npm root -g)" node tests/e2e/demo_flow.cjs --root . --out ../r10-e2e-out
-    # готовый сервер вместо своего:  --url http://127.0.0.1:8611/ --user <логин сотрудника> --pass <пароль>
-    # только часть:                  --sizes 1366x768 --langs kk
+    # Python 3.11+ с pytest, Node 20+, Playwright с Chromium
+    NODE_PATH="$(npm root -g)" node tests/e2e/run_acceptance.cjs --root <папка сборки> --out <папка отчёта> --label B1
+    NODE_PATH="$(npm root -g)" node tests/e2e/demo_flow.cjs --root <сборка> --out <папка>          # только сценарий
+    NODE_PATH="$(npm root -g)" node tests/e2e/ux_screens.cjs --screens tests/e2e/screens_build.json --base http://127.0.0.1:8611/ --out <папка>
+    # Windows: $env:PYTHON = "<сборка>\.venv\Scripts\python.exe"
 
-Без `--url` тест сам запускает `python3 app.py` на свободном порту с временной базой (init → seed-demo →
-seed-r14-demo, если есть → сотрудник `r10-operator`) и удаляет её после прогона. В репозиторий ничего не пишет.
-Результат: `<out>/RESULT.md`, `RESULT.json`, кадры `<размер>-<язык>-<шаг>.jpg`. Код возврата 1, если есть FAIL.
-
-Реальная точка сценария — остановка «Хан Шатыр» (`osm-node-4109037549`, Нура). Тексты жалоб — синтетические.
-Точность карты (CONTRACT §8) — отдельно: `python3 -m pytest -q tests/civic/R10` или `python3 tests/civic/R10/accuracy.py`.
+Ничего не пишут в репозиторий; база — временная. Код возврата demo_flow — 1 при любом FAIL.
+Точность карты (CONTRACT §8) — `tests/civic/R10/` (`python3 tests/civic/R10/accuracy.py --root <сборка>`).
+Подробно — `research/round-14-results/R10/RUN.txt`; задание Codex на приёмку FINAL — `CODEX_ACCEPTANCE_PROMPT.txt` там же.

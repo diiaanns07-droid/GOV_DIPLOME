@@ -4,25 +4,42 @@
 Агент: Claude Code (облачная сессия), Астана. Аккаунт b10 (s11), бюджет недели ограничен — тяжёлые прогоны → Codex.
 Рабочая ветка: **`claude/r14-R10`** (от `claude/round-14-package` @ 4bbf456). В `claude/round-14-package` не пушу.
 Свои пути: `tests/civic/R10/`, `tests/e2e/`, `research/round-14-results/R10/`, этот файл.
-Обновлено: 2026-10-10, вечер (UTC; точное время — у коммита).
-Статус: partial (начато раньше плана по просьбе владельца: проверка поставок по отдельности и текущей ветки R01).
+Обновлено: 2026-10-10, вечер (UTC; точное время — у последнего коммита ветки).
+Статус: **partial — инструменты приёмки готовы, приёмка до B1 сделана; ждём B1 (13 окт)**.
+Начато раньше плана по просьбе владельца: проверка поставок по отдельности и текущей ветки R01, баги — в BUGS.md.
 
-## Что сделано
-1. Проверка поставок ролей по отдельности → `research/round-14-results/R10/DELIVERIES_CHECK.md`:
-   владение путями (все чисто), повтор тестов R03, R05, R06, R07, R08, R09, R11, R12 (совпадают с DELIVERY),
-   прямая проверка API R04.
-2. Текущая сборка R01 (`claude/sharp-dijkstra-0t87gl` @ bc7c961) запущена, сценарий демо пока не проходит (ожидаемо до B1).
-3. Дефекты → `research/round-14-results/R10/BUGS.md` (B-001…B-006).
+## Что сделано (10 окт)
+1. Поставки ролей по отдельности → `research/round-14-results/R10/DELIVERIES_CHECK.md`: владение путями (все чисто);
+   тесты R03, R05, R06, R07, R08, R09, R11, R12 повторены в отдельных worktree — совпадают с DELIVERY; R04 проверен
+   прямым вызовом API (DELIVERY у R04, R13, R14, R15 ещё нет).
+2. Точность карты §8 — свой независимый инструмент `tests/civic/R10/accuracy.py` (+ pytest-обёртка с самопроверкой
+   геометрии). Отчёты по веткам — `research/round-14-results/R10/accuracy/`.
+3. Сценарий демо e2e — `tests/e2e/demo_flow.cjs` (API + интерфейс, 1366/375 × ru/kk, кадры). Проверен на настоящем
+   интерфейсе жалобы R09: шаги 1–2 PASS во всех 4 вариантах (`e2e/r09-stand/`).
+4. UX-чек-лист по экранам — `tests/e2e/ux_screens.cjs` + `ux_lib.cjs`; 7 экранов ролей → `ux/README.md`.
+5. Одна команда для B1/B2/FINAL — `tests/e2e/run_acceptance.cjs` (сервер с временной базой → точность → сценарий → UX → SUMMARY.md).
+6. Приёмка текущей ветки R01 (`claude/sharp-dijkstra-0t87gl` @ bc7c961) → `ACCEPTANCE_PRE_B1.md`: сценарий не проходит
+   (ожидаемо до B1); работает «Картина дня» через API, шапка, ҚАЗ/РУС.
+7. Дефекты → `BUGS.md` B-001…B-018 (блокер 1 «до B1», важных 8, мелочей 9).
+8. `CODEX_ACCEPTANCE_PROMPT.txt` — самодостаточное задание Codex на приёмку FINAL на ноутбуке владельца.
+9. `RUN.txt`, `INTEGRATION.txt`, `DELIVERY.json`.
 
-## Следующий шаг
-1. (сделано, checkpoint 2) `tests/civic/R10/accuracy.py` — точность §8; отчёты `research/round-14-results/R10/accuracy/`.
-2. `tests/e2e/demo_flow.cjs` — 6 шагов сценария, 1366/375 × ru/kk, скриншоты; прогон на текущей R01 → `ACCEPTANCE_PRE_B1.md`.
-3. UX-чек-лист по экранам; `CODEX_ACCEPTANCE_PROMPT.txt`; DELIVERY.json, RUN.txt, INTEGRATION.txt.
-4. 13 окт вечер — B1 (SHA в STATUS.md R01) → `ACCEPTANCE_B1.md`; 14-го B2; 15-го FINAL.
+## Следующий шаг (для следующей сессии R10, 13 окт вечером)
+1. Взять SHA B1 из `research/handoffs/astana/R01/round14/STATUS.md` (ветка R01 — в research/round-14/BRANCHES.md).
+2. `git worktree add --detach ../b1 <SHA>` и из ветки R10:
+   `NODE_PATH=$(npm root -g) node tests/e2e/run_acceptance.cjs --root ../b1 --out ../r10-b1 --label B1`
+   (pytest должен стоять в том же python3: `pip install --user pytest`).
+3. По SUMMARY.md и кадрам написать `ACCEPTANCE_B1.md` (образец — ACCEPTANCE_PRE_B1.md), сложить 8–12 кадров в
+   `e2e/b1/`, обновить статусы в BUGS.md (исправлен SHA / открыт / обход для демо), новые дефекты — B-019+.
+   Посмотреть кадры глазами жюри: метрики не ловят «цвет без числа» (так нашёлся B-016).
+4. Если в B1 меняются тексты кнопок/ключи — добавить синонимы в `T(...)` demo_flow.cjs; если R01 отдаёт страницы
+   модулей — они уже в `screens_build.json` (optional).
+5. 14-го — то же для B2; 15-го — FINAL (+ сверить «готово»: нет блокеров, важные исправлены или с обходом).
 
 ## Как воспроизвести мои проверки
-- Ветки ролей — в `DELIVERIES_CHECK.md` (SHA). Каждую — в отдельный worktree: `git worktree add --detach <папка> origin/<ветка>`.
-- pytest нужен в том же Python, что и `python3` (`pip install --user pytest`), Playwright — глобальный npm
-  (`NODE_PATH=$(npm root -g)`).
+- Ветки ролей и SHA — `DELIVERIES_CHECK.md`. Каждую — в отдельный worktree: `git worktree add --detach <папка> origin/<ветка>`.
 - Стенды: R07 `python3 -m ui.civic_heat.devserver` (8617); R08 `python3 tests/civic/R08/demo_server.py` (8508, нужен R07 —
-  запускать из сборки R01); R06 `serve_r14.py --port 8616 --age-days 16 --kit-dir <выгрузка web/civic/ui-kit и i18n из R11>`.
+  запускать из сборки R01); R06 `serve_r14.py --port 8616 --age-days 16 --kit-dir <выгрузка R11>`; R09
+  `serve_r09.py --port 8790 --seed --r11 <выгрузка R11>/web`; R05 `python3 -m http.server 8765 -d web`.
+- Выгрузка R11: `git archive origin/claude/r14-R11 web/civic/ui-kit web/civic/i18n | tar -x -C <папка>`.
+- Осторожно: `pkill -f <имя>` убивает и собственную оболочку, если имя есть в команде, — гасить по PID.

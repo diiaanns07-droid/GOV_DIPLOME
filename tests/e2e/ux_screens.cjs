@@ -4,8 +4,9 @@
 //
 // screens.json: [{"name": "Тепловая карта · акимат", "owner": "R07",
 //                 "url": "http://127.0.0.1:8617/civic/heat/demo.html?lang={lang}&role=akimat&view=nura",
-//                 "primary": "Взять в работу|Жұмысқа алу"}]          // primary — подпись главной кнопки (необязательно)
-// {lang} заменяется на ru / kk. Экран открывается в обоих языках; kk сравнивается с ru построчно.
+//                 "primary": "Взять в работу|Жұмысқа алу",         // подпись главной кнопки (необязательно)
+//                 "optional": true}]                                 // страницы может не быть (404 → NOT_RUN)
+// {lang} заменяется на ru / kk, {base} — на --base. Экран открывается в обоих языках; kk сравнивается с ru построчно.
 // Проверки на каждом размере: прокрутка вбок, ключи перевода, тех. слова, шрифт < 14 px, зоны нажатия < 40 px,
 // русские строки в kk, ошибки консоли; на 1366 — Tab до главной кнопки и видимая рамка фокуса.
 // Состояния «загрузка / пусто / ошибка» здесь не проверяются (их проверяют тесты ролей и demo_flow) — NOT_RUN.
@@ -22,6 +23,8 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((acc, a, i, all) =>
 const OUT = path.resolve(args.out || "ux-out");
 const SIZES = String(args.sizes || "1366x768,375x812").split(",").map((s) => s.split("x").map(Number));
 const SCREENS = JSON.parse(fs.readFileSync(args.screens, "utf8"));
+// {base} в адресах экранов — корень сервера сборки (--base http://127.0.0.1:8611/).
+const BASE = String(args.base || "http://127.0.0.1:8611/");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9а-яәғқңөұүһі]+/gi, "-").replace(/^-|-$/g, "").slice(0, 40);
 
@@ -39,7 +42,8 @@ async function open(browser, url, w, h, lang) {
   page.errs = [];
   page.on("pageerror", (e) => page.errs.push("pageerror: " + e.message));
   page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) page.errs.push(m.type() + ": " + m.text().slice(0, 200)); });
-  await page.goto(url.replace("{lang}", lang)).catch((e) => page.errs.push("goto: " + e.message));
+  const res = await page.goto(url.replace("{lang}", lang).replace("{base}", BASE)).catch((e) => { page.errs.push("goto: " + e.message); return null; });
+  page.httpStatus = res ? res.status() : 0;
   await sleep(3000);
   // Экраны без ?lang= (оболочка R01): язык выбирается кнопкой ҚАЗ / РУС в шапке.
   const btn = page.getByRole("button", { name: lang === "kk" ? /^ҚАЗ$/ : /^РУС$/ }).first();
@@ -55,6 +59,12 @@ async function open(browser, url, w, h, lang) {
       const size = `${w}`;
       // Сначала ru (эталон строк), затем kk.
       const ru = await open(browser, screen.url, w, h, "ru");
+      // "optional": true — страницы может не быть в этой сборке (404) → NOT_RUN, а не FAIL.
+      if (screen.optional && ru.page.httpStatus >= 400) {
+        add(screen, size, "ru+kk", "страница есть в сборке", "NOT_RUN", { http: ru.page.httpStatus });
+        await ru.ctx.close();
+        continue;
+      }
       const ruLines = await cyrLines(ru.page);
       await ru.ctx.close();
       for (const lang of ["ru", "kk"]) {
@@ -81,14 +91,14 @@ async function open(browser, url, w, h, lang) {
       }
     }
   } finally { await browser.close(); }
-  const counts = { PASS: 0, FAIL: 0 };
+  const counts = { PASS: 0, FAIL: 0, NOT_RUN: 0 };
   rows.forEach((r) => counts[r.status]++);
   fs.writeFileSync(path.join(OUT, "UX_RESULT.json"), JSON.stringify({ when: new Date().toISOString(), counts, rows }, null, 1));
   // Сводка: экран × размер × язык → число FAIL и какие пункты
   const keyOf = (r) => `${r.owner} · ${r.screen} · ${r.size} · ${r.lang}`;
   const groups = {};
   rows.forEach((r) => { (groups[keyOf(r)] = groups[keyOf(r)] || []).push(r); });
-  const md = ["# R10 · UX-чек-лист по экранам", "", `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}. «Загрузка/пусто/ошибка» — NOT_RUN здесь (см. тесты ролей).`, "",
+  const md = ["# R10 · UX-чек-лист по экранам", "", `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, NOT_RUN ${counts.NOT_RUN}. «Загрузка/пусто/ошибка» — NOT_RUN здесь (см. тесты ролей).`, "",
     "| Экран | FAIL | Что не так | Кадр |", "|---|---|---|---|",
     ...Object.entries(groups).map(([k, rs]) => {
       const bad = rs.filter((r) => r.status === "FAIL");
