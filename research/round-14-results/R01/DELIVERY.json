@@ -15,12 +15,12 @@
     "data/civic/astana/round12-verified, round13-verified, tests/civic/R05": "claude/fervent-dijkstra-1cqrg5@a995f9f",
     "web/civic/ui-kit, web/civic/i18n, tests/civic/R11": "claude/r14-R11@eac07c4 (+ patches/R01_map_lang.patch к web/map.js)",
     "ml/datasets, ml/labeling, web/labeling, tests/civic/R02/round14": "claude/r14-R02@f62cc93 (+ P-R02 R15)",
-    "ui/civic_heat, web/civic/heat, tests/civic/R07 (новые)": "claude/upbeat-knuth-i0rqaa@7518bc2",
+    "ui/civic_heat, web/civic/heat, tests/civic/R07 (новые)": "claude/upbeat-knuth-i0rqaa@58f5a56",
     "ui/civic_akim, web/civic/akim, tests/civic/R08 (новые)": "claude/r14-R08@bedb753 (+ tests/civic/R08 51fdbcd5)",
     "ui/civic_feedback/v2, web/civic/feedback (новые), tests/civic/R09 (новые)": "claude/wizardly-ptolemy-qy8ltw@f4fb7b9 (новая ветка R09)",
-    "engine/civic_geo, data/civic/astana/geo, web/civic/map, web/civic/editor, tests/civic/R12": "claude/r14-R12@d6c788e9 (новая ветка R12, поставка 2)",
+    "engine/civic_geo, data/civic/astana/geo, web/civic/map, web/civic/editor, tests/civic/R12": "claude/r14-R12@208413bc (новая ветка R12, поставка 3)",
     "ui/civic_store, web/civic/proposals, tests/civic/R06": "claude/round-14-r06@d707efc (round14/store; тесты раунда 13 не тронуты)",
-    "web/civic/build3d, tests/civic/R05": "claude/r14-R05@a331db0",
+    "web/civic/build3d, tests/civic/R05": "claude/r14-R05@be7d813 (+ proposed_r01_final2.patch к оболочке)",
     "ml/civic_forecast, ui/civic_forecast, tests/civic/R13": "claude/r14-R13@a0133e9",
     "ml/civic_dedup, ui/civic_ml_api, tests/civic/R04/round14": "claude/r14-R04@deeb1de",
     "ml/civic_classifier_v2, tests/civic/R03/round14": "claude/r14-R03@ac0e954 (без весов — LOCAL)",
@@ -55,11 +55,12 @@
     "night_5a_final_candidate": "1dd5b53",
     "night_6_final_candidate": "e6d9d80",
     "night_6c_final_candidate": "d99c8c2",
-    "night_7_final_candidate": "fa117c3 (код 61a5a62)"
+    "night_7_final_candidate": "fa117c3 (код 61a5a62)",
+    "night_8a_final_candidate": "0df9531"
   },
-  "code_sha": "61a5a62",
-  "tested_sha": "fa117c3 (= код 61a5a62 + тесты R10/R11); pytest на 8807b28 (после него только shell.js и тесты), браузер на 61a5a62",
-  "push_status": "OK: fa117c3 в origin/claude/sharp-dijkstra-0t87gl; документы — следующим коммитом",
+  "code_sha": "0df9531",
+  "tested_sha": "0df9531 (pytest и браузер на рабочем дереве = 0df9531)",
+  "push_status": "OK: 0df9531 в origin/claude/sharp-dijkstra-0t87gl; документы — следующим коммитом",
   "changed_paths": [
     "ui/web_server.py",
     "web/index.html",
@@ -120,7 +121,9 @@
     "e6d9d80: full run_checks.sh": "PASS 19/19",
     "e6d9d80: R10 acceptance": "сценарий 134/1/1 (счёт значков под нагрузкой), UX 94/0/8, точность 29/0/0",
     "1dd5b53: R10 acceptance": "сценарий 133/2/1 (B-038), UX 88/6/8, точность 29/0/0; R10: можно показывать, блокеров и важных дефектов нет",
-    "fa117c3: R10 acceptance": "PASS сценарий 140/0/0, UX 94/0/8 (NOT_RUN — стенды ролей), точность 29/0/0"
+    "fa117c3: R10 acceptance": "PASS сценарий 140/0/0, UX 94/0/8 (NOT_RUN — стенды ролей), точность 29/0/0",
+    "0df9531: pytest tests": "PASS 2695 passed, 21 skipped",
+    "0df9531: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 27/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0"
   },
   "known_limits": [
     "Все жалобы, объекты и предложения на демо — синтетика (demo: true, «Пример»); реальных обращений нет.",
