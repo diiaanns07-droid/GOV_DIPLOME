@@ -569,13 +569,24 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     let pt = await showPoint(page, place, 17);
     if (pt && !pt.onCanvas && pt.near) pt = { ...pt, x: pt.near.x, y: pt.near.y };
     if (pt) { if (!mobile) await page.mouse.move(pt.x, pt.y); await tap(page, pt.x, pt.y); await sleep(1200); }
+    // DEMO_SCRIPT 5.2: «повернуть ↺ ↻ при желании» — кнопки поворота есть, пока объект не поставлен.
+    const rotR = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.rotate_right", lang === "kk" ? "Оңға бұру" : "Повернуть вправо")) + "$", "i"), { wait: 500 });
+    const rotL = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.rotate_left", lang === "kk" ? "Солға бұру" : "Повернуть влево")) + "$", "i"), { wait: 500 });
     const placeRe = new RegExp("^" + esc(T(dict, "proposal.place", lang === "kk" ? "Орнату" : "Поставить")) + "$", "i");
     const placedClick = await clickText(page, placeRe, { wait: 4000 });
     const placedMsg = await visibleText(page, textRe(T(dict, "build3d.placed", "Проект поставлен")));
     const projRe = new RegExp("^" + esc(kindName) + ":.*2027", "i");
     const near = pt ? await nearestVisible(page.getByRole("button", { name: projRe }), pt) : null;
-    step("5", `«${kindName}» → нажать на карту → «Поставить»: «Проект поставлен», на карте табличка проекта 2027`, placedClick && placedMsg && !!near && near.d < 80,
-      { hint, placedClick, placedMsg, label_px_from_place: near && near.d }, await shot("5-placed"));
+    step("5", `«${kindName}» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027`, placedClick && placedMsg && !!near && near.d < 80 && rotR && rotL,
+      { hint, rotate: [rotL, rotR], placedClick, placedMsg, label_px_from_place: near && near.d }, await shot("5-placed"));
+    // DEMO_SCRIPT 5.2: «кнопка 3D справа — наклон».
+    const pitch0 = await page.evaluate(() => (typeof map !== "undefined" && map.getPitch ? map.getPitch() : null));
+    // У кнопки видимый текст «3D», а имя для экранного диктора — «Объёмный вид» (ключ common.map.view3d).
+    const view3dRe = new RegExp("^(3D|" + esc(T(dict, ["common.map.view3d", "shell.map.view3d"], lang === "kk" ? "Көлемді көрініс" : "Объёмный вид")) + ")$", "i");
+    const b3d = await clickText(page, view3dRe, { wait: 1500 });
+    const pitch1 = await page.evaluate(() => (typeof map !== "undefined" && map.getPitch ? map.getPitch() : null));
+    step("5", "кнопка «3D» наклоняет карту", b3d && pitch1 !== null && pitch1 > 20 && pitch1 > pitch0, { b3d, pitch0, pitch1 }, await shot("5-3d"));
+    if (b3d && pitch1 > 20) { await clickText(page, view3dRe, { wait: 800 }); }  // вернуть плоский вид для следующих шагов
 
     // Житель: карточка проекта → «За».
     await setMode("resident");
