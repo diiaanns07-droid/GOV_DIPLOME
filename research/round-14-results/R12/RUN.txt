@@ -1,9 +1,9 @@
-R12 · раунд 14 · как запустить и проверить (из корня репозитория, ветка claude/tender-brahmagupta-ef5ztl)
+R12 · раунд 14 · как запустить и проверить (из корня репозитория, ветка claude/r14-R12; день 1 — claude/tender-brahmagupta-ef5ztl)
 Нужно: python3 (только stdlib; для тестов — pytest), Node 22, Playwright + Chromium (локально или `npm root -g`).
 Без Playwright браузерные проверки пропускаются (NOT_RUN). Ничего не пишется в репозиторий, кроме явных команд сборки.
 
 1. ДВИЖОК ТОЧНОСТИ (engine/civic_geo)
-   python3 -m pytest -q tests/civic/R12/test_civic_geo.py                  # 25 тестов: фикстура + настоящий граф
+   python3 -m pytest -q tests/civic/R12/test_civic_geo.py                  # 33 теста: фикстура + настоящий граф (день 2: дворы целиком, подписи ru/kk)
    python3 -m engine.civic_geo report                                      # отчёт точности по всем объектам карты
    python3 -m engine.civic_geo report --json research/round-14-results/R12/accuracy_report.json
    python3 -m engine.civic_geo report --objects <выгрузка записей {items:[...]}>   # линии из хранилища идут по улице?
@@ -13,7 +13,7 @@ R12 · раунд 14 · как запустить и проверить (из к
 
 2. ПЕРЕСБОРКА ДАННЫХ (data/civic/astana/geo)
    python3 -m engine.civic_geo build-way-tags      # тип дороги и казахские имена из снимка пешеходной сети
-   python3 -m engine.civic_geo build-data          # objects/yards/cells/SOURCE (после LOCAL-1 — полные данные)
+   python3 -m engine.civic_geo build-data          # objects/yards/cells/SOURCE (после LOCAL-1 — полные данные; двор — только целиком в городе)
    python3 -m engine.civic_geo snap-demo           # demo_snapped.json + копия web/civic/map/demo_snapped.json
 
 3. КАРТА (web/civic/map) — стенд с mock API
@@ -24,12 +24,19 @@ R12 · раунд 14 · как запустить и проверить (из к
    Руками: node tests/civic/R12/map/serve.mjs 8765, затем
      http://127.0.0.1:8765/tests/civic/R12/map/stand/?basemap=offline&objects=/data/civic/astana/demo_synthetic.json&snapped=/web/civic/map/demo_snapped.json&streets=/tests/civic/R12/map/fixtures/.generated/streets_demo_area.json
      (подложка улиц: python3 -B tests/civic/R12/map/make_streets_fixture.py)
+   День 2:
+   NODE_PATH=$(npm root -g) node --test --test-concurrency=1 tests/civic/R12/map/r12_accuracy.test.mjs   # + гонка demo-ring, карточка в ҚАЗ
+   NODE_PATH=$(npm root -g) node --test --test-concurrency=1 tests/civic/R12/map/r12_offline_glyphs.test.mjs
+     # подпись улицы R12 на локальных глифах офлайн-подложки (нужны web/civic/offline/fonts, иначе NOT_RUN)
 
 4. РЕДАКТОР (web/civic/editor) — стенд с контрактным mock civic-v1
    NODE_PATH=$(npm root -g) node --test --test-concurrency=1 tests/civic/R12/editor/core.test.cjs tests/civic/R12/editor/contract_mock.test.cjs
    NODE_PATH=$(npm root -g) node --test --test-concurrency=1 tests/civic/R12/editor/e2e.test.cjs tests/civic/R12/editor/e2e_r13.test.cjs tests/civic/R12/editor/joint_r03.test.cjs
    NODE_PATH=$(npm root -g) R12_SHOTS=1 node --test --test-concurrency=1 tests/civic/R12/editor/e2e_r12.test.cjs        # новые инструменты (тестовый клиент)
    NODE_PATH=$(npm root -g) R12_SHOTS=1 node --test --test-concurrency=1 tests/civic/R12/editor/e2e_r12_real.test.cjs   # настоящий граф OSM
+   NODE_PATH=$(npm root -g) R12_SHOTS=1 node --test --test-concurrency=1 tests/civic/R12/editor/e2e_r12_kk.test.cjs     # кабинет на ҚАЗ (словарь R11 @ 548510b)
+   На сборке R01 (кабинет в настоящем app.py; R01 применил свой patch редактора, поэтому R04_APP_PATCHED=1):
+   R04_APP=1 R04_APP_PATCHED=1 NODE_PATH=$(npm root -g) node --test tests/civic/R12/editor/app_acceptance_r13.test.cjs
    Сервер геоданных отдельно: python3 -B tests/civic/R12/geo_api_server.py 8790 -> http://127.0.0.1:8790/api/civic/v2/targets?lon=71.4289&lat=51.1716&category=roads
 
 5. ЧТО ТЕПЕРЬ МОЖЕТ ПОЛЬЗОВАТЕЛЬ
@@ -38,6 +45,10 @@ R12 · раунд 14 · как запустить и проверить (из к
    значки остаются сверху; в карточке написано «Участок улицы по карте OSM: …».
    Сотрудник: «Участок улицы» — два нажатия (начало прилипает к оси, конец — линия строится по улице), «Готово»;
    «Проезжая часть / Тротуар»; точка рядом с остановкой ставится точно на объект OSM одним нажатием; «Выбрать двор»
-   выделяет двор OSM целиком (538 дворов OSM). Нарисовать линию «от руки» больше нельзя. У сохранённой записи —
+   выделяет двор OSM целиком (537 дворов OSM). Нарисовать линию «от руки» больше нельзя. У сохранённой записи —
    блок «Этап работ» R06 (если на странице подключён stage-editor.js).
    Соседи: /targets даёт 1–3 кандидата привязки жалобы за < 1 мс; target_geometry даёт форму любой цели по id.
+   День 2: кабинет сотрудника и редактор — на казахском при ҚАЗ (вход, вкладки, список, выход; имена улиц и объектов OSM —
+   казахские из OSM); «Это здесь?»: «Тұран даңғылының бөлігі», безымянный проезд — «Проезд у улицы Сауран» /
+   «Сауран көшесі маңындағы өтпе жол»; карточка объекта работ на карте в ҚАЗ — главное по-казахски, подробности —
+   в разделе «Толық мәліметтер (орыс тілінде)»; подпись улицы на карте следует языку.

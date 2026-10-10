@@ -258,7 +258,7 @@
   // nothing is repaired or guessed. kind: null | "invalid" | "unsupported" | "out_of_region".
   function normalizeGeometry(g, region) {
     if (g === null || g === undefined) return { geometry: null, issue: null, kind: null };
-    if (!isObj(g) || typeof g.type !== "string") return { geometry: null, issue: "геометрия в записи повреждена", kind: "invalid" };
+    if (!isObj(g) || typeof g.type !== "string") return { geometry: null, issue: "место на карте в записи повреждено", kind: "invalid" };
     let ok = false;
     if (g.type === "Point") ok = isPos(g.coordinates);
     else if (g.type === "LineString") ok = Array.isArray(g.coordinates) && g.coordinates.length >= 2 && g.coordinates.every(isPos);
@@ -266,7 +266,7 @@
       ok = Array.isArray(g.coordinates) && g.coordinates.length >= 1 && g.coordinates.every((ring) =>
         Array.isArray(ring) && ring.length >= 4 && ring.every(isPos) &&
         ring[0][0] === ring[ring.length - 1][0] && ring[0][1] === ring[ring.length - 1][1]);
-    } else return { geometry: null, issue: "тип геометрии «" + g.type.slice(0, 40) + "» не входит в civic-v1", kind: "unsupported" };
+    } else return { geometry: null, issue: "место на карте записано в неизвестном виде («" + g.type.slice(0, 40) + "»)", kind: "unsupported" };
     if (!ok) return { geometry: null, issue: "координаты в записи некорректны", kind: "invalid" };
     const clean = { type: g.type, coordinates: g.coordinates };
     const box = bboxOf(clean);
@@ -631,10 +631,59 @@
 
   // R11 i18n (раунд 14): новые строки R12 идут через ключи BirgeI18n, если словарь подключён и ключ в нём есть
   // (ключи и черновик kk — research/round-14-results/R12/INTEGRATION.txt §7); иначе — русский текст как раньше.
+  // Запасной казахский для ключей, которых ещё нет в словаре R11 (черновик R12 → research/round-14-results/R12/i18n_keys.json;
+  // works.* и common.* — копия значений R11 @ 548510b для сборок со старым словарём). Есть ключ в словаре — берётся словарь.
+  const KK_DRAFT = {
+    "map.card.back": "Барлық нысандар",
+    "map.card.on_map": "Картада",
+    "map.card.title": "Нысан карточкасы",
+    "map.card.loading": "Карточка жүктеліп жатыр…",
+    "map.card.not_found": "Нысан табылмады",
+    "map.card.not_found_hint": "Мүмкін, ол жарияланымнан алынған немесе сілтеме ескірген.",
+    "map.card.error": "Карточканы жүктеу мүмкін болмады.",
+    "map.card.summary": "Нысан туралы қысқаша",
+    "map.card.now": "Қазір",
+    "map.card.when": "Қашан аяқталады",
+    "map.card.done_on": "аяқталды: {date}",
+    "map.card.plan_passed": "жоспар бойынша мерзімі өтіп кетті",
+    "map.card.place": "Орны",
+    "map.card.precision.source": "Орны дереккөз бойынша көрсетілген",
+    "map.card.precision.approximate": "Орны шамамен көрсетілген",
+    "map.card.precision.unknown": "Орынның дәлдігі белгісіз",
+    "map.card.more_ru": "Толық мәліметтер (орыс тілінде)",
+    "map.card.ask": "Нысан бойынша сұрақ қою",
+    "map.card.copy_link": "Сілтемені көшіру",
+    "works.kind.construction": "Құрылыс", "works.kind.roadworks": "Жол жұмыстары", "works.kind.landscaping": "Абаттандыру",
+    "works.kind.event": "Іс-шара, жолды жабу", "works.kind.other": "Басқа",
+    "works.status.planned": "Жоспарланған", "works.status.in_progress": "Жұмыс жүріп жатыр", "works.status.completed": "Аяқталды",
+    "works.status.cancelled": "Болдырылмады", "works.status.unknown": "Мәртебесі белгісіз",
+    "works.until": "мерзімі: {date}", "works.no_dates": "мерзімі: дерек жоқ", "works.not_on_map": "Картада жоқ",
+    "works.shift_later": "мерзімі ауыстырылды", "works.shift_earlier": "мерзімі ертерек ауыстырылды",
+    "works.evidence.synthetic_hint": "Көрсетуге арналған үлгі — нақты жұмыстар туралы мәлімет емес",
+    "common.tag.demo": "Үлгі", "common.action.retry": "Қайталау",
+    "geo.place.street_line": "OSM картасы бойынша көше бөлігі: {street}", "geo.place.street_line_noname": "OSM картасы бойынша көше бөлігі",
+    "geo.place.yard": "OSM картасы бойынша аула", "geo.place.approx": "Шамамен көрсетілген орын — аймақпен белгіленген",
+    "geo.place.approx_line": "Көше бөлігі, шекаралары шамамен — үзік сызықпен көрсетілген",
+    "geo.badge.street": "Көше бойымен", "geo.badge.yard": "Картадағы аула",
+  };
+  // Месяцы для казахской даты без словаря (значения R11 dates.month_short.*).
+  const MONTHS_KK = ["қаңтар", "ақпан", "наурыз", "сәуір", "мамыр", "маусым", "шілде", "тамыз", "қыркүйек", "қазан", "қараша", "желтоқсан"];
+  function i18n() { return typeof self !== "undefined" ? self.BirgeI18n : null; }
+  // Язык интерфейса (R11 BirgeI18n); без словаря — «ru».
+  function lang() { const B = i18n(); return B && typeof B.getLang === "function" ? B.getLang() : "ru"; }
   function tr(key, ru, params) {
-    const B = typeof self !== "undefined" ? self.BirgeI18n : null;
+    const B = i18n();
     if (B && typeof B.t === "function" && typeof B.has === "function" && (B.has(key) || B.has(key, "ru"))) return B.t(key, params);
-    return params ? String(ru).replace(/\{(\w+)\}/g, (w, n) => (params[n] == null ? w : String(params[n]))) : ru;
+    const text = lang() === "kk" && KK_DRAFT[key] ? KK_DRAFT[key] : ru;
+    return params ? String(text).replace(/\{(\w+)\}/g, (w, n) => (params[n] == null ? w : String(params[n]))) : text;
+  }
+  // «20 қазан 2026» — день для казахской карточки (месяцы из словаря R11); без словаря — обычная запись дня.
+  function formatDayKk(value) {
+    const B = i18n();
+    const p = parseDay(value);
+    if (p && B && typeof B.formatDate === "function" && typeof B.has === "function" && B.has("dates.month_short.1")) return B.formatDate(value, { year: true });
+    if (p && lang() === "kk") return p.d + " " + MONTHS_KK[p.m - 1] + " " + p.y;
+    return formatDay(value);
   }
 
   // ---------- R12: точность карты (линии по улицам OSM, «примерное место» областью) ----------
@@ -704,9 +753,7 @@
   // Название улицы на языке интерфейса: в ҚАЗ — казахское из OSM (street_kk в demo_snapped / ответе привязки), иначе ru.
   function snapStreet(it) {
     if (!it || !it.snap) return null;
-    const B = typeof self !== "undefined" ? self.BirgeI18n : null;
-    const kk = !!(B && typeof B.getLang === "function" && B.getLang() === "kk");
-    return (kk && it.snap.streetKk) || it.snap.street || null;
+    return (lang() === "kk" && it.snap.streetKk) || it.snap.street || null;
   }
   function placeText(it) {
     const street = snapStreet(it);
@@ -818,6 +865,6 @@
     plannedInterval, matchPeriod, scheduleShift, staleness, plural, daysText, normalizeHistory, fieldLabel,
     shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters, EVIDENCE_FILTERS, evidenceGroup, pastPlan,
     applyFilters, sortItems, featureCollection, createSequence, unwrap, errorInfo, contrast,
-    APPROX_RADIUS_M, circlePolygon, approxArea, applySnapped, displayMode, placeText, snapStreet, haversineM, tr,
+    APPROX_RADIUS_M, circlePolygon, approxArea, applySnapped, displayMode, placeText, snapStreet, haversineM, tr, lang, formatDayKk,
   };
 });

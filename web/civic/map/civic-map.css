@@ -1082,3 +1082,25 @@
     border: 1px solid ButtonText;
   }
 }
+
+/* R12 день 2: в ҚАЗ подробности раунда 13 свёрнуты в «Толық мәліметтер (орыс тілінде)» — зона нажатия 48 px (UX_BRIEF). */
+.civic-r03-more {
+  margin-top: 12px;
+  border-top: 1px solid var(--civic-r03-line, #e2e6df);
+}
+.civic-r03-more > summary {
+  cursor: pointer;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.civic-r03-more > summary:focus-visible {
+  outline: 3px solid #1f5fa8;
+  outline-offset: 2px;
+}
+.civic-r03-more-body {
+  padding-bottom: 8px;
+}

@@ -176,3 +176,45 @@ test("r12: destroy while tiles are in flight — no missing demo-ring image; a r
   assert.deepEqual(errors, []);
   await ctx.close();
 });
+
+// R12 день 2: карточка объекта работ в ҚАЗ — главное по-казахски, подробности раунда 13 — в разделе «орыс тілінде».
+test("r12: works card in ҚАЗ — kind, status, deadline, place and buttons in Kazakh; round-13 details folded as Russian", { skip: SKIP }, async () => {
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, deviceScaleFactor: 1 });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
+  // Переключатель языка как у R11 (getLang + birge:lang), без словаря: проверяется запасной kk модуля.
+  await page.addInitScript(() => { let lang = "kk"; window.BirgeI18n = { getLang: () => lang, has: () => false, t: (k) => k,
+    setLang: (l) => { lang = l; document.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang } })); } }; });
+  const qs = new URLSearchParams({ today: "2026-10-10", basemap: "offline", fit: "0", persist: "0",
+    objects: "/data/civic/astana/demo_synthetic.json", streets: STREETS, snapped: "/web/civic/map/demo_snapped.json" });
+  await page.goto(base + "/tests/civic/R12/map/stand/?" + qs);
+  await page.waitForFunction(() => window.__stand && window.__stand.instance && window.__stand.instance.getState().list === "ready", null, { timeout: 30000 });
+  await page.evaluate((id) => window.__stand.instance.selectObject(id), DELAY);
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  const card = () => page.evaluate(() => {
+    const c = document.querySelector(".civic-r03-card");
+    const more = c.querySelector(".civic-r03-more");
+    const visible = [...c.childNodes].filter((n) => n !== more).map((n) => n.innerText || n.textContent).join("\n");
+    return { visible, more: more ? more.querySelector("summary").textContent : null, open: more ? more.open : null, moreLang: more ? more.querySelector(".civic-r03-more-body").lang : null };
+  });
+  const kk = await card();
+  for (const t of ["Барлық нысандар", "Үлгі.", "Жол жұмыстары", "Қазір", "Қашан аяқталады", "Орны", "OSM картасы бойынша көше бөлігі: Сәкен Сейфуллин көшесі",
+    "мерзімі: 25 қазан 2026", "Сілтемені көшіру"])
+    assert.ok(kk.visible.toLowerCase().includes(t.toLowerCase()), "нет «" + t + "» в казахской карточке:\n" + kk.visible);  // заголовки секций — заглавными (CSS)
+  // Русские подписи раунда 13 не видны вне раздела «орыс тілінде» (кроме названия записи — это данные).
+  const title = await page.textContent(".civic-r03-card-title");
+  const outside = kk.visible.replace(title, "");
+  assert.doesNotMatch(outside, /Все объекты|Сейчас|Когда закончат|Кто отвечает|Откуда сведения|Источники|История изменений|Скопировать ссылку|Дорожные работы|Участок улицы/i, outside);
+  assert.deepEqual([kk.more, kk.open, kk.moreLang], ["Толық мәліметтер (орыс тілінде)", false, "ru"]);
+  if (SHOTS) await page.screenshot({ path: path.join(SHOTS, "works-card-kk-1366.png") });
+  // РУС — карточка раунда 13 как была, без раздела
+  await page.evaluate(() => window.BirgeI18n.setLang("ru"));
+  await page.waitForFunction(() => /Все объекты/.test(document.querySelector(".civic-r03-card").innerText));
+  const ru = await card();
+  assert.equal(ru.more, null);
+  for (const t of ["Сейчас", "Когда закончат", "Кто отвечает", "Источники", "История изменений", "Место"]) assert.ok(ru.visible.toLowerCase().includes(t.toLowerCase()), t);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
