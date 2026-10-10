@@ -1,0 +1,32 @@
+{
+ "schema": "r12-geo-source-v1",
+ "built_at": "2026-10-10T12:40:35Z",
+ "builder": "engine/civic_geo/build_geo_data.py",
+ "raw_dir": "/home/user/GOV_DIPLOME/data/civic/astana/osm-objects/raw",
+ "raw_dir_present": false,
+ "inputs": [
+  {
+   "path": "data/civic/astana/osm-walking/overpass.json.gz",
+   "sha256": "93cbef9d4bf041b9d2157cdbdd80d603de9e4117b992fbc61a64e84e42ad8a46",
+   "bytes": 2974580,
+   "use": "только узлы-остановки на линиях дорог"
+  }
+ ],
+ "counts": {
+  "bus_stop": 20,
+  "yard": 0
+ },
+ "skipped": {
+  "outside_city": 1,
+  "no_geometry": 0,
+  "duplicate": 0
+ },
+ "not_used_tags": {},
+ "license": {
+  "id": "ODbL-1.0",
+  "attribution": "© OpenStreetMap contributors",
+  "url": "https://www.openstreetmap.org/copyright"
+ },
+ "evidence_type": "real",
+ "status": "partial: нет выгрузки LOCAL-1 (data/civic/astana/osm-objects/raw) — только остановки из снимка пешеходной сети; дворов, площадок и парков нет"
+}

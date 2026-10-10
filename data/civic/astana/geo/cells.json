@@ -1,0 +1,1 @@
+{"schema":"r12-cells-v1","origin":[71.2079,50.9206],"cell_m":150,"ref_lat":51.14,"note":"Ячейки там, где двора нет: id cell-<ix>-<iy>, ix = floor((lon - origin_lon) / dlon), iy = floor((lat - origin_lat) / dlat), dlat = cell_m / 111195.08, dlon = dlat / cos(ref_lat).","m_per_deg":111195.0802335329}

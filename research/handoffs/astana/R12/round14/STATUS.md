@@ -22,3 +22,14 @@
 ## Дальше
 engine/civic_geo (граф, индекс, ближайшее ребро, участок улицы, targets, проверки точности, CLI) → data/civic/astana/geo
 → demo_snapped.json и отрисовка → инструмент «Участок улицы» в редакторе → /targets.
+
+## Checkpoint 2 — engine/civic_geo и данные (PARTIAL)
+- engine/civic_geo/ (только stdlib): geo.py (метры, проекция, обрезка ломаной, полигоны, упрощение),
+  graph.py (граф OSM по MANIFEST + sha256, сетка 100 м, ближайшее ребро), segment.py (участок улицы по рёбрам,
+  предпочтение одной улицы), objects.py (объекты/дворы/ячейки 150 м), targets.py (1–3 кандидата по
+  target_kinds из categories_v2.json), accuracy.py (CONTRACT §8), api.py (функции для R01), snap_demo.py,
+  build_way_tags.py, build_geo_data.py, __main__.py (CLI report/targets/segment/bench).
+- data/civic/astana/geo/: way_tags.json (34 380 линий), objects.json (20 настоящих остановок из снимка пешеходной сети),
+  yards.json пуст (нет LOCAL-1), cells.json, demo_snapped.json, SOURCE.json, README.md.
+- Отчёт точности: 34/34 PASS; /targets p50 0,19 мс, p95 0,47 мс (3000 точек, после загрузки графа 1,5 с).
+- tests/civic/R12/test_civic_geo.py — 21/21 PASS (синтетическая фикстура + настоящий граф).

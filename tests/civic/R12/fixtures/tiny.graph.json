@@ -1,0 +1,260 @@
+{
+ "id": "fixture-r12-tiny",
+ "digest": "fixture",
+ "bbox": [
+  71.42,
+  51.15,
+  71.45,
+  51.17
+ ],
+ "city": "astana",
+ "evidence_type": "synthetic",
+ "label": "СИНТЕТИЧЕСКИЙ граф R12 для тестов — не реальные улицы",
+ "license": null,
+ "source": {
+  "kind": "hand_made",
+  "snapshot_at": null
+ },
+ "nodes": [
+  {
+   "id": "fx-n0",
+   "lon": 71.43,
+   "lat": 51.16,
+   "boundary": false
+  },
+  {
+   "id": "fx-n1",
+   "lon": 71.4325,
+   "lat": 51.16,
+   "boundary": false
+  },
+  {
+   "id": "fx-n2",
+   "lon": 71.435,
+   "lat": 51.16,
+   "boundary": false
+  },
+  {
+   "id": "fx-n3",
+   "lon": 71.4375,
+   "lat": 51.16,
+   "boundary": false
+  },
+  {
+   "id": "fx-n4",
+   "lon": 71.44000000000001,
+   "lat": 51.16,
+   "boundary": false
+  },
+  {
+   "id": "fx-n10",
+   "lon": 71.435,
+   "lat": 51.157999999999994,
+   "boundary": false
+  },
+  {
+   "id": "fx-n11",
+   "lon": 71.435,
+   "lat": 51.162,
+   "boundary": false
+  },
+  {
+   "id": "fx-n20",
+   "lon": 71.43050000000001,
+   "lat": 51.160053999999995,
+   "boundary": false
+  },
+  {
+   "id": "fx-n21",
+   "lon": 71.43950000000001,
+   "lat": 51.160053999999995,
+   "boundary": false
+  }
+ ],
+ "edges": [
+  {
+   "id": "osm-w900001-0",
+   "from": "fx-n0",
+   "to": "fx-n1",
+   "name": "улица Тестовая",
+   "geometry": [
+    [
+     71.43,
+     51.16
+    ],
+    [
+     71.4325,
+     51.16
+    ]
+   ],
+   "length_m": 174.339,
+   "osm_way_id": 900001,
+   "oneway": false,
+   "access": "unknown"
+  },
+  {
+   "id": "osm-w900001-1",
+   "from": "fx-n1",
+   "to": "fx-n2",
+   "name": "улица Тестовая",
+   "geometry": [
+    [
+     71.4325,
+     51.16
+    ],
+    [
+     71.43375,
+     51.159909999999996
+    ],
+    [
+     71.435,
+     51.16
+    ]
+   ],
+   "length_m": 175.484,
+   "osm_way_id": 900001,
+   "oneway": false,
+   "access": "unknown"
+  },
+  {
+   "id": "osm-w900001-2",
+   "from": "fx-n2",
+   "to": "fx-n3",
+   "name": "улица Тестовая",
+   "geometry": [
+    [
+     71.435,
+     51.16
+    ],
+    [
+     71.4375,
+     51.16
+    ]
+   ],
+   "length_m": 174.339,
+   "osm_way_id": 900001,
+   "oneway": false,
+   "access": "unknown"
+  },
+  {
+   "id": "osm-w900001-3",
+   "from": "fx-n3",
+   "to": "fx-n4",
+   "name": "улица Тестовая",
+   "geometry": [
+    [
+     71.4375,
+     51.16
+    ],
+    [
+     71.44000000000001,
+     51.16
+    ]
+   ],
+   "length_m": 174.339,
+   "osm_way_id": 900001,
+   "oneway": false,
+   "access": "unknown"
+  },
+  {
+   "id": "osm-w900002-0",
+   "from": "fx-n10",
+   "to": "fx-n2",
+   "name": "улица Поперечная",
+   "geometry": [
+    [
+     71.435,
+     51.157999999999994
+    ],
+    [
+     71.435,
+     51.16
+    ]
+   ],
+   "length_m": 222.39,
+   "osm_way_id": 900002,
+   "oneway": false,
+   "access": "unknown"
+  },
+  {
+   "id": "osm-w900002-1",
+   "from": "fx-n2",
+   "to": "fx-n11",
+   "name": "улица Поперечная",
+   "geometry": [
+    [
+     71.435,
+     51.16
+    ],
+    [
+     71.435,
+     51.162
+    ]
+   ],
+   "length_m": 222.39,
+   "osm_way_id": 900002,
+   "oneway": false,
+   "access": "unknown"
+  },
+  {
+   "id": "osm-w900003-0",
+   "from": "fx-n20",
+   "to": "fx-n21",
+   "name": null,
+   "geometry": [
+    [
+     71.43050000000001,
+     51.160053999999995
+    ],
+    [
+     71.43950000000001,
+     51.160053999999995
+    ]
+   ],
+   "length_m": 627.621,
+   "osm_way_id": 900003,
+   "oneway": false,
+   "access": "unknown"
+  },
+  {
+   "id": "osm-w900003-1",
+   "from": "fx-n0",
+   "to": "fx-n20",
+   "name": null,
+   "geometry": [
+    [
+     71.43,
+     51.16
+    ],
+    [
+     71.43050000000001,
+     51.160053999999995
+    ]
+   ],
+   "length_m": 35.381,
+   "osm_way_id": 900003,
+   "oneway": false,
+   "access": "unknown"
+  },
+  {
+   "id": "osm-w900003-2",
+   "from": "fx-n21",
+   "to": "fx-n4",
+   "name": null,
+   "geometry": [
+    [
+     71.43950000000001,
+     51.160053999999995
+    ],
+    [
+     71.44000000000001,
+     51.16
+    ]
+   ],
+   "length_m": 35.381,
+   "osm_way_id": 900003,
+   "oneway": false,
+   "access": "unknown"
+  }
+ ]
+}
