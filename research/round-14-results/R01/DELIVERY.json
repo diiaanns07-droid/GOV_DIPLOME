@@ -13,14 +13,14 @@
     "agent/civic_assistant, web/civic/assistant, tests/civic/R09": "claude/wizardly-ptolemy-qy8ltw@14c3384 (код c46b2ed)",
     "ml/civic_classifier, tests/civic/R08": "claude/wizardly-ptolemy-qy8ltw@14c3384",
     "data/civic/astana/round12-verified, round13-verified, tests/civic/R05": "claude/fervent-dijkstra-1cqrg5@a995f9f",
-    "web/civic/ui-kit, web/civic/i18n, tests/civic/R11": "claude/r14-R11@e38b9a6 (+ patches/R01_map_lang.patch к web/map.js)",
+    "web/civic/ui-kit, web/civic/i18n, tests/civic/R11": "claude/r14-R11@1958634 (+ patches/R01_map_lang.patch к web/map.js)",
     "ml/datasets, ml/labeling, web/labeling, tests/civic/R02/round14": "claude/r14-R02@f62cc93 (+ P-R02 R15)",
-    "ui/civic_heat, web/civic/heat, tests/civic/R07 (новые)": "claude/upbeat-knuth-i0rqaa@0639ede",
-    "ui/civic_akim, web/civic/akim, tests/civic/R08 (новые)": "claude/r14-R08@bedb753",
+    "ui/civic_heat, web/civic/heat, tests/civic/R07 (новые)": "claude/upbeat-knuth-i0rqaa@9411dee",
+    "ui/civic_akim, web/civic/akim, tests/civic/R08 (новые)": "claude/r14-R08@bedb753 (+ tests/civic/R08 51fdbcd5)",
     "ui/civic_feedback/v2, web/civic/feedback (новые), tests/civic/R09 (новые)": "claude/wizardly-ptolemy-qy8ltw@b6cadb3 (новая ветка R09)",
     "engine/civic_geo, data/civic/astana/geo, web/civic/map, web/civic/editor, tests/civic/R12": "claude/r14-R12@d6c788e9 (новая ветка R12, поставка 2)",
     "ui/civic_store, web/civic/proposals, tests/civic/R06": "claude/round-14-r06@d707efc (round14/store; тесты раунда 13 не тронуты)",
-    "web/civic/build3d, tests/civic/R05": "claude/r14-R05@05f8e52",
+    "web/civic/build3d, tests/civic/R05": "claude/r14-R05@b38654a",
     "ml/civic_forecast, ui/civic_forecast, tests/civic/R13": "claude/r14-R13@a0133e9",
     "ml/civic_dedup, ui/civic_ml_api, tests/civic/R04/round14": "claude/r14-R04@deeb1de",
     "ml/civic_classifier_v2, tests/civic/R03/round14": "claude/r14-R03@ac0e954 (без весов — LOCAL)",
@@ -52,11 +52,12 @@
     "night_3c_final_candidate": "6096be8",
     "night_4a_final_candidate": "85c16e2",
     "night_4a": "85c16e2",
-    "night_5a_final_candidate": "1dd5b53"
+    "night_5a_final_candidate": "1dd5b53",
+    "night_6_final_candidate": "e6d9d80"
   },
-  "code_sha": "1dd5b53",
-  "tested_sha": "1dd5b53 (pytest и браузер на рабочем дереве = 1dd5b53; приёмка R10 — в BUILD_LOG)",
-  "push_status": "OK: 1dd5b53 в origin/claude/sharp-dijkstra-0t87gl; документы — следующим коммитом",
+  "code_sha": "e6d9d80",
+  "tested_sha": "e6d9d80 (pytest и браузер на рабочем дереве = b6d9ecf + тест города e6d9d80; приёмка R10 — в BUILD_LOG)",
+  "push_status": "OK: e6d9d80 в origin/claude/sharp-dijkstra-0t87gl; документы — следующим коммитом",
   "changed_paths": [
     "ui/web_server.py",
     "web/index.html",
@@ -107,7 +108,9 @@
     "0a7a346: R10 run_acceptance": "сценарий 111/2/0 (оба FAIL — кабинет на ҚАЗ, исправлен в 4ca9aef), UX 94/0/8, точность 28/1 (R12)",
     "85c16e2 (рабочее дерево)": "pytest 2675 passed / 21 skipped / 1 xfailed / 0 failed; браузер P0 63/0/1, город 81/0, B1 15/0, B2 25/0, шапка 38/0",
     "1dd5b53: pytest tests": "PASS 2688 passed, 21 skipped, 1 xfailed; 1 failed под двойной нагрузкой (R04 прогрев кэша, join 10 с) — отдельно 23/23 PASS",
-    "1dd5b53: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 26/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0 (повтор; в общем прогоне 80/1 под нагрузкой)"
+    "1dd5b53: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 26/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0 (повтор; в общем прогоне 80/1 под нагрузкой)",
+    "e6d9d80: pytest tests": "PASS 2690 passed, 21 skipped",
+    "e6d9d80: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 26/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0"
   },
   "known_limits": [
     "Все жалобы, объекты и предложения на демо — синтетика (demo: true, «Пример»); реальных обращений нет.",
@@ -118,5 +121,5 @@
     "Шаг 6 демо — на «Хан Шатыре»: у остальных целей примеры R07 без кнопок статуса (R10 B-037).",
     "Подписи онлайн-подложки на ҚАЗ (патч R11) в облаке не проверены — нет интернета (LOCAL-7)."
   ],
-  "next_step": "Забрать новые DELIVERY ролей (B-038 у R07), run_checks + приёмка R10, STATUS; слияние в main — координатор."
+  "next_step": "Забрать новые DELIVERY ролей, run_checks + приёмка R10, STATUS; слияние в main — координатор."
 }
