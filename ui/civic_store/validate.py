@@ -33,7 +33,12 @@ SOURCE_REF_KEYS = ("id", "url", "publisher", "published_on", "retrieved_at",
 # Содержимое, которое задаёт редактор/импорт. Остальные поля civic-v1 назначает сервер.
 CONTENT_FIELDS = ("kind", "title", "description", "status", "geometry", "geometry_precision",
                   "schedule", "budget", "responsible", "evidence_type", "source_refs",
-                  "evidence_notes")
+                  "evidence_notes", "geometry_source")
+# Откуда взята форма места (раунд 14, просьба R12): osm-graph — линия по рёбрам пешеходного графа OSM
+# (редактор R12 «Участок улицы»), osm-object — точка реального объекта OSM, osm-area — полигон двора/квартала OSM,
+# manual — нарисовано вручную, import — из пакета источника. null — неизвестно (все записи до раунда 14).
+GEOMETRY_SOURCES = ("osm-graph", "osm-object", "osm-area", "manual", "import")
+GEOMETRY_SOURCE_TYPES = {"osm-graph": ("LineString",), "osm-object": ("Point",), "osm-area": ("Polygon",)}
 STAFF_ONLY_FIELDS = ("internal_notes",)
 # Эти ключи клиент может прислать (например, вернув карточку целиком), но сервер
 # их не принимает: значения назначает только он.
@@ -368,6 +373,7 @@ def empty_content() -> dict:
         "budget": {"amount_kzt": None, "basis": "unknown", "source_id": None},
         "responsible": {"organization": None, "public_contact": None},
         "evidence_type": None, "source_refs": [], "evidence_notes": "",
+        "geometry_source": None,
     }
 
 
@@ -459,6 +465,15 @@ def validate_content(raw: dict, *, today: date, original_locked: bool = False) -
     }
     out["evidence_notes"] = clean_text(data["evidence_notes"], "evidence_notes", errors,
                                        max_len=MAX_TEXT["evidence_notes"], multiline=True)
+    source = data["geometry_source"]
+    if source is not None and source not in GEOMETRY_SOURCES:
+        errors.add("geometry_source", "Допустимые значения: " + ", ".join(GEOMETRY_SOURCES) + " или null.")
+        source = None
+    if out["geometry"] is None:
+        source = None  # нет места — нет и источника формы
+    elif source in GEOMETRY_SOURCE_TYPES and out["geometry"]["type"] not in GEOMETRY_SOURCE_TYPES[source]:
+        errors.add("geometry_source", f"{source} — только для {', '.join(GEOMETRY_SOURCE_TYPES[source])}.")
+    out["geometry_source"] = source
     errors.raise_if_any()
 
     # Согласованность после проверки типов.

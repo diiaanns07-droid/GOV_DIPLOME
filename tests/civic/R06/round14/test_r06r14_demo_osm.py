@@ -105,3 +105,36 @@ def test_lighting_follows_graph_edges_within_5m():
     line = POINTS["lighting"]["coordinates"]
     for p in line:
         assert min(to_segment(p, g) for g in edges) <= 5.0
+
+
+DEMO_PACKAGE = REPO / "ui" / "civic_store" / "demo_package.json"
+
+
+def test_demo_package_titles_have_no_tech_words_but_stay_synthetic():
+    # UX_REVIEW R11 день 3, п. 15: «Демо: … (синтетика)» в названии лишнее — метка «Пример» уже есть.
+    pkg = json.loads(DEMO_PACKAGE.read_text(encoding="utf-8"))
+    assert pkg["slice"]["demo"] is True
+    for item in pkg["items"]:
+        assert "Демо" not in item["title"] and "синтетик" not in item["title"].lower(), item["title"]
+        assert item["evidence_type"] == "synthetic"
+
+
+@pytest.mark.skipif(not GRAPH.is_file(), reason="нет пешеходного графа OSM")
+def test_demo_package_lines_follow_osm_graph_within_5m():
+    graph = json.loads(GRAPH.read_text(encoding="utf-8"))
+    pkg = json.loads(DEMO_PACKAGE.read_text(encoding="utf-8"))
+    lines = [i for i in pkg["items"] if i["geometry"] and i["geometry"]["type"] == "LineString"]
+    assert lines and all(i["geometry_source"] == "osm-graph" for i in lines)
+    edges = [e["geometry"] for e in graph["edges"] if e.get("osm_way_id") == 409391547]
+    for item in lines:
+        for p in item["geometry"]["coordinates"]:
+            assert min(to_segment(p, g) for g in edges) <= 5.0
+
+
+def test_demo_yard_is_real_osm_residential():
+    pkg = json.loads(DEMO_PACKAGE.read_text(encoding="utf-8"))
+    yard = next(i for i in pkg["items"] if i["id"] == "demo-r02-yard-landscaping")
+    ring = yard["geometry"]["coordinates"][0]
+    residential = [r for t, r in shapes("residential") if t == "way" and len(r) > 3]
+    best = min(max(min(metres(p, q) for q in r) for p in ring) for r in residential)
+    assert yard["geometry_source"] == "osm-area" and best <= 5.0  # каждая вершина ≤ 5 м от контура двора OSM

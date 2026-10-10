@@ -1,84 +1,206 @@
 {
-  "schema_version": "civic-v1",
-  "city": "astana",
-  "slice": {
-    "name": "r02-demo",
-    "source": "r02-demo",
-    "version": "r02-demo-2026-10-06-v1",
-    "demo": true,
-    "as_of": "2026-10-06",
-    "notice": "СИНТЕТИЧЕСКИЕ ДАННЫЕ R02 ДЛЯ ДЕМОНСТРАЦИИ. Не сведения о реальных работах в Астане; координаты схематичные."
+ "schema_version": "civic-v1",
+ "city": "astana",
+ "slice": {
+  "name": "r02-demo",
+  "source": "r02-demo",
+  "version": "r02-demo-2026-10-13-v2",
+  "demo": true,
+  "as_of": "2026-10-06",
+  "notice": "СИНТЕТИЧЕСКИЕ ДАННЫЕ ДЛЯ ДЕМОНСТРАЦИИ. Работы выдуманы; места — реальные улицы и дворы OSM (© OpenStreetMap contributors, ODbL), чтобы на карте не было линий «от руки» (CONTRACT §8)."
+ },
+ "items": [
+  {
+   "id": "demo-r02-sidewalk-delay",
+   "kind": "roadworks",
+   "title": "Ремонт тротуара",
+   "description": "Синтетическая запись для проверки карты и истории сроков. Не сведения о реальных работах.",
+   "status": "in_progress",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.4281147,
+      51.1615671
+     ],
+     [
+      71.4281209,
+      51.1615411
+     ],
+     [
+      71.4282917,
+      51.1608287
+     ],
+     [
+      71.4282968,
+      51.1607888
+     ],
+     [
+      71.4284205,
+      51.1606823
+     ],
+     [
+      71.4286767,
+      51.1597508
+     ],
+     [
+      71.4287235,
+      51.1595797
+     ],
+     [
+      71.4289555,
+      51.1587225
+     ],
+     [
+      71.4289752,
+      51.1586463
+     ],
+     [
+      71.4290209,
+      51.1585012
+     ]
+    ]
+   },
+   "geometry_precision": "approximate",
+   "schedule": {
+    "planned_start": "2026-10-01",
+    "original_planned_end": "2026-10-20",
+    "current_planned_end": "2026-10-27",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Демо R02: перенос срока сценарный, чтобы показать историю. Не публиковать как реальные работы. Линия — тротуар по рёбрам пешеходного графа OSM osm-w409391547-0, …, osm-w409391547-5 (348 м); сами работы выдуманы.",
+   "suggested_publication": "published",
+   "geometry_source": "osm-graph"
   },
-  "items": [
-    {
-      "id": "demo-r02-sidewalk-delay",
-      "kind": "roadworks",
-      "title": "Демо: ремонт тротуара (синтетика)",
-      "description": "Синтетическая запись для проверки карты и истории сроков. Не сведения о реальных работах.",
-      "status": "in_progress",
-      "geometry": {"type": "LineString", "coordinates": [[71.4210, 51.1600], [71.4245, 51.1612]]},
-      "geometry_precision": "approximate",
-      "schedule": {"planned_start": "2026-10-01", "original_planned_end": "2026-10-20",
-                   "current_planned_end": "2026-10-27", "actual_end": null},
-      "budget": {"amount_kzt": null, "basis": "unknown", "source_id": null},
-      "responsible": {"organization": null, "public_contact": null},
-      "evidence_type": "synthetic",
-      "source_refs": [],
-      "evidence_notes": "Демо R02: перенос срока сценарный, чтобы показать историю. Не публиковать как реальные работы.",
-      "suggested_publication": "published"
-    },
-    {
-      "id": "demo-r02-yard-landscaping",
-      "kind": "landscaping",
-      "title": "Демо: благоустройство двора (синтетика)",
-      "description": "Синтетическая запись: стоимость и исполнитель неизвестны и показываются как «нет данных».",
-      "status": "planned",
-      "geometry": {"type": "Polygon", "coordinates": [[[71.4400, 51.1500], [71.4420, 51.1500],
-                                                       [71.4420, 51.1512], [71.4400, 51.1512],
-                                                       [71.4400, 51.1500]]]},
-      "geometry_precision": "approximate",
-      "schedule": {"planned_start": "2026-11-02", "original_planned_end": null,
-                   "current_planned_end": "2026-11-30", "actual_end": null},
-      "budget": {"amount_kzt": null, "basis": "unknown", "source_id": null},
-      "responsible": {"organization": null, "public_contact": null},
-      "evidence_type": "synthetic",
-      "source_refs": [],
-      "evidence_notes": "Демо R02. Не публиковать как реальные работы.",
-      "suggested_publication": "published"
-    },
-    {
-      "id": "demo-r02-event-no-geometry",
-      "kind": "event",
-      "title": "Демо: городское мероприятие без точного места (синтетика)",
-      "description": "Синтетическая запись без геометрии: показывается списком, точка не выдумывается.",
-      "status": "unknown",
-      "geometry": null,
-      "geometry_precision": "unknown",
-      "schedule": {"planned_start": "2026-10-17", "original_planned_end": null,
-                   "current_planned_end": "2026-10-18", "actual_end": null},
-      "budget": {"amount_kzt": null, "basis": "unknown", "source_id": null},
-      "responsible": {"organization": null, "public_contact": null},
-      "evidence_type": "synthetic",
-      "source_refs": [],
-      "evidence_notes": "Демо R02. Не публиковать как реальное мероприятие.",
-      "suggested_publication": "published"
-    },
-    {
-      "id": "demo-r02-draft-hidden",
-      "kind": "construction",
-      "title": "Демо: черновик, не виден жителям (синтетика)",
-      "description": "Синтетический черновик для проверки, что публичный API его не отдаёт.",
-      "status": "unknown",
-      "geometry": {"type": "Point", "coordinates": [71.4300, 51.1700]},
-      "geometry_precision": "approximate",
-      "schedule": {"planned_start": null, "original_planned_end": null,
-                   "current_planned_end": null, "actual_end": null},
-      "budget": {"amount_kzt": null, "basis": "unknown", "source_id": null},
-      "responsible": {"organization": null, "public_contact": null},
-      "evidence_type": "synthetic",
-      "source_refs": [],
-      "evidence_notes": "Демо R02: должен остаться черновиком.",
-      "suggested_publication": "draft"
-    }
-  ]
+  {
+   "id": "demo-r02-yard-landscaping",
+   "kind": "landscaping",
+   "title": "Благоустройство двора",
+   "description": "Синтетическая запись: стоимость и исполнитель неизвестны и показываются как «нет данных».",
+   "status": "planned",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.436848,
+       51.1450979
+      ],
+      [
+       71.4363349,
+       51.1454835
+      ],
+      [
+       71.4374566,
+       51.1462912
+      ],
+      [
+       71.4381281,
+       51.1457458
+      ],
+      [
+       71.436848,
+       51.1450979
+      ]
+     ]
+    ]
+   },
+   "geometry_precision": "approximate",
+   "schedule": {
+    "planned_start": "2026-11-02",
+    "original_planned_end": null,
+    "current_planned_end": "2026-11-30",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Демо R02. Не публиковать как реальные работы. Полигон — двор OSM osm-way-258768463 (landuse=residential); сами работы выдуманы.",
+   "suggested_publication": "published",
+   "geometry_source": "osm-area"
+  },
+  {
+   "id": "demo-r02-event-no-geometry",
+   "kind": "event",
+   "title": "Городское мероприятие без точного места",
+   "description": "Синтетическая запись без геометрии: показывается списком, точка не выдумывается.",
+   "status": "unknown",
+   "geometry": null,
+   "geometry_precision": "unknown",
+   "schedule": {
+    "planned_start": "2026-10-17",
+    "original_planned_end": null,
+    "current_planned_end": "2026-10-18",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Демо R02. Не публиковать как реальное мероприятие.",
+   "suggested_publication": "published",
+   "geometry_source": null
+  },
+  {
+   "id": "demo-r02-draft-hidden",
+   "kind": "construction",
+   "title": "Черновик, не виден жителям",
+   "description": "Синтетический черновик для проверки, что публичный API его не отдаёт.",
+   "status": "unknown",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.43,
+     51.17
+    ]
+   },
+   "geometry_precision": "approximate",
+   "schedule": {
+    "planned_start": null,
+    "original_planned_end": null,
+    "current_planned_end": null,
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Демо R02: должен остаться черновиком.",
+   "suggested_publication": "draft",
+   "geometry_source": null
+  }
+ ]
 }

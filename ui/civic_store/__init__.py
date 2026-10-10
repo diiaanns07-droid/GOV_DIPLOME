@@ -13,7 +13,7 @@ from .auth import Principal
 from .db import DEFAULT_DB_PATH, SCHEMA_VERSION, Database, StorageError
 from .http_adapter import CivicHttpAdapter
 from .service import PREFIX, CivicService
-from .v2 import PREFIX_V2, CivicV2
+from .v2 import PREFIX_V2, CivicV2, akim_objects, akim_proposals  # akim_* — «Картина дня» R08 ищет их здесь
 
-__all__ = ["CivicHttpAdapter", "CivicService", "CivicV2", "PREFIX_V2", "DEFAULT_DB_PATH", "Database", "PREFIX", "Principal",
+__all__ = ["CivicHttpAdapter", "CivicService", "CivicV2", "PREFIX_V2", "akim_objects", "akim_proposals", "DEFAULT_DB_PATH", "Database", "PREFIX", "Principal",
            "SCHEMA_VERSION", "StorageError"]
