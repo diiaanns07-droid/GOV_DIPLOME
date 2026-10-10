@@ -514,7 +514,10 @@
   "badges": 0,
   "extra": {
    "text": "Нет связи с сервером\n\nПроверьте интернет и нажмите «Повторить».\n\nПовторить",
-   "retry": true
+   "retry": true,
+   "retryVisible": true,
+   "top": 156,
+   "emptyLegend": false
   }
  },
  {
@@ -525,7 +528,10 @@
   "badges": 0,
   "extra": {
    "text": "Сервермен байланыс жоқ\n\nИнтернетті тексеріп, «Қайталау» түймесін басыңыз.\n\nҚайталау",
-   "retry": true
+   "retry": true,
+   "retryVisible": true,
+   "top": 569,
+   "emptyLegend": false
   }
  },
  {

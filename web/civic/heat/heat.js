@@ -1002,7 +1002,9 @@
         host.append(S.legendEl);
       }
       S.legendEl.dataset.role = S.role;
-      S.legendEl.innerHTML = legendHtml(true);
+      const html = legendHtml(true);
+      S.legendEl.innerHTML = html;
+      S.legendEl.hidden = !html;   // нет данных (нет связи) — не пустая белая плашка над картой (R10 B-034)
     }
 
     function filtersHtml() {

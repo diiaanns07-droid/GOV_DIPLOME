@@ -437,14 +437,25 @@ async function colorOnlyCheck(page) {
   }
 
   // ошибка первой загрузки: что случилось + что сделать + «Повторить», после связи — карта
+  // на телефоне — как в проверке R10 B-034: оборваны все запросы карты, и /heat, и /heat/meta
   for (const [size, lang] of [["desktop", "ru"], ["phone", "kk"]]) {
     let fail = true;
+    const pattern = size === "phone" ? /\/api\/civic\/v2\/heat/ : HEAT_GET;
     const { page, errors } = await rawPage(size, `?lang=${lang}&view=nura`, (pg) =>
-      pg.route(HEAT_GET, (r) => (fail ? r.abort() : r.continue())));
+      pg.route(pattern, (r) => (fail ? r.abort() : r.continue())));
     await page.waitForSelector(".r07-error", { timeout: 15000 }).catch(() => {});
-    const x = await page.evaluate(() => { const e = document.querySelector(".r07-error"); return e ? { text: e.innerText, retry: !!e.querySelector("[data-retry]") } : null; });
+    const x = await page.evaluate(() => {
+      const e = document.querySelector(".r07-error");
+      if (!e) return null;
+      const r = e.getBoundingClientRect(), b = e.querySelector("[data-retry]").getBoundingClientRect();
+      const l = document.querySelector(".r07-maplegend");
+      return { text: e.innerText, retry: !!e.querySelector("[data-retry]"), retryVisible: b.bottom <= innerHeight && b.top >= 0, top: Math.round(r.top),
+               emptyLegend: !!l && !l.hidden && l.getBoundingClientRect().height > 0 && !l.innerText.trim() };
+    });
     const problems = [];
     if (!x || !x.retry || x.text.split("\n").filter(Boolean).length < 3) problems.push("нет понятной ошибки с действием: " + JSON.stringify(x));
+    if (x && !x.retryVisible) problems.push("«Повторить» не видно без прокрутки (R10 B-034): " + JSON.stringify(x));
+    if (x && x.emptyLegend) problems.push("пустая плашка легенды над картой (R10 B-034)");
     if (x && /Ошибка:|!/.test(x.text)) problems.push("в тексте ошибки «Ошибка:» или «!»");
     const name = `state-error-${size === "phone" ? 375 : 1366}-${lang}`;
     await page.screenshot({ path: path.join(OUT, name + ".jpg"), type: "jpeg", quality: 82 });
