@@ -108,3 +108,7 @@
 @media (prefers-reduced-motion: reduce) {
   .bc-panel { animation: none; transition: none; }
 }
+
+/* Выбор места: значки на карте (тепловая карта R07 и др.) выбирают место, как нажатие по карте (B-019). */
+html.bc-picking .maplibregl-marker,
+html.bc-picking .maplibregl-marker * { cursor: crosshair; }

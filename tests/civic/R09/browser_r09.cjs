@@ -66,10 +66,10 @@ async function newPage(browser, base, width, height, lang) {
   return page;
 }
 
-async function clickMapAt(page, point) {
+async function centerOn(page, point, zoom = 17) {
   // Точку ставим в середину видимой части карты (на телефоне снизу шторка, на ноутбуке справа панель):
   // jumpTo + panBy без анимации, затем проверяем, что точка действительно в видимой области.
-  const xy = await page.evaluate(async (p) => {
+  return page.evaluate(async ([p, zoom]) => {
     const map = window.standMap;
     const canvas = map.getCanvas().getBoundingClientRect();
     const panel = document.querySelector(".bc-panel");
@@ -79,7 +79,7 @@ async function clickMapAt(page, point) {
     const bottom = r && mobile ? r.top : canvas.bottom;
     const want = { x: (canvas.left + right) / 2, y: (canvas.top + bottom) / 2 };
     for (let i = 0; i < 3; i++) {
-      map.jumpTo({ center: p, zoom: 17 });
+      map.jumpTo({ center: p, zoom });
       const q = map.project(p);
       map.panBy([canvas.left + q.x - want.x, canvas.top + q.y - want.y], { duration: 0 });
       await new Promise((ok) => setTimeout(ok, 150));
@@ -89,7 +89,11 @@ async function clickMapAt(page, point) {
     }
     const q = map.project(p);
     return { x: canvas.left + q.x, y: canvas.top + q.y, unstable: true };
-  }, point);
+  }, [point, zoom]);
+}
+
+async function clickMapAt(page, point) {
+  const xy = await centerOn(page, point);
   const tap = async () => {
     if (page.viewportSize().width < 1024) await page.touchscreen.tap(xy.x, xy.y); else await page.mouse.click(xy.x, xy.y);
   };
@@ -328,6 +332,60 @@ async function withoutMl(browser, base, hot, tag) {
   await page.context().close();
 }
 
+// R10 B-019 / LOCAL №2 / R11 B1 №3: значок тепловой карты R07 (маркер MapLibre с собственным обработчиком,
+// гасящим всплытие, как в heat.js) не должен «съедать» нажатие в «Где проблема?».
+async function badgeTap(browser, base, hot, lang, width, height, tag) {
+  const page = await newPage(browser, base, width, height, lang);
+  await page.evaluate((p) => {
+    window.r07Clicks = 0;
+    const make = (kind, at) => {
+      const el = document.createElement("button");
+      el.className = "r07-badge"; el.type = "button"; el.dataset.kind = kind; el.textContent = kind === "district" ? "Нұра · 12" : "13";
+      el.style.cssText = "min-width:40px;height:32px;border-radius:16px;background:#a32d2d;color:#fff;border:2px solid #fff";
+      el.addEventListener("click", (ev) => { ev.stopPropagation(); window.r07Clicks++; });   // как R07: свой обработчик
+      return new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(at).addTo(window.standMap);
+    };
+    make("object", p);
+    make("district", [p[0] + 0.004, p[1] + 0.002]);
+  }, hot.point);
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  const picking = await page.evaluate(() => document.documentElement.classList.contains("bc-picking"));
+  await centerOn(page, hot.point);
+  const box = await page.$eval(".r07-badge[data-kind='object']", (b) => { const r = b.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+  if (width < 1024) await page.touchscreen.tap(box.x, box.y); else await page.mouse.click(box.x, box.y);
+  const offered = await page.waitForSelector(".bc-option--first", { timeout: 8000 }).then(() => true, () => false);
+  const first = offered ? (await page.textContent(".bc-option--first")).trim() : "";
+  const hotLabel = lang === "kk" ? hot.target.label_kk : hot.target.label_ru;
+  check(`${tag}: нажатие на значок тепловой карты выбирает это место («${first.slice(0, 40)}»)`,
+        picking && offered && first.startsWith(hotLabel), `bc-picking=${picking}`);
+  check(`${tag}: значок не открыл свою карточку во время выбора места`, (await page.evaluate(() => window.r07Clicks)) === 0);
+  // Значок района только приближает карту — район не место жалобы.
+  const zoom0 = await page.evaluate(() => window.standMap.getZoom());
+  await centerOn(page, [hot.point[0] + 0.004, hot.point[1] + 0.002], 12);
+  const dist = await page.$eval(".r07-badge[data-kind='district']", (b) => { const r = b.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2, visible: r.width > 0 }; });
+  const before = await page.evaluate(() => window.standAdapter.current().features.length);
+  if (dist.visible) {
+    if (width < 1024) await page.touchscreen.tap(dist.x, dist.y); else await page.mouse.click(dist.x, dist.y);
+  }
+  await page.waitForTimeout(800);
+  const after = await page.evaluate(() => ({ zoom: window.standMap.getZoom(),
+    point: JSON.stringify(window.standAdapter.current().features.find((f) => f.properties.pick) || null) }));
+  check(`${tag}: значок района приближает карту, а не выбирает место`, dist.visible && after.zoom >= 14 &&
+        (await page.evaluate(() => window.r07Clicks)) === 0, `zoom ${zoom0.toFixed(1)} -> 12 -> ${after.zoom.toFixed(1)}`);
+  // После выбора места значок снова работает как значок R07.
+  await page.keyboard.press("Escape");
+  await page.waitForSelector(".bc-panel", { state: "hidden" });
+  const after2 = await page.evaluate(() => document.documentElement.classList.contains("bc-picking"));
+  await page.$eval(".r07-badge[data-kind='object']", (b) => b.click());
+  check(`${tag}: мастер закрыт — значок снова открывает свою карточку`, !after2 &&
+        (await page.evaluate(() => window.r07Clicks)) === 1);
+  check(`${tag}: нет ошибок консоли`, page.problems.length === 0, page.problems.join(" | "));
+  await page.context().close();
+}
+
 async function keyboard(browser, base, tag) {
   const page = await newPage(browser, base, 1366, 768, "ru");
   let reached = false;
@@ -344,6 +402,12 @@ async function keyboard(browser, base, tag) {
   check(`${tag}: фокус переходит на заголовок шага`, focused === "bc-title", focused);
   await page.keyboard.press("Escape");
   check(`${tag}: Escape закрывает панель`, await page.isHidden(".bc-panel"));
+  // R01 INTEGRATION §8: Escape закрывает и «Мои обращения», когда фокус вне панели (например, на карте).
+  await page.evaluate(() => window.standUi.openMine());
+  await page.waitForSelector(".bc-panel[data-step='mine']");
+  await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.standMap.getCanvas().focus(); });
+  await page.keyboard.press("Escape");
+  check(`${tag}: Escape закрывает «Мои обращения» при фокусе на карте`, await page.isHidden(".bc-panel"));
   await page.context().close();
 }
 
@@ -368,6 +432,8 @@ async function keyboard(browser, base, tag) {
     await newComplaintAndMine(browser, "http://127.0.0.1:8791", "kk", 375, 812, "375-kk-new", [71.4605, 51.0785]);
     await newComplaintAndMine(browser, "http://127.0.0.1:8791", "ru", 1366, 768, "1366-ru-new", [71.3965, 51.0765]);
     await withoutMl(browser, "http://127.0.0.1:8792", info2.hot, "375-noml");
+    await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk-badge");
+    await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru-badge");
     await keyboard(browser, "http://127.0.0.1:8791", "1366-kbd");
     await browser.close();
   } catch (err) {

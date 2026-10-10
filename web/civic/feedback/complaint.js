@@ -299,6 +299,30 @@
     }
     map.on("click", onClick);
 
+    // R10 B-019 / R11 B1 №3: значок тепловой карты R07 — маркер MapLibre (элемент поверх холста) — гасит нажатие,
+    // и житель, нажав прямо на «горящую» остановку, не получал «Это здесь?». Пока идёт выбор места, нажатие по
+    // любому маркеру — это нажатие по карте в точке значка (центр элемента: у R07 anchor "center").
+    // Значок района (data-kind="district") лишь приближает карту: район — не место жалобы.
+    // Ловим на фазе захвата у контейнера карты, поэтому обработчик самого значка в этот момент не срабатывает.
+    var container = map.getContainer ? map.getContainer() : null;
+    function onMarkerClick(e) {
+      if (!picking || !container) return;
+      var marker = e.target && e.target.closest ? e.target.closest(".maplibregl-marker") : null;
+      if (!marker || !container.contains(marker)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var box = marker.getBoundingClientRect(), canvas = map.getCanvas().getBoundingClientRect();
+      var at = map.unproject([box.left + box.width / 2 - canvas.left, box.top + box.height / 2 - canvas.top]);
+      var kind = marker.getAttribute("data-kind") || (marker.querySelector("[data-kind]") || { getAttribute: function () { return null; } })
+        .getAttribute("data-kind");
+      if (kind === "district") {
+        map.easeTo({ center: [at.lng, at.lat], zoom: Math.max(map.getZoom() + 2, 15), duration: 500 });
+        return;
+      }
+      listeners.forEach(function (cb) { cb({ lon: at.lng, lat: at.lat }); });
+    }
+    if (container) container.addEventListener("click", onMarkerClick, true);
+
     // isStyleLoaded() = false и пока грузится любой источник (например, слой улиц хоста), а «load»
     // уже не повторится. Поэтому пробуем сразу и только при ошибке ждём, пока карта станет «idle».
     function whenReady(fn) {
@@ -313,6 +337,8 @@
       setPickMode: function (on) {
         picking = !!on;
         map.getCanvas().style.cursor = on ? "crosshair" : "";
+        // Признак для оболочки и соседей (R01, R07): идёт выбор места жалобы.
+        document.documentElement.classList.toggle("bc-picking", picking);
       },
       highlight: function (target, geometry, point) {
         var features = [];
@@ -336,7 +362,12 @@
         map.easeTo({ center: point, zoom: Math.max(map.getZoom(), 16), duration: 600, offset: offset || [0, 0] });
       },
       current: function () { return current; },
-      destroy: function () { map.off("click", onClick); listeners = []; }
+      destroy: function () {
+        map.off("click", onClick);
+        if (container) container.removeEventListener("click", onMarkerClick, true);
+        document.documentElement.classList.remove("bc-picking");
+        listeners = [];
+      }
     };
   }
 
@@ -361,7 +392,11 @@
     els.toast = h("div", { "class": "bk-toast bc-toast", hidden: true });
     root.appendChild(els.panel);
     root.appendChild(els.toast);
-    els.panel.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+    // Escape закрывает открытую панель, где бы ни был фокус (R01 INTEGRATION §8: фокус мог остаться на карте).
+    function onKey(e) {
+      if (e.key === "Escape" && !els.panel.hidden && !e.defaultPrevented) { e.preventDefault(); close(); }
+    }
+    document.addEventListener("keydown", onKey);
 
     function freshState() {
       var draft = null;
@@ -946,6 +981,7 @@
       state: function () { return state; },
       destroy: function () {
         setPicking(false);
+        document.removeEventListener("keydown", onKey);
         window.removeEventListener("birge:lang", onLang);
         if (mql && mql.removeEventListener) mql.removeEventListener("change", render);
         [els.fab, els.panel, els.toast].forEach(function (node) { if (node.parentNode) node.parentNode.removeChild(node); });
