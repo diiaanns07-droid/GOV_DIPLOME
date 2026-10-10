@@ -19,7 +19,8 @@ R01 (интегратор)
    Если R01 обновляет R03 перед FINAL — брать последний SHA claude/r14-R03 (DELIVERY.json); остальное после
    937f665 — инструменты анализа, отчёты и тесты.
    Проверено: 2b9e837 + пути R03 @ 1f78f66 → pytest tests/civic/R03/round14 tests/civic/R04 tests/civic/R09
-   tests/civic/R01 — 791 passed, 1 skipped; FINAL ef1ef44 + пути R03 @ c1654aa → 794 passed, 1 skipped
+   tests/civic/R01 — 791 passed, 1 skipped; FINAL ef1ef44 + пути R03 @ c1654aa → 794 passed, 1 skipped;
+   ef1ef44 + пути R03 @ b86563c (с bench.py и новыми тестами) → 811 passed, 1 skipped, 1 xfailed
    (Linux, Python 3.13). Новых зависимостей и маршрутов нет;
    ml/civic_classifier_v2/results/ — только отчёты (MD/JSON/CSV), рантайм их не читает.
 1. Взять пути R03 из claude/r14-R03 (без слияния ветки целиком не обойтись — там только пути R03).

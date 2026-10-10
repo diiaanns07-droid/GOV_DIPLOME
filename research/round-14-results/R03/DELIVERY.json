@@ -108,7 +108,8 @@
   "демо-фразы R02/R10 → продуктовый словарь (запасной путь R04 без модели)": "PASS 11 из 11; «Спасибо за новый сквер!» → yards вместо other — strict xfail, ограничение в MODEL_CARD",
   "нагрузка /classify (bench.py, облако 4 vCPU, модель размера xlm-roberta-base, случайные веса, int8 per-channel)": "PASS — 5000 знаков: mean 35–37 мс, p95 ≤ 49 мс; 8 одновременных: 2300–2900 запросов/мин; память ≈ 510 МБ (3 прогона)",
   "нагрузка /classify настоящей моделью на ноутбуке": "NOT_RUN — по желанию, RUN.txt (bench, ≈ 1 мин)",
-  "разрыв kk − ru на probe_v2 (бутстрэп отдельно по языкам, ERROR_ANALYSIS раздел 7)": "PASS — логрегрессия −0.049 [−0.167; +0.052], словарь +0.001 [−0.131; +0.108]: не доказано; трансформер — NOT_RUN (утро, шаг 8б)"
+  "разрыв kk − ru на probe_v2 (бутстрэп отдельно по языкам, ERROR_ANALYSIS раздел 7)": "PASS — логрегрессия −0.049 [−0.167; +0.052], словарь +0.001 [−0.131; +0.108]: не доказано; трансформер — NOT_RUN (утро, шаг 8б)",
+  "FINAL R01 ef1ef44 + пути R03 @ b86563c: tests R03/R04/R09/R01": "PASS 811, skipped 1, xfailed 1"
  },
  "results_so_far": {
   "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",
@@ -156,5 +157,5 @@
   "label_audit": "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.md (+ .json), llm_label_cleaning_effect.json",
   "classify_load": "ml/civic_classifier_v2/bench.py → results/classify_load_cloud.json, таблица 10 в DIPLOMA_TABLES.md (для R15/R04/R14)"
  },
- "for_R01": "В R01 ef1ef44 уже R03 937f665 (B-004 исправлен, проверено: «машины стоят на газоне во дворе» → parking) — для показа достаточно. Если обновлять перед FINAL — последний SHA ветки: две мелочи predict.py (гонка get_default, запасной torch при отсутствии onnxruntime), в связке R04 не проявляются; остальное — анализ, отчёты, тесты. Проверено: ef1ef44 + пути R03 @ c1654aa — 794 passed."
+ "for_R01": "В R01 ef1ef44 уже R03 937f665 (B-004 исправлен, проверено: «машины стоят на газоне во дворе» → parking) — для показа достаточно. Если обновлять перед FINAL — последний SHA ветки: две мелочи predict.py (гонка get_default, запасной torch при отсутствии onnxruntime), в связке R04 не проявляются; остальное — анализ, отчёты, тесты. Проверено: ef1ef44 + пути R03 @ b86563c — 811 passed, 1 skipped, 1 xfailed."
 }
