@@ -21,12 +21,11 @@
 /* Без своего корня модуль кладёт панель поверх карты, внизу по центру. */
 .b3d--overlay {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0; /* вся площадь карты: панель внизу (flex), карточка на ноутбуке — справа (absolute) */
   z-index: var(--z-map-ui, 10);
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
   padding: 0 var(--gap-edge, 12px) calc(var(--gap-edge, 12px) + env(safe-area-inset-bottom));
   pointer-events: none; /* карта под пустыми краями остаётся доступной */
@@ -44,6 +43,52 @@
 }
 .b3d-dock[data-state="empty"] {
   display: none;
+}
+.b3d-dock[data-state="card"] {
+  position: relative;
+}
+/* Ноутбук (≥ 1024 px): карточка проекта выезжает справа, 400 px, как карточки целей (UX_SPEC §1);
+   каталог и размещение остаются внизу по центру. Телефон и узкие окна — карточка снизу. */
+@media (min-width: 1024px) {
+  .b3d--overlay .b3d-dock[data-state="card"] {
+    position: absolute;
+    top: var(--gap-edge, 12px);
+    right: var(--gap-edge, 12px);
+    width: min(var(--panel-w, 400px), calc(100% - 2 * var(--gap-edge, 12px)));
+    max-height: calc(100% - 2 * var(--gap-edge, 12px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    animation: b3d-slide-in var(--t-base, 240ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  }
+}
+@keyframes b3d-slide-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d--overlay .b3d-dock[data-state="card"] {
+    animation: none;
+  }
+}
+.b3d-pcard__where,
+.b3d-pcard__yard {
+  margin: 0;
+}
+/* Карточка R06 внутри панели: без второй тени и полей, «Закрыть» — в углу панели. */
+.b3d-head--end {
+  position: absolute;
+  top: var(--s-2, 8px);
+  right: var(--s-2, 8px);
+  min-height: 0;
+}
+.b3d-r06 .bk-card {
+  padding: 0;
+  box-shadow: none;
+}
+.b3d-r06 .bk-card > .bk-card__row:first-child {
+  padding-right: 48px;
 }
 
 .b3d-head {

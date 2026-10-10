@@ -241,17 +241,26 @@ function fakeFetch(routes, log) {
   };
 }
 
-test("API R06: список, создание, голос с device_id, удаление; ошибки с кодом", async () => {
+test("API R06 по настоящему контракту (claude/round-14-r06): только разрешённые поля, planned_year, {item}, withdraw", async () => {
   const log = [];
-  const item = { id: "p1", kind: "square", geometry: { type: "Point", coordinates: NURA }, status: "proposal", votes_up: 2, votes_down: 0 };
+  const item = { id: "p-1", kind: "square", geometry: { type: "Point", coordinates: NURA }, status: "proposal", planned_year: 2027,
+    votes_up: 2, votes_down: 0, my_vote: null, voting_open: true, demo: false, title_ru: "Сквер", title_kk: "Гүлзар" };
+  const ALLOWED = ["demo", "geometry", "kind", "planned_year", "rotation_deg", "title_kk", "title_ru"];
   const api = C.createApiStore({
+    deviceId: "dev-0123456789abcdef0123456789abcdef",
     fetch: fakeFetch(
       {
         "GET /api/civic/v2/proposals": [200, { items: [item, { kind: "bad" }] }],
-        "POST /api/civic/v2/proposals": (init) => [201, Object.assign({ id: "p2", votes_up: 0, votes_down: 0 }, JSON.parse(init.body))],
-        "POST /api/civic/v2/proposals/p1/vote": [200, { proposal: Object.assign({}, item, { votes_up: 3 }) }],
-        "DELETE /api/civic/v2/proposals/p1": [204, null],
-        "DELETE /api/civic/v2/proposals/zz": [404, { error: { code: "not_found" } }],
+        "POST /api/civic/v2/proposals": (init) => {
+          const body = JSON.parse(init.body);
+          const extra = Object.keys(body).filter((k) => !ALLOWED.includes(k));
+          if (extra.length) return [422, { ok: false, error: { code: "invalid_payload", fields: { [extra[0]]: "Неизвестное поле." } } }];
+          return [201, { item: Object.assign({ id: "p-2", status: "proposal", votes_up: 0, votes_down: 0, my_vote: null, voting_open: true }, body) }];
+        },
+        "POST /api/civic/v2/proposals/p-1/vote": [200, { item: Object.assign({}, item, { votes_up: 3, my_vote: 1 }), changed: true, previous: null }],
+        "POST /api/civic/v2/proposals/p-1/withdraw": [200, { item: Object.assign({}, item, { status: "withdrawn" }) }],
+        "POST /api/civic/v2/proposals/zz/withdraw": [404, { error: "not_found", message: "Проект не найден" }],
+        "DELETE /api/civic/v2/proposals/zz": [404, { error: "not_found" }],
       },
       log
     ),
@@ -259,14 +268,61 @@ test("API R06: список, создание, голос с device_id, удал
   const list = await api.list([71.3, 51.1, 71.5, 51.2]);
   assert.equal(list.length, 1, "неверная запись отброшена");
   assert.match(log[0][1], /bbox=71\.300000,51\.100000,71\.500000,51\.200000/);
-  const created = await api.create({ kind: "stop", geometry: { type: "Point", coordinates: NURA }, rotation_deg: 30 });
-  assert.equal(created.id, "p2");
-  assert.equal(log[1][2].rotation_deg, 30);
-  const voted = await api.vote("p1", 1, "dev-9");
+  assert.match(log[0][1], /device_id=dev-0123456789abcdef/, "device_id в запросе списка — «мой голос»");
+  assert.equal(list[0].year, 2027, "planned_year → год на табличке");
+  assert.equal(list[0].my_vote, 0);
+  // Черновик модуля несёт лишние поля (улица, двор, район) — на сервер уходят только поля R06.
+  const created = await api.create({ kind: "stop", geometry: { type: "Point", coordinates: NURA }, rotation_deg: 30.4, year: 2027,
+    status: "proposal", district: "nura", near_street: "улица Сыганак", target: { kind: "area", id: "yard-1" }, demo: false });
+  assert.equal(created.id, "p-2");
+  const byPath = (m, path) => log.filter((r) => r[0] === m && r[1].replace(/\?.*$/, "") === path);
+  assert.ok(log.some((r) => r[1] === "/api/civic/v1/session"), "CSRF сотрудника берётся из сессии, как в карточке R06");
+  const sent = byPath("POST", "/api/civic/v2/proposals")[0][2];
+  assert.deepEqual(Object.keys(sent).sort(), ["demo", "geometry", "kind", "planned_year", "rotation_deg"]);
+  assert.equal(sent.rotation_deg, 30);
+  assert.equal(sent.planned_year, 2027);
+  const voted = await api.vote("p-1", 1);
   assert.equal(voted.votes_up, 3);
-  assert.deepEqual(log[2][2], { value: 1, device_id: "dev-9" });
-  assert.equal(await api.remove("p1"), true);
+  assert.equal(voted.my_vote, 1);
+  assert.deepEqual(byPath("POST", "/api/civic/v2/proposals/p-1/vote")[0][2], { value: 1, device_id: "dev-0123456789abcdef0123456789abcdef" });
+  assert.equal(await api.remove("p-1"), true);
+  assert.equal(byPath("POST", "/api/civic/v2/proposals/p-1/withdraw").length, 1, "«Удалить» = withdraw R06");
   await assert.rejects(api.remove("zz"), (e) => e.code === "not_found" && e.status === 404);
+  assert.equal(byPath("DELETE", "/api/civic/v2/proposals/zz").length, 1, "запасной DELETE, если withdraw не найден");
+});
+
+test("API: конверт сервиса R06 {ok, data}, ошибка без сессии сотрудника, клиент оболочки R01 api.v2", async () => {
+  const env = C.createApiStore({ fetch: fakeFetch({ "GET /api/civic/v2/proposals": [200, { ok: true, data: { items: [{ id: "p-9", kind: "stop", geometry: { type: "Point", coordinates: NURA }, planned_year: null }] } }],
+    "POST /api/civic/v2/proposals": [401, { ok: false, error: { code: "unauthenticated", message: "Войдите" } }], "GET /api/civic/v1/session": [200, { authenticated: false }] }, []) });
+  const items = await env.list();
+  assert.equal(items[0].id, "p-9");
+  assert.equal(items[0].year, null, "нет года — табличка просто «Проект»");
+  await assert.rejects(env.create({ kind: "stop", geometry: { type: "Point", coordinates: NURA } }), (e) => e.status === 401 && e.code === "unauthenticated");
+  // Клиент оболочки: ошибки — объект со status и error-кодом (BirgeApiError R01).
+  const calls = [];
+  const viaShell = C.createApiStore({
+    v2: async (method, path, body) => {
+      calls.push([method, path, body]);
+      if (method === "POST" && path === "/proposals") {
+        const err = new Error("csrf");
+        err.status = 403;
+        err.error = "csrf_failed";
+        throw err;
+      }
+      return { items: [] };
+    },
+  });
+  assert.deepEqual(await viaShell.list(), []);
+  await assert.rejects(viaShell.create({ kind: "stop", geometry: { type: "Point", coordinates: NURA } }), (e) => e.status === 403 && e.code === "csrf_failed");
+  assert.deepEqual(calls[0], ["GET", "/proposals", undefined]);
+});
+
+test("id устройства — формат R06 (16–128 [A-Za-z0-9_-]), старый короткий заменяется", () => {
+  const st = memStorage();
+  st.setItem("birge.device_id", "dev-1");
+  const id = C.getDeviceId(st);
+  assert.match(id, /^dev-[0-9a-f]{32}$/);
+  assert.equal(C.getDeviceId(st), id);
 });
 
 test("авто: нет адреса /proposals (404/503) или сервера — честно переходим на заглушку; 500 — ошибка", async () => {
@@ -288,6 +344,6 @@ test("авто: нет адреса /proposals (404/503) или сервера �
 test("устройство: один id на браузер", () => {
   const st = memStorage();
   const a = C.getDeviceId(st);
-  assert.match(a, /^dev-/);
+  assert.match(a, /^[A-Za-z0-9_-]{16,128}$/);
   assert.equal(C.getDeviceId(st), a);
 });

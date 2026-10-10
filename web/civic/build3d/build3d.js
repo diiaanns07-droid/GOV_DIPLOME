@@ -159,6 +159,11 @@
       "common.tag.project": "Проект",
       "common.tag.demo": "Пример",
       "common.tag.demo_hint": "Пример для показа, не настоящее обращение",
+      "common.tag.project": "Проект",
+      "proposal.status.approved": "Одобрено",
+      "proposal.status.rejected": "Отклонено",
+      "proposal.voting_closed": "Голосование по этому проекту закрыто",
+      "proposal.need_staff": "Войдите как сотрудник акимата",
     },
     kk: {
       "proposal.catalog.title": "Не салайық?",
@@ -184,6 +189,11 @@
       "common.tag.project": "Жоба",
       "common.tag.demo": "Үлгі",
       "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты өтініш емес",
+      "common.tag.project": "Жоба",
+      "proposal.status.approved": "Мақұлданды",
+      "proposal.status.rejected": "Қабылданбады",
+      "proposal.voting_closed": "Бұл жоба бойынша дауыс беру аяқталды",
+      "proposal.need_staff": "Әкімдік қызметкері ретінде кіріңіз",
     },
   };
 
@@ -294,15 +304,84 @@
 
   // ───────────── mount ─────────────
 
+  // R01 передаёт карту функцией map() (null, пока карта грузится — как у R04 в раунде 13): ждём её до минуты
+  // и только потом монтируем; до этого handle отвечает phase "waiting_map" и запоминает setVisible/setMode.
   function mount(opts) {
+    opts = opts || {};
+    if (typeof opts.map !== "function") return mountWithMap(opts);
+    var getter = opts.map;
+    var get = function () {
+      try {
+        return getter() || null;
+      } catch (e) {
+        return null;
+      }
+    };
+    var now = get();
+    if (now) return mountWithMap(Object.assign({}, opts, { map: now }));
+    var inner = null,
+      dead = false,
+      queued = [],
+      tries = 0,
+      resolveReady;
+    var ready = new Promise(function (r) {
+      resolveReady = r;
+    });
+    var timer = setInterval(function () {
+      var m = get();
+      if (dead || (!m && ++tries < 240)) return;
+      clearInterval(timer);
+      if (dead || !m) return resolveReady(null);
+      inner = mountWithMap(Object.assign({}, opts, { map: m }));
+      queued.forEach(function (fn) {
+        fn(inner);
+      });
+      inner.ready.then(resolveReady, resolveReady);
+    }, 250);
+    function later(name) {
+      return function () {
+        var args = arguments;
+        if (inner) return inner[name].apply(inner, args);
+        if (name === "update" || name === "setVisible" || name === "setMode")
+          queued.push(function (h) {
+            h[name].apply(h, args);
+          });
+        return name === "start" || name === "flyToProposals" ? false : undefined;
+      };
+    }
+    return {
+      ready: ready,
+      start: later("start"),
+      cancel: later("cancel"),
+      select: later("select"),
+      flyToProposals: later("flyToProposals"),
+      refresh: later("refresh"),
+      setVisible: later("setVisible"),
+      setMode: later("setMode"),
+      update: later("update"),
+      getState: function () {
+        return inner ? inner.getState() : { phase: "waiting_map", mode: "idle", count: 0, proposals: [], items: [] };
+      },
+      _project: later("_project"),
+      destroy: function () {
+        dead = true;
+        clearInterval(timer);
+        if (inner) inner.destroy();
+      },
+    };
+  }
+
+  function mountWithMap(opts) {
     opts = opts || {};
     var map = opts.map;
     if (!map || typeof map.addLayer !== "function") throw new Error("CivicBuild3D.mount: нужна карта MapLibre (opts.map)");
     if (!Core || !ModelsLib) throw new Error("CivicBuild3D: подключите build3d-core.js и build3d-models.js раньше build3d.js");
 
     var o = {
-      role: opts.role === "resident" ? "resident" : "akimat",
+      // R01: «mode» — "akimat" | "resident" (переключатель в шапке); «role» — старое имя того же.
+      role: (opts.mode || opts.role) === "resident" ? "resident" : "akimat",
       apiPrefix: opts.apiPrefix || "/api/civic/v2",
+      geoPrefix: opts.geoPrefix || opts.apiPrefix || "/api/civic/v2", // маршруты R12 /street-snap, /street-segment
       threeUrl: opts.threeUrl || "/vendor/three/three.module.min.js",
       dataUrl: (opts.dataUrl || "/civic/build3d/data/").replace(/\/?$/, "/"),
       iconsUrl: opts.iconsUrl || "/civic/ui-kit/icons.svg",
@@ -310,6 +389,7 @@
       buildMs: opts.buildMs > 0 ? opts.buildMs : BUILD_MS,
       autoZoom: opts.autoZoom !== false,
       renderCard: opts.renderCard !== false,
+      useR06Card: opts.useR06Card !== false, // карточка R06 при настоящем API (если её модуль подключён)
       storage: opts.storage || safeLocalStorage(),
     };
     var i18n = opts.i18n || root.BirgeI18n || null;
@@ -353,7 +433,9 @@
 
     // ── DOM: корень, нижняя панель, тосты, подписи ──
     var hostRoot = opts.root || map.getContainer();
-    var ui = el("div", "b3d bk-app" + (opts.root ? "" : " b3d--overlay"), { "data-b3d-role": o.role });
+    // overlay: панель внизу, карточка на ноутбуке справа. Без своего root — всегда; с root хозяина — по opts.overlay
+    // (корень хозяина тогда должен покрывать свободную часть карты, см. INTEGRATION.txt).
+    var ui = el("div", "b3d bk-app" + (!opts.root || opts.overlay ? " b3d--overlay" : ""), { "data-b3d-role": o.role });
     var dock = el("section", "b3d-dock", { "aria-live": "polite" });
     var toasts = el("div", "b3d-toasts");
     ui.appendChild(toasts);
@@ -523,7 +605,75 @@
       return b;
     }
 
+    // С настоящим сервером R06 карточку проекта рисует сам R06 (BirgeProposals.renderProposal): одна карточка
+    // во всей сборке — голоса, статус, «Одобрить / Отклонить» для акимата. От 3D-модуля — «Рядом / Двор» и «Удалить».
+    function useR06Card() {
+      return o.useR06Card && S.storeMode === "api" && root.BirgeProposals && typeof root.BirgeProposals.renderProposal === "function";
+    }
+    function toR06Item(p) {
+      var name = Core.KINDS[p.kind] ? COMMON_FALLBACK.ru[Core.KINDS[p.kind].key] : p.kind;
+      return {
+        id: p.id, kind: p.kind, geometry: p.geometry, rotation_deg: p.rotation_deg, status: p.status,
+        title_ru: p.title_ru || name, title_kk: p.title_kk || null, district: p.district, planned_year: p.year,
+        votes_up: p.votes_up, votes_down: p.votes_down, my_vote: p.my_vote || null,
+        voting_open: p.voting_open !== false, demo: p.demo,
+      };
+    }
+    function renderR06Card(p) {
+      dock.setAttribute("data-state", "card");
+      var head = el("div", "b3d-head b3d-head--end");
+      var close = el("button", "bk-iconbtn", { type: "button", "aria-label": t("common.action.close"), title: t("common.action.close"), "data-action": "close-card" });
+      close.appendChild(icon("close", o.iconsUrl));
+      close.addEventListener("click", function () {
+        select(null);
+      });
+      head.appendChild(close);
+      dock.appendChild(head);
+      var host = el("div", "b3d-r06");
+      dock.appendChild(host);
+      try {
+        root.BirgeProposals.renderProposal(host, toR06Item(p), {
+          role: o.role,
+          onChange: function (np) {
+            // Голос/решение уже показаны карточкой R06 — обновляем только свои данные и подпись, без перерисовки.
+            var obj = S.objects[p.id];
+            var fresh = Core.normalizeProposal(np);
+            if (!obj || !fresh) return;
+            obj.p = Object.assign({}, obj.p, fresh);
+            updateLabelText(obj);
+            emitSelect(obj.p);
+          },
+        });
+      } catch (e) {
+        console.error("[build3d] карточка R06", e);
+        dock.textContent = "";
+        return renderOwnCard(p);
+      }
+      var where = placeText(p);
+      if (where) dock.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
+      var yard = yardOf(p);
+      if (yard) {
+        var yardName = t.lang() === "kk" ? yard.label_kk || yard.label_ru : yard.label_ru || yard.label_kk;
+        dock.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
+      }
+      if (o.role === "akimat") dock.appendChild(deleteBtn(p));
+    }
+
+    function deleteBtn(p) {
+      var del = actionBtn("close", t("proposal.delete"), "bk-btn--danger b3d-delete", function () {
+        removeProposal(p.id);
+      }, "delete");
+      if (S.cardBusy === "delete") del.setAttribute("aria-busy", "true");
+      if (S.objects[p.id] && S.objects[p.id].pending) del.setAttribute("aria-disabled", "true");
+      return del;
+    }
+
     function renderCard(p) {
+      if (useR06Card()) return renderR06Card(p);
+      return renderOwnCard(p);
+    }
+
+    function renderOwnCard(p) {
       dock.setAttribute("data-state", "card");
       var card = el("article", "b3d-pcard", { "aria-labelledby": "b3d-pcard-title" });
       var head = el("div", "b3d-head");
@@ -539,14 +689,17 @@
       head.appendChild(close);
       card.appendChild(head);
       var tags = el("div", "bk-card__row");
-      tags.appendChild(el("span", "bk-tag bk-tag--project", { text: t("proposal.label", { year: String(p.year) }) }));
+      tags.appendChild(el("span", "bk-tag bk-tag--project", { text: projectLabel(p) }));
       if (p.demo) tags.appendChild(el("span", "bk-tag bk-tag--demo", { text: t("common.tag.demo"), title: t("common.tag.demo_hint") }));
-      tags.appendChild(el("span", "bk-meta", { text: t("proposal.status.proposal") }));
+      // Статус словом и цветом (R06: proposal | approved | rejected).
+      var st = p.status === "approved" || p.status === "rejected" ? p.status : "proposal";
+      tags.appendChild(el("span", "bk-status", { "data-status": st === "approved" ? "fixed" : st === "rejected" ? "rejected" : "accepted", text: t("proposal.status." + st) }));
       card.appendChild(tags);
       var where = placeText(p);
       if (where) card.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
-      if (p.target && p.target.kind === "area" && (p.target.label_ru || p.target.label_kk)) {
-        var yardName = t.lang() === "kk" ? p.target.label_kk || p.target.label_ru : p.target.label_ru || p.target.label_kk;
+      var yard = yardOf(p);
+      if (yard) {
+        var yardName = t.lang() === "kk" ? yard.label_kk || yard.label_ru : yard.label_ru || yard.label_kk;
         card.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
       }
       var votes = el("div", "b3d-votes", { role: "group", "aria-label": t("proposal.one_vote") });
@@ -554,15 +707,9 @@
       votes.appendChild(voteBtn(p, -1));
       card.appendChild(votes);
       var note = p.my_vote === 1 ? t("build3d.card.your_vote_up") : p.my_vote === -1 ? t("build3d.card.your_vote_down") : t("proposal.one_vote");
+      if (p.voting_open === false) note = t("proposal.voting_closed");
       card.appendChild(el("p", "bk-meta", { text: note }));
-      if (o.role === "akimat") {
-        var del = actionBtn("close", t("proposal.delete"), "bk-btn--danger", function () {
-          removeProposal(p.id);
-        }, "delete");
-        if (S.cardBusy === "delete") del.setAttribute("aria-busy", "true");
-        if (S.objects[p.id] && S.objects[p.id].pending) del.setAttribute("aria-disabled", "true");
-        card.appendChild(del);
-      }
+      if (o.role === "akimat") card.appendChild(deleteBtn(p));
       dock.appendChild(card);
     }
 
@@ -577,10 +724,21 @@
       b.appendChild(el("span", "", { text: t(up ? "proposal.vote_up" : "proposal.vote_down") }));
       b.appendChild(el("span", "bk-btn__count", { text: formatNum(up ? p.votes_up : p.votes_down) }));
       if (S.cardBusy === "vote" + value) b.setAttribute("aria-busy", "true");
+      if (p.voting_open === false) b.disabled = true; // проект одобрен или отклонён — голосование закрыто
       b.addEventListener("click", function () {
         vote(p.id, value);
       });
       return b;
+    }
+
+    // «Проект · 2027»; без года (у R06 planned_year может быть пустым) — просто «Проект». Пометка есть всегда.
+    function projectLabel(p) {
+      return p.year ? t("proposal.label", { year: String(p.year) }) : t("common.tag.project");
+    }
+
+    // Создавать и снимать проекты может только вошедший сотрудник (шлюз R01/R06: 401, 403, csrf_failed).
+    function isStaffError(err) {
+      return !!err && (err.status === 401 || err.status === 403 || /unauth|csrf|forbidden|staff/.test(String(err.code || "")));
     }
 
     function formatNum(n) {
@@ -592,9 +750,35 @@
         var len = Core.polylineLength(p.geometry.coordinates.map(function (c) {
           return Core.toLocal(p.geometry.coordinates[0], c);
         }));
-        return t("build3d.card.segment", { street: p.target.label_ru, length: Math.round(len) });
+        var sname = t.lang() === "kk" && p.target.label_kk ? p.target.label_kk : p.target.label_ru;
+        return t("build3d.card.segment", { street: sname, length: Math.round(len) });
       }
-      return p.near_street ? t("build3d.card.near", { street: p.near_street }) : "";
+      // У R06 нет полей улицы и двора — вычисляем по геометрии (настоящие улицы OSM), одинаково на любом устройстве.
+      var street = p.near_street;
+      if (!street && streets && p.kind !== "lighting") {
+        var n = streets.nearest(p.geometry.coordinates, 120);
+        street = n ? n.edge.name : null;
+      }
+      if (!street && p.kind === "lighting" && streets) {
+        var c = p.geometry.coordinates;
+        var m = streets.nearest(c[Math.floor(c.length / 2)], 30);
+        if (m) {
+          var L = Core.polylineLength(c.map(function (q) {
+            return Core.toLocal(c[0], q);
+          }));
+          return t("build3d.card.segment", { street: m.edge.name, length: Math.round(L) });
+        }
+      }
+      return street ? t("build3d.card.near", { street: street }) : "";
+    }
+
+    function yardOf(p) {
+      if (p.target && p.target.kind === "area" && (p.target.label_ru || p.target.label_kk)) return p.target;
+      if (existing && p.kind !== "lighting") {
+        var y = existing.yardAt(p.geometry.coordinates);
+        if (y && (y.name_ru || y.name_kk)) return { kind: "area", id: y.id, label_ru: y.name_ru, label_kk: y.name_kk };
+      }
+      return null;
     }
 
     // ── Тосты: что случилось + действие (Отменить / Повторить), 6 с ──
@@ -691,7 +875,13 @@
     function makeStore() {
       var s = opts.store;
       if (s && typeof s === "object") return s;
-      var cfg = { prefix: o.apiPrefix, storage: o.storage, fixture: fixture };
+      var cfg = {
+        prefix: o.apiPrefix,
+        storage: o.storage,
+        fixture: fixture,
+        deviceId: deviceId,
+        v2: opts.api && typeof opts.api.v2 === "function" ? opts.api.v2 : null, // клиент оболочки R01
+      };
       if (s === "api") return Core.createApiStore(cfg);
       if (s === "local") return Core.createLocalStore(cfg);
       return Core.createAutoStore(cfg);
@@ -728,7 +918,9 @@
     }
 
     function loadProposals() {
-      return store.list(currentBbox()).then(
+      // Все проекты сразу, без bbox: их десятки, а запрос «по видимой части» терял бы проекты, к которым
+      // пользователь потом прокрутит карту (найдено проверкой на стенде R06).
+      return store.list(null).then(
         function (items) {
           if (S.destroyed) return;
           S.storeMode = store.mode || "api";
@@ -1006,9 +1198,9 @@
       b = b || obj.label;
       if (!b) return;
       var name = t(Core.KINDS[obj.p.kind].key);
-      b.textContent = t("proposal.label", { year: String(obj.p.year) });
+      b.textContent = projectLabel(obj.p);
       obj.labelSize = null; // текст сменился — размер измерим заново (один раз, не в каждом кадре)
-      b.setAttribute("aria-label", t("build3d.card.open", { kind: name, year: String(obj.p.year) }));
+      b.setAttribute("aria-label", t("build3d.card.open", { kind: name, year: String(obj.p.year || "") }).replace(/\s+,/, ","));
       b.setAttribute("aria-pressed", S.selected === obj.p.id ? "true" : "false");
     }
 
@@ -1284,7 +1476,7 @@
       };
       if (kind === "lighting") {
         S.ghost.follow = "pinned";
-        setHint(streets ? "build3d.hint.segment_start" : "build3d.err.no_streets", null, !streets);
+        setHint("build3d.hint.segment_start"); // улицы: R12 по всему городу или свой индекс Нуры
       } else setHint(touch ? "build3d.hint.touch" : "proposal.place_hint");
       setTool(true);
       ensureExisting();
@@ -1367,7 +1559,7 @@
           year: o.year,
           district: districts ? Core.districtAt(districts, g.section.coords[0]) : null,
           near_street: g.section.name,
-          target: { kind: "segment", id: g.section.edge_ids[0], ids: g.section.edge_ids, label_ru: g.section.name, label_kk: g.section.name },
+          target: { kind: "segment", id: g.section.edge_ids[0], ids: g.section.edge_ids, label_ru: g.section.name, label_kk: g.section.name_kk || g.section.name },
           demo: false,
         };
       }
@@ -1617,40 +1809,144 @@
       } else if (S.selected) select(null);
     }
 
+    // ── Участок улицы для освещения ──
+    // Основной источник — R12 (engine.civic_geo через шлюз R01): GET /street-snap и /street-segment, весь город,
+    // с казахским названием улицы. Пока маршрутов нет (404/405/501/503 или нет сервера) — свой индекс улиц Нуры
+    // (data/nura-streets.json): та же форма OSM, тот же расчёт (проверено: ул. Сыганак 184.3 м у обоих).
+    var geo = { state: "unknown" }; // unknown | ok | off
+    function geoGet(path) {
+      if (geo.state === "off") return Promise.resolve(null);
+      var req =
+        opts.api && typeof opts.api.v2 === "function" && o.geoPrefix === o.apiPrefix
+          ? Promise.resolve().then(function () {
+              return opts.api.v2("GET", path);
+            })
+          : fetch(o.geoPrefix + path, { credentials: "same-origin", headers: { Accept: "application/json" } }).then(function (res) {
+              return res.json().then(
+                function (data) {
+                  return { res: res, data: data };
+                },
+                function () {
+                  return { res: res, data: null };
+                }
+              ).then(function (r) {
+                if (!r.res.ok) {
+                  var e = new Error("geo");
+                  e.status = r.res.status;
+                  e.error = r.data && (typeof r.data.error === "string" ? r.data.error : (r.data.error && r.data.error.code) || r.data.code);
+                  throw e;
+                }
+                return r.data;
+              });
+            });
+      return req.then(
+        function (data) {
+          geo.state = "ok";
+          return data && data.ok === true && data.data ? data.data : data;
+        },
+        function (err) {
+          var st = err && err.status;
+          if (!st || st === 404 || st === 405 || st === 501 || st === 503) {
+            geo.state = "off"; // маршрутов R12 на этом сервере нет — дальше только свой индекс
+            return null;
+          }
+          var e = new Error("geo");
+          e.status = st;
+          e.code = err.error || err.code;
+          throw e;
+        }
+      );
+    }
+    function ll2(q) {
+      return q[0].toFixed(7) + "," + q[1].toFixed(7);
+    }
+    // Ответ R12 segment_between → участок в формате модуля (как у StreetIndex.section).
+    function fromR12Segment(seg) {
+      if (!seg || !seg.geometry || seg.geometry.type !== "LineString" || seg.geometry.coordinates.length < 2) return null;
+      var name = seg.street_ru || (seg.names && seg.names[0]) || seg.label_ru || null;
+      if (seg.same_street === false) return { ok: false, reason: "other_street", name: name };
+      var L = seg.length_m;
+      if (L < Core.LIGHT_MIN_M) return { ok: false, reason: "too_short", name: name };
+      if (L > Core.LIGHT_MAX_M) return { ok: false, reason: "too_long", name: name };
+      return { ok: true, name: name, name_kk: seg.street_kk || null, coords: seg.geometry.coordinates, length_m: L, edge_ids: seg.edge_ids || [], source: "r12" };
+    }
+    function geoReason(code) {
+      return code === "not_on_street" ? "far_from_street" : code === "too_long" ? "too_long" : "no_path";
+    }
+    function streetLabel(sec) {
+      return t.lang() === "kk" && sec.name_kk ? sec.name_kk : sec.name;
+    }
+    function applySection(g, sec, ll) {
+      if (sec && sec.ok) {
+        g.section = sec;
+        g.b = ll;
+        var n = Core.sampleAlong(lightingOpts(sec.coords).line, Core.LIGHT_STEP_M).length;
+        setHint("build3d.hint.segment_ready", { street: streetLabel(sec), length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
+      } else {
+        g.section = null;
+        setHint("build3d.err." + ((sec && sec.reason) || "no_path"), { street: (sec && sec.name) || g.aStreet || "" }, true);
+      }
+      updateGhost(true);
+      render();
+    }
+
     function clickLighting(ll) {
       var g = S.ghost;
-      if (!streets) {
-        setHint("build3d.err.no_streets", null, true);
-        return render();
-      }
+      var seq = (g.seq = (g.seq || 0) + 1);
+      var stale = function () {
+        return S.ghost !== g || g.seq !== seq;
+      };
       if (!g.a || (g.section && g.section.ok && g.b)) {
-        var snap = streets.nearest(ll, Core.SNAP_STREET_M);
+        var snap = streets ? streets.nearest(ll, Core.SNAP_STREET_M) : null;
         g.section = null;
         g.preview = null;
         g.b = null;
-        if (!snap) {
-          g.a = null;
-          setHint(inStreetArea(ll) ? "build3d.err.far_from_street" : "build3d.err.no_streets", null, true);
-        } else {
+        g.a = null;
+        if (snap) {
           g.a = snap.lngLat;
           g.aStreet = snap.edge.name;
           g.dirHint = [Math.sin(snap.bearing * DEG), Math.cos(snap.bearing * DEG)];
           setHint("build3d.hint.segment_end", { street: snap.edge.name });
-        }
-      } else {
-        var sec = streets.section(g.a, ll);
-        if (sec.ok) {
-          g.section = sec;
-          g.b = ll;
-          var n = Core.sampleAlong(lightingOpts(sec.coords).line, Core.LIGHT_STEP_M).length;
-          setHint("build3d.hint.segment_ready", { street: sec.name, length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
         } else {
-          g.section = null;
-          setHint("build3d.err." + sec.reason, { street: sec.name || g.aStreet }, true);
+          setHint(streets && inStreetArea(ll) ? "build3d.err.far_from_street" : "build3d.err.no_streets", null, true);
+          // Вне своего индекса — спросим привязку к улице у R12.
+          geoGet("/street-snap?lon=" + ll[0].toFixed(7) + "&lat=" + ll[1].toFixed(7) + "&kind=road").then(
+            function (sn) {
+              if (stale() || !sn) return;
+              if (sn.point && sn.distance_m <= Core.SNAP_STREET_M + 15) {
+                g.a = sn.point;
+                g.aStreet = sn.street_ru || sn.label_ru;
+                setHint("build3d.hint.segment_end", { street: t.lang() === "kk" ? sn.street_kk || sn.label_kk || g.aStreet : g.aStreet });
+              } else setHint("build3d.err.far_from_street", null, true);
+              updateGhost(true);
+              render();
+            },
+            function (err) {
+              if (stale()) return;
+              setHint("build3d.err." + geoReason(err.code), null, true);
+              render();
+            }
+          );
         }
+        updateGhost(true);
+        return render();
       }
-      updateGhost(true);
-      render();
+      var a = g.a;
+      var local = streets ? streets.section(a, ll) : { ok: false, reason: "no_streets" };
+      if (local.ok || geo.state === "off") applySection(g, local, ll);
+      // Участок от R12 точнее и с казахским названием — заменяет свой, когда приходит.
+      geoGet("/street-segment?from=" + ll2(a) + "&to=" + ll2(ll) + "&kind=road").then(
+        function (seg) {
+          if (stale()) return;
+          var sec = fromR12Segment(seg);
+          if (sec && (sec.ok || !local.ok)) applySection(g, sec, ll);
+          else if (!sec && !local.ok) applySection(g, local, ll);
+        },
+        function (err) {
+          if (stale() || local.ok) return;
+          applySection(g, { ok: false, reason: geoReason(err.code), name: g.aStreet }, ll);
+        }
+      );
     }
 
     function inStreetArea(ll) {
@@ -1779,6 +2075,7 @@
         function (err) {
           console.error("[build3d] не сохранилось", err);
           animateRemove(tempId);
+          if (isStaffError(err)) return toast(t("proposal.need_staff"), { error: true });
           toast(t(err && err.code === "limit" ? "proposal.limit" : "build3d.save_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -1858,9 +2155,13 @@
           render();
           focusDock("[data-action=" + (value === 1 ? "vote-up" : "vote-down") + "]");
         },
-        function () {
+        function (err) {
           S.cardBusy = null;
           render();
+          if (err && (err.code === "voting_closed" || err.code === "already_decided")) {
+            toast(t("proposal.voting_closed"), { error: true });
+            return loadProposals();
+          }
           toast(t("build3d.vote_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -1894,26 +2195,33 @@
       repaint();
     }
 
-    // Выбранный объект не должен прятаться под карточкой (UX_REVIEW день 3 #21): если его точка на земле
-    // ниже верха панели (или у края экрана), плавно сдвигаем карту так, чтобы объект встал над карточкой.
-    // Это ответ на нажатие пользователя, поэтому правило «карта сама не двигается» не нарушается.
-    function keepAboveDock(obj) {
-      if (!obj || !lastMatrix) return;
+    // Выбранный объект не должен прятаться под карточкой (UX_REVIEW день 3 #21): считаем свободную часть карты
+    // (слева от карточки на ноутбуке, над панелью на телефоне) и, если объект вне её, плавно ставим его в её
+    // центр. Это ответ на нажатие пользователя, поэтому правило «карта сама не двигается» не нарушается.
+    function freeArea() {
       var canvas = map.getCanvas();
       var cr = canvas.getBoundingClientRect();
       var w = canvas.clientWidth,
         h = canvas.clientHeight;
       var dr = dock.getBoundingClientRect();
-      var dockTop = dr.height ? Math.min(h, dr.top - cr.top) : h;
+      if (!dr.width || !dr.height || ui.hidden) return { x0: 0, y0: 0, x1: w, y1: h };
+      var left = dr.left - cr.left,
+        top = dr.top - cr.top;
+      if (left > w * 0.45 && top < h * 0.3) return { x0: 0, y0: 0, x1: Math.max(120, left), y1: h }; // карточка справа
+      return { x0: 0, y0: 0, x1: w, y1: Math.max(120, top) }; // панель снизу
+    }
+    function keepAboveDock(obj) {
+      if (!obj || !lastMatrix) return;
       var ground = worldOf(obj, obj.p.kind === "lighting" ? [obj.labelPoint[0], obj.labelPoint[1], 0] : [0, 0, 0]);
       var sp = projectLocal(ground.x, ground.y, 0);
       if (!sp) return;
-      var margin = 40;
-      var targetY = Math.max(margin + 60, Math.min(dockTop - 90, dockTop * 0.6));
-      var dx = sp.x < margin || sp.x > w - margin ? sp.x - w / 2 : 0;
-      var dy = sp.y > dockTop - 70 || sp.y < margin + 40 ? sp.y - targetY : 0;
-      if (Math.abs(dx) < 2 && Math.abs(dy) < 2) return;
-      map.panBy([dx, dy], { duration: reducedMotion() ? 0 : 450 });
+      var f = freeArea();
+      var m = 48; // запас: подпись над объектом тоже должна быть видна
+      var inside = sp.x > f.x0 + m && sp.x < f.x1 - m && sp.y > f.y0 + m + 60 && sp.y < f.y1 - m;
+      if (inside) return;
+      var tx = (f.x0 + f.x1) / 2,
+        ty = f.y0 + (f.y1 - f.y0) * 0.6;
+      map.panBy([sp.x - tx, sp.y - ty], { duration: reducedMotion() ? 0 : 450 });
     }
 
     // Крупный план проектов (для оболочки: открыли «3D-превью» — камера к проектам; UX_REVIEW день 3 #20).
@@ -1964,10 +2272,23 @@
       if (S.mode === "placing" && S.kind === "lighting" && S.ghost && S.ghost.section && S.ghost.section.ok) {
         var sec = S.ghost.section;
         var n = Core.sampleAlong(lightingOpts(sec.coords).line, Core.LIGHT_STEP_M).length;
-        setHint("build3d.hint.segment_ready", { street: sec.name, length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
+        setHint("build3d.hint.segment_ready", { street: streetLabel(sec), length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
       }
       render(true);
       repaint();
+    }
+
+    // «Акимат / Житель» без пересоздания модуля: событие оболочки R01 document "birge:mode" {detail:{mode}}.
+    function setMode(mode) {
+      var r = mode === "resident" ? "resident" : "akimat";
+      if (r === o.role) return;
+      if (S.mode === "placing") cancel();
+      o.role = r;
+      ui.setAttribute("data-b3d-role", r);
+      render(true);
+    }
+    function onShellMode(e) {
+      if (e && e.detail && e.detail.mode) setMode(e.detail.mode);
     }
 
     // ───────────── Подписки ─────────────
@@ -1976,6 +2297,7 @@
     map.on("move", onMapMove);
     map.on("styledata", onStyleData);
     doc.addEventListener("keydown", onKey);
+    if (opts.followShellMode !== false) doc.addEventListener("birge:mode", onShellMode);
     if (i18n && typeof i18n.onChange === "function") unsubLang = i18n.onChange(onLang);
 
     render();
@@ -1993,6 +2315,14 @@
       cancel: cancel,
       select: select,
       flyToProposals: flyToProposals,
+      setMode: setMode,
+      // R01: update({mode, visible}) — то же, что setMode / setVisible.
+      update: function (u) {
+        u = u || {};
+        if (u.mode || u.role) setMode(u.mode || u.role);
+        if (typeof u.visible === "boolean") handle.setVisible(u.visible);
+        return handle;
+      },
       refresh: function () {
         return store ? loadProposals() : ready;
       },
@@ -2051,6 +2381,7 @@
         map.off("move", onMapMove);
         map.off("styledata", onStyleData);
         doc.removeEventListener("keydown", onKey);
+        doc.removeEventListener("birge:mode", onShellMode);
         if (unsubLang) unsubLang();
         clearTimeout(toastTimer);
         Object.keys(S.objects).forEach(disposeObject);

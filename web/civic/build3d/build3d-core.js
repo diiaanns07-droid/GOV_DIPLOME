@@ -602,7 +602,14 @@
       votes_up: Math.max(0, Math.round(num(raw.votes_up, 0))),
       votes_down: Math.max(0, Math.round(num(raw.votes_down, 0))),
       my_vote: raw.my_vote === 1 || raw.my_vote === -1 ? raw.my_vote : 0,
-      year: Math.round(num(raw.year, 2027)),
+      // Год на табличке: у R06 поле planned_year (может быть пустым — тогда просто «Проект»).
+      year: (function () {
+        var y = raw.year != null ? raw.year : raw.planned_year !== undefined ? raw.planned_year : 2027;
+        return y === null || !isFinite(Number(y)) ? null : Math.round(Number(y));
+      })(),
+      voting_open: typeof raw.voting_open === "boolean" ? raw.voting_open : (typeof raw.status === "string" ? raw.status : "proposal") === "proposal",
+      title_ru: typeof raw.title_ru === "string" ? raw.title_ru : null,
+      title_kk: typeof raw.title_kk === "string" ? raw.title_kk : null,
       district: typeof raw.district === "string" ? raw.district : null,
       near_street: typeof raw.near_street === "string" ? raw.near_street : null,
       target: raw.target && typeof raw.target === "object" ? raw.target : null,
@@ -642,11 +649,25 @@
     };
   }
 
+  // Случайный id устройства для «один голос с устройства». Тот же ключ и формат, что у карточки R06
+  // (birge.device_id, "dev-" + 32 hex): «мой голос» совпадает в обеих карточках. Старый короткий id заменяется.
   function getDeviceId(storage) {
     var st = safeStorage(storage);
     var id = st.get(DEVICE_KEY);
-    if (!id) {
-      id = "dev-" + Date.now().toString(36) + "-" + Math.floor(Math.random() * 1e9).toString(36);
+    if (!id || !/^[A-Za-z0-9_-]{16,128}$/.test(id)) {
+      var bytes = new Array(16);
+      var g = typeof self !== "undefined" ? self : null;
+      var cr = g && g.crypto && g.crypto.getRandomValues ? g.crypto : null;
+      if (cr) bytes = Array.prototype.slice.call(cr.getRandomValues(new Uint8Array(16)));
+      else
+        for (var i = 0; i < 16; i++) bytes[i] = Math.floor(Math.random() * 256);
+      id =
+        "dev-" +
+        bytes
+          .map(function (b) {
+            return ("0" + b.toString(16)).slice(-2);
+          })
+          .join("");
       st.set(DEVICE_KEY, id);
     }
     return id;
@@ -755,82 +776,184 @@
     return e;
   }
 
-  // Клиент API R06 (CONTRACT §7). DELETE /proposals/{id} — запрошен у R06 в INTEGRATION.txt.
+  // Клиент API R06 — по НАСТОЯЩЕМУ контракту поставки R06 (claude/round-14-r06 @ 3d10f7d, ui/civic_store/v2.py,
+  // proposals.py) и шлюза R01 (claude/sharp-dijkstra-0t87gl, ui/web_server.py V2_ROUTES):
+  //   GET  /proposals?bbox&device_id            → {items:[…]}           (сервис R06 напрямую: {ok:true, data:{items}})
+  //   POST /proposals  [сотрудник, X-CSRF-Token] тело ТОЛЬКО {kind, geometry, rotation_deg, planned_year, demo}
+  //        (лишние поля R06 отклоняет: 422 «Неизвестное поле») → 201 {item}
+  //   POST /proposals/{id}/vote {value, device_id}                    → {item, changed, previous}
+  //   POST /proposals/{id}/withdraw {} [сотрудник] — «Удалить» (строка остаётся в базе, в списках не видна);
+  //        если маршрута нет (404/405) — запасной DELETE /proposals/{id}.
+  // Ошибки: шлюз R01 {error:"код", message, field}; сервис R06 {ok:false, error:{code, message, fields}}.
+  // Контекст 3D (улица рядом, двор, участок) R06 не хранит — модуль вычисляет его по геометрии при показе.
+  // opts.v2 — клиент оболочки R01 (BirgeShell.api.v2(method, path, body)): сам ставит CSRF и куки.
+  var DEVICE_RE = /^[A-Za-z0-9_-]{16,128}$/;
+
+  function errorCode(data, status) {
+    var e = data && data.error;
+    if (typeof e === "string") return e;
+    if (e && typeof e === "object" && e.code) return e.code;
+    if (data && typeof data.code === "string") return data.code;
+    return "http_" + status;
+  }
+  function unwrap(data) {
+    return data && data.ok === true && Object.prototype.hasOwnProperty.call(data, "data") ? data.data : data;
+  }
+  // Тело POST /proposals: только поля, которые принимает R06.
+  function toServerProposal(p) {
+    var body = { kind: p.kind, geometry: p.geometry, rotation_deg: Math.round(p.rotation_deg || 0), demo: p.demo === true };
+    var year = p.year != null ? p.year : p.planned_year;
+    if (year != null && isFinite(year)) body.planned_year = Math.round(year);
+    if (typeof p.title_ru === "string" && p.title_ru) body.title_ru = p.title_ru;
+    if (typeof p.title_kk === "string" && p.title_kk) body.title_kk = p.title_kk;
+    return body;
+  }
+
   function createApiStore(opts) {
     opts = opts || {};
     var prefix = (opts.prefix || "/api/civic/v2").replace(/\/$/, "");
     var fetchFn = opts.fetch || (typeof fetch === "function" ? fetch.bind(null) : null);
     var timeoutMs = opts.timeoutMs || 8000;
-    function call(method, path, body) {
-      if (!fetchFn) return Promise.reject(storeError("network"));
-      var ctrl = typeof AbortController === "function" ? new AbortController() : null;
-      var timer = ctrl
-        ? setTimeout(function () {
-            ctrl.abort();
-          }, timeoutMs)
-        : null;
-      var init = { method: method, headers: { Accept: "application/json" }, signal: ctrl ? ctrl.signal : undefined };
-      if (body !== undefined) {
-        init.headers["Content-Type"] = "application/json";
-        init.body = JSON.stringify(body);
+    var shellV2 = typeof opts.v2 === "function" ? opts.v2 : null;
+    var csrfCache = null;
+
+    // CSRF сотрудника: из оболочки R01 (CivicShell.csrfToken), иначе из GET /api/civic/v1/session (как карточка R06).
+    function csrf() {
+      var g = typeof self !== "undefined" ? self : null;
+      try {
+        var fromShell = g && g.CivicShell && typeof g.CivicShell.csrfToken === "function" ? g.CivicShell.csrfToken() : null;
+        if (fromShell) return Promise.resolve(fromShell);
+      } catch (e) {
+        /* оболочки нет */
       }
-      return fetchFn(prefix + path, init).then(
-        function (res) {
-          if (timer) clearTimeout(timer);
-          return res.text().then(function (text) {
-            var data = null;
-            try {
-              data = text ? JSON.parse(text) : null;
-            } catch (e) {
-              data = null;
-            }
-            if (!res.ok) {
-              var code = (data && data.error && data.error.code) || (data && data.code) || "http_" + res.status;
-              throw storeError(code, res.status);
-            }
-            if (text && data === null) throw storeError("bad_json", res.status);
-            return data;
+      if (csrfCache) return Promise.resolve(csrfCache);
+      if (!fetchFn) return Promise.resolve(null);
+      var sessionUrl = opts.sessionUrl || "/api/civic/v1/session";
+      // Никогда не падает: нет сессии или ответа — просто без токена (сервер ответит 401, модуль скажет «Войдите»).
+      return Promise.resolve()
+        .then(function () {
+          return fetchFn(sessionUrl, { method: "GET", credentials: "same-origin", headers: { Accept: "application/json" } });
+        })
+        .then(function (res) {
+          return res.text();
+        })
+        .then(function (text) {
+          var data = unwrap(text ? JSON.parse(text) : null) || {};
+          csrfCache = data.authenticated && typeof data.csrf_token === "string" ? data.csrf_token : null;
+          return csrfCache;
+        })
+        .catch(function () {
+          return null;
+        });
+    }
+
+    function call(method, path, body, staff) {
+      if (shellV2) {
+        // Клиент оболочки: ошибки — объект с полями status, error (код), message.
+        return Promise.resolve()
+          .then(function () {
+            return shellV2(method, path, body);
+          })
+          .then(unwrap, function (err) {
+            var e = storeError((err && (typeof err.error === "string" ? err.error : err.code)) || "network", err && err.status);
+            if (err && err.status === 0) e.code = "network";
+            throw e;
           });
-        },
-        function (err) {
-          if (timer) clearTimeout(timer);
-          throw storeError(err && err.name === "AbortError" ? "timeout" : "network");
+      }
+      if (!fetchFn) return Promise.reject(storeError("network"));
+      return (staff ? csrf() : Promise.resolve(null)).then(function (token) {
+        var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+        var timer = ctrl
+          ? setTimeout(function () {
+              ctrl.abort();
+            }, timeoutMs)
+          : null;
+        var init = {
+          method: method,
+          credentials: "same-origin",
+          headers: { Accept: "application/json" },
+          signal: ctrl ? ctrl.signal : undefined,
+        };
+        if (body !== undefined) {
+          init.headers["Content-Type"] = "application/json";
+          init.body = JSON.stringify(body);
         }
-      );
+        if (token) init.headers["X-CSRF-Token"] = token;
+        return fetchFn(prefix + path, init).then(
+          function (res) {
+            if (timer) clearTimeout(timer);
+            return res.text().then(function (text) {
+              var data = null;
+              try {
+                data = text ? JSON.parse(text) : null;
+              } catch (e) {
+                data = null;
+              }
+              if (!res.ok) {
+                if (res.status === 401 || res.status === 403) csrfCache = null; // сессия могла кончиться
+                throw storeError(errorCode(data, res.status), res.status);
+              }
+              if (text && data === null) throw storeError("bad_json", res.status);
+              return unwrap(data);
+            });
+          },
+          function (err) {
+            if (timer) clearTimeout(timer);
+            throw storeError(err && err.name === "AbortError" ? "timeout" : "network");
+          }
+        );
+      });
     }
     function one(data) {
-      var p = normalizeProposal(data && data.proposal ? data.proposal : data);
+      var raw = data && (data.item || data.proposal) ? data.item || data.proposal : data;
+      var p = normalizeProposal(raw);
       if (!p) throw storeError("bad_response");
       return p;
     }
+    var deviceId = opts.deviceId || null;
     return {
       mode: "api",
       list: function (bbox) {
-        var q = bbox ? "?bbox=" + bbox.map(function (v) {
-          return Number(v).toFixed(6);
-        }).join(",") : "";
-        return call("GET", "/proposals" + q).then(function (data) {
+        var q = [];
+        if (bbox)
+          q.push(
+            "bbox=" +
+              bbox
+                .map(function (v) {
+                  return Number(v).toFixed(6);
+                })
+                .join(",")
+          );
+        if (deviceId && DEVICE_RE.test(deviceId)) q.push("device_id=" + encodeURIComponent(deviceId)); // «мой голос»
+        return call("GET", "/proposals" + (q.length ? "?" + q.join("&") : "")).then(function (data) {
           var items = Array.isArray(data) ? data : data && (data.items || data.proposals);
           if (!Array.isArray(items)) throw storeError("bad_response");
           return items.map(normalizeProposal).filter(Boolean);
         });
       },
       create: function (draft) {
-        return call("POST", "/proposals", draft).then(one);
+        return call("POST", "/proposals", toServerProposal(draft), true).then(one);
       },
       restore: function (p) {
-        // Возврат удалённого: создаём заново с теми же полями (id может смениться — его выдаёт сервер).
-        var copy = clone(p);
-        delete copy.my_vote;
-        return call("POST", "/proposals", copy).then(one);
+        // Возврат удалённого: создаём заново (id выдаёт сервер; голоса R06 к новому id не переносятся).
+        return call("POST", "/proposals", toServerProposal(p), true).then(one);
       },
       remove: function (id) {
-        return call("DELETE", "/proposals/" + encodeURIComponent(id)).then(function () {
-          return true;
-        });
+        var path = "/proposals/" + encodeURIComponent(id);
+        return call("POST", path + "/withdraw", {}, true).then(
+          function () {
+            return true;
+          },
+          function (err) {
+            if (err.status !== 404 && err.status !== 405) throw err;
+            return call("DELETE", path, undefined, true).then(function () {
+              return true;
+            });
+          }
+        );
       },
-      vote: function (id, value, deviceId) {
-        return call("POST", "/proposals/" + encodeURIComponent(id) + "/vote", { value: value, device_id: deviceId }).then(
+      vote: function (id, value, devId) {
+        return call("POST", "/proposals/" + encodeURIComponent(id) + "/vote", { value: value, device_id: devId || deviceId }).then(
           function (data) {
             var p = one(data);
             if (!p.my_vote) p.my_vote = value;
@@ -925,6 +1048,7 @@
     createLocalStore: createLocalStore,
     createApiStore: createApiStore,
     createAutoStore: createAutoStore,
+    toServerProposal: toServerProposal,
     isMissingApi: isMissingApi,
     LOCAL_KEY: LOCAL_KEY,
   };

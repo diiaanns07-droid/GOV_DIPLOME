@@ -11,6 +11,7 @@
       Параметры адреса: ?lang=kk · ?role=resident · ?pitch=0|60 · ?bearing=-20 · ?zoom=16.4
                         ?center=71.398,51.1275 · ?store=local|api|auto · ?reset=1 (стереть сохранённое)
                         для проверок: ?build_ms=6000 (медленная постройка) · ?three=/нет.js (ошибка загрузки 3D)
+                        ?r06=1 — карточка проекта R06 (если web/civic/proposals/ есть в сборке; с ?store=api)
     -->
     <link rel="stylesheet" href="/vendor/maplibre-gl.css" />
     <link rel="stylesheet" href="/civic/ui-kit/tokens.css" />
@@ -111,6 +112,16 @@
           var v = parseFloat(q.get(k));
           return isFinite(v) ? v : d;
         };
+        // ?r06=1 — подключить карточку проекта R06 (web/civic/proposals/), если она есть в этой сборке.
+        if (q.get("r06") === "1") {
+          var css = document.createElement("link");
+          css.rel = "stylesheet";
+          css.href = "/civic/proposals/proposals.css";
+          document.head.appendChild(css);
+          var js = document.createElement("script");
+          js.src = "/civic/proposals/proposals.js";
+          document.head.appendChild(js);
+        }
         if (q.get("reset") === "1") {
           try {
             localStorage.removeItem(CivicBuild3DCore.LOCAL_KEY);

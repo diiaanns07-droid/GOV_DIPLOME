@@ -1,0 +1,143 @@
+{
+ "generated_at": "2026-10-10T14:32:39.689Z",
+ "stand": {
+  "url": "http://127.0.0.1:8616/civic/proposals/demo.html"
+ },
+ "checks": [
+  {
+   "id": "list_from_r06_server",
+   "status": "PASS",
+   "detail": {
+    "storeMode": "api",
+    "count": 5,
+    "kinds": [
+     "playground:2027:demo",
+     "sports:2027:demo",
+     "stop:2027:demo",
+     "square:2027:demo",
+     "lighting:2027:demo"
+    ]
+   }
+  },
+  {
+   "id": "list_sends_device_id_no_bbox",
+   "status": "PASS",
+   "detail": [
+    "/api/civic/v2/proposals?device_id=dev-17462e37467f0c0e26d3cae395b486d4"
+   ]
+  },
+  {
+   "id": "create_without_staff_says_login",
+   "status": "PASS",
+   "detail": "Войдите как сотрудник акимата"
+  },
+  {
+   "id": "staff_login",
+   "status": "PASS",
+   "detail": 200
+  },
+  {
+   "id": "placed_where_clicked",
+   "status": "PASS",
+   "detail": [
+    71.4009,
+    51.1283
+   ]
+  },
+  {
+   "id": "create_posts_only_r06_fields",
+   "status": "PASS",
+   "detail": {
+    "kind": "stop",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      71.4009,
+      51.1283
+     ]
+    },
+    "rotation_deg": 11,
+    "demo": false,
+    "planned_year": 2027
+   }
+  },
+  {
+   "id": "created_on_server_with_year_and_rotation",
+   "status": "PASS",
+   "detail": {
+    "id": "p-b55c7f6575ea",
+    "kind": "stop",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      71.4009,
+      51.1283
+     ]
+    },
+    "rotation_deg": 11,
+    "status": "proposal",
+    "votes_up": 0,
+    "votes_down": 0,
+    "my_vote": 0,
+    "year": 2027,
+    "voting_open": true,
+    "title_ru": "Остановка",
+    "title_kk": "Аялдама",
+    "district": "nura",
+    "near_street": null,
+    "target": null,
+    "created_at": "2026-10-10T14:32:19+00:00",
+    "demo": false
+   }
+  },
+  {
+   "id": "r06_card_inside_3d_panel",
+   "status": "PASS",
+   "detail": "Остановка"
+  },
+  {
+   "id": "vote_through_r06_card_with_device_id",
+   "status": "PASS",
+   "detail": "{\"value\":1,\"device_id\":\"dev-e049df818d9f38dbf3fba0edc88b79c6\"}"
+  },
+  {
+   "id": "vote_synced_to_3d_object",
+   "status": "PASS",
+   "detail": {
+    "up": 1,
+    "my": 1
+   }
+  },
+  {
+   "id": "delete_is_withdraw",
+   "status": "PASS",
+   "detail": [
+    "POST /api/civic/v1/session/login",
+    "POST /api/civic/v2/proposals",
+    "POST /api/civic/v2/proposals/p-b55c7f6575ea/vote",
+    "POST /api/civic/v2/proposals/p-b55c7f6575ea/withdraw"
+   ]
+  },
+  {
+   "id": "withdrawn_gone_after_reload",
+   "status": "PASS",
+   "detail": {
+    "before": 5,
+    "after": 5
+   }
+  },
+  {
+   "id": "resident_r06_card_no_staff_actions",
+   "status": "PASS",
+   "detail": {
+    "hasApprove": false,
+    "hasDelete": false
+   }
+  },
+  {
+   "id": "no_page_errors",
+   "status": "PASS",
+   "detail": []
+  }
+ ]
+}
