@@ -1,0 +1,93 @@
+R11 · INTEGRATION — как подключить ui-kit и i18n к общей сборке
+Ветка поставки: claude/r14-R11 (SHA — в DELIVERY.json). Пути R11: web/civic/ui-kit/, web/civic/i18n/, tests/civic/R11/.
+
+=====================================================================
+1. ДЛЯ R01 · ui/web_server.py — отдать файлы ui-kit и словари
+=====================================================================
+Сервер отдаёт только перечисленные файлы. Без этого патча ui-kit и словари вернут 404, а icons.svg придёт как
+text/plain (браузер не нарисует иконки). Минимальный patch (заменяет блок CIVIC_ASSETS и цикл под ним):
+
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@
+ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/streets.json",
+                 ...
+-                "assistant/assistant.js", "assistant/assistant.css")  # R09 @f895c30 (demo.html not served)
+-for _asset in CIVIC_ASSETS:
+-    _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
+-    ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
++                "assistant/assistant.js", "assistant/assistant.css",  # R09 @f895c30 (demo.html not served)
++                # R14 R11: ui-kit (токены, компоненты, иконки, витрина) и переводы ru/kk
++                "ui-kit/tokens.css", "ui-kit/components.css", "ui-kit/ui-kit.js", "ui-kit/icons.svg",
++                "ui-kit/categories_v2.json", "ui-kit/index.html",
++                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-SemiBold.woff2", "ui-kit/fonts/Inter-Bold.woff2",
++                "ui-kit/fonts/OFL.txt",
++                "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json")
++_CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
++               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
++               ".html": "text/html; charset=utf-8", ".woff2": "font/woff2"}
++for _asset in CIVIC_ASSETS:
++    ASSETS["/civic/" + _asset] = ("civic/" + _asset, _CIVIC_MIME.get(Path(_asset).suffix, "text/plain; charset=utf-8"))
+
+Проверка после патча: открыть http://127.0.0.1:<порт>/civic/ui-kit/index.html и …/index.html?lang=kk —
+иконки видны, переключатель ҚАЗ/РУС работает, в консоли нет «[i18n]».
+
+=====================================================================
+2. ДЛЯ R01 · web/index.html — порядок подключения
+=====================================================================
+В <head>, ПЕРЕД стилями модулей (модули могут переопределять, но используют токены):
+    <link rel="stylesheet" href="/civic/ui-kit/tokens.css" />
+    <link rel="stylesheet" href="/civic/ui-kit/components.css" />
+В конце <body>, ПЕРЕД скриптами модулей:
+    <script src="/civic/i18n/i18n.js"></script>
+    <script src="/civic/ui-kit/ui-kit.js"></script>
+На <body> добавить класс bk-app (шрифт, цвет текста, рамка фокуса). Старый web/style.css задаёт body 14px —
+bk-app поднимает до 16px; если старые панели поедут, оставьте bk-app только на новых контейнерах.
+Шапка: <div id="lang"></div> и после загрузки BirgeUI.langSwitch(document.getElementById("lang")).
+<html lang> выставляет i18n.js сам ("ru" | "kk").
+
+Глобальное правило в web/style.css `svg { width:20px; height:20px; stroke-width:1.7 }` иконкам ui-kit не мешает
+(у .ic свои размеры), но лучше сузить его до старых селекторов при чистке оболочки.
+
+=====================================================================
+3. ДЛЯ ВСЕХ РОЛЕЙ С ЭКРАНОМ · как пользоваться
+=====================================================================
+    BirgeI18n.ready.then(render);          // словари загружены
+    BirgeI18n.onChange(render);            // перерисовать при ҚАЗ/РУС
+    t("complaint.cta")                      // const t = BirgeI18n.t
+    t("target.reported", { n: 12 })         // формы числа ru/kk
+    BirgeI18n.cat("snow_ice")               // название категории v2
+    BirgeI18n.formatDate(iso) / formatNumber(n) / formatRelative(iso)
+    BirgeUI.icon("bus") + подпись;  BirgeUI.toast(...);  BirgeUI.state(el, "loading"|"empty"|"error", ...)
+    Список категорий с иконками — fetch("/civic/ui-kit/categories_v2.json") (точная копия research/round-14/categories_v2.json).
+Классы компонентов — UX_SPEC.md §5 и витрина /civic/ui-kit/index.html.
+
+=====================================================================
+4. ДЛЯ ВСЕХ РОЛЕЙ · как прислать новые ключи перевода
+=====================================================================
+Сначала ищите в web/civic/i18n/ru.json (257 ключей: общее, категории, районы, статусы, этапы, тепловая карта,
+карточка места, «Картина дня», путь жителя, «Мои обращения», предложения). Не хватает — положите в свой INTEGRATION.txt
+блок JSON (R11 забирает ежедневно и прогоняет `python3 tests/civic/R11/i18n_tools.py add <файл>`):
+
+    I18N-KEYS R07
+    {"heat.card.chart_title": {"ru": "Жалобы по дням", "where": "R07 · карточка цели, над графиком"},
+     "heat.card.people": {"ru": {"one": "{n} человек", "few": "{n} человека", "many": "{n} человек"}, "where": "…"}}
+
+Правила: ключ «модуль.экран.что» латиницей; целая фраза с параметрами {name}, не склейка кусков; формы числа ru —
+one/few/many; казахский можно не писать — переведёт R11 (если пишете сами — R11 вычитает).
+До того как ключ попал в ru.json, i18n.js покажет сам ключ и предупредит в консоли — это видно на проверке.
+
+=====================================================================
+5. ЧУЖИЕ ТОЧКИ, КОТОРЫХ R11 НЕ МЕНЯЕТ
+=====================================================================
+R11 не правит модули других ролей. Конкретные правки по экранам — в UX_REVIEW.md (ежедневно).
+Проверка любой страницы на 375/1366 в ru/kk:
+    NODE_PATH="$(npm root -g)" node tests/civic/R11/browser_check.cjs --page /civic/<модуль>/<страница>.html --shots <папка>
+(свой статический сервер по web/; API-запросы страницы при этом вернут 404 — проверяется вёрстка и тексты).
+
+=====================================================================
+6. LOCAL-задачи
+=====================================================================
+Нет. Шрифт Inter (OFL 1.1, кириллица с казахскими буквами) уже лежит в web/civic/ui-kit/fonts/ — сабсет woff2 ~40 КБ
+на начертание (см. fonts/SOURCE.txt). Иконки — свои, в icons.svg. Ничего не грузится из интернета.
+LOCAL-7 (скриншоты сборок): снимать и в ?lang=kk — по ним R11 проверяет обрезку казахского текста.

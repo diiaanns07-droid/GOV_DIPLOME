@@ -62,7 +62,7 @@
  "common.state.empty_title": "Пока пусто",
  "common.state.saved": "Сохранено",
  "common.tag.demo": "Пример",
- "common.tag.demo_hint": "Пример для показа, не настоящее обращение",
+ "common.tag.demo_hint": "Пример для показа, не настоящие данные",
  "common.tag.project": "Проект",
  "common.tag.approx": "Примерное место",
  "common.map.zoom_in": "Приблизить",
@@ -102,6 +102,9 @@
   "few": "{n} обращения",
   "many": "{n} обращений"
  },
+ "common.sheet.toggle": "Развернуть или свернуть панель",
+ "common.state.place_error": "Место на карте указано с ошибкой. Запись показана без карты",
+ "common.state.offline": "Нет связи. Показаны последние загруженные данные",
  "dates.month_short.1": "янв",
  "dates.month_short.2": "фев",
  "dates.month_short.3": "мар",
@@ -304,6 +307,5 @@
  "uikit.demo.stop_name": "Нура",
  "uikit.demo.complaint_text": "Павильон сломан, нет крыши, зимой стоять негде",
  "uikit.demo.street": "ул. Кабанбай батыра",
- "uikit.demo.summary": "Сегодня 34 новых обращения. Больше всего — снег и гололёд в районе Нура: 12.",
- "common.sheet.toggle": "Развернуть или свернуть панель"
+ "uikit.demo.summary": "Сегодня 34 новых обращения. Больше всего — снег и гололёд в районе Нура: 12."
 }

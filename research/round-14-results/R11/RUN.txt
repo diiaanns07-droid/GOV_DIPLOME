@@ -1,0 +1,23 @@
+R11 · RUN — как посмотреть и проверить ui-kit и переводы
+
+1. Витрина без сборки (любая ОС, нужен только Python):
+     cd web
+     python -m http.server 8765
+   Открыть http://127.0.0.1:8765/civic/ui-kit/index.html  и  …/index.html?lang=kk
+   Что можно сделать: переключить ҚАЗ/РУС (выбор запоминается), понажимать чипы, «Новая жалоба» (пульс),
+   тосты, шторку (тянуть за ручку), посмотреть все кнопки, статусы, этапы, форму жалобы, «Картину дня».
+   После патча R01 (INTEGRATION.txt §1) та же витрина открывается из run-city.bat по /civic/ui-kit/index.html.
+
+2. Проверки (из корня репозитория):
+     python3 tests/civic/R11/i18n_tools.py check          # словари ru/kk: полнота, {параметры}, формы числа, категории
+     python3 tests/civic/R11/test_r11_ui_kit.py            # или: python -m pytest tests/civic/R11
+     node tests/civic/R11/i18n.test.cjs                    # склонения, даты (время Астаны), запасной ru
+     NODE_PATH="$(npm root -g)" node tests/civic/R11/browser_check.cjs --shots research/round-14-results/R11/screens
+       # 375×812 и 1366×768 в ru и kk: нет прокрутки вбок, нет ключей вместо текста, кнопки ≥ 48 px, шрифт ≥ 14 px,
+       # шрифт с казахскими буквами загружен. Нужен Playwright (npm i -g playwright) и Chromium.
+
+3. Переводы:
+     python3 tests/civic/R11/i18n_tools.py add <ключи.json>   # ключи от ролей (формат — INTEGRATION.txt §4)
+     python3 tests/civic/R11/i18n_tools.py review             # пересобрать KK_REVIEW.md для владельца
+     python3 tests/civic/R11/i18n_tools.py sync               # если изменился research/round-14/categories_v2.json
+   Правки владельца по казахскому — прямо в web/civic/i18n/kk.json, затем check и review.

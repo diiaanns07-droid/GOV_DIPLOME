@@ -7,7 +7,8 @@
  *   - нет предупреждений [i18n] и ошибок в консоли;
  *   - на экране нет «сырых» ключей вида common.action.close;
  *   - видимые кнопки .bk-btn / .bk-mapbtn / .bk-iconbtn не ниже 48 px;
- *   - видимый основной текст не меньше 14 px (подписи), у .bk-btn ≥ 16 px.
+ *   - видимый основной текст не меньше 14 px (подписи), у .bk-btn ≥ 16 px;
+ *   - локальный шрифт «Birge Sans» загрузился и содержит казахские буквы.
  * Сервер статики свой (web/ как корень), без зависимостей; сеть наружу не нужна.
  */
 "use strict";
@@ -50,8 +51,14 @@ async function check(browser, base, width, height, lang) {
   page.on("pageerror", (e) => problems.push("ошибка JS: " + e.message));
   await page.goto(base + PAGE + "?lang=" + lang, { waitUntil: "networkidle" });
   await page.waitForTimeout(300);
-  const r = await page.evaluate(() => {
+  const r = await page.evaluate(async () => {
     const out = { keys: [], small: [], lowButtons: [], tinyText: [] };
+    // Локальный шрифт ui-kit загружен и содержит казахские буквы (если страница подключает tokens.css)
+    await document.fonts.ready;
+    const faces = Array.from(document.fonts).filter((f) => f.family.replace(/"/g, "") === "Birge Sans");
+    out.fontFaces = faces.length;
+    out.fontLoaded = faces.filter((f) => f.status === "loaded").length;
+    out.fontKazakh = faces.length ? document.fonts.check('16px "Birge Sans"', "ӘҒҚҢӨҰҮҺІәғқңөұүһі") : null;
     const doc = document.documentElement;
     out.scroll = doc.scrollWidth - window.innerWidth;
     out.lang = doc.lang;
@@ -86,6 +93,7 @@ async function check(browser, base, width, height, lang) {
     });
     return out;
   });
+  if (r.fontFaces && (!r.fontLoaded || !r.fontKazakh)) problems.push(`шрифт Birge Sans: загружено ${r.fontLoaded}/${r.fontFaces}, казахские буквы: ${r.fontKazakh}`);
   if (r.scroll > 0) problems.push("горизонтальная прокрутка на " + r.scroll + " px");
   if (r.lang !== lang) problems.push("html lang=" + r.lang + ", ожидали " + lang);
   r.keys.forEach((k) => problems.push("ключ вместо текста: " + k));

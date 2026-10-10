@@ -1256,7 +1256,7 @@
   content: "▼";
 }
 .bk-kpi__delta[data-trend="flat"]::before {
-  content: "＝";
+  content: "=";
 }
 .bk-kpi__delta[data-good="false"] {
   color: var(--c-danger);

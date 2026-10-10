@@ -62,7 +62,7 @@
  "common.state.empty_title": "Әзірге бос",
  "common.state.saved": "Сақталды",
  "common.tag.demo": "Үлгі",
- "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты өтініш емес",
+ "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты дерек емес",
  "common.tag.project": "Жоба",
  "common.tag.approx": "Шамамен көрсетілген орын",
  "common.map.zoom_in": "Жақындату",
@@ -78,6 +78,9 @@
  "common.people": "{n} адам",
  "common.complaints": "{n} шағым",
  "common.appeals": "{n} өтініш",
+ "common.sheet.toggle": "Панельді ашу немесе жию",
+ "common.state.place_error": "Картадағы орны қате көрсетілген. Жазба картасыз көрсетілді",
+ "common.state.offline": "Байланыс жоқ. Соңғы жүктелген деректер көрсетілген",
  "dates.month_short.1": "қаңтар",
  "dates.month_short.2": "ақпан",
  "dates.month_short.3": "наурыз",
@@ -252,6 +255,5 @@
  "uikit.demo.stop_name": "Нұра",
  "uikit.demo.complaint_text": "Павильон сынған, шатыры жоқ, қыста тұратын жер жоқ",
  "uikit.demo.street": "Қабанбай батыр көшесі",
- "uikit.demo.summary": "Бүгін 34 жаңа өтініш түсті. Ең көбі — Нұра ауданындағы қар және көктайғақ: 12.",
- "common.sheet.toggle": "Панельді ашу немесе жию"
+ "uikit.demo.summary": "Бүгін 34 жаңа өтініш түсті. Ең көбі — Нұра ауданындағы қар және көктайғақ: 12."
 }

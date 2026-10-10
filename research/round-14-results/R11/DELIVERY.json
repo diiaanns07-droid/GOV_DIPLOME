@@ -1,0 +1,35 @@
+{
+  "role": "R11",
+  "title": "UX-дизайн, ui-kit и казахский язык",
+  "branch": "claude/r14-R11",
+  "base_sha": "af77b78",
+  "restored_from": null,
+  "code_sha": "см. последний коммит ветки claude/r14-R11 (этот файл входит в него); предыдущий a924ced",
+  "tested_sha": "рабочее дерево поверх a924ced, проверено перед коммитом",
+  "push_status": "см. STATUS.md и финальное сообщение",
+  "also_in_package_branch": ["c75a9ac UX_SPEC.md v1", "608e367 tokens/components/icons/i18n (ранняя версия)"],
+  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Node 22, Playwright 1.56.1 + Chromium 1194",
+  "changed_paths": [
+    "web/civic/ui-kit/tokens.css", "web/civic/ui-kit/components.css", "web/civic/ui-kit/ui-kit.js",
+    "web/civic/ui-kit/icons.svg", "web/civic/ui-kit/index.html", "web/civic/ui-kit/categories_v2.json",
+    "web/civic/ui-kit/fonts/", "web/civic/i18n/i18n.js", "web/civic/i18n/ru.json", "web/civic/i18n/kk.json",
+    "tests/civic/R11/", "research/round-14-results/R11/", "research/handoffs/astana/R11/round14/STATUS.md"
+  ],
+  "tests": {
+    "i18n_tools check (257 ключей ru=kk, параметры, формы, категории)": "PASS",
+    "test_r11_ui_kit.py (12 проверок: контраст, цвета тепловой карты = categories_v2, иконки, шрифт, ключи витрины)": "PASS",
+    "i18n.test.cjs (склонения, даты UTC+5, запасной ru, kz→kk, onChange)": "PASS",
+    "browser_check витрины 375/1366 × ru/kk": "PASS",
+    "патч ui/web_server.py: карта ASSETS на копии файла, все 13 файлов существуют, MIME верные": "PASS",
+    "живой запуск ui/web_server.py с патчем": "NOT_RUN — патч применяет R01",
+    "экраны других ролей на ui-kit": "NOT_RUN — веток ролей раунда 14 ещё нет",
+    "проверка казахского владельцем": "NOT_RUN — KK_REVIEW.md отправлен"
+  },
+  "known_limits": [
+    "Казахский перевод выполнен R11 и не проверен носителем; 22 места помечены ⚑ в KK_REVIEW.md",
+    "cat.sidewalks kk из пакета («Жаяу жүргіншілер жолы») длинный для чипа — ждёт решения владельца",
+    "Модули ролей пока не на i18n: ≈1350 русских строк в коде (UX_REVIEW.md, день 1)",
+    "Скриншоты — только витрины ui-kit (Chromium в облаке, шрифт Inter); экранов продукта ещё нет"
+  ],
+  "next_step": "Ежедневно: забрать ключи из INTEGRATION.txt ролей (i18n_tools add), перевести, UX_REVIEW по веткам ролей; внести правки владельца в kk.json"
+}
