@@ -942,8 +942,13 @@ await check("kk_no_russian_street_names_in_card_and_hint", async () => {
   await p.mouse.click(x, y);
   await p.waitForTimeout(300);
   const hint = await p.textContent(".b3d-hint");
+  // Смена языка посреди размещения: подсказка с улицей — на новом языке.
+  await p.click(".bk-seg [data-lang=ru]");
+  await p.waitForTimeout(300);
+  const hintRu = await p.textContent(".b3d-hint");
   await p.context().close();
   const expected = noKk.replace(/^улица /, "") + " көшесі";
+  assert(hintRu.includes(noKk), "после РУС подсказка по-русски: " + hintRu);
   assert(card.includes("Жанында: " + expected) && hint.includes(expected) && !/улица|проспект/.test(card + hint), JSON.stringify({ noKk, card, hint }));
   return { status: "PASS", detail: { street_ru: noKk, card: (card.match(/Жанында:[^\n]*/) || [""])[0], hint: hint.trim() } };
 });

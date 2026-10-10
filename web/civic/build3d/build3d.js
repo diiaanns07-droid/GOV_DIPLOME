@@ -2515,6 +2515,9 @@
         var sec = S.ghost.section;
         var n = Core.sampleAlong(lightingOpts(sec.coords).line, Core.LIGHT_STEP_M).length;
         setHint("build3d.hint.segment_ready", { street: streetLabel(sec), length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
+      } else if (S.mode === "placing" && S.kind === "lighting" && S.ghost && S.ghost.a && S.ghost.aStreet && S.hint && S.hint.key === "build3d.hint.segment_end") {
+        // Начало участка уже выбрано: название улицы — на новом языке (в подсказке оно подставлено текстом).
+        setHint("build3d.hint.segment_end", { street: streetName(S.ghost.aStreet, S.ghost.aStreetKk) || t("build3d.street.this") });
       }
       render(true);
       repaint();
