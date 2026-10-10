@@ -1,0 +1,213 @@
+{
+ "generated_at": "2026-10-10T17:46:26Z",
+ "script": "claude/r14-R10 @ 64cffc3: tests/civic/R10/accuracy.py --root <ветка R05> (без изменений; только чтение данных)",
+ "bugs": "R10 BUGS.md B-007 (ж/д платформы как остановки), B-008 (объекты вне границы Астаны); Codex LOCAL_B2 №5, №6",
+ "before_169c56b": [
+  {
+   "name": "граница Астаны · R05 proposals.fixture.json",
+   "status": "PASS",
+   "detail": {
+    "coords": 7,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R05 nura-streets.json",
+   "status": "PASS",
+   "detail": {
+    "coords": 2185,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R05 astana-existing.json",
+   "status": "FAIL",
+   "detail": {
+    "coords": 6691,
+    "outside": 337,
+    "examples": [
+     [
+      71.37867,
+      51.00083
+     ],
+     [
+      71.377295,
+      51.000097
+     ],
+     [
+      71.375421,
+      50.9981
+     ],
+     [
+      71.37357,
+      50.996948
+     ],
+     [
+      71.369762,
+      50.993719
+     ]
+    ]
+   }
+  },
+  {
+   "name": "улицы Нуры R05 = рёбра OSM",
+   "status": "PASS",
+   "detail": {
+    "edges": 924,
+    "worst_m": 0.066,
+    "bad": []
+   }
+  },
+  {
+   "name": "линии R05 proposals.fixture на улице",
+   "status": "PASS",
+   "detail": {
+    "lines": 1,
+    "dev_m": [
+     0.06
+    ]
+   }
+  },
+  {
+   "name": "остановки — не ж/д платформы · R05",
+   "status": "FAIL",
+   "detail": {
+    "stops": 1017,
+    "railway": 41,
+    "examples": [
+     "osm-way-1019455643",
+     "osm-way-1058647263",
+     "osm-way-1058647264",
+     "osm-way-1058647265",
+     "osm-way-1492444185",
+     "osm-way-1531992951",
+     "osm-way-1531992953",
+     "osm-way-1531992954"
+    ]
+   }
+  },
+  {
+   "name": "остановки ≤ 60 м от улицы · R05",
+   "status": "FAIL",
+   "detail": {
+    "stops": 1017,
+    "far_from_any_line": [
+     "osm-way-1492444185",
+     "osm-way-272757224"
+    ],
+    "far_from_road": 2,
+    "far_road_examples": [
+     {
+      "id": "osm-way-1492444185",
+      "road_m": 75.2,
+      "any_line_m": 75.2,
+      "point": [
+       71.408875,
+       51.19607
+      ]
+     },
+     {
+      "id": "osm-way-272757224",
+      "road_m": 98.2,
+      "any_line_m": 98.2,
+      "point": [
+       71.409403,
+       51.19609
+      ]
+     }
+    ],
+    "max_road_m": 98.2
+   }
+  },
+  {
+   "name": "объекты R05 = точки OSM",
+   "status": "PASS",
+   "detail": {
+    "checked": 2478,
+    "missing": 0,
+    "missing_examples": [],
+    "moved": []
+   }
+  }
+ ],
+ "after": [
+  {
+   "name": "граница Астаны · R05 proposals.fixture.json",
+   "status": "PASS",
+   "detail": {
+    "coords": 7,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R05 nura-streets.json",
+   "status": "PASS",
+   "detail": {
+    "coords": 2185,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R05 astana-existing.json",
+   "status": "PASS",
+   "detail": {
+    "coords": 6294,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "улицы Нуры R05 = рёбра OSM",
+   "status": "PASS",
+   "detail": {
+    "edges": 924,
+    "worst_m": 0.066,
+    "bad": []
+   }
+  },
+  {
+   "name": "линии R05 proposals.fixture на улице",
+   "status": "PASS",
+   "detail": {
+    "lines": 1,
+    "dev_m": [
+     0.06
+    ]
+   }
+  },
+  {
+   "name": "остановки — не ж/д платформы · R05",
+   "status": "PASS",
+   "detail": {
+    "stops": 956,
+    "railway": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "остановки ≤ 60 м от улицы · R05",
+   "status": "PASS",
+   "detail": {
+    "stops": 956,
+    "far_from_any_line": [],
+    "far_from_road": 0,
+    "far_road_examples": [],
+    "max_road_m": 34.7
+   }
+  },
+  {
+   "name": "объекты R05 = точки OSM",
+   "status": "PASS",
+   "detail": {
+    "checked": 2382,
+    "missing": 0,
+    "missing_examples": [],
+    "moved": []
+   }
+  }
+ ]
+}

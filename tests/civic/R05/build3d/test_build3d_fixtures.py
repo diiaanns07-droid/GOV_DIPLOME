@@ -164,14 +164,30 @@ class Fixtures(unittest.TestCase):
     def test_existing_objects_are_real_osm(self):
         ex = load(os.path.join(DATA, "astana-existing.json"))
         self.assertEqual(ex["evidence_type"], "real (OSM)")
-        # Остановки = остановки ∪ платформы без повторов по (type, id), как требует README LOCAL-1.
-        keys = set()
+        city = mf.city_polygons()
+
+        def inside(el):
+            x, y = mf.center(el)
+            return mf.in_city((mf.r(x), mf.r(y)), city)
+
+        # Остановки = остановки ∪ платформы без повторов по (type, id), как требует README LOCAL-1,
+        # без ж/д и трамвайных платформ (R10 B-007) и без объектов вне районов Астаны (R10 B-008).
+        stops, rail = {}, set()
         for name in ("bus_stops", "platforms"):
-            keys |= {(e["type"], e["id"]) for e in mf.osm_elements(name)}
-        self.assertEqual(len(ex["points"]["stop"]), len(keys))
-        self.assertEqual(len(ex["points"]["playground"]), len(mf.osm_elements("playgrounds")))
-        self.assertEqual(len(ex["points"]["sports"]), len(mf.osm_elements("pitches")))
-        self.assertEqual(len(ex["points"]["lamp"]), len(mf.osm_elements("street_lamps")))
+            for e in mf.osm_elements(name):
+                stops[(e["type"], e["id"])] = e
+                if mf.is_rail(e):
+                    rail.add("osm-%s-%d" % (e["type"], e["id"]))
+        self.assertGreater(len(rail), 0, "в выгрузке LOCAL-1 есть ж/д платформы — фильтр проверяется на деле")
+        expected = [e for e in stops.values() if not mf.is_rail(e) and inside(e)]
+        self.assertEqual(len(ex["points"]["stop"]), len(expected))
+        self.assertFalse(rail & {row[2] for row in ex["points"]["stop"]}, "ж/д платформа записана как остановка")
+        for kind, name in (("playground", "playgrounds"), ("sports", "pitches"), ("lamp", "street_lamps")):
+            self.assertEqual(len(ex["points"][kind]), len([e for e in mf.osm_elements(name) if inside(e)]), kind)
+        # Все координаты файла — внутри Астаны (CONTRACT §8.3; так же проверяет R10 accuracy.py).
+        outside = [row[:3] for rows in ex["points"].values() for row in rows if not mf.in_city(row[:2], city)]
+        outside += [y[0] for y in ex["yards"] for p in y[4] if not mf.in_city(p, city)]
+        self.assertEqual(outside, [], "объекты вне границы Астаны")
         lo, la, hi_lo, hi_la = 71.2079 - 0.05, 50.9206 - 0.05, 71.7953 + 0.05, 51.3612 + 0.05
         for kind, rows in ex["points"].items():
             for row in rows:
