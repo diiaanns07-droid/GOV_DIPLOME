@@ -123,7 +123,8 @@
     "1dd5b53: R10 acceptance": "сценарий 133/2/1 (B-038), UX 88/6/8, точность 29/0/0; R10: можно показывать, блокеров и важных дефектов нет",
     "fa117c3: R10 acceptance": "PASS сценарий 140/0/0, UX 94/0/8 (NOT_RUN — стенды ролей), точность 29/0/0",
     "0df9531: pytest tests": "PASS 2695 passed, 21 skipped",
-    "0df9531: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 27/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0"
+    "0df9531: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 27/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0",
+    "0df9531: R10 acceptance": "PASS сценарий 140/0/0, UX 94/0/8 (NOT_RUN — стенды ролей), точность 29/0/0"
   },
   "known_limits": [
     "Все жалобы, объекты и предложения на демо — синтетика (demo: true, «Пример»); реальных обращений нет.",
