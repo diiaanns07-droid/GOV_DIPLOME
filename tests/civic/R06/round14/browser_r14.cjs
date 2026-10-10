@@ -305,6 +305,34 @@ async function clickVote(page, id, value) {
       await context.close();
     }
 
+    // UX_REVIEW R11 (ночь, круг 2, п. 3): проект без названия, но с улицей (так ставит R05) — «вид + улица» в ru и kk.
+    {
+      const { context, page } = await staffPage({ width: 375, height: 812 }, "ru");
+      const created = await page.evaluate(async () => {
+        const s = await (await fetch("/api/civic/v1/session", { credentials: "same-origin" })).json();
+        const r = await fetch("/api/civic/v2/proposals", {
+          method: "POST", credentials: "same-origin",
+          headers: { "Content-Type": "application/json", "X-CSRF-Token": s.data.csrf_token },
+          body: JSON.stringify({ kind: "square", geometry: { type: "Point", coordinates: [71.4148, 51.1131] }, near_street: "улица Керей и Жанибек хандар" }),
+        });
+        return { status: r.status, item: (await r.json()).data.item };
+      });
+      check("новый проект без названия: сервер собрал «вид + улица»", created.status === 201 &&
+            created.item.title_ru === "Сквер у улицы Керей и Жанибек хандар" && /^Гүлзар · .+ көшесі маңында$/.test(created.item.title_kk),
+            JSON.stringify({ ru: created.item && created.item.title_ru, kk: created.item && created.item.title_kk }));
+      await context.close();
+      for (const lang of ["ru", "kk"]) {
+        const o = await openPage(browser, { width: 375, height: 812 }, lang);
+        const card = o.page.locator('.r06-card[data-proposal="' + created.item.id + '"]');
+        await card.waitFor();
+        const title = (await card.locator(".bk-card__title").textContent()).trim();
+        check("новый проект " + lang + ": в карточке вид и улица", lang === "kk" ? /^Гүлзар · .+маңында$/.test(title) && !/улица/.test(title)
+              : title === "Сквер у улицы Керей и Жанибек хандар", title);
+        if (shots) await card.screenshot({ path: path.join(shots, "r06-375-" + lang + "-new-project.png") });
+        await o.context.close();
+      }
+    }
+
     // UX_REVIEW п. 18: формат даты в поле этапа на ru/kk (Chromium берёт его из языка браузера).
     for (const lang of ["ru", "kk"]) {
       const { context, page } = await staffPage({ width: 1366, height: 768 }, lang);

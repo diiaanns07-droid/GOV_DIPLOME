@@ -226,3 +226,20 @@ def test_seed_refreshes_outdated_demo_texts_but_keeps_votes(tmp_path, clock, cap
     assert row == ("Сквер у улицы Чингиза Айтматова", "улица Чингиза Айтматова", "Шыңғыс Айтматов көшесі")
     assert conn.execute("SELECT COUNT(*) FROM civic_votes").fetchone()[0] == votes_before
     conn.close()
+
+
+# --- UX_REVIEW R11 (ночь, круг 2, п. 3): название нового проекта — вид + улица ---------------------
+
+def test_new_project_without_title_gets_kind_and_street(staff):
+    square = {"kind": "square", "geometry": {"type": "Point", "coordinates": NURA_POINT}, "near_street": "улица Керей и Жанибек хандар"}
+    p = r05_one(staff.call("POST", "/proposals", square)["body"]["data"])
+    assert p["title_ru"] == "Сквер у улицы Керей и Жанибек хандар"
+    assert p["title_kk"] == "Гүлзар · Керей и Жанибек хандар көшесі маңында"  # в kk нет слова «улица»
+    with_kk = r05_one(staff.call("POST", "/proposals", {**square, "near_street_kk": "Керей және Жәнібек хандар көшесі"})["body"]["data"])
+    assert with_kk["title_kk"] == "Гүлзар · Керей және Жәнібек хандар көшесі маңында"  # пример R11
+    light = r05_one(staff.call("POST", "/proposals", {**R05_DRAFT, "near_street_kk": "Ілияс Омаров көшесі"})["body"]["data"])
+    assert light["title_ru"] == "Освещение улицы Ильяса Омарова" and light["title_kk"] == "Ілияс Омаров көшесін жарықтандыру"
+    named = r05_one(staff.call("POST", "/proposals", {**square, "title_ru": "Сквер «Шанырак»"})["body"]["data"])
+    assert named["title_ru"] == "Сквер «Шанырак»" and named["title_kk"] is None  # своё название главнее
+    plain = r05_one(staff.call("POST", "/proposals", {"kind": "stop", "geometry": {"type": "Point", "coordinates": NURA_POINT}})["body"]["data"])
+    assert plain["title_ru"] == "Остановка" and plain["title_kk"] == "Аялдама"  # без улицы — как раньше
