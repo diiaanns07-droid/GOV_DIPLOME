@@ -1,8 +1,9 @@
 Задача: Раунд 14 · R07 · Тепловая карта объектов — главный экран акимата
 Агент: Claude Code (облачная сессия) · Астана · Birge
-Обновлено: 2026-10-10 13:20 UTC
+Обновлено: 2026-10-10 13:40 UTC (переход на реальные объекты LOCAL-1)
 Статус: ready_for_review (модуль готов на демо-данных; ждёт подключения R01 и живых данных R09/R12)
-Ветка: claude/upbeat-knuth-i0rqaa · основа af77b78 (claude/round-14-package) · код 7d500b5
+Ветка: claude/upbeat-knuth-i0rqaa · основа af77b78 (claude/round-14-package) · код 5a97636
+Входные данные: data/civic/astana/osm-objects/ (LOCAL-1) из claude/round-14-package @ bdf12c8, без изменений
 Пути: ui/civic_heat/, web/civic/heat/, tests/civic/R07/, research/round-14-results/R07/
 
 Примечание: в начале сессии по ошибке выполнялась роль R11. Её черновики сохранены в коммитах
@@ -15,10 +16,14 @@
 Что сделано:
 - ui/civic_heat/: config (всё из categories_v2.json), engine (вес 0.5^(дни/14) × (1+metoo), уровни, «исправлено», районы),
   service (кэш с invalidate, top/districts/target для R08), api.handle_get (CONTRACT §7: /heat, /heat/meta, /heat/target),
-  targets (форма цели: реестр → R12 → ребро графа OSM → ячейка 150 м → «примерное место»), build_fixtures (цели из OSM),
-  demo_seed (125 синтетических жалоб, детерминированно), devserver (только демо).
-- web/civic/heat/: heat.js (window.CivicHeat.mount), heat.css, demo.html (офлайн-подложка из улиц OSM).
-- Проверки: pytest R07 94 PASS; весь tests/civic 683 PASS; браузер 15 PASS; патч для ui/web_server.py проверен на настоящем сервере.
+  targets (форма цели: реестр → R12 → реальные объекты LOCAL-1 → ребро графа OSM → ячейка 150 м → «примерное место»),
+  osm_objects (3506 реальных объектов: остановки, площадки, дворы ЖК, мусор…; id osm-node-…/osm-way-…/yard-…),
+  build_fixtures (цели демо из OSM + подписи безымянных объектов), demo_seed (136 синтетических жалоб), devserver (только демо).
+- Демо-цели теперь реальные объекты Нуры: остановки «Хан Шатыр», «Центр материнства и детства» и др., дворы ЖК «Evolution»,
+  «Алматау», «Zam-Zam» и др., 2 детские и 2 контейнерные площадки; участки улиц — рёбра графа OSM.
+- Исправлено: центр многоугольника считался с потерей точности — значок уезжал на 60–100 м от мелких площадок (тест добавлен).
+- web/civic/heat/: heat.js (window.CivicHeat.mount; контуры площадок, подписи типов объектов), heat.css, demo.html.
+- Проверки: pytest R07 97 PASS; весь tests/civic 780 PASS; браузер 16 PASS; патч ui/web_server.py проверен на настоящем сервере (откат сделан).
 - Скриншоты: research/round-14-results/R07/screens/.
 
 Файлы передачи: research/round-14-results/R07/DELIVERY.json, RUN.txt, INTEGRATION.txt.
@@ -27,6 +32,6 @@
 
 Следующий шаг:
 1. R01 — INTEGRATION §1 (CIVIC_ASSETS, маршрут, mount в оболочке). 2. R09 — invalidate() + событие birge:complaint (§2).
-3. После LOCAL-1 / R12 — python -m ui.civic_heat.build_fixtures (остановки и дворы Нуры), повтор тестов и скриншотов.
-4. Владелец — проверить 66 казахских строк (INTEGRATION §6) и выбрать «түзетілді» / «жөнделді».
+3. R12 — те же id целей в /targets (osm-node-…, yard-…). Промзон в LOCAL-1 нет — «запахи» пока на ячейках.
+4. Владелец — проверить 76 казахских строк (INTEGRATION §6) и выбрать «түзетілді» / «жөнделді».
 Если сессию продолжит другой аккаунт: базовая ветка claude/upbeat-knuth-i0rqaa, всё описано в DELIVERY.json и INTEGRATION.txt.
