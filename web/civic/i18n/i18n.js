@@ -301,8 +301,10 @@
         if (typeof console !== "undefined") console.error(e);
       }
     });
+    // Событие и на document, и на window: модули слушают по-разному (R09 — window).
     if (doc && typeof root.CustomEvent === "function") {
       doc.dispatchEvent(new root.CustomEvent("birge:lang", { detail: { lang: lang } }));
+      if (typeof root.dispatchEvent === "function") root.dispatchEvent(new root.CustomEvent("birge:lang", { detail: { lang: lang } }));
     }
   }
 
