@@ -385,6 +385,14 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   step("0", "шрифт: нет текста мельче 14 px (основной ≥ 16 px)", scr.tinyN === 0, { tiny: scr.tinyN, ex: scr.tiny, under16: scr.smallN, ex16: scr.small });
   step("0", "зоны нажатия ≥ 40 px (цель — 48 px)", scr.under40.length === 0, { under40N: scr.under40N, under40: scr.under40, under48: `${scr.under48N}/${scr.targetsN}` });
 
+  // 0а. Выбор языка запоминается: после перезагрузки страница остаётся на выбранном языке.
+  if (hasLang) {
+    await page.reload(); await sleep(3000);
+    const kept = (await page.evaluate(() => document.documentElement.lang)) === lang;
+    step("0", "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы", kept);
+    if (!kept) await setLang();  // дальше проверяем на нужном языке
+  }
+
   // 0б. Казахский полный: на экране kk не должно остаться русских строк из экрана ru (кроме имён и чисел).
   if (lang === "kk") {
     const kkLines = await cyrLines(page), kkAll = await cyrLines(page, { all: true });
@@ -617,6 +625,11 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     step("6", `акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «${fixedWord}», зелёным на карте`,
       nothingNew ? null : take && fix && fixedShown && green,
       { under: s && s.under, take, fix, fixedShown, green, note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : undefined }, await shot("6-fixed"));
+    if (!mobile && fixedShown) {
+      await page.keyboard.press("Escape"); await sleep(800);
+      const stillOpen = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
+      step("6", "клавиатура: Esc закрывает карточку остановки", !stillOpen, { stillOpen });
+    }
   } else step("6", "акимат отмечает исправленным", null, "нет входа сотрудника");
   const mineLabel = T(dict, ["common.nav.mine", "mine.title", "complaint.step5.to_mine"], lang === "kk" ? "Менің өтініштерім" : "Мои обращения");
   await setMode("resident");
