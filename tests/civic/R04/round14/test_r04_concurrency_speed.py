@@ -12,7 +12,7 @@ import ui.civic_ml_api as api
 from ml.civic_dedup import fixtures as F
 from ml.civic_dedup import loader
 
-from conftest import NOW, STOP, record
+from r04_helpers import NOW, STOP, clean_api, record  # noqa: F401 — clean_api: autouse-фикстура
 
 TEXTS = ["Во дворе не горят фонари", "Аялдамада қар тазаланбаған", "Yama na doroge", "Лифт не работает",
          "Мусор не вывозят", "", "Не убран снег на остановке, люди падают"]

@@ -3,6 +3,8 @@
 from ml.civic_dedup.concepts import concepts
 from ml.civic_dedup.normalize import letters, normalize, to_cyrillic
 
+from r04_helpers import clean_api  # noqa: F401 — autouse-фикстура (чистое состояние ML-API)
+
 
 def test_russian_translit_becomes_cyrillic():
     assert normalize("Yama na doroge u ostanovki!") == "яма на дороге у остановки"

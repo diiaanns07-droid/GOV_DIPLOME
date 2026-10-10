@@ -9,7 +9,7 @@ import ui.civic_ml_api as api
 from ml.civic_dedup.fixtures import offset
 from ui.civic_ml_api.errors import MLServiceUnavailable
 
-from conftest import NOW, STOP, record
+from r04_helpers import NOW, STOP, clean_api, record  # noqa: F401 — clean_api: autouse-фикстура
 
 SNOW = "Не убран снег на остановке, люди падают"
 OTHER_TEXTS = ["Во дворе не горят фонари", "Мусорные баки переполнены", "Яма на дороге у школы"]

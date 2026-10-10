@@ -22,7 +22,7 @@ from ml.civic_dedup.e5 import META_NAME, E5Scorer, E5Unavailable  # noqa: E402
 from ml.civic_dedup.export_e5 import quantize  # noqa: E402
 from ml.civic_dedup.fixtures import PHRASES  # noqa: E402
 
-from conftest import NOW, STOP, record  # noqa: E402
+from r04_helpers import NOW, STOP, clean_api, record  # noqa: F401, E402 — clean_api: autouse-фикстура
 
 DIM = 32
 

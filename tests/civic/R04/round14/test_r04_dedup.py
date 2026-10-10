@@ -11,7 +11,7 @@ from ml.civic_dedup.geo import bbox_around, distance_m, parse_point
 from ml.civic_dedup.scorers import NgramConceptScorer
 from ml.civic_dedup.search import Deduper, FeatureCache, clamp_days
 
-from conftest import NOW, STOP, record
+from r04_helpers import NOW, STOP, clean_api, record  # noqa: F401 — clean_api: autouse-фикстура
 
 SNOW = "Не убран снег на остановке, люди падают"
 

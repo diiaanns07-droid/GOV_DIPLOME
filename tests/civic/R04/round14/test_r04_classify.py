@@ -8,6 +8,8 @@ import ui.civic_ml_api as api
 from ui.civic_ml_api import categories as C
 from ui.civic_ml_api import classify_chain as K
 
+from r04_helpers import clean_api  # noqa: F401 — autouse-фикстура (чистое состояние ML-API)
+
 CONTRACT_KEYS = {"category", "score", "needs_review", "model_version", "top3"}
 
 

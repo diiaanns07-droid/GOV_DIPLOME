@@ -15,7 +15,7 @@ from ml.civic_dedup import get_deduper, loader  # noqa: E402
 from ml.civic_dedup.e5 import E5Scorer, E5Unavailable, mean_pool  # noqa: E402
 from ml.civic_dedup.search import Deduper  # noqa: E402
 
-from conftest import NOW, STOP, record  # noqa: E402
+from r04_helpers import NOW, STOP, clean_api, record  # noqa: F401, E402 — clean_api: autouse-фикстура
 
 
 class Enc:
