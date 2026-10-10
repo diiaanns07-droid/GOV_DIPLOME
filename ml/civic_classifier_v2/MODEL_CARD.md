@@ -96,5 +96,5 @@ PyTorch — 100 % (60 текстов). Критерий «< 50 мс на CPU» �
 
 ## Воспроизведение
 `research/round-14-results/R03/RUN.txt` (ноутбук: тесты → проверка GPU → zero-shot → эксперимент → итоговая модель →
-ONNX → predict → commit результатов). Облако/CPU: `python -m pytest tests/civic/R03/round14 -q` (61 тест,
+ONNX → predict → commit результатов). Облако/CPU: `python -m pytest tests/civic/R03/round14 -q` (65 тестов,
 крошечная случайная модель). Перегенерация таблицы: `python -m ml.civic_classifier_v2.evaluate render`.
