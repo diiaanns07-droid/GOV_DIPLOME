@@ -8,24 +8,28 @@ R14 · раунд 14 · INTEGRATION
    Предложение (решает R01/владелец, не R14): в README.md корня добавить ссылку «Birge: docs/birge/README.md».
 
 2. Несостыковки, найденные при чтении веток (для владельцев модулей; R14 их не правит)
-   Подробно — docs/birge/ARCHITECTURE.md §8.
-   2.1 R01: V2_HANDLERS ждёт функцию на маршрут, а R07/R08 отдают api.handle_get(path, query), R09 — список ROUTES,
-       R06 — функции после bind(service); нужны адаптеры. На bc7c961 через v2 работает только /akim/summary.
-   2.2 R01 ↔ R08: birge.js вызывает akim.mount({root, api, lang, mode}), а BirgeAkim.mount(rootEl, options).
-   2.3 R01: файлы web/civic/akim/*, heat/*, feedback/complaint*.js перенесены, но не в CIVIC_ASSETS и index.html
-       (проверено: /civic/akim/akim.js → 404 на bc7c961).
+   Подробно — docs/birge/ARCHITECTURE.md §8. Статус сверен с кандидатом B1 R01 @ d3c33d9 (запуск R14).
+   2.1 [R07, R08, R09 — РЕШЕНО в d3c33d9] R01: V2_HANDLERS ждёт функцию на маршрут, а R07/R08 отдают api.handle_get,
+       R09 — список ROUTES; адаптеры сделаны. Осталось: R06 — bind(service), R04/R12/R13 — перенос и patch.
+   2.2 [проверить в d3c33d9 — «Картина дня» открывается в пути демо B1 15/0] R01 ↔ R08: сигнатуры mount различались.
+   2.3 [РЕШЕНО в d3c33d9: akim.js, heat.js, complaint.js → 200] файлы модулей не были в CIVIC_ASSETS на bc7c961.
+       Для R05/R06/R12/R13 — то же при их подключении.
    2.4 R05 ↔ R06: лишние поля в POST /proposals (422), DELETE вместо POST …/withdraw, ответ {item} вместо ожидаемого.
-   2.5 R09 ↔ R05/R06/R07: ключ устройства в localStorage — "birge.device" (R09) против "birge.device_id" (остальные).
-       «Я тоже» и голоса одного телефона будут считаться по разным идентификаторам.
+   2.5 [R07/R09 — сведено в d3c33d9; R05/R06 — проверить при подключении] ключ устройства в localStorage —
+       "birge.device" (R09) против "birge.device_id" (R05/R06/R07).
    2.6 R08 ↔ R09: два справочника сроков с разными числами — DEADLINE_DAYS (исправление, R08) и RESPONSE_DAYS
        (первый ответ, R09). Оба — демо-нормативы; на защите называть их так.
-   2.7 R09 → R07: после новой жалобы нет ui.civic_heat.invalidate() (кэш R07 60 с).
+   2.7 [РЕШЕНО в d3c33d9: сброс кэша по событиям R09] R09 → R07: не было invalidate() после новой жалобы.
    2.8 R01 RUN.txt: «set PORT=8612 && run-city.bat» не меняет порт — run-city.bat безусловно ставит PORT=8611.
        Рабочий вариант описан в docs/birge/RUNBOOK.md §3.
-   2.9 R13: history.to_records считает день записи через встроенный hash() — зависит от PYTHONHASHSEED,
-       даты невоспроизводимы между процессами; нужен hashlib.
-   2.10 Отчёты: у R04 и R13 нет DELIVERY.json; DELIVERY R01 отстаёт от головы (code_sha 2eaeacb при голове bc7c961);
+   2.9 R13 (8705829, строка 276): history.to_records считает день записи через встроенный hash() — зависит от
+       PYTHONHASHSEED, даты демо-записей невоспроизводимы между процессами; нужен hashlib (счётчики и backtest не затронуты).
+   2.10 Отчёты: [R04, R13, R01 — РЕШЕНО: DELIVERY сданы/обновлены];
         в DELIVERY R11 нет точного SHA; в STATUS R09 устаревшая строка о code_sha; R07 DELIVERY 97 тестов — повтор R14 дал 98.
+
+   2.11 Новое (R01 BUILD_LOG, R10 BUGS): сетки ячеек R07 и R09 разные — в сборке адаптер, нужна одна сетка;
+        R04+R09: needs_review всегда true → категорию модель не выбирает (B-003); данные R05 — ж/д платформы
+        как остановки и объекты за границей (B-007, B-008); дворы R12 проверяются только по центру (B-009).
 
 3. LOCAL-задачи (ноутбук владельца / ChatGPT с поиском)
    LOCAL-R14-1. Проверка источников (ChatGPT с поиском в интернете). Промпт — docs/birge/CONTINUE_WITH_GPT.md §3.8:
