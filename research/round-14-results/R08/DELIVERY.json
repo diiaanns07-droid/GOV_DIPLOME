@@ -4,14 +4,14 @@
  "branch": "claude/r14-R08",
  "base_sha": "2131c15 (claude/round-14-package)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "4ce8f08",
- "tested_sha": "4ce8f08",
+ "code_sha": "463901f",
+ "tested_sha": "463901f",
  "tested_with": {
-  "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 3eb3f9d — временная копия в рабочей папке, в git R08 не входит",
-  "r11_ui_kit_i18n": "web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 6102dfb — через demo_server.py --kit-dir (в git R08 не входят)",
-  "r06_store": "ui/civic_store из claude/round-14-r06 @ 3d10f7d — отдельная рабочая копия, база init + seed-r14-demo",
-  "environment": "облачная сессия Claude Code, Linux, Python 3.13, pytest, Node 22, Playwright 1.56.1 + Chromium 1194",
-  "date": "2026-10-10"
+  "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 35e6feb (код 306074b: records()/generation, 5-недельный демо-поток, metoo_times) — временная копия, в git R08 не входит",
+  "r11_ui_kit_i18n": "web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 8451468 — demo_server.py --kit-dir",
+  "r06_store": "claude/round-14-r06 @ 6b9da27 (код b42e790) — отдельная рабочая копия, init + seed-r14-demo, demo_server --r06-db",
+  "environment": "облачная сессия Claude Code, Linux, Python 3.13.16, Node 22.22.0, Playwright 1.56.1 + Chromium 1194",
+  "date": "2026-10-10 (ночь)"
  },
  "push_status": "OK — claude/r14-R08; DELIVERY и STATUS отдельным коммитом поверх code_sha",
  "changed_paths": [
@@ -41,27 +41,27 @@
  ],
  "api": "GET /api/civic/v2/akim/summary?date=YYYY-MM-DD&district=<id|all> → ui.civic_akim.api.handle_get (подключает R01)",
  "tests": {
-  "pytest tests/civic/R08": "126 PASS + 1 XFAIL (test_r08_demo_plausible — демо-набор R07, с перечнем нарушений)",
-  "pytest tests/civic/R08 без ui/civic_heat": "110 PASS + 2 SKIP с причиной (heat_match, demo_plausible)",
-  "pytest tests/civic/R08/test_r08_r06_sources.py": "13 PASS — словари R06 → списки, дубль late/stale один раз, district и status=proposal передаются, несвязанный R06 → фикстуры «Пример», ошибка R06 → «не отвечает», служебные слова в демо-названиях",
-  "живой R06 (claude/round-14-r06 @ 3d10f7d, init + seed-r14-demo)": "PASS — до bind фикстуры, после bind 2 отстающих объекта и 5 предложений, фильтр района; скриншоты akim-1366-ru-r06-objects.png, akim-375-kk-r06-objects.png",
-  "node tests/civic/R08/ui_check.cjs (demo_server --kit-dir R11 @ 6102dfb)": "95/95 PASS — прежние 77 + новые: одна метка «Пример» в заголовке, «Пример:» сверху, одно изменение на телефоне, «за 7 дней» на ноутбуке, полоса 6 этапов и подпись, «в N,N раза»; 1366 и 375, ru и kk",
-  "screenshots": "research/round-14-results/R08/screens/: akim-1366-ru/kk(.png, -full.jpg), akim-375-ru/kk(.png, -full.jpg), akim-date-*.png, akim-*-r06-objects.png, состояния, печать PDF",
-  "integration_with_R01_server": "NOT_RUN — B1 R01 ещё не смонтировал экран (R10 B-011)",
+  "pytest tests/civic/R08 (с R07 35e6feb)": "129 PASS (было 126 + 1 XFAIL): test_r08_demo_plausible теперь PASS на наборе R07 35e6feb; BIRGE_STRICT_DEMO=1 — тоже 129 PASS",
+  "pytest tests/civic/R08 без ui/civic_heat": "114 PASS + 2 SKIP с причиной (heat_match, demo_plausible) — ошибки сбора больше нет",
+  "pytest tests/civic/R08 в рабочей копии R06 6b9da27": "129 PASS",
+  "test_r08_heat_match.py": "без assert при сборе (R15: «ошибка сбора, assert 0 >= 3» на 5-недельном наборе R07); новые проверки: «неделю назад» не пустое, снимок отбрасывает «Я тоже», нажатые позже",
+  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 35e6feb)": "97/97 PASS — прежние 95 + B-018: объект и предложение без казахского названия → в ҚАЗ вид объекта по-казахски, в РУС — название",
+  "живой R06 6b9da27": "PASS — объекты и предложения из базы R06, в ҚАЗ названия казахские («Тротуарды жөндеу», «Ілияс Омаров көшесі маңындағы гүлзар»); кадры akim-1366-ru/kk-r06-objects.png, akim-375-kk-r06-objects.png",
+  "screenshots": "research/round-14-results/R08/screens/: akim-1366-ru/kk, akim-375-ru/kk (.png и -full.jpg), состояния, печать PDF, *-r06-objects.png — пересняты в эту ночь",
+  "integration_with_R01_server": "по ACCEPTANCE_B2 R10: шаг 4 «Картина дня» PASS 4/4 в сборке f54361d (R08 4ce8f08); эту поставку в сборке R01 не проверял — NOT_RUN",
   "map_link_target_opening": "NOT_RUN — разбор #target=…&days=7 делает R01/R07"
  },
  "known_limits": [
   "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
-  "«Неделю назад» восстанавливается по status_history; у записи v2 нет времени каждого «Я тоже», поэтому metoo берётся текущим (то же ограничение у R07).",
-  "Используются внутренние _records/_generation HeatService R07, пока R07 не добавит публичные records()/generation (patch в INTEGRATION.txt п.4).",
+  "Правдоподобные демо-числа — только с R07 @ 35e6feb (5-недельный поток). С R07 5a97636 (в B2) числа «как авария» (R11 п. 13) — R01 должен взять новый R07.",
+  "«Я тоже» без времени (старые записи без metoo_times) при расчёте «неделю назад» считаются нажатыми в момент подачи.",
   "Записи берутся у источника R07/R09 целиком (since=None); R09 store.list отдаёт не больше 5000 последних — для демо достаточно.",
   "Формат поля даты (10/10/2026 или 10.10.2026) задаёт браузер по языку системы.",
-  "Демо-числа R07 неправдоподобны (п. 9) до правки demo_seed.py у R07 — R08 показывает их честно, тест XFAIL.",
-  "Ветка R08 одна, без R11 @ claude/r14-R11, покажет ключи вместо текста (akim.i18n.json удалён) — стенд предупреждает; в сборке словарь R11.",
-  "У демо-объектов R06 нет казахского названия — в kk показывается русское (просьба R06)."
+  "У настоящих объектов R06 без казахского названия в ҚАЗ показывается вид объекта («Жол жөндеу»), а не название — точнее назвать нельзя без перевода данных.",
+  "Ветка R08 одна, без словаря R11 покажет ключи вместо текста — стенд предупреждает; в сборке словарь R11."
  ],
- "next_step": "R01 (B2): смонтировать akim.js в оболочке (B-011), маршрут /api/civic/v2/akim/summary, убрать akim.i18n.json из CIVIC_ASSETS, ui-kit/i18n только из claude/r14-R11, bind R06 v2; R07: демо-набор на 3 недели (п. 4а) и records()/generation; R11: akim.delta.ratio other; R10: ui_check.cjs и BIRGE_STRICT_DEMO=1 pytest на B2.",
- "delivery": "2 — день 3: замечания UX_REVIEW R11 (п. 9–14), функции R06, словарь R11; для сборки B2",
+ "next_step": "R01 (FINAL): взять R08 этой поставки, R07 @ 35e6feb (правдоподобные числа, records()/generation), R06 @ 6b9da27 (title_kk), R11 @ последний; прогнать pytest tests/civic/R08 и ui_check.cjs на сервере сборки. R10: перепроверить B-005, B-018 и п. 13 R11 на FINAL.",
+ "delivery": "3 (ночь, круг 1): замечания R15 (ошибка сбора test_r08_heat_match), R10 B-018 / LOCAL_B2 №4 (русские названия в ҚАЗ), R11 п. 13 (демо-числа) — проверено с R07 35e6feb",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -84,5 +84,14 @@
   "R01 маршрут, файлы, ссылка в шапке (B-011)": "ОТКРЫТО у R01 — INTEGRATION п. 1–3",
   "R11 akim.delta.ratio ru other": "НОВОЕ — INTEGRATION п. 7",
   "R06 title_kk у демо-объектов": "НОВОЕ, мелочь — INTEGRATION п. 6"
+ },
+ "closed_remarks": {
+  "night_r1": {
+   "R15 SECURITY DELIVERY: test_r08_heat_match — ошибка сбора": "исправлено 463901f (проверено с R07 35e6feb и без R07)",
+   "R10 B-018 / LOCAL_B2 №4: русские названия объектов в ҚАЗ": "R08: запасной вид объекта по-казахски (463901f); R06 6b9da27 даёт title_kk демо-объектам — проверено вживую",
+   "R11 п. 13 (B1/B2): демо-числа как авария": "закрывается R07 35e6feb: просрочено 6, новых 51 против 37, за 7 дней 153 против 140; test_r08_demo_plausible PASS",
+   "R10 B-005: стенд без R07": "закрыто в поставке 2 (RUN.txt, предупреждение demo_server); R10 — перепроверить",
+   "R07 records()/generation": "ЗАКРЫТО в R07 35e6feb; R08 берёт публичные (запасной путь _records оставлен)"
+  }
  }
 }
