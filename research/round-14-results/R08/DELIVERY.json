@@ -53,7 +53,8 @@
   "node tests/civic/R08/shell_check.cjs (сборка R01 d9a8895)": "28/28 PASS — экран в оболочке 1366/375 × ru/kk, ҚАЗ без русских названий, клик «горячее место → карточка цели» с тем же числом и 7 днями, печать из оболочки — только «Картина дня» на 2 листа A4 (screens/shell/shell-print.pdf)",
   "pytest tests/civic/R08 (с R07 597ec4f)": "133 PASS + 1 SKIP (test_r08_hot_labels — нет данных R12 в ветке R08; в сборке R01: с R07 597ec4f PASS, с R07 306074b FAIL)",
   "pytest tests/civic/R08 в сборке R01": "161 PASS + 1 SKIP за 107 с — 98 с из них старый тест классификатора v1 раунда 13 test_r08_train.py (восстановлен R01 в эту папку, не «Картина дня»)",
-  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 597ec4f)": "104/104 PASS — 1366/375 × ru/kk, состояния, клавиатура, печать, тихое обновление, B-018, пустой реестр, место без подписи"
+  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 597ec4f)": "104/104 PASS — 1366/375 × ru/kk, состояния, клавиатура, печать, тихое обновление, B-018, пустой реестр, место без подписи",
+  "R10 ux_screens.cjs (инструмент R10 3623f65) по «Картине дня» — оболочка d9a8895 + R08 15276be и отдельная страница": "56/56 PASS (1366/375 × ru/kk: прокрутка, ключи, тех. слова, шрифт, зоны нажатия, русские строки в kk, консоль) — research/round-14-results/R08/r10_ux/"
  },
  "known_limits": [
   "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
@@ -66,7 +67,7 @@
   "В папке tests/civic/R08 сборки R01 лежат тесты классификатора v1 раунда 13 (test_r08_train/corpus/contract/reports/feedback_integration) — не мои, R08 их не трогает (INTEGRATION п. 8)."
  ],
  "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 328e793 (код 597ec4f: правдоподобные числа и подписи мест), R06 @ 224075b, R11 @ последний; прогнать pytest tests/civic/R08 и node tests/civic/R08/shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, B-029 и п. 13 R11 на FINAL.",
- "delivery": "3 (ночь, круги 1–6)",
+ "delivery": "3 (ночь, круги 1–7)",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -119,5 +120,22 @@
    "Своя находка: горячее место без подписи — пустая строка": "вид места из словаря R11 (heat.kind.*)",
    "Своя находка: в сводке за прошлый год дата без года": "«30 дек 2025 — …», как BirgeI18n.formatDate"
   }
+ },
+ "for_r01_final": {
+  "take": "claude/r14-R08 @ код 15276be (последний коммит ветки — документы поверх)",
+  "replaces": "R08 4ce8f08 в FINAL-кандидате R01 2b9e837",
+  "fixes_in_build": [
+   "R01 I-02 / R15: test_r08_heat_match — ошибка сбора исчезает (проверено с R07 306074b и 597ec4f)",
+   "R10 B-018: в ҚАЗ нет русских названий объектов (вместе с R06 ≥ 6b9da27)",
+   "печать из оболочки — вся «Картина дня» на 2 листа A4, без шапки и карты",
+   "тихое обновление раз в 2 минуты; телефон — 4 числа на первом экране; пустой реестр — «Пока пусто»"
+  ],
+  "files": [
+   "ui/civic_akim/*",
+   "web/civic/akim/{index.html,akim.js,akim.css}",
+   "tests/civic/R08/{r08_helpers.py,test_r08_*.py кроме старых v1,ui_check.cjs,shell_check.cjs,demo_server.py}"
+  ],
+  "optional_one_line": "web/civic/shell/birge.js: titleTag: \"h2\" (INTEGRATION 4д)",
+  "check_after": "pytest tests/civic/R08; node tests/civic/R08/shell_check.cjs http://127.0.0.1:8611 (28 проверок)"
  }
 }

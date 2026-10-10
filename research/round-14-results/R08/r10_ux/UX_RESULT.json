@@ -1,0 +1,722 @@
+{
+ "when": "2026-10-10T18:03:48.419Z",
+ "counts": {
+  "PASS": 56,
+  "FAIL": 0,
+  "NOT_RUN": 0
+ },
+ "rows": [
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-1366-ru.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 18
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "6/10"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-1366-kk.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 17
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "6/9"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-375-ru.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "2/5"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-375-kk.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "2/5"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r08-картина-дня-страница-модуля-1366-ru.jpg"
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 18
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "2/10"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r08-картина-дня-страница-модуля-1366-kk.jpg"
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 18
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "2/9"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r08-картина-дня-страница-модуля-375-ru.jpg"
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "2/5"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r08-картина-дня-страница-модуля-375-kk.jpg"
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "2/5"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  }
+ ]
+}
