@@ -20,6 +20,10 @@ const NB = " ";
     "14 человек", "21 человек", "22 человека", "25 человек", "101 человек", "111 человек"]);
   assert.strictEqual(I.t("common.period.last_days", { n: 21 }), "за 21 день");
   assert.strictEqual(I.t("object.late", { n: 23 }), "Отстаёт на 23 дня");
+  // Дробные в ru — форма «раза/дня» (CLDR other ≈ few), даже если в словаре только one/few/many.
+  assert.strictEqual(I.t("akim.delta.ratio", { n: 7.2 }), "в 7,2 раза больше");
+  assert.strictEqual(I.t("akim.delta.ratio", { n: 4 }), "в 4 раза больше");
+  assert.strictEqual(I.t("akim.delta.ratio", { n: 5 }), "в 5 раз больше");
   // Числа и даты
   assert.strictEqual(I.formatNumber(1666), "1" + NB + "666");
   assert.strictEqual(I.formatNumber(1234567), "1" + NB + "234" + NB + "567");

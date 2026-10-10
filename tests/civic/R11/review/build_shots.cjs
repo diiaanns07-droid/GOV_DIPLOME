@@ -89,14 +89,17 @@ async function clickMapAt(p, ll) {
         const w = await clickMapAt(p, NURA); logs.push(`R11: над мастером (до y=${w.top}) свободно ${w.share}% карты, самый длинный отрезок ${w.h} px`); await p.waitForSelector(".bc-panel[data-step='3'], .bc-option", { timeout: 10000 }); await p.waitForTimeout(600);
       });
       await step("7-wizard-text", async () => {
-        if (await p.$(".bc-panel[data-step='2'] .bc-option.bk-btn--ghost")) await p.click(".bc-option.bk-btn--ghost");
-        else if (await p.$(".bc-option--first")) await p.click(".bc-option--first");
+        // Житель берёт первую предложенную цель («Это здесь?»); без целей (B1: /targets 503) — «Другое место».
+        if (await p.$(".bc-panel[data-step='2'] .bc-option--first")) { logs.push("R11: место — " + (await p.textContent(".bc-option--first .bc-option__label"))); await p.click(".bc-option--first"); }
+        else if (await p.$(".bc-panel[data-step='2'] .bc-option.bk-btn--ghost")) { logs.push("R11: место — примерное"); await p.click(".bc-option.bk-btn--ghost"); }
         await p.waitForSelector(".bc-panel[data-step='3']", { timeout: 10000 });
         await p.fill("#bc-text", lang === "kk" ? "Аялдамада кешке қараңғы, шамдар жанбайды" : "На остановке вечером темно, не горят фонари");
         await p.waitForTimeout(3200); // ML нет — через 2,5 с открывается сетка категорий
       });
       await step("8-wizard-done", async () => {
-        if (await p.$(".bc-grid")) await p.click(".bc-grid__chip:nth-child(5)");
+        // Категория «Освещение» (5-я): сетка R09 B1 — .bc-grid, с B2 — .bk-catgrid ui-kit.
+        if (await p.$(".bk-catgrid")) await p.click(".bk-catgrid > button:nth-child(5)");
+        else if (await p.$(".bc-grid")) await p.click(".bc-grid__chip:nth-child(5)");
         await p.click(".bc-send");
         await p.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 15000 });
         if (await p.$(".bc-panel[data-step='4']")) await p.click(".bc-different");
