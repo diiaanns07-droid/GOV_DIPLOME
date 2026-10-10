@@ -54,6 +54,24 @@ const KEYLIKE = /\b(akim|common|district|cat|status|stage|object|heat|shell|date
       }
       const hscroll = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       check(`${tag}: нет горизонтальной прокрутки`, hscroll <= 0, hscroll);
+      if (width === 1366 && lang === "ru") {
+        // Печать из оболочки: вся «Картина дня» (а не видимая часть панели), без шапки и карты, 1–3 листа A4.
+        await page.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
+        await page.emulateMedia({ media: "print" });
+        const vis = await page.evaluate(() => ({
+          header: getComputedStyle(document.querySelector("header") || document.body).display,
+          proposals: !!document.querySelector("#birge-day-root .akim-proposals") &&
+            getComputedStyle(document.querySelector("#birge-day-root .akim-proposals")).display !== "none",
+          marked: document.documentElement.classList.contains("akim-printing"),
+        }));
+        const pdf = await page.pdf({ format: "A4", printBackground: true });
+        fs.writeFileSync(path.join(OUT, "shell-print.pdf"), pdf);
+        const pages = (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;
+        check(`${tag}: печать из оболочки — только «Картина дня», 1–3 листа A4`, vis.marked && vis.header === "none" && vis.proposals && pages >= 1 && pages <= 3, { vis, pages });
+        await page.evaluate(() => window.dispatchEvent(new Event("afterprint")));
+        await page.emulateMedia({ media: "screen" });
+        check(`${tag}: после печати метки сняты`, await page.evaluate(() => !document.documentElement.classList.contains("akim-printing") && !document.querySelector(".akim-print-path")));
+      }
       // Горячее место → карта с карточкой цели.
       const first = api.hot.items[0];
       await page.click("#birge-day-root .akim-hot__item");

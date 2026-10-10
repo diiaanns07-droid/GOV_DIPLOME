@@ -346,10 +346,51 @@ async function shot(page, name, full) {
     }
   }
 
+  // ───────────── 3б. Тихое обновление ─────────────
+  {
+    // Второй ответ сервера отличается (+1 новое обращение); третий — нет связи. Экран не мигает скелетоном,
+    // фокус остаётся на той же строке «Горячих мест», при ошибке старые числа остаются.
+    let call = 0;
+    const changed = JSON.parse(JSON.stringify(realSummary));
+    changed.kpi.new_day.value += 1;
+    const { ctx, page } = await open(browser, {
+      width: 1366, height: 768, lang: "ru",
+      route: async (route) => {
+        call++;
+        if (call === 1) return route.continue();
+        if (call === 2) return route.fulfill({ json: changed });
+        return route.abort("internetdisconnected");
+      },
+    });
+    await waitState(page, "ok");
+    const before = await page.textContent(".akim-kpi .bk-kpi__value");
+    await page.focus(".akim-hot__item >> nth=2");
+    const key = await page.evaluate(() => document.activeElement.getAttribute("data-key"));
+    let sawLoading = false;
+    await page.exposeFunction("__akimState", (st) => { if (st === "loading") sawLoading = true; });
+    await page.evaluate(() => new MutationObserver(() => window.__akimState(document.getElementById("akim").dataset.state))
+      .observe(document.getElementById("akim"), { attributes: true, attributeFilter: ["data-state"] }));
+    await page.evaluate(() => document.getElementById("akim").birgeAkim.refresh());
+    await page.waitForFunction((b) => document.querySelector(".akim-kpi .bk-kpi__value").textContent !== b, before, { timeout: 10000 });
+    const after = await page.textContent(".akim-kpi .bk-kpi__value");
+    const keyAfter = await page.evaluate(() => document.activeElement && document.activeElement.getAttribute("data-key"));
+    check("тихое обновление: новые числа без скелетона, фокус на той же строке",
+      Number(after.replace(/\D/g, "")) === Number(before.replace(/\D/g, "")) + 1 && !sawLoading && keyAfter === key, { before, after, key, keyAfter, sawLoading });
+    await page.evaluate(() => document.getElementById("akim").birgeAkim.refresh());
+    await page.waitForTimeout(800);
+    const st = await page.evaluate(() => document.getElementById("akim").dataset.state);
+    check("тихое обновление: нет связи — числа остаются, ошибкой экран не сменяется",
+      st === "ok" && (await page.textContent(".akim-kpi .bk-kpi__value")) === after, { st });
+    await ctx.close();
+  }
+
   // ───────────── 4. Печать ─────────────
   {
     const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru" });
     await waitState(page, "ok");
+    await page.evaluate(() => window.dispatchEvent(new Event("beforeprint"))); // как Ctrl+P или кнопка «Распечатать»
+    check("печать: перед печатью модуль помечает свою ветку страницы", await page.evaluate(() =>
+      document.documentElement.classList.contains("akim-printing") && document.body.classList.contains("akim-print-path")));
     await page.emulateMedia({ media: "print" });
     const hidden = await page.evaluate(() => ["header.bk-header", ".akim__controls", ".akim-print-bottom"].map(
       (s) => getComputedStyle(document.querySelector(s)).display));
@@ -360,6 +401,9 @@ async function shot(page, name, full) {
     const pages = (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;
     fs.writeFileSync(path.join(OUT, "akim-print.pdf"), pdf);
     check("печать: помещается на 1–3 листа A4", pages >= 1 && pages <= 3, pages);
+    await page.evaluate(() => window.dispatchEvent(new Event("afterprint")));
+    check("печать: после печати метки сняты", await page.evaluate(() =>
+      !document.documentElement.classList.contains("akim-printing") && !document.querySelector(".akim-print-path")));
     await ctx.close();
   }
 
