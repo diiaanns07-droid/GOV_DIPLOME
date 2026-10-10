@@ -1,7 +1,7 @@
 {
  "meta": {
-  "root": "<worktree ef1ef44>",
-  "sha": "ef1ef44",
+  "root": "<worktree 4ca9aef>",
+  "sha": "4ca9aef",
   "base": "http://127.0.0.1:<порт>/",
   "seeds": [],
   "sizes": [
@@ -12,12 +12,12 @@
    "ru",
    "kk"
   ],
-  "when": "2026-10-10T18:29:06.170Z",
+  "when": "2026-10-10T19:22:47.368Z",
   "node": "v22.22.0"
  },
  "counts": {
-  "PASS": 114,
-  "FAIL": 4,
+  "PASS": 131,
+  "FAIL": 5,
   "NOT_RUN": 0
  },
  "results": [
@@ -49,10 +49,9 @@
    "layer": "API",
    "step": "2",
    "name": "/similar сразу после запуска сервера (до первой загрузки страницы) отвечает 200",
-   "status": "FAIL",
+   "status": "PASS",
    "detail": {
-    "status": 503,
-    "error": "source_not_connected"
+    "status": 200
    },
    "shot": null
   },
@@ -60,10 +59,10 @@
    "layer": "API",
    "step": "2",
    "name": "чистая база демо: /similar по тексту DEMO_SCRIPT у остановки находит похожие (иначе «Я тоже» не будет)",
-   "status": "FAIL",
+   "status": "PASS",
    "detail": {
     "status": 200,
-    "n": 0,
+    "n": 3,
     "stop": "Хан Шатыр"
    },
    "shot": null
@@ -76,9 +75,9 @@
    "detail": {
     "status": 200,
     "first": {
-     "id": "osm-node-4109037549",
-     "label": "Остановка «Хан Шатыр»",
-     "d": 0.1
+     "id": "osm-node-13394597038",
+     "label": "Остановка «Республиканский диагностический центр»",
+     "d": 0
     },
     "n": 1
    },
@@ -133,7 +132,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "c-52dcb3029543f6da",
+    "id": "c-e1638462087f90e9",
     "st": "new"
    },
    "shot": null
@@ -147,20 +146,20 @@
     "status": 200,
     "n": 1,
     "top": {
-     "complaint_id": "c-52dcb3029543f6da",
+     "complaint_id": "c-e1638462087f90e9",
      "score": 0.798,
      "target": {
-      "id": "osm-node-4109037549",
+      "id": "osm-node-13394597038",
       "kind": "object",
-      "label_kk": "«Хан Шатыр» аялдамасы",
-      "label_ru": "Остановка «Хан Шатыр»"
+      "label_kk": "«Республиканский диагностический центр» аялдамасы",
+      "label_ru": "Остановка «Республиканский диагностический центр»"
      },
      "metoo": 0,
      "people": 1,
      "category": "transport",
-     "created_at": "2026-10-10T23:22:44+05:00",
+     "created_at": "2026-10-11T00:13:52+05:00",
      "status": "new",
-     "distance_m": 35.6,
+     "distance_m": 44.3,
      "same_target": false
     }
    },
@@ -197,9 +196,9 @@
     "status": 200,
     "items": 31,
     "target": {
-     "level": 1,
-     "count": 2,
-     "weight": 2,
+     "level": 4,
+     "count": 21,
+     "weight": 15.609,
      "kind": "object"
     }
    },
@@ -269,7 +268,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "p-09a3c855aac8",
+    "id": "p-103d6f993d81",
     "st": "proposal"
    },
    "shot": null
@@ -311,7 +310,7 @@
     "item": {
      "level": "fixed",
      "weight": 0,
-     "fixed_until": "2026-10-17T23:22:44+05:00"
+     "fixed_until": "2026-10-18T00:13:53+05:00"
     }
    },
    "shot": null
@@ -375,7 +374,7 @@
      "14px «Приблизьте карту, чтобы увидет»",
      "14px «Город и жители вместе»",
      "14px «3D»",
-     "14px «Больше всего жалоб: Нура · 68 »"
+     "14px «Больше всего жалоб: Нура · 52 »"
     ]
    },
    "shot": null
@@ -390,6 +389,14 @@
     "under40": [],
     "under48": "19/26"
    },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
+   "status": "PASS",
+   "detail": null,
    "shot": null
   },
   {
@@ -444,8 +451,6 @@
      }
     },
     "names": [
-     "Хан Шатыр",
-     "Хан Шатыр",
      "Хан Шатыр"
     ]
    },
@@ -470,7 +475,7 @@
    "status": "PASS",
    "detail": {
     "sent": true,
-    "metoo": false,
+    "metoo": true,
     "done": true
    },
    "shot": "1366-ru-2-sent.jpg"
@@ -484,7 +489,7 @@
     "map": true,
     "layers": 13,
     "rendered": 54,
-    "badges": 52,
+    "badges": 17,
     "legend": true
    },
    "shot": "1366-ru-3-heat.jpg"
@@ -610,6 +615,16 @@
   {
    "layer": "UI 1366-ru",
    "step": "6",
+   "name": "клавиатура: Esc закрывает карточку остановки",
+   "status": "PASS",
+   "detail": {
+    "stillOpen": false
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
    "name": "житель: «Мои обращения» → у обращения статус «Исправлено»",
    "status": "PASS",
    "detail": {
@@ -625,6 +640,45 @@
    "status": "PASS",
    "detail": [],
    "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-E-heat.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-E-mine.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-E-summary.jpg"
   },
   {
    "layer": "UI 1366-kk",
@@ -673,7 +727,7 @@
      "14px «Көшелерді, аулаларды және аялд»",
      "14px «Қала мен тұрғындар бірге»",
      "14px «3D»",
-     "14px «Ең көп шағым: Нұра · 68 адам»"
+     "14px «Ең көп шағым: Нұра · 49 адам»"
     ]
    },
    "shot": null
@@ -688,6 +742,14 @@
     "under40": [],
     "under48": "19/25"
    },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
+   "status": "PASS",
+   "detail": null,
    "shot": null
   },
   {
@@ -749,24 +811,22 @@
   {
    "layer": "UI 1366-kk",
    "step": "1",
-   "name": "после нажатия на карту в форме предложена остановка «Хан Шатыр»",
+   "name": "после нажатия на карту в форме предложена остановка «Центр материнства и детства»",
    "status": "PASS",
    "detail": {
     "point": {
      "x": 682.9999999933773,
-     "y": 345.60000001721914,
+     "y": 345.60000000066225,
      "onCanvas": false,
      "under": "r07-badge maplibregl-marker maplibregl-m",
      "near": {
       "x": 682.9999999933773,
-      "y": 375.60000001721914,
+      "y": 375.60000000066225,
       "r": 30
      }
     },
     "names": [
-     "Хан Шатыр",
-     "Хан Шатыр",
-     "Хан Шатыр"
+     "Центр материнства и детства"
     ]
    },
    "shot": "1366-kk-1-target.jpg"
@@ -804,7 +864,7 @@
     "map": true,
     "layers": 13,
     "rendered": 54,
-    "badges": 52,
+    "badges": 17,
     "legend": true
    },
    "shot": "1366-kk-3-heat.jpg"
@@ -844,18 +904,7 @@
    "detail": {
     "opened": true,
     "ok": true,
-    "ru_in_kk": [
-     "Вход для сотрудника",
-     "Учётную запись создаёт",
-     "Имя пользователя",
-     "Пароль",
-     "Кабинет редактора",
-     "Новый объект",
-     "Обновить список",
-     "Черновики",
-     "Опубликованные",
-     "Архив"
-    ],
+    "ru_in_kk": [],
     "tech": []
    },
    "shot": "1366-kk-5-login.jpg"
@@ -874,20 +923,9 @@
    "layer": "UI 1366-kk",
    "step": "5",
    "name": "ҚАЗ: форма входа и кабинет сотрудника по-казахски",
-   "status": "FAIL",
+   "status": "PASS",
    "detail": {
-    "ru": [
-     "Вход для сотрудника",
-     "Учётную запись создаёт",
-     "Имя пользователя",
-     "Пароль",
-     "Кабинет редактора",
-     "Новый объект",
-     "Обновить список",
-     "Черновики",
-     "Опубликованные",
-     "Архив"
-    ]
+    "ru": []
    },
    "shot": null
   },
@@ -950,15 +988,25 @@
    "layer": "UI 1366-kk",
    "step": "6",
    "name": "акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Түзетілді», зелёным на карте",
-   "status": "PASS",
+   "status": "FAIL",
    "detail": {
     "under": "r07-badge maplibregl-marker maplibregl-m",
     "take": true,
     "fix": true,
     "fixedShown": true,
-    "green": true
+    "green": false
    },
    "shot": "1366-kk-6-fixed.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "клавиатура: Esc закрывает карточку остановки",
+   "status": "PASS",
+   "detail": {
+    "stillOpen": false
+   },
+   "shot": null
   },
   {
    "layer": "UI 1366-kk",
@@ -978,6 +1026,45 @@
    "status": "PASS",
    "detail": [],
    "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-E-heat.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-E-mine.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-E-summary.jpg"
   },
   {
    "layer": "UI 375-ru",
@@ -1019,13 +1106,13 @@
    "detail": {
     "tiny": 0,
     "ex": [],
-    "under16": 6,
+    "under16": 7,
     "ex16": [
      "15px «Birge»",
      "14px «3D»",
-     "14px «Больше всего жалоб: Нура · 68 »",
+     "14px «Больше всего жалоб: Нура · 48 »",
      "14px «Примеры: жалобы придуманы, ули»",
-     "14px «26 мест с жалобами»",
+     "14px «24 места с жалобами»",
      "14px «Территория»"
     ]
    },
@@ -1039,8 +1126,16 @@
    "detail": {
     "under40N": 0,
     "under40": [],
-    "under48": "9/14"
+    "under48": "9/15"
    },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
+   "status": "PASS",
+   "detail": null,
    "shot": null
   },
   {
@@ -1066,24 +1161,22 @@
   {
    "layer": "UI 375-ru",
    "step": "1",
-   "name": "после нажатия на карту в форме предложена остановка «Хан Шатыр»",
+   "name": "после нажатия на карту в форме предложена остановка «Жилой комплекс Зелёный Квартал»",
    "status": "PASS",
    "detail": {
     "point": {
-     "x": 187.5,
-     "y": 365.4000000131541,
+     "x": 187.50000000626386,
+     "y": 365.40000000375835,
      "onCanvas": false,
      "under": "r07-badge maplibregl-marker maplibregl-m",
      "near": {
-      "x": 187.5,
-      "y": 395.4000000131541,
+      "x": 187.50000000626386,
+      "y": 395.40000000375835,
       "r": 30
      }
     },
     "names": [
-     "Хан Шатыр",
-     "Хан Шатыр",
-     "Хан Шатыр"
+     "Жилой комплекс Зелёный Квартал"
     ]
    },
    "shot": "375-ru-1-target.jpg"
@@ -1121,7 +1214,7 @@
     "map": true,
     "layers": 13,
     "rendered": 20,
-    "badges": 51,
+    "badges": 2,
     "legend": true
    },
    "shot": "375-ru-3-heat.jpg"
@@ -1234,13 +1327,13 @@
    "layer": "UI 375-ru",
    "step": "6",
    "name": "акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Исправлено», зелёным на карте",
-   "status": "PASS",
+   "status": "FAIL",
    "detail": {
     "under": "r07-badge maplibregl-marker maplibregl-m",
-    "take": true,
+    "take": false,
     "fix": true,
-    "fixedShown": true,
-    "green": true
+    "fixedShown": false,
+    "green": false
    },
    "shot": "375-ru-6-fixed.jpg"
   },
@@ -1262,6 +1355,45 @@
    "status": "PASS",
    "detail": [],
    "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-ru-E-heat.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-ru-E-mine.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-ru-E-summary.jpg"
   },
   {
    "layer": "UI 375-kk",
@@ -1303,13 +1435,14 @@
    "detail": {
     "tiny": 0,
     "ex": [],
-    "under16": 5,
+    "under16": 6,
     "ex16": [
      "15px «Birge»",
      "14px «3D»",
-     "14px «Ең көп шағым: Нұра · 68 адам»",
+     "14px «Ең көп шағым: Нұра · 47 адам»",
      "14px «Мысалдар: шағымдар ойдан құрас»",
-     "14px «Аумақ»"
+     "14px «Аумақ»",
+     "14px «Приблизьте карту, чтобы увидет»"
     ]
    },
    "shot": null
@@ -1322,18 +1455,28 @@
    "detail": {
     "under40N": 0,
     "under40": [],
-    "under48": "6/11"
+    "under48": "6/10"
    },
    "shot": null
   },
   {
    "layer": "UI 375-kk",
    "step": "0",
-   "name": "ҚАЗ: на экране нет строк, оставшихся по-русски",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
    "status": "PASS",
+   "detail": null,
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "ҚАЗ: на экране нет строк, оставшихся по-русски",
+   "status": "FAIL",
    "detail": {
-    "n": 0,
-    "ex": []
+    "n": 1,
+    "ex": [
+     "Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз"
+    ]
    },
    "shot": null
   },
@@ -1341,10 +1484,12 @@
    "layer": "UI 375-kk",
    "step": "0",
    "name": "ҚАЗ: во всей странице (с прокруткой панелей) нет строк по-русски",
-   "status": "PASS",
+   "status": "FAIL",
    "detail": {
-    "n": 0,
-    "ex": []
+    "n": 1,
+    "ex": [
+     "Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз"
+    ]
    },
    "shot": null
   },
@@ -1371,24 +1516,23 @@
   {
    "layer": "UI 375-kk",
    "step": "1",
-   "name": "после нажатия на карту в форме предложена остановка «Хан Шатыр»",
+   "name": "после нажатия на карту в форме предложена остановка «Национальный кардиологический центр»",
    "status": "PASS",
    "detail": {
     "point": {
-     "x": 187.5,
-     "y": 365.4000000131541,
+     "x": 187.50000000626386,
+     "y": 365.4000000006264,
      "onCanvas": false,
      "under": "r07-badge maplibregl-marker maplibregl-m",
      "near": {
-      "x": 187.5,
-      "y": 395.4000000131541,
+      "x": 187.50000000626386,
+      "y": 395.4000000006264,
       "r": 30
      }
     },
     "names": [
-     "Хан Шатыр",
-     "Хан Шатыр",
-     "Хан Шатыр"
+     "Национальный кардиологический центр",
+     "Ұлттық кардиохирургиялық орталық"
     ]
    },
    "shot": "375-kk-1-target.jpg"
@@ -1426,7 +1570,7 @@
     "map": true,
     "layers": 13,
     "rendered": 20,
-    "badges": 51,
+    "badges": 2,
     "legend": true
    },
    "shot": "375-kk-3-heat.jpg"
@@ -1466,18 +1610,7 @@
    "detail": {
     "opened": true,
     "ok": true,
-    "ru_in_kk": [
-     "Вход для сотрудника",
-     "Учётную запись создаёт",
-     "Имя пользователя",
-     "Пароль",
-     "Кабинет редактора",
-     "Новый объект",
-     "Обновить список",
-     "Черновики",
-     "Опубликованные",
-     "Архив"
-    ],
+    "ru_in_kk": [],
     "tech": []
    },
    "shot": "375-kk-5-login.jpg"
@@ -1496,20 +1629,9 @@
    "layer": "UI 375-kk",
    "step": "5",
    "name": "ҚАЗ: форма входа и кабинет сотрудника по-казахски",
-   "status": "FAIL",
+   "status": "PASS",
    "detail": {
-    "ru": [
-     "Вход для сотрудника",
-     "Учётную запись создаёт",
-     "Имя пользователя",
-     "Пароль",
-     "Кабинет редактора",
-     "Новый объект",
-     "Обновить список",
-     "Черновики",
-     "Опубликованные",
-     "Архив"
-    ]
+    "ru": []
    },
    "shot": null
   },
@@ -1572,13 +1694,13 @@
    "layer": "UI 375-kk",
    "step": "6",
    "name": "акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Түзетілді», зелёным на карте",
-   "status": "PASS",
+   "status": "FAIL",
    "detail": {
     "under": "r07-badge maplibregl-marker maplibregl-m",
     "take": true,
     "fix": true,
     "fixedShown": true,
-    "green": true
+    "green": false
    },
    "shot": "375-kk-6-fixed.jpg"
   },
@@ -1600,6 +1722,45 @@
    "status": "PASS",
    "detail": [],
    "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-kk-E-heat.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-kk-E-mine.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-kk-E-summary.jpg"
   }
  ]
 }
