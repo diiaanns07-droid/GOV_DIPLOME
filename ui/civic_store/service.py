@@ -60,6 +60,33 @@ def meta() -> dict:
         "astana_bbox": list(validate.ASTANA_BBOX),
         "source_field_paths": sorted(validate.SOURCE_FIELD_PATHS),
         "roles": ["editor", "admin"],
+        # Раунд 13: справочник для R04 вместо дублирования констант в клиенте.
+        "meta_version": 2,
+        "text_rules": "Длина — кодовые точки после NFC и обрезки пробелов; HTML и управляющие символы запрещены.",
+        "required_reason": {"update": "после первой публикации", "publish": "всегда", "archive": "всегда",
+                            "candidate_apply": "после первой публикации", "candidate_dismiss": "нет"},
+        "public_reason": "Публично видна только причина публикации; причина правки (update/apply) — служебная.",
+        "locked_after_first_publication": ["schedule.original_planned_end"],
+        "publication_requires": {"observed": ["source_refs"], "derived": ["source_refs"]},
+        "import_candidates": {
+            "resolutions": ["applied", "partially_applied", "dismissed", "superseded"],
+            "actions": ["apply", "dismiss"],
+            "apply_body": {"expected_revision": "int", "reason": "text", "fields": "[path] | null (все изменения)"},
+            "review_field_keys": ["path", "current", "proposed", "previous_import", "changed_by_source",
+                                  "changed_by_editor", "conflict", "proposed_sources", "current_sources"],
+        },
+        "import_warnings": ["end_date_passed", "end_date_unknown", "field_has_several_sources",
+                            "observed_source_not_fetched"],
+        "errors": {
+            "bad_request": 400, "invalid_credentials": 401, "unauthenticated": 401, "cross_origin": 403,
+            "csrf_failed": 403, "forbidden": 403, "forbidden_host": 403, "not_found": 404,
+            "method_not_allowed": 405, "request_timeout": 408, "stale_revision": 409,
+            "candidate_superseded": 409, "candidate_resolved": 409, "length_required": 411,
+            "payload_too_large": 413, "unsupported_media_type": 415, "validation_failed": 422,
+            "rate_limited": 429, "internal_error": 500, "busy": 503,
+        },
+        "error_shape": {"ok": False, "error": {"code": "str", "message": "str", "fields": "{path: message} | absent",
+                                               "current_revision": "int (только 409)"}},
     }
 
 
@@ -280,7 +307,7 @@ class CivicService:
         except NotFound:
             return error(404, "not_found", "Объект не найден.")
         except Conflict as exc:
-            return error(409, "stale_revision", str(exc), current_revision=exc.current_revision)
+            return error(409, exc.code, str(exc), current_revision=exc.current_revision)
         except RateLimited as exc:
             return error(429, "rate_limited", "Слишком много попыток. Повторите позже.",
                          headers={"Retry-After": str(exc.retry_after)}, retry_after=exc.retry_after)
@@ -428,7 +455,7 @@ class CivicService:
             return denied
         item = self.objects.resolve_candidate(principal.actor(), object_id, candidate_id, action=action,
                                               expected_revision=payload.get("expected_revision"),
-                                              reason=payload.get("reason"))
+                                              reason=payload.get("reason"), fields=payload.get("fields"))
         return ok({"item": item})
 
     def _staff_audit(self, context, params, payload):

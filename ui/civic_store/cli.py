@@ -11,7 +11,10 @@
   seed-demo [--package FILE]    синтетический демо-набор + демо-публикация (только synthetic)
   backup DEST                   согласованная копия через SQLite backup API
   restore SRC --yes             восстановление с предварительной копией текущей базы
+  verify-backup SRC             проверить копию только для чтения: целостность, схема, счётчики
   export-audit [--since ISO]    служебная история изменений (JSON Lines) для редактора
+  export-public [--out FILE]    только опубликованные карточки + публичная история (без сессий/секретов)
+  restore-public FILE [--dry-run]  восстановить публичную выгрузку в базу без объектов
 
 Пароль никогда не принимается аргументом командной строки (он остался бы в истории shell
 и в списке процессов). Без терминала используйте --password-stdin (одна строка stdin).
@@ -33,6 +36,7 @@ from .db import (DEFAULT_DB_PATH, MIGRATIONS, SCHEMA_VERSION, Database, StorageE
                  create_private_file, resolve_db_path, restrict_permissions)
 from .importer import ImportRejected, describe_package, import_package, load_package
 from .objects import Actor, BadRequest, Conflict, NotFound
+from .public_export import PublicRestoreRejected, export_public, restore_public
 from .service import CivicService
 from .validate import ValidationError
 
@@ -235,6 +239,31 @@ def _check_source_schema(source: Path) -> None:
             raise SystemExit(f"Миграция {version} в копии отличается от кода; восстановление не выполнено.")
 
 
+def cmd_verify_backup(args, _service_unused=None):
+    """Копия открывается только для чтения; рабочая база не трогается и не нужна."""
+    source = Path(args.src).expanduser().resolve()
+    if not source.is_file():
+        raise SystemExit("Файл копии не найден.")
+    _check_source_schema(source)
+    conn = sqlite3.connect(f"{source.as_uri()}?mode=ro", uri=True)
+    try:
+        versions = [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")]
+        counts = {row[0]: row[1] for row in conn.execute(
+            "SELECT publication, COUNT(*) FROM civic_objects GROUP BY publication")}
+        report = {
+            "file": str(source), "integrity": "ok", "migrations": versions,
+            "needs_migration": [v for v, _, _ in MIGRATIONS if v not in versions],
+            "objects": counts,
+            "public_objects": conn.execute("SELECT COUNT(*) FROM civic_public_objects").fetchone()[0],
+            "history_entries": conn.execute("SELECT COUNT(*) FROM civic_history").fetchone()[0],
+            "editors": conn.execute("SELECT COUNT(*) FROM civic_users").fetchone()[0],
+            "note": "Полная служебная копия: содержит хэши паролей, сессии и заметки — хранить как секрет.",
+        }
+    finally:
+        conn.close()
+    _print(report)
+
+
 def _unique_sibling(path: Path, label: str) -> Path:
     stamp = time.strftime("%Y%m%dT%H%M%S")
     for attempt in range(1000):
@@ -379,6 +408,28 @@ def cmd_export_audit(args, service):
             out.close()
 
 
+def cmd_export_public(args, service):
+    text = json.dumps(export_public(service.objects), ensure_ascii=False, indent=1) + "\n"
+    if not args.out:
+        sys.stdout.write(text)
+        return
+    try:
+        # Данные публичные, но существующий файл не перезаписываем молча.
+        with open(args.out, "x", encoding="utf-8") as out:
+            out.write(text)
+    except FileExistsError:
+        raise SystemExit("Файл уже существует — выберите новое имя.")
+    print(f"Публичная выгрузка: {args.out}", file=sys.stderr)
+
+
+def cmd_restore_public(args, service):
+    try:
+        export = json.loads(Path(args.file).read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError, UnicodeDecodeError) as exc:
+        raise PublicRestoreRejected(f"Не удалось прочитать выгрузку: {exc.__class__.__name__}.")
+    _print(restore_public(service.objects, export, dry_run=args.dry_run))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="python -m ui.civic_store",
                                      description="R02 civic_store: база объектов и доступ редактора")
@@ -420,10 +471,20 @@ def build_parser() -> argparse.ArgumentParser:
     cmd.add_argument("src")
     cmd.add_argument("--yes", action="store_true")
     cmd.set_defaults(func=cmd_restore, no_service=True)
+    cmd = sub.add_parser("verify-backup")
+    cmd.add_argument("src")
+    cmd.set_defaults(func=cmd_verify_backup, no_service=True)
     cmd = sub.add_parser("export-audit")
     cmd.add_argument("--since", help="ISO-время, с которого выгружать")
     cmd.add_argument("--out")
     cmd.set_defaults(func=cmd_export_audit)
+    cmd = sub.add_parser("export-public")
+    cmd.add_argument("--out")
+    cmd.set_defaults(func=cmd_export_public)
+    cmd = sub.add_parser("restore-public")
+    cmd.add_argument("file")
+    cmd.add_argument("--dry-run", action="store_true")
+    cmd.set_defaults(func=cmd_restore_public)
     return parser
 
 
@@ -439,7 +500,7 @@ def main(argv=None) -> int:
             # не создаёт новую пустую базу, status/export/dry-run ничего не мигрируют.
             args.func(args, CivicService(_existing_db(args), auto_migrate=False))
     except (StorageError, PasswordPolicyError, ImportRejected, ValidationError, BadRequest,
-            NotFound, Conflict) as exc:
+            NotFound, Conflict, PublicRestoreRejected) as exc:
         report = getattr(exc, "report", None)
         if report:
             _print(report)

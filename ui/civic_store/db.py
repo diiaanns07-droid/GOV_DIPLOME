@@ -178,6 +178,120 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
         "ALTER TABLE civic_import_candidates ADD COLUMN resolution TEXT",
         "ALTER TABLE civic_import_candidates ADD COLUMN resolved_by INTEGER REFERENCES civic_users(id)",
     )),
+    # След решения редактора: причина, какие поля приняты (частичное принятие) и ревизия объекта
+    # после решения. resolution дополнительно может быть partially_applied.
+    (5, "import candidate review trail", (
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolution_reason TEXT",
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolution_fields_json TEXT",
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolved_revision INTEGER",
+    )),
+    # Раунд 14 (R06): этапы объекта, предложения акимата и голоса жителей.
+    # Только новые таблицы: civic_objects и civic_history не меняются, поэтому старые записи
+    # и их история сохраняются байт в байт. Этап хранится отдельным слоем поверх объекта.
+    (6, "round 14 stages, proposals, votes", (
+        # Текущий этап объекта. stage NULL — этап неизвестен (status unknown/cancelled).
+        # source: migrated — выведен из status при миграции; editor — задан сотрудником; demo — демо-данные.
+        """CREATE TABLE civic_object_stages (
+            object_id TEXT PRIMARY KEY REFERENCES civic_objects(id),
+            stage TEXT CHECK (stage IS NULL OR stage IN ('planned', 'design', 'procurement',
+                                                         'construction', 'acceptance', 'operating')),
+            planned_end TEXT,
+            forecast_end TEXT,
+            revision INTEGER NOT NULL CHECK (revision >= 1),
+            updated_at TEXT NOT NULL,
+            updated_by INTEGER REFERENCES civic_users(id),
+            source TEXT NOT NULL CHECK (source IN ('migrated', 'editor', 'demo'))
+        )""",
+        # История этапов: только дополняется, как civic_history.
+        """CREATE TABLE civic_stage_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            object_id TEXT NOT NULL REFERENCES civic_objects(id),
+            revision INTEGER NOT NULL,
+            at TEXT NOT NULL,
+            action TEXT NOT NULL CHECK (action IN ('migrate', 'set', 'demo')),
+            stage TEXT,
+            planned_end TEXT,
+            forecast_end TEXT,
+            reason TEXT NOT NULL DEFAULT '',
+            actor_user_id INTEGER REFERENCES civic_users(id),
+            actor_label TEXT NOT NULL,
+            public_actor_label TEXT NOT NULL,
+            UNIQUE (object_id, revision)
+        )""",
+        """CREATE TRIGGER civic_stage_history_no_update BEFORE UPDATE ON civic_stage_history
+           BEGIN SELECT RAISE(ABORT, 'civic_stage_history is append-only'); END""",
+        """CREATE TRIGGER civic_stage_history_no_delete BEFORE DELETE ON civic_stage_history
+           BEGIN SELECT RAISE(ABORT, 'civic_stage_history is append-only'); END""",
+        # Перенос старых записей: этап выводится из status (planned → planned, in_progress →
+        # construction, completed → operating; unknown/cancelled → NULL). Плановый срок — исходный
+        # original_planned_end (если был), иначе current_planned_end. Время обновления — время объекта,
+        # чтобы «давно не обновлялось» считалось честно, а не с момента миграции.
+        """INSERT INTO civic_object_stages(object_id, stage, planned_end, forecast_end, revision,
+                                           updated_at, updated_by, source)
+           SELECT id,
+                  CASE status WHEN 'planned' THEN 'planned' WHEN 'in_progress' THEN 'construction'
+                              WHEN 'completed' THEN 'operating' ELSE NULL END,
+                  COALESCE(json_extract(data_json, '$.schedule.original_planned_end'), current_planned_end),
+                  NULL, 1, updated_at, NULL, 'migrated'
+           FROM civic_objects""",
+        """INSERT INTO civic_stage_history(object_id, revision, at, action, stage, planned_end,
+                                           forecast_end, reason, actor_user_id, actor_label, public_actor_label)
+           SELECT object_id, 1, updated_at, 'migrate', stage, planned_end, forecast_end,
+                  'Этап выведен из статуса при обновлении до раунда 14', NULL, 'migration', 'Birge'
+           FROM civic_object_stages""",
+        # Предложения акимата (3D-объекты R05). kind — 5 объектов каталога.
+        """CREATE TABLE civic_proposals (
+            id TEXT PRIMARY KEY CHECK (length(id) BETWEEN 1 AND 64),
+            kind TEXT NOT NULL CHECK (kind IN ('square', 'playground', 'sports', 'stop', 'lighting')),
+            geometry_json TEXT NOT NULL,
+            rotation_deg REAL NOT NULL DEFAULT 0,
+            title_ru TEXT NOT NULL,
+            title_kk TEXT,
+            status TEXT NOT NULL CHECK (status IN ('proposal', 'approved', 'rejected', 'withdrawn')),
+            district TEXT,
+            planned_year INTEGER,
+            demo INTEGER NOT NULL DEFAULT 0 CHECK (demo IN (0, 1)),
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            created_by INTEGER REFERENCES civic_users(id),
+            decided_at TEXT,
+            decided_by INTEGER REFERENCES civic_users(id),
+            decision_reason TEXT NOT NULL DEFAULT ''
+        )""",
+        "CREATE INDEX civic_proposals_order ON civic_proposals(created_at DESC, id DESC)",
+        """CREATE TRIGGER civic_proposals_no_delete BEFORE DELETE ON civic_proposals
+           BEGIN SELECT RAISE(ABORT, 'civic_proposals rows are withdrawn, not deleted'); END""",
+        """CREATE TABLE civic_proposal_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            proposal_id TEXT NOT NULL REFERENCES civic_proposals(id),
+            at TEXT NOT NULL,
+            action TEXT NOT NULL CHECK (action IN ('create', 'approve', 'reject', 'withdraw')),
+            status TEXT NOT NULL,
+            reason TEXT NOT NULL DEFAULT '',
+            actor_user_id INTEGER REFERENCES civic_users(id),
+            actor_label TEXT NOT NULL
+        )""",
+        """CREATE TRIGGER civic_proposal_history_no_update BEFORE UPDATE ON civic_proposal_history
+           BEGIN SELECT RAISE(ABORT, 'civic_proposal_history is append-only'); END""",
+        """CREATE TRIGGER civic_proposal_history_no_delete BEFORE DELETE ON civic_proposal_history
+           BEGIN SELECT RAISE(ABORT, 'civic_proposal_history is append-only'); END""",
+        # Голос: одна строка на (предложение, устройство). Хранится только хэш device_id с солью.
+        # Повторное нажатие меняет value в той же строке — счёт не удваивается по построению.
+        """CREATE TABLE civic_votes (
+            proposal_id TEXT NOT NULL REFERENCES civic_proposals(id),
+            device_hash TEXT NOT NULL CHECK (length(device_hash) = 64),
+            value INTEGER NOT NULL CHECK (value IN (-1, 1)),
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            PRIMARY KEY (proposal_id, device_hash)
+        )""",
+        # Соль для хэша устройства: случайная на каждую базу, в ответы не попадает.
+        """CREATE TABLE civic_v2_settings (
+            name TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        )""",
+        "INSERT INTO civic_v2_settings(name, value) VALUES ('vote_salt', lower(hex(randomblob(32))))",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 
