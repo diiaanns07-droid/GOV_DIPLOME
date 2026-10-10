@@ -23,6 +23,7 @@
 Данные © OpenStreetMap contributors, ODbL 1.0 (производные).
 """
 
+import collections
 import gzip
 import json
 import math
@@ -137,6 +138,7 @@ def main(out_dir=None):
             round(e["length_m"], 2), [[r(x), r(y)] for x, y in e["geometry"]],
         ])
     edges.sort(key=lambda row: row[0])
+    names_kk = street_names_kk(edges, names)
     streets = {
         "schema": "birge-build3d-streets-v1",
         "purpose": "Улицы для освещения вдоль участка, подписи «рядом» и разворота остановки. "
@@ -145,10 +147,16 @@ def main(out_dir=None):
         "source": source,
         "fields": ["id", "name_index", "from_node_index", "to_node_index", "length_m", "geometry"],
         "names": names,
+        # Казахское название — только если оно есть в OSM (name:kk тех же путей, снимок osm-walking); иначе null и
+        # интерфейс показывает русское с lang="ru" (так же делает R12 label_kk). Машинного перевода нет.
+        "names_kk": names_kk,
+        "names_kk_source": {"path": "data/civic/astana/osm-walking/overpass.json.gz", "tag": "name:kk",
+                            "evidence_type": "real (OSM)", "found": sum(1 for x in names_kk if x), "of": len(names)},
         "nodes": nodes,
         "edges": edges,
     }
-    print(dump("nura-streets.json", streets, out_dir), len(edges), "edges", len(names), "names")
+    print(dump("nura-streets.json", streets, out_dir), len(edges), "edges", len(names), "names",
+          sum(1 for x in names_kk if x), "kk")
 
     # 2. Районы: упрощённые кольца + bbox города.
     districts = []
@@ -277,6 +285,23 @@ def outer_rings(el):
             if len(ring) >= 4 and ring[0] == ring[-1]:
                 rings.append(ring)
     return rings
+
+
+OSM_WALKING = os.path.join(REPO, "data", "civic", "astana", "osm-walking", "overpass.json.gz")
+
+
+def street_names_kk(edges, names):
+    """name:kk из снимка OSM для каждого русского названия: самое частое среди путей (way) его рёбер, иначе None."""
+    with gzip.open(OSM_WALKING, "rt", encoding="utf-8") as fh:
+        way_kk = {el["id"]: (el.get("tags") or {}).get("name:kk") for el in json.load(fh).get("elements", [])
+                  if el.get("type") == "way"}
+    votes = [collections.Counter() for _ in names]
+    for row in edges:
+        way = int(row[0].split("-")[1][1:])  # osm-w<way>-<n>
+        kk = (way_kk.get(way) or "").strip()
+        if kk:
+            votes[row[1]][kk] += 1
+    return [v.most_common(1)[0][0] if v else None for v in votes]
 
 
 def is_rail(el):

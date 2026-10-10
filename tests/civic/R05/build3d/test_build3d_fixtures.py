@@ -198,6 +198,20 @@ class Fixtures(unittest.TestCase):
             self.assertGreaterEqual(len(y[4]), 4)
             self.assertEqual(y[4][0], y[4][-1], "кольцо двора замкнуто")
 
+    def test_street_names_kk_only_from_osm(self):
+        # Казахские названия улиц — только name:kk из OSM (без машинного перевода), параллельно names.
+        names, kk = self.streets["names"], self.streets["names_kk"]
+        self.assertEqual(len(kk), len(names))
+        self.assertEqual(kk[names.index("улица Сыганак")], "Сығанақ көшесі")
+        self.assertEqual(kk[names.index("проспект Туран")], "Тұран даңғылы")
+        import gzip
+        with gzip.open(mf.OSM_WALKING, "rt", encoding="utf-8") as fh:
+            osm_kk = {(el.get("tags") or {}).get("name:kk") for el in json.load(fh)["elements"] if el.get("type") == "way"}
+        for name in kk:
+            if name is not None:
+                self.assertIn(name, osm_kk, "название не из OSM")
+        self.assertEqual(self.streets["names_kk_source"]["found"], sum(1 for x in kk if x))
+
     def test_license_and_attribution(self):
         for data in (self.streets, self.proposals):
             self.assertEqual(data["source"]["license"], "ODbL-1.0")

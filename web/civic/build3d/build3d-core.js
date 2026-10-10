@@ -191,6 +191,7 @@
     this.bbox = bbox;
     this.origin = [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2];
     this.names = data.names || [];
+    this.namesKk = data.names_kk || []; // name:kk из OSM (null — нет в OSM)
     var origin = this.origin;
     this.edges = data.edges.map(function (row, i) {
       var geom = row[5];
@@ -207,6 +208,7 @@
         i: i,
         id: row[0],
         name: data.names[row[1]] || "",
+        name_kk: (data.names_kk && data.names_kk[row[1]]) || null, // name:kk из OSM, если есть
         from: row[2],
         to: row[3],
         geom: geom,
@@ -242,6 +244,12 @@
   // Участок улицы между двумя точками: по рёбрам ОДНОЙ улицы (одно имя), кратчайший путь (Дейкстра).
   // Возврат: {ok:true, name, coords:[[lon,lat]…], length_m, edge_ids:[…]} или {ok:false, reason}.
   // reason: "far_from_street" | "other_street" | "no_path" | "too_short" | "too_long".
+  // Казахское название улицы из OSM по русскому (null — в OSM его нет).
+  StreetIndex.prototype.kkOf = function (name) {
+    var i = this.names.indexOf(name);
+    return i >= 0 && this.namesKk[i] ? this.namesKk[i] : null;
+  };
+
   StreetIndex.prototype.section = function (aLngLat, bLngLat, opts) {
     opts = opts || {};
     var maxDist = opts.maxDist || SNAP_STREET_M;
@@ -270,6 +278,7 @@
     return {
       ok: true,
       name: A.edge.name,
+      name_kk: A.edge.name_kk || null,
       coords: path.local.map(function (p) {
         return fromLocal(origin, p);
       }),

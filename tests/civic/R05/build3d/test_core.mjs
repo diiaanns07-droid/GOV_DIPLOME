@@ -107,6 +107,17 @@ test("участок улицы: понятные отказы", () => {
   }
 });
 
+test("казахские названия улиц — из OSM (name:kk), иначе нет", () => {
+  const idx = new C.StreetIndex(STREETS);
+  assert.equal(idx.kkOf("улица Сыганак"), "Сығанақ көшесі");
+  assert.equal(idx.kkOf("нет такой улицы"), null);
+  const noKk = STREETS.names.find((n, i) => !STREETS.names_kk[i]);
+  assert.equal(idx.kkOf(noKk), null, "нет в OSM — null (интерфейс покажет русское)");
+  const e = STREETS.edges.find((row) => STREETS.names[row[1]] === "улица Сыганак");
+  const near = idx.nearest(e[5][0], 30, "улица Сыганак");
+  assert.equal(near.edge.name_kk, "Сығанақ көшесі");
+});
+
 test("ближайшая улица и направление для остановки", () => {
   const idx = new C.StreetIndex(STREETS);
   const stop = FIXTURE.proposals.find((p) => p.kind === "stop");

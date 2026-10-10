@@ -893,6 +893,35 @@ await check("r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk", async () =
     JSON.stringify(out));
   return { status: "PASS", detail: out.map((o) => `${o.vp} ${o.lang}: метка «${o.far.count}» (${o.far.aria}), точка ≥ ${o.far.minPill} px, зона ${o.far.zone} → масштаб ${o.near.zoom}, полных подписей ${o.near.full}`).join("; ") };
 });
+await check("kk_street_names_from_osm_card_and_lighting_hint_1366_375", async () => {
+  // Самопроверка по UX_BRIEF п. 6: в kk название улицы — казахское из OSM (name:kk), если оно там есть.
+  const out = [];
+  for (const vp of [{ width: 1366, height: 768 }, { width: 375, height: 812 }]) {
+    const touch = vp.width < 640 ? { hasTouch: true, isMobile: true } : {};
+    const p = await openPage(Object.assign({ viewport: vp }, touch), "?reset=1&store=local&lang=kk&" + MAIN_Q.slice(1));
+    await p.evaluate(() => __b3d.select("p-demo-stop-syganak"));
+    await p.waitForSelector(".b3d-dock[data-state=card]");
+    await idle(p);
+    const card = await p.$eval(".b3d-dock", (d) => d.innerText);
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `kk_street_${vp.width}_card.png`) });
+    await p.evaluate(() => __b3d.select(null));
+    await (touch.hasTouch ? p.tap(".b3d-card[data-kind=lighting]") : p.click(".b3d-card[data-kind=lighting]"));
+    await p.evaluate((ll) => __map.jumpTo({ center: ll }), LIGHT_A); // точка улицы — в центре карты, не под панелью
+    await idle(p);
+    const [x, y] = await screenOf(p, LIGHT_A);
+    if (touch.hasTouch) await p.touchscreen.tap(x, y);
+    else {
+      await p.mouse.move(x, y);
+      await p.mouse.click(x, y);
+    }
+    await p.waitForTimeout(300);
+    const hint = await p.textContent(".b3d-hint");
+    out.push({ vp: vp.width, card: (card.match(/Жанында:[^\n]*/) || [""])[0], hint: hint.trim() });
+    await p.context().close();
+  }
+  assert(out.every((o) => /Сығанақ көшесі/.test(o.card) && /Сығанақ көшесі/.test(o.hint) && !/улица/.test(o.card + o.hint)), JSON.stringify(out));
+  return { status: "PASS", detail: out };
+});
 await check("r01_map_getter_waits_for_map", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   const r = await p.evaluate(async () => {
