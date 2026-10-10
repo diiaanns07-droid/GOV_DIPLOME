@@ -239,7 +239,10 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
   font-size: 15px; font-weight: 800; line-height: 22px; white-space: nowrap; font-variant-numeric: tabular-nums;
 }
 .r07-badge--selected .r07-badge__dot { box-shadow: 0 0 0 3px #152c26; }
-.r07-badge[data-kind="district"] .r07-badge__count { font-size: 16px; height: 28px; line-height: 26px; }
+/* Районы (их 6): значок 44 px — как кнопки (R11: элементы ≥ 44 на 1366); значки мест остаются 34 px (≥ 24, кайма 48) */
+.r07-badge[data-kind="district"] .r07-badge__dot { width: 44px; height: 44px; }
+.r07-badge[data-kind="district"] .r07-badge__count { font-size: 17px; height: 34px; line-height: 32px; margin-left: -10px; padding-left: 13px; border-radius: 0 17px 17px 0; }
+.r07-badge[data-kind="district"]:not(.r07-badge--mini)::after { inset: -2px -3px; }
 
 /* Пульс при новой жалобе: два расходящихся кольца цвета уровня */
 .r07-pulse { width: 24px; height: 24px; border-radius: 50%; pointer-events: none; }
