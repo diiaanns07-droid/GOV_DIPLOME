@@ -528,6 +528,12 @@
         if (box) keepVisible([(box[0] + box[2]) / 2, (box[1] + box[3]) / 2]);
       });
     }
+    // Камера R12: на телефоне она ждёт, пока шторка дорастёт (320 мс); под нагрузкой шторка бывает выше, чем при замере,
+    // и место оказывается под ней (r12_city 360×800). Страховка оболочки: после полёта — сдвиг в свободную часть карты.
+    if (S.selected && r03Camera() && innerWidth < 761 && item?.geometry && window.CivicExplore?.bounds) {
+      const box = window.CivicExplore.bounds(item.geometry);
+      if (box) keepVisible([(box[0] + box[2]) / 2, (box[1] + box[3]) / 2]);
+    }
     S.selectedTitle = S.selected ? item?.title || null : null;
     if (S.selected) S.mounted.explore?.setView?.(selectedViewText(), "object");
     else S.mounted.explore?.setView?.(S.view?.render?.() || "", S.view?.kind || "");
