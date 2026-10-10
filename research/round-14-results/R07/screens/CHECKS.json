@@ -7,7 +7,7 @@
   "hscroll": false,
   "rawKeys": [],
   "smallButtons": [],
-  "badges": 37,
+  "badges": 31,
   "state": {
    "role": "akimat",
    "lang": "ru",
@@ -19,7 +19,7 @@
    "selected": null,
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {
@@ -30,7 +30,7 @@
   "hscroll": false,
   "rawKeys": [],
   "smallButtons": [],
-  "badges": 37,
+  "badges": 31,
   "state": {
    "role": "akimat",
    "lang": "ru",
@@ -42,7 +42,7 @@
    "selected": null,
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {
@@ -88,7 +88,7 @@
    "selected": "segment:osm-w1181261286-8",
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {
@@ -111,7 +111,7 @@
    "selected": "segment:osm-w1181261286-8",
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {
@@ -122,7 +122,7 @@
   "hscroll": false,
   "rawKeys": [],
   "smallButtons": [],
-  "badges": 37,
+  "badges": 31,
   "state": {
    "role": "akimat",
    "lang": "kk",
@@ -134,7 +134,7 @@
    "selected": null,
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {
@@ -145,7 +145,7 @@
   "hscroll": false,
   "rawKeys": [],
   "smallButtons": [],
-  "badges": 37,
+  "badges": 31,
   "state": {
    "role": "akimat",
    "lang": "kk",
@@ -157,7 +157,7 @@
    "selected": null,
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {
@@ -203,7 +203,7 @@
    "selected": "segment:osm-w1181261286-8",
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {
@@ -226,18 +226,18 @@
    "selected": "segment:osm-w1181261286-8",
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {
   "name": "stop-fixed-1366-ru",
   "size": "desktop",
-  "query": "?lang=ru&view=stops&target=object:osm-node-4975687943",
+  "query": "?lang=ru&view=nura",
   "errors": [],
   "hscroll": false,
   "rawKeys": [],
   "smallButtons": [],
-  "badges": 41,
+  "badges": 43,
   "state": {
    "role": "akimat",
    "lang": "ru",
@@ -246,21 +246,21 @@
     "days": 30,
     "district": null
    },
-   "selected": "object:osm-node-4975687943",
+   "selected": "object:osm-node-4109037549",
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {
   "name": "stop-fixed-1366-kk",
   "size": "desktop",
-  "query": "?lang=kk&view=stops&target=object:osm-node-4975687943",
+  "query": "?lang=kk&view=nura",
   "errors": [],
   "hscroll": false,
   "rawKeys": [],
   "smallButtons": [],
-  "badges": 41,
+  "badges": 43,
   "state": {
    "role": "akimat",
    "lang": "kk",
@@ -269,10 +269,33 @@
     "days": 30,
     "district": null
    },
-   "selected": "object:osm-node-4975687943",
+   "selected": "object:osm-node-4109037549",
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
+  }
+ },
+ {
+  "name": "playground-real-osm-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=nura",
+  "errors": [],
+  "hscroll": false,
+  "rawKeys": [],
+  "smallButtons": [],
+  "badges": 43,
+  "state": {
+   "role": "akimat",
+   "lang": "kk",
+   "filters": {
+    "category": null,
+    "days": 30,
+    "district": null
+   },
+   "selected": "object:osm-way-1449322330",
+   "mode": "targets",
+   "status": "ready",
+   "items": 43
   }
  },
  {
@@ -295,7 +318,7 @@
    "selected": "segment:osm-w1181261286-8",
    "mode": "targets",
    "status": "ready",
-   "items": 41
+   "items": 43
   }
  },
  {

@@ -81,7 +81,10 @@
       "heat.badge_label": "{target}: {reported}",
       "heat.open_on_map": "Показать на карте",
       "heat.district_targets": { one: "{count} место с жалобами", few: "{count} места с жалобами", many: "{count} мест с жалобами" },
-      "heat.kind.bus_stop": "Остановка",
+      "heat.kind.bus_stop": "Остановка", "heat.kind.playground": "Детская площадка", "heat.kind.pitch": "Спортплощадка",
+      "heat.kind.park": "Парк", "heat.kind.garden": "Сквер", "heat.kind.waste_disposal": "Контейнерная площадка",
+      "heat.kind.recycling": "Приём вторсырья", "heat.kind.street_lamp": "Фонарь", "heat.kind.school": "Школа",
+      "heat.kind.kindergarten": "Детский сад", "heat.kind.yard": "Двор",
       "heat.role.akimat": "Акимат", "heat.role.resident": "Житель",
     },
     kk: {
@@ -139,7 +142,10 @@
       "heat.badge_label": "{target}: {reported}",
       "heat.open_on_map": "Картадан көрсету",
       "heat.district_targets": { other: "{count} орында шағым бар" },
-      "heat.kind.bus_stop": "Аялдама",
+      "heat.kind.bus_stop": "Аялдама", "heat.kind.playground": "Балалар алаңы", "heat.kind.pitch": "Спорт алаңы",
+      "heat.kind.park": "Саябақ", "heat.kind.garden": "Гүлзар", "heat.kind.waste_disposal": "Қоқыс алаңы",
+      "heat.kind.recycling": "Қайта өңдеу пункті", "heat.kind.street_lamp": "Көше шамы", "heat.kind.school": "Мектеп",
+      "heat.kind.kindergarten": "Балабақша", "heat.kind.yard": "Аула",
       "heat.role.akimat": "Әкімдік", "heat.role.resident": "Тұрғын",
     },
   };
@@ -164,6 +170,8 @@
     parking: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M10 17V7h3a3 3 0 0 1 0 6h-3"/>',
     dots: '<circle cx="5.5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18.5" cy="12" r="1.6" fill="currentColor"/>',
     check: '<path d="m5 12.5 4.5 4.5L19 7"/>',
+    playground: '<path d="M3 21 7 4h10l4 17M10 4v9M14 4v9M9 13h6"/>',
+    ball: '<circle cx="12" cy="12" r="9"/><path d="m12 7.5 3.8 2.8-1.5 4.4H9.7l-1.5-4.4zM12 3v4.5M15.8 10.3l4.6-1.6M14.3 14.7l2.8 3.6M9.7 14.7l-2.8 3.6M8.2 10.3 3.6 8.7"/>',
     back: '<path d="M15 5l-7 7 7 7"/>',
     close: '<path d="M6 6l12 12M18 6 6 18"/>',
     users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.1A5 5 0 0 1 21.5 19"/>',
@@ -173,6 +181,9 @@
     wifi_off: '<path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 12.6a10 10 0 0 1 5.1-2.6M19 12.6a10 10 0 0 0-2.3-1.7M12 20h.01"/>',
   };
   const KIND_ICON = { object: "pin", segment: "road", area: "home", district: "pin" };
+  // Подтип реального объекта OSM (ui/civic_heat/osm_objects.py) → иконка в карточке
+  const SUBTYPE_ICON = { bus_stop: "bus", playground: "playground", pitch: "ball", park: "trees", garden: "trees",
+    waste_disposal: "trash", recycling: "trash", street_lamp: "bulb", school: "home", kindergarten: "home", yard: "home" };
 
   function svgIcon(name, size) {
     const s = size || 20;
@@ -382,15 +393,19 @@
         paint: { "line-color": color, "line-width": 2, "line-opacity": 0.8 } });
       // Дворы и кварталы
       // Мягкая ячейка: размытая кайма + полупрозрачная заливка, чтобы квартал не выглядел жёстким квадратом.
-      add({ id: "r07-area-glow", type: "line", source: SRC, filter: ["==", ["get", "kind"], "area"],
+      const AREA = ["in", ["get", "kind"], ["literal", ["area", "object_area"]]];
+      add({ id: "r07-area-glow", type: "line", source: SRC, filter: AREA,
         paint: { "line-color": color, "line-width": ["interpolate", ["linear"], ["zoom"], 12, 4, 17, 18], "line-blur": ["interpolate", ["linear"], ["zoom"], 12, 3, 17, 14], "line-opacity": 0.45 * soft } });
-      add({ id: "r07-area-fill", type: "fill", source: SRC, filter: ["==", ["get", "kind"], "area"],
+      add({ id: "r07-area-fill", type: "fill", source: SRC, filter: AREA,
         paint: { "fill-color": color, "fill-opacity": ["case", ["get", "fixed"], 0.2, 0.34 * soft] } });
-      add({ id: "r07-area-line", type: "line", source: SRC, filter: ["all", ["==", ["get", "kind"], "area"], ["!", ["get", "approx"]]],
+      add({ id: "r07-area-line", type: "line", source: SRC, filter: ["all", AREA, ["!", ["get", "approx"]]],
         paint: { "line-color": color, "line-width": 1.5, "line-opacity": 0.9 } });
-      add({ id: "r07-area-approx", type: "line", source: SRC, filter: ["all", ["==", ["get", "kind"], "area"], ["get", "approx"]],
+      add({ id: "r07-area-approx", type: "line", source: SRC, filter: ["all", AREA, ["get", "approx"]],
         paint: { "line-color": color, "line-width": 2, "line-dasharray": [2, 1.5] } });
-      // Выделение выбранной цели — тёмный контур под цветом
+      // Выделение выбранной цели: двор / площадка — тонкий тёмный контур поверх заливки
+      add({ id: "r07-sel-outline", type: "line", source: SRC, filter: ["==", ["get", "key"], ""],
+        paint: { "line-color": "#152c26", "line-width": 3 } });
+      // участок улицы — тёмная подложка под цветной линией
       add({ id: "r07-sel-line", type: "line", source: SRC, filter: ["==", ["get", "key"], ""],
         layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": "#152c26", "line-width": ["interpolate", ["linear"], ["zoom"], 11, ["+", 7, ["*", ["get", "w"], 0.25]], 17, ["+", 14, ["*", ["get", "w"], 1.1]]] } });
@@ -438,8 +453,12 @@
         const w = Math.min(Number(it.weight) || 0, 12);
         const props = { key, kind: it.target.kind, level: it.level === "fixed" ? 5 : it.level, color: it.color || "#999999",
           w: it.state === "fixed" ? 1 : w, fixed: it.state === "fixed", approx: !!it.approximate };
-        if (it.target.kind === "object") pts.push({ type: "Feature", properties: props, geometry: it.geometry });
-        else feats.push({ type: "Feature", properties: props, geometry: it.geometry });
+        if (it.target.kind === "object") {
+          // Ореол и точка — в центре объекта; если объект в OSM — многоугольник (площадка), рисуем и его контур.
+          const point = it.geometry.type === "Point" ? it.geometry : (it.anchor ? { type: "Point", coordinates: it.anchor } : null);
+          if (point) pts.push({ type: "Feature", properties: props, geometry: point });
+          if (it.geometry.type !== "Point") feats.push({ type: "Feature", properties: Object.assign({}, props, { kind: "object_area" }), geometry: it.geometry });
+        } else feats.push({ type: "Feature", properties: props, geometry: it.geometry });
       });
       return [{ type: "FeatureCollection", features: feats }, { type: "FeatureCollection", features: pts }];
     }
@@ -484,7 +503,9 @@
 
     function updateSelectionLayer() {
       if (!map || !layersReady) return;
-      map.setFilter("r07-sel-line", ["==", ["get", "key"], S.selected || ""]);
+      const key = S.selected || "";
+      map.setFilter("r07-sel-line", ["all", ["==", ["get", "key"], key], ["==", ["get", "kind"], "segment"]]);
+      map.setFilter("r07-sel-outline", ["all", ["==", ["get", "key"], key], ["in", ["get", "kind"], ["literal", ["area", "object_area"]]]]);
     }
 
     // ----- значки с числом (DOM-маркеры: работают без шрифтов карты и доступны с клавиатуры) -----
@@ -739,7 +760,7 @@
       return '<article class="r07-card">' +
         '<div class="r07-card__nav"><button type="button" class="r07-btn r07-btn--ghost" data-back>' + svgIcon("back", 20) + esc(t("heat.back")) + "</button>" +
         '<button type="button" class="r07-icon-btn" data-back aria-label="' + esc(t("heat.close")) + '" title="' + esc(t("heat.close")) + '">' + svgIcon("close", 22) + "</button></div>" +
-        '<p class="r07-eyebrow">' + svgIcon(it.target.subtype === "bus_stop" ? "bus" : KIND_ICON[it.target.kind] || "pin", 16) +
+        '<p class="r07-eyebrow">' + svgIcon(SUBTYPE_ICON[it.target.subtype] || KIND_ICON[it.target.kind] || "pin", 16) +
           esc(t("heat.kind." + (it.target.subtype || it.target.kind))) + (it.demo ? ' <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") + "</p>" +
         '<h3 class="r07-card__title" tabindex="-1">' + esc(label(it.target)) + "</h3>" +
         levelBadge +
@@ -845,7 +866,7 @@
     };
 
     function removeLayers() {
-      ["r07-district-fill", "r07-district-line", "r07-area-glow", "r07-area-fill", "r07-area-line", "r07-area-approx", "r07-sel-line", "r07-seg-casing", "r07-seg", "r07-obj-halo", "r07-obj-dot"]
+      ["r07-district-fill", "r07-district-line", "r07-area-glow", "r07-area-fill", "r07-area-line", "r07-area-approx", "r07-sel-outline", "r07-sel-line", "r07-seg-casing", "r07-seg", "r07-obj-halo", "r07-obj-dot"]
         .forEach((id) => { try { if (map.getLayer(id)) map.removeLayer(id); } catch (e) { /* стиль сменился */ } });
       [SRC, SRC_PTS].forEach((id) => { try { if (map.getSource(id)) map.removeSource(id); } catch (e) { /* стиль сменился */ } });
       layersReady = false;

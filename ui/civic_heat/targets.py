@@ -4,6 +4,7 @@
 и подпись цели по её id. Источники по порядку:
   1. реестр готовых целей (fixtures/targets_demo.json и данные R12 data/civic/astana/geo/*.json);
   2. модуль R12 engine.civic_geo, если в нём есть функция target_geometry(target);
+  2а. реальные объекты OSM (LOCAL-1, data/civic/astana/osm-objects/): osm-node-…, osm-way-…, yard-…;
   3. участок улицы osm-w<way>-<n> — настоящая форма ребра из пешеходного графа OSM;
   4. ячейка cell-<ix>-<iy> — квадрат ~150 м по формуле из geo.py;
   5. иначе — «примерное место»: круг 60 м вокруг точки жалобы (никаких уверенных линий).
@@ -15,13 +16,40 @@ import re
 import threading
 from pathlib import Path
 
-from . import geo
+from . import geo, osm_objects
 from .config import GRAPH_PATH, ROOT
 
 FIXTURE_TARGETS = Path(__file__).resolve().parent / "fixtures" / "targets_demo.json"
+STREET_LABELS = Path(__file__).resolve().parent / "fixtures" / "osm_street_labels.json"
 R12_GEO_DIR = ROOT / "data" / "civic" / "astana" / "geo"
 APPROX_RADIUS_M = 60.0
 _EDGE_RE = re.compile(r"^osm-w(\d+)-(\d+)$")
+_OSM_RE = re.compile(r"^(osm-(node|way|relation)-\d+|yard-r?\d+)$")
+_STREET_CELL = 0.003   # ячейка индекса улиц, градусы (~200–330 м)
+
+# Подпись безымянного объекта по ближайшей улице: (ru — после «у ул. …», kk — перед «маңындағы»).
+_NEAR_WORDS = {
+    "bus_stop": ("Остановка", "жанындағы аялдама"),
+    "playground": ("Детская площадка", "маңындағы балалар алаңы"),
+    "pitch": ("Спортплощадка", "маңындағы спорт алаңы"),
+    "yard": ("Двор", "маңындағы аула"),
+    "waste_disposal": ("Контейнерная площадка", "маңындағы қоқыс алаңы"),
+    "recycling": ("Пункт приёма вторсырья", "маңындағы қайта өңдеу пункті"),
+    "street_lamp": ("Фонарь", "маңындағы көше шамы"),
+    "park": ("Парк", "маңындағы саябақ"),
+    "garden": ("Сквер", "маңындағы гүлзар"),
+}
+
+
+def near_street_labels(subtype: str, street_ru: str | None, street_kk: str | None = None) -> tuple[str, str] | None:
+    """«Остановка у ул. Сыганак» / «Сыганак көшесі жанындағы аялдама». Без улицы — None."""
+    if not street_ru or subtype not in _NEAR_WORDS:
+        return None
+    word_ru, tail_kk = _NEAR_WORDS[subtype]
+    short = short_street_ru(street_ru)
+    # «у ул. …» читается правильно только с сокращённым типом улицы; без типа — через запятую.
+    ru = f"{word_ru} у {short}" if short != street_ru else f"{word_ru}, {street_ru}"
+    return ru, f"{street_kk or kk_street_from_ru(street_ru)} {tail_kk}"
 
 KIND_WORD = {
     "object": ("Объект", "Нысан"),
@@ -97,12 +125,15 @@ def segment_labels(street_ru: str | None, street_kk: str | None, from_ru=None, t
 class TargetResolver:
     """Ищет форму и подпись цели. Потокобезопасен; граф грузится один раз и только при нужде."""
 
-    def __init__(self, registry: dict | None = None, *, graph_path: Path | None = GRAPH_PATH, use_r12: bool = True):
+    def __init__(self, registry: dict | None = None, *, graph_path: Path | None = GRAPH_PATH, use_r12: bool = True,
+                 use_osm_objects: bool = True):
         self._registry: dict = {}
         self._lock = threading.Lock()
         self._graph_path = graph_path
         self._edges: dict | None = None
+        self._streets: dict | None = None
         self._r12 = None
+        self._use_osm_objects = use_osm_objects
         self._cache: dict = {}
         self.add_registry(_load_json_targets(FIXTURE_TARGETS))
         for name in ("objects.json", "yards.json", "targets.json"):
@@ -134,6 +165,49 @@ class TargetResolver:
                     for e in raw.get("edges", []):
                         self._edges[e["id"]] = (e.get("geometry"), e.get("name"))
             return self._edges
+
+    def _street_index(self) -> dict:
+        """Сетка середин рёбер с названиями — для подписи «у ул. …». Строится один раз."""
+        edges = self._edge_index()
+        with self._lock:
+            if self._streets is None:
+                grid: dict = {}
+                for geom, name in edges.values():
+                    if not name or not geom:
+                        continue
+                    mid = geo.line_midpoint(geom)
+                    grid.setdefault((int(mid[0] // _STREET_CELL), int(mid[1] // _STREET_CELL)), []).append((mid, name))
+                self._streets = grid
+            return self._streets
+
+    def nearest_street(self, point, max_m: float = 250.0) -> str | None:
+        grid = self._street_index()
+        cx, cy = int(point[0] // _STREET_CELL), int(point[1] // _STREET_CELL)
+        best = None
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for mid, name in grid.get((cx + dx, cy + dy), ()):
+                    d = geo.haversine_m(point, mid)
+                    if d <= max_m and (best is None or d < best[0]):
+                        best = (d, name)
+        return best[1] if best else None
+
+    def _osm_object(self, tid: str) -> dict | None:
+        if not self._use_osm_objects or not _OSM_RE.match(tid):
+            return None
+        item = osm_objects.load().get(tid)
+        if not item:
+            return None
+        label_ru, label_kk = item["label_ru"], item["label_kk"]
+        if item.get("needs_street_label"):
+            near = _street_labels().get(tid)          # заранее посчитано build_fixtures (быстро, с name:kk)
+            if not near:
+                anchor = geo.anchor_of(item["geometry"])
+                near = near_street_labels(item["subtype"], self.nearest_street(anchor)) if anchor else None
+            if near:
+                label_ru, label_kk = near
+        return {"geometry": item["geometry"], "label_ru": label_ru, "label_kk": label_kk, "approximate": False,
+                "source": item["source"], "subtype": item["subtype"]}
 
     def resolve(self, target: dict | None, point=None) -> dict | None:
         """→ {geometry, label_ru, label_kk, approximate, anchor, source} или None, если нечего показать."""
@@ -171,6 +245,9 @@ class TargetResolver:
                             "approximate": bool(got.get("approximate")), "source": "r12"}
             except Exception:
                 pass
+        real = self._osm_object(tid)
+        if real:
+            return real
         if kind == "segment" and _EDGE_RE.match(tid):
             edge = self._edge_index().get(tid)
             if edge and edge[0] and len(edge[0]) >= 2:
@@ -185,6 +262,20 @@ class TargetResolver:
             return {"geometry": geo.circle_polygon(point, APPROX_RADIUS_M), "label_ru": "Примерное место",
                     "label_kk": "Шамамен көрсетілген орын", "approximate": True, "source": "complaint-point"}
         return None
+
+
+_street_labels_cache: dict | None = None
+
+
+def _street_labels() -> dict:
+    global _street_labels_cache
+    if _street_labels_cache is None:
+        try:
+            raw = json.loads(STREET_LABELS.read_text("utf-8"))
+            _street_labels_cache = {k: tuple(v) for k, v in raw.get("labels", {}).items()}
+        except (OSError, ValueError):
+            _street_labels_cache = {}
+    return _street_labels_cache
 
 
 def _load_json_targets(path: Path) -> dict:

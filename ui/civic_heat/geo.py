@@ -54,21 +54,27 @@ def line_midpoint(coords) -> list[float]:
 
 
 def ring_centroid(ring) -> list[float]:
-    """Центр тяжести кольца; для вырожденного кольца — среднее вершин."""
+    """Центр тяжести кольца; для вырожденного кольца — среднее вершин.
+
+    Считаем ОТНОСИТЕЛЬНО первой вершины: в абсолютных градусах (71°, 51°) произведения огромные,
+    а площадь детской площадки крошечная — разность теряется в округлении, и центр уезжал на 60–100 м
+    за пределы объекта (найдено на скриншоте, тест test_anchor_lies_inside_target).
+    """
+    ox, oy = ring[0][0], ring[0][1]
     a = cx = cy = 0.0
     n = len(ring)
     for i in range(n - 1):
-        x0, y0 = ring[i]
-        x1, y1 = ring[i + 1]
+        x0, y0 = ring[i][0] - ox, ring[i][1] - oy
+        x1, y1 = ring[i + 1][0] - ox, ring[i + 1][1] - oy
         cross = x0 * y1 - x1 * y0
         a += cross
         cx += (x0 + x1) * cross
         cy += (y0 + y1) * cross
-    if abs(a) < 1e-15:
+    if abs(a) < 1e-18:
         pts = ring[:-1] or ring
         return [sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts)]
     a *= 0.5
-    return [cx / (6 * a), cy / (6 * a)]
+    return [ox + cx / (6 * a), oy + cy / (6 * a)]
 
 
 def point_in_ring(pt, ring) -> bool:
@@ -101,15 +107,38 @@ def anchor_of(geometry: dict) -> list[float] | None:
         longest = max(c, key=line_length_m)
         return line_midpoint(longest)
     if t == "Polygon":
-        return ring_centroid(c[0])
+        return inside_point(c)
     if t == "MultiPolygon":
         biggest = max(c, key=lambda poly: abs(_ring_area(poly[0])))
-        return ring_centroid(biggest[0])
+        return inside_point(biggest)
     return None
 
 
+def inside_point(rings) -> list[float]:
+    """Точка ВНУТРИ многоугольника: центр тяжести, а если он снаружи (контур буквой «Г») —
+    середина самого широкого внутреннего отрезка на горизонтали через середину контура."""
+    c = ring_centroid(rings[0])
+    if point_in_polygon(c, rings):
+        return c
+    ys = [p[1] for p in rings[0]]
+    for frac in (0.5, 0.35, 0.65, 0.2, 0.8):
+        y = min(ys) + (max(ys) - min(ys)) * frac
+        xs = []
+        for ring in rings:
+            for i in range(len(ring) - 1):
+                (x0, y0), (x1, y1) = ring[i], ring[i + 1]
+                if (y0 > y) != (y1 > y):
+                    xs.append(x0 + (y - y0) * (x1 - x0) / (y1 - y0))
+        xs.sort()
+        spans = [(xs[i + 1] - xs[i], (xs[i] + xs[i + 1]) / 2) for i in range(0, len(xs) - 1, 2)]
+        if spans:
+            return [max(spans)[1], y]
+    return c
+
+
 def _ring_area(ring) -> float:
-    return 0.5 * sum(ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1] for i in range(len(ring) - 1))
+    ox, oy = ring[0][0], ring[0][1]   # относительно первой вершины — та же причина, что в ring_centroid
+    return 0.5 * sum((ring[i][0] - ox) * (ring[i + 1][1] - oy) - (ring[i + 1][0] - ox) * (ring[i][1] - oy) for i in range(len(ring) - 1))
 
 
 def bbox_of(geometry: dict) -> tuple[float, float, float, float] | None:

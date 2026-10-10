@@ -63,10 +63,27 @@ async function shot(browser, name, size, query, after) {
   }
   // Исправленная остановка (зелёная, 7 дней) — открываем её карточку через параметр target.
   for (const lang of ["ru", "kk"]) {
-    await shot(browser, `stop-fixed-1366-${lang}`, "desktop", `?lang=${lang}&view=stops&target=object:osm-node-4975687943`, async (page) => {
+    await shot(browser, `stop-fixed-1366-${lang}`, "desktop", `?lang=${lang}&view=nura`, async (page) => {
+      // Находим исправленную цель через API и открываем её карточку (как переход из «Картины дня»).
+      await page.evaluate(async () => {
+        const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
+        const it = d.items.find((x) => x.state === "fixed");
+        if (it) window.__heat.focusTarget(it.target.kind, it.target.id);
+      });
       await page.waitForSelector(".r07-card", { timeout: 5000 });
+      await page.waitForTimeout(900);
     });
   }
+  // Реальная детская площадка OSM (многоугольник) — контур + ореол + значок
+  await shot(browser, "playground-real-osm-1366-kk", "desktop", "?lang=kk&view=nura", async (page) => {
+    await page.evaluate(async () => {
+      const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
+      const it = d.items.find((x) => x.target.subtype === "playground");
+      if (it) window.__heat.focusTarget(it.target.kind, it.target.id);
+    });
+    await page.waitForSelector(".r07-card", { timeout: 5000 });
+    await page.waitForTimeout(900);
+  });
   await shot(browser, "pulse-new-complaint-1366-ru", "desktop", "?lang=ru&view=nura", async (page) => {
     await page.click(".r07-item");
     await page.waitForTimeout(700);

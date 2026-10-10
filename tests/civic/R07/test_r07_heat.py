@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 
 from ui.civic_heat import HeatService, load_config
-from ui.civic_heat import api, demo_seed, engine, geo
+from ui.civic_heat import api, demo_seed, engine, geo, osm_objects
 from ui.civic_heat.service import HeatError
 from ui.civic_heat.targets import TargetResolver, kk_street_from_ru, segment_labels
 
@@ -254,16 +254,86 @@ def test_segment_targets_are_exact_osm_edges_and_inside_astana():
             assert max(geo.haversine_m(p, q) for p, q in zip(src, got)) < 0.2, tid
 
 
-def test_stop_targets_are_real_osm_bus_stops():
-    snap = json.loads(gzip.open(ROOT / "data/civic/astana/osm-walking/overpass.json.gz").read().decode("utf-8"))
-    nodes = {e["id"]: e for e in snap["elements"] if e["type"] == "node"}
+def _raw_osm_index():
+    out = {}
+    for f in sorted((ROOT / "data/civic/astana/osm-objects/raw").glob("*.json.gz")):
+        for el in json.loads(gzip.open(f).read().decode("utf-8"))["elements"]:
+            out.setdefault((el["type"], el["id"]), (f.name, el))
+    return out
+
+
+@pytest.mark.skipif(not osm_objects.available(), reason="NOT_RUN: нет data/civic/astana/osm-objects (LOCAL-1)")
+def test_object_and_yard_targets_are_real_osm_elements():
+    raw = _raw_osm_index()
+    seen = {"bus_stop": 0, "yard": 0, "playground": 0, "waste_disposal": 0}
     for tid, t in TARGETS.items():
-        if t["kind"] != "object":
+        if t["kind"] == "segment" or tid.startswith("cell-"):
             continue
-        n = nodes[int(tid.replace("osm-node-", ""))]
-        tags = n.get("tags", {})
-        assert tags.get("highway") == "bus_stop" or tags.get("public_transport") == "platform"
-        assert geo.haversine_m([n["lon"], n["lat"]], t["geometry"]["coordinates"]) < 0.2
+        osm = t["osm"]
+        fname, el = raw[(osm["type"], osm["id"])]
+        assert t["district"] == "nura", tid
+        tags = el.get("tags", {})
+        if t["subtype"] == "bus_stop":
+            assert tags.get("highway") == "bus_stop" and tags.get("name"), tid   # только остановки с названием
+        if t["subtype"] == "yard":
+            assert tags.get("landuse") == "residential" and tid == f"yard-{el['id']}"
+        if t["subtype"] == "playground":
+            assert tags.get("leisure") == "playground"
+        if t["subtype"] == "waste_disposal":
+            assert tags.get("amenity") == "waste_disposal"
+        # Форма — из OSM как есть (точка или контур), расхождение только от округления
+        if el["type"] == "node":
+            assert geo.haversine_m([el["lon"], el["lat"]], t["geometry"]["coordinates"]) < 0.2
+        else:
+            ring = t["geometry"]["coordinates"][0]
+            src = [[p["lon"], p["lat"]] for p in el["geometry"]]
+            assert len(ring) == len(src) and max(geo.haversine_m(a, b) for a, b in zip(src, ring)) < 0.2, tid
+        seen[t["subtype"]] += 1
+    assert seen["bus_stop"] >= 4 and seen["yard"] >= 5 and seen["playground"] >= 1 and seen["waste_disposal"] >= 1
+
+
+@pytest.mark.skipif(not osm_objects.available(), reason="NOT_RUN: нет data/civic/astana/osm-objects (LOCAL-1)")
+def test_resolver_finds_any_real_osm_object_by_contract_id():
+    r = TargetResolver(graph_path=None, use_r12=False)
+    stop = r.resolve({"kind": "object", "id": "osm-node-4109037549"})
+    assert stop["label_ru"] == "Остановка «Хан Шатыр»" and stop["label_kk"] == "«Хан Шатыр» аялдамасы"
+    assert stop["subtype"] == "bus_stop" and stop["geometry"]["type"] == "Point" and stop["approximate"] is False
+    yard = r.resolve({"kind": "area", "id": "yard-1148721825"})
+    assert yard["geometry"]["type"] == "Polygon" and yard["label_ru"] == "Двор ЖК «Evolution»"
+    # Безымянный объект: подпись по ближайшей улице посчитана заранее — граф улиц не грузится (graph_path=None)
+    labels = json.loads((ROOT / "ui/civic_heat/fixtures/osm_street_labels.json").read_text("utf-8"))["labels"]
+    some = sorted(k for k in labels if k.startswith("osm-node-"))[0]
+    got = r.resolve({"kind": "object", "id": some})
+    assert [got["label_ru"], got["label_kk"]] == labels[some]
+    assert r.resolve({"kind": "object", "id": "osm-node-1"}, point=[71.4, 51.12])["approximate"] is True
+
+
+def test_complex_names_and_kazakh_stop_names():
+    assert osm_objects.clean_complex_name('ЖК "Семейный"') == "Семейный"
+    assert osm_objects.clean_complex_name("Жилой комплекс Зелёный Квартал") == "Зелёный Квартал"
+    ru, kk = osm_objects.labels("bus_stops", {"name": "Ұлттық кардиохирургиялық орталық", "name:ru": "Национальный кардиологический центр"})
+    assert ru == "Остановка «Национальный кардиологический центр»" and kk == "«Ұлттық кардиохирургиялық орталық» аялдамасы"
+
+
+def test_anchor_lies_inside_target():
+    # Значок с числом должен стоять НА объекте: точка — сама точка, многоугольник — внутри контура, линия — на линии.
+    for tid, t in TARGETS.items():
+        g = t["geometry"]
+        a = geo.anchor_of(g)
+        if g["type"] == "Polygon":
+            assert geo.point_in_polygon(a, g["coordinates"]), tid
+        elif g["type"] == "LineString":
+            assert min(geo.haversine_m(a, p) for p in g["coordinates"]) <= geo.line_length_m(g["coordinates"]) / 2 + 0.5, tid
+        else:
+            assert a == g["coordinates"], tid
+    # Маленький квадрат 15×15 м далеко от нуля координат — классический случай потери точности
+    sq = [[71.4, 51.13], [71.40021, 51.13], [71.40021, 51.13014], [71.4, 51.13014], [71.4, 51.13]]
+    c = geo.ring_centroid(sq)
+    assert abs(c[0] - 71.400105) < 1e-7 and abs(c[1] - 51.13007) < 1e-7
+    # Контур буквой «П»: центр тяжести снаружи, значок всё равно встаёт внутрь
+    u = [[71.4 + x * 0.0002, 51.13 + y * 0.0002] for x, y in [(0, 0), (3, 0), (3, 3), (2, 3), (2, 1), (1, 1), (1, 3), (0, 3), (0, 0)]]
+    assert not geo.point_in_polygon(geo.ring_centroid(u), [u])
+    assert geo.point_in_polygon(geo.anchor_of({"type": "Polygon", "coordinates": [u]}), [u])
 
 
 def test_cell_grid_is_about_150m_and_roundtrips():

@@ -4,13 +4,14 @@
 
 Что строится:
   ui/civic_heat/fixtures/targets_demo.json — цели для демо-жалоб: участки улиц (форма ребра пешеходного
-      графа OSM, без правок), ячейки ~150 м (кварталы) и реальные остановки (узлы OSM highway=bus_stop);
+      графа OSM, без правок), реальные остановки, дворы (landuse=residential), детские и контейнерные площадки
+      из data/civic/astana/osm-objects/ (LOCAL-1) и ячейки ~150 м только для «запахов»;
+  ui/civic_heat/fixtures/osm_street_labels.json — подписи безымянных объектов OSM по ближайшей улице;
   web/civic/heat/fixtures/basemap-nura.geojson — улицы крупного плана Нуры для офлайн-подложки демо;
   web/civic/heat/fixtures/basemap-city.geojson — магистрали города и границы районов (мелкий масштаб).
 
 Отбор детерминированный: одинаковые данные → одинаковые файлы. Объекты не выдумываются.
-Пока задача LOCAL-1 не положила data/civic/astana/osm-objects/, остановок в Нуре нет (в снимке графа
-есть только 37 остановок, все вне Нуры) — берём ближайшие настоящие остановки района Есиль.
+Место промзоны в OSM-наборе нет (landuse=industrial не выгружали) — «запахи» пока на ячейках у Коргалжинского шоссе.
 """
 from __future__ import annotations
 
@@ -21,12 +22,13 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-from . import geo
+from . import geo, osm_objects
 from .config import GRAPH_PATH, ROOT
-from .targets import kk_street_from_ru, segment_labels, short_street_ru
+from .targets import kk_street_from_ru, near_street_labels, segment_labels, short_street_ru
 
 SNAPSHOT = ROOT / "data" / "civic" / "astana" / "osm-walking" / "overpass.json.gz"
 OUT_TARGETS = Path(__file__).resolve().parent / "fixtures" / "targets_demo.json"
+OUT_STREET_LABELS = Path(__file__).resolve().parent / "fixtures" / "osm_street_labels.json"
 OUT_BASEMAP_NURA = ROOT / "web" / "civic" / "heat" / "fixtures" / "basemap-nura.geojson"
 OUT_BASEMAP_CITY = ROOT / "web" / "civic" / "heat" / "fixtures" / "basemap-city.geojson"
 
@@ -138,37 +140,54 @@ def build():
     for (name, (_, e)), role in zip(streets, roles):
         add_segment(e, role)
 
-    # --- Кварталы (ячейки ~150 м) с густой сетью дворовых проездов = жилые дворы ---
-    svc_count = defaultdict(int)
-    for e in near_edges:
-        if e["_district"] != "nura":
-            continue
-        way = ways.get(_way_id(e["id"]))
-        if (way or {}).get("tags", {}).get("highway") in ("service", "footway", "living_street"):
-            if geo.haversine_m(e["_mid"], FOCUS) <= FOCUS_RADIUS_M:
-                svc_count[geo.cell_id_for(e["_mid"])] += 1
-    chosen_cells = []
-    for cid, _n in sorted(svc_count.items(), key=lambda kv: (-kv[1], kv[0])):
-        ix, iy = map(int, cid.split("-")[1:])
-        if any(abs(ix - a) <= 2 and abs(iy - b) <= 2 for a, b in chosen_cells):
-            continue  # кварталы не должны слипаться в одно пятно
-        chosen_cells.append((ix, iy))
-        if len(chosen_cells) == 8:
-            break
-    cell_roles = ["yards", "yards", "waste", "lighting", "yards", "parking", "waste", "utilities"]
-    for (ix, iy), role in zip(chosen_cells, cell_roles):
-        cid = f"cell-{ix}-{iy}"
-        poly = geo.cell_polygon(cid)
-        center = geo.anchor_of(poly)
-        st = nearest_street(center)
-        st_ru = st.get("name") if st else None
-        st_kk = kk_of_edge(st) if st else None
-        targets[cid] = {
-            "kind": "area", "role": role, "geometry": poly,
-            "label_ru": f"Квартал у {short_street_ru(st_ru)}" if st_ru else "Квартал",
-            "label_kk": f"{st_kk or kk_street_from_ru(st_ru)} маңындағы орам" if st_ru else "Орам",
-            "district": geo.district_of(center), "source": "cell-grid-150m",
-        }
+    # --- Реальные объекты OSM (LOCAL-1): дворы жилых комплексов, площадки, контейнерные площадки ---
+    objs = osm_objects.load()
+
+    def real_near(subtype, n, roles, min_gap_m=250.0, need_name=False, max_area_m2=None):
+        """n реальных объектов подтипа у фокуса Нуры: ближе к центру, не слипаются, подписи не повторяются."""
+        cands = []
+        for tid, it in objs.items():
+            if it["subtype"] != subtype or it["district"] != "nura":
+                continue
+            if need_name and it.get("needs_street_label"):
+                continue
+            anchor = geo.anchor_of(it["geometry"])
+            d = geo.haversine_m(anchor, FOCUS)
+            if d > FOCUS_RADIUS_M:
+                continue
+            if max_area_m2 and it["geometry"]["type"] != "Point" and polygon_area_m2(it["geometry"]) > max_area_m2:
+                continue
+            cands.append((d, tid, it, anchor))
+        cands.sort(key=lambda x: (x[0], x[1]))
+        picked = []
+        for d, tid, it, anchor in cands:
+            if any(geo.haversine_m(anchor, q) < min_gap_m for q in picked_points):
+                continue
+            label_ru, label_kk = real_labels(tid, it)
+            if any(v.get("label_ru") == label_ru for v in targets.values()):
+                continue  # одинаковые подписи в списке «Горячие места» сбивают с толку
+            role = roles[len(picked)]
+            targets[tid] = {"kind": it["kind"], "subtype": subtype, "role": role, "geometry": it["geometry"],
+                            "label_ru": label_ru, "label_kk": label_kk, "district": it["district"],
+                            "source": it["source"], "osm": it["osm"]}
+            picked.append(tid)
+            picked_points.append(anchor)
+            if len(picked) == n:
+                break
+        return picked
+
+    def real_labels(tid, it):
+        if not it.get("needs_street_label"):
+            return it["label_ru"], it["label_kk"]
+        lab = street_labels.get(tid)
+        return tuple(lab) if lab else (it["label_ru"], it["label_kk"])
+
+    street_labels = write_street_labels(objs, edges, kk_of_edge)
+    picked_points: list = []
+    # Двор = landuse=residential (жилой комплекс). Огромные массивы (> 0.12 км²) не берём — это уже не двор.
+    real_near("yard", 7, ["yards", "yards", "waste", "lighting", "yards", "parking", "utilities"], max_area_m2=120000)
+    real_near("playground", 2, ["playground", "playground"])
+    real_near("waste_disposal", 2, ["waste_site", "waste_site"], min_gap_m=150.0)
 
     # --- Запахи: кварталы на окраине Нуры у Коргалжинского шоссе (место промзоны не проверено) ---
     korg = [e for e in edges if e.get("name") == "Коргалжинское шоссе"]
@@ -190,44 +209,8 @@ def build():
                             "label_ru": "Квартал у Коргалжинского шоссе", "label_kk": f"{kk_korg} маңындағы орам",
                             "district": geo.district_of(geo.anchor_of(poly)), "source": "cell-grid-150m"}
 
-    # --- Остановки: реальные узлы OSM highway=bus_stop / public_transport=platform ---
-    stops = []
-    for n in nodes.values():
-        t = n.get("tags") or {}
-        if t.get("highway") == "bus_stop" or t.get("public_transport") == "platform":
-            stops.append(n)
-    stops.sort(key=lambda n: (geo.haversine_m([n["lon"], n["lat"]], FOCUS), n["id"]))
-    seen_xy = []
-    for n in stops:
-        pt = [n["lon"], n["lat"]]
-        if any(geo.haversine_m(pt, s) < 150 for s in seen_xy):
-            continue  # две платформы одной остановки — оставляем одну
-        seen_xy.append(pt)
-        t = n.get("tags", {})
-        name_ru = t.get("name:ru") or t.get("name")
-        name_kk = t.get("name:kk") or (t.get("name") if t.get("name") and KK_LETTERS.search(t["name"]) else None)
-        if name_ru:
-            ru = f"Остановка «{name_ru}»"
-            kk = f"«{name_kk or name_ru}» аялдамасы"
-        else:
-            near = None
-            best = None
-            for e in edges_near_point(edges, pt):
-                if e.get("name"):
-                    d = geo.haversine_m(pt, geo.line_midpoint(e["geometry"]))
-                    if best is None or d < best:
-                        best, near = d, e
-            if near:
-                ru = f"Остановка у {short_street_ru(near['name'])}"
-                kk = f"{kk_of_edge(near) or kk_street_from_ru(near['name'])} жанындағы аялдама"
-            else:
-                ru, kk = "Остановка", "Аялдама"
-        if any(v.get("label_ru") == ru for v in targets.values()):
-            continue  # одинаковые подписи в списке «Горячие места» сбивают с толку — берём следующую остановку
-        targets[f"osm-node-{n['id']}"] = {"kind": "object", "subtype": "bus_stop", "role": "transport", "geometry": {"type": "Point", "coordinates": pt},
-                                          "label_ru": ru, "label_kk": kk, "district": geo.district_of(pt), "source": "osm-node-bus_stop"}
-        if sum(1 for v in targets.values() if v["role"] == "transport") == 4:
-            break
+    # --- Остановки Нуры: реальные узлы OSM highway=bus_stop (LOCAL-1), только с названием ---
+    real_near("bus_stop", 5, ["transport"] * 5, min_gap_m=200.0, need_name=True)
 
     # --- Другие районы: по 2 настоящих участка у центра района (для вида «весь город») ---
     dist = geo.districts()
@@ -272,6 +255,52 @@ def build():
     OUT_TARGETS.write_text(json.dumps({"_meta": meta, "targets": dict(sorted(targets.items()))}, ensure_ascii=False, indent=1) + "\n", "utf-8")
     write_basemaps(graph, ways, nodes)
     return targets
+
+
+def polygon_area_m2(geometry) -> float:
+    polys = [geometry["coordinates"]] if geometry["type"] == "Polygon" else geometry["coordinates"]
+    total = 0.0
+    for poly in polys:
+        ring = poly[0]
+        kx = 111320 * math.cos(math.radians(ring[0][1]))
+        ky = 110574
+        total += abs(sum(ring[i][0] * kx * ring[i + 1][1] * ky - ring[i + 1][0] * kx * ring[i][1] * ky for i in range(len(ring) - 1)) / 2)
+    return total
+
+
+def write_street_labels(objs, edges, kk_of_edge) -> dict:
+    """Подписи безымянных объектов OSM по ближайшей улице («Остановка у ул. …») — заранее, чтобы
+    сервер не грузил граф улиц (2–3 с) на первом запросе. Казахское название улицы — из OSM name:kk."""
+    cell = 0.003
+    grid: dict = {}
+    for e in edges:
+        if e.get("name"):
+            mid = geo.line_midpoint(e["geometry"])
+            grid.setdefault((int(mid[0] // cell), int(mid[1] // cell)), []).append((mid, e))
+    out = {}
+    for tid, it in sorted(objs.items()):
+        if not it.get("needs_street_label"):
+            continue
+        anchor = geo.anchor_of(it["geometry"])
+        if not anchor:
+            continue
+        cx, cy = int(anchor[0] // cell), int(anchor[1] // cell)
+        best = None
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for mid, e in grid.get((cx + dx, cy + dy), ()):
+                    d = geo.haversine_m(anchor, mid)
+                    if d <= 250 and (best is None or d < best[0] or (d == best[0] and e["id"] < best[1]["id"])):
+                        best = (d, e)
+        if best:
+            lab = near_street_labels(it["subtype"], best[1]["name"], kk_of_edge(best[1]))
+            if lab:
+                out[tid] = list(lab)
+    OUT_STREET_LABELS.write_text(json.dumps({"_meta": {"built_by": "ui/civic_heat/build_fixtures.py",
+                                                       "license": "ODbL-1.0 © OpenStreetMap contributors",
+                                                       "note": "Подпись безымянного объекта OSM по ближайшей улице (≤ 250 м)."},
+                                             "labels": out}, ensure_ascii=False, separators=(",", ":")) + "\n", "utf-8")
+    return out
 
 
 def edges_near_point(edges, pt, radius_m=300.0):

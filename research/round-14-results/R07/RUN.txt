@@ -13,15 +13,16 @@ R07 · Тепловая карта объектов — как запустит�
      «Взять в работу» / «Отметить исправленным» (цель становится зелёной «исправлено» на 7 дней).
    - Житель (переключатель «Житель»): та же карта мягче, в карточке — «Я тоже» (один раз с устройства).
    - Кнопка «Новая жалоба (демо)» добавляет синтетическую жалобу на выбранную цель: цвет плавно меняется, на цели пульс.
-   ҚАЗ / РУС — в шапке, выбор запоминается. Все жалобы — demo (synthetic); места настоящие (OSM).
+   ҚАЗ / РУС — в шапке, выбор запоминается. Все жалобы — demo (synthetic); места настоящие (OSM):
+   остановки «Хан Шатыр», «Центр материнства и детства»…, дворы ЖК «Evolution», «Алматау»…, детские и контейнерные площадки.
 
 3. Проверки:
      python -m pytest tests/civic/R07 -q                    # расчёт, API, точность по OSM, скорость, словарь ru/kk
      python -m ui.civic_heat.devserver &                     # затем браузерные проверки и скриншоты:
      NODE_PATH=$(npm root -g) node tests/civic/R07/browser/shots.js   # Playwright + Chromium → research/round-14-results/R07/screens/
 
-4. Пересобрать фикстуры из OSM (после LOCAL-1 / данных R12):
+4. Пересобрать фикстуры из OSM (данные LOCAL-1 data/civic/astana/osm-objects/ уже в ветке):
      python -m ui.civic_heat.build_fixtures                  # ui/civic_heat/fixtures/targets_demo.json, web/civic/heat/fixtures/basemap-*.geojson
-     python -m ui.civic_heat.demo_seed                       # сводка демо-набора (125 жалоб, 240 человек, 41 цель)
+     python -m ui.civic_heat.demo_seed                       # сводка демо-набора (136 жалоб, 241 человек, 45 целей)
 
 5. Подключение к ui/web_server.py и оболочке — INTEGRATION.txt (патч проверен на настоящем сервере, см. DELIVERY.json).

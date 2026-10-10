@@ -3,7 +3,8 @@
     python -m ui.civic_heat.demo_seed            # сводка набора
     python -m ui.civic_heat.demo_seed --write    # сохранить fixtures/demo_complaints.json (якорь 2026-10-11 12:00)
 
-Цели — настоящие участки улиц, кварталы и остановки из fixtures/targets_demo.json (собраны из OSM).
+Цели — настоящие объекты OSM из fixtures/targets_demo.json: участки улиц, остановки, дворы жилых комплексов,
+детские и контейнерные площадки (LOCAL-1); ячейки ~150 м — только для «запахов».
 Тексты, люди, время и статусы придуманы. Формат записи — CONTRACT §5 (v2).
 Набор детерминированный: при одном seed и одном now — те же записи. Возраст жалоб задаётся
 относительно now, поэтому в день показа карта выглядит так же «свежо», как при разработке.
@@ -39,7 +40,9 @@ CLUSTERS = {
     "waste": ("waste", [4, 2], 10),
     "utilities": ("utilities", [4], 6),
     "smell_air": ("smell_air", [5, 3, 2], 8),
-    "transport": ("transport", [8, 4, 3, 2], 12),
+    "transport": ("transport", [8, 4, 3, 2, 2], 12),
+    "playground": ("yards", [4, 2], 15),          # реальные детские площадки OSM
+    "waste_site": ("waste", [3, 2], 8),            # реальные контейнерные площадки OSM
     "city_snow": ("snow_ice", [4, 3, 2, 2, 1], 6),
     "city_roads": ("roads", [2, 2, 1, 1, 1], 40),
 }
