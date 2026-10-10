@@ -90,7 +90,7 @@ class Table:
 
 # ---------- таблицы для диплома ----------
 
-def build_tables(exp: dict, final: dict, onnx: dict) -> list[Table]:
+def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None) -> list[Table]:
     runs = exp.get("runs") or {}
     labels = tuple(exp.get("labels") or L.labels())
     names = L.names("ru")
@@ -196,7 +196,46 @@ def build_tables(exp: dict, final: dict, onnx: dict) -> list[Table]:
             t.add("Диагностика LOCAL-4: per-channel, 4 потока", f"{diag['isolated_4_threads']['mean_ms']} мс "
                                                                f"(p95 {diag['isolated_4_threads']['p95_ms']})")
         tables.append(t)
+    tables += extra_tables(Path(folder) if folder else RESULTS_DIR)
     return tables
+
+
+def extra_tables(folder: Path) -> list[Table]:
+    """Дополнительные опыты (если файлы есть): перевод транслита и чистка шумных меток llm_v1."""
+    out = []
+    tr = _load(folder / "translit_to_cyrillic_probe_v2.json")
+    if tr:
+        t = Table("t8_translit_to_cyrillic", "Таблица 8. Перевод транслита в кириллицу перед моделью (probe_v2)",
+                  ["Модель", "macro-F1 без / с переводом", "Δ [95% ДИ]", "Транслит: accuracy без / с", "Текстов изменено"],
+                  "to_cyrillic — функция R04; меняет только тексты, где латиницы ≥ 50 % (24 текста стиля translit). "
+                  "Обучение как synth_all.")
+        for key, name in (("heuristic_v1", "словарь (v1)"), ("logreg", "логрегрессия")):
+            r = tr.get(key)
+            if r:
+                d = r["paired_delta_cyr_minus_raw"]
+                t.add(name, f"{_f(r['raw']['macro_f1'])} / {_f(r['to_cyrillic']['macro_f1'])}",
+                      f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}]",
+                      f"{_f(r['raw']['translit_accuracy'], 2)} / {_f(r['to_cyrillic']['translit_accuracy'], 2)}",
+                      r["texts_changed"])
+        out.append(t)
+    cl = _load(folder / "llm_label_cleaning_effect.json")
+    audit = _load(folder / "LLM_LABEL_AUDIT.json")
+    if cl or audit:
+        t = Table("t9_llm_label_noise", "Таблица 9. Шум меток LLM-синтетики llm_v1 (без людей)", ["Показатель", "Значение"],
+                  "Кандидаты — confident learning (логрегрессия 5-fold): p(своей метки) < 0.2 и другая категория ≥ 0.6.")
+        if audit:
+            t.add("Кандидатов на неверную метку", f"{audit['candidates']} из {audit['n']} ({audit['share']:.1%})")
+            other = (audit.get("by_label") or {}).get("other") or {}
+            if other:
+                t.add("Из них в «Другом»", f"{other['candidates']} из {other['n']} ({other['share']:.1%})")
+        if cl:
+            d = cl["paired_delta_clean_minus_original"]
+            t.add("Логрегрессия v3 + LLM на probe_v2: исходно / без кандидатов",
+                  f"{_f(cl['probe_v2_macro_f1']['original'])} / {_f(cl['probe_v2_macro_f1']['clean'])}")
+            t.add("Δ [95% ДИ]", f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}] — "
+                                f"{'доказано' if d['low'] > 0 or d['high'] < 0 else 'не доказано'}")
+        out.append(t)
+    return out
 
 
 def render_tables(tables: list[Table], exp: dict) -> str:
@@ -397,7 +436,7 @@ def main(argv=None) -> int:
         return 2
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     if args.cmd == "tables":
-        tables = build_tables(exp, _load(Path(args.final)), _load(Path(args.onnx)))
+        tables = build_tables(exp, _load(Path(args.final)), _load(Path(args.onnx)), Path(args.results).parent)
         Path(args.out).write_text(render_tables(tables, exp) + "\n", encoding="utf-8")
         for t in tables:
             t.write_csv(Path(args.csv_dir))
