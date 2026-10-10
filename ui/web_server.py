@@ -476,6 +476,387 @@ class CivicGateway:
                            f"Модуль «{CIVIC_MODULE_LABELS[owner]}» не подключён в этой сборке.")
 
 
+# ---------------------------------------------------------------------------
+# API v2 (раунд 14, research/round-14/CONTRACT.md §7). Всё под /api/civic/v2/.
+#
+# Шлюз владеет только транспортом: адреса, Host/Origin, размер, разбор и проверка параметров.
+# Считают модули ролей — обычные Python-функции. Для каждого маршрута ниже записано, у какой роли,
+# в каком модуле и под каким именем шлюз ищет функцию. Нет модуля или функции — ответ 503
+# {"error": "module_not_ready", "module": ..., "role": ...}; приложение при этом работает дальше.
+#
+# Формат v2 проще, чем у v1: успешный ответ — сам JSON из функции (без обёртки ok/data),
+# ошибка — {"error": код, "message": текст по-русски, ...}.
+#
+# Как функция сообщает об ошибке (подробно — research/round-14-results/R01/INTEGRATION.txt):
+#   return {...}                      -> 200 и этот объект
+#   return (201, {...})               -> свой код ответа
+#   raise ValueError("текст")         -> 400 bad_request
+#   raise LookupError / KeyError      -> 404 not_found
+#   raise PermissionError             -> 403 forbidden
+#   исключение с атрибутами status (int 400..599) и code (str) -> этот код; message — атрибут message или str(exc)
+#   любое другое исключение           -> 500 internal (подробности только в журнале сервера)
+# Необязательные именованные параметры context (заголовки, cookies, адрес) и principal
+# ({"username", "role"} сотрудника или None) передаются, только если функция их объявила.
+CIVIC_V2_PREFIX = "/api/civic/v2"
+CATEGORIES_V2_FILE = ROOT / "research" / "round-14" / "categories_v2.json"
+# Город с запасом: координаты вне этого прямоугольника — точно ошибка ввода (CONTRACT §8).
+ASTANA_BOUNDS = (70.9, 50.9, 71.9, 51.4)
+V2_TEXT_MAX = 5000
+V2_DEVICE_ID = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
+V2_DISTRICT = re.compile(r"^[a-z][a-z0-9_-]{1,39}$")
+V2_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+class V2Handler:
+    """Где живёт функция маршрута: роль, модули-кандидаты (первый найденный), имя функции."""
+
+    def __init__(self, role, modules, function, staff=False):
+        self.role, self.modules, self.function, self.staff = role, tuple(modules), function, staff
+
+
+# (метод, шаблон пути, ключ маршрута). {id} проверяется тем же правилом CIVIC_ID, что и в v1.
+V2_ROUTES = (
+    ("GET", ("modules",), "modules"),
+    ("POST", ("classify",), "classify"),
+    ("POST", ("similar",), "similar"),
+    ("GET", ("targets",), "targets"),
+    ("POST", ("complaints",), "complaints.create"),
+    ("GET", ("complaints",), "complaints.list"),
+    ("POST", ("complaints", "{id}", "metoo"), "complaints.metoo"),
+    ("POST", ("complaints", "{id}", "status"), "complaints.status"),
+    ("GET", ("heat",), "heat"),
+    ("GET", ("akim", "summary"), "akim.summary"),
+    ("GET", ("proposals",), "proposals.list"),
+    ("POST", ("proposals",), "proposals.create"),
+    ("POST", ("proposals", "{id}", "vote"), "proposals.vote"),
+    ("GET", ("objects",), "objects.list"),
+    ("PUT", ("objects", "{id}", "stage"), "objects.stage"),
+)
+# Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
+V2_HANDLERS = {
+    "classify": V2Handler("R04", ("ui.civic_ml_api",), "classify"),
+    "similar": V2Handler("R04", ("ui.civic_ml_api",), "similar"),
+    "targets": V2Handler("R12", ("engine.civic_geo",), "targets"),
+    "complaints.create": V2Handler("R09", ("ui.civic_feedback.v2", "ui.civic_feedback"), "create_complaint"),
+    "complaints.list": V2Handler("R09", ("ui.civic_feedback.v2", "ui.civic_feedback"), "list_complaints"),
+    "complaints.metoo": V2Handler("R09", ("ui.civic_feedback.v2", "ui.civic_feedback"), "add_metoo"),
+    "complaints.status": V2Handler("R09", ("ui.civic_feedback.v2", "ui.civic_feedback"), "set_complaint_status",
+                                   staff=True),
+    "heat": V2Handler("R07", ("ui.civic_heat",), "heat"),
+    "akim.summary": V2Handler("R08", ("ui.civic_akim",), "summary"),
+    "proposals.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_proposals"),
+    "proposals.create": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "create_proposal", staff=True),
+    "proposals.vote": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "vote_proposal"),
+    "objects.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_objects"),
+    "objects.stage": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "set_object_stage", staff=True),
+}
+
+
+def v2_error(status, code, message, **extra):
+    body = {"error": code, "message": message}
+    body.update(extra)
+    return {"status": status, "headers": {}, "body": body}
+
+
+class V2BadRequest(ValueError):
+    """Неверный параметр запроса: field — имя параметра, message — что исправить (по-русски)."""
+
+    def __init__(self, field, message):
+        super().__init__(message)
+        self.field, self.message = field, message
+
+
+def load_category_ids(path=CATEGORIES_V2_FILE):
+    """Id категорий v2 из единого источника (CONTRACT §3). Нет файла — проверка категории отключается."""
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        return frozenset(item["id"] for item in data["categories"])
+    except (OSError, ValueError, KeyError, TypeError):
+        LOGGER.warning("categories_v2.json не прочитан: категория в API v2 не проверяется")
+        return None
+
+
+def _v2_number(raw, field, low, high):
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        raise V2BadRequest(field, f"{field}: нужно число.") from None
+    if not (low <= value <= high):  # NaN тоже не проходит это сравнение
+        raise V2BadRequest(field, f"{field}: число вне допустимого диапазона.")
+    return value
+
+
+def _v2_int(raw, field, low, high):
+    if isinstance(raw, bool) or (isinstance(raw, float) and not raw.is_integer()):
+        raise V2BadRequest(field, f"{field}: нужно целое число.")
+    try:
+        value = int(raw)
+    except (TypeError, ValueError):
+        raise V2BadRequest(field, f"{field}: нужно целое число.") from None
+    if not low <= value <= high:
+        raise V2BadRequest(field, f"{field}: число вне допустимого диапазона.")
+    return value
+
+
+def _v2_bbox(raw):
+    """bbox=minLon,minLat,maxLon,maxLat -> кортеж из 4 чисел внутри Астаны (с запасом)."""
+    parts = str(raw).split(",")
+    if len(parts) != 4:
+        raise V2BadRequest("bbox", "bbox: четыре числа через запятую: minLon,minLat,maxLon,maxLat.")
+    lon1, lat1, lon2, lat2 = (_v2_number(p, "bbox", -180, 180) for p in parts)
+    if lon1 >= lon2 or lat1 >= lat2:
+        raise V2BadRequest("bbox", "bbox: сначала меньшие координаты, потом большие.")
+    w, s, e, n = ASTANA_BOUNDS
+    if lon2 < w or lon1 > e or lat2 < s or lat1 > n:
+        raise V2BadRequest("bbox", "bbox: область вне Астаны.")
+    return (lon1, lat1, lon2, lat2)
+
+
+def _v2_point(raw, field="point"):
+    if not isinstance(raw, (list, tuple)) or len(raw) != 2:
+        raise V2BadRequest(field, f"{field}: нужна пара [долгота, широта].")
+    lon = _v2_number(raw[0], field, ASTANA_BOUNDS[0], ASTANA_BOUNDS[2])
+    lat = _v2_number(raw[1], field, ASTANA_BOUNDS[1], ASTANA_BOUNDS[3])
+    return [lon, lat]
+
+
+def _v2_text(raw, field="text"):
+    if not isinstance(raw, str) or not raw.strip():
+        raise V2BadRequest(field, "Напишите текст обращения.")
+    if len(raw) > V2_TEXT_MAX:
+        raise V2BadRequest(field, f"Текст длиннее {V2_TEXT_MAX} символов.")
+    return raw
+
+
+class CivicV2Gateway:
+    """Маршрутизатор API v2: проверяет параметры и вызывает функцию модуля роли."""
+
+    def __init__(self, store_gateway=None, modules=None, category_ids=None):
+        # store_gateway — шлюз v1: из него берётся R02 для проверки сессии сотрудника.
+        self.store_gateway = store_gateway
+        # modules: {имя_модуля: объект} — подмена для тестов; иначе importlib.
+        self._override = dict(modules) if modules is not None else None
+        self._resolved = {}  # route_key -> (callable | None, причина, имя модуля)
+        self._lock = threading.Lock()
+        self.category_ids = load_category_ids() if category_ids is None else frozenset(category_ids)
+
+    # --- поиск функций модулей ---------------------------------------------
+    def _import(self, name):
+        if self._override is not None:
+            return self._override.get(name)
+        try:
+            return importlib.import_module(name)
+        except ModuleNotFoundError as exc:
+            missing = getattr(exc, "name", None) or ""
+            # Нет самого модуля (или его пакета) — «ещё не сдан». Нет зависимости внутри модуля — сбой.
+            if name == missing or name.startswith(missing + "."):
+                return None
+            raise
+
+    def resolve(self, key):
+        """(функция | None, причина, модуль). Причина: ready | module_not_ready | module_failed."""
+        with self._lock:
+            if key in self._resolved:
+                return self._resolved[key]
+            handler = V2_HANDLERS[key]
+            result = (None, "module_not_ready", handler.modules[0])
+            for name in handler.modules:
+                try:
+                    module = self._import(name)
+                except Exception:
+                    LOGGER.exception("API v2: модуль %s (%s) не загрузился", name, handler.role)
+                    result = (None, "module_failed", name)
+                    break
+                fn = getattr(module, handler.function, None) if module is not None else None
+                if callable(fn):
+                    result = (fn, "ready", name)
+                    break
+            self._resolved[key] = result
+            return result
+
+    def modules(self):
+        """Состояние каждого маршрута v2 — для оболочки и приёмки (R10)."""
+        out = {}
+        for _method, _pattern, key in V2_ROUTES:
+            if key == "modules":
+                continue
+            handler = V2_HANDLERS[key]
+            fn, reason, module = self.resolve(key)
+            out[key] = {"role": handler.role, "module": module, "function": handler.function,
+                        "status": "ready" if fn else reason}
+        return out
+
+    # --- разбор параметров маршрутов -------------------------------------------
+    def _category(self, raw, required=False):
+        if raw in (None, ""):
+            if required:
+                raise V2BadRequest("category", "category: выберите категорию.")
+            return None
+        if not isinstance(raw, str) or (self.category_ids is not None and raw not in self.category_ids):
+            raise V2BadRequest("category", "category: неизвестная категория.")
+        return raw
+
+    def arguments(self, key, params, query, body):
+        """Именованные аргументы функции. Ошибка ввода — V2BadRequest (ответ 400)."""
+        q = {k: v[-1] for k, v in parse_qs(query or "", keep_blank_values=True).items()}
+        body = body if isinstance(body, dict) else {}
+        opt = lambda name: q.get(name) not in (None, "")  # noqa: E731 — короткая проверка «параметр задан»
+        if key == "classify":
+            return {"text": _v2_text(body.get("text"))}
+        if key == "similar":
+            args = {"text": _v2_text(body.get("text"))}
+            args["point"] = _v2_point(body["point"]) if body.get("point") is not None else None
+            args["days"] = _v2_int(body["days"], "days", 1, 365) if body.get("days") is not None else None
+            return args
+        if key == "targets":
+            if not (opt("lon") and opt("lat")):
+                raise V2BadRequest("lon", "Нужны lon и lat точки.")
+            return {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
+                    "lat": _v2_number(q["lat"], "lat", ASTANA_BOUNDS[1], ASTANA_BOUNDS[3]),
+                    "category": self._category(q.get("category"))}
+        if key == "complaints.create":
+            _v2_text(body.get("text"))
+            if body.get("point") is not None:
+                _v2_point(body["point"])
+            if body.get("category") is not None:
+                self._category(body.get("category"))
+            return {"body": body}
+        if key == "complaints.list":
+            since = q.get("since") or None
+            if since is not None and len(since) > 40:
+                raise V2BadRequest("since", "since: дата и время в формате ISO 8601.")
+            return {"bbox": _v2_bbox(q["bbox"]) if opt("bbox") else None, "since": since}
+        if key in ("complaints.metoo", "complaints.status"):
+            return {"complaint_id": params["id"], "body": body}
+        if key == "heat":
+            return {"bbox": _v2_bbox(q["bbox"]) if opt("bbox") else None,
+                    "days": _v2_int(q["days"], "days", 1, 365) if opt("days") else None,
+                    "category": self._category(q.get("category")),
+                    "zoom": _v2_number(q["zoom"], "zoom", 0, 24) if opt("zoom") else None}
+        if key == "akim.summary":
+            date = q.get("date") or None
+            if date is not None and not V2_DATE.match(date):
+                raise V2BadRequest("date", "date: дата в формате ГГГГ-ММ-ДД.")
+            district = q.get("district") or None
+            if district is not None and not V2_DISTRICT.match(district):
+                raise V2BadRequest("district", "district: неизвестный район.")
+            return {"date": date, "district": district}
+        if key in ("proposals.list", "objects.list"):
+            return {"bbox": _v2_bbox(q["bbox"]) if opt("bbox") else None}
+        if key == "proposals.create":
+            return {"body": body}
+        if key == "proposals.vote":
+            value = body.get("value")
+            if isinstance(value, bool) or value not in (1, -1):
+                raise V2BadRequest("value", "value: 1 (за) или -1 (против).")
+            device = body.get("device_id")
+            if not isinstance(device, str) or not V2_DEVICE_ID.match(device):
+                raise V2BadRequest("device_id", "device_id: строка 8–128 символов.")
+            return {"proposal_id": params["id"], "value": value, "device_id": device}
+        if key == "objects.stage":
+            return {"object_id": params["id"], "body": body}
+        return {}
+
+    # --- вызов ------------------------------------------------------------------
+    def _staff(self, context):
+        """(principal_dict, None) или (None, ответ-ошибка) — сессия сотрудника R02 (как в v1)."""
+        store = self.store_gateway.service("store") if self.store_gateway is not None else None
+        if store is None or not hasattr(store, "require_staff"):
+            return None, v2_error(503, "module_not_ready", "Вход сотрудника пока не подключён.",
+                                  module="ui.civic_store", role="R06")
+        principal, denied = store.require_staff(context, unsafe=True)
+        if denied:
+            error = (denied.get("body") or {}).get("error") or {}
+            return None, v2_error(denied.get("status", 403), error.get("code", "forbidden"),
+                                  error.get("message", "Недостаточно прав."))
+        return {"username": principal.username, "role": principal.role}, None
+
+    @staticmethod
+    def _call(fn, args, context, principal):
+        import inspect  # локально: нужен только здесь
+        try:
+            accepted = inspect.signature(fn).parameters
+            takes_kwargs = any(p.kind is inspect.Parameter.VAR_KEYWORD for p in accepted.values())
+        except (TypeError, ValueError):
+            accepted, takes_kwargs = {}, False
+        for name, value in (("context", context), ("principal", principal)):
+            if takes_kwargs or name in accepted:
+                args[name] = value
+        return fn(**args)
+
+    def handle(self, method, rel_path, query, body, context):
+        segments = rel_path.strip("/").split("/") if rel_path.strip("/") else []
+        if rel_path != "/" + "/".join(segments) or any(not s for s in segments):
+            return v2_error(404, "not_found", "Адрес API не найден.")
+        allowed, found = set(), None
+        for route_method, pattern, key in V2_ROUTES:
+            if len(pattern) != len(segments):
+                continue
+            params = {}
+            for part, value in zip(pattern, segments):
+                if part == "{id}":
+                    if not CIVIC_ID.match(value):
+                        break
+                    params["id"] = value
+                elif part != value:
+                    break
+            else:
+                if route_method == method:
+                    found = (key, params)
+                    break
+                allowed.add(route_method)
+        if found is None:
+            if allowed:
+                reply = v2_error(405, "method_not_allowed", "Метод не поддерживается для этого адреса.")
+                reply["headers"]["Allow"] = ",".join(sorted(allowed))
+                return reply
+            return v2_error(404, "not_found", "Адрес API не найден.")
+        key, params = found
+        if key == "modules":
+            return {"status": 200, "headers": {}, "body": {"modules": self.modules()}}
+        handler = V2_HANDLERS[key]
+        fn, reason, module = self.resolve(key)
+        if fn is None:
+            message = ("Модуль не загрузился, подробности в журнале сервера." if reason == "module_failed"
+                       else "Эта часть ещё не подключена в сборке.")
+            return v2_error(503, reason, message, module=module, role=handler.role)
+        try:
+            args = self.arguments(key, params, query, body)
+        except V2BadRequest as exc:
+            return v2_error(400, "bad_request", exc.message, field=exc.field)
+        principal = None
+        if handler.staff:
+            principal, denied = self._staff(context)
+            if denied:
+                return denied
+        try:
+            result = self._call(fn, args, context, principal)
+        except V2BadRequest as exc:
+            return v2_error(400, "bad_request", exc.message, field=exc.field)
+        except PermissionError as exc:
+            return v2_error(403, "forbidden", str(exc) or "Недостаточно прав.")
+        except Exception as exc:  # ошибки модуля -> понятный ответ, приложение не падает
+            status = getattr(exc, "status", None)
+            if isinstance(status, int) and not isinstance(status, bool) and 400 <= status <= 599:
+                code = getattr(exc, "code", None)
+                return v2_error(status, code if isinstance(code, str) and code else "error",
+                                str(getattr(exc, "message", None) or exc)[:300])
+            if isinstance(exc, (LookupError,)):
+                return v2_error(404, "not_found", "Запись не найдена.")
+            if isinstance(exc, ValueError):
+                return v2_error(400, "bad_request", str(exc)[:300] or "Неверные данные запроса.")
+            LOGGER.exception("API v2: %s (%s.%s) упал", key, module, handler.function)
+            return v2_error(500, "internal", "Не удалось выполнить запрос. Попробуйте ещё раз.")
+        status = 200
+        if (isinstance(result, tuple) and len(result) == 2 and isinstance(result[0], int)
+                and not isinstance(result[0], bool)):
+            status, result = result
+        if not isinstance(result, dict) or not 200 <= status <= 599:
+            LOGGER.error("API v2: %s вернул не объект JSON", key)
+            return v2_error(500, "bad_module_response", "Модуль вернул некорректный ответ.")
+        return {"status": status, "headers": {}, "body": result}
+
+
 def event_id(value):
     if value is None or value == "":
         return None
@@ -700,13 +1081,13 @@ class Handler(BaseHTTPRequestHandler):
             return True
         return None
 
-    def civic_send(self, reply):
+    def civic_send(self, reply, v2=False):
         status = reply.get("status") if isinstance(reply, dict) else None
         body = reply.get("body") if isinstance(reply, dict) else None
         if (not isinstance(status, int) or isinstance(status, bool) or not 200 <= status <= 599
-                or not isinstance(body, dict) or not isinstance(body.get("ok"), bool)):
+                or not isinstance(body, dict) or (not v2 and not isinstance(body.get("ok"), bool))):
             LOGGER.error("civic service returned a malformed response")
-            reply = civic_error(500, "bad_service_response", "Сервис вернул некорректный ответ.")
+            reply = (v2_error if v2 else civic_error)(500, "bad_service_response", "Сервис вернул некорректный ответ.")
             status, body = reply["status"], reply["body"]
         try:
             data = json.dumps(body, ensure_ascii=False, allow_nan=False).encode("utf-8")
@@ -740,32 +1121,36 @@ class Handler(BaseHTTPRequestHandler):
         except CLIENT_DISCONNECTED:
             self.close_connection = True
 
-    def civic_request(self, method):
+    def civic_request(self, method, v2=False):
+        """Общий транспорт v1 и v2 (раунд 14): те же проверки Host/Origin/размера/JSON, разный формат ответа."""
         parsed = urlsplit(self.path)
-        rel_path = parsed.path[len(CIVIC_PREFIX):] or "/"
+        rel_path = parsed.path[len(CIVIC_V2_PREFIX if v2 else CIVIC_PREFIX):] or "/"
+        error = v2_error if v2 else civic_error
+        send = (lambda reply: self.civic_send(reply, v2=True)) if v2 else self.civic_send
+        has_body = method in ("POST", "PUT")
         if not self.host_allowed():
-            if method == "POST":
+            if has_body:
                 self.discard_body()
-            self.civic_send(civic_error(403, "forbidden_host", "Откройте интерфейс через адрес этого сервера."))
+            send(error(403, "forbidden_host", "Откройте интерфейс через адрес этого сервера."))
             return
-        if method == "POST":
+        if has_body:
             if self.origin_state() is False:
                 self.discard_body()
-                self.civic_send(civic_error(403, "cross_origin", "Запрос с другого сайта отклонён."))
+                send(error(403, "cross_origin", "Запрос с другого сайта отклонён."))
                 return
         if len(parsed.query) > CIVIC_MAX_QUERY:
-            if method == "POST":
+            if has_body:
                 self.discard_body()
-            self.civic_send(civic_error(400, "query_too_long", "Слишком длинная строка запроса."))
+            send(error(400, "query_too_long", "Слишком длинная строка запроса."))
             return
         query = parsed.query  # raw; each service parses and bounds it (R02 parse_query)
         body = None
         if self.headers.get("Transfer-Encoding"):
             # Content-Length only; a chunked body would stay in the stream (adopted from R02 adapter).
             self.close_connection = True
-            self.civic_send(civic_error(411, "length_required", "Нужен Content-Length; chunked не поддерживается."))
+            send(error(411, "length_required", "Нужен Content-Length; chunked не поддерживается."))
             return
-        if method == "POST":
+        if has_body:
             try:
                 length = int(self.headers.get("Content-Length", "0"))
             except ValueError:
@@ -775,12 +1160,12 @@ class Handler(BaseHTTPRequestHandler):
                     self.rfile.read(length)
                 self.close_connection = True
                 code = 413 if length > CIVIC_MAX_BODY else 400
-                self.civic_send(civic_error(code, "too_large" if code == 413 else "empty_body",
-                                            "Слишком большой запрос." if code == 413 else "Пустой запрос."))
+                send(error(code, "too_large" if code == 413 else "empty_body",
+                           "Слишком большой запрос." if code == 413 else "Пустой запрос."))
                 return
             if self.headers.get_content_type() != "application/json":
                 self.rfile.read(length)
-                self.civic_send(civic_error(415, "unsupported_media_type", "Ожидается Content-Type: application/json."))
+                send(error(415, "unsupported_media_type", "Ожидается Content-Type: application/json."))
                 return
             try:
                 body = json.loads(self.rfile.read(length).decode("utf-8"), parse_constant=_invalid_number)
@@ -789,10 +1174,10 @@ class Handler(BaseHTTPRequestHandler):
                 return
             except (ValueError, UnicodeDecodeError, RecursionError):
                 # RecursionError: pathologically nested JSON within the size limit.
-                self.civic_send(civic_error(400, "invalid_json", "Тело запроса должно быть корректным JSON."))
+                send(error(400, "invalid_json", "Тело запроса должно быть корректным JSON."))
                 return
             if not isinstance(body, dict):
-                self.civic_send(civic_error(400, "invalid_json", "Тело запроса должно быть JSON-объектом."))
+                send(error(400, "invalid_json", "Тело запроса должно быть JSON-объектом."))
                 return
         cookies = {}
         try:
@@ -809,21 +1194,25 @@ class Handler(BaseHTTPRequestHandler):
             "host_allowed": True, "is_same_origin": self.origin_state(), "is_https": False,
             "host": self.headers.get("Host"),
         }
+        gateway = self.server.civic_v2 if v2 else self.server.civic
         try:
-            reply = self.server.civic.handle(method, rel_path, query, body, context)
+            reply = gateway.handle(method, rel_path, query, body, context)
         except Exception:
             # No body, cookies or provider details in the log or the reply.
             LOGGER.exception("civic handler failed for %s %s", method, rel_path)
-            reply = civic_error(500, "internal", "Не удалось выполнить запрос. Попробуйте ещё раз.")
+            reply = error(500, "internal", "Не удалось выполнить запрос. Попробуйте ещё раз.")
         if reply is None:
-            reply = civic_error(404, "not_found", "Адрес API не найден.")
-        self.civic_send(reply)
+            reply = error(404, "not_found", "Адрес API не найден.")
+        send(reply)
 
     def do_GET(self):
         parsed = urlsplit(self.path)
         path = parsed.path
         if path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/"):
             self.civic_request("GET")
+            return
+        if path == CIVIC_V2_PREFIX or path.startswith(CIVIC_V2_PREFIX + "/"):
+            self.civic_request("GET", v2=True)
             return
         if path == "/api/health":
             self.json_reply(200, {"status": "ok"})
@@ -855,6 +1244,9 @@ class Handler(BaseHTTPRequestHandler):
         path = urlsplit(self.path).path
         if path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/"):
             self.civic_request("POST")
+            return
+        if path == CIVIC_V2_PREFIX or path.startswith(CIVIC_V2_PREFIX + "/"):
+            self.civic_request("POST", v2=True)
             return
         if path not in POST_ROUTES:
             self.discard_body()
@@ -920,6 +1312,8 @@ class Handler(BaseHTTPRequestHandler):
             path = urlsplit(raw).path
         except ValueError:
             return False
+        if path == CIVIC_V2_PREFIX or path.startswith(CIVIC_V2_PREFIX + "/"):
+            return "v2"
         return path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/")
 
     def do_unsupported(self):
@@ -927,14 +1321,25 @@ class Handler(BaseHTTPRequestHandler):
         path, 405 with Allow for a known one, never a service call); elsewhere a JSON 405."""
         self.discard_body()
         self.close_connection = True
-        if self._is_civic_path():
+        civic = self._is_civic_path()
+        if civic == "v2":
+            rel_path = urlsplit(self.path).path[len(CIVIC_V2_PREFIX):] or "/"
+            self.civic_send(self.server.civic_v2.handle(self.command, rel_path, "", None, {}), v2=True)
+        elif civic:
             rel_path = urlsplit(self.path).path[len(CIVIC_PREFIX):] or "/"
             # No route accepts these methods, so handle() only produces 404/405 envelopes.
             self.civic_send(self.server.civic.handle(self.command, rel_path, "", None, {}))
         else:
             self.error_reply(405, "Метод не поддерживается.")
 
-    do_PUT = do_PATCH = do_DELETE = do_OPTIONS = do_TRACE = do_unsupported
+    def do_PUT(self):
+        # PUT есть только в API v2 (PUT /objects/{id}/stage, CONTRACT §7); остальное — как прежде.
+        if self._is_civic_path() == "v2":
+            self.civic_request("PUT", v2=True)
+        else:
+            self.do_unsupported()
+
+    do_PATCH = do_DELETE = do_OPTIONS = do_TRACE = do_unsupported
 
     def send_error(self, code, message=None, explain=None):
         """Protocol errors raised by BaseHTTPRequestHandler (unknown method, 400/414/431/505) are
@@ -946,14 +1351,16 @@ class Handler(BaseHTTPRequestHandler):
         # that suppresses all response headers, including our JSON content type.
         if self.request_version == "HTTP/0.9":
             self.request_version = "HTTP/1.0"
+        v2 = self._is_civic_path() == "v2"
+        error = v2_error if v2 else civic_error
         if code == 501:  # unknown method: semantically "not allowed on this resource"
-            reply = civic_error(405, "method_not_allowed", "Метод не поддерживается.")
+            reply = error(405, "method_not_allowed", "Метод не поддерживается.")
         else:
-            reply = civic_error(code, "bad_request" if code == 400 else "http_error",
-                                "Некорректный HTTP-запрос.")
+            reply = error(code, "bad_request" if code == 400 else "http_error",
+                          "Некорректный HTTP-запрос.")
         if not hasattr(self, "headers") or self.headers is None:
             self.headers = {}
-        self.civic_send(reply)
+        self.civic_send(reply, v2=v2)
 
 
 def _invalid_number(value):
@@ -961,12 +1368,15 @@ def _invalid_number(value):
 
 
 def create_server(project: Path = ROOT, port: int = 8501, host: str = "127.0.0.1",
-                  civic: CivicGateway | None = None, civic_db: Path | None = None, classifier: str | None = None):
+                  civic: CivicGateway | None = None, civic_db: Path | None = None, classifier: str | None = None,
+                  civic_v2: "CivicV2Gateway | None" = None):
     backend = Backend(project)
     server = ThreadingHTTPServer((host, port), Handler)
     server.daemon_threads = True
     server.backend = backend
     server.civic = civic if civic is not None else CivicGateway.for_project(Path(project), civic_db, classifier)
+    # API v2 (раунд 14): сессию сотрудника проверяет тот же R02 из шлюза v1.
+    server.civic_v2 = civic_v2 if civic_v2 is not None else CivicV2Gateway(server.civic)
     return server
 
 
@@ -994,6 +1404,8 @@ def main():
     url = f"http://{address}:{args.port}"
     modules = server.civic.modules()
     print("civic-v1: " + ", ".join(f"{name}={item['status']}" for name, item in modules.items()), flush=True)
+    ready_v2 = sorted({item["role"] for item in server.civic_v2.modules().values() if item["status"] == "ready"})
+    print("civic-v2: ready " + (", ".join(ready_v2) if ready_v2 else "none yet"), flush=True)
     cls = server.civic.classifier_status
     print("classifier: " + ("off" if not cls["enabled"] else
           f"r08 {'connected' if cls['available'] else 'unavailable: ' + str(cls['reason'])}"
