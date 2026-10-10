@@ -1,0 +1,77 @@
+/* R09 · ВРЕМЕННАЯ замена классов ui-kit R11 (bk-*), нужная только пока web/civic/ui-kit/components.css
+   не подключён. Значения — из UX_SPEC §2/§5. Когда R01 подключит ui-kit, этот файл НЕ подключать. */
+:root {
+  --c-ink: #152c26; --c-text-2: #5b6a64; --c-line: #e4e9e3; --c-paper: #f7f8f4; --c-surface: #fff;
+  --c-brand: #176b4a; --c-brand-press: #10553a; --c-accent: #d7f57c; --c-focus: #2f7fd6;
+  --c-danger: #b3362e; --c-info: #1f5fa8; --c-ok: #2f6b12; --c-ok-bg: #eaf4dc; --c-warn: #8a5a12; --c-warn-bg: #fff4dc;
+  --heat-1: #FAC775; --heat-2: #EF9F27; --heat-3-badge: #C93B3A; --heat-4: #A32D2D; --fixed-badge: #4E7D1A;
+  --font: "Birge Sans", system-ui, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+}
+.ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; }
+.bk-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px;
+          border: 1px solid var(--c-line); border-radius: 12px; background: var(--c-surface); color: var(--c-ink);
+          font: inherit; font-size: 18px; font-weight: 600; cursor: pointer; text-align: center; }
+.bk-btn:disabled { opacity: .55; cursor: default; }
+.bk-btn:focus-visible, .bk-chip:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 2px; box-shadow: 0 0 0 2px #fff; }
+.bk-btn--primary { background: var(--c-brand); border-color: var(--c-brand); color: #fff; }
+.bk-btn--primary:active { background: var(--c-brand-press); }
+.bk-btn--ghost { background: transparent; border-color: transparent; color: var(--c-brand); font-size: 16px; }
+.bk-btn--block { width: 100%; }
+.bk-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 4px 14px; margin: 4px 0;
+           border: 1px solid var(--c-line); border-radius: 999px; background: var(--c-surface); color: var(--c-ink);
+           font: inherit; font-size: 16px; cursor: pointer; }
+.bk-chip[aria-pressed="true"] { background: var(--c-accent); border-color: var(--c-ink); font-weight: 600; }
+.bk-chip[aria-pressed="true"]::before { content: "✓"; font-weight: 700; }   /* как в ui-kit R11 */
+/* Сетка категорий — копия правил .bk-catgrid ui-kit R11 (components.css): колонки ≥ 150 px. */
+.bk-catgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); gap: 8px; }
+.bk-catgrid > button { display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 8px 12px;
+                       border: 1px solid #c9d2cc; border-radius: 12px; background: var(--c-surface); color: var(--c-ink);
+                       font: inherit; font-size: 14px; font-weight: 600; line-height: 1.2; text-align: left;
+                       overflow-wrap: break-word; cursor: pointer; }
+.bk-catgrid > button .ic { width: 24px; height: 24px; }
+.bk-catgrid > button[aria-pressed="true"] { border: 2px solid var(--c-ink); background: var(--c-accent); }
+.bk-catgrid > button:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 2px; }
+.bk-card { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: 16px; padding: 16px; }
+.bk-status { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px;
+             font-size: 14px; font-weight: 700; background: var(--c-paper); color: var(--c-ink); }
+.bk-status::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+.bk-status[data-status="new"] { color: var(--c-ink); }
+.bk-status[data-status="accepted"] { color: var(--c-info); background: #e8f0fa; }
+.bk-status[data-status="in_progress"] { color: var(--c-warn); background: var(--c-warn-bg); }
+.bk-status[data-status="fixed"] { color: var(--c-ok); background: var(--c-ok-bg); }
+.bk-status[data-status="rejected"] { color: var(--c-danger); background: #fbe9e7; }
+.bk-heat { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 6px;
+           border-radius: 999px; font-size: 14px; font-weight: 700; background: var(--heat-1); color: var(--c-ink); }
+.bk-heat[data-level="2"] { background: var(--heat-2); }
+.bk-heat[data-level="3"] { background: var(--heat-3-badge); color: #fff; }
+.bk-heat[data-level="4"] { background: var(--heat-4); color: #fff; }
+.bk-tag { display: inline-block; align-self: flex-start; padding: 2px 8px; border-radius: 6px; font-size: 14px; }
+.bk-tag--demo { background: #e6ecf3; color: #2d4a66; }
+.bk-steps { list-style: none; display: flex; gap: 0; margin: 4px 0; padding: 0; }
+.bk-steps__item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative;
+                  font-size: 14px; text-align: center; color: var(--c-text-2); }
+.bk-steps__item + .bk-steps__item::before { content: ""; position: absolute; top: 13px; right: 50%; width: 100%; height: 2px;
+                                            background: var(--c-line); z-index: 0; }
+.bk-steps__dot { position: relative; z-index: 1; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+                 border: 2px solid var(--c-line); background: var(--c-surface); font-size: 14px; color: #fff; }
+.bk-steps__item[data-state="done"] .bk-steps__dot { background: var(--c-brand); border-color: var(--c-brand); }
+.bk-steps__item[data-state="current"] { color: var(--c-ink); font-weight: 700; }
+.bk-steps__item[data-state="current"] .bk-steps__dot { border: 3px solid var(--c-brand); box-shadow: 0 0 0 3px var(--c-accent); }
+.bk-steps__item[data-status="rejected"][data-state="current"] { color: var(--c-danger); }
+.bk-steps__item[data-status="rejected"] .bk-steps__dot { border-color: var(--c-danger); }
+.bk-wizard { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; color: var(--c-text-2); }
+.bk-wizard__dots { display: inline-flex; gap: 6px; }
+.bk-wizard__dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--c-line); }
+.bk-wizard__dots span[data-state="done"] { background: var(--c-brand); }
+.bk-wizard__dots span[data-state="current"] { background: var(--c-brand); width: 20px; border-radius: 4px; }
+.bk-skel { display: block; background: linear-gradient(90deg, #eef1ec 25%, #f7f8f4 50%, #eef1ec 75%); background-size: 200% 100%;
+           animation: bk-shimmer 1.2s infinite linear; }
+@keyframes bk-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.bk-empty, .bk-error { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 24px 8px; }
+.bk-empty .ic, .bk-error .ic { width: 48px; height: 48px; color: var(--c-text-2); }
+.bk-empty__title, .bk-error__title { font-size: 18px; font-weight: 700; margin: 0; }
+.bk-empty p, .bk-error p { margin: 0; }
+.bk-toast { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: var(--c-ink); color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,.25); font-size: 16px; }
+.bk-toast .bk-btn--ghost { color: var(--c-accent); min-height: 40px; padding: 0 8px; }
+@media (prefers-reduced-motion: reduce) { .bk-skel { animation: none; } }

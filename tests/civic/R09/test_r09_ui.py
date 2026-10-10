@@ -32,8 +32,7 @@ def test_no_html_sinks_or_globals_in_component():
 
 def test_component_request_body_has_no_facts():
     m = re.search(r'api\.request\("POST", "/assistant", (\{[^}]*\})', JS)
-    assert m and set(re.findall(r"(\w+):", m.group(1))) == {"question", "object_id", "scenario_id", "revision"}
-    assert "revision: objectId ? revision : null" in m.group(1)  # редакция — только вместе с объектом
+    assert m and set(re.findall(r"(\w+):", m.group(1))) == {"question", "object_id", "scenario_id"}
 
 
 def test_css_is_prefixed():

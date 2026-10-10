@@ -1,0 +1,69 @@
+# R09 round 14 — STATUS (жалоба жителя v2)
+
+## НОЧЬ (сессия claude/wizardly-ptolemy-qy8ltw) — коротко для владельца
+- Где работа: ветка **claude/wizardly-ptolemy-qy8ltw** (среда этой сессии разрешает push только в неё; ветку
+  claude/modest-shannon-0ki93p из BRANCHES.md продолжить нельзя). Пути R09 взяты из modest-shannon @ 5dd6465 побайтно,
+  без merge. R01 забирает R09 отсюда по SHA из DELIVERY.json.
+- Базовая линия (пакет a38da11 + R09 5dd6465): pytest tests/civic/R09 — 211 passed, 2 skipped; Chromium 106/106.
+- Статус: в работе — исправляю замечания R15, R10, R11, LOCAL, R01 (список ниже обновляется).
+
+### Вопросы владельцу утром
+1. Продолжать R09 в claude/wizardly-ptolemy-qy8ltw (как этой ночью) или перенести в claude/modest-shannon-0ki93p
+   (для этого нужна сессия с правом push в ту ветку)?
+
+---
+
+## Предыдущая сессия (modest-shannon)
+Роль: R09 · Ветка: claude/modest-shannon-0ki93p · База: claude/round-14-package @ c75a9ac
+Восстановлено: ui/civic_feedback, web/civic/feedback из claude/focused-hypatia-z8h0no @ 933cd90 (побайтно; v1 не менялся).
+Код (до перехода на OSM): cca386e (= code_sha/tested_sha в DELIVERY.json). Статус: основной объём дня 1 готов; ждём соседей.
+
+## Сделано и проверено
+- Бэкенд ui/civic_feedback/v2: запись §5 (+ code B-0001, due_at), цель всегда есть (иначе ячейка «примерное место»),
+  язык ru/kk/mixed, «Я тоже» одно на устройство (никогда не создаёт запись; на дубль — засчитывается исходной),
+  статусы с историей и защитой от одновременной правки, duplicate_of с переносом людей без двойного счёта,
+  сроки ответа по 12 категориям, просрочки, события created/metoo/status/duplicate, metoo_times для веса R07,
+  миграция v1 -> v2 без потерь (legacy целиком, идемпотентно), HTTP /api/civic/v2 (11 маршрутов), CLI.
+- Фронтенд web/civic/feedback: complaint.js (мастер 5 шагов + «Мои обращения» + адаптер MapLibre),
+  complaint.css, kit-fallback.css (временно до ui-kit R11), complaint-strings.js (81 ключ ru/kk),
+  categories_v2.js (генерируется из categories_v2.json).
+- Тесты: pytest R09 v2 — 72 PASS; tests/civic/R09 — 194 PASS; Chromium-путь — 66/66 (трижды подряд + на cca386e).
+- tests/civic целиком: 802 PASS, 3 FAIL — устаревшие тесты v1 раунда 12 в tests/civic/R06 (их версии 933cd90: 210 PASS).
+
+## Для соседей — research/round-14-results/R09/INTEGRATION.txt
+R01 — маршруты и подключение фронтенда; R07 — событие birge:complaint и /complaints/events; R08 — overdue();
+R12 — формат /targets и находка про соседние рёбра; R04 — /classify, /similar; R11 — I18N_KEYS.md, UX-замечание к §6.4.
+
+## Дальше (следующей сессии R09)
+1. Когда появятся R12 /targets, R04 /classify,/similar — прогнать стенд без FIXTURE (флаги serve_r09.py) и пару тестов.
+2. Когда R11 выложит ui-kit и i18n — убрать kit-fallback.css из стенда, сверить классы/иконки, принять правки kk.
+3. По патчу R01 — проверить путь в настоящем приложении (index.html), скриншоты 375/1366.
+4. Если владелец утвердит сроки ответа — обновить RESPONSE_DAYS и пересобрать categories_v2.js.
+
+## Обновление: реальные объекты OSM (LOCAL-1)
+- data/civic/astana/osm-objects взят из claude/round-14-package @ bdf12c8 без изменений (только чтение).
+- Стенд: /targets предлагает реальные остановки, площадки, спортплощадки, парки, скверы, дворы (yard-<id>), школы,
+  детсады, мусорные площадки + участки улиц; демо-цель «7 человек» — реальная остановка («Бухар жырау»).
+- Модуль: при одинаковых подписях кандидатов всегда показывается расстояние.
+- Код: da295be; pytest R09 v2 77 PASS, tests/civic/R09 199 PASS, Chromium 69/69.
+
+## Обновление: ранний UX-разбор R11 (день 2), строки 1–6 — исправлено
+Код a4ab5a4. Отчёт: research/round-14-results/R09/R11_REVIEW_FIXES.md (что было → исправление → проверка).
+- 1 слой пунктира отдельно; 2 цель 11 px / нажатие 6 px (coalesce); 3 «Отправить» активна после /classify;
+  4 «Это здесь?» без названия в вопросе; 5 сетка .bk-catgrid ui-kit (2 колонки на 375, слова не рвутся); 6 одна галочка.
+- Проверки: pytest test_r11_1…6 (падают на 32566a0, на 4021818 — ровно 2/5/6); Chromium [R11-1…6].
+- Стенд --r11 <папка>: настоящий ui-kit и i18n R11 (cc77761) — 105/105, как и без него.
+- pytest R09 v2 83 PASS, tests/civic/R09 205 PASS. Скриншоты: screens/ и screens-r11ui/ (375/1366, ru/kk).
+Дальше: строки 7–12 разбора R11 и точки прогресса .bk-wizard с ui-kit.
+
+## Обновление: совместный прогон с настоящими R12 /targets (8810221) и R04 /classify, /similar (deeb1de)
+Код fa49fc9. Отчёт: research/round-14-results/R09/NEIGHBOURS_RUN.md.
+Найдено и исправлено 7: (1) сетка ячеек «примерного места» не совпадала с R07/R12 — теперь общая, 0 расхождений на 5000 точках;
+(2) подсказка категории не показывалась никогда (R04 needs_review всегда true) — теперь по suggest; (3) повторный фильтр
+score ≥ 0.6 поверх порога R04 убран, в /similar передаётся цель; (4) признак approximate R12 переносится в target;
+(5) только «примерное место» — без лишнего вопроса; (6) нет двух кнопок «примерного места», подпись R12 сохраняется;
+(7) таймаут /targets 5 с под холодную загрузку графа.
+Проверки: Chromium --real 107/107, заглушки 106/106, ui-kit R11 106/106; pytest R09 v2 91 (с соседями) / 89+2 skip (ветка);
+тесты R04 (90+1 skip) и R12 (29) проходят на новом коде R09.
+Стенд: --real-geo / --real-ml (RUN.txt п.6). Код соседей в ветку R09 не коммитится.
+Дальше: R01 — прогрев R12, connect_store R04, patch r01_similar_target; R09 — строки 7–12 разбора R11.

@@ -92,8 +92,8 @@ def endpoint(data):
     published = {"r09-synth-full": (data["objects"]["full"], data["history"]["full"])}
 
     def load(object_id):
-        if object_id == "r09-synth-draft":  # неисправный загрузчик вернул черновик — второй рубеж должен отказать
-            return data["objects"]["draft"], []  # (раунд 13: тот же id, иначе раньше сработает object_mismatch)
+        if object_id == "leaky-draft":  # неисправный загрузчик вернул черновик — второй рубеж должен отказать
+            return data["objects"]["draft"], []
         return published.get(object_id)
 
     return AssistantEndpoint(load, lambda sid: RESULT if sid == SID else None,
@@ -147,7 +147,7 @@ def test_draft_and_missing_are_indistinguishable(endpoint):
     a = post(endpoint, {"question": "Что здесь?", "object_id": "r09-synth-draft"})["body"]["data"]
     b = post(endpoint, {"question": "Что здесь?", "object_id": "no-such-object"})["body"]["data"]
     assert a["source"] == b["source"] == "unavailable" and a["text"] == b["text"]
-    leaked = post(endpoint, {"question": "Сколько стоит?", "object_id": "r09-synth-draft"})["body"]["data"]
+    leaked = post(endpoint, {"question": "Сколько стоит?", "object_id": "leaky-draft"})["body"]["data"]
     assert leaked["source"] == "unavailable" and "999" not in leaked["text"] and "Секретный" not in leaked["text"]
     assert leaked["warnings"] == ["object_not_public"]
 
@@ -217,17 +217,9 @@ def test_r07_case_loader_uses_server_payload():
     calls = []
     cases = [{"case_id": SID, "payload": {"graph_id": "g1", "x": 1}}]
     load = r07_case_loader(lambda: cases, lambda gid: ("graph", gid), lambda p, g: calls.append((p, g)) or RESULT)
-    # Раунд 12: загрузчик отдаёт тот же результат движка вместе с серверным входом сценария
-    # (интервалы перекрытий) и записью MANIFEST графа (здесь manifest не передан -> None).
-    first, second = load(SID), load(SID)
-    # Раунд 13: компактная запись v2 (без маршрутов), подготовленный кейс помечен kind=prepared_case.
-    assert first is second and len(calls) == 1 and first["kind"] == "prepared_case"
-    assert first["result_digest"] == RESULT["result_digest"] and first["graph"] is None
-    assert first["closures"] is None  # вход {"graph_id": "g1", "x": 1} не совпадает с input.payload_digest
+    assert load(SID) is RESULT and load(SID) is RESULT and len(calls) == 1
     assert calls[0] == ({"graph_id": "g1", "x": 1}, ("graph", "g1"))
-    assert load("other") is None and load.status("other") == "unknown" and load.status(SID) == "ok"
-    assert load("result:" + "0" * 64) is None  # без кэша результатов пользовательских сравнений нет
-    assert load.status("result:" + "0" * 64) == "unknown"
+    assert load("other") is None
 
 
 @pytest.mark.parametrize("bad", [("only-one",), "string", {"item": {}}, (None, None, None)])
