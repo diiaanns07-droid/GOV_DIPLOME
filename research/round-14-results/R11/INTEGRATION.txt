@@ -121,6 +121,8 @@ LOCAL-7 (скриншоты сборок): снимать и в ?lang=kk — п�
     research/round-14-results/R11/patches/R12_staff_i18n.patch — кабинет сотрудника (web/civic/editor/editor.js) на ключах
     staff.* / works.*; git apply --check проходит на R12 8bb7bf8 и R01 daec72a; тесты редактора R12 78/78 с ним (R10 B-021).
     (patches/R09_formatDate.patch больше не нужен — R09 сам исправил даты в 6beaa4a.)
+    research/round-14-results/R11/patches/R01_map_lang.patch — web/map.js (R01): подписи онлайн-подложки на языке интерфейса
+    (+ birge:lang) и 6 сообщений об ошибке карты через ключи shell.map.error.*; git apply --check на 6096be8; сценарий 44/44.
 Проверка после подключения одной командой: bash tests/civic/R11/review/review_build.sh <порт> <папка> <файл-пароля> <SHA>
 Или по шагам (сервер сборки поднят, CIVIC_DEMO=1):
     NODE_PATH="$(npm root -g)" node tests/civic/R11/browser_check.cjs --base http://127.0.0.1:<порт>

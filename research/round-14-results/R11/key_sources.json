@@ -487,5 +487,11 @@
  "staff.row.pending": "R12 · кабинет сотрудника, метка записи",
  "staff.row.unsaved": "R12 · кабинет сотрудника, метка записи",
  "heat.too_many": "R07 · тост на ответ 429 (лимиты R15)",
- "heat.need_login": "R07 · тост на 401/403 при «Взять в работу»"
+ "heat.need_login": "R07 · тост на 401/403 при «Взять в работу»",
+ "shell.map.error.no_borders": "R01 · web/map.js showMapError (нет границ районов)",
+ "shell.map.error.offline": "R01 · web/map.js showMapError (нет сети и нет офлайн-карты)",
+ "shell.map.error.slow": "R01 · web/map.js showMapError (медленная загрузка)",
+ "shell.map.error.layers": "R01 · web/map.js showMapError (ошибка слоёв)",
+ "shell.map.error.waiting": "R01 · web/map.js showMapError (ждёт подложку)",
+ "shell.map.error.no_webgl": "R01 · web/map.js showMapError (нет WebGL)"
 }
