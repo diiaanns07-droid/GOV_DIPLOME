@@ -1,7 +1,7 @@
-# R10 · приёмка FINAL-candidate-8807b28 · сборка 8807b28
+# R10 · приёмка FINAL-candidate-fa117c3 · сборка fa117c3
 
-Папка сборки: <worktree 8807b28>
-Когда: 2026-10-10T20:19:58.980Z · Node v22.22.0 · Python: python3
+Папка сборки: <worktree fa117c3>
+Когда: 2026-10-10T20:33:47.361Z · Node v22.22.0 · Python: python3
 
 ## 1. Точность карты (CONTRACT §8)
 

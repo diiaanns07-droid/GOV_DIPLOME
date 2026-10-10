@@ -1,7 +1,7 @@
-# R10 e2e · сценарий демо · 8807b28
+# R10 e2e · сценарий демо · fa117c3
 
 ```
-{"root":"<worktree 8807b28>","sha":"8807b28","base":"http://127.0.0.1:<порт>/","seeds":[],"sizes":["1366x768","375x812"],"langs":["ru","kk"],"when":"2026-10-10T20:30:01.112Z","node":"v22.22.0"}
+{"root":"<worktree fa117c3>","sha":"fa117c3","base":"http://127.0.0.1:<порт>/","seeds":[],"sizes":["1366x768","375x812"],"langs":["ru","kk"],"when":"2026-10-10T20:43:52.188Z","node":"v22.22.0"}
 ```
 
 Итого: PASS 140, FAIL 0, NOT_RUN 0
@@ -16,8 +16,8 @@
 | API | 2 | /classify (ru) → «Остановки и транспорт», ответ по §7 | **PASS** | {"status":200,"category":"transport","score":1,"needs_review":true,"model":"civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"} |  |
 | API | 2 | /classify (kk) → «Остановки и транспорт», ответ по §7 | **PASS** | {"status":200,"category":"transport","score":1,"needs_review":true,"model":"civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"} |  |
 | API | 2 | /classify (mixed) → «Остановки и транспорт», ответ по §7 | **PASS** | {"status":200,"category":"transport","score":1,"needs_review":true,"model":"civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"} |  |
-| API | 1 | POST /complaints: запись §5 (id c-…, status new, target сохранён) | **PASS** | {"status":201,"id":"c-3f674e44537eebd7","st":"new"} |  |
-| API | 2 | /similar находит только что поданную жалобу на ту же остановку | **PASS** | {"status":200,"n":1,"top":{"complaint_id":"c-3f674e44537eebd7","score":0.798,"target":{"id":"osm-node-13394597038","kind":"object","label_kk":"«Республиканский диагностический центр» аялдамасы","label_ru":"Остановка «Рес |  |
+| API | 1 | POST /complaints: запись §5 (id c-…, status new, target сохранён) | **PASS** | {"status":201,"id":"c-b8bd4335bafc02f7","st":"new"} |  |
+| API | 2 | /similar находит только что поданную жалобу на ту же остановку | **PASS** | {"status":200,"n":1,"top":{"complaint_id":"c-b8bd4335bafc02f7","score":0.798,"target":{"id":"osm-node-13394597038","kind":"object","label_kk":"«Республиканский диагностический центр» аялдамасы","label_ru":"Остановка «Рес |  |
 | API | 2 | «Я тоже» другим устройством: metoo +1 | **PASS** | {"status":200,"metoo":1} |  |
 | API | 2 | повторное «Я тоже» с того же устройства не увеличивает счёт | **PASS** | {"status":200,"metoo":1} |  |
 | API | 3 | /heat (Нура, 30 дней, z16): цель жалобы есть, level ≥ 1, count ≥ 1, форма есть | **PASS** | {"status":200,"items":31,"target":{"level":4,"count":21,"weight":15.609,"kind":"object"}} |  |
@@ -25,10 +25,10 @@
 | API | 4 | /akim/summary: KPI, темы, районы, горячие места, просрочки, отставание, текст ru/kk | **PASS** | {"status":200,"complaints_available":true,"sources":{"complaints":"r07","objects":"r06","proposals":"r06","heat":"r07"},"hot":10} |  |
 | API | 5 | вход сотрудника акимата (сессия + CSRF) | **PASS** | {"ok":true,"status":200} |  |
 | API | 5 | GET /proposals: демо-предложения (seed-r14-demo) со статусом | **PASS** | {"status":200,"n":5,"statuses":["proposal"]} |  |
-| API | 5 | POST /proposals (сквер) от сотрудника | **PASS** | {"status":201,"id":"p-7e90b7e59198","st":"proposal"} |  |
+| API | 5 | POST /proposals (сквер) от сотрудника | **PASS** | {"status":201,"id":"p-72009d557cc9","st":"proposal"} |  |
 | API | 5 | голос «За» +1, повтор с того же устройства не удваивает | **PASS** | {"first":[200,1],"second":[200,1]} |  |
 | API | 6 | сотрудник: «Взять в работу» → «Исправлено» | **PASS** | {"in_progress":200,"fixed":200} |  |
-| API | 6 | после «исправлено» цель зелёная (fixed_until задан, вес обнулён) | **PASS** | {"item":{"level":"fixed","weight":0,"fixed_until":"2026-10-18T01:20:37+05:00"}} |  |
+| API | 6 | после «исправлено» цель зелёная (fixed_until задан, вес обнулён) | **PASS** | {"item":{"level":"fixed","weight":0,"fixed_until":"2026-10-18T01:34:26+05:00"}} |  |
 | API | 6 | GET /complaints: статус fixed и история статусов | **PASS** | {"status":200,"st":"fixed","history":3} |  |
 | UI 1366-ru | 0 | шапка: ҚАЗ/РУС на виду, язык страницы переключился | **PASS** | {"lang":"ru"} | 1366-ru-0-start.jpg |
 | UI 1366-ru | 0 | нет горизонтальной прокрутки | **PASS** | {"scrollW":1366,"w":1366} |  |
