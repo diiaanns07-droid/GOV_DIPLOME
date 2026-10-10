@@ -2,8 +2,10 @@
 
     жалобы v2 ............ те же записи, что у тепловой карты R07 (а она берёт их у R09);
     тепловая карта ....... HeatService R07 (ui.civic_heat) — топ мест, темы, районы;
-    объекты и отставание . функция R06; пока её нет — fixtures/objects_demo.json (demo);
-    предложения и голоса . функция R06; пока её нет — fixtures/proposals_demo.json (demo).
+    объекты и отставание . R06 ui.civic_store.v2.lagging_objects(district); пока модуля нет или шлюз R01
+                           не связал его с базой (bind) — fixtures/objects_demo.json (demo);
+    предложения и голоса . R06 ui.civic_store.v2.list_proposals(district=, status="proposal"); иначе —
+                           fixtures/proposals_demo.json (demo).
 
 Главное правило: числа «Картины дня» обязаны совпадать с картой. Поэтому жалобы берутся
 у того же HeatService, который отвечает на /heat, а не из отдельного запроса к базе.
@@ -63,15 +65,58 @@ def records_from_heat(svc):
 # ---------------------------------------------------------------- R06: объекты и предложения
 
 def _r06(names):
-    try:
-        import ui.civic_store as store  # type: ignore
-    except Exception:
-        return None
-    for name in names:
-        fn = getattr(store, name, None)
-        if callable(fn):
-            return fn
+    """Функция R06 по имени: сначала модуль v2 (раунд 14, ветка claude/round-14-r06), потом сам пакет."""
+    for modname in ("ui.civic_store.v2", "ui.civic_store"):
+        try:
+            module = __import__(modname, fromlist=["_"])
+        except Exception:
+            continue
+        for name in names:
+            fn = getattr(module, name, None)
+            if callable(fn):
+                return fn
     return None
+
+
+class R06NotReady(RuntimeError):
+    """Модуль R06 есть, но шлюз R01 ещё не вызвал civic_store.v2.bind(service) — базы нет."""
+
+
+def _call_r06(fn, **kwargs):
+    try:
+        return fn(**kwargs)
+    except Exception as exc:  # V2Error R06: status 503 module_not_ready — модуль не связан с базой
+        if getattr(exc, "status", None) == 503 or getattr(exc, "code", None) == "module_not_ready":
+            raise R06NotReady(str(exc)) from exc
+        raise
+
+
+def r06_object_list(answer) -> list[dict]:
+    """Ответ R06 → список объектов. lagging_objects отдаёт {late:[…], stale:[…]} (объект может быть в обоих);
+    на будущее принимается и простой список, и {items:[…]}."""
+    if isinstance(answer, list):
+        return answer
+    if not isinstance(answer, dict):
+        return []
+    if "items" in answer:
+        return list(answer.get("items") or [])
+    seen, out = set(), []
+    for item in list(answer.get("late") or []) + list(answer.get("stale") or []):
+        key = item.get("id") if isinstance(item, dict) else None
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(item)
+    return out
+
+
+def r06_proposal_list(answer) -> list[dict]:
+    """Ответ R06 list_proposals → {items:[…], truncated}; список тоже принимается."""
+    if isinstance(answer, list):
+        return answer
+    if isinstance(answer, dict):
+        return list(answer.get("items") or [])
+    return []
 
 
 def _shift_days(meta: dict, today: date) -> int:
@@ -116,18 +161,33 @@ def fixture_proposals(today: date) -> list[dict]:
 
 
 def default_objects():
-    """Функция (district, today) → объекты. R06, если есть; иначе демо-фикстура."""
+    """Функция (district, today) → объекты. R06, если есть и связан с базой; иначе демо-фикстура (demo: true)."""
     fn = _r06(R06_OBJECT_FUNCS)
-    if fn is not None:
-        return (lambda district, today: list(fn(district=district))), "r06"
-    return (lambda district, today: fixture_objects(today)), "fixture"
+    if fn is None:
+        return (lambda district, today: fixture_objects(today)), "fixture"
+
+    def objects(district, today):
+        try:
+            return r06_object_list(_call_r06(fn, district=district))
+        except R06NotReady:
+            return fixture_objects(today)
+    return objects, "r06"
 
 
 def default_proposals():
     fn = _r06(R06_PROPOSAL_FUNCS)
-    if fn is not None:
-        return (lambda district, today: list(fn(district=district))), "r06"
-    return (lambda district, today: fixture_proposals(today)), "fixture"
+    if fn is None:
+        return (lambda district, today: fixture_proposals(today)), "fixture"
+
+    def proposals(district, today):
+        kwargs = {"district": district}
+        if getattr(fn, "__name__", "") == "list_proposals":
+            kwargs["status"] = "proposal"  # «Картине дня» нужны только открытые для голосования
+        try:
+            return r06_proposal_list(_call_r06(fn, **kwargs))
+        except R06NotReady:
+            return fixture_proposals(today)
+    return proposals, "r06"
 
 
 # ---------------------------------------------------------------- нормализация объекта R06
@@ -157,17 +217,25 @@ def normalize_object(o: dict, as_of: datetime) -> dict:
     delay = o.get("delay_days")
     if not isinstance(delay, (int, float)):
         delay = (forecast - planned).days if planned and forecast else 0
-    updated = _parse_time(o.get("updated_at"))
+    updated = _parse_time(o.get("updated_at") or o.get("last_update_at"))
     days_since = (as_of - updated).days if updated else None
+    if days_since is None and isinstance(o.get("stale_days"), (int, float)):
+        days_since = int(o["stale_days"])  # R06 lagging_objects: дней без обновления, времени нет
     stale = o.get("stale")
     if not isinstance(stale, bool):
         stale = days_since is not None and days_since > STALE_DAYS
-    title_ru = o.get("title_ru") or o.get("title") or o.get("name") or o.get("id")
+    title = o.get("title")
+    if isinstance(title, dict):  # civic-v1 может хранить {ru, kk}
+        title_ru = o.get("title_ru") or title.get("ru") or title.get("kk") or o.get("id")
+        title_kk = o.get("title_kk") or title.get("kk") or title_ru
+    else:
+        title_ru = o.get("title_ru") or title or o.get("name") or o.get("id")
+        title_kk = o.get("title_kk") or title_ru
     return {
         "id": o.get("id"),
         "kind": o.get("kind"),
         "title_ru": title_ru,
-        "title_kk": o.get("title_kk") or title_ru,
+        "title_kk": title_kk,
         "district": o.get("district"),
         "stage": o.get("stage"),
         "planned_end": planned.isoformat() if planned else None,

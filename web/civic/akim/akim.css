@@ -29,6 +29,11 @@
 .akim__title-date {
   white-space: nowrap;
 }
+/* «Пример» — одна метка на страницу, рядом с заголовком */
+.akim__title .bk-tag--demo {
+  margin-left: var(--s-2);
+  vertical-align: middle;
+}
 .akim__meta {
   margin: var(--s-1) 0 0;
 }
@@ -246,6 +251,17 @@
 .akim-obj > .bk-list__main {
   flex: 1 1 14em; /* узко — метки уходят на следующую строку, а не сжимают название */
 }
+/* полоса этапов (ui-kit .bk-stages--compact) под названием объекта */
+.akim-obj__stages {
+  display: block;
+  max-width: 22em;
+  margin-top: var(--s-2);
+}
+.akim-obj__stages .bk-stages__caption {
+  display: block;
+  margin-top: var(--s-1);
+  font-size: var(--fs-body);
+}
 .akim-obj__tags {
   display: flex;
   flex-wrap: wrap;
@@ -341,6 +357,12 @@
   }
   .akim-summary__text {
     font-size: var(--fs-body);
+  }
+}
+/* Телефон: в карточке одно изменение — к прошлой неделе. «За 7 дней» — только на ноутбуке (UX_REVIEW день 3, п. 10). */
+@media (max-width: 479px) {
+  .akim-kpi[data-kind="new"] .akim-kpi__extra {
+    display: none;
   }
 }
 

@@ -210,7 +210,7 @@ def _objects_kk(s: dict) -> str:
 def render_parts(summary: dict, lang: str = "ru") -> list[dict]:
     """Фразы сводки с ролью: new, main (главная проблема — интерфейс выделяет её), overdue, objects."""
     if summary.get("complaints_available") is False:  # нет источника жалоб — не выдумываем нули
-        no_data = ("Өтініштер туралы дерек әлі қосылмаған." if lang == "kk"
+        no_data = ("Өтініштер туралы деректер әлі қосылмаған." if lang == "kk"
                    else "Данные об обращениях пока не подключены.")
         objects = _objects_kk(summary) if lang == "kk" else _objects_ru(summary)
         return [{"role": "new", "text": no_data}] + ([{"role": "objects", "text": objects}] if objects else [])
