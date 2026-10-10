@@ -131,4 +131,56 @@
 | three.js | 0.169.0, MIT | `web/vendor/three/SOURCE.txt`, pkg |
 | MapLibre GL JS | 5.6.2, BSD-3 | `web/vendor/maplibre-gl.js`, pkg |
 
-_Разделы 10+ (сборка R01, жалобы R09, тепловая карта R07, картина дня R08, предложения R06, 3D R05, UX R11) — добавляются по мере чтения поставок._
+## 10. Сборка и сервер (R01)
+
+| Факт | Значение | Источник |
+|---|---|---|
+| Сервер | `ui/web_server.py`, только стандартная библиотека, `ThreadingHTTPServer`; порт 8501 (`run.bat`) / 8611 (`run-city.bat`) | R01 @ bc7c961; `run-city.bat`, pkg |
+| Маршрутов API | civic v1 — 30; civic v2 — 14 + `/modules` | `ui/web_server.py`, R01 @ bc7c961 |
+| Перенесено в сборку на 10.10 | модули раунда 13 (I0), ui-kit/i18n R11, поставки R02, R07, R08, R09 (99 файлов в B1 шаг 1) | `research/round-14-results/R01/BUILD_LOG.md`, R01 |
+| Весь pytest сборки | 1 458 passed / 11 skipped (на 2eaeacb) | `research/round-14-results/R01/DELIVERY.json` |
+| Запуск сборки (повтор R14) | civic-v1 4/4 ready; civic-v2 ready R08; `/akim/summary` 200 за 21.8 мс; `/civic/akim/akim.js` 404 (не в белом списке) | запуск R14 на bc7c961, Linux, Python 3.13.16 |
+| Словари в сборке | 257 ключей ru = 257 kk | `web/civic/i18n/*.json`, R01 @ bc7c961 |
+
+## 11. Модули интерфейса и сервиса
+
+| Факт | Значение | Источник |
+|---|---|---|
+| R09: маршрутов жалобы v2 | 11 | `ui/civic_feedback/v2/api.py`, R09 @ e012f73 (код a4ab5a4) |
+| R09: шагов мастера жителя | 5 | `web/civic/feedback/complaint.js`, R09 |
+| R09: лимит | 20 жалоб в час с устройства | `ui/civic_feedback/v2/store.py`, R09 |
+| R09: тесты | pytest v2 83 PASS; папка 205 PASS; браузер 105/105 | `research/round-14-results/R09/DELIVERY.json` |
+| R07: вес цели | Σ (1 + metoo)·0.5^(возраст/14); уровни 1/3/6/10; районы — пороги × 5; «исправлено» 7 дней | `ui/civic_heat/engine.py`, `config.py`, R07 @ 3eb3f9d (код 5a97636) |
+| R07: смысловой зум | z < 12 — районы; значки с числом при z ≥ 15 | `ui/civic_heat/service.py`, `web/civic/heat/heat.js`, R07 |
+| R07: скорость | 6 500 жалоб за 90 дней < 300 мс (тест); кэш 60 с | `tests/civic/R07/test_r07_heat.py`, `service.py`, R07 |
+| R07: демо | 136 синтетических жалоб, 241 человек, 45 реальных целей OSM | `ui/civic_heat/demo_seed.py`, `research/round-14-results/R07/RUN.txt`, R07 |
+| R07: тесты | pytest 97 PASS; браузер 16 PASS | `research/round-14-results/R07/DELIVERY.json` |
+| R08: картина дня | 4 KPI, топ-10 горячих мест из тепловой карты за 7 дней, 12 сроков исправления (демо-норматив), сводка ru/kk шаблоном без LLM, кэш 30 с | `ui/civic_akim/summary.py`, `deadlines.py`, `text.py`, R08 @ a4189ba (код 9f1d9c0) |
+| R08: тесты | pytest 112 PASS (с R07), UI 77/77 | `research/round-14-results/R08/DELIVERY.json`, `screens/ui_check.json` |
+| R06: этапы | 6: planned → design → procurement → construction → acceptance → operating; stale > 14 дней | `ui/civic_store/stages.py`, R06 @ 3d10f7d (код 7031afa) |
+| R06: база | миграция 6 — 6 новых таблиц; история только дополняется (триггеры) | `ui/civic_store/db.py`, R06 |
+| R06: голос | один с устройства (sha256 соль + id); 30 голосов в минуту с адреса | `ui/civic_store/proposals.py`, R06 |
+| R06: тесты | 445 passed / 5 skipped (папка), round14 66 / 4, браузер 48/48 | `research/round-14-results/R06/DELIVERY.json` |
+| R05: объекты 3D | 5 видов (сквер 40×30 м, детская площадка, спортплощадка, остановка, освещение — опоры через ~30 м), лимит 20, анимация 1.2 с | `web/civic/build3d/build3d-core.js`, `build3d.js`, R05 @ e533e67 (код b0353ee) |
+| R05: точность 3D | смещение якоря 0.000 px при наклоне 0–60° и повороте; освещение ≤ 0.5 м от рёбер | `research/round-14-results/R05/runs/browser_check.json`, DELIVERY R05 |
+| R05: тесты | node 25/25, python 9/9, браузер 25 PASS / 1 NOT_RUN (плавность на GPU) | `research/round-14-results/R05/DELIVERY.json` |
+| R11: дизайн-система | ~48 компонентов `bk-*`, 49 иконок, шрифт Inter 4.0 (OFL) «Birge Sans» | `web/civic/ui-kit/`, R11 @ cc77761 |
+| R11: словари | 509 ключей ru = 509 kk; 29 мест ⚑ для проверки владельцем | `web/civic/i18n/*.json`, `research/round-14-results/R11/KK_REVIEW.md`, R11 |
+| R11: контраст | текст 14.8:1, вторичный 5.7:1, бренд 6.5:1; значки 9.5 / 6.8 / 5.0 / 7.1, «исправлено» 4.9 | `research/round-14-results/R11/UX_SPEC.md` §2 |
+
+## 12. Повторный запуск тестов R14 (облако: Linux, Python 3.13.16, pytest 9.1.1, Node 22.22.0, без torch/sklearn)
+
+| Роль @ SHA | Команда | Результат R14 | По DELIVERY |
+|---|---|---|---|
+| R02 @ f62cc93 | `python3 -m pytest -q tests/civic/R02/round14` | 89 passed | 89 PASS |
+| R03 @ 847bf31 | `python3 -m pytest -q tests/civic/R03/round14` | 58 passed, 7 skipped | 58 + 7 NOT_RUN без torch/sklearn/onnx |
+| R05 @ b0353ee | `node --test …/test_core.mjs …/test_models.mjs`; `python3 -m unittest discover -s tests/civic/R05/build3d -p "test_*.py"` | 25 pass; 9 OK | 25/25; 9/9 |
+| R06 @ 7031afa | `python3 -m pytest -q tests/civic/R06/round14` | 66 passed, 4 skipped | 66 / 4 |
+| R07 @ 5a97636 | `python3 -m pytest -q tests/civic/R07` | 98 passed | 97 PASS |
+| R08 @ 9f1d9c0 | `python3 -m pytest -q tests/civic/R08` | 101 passed, 1 skipped (R07 нет в дереве) | 100 + 1 SKIP без R07 |
+| R09 @ a4ab5a4 | `python3 -m pytest -q tests/civic/R09/test_r09v2_{store,migrate,api,frontend,stand_osm}.py` | 83 passed | 83 PASS |
+| R11 @ cc77761 | `python3 tests/civic/R11/i18n_tools.py check`; `pytest tests/civic/R11/test_r11_ui_kit.py` | PASS; 14 passed | PASS |
+| R12 @ d13f49a | `python3 -m pytest -q tests/civic/R12/test_civic_geo.py`; `python3 -m engine.civic_geo report` | 29 passed; 954/954 PASS | 29/29; 954/954 |
+| R01 @ bc7c961 | `python3 -B app.py --port 8711 --civic-db <tmp>` | старт OK, см. §10 | — |
+
+NOT_RUN в этой сессии: браузерные проверки ролей (Playwright), R04 (тесты в работе), R13 (тестов нет), Windows `run-city.bat`.
