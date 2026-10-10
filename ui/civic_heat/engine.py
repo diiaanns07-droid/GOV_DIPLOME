@@ -1,8 +1,10 @@
 """Расчёт тепловой карты: вес, уровень, «исправлено», районы (CONTRACT §6).
 
 Правила (одним местом, чтобы следующий разработчик не искал по коду):
-- Человек = одна жалоба + каждое «Я тоже» к ней. Вклад жалобы: (1 + metoo) * 0.5 ** (возраст_в_днях / 14).
-  У записи v2 нет времени каждого «Я тоже», поэтому «Я тоже» стареет вместе со своей жалобой.
+- Человек = одна жалоба + каждое «Я тоже» к ней. Вклад каждого человека: 0.5 ** (возраст_в_днях / 14).
+  Возраст «Я тоже» — по его собственному времени из поля metoo_times (R09: ComplaintStore.metoo_times);
+  если времени нет (старые записи, демо), «Я тоже» стареет вместе со своей жалобой.
+- Дубли (duplicate_of задан) не считаются: их люди уже перенесены в «Я тоже» исходной записи (R09).
 - В расчёт идут жалобы за выбранный период (7/30/90 дней), кроме статусов fixed и rejected.
 - Если цель отмечена исправленной (статус fixed в истории), всё, что пришло ДО этого момента, считается
   закрытым. Новых жалоб нет → цель 7 дней зелёная «исправлено», вес 0. Пришли новые → снова краснеет.
@@ -12,6 +14,7 @@
 from __future__ import annotations
 
 import math
+import re
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
@@ -61,6 +64,15 @@ def fixed_at(c: dict) -> datetime | None:
     return last
 
 
+def reports(c: dict, created: datetime) -> list[datetime]:
+    """Моменты, когда люди сообщили о проблеме: сама жалоба + каждое «Я тоже» (по его времени, если оно есть)."""
+    out = [created]
+    times = [t for t in (parse_time(x) for x in (c.get("metoo_times") or [])) if t is not None]
+    out.extend(times)
+    out.extend([created] * max(0, people(c) - 1 - len(times)))
+    return out
+
+
 def decay(age_days: float, half_life: float) -> float:
     return 0.5 ** (max(0.0, age_days) / half_life)
 
@@ -98,7 +110,7 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
     today = _astana_day(now)
     groups: dict = defaultdict(list)
     meta: dict = {}
-    stats = {"complaints": 0, "skipped_invalid": 0, "unresolved_targets": 0, "approximate_targets": 0}
+    stats = {"complaints": 0, "skipped_invalid": 0, "duplicates_skipped": 0, "unresolved_targets": 0, "approximate_targets": 0}
 
     for c in complaints:
         if not isinstance(c, dict):
@@ -108,6 +120,9 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
         tk = target_key(c)
         if created is None or tk is None:
             stats["skipped_invalid"] += 1
+            continue
+        if c.get("duplicate_of"):
+            stats["duplicates_skipped"] += 1
             continue
         if category and c.get("category") != category:
             continue
@@ -134,17 +149,23 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
                 t_fixed = f
         active = [(c, cr) for c, cr in rows
                   if c.get("status", "new") in OPEN_STATUSES and (t_fixed is None or cr > t_fixed)]
-        in_period = [(c, cr) for c, cr in active if period_start <= cr <= now + timedelta(minutes=5)]
+        latest = now + timedelta(minutes=5)   # небольшой запас на расхождение часов
         weight = 0.0
         count = 0
         by_cat: dict = defaultdict(int)
         status_rank = 0
-        for c, cr in in_period:
-            n = people(c)
-            age = (now - cr).total_seconds() / 86400.0
-            weight += n * decay(age, config.half_life_days)
-            count += n
-            by_cat[c.get("category") or "other"] += n
+        in_period = []
+        events_in_period = []                # (жалоба, момент) — для графика по дням
+        for c, cr in active:
+            moments = [t for t in reports(c, cr) if period_start <= t <= latest]
+            if not moments:
+                continue
+            in_period.append((c, max(moments)))
+            for t in moments:
+                weight += decay((now - t).total_seconds() / 86400.0, config.half_life_days)
+                events_in_period.append(t)
+            count += len(moments)
+            by_cat[c.get("category") or "other"] += len(moments)
             status_rank = max(status_rank, STATUS_RANK.get(c.get("status", "new"), 0))
 
         state = "active"
@@ -165,7 +186,7 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
         if not resolved:
             stats["unresolved_targets"] += 1
             continue
-        approximate = bool(resolved.get("approximate") or m["missing"])
+        approximate = bool(resolved.get("approximate") or m["missing"] or m["target"].get("approximate"))
         if approximate:
             stats["approximate_targets"] += 1
         if bbox is not None:
@@ -174,10 +195,10 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
                 continue
 
         daily = [0] * DAILY_WINDOW_DAYS
-        for c, cr in (in_period if state == "active" else []):
-            idx = DAILY_WINDOW_DAYS - 1 - (today - _astana_day(cr)).days
+        for t in (events_in_period if state == "active" else []):
+            idx = DAILY_WINDOW_DAYS - 1 - (today - _astana_day(t)).days
             if 0 <= idx < DAILY_WINDOW_DAYS:
-                daily[idx] += people(c)
+                daily[idx] += 1
 
         level = config.level_for(weight) if state == "active" else "fixed"
         color = config.color_for(level) if state == "active" else config.fixed_color
@@ -210,6 +231,60 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
 
     items.sort(key=lambda it: (it["state"] == "active", it["level"] if it["state"] == "active" else 0, it["weight"], it["count"]), reverse=True)
     return {"items": items, "stats": stats}
+
+
+_NORM_RE = re.compile(r"[^\w\s]+", re.U)
+TEXT_MAX = 140
+
+
+def _norm_text(text: str) -> str:
+    return " ".join(_NORM_RE.sub(" ", text.lower()).split())[:80]
+
+
+def text_groups(complaints, *, kind: str, target_id: str, now: datetime, days: int, include_real: bool, limit: int = 3) -> dict:
+    """«Что пишут жители»: 1–3 группы похожих текстов по цели с числом людей.
+
+    Тексты демо-записей (synthetic) показываются всегда — в них нет людей и личных данных.
+    Тексты НАСТОЯЩИХ жалоб — только сотруднику (include_real=True ставит шлюз R01 после проверки входа);
+    жителю и публичной карте — никогда (CONTRACT, промпт R07: «только цель и число»).
+    Группа = одинаковый текст без регистра и знаков; показывается самый свежий вариант формулировки.
+    """
+    period_start = now - timedelta(days=days)
+    rows = []
+    t_fixed = None
+    for c in complaints:
+        t = c.get("target") if isinstance(c, dict) else None
+        if not isinstance(t, dict) or str(t.get("id")) != target_id or (t.get("kind") or "area") != kind or c.get("duplicate_of"):
+            continue
+        cr = parse_time(c.get("created_at"))
+        if cr is None:
+            continue
+        rows.append((c, cr))
+        f = fixed_at(c)
+        if f and (t_fixed is None or f > t_fixed):
+            t_fixed = f
+    groups: dict = {}
+    hidden = 0
+    for c, cr in rows:
+        if c.get("status", "new") not in OPEN_STATUSES or (t_fixed is not None and cr <= t_fixed) or cr < period_start:
+            continue
+        text = str(c.get("text") or "").strip()
+        if not text:
+            continue
+        if not c.get("demo") and not include_real:
+            hidden += people(c)
+            continue
+        g = groups.setdefault(_norm_text(text), {"text": text, "people": 0, "demo": True, "lang": c.get("lang"), "_last": cr})
+        g["people"] += people(c)
+        g["demo"] = g["demo"] and bool(c.get("demo"))
+        if cr >= g["_last"]:
+            g["_last"], g["text"], g["lang"] = cr, text, c.get("lang")
+    ordered = sorted(groups.values(), key=lambda g: (-g["people"], -g["_last"].timestamp()))[: max(0, limit)]
+    out = []
+    for g in ordered:
+        text = g["text"] if len(g["text"]) <= TEXT_MAX else g["text"][: TEXT_MAX - 1].rstrip() + "…"
+        out.append({"text": text, "people": g["people"], "demo": g["demo"], "lang": g["lang"]})
+    return {"groups": out, "hidden_people": hidden}
 
 
 def districts_summary(target_items: list, config: HeatConfig) -> list:

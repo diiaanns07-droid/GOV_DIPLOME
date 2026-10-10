@@ -57,6 +57,14 @@ def names(tags: dict) -> tuple[str | None, str | None]:
     return ru, kk
 
 
+_STRAIGHT_QUOTES = re.compile(r'"([^"]+)"')
+
+
+def inner_quotes(name: str) -> str:
+    """Имя пойдёт внутрь «ёлочек»: прямые кавычки внутри заменяем на „лапки“ (МЦ „Астана-Эколайф“)."""
+    return _STRAIGHT_QUOTES.sub(lambda m: "„" + m.group(1) + "“", name).replace("«", "„").replace("»", "“")
+
+
 def labels(set_name: str, tags: dict) -> tuple[str, str] | None:
     kind, subtype, plain_ru, plain_kk, tpl_ru, tpl_kk = SETS[set_name]
     ru, kk = names(tags)
@@ -64,6 +72,8 @@ def labels(set_name: str, tags: dict) -> tuple[str, str] | None:
         return None  # без имени подпись достраивается по ближайшей улице (targets.py)
     if subtype == "yard":
         ru, kk = clean_complex_name(ru), clean_complex_name(kk or ru)
+    if "«{n}»" in tpl_ru:
+        ru, kk = inner_quotes(ru), inner_quotes(kk or ru)
     return tpl_ru.format(n=ru), tpl_kk.format(n=kk or ru)
 
 
@@ -131,6 +141,15 @@ def geometry_of(el: dict, area: bool) -> dict | None:
     return None
 
 
+def is_bus_platform(tags: dict) -> bool:
+    """public_transport=platform — это и автобус, и поезд. Остановка — только по правилу приёмки R10:
+    highway=bus_stop или платформа с явным bus/trolleybus/share_taxi=yes; ж/д платформы — никогда (B-007)."""
+    if tags.get("railway") in ("platform", "halt", "station") or tags.get("train") == "yes" or tags.get("subway") == "yes":
+        return False
+    return (tags.get("highway") == "bus_stop" or tags.get("bus") == "yes" or tags.get("trolleybus") == "yes"
+            or tags.get("share_taxi") == "yes")
+
+
 def target_id(set_name: str, el: dict) -> str | None:
     if SETS[set_name][1] == "yard":
         if el["type"] == "way":
@@ -161,6 +180,8 @@ def load(directory: Path | None = None) -> dict:
                 continue
             kind, subtype, plain_ru, plain_kk = SETS[set_name][:4]
             for el in raw.get("elements", []):
+                if set_name == "platforms" and not is_bus_platform(el.get("tags") or {}):
+                    continue  # ж/д платформы вокзала — не остановки (R10, B-007)
                 tid = target_id(set_name, el)
                 if not tid or tid in out:
                     continue

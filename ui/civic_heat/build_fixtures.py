@@ -240,6 +240,26 @@ def build():
             n_added += 1
             if n_added == 2:
                 break
+        # И по одной реальной остановке (с названием) и двору ЖК у центра района — чтобы районы на мелком
+        # масштабе и в «Картине дня» были сопоставимы с Нурой, а не «Нура 149 · Есиль 1» (UX_REVIEW R11, день 3, №9).
+        for subtype, role, need_name in (("bus_stop", "city_stop", True), ("yard", "city_yard", False)):
+            best = None
+            for tid, it in objs.items():
+                if it["subtype"] != subtype or it["district"] != d_id or tid in targets:
+                    continue
+                if need_name and it.get("needs_street_label"):
+                    continue
+                if subtype == "yard" and polygon_area_m2(it["geometry"]) > 120000:
+                    continue
+                dd = geo.haversine_m(geo.anchor_of(it["geometry"]), center)
+                if dd < 4000 and (best is None or (dd, tid) < best[:2]):
+                    best = (dd, tid, it)
+            if best:
+                _, tid, it = best
+                label_ru, label_kk = real_labels(tid, it)
+                targets[tid] = {"kind": it["kind"], "subtype": subtype, "role": role, "geometry": it["geometry"],
+                                "label_ru": label_ru, "label_kk": label_kk, "district": d_id,
+                                "source": it["source"], "osm": it["osm"]}
 
     meta = {
         "built_by": "ui/civic_heat/build_fixtures.py",

@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import threading
 from pathlib import Path
@@ -209,12 +210,31 @@ class TargetResolver:
         return {"geometry": item["geometry"], "label_ru": label_ru, "label_kk": label_kk, "approximate": False,
                 "source": item["source"], "subtype": item["subtype"]}
 
+    def _cell(self, tid: str, target: dict, point) -> dict | None:
+        """Ячейка cell-<x>-<y>. Сеток две с одинаковыми id (CONTRACT не задал формулу):
+          общая R07/R12 (geo.py: угол 71.0/50.8) — «Квартал», и «примерное место» формы R09
+          (ui/civic_feedback/v2/record.py: угол 70.9/50.8) — одна и та же id там в ~7 км.
+        Решает точка жалобы: какая ячейка её содержит, та и правильная. Без точки — флаг approximate
+        в цели (его ставит только запасная цель R09)."""
+        family = cell_family(tid, point, target)
+        if family == "r09":
+            poly = r09_cell_polygon(tid)
+            return {"geometry": poly, "label_ru": "Примерное место", "label_kk": "Шамамен көрсетілген орын",
+                    "approximate": True, "source": "cell-grid-r09"} if poly else None
+        poly = geo.cell_polygon(tid)
+        if not poly:
+            return None
+        return {"geometry": poly, "label_ru": "Квартал", "label_kk": "Орам",
+                "approximate": bool(target.get("approximate")), "source": "cell-grid"}
+
     def resolve(self, target: dict | None, point=None) -> dict | None:
         """→ {geometry, label_ru, label_kk, approximate, anchor, source} или None, если нечего показать."""
         target = target or {}
         tid = str(target.get("id") or "")
         kind = target.get("kind") or "area"
         key = (kind, tid) if tid else ("point", tuple(point) if point else None)
+        if tid.startswith("cell-"):
+            key = (kind, tid, cell_family(tid, point, target))   # одна id — два места (сетки R07 и R09)
         if key in self._cache:
             return self._cache[key]
         found = self._resolve(kind, tid, target, point)
@@ -230,6 +250,8 @@ class TargetResolver:
         return found
 
     def _resolve(self, kind, tid, target, point):
+        if tid.startswith("cell-") and tid not in self._registry:
+            return self._cell(tid, target, point)
         if tid in self._registry:
             item = self._registry[tid]
             return {"geometry": item["geometry"], "label_ru": item.get("label_ru") or KIND_WORD.get(kind, KIND_WORD["area"])[0],
@@ -254,14 +276,55 @@ class TargetResolver:
                 ru, kk = segment_labels(edge[1], None)
                 return {"geometry": {"type": "LineString", "coordinates": edge[0]}, "label_ru": ru, "label_kk": kk,
                         "approximate": False, "source": "osm-walking-graph"}
-        if kind == "area" and tid.startswith("cell-"):
-            poly = geo.cell_polygon(tid)
-            if poly:
-                return {"geometry": poly, "label_ru": "Квартал", "label_kk": "Орам", "approximate": False, "source": "cell-grid"}
         if point and len(point) == 2:
             return {"geometry": geo.circle_polygon(point, APPROX_RADIUS_M), "label_ru": "Примерное место",
                     "label_kk": "Шамамен көрсетілген орын", "approximate": True, "source": "complaint-point"}
         return None
+
+
+# ---------- Сетка «примерного места» R09 ----------
+# Копия формулы ui/civic_feedback/v2/record.py (R09): если модуль R09 доступен — берём его функцию.
+R09_CELL_ORIGIN = (70.9, 50.8)
+R09_DLAT = 150.0 / 111320.0
+R09_DLON = 150.0 / (111320.0 * math.cos(math.radians(51.15)))
+_CELL_ID_RE = re.compile(r"^cell-(-?\d+)-(-?\d+)$")
+
+
+def r09_cell_polygon(cell_id: str) -> dict | None:
+    try:
+        from ui.civic_feedback.v2 import record as r09_record  # type: ignore
+
+        ring = r09_record.cell_polygon(cell_id)
+        if ring:
+            return {"type": "Polygon", "coordinates": [ring]}
+    except Exception:
+        pass
+    m = _CELL_ID_RE.match(cell_id or "")
+    if not m:
+        return None
+    col, row = int(m.group(1)), int(m.group(2))
+    x0 = R09_CELL_ORIGIN[0] + col * R09_DLON
+    y0 = R09_CELL_ORIGIN[1] + row * R09_DLAT
+    x1, y1 = x0 + R09_DLON, y0 + R09_DLAT
+    ring = [[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]
+    return {"type": "Polygon", "coordinates": [[[round(x, 6), round(y, 6)] for x, y in ring]]}
+
+
+def _in_box(point, polygon: dict | None, pad: float = 1e-6) -> bool:
+    if not polygon:
+        return False
+    bb = geo.bbox_of(polygon)
+    return bb[0] - pad <= point[0] <= bb[2] + pad and bb[1] - pad <= point[1] <= bb[3] + pad
+
+
+def cell_family(cell_id: str, point, target: dict | None) -> str:
+    """'r07' (общая сетка R07/R12) или 'r09' (примерное место R09) — по точке жалобы, иначе по флагу."""
+    if point and len(point) == 2:
+        if _in_box(point, geo.cell_polygon(cell_id)):
+            return "r07"
+        if _in_box(point, r09_cell_polygon(cell_id)):
+            return "r09"
+    return "r09" if (target or {}).get("approximate") else "r07"
 
 
 _street_labels_cache: dict | None = None
@@ -293,9 +356,13 @@ def _load_json_targets(path: Path) -> dict:
             continue
         it = dict(it)
         if not it.get("geometry"):
-            # Точечные объекты R12 могут прийти как {lon, lat} или {coordinates: [lon, lat]}.
-            c = it.get("coordinates") or ([it["lon"], it["lat"]] if "lon" in it and "lat" in it else None)
-            if c and len(c) == 2 and all(isinstance(v, (int, float)) for v in c):
+            # R12 (geo/objects.json, yards.json): поля point / polygon; другие источники — {lon, lat} или coordinates.
+            poly = it.get("polygon")
+            if isinstance(poly, list) and poly and isinstance(poly[0], list):
+                rings = poly if isinstance(poly[0][0], list) else [poly]
+                it["geometry"] = {"type": "Polygon", "coordinates": rings}
+            c = it.get("point") or it.get("coordinates") or ([it["lon"], it["lat"]] if "lon" in it and "lat" in it else None)
+            if not it.get("geometry") and c and len(c) == 2 and all(isinstance(v, (int, float)) for v in c):
                 it["geometry"] = {"type": "Point", "coordinates": [float(c[0]), float(c[1])]}
         it.setdefault("label_ru", it.get("name_ru") or it.get("name"))
         it.setdefault("label_kk", it.get("name_kk"))

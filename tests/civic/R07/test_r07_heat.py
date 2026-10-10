@@ -271,10 +271,13 @@ def test_object_and_yard_targets_are_real_osm_elements():
             continue
         osm = t["osm"]
         fname, el = raw[(osm["type"], osm["id"])]
-        assert t["district"] == "nura", tid
+        # район — по настоящему положению объекта; роли без «city_» — крупный план Нуры
+        assert t["district"] == geo.district_of(geo.anchor_of(t["geometry"])), tid
+        assert t["role"].startswith("city_") or t["district"] == "nura", tid
         tags = el.get("tags", {})
         if t["subtype"] == "bus_stop":
-            assert tags.get("highway") == "bus_stop" and tags.get("name"), tid   # только остановки с названием
+            # правило R10: highway=bus_stop или платформа с bus=yes; только с названием
+            assert (tags.get("highway") == "bus_stop" or tags.get("bus") == "yes") and tags.get("name"), tid
         if t["subtype"] == "yard":
             assert tags.get("landuse") == "residential" and tid == f"yard-{el['id']}"
         if t["subtype"] == "playground":
@@ -313,6 +316,7 @@ def test_complex_names_and_kazakh_stop_names():
     assert osm_objects.clean_complex_name("Жилой комплекс Зелёный Квартал") == "Зелёный Квартал"
     ru, kk = osm_objects.labels("bus_stops", {"name": "Ұлттық кардиохирургиялық орталық", "name:ru": "Национальный кардиологический центр"})
     assert ru == "Остановка «Национальный кардиологический центр»" and kk == "«Ұлттық кардиохирургиялық орталық» аялдамасы"
+    assert osm_objects.labels("bus_stops", {"name": 'МЦ "Астана-Эколайф"'})[0] == "Остановка «МЦ „Астана-Эколайф“»"
 
 
 def test_anchor_lies_inside_target():
