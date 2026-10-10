@@ -493,5 +493,7 @@
  "shell.map.error.slow": "R01 · web/map.js showMapError (медленная загрузка)",
  "shell.map.error.layers": "R01 · web/map.js showMapError (ошибка слоёв)",
  "shell.map.error.waiting": "R01 · web/map.js showMapError (ждёт подложку)",
- "shell.map.error.no_webgl": "R01 · web/map.js showMapError (нет WebGL)"
+ "shell.map.error.no_webgl": "R01 · web/map.js showMapError (нет WebGL)",
+ "heat.example_readonly": "R07 · карточка места, где только примеры (R10 B-037)",
+ "heat.not_found": "R07 · тост на 404 при действии сотрудника"
 }
