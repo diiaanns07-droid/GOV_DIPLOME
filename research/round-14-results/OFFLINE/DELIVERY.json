@@ -1,0 +1,46 @@
+{
+  "role": "OFFLINE",
+  "branch": "claude/r14-offline",
+  "base_sha": "d9a889520048e69aa0d1ae6e167457e9e729a3d8",
+  "restored_from": null,
+  "code_sha": null,
+  "tested_sha": "working tree based on d9a8895",
+  "push_status": "PENDING_CHECKPOINT",
+  "changed_paths": [
+    "web/civic/offline/",
+    "web/vendor/pmtiles/",
+    ".gitignore",
+    "web/index.html",
+    "web/map.js",
+    "ui/web_server.py",
+    "research/round-14-results/OFFLINE/",
+    "research/handoffs/astana/OFFLINE/round14/STATUS.md"
+  ],
+  "tests": [
+    {
+      "name": "HTTP transport",
+      "status": "PASS",
+      "count": 13
+    },
+    {
+      "name": "R10 offline UI/API",
+      "status": "FAIL",
+      "counts": {
+        "PASS": 75,
+        "FAIL": 22,
+        "NOT_RUN": 4
+      }
+    },
+    {
+      "name": "additional visual/3D/heat acceptance",
+      "status": "NOT_RUN",
+      "reason": "in progress"
+    }
+  ],
+  "known_limits": [
+    "PMTiles archive local-only, reproduce/copy before running",
+    "Protomaps omits name:kk, local name used",
+    "Existing shared UI acceptance failures; see R10 results"
+  ],
+  "next_step": "Finish visual/3D/heat and final report"
+}

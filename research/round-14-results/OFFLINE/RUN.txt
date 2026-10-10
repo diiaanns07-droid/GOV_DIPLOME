@@ -1,0 +1,104 @@
+OFFLINE · локальная карта Астаны для Birge
+Основа: d9a889520048e69aa0d1ae6e167457e9e729a3d8 (R01 B3).
+Рабочая папка: C:\Users\LEGION\Desktop\hackalem\birge-offline
+Ветка: claude/r14-offline. Основную папку проекта не использовать.
+
+1. Тайлы (однократно с интернетом, потом интернет не нужен)
+
+Set-Location C:\Users\LEGION\Desktop\hackalem\birge-offline
+powershell -NoProfile -ExecutionPolicy Bypass -File research\round-14-results\OFFLINE\download_tiles.ps1
+
+Скрипт скачивает go-pmtiles 1.31.2 Windows x86_64, проверяет SHA256 ZIP,
+считает bbox графа + минимум 3000 м, выполняет extract и verify.
+Точная команда выполненной выгрузки:
+
+pmtiles.exe extract https://build.protomaps.com/20261010.pmtiles data/civic/astana/tiles/astana.pmtiles --bbox=71.1645902,50.8935730,71.8386098,51.3882270 --maxzoom=15 --download-threads=4
+pmtiles.exe verify data/civic/astana/tiles/astana.pmtiles
+pmtiles.exe show data/civic/astana/tiles/astana.pmtiles --header-json
+
+Результат: 10 146 737 байт, SHA256
+7c8343ad3866374ca17cba4cb62e1e82033dd839d0bcfd4d6623773ac4807949
+5581 записей тайлов, z0–15. На z16–18 используется увеличение геометрии z15.
+Исходный bbox: 71.2079,50.9206,71.7953,51.3612.
+Расширение: dlat=3000/111000; dlon=3000/(111000*cos(max_abs_lat+dlat)).
+Вырезка по целым тайлам; на краях часть объектов выходит за bbox.
+
+Ежедневные сборки Protomaps удаляются по политике хранения. После истечения
+20261010 точный прежний файл можно получить только из сохранённой копии;
+для новой свежей карты используйте тот же скрипт с -Latest (SHA будет другой).
+Для другой ещё доступной даты: -Build YYYYMMDD. Не скачивать планету целиком.
+Если есть astana.download.pmtiles после сбоя, сначала проверьте файл, затем
+переименуйте его или уберите вручную; скрипт не стирает частичную выгрузку.
+
+Тайлы исключены из Git целиком, хотя этот архив меньше 40 МБ. Для интеграции
+R01 можно скопировать проверенный astana.pmtiles в аналогичный путь его
+worktree; не создавать и не менять файлы в основной папке владельца.
+Архив, .runtime, Python-окружение и веса не входят в коммит.
+
+2. Запуск на этом ноутбуке (использована уже установленная среда, без чтения .env)
+
+Set-Location C:\Users\LEGION\Desktop\hackalem\birge-offline
+$env:PYTHONUTF8='1'
+$env:PYTHONIOENCODING='utf-8'
+$env:PYTHONDONTWRITEBYTECODE='1'
+$env:CIVIC_DEMO='1'
+$env:CIVIC_DB_PATH="$PWD\.runtime\offline-demo.sqlite3"
+$env:BIRGE_CLF_V2_DIR='C:\Users\LEGION\Desktop\hackalem\birge-r03\ml\civic_classifier_v2\artifacts\onnx_per_channel'
+$env:HF_HUB_OFFLINE='1'
+$env:TRANSFORMERS_OFFLINE='1'
+$OfflinePython='C:\Users\LEGION\Desktop\hackalem\birge-b2\.venv\Scripts\python.exe'
+& $OfflinePython -B -m ui.civic_store init
+& $OfflinePython -B -m ui.civic_store seed-demo --package data\civic\astana\demo_synthetic.json
+& $OfflinePython -B -m ui.civic_store seed-r14-demo
+& $OfflinePython -B app.py --host 127.0.0.1 --port 8613
+
+Открыть http://127.0.0.1:8613/?offline=1 (или просто /).
+После переноса в R01 работают штатные run-city.bat и порт 8611; здесь выбран
+8613, чтобы не занимать порт другой сборки. Запуск не открывает личный Chrome.
+На другом ноутбуке сначала создайте .venv Python 3.12 и поставьте требования
+проекта; для классификатора дополнительно нужны onnxruntime, tokenizers,
+numpy и локальные веса R03. Карта работает и без модели классификации.
+
+Поведение: если архив установлен, карта всегда берётся локально. Это решение
+исключает задержку проверки интернета перед показом. ?offline=1 и navigator
+offline принудительно запрещают выбор удалённого стиля. Без архива в этом
+режиме остаётся прежний упрощённый фон, а не обещание полноценной карты.
+Если архив отсутствует, браузер online и нет флага, используется прежний
+OpenFreeMap с существующим запасным фоном при ошибке.
+
+3. Лицензии и локальные ресурсы
+
+web/vendor/pmtiles/: PMTiles JS 4.5.0, опубликован 2026-08-10 (старше 2 недель).
+web/civic/offline/: style.json, boot.js, serve.py, fonts, sprites, attribution.
+Набор глифов Noto Sans Regular: все 256 диапазонов BMP; проверено присутствие
+Ққ Ғғ Үү Ұұ Әә Өө Һһ Іі Ңң. OFL 1.1. Спрайты light v4: 1x/2x, MIT.
+Данные: OpenStreetMap ODbL 1.0; Natural Earth public domain. Атрибуция в карте.
+ASSETS.json и assets-manifest.json содержат размеры, SHA и закреплённые источники.
+Ссылки атрибуции не загружают данные; при нажатии на внешнюю ссылку нужен интернет.
+Русский: name:ru → name → name:kk. Қазақша: name:kk → name → name:ru.
+Текущая Protomaps 4.15.2 не сохраняет отдельный name:kk; местное name часто
+казахское. Никаких придуманных переводов или смены геометрии нет.
+Здания: height/min_height из Protomaps (высота/этажность OSM upstream);
+запасной расчёт по building:levels * 3, при отсутствии сведений 6 м.
+Это высоты OSM/приближения, не геодезическая модель города.
+
+4. Проверка
+
+& 'C:\Users\LEGION\venvs\birge-ml\Scripts\python.exe' -B research\round-14-results\OFFLINE\tests\test_transport.py $PWD
+
+Браузер: Playwright 1.63.0 / собственный Chromium, без Computer Use.
+Каждый основной профиль создаёт чистый context и context.set_offline(True).
+Offline Chromium блокирует даже localhost. Поэтому offline_bridge.py и
+offline_capture.cjs пропускают ТОЛЬКО реальный сервер 127.0.0.1:8613 через
+APIRequestContext (не фикстуры, не перехваченный кэш). Любой другой origin
+блокируется и попадает в журнал. navigator.onLine остаётся false.
+Это проверка «ноутбук без интернета, локальный сервер включён», а не PWA,
+которая может работать после выключения Python-сервера. Service worker не нужен.
+Отдельно проверяется автоматический выбор без флага при navigator.onLine=true
+с запрещёнными внешними запросами. Холодные времена включают тестовый мост.
+
+Сценарий R10 из ac8508ea0eb6b1ffe3bfdbd9851da2bd9b8c98f1 используется без
+изменения его проверок. Сырые FAIL отделены в OFFLINE.md от офлайн-карты и
+ошибок/ограничений самой приёмки. Дополнительные реальные UI-проходы проверяют
+смешанный текст, подложку, подписи, фактическую постановку и якорь 3D.
+Все жалобы/голоса в проверке синтетические; SQLite и учётная запись локальные.

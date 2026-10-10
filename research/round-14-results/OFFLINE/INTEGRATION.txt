@@ -1,0 +1,124 @@
+OFFLINE → R01. Минимальные подключения к B3 d9a889520048e69aa0d1ae6e167457e9e729a3d8.
+В этой ветке patch уже применён и тестируется. Для общей сборки:
+1. Перенести web/civic/offline/ и web/vendor/pmtiles/ из поставки OFFLINE.
+2. git apply --check research/round-14-results/OFFLINE/INTEGRATION.txt
+3. git apply research/round-14-results/OFFLINE/INTEGRATION.txt
+4. Получить data/civic/astana/tiles/astana.pmtiles по RUN.txt; он не в Git.
+5. Запустить сервер и открыть /?offline=1. Без архива полного офлайна нет.
+Не cherry-pick всей ветки другого владельца. .gitignore содержит только
+добавление пути тайлов; ui/web_server.py — явная раздача библиотеки и один
+обработчик ресурсов (без произвольного чтения каталогов). Импорт serve.py
+не открывает файлы до запроса; Python-файл через HTTP не отдаётся.
+web/map.js выбирает стиль до создания карты, сохраняет слои R07/R05/R12,
+переключает схему buildings/height только для Protomaps. Старый запасной фон
+больше не пытается добавить удалённый источник зданий при offline=1.
+Автоматический режим — local-first при установленном архиве; чужие сетевые
+пробы не нужны. Подписи меняются по birge:lang. Прочие тексты UI не менялись.
+Сервер локальный, HTTP Range: 206, Content-Range, HEAD, ETag/If-Range, 416;
+файлы копируются порциями 64 KiB. Глифы: строго один шрифт и диапазоны BMP.
+
+diff --git a/.gitignore b/.gitignore
+index 1a1f94a..ad7c9f0 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -43,3 +43,6 @@ private/
+ 
+ # Раунд 14, R03: веса, ONNX, кэш LLM и прогнозы классификатора v2 — никогда в Git (> 50 МБ)
+ ml/civic_classifier_v2/artifacts/
++
++# OFFLINE: local Protomaps archive, reproduce with OFFLINE/RUN.txt
++data/civic/astana/tiles/
+diff --git a/ui/web_server.py b/ui/web_server.py
+index ecc6d46..28608a5 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -22,6 +22,7 @@ from urllib.parse import parse_qs, urlsplit
+ import webbrowser
+ 
+ import engine
++from web.civic.offline.serve import serve as serve_offline
+ 
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+@@ -37,6 +38,7 @@ ASSETS = {
+     "/style.css": ("style.css", "text/css; charset=utf-8"),
+     "/favicon.svg": ("favicon.svg", "image/svg+xml"),
+     "/vendor/maplibre-gl.js": ("vendor/maplibre-gl.js", "text/javascript; charset=utf-8"),
++    "/vendor/pmtiles/pmtiles.js": ("vendor/pmtiles/pmtiles.js", "text/javascript; charset=utf-8"),
+     "/vendor/maplibre-gl.css": ("vendor/maplibre-gl.css", "text/css; charset=utf-8"),
+     # B2: three.js 0.169.0 (LOCAL-2) для 3D-превью R05; грузится модулем build3d только при монтировании.
+     "/vendor/three/three.module.min.js": ("vendor/three/three.module.min.js", "text/javascript; charset=utf-8"),
+@@ -1478,6 +1480,8 @@ class Handler(BaseHTTPRequestHandler):
+     def do_GET(self):
+         parsed = urlsplit(self.path)
+         path = parsed.path
++        if serve_offline(self, path):
++            return
+         if path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/"):
+             self.civic_request("GET")
+             return
+diff --git a/web/index.html b/web/index.html
+index b0e2196..7e77ada 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -198,6 +198,8 @@
+     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+     <script defer src="/app.js"></script>
+     <script defer src="/interface.js"></script>
++    <script defer src="/vendor/pmtiles/pmtiles.js"></script>
++    <script defer src="/civic/offline/boot.js"></script>
+     <script defer src="/map.js"></script>
+     <script defer src="/govtech/core/data.js"></script>
+     <script defer src="/govtech/core/evidence.js"></script>
+diff --git a/web/map.js b/web/map.js
+index b296195..af78a49 100644
+--- a/web/map.js
++++ b/web/map.js
+@@ -238,9 +238,11 @@ async function loadMap() {
+     return;
+   }
+   try {
++    const basemap = await window.BirgeOffline.choose("https://tiles.openfreemap.org/styles/liberty");
++    offlineBasemap = basemap.schematic;
+     map = new maplibregl.Map({
+       container: "map",
+-      style: "https://tiles.openfreemap.org/styles/liberty",
++      style: basemap.style || offlineStyle(),
+       center: cityBounds().getCenter(),
+       zoom: 10.7,
+       pitch: 0,
+@@ -284,7 +286,7 @@ async function loadMap() {
+           if (
+             l.type === "symbol" &&
+             l.layout?.["text-field"] &&
+-            /name/.test(JSON.stringify(l.layout["text-field"]))
++            !window.BirgeOffline.active && /name/.test(JSON.stringify(l.layout["text-field"]))
+           ) {
+             try {
+               map.setLayoutProperty(l.id, "text-field", [
+@@ -361,6 +363,7 @@ async function loadMap() {
+           },
+           label,
+         );
++        if (!offlineBasemap) {
+         const sourceId =
+           Object.keys(map.getStyle().sources).find(
+             (k) => map.getStyle().sources[k].type === "vector",
+@@ -371,7 +374,7 @@ async function loadMap() {
+             url: "https://tiles.openfreemap.org/planet",
+           });
+         map.addLayer(
+-          {
++          window.BirgeOffline.active ? window.BirgeOffline.buildingLayer() : {
+             id: "akim-3d",
+             type: "fill-extrusion",
+             source: sourceId,
+@@ -413,6 +416,8 @@ async function loadMap() {
+           },
+           label,
+         );
++        }
++        window.BirgeOffline.attach(map);
+         map.setLight({
+           anchor: "viewport",
+           color: "#fff9e8",

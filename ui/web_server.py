@@ -26,6 +26,7 @@ from urllib.parse import parse_qs, urlsplit
 import webbrowser
 
 import engine
+from web.civic.offline.serve import serve as serve_offline
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +42,7 @@ ASSETS = {
     "/style.css": ("style.css", "text/css; charset=utf-8"),
     "/favicon.svg": ("favicon.svg", "image/svg+xml"),
     "/vendor/maplibre-gl.js": ("vendor/maplibre-gl.js", "text/javascript; charset=utf-8"),
+    "/vendor/pmtiles/pmtiles.js": ("vendor/pmtiles/pmtiles.js", "text/javascript; charset=utf-8"),
     "/vendor/maplibre-gl.css": ("vendor/maplibre-gl.css", "text/css; charset=utf-8"),
     # B2: three.js 0.169.0 (LOCAL-2) для 3D-превью R05; грузится модулем build3d только при монтировании.
     "/vendor/three/three.module.min.js": ("vendor/three/three.module.min.js", "text/javascript; charset=utf-8"),
@@ -1576,6 +1578,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urlsplit(self.path)
         path = parsed.path
+        if serve_offline(self, path):
+            return
         if path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/"):
             self.civic_request("GET")
             return

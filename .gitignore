@@ -43,3 +43,6 @@ private/
 
 # Раунд 14, R03: веса, ONNX, кэш LLM и прогнозы классификатора v2 — никогда в Git (> 50 МБ)
 ml/civic_classifier_v2/artifacts/
+
+# OFFLINE: local Protomaps archive, reproduce with OFFLINE/RUN.txt
+data/civic/astana/tiles/

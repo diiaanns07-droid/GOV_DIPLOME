@@ -1,0 +1,40 @@
+{
+  "graph_bbox": [
+    71.2079,
+    50.9206,
+    71.7953,
+    51.3612
+  ],
+  "padding_m": 3000,
+  "bbox": [
+    71.1645902,
+    50.893573,
+    71.8386098,
+    51.388227
+  ],
+  "build": {
+    "key": "20261010.pmtiles",
+    "size": 138768930345,
+    "md5sum": "DJnNVN5wcaSMk6+JenbZ6g==",
+    "b3sum": "9c36c11e8b8c0220f113bdfdda079ed185480c9090056e853c79fee8b7be45da",
+    "uploaded": "2026-10-10T09:03:21.665Z",
+    "version": "4.15.2"
+  },
+  "source_url": "https://build.protomaps.com/20261010.pmtiles",
+  "schema": "4.15.2",
+  "minzoom": 0,
+  "maxzoom": 15,
+  "cli": "go-pmtiles 1.31.2",
+  "cli_zip_sha256": "a658baa4d7e55020aef6ca17bd9ff9faa1582671266b36f58c52db0ac8e785a1",
+  "extract_seconds": 13.1935431,
+  "tile_entries": 5581,
+  "region_tiles": 6152,
+  "archive_path": "data/civic/astana/tiles/astana.pmtiles",
+  "archive_bytes": 10146737,
+  "archive_sha256": "7c8343ad3866374ca17cba4cb62e1e82033dd839d0bcfd4d6623773ac4807949",
+  "graph_sha256": "4d93d8b5af188a65e25efe67add2b60ea066cc8ff9f9d4c6927a46b9c6cc8883",
+  "license": "ODbL-1.0; Natural Earth public domain",
+  "fonts_bytes": 6244847,
+  "sprites_bytes": 53228,
+  "retrieved_utc": "2026-10-10T17:49:44.043856+00:00"
+}
