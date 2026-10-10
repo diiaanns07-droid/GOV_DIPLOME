@@ -196,14 +196,17 @@ def review():
         f"Ключей: {len(ru)}. С пометкой ⚑: {len(flagged)}.",
         "",
         "## 1. Сначала проверьте — места с пометкой ⚑",
-        "",
-        "| ключ | рус | қаз | комментарий |",
-        "|---|---|---|---|",
     ]
     esc = lambda s: str(s).replace("|", "\\|").replace("\n", " ")
-    for k in flagged:
-        src = f" <sub>{esc(sources[k])}</sub>" if k in sources else ""
-        lines.append(f"| `{k}` | {esc(fmt(ru[k]))} | {esc(fmt(kk.get(k, '')))} | ⚑ {esc(notes[k])}{src} |")
+    # Сначала то, что жюри видит на шагах демо (путь жителя, карта, «Картина дня», 3D), потом кабинет, лента работ и прочее.
+    demo = ("complaint.", "heat.", "akim.", "common.", "cat.", "target.", "status.", "dates.", "mine.", "proposal.",
+            "build3d.", "shell.map.", "shell.brand", "shell.nav")
+    seen = [k for k in flagged if k.startswith(demo)], [k for k in flagged if not k.startswith(demo)]
+    for title, part in zip(("### 1а. Видно на демо", "### 1б. Кабинет сотрудника, лента работ, служебное"), seen):
+        lines += ["", f"{title} ({len(part)})", "", "| ключ | рус | қаз | комментарий |", "|---|---|---|---|"]
+        for k in part:
+            src = f" <sub>{esc(sources[k])}</sub>" if k in sources else ""
+            lines.append(f"| `{k}` | {esc(fmt(ru[k]))} | {esc(fmt(kk.get(k, '')))} | ⚑ {esc(notes[k])}{src} |")
     lines += ["", "## 2. Весь словарь по разделам", ""]
     group = None
     titles = {
