@@ -110,7 +110,8 @@
 Агент / город: Claude Code (облачная сессия), Астана, Birge. Время — у коммитов (UTC).
 Статус: **модель обучена (LOCAL-4, c19b889), выводы в MODEL_CARD.md; ждём повторный ONNX-экспорт на ноутбуке и разметку людей.**
 Рабочая ветка: claude/r14-R03 (от claude/round-14-package @ 3c5ac25). В claude/round-14-package не пушу.
-Последний код: см. DELIVERY.json code_sha (= tested_sha). Push: OK.
+Рабочий код (рантайм) — ac0e954, он же в FINAL-кандидате R01; после него — инструменты анализа, отчёты, тесты.
+Последний SHA — голова ветки (DELIVERY.json). Push: OK.
 Назначенные пути: ml/civic_classifier_v2/, tests/civic/R03/round14/ (старые tests/civic/R03/*.mjs раунда 13 —
 другой модуль, не трогаю), research/round-14-results/R03/, этот файл.
 
@@ -157,15 +158,21 @@
 - Трансформер − логрегрессия на v3 + LLM: +0.015 [−0.034; +0.068] — не доказано. Трансформер − словарь: +0.128 [+0.070; +0.189].
 - Языки: kk 0.80 / ru 0.82 — заметного разрыва нет, но и не доказано, что его нет (у логрегрессии ДИ kk − ru
   от −0.17 до +0.05). Слабые места: транслит 0.53, трудные случаи 0.67.
+- Объём синтетики (логрегрессия): v3 0.751 → +25 % LLM 0.790 → +100 % 0.797 — плато; важно разнообразие, не объём.
 
 ## Ждём
-- Ноутбук: RUN.txt шаг 8 с кода d472baf (повторный экспорт per-channel → ожидаются три PASS) и шаг 8б (int8 на probe_v2).
+- Ноутбук: блок «УТРО 11 ОКТ» RUN.txt с последнего SHA ветки: шаг 8 (повторный экспорт per-channel → три PASS),
+  8б (int8 на probe_v2 + разбор ошибок), 8в (перевод транслита), по желанию paired и bench, затем `analysis tables`.
 - Владелец: разметка людей ≥ 200 (birge-labels-v1, private/) — тогда шаг 6 с --human (и по желанию шаг 5, 6б).
 
 ## Следующий шаг
-1. Когда придут onnx_export.json (повтор) и onnx_int8_on_probe_v2.json: проверить три PASS и разницу int8 против
-   PyTorch на probe_v2 (0.828), вписать в MODEL_CARD.md (раздел ONNX), обновить DELIVERY.json, сообщить R04, что
-   artifacts/onnx готов.
+1. Когда придут файлы утра (onnx_export.json, onnx_int8_on_probe_v2*.json, preds_probe_v2_final_onnx_int8.jsonl,
+   ERROR_ANALYSIS.md, DIPLOMA_TABLES.md; по желанию paired_transformer_*.json, classify_load_laptop.json):
+   - проверить три PASS и int8 против PyTorch на probe_v2 (0.828) — таблица 7; вписать в MODEL_CARD (раздел ONNX);
+   - трансформер в ERROR_ANALYSIS: ДИ kk − ru (раздел 7) и калибровка (раздел 8) → MODEL_CARD пункты 4 и 7, R14;
+   - перевод транслита для трансформера (таблица 8) → INTEGRATION для R04: звать ли v2 на to_cyrillic;
+   - парный вклад LLM у трансформера (таблица 3) → MODEL_CARD пункт 1, R14 (заменить «[РЕЗУЛЬТАТ R03]»);
+   - обновить DELIVERY.json; сообщить R04, что artifacts/onnx готов.
 2. Когда будут тексты людей: шаг 6 с --human → RESULTS.md (таблица на людях, human/mix, потеря «шаблоны → люди»),
    выводы в MODEL_CARD.md; итоговая модель — режим mix (шаг 7 с --experiments), затем шаг 8 заново.
 3. Если людей < 200 к 13 окт — оставить NOT_EVALUATED; текущая итоговая модель (synth_all) остаётся в продукте с needs_review=true.
