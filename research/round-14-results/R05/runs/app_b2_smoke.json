@@ -1,14 +1,15 @@
 {
- "generated_at": "2026-10-10T20:11:12.909Z",
+ "generated_at": "2026-10-10T20:37:35.611Z",
  "url": "http://127.0.0.1:8805/",
- "r01": "claude/sharp-dijkstra-0t87gl@1dd5b53 (FINAL night 5a) + R05 a331db0 + proposed_r01_final2.patch",
+ "r01": "claude/sharp-dijkstra-0t87gl@1dd5b53 (FINAL night 5a) + R05 be7d813 + proposed_r01_final2.patch",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
    "status": "PASS",
    "detail": {
     "labels": [
-     "Проект · 20276",
+     "Проект · 20277",
+     "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027",
@@ -57,7 +58,7 @@
     "posts": [
      201
     ],
-    "id": "p-209e7a16df8f",
+    "id": "p-25349bfacaf8",
     "year": 2027
    }
   },
@@ -93,8 +94,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 674.9891918489977,
-     "y": 278.00518381943584
+     "x": 674.9891918208352,
+     "y": 278.00518373175515
     },
     "under": []
    }
@@ -183,12 +184,12 @@
    "detail": {
     "1366_ru": {
      "heldBefore": 1,
-     "count": 6,
+     "count": 7,
      "console_errors": []
     },
     "375_kk": {
      "heldBefore": 1,
-     "count": 6,
+     "count": 7,
      "console_errors": []
     }
    }
@@ -200,40 +201,40 @@
     "kk": {
      "sheet_before": "half",
      "tapped": [
-      187,
-      186
+      188,
+      187
      ],
      "state": "card",
      "sheet": "peek",
      "dock": [
-      218,
+      210,
       609
      ],
      "header_bottom": 72,
      "header_free": true,
      "object": [
       204,
-      164
+      160
      ],
      "object_above_card": true
     },
     "ru": {
      "sheet_before": "half",
      "tapped": [
-      187,
-      186
+      188,
+      187
      ],
      "state": "card",
      "sheet": "peek",
      "dock": [
-      218,
+      210,
       609
      ],
      "header_bottom": 72,
      "header_free": true,
      "object": [
       152,
-      164
+      160
      ],
      "object_above_card": true
     }

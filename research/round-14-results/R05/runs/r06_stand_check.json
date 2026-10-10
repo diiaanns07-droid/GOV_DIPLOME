@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-10T18:55:42.377Z",
+ "generated_at": "2026-10-10T20:33:59.487Z",
  "stand": {
   "url": "http://127.0.0.1:8618/civic/proposals/demo.html",
   "r06_sha": "b42e790",
@@ -13,11 +13,11 @@
     "storeMode": "api",
     "count": 5,
     "kinds": [
-     "stop:2027:demo",
-     "playground:2027:demo",
-     "sports:2027:demo",
+     "square:2027:demo",
      "lighting:2027:demo",
-     "square:2027:demo"
+     "sports:2027:demo",
+     "playground:2027:demo",
+     "stop:2027:demo"
     ]
    }
   },
@@ -25,7 +25,7 @@
    "id": "list_sends_device_id_no_bbox",
    "status": "PASS",
    "detail": [
-    "/api/civic/v2/proposals?device_id=dev-d9e9508e07944c1357d8e7e9f3ed06cd"
+    "/api/civic/v2/proposals?device_id=dev-d37d44839bcd3fde856e5438b8bb4214"
    ]
   },
   {
@@ -42,8 +42,8 @@
    "id": "placed_where_clicked",
    "status": "PASS",
    "detail": [
-    71.4009,
-    51.1283
+    71.400895,
+    51.127903
    ]
   },
   {
@@ -54,14 +54,15 @@
     "geometry": {
      "type": "Point",
      "coordinates": [
-      71.4009,
-      51.1283
+      71.400895,
+      51.127903
      ]
     },
     "rotation_deg": 11,
     "demo": false,
     "planned_year": 2027,
-    "near_street": "улица Абикена Бектурова",
+    "near_street": "улица Сыганак",
+    "near_street_kk": "Сығанақ көшесі",
     "target": {
      "kind": "area",
      "id": "yard-1148721825",
@@ -71,24 +72,46 @@
    }
   },
   {
-   "id": "r06_d2_accepts_context_first_try",
+   "id": "r06_delivery2_steps_down_keeping_known_fields",
    "status": "PASS",
    "detail": {
-    "posts": 1,
-    "firstStatus": 201
+    "statuses": [
+     422,
+     201
+    ],
+    "retry": {
+     "kind": "stop",
+     "geometry": {
+      "type": "Point",
+      "coordinates": [
+       71.400895,
+       51.127903
+      ]
+     },
+     "rotation_deg": 11,
+     "demo": false,
+     "planned_year": 2027,
+     "near_street": "улица Сыганак",
+     "target": {
+      "kind": "area",
+      "id": "yard-1148721825",
+      "label_ru": "Evolution",
+      "label_kk": "Evolution"
+     }
+    }
    }
   },
   {
    "id": "created_on_server_with_year_and_rotation",
    "status": "PASS",
    "detail": {
-    "id": "p-5d1e99151c76",
+    "id": "p-afd17787c0d7",
     "kind": "stop",
     "geometry": {
      "type": "Point",
      "coordinates": [
-      71.4009,
-      51.1283
+      71.400895,
+      51.127903
      ]
     },
     "rotation_deg": 11,
@@ -101,23 +124,24 @@
     "title_ru": "Остановка",
     "title_kk": "Аялдама",
     "district": "nura",
-    "near_street": "улица Абикена Бектурова",
+    "near_street": "улица Сыганак",
+    "near_street_kk": null,
     "target": {
      "id": "yard-1148721825",
      "kind": "area",
      "label_kk": "Evolution",
      "label_ru": "Evolution"
     },
-    "created_at": "2026-10-10T18:55:19+00:00",
+    "created_at": "2026-10-10T20:33:39+00:00",
     "demo": false
    }
   },
   {
-   "id": "r06_d2_stores_near_street",
+   "id": "r06_stores_near_street",
    "status": "PASS",
    "detail": {
-    "sent": "улица Абикена Бектурова",
-    "got": "улица Абикена Бектурова"
+    "sent": "улица Сыганак",
+    "got": "улица Сыганак"
    }
   },
   {
@@ -153,15 +177,16 @@
    "detail": [
     "POST /api/civic/v1/session/login",
     "POST /api/civic/v2/proposals",
-    "POST /api/civic/v2/proposals/p-5d1e99151c76/vote",
-    "POST /api/civic/v2/proposals/p-5d1e99151c76/withdraw"
+    "POST /api/civic/v2/proposals",
+    "POST /api/civic/v2/proposals/p-afd17787c0d7/vote",
+    "POST /api/civic/v2/proposals/p-afd17787c0d7/withdraw"
    ]
   },
   {
    "id": "undo_restores_same_proposal_with_vote",
    "status": "PASS",
    "detail": {
-    "id": "p-5d1e99151c76",
+    "id": "p-afd17787c0d7",
     "votes_up": 1
    }
   },

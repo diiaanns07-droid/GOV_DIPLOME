@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-10-10T20:09:49.354Z",
- "build": "claude/sharp-dijkstra-0t87gl@1dd5b53 (FINAL night 5a) + R05 a331db0 + proposed_r01_final2.patch",
+ "generated_at": "2026-10-10T20:36:14.431Z",
+ "build": "claude/sharp-dijkstra-0t87gl@1dd5b53 (FINAL night 5a) + R05 be7d813 + proposed_r01_final2.patch",
  "place": [
   71.402341,
   51.117181
  ],
- "proposal": "p-1e69c2f054af",
+ "proposal": "p-2c6bc5cf8061",
  "status": "PASS",
  "checks": [
   {
@@ -39,6 +39,42 @@
    "ok": true,
    "shot": "screens/final_kk_street_375_ru.png",
    "page_errors": []
+  },
+  {
+   "titles": {
+    "nura": {
+     "title_ru": "Сквер у улицы Керей и Жанибек хандар",
+     "title_kk": "Гүлзар · Керей және Жәнібек хандар көшесі маңында",
+     "near_street": "улица Керей и Жанибек хандар",
+     "near_street_kk": "Керей және Жәнібек хандар көшесі"
+    },
+    "left_bank": {
+     "street_snap_requests": 1,
+     "title_ru": "Сквер у улицы Сауран",
+     "title_kk": "Гүлзар · Сауран көшесі маңында",
+     "near_street": "улица Сауран",
+     "near_street_kk": "Сауран көшесі"
+    },
+    "left_bank_cards": {
+     "1366_ru": {
+      "title_on_screen": "Сквер у улицы Сауран",
+      "shot": "screens/final_left_bank_card_1366_ru.png"
+     },
+     "1366_kk": {
+      "title_on_screen": "Гүлзар · Сауран көшесі маңында",
+      "shot": "screens/final_left_bank_card_1366_kk.png"
+     },
+     "375_ru": {
+      "title_on_screen": "Сквер у улицы Сауран",
+      "shot": "screens/final_left_bank_card_375_ru.png"
+     },
+     "375_kk": {
+      "title_on_screen": "Гүлзар · Сауран көшесі маңында",
+      "shot": "screens/final_left_bank_card_375_kk.png"
+     }
+    }
+   },
+   "ok": true
   }
  ]
 }
