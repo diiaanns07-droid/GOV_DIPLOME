@@ -2,7 +2,7 @@
   "role": "R01",
   "title": "Интегратор: одна работающая версия Birge",
   "branch": "claude/sharp-dijkstra-0t87gl",
-  "base_sha": "af77b78 (claude/round-14-package), влиты обновления пакета до 4bbf456 (merge 7e0a424)",
+  "base_sha": "af77b78 (claude/round-14-package), влиты обновления пакета до a38da11 (merge ef1ef44)",
   "restored_from": {
     "shell_and_gateway": "claude/affectionate-ride-bol5v8@cb9d60a",
     "ui/civic_store, tests/civic/R02": "claude/elegant-franklin-jbhprq@26793c8 (код b9eb180)",
@@ -13,17 +13,20 @@
     "agent/civic_assistant, web/civic/assistant, tests/civic/R09": "claude/wizardly-ptolemy-qy8ltw@14c3384 (код c46b2ed)",
     "ml/civic_classifier, tests/civic/R08": "claude/wizardly-ptolemy-qy8ltw@14c3384",
     "data/civic/astana/round12-verified, round13-verified, tests/civic/R05": "claude/fervent-dijkstra-1cqrg5@a995f9f",
-    "web/civic/ui-kit, web/civic/i18n, tests/civic/R11": "claude/r14-R11@6102dfb (B2; прежде ba8758b, cc77761)",
-    "ml/datasets, ml/labeling, web/labeling, tests/civic/R02/round14": "claude/r14-R02@229f1aa",
-    "ui/civic_heat, web/civic/heat, tests/civic/R07 (новые)": "claude/upbeat-knuth-i0rqaa@5a97636",
-    "ui/civic_akim, web/civic/akim, tests/civic/R08 (новые)": "claude/r14-R08@4ce8f08 (B2, поставка 2; прежде 9f1d9c0)",
+    "web/civic/ui-kit, web/civic/i18n, tests/civic/R11": "claude/r14-R11@f0e5e80",
+    "ml/datasets, ml/labeling, web/labeling, tests/civic/R02/round14": "claude/r14-R02@f62cc93 (+ P-R02 R15)",
+    "ui/civic_heat, web/civic/heat, tests/civic/R07 (новые)": "claude/upbeat-knuth-i0rqaa@b28268b",
+    "ui/civic_akim, web/civic/akim, tests/civic/R08 (новые)": "claude/r14-R08@c7646a1",
     "ui/civic_feedback/v2, web/civic/feedback (новые), tests/civic/R09 (новые)": "claude/modest-shannon-0ki93p@fa49fc9 (B2; прежде da295be, a4ab5a4)",
     "engine/civic_geo, data/civic/astana/geo, web/civic/map, web/civic/editor, tests/civic/R12": "claude/tender-brahmagupta-ef5ztl@d13f49a (tested; code 8810221 — предок)",
-    "ui/civic_store, web/civic/proposals, tests/civic/R06": "claude/round-14-r06@7031afa (+ патч R06 r02_old_store_tests.patch к tests/civic/R02)",
-    "web/civic/build3d, tests/civic/R05": "claude/r14-R05@b0353ee",
-    "ml/civic_forecast, ui/civic_forecast, tests/civic/R13": "claude/r14-R13@8705829",
+    "ui/civic_store, web/civic/proposals, tests/civic/R06": "claude/round-14-r06@efafee9 (round14/store; тесты раунда 13 не тронуты)",
+    "web/civic/build3d, tests/civic/R05": "claude/r14-R05@fc03e19",
+    "ml/civic_forecast, ui/civic_forecast, tests/civic/R13": "claude/r14-R13@a0133e9",
     "ml/civic_dedup, ui/civic_ml_api, tests/civic/R04/round14": "claude/r14-R04@deeb1de",
-    "ml/civic_classifier_v2, tests/civic/R03/round14": "claude/r14-R03@252913e (без весов — LOCAL)"
+    "ml/civic_classifier_v2, tests/civic/R03/round14": "claude/r14-R03@ac0e954 (без весов — LOCAL)",
+    "tests/civic/R10, tests/e2e": "claude/r14-R10@3623f65",
+    "tests/civic/R15 + patches": "claude/r14-R15@054b056 (тесты), patches b892532 (P-R01, P-R09, P-R07, P-R04, P-R02)",
+    "docs/birge, docs/diploma": "claude/r14-R14@16ee4f7"
   },
   "builds": {
     "I0": "3adabe3",
@@ -36,11 +39,17 @@
     "merge_package_4bbf456": "7e0a424",
     "b2_step1": "915143f",
     "b2_step2": "b5c153d",
-    "b2_candidate": "коммит с этим файлом (код = b5c153d; после него только проверки и документы)"
+    "b2_candidate": "коммит с этим файлом (код = b5c153d; после него только проверки и документы)",
+    "b3_b11": "d9a8895 (ветка claude/r14-R01, перенесено fast-forward)",
+    "night_1": "2b9e837",
+    "night_2a": "daec72a",
+    "night_2b": "095653b",
+    "package_merge": "ef1ef44",
+    "night_2c_final_candidate": "0a7a346"
   },
-  "code_sha": "b5c153d",
-  "tested_sha": "b5c153d (полный run_checks.sh в отдельной рабочей копии); r14_b2.cjs 20 проверок — рабочее дерево поверх b5c153d",
-  "push_status": "OK: 915143f и b5c153d в origin/claude/sharp-dijkstra-0t87gl; этот файл — в следующем коммите (SHA — в итоговом сообщении)",
+  "code_sha": "0a7a346",
+  "tested_sha": "0a7a346 (pytest и браузер на рабочем дереве = 0a7a346; полный run_checks в отдельной копии — BUILD_LOG «Ночь»)",
+  "push_status": "OK: 0a7a346 в origin/claude/sharp-dijkstra-0t87gl; документы — следующим коммитом",
   "changed_paths": [
     "ui/web_server.py",
     "web/index.html",
@@ -84,17 +93,17 @@
     "d3c33d9: full run_checks.sh": "pytest 1793 passed / 11 skipped; web_check, node ×8 PASS; браузер: сценарии 16/0, город 81/0, пустой реестр 15/0, шапка 38/0, путь демо B1 15/0, P0 62/1/2 (1 FAIL = гонка demo-ring модуля карты R12, есть и на I0)",
     "b5c153d: full run_checks.sh": "pytest 2377 passed / 20 skipped / 1 xfailed; web_check, node govtech ×5, R04, R01 explore PASS; node R03 core FAIL 24/2 — устаревший тест карты раунда 13 (карта теперь R12), шаг заменён на R12 map core 29/0 и R12 editor 40/0; браузер: сценарии 16/0, город 81/0, пустой реестр 15/0, шапка 38/0, путь B1 15/0, путь B2 17/0, P0 62/1/2 (demo-ring R12, есть на I0)",
     "рабочее дерево поверх b5c153d: r14_b2.cjs": "PASS 20/0 (добавлен путь жителя: место R12, подсказка R04)",
-    "live app.py (CIVIC_DEMO=1)": "PASS: civic-v2: ready R04, R06, R07, R08, R09, R12, R13; seed-r14-demo при работающем сервере — 4 отстающих объекта, 5 предложений"
+    "live app.py (CIVIC_DEMO=1)": "PASS: civic-v2: ready R04, R06, R07, R08, R09, R12, R13; seed-r14-demo при работающем сервере — 4 отстающих объекта, 5 предложений",
+    "0a7a346 (рабочее дерево)": "pytest 2638 passed / 21 skipped / 1 failed (R10 точность: двор R12 за границей, B-009); R15 121/0; браузер B1 15/0, B2 25/0, шапка 38/0, город 81/0",
+    "ef1ef44: R10 run_acceptance": "сценарий 110/3/0 (B-030 — исправлен в 0a7a346; кабинет на ҚАЗ — R12), UX 94/0/8 (NOT_RUN — стенды ролей)"
   },
   "known_limits": [
-    "Все жалобы, объекты-с-отставанием и предложения на демо — синтетика (demo: true, «Пример»), реальных обращений нет.",
-    "R05 и R06 расходятся в контракте предложений: в оболочке временный адаптер build3dFetch (INTEGRATION §9); убрать, когда сдана R05 7f42cb3 или R06 d043e7b.",
-    "R07, R06, R05: на ветках есть UX-правки после DELIVERY (9bc25e6, d043e7b, 7f42cb3) — в B2 не вошли, ждут обновления DELIVERY.json.",
-    "R03 без весов модели (LOCAL): категорию подсказывают словари R03/R04 и v1; тесты R03 не запускать списком папок с другими (INTEGRATION §9).",
-    "seed-r14-demo (демо-этапы и предложения R06) — ручной шаг 4 в RUN.txt; run.bat не путь R01.",
-    "R13 /forecast — только API, прототип на синтетике; на экран не выведен.",
-    "Модуль карты (R12): изредка предупреждение demo-ring после смены режима (есть на I0).",
-    "Подложка OpenFreeMap и 3D-здания в облаке недоступны — NOT_RUN; проверить на ноутбуке (LOCAL-7)."
+    "Все жалобы, объекты и предложения на демо — синтетика (demo: true, «Пример»); реальных обращений нет.",
+    "Кабинет сотрудника (редактор R12) только по-русски — вход до показа (R10 B-021, BUGS I-04).",
+    "Лимиты частоты R15 — в памяти сервера: перед показом перезапустить run-city.bat.",
+    "Двор R12 yard-619707707 частично за границей города (R10 B-009) — красная проверка точности R10.",
+    "R13 /forecast — только API, прототип на синтетике.",
+    "Подложка OpenFreeMap и 3D-здания в облаке недоступны — на ноутбуке проверены Codex (LOCAL_B2)."
   ],
-  "next_step": "FINAL 15 окт 18:00: повторные поставки R07/R06/R05 по DELIVERY, убрать адаптер R05->R06, run_checks.sh + r14_b1 + r14_b2, DEMO_SCRIPT, DELIVERY, STATUS; R10 — приёмка на B2."
+  "next_step": "Утро/FINAL: забрать новые DELIVERY ролей (R12 — кабинет на ҚАЗ и двор), run_checks + R10 acceptance, STATUS."
 }
