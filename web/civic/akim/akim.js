@@ -469,7 +469,8 @@
       }
       var list = h("ol", { class: "bk-list akim-hot__list" });
       d.hot.items.forEach(function (it) {
-        var name = label(it.target, "label");
+        // Подписи нет (новая цель без названия) — вид места из словаря R11, а не пустая строка.
+        var name = label(it.target, "label") || (I() && I().has("heat.kind." + it.target.kind) ? tr("heat.kind." + it.target.kind) : "");
         var sub = [it.category ? I().cat(it.category) : null, it.district ? tr("district." + it.district) : null].filter(Boolean).join(" · ");
         var a = h(
           "a",

@@ -359,6 +359,21 @@ async function shot(page, name, full) {
     await ctx.close();
   }
 
+  {
+    // Горячее место без подписи (новая цель) — вид места словами, а не пустая строка.
+    const noLabel = JSON.parse(JSON.stringify(realSummary));
+    noLabel.hot.items[0].target.label_ru = null;
+    noLabel.hot.items[0].target.label_kk = null;
+    noLabel.hot.items[0].target.kind = "segment";
+    for (const [lang, word] of [["ru", "Участок улицы"], ["kk", "Көше бөлігі"]]) {
+      const { ctx, page } = await open(browser, { width: 1366, height: 768, lang, route: (route) => route.fulfill({ json: noLabel }) });
+      await waitState(page, "ok");
+      const t = (await page.textContent(".akim-hot__item .bk-list__title")).trim();
+      check(`${lang}: горячее место без подписи — «${word}», а не пусто`, t === word, t);
+      await ctx.close();
+    }
+  }
+
   // ───────────── 3б. Тихое обновление ─────────────
   {
     // Второй ответ сервера отличается (+1 новое обращение); третий — нет связи. Экран не мигает скелетоном,
