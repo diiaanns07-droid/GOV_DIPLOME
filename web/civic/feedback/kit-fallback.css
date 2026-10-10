@@ -21,6 +21,16 @@
            border: 1px solid var(--c-line); border-radius: 999px; background: var(--c-surface); color: var(--c-ink);
            font: inherit; font-size: 16px; cursor: pointer; }
 .bk-chip[aria-pressed="true"] { background: var(--c-accent); border-color: var(--c-ink); font-weight: 600; }
+.bk-chip[aria-pressed="true"]::before { content: "✓"; font-weight: 700; }   /* как в ui-kit R11 */
+/* Сетка категорий — копия правил .bk-catgrid ui-kit R11 (components.css): колонки ≥ 150 px. */
+.bk-catgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); gap: 8px; }
+.bk-catgrid > button { display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 8px 12px;
+                       border: 1px solid #c9d2cc; border-radius: 12px; background: var(--c-surface); color: var(--c-ink);
+                       font: inherit; font-size: 14px; font-weight: 600; line-height: 1.2; text-align: left;
+                       overflow-wrap: break-word; cursor: pointer; }
+.bk-catgrid > button .ic { width: 24px; height: 24px; }
+.bk-catgrid > button[aria-pressed="true"] { border: 2px solid var(--c-ink); background: var(--c-accent); }
+.bk-catgrid > button:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 2px; }
 .bk-card { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: 16px; padding: 16px; }
 .bk-status { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px;
              font-size: 14px; font-weight: 700; background: var(--c-paper); color: var(--c-ink); }
