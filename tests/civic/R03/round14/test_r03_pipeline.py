@@ -144,7 +144,9 @@ def test_experiments_end_to_end_smoke(data_dir, tiny_model, tmp_path):
     assert "ПРОВЕРКА КОНВЕЙЕРА" in md and "| v2: трансформер |" in md
     # Приватность: тексты людей не попадают ни в results/, ни в файлы прогнозов.
     blobs = [p.read_text(encoding="utf-8") for p in (tmp_path / "results").iterdir()]
-    blobs += [p.read_text(encoding="utf-8") for p in (tmp_path / "art" / "experiments").glob("*__*.jsonl")]
+    preds = list((tmp_path / "art" / "experiments" / "smoke").glob("*__*.jsonl"))
+    assert preds                                                    # прогнозы smoke — в своей подпапке
+    blobs += [p.read_text(encoding="utf-8") for p in preds]
     for r in F.human_like():
         assert all(r["text"] not in b for b in blobs)
 

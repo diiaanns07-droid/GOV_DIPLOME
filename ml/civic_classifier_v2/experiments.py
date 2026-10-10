@@ -140,7 +140,11 @@ def run(args) -> dict:
     if args.smoke:
         cfg = cfg.override([f"{k}={json.dumps(v)}" for k, v in SMOKE_OVERRIDES.items()])
     cfg = cfg.override(args.set)
+    # Главный прогон — artifacts/experiments/, остальные (smoke, lc_0.5, …) — в подпапке со своим именем,
+    # чтобы не перезаписать прогнозы и лог главного.
     out_art = Path(args.artifacts) / "experiments"
+    if args.name != "experiments":
+        out_art = out_art / args.name
     out_art.mkdir(parents=True, exist_ok=True)
     log_path = out_art / "train_log.jsonl"
 
