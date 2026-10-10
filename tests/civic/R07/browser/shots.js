@@ -267,6 +267,102 @@ async function colorOnlyCheck(page) {
     await page.waitForTimeout(700);
   });
 
+  // R10 B-019 / R11 B1 п.3 / LOCAL_B2 P1: житель выбирает место — нажатие на значок = щелчок по карте в точке цели.
+  // Стенд как в оболочке B3: класс body.birge-picking + правило birge.css «pointer-events: none» для значков;
+  // слушатель map.on("click") — как адаптер R09 (complaint.js maplibreAdapter).
+  for (const [size, lang] of [["desktop", "ru"], ["desktop", "kk"], ["phone", "ru"], ["phone", "kk"]]) {
+    const w = size === "desktop" ? "1366" : "375";
+    await shot(browser, `pick-badge-${w}-${lang}`, size, `?lang=${lang}&role=resident&view=nura`, async (page) => {
+      const pre = await page.evaluate(async () => {
+        const map = window.__map;
+        const css = document.createElement("style");
+        css.textContent = "body.birge-picking .r07-badge, body.birge-picking .r07-maplegend { pointer-events: none; }";
+        document.head.append(css);
+        document.body.classList.add("birge-picking");
+        window.__picked = [];
+        map.on("click", (e) => window.__picked.push([e.lngLat.lng, e.lngLat.lat]));
+        const sheetTop = document.getElementById("panel") ? document.getElementById("panel").getBoundingClientRect().top : innerHeight;
+        const badge = [...document.querySelectorAll('.r07-badge[data-kind="object"]')].find((b) => {
+          const r = b.getBoundingClientRect();
+          return !b.hidden && r.left > 0 && r.right < innerWidth && r.bottom < Math.min(innerHeight, innerWidth < 700 ? sheetTop : innerHeight) && r.top > 60;
+        });
+        if (!badge) return { error: "нет значка объекта в видимой части карты" };
+        badge.id = "pick-me";
+        const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
+        const it = d.items.find((x) => x.target.label_ru === badge.title || x.target.label_kk === badge.title);
+        const r = badge.getBoundingClientRect();
+        // нажатие ближе к краю значка (не в центр) — всё равно точно в цель
+        return { x: r.left + r.width * 0.8, y: r.top + r.height * 0.5, anchor: it && it.anchor, title: badge.title };
+      });
+      if (pre.error) return pre;
+      const hit = await page.evaluate((p) => { const el = document.elementFromPoint(p.x, p.y); const b = document.getElementById("pick-me"); return el === b || b.contains(el); }, pre);
+      await page.mouse.click(pre.x, pre.y);
+      await page.waitForTimeout(300);
+      const after = await page.evaluate(async () => {
+        const map = window.__map;
+        const got = window.__picked[0];
+        if (got) new window.maplibregl.Marker({ color: "#176b4a" }).setLngLat(got).addTo(map);
+        // щелчок по линии участка улицы в режиме выбора тоже не открывает карточку
+        const seg = map.queryRenderedFeatures({ layers: ["r07-seg"] })[0];
+        if (seg) {
+          const c = seg.geometry.coordinates[Math.floor(seg.geometry.coordinates.length / 2)];
+          map.fire("click", { lngLat: new window.maplibregl.LngLat(c[0], c[1]), point: map.project(c), originalEvent: new MouseEvent("click") });
+          await new Promise((ok) => setTimeout(ok, 300));
+        }
+        return { picked: got, card: !!document.querySelector(".r07-card"), clicks: window.__picked.length, seg: !!seg };
+      });
+      return { ...pre, hit, ...after };
+    }, async (page, m, x) => {
+      const out = [];
+      if (x.error) return [x.error];
+      if (!x.hit) out.push("нажатие на значок не дошло до значка (перехвачено)");
+      if (!x.picked) out.push("мастер не получил щелчок по карте");
+      else if (!x.anchor || Math.abs(x.picked[0] - x.anchor[0]) > 1e-6 || Math.abs(x.picked[1] - x.anchor[1]) > 1e-6)
+        out.push("щелчок не в точке цели: " + JSON.stringify([x.picked, x.anchor]));
+      if (x.card) out.push("в режиме выбора открылась карточка цели");
+      return out;
+    });
+  }
+
+  // R10 B-025: значки — одна остановка Tab, между ними — стрелки; Enter открывает карточку
+  {
+    const { page, errors } = await open(browser, "desktop", "?lang=ru&role=akimat&view=nura");
+    const r = await page.evaluate(() => {
+      const vis = [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden);
+      return { visible: vis.length, tabbable: vis.filter((b) => b.tabIndex === 0).length };
+    });
+    await page.focus('.r07-badge[tabindex="0"]');
+    const first = await page.evaluate(() => document.activeElement.title);
+    await page.keyboard.press("ArrowRight");
+    const second = await page.evaluate(() => ({ title: document.activeElement.title, badge: document.activeElement.classList.contains("r07-badge"),
+      tabbable: [...document.querySelectorAll(".r07-badge")].filter((b) => b.tabIndex === 0).length }));
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(500);
+    const card = await page.evaluate(() => document.querySelector(".r07-card__title")?.innerText || "");
+    const problems = [];
+    if (r.visible < 3 || r.tabbable !== 1) problems.push("значков в порядке Tab: " + r.tabbable + " из " + r.visible + " (нужно 1)");
+    if (!second.badge || second.title === first || second.tabbable !== 1) problems.push("стрелка не перевела фокус на соседний значок");
+    if (!card) problems.push("Enter на значке не открыл карточку");
+    results.push({ name: "keyboard-badges-roving-1366-ru", size: "desktop", query: "", problems: problems.concat(errors), badges: r.visible, extra: { first, second: second.title, card } });
+    await page.close();
+  }
+
+  // R10 B-023: в оболочке тост — общий ui-kit R11 (BirgeUI.toast, z 60 над каталогом R05), не свой внизу под каталогом
+  {
+    const { page, errors } = await open(browser, "desktop", "?lang=kk&role=akimat&view=nura");
+    await page.evaluate(() => { window.__toasts = []; window.BirgeUI = { toast: (t, o) => window.__toasts.push([t, o && o.type]) }; });
+    await page.click(".r07-item");
+    await page.waitForSelector('[data-act="take"], [data-act="fixed"]');
+    await page.click('[data-act="take"], [data-act="fixed"]');
+    await page.waitForTimeout(900);
+    const x = await page.evaluate(() => ({ toasts: window.__toasts, own: document.querySelectorAll(".r07-toast").length }));
+    const problems = [];
+    if (!x.toasts.length || !/алынды|белгіленді/.test(x.toasts[0][0]) || x.toasts[0][1] !== "ok") problems.push("тост не ушёл в BirgeUI.toast: " + JSON.stringify(x.toasts));
+    if (x.own) problems.push("свой тост R07 тоже показан");
+    results.push({ name: "toast-ui-kit-1366-kk", size: "desktop", query: "", problems: problems.concat(errors), badges: 0, extra: x });
+    await page.close();
+  }
+
   // Клавиатура: Tab до главной кнопки, рамка фокуса, Esc закрывает карточку
   {
     const { page, errors } = await open(browser, "desktop", "?lang=ru&view=nura");

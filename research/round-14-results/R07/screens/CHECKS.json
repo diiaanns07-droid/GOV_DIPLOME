@@ -323,6 +323,134 @@
   "extra": {}
  },
  {
+  "name": "pick-badge-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=resident&view=nura",
+  "problems": [],
+  "badges": 41,
+  "primary": [],
+  "extra": {
+   "x": 548.7,
+   "y": 435,
+   "anchor": [
+    71.406054,
+    51.126603
+   ],
+   "title": "Остановка «Республиканский диагностический центр»",
+   "hit": true,
+   "picked": [
+    71.406054,
+    51.126603
+   ],
+   "card": false,
+   "clicks": 2,
+   "seg": true
+  }
+ },
+ {
+  "name": "pick-badge-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&role=resident&view=nura",
+  "problems": [],
+  "badges": 41,
+  "primary": [],
+  "extra": {
+   "x": 548.7,
+   "y": 435,
+   "anchor": [
+    71.406054,
+    51.126603
+   ],
+   "title": "«Республиканский диагностический центр» аялдамасы",
+   "hit": true,
+   "picked": [
+    71.406054,
+    51.126603
+   ],
+   "card": false,
+   "clicks": 2,
+   "seg": true
+  }
+ },
+ {
+  "name": "pick-badge-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&role=resident&view=nura",
+  "problems": [],
+  "badges": 27,
+  "primary": [],
+  "extra": {
+   "x": 224.7,
+   "y": 308,
+   "anchor": [
+    71.406054,
+    51.126603
+   ],
+   "title": "Остановка «Республиканский диагностический центр»",
+   "hit": true,
+   "picked": [
+    71.406054,
+    51.126603
+   ],
+   "card": false,
+   "clicks": 2,
+   "seg": true
+  }
+ },
+ {
+  "name": "pick-badge-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&role=resident&view=nura",
+  "problems": [],
+  "badges": 27,
+  "primary": [],
+  "extra": {
+   "x": 224.7,
+   "y": 308,
+   "anchor": [
+    71.406054,
+    51.126603
+   ],
+   "title": "«Республиканский диагностический центр» аялдамасы",
+   "hit": true,
+   "picked": [
+    71.406054,
+    51.126603
+   ],
+   "card": false,
+   "clicks": 2,
+   "seg": true
+  }
+ },
+ {
+  "name": "keyboard-badges-roving-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 40,
+  "extra": {
+   "first": "Остановка «Республиканский диагностический центр»",
+   "second": "Двор у ул. Коксенгир",
+   "card": "Двор у ул. Коксенгир"
+  }
+ },
+ {
+  "name": "toast-ui-kit-1366-kk",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "toasts": [
+    [
+     "Түзетілді деп белгіленді",
+     "ok"
+    ]
+   ],
+   "own": 0
+  }
+ },
+ {
   "name": "keyboard-card-1366-ru",
   "size": "desktop",
   "query": "",
