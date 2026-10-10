@@ -308,3 +308,25 @@ def test_common_base_with_digits_is_refused(password):
 def test_strong_staff_password_is_accepted(password):
     auth = need_module("ui.civic_store.auth")
     auth.check_password_policy("r15-editor", password)
+
+
+def test_every_inline_script_is_allowed_by_its_page_csp(srv):
+    """Строгая CSP (S01): у каждой HTML-страницы из белого списка хэш каждого встроенного <script> есть в её CSP —
+    иначе браузер молча заблокирует скрипт (ui-kit, «Картина дня»). Скрипты по src — только со своего сервера."""
+    import base64
+    import hashlib
+    import re
+    web_server = need_module("ui.web_server")
+    pages = [url for url, (_f, ctype) in web_server.ASSETS.items() if ctype.startswith("text/html")]
+    assert pages, "в белом списке нет HTML"
+    inline = re.compile(rb"<script(?![^>]*\bsrc\s*=)[^>]*>(.*?)</script>", re.S | re.I)
+    for url in pages:
+        status, headers, body = request(srv, "GET", url)
+        assert status == 200, url
+        csp = headers.get("content-security-policy", "")
+        for match in inline.finditer(body):
+            digest = base64.b64encode(hashlib.sha256(match.group(1)).digest()).decode("ascii")
+            assert "'sha256-%s'" % digest in csp, (url, digest)
+        for src in re.findall(rb"<script[^>]*\bsrc\s*=\s*[\"']([^\"']+)", body):
+            # свой сервер: /путь или ../путь; чужой — со схемой (https:) или «//хост»
+            assert not re.match(rb"^([a-zA-Z][a-zA-Z0-9+.-]*:|//)", src), (url, src)

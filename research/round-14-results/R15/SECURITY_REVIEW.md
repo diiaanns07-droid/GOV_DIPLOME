@@ -179,7 +179,7 @@ git checkout origin/claude/r14-R15 -- tests/civic/R15
 R15_ROOT=/tmp/b3 python -m pytest tests/civic/R15 -q -rxX
 ```
 
-На FINAL-кандидате `13ae790` (ветка `claude/sharp-dijkstra-0t87gl`): `115 passed, 5 xfailed` (S15 ×4, S16).
+На FINAL-кандидате `13ae790` (ветка `claude/sharp-dijkstra-0t87gl`): `116 passed, 5 xfailed` (S15 ×4, S16 — исправлены у R06 и R05, ждут сборки).
 На `d9a8895` (B3 шаг 4): `96 passed, 24 xfailed` (на `be82fa8` до теста S15 — `80 passed, 19 xfailed`).
 После всех семи патчей из INTEGRATION.txt — `96 passed`, все 24 становятся
 XPASS (strict: pytest пишет их как failed с пометкой XPASS — это и есть сигнал «исправлено»).
