@@ -4,7 +4,7 @@
  "base_sha": "4bbf456",
  "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
  "code_sha": "c5b98a0 (tests/civic/R15); patches — b892532",
- "tested_sha": "ef1ef44 (FINAL-кандидат R01, ветка claude/sharp-dijkstra-0t87gl); раньше 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
+ "tested_sha": "0a7a346 (FINAL-кандидат R01, ветка claude/sharp-dijkstra-0t87gl); раньше ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
  "push_status": "OK — claude/r14-R15 запушена (последний коммит — в финальном сообщении роли)",
  "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
  "changed_paths": [
@@ -45,7 +45,8 @@
    "S12": "FINAL-кандидат R01 2b9e837 (patches R15)",
    "S13": "FINAL-кандидат R01 2b9e837 (patches R15)",
    "S14": "FINAL-кандидат R01 2b9e837 (patches R15)",
-   "S16": "R05 7f42cb3; сборка R01 ef1ef44 (R05 169c56b)"
+   "S16": "R05 7f42cb3; сборка R01 ef1ef44 (R05 169c56b)",
+   "S15": "R06 7b99e6c; сборка R01 0a7a346 (R06 efafee9)"
   },
   "patch_for": {
    "P-R01": [
@@ -79,12 +80,8 @@
     "S16"
    ]
   },
-  "fixed_in_role_branch_pending_build": {
-   "S15": "R06 7b99e6c (= P-R06)"
-  },
-  "open_in_final_candidate": [
-   "S15 (исправлено в R06 7b99e6c; в сборке R06 d20c7e2)"
-  ]
+  "fixed_in_role_branch_pending_build": {},
+  "open_in_final_candidate": []
  },
  "tests": {
   "r15_on_be82fa8": "PASS — 80 passed, 19 xfailed (каждая открытая находка воспроизводится)",
@@ -115,7 +112,9 @@
   "r15_on_final_candidate_13ae790": "PASS — 115 passed, 5 xfailed (S15 ×4, S16)",
   "browser_final_candidate_13ae790": "PASS — R01 r14_b1 15/15, r14_b2 25/25; страницы ui-kit, akim и главная под строгой CSP: скрипты работают, нарушений CSP нет (проверено R15)",
   "r15_on_final_ef1ef44": "PASS — 117 passed, 4 xfailed (S15 ×4); CSP-страницы — PASS",
-  "browser_final_ef1ef44": "PASS — R01 r14_b1 15/15, r14_b2 25/25 со строгой CSP и лимитами; CSP-страницы PASS"
+  "browser_final_ef1ef44": "PASS — R01 r14_b1 15/15, r14_b2 25/25 со строгой CSP и лимитами; CSP-страницы PASS",
+  "r15_on_final_0a7a346": "PASS — 121 passed, 0 xfail (все 16 находок исправлены; копия тестов в сборке R01 совпадает с веткой R15)",
+  "browser_final_0a7a346": "PASS — R01 r14_b1 15/15, r14_b2 25/25; CSP-страницы ui-kit/akim/главная PASS"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
@@ -125,5 +124,5 @@
   "согласие в форме сбора текстов не упоминает внешний ИИ-сервис за рубежом (S14) — решение владельца",
   "patch не применены в сборку R01 — это делает R01; статусы обновлю на B3/FINAL 13–15 окт"
  ],
- "next_step": "R01: взять R06 >= 7b99e6c (S15) и обновить tests/civic/R15 из claude/r14-R15 (в копии R01 нет тестов S15/S16, FIXED совпадает). R15: перепроверять каждый новый SHA FINAL."
+ "next_step": "R15: перепроверять каждый новый SHA FINAL R01 (tests/civic/R15 + браузер со строгой CSP); 13–15 окт — финальная проверка."
 }
