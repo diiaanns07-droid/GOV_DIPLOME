@@ -38,7 +38,6 @@
     "web/civic/ui-kit/ui-kit.js"
   ],
   "tests": {
-    "test_r11_ui_kit.py (14 проверок, в т.ч. ключи макетов и участки из рёбер OSM)": "PASS",
     "browser_check: витрина + prototypes/{index,akimat-map,complaint,day} × 375/1366 × ru/kk": "PASS",
     "proto_shots.cjs: 72 кадра, 0 ошибок консоли, 0 прокрутки вбок": "PASS",
     "патч ui/web_server.py (статически, на копии)": "PASS",
@@ -53,7 +52,8 @@
     "ночь, круг 1: ru_kk_same.cjs на B3 — непереведённых строк на карте акимата, у жителя и в «Картине дня» нет (остались «Карта», «Алматы», «РУС»)": "PASS",
     "ночь, круг 2: сборка R01 @ 13ae790 (CSP R15): build_shots 44/44; витрина ui-kit под CSP (browser_check --base) 4/4": "PASS",
     "i18n_tools check (732 ключа ru=kk, параметры, формы + other, категории)": "PASS",
-    "ночь, круг 4: предпросмотр FINAL (13ae790 + фронтенд ночных голов R05–R09 + R11) — build_shots 44/44": "PASS"
+    "ночь, круг 4: предпросмотр FINAL (13ae790 + фронтенд ночных голов R05–R09 + R11) — build_shots 44/44": "PASS",
+    "test_r11_ui_kit.py (16 проверок: ключи макетов, участки из рёбер OSM, легенда телефона, формы ru + other)": "PASS"
   },
   "known_limits": [
     "Казахский перевод — R11 и черновики ролей, не проверен носителем; 29 мест ⚑ в KK_REVIEW.md",

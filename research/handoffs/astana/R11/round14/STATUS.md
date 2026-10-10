@@ -43,7 +43,7 @@
   UX_SPEC v1.3, patch для R09 (даты), `missing_keys.py`; сборка 13ae790 — 44/44, ui-kit под CSP R15 — PASS.
 
 ## Проверки (ночь, круги 1–2)
-i18n_tools check (737) — PASS · test_r11_ui_kit.py (14) — PASS · i18n.test.cjs — PASS ·
+i18n_tools check (737) — PASS · test_r11_ui_kit.py (16) — PASS · i18n.test.cjs — PASS ·
 build_shots.cjs на B3 d9a8895, 13ae790, daec72a и предпросмотре FINAL — 44/44 · ru_kk_same.cjs — 1–3 одинаковые строки на экран (норма) ·
 browser_check.cjs --base (витрина под CSP R15) — 4/4.
 NOT_RUN: реальный телефон (LOCAL-7).
