@@ -392,6 +392,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   let scr = await uiScreen(page);
   step("0", "шапка: ҚАЗ/РУС на виду, язык страницы переключился", hasLang && scr.lang === lang, { lang: scr.lang }, await shot("0-start"));
   step("0", "нет горизонтальной прокрутки", scr.scrollW <= scr.innerW, { scrollW: scr.scrollW, w: scr.innerW });
+  step("0", "надписи не закрыты другими панелями (частично)", scr.clippedN === 0, { n: scr.clippedN, ex: scr.clipped });
   step("0", "нет ключей перевода и технических слов", scr.raw.length === 0 && scr.tech.length === 0, { raw: scr.raw, tech: scr.tech });
   step("0", "шрифт: нет текста мельче 14 px (основной ≥ 16 px)", scr.tinyN === 0, { tiny: scr.tinyN, ex: scr.tiny, under16: scr.smallN, ex16: scr.small });
   step("0", "зоны нажатия ≥ 40 px (цель — 48 px)", scr.under40.length === 0, { under40N: scr.under40N, under40: scr.under40, under48: `${scr.under48N}/${scr.targetsN}` });
