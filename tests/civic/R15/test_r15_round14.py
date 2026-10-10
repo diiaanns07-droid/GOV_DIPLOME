@@ -347,3 +347,54 @@ def test_llm_label_sends_no_names_to_external_api(tmp_path):
     llm_label.run(args, transport=capture)
     leaked = [s for _t, s in NAME_TEXTS if any(s in m for m in sent)]
     assert not leaked, leaked
+
+
+# --- 1. ссылки источников объекта: только http(s) (регрессия, R06 validate.clean_url + R12 civic-map.js) ------
+
+@pytest.mark.parametrize("url", ["javascript:alert(1)", "JaVaScRiPt:alert(1)", "data:text/html,<script>alert(1)</script>",
+                                 "vbscript:msgbox(1)", "http://user:pass@example.org/", "https://exa mple.org/",
+                                 "https://example.org/‮gpj.exe"])
+def test_object_source_url_must_be_plain_http(url):
+    """Ссылка «Источник» на публичной карточке объекта: javascript:/data: выполнили бы скрипт у жителя по клику."""
+    validate = need_module("ui.civic_store.validate")
+    errors = validate._Errors()
+    assert validate.clean_url(url, "source_refs[0].url", errors) is None
+    assert errors.fields
+
+
+def test_object_source_url_plain_https_is_kept():
+    validate = need_module("ui.civic_store.validate")
+    errors = validate._Errors()
+    assert validate.clean_url("https://www.gov.kz/memleket/entities/astana", "u", errors) == \
+        "https://www.gov.kz/memleket/entities/astana"
+    assert not errors.fields
+
+
+# --- 3/4. id устройства R05: ключ к «Мои обращения» должен быть криптографически случайным ---------------------
+
+DEVICE_PROBE = r"""
+const core = require(process.argv[2]);
+const mem = () => { const m = {}; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); } }; };
+Date.now = () => 1791700000000;
+Math.random = () => 0.4242;
+const a = core.getDeviceId(mem()), b = core.getDeviceId(mem());
+console.log(JSON.stringify({ a, b }));
+"""
+
+
+@xfail("S16")
+def test_build3d_device_id_is_not_time_and_math_random(tmp_path):
+    """R05 build3d-core.getDeviceId: «dev-» + Date.now + Math.random. R07 heat.js перенимает этот id как birge.device,
+    а R09 по нему открывает «Мои обращения» (тексты жалоб). При одинаковых часах и Math.random id совпадает."""
+    import shutil
+    import subprocess
+    from r15_common import ROOT
+    node = shutil.which("node")
+    core = ROOT / "web" / "civic" / "build3d" / "build3d-core.js"
+    if not node or not core.exists():
+        pytest.skip("нет node или web/civic/build3d/build3d-core.js в этой сборке")
+    script = tmp_path / "probe.cjs"
+    script.write_text(DEVICE_PROBE, encoding="utf-8")
+    out = subprocess.run([node, str(script), str(core)], capture_output=True, text=True, timeout=60, check=True)
+    ids = json.loads(out.stdout.strip().splitlines()[-1])
+    assert ids["a"] != ids["b"], ids

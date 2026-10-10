@@ -3,7 +3,7 @@ R15 (раунд 14) — INTEGRATION: исправления безопаснос
 
 Кто применяет: R01 (интегратор) в общую сборку; владельцы модулей — в свои ветки, если хотят у себя.
 Все patch сделаны на сборке R01 B3 шаг 2 = be82fa8 и перепроверены на B3 шаг 4 = d9a8895 (ветка claude/r14-R01):
-накладываются без правок, тесты R15 на d9a8895: без patch 88 passed + 23 xfailed, со всеми шестью — 88 passed + 23 XPASS.
+накладываются без правок, тесты R15 на d9a8895: без patch 96 passed + 24 xfailed, со всеми семью — 96 passed + 24 XPASS.
 Подробности и как воспроизвести каждую находку — SECURITY_REVIEW.md. Тесты — tests/civic/R15/ (ветка claude/r14-R15).
 
 Файлы patch (в этой папке, patches/):
@@ -13,10 +13,11 @@ R15 (раунд 14) — INTEGRATION: исправления безопаснос
   P-R04.diff  ui/civic_ml_api/similar_search.py                 S13
   P-R02.diff  ml/labeling/{anonymize,llm_label}.py              S07 S14
   P-R06.diff  ui/civic_store/auth.py                            S15 (мелочь; добавлен ночью 10→11 окт)
+  P-R05.diff  web/civic/build3d/build3d-core.js                 S16 (мелочь; добавлен ночью 10→11 окт)
 
 Как применить (из корня рабочей копии сборки R01):
   git fetch origin claude/r14-R15
-  for p in P-R01 P-R09 P-R07 P-R04 P-R02 P-R06; do
+  for p in P-R01 P-R09 P-R07 P-R04 P-R02 P-R06 P-R05; do
       git show origin/claude/r14-R15:research/round-14-results/R15/patches/$p.diff | git apply --check - && \
       git show origin/claude/r14-R15:research/round-14-results/R15/patches/$p.diff | git apply -
   done
@@ -115,6 +116,15 @@ S15  check_password_policy: кроме 10 точных строк — отказ
      «password12345», «Astana2026!!!», «akimat123456», «Qwerty-2026-10» -> «Слишком простой пароль».
      Пароли из тестов ролей («Tulpar-Bayterek-2026», «Tz7-qerB-91vk-Lmsd», «Esil-…») проходят, как раньше.
      Уже созданные учётки не меняются: правило — только для новых паролей (create-editor, set_password).
+
+
+--------------------------------------------------------------------------------
+P-R05  web/civic/build3d/build3d-core.js  (R05)
+--------------------------------------------------------------------------------
+S16  getDeviceId: «dev-» + 24 символа из crypto.getRandomValues вместо Date.now + Math.random (запасной Math.random —
+     только если crypto нет совсем). Формат и ключ хранения прежние (birge.device_id, /^dev-/): тесты R05
+     tests/civic/R05/build3d/test_core.mjs — 16/16 PASS с patch. Уже выданные id в браузерах не меняются.
+     Почему важно: R07 heat.js перенимает birge.device_id как birge.device, а по нему R09 отдаёт «Мои обращения».
 
 
 --------------------------------------------------------------------------------

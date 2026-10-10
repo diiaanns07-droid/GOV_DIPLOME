@@ -23,12 +23,13 @@
   "research/round-14-results/R15/patches/P-R04.diff",
   "research/round-14-results/R15/patches/P-R02.diff",
   "research/handoffs/astana/R15/round14/STATUS.md",
-  "research/round-14-results/R15/patches/P-R06.diff"
+  "research/round-14-results/R15/patches/P-R06.diff",
+  "research/round-14-results/R15/patches/P-R05.diff"
  ],
  "findings": {
   "critical": 0,
   "important": 11,
-  "minor": 4,
+  "minor": 5,
   "fixed": {
    "S09": "R06 ef35fb6, R01 d3c33d9"
   },
@@ -59,6 +60,9 @@
    ],
    "P-R06": [
     "S15"
+   ],
+   "P-R05": [
+    "S16"
    ]
   },
   "open_on_be82fa8": [
@@ -90,7 +94,8 @@
    "S12",
    "S13",
    "S14",
-   "S15"
+   "S15",
+   "S16"
   ]
  },
  "tests": {
@@ -114,9 +119,10 @@
   "supply_chain": "PASS — three.js 0.169.0 = SOURCE.txt sha256; maplibre-gl 5.6.2 js/css = npm-пакет (sha256 1525f971…, 43c1d886…)",
   "git_history_secrets": "PASS — 187 коммитов веток раунда 14: ключей API нет; телефоны/ИИН — только тестовые образцы",
   "model_load_classify_similar": "NOT_RUN — моделей R03/R04 в облаке нет (классификатор на словарях: 2–3 мс)",
-  "r15_on_d9a8895": "PASS — 88 passed, 23 xfailed (все открытые находки воспроизводятся; патчи R15 в сборку ещё не применены)",
-  "r15_on_d9a8895_all_6_patches": "PASS — 88 passed, 23 XPASS(strict): все открытые находки закрыты",
-  "roles_R01_R06_d9a8895_all_6_patches": "PASS — 717 passed, 3 skipped, 0 failed"
+  "r15_on_d9a8895": "PASS — 96 passed, 24 xfailed (все открытые находки воспроизводятся; патчи R15 в сборку ещё не применены)",
+  "roles_R01_R06_d9a8895_all_6_patches": "PASS — 717 passed, 3 skipped, 0 failed",
+  "r15_on_d9a8895_all_7_patches": "PASS — 96 passed, 24 XPASS(strict): все открытые находки закрыты",
+  "r05_core_with_P-R05": "PASS — node --test tests/civic/R05/build3d/test_core.mjs 16/16"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
