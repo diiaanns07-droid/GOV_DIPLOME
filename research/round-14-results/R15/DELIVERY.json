@@ -4,7 +4,7 @@
  "base_sha": "4bbf456",
  "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
  "code_sha": "c5b98a0 (tests/civic/R15); patches — b892532",
- "tested_sha": "96c1f99 (FINAL-кандидат R01, ветка claude/sharp-dijkstra-0t87gl); раньше 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
+ "tested_sha": "a2d90dd (FINAL-кандидат R01, ветка claude/sharp-dijkstra-0t87gl); раньше 96c1f99, 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
  "push_status": "OK — claude/r14-R15 запушена (последний коммит — в финальном сообщении роли)",
  "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
  "changed_paths": [
@@ -128,7 +128,8 @@
   "r15_on_final_d5a300f": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS",
   "r15_on_final_17dccd9": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
   "r15_on_final_293dc40": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
-  "r15_on_final_96c1f99": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS"
+  "r15_on_final_96c1f99": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
+  "r15_on_final_a2d90dd": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
