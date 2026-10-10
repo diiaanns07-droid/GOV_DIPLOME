@@ -3,7 +3,7 @@
 > Документ R14 (раунд 14), обновлён ночью 10→11 октября 2026. Основан на `run.bat`, `run-city.bat`, `ui/web_server.py`,
 > `research/round-14-results/R01/RUN.txt`, `research/round-14-results/R03/RUN.txt` и `research/round-14-results/LOCAL/LOCAL_B2.md`.
 > Проверено R14 в облаке (Linux, Python 3.13.16, `CIVIC_DEMO=1`) на сборке **B2** `claude/sharp-dijkstra-0t87gl` @ f54361d и
-> на голове R01 d9a8895: сервер стартует, `civic-v2: ready R04, R06, R07, R08, R09, R12, R13`, все 37 маршрутов v2 `ready`;
+> на голове R01 d9a8895 и FINAL-кандидате 13ae790 (= код 2b9e837): сервер стартует, `civic-v2: ready R04, R06, R07, R08, R09, R12, R13`, все 37 маршрутов v2 `ready`;
 > весь pytest B2 — 2 377 passed / 20 skipped / 1 xfailed. **`run-city.bat` на Windows** запускал Codex на ноутбуке владельца
 > со сборкой B2 (`LOCAL_B2.md`): сервер, подложка, 3D-здания и модель v2 работают, сценарий проходит (на телефоне — с обходами).
 
@@ -12,7 +12,7 @@
 ```bat
 cd C:\Users\LEGION\Desktop\hackalem\hack-d3b2c613-stupits
 git fetch origin
-git switch --detach f54361d   & rem B2 (принят R10); ночной FINAL-кандидат — 2b9e837; итоговый FINAL — SHA из STATUS.md R01
+git switch --detach 2b9e837   & rem FINAL-кандидат (принят R10 ночью 10→11.10); B2 — f54361d; итоговый FINAL 15.10 — SHA из STATUS.md R01
 run-city.bat
 ```
 

@@ -204,7 +204,7 @@ DELIVERY R01 описывает B2, для B3 — только сообщени�
 | Кандидат B1 (d3c33d9), для истории | весь pytest 1 793 passed / 11 skipped; путь демо B1 15/0 | DELIVERY R01, `BUILD_LOG.md` |
 | B3 (d9a8895): весь pytest | 6 failed (чужие стыки R07/R08/данные) / 2 436 passed / 1 error сбора R08 | `research/handoffs/astana/R01/round14/STATUS.md` «История сборок», R01 @ 13ae790 |
 | **FINAL-кандидат 2b9e837** (ночь 10→11.10) | патчи R15 (5), тесты R10 08392e7, каталог 3D на телефоне, Tab к главной кнопке; pytest 2 535 passed / 21 skipped; 6 failed + 1 error сбора — те же стыки (I-01…I-03, данные R05/R12); путь демо r14_b2 25/0; R15 99/0 | сообщение коммита 2b9e837 и STATUS R01 @ 13ae790 |
-| FINAL-кандидат, повтор R14 | `tests/civic/R15` — **99 passed** за 36 с; весь pytest (`--continue-on-collection-errors`) — **2 535 passed / 21 skipped / 6 failed / 1 error** за 296 с: R07 ×2 (I-01, I-03), R10 точность ×4 (данные R05, R12), ошибка сбора R08 (I-02) — совпадает с R01 | запуск R14 на голове R01 13ae790, Linux, Python 3.13.16 |
+| FINAL-кандидат, повтор R14 | `tests/civic/R15` — **99 passed** за 36 с; весь pytest (`--continue-on-collection-errors`) — **2 535 passed / 21 skipped / 6 failed / 1 error** за 296 с: R07 ×2 (I-01, I-03), R10 точность ×4 (данные R05, R12), ошибка сбора R08 (I-02) — совпадает с R01; старт `CIVIC_DEMO=1`: 37/37 маршрутов v2 ready, 5 демо-проектов R06 при старте, заголовок `Content-Security-Policy: default-src 'self'; script-src 'self'; …` (патч S01) | запуск R14 на голове R01 13ae790, Linux, Python 3.13.16 |
 
 ## 11. Модули интерфейса и сервиса
 
