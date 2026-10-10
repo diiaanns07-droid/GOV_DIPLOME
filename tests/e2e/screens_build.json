@@ -1,0 +1,8 @@
+[
+ {"name": "Главная карта", "owner": "R01", "url": "{base}", "primary": "Сообщить о проблеме|Мәселе туралы хабарлау|Взять в работу|Жұмысқа алу"},
+ {"name": "Картина дня (в оболочке)", "owner": "R01+R08", "url": "{base}#day"},
+ {"name": "Тепловая карта · страница модуля", "owner": "R07", "url": "{base}civic/heat/demo.html?lang={lang}&role=akimat&view=nura", "optional": true},
+ {"name": "Картина дня · страница модуля", "owner": "R08", "url": "{base}civic/akim/?lang={lang}", "optional": true},
+ {"name": "Предложения и этапы · страница модуля", "owner": "R06", "url": "{base}civic/proposals/demo.html?lang={lang}", "optional": true},
+ {"name": "3D-превью · страница модуля", "owner": "R05", "url": "{base}civic/build3d/demo.html?lang={lang}&reset=1", "optional": true}
+]

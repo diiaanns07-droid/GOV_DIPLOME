@@ -1,0 +1,128 @@
+{
+ "corpus": "probe_v2.jsonl",
+ "corpus_sha256": "cba3c7dbb0dc05b0b673545ab4fd64c3fa3bbf711151736e69436e6a10186172",
+ "rows": 300,
+ "source": "agent_probe_v2",
+ "evidence_type": "synthetic_agent_written",
+ "written_by": "агент (Claude, R02, раунд 14) вручную, вне шаблонов synth_v3; не тексты жителей",
+ "labels_by": "агент по ml/datasets/LABELING_GUIDE_v2.md (guide_sha256 ниже); не экспертная разметка",
+ "guide_sha256": "c058a0995ffc364cfbc25c6022414f787a414ec031630aed4bea1298b8a53a76",
+ "purpose": "только проверка (split=test); не использовать для обучения и подбора порогов",
+ "per_category": 25,
+ "by_label": {
+  "lighting": 25,
+  "noise_safety": 25,
+  "other": 25,
+  "parking": 25,
+  "roads": 25,
+  "sidewalks": 25,
+  "smell_air": 25,
+  "snow_ice": 25,
+  "transport": 25,
+  "utilities": 25,
+  "waste": 25,
+  "yards": 25
+ },
+ "by_lang": {
+  "kk": 97,
+  "mixed": 48,
+  "ru": 155
+ },
+ "by_style": {
+  "colloquial": 81,
+  "long": 36,
+  "official": 36,
+  "question": 25,
+  "short": 36,
+  "slang": 24,
+  "thanks": 2,
+  "translit": 24,
+  "typos": 36
+ },
+ "hard_cases": 94,
+ "by_label_lang": {
+  "lighting": {
+   "kk": 9,
+   "mixed": 4,
+   "ru": 12
+  },
+  "noise_safety": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "other": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "parking": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "roads": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "sidewalks": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "smell_air": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "snow_ice": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "transport": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "utilities": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "waste": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  },
+  "yards": {
+   "kk": 8,
+   "mixed": 4,
+   "ru": 13
+  }
+ },
+ "anonymized_markers": {
+  "[адрес]": 3
+ },
+ "independence": {
+  "near_dup_threshold": 0.8,
+  "max_jaccard_synth_v3": {
+   "median": 0.18478260869565216,
+   "p90": 0.2980132450331126,
+   "max": 0.6111111111111112
+  },
+  "max_jaccard_v1": {
+   "median": 0.15584415584415584,
+   "p90": 0.24390243902439024,
+   "max": 0.6111111111111112
+  },
+  "synth_v3_sha256": "90be30b0bd0358be44af4797a510a56ee9240e72f69743892739202fef83d0a7",
+  "v1_in_v2_sha256": "156fe6f616a3294390c7d69ca4691a80c830bf0599cc05a54ec91093d626abfb"
+ },
+ "length_chars": {
+  "median": 72,
+  "p90": 192,
+  "max": 311
+ }
+}

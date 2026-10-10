@@ -127,8 +127,8 @@
   function pickForm(forms, l, n) {
     var cat = pluralCategory(l, Number(n));
     if (forms[cat] != null) return forms[cat];
-    // Запасные пути: в kk обычно одна форма other; в ru у дробных — other или few.
-    var order = ["other", "many", "few", "one"];
+    // Запасные пути: в kk обычно одна форма other; в ru у дробных — other, затем few («в 7,2 раза», «2,5 дня»).
+    var order = l === "ru" ? ["other", "few", "many", "one"] : ["other", "many", "few", "one"];
     for (var i = 0; i < order.length; i++) if (forms[order[i]] != null) return forms[order[i]];
     return "";
   }
