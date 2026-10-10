@@ -13,6 +13,12 @@
 #birge-header .birge-menu-btn { display: none; }
 .civic-mode .brand-title { font-weight: 700; letter-spacing: 0.01em; }
 
+/* Модули раунда 13 вне сценария демо Birge (решение R01, INTEGRATION §6): сравнение перекрытий и помощник по объекту.
+ * Скрыты всегда; ?tools=all в адресе возвращает их (body[data-birge-tools="all"]). */
+body[data-birge-tools="off"] #civic-scenarios-button,
+body[data-birge-tools="off"] #civic-scenarios,
+body[data-birge-tools="off"] #civic-assistant-box { display: none !important; }
+
 /* Вид «Житель»: инструменты акимата (сравнение перекрытий, модерация) скрыты; вход «Для сотрудников» остаётся. */
 body[data-birge-mode="resident"] #civic-scenarios-button,
 body[data-birge-mode="resident"] #civic-moderation-button { display: none !important; }

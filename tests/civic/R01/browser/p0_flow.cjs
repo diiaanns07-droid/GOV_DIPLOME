@@ -74,7 +74,8 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
   const result = { backend: "R02 SQLite (temp) + R06", base, started_at: new Date().toISOString(), checks };
   let createdId = null;
   try {
-    const { ctx, page } = await openPage(browser, base, { width: 1440, height: 900 });
+    // ?tools=all: this flow also checks the round-13 assistant and scenarios, hidden from Birge by default.
+    const { ctx, page } = await openPage(browser, base + "?tools=all", { width: 1440, height: 900 });
     const start = await page.evaluate(() => ({
       modules: { map: window.CivicShell.isFallback("map") ? "R01 fallback" : "R03", editor: window.CivicShell.isFallback("editor") ? "R01 fallback" : "R04",
         feedback: window.CivicShell.isFallback("feedback") ? "R01 fallback" : "R06" },
@@ -335,7 +336,7 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await ctx.close();
 
     // ---- mobile 390x844
-    const m = await openPage(browser, base, { width: 390, height: 844 }, { isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+    const m = await openPage(browser, base + "?tools=all", { width: 390, height: 844 }, { isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
     const mob = await m.page.evaluate(() => {
       const attrib = document.querySelector(".maplibregl-ctrl-attrib");
       let attribVisible = null;

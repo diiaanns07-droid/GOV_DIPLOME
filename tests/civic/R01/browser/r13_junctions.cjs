@@ -104,7 +104,7 @@ const findFreePoint = (page) => page.evaluate(() => {
     page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errs.push(m.type() + ": " + m.text()); });
 
     // ---- 1. cabinet opened before the map is ready
-    await page.goto(base, { waitUntil: "domcontentloaded" });
+    await page.goto(base + "?tools=all", { waitUntil: "domcontentloaded" });  // round-13 tools hidden from Birge by default
     await page.waitForFunction(() => typeof window.CivicShell?.openEditor === "function", null, { timeout: 15000 });
     const mapReadyAtOpen = await page.evaluate(() => { const r = typeof mapReady !== "undefined" && !!mapReady; window.CivicShell.openEditor(); return r; });
     await loginInCabinet(page);

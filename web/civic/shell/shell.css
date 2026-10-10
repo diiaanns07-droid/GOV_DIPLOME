@@ -177,3 +177,23 @@ body[data-civic-drawer="open"].civic-mode .civic-panel { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .civic-panel, .civic-mode .maplibregl-ctrl-bottom-right { transition: none; }
 }
+
+/* Раунд 14 (UX_SPEC R11 §1, как 2ГИС): на ноутбуке и планшете панель справа, навигация по городу — слева сверху,
+ * кнопки карты — столбиком слева от панели (и слева от открытого ящика сотрудника). Телефон (≤ 760) — без изменений. */
+@media (min-width: 761px) {
+  .civic-panel { left: auto; right: 20px; width: 400px; }
+  .civic-explore { left: 20px; right: auto; width: min(440px, calc(100vw - 400px - 40px - 76px)); max-width: none; }
+  .civic-mode .map-tools { right: 432px; }                                    /* 20 + 400 + 12 */
+  .civic-drawer { right: 20px; }
+  body[data-civic-drawer="open"].civic-mode .map-tools { right: 472px; }      /* ящик 440 + 20 + 12 */
+  body[data-civic-drawer="open"].civic-mode:has(#civic-scenarios:not([hidden])) .map-tools { right: 552px; }  /* 520 */
+  .civic-mode #map-status { left: 20px; }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .civic-panel { width: 360px; }
+  .civic-explore { width: calc(100vw - 360px - 40px - 76px); }
+  .civic-mode .map-tools { right: 392px; }                                    /* 20 + 360 + 12 */
+  .civic-drawer, #civic-scenarios { width: 380px; }
+  body[data-civic-drawer="open"].civic-mode .map-tools,
+  body[data-civic-drawer="open"].civic-mode:has(#civic-scenarios:not([hidden])) .map-tools { right: 412px; }
+}

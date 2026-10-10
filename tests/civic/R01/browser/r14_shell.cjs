@@ -75,6 +75,14 @@ async function main() {
       h.brand === "Birge" && h.oldModes === "none" && h.mode === "akimat" && h.pressed.section === "map" && h.pressed.mode === "akimat", h);
     check("1366: header fits (no overflow, no horizontal scroll), segment buttons ≥ 40 px", h.out === 0 && h.scrollW <= 1366 && h.minHeight >= 40, h);
     check("1366: ru labels, no raw translation keys", h.htmlLang === "ru" && h.labels.includes("Картина дня") && h.labels.includes("Акимат") && h.keys.length === 0, h);
+    const tools = await page.evaluate(() => ({ scen: getComputedStyle(document.getElementById("civic-scenarios-button")).display,
+      assistant: getComputedStyle(document.getElementById("civic-assistant-box")).display, staff: getComputedStyle(document.getElementById("civic-staff-button")).display }));
+    check("1366: round-13 tools outside the Birge demo (scenarios, assistant) hidden even for akimat; sign-in shown",
+      tools.scen === "none" && tools.assistant === "none" && tools.staff !== "none", tools);
+    const panelBox = await page.evaluate(() => { const p = document.getElementById("civic-panel").getBoundingClientRect(), t = document.querySelector(".map-tools").getBoundingClientRect(),
+      e = document.querySelector(".civic-explore").getBoundingClientRect(); return { panelRight: Math.round(innerWidth - p.right), panelW: Math.round(p.width), toolsLeftOfPanel: t.right <= p.left, exploreLeft: Math.round(e.left) }; });
+    check("1366: panel on the right (400 px), map buttons left of it, city navigation top-left (UX_SPEC §1)",
+      panelBox.panelW === 400 && panelBox.panelRight === 20 && panelBox.toolsLeftOfPanel && panelBox.exploreLeft === 20, panelBox);
     await page.screenshot({ path: path.join(OUT, "01_map_1366_ru.png") });
 
     // ҚАЗ: labels, brand, <html lang>; choice survives reload
@@ -167,6 +175,10 @@ async function main() {
     check("reload after visiting the old model opens the Birge map", (await page.evaluate(() => window.CivicShell.mode)) === "civic");
 
     // API v2 is reachable from the page (same origin) and reports module states
+    await page.goto(base + "?tools=all");
+    await ready(page);
+    const toolsOn = await page.evaluate(() => getComputedStyle(document.getElementById("civic-scenarios-button")).display);
+    check("?tools=all brings the scenario comparison back (akimat view)", toolsOn !== "none", toolsOn);
     const v2 = await page.evaluate(async () => { const r = await fetch("/api/civic/v2/modules"); return { status: r.status, keys: Object.keys((await r.json()).modules || {}).length }; });
     check("API v2 /modules answers from the page", v2.status === 200 && v2.keys === 14, v2);
     check("1366: no page errors or warnings", page.errs.length === 0, page.errs);

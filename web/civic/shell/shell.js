@@ -393,7 +393,8 @@
     destroyMounted("assistant");
     $c("civic-assistant-box").hidden = true;
     const assistant = moduleFor("assistant");
-    if (S.selected && assistant && S.modules?.assistant?.status === "ready") {
+    const toolsVisible = window.BirgeShell ? window.BirgeShell.toolsVisible : true;
+    if (S.selected && assistant && toolsVisible && S.modules?.assistant?.status === "ready") {
       // Mount R09 only for an object confirmed public (permalinks may name drafts/unknown ids).
       const id = S.selected, seq = ++S.assistantSeq;
       request("GET", "/objects/" + encodeURIComponent(id)).then((data) => {
@@ -651,7 +652,7 @@
     const panel = shown($c("civic-panel"));
     if (panel) {
       if (mobile) pad.bottom = Math.max(pad.bottom, c.bottom - panel.top + 12);
-      else pad.left = Math.max(pad.left, panel.right - c.left + 20);
+      else pad.right = Math.max(pad.right, c.right - panel.left + 20);  // раунд 14: панель справа (UX_SPEC §1)
     }
     for (const id of ["civic-editor", "civic-moderation", "civic-scenarios"]) {
       const r = shown($c(id));

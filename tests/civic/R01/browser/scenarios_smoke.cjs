@@ -28,9 +28,9 @@ const freePort = () => new Promise((ok, no) => { const s = net.createServer().on
       const page = await ctx.newPage(); const errs = [];
       page.on("pageerror", (e) => errs.push("pageerror: " + e.message));
       page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errs.push(m.type() + ": " + m.text()); });
-      await page.goto(base);
+      await page.goto(base + "?tools=all");  // scenarios are hidden from Birge without it
       await page.evaluate(() => localStorage.clear());
-      await page.goto(base);
+      await page.goto(base + "?tools=all");  // scenarios are hidden from Birge without it
       await page.waitForFunction(() => window.CivicShell?.mode === "civic" && mapReady && window.CivicShell.modules?.scenarios, null, { timeout: 40000 });
       const status = await page.evaluate(() => window.CivicShell.modules.scenarios.status);
       check(`[${tag}] scenarios module ready on server`, status === "ready", status);

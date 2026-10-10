@@ -1,0 +1,70 @@
+{
+  "role": "R01",
+  "title": "Интегратор: одна работающая версия Birge",
+  "branch": "claude/sharp-dijkstra-0t87gl",
+  "base_sha": "af77b78 (claude/round-14-package), влиты обновления пакета до d2a4351",
+  "restored_from": {
+    "shell_and_gateway": "claude/affectionate-ride-bol5v8@cb9d60a",
+    "ui/civic_store, tests/civic/R02": "claude/elegant-franklin-jbhprq@26793c8 (код b9eb180)",
+    "web/civic/map, tests/civic/R03": "claude/zen-mendel-e79iiv@7de5e0b (код f0a52f7)",
+    "web/civic/editor, tests/civic/R04": "claude/intelligent-sagan-7shpeh@9c996c6",
+    "ui/civic_feedback, web/civic/feedback, tests/civic/R06": "claude/focused-hypatia-z8h0no@933cd90 (код 12b3170)",
+    "engine/civic_scenarios, web/civic/scenarios, tests/civic/R07": "claude/brave-hopper-bkc58b@16aa37a (код 1197f7d)",
+    "agent/civic_assistant, web/civic/assistant, tests/civic/R09": "claude/wizardly-ptolemy-qy8ltw@14c3384 (код c46b2ed)",
+    "ml/civic_classifier, tests/civic/R08": "claude/wizardly-ptolemy-qy8ltw@14c3384",
+    "data/civic/astana/round12-verified, round13-verified, tests/civic/R05": "claude/fervent-dijkstra-1cqrg5@a995f9f",
+    "web/civic/ui-kit, web/civic/i18n, tests/civic/R11": "claude/r14-R11@ba8758b"
+  },
+  "builds": {
+    "I0": "3adabe3",
+    "api_v2": "caf2cff",
+    "birge_header": "d27116c",
+    "r11_integrated": "022787b",
+    "shell_ru_kk": "2eaeacb"
+  },
+  "code_sha": "2eaeacb",
+  "tested_sha": "2eaeacb (полный run_checks.sh в отдельной рабочей копии этого коммита); I0 — 3adabe3",
+  "push_status": "OK: 0121238, 3adabe3, be2cb4e, caf2cff, d27116c, 022787b, 2eaeacb, 3bf631f; этот файл — в следующем коммите (SHA в STATUS.md)",
+  "changed_paths": [
+    "ui/web_server.py",
+    "web/index.html",
+    "web/civic/shell/shell.js",
+    "web/civic/shell/explore.js",
+    "web/civic/shell/birge.js",
+    "web/civic/shell/birge.css",
+    "web/civic/shell/shell-text.js",
+    "tests/civic/R01/test_r01_api_v2.py",
+    "tests/civic/R01/browser/r14_shell.cjs",
+    "tests/civic/R01/browser/p0_flow.cjs",
+    "tests/civic/R01/browser/r12_city.cjs",
+    "tests/civic/R01/browser/scenarios_smoke.cjs",
+    "tests/civic/R01/run_checks.sh",
+    "tests/civic/R08/test_r08_feedback_integration.py (патч R06, применён как есть)",
+    "перенесённые пути модулей — см. restored_from",
+    "research/round-14-results/R01/",
+    "research/handoffs/astana/R01/round14/STATUS.md"
+  ],
+  "tests": {
+    "I0 3adabe3: pytest tests": "PASS 1384 passed, 12 skipped (все skip с причиной)",
+    "I0 3adabe3: browser P0 / scenarios / city / empty registry": "PASS 59/0 (2 NOT_RUN: OpenFreeMap) / 16/0 / 81/0 / 15/0",
+    "caf2cff: pytest tests": "PASS 1446 passed, 11 skipped",
+    "caf2cff: tests/civic/R01/test_r01_api_v2.py": "PASS 61/61",
+    "022787b: tests/civic/R11": "PASS 12/12",
+    "2eaeacb: browser r14_shell (1366, 768, 375; ru, kk)": "PASS 35/0",
+    "2eaeacb: browser r12_city": "PASS 81/0",
+    "2eaeacb: node R01 explore": "PASS 5/5",
+    "2eaeacb: full run_checks.sh": "pytest 1458 passed / 11 skipped; web_check, node ×8 PASS; браузер: сценарии 16/0, город 81/0, пустой реестр 15/0, шапка 35/0, P0 62/1/2 — 1 FAIL = давняя гонка demo-ring модуля карты (воспроизведена и на I0), см. BUILD_LOG",
+    "live app.py :8611": "PASS: civic-v1 store/feedback/scenarios/assistant ready; /api/civic/v2/* -> 503 module_not_ready с ролью; главная 200",
+    "Windows run-city.bat": "NOT_RUN: облачный Linux; команды в RUN.txt (LOCAL-7)",
+    "right panel + hidden tools (рабочее дерево)": "r14_shell 38/0, r12_city 81/0, scenarios_smoke 16/0, P0 62/1/2 (demo-ring)"
+  },
+  "known_limits": [
+    "Все опубликованные объекты — синтетика (демо); реальных подтверждённых записей 0.",
+    "Модули раунда 14 (R04, R06, R07, R08, R09, R12) ещё не сданы: маршруты /api/civic/v2/* отвечают 503 module_not_ready.",
+    "Панель перенесена направо (400 px) по UX_SPEC; сравнение перекрытий и помощник раунда 13 скрыты (?tools=all — вернуть).",
+    "Модуль карты (R12, код R03 f0a52f7) иногда пишет предупреждение demo-ring после смены стиля (1 раз в одном прогоне P0).",
+    "Тексты модулей раунда 13 внутри панели (карта/карточки R12, форма R09, редактор) — на русском до их поставок раунда 14; скрываемые модули (сравнение, помощник) не переводятся.",
+    "Подложка OpenFreeMap и 3D-здания в облаке недоступны — NOT_RUN."
+  ],
+  "next_step": "Правая панель 400 px (UX_SPEC §1); скрыть сравнение и помощника из Birge; ежедневная интеграция поставок с DELIVERY.json и подключение функций v2; B1 вечером 13 окт."
+}

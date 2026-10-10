@@ -237,6 +237,9 @@
 
   // ------------------------------------------------------------------ запуск
   function start() {
+    // Сравнение перекрытий и помощник по объекту (модули раунда 13) в сценарий демо Birge не входят:
+    // скрыты, код и API v1 целы. ?tools=all в адресе возвращает их (проверки ролей, показ сотрудникам).
+    document.body.dataset.birgeTools = /[?&]tools=all(&|$)/.test(location.search) ? "all" : "off";
     state.mode = savedMode() || defaultMode();
     document.body.dataset.birgeMode = state.mode;
     buildHeader();
@@ -259,6 +262,7 @@
     t, lang,
     get mode() { return state.mode; },
     get section() { return state.section; },
+    get toolsVisible() { return document.body.dataset.birgeTools === "all"; },
     setMode, setSection,
     api: { v2, ApiError: BirgeApiError },
   };
