@@ -117,6 +117,10 @@ LOCAL-7 (скриншоты сборок): снимать и в ?lang=kk — п�
   - i18n.js: без изменений с 52d7c59 (дробные «в 7,2 раза» уже там).
   - ui-kit: .bk-legend на телефоне — одна строка 32 px (заголовок и .bk-legend__note скрыты); размер иконки только число.
     Витрина работает под строгой CSP R15 (проверено на 13ae790).
+Патч для чужого модуля (R11 его не применяет — решает владелец или R01 по правилу «патчи ролей»):
+    research/round-14-results/R11/patches/R12_staff_i18n.patch — кабинет сотрудника (web/civic/editor/editor.js) на ключах
+    staff.* / works.*; git apply --check проходит на R12 8bb7bf8 и R01 daec72a; тесты редактора R12 78/78 с ним (R10 B-021).
+    (patches/R09_formatDate.patch больше не нужен — R09 сам исправил даты в 6beaa4a.)
 Проверка после подключения (сервер сборки поднят, CIVIC_DEMO=1):
     NODE_PATH="$(npm root -g)" node tests/civic/R11/browser_check.cjs --base http://127.0.0.1:<порт>
     NODE_PATH="$(npm root -g)" node tests/civic/R11/review/build_shots.cjs http://127.0.0.1:<порт> <папка> final <файл-пароля>
