@@ -440,6 +440,23 @@ class ComplaintStore:
             result.append(item)
         return result
 
+    def place_reporters(self, record: dict, *, days: int = 14) -> int:
+        """Сколько людей сообщили о том же на этом месте: жалобы той же цели и категории (кроме отклонённых и дублей —
+        люди дубля уже перенесены в исходную), поданные в пределах ±days от этой. Для «Мои обращения»: то же число, что
+        житель видел на шаге «Я тоже», даже если о проблеме подали несколько отдельных жалоб; после «исправлено» не меняется."""
+        own = rec.reporters(record)
+        target_id = (record.get("target") or {}).get("id")
+        created = rec.parse_iso(record.get("created_at"))
+        if not target_id or not record.get("category") or created is None:
+            return own
+        span = timedelta(days=days).total_seconds()
+        with self._lock:
+            rows = self._db.execute(
+                "SELECT record_json FROM complaints_v2 WHERE target_id = ? AND category = ? AND status != 'rejected' "
+                "AND duplicate_of IS NULL AND created_ts BETWEEN ? AND ?",
+                (target_id, record["category"], created.timestamp() - span, created.timestamp() + span)).fetchall()
+        return max(own, sum(rec.reporters(json.loads(row[0])) for row in rows))
+
     def is_author(self, complaint_id: str, device_id: str) -> bool:
         try:
             device = self.device_hash(device_id)
