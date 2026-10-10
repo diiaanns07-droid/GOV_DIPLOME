@@ -62,6 +62,9 @@ probe_v2 (results/translit_to_cyrillic_probe_v2.json): логрегрессия 
 - Модель: папка ml/civic_classifier_v2/artifacts/onnx/ (model.int8.onnx ≈ 266 МБ, tokenizer.json, birge_meta.json)
   после RUN.txt шаг 8 на ноутбуке; другой путь — переменная окружения BIRGE_CLF_V2_DIR.
 - Пакеты на сервере: ml/civic_classifier_v2/requirements-runtime.txt (onnxruntime, tokenizers, numpy). torch не нужен.
+- get_default(): при одновременных первых запросах без модели все потоки получают ModelUnavailable (исправлена гонка,
+  раньше второй поток мог получить KeyError). В режиме auto, если onnxruntime/токенизатор недоступны, загрузка
+  переходит к PyTorch-папке (artifacts/final), а не падает.
 - Потоки: predict по умолчанию берёт min(4, ядер) потоков onnxruntime (переменная BIRGE_CLF_V2_THREADS меняет число).
   Не ставить «все потоки»: на ноутбуке владельца (24 потока, гибридный Intel) это 103 мс на текст, 4 потока — 21–23 мс.
   Один поток — 76–92 мс на ноутбуке, 58 мс в облаке при 128 токенах.

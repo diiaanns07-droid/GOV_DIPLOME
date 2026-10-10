@@ -332,3 +332,83 @@ def test_exclude_train_ids_only_touches_training(data_dir, tmp_path, monkeypatch
     assert test_id in sets["synth_test_template"]                       # оценочные наборы не тронуты
     res = json.loads((tmp_path / "results" / "experiments.json").read_text(encoding="utf-8"))
     assert res["meta"]["excluded_ids_n"] == 6 and any("исключено по --exclude-train-ids 5" in n for n in res["notes"])
+
+
+# ---------- регрессии по ревью кода (ночь 10→11 окт) ----------
+
+def test_get_default_concurrent_failure_raises_model_unavailable(monkeypatch):
+    """Два потока одновременно, модели нет: оба получают ModelUnavailable (раньше второй падал с KeyError)."""
+    import threading
+    import time
+    from ml.civic_classifier_v2 import predict as P
+
+    def slow_fail(*a, **k):
+        time.sleep(0.2)
+        raise P.ModelUnavailable("нет модели")
+
+    monkeypatch.setattr(P, "_default", {})
+    monkeypatch.setattr(P.Classifier, "load", classmethod(lambda cls, *a, **k: slow_fail()))
+    errors = []
+
+    def call():
+        try:
+            P.get_default()
+        except Exception as exc:  # noqa: BLE001 — проверяем именно тип
+            errors.append(type(exc).__name__)
+
+    threads = [threading.Thread(target=call) for _ in range(3)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert errors == ["ModelUnavailable"] * 3
+
+
+def test_auto_backend_falls_back_to_torch_when_onnx_unavailable(tmp_path, monkeypatch):
+    from ml.civic_classifier_v2 import predict as P
+    d = tmp_path / "m"
+    d.mkdir()
+    (d / P.META_NAME).write_text(json.dumps({"labels": list(L.labels()), "model_version": "x",
+                                             "train_config": {"max_length": 32}}), encoding="utf-8")
+    (d / "model.int8.onnx").write_bytes(b"x")
+    (d / "config.json").write_text("{}", encoding="utf-8")
+
+    def no_onnx(*a, **k):
+        raise P.ModelUnavailable("не установлен onnxruntime")
+
+    class FakeTorch:
+        def __init__(self, model_dir):
+            self.file = "pytorch"
+
+    monkeypatch.setattr(P, "_OnnxBackend", no_onnx)
+    monkeypatch.setattr(P, "_TorchBackend", FakeTorch)
+    assert P.Classifier.load(d).backend == "torch"
+    with pytest.raises(P.ModelUnavailable):
+        P.Classifier.load(d, backend="onnx")                         # явный onnx — ошибка, без подмены
+
+
+def test_synthetic_val_drops_texts_equal_to_eval_sets(tmp_path, monkeypatch):
+    """Текст validation, совпавший с probe_v2, не участвует в выборе эпохи/порога/гиперпараметров."""
+    corpus = F.synth_corpus()
+    val_row = next(r for r in corpus if r["split"] == "val")
+    probe = F.probe_like()
+    probe[0] = dict(probe[0], text=val_row["text"].upper() + "!")   # совпадает после нормализации
+    d = tmp_path / "data"
+    F.write_jsonl(d / "synth_v3" / "corpus_v3.jsonl", corpus)
+    F.write_jsonl(d / "probe_v2" / "probe_v2.jsonl", probe)
+    F.write_jsonl(d / "human.jsonl", F.human_like())
+    seen = []
+    monkeypatch.setattr(E, "run_model", lambda name, train, val, sets, *a, **k: (
+        seen.append({r["id"] for r in val}) or {s: ([0] * len(r), None) for s, r in sets.items()},
+        {"n_train": len(train), "n_val": len(val)}))
+    E.main(_args(d, tmp_path, "--models", "heuristic", "--regimes", "synth_template"))
+    assert val_row["id"] not in seen[0]
+    res = json.loads((tmp_path / "results" / "experiments.json").read_text(encoding="utf-8"))
+    assert any("из синтетической validation убрано 1" in n for n in res["notes"])
+
+
+def test_auto_set_name_never_marks_human_as_probe():
+    from ml.civic_classifier_v2.evaluate import auto_set_name
+    assert auto_set_name([{"evidence": "synthetic_agent_written"}] * 3) == "probe_v2"
+    assert auto_set_name([{"evidence": "synthetic_agent_written"}, {"evidence": "real_human_text"}]) == "human"
+    assert auto_set_name([{}]) == "human" and auto_set_name([]) == "human"

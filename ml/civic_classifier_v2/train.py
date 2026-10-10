@@ -57,8 +57,9 @@ def assemble(regime: str, synth: dict[str, list[dict]], human: list[dict], val_r
     if regime.startswith("synth"):
         if human:
             syn_tr, leaked = D.drop_leaks(syn_tr, human)
-            if leaked:
-                notes.append(f"из синтетического train убрано {leaked} текстов, совпавших с текстами людей")
+            syn_va, leaked_va = D.drop_leaks(syn_va, human)  # люди здесь — оценка; в выбор эпохи/порога не идут
+            if leaked or leaked_va:
+                notes.append(f"убрано совпавших с текстами людей: train {leaked}, val {leaked_va}")
         return syn_tr, syn_va
     if not human:
         raise SystemExit(f"режим {regime}: нужен --human (файл разметки людей)")
@@ -126,8 +127,9 @@ def main(argv=None) -> int:
         probe, _ = D.load_corpus(Path(args.probe_v2), source="probe_v2", evidence="synthetic_agent_written",
                                  not_complaint=args.not_complaint)
         train, leaked = D.drop_leaks(train, probe)
-        if leaked:
-            notes.append(f"из train убрано {leaked} текстов, совпавших с probe_v2")
+        val, leaked_va = D.drop_leaks(val, probe)
+        if leaked or leaked_va:
+            notes.append(f"убрано совпавших с probe_v2: train {leaked}, val {leaked_va}")
     except FileNotFoundError:
         pass
     print(f"режим {regime}: train {len(train)}, val {len(val)}; модель {cfg.model_name}", file=sys.stderr)

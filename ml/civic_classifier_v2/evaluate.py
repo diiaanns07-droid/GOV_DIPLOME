@@ -298,6 +298,11 @@ def _cmd_render(args) -> int:
     return 0
 
 
+def auto_set_name(recs: list[dict]) -> str:
+    """«probe_v2» только если все записи синтетические (evidence synthetic*), иначе «human» (тексты не печатаются)."""
+    return "probe_v2" if recs and all(str(r.get("evidence", "")).startswith("synthetic") for r in recs) else "human"
+
+
 def _cmd_model(args) -> int:
     from ml.civic_classifier_v2 import data as D
     from ml.civic_classifier_v2.predict import Classifier
@@ -324,7 +329,9 @@ def _cmd_model(args) -> int:
         Path(args.out).write_text(text + "\n", encoding="utf-8")
     if args.preds_out:
         # Прогноз по каждому тексту: только id, метки и score (без текстов) — для analysis.py errors.
-        set_name = args.set_name
+        # auto: «probe_v2» только если ВСЕ записи синтетические (evidence synthetic*), иначе «human» —
+        # analysis.py никогда не печатает тексты набора human, даже если флаг забыли.
+        set_name = auto_set_name(recs) if args.set_name == "auto" else args.set_name
         with open(args.preds_out, "w", encoding="utf-8") as fh:
             for r, pr, row in zip(recs, pred, proba):
                 fh.write(json.dumps({"set": set_name, "id": r["id"], "true": r["label"], "pred": labels[pr],
@@ -351,8 +358,9 @@ def main(argv=None) -> int:
     m.add_argument("--to-cyrillic", action="store_true",
                    help="ещё прогон с переводом транслита в кириллицу (to_cyrillic R04) и парная разница")
     m.add_argument("--normalize-file", help="ml/civic_dedup/normalize.py R04, если его нет в сборке")
-    m.add_argument("--set-name", default="probe_v2",
-                   help="имя набора в --preds-out; для текстов людей укажите human — analysis не покажет их примеры")
+    m.add_argument("--set-name", default="auto",
+                   help="имя набора в --preds-out; auto: probe_v2, если все записи синтетические, иначе human "
+                        "(примеры текстов human analysis.py не показывает)")
     args = ap.parse_args(argv)
     return _cmd_render(args) if args.cmd == "render" else _cmd_model(args)
 

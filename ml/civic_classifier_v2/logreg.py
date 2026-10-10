@@ -19,7 +19,7 @@ import numpy as np
 
 from ml.civic_classifier_v2 import heuristic
 from ml.civic_classifier_v2 import labels as L
-from ml.civic_classifier_v2.metrics import macro_f1_cm
+from ml.civic_classifier_v2.metrics import macro_f1
 
 _URL = re.compile(r"(?:https?://|www\.)\S+", re.I)
 _EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
@@ -143,10 +143,7 @@ def fit(train: list[dict], val: list[dict], seed: int, grid: list[dict] | None =
         clf.fit(X, y_tr)
         model.clf = clf
         if len(val):
-            pred = np.array(model.predict([r["text"] for r in val]))
-            k = len(labels)
-            cm = np.bincount(y_va * k + pred, minlength=k * k).reshape(k, k)
-            score = macro_f1_cm(cm)
+            score = macro_f1(y_va, model.predict([r["text"] for r in val]), len(labels))
         else:
             score = 0.0
         log.append({"hyper": hyper, "val_macro_f1": round(score, 4)})

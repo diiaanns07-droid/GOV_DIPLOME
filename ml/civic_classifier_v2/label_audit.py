@@ -122,6 +122,7 @@ def main(argv=None) -> int:
     proba_v3 = None
     try:
         v3, _ = D.load_corpus(Path(args.synth_v3), source="synth_v3", evidence="synthetic_template")
+        D.ensure_splits(v3, args.seed)
         tr = [r for r in v3 if r["split"] in ("train", "val")]
         model, _ = logreg.fit(tr, [], args.seed, grid=[HYPER], labels=L.labels())
         proba_v3 = model.predict_proba([r["text"] for r in llm])

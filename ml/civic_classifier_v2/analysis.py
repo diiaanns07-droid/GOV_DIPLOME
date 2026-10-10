@@ -342,9 +342,13 @@ def render_errors(exp: dict, preds: dict[str, dict[str, dict]], probe: dict[str,
             goes = sorted(((labels[j], n) for j, n in enumerate(row) if n and labels[j] != lab), key=lambda x: -x[1])[:3]
             out.append(f"- {names[lab]}: F1 {_f(pc['f1'], 2)}, support {pc['support']}, предсказано {pc['predicted']}; "
                        "уходят в " + ", ".join(f"{names[g]} ({n})" for g, n in goes))
-        out += ["", "Train loss падает до 0.03 при val 0.756: модель запоминает формулировки шаблонов. Невиданные "
-                "шаблоны тех же категорий (другие слова) она относит к соседним темам. Добавление LLM-синтетики "
-                "(другие формулировки) поднимает test v3 до 0.779 — разнообразие данных важнее размера модели.", ""]
+        tr_info = (runs.get("synth_template/transformer") or {}).get("train") or {}
+        loss = _last_train_loss(RESULTS_DIR / "train_log_experiments.jsonl", "synth_template/transformer")
+        all_v3 = (_ev(runs, "synth_all/transformer", "synth_test_template") or {}).get("macro_f1")
+        out += ["", f"Train loss в конце обучения {_f(loss, 2)} при val macro-F1 {_f(tr_info.get('best_val_macro_f1'))}: "
+                "модель запоминает формулировки шаблонов. Невиданные шаблоны тех же категорий (другие слова) она "
+                "относит к соседним темам. С LLM-синтетикой (другие формулировки) test v3 — "
+                f"{_f(all_v3)}: разнообразие данных важнее размера модели.", ""]
 
     if preds and probe:
         out += ["## 4. Примеры ошибок (тексты probe_v2)", ""]
@@ -378,6 +382,21 @@ def render_errors(exp: dict, preds: dict[str, dict[str, dict]], probe: dict[str,
                 "Нет файлов прогнозов по текстам. Для трансформера их даёт ноутбук: RUN.txt шаг 8б "
                 "(`--preds-out`), для словаря и логрегрессии — `experiments.py` (artifacts/experiments/*.jsonl).", ""]
     return "\n".join(out)
+
+
+def _last_train_loss(log_path: Path, tag_prefix: str) -> float | None:
+    """train_loss последней эпохи прогона из лога обучения (если лог сохранён в results/)."""
+    if not Path(log_path).exists():
+        return None
+    last = None
+    for line in Path(log_path).read_text(encoding="utf-8").splitlines():
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if str(r.get("tag", "")).startswith(tag_prefix):
+            last = r.get("train_loss")
+    return last
 
 
 def _hard_rules_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:

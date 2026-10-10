@@ -74,9 +74,12 @@ def _cmd_check(args) -> int:
     v3, _ = D.load_corpus(Path(args.synth_v3), source="synth_v3", evidence="synthetic_template")
     llm, _ = D.load_corpus(Path(args.llm_v1), source="llm_v1", evidence="synthetic_llm")
     probe, _ = D.load_corpus(Path(args.probe_v2), source="probe_v2", evidence="synthetic_agent_written")
+    for corpus in (v3, llm):  # как experiments.py: нет поля split — детерминированный split по шаблонам
+        D.ensure_splits(corpus, args.seed)
     evals = list(probe) + [r for r in v3 + llm if r["split"] == "test"]
     try:
         v1, _ = D.load_corpus(Path(args.v1_in_v2), source="v1_in_v2", evidence="synthetic_template_v1")
+        D.ensure_splits(v1, args.seed)
         evals += [r for r in v1 if r["split"] == "test"]
     except FileNotFoundError:
         pass

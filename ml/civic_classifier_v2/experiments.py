@@ -265,6 +265,10 @@ def run(args) -> dict:
         syn_train, leaked = D.drop_leaks(syn_train, all_eval)
         if leaked:
             notes.append(f"{regime}: из синтетического train убрано {leaked} текстов, совпавших с оценочными")
+        # validation выбирает эпоху, порог и гиперпараметры — оценочных текстов в ней тоже быть не должно.
+        syn_val, leaked_val = D.drop_leaks(syn_val, all_eval)
+        if leaked_val:
+            notes.append(f"{regime}: из синтетической validation убрано {leaked_val} текстов, совпавших с оценочными")
 
         for m in args.models:
             key = f"{regime}/{m}"

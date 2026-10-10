@@ -50,16 +50,15 @@ FALLBACK_TEXTS = [
 def export_fp32(model_dir: Path, onnx_path: Path, exporter: str = "auto") -> dict:
     """PyTorch -> ONNX. Сначала классический экспортёр (dynamo=False), при ошибке — dynamo."""
     import torch
-    from ml.civic_classifier_v2 import transformer as T
+    from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-    tm = T.load(model_dir, device="cpu")
+    # Модель грузится один раз (xlm-roberta-base ≈ 1.1 ГБ): токенизатор отдельно, веса — с «eager»-вниманием,
+    # оно трассируется без условий по форме входа (у sdpa в трассировке остаются константы). Сверка с PyTorch — ниже.
+    tokenizer = AutoTokenizer.from_pretrained(model_dir)
     try:
-        # «eager»-внимание трассируется без условий по форме входа (у sdpa в трассировке остаются
-        # константы); веса те же, результат сверяется с PyTorch ниже.
-        from transformers import AutoModelForSequenceClassification
         model = AutoModelForSequenceClassification.from_pretrained(model_dir, attn_implementation="eager")
     except (TypeError, ValueError):
-        model = tm.model
+        model = AutoModelForSequenceClassification.from_pretrained(model_dir)
     model = model.float().eval()
 
     class Wrapper(torch.nn.Module):
@@ -71,7 +70,7 @@ def export_fp32(model_dir: Path, onnx_path: Path, exporter: str = "auto") -> dic
             return self.m(input_ids=input_ids, attention_mask=attention_mask).logits
 
     wrapped = Wrapper(model).eval()
-    enc = tm.tokenizer(["Во дворе не горят фонари", "яма"], padding=True, return_tensors="pt")
+    enc = tokenizer(["Во дворе не горят фонари", "яма"], padding=True, return_tensors="pt")
     args = (enc["input_ids"], enc["attention_mask"])
     kwargs = dict(input_names=["input_ids", "attention_mask"], output_names=["logits"],
                   dynamic_axes={"input_ids": {0: "batch", 1: "seq"}, "attention_mask": {0: "batch", 1: "seq"},
