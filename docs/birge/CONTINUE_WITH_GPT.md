@@ -179,4 +179,28 @@
 
 Список собран из `STATUS.md` и `DELIVERY.json` ролей на 10 октября 2026 (см. `MODULES.md`, раздел каждого модуля, где указаны ветка и SHA). Обновлять по мере сборок B1/B2/FINAL.
 
-_(раздел заполняется — см. ниже после сбора фактов)_
+| Модуль | Открытые задачи (по STATUS/DELIVERY ролей, 10.10) | Где подробности |
+|---|---|---|
+| **R01 сборка** | Подключить v2-модули: адаптеры для `api.handle_get` (R07, R08), списка `ROUTES` (R09), `bind(service)` (R06); добавить файлы модулей в `CIVIC_ASSETS` и `<script>` в `web/index.html` (akim, heat, feedback/complaint, build3d, proposals); перенести R03, R04, R05, R06, R12, R13; адаптер для `BirgeAkim.mount(rootEl, options)`; один ключ устройства для всех модулей; сборки B1 (13.10) → B2 (14.10) → FINAL (15.10 18:00); обновить DELIVERY (отстаёт от головы) | `ARCHITECTURE.md` §8; `research/round-14-results/R01/` |
+| **R02 данные** | Форма → `import_form` → разметка 300 текстов владельцем → второй разметчик (100) → `agreement` → LOCAL-8 (`llm_synth`, `llm_label`) → проверка казахского | `research/round-14-results/R02/RUN.txt` |
+| **R03 модель** | LOCAL-4: обучение на GPU по `RUN.txt`, пуш `results/*.json` + `RESULTS.md`; ONNX передать в сборку; по желанию — оценка на `probe_v2`, режим «+ v1_in_v2» | `research/round-14-results/R03/RUN.txt`, `MODEL_CARD.md` |
+| **R04 дубли/ML-API** | DELIVERY, RUN, INTEGRATION; тесты (пустой/длинный текст, казахский без спецбукв, транслит, нет модели, параллельные запросы); экспорт E5 в ONNX (LOCAL) и подбор порога e5 на dev-парах; оценка на текстах людей | ветка `claude/r14-R04`, `research/handoffs/astana/R04/round14/STATUS.md` |
+| **R05 3D** | R01 применяет `proposed_r01.patch`; согласовать с R06 поля `POST /proposals`, удаление (`withdraw` вместо `DELETE`) и формат ответа `{item}`; ключи `build3d.*` в словари R11; проверить плавность и пересечения со зданиями на ноутбуке с GPU | `research/round-14-results/R05/INTEGRATION.txt` |
+| **R06 предложения/этапы** | R01: `bind(service)`, маршруты approve/reject/withdraw/summary/lagging/по id, статика; R08 перейти на `lagging_objects` и `proposals_summary`; перед обновлением базы — резервная копия | `research/round-14-results/R06/INTEGRATION.txt` |
+| **R07 тепловая карта** | Подключение в шлюз R01 (INTEGRATION §1); R09 после новой жалобы вызывает `invalidate()` и шлёт `birge:complaint`; цели — те же id, что у R12; передавать bbox в запросе; скриншоты с настоящей подложкой (LOCAL-7); проверка казахских строк | `research/round-14-results/R07/INTEGRATION.txt` |
+| **R08 картина дня** | Маршрут и адаптер `mount` у R01; функции R06 вместо фикстур; ключи в R11; R10 прогоняет `ui_check.cjs` на сборке; проверка казахской сводки | `research/round-14-results/R08/INTEGRATION.txt` |
+| **R09 жалоба** | Пункты 7–12 ревью R11 (`UX_REVIEW.md`); подключение у R01; живые `/targets` (R12) и `/classify`, `/similar` (R04) вместо фикстур; ключ устройства `birge.device` → общий `birge.device_id`; район записи на сервере | `research/round-14-results/R09/INTEGRATION.txt` |
+| **R11 UX/казахский** | Владелец проверяет `kk.json` (29 мест ⚑ в `KK_REVIEW.md`); перенос ключей модулей в общие словари; patch `CIVIC_ASSETS` у R01; скрыть или перевести тексты сравнения перекрытий и помощника (в них запрещённые слова «граф», «сценарий») | `research/round-14-results/R11/` |
+| **R12 карта** | R01 подключает 5 маршрутов (`/street-segment`, `/street-snap`, `/objects-near`, `/yard`, `/geo/status`) и `demo_snapped.json`; прогон `app_acceptance.mjs` и `e2e_r12_real` на сборке; соседние рёбра одной улицы — сейчас разные цели (подумать о группировке «Я тоже» по улице) | `research/round-14-results/R12/INTEGRATION.txt` |
+| **R13 прогноз** | `features.py`, `model.py`, `backtest.py` (precision@K для K = 10/20/30 против «прошлый месяц» и «тот же месяц год назад»), `forecast()` + маршрут; заменить `hash()` в `history.to_records` на детерминированный хэш (sha256); погода LOCAL-9; README, `__main__.py`, DELIVERY | ветка `claude/r14-R13`, `research/round-14/prompts/R13.txt` |
+| **R10 приёмка** | Приёмка сборок B1/B2/FINAL по чек-листу UX_BRIEF и сценарию CONTRACT §0 | `research/round-14/prompts/R10.txt` |
+| **R15 безопасность** | Отчёт и patch по XSS, CSRF, правам сотрудника, персональным данным | ветка `claude/r14-R15` |
+| **Диплом (R14)** | Заменить `[РЕЗУЛЬТАТ R03]`/`[РЕЗУЛЬТАТ R13]` числами из `RESULTS.md`; проверить источники `[ПРОВЕРИТЬ ИСТОЧНИК]` (шаблон 3.8); вставить требования вуза `[ТРЕБОВАНИЕ ВУЗА]`; обновить `FACTS.md` по сборке FINAL | `docs/diploma/`, `research/round-14-results/R14/FACTS.md` |
+
+## 5. Как понять, что задача сделана
+
+- Тесты модуля зелёные (команда — в `MODULES.md`), и вы видели их вывод сами.
+- Если менялся экран — скриншоты 375 и 1366 px, ҚАЗ и РУС, из реально запущенного приложения.
+- `git diff --cached --stat` содержит только файлы задачи; нет `.env`, `private/`, `*.sqlite3`, `artifacts/`.
+- Push прошёл (`git push` без ошибок), в отчёте — ветка и SHA.
+- Обновлены документы, если поменялось поведение: `MODULES.md` (модуль), `FACTS.md` (числа), `RUNBOOK.md` (запуск).
