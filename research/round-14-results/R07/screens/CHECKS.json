@@ -3,355 +3,337 @@
   "name": "nura-akimat-1366-ru",
   "size": "desktop",
   "query": "?lang=ru&role=akimat&view=nura",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 31,
-  "state": {
-   "role": "akimat",
-   "lang": "ru",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": null,
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 40,
+  "primary": [],
+  "extra": {}
  },
  {
   "name": "nura-akimat-375-ru",
   "size": "phone",
-  "query": "?lang=ru&role=akimat&view=nura&sheet=peek",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 31,
-  "state": {
-   "role": "akimat",
-   "lang": "ru",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": null,
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "query": "?lang=ru&role=akimat&view=nura",
+  "problems": [],
+  "badges": 27,
+  "primary": [],
+  "extra": {}
  },
  {
-  "name": "city-districts-1366-ru",
-  "size": "desktop",
-  "query": "?lang=ru&view=city",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 6,
-  "state": {
-   "role": "akimat",
-   "lang": "ru",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": null,
-   "mode": "districts",
-   "status": "ready",
-   "items": 6
-  }
- },
- {
-  "name": "card-segment-1366-ru",
+  "name": "card-akimat-1366-ru",
   "size": "desktop",
   "query": "?lang=ru&view=nura",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 40,
-  "state": {
-   "role": "akimat",
-   "lang": "ru",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": "segment:osm-w1181261286-8",
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 52,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 9.32
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-akimat-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&view=nura&sheet=full",
+  "problems": [],
+  "badges": 53,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 9.32
+   }
+  ],
+  "extra": {}
  },
  {
   "name": "card-resident-375-ru",
   "size": "phone",
   "query": "?lang=ru&role=resident&view=nura&sheet=full",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 40,
-  "state": {
-   "role": "resident",
-   "lang": "ru",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": "segment:osm-w1181261286-8",
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 53,
+  "primary": [
+   {
+    "t": "Я тоже",
+    "ratio": 9.32
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-resident-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=resident&view=nura",
+  "problems": [],
+  "badges": 53,
+  "primary": [
+   {
+    "t": "Я тоже",
+    "ratio": 9.32
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "city-districts-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=city",
+  "problems": [],
+  "badges": 6,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "city-districts-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&view=city&sheet=peek",
+  "problems": [],
+  "badges": 6,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "empty-filter-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=nura&sheet=full",
+  "problems": [],
+  "badges": 0,
+  "primary": [
+   {
+    "t": "Показать 30 дней",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "empty-filter-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&view=nura&sheet=full",
+  "problems": [],
+  "badges": 0,
+  "primary": [
+   {
+    "t": "Показать 30 дней",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
  },
  {
   "name": "nura-akimat-1366-kk",
   "size": "desktop",
   "query": "?lang=kk&role=akimat&view=nura",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 31,
-  "state": {
-   "role": "akimat",
-   "lang": "kk",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": null,
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 40,
+  "primary": [],
+  "extra": {}
  },
  {
   "name": "nura-akimat-375-kk",
   "size": "phone",
-  "query": "?lang=kk&role=akimat&view=nura&sheet=peek",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 31,
-  "state": {
-   "role": "akimat",
-   "lang": "kk",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": null,
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "query": "?lang=kk&role=akimat&view=nura",
+  "problems": [],
+  "badges": 27,
+  "primary": [],
+  "extra": {}
  },
  {
-  "name": "city-districts-1366-kk",
-  "size": "desktop",
-  "query": "?lang=kk&view=city",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 6,
-  "state": {
-   "role": "akimat",
-   "lang": "kk",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": null,
-   "mode": "districts",
-   "status": "ready",
-   "items": 6
-  }
- },
- {
-  "name": "card-segment-1366-kk",
+  "name": "card-akimat-1366-kk",
   "size": "desktop",
   "query": "?lang=kk&view=nura",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 40,
-  "state": {
-   "role": "akimat",
-   "lang": "kk",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": "segment:osm-w1181261286-8",
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 53,
+  "primary": [
+   {
+    "t": "Түзетілді деп белгілеу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-akimat-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&view=nura&sheet=full",
+  "problems": [],
+  "badges": 53,
+  "primary": [
+   {
+    "t": "Түзетілді деп белгілеу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
  },
  {
   "name": "card-resident-375-kk",
   "size": "phone",
   "query": "?lang=kk&role=resident&view=nura&sheet=full",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 40,
-  "state": {
-   "role": "resident",
-   "lang": "kk",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": "segment:osm-w1181261286-8",
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 53,
+  "primary": [
+   {
+    "t": "Мен де",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-resident-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&role=resident&view=nura",
+  "problems": [],
+  "badges": 53,
+  "primary": [
+   {
+    "t": "Мен де",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "city-districts-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=city",
+  "problems": [],
+  "badges": 6,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "city-districts-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&view=city&sheet=peek",
+  "problems": [],
+  "badges": 6,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "empty-filter-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=nura&sheet=full",
+  "problems": [],
+  "badges": 0,
+  "primary": [
+   {
+    "t": "Соңғы 30 күнді көрсету",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "empty-filter-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&view=nura&sheet=full",
+  "problems": [],
+  "badges": 0,
+  "primary": [
+   {
+    "t": "Соңғы 30 күнді көрсету",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
  },
  {
   "name": "stop-fixed-1366-ru",
   "size": "desktop",
   "query": "?lang=ru&view=nura",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 43,
-  "state": {
-   "role": "akimat",
-   "lang": "ru",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": "object:osm-node-4109037549",
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 52,
+  "primary": [],
+  "extra": {}
  },
  {
   "name": "stop-fixed-1366-kk",
   "size": "desktop",
   "query": "?lang=kk&view=nura",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 43,
-  "state": {
-   "role": "akimat",
-   "lang": "kk",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": "object:osm-node-4109037549",
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 52,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "deeplink-days7-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=city&sheet=full#target=area:yard-1071933339&days=7",
+  "problems": [],
+  "badges": 53,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "deeplink-days7-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&view=city&sheet=full#target=area:yard-1071933339&days=7",
+  "problems": [],
+  "badges": 53,
+  "primary": [
+   {
+    "t": "Түзетілді деп белгілеу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
  },
  {
   "name": "playground-real-osm-1366-kk",
   "size": "desktop",
   "query": "?lang=kk&view=nura",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 43,
-  "state": {
-   "role": "akimat",
-   "lang": "kk",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": "object:osm-way-1449322330",
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 52,
+  "primary": [
+   {
+    "t": "Жұмысқа алу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
  },
  {
   "name": "pulse-new-complaint-1366-ru",
   "size": "desktop",
   "query": "?lang=ru&view=nura",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
-  "badges": 40,
-  "state": {
-   "role": "akimat",
-   "lang": "ru",
-   "filters": {
-    "category": null,
-    "days": 30,
-    "district": null
-   },
-   "selected": "segment:osm-w1181261286-8",
-   "mode": "targets",
-   "status": "ready",
-   "items": 43
-  }
+  "problems": [],
+  "badges": 52,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
  },
  {
   "name": "filter-snow-7days-1366-kk",
   "size": "desktop",
   "query": "?lang=kk&view=nura",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
+  "problems": [],
   "badges": 12,
-  "state": {
-   "role": "akimat",
-   "lang": "kk",
-   "filters": {
-    "category": "snow_ice",
-    "days": 7,
-    "district": null
-   },
-   "selected": null,
-   "mode": "targets",
-   "status": "ready",
-   "items": 12
-  }
+  "primary": [],
+  "extra": {}
  },
  {
   "name": "keyboard-card-1366-ru",
   "size": "desktop",
   "query": "",
-  "errors": [],
-  "hscroll": false,
-  "rawKeys": [],
-  "smallButtons": [],
+  "problems": [],
+  "badges": 0
+ },
+ {
+  "name": "lang-document-and-device-375",
+  "size": "phone",
+  "query": "",
+  "problems": [],
   "badges": 0
  }
 ]

@@ -23,7 +23,9 @@
   color: var(--r07-ink);
 }
 .r07-root *, .r07-root *::before, .r07-root *::after { box-sizing: border-box; }
-.r07-root button, .r07-root select { font: inherit; color: inherit; }
+/* Сброс через :where() — нулевая специфичность, иначе он перебивает цвет главной кнопки:
+   «.r07-root button» (0,1,1) сильнее «.r07-btn--primary» (0,1,0) → тёмный текст на зелёном, 2,3:1 (UX_REVIEW R11, день 3, №1). */
+:where(.r07-root) button, :where(.r07-root) select { font: inherit; color: inherit; }
 .r07-root :focus-visible, .r07-badge:focus-visible { outline: 3px solid var(--r07-focus); outline-offset: 2px; }
 .r07-ic { flex-shrink: 0; vertical-align: middle; }
 .r07-ic--flip { transform: scaleX(-1); color: var(--r07-ink-2); }
@@ -71,6 +73,9 @@
   min-height: 42px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 9px;
   background: transparent; color: var(--r07-ink-2); font-weight: 650; white-space: nowrap; cursor: pointer;
 }
+/* 42 px видимые + невидимая кайма 3 px сверху и снизу = 48 px для пальца (№6) */
+.r07-seg > button { position: relative; }
+.r07-seg > button::after { content: ""; position: absolute; inset: -3px 0; }
 .r07-seg > button[aria-pressed="true"] { background: #fff; color: var(--r07-ink); box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; }
 .r07-select select {
   min-height: 48px; max-width: 100%; padding: 0 36px 0 12px; border: 1px solid #c9d4c5; border-radius: 12px;
@@ -87,7 +92,7 @@
 }
 .r07-btn:hover:not(:disabled) { background: var(--r07-green-50); }
 .r07-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.r07-btn--primary { background: var(--r07-green); border-color: var(--r07-green); color: #fff; }
+.r07-btn--primary, .r07-root .r07-btn--primary { background: var(--r07-green); border-color: var(--r07-green); color: #fff; }
 .r07-btn--primary:hover:not(:disabled) { background: #0f5137; border-color: #0f5137; }
 .r07-btn--ghost { border-color: transparent; background: transparent; color: var(--r07-green); padding: 0 10px; }
 .r07-btn--lg { min-height: 56px; font-size: 18px; }
@@ -125,7 +130,7 @@
 .r07-eyebrow { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--r07-ink-2); }
 .r07-card__title { margin: 0; font-size: 22px; line-height: 1.25; font-weight: 750; overflow-wrap: anywhere; }
 .r07-root .r07-card__title:focus, .r07-root .r07-card__title:focus-visible { outline: none; } /* фокус ставится программно — рамка не нужна */
-.r07-tag { margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: #f1efe6; color: #5b5442; font-size: 13px; letter-spacing: 0; text-transform: none; }
+.r07-tag { margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: #f1efe6; color: #5b5442; font-size: 14px; letter-spacing: 0; text-transform: none; }
 .r07-level { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; }
 .r07-card__reported { margin: 0; font-size: 17px; }
 .r07-spark { display: flex; align-items: flex-end; gap: 3px; height: 56px; padding: 4px; border-radius: 10px; background: var(--r07-paper); }
@@ -144,6 +149,30 @@
 .r07-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 .r07-actions > .r07-btn { flex: 1 1 160px; }
 
+/* ---- Легенда на карте (№3): ноутбук — слева внизу над атрибуцией, телефон — сверху слева, компактно ---- */
+.r07-maplegend { position: absolute; z-index: 5; left: 12px; bottom: 34px; max-width: 360px; padding: 10px 12px;
+  border: 1px solid var(--r07-line); border-radius: 14px; background: #fffffff2; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812;
+  font-size: 15px; pointer-events: auto; }
+.r07-maplegend .r07-legend__title { margin: 0 0 6px; font-size: 15px; font-weight: 700; }
+.r07-maplegend ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.r07-maplegend li { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.r07-maplegend .r07-legend__hint { margin: 6px 0 0; font-size: 14px; color: var(--r07-ink-2); }
+@media (max-width: 760px) {
+  .r07-maplegend { top: 8px; bottom: auto; left: 8px; right: 66px; max-width: none; padding: 6px 10px; font-size: 14px; }
+  .r07-maplegend .r07-legend__title, .r07-maplegend .r07-legend__fresh { display: none; }
+  .r07-maplegend ul { gap: 2px 10px; }
+  .r07-maplegend .r07-sw { width: 14px; height: 14px; }
+}
+
+/* ---- «Что пишут жители» (№4) ---- */
+.r07-texts { display: flex; flex-direction: column; gap: 6px; }
+.r07-quotes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.r07-quotes li { padding: 10px 12px; border-radius: 12px; background: var(--r07-paper); border-left: 4px solid #d9d4c5; }
+.r07-quote { margin: 0; font-size: 16px; line-height: 1.4; }
+.r07-quote__meta { margin: 4px 0 0; font-size: 14px; color: var(--r07-ink-2); display: flex; align-items: center; gap: 6px; }
+.r07-skeleton--line i { height: 40px; }
+.r07-empty__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 4px; }
+
 /* ---- Легенда ---- */
 .r07-legend { padding: 12px; border: 1px solid var(--r07-line); border-radius: 14px; background: #fff; }
 .r07-legend__title { margin: 0 0 8px; font-size: 16px; font-weight: 700; }
@@ -157,7 +186,7 @@
 .r07-skeleton i { display: block; height: 52px; border-radius: 12px; background: linear-gradient(90deg, #eef2ea, #f8faf6, #eef2ea); background-size: 200% 100%; animation: r07-shimmer 1.2s linear infinite; }
 @keyframes r07-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .r07-empty, .r07-error { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 20px 12px; text-align: center; border-radius: 14px; }
-.r07-empty .r07-ic { color: var(--r07-ok-ink); }
+.r07-empty .r07-ic { color: var(--r07-ink-2); }
 .r07-error { background: #fbeceb; }
 .r07-error .r07-ic { color: var(--r07-danger-ink); }
 .r07-empty__title, .r07-error__title { margin: 0; font-size: 18px; font-weight: 700; }
@@ -179,6 +208,14 @@
   transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .r07-badge[hidden] { display: none; }
+/* Зона нажатия значка ≥ 48 px (видимый значок 34–38 px). Маркер MapLibre уже position:absolute. */
+.r07-badge::after { content: ""; position: absolute; inset: -6px -3px; }
+/* Маленькая плашка с числом — когда полному значку тесно (№2): число остаётся, кружок прячется */
+.r07-badge--mini .r07-badge__dot { display: none; }
+.r07-badge--mini .r07-badge__count { margin-left: 0; height: 22px; line-height: 20px; padding: 0 7px 0 6px; border-radius: 11px;
+  border-left: 5px solid var(--r07-c, #999); font-size: 14px; }
+.r07-badge--mini::after { inset: -13px -7px; }
+.r07-badge--mini .r07-badge__name { display: none; }
 .r07-badge:hover, .r07-badge--selected { transform: scale(1.12); z-index: 3; }
 .r07-badge__dot {
   display: grid; place-items: center; width: 34px; height: 34px; border: 2px solid #fff; border-radius: 50%;
