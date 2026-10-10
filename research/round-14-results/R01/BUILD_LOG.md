@@ -70,3 +70,15 @@ NOT_RUN и пропуски (все с причиной):
 Известные ограничения I0: все опубликованные объекты — синтетика (демо); реальных подтверждённых записей 0;
 классификатор v1 (R08) обучен только на синтетике и включается флагом; интерфейс — раунда 13 (шапка Birge,
 ҚАЗ/РУС и API v2 — следующие шаги R01).
+
+## После I0: API v2, шапка Birge, поставка R11
+
+| Шаг | Коммит | Что | Проверки |
+|---|---|---|---|
+| база пакета | be2cb4e | merge claude/round-14-package @ 7ff639a (правила веток, ui-kit/i18n R11 v1 608e367) | — |
+| API v2 | caf2cff | /api/civic/v2/* (14 маршрутов + /modules), 503 module_not_ready | pytest tests: 1446 passed / 11 skipped / 0 failed; test_r01_api_v2.py 61/61 |
+| шапка Birge | d27116c | birge.js/birge.css, старые режимы из меню, вид «Житель» | r14_shell.cjs 28/0; полный run_checks — см. ниже |
+| R11 | (этот коммит) | пути web/civic/ui-kit/, web/civic/i18n/, tests/civic/R11/ с claude/r14-R11 @ ba8758b (DELIVERY R11: code = голова ветки) | pytest tests/civic/R11 12/12; r14_shell.cjs 28/0; шрифт font/woff2 200, icons.svg image/svg+xml |
+
+Код R11 прочитан: innerHTML только со статической разметкой (тексты — textContent), сети нет, i18n_tools пишет словари
+только по явной команде. Удалений относительно 608e367 нет.

@@ -1,0 +1,11 @@
+Шрифт Inter 4.0 (The Inter Project Authors, https://github.com/rsms/inter), лицензия SIL OFL 1.1 — текст в OFL.txt.
+Источник файлов: пакет Debian fonts-inter 4.0+ds-1 (/usr/share/fonts/opentype/inter/Inter-{Regular,SemiBold,Bold}.otf)
+в облачной сессии R11, 2026-10-11. Изменение (Modified Version по OFL): подмножество символов и формат woff2, имя
+не меняли; в CSS подключается как семейство «Birge Sans» (web/civic/ui-kit/tokens.css).
+
+Состав: латиница, кириллица целиком (U+0400–052F, в т. ч. казахские Ә Ғ Қ Ң Ө Ұ Ү Һ І), пунктуация U+2000–206F,
+₸ ₽ № − ✓ ▲ ▼ ● … и стрелки. Проверено: все 9 казахских букв присутствуют в исходном Inter-Regular.otf (fc-list :charset).
+
+Команда (fonttools 4.66.1 + brotli):
+pyftsubset Inter-<W>.otf --unicodes="U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0400-04FF,U+0500-052F,U+2000-206F,U+20B8,U+20BD,U+2116,U+2190-2199,U+2212,U+2215,U+25B2,U+25BC,U+25CF,U+2713,U+2026" \
+  --layout-features='kern,liga,calt,tnum,case,ccmp,locl,mark,mkmk' --flavor=woff2 --output-file=Inter-<W>.woff2

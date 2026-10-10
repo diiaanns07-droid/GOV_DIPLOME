@@ -141,7 +141,7 @@
     const menuButton = el("button", { type: "button", class: "bk-btn birge-menu-btn", "aria-expanded": "false",
       "aria-controls": "birge-menu" });
     menuButton.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/civic/ui-kit/icons.svg#i-menu"></use></svg><span></span>';
-    header = el("div", { id: "birge-header", class: "birge-header" }, [
+    header = el("div", { id: "birge-header", class: "birge-header bk-app" }, [
       menuButton,
       el("div", { id: "birge-menu", class: "birge-menu" }, [
         el("div", { class: "bk-seg birge-nav", role: "group", "data-group": "section" },
@@ -223,7 +223,7 @@
   let day = null;
   function buildDay() {
     if (document.getElementById("birge-day")) return;
-    day = el("section", { id: "birge-day", class: "birge-day", hidden: true, "aria-labelledby": "birge-day-title" }, [
+    day = el("section", { id: "birge-day", class: "birge-day bk-app", hidden: true, "aria-labelledby": "birge-day-title" }, [
       el("h1", { id: "birge-day-title", class: "birge-day-title" }),
       el("div", { id: "birge-day-root", class: "birge-day-root" }),
     ]);

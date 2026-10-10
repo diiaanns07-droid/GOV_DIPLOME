@@ -4,7 +4,7 @@
 /* Старые режимы («Школы», «Учебная модель») убраны из главного меню: в режиме карты переключатель не виден.
  * Код и ссылки #school / #training остаются; оттуда кнопка «Город» возвращает на карту. */
 .civic-mode #civic-modes { display: none !important; }
-#birge-header { display: none; }
+#birge-header { display: none; background: transparent; }
 .civic-mode #birge-header { display: flex; align-items: center; gap: var(--s-3, 12px); }
 .civic-mode .top-actions > #birge-header { display: flex !important; } /* сильнее правила shell.css для старых кнопок */
 #birge-header .bk-seg > button { min-width: 48px; white-space: nowrap; }

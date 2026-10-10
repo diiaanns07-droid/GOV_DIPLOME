@@ -67,14 +67,19 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "map/civic-map-core.js", "map/civic-map.js", "map/civic-map.css",  # R03 @f73745c
                 "editor/editor-core.js", "editor/editor.js", "editor/editor.css",  # R04 @da46e1c
                 "assistant/assistant.js", "assistant/assistant.css",  # R09 @f895c30 (demo.html not served)
-                # Раунд 14: шапка Birge (R01) и ui-kit / переводы R11 (база пакета 608e367).
+                # Раунд 14: шапка Birge (R01); ui-kit, шрифт Inter и переводы R11 (поставка claude/r14-R11 @ ba8758b).
                 "shell/birge.js", "shell/birge.css",
-                "ui-kit/tokens.css", "ui-kit/components.css", "ui-kit/icons.svg",
+                "ui-kit/tokens.css", "ui-kit/components.css", "ui-kit/ui-kit.js", "ui-kit/icons.svg",
+                "ui-kit/categories_v2.json", "ui-kit/index.html",
+                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-SemiBold.woff2", "ui-kit/fonts/Inter-Bold.woff2",
+                "ui-kit/fonts/OFL.txt",
                 "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json")
+# Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+              ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
+              ".html": "text/html; charset=utf-8", ".woff2": "font/woff2"}
 for _asset in CIVIC_ASSETS:
-    _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json",
-             ".svg": "image/svg+xml"}.get(Path(_asset).suffix, "text/plain")
-    ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
+    ASSETS["/civic/" + _asset] = ("civic/" + _asset, CIVIC_MIME.get(Path(_asset).suffix, "text/plain; charset=utf-8"))
 
 
 # ---------------------------------------------------------------------------
