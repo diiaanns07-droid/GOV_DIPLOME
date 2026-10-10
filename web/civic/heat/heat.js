@@ -456,11 +456,6 @@
         draw(reason === "event");
         render();
         afterLoad();
-        // Телефон: подсказка «приблизьте карту» — один раз тостом, а не строкой в легенде поверх карты (R11, ночь 4, п. 1)
-        if (S.mode === "districts" && !S.zoomHintShown && window.matchMedia && window.matchMedia("(max-width: 760px)").matches) {
-          S.zoomHintShown = true;
-          toast(t("heat.zoom_hint"));
-        }
       } catch (err) {
         if (seq !== S.reqSeq || S.destroyed) return;
         S.status = err.status === 503 ? "not_ready" : "error";
@@ -1020,6 +1015,9 @@
       const top = S.data && S.data.items.find((x) => x.state === "active" && x.count > 0);
       const sub = top ? t("heat.top_line", { target: label(top.target), people: t("heat.people_short", { count: top.count }) }) : t("heat.subtitle");
       parts.push('<header class="r07-head"><div><h2 class="r07-h">' + esc(t("heat.title")) + '</h2><p class="r07-sub">' + esc(sub) + "</p></div></header>");
+      // Телефон, районы: «Приблизьте карту…» — строкой в шторке, на текущем языке (не тостом над главной кнопкой и не
+      // строкой легенды поверх карты: R11 ночь 4 п. 1, R10 B-038). На ноутбуке та же подсказка — в легенде на карте.
+      if (S.mode === "districts" && S.data) parts.push('<p class="r07-zoomhint">' + svgIcon("pin", 16) + esc(t("heat.zoom_hint")) + "</p>");
       const cardItem = S.selected && findItem(S.selected);
       // В карточке цели фильтры не нужны: так кнопки действий видны без прокрутки. Пока данных нет (загрузка,
       // нет связи) — тоже: на телефоне в шторке сразу видно скелетон или «Нет связи · Повторить», а не фильтры.

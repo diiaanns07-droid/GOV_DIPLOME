@@ -154,6 +154,8 @@
   border: 1px solid var(--r07-line); border-radius: 14px; background: #fffffff2; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812;
   font-size: 15px; pointer-events: auto; }
 .r07-maplegend[hidden] { display: none; }
+.r07-zoomhint { display: none; margin: 0; align-items: center; gap: 6px; font-size: 14px; color: var(--r07-ink-2); }
+@media (max-width: 760px) { .r07-zoomhint { display: flex; } }
 .r07-maplegend .r07-legend__title { margin: 0 0 6px; font-size: 15px; font-weight: 700; }
 .r07-maplegend ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; }
 .r07-maplegend li { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
