@@ -1,7 +1,7 @@
-# R10 · приёмка FINAL-candidate-0df9531 · сборка 0df9531
+# R10 · приёмка FINAL-candidate-8e67c65 · сборка 8e67c65
 
-Папка сборки: <worktree 0df9531>
-Когда: 2026-10-10T20:52:55.050Z · Node v22.22.0 · Python: python3
+Папка сборки: /home/user/n11
+Когда: 2026-10-10T21:35:10.265Z · Node v22.22.0 · Python: python3
 
 ## 1. Точность карты (CONTRACT §8)
 
@@ -10,7 +10,7 @@ PASS 29 · FAIL 0 · NOT_RUN 0 (pytest код 0)
 
 ## 2. Сервер сборки
 
-запущен на http://127.0.0.1:<порт>/; CIVIC_DEMO=1; база: init:0, seed-demo:0, seed-r14-demo:0; сотрудник: создан
+запущен на http://127.0.0.1:44581/; CIVIC_DEMO=1; база: init:0, seed-demo:0, seed-r14-demo:0; сотрудник: создан
 
 | Маршрут v2 | Роль | Статус |
 |---|---|---|
@@ -54,7 +54,7 @@ PASS 29 · FAIL 0 · NOT_RUN 0 (pytest код 0)
 
 ## 3. Сценарий демо (tests/e2e/demo_flow.cjs)
 
-PASS 144 · FAIL 0 · NOT_RUN 0 — подробно e2e/RESULT.md
+PASS 152 · FAIL 0 · NOT_RUN 0 — подробно e2e/RESULT.md
 
 | Шаг | PASS | FAIL | NOT_RUN |
 |---|---|---|---|
@@ -62,10 +62,10 @@ PASS 144 · FAIL 0 · NOT_RUN 0 — подробно e2e/RESULT.md
 | 0 | 33 | 0 | 0 |
 | 1 | 16 | 0 | 0 |
 | 2 | 17 | 0 | 0 |
-| 3 | 10 | 0 | 0 |
+| 3 | 14 | 0 | 0 |
 | 4 | 5 | 0 | 0 |
 | 5 | 34 | 0 | 0 |
-| 6 | 13 | 0 | 0 |
+| 6 | 17 | 0 | 0 |
 | E | 12 | 0 | 0 |
 
 ## 4. UX по экранам (tests/e2e/ux_screens.cjs)

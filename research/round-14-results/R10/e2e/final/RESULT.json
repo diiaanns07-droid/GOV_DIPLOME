@@ -1,8 +1,8 @@
 {
  "meta": {
-  "root": "<worktree 0df9531>",
-  "sha": "0df9531",
-  "base": "http://127.0.0.1:<порт>/",
+  "root": "/home/user/n11",
+  "sha": "8e67c65",
+  "base": "http://127.0.0.1:44581/",
   "seeds": [],
   "sizes": [
    "1366x768",
@@ -12,11 +12,11 @@
    "ru",
    "kk"
   ],
-  "when": "2026-10-10T21:02:57.389Z",
+  "when": "2026-10-10T21:46:16.076Z",
   "node": "v22.22.0"
  },
  "counts": {
-  "PASS": 144,
+  "PASS": 152,
   "FAIL": 0,
   "NOT_RUN": 0
  },
@@ -132,7 +132,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "c-2ea94ce1333ed719",
+    "id": "c-83a736b7766c4594",
     "st": "new"
    },
    "shot": null
@@ -146,7 +146,7 @@
     "status": 200,
     "n": 1,
     "top": {
-     "complaint_id": "c-2ea94ce1333ed719",
+     "complaint_id": "c-83a736b7766c4594",
      "score": 0.798,
      "target": {
       "id": "osm-node-13394597038",
@@ -157,7 +157,7 @@
      "metoo": 0,
      "people": 1,
      "category": "transport",
-     "created_at": "2026-10-11T01:53:32+05:00",
+     "created_at": "2026-10-11T02:35:50+05:00",
      "status": "new",
      "distance_m": 44.3,
      "same_target": false
@@ -268,7 +268,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "p-61a1d9093bd1",
+    "id": "p-c906af2a89c5",
     "st": "proposal"
    },
    "shot": null
@@ -310,7 +310,7 @@
     "item": {
      "level": "fixed",
      "weight": 0,
-     "fixed_until": "2026-10-18T01:53:33+05:00"
+     "fixed_until": "2026-10-18T02:35:51+05:00"
     }
    },
    "shot": null
@@ -520,6 +520,45 @@
   },
   {
    "layer": "UI 1366-ru",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "1 11 Двор у ул. Коксенгир Дворы и площадки · 11 че",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    },
+    {
+     "title": "2 8 Участок ул. Е-308 Снег и гололёд · 8 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    },
+    {
+     "title": "3 8 Двор ЖК «Амина» Дворы и площадки · 8 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "1366-ru-3-hot.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
    "step": "4",
    "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
    "status": "PASS",
@@ -622,6 +661,22 @@
     "label": true,
     "delClick": true,
     "deleted": true
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     683,
+     346
+    ],
+    "covered": null
    },
    "shot": null
   },
@@ -922,6 +977,45 @@
   },
   {
    "layer": "UI 1366-kk",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "1 11 Коксенгир көшесі маңындағы аула Аулалар мен а",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    },
+    {
+     "title": "2 8 Е-308 көшесінің бөлігі Қар және көктайғақ · 8 ",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    },
+    {
+     "title": "3 8 «Амина» ТК ауласы Аулалар мен алаңдар · 8 адам",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "1366-kk-3-hot.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
    "step": "4",
    "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
    "status": "PASS",
@@ -1035,6 +1129,22 @@
     "label": true,
     "delClick": true,
     "deleted": true
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     683,
+     346
+    ],
+    "covered": null
    },
    "shot": null
   },
@@ -1299,6 +1409,45 @@
   },
   {
    "layer": "UI 375-ru",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "1 11 Двор у ул. Коксенгир Дворы и площадки · 11 че",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    },
+    {
+     "title": "2 8 Участок ул. Е-308 Снег и гололёд · 8 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    },
+    {
+     "title": "3 8 Двор ЖК «Амина» Дворы и площадки · 8 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "375-ru-3-hot.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
    "step": "4",
    "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
    "status": "PASS",
@@ -1401,6 +1550,22 @@
     "label": true,
     "delClick": true,
     "deleted": true
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     188,
+     365
+    ],
+    "covered": null
    },
    "shot": null
   },
@@ -1678,6 +1843,45 @@
   },
   {
    "layer": "UI 375-kk",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "1 11 Коксенгир көшесі маңындағы аула Аулалар мен а",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    },
+    {
+     "title": "2 8 Е-308 көшесінің бөлігі Қар және көктайғақ · 8 ",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    },
+    {
+     "title": "3 8 «Амина» ТК ауласы Аулалар мен алаңдар · 8 адам",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "375-kk-3-hot.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
    "step": "4",
    "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
    "status": "PASS",
@@ -1791,6 +1995,22 @@
     "label": true,
     "delClick": true,
     "deleted": true
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     187,
+     365
+    ],
+    "covered": null
    },
    "shot": null
   },
