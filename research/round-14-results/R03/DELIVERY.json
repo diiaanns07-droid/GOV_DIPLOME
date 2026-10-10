@@ -149,5 +149,5 @@
   "translit": "ml/civic_classifier_v2/results/translit_to_cyrillic_probe_v2.json",
   "label_audit": "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.md (+ .json), llm_label_cleaning_effect.json"
  },
- "for_R01": "Взять ac0e954 (или новее) вместо d472baf: B-004, маркеры тестов (§9), гонка get_default. Проверено на 2b9e837 с 1f78f66 — 791 passed; после 1f78f66 менялись только инструменты анализа (translit, evaluate, analysis), рантайм predict/heuristic — нет."
+ "for_R01": "В R01 ef1ef44 уже R03 937f665 (B-004 исправлен, проверено: «машины стоят на газоне во дворе» → parking) — для показа достаточно. Если обновлять перед FINAL — последний SHA ветки: две мелочи predict.py (гонка get_default, запасной torch при отсутствии onnxruntime), в связке R04 не проявляются; остальное — анализ, отчёты, тесты. Проверено: ef1ef44 + пути R03 @ c1654aa — 794 passed."
 }
