@@ -40,13 +40,25 @@ STATUS_TO_STAGE = {"planned": "planned", "in_progress": "construction", "complet
 STALE_DAYS = 14
 MAX_REASON = 500
 MAX_OBJECTS = 1000  # публичный список: Астана — сотни объектов, не десятки тысяч
-# Казахские названия СИНТЕТИЧЕСКИХ демо-записей (seed-demo R02 и demo_package.json R06; просьба R08, день 3).
+# Казахские названия СИНТЕТИЧЕСКИХ демо-записей (просьба R08, день 3; R10 B-018). Два набора:
+#  - demo_package.json R06 (seed-demo без --package);
+#  - data/civic/astana/demo_synthetic.json (seed-demo --package …, так засевает сборка R01 при CIVIC_DEMO=1;
+#    данные координатора — их названия «Демо: …» не меняем, перевод даём здесь, без слова «Демо»).
 # Настоящие записи civic-v1 одноязычные: у них title_kk = None, интерфейс показывает title с lang="ru".
-# Черновик R06 — на вычитку R11.
+# Черновик R06 — на вычитку R11 (KK_REVIEW).
 DEMO_TITLES_KK = {
     "demo-r02-sidewalk-delay": "Тротуарды жөндеу",
     "demo-r02-yard-landscaping": "Ауланы абаттандыру",
     "demo-r02-event-no-geometry": "Нақты орны көрсетілмеген қалалық іс-шара",
+    "demo-astana-archived": "Мұрағаттағы іс-шара",
+    "demo-astana-construction-unknown": "Мәртебесі белгісіз құрылыс",
+    "demo-astana-draft-hidden": "Тұрғындарға көрінбейтін жоба нұсқасы",
+    "demo-astana-event-weekend": "Демалыс күндердегі қалалық іс-шара",
+    "demo-astana-landscaping-yard": "Ауланы абаттандыру (шартты учаске)",
+    "demo-astana-list-only": "Орны белгісіз жұмыстар (тек тізімде)",
+    "demo-astana-roadworks-cancelled": "Күші жойылған жол жабу",
+    "demo-astana-roadworks-completed": "Аяқталған тротуар жөндеуі",
+    "demo-astana-roadworks-delay": "Мерзімі ауысқан жол учаскесін жөндеу",
 }
 
 

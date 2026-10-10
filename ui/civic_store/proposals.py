@@ -49,6 +49,9 @@ TARGET_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")
 SERVER_KEYS = frozenset({"id", "votes_up", "votes_down", "my_vote", "voting_open", "created_at", "updated_at",
                          "decided_at", "district", "proposal", "item"})
 VOTES_PER_MINUTE = 30  # с одного адреса; защита сервера от залипшей кнопки и скриптов
+# R15 S08: новых голосов за ОДНО предложение с одного адреса в сутки (семье и офису хватает; скрипт с новыми
+# device_id упирается в 20, а не в 1800 в час). Смена своего голоса не считается. Полное решение — вход eGov/SMS.
+VOTES_PER_TARGET_PER_DAY = 20
 
 
 class VotingClosed(Conflict):
@@ -76,12 +79,22 @@ class RateLimiter:
                 self._hits = {k: v for k, v in self._hits.items() if v and now - v[-1] <= self.window}
             return True
 
+    def retry_after(self, key: str) -> int:
+        """Через сколько секунд освободится место в окне (для заголовка Retry-After)."""
+        now = time.monotonic()
+        with self._lock:
+            hits = self._hits.get(key)
+            if not hits or len(hits) < self.limit:
+                return 1
+            return max(1, int(self.window - (now - hits[0])) + 1)
+
 
 class ProposalRepository:
     def __init__(self, database, clock):
         self.db = database
         self.clock = clock
         self.limiter = RateLimiter(VOTES_PER_MINUTE)
+        self.target_limiter = RateLimiter(VOTES_PER_TARGET_PER_DAY, window=24 * 3600.0)
         self._salt = None
 
     # --- служебное -----------------------------------------------------------------------
@@ -319,6 +332,11 @@ class ProposalRepository:
                                    (proposal_id, device)).fetchone()
             changed = current is None or current["value"] != value
             if current is None:
+                target_key = f"{client_key}|{proposal_id}"
+                if not self.target_limiter.allow(target_key):
+                    raise _VoteRateLimited(
+                        "С этого адреса уже много голосов за этот проект. Повторите завтра.",
+                        self.target_limiter.retry_after(target_key))
                 conn.execute("""INSERT INTO civic_votes(proposal_id, device_hash, value, created_at, updated_at)
                                 VALUES (?, ?, ?, ?, ?)""", (proposal_id, device, value, now, now))
             elif changed:
@@ -360,7 +378,9 @@ class ProposalRepository:
 
 
 class _VoteRateLimited(Exception):
-    retry_after = 60
+    def __init__(self, message="Слишком много голосов подряд. Повторите через минуту.", retry_after=60):
+        super().__init__(message)
+        self.message, self.retry_after = message, retry_after
 
 
 __all__ = ["DECISIONS", "DEFAULT_TITLES", "DISTRICT_NAMES", "KINDS", "ProposalRepository", "STATUSES",

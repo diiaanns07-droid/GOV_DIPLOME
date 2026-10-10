@@ -153,3 +153,36 @@ def test_real_r08_summary_uses_r06_functions(staff, bound):
     norm = [sources.normalize_object(o, __import__("datetime").datetime(2026, 10, 11, 12, tzinfo=sources.ASTANA_TZ)) for o in rows]
     assert norm[0]["delay_days"] == 24 and norm[0]["title_ru"] and norm[0]["has_place"] is True
     assert proposals("nura", date(2026, 10, 11))[0]["status"] == "proposal"
+
+
+# --- R15 S08: накрутка голосов новыми device_id с одного адреса --------------------------------
+
+def test_votes_per_target_per_address_are_limited(staff):
+    from ui.civic_store.proposals import VOTES_PER_TARGET_PER_DAY
+    p = staff.create_proposal()
+    other = staff.create_proposal()
+    ip = context(client_ip="203.0.113.7")
+    for n in range(VOTES_PER_TARGET_PER_DAY):
+        assert call(staff.v2, "POST", f"/proposals/{p['id']}/vote", {"value": 1, "device_id": device(n)}, ctx=ip)["status"] == 200
+    extra = call(staff.v2, "POST", f"/proposals/{p['id']}/vote", {"value": 1, "device_id": device(99)}, ctx=ip)
+    assert extra["status"] == 429 and extra["body"]["error"]["code"] == "rate_limited"
+    assert int(extra["headers"]["Retry-After"]) > 3600  # окно — сутки, а не минута
+    # Свой голос можно поменять (не новый голос), другое предложение и другой адрес — не задеты.
+    again = call(staff.v2, "POST", f"/proposals/{p['id']}/vote", {"value": -1, "device_id": device(3)}, ctx=ip)
+    assert again["status"] == 200 and again["body"]["data"]["changed"] is True
+    assert call(staff.v2, "POST", f"/proposals/{other['id']}/vote", {"value": 1, "device_id": device(99)}, ctx=ip)["status"] == 200
+    assert call(staff.v2, "POST", f"/proposals/{p['id']}/vote", {"value": 1, "device_id": device(99)},
+                ctx=context(client_ip="198.51.100.4"))["status"] == 200
+    tally = call(staff.v2, "GET", f"/proposals/{p['id']}")["body"]["data"]["item"]
+    assert tally["votes_up"] + tally["votes_down"] == VOTES_PER_TARGET_PER_DAY + 1
+
+
+def test_module_vote_limit_reaches_gateway_as_429(staff, bound):
+    from ui.civic_store.proposals import VOTES_PER_TARGET_PER_DAY
+    p = staff.create_proposal()
+    ctx = {"client_ip": "203.0.113.9"}
+    for n in range(VOTES_PER_TARGET_PER_DAY):
+        v2mod.vote_proposal(p["id"], 1, device(n), context=ctx)
+    with pytest.raises(v2mod.V2Error) as exc:
+        v2mod.vote_proposal(p["id"], 1, device(77), context=ctx)
+    assert exc.value.status == 429 and exc.value.retry_after > 3600

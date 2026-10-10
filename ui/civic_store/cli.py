@@ -65,8 +65,32 @@ def _read_password(args, username: str) -> str:
     return password
 
 
+_KK_PROBE = "Ошибка әғқңөұүһі"  # русские и казахские буквы; казахских нет в Windows CP1251/CP866
+
+
+def _ascii_json(stream=None) -> bool:
+    """True, если поток не напечатает казахские буквы (консоль Windows CP1251, LOCAL_B2): тогда JSON
+    печатается с \\u-экранированием — остаётся валидным и не падает с UnicodeEncodeError после записи в базу."""
+    encoding = getattr(stream or sys.stdout, "encoding", None) or "ascii"
+    try:
+        _KK_PROBE.encode(encoding)
+        return False
+    except (UnicodeEncodeError, LookupError):
+        return True
+
+
+def _safe_streams() -> None:
+    """Обычный текст (сообщения, ошибки) в такой консоли: недоступные буквы как \\uXXXX вместо падения."""
+    for stream in (sys.stdout, sys.stderr):
+        if _ascii_json(stream) and hasattr(stream, "reconfigure"):
+            try:
+                stream.reconfigure(errors="backslashreplace")
+            except (ValueError, OSError):
+                pass
+
+
 def _print(value) -> None:
-    print(json.dumps(value, ensure_ascii=False, indent=2))
+    print(json.dumps(value, ensure_ascii=_ascii_json(), indent=2))
 
 
 def cmd_init(args, service):
@@ -413,17 +437,18 @@ def cmd_export_audit(args, service):
                     "diff": json.loads(row["diff_json"]), "reason": row["reason"],
                     "actor_kind": row["actor_kind"], "actor_label": row["actor_label"],
                     "public_actor_label": row["public_actor_label"], "is_public": bool(row["is_public"]),
-                }, ensure_ascii=False) + "\n")
+                }, ensure_ascii=False if args.out else _ascii_json(out)) + "\n")
     finally:
         if args.out:
             out.close()
 
 
 def cmd_export_public(args, service):
-    text = json.dumps(export_public(service.objects), ensure_ascii=False, indent=1) + "\n"
+    data = export_public(service.objects)
     if not args.out:
-        sys.stdout.write(text)
+        sys.stdout.write(json.dumps(data, ensure_ascii=_ascii_json(), indent=1) + "\n")
         return
+    text = json.dumps(data, ensure_ascii=False, indent=1) + "\n"
     try:
         # Данные публичные, но существующий файл не перезаписываем молча.
         with open(args.out, "x", encoding="utf-8") as out:
@@ -501,6 +526,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv=None) -> int:
+    _safe_streams()
     args = build_parser().parse_args(argv)
     try:
         if getattr(args, "no_service", False):

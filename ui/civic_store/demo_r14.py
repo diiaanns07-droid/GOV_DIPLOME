@@ -3,8 +3,11 @@
     python -m ui.civic_store --db .runtime/civic.sqlite3 seed-r14-demo
 
 Всё, что создаёт эта команда, — synthetic/demo:
-  - этапы ставятся только объектам с evidence_type=synthetic (встроенный demo_package.json);
-    у объекта, этап которого уже задал сотрудник (source=editor), ничего не меняется;
+  - этапы ставятся только объектам с evidence_type=synthetic (встроенный demo_package.json или
+    data/civic/astana/demo_synthetic.json сборки R01) — по статусу записи (demo_stage): идущие работы отстают,
+    плановые — по графику или с затянутой закупкой, завершённые — «Работает»; отменённым, со статусом
+    unknown и мероприятиям этап не ставится; у объекта, этап которого уже задал сотрудник (source=editor),
+    ничего не меняется;
   - предложения помечены demo=true (интерфейс показывает «Пример»), голоса у них — тоже демо
     (устройства demo-seed-…); у настоящих предложений голоса не создаются никогда.
 Команда идемпотентна: повторный запуск ничего не дублирует.
@@ -54,14 +57,34 @@ DEMO_PROPOSALS = (
     ("lighting", OMAROVA_SEGMENT, "Освещение улицы Ильяса Омарова", "Ілияс Омаров көшесін жарықтандыру", 87, 3,
      "osm-w1482578141-0…8 (пешеходный граф OSM)"),
 )
-# Этапы для синтетических объектов по кругу. Сроки — от сегодняшнего дня, чтобы демо всегда
-# показывало одно и то же: первый объект отстаёт на 23 дня (как в макете UX_SPEC §6.2).
-DEMO_STAGES = (
-    ("procurement", -10, 13),   # план 10 дней назад, прогноз через 13 → «Отстаёт на 23 дня»
-    ("design", 60, None),       # идёт по графику
-    ("construction", 20, 26),   # прогноз на 6 дней позже плана
-    ("acceptance", 3, None),
+# Этапы синтетических объектов — по их статусу и виду, чтобы карточка не спорила со своим названием
+# (свой проход по UX_BRIEF: «Ремонт со сдвигом срока» шёл «по графику», а «Завершённый ремонт» — «отставал»).
+# Сроки — от сегодняшнего дня: демо показывает одно и то же в любой день показа.
+IN_PROGRESS_STAGE = ("construction", -10, 13)  # план 10 дней назад, прогноз через 13 → «Отстаёт на 23 дня» (UX_SPEC §6.2)
+PLANNED_STAGES = (
+    ("design", 60, None),        # идёт по графику
+    ("procurement", 20, 26),     # закупка затянулась: прогноз на 6 дней позже плана
 )
+# Без демо-этапа (этап выводится из статуса, как после миграции 6): отменённые и с неизвестным статусом —
+# честно «Этап работ не указан»; мероприятия — у них нет этапов стройки.
+SKIP_STATUSES = ("cancelled", "unknown")
+SKIP_KINDS = ("event",)
+
+
+def demo_stage(status, kind, planned_index, today, actual_end=None):
+    """(stage, planned_end, forecast_end) для синтетического объекта или None — этап не ставим."""
+    if status in SKIP_STATUSES or kind in SKIP_KINDS:
+        return None
+    if status == "completed":
+        done = actual_end or (today - timedelta(days=30)).isoformat()
+        return "operating", done, None
+    if status == "in_progress":
+        stage, plan_shift, forecast_shift = IN_PROGRESS_STAGE
+    else:
+        stage, plan_shift, forecast_shift = PLANNED_STAGES[planned_index % len(PLANNED_STAGES)]
+    planned = (today + timedelta(days=plan_shift)).isoformat()
+    forecast = (today + timedelta(days=forecast_shift)).isoformat() if forecast_shift is not None else None
+    return stage, planned, forecast
 
 
 def seed_r14_demo(service) -> dict:
@@ -71,18 +94,27 @@ def seed_r14_demo(service) -> dict:
     report = {"stages": [], "proposals": [], "note": "synthetic/demo: не реальные работы и не реальные голоса"}
     with service.db.read() as conn:
         rows = conn.execute(
-            """SELECT o.id, s.source FROM civic_public_objects p JOIN civic_objects o ON o.id = p.id
+            """SELECT o.id, s.source, json_extract(o.data_json, '$.status') AS status,
+                      json_extract(o.data_json, '$.kind') AS kind,
+                      json_extract(o.data_json, '$.schedule.actual_end') AS actual_end
+                 FROM civic_public_objects p JOIN civic_objects o ON o.id = p.id
                LEFT JOIN civic_object_stages s ON s.object_id = o.id
                WHERE json_extract(o.data_json, '$.evidence_type') = 'synthetic'
                ORDER BY json_extract(o.data_json, '$.geometry') IS NULL, o.id""").fetchall()
         have_demo = {r["kind"] for r in conn.execute("SELECT kind FROM civic_proposals WHERE demo = 1")}
-    for index, row in enumerate(rows):
+    planned_index = 0
+    for row in rows:
         if row["source"] in ("editor", "demo"):
             report["stages"].append({"object_id": row["id"], "action": "kept", "source": row["source"]})
             continue
-        stage, plan_shift, forecast_shift = DEMO_STAGES[index % len(DEMO_STAGES)]
-        planned = (today + timedelta(days=plan_shift)).isoformat()
-        forecast = (today + timedelta(days=forecast_shift)).isoformat() if forecast_shift is not None else None
+        chosen = demo_stage(row["status"], row["kind"], planned_index, today, row["actual_end"])
+        if chosen is None:
+            report["stages"].append({"object_id": row["id"], "action": "skipped", "status": row["status"],
+                                     "kind": row["kind"]})
+            continue
+        if row["status"] not in ("completed", "in_progress"):
+            planned_index += 1
+        stage, planned, forecast = chosen
         stages.seed_demo(row["id"], stage=stage, planned_end=planned, forecast_end=forecast)
         report["stages"].append({"object_id": row["id"], "action": "set", "stage": stage,
                                  "planned_end": planned, "forecast_end": forecast})

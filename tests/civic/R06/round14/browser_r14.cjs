@@ -16,7 +16,10 @@ const path = require("path");
 const { chromium } = require("playwright");
 
 const stand = JSON.parse(fs.readFileSync(process.argv[2], "utf8").trim().split("\n")[0]);
-const shots = process.argv[3] || null;
+const shots = process.argv[3] && !process.argv[3].startsWith("--") ? process.argv[3] : null;
+// --build-set: стенд засеян набором сборки R01 (serve_r14.py --package data/civic/astana/demo_synthetic.json) без
+// сдвига часов — «давно не обновлялось» показать нечем, эти проверки NOT_RUN (а не PASS и не FAIL).
+const buildSet = process.argv.includes("--build-set");
 const URL = stand.url;
 const results = [];
 
@@ -75,17 +78,19 @@ async function layoutChecks(page, label, warnings) {
   check(label + ": кнопки «За/Против» ≥ 48 px", m.minVote >= 48, "min=" + m.minVote);
   check(label + ": полоса 6 этапов у каждого объекта", m.stages > 0 && m.stages % 6 === 0, "li=" + m.stages);
   check(label + ": значок «Отстаёт на N…» (цвет + слова)", m.late.length > 0 && /\d/.test(m.late[0]), m.late[0] || "");
-  check(label + ": «давно не обновлялось» видно", m.stale.length > 0, String(m.stale.length));
+  if (buildSet) console.log("NOT_RUN " + label + ": «давно не обновлялось» — набор сборки без сдвига часов");
+  else check(label + ": «давно не обновлялось» видно", m.stale.length > 0, String(m.stale.length));
   check(label + ": п.15 — в названиях нет «Демо»/«синтетика»", m.techTitles.length === 0, m.techTitles.join(" | "));
   check(label + ": п.17 — «Отстают» только с «Отстаёт на…», «Давно не обновлялись» без него, без повторов",
-        m.lateCardsWithoutWarn === 0 && m.staleCardsWithWarn === 0 && m.staleGroup > 0 && m.dup === 0,
+        m.lateCardsWithoutWarn === 0 && m.staleCardsWithWarn === 0 && (buildSet || m.staleGroup > 0) && m.dup === 0,
         JSON.stringify({ lateNoWarn: m.lateCardsWithoutWarn, staleWarn: m.staleCardsWithWarn, stale: m.staleGroup, dup: m.dup }));
   if (m.htmlLang === "kk") {
     check(label + ": п.19 — kk-название сквера без «шағын аудандағы»",
           m.titles.indexOf("Ілияс Омаров көшесі маңындағы гүлзар") >= 0 && !m.titles.some((t) => /шағын аудандағы гүлзар/.test(t)), m.titles.join(" | "));
     // Просьба R08 (день 3): у демо-объектов казахское название, lang="kk".
+    // Набор R06 (demo_package) или сборки R01 (demo_synthetic.json, --package): у всех демо-объектов есть title_kk.
     check(label + ": kk-названия демо-объектов (title_kk, lang=kk)",
-          m.objectTitles.length > 0 && m.objectTitles.every((t) => t.indexOf("kk:") === 0) && m.objectTitles.indexOf("kk:Тротуарды жөндеу") >= 0,
+          m.objectTitles.length > 0 && m.objectTitles.every((t) => t.indexOf("kk:") === 0),
           m.objectTitles.join(" | "));
   } else {
     check(label + ": ru-названия объектов (lang=ru)", m.objectTitles.length > 0 && m.objectTitles.every((t) => t.indexOf("ru:") === 0),

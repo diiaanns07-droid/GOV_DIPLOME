@@ -5,6 +5,8 @@
 - База — временный файл вне репозитория; при запуске: seed-demo + seed-r14-demo (всё synthetic/demo).
 - --age-days N: демо-данные засеваются «N дней назад» (часы сдвинуты), чтобы на стенде было видно
   «давно не обновлялось». Сам сервер работает по настоящим часам.
+- --package FILE: демо-срез для seed-demo вместо встроенного demo_package.json — например
+  data/civic/astana/demo_synthetic.json, как засевает сборка R01 при CIVIC_DEMO=1.
 - --kit-dir: папка, в которой лежат web/civic/ui-kit и web/civic/i18n другой ветки (например, свежая
   поставка R11, выгруженная git archive). Без неё берутся файлы из этого рабочего дерева.
 - Создаётся сотрудник akimat-demo со случайным паролем; логин и пароль печатаются в stdout одной
@@ -39,10 +41,10 @@ MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-
         ".html": "text/html; charset=utf-8", ".woff2": "font/woff2", ".png": "image/png"}
 
 
-def build(db_path: Path, age_days: int):
+def build(db_path: Path, age_days: int, package: Path | None = None):
     shift = timedelta(days=age_days)
     seeding = CivicService(db_path, clock=lambda: datetime.now(timezone.utc) - shift)
-    seed_demo(seeding, load_package(DEMO_PACKAGE))
+    seed_demo(seeding, load_package(package or DEMO_PACKAGE))
     seed_r14_demo(seeding)
     service = CivicService(db_path)
     password = "Demo-" + secrets.token_urlsafe(12)
@@ -127,9 +129,10 @@ def main(argv=None):
     parser.add_argument("--port", type=int, default=8616)
     parser.add_argument("--kit-dir", help="корень с web/civic/ui-kit и web/civic/i18n (другая ветка)")
     parser.add_argument("--age-days", type=int, default=0)
+    parser.add_argument("--package", help="демо-срез для seed-demo (по умолчанию встроенный demo_package.json)")
     args = parser.parse_args(argv)
     tmp = Path(tempfile.mkdtemp(prefix="r06-stand-"))
-    service, v2, password = build(tmp / "civic.sqlite3", args.age_days)
+    service, v2, password = build(tmp / "civic.sqlite3", args.age_days, Path(args.package) if args.package else None)
     kit = Path(args.kit_dir).resolve() / "web" if args.kit_dir else None
     server = ThreadingHTTPServer(("127.0.0.1", args.port),
                                  make_handler(service, v2, REPO / "web", kit, args.port))
