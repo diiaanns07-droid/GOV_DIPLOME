@@ -4,7 +4,7 @@
   "size": "desktop",
   "query": "?lang=ru&role=akimat&view=nura",
   "problems": [],
-  "badges": 40,
+  "badges": 21,
   "primary": [],
   "extra": {}
  },
@@ -13,7 +13,7 @@
   "size": "phone",
   "query": "?lang=ru&role=akimat&view=nura",
   "problems": [],
-  "badges": 27,
+  "badges": 13,
   "primary": [],
   "extra": {}
  },
@@ -22,7 +22,7 @@
   "size": "desktop",
   "query": "?lang=ru&view=nura",
   "problems": [],
-  "badges": 52,
+  "badges": 6,
   "primary": [
    {
     "t": "Отметить исправленным",
@@ -36,7 +36,7 @@
   "size": "phone",
   "query": "?lang=ru&view=nura&sheet=full",
   "problems": [],
-  "badges": 53,
+  "badges": 1,
   "primary": [
    {
     "t": "Отметить исправленным",
@@ -50,7 +50,7 @@
   "size": "phone",
   "query": "?lang=ru&role=resident&view=nura&sheet=full",
   "problems": [],
-  "badges": 53,
+  "badges": 1,
   "primary": [
    {
     "t": "Я тоже",
@@ -64,7 +64,7 @@
   "size": "desktop",
   "query": "?lang=ru&role=resident&view=nura",
   "problems": [],
-  "badges": 53,
+  "badges": 7,
   "primary": [
    {
     "t": "Я тоже",
@@ -124,7 +124,7 @@
   "size": "desktop",
   "query": "?lang=kk&role=akimat&view=nura",
   "problems": [],
-  "badges": 40,
+  "badges": 21,
   "primary": [],
   "extra": {}
  },
@@ -133,7 +133,7 @@
   "size": "phone",
   "query": "?lang=kk&role=akimat&view=nura",
   "problems": [],
-  "badges": 27,
+  "badges": 13,
   "primary": [],
   "extra": {}
  },
@@ -142,7 +142,7 @@
   "size": "desktop",
   "query": "?lang=kk&view=nura",
   "problems": [],
-  "badges": 53,
+  "badges": 7,
   "primary": [
    {
     "t": "Түзетілді деп белгілеу",
@@ -156,7 +156,7 @@
   "size": "phone",
   "query": "?lang=kk&view=nura&sheet=full",
   "problems": [],
-  "badges": 53,
+  "badges": 1,
   "primary": [
    {
     "t": "Түзетілді деп белгілеу",
@@ -170,7 +170,7 @@
   "size": "phone",
   "query": "?lang=kk&role=resident&view=nura&sheet=full",
   "problems": [],
-  "badges": 53,
+  "badges": 1,
   "primary": [
    {
     "t": "Мен де",
@@ -184,7 +184,7 @@
   "size": "desktop",
   "query": "?lang=kk&role=resident&view=nura",
   "problems": [],
-  "badges": 53,
+  "badges": 7,
   "primary": [
    {
     "t": "Мен де",
@@ -244,7 +244,7 @@
   "size": "desktop",
   "query": "?lang=ru&view=nura",
   "problems": [],
-  "badges": 52,
+  "badges": 5,
   "primary": [],
   "extra": {}
  },
@@ -253,7 +253,7 @@
   "size": "desktop",
   "query": "?lang=kk&view=nura",
   "problems": [],
-  "badges": 52,
+  "badges": 5,
   "primary": [],
   "extra": {}
  },
@@ -262,7 +262,7 @@
   "size": "desktop",
   "query": "?lang=ru&view=city&sheet=full#target=area:yard-1071933339&days=7",
   "problems": [],
-  "badges": 53,
+  "badges": 1,
   "primary": [
    {
     "t": "Отметить исправленным",
@@ -276,7 +276,7 @@
   "size": "phone",
   "query": "?lang=kk&view=city&sheet=full#target=area:yard-1071933339&days=7",
   "problems": [],
-  "badges": 53,
+  "badges": 1,
   "primary": [
    {
     "t": "Түзетілді деп белгілеу",
@@ -290,7 +290,7 @@
   "size": "desktop",
   "query": "?lang=kk&view=nura",
   "problems": [],
-  "badges": 52,
+  "badges": 3,
   "primary": [
    {
     "t": "Жұмысқа алу",
@@ -304,7 +304,7 @@
   "size": "desktop",
   "query": "?lang=ru&view=nura",
   "problems": [],
-  "badges": 52,
+  "badges": 6,
   "primary": [
    {
     "t": "Отметить исправленным",
@@ -318,7 +318,7 @@
   "size": "desktop",
   "query": "?lang=kk&view=nura",
   "problems": [],
-  "badges": 12,
+  "badges": 7,
   "primary": [],
   "extra": {}
  },
@@ -327,7 +327,7 @@
   "size": "desktop",
   "query": "?lang=ru&role=resident&view=nura",
   "problems": [],
-  "badges": 41,
+  "badges": 22,
   "primary": [],
   "extra": {
    "x": 548.7,
@@ -352,7 +352,7 @@
   "size": "desktop",
   "query": "?lang=kk&role=resident&view=nura",
   "problems": [],
-  "badges": 41,
+  "badges": 22,
   "primary": [],
   "extra": {
    "x": 548.7,
@@ -377,7 +377,7 @@
   "size": "phone",
   "query": "?lang=ru&role=resident&view=nura",
   "problems": [],
-  "badges": 27,
+  "badges": 13,
   "primary": [],
   "extra": {
    "x": 224.7,
@@ -402,7 +402,7 @@
   "size": "phone",
   "query": "?lang=kk&role=resident&view=nura",
   "problems": [],
-  "badges": 27,
+  "badges": 13,
   "primary": [],
   "extra": {
    "x": 224.7,
@@ -427,11 +427,11 @@
   "size": "desktop",
   "query": "",
   "problems": [],
-  "badges": 40,
+  "badges": 21,
   "extra": {
    "first": "Остановка «Республиканский диагностический центр»",
-   "second": "Двор у ул. Коксенгир",
-   "card": "Двор у ул. Коксенгир"
+   "second": "Участок ул. Е-308",
+   "card": "Участок ул. Е-308"
   }
  },
  {
@@ -448,6 +448,38 @@
     ]
    ],
    "own": 0
+  }
+ },
+ {
+  "name": "tilt-3d-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=akimat&view=nura",
+  "problems": [],
+  "badges": 22,
+  "primary": [],
+  "extra": {
+   "pitch": 60,
+   "bearing": -30,
+   "visible": 22,
+   "overlaps": 0,
+   "checked": 22,
+   "far": []
+  }
+ },
+ {
+  "name": "tilt-3d-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&role=akimat&view=nura",
+  "problems": [],
+  "badges": 6,
+  "primary": [],
+  "extra": {
+   "pitch": 60,
+   "bearing": -30,
+   "visible": 6,
+   "overlaps": 0,
+   "checked": 6,
+   "far": []
   }
  },
  {
@@ -513,7 +545,7 @@
   "size": "phone",
   "query": "",
   "problems": [],
-  "badges": 53,
+  "badges": 1,
   "extra": {
    "text": "Сақталмады. Байланысты тексеріп, қайталап көріңіз\nҚайталау",
    "action": "Қайталау",
@@ -525,7 +557,7 @@
   "size": "desktop",
   "query": "",
   "problems": [],
-  "badges": 53,
+  "badges": 1,
   "extra": {
    "eyebrow": "Область на карте Пример",
    "note": "Примерное место: точный объект не выбран, показана область."
@@ -536,7 +568,7 @@
   "size": "phone",
   "query": "",
   "problems": [],
-  "badges": 53,
+  "badges": 1,
   "extra": {
    "eyebrow": "Картадағы аумақ Үлгі",
    "note": "Шамамен көрсетілген орын: нақты нысан таңдалмаған, аумақ көрсетілген."

@@ -363,6 +363,38 @@ async function colorOnlyCheck(page) {
     await page.close();
   }
 
+  // UX_BRIEF «Точность»: при наклоне и повороте карты значки стоят на своих местах и не налезают друг на друга
+  for (const [size, lang] of [["desktop", "ru"], ["phone", "kk"]]) {
+    await shot(browser, `tilt-3d-${size === "phone" ? 375 : 1366}-${lang}`, size, `?lang=${lang}&role=akimat&view=nura`, async (page) => {
+      await page.evaluate(() => new Promise((ok) => { const m = window.__map; m.once("moveend", ok); m.jumpTo({ pitch: 60, bearing: -30, zoom: 15.3 }); }));
+      await page.waitForTimeout(900);
+      return page.evaluate(() => {
+        const map = window.__map;
+        const host = map.getContainer().getBoundingClientRect();
+        const vis = [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden && b.offsetParent !== null);
+        const boxes = vis.map((b) => ({ b, r: b.getBoundingClientRect() }));
+        let overlaps = 0;
+        for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+          const a = boxes[i].r, c = boxes[j].r;
+          const ix = Math.min(a.right, c.right) - Math.max(a.left, c.left), iy = Math.min(a.bottom, c.bottom) - Math.max(a.top, c.top);
+          if (ix > 4 && iy > 4) overlaps++;
+        }
+        // где должен стоять значок: проекция его точки на карте (MapLibre ставит центр значка в неё)
+        const placed = window.__heat.badges();
+        const far = placed.filter((x) => { const p = map.project(x.spot); return Math.hypot(p.x + host.left - x.cx, p.y + host.top - x.cy) > 2; });
+        return { pitch: map.getPitch(), bearing: map.getBearing(), visible: vis.length, overlaps, checked: placed.length, far: far.map((x) => x.key) };
+      });
+    }, async (page, m, x) => {
+      const out = [];
+      if (Math.round(x.pitch) !== 60) out.push("наклон не применился");
+      if (x.visible < 3) out.push("мало значков на наклонённой карте: " + x.visible);
+      if (x.overlaps) out.push("значки налезают друг на друга при наклоне: " + x.overlaps);
+      if (!x.checked) out.push("нет данных о точках значков");
+      if (x.far.length) out.push("значок не в своей точке (> 2 px): " + x.far.join(", "));
+      return out;
+    });
+  }
+
   // UX_BRIEF правило 7 и «Тексты»: загрузка, ошибка с действием, ошибка обновления и действия — у каждой «Повторить»
   async function rawPage(size, query, setup) {
     const page = await browser.newPage({ viewport: SIZES[size], deviceScaleFactor: 1 });
@@ -497,6 +529,11 @@ async function colorOnlyCheck(page) {
   // Язык через событие на document (так шлёт i18n R11) и id устройства R09 + заголовок X-Birge-Device
   {
     const { page, errors } = await open(browser, "phone", "?lang=ru&role=resident&view=nura&sheet=full");
+    // R15 S16: слабый id 3D-превью R05 в старом ключе "birge.device_id" не должен стать "birge.device"
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem("birge.device_id", "dev-1760000000000-4fzyo82mvyq"); });
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.waitForTimeout(600);
     const headers = [];
     page.on("request", (r) => { if (r.url().includes("/metoo")) headers.push(r.headers()["x-birge-device"] || ""); });
     await page.evaluate(() => document.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang: "kk" } })));
@@ -510,6 +547,7 @@ async function colorOnlyCheck(page) {
     const problems = [];
     if (!kk) problems.push("birge:lang на document не переключил язык");
     if (!/^[A-Za-z0-9_-]{16,80}$/.test(dev || "")) problems.push("нет id устройства R09 в birge.device: " + dev);
+    if (dev === "dev-1760000000000-4fzyo82mvyq" || !/^d-[A-Za-z0-9]{24}$/.test(dev || "")) problems.push("взят слабый id R05 из birge.device_id (R15 S16): " + dev);
     if (!headers.length || headers[0] !== dev) problems.push("«Я тоже» без заголовка X-Birge-Device: " + JSON.stringify(headers));
     results.push({ name: "lang-document-and-device-375", size: "phone", query: "", problems: problems.concat(errors), badges: 0 });
     await page.close();

@@ -290,9 +290,10 @@
     try {
       let id = localStorage.getItem(DEVICE_KEY);
       if (!id || !DEVICE_RE.test(id)) {
-        const old = localStorage.getItem("birge.device_id");
-        id = old && DEVICE_RE.test(old) ? old : memoryDevice || "d-" + randomId(24);
-        localStorage.setItem(DEVICE_KEY, id);
+        // Старый ключ "birge.device_id" НЕ переносим: им же пользуется 3D-превью R05, и там id из Date.now + Math.random
+        // (R15 S16) — по "birge.device" R09 открывает «Мои обращения». Новый id — только из crypto.
+        id = memoryDevice || "d-" + randomId(24);
+        if (window.crypto && window.crypto.getRandomValues) localStorage.setItem(DEVICE_KEY, id);   // без crypto — только в памяти
       }
       memoryDevice = id;
       return id;
@@ -789,10 +790,15 @@
       const host = map.getContainer().getBoundingClientRect();
       const overlays = [];
       if (S.legendEl && S.legendEl.isConnected) overlays.push(S.legendEl.getBoundingClientRect());
+      // Своя панель / шторка поверх карты и кнопки MapLibre: значок наполовину под ними выглядит обрезанным.
+      if (!root.contains(map.getContainer())) overlays.push(root.getBoundingClientRect());
+      map.getContainer().querySelectorAll(".maplibregl-ctrl-group, .maplibregl-ctrl-attrib").forEach((el) => overlays.push(el.getBoundingClientRect()));
       if (typeof opts.avoidRects === "function") overlays.push(...(opts.avoidRects() || []));
       overlays.forEach((r) => { if (r && r.width) placed.push([r.left - host.left, r.top - host.top, r.right - host.left, r.bottom - host.top]); });
       const boxAt = (p, w, h) => [p.x - w / 2, p.y - h / 2, p.x + w / 2, p.y + h / 2];
-      const free = (box) => !placed.some((b) => !(box[2] < b[0] || b[2] < box[0] || box[3] < b[1] || b[3] < box[1]));
+      // Значок — только целиком внутри карты (обрезанный краем выглядит сломанным) и не поверх уже поставленных.
+      const inside = (box) => box[0] >= 2 && box[1] >= 2 && box[2] <= host.width - 2 && box[3] <= host.height - 2;
+      const free = (box) => inside(box) && !placed.some((b) => !(box[2] < b[0] || b[2] < box[0] || box[3] < b[1] || b[3] < box[1]));
       const list = [...S.markers.values()].sort((a, b) =>
         (keyOf(b.item.target) === S.selected) - (keyOf(a.item.target) === S.selected) ||
         (b.item.weight || 0) - (a.item.weight || 0) || (b.item.count || 0) - (a.item.count || 0));
@@ -1236,6 +1242,11 @@
       setFilters: (f) => { Object.assign(S.filters, f || {}); void load(); },
       // Режим выбора места жалобой без класса body.birge-picking (другая оболочка): значки передают щелчок карте.
       setPickMode: (on) => { S.picking = !!on; for (const m of S.markers.values()) m.el.classList.toggle("r07-badge--pick", !!on); },
+      // Видимые значки: id цели, вид (full / mini), точка на карте и центр на экране — для проверок точности (R10, тесты R07).
+      badges: () => [...S.markers.entries()].filter(([, m]) => !m.el.hidden).map(([key, m]) => {
+        const r = m.el.getBoundingClientRect();
+        return { key, mode: m.el.dataset.mode, spot: m.spot, cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+      }),
       state: () => ({ role: S.role, lang: S.lang, filters: { ...S.filters }, selected: S.selected, mode: S.mode, status: S.status,
         items: S.data ? S.data.items.length : 0, pending: S.pendingSelect, fittedKeys: S.fittedKeys || [] }),
       destroy,
