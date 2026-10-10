@@ -100,6 +100,11 @@ human 5-fold ≈ 5–10 мин (на ~200 текстах до 30 эпох — т
 foreach ($f in 0.25, 0.5) { & $PY -m ml.civic_classifier_v2.experiments --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM --probe-v2 $PROBE --human $HUMAN --regimes human mix --models logreg transformer --human-fraction $f --name "lc_$f" }
 Результат: ml\civic_classifier_v2\results\lc_0.25.json/.md, lc_0.5.json/.md (в шаге 9 добавить в git add).
 
+6в. (по желанию, ~10 мин) Мешает ли трансформеру шум меток LLM-синтетики: тот же режим без 80 кандидатов аудита.
+& $PY -m ml.civic_classifier_v2.experiments --synth-v3 "$R02\ml\datasets\synth_v3" --v1-in-v2 "$R02\ml\datasets\v1_in_v2" --llm-v1 $LLM --probe-v2 $PROBE --regimes synth_all --models transformer --exclude-train-ids ml\civic_classifier_v2\results\LLM_LABEL_AUDIT.json --name clean_llm
+Сравнить probe_v2 в results\clean_llm.json с synth_all/transformer в experiments.json (0.812); добавить clean_llm.* в git add.
+(Логрегрессия в облаке: 0.797 → 0.804, Δ не доказана.)
+
 -----------------------------------------------------------------
 7. Итоговая модель для продукта — ~10–15 мин
 -----------------------------------------------------------------

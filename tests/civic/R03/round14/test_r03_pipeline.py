@@ -311,3 +311,24 @@ def test_small_data_trains_min_steps_before_early_stop(tiny_model):
     ran_steps = tm.history[-1]["steps"]
     assert ran_steps >= min(20, spe * 6)                                  # остановка не раньше min_train_steps
     assert 1 <= tm.best_epoch <= len(tm.history)
+
+
+def test_exclude_train_ids_only_touches_training(data_dir, tmp_path, monkeypatch):
+    seen = []
+
+    def spy(name, train, val, eval_sets, cfg, labels, log_path, tag):
+        seen.append(({r["id"] for r in train}, {s: [r["id"] for r in v] for s, v in eval_sets.items()}))
+        return {s: ([0] * len(r), None) for s, r in eval_sets.items()}, {"n_train": len(train), "n_val": len(val)}
+
+    monkeypatch.setattr(E, "run_model", spy)
+    train_ids = [r["id"] for r in F.synth_corpus() if r["split"] == "train"][:5]
+    test_id = next(r["id"] for r in F.synth_corpus() if r["split"] == "test")
+    excl = tmp_path / "audit.json"
+    excl.write_text(json.dumps({"candidate_ids": train_ids + [test_id]}), encoding="utf-8")
+    E.main(_args(data_dir, tmp_path, "--models", "heuristic", "--regimes", "synth_template",
+                 "--exclude-train-ids", str(excl)))
+    tr, sets = seen[0]
+    assert not set(train_ids) & tr                                      # исключены из обучения
+    assert test_id in sets["synth_test_template"]                       # оценочные наборы не тронуты
+    res = json.loads((tmp_path / "results" / "experiments.json").read_text(encoding="utf-8"))
+    assert res["meta"]["excluded_ids_n"] == 6 and any("исключено по --exclude-train-ids 5" in n for n in res["notes"])
