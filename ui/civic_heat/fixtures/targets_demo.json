@@ -1,0 +1,1643 @@
+{
+ "_meta": {
+  "built_by": "ui/civic_heat/build_fixtures.py",
+  "graph": {
+   "id": "osm-astana-walking-20260506",
+   "digest": "a694be21cc08ef1bf8000387a5120e7e5ad810ee37a955a4c223c004aeba5e35"
+  },
+  "osm_snapshot": "2026-05-06T03:25:00Z",
+  "license": "ODbL-1.0 © OpenStreetMap contributors",
+  "note": "Формы и названия — из OSM без правок. Роли (snow, yards…) — только для демо-жалоб (synthetic).",
+  "focus": [
+   71.405,
+   51.128
+  ]
+ },
+ "targets": {
+  "cell-143-245": {
+   "kind": "area",
+   "role": "smell_air",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.307178,
+       51.132357
+      ],
+      [
+       71.309326,
+       51.132357
+      ],
+      [
+       71.309326,
+       51.133713
+      ],
+      [
+       71.307178,
+       51.133713
+      ],
+      [
+       71.307178,
+       51.132357
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Квартал у Коргалжинского шоссе",
+   "label_kk": "Қорғалжын тас жолы маңындағы орам",
+   "district": "nura",
+   "source": "cell-grid-150m"
+  },
+  "cell-143-246": {
+   "kind": "area",
+   "role": "smell_air",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.307178,
+       51.133713
+      ],
+      [
+       71.309326,
+       51.133713
+      ],
+      [
+       71.309326,
+       51.13507
+      ],
+      [
+       71.307178,
+       51.13507
+      ],
+      [
+       71.307178,
+       51.133713
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Квартал у Коргалжинского шоссе",
+   "label_kk": "Қорғалжын тас жолы маңындағы орам",
+   "district": "nura",
+   "source": "cell-grid-150m"
+  },
+  "cell-144-245": {
+   "kind": "area",
+   "role": "smell_air",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.309326,
+       51.132357
+      ],
+      [
+       71.311474,
+       51.132357
+      ],
+      [
+       71.311474,
+       51.133713
+      ],
+      [
+       71.309326,
+       51.133713
+      ],
+      [
+       71.309326,
+       51.132357
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Квартал у Коргалжинского шоссе",
+   "label_kk": "Қорғалжын тас жолы маңындағы орам",
+   "district": "nura",
+   "source": "cell-grid-150m"
+  },
+  "osm-node-13335403725": {
+   "kind": "object",
+   "subtype": "waste_disposal",
+   "role": "waste_site",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.396194,
+     51.132361
+    ]
+   },
+   "label_ru": "Контейнерная площадка у ул. Толе Би",
+   "label_kk": "Төле Би көшесі маңындағы қоқыс алаңы",
+   "district": "nura",
+   "source": "osm-objects/waste_disposal",
+   "osm": {
+    "type": "node",
+    "id": 13335403725
+   }
+  },
+  "osm-node-13394597038": {
+   "kind": "object",
+   "subtype": "bus_stop",
+   "role": "transport",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.406054,
+     51.126603
+    ]
+   },
+   "label_ru": "Остановка «Республиканский диагностический центр»",
+   "label_kk": "«Республиканский диагностический центр» аялдамасы",
+   "district": "nura",
+   "source": "osm-objects/bus_stops",
+   "osm": {
+    "type": "node",
+    "id": 13394597038
+   }
+  },
+  "osm-node-2716977767": {
+   "kind": "object",
+   "subtype": "bus_stop",
+   "role": "transport",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.41315,
+     51.12767
+    ]
+   },
+   "label_ru": "Остановка «Национальный кардиологический центр»",
+   "label_kk": "«Ұлттық кардиохирургиялық орталық» аялдамасы",
+   "district": "nura",
+   "source": "osm-objects/bus_stops",
+   "osm": {
+    "type": "node",
+    "id": 2716977767
+   }
+  },
+  "osm-node-4109037549": {
+   "kind": "object",
+   "subtype": "bus_stop",
+   "role": "transport",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.406553,
+     51.131155
+    ]
+   },
+   "label_ru": "Остановка «Хан Шатыр»",
+   "label_kk": "«Хан Шатыр» аялдамасы",
+   "district": "nura",
+   "source": "osm-objects/bus_stops",
+   "osm": {
+    "type": "node",
+    "id": 4109037549
+   }
+  },
+  "osm-node-5756851369": {
+   "kind": "object",
+   "subtype": "bus_stop",
+   "role": "transport",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.40432,
+     51.125145
+    ]
+   },
+   "label_ru": "Остановка «Центр материнства и детства»",
+   "label_kk": "«Центр материнства и детства» аялдамасы",
+   "district": "nura",
+   "source": "osm-objects/bus_stops",
+   "osm": {
+    "type": "node",
+    "id": 5756851369
+   }
+  },
+  "osm-node-5756882393": {
+   "kind": "object",
+   "subtype": "bus_stop",
+   "role": "transport",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.396684,
+     51.12781
+    ]
+   },
+   "label_ru": "Остановка «Жилой комплекс Зелёный Квартал»",
+   "label_kk": "«Жилой комплекс Зелёный Квартал» аялдамасы",
+   "district": "nura",
+   "source": "osm-objects/bus_stops",
+   "osm": {
+    "type": "node",
+    "id": 5756882393
+   }
+  },
+  "osm-w1105784883-0": {
+   "kind": "segment",
+   "role": "city_snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.574109,
+      51.111791
+     ],
+     [
+      71.576589,
+      51.111008
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. А-403",
+   "label_kk": "А-403 көшесінің бөлігі",
+   "district": "saraishyk",
+   "street_ru": "улица А-403",
+   "length_m": 193.8,
+   "source": "osm-walking-graph",
+   "osm_way_id": 1105784883
+  },
+  "osm-w1175582593-4": {
+   "kind": "segment",
+   "role": "roads",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.413313,
+      51.127226
+     ],
+     [
+      71.413104,
+      51.126038
+     ],
+     [
+      71.413086,
+      51.125969
+     ]
+    ]
+   },
+   "label_ru": "Участок пр. Кабанбай Батыра",
+   "label_kk": "Қабанбай Батыр даңғылының бөлігі",
+   "district": "nura",
+   "street_ru": "проспект Кабанбай Батыра",
+   "length_m": 140.7,
+   "source": "osm-walking-graph",
+   "osm_way_id": 1175582593
+  },
+  "osm-w1181261286-8": {
+   "kind": "segment",
+   "role": "snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.399729,
+      51.132785
+     ],
+     [
+      71.399727,
+      51.132397
+     ],
+     [
+      71.399731,
+      51.132281
+     ],
+     [
+      71.399742,
+      51.132165
+     ],
+     [
+      71.399779,
+      51.132037
+     ],
+     [
+      71.399859,
+      51.131857
+     ],
+     [
+      71.399943,
+      51.131695
+     ],
+     [
+      71.40006,
+      51.13152
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Е-308",
+   "label_kk": "Е-308 көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Е-308",
+   "length_m": 144.3,
+   "source": "osm-walking-graph",
+   "osm_way_id": 1181261286
+  },
+  "osm-w1318422301-2": {
+   "kind": "segment",
+   "role": "roads",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.396704,
+      51.130677
+     ],
+     [
+      71.396304,
+      51.129551
+     ],
+     [
+      71.396231,
+      51.129346
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Толе Би",
+   "label_kk": "Төле Би көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Толе Би",
+   "length_m": 151.7,
+   "source": "osm-walking-graph",
+   "osm_way_id": 1318422301
+  },
+  "osm-w1420153729-0": {
+   "kind": "segment",
+   "role": "sidewalks",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.409506,
+      51.134046
+     ],
+     [
+      71.407862,
+      51.134306
+     ],
+     [
+      71.40778,
+      51.134319
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Кунаева",
+   "label_kk": "Қонаев көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Кунаева",
+   "length_m": 124.2,
+   "source": "osm-walking-graph",
+   "osm_way_id": 1420153729
+  },
+  "osm-w1456014948-1": {
+   "kind": "segment",
+   "role": "lighting",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.395906,
+      51.134926
+     ],
+     [
+      71.395355,
+      51.133541
+     ],
+     [
+      71.394987,
+      51.132613
+     ]
+    ]
+   },
+   "label_ru": "Участок: E-900",
+   "label_kk": "E-900: көше бөлігі",
+   "district": "nura",
+   "street_ru": "E-900",
+   "length_m": 265.0,
+   "source": "osm-walking-graph",
+   "osm_way_id": 1456014948
+  },
+  "osm-w1456068829-1": {
+   "kind": "segment",
+   "role": "roads",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.40932,
+      51.122707
+     ],
+     [
+      71.409004,
+      51.122757
+     ],
+     [
+      71.407331,
+      51.123022
+     ],
+     [
+      71.406895,
+      51.123091
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Шандора Петёфи",
+   "label_kk": "Шандор Петефи көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Шандора Петёфи",
+   "length_m": 174.6,
+   "source": "osm-walking-graph",
+   "osm_way_id": 1456068829
+  },
+  "osm-w167440136-6": {
+   "kind": "segment",
+   "role": "city_roads",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.470852,
+      51.041542
+     ],
+     [
+      71.473961,
+      51.042746
+     ]
+    ]
+   },
+   "label_ru": "Участок: Объездная Астаны",
+   "label_kk": "Астана айналма жолының бөлігі",
+   "district": "esil",
+   "street_ru": "Объездная Астаны",
+   "length_m": 255.3,
+   "source": "osm-walking-graph",
+   "osm_way_id": 167440136
+  },
+  "osm-w171875547-1": {
+   "kind": "segment",
+   "role": "snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.404443,
+      51.127132
+     ],
+     [
+      71.402727,
+      51.127391
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Сыганак",
+   "label_kk": "Сығанақ көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Сыганак",
+   "length_m": 123.2,
+   "source": "osm-walking-graph",
+   "osm_way_id": 171875547
+  },
+  "osm-w23983668-2": {
+   "kind": "segment",
+   "role": "parking",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.40973,
+      51.137013
+     ],
+     [
+      71.412282,
+      51.136772
+     ],
+     [
+      71.412328,
+      51.136767
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Сарайшык",
+   "label_kk": "Сарайшық көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Сарайшык",
+   "length_m": 183.3,
+   "source": "osm-walking-graph",
+   "osm_way_id": 23983668
+  },
+  "osm-w241587755-0": {
+   "kind": "segment",
+   "role": "city_snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.331957,
+      51.200685
+     ],
+     [
+      71.333035,
+      51.199198
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Карасу от ул. Улытау до ул. Таргабатай",
+   "label_kk": "Карасу көшесінің Улытау көшесі – Таргабатай көшесі аралығы",
+   "district": "saryarka",
+   "street_ru": "улица Карасу",
+   "length_m": 181.6,
+   "source": "osm-walking-graph",
+   "osm_way_id": 241587755
+  },
+  "osm-w241587773-0": {
+   "kind": "segment",
+   "role": "city_roads",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.330734,
+      51.20035
+     ],
+     [
+      71.331799,
+      51.19884
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Моншакты от ул. Улытау до ул. Таргабатай",
+   "label_kk": "Моншакты көшесінің Улытау көшесі – Таргабатай көшесі аралығы",
+   "district": "saryarka",
+   "street_ru": "улица Моншакты",
+   "length_m": 183.6,
+   "source": "osm-walking-graph",
+   "osm_way_id": 241587773
+  },
+  "osm-w243769180-0": {
+   "kind": "segment",
+   "role": "parking",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.403504,
+      51.138343
+     ],
+     [
+      71.405561,
+      51.138413
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Улбике акын",
+   "label_kk": "Улбике акын көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Улбике акын",
+   "length_m": 143.7,
+   "source": "osm-walking-graph",
+   "osm_way_id": 243769180
+  },
+  "osm-w258636382-0": {
+   "kind": "segment",
+   "role": "city_roads",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.572993,
+      51.115012
+     ],
+     [
+      71.573225,
+      51.11495
+     ],
+     [
+      71.573518,
+      51.114902
+     ],
+     [
+      71.57475,
+      51.114733
+     ],
+     [
+      71.57532,
+      51.114652
+     ],
+     [
+      71.575878,
+      51.114569
+     ],
+     [
+      71.576057,
+      51.114539
+     ],
+     [
+      71.576186,
+      51.114469
+     ],
+     [
+      71.577816,
+      51.113651
+     ]
+    ]
+   },
+   "label_ru": "Участок: Центральная улица",
+   "label_kk": "Центральная көшесінің бөлігі",
+   "district": "saraishyk",
+   "street_ru": "Центральная улица",
+   "length_m": 378.1,
+   "source": "osm-walking-graph",
+   "osm_way_id": 258636382
+  },
+  "osm-w258804063-14": {
+   "kind": "segment",
+   "role": "city_snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.436924,
+      51.217095
+     ],
+     [
+      71.43891,
+      51.215596
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Северная объездная",
+   "label_kk": "Северная объездная көшесінің бөлігі",
+   "district": "baikonur",
+   "street_ru": "улица Северная объездная",
+   "length_m": 216.6,
+   "source": "osm-walking-graph",
+   "osm_way_id": 258804063
+  },
+  "osm-w398742585-2": {
+   "kind": "segment",
+   "role": "lighting",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.407523,
+      51.137421
+     ],
+     [
+      71.405548,
+      51.137653
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Кайыма Мухамедханова",
+   "label_kk": "Қайым Мұхамедханов көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Кайыма Мухамедханова",
+   "length_m": 140.2,
+   "source": "osm-walking-graph",
+   "osm_way_id": 398742585
+  },
+  "osm-w401897130-8": {
+   "kind": "segment",
+   "role": "city_snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.566383,
+      51.153228
+     ],
+     [
+      71.570731,
+      51.153742
+     ]
+    ]
+   },
+   "label_ru": "Участок пр. Аль-Фараби",
+   "label_kk": "Әл-Фараби даңғылының бөлігі",
+   "district": "almaty",
+   "street_ru": "проспект Аль-Фараби",
+   "length_m": 308.6,
+   "source": "osm-walking-graph",
+   "osm_way_id": 401897130
+  },
+  "osm-w445682225-9": {
+   "kind": "segment",
+   "role": "sidewalks",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.394654,
+      51.124792
+     ],
+     [
+      71.394195,
+      51.123392
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Е 51",
+   "label_kk": "Е 51 көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Е 51",
+   "length_m": 158.9,
+   "source": "osm-walking-graph",
+   "osm_way_id": 445682225
+  },
+  "osm-w451692792-8": {
+   "kind": "segment",
+   "role": "city_roads",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.482252,
+      51.214295
+     ],
+     [
+      71.482997,
+      51.215142
+     ],
+     [
+      71.483502,
+      51.215665
+     ],
+     [
+      71.483732,
+      51.215868
+     ],
+     [
+      71.483923,
+      51.216002
+     ],
+     [
+      71.484161,
+      51.21614
+     ],
+     [
+      71.484703,
+      51.216414
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. С316",
+   "label_kk": "С316 көшесінің бөлігі",
+   "district": "baikonur",
+   "street_ru": "улица С316",
+   "length_m": 294.2,
+   "source": "osm-walking-graph",
+   "osm_way_id": 451692792
+  },
+  "osm-w513046076-0": {
+   "kind": "segment",
+   "role": "snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.410507,
+      51.128969
+     ],
+     [
+      71.408193,
+      51.129335
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Достык",
+   "label_kk": "Достық көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Достык",
+   "length_m": 166.5,
+   "source": "osm-walking-graph",
+   "osm_way_id": 513046076
+  },
+  "osm-w589904214-1": {
+   "kind": "segment",
+   "role": "city_snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.472722,
+      51.036393
+     ],
+     [
+      71.474747,
+      51.035165
+     ]
+    ]
+   },
+   "label_ru": "Участок: Проезд 77",
+   "label_kk": "Проезд 77: көше бөлігі",
+   "district": "esil",
+   "street_ru": "Проезд 77",
+   "length_m": 196.7,
+   "source": "osm-walking-graph",
+   "osm_way_id": 589904214
+  },
+  "osm-w607127142-3": {
+   "kind": "segment",
+   "role": "snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.405109,
+      51.128054
+     ],
+     [
+      71.405555,
+      51.129183
+     ]
+    ]
+   },
+   "label_ru": "Участок пр. Туран",
+   "label_kk": "Тұран даңғылының бөлігі",
+   "district": "nura",
+   "street_ru": "проспект Туран",
+   "length_m": 129.4,
+   "source": "osm-walking-graph",
+   "osm_way_id": 607127142
+  },
+  "osm-w649739915-1": {
+   "kind": "segment",
+   "role": "city_roads",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.567419,
+      51.149441
+     ],
+     [
+      71.567784,
+      51.150225
+     ],
+     [
+      71.567841,
+      51.150337
+     ],
+     [
+      71.567731,
+      51.150457
+     ],
+     [
+      71.567188,
+      51.150684
+     ],
+     [
+      71.566916,
+      51.150891
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Ащысай",
+   "label_kk": "Ащысай көшесінің бөлігі",
+   "district": "almaty",
+   "street_ru": "улица Ащысай",
+   "length_m": 194.6,
+   "source": "osm-walking-graph",
+   "osm_way_id": 649739915
+  },
+  "osm-w661337975-3": {
+   "kind": "segment",
+   "role": "snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.398468,
+      51.130689
+     ],
+     [
+      71.399052,
+      51.130595
+     ],
+     [
+      71.399577,
+      51.130507
+     ],
+     [
+      71.39984,
+      51.130468
+     ],
+     [
+      71.400038,
+      51.130436
+     ],
+     [
+      71.400195,
+      51.130419
+     ],
+     [
+      71.40036,
+      51.130413
+     ],
+     [
+      71.400531,
+      51.130429
+     ],
+     [
+      71.400717,
+      51.13048
+     ],
+     [
+      71.400923,
+      51.130575
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Халифа бен Заид аль-Нахаян",
+   "label_kk": "Халифа бен Заид әл-Нахаян көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Халифа бен Заид аль-Нахаян",
+   "length_m": 179.8,
+   "source": "osm-walking-graph",
+   "osm_way_id": 661337975
+  },
+  "osm-w689189362-2": {
+   "kind": "segment",
+   "role": "snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.400234,
+      51.127929
+     ],
+     [
+      71.400865,
+      51.129523
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Абикена Бектурова",
+   "label_kk": "Әбікен Бектұров көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Абикена Бектурова",
+   "length_m": 182.6,
+   "source": "osm-walking-graph",
+   "osm_way_id": 689189362
+  },
+  "osm-w736834155-17": {
+   "kind": "segment",
+   "role": "snow",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.399021,
+      51.124712
+     ],
+     [
+      71.399425,
+      51.125802
+     ]
+    ]
+   },
+   "label_ru": "Участок ул. Абикен Бектуров",
+   "label_kk": "Абикен Бектуров көшесінің бөлігі",
+   "district": "nura",
+   "street_ru": "улица Абикен Бектуров",
+   "length_m": 124.4,
+   "source": "osm-walking-graph",
+   "osm_way_id": 736834155
+  },
+  "osm-way-1449322330": {
+   "kind": "object",
+   "subtype": "playground",
+   "role": "playground",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.403291,
+       51.132375
+      ],
+      [
+       71.403271,
+       51.132351
+      ],
+      [
+       71.403255,
+       51.132324
+      ],
+      [
+       71.403251,
+       51.132297
+      ],
+      [
+       71.403255,
+       51.132265
+      ],
+      [
+       71.403267,
+       51.132241
+      ],
+      [
+       71.403303,
+       51.132209
+      ],
+      [
+       71.403339,
+       51.132184
+      ],
+      [
+       71.403376,
+       51.132166
+      ],
+      [
+       71.403441,
+       51.132238
+      ],
+      [
+       71.403354,
+       51.132266
+      ],
+      [
+       71.403382,
+       51.132299
+      ],
+      [
+       71.403331,
+       51.132316
+      ],
+      [
+       71.403338,
+       51.132332
+      ],
+      [
+       71.40331,
+       51.132338
+      ],
+      [
+       71.403326,
+       51.132348
+      ],
+      [
+       71.403291,
+       51.132375
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Детская площадка у ул. Е-308",
+   "label_kk": "Е-308 көшесі маңындағы балалар алаңы",
+   "district": "nura",
+   "source": "osm-objects/playgrounds",
+   "osm": {
+    "type": "way",
+    "id": 1449322330
+   }
+  },
+  "osm-way-1454154030": {
+   "kind": "object",
+   "subtype": "waste_disposal",
+   "role": "waste_site",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.392586,
+       51.132595
+      ],
+      [
+       71.392645,
+       51.132588
+      ],
+      [
+       71.392595,
+       51.13246
+      ],
+      [
+       71.39254,
+       51.132467
+      ],
+      [
+       71.392586,
+       51.132595
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Контейнерная площадка у ул. Халифа бен Заид аль-Нахаян",
+   "label_kk": "Халифа бен Заид әл-Нахаян көшесі маңындағы қоқыс алаңы",
+   "district": "nura",
+   "source": "osm-objects/waste_disposal",
+   "osm": {
+    "type": "way",
+    "id": 1454154030
+   }
+  },
+  "osm-way-1526900363": {
+   "kind": "object",
+   "subtype": "playground",
+   "role": "playground",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.394597,
+       51.1292
+      ],
+      [
+       71.394646,
+       51.129211
+      ],
+      [
+       71.394698,
+       51.129207
+      ],
+      [
+       71.39474,
+       51.129188
+      ],
+      [
+       71.394764,
+       51.129153
+      ],
+      [
+       71.394754,
+       51.129116
+      ],
+      [
+       71.394714,
+       51.129087
+      ],
+      [
+       71.394656,
+       51.129077
+      ],
+      [
+       71.394599,
+       51.129088
+      ],
+      [
+       71.394563,
+       51.129112
+      ],
+      [
+       71.39455,
+       51.129144
+      ],
+      [
+       71.394562,
+       51.129176
+      ],
+      [
+       71.394597,
+       51.1292
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Детская площадка у ул. Сыганак",
+   "label_kk": "Сығанақ көшесі маңындағы балалар алаңы",
+   "district": "nura",
+   "source": "osm-objects/playgrounds",
+   "osm": {
+    "type": "way",
+    "id": 1526900363
+   }
+  },
+  "yard-1148721825": {
+   "kind": "area",
+   "subtype": "yard",
+   "role": "yards",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.402953,
+       51.128191
+      ],
+      [
+       71.401802,
+       51.127746
+      ],
+      [
+       71.400445,
+       51.12792
+      ],
+      [
+       71.401085,
+       51.129454
+      ],
+      [
+       71.401353,
+       51.130153
+      ],
+      [
+       71.401527,
+       51.130298
+      ],
+      [
+       71.402162,
+       51.130096
+      ],
+      [
+       71.402837,
+       51.129988
+      ],
+      [
+       71.402459,
+       51.129035
+      ],
+      [
+       71.403058,
+       51.12889
+      ],
+      [
+       71.403056,
+       51.128689
+      ],
+      [
+       71.403681,
+       51.128584
+      ],
+      [
+       71.403748,
+       51.128504
+      ],
+      [
+       71.402953,
+       51.128191
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Двор ЖК «Evolution»",
+   "label_kk": "«Evolution» ТК ауласы",
+   "district": "nura",
+   "source": "osm-objects/residential",
+   "osm": {
+    "type": "way",
+    "id": 1148721825
+   }
+  },
+  "yard-1424189376": {
+   "kind": "area",
+   "subtype": "yard",
+   "role": "utilities",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.390082,
+       51.127109
+      ],
+      [
+       71.3905,
+       51.128372
+      ],
+      [
+       71.39274,
+       51.128097
+      ],
+      [
+       71.392362,
+       51.126849
+      ],
+      [
+       71.390082,
+       51.127109
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Двор ЖК «Eco Park»",
+   "label_kk": "«Eco Park» ТК ауласы",
+   "district": "nura",
+   "source": "osm-objects/residential",
+   "osm": {
+    "type": "way",
+    "id": 1424189376
+   }
+  },
+  "yard-1453849421": {
+   "kind": "area",
+   "subtype": "yard",
+   "role": "waste",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.398038,
+       51.133133
+      ],
+      [
+       71.399367,
+       51.132936
+      ],
+      [
+       71.399066,
+       51.132179
+      ],
+      [
+       71.399225,
+       51.131942
+      ],
+      [
+       71.399669,
+       51.13133
+      ],
+      [
+       71.399602,
+       51.131161
+      ],
+      [
+       71.397371,
+       51.131531
+      ],
+      [
+       71.3975,
+       51.131998
+      ],
+      [
+       71.397739,
+       51.132587
+      ],
+      [
+       71.398038,
+       51.133133
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Двор ЖК «GreenLine.Headliner»",
+   "label_kk": "«GreenLine.Headliner» ТК ауласы",
+   "district": "nura",
+   "source": "osm-objects/residential",
+   "osm": {
+    "type": "way",
+    "id": 1453849421
+   }
+  },
+  "yard-1454082638": {
+   "kind": "area",
+   "subtype": "yard",
+   "role": "parking",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.396789,
+       51.131531
+      ],
+      [
+       71.394821,
+       51.131805
+      ],
+      [
+       71.395291,
+       51.133026
+      ],
+      [
+       71.395476,
+       51.133508
+      ],
+      [
+       71.396526,
+       51.135939
+      ],
+      [
+       71.396777,
+       51.136764
+      ],
+      [
+       71.397197,
+       51.13782
+      ],
+      [
+       71.397354,
+       51.138115
+      ],
+      [
+       71.399332,
+       51.137839
+      ],
+      [
+       71.398926,
+       51.136828
+      ],
+      [
+       71.398588,
+       51.136061
+      ],
+      [
+       71.398308,
+       51.135406
+      ],
+      [
+       71.397956,
+       51.134535
+      ],
+      [
+       71.397592,
+       51.133634
+      ],
+      [
+       71.397389,
+       51.133145
+      ],
+      [
+       71.397002,
+       51.132141
+      ],
+      [
+       71.396789,
+       51.131531
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Двор ЖК «GreenLine.Asyl Mura»",
+   "label_kk": "«GreenLine.Asyl Mura» ТК ауласы",
+   "district": "nura",
+   "source": "osm-objects/residential",
+   "osm": {
+    "type": "way",
+    "id": 1454082638
+   }
+  },
+  "yard-1461758835": {
+   "kind": "area",
+   "subtype": "yard",
+   "role": "lighting",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.404115,
+       51.122446
+      ],
+      [
+       71.40492,
+       51.122324
+      ],
+      [
+       71.40533,
+       51.123209
+      ],
+      [
+       71.406585,
+       51.123025
+      ],
+      [
+       71.405839,
+       51.121158
+      ],
+      [
+       71.40371,
+       51.121513
+      ],
+      [
+       71.404115,
+       51.122446
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Двор ЖК «Tandau»",
+   "label_kk": "«Tandau» ТК ауласы",
+   "district": "nura",
+   "source": "osm-objects/residential",
+   "osm": {
+    "type": "way",
+    "id": 1461758835
+   }
+  },
+  "yard-1549054977": {
+   "kind": "area",
+   "subtype": "yard",
+   "role": "yards",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.412366,
+       51.124719
+      ],
+      [
+       71.412225,
+       51.124777
+      ],
+      [
+       71.411146,
+       51.124909
+      ],
+      [
+       71.411216,
+       51.125176
+      ],
+      [
+       71.410782,
+       51.125266
+      ],
+      [
+       71.410631,
+       51.124875
+      ],
+      [
+       71.410118,
+       51.123731
+      ],
+      [
+       71.412135,
+       51.123399
+      ],
+      [
+       71.412137,
+       51.123413
+      ],
+      [
+       71.412359,
+       51.12468
+      ],
+      [
+       71.412366,
+       51.124719
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Двор ЖК «Алматау»",
+   "label_kk": "«Алматау» ТК ауласы",
+   "district": "nura",
+   "source": "osm-objects/residential",
+   "osm": {
+    "type": "way",
+    "id": 1549054977
+   }
+  },
+  "yard-736834153": {
+   "kind": "area",
+   "subtype": "yard",
+   "role": "yards",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.393688,
+       51.121378
+      ],
+      [
+       71.394425,
+       51.123377
+      ],
+      [
+       71.396526,
+       51.123072
+      ],
+      [
+       71.396479,
+       51.122907
+      ],
+      [
+       71.396211,
+       51.122217
+      ],
+      [
+       71.397935,
+       51.121967
+      ],
+      [
+       71.397513,
+       51.120822
+      ],
+      [
+       71.393688,
+       51.121378
+      ]
+     ]
+    ]
+   },
+   "label_ru": "Двор ЖК «Zam-Zam»",
+   "label_kk": "«Zam-Zam» ТК ауласы",
+   "district": "nura",
+   "source": "osm-objects/residential",
+   "osm": {
+    "type": "way",
+    "id": 736834153
+   }
+  }
+ }
+}

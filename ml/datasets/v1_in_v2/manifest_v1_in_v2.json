@@ -1,0 +1,42 @@
+{
+ "source": "v1.jsonl",
+ "source_sha256": "f446434196768da0146ba84ca95449ee1b50a409c5256eeacc4a3d3eeb9cc45b",
+ "source_origin": "origin/claude/wizardly-ptolemy-qy8ltw @ 14c3384, ml/civic_classifier/data/",
+ "rows": 2725,
+ "rules": {
+  "noise_from_other": 69,
+  "parking_from_other": 5,
+  "snow_anywhere": 104,
+  "table": 2332,
+  "underpass_lighting": 4,
+  "utilities_from_other": 150,
+  "waste_from_other": 61
+ },
+ "moved_vs_table": {
+  "other→noise_safety": 69,
+  "other→parking": 5,
+  "other→utilities": 150,
+  "other→waste": 61,
+  "roads→snow_ice": 30,
+  "sidewalks→lighting": 4,
+  "sidewalks→snow_ice": 45,
+  "transport_stops→snow_ice": 29
+ },
+ "label_disagrees_with_table": 393,
+ "by_label": {
+  "lighting": 415,
+  "noise_safety": 69,
+  "other": 143,
+  "parking": 5,
+  "roads": 533,
+  "sidewalks": 434,
+  "snow_ice": 104,
+  "transport": 399,
+  "utilities": 150,
+  "waste": 61,
+  "yards": 412
+ },
+ "note": "label — уточнённая метка v2 (для обучения); label_table — механический перевод v1_to_v2; маркеры <phone>/<email>/<id>/<url> заменены на [телефон]/[email]/[номер]/[ссылка]",
+ "output": "corpus_v1_in_v2.jsonl",
+ "output_sha256": "156fe6f616a3294390c7d69ca4691a80c830bf0599cc05a54ec91093d626abfb"
+}

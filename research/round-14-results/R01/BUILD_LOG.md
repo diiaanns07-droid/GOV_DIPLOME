@@ -106,3 +106,22 @@ revision и иначе снимает объяснение A/B, чем ожид�
 - «Сравнить ограничения» и помощник скрыты всегда (body[data-birge-tools="off"]); ?tools=all возвращает их —
   так их проверяют p0_flow, scenarios_smoke, r13_junctions.
 - Проверки: r14_shell 38/0 (+ раскладка UX_SPEC и скрытие), r12_city 81/0, scenarios_smoke 16/0, P0 62/1/2 (тот же demo-ring).
+
+## B1 — шаг 1: перенос поставок R02, R07, R08, R09 (без подключения)
+
+Правило переноса: только файлы, которые роль ДОБАВИЛА или ИЗМЕНИЛА относительно своей базы
+(`git diff --diff-filter=AM <merge-base> <code_sha> -- <пути роли>`), `git checkout <code_sha> -- <файлы>`.
+Так тесты раунда 13 в tests/civic/R07, R08, R09 (которых нет в базах ролей) не удаляются и не откатываются
+к версиям раунда 12.
+
+| Роль | Ветка | code_sha (DELIVERY) | Пути | Файлов |
+|---|---|---|---|---|
+| R02 | claude/r14-R02 | 229f1aa | ml/datasets/, ml/labeling/, web/labeling/, tests/civic/R02/round14/ | 27 |
+| R07 | claude/upbeat-knuth-i0rqaa | 5a97636 | ui/civic_heat/, web/civic/heat/, tests/civic/R07/ (новые) | 21 |
+| R08 | claude/r14-R08 | 9f1d9c0 | ui/civic_akim/, web/civic/akim/, tests/civic/R08/ (новые) | 20 |
+| R09 | claude/modest-shannon-0ki93p | da295be | ui/civic_feedback/v2/, web/civic/feedback/ (новые), tests/civic/R09/ (новые) | 31 (v1 побайтно = I0) |
+
+- INTEGRATION R02: `private/` добавлен в .gitignore.
+- Код прочитан: сеть только в LLM-скриптах R02 (`ml/labeling/llm_client.py`, ручной запуск с --confirm-external,
+  тесты подставляют транспорт); остальное — stdlib, локальные тестовые серверы, node для проверок.
+- pytest tests/civic/R02/round14 tests/civic/R07 tests/civic/R08 tests/civic/R09 — **784 passed, 1 skipped**.

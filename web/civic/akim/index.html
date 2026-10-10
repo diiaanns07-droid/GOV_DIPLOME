@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Картина дня · Birge</title>
+  <!-- R08 · «Картина дня» для акима. Отдельная страница; оболочка R01 может вместо неё
+       вызвать BirgeAkim.mount(элемент) у себя (см. research/round-14-results/R08/INTEGRATION.txt). -->
+  <link rel="stylesheet" href="../ui-kit/tokens.css">
+  <link rel="stylesheet" href="../ui-kit/components.css">
+  <link rel="stylesheet" href="akim.css">
+  <style>
+    html, body { margin: 0; }
+    body { min-height: 100vh; }
+    .akim-header__nav { display: flex; gap: var(--s-1); }
+    .akim-header__nav a {
+      display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 var(--s-3);
+      border-radius: var(--r-m); color: var(--c-ink); font-weight: var(--fw-semi); text-decoration: none;
+    }
+    .akim-header__nav a:hover { background: var(--c-paper); }
+    .akim-header__nav a[aria-current="page"] { background: var(--c-accent); }
+    @media (max-width: 480px) { .akim-header__nav a[aria-current="page"] { display: none; } }
+    @media print { .bk-header { display: none; } }
+  </style>
+</head>
+<body class="bk-app">
+  <header class="bk-header">
+    <div class="bk-header__brand">
+      <span class="bk-header__mark" aria-hidden="true">B</span>
+      <span class="bk-header__brand-text" data-i18n="common.app_name">Birge</span>
+    </div>
+    <nav class="akim-header__nav" aria-label="Birge">
+      <a href="/" id="akim-to-map">
+        <svg class="ic" aria-hidden="true"><use href="../ui-kit/icons.svg#i-pin"></use></svg>
+        <span data-i18n="common.nav.map">Карта</span>
+      </a>
+      <a href="" aria-current="page">
+        <svg class="ic" aria-hidden="true"><use href="../ui-kit/icons.svg#i-chart"></use></svg>
+        <span data-i18n="common.nav.day">Картина дня</span>
+      </a>
+    </nav>
+    <div class="bk-header__end">
+      <div class="bk-seg" role="group" data-i18n-attr="aria-label:common.lang.label" aria-label="Язык интерфейса">
+        <button type="button" data-lang="kk" lang="kk" data-i18n="common.lang.kk" aria-pressed="false">ҚАЗ</button>
+        <button type="button" data-lang="ru" lang="ru" data-i18n="common.lang.ru" aria-pressed="true">РУС</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="akim" class="akim" data-state="loading">
+    <p class="bk-meta" style="padding: 24px">Собираем картину дня…</p>
+  </main>
+
+  <noscript><p style="padding: 24px">Для «Картины дня» нужен включённый JavaScript.</p></noscript>
+
+  <script src="../i18n/i18n.js"></script>
+  <script src="akim.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      // ҚАЗ / РУС: выбор запоминает BirgeI18n (localStorage), кнопки показывают текущий язык.
+      var seg = document.querySelectorAll("[data-lang]");
+      function syncLang(lang) {
+        seg.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
+        document.title = BirgeI18n.t("akim.title") + " · Birge";
+      }
+      seg.forEach(function (b) {
+        b.addEventListener("click", function () { BirgeI18n.setLang(b.getAttribute("data-lang")); });
+      });
+      BirgeI18n.onChange(syncLang);
+      BirgeI18n.ready.then(syncLang);
+      // Адрес API можно переопределить: <main id="akim" data-api="/api/civic/v2">.
+      var main = document.getElementById("akim");
+      BirgeAkim.mount(main, { apiBase: main.getAttribute("data-api") || undefined });
+    })();
+  </script>
+</body>
+</html>

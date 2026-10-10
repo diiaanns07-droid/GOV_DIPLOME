@@ -1,0 +1,114 @@
+/* R09 · путь жителя v2 и «Мои обращения». Цвета, размеры и шрифт — токены ui-kit R11
+   (UX_SPEC §2), с запасными значениями на случай, если tokens.css ещё не подключён. */
+
+.bc-fab {
+  position: fixed; z-index: 30;
+  left: 50%; transform: translateX(-50%);
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  min-height: 56px; padding: 0 24px;
+  box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18));
+  max-width: calc(100vw - 32px);
+}
+.bc-fab[hidden] { display: none; }
+
+/* Панель: ноутбук — справа 400 px поверх карты; телефон — нижняя шторка. */
+.bc-panel {
+  position: fixed; z-index: 40;
+  top: calc(var(--header-h, 64px) + 12px); right: 12px; bottom: 12px;
+  width: var(--panel-w, 400px); max-width: calc(100vw - 24px);
+  display: flex; flex-direction: column;
+  background: var(--c-surface, #fff); color: var(--c-ink, #152c26);
+  border-radius: var(--r-l, 16px);
+  box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18));
+  font-family: var(--font, system-ui, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif);
+  font-size: var(--fs-body, 16px); line-height: 1.4;
+  padding: 0 20px 20px; overflow-y: auto; overscroll-behavior: contain;
+  animation: bc-in-right var(--t-base, 240ms) var(--ease, cubic-bezier(.22, 1, .36, 1));
+}
+.bc-panel[hidden] { display: none; }
+.bc-handle { display: none; }
+@keyframes bc-in-right { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes bc-in-up { from { transform: translateY(32px); opacity: .4; } to { transform: none; opacity: 1; } }
+
+@media (max-width: 1023px) {
+  .bc-panel {
+    top: auto; left: 0; right: 0; bottom: 0; width: auto; max-width: none;
+    border-radius: 20px 20px 0 0; padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    height: 92vh; height: 92dvh;
+    transition: height var(--t-base, 240ms) var(--ease, ease);
+    animation-name: bc-in-up;
+  }
+  .bc-panel[data-snap="half"] { height: 50vh; height: 50dvh; }
+  .bc-handle { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--c-line, #e4e9e3);
+               margin: 8px auto 0; flex: none; }
+}
+
+.bc-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 56px;
+           position: sticky; top: 0; background: inherit; z-index: 1; }
+.bc-head__spacer { flex: 1; }
+.bc-back, .bc-close { padding: 0 8px; }
+@media (max-width: 359px) { .bc-close__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } }
+
+.bc-title { font-size: var(--fs-title, 20px); font-weight: 700; line-height: 1.2; margin: 8px 0 12px; }
+.bc-title:focus { outline: none; }
+.bc-title:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+.bc-body { display: flex; flex-direction: column; gap: 12px; }
+.bc-hint { margin: 0; }
+.bc-lead { margin: 0; font-size: var(--fs-lead, 18px); font-weight: 600; }
+.bc-meta { margin: 0; font-size: var(--fs-caption, 14px); color: var(--c-text-2, #5b6a64); }
+.bc-label { font-weight: 600; margin: 4px 0 0; display: block; }
+.bc-question { font-size: var(--fs-lead, 18px); font-weight: 700; margin: 8px 0 0; }
+
+.bc-options { display: flex; flex-direction: column; gap: 8px; }
+.bc-option { justify-content: flex-start; text-align: left; white-space: normal; min-height: 56px; height: auto;
+             padding-top: 8px; padding-bottom: 8px; }
+.bc-option__label { flex: 1; }
+.bc-option__meta { font-size: var(--fs-caption, 14px); color: var(--c-text-2, #5b6a64); font-weight: 400; }
+.bc-option--first { border-color: var(--c-brand, #176b4a); border-width: 2px; }
+
+.bc-place { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 12px;
+            background: var(--c-paper, #f7f8f4); border-radius: var(--r-m, 12px); font-weight: 600; }
+
+.bc-textarea { width: 100%; box-sizing: border-box; min-height: 112px; resize: vertical;
+               font: inherit; font-size: 16px; /* ≥16 px: iOS не масштабирует страницу при вводе */
+               padding: 12px; border: 1px solid var(--c-line, #e4e9e3); border-radius: var(--r-m, 12px);
+               color: var(--c-ink, #152c26); background: var(--c-surface, #fff); }
+.bc-textarea:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+
+.bc-category { display: flex; flex-direction: column; gap: 8px; }
+.bc-cat-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.bc-cat-row__label { font-weight: 600; }
+.bc-change { align-self: flex-start; }
+.bc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.bc-grid__chip { flex-direction: column; justify-content: center; text-align: center; height: auto; min-height: 72px;
+                 padding: 8px 4px; white-space: normal; line-height: 1.15; border-radius: var(--r-m, 12px);
+                 font-size: 15px; hyphens: auto; overflow-wrap: anywhere; }
+.bc-grid__chip[data-suggested="true"] { border-color: var(--c-brand, #176b4a); }
+@media (min-width: 1024px) { .bc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.bc-send { margin-top: 4px; }
+.bc-loading { display: flex; flex-direction: column; gap: 8px; }
+.bc-loading__text { color: var(--c-text-2, #5b6a64); }
+.bc-skel-line { height: 56px; border-radius: var(--r-m, 12px); }
+.bc-skel-card { height: 120px; border-radius: var(--r-l, 16px); }
+
+.bc-similar { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--r-l, 16px);
+              background: var(--c-paper, #f7f8f4); }
+.bc-similar__count { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 600; }
+
+.bc-code { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; font-size: var(--fs-lead, 18px); }
+.bc-code__value { font-size: 24px; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+
+.bc-mine { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.bc-mine__card { display: flex; flex-direction: column; gap: 6px; }
+.bc-mine__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.bc-mine__cat { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.bc-overdue { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--c-danger, #b3362e); font-weight: 600; }
+
+.bc-toast { position: fixed; z-index: 60; left: 50%; transform: translateX(-50%);
+            bottom: calc(88px + env(safe-area-inset-bottom, 0px)); max-width: min(480px, calc(100vw - 32px)); }
+.bc-toast[hidden] { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-panel { animation: none; transition: none; }
+}
