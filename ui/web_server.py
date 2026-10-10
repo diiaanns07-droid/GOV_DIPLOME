@@ -926,7 +926,23 @@ class CivicV2Gateway:
     )
 
     def _seed_demo_complaints(self, store):
-        """Синтетические жалобы R09 для шага 2 демо (только CIVIC_DEMO=1). Сбой не мешает приложению."""
+        """Синтетические жалобы R09 для шага 2 демо (только CIVIC_DEMO=1). Сбой не мешает приложению.
+
+        Сначала засев самого R09 (ui.civic_feedback.v2.demo_seed.seed_demo, поставка 14a75c6: те же «Хан Шатыр» и
+        «Я тоже», постоянные id, время «30 ч назад»); нет модуля — запасной засев R01 ниже.
+        """
+        try:
+            seed = getattr(self._import("ui.civic_feedback.v2.demo_seed"), "seed_demo", None)
+        except Exception:
+            seed = None
+        if callable(seed):
+            try:
+                report = seed(getattr(store, "store", store))
+                LOGGER.info("civic-demo: R09 demo complaints %s", report)
+                return report
+            except Exception:
+                LOGGER.exception("civic-demo: демо-жалобы R09 не загрузились")
+                return None
         create = getattr(getattr(store, "store", store), "create", None)
         if not callable(create):
             return 0

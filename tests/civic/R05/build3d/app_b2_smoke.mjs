@@ -122,6 +122,9 @@ try {
   await p.waitForTimeout(600);
   const cardR = await rect(p, "#birge-build3d-root .b3d-dock"), panel2 = await rect(p, ".civic-panel");
   check("card_not_over_shell_panel", !overlap(cardR, panel2) && !!(await p.$("#birge-build3d-root [data-action=delete]")), { card: cardR, panel: panel2 });
+  // Легенда тепловой карты R07 (внизу слева) не лежит под карточкой проекта (R11 ночь, B3 п. 9; правило в патче R01).
+  const legend = await p.evaluate(() => { const l = document.querySelector(".r07-maplegend"); return l ? getComputedStyle(l).visibility : "нет легенды"; });
+  check("r07_legend_hidden_while_3d_card_open", legend !== "visible", legend);
   // Камера ставит объект в свободную часть карты: не под карточкой, шапкой, «Территорией», панелью и кнопками карты.
   await p.waitForFunction(() => !map.isMoving(), null, { timeout: 5000 }).catch(() => {});
   await p.waitForTimeout(300);

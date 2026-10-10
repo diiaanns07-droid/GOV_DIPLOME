@@ -541,9 +541,26 @@ def test_demo_complaints_are_seeded_once_and_marked_demo():
             return saved[key], created
 
     gateway = CivicV2Gateway(demo=True)
+    real_import = gateway._import
+    gateway._import = lambda name: None if name == "ui.civic_feedback.v2.demo_seed" else real_import(name)  # запасной путь R01
     assert gateway._seed_demo_complaints(FakeStore()) == 3
     store = FakeStore()
     store.create = FakeStore.create.__get__(store)
     assert gateway._seed_demo_complaints(store) == 0  # те же request_id — дублей нет
     assert all(demo is True for _payload, _device, demo in calls)
     assert all(p["category"] == "lighting" and p["target"]["id"] == "osm-node-4109037549" for p, _d, _demo in calls)
+
+
+def test_demo_complaints_prefer_the_r09_seed():
+    """Есть ui.civic_feedback.v2.demo_seed (R09) — засевает он, запасной путь R01 не вызывается."""
+    seen = []
+    gateway = CivicV2Gateway(demo=True)
+    gateway._import = lambda name: types.SimpleNamespace(seed_demo=lambda store: seen.append(store) or {"created": 2}) \
+        if name == "ui.civic_feedback.v2.demo_seed" else None
+
+    class Store:
+        def create(self, *a, **k):
+            raise AssertionError("запасной засев R01 не должен вызываться")
+
+    store = Store()
+    assert gateway._seed_demo_complaints(store) == {"created": 2} and seen == [store]

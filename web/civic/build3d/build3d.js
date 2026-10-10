@@ -1217,7 +1217,8 @@
       var line = coords.map(function (c) {
         return Core.toLocal(a, c);
       });
-      return { poles: Core.sampleAlong(line, Core.LIGHT_STEP_M), line: line, offset: Core.LIGHT_OFFSET_M };
+      var offset = streets && streets.poleOffset ? streets.poleOffset(coords) : Core.LIGHT_OFFSET_M;
+      return { poles: Core.sampleAlong(line, Core.LIGHT_STEP_M), line: line, offset: offset };
     }
 
     function buildGeos(p) {

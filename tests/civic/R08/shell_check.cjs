@@ -89,6 +89,23 @@ const KEYLIKE = /\b(akim|common|district|cat|status|stage|object|heat|shell|date
       check(`${tag}: горячее место → карта с карточкой цели`, section === "map" && card && card.title === name, { section, card, name });
       check(`${tag}: в карточке то же число людей и 7 дней`, card && new RegExp("(^|\\D)" + first.count + "(\\D|$)").test(card.reported) && /7/.test(card.reported), card);
       await page.screenshot({ path: path.join(OUT, `shell-target-${tag}.png`) });
+      // Объект с местом на карте (R06) → раздел «Карта», объект выбран (R11, ночь 6, п. 4).
+      const withPlace = [...(api.objects.late || []), ...(api.objects.stale || [])].find((o) => o.has_place);
+      if (withPlace && width === 1366) {
+        await page.evaluate(() => window.BirgeShell.setSection("day"));
+        await page.waitForSelector("#birge-day-root[data-state=ok]", { timeout: 20000 });
+        const link = await page.$(`#birge-day-root a.akim-obj--link[data-key="object:${withPlace.id}"]`);
+        // Переход к объекту включает оболочка (objectHref); пока не включён — строки не ссылки, проверять нечего.
+        if (!link) console.log(`NOTE ${tag}: переход к объекту в оболочке не включён (objectHref) — шаг пропущен`);
+        else {
+          await link.click();
+          await page.waitForFunction((id) => document.body.dataset.birgeSection === "map" && window.CivicShell && window.CivicShell.selected === id,
+            withPlace.id, { timeout: 10000 }).catch(() => {});
+          const st = await page.evaluate(() => ({ section: document.body.dataset.birgeSection, selected: window.CivicShell && window.CivicShell.selected }));
+          check(`${tag}: объект «${withPlace.title_ru}» → карта, объект выбран`, st.section === "map" && st.selected === withPlace.id, st);
+          await page.screenshot({ path: path.join(OUT, `shell-object-${tag}.png`) });
+        }
+      }
       check(`${tag}: без ошибок JS`, errors.length === 0, errors.slice(0, 3));
       await ctx.close();
     }

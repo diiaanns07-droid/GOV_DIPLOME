@@ -11,6 +11,7 @@ R01 чужой код не переписывает: здесь — что сл�
 | I-03 | мелочь (красный тест) | R07 | `test_r07_day3.py::test_r09_approximate_cell_is_drawn_where_the_resident_tapped` считает id по старой сетке R09 (70.9) | исправлен (R07 597ec4f) |
 | I-04 | важно | R12 (+R11) | Кабинет сотрудника не переведён на казахский, служебная строка «editor · /staff/meta» | исправлено в сборке R01 патчем R11 R12_staff_i18n.patch (ночь, круг 3); строка скрыта CSS; R12 — включить патч в свою поставку |
 | I-05 | мелочь | R05 | r14_shell один раз (из 3 прогонов): «[build3d] предложения не загрузились TypeError: Failed to fetch» в консоли — запрос списка прерван перезагрузкой страницы; лучше не писать console.error для AbortError/перехода | открыт (не воспроизводится стабильно) |
+| I-06 | мелочь | R09 | Телефон: после «Отправить» → «Это другая проблема» и быстрого закрытия мастера (Escape) через задержку классификатора — TypeError «Cannot read properties of null (reading 'text')» (complaint.js, тело таймера scheduleClassify читает state.text после close()). Нашёл Codex (OFFLINE R09_ISSUE.md), в R09 14a75c6 ещё есть. Правка R09: в close() — clearTimeout(classifyTimer); classifySeq++; в таймере — `if (!state) return;` | открыт |
 
 ## I-01 · R07 · подписи объектов OSM в сборке
 

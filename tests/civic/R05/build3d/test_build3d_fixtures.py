@@ -78,7 +78,7 @@ class Fixtures(unittest.TestCase):
     def test_streets_are_real_graph_edges(self):
         names = self.streets["names"]
         self.assertGreater(len(self.streets["edges"]), 500)
-        for eid, ni, _f, _t, length, geom in self.streets["edges"]:
+        for eid, ni, _f, _t, length, geom, *_rest in self.streets["edges"]:
             src = self.by_id[eid]  # id как у R12 /targets: osm-w<way>-<n>
             self.assertEqual(names[ni], src["name"])
             self.assertEqual(len(geom), len(src["geometry"]))
@@ -88,7 +88,7 @@ class Fixtures(unittest.TestCase):
             self.assertAlmostEqual(length, src["length_m"], delta=0.01)
 
     def test_street_coordinates_inside_astana(self):
-        for _eid, _ni, _f, _t, _l, geom in self.streets["edges"]:
+        for _eid, _ni, _f, _t, _l, geom, *_rest in self.streets["edges"]:
             for lon, lat in (geom[0], geom[-1]):
                 self.assertTrue(self.in_astana(lon, lat), (lon, lat))
 
@@ -211,6 +211,20 @@ class Fixtures(unittest.TestCase):
             if name is not None:
                 self.assertIn(name, osm_kk, "название не из OSM")
         self.assertEqual(self.streets["names_kk_source"]["found"], sum(1 for x in kk if x))
+
+    def test_pole_offset_from_osm_lanes_and_width(self):
+        # Опоры освещения — у края проезжей части: половина ширины + 1,5 м, не меньше 5 м (не на полосах движения).
+        self.assertEqual(mf.pole_offset_m({"highway": "residential"}), 5.0)
+        self.assertEqual(mf.pole_offset_m({"highway": "secondary"}), 8.0)  # 4 полосы по умолчанию
+        self.assertEqual(mf.pole_offset_m({"highway": "primary", "lanes": "7"}), 12.9)
+        self.assertEqual(mf.pole_offset_m({"highway": "primary", "lanes": "7", "width": "20"}), 11.5)  # width главнее
+        self.assertEqual(mf.pole_offset_m({"highway": "tertiary", "lanes": "abc"}), 5.0)
+        fields = self.streets["fields"]
+        self.assertEqual(fields[-1], "pole_offset_m")
+        for e in self.streets["edges"]:
+            self.assertGreaterEqual(e[6], 5.0, e[0])
+        wide = [e for e in self.streets["edges"] if e[6] >= 12]
+        self.assertTrue(wide, "есть широкие улицы (7 полос) — опоры дальше от оси")
 
     def test_license_and_attribution(self):
         for data in (self.streets, self.proposals):

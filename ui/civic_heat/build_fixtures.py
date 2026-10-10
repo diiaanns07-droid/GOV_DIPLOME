@@ -8,7 +8,11 @@
       из data/civic/astana/osm-objects/ (LOCAL-1) и ячейки ~150 м только для «запахов»;
   ui/civic_heat/fixtures/osm_street_labels.json — подписи безымянных объектов OSM по ближайшей улице;
   web/civic/heat/fixtures/basemap-nura.geojson — улицы крупного плана Нуры для офлайн-подложки демо;
-  web/civic/heat/fixtures/basemap-city.geojson — магистрали города и границы районов (мелкий масштаб).
+  web/civic/heat/fixtures/basemap-city.geojson — магистрали города и границы районов (мелкий масштаб);
+  в basemap-nura.geojson добавлены и улицы на 700 м вокруг демо-целей вне Нуры (свойство "a": 1): горячее место
+      в Байконуре, Есиле… на демо без сети тоже стоит на улицах, а не на пустом поле (UX_REVIEW R11, ночь 7, п. 1).
+      Офлайн-фон оболочки R01 (web/map.js) уже читает этот файл — менять в оболочке ничего не нужно.
+  Только эти улицы, без пересборки целей:  python -m ui.civic_heat.build_fixtures --around
 
 Отбор детерминированный: одинаковые данные → одинаковые файлы. Объекты не выдумываются.
 Место промзоны в OSM-наборе нет (landuse=industrial не выгружали) — «запахи» пока на ячейках у Коргалжинского шоссе.
@@ -31,6 +35,7 @@ OUT_TARGETS = Path(__file__).resolve().parent / "fixtures" / "targets_demo.json"
 OUT_STREET_LABELS = Path(__file__).resolve().parent / "fixtures" / "osm_street_labels.json"
 OUT_BASEMAP_NURA = ROOT / "web" / "civic" / "heat" / "fixtures" / "basemap-nura.geojson"
 OUT_BASEMAP_CITY = ROOT / "web" / "civic" / "heat" / "fixtures" / "basemap-city.geojson"
+AROUND_M = 700.0     # улицы на 700 м вокруг каждой демо-цели вне Нуры
 
 # Крупный план Нуры: самая плотная по улицам часть района (подсчёт рёбер по сетке 1 км).
 FOCUS = (71.405, 51.128)
@@ -274,6 +279,7 @@ def build():
     OUT_TARGETS.parent.mkdir(parents=True, exist_ok=True)
     OUT_TARGETS.write_text(json.dumps({"_meta": meta, "targets": dict(sorted(targets.items()))}, ensure_ascii=False, indent=1) + "\n", "utf-8")
     write_basemaps(graph, ways, nodes)
+    write_basemap_around(graph, ways, targets)
     return targets
 
 
@@ -340,6 +346,50 @@ def _round_geom(g, digits=6):
     return {"type": g["type"], "coordinates": r(g["coordinates"])}
 
 
+def _street_feature(e, ways):
+    """Ребро графа → линия подложки {c: major | street | minor, n: имя}; тротуары и тропинки — None."""
+    hw = (ways.get(_way_id(e["id"])) or {}).get("tags", {}).get("highway", "")
+    if hw in ("footway", "path", "cycleway", "steps", "track", "corridor", "elevator", ""):
+        return None
+    cls = "major" if hw in MAJOR else ("street" if hw in ("tertiary", "tertiary_link", "residential", "living_street", "unclassified", "pedestrian") else "minor")
+    props = {"c": cls}
+    if e.get("name") and cls != "minor":
+        props["n"] = e["name"]
+    return {"type": "Feature", "properties": props,
+            "geometry": {"type": "LineString", "coordinates": [[round(c[0], 5), round(c[1], 5)] for c in e["geometry"]]}}
+
+
+def write_basemap_around(graph, ways, targets: dict):
+    """Дописывает в basemap-nura улицы вокруг демо-целей вне прямоугольника Нуры (кусками на AROUND_M).
+    Рёбра, уже попавшие в Нуру, не повторяются; прежние «around»-линии ("a": 1) заменяются."""
+    half_lat = BASEMAP_HALF_M / 110574.0
+    half_lon = BASEMAP_HALF_M / (111320.0 * math.cos(math.radians(FOCUS[1])))
+    nura_box = (FOCUS[0] - half_lon, FOCUS[1] - half_lat, FOCUS[0] + half_lon, FOCUS[1] + half_lat)
+    inside = lambda c, b: b[0] <= c[0] <= b[2] and b[1] <= c[1] <= b[3]
+    boxes = []
+    for t in targets.values():
+        a = geo.anchor_of(t["geometry"])
+        if not a or inside(a, nura_box):
+            continue
+        dl = AROUND_M / 110574.0
+        dn = AROUND_M / (111320.0 * math.cos(math.radians(a[1])))
+        boxes.append((a[0] - dn, a[1] - dl, a[0] + dn, a[1] + dl))
+    extra = []
+    for e in graph["edges"]:
+        coords = e["geometry"]
+        if any(inside(c, nura_box) for c in coords) or not any(inside(c, b) for b in boxes for c in coords):
+            continue
+        f = _street_feature(e, ways)
+        if f:
+            f["properties"]["a"] = 1
+            extra.append(f)
+    base = json.loads(OUT_BASEMAP_NURA.read_text("utf-8"))
+    base["features"] = [f for f in base["features"] if not f["properties"].get("a")] + extra
+    base["note"] = f"Нура целиком + улицы на {int(AROUND_M)} м вокруг {len(boxes)} демо-целей в других районах (\"a\": 1)"
+    OUT_BASEMAP_NURA.write_text(json.dumps(base, ensure_ascii=False, separators=(",", ":")), "utf-8")
+    return len(boxes), len(extra)
+
+
 def write_basemaps(graph, ways, nodes):
     """Офлайн-подложка демо: настоящие улицы OSM (тайлы в облаке недоступны, на финале может не быть сети)."""
     half_lat = BASEMAP_HALF_M / 110574.0
@@ -382,6 +432,13 @@ def write_basemaps(graph, ways, nodes):
 
 
 if __name__ == "__main__":
+    import sys
+
+    if "--around" in sys.argv:   # только подложка вокруг целей: цели и числа демо не меняются
+        g, w, _ = load_inputs()
+        n_boxes, n_feats = write_basemap_around(g, w, json.loads(OUT_TARGETS.read_text("utf-8"))["targets"])
+        print(OUT_BASEMAP_NURA.relative_to(ROOT), "+", n_feats, "линий вокруг", n_boxes, "целей,", round(OUT_BASEMAP_NURA.stat().st_size / 1024), "КБ")
+        raise SystemExit(0)
     t = build()
     from collections import Counter
 

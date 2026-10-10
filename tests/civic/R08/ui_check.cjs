@@ -374,6 +374,51 @@ async function shot(page, name, full) {
     }
   }
 
+  {
+    // R11 (ночь 6, п. 4): объект с местом на карте — ссылка /#object=<id> и событие birge:open-object;
+    // объект без места (мероприятие «без точного места», демо-фикстура) — обычная строка.
+    const withPlace = JSON.parse(JSON.stringify(realSummary));
+    const base = { kind: "roadworks", title_ru: "Ремонт тротуара", title_kk: "Тротуарды жөндеу", title_kk_missing: false,
+      district: "nura", stage: "construction", planned_end: "2026-11-01", forecast_end: "2026-11-20", delay_days: 19,
+      stale: false, updated_at: null, days_since_update: 2, demo: true };
+    const objs = [{ ...base, id: "obj-place-1", has_place: true }, { ...base, id: "obj-noplace-2", title_ru: "Мероприятие без места", has_place: false, delay_days: 6 }];
+    Object.assign(withPlace.objects, { available: true, late: objs, stale: [], late_count: 2, stale_count: 0, total: 2 });
+    const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru", route: (route) => route.fulfill({ json: withPlace }) });
+    await waitState(page, "ok");
+    const byDefault = await page.$$(".akim-objects a.akim-obj--link");
+    check("объекты: по умолчанию (objectHref не задан) строки не ссылки", byDefault.length === 0, byDefault.length);
+    // Включаем переход, как это сделает оболочка R01: mount(…, { objectHref: "/#object={id}" }).
+    await page.evaluate(() => {
+      const el = document.getElementById("akim");
+      el.birgeAkim.destroy();
+      window.BirgeAkim.mount(el, { objectHref: "/#object={id}", syncUrl: false });
+    });
+    await waitState(page, "ok");
+    await page.waitForSelector(".akim-objects .akim-obj");
+    const links = await page.$$eval(".akim-objects a.akim-obj--link", (els) => els.map((a) => a.getAttribute("href")));
+    const rows = await page.$$eval(".akim-objects .akim-obj", (els) => els.length);
+    await page.evaluate(() => {
+      window.__obj = null;
+      document.addEventListener("birge:open-object", (e) => { window.__obj = e.detail; e.preventDefault(); });
+    });
+    const urlBefore = page.url();
+    await page.click(".akim-objects a.akim-obj--link");
+    const opened = await page.evaluate(() => window.__obj);
+    check("объекты: с местом — ссылка на карту и событие, без места — обычная строка",
+      links.length === 1 && links[0] === "/#object=obj-place-1" && rows === 2 && opened && opened.id === "obj-place-1" && page.url() === urlBefore,
+      { links, rows, opened });
+    await ctx.close();
+  }
+  for (const lang of ["ru", "kk"]) {
+    // R11 (ночь 5): на телефоне длинные названия тем («Жаяу жүргіншілер жолы») — в одну строку, полоса под ними.
+    const { ctx, page } = await open(browser, { width: 375, height: 812, lang });
+    await waitState(page, "ok");
+    const tall = await page.$$eval(".akim-topics .bk-bar__label, .akim-districts .bk-bar__label", (els) =>
+      els.filter((e) => e.getBoundingClientRect().height > 30).map((e) => e.textContent.trim()));
+    check(`375-${lang}: подписи тем и районов в одну строку`, tall.length === 0, tall);
+    await ctx.close();
+  }
+
   // ───────────── 3б. Тихое обновление ─────────────
   {
     // Второй ответ сервера отличается (+1 новое обращение); третий — нет связи. Экран не мигает скелетоном,

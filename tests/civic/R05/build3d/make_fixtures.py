@@ -138,6 +138,9 @@ def main(out_dir=None):
             round(e["length_m"], 2), [[r(x), r(y)] for x, y in e["geometry"]],
         ])
     edges.sort(key=lambda row: row[0])
+    way_tags = osm_way_tags()
+    for row in edges:
+        row.append(pole_offset_m(way_tags.get(int(row[0].split("-")[1][1:]), {})))
     names_kk = street_names_kk(edges, names)
     streets = {
         "schema": "birge-build3d-streets-v1",
@@ -145,7 +148,11 @@ def main(out_dir=None):
                    "Заглушка до R12 /targets; форма улиц — настоящая OSM.",
         "bbox": list(FOCUS_BBOX),
         "source": source,
-        "fields": ["id", "name_index", "from_node_index", "to_node_index", "length_m", "geometry"],
+        "fields": ["id", "name_index", "from_node_index", "to_node_index", "length_m", "geometry", "pole_offset_m"],
+        # Опоры освещения — у края проезжей части, а не на ней: половина ширины (width или lanes × 3,25 м, иначе типовое
+        # число полос по классу highway) + 1,5 м, не меньше 5 м. Производное из тегов OSM того же снимка.
+        "pole_offset_source": {"path": "data/civic/astana/osm-walking/overpass.json.gz", "tags": ["width", "lanes", "highway"],
+                               "lane_m": LANE_M, "curb_m": CURB_M, "min_m": MIN_POLE_OFFSET_M, "evidence_type": "derived (OSM)"},
         "names": names,
         # Казахское название — только если оно есть в OSM (name:kk тех же путей, снимок osm-walking); иначе null и
         # интерфейс показывает русское с lang="ru" (так же делает R12 label_kk). Машинного перевода нет.
@@ -288,6 +295,38 @@ def outer_rings(el):
 
 
 OSM_WALKING = os.path.join(REPO, "data", "civic", "astana", "osm-walking", "overpass.json.gz")
+
+
+LANE_M = 3.25  # городская полоса движения
+CURB_M = 1.5  # от края проезжей части до опоры
+MIN_POLE_OFFSET_M = 5.0
+DEFAULT_LANES = {"motorway": 4, "trunk": 4, "primary": 4, "secondary": 4, "tertiary": 2, "residential": 2,
+                 "unclassified": 2, "living_street": 1, "service": 1}
+
+
+def osm_way_tags():
+    with gzip.open(OSM_WALKING, "rt", encoding="utf-8") as fh:
+        return {el["id"]: (el.get("tags") or {}) for el in json.load(fh).get("elements", []) if el.get("type") == "way"}
+
+
+def pole_offset_m(tags):
+    """Расстояние опоры от оси пути OSM, м: половина ширины проезжей части + отступ от бордюра, не меньше 5 м."""
+    half = None
+    try:
+        w = float(str(tags.get("width", "")).replace(",", ".").split()[0])
+        if 3 <= w <= 60:
+            half = w / 2
+    except (ValueError, IndexError):
+        pass
+    if half is None:
+        try:
+            lanes = int(str(tags.get("lanes", "")).split(";")[0])
+        except ValueError:
+            lanes = 0
+        if not 1 <= lanes <= 10:
+            lanes = DEFAULT_LANES.get(tags.get("highway"), 2)
+        half = lanes * LANE_M / 2
+    return round(max(MIN_POLE_OFFSET_M, half + CURB_M), 1)
 
 
 def street_names_kk(edges, names):

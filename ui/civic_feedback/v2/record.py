@@ -237,29 +237,45 @@ def _xy(lon: float, lat: float, lat0: float) -> tuple[float, float]:
     return (lon * 111_320.0 * math.cos(math.radians(lat0)), lat * 110_540.0)
 
 
+def _polyline_m(px, py, pts) -> float:
+    best = float("inf")
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        dx, dy = bx - ax, by - ay
+        t = 0.0 if dx == dy == 0 else max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)))
+        best = min(best, math.hypot(ax + t * dx - px, ay + t * dy - py))
+    return best
+
+
+def _polygon_m(px, py, rings_xy) -> float:
+    """0 внутри (первое кольцо — граница, остальные — дыры), иначе до ближайшей границы."""
+    inside = False
+    for pts in rings_xy:
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            if (ay > py) != (by > py) and px < ax + (py - ay) * (bx - ax) / (by - ay):
+                inside = not inside
+    return 0.0 if inside else min(_polyline_m(px, py, pts) for pts in rings_xy if len(pts) > 1)
+
+
 def distance_to_geometry_m(point, geometry) -> float | None:
-    """Расстояние (м) от точки до Point / LineString / Polygon (внутри многоугольника — 0). None — форма неизвестна."""
+    """Расстояние (м) от точки до Point / LineString / Polygon / Multi* (внутри области — 0). None — форма неизвестна."""
     if not isinstance(geometry, dict):
         return None
     kind, coords = geometry.get("type"), geometry.get("coordinates")
     lat0 = float(point[1])
     px, py = _xy(float(point[0]), lat0, lat0)
+    xy = lambda ring: [_xy(float(c[0]), float(c[1]), lat0) for c in ring]  # noqa: E731
     if kind == "Point":
-        x, y = _xy(coords[0], coords[1], lat0)
+        x, y = _xy(float(coords[0]), float(coords[1]), lat0)
         return math.hypot(x - px, y - py)
-    lines = [coords] if kind == "LineString" else list(coords or []) if kind == "Polygon" else []
-    if not lines:
-        return None
-    best, inside = float("inf"), False
-    for ring in lines:
-        pts = [_xy(c[0], c[1], lat0) for c in ring]
-        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
-            dx, dy = bx - ax, by - ay
-            t = 0.0 if dx == dy == 0 else max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)))
-            best = min(best, math.hypot(ax + t * dx - px, ay + t * dy - py))
-            if kind == "Polygon" and (ay > py) != (by > py) and px < ax + (py - ay) * dx / (dy or 1e-12):
-                inside = not inside
-    return 0.0 if inside else best
+    if kind == "LineString" and len(coords) > 1:
+        return _polyline_m(px, py, xy(coords))
+    if kind == "MultiLineString" and coords:
+        return min(_polyline_m(px, py, xy(line)) for line in coords if len(line) > 1)
+    if kind == "Polygon" and coords:
+        return _polygon_m(px, py, [xy(ring) for ring in coords])
+    if kind == "MultiPolygon" and coords:
+        return min(_polygon_m(px, py, [xy(ring) for ring in poly]) for poly in coords if poly)
+    return None
 
 
 def checked_target(target: dict, point: list[float], lookup=None) -> dict:
@@ -275,13 +291,22 @@ def checked_target(target: dict, point: list[float], lookup=None) -> dict:
     clean = {"kind": target["kind"], "id": target["id"]}
     if target.get("approximate") is True:
         clean["approximate"] = True
-    if lookup is None:
-        return clean
+    found = None
+    if lookup is not None:
+        try:
+            found = lookup(clean)
+        except Exception:  # noqa: BLE001 — карта R12 недоступна: цели не верим, но жалобу не теряем
+            found = None
+    if found is None and cell_polygon(target["id"]) is not None:
+        # Ячейка «примерного места» — сетка R09 (общая с R07/R12): контур считаем сами, даже без R12.
+        found = {"geometry": {"type": "Polygon", "coordinates": [cell_polygon(target["id"])]},
+                 "label_ru": own_cell["label_ru"], "label_kk": own_cell["label_kk"], "approximate": True}
+    if found is None and lookup is None:
+        return clean  # без карты R12 объект/участок проверить нечем: id сохраняем, подписи жителя — нет
     try:
-        found = lookup(clean)
-    except Exception:
-        found = None
-    distance = distance_to_geometry_m(point, (found or {}).get("geometry")) if found else None
+        distance = distance_to_geometry_m(point, found.get("geometry")) if isinstance(found, dict) else None
+    except (TypeError, ValueError, IndexError, KeyError):
+        distance = None  # неверная форма цели с карты — как «цель неизвестна»
     if distance is None or distance > TARGET_MAX_M:
         return own_cell
     for name in ("label_ru", "label_kk"):
