@@ -19,9 +19,9 @@
   "weather": "synthetic fixture (weather_fixture.csv) до LOCAL-9",
   "results": "на синтетике — не реальная точность"
  },
- "code_sha": "15fc856",
- "tested_sha": "15fc856 (Linux, Python 3.13, scikit-learn, numpy)",
- "push_status": "15fc856 и документы — в origin/claude/r14-R13 (см. git log)",
+ "code_sha": "a0133e9",
+ "tested_sha": "a0133e9 (Linux, Python 3.13, scikit-learn, numpy)",
+ "push_status": "a0133e9 и документы — в origin/claude/r14-R13 (см. git log)",
  "changed_paths": [
   "ml/civic_forecast/ (targets, weather, history, features, model, reasons, backtest, CLI, README, RESULTS, data/)",
   "ui/civic_forecast/ (forecast, forecast_response, attention_next_month, build, data/forecast_cache.json)",
@@ -31,7 +31,7 @@
  ],
  "results_on_synthetic": "История жалоб — СИНТЕТИКА, погода — real (LOCAL-9). precision@10/20/30: бустинг 0,57/0,51/0,47; без погоды 0,59/0,51/0,46; запасная 0,57/0,51/0,46; «как в прошлом месяце» 0,47/0,40/0,38; «как год назад» 0,40/0,36/0,32; случайно 0,04. Ориентир Gton 60–70 % не достигнут; погодные признаки ≈ 0 (−0,006).",
  "tests": {
-  "pytest tests/civic/R13 @15fc856": "PASS 31 passed, 7 skipped (без шлюза R01)",
+  "pytest tests/civic/R13 @a0133e9": "PASS 32 passed, 7 skipped (без шлюза R01)",
   "pytest tests/civic/R13/test_r13_gateway_r01.py c R13_R01_WEB_SERVER = ui/web_server.py R01 d9a8895": "PASS 7/7",
   "backtest 3 seed × 16 месяцев на реальной погоде": "PASS — RESULTS.md (копия в research/round-14-results/R13/)",
   "сезонность генератора на реальной и на синтетической погоде": "PASS (полная история, те же пороги)",
@@ -47,13 +47,14 @@
   "Безымянные территории подписаны ориентиром OSM; 138 из 1307 — без ориентира в 800 м (просто «Двор»/«Аялдама»).",
   "Казахские тексты причин — черновик R13, нужна вычитка (KK_REVIEW R11)."
  ],
- "next_step": "R01 (FINAL): взять по путям на code_sha 15fc856 — ml/civic_forecast/, ui/civic_forecast/, tests/civic/R13/, data/civic/astana/weather/ (тот же файл LOCAL-9, что в пакете). Маршрут /forecast без изменений. R08: если блок прогноза выводится — пометка «Прототип…» в обеих локалях.",
+ "next_step": "R01 (FINAL): взять по путям на code_sha a0133e9 — ml/civic_forecast/, ui/civic_forecast/, tests/civic/R13/, data/civic/astana/weather/ (тот же файл LOCAL-9, что в пакете). Маршрут /forecast без изменений. R08: если блок прогноза выводится — пометка «Прототип…» в обеих локалях.",
  "delivery": 2,
  "delivery_note": "Поставка 2 (ночь 10→11 окт) для FINAL R01: казахские правки R11 (KK_REVIEW), backtest и кэш на реальной погоде LOCAL-9. Поставка 1: 8705829 (в B2/B3 R01).",
  "night_fixes": {
   "R11 KK_REVIEW (причины)": "«шешілмей тұр», «жылдық норма», «(+28 °C және одан жоғары) — қоқыс пен жағымсыз иіс» — test_reason_texts_ru_kk",
   "R11 KK_REVIEW (подписи территорий)": "«Аула · жанында …» без запятой и двоеточия (257 подписей в кэше; числа прогноза не изменились — сравнено поле за полем)",
   "R11 UX_REVIEW день 4 (ключи)": "forecast.title «Келесі айда назар аудару керек орындар», forecast.prototype «синтетикалық тарихи деректерде» — в INTEGRATION и в note_kk ответа",
-  "LOCAL-9 (реальная погода)": "backtest 3 seed × 16 мес. и кэш на реальной погоде; RESULTS.md «Погода: real»; жалобы — по-прежнему синтетика"
+  "LOCAL-9 (реальная погода)": "backtest 3 seed × 16 мес. и кэш на реальной погоде; RESULTS.md «Погода: real»; жалобы — по-прежнему синтетика",
+  "R11 UX_REVIEW ночь п. 5 (улицы в kk)": "подписи территорий в ҚАЗ без «улица/проспект»: «Кенгир көшесі», «… даңғылы» (правило R07 kk_street_from_ru); 0 из 2334 — test_kk_labels_have_no_russian_street_words"
  }
 }
