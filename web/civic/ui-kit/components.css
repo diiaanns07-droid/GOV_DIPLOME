@@ -1,0 +1,1416 @@
+/*
+ * Birge · ui-kit · компоненты (R11, раунд 14).
+ * Подключать после tokens.css. Все классы с префиксом bk- — чтобы не задеть старые стили web/style.css.
+ * Витрина со всеми состояниями — /civic/ui-kit/index.html. Размеры — UX_SPEC.md §5.
+ *
+ * Общие правила:
+ *  - зона нажатия ≥ 48 px (--tap); текст кнопок переносится, а не обрезается (казахский длиннее);
+ *  - фокус виден всегда (:focus-visible);
+ *  - цвет никогда не один: у статусов слово, у уровней число.
+ */
+
+/* ───────────── База ───────────── */
+
+.bk-app {
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: var(--lh-text);
+  color: var(--c-ink);
+  background: var(--c-paper);
+  -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;
+}
+.bk-app *,
+.bk-app *::before,
+.bk-app *::after {
+  box-sizing: border-box;
+}
+/* Заголовки внутри ui-kit */
+.bk-h1 {
+  margin: 0;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-head);
+  font-weight: var(--fw-bold);
+}
+.bk-h2 {
+  margin: 0;
+  font-size: var(--fs-title);
+  line-height: var(--lh-head);
+  font-weight: var(--fw-bold);
+}
+.bk-lead {
+  font-size: var(--fs-lead);
+}
+.bk-meta {
+  font-size: var(--fs-caption);
+  color: var(--c-text-2);
+}
+.bk-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Иконка из icons.svg: <svg class="ic"><use href="…/icons.svg#i-bus"/></svg> */
+.ic {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: middle;
+}
+.ic--18 {
+  width: 18px;
+  height: 18px;
+}
+.ic--24 {
+  width: 24px;
+  height: 24px;
+}
+.ic--48 {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.5;
+}
+
+/* Только для экранного диктора */
+.bk-sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+/* «Перейти к главной кнопке» — видна только при фокусе с клавиатуры */
+.bk-skip {
+  position: absolute;
+  left: var(--s-3);
+  top: -100px;
+  z-index: var(--z-toast);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-m);
+  background: var(--c-ink);
+  color: #fff;
+  font-weight: var(--fw-semi);
+  text-decoration: none;
+}
+.bk-skip:focus {
+  top: var(--s-3);
+}
+
+/* Единая рамка фокуса: синяя + белый зазор, видна и на карте, и на зелёной кнопке */
+.bk-app :focus-visible,
+.bk-focus:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+/* ───────────── Кнопки ───────────── */
+
+.bk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 10px var(--s-5);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal; /* перенос, а не обрезка */
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  text-decoration: none;
+  touch-action: manipulation;
+  transition:
+    background var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+.bk-btn:hover {
+  border-color: var(--c-ink);
+}
+.bk-btn:active {
+  transform: translateY(1px);
+}
+.bk-btn:disabled,
+.bk-btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+.bk-btn--primary {
+  border-color: var(--c-brand);
+  background: var(--c-brand);
+  color: #fff;
+}
+.bk-btn--primary:hover {
+  border-color: var(--c-brand-hover);
+  background: var(--c-brand-hover);
+}
+.bk-btn--primary:active {
+  background: var(--c-brand-press);
+}
+.bk-btn--dark {
+  border-color: var(--c-ink);
+  background: var(--c-ink);
+  color: #fff;
+}
+.bk-btn--danger {
+  border-color: var(--c-danger);
+  color: var(--c-danger);
+}
+.bk-btn--danger:hover {
+  background: var(--c-danger-soft);
+  border-color: var(--c-danger);
+}
+.bk-btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--c-brand);
+  padding-inline: var(--s-3);
+}
+.bk-btn--ghost:hover {
+  background: var(--c-brand-soft);
+  border-color: transparent;
+}
+.bk-btn--block {
+  display: flex;
+  width: 100%;
+}
+.bk-btn--lg {
+  min-height: var(--tap-lg);
+  border-radius: var(--r-l);
+  font-size: var(--fs-lead);
+  box-shadow: var(--shadow-2);
+}
+/* Состояние «Отправляем…»: крутилка слева, кнопка заблокирована */
+.bk-btn[aria-busy="true"]::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: bk-spin 0.8s linear infinite;
+}
+.bk-btn__count {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-bold);
+}
+.bk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+.bk-actions > .bk-btn {
+  flex: 1 1 160px;
+}
+
+/* Кнопка карты (+, −, ◎, 3D): только иконка, поэтому обязательны aria-label и title */
+.bk-mapbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-1);
+  font: inherit;
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+.bk-mapbtn:hover {
+  background: var(--c-paper);
+}
+.bk-mapbtn[aria-pressed="true"] {
+  background: var(--c-ink);
+  color: #fff;
+}
+.bk-maptools {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+/* ───────────── Чипы, переключатели, поиск ───────────── */
+
+.bk-chips {
+  display: flex;
+  gap: var(--s-2);
+  overflow-x: auto; /* прокрутка внутри строки, не всей страницы */
+  scrollbar-width: none;
+  padding: 4px 2px; /* место под рамку фокуса */
+  -webkit-overflow-scrolling: touch;
+}
+.bk-chips::-webkit-scrollbar {
+  display: none;
+}
+.bk-chips--wrap {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+.bk-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  min-height: 40px;
+  padding: 6px 14px 6px 10px;
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition: background var(--t-fast) var(--ease);
+}
+/* Зона нажатия 48 px при видимой высоте 40 px */
+.bk-chip::after {
+  content: "";
+  position: absolute;
+  inset: -4px 0;
+}
+.bk-chip:hover {
+  border-color: var(--c-ink);
+}
+.bk-chip[aria-pressed="true"],
+.bk-chip[aria-checked="true"] {
+  border-color: var(--c-ink);
+  background: var(--c-accent);
+}
+.bk-chip[aria-pressed="true"]::before,
+.bk-chip[aria-checked="true"]::before {
+  content: "✓";
+  font-weight: var(--fw-bold);
+}
+.bk-chip--suggest {
+  border-style: dashed;
+  border-color: var(--c-brand);
+  background: var(--c-brand-soft);
+}
+
+/* Сегментный переключатель: ҚАЗ|РУС, Акимат|Житель, 7|30|90 */
+.bk-seg {
+  display: inline-flex;
+  padding: 4px;
+  gap: 2px;
+  border-radius: var(--r-m);
+  background: var(--c-paper);
+  border: 1px solid var(--c-line);
+}
+.bk-seg > button {
+  position: relative;
+  min-height: 40px;
+  min-width: 48px;
+  padding: 0 var(--s-3);
+  border: 0;
+  border-radius: var(--r-s);
+  background: transparent;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  cursor: pointer;
+}
+.bk-seg > button::after {
+  content: "";
+  position: absolute;
+  inset: -4px 0;
+}
+.bk-seg > button[aria-pressed="true"] {
+  background: var(--c-surface);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-1);
+}
+
+.bk-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.bk-search > .ic {
+  position: absolute;
+  left: 14px;
+  color: var(--c-text-2);
+  pointer-events: none;
+}
+.bk-search input {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 var(--tap) 0 44px;
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+}
+.bk-search input::placeholder {
+  color: var(--c-text-2);
+}
+.bk-search__clear {
+  position: absolute;
+  right: 0;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  background: none;
+  color: var(--c-text-2);
+  cursor: pointer;
+}
+
+/* Поле ввода с подписью и подсказкой */
+.bk-field {
+  display: grid;
+  gap: 6px;
+}
+.bk-field__label {
+  font-weight: var(--fw-semi);
+}
+.bk-field__hint {
+  font-size: var(--fs-caption);
+  color: var(--c-text-2);
+}
+.bk-field input,
+.bk-field textarea,
+.bk-field select {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 12px 14px;
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body); /* 16 px: iOS не увеличивает страницу при фокусе */
+}
+.bk-field textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+.bk-field--error input,
+.bk-field--error textarea {
+  border-color: var(--c-danger);
+}
+.bk-field__error {
+  color: var(--c-danger);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+}
+
+/* Крупный вариант ответа: «Это остановка "Нура"?» */
+.bk-option {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.bk-option[aria-checked="true"],
+.bk-option[aria-pressed="true"] {
+  border: 2px solid var(--c-brand);
+  background: var(--c-brand-soft);
+}
+.bk-option__sub {
+  display: block;
+  font-size: var(--fs-caption);
+  color: var(--c-text-2);
+}
+
+/* Сетка 12 категорий: 3 колонки на телефоне, 4 на широкой панели */
+.bk-catgrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+.bk-catgrid > button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 88px;
+  padding: var(--s-2);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  cursor: pointer;
+}
+.bk-catgrid > button .ic {
+  width: 28px;
+  height: 28px;
+}
+.bk-catgrid > button[aria-pressed="true"] {
+  border: 2px solid var(--c-ink);
+  background: var(--c-accent);
+}
+
+/* ───────────── Карточка, панель, шторка, шапка ───────────── */
+
+.bk-card {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border-radius: var(--r-l);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+}
+.bk-card__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  color: var(--c-text-2);
+}
+.bk-card__title {
+  margin: 0;
+  font-size: var(--fs-title);
+  line-height: var(--lh-head);
+  font-weight: var(--fw-bold);
+  overflow-wrap: anywhere;
+}
+.bk-card__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+.bk-divider {
+  height: 1px;
+  margin: var(--s-1) 0;
+  border: 0;
+  background: var(--c-line);
+}
+.bk-section-title {
+  margin: 0;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-text-2);
+}
+
+/* Шапка приложения */
+.bk-header {
+  position: relative;
+  z-index: var(--z-header);
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  height: var(--header-h);
+  padding: 0 var(--s-4);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+}
+.bk-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--fs-title);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+.bk-header__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--c-ink);
+  color: var(--c-accent);
+}
+.bk-header__search {
+  flex: 1 1 auto;
+  max-width: 440px;
+}
+.bk-header__end {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-left: auto;
+}
+@media (max-width: 1023px) {
+  .bk-header {
+    height: var(--header-h-phone);
+    gap: var(--s-2);
+    padding: 0 var(--s-2);
+  }
+  .bk-header__brand-text,
+  .bk-header__wide {
+    display: none;
+  }
+}
+
+/* Правая панель (ноутбук). На узком экране превращается в шторку. */
+.bk-panel {
+  position: absolute;
+  z-index: var(--z-panel);
+  top: calc(var(--header-h) + var(--gap-edge));
+  right: var(--gap-edge);
+  bottom: var(--gap-edge);
+  display: flex;
+  flex-direction: column;
+  width: var(--panel-w);
+  max-width: calc(100vw - 2 * var(--gap-edge));
+  border-radius: var(--r-l);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-2);
+  transform: translateX(0);
+  transition:
+    transform var(--t-base) var(--ease),
+    opacity var(--t-base) var(--ease);
+}
+.bk-panel[hidden] {
+  display: flex; /* оставляем в потоке для анимации */
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(calc(100% + var(--gap-edge)));
+}
+.bk-panel--static {
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  max-height: 640px;
+}
+.bk-panel__head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: 56px;
+  padding: var(--s-1) var(--s-2);
+  border-bottom: 1px solid var(--c-line);
+}
+.bk-panel__title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-bold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bk-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s-5);
+  display: grid;
+  align-content: start;
+  gap: var(--s-4);
+}
+.bk-panel__foot {
+  padding: var(--s-4) var(--s-5);
+  border-top: 1px solid var(--c-line);
+}
+.bk-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  border-radius: var(--r-m);
+  background: transparent;
+  color: var(--c-ink);
+  cursor: pointer;
+}
+.bk-iconbtn:hover {
+  background: var(--c-paper);
+}
+
+/* Нижняя шторка (телефон). data-snap: peek | half | full; перетаскивание — в JS модуля. */
+.bk-sheet {
+  position: fixed;
+  z-index: var(--z-sheet);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  height: var(--sheet-full);
+  padding-bottom: env(safe-area-inset-bottom);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-3);
+  transform: translateY(calc(var(--sheet-full) - var(--sheet-peek)));
+  transition: transform var(--t-base) var(--ease);
+  will-change: transform;
+}
+.bk-sheet[data-snap="half"] {
+  transform: translateY(calc(var(--sheet-full) - var(--sheet-half)));
+}
+.bk-sheet[data-snap="full"] {
+  transform: translateY(0);
+}
+.bk-sheet[hidden] {
+  display: flex;
+  transform: translateY(100%);
+  visibility: hidden;
+}
+.bk-sheet__handle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+}
+.bk-sheet__handle::before {
+  content: "";
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--c-line-strong);
+}
+.bk-sheet__body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 var(--gutter-phone) var(--s-4);
+  display: grid;
+  align-content: start;
+  gap: var(--s-4);
+}
+.bk-sheet--static {
+  position: relative;
+  height: auto;
+  transform: none;
+  border-radius: var(--r-xl);
+}
+
+/* Затемнение под шторкой в положении full и под диалогом */
+.bk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  background: var(--c-overlay);
+  animation: bk-fade var(--t-base) var(--ease);
+}
+
+/* ───────────── Тепловая карта: значок, легенда, пульс ───────────── */
+
+/* Значок уровня: цвет + число (правило «цвет никогда не один») */
+.bk-heat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 7px;
+  border: 2px solid #fff;
+  border-radius: var(--r-pill);
+  background: var(--c-paper);
+  color: var(--c-ink);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  box-shadow: var(--shadow-1);
+  transition:
+    background var(--t-heat) var(--ease),
+    color var(--t-heat) var(--ease);
+}
+.bk-heat[data-level="1"] {
+  background: var(--heat-1-badge);
+  color: var(--heat-1-on);
+}
+.bk-heat[data-level="2"] {
+  background: var(--heat-2-badge);
+  color: var(--heat-2-on);
+}
+.bk-heat[data-level="3"] {
+  background: var(--heat-3-badge);
+  color: var(--heat-3-on);
+}
+.bk-heat[data-level="4"] {
+  background: var(--heat-4-badge);
+  color: var(--heat-4-on);
+}
+.bk-heat[data-level="fixed"] {
+  background: var(--fixed-badge);
+  color: var(--fixed-on);
+}
+.bk-heat[data-level="fixed"]::before {
+  content: "✓";
+  margin-right: 2px;
+}
+.bk-heat--lg {
+  min-width: 36px;
+  height: 36px;
+  font-size: var(--fs-body);
+}
+
+/* Легенда: 5 уровней + «исправлено», всегда с числами */
+.bk-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+  font-size: var(--fs-caption);
+}
+.bk-legend__title {
+  font-weight: var(--fw-bold);
+}
+.bk-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.bk-legend__swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(21, 44, 38, 0.2);
+}
+.bk-legend__swatch[data-level="0"] {
+  background: var(--c-surface);
+}
+.bk-legend__swatch[data-level="1"] {
+  background: var(--heat-1);
+}
+.bk-legend__swatch[data-level="2"] {
+  background: var(--heat-2);
+}
+.bk-legend__swatch[data-level="3"] {
+  background: var(--heat-3);
+}
+.bk-legend__swatch[data-level="4"] {
+  background: var(--heat-4);
+}
+.bk-legend__swatch[data-level="fixed"] {
+  background: var(--fixed);
+}
+
+/* Пульс на цели при новой жалобе: два кольца по 800 мс */
+.bk-pulse {
+  position: relative;
+}
+.bk-pulse::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 3px solid var(--heat-3);
+  border-radius: 50%;
+  animation: bk-pulse var(--t-heat) var(--ease) 2;
+  pointer-events: none;
+}
+
+/* ───────────── Статусы и метки ───────────── */
+
+/* Статус обращения: точка-цвет + слово */
+.bk-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+.bk-status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.bk-status[data-status="new"] {
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+.bk-status[data-status="accepted"] {
+  background: var(--c-info-soft);
+  color: var(--c-info);
+}
+.bk-status[data-status="in_progress"] {
+  background: var(--c-warn-soft);
+  color: var(--c-warn);
+}
+.bk-status[data-status="fixed"] {
+  background: var(--c-ok-soft);
+  color: var(--c-ok);
+}
+.bk-status[data-status="rejected"] {
+  background: var(--c-danger-soft);
+  color: var(--c-danger);
+}
+
+.bk-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--r-s);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+  background: var(--c-paper);
+  color: var(--c-text-2);
+}
+.bk-tag--demo {
+  background: var(--c-demo-soft);
+  color: var(--c-demo);
+}
+.bk-tag--project {
+  background: var(--c-accent);
+  color: var(--c-ink);
+}
+.bk-tag--warn {
+  background: var(--c-warn-soft);
+  color: var(--c-warn);
+}
+.bk-tag--danger {
+  background: var(--c-danger-soft);
+  color: var(--c-danger);
+}
+.bk-tag--approx {
+  border: 1px dashed var(--c-text-2);
+  background: transparent;
+}
+
+/* ───────────── Обратная связь: тост, скелетон, пусто, ошибка ───────────── */
+
+.bk-toasts {
+  position: fixed;
+  z-index: var(--z-toast);
+  left: 50%;
+  bottom: calc(var(--s-6) + env(safe-area-inset-bottom));
+  display: grid;
+  gap: var(--s-2);
+  width: min(480px, calc(100vw - 2 * var(--gutter-phone)));
+  transform: translateX(-50%);
+}
+.bk-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 56px;
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4);
+  border-radius: var(--r-m);
+  background: var(--c-ink);
+  color: #fff;
+  box-shadow: var(--shadow-3);
+  animation: bk-rise var(--t-base) var(--ease);
+}
+.bk-toast__text {
+  flex: 1;
+  min-width: 0;
+}
+.bk-toast .bk-btn {
+  min-height: 40px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--c-accent);
+  padding-inline: var(--s-3);
+}
+.bk-toast--error {
+  background: var(--c-danger);
+}
+.bk-toast--error .bk-btn {
+  color: #fff;
+  text-decoration: underline;
+}
+.bk-toast--ok .ic {
+  color: var(--c-accent);
+}
+
+/* Скелетон: серые полосы с мягким мерцанием */
+.bk-skel {
+  display: block;
+  border-radius: var(--r-s);
+  background: linear-gradient(90deg, #eceee9 0%, #f6f7f3 50%, #eceee9 100%);
+  background-size: 200% 100%;
+  animation: bk-shimmer 1.2s linear infinite;
+}
+.bk-skel--line {
+  height: 14px;
+}
+.bk-skel--title {
+  height: 22px;
+  width: 70%;
+}
+.bk-skel--block {
+  height: 96px;
+  border-radius: var(--r-m);
+}
+.bk-skel--circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Пусто и ошибка: иконка, заголовок, подсказка, действие */
+.bk-empty,
+.bk-error {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-2);
+  padding: var(--s-6) var(--s-4);
+  text-align: center;
+}
+.bk-empty .ic--48 {
+  color: var(--c-text-3);
+}
+.bk-error .ic--48 {
+  color: var(--c-danger);
+}
+.bk-empty__title,
+.bk-error__title {
+  margin: 0;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-bold);
+}
+.bk-empty__text,
+.bk-error__text {
+  margin: 0;
+  max-width: 32ch;
+  color: var(--c-text-2);
+}
+.bk-empty .bk-btn,
+.bk-error .bk-btn {
+  margin-top: var(--s-2);
+}
+
+/* ───────────── Этапы, шаги, мастер ───────────── */
+
+/* Полоса 6 этапов объекта. li[data-state=done|current|todo].
+   По умолчанию — вертикальный список (казахские названия этапов длинные, 16 px без обрезки).
+   .bk-stages--compact — горизонтальные точки без подписей + строка .bk-stages__caption под ними
+   («Этап 3 из 6: Закупка»), для узких мест вроде списка объектов. */
+.bk-stages {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bk-stages > li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 24px;
+  color: var(--c-text-2);
+}
+.bk-stages > li::before {
+  content: "";
+  z-index: 1;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--c-line-strong);
+  border-radius: 50%;
+  background: var(--c-surface);
+}
+/* Линия между точками */
+.bk-stages > li:not(:first-child)::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  bottom: 50%;
+  width: 2px;
+  height: calc(100% + var(--s-3));
+  background: var(--c-line-strong);
+}
+.bk-stages > li[data-state="done"] {
+  color: var(--c-ink);
+}
+.bk-stages > li[data-state="done"]::before {
+  border-color: var(--c-brand);
+  background: var(--c-brand)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E")
+    center/12px no-repeat;
+}
+.bk-stages > li[data-state="done"]::after,
+.bk-stages > li[data-state="current"]::after {
+  background: var(--c-brand);
+}
+.bk-stages > li[data-state="current"] {
+  color: var(--c-ink);
+  font-weight: var(--fw-bold);
+}
+.bk-stages > li[data-state="current"]::before {
+  border: 6px solid var(--c-brand);
+  box-shadow: 0 0 0 4px var(--c-brand-soft);
+}
+/* Объект отстаёт: текущий этап оранжевый (рядом всегда слова «Отстаёт на N дней») */
+.bk-stages--late > li[data-state="current"]::before {
+  border-color: var(--c-warn);
+  box-shadow: 0 0 0 4px var(--c-warn-soft);
+}
+.bk-stages--compact {
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0;
+}
+.bk-stages--compact > li {
+  justify-content: center;
+}
+.bk-stages--compact > li > span {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.bk-stages--compact > li:not(:first-child)::after {
+  left: auto;
+  right: 50%;
+  bottom: auto;
+  top: 11px;
+  width: 100%;
+  height: 2px;
+}
+.bk-stages__caption {
+  margin: var(--s-2) 0 0;
+  font-weight: var(--fw-semi);
+}
+
+/* Шкала статуса жителя: Принято → В работе → Исправлено. li[data-state=done|current|todo] */
+.bk-steps {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bk-steps > li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  font-size: var(--fs-caption);
+  text-align: center;
+  color: var(--c-text-2);
+}
+.bk-steps > li::before {
+  content: "";
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--c-line-strong);
+  border-radius: 50%;
+  background: var(--c-surface);
+}
+.bk-steps > li:not(:first-child)::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--c-line-strong);
+}
+.bk-steps > li[data-state="done"]::before,
+.bk-steps > li[data-state="current"]::before {
+  border-color: var(--c-brand);
+  background: var(--c-brand);
+}
+.bk-steps > li[data-state="done"]::after,
+.bk-steps > li[data-state="current"]::after {
+  background: var(--c-brand);
+}
+.bk-steps > li[data-state="current"] {
+  color: var(--c-ink);
+  font-weight: var(--fw-bold);
+}
+.bk-steps--fixed > li[data-state="current"]::before {
+  border-color: var(--fixed-badge);
+  background: var(--fixed-badge);
+}
+
+/* Мастер «Шаг 2 из 5» */
+.bk-wizard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+.bk-wizard__label {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  color: var(--c-text-2);
+}
+.bk-wizard__dots {
+  display: flex;
+  gap: 6px;
+}
+.bk-wizard__dots > i {
+  width: 24px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--c-line-strong);
+}
+.bk-wizard__dots > i[data-state="done"],
+.bk-wizard__dots > i[data-state="current"] {
+  background: var(--c-brand);
+}
+
+/* ───────────── «Картина дня»: KPI, полосы, списки ───────────── */
+
+.bk-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+@media (max-width: 720px) {
+  .bk-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.bk-kpi {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-4);
+  border-radius: var(--r-l);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+}
+.bk-kpi__value {
+  font-size: var(--fs-num);
+  line-height: 1.1;
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+.bk-kpi__label {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+}
+/* Изменение: стрелка + слово. data-trend=up|down|flat, data-good=true|false (рост жалоб — плохо) */
+.bk-kpi__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  color: var(--c-text-2);
+}
+.bk-kpi__delta[data-trend="up"]::before {
+  content: "▲";
+}
+.bk-kpi__delta[data-trend="down"]::before {
+  content: "▼";
+}
+.bk-kpi__delta[data-trend="flat"]::before {
+  content: "＝";
+}
+.bk-kpi__delta[data-good="false"] {
+  color: var(--c-danger);
+}
+.bk-kpi__delta[data-good="true"] {
+  color: var(--c-ok);
+}
+
+/* Горизонтальная полоса темы/района: подпись · полоса · число */
+.bk-bars {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bk-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 11em) 1fr auto;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 32px;
+}
+.bk-bar__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bk-bar__track {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--c-paper);
+  overflow: hidden;
+}
+.bk-bar__fill {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--c-brand);
+  transition: width var(--t-slow) var(--ease);
+}
+.bk-bar__value {
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Список: вся строка нажимается, высота ≥ 56 */
+.bk-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+}
+.bk-list > li + li {
+  border-top: 1px solid var(--c-line);
+}
+.bk-list__item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--s-2) var(--s-3);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.bk-list__item:hover {
+  background: var(--c-paper);
+}
+.bk-list__main {
+  flex: 1;
+  min-width: 0;
+}
+.bk-list__title {
+  display: block;
+  font-weight: var(--fw-semi);
+  overflow-wrap: anywhere;
+}
+.bk-list__sub {
+  display: block;
+  font-size: var(--fs-caption);
+  color: var(--c-text-2);
+}
+.bk-list__chevron {
+  color: var(--c-text-3);
+}
+
+/* Мини-график по дням (столбики) */
+.bk-spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 40px;
+}
+.bk-spark > i {
+  flex: 1;
+  min-height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--heat-2);
+}
+
+/* ───────────── Анимации ───────────── */
+
+@keyframes bk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes bk-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes bk-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes bk-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes bk-pulse {
+  from {
+    opacity: 0.9;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bk-pulse::after,
+  .bk-skel {
+    animation: none;
+  }
+}
+
+/* ───────────── Печать («Картина дня») ───────────── */
+@media print {
+  .bk-header,
+  .bk-maptools,
+  .bk-toasts,
+  .bk-btn,
+  .bk-seg,
+  .bk-chips {
+    display: none !important;
+  }
+  .bk-app {
+    background: #fff;
+  }
+  .bk-kpi,
+  .bk-card {
+    box-shadow: none;
+    border: 1px solid var(--c-line);
+  }
+}

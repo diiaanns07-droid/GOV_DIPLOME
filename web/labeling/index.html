@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Birge · Разметка обращений</title>
+  <!-- Офлайн-страница: никаких внешних шрифтов, скриптов и запросов в сеть. -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><span class="logo" aria-hidden="true">B</span><span data-t="title">Разметка обращений</span></div>
+    <div class="session" id="sessionInfo" hidden>
+      <span class="file" id="fileName"></span>
+      <span class="role" id="roleChip"></span>
+    </div>
+    <div class="progress-text" id="progressText" hidden aria-live="polite"></div>
+    <div class="top-actions">
+      <div class="lang-switch" role="group" aria-label="Тіл / Язык">
+        <button type="button" class="lang" data-lang="kk">ҚАЗ</button>
+        <button type="button" class="lang" data-lang="ru">РУС</button>
+      </div>
+      <button type="button" class="btn ghost" id="helpBtn" aria-keyshortcuts="Shift+Slash"><span class="ic-slot" data-icon="help"></span><span data-t="help">Справка</span></button>
+      <button type="button" class="btn ghost" id="exportBtn" hidden aria-keyshortcuts="Control+S"><span class="ic-slot" data-icon="download"></span><span data-t="export">Скачать JSONL</span></button>
+      <button type="button" class="btn ghost" id="closeBtn" hidden><span class="ic-slot" data-icon="folder"></span><span data-t="changeFile">Другой файл</span></button>
+    </div>
+  </header>
+  <div class="bar" id="bar" hidden><div class="bar-fill" id="barFill"></div></div>
+  <div class="banner" id="storageBanner" hidden data-t="storageOff">Автосохранение в этом браузере недоступно. Скачивайте JSONL чаще.</div>
+
+  <!-- Экран 1: выбор роли и файла -->
+  <main class="start" id="startScreen">
+    <section class="start-card">
+      <h1 data-t="startTitle">Разметка обращений жителей</h1>
+      <p class="lead" data-t="startLead">Откройте файл с текстами (CSV или JSONL). Для каждого текста нажмите цифру категории — следующий текст появится сам.</p>
+
+      <div id="resumeBox" class="resume" hidden>
+        <h2 data-t="resumeTitle">Продолжить</h2>
+        <div id="resumeList"></div>
+      </div>
+
+      <fieldset class="roles">
+        <legend data-t="whoAreYou">Кто размечает</legend>
+        <label class="role-opt"><input type="radio" name="role" value="first" checked>
+          <span><b data-t="roleFirst">Первый разметчик</b><small data-t="roleFirstHint">Все тексты файла по порядку</small></span></label>
+        <label class="role-opt"><input type="radio" name="role" value="second">
+          <span><b data-t="roleSecond">Второй разметчик</b><small data-t="roleSecondHint">Тот же поднабор для проверки согласия; чужие метки скрыты</small></span></label>
+      </fieldset>
+
+      <div class="fields">
+        <label class="field"><span data-t="annotatorName">Имя или код разметчика</span>
+          <input type="text" id="annotatorInput" maxlength="24" autocomplete="off" value="A"></label>
+        <div id="subsetFields" class="subset" hidden>
+          <label class="field"><span data-t="subsetSize">Сколько текстов</span>
+            <input type="number" id="subsetSize" min="1" max="5000" value="100"></label>
+          <label class="field"><span data-t="subsetSeed">Ключ поднабора</span>
+            <input type="text" id="subsetSeed" maxlength="32" value="birge-2026" autocomplete="off"></label>
+          <p class="hint" data-t="subsetHint">Одинаковый файл и одинаковый ключ дают одинаковый поднабор на любом компьютере.</p>
+        </div>
+      </div>
+
+      <div class="drop" id="dropZone" tabindex="-1">
+        <button type="button" class="btn primary big" id="openBtn"><span class="ic-slot" data-icon="upload"></span><span data-t="openFile">Открыть файл</span></button>
+        <p data-t="dropHint">или перетащите файл .csv / .jsonl сюда</p>
+        <input type="file" id="fileInput" accept=".csv,.tsv,.txt,.jsonl,.json" hidden>
+      </div>
+      <p class="error" id="startError" role="alert" hidden></p>
+      <p class="privacy" data-t="privacy">Файл не уходит в интернет: тексты и метки остаются в этом браузере, пока вы сами не скачаете JSONL.</p>
+    </section>
+  </main>
+
+  <!-- Экран 2: разметка -->
+  <main class="work" id="workScreen" hidden>
+    <section class="text-card" id="textCard" aria-live="polite">
+      <div class="meta">
+        <span class="num" id="itemNum"></span>
+        <button type="button" class="chip" id="langChip" aria-keyshortcuts="L"></button>
+        <span class="chip muted" id="districtChip" hidden></span>
+        <span class="chip unsure" id="unsureChip" hidden data-t="unsureOn">сомневаюсь</span>
+        <span class="chip done" id="labelChip" hidden></span>
+        <span class="item-id" id="itemId"></span>
+      </div>
+      <p class="text" id="itemText"></p>
+    </section>
+
+    <section class="finish" id="finishCard" hidden>
+      <h2 id="finishTitle" data-t="finishTitle">Все тексты размечены</h2>
+      <p id="finishStats"></p>
+      <div class="finish-actions">
+        <button type="button" class="btn primary big" id="finishExport"><span class="ic-slot" data-icon="download"></span><span data-t="export">Скачать JSONL</span></button>
+        <button type="button" class="btn big" id="backToSkipped" hidden></button>
+      </div>
+      <div class="by-label" id="byLabel"></div>
+    </section>
+
+    <section class="cats" id="cats" aria-label="Категории"></section>
+
+    <section class="actions">
+      <button type="button" class="btn act" id="notComplaintBtn" aria-keyshortcuts="N"><span class="ic-slot" data-icon="ban"></span><span data-t="notComplaint">Не жалоба</span><kbd>N</kbd></button>
+      <button type="button" class="btn act" id="unsureBtn" aria-pressed="false" aria-keyshortcuts="F"><span class="ic-slot" data-icon="flag"></span><span data-t="unsure">Сомневаюсь</span><kbd>F</kbd></button>
+      <button type="button" class="btn act" id="skipBtn" aria-keyshortcuts="Space"><span class="ic-slot" data-icon="skip"></span><span data-t="skip">Пропустить</span><kbd data-t="spaceKey">Пробел</kbd></button>
+      <button type="button" class="btn act" id="undoBtn" aria-keyshortcuts="Backspace"><span class="ic-slot" data-icon="undo"></span><span data-t="undo">Отменить</span><kbd>⌫</kbd></button>
+      <span class="nav">
+        <button type="button" class="btn icon-only" id="prevBtn" aria-keyshortcuts="ArrowLeft"><span class="ic-slot" data-icon="left"></span><span class="sr" data-t="prev">Предыдущий</span></button>
+        <button type="button" class="btn icon-only" id="nextBtn" aria-keyshortcuts="ArrowRight"><span class="ic-slot" data-icon="right"></span><span class="sr" data-t="next">Следующий</span></button>
+      </span>
+      <span class="speed" id="speedInfo"></span>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Справка: клавиши и спорные случаи (полные правила — ml/datasets/LABELING_GUIDE_v2.md) -->
+  <div class="overlay" id="helpOverlay" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="dialog-head">
+        <h2 id="helpTitle" data-t="helpTitle">Клавиши и правила</h2>
+        <button type="button" class="btn icon-only" id="helpClose"><span class="ic-slot" data-icon="close"></span><span class="sr" data-t="close">Закрыть</span></button>
+      </div>
+      <div class="help-grid">
+        <div>
+          <h3 data-t="keysTitle">Клавиши (работают в любой раскладке)</h3>
+          <table class="keys" id="keysTable"></table>
+        </div>
+        <div>
+          <h3 data-t="rulesTitle">Главное правило</h3>
+          <p data-t="ruleMain">Категорию определяет предмет проблемы, а не место. Если проблем несколько — главная (о чём просят).</p>
+          <h3 data-t="casesTitle">Спорные случаи</h3>
+          <ul class="cases" id="casesList"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="categories.js"></script>
+  <script src="core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

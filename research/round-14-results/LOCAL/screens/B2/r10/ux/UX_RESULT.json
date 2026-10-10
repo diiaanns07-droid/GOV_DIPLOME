@@ -1,0 +1,1778 @@
+{
+ "when": "2026-10-10T16:54:09.954Z",
+ "counts": {
+  "PASS": 38,
+  "FAIL": 54,
+  "NOT_RUN": 8
+ },
+ "rows": [
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-главная-карта-житель-1366-ru.jpg"
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 12,
+    "ex": [
+     "11px «Город и жители вместе»",
+     "11px «3D»",
+     "12px «Для сотрудников»",
+     "10px «Территория»",
+     "12px «К объектам»",
+     "12px «Слои»",
+     "12px «Границы районов»",
+     "12px «Карта доступна по всей Астане.»"
+    ],
+    "under16": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 7,
+    "ex": [
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Для сотрудников"
+     },
+     {
+      "h": 25,
+      "w": 276,
+      "t": "Вся Астана Есиль Алматы "
+     },
+     {
+      "h": 32,
+      "w": 69,
+      "t": "К объектам"
+     },
+     {
+      "h": 32,
+      "w": 45,
+      "t": "Слои"
+     },
+     {
+      "h": 36,
+      "w": 11,
+      "t": ""
+     },
+     {
+      "h": 34,
+      "w": 367,
+      "t": "Найти улицу в Астане"
+     },
+     {
+      "h": 32,
+      "w": 39,
+      "t": "Найти"
+     }
+    ],
+    "under48": "22/31"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 12,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "Tab до главной кнопки, рамка фокуса видна",
+   "status": "FAIL",
+   "detail": {
+    "tabs": null,
+    "primary": false,
+    "ring": false
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-главная-карта-житель-1366-kk.jpg"
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 12,
+    "ex": [
+     "11px «Қала мен тұрғындар бірге»",
+     "11px «3D»",
+     "12px «Қызметкерлерге»",
+     "10px «Аумақ»",
+     "12px «Нысандарға»",
+     "12px «Қабаттар»",
+     "12px «Аудан шекаралары»",
+     "12px «Карта бүкіл Астана бойынша қол»"
+    ],
+    "under16": 8
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 7,
+    "ex": [
+     {
+      "h": 36,
+      "w": 124,
+      "t": "Қызметкерлерге"
+     },
+     {
+      "h": 25,
+      "w": 249,
+      "t": "Бүкіл Астана Есіл Алматы"
+     },
+     {
+      "h": 32,
+      "w": 73,
+      "t": "Нысандарға"
+     },
+     {
+      "h": 32,
+      "w": 68,
+      "t": "Қабаттар"
+     },
+     {
+      "h": 36,
+      "w": 34,
+      "t": ""
+     },
+     {
+      "h": 34,
+      "w": 377,
+      "t": "Астанадан көше іздеу"
+     },
+     {
+      "h": 32,
+      "w": 29,
+      "t": "Табу"
+     }
+    ],
+    "under48": "22/30"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 12,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный (нет русских строк)",
+   "status": "FAIL",
+   "detail": {
+    "n": 40,
+    "ex": [
+     "7 объектов",
+     "Подтверждённых реальных работ в реестре пока нет: все 7 записей — демонстрационные, не сведения о работах в городе.",
+     "Фильтры",
+     "Дорожные работы",
+     "Демо: завершённый ремонт тротуара",
+     "Завершено · до 30.09.2026 · срок перенесён"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "Tab до главной кнопки, рамка фокуса видна",
+   "status": "FAIL",
+   "detail": {
+    "tabs": null,
+    "primary": false,
+    "ring": false
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-главная-карта-житель-375-ru.jpg"
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 10,
+    "ex": [
+     "11px «3D»",
+     "10px «Территория»",
+     "12px «К объектам»",
+     "12px «Слои»",
+     "12px «Границы районов»",
+     "12px «Карта доступна по всей Астане.»",
+     "12px «Опубликовано записей: 7. Из ни»",
+     "12px «Границы: OpenStreetMap, снимок»"
+    ],
+    "under16": 5
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 7,
+    "ex": [
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Показать всю Астану"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Приблизить"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "3D"
+     },
+     {
+      "h": 36,
+      "w": 373,
+      "t": "Развернуть панель"
+     },
+     {
+      "h": 36,
+      "w": 153,
+      "t": "Вся Астана Есиль Алматы "
+     },
+     {
+      "h": 40,
+      "w": 37,
+      "t": "Слои"
+     },
+     {
+      "h": 36,
+      "w": 3,
+      "t": ""
+     }
+    ],
+    "under48": "15/20"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 9,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-главная-карта-житель-375-kk.jpg"
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 10,
+    "ex": [
+     "11px «3D»",
+     "10px «Аумақ»",
+     "12px «Нысандарға»",
+     "12px «Қабаттар»",
+     "12px «Аудан шекаралары»",
+     "12px «Карта бүкіл Астана бойынша қол»",
+     "12px «Жарияланған жазбалар: 7. Оның »",
+     "12px «Шекаралар: OpenStreetMap, 23.0»"
+    ],
+    "under16": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 7,
+    "ex": [
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Показать всю Астану"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Приблизить"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "3D"
+     },
+     {
+      "h": 36,
+      "w": 373,
+      "t": "Панельді ашу"
+     },
+     {
+      "h": 36,
+      "w": 127,
+      "t": "Бүкіл Астана Есіл Алматы"
+     },
+     {
+      "h": 36,
+      "w": 25,
+      "t": ""
+     },
+     {
+      "h": 40,
+      "w": 33,
+      "t": "Табу"
+     }
+    ],
+    "under48": "15/20"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 9,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный (нет русских строк)",
+   "status": "FAIL",
+   "detail": {
+    "n": 39,
+    "ex": [
+     "7 объектов",
+     "Подтверждённых реальных работ в реестре пока нет: все 7 записей — демонстрационные, не сведения о работах в городе.",
+     "Фильтры",
+     "Дорожные работы",
+     "Демо: завершённый ремонт тротуара",
+     "Завершено · до 30.09.2026 · срок перенесён"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-главная-карта-акимат-1366-ru.jpg"
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 12,
+    "ex": [
+     "11px «Город и жители вместе»",
+     "11px «3D»",
+     "12px «Для сотрудников»",
+     "10px «Территория»",
+     "12px «К объектам»",
+     "12px «Слои»",
+     "12px «Границы районов»",
+     "12px «Карта доступна по всей Астане.»"
+    ],
+    "under16": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 7,
+    "ex": [
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Для сотрудников"
+     },
+     {
+      "h": 25,
+      "w": 276,
+      "t": "Вся Астана Есиль Алматы "
+     },
+     {
+      "h": 32,
+      "w": 69,
+      "t": "К объектам"
+     },
+     {
+      "h": 32,
+      "w": 45,
+      "t": "Слои"
+     },
+     {
+      "h": 36,
+      "w": 11,
+      "t": ""
+     },
+     {
+      "h": 34,
+      "w": 367,
+      "t": "Найти улицу в Астане"
+     },
+     {
+      "h": 32,
+      "w": 39,
+      "t": "Найти"
+     }
+    ],
+    "under48": "21/34"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 12,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-главная-карта-акимат-1366-kk.jpg"
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 12,
+    "ex": [
+     "11px «Қала мен тұрғындар бірге»",
+     "11px «3D»",
+     "12px «Қызметкерлерге»",
+     "10px «Аумақ»",
+     "12px «Нысандарға»",
+     "12px «Қабаттар»",
+     "12px «Аудан шекаралары»",
+     "12px «Карта бүкіл Астана бойынша қол»"
+    ],
+    "under16": 8
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 7,
+    "ex": [
+     {
+      "h": 36,
+      "w": 124,
+      "t": "Қызметкерлерге"
+     },
+     {
+      "h": 25,
+      "w": 249,
+      "t": "Бүкіл Астана Есіл Алматы"
+     },
+     {
+      "h": 32,
+      "w": 73,
+      "t": "Нысандарға"
+     },
+     {
+      "h": 32,
+      "w": 68,
+      "t": "Қабаттар"
+     },
+     {
+      "h": 36,
+      "w": 34,
+      "t": ""
+     },
+     {
+      "h": 34,
+      "w": 377,
+      "t": "Астанадан көше іздеу"
+     },
+     {
+      "h": 32,
+      "w": 29,
+      "t": "Табу"
+     }
+    ],
+    "under48": "21/33"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 12,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный (нет русских строк)",
+   "status": "FAIL",
+   "detail": {
+    "n": 40,
+    "ex": [
+     "7 объектов",
+     "Подтверждённых реальных работ в реестре пока нет: все 7 записей — демонстрационные, не сведения о работах в городе.",
+     "Фильтры",
+     "Дорожные работы",
+     "Демо: завершённый ремонт тротуара",
+     "Завершено · до 30.09.2026 · срок перенесён"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-главная-карта-акимат-375-ru.jpg"
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 11,
+    "ex": [
+     "11px «3D»",
+     "12px «Для сотрудников»",
+     "10px «Территория»",
+     "12px «К объектам»",
+     "12px «Слои»",
+     "12px «Границы районов»",
+     "12px «Карта доступна по всей Астане.»",
+     "12px «Опубликовано записей: 7. Из ни»"
+    ],
+    "under16": 5
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 8,
+    "ex": [
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Показать всю Астану"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Приблизить"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "3D"
+     },
+     {
+      "h": 36,
+      "w": 373,
+      "t": "Развернуть панель"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Для сотрудников"
+     },
+     {
+      "h": 36,
+      "w": 153,
+      "t": "Вся Астана Есиль Алматы "
+     },
+     {
+      "h": 40,
+      "w": 37,
+      "t": "Слои"
+     },
+     {
+      "h": 36,
+      "w": 3,
+      "t": ""
+     }
+    ],
+    "under48": "16/20"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 9,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-главная-карта-акимат-375-kk.jpg"
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 11,
+    "ex": [
+     "11px «3D»",
+     "12px «Қызметкерлерге»",
+     "10px «Аумақ»",
+     "12px «Нысандарға»",
+     "12px «Қабаттар»",
+     "12px «Аудан шекаралары»",
+     "12px «Карта бүкіл Астана бойынша қол»",
+     "12px «Жарияланған жазбалар: 7. Оның »"
+    ],
+    "under16": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 8,
+    "ex": [
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Показать всю Астану"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Приблизить"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "3D"
+     },
+     {
+      "h": 36,
+      "w": 373,
+      "t": "Панельді ашу"
+     },
+     {
+      "h": 36,
+      "w": 124,
+      "t": "Қызметкерлерге"
+     },
+     {
+      "h": 36,
+      "w": 127,
+      "t": "Бүкіл Астана Есіл Алматы"
+     },
+     {
+      "h": 36,
+      "w": 25,
+      "t": ""
+     },
+     {
+      "h": 40,
+      "w": 33,
+      "t": "Табу"
+     }
+    ],
+    "under48": "16/20"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 9,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный (нет русских строк)",
+   "status": "FAIL",
+   "detail": {
+    "n": 40,
+    "ex": [
+     "7 объектов",
+     "Подтверждённых реальных работ в реестре пока нет: все 7 записей — демонстрационные, не сведения о работах в городе.",
+     "Фильтры",
+     "Дорожные работы",
+     "Демо: завершённый ремонт тротуара",
+     "Завершено · до 30.09.2026 · срок перенесён"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-1366-ru.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 2,
+    "ex": [
+     "11px «Город и жители вместе»",
+     "11px «3D»"
+    ],
+    "under16": 16
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "11/16"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 12,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-1366-kk.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 2,
+    "ex": [
+     "11px «Қала мен тұрғындар бірге»",
+     "11px «3D»"
+    ],
+    "under16": 16
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "11/16"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 12,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный (нет русских строк)",
+   "status": "FAIL",
+   "detail": {
+    "n": 4,
+    "ex": [
+     "Завершённый ремонт тротуара",
+     "Строительство с неизвестным статусом",
+     "Благоустройство двора (условный участок)",
+     "Работы без известного места (только в списке)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-375-ru.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 1,
+    "ex": [
+     "11px «3D»"
+    ],
+    "under16": 8
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 3,
+    "ex": [
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Показать всю Астану"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Приблизить"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "3D"
+     }
+    ],
+    "under48": "5/8"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 11,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-375-kk.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 1,
+    "ex": [
+     "11px «3D»"
+    ],
+    "under16": 8
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "FAIL",
+   "detail": {
+    "under40": 3,
+    "ex": [
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Показать всю Астану"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "Приблизить"
+     },
+     {
+      "h": 34,
+      "w": 34,
+      "t": "3D"
+     }
+    ],
+    "under48": "5/8"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "FAIL",
+   "detail": {
+    "badges": 11,
+    "under24": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный (нет русских строк)",
+   "status": "FAIL",
+   "detail": {
+    "n": 4,
+    "ex": [
+     "Завершённый ремонт тротуара",
+     "Строительство с неизвестным статусом",
+     "Благоустройство двора (условный участок)",
+     "Работы без известного места (только в списке)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "FAIL",
+   "detail": [
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead.",
+    "warning: Expected value to be of type number, but found null instead."
+   ],
+   "shot": null
+  },
+  {
+   "screen": "Тепловая карта · страница модуля",
+   "owner": "R07",
+   "size": "1366",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Тепловая карта · страница модуля",
+   "owner": "R07",
+   "size": "375",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Предложения и этапы · страница модуля",
+   "owner": "R06",
+   "size": "1366",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Предложения и этапы · страница модуля",
+   "owner": "R06",
+   "size": "375",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "3D-превью · страница модуля",
+   "owner": "R05",
+   "size": "1366",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "3D-превью · страница модуля",
+   "owner": "R05",
+   "size": "375",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  }
+ ]
+}

@@ -1,0 +1,161 @@
+/*
+ * Birge · ui-kit · токены дизайна (R11, раунд 14).
+ * Единственное место, где задаются цвета, размеры, шрифты и анимации.
+ * Модули используют только var(--…); свои цвета не придумывать.
+ * Описание и обоснование контрастов — research/round-14-results/R11/UX_SPEC.md §2.
+ *
+ * Цвета тепловой карты взяты из research/round-14/categories_v2.json (heat_levels, fixed_state).
+ * Тест tests/civic/R11/test_ui_kit.py сверяет их с этим файлом — менять только вместе с JSON.
+ */
+
+/* Локальный шрифт для офлайн-финала. Файлы кладёт LOCAL-задача (см. R11/INTEGRATION.txt).
+   Пока файлов нет, браузер молча берёт следующий шрифт из стека (системный). */
+@font-face {
+  font-family: "Birge Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Inter"), local("Inter Regular"), url("./fonts/Inter-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Birge Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("Inter SemiBold"), url("./fonts/Inter-SemiBold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Birge Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("Inter Bold"), url("./fonts/Inter-Bold.woff2") format("woff2");
+}
+
+:root {
+  /* ── Текст и поверхности ── */
+  --c-ink: #152c26; /* основной текст: 14.8:1 на белом */
+  --c-text-2: #5b6a64; /* вторичный текст: 5.7:1 (старый #6d7c76 — 4.38, для текста не годится) */
+  --c-text-3: #7d8a85; /* только для неактивных подсказок-плейсхолдеров и иконок, не для текста */
+  --c-line: #e4e9e3;
+  --c-line-strong: #c9d3cb;
+  --c-paper: #f7f8f4;
+  --c-surface: #ffffff;
+  --c-overlay: rgba(21, 44, 38, 0.32); /* затемнение под шторкой/диалогом */
+
+  /* ── Бренд ── */
+  --c-brand: #176b4a; /* главная кнопка: белый текст 6.5:1 */
+  --c-brand-hover: #125d40;
+  --c-brand-press: #10553a;
+  --c-brand-soft: #e6f1eb;
+  --c-accent: #d7f57c; /* выбранный чип; текст на нём только --c-ink (12.1:1) */
+  --c-accent-soft: #f1fbd6;
+
+  /* ── Смысловые ── */
+  --c-focus: #2f7fd6;
+  --c-danger: #b3362e; /* 6.0:1 */
+  --c-danger-soft: #fdecea;
+  --c-warn: #8a5a12; /* 5.9:1 */
+  --c-warn-soft: #fff4dc;
+  --c-info: #1f5fa8; /* 6.4:1 */
+  --c-info-soft: #e8f0fb;
+  --c-ok: #2f6b12; /* 6.5:1 */
+  --c-ok-soft: #eaf4dc;
+  --c-demo: #4b5d7a; /* метка «Пример» для demo: true */
+  --c-demo-soft: #edf1f7;
+
+  /* ── Тепловая карта (categories_v2.json) ── */
+  --heat-1: #fac775;
+  --heat-2: #ef9f27;
+  --heat-3: #e24b4a;
+  --heat-4: #a32d2d;
+  --fixed: #639922;
+  /* Значки с числом: фон и текст с контрастом ≥ 4.5:1.
+     Уровень 3 и «исправлено» на значке чуть темнее, чем на карте (см. UX_SPEC §2). */
+  --heat-1-badge: #fac775;
+  --heat-1-on: #152c26;
+  --heat-2-badge: #ef9f27;
+  --heat-2-on: #152c26;
+  --heat-3-badge: #c93b3a;
+  --heat-3-on: #ffffff;
+  --heat-4-badge: #a32d2d;
+  --heat-4-on: #ffffff;
+  --fixed-badge: #4e7d1a;
+  --fixed-on: #ffffff;
+  --heat-fill-opacity: 0.8; /* акимат */
+  --heat-fill-opacity-soft: 0.55; /* житель: та же карта мягче */
+
+  /* ── Шрифт ── */
+  --font: "Birge Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial,
+    sans-serif;
+  --fs-caption: 14px; /* только мета: дата, источник */
+  --fs-body: 16px;
+  --fs-lead: 18px; /* важное, кнопки */
+  --fs-title: 20px;
+  --fs-h1: 24px;
+  --fs-num: 32px;
+  --lh-text: 1.4;
+  --lh-head: 1.2;
+  --fw-regular: 400;
+  --fw-semi: 600;
+  --fw-bold: 700;
+
+  /* ── Размеры ── */
+  --tap: 48px; /* минимальная зона нажатия */
+  --tap-lg: 56px; /* «Сообщить о проблеме» на телефоне */
+  --header-h: 64px;
+  --header-h-phone: 56px;
+  --panel-w: 400px;
+  --gap-edge: 12px; /* отступ панели от краёв карты */
+  --gutter-phone: 16px;
+  --sheet-peek: 120px;
+  --sheet-half: 50vh;
+  --sheet-full: 92vh;
+
+  /* Отступы, шаг 4 px */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 28px;
+  --s-8: 32px;
+
+  /* Радиусы */
+  --r-s: 8px;
+  --r-m: 12px;
+  --r-l: 16px;
+  --r-xl: 20px;
+  --r-pill: 999px;
+
+  /* Тени */
+  --shadow-1: 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06);
+  --shadow-2: 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1);
+  --shadow-3: 0 8px 24px rgba(21, 44, 38, 0.16), 0 20px 56px rgba(21, 44, 38, 0.14);
+
+  /* Движение (UX_BRIEF: 200–800 мс) */
+  --t-fast: 200ms;
+  --t-base: 240ms;
+  --t-slow: 480ms;
+  --t-heat: 800ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Слои */
+  --z-map-ui: 10;
+  --z-panel: 20;
+  --z-header: 30;
+  --z-sheet: 40;
+  --z-overlay: 50;
+  --z-toast: 60;
+}
+
+/* Меньше движения по настройке системы: анимации почти мгновенные, пульс выключен в components.css */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-fast: 1ms;
+    --t-base: 1ms;
+    --t-slow: 1ms;
+    --t-heat: 1ms;
+  }
+}
