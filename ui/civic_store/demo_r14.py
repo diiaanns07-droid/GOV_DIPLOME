@@ -9,10 +9,18 @@
     (устройства demo-seed-…); у настоящих предложений голоса не создаются никогда.
 Команда идемпотентна: повторный запуск ничего не дублирует.
 
-Геометрия: освещение — настоящий участок улицы Ильяса Омарова из пешеходного графа OSM
-(engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json, рёбра osm-w1482578141-0…8,
-ODbL © OpenStreetMap contributors). Точки остальных предложений — гипотетические места
-рядом с этой улицей в районе Нура (предлагаемые объекты, а не существующие).
+Геометрия — по реальным данным OSM (ODbL, © OpenStreetMap contributors), без точек «от руки»:
+  - освещение — настоящий участок улицы Ильяса Омарова из пешеходного графа
+    (engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json, рёбра osm-w1482578141-0…8, 396 м).
+    Фонарей highway=street_lamp в OSM у участка нет (ближайший — 3,4 км), но это полнота OSM, а не замер освещённости;
+  - остановка — существующая остановка OSM «Жағалау-3» (osm-node-5254203835, 13 м от оси улицы): проект павильона
+    на ней. Тега shelter у неё в OSM нет — «павильона нет» отсюда НЕ следует, это демо;
+  - сквер, площадка, спортплощадка — точки внутри реальных жилых кварталов OSM района Нура (landuse=residential:
+    way 1526197869 и «Жағалау шағын ауданы» way 257962279), не ближе 60 м к существующим площадкам, спортплощадкам,
+    паркам и вне территорий школ и детсадов (data/civic/astana/osm-objects, LOCAL-1). Подбор и проверка —
+    tests/civic/R06/round14/test_r06r14_demo_osm.py. Зданий в этих данных нет: попадание в дом не проверено.
+  Прежние гипотетические точки отвергнуты этой проверкой: «площадка» стояла на территории школы, «спортплощадка» —
+  в 25 м от существующей.
 """
 
 from __future__ import annotations
@@ -33,16 +41,17 @@ OMAROVA_SEGMENT = {  # рёбра osm-w1482578141-0…8, 396 м, район Ну
                     [71.3686027, 51.1351064], [71.3682669, 51.1342208]],
 }
 DEMO_PROPOSALS = (
-    # kind, точка/линия, ru, kk, голоса за/против (демо)
-    ("square", {"type": "Point", "coordinates": [71.3712, 51.1368]}, "Сквер у улицы Ильяса Омарова",
-     "Ілияс Омаров көшесі жанындағы гүлзар", 128, 12),
-    ("playground", {"type": "Point", "coordinates": [71.3705, 51.1352]}, "Детская площадка во дворе",
-     "Аула ішіндегі балалар алаңы", 64, 5),
-    ("sports", {"type": "Point", "coordinates": [71.3668, 51.1361]}, "Спортплощадка у школы",
-     "Мектеп жанындағы спорт алаңы", 41, 9),
-    ("stop", {"type": "Point", "coordinates": [71.36985, 51.13795]}, "Остановка с павильоном",
-     "Павильоны бар аялдама", 23, 2),
-    ("lighting", OMAROVA_SEGMENT, "Освещение улицы Ильяса Омарова", "Ілияс Омаров көшесін жарықтандыру", 87, 3),
+    # kind, точка/линия, ru, kk, голоса за/против (демо), откуда место (OSM)
+    ("square", {"type": "Point", "coordinates": [71.36554, 51.139097]}, "Сквер в квартале у улицы Ильяса Омарова",
+     "Ілияс Омаров көшесі маңындағы шағын аудандағы гүлзар", 128, 12, "inside osm-way-1526197869 (landuse=residential)"),
+    ("playground", {"type": "Point", "coordinates": [71.366889, 51.132499]}, "Детская площадка в микрорайоне Жагалау",
+     "Жағалау шағын ауданындағы балалар алаңы", 64, 5, "inside osm-way-257962279 «Жағалау шағын ауданы»"),
+    ("sports", {"type": "Point", "coordinates": [71.36403, 51.135544]}, "Спортплощадка в микрорайоне Жагалау",
+     "Жағалау шағын ауданындағы спорт алаңы", 41, 9, "inside osm-way-257962279 «Жағалау шағын ауданы»"),
+    ("stop", {"type": "Point", "coordinates": [71.3691001, 51.136005]}, "Павильон на остановке «Жағалау-3»",
+     "«Жағалау-3» аялдамасындағы павильон", 23, 2, "osm-node-5254203835 highway=bus_stop «Жағалау-3»"),
+    ("lighting", OMAROVA_SEGMENT, "Освещение улицы Ильяса Омарова", "Ілияс Омаров көшесін жарықтандыру", 87, 3,
+     "osm-w1482578141-0…8 (пешеходный граф OSM)"),
 )
 # Этапы для синтетических объектов по кругу. Сроки — от сегодняшнего дня, чтобы демо всегда
 # показывало одно и то же: первый объект отстаёт на 23 дня (как в макете UX_SPEC §6.2).
@@ -77,7 +86,7 @@ def seed_r14_demo(service) -> dict:
         report["stages"].append({"object_id": row["id"], "action": "set", "stage": stage,
                                  "planned_end": planned, "forecast_end": forecast})
     now = utc_now(service.clock)
-    for number, (kind, geometry, title_ru, title_kk, up, down) in enumerate(DEMO_PROPOSALS):
+    for number, (kind, geometry, title_ru, title_kk, up, down, osm_ref) in enumerate(DEMO_PROPOSALS):
         if kind in have_demo:
             report["proposals"].append({"kind": kind, "action": "kept"})
             continue
@@ -91,5 +100,5 @@ def seed_r14_demo(service) -> dict:
                                     updated_at) VALUES (?, ?, ?, ?, ?)""",
                              (item["id"], device, 1 if n < up else -1, iso(now), iso(now)))
         report["proposals"].append({"kind": kind, "action": "create", "id": item["id"],
-                                    "votes_up": up, "votes_down": down})
+                                    "votes_up": up, "votes_down": down, "place": osm_ref})
     return report

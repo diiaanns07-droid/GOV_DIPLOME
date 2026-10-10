@@ -1,0 +1,264 @@
+{
+  "city": "Astana",
+  "data_classification": "real",
+  "source": "OpenStreetMap / Overpass API",
+  "endpoint": "https://overpass-api.de/api/interpreter",
+  "bbox": [
+    71.2079,
+    50.9206,
+    71.7953,
+    51.3612
+  ],
+  "bbox_order": [
+    "west",
+    "south",
+    "east",
+    "north"
+  ],
+  "bbox_source": "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json",
+  "overpass_bbox": [
+    50.9206,
+    71.2079,
+    51.3612,
+    71.7953
+  ],
+  "license": "ODbL-1.0",
+  "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "attribution": "© OpenStreetMap contributors",
+  "attribution_url": "https://www.openstreetmap.org/copyright",
+  "query_policy": "Sequential requests only; [timeout:180]; out geom; no geometry clipping.",
+  "sets": [
+    {
+      "name": "bus_stops",
+      "title_ru": "Остановки",
+      "tag": "highway=bus_stop",
+      "file": "raw/bus_stops.json.gz",
+      "query": "[out:json][timeout:180];\nnwr[\"highway\"=\"bus_stop\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:01:06.506759+00:00",
+      "downloaded_at_utc": "2026-10-10T13:02:59.679292+00:00",
+      "osm_base": "2026-10-10T13:01:05Z",
+      "object_count": 967,
+      "counts_by_osm_type": {
+        "node": 967
+      },
+      "compressed_bytes": 25227,
+      "uncompressed_bytes": 210078,
+      "sha256_gzip": "5548c998f798f65242787037a3ec6a4ead5d9e21f13a35d58bb4bbd6f21ed5a5",
+      "sha256_raw_json": "d9d4e233f47a763dbb632532b3d1ccbec533a34b9bea55e87fd51a52129c6507"
+    },
+    {
+      "name": "platforms",
+      "title_ru": "Платформы общественного транспорта",
+      "tag": "public_transport=platform",
+      "file": "raw/platforms.json.gz",
+      "query": "[out:json][timeout:180];\nnwr[\"public_transport\"=\"platform\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:03:02.692370+00:00",
+      "downloaded_at_utc": "2026-10-10T13:03:07.156224+00:00",
+      "osm_base": "2026-10-10T13:01:05Z",
+      "object_count": 729,
+      "counts_by_osm_type": {
+        "node": 681,
+        "way": 48
+      },
+      "compressed_bytes": 22692,
+      "uncompressed_bytes": 190593,
+      "sha256_gzip": "434ccf8f922d384d2ae5bb374630a6628075334082e92ad99018d4e17c3c23e0",
+      "sha256_raw_json": "98983c95aec20552db307879636c0dbc5d233c8f2965568c432699dc57c9b043"
+    },
+    {
+      "name": "playgrounds",
+      "title_ru": "Детские площадки",
+      "tag": "leisure=playground",
+      "file": "raw/playgrounds.json.gz",
+      "query": "[out:json][timeout:180];\nnwr[\"leisure\"=\"playground\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:03:10.169657+00:00",
+      "downloaded_at_utc": "2026-10-10T13:04:27.690996+00:00",
+      "osm_base": "2026-10-10T13:03:06Z",
+      "object_count": 348,
+      "counts_by_osm_type": {
+        "node": 38,
+        "way": 305,
+        "relation": 5
+      },
+      "compressed_bytes": 36727,
+      "uncompressed_bytes": 242602,
+      "sha256_gzip": "b24d4c6b1acccf4915684cbe57bbe702341575e9a1cf39f299fc3630223cb639",
+      "sha256_raw_json": "7ad4d6ae664e6f7c13728a688998c8677e65ad5fc0995bf91960f5a13bc7cdb0"
+    },
+    {
+      "name": "pitches",
+      "title_ru": "Спортплощадки",
+      "tag": "leisure=pitch",
+      "file": "raw/pitches.json.gz",
+      "query": "[out:json][timeout:180];\nnwr[\"leisure\"=\"pitch\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:04:30.710659+00:00",
+      "downloaded_at_utc": "2026-10-10T13:06:01.554685+00:00",
+      "osm_base": "2026-10-10T13:04:06Z",
+      "object_count": 716,
+      "counts_by_osm_type": {
+        "way": 714,
+        "relation": 2
+      },
+      "compressed_bytes": 65431,
+      "uncompressed_bytes": 437670,
+      "sha256_gzip": "2fad47a6b61b438c76631205df453486138c9c0c7c21f5d3c25e9b7f5391a9ab",
+      "sha256_raw_json": "ca136d9e115312719059e9747f6af5943375feb129061ee84cb5977d64617595"
+    },
+    {
+      "name": "parks",
+      "title_ru": "Парки",
+      "tag": "leisure=park",
+      "file": "raw/parks.json.gz",
+      "query": "[out:json][timeout:180];\nnwr[\"leisure\"=\"park\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:06:04.585841+00:00",
+      "downloaded_at_utc": "2026-10-10T13:06:05.986265+00:00",
+      "osm_base": "2026-10-10T13:04:06Z",
+      "object_count": 128,
+      "counts_by_osm_type": {
+        "way": 124,
+        "relation": 4
+      },
+      "compressed_bytes": 31328,
+      "uncompressed_bytes": 170033,
+      "sha256_gzip": "37be4641208f3056a4724985d54ac709506db8eff55aa248f5e3f40e4d552dd3",
+      "sha256_raw_json": "d980f976db971c52bd02fc2261a7e5f908962b4266362171fcf63b75f6207df2"
+    },
+    {
+      "name": "gardens",
+      "title_ru": "Скверы и сады",
+      "tag": "leisure=garden",
+      "file": "raw/gardens.json.gz",
+      "query": "[out:json][timeout:180][maxsize:67108864];\nnwr[\"leisure\"=\"garden\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:09:20.366020+00:00",
+      "downloaded_at_utc": "2026-10-10T13:09:21.239096+00:00",
+      "osm_base": "2026-10-10T13:08:05Z",
+      "object_count": 52,
+      "counts_by_osm_type": {
+        "way": 52
+      },
+      "compressed_bytes": 6253,
+      "uncompressed_bytes": 38276,
+      "sha256_gzip": "d9a2159dafb6354094b25e95fbc61c64212db8e47329b50e02a74f5b25bba16f",
+      "sha256_raw_json": "6bcf7f12c79abf26177ddff9489d7614b37de95c517c3d1409b8db5f7fc6eb19"
+    },
+    {
+      "name": "residential",
+      "title_ru": "Жилые кварталы",
+      "tag": "landuse=residential",
+      "file": "raw/residential.json.gz",
+      "query": "[out:json][timeout:180][maxsize:67108864];\nnwr[\"landuse\"=\"residential\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:09:24.242180+00:00",
+      "downloaded_at_utc": "2026-10-10T13:09:25.550337+00:00",
+      "osm_base": "2026-10-10T13:08:05Z",
+      "object_count": 570,
+      "counts_by_osm_type": {
+        "node": 7,
+        "way": 551,
+        "relation": 12
+      },
+      "compressed_bytes": 77750,
+      "uncompressed_bytes": 477541,
+      "sha256_gzip": "3d8f5354e738dae898dad2e12b1b79d4c8ebb21bcf4892a1001ce37e15059884",
+      "sha256_raw_json": "b3ef350de438e017549df3f3a5f2275b76ef9e64e90741b22ed0e4a7ece7311d"
+    },
+    {
+      "name": "waste_disposal",
+      "title_ru": "Места сбора мусора",
+      "tag": "amenity=waste_disposal",
+      "file": "raw/waste_disposal.json.gz",
+      "query": "[out:json][timeout:180][maxsize:67108864];\nnwr[\"amenity\"=\"waste_disposal\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:09:28.576529+00:00",
+      "downloaded_at_utc": "2026-10-10T13:09:29.176981+00:00",
+      "osm_base": "2026-10-10T13:08:05Z",
+      "object_count": 102,
+      "counts_by_osm_type": {
+        "node": 83,
+        "way": 19
+      },
+      "compressed_bytes": 4261,
+      "uncompressed_bytes": 27692,
+      "sha256_gzip": "a3de1ec62d8cc6de377c8e05167b8882370a1e1356a1c1e6bd2bcb1dc997c133",
+      "sha256_raw_json": "e7407f6903c59b8bdb641ef4cec036d107793195da304d67e350adad3e1724bb"
+    },
+    {
+      "name": "recycling",
+      "title_ru": "Приём вторсырья",
+      "tag": "amenity=recycling",
+      "file": "raw/recycling.json.gz",
+      "query": "[out:json][timeout:180][maxsize:67108864];\nnwr[\"amenity\"=\"recycling\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:09:32.182878+00:00",
+      "downloaded_at_utc": "2026-10-10T13:09:32.802344+00:00",
+      "osm_base": "2026-10-10T13:08:05Z",
+      "object_count": 41,
+      "counts_by_osm_type": {
+        "node": 40,
+        "way": 1
+      },
+      "compressed_bytes": 1880,
+      "uncompressed_bytes": 14998,
+      "sha256_gzip": "5a96d0db83f475ed2442a528e8fe65f4190a238f36c136a52a4edcbe34deb427",
+      "sha256_raw_json": "3d79d7aeb37dc75033d92e85c06f44fd82f778229eafceddae2e5c47d39c038b"
+    },
+    {
+      "name": "street_lamps",
+      "title_ru": "Фонари",
+      "tag": "highway=street_lamp",
+      "file": "raw/street_lamps.json.gz",
+      "query": "[out:json][timeout:180][maxsize:67108864];\nnwr[\"highway\"=\"street_lamp\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:09:35.807159+00:00",
+      "downloaded_at_utc": "2026-10-10T13:10:15.184730+00:00",
+      "osm_base": "2026-10-10T13:09:06Z",
+      "object_count": 217,
+      "counts_by_osm_type": {
+        "node": 217
+      },
+      "compressed_bytes": 3116,
+      "uncompressed_bytes": 28666,
+      "sha256_gzip": "3af53611331d7fc3cc61338d28e02fcf48b4a1edf94535eed3be4879439809e3",
+      "sha256_raw_json": "07f4304e6701b4b02001892d22d8c8b2d01ac7e5c4f2cc88236d4c9c35fe1c5e"
+    },
+    {
+      "name": "schools",
+      "title_ru": "Школы",
+      "tag": "amenity=school",
+      "file": "raw/schools.json.gz",
+      "query": "[out:json][timeout:180][maxsize:67108864];\nnwr[\"amenity\"=\"school\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:10:18.187829+00:00",
+      "downloaded_at_utc": "2026-10-10T13:10:22.959259+00:00",
+      "osm_base": "2026-10-10T13:09:06Z",
+      "object_count": 175,
+      "counts_by_osm_type": {
+        "node": 33,
+        "way": 141,
+        "relation": 1
+      },
+      "compressed_bytes": 26768,
+      "uncompressed_bytes": 146741,
+      "sha256_gzip": "07ee65438b016c7b6e1a4824afd9c95da6b050917f9be48aea36fce705b1f745",
+      "sha256_raw_json": "fa394ce3a42c366684b70dda1604847667a085d18b5d2f636244a027fe9b2793"
+    },
+    {
+      "name": "kindergartens",
+      "title_ru": "Детские сады",
+      "tag": "amenity=kindergarten",
+      "file": "raw/kindergartens.json.gz",
+      "query": "[out:json][timeout:180][maxsize:67108864];\nnwr[\"amenity\"=\"kindergarten\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-10T13:10:25.968885+00:00",
+      "downloaded_at_utc": "2026-10-10T13:10:26.758515+00:00",
+      "osm_base": "2026-10-10T13:09:06Z",
+      "object_count": 147,
+      "counts_by_osm_type": {
+        "node": 55,
+        "way": 92
+      },
+      "compressed_bytes": 16435,
+      "uncompressed_bytes": 91677,
+      "sha256_gzip": "be3b04a76b6e60a2b2576b466176218fe01842b9ec2ff934f1a1f970832fc0e4",
+      "sha256_raw_json": "c0cc255d9ae4f86f33a3e63bb468dd601b4cc653abe4607dcb8895b11506c12c"
+    }
+  ],
+  "download_completed_at_utc": "2026-10-10T13:10:29.769287+00:00",
+  "total_set_memberships": 4192,
+  "unique_osm_objects": 3513,
+  "total_compressed_bytes": 317868
+}
