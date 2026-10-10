@@ -1,0 +1,25 @@
+diff --git a/web/civic/editor/editor.js b/web/civic/editor/editor.js
+index 18b7899..9a36e14 100644
+--- a/web/civic/editor/editor.js
++++ b/web/civic/editor/editor.js
+@@ -649,7 +649,7 @@
+     function buildEditor() {
+       const it = S.item, acts = C.allowedActions(it, S.session), locked = C.isOriginalLocked(it);
+       for (const k of Object.keys(F)) delete F[k];
+-      for (const k of ["reauth", "restore", "conflict", "srcreview", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history", "rare"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
++      for (const k of ["reauth", "restore", "conflict", "srcreview", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history", "rare", "stage"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
+       V.msg.setAttribute("class", "civic-r04-slot-msg");
+       const meta = it
+         ? el("p", { class: "civic-r04-meta" }, [badge(C.PUBLICATION[it.publication] || String(it.publication), "pub-" + it.publication),
+@@ -727,7 +727,10 @@
+         el("div", { class: "civic-r04-bar" }, [
+           btn("← Все записи", () => showList(true), "link", "back"),
+           el("h3", { id: P + "edit-h", tabindex: "-1", "data-fk": "edit-h" }, it ? it.title || "(без названия)" : "Новый объект"), meta]),
+-        V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.preview, V.history, review, actions].filter(Boolean)));
++        V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.stage, V.preview, V.history, review, actions].filter(Boolean)));
++      // R06 раунд 14: этап работ — отдельный блок со своей кнопкой и ревизией (web/civic/proposals/stage-editor.js),
++      // форма и сохранение редактора не меняются. Только у сохранённой записи: у новой ещё нет ID.
++      if (it && window.BirgeStageEditor) window.BirgeStageEditor.mount(V.stage, { objectId: it.id, readOnly: !acts.edit });
+       renderGeometry(); renderSources(); renderSchedNote(); renderSrcReview(); renderReauth(); renderRestore(); renderConflict(); renderPreview(); renderHistory();
+       renderDiff(); renderReason(); renderButtons();
+       V.msg.replaceChildren(...[msgBlock(S.notice)].filter(Boolean));

@@ -1,0 +1,64 @@
+{
+ "role": "R06",
+ "title": "Предложения, голоса жителей, этапы и отставание объектов",
+ "branch": "claude/round-14-r06",
+ "branch_note": "Отдельная ветка с разрешения пользователя: claude/round-14-package уже вела сессия R11; по COMMON (обновлён позже) имя было бы claude/r14-R06 — координатору внести claude/round-14-r06 в BRANCHES.md.",
+ "base_sha": "608e367 (claude/round-14-package)",
+ "restored_from": {
+  "ui/civic_store/": "claude/elegant-franklin-jbhprq @ 26793c8 (R02 раунда 13, код b9eb180)",
+  "tests/civic/R06/store/": "tests/civic/R02 @ 26793c8, переименованы в r06store_*; 3 теста схемы/cookie обновлены под миграцию 6"
+ },
+ "inputs_read_only": {
+  "data/civic/astana/osm-objects/": "claude/round-14-package @ a29428a (LOCAL-1, real, ODbL) — без изменений",
+  "web/civic/ui-kit, web/civic/i18n": "R11 claude/r14-R11 @ ba8758b — только для стенда/скриншотов (--kit-dir), в ветку R06 не копировались",
+  "ui/web_server.py R01": "claude/sharp-dijkstra-0t87gl @ 022787b — только для теста шлюза",
+  "web/civic/editor R12": "claude/tender-brahmagupta-ef5ztl @ f48e578 — только для patch и прогона его тестов"
+ },
+ "code_sha": "7031afa",
+ "tested_sha": "7031afa (Linux, Python 3.13.16, SQLite 3.45.1, Node 22.22.0, Chromium Playwright)",
+ "push_status": "см. финальный коммит передачи; checkpoints 25796fa, f5f1e94, ef35fb6, 18d5182, c3cd15d, 7031afa отправлены",
+ "changed_paths": [
+  "ui/civic_store/db.py (миграция 6)",
+  "ui/civic_store/auth.py (COOKIE_PATH=/api/civic)",
+  "ui/civic_store/stages.py",
+  "ui/civic_store/proposals.py",
+  "ui/civic_store/districts.py",
+  "ui/civic_store/v2.py",
+  "ui/civic_store/demo_r14.py",
+  "ui/civic_store/cli.py (seed-r14-demo)",
+  "ui/civic_store/__init__.py",
+  "ui/civic_store/* остальное — восстановлено из 26793c8 без изменений",
+  "web/civic/proposals/proposals.js",
+  "web/civic/proposals/proposals.css",
+  "web/civic/proposals/stage-editor.js",
+  "web/civic/proposals/demo.html (стенд, не раздаётся)",
+  "tests/civic/R06/round14/",
+  "tests/civic/R06/store/",
+  "data/civic/astana/osm-objects/ (копия LOCAL-1 из пакета, без изменений)",
+  "research/round-14-results/R06/",
+  "research/handoffs/astana/R06/round14/STATUS.md"
+ ],
+ "tests": {
+  "pytest tests/civic/R06 @7031afa": "PASS 445 passed, 5 skipped (4 — тест шлюза R01 без R06_R01_WEB_SERVER, 1 — унаследован из R02)",
+  "pytest tests/civic/R06/round14 (этапы, миграция без потерь, предложения, голоса, демо, места по OSM)": "PASS 66 passed, 4 skipped",
+  "через настоящий CivicV2Gateway R01 @022787b (R06_R01_WEB_SERVER)": "PASS 4/4",
+  "pytest tests/civic (весь) @c3cd15d": "1036 passed, 9 skipped, 3 FAIL — старые тесты хранилища tests/civic/R02 (номер схемы, таблицы, путь cookie); patch r02_old_store_tests.patch → tests/civic/R02 210 passed",
+  "браузер browser_r14.cjs на свежем стенде serve_r14.py (375/1366, ru/kk, голос/повтор/смена/перезагрузка/другое устройство, акимат «Одобрить», этап сотрудника + 409 + 422, нет связи)": "PASS 48/48, скриншоты screens/",
+  "голос сохраняется, повтор не удваивает, переживает перезапуск сервера": "PASS (pytest test_votes_survive_restart + браузер)",
+  "R12 редактор с r12_editor_stage.patch на моём хранилище": "80 pass / 8 fail / 1 skip — ТО ЖЕ, что без patch на хранилище раунда 13 (80/8/1): падения есть в ветке R12 до patch (поиск улиц, e2e с реальным R02), регрессии нет",
+  "весь tests/ репозитория": "NOT_RUN: вне роли",
+  "Windows run-city.bat": "NOT_RUN: облачный Linux"
+ },
+ "known_limits": [
+  "Голос — один с устройства (localStorage + хэш с солью), а не один на человека: очистка браузера даёт новое «устройство». Ограничение частоты 30 голосов/мин с адреса.",
+  "Шлюз R01 ещё не вызывает bind(service) и не знает маршрутов approve/reject/withdraw, GET по id, lagging, summary, staff stage — INTEGRATION §1.",
+  "Через шлюз R01 сейчас теряются fields у 422 (форма этапа покажет общее сообщение) — INTEGRATION §1.4.",
+  "Названия объектов civic-v1 одноязычные (ru): в kk карточка объекта показывает русское название с lang=ru.",
+  "Новые ключи перевода (32) пока живут в запасных списках R06; казахский — черновик R06 до вычитки R11/владельцем.",
+  "Демо: объекты — синтетика R02; проекты помечены demo, их голоса синтетические. Места подобраны по OSM, но слоя зданий нет — попадание в дом не проверено.",
+  "Район — по полигонам OSM (не юридическая граница); объект без геометрии — district null.",
+  "stale считается от более свежего из (обновление этапа, обновление карточки); для работающих и без этапа — false.",
+  "Код раунда 13 не откроет базу после миграции 6 — перед обновлением backup."
+ ],
+ "next_step": "R01: bind(service) + маршруты/статика по INTEGRATION §1; R12: наложить r12_editor_stage.patch; R11: забрать I18N-KEYS R06; R08: lagging_objects()/proposals_summary(); R05: POST /proposals."
+}

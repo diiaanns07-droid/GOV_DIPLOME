@@ -1,0 +1,175 @@
+R06 · раунд 14 · INTEGRATION — предложения, голоса, этапы и отставание объектов
+Ветка поставки: claude/round-14-r06 (точный SHA — DELIVERY.json). Пути R06: ui/civic_store/, web/civic/proposals/,
+tests/civic/R06/, research/round-14-results/R06/, research/handoffs/astana/R06/round14/STATUS.md.
+Основа: claude/round-14-package @ 608e367; ui/civic_store/ восстановлен из claude/elegant-franklin-jbhprq @ 26793c8 (R02 раунда 13).
+
+=====================================================================
+0. ЧТО ВАЖНО ЗНАТЬ ВСЕМ (два изменения поведения хранилища)
+=====================================================================
+а) Миграция 6 (ui/civic_store/db.py). Только НОВЫЕ таблицы: civic_object_stages, civic_stage_history (append-only),
+   civic_proposals (без удаления), civic_proposal_history (append-only), civic_votes, civic_v2_settings.
+   civic_objects / civic_history / civic_public_objects не меняются (тест сравнивает строки до и после).
+   Этап старых объектов выводится из status: planned→planned, in_progress→construction, completed→operating,
+   unknown/cancelled→«этап не указан»; плановый срок = original_planned_end (или current_planned_end).
+   Применяется автоматически (CivicService(auto_migrate=True)) или `python -m ui.civic_store init`.
+   Код раунда 13 базу со схемой 6 не откроет (защита R02 от понижения версии) — перед обновлением backup.
+б) Cookie сессии сотрудника: Path=/api/civic/v1 → Path=/api/civic (ui/civic_store/auth.py COOKIE_PATH).
+   Иначе браузер не отправлял сессию на /api/civic/v2 и любое действие сотрудника в v2 давало 401
+   (найдено браузерной проверкой). HttpOnly, SameSite=Strict, CSRF — как было. Старые cookie с прежним
+   путём живут до 8 ч и ни на что не влияют.
+
+=====================================================================
+1. ДЛЯ R01 · шлюз v2 (ui/web_server.py, ваша ветка claude/sharp-dijkstra-0t87gl)
+=====================================================================
+Функции уже лежат там, где их ищет ваша таблица V2_HANDLERS: ui/civic_store/v2.py (list_proposals, create_proposal,
+vote_proposal, list_objects, set_object_stage). Проверено вашим настоящим CivicV2Gateway (ui/web_server.py вашей
+ветки @022787b): tests/civic/R06/round14/test_r06r14_gateway_r01.py — 4 PASS
+(R06_R01_WEB_SERVER=<путь к вашему web_server.py> python3 -m pytest tests/civic/R06/round14/test_r06r14_gateway_r01.py).
+
+1.1 ОБЯЗАТЕЛЬНО — одна строка: связать модуль с тем же CivicService, что обслуживает v1 (одна база и сессии).
+    Без неё маршруты R06 отвечают 503 module_not_ready. Место — фабрика store() в CivicGateway, сразу после
+        service = service_class(str(db_path))
+    +   importlib.import_module("ui.civic_store.v2").bind(service)   # R06 r14: функции v2 работают с этой базой
+
+1.2 Добавить маршруты, которых нет в V2_ROUTES (функции есть в ui.civic_store.v2):
+    ("GET",  ("proposals", "summary"),           "proposals.summary")    -> proposals_summary(since=None)          # R08
+    ("GET",  ("proposals", "{id}"),              "proposals.get")        -> get_proposal(proposal_id, device_id=None)
+    ("POST", ("proposals", "{id}", "approve"),   "proposals.approve")    -> decide_proposal(proposal_id, "approve", body)  [С]
+    ("POST", ("proposals", "{id}", "reject"),    "proposals.reject")     -> decide_proposal(proposal_id, "reject", body)   [С]
+    ("POST", ("proposals", "{id}", "withdraw"),  "proposals.withdraw")   -> decide_proposal(proposal_id, "withdraw", body) [С]  # R05 «Удалить»
+    ("GET",  ("objects", "lagging"),             "objects.lagging")      -> lagging_objects(district=None)          # R08
+    ("GET",  ("objects", "{id}"),                "objects.get")          -> get_object(object_id)
+    ("GET",  ("staff", "objects", "{id}", "stage"), "objects.stage.get") -> get_object_stage(object_id)             [С]
+    ВНИМАНИЕ порядок: ("proposals","summary") и ("objects","lagging") — ДО шаблонов с {id}, иначе «summary» уйдёт
+    в get как id. [С] — staff=True. Функциям нужен context (для сессии) — они его объявляют, ваш _call передаст.
+
+1.3 В arguments(): proposals.list — передавать ещё device_id (q["device_id"], ваш V2_DEVICE_ID), district и status;
+    objects.list — district. Без device_id карточка не знает «мой голос» (my_vote = null) — голос при этом
+    всё равно один с устройства (это проверяет сервер при POST /vote).
+
+1.4 v2_error: пробросить из исключения атрибуты fields и current_revision, если есть (V2Error R06 их даёт).
+    Без fields форма этапа показывает общее «Исправьте выделенные поля», но не подсвечивает конкретное поле.
+
+1.5 Статика (CIVIC_ASSETS + ваш _CIVIC_MIME): "proposals/proposals.js", "proposals/proposals.css",
+    "proposals/stage-editor.js". demo.html НЕ раздавать (стенд для проверки).
+    web/index.html: после ui-kit.js и i18n.js, ДО editor.js:
+        <link rel="stylesheet" href="/civic/proposals/proposals.css" />        (в <head>, после components.css)
+        <script defer src="/civic/proposals/proposals.js"></script>
+        <script defer src="/civic/proposals/stage-editor.js"></script>          (до /civic/editor/editor.js)
+
+1.6 Как показать карточки (оболочка, R05, R07):
+        BirgeProposals.mountProposal(el, id, {role: "resident"|"akimat"})   // загрузит и покажет; ошибки — состояния ui-kit
+        BirgeProposals.renderProposal(el, proposal, {role, onChange})       // уже загруженное (например, из R05)
+        BirgeProposals.mountObject(el, id) / renderObject(el, object)       // карточка объекта: 6 этапов + отставание
+        BirgeProposals.renderStages(el, object)                             // только блок этапов внутри чужой карточки
+    Клиент понимает оба формата ответа: конверт {ok,data} (сервис R06 напрямую) и «голый» JSON вашего шлюза.
+
+1.7 Старые тесты хранилища tests/civic/R02 (раунд 11/12, путь R02) — 3 падения ожидаемы после восстановления
+    кода раунда 13 и миграции 6 (номер схемы, список таблиц, путь cookie). Минимальный patch:
+    research/round-14-results/R06/r02_old_store_tests.patch (с ним tests/civic/R02: 210 passed, 1 skipped).
+    Полная регрессия хранилища раунда 13 перенесена в tests/civic/R06/store/ (247 тестов, имена модулей r06store_*);
+    tests/civic/R02 со старыми тестами хранилища можно убрать при сборке — решение за вами.
+
+=====================================================================
+2. ДЛЯ R12 · редактор (web/civic/editor/editor.js) — поля этапа
+=====================================================================
+Patch: research/round-14-results/R06/r12_editor_stage.patch (3 строки + комментарий; накладывается на вашу ветку
+claude/tender-brahmagupta-ef5ztl @ f48e578: git apply --check OK; node --check OK).
+Что делает: в карточке сохранённой записи под формой появляется блок «Этап работ» (stage-editor.js R06):
+этап из 6, плановое окончание, прогноз, причина (только для сотрудников), кнопка «Сохранить этап».
+Своя кнопка и своя ревизия (stage_revision): форма редактора, её сохранение, черновики и 409 редактора не меняются.
+Состояния блока: загрузка, ошибка с «Повторить», 409 «Этап уже изменил другой сотрудник… показана новая версия»,
+422 — ошибка у поля и фокус на нём, 401 — «Сессия закончилась. Войдите заново». Только чтение — если редактировать нельзя.
+Нужно: stage-editor.js подключён ДО editor.js (п. 1.5); без него блок просто не появляется.
+Прогон ваших тестов редактора (tests/civic/R12/editor/*.test.cjs, R04_R02_ROOT=моя ветка) с patch: 80 pass / 8 fail /
+1 skip — ровно то же, что без patch на хранилище раунда 13 (80/8/1). Падающие (street search в e2e_r13 и e2e против
+реального R02) падают у вас и без patch — регрессии от R06 нет.
+
+=====================================================================
+3. ДЛЯ R08 · «Картина дня»
+=====================================================================
+Python, без HTTP (тот же процесс):
+    from ui.civic_store import v2
+    v2.lagging_objects(district=None | "nura" | …) -> {today, district, late:[…], stale:[…], counts:{total, late, stale},
+                                                       by_district:{id: {total, late, stale}}, stale_after_days: 14}
+        элемент: {id, title, kind, district, stage, planned_end, forecast_end, delay_days, stale_days, late, stale, demo, geometry}
+        late — по убыванию delay_days; stale — по убыванию stale_days. Только опубликованные объекты.
+    v2.proposals_summary(since="2026-10-11") -> {total, new, by_status, votes_up, votes_down, top:[5 по числу голосов]}
+HTTP: GET /api/civic/v2/objects/lagging?district=…, GET /api/civic/v2/proposals/summary?since=… (после п. 1.2).
+Районы: id как в data/civic/astana/geofence.json (almaty, baikonur, esil, nura, saraishyk, saryarka) — по полигонам OSM;
+подписи — ключи R11 district.<id>. Объект без геометрии — district null (в by_district → "unknown").
+Демо-данные: python -m ui.civic_store --db <база> seed-r14-demo (см. RUN.txt) — всё помечено demo.
+
+=====================================================================
+4. ДЛЯ R05 · 3D-размещение → предложение
+=====================================================================
+POST /api/civic/v2/proposals (сотрудник, X-CSRF-Token):
+    {"kind": "square|playground|sports|stop|lighting", "geometry": GeoJSON, "title_ru"?: "…", "title_kk"?: "…",
+     "rotation_deg"?: −360…360, "planned_year"?: 2025…2040, "demo"?: bool}
+    lighting — только LineString (форма участка улицы от R12 /targets); остальное — Point или Polygon. Внутри Астаны.
+    Нет названий — подставятся «Сквер» / «Гүлзар» и т. п. (как proposal.kind.* R11). Ответ 201 {item}.
+GET /api/civic/v2/proposals → items[] {id, kind, geometry, rotation_deg, title_ru, title_kk, status, district,
+    planned_year, votes_up, votes_down, my_vote, voting_open, demo, created_at, updated_at, decided_at}.
+«Удалить» → POST /proposals/{id}/withdraw (после п. 1.2): строка остаётся в базе со статусом withdrawn, в списках не видна.
+Карточка голосования: BirgeProposals.renderProposal(el, item, {role}) — табличка «Проект · 2027» всегда.
+
+=====================================================================
+5. ДЛЯ R11 · новые ключи перевода (формат вашего INTEGRATION §4)
+=====================================================================
+До добавления в ru.json/kk.json модули R06 берут текст из своего запасного списка (proposals.js PENDING,
+stage-editor.js PENDING) без предупреждений; как только ключ есть в словаре — побеждает словарь R11.
+Казахский — черновик R06, просьба вычитать.
+
+I18N-KEYS R06
+{"proposal.your_vote_up": {"ru": "Вы проголосовали «за»", "kk": "Сіз «жақтаймын» деп дауыс бердіңіз", "where": "R06 · карточка проекта, под кнопками"},
+ "proposal.your_vote_down": {"ru": "Вы проголосовали «против»", "kk": "Сіз «қарсымын» деп дауыс бердіңіз", "where": "то же"},
+ "proposal.vote_saved": {"ru": "Голос учтён", "kk": "Дауысыңыз есепке алынды", "where": "R06 · тост после голоса"},
+ "proposal.vote_changed": {"ru": "Голос изменён", "kk": "Дауысыңыз өзгертілді", "where": "R06 · тост после смены голоса"},
+ "proposal.vote_error": {"ru": "Не удалось отправить голос. Проверьте связь и повторите.", "kk": "Дауыс жіберілмеді. Байланысты тексеріп, қайталаңыз.", "where": "R06 · тост-ошибка с «Повторить»"},
+ "proposal.voting_closed": {"ru": "Голосование по этому проекту закрыто", "kk": "Бұл жоба бойынша дауыс беру аяқталды", "where": "R06 · карточка одобренного/отклонённого проекта"},
+ "proposal.votes_aria": {"ru": "За: {up}, против: {down}", "kk": "Жақтағандар: {up}, қарсылар: {down}", "where": "R06 · aria-label группы кнопок"},
+ "proposal.need_staff": {"ru": "Войдите как сотрудник акимата", "kk": "Әкімдік қызметкері ретінде кіріңіз", "where": "R06 · «Одобрить» без сессии"},
+ "proposal.already_decided": {"ru": "Решение по проекту уже принято. Карточка обновлена.", "kk": "Жоба бойынша шешім қабылданып қойған. Ақпарат жаңартылды.", "where": "R06 · 409"},
+ "proposal.not_found": {"ru": "Проект не найден или снят", "kk": "Жоба табылмады немесе алынып тасталды", "where": "R06 · пустое состояние"},
+ "object.stage_unknown": {"ru": "Этап работ не указан", "kk": "Жұмыс кезеңі көрсетілмеген", "where": "R06 · карточка объекта без этапа"},
+ "object.not_found": {"ru": "Объект не найден или снят с публикации", "kk": "Нысан табылмады немесе жариялаудан алынды", "where": "R06 · пустое состояние"},
+ "object.kind.construction": {"ru": "Строительство", "kk": "Құрылыс", "where": "R06 · тип объекта civic-v1"},
+ "object.kind.roadworks": {"ru": "Ремонт дороги", "kk": "Жол жөндеу", "where": "то же"},
+ "object.kind.landscaping": {"ru": "Благоустройство", "kk": "Абаттандыру", "where": "то же"},
+ "object.kind.event": {"ru": "Мероприятие", "kk": "Іс-шара", "where": "то же"},
+ "stage.editor.title": {"ru": "Этап работ", "kk": "Жұмыс кезеңі", "where": "R06 · блок в редакторе R12"},
+ "stage.editor.stage": {"ru": "Текущий этап", "kk": "Ағымдағы кезең", "where": "то же, поле"},
+ "stage.editor.planned_end": {"ru": "Плановое окончание", "kk": "Жоспарлы аяқталу күні", "where": "то же"},
+ "stage.editor.planned_hint": {"ru": "Дата по плану. От неё считается отставание.", "kk": "Жоспар бойынша күн. Кешігу осы күннен есептеледі.", "where": "то же"},
+ "stage.editor.forecast_end": {"ru": "Прогноз окончания", "kk": "Аяқталу болжамы", "where": "то же"},
+ "stage.editor.forecast_hint": {"ru": "Когда реально закончат. Пусто — прогноза нет.", "kk": "Нақты қашан аяқталады. Бос болса — болжам жоқ.", "where": "то же"},
+ "stage.editor.reason": {"ru": "Что изменилось (видно только сотрудникам)", "kk": "Не өзгерді (тек қызметкерлерге көрінеді)", "where": "то же"},
+ "stage.editor.save": {"ru": "Сохранить этап", "kk": "Кезеңді сақтау", "where": "то же, кнопка"},
+ "stage.editor.saving": {"ru": "Сохраняем…", "kk": "Сақталуда…", "where": "то же"},
+ "stage.editor.saved": {"ru": "Этап сохранён", "kk": "Кезең сақталды", "where": "то же"},
+ "stage.editor.unchanged": {"ru": "Изменений нет", "kk": "Өзгеріс жоқ", "where": "то же"},
+ "stage.editor.conflict": {"ru": "Этап уже изменил другой сотрудник. Показана новая версия — проверьте и сохраните ещё раз.", "kk": "Кезеңді басқа қызметкер өзгертіп қойған. Жаңа нұсқа көрсетілді — тексеріп, қайта сақтаңыз.", "where": "то же, 409"},
+ "stage.editor.login": {"ru": "Сессия закончилась. Войдите заново и повторите.", "kk": "Сессия аяқталды. Қайта кіріп, қайталаңыз.", "where": "то же, 401"},
+ "stage.editor.error": {"ru": "Не удалось сохранить. Проверьте связь и повторите.", "kk": "Сақталмады. Байланысты тексеріп, қайталаңыз.", "where": "то же"},
+ "stage.editor.fix": {"ru": "Исправьте выделенные поля", "kk": "Белгіленген өрістерді түзетіңіз", "where": "то же, 422"},
+ "stage.editor.draft_note": {"ru": "Запись ещё не опубликована: жители увидят этап после публикации.", "kk": "Жазба әлі жарияланбаған: тұрғындар кезеңді жарияланғаннан кейін көреді.", "where": "то же"},
+ "stage.editor.select": {"ru": "— выберите этап —", "kk": "— кезеңді таңдаңыз —", "where": "то же, пустой вариант"}}
+
+Замечание к словарю R11 (UX_REVIEW): ru «object.late» = «Отстаёт на 23 дня», kk «Кестеден 23 күн кешігуде» — смысл
+совпадает; «proposal.vote_up» kk «Жақтаймын» на 375 px переносится под иконку — кнопки остаются ровными (проверено).
+
+=====================================================================
+6. Данные OSM (LOCAL-1) в демо R06
+=====================================================================
+data/civic/astana/osm-objects/ взят из claude/round-14-package @ a29428a без изменений (только чтение).
+Демо-проекты seed-r14-demo поставлены по реальным объектам: «Павильон на остановке «Жағалау-3»» — на настоящей остановке
+OSM (node 5254203835); сквер, площадка, спортплощадка — внутри жилых кварталов OSM Нуры, ≥ 60 м от существующих
+площадок/спортплощадок/парков, вне школ и детсадов (test_r06r14_demo_osm.py). Прежние «придуманные» точки этой проверкой
+отвергнуты: площадка попадала на территорию школы. Совет R05: при постановке объекта проверять то же самое (функцию
+можно взять из теста; зданий в LOCAL-1 нет — попадание в дом проверяет R12/R05 по своему слою).
+
+=====================================================================
+7. LOCAL-задачи
+=====================================================================
+Нет. Всё работает без сети: шрифт и иконки — из ui-kit R11, районы — из data/civic/astana/geofence.json,
+освещение в демо — по рёбрам графа OSM, который уже в репозитории.
