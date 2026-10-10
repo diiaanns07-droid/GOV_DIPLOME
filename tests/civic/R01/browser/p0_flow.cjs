@@ -328,7 +328,9 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
       && document.querySelector("#civic-map-root .civic-r03-card")?.textContent.includes("Проверочный ремонт тротуара R01"), null, { timeout: 15000 }).then(() => true).catch(() => false);
     check("in-page #training / #object= links switch mode and open the card", hashTraining && hashCard, { hashTraining, hashCard });
     await page.evaluate(() => { location.hash = "#object=no-such-object-r01"; });
-    await page.waitForTimeout(1500);
+    // Адрес очищается после ответа 404 модуля карты — ждём условие, а не паузу (B3: запасной фон грузит оси улиц).
+    await page.waitForFunction(() => !location.hash.includes("no-such"), null, { timeout: 8000 }).catch(() => {});
+    await page.waitForTimeout(300);
     const unknownLink = await page.evaluate(() => ({ assistantHidden: document.getElementById("civic-assistant-box").hidden,
       assistantEmpty: !document.getElementById("civic-assistant-root").textContent.trim(), hash: location.hash }));
     check("unknown/draft permalink: no assistant mounted, hash cleared", unknownLink.assistantHidden && unknownLink.assistantEmpty && !unknownLink.hash.includes("no-such"), unknownLink);

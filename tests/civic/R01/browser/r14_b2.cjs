@@ -128,6 +128,19 @@ async function main() {
     await b3dReady(page);
     let st = await b3dState(page);
     check("akimat: 3D catalog (R05) is mounted over the map with the R06 store", st?.phase === "ready" && st?.storeMode === "api", st && { phase: st.phase, storeMode: st.storeMode, count: st.count });
+    // B3: каталог свёрнут в одну кнопку «Что построить?» — легенда тепловой карты свободна; по нажатию — 5 видов.
+    const closed = await page.evaluate(() => {
+      const t = document.querySelector(".birge-b3d-toggle"), d = document.querySelector("#birge-build3d-root .b3d-dock"),
+        lg = document.querySelector(".r07-maplegend");
+      const box = (n) => (n && n.getClientRects().length && getComputedStyle(n).visibility !== "hidden" ? n.getBoundingClientRect() : null);
+      const a = box(t), b = box(lg);
+      return { toggle: t?.textContent || null, expanded: t?.getAttribute("aria-expanded"), catalogShown: !!box(d),
+        legendShown: !!b, overlap: !!(a && b && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom) };
+    });
+    check("akimat: catalog folded into one «Что построить?» button, the heat legend is free", closed.toggle === "Что построить?"
+      && closed.expanded === "false" && !closed.catalogShown && closed.legendShown && !closed.overlap, closed);
+    await page.click(".birge-b3d-toggle");
+    await page.waitForTimeout(300);
     const dock = await page.evaluate(() => {
       const d = document.querySelector("#birge-build3d-root .b3d-dock"), p = document.querySelector(".civic-panel");
       if (!d) return null;
@@ -136,6 +149,8 @@ async function main() {
         bottom: Math.round(r.bottom), vh: innerHeight };
     });
     check("akimat: catalog shows 5 kinds and does not cover the right panel", dock?.state === "catalog" && dock.kinds === 5 && dock.right <= dock.panelLeft, dock);
+    const legendWhileOpen = await page.evaluate(() => getComputedStyle(document.querySelector(".r07-maplegend")).visibility);
+    check("akimat: while the catalog is open the legend steps aside (no overlap at the bottom of the map)", legendWhileOpen === "hidden", legendWhileOpen);
     await page.screenshot({ path: path.join(OUT, "b2-1366-akimat-catalog.png") });
 
     const seeded = (await api(page, "/api/civic/v2/proposals")).body?.items || [];
@@ -226,6 +241,8 @@ async function main() {
     await p2.evaluate(() => { const sel = document.querySelector(".civic-explore select"); const opt = [...sel.options].find((o) => o.value);
       sel.value = opt.value; sel.dispatchEvent(new Event("change", { bubbles: true })); });
     await p2.waitForTimeout(1200);
+    await p2.click(".birge-b3d-toggle");  // B3: каталог раскрывается кнопкой «Что построить?» над шторкой
+    await p2.waitForTimeout(300);
     const peek = await phoneDock();
     check("375 px akimat: sheet collapsed -> catalog above it, within the screen", peek && peek.sheet === "peek" && peek.shown
       && peek.left >= 0 && peek.right <= peek.w && peek.bottom <= peek.sheetTop + 1 && !peek.scrollX, peek);

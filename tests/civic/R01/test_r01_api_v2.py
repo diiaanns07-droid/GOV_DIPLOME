@@ -471,3 +471,58 @@ def test_forecast_arguments_are_checked_before_the_module():
         with pytest.raises(V2BadRequest) as error:
             gateway.arguments("forecast", {}, query, None)
         assert error.value.field == field
+
+
+# --- B3: сотрудник в карточке цели R07, демо-проекты R06, запасной фон карты ----------------
+class _StaffStore:
+    """Сессия R02 для шлюза: сотрудник — только с cookie "s" (как в настоящем require_staff)."""
+
+    def __init__(self):
+        self.calls = []
+
+    def require_staff(self, context, unsafe):
+        self.calls.append(unsafe)
+        if (context or {}).get("cookies", {}).get("s") == "staff-session":
+            return types.SimpleNamespace(username="operator", role="editor"), None
+        return None, {"status": 401, "body": {"error": {"code": "unauthenticated"}}}
+
+
+def test_heat_target_gets_staff_only_after_the_session_is_checked():
+    """R07 /heat/target показывает тексты настоящих жалоб только сотруднику (INTEGRATION R07 §1г)."""
+    seen = []
+
+    def handle_get(path, query, staff=False):
+        seen.append((path, staff))
+        return 200, {"item": {"texts": "staff" if staff else "public"}}
+
+    store = _StaffStore()
+    gateway = gw({"ui.civic_heat.api": fake_module(handle_get=handle_get)},
+                 types.SimpleNamespace(service=lambda name: store if name == "store" else None))
+    resident = call(gateway, "GET", "/heat/target", "kind=object&id=osm-node-1&staff=1")  # параметр не даёт доступа
+    staff = call(gateway, "GET", "/heat/target", "kind=object&id=osm-node-1",
+                 context=dict(CTX, cookies={"s": "staff-session"}))
+    plain = call(gateway, "GET", "/heat", "days=7", context=dict(CTX, cookies={"s": "staff-session"}))
+    assert resident == (200, {"item": {"texts": "public"}}) and staff == (200, {"item": {"texts": "staff"}})
+    assert plain[0] == 200 and [s for _p, s in seen] == [False, True, False]  # /heat тексты не получает никогда
+    assert store.calls == [False, False]  # чтение: без CSRF; на /heat сессия не проверяется вовсе
+
+
+def test_demo_build_seeds_r06_projects_once(tmp_path):
+    """CIVIC_DEMO=1: 5 демо-предложений и этапы R06 появляются при старте, повтор ничего не дублирует."""
+    pytest.importorskip("ui.civic_store.demo_r14")
+    v1 = CivicGateway.for_project(tmp_path, tmp_path / "civic.sqlite3")
+    assert CivicV2Gateway(v1, demo=False).seed_demo() is None  # не демо-сборка — ничего не пишем
+    gateway = CivicV2Gateway(v1, demo=True)
+    first, second = gateway.seed_demo(), gateway.seed_demo()
+    assert [p["action"] for p in first["proposals"]] == ["create"] * 5
+    assert [p["action"] for p in second["proposals"]] == ["kept"] * 5
+    status, listed = call(gateway, "GET", "/proposals")
+    assert status == 200 and len(listed["items"]) == 5 and all(p["demo"] is True for p in listed["items"])
+
+
+def test_offline_basemap_files_are_served_and_nothing_else_from_fixtures():
+    """Запасной фон карты (web/map.js offlineStyle) — оси улиц OSM со стенда R07; папка fixtures целиком не отдаётся."""
+    for name in ("basemap-city.geojson", "basemap-nura.geojson"):
+        rel, mime = web_server.ASSETS["/civic/heat/fixtures/" + name]
+        assert (web_server.ROOT / "web" / rel).is_file() and mime.startswith("application/geo+json")
+    assert not any(k.startswith("/civic/heat/fixtures/") and not k.endswith(".geojson") for k in web_server.ASSETS)

@@ -17,7 +17,8 @@ step() {
     if "$@" >"$log" 2>&1; then echo "PASS  $name"; else echo "FAIL  $name  (log: $log)"; fail=1; fi
 }
 echo "R01 checks on $(git rev-parse --short HEAD 2>/dev/null || echo unknown) -> $OUT"
-step "pytest" "$PY" -m pytest -q -p no:cacheprovider tests
+# --continue-on-collection-errors: сломанный при сборе модуль одной роли не прячет результаты остальных (B3: R08).
+step "pytest" "$PY" -m pytest -q -p no:cacheprovider --continue-on-collection-errors tests
 step "ui.web_check" "$PY" -B -m ui.web_check
 for t in plan resilience whatif school_case school_vs_k05; do step "node govtech/$t" node "tests/govtech/$t.cjs"; done
 # Карту и редактор раунда 13 (R03, R04) в раунде 14 ведёт R12: его копии тестов с новыми ожиданиями (область

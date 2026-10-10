@@ -189,6 +189,43 @@ function showMapError(text) {
   $("map-status").classList.remove("hidden");
 }
 let offlineBasemap = false;
+// Запасной фон, если OpenFreeMap недоступен (нет интернета на защите — главный риск демо, UX_REVIEW R11 B1 п. 4):
+// настоящие оси улиц OSM из тех же файлов, что у стенда тепловой карты R07 (web/civic/heat/fixtures, © OpenStreetMap
+// contributors, ODbL). Главные улицы города видны всегда, улицы фокус-района Нура — с 12-го масштаба.
+// Подписей улиц нет: для текста MapLibre нужны шрифты-глифы с сервера тайлов, а их без интернета нет.
+const OFFLINE_OSM = "© OpenStreetMap contributors";
+function offlineStyle() {
+  const width = (z0, w0, z1, w1) => ["interpolate", ["linear"], ["zoom"], z0, w0, z1, w1];
+  const road = { "line-cap": "round", "line-join": "round" };
+  return {
+    version: 8,
+    sources: {
+      "offline-city": { type: "geojson", data: "/civic/heat/fixtures/basemap-city.geojson", attribution: OFFLINE_OSM },
+      "offline-nura": { type: "geojson", data: "/civic/heat/fixtures/basemap-nura.geojson", attribution: OFFLINE_OSM },
+    },
+    layers: [
+      { id: "offline-bg", type: "background", paint: { "background-color": "#eef1ea" } },
+      { id: "offline-nura-minor", type: "line", source: "offline-nura", filter: ["==", ["get", "c"], "minor"], minzoom: 13,
+        paint: { "line-color": "#e2ded2", "line-width": width(13, 0.8, 17, 4) } },
+      { id: "offline-nura-street-case", type: "line", source: "offline-nura", filter: ["==", ["get", "c"], "street"], minzoom: 12,
+        layout: road, paint: { "line-color": "#d9d4c5", "line-width": width(12, 1.5, 17, 12) } },
+      { id: "offline-nura-street", type: "line", source: "offline-nura", filter: ["==", ["get", "c"], "street"], minzoom: 12,
+        layout: road, paint: { "line-color": "#ffffff", "line-width": width(12, 0.8, 17, 9) } },
+      // Границы районов рисует само приложение (слой district-*), поэтому класс "district" здесь не нужен.
+      { id: "offline-city-major-case", type: "line", source: "offline-city", filter: ["==", ["get", "c"], "major"],
+        layout: road, paint: { "line-color": "#e3cf8f", "line-width": width(9, 1.2, 17, 16) } },
+      { id: "offline-city-major", type: "line", source: "offline-city", filter: ["==", ["get", "c"], "major"],
+        layout: road, paint: { "line-color": "#fff3c8", "line-width": width(9, 0.6, 17, 12) } },
+    ],
+  };
+}
+// Текст плашки о запасном фоне: в Birge — ключ R11 (ҚАЗ/РУС), в прежних режимах — русская строка.
+function offlineBasemapText() {
+  const i18n = window.BirgeI18n;
+  if (document.body.classList.contains("civic-mode") && i18n?.has?.("shell.map.basemap_offline"))
+    return i18n.t("shell.map.basemap_offline");
+  return "Карта улиц не загрузилась — показан упрощённый фон без 3D-зданий.";
+}
 async function loadMap() {
   if (!geojson?.features?.length) {
     showMapError("Границы районов недоступны. Выберите район на карточке.");
@@ -225,7 +262,7 @@ async function loadMap() {
       // background so data layers still work. No streets and no 3D buildings then.
       if (!mapReady && !map.isStyleLoaded() && !offlineBasemap) {
         offlineBasemap = true;
-        map.setStyle({ version: 8, sources: {}, layers: [{ id: "offline-bg", type: "background", paint: { "background-color": "#eef1ea" } }] });
+        map.setStyle(offlineStyle());
         return;
       }
       if (!mapReady)
@@ -471,7 +508,7 @@ async function loadMap() {
         $("map-fallback").classList.add("hidden");
         $("map-status").classList.add("hidden");
         if (offlineBasemap) {
-          $("map-status").textContent = "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий";
+          $("map-status").textContent = offlineBasemapText();
           $("map-status").classList.remove("hidden");
           document.body.classList.add("offline-basemap");
         }

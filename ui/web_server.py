@@ -86,11 +86,14 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 # B2: R05 3D-превью @ b0353ee. demo.html и data/demo-basemap.json не отдаём (только для демо R05).
                 "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
                 "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
-                "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json")
+                "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",
+                # B3: запасной фон карты без интернета (web/map.js offlineStyle) — оси улиц OSM со стенда R07 @ 306074b.
+                "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson")
 # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
-              ".html": "text/html; charset=utf-8", ".woff2": "font/woff2"}
+              ".html": "text/html; charset=utf-8", ".woff2": "font/woff2",
+              ".geojson": "application/geo+json; charset=utf-8"}
 for _asset in CIVIC_ASSETS:
     ASSETS["/civic/" + _asset] = ("civic/" + _asset, CIVIC_MIME.get(Path(_asset).suffix, "text/plain; charset=utf-8"))
 
@@ -840,6 +843,29 @@ class CivicV2Gateway:
                     LOGGER.info("civic-v2: similar <- R09 complaints")
             except Exception:
                 LOGGER.exception("API v2: поиск похожих (R04) не подключился")
+
+    def seed_demo(self):
+        """Демо-сборка (run-city.bat, CIVIC_DEMO=1): этапы демо-объектов и 5 демо-предложений R06 в Нуре.
+
+        Без них в «Картине дня» 1 отстающий объект вместо 4, а на карте нет проектов для голосования (B2, RUN.txt п. 4).
+        seed_r14_demo R06 идемпотентен (повтор ничего не дублирует, снятые предложения не возвращает) и пишет только
+        synthetic/demo. Вне демо-сборки и при сбое — ничего не делает, приложение работает. Возвращает отчёт R06 или None.
+        """
+        if not self.demo or self._override is not None:
+            return None
+        store = self.store_gateway.service("store") if self.store_gateway is not None else None
+        try:
+            seed = getattr(self._import("ui.civic_store.demo_r14"), "seed_r14_demo", None)
+        except Exception:
+            seed = None
+        if store is None or not callable(seed) or not hasattr(store, "db"):
+            LOGGER.info("civic-demo: демо-проекты R06 пропущены (хранилище или seed_r14_demo недоступны)")
+            return None
+        try:
+            return seed(store)
+        except Exception:
+            LOGGER.exception("civic-demo: демо-проекты R06 не загрузились")
+            return None
 
     def modules(self):
         """Состояние каждого маршрута v2 — для оболочки и приёмки (R10)."""
@@ -1653,6 +1679,11 @@ def main():
     url = f"http://{address}:{args.port}"
     modules = server.civic.modules()
     print("civic-v1: " + ", ".join(f"{name}={item['status']}" for name, item in modules.items()), flush=True)
+    demo = server.civic_v2.seed_demo()
+    if demo is not None:
+        created = sum(1 for p in demo.get("proposals", []) if p.get("action") == "create")
+        print(f"civic-demo: R06 synthetic projects {len(demo.get('proposals', []))} (new {created}), "
+              f"object stages {len(demo.get('stages', []))}", flush=True)
     ready_v2 = sorted({item["role"] for item in server.civic_v2.modules().values() if item["status"] == "ready"})
     print("civic-v2: ready " + (", ".join(ready_v2) if ready_v2 else "none yet"), flush=True)
     cls = server.civic.classifier_status

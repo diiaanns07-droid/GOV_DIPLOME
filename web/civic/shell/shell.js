@@ -198,13 +198,15 @@
           <div id="civic-assistant-root" class="civic-slot"></div>
         </section>
       </div>
-      <div id="birge-complaint-root" class="birge-complaint-root"></div>
       <footer class="civic-foot">
         <button type="button" id="civic-staff-button" class="btn" data-t="shell.staff.open"></button>
         <button type="button" id="civic-scenarios-button" class="btn" data-t="shell.scenarios.open"></button>
         <button type="button" id="civic-moderation-button" class="btn" hidden data-t="shell.moderation.open"></button>
       </footer>
     </div>
+    <!-- B3: кнопка «Сообщить о проблеме», мастер и тосты R09 (position: fixed) — вне панели: внутри её слоя (z 5)
+         мастер на телефоне оказывался под панелью «Территория» (z 6) — UX_REVIEW R11 B1 п. 1. -->
+    <div id="birge-complaint-root" class="birge-complaint-root"></div>
     <!-- B2: 3D-превью предложений (R05) — каталог акимата и карточка «За/Против» над картой, слева от панели. -->
     <div id="birge-build3d-root" class="birge-build3d-root"></div>
     <section id="civic-editor" class="civic-drawer" hidden data-t-attr="aria-label:shell.editor.title">
@@ -249,6 +251,8 @@
     const handle = $c("civic-sheet-handle");
     handle?.setAttribute("aria-label", T(S.sheet === "full" ? "shell.sheet.collapse" : "shell.sheet.expand"));
     S.mounted.heat?.setLang?.(birgeLang());
+    const build3dRoot = $c("birge-build3d-root");
+    if (build3dRoot?.dataset.catalog) setBuild3dCatalog(build3dRoot.dataset.catalog === "open");
     if (S.mode !== "civic") return;
     describeData();
     if (S.selected) S.mounted.explore?.setView?.(selectedViewText(), "object");
@@ -402,6 +406,9 @@
         const setPickMode = adapter.setPickMode;
         adapter.setPickMode = (on) => {
           S.mounted.map?.setInteractionEnabled?.(!on, "birge-complaint");
+          // Значки тепловой карты (R07) и подписи проектов (R05) — HTML поверх карты: во время выбора места нажатие
+          // на них должно дойти до карты, иначе мастер молчит (UX_REVIEW R11 B1 п. 3; birge.css .birge-picking).
+          document.body.classList.toggle("birge-picking", !!on);
           return typeof setPickMode === "function" ? setPickMode.call(adapter, on) : undefined;
         };
       }
@@ -439,9 +446,31 @@
     if (body !== undefined) headers.set("Content-Type", "application/json");
     return birgeFetch(target.toString(), { ...init, method, body, headers });
   }
+  // Каталог «Что построить?» акимата свёрнут в одну кнопку: открытый постоянно, он закрывал легенду тепловой карты
+  // и спорил с главной кнопкой экрана (UX_BRIEF правила 1 и 3). Размещение и карточку проекта R05 показывает всегда —
+  // скрывается только сам каталог (birge.css, [data-catalog="closed"]).
+  function build3dToggle(root) {
+    let button = root.querySelector(".birge-b3d-toggle");
+    if (!button) {
+      button = el("button", { type: "button", class: "bk-btn birge-b3d-toggle", "aria-expanded": "false" });
+      button.addEventListener("click", () => setBuild3dCatalog(root.dataset.catalog !== "open", { focus: true }));
+      root.prepend(button);
+    }
+    return button;
+  }
+  function setBuild3dCatalog(open, { focus = false } = {}) {
+    const root = $c("birge-build3d-root");
+    if (!root) return;
+    root.dataset.catalog = open ? "open" : "closed";
+    const button = build3dToggle(root);
+    button.setAttribute("aria-expanded", String(open));
+    button.textContent = open ? T("common.action.close") : T("proposal.catalog.title");
+    if (open && focus) requestAnimationFrame(() => root.querySelector('.b3d-dock[data-state="catalog"] .b3d-card')?.focus?.({ preventScroll: true }));
+  }
   function mountBuild3d() {
     const lib = window.CivicBuild3D, core = window.CivicBuild3DCore, m = currentMap();
     if (S.mounted.build3d || !lib || typeof lib.mount !== "function" || !m) return;
+    setBuild3dCatalog(false);
     try {
       S.mounted.build3d = lib.mount({
         map: m, root: $c("birge-build3d-root"), role: birgeMode() === "resident" ? "resident" : "akimat",

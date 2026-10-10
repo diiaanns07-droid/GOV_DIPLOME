@@ -18,6 +18,9 @@
   const MODES = ["akimat", "resident"];
   const SECTIONS = ["map", "day"];
   const PHONE = 761;                         // как в shell.js: уже 761 px — телефонная схема
+  // Кнопки карты из web/index.html и их ключи перевода (словари R11, shell.map.*).
+  const MAP_BUTTONS = [["overview-map", "shell.map.fit_city"], ["zoom-in", "shell.map.zoom_in"],
+    ["zoom-out", "shell.map.zoom_out"], ["toggle-3d", "shell.map.view3d"], ["rotate-map", "shell.map.rotate"]];
 
   // Тексты: сначала словари R11 (BirgeI18n), затем запасной словарь оболочки (shell-text.js, ru + kk).
   const i18n = () => window.BirgeI18n || null;
@@ -161,6 +164,13 @@
       if (sub) sub.textContent = t("shell.brand.tagline");
       document.title = t("shell.title");
       document.getElementById("map")?.setAttribute("aria-label", t("shell.map.label"));
+      // Кнопки карты (web/index.html) и плашка запасного фона (web/map.js) — на языке страницы (UX_REVIEW R11 B1 п. 5–6).
+      for (const [id, key] of MAP_BUTTONS) {
+        const button = document.getElementById(id);
+        if (button) { button.setAttribute("aria-label", t(key)); button.title = t(key); }
+      }
+      const status = document.getElementById("map-status");
+      if (status && document.body.classList.contains("offline-basemap")) status.textContent = t("shell.map.basemap_offline");
     }
     renderDay();
   }
@@ -259,8 +269,7 @@
     const I = i18n();
     if (I) {
       I.onChange(() => render());
-      // R07 и R09 слушают "birge:lang" на window, а i18n R11 шлёт его на document — передаём дальше.
-      I.onChange((l) => { try { window.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang: l } })); } catch (e) { /* старый браузер */ } });
+      // "birge:lang" на window для R07 и R09 i18n R11 (>= cc77761) шлёт сам — своя пересылка убрана (R09 рисовал дважды).
       if (I.ready && typeof I.ready.then === "function") I.ready.then(render, render);
     }
     // shell.js переключает режимы старого приложения; при возврате на карту перерисовываем бренд.

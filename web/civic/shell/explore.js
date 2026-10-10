@@ -119,6 +119,21 @@
     registry.setAttribute("role", "status");
     registry.hidden = true;
     box.append(registry, notices);
+    // Телефон (≤ 760 px): панель свёрнута в одну кнопку «Территория» 48 px и раскрывается по нажатию — иначе она
+    // занимала треть карты над шторкой (UX_REVIEW R11 B1 п. 7). На ноутбуке кнопки нет, панель открыта всегда (CSS).
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "civic-explore-toggle";
+    toggle.dataset.t = "shell.explore.area";
+    toggle.setAttribute("aria-expanded", "false");
+    box.prepend(toggle);
+    box.dataset.open = "false";
+    const phone = () => typeof global.matchMedia === "function" && global.matchMedia("(max-width: 760px)").matches;
+    function setOpen(open) {
+      box.dataset.open = open ? "true" : "false";
+      toggle.setAttribute("aria-expanded", String(open));
+    }
+    toggle.addEventListener("click", () => setOpen(box.dataset.open !== "true"));
     const input = search.querySelector("input"), clear = search.querySelector(".civic-explore-clear");
     const list = search.querySelector("ul"), status = search.querySelector(".civic-explore-status");
     const select = box.querySelector("select"), checkbox = box.querySelector("details input");
@@ -242,6 +257,7 @@
       say("shell.explore.chosen", "chosen", { name: it.name, place: it.place });
       pinStreet(it);
       onStreet?.({ name: it.name, label: it.label, place: it.place, district: it.district, bbox: it.bbox });
+      if (phone()) setOpen(false);  // улица выбрана — карта снова свободна
     }
     input.addEventListener("input", refresh);
     input.addEventListener("focus", () => { if (input.value.trim().length > 1 && index.state === "ready" && status.dataset.kind !== "chosen") refresh(); });
@@ -319,6 +335,7 @@
       input.value = ""; clear.hidden = true; close(); quiet(); unpin();
       paint();
       onNavigate(features.find((f) => f.properties.id === selected) || null);
+      if (phone()) setOpen(false);
     });
     checkbox.addEventListener("change", paint);
     box.querySelector(".civic-explore-objects").addEventListener("click", onObjects);
@@ -341,6 +358,7 @@
       // look different even when the map itself is plain (offline basemap).
       setView(text, kind) { view.textContent = text || ""; view.dataset.kind = kind || ""; },
       reset() { selected = ""; select.value = ""; input.value = ""; clear.hidden = true; close(); quiet(); unpin(); paint(); },
+      setOpen,
       updateRecords(items) { showRecords(items); },
       destroy() {
         destroyed = true; controller?.abort(); unpin(); map?.off("style.load", paint);

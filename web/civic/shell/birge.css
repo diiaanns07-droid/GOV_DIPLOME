@@ -90,3 +90,77 @@ body[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
   body:has(.civic-panel:not([data-sheet="peek"])) .birge-build3d-root .b3d-dock:is([data-state="catalog"], [data-state="loading"]) { display: none; }
   body:has(.civic-panel[data-sheet="peek"]) .birge-build3d-root { bottom: calc(24% + 8px); }
 }
+
+/* B3: каталог «Что построить?» свёрнут в одну кнопку (shell.js setBuild3dCatalog): открытый всегда, он закрывал легенду
+   тепловой карты. Кнопка внизу, открытый каталог — над ней. Размещение и карточку проекта R05 показывает всегда. */
+.birge-build3d-root { flex-direction: column-reverse; justify-content: flex-start; align-items: center; gap: var(--s-2, 8px); }
+.birge-build3d-root .birge-b3d-toggle {
+  pointer-events: auto; min-height: 48px; padding: 0 var(--s-5, 20px); font-size: 16px; font-weight: 650;
+  box-shadow: var(--shadow-2, 0 4px 12px #152c2614, 0 12px 40px #152c261a);
+}
+body[data-birge-mode="resident"] .birge-b3d-toggle,
+.birge-build3d-root:has(.b3d-dock:is([data-state="placing"], [data-state="card"])) .birge-b3d-toggle { display: none; }
+.birge-build3d-root[data-catalog="closed"] .b3d-dock:is([data-state="catalog"], [data-state="loading"], [data-state="error"]) { display: none; }
+
+/* B3: кнопки карты 44 × 44 с зоной нажатия 48, подписи — по ключам R11 (birge.js; UX_REVIEW R11 B1 п. 6, R10 B-014). */
+.civic-mode .map-tools .icon-btn { position: relative; width: 44px; height: 44px; }
+.civic-mode .map-tools .icon-btn::after { content: ""; position: absolute; inset: -3px; }
+.civic-mode .map-tools .three-d { font-size: 14px; }
+/* Плашка о запасном фоне карты и подзаголовок шапки — не мельче 14 px (R11 B1 п. 5 и 14, R10 B-013). */
+.civic-mode .civic-explore #map-status { font-size: 14px; line-height: 1.4; }
+.civic-mode .brand-sub { font-size: 14px; }
+@media (max-width: 1023px) { .civic-mode .brand-sub { display: none; } }
+/* Панель «Территория» (раунд 13, explore.js): весь текст ≥ 14 px, кнопки ≥ 44 px (R11 B1 п. 7, R10 B-013/B-014). */
+.civic-mode .civic-explore-row > label > span,
+.civic-mode .civic-explore button, .civic-mode .civic-explore summary,
+.civic-mode .civic-explore-opt-place, .civic-mode .civic-explore-more, .civic-mode .civic-explore-status,
+.civic-mode .civic-explore-view, .civic-mode .civic-explore-registry,
+.civic-mode .civic-explore .civic-explore-retry { font-size: 14px; }
+.civic-mode .civic-explore-opt-name { font-size: 16px; }
+.civic-mode .civic-explore button, .civic-mode .civic-explore summary { min-height: 44px; padding-left: 8px; padding-right: 8px; }
+.civic-mode .civic-explore-field input { min-height: 44px; padding-right: 44px; font-size: 16px; }
+.civic-mode .civic-explore .civic-explore-clear { width: 40px; height: 40px; }
+@media (max-width: 760px) {
+  .civic-mode .map-tools .icon-btn { width: 44px; height: 44px; }
+  /* Телефон: каталог акимата и его кнопка — только над свёрнутой шторкой (иначе закрыли бы «Карту жалоб»). */
+  body:has(.civic-panel:not([data-sheet="peek"])) .birge-b3d-toggle { display: none; }
+}
+
+/* B3: выбор места жителем — значки R07 и подписи R05 пропускают нажатие к карте (shell.js, setPickMode). */
+body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-picking .b3d-label { pointer-events: none; }
+/* Кнопка «Территория» — только на телефоне (explore.js). */
+.civic-explore-toggle { display: none; }
+@media (max-width: 760px) {
+  /* Панель «Территория» свёрнута в кнопку 48 px; раскрытая — как раньше. */
+  .civic-mode .civic-explore[data-open="false"] { right: auto; padding: 0; }
+  .civic-mode .civic-explore[data-open="false"] > :not(.civic-explore-toggle) { display: none; }
+  .civic-mode .civic-explore-toggle {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 14px;
+    font-size: 16px; font-weight: 650; color: var(--c-ink, #152c26); background: transparent; border: 0;
+  }
+  .civic-mode .civic-explore-toggle::after { content: ""; width: 8px; height: 8px; margin-top: -4px;
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
+  .civic-mode .civic-explore[data-open="true"] .civic-explore-toggle::after { margin-top: 4px; transform: rotate(-135deg); }
+  /* Легенда R07 на телефоне — под кнопкой «Территория», а не на шапке (закрывала «Меню»). */
+  .civic-mode .r07-maplegend { top: 138px; left: 10px; right: 66px; }
+  /* Мастер жалобы открыт — панель «Территория» не нужна (R11 B1 п. 1–2). */
+  html.bc-open .civic-mode .civic-explore, html.bc-open .civic-mode .r07-maplegend { display: none; }
+  /* «Сообщить о проблеме» — во всю ширину в одну строку (kk не в три строки); пока открыта карточка места со своей
+     «Я тоже», кнопка спрятана (R11 B1 п. 8). */
+  .civic-mode .bc-fab { left: 16px; right: 16px; transform: none; max-width: none; white-space: nowrap; justify-content: center; }
+  body:has(#birge-heat-root .r07-card) .bc-fab { display: none !important; }
+}
+/* Ноутбук: открытый каталог «Что построить?» и размещение объекта стоят внизу карты там же, где легенда R07, —
+   пока акимат строит, легенда скрыта (появляется сразу после «Закрыть» или «Поставить»). */
+@media (min-width: 761px) {
+  body:has(.birge-build3d-root[data-catalog="open"] .b3d-dock[data-state="catalog"]) .r07-maplegend,
+  body:has(.birge-build3d-root .b3d-dock[data-state="placing"]) .r07-maplegend { visibility: hidden; }
+}
+@media (max-width: 760px) {
+  /* Житель: кнопка «Сообщить о проблеме» плавает над шторкой — низ списка прокручивается выше неё. */
+  body[data-birge-mode="resident"].civic-mode #civic-scroll { padding-bottom: 88px; }
+}
+@media (max-width: 760px) {
+  /* Шторка раскрыта во весь экран: карты почти не видно, наверху слева — атрибуция OSM; легенда не нужна. */
+  body[data-civic-sheet="full"].civic-mode .r07-maplegend { display: none; }
+}

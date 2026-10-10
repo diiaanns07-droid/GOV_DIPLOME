@@ -28,6 +28,9 @@
       "common.role.label": "Чей вид",
       "common.role.akimat": "Акимат",
       "common.role.resident": "Житель",
+      // B3: кнопка каталога 3D-проектов (ключи R11 proposal.catalog.title, common.action.close) — запасной текст
+      "proposal.catalog.title": "Что построить?",
+      "common.action.close": "Закрыть",
       "common.action.retry": "Повторить",
       "common.search.clear": "Очистить поиск",
       "akim.title": "Картина дня",
@@ -135,6 +138,8 @@
       "common.role.label": "Кімнің көрінісі",
       "common.role.akimat": "Әкімдік",
       "common.role.resident": "Тұрғын",
+      "proposal.catalog.title": "Не салайық?",
+      "common.action.close": "Жабу",
       "common.action.retry": "Қайталау",
       "common.search.clear": "Іздеуді тазарту",
       "akim.title": "Күн қорытындысы",
