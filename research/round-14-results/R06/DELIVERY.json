@@ -3,7 +3,7 @@
  "title": "Предложения, голоса жителей, этапы и отставание объектов",
  "branch": "claude/round-14-r06",
  "branch_note": "Отдельная ветка с разрешения пользователя: claude/round-14-package уже вела сессия R11; по COMMON (обновлён позже) имя было бы claude/r14-R06 — координатору внести claude/round-14-r06 в BRANCHES.md.",
- "base_sha": "608e367 (claude/round-14-package); соседи на 10.10: R01 915143f, R05 7f42cb3, R08 7101f46, R11 6102dfb, package 4bbf456",
+ "base_sha": "608e367 (claude/round-14-package); соседи на 10.10 ночь: R01 d9a8895, R10 ac8508e, R11 52d7c59, R15 77bd744, package a38da11",
  "restored_from": {
   "ui/civic_store/": "claude/elegant-franklin-jbhprq @ 26793c8 (R02 раунда 13, код b9eb180)",
   "tests/civic/R06/store/": "tests/civic/R02 @ 26793c8, переименованы в r06store_*; тесты схемы/cookie/выгрузки/seed-demo/проекции обновлены под миграции 6–7, geometry_source и названия демо без служебных слов"
@@ -11,14 +11,14 @@
  "inputs_read_only": {
   "data/civic/astana/osm-objects/": "claude/round-14-package @ a29428a (LOCAL-1, real, ODbL) — без изменений",
   "web/civic/ui-kit, web/civic/i18n": "R11 claude/r14-R11 @ 6102dfb (и проверка ключей на cc77761, f025241) — только для стенда (--kit-dir), в ветку R06 не копировались",
-  "ui/web_server.py R01": "claude/sharp-dijkstra-0t87gl @ 915143f (B2 step 1) и d3c33d9 (B1) — только для теста шлюза и прогона дерева R01",
-  "web/civic/build3d/build3d-core.js R05": "claude/r14-R05 @ 7f42cb3 — только для r05_client_r14.cjs",
+  "ui/web_server.py R01": "claude/sharp-dijkstra-0t87gl @ d9a8895 (B3), 915143f (B2), d3c33d9 (B1) — только для теста шлюза и прогона дерева R01",
+  "web/civic/build3d/build3d-core.js R05": "claude/r14-R05 @ 7f42cb3 и 169c56b — только для r05_client_r14.cjs",
   "ui/civic_akim R08": "claude/r14-R08 @ 7101f46 — только для теста с R06_R08_ROOT",
   "engine/civic_geo R12": "из дерева R01 915143f — только для отчёта точности линий демо-пакета"
  },
- "code_sha": "b42e790",
- "tested_sha": "b42e790 (Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright)",
- "push_status": "b42e790 отправлен в origin/claude/round-14-r06 (d043e7b..b42e790); документы поставки — следующий коммит той же ветки",
+ "code_sha": "681a4ef",
+ "tested_sha": "681a4ef (Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright)",
+ "push_status": "681a4ef и документы поставки — в origin/claude/round-14-r06 (см. git log)",
  "changed_paths": [
   "ui/civic_store/db.py (миграции 6 и 7)",
   "ui/civic_store/auth.py (COOKIE_PATH=/api/civic)",
@@ -40,22 +40,19 @@
   "research/handoffs/astana/R06/round14/STATUS.md"
  ],
  "tests": {
-  "pytest tests/civic/R06 @b42e790": "PASS 467 passed, 7 skipped (без R06_R01_WEB_SERVER / R06_R08_ROOT — их тесты SKIP; 1 — унаследован из R02)",
-  "через настоящий CivicV2Gateway R01 @915143f (R06_R01_WEB_SERVER)": "PASS 5/5 (вкл. маршруты B2: get, approve/reject/withdraw, summary, lagging, staff stage, «Отменить» с id)",
-  "через CivicV2Gateway R01 @d3c33d9 (B1)": "PASS 4, SKIP 1 (маршрутов B2 там нет)",
-  "с настоящим кодом R08 @7101f46 (R06_R08_ROOT) test_r06r14_neighbors.py": "PASS 12/12",
-  "клиент R05 createApiStore @7f42cb3 против стенда (r05_client_r14.cjs)": "PASS 17/17 (конверт R06 и «голый» JSON R01)",
-  "дерево R01 915143f + пути R06 + r01_b2_r02_tests.patch: pytest tests/civic/R01 tests/civic/R02 (без R02/round14)": "PASS 400 passed, 2 skipped",
-  "tests/civic/R02 дерева R01 915143f с patch": "PASS 247 passed, 1 skipped",
-  "отчёт точности R12 engine.civic_geo report --objects demo_package.json": "PASS 959/959, store_line_on_street 1/0",
-  "браузер browser_r14.cjs на свежем стенде, ui-kit R11 6102dfb (375/1366, ru/kk, голос, акимат, п.15–19, дата, этап, нет связи)": "PASS 83/83, screens/ (browser_r14.txt, browser_r14.json)",
-  "tests/civic/R02/round14 дерева R01": "NOT_RUN: тесты данных R02, нужен ml.labeling — вне роли R06",
-  "app-тест в собранной оболочке R01 B2": "NOT_RUN: index.html B2 ещё не подключает proposals.js (INTEGRATION §1.3)",
+  "pytest tests/civic/R06 @681a4ef": "PASS 476 passed, 7 skipped (без R06_R01_WEB_SERVER / R06_R08_ROOT — их тесты SKIP; 1 — унаследован из R02)",
+  "дерево R01 d9a8895 + ui/civic_store, web/civic/proposals, tests/civic/R06/round14, tests/civic/R06/store: pytest tests/civic/R01 R02 R06 R08": "PASS 1117 passed, 5 skipped (без R02/round14 — нужен ml.labeling; без R08 test_r08_heat_match — падает при сборе и без R06)",
+  "браузер browser_r14.cjs, свой демо-набор (--age-days 16), ui-kit R11 6102dfb": "PASS 83/83",
+  "браузер browser_r14.cjs --build-set, набор сборки data/civic/astana/demo_synthetic.json": "PASS 79/79, NOT_RUN 4 («давно не обновлялось»: без сдвига часов показать нечем)",
+  "браузер browser_nokit.cjs (без ui-kit / без словаря), 375 и 1366": "PASS 16/16",
+  "клиент R05 createApiStore @7f42cb3 (r05_client_r14.cjs)": "PASS 17/17 @681a4ef; и с головой R05 169c56b — 17/17",
+  "через CivicV2Gateway R01 @915143f (R06_R01_WEB_SERVER)": "PASS 5/5 @681a4ef; с web_server.py R01 d9a8895 — 5/5",
+  "с настоящим кодом R08 @7101f46 (R06_R08_ROOT)": "PASS @681a4ef (test_r06r14_neighbors + gateway: 19 passed)",
   "Windows run-city.bat и вид поля даты в Chrome ru/kk": "NOT_RUN: облачный Linux (LOCAL-R06-1)"
  },
  "known_limits": [
-  "Голос — один с устройства (localStorage + хэш с солью), а не один на человека: очистка браузера даёт новое «устройство». Ограничение частоты 30 голосов/мин с адреса.",
-  "Названия объектов civic-v1 одноязычные (ru): title_kk есть только у синтетических демо-записей; у настоящих — русское название с lang=ru.",
+  "Голос — один с устройства (localStorage + хэш с солью), а не один на человека. Защита: 30 голосов/мин с адреса и 20 новых голосов в сутки за одно предложение с адреса (R15 S08). Без eGov/SMS накрутку можно усложнить, но не исключить: голоса — «мнение жителей».",
+  "Названия объектов civic-v1 одноязычные (ru): title_kk есть только у синтетических демо-записей (оба демо-набора); у настоящих — русское название с lang=ru.",
   "Казахский в данных (название сквера, демо-объекты) — черновик R06/R11 до вычитки владельцем.",
   "Клиент R05 @7f42cb3 при «Отменить» создаёт новое предложение без голосов (id в теле не шлёт) — сервер умеет вернуть то же с голосами (INTEGRATION §2).",
   "Демо: объекты — синтетика; проекты помечены demo, их голоса синтетические. Места по OSM, слоя зданий нет — попадание в дом не проверено.",
@@ -63,9 +60,9 @@
   "stale считается от более свежего из (обновление этапа, обновление карточки); для работающих и без этапа — false.",
   "Код раунда 13 и поставки 1 не откроет базу после миграции 7 — перед обновлением backup."
  ],
- "next_step": "R01 (B2): взять R06 по путям на code_sha, наложить r01_b2_r02_tests.patch, подключить proposals.css/proposals.js/stage-editor.js в web/index.html до editor.js (INTEGRATION §1). R05: по желанию id в restore. R11: вычитать kk в данных (INTEGRATION §5). LOCAL: LOCAL-R06-1.",
- "delivery": 2,
- "delivery_note": "Поставка 2 для сборки B2 R01: UX_REVIEW R11 день 3 (п. 15–19), запросы R05/R08/R11/R12. Поставка 1: 3d10f7d (код 7031afa) — её взял R01 в 915143f.",
+ "next_step": "R01 (FINAL): взять R06 по путям на code_sha 681a4ef — ui/civic_store/, web/civic/proposals/, tests/civic/R06/round14/, tests/civic/R06/store/ (НЕ трогать тесты раунда 13 в tests/civic/R06/*.py). R11: вычитать kk-названия демо (INTEGRATION §5). LOCAL: LOCAL-R06-1.",
+ "delivery": 3,
+ "delivery_note": "Поставка 3 (ночь 10→11 окт) для FINAL R01: R10 B-018/B-006, LOCAL_B2 (CP1251), R15 S08, правдоподобные демо-этапы. Поставка 2: b42e790 (в B3 R01 a8fabce). Поставка 1: 7031afa.",
  "ux_review_day3": {
   "15": {
    "fix": "названия демо без «Демо:»/«(синтетика)», синтетика — в evidence_type/описании, метка «Пример»",
@@ -94,5 +91,12 @@
   "R08": "закрыто: akim_objects/akim_proposals в пакете (12/12 с кодом R08 7101f46), названия без служебных слов, title_kk демо-объектов",
   "R11": "закрыто: PENDING удалён, новых ключей не нужно; kk в данных — на вычитку (INTEGRATION §5)",
   "R12": "закрыто: geometry_source в civic-v1; демо-линии по графу (отчёт R12 store_line_on_street PASS)"
+ },
+ "night_fixes": {
+  "R10 B-018": "kk-названия всех 9 объектов demo-astana-* (набор сборки) + своих; карточка без «Демо:»/«(синтетика)» — pytest test_build_demo_set_has_kk_titles; браузер на наборе сборки 79/79 + 4 NOT_RUN",
+  "R10 B-006": "без ui-kit/i18n — сообщение ru/kk и «Обновить», карточки — простой текст и «Повторить» — browser_nokit.cjs 16/16",
+  "LOCAL_B2 CP1251": "CLI печатает JSON с \\u-экранированием в консоли без казахских букв — test_r06r14_cli_encoding.py (cp1251, cp866), исходная ошибка воспроизведена",
+  "R15 S08": "≤ 20 новых голосов в сутки за одно предложение с одного адреса → 429 + Retry-After; V2Error.retry_after для шлюза — test_votes_per_target_per_address_are_limited, test_module_vote_limit_reaches_gateway_as_429",
+  "UX_BRIEF (свой проход)": "демо-этапы по статусу записи — test_demo_stages_agree_with_record_status (оба набора)"
  }
 }
