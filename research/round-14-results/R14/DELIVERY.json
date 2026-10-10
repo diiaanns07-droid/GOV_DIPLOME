@@ -28,7 +28,12 @@
   "research/round-14-results/R14/DELIVERY.json",
   "research/round-14-results/R14/RUN.txt",
   "research/round-14-results/R14/INTEGRATION.txt",
-  "research/handoffs/astana/R14/round14/STATUS.md"
+  "research/handoffs/astana/R14/round14/STATUS.md",
+  "docs/gton/README.md",
+  "docs/gton/NUMBERS.md",
+  "docs/gton/APPLICATION.md",
+  "docs/gton/SPEECH.md",
+  "docs/gton/JURY_FAQ.md"
  ],
  "owned_paths_only": true,
  "code_changed": false,
@@ -62,7 +67,8 @@
   "docs_birge": "6 файлов: README, ARCHITECTURE (Mermaid: модули, поток жалоба→статус, ML-контур), MODULES (все роли: ветка, SHA, файлы, функции, маршруты, тесты, ограничения), RUNBOOK (Windows с нуля, модели, частые ошибки), DATA (все наборы: источник, лицензия, real/synthetic), CONTINUE_WITH_GPT (правила, открытые задачи по модулям, 8 шаблонов промптов)",
   "docs_diploma": "8 глав + README: введение, анализ, проектирование, реализация, эксперименты (постановка + предварительные результаты на синтетике), тестирование (с повтором тестов R14), заключение, литература 59 записей",
   "facts": "FACTS.md — 12 разделов, каждое число с файлом, веткой и SHA",
-  "diploma_results_filled": "глава 4 — результаты LOCAL-4 R03 (probe_v2: итоговая модель 0.828 [0.778–0.865]; эксперимент 4 режима × 3 модели; парные Δ; языки, категории, разбор ошибок, транслит, ONNX; ответы В2 и В4; В1 и В3 — NOT_EVALUATED), дубли R04, backtest R13 (синтетика); глава 3 — сборки I0 → B1 → B2 → B3 → FINAL-кандидат; глава 5 — приёмка R10 B1/B2/B3, Windows LOCAL B2, ревью R15 и применённые патчи, повторы R14 на B2 и FINAL-кандидате; введение, главы 1–2, заключение вычитаны на согласованность"
+  "diploma_results_filled": "глава 4 — результаты LOCAL-4 R03 (probe_v2: итоговая модель 0.828 [0.778–0.865]; эксперимент 4 режима × 3 модели; парные Δ; языки, категории, разбор ошибок, транслит, ONNX; ответы В2 и В4; В1 и В3 — NOT_EVALUATED), дубли R04, backtest R13 (синтетика); глава 3 — сборки I0 → B1 → B2 → B3 → FINAL-кандидат; глава 5 — приёмка R10 B1/B2/B3, Windows LOCAL B2, ревью R15 и применённые патчи, повторы R14 на B2 и FINAL-кандидате; введение, главы 1–2, заключение вычитаны на согласованность",
+  "docs_gton": "5 файлов: NUMBERS (цифры с источниками + «чего не говорить»), APPLICATION (поля заявки, честный трекшен), SPEECH (3 минуты по DEMO_SCRIPT R01), JURY_FAQ (25 вопросов), README"
  },
  "known_limits": [
   "Срез — ночь 10→11.10: FINAL R01 (15.10), его приёмка R10, повторный ONNX R03 (шаги 8/8б/8в), backtest R13 с реальной погодой — ещё не получены; метки [РЕЗУЛЬТАТ …] в тексте.",
