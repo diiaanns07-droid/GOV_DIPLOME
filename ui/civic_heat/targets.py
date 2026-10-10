@@ -39,6 +39,23 @@ def short_street_ru(name: str) -> str:
     return name
 
 
+# Русский тип улицы → казахский (ставится ПОСЛЕ названия): «улица Сыганак» → «Сыганак көшесі».
+_KK_TYPES = (("улица ", "көшесі"), ("проспект ", "даңғылы"), ("переулок ", "тұйық көшесі"),
+             ("шоссе ", "тас жолы"), ("бульвар ", "бульвары"), ("площадь ", "алаңы"))
+
+
+def kk_street_from_ru(name_ru: str | None) -> str | None:
+    """Казахская подпись улицы, когда в OSM нет name:kk: тип по-казахски, имя собственное как есть."""
+    if not name_ru:
+        return None
+    for ru_type, kk_type in _KK_TYPES:
+        if name_ru.startswith(ru_type):
+            return f"{name_ru[len(ru_type):]} {kk_type}"
+        if name_ru.endswith(" " + ru_type.strip()):
+            return f"{name_ru[: -len(ru_type)]} {kk_type}"
+    return name_ru
+
+
 def segment_labels(street_ru: str | None, street_kk: str | None, from_ru=None, to_ru=None, from_kk=None, to_kk=None) -> tuple[str, str]:
     """Подпись участка: «Участок ул. Сыганак от ул. X до ул. Y».
 
@@ -47,10 +64,14 @@ def segment_labels(street_ru: str | None, street_kk: str | None, from_ru=None, t
     """
     if not street_ru:
         return "Участок улицы", "Көше бөлігі"
-    ru = "Участок " + short_street_ru(street_ru)
+    short = short_street_ru(street_ru)
+    # «Участок ул. Сыганак», но «Участок: Объездная Астаны» — когда в названии нет типа улицы.
+    ru = ("Участок " if short != street_ru else "Участок: ") + short
     if from_ru and to_ru and from_ru != to_ru:
         ru += f" от {short_street_ru(from_ru)} до {short_street_ru(to_ru)}"
-    kk_street = street_kk or street_ru
+    kk_street = street_kk or kk_street_from_ru(street_ru)
+    from_kk = from_kk or kk_street_from_ru(from_ru)
+    to_kk = to_kk or kk_street_from_ru(to_ru)
     kk = f"{kk_street}: көше бөлігі"
     if from_kk and to_kk and from_kk != to_kk:
         kk = f"{kk_street}: {from_kk} – {to_kk} аралығы"

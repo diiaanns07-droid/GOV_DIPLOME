@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -56,13 +57,16 @@ class HeatConfig:
 
         В categories_v2.json у уровня 1 порог веса 1.0, а вес одной жалобы уже через час меньше 1
         (0.5 ** (возраст/14)). Без «пола» одиночная жалоба исчезала бы с карты почти сразу,
-        поэтому вес > 0 всегда даёт уровень не ниже 1. Остальные пороги — строго по JSON.
+        поэтому вес > 0 всегда даёт уровень не ниже 1.
+        С порогами сравнивается вес, округлённый до целого человека: иначе 10 свежих жалоб
+        (вес 9,95) показывались бы цветом «6–9», а на значке стояло бы «10» — путаница для зрителя.
         """
         if weight <= 0:
             return 0
+        rounded = math.floor(weight / scale + 0.5) * scale
         result = 1
         for lv in self.levels:
-            if lv.level >= 1 and weight >= lv.min_weight * scale:
+            if lv.level >= 1 and rounded >= lv.min_weight * scale:
                 result = max(result, lv.level)
         return result
 
