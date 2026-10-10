@@ -314,3 +314,12 @@ def test_default_sources_are_marked_demo():
     assert s["sources"]["objects"] in ("fixture", "r06") and s["sources"]["proposals"] in ("fixture", "r06")
     if s["sources"]["objects"] == "fixture":
         assert s["objects"]["demo"] is True and s["demo"]["any"] is True
+
+
+def test_no_complaint_source_is_not_zero():
+    """Без источника жалоб — «нет данных», а не «Сегодня новых обращений нет»."""
+    s = AkimService(heat=False, records=None, objects=None, proposals=None, clock=lambda: NOW).summary(now=NOW)
+    assert s["complaints_available"] is False and s["empty"] is False
+    assert s["text"]["ru"] == "Данные об обращениях пока не подключены."
+    assert s["text"]["kk"] == "Өтініштер туралы дерек әлі қосылмаған."
+    assert summary([])["complaints_available"] is True

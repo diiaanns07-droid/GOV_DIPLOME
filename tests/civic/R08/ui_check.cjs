@@ -279,6 +279,13 @@ async function shot(page, name, full) {
     noHeat.main_problem = null;
     (await stateCase("состояние: карта жалоб не отвечает — блоки честно говорят об этом",
       (route) => route.fulfill({ json: noHeat }), "ok", ["Карта жалоб пока не отвечает"], null)).ctx.close();
+    const noComplaints = JSON.parse(JSON.stringify(noHeat));
+    noComplaints.complaints_available = false;
+    noComplaints.text_parts = { ru: [{ role: "new", text: "Данные об обращениях пока не подключены." }], kk: [{ role: "new", text: "Өтініштер туралы дерек әлі қосылмаған." }] };
+    const nc = await stateCase("состояние: жалобы не подключены — вместо нулей прямой текст",
+      (route) => route.fulfill({ json: noComplaints }), "ok", ["Обращения пока не подключены", "Данные об обращениях пока не подключены"], null);
+    check("состояние: жалобы не подключены — нет карточек с нулями", (await nc.page.$$(".akim-kpi")).length === 0);
+    await nc.ctx.close();
   }
 
   // ───────────── 4. Печать ─────────────

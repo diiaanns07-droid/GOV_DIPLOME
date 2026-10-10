@@ -283,7 +283,9 @@ class AkimService:
             "proposals": proposals,
             "deadlines": dict(deadlines.DEADLINE_DAYS),
             "heat_days": HEAT_DAYS,
-            "empty": kpi["new_day"]["value"] == 0,
+            # Нет источника жалоб — это «нет данных», а не «ноль обращений»: интерфейс и сводка говорят об этом прямо.
+            "complaints_available": self._records is not None,
+            "empty": self._records is not None and kpi["new_day"]["value"] == 0,
             "sources": dict(self.source_names),
             "demo": {
                 "complaints": any(r.get("demo") for r in scoped) or self.source_names["complaints"] == "r07-demo",

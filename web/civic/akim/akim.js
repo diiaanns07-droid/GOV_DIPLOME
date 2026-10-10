@@ -615,7 +615,12 @@
       if (d.demo && d.demo.any) {
         body.appendChild(h("p", { class: "akim-demo" }, [demoTag(), h("span", { text: tr("akim.demo_note") })]));
       }
-      body.appendChild(renderKpis(d));
+      if (d.complaints_available === false) {
+        // Нет источника жалоб: показываем это прямо, а не четыре нуля.
+        body.appendChild(h("div", { class: "akim-unavailable akim-no-complaints", role: "status" }, [icon("alert"), h("span", { text: tr("akim.no_complaints") })]));
+      } else {
+        body.appendChild(renderKpis(d));
+      }
       body.appendChild(
         h("section", { class: "bk-card akim-card akim-summary", "aria-labelledby": "akim-summary-title" }, [
           h("h2", { class: "akim-summary__title", id: "akim-summary-title", text: tr("akim.summary.title") }),

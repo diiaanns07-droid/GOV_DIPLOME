@@ -277,6 +277,10 @@
 .akim-empty {
   padding: var(--s-4) var(--s-2);
 }
+.akim-no-complaints {
+  margin-bottom: var(--s-3);
+  font-size: var(--fs-lead);
+}
 .akim-empty .bk-empty__title {
   font-size: var(--fs-body);
 }
