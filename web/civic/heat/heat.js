@@ -829,6 +829,11 @@
       // Своя панель / шторка поверх карты и кнопки MapLibre: значок наполовину под ними выглядит обрезанным.
       if (!root.contains(map.getContainer())) { const vr = visibleRect(root); if (vr) overlays.push(vr); }
       map.getContainer().querySelectorAll(".maplibregl-ctrl-group, .maplibregl-ctrl-attrib").forEach((el) => overlays.push(el.getBoundingClientRect()));
+      // Чужие маркеры на той же карте (таблички проектов R05 и др.): значок R07 не ложится поверх них (кадр Codex OFFLINE)
+      map.getContainer().querySelectorAll(".maplibregl-marker:not(.r07-badge):not(.r07-pulse)").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.width && r.height && getComputedStyle(el).visibility !== "hidden") overlays.push(r);
+      });
       if (typeof opts.avoidRects === "function") overlays.push(...(opts.avoidRects() || []));
       overlays.forEach((r) => { if (r && r.width) placed.push([r.left - host.left, r.top - host.top, r.right - host.left, r.bottom - host.top]); });
       const boxAt = (p, w, h) => [p.x - w / 2, p.y - h / 2, p.x + w / 2, p.y + h / 2];
@@ -962,7 +967,8 @@
     // (R15 U1). Остальное — «Проверьте связь» с кнопкой «Повторить».
     // retry — повтор того же действия с ТЕКУЩЕЙ кнопкой: панель могла перерисоваться (язык, Esc, новая жалоба).
     function actionFailed(e, retry) {
-      if (e && e.status === 404) { toast(t("heat.not_found"), "error"); void load("event"); return; }   // не «проверьте связь»
+      // 404 — не «проверьте связь»: обращения уже нет; сообщение обычное (перезагрузка карты его не закрывает)
+      if (e && e.status === 404) { toast(t("heat.not_found")); void load("event"); return; }
       if (e && e.status === 429) toast(t("heat.too_many"), "error");
       else if (e && (e.status === 401 || e.status === 403)) toast(t("heat.need_login"), "error");
       else toast(t("heat.action_failed"), "error", { label: t("heat.retry"), onClick: retry });

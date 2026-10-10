@@ -441,6 +441,18 @@
   }
  },
  {
+  "name": "foreign-marker-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=akimat&view=nura",
+  "problems": [],
+  "badges": 19,
+  "primary": [],
+  "extra": {
+   "key": "object:osm-node-13394597038",
+   "overlapping": []
+  }
+ },
+ {
   "name": "keyboard-badges-roving-1366-ru",
   "size": "desktop",
   "query": "",
