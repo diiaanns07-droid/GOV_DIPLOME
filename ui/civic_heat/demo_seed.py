@@ -8,6 +8,8 @@
 Тексты, люди, время и статусы придуманы. Формат записи — CONTRACT §5 (v2).
 Набор детерминированный: при одном seed и одном now — те же записи. Возраст жалоб задаётся
 относительно now, поэтому в день показа карта выглядит так же «свежо», как при разработке.
+История — 3 недели с работой акимата (старое закрыто, свежее открыто), чтобы «Картина дня» R08
+показывала правдоподобные числа: неделя к неделе сопоставимо, просроченных немного.
 """
 from __future__ import annotations
 
@@ -24,28 +26,45 @@ from .engine import ASTANA_TZ, iso
 HERE = Path(__file__).resolve().parent
 TARGETS_PATH = HERE / "fixtures" / "targets_demo.json"
 OUT_PATH = HERE / "fixtures" / "demo_complaints.json"
-DEFAULT_SEED = 20261011
+DEFAULT_SEED = 20261014   # выбран tests/civic/R07/tune_demo_seed.py: все критерии правдоподобия (см. там)
 ANCHOR = datetime(2026, 10, 11, 12, 0, tzinfo=ASTANA_TZ)
 
-# Роль цели → (категория, сколько жалоб у целей этой роли по порядку, максимальный возраст в днях).
-# Числа подобраны так, чтобы на карте были все 4 уровня: снег в Нуре — свежий и плотный,
-# дороги — старые и «остывшие», одна остановка уже исправлена.
+HORIZON_DAYS = 35   # демо-история — 5 недель: первые две — «разгон», последние две сравнивает «Картина дня»
+
+# Роль цели → (категория, сколько жалоб за 3 недели у целей этой роли по порядку, форма потока).
+# Формы: steady — ровно за 3 недели; snow — два снегопада (сейчас и ровно неделю назад); recent — последние 5 дней.
 CLUSTERS = {
-    "snow": ("snow_ice", [9, 6, 5, 4, 3, 2, 1], 5),
-    "roads": ("roads", [5, 3, 2], 45),
-    "sidewalks": ("sidewalks", [3, 2], 20),
-    "lighting": ("lighting", [4, 2, 2], 14),
-    "parking": ("parking", [3, 2, 1], 25),
-    "yards": ("yards", [5, 3, 2], 20),
-    "waste": ("waste", [4, 2], 10),
-    "utilities": ("utilities", [4], 6),
-    "smell_air": ("smell_air", [5, 3, 2], 8),
-    "transport": ("transport", [8, 4, 3, 2, 2], 12),
-    "playground": ("yards", [4, 2], 15),          # реальные детские площадки OSM
-    "waste_site": ("waste", [3, 2], 8),            # реальные контейнерные площадки OSM
-    "city_snow": ("snow_ice", [4, 3, 2, 2, 1], 6),
-    "city_roads": ("roads", [2, 2, 1, 1, 1], 40),
+    "snow": ("snow_ice", [19, 8, 3, 3, 2, 2, 2], "snow"),
+    "roads": ("roads", [7, 3, 2], "steady"),
+    "sidewalks": ("sidewalks", [3, 2], "steady"),
+    "lighting": ("lighting", [4, 3, 2], "steady"),
+    "parking": ("parking", [3, 2, 2], "steady"),
+    "yards": ("yards", [5, 3, 2], "steady"),
+    "waste": ("waste", [4], "steady"),
+    "utilities": ("utilities", [3], "recent"),
+    "smell_air": ("smell_air", [7, 3, 2], "recent"),
+    "transport": ("transport", [12, 5, 5, 3, 2], "steady"),
+    "playground": ("yards", [4, 3], "steady"),          # реальные детские площадки OSM
+    "waste_site": ("waste", [4, 3], "steady"),           # реальные контейнерные площадки OSM
+    "city_snow": ("snow_ice", [18, 17, 17, 16, 16], "snow"),
+    "city_roads": ("roads", [18, 17, 16, 15, 14], "steady"),
+    "city_stop": ("transport", [22, 21, 20, 19, 19], "steady"),
+    "city_yard": ("yards", [20, 19, 19, 18, 18], "steady"),
 }
+
+# Через сколько дней акимат обычно закрывает жалобу категории — по смыслу из демо-норматива «Картины дня»
+# (R08, ui/civic_akim/deadlines.py): закрываем чуть раньше срока, поэтому «просрочено» — немного.
+# Числа CLUSTERS и FIX_LAG_DAYS проверены кодом R08: tests/civic/R07/tune_demo_seed.py.
+FIX_LAG_DAYS = {"roads": 6, "snow_ice": 1.6, "sidewalks": 8, "transport": 4, "lighting": 2.5, "yards": 11,
+                "waste": 1.6, "utilities": 0.8, "smell_air": 2.5, "noise_safety": 2.5, "parking": 11, "other": 8}
+# Цели, где акимат не успевает: здесь и только здесь будут просроченные жалобы (≈ 5–8 на город).
+LATE = {("transport", 0), ("roads", 0), ("lighting", 0), ("city_stop", 1), ("city_roads", 0), ("city_yard", 2)}
+# Горячие места: к свежим жалобам здесь присоединяется много людей («Я тоже»). Число ОБРАЩЕНИЙ (его считает
+# «Картина дня») от этого не растёт, а цель на карте краснеет — как на демо: снег, остановка, запахи, двор.
+HOT = {("snow", 0), ("transport", 0), ("smell_air", 0),
+       ("city_snow", 0), ("city_stop", 0), ("city_stop", 1), ("city_yard", 0), ("city_yard", 1)}
+# Ещё две цели отремонтированы и стоят зелёными (кроме остановки transport/2): пример «исправлено» на карте.
+CALM = {("roads", 2), ("city_roads", 4)}
 
 TEXTS = {
     "snow_ice": [("ru", "Не убран снег на тротуаре, очень скользко"), ("kk", "Тротуардағы қар тазаланбаған, өте тайғақ"),
@@ -94,7 +113,58 @@ def _point_on(geometry: dict, rnd: random.Random) -> list[float]:
     return [round(v, 6) for v in geo.anchor_of(geometry)]
 
 
+def _ages(shape: str, n: int, rnd: random.Random) -> list[float]:
+    """Возраст жалоб в днях — ровный поток за 3 недели (неделя к неделе сопоставимо по построению).
+    snow: два одинаковых снегопада — сейчас и ровно неделю назад — плюс фон; recent: последние 6 дней."""
+    out = []
+    for i in range(n):
+        if shape == "snow":
+            r = i % 5
+            out.append(rnd.uniform(0.05, 1.8) if r in (0, 2) else rnd.uniform(7.05, 8.8) if r in (1, 3) else rnd.uniform(0.05, HORIZON_DAYS))
+        elif shape == "recent":
+            out.append(rnd.uniform(0.05, 6.0))
+        else:
+            out.append(rnd.uniform(0.05, HORIZON_DAYS))
+    return sorted(out, reverse=True)          # от старых к новым
+
+
+def _repairs(created: list[datetime], lag: float, late: bool, now: datetime, rnd: random.Random) -> list[datetime | None]:
+    """Когда закрыта каждая жалоба. Каждой назначен срок lag × 0.5–1.0; ремонт в этот момент закрывает ВСЕ
+    открытые жалобы цели, пришедшие раньше (одна яма — один ремонт). None — ещё открыта.
+    late: у этой цели акимат хронически не успевает (срок × 2–3) — отсюда «просрочено» в «Картине дня»,
+    и сегодня, и неделю назад одинаково (≈ 5–8 на город)."""
+    due = [c + timedelta(days=lag * (rnd.uniform(2.0, 3.0) if late else rnd.uniform(0.5, 1.0))) for c in created]
+    closed: list = [None] * len(created)
+    for i in sorted(range(len(created)), key=lambda k: due[k]):
+        if closed[i] is not None or due[i] > now:
+            continue
+        for j in range(len(created)):
+            if closed[j] is None and created[j] <= due[i]:
+                closed[j] = due[i]
+    return closed
+
+
+def _history(created: datetime, end_status: str, fixed_time: datetime | None, now: datetime, rnd: random.Random) -> list:
+    hist = [{"at": iso(created), "status": "new"}]
+    if end_status == "new":
+        return hist
+    accepted = min(now, created + timedelta(hours=rnd.uniform(1, 8)))
+    hist.append({"at": iso(accepted), "status": "accepted"})
+    if end_status == "accepted":
+        return hist
+    work = min(now, accepted + timedelta(hours=rnd.uniform(2, 20)))
+    if fixed_time is not None:
+        work = min(work, fixed_time - timedelta(hours=1))
+    hist.append({"at": iso(max(work, accepted)), "status": "in_progress"})
+    if end_status == "fixed":
+        hist.append({"at": iso(fixed_time), "status": "fixed"})
+    return hist
+
+
 def demo_records(now: datetime | None = None, seed: int = DEFAULT_SEED, targets: dict | None = None) -> list[dict]:
+    """Поток жалоб за 3 недели + работа акимата: старые жалобы у цели закрываются одним ремонтом
+    (статус fixed у всех, кто пришёл до него), свежие — открыты. Поэтому на карте горят свежие места,
+    «неделю назад» сопоставимо с «сейчас», а просроченных немного (только цели из LATE)."""
     now = (now or datetime.now(timezone.utc)).astimezone(ASTANA_TZ)
     targets = targets or load_targets()
     rnd = random.Random(seed)
@@ -105,40 +175,49 @@ def demo_records(now: datetime | None = None, seed: int = DEFAULT_SEED, targets:
     records = []
     n = 0
     for role in sorted(CLUSTERS):
-        category, counts, max_age = CLUSTERS[role]
+        category, counts, shape = CLUSTERS[role]
+        lag = FIX_LAG_DAYS.get(category, 8)
         for idx, tid in enumerate(by_role.get(role, [])[: len(counts)]):
             t = targets[tid]
-            # Особые случаи, чтобы показать все состояния карточки:
-            fixed_case = role == "transport" and idx == 2            # остановка исправлена 2 дня назад → зелёная
-            in_progress_case = role == "snow" and idx == 1           # участок со снегом уже «в работе»
-            accepted_case = role == "yards" and idx == 0             # двор: обращение принято
-            for k in range(counts[idx]):
+            fixed_case = role == "transport" and idx == 2        # остановка исправлена 2 дня назад → зелёная
+            in_progress_case = role == "snow" and idx == 1       # участок со снегом уже «в работе»
+            accepted_case = role == "yards" and idx == 0         # двор: обращение принято
+            calm = fixed_case or (role, idx) in CALM
+            ages = _ages(shape, counts[idx], rnd)
+            if calm:
+                # отремонтировано недавно, новых жалоб после ремонта нет → 7 дней зелёная «исправлено»
+                repair_age = 2.0 if fixed_case else 3.0
+                ages = sorted((rnd.uniform(repair_age + 0.5, repair_age + 9) for _ in ages), reverse=True)
+            created_list = [now - timedelta(days=a) for a in ages]
+            if calm:
+                closes = [now - timedelta(days=repair_age)] * len(created_list)
+            else:
+                closes = _repairs(created_list, lag, (role, idx) in LATE, now, rnd)
+                if all(c is not None for c in closes) and rnd.random() < 0.85:
+                    # У большинства мест после последнего ремонта уже кто-то снова написал: карта не «вся зелёная».
+                    created_list[-1] = now - timedelta(days=rnd.uniform(0.05, min(lag * 0.5, 2.0)))
+                    closes = _repairs(created_list, lag, (role, idx) in LATE, now, rnd)
+            for k, (created, own_fix) in enumerate(zip(created_list, closes)):
                 n += 1
+                age = (now - created).total_seconds() / 86400
                 lang, text = TEXTS[category][rnd.randrange(len(TEXTS[category]))]
-                if fixed_case:
-                    age_days = rnd.uniform(4, 12)
-                elif role == "roads":
-                    age_days = rnd.uniform(20, max_age)                  # старые жалобы — «остывшая» цель
-                else:
-                    age_days = rnd.triangular(0.02, max_age, 0.3)        # больше всего свежих
-                created = now - timedelta(days=age_days)
-                history = [{"at": iso(created), "status": "new"}]
-                status = "new"
-                if fixed_case:
-                    fixed_time = now - timedelta(days=2)
-                    history += [{"at": iso(created + timedelta(hours=6)), "status": "accepted"},
-                                {"at": iso(fixed_time - timedelta(days=1)), "status": "in_progress"},
-                                {"at": iso(fixed_time), "status": "fixed"}]
+                if own_fix is not None:
                     status = "fixed"
                 elif in_progress_case:
-                    history += [{"at": iso(min(now, created + timedelta(hours=3))), "status": "accepted"},
-                                {"at": iso(min(now, created + timedelta(hours=8))), "status": "in_progress"}]
                     status = "in_progress"
-                elif accepted_case:
-                    history.append({"at": iso(min(now, created + timedelta(hours=5))), "status": "accepted"})
-                    status = "accepted"
+                elif accepted_case or age > 0.5:
+                    status = "accepted" if rnd.random() < 0.7 else "in_progress"
+                else:
+                    status = "new"
                 score = round(rnd.uniform(0.62, 0.97), 2)
-                metoo = rnd.choice((0, 0, 0, 1, 1, 2, 3)) if k < 3 else rnd.choice((0, 0, 1))
+                if (role, idx) in HOT:
+                    metoo = rnd.choice((1, 2, 2, 3, 3, 4))
+                else:
+                    metoo = rnd.choice((0, 0, 0, 1, 1, 2)) if k % 3 == 0 else rnd.choice((0, 0, 1))
+                # «Я тоже» приходят в первые полсуток после жалобы (и не позже ремонта / сейчас)
+                limit = min(now, own_fix) if own_fix is not None else now
+                span = max(0.0, min((limit - created).total_seconds(), 12 * 3600))
+                metoo_times = sorted(iso(created + timedelta(seconds=rnd.uniform(0, span))) for _ in range(metoo))
                 records.append({
                     "id": f"c-demo-{n:04d}",
                     "created_at": iso(created),
@@ -151,8 +230,9 @@ def demo_records(now: datetime | None = None, seed: int = DEFAULT_SEED, targets:
                     "target": {"kind": t["kind"], "id": tid},
                     "district": t.get("district"),
                     "status": status,
-                    "status_history": history,
+                    "status_history": _history(created, status, own_fix, now, rnd),
                     "metoo": metoo,
+                    "metoo_times": metoo_times,
                     "duplicate_of": None,
                     "demo": True,
                 })

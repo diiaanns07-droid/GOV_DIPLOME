@@ -12,7 +12,7 @@ import sys
 import pytest
 
 from ui.civic_store import cli
-from ui.civic_store.db import MIGRATIONS, REPO_ROOT, Database
+from ui.civic_store.db import MIGRATIONS, REPO_ROOT, SCHEMA_VERSION, Database
 from ui.civic_store.importer import import_package
 from ui.civic_store.public_export import (PublicRestoreRejected, _digest, export_public,
                                           restore_public)
@@ -182,7 +182,7 @@ def test_existing_older_schema_with_data_migrates_without_loss(tmp_path, monkeyp
     before = all_rows(path)
     with pytest.raises(Exception, match="миграц"):
         CivicService(path, auto_migrate=False)  # старая схема не используется молча
-    assert Database(path).migrate() == [4, 5, 6]  # раунд 14: миграция 6 R06 (как в tests/civic/R06/store)
+    assert Database(path).migrate() == list(range(4, SCHEMA_VERSION + 1))  # раунд 14: миграции R06 6–7 (как в tests/civic/R06/store)
     after = all_rows(path)
     assert {k: v for k, v in after.items() if k in before} == before  # данные и история не потеряны и не переписаны
     service = CivicService(path, auto_migrate=False)
@@ -191,7 +191,7 @@ def test_existing_older_schema_with_data_migrates_without_loss(tmp_path, monkeyp
     assert Database(path).migrate() == []
     conn = sqlite3.connect(path)
     try:
-        assert [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")] == [1, 2, 3, 4, 5, 6]
+        assert [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")] == list(range(1, SCHEMA_VERSION + 1))
     finally:
         conn.close()
 

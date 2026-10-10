@@ -244,6 +244,16 @@ def test_seed_r14_demo_is_marked_and_idempotent(tmp_path, clock, capsys):
     assert all(i["district"] == "nura" for i in items)
     objects = v2.list_objects()["items"]
     assert objects and all(o["demo"] and o["stage_source"] == "demo" for o in objects)
+    # Просьба R08 (день 3): у демо-объектов есть казахское название; у остальных записей title_kk = None.
+    from ui.civic_store.stages import DEMO_TITLES_KK
+    assert all(o["title_kk"] == DEMO_TITLES_KK[o["id"]] for o in objects)
+    assert all(i["title_kk"] for i in v2.stages.lagging(None)["late"])
+
+
+def test_title_kk_only_for_known_demo_records(staff):
+    item = staff.create_object()
+    listed = next(o for o in call(staff.v2, "GET", "/objects")["body"]["data"]["items"] if o["id"] == item["id"])
+    assert listed["demo"] is True and listed["title_kk"] is None  # синтетика теста, но не из демо-набора
 
 
 def test_session_cookie_reaches_v2_routes(stack):

@@ -61,6 +61,17 @@
   margin: 0;
 }
 
+/* Вид акимата: голоса — только чтение, крупными числами (кнопки голосования — у жителя). */
+.r06-tally {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+}
+
 /* Полоса «за/против» — доля голосов, подписи цифрами рядом (цвет не один). */
 .r06-share {
   display: flex;
@@ -106,4 +117,13 @@
 }
 .r06-stage-editor__fields .bk-btn {
   justify-self: start;
+}
+/* Дата словами под полем type="date" (формат самого поля зависит от языка браузера). */
+.r06-date-words {
+  margin: 0;
+  color: var(--c-ink);
+  font-weight: var(--fw-semi);
+}
+.r06-date-words:empty {
+  display: none;
 }

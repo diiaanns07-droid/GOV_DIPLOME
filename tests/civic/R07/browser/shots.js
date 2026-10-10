@@ -1,20 +1,65 @@
 // R07: скриншоты и проверки тепловой карты в настоящем Chromium (Playwright).
 // Запуск: python -m ui.civic_heat.devserver &   затем
 //   NODE_PATH=$(npm root -g) node tests/civic/R07/browser/shots.js [папка_для_скриншотов]
-// Проверяет: нет ошибок консоли, нет горизонтальной прокрутки, нет непереведённых ключей heat.*,
-// кнопки ≥ 48 px, значки с числом на карте, карточка цели, пульс после новой жалобы.
+// Общие проверки каждого кадра: нет ошибок консоли, нет горизонтальной прокрутки, нет ключей heat.* вместо текста,
+// нет слова «демо» в видимом тексте, зоны нажатия ≥ 48 px (с невидимой каймой ::after), главные кнопки ≥ 4,5:1.
+// Отдельные сценарии — замечания UX_REVIEW R11, день 3 (№ в имени проверки).
 const { chromium } = require("playwright");
 const fs = require("fs");
 const path = require("path");
 
 const BASE = process.env.R07_BASE || "http://127.0.0.1:8617/civic/heat/demo.html";
+const API = BASE.replace(/\/civic\/heat\/demo\.html.*$/, "") + "/api/civic/v2";
 const OUT = process.argv[2] || path.join(__dirname, "..", "..", "..", "..", "research", "round-14-results", "R07", "screens");
 fs.mkdirSync(OUT, { recursive: true });
 
 const SIZES = { desktop: { width: 1366, height: 768 }, phone: { width: 375, height: 812 } };
 const results = [];
 
-async function shot(browser, name, size, query, after) {
+// Общие замеры страницы (выполняются в браузере)
+async function measure(page) {
+  return page.evaluate(() => {
+    const lum = (rgb) => {
+      const c = rgb.match(/\d+(\.\d+)?/g).slice(0, 3).map(Number).map((v) => v / 255)
+        .map((v) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
+      return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    };
+    const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+    const visible = (el) => { const r = el.getBoundingClientRect(); return el.offsetParent !== null && r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== "hidden"; };
+    // Высота зоны нажатия: сам элемент + невидимая кайма ::after (inset с минусом)
+    const hitHeight = (el) => {
+      const r = el.getBoundingClientRect();
+      const a = getComputedStyle(el, "::after");
+      let extra = 0;
+      if (a.content && a.content !== "none" && a.position === "absolute") {
+        const top = parseFloat(a.top), bottom = parseFloat(a.bottom);
+        extra = (top < 0 ? -top : 0) + (bottom < 0 ? -bottom : 0);
+      }
+      return r.height + extra;
+    };
+    const buttons = [...document.querySelectorAll("button, select")].filter(visible);
+    const small = buttons.map((b) => ({ t: (b.innerText || b.getAttribute("aria-label") || "").trim().slice(0, 30), h: Math.round(hitHeight(b)) }))
+      .filter((b) => b.h < 48);
+    const primary = [...document.querySelectorAll(".r07-btn--primary")].filter(visible).map((b) => {
+      const cs = getComputedStyle(b);
+      return { t: b.innerText.trim().slice(0, 30), ratio: Math.round(contrast(cs.color, cs.backgroundColor) * 100) / 100 };
+    });
+    const doc = document.documentElement;
+    const text = document.body.innerText;
+    return {
+      hscroll: doc.scrollWidth > doc.clientWidth + 1,
+      rawKeys: text.match(/heat\.[a-z_.0-9]+/g) || [],
+      demoWord: /демо/i.test(text),
+      smallButtons: small,
+      primary,
+      badges: [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden).length,
+      legendOnMap: (() => { const l = document.querySelector(".r07-maplegend"); if (!l || !visible(l)) return false; const r = l.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight && r.left >= 0; })(),
+      state: window.__heat ? window.__heat.state() : null,
+    };
+  });
+}
+
+async function open(browser, size, query) {
   const page = await browser.newPage({ viewport: SIZES[size], deviceScaleFactor: 1 });
   const errors = [];
   page.on("console", (m) => { if (m.type() === "error" || (m.type() === "warning" && m.text().includes("[heat]"))) errors.push(m.text()); });
@@ -22,68 +67,191 @@ async function shot(browser, name, size, query, after) {
   await page.goto(BASE + query, { waitUntil: "networkidle" });
   await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
   await page.waitForTimeout(900);
-  if (after) await after(page);
+  return { page, errors };
+}
+
+async function shot(browser, name, size, query, after, check) {
+  const { page, errors } = await open(browser, size, query);
+  let extra = {};
+  if (after) extra = (await after(page)) || {};
   await page.waitForTimeout(500);
-  const checks = await page.evaluate(() => {
-    const doc = document.documentElement;
-    const panelText = document.getElementById("heat-root").innerText;
-    const small = [...document.querySelectorAll("#heat-root button, .bar button, .mapbtns button")]
-      .filter((b) => b.offsetParent !== null)
-      .map((b) => ({ t: (b.innerText || b.getAttribute("aria-label") || "").trim().slice(0, 30), h: b.getBoundingClientRect().height }))
-      .filter((b) => b.h < 39.5); // чипы 40 видимых + 4+4 зона нажатия
-    const badges = [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden).length;
-    return {
-      hscroll: doc.scrollWidth > doc.clientWidth + 1,
-      rawKeys: (panelText.match(/heat\.[a-z_.0-9]+/g) || []),
-      smallButtons: small,
-      badges,
-      state: window.__heat.state(),
-    };
-  });
-  const file = path.join(OUT, name + ".jpg");
-  await page.screenshot({ path: file, type: "jpeg", quality: 82 });
-  results.push({ name, size, query, errors, ...checks });
+  const m = await measure(page);
+  const problems = [];
+  if (errors.length) problems.push("console: " + errors.join(" | "));
+  if (m.hscroll) problems.push("горизонтальная прокрутка");
+  if (m.rawKeys.length) problems.push("ключи без перевода: " + m.rawKeys.join(","));
+  if (m.demoWord) problems.push("слово «демо» в интерфейсе (№7)");
+  if (m.smallButtons.length) problems.push("зона нажатия < 48 (№6): " + JSON.stringify(m.smallButtons));
+  const lowContrast = m.primary.filter((b) => b.ratio < 4.5);
+  if (lowContrast.length) problems.push("контраст главной кнопки < 4,5 (№1): " + JSON.stringify(lowContrast));
+  if (m.state && m.state.mode === "targets" && !m.legendOnMap) problems.push("легенды нет на карте (№3)");
+  if (check) problems.push(...((await check(page, m, extra)) || []));
+  await page.screenshot({ path: path.join(OUT, name + ".jpg"), type: "jpeg", quality: 82 });
+  results.push({ name, size, query, problems, badges: m.badges, primary: m.primary, extra });
   await page.close();
+}
+
+// №2: на масштабе 12–15 ни одного объекта, переданного только цветом; у видимых целей — значок с числом
+async function colorOnlyCheck(page) {
+  return page.evaluate(() => {
+    const map = window.__map;
+    const out = [];
+    const z = map.getZoom();
+    const feats = map.queryRenderedFeatures({ layers: ["r07-obj-halo-lo", "r07-obj-halo", "r07-obj-dot"].filter((l) => map.getLayer(l)) });
+    const shown = new Set([...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden).map((b) => b.title));
+    if (z < 15) {
+      const low = feats.filter((f) => f.properties.level < 3);
+      if (low.length) out.push("на " + z.toFixed(1) + " видны объекты уровней 1–2 без числа: " + low.length);
+    }
+    return out;
+  });
 }
 
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
+  const apiItems = async (days) => (await (await fetch(API + "/heat?days=" + days + "&zoom=15")).json()).items;
+
   for (const lang of ["ru", "kk"]) {
-    await shot(browser, `nura-akimat-1366-${lang}`, "desktop", `?lang=${lang}&role=akimat&view=nura`);
-    await shot(browser, `nura-akimat-375-${lang}`, "phone", `?lang=${lang}&role=akimat&view=nura&sheet=peek`);
-    await shot(browser, `city-districts-1366-${lang}`, "desktop", `?lang=${lang}&view=city`);
-    await shot(browser, `card-segment-1366-${lang}`, "desktop", `?lang=${lang}&view=nura`, async (page) => {
-      await page.click(".r07-item");               // первая строка «Горячие места»
-      await page.waitForTimeout(900);
+    // Старт карты акимата: 1366 и 375 (№2, №3, №5)
+    await shot(browser, `nura-akimat-1366-${lang}`, "desktop", `?lang=${lang}&role=akimat&view=nura`, null, colorOnlyCheck);
+    await shot(browser, `nura-akimat-375-${lang}`, "phone", `?lang=${lang}&role=akimat&view=nura`, null, async (page, m) => {
+      const out = await colorOnlyCheck(page);
+      // №5: горячие места, под которые подогнана карта, целиком видны — не за краем и не под шторкой
+      const bad = await page.evaluate(async () => {
+        const sheetTop = document.getElementById("panel").getBoundingClientRect().top;
+        const keys = window.__heat.state().fittedKeys;
+        const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
+        const labels = d.items.filter((x) => keys.includes(x.target.kind + ":" + x.target.id)).map((x) => x.target.label_ru);
+        const badges = [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden && labels.includes(b.title));
+        const outside = badges.filter((b) => { const r = b.getBoundingClientRect(); return r.left < 0 || r.right > innerWidth || r.bottom > sheetTop || r.top < 56; });
+        return { fitted: keys.length, shown: badges.length, outside: outside.map((b) => b.title) };
+      });
+      if (bad.fitted < 2) out.push("карта не подогнана под горячие места (№5)");
+      if (bad.outside.length) out.push("горячие значки за краем или под шторкой (№5): " + bad.outside.join(", "));
+      const inView = await page.evaluate(() => {
+        const sheetTop = document.getElementById("panel").getBoundingClientRect().top;
+        return [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden && b.getBoundingClientRect().bottom < sheetTop && b.getBoundingClientRect().top > 56).length;
+      });
+      if (inView < 4) out.push("над шторкой видно мало значков (№5): " + inView);
+      return out;
     });
+    // Карточка акимата: контраст «Взять в работу» и «Что пишут жители» (№1, №4)
+    await shot(browser, `card-akimat-1366-${lang}`, "desktop", `?lang=${lang}&view=nura`, async (page) => {
+      await page.click(".r07-item");
+      await page.waitForSelector(".r07-quotes, .r07-texts .r07-note", { timeout: 6000 });
+    }, async (page) => {
+      const out = [];
+      const q = await page.evaluate(() => ({ quotes: document.querySelectorAll(".r07-quotes li").length,
+        tag: [...document.querySelectorAll(".r07-quotes .r07-tag")].map((t) => t.innerText),
+        actionTop: (document.querySelector('[data-act]') || {}).getBoundingClientRect?.().bottom || 9999 }));
+      if (!q.quotes) out.push("нет «Что пишут жители» (№4)");
+      if (!q.tag.length) out.push("у примеров нет метки «Пример»/«Үлгі»");
+      if (q.actionTop > 768) out.push("главная кнопка ниже экрана");
+      return out;
+    });
+    await shot(browser, `card-akimat-375-${lang}`, "phone", `?lang=${lang}&view=nura&sheet=full`, async (page) => {
+      await page.click(".r07-item");
+      await page.waitForSelector(".r07-quotes, .r07-texts .r07-note", { timeout: 6000 });
+    });
+    // Житель: мягче, «Я тоже», БЕЗ текстов жителей
     await shot(browser, `card-resident-375-${lang}`, "phone", `?lang=${lang}&role=resident&view=nura&sheet=full`, async (page) => {
       await page.click(".r07-item");
       await page.waitForTimeout(900);
+    }, async (page) => {
+      const n = await page.evaluate(() => document.querySelectorAll(".r07-texts, .r07-quotes").length);
+      return n ? ["жителю показаны тексты жалоб"] : [];
     });
+    await shot(browser, `card-resident-1366-${lang}`, "desktop", `?lang=${lang}&role=resident&view=nura`, async (page) => {
+      await page.click(".r07-item");
+      await page.waitForTimeout(900);
+    });
+    // Весь город: районы с числами
+    await shot(browser, `city-districts-1366-${lang}`, "desktop", `?lang=${lang}&view=city`);
+    await shot(browser, `city-districts-375-${lang}`, "phone", `?lang=${lang}&view=city&sheet=peek`, null, async (page) => {
+      // районы целиком на экране, ни один значок не под легендой и не за краем
+      const r = await page.evaluate(() => {
+        const leg = document.querySelector(".r07-maplegend").getBoundingClientRect();
+        const sheetTop = document.getElementById("panel").getBoundingClientRect().top;
+        const all = [...document.querySelectorAll('.r07-badge[data-kind="district"]')];
+        const shown = all.filter((b) => !b.hidden);
+        const bad = shown.filter((b) => { const x = b.getBoundingClientRect();
+          const underLegend = !(x.right < leg.left || leg.right < x.left || x.bottom < leg.top || leg.bottom < x.top);
+          return x.left < 0 || x.right > innerWidth || x.bottom > sheetTop || underLegend; });
+        return { total: all.length, shown: shown.length, bad: bad.map((b) => b.title) };
+      });
+      const out = [];
+      if (r.shown < r.total) out.push(`видно районов ${r.shown} из ${r.total}`);
+      if (r.bad.length) out.push("значок района за краем / под легендой: " + r.bad.join(", "));
+      return out;
+    });
+    // Пустой фильтр (№8): «За 7 дней жалоб нет» + «Показать 30 дней», без зелёной галочки
+    for (const size of ["desktop", "phone"]) {
+      await shot(browser, `empty-filter-${size === "desktop" ? 1366 : 375}-${lang}`, size, `?lang=${lang}&view=nura&sheet=full`, async (page) => {
+        await page.evaluate(async () => {
+          const meta = await (await fetch("/api/civic/v2/heat/meta")).json();
+          for (const c of meta.categories) {
+            const d = await (await fetch("/api/civic/v2/heat?days=7&zoom=15&category=" + c.id)).json();
+            if (!d.items.some((x) => x.state === "active")) { window.__heat.setFilters({ category: c.id, days: 7 }); return; }
+          }
+        });
+        await page.waitForSelector(".r07-empty", { timeout: 6000 });
+      }, async (page) => {
+        const e = await page.evaluate(() => ({ title: document.querySelector(".r07-empty__title").innerText,
+          next: !!document.querySelector("[data-days-next]"), reset: !!document.querySelector(".r07-empty [data-reset]"),
+          check: !!document.querySelector('.r07-empty svg path[d="m5 12.5 4.5 4.5L19 7"]') }));
+        const out = [];
+        if (!/7/.test(e.title)) out.push("заголовок пустого фильтра без периода: " + e.title);
+        if (!e.next || !e.reset) out.push("нет «Показать 30 дней» / «Сбросить фильтры»");
+        if (e.check) out.push("зелёная галочка в пустом состоянии");
+        return out;
+      });
+    }
   }
-  // Исправленная остановка (зелёная, 7 дней) — открываем её карточку через параметр target.
+
+  // Исправленная остановка (зелёная) — карточка через API, как переход из «Картины дня»
   for (const lang of ["ru", "kk"]) {
     await shot(browser, `stop-fixed-1366-${lang}`, "desktop", `?lang=${lang}&view=nura`, async (page) => {
-      // Находим исправленную цель через API и открываем её карточку (как переход из «Картины дня»).
       await page.evaluate(async () => {
         const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
-        const it = d.items.find((x) => x.state === "fixed");
-        if (it) window.__heat.focusTarget(it.target.kind, it.target.id);
+        const it = d.items.find((x) => x.state === "fixed" && x.target.subtype === "bus_stop") || d.items.find((x) => x.state === "fixed");
+        if (it) await window.__heat.focusTarget(it.target.kind, it.target.id);
       });
-      await page.waitForSelector(".r07-card", { timeout: 5000 });
+      await page.waitForSelector(".r07-card", { timeout: 6000 });
       await page.waitForTimeout(900);
     });
   }
-  // Реальная детская площадка OSM (многоугольник) — контур + ореол + значок
+
+  // №12: ссылка «Картины дня» #target=kind:id&days=7 — карточка открыта, период 7 дней, число = числу из API за 7 дней
+  {
+    const items7 = await apiItems(7);
+    const top = items7.find((x) => x.state === "active" && x.target.kind !== "district");
+    for (const [lang, size] of [["ru", "desktop"], ["kk", "phone"]]) {
+      await shot(browser, `deeplink-days7-${size === "desktop" ? 1366 : 375}-${lang}`, size,
+        `?lang=${lang}&view=city&sheet=full#target=${top.target.kind}:${top.target.id}&days=7`, async (page) => {
+          await page.waitForSelector(".r07-card", { timeout: 10000 });
+          await page.waitForTimeout(700);
+        }, async (page) => {
+          const st = await page.evaluate(() => ({ s: window.__heat.state(), text: document.querySelector(".r07-card__reported").innerText }));
+          const out = [];
+          if (st.s.filters.days !== 7) out.push("период не 7 дней: " + st.s.filters.days);
+          if (st.s.selected !== top.target.kind + ":" + top.target.id) out.push("открыта не та цель: " + st.s.selected);
+          if (!st.text.includes(String(top.count))) out.push(`в карточке не ${top.count}: ${st.text}`);
+          return out;
+        });
+    }
+  }
+
+  // Реальная детская площадка OSM (многоугольник) — значок внутри контура
   await shot(browser, "playground-real-osm-1366-kk", "desktop", "?lang=kk&view=nura", async (page) => {
     await page.evaluate(async () => {
       const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
       const it = d.items.find((x) => x.target.subtype === "playground");
-      if (it) window.__heat.focusTarget(it.target.kind, it.target.id);
+      if (it) await window.__heat.focusTarget(it.target.kind, it.target.id);
     });
-    await page.waitForSelector(".r07-card", { timeout: 5000 });
+    await page.waitForSelector(".r07-card", { timeout: 6000 });
     await page.waitForTimeout(900);
   });
+  // Пульс после новой жалобы
   await shot(browser, "pulse-new-complaint-1366-ru", "desktop", "?lang=ru&view=nura", async (page) => {
     await page.click(".r07-item");
     await page.waitForTimeout(700);
@@ -98,36 +266,53 @@ async function shot(browser, name, size, query, after) {
     await page.click('[data-days="7"]');
     await page.waitForTimeout(700);
   });
-  // Клавиатура: из карточки цели Tab доходит до главной кнопки, рамка фокуса видна, Esc закрывает карточку.
+
+  // Клавиатура: Tab до главной кнопки, рамка фокуса, Esc закрывает карточку
   {
-    const page = await browser.newPage({ viewport: SIZES.desktop });
-    await page.goto(BASE + "?lang=ru&view=nura", { waitUntil: "networkidle" });
-    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    const { page, errors } = await open(browser, "desktop", "?lang=ru&view=nura");
     await page.focus(".r07-item");
     await page.keyboard.press("Enter");
     await page.waitForSelector(".r07-card");
     let reached = false, outline = "";
-    for (let i = 0; i < 15 && !reached; i++) {
+    for (let i = 0; i < 20 && !reached; i++) {
       await page.keyboard.press("Tab");
-      reached = await page.evaluate(() => document.activeElement && document.activeElement.dataset.act === "take");
+      reached = await page.evaluate(() => document.activeElement && ["take", "fixed"].includes(document.activeElement.dataset.act));
     }
     if (reached) outline = await page.evaluate(() => getComputedStyle(document.activeElement).outlineStyle + " " + getComputedStyle(document.activeElement).outlineWidth);
     await page.keyboard.press("Escape");
     const closed = await page.evaluate(() => !document.querySelector(".r07-card"));
-    results.push({ name: "keyboard-card-1366-ru", size: "desktop", query: "", errors: reached && closed && outline.startsWith("solid") ? [] : ["Tab/Esc: reached=" + reached + " outline=" + outline + " closed=" + closed], hscroll: false, rawKeys: [], smallButtons: [], badges: 0 });
+    const problems = reached && closed && outline.startsWith("solid") ? [] : ["Tab/Esc: reached=" + reached + " outline=" + outline + " closed=" + closed];
+    results.push({ name: "keyboard-card-1366-ru", size: "desktop", query: "", problems: problems.concat(errors), badges: 0 });
     await page.close();
   }
+
+  // Язык через событие на document (так шлёт i18n R11) и id устройства R09 + заголовок X-Birge-Device
+  {
+    const { page, errors } = await open(browser, "phone", "?lang=ru&role=resident&view=nura&sheet=full");
+    const headers = [];
+    page.on("request", (r) => { if (r.url().includes("/metoo")) headers.push(r.headers()["x-birge-device"] || ""); });
+    await page.evaluate(() => document.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang: "kk" } })));
+    await page.waitForTimeout(300);
+    const kk = await page.evaluate(() => window.__heat.state().lang === "kk" && document.querySelector(".r07-h").innerText === "Шағымдар картасы");
+    await page.click(".r07-item");
+    await page.waitForSelector('[data-act="metoo"]');
+    await page.click('[data-act="metoo"]');
+    await page.waitForTimeout(900);
+    const dev = await page.evaluate(() => localStorage.getItem("birge.device"));
+    const problems = [];
+    if (!kk) problems.push("birge:lang на document не переключил язык");
+    if (!/^[A-Za-z0-9_-]{16,80}$/.test(dev || "")) problems.push("нет id устройства R09 в birge.device: " + dev);
+    if (!headers.length || headers[0] !== dev) problems.push("«Я тоже» без заголовка X-Birge-Device: " + JSON.stringify(headers));
+    results.push({ name: "lang-document-and-device-375", size: "phone", query: "", problems: problems.concat(errors), badges: 0 });
+    await page.close();
+  }
+
   await browser.close();
   fs.writeFileSync(path.join(OUT, "CHECKS.json"), JSON.stringify(results, null, 1));
   let bad = 0;
   for (const r of results) {
-    const problems = [];
-    if (r.errors.length) problems.push("console: " + r.errors.join(" | "));
-    if (r.hscroll) problems.push("горизонтальная прокрутка");
-    if (r.rawKeys.length) problems.push("ключи без перевода: " + r.rawKeys.join(","));
-    if (r.smallButtons.length) problems.push("мелкие кнопки: " + JSON.stringify(r.smallButtons));
-    if (problems.length) bad++;
-    console.log((problems.length ? "FAIL " : "PASS ") + r.name + " · значков " + r.badges + (problems.length ? " · " + problems.join("; ") : ""));
+    if (r.problems.length) bad++;
+    console.log((r.problems.length ? "FAIL " : "PASS ") + r.name + " · значков " + r.badges + (r.problems.length ? " · " + r.problems.join("; ") : ""));
   }
   process.exit(bad ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(2); });

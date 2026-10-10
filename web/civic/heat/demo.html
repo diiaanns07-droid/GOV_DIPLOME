@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#ffffff" />
-  <title>Birge · Карта жалоб (демо R07)</title>
+  <title>Birge · Карта жалоб</title>
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="/vendor/maplibre-gl.css" />
   <link rel="stylesheet" href="/civic/heat/heat.css" />
@@ -23,6 +23,9 @@
     .seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 12px; background: #eef2ea; }
     .seg button { min-height: 42px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; color: #55655e; font: inherit; font-weight: 650; cursor: pointer; white-space: nowrap; }
     .seg button[aria-pressed="true"] { background: #fff; color: #152c26; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; }
+    /* 42 px видимые + невидимая кайма по 3 px = 48 px для пальца (UX_REVIEW R11, день 3, №6) */
+    .seg button { position: relative; }
+    .seg button::after { content: ""; position: absolute; inset: -3px 0; }
     .demo-btn { min-height: 48px; padding: 0 14px; border: 1px dashed #b07823; border-radius: 12px; background: #faf5e7; color: #7a531a; font: inherit; font-weight: 650; cursor: pointer; white-space: nowrap; }
     :focus-visible { outline: 3px solid #2f7de1; outline-offset: 2px; }
     #map { position: absolute; top: 64px; left: 0; right: 0; bottom: 0; }
@@ -39,15 +42,16 @@
       /* На телефоне демо-кнопка уходит к кнопкам карты, чтобы шапка не была шире экрана */
       .demo-btn { position: absolute; top: 176px; right: 10px; width: 48px; padding: 0; z-index: 20; }
       .demo-btn .long { display: none; }
+      body[data-sheet="full"] .demo-btn { display: none; }   /* развёрнутая шторка закрывает карту — кнопке карты там не место */
       .seg button { padding: 0 10px; }
       #map { top: 56px; }
       .panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 46dvh; border-radius: 20px 20px 0 0; border-bottom: 0; padding: 0 16px 16px; transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
-      .panel[data-state="peek"] { height: 112px; overflow: hidden; }
+      .panel[data-state="peek"] { height: 132px; overflow: hidden; }
       .panel[data-state="full"] { height: calc(100dvh - 56px); }
-      .handle { position: sticky; top: 0; z-index: 2; display: flex; justify-content: center; align-items: center; width: calc(100% + 32px); height: 28px; margin: 0 -16px 4px; border: 0; background: #fff; cursor: pointer; }
+      .handle { position: sticky; top: 0; z-index: 2; display: flex; justify-content: center; align-items: center; width: calc(100% + 32px); height: 48px; margin: 0 -16px 0; border: 0; background: #fff; cursor: pointer; }
       .handle::after { content: ""; width: 40px; height: 4px; border-radius: 2px; background: #b9c4b6; }
       .mapbtns { top: 64px; right: 10px; }
-      .attr { bottom: auto; top: 62px; }
+      .attr { bottom: auto; top: auto; left: auto; right: 8px; top: 248px; }   /* ниже кнопок карты, не под легендой */
     }
   </style>
 </head>
@@ -61,7 +65,7 @@
     <div class="seg" id="lang" role="group" aria-label="Язык">
       <button type="button" data-lang="kk" aria-pressed="false">ҚАЗ</button><button type="button" data-lang="ru" aria-pressed="true">РУС</button>
     </div>
-    <button type="button" class="demo-btn" id="demo-new"><span aria-hidden="true">＋</span> <span class="long" data-t="demo_new">Новая жалоба (демо)</span></button>
+    <button type="button" class="demo-btn" id="demo-new"><span aria-hidden="true">＋</span> <span class="long" data-t="demo_new">Пример жалобы</span></button>
   </header>
   <div id="map" role="region" aria-label="Карта жалоб"></div>
   <div class="mapbtns">
@@ -81,8 +85,8 @@
     "use strict";
     const P = new URLSearchParams(location.search);
     const PAGE = {
-      ru: { role: "Режим", lang: "Язык", akimat: "Акимат", resident: "Житель", demo_new: "Новая жалоба (демо)", zin: "Приблизить", zout: "Отдалить", map: "Карта жалоб", handle: "Развернуть или свернуть панель" },
-      kk: { role: "Режим", lang: "Тіл", akimat: "Әкімдік", resident: "Тұрғын", demo_new: "Жаңа шағым (демо)", zin: "Жақындату", zout: "Алыстату", map: "Шағымдар картасы", handle: "Панельді ашу немесе жабу" },
+      ru: { role: "Режим", lang: "Язык", akimat: "Акимат", resident: "Житель", demo_new: "Пример жалобы", zin: "Приблизить", zout: "Отдалить", map: "Карта жалоб", handle: "Развернуть или свернуть панель" },
+      kk: { role: "Режим", lang: "Тіл", akimat: "Әкімдік", resident: "Тұрғын", demo_new: "Үлгі шағым", zin: "Жақындату", zout: "Алыстату", map: "Шағымдар картасы", handle: "Панельді ашу немесе жабу" },
     };
     let lang = P.get("lang") || (function () { try { return localStorage.getItem("birge.lang"); } catch (e) { return null; } })() || "ru";
     lang = lang === "kk" ? "kk" : "ru";
@@ -111,14 +115,16 @@
       ],
     };
     const style = P.get("basemap") === "online" ? "https://tiles.openfreemap.org/styles/liberty" : offline;
-    const map = new maplibregl.Map({ container: "map", style, center: v.center, zoom: v.zoom, minZoom: 9, maxZoom: 18, attributionControl: false, fadeDuration: 0 });
+    const map = new maplibregl.Map({ container: "map", style, center: v.center, zoom: v.zoom, minZoom: 8, maxZoom: 18, attributionControl: false, fadeDuration: 0 });   // minZoom 8 — как в web/map.js
     window.__map = map;
 
     const panel = document.getElementById("panel");
     if (P.get("sheet")) panel.dataset.state = P.get("sheet");
+    document.body.dataset.sheet = panel.dataset.state;
     document.getElementById("handle").addEventListener("click", () => {
       const order = ["peek", "half", "full"];
       panel.dataset.state = order[(order.indexOf(panel.dataset.state) + 1) % order.length];
+      document.body.dataset.sheet = panel.dataset.state;
     });
     document.getElementById("zin").addEventListener("click", () => map.zoomIn({ duration: 300 }));
     document.getElementById("zout").addEventListener("click", () => map.zoomOut({ duration: 300 }));
@@ -135,11 +141,21 @@
       document.getElementById("zout").setAttribute("aria-label", D.zout); document.getElementById("zout").title = D.zout;
       document.getElementById("map").setAttribute("aria-label", D.map);
       document.getElementById("handle").setAttribute("aria-label", D.handle);
+      const demoBtn = document.getElementById("demo-new");
+      demoBtn.setAttribute("aria-label", D.demo_new); demoBtn.title = D.demo_new;   // на телефоне видна только «＋»
       document.querySelectorAll("#lang [data-lang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
     }
     applyPageLang();
 
-    const heat = window.CivicHeat.mount({ root: document.getElementById("heat-root"), map, role, lang });
+    // Отступы для стартовой подгонки карты: шапка, правая панель (ноутбук) или шторка (телефон), кнопки карты.
+    const fitPadding = () => {
+      const phone = window.matchMedia("(max-width: 760px)").matches;
+      return phone ? { top: 24, left: 24, right: 72, bottom: panel.getBoundingClientRect().height + 24 }
+                   : { top: 32, left: 48, bottom: 140, right: panel.getBoundingClientRect().width + 48 };
+    };
+    const heat = window.CivicHeat.mount({ root: document.getElementById("heat-root"), map, role, lang, fitPadding,
+      fit: !P.get("z") && !P.get("c"), handleOpenTarget: true,
+      avoidRects: () => [document.querySelector(".attr").getBoundingClientRect()] });   // значки не под подписью OSM
     window.__heat = heat;
     document.querySelectorAll("#role [data-role]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.role === role)));
 
@@ -177,7 +193,8 @@
 
     if (P.get("target")) {
       const [kind, ...rest] = P.get("target").split(":");
-      const wait = setInterval(() => { if (heat.state().status === "ready") { clearInterval(wait); heat.focusTarget(kind, rest.join(":")); } }, 100);
+      const days = P.get("days") ? Number(P.get("days")) : undefined;
+      const wait = setInterval(() => { if (heat.state().status === "ready") { clearInterval(wait); heat.focusTarget(kind, rest.join(":"), { days }); } }, 100);
     }
   })();
   </script>

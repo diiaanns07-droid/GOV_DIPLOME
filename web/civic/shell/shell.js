@@ -359,31 +359,38 @@
     mountBirgeModules();
   }
   // ---------------------------------------------------------------- модули раунда 14 (B1)
-  // Запросы тепловой карты R07 (её опция fetch): сотруднику — X-CSRF-Token (R09 требует его для «Взять в работу»
-  // и «Исправлено»), «Я тоже» — X-Birge-Device того же устройства, что у формы жалобы R09 (ключ birge.device),
-  // чтобы одно устройство не отметилось дважды через карту и через форму.
-  function birgeDevice() {
-    let id = null;
-    try { id = localStorage.getItem("birge.device"); } catch { /* приватный режим */ }
-    if (!id || !/^[A-Za-z0-9_-]{16,80}$/.test(id)) {
-      const bytes = new Uint8Array(18);
-      crypto.getRandomValues(bytes);
-      id = "d-" + Array.from(bytes, (b) => (b % 36).toString(36)).join("");
-      try { localStorage.setItem("birge.device", id); } catch { /* только на эту вкладку */ }
-    }
-    return id;
-  }
+  // Запросы модулей раунда 14 (опция fetch R07 и R05): сотруднику — X-CSRF-Token (R09 требует его для «Взять
+  // в работу» и «Исправлено», R06 — для предложений). Id устройства для «Я тоже» (X-Birge-Device, ключ
+  // birge.device — общий с формой жалобы R09) R07 @ 306074b ставит сам.
   function birgeFetch(url, init = {}) {
     if (String(init.method || "GET").toUpperCase() === "GET") return fetch(url, init);
     const headers = new Headers(init.headers || {});
     if (session.authenticated && session.csrfToken) headers.set("X-CSRF-Token", session.csrfToken);
-    if (/\/metoo$/.test(new URL(url, location.href).pathname)) headers.set("X-Birge-Device", birgeDevice());
     return fetch(url, { ...init, headers, credentials: "same-origin" });
+  }
+  // Плашки поверх карты, под которыми значкам тепловой карты не место: 3D-каталог R05, кнопка и панель жалобы R09.
+  function birgeOverlayRects() {
+    const rects = [];
+    for (const id of ["birge-build3d-root", "birge-complaint-root"]) {
+      for (const el of $c(id)?.children || []) {
+        if (!el.getClientRects().length || getComputedStyle(el).visibility === "hidden") continue;
+        const r = el.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) rects.push(r);
+      }
+    }
+    return rects;
   }
   // R07 «Карта жалоб» в панели и R09 «Сообщить о проблеме» (кнопка видна только жителю, birge.css).
   function mountBirgeModules() {
     if (!S.mounted.heat && moduleFor("heat")) {
-      mount("heat", $c("birge-heat-root"), { map: currentMap(), role: birgeMode(), lang: birgeLang(), fetch: birgeFetch });
+      mount("heat", $c("birge-heat-root"), {
+        map: currentMap(), role: birgeMode(), lang: birgeLang(), fetch: birgeFetch,
+        // Стартовая подгонка под горячие места — в свободную часть карты (без шапки, панели, кнопок карты).
+        fitPadding: () => freeArea(),
+        avoidRects: birgeOverlayRects,
+        // Ссылку #target=… и событие «Картины дня» разбирает оболочка (переключает раздел) — не модуль.
+        hash: false, handleOpenTarget: false,
+      });
       openTargetFromLink();
     }
     if (!S.mounted.complaint && moduleFor("complaint")) {
@@ -407,18 +414,19 @@
     }
     mountBuild3d();
   }
-  // ---------------------------------------------------------------- 3D-превью предложений (B2: R05 + R06)
-  // Клиент R05 (build3d-core createApiStore) и R06 @ 7031afa расходятся в мелочах: R05 шлёт year/near_street/target
-  // и DELETE /proposals/{id}, ждёт ответ {proposal} с полем year; R06 принимает planned_year, снимает предложение
-  // через POST …/withdraw и отвечает {item}. Переводим здесь (INTEGRATION.txt §9); R06, который сам понимает
-  // year/DELETE/proposal (ветка R06 d043e7b), адаптер не ломает: лишнее он отбрасывает, {proposal} не трогает.
-  const B3D_CREATE_FIELDS = ["kind", "geometry", "rotation_deg", "title_ru", "title_kk", "planned_year", "demo"];
+  // ---------------------------------------------------------------- 3D-превью предложений (R05 + R06)
+  // R06 @ b42e790 (поставка 2) сам понимает тело клиента R05: year/near_street/target/status, служебные поля
+  // игнорирует, отвечает {item, proposal} с полем year — поэтому тело и ответ больше не переводятся.
+  // Остаток адаптера нужен только клиенту R05 @ b0353ee (INTEGRATION.txt §10): он снимает предложение через
+  // DELETE /proposals/{id} (в CONTRACT §7 и в шлюзе нет — переводим в POST …/withdraw) и не передаёт device_id
+  // в список (без него R06 не вернёт my_vote этого устройства). Клиент R05 под R06 поставки 2 делает это сам —
+  // тогда build3dFetch убирается целиком.
   const B3D_PROPOSALS = /\/api\/civic\/v2\/proposals$/;
   const B3D_ONE = /\/api\/civic\/v2\/proposals\/[^/]+$/;
   function build3dDevice() {
     try { return localStorage.getItem("birge.device_id"); } catch { return null; }  // ключ R05/R06 (голос «За/Против»)
   }
-  async function build3dFetch(url, init = {}) {
+  function build3dFetch(url, init = {}) {
     const target = new URL(url, location.href);
     let method = String(init.method || "GET").toUpperCase(), body = init.body;
     if (method === "GET" && B3D_PROPOSALS.test(target.pathname) && !target.searchParams.has("device_id")) {
@@ -426,28 +434,10 @@
       if (device) target.searchParams.set("device_id", device);  // R06 вернёт my_vote этого устройства
     } else if (method === "DELETE" && B3D_ONE.test(target.pathname)) {
       method = "POST"; target.pathname += "/withdraw"; body = "{}";
-    } else if (method === "POST" && B3D_PROPOSALS.test(target.pathname) && typeof body === "string") {
-      try {
-        const draft = JSON.parse(body), out = {};
-        for (const key of B3D_CREATE_FIELDS) if (draft[key] !== undefined && draft[key] !== null) out[key] = draft[key];
-        if (out.planned_year === undefined && Number.isInteger(draft.year)) out.planned_year = draft.year;
-        body = JSON.stringify(out);
-      } catch { /* не JSON — пусть ответит сервер */ }
     }
     const headers = new Headers(init.headers || {});
     if (body !== undefined) headers.set("Content-Type", "application/json");
-    const response = await birgeFetch(target.toString(), { ...init, method, body, headers });
-    const text = await response.text();
-    let data;
-    try { data = text ? JSON.parse(text) : null; } catch { data = undefined; }
-    if (data && typeof data === "object") {
-      const withYear = (p) => (p && typeof p === "object" && p.year == null && Number.isInteger(p.planned_year) ? { ...p, year: p.planned_year } : p);
-      if (data.item && !data.proposal) data.proposal = data.item;
-      if (data.proposal) data.proposal = withYear(data.proposal);
-      if (Array.isArray(data.items)) data.items = data.items.map(withYear);
-    }
-    return new Response(data === undefined ? text : (data === null ? "" : JSON.stringify(data)),
-      { status: response.status, statusText: response.statusText, headers: { "Content-Type": "application/json" } });
+    return birgeFetch(target.toString(), { ...init, method, body, headers });
   }
   function mountBuild3d() {
     const lib = window.CivicBuild3D, core = window.CivicBuild3DCore, m = currentMap();
@@ -478,8 +468,8 @@
     if (!m || !S.mounted.heat) return false;
     let id = m[2];
     try { id = decodeURIComponent(id); } catch { /* как есть */ }
-    if (m[3]) S.mounted.heat.setFilters?.({ days: Number(m[3]) });
-    S.mounted.heat.focusTarget?.(m[1], id);
+    // Период — в том же вызове (R07 >= 306074b): один запрос вместо «фильтр, затем цель».
+    S.mounted.heat.focusTarget?.(m[1], id, m[3] ? { days: Number(m[3]) } : undefined);
     return true;
   }
   function remountAll() {
@@ -1017,8 +1007,7 @@
     if (!target?.kind || !target?.id || S.mode !== "civic" || !S.mounted.heat) return;
     event.preventDefault();
     window.BirgeShell?.setSection?.("map");
-    if (event.detail.days) S.mounted.heat.setFilters?.({ days: Number(event.detail.days) });
-    S.mounted.heat.focusTarget?.(target.kind, target.id);
+    S.mounted.heat.focusTarget?.(target.kind, target.id, event.detail.days ? { days: Number(event.detail.days) } : undefined);
   });
   document.addEventListener("birge:mode", (event) => {
     S.mounted.heat?.setRole?.(event.detail?.mode);

@@ -12,11 +12,13 @@
   POST /objects/{id}/stage               то же (шлюз R01 сейчас не принимает PUT)
   GET  /staff/objects/{id}/stage         сотрудник: этап черновика, stage_revision, служебная история
   GET  /proposals?status&bbox&district&device_id
-  POST /proposals                        сотрудник: {kind, geometry, title_ru?, title_kk?, rotation_deg?, planned_year?, demo?}
+  POST /proposals                        сотрудник: {kind, geometry, title_ru?, title_kk?, rotation_deg?, planned_year?|year?,
+                                         near_street?, target?, demo?}; с id снятого предложения — вернуть его (голоса целы)
   GET  /proposals/summary?since          для R08
   GET  /proposals/{id}?device_id
   POST /proposals/{id}/vote              житель: {value: 1|-1, device_id}
   POST /proposals/{id}/approve|reject|withdraw   сотрудник: {reason?}
+  DELETE /proposals/{id}                 сотрудник: то же, что withdraw («Удалить» в 3D R05); 200 {withdrawn}
   GET  /meta                             перечисления (этапы, виды, районы, порог устаревания)
 
 Права: чтение и голос — публичные (только адрес этого сервера; голос — без чужого Origin);
@@ -145,7 +147,8 @@ class CivicV2:
         if s == ["proposals", "summary"]:
             return {"GET": (self._proposals_summary, ())}
         if n == 2 and s[0] == "proposals":
-            return {"GET": (self._proposal, (s[1],))}
+            # DELETE — «Удалить» в 3D R05: снять предложение (строка и голоса остаются, в списках не видно).
+            return {"GET": (self._proposal, (s[1],)), "DELETE": (self._delete_proposal, (s[1],))}
         if n == 3 and s[0] == "proposals" and s[2] == "vote":
             return {"POST": (self._vote, (s[1],))}
         if n == 3 and s[0] == "proposals" and s[2] in DECISIONS:
@@ -221,6 +224,12 @@ class CivicV2:
             raise BadRequest("Недопустимый ID предложения.", {"id": "Пустой или недопустимый ID."})
         client = str(context.get("client_ip") or "unknown")
         return ok(self.proposals.vote(proposal_id, payload, client_key=client))
+
+    def _delete_proposal(self, context, params, payload, proposal_id):
+        principal, denied = self.service.require_staff(context, unsafe=True)
+        if denied:
+            return denied
+        return ok(self.proposals.decide(principal.actor(), proposal_id, "withdraw", {}))
 
     def _decide(self, context, params, payload, proposal_id, action):
         principal, denied = self.service.require_staff(context, unsafe=True)
@@ -338,6 +347,38 @@ def set_object_stage(object_id, body, context=None, principal=None):
 def get_object_stage(object_id, context=None, principal=None):
     _actor(context)
     return _run(_v2().stages.get_staff, object_id)
+
+
+def delete_proposal(proposal_id, context=None, principal=None):
+    """DELETE /proposals/{id} (R05 «Удалить») — снять предложение. Ответ 200 {withdrawn: id}."""
+    return _run(_v2().proposals.decide, _actor(context), proposal_id, "withdraw", {})
+
+
+# --- для «Картины дня» R08: ищет в пакете ui.civic_store функции akim_objects / akim_proposals -----------------
+
+def akim_objects(district=None):
+    """Опубликованные объекты в виде, который ждёт R08 (CONTRACT §7): список словарей.
+
+    Не связан с хранилищем (нет bind) — исключение V2Error 503: R08 его ловит и пишет «не подключено».
+    """
+    data = _run(_v2().stages.list_public, _query(None, district))
+    out = []
+    for item in data["items"]:
+        out.append({"id": item["id"], "kind": item["kind"], "title_ru": item["title"], "title_kk": item.get("title_kk"),
+                    "district": item["district"], "stage": item["stage"], "planned_end": item["planned_end"],
+                    "forecast_end": item["forecast_end"], "delay_days": item["delay_days"] or 0,
+                    "late": item["late"], "stale": item["stale"], "stale_days": item["stale_days"],
+                    "updated_at": item["last_update_at"], "demo": item["demo"], "geometry": item["geometry"],
+                    "geometry_precision": item["geometry_precision"]})
+    return out
+
+
+def akim_proposals(district=None):
+    """Предложения для R08: id, kind, title_ru, title_kk, district, status, created_at, votes_up, votes_down, demo."""
+    data = _run(_v2().proposals.list, _query(None, district))
+    keys = ("id", "kind", "title_ru", "title_kk", "district", "status", "created_at", "votes_up", "votes_down",
+            "demo", "year", "geometry")
+    return [{k: p[k] for k in keys} for p in data["items"]]
 
 
 def lagging_objects(district=None):

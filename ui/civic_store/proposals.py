@@ -38,10 +38,16 @@ DEFAULT_TITLES = {
     "stop": ("Остановка", "Аялдама"),
     "lighting": ("Освещение улицы", "Көше жарығы"),
 }
-DEVICE_RE = re.compile(r"^[A-Za-z0-9_-]{16,128}\Z")
+DEVICE_RE = re.compile(r"^[A-Za-z0-9._:-]{8,128}\Z")  # как V2_DEVICE_ID шлюза R01
 MAX_TITLE = 200
 MAX_REASON = 500
 MAX_PROPOSALS = 500
+MAX_OPEN_PER_DISTRICT = 20  # открытых проектов на район (как лимит сцены R05: до 20 объектов) → 409 limit
+TARGET_KINDS = ("object", "segment", "area")
+TARGET_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")
+# Поля, которые назначает сервер: клиент R05 присылает их обратно при «Отменить» после «Удалить» — не ошибка.
+SERVER_KEYS = frozenset({"id", "votes_up", "votes_down", "my_vote", "voting_open", "created_at", "updated_at",
+                         "decided_at", "district", "proposal", "item"})
 VOTES_PER_MINUTE = 30  # с одного адреса; защита сервера от залипшей кнопки и скриптов
 
 
@@ -111,6 +117,8 @@ class ProposalRepository:
             "status": row["status"], "district": row["district"], "planned_year": row["planned_year"],
             "votes_up": up, "votes_down": down, "my_vote": my_vote,
             "voting_open": row["status"] == "proposal", "demo": bool(row["demo"]),
+            "year": row["planned_year"],  # имя поля у R05 (табличка «Проект · 2027»)
+            "near_street": row["near_street"], "target": _loads(row["target_json"]),
             "created_at": row["created_at"], "updated_at": row["updated_at"], "decided_at": row["decided_at"],
         }
 
@@ -170,13 +178,46 @@ class ProposalRepository:
 
     # --- запись --------------------------------------------------------------------------
 
+    @staticmethod
+    def _clean_target(value, errors):
+        """Цель CONTRACT §4 от R05: {kind, id, ids?, label_ru?, label_kk?} или null."""
+        if value is None:
+            return None
+        if not isinstance(value, dict) or value.get("kind") not in TARGET_KINDS \
+                or not isinstance(value.get("id"), str) or not TARGET_ID_RE.match(value["id"]):
+            errors.add("target", "Цель: {kind: object|segment|area, id} или null.")
+            return None
+        unknown = set(value) - {"kind", "id", "ids", "label_ru", "label_kk"}
+        if unknown:
+            errors.add("target", "Цель: допустимы kind, id, ids, label_ru, label_kk.")
+            return None
+        out = {"kind": value["kind"], "id": value["id"]}
+        ids = value.get("ids")
+        if ids is not None:
+            if not isinstance(ids, list) or len(ids) > 200 or not all(isinstance(i, str) and TARGET_ID_RE.match(i) for i in ids):
+                errors.add("target.ids", "Список id рёбер (до 200).")
+            else:
+                out["ids"] = ids
+        for key in ("label_ru", "label_kk"):
+            text = clean_text(value.get(key), f"target.{key}", errors, max_len=MAX_TITLE, nullable=True)
+            if text:
+                out[key] = text
+        return out
+
     def create(self, actor, payload: dict) -> dict:
+        """Новое предложение (акимат, 3D R05). Вернуть удалённое («Отменить» после «Удалить») — тот же вызов
+        с id снятого предложения: оно возвращается со своими голосами, новое не создаётся."""
         errors = _Errors()
-        allowed = {"kind", "geometry", "title_ru", "title_kk", "rotation_deg", "planned_year", "demo"}
-        unknown = sorted(set(payload) - allowed)
+        allowed = {"kind", "geometry", "title_ru", "title_kk", "rotation_deg", "planned_year", "year", "demo",
+                   "status", "near_street", "target"}
+        unknown = sorted(set(payload) - allowed - SERVER_KEYS)
         if unknown:
             errors.add(unknown[0] if isinstance(unknown[0], str) and len(unknown[0]) <= 64 else "body",
                        "Неизвестное поле.")
+        ignored = sorted(k for k in payload if k in SERVER_KEYS)
+        status = payload.get("status", "proposal")
+        if status != "proposal":
+            errors.add("status", "Новое предложение всегда со статусом proposal (решение — approve/reject).")
         kind = payload.get("kind")
         if kind not in KINDS:
             errors.add("kind", "Выберите объект: " + ", ".join(KINDS) + ".")
@@ -192,33 +233,64 @@ class ProposalRepository:
         default_ru, default_kk = DEFAULT_TITLES.get(kind, (None, None))
         title_ru = clean_text(payload.get("title_ru"), "title_ru", errors, max_len=MAX_TITLE, nullable=True)
         title_kk = clean_text(payload.get("title_kk"), "title_kk", errors, max_len=MAX_TITLE, nullable=True)
+        near_street = clean_text(payload.get("near_street"), "near_street", errors, max_len=MAX_TITLE, nullable=True)
+        target = self._clean_target(payload.get("target"), errors)
         rotation = payload.get("rotation_deg", 0)
         if isinstance(rotation, bool) or not isinstance(rotation, (int, float)) or rotation != rotation \
                 or not -360 <= rotation <= 360:
             errors.add("rotation_deg", "Число от −360 до 360.")
-        year = payload.get("planned_year")
+        year = payload.get("planned_year", payload.get("year"))
+        year_field = "planned_year" if "planned_year" in payload else "year"
         if year is not None and (isinstance(year, bool) or not isinstance(year, int) or not 2025 <= year <= 2040):
-            errors.add("planned_year", "Год 2025–2040 или пусто.")
+            errors.add(year_field, "Год 2025–2040 или пусто.")
         demo = payload.get("demo", False)
         if not isinstance(demo, bool):
             errors.add("demo", "true или false.")
         if errors.fields:
             raise ValidationError(errors.fields)
         now = iso(utc_now(self.clock))
-        proposal_id = "p-" + secrets.token_hex(6)
+        district = district_of(geometry)  # район считает сервер по полигонам OSM; присланный клиентом — подсказка
         with self.db.write() as conn:
+            restored = self._restore(conn, actor, payload.get("id"), kind, now)
+            if restored is not None:
+                return {"item": restored, "proposal": restored, "restored": True, "ignored_fields": ignored}
+            if district is not None:
+                open_count = conn.execute("SELECT COUNT(*) FROM civic_proposals WHERE status = 'proposal' AND district = ?",
+                                          (district,)).fetchone()[0]
+                if open_count >= MAX_OPEN_PER_DISTRICT:
+                    raise Conflict(f"В районе уже {MAX_OPEN_PER_DISTRICT} открытых проектов: решите по одному из них.",
+                                   None, code="limit")
+            proposal_id = "p-" + secrets.token_hex(6)
             conn.execute(
                 """INSERT INTO civic_proposals(id, kind, geometry_json, rotation_deg, title_ru, title_kk, status,
-                       district, planned_year, demo, created_at, updated_at, created_by)
-                   VALUES (?, ?, ?, ?, ?, ?, 'proposal', ?, ?, ?, ?, ?, ?)""",
+                       district, planned_year, demo, created_at, updated_at, created_by, near_street, target_json)
+                   VALUES (?, ?, ?, ?, ?, ?, 'proposal', ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (proposal_id, kind, _dumps(geometry), float(rotation) % 360, title_ru or default_ru,
-                 title_kk if title_kk else (default_kk if not title_ru else None), district_of(geometry), year,
-                 int(demo), now, now, actor.user_id))
+                 title_kk if title_kk else (default_kk if not title_ru else None), district, year,
+                 int(demo), now, now, actor.user_id, near_street, _dumps(target) if target else None))
             conn.execute(
                 """INSERT INTO civic_proposal_history(proposal_id, at, action, status, reason, actor_user_id,
                        actor_label) VALUES (?, ?, 'create', 'proposal', '', ?, ?)""",
                 (proposal_id, now, actor.user_id, actor.label))
-            return {"item": self._dto(conn, self._row(conn, proposal_id))}
+            item = self._dto(conn, self._row(conn, proposal_id))
+            return {"item": item, "proposal": item, "restored": False, "ignored_fields": ignored}
+
+    def _restore(self, conn, actor, proposal_id, kind, now):
+        """Снятое предложение с тем же id и видом → снова proposal (голоса сохранены). Иначе None."""
+        if not isinstance(proposal_id, str) or not is_valid_id(proposal_id):
+            return None
+        row = conn.execute("SELECT * FROM civic_proposals WHERE id = ?", (proposal_id,)).fetchone()
+        if row is None or row["status"] != "withdrawn" or row["kind"] != kind:
+            return None
+        conn.execute("""UPDATE civic_proposals SET status = 'proposal', updated_at = ?, decided_at = NULL,
+                            decided_by = NULL, decision_reason = '' WHERE id = ? AND status = 'withdrawn'""",
+                     (now, proposal_id))
+        # В истории — «create» с причиной: CHECK миграции 6 не знает действия restore, а историю не переписываем.
+        conn.execute(
+            """INSERT INTO civic_proposal_history(proposal_id, at, action, status, reason, actor_user_id, actor_label)
+               VALUES (?, ?, 'create', 'proposal', 'Возвращено после «Удалить» (Отменить)', ?, ?)""",
+            (proposal_id, now, actor.user_id, actor.label))
+        return self._dto(conn, self._row(conn, proposal_id))
 
     def vote(self, proposal_id, payload: dict, *, client_key: str) -> dict:
         """Голос жителя. value 1 | -1. Тот же голос ещё раз — без изменений (changed=false)."""
@@ -228,7 +300,7 @@ class ProposalRepository:
             errors.add("value", "1 (за) или -1 (против).")
         device_id = payload.get("device_id")
         if not isinstance(device_id, str) or not DEVICE_RE.match(device_id):
-            errors.add("device_id", "Случайный идентификатор устройства: 16–128 символов [A-Za-z0-9_-].")
+            errors.add("device_id", "Случайный идентификатор устройства: 8–128 символов [A-Za-z0-9._:-].")
         unknown = sorted(set(payload) - {"value", "device_id"})
         if unknown:
             errors.add(unknown[0] if isinstance(unknown[0], str) and len(unknown[0]) <= 64 else "body",
@@ -253,7 +325,7 @@ class ProposalRepository:
                 conn.execute("UPDATE civic_votes SET value = ?, updated_at = ? WHERE proposal_id = ? AND device_hash = ?",
                              (value, now, proposal_id, device))
             item = self._dto(conn, row, device)
-        return {"item": item, "changed": changed, "previous": current["value"] if current else None}
+        return {"item": item, "proposal": item, "changed": changed, "previous": current["value"] if current else None}
 
     def decide(self, actor, proposal_id, action, payload: dict) -> dict:
         """Одобрить / отклонить / снять (R05 «Удалить»). Только из статуса proposal."""
@@ -283,7 +355,8 @@ class ProposalRepository:
                 (proposal_id, now, action, status, reason or "", actor.user_id, actor.label))
             if status == "withdrawn":
                 return {"item": None, "withdrawn": proposal_id}
-            return {"item": self._dto(conn, self._row(conn, proposal_id))}
+            item = self._dto(conn, self._row(conn, proposal_id))
+            return {"item": item, "proposal": item}
 
 
 class _VoteRateLimited(Exception):

@@ -28,6 +28,9 @@
         justify-content: space-between;
         gap: var(--s-3);
       }
+      .r06-demo__sub {
+        margin: var(--s-5) 0 var(--s-3);
+      }
       .r06-demo__grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
@@ -49,7 +52,7 @@
       </section>
       <section>
         <h2 class="bk-h2" data-i18n="akim.late.title"></h2>
-        <div class="r06-demo__grid" id="objects"></div>
+        <div id="objects"></div>
       </section>
     </main>
     <script src="/civic/i18n/i18n.js"></script>
@@ -92,33 +95,60 @@
           P.api.objects().then(
             function (data) {
               objects.innerHTML = "";
-              data.items.forEach(function (o) {
-                var card = cell(objects);
-                var objEl = document.createElement("div");
-                card.appendChild(objEl);
-                P.renderObject(objEl, o);
-                // Акимат: под карточкой — блок «Этап работ», как он встанет в редактор R12.
-                if (role === "akimat") {
-                  var editor = document.createElement("div");
-                  editor.style.marginTop = "var(--s-3)";
-                  card.appendChild(editor);
-                  window.BirgeStageEditor.mount(editor, {
-                    objectId: o.id,
-                    onSaved: function () {
-                      P.api.object(o.id).then(function (d) {
-                        P.renderObject(objEl, d.item);
-                      });
-                    },
-                  });
-                }
-              });
-              // Состояния «нет такого объекта» и «нет связи» — тоже на стенде.
-              P.mountObject(cell(objects), "no-such-object");
+              // UX_REVIEW R11, день 3, п. 17 — как у R08: сначала отстающие от графика, ниже подраздел
+              // «Давно не обновлялись» только с теми, кто не отстаёт (без повторов). Работающие не показываем.
+              var active = data.items.filter(function (o) { return o.stage !== "operating"; });
+              var late = active.filter(function (o) { return o.late; });
+              var staleOnly = active.filter(function (o) { return o.stale && !o.late; });
+              var lateGrid = document.createElement("div");
+              lateGrid.className = "r06-demo__grid";
+              lateGrid.setAttribute("data-group", "late");
+              objects.appendChild(lateGrid);
+              if (!late.length) window.BirgeUI.state(lateGrid, "empty", { title: window.BirgeI18n.t("akim.late.empty") });
+              late.forEach(function (o) { objectCard(lateGrid, o); });
+              if (staleOnly.length) {
+                var h = document.createElement("h3");
+                h.className = "bk-h2 r06-demo__sub";
+                h.setAttribute("data-i18n", "akim.late.stale_title");
+                objects.appendChild(h);
+                var staleGrid = document.createElement("div");
+                staleGrid.className = "r06-demo__grid";
+                staleGrid.setAttribute("data-group", "stale");
+                objects.appendChild(staleGrid);
+                staleOnly.forEach(function (o) { objectCard(staleGrid, o); });
+              }
+              window.BirgeI18n.apply(objects);
+              // Состояние «нет такого объекта» — тоже на стенде.
+              var missing = document.createElement("div");
+              missing.className = "r06-demo__grid";
+              objects.appendChild(missing);
+              P.mountObject(cell(missing), "no-such-object");
             },
             function () {
               window.BirgeUI.state(objects, "error", { action: { onClick: load } });
             }
           );
+        }
+
+        function objectCard(grid, o) {
+          var card = cell(grid);
+          var objEl = document.createElement("div");
+          card.appendChild(objEl);
+          P.renderObject(objEl, o);
+          // Акимат: под карточкой — блок «Этап работ», как он встанет в редактор R12.
+          if (role === "akimat") {
+            var editor = document.createElement("div");
+            editor.style.marginTop = "var(--s-3)";
+            card.appendChild(editor);
+            window.BirgeStageEditor.mount(editor, {
+              objectId: o.id,
+              onSaved: function () {
+                P.api.object(o.id).then(function (d) {
+                  P.renderObject(objEl, d.item);
+                });
+              },
+            });
+          }
         }
         window.BirgeI18n.ready.then(load);
       })();

@@ -40,6 +40,14 @@ STATUS_TO_STAGE = {"planned": "planned", "in_progress": "construction", "complet
 STALE_DAYS = 14
 MAX_REASON = 500
 MAX_OBJECTS = 1000  # публичный список: Астана — сотни объектов, не десятки тысяч
+# Казахские названия СИНТЕТИЧЕСКИХ демо-записей (seed-demo R02 и demo_package.json R06; просьба R08, день 3).
+# Настоящие записи civic-v1 одноязычные: у них title_kk = None, интерфейс показывает title с lang="ru".
+# Черновик R06 — на вычитку R11.
+DEMO_TITLES_KK = {
+    "demo-r02-sidewalk-delay": "Тротуарды жөндеу",
+    "demo-r02-yard-landscaping": "Ауланы абаттандыру",
+    "demo-r02-event-no-geometry": "Нақты орны көрсетілмеген қалалық іс-шара",
+}
 
 
 def _date(value):
@@ -165,6 +173,8 @@ class StageRepository:
             current_planned_end=moved, actual_end=schedule.get("actual_end"),
             last_update=last.astimezone(ASTANA_TZ).date() if last else None, today=today)
         district = district_of(public_item.get("geometry"))
+        # demo: синтетическая запись (evidence_type synthetic) — интерфейс помечает «Пример».
+        demo = public_item.get("evidence_type") == "synthetic"
         return {
             **public_item,
             **life,
@@ -172,8 +182,8 @@ class StageRepository:
             "stage_updated_at": stage_updated,
             "last_update_at": iso(last) if last else None,
             "district": district,
-            # demo: синтетическая запись (evidence_type synthetic) — интерфейс помечает «Пример».
-            "demo": public_item.get("evidence_type") == "synthetic",
+            "demo": demo,
+            "title_kk": DEMO_TITLES_KK.get(public_item.get("id")) if demo else None,
         }
 
     def list_public(self, query: dict) -> dict:
@@ -346,8 +356,8 @@ class StageRepository:
         data = self.list_public(query)
 
         def brief(item):
-            return {"id": item["id"], "title": item["title"], "kind": item["kind"], "district": item["district"],
-                    "stage": item["stage"], "planned_end": item["planned_end"],
+            return {"id": item["id"], "title": item["title"], "title_kk": item["title_kk"], "kind": item["kind"],
+                    "district": item["district"], "stage": item["stage"], "planned_end": item["planned_end"],
                     "forecast_end": item["forecast_end"], "delay_days": item["delay_days"],
                     "stale_days": item["stale_days"], "late": item["late"], "stale": item["stale"],
                     "demo": item["demo"], "geometry": item["geometry"]}

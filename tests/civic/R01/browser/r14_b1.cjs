@@ -138,7 +138,8 @@ async function main() {
     check("«Картина дня» opens inside Birge and counts today's complaints (incl. the new one)", day.api >= 1 && /Картина дня/.test(day.text), day);
     await page.screenshot({ path: path.join(OUT, "03_day_1366.png") });
     await page.click("#birge-day .akim-hot__item");
-    await page.waitForTimeout(800);
+    // R07 >= 306074b сначала плавно ведёт камеру к цели (до ~1,2 с), потом выбирает её — ждём выбор, а не паузу.
+    await page.waitForFunction(() => !!window.CivicShell.heat?.state?.().selected, null, { timeout: 8000 }).catch(() => {});
     const opened = await page.evaluate(() => ({ section: document.body.dataset.birgeSection, selected: window.CivicShell.heat.state().selected, hash: location.hash }));
     check("hot place in «Картина дня» opens its target on the map (no page reload)", opened.section === "map" && !!opened.selected, opened);
     await page.screenshot({ path: path.join(OUT, "04_hot_target_1366.png") });

@@ -144,7 +144,8 @@ def test_seed_demo_publishes_only_synthetic_with_visible_history(service):
     assert report["source"] == "r02-demo"
     items = call(service, "GET", "/objects")["body"]["data"]["items"]
     assert len(items) == 3
-    assert all(item["evidence_type"] == "synthetic" and "синтетика" in item["title"] for item in items)
+    # R06 раунд 14 (UX_REVIEW R11, день 3, п. 15): «синтетика» — в типе данных и описании, не в названии.
+    assert all(item["evidence_type"] == "synthetic" and "интетическ" in item["description"] for item in items)
     assert all(item["budget"]["amount_kzt"] is None for item in items)
     delayed = call(service, "GET", "/objects/demo-r02-sidewalk-delay")["body"]["data"]
     assert delayed["item"]["schedule"]["original_planned_end"] == "2026-10-20"

@@ -19,7 +19,8 @@
   const VERSION = "r07-round14-1";
   const NBSP = " ";
   const ANIM_MS = 800;           // перетекание цвета при новой жалобе (UX_BRIEF: ~0.8 с)
-  const BADGE_W = 64, BADGE_H = 40;
+  const BADGE_W = 64, BADGE_H = 40;   // полный значок: кружок с иконкой + число
+  const MINI_W = 34, MINI_H = 26;     // маленькая плашка с числом, когда полному значку тесно
   const DISTRICT_ZOOM = 12;      // меньше — районы (CONTRACT §6); сервер присылает то же значение в meta
 
   // ---------- Тексты ru / kk ----------
@@ -30,8 +31,8 @@
       "heat.title": "Карта жалоб",
       "heat.subtitle": "Где жители сообщают о проблемах",
       "heat.top_line": "Больше всего жалоб: {target} · {people}",
-      "heat.demo_note": "Демо-данные: жалобы придуманы, улицы и остановки настоящие (OpenStreetMap).",
-      "heat.demo_tag": "Демо",
+      "heat.demo_note": "Примеры: жалобы придуманы, улицы и остановки настоящие (OpenStreetMap).",
+      "heat.demo_tag": "Пример",
       "heat.filters": "Фильтры",
       "heat.category_all": "Все категории",
       "heat.period": "Период",
@@ -47,7 +48,7 @@
       "heat.reported": { one: "Сообщил {count} человек", few: "Сообщили {count} человека", many: "Сообщили {count} человек" },
       "heat.reported_fixed": { one: "Сообщал {count} человек", few: "Сообщали {count} человека", many: "Сообщали {count} человек" },
       "heat.for_days": { one: "за {count} день", few: "за {count} дня", many: "за {count} дней" },
-      "heat.level_word.1": "Немного жалоб", "heat.level_word.2": "Заметно", "heat.level_word.3": "Много жалоб", "heat.level_word.4": "Очень много жалоб",
+      "heat.level_word.1": "Немного жалоб", "heat.level_word.2": "Несколько жалоб", "heat.level_word.3": "Много жалоб", "heat.level_word.4": "Очень много жалоб",
       "heat.fixed_word": "Исправлено",
       "heat.fixed_until": "На карте зелёным до {date}",
       "heat.chart": "Жалобы по дням",
@@ -70,9 +71,18 @@
       "heat.action_failed": "Не получилось сохранить. Проверьте связь и попробуйте ещё раз",
       "heat.back": "Горячие места",
       "heat.close": "Закрыть",
-      "heat.loading": "Загружаем карту жалоб…",
-      "heat.empty_title": "Жалоб нет",
-      "heat.empty_hint": "Здесь жалоб нет {period}. Измените период или район.",
+      "heat.loading": "Загружаем жалобы…",
+      // Пустой фильтр (UX_REVIEW R11, день 3, №8) — ключи и тексты из общего словаря R11
+      "heat.empty.title": { one: "За {n} день жалоб нет", few: "За {n} дня жалоб нет", many: "За {n} дней жалоб нет" },
+      "heat.empty.hint": "Попробуйте период побольше",
+      "heat.empty.hint_filters": "Попробуйте другой период или сбросьте фильтры",
+      "heat.empty.show_days": { one: "Показать {n} день", few: "Показать {n} дня", many: "Показать {n} дней" },
+      "heat.filter.reset": "Сбросить фильтры",
+      // «Что пишут жители» (№4): тексты только у примеров или для сотрудника после входа
+      "heat.texts.title": "Что пишут жители",
+      "heat.texts.people": { one: "{count} человек", few: "{count} человека", many: "{count} человек" },
+      "heat.texts.staff_only": "Тексты жителей видны сотрудникам после входа",
+      "heat.texts.none": "Текстов пока нет",
       "heat.error_title": "Нет связи с сервером",
       "heat.error_hint": "Проверьте интернет и нажмите «Повторить».",
       "heat.not_ready": "Тепловая карта ещё не подключена к серверу",
@@ -91,14 +101,14 @@
       "heat.title": "Шағымдар картасы",
       "heat.subtitle": "Тұрғындар қай жерде мәселе туралы хабарлайды",
       "heat.top_line": "Ең көп шағым: {target} · {people}",
-      "heat.demo_note": "Демо-деректер: шағымдар ойдан жасалған, көшелер мен аялдамалар нақты (OpenStreetMap).",
-      "heat.demo_tag": "Демо",
+      "heat.demo_note": "Мысалдар: шағымдар ойдан құрастырылған, көшелер мен аялдамалар нақты (OpenStreetMap).",
+      "heat.demo_tag": "Үлгі",
       "heat.filters": "Сүзгілер",
-      "heat.category_all": "Барлық санат",
+      "heat.category_all": "Барлық санаттар",
       "heat.period": "Кезең",
       "heat.days": { other: "{count} күн" },
       "heat.district": "Аудан",
-      "heat.district_all": "Барлық аудан",
+      "heat.district_all": "Барлық аудандар",
       "heat.reset": "Тазарту",
       "heat.legend": "Қанша адам хабарлады",
       "heat.legend_hint": "Жаңа шағымдар ашығырақ: 2 аптада шағымның салмағы екі есе азаяды.",
@@ -108,9 +118,9 @@
       "heat.reported": { other: "{count} адам хабарлады" },
       "heat.reported_fixed": { other: "{count} адам хабарлаған" },
       "heat.for_days": { other: "соңғы {count} күнде" },
-      "heat.level_word.1": "Шағым аз", "heat.level_word.2": "Шағым бар", "heat.level_word.3": "Шағым көп", "heat.level_word.4": "Шағым өте көп",
+      "heat.level_word.1": "Шағым аз", "heat.level_word.2": "Бірнеше шағым", "heat.level_word.3": "Шағым көп", "heat.level_word.4": "Шағым өте көп",
       "heat.fixed_word": "Түзетілді",
-      "heat.fixed_until": "Картада жасыл түспен көрсетіледі (соңғы күні: {date})",
+      "heat.fixed_until": "Жасыл түспен көрсетілу мерзімі: {date}",
       "heat.chart": "Күндер бойынша шағымдар",
       "heat.chart_from": "14 күн бұрын",
       "heat.chart_to": "бүгін",
@@ -123,22 +133,29 @@
       "heat.mark_fixed": "Түзетілді деп белгілеу",
       "heat.metoo": "Мен де",
       "heat.metoo_done": { other: "Сіз бізбен біргесіз. {count} адам хабарлады" },
-      "heat.metoo_already": "Сіз белгі қойдыңыз",
+      "heat.metoo_already": "Сіз бұған дейін белгі қойғансыз",
       "heat.toast_taken": "Жұмысқа алынды",
       "heat.toast_fixed": "Түзетілді деп белгіленді",
-      "heat.toast_metoo": "Рақмет. Даусыңыз есептелді",
+      "heat.toast_metoo": "Рақмет. Дауысыңыз есепке алынды",
       "heat.toast_new": "Жаңа шағым: {target}",
       "heat.action_failed": "Сақталмады. Байланысты тексеріп, қайталап көріңіз",
       "heat.back": "Шағымы көп орындар",
       "heat.close": "Жабу",
-      "heat.loading": "Шағымдар картасы жүктеліп жатыр…",
-      "heat.empty_title": "Шағым жоқ",
-      "heat.empty_hint": "Бұл жерде {period} шағым түспеген. Кезеңді немесе ауданды өзгертіңіз.",
+      "heat.loading": "Шағымдар жүктеліп жатыр…",
+      "heat.empty.title": { other: "Соңғы {n} күнде шағым жоқ" },
+      "heat.empty.hint": "Ұзағырақ кезеңді таңдап көріңіз",
+      "heat.empty.hint_filters": "Басқа кезеңді таңдаңыз немесе сүзгілерді тазартыңыз",
+      "heat.empty.show_days": { other: "Соңғы {n} күнді көрсету" },
+      "heat.filter.reset": "Сүзгілерді тазарту",
+      "heat.texts.title": "Тұрғындар не жазады",
+      "heat.texts.people": { other: "{count} адам" },
+      "heat.texts.staff_only": "Тұрғындардың мәтіндерін қызметкерлер кіргеннен кейін көреді",
+      "heat.texts.none": "Әзірге мәтін жоқ",
       "heat.error_title": "Сервермен байланыс жоқ",
       "heat.error_hint": "Интернетті тексеріп, «Қайталау» түймесін басыңыз.",
       "heat.not_ready": "Шағымдар картасы серверге әлі қосылмаған",
       "heat.retry": "Қайталау",
-      "heat.zoom_hint": "Көшелерді, аулалар мен аялдамаларды көру үшін картаны жақындатыңыз",
+      "heat.zoom_hint": "Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз",
       "heat.badge_label": "{target}: {reported}",
       "heat.open_on_map": "Картадан көрсету",
       "heat.district_targets": { other: "{count} орында шағым бар" },
@@ -170,6 +187,7 @@
     parking: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M10 17V7h3a3 3 0 0 1 0 6h-3"/>',
     dots: '<circle cx="5.5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18.5" cy="12" r="1.6" fill="currentColor"/>',
     check: '<path d="m5 12.5 4.5 4.5L19 7"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
     playground: '<path d="M3 21 7 4h10l4 17M10 4v9M14 4v9M9 13h6"/>',
     ball: '<circle cx="12" cy="12" r="9"/><path d="m12 7.5 3.8 2.8-1.5 4.4H9.7l-1.5-4.4zM12 3v4.5M15.8 10.3l4.6-1.6M14.3 14.7l2.8 3.6M9.7 14.7l-2.8 3.6M8.2 10.3 3.6 8.7"/>',
     back: '<path d="M15 5l-7 7 7 7"/>',
@@ -224,13 +242,60 @@
     return "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
   }
   function keyOf(target) { return target.kind + ":" + target.id; }
+  function inRing(pt, ring) {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [xi, yi] = ring[i], [xj, yj] = ring[j];
+      if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < ((xj - xi) * (pt[1] - yi)) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  }
+  // Точка на линии на доле frac её длины (для коротких участков улиц плоские координаты точны достаточно).
+  function alongLine(coords, frac) {
+    const kx = Math.cos((coords[0][1] * Math.PI) / 180);
+    const seg = [];
+    let total = 0;
+    for (let i = 0; i < coords.length - 1; i++) {
+      const d = Math.hypot((coords[i + 1][0] - coords[i][0]) * kx, coords[i + 1][1] - coords[i][1]);
+      seg.push(d);
+      total += d;
+    }
+    let need = total * frac;
+    for (let i = 0; i < seg.length; i++) {
+      if (need <= seg[i] && seg[i] > 0) {
+        const f = need / seg[i];
+        return [coords[i][0] + (coords[i + 1][0] - coords[i][0]) * f, coords[i][1] + (coords[i + 1][1] - coords[i][1]) * f];
+      }
+      need -= seg[i];
+    }
+    return coords[coords.length - 1];
+  }
+  // Id устройства — ТОТ ЖЕ, что у формы жалобы R09 (ключ "birge.device", 16–80 символов [A-Za-z0-9_-]):
+  // «Я тоже» одно на устройство, где бы его ни нажали (просьба R01, INTEGRATION §8). Старый ключ R07 переносим.
+  const DEVICE_KEY = "birge.device";
+  const DEVICE_RE = /^[A-Za-z0-9_-]{16,80}$/;
+  let memoryDevice = null;
+  function randomId(n) {
+    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const buf = new Uint8Array(n);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(buf);
+    else for (let i = 0; i < n; i++) buf[i] = Math.floor(Math.random() * 256);
+    return Array.from(buf, (b) => abc[b % abc.length]).join("");
+  }
   function deviceId() {
-    // Тот же ключ, что у формы жалобы R09: один голос «Я тоже» с устройства.
     try {
-      let id = localStorage.getItem("birge.device_id");
-      if (!id) { id = "dev-" + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem("birge.device_id", id); }
+      let id = localStorage.getItem(DEVICE_KEY);
+      if (!id || !DEVICE_RE.test(id)) {
+        const old = localStorage.getItem("birge.device_id");
+        id = old && DEVICE_RE.test(old) ? old : memoryDevice || "d-" + randomId(24);
+        localStorage.setItem(DEVICE_KEY, id);
+      }
+      memoryDevice = id;
       return id;
-    } catch (e) { return "dev-anon"; }
+    } catch (e) {
+      memoryDevice = memoryDevice || "d-" + randomId(24);
+      return memoryDevice;
+    }
   }
   function metooDone(targetKey) {
     try { return JSON.parse(localStorage.getItem("birge.heat.metoo") || "{}")[targetKey] === true; } catch (e) { return false; }
@@ -262,6 +327,10 @@
       status: "loading",      // loading | ready | error | not_ready
       selected: null,         // ключ выбранной цели
       catsOpen: false,        // раскрыт ли список категорий
+      texts: new Map(),       // «Что пишут жители»: ключ|дни → {status, data}
+      legendEl: null,         // легенда на карте
+      fitted: false,          // карта уже подогнана под горячие места (один раз, до первого касания)
+      pendingSelect: null,    // цель из ссылки / «Картины дня», ждёт загрузки данных
       prevColors: new Map(),  // ключ → цвет до обновления (для плавного перехода)
       markers: new Map(),     // ключ → { marker, el, item }
       anim: null,
@@ -276,7 +345,7 @@
       if (g && typeof g.has === "function" && g.has(key, S.lang)) return g.t(key, p, S.lang);
       let v = (DICT[S.lang] && DICT[S.lang][key]) || DICT.ru[key];
       if (v == null) { console.warn("[heat] нет текста", key); return key; }
-      if (typeof v === "object") v = v[pluralForm(S.lang, Number(p.count))] || v.other || v.many || "";
+      if (typeof v === "object") v = v[pluralForm(S.lang, Number(p.n != null ? p.n : p.count))] || v.other || v.many || "";
       return v.replace(/\{(\w+)\}/g, (w, name) => (name in p ? (typeof p[name] === "number" ? fmtNum(p[name]) : p[name]) : w));
     }
     const label = (target) => (S.lang === "kk" ? target.label_kk || target.label_ru : target.label_ru) || "";
@@ -345,6 +414,7 @@
         if (S.selected && !findItem(S.selected) && S.mode === "targets") S.selected = null;
         draw(reason === "event");
         render();
+        afterLoad();
       } catch (err) {
         if (seq !== S.reqSeq || S.destroyed) return;
         S.status = err.status === 503 ? "not_ready" : "error";
@@ -352,6 +422,102 @@
       }
     }
     function findItem(key) { return S.data ? S.data.items.find((it) => keyOf(it.target) === key) : null; }
+
+    // После каждой загрузки: открыть цель из ссылки / «Картины дня» или один раз подогнать карту.
+    function afterLoad() {
+      if (S.pendingSelect) {
+        const key = S.pendingSelect;
+        if (findItem(key)) { S.pendingSelect = null; select(key, false); return; }
+        if (S.mode === "targets" && !S.pendingMoving) {
+          S.pendingSelect = null;   // за этот период жалоб по цели нет — честно сказать, а не молчать
+          toast(t("heat.empty.title", { n: S.filters.days }));
+        }
+        return;
+      }
+      fitToHot();
+    }
+
+    // Телефон 375: стартовый вид не обрезает значки и не прячет их под шторкой (UX_REVIEW R11, день 3, №5).
+    // Один раз, сразу после первой загрузки и только если пользователь ещё не трогал карту (UX_BRIEF, правило 8).
+    // Берём горячие места рядом с тем, что показала оболочка (не весь город), и подгоняем с отступами
+    // под шапку, шторку/панель и кнопки карты (opts.fitPadding — объект или функция, её даёт оболочка).
+    function fitToHot() {
+      if (!map || opts.fit === false || S.fitted || userMoved.value || !S.data) return;
+      S.fitted = true;
+      const districts = S.mode === "districts";
+      const b = map.getBounds();
+      const cx = (b.getWest() + b.getEast()) / 2, cy = (b.getSouth() + b.getNorth()) / 2;
+      const hw = (b.getEast() - b.getWest()) * 0.8, hh = (b.getNorth() - b.getSouth()) * 0.8;
+      // Мелкий масштаб: все районы с числами; крупный — горячие места рядом с тем, что показала оболочка.
+      const near = districts
+        ? S.data.items.filter((it) => it.anchor && it.count > 0)
+        : S.data.items.filter((it) => it.state === "active" && it.anchor &&
+          Math.abs(it.anchor[0] - cx) <= hw && Math.abs(it.anchor[1] - cy) <= hh).slice(0, 8);
+      if (near.length < 2) return;
+      S.fittedKeys = near.map((it) => keyOf(it.target));
+      let w = 180, s = 90, e = -180, n = -90;
+      near.forEach((it) => { w = Math.min(w, it.anchor[0]); e = Math.max(e, it.anchor[0]); s = Math.min(s, it.anchor[1]); n = Math.max(n, it.anchor[1]); });
+      const padding = Object.assign({ top: 40, bottom: 40, left: 40, right: 40 },
+        typeof opts.fitPadding === "function" ? opts.fitPadding() : opts.fitPadding || {});
+      // Отступ считается до ЯКОРЯ значка, а значок шире точки: добавляем половину значка
+      // (у района с названием — около 70 px) и место под легенду, если она сверху или снизу карты.
+      const halfW = districts ? 72 : BADGE_W / 2, halfH = BADGE_H / 2;
+      padding.left += halfW; padding.right += halfW; padding.top += halfH; padding.bottom += halfH;
+      if (S.legendEl && S.legendEl.isConnected) {
+        const host = map.getContainer().getBoundingClientRect(), lr = S.legendEl.getBoundingClientRect();
+        if (lr.top - host.top < host.height / 3) padding.top = Math.max(padding.top, lr.bottom - host.top + halfH + 8);
+        else if (host.bottom - lr.bottom < host.height / 3 && lr.width > host.width * 0.6) padding.bottom = Math.max(padding.bottom, host.bottom - lr.top + halfH + 8);
+      }
+      const edge = (S.meta && S.meta.district_zoom_max) || DISTRICT_ZOOM;
+      const host = map.getContainer();
+      // отступы больше самой карты — подгонять некуда (очень маленькое окно)
+      if (padding.left + padding.right >= host.clientWidth - 20 || padding.top + padding.bottom >= host.clientHeight - 20) return;
+      // fitBounds сам учитывает несимметричные отступы (шторка снизу, панель справа). Крупный план не уходит
+      // в «районы» и не приближается сильнее, чем показала оболочка; вид районов не приближается до улиц.
+      const maxZoom = districts ? Math.min(map.getZoom(), edge - 0.2) : map.getZoom();
+      try { map.fitBounds([[w, s], [e, n]], { padding, maxZoom, duration: 0 }); } catch (err) { return; }
+      if (!districts && map.getZoom() < edge + 0.6) map.jumpTo({ zoom: edge + 0.6 });
+    }
+
+    // Открыть цель: из «Картины дня» (R08), по ссылке #target=kind:id&days=N или из оболочки R01.
+    // days — тот же период, что в списке «Горячие места» (тогда число в карточке = числу в списке).
+    async function focusTarget(kind, id, options) {
+      const key = kind + ":" + id;
+      const days = Number(options && options.days);
+      const daysChanged = Number.isInteger(days) && days >= 1 && days <= 365 && days !== S.filters.days;
+      if (daysChanged) S.filters.days = days;
+      S.fitted = true;            // переход по ссылке важнее стартовой подгонки
+      if (!daysChanged && findItem(key)) { select(key, true); return; }
+      S.pendingSelect = key;
+      S.pendingMoving = true;
+      try {
+        const q = new URLSearchParams({ kind, id, days: String(S.filters.days) });
+        const res = await getJson("/heat/target?" + q.toString());
+        const item = res && res.item;
+        if (item) S.texts.set(textsKey(key), { status: "ready", data: item.texts || null });
+        if (map && item && item.anchor) {
+          const zoom = Math.max(map.getZoom(), kind === "object" ? 16 : 15);
+          // ждём конца перелёта (если камера уже на месте, moveend может не прийти — страховка 1,2 с)
+          await new Promise((done) => { map.once("moveend", done); setTimeout(done, 1200); map.easeTo({ center: item.anchor, zoom, duration: 600 }); });
+        }
+      } catch (err) { /* цели за период нет или сеть — ниже честно скажем */ }
+      S.pendingMoving = false;
+      await load();
+    }
+
+    function parseHash() {
+      const raw = (window.location.hash || "").replace(/^#/, "");
+      if (!raw) return null;
+      const q = new URLSearchParams(raw);
+      const target = q.get("target") || "";
+      const i = target.indexOf(":");
+      if (i <= 0) return null;
+      return { kind: target.slice(0, i), id: target.slice(i + 1), days: q.get("days") ? Number(q.get("days")) : undefined };
+    }
+    function onHash() {
+      const h = parseHash();
+      if (h) void focusTarget(h.kind, h.id, { days: h.days });
+    }
 
     // ----- слои карты -----
     const SRC = "r07-heat", SRC_PTS = "r07-heat-pts";
@@ -416,11 +582,14 @@
       add({ id: "r07-seg", type: "line", source: SRC, filter: ["==", ["get", "kind"], "segment"],
         layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": color, "line-width": ["interpolate", ["linear"], ["zoom"], 11, ["+", 2, ["*", ["get", "w"], 0.2 * soft]], 17, ["+", 5, ["*", ["get", "w"], 0.9 * soft]]] } });
-      // Объекты: ореол растёт с весом; на среднем масштабе — точка (значок появится ближе)
-      add({ id: "r07-obj-halo", type: "circle", source: SRC_PTS, minzoom: 12,
-        paint: { "circle-color": color, "circle-opacity": 0.32 * soft, "circle-blur": 0.45,
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 12, ["+", 8, ["*", ["get", "w"], 1.2 * soft]], 17, ["+", 20, ["*", ["get", "w"], 4 * soft]]] } });
-      add({ id: "r07-obj-dot", type: "circle", source: SRC_PTS, minzoom: 12,
+      // Объекты: ореол растёт с весом. Цвет никогда не один (UX_BRIEF, правило 5; UX_REVIEW R11 день 3, №2):
+      // на 12–15 объекты уровней 1–2 не рисуются вовсе, а уровни 3–4 и «исправлено» — ореол + значок с числом;
+      // с 15-го масштаба — все объекты: точка, ореол и значок.
+      const haloRadius = ["interpolate", ["linear"], ["zoom"], 12, ["+", 8, ["*", ["get", "w"], 1.2 * soft]], 17, ["+", 20, ["*", ["get", "w"], 4 * soft]]];
+      const haloPaint = { "circle-color": color, "circle-opacity": 0.32 * soft, "circle-blur": 0.45, "circle-radius": haloRadius };
+      add({ id: "r07-obj-halo-lo", type: "circle", source: SRC_PTS, minzoom: 12, maxzoom: 15, filter: [">=", ["get", "level"], 3], paint: haloPaint });
+      add({ id: "r07-obj-halo", type: "circle", source: SRC_PTS, minzoom: 15, paint: haloPaint });
+      add({ id: "r07-obj-dot", type: "circle", source: SRC_PTS, minzoom: 15,
         paint: { "circle-color": color, "circle-radius": 6, "circle-stroke-color": "#ffffff", "circle-stroke-width": 2 } });
 
       if (handlersBound) return;
@@ -524,12 +693,17 @@
           el.className = "r07-badge";
           el.addEventListener("click", (ev) => { ev.stopPropagation(); onBadgeClick(key); });
           const marker = new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(it.anchor).addTo(map);
-          m = { marker, el, item: it };
+          m = { marker, el, item: it, spot: it.anchor };
           S.markers.set(key, m);
         }
         m.item = it;
         m.marker.setLngLat(it.anchor);
+        m.spot = it.anchor;
         fillBadge(m.el, it);
+        // Настоящий размер значка (у района с названием ~130 px, а не 64) — для честной проверки наложений.
+        m.el.hidden = false;
+        m.el.classList.remove("r07-badge--mini");
+        if (m.el.offsetWidth) { m.w = m.el.offsetWidth; m.h = m.el.offsetHeight; }
       });
       for (const [key, m] of S.markers) {
         if (!keep.has(key)) { m.marker.remove(); S.markers.delete(key); }
@@ -542,34 +716,89 @@
       const district = it.target.kind === "district";
       const icon = fixed ? "check" : district ? "pin" : catIcon(Object.keys(it.by_category || {})[0] || "other");
       el.dataset.level = fixed ? "fixed" : String(it.level);
+      el.style.setProperty("--r07-c", it.color || "#999");
       el.dataset.kind = it.target.kind;
       el.classList.toggle("r07-badge--selected", S.selected === keyOf(it.target));
       const reported = t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count });
       el.setAttribute("aria-label", t("heat.badge_label", { target: label(it.target), reported }) + (fixed ? ". " + t("heat.fixed_word") : ""));
       el.title = label(it.target);
       el.innerHTML = '<span class="r07-badge__dot" style="--r07-c:' + esc(it.color || "#999") + '">' + svgIcon(icon, 18) + "</span>" +
-        '<span class="r07-badge__count">' + (district ? esc(label(it.target)) + " · " : "") + fmtNum(it.count) + "</span>";
+        '<span class="r07-badge__count">' + (district ? '<span class="r07-badge__name">' + esc(label(it.target)) + " · </span>" : "") + fmtNum(it.count) + "</span>";
     }
 
-    // Значки не налезают друг на друга: сначала самые горячие, остальные прячутся до приближения.
+    // Где можно поставить значок цели: у участка улицы — середина и ещё две точки на линии (30 % и 70 %),
+    // чтобы число не пропадало, когда рядом значок горячее; у остальных — только якорь с сервера.
+    function badgeSpots(it) {
+      const spots = [it.anchor];
+      const g = it.geometry;
+      if (it.target.kind === "segment" && g && g.type === "LineString" && g.coordinates.length >= 2) {
+        spots.push(alongLine(g.coordinates, 0.3), alongLine(g.coordinates, 0.7));
+      }
+      // Район большой: если у центра тесно, значок можно поставить в другой точке ВНУТРИ его границы.
+      if (it.target.kind === "district" && g && (g.type === "Polygon" || g.type === "MultiPolygon")) {
+        const polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
+        const ring = polys.reduce((best, poly) => (poly[0].length > best.length ? poly[0] : best), polys[0][0]);
+        let w = 180, so = 90, e = -180, n = -90;
+        ring.forEach(([x, y]) => { w = Math.min(w, x); e = Math.max(e, x); so = Math.min(so, y); n = Math.max(n, y); });
+        const extra = [];
+        for (const fy of [0.5, 0.35, 0.65, 0.2, 0.8]) for (const fx of [0.5, 0.35, 0.65, 0.2, 0.8]) {
+          const pt = [w + (e - w) * fx, so + (n - so) * fy];
+          if (inRing(pt, ring)) extra.push(pt);
+        }
+        extra.sort((a, b2) => Math.hypot(a[0] - it.anchor[0], a[1] - it.anchor[1]) - Math.hypot(b2[0] - it.anchor[0], b2[1] - it.anchor[1]));
+        spots.push(...extra.slice(0, 12));
+      }
+      return spots;
+    }
+
+    // Значки не налезают друг на друга: сначала самые горячие. Не хватает места для полного значка —
+    // маленькая плашка с числом (UX_REVIEW R11, день 3, №2: «а не пусто»); совсем некуда — прячем до приближения.
     function declutter() {
       if (!map) return;
       const z = map.getZoom();
       const placed = [];
-      const list = [...S.markers.values()].sort((a, b) => (b.item.weight || 0) - (a.item.weight || 0) || (b.item.count || 0) - (a.item.count || 0));
+      // Значки не прячутся под легендой и другими плашками поверх карты (opts.avoidRects — от оболочки).
+      const host = map.getContainer().getBoundingClientRect();
+      const overlays = [];
+      if (S.legendEl && S.legendEl.isConnected) overlays.push(S.legendEl.getBoundingClientRect());
+      if (typeof opts.avoidRects === "function") overlays.push(...(opts.avoidRects() || []));
+      overlays.forEach((r) => { if (r && r.width) placed.push([r.left - host.left, r.top - host.top, r.right - host.left, r.bottom - host.top]); });
+      const boxAt = (p, w, h) => [p.x - w / 2, p.y - h / 2, p.x + w / 2, p.y + h / 2];
+      const free = (box) => !placed.some((b) => !(box[2] < b[0] || b[2] < box[0] || box[3] < b[1] || b[3] < box[1]));
+      const list = [...S.markers.values()].sort((a, b) =>
+        (keyOf(b.item.target) === S.selected) - (keyOf(a.item.target) === S.selected) ||
+        (b.item.weight || 0) - (a.item.weight || 0) || (b.item.count || 0) - (a.item.count || 0));
       list.forEach((m) => {
         const it = m.item;
-        // Объекты со значком — с 15-го масштаба; на 12–15 их видно точкой и ореолом (CONTRACT §6).
-        let visible = !(it.target.kind === "object" && z < 15 && it.level !== 4 && keyOf(it.target) !== S.selected);
-        if (visible) {
-          const p = map.project(it.anchor);
-          const box = [p.x - BADGE_W / 2, p.y - BADGE_H / 2, p.x + BADGE_W / 2, p.y + BADGE_H / 2];
-          const hit = placed.some((b) => !(box[2] < b[0] || b[2] < box[0] || box[3] < b[1] || b[3] < box[1]));
-          if (hit && keyOf(it.target) !== S.selected) visible = false;
-          else placed.push(box);
+        const selected = keyOf(it.target) === S.selected;
+        // Ниже 15-го масштаба объекты уровней 1–2 не рисуются вовсе (ни цветом, ни значком) — правило 5 UX_BRIEF.
+        const quietObject = it.target.kind === "object" && z < 15 && it.state !== "fixed" && Number(it.level) < 3;
+        let mode = "hidden";
+        let spot = it.anchor;
+        if (!quietObject || selected) {
+          const spots = badgeSpots(it).map((ll) => ({ ll, p: map.project(ll) }));
+          const fw = Math.max(m.w || BADGE_W, 40), fh = Math.max(m.h || BADGE_H, 30);
+          // маленький вариант — только число (у района название остаётся в подсказке, aria-label и списке)
+          const mw = MINI_W, mh = MINI_H;
+          const full = selected ? spots[0] : spots.find((sp) => free(boxAt(sp.p, fw, fh)));
+          if (full) {
+            mode = "full";
+            spot = full.ll;
+            placed.push(boxAt(full.p, fw, fh));
+          } else {
+            const mini = spots.find((sp) => free(boxAt(sp.p, mw, mh)));
+            if (mini) {
+              mode = "mini";
+              spot = mini.ll;
+              placed.push(boxAt(mini.p, mw, mh));
+            }
+          }
         }
-        m.el.hidden = !visible;
-        m.el.tabIndex = visible ? 0 : -1;
+        if (mode !== "hidden" && (spot[0] !== m.spot?.[0] || spot[1] !== m.spot?.[1])) { m.marker.setLngLat(spot); m.spot = spot; }
+        m.el.hidden = mode === "hidden";
+        m.el.classList.toggle("r07-badge--mini", mode === "mini");
+        m.el.tabIndex = mode === "hidden" ? -1 : 0;
+        m.el.dataset.mode = mode;
       });
     }
 
@@ -593,6 +822,8 @@
         map.easeTo({ center: it.anchor, zoom: Math.max(map.getZoom(), it.target.kind === "object" ? 16 : 15), duration: 600 });
       }
       render();
+      declutter();
+      void loadTexts(key);
       const heading = panel.querySelector(".r07-card__title");
       if (heading) heading.focus({ preventScroll: true });
       root.dispatchEvent(new CustomEvent("birge:heat-select", { bubbles: true, detail: { target: it ? it.target : null } }));
@@ -612,7 +843,9 @@
 
     // ----- действия -----
     async function post(path, body) {
-      const res = await fetchFn(apiBase + path, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body || {}) });
+      // X-Birge-Device — как у формы R09 (её API берёт id устройства из этого заголовка).
+      const headers = { "Content-Type": "application/json", Accept: "application/json", "X-Birge-Device": deviceId() };
+      const res = await fetchFn(apiBase + path, { method: "POST", headers, body: JSON.stringify(body || {}) });
       if (!res.ok) throw new Error("HTTP " + res.status);
       try { return await res.json(); } catch (e) { return null; }
     }
@@ -668,9 +901,24 @@
         const it = S.selected && findItem(S.selected);
         parts.push(it ? cardHtml(it) : listHtml());
       }
-      parts.push(legendHtml());
+      // Легенда — на карте слева внизу (на телефоне — сверху), всегда видна (UX_REVIEW R11, день 3, №3).
+      // Без карты (страница-список) — в панели.
+      if (map) renderMapLegend(); else parts.push(legendHtml(false));
       panel.innerHTML = parts.join("");
       bindPanel();
+      if (map) declutter();   // легенда могла сменить размер (язык, режим) — значки не должны оказаться под ней
+    }
+
+    function renderMapLegend() {
+      const host = opts.legendContainer || (map && map.getContainer());
+      if (!host) return;
+      if (!S.legendEl || !S.legendEl.isConnected) {
+        S.legendEl = document.createElement("section");
+        S.legendEl.className = "r07-maplegend r07-root";
+        host.append(S.legendEl);
+      }
+      S.legendEl.dataset.role = S.role;
+      S.legendEl.innerHTML = legendHtml(true);
     }
 
     function filtersHtml() {
@@ -696,14 +944,15 @@
         (dirty ? '<button type="button" class="r07-btn r07-btn--ghost" data-reset>' + esc(t("heat.reset")) + "</button>" : "") + "</div></section>";
     }
 
-    function legendHtml() {
+    function legendHtml(onMap) {
       const lg = (S.data && S.data.legend) || (S.meta && S.meta.legend);
       if (!lg) return "";
       const rows = lg.levels.filter((lv) => lv.level > 0).map((lv) =>
         '<li><i class="r07-sw" style="background:' + esc(lv.color) + '"></i>' + esc(legendLabel(lv)) + "</li>").join("") +
         '<li><i class="r07-sw" style="background:' + esc(lg.fixed.color) + '"></i>' + esc(S.lang === "kk" ? lg.fixed.kk : lg.fixed.ru) + "</li>";
-      const zoomHint = S.mode === "districts" ? '<p class="r07-legend__hint">' + esc(t("heat.zoom_hint")) + "</p>" : "";
-      return '<section class="r07-legend" aria-label="' + esc(t("heat.legend")) + '"><h3 class="r07-legend__title">' + esc(t("heat.legend")) + "</h3><ul>" + rows + '</ul><p class="r07-legend__hint">' + esc(t("heat.legend_hint")) + "</p>" + zoomHint + "</section>";
+      const zoomHint = S.mode === "districts" ? '<p class="r07-legend__hint r07-legend__zoom">' + esc(t("heat.zoom_hint")) + "</p>" : "";
+      const inner = '<h3 class="r07-legend__title">' + esc(t("heat.legend")) + "</h3><ul>" + rows + '</ul><p class="r07-legend__hint r07-legend__fresh">' + esc(t("heat.legend_hint")) + "</p>" + zoomHint;
+      return onMap ? inner : '<section class="r07-legend" aria-label="' + esc(t("heat.legend")) + '">' + inner + "</section>";
     }
 
     function skeletonHtml() {
@@ -719,9 +968,13 @@
     function listHtml() {
       const items = (S.data ? S.data.items : []).filter((it) => it.state === "active" && it.count > 0);
       if (!items.length) {
-        return '<div class="r07-empty">' + svgIcon("check", 40) + '<p class="r07-empty__title">' + esc(t("heat.empty_title")) + '</p><p class="r07-empty__hint">' +
-          esc(t("heat.empty_hint", { period: t("heat.for_days", { count: S.filters.days }) })) + "</p>" +
-          (S.filters.category || S.filters.district ? '<button type="button" class="r07-btn" data-reset>' + esc(t("heat.reset")) + "</button>" : "") + "</div>";
+        // Пусто ≠ «всё исправлено»: иконка поиска, «За 7 дней жалоб нет» и действие «Показать 30 дней» (№8).
+        const filtered = Boolean(S.filters.category || S.filters.district);
+        const next = (S.meta && S.meta.periods || [7, 30, 90]).find((d) => d > S.filters.days);
+        return '<div class="r07-empty" role="status">' + svgIcon("search", 40) + '<p class="r07-empty__title">' + esc(t("heat.empty.title", { n: S.filters.days })) +
+          '</p><p class="r07-empty__hint">' + esc(t(filtered ? "heat.empty.hint_filters" : "heat.empty.hint")) + '</p><div class="r07-empty__actions">' +
+          (next ? '<button type="button" class="r07-btn r07-btn--primary" data-days-next="' + next + '">' + esc(t("heat.empty.show_days", { n: next })) + "</button>" : "") +
+          (filtered ? '<button type="button" class="r07-btn" data-reset>' + esc(t("heat.filter.reset")) + "</button>" : "") + "</div></div>";
       }
       const rows = items.slice(0, 10).map((it, i) => {
         const top = Object.keys(it.by_category || {})[0];
@@ -767,12 +1020,52 @@
         '<p class="r07-card__reported">' + esc(t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count })) + " · " + esc(t("heat.for_days", { count: S.filters.days })) + "</p>" +
         (fixed && it.fixed_until ? '<p class="r07-note r07-note--ok">' + esc(t("heat.fixed_until", { date: fmtDate(it.fixed_until, S.lang) })) + "</p>" : "") +
         (it.approximate ? '<p class="r07-note r07-note--warn">' + esc(t("heat.approximate")) + "</p>" : "") +
+        // Статус и главная кнопка — сразу под числом: видны без прокрутки и на 1366, и на 375 px.
+        '<p class="r07-card__status">' + esc(t("heat.status")) + ": " + statusPill + "</p>" +
+        (actions ? '<div class="r07-actions">' + actions + "</div>" : "") +
+        (S.role === "akimat" ? textsHtml(key) : "") +
         (!fixed ? '<div class="r07-chart" aria-label="' + esc(t("heat.chart")) + '"><h4 class="r07-h4">' + esc(t("heat.chart")) + '</h4><div class="r07-spark">' + bars +
           '</div><div class="r07-axis"><span>' + esc(t("heat.chart_from")) + "</span><span>" + esc(t("heat.chart_to")) + "</span></div></div>" : "") +
         (topics ? '<h4 class="r07-h4">' + esc(t("heat.topics")) + '</h4><ul class="r07-topics">' + topics + "</ul>" : "") +
-        '<p class="r07-card__status">' + esc(t("heat.status")) + ": " + statusPill + "</p>" +
-        (actions ? '<div class="r07-actions">' + actions + "</div>" : "") +
         "</article>";
+    }
+
+    // «Что пишут жители» (UX_REVIEW R11, день 3, №4): 1–3 группы похожих текстов с числом людей.
+    // Только для акимата. Сервер отдаёт тексты примеров (synthetic) всем, а настоящих жалоб — только сотруднику
+    // после входа (шлюз R01 передаёт staff=True); жителю этот раздел не показывается вовсе.
+    function textsKey(key) { return key + "|" + S.filters.days; }
+    function textsHtml(key) {
+      const st = S.texts.get(textsKey(key));
+      let body;
+      if (!st || st.status === "loading") body = '<div class="r07-skeleton r07-skeleton--line" aria-busy="true"><i></i><i></i></div>';
+      else if (st.status === "error") return "";
+      else {
+        const groups = (st.data && st.data.groups) || [];
+        const hidden = (st.data && st.data.hidden_people) || 0;
+        body = groups.length
+          ? '<ul class="r07-quotes">' + groups.map((g) =>
+            '<li><p class="r07-quote" lang="' + esc(g.lang === "kk" ? "kk" : g.lang === "ru" ? "ru" : S.lang) + '">«' + esc(g.text) + '»</p><p class="r07-quote__meta">' +
+            esc(t("heat.texts.people", { count: g.people })) + (g.demo ? ' <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") + "</p></li>").join("") + "</ul>"
+          : "";
+        if (hidden) body += '<p class="r07-note">' + esc(t("heat.texts.staff_only")) + "</p>";
+        if (!body) body = '<p class="r07-muted">' + esc(t("heat.texts.none")) + "</p>";
+      }
+      return '<section class="r07-texts"><h4 class="r07-h4">' + esc(t("heat.texts.title")) + "</h4>" + body + "</section>";
+    }
+    async function loadTexts(key) {
+      if (S.role !== "akimat") return;
+      const tk = textsKey(key);
+      if (S.texts.has(tk) && S.texts.get(tk).status === "ready") return;
+      S.texts.set(tk, { status: "loading" });
+      const [kind, ...rest] = key.split(":");
+      try {
+        const q = new URLSearchParams({ kind, id: rest.join(":"), days: String(S.filters.days) });
+        const res = await getJson("/heat/target?" + q.toString());
+        S.texts.set(tk, { status: "ready", data: res && res.item ? res.item.texts : null });
+      } catch (e) {
+        S.texts.set(tk, { status: "error" });
+      }
+      if (S.selected === key && !S.destroyed) render();
     }
 
     function bindPanel() {
@@ -793,6 +1086,9 @@
         const d = S.meta && S.meta.districts.find((x) => x.id === sel.value);
         if (d && map && d.bbox) map.fitBounds([[d.bbox[0], d.bbox[1]], [d.bbox[2], d.bbox[3]]], { padding: 40, duration: 700 });
       });
+      panel.querySelectorAll("[data-days-next]").forEach((b) => b.addEventListener("click", () => {
+        S.filters.days = Number(b.dataset.daysNext); void load();
+      }));
       panel.querySelectorAll("[data-reset]").forEach((b) => b.addEventListener("click", () => {
         S.filters = { category: null, days: (S.meta && S.meta.default_days) || 30, district: null }; S.selected = null; void load();
       }));
@@ -845,28 +1141,44 @@
       map.on("moveend", onMoveEnd);
       map.on("styledata", onStyleData);
       map.on("dragstart", () => { userMoved.value = true; });
+      map.on("movestart", (e) => { if (e && e.originalEvent) userMoved.value = true; });   // колесо, щипок, кнопки
     }
     window.addEventListener("birge:complaint", onComplaintEvent);
+    // Язык: i18n R11 шлёт "birge:lang" на document, другие модули — на window. Слушаем оба (повтор отсекается).
     window.addEventListener("birge:lang", onLang);
+    document.addEventListener("birge:lang", onLang);
     document.addEventListener("keydown", onKey);
+    if (opts.hash !== false) window.addEventListener("hashchange", onHash);
+    // «Горячее место» в «Картине дня» R08 шлёт отменяемое "birge:open-target". В сборке его ловит оболочка R01;
+    // модуль ловит сам только по просьбе (opts.handleOpenTarget), чтобы не мешать оболочке переключить вкладку.
+    function onOpenTarget(ev) {
+      const d = (ev && ev.detail) || {};
+      if (ev.defaultPrevented || !d.target || !d.target.kind || !d.target.id) return;
+      ev.preventDefault();
+      void focusTarget(d.target.kind, d.target.id, { days: d.days });
+    }
+    if (opts.handleOpenTarget) document.addEventListener("birge:open-target", onOpenTarget);
 
     render();
-    void load();
+    const startHash = opts.hash !== false ? parseHash() : null;
+    if (startHash) void focusTarget(startHash.kind, startHash.id, { days: startHash.days });
+    else void load();
 
     return {
       version: VERSION,
       refresh: () => load("event"),
       pulse: (target) => pulse(typeof target === "string" ? target : keyOf(target)),
-      focusTarget: (kind, id) => select(kind + ":" + id, true),
+      focusTarget: (kind, id, o) => focusTarget(kind, id, o),
       setRole: (role) => { S.role = role === "resident" ? "resident" : "akimat"; if (map && layersReady) { removeLayers(); } draw(false); render(); },
       setLang: (lang) => { S.lang = lang === "kk" ? "kk" : "ru"; render(); drawBadges(); },
       setFilters: (f) => { Object.assign(S.filters, f || {}); void load(); },
-      state: () => ({ role: S.role, lang: S.lang, filters: { ...S.filters }, selected: S.selected, mode: S.mode, status: S.status, items: S.data ? S.data.items.length : 0 }),
+      state: () => ({ role: S.role, lang: S.lang, filters: { ...S.filters }, selected: S.selected, mode: S.mode, status: S.status,
+        items: S.data ? S.data.items.length : 0, pending: S.pendingSelect, fittedKeys: S.fittedKeys || [] }),
       destroy,
     };
 
     function removeLayers() {
-      ["r07-district-fill", "r07-district-line", "r07-area-glow", "r07-area-fill", "r07-area-line", "r07-area-approx", "r07-sel-outline", "r07-sel-line", "r07-seg-casing", "r07-seg", "r07-obj-halo", "r07-obj-dot"]
+      ["r07-district-fill", "r07-district-line", "r07-area-glow", "r07-area-fill", "r07-area-line", "r07-area-approx", "r07-sel-outline", "r07-sel-line", "r07-seg-casing", "r07-seg", "r07-obj-halo-lo", "r07-obj-halo", "r07-obj-dot"]
         .forEach((id) => { try { if (map.getLayer(id)) map.removeLayer(id); } catch (e) { /* стиль сменился */ } });
       [SRC, SRC_PTS].forEach((id) => { try { if (map.getSource(id)) map.removeSource(id); } catch (e) { /* стиль сменился */ } });
       layersReady = false;
@@ -876,7 +1188,11 @@
       if (S.anim) cancelAnimationFrame(S.anim);
       window.removeEventListener("birge:complaint", onComplaintEvent);
       window.removeEventListener("birge:lang", onLang);
+      document.removeEventListener("birge:lang", onLang);
       document.removeEventListener("keydown", onKey);
+      window.removeEventListener("hashchange", onHash);
+      document.removeEventListener("birge:open-target", onOpenTarget);
+      if (S.legendEl) S.legendEl.remove();
       for (const m of S.markers.values()) m.marker.remove();
       S.markers.clear();
       if (map) {

@@ -201,7 +201,7 @@ class ObjectRepository:
             "kind": content["kind"], "status": content["status"], "publication": publication,
             "planned_start": content["schedule"]["planned_start"],
             "current_planned_end": content["schedule"]["current_planned_end"],
-            "data_json": _dumps({key: content[key] for key in CONTENT_FIELDS}),
+            "data_json": _dumps({key: content.get(key) for key in CONTENT_FIELDS}),  # .get: записи до раунда 14 без geometry_source
             "internal_notes": internal_notes, "revision": revision, "updated_at": now,
             "updated_by": actor.user_id, **(extra or {}),
         }

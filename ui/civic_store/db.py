@@ -292,6 +292,11 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
         )""",
         "INSERT INTO civic_v2_settings(name, value) VALUES ('vote_salt', lower(hex(randomblob(32))))",
     )),
+    # Раунд 14, просьба R05: у предложения — ближайшая улица OSM и цель по CONTRACT §4 (связь с жалобами R07/R09).
+    (7, "round 14 proposal street and target", (
+        "ALTER TABLE civic_proposals ADD COLUMN near_street TEXT",
+        "ALTER TABLE civic_proposals ADD COLUMN target_json TEXT",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 

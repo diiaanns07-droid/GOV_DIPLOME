@@ -106,3 +106,52 @@ def test_not_bound_gives_503(gw):
     v2mod._BOUND = None
     result = gw.handle("GET", "/proposals", "", None, context())
     assert result["status"] == 503 and body(result)["error"] == "module_not_ready"
+
+
+B2_KEYS = ("proposals.get", "proposals.approve", "proposals.reject", "proposals.withdraw", "proposals.summary",
+           "objects.lagging", "objects.get", "objects.stage.get")
+
+
+def r01_keys():
+    return {key for _method, _pattern, key in getattr(R01, "V2_ROUTES", ())}
+
+
+@pytest.mark.skipif(R01 is None or not set(B2_KEYS) <= r01_keys(), reason="маршруты B2 R01 (915143f и новее)")
+def test_b2_routes_through_gateway(gw, stack):
+    """Сборка B2 R01: get, approve/reject/withdraw, summary, lagging; клиент R05 (planned_year, withdraw, «Отменить»)."""
+    svc, v2 = stack
+    staff = Staff(svc, v2)
+    modules = body(gw.handle("GET", "/modules", "", None, context()))["modules"]
+    for key in B2_KEYS:
+        assert modules[key]["status"] == "ready", (key, modules[key])
+    r05 = {"kind": "playground", "geometry": {"type": "Point", "coordinates": NURA_POINT}, "rotation_deg": 90,
+           "planned_year": 2027, "demo": False}  # тело toServerProposal клиента R05 @ 7f42cb3
+    created = body(gw.handle("POST", "/proposals", "", r05, staff.ctx()))["item"]
+    assert created["rotation_deg"] == 90 and created["year"] == 2027 and created["district"] == "nura"
+    pid = created["id"]
+    gw.handle("POST", f"/proposals/{pid}/vote", "", {"value": 1, "device_id": "dev-" + "a1" * 16}, context())
+    got = gw.handle("GET", f"/proposals/{pid}", "device_id=dev-" + "a1" * 16, None, context())
+    assert got["status"] == 200 and body(got)["item"]["my_vote"] == 1
+    anon = gw.handle("POST", f"/proposals/{pid}/withdraw", "", {}, context())
+    assert anon["status"] == 401
+    gone = gw.handle("POST", f"/proposals/{pid}/withdraw", "", {}, staff.ctx())
+    assert gone["status"] == 200, gone
+    assert gw.handle("GET", f"/proposals/{pid}", "", None, context())["status"] == 404
+    # «Отменить»: если клиент передаёт id снятого предложения, оно возвращается с голосами (тело — как есть).
+    undo = body(gw.handle("POST", "/proposals", "", {**r05, "id": pid}, staff.ctx()))
+    assert undo["restored"] is True and undo["item"]["id"] == pid and undo["item"]["votes_up"] == 1
+    approved = gw.handle("POST", f"/proposals/{pid}/approve", "", {}, staff.ctx())
+    assert approved["status"] == 200 and body(approved)["item"]["status"] == "approved"
+    other = body(gw.handle("POST", "/proposals", "", r05, staff.ctx()))["item"]["id"]
+    rejected = gw.handle("POST", f"/proposals/{other}/reject", "", {"reason": "Нет места"}, staff.ctx())
+    assert rejected["status"] == 200 and body(rejected)["item"]["status"] == "rejected"
+    summary = gw.handle("GET", "/proposals/summary", "", None, context())
+    assert summary["status"] == 200
+    item = staff.create_object()
+    staff.set_stage(item["id"], 0, stage="construction", planned_end="2026-10-01", forecast_end="2026-10-25")
+    lag = body(gw.handle("GET", "/objects/lagging", "district=nura", None, context()))
+    assert [o["id"] for o in lag["late"]] == [item["id"]] and lag["counts"]
+    assert gw.handle("GET", f"/objects/{item['id']}", "", None, context())["status"] == 200
+    assert gw.handle("GET", f"/staff/objects/{item['id']}/stage", "", None, context())["status"] == 401
+    staff_stage = gw.handle("GET", f"/staff/objects/{item['id']}/stage", "", None, staff.ctx())
+    assert staff_stage["status"] == 200, staff_stage

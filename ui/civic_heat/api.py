@@ -6,7 +6,9 @@
 Маршруты (CONTRACT §7, всё под /api/civic/v2/):
     GET /heat?bbox&days&category&district&zoom  → {generated_at, items:[{target, geometry, weight, level, count, fixed_until, …}]}
     GET /heat/meta                              → категории, легенда, районы, периоды (интерфейс ничего не копирует)
-    GET /heat/target?kind&id&days               → одна цель для карточки (переход из «Картины дня»)
+    GET /heat/target?kind&id&days               → одна цель для карточки + «Что пишут жители» (texts.groups)
+Тексты настоящих жалоб — только сотруднику: шлюз R01 передаёт staff=True после проверки входа (principal R02).
+Без этого в texts только примеры (demo: true), а люди настоящих жалоб — числом hidden_people.
 Ошибка в параметрах → 400 {"error":"bad_request","field":…,"message":…}. Сбой расчёта → 500 без падения сервера.
 """
 from __future__ import annotations
@@ -27,7 +29,7 @@ def _one(query: dict, name: str):
     return v
 
 
-def handle_get(path: str, query: dict | None = None, service=None) -> tuple[int, dict]:
+def handle_get(path: str, query: dict | None = None, service=None, staff: bool = False) -> tuple[int, dict]:
     svc = service or default_service()
     q = query or {}
     try:
@@ -40,7 +42,7 @@ def handle_get(path: str, query: dict | None = None, service=None) -> tuple[int,
             kind, tid = _one(q, "kind"), _one(q, "id")
             if not kind or not tid:
                 return 400, {"error": "bad_request", "field": "id", "message": "нужны kind и id цели"}
-            item = svc.target(kind, tid, days=_one(q, "days"))
+            item = svc.target(kind, tid, days=_one(q, "days"), include_real_texts=bool(staff))
             if item is None:
                 return 404, {"error": "not_found", "message": "по этой цели жалоб за период нет"}
             return 200, {"item": item, "legend": svc.config.legend(), "demo": svc.is_demo}

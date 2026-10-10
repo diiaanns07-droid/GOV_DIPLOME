@@ -120,6 +120,9 @@ def check_export(export, *, today) -> list[dict]:
             errors.add(f"{prefix}.item.id", "Допустимый уникальный id.")
             continue
         seen.add(object_id)
+        if "geometry_source" not in item:
+            # Выгрузка до раунда 14: поля ещё не было — значит «неизвестно».
+            item = {**item, "geometry_source": None}
         try:
             if dto.sanitize_public(item) != item or set(item) != set(dto.PUBLIC_FIELDS):
                 raise ValidationError({"item": "Только публичные поля civic-v1 (allowlist)."})

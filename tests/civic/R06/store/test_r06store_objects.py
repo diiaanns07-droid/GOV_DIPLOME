@@ -193,7 +193,8 @@ def test_internal_notes_and_staff_meta_never_reach_public_projection(editor, ser
     assert set(detail["item"]) == {
         "schema_version", "id", "city", "kind", "title", "description", "status", "publication",
         "geometry", "geometry_precision", "schedule", "budget", "responsible", "evidence_type",
-        "source_refs", "evidence_notes", "updated_at", "revision"}
+        "source_refs", "evidence_notes", "updated_at", "revision",
+        "geometry_source"}  # R06 раунд 14: источник формы места (просьба R12)
     for entry in detail["history"]:
         assert set(entry) == {"id", "object_id", "revision", "at", "changed_fields", "reason",
                               "public_actor_label"}

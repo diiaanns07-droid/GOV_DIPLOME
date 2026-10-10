@@ -15,7 +15,7 @@ from .validate import (BUDGET_KEYS, CITY, CONTENT_FIELDS, RESPONSIBLE_KEYS, SCHE
 PUBLIC_FIELDS = ("schema_version", "id", "city", "kind", "title", "description", "status",
                  "publication", "geometry", "geometry_precision", "schedule", "budget",
                  "responsible", "evidence_type", "source_refs", "evidence_notes", "updated_at",
-                 "revision")
+                 "revision", "geometry_source")
 PUBLIC_HISTORY_FIELDS = ("id", "object_id", "revision", "at", "changed_fields", "reason",
                          "public_actor_label")
 _NESTED = {"schedule": SCHEDULE_KEYS, "budget": BUDGET_KEYS, "responsible": RESPONSIBLE_KEYS}
@@ -50,6 +50,8 @@ def public_dto(object_id: str, content: dict, *, publication: str, revision: int
         "evidence_notes": content["evidence_notes"],
         "updated_at": updated_at,
         "revision": revision,
+        # Раунд 14: у записей до него ключа нет — null («неизвестно»).
+        "geometry_source": content.get("geometry_source"),
     }
     return item
 

@@ -547,11 +547,14 @@ class V2Handler:
                       ждёт этот конверт). Сотрудника и CSRF такой сервис проверяет сам по principal R02.
     """
 
-    def __init__(self, role, modules, function, staff=False, kind="function", strip_prefix=False):
+    def __init__(self, role, modules, function, staff=False, kind="function", strip_prefix=False, staff_view=False):
         self.role, self.modules, self.function, self.staff = role, tuple(modules), function, staff
         self.kind = kind
         # strip_prefix: raw-обработчик ждёт путь без /api/civic/v2 (R12 engine.civic_geo.api.handle).
         self.strip_prefix = strip_prefix
+        # staff_view: raw-маршрут открыт всем, но сотруднику показывает больше (R07 /heat/target — тексты
+        # настоящих жалоб). Шлюз передаёт staff=True только после проверки сессии R02; параметр в адресе не в счёт.
+        self.staff_view = staff_view
 
 
 # (метод, шаблон пути, ключ маршрута). {id} проверяется тем же правилом CIVIC_ID, что и в v1.
@@ -609,7 +612,8 @@ V2_HANDLERS = {
         "complaints.categories", "complaints.list", "complaints.create", "complaints.mine", "complaints.events",
         "complaints.summary", "complaints.place", "complaints.get", "complaints.metoo", "complaints.status",
         "complaints.duplicate")},
-    **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta", "heat.target")},
+    **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta")},
+    "heat.target": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", staff_view=True),
     "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),
     **{key: V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True)
        for key in ("geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status")},
@@ -811,7 +815,11 @@ class CivicV2Gateway:
             def source(since):
                 return demo_records + store.list(since=since)
 
-            heat.configure(source=source, **self._cell_resolver())
+            # metoo_times (R07 INTEGRATION §1в): каждое «Я тоже» остывает от своего времени, а не от времени жалобы.
+            # Ячейки «примерного места» R09 R07 @ 306074b различает сам (по точке жалобы, формула R09) — свой
+            # резолвер ячеек R01 больше не подставляет.
+            extra = {"metoo_times": store.metoo_times} if callable(getattr(store, "metoo_times", None)) else {}
+            heat.configure(source=source, **extra)
             store.subscribe(lambda _event: heat.invalidate())
             LOGGER.info("civic-v2: heat <- R09 complaints%s", " + R07 demo set" if demo_records else "")
         try:
@@ -832,33 +840,6 @@ class CivicV2Gateway:
                     LOGGER.info("civic-v2: similar <- R09 complaints")
             except Exception:
                 LOGGER.exception("API v2: поиск похожих (R04) не подключился")
-
-    def _cell_resolver(self):
-        """Ячейки «примерного места» R09 рисуются там, где их посчитал R09.
-
-        R09 (автор id ячейки) и R07 считают сетку 150 м от разных углов (70.9/50.8 и 71.0/50.8) — без этого
-        адаптера жалоба из Нуры попадала на карту на ~7 км восточнее. Цели R09 помечены approximate: true;
-        для них контур — ui.civic_feedback.v2.record.cell_polygon и подпись «примерное место» (CONTRACT §8.4).
-        Остальные цели (в т. ч. демо-ячейки R07) R07 решает сам. Передано R07/R09: договориться об одной сетке.
-        """
-        try:
-            targets = self._import("ui.civic_heat.targets")
-            record = self._import("ui.civic_feedback.v2.record")
-        except Exception:
-            return {}
-        if targets is None or record is None or not hasattr(record, "cell_polygon"):
-            return {}
-
-        class R09CellResolver(targets.TargetResolver):
-            def _resolve(self, kind, tid, target, point):
-                if kind == "area" and tid.startswith("cell-") and (target or {}).get("approximate") is True:
-                    ring = record.cell_polygon(tid)
-                    if ring:
-                        return {"geometry": {"type": "Polygon", "coordinates": [ring]}, "label_ru": "Примерное место",
-                                "label_kk": "Шамамен орны", "approximate": True, "source": "r09-cell"}
-                return super()._resolve(kind, tid, target, point)
-
-        return {"resolver": R09CellResolver()}
 
     def modules(self):
         """Состояние каждого маршрута v2 — для оболочки и приёмки (R10)."""
@@ -966,6 +947,18 @@ class CivicV2Gateway:
                                   error.get("message", "Недостаточно прав."))
         return {"username": principal.username, "role": principal.role}, None
 
+    def _is_staff(self, context):
+        """Сотрудник вошёл (сессия R02)? Для чтения: без CSRF, отказ — не ошибка, а обычный вид жителя."""
+        store = self.store_gateway.service("store") if self.store_gateway is not None else None
+        if store is None or not hasattr(store, "require_staff"):
+            return False
+        try:
+            principal, denied = store.require_staff(context, unsafe=False)
+        except Exception:
+            LOGGER.exception("API v2: проверка сотрудника не удалась")
+            return False
+        return principal is not None and not denied
+
     @staticmethod
     def _call(fn, args, context, principal):
         import inspect  # локально: нужен только здесь
@@ -1021,7 +1014,9 @@ class CivicV2Gateway:
                        else "Эта часть ещё не подключена в сборке.")
             return v2_error(503, reason, message, module=module, role=handler.role)
         if handler.kind == "raw":
-            return self._raw(fn, key, rel_path if handler.strip_prefix else CIVIC_V2_PREFIX + rel_path, query, module, handler)
+            staff = self._is_staff(context) if handler.staff_view else None
+            return self._raw(fn, key, rel_path if handler.strip_prefix else CIVIC_V2_PREFIX + rel_path, query, module,
+                             handler, staff=staff)
         if handler.kind == "service":
             return self._delegate(fn, method, rel_path, query, body, context, module, handler)
         try:
@@ -1067,10 +1062,15 @@ class CivicV2Gateway:
         return {"status": status, "headers": {}, "body": result}
 
     @staticmethod
-    def _raw(fn, key, path, query, module, handler):
-        """R07/R08/R12: fn(path, parse_qs(query)) -> (status, body) | None; роль сама проверяет параметры."""
+    def _raw(fn, key, path, query, module, handler, staff=None):
+        """R07/R08/R12: fn(path, parse_qs(query)) -> (status, body) | None; роль сама проверяет параметры.
+
+        staff (только для маршрутов staff_view): True — сессия сотрудника проверена шлюзом; передаётся
+        именованным аргументом и только тогда, когда он True, — функции без этого параметра не ломаются.
+        """
         try:
-            reply = fn(path, parse_qs(query or "", keep_blank_values=True))
+            parsed_query = parse_qs(query or "", keep_blank_values=True)
+            reply = fn(path, parsed_query, staff=True) if staff else fn(path, parsed_query)
             if reply is None:
                 return v2_error(404, "not_found", "Адрес API не найден.")
             status, body = reply

@@ -12,7 +12,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[3]
 HEAT_JS = ROOT / "web/civic/heat/heat.js"
-TECH_WORDS = ("ребро", "граф", "геометри", "сценари", "payload", "demo-ring", "feature", "target", "undefined")
+TECH_WORDS = ("ребро", "граф", "геометри", "сценари", "payload", "demo-ring", "feature", "target", "undefined", "демо")  # «демо» — UX_BRIEF №4, R11 день 3 №7
 
 
 def load_dict():
