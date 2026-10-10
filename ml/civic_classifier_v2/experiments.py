@@ -467,6 +467,7 @@ def _comparisons(store: dict, sets: dict[str, list[dict]], labels, regimes) -> l
             add(f"{r}/logreg", f"{r}/heuristic", f"{r}: логрегрессия − эвристика")
         for m in ("transformer", "logreg"):
             add(f"synth_template/{m}", f"synth_v1/{m}", f"{m}: синтетика v3 − синтетика v1→v2")
+            add(f"synth_all/{m}", f"synth_template/{m}", f"{m}: v3 + LLM − только v3 (вклад LLM-синтетики)")
             add(f"synth_llm/{m}", f"synth_template/{m}", f"{m}: LLM-синтетика − шаблонная синтетика")
             add(f"mix/{m}", f"synth_all/{m}", f"{m}: смесь − только синтетика (вклад текстов людей)")
             add(f"mix/{m}", f"human/{m}", f"{m}: смесь − только люди (вклад синтетики)")

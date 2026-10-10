@@ -425,6 +425,27 @@ def _hard_rules_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict
     return out + [""]
 
 
+def paired_from_files(path_a: Path, path_b: Path, set_name: str = "probe_v2") -> dict:
+    """Парная Δ macro-F1 (a − b) по двум файлам прогнозов {set,id,true,pred} на общих id набора."""
+    from ml.civic_classifier_v2.metrics import paired_delta, report
+    labs = L.labels()
+    idx = {lab: i for i, lab in enumerate(labs)}
+
+    def load(p):
+        rows = (json.loads(x) for x in Path(p).read_text(encoding="utf-8").splitlines() if x.strip())
+        return {str(r["id"]): r for r in rows if r.get("set", set_name) == set_name}
+
+    a, b = load(path_a), load(path_b)
+    ids = sorted(set(a) & set(b))
+    if not ids:
+        raise ValueError(f"нет общих id набора {set_name}")
+    y = [idx[a[i]["true"]] for i in ids]
+    pa, pb = [idx[a[i]["pred"]] for i in ids], [idx[b[i]["pred"]] for i in ids]
+    return {"set": set_name, "n": len(ids), "a": Path(path_a).name, "b": Path(path_b).name,
+            "macro_f1_a": report(y, pa, labs)["macro_f1"], "macro_f1_b": report(y, pb, labs)["macro_f1"],
+            "delta": paired_delta(y, pa, pb, len(labs))}
+
+
 def load_probe(path: Path | None) -> dict[str, dict]:
     if not path:
         return {}
@@ -447,7 +468,21 @@ def main(argv=None) -> int:
     sub.choices["errors"].add_argument("--out", default=str(RESULTS_DIR / "ERROR_ANALYSIS.md"))
     sub.choices["errors"].add_argument("--preds", nargs="*", default=[], help="JSONL {set,id,true,pred[,score]}")
     sub.choices["errors"].add_argument("--probe", help="probe_v2.jsonl (тексты для примеров)")
+    pr = sub.add_parser("paired", help="парная Δ macro-F1 по двум файлам прогнозов (a − b)")
+    pr.add_argument("--a", required=True)
+    pr.add_argument("--b", required=True)
+    pr.add_argument("--set", default="probe_v2")
+    pr.add_argument("--out", help="JSON с результатом")
     args = ap.parse_args(argv)
+
+    if args.cmd == "paired":
+        res = paired_from_files(Path(args.a), Path(args.b), args.set)
+        d = res["delta"]
+        print(f"{res['a']} − {res['b']} на {res['set']} (n={res['n']}): {res['macro_f1_a']} − {res['macro_f1_b']} = "
+              f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}]")
+        if args.out:
+            Path(args.out).write_text(json.dumps(res, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        return 0
 
     exp = _load(Path(args.results))
     if not exp:

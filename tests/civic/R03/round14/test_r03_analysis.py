@@ -174,3 +174,14 @@ def test_load_to_cyrillic_from_git_ref_reads_bytes(monkeypatch):
     f = T.load_to_cyrillic(git_ref="origin/claude/r14-R04")
     assert calls and calls[0][-1] == "origin/claude/r14-R04:ml/civic_dedup/normalize.py"
     assert f("na doroge yama") == "na doroge яма" and f("Яма во дворе") == "Яма во дворе"
+
+
+def test_paired_from_files(tmp_path):
+    rows_a = [{"set": "probe_v2", "id": str(i), "true": "roads", "pred": "roads"} for i in range(10)]
+    rows_b = [dict(r, pred="other" if i < 5 else "roads") for i, r in enumerate(rows_a)]
+    rows_b.append({"set": "human", "id": "h", "true": "roads", "pred": "other"})   # чужой набор не учитывается
+    fa, fb = tmp_path / "a.jsonl", tmp_path / "b.jsonl"
+    for f, rows in ((fa, rows_a), (fb, rows_b)):
+        f.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    res = A.paired_from_files(fa, fb)
+    assert res["n"] == 10 and res["macro_f1_a"] == 1.0 and res["delta"]["delta"] > 0
