@@ -317,7 +317,7 @@ def _cmd_model(args) -> int:
     if args.to_cyrillic:
         # Та же модель, тексты после to_cyrillic (R04): помогает ли перевод транслита (см. translit.py).
         from ml.civic_classifier_v2.translit import compare, load_to_cyrillic
-        to_cyr = load_to_cyrillic(args.normalize_file)
+        to_cyr = load_to_cyrillic(args.normalize_file, args.normalize_ref)
         cyr = [to_cyr(r["text"]) for r in recs]
         pred_cyr = [int(i) for i in clf.predict_proba(cyr).argmax(axis=1)]
         out["to_cyrillic"] = compare(recs, pred, pred_cyr, [a != r["text"] for a, r in zip(cyr, recs)])
@@ -358,6 +358,7 @@ def main(argv=None) -> int:
     m.add_argument("--to-cyrillic", action="store_true",
                    help="ещё прогон с переводом транслита в кириллицу (to_cyrillic R04) и парная разница")
     m.add_argument("--normalize-file", help="ml/civic_dedup/normalize.py R04, если его нет в сборке")
+    m.add_argument("--normalize-ref", help="ветка git с кодом R04 (origin/claude/r14-R04), читается через git show")
     m.add_argument("--set-name", default="auto",
                    help="имя набора в --preds-out; auto: probe_v2, если все записи синтетические, иначе human "
                         "(примеры текстов human analysis.py не показывает)")

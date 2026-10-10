@@ -5,6 +5,29 @@ R03 · классификатор v2 · ЗАПУСК НА НОУТБУКЕ ВЛ�
 Python 3.12.10, torch 2.14.1+cu126, transformers 5.19.0, onnxruntime 1.31.0; модель FacebookAI/xlm-roberta-base в кэше HF.
 Код: ветка claude/r14-R03. Корпуса: ветка claude/r14-R02. Тексты людей: только в private\ основной папки (вне Git).
 
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║ УТРО 11 ОКТ — НУЖНЫ ТОЛЬКО ЭТИ ШАГИ (≈ 10 мин). Модель уже обучена (c19b889), шаги 4–7 НЕ повторять.     ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝
+Шаг 0 (переменные) — как ниже, затем:
+cd $REPO; git fetch origin claude/r14-R03 claude/r14-R02 claude/r14-R04
+cd $WT; git pull origin claude/r14-R03
+& $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider                 (ожидается 88 passed)
+Шаг 8 (повторный экспорт ONNX per-channel; ожидаются три PASS):
+& $PY -m ml.civic_classifier_v2.export_onnx --texts "$R02\ml\datasets\synth_v3\data\corpus_v3.jsonl" --n 200
+Шаг 8б (int8 на probe_v2 + разбор ошибок трансформера + таблицы):
+& $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2.json --preds-out ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl
+& $PY -m ml.civic_classifier_v2.analysis errors --preds ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_logreg.jsonl --probe "$PROBE\probe_v2.jsonl"
+& $PY -m ml.civic_classifier_v2.analysis tables
+Шаг 8в (перевод транслита перед трансформером):
+& $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --to-cyrillic --normalize-ref origin/claude/r14-R04 --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2_to_cyrillic.json
+Сохранить (только числа и id; без artifacts\, private\, *.onnx):
+git add ml/civic_classifier_v2/results/onnx_export.json ml/civic_classifier_v2/results/onnx_int8_on_probe_v2.json ml/civic_classifier_v2/results/onnx_int8_on_probe_v2_to_cyrillic.json ml/civic_classifier_v2/results/preds_probe_v2_final_onnx_int8.jsonl ml/civic_classifier_v2/results/ERROR_ANALYSIS.md ml/civic_classifier_v2/results/DIPLOMA_TABLES.md ml/civic_classifier_v2/results/tables
+git commit -m "R03: LOCAL morning: ONNX per-channel re-export, int8 on probe_v2, translit check"
+git push origin claude/r14-R03
+Папку artifacts\onnx передать сборке (BIRGE_CLF_V2_DIR); artifacts\onnx_per_channel можно удалить.
+Шаги 5, 6, 6б, 6в, 7 — только когда будет ≥ 200 размеченных текстов людей (или по желанию 6в).
+════════════════════════════════════════════════════════════════════════════════════════════════════════
+
 Правила: не читать .env; ключи API — только переменной окружения в этом окне; в Git — только файлы из шага 9.
 Каждую команду вставляйте целиком одной строкой. Время и память — оценки; фактические числа скрипты сами пишут
 в results\*.json и artifacts\...\train_log.jsonl.
@@ -50,7 +73,7 @@ $HUMAN = "$REPO\private\labels_owner.jsonl"      # <- подставьте фа�
 & $PY -c "from transformers import AutoTokenizer, AutoModelForSequenceClassification as M; AutoTokenizer.from_pretrained('FacebookAI/xlm-roberta-base'); M.from_pretrained('FacebookAI/xlm-roberta-base', num_labels=12); print('OK: веса из кэша')"
 
 -----------------------------------------------------------------
-3. Тесты R03 (CPU, крошечная модель, без сети) — ~1–3 мин, ожидается 65 passed
+3. Тесты R03 (CPU, крошечная модель, без сети) — ~1–3 мин, ожидается 88 passed
 -----------------------------------------------------------------
 & $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider
 
@@ -135,8 +158,9 @@ foreach ($f in 0.25, 0.5) { & $PY -m ml.civic_classifier_v2.experiments --synth-
 & $PY -m ml.civic_classifier_v2.analysis tables
 
 8в. (≈ 1 мин) Поможет ли трансформеру перевод транслита в кириллицу (to_cyrillic R04), как словарю и логрегрессии:
-git -C $REPO show origin/claude/r14-R04:ml/civic_dedup/normalize.py > "$WT\..\r04_normalize.py"
-& $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --to-cyrillic --normalize-file "$WT\..\r04_normalize.py" --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2_to_cyrillic.json
+git -C $REPO fetch origin claude/r14-R04
+& $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --to-cyrillic --normalize-ref origin/claude/r14-R04 --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2_to_cyrillic.json
+(код R04 читается через git show внутри Python — не через «>» PowerShell, который пишет UTF-16)
 В конце строка «to_cyrillic: macro-F1 A -> B (Δ …)» — её и файл передать R04 (решает, звать ли v2 на to_cyrillic).
 Проверка как у R04:
 & $PY -m ml.civic_classifier_v2.predict "Во дворе не горят фонари уже неделю" "Аулада шам жанбайды, қараңғы" "Не вывозят мусор, баки переполнены"

@@ -155,3 +155,22 @@ def test_label_audit_flags_confident_disagreement():
     assert res["candidates"] == 1 and res["items"][0]["id"] == "x0"
     assert res["items"][0]["suggested"] == "noise_safety" and res["items"][0]["v3_agrees"] is True
     assert res["by_label"]["other"] == {"candidates": 1, "n": 4, "share": 0.25}
+
+
+def test_load_to_cyrillic_from_git_ref_reads_bytes(monkeypatch):
+    """--normalize-ref: код R04 берётся через git show в байтах (без перенаправления оболочки)."""
+    import subprocess
+    from ml.civic_classifier_v2 import translit as T
+    calls = []
+
+    class Done:
+        stdout = FAKE_NORMALIZE.encode("utf-8")
+
+    def fake_run(cmd, **kw):
+        calls.append(cmd)
+        return Done()
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    f = T.load_to_cyrillic(git_ref="origin/claude/r14-R04")
+    assert calls and calls[0][-1] == "origin/claude/r14-R04:ml/civic_dedup/normalize.py"
+    assert f("na doroge yama") == "na doroge яма" and f("Яма во дворе") == "Яма во дворе"
