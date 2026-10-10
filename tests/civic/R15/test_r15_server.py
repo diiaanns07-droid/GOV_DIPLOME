@@ -330,3 +330,31 @@ def test_every_inline_script_is_allowed_by_its_page_csp(srv):
         for src in re.findall(rb"<script[^>]*\bsrc\s*=\s*[\"']([^\"']+)", body):
             # свой сервер: /путь или ../путь; чужой — со схемой (https:) или «//хост»
             assert not re.match(rb"^([a-zA-Z][a-zA-Z0-9+.-]*:|//)", src), (url, src)
+
+
+# --- 5. офлайн-подложка (R01 ночь 3c, web/civic/offline/serve.py): тот же белый список, без выхода за папку --------
+
+OFFLINE_TRAVERSAL = [
+    "/civic/offline/serve.py", "/civic/offline/../../../ui/web_server.py", "/civic/offline/%2e%2e/%2e%2e/%2e%2e/ui/web_server.py",
+    "/civic/offline/fonts/Noto%20Sans%20Regular/../../serve.py", "/civic/offline/fonts/..%2f..%2fserve.py",
+    "/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf/../../../serve.py", "/civic/offline/fonts/Noto%20Sans%20Regular/1-256.pbf",
+    "/civic/offline/sprites/", "/civic/offline/", "/civic/offline/astana.pmtiles/../../../../.git/config",
+    "/civic/offline/..%5c..%5c..%5cui%5cweb_server.py", "/civic/offline/style.json/..%2f..%2f..%2f..%2f.env",
+]
+
+
+@pytest.mark.parametrize("path", OFFLINE_TRAVERSAL)
+def test_offline_basemap_server_has_no_path_traversal(srv, path):
+    need_module("web.civic.offline.serve")
+    status, _headers, body = request(srv, "GET", path)
+    assert status == 404, (path, status)
+    assert b"import " not in body and b"[core]" not in body
+
+
+def test_offline_basemap_status_and_bad_range(srv):
+    need_module("web.civic.offline.serve")
+    status, _h, body = request(srv, "GET", "/civic/offline/status.json")
+    assert status == 200 and isinstance(json.loads(body).get("available"), bool)
+    # Range разбирается только для архива; кривой Range у JSON просто игнорируется (200, не 500).
+    status, _h, _b = request(srv, "GET", "/civic/offline/style.json", headers={"Range": "bytes=abc-"})
+    assert status in (200, 404)

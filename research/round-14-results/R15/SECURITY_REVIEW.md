@@ -5,7 +5,8 @@ SQLite в tmp, без обращений к чужим системам.
 
 | Что проверено | SHA | Среда |
 |---|---|---|
-| **FINAL-кандидат R01, последняя голова** (ночь 3b) | `c2318b7` (ветка `claude/sharp-dijkstra-0t87gl`) | то же; тесты R15: **121 passed**; браузер B1 15/15, B2 25/25; CSP-страницы PASS; R09 взял P-R09 к себе (14a75c6) |
+| **FINAL-кандидат R01, последняя голова** (ночь 3c, офлайн-подложка) | `6096be8` (ветка `claude/sharp-dijkstra-0t87gl`) | то же; тесты R15: **121 passed** (+13 новых тестов офлайн-сервера — PASS); браузер B1 15/15, B2 25/25; CSP-страницы PASS |
+| FINAL-кандидат R01 (ночь 3b) | `c2318b7` (ветка `claude/sharp-dijkstra-0t87gl`) | то же; тесты R15: **121 passed**; браузер B1 15/15, B2 25/25; CSP-страницы PASS; R09 взял P-R09 к себе (14a75c6) |
 | FINAL-кандидат R01 (ночь 3a) | `4ca9aef` (ветка `claude/sharp-dijkstra-0t87gl`) | то же; тесты R15: **121 passed**; браузер B1 15/15, B2 25/25; CSP-страницы PASS |
 | FINAL-кандидат R01 (ночь, третья волна) | `0a7a346` (ветка `claude/sharp-dijkstra-0t87gl`) | то же; тесты R15: **121 passed, 0 xfail** — исправлены все 16; браузер B1 15/15, B2 25/25; CSP-страницы PASS |
 | FINAL-кандидат R01 | `ef1ef44` | тесты R15: 117 passed, 4 xfailed (S15) |
@@ -82,6 +83,7 @@ SQLite в tmp, без обращений к чужим системам.
 | Область | Результат | Тест |
 |---|---|---|
 | Раздача статики | Только белый список `ASSETS`; 15 попыток выйти за `web/` (`..`, `%2e%2e`, `%5c`, `.env`, `.git`, sqlite) → 404 | `test_static_has_no_path_traversal` |
+| Офлайн-подложка (R01 `6096be8`) | `web/civic/offline/serve.py`: только явный список файлов, шрифты по строгому шаблону `цифры-цифры.pbf`, один архив `astana.pmtiles`; проверка `resolve()` против ссылок; `Range` — один диапазон, иначе 416; 12 попыток выхода за папку → 404 | `test_offline_basemap_server_has_no_path_traversal` |
 | Заголовки | `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: same-origin`, `frame-ancestors 'none'` | `test_index_is_served_with_basic_security_headers` |
 | CSRF / чужой сайт | Origin чужого сайта → 403; `Sec-Fetch-Site: cross-site` → 403; `text/plain` (форма без preflight) → 415; CORS не разрешён; чужой Host (DNS rebinding) → 403 | `test_cross_origin_*`, `test_simple_form_post_cannot_reach_api`, `test_foreign_host_header_is_rejected` |
 | Действия сотрудника | Без сессии: статусы и дубли жалоб, предложения (создать, одобрить, отклонить, снять), этапы объектов, журнал, отзывы → 401/403 | `test_staff_actions_need_session`, `test_r06_staff_actions_refuse_anonymous`, `test_staff_actions_refuse_resident` |
@@ -91,7 +93,7 @@ SQLite в tmp, без обращений к чужим системам.
 | Ввод | Точка вне Астаны, NaN, строки, `[0,0]` → 422; текст > 2000 → 422; тело > 64 КБ → 413; вложенный JSON → 400; bbox и точки R12 — в границах города, поиск пути ≤ 6 км (~150 мс) | `test_bad_point_is_rejected`, `test_long_text_*` |
 | Что видят чужие | Без текста жалобы, модели, кода, `device_id`; имя и заметка сотрудника не публичны; `/heat/target` без входа не отдаёт тексты (параметр `staff=1` в адресе не помогает); `/similar` — без текста; `/akim/summary` и `/forecast` — только агрегаты | `test_public_list_*`, `test_heat_target_hides_real_texts_from_anonymous`, `test_similar_returns_no_resident_text`, `test_public_akim_summary_has_no_resident_texts`, `test_forecast_is_public_aggregate_without_resident_data` |
 | Хранение `device_id` | В базе только хэш с солью (`device_hash`), сырого id нет ни в файле, ни в WAL | `test_device_ids_are_stored_hashed` |
-| Цепочка поставки | three.js 0.169.0: sha256 = SOURCE.txt; MapLibre 5.6.2: `maplibre-gl.js`/`.css` побайтно = npm-пакет `maplibre-gl@5.6.2` (sha256 `1525f971…`, `43c1d886…`); шрифт Inter 4.0 (OFL) — локально; скриптов из интернета в рантайме нет | ручная сверка |
+| Цепочка поставки | three.js 0.169.0: sha256 = SOURCE.txt; MapLibre 5.6.2: `maplibre-gl.js`/`.css` побайтно = npm-пакет `maplibre-gl@5.6.2` (sha256 `1525f971…`, `43c1d886…`); шрифт Inter 4.0 (OFL) — локально; PMTiles 4.5.0 (`web/vendor/pmtiles/pmtiles.js`, R01 `6096be8`) побайтно = npm `pmtiles@4.5.0` (sha256 `caf981bc…`, integrity sha512 совпадает); скриптов из интернета в рантайме нет | ручная сверка |
 | Вход сотрудника | Подбор пароля: после нескольких неверных попыток с адреса — 429 (по логину и по адресу); пароль ≥ 12 символов, не логин, не из списка; сессия 1 ч без действий, 8 ч максимум | `test_staff_login_bruteforce_is_throttled`, `test_weak_staff_password_is_refused` |
 | Демо-запуск | `run.bat`/`run.sh`/`run-city.bat` слушают только 127.0.0.1; пароль сотрудника вводится скрыто (`create-editor --password-stdin`), паролей в Git нет | ручной просмотр |
 | Модели ИИ | В рантайме — ONNX и JSON токенизатора; `pickle`/`joblib`/`torch.load` нет (подменённый файл модели не выполнит код) | `grep` по ui/ ml/ engine/ agent/ |
@@ -149,7 +151,7 @@ SQLite в tmp, без обращений к чужим системам.
 | Сервер и резервные копии базы — в РК, копии зашифрованы | Требование хранить базы с персональными данными в РК | `.runtime/*.sqlite3` |
 | Срок хранения текстов и удаление по просьбе автора | Минимизация; сейчас жалобы хранятся бессрочно | R09 `ComplaintStore` |
 | Ротация журнала и срок его хранения | В журнале — IP и время (без строки запроса после P-R01) | `ui/web_server.py` `log_request` |
-| Свой сервер тайлов подложки | `tiles.openfreemap.org` видит IP посетителя | `web/map.js`, CSP `CSP_TILES` |
+| Свой сервер тайлов подложки | `tiles.openfreemap.org` видит IP посетителя. R01 `6096be8` уже отдаёт локальный архив PMTiles Астаны, если он скачан (`data/civic/astana/tiles/`, вне Git) | `web/map.js`, `web/civic/offline/`, CSP `CSP_TILES` |
 | Согласие в форме: прямо про внешний ИИ-сервис за рубежом — или не отправлять настоящие тексты | S14 | R02 `llm_label.py` |
 | Лимит GET на прокси (`/heat`, `/akim/summary`) | Чтение не ограничено: сейчас < 300 мс, но поток запросов загрузит процессор | прокси |
 
