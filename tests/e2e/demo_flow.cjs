@@ -631,6 +631,56 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   await ctx.close();
 }
 
+
+// ------------------------------------------------------------------------------------------------ «нет связи»
+// UX_BRIEF правило 7 и COMMON «ошибки сети»: при обрыве запросов API экран показывает понятное сообщение и
+// «Повторить», а не пустое место; после восстановления связи «Повторить» возвращает данные.
+// Отдельное окно браузера: оборванные запросы не попадают в проверку консоли основного прогона.
+async function networkErrors(browser, base, [w, h], lang) {
+  const dict = loadDict(lang);
+  const tag = `${w}-${lang}`;
+  const mobile = w < 761;
+  const step = (name, ok, detail, file) => add(`UI ${tag}`, "E", name, ok === null ? "NOT_RUN" : ok ? "PASS" : "FAIL", detail, file);
+  const netRe = new RegExp([T(dict, ["heat.error_title", "common.state.network_title"], lang === "kk" ? "Сервермен байланыс жоқ" : "Нет связи с сервером"),
+    T(dict, "common.state.error_title", "Не получилось загрузить"), T(dict, "shell.day.error_title", "Картину дня не удалось открыть")]
+    .filter(Boolean).map(esc).join("|"), "i");
+  const retryRe = new RegExp("^" + esc(T(dict, ["heat.retry", "common.action.retry"], lang === "kk" ? "Қайталау" : "Повторить")) + "$", "i");
+  const menuRe = new RegExp("^" + esc(T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню")) + "$", "i");
+  const header = async (page, re) => { let ok = await clickText(page, re, { wait: 2000 });
+    if (!ok && mobile && (await clickText(page, menuRe))) ok = await clickText(page, re, { wait: 2000 }); return ok; };
+  const cases = [
+    { name: "тепловая карта", route: "**/api/civic/v2/heat**", mode: "akimat" },
+    { name: "«Мои обращения»", route: "**/api/civic/v2/complaints/mine**", mode: "resident",
+      open: (page) => header(page, textRe(T(dict, ["common.nav.mine", "mine.title"], lang === "kk" ? "Менің өтініштерім" : "Мои обращения"))) },
+    { name: "«Картина дня»", route: "**/api/civic/v2/akim/summary**", mode: "akimat",
+      open: (page) => header(page, new RegExp("^" + esc(T(dict, ["common.nav.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня")) + "$", "i")) },
+  ];
+  for (const c of cases) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 });
+    const page = await ctx.newPage();
+    await page.addInitScript(([m, l]) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", l); } catch (e) { /* пусто */ } }, [c.mode, lang]);
+    let broken = true;
+    await page.route(c.route, (r) => (broken ? r.abort("internetdisconnected") : r.continue()));
+    try {
+      await page.goto(base); await sleep(3500);
+      const lb = await firstVisible(page.getByRole("button", { name: lang === "kk" ? /^ҚАЗ$/ : /^РУС$/ }));
+      if (lb) { await lb.click().catch(() => null); await sleep(800); }
+      const opened = c.open ? await c.open(page) : true;
+      await sleep(1500);
+      const msg = await visibleText(page, netRe);
+      const retry = await firstVisible(page.getByRole("button", { name: retryRe }));
+      const f = path.join(OUT, `${tag}-E-${c.route.split("/").filter(Boolean).slice(-1)[0].replace(/\W+/g, "")}.jpg`);
+      await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+      broken = false;
+      let recovered = null;
+      if (retry) { await retry.click().catch(() => null); await sleep(2500); recovered = !(await visibleText(page, netRe)); }
+      step(`нет связи · ${c.name}: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные`,
+        opened && msg && !!retry && recovered === true, { opened, message: msg, retry: !!retry, recovered }, path.basename(f));
+    } catch (e) { step(`нет связи · ${c.name}`, false, String(e.message || e).slice(0, 200)); }
+    await ctx.close();
+  }
+}
+
 // ------------------------------------------------------------------------------------------------ main
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -645,6 +695,8 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     let vi = 0;  // номер варианта экрана: у каждого своё место для проекта на шаге 5
     for (const size of SIZES) for (const lang of LANGS) {
       try { await uiFlow(browser, base, size, lang, apiCtx, staff, vi++); }
+      catch (e) { add(`UI ${size[0]}-${lang}`, "!", "прогон экрана прервался", "FAIL", String(e.message || e).slice(0, 300)); }
+      try { await networkErrors(browser, base, size, lang); }
       catch (e) { add(`UI ${size[0]}-${lang}`, "!", "прогон экрана прервался", "FAIL", String(e.message || e).slice(0, 300)); }
     }
   } finally {
