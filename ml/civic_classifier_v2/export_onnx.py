@@ -21,6 +21,7 @@ import inspect
 import json
 import os
 import platform
+import random
 import shutil
 import statistics
 import sys
@@ -127,18 +128,22 @@ def quantize(fp32: Path, int8: Path) -> dict:
 
 def load_texts(path: str | None, n: int) -> tuple[list[str], str]:
     """Тексты для проверки: файл (JSONL с полем text или .txt построчно) или синтетика v3 test+val."""
+    def sample(texts: list[str]) -> list[str]:
+        # Корпус отсортирован по шаблонам: первые n строк — одна категория. Берём равномерную выборку (seed 0).
+        return texts if len(texts) <= n else random.Random(0).sample(texts, n)
+
     if path:
         p = Path(path)
         if p.suffix.lower() == ".txt":
             texts = [x.strip() for x in p.read_text(encoding="utf-8").splitlines() if x.strip()]
         else:
             texts = [D.clean_text(r.get("text")) for r in D.read_rows(p)[0] if r.get("text")]
-        return texts[:n], p.name
+        return sample(texts), p.name
     try:
         recs, _ = D.load_corpus(SYNTH_V3_DIR, source="synth_v3", evidence="synthetic_template")
         texts = [r["text"] for r in recs if r["split"] in ("test", "val")] or [r["text"] for r in recs]
         if texts:
-            return texts[:n], "synth_v3 test/val"
+            return sample(texts), "synth_v3 test/val"
     except FileNotFoundError:
         pass
     texts = [f"{t} {i}" if i >= len(FALLBACK_TEXTS) else t for i, t in

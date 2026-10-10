@@ -154,6 +154,12 @@ def fit(train: list[dict], val: list[dict], cfg: TrainConfig, labels: tuple[str,
     model = AutoModelForSequenceClassification.from_pretrained(
         cfg.model_name, num_labels=k, id2label={i: lab for i, lab in enumerate(labels)},
         label2id={lab: i for i, lab in enumerate(labels)}, ignore_mismatched_sizes=True)
+    # Длина не больше, чем умеет модель: у RoBERTa-подобных позиции сдвинуты на 2 (у xlm-roberta-base 514 -> 512).
+    max_pos = getattr(model.config, "max_position_embeddings", None)
+    if max_pos and cfg.max_length > max_pos - 2:
+        print(f"[civic_classifier_v2] max_length {cfg.max_length} > возможностей модели ({max_pos - 2}) — "
+              f"уменьшаю до {max_pos - 2}", flush=True)
+        cfg = cfg.override([f"max_length={max_pos - 2}"])
     if cfg.freeze_embeddings:
         emb = model.get_input_embeddings()
         emb.weight.requires_grad_(False)

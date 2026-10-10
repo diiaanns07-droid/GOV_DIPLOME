@@ -1,0 +1,133 @@
+R03 · классификатор v2 · ЗАПУСК НА НОУТБУКЕ ВЛАДЕЛЬЦА (LOCAL-4)
+=================================================================
+Для: Codex desktop / владелец. Windows, PowerShell, RTX 4060 Laptop 8 ГБ.
+Окружение уже готово (LOCAL-3, research/round-14-results/LOCAL/ENV.md): venv C:\Users\LEGION\venvs\birge-ml,
+Python 3.12.10, torch 2.14.1+cu126, transformers 5.19.0, onnxruntime 1.31.0; модель FacebookAI/xlm-roberta-base в кэше HF.
+Код: ветка claude/r14-R03. Корпуса: ветка claude/r14-R02. Тексты людей: только в private\ основной папки (вне Git).
+
+Правила: не читать .env; ключи API — только переменной окружения в этом окне; в Git — только файлы из шага 9.
+Каждую команду вставляйте целиком одной строкой. Время и память — оценки; фактические числа скрипты сами пишут
+в results\*.json и artifacts\...\train_log.jsonl.
+
+-----------------------------------------------------------------
+0. Переменные (вставить один раз в окно PowerShell)
+-----------------------------------------------------------------
+$REPO = "C:\Users\LEGION\Desktop\hackalem\hack-d3b2c613-stupits"
+$WT   = "C:\Users\LEGION\Desktop\hackalem\birge-r03"
+$R02  = "C:\Users\LEGION\Desktop\hackalem\birge-r02-data"
+$PY   = "C:\Users\LEGION\venvs\birge-ml\Scripts\python.exe"
+$env:HF_HUB_OFFLINE = "1"; $env:TRANSFORMERS_OFFLINE = "1"; $env:PYTHONUTF8 = "1"
+
+-----------------------------------------------------------------
+1. Две рабочие папки (worktree): код R03 и данные R02  — ~1 мин
+-----------------------------------------------------------------
+cd $REPO
+git fetch origin claude/r14-R03 claude/r14-R02
+git worktree add -B claude/r14-R03 $WT origin/claude/r14-R03
+git worktree add --detach $R02 origin/claude/r14-R02
+cd $WT
+(если папки уже есть с прошлого раза: cd $WT; git pull origin claude/r14-R03; cd $R02; git checkout --detach origin/claude/r14-R02; cd $WT)
+
+Где LLM-синтетика (после LOCAL-8): файл corpus_llm_v1.jsonl. Если он запушен в claude/r14-R02 — он в $R02\ml\datasets\llm_v1;
+если лежит только локально — укажите его папку:
+$LLM = "$R02\ml\datasets\llm_v1"        # или "$REPO\ml\datasets\llm_v1"
+Если корпуса llm_v1 ещё нет — ничего не делать: режимы synth_llm / synth_all честно получат NOT_RUN, mix пойдёт с v3.
+
+Файл(ы) разметки людей (экспорт web/labeling, schema birge-labels-v1), первым — файл владельца:
+$HUMAN = "$REPO\private\labels_owner.jsonl"      # <- подставьте фактическое имя файла
+Проверка: Test-Path $HUMAN   (должно быть True)
+
+-----------------------------------------------------------------
+2. Проверка окружения и зависимостей — ~1 мин
+-----------------------------------------------------------------
+& $PY -c "import torch, transformers, onnxruntime, sklearn; print(torch.__version__, torch.cuda.is_available(), torch.cuda.get_device_name(0), transformers.__version__, onnxruntime.__version__, sklearn.__version__)"
+& $PY -m pip install -r ml\civic_classifier_v2\requirements-gpu.txt pytest
+  (всё уже стоит из LOCAL-3; pip только проверит. torch НЕ переустанавливать — он с CUDA 12.6.)
+& $PY -c "from transformers import AutoTokenizer, AutoModelForSequenceClassification as M; AutoTokenizer.from_pretrained('FacebookAI/xlm-roberta-base'); M.from_pretrained('FacebookAI/xlm-roberta-base', num_labels=12); print('OK: веса из кэша')"
+
+-----------------------------------------------------------------
+3. Тесты R03 (CPU, крошечная модель, без сети) — ~1–3 мин, ожидается 61 passed
+-----------------------------------------------------------------
+& $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider
+
+-----------------------------------------------------------------
+4. Короткая проверка GPU: 1 эпоха настоящей модели на шаблонной синтетике — ~2–4 мин
+-----------------------------------------------------------------
+& $PY -m ml.civic_classifier_v2.train --regime synth_template --synth-v3 "$R02\ml\datasets\synth_v3" --set epochs=1 --out ml\civic_classifier_v2\artifacts\gpu_check
+Ожидается: в конце JSON с "gpu_peak_gb" ≈ 4–6 и "best_val_macro_f1" заметно больше 0.1.
+Если CUDA out of memory: добавить к командам шагов 6 и 8  --set batch_size=8 --set grad_accum=4
+  (эффективный batch тот же); если всё равно мало —  --set freeze_embeddings=true  (≈ −2 ГБ).
+Папку artifacts\gpu_check потом можно удалить.
+
+-----------------------------------------------------------------
+5. (по желанию, ~$0.05) LLM без обучения — zero-shot на тех же текстах людей
+-----------------------------------------------------------------
+Отправляет во внешний API обезличенные тексты людей (без меток). Делать, только если владелец согласен.
+$env:OPENAI_API_KEY = "..."      # ключ вводит владелец в этом окне, в файлы не записывать
+& $PY -m ml.civic_classifier_v2.zeroshot --human $HUMAN --model gpt-4o-mini --max-usd 1
+  или NVIDIA:  $env:NVIDIA_API_KEY = "..."; & $PY -m ml.civic_classifier_v2.zeroshot --human $HUMAN --base-url https://integrate.api.nvidia.com/v1 --api-key-env NVIDIA_API_KEY --model meta/llama-3.1-70b-instruct --price-in 0 --price-out 0 --max-usd 1
+Оценка стоимости gpt-4o-mini: 300 текстов × ~700 входных токенов ≈ 0.2 млн токенов ≈ $0.03–0.05.
+Результат: ml\civic_classifier_v2\artifacts\zeroshot\gpt-4o-mini.jsonl (только id и метка). Повторный запуск берёт кэш.
+Remove-Item Env:OPENAI_API_KEY   # сразу после
+
+-----------------------------------------------------------------
+6. ГЛАВНЫЙ ЭКСПЕРИМЕНТ (одна команда) — ~1–1.5 ч на GPU
+-----------------------------------------------------------------
+С текстами людей (нужно ≥ 200 размеченных):
+& $PY -m ml.civic_classifier_v2.experiments --synth-v3 "$R02\ml\datasets\synth_v3" --v1-in-v2 "$R02\ml\datasets\v1_in_v2" --llm-v1 $LLM --human $HUMAN --env-note "RTX 4060 Laptop 8 ГБ, Windows, Python 3.12.10, torch 2.14.1+cu126"
+  + если был шаг 5:   --zeroshot-preds ml\civic_classifier_v2\artifacts\zeroshot\gpt-4o-mini.jsonl
+Если людей пока < 200 — та же команда без --human: синтетические режимы посчитаются, люди — NOT_EVALUATED.
+Если есть время (ночью, ~3–4 ч): добавить --seeds 3 — разброс трансформера по seed.
+
+Что происходит: режимы synth_v1, synth_template, synth_llm, synth_all, human (5-fold), mix (5-fold) ×
+модели heuristic, logreg, transformer; все оцениваются на одном наборе текстов людей (+ синтетический test справочно).
+Оценка по времени (fp16, batch 16×2, длина ≤128): эпоха на ~2.7 тыс. текстов ≈ 0.5–1 мин; synth_* ≈ 5–10 мин каждый;
+human 5-fold ≈ 5 мин; mix 5-fold ≈ 25–40 мин; логрегрессия на CPU ≈ 15–25 мин суммарно.
+Пиковая память: GPU ≈ 4–6 ГБ из 8 (оценка: веса+градиенты+AdamW 278 млн параметров ≈ 4.4 ГБ + активации);
+ОЗУ ≈ 4–7 ГБ (в облаке на CPU пик 7.1 ГБ). Промежуточные результаты сохраняются после каждой модели —
+если ноутбук уснёт, готовое не потеряется; перезапуск начинает заново (≈ то же время).
+Не давать ноутбуку уснуть: питание от сети, режим «Высокая производительность».
+Результат: ml\civic_classifier_v2\results\experiments.json и RESULTS.md (таблица для диплома).
+
+-----------------------------------------------------------------
+7. Итоговая модель для продукта — ~10–15 мин
+-----------------------------------------------------------------
+& $PY -m ml.civic_classifier_v2.train --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM --human $HUMAN --experiments ml\civic_classifier_v2\results\experiments.json
+  (режим выбирается сам: mix, если людей ≥ 200, иначе synth_all / synth_template; можно явно --regime mix)
+  Без людей:  & $PY -m ml.civic_classifier_v2.train --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM
+Результат: ml\civic_classifier_v2\artifacts\final\ (≈1.1 ГБ: веса, токенизатор, birge_meta.json, train_log.jsonl).
+
+-----------------------------------------------------------------
+8. ONNX + int8 + сверка + скорость на CPU — ~3–5 мин
+-----------------------------------------------------------------
+& $PY -m ml.civic_classifier_v2.export_onnx --texts "$R02\ml\datasets\synth_v3\data\corpus_v3.jsonl" --n 200
+  (берёт artifacts\final -> artifacts\onnx; 200 синтетических текстов для сверки PyTorch / ONNX fp32 / ONNX int8;
+   тексты людей для сверки не нужны)
+Ожидается: verdict — fp32_matches_torch PASS, int8_agreement PASS, int8_mean_lt_50ms PASS; model.int8.onnx ≈ 266 МБ.
+(Облако, случайные веса того же размера: 11–33 мс на текст при 32–128 токенах, 4 vCPU.)
+Проверка как у R04:
+& $PY -m ml.civic_classifier_v2.predict "Во дворе не горят фонари уже неделю" "Аулада шам жанбайды, қараңғы" "Не вывозят мусор, баки переполнены"
+Результат: ml\civic_classifier_v2\artifacts\onnx\ — эту папку целиком передать R04 / в сборку (в Git НЕ коммитить, > 50 МБ).
+
+-----------------------------------------------------------------
+9. Сохранить результаты в Git (только числа, без текстов людей) — ~1 мин
+-----------------------------------------------------------------
+Copy-Item ml\civic_classifier_v2\artifacts\experiments\train_log.jsonl ml\civic_classifier_v2\results\train_log_experiments.jsonl
+Copy-Item ml\civic_classifier_v2\artifacts\final\train_log.jsonl ml\civic_classifier_v2\results\train_log_final.jsonl
+Copy-Item ml\civic_classifier_v2\artifacts\final\birge_meta.json ml\civic_classifier_v2\results\final_model_meta.json
+git status --short          (НЕ должно быть artifacts\, private\, *.onnx, *.safetensors)
+git add ml/civic_classifier_v2/results/experiments.json ml/civic_classifier_v2/results/RESULTS.md ml/civic_classifier_v2/results/onnx_export.json ml/civic_classifier_v2/results/train_log_experiments.jsonl ml/civic_classifier_v2/results/train_log_final.jsonl ml/civic_classifier_v2/results/final_model_meta.json
+git commit -m "R03: LOCAL-4 results (RTX 4060): experiments, final model meta, ONNX export"
+git push origin claude/r14-R03
+Если push не прошёл — прислать эти файлы текстом в чат. Тексты людей в эти файлы не попадают (проверено тестом
+test_experiments_end_to_end_smoke: в results/ и прогнозах только числа, метки и id).
+
+-----------------------------------------------------------------
+Что теперь может пользователь
+-----------------------------------------------------------------
+- Владелец (диплом): таблица RESULTS.md — macro-F1 с 95% ДИ для режимов × моделей на текстах людей, потеря на людях
+  относительно синтетики, парные сравнения, матрица ошибок, срезы по языку/стилю.
+- R04: папка artifacts\onnx + ml/civic_classifier_v2/predict.py -> POST /api/civic/v2/classify (контракт §7).
+- Перепроверка: python -m ml.civic_classifier_v2.evaluate render  (RESULTS.md из experiments.json без пересчёта);
+  python -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human <новый файл> —
+  оценка готовой модели на новой порции текстов людей (настоящий отложенный test).
