@@ -209,20 +209,24 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     assert.equal(await p.evaluate(() => window.__map.getCanvas().style.cursor), "");
   });
 
-  it("place: a line section (LineString) from map clicks", async () => {
+  it("place: a street section (LineString) from two map clicks, along the street (R12)", async () => {
     const p = await open();
     await login(p);
     await fillDraft(p, { title: "Участок работ" });
     await p.check(fk("place-approximate"));
-    await p.click(fk("tool-line"));
+    await p.click(fk("tool-segment"));
     const b = await p.locator("#map").boundingBox();
-    for (const [dx, dy] of [[-120, 0], [0, 30], [140, 10]]) await p.mouse.click(b.x + b.width / 2 + dx, b.y + b.height / 2 + dy);
+    await p.mouse.click(b.x + b.width / 2 - 120, b.y + b.height / 2 + 2);
+    await p.waitForSelector(`${fk("seg-step")}:has-text("Начало: улица Стендовая")`);
+    await p.mouse.click(b.x + b.width / 2 + 140, b.y + b.height / 2 - 2);
+    await p.waitForSelector(`${fk("seg-step")}:has-text("Участок: улица Стендовая")`);
     await p.click(fk("tool-done"));
     await p.check(fk("geometry_confirmed"));
     await saveOk(p, "Черновик создан");
     const [rec] = objects();
     assert.equal(rec.geometry.type, "LineString");
-    assert.equal(rec.geometry.coordinates.length, 3);
+    assert.ok(rec.geometry.coordinates.length >= 3, "line follows the street vertices");
+    assert.ok(rec.geometry.coordinates.every((c) => c[1] === 51.13), "every vertex lies on the (test) street axis");
   });
 
   it("publish: reason required, preview hides internal notes, onPublished gets the public projection", async () => {
@@ -475,7 +479,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     const base = await p.evaluate(() => Object.assign({}, window.__mapCounts));
     await p.click(fk("new"));
     await p.check(fk("place-approximate"));
-    await p.click(fk("tool-line"));
+    await p.click(fk("tool-segment"));
     const during = await p.evaluate(() => Object.assign({}, window.__mapCounts));
     assert.ok(during.click > (base.click || 0) && during.styledata > (base.styledata || 0));
     await p.evaluate(() => window.__editor.destroy());
@@ -627,10 +631,12 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     const base = await p.evaluate(() => Object.assign({}, window.__mapCounts));
     const b = await p.locator("#map").boundingBox();
     const at = (dx, dy) => p.mouse.click(b.x + b.width / 2 + dx, b.y + b.height / 2 + dy);
-    // Esc on an unfinished line: nothing is kept, focus is back on the form, the map listener is gone
-    await p.click(fk("tool-line"));
+    // Esc on an unfinished street section: nothing is kept, focus is back on the form, the map listener is gone
+    await p.click(fk("tool-segment"));
     await at(-80, 0);
+    await p.waitForSelector(`${fk("seg-step")}:has-text("Начало")`);
     await at(80, 0);
+    await p.waitForSelector(`${fk("seg-step")}:has-text("Участок:")`);
     await p.keyboard.press("Escape");
     assert.equal(await p.$(fk("tool-done")), null);
     assert.equal(await p.evaluate(() => document.activeElement.dataset.fk), "tool-point");

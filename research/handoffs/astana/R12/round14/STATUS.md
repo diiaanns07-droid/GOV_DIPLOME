@@ -43,3 +43,13 @@ engine/civic_geo (граф, индекс, ближайшее ребро, уча�
 - tests/civic/R12/map/r12_accuracy.test.mjs 4/4 PASS; core 28/28 PASS.
 - Скриншоты: research/round-14-results/R12/screenshots/before-closure-1366.png, after-closure-1366.png, after-closure-375.png
   (подложка — оси улиц OSM из графа: OpenFreeMap в облаке 403).
+
+## Checkpoint 4 — редактор: точная отметка (PARTIAL)
+- web/civic/editor/editor.js: вместо «Линия от руки» — «Участок улицы» (1-е нажатие прилипает к оси улицы через
+  /street-snap, 2-е строит участок по рёбрам через /street-segment, предпросмотр, «Готово»; «Проезжая часть / Тротуар»;
+  новое нажатие перестраивает конец; гонка нажатий отсекается счётчиком); «Выбрать двор» (/yard) и «Площадь по углам»;
+  после точки — подсказка «Рядом есть объект OSM» (/objects-near) и привязка одним нажатием; у линии по улице нет
+  «Изменить вершины»; ошибки понятными словами (не у улицы / привязка не подключена / нет связи); o.geo=false — выкл.
+- engine/civic_geo/api.py: snap_response, near_response, yard_response, handle(path, query) — один вход для R01.
+- Стенд редактора: тестовый (СИНТЕТИЧЕСКИЙ) клиент геоданных; 5 старых тестов переведены с tool-line на tool-segment.
+- Проверки: editor e2e+e2e_r13+joint 41/41, e2e_r12 7/7, map browser 69/69, civic_geo 21/21 — PASS.

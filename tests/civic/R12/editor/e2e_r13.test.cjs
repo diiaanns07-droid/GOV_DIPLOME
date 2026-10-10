@@ -142,7 +142,7 @@ describe("R04 round 13 (contract mock)", { skip: PW ? false : "playwright not in
     await K.loginToList(p);
     await K.fillDraft(p, { title: "Выход во время рисования" });
     await p.check(fk("place-approximate"));
-    await p.click(fk("tool-line"));
+    await p.click(fk("tool-segment"));
     const b = await p.locator("#map").boundingBox();
     await p.mouse.click(b.x + b.width / 2 - 60, b.y + b.height / 2);
     await p.click(fk("logout"));

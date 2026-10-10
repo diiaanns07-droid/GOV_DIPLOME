@@ -70,7 +70,7 @@ describe("R04 editor + R03 public map on one map (joint, pinned R03)", { skip },
     await K.loginToList(p);
     await K.fillDraft(p, { title: "Отметка поверх публичного объекта" });
     // 1) hover over the public object while the line tool is active: whose cursor wins?
-    await p.click(fk("tool-line"));
+    await p.click(fk("tool-segment"));
     const pt = await at();
     await p.mouse.move(pt.x + 2, pt.y + 2);
     await sleep(250);

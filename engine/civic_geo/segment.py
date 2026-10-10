@@ -40,10 +40,19 @@ def _group_filter(groups: Sequence[str] | None) -> Callable[[Edge], bool] | None
 def snap(graph: StreetGraph, p, radius_m: float = DEFAULT_SNAP_M, groups: Sequence[str] | None = None,
          limit: int = 8):
     """Кандидаты привязки точки к улице. Сначала — рёбра нужных групп; если их нет рядом — любые."""
-    found = graph.nearest(p, radius_m, limit=limit, accept=_group_filter(groups))
+    found = graph.nearest(p, radius_m, accept=_group_filter(groups))
     if not found and groups:
-        found = graph.nearest(p, radius_m, limit=limit)
-    return found
+        found = graph.nearest(p, radius_m)
+    # Щелчок «по улице» чаще значит главную улицу, а не безымянный проезд рядом: небольшой штраф в метрах.
+    found.sort(key=lambda r: (r[0] + _snap_penalty(r[1], groups), r[1].id))
+    return found[:limit]
+
+
+def _snap_penalty(e: Edge, groups) -> float:
+    if not groups:
+        return 0.0
+    pen = groups.index(e.group) * 8.0 if e.group in groups else 0.0
+    return pen + (0.0 if e.name else 4.0)
 
 
 def _choose_pair(cands_a, cands_b):
