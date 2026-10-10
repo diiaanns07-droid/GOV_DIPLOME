@@ -44,6 +44,12 @@ agreement.py; корпус v3 лежит в ветке, R03 может обуч�
 - [x] 7. ml/datasets/README.md; research/round-14-results/R02/: DELIVERY.json, RUN.txt (команды ноутбука и
       стоимость), INTEGRATION.txt (patch private/ для R01; R03, R04, R11, LOCAL), KK_STRINGS.md (84+9 строк ru/kk).
 
+## Дополнительно (задание после приёмки)
+- [x] П. 1. ml/datasets/probe_v2/ — 300 проверочных сообщений, написанных вручную вне шаблонов (25 × 12),
+      ru 155 / kk 97 / mixed 48, 9 стилей, 94 спорных случая; source="agent_probe_v2"; split=test.
+      Близость к synth_v3 по Jaccard 3-грамм: медиана 0.18, максимум 0.61 (< 0.8). Сборка: python -m ml.datasets.probe_v2.build.
+- [ ] П. 2. ml/datasets/DATASHEET.md
+
 ## Проверки (Linux, Python 3.13.16, pytest 9.1.1, Node 22.22.0, playwright 1.56.1 + Chromium /opt/pw-browsers)
 - python -m pytest tests/civic/R02/round14 — 89 PASS
 - node --test tests/civic/R02/round14/labeling_core.test.mjs — 12 PASS
