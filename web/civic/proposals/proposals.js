@@ -121,11 +121,7 @@
       function (res) {
         return res.json().then(
           function (json) {
-            if (res.ok && json && json.ok) return json.data;
-            var err = new Error((json && json.error && json.error.message) || "HTTP " + res.status);
-            err.status = res.status;
-            err.code = json && json.error && json.error.code;
-            throw err;
+            return unwrap(res, json);
           },
           function () {
             var err = new Error("HTTP " + res.status);
@@ -142,6 +138,18 @@
         throw err;
       }
     );
+  }
+  // Два формата ответа: конверт R02/R06 {ok, data | error:{code, message}} и «голый» JSON шлюза R01
+  // (успех — сам объект, ошибка — {error: "код", message}). Карточкам всё равно, через что их подключили.
+  function unwrap(res, json) {
+    if (res.ok && json && json.ok === true) return json.data;
+    if (res.ok && json && json.ok === undefined && !json.error) return json;
+    var e = (json && json.error) || {};
+    var err = new Error((typeof e === "object" ? e.message : json && json.message) || "HTTP " + res.status);
+    err.status = res.status;
+    err.code = typeof e === "string" ? e : e.code;
+    err.fields = (typeof e === "object" && e.fields) || (json && json.fields) || {};
+    return Promise.reject(err);
   }
   var csrfToken = null;
   function csrf() {
@@ -389,6 +397,7 @@
 
   root.BirgeProposals = {
     api: api,
+    unwrap: unwrap,
     deviceId: deviceId,
     renderProposal: renderProposal,
     mountProposal: mountProposal,

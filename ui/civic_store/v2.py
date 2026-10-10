@@ -227,3 +227,119 @@ class CivicV2:
         if denied:
             return denied
         return ok(self.proposals.decide(principal.actor(), proposal_id, action, payload))
+
+
+# ===========================================================================================
+# Функции уровня модуля для шлюза R01 (ui/web_server.py, CivicV2Gateway, ветка claude/sharp-dijkstra-0t87gl).
+# Шлюз ищет их по именам из V2_HANDLERS и отдаёт результат как есть (без обёртки ok/data);
+# ошибка — исключение с атрибутами status и code (V2Error). Перед первым вызовом R01 один раз
+# вызывает bind(store_service) — тот же CivicService, что обслуживает v1 (одна база, одни сессии).
+# ===========================================================================================
+
+class V2Error(Exception):
+    """Ошибка для шлюза R01: status (HTTP), code (строка), message (по-русски), fields (по полям)."""
+
+    def __init__(self, status: int, code: str, message: str, fields=None, current_revision=None):
+        super().__init__(message)
+        self.status, self.code, self.message = status, code, message
+        self.fields = fields or {}
+        self.current_revision = current_revision
+
+
+_BOUND: CivicV2 | None = None
+
+
+def bind(service) -> CivicV2:
+    """Связать модуль с CivicService шлюза. Повторный вызов с тем же сервисом ничего не меняет."""
+    global _BOUND
+    if _BOUND is None or _BOUND.service is not service:
+        _BOUND = CivicV2(service)
+    return _BOUND
+
+
+def _v2() -> CivicV2:
+    if _BOUND is None:
+        raise V2Error(503, "module_not_ready", "R06 не связан с хранилищем: шлюз должен вызвать bind(service).")
+    return _BOUND
+
+
+def _run(fn, *args, **kwargs):
+    """Перевод исключений хранилища в V2Error (те же коды, что у CivicV2.handle)."""
+    try:
+        return fn(*args, **kwargs)
+    except ValidationError as exc:
+        raise V2Error(422, "validation_failed", exc.message, exc.fields)
+    except BadRequest as exc:
+        raise V2Error(400, "bad_request", str(exc), exc.fields)
+    except NotFound:
+        raise V2Error(404, "not_found", "Не найдено.")
+    except Conflict as exc:
+        raise V2Error(409, exc.code, str(exc), current_revision=exc.current_revision)
+    except _VoteRateLimited:
+        raise V2Error(429, "rate_limited", "Слишком много голосов подряд. Повторите через минуту.")
+
+
+def _query(bbox=None, district=None, status=None):
+    query = {}
+    if bbox is not None:
+        query["bbox"] = [",".join(str(float(v)) for v in bbox)]
+    if district:
+        query["district"] = [district]
+    if status:
+        query["status"] = [status]
+    return query
+
+
+def _actor(context):
+    """Сотрудник из серверной сессии (cookie). principal-словарь шлюза не содержит user_id для истории."""
+    principal = _v2().service.resolve_principal(context or {})
+    if principal is None or not principal.is_staff:
+        raise V2Error(401, "unauthenticated", "Войдите как сотрудник акимата.")
+    return principal.actor()
+
+
+def list_proposals(bbox=None, district=None, status=None, device_id=None, context=None):
+    return _run(_v2().proposals.list, _query(bbox, district, status), device_id)
+
+
+def get_proposal(proposal_id, device_id=None, context=None):
+    return _run(_v2().proposals.get, proposal_id, device_id)
+
+
+def create_proposal(body, context=None, principal=None):
+    return 201, _run(_v2().proposals.create, _actor(context), body or {})
+
+
+def vote_proposal(proposal_id, value, device_id, context=None):
+    client = str((context or {}).get("client_ip") or "unknown")
+    return _run(_v2().proposals.vote, proposal_id, {"value": value, "device_id": device_id}, client_key=client)
+
+
+def decide_proposal(proposal_id, action, body=None, context=None, principal=None):
+    return _run(_v2().proposals.decide, _actor(context), proposal_id, action, body or {})
+
+
+def proposals_summary(since=None):
+    return _run(_v2().proposals.summary, since)
+
+
+def list_objects(bbox=None, district=None, context=None):
+    return _run(_v2().stages.list_public, _query(bbox, district))
+
+
+def get_object(object_id, context=None):
+    return _run(_v2().stages.get_public, object_id)
+
+
+def set_object_stage(object_id, body, context=None, principal=None):
+    return _run(_v2().stages.set_stage, _actor(context), object_id, body or {})
+
+
+def get_object_stage(object_id, context=None, principal=None):
+    _actor(context)
+    return _run(_v2().stages.get_staff, object_id)
+
+
+def lagging_objects(district=None):
+    """Для R08 «Картина дня»: {today, late:[…], stale:[…], counts, by_district}."""
+    return _run(_v2().stages.lagging, district)

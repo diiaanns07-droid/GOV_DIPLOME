@@ -7,7 +7,7 @@
  *
  *   BirgeStageEditor.mount(container, { objectId: "ast-…", readOnly: false, onSaved: fn })
  *
- * Запросы: GET /api/civic/v2/staff/objects/{id}/stage, POST /api/civic/v2/objects/{id}/stage
+ * Запросы: GET /api/civic/v2/staff/objects/{id}/stage, PUT /api/civic/v2/objects/{id}/stage
  * (CSRF — из GET /api/civic/v1/session; cookie сессии с раунда 14 действует на весь /api/civic).
  * Нужны ui-kit (tokens.css, components.css) и, по возможности, i18n.js и ui-kit.js.
  */
@@ -70,11 +70,14 @@
     return root.fetch(path, { method: method, credentials: "same-origin", headers: headers, body: body ? JSON.stringify(body) : undefined }).then(
       function (res) {
         return res.json().then(function (json) {
-          if (res.ok && json.ok) return json.data;
-          var err = new Error((json.error && json.error.message) || "HTTP " + res.status);
+          // Конверт {ok, data} (R02/R06) или «голый» JSON шлюза R01 — как в proposals.js.
+          if (res.ok && json && json.ok === true) return json.data;
+          if (res.ok && json && json.ok === undefined && !json.error) return json;
+          var e = (json && json.error) || {};
+          var err = new Error((typeof e === "object" ? e.message : json.message) || "HTTP " + res.status);
           err.status = res.status;
-          err.code = json.error && json.error.code;
-          err.fields = (json.error && json.error.fields) || {};
+          err.code = typeof e === "string" ? e : e.code;
+          err.fields = (typeof e === "object" && e.fields) || json.fields || {};
           throw err;
         });
       },
@@ -181,7 +184,8 @@
             e.status = 401;
             throw e;
           }
-          return request("POST", "/api/civic/v2/objects/" + encodeURIComponent(id) + "/stage", body, sess.csrf_token);
+          // PUT — как в CONTRACT §7 и таблице шлюза R01 (сервис R06 принимает и POST).
+          return request("PUT", "/api/civic/v2/objects/" + encodeURIComponent(id) + "/stage", body, sess.csrf_token);
         })
         .then(
           function (data) {
