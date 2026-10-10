@@ -50,11 +50,14 @@ web/civic/build3d/demo.html и data/demo-basemap.json — только для д
     tests/civic/R01/browser/r14_b2.cjs — ожидания под поставку 2: у жителя dock "hint" или "empty" (не только "empty");
       «За» — в карточке R06 (.r06-vote__btn[data-value="1"]) или в своей ([data-action=vote-up]); «Поставить» ждёт
       успешный POST (с R06 7031afa первый POST с контекстом 3D получает 422, R05 повторяет базовым телом).
-1.2а На голове R01 2b9e837 (B3 + ночь 1) — patch research/round-14-results/R05/proposed_r01_b3.patch (git apply --check: OK):
+1.2а На голове R01 2b9e837 и 13ae790 (B3 + ночь 1; файлы оболочки одинаковые) — patch
+    research/round-14-results/R05/proposed_r01_b3.patch (git apply --check на обеих: OK):
     shell.js — убрать остаток адаптера build3dFetch (DELETE→withdraw и device_id R05 делает сам), mount({mode, api:
       window.BirgeShell?.api, avoid, onToolChange}); при «Акимат/Житель» — не пересоздавать модуль, только свернуть ваш
       каталог (setBuild3dCatalog(false)); ваша кнопка «Что построить?» и [data-catalog] работают как есть;
     birge.css — подсказка жителя (data-state="hint") скрыта над полуоткрытой шторкой телефона, как каталог;
+      легенда R07 скрыта, пока открыта карточка проекта 3D (UX_REVIEW R11, ночь, B3 п. 9 — карточка внизу слева
+      закрывала «Қанша адам хабарлады»), как уже скрыта при открытом каталоге и размещении;
     r14_b2.cjs — ожидания поставки 2 (подсказка жителя, голос в карточке R06, успешный POST).
     Проверено (app.py, CIVIC_DEMO=1, временная база): ваш r14_b2.cjs 25/25 с патчем, 23/25 без (те же две проверки
     ожиданий b0353ee) — runs/r01_b3_with_patch.txt, runs/r01_b3_without_patch.txt; мой app_b2_smoke.mjs (раскрывает
