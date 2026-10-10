@@ -4,15 +4,16 @@
  "branch": "claude/upbeat-knuth-i0rqaa",
  "base_sha": "af77b78",
  "restored_from": null,
- "delivery": "ночь, круг 1: замечания R10 (BUGS), R11 (UX_REVIEW день 4), R15 (S11), Codex (LOCAL_B2), R01 (I-01, I-03) — для FINAL (R01)",
- "code_sha": "597ec4f",
+ "delivery": "ночь, круги 1–2: замечания R10, R11, R15, Codex, R01, R08 + самопроверка по UX_BRIEF — для FINAL (R01)",
+ "code_sha": "e465cdd",
  "code_commits": {
   "9bc25e6": "сервер: демо-поток 5 недель, ячейки и «Я тоже» R09, тексты жителей только сотруднику, records()/generation для R08, остановки только автобусные",
   "306074b": "интерфейс: исправления R11 № 1–8 и 12, ключ устройства R09, birge:lang на document, скриншоты",
-  "597ec4f": "ночь 1: S11 подписи жителя только у ячеек, OSM-подписи главнее файлов R12 (I-01), общая сетка R09 (I-03), значок в режиме выбора места = цель (B-019), одна остановка Tab (B-025), тост ui-kit (B-023)"
+  "597ec4f": "ночь 1: S11 подписи жителя только у ячеек, OSM-подписи главнее файлов R12 (I-01), общая сетка R09 (I-03), значок в режиме выбора места = цель (B-019), одна остановка Tab (B-025), тост ui-kit (B-023)",
+  "e465cdd": "ночь 2: цели фикстуры не стираются файлами R12 (B-029, R08 4б), «Повторить» у каждой ошибки, загрузка/ошибка видны на телефоне, «Область на карте» у примерного места, слово R11 для вторсырья, чипы 16 px"
  },
- "tested_sha": "597ec4f",
- "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документы поверх 597ec4f)",
+ "tested_sha": "e465cdd",
+ "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документы поверх e465cdd)",
  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Node 22, Playwright 1.56.1 + Chromium 1194 (программный WebGL); интернет-тайлы закрыты (403) — офлайн-подложка из улиц OSM",
  "note_on_session": "В начале сессии по ошибке выполнялась роль R11; её черновики сохранены в 9cf80fc и 0cf32c5 и удалены из головы ветки (bcb3b6b).",
  "changed_paths": [
@@ -23,10 +24,13 @@
   "research/round-14-results/R07/RUN.txt",
   "research/round-14-results/R07/UX_FIXES_DAY3.md",
   "research/round-14-results/R07/screens/CHECKS.json",
+  "research/round-14-results/R07/screens/action-error-toast-375-kk.jpg",
   "research/round-14-results/R07/screens/card-akimat-1366-kk.jpg",
   "research/round-14-results/R07/screens/card-akimat-1366-ru.jpg",
   "research/round-14-results/R07/screens/card-akimat-375-kk.jpg",
   "research/round-14-results/R07/screens/card-akimat-375-ru.jpg",
+  "research/round-14-results/R07/screens/card-approximate-1366-ru.jpg",
+  "research/round-14-results/R07/screens/card-approximate-375-kk.jpg",
   "research/round-14-results/R07/screens/card-resident-1366-kk.jpg",
   "research/round-14-results/R07/screens/card-resident-1366-ru.jpg",
   "research/round-14-results/R07/screens/card-resident-375-kk.jpg",
@@ -53,6 +57,11 @@
   "research/round-14-results/R07/screens/pick-badge-375-ru.jpg",
   "research/round-14-results/R07/screens/playground-real-osm-1366-kk.jpg",
   "research/round-14-results/R07/screens/pulse-new-complaint-1366-ru.jpg",
+  "research/round-14-results/R07/screens/refresh-error-toast-1366-ru.jpg",
+  "research/round-14-results/R07/screens/state-error-1366-ru.jpg",
+  "research/round-14-results/R07/screens/state-error-375-kk.jpg",
+  "research/round-14-results/R07/screens/state-loading-1366-ru.jpg",
+  "research/round-14-results/R07/screens/state-loading-375-kk.jpg",
   "research/round-14-results/R07/screens/stop-fixed-1366-kk.jpg",
   "research/round-14-results/R07/screens/stop-fixed-1366-ru.jpg",
   "tests/civic/R07/browser/shots.js",
@@ -107,18 +116,16 @@
  ],
  "tests": {
   "pytest tests/civic/R07 (112 passed, 3 skipped)": "PASS",
-  "pytest tests/civic (795 passed, 6 skipped)": "PASS",
+  "pytest tests/civic (795 passed, 6 skipped) на e465cdd": "PASS",
+  "browser tests/civic/R07/browser/shots.js (43 сценария, 1366/375 ru/kk; состояния загрузки/ошибки, «Повторить», выбор места, клавиатура)": "PASS 43/43 (screens/CHECKS.json)",
+  "сборка R01 @ 13ae790 + R07 e465cdd (копия во временной папке): r14_b1.cjs / r14_b2.cjs": "PASS 15/15 и 25/25",
+  "сборка R01 @ 13ae790 + R07 e465cdd: pytest tests/civic/R07 + R08/test_r08_hot_labels.py + R15": "PASS 234 passed, 1 skipped",
   "skipped в R07 (3)": "NOT_RUN в ветке: формула ячейки R09 и сверка с R08 — модулей нет; в сборке R01 те же тесты PASS",
-  "browser tests/civic/R07/browser/shots.js (35 сценариев, 1366/375 ru/kk; +pick-badge ×4, keyboard-badges-roving, toast-ui-kit)": "PASS 35/35 (screens/CHECKS.json)",
-  "сборка R01 @ d9a8895 + R07 597ec4f (копия во временной папке): r14_b1.cjs": "PASS 15/15",
-  "сборка R01 @ d9a8895 + R07 597ec4f: r14_b2.cjs": "PASS 22/22",
-  "сборка R01 @ d9a8895 + R07 597ec4f: pytest tests/civic/R07 tests/civic/R15": "R07 PASS; R15 S11 ×2 XPASS (= исправлено, R01/R15 переносят в FIXED); остальные xfail R15 — чужие",
-  "tests/civic/R07/tune_demo_seed.py с кодом R08 @ a4189ba (копия во временной папке, не в ветке)": "PASS: OK seed 20261014",
   "реальная подложка OpenFreeMap (тайлы из интернета)": "NOT_RUN: в облаке 403, задача LOCAL-7",
   "живые данные R09 v2": "NOT_RUN: модуля в этой ветке нет — демо-набор по CONTRACT §5; подключение configure(source, metoo_times) — INTEGRATION §1в",
   "цели R12 (engine.civic_geo)": "NOT_RUN: модуля в этой ветке нет — реальные объекты LOCAL-1 читаются напрямую"
  },
- "screenshots": "research/round-14-results/R07/screens/ — 32 кадра 1366×768 и 375×812, ru и kk, только из реально запущенного интерфейса (новые: pick-badge-*); замеры — CHECKS.json",
+ "screenshots": "research/round-14-results/R07/screens/ — 40 кадров 1366×768 и 375×812, ru и kk, только из реально запущенного интерфейса; замеры — CHECKS.json",
  "known_limits": [
   "Жалобы демо (synthetic, demo: true): 483 жалобы, 952 человека с «Я тоже», 54 цели. Цели настоящие (OSM/LOCAL-1): 26 участков улиц (рёбра графа OSM), остановки и дворы ЖК Нуры, детские и контейнерные площадки, в каждом районе — настоящая остановка и двор.",
   "Демо-числа подобраны под критерии R08 (seed 20261014), но это не статистика Астаны.",
@@ -132,7 +139,7 @@
   "Тексты настоящих жалоб видит только сотрудник, если шлюз R01 передаёт staff=True; без этого — только примеры и число скрытых людей.",
   "11 id из файлов R12 нет в слое OSM R07 (части мультиполигонов yard-r…-N, платформа «Мерей» без bus=yes) — берутся у R12."
  ],
- "next_step": "R01 (FINAL): взять R07 @ 597ec4f; убрать адаптер R09CellResolver (модуль подписывает «примерное место» сам); правило birge.css для .r07-badge можно оставить (INTEGRATION §1е); ссылка «к главному действию» — B-025. R08: I-02 в своём тесте. R15/R01: S11 → FIXED.",
+ "next_step": "R01 (FINAL): взять R07 @ e465cdd; убрать адаптер R09CellResolver; patch R08 4б не нужен (то же сделано в R07); правило birge.css для .r07-badge можно оставить (INTEGRATION §1е); B-017 — ручка шторки оболочки. R11: 8 новых ключей heat.kind.* (INTEGRATION §6).",
  "inputs": {
   "data/civic/astana/osm-objects/": "LOCAL-1, claude/round-14-package @ bdf12c8, без изменений (git diff с пакетом пуст), real, ODbL",
   "research/round-14-results/R11/UX_REVIEW.md": "claude/r14-R11 @ f025241, только чтение",
@@ -148,6 +155,9 @@
   "R10 B-019 / R11 B1 п.3 / LOCAL_B2 P1 (важно)": "FIXED — в режиме выбора места значок передаёт карте щелчок в точку цели; shots.js pick-badge ×4 PASS",
   "R10 B-025 (мелочь)": "FIXED (часть R07) — значки = одна остановка Tab, стрелки между ними; ссылка «к главному действию» — R01",
   "R10 B-023 (мелочь)": "FIXED (часть R07) — тосты через BirgeUI.toast; сворачивание каталога — R01/R05",
-  "R10 B-016, B-017; R11 день 4 п.1": "уже FIXED в 306074b (в B3) — повторно проверено на стенде R07"
+  "R10 B-016, B-017; R11 день 4 п.1": "уже FIXED в 306074b (в B3) — повторно проверено на стенде R07",
+  "R10 B-029 (важно) / R08 4б": "FIXED — 597ec4f + e465cdd; test_r08_hot_labels PASS в сборке R01 13ae790",
+  "R10 B-017 (B3)": "не R07: ручка шторки оболочки R01 (shell.sheet.expand); у стенда R07 — 48 px",
+  "UX_BRIEF самопроверка": "FIXED — «Повторить» у ошибок, состояния загрузки/ошибки на телефоне, примерное место, чипы 16 px"
  }
 }
