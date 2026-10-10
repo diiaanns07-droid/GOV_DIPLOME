@@ -42,6 +42,7 @@
   "ml/civic_classifier_v2/results/preds_probe_v2_synth_all_heuristic.jsonl",
   "ml/civic_classifier_v2/results/preds_probe_v2_synth_all_logreg.jsonl",
   "ml/civic_classifier_v2/results/preds_probe_v2_synth_template_logreg.jsonl",
+  "ml/civic_classifier_v2/results/tables/t10_classify_load.csv",
   "ml/civic_classifier_v2/results/tables/t1_probe_v2_macro_f1.csv",
   "ml/civic_classifier_v2/results/tables/t2_template_vs_probe.csv",
   "ml/civic_classifier_v2/results/tables/t3_paired_probe_v2.csv",
@@ -71,8 +72,8 @@
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 104, xfailed 1 (известное ограничение словаря: благодарность с темой)",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 96, NOT_RUN 8 (skipped с причиной), xfailed 1",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 105, xfailed 1 (известное ограничение словаря: благодарность с темой)",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 97, NOT_RUN 8 (skipped с причиной), xfailed 1",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
@@ -152,7 +153,7 @@
   "per-text predictions": "results/preds_probe_v2_synth_all_{heuristic,logreg}.jsonl (id и метки)",
   "translit": "ml/civic_classifier_v2/results/translit_to_cyrillic_probe_v2.json",
   "label_audit": "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.md (+ .json), llm_label_cleaning_effect.json",
-  "classify_load": "ml/civic_classifier_v2/bench.py → results/classify_load_cloud.json (для R15/R04)"
+  "classify_load": "ml/civic_classifier_v2/bench.py → results/classify_load_cloud.json, таблица 10 в DIPLOMA_TABLES.md (для R15/R04/R14)"
  },
  "for_R01": "В R01 ef1ef44 уже R03 937f665 (B-004 исправлен, проверено: «машины стоят на газоне во дворе» → parking) — для показа достаточно. Если обновлять перед FINAL — последний SHA ветки: две мелочи predict.py (гонка get_default, запасной torch при отсутствии onnxruntime), в связке R04 не проявляются; остальное — анализ, отчёты, тесты. Проверено: ef1ef44 + пути R03 @ c1654aa — 794 passed."
 }

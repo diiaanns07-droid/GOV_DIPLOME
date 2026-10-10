@@ -195,3 +195,14 @@ def test_suggest_section_precision():
                    "3": {"true": "roads", "pred": "roads", "score": 0.2}}}
     md = "\n".join(A._suggest_section(preds, probe))
     assert "| `m` | 0.3 | 50% | 50% | 4 |" in md and "| `m` | 0.9 | 25% | 100% | 4 |" in md
+
+
+def test_load_table_from_bench_files(tmp_path):
+    rep = {"cpu": {"cpu_count": 4}, "threads_per_request": 4, "peak_rss_mb": 509.0,
+           "sequential_by_length": {"40": {"mean_ms": 10.9, "p95_ms": 14.7}, "5000": {"mean_ms": 34.9, "p95_ms": 43.5}},
+           "concurrent_longest": {"length": 5000, "by_workers": {"8": {"requests_per_minute": 2342, "p95_ms": 291.6},
+                                                                  "1": {"requests_per_minute": 1653, "p95_ms": 46.4}}}}
+    (tmp_path / "classify_load_cloud.json").write_text(json.dumps(rep), encoding="utf-8")
+    (tmp_path / "classify_load_broken.json").write_text("{}", encoding="utf-8")       # без замеров — пропускается
+    t = next(t for t in A.extra_tables(tmp_path) if t.slug == "t10_classify_load")
+    assert t.rows == [["cloud", "4 / 4", "10.9", "34.9 / 43.5", "1 → 1653; 8 → 2342", "292", "509"]]

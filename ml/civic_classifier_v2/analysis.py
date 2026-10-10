@@ -201,7 +201,7 @@ def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None)
 
 
 def extra_tables(folder: Path) -> list[Table]:
-    """Дополнительные опыты (если файлы есть): перевод транслита и чистка шумных меток llm_v1."""
+    """Дополнительные опыты (если файлы есть): перевод транслита, чистка шумных меток llm_v1, нагрузка /classify."""
     out = []
     tr = _load(folder / "translit_to_cyrillic_probe_v2.json")
     if tr:
@@ -234,6 +234,26 @@ def extra_tables(folder: Path) -> list[Table]:
                   f"{_f(cl['probe_v2_macro_f1']['original'])} / {_f(cl['probe_v2_macro_f1']['clean'])}")
             t.add("Δ [95% ДИ]", f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}] — "
                                 f"{'доказано' if d['low'] > 0 or d['high'] < 0 else 'не доказано'}")
+        out.append(t)
+    loads = [(f, _load(f)) for f in sorted(folder.glob("classify_load*.json"))]
+    loads = [(f, r) for f, r in loads if r.get("sequential_by_length")]
+    if loads:
+        t = Table("t10_classify_load", "Таблица 10. Нагрузка на /classify: ONNX int8, CPU",
+                  ["Замер", "Ядер / потоков на запрос", "Текст 40 знаков: mean, мс", "5000 знаков: mean / p95, мс",
+                   "Одновременно → запросов в минуту", "p95 при наибольшем числе, мс", "Память, МБ"],
+                  "bench.py: путь R04 /classify (обрезка до 5000 знаков и 128 токенов, токенизация, ONNX). Облако — "
+                  "модель того же размера со случайными весами: скорость, не качество. Лимит R15 — 60 запросов в минуту "
+                  "с адреса.")
+        for f, r in loads:
+            seq = r["sequential_by_length"]
+            short, longest = seq[min(seq, key=int)], seq[max(seq, key=int)]
+            conc = r["concurrent_longest"]["by_workers"]
+            top = conc[max(conc, key=int)]
+            t.add(f.stem.replace("classify_load", "").lstrip("_") or "—",
+                  f"{r['cpu'].get('cpu_count')} / {r.get('threads_per_request')}", _f(short["mean_ms"], 1),
+                  f"{_f(longest['mean_ms'], 1)} / {_f(longest['p95_ms'], 1)}",
+                  "; ".join(f"{w} → {v['requests_per_minute']}" for w, v in sorted(conc.items(), key=lambda kv: int(kv[0]))),
+                  _f(top["p95_ms"], 0), _f(r.get("peak_rss_mb"), 0))
         out.append(t)
     return out
 
