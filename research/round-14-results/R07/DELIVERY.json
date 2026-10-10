@@ -4,8 +4,8 @@
  "branch": "claude/upbeat-knuth-i0rqaa",
  "base_sha": "af77b78",
  "restored_from": null,
- "delivery": "ночь, круги 1–11: замечания R10, R11, R15, Codex, R01, R08, стык с новым R09 + самопроверка и ревью кода — для FINAL (R01)",
- "code_sha": "96def31",
+ "delivery": "ночь, круги 1–12: замечания R10, R11, R15, Codex (LOCAL_B2, OFFLINE), R01, R08, стык с новым R09 + самопроверка и ревью кода — для FINAL (R01)",
+ "code_sha": "9411dee",
  "code_commits": {
   "9bc25e6": "сервер: демо-поток 5 недель, ячейки и «Я тоже» R09, тексты жителей только сотруднику, records()/generation для R08, остановки только автобусные",
   "306074b": "интерфейс: исправления R11 № 1–8 и 12, ключ устройства R09, birge:lang на document, скриншоты",
@@ -19,10 +19,11 @@
   "3e06702": "ночь 8: офлайн-улицы вокруг демо-целей вне Нуры в basemap-nura.geojson (R11 ночь 7 п.1)",
   "2575e11": "ночь 9: исправления по ревью кода (видимая часть панели, один тост ошибки, «Повторить» после перерисовки, кэш ячеек, заглушки имён R12) + html.bc-picking нового R09",
   "0639ede": "ночь 10: у примеров R07 в общей сборке нет кнопок статуса (их нет в R09, R10 B-037), 404 — «Обращение не найдено»",
-  "96def31": "ночь 11: подсказка «Приблизьте карту» на телефоне — в шторке на текущем языке, без тоста над главной кнопкой (R10 B-038)"
+  "96def31": "ночь 11: подсказка «Приблизьте карту» на телефоне — в шторке на текущем языке, без тоста над главной кнопкой (R10 B-038)",
+  "9411dee": "ночь 12: значки обходят чужие маркеры (таблички R05), 404 — обычное сообщение"
  },
- "tested_sha": "96def31",
- "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документы поверх 96def31)",
+ "tested_sha": "9411dee",
+ "push_status": "см. финальное сообщение сессии и STATUS.md (коммит с этим файлом — документы поверх 9411dee)",
  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Node 22, Playwright 1.56.1 + Chromium 1194 (программный WebGL); интернет-тайлы закрыты (403) — офлайн-подложка из улиц OSM",
  "note_on_session": "В начале сессии по ошибке выполнялась роль R11; её черновики сохранены в 9cf80fc и 0cf32c5 и удалены из головы ветки (bcb3b6b).",
  "changed_paths": [
@@ -59,6 +60,7 @@
   "research/round-14-results/R07/screens/empty-filter-375-kk.jpg",
   "research/round-14-results/R07/screens/empty-filter-375-ru.jpg",
   "research/round-14-results/R07/screens/filter-snow-7days-1366-kk.jpg",
+  "research/round-14-results/R07/screens/foreign-marker-1366-ru.jpg",
   "research/round-14-results/R07/screens/hot-outside-nura-1366-kk.jpg",
   "research/round-14-results/R07/screens/hot-outside-nura-375-ru.jpg",
   "research/round-14-results/R07/screens/integrated-main-app-1366-ru.jpg",
@@ -139,11 +141,11 @@
  "tests": {
   "pytest tests/civic/R07 (116 passed, 3 skipped)": "PASS",
   "pytest tests/civic (799 passed, 6 skipped) на 0639ede": "PASS",
-  "browser tests/civic/R07/browser/shots.js (59 сценариев, 1366/375 ru/kk; в каждом кадре — зона нажатия ≥ 48 и видимая высота ≥ 44)": "PASS 59/59 на 96def31 (screens/CHECKS.json)",
+  "browser tests/civic/R07/browser/shots.js (60 сценариев, 1366/375 ru/kk; в каждом кадре — зона нажатия ≥ 48 и видимая высота ≥ 44)": "PASS 60/60 на 9411dee (screens/CHECKS.json)",
   "сборка R01 @ 9b6f0de (FINAL-кандидат) + R07 96def31 (копия во временной папке): pytest R07+R08+R15": "PASS 421 passed, 2 skipped, 1 xfailed (R08 «нормальный день» — время суток)",
-  "сборка R01 @ 9b6f0de + R07 96def31: r14_b1.cjs / r14_b2.cjs": "PASS 15/15 и 25/25",
+  "сборка R01 @ 9b6f0de + R07 9411dee: r14_b1.cjs / r14_b2.cjs": "PASS 15/15 и 25/25",
   "skipped в R07 (3)": "NOT_RUN в ветке: формула ячейки R09 и сверка с R08 — модулей нет; в сборке R01 те же тесты PASS",
-  "реальная подложка OpenFreeMap (тайлы из интернета)": "NOT_RUN: в облаке 403, задача LOCAL-7",
+  "настоящая подложка (OpenFreeMap или офлайн PMTiles R01/Codex)": "NOT_RUN у R07: в облаке тайлы закрыты, архив PMTiles не в Git (LOCAL); на кадре Codex OFFLINE слои R07 по улицам, подписи подложки поверх",
   "живые данные R09 v2": "NOT_RUN: модуля в этой ветке нет — демо-набор по CONTRACT §5; подключение configure(source, metoo_times) — INTEGRATION §1в",
   "цели R12 (engine.civic_geo)": "NOT_RUN: модуля в этой ветке нет — реальные объекты LOCAL-1 читаются напрямую",
   "живой сервер сборки R01 13ae790 + R07 (CIVIC_DEMO=1): /heat — 53 цели, подписей «Нысан/Двор или квартал» 0": "PASS",
@@ -164,7 +166,7 @@
   "Тексты настоящих жалоб видит только сотрудник, если шлюз R01 передаёт staff=True; без этого — только примеры и число скрытых людей.",
   "11 id из файлов R12 нет в слое OSM R07 (части мультиполигонов yard-r…-N, платформа «Мерей» без bus=yes) — берутся у R12."
  ],
- "next_step": "R01 (FINAL): взять R07 @ 96def31 (вместе с web/civic/heat/fixtures/basemap-nura.geojson — в нём улицы вокруг горячих мест вне Нуры); убрать адаптер R09CellResolver; patch R08 4б не нужен (то же сделано в R07); правило birge.css для .r07-badge можно оставить (INTEGRATION §1е); B-017 — ручка шторки оболочки. R11: 10 новых ключей (heat.kind.*, heat.too_many, heat.need_login) (INTEGRATION §6).",
+ "next_step": "R01 (FINAL): взять R07 @ 9411dee (вместе с web/civic/heat/fixtures/basemap-nura.geojson — в нём улицы вокруг горячих мест вне Нуры); убрать адаптер R09CellResolver; patch R08 4б не нужен (то же сделано в R07); правило birge.css для .r07-badge можно оставить (INTEGRATION §1е); B-017 — ручка шторки оболочки. R11: 10 новых ключей (heat.kind.*, heat.too_many, heat.need_login) (INTEGRATION §6).",
  "inputs": {
   "data/civic/astana/osm-objects/": "LOCAL-1, claude/round-14-package @ bdf12c8, без изменений (git diff с пакетом пуст), real, ODbL",
   "research/round-14-results/R11/UX_REVIEW.md": "claude/r14-R11 @ f025241, только чтение",
@@ -196,6 +198,7 @@
   "стык с новым R09 (bc-picking, свой перехват маркеров)": "проверено: выбор места ровно один, карточка не открывается",
   "R10 B-037 (важно)": "FIXED (часть R07): кнопок у примеров нет, честная пометка; 404 не «проверьте связь». Полностью — R01 засевает примеры в R09 при CIVIC_DEMO=1 (по желанию)",
   "R10 B-036 (мелочь)": "оставлено намеренно (ремонт закрывает всё, что пришло раньше; из интерфейса недостижимо) — NIGHT_FIXES круг 10",
-  "R10 B-038 (мелочь)": "FIXED — подсказка в шторке, тоста нет, язык меняется сразу"
+  "R10 B-038 (мелочь)": "FIXED — подсказка в шторке, тоста нет, язык меняется сразу",
+  "кадр Codex OFFLINE (табличка R05 на значке)": "FIXED — чужие маркеры — препятствия"
  }
 }
