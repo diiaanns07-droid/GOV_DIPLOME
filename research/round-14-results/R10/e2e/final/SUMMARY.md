@@ -1,7 +1,7 @@
-# R10 · приёмка FINAL-candidate-4ca9aef · сборка 4ca9aef
+# R10 · приёмка FINAL-candidate-6096be8 · сборка 9b6f0de
 
-Папка сборки: <worktree 4ca9aef>
-Когда: 2026-10-10T19:13:16.451Z · Node v22.22.0 · Python: python3
+Папка сборки: <worktree 9b6f0de>
+Когда: 2026-10-10T19:27:22.622Z · Node v22.22.0 · Python: python3
 
 ## 1. Точность карты (CONTRACT §8)
 

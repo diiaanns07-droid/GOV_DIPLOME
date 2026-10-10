@@ -1,7 +1,7 @@
 {
  "meta": {
-  "root": "<worktree 4ca9aef>",
-  "sha": "4ca9aef",
+  "root": "<worktree 9b6f0de>",
+  "sha": "9b6f0de",
   "base": "http://127.0.0.1:<порт>/",
   "seeds": [],
   "sizes": [
@@ -12,7 +12,7 @@
    "ru",
    "kk"
   ],
-  "when": "2026-10-10T19:22:47.368Z",
+  "when": "2026-10-10T19:37:01.281Z",
   "node": "v22.22.0"
  },
  "counts": {
@@ -62,7 +62,7 @@
    "status": "PASS",
    "detail": {
     "status": 200,
-    "n": 3,
+    "n": 1,
     "stop": "Хан Шатыр"
    },
    "shot": null
@@ -132,7 +132,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "c-e1638462087f90e9",
+    "id": "c-c64cc19bb96b4efa",
     "st": "new"
    },
    "shot": null
@@ -146,7 +146,7 @@
     "status": 200,
     "n": 1,
     "top": {
-     "complaint_id": "c-e1638462087f90e9",
+     "complaint_id": "c-c64cc19bb96b4efa",
      "score": 0.798,
      "target": {
       "id": "osm-node-13394597038",
@@ -157,7 +157,7 @@
      "metoo": 0,
      "people": 1,
      "category": "transport",
-     "created_at": "2026-10-11T00:13:52+05:00",
+     "created_at": "2026-10-11T00:28:02+05:00",
      "status": "new",
      "distance_m": 44.3,
      "same_target": false
@@ -268,7 +268,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "p-103d6f993d81",
+    "id": "p-e122c8616df8",
     "st": "proposal"
    },
    "shot": null
@@ -310,7 +310,7 @@
     "item": {
      "level": "fixed",
      "weight": 0,
-     "fixed_until": "2026-10-18T00:13:53+05:00"
+     "fixed_until": "2026-10-18T00:28:02+05:00"
     }
    },
    "shot": null
