@@ -48,8 +48,19 @@ def _row(check: str, obj: str, ok: bool, value, detail: str) -> dict:
             "value": None if value is None else (round(value, 2) if value != float("inf") else "inf"), "detail": detail}
 
 
+def check_line_on_streets(graph: StreetGraph, coords) -> tuple[bool, float]:
+    """Линия без списка рёбер (например, из хранилища): каждые 2 м — не дальше 5 м от какого-нибудь ребра графа."""
+    mid = coords[len(coords) // 2]
+    span = max(geo.haversine_m(mid, c) for c in coords) + 50.0
+    near = [e.geometry for _, e, _ in graph.nearest(mid, span)]
+    off = geo.max_offset_m(coords, near) if near else float("inf")
+    return off <= LINE_TOLERANCE_M, off
+
+
 def report(graph: StreetGraph | None = None, geo_dir: Path = GEO_DIR, demo_path: Path = DEMO_SYNTHETIC,
-           snapped_path: Path | None = None) -> dict:
+           snapped_path: Path | None = None, objects_path: Path | None = None) -> dict:
+    """objects_path — необязательная выгрузка записей civic-v1 ({"items": [...]}, например из хранилища R06):
+    каждая линия в ней должна идти по улице (≤ 5 м от рёбер графа)."""
     graph = graph or get_graph()
     objects, yards, _ = get_layers(geo_dir)
     city = CityBoundary()
@@ -106,6 +117,17 @@ def report(graph: StreetGraph | None = None, geo_dir: Path = GEO_DIR, demo_path:
         if not city.contains(y.point):
             rows.append(_row("inside_astana", y.id, False, None, f"центр двора вне границы: {y.point}"))
 
+    # 4б. Линии в выгрузке хранилища (то, что сотрудники нарисовали в редакторе).
+    if objects_path is not None:
+        data = json.loads(Path(objects_path).read_text("utf-8"))
+        for it in data.get("items", data if isinstance(data, list) else []):
+            g = (it or {}).get("geometry") or {}
+            if g.get("type") != "LineString":
+                continue
+            ok, off = check_line_on_streets(graph, g["coordinates"])
+            rows.append(_row("store_line_on_street", str(it.get("id")), ok, off,
+                             f"отклонение от улиц {off:.2f} м (допуск {LINE_TOLERANCE_M:g} м)"))
+
     # 5. Перекрытия в сценариях ссылаются на настоящие рёбра этого графа.
     for p in sorted(SCENARIO_CASES.glob("*.case.json")):
         case = json.loads(p.read_text("utf-8"))
@@ -128,6 +150,7 @@ def report(graph: StreetGraph | None = None, geo_dir: Path = GEO_DIR, demo_path:
         "schema": "r12-accuracy-report-v1",
         "graph": {"id": graph.id, "digest": graph.digest},
         "inputs": {"demo": str(Path(demo_path).resolve().relative_to(ROOT)), "snapped": str(sp.resolve().relative_to(ROOT)) if sp.is_file() else None,
+                   "store_export": str(objects_path) if objects_path else None,
                    "objects": len(objects.items), "yards": len(yards.items)},
         "rules": {"line_tolerance_m": LINE_TOLERANCE_M, "stop_to_street_m": STOP_TO_STREET_M,
                   "boundary": "data/civic/astana/geofence.json (полигоны районов OSM)"},

@@ -73,6 +73,8 @@ test("r12: demo closure is drawn along the OSM street, not by hand", { skip: SKI
   assert.equal(line[0].properties.street, "улица Сакена Сейфуллина");
   // Каждая линия на карте — привязанная (ни одной «от руки»).
   for (const f of fs.filter((x) => x.geometry.type === "LineString")) assert.equal(f.properties.snapped, true, f.properties.cid);
+  // Демо-линия, которую нельзя честно положить на одну улицу, — областью, не крюком по соседним улицам.
+  assert.deepEqual(fs.filter((f) => f.properties.cid === "demo-astana-roadworks-completed").map((f) => f.geometry.type), ["Polygon"]);
   // Примерная точка — область «примерное место» + значок.
   const approx = fs.filter((f) => f.properties.cid === "demo-astana-construction-unknown").map((f) => f.geometry.type);
   assert.deepEqual(approx, ["Polygon", "Point"]);
@@ -94,8 +96,9 @@ test("r12: before — the same record without snapping is a free-hand line that 
   // показывается областью «примерное место»; для скриншота «было» рисуем исходную линию на стенде отдельно.
   const { ctx, page, errors } = await open({});
   const fs = await features(page);
-  assert.deepEqual(fs.filter((f) => f.properties.cid === DELAY).map((f) => f.geometry.type), ["Polygon"],
-    "без привязки — только область, не уверенная линия");
+  const raw = fs.filter((f) => f.properties.cid === DELAY);
+  assert.deepEqual(raw.map((f) => [f.geometry.type, f.properties.exact]), [["LineString", false]],
+    "без файла привязки — исходная линия только пунктиром (примерно), не сплошной");
   const hand = SNAPPED.items[DELAY].original_coordinates;
   await page.evaluate((coords) => {
     const m = window.__stand.map;

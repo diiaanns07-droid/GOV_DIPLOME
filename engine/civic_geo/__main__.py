@@ -1,6 +1,6 @@
 """Командная строка R12:
 
-    python3 -m engine.civic_geo report [--json out.json]        отчёт точности по всем объектам карты (код 1 при FAIL)
+    python3 -m engine.civic_geo report [--json out.json] [--objects store.json]   отчёт точности (код 1 при FAIL)
     python3 -m engine.civic_geo targets LON LAT CATEGORY         кандидаты привязки жалобы
     python3 -m engine.civic_geo segment LON,LAT LON,LAT [--kind road|foot]   участок улицы по графу
     python3 -m engine.civic_geo bench [N]                        время ответа /targets на N случайных точках
@@ -35,8 +35,9 @@ def main(argv=None):
         from .accuracy import format_report, report
         ap = argparse.ArgumentParser(prog="report")
         ap.add_argument("--json")
+        ap.add_argument("--objects", help="выгрузка записей civic-v1 (JSON {items:[...]}) — проверить их линии")
         a = ap.parse_args(rest)
-        r = report()
+        r = report(objects_path=Path(a.objects) if a.objects else None)
         print(format_report(r))
         if a.json:
             Path(a.json).parent.mkdir(parents=True, exist_ok=True)

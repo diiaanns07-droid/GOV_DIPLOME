@@ -376,8 +376,14 @@ test("r12: demo_snapped replaces a free-hand line only when the stored geometry 
   assert.equal(d1[0].geometry.type, "LineString");
   assert.equal(d1[0].properties.snapped, true);
   const d2 = fc.features.filter((f) => f.properties.cid === "d2");
-  assert.deepEqual(d2.map((f) => f.geometry.type), ["Polygon"], "непривязанная примерная линия — только область");
-  assert.equal(d2[0].properties.approx_area, true);
+  assert.deepEqual(d2.map((f) => f.geometry.type), ["LineString"], "примерная линия из хранилища — пунктиром по своей форме, не кругом");
+  assert.equal(d2[0].properties.exact, false);
+  assert.match(C.placeText(out[1]), /границы примерные/);
+  // демо-линия, которую snap_demo не смог честно положить на одну улицу, — только область «примерное место»
+  const forced = C.applySnapped(items, { items: { d1: { status: "not_snapped", display: "approximate_area", original_coordinates: hand } } });
+  const f1 = C.featureCollection(forced).features.filter((f) => f.properties.cid === "d1");
+  assert.deepEqual(f1.map((f) => f.geometry.type), ["Polygon"]);
+  assert.equal(f1[0].properties.approx_area, true);
   assert.deepEqual(C.applySnapped(items, null), items);
   assert.deepEqual(C.applySnapped(items, { items: { d1: { status: "snapped", original_coordinates: hand, geometry: { type: "LineString", coordinates: [[1, 2], [3, 4]] } } } })[0].geometry.coordinates, hand,
     "привязка вне Астаны отбрасывается");

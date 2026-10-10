@@ -304,3 +304,42 @@ def test_snap_demo_refuses_a_detour_and_keeps_the_closure(real):
     assert items["demo-astana-roadworks-delay"]["length_ratio"] < 1.05
     side = items["demo-astana-roadworks-completed"]
     assert side["status"] == "not_snapped" and side["display"] == "approximate_area", side.get("reason")
+
+
+# ---------- по независимой проверке (review 10 окт) ----------
+def test_snap_polyline_legs_share_the_waypoint_and_never_jump(real):
+    """Было: промежуточная вершина прилипала к двум разным рёбрам, части соединялись прямой (60 м)."""
+    coords = [[71.51675157, 51.10704701], [71.51691021, 51.10667544], [71.51777978, 51.10672599]]
+    try:
+        r = segment.snap_polyline(real, coords, groups=("road", "service"))
+    except segment.GeoError:
+        return  # честный отказ (тогда демо-запись показывается областью) — тоже правильно
+    line = r["geometry"]["coordinates"]
+    near = [e.geometry for _, e, _ in real.nearest(line[len(line) // 2], 800)]
+    assert geo.max_offset_m(line, near) <= 5.0
+
+
+def test_loop_edge_takes_the_short_way(real):
+    """Ребро-петля (from == to): путь уходит с петли ближним концом, а не обходит её целиком."""
+    loop = real.by_id["osm-w627195412-0"]
+    assert loop.a == loop.b
+    a = geo.point_at_along(loop.geometry, loop.length_m - 8)[1]
+    nxt = real.by_id["osm-w627195412-1"]
+    b = geo.point_at_along(nxt.geometry, 30)[1]
+    r = segment.street_segment(real, a, b)
+    assert r["length_m"] < 60, r["length_m"]
+    ok, off, _ = accuracy.check_line_on_edges(real, r["geometry"]["coordinates"], r["edge_ids"])
+    assert ok and off < 0.5
+
+
+def test_report_checks_store_lines(real, tmp_path):
+    seif = segment.street_segment(real, [71.4251, 51.1712], [71.4326, 51.1719], groups=("road",))
+    export = tmp_path / "store.json"
+    export.write_text(json.dumps({"items": [
+        {"id": "editor-line", "geometry": seif["geometry"]},
+        {"id": "hand-line", "geometry": {"type": "LineString", "coordinates": [[71.4251, 51.1712], [71.4289, 51.1716], [71.4326, 51.1719]]}},
+        {"id": "point", "geometry": {"type": "Point", "coordinates": [71.43, 51.17]}}]}), "utf-8")
+    r = accuracy.report(real, objects_path=export)
+    rows = {x["id"]: x for x in r["rows"] if x["check"] == "store_line_on_street"}
+    assert rows["editor-line"]["status"] == "PASS" and rows["hand-line"]["status"] == "FAIL"
+    assert set(rows) == {"editor-line", "hand-line"}

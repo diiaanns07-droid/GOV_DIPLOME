@@ -116,6 +116,25 @@ describe("R12 editor: exact place tools", { skip: PW ? false : "playwright not i
     assert.ok(Math.abs(rec.geometry.coordinates.at(-1)[0] - 71.441) < 0.0002, "сохранён участок до последнего нажатия");
   });
 
+  it("review fixes: switching road/sidewalk or «Начать заново» while an answer is in flight leaves no stale start and no stuck «Строим…»", async () => {
+    const p = await draft("?geodelay=500");
+    await p.click(fk("tool-segment"));
+    await clickAt(p, 71.425, 51.13);              // ответ на «начало» ещё в пути…
+    await sleep(80);
+    await p.click(fk("seg-kind-foot"));            // …а сотрудник переключил «Тротуар»
+    await sleep(800);
+    assert.match(await p.textContent(fk("seg-step")), /Нажмите на начало участка/, "старый ответ не стал началом");
+    await clickAt(p, 71.425, 51.13);
+    await p.waitForSelector(`${fk("seg-step")}:has-text("Начало")`, { timeout: 5000 });
+    await clickAt(p, 71.435, 51.13);              // строим участок…
+    await sleep(80);
+    await p.click(fk("tool-undo"));                // …и сразу «Начать заново»
+    await sleep(800);
+    assert.match(await p.textContent(fk("seg-step")), /Нажмите на начало участка/, "нет зависшего «Строим участок…»");
+    assert.equal(await p.isDisabled(fk("tool-done")), true);
+    await p.keyboard.press("Escape");
+  });
+
   it("server without the R12 routes: an honest message, nothing drawn by hand; geo:false disables the tools", async () => {
     const p = await draft("?geo=fail");
     await p.click(fk("tool-segment"));

@@ -689,7 +689,7 @@
     function buildEditor() {
       const it = S.item, acts = C.allowedActions(it, S.session), locked = C.isOriginalLocked(it);
       for (const k of Object.keys(F)) delete F[k];
-      for (const k of ["reauth", "restore", "conflict", "srcreview", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history", "rare"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
+      for (const k of ["reauth", "restore", "conflict", "srcreview", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history", "rare", "stage"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
       V.msg.setAttribute("class", "civic-r04-slot-msg");
       const meta = it
         ? el("p", { class: "civic-r04-meta" }, [badge(C.PUBLICATION[it.publication] || String(it.publication), "pub-" + it.publication),
@@ -767,7 +767,10 @@
         el("div", { class: "civic-r04-bar" }, [
           btn("← Все записи", () => showList(true), "link", "back"),
           el("h3", { id: P + "edit-h", tabindex: "-1", "data-fk": "edit-h" }, it ? it.title || "(без названия)" : "Новый объект"), meta]),
-        V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.preview, V.history, review, actions].filter(Boolean)));
+        V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.stage, V.preview, V.history, review, actions].filter(Boolean)));
+      // R06 раунд 14: этап работ — отдельный блок со своей кнопкой и ревизией (web/civic/proposals/stage-editor.js),
+      // форма и сохранение редактора не меняются. Только у сохранённой записи: у новой ещё нет ID.
+      if (it && window.BirgeStageEditor) window.BirgeStageEditor.mount(V.stage, { objectId: it.id, readOnly: !acts.edit });
       renderGeometry(); renderSources(); renderSchedNote(); renderSrcReview(); renderReauth(); renderRestore(); renderConflict(); renderPreview(); renderHistory();
       renderDiff(); renderReason(); renderButtons();
       V.msg.replaceChildren(...[msgBlock(S.notice)].filter(Boolean));
@@ -923,7 +926,8 @@
       } else if (t && (t.mode === "segment" || t.mode === "yard")) {
         kids.push(el("p", { class: "civic-r04-tool", role: "status" }, toolText(t.mode)));
         if (t.mode === "segment") {
-          const kindBtn = (k, label) => btn(label, () => { if (S.segKind !== k) { S.segKind = k; t.start = null; t.result = null; t.problem = null; renderGeometry(); syncMap(); } }, S.segKind === k ? "primary" : "", "seg-kind-" + k, { "aria-pressed": String(S.segKind === k) });
+          // Смена вида отменяет и ответ, который ещё в пути (t.seq++), — иначе начало «прилипнет» к старому виду.
+          const kindBtn = (k, label) => btn(label, () => { if (S.segKind !== k) { S.segKind = k; t.seq++; t.pending = false; t.start = null; t.result = null; t.problem = null; renderGeometry(); syncMap(); } }, S.segKind === k ? "primary" : "", "seg-kind-" + k, { "aria-pressed": String(S.segKind === k) });
           kids.push(el("p", { class: "civic-r04-row-btns", role: "group", "aria-label": tr("editor.seg.kind.label", "Что ремонтируют") },
             [kindBtn("road", tr("editor.seg.kind.road", "Проезжая часть")), kindBtn("foot", tr("editor.seg.kind.foot", "Тротуар"))]));
           const step = t.pending ? tr("editor.seg.pending", "Строим участок по улице…") : t.result
@@ -939,7 +943,7 @@
         if (t.problem) kids.push(el("p", { class: "civic-r04-err", role: "alert" }, t.problem));
         kids.push(el("p", { class: "civic-r04-row-btns" }, [
           btn("Готово", finishShape, "primary", "tool-done", { disabled: !(t.mode === "segment" ? t.result : t.yard) || t.pending }),
-          t.mode === "segment" ? btn(tr("editor.seg.restart", "Начать заново"), () => { t.start = null; t.result = null; t.problem = null; t.seq++; renderGeometry(); syncMap(); }, "", "tool-undo", { disabled: !t.start }) : null,
+          t.mode === "segment" ? btn(tr("editor.seg.restart", "Начать заново"), () => { t.start = null; t.result = null; t.problem = null; t.seq++; t.pending = false; renderGeometry(); syncMap(); }, "", "tool-undo", { disabled: !t.start }) : null,
           btn("Отмена", () => { closeTool(); focusKey("tool-point"); }, "ghost", "tool-cancel")].filter(Boolean)));
       } else if (t) {
         const n = t.vertices.length;

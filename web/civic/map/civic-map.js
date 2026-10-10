@@ -1396,11 +1396,23 @@
       const l = layers.find((x) => x.type === "symbol" && x.layout && x.layout["text-field"] && !x.id.startsWith(P));
       return l ? l.id : undefined;
     }
-    // R12: «плоские» слои — под первым слоем 3D-зданий (fill-extrusion), а если его нет — под подписями.
+    // R12: порядок слоёв без сериализации всего стиля (getLayersOrder есть в MapLibre 5.x).
+    function layerOrder() {
+      if (typeof map.getLayersOrder === "function") return map.getLayersOrder();
+      return ((map.getStyle() && map.getStyle().layers) || []).map((x) => x.id);
+    }
+    // Первый ВИДИМЫЙ слой 3D-зданий хоста: web/map.js прячет 3D-слои подложки (visibility none) и добавляет свой akim-3d.
+    function visibleExtrusion(ids) {
+      return ids.find((id) => {
+        if (id.startsWith(P)) return false;
+        const l = map.getLayer(id);
+        if (!l || l.type !== "fill-extrusion") return false;
+        try { return map.getLayoutProperty(id, "visibility") !== "none"; } catch (e) { return true; }
+      }) || null;
+    }
+    // R12: «плоские» слои — под первым видимым слоем 3D-зданий (fill-extrusion), а если его нет — под подписями.
     function flatBefore() {
-      const layers = (map.getStyle() && map.getStyle().layers) || [];
-      const ext = layers.find((x) => x.type === "fill-extrusion" && !x.id.startsWith(P));
-      return ext ? ext.id : firstLabelLayer();
+      return visibleExtrusion(layerOrder()) || firstLabelLayer();
     }
     // Шрифт для подписи — тот же, что у подписей подложки; без glyphs в стиле подписи не добавляем.
     function labelFont() {
@@ -1412,10 +1424,10 @@
     // Хост может добавить 3D-здания ПОСЛЕ модуля (включение «3D», смена стиля): тогда опускаем наши слои под них.
     function keepFlatBelow3d() {
       if (!map || destroyed || !map.getLayer(L.approxFill)) return;
-      const layers = (map.getStyle() && map.getStyle().layers) || [];
-      const ids = layers.map((x) => x.id);
-      const ext = layers.find((x) => x.type === "fill-extrusion" && !x.id.startsWith(P));
-      if (!ext) return;
+      const ids = layerOrder();
+      const extId = visibleExtrusion(ids);
+      if (!extId) return;
+      const ext = { id: extId };
       const extAt = ids.indexOf(ext.id);
       const flatOk = BELOW_LABELS.every((id) => !map.getLayer(id) || ids.indexOf(id) < extAt);
       const topOk = ON_TOP.concat(LABELS).every((id) => !map.getLayer(id) || ids.indexOf(id) > extAt);
@@ -1424,7 +1436,7 @@
         if (!flatOk) for (const id of BELOW_LABELS) if (map.getLayer(id)) map.moveLayer(id, ext.id);
         if (!topOk) {
           // Значки и подписи — сразу над 3D-зданиями (перед следующим чужим слоем), чтобы дома их не закрывали.
-          const now = map.getStyle().layers.map((x) => x.id);
+          const now = layerOrder();
           const next = now.slice(now.indexOf(ext.id) + 1).find((id) => !id.startsWith(P));
           for (const id of ON_TOP.concat(LABELS)) if (map.getLayer(id)) map.moveLayer(id, next);
         }

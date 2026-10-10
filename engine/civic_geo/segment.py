@@ -107,15 +107,17 @@ def street_segment(graph: StreetGraph, a, b, snap_radius_m: float = DEFAULT_SNAP
         path = _dijkstra(graph, ea, pa, eb, pb, street, group, limit, only)
         if path is None:
             raise GeoError("no_path", "Между этими точками нет связанного участка улицы. Выберите точки на одной улице.")
-        exit_node, middle, entry_node = path
-        pieces = [(ea, pa.along_m, 0.0 if exit_node == ea.a else ea.length_m)]
+        exit_end, middle, entry_end = path
+        # exit_end/entry_end — каким концом ('a' или 'b') путь уходит с первого ребра и входит на последнее
+        # (важно для рёбер-петель, у которых оба конца — один узел).
+        pieces = [(ea, pa.along_m, 0.0 if exit_end == "a" else ea.length_m)]
         coords = geo.cut_polyline(ea.geometry, pa.along_m, pieces[0][2])
-        node = exit_node
+        node = ea.a if exit_end == "a" else ea.b
         for e in middle:
             pieces.append((e, 0.0, e.length_m) if node == e.a else (e, e.length_m, 0.0))
             coords.extend([list(c) for c in graph.oriented(e, node)])
             node = graph.other_end(e, node)
-        start_last = 0.0 if entry_node == eb.a else eb.length_m
+        start_last = 0.0 if entry_end == "a" else eb.length_m
         pieces.append((eb, start_last, pb.along_m))
         coords.extend(geo.cut_polyline(eb.geometry, start_last, pb.along_m))
         coords = geo.dedupe(coords)
@@ -143,29 +145,33 @@ def street_segment(graph: StreetGraph, a, b, snap_radius_m: float = DEFAULT_SNAP
 
 
 def _dijkstra(graph: StreetGraph, ea: Edge, pa, eb: Edge, pb, street, group, limit_m, only=None):
-    """Путь от проекции на ea до проекции на eb: (узел выхода с ea, рёбра между, узел входа на eb)."""
-    # Стартовые узлы: концы первого ребра, стоимость — остаток ребра от проекции.
+    """Путь от проекции на ea до проекции на eb: (конец выхода с ea 'a'|'b', рёбра между, конец входа на eb 'a'|'b')."""
+    # Стартовые узлы: концы первого ребра, стоимость — остаток ребра от проекции. У петли (a == b) оба
+    # «конца» — один узел: берём более короткий путь до него и запоминаем, каким концом вышли.
     dist: dict[str, float] = {}
     real: dict[str, float] = {}   # настоящая длина в метрах (для ограничения длины)
-    prev: dict[str, tuple[str | None, int | None]] = {}
+    prev: dict[str, tuple] = {}   # узел -> (предыдущий узел, ребро) или (None, конец выхода с ea)
     heap: list[tuple[float, str]] = []
     w_ea = _weight(ea, street, group) / max(ea.length_m, 1e-9)
-    for node, part in ((ea.a, pa.along_m), (ea.b, ea.length_m - pa.along_m)):
+    for end, node, part in (("a", ea.a, pa.along_m), ("b", ea.b, ea.length_m - pa.along_m)):
         c = part * w_ea
         if c < dist.get(node, float("inf")):
             dist[node] = c
             real[node] = part
-            prev[node] = (None, None)
+            prev[node] = (None, end)
             heapq.heappush(heap, (c, node))
     w_eb = _weight(eb, street, group) / max(eb.length_m, 1e-9)
-    targets = {eb.a: pb.along_m * w_eb, eb.b: (eb.length_m - pb.along_m) * w_eb}
+    targets: dict[str, tuple[float, str]] = {}
+    for end, node, part in (("a", eb.a, pb.along_m), ("b", eb.b, eb.length_m - pb.along_m)):
+        if node not in targets or part * w_eb < targets[node][0]:
+            targets[node] = (part * w_eb, end)
     best_total, best_node = float("inf"), None
     while heap:
         c, node = heapq.heappop(heap)
         if c > dist.get(node, float("inf")) or c >= best_total:
             continue
-        if node in targets and c + targets[node] < best_total:
-            best_total, best_node = c + targets[node], node
+        if node in targets and c + targets[node][0] < best_total:
+            best_total, best_node = c + targets[node][0], node
         for idx in graph.adj.get(node, ()):
             e = graph.edges[idx]
             if e is ea or e is eb or (only is not None and not only(e)):
@@ -189,7 +195,7 @@ def _dijkstra(graph: StreetGraph, ea: Edge, pa, eb: Edge, pb, street, group, lim
         middle.append(graph.edges[idx])
         node = p_node
     middle.reverse()
-    return node, middle, best_node
+    return prev[node][1], middle, targets[best_node][1]
 
 
 def snap_polyline(graph: StreetGraph, coords, snap_radius_m: float = DEFAULT_SNAP_M,
@@ -197,7 +203,23 @@ def snap_polyline(graph: StreetGraph, coords, snap_radius_m: float = DEFAULT_SNA
     """Привязка нарисованной от руки линии: участок по улице через все её вершины по порядку."""
     if len(coords) < 2:
         raise GeoError("too_short", "У линии меньше двух точек.")
-    parts = [street_segment(graph, coords[i], coords[i + 1], snap_radius_m, groups) for i in range(len(coords) - 1)]
+    # Каждая следующая часть начинается В ТОЙ ЖЕ точке на оси улицы, где закончилась предыдущая
+    # (иначе промежуточная вершина могла «прилипнуть» к двум разным рёбрам и части соединились бы прямой).
+    parts = []
+    cur = coords[0]
+    for nxt in coords[1:]:
+        try:
+            part = street_segment(graph, cur, nxt, snap_radius_m, groups)
+        except GeoError as exc:
+            if exc.code == "too_short":
+                continue  # вершина почти совпала с предыдущей — пропускаем короткий кусок
+            raise
+        if parts and geo.haversine_m(parts[-1]["geometry"]["coordinates"][-1], part["geometry"]["coordinates"][0]) > 1.0:
+            raise GeoError("gap", "Части участка не сходятся на улице.")
+        parts.append(part)
+        cur = part["to"]["point"]
+    if not parts:
+        raise GeoError("too_short", "Линия слишком короткая.")
     out_coords: list = []
     edge_ids: list[str] = []
     pieces: list[dict] = []

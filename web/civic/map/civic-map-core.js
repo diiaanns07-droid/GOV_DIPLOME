@@ -690,18 +690,23 @@
       return it;
     });
   }
-  // Как запись показывается: line/area/point — точно; approx — областью «примерное место».
+  // Как запись показывается: exact — как есть; approx — областью «примерное место»;
+  // approx_line — пунктиром по своей линии. Редактор R12 строит линии только по улицам OSM, поэтому
+  // «примерная» линия из хранилища идёт по улице: примерны её границы, а не форма — круг здесь был бы хуже.
+  // Старые линии «от руки» из демо-среза приходят через demo_snapped.json (snap или forceApprox).
   function displayMode(it) {
     if (!it.geometry) return null;
     if (it.snap) return "exact";
-    if (it.forceApprox || it.precision !== "source") return "approx";
-    return "exact";
+    if (it.forceApprox) return "approx";
+    if (it.precision === "source") return "exact";
+    return it.geometry.type === "LineString" ? "approx_line" : "approx";
   }
   function placeText(it) {
     if (it.snap && it.snap.display === "street_line") return it.snap.street
       ? tr("geo.place.street_line", "Участок улицы по карте OSM: {street}", { street: it.snap.street }) : tr("geo.place.street_line_noname", "Участок улицы по карте OSM");
     if (it.snap && it.snap.display === "yard") return tr("geo.place.yard", "Двор по карте OSM");
     if (displayMode(it) === "approx") return tr("geo.place.approx", "Примерное место — показано областью");
+    if (displayMode(it) === "approx_line") return tr("geo.place.approx_line", "Участок улицы, границы примерные — показан пунктиром");
     return null;
   }
 

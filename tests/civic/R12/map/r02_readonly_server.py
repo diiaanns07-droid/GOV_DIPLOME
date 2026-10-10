@@ -29,7 +29,7 @@ import sys
 import tempfile
 import threading
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[4]  # tests/civic/R12/map/ -> корень репозитория
 ALLOWED = ("web/", "tests/civic/R12/map/stand/", "tests/civic/R12/map/fixtures/")
 TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
          ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8",
