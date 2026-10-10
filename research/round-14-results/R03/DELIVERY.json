@@ -4,8 +4,8 @@
  "base_sha": "3c5ac25 (claude/round-14-package)",
  "restored_from": "нет: v1 (claude/wizardly-ptolemy-qy8ltw @ 14c3384, ml/civic_classifier/) только прочитан; признаки v1 повторены в logreg.py",
  "data_from": "R02 claude/r14-R02: synth_v3, v1_in_v2, probe_v2 (@ 73b97d2), llm_v1 (@ 2a95286, gpt-4.1-mini, 3979 текстов) — читаются по путям, в ветку R03 не копировались",
- "code_sha": "6b226d9",
- "tested_sha": "6b226d9",
+ "code_sha": "ac0e954",
+ "tested_sha": "ac0e954",
  "push_status": "OK (claude/r14-R03)",
  "changed_paths": [
   "ml/civic_classifier_v2/.gitignore",
@@ -36,8 +36,10 @@
   "ml/civic_classifier_v2/results/final_model_meta.json",
   "ml/civic_classifier_v2/results/llm_label_cleaning_effect.json",
   "ml/civic_classifier_v2/results/onnx_export.json",
+  "ml/civic_classifier_v2/results/paired_logreg_synth_all_vs_template.json",
   "ml/civic_classifier_v2/results/preds_probe_v2_synth_all_heuristic.jsonl",
   "ml/civic_classifier_v2/results/preds_probe_v2_synth_all_logreg.jsonl",
+  "ml/civic_classifier_v2/results/preds_probe_v2_synth_template_logreg.jsonl",
   "ml/civic_classifier_v2/results/tables/t1_probe_v2_macro_f1.csv",
   "ml/civic_classifier_v2/results/tables/t2_template_vs_probe.csv",
   "ml/civic_classifier_v2/results/tables/t3_paired_probe_v2.csv",
@@ -136,7 +138,7 @@
   "Слабые места: транслит латиницей (0.53), трудные случаи (0.67), noise_safety/roads (0.71–0.72).",
   "guess_lang считает казахский без специфических букв русским — срезы берут язык из записи."
  ],
- "next_step": "Ноутбук: git pull claude/r14-R03, RUN.txt шаг 8 (повторный экспорт, ожидаются три PASS) и шаг 8б (int8 на probe_v2), commit results/onnx_export.json и onnx_int8_on_probe_v2.json. Затем передать artifacts/onnx R04. Когда будет ≥ 200 размеченных текстов людей — шаг 6 с --human (таблица на людях, режимы human/mix).",
+ "next_step": "Утро: RUN.txt блок «УТРО 11 ОКТ» на ноутбуке (ONNX per-channel, int8 на probe_v2, перевод транслита, парный вклад LLM-синтетики для трансформера) → commit/push results. R01: взять ac0e954 в FINAL. Когда будет ≥ 200 текстов людей — шаги 6/7 с --human.",
  "local4_results_sha": "c19b889 (Codex на ноутбуке владельца: experiments.json, RESULTS.md, final_model_meta.json, onnx_export.json, train_log_*.jsonl; код 477f97b)",
  "deliverables_night": {
   "DIPLOMA_TABLES.md": "ml/civic_classifier_v2/results/DIPLOMA_TABLES.md (+ results/tables/*.csv)",
@@ -145,5 +147,5 @@
   "translit": "ml/civic_classifier_v2/results/translit_to_cyrillic_probe_v2.json",
   "label_audit": "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.md (+ .json), llm_label_cleaning_effect.json"
  },
- "for_R01": "Взять 6b226d9 (или новее) вместо d472baf: B-004, маркеры тестов (§9), гонка get_default. Проверено на 2b9e837 с 1f78f66 — 791 passed; после 1f78f66 менялись только translit/evaluate (опыт, не рантайм)."
+ "for_R01": "Взять ac0e954 (или новее) вместо d472baf: B-004, маркеры тестов (§9), гонка get_default. Проверено на 2b9e837 с 1f78f66 — 791 passed; после 1f78f66 менялись только инструменты анализа (translit, evaluate, analysis), рантайм predict/heuristic — нет."
 }
