@@ -822,6 +822,11 @@
  "staff.cabinet.untitled": "(без названия)",
  "staff.cabinet.back_to_list": "← Все записи",
  "staff.cabinet.back_to_edit": "Вернуться к правке",
+ "staff.pub.draft": "Черновик",
+ "staff.pub.published": "Опубликовано",
+ "staff.pub.archived": "В архиве",
+ "staff.row.pending": "есть неопубликованные изменения",
+ "staff.row.unsaved": "есть несохранённые правки",
  "works.count": {
   "one": "{n} объект",
   "few": "{n} объекта",
