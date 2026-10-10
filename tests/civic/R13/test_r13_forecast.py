@@ -93,12 +93,19 @@ def test_subset_values_match_full_history(targets, small):
     assert full_one.counts[small.targets[5]["id"]] == small.counts[small.targets[5]["id"]]
 
 
-def test_seasonality_snow_winter_waste_summer_heating_october(small):
+@pytest.fixture(scope="module")
+def full():
+    # Вся история (2334 территории, < 1 с): сезонность проверяем на полных суммах — на выборке по 60 территорий
+    # счётчики малы, и с реальной погодой LOCAL-9 октябрь/август «коммуналки» выходил 16 против 12 (шум, не сезон).
+    return generate()
+
+
+def test_seasonality_snow_winter_waste_summer_heating_october(full):
     cats, _ = load_categories()
     ci = {c: i for i, c in enumerate(cats)}
 
     def by_month(cat, months):
-        return sum(small.counts[t["id"]][small.months.index(m)][ci[cat]] for t in small.targets for m in months)
+        return sum(full.counts[t["id"]][full.months.index(m)][ci[cat]] for t in full.targets for m in months)
 
     assert by_month("snow_ice", ["2025-01", "2025-02"]) > 5 * by_month("snow_ice", ["2025-07", "2025-08"])
     assert by_month("waste", ["2025-07", "2025-08"]) > 1.5 * by_month("waste", ["2025-01", "2025-02"])
