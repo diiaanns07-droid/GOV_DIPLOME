@@ -39,7 +39,8 @@
 
   // Иконка из спрайта. Подпись рядом с иконкой — забота вызывающего (UX_BRIEF, правило 3).
   function icon(name, opts) {
-    var cls = "ic" + (opts && opts.size ? " ic--" + opts.size : "");
+    var size = opts && parseInt(opts.size, 10); // только число: строка из вызова не попадёт в разметку
+    var cls = "ic" + (size ? " ic--" + size : "");
     return (
       '<svg class="' + cls + '" aria-hidden="true" focusable="false"><use href="' + SPRITE + "#i-" + esc(name) + '"></use></svg>'
     );

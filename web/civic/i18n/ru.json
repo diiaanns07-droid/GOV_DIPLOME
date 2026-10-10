@@ -768,6 +768,12 @@
  "build3d.resident.hint": "Нажмите на проект, чтобы проголосовать",
  "build3d.resident.empty": "Здесь пока нет проектов",
  "build3d.demo.title": "3D-превью",
+ "build3d.cluster": {
+  "one": "{n} проект",
+  "few": "{n} проекта",
+  "many": "{n} проектов"
+ },
+ "build3d.cluster.open": "{count} рядом — показать ближе",
  "forecast.title": "На что обратить внимание в следующем месяце",
  "forecast.prototype": "Прототип: прогноз обучен на синтетической истории, не реальная оценка",
  "forecast.risk": "Риск {pct} %",
@@ -795,5 +801,18 @@
  "staff.logout.confirm_title": "Выйти без сохранения?",
  "staff.logout.confirm_text": "Есть несохранённые правки. Если выйти, они пропадут.",
  "staff.logout.discard": "Выйти без сохранения",
- "staff.logout.stay": "Остаться"
+ "staff.logout.stay": "Остаться",
+ "staff.cabinet.tab.draft": "Черновики",
+ "staff.cabinet.tab.published": "Опубликованные",
+ "staff.cabinet.tab.archive": "Архив",
+ "staff.cabinet.tab.all": "Все",
+ "staff.cabinet.refresh": "Обновить список",
+ "staff.cabinet.refreshing": "Обновляем…",
+ "staff.cabinet.list_loading": "Загрузка списка…",
+ "staff.cabinet.list_label": "Записи",
+ "staff.cabinet.no_drafts": "Черновиков нет. Создайте объект кнопкой выше.",
+ "staff.cabinet.show_more": "Показать ещё",
+ "staff.cabinet.untitled": "(без названия)",
+ "staff.cabinet.back_to_list": "← Все записи",
+ "staff.cabinet.back_to_edit": "Вернуться к правке"
 }

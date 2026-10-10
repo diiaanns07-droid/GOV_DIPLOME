@@ -636,6 +636,8 @@
  "build3d.resident.hint": "Дауыс беру үшін жобаны басыңыз",
  "build3d.resident.empty": "Мұнда әзірге жоба жоқ",
  "build3d.demo.title": "3D-көрініс",
+ "build3d.cluster": "{n} жоба",
+ "build3d.cluster.open": "Жақын жерде {count} — жақындатып көрсету",
  "forecast.title": "Келесі айда назар аудару керек орындар",
  "forecast.prototype": "Прототип: болжам синтетикалық тарихи деректерде оқытылған, нақты баға емес",
  "forecast.risk": "Тәуекел {pct} %",
@@ -663,5 +665,18 @@
  "staff.logout.confirm_title": "Сақтамай шығасыз ба?",
  "staff.logout.confirm_text": "Сақталмаған түзетулер бар. Шықсаңыз, олар жойылады.",
  "staff.logout.discard": "Сақтамай шығу",
- "staff.logout.stay": "Қалу"
+ "staff.logout.stay": "Қалу",
+ "staff.cabinet.tab.draft": "Қаралама жазбалар",
+ "staff.cabinet.tab.published": "Жарияланғандар",
+ "staff.cabinet.tab.archive": "Мұрағат",
+ "staff.cabinet.tab.all": "Барлығы",
+ "staff.cabinet.refresh": "Тізімді жаңарту",
+ "staff.cabinet.refreshing": "Жаңартылып жатыр…",
+ "staff.cabinet.list_loading": "Тізім жүктеліп жатыр…",
+ "staff.cabinet.list_label": "Жазбалар",
+ "staff.cabinet.no_drafts": "Қаралама жазба жоқ. Жоғарыдағы түймемен нысан жасаңыз.",
+ "staff.cabinet.show_more": "Тағы көрсету",
+ "staff.cabinet.untitled": "(атауы жоқ)",
+ "staff.cabinet.back_to_list": "← Барлық жазбалар",
+ "staff.cabinet.back_to_edit": "Түзетуге оралу"
 }

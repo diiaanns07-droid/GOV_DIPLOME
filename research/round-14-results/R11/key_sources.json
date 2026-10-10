@@ -408,5 +408,20 @@
  "staff.logout.confirm_title": "R12/R01 · кабинет сотрудника раунда 13 (web/civic/editor/editor.js: вход, шапка, выход) — для B-021 R10 / LOCAL_B2 №4",
  "staff.logout.confirm_text": "R12/R01 · кабинет сотрудника раунда 13 (web/civic/editor/editor.js: вход, шапка, выход) — для B-021 R10 / LOCAL_B2 №4",
  "staff.logout.discard": "R12/R01 · кабинет сотрудника раунда 13 (web/civic/editor/editor.js: вход, шапка, выход) — для B-021 R10 / LOCAL_B2 №4",
- "staff.logout.stay": "R12/R01 · кабинет сотрудника раунда 13 (web/civic/editor/editor.js: вход, шапка, выход) — для B-021 R10 / LOCAL_B2 №4"
+ "staff.logout.stay": "R12/R01 · кабинет сотрудника раунда 13 (web/civic/editor/editor.js: вход, шапка, выход) — для B-021 R10 / LOCAL_B2 №4",
+ "build3d.cluster": "R05 · метка нескольких проектов в одной точке на мелком масштабе (для экранного диктора)",
+ "build3d.cluster.open": "R05 · aria-label метки группы проектов",
+ "staff.cabinet.tab.draft": "R12 · кабинет сотрудника, вкладки списка (editor.js:127)",
+ "staff.cabinet.tab.published": "R12 · кабинет сотрудника, вкладки списка",
+ "staff.cabinet.tab.archive": "R12 · кабинет сотрудника, вкладки списка",
+ "staff.cabinet.tab.all": "R12 · кабинет сотрудника, вкладки списка",
+ "staff.cabinet.refresh": "R12 · кабинет сотрудника, кнопка над списком",
+ "staff.cabinet.refreshing": "R12 · кабинет сотрудника",
+ "staff.cabinet.list_loading": "R12 · кабинет сотрудника",
+ "staff.cabinet.list_label": "R12 · кабинет сотрудника, aria-label списка",
+ "staff.cabinet.no_drafts": "R12 · кабинет сотрудника, пустой список",
+ "staff.cabinet.show_more": "R12 · кабинет сотрудника, под списком",
+ "staff.cabinet.untitled": "R12 · кабинет сотрудника, строка списка",
+ "staff.cabinet.back_to_list": "R12 · кабинет сотрудника, из карточки записи в список",
+ "staff.cabinet.back_to_edit": "R12 · кабинет сотрудника"
 }
