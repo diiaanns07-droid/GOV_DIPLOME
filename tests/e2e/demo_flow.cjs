@@ -2,6 +2,7 @@
 //
 //   node tests/e2e/demo_flow.cjs --root <папка сборки> --out <папка отчёта>
 //        [--sizes 1366x768,375x812] [--langs ru,kk] [--url http://127.0.0.1:8611/ --user U --pass P]
+//        [--stop "lon,lat,osm-node-…,Имя"]
 //
 // Без --url тест сам поднимает сервер сборки (python3 app.py) на свободном порту с ВРЕМЕННОЙ базой:
 // init → seed-demo (синтетика R02) → seed-r14-demo (если есть у R06) → сотрудник «r10-operator».
@@ -28,7 +29,9 @@ const OUT = path.resolve(args.out || path.join(os.tmpdir(), "r10-e2e"));
 const SIZES = String(args.sizes || "1366x768,375x812").split(",").map((s) => s.split("x").map(Number));
 const LANGS = String(args.langs || "ru,kk").split(",");
 // Реальная остановка Нуры из OSM (есть в целях R07 и в geo/objects.json R12).
-const STOP = { id: "osm-node-4109037549", name: "Хан Шатыр", point: [71.406553, 51.131155] };
+// --stop "lon,lat,id,Имя" — другая остановка (например, для стенда роли с узкой областью данных).
+const STOP = args.stop ? (([lon, lat, id, ...name]) => ({ id, name: name.join(","), point: [Number(lon), Number(lat)] }))(String(args.stop).split(","))
+  : { id: "osm-node-4109037549", name: "Хан Шатыр", point: [71.406553, 51.131155] };
 const NURA_BBOX = "71.375,51.115,71.420,51.140";
 const DEVICE = "r10-e2e-device-" + Date.now();
 // Шум среды: нет интернета для подложки, программный WebGL в headless Chromium.
@@ -77,7 +80,7 @@ async function startServer() {
 // ------------------------------------------------------------------------------------------------ HTTP
 function api(base) {
   let cookie = null, csrf = null;
-  const origin = base.replace(/\/$/, "");
+  const origin = new URL(base).origin;  // API всегда от корня сервера, даже если страница по пути /stand/
   const call = async (method, p, body, staff) => {
     const headers = { "Content-Type": "application/json", Origin: origin };
     if (staff && cookie) { headers.Cookie = cookie; headers["X-CSRF-Token"] = csrf; }
@@ -284,8 +287,22 @@ async function tapMap(page, point) {
     if (!m) return null;
     m.jumpTo({ center: p, zoom: 17 });
     await new Promise((ok) => setTimeout(ok, 400));
-    const c = m.getCanvas().getBoundingClientRect(); const q = m.project(p);
-    return { x: c.left + q.x, y: c.top + q.y };
+    const canvas = m.getCanvas(), c = canvas.getBoundingClientRect();
+    // Панель (ноутбук) или шторка (телефон) может закрывать центр карты: ищем свободную точку карты
+    // по вертикали от центра вверх и сдвигаем карту так, чтобы остановка оказалась там.
+    const free = (x, y) => { const e = document.elementFromPoint(x, y); return e === canvas || (e && canvas.parentElement.contains(e) && e.tagName === "CANVAS"); };
+    let want = { x: c.left + c.width / 2, y: c.top + c.height / 2 };
+    if (!free(want.x, want.y)) {
+      const xs = [c.left + c.width * 0.5, c.left + c.width * 0.3, c.left + c.width * 0.15];
+      outer: for (const x of xs) for (let y = c.top + c.height / 2; y > c.top + 40; y -= 20) if (free(x, y)) { want = { x, y: y - 10 }; break outer; }
+    }
+    for (let i = 0; i < 3; i++) {
+      const q = m.project(p);
+      m.panBy([c.left + q.x - want.x, c.top + q.y - want.y], { duration: 0 });
+      await new Promise((ok) => setTimeout(ok, 150));
+    }
+    const q = m.project(p);
+    return { x: c.left + q.x, y: c.top + q.y, free: free(c.left + q.x, c.top + q.y) };
   }, point);
   if (!xy) return false;
   if (page.viewportSize().width < 1024) await page.touchscreen.tap(xy.x, xy.y); else await page.mouse.click(xy.x, xy.y);
@@ -360,10 +377,15 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx) {
   step("1", `главная кнопка «${startLabel}» есть и открывает шаги`, started, { resident_view: toResident }, await shot("1-start"));
   let picked = false;
   if (started) {
-    await tapMap(page, STOP.point);
-    const q = await visibleText(page, new RegExp(STOP.name, "i"));
-    step("1", `после нажатия на карту предложена остановка «${STOP.name}»`, q, null, await shot("1-target"));
-    picked = q && (await clickText(page, new RegExp(STOP.name, "i")));
+    const tapped = await tapMap(page, STOP.point);
+    // Имя остановки: из OSM-набора теста или подпись, которую вернул /targets (ru/kk могут отличаться).
+    const t = apiCtx && apiCtx.target;
+    const names = [STOP.name, t && t.label_ru, t && t.label_kk].filter(Boolean)
+      .map((x) => x.replace(/^.*«(.+)».*$/, "$1").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    const nameRe = new RegExp(names.join("|"), "i");
+    const q = tapped && (await visibleText(page, nameRe));
+    step("1", `после нажатия на карту предложена остановка «${STOP.name}»`, q, { tapped, names }, await shot("1-target"));
+    picked = q && (await clickText(page, nameRe));
   } else step("1", `предложена остановка «${STOP.name}»`, null, "нет главной кнопки");
 
   // 2. Текст → категория → похожие / «Я тоже».
@@ -374,7 +396,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx) {
     const cat = T(dict, "cat.transport", lang === "kk" ? "Аялдамалар мен көлік" : "Остановки и транспорт");
     const suggested = await visibleText(page, textRe(T(dict, "complaint.step3.suggested", "Похоже на:")));
     const catShown = await visibleText(page, new RegExp(cat, "i"));
-    step("2", `модель предложила категорию «${cat}» («${T(dict, "complaint.step3.suggested")}»)`, suggested && catShown, { suggested, catShown }, await shot("2-category"));
+    step("2", `модель предложила категорию «${cat}» («${T(dict, "complaint.step3.suggested", "Похоже на:")}»)`, suggested && catShown, { suggested, catShown }, await shot("2-category"));
     const sent = await clickText(page, textRe(T(dict, "complaint.send", "Отправить")), { wait: 2500 });
     const metoo = await visibleText(page, new RegExp("^" + T(dict, "complaint.step4.metoo", "Я тоже") + "$", "i"));
     const done = await visibleText(page, textRe(T(dict, "complaint.step5.title", "Обращение отправлено")));
@@ -415,8 +437,9 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx) {
 
   // 6. Житель видит «исправлено» (жалобу из API-шага 6 отметили исправленной).
   const fixedWord = T(dict, "status.fixed", lang === "kk" ? "Түзетілді" : "Исправлено");
-  const mineOpen = await clickText(page, textRe(T(dict, "mine.title", "Мои обращения")), { wait: 1500 });
-  step("6", `«${T(dict, "mine.title")}» доступны жителю; статус — цвет + слово «${fixedWord}»`, mineOpen ? await visibleText(page, new RegExp(fixedWord, "i")) : false,
+  const mineLabel = T(dict, ["mine.title", "complaint.step5.to_mine"], lang === "kk" ? "Менің өтініштерім" : "Мои обращения");
+  const mineOpen = await clickText(page, textRe(mineLabel), { wait: 1500 });
+  step("6", `«${mineLabel}» доступны жителю; статус — цвет + слово «${fixedWord}»`, mineOpen ? await visibleText(page, new RegExp(fixedWord, "i")) : false,
     { mineOpen, note: "жалоба API-шага подана с другого устройства — проверяется наличие экрана и слова статуса" }, await shot("6-mine"));
 
   step("*", "консоль без ошибок (кроме шума среды: подложка, WebGL)", errors.length === 0, errors.slice(0, 6));
