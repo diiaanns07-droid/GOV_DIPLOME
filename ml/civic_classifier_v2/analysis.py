@@ -377,6 +377,7 @@ def render_errors(exp: dict, preds: dict[str, dict[str, dict]], probe: dict[str,
                            f"{pr.get('hard_rule') or ''} |")
             out.append("")
         out += _hard_rules_section(preds, probe)
+        out += _suggest_section(preds, probe)
     elif not preds:
         out += ["## 4. Примеры ошибок", "",
                 "Нет файлов прогнозов по текстам. Для трансформера их даёт ноутбук: RUN.txt шаг 8б "
@@ -397,6 +398,33 @@ def _last_train_loss(log_path: Path, tag_prefix: str) -> float | None:
         if str(r.get("tag", "")).startswith(tag_prefix):
             last = r.get("train_loss")
     return last
+
+
+SUGGEST_THRESHOLDS = (0.3, 0.5, 0.7, 0.9)
+
+
+def _suggest_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:
+    """Подсказка жителю «Похоже на …» (R04 suggest: категория не other и score ≥ порога модели):
+    какая доля текстов получает предвыбор и как часто он верен — по прогнозам со score."""
+    rows = []
+    for name, pr in preds.items():
+        items = [r for i, r in pr.items() if i in probe and r.get("score") is not None]
+        if not items:
+            continue
+        for t in SUGGEST_THRESHOLDS:
+            sel = [r for r in items if r["score"] >= t and r["pred"] != "other"]
+            prec = sum(r["pred"] == r["true"] for r in sel) / len(sel) if sel else None
+            rows.append((name, t, len(sel) / len(items), prec, len(items)))
+    if not rows:
+        return []
+    out = ["## 6. Подсказка «Похоже на …»: доля предвыбора и его точность на probe_v2", "",
+           "R04 предвыбирает категорию жителю, если она не «Другое» и score ≥ порога модели (у итоговой — 0.3, "
+           "подобран на синтетической validation). Точность — доля верных среди предвыбранных; житель всегда может "
+           "сменить категорию. score не калиброван, на людях эти числа будут другими.", "",
+           "| Прогнозы | Порог | Доля текстов с предвыбором | Точность предвыбора | n |", "|---|---|---|---|---|"]
+    for name, t, cov, prec, n in rows:
+        out.append(f"| `{name}` | {t} | {cov:.0%} | {'—' if prec is None else f'{prec:.0%}'} | {n} |")
+    return out + [""]
 
 
 def _hard_rules_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:

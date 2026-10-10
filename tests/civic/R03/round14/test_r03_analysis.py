@@ -185,3 +185,13 @@ def test_paired_from_files(tmp_path):
         f.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
     res = A.paired_from_files(fa, fb)
     assert res["n"] == 10 and res["macro_f1_a"] == 1.0 and res["delta"]["delta"] > 0
+
+
+def test_suggest_section_precision():
+    probe = {str(i): {"id": str(i)} for i in range(4)}
+    preds = {"m": {"0": {"true": "roads", "pred": "roads", "score": 0.95},
+                   "1": {"true": "roads", "pred": "waste", "score": 0.8},
+                   "2": {"true": "other", "pred": "other", "score": 0.99},     # other не предвыбирается
+                   "3": {"true": "roads", "pred": "roads", "score": 0.2}}}
+    md = "\n".join(A._suggest_section(preds, probe))
+    assert "| `m` | 0.3 | 50% | 50% | 4 |" in md and "| `m` | 0.9 | 25% | 100% | 4 |" in md
