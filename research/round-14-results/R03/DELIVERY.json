@@ -3,9 +3,9 @@
  "branch": "claude/r14-R03",
  "base_sha": "3c5ac25 (claude/round-14-package)",
  "restored_from": "нет: v1 (claude/wizardly-ptolemy-qy8ltw @ 14c3384, ml/civic_classifier/) только прочитан; признаки v1 повторены в logreg.py",
- "data_from": "R02 claude/r14-R02 @ 73b97d2: ml/datasets/synth_v3/data/corpus_v3.jsonl, ml/datasets/v1_in_v2/corpus_v1_in_v2.jsonl, ml/datasets/probe_v2/probe_v2.jsonl (читаются по путям, в ветку R03 не копировались)",
- "code_sha": "252913e",
- "tested_sha": "252913e",
+ "data_from": "R02 claude/r14-R02: synth_v3, v1_in_v2, probe_v2 (@ 73b97d2), llm_v1 (@ 2a95286, gpt-4.1-mini, 3979 текстов) — читаются по путям, в ветку R03 не копировались",
+ "code_sha": "d472baf",
+ "tested_sha": "d472baf",
  "push_status": "OK (claude/r14-R03)",
  "changed_paths": [
   "ml/civic_classifier_v2/.gitignore",
@@ -27,6 +27,10 @@
   "ml/civic_classifier_v2/results/RESULTS.md",
   "ml/civic_classifier_v2/results/cloud_check_2026-10-10.json",
   "ml/civic_classifier_v2/results/experiments.json",
+  "ml/civic_classifier_v2/results/final_model_meta.json",
+  "ml/civic_classifier_v2/results/onnx_export.json",
+  "ml/civic_classifier_v2/results/train_log_experiments.jsonl",
+  "ml/civic_classifier_v2/results/train_log_final.jsonl",
   "ml/civic_classifier_v2/train.py",
   "ml/civic_classifier_v2/transformer.py",
   "ml/civic_classifier_v2/zeroshot.py",
@@ -41,47 +45,63 @@
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 65/65",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 58, NOT_RUN 7 (skipped с причиной)",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 66/66",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 59, NOT_RUN 7 (skipped с причиной)",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
   "ONNX fp32 = PyTorch (argmax 100%, max|Δp| < 1e-3, пачки и по одному тексту); оба экспортёра torchscript и dynamo": "PASS",
   "модель размера xlm-roberta-base (случайные веса): обучение 1 эпоха на CPU, ONNX int8 266 МБ, 11–33 мс/текст при 32–128 токенах (4 vCPU)": "PASS",
   "базовые модели на корпусах R02 (облако)": "PASS — results/RESULTS.md, experiments.json (с probe_v2, корпуса R02 @ 73b97d2)",
-  "обучение xlm-roberta-base на GPU, качество v2": "NOT_RUN — в облаке нет весов (HF недоступен); LOCAL-4 по RUN.txt",
-  "оценка на текстах людей": "NOT_EVALUATED — разметка ≥ 200 текстов ещё не готова",
-  "LLM zero-shot с настоящим API": "NOT_RUN — только локально с ключом (RUN.txt шаг 5); проверено на подставном клиенте",
-  "R02 llm_v1": "NOT_RUN — корпуса ещё нет (LOCAL-8)",
+  "оценка на текстах людей": "NOT_EVALUATED — шаги с $HUMAN не запускались по решению владельца",
+  "LLM zero-shot с настоящим API": "NOT_RUN — шаг 5 пропущен владельцем",
   "кривая обучения --human-fraction (spy-тест: меньше людей в обучении, оценка на всех)": "PASS",
   "малые наборы: ранняя остановка не раньше min_train_steps (тест на крошечной модели)": "PASS",
-  "probe_v2: оценивается во всех режимах, не попадает в train/val (spy-тест), k-fold — ансамбль фолдов, раздел 1б/4б в RESULTS.md": "PASS"
+  "probe_v2: оценивается во всех режимах, не попадает в train/val (spy-тест), k-fold — ансамбль фолдов, раздел 1б/4б в RESULTS.md": "PASS",
+  "LOCAL-4: обучение xlm-roberta-base на GPU (RTX 4060), 4 синтетических режима × 3 модели, итоговая модель synth_all": "PASS — c19b889; пик GPU 5.23 ГБ; CPU-тесты 65 PASS и GPU-check PASS на ноутбуке",
+  "LOCAL-4: ONNX штатный экспорт (код 477f97b): fp32 = PyTorch": "PASS (100 %, max|Δp| 9e-6)",
+  "LOCAL-4: ONNX штатный экспорт: int8 совпадение ≥ 97 %": "FAIL — 96.5 % (по одному тексту 98 %); per-channel в диагностике — 98 %",
+  "LOCAL-4: ONNX штатный экспорт: < 50 мс на текст": "FAIL — 102.9 мс при 24 потоках; 4 потока — 21.2 мс (диагностика)",
+  "исправление ONNX (d472baf): per-channel + 4 потока, облако, модель размера xlm-r-base со случайными весами": "PASS — 266 МБ, 17.8 мс, три PASS",
+  "повторный экспорт на ноутбуке с d472baf (RUN.txt шаг 8) и int8 на probe_v2 (шаг 8б)": "NOT_RUN — ждёт ноутбук",
+  "независимость probe_v2 от обучающих корпусов (Jaccard 3-грамм)": "PASS — максимум 0.37 к llm_v1 train, 0.56 к synth_v3 train; ≥ 0.6 нет"
  },
  "results_so_far": {
-  "synthetic_v3_test_macro_f1": {
-   "heuristic": "0.731 [0.570–0.857]",
-   "logreg_trained_on_v3": "0.632 [0.494–0.771]",
-   "logreg_trained_on_v1_in_v2": "0.548 [0.424–0.675]"
-  },
-  "probe_v2_macro_f1": {
+  "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",
+  "final_model_probe_v2_macro_f1": "0.828 [0.778–0.865], accuracy 0.827",
+  "probe_v2_macro_f1_experiment": {
    "heuristic": "0.684 [0.628–0.726]",
-   "logreg_trained_on_v3": "0.751 [0.696–0.795]",
-   "logreg_trained_on_v1_in_v2": "0.534 [0.481–0.581]",
-   "paired_logreg_v3_minus_heuristic": "+0.067 [+0.026; +0.111]",
-   "paired_logreg_v3_minus_logreg_v1": "+0.217 [+0.162; +0.271]"
+   "logreg": {
+    "v1_in_v2": "0.534",
+    "synth_v3": "0.751",
+    "llm_v1": "0.746",
+    "v3+llm": "0.797 [0.746–0.838]"
+   },
+   "transformer": {
+    "v1_in_v2": "0.450",
+    "synth_v3": "0.685",
+    "llm_v1": "0.748",
+    "v3+llm": "0.812 [0.763–0.850]"
+   }
   },
-  "note": "синтетика и probe_v2 (текст агента R02 вне шаблонов) — не качество на людях; трансформер NOT_RUN в облаке"
+  "paired_on_probe_v2": {
+   "v3+llm: transformer − logreg": "+0.015 [−0.034; +0.068] (не доказано)",
+   "v3+llm: transformer − heuristic": "+0.128 [+0.070; +0.189]",
+   "v3: transformer − logreg": "−0.065 [−0.126; −0.009]",
+   "transformer: llm_v1 − v3": "+0.063 [+0.011; +0.117]"
+  },
+  "human": "NOT_EVALUATED",
+  "note": "synthetic и probe_v2 (текст агента R02 вне шаблонов) — не качество на жителях"
  },
  "known_limits": [
-  "Настоящая модель не обучена в облаке: нет весов xlm-roberta-base; все числа трансформера появятся после LOCAL-4.",
-  "Пиковая память GPU 4–6 ГБ — оценка, не замер; при OOM: batch_size=8 grad_accum=4, затем freeze_embeddings=true.",
-  "Время на ноутбуке — оценка (эксперимент ≈1–1.5 ч на seed).",
-  "Логрегрессия и словарь на синтетике v3: казахский ≈0.5, транслит 0.02–0.29 macro-F1.",
-  "Словарь эвристики и шаблоны R02 опираются на одни правила спорных случаев — на синтетике словарь завышен.",
-  "200–400 текстов людей → широкие ДИ; один разметчик.",
-  "needs_review всегда true, пока модель не обучена с людьми и рецепт не оценён k-fold (как у v1).",
-  "guess_lang считает казахский без специфических букв русским — срезы берут язык из записи.",
-  "Скорость int8 в 1 поток при 128 токенах 58 мс (облако) — R04 не должен ограничивать потоки."
+  "Качество на текстах жителей не измерено: обучение и оценка только на синтетике; needs_review всегда true.",
+  "Трансформер на одной шаблонной v3 переобучается на шаблоны (test v3 0.482); преимущество трансформера над логрегрессией на v3+LLM не доказано (+0.015, ДИ содержит 0).",
+  "probe_v2 написан тем же агентом R02 и по тому же гайду — ориентир переноса вне шаблонов, не замена людям.",
+  "Один seed; метки llm_v1 не проверены людьми; score не калиброван (ECE 0.14 на probe).",
+  "ONNX на ноутбуке ещё штатный (96.5 %, 103 мс — FAIL); исправленные умолчания (per-channel, 4 потока) подтверждены диагностикой Codex и облаком, но экспорт с d472baf на ноутбуке не повторён.",
+  "Слабые места: транслит латиницей (0.53), трудные случаи (0.67), noise_safety/roads (0.71–0.72).",
+  "guess_lang считает казахский без специфических букв русским — срезы берут язык из записи."
  ],
- "next_step": "LOCAL-4: Codex на ноутбуке выполняет research/round-14-results/R03/RUN.txt (шаги 0–9) и пушит results/*.json + RESULTS.md в claude/r14-R03; затем R03 (или следующий аккаунт) проверяет числа, дописывает выводы в MODEL_CARD.md и передаёт artifacts/onnx R04."
+ "next_step": "Ноутбук: git pull claude/r14-R03, RUN.txt шаг 8 (повторный экспорт, ожидаются три PASS) и шаг 8б (int8 на probe_v2), commit results/onnx_export.json и onnx_int8_on_probe_v2.json. Затем передать artifacts/onnx R04. Когда будет ≥ 200 размеченных текстов людей — шаг 6 с --human (таблица на людях, режимы human/mix).",
+ "local4_results_sha": "c19b889 (Codex на ноутбуке владельца: experiments.json, RESULTS.md, final_model_meta.json, onnx_export.json, train_log_*.jsonl; код 477f97b)"
 }
