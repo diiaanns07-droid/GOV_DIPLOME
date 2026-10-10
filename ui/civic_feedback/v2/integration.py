@@ -6,8 +6,12 @@
     reply = complaints.handle(method, "/api/civic/v2" + rel_path, query, body, principal, context)
 
 Цель жалобы (R15 S04/S12): подписи берутся только с карты R12, а цель дальше 300 м от точки жителя становится
-«примерным местом». make_service по умолчанию сам подключает engine.civic_geo.target_geometry, если R12 есть в
-сборке (target_lookup="auto"); без R12 подписи из запроса не сохраняются. Явно: make_service(db, target_lookup=f|None).
+«примерным местом». Карту подключает хост: make_service(db, target_lookup=geo_target_lookup()) или
+store.target_lookup = engine.civic_geo.target_geometry (так делает шлюз R01 в wire()). Без карты подписи из запроса
+не сохраняются, а ячейки «примерного места» R09 проверяет по своей сетке.
+
+Демо-сборка (CIVIC_DEMO=1, R10 B-030): make_service(db, demo_seed=True) засевает несколько синтетических жалоб
+(demo: true, «Пример») у остановки из сценария, чтобы на шаге 2 демо было «Я тоже». Повтор ничего не дублирует.
 
 principal — store.resolve_principal(context) (R02) или None; context — как у v1:
 {"headers": заголовки запроса (нужен X-Birge-Device, для сотрудника X-CSRF-Token),
@@ -44,7 +48,11 @@ def geo_target_lookup():
     return target_geometry
 
 
-def make_service(db_path, *, target_lookup="auto", **store_options) -> ComplaintsV2Service:
+def make_service(db_path, *, target_lookup=None, demo_seed: bool = False, **store_options) -> ComplaintsV2Service:
     store = ComplaintStore(db_path, **store_options)
+    # "auto" — взять R12 из сборки, если он есть. По умолчанию None: тесты соседей создают жалобы с условными id.
     store.target_lookup = geo_target_lookup() if target_lookup == "auto" else target_lookup
+    if demo_seed:
+        from .demo_seed import seed_demo
+        seed_demo(store)
     return ComplaintsV2Service(store)

@@ -222,6 +222,8 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   const title4 = await page.textContent(".bc-title");
   const before = Number((title4.match(/\d+/) || [0])[0]);
   check(`${tag}: шаг 4 «уже сообщили N» (N ≥ 7 по демо-цели)`, before >= 7, title4);
+  const demoTag = await page.$$eval(".bc-similar .bk-tag--demo", (x) => x.map((e) => e.textContent.trim()));
+  check(`${tag}: похожая демо-жалоба на шаге 4 помечена «Пример»`, demoTag.length === 1, demoTag.join());
   const leak = await page.evaluate(() => document.querySelector(".bc-panel").innerText.includes("нет крыши") &&
     !document.querySelector("#bc-text"));
   check(`${tag}: чужой текст жалобы не показан`, !leak);

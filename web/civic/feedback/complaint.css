@@ -97,6 +97,7 @@
 .bc-similar { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--r-l, 16px);
               background: var(--c-paper, #f7f8f4); }
 .bc-similar__count { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 600; }
+.bc-similar__status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 
 .bc-code { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; font-size: var(--fs-lead, 18px); }
 .bc-code__value { font-size: 24px; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }

@@ -559,8 +559,10 @@
         var d = candidate.distance_m;
         var same = labelCount[targetLabel(candidate.target)] > 1;
         var meters = typeof d === "number" && (d >= 5 || same) ? Math.max(1, Math.round(d)) : null;
-        // Точка внутри двора/площадки (0 м) — «Вы здесь», а не «0 м» и не пусто (R11 B2 №3).
-        var here = typeof d === "number" && d < 1;
+        // Точка внутри двора/площадки (0 м) — «Вы здесь», а не «0 м» и не пусто (R11 B2 №3). У «примерного места»
+        // точка всегда внутри своей ячейки — там «Вы здесь» ничего не добавляет и только путает.
+        var approx = candidate.approximate || (candidate.target && candidate.target.approximate);
+        var here = typeof d === "number" && d < 1 && !approx;
         list.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-option" + (index === 0 ? " bc-option--first" : ""),
                                        type: "button", onclick: function () { chooseCandidate(candidate); } },
           [icon(candidate.approximate ? "pin" : (candidate.target.kind === "segment" ? "road" : (candidate.target.kind === "area" ? "trees" : "pin"))),
@@ -747,7 +749,9 @@
           String(match.reporters)), h("span", {}, categoryLabel(match.category))]),
         h("p", { "class": "bc-meta" }, [targetLabel(match.target),
           " · ", ago === 0 ? t("complaint.step4.today") : t("complaint.step4.ago_days", { n: ago })]),
-        h("div", { "class": "bc-similar__status" }, statusBadge(match.status))
+        h("div", { "class": "bc-similar__status" }, [statusBadge(match.status),
+          // Синтетическая жалоба для показа — с меткой «Пример», как на карте (UX_BRIEF: синтетика помечена).
+          match.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null])
       ]));
       body.appendChild(h("p", { "class": "bc-hint" }, t("complaint.step4.hint")));
       body.appendChild(h("button", { "class": "bk-btn bk-btn--primary bk-btn--block", type: "button",

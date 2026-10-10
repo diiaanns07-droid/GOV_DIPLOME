@@ -207,15 +207,17 @@ def test_make_service_wires_r12_when_present(tmp_path, monkeypatch):
     fake.target_geometry = lookup
     monkeypatch.setitem(sys.modules, "engine.civic_geo", fake)
     assert geo_target_lookup() is lookup
-    svc = make_service(tmp_path / "w.sqlite3")
+    svc = make_service(tmp_path / "w.sqlite3", target_lookup="auto")
     assert svc.store.target_lookup is lookup
-    assert make_service(tmp_path / "x.sqlite3", target_lookup=None).store.target_lookup is None
+    plain = make_service(tmp_path / "x.sqlite3")          # по умолчанию карту подключает хост (R01 wire())
+    assert plain.store.target_lookup is None
     svc.store.close()
+    plain.store.close()
 
 
 def test_make_service_without_r12(tmp_path, monkeypatch):
     monkeypatch.setitem(sys.modules, "engine.civic_geo", None)       # import -> ImportError
     assert geo_target_lookup() is None
-    svc = make_service(tmp_path / "y.sqlite3")
+    svc = make_service(tmp_path / "y.sqlite3", target_lookup="auto")
     assert svc.store.target_lookup is None
     svc.store.close()
