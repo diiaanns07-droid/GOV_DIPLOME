@@ -4,7 +4,7 @@
  "title": "Точность карты: привязка к улицам и объектам OSM",
  "branch": "claude/r14-R12",
  "branch_note": "Продолжение claude/tender-brahmagupta-ef5ztl @ 8bb7bf8 (день 1, поставка 1: code 8810221, tested d13f49a) + merge базы пакета claude/round-14-package @ a38da11. Первое сообщение сессии: «РОЛЬ: R12» + «НОЧНАЯ ЗАДАЧА» про офлайн-карту (её ведёт локальный агент в claude/r14-offline, см. OFFLINE_CHECK.md).",
- "delivery": 2,
+ "delivery": 3,
  "base_sha": "a38da114 (claude/round-14-package) поверх 8bb7bf8a (R12 день 1)",
  "restored_from": [
   {
@@ -48,10 +48,10 @@
    "into": "web/civic/editor/editor.js"
   }
  ],
- "code_sha": "d6c788e9",
- "code_sha_note": "Код поставки 2 = d6c788e9 (checkpoint 2). Изменения после него в этой поставке — только документы research/.",
- "tested_sha": "d6c788e9",
- "tested_note": "Среда: Linux-контейнер Claude Code, Python 3.13.16, Node 22.22, Playwright 1.56.1 + Chromium /opt/pw-browsers, без сети к OpenFreeMap/Protomaps (403). Интеграция: пути R12 из d6c788e9 положены на сборку R01 cb6d336 (detached worktree, ничего не коммитилось).",
+ "code_sha": "208413bc",
+ "code_sha_note": "Поставка 3 = 208413bc (поверх поставки 2 d6c788e9: 9e9b5e16 карточка/подсказка на ҚАЗ и тексты ошибок места, 208413bc ключи кабинета как в словаре R11). После неё — только документы research/.",
+ "tested_sha": "208413bc",
+ "tested_note": "Среда: Linux-контейнер Claude Code, Python 3.13.16, Node 22.22, Playwright 1.56.1 + Chromium /opt/pw-browsers, без сети к OpenFreeMap/Protomaps (403). Интеграция: пути R12 из 208413bc положены на сборку R01 c2318b74 (поставка 2 — на cb6d336) (detached worktree, ничего не коммитилось).",
  "push_status": "pushed: origin/claude/r14-R12 — коммит с этим файлом см. в финальном сообщении/STATUS.md",
  "changed_paths_day2": [
   "engine/civic_geo/names.py (новый)",
@@ -65,6 +65,7 @@
   "data/civic/astana/geo/SOURCE.json",
   "web/civic/map/civic-map.js",
   "web/civic/map/civic-map-core.js",
+  "web/civic/map/civic-map.css (раздел «орыс тілінде» в карточке, 48 px)",
   "web/civic/editor/editor.js",
   "web/civic/editor/editor.css",
   "tests/civic/R12/ (новые: editor/e2e_r12_kk.test.cjs, map/r12_offline_glyphs.test.mjs; дополнены: test_civic_geo.py, map/core, map/browser, map/r12_accuracy, editor/e2e, e2e_r13, app_acceptance_r13)",
@@ -101,6 +102,21 @@
    "id": "kk в карте и редакторе",
    "what": "имена улиц и объектов OSM на языке интерфейса (street_kk, label_kk), карта перерисовывается по birge:lang",
    "test": "map/core.test.mjs (новый тест), map/r12_offline_glyphs.test.mjs"
+  },
+  {
+   "id": "карточка объекта работ и подсказка на ҚАЗ (R10 B-015 частично, R11 B1 п. 11)",
+   "what": "в ҚАЗ — вид, статус, «Қашан аяқталады», место, «Үлгі», кнопки по-казахски (works.*, common.*, geo.*, новые map.card.*); подробности раунда 13 — в разделе «Толық мәліметтер (орыс тілінде)»; в РУС карточка не менялась",
+   "test": "r12_accuracy «works card in ҚАЗ» (+ скриншот screenshots/works-card-kk-1366.png)"
+  },
+  {
+   "id": "R11 UX_REVIEW день 1 п. 9",
+   "what": "тексты «место не показано» без слова «геометрия»: «место на карте в записи повреждено», «…записано в неизвестном виде»",
+   "test": "map/core.test.mjs"
+  },
+  {
+   "id": "«Круг 3: R12» (INTEGRATION R01)",
+   "what": "patch R11 R12_staff_i18n.patch включён по смыслу: все 40 ключей в editor.js (staff.row.pending, staff.pub.*, staff.cabinet.back_to_list); git apply --check на файле R12 — отказ, повторно не накладывать",
+   "test": "e2e_r12_kk 3/3; R10 demo_flow шаг 5 на сборке"
   }
  ],
  "not_r12": [
@@ -146,16 +162,95 @@
   "r10_check": "tests/civic/R10/accuracy.py @ r14-R10 на дереве R12: 9 PASS / 0 FAIL по R12 (yards 3936 координат, 0 вне границы)"
  },
  "targets_latency": "p50 0,4 мс, p95 2,3 мс, max 11 мс на 3000 точках (python3 -m engine.civic_geo bench 3000) — требование < 50 мс",
- "tests": [],
+ "tests": [
+  {
+   "name": "engine/civic_geo (pytest)",
+   "status": "PASS",
+   "result": "33/33",
+   "command": "python3 -m pytest -q tests/civic/R12/",
+   "sha": "9e9b5e16 (python-код в 208413bc не менялся)"
+  },
+  {
+   "name": "отчёт точности по всем объектам карты",
+   "status": "PASS",
+   "result": "956/956",
+   "command": "python3 -m engine.civic_geo report"
+  },
+  {
+   "name": "/targets быстрее 50 мс",
+   "status": "PASS",
+   "result": "p50 0,4 мс, p95 2,3 мс, max 11 мс (3000 точек)",
+   "command": "python3 -m engine.civic_geo bench 3000"
+  },
+  {
+   "name": "карта: ядро (node:test)",
+   "status": "PASS",
+   "result": "30/30",
+   "sha": "9e9b5e16"
+  },
+  {
+   "name": "карта: стенд раундов 11–13 (mock API, MapLibre 5.6.2)",
+   "status": "PASS",
+   "result": "69/69",
+   "sha": "9e9b5e16"
+  },
+  {
+   "name": "карта: точность R12 (+ гонка demo-ring, карточка на ҚАЗ)",
+   "status": "PASS",
+   "result": "6/6",
+   "sha": "9e9b5e16"
+  },
+  {
+   "name": "карта × офлайн-подложка (глифы claude/r14-offline @ 82218f7, без интернета)",
+   "status": "PASS",
+   "result": "1/1 на временно скопированных глифах; в дереве без шрифтов — NOT_RUN",
+   "sha": "208413bc"
+  },
+  {
+   "name": "редактор: ядро + контрактный mock + предпросмотр",
+   "status": "PASS",
+   "result": "31 + 9 + 3",
+   "sha": "208413bc (preview_parity — 9e9b5e16)"
+  },
+  {
+   "name": "редактор: e2e раундов 12–13 + совместный с картой",
+   "status": "PASS",
+   "result": "25 + 14 + 2",
+   "sha": "208413bc"
+  },
+  {
+   "name": "редактор: инструменты R12 (тестовый клиент) / настоящий граф",
+   "status": "PASS",
+   "result": "8/8 и 1/1",
+   "sha": "208413bc"
+  },
+  {
+   "name": "редактор: кабинет на ҚАЗ (словарь R11 @ 548510b)",
+   "status": "PASS",
+   "result": "3/3",
+   "command": "node --test tests/civic/R12/editor/e2e_r12_kk.test.cjs",
+   "sha": "208413bc"
+  },
+  {
+   "name": "Windows / run-city.bat",
+   "status": "NOT_RUN",
+   "reason": "Linux-контейнер"
+  },
+  {
+   "name": "OpenFreeMap и настоящие 3D-здания в облаке",
+   "status": "NOT_RUN",
+   "reason": "tiles.openfreemap.org и build.protomaps.com — 403 через прокси; настоящая подложка проверена локальным агентом офлайн-ветки"
+  }
+ ],
  "known_limits": [
-  "Карточка объекта работ (раунд 13, web/civic/map) в ҚАЗ остаётся русской: ключей R11 на ~90 её фраз нет, лента работ в Birge скрыта (R11 пометил пункт как неактуальный). Карточка показывается при нажатии на объект работ на карте — следующий шаг, если владелец/R11 решат (ключи map.card.* + черновик kk).",
-  "19 новых ключей кабинета — kk-черновик R12 (KK_DRAFT в editor.js), на проверку R11/владельцу.",
+  "Подробности карточки объекта работ (источники, стоимость, история — раунд 13) в ҚАЗ остаются русскими в явно подписанном разделе «Толық мәліметтер (орыс тілінде)»: ключей на ~90 фраз нет, лента работ в Birge скрыта. Полный перевод — по решению владельца/R11.",
+  "Новые ключи (staff.* кабинета, которых нет в словаре, и map.card.*) — kk-черновик R12 (KK_DRAFT в editor.js и civic-map-core.js), на проверку R11/владельцу; есть ключ в словаре — берётся словарь.",
   "Служебная строка кабинета (роль, /staff/meta) — по-русски, видна только разработчику (?tools=all и стенды).",
   "Тест r12_offline_glyphs NOT_RUN, пока в сборке нет web/civic/offline/fonts (после слияния claude/r14-offline — PASS; в облаке проверен на временно скопированных глифах).",
   "Ограничения дня 1, которых не касались правки, в силе: 403 остановки OSM без названия → «Остановка без названия»; освещение привязывается к участку улицы (фонарей в OSM 217)."
  ],
- "next_step": "R01: взять пути R12 из d6c788e9 (INTEGRATION §0); R11: 19 ключей из i18n_keys.json; R10: перепроверить B-009, B-021, demo-ring. R12 дальше: по решению — перевод карточки работ (map.card.*), правки kk от владельца.",
- "integration": {
+ "next_step": "R01: взять пути R12 из 208413bc (INTEGRATION §0 и §0б); patch R11 к editor.js повторно не накладывать. R11: ключи со статусом new из i18n_keys.json. R10: перепроверить B-009, B-021, demo-ring, карточку объекта работ на ҚАЗ. R12 дальше: правки kk от владельца; по решению — полный перевод подробностей карточки.",
+ "integration_delivery2": {
   "build": "claude/sharp-dijkstra-0t87gl @ cb6d336 (R01 FINAL-кандидат 0a7a346 + документы) + пути R12 из d6c788e9; detached worktree, ничего не коммитилось",
   "results": [
    {
@@ -189,6 +284,52 @@
     "status": "PASS",
     "result": "113 PASS / 0 FAIL / 0 NOT_RUN; шаг 5 «ҚАЗ: форма входа и кабинет сотрудника по-казахски» PASS на обоих размерах (B-021)",
     "evidence": "screenshots/cabinet-kk-r01build-1366.jpg, cabinet-kk-r01build-375.jpg"
+   }
+  ]
+ },
+ "integration": {
+  "build": "claude/sharp-dijkstra-0t87gl @ c2318b74 (R01 night 3b) + пути R12 из 208413bc; detached worktree, ничего не коммитилось",
+  "results": [
+   {
+    "name": "pytest tests/civic (все роли)",
+    "status": "PASS",
+    "result": "2537 passed, 21 skipped, 1 xfailed (7 мин 9 с)"
+   },
+   {
+    "name": "R12 карта: приёмка в app.py",
+    "status": "PASS",
+    "result": "12 PASS / 0 FAIL"
+   },
+   {
+    "name": "R12 редактор: приёмка в app.py (R04_APP_PATCHED=1)",
+    "status": "PASS",
+    "result": "4/4"
+   },
+   {
+    "name": "R01 p0_flow",
+    "status": "PASS",
+    "result": "63/0/1 (NOT_RUN — OpenFreeMap), без гонки demo-ring"
+   },
+   {
+    "name": "R01 r14_b1 / r14_b2",
+    "status": "PASS",
+    "result": "15/0 и 25/0"
+   },
+   {
+    "name": "R10 demo_flow из сборки R01 (старая версия теста)",
+    "status": "FAIL",
+    "result": "105 PASS / 4 FAIL / 4 NOT_RUN",
+    "reason": "не R12: в c2318b74 R01 добавил демо-посев R09 у «Хан Шатыр», шаг 2 уходит в «Я тоже» (metoo=true), и старый тест на шаге 6 пишет «у остановки нет новых жалоб» (на cb6d336 было metoo=false и 113/0). Шаг 5 «ҚАЗ: кабинет по-казахски» — PASS на 1366 и 375. R10 уже переписал тест (r14-R10 3fa9315c: своя остановка на каждый вариант)."
+   },
+   {
+    "name": "R10 demo_flow — свежая версия теста (r14-R10 3fa9315c: своя остановка на каждый вариант экрана)",
+    "status": "FAIL (не R12)",
+    "result": "131 PASS / 5 FAIL / 0 NOT_RUN — и с R12 208413bc, и на чистой c2318b74 без поставки R12: те же 5 FAIL",
+    "fails": [
+     "шаг 6 «Взять в работу → Отметить исправленным → зелёным» в вариантах 1366-kk, 375-ru, 375-kk (green=false / take=false) — R07/оболочка/R09",
+     "375-kk шаг 0: строка легенды R07 «Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз» засчитана как русская — проверка R10/легенда R07"
+    ],
+    "r12_steps": "шаг 1 «предложена остановка …» (цели R12) и шаг 5 «ҚАЗ: форма входа и кабинет сотрудника по-казахски» — PASS во всех вариантах"
    }
   ]
  }
