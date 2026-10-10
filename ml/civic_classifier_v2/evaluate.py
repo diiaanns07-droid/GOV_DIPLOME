@@ -312,6 +312,13 @@ def _cmd_model(args) -> int:
     text = json.dumps(out, ensure_ascii=False, indent=1)
     if args.out:
         Path(args.out).write_text(text + "\n", encoding="utf-8")
+    if args.preds_out:
+        # Прогноз по каждому тексту: только id, метки и score (без текстов) — для analysis.py errors.
+        set_name = args.set_name
+        with open(args.preds_out, "w", encoding="utf-8") as fh:
+            for r, pr, row in zip(recs, pred, proba):
+                fh.write(json.dumps({"set": set_name, "id": r["id"], "true": r["label"], "pred": labels[pr],
+                                     "score": round(float(row[pr]), 4)}, ensure_ascii=False) + "\n")
     print(f"n={len(recs)} macro-F1={out['human']['macro_f1']} accuracy={out['human']['accuracy']} "
           f"ДИ={out['human']['ci']['macro_f1']}")
     print("Предсказано по категориям:", dict(Counter(labels[p] for p in pred)))
@@ -330,6 +337,9 @@ def main(argv=None) -> int:
     m.add_argument("--human", nargs="+", required=True)
     m.add_argument("--not-complaint", choices=("drop", "other"), default="drop")
     m.add_argument("--out")
+    m.add_argument("--preds-out", help="JSONL прогнозов по текстам {set,id,true,pred,score} (без текстов)")
+    m.add_argument("--set-name", default="probe_v2",
+                   help="имя набора в --preds-out; для текстов людей укажите human — analysis не покажет их примеры")
     args = ap.parse_args(argv)
     return _cmd_render(args) if args.cmd == "render" else _cmd_model(args)
 

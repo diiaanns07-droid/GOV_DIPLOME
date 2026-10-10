@@ -123,8 +123,11 @@ foreach ($f in 0.25, 0.5) { & $PY -m ml.civic_classifier_v2.experiments --synth-
 (Облако, случайные веса того же размера, новый экспорт: 266 МБ, 17.8 мс на текст по умолчанию, три PASS.)
 
 8б. Качество int8 на независимом тесте (≈ 1 мин) — то, что реально получит R04:
-& $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2.json
+& $PY -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human "$PROBE\probe_v2.jsonl" --out ml\civic_classifier_v2\results\onnx_int8_on_probe_v2.json --preds-out ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl
 Сравнить macro-F1 с probe_v2_eval в results\final_model_meta.json (PyTorch: 0.828). Ожидается разница в пределах ~0.01–0.02.
+Затем разбор ошибок с примерами текстов трансформера (≈ 5 с):
+& $PY -m ml.civic_classifier_v2.analysis errors --preds ml\civic_classifier_v2\results\preds_probe_v2_final_onnx_int8.jsonl ml\civic_classifier_v2\results\preds_probe_v2_synth_all_logreg.jsonl --probe "$PROBE\probe_v2.jsonl"
+& $PY -m ml.civic_classifier_v2.analysis tables
 Проверка как у R04:
 & $PY -m ml.civic_classifier_v2.predict "Во дворе не горят фонари уже неделю" "Аулада шам жанбайды, қараңғы" "Не вывозят мусор, баки переполнены"
 Результат: ml\civic_classifier_v2\artifacts\onnx\ — эту папку целиком передать R04 / в сборку (в Git НЕ коммитить, > 50 МБ).
@@ -137,7 +140,7 @@ Copy-Item ml\civic_classifier_v2\artifacts\final\train_log.jsonl ml\civic_classi
 Copy-Item ml\civic_classifier_v2\artifacts\final\birge_meta.json ml\civic_classifier_v2\results\final_model_meta.json
 git status --short          (НЕ должно быть artifacts\, private\, *.onnx, *.safetensors)
 git add ml/civic_classifier_v2/results/lc_*      (только если был шаг 6б)
-git add ml/civic_classifier_v2/results/onnx_int8_on_probe_v2.json      (шаг 8б)
+git add ml/civic_classifier_v2/results/onnx_int8_on_probe_v2.json ml/civic_classifier_v2/results/preds_probe_v2_final_onnx_int8.jsonl ml/civic_classifier_v2/results/ERROR_ANALYSIS.md ml/civic_classifier_v2/results/DIPLOMA_TABLES.md ml/civic_classifier_v2/results/tables      (шаг 8б)
 git add ml/civic_classifier_v2/results/experiments.json ml/civic_classifier_v2/results/RESULTS.md ml/civic_classifier_v2/results/onnx_export.json ml/civic_classifier_v2/results/train_log_experiments.jsonl ml/civic_classifier_v2/results/train_log_final.jsonl ml/civic_classifier_v2/results/final_model_meta.json
 git commit -m "R03: LOCAL-4 results (RTX 4060): experiments, final model meta, ONNX export"
 git push origin claude/r14-R03
