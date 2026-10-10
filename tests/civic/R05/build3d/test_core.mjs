@@ -347,3 +347,26 @@ test("устройство: один id на браузер", () => {
   assert.match(a, /^[A-Za-z0-9_-]{16,128}$/);
   assert.equal(C.getDeviceId(st), a);
 });
+
+test("ключи для R11 (UX_REVIEW день 3 #26): файл i18n_build3d.json совпадает со строками модуля, ru и kk есть у всех", async () => {
+  const vm = await import("node:vm");
+  const code = readFileSync(path.join(ROOT, "web/civic/build3d/build3d.js"), "utf8");
+  const ctx = { self: { document: null, CivicBuild3DCore: {}, CivicBuild3DModels: {} } };
+  vm.createContext(ctx);
+  vm.runInContext(code, ctx);
+  const S = ctx.self.CivicBuild3D.STRINGS;
+  const file = JSON.parse(readFileSync(path.join(ROOT, "research/round-14-results/R05/i18n_build3d.json"), "utf8"));
+  assert.deepEqual(Object.keys(file).sort(), Object.keys(S.ru).sort());
+  for (const [key, spec] of Object.entries(file)) {
+    assert.match(key, /^[a-z0-9_]+(\.[a-z0-9_]+)+$/, key);
+    // JSON: объекты из vm-контекста имеют другой прототип, сравниваем значения.
+    assert.equal(JSON.stringify(spec.ru), JSON.stringify(S.ru[key]), key);
+    assert.equal(JSON.stringify(spec.kk), JSON.stringify(S.kk[key]), key);
+    assert.ok(spec.kk && spec.where, key);
+    const params = (v) => JSON.stringify(v).match(/\{\w+\}/g)?.sort() || [];
+    assert.deepEqual(params(spec.kk), params(typeof spec.ru === "object" ? spec.ru.many : spec.ru), "параметры ru/kk совпадают: " + key);
+  }
+  // Ни одного технического слова в текстах (UX_BRIEF, правило 4).
+  const texts = JSON.stringify(Object.values(file).map((v) => [v.ru, v.kk])).toLowerCase(); // только тексты экрана, не «where»
+  for (const word of ["ребро", "граф", "геометрия", "payload", "demo", "null", "undefined", "webgl"]) assert.ok(!texts.includes(word), word);
+});

@@ -20,6 +20,11 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.
 const WEB = path.join(ROOT, "web");
 const OUT = path.join(ROOT, "research/round-14-results/R05");
 const SHOTS = !process.argv.includes("--no-shots");
+// --kit <папка> — взять web/civic/ui-kit и web/civic/i18n из выгрузки другой ветки (R11: как будет в сборке).
+const KIT = (() => {
+  const i = process.argv.indexOf("--kit");
+  return i > 0 && process.argv[i + 1] ? path.resolve(process.argv[i + 1], "web") : null;
+})();
 
 function loadPlaywright() {
   for (const id of ["playwright", "/opt/node22/lib/node_modules/playwright"]) {
@@ -93,8 +98,10 @@ const server = http.createServer(async (req, res) => {
     }
     return handleApi(req, res, url, body);
   }
-  const file = path.normalize(path.join(WEB, decodeURIComponent(url.pathname)));
-  if (!file.startsWith(WEB)) return json(res, 403, { error: "forbidden" });
+  const rel = decodeURIComponent(url.pathname);
+  const base = KIT && (rel.startsWith("/civic/ui-kit/") || rel.startsWith("/civic/i18n/")) ? KIT : WEB;
+  const file = path.normalize(path.join(base, rel));
+  if (!file.startsWith(base)) return json(res, 403, { error: "forbidden" });
   try {
     const data = await readFile(file);
     res.writeHead(200, { "Content-Type": MIME[path.extname(file)] || "application/octet-stream" });
@@ -204,9 +211,7 @@ async function placeLighting(page, a, b) {
 // Набор для обзорных скриншотов: три объекта «как после перезагрузки» + два примера из фикстуры.
 const FIXTURE = JSON.parse(await readFile(path.join(WEB, "civic/build3d/data/proposals.fixture.json"), "utf8"));
 const SHOWCASE = [
-  { id: "s-square", kind: "square", geometry: { type: "Point", coordinates: [71.3972, 51.1283] }, rotation_deg: 10 },
-  { id: "s-playground", kind: "playground", geometry: { type: "Point", coordinates: [71.3992, 51.129] }, rotation_deg: 20 },
-  { id: "s-sports", kind: "sports", geometry: { type: "Point", coordinates: [71.3962, 51.1265] }, rotation_deg: 15 },
+  { id: "s-sports", kind: "sports", geometry: { type: "Point", coordinates: [71.3998, 51.1268] }, rotation_deg: 8 },
 ]
   .map((p) => Object.assign({ status: "proposal", votes_up: 0, votes_down: 0, year: 2027, district: "nura" }, p))
   .concat(FIXTURE.proposals);
@@ -461,9 +466,10 @@ await check("real_osm_nearby_hint_and_yard_target", async () => {
   const info = await page.textContent(".b3d-hint--info");
   const placeEnabled = (await page.getAttribute("[data-action=place]", "aria-disabled")) !== "true";
   await page.click("[data-action=cancel]");
-  // Детская площадка в центре двора «Evolution» (OSM landuse=residential) → цель area yard-1148721825.
+  // Детская площадка в центре двора «Eco Park» (OSM landuse=residential) → цель area yard-1424189376.
+  await resetView(page, { center: [71.3914, 51.1278], zoom: 17.6 });
   const before = (await state(page)).proposals.map((p) => p.id);
-  await placePoint(page, "playground", [71.4021, 51.1289]);
+  await placePoint(page, "playground", [71.391411, 51.1276105]);
   await idle(page);
   const created = (await state(page)).proposals.find((p) => !before.includes(p.id));
   await page.click(`.b3d-label[data-id="${created.id}"]`);
@@ -532,7 +538,7 @@ await check("build_animation_grows_then_shows_label", async () => {
   await placePoint(p, "square", [71.4004, 51.1278]);
   await p.waitForTimeout(1600);
   const mid = await state(p);
-  const id = mid.proposals.find((x) => x.kind === "square").id;
+  const id = mid.proposals.find((x) => x.kind === "square" && !x.demo).id; // не сквер-пример из фикстуры
   const hiddenMid = await p.$eval(`.b3d-label[data-id="${id}"]`, (e) => e.classList.contains("b3d-label--hidden"));
   if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", "1366_ru_building.png") });
   await p.waitForFunction(() => !__b3d.getState().animating, null, { timeout: 30000 });
@@ -564,14 +570,14 @@ await check("kk_locale_no_raw_keys_no_i18n_warnings", async () => {
   const labels = await p.$$eval(".b3d-label", (els) => els.map((e) => e.textContent));
   await p.click(".b3d-card[data-kind=lighting]");
   const hint = await p.textContent(".b3d-hint");
-  const body = await p.textContent("body");
+  const body = await p.evaluate(() => document.body.innerText); // видимый текст (без кода <script> страницы)
   await p.click("[data-action=cancel]");
   await p.click('.b3d-label[data-id="p-demo-stop-syganak"]');
   const card = await p.textContent(".b3d-pcard");
   const warns = p._console.filter((m) => m.text.includes("[i18n]"));
   await p.context().close();
   assert(title === "Не салайық?" && labels.every((t) => t === "Жоба · 2027"), JSON.stringify({ title, labels }));
-  assert(!RAW_KEY.test(body) && !RAW_KEY.test(card), "ключ на экране");
+  assert(!RAW_KEY.test(body) && !RAW_KEY.test(card), "ключ на экране: " + ((body.match(RAW_KEY) || card.match(RAW_KEY) || [])[0]));
   assert(warns.length === 0, JSON.stringify(warns));
   return { status: "PASS", detail: { title, label: labels[0], hint, card: card.replace(/\s+/g, " ").trim() } };
 });
@@ -679,17 +685,174 @@ await check("api_store_contract_roundtrip", async () => {
   return { status: "PASS", detail: { requests: api.log.map((r) => r.method + " " + r.path.replace("/api/civic/v2", "")), post_fields: Object.keys(post.body).sort() } };
 });
 
+// ───────────── UX_REVIEW R11, день 3 (#20–#25): по проверке на каждое замечание ─────────────
+await check("r11_20_start_close_up_17_4", async () => {
+  const p = await openPage({}, "?reset=1&store=local"); // без center — крупный план проектов (flyToProposals)
+  const st = await p.evaluate(() => ({
+    zoom: __map.getZoom(),
+    labels: [...document.querySelectorAll(".b3d-label")].filter((l) => l.style.visibility !== "hidden" && !l.classList.contains("b3d-label--dot")).length,
+  }));
+  await p.context().close();
+  assert(Math.abs(st.zoom - 17.4) < 0.05 && st.labels >= 2, JSON.stringify(st));
+  return { status: "PASS", detail: `масштаб ${st.zoom.toFixed(2)}, видно подписей ${st.labels}` };
+});
+await check("r11_20_catalog_pick_zooms_to_17_5", async () => {
+  const p = await openPage({}, "?reset=1&store=local&center=71.4009,51.1276&zoom=16.4");
+  await p.click(".b3d-card[data-kind=square]");
+  await p.waitForFunction(() => Math.abs(__map.getZoom() - 17.5) < 0.01 && !__map.isMoving(), null, { timeout: 15000 });
+  const z = await p.evaluate(() => __map.getZoom());
+  await p.context().close();
+  return { status: "PASS", detail: `выбор «Сквер» на 16.4 → плавно ${z.toFixed(2)}` };
+});
+await check("r11_21_model_clickable_pointer_label_40_zone_48", async () => {
+  const p = await openPage({}, "?reset=1&store=local&center=71.4022,51.1286&zoom=17.9&pitch=55&bearing=-20");
+  const id = "p-demo-square-yard-1148721825";
+  const pt = await p.evaluate((id) => {
+    const a = __b3d._project(id, [6, -4, 1]); // газон сквера, не подпись
+    const r = __map.getCanvas().getBoundingClientRect();
+    return [a.x + r.left, a.y + r.top];
+  }, id);
+  await p.mouse.move(pt[0], pt[1], { steps: 3 });
+  await p.waitForTimeout(400);
+  const cursor = await p.evaluate(() => __map.getCanvas().style.cursor);
+  await p.mouse.click(pt[0], pt[1]);
+  await p.waitForSelector(".b3d-dock[data-state=card]");
+  const sel = (await state(p)).selected;
+  const sizes = await p.$$eval(".b3d-label", (els) =>
+    els
+      .filter((e) => !e.classList.contains("b3d-label--dot") && e.style.visibility !== "hidden")
+      .map((e) => {
+        const r = e.getBoundingClientRect();
+        const b = getComputedStyle(e, "::before");
+        return { h: r.height, zoneH: r.height - parseFloat(b.top) - parseFloat(b.bottom), zoneW: r.width - parseFloat(b.left) - parseFloat(b.right) };
+      })
+  );
+  await p.context().close();
+  assert(cursor === "pointer" && sel === id, JSON.stringify({ cursor, sel }));
+  assert(sizes.length && sizes.every((z) => z.h >= 40 && z.zoneH >= 48 && z.zoneW >= 48), JSON.stringify(sizes));
+  return { status: "PASS", detail: { cursor_over_model: cursor, opened_by_model_click: sel, label_height_px: sizes[0].h, tap_zone_px: sizes[0].zoneH } };
+});
+await check("r11_21_selected_object_not_under_card_1366_375", async () => {
+  const out = [];
+  for (const vp of [{ width: 1366, height: 768 }, { width: 375, height: 812 }]) {
+    // Остановка-пример у нижнего края экрана: после выбора она должна оказаться над/слева от карточки.
+    const p = await openPage({ viewport: vp }, "?reset=1&store=local&center=71.4015,51.1290&zoom=17.4&pitch=55&bearing=-20");
+    const id = "p-demo-stop-syganak";
+    await p.evaluate((id) => __b3d.select(id), id);
+    await p.waitForTimeout(1000);
+    const r = await p.evaluate((id) => {
+      const a = __b3d._project(id, [0, 0, 0]);
+      const c = __map.getCanvas().getBoundingClientRect();
+      const d = document.querySelector(".b3d-dock").getBoundingClientRect();
+      const x = a.x + c.left,
+        y = a.y + c.top;
+      return { x: Math.round(x), y: Math.round(y), under: x >= d.left && x <= d.right && y >= d.top && y <= d.bottom, onScreen: x > 0 && x < innerWidth && y > c.top && y < innerHeight };
+    }, id);
+    out.push(Object.assign({ vp: vp.width }, r));
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `${vp.width}_ru_card_object_visible.png`) });
+    await p.context().close();
+  }
+  assert(out.every((o) => !o.under && o.onScreen), JSON.stringify(out));
+  return { status: "PASS", detail: out.map((o) => `${o.vp} px: объект (${o.x}, ${o.y}) на экране и не под карточкой`).join("; ") };
+});
+await check("r11_22_23_demo_header_title_and_3d_label", async () => {
+  const res = {};
+  for (const lang of ["ru", "kk"]) {
+    const p = await openPage({}, `?reset=1&store=local&lang=${lang}`);
+    res[lang] = await p.evaluate(() => ({
+      title: document.getElementById("demo-title").textContent,
+      tag_in_header: !!document.querySelector(".bk-header .bk-tag"),
+      button_3d_text: document.getElementById("demo-3d").textContent.trim(),
+      button_3d_height: document.getElementById("demo-3d").getBoundingClientRect().height,
+    }));
+    await p.context().close();
+  }
+  assert(res.ru.title === "3D-превью" && res.kk.title === "3D-көрініс" && !res.ru.tag_in_header, JSON.stringify(res));
+  assert(res.ru.button_3d_text === "3D" && res.kk.button_3d_text === "3D" && res.ru.button_3d_height >= 48, JSON.stringify(res));
+  return { status: "PASS", detail: res };
+});
+await check("r11_24_resident_hint_ru_kk", async () => {
+  const res = {};
+  for (const [lang, vp] of [["ru", { width: 1366, height: 768 }], ["kk", { width: 375, height: 812 }]]) {
+    const p = await openPage({ viewport: vp }, `?reset=1&store=local&role=resident&lang=${lang}`);
+    res[lang + "_" + vp.width] = (await p.textContent(".b3d-dock")).trim();
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `${vp.width}_${lang}_resident_hint.png`) });
+    await p.context().close();
+  }
+  assert(res.ru_1366 === "Нажмите на проект, чтобы проголосовать" && res.kk_375 === "Дауыс беру үшін жобаны басыңыз", JSON.stringify(res));
+  return { status: "PASS", detail: res };
+});
+await check("r11_25_offline_basemap_real_osm_yards", async () => {
+  const p = await openPage({}, "?reset=1&store=local");
+  const r = await p.evaluate(() => ({
+    yards_in_source: __map.getSource("yards").serialize().data.features.length,
+    yards_on_screen: __map.queryRenderedFeatures({ layers: ["yards"] }).length,
+    examples_in_yards: __b3d.getState().proposals.filter((q) => q.target && q.target.kind === "area").map((q) => q.target.label_ru),
+  }));
+  await p.context().close();
+  assert(r.yards_in_source > 100 && r.yards_on_screen >= 2 && r.examples_in_yards.length >= 2, JSON.stringify(r));
+  return { status: "PASS", detail: r };
+});
+
+// ───────────── Соглашения оболочки R01 и участки улиц R12 ─────────────
+await check("r01_birge_mode_event_update_dock", async () => {
+  const p = await openPage({}, "?reset=1&store=local");
+  await p.evaluate(() => document.dispatchEvent(new CustomEvent("birge:mode", { detail: { mode: "resident" } })));
+  await p.waitForTimeout(200);
+  const residentCards = await p.$$eval(".b3d-card", (e) => e.length);
+  const hint = (await p.textContent(".b3d-dock")).trim();
+  await p.evaluate(() => __b3d.update({ mode: "akimat", dock: false }));
+  const hidden = await p.$eval(".b3d-dock", (d) => d.getAttribute("data-state"));
+  const labels = await p.$$eval(".b3d-label", (e) => e.length);
+  await p.evaluate(() => __b3d.update({ dock: true }));
+  const back = await p.$$eval(".b3d-card", (e) => e.length);
+  await p.context().close();
+  assert(residentCards === 0 && /проголосовать/.test(hint) && hidden === "empty" && labels >= 4 && back === 5, JSON.stringify({ residentCards, hint, hidden, labels, back }));
+  return { status: "PASS", detail: "birge:mode → житель без каталога; update({dock:false}) прячет каталог, объекты остаются; update({dock:true}) возвращает" };
+});
+await check("r01_map_getter_waits_for_map", async () => {
+  const p = await openPage({}, "?reset=1&store=local");
+  const r = await p.evaluate(async () => {
+    __b3d.destroy();
+    let ready = null;
+    const h = CivicBuild3D.mount({ map: () => ready, mode: "resident", store: "local" });
+    const before = h.getState().phase;
+    setTimeout(() => {
+      ready = __map;
+    }, 700);
+    await h.ready;
+    const after = h.getState();
+    h.destroy();
+    return { before, phase: after.phase, count: after.count };
+  });
+  await p.context().close();
+  assert(r.before === "waiting_map" && r.phase === "ready" && r.count >= 4, JSON.stringify(r));
+  return { status: "PASS", detail: r };
+});
+await check("lighting_outside_nura_without_r12_says_so", async () => {
+  const p = await openPage({}, "?reset=1&store=local&center=71.4314,51.1604&zoom=17.4&pitch=50&bearing=0");
+  await p.click(".b3d-card[data-kind=lighting]");
+  const c = await screenOf(p, [71.4300153, 51.1601624]);
+  await p.mouse.move(c[0], c[1]);
+  await p.mouse.click(c[0], c[1]);
+  await p.waitForTimeout(800);
+  const hint = (await p.textContent(".b3d-hint")).trim();
+  await p.context().close();
+  assert(/только в районе Нура/.test(hint), hint);
+  return { status: "PASS", detail: hint + " (маршрутов R12 нет на этом сервере; с R12 — geo_check.mjs)" };
+});
+
 // ───────────── 13. Скриншоты для DELIVERY: 1366 и 375, наклон 0° и 60°, ru и kk ─────────────
 if (SHOTS) {
   await check("screenshots_1366_375_pitch_0_60_ru_kk", async () => {
     const made = [];
     for (const lang of ["ru", "kk"]) {
       for (const pitch of [60, 0]) {
-        const desk = await openPage({}, `?lang=${lang}&store=local&center=71.3988,51.1276&zoom=17.15&pitch=${pitch}&bearing=${pitch ? -20 : 0}`, { seed: SHOWCASE });
+        const desk = await openPage({}, `?lang=${lang}&store=local&pitch=${pitch}&bearing=${pitch ? -20 : 0}`, { seed: SHOWCASE });
         await shot(desk, `1366_${lang}_p${pitch}.png`);
         made.push(`1366_${lang}_p${pitch}.png`);
         await desk.context().close();
-        const phone = await openPage({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }, `?lang=${lang}&store=local&center=71.3995,51.1279&zoom=16.75&pitch=${pitch}&bearing=${pitch ? -20 : 0}`, { seed: SHOWCASE });
+        const phone = await openPage({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }, `?lang=${lang}&store=local&pitch=${pitch}&bearing=${pitch ? -20 : 0}`, { seed: SHOWCASE });
         await shot(phone, `375_${lang}_p${pitch}.png`);
         made.push(`375_${lang}_p${pitch}.png`);
         await phone.context().close();
@@ -748,7 +911,8 @@ const report = {
       return null;
     }
   })(),
-  environment: Object.assign({ node: process.version, chromium: browser.version ? browser.version() : null, renderer: "SwiftShader (без GPU)" }, env),
+  environment: Object.assign({ node: process.version, chromium: browser.version ? browser.version() : null, renderer: "SwiftShader (без GPU)",
+    ui_kit_i18n: KIT ? "из выгрузки --kit " + path.relative(ROOT, path.dirname(KIT)) : "web/civic/ui-kit, web/civic/i18n этой ветки" }, env),
   summary: {
     pass: results.filter((r) => r.status === "PASS").length,
     fail: results.filter((r) => r.status === "FAIL").length,

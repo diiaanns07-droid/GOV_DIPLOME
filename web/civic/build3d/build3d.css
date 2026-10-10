@@ -50,7 +50,7 @@
 /* Ноутбук (≥ 1024 px): карточка проекта выезжает справа, 400 px, как карточки целей (UX_SPEC §1);
    каталог и размещение остаются внизу по центру. Телефон и узкие окна — карточка снизу. */
 @media (min-width: 1024px) {
-  .b3d--overlay .b3d-dock[data-state="card"] {
+  .b3d--overlay:not(.b3d--host-right) .b3d-dock[data-state="card"] {
     position: absolute;
     top: var(--gap-edge, 12px);
     right: var(--gap-edge, 12px);
@@ -68,7 +68,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .b3d--overlay .b3d-dock[data-state="card"] {
+  .b3d--overlay:not(.b3d--host-right) .b3d-dock[data-state="card"] {
     animation: none;
   }
 }

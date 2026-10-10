@@ -1,0 +1,58 @@
+{
+ "generated_at": "2026-10-10T14:37:01.451Z",
+ "origin": "http://127.0.0.1:8617",
+ "checks": [
+  {
+   "id": "lighting_outside_nura_via_r12",
+   "status": "PASS",
+   "detail": {
+    "length_m": 190.4,
+    "edges": [
+     "osm-w623788311-1",
+     "osm-w623788311-0",
+     "osm-w425997757-1",
+     "osm-w425997757-0"
+    ],
+    "name": "Участок улицы без названия",
+    "name_kk": "Атауы жоқ көше учаскесі"
+   }
+  },
+  {
+   "id": "kk_street_name_from_r12",
+   "status": "PASS",
+   "detail": {
+    "hint": "Атауы жоқ көше учаскесі, 190 м · 7 шам. «Орнату» түймесін басыңыз",
+    "name_kk": "Атауы жоқ көше учаскесі"
+   }
+  },
+  {
+   "id": "placed_lighting_follows_r12_shape",
+   "status": "PASS",
+   "detail": {
+    "kind": "segment",
+    "id": "osm-w623788311-1",
+    "ids": [
+     "osm-w623788311-1",
+     "osm-w623788311-0",
+     "osm-w425997757-1",
+     "osm-w425997757-0"
+    ],
+    "label_ru": "Участок улицы без названия",
+    "label_kk": "Атауы жоқ көше учаскесі"
+   }
+  },
+  {
+   "id": "nura_section_r12_matches_local_length",
+   "status": "PASS",
+   "detail": {
+    "length_m": 184.3,
+    "name_kk": "Сығанақ көшесі"
+   }
+  },
+  {
+   "id": "no_page_errors",
+   "status": "PASS",
+   "detail": []
+  }
+ ]
+}

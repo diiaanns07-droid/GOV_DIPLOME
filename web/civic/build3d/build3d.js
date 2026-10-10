@@ -25,6 +25,11 @@
  *   onToolChange(active, kind) — модуль взял/отдал щелчки по карте (R01: map.setInteractionEnabled);
  *   onSelect(proposal|null)    — выбрано предложение (R06 может показать свою карточку);
  *   renderCard: false          — не показывать встроенную карточку (её рисует R06).
+ *   avoid: () => [элементы]    — элементы хозяина поверх карты (панель R01): модуль ставит свою панель, карточку
+ *                                и сдвиг камеры в свободную часть карты (справа от панели / над шторкой);
+ *   dock: false                — спрятать каталог/подсказку (объекты, подписи и карточка по нажатию — видны);
+ *   mode                       — "akimat" | "resident" (как у оболочки R01; role — старое имя), событие "birge:mode";
+ *   api                        — клиент оболочки R01 ({v2(method, path, body)}); map — карта или функция map().
  *
  * Handle: start(kind), cancel(), select(id), refresh(), setVisible(bool), getState(), destroy().
  * Событие для соседей: document "civic-build3d:tool" {active, kind} — как "civic-editor:tool" у редактора.
@@ -390,6 +395,7 @@
       autoZoom: opts.autoZoom !== false,
       renderCard: opts.renderCard !== false,
       useR06Card: opts.useR06Card !== false, // карточка R06 при настоящем API (если её модуль подключён)
+      dock: opts.dock !== false, // каталог/подсказка видны (карточка и размещение — всегда)
       storage: opts.storage || safeLocalStorage(),
     };
     var i18n = opts.i18n || root.BirgeI18n || null;
@@ -453,7 +459,7 @@
       var sel = S.selected && S.objects[S.selected] ? S.objects[S.selected] : null;
       var g = S.ghost;
       return JSON.stringify([
-        S.phase, S.mode, S.kind, S.hint, S.visible, S.storeMode, S.cardBusy, t.lang(), Object.keys(S.objects).length,
+        S.phase, S.mode, S.kind, S.hint, S.visible, S.storeMode, S.cardBusy, t.lang(), Object.keys(S.objects).length, o.dock, o.role,
         g ? [g.valid && g.valid.ok, !!(g.section && g.section.ok), nearInfo()] : null,
         sel ? [sel.p.id, sel.p.votes_up, sel.p.votes_down, sel.p.my_vote, sel.pending] : null,
       ]);
@@ -469,6 +475,7 @@
         if (active.getAttribute("data-action")) focusSel = '[data-action="' + active.getAttribute("data-action") + '"]';
         else if (active.getAttribute("data-kind")) focusSel = '[data-kind="' + active.getAttribute("data-kind") + '"]';
       }
+      applyInsets();
       renderDock();
       labelsLayer.classList.toggle("b3d-labels--passive", S.mode === "placing");
       if (focusSel) {
@@ -476,6 +483,40 @@
         if (again) again.focus({ preventScroll: true });
       }
     }
+    // Свободная часть карты: не заходим под элементы хозяина (панель R01 слева, шторка снизу на телефоне).
+    function applyInsets() {
+      if (typeof opts.avoid !== "function" || !ui.classList.contains("b3d--overlay")) return;
+      var host = ui.parentNode;
+      if (!host || !host.getBoundingClientRect) return;
+      var c = host.getBoundingClientRect();
+      var ins = { left: 0, right: 0, top: 0, bottom: 0 };
+      var gap = 12;
+      var list = [];
+      try {
+        list = opts.avoid() || [];
+      } catch (e) {
+        list = [];
+      }
+      list.forEach(function (node) {
+        if (!node || !node.getBoundingClientRect || node.hidden) return;
+        var r = node.getBoundingClientRect();
+        if (!r.width || !r.height || r.right <= c.left || r.left >= c.right || r.bottom <= c.top || r.top >= c.bottom) return;
+        var wide = r.width > c.width * 0.6,
+          tall = r.height > c.height * 0.25;
+        // Полосы во всю ширину: шапка сверху, шторка снизу. Колонки: панель/кнопки слева или справа.
+        if (wide && r.bottom >= c.bottom - 4) ins.bottom = Math.max(ins.bottom, c.bottom - r.top + gap);
+        else if (wide && r.top - c.top < c.height * 0.2) ins.top = Math.max(ins.top, r.bottom - c.top + gap);
+        else if (tall && r.right - c.left < c.width * 0.5) ins.left = Math.max(ins.left, r.right - c.left + gap);
+        else if (tall && r.left - c.left > c.width * 0.5) ins.right = Math.max(ins.right, c.right - r.left + gap);
+      });
+      // Справа у хозяина своя панель (карточки целей R07): карточка проекта остаётся внизу, как каталог.
+      ui.classList.toggle("b3d--host-right", ins.right > 0);
+      ui.style.left = ins.left + "px";
+      ui.style.right = ins.right + "px";
+      ui.style.top = ins.top + "px";
+      ui.style.bottom = ins.bottom + "px";
+    }
+
     function renderDock() {
       ui.hidden = !S.visible;
       dock.textContent = "";
@@ -485,6 +526,10 @@
       if (S.phase === "error") return renderMessage("wifi-off", t("build3d.load_failed"), "", true);
       if (S.mode === "placing") return renderPlacing();
       if (S.selected && S.objects[S.selected] && o.renderCard) return renderCard(S.objects[S.selected].p);
+      if (!o.dock) {
+        dock.setAttribute("data-state", "empty"); // хозяин спрятал каталог; объекты и карточки работают
+        return;
+      }
       if (o.role === "akimat") return renderCatalog();
       renderResidentHint();
     }
@@ -1861,14 +1906,20 @@
       return q[0].toFixed(7) + "," + q[1].toFixed(7);
     }
     // Ответ R12 segment_between → участок в формате модуля (как у StreetIndex.section).
-    function fromR12Segment(seg) {
+    function fromR12Segment(seg, fallbackName, fallbackKk) {
       if (!seg || !seg.geometry || seg.geometry.type !== "LineString" || seg.geometry.coordinates.length < 2) return null;
-      var name = seg.street_ru || (seg.names && seg.names[0]) || seg.label_ru || null;
-      if (seg.same_street === false) return { ok: false, reason: "other_street", name: name };
+      // Отказ — только если путь идёт по двум и более РАЗНЫМ названным улицам. Безымянные проезды R12 отдаёт
+      // с same_street:false (у них нет имени) — это всё ещё один участок, его можно осветить.
+      var names = (seg.names || []).filter(function (n, i, all) {
+        return n && all.indexOf(n) === i;
+      });
+      var name = seg.street_ru || names[0] || seg.label_ru || fallbackName || null;
+      if (names.length > 1) return { ok: false, reason: "other_street", name: name };
       var L = seg.length_m;
       if (L < Core.LIGHT_MIN_M) return { ok: false, reason: "too_short", name: name };
       if (L > Core.LIGHT_MAX_M) return { ok: false, reason: "too_long", name: name };
-      return { ok: true, name: name, name_kk: seg.street_kk || null, coords: seg.geometry.coordinates, length_m: L, edge_ids: seg.edge_ids || [], source: "r12" };
+      var nameKk = seg.street_kk || seg.label_kk || (!seg.street_ru && !names.length ? fallbackKk : null) || null;
+      return { ok: true, name: name, name_kk: nameKk, coords: seg.geometry.coordinates, length_m: L, edge_ids: seg.edge_ids || [], source: "r12" };
     }
     function geoReason(code) {
       return code === "not_on_street" ? "far_from_street" : code === "too_long" ? "too_long" : "no_path";
@@ -1916,6 +1967,7 @@
               if (sn.point && sn.distance_m <= Core.SNAP_STREET_M + 15) {
                 g.a = sn.point;
                 g.aStreet = sn.street_ru || sn.label_ru;
+                g.aStreetKk = sn.street_kk || sn.label_kk || null;
                 setHint("build3d.hint.segment_end", { street: t.lang() === "kk" ? sn.street_kk || sn.label_kk || g.aStreet : g.aStreet });
               } else setHint("build3d.err.far_from_street", null, true);
               updateGhost(true);
@@ -1938,7 +1990,7 @@
       geoGet("/street-segment?from=" + ll2(a) + "&to=" + ll2(ll) + "&kind=road").then(
         function (seg) {
           if (stale()) return;
-          var sec = fromR12Segment(seg);
+          var sec = fromR12Segment(seg, g.aStreet, g.aStreetKk);
           if (sec && (sec.ok || !local.ok)) applySection(g, sec, ll);
           else if (!sec && !local.ok) applySection(g, local, ll);
         },
@@ -2203,12 +2255,18 @@
       var cr = canvas.getBoundingClientRect();
       var w = canvas.clientWidth,
         h = canvas.clientHeight;
+      // Начинаем с области корня модуля (она уже без панелей хозяина, см. applyInsets), затем вычитаем свою панель.
+      var ur = ui.getBoundingClientRect();
+      var a = ur.width && ur.height
+        ? { x0: Math.max(0, ur.left - cr.left), y0: Math.max(0, ur.top - cr.top), x1: Math.min(w, ur.right - cr.left), y1: Math.min(h, ur.bottom - cr.top) }
+        : { x0: 0, y0: 0, x1: w, y1: h };
       var dr = dock.getBoundingClientRect();
-      if (!dr.width || !dr.height || ui.hidden) return { x0: 0, y0: 0, x1: w, y1: h };
+      if (!dr.width || !dr.height || ui.hidden) return a;
       var left = dr.left - cr.left,
         top = dr.top - cr.top;
-      if (left > w * 0.45 && top < h * 0.3) return { x0: 0, y0: 0, x1: Math.max(120, left), y1: h }; // карточка справа
-      return { x0: 0, y0: 0, x1: w, y1: Math.max(120, top) }; // панель снизу
+      if (left > a.x0 + (a.x1 - a.x0) * 0.45 && top < a.y0 + (a.y1 - a.y0) * 0.3) a.x1 = Math.max(a.x0 + 120, left); // карточка справа
+      else a.y1 = Math.max(a.y0 + 120, top); // панель снизу
+      return a;
     }
     function keepAboveDock(obj) {
       if (!obj || !lastMatrix) return;
@@ -2221,7 +2279,15 @@
       if (inside) return;
       var tx = (f.x0 + f.x1) / 2,
         ty = f.y0 + (f.y1 - f.y0) * 0.6;
-      map.panBy([sp.x - tx, sp.y - ty], { duration: reducedMotion() ? 0 : 450 });
+      // easeTo с offset: MapLibre ставит точку объекта в нужное место экрана с учётом наклона
+      // (panBy двигает центр, а при наклоне точки у края экрана смещаются на другое расстояние).
+      var canvas = map.getCanvas();
+      var anchor = obj.p.kind === "lighting" ? obj.p.geometry.coordinates[Math.floor(obj.p.geometry.coordinates.length / 2)] : obj.p.geometry.coordinates;
+      map.easeTo({
+        center: anchor,
+        offset: [tx - canvas.clientWidth / 2, ty - canvas.clientHeight / 2],
+        duration: reducedMotion() ? 0 : 450,
+      });
     }
 
     // Крупный план проектов (для оболочки: открыли «3D-превью» — камера к проектам; UX_REVIEW день 3 #20).
@@ -2298,6 +2364,10 @@
     map.on("styledata", onStyleData);
     doc.addEventListener("keydown", onKey);
     if (opts.followShellMode !== false) doc.addEventListener("birge:mode", onShellMode);
+    var onResize = function () {
+      applyInsets();
+    };
+    root.addEventListener("resize", onResize);
     if (i18n && typeof i18n.onChange === "function") unsubLang = i18n.onChange(onLang);
 
     render();
@@ -2321,6 +2391,11 @@
         u = u || {};
         if (u.mode || u.role) setMode(u.mode || u.role);
         if (typeof u.visible === "boolean") handle.setVisible(u.visible);
+        if (typeof u.dock === "boolean" && u.dock !== o.dock) {
+          o.dock = u.dock;
+          render(true);
+        }
+        if (u.insets === true) applyInsets(); // хозяин передвинул свою панель — пересчитать свободную часть
         return handle;
       },
       refresh: function () {
@@ -2349,7 +2424,15 @@
                 valid: S.ghost.valid,
                 a: S.ghost.a ? S.ghost.a.slice() : null,
                 section: S.ghost.section
-                  ? { ok: S.ghost.section.ok, length_m: S.ghost.section.length_m, name: S.ghost.section.name, coords: S.ghost.section.coords, edge_ids: S.ghost.section.edge_ids }
+                  ? {
+                      ok: S.ghost.section.ok,
+                      length_m: S.ghost.section.length_m,
+                      name: S.ghost.section.name,
+                      name_kk: S.ghost.section.name_kk || null,
+                      source: S.ghost.section.source || "local",
+                      coords: S.ghost.section.coords,
+                      edge_ids: S.ghost.section.edge_ids,
+                    }
                   : null,
               }
             : null,
@@ -2382,6 +2465,7 @@
         map.off("styledata", onStyleData);
         doc.removeEventListener("keydown", onKey);
         doc.removeEventListener("birge:mode", onShellMode);
+        root.removeEventListener("resize", onResize);
         if (unsubLang) unsubLang();
         clearTimeout(toastTimer);
         Object.keys(S.objects).forEach(disposeObject);

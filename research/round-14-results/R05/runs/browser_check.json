@@ -1,28 +1,29 @@
 {
  "role": "R05",
- "generated_at": "2026-10-10T13:50:44.994Z",
- "tested_sha": "b0353ee6e1052fddf792b4550dfb4bc754b7eded",
- "dirty": false,
+ "generated_at": "2026-10-10T14:52:52.416Z",
+ "tested_sha": "7f42cb335b464b44948bd1009d651c0244613b3b",
+ "dirty": true,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
+  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 7.3,
-  "fps_20_objects_swiftshader": 2.5,
+  "fps_0_objects_swiftshader": 6.4,
+  "fps_20_objects_swiftshader": 2.6,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 25,
-  "fail": 0,
+  "pass": 33,
+  "fail": 1,
   "not_run": 1
  },
  "checks": [
   {
    "id": "load_auto_falls_back_to_local_store",
    "status": "PASS",
-   "detail": "storeMode=local после 404 /proposals; примеров 2; подписи [\"Проект · 2027\",\"Проект · 2027\"]"
+   "detail": "storeMode=local после 404 /proposals; примеров 4; подписи [\"Проект · 2027\",\"Проект · 2027\",\"Проект · 2027\",\"Проект · 2027\"]"
   },
   {
    "id": "maplibre_mercator_matches_core",
@@ -33,7 +34,7 @@
    "id": "place_all_five_kinds",
    "status": "PASS",
    "detail": {
-    "count": 7,
+    "count": 9,
     "stop_auto_rotation_deg": 11,
     "lighting_hint": "улица Сыганак, 187 м · 7 фонарей. Нажмите «Поставить»",
     "near": [
@@ -48,7 +49,7 @@
   {
    "id": "labels_project_on_every_object",
    "status": "PASS",
-   "detail": "7 подписей «Проект · 2027» на 7 объектах"
+   "detail": "9 подписей «Проект · 2027» на 9 объектах"
   },
   {
    "id": "anchor_precision_pitch_0_60_rotation",
@@ -58,12 +59,12 @@
   {
    "id": "labels_follow_objects_when_tilted",
    "status": "PASS",
-   "detail": "6 подписей над объектами, макс. смещение по x 7.1 px (60°, поворот −35°)"
+   "detail": "8 подписей над объектами, макс. смещение по x 7.9 px (60°, поворот −35°)"
   },
   {
    "id": "reload_keeps_objects_without_animation",
    "status": "PASS",
-   "detail": "7 объектов, animating=false, скрытых подписей 0"
+   "detail": "9 объектов, animating=false, скрытых подписей 0"
   },
   {
    "id": "vote_in_card_one_per_device",
@@ -73,12 +74,12 @@
   {
    "id": "delete_frees_gpu_memory_and_undo_restores",
    "status": "PASS",
-   "detail": "геометрий на GPU: 27 → 31 → 27 (освобождены); «Отменить» вернул объект, всего 8"
+   "detail": "геометрий на GPU: 34 → 38 → 34 (освобождены); «Отменить» вернул объект, всего 10"
   },
   {
    "id": "undo_after_place_removes_object",
    "status": "PASS",
-   "detail": "после «Поставить» → «Отменить» объектов снова 8"
+   "detail": "после «Поставить» → «Отменить» объектов снова 10"
   },
   {
    "id": "overlap_is_blocked_with_message",
@@ -93,7 +94,7 @@
   {
    "id": "style_swap_keeps_layer_and_objects",
    "status": "PASS",
-   "detail": "слой вернулся, объектов 8"
+   "detail": "слой вернулся, объектов 10"
   },
   {
    "id": "real_osm_nearby_hint_and_yard_target",
@@ -102,17 +103,17 @@
     "hint": "Рядом уже есть остановка: «БЦ Саад», 60 м · по данным OpenStreetMap",
     "target": {
      "kind": "area",
-     "id": "yard-1148721825",
-     "label_ru": "Evolution",
-     "label_kk": "Evolution"
+     "id": "yard-1424189376",
+     "label_ru": "Eco Park",
+     "label_kk": "Eco Park"
     },
-    "card": "Двор: Evolution"
+    "card": "Двор: Eco Park"
    }
   },
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.5 кадр/с (без объектов 7.3)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.6 кадр/с (без объектов 6.4)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -126,13 +127,8 @@
   },
   {
    "id": "kk_locale_no_raw_keys_no_i18n_warnings",
-   "status": "PASS",
-   "detail": {
-    "title": "Не салайық?",
-    "label": "Жоба · 2027",
-    "hint": "Көшені басыңыз — бөліктің басы",
-    "card": "АялдамаЖоба · 2027ҮлгіҰсынысЖанында: улица СыганакЖақтаймын64Қарсымын5Бір құрылғыдан бір дауысЖою"
-   }
+   "status": "FAIL",
+   "detail": "ключ на экране: build3d.demo.title"
   },
   {
    "id": "phone_375_touch_layout",
@@ -160,29 +156,105 @@
    "detail": {
     "requests": [
      "GET /proposals",
+     "GET /api/civic/v1/session",
      "POST /proposals",
      "POST /proposals/srv-1/vote",
+     "GET /api/civic/v1/session",
+     "POST /proposals/srv-1/withdraw",
+     "GET /api/civic/v1/session",
      "DELETE /proposals/srv-1",
      "GET /proposals"
     ],
     "post_fields": [
      "demo",
-     "district",
      "geometry",
-     "id",
      "kind",
-     "near_street",
-     "rotation_deg",
-     "status",
-     "target",
-     "year"
+     "planned_year",
+     "rotation_deg"
     ]
    }
   },
   {
-   "id": "screenshots_1366_375_pitch_0_60_ru_kk",
+   "id": "r11_20_start_close_up_17_4",
    "status": "PASS",
-   "detail": "1366_ru_p60.png, 375_ru_p60.png, 1366_ru_p0.png, 375_ru_p0.png, 1366_kk_p60.png, 375_kk_p60.png, 1366_kk_p0.png, 375_kk_p0.png, 1366_ru_ghost_stop.png, 1366_ru_lighting_ghost.png"
+   "detail": "масштаб 17.40, видно подписей 4"
+  },
+  {
+   "id": "r11_20_catalog_pick_zooms_to_17_5",
+   "status": "PASS",
+   "detail": "выбор «Сквер» на 16.4 → плавно 17.50"
+  },
+  {
+   "id": "r11_21_model_clickable_pointer_label_40_zone_48",
+   "status": "PASS",
+   "detail": {
+    "cursor_over_model": "pointer",
+    "opened_by_model_click": "p-demo-square-yard-1148721825",
+    "label_height_px": 40.390625,
+    "tap_zone_px": 52.390625
+   }
+  },
+  {
+   "id": "r11_21_selected_object_not_under_card_1366_375",
+   "status": "PASS",
+   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (188, 287) на экране и не под карточкой"
+  },
+  {
+   "id": "r11_22_23_demo_header_title_and_3d_label",
+   "status": "PASS",
+   "detail": {
+    "ru": {
+     "title": "3D-превью",
+     "tag_in_header": false,
+     "button_3d_text": "3D",
+     "button_3d_height": 48
+    },
+    "kk": {
+     "title": "3D-көрініс",
+     "tag_in_header": false,
+     "button_3d_text": "3D",
+     "button_3d_height": 48
+    }
+   }
+  },
+  {
+   "id": "r11_24_resident_hint_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "ru_1366": "Нажмите на проект, чтобы проголосовать",
+    "kk_375": "Дауыс беру үшін жобаны басыңыз"
+   }
+  },
+  {
+   "id": "r11_25_offline_basemap_real_osm_yards",
+   "status": "PASS",
+   "detail": {
+    "yards_in_source": 560,
+    "yards_on_screen": 11,
+    "examples_in_yards": [
+     "Evolution",
+     "BI City Seoul"
+    ]
+   }
+  },
+  {
+   "id": "r01_birge_mode_event_update_dock",
+   "status": "PASS",
+   "detail": "birge:mode → житель без каталога; update({dock:false}) прячет каталог, объекты остаются; update({dock:true}) возвращает"
+  },
+  {
+   "id": "r01_map_getter_waits_for_map",
+   "status": "PASS",
+   "detail": {
+    "before": "waiting_map",
+    "phase": "ready",
+    "count": 4
+   }
+  },
+  {
+   "id": "lighting_outside_nura_without_r12_says_so",
+   "status": "PASS",
+   "detail": "Освещение пока можно предложить только в районе Нура (маршрутов R12 нет на этом сервере; с R12 — geo_check.mjs)"
   },
   {
    "id": "no_page_errors",

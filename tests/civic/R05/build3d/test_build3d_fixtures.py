@@ -130,6 +130,29 @@ class Fixtures(unittest.TestCase):
             self.assertGreater(d, 3.0, "остановка не стоит на оси дороги")
             self.assertTrue(self.in_astana(*c))
 
+    def test_yard_examples_fit_inside_real_yards(self):
+        """Примеры сквера и площадки стоят ЦЕЛИКОМ внутри настоящих дворов OSM (UX_REVIEW R11, день 3 #20)."""
+        ex = load(os.path.join(DATA, "astana-existing.json"))
+        yards = {y[0]: y[4] for y in ex["yards"]}
+        sizes = {"square": (40, 30), "playground": (24, 18), "sports": (32, 20), "stop": (12, 4.5)}
+        found = 0
+        for p in self.proposals["proposals"]:
+            t = p.get("target") or {}
+            if t.get("kind") != "area":
+                continue
+            found += 1
+            ring = yards[t["id"]]
+            w, d = sizes[p["kind"]]
+            c = p["geometry"]["coordinates"]
+            a = math.radians(-p["rotation_deg"])
+            local_ring = [mf.to_local(c, q) for q in ring]
+            for sx in (-1, 1):
+                for sy in (-1, 1):
+                    x, y = sx * w / 2, sy * d / 2
+                    xr, yr = x * math.cos(a) - y * math.sin(a), x * math.sin(a) + y * math.cos(a)
+                    self.assertTrue(mf.point_in_ring_xy(xr, yr, local_ring), (p["id"], sx, sy))
+        self.assertGreaterEqual(found, 2)
+
     def test_proposals_contract_shape(self):
         for p in self.proposals["proposals"]:
             for key in ("id", "kind", "geometry", "status", "votes_up", "votes_down"):

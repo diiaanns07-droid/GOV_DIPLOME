@@ -1,0 +1,81 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index f354f20..7c86e18 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -38,6 +38,8 @@ ASSETS = {
+     "/favicon.svg": ("favicon.svg", "image/svg+xml"),
+     "/vendor/maplibre-gl.js": ("vendor/maplibre-gl.js", "text/javascript; charset=utf-8"),
+     "/vendor/maplibre-gl.css": ("vendor/maplibre-gl.css", "text/css; charset=utf-8"),
++    # R05 r14: three.js 0.169.0 для 3D-превью (грузится модулем build3d только при монтировании).
++    "/vendor/three/three.module.min.js": ("vendor/three/three.module.min.js", "text/javascript; charset=utf-8"),
+ }
+ POST_ROUTES = {
+     "/api/validate", "/api/simulate", "/api/plan-status", "/api/optimize",
+@@ -78,7 +80,11 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 "heat/heat.js", "heat/heat.css",
+                 "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
+                 "feedback/complaint.css",
+-                "akim/index.html", "akim/akim.js", "akim/akim.css", "akim/akim.i18n.json")
++                "akim/index.html", "akim/akim.js", "akim/akim.css", "akim/akim.i18n.json",
++                # B2: R05 3D-превью предложений (demo.html и data/demo-basemap.json НЕ отдаём).
++                "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
++                "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
++                "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json")
+ # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+ CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index c0b2a66..f34af8c 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -262,6 +262,7 @@
+     map: window.CivicMap, editor: window.CivicEditor, feedback: window.CivicFeedback,
+     scenarios: window.CivicScenarios, assistant: window.CivicAssistant, scenarioAssistant: window.CivicAssistant,
+     heat: window.CivicHeat, complaint: window.BirgeComplaint,  // B1: R07, R09 (раунд 14)
++    build3d: window.CivicBuild3D,                              // B2: R05 3D-превью (раунд 14)
+   })[name] || null;
+   const isFallback = () => false;
+   // Нет файла модуля / модуль упал при запуске: без технических слов (UX_BRIEF правило 4); подробности — в консоли.
+@@ -403,6 +404,20 @@
+         console.error("birge complaint mount", error);
+       }
+     }
++    // R05 3D-превью: проекты акимата на карте («Проект · 2027»), каталог «Что построить?» у акимата, голос у жителя.
++    // Свою панель модуль ставит в свободную часть карты (avoid — панель оболочки); пока ставят объект, щелчки по
++    // карте у модуля записей выключены. «Акимат / Житель» модуль слушает сам (событие birge:mode).
++    if (!S.mounted.build3d && moduleFor("build3d")) {
++      try {
++        S.mounted.build3d = window.CivicBuild3D.mount({
++          map: () => currentMap(), mode: birgeMode(), api: window.BirgeShell?.api,
++          avoid: () => [$c("civic-panel"), document.getElementById("birge-header"), document.querySelector(".map-tools")],
++          onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "civic-build3d"),
++        }) || {};
++      } catch (error) {
++        console.error("birge build3d mount", error);
++      }
++    }
+   }
+   // Ссылка «#target=<kind>:<id>&days=N» (R08 «Картина дня», R07): открыть цель на тепловой карте.
+   function openTargetFromLink(hash = location.hash) {
+diff --git a/web/index.html b/web/index.html
+index 8822975..781f829 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -22,6 +22,7 @@
+     <link rel="stylesheet" href="/civic/heat/heat.css" />
+     <link rel="stylesheet" href="/civic/feedback/complaint.css" />
+     <link rel="stylesheet" href="/civic/akim/akim.css" />
++    <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+     <link rel="stylesheet" href="/civic/shell/shell.css" />
+     <link rel="stylesheet" href="/civic/shell/birge.css" />
+   </head>
+@@ -227,6 +228,9 @@
+     <script defer src="/civic/feedback/complaint-strings.js"></script>
+     <script defer src="/civic/feedback/complaint.js"></script>
+     <script defer src="/civic/akim/akim.js"></script>
++    <script defer src="/civic/build3d/build3d-core.js"></script>
++    <script defer src="/civic/build3d/build3d-models.js"></script>
++    <script defer src="/civic/build3d/build3d.js"></script>
+     <script defer src="/civic/shell/shell-text.js"></script>
+     <script defer src="/civic/shell/birge.js"></script>
+     <script defer src="/civic/shell/explore.js"></script>
