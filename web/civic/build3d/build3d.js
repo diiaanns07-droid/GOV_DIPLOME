@@ -76,6 +76,8 @@
       "build3d.vote_failed": "Голос не отправлен. Повторите",
       "build3d.card.near": "Рядом: {street}",
       "build3d.card.segment": "Участок: {street}, {length} м",
+      "build3d.card.segment_plain": "Участок улицы, {length} м",
+      "build3d.street.this": "эта улица",
       "build3d.card.your_vote_up": "Ваш голос: за",
       "build3d.card.your_vote_down": "Ваш голос: против",
       "build3d.card.open": "{kind}: проект {year}, открыть карточку",
@@ -123,6 +125,8 @@
       "build3d.vote_failed": "Дауыс жіберілмеді. Қайталап көріңіз",
       "build3d.card.near": "Жанында: {street}",
       "build3d.card.segment": "Бөлік: {street}, {length} м",
+      "build3d.card.segment_plain": "Көше бөлігі, {length} м",
+      "build3d.street.this": "осы көше",
       "build3d.card.your_vote_up": "Сіздің дауысыңыз: жақтаймын",
       "build3d.card.your_vote_down": "Сіздің дауысыңыз: қарсымын",
       "build3d.card.open": "{kind}: {year} жылғы жоба, карточканы ашу",
@@ -798,11 +802,11 @@
       return i18n && i18n.formatNumber ? i18n.formatNumber(n) : formatNumberLocal(n);
     }
 
-    // Название улицы на языке интерфейса: в kk — name:kk из OSM, если он есть (у 13 из 59 улиц Нуры), иначе русское
-    // (как label_kk у R12). Машинного перевода названий нет.
+    // Название улицы на языке интерфейса. kk: name:kk из OSM (13 из 59 улиц Нуры) → тип улицы по-казахски, имя как
+    // есть (правило R07) → null (улицу не показываем — не по-русски внутри казахской фразы, R11 ночь B3 п. 5).
     function streetName(ru, kk) {
       if (!ru || t.lang() !== "kk") return ru;
-      return kk || (streets && streets.kkOf ? streets.kkOf(ru) : null) || ru;
+      return kk || (streets && streets.kkOf ? streets.kkOf(ru) : null) || Core.kkStreetFromRu(ru);
     }
 
     function placeText(p) {
@@ -810,8 +814,8 @@
         var len = Core.polylineLength(p.geometry.coordinates.map(function (c) {
           return Core.toLocal(p.geometry.coordinates[0], c);
         }));
-        var sname = t.lang() === "kk" && p.target.label_kk ? p.target.label_kk : p.target.label_ru;
-        return t("build3d.card.segment", { street: sname, length: Math.round(len) });
+        var sname = t.lang() === "kk" ? p.target.label_kk || streetName(p.target.label_ru) : p.target.label_ru;
+        return sname ? t("build3d.card.segment", { street: sname, length: Math.round(len) }) : t("build3d.card.segment_plain", { length: Math.round(len) });
       }
       // У R06 нет полей улицы и двора — вычисляем по геометрии (настоящие улицы OSM), одинаково на любом устройстве.
       var street = p.near_street;
@@ -826,10 +830,12 @@
           var L = Core.polylineLength(c.map(function (q) {
             return Core.toLocal(c[0], q);
           }));
-          return t("build3d.card.segment", { street: streetName(m.edge.name, m.edge.name_kk), length: Math.round(L) });
+          var segName = streetName(m.edge.name, m.edge.name_kk);
+          return segName ? t("build3d.card.segment", { street: segName, length: Math.round(L) }) : t("build3d.card.segment_plain", { length: Math.round(L) });
         }
       }
-      return street ? t("build3d.card.near", { street: streetName(street) }) : "";
+      var shown = streetName(street);
+      return shown ? t("build3d.card.near", { street: shown }) : "";
     }
 
     function yardOf(p) {
@@ -2044,7 +2050,7 @@
       return code === "not_on_street" ? "far_from_street" : code === "too_long" ? "too_long" : "no_path";
     }
     function streetLabel(sec) {
-      return streetName(sec.name, sec.name_kk);
+      return streetName(sec.name, sec.name_kk) || t("build3d.street.this");
     }
     function applySection(g, sec, ll) {
       if (sec && sec.ok) {
@@ -2054,7 +2060,7 @@
         setHint("build3d.hint.segment_ready", { street: streetLabel(sec), length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
       } else {
         g.section = null;
-        setHint("build3d.err." + ((sec && sec.reason) || "no_path"), { street: (sec && sec.name ? streetName(sec.name, sec.name_kk) : streetName(g.aStreet, g.aStreetKk)) || "" }, true);
+        setHint("build3d.err." + ((sec && sec.reason) || "no_path"), { street: (sec && sec.name ? streetName(sec.name, sec.name_kk) : streetName(g.aStreet, g.aStreetKk)) || t("build3d.street.this") }, true);
       }
       updateGhost(true);
       render();
@@ -2077,7 +2083,7 @@
           g.aStreet = snap.edge.name;
           g.aStreetKk = snap.edge.name_kk || null;
           g.dirHint = [Math.sin(snap.bearing * DEG), Math.cos(snap.bearing * DEG)];
-          setHint("build3d.hint.segment_end", { street: streetName(snap.edge.name, snap.edge.name_kk) });
+          setHint("build3d.hint.segment_end", { street: streetName(snap.edge.name, snap.edge.name_kk) || t("build3d.street.this") });
         } else {
           setHint(streets && inStreetArea(ll) ? "build3d.err.far_from_street" : "build3d.err.no_streets", null, true);
           // Вне своего индекса — спросим привязку к улице у R12.
