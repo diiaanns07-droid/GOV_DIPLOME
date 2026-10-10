@@ -138,6 +138,30 @@ def test_build_geo_data_from_fixture(tiny_layers):
     assert src["license"]["id"] == "ODbL-1.0" and src["inputs"][0]["sha256"]
 
 
+def test_yard_must_be_inside_the_city_whole_not_only_its_centre(tmp_path):
+    """R10 B-009: двор на северо-восточной окраине — центр в городе, 19 из 26 вершин за границей. Не берём."""
+    import gzip
+    raw = json.loads(gzip.decompress((build_geo_data.OSM_OBJECTS_DIR / "raw" / "residential.json.gz").read_bytes()))
+    el = next(e for e in raw["elements"] if e.get("type") == "way" and e.get("id") == 619707707)
+    inside = {"type": "way", "id": 1, "tags": {"landuse": "residential"},
+              "geometry": [{"lon": x, "lat": y} for x, y in [(71.430, 51.130), (71.432, 51.130), (71.432, 51.131), (71.430, 51.131), (71.430, 51.130)]]}
+    (tmp_path / "raw").mkdir()
+    (tmp_path / "raw" / "yards.json").write_text(json.dumps({"elements": [el, inside]}), "utf-8")
+    boundary = build_geo_data.CityBoundary()
+    ring = [[p["lon"], p["lat"]] for p in el["geometry"]]
+    assert boundary.contains(geo.bbox_center(ring)), "центр двора — в городе (старое правило его пропускало)"
+    result = build_geo_data.build(tmp_path / "raw", walking_raw=None, evidence_type="real")
+    assert [y["id"] for y in result["yards"]] == ["yard-1"]
+    assert result["skipped"]["outside_city"] == 1
+
+
+def test_real_yards_and_object_outlines_are_inside_the_city_vertex_by_vertex(real):
+    r = accuracy.report(real)
+    rows = {x["id"]: x for x in r["rows"] if x["check"] == "inside_astana" and x["id"].startswith("geo/")}
+    assert set(rows) == {"geo/objects.json", "geo/yards.json"}
+    assert all(x["status"] == "PASS" and x["value"] == 0 for x in rows.values()), rows
+
+
 def test_kazakh_name_rules():
     assert kazakh_name({"name": "Қабанбай Батыр даңғылы", "name:ru": "проспект Кабанбай Батыра"}) == "Қабанбай Батыр даңғылы"
     assert kazakh_name({"name": "улица Мира"}) is None

@@ -1,8 +1,8 @@
 {
  "schema": "r12-geo-source-v1",
- "built_at": "2026-10-10T13:21:02Z",
+ "built_at": "2026-10-10T18:48:10Z",
  "builder": "engine/civic_geo/build_geo_data.py",
- "raw_dir": "/home/user/GOV_DIPLOME/data/civic/astana/osm-objects/raw",
+ "raw_dir": "data/civic/astana/osm-objects/raw",
  "raw_dir_present": true,
  "inputs": [
   {
@@ -78,10 +78,10 @@
   "pitch": 696,
   "playground": 334,
   "waste": 136,
-  "yard": 538
+  "yard": 537
  },
  "skipped": {
-  "outside_city": 108,
+  "outside_city": 109,
   "no_geometry": 13,
   "duplicate": 697
  },

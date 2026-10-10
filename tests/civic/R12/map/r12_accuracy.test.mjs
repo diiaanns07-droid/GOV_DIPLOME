@@ -142,3 +142,37 @@ test("r12: phone 375 px — the snapped closure and the card fit without horizon
   assert.deepEqual(errors, []);
   await ctx.close();
 });
+
+// R01 INTEGRATION §7: при смене режима (карта → учебная модель) модуль уничтожается, пока воркер MapLibre ещё
+// разбирает тайл с нашим слоем «Пример»; раньше картинка кольца снималась сразу и воркер получал
+// «Image "civic-r03-demo-ring" could not be loaded». Теперь картинка снимается после idle; повторный mount до
+// этого момента берёт ту же картинку.
+test("r12: destroy while tiles are in flight — no missing demo-ring image; a remount before idle keeps the ring", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ snapped: "/web/civic/map/demo_snapped.json" });
+  const warns = [];
+  page.on("console", (m) => { if (m.type() === "warning" || m.type() === "error") warns.push(m.text()); });
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4289, 51.1716], zoom: 14, pitch: 0, bearing: 0 }));
+  for (let i = 0; i < 6; i++) {
+    // новые данные → новый разбор тайлов в воркере → сразу destroy (как переключение режима оболочкой)
+    await page.evaluate((k) => {
+      const s = window.__stand;
+      s.map.jumpTo({ center: [71.4289 + k * 0.004, 51.1716], zoom: 14 + (k % 3) });
+      s.instance.refresh();
+      s.destroy();
+    }, i);
+    await page.waitForTimeout(i % 2 ? 30 : 400);
+    // remount до idle: картинка ещё на карте или добавляется заново — слой «Пример» её находит
+    await page.evaluate(() => window.__stand.mount());
+    await page.waitForFunction(() => window.__stand.instance.getState().list === "ready", null, { timeout: 15000 });
+  }
+  await page.waitForFunction(() => window.__stand.map.loaded(), null, { timeout: 10000 });
+  await page.waitForTimeout(1500);
+  const live = await page.evaluate(() => ({ ring: window.__stand.map.hasImage("civic-r03-demo-ring"), layer: !!window.__stand.map.getLayer("civic-r03-point-synthetic") }));
+  assert.deepEqual(live, { ring: true, layer: true }, "после последнего mount кольцо на месте (отложенное снятие его не тронуло)");
+  // окончательный destroy: картинка снимается, когда карта затихла
+  await page.evaluate(() => window.__stand.destroy());
+  await page.waitForFunction(() => !window.__stand.map.hasImage("civic-r03-demo-ring"), null, { timeout: 8000 });
+  assert.equal(warns.filter((t) => /could not be loaded|civic-r03-demo-ring/.test(t)).length, 0, warns.join("\n"));
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});

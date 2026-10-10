@@ -382,6 +382,9 @@ test("mount/destroy twice: layers, sources, popup, root, map and window listener
   await page.mouse.move(pt.x, pt.y);
   await page.waitForSelector(".civic-r03-tip");
   await page.evaluate(() => window.__stand.destroy());
+  // картинку кольца модуль снимает после idle (+1 с): поздний запрос воркера не должен давать «could not be loaded»
+  const ringDropped = () => page.waitForFunction(() => !window.__stand.map.hasImage("civic-r03-demo-ring"), null, { timeout: 8000 });
+  await ringDropped();
   const s1 = await snap();
   assert.equal(s1.layers, 0);
   assert.equal(s1.sources, 0);
@@ -397,6 +400,7 @@ test("mount/destroy twice: layers, sources, popup, root, map and window listener
     assert.equal(mid.layers, 15);
     await page.evaluate(() => { window.__stand.instance.destroy(); window.__stand.instance.destroy(); window.__stand.instance.selectObject("r03-demo-area"); window.__stand.instance.refresh(); window.__stand.instance = null; });
     await page.waitForTimeout(200);
+    await ringDropped();
     const s2 = await snap();
     assert.deepEqual(s2, s1, "state after mount+destroy #" + (i + 2) + " equals state after the first destroy");
   }

@@ -1469,7 +1469,21 @@
       if (!map) return;
       for (const id of BELOW_LABELS.concat(ON_TOP, LABELS)) { try { if (map.getLayer(id)) map.removeLayer(id); } catch (e) { /* style gone */ } }
       try { if (map.getSource(SRC)) map.removeSource(SRC); } catch (e) { /* style gone */ }
-      try { if (map.hasImage(DEMO_IMG)) map.removeImage(DEMO_IMG); } catch (e) { /* style gone */ }
+      dropDemoImageLater(map);
+    }
+    // Картинку кольца «Пример» снимаем не сразу. Воркер MapLibre может ещё дорабатывать тайл нашего источника,
+    // начатый до removeLayer, и попросить картинку уже после удаления — тогда в консоли «Image "civic-r03-demo-ring"
+    // could not be loaded» (R01 INTEGRATION §7: карта → учебная модель, 3 из 3 прогонов p0_flow). Поэтому снимаем,
+    // когда карта затихла (idle), с запасом в 1 с, и только если слоёв модуля на карте нет (не смонтирован снова).
+    function dropDemoImageLater(m) {
+      const drop = () => {
+        try {
+          if (!m.hasImage(DEMO_IMG)) return;
+          if (BELOW_LABELS.concat(ON_TOP, LABELS).some((id) => m.getLayer(id))) return;
+          m.removeImage(DEMO_IMG);
+        } catch (e) { /* style gone or map removed */ }
+      };
+      try { m.once("idle", () => setTimeout(drop, 1000)); } catch (e) { /* map removed */ }
     }
     function updateMapData() {
       if (!map || destroyed) return;

@@ -106,16 +106,30 @@ def report(graph: StreetGraph | None = None, geo_dir: Path = GEO_DIR, demo_path:
                          "все координаты внутри Астаны" if not outside else f"вне границы: {outside[:2]}"))
 
     # 2 + 3. Объекты OSM: остановки рядом с улицей, всё внутри города.
+    # Внутри города — каждая вершина контура, а не только центр (как проверка R10, B-009).
+    def outside_vertices(feature):
+        ring = feature.polygon[0] if feature.polygon else []
+        return [c for c in ring if not city.contains(c)]
+
     for f in objects.items:
         if not city.contains(f.point):
             rows.append(_row("inside_astana", f.id, False, None, f"вне границы: {f.point}"))
+        elif f.polygon and outside_vertices(f):
+            out = outside_vertices(f)
+            rows.append(_row("inside_astana", f.id, False, len(out), f"вершины контура вне границы: {out[:2]}"))
         if f.kind == "bus_stop":
             d = stop_distance(graph, f.point)
             rows.append(_row("stop_within_60m_of_street", f.id, d <= STOP_TO_STREET_M, d,
                              f"до улицы {d:.1f} м (допуск {STOP_TO_STREET_M:g} м)"))
     for y in yards.items:
-        if not city.contains(y.point):
-            rows.append(_row("inside_astana", y.id, False, None, f"центр двора вне границы: {y.point}"))
+        out = outside_vertices(y)
+        if not city.contains(y.point) or out:
+            rows.append(_row("inside_astana", y.id, False, len(out), f"двор выходит за границу: центр {y.point}, вершин вне границы {len(out)}"))
+    # Итог по файлам: сколько координат проверено (точки + все вершины контуров) и сколько вне границы.
+    for name, feats in (("geo/objects.json", objects.items), ("geo/yards.json", yards.items)):
+        total = sum(1 + (len(f.polygon[0]) if f.polygon else 0) for f in feats)
+        bad = sum((0 if city.contains(f.point) else 1) + len(outside_vertices(f)) for f in feats)
+        rows.append(_row("inside_astana", name, bad == 0, bad, f"проверено координат: {total}, вне границы: {bad}"))
 
     # 4б. Линии в выгрузке хранилища (то, что сотрудники нарисовали в редакторе).
     if objects_path is not None:
