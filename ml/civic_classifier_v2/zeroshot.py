@@ -6,6 +6,8 @@
     python -m ml.civic_classifier_v2.zeroshot --human private/labels_owner.jsonl \
         --base-url https://integrate.api.nvidia.com/v1 --api-key-env NVIDIA_API_KEY \
         --model meta/llama-3.1-70b-instruct --max-usd 1
+--human принимает любые размеченные JSONL: тексты людей и/или probe_v2 (ml/datasets/probe_v2/probe_v2.jsonl,
+текст агента — его можно отправлять и без людей). Метки в API не отправляются.
 Выход: artifacts/zeroshot/<model>.jsonl — только {id, label, raw_ok} (без текстов), затем
     python -m ml.civic_classifier_v2.experiments ... --zeroshot-preds artifacts/zeroshot/<model>.jsonl
 

@@ -33,6 +33,10 @@ cd $WT
 $LLM = "$R02\ml\datasets\llm_v1"        # или "$REPO\ml\datasets\llm_v1"
 Если корпуса llm_v1 ещё нет — ничего не делать: режимы synth_llm / synth_all честно получат NOT_RUN, mix пойдёт с v3.
 
+Независимый тест вне шаблонов (R02, 300 текстов агента, только оценка):
+$PROBE = "$R02\ml\datasets\probe_v2"
+Проверка: Test-Path "$PROBE\probe_v2.jsonl"   (True; если False — git -C $R02 checkout --detach origin/claude/r14-R02)
+
 Файл(ы) разметки людей (экспорт web/labeling, schema birge-labels-v1), первым — файл владельца:
 $HUMAN = "$REPO\private\labels_owner.jsonl"      # <- подставьте фактическое имя файла
 Проверка: Test-Path $HUMAN   (должно быть True)
@@ -60,13 +64,14 @@ $HUMAN = "$REPO\private\labels_owner.jsonl"      # <- подставьте фа�
 Папку artifacts\gpu_check потом можно удалить.
 
 -----------------------------------------------------------------
-5. (по желанию, ~$0.05) LLM без обучения — zero-shot на тех же текстах людей
+5. (по желанию, ~$0.05–0.1) LLM без обучения — zero-shot на текстах людей и на probe_v2
 -----------------------------------------------------------------
-Отправляет во внешний API обезличенные тексты людей (без меток). Делать, только если владелец согласен.
+Отправляет во внешний API обезличенные тексты (без меток). Тексты людей — только если владелец согласен;
+probe_v2 написан агентом, его можно отправлять всегда (если людей ещё нет — уберите $HUMAN из команды).
 $env:OPENAI_API_KEY = "..."      # ключ вводит владелец в этом окне, в файлы не записывать
-& $PY -m ml.civic_classifier_v2.zeroshot --human $HUMAN --model gpt-4o-mini --max-usd 1
-  или NVIDIA:  $env:NVIDIA_API_KEY = "..."; & $PY -m ml.civic_classifier_v2.zeroshot --human $HUMAN --base-url https://integrate.api.nvidia.com/v1 --api-key-env NVIDIA_API_KEY --model meta/llama-3.1-70b-instruct --price-in 0 --price-out 0 --max-usd 1
-Оценка стоимости gpt-4o-mini: 300 текстов × ~700 входных токенов ≈ 0.2 млн токенов ≈ $0.03–0.05.
+& $PY -m ml.civic_classifier_v2.zeroshot --human $HUMAN "$PROBE\probe_v2.jsonl" --model gpt-4o-mini --max-usd 1
+  или NVIDIA:  $env:NVIDIA_API_KEY = "..."; & $PY -m ml.civic_classifier_v2.zeroshot --human $HUMAN "$PROBE\probe_v2.jsonl" --base-url https://integrate.api.nvidia.com/v1 --api-key-env NVIDIA_API_KEY --model meta/llama-3.1-70b-instruct --price-in 0 --price-out 0 --max-usd 1
+Оценка стоимости gpt-4o-mini: 600 текстов × ~700 входных токенов ≈ 0.4 млн токенов ≈ $0.06–0.1.
 Результат: ml\civic_classifier_v2\artifacts\zeroshot\gpt-4o-mini.jsonl (только id и метка). Повторный запуск берёт кэш.
 Remove-Item Env:OPENAI_API_KEY   # сразу после
 
@@ -74,9 +79,10 @@ Remove-Item Env:OPENAI_API_KEY   # сразу после
 6. ГЛАВНЫЙ ЭКСПЕРИМЕНТ (одна команда) — ~1–1.5 ч на GPU
 -----------------------------------------------------------------
 С текстами людей (нужно ≥ 200 размеченных):
-& $PY -m ml.civic_classifier_v2.experiments --synth-v3 "$R02\ml\datasets\synth_v3" --v1-in-v2 "$R02\ml\datasets\v1_in_v2" --llm-v1 $LLM --human $HUMAN --env-note "RTX 4060 Laptop 8 ГБ, Windows, Python 3.12.10, torch 2.14.1+cu126"
+& $PY -m ml.civic_classifier_v2.experiments --synth-v3 "$R02\ml\datasets\synth_v3" --v1-in-v2 "$R02\ml\datasets\v1_in_v2" --llm-v1 $LLM --probe-v2 $PROBE --human $HUMAN --env-note "RTX 4060 Laptop 8 ГБ, Windows, Python 3.12.10, torch 2.14.1+cu126"
   + если был шаг 5:   --zeroshot-preds ml\civic_classifier_v2\artifacts\zeroshot\gpt-4o-mini.jsonl
-Если людей пока < 200 — та же команда без --human: синтетические режимы посчитаются, люди — NOT_EVALUATED.
+Если людей пока < 200 — та же команда без --human: синтетические режимы посчитаются на синтетическом test
+и на probe_v2 (независимый тест вне шаблонов), люди — NOT_EVALUATED.
 Если есть время (ночью, ~3–4 ч): добавить --seeds 3 — разброс трансформера по seed.
 
 Что происходит: режимы synth_v1, synth_template, synth_llm, synth_all, human (5-fold), mix (5-fold) ×
@@ -91,15 +97,16 @@ human 5-fold ≈ 5–10 мин (на ~200 текстах до 30 эпох — т
 
 6б. (по желанию, ~1 ч) Кривая обучения: сколько текстов людей нужно. Те же фолды, в обучение — только доля людей,
     оценка — на всех текстах людей (100% = главный эксперимент шага 6):
-foreach ($f in 0.25, 0.5) { & $PY -m ml.civic_classifier_v2.experiments --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM --human $HUMAN --regimes human mix --models logreg transformer --human-fraction $f --name "lc_$f" }
+foreach ($f in 0.25, 0.5) { & $PY -m ml.civic_classifier_v2.experiments --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM --probe-v2 $PROBE --human $HUMAN --regimes human mix --models logreg transformer --human-fraction $f --name "lc_$f" }
 Результат: ml\civic_classifier_v2\results\lc_0.25.json/.md, lc_0.5.json/.md (в шаге 9 добавить в git add).
 
 -----------------------------------------------------------------
 7. Итоговая модель для продукта — ~10–15 мин
 -----------------------------------------------------------------
-& $PY -m ml.civic_classifier_v2.train --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM --human $HUMAN --experiments ml\civic_classifier_v2\results\experiments.json
+& $PY -m ml.civic_classifier_v2.train --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM --probe-v2 $PROBE --human $HUMAN --experiments ml\civic_classifier_v2\results\experiments.json
   (режим выбирается сам: mix, если людей ≥ 200, иначе synth_all / synth_template; можно явно --regime mix)
-  Без людей:  & $PY -m ml.civic_classifier_v2.train --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM
+  Без людей:  & $PY -m ml.civic_classifier_v2.train --synth-v3 "$R02\ml\datasets\synth_v3" --llm-v1 $LLM --probe-v2 $PROBE
+  (итоговая модель оценивается на probe_v2 — в birge_meta.json поле probe_v2_eval; в обучение он не входит)
 Результат: ml\civic_classifier_v2\artifacts\final\ (≈1.1 ГБ: веса, токенизатор, birge_meta.json, train_log.jsonl).
 
 -----------------------------------------------------------------
@@ -131,8 +138,9 @@ test_experiments_end_to_end_smoke: в results/ и прогнозах тольк�
 -----------------------------------------------------------------
 Что теперь может пользователь
 -----------------------------------------------------------------
-- Владелец (диплом): таблица RESULTS.md — macro-F1 с 95% ДИ для режимов × моделей на текстах людей, потеря на людях
-  относительно синтетики, парные сравнения, матрица ошибок, срезы по языку/стилю.
+- Владелец (диплом): таблица RESULTS.md — macro-F1 с 95% ДИ для режимов × моделей на текстах людей и на независимом
+  тесте вне шаблонов probe_v2, потеря «шаблоны → probe» и «шаблоны → люди», парные сравнения, матрица ошибок,
+  срезы по языку/стилю/трудным случаям.
 - R04: папка artifacts\onnx + ml/civic_classifier_v2/predict.py -> POST /api/civic/v2/classify (контракт §7).
 - Перепроверка: python -m ml.civic_classifier_v2.evaluate render  (RESULTS.md из experiments.json без пересчёта);
   python -m ml.civic_classifier_v2.evaluate model --model ml\civic_classifier_v2\artifacts\onnx --human <новый файл> —
