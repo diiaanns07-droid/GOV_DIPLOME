@@ -1,21 +1,21 @@
 {
  "role": "R05",
- "generated_at": "2026-10-10T15:48:06.879Z",
- "tested_sha": "169c56b4572c6abff9552e3d6d608068e3240de2",
- "dirty": true,
+ "generated_at": "2026-10-10T18:08:19.042Z",
+ "tested_sha": "8d11dc3649ddfbe3dff7cc42ff34233b1552c354",
+ "dirty": false,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
-  "ui_kit_i18n": "выгрузка claude/r14-R11 @ 52d7c59 (git archive web/civic/ui-kit web/civic/i18n), флаг --kit",
+  "ui_kit_i18n": "выгрузка claude/r14-R11 @ 8451468 (git archive web/civic/ui-kit web/civic/i18n), флаг --kit",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 6,
-  "fps_20_objects_swiftshader": 2.7,
+  "fps_0_objects_swiftshader": 6.5,
+  "fps_20_objects_swiftshader": 2.6,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 37,
+  "pass": 39,
   "fail": 0,
   "not_run": 1
  },
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.7 кадр/с (без объектов 6)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.6 кадр/с (без объектов 6.5)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -132,7 +132,7 @@
     "title": "Не салайық?",
     "label": "Жоба · 2027",
     "hint": "Көшені басыңыз — бөліктің басы",
-    "card": "АялдамаЖоба · 2027ҮлгіҰсынысЖанында: улица СыганакЖақтаймын64Қарсымын5Бір құрылғыдан бір дауысЖою"
+    "card": "АялдамаЖоба · 2027ҮлгіҰсынысЖанында: Сығанақ көшесіЖақтаймын64Қарсымын5Бір құрылғыдан бір дауысЖою"
    }
   },
   {
@@ -235,7 +235,7 @@
    "id": "r11_25_offline_basemap_real_osm_yards",
    "status": "PASS",
    "detail": {
-    "yards_in_source": 560,
+    "yards_in_source": 536,
     "yards_on_screen": 11,
     "examples_in_yards": [
      "Evolution",
@@ -288,6 +288,27 @@
      "minFs": 14
     }
    }
+  },
+  {
+   "id": "r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": "1366 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 36 px, зона 48 → масштаб 16.17, полных подписей 4; 1366 kk: метка «4» (Қатар 4 жоба — жақыннан көрсету), точка ≥ 36 px, зона 48 → масштаб 16.17, полных подписей 4; 375 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 36 px, зона 48 → масштаб 15.33, полных подписей 3; 375 kk: метка «4» (Қатар 4 жоба — жақыннан көрсету), точка ≥ 36 px, зона 48 → масштаб 15.33, полных подписей 3"
+  },
+  {
+   "id": "kk_street_names_from_osm_card_and_lighting_hint_1366_375",
+   "status": "PASS",
+   "detail": [
+    {
+     "vp": 1366,
+     "card": "Жанында: Сығанақ көшесі",
+     "hint": "Енді бөліктің соңын таңдаңыз: Сығанақ көшесі"
+    },
+    {
+     "vp": 375,
+     "card": "Жанында: Сығанақ көшесі",
+     "hint": "Енді бөліктің соңын таңдаңыз: Сығанақ көшесі"
+    }
+   ]
   },
   {
    "id": "r01_map_getter_waits_for_map",

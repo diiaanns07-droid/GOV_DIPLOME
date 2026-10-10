@@ -1,19 +1,23 @@
 {
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
- "delivery": 2,
- "for_build": "B2 (R01 claude/sharp-dijkstra-0t87gl @ f54361d уже содержит поставку 1 = b0353ee)",
+ "delivery": 3,
+ "for_build": "FINAL (R01 claude/sharp-dijkstra-0t87gl @ 2b9e837 ещё содержит поставку 1 = b0353ee)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "169c56b",
- "tested_sha": "169c56b",
- "tested_note": "Все проверки поставки 2 прогнаны на коде 169c56b (web/ не менялся после него: git diff 169c56b -- web/ пуст); dirty:true в browser_check.json — только файлы отчётов и документов этой поставки.",
+ "code_sha": "fc03e19",
+ "tested_sha": "fc03e19",
+ "tested_note": "Все проверки поставки 3 прогнаны одним прогоном подряд на коде fc03e19 (web/ во время прогона не менялся). В browser_check.json tested_sha = 8d11dc3: во время прогона закоммичен только патч для R01 и документы; git diff fc03e19 8d11dc3 -- web/ пуст.",
  "previous_delivery": {
-  "code_sha": "b0353ee",
-  "delivery_commit": "e533e67"
+  "code_sha": "169c56b",
+  "delivery_commit": "3b57c11",
+  "before": {
+   "code_sha": "b0353ee",
+   "delivery_commit": "e533e67"
+  }
  },
- "push_status": "см. финальное сообщение роли (коммит с этим файлом — следующий после 169c56b)",
+ "push_status": "см. STATUS.md и финальное сообщение роли",
  "changed_paths": [
   {
    "path": "web/civic/build3d/",
@@ -43,8 +47,8 @@
   }
  ],
  "owned_paths_only": true,
- "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, ветки R01/R06/R11/R12 — изменения оболочки R01 только патчем research/round-14-results/R05/proposed_r01_b2.patch (git apply --check на f54361d: OK)",
- "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3, Chromium 141.0.7390.37 headless, WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2, SwiftShader без GPU; ui-kit/i18n R11 @ 52d7c59 (--kit)",
+ "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, ветки R01/R06/R11/R12 — изменения оболочки R01 только патчем research/round-14-results/R05/proposed_r01_b3.patch (к 2b9e837) и proposed_r01_b2.patch (к f54361d), git apply --check: OK",
+ "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3, Chromium 141.0.7390.37 headless, WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2, SwiftShader без GPU; ui-kit/i18n R11 @ 8451468 (--kit)",
  "ux_review_r11_day3": {
   "source": "claude/r14-R11 @ 52d7c59, research/round-14-results/R11/UX_REVIEW.md, «День 3», пп. 20–26 (и «День 4» — пунктов для R05 нет, кроме правок kk)",
   "table": "research/round-14-results/R05/UX_REVIEW_DAY3.md",
@@ -142,15 +146,15 @@
  "tests": {
   "node_core_models": {
    "status": "PASS",
-   "detail": "29/29 — node --test tests/civic/R05/build3d/test_core.mjs test_models.mjs"
+   "detail": "30/30 — node --test test_core.mjs test_models.mjs"
   },
   "python_fixtures": {
    "status": "PASS",
-   "detail": "10/10 — генератор байт в байт, освещение по рёбрам OSM, примеры внутри дворов, всё внутри Астаны"
+   "detail": "11/11 — данные OSM, без ж/д платформ, внутри Астаны, name:kk только из OSM, генератор байт в байт"
   },
   "browser_check": {
    "status": "PASS",
-   "detail": "37 PASS, 0 FAIL, 1 NOT_RUN — runs/browser_check.json (ui-kit/i18n R11 @ 52d7c59)"
+   "detail": "39 PASS, 0 FAIL, 1 NOT_RUN — runs/browser_check.json (ui-kit/i18n R11 @ 8451468)"
   },
   "browser_checks": {
    "load_auto_falls_back_to_local_store": "PASS",
@@ -186,6 +190,8 @@
    "r01_birge_mode_event_update_dock": "PASS",
    "mode_switch_clears_akimat_undo_toast": "PASS",
    "catalog_labels_fit_cards_in_narrow_host": "PASS",
+   "r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk": "PASS",
+   "kk_street_names_from_osm_card_and_lighting_hint_1366_375": "PASS",
    "r01_map_getter_waits_for_map": "PASS",
    "lighting_outside_nura_without_r12_says_so": "PASS",
    "screenshots_1366_375_pitch_0_60_ru_kk": "PASS",
@@ -194,11 +200,11 @@
   },
   "ux_day3_check": {
    "status": "PASS",
-   "detail": "29/29 PASS — пп. 20–26 R11 на 1366/375 × ru/kk, runs/ux_day3_check.json"
+   "detail": "29/29 PASS — runs/ux_day3_check.json"
   },
   "r11_measure_recheck": {
    "status": "PASS",
-   "detail": "24 из 24 — «чисто» — measure.cjs R11 (их сценарий r05_build3d_shots.cjs без изменений), runs/r11_measure_recheck.json"
+   "detail": "24 из 24 — «чисто» — runs/r11_measure_recheck.json"
   },
   "r11_i18n_tools": {
    "status": "PASS",
@@ -214,27 +220,31 @@
   },
   "r06_own_client_test": {
    "status": "PASS",
-   "detail": "17/17 — tests/civic/R06/round14/r05_client_r14.cjs (R06 @ 6b9da27) с build3d-core.js этой поставки, runs/r06_own_client_test.txt"
+   "detail": "r06 own exit 0 {\"total\":17,\"failed\":0} — runs/r06_own_client_test.txt"
   },
   "r12_engine_geo_check": {
    "status": "PASS",
-   "detail": "5/5 PASS — engine.civic_geo R12 @ d13f49a (8bb7bf8), runs/geo_check.json"
-  },
-  "r01_b2_shell_own_test_with_patch": {
-   "status": "PASS",
-   "detail": "20/20 — tests/civic/R01/browser/r14_b2.cjs на f54361d + файлы R05 + proposed_r01_b2.patch, runs/r01_b2_with_patch.txt"
-  },
-  "r01_b2_shell_own_test_without_patch": {
-   "status": "FAIL",
-   "detail": "18/20 — две проверки теста R01 ждут поведения b0353ee (пустой dock у жителя, голос [data-action=vote-up]); патч меняет их. runs/r01_b2_without_patch.txt"
-  },
-  "app_b2_smoke": {
-   "status": "PASS",
-   "detail": "14/14 PASS — модуль в оболочке B2 с патчем, 1366/375 × ru/kk, runs/app_b2_smoke.json"
+   "detail": "5/5 PASS — runs/geo_check.json"
   },
   "smooth_on_laptop_gpu": {
    "status": "NOT_RUN",
-   "detail": "в облаке нет GPU: SwiftShader 6 кадр/с без объектов и 2.7 с 20 объектами — программная отрисовка, не оценка ноутбука; LOCAL-R05-1"
+   "detail": "в облаке нет GPU: SwiftShader 6.5 кадр/с без объектов и 2.6 с 20 объектами — программная отрисовка; LOCAL-R05-1"
+  },
+  "r10_accuracy_r05": {
+   "status": "PASS",
+   "detail": "8/8 PASS для R05 (tests/civic/R10/accuracy.py @ 64cffc3) — runs/r10_accuracy_r05.json"
+  },
+  "r01_b3_head_own_test_with_patch": {
+   "status": "PASS",
+   "detail": "25/25 — r14_b2.cjs R01 на 2b9e837 + файлы R05 + proposed_r01_b3.patch, runs/r01_b3_with_patch.txt"
+  },
+  "r01_b3_head_own_test_without_patch": {
+   "status": "FAIL",
+   "detail": "23/25 — две проверки ждут поведения b0353ee (пустой dock у жителя, голос [data-action=vote-up]); runs/r01_b3_without_patch.txt"
+  },
+  "app_shell_smoke_r01_head": {
+   "status": "PASS",
+   "detail": "14/14 PASS — на R01 2b9e837 + proposed_r01_b3.patch, runs/app_b2_smoke.json"
   }
  },
  "screenshots": {
@@ -256,14 +266,6 @@
    "screens/d3_24_resident_375_ru.png",
    "screens/d3_24_resident_375_kk.png"
   ],
-  "in_r01_b2_shell": [
-   "screens/b2_1366_ru_akimat.png",
-   "screens/b2_1366_ru_card.png",
-   "screens/b2_1366_ru_resident.png",
-   "screens/b2_1366_kk_akimat.png",
-   "screens/b2_375_kk_resident.png",
-   "screens/b2_375_ru_akimat.png"
-  ],
   "r06_r12_stands": [
    "screens/r06_1366_ru_card.png",
    "screens/r06_375_kk_resident_card.png",
@@ -279,7 +281,23 @@
    "screens/375_kk_p60.png",
    "screens/375_kk_p0.png"
   ],
-  "note": "Сняты в реально запущенном интерфейсе (Chromium, SwiftShader). Демо-подложка — улицы и дворы OSM без зданий; в оболочке R01 без интернета — её упрощённый фон."
+  "note": "Сняты в реально запущенном интерфейсе (Chromium, SwiftShader). Демо-подложка — улицы и дворы OSM без зданий; в оболочке R01 без интернета — её упрощённый фон.",
+  "night_1": [
+   "screens/b026_cluster_1366_ru.png",
+   "screens/b026_cluster_1366_kk.png",
+   "screens/b026_cluster_375_ru.png",
+   "screens/b026_cluster_375_kk.png",
+   "screens/kk_street_1366_card.png",
+   "screens/kk_street_375_card.png"
+  ],
+  "in_r01_shell": [
+   "screens/b2_1366_ru_akimat.png",
+   "screens/b2_1366_ru_card.png",
+   "screens/b2_1366_ru_resident.png",
+   "screens/b2_1366_kk_akimat.png",
+   "screens/b2_375_kk_resident.png",
+   "screens/b2_375_ru_akimat.png"
+  ]
  },
  "done_criteria": {
   "five_objects_in_nura": "PASS (place_all_five_kinds)",
@@ -293,11 +311,54 @@
   "Зданий нет ни в демо, ни в офлайн-фоне сборки: в LOCAL-1 нет контуров домов — выгрузка LOCAL-R05-3; пересечение проектов с домами не проверяется (только между проектами), посмотреть примеры с 3D-зданиями — LOCAL-R05-2.",
   "С R06 поставки 1 (7031afa, сейчас в B2) контекст 3D (улица, двор, участок) не сохраняется на сервере — модуль вычисляет его по геометрии при показе; «Отменить» после «Удалить» создаёт новое предложение без голосов. С R06 ≥ b42e790 — сохраняется и возвращается то же.",
   "Без патча R01 (адаптер оставлен): на телефоне подсказка жителя закрывает фильтры открытой шторки, объект открытой карточки может уйти под «Территорию».",
-  "Названия улиц в офлайн-данных (граф OSM) — только по-русски: в kk без R12 подсказка «Жанында: улица Сыганак»; с маршрутами R12 подписи участков освещения казахские (street_kk/label_kk).",
+  "В kk казахские названия улиц есть только там, где они есть в OSM (13 из 59 улиц Нуры); остальные — по-русски (как у R12). Машинного перевода названий нет.",
   "Опоры освещения — в 5 м от оси улицы (ширины проезжей части в графе нет).",
   "Подсказка «рядом уже есть …» опирается на OSM: отсутствие объекта в OSM не значит, что его нет.",
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
-  "Казахские строки 3 новых ключей — на вычитку R11."
+  "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: взять web/civic/build3d из 169c56b и применить proposed_r01_b2.patch к f54361d (INTEGRATION §1), R06 ≥ b42e790 в B2; R11: 3 новых ключа; LOCAL: LOCAL-R05-1/2/3 (GPU, 3D-здания, контуры зданий OSM)."
+ "next_step": "R01: взять web/civic/build3d из fc03e19 и применить proposed_r01_b3.patch к 2b9e837 (INTEGRATION §1.2а); R11: 2 новых ключа; LOCAL: LOCAL-R05-1/2/3.",
+ "night_1": {
+  "sources_checked": {
+   "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
+   "R11": "claude/r14-R11 @ 8451468 (UX_REVIEW.md — новых пунктов R05 нет; словарь: 43 ключа R05 есть)",
+   "R15": "claude/r14-R15 @ 77bd744 (SECURITY_REVIEW.md — находок для R05 нет; S08/S10 — шлюз R01)",
+   "Codex": "claude/round-14-package @ a38da11 (LOCAL_B2.md №3, №5, №6, №9)",
+   "R01": "claude/sharp-dijkstra-0t87gl @ 2b9e837 (INTEGRATION §9–10)"
+  },
+  "fixed": {
+   "R10_B-007": {
+    "status": "FIXED",
+    "detail": "ж/д и трамвайные платформы не «остановки» (41 из 1017)",
+    "check": "R10 accuracy.py 8/8 PASS для R05 (runs/r10_accuracy_r05.json); test_existing_objects_are_real_osm"
+   },
+   "R10_B-008": {
+    "status": "FIXED",
+    "detail": "объекты и дворы только внутри районов Астаны (остановок 1017 → 956, дворов 560 → 536)",
+    "check": "R10 accuracy.py «граница Астаны · R05 astana-existing.json» PASS"
+   },
+   "R10_B-026": {
+    "status": "FIXED",
+    "detail": "точка 32 px со значком вида; совпавшие проекты — метка с числом, нажатие приближает",
+    "check": "browser_check r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk",
+    "screens": [
+     "screens/b026_cluster_{1366,375}_{ru,kk}.png"
+    ]
+   },
+   "R10_B-022_R01": {
+    "status": "R01 + патч R05",
+    "detail": "кнопку «Что построить?» на телефоне сделал R01; патч R05 скрывает подсказку жителя над полуоткрытой шторкой",
+    "check": "app_b2_smoke phone_*; r14_b2.cjs R01 25/25 с proposed_r01_b3.patch"
+   },
+   "kk_street_names": {
+    "status": "DONE (самопроверка UX_BRIEF п. 6)",
+    "detail": "в kk названия улиц из OSM name:kk (13 из 59), иначе русское",
+    "check": "browser_check kk_street_names_from_osm_card_and_lighting_hint_1366_375; test_street_names_kk_only_from_osm",
+    "screens": [
+     "screens/kk_street_{1366,375}_card.png"
+    ]
+   }
+  },
+  "r01_patch_for_head": "research/round-14-results/R05/proposed_r01_b3.patch (к 2b9e837; git apply --check OK)"
+ }
 }
