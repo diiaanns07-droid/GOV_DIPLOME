@@ -16,12 +16,10 @@ R01 · раунд 14 · INTEGRATION — как модули ролей подк�
 | POST /classify {text}            | R04  | ui.civic_ml_api                           | classify(text) |
 | POST /similar {text,point?,days?}| R04  | ui.civic_ml_api                           | similar(text, point=None, days=None) |
 | GET /targets?lon&lat&category    | R12  | engine.civic_geo                          | targets(lon, lat, category=None) |
-| POST /complaints                 | R09  | ui.civic_feedback.v2, ui.civic_feedback   | create_complaint(body) |
-| GET /complaints?bbox&since       | R09  | то же                                     | list_complaints(bbox=None, since=None) |
-| POST /complaints/{id}/metoo      | R09  | то же                                     | add_metoo(complaint_id, body) |
-| POST /complaints/{id}/status  [С]| R09  | то же                                     | set_complaint_status(complaint_id, body) |
-| GET /heat?bbox&days&category&zoom| R07  | ui.civic_heat                             | heat(bbox=None, days=None, category=None, zoom=None) |
-| GET /akim/summary?date&district  | R08  | ui.civic_akim                             | summary(date=None, district=None) |
+| /categories, /complaints, /complaints/mine|events|summary|place|{id}, /complaints/{id}/metoo|status|duplicate
+|                                  | R09  | ui.civic_feedback.v2.integration          | make_service(db) -> handle(...) — ПОДКЛЮЧЕНО в B1 |
+| GET /heat, /heat/meta, /heat/target | R07 | ui.civic_heat.api                       | handle_get(path, query) — ПОДКЛЮЧЕНО в B1 |
+| GET /akim/summary?date&district  | R08  | ui.civic_akim.api                         | handle_get(path, query) — ПОДКЛЮЧЕНО в B1 |
 | GET /proposals?bbox              | R06  | ui.civic_store.v2, ui.civic_store         | list_proposals(bbox=None) |
 | POST /proposals               [С]| R06  | то же                                     | create_proposal(body) |
 | POST /proposals/{id}/vote        | R06  | то же                                     | vote_proposal(proposal_id, value, device_id) |
@@ -30,6 +28,9 @@ R01 · раунд 14 · INTEGRATION — как модули ролей подк�
 
 [С] — только сотрудник: шлюз сам проверяет сессию редактора R02 (cookie + заголовок X-CSRF-Token, как staff-маршруты
 v1) и не вызывает функцию без неё (401/403).
+Три вида подключения (класс V2Handler): «функция» по таблице (шлюз проверяет параметры), «handle_get» роли (R07, R08 —
+роль сама разбирает запрос и отвечает (status, body)), «сервис» роли (R09 — отвечает целиком в конверте ok/data и сам
+проверяет сотрудника по principal R02). Связку модулей делает CivicV2Gateway.wire() — см. §8.
 
 Если у вас функция называется иначе или лежит в другом модуле — напишите в своём INTEGRATION.txt строку
 «R01: маршрут → модуль.функция», R01 поправит одну строку таблицы V2_HANDLERS. Не нужно подстраивать имена под меня.
@@ -139,3 +140,37 @@ destroy и повторный mount модуля на той же карте) Ma
 Вероятная причина: картинка снимается (removeImage) раньше слоёв, которые на неё ссылаются, или слой добавляется
 раньше картинки после setStyle. Проверка: node tests/civic/R01/browser/p0_flow.cjs <папка> → строка
 «no page errors (desktop) — R03 demo-ring image race».
+
+
+=====================================================================================================
+8. B1 (10 окт): как связаны R09, R07, R08 и что нашлось на стыках — просьбы к ролям
+=====================================================================================================
+Связка (ui/web_server.py, CivicV2Gateway.wire):
+- карта жалоб R07 читает записи хранилища R09 (store.list(since)); при CIVIC_DEMO=1 (run-city.bat) к ним добавляется
+  синтетический набор R07 (demo: true) — карта на демо не пустая, новая жалоба жителя видна сразу;
+- подписка R09 store.subscribe -> civic_heat.invalidate(): новая жалоба, «Я тоже», статус перекрашивают цель сразу;
+- R08 civic_akim.configure() после настройки карты — числа «Картины дня» те же, что на карте.
+Проверка: tests/civic/R01/browser/r14_b1.cjs (житель -> карта -> «Картина дня» -> «Взять в работу» -> «Исправлено»).
+
+R06 (ui/civic_store) — ВАЖНО, включите в свою поставку:
+  ui/civic_store/auth.py: COOKIE_PATH = "/api/civic" (было "/api/civic/v1"). С прежним путём браузер не отправлял
+  cookie сотрудника на /api/civic/v2 — «Взять в работу», «Исправлено», этапы и предложения сотрудника не работали.
+  Применено R01 в B1 (d3c33d9) вместе с правкой теста tests/civic/R02/test_r02_auth.py. Если ваша поставка перезапишет
+  auth.py без этой строки — сотрудник в v2 снова получит 403.
+R07 (ui/civic_heat, web/civic/heat):
+  1) Сетка ячеек: id cell-<ix>-<iy> создаёт R09 (угол 70.9/50.8, шаг по широте 150/111320), у вас — 71.0/50.8 и 150/110574.
+     Жалоба из Нуры рисовалась на ~7 км восточнее с подписью «Квартал». В B1 R01 подставляет свой резолвер для целей
+     R09 с approximate: true (контур — ui.civic_feedback.v2.record.cell_polygon, подпись «примерное место»).
+     Договоритесь с R09 об одной сетке (лучше — брать формулу/контур у R09 или у R12 /targets).
+  2) Ключ устройства: heat.js хранит id в localStorage "birge.device_id", форма R09 — в "birge.device"; одно устройство
+     могло нажать «Я тоже» дважды. В B1 оболочка передаёт в mount({fetch}) обёртку, которая ставит заголовок
+     X-Birge-Device из "birge.device" (и X-CSRF-Token сотрудника для статусов). Лучше перейти на "birge.device".
+  3) Язык: i18n R11 шлёт "birge:lang" на document; вы слушаете window — оболочка B1 пересылает событие на window.
+  4) Патч R08 (records(), generation) применён R01 в ui/civic_heat/service.py — включите его в свою поставку.
+R09 (ui/civic_feedback/v2, web/civic/feedback):
+  - invalidate тепловой карты делает шлюз через store.subscribe — в коде R09 ничего добавлять не нужно.
+  - Панель «Мои обращения» оставалась открытой при переключении на «Акимат» — оболочка вызывает close(); просьба:
+    закрывать панель по Escape и при фокусе вне неё не только внутри (сейчас Escape работает, только если фокус в панели).
+R08 (ui/civic_akim, web/civic/akim): «Картина дня» монтируется в оболочке (#day) с syncUrl: false; «горячее место» открывает
+  цель на карте через birge:open-target (оболочка делает preventDefault). Ссылка /#target=<kind>:<id>&days=N тоже работает.
+R11: новые ключи common.nav.mine (есть у вас), шапка «Мои обращения» у жителя. Ключи heat.*/akim.*/complaint.* — у ролей.
