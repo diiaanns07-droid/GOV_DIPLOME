@@ -17,7 +17,8 @@ R01 (интегратор)
    Проверено: 2b9e837 + пути R03 @ 1f78f66 → pytest tests/civic/R03/round14 tests/civic/R04 tests/civic/R09
    tests/civic/R01 — 791 passed, 1 skipped; FINAL ef1ef44 + пути R03 @ c1654aa → 794 passed, 1 skipped;
    ef1ef44 + пути R03 @ b86563c (с bench.py и новыми тестами) → 811 passed, 1 skipped, 1 xfailed;
-   0a7a346 + пути R03 @ 68393f1 → 814 passed, 1 skipped, 1 xfailed
+   0a7a346 + пути R03 @ 68393f1 → 814 passed, 1 skipped, 1 xfailed;
+   FINAL-кандидат fa117c3 (тот же R03 ac0e954) + пути R03 @ 23ecee7 → 847 passed, 1 skipped, 1 xfailed
    (Linux, Python 3.13). Новых зависимостей и маршрутов нет;
    ml/civic_classifier_v2/results/ — только отчёты (MD/JSON/CSV), рантайм их не читает.
 1. Взять пути R03 из claude/r14-R03 (без слияния ветки целиком не обойтись — там только пути R03).
