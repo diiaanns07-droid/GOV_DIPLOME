@@ -50,7 +50,7 @@ async function openPage(viewport, hash) {
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
   await page.goto(base + (hash || ""));
   await page.waitForSelector("#civic-map-root .civic-r03-item", { state: "attached", timeout: 40000 });
-  await page.waitForFunction(() => typeof map !== "undefined" && map && map.getStyle && (map.getStyle()?.layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 20000 });
+  await page.waitForFunction(() => typeof map !== "undefined" && map && map.getStyle && (map.getStyle()?.layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 15, null, { timeout: 20000 });
   await sleep(800);
   return { ctx, page, errors, warns };
 }
@@ -73,7 +73,7 @@ try {
   const { ctx, page, errors, warns } = await openPage({ width: 1440, height: 900 });
   const r = await page.evaluate(() => ({ canvases: document.querySelectorAll("canvas").length, layers: map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03")).length,
     ring: map.hasImage("civic-r03-demo-ring"), offline: !map.getStyle().sources || !Object.keys(map.getStyle().sources).some((k) => /openmaptiles|openfreemap/i.test(k)) }));
-  check("render: one map canvas with 13 civic-r03 layers and the demo ring image", r.canvases === 1 && r.layers === 13 && r.ring, r);
+  check("render: one map canvas with 15 civic-r03 layers and the demo ring image", r.canvases === 1 && r.layers === 15 && r.ring, r);
   if (r.offline) notRun("OpenFreeMap basemap and 3D buildings", "tiles.openfreemap.org not reachable from this environment (proxy 403) — offline light background used");
   await page.screenshot({ path: path.join(OUT, "r13-app-1440-start.png") });
 
@@ -81,10 +81,10 @@ try {
   await page.click("#toggle-3d");
   await sleep(1500);
   const tilt = await page.evaluate(() => ({ pitch: Math.round(map.getPitch()), layers: map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03")).length }));
-  check("3D toggle: camera tilts, R03 layers stay", tilt.pitch >= 30 && tilt.layers === 13, tilt);
+  check("3D toggle: camera tilts, R03 layers stay", tilt.pitch >= 30 && tilt.layers === 15, tilt);
   await page.screenshot({ path: path.join(OUT, "r13-app-1440-3d.png") });
   await page.evaluate(() => { const st = map.getStyle(); map.setStyle({ version: 8, sources: {}, layers: [{ id: "r03-acc-bg", type: "background", paint: { "background-color": "#f1f3ee" } }] }, { diff: false }); window.__r03swap = st; });
-  await page.waitForFunction(() => (map.getStyle()?.layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 10000 });
+  await page.waitForFunction(() => (map.getStyle()?.layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 15, null, { timeout: 10000 });
   await sleep(600);
   check("host style swap: layers and demo ring re-added, no missing-image warning", await page.evaluate(() => map.hasImage("civic-r03-demo-ring")) && !warns.some((t) => /could not be loaded/.test(t)), warns.filter((t) => /civic-r03|image/i.test(t)).slice(0, 3));
   await page.click("#toggle-3d");

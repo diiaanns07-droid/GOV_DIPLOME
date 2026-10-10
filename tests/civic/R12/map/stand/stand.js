@@ -5,6 +5,9 @@
  *   empty=1             server has no published objects
  *   hostile=1           add malformed/hostile records (tests)
  *   today=YYYY-MM-DD    fixed "today" for screenshots and tests
+ *   objects=URL         R12: load records from this civic-v1 file instead of the fixtures (e.g. the R05 demo slice)
+ *   snapped=URL         R12: demo_snapped.json for the map module (off by default)
+ *   streets=URL         R12: GeoJSON of OSM graph edges drawn as a plain street backdrop (no OpenFreeMap in the cloud)
  *   mobile tools: none; the page is responsive via CSS.
  */
 (async function () {
@@ -19,7 +22,7 @@
   const get = (p) => fetch(p).then((r) => { if (!r.ok) throw new Error(p + " " + r.status); return r.json(); });
   const real0 = q.get("api") === "real";
   const [objs, hist, hostile] = real0 ? [{ items: [] }, { history: {} }, { items: [] }] : await Promise.all([
-    get("/tests/civic/R12/map/fixtures/objects.json"),
+    get(q.get("objects") || "/tests/civic/R12/map/fixtures/objects.json"),
     get("/tests/civic/R12/map/fixtures/history.json"),
     q.get("hostile") ? get("/tests/civic/R12/map/fixtures/hostile.json") : Promise.resolve({ items: [] }),
   ]);
@@ -69,6 +72,8 @@
       permalink: q.get("permalink") === "1",
       persistFilters: q.get("persist") !== "0",
       fitOnLoad: q.get("fit") !== "0",
+      // R12: привязка демо-линий (по умолчанию выключена, чтобы старые проверки шли на исходной геометрии).
+      snappedUrl: q.get("snapped") ? q.get("snapped") : false,
       onSelect: (obj, meta) => stand.selects.push({ id: obj && obj.id, source: meta.source }),
       onData: (items) => stand.data.push(items),
       onFeedback: (payload) => { stand.feedback.push(payload); say("onFeedback вызван для «" + payload.title + "» — форму обращения подключает R06/R01."); },
@@ -107,10 +112,20 @@
     if (!map.isStyleLoaded() && !fallback) { fallback = true; map.setStyle(OFFLINE_STYLE); }
     console.warn("map:", e && e.error && e.error.message);
   });
-  map.once("load", () => {
+  map.once("load", async () => {
+    if (q.get("streets")) {
+      // Подложка-заменитель: настоящие оси улиц OSM (рёбра графа), чтобы на скриншоте было видно, идёт ли линия по улице.
+      try {
+        map.addSource("stand-streets", { type: "geojson", data: await get(q.get("streets")) });
+        map.addLayer({ id: "stand-streets", type: "line", source: "stand-streets", layout: { "line-join": "round", "line-cap": "round" },
+          paint: { "line-color": ["match", ["get", "g"], "road", "#b9c2b8", "service", "#d3d9d1", "#dfe4dc"],
+            "line-width": ["interpolate", ["linear"], ["zoom"], 13, ["match", ["get", "g"], "road", 2, 1], 17, ["match", ["get", "g"], "road", 14, "service", 6, 2.5]] } });
+      } catch (e) { console.warn("stand streets:", e.message); }
+    }
     stand.map = map;
     stand.basemap = fallback ? "offline-fallback" : "openfreemap";
-    if (fallback) say("Подложка OpenFreeMap недоступна: простой фон без улиц и 3D-зданий. Объекты и карточки работают.");
+    if (fallback) say(q.get("streets") ? "Подложка OpenFreeMap недоступна: показаны только оси улиц OSM, без домов и 3D-зданий."
+      : "Подложка OpenFreeMap недоступна: простой фон без улиц и 3D-зданий. Объекты и карточки работают.");
     mount();
   });
   const tilt = document.getElementById("toggle-3d");

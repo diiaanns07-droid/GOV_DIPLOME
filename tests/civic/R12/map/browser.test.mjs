@@ -116,7 +116,7 @@ test("desktop 1440x900: list, layers, legend, no staff calls, no overflow", { sk
     rendered: window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point", "civic-r03-line", "civic-r03-line-approx", "civic-r03-area-fill"] }).map((f) => f.properties.cid),
   }));
   assert.equal(info.basemap, "offline-fallback");
-  assert.equal(info.layers.length, 13);
+  assert.equal(info.layers.length, 15);
   assert.deepEqual(info.sources, ["civic-r03-objects"]);
   assert.ok(info.calls.every((c) => c.startsWith("GET /objects")), info.calls.join());
   assert.ok(!info.calls.some((c) => c.includes("staff")));
@@ -191,7 +191,7 @@ test("card without data: every missing value reads 'нет данных', no inv
   assert.match(text, /Стоимость\s+нет данных/);
   assert.match(text, /Начало по плану\s+нет данных/);
   assert.match(text, /Сейчас — до\s+нет данных/);
-  assert.match(text, /Место примерное/);
+  assert.match(text, /Примерное место — показано областью/);
   assert.match(text, /Плановый интервал неполный/);
   assert.doesNotMatch(text, /0 ₸/);
   assert.doesNotMatch(text, /перенесён/);
@@ -394,7 +394,7 @@ test("mount/destroy twice: layers, sources, popup, root, map and window listener
     await page.evaluate(() => window.__stand.mount());
     await page.waitForFunction(() => window.__stand.instance.getState().list === "ready");
     const mid = await snap();
-    assert.equal(mid.layers, 13);
+    assert.equal(mid.layers, 15);
     await page.evaluate(() => { window.__stand.instance.destroy(); window.__stand.instance.destroy(); window.__stand.instance.selectObject("r03-demo-area"); window.__stand.instance.refresh(); window.__stand.instance = null; });
     await page.waitForTimeout(200);
     const s2 = await snap();
@@ -549,7 +549,8 @@ test("embedded in an R01-like host panel: no own positioning, camera avoids the 
 });
 
 // ---------- regressions for the adversarial review (wf_a5038205-b19) ----------
-const srcIds = (page) => page.evaluate(async () => (await window.__stand.map.getSource("civic-r03-objects").getData()).features.map((f) => f.properties.cid));
+// R12: у примерной записи две фигуры (область + значок) — считаем записи, а не фигуры.
+const srcIds = (page) => page.evaluate(async () => [...new Set((await window.__stand.map.getSource("civic-r03-objects").getData()).features.map((f) => f.properties.cid))]);
 
 test("review: a second mount on the same root/map replaces the first cleanly", { skip: SKIP }, async () => {
   const { ctx, page, errors } = await open({ persist: "0" });
@@ -565,7 +566,7 @@ test("review: a second mount on the same root/map replaces the first cleanly", {
     return { mid, still, after: { children: root.childNodes.length, cls: root.getAttribute("class"), layers: window.__stand.map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03")).length } };
   });
   assert.equal(r.mid.items, 12);
-  assert.equal(r.mid.layers, 13);
+  assert.equal(r.mid.layers, 15);
   assert.equal(r.still, 12, "destroying the stale handle does not wipe the live UI");
   assert.deepEqual(r.after, { children: 0, cls: null, layers: 0 });
   assert.deepEqual(errors, []);
@@ -788,7 +789,7 @@ test("review: a failed re-read after refresh shows the fresh list copy, not the 
 test("review: a host setStyle (diff) re-adds R03 layers without MapLibre placement errors", { skip: SKIP }, async () => {
   const { ctx, page, errors } = await open({ persist: "0" });
   await page.evaluate(() => window.__stand.map.setStyle({ version: 8, sources: {}, layers: [{ id: "bg2", type: "background", paint: { "background-color": "#f1f3ee" } }] }));
-  await page.waitForFunction(() => window.__stand.map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 5000 });
+  await page.waitForFunction(() => window.__stand.map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03")).length === 15, null, { timeout: 5000 });
   await page.waitForTimeout(500);
   assert.equal(await page.evaluate(() => window.__stand.map.hasImage("civic-r03-demo-ring")), true);
   assert.deepEqual(errors, []);
@@ -1034,7 +1035,7 @@ for (const N of [500, 2000]) {
       const st = window.__stand.instance.getState();
       const pages = window.__stand.api.calls.filter((c) => c.path.startsWith("/objects?") && c.path.includes("limit=100")).length;
       const rendered = document.querySelectorAll(".civic-r03-item").length;
-      const features = (await window.__stand.map.getSource("civic-r03-objects").getData()).features.length;
+      const features = new Set((await window.__stand.map.getSource("civic-r03-objects").getData()).features.map((f) => f.properties.cid)).size;
       const t1 = performance.now();
       document.querySelector('[data-kind="roadworks"]').click();
       const filterMs = performance.now() - t1;
@@ -1394,7 +1395,7 @@ test("r13: render -> style change -> editor draws -> cancel -> select: input bel
     m.setStyle({ version: 8, sources: {}, layers: [{ id: "bg-r13", type: "background", paint: { "background-color": "#eef1ea" } }] }, { diff: false });
     window.__stand.instance.refresh();
   });
-  await page.waitForFunction(() => ((window.__stand.map.getStyle() || {}).layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 8000 });
+  await page.waitForFunction(() => ((window.__stand.map.getStyle() || {}).layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 15, null, { timeout: 8000 });
   await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4511, 51.1209], zoom: 15 }));
   await page.waitForTimeout(500);
   assert.equal(await page.evaluate(() => window.__stand.map.hasImage("civic-r03-demo-ring")), true);
@@ -1467,11 +1468,11 @@ test("r13: 3D tilt keeps picking and flying; three quick style swaps and a remou
     m.setStyle(bg("#eef1ea"), { diff: false }); m.setStyle(bg("#f1f3ee"), { diff: false }); m.setStyle(bg("#f4f5f0"));
     window.__stand.destroy(); window.__stand.mount();
   });
-  await page.waitForFunction(() => ((window.__stand.map.getStyle() || {}).layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 10000 });
+  await page.waitForFunction(() => ((window.__stand.map.getStyle() || {}).layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 15, null, { timeout: 10000 });
   await page.waitForTimeout(600);
   const s = await page.evaluate(() => ({ ids: window.__stand.map.getStyle().layers.map((l) => l.id).filter((x) => x.startsWith("civic-r03")),
     ring: window.__stand.map.hasImage("civic-r03-demo-ring"), synth: window.__stand.map.getLayer("civic-r03-point-synthetic").type }));
-  assert.equal(new Set(s.ids).size, 13);
+  assert.equal(new Set(s.ids).size, 15);
   assert.equal(s.ring, true);
   assert.equal(s.synth, "symbol", "demo points keep their dashed-ring symbol");
   assert.equal(warn.filter((x) => /could not be loaded|civic-r03/.test(x)).length, 0, warn.join("\n"));

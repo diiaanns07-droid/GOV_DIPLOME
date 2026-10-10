@@ -629,8 +629,76 @@
     });
   }
 
+  // ---------- R12: точность карты (линии по улицам OSM, «примерное место» областью) ----------
+  const APPROX_RADIUS_M = 120;   // радиус области «примерное место» вокруг примерной точки
+  const M_PER_DEG = Math.PI / 180 * 6371008.8;
+
+  // Круг радиусом radiusM метров вокруг точки как полигон (n вершин) — область, а не уверенная точка.
+  function circlePolygon(center, radiusM, n) {
+    const k = n || 48;
+    const dLat = radiusM / M_PER_DEG, dLon = dLat / Math.cos(center[1] * Math.PI / 180);
+    const ring = [];
+    for (let i = 0; i < k; i++) {
+      const a = (2 * Math.PI * i) / k;
+      ring.push([+(center[0] + dLon * Math.cos(a)).toFixed(7), +(center[1] + dLat * Math.sin(a)).toFixed(7)]);
+    }
+    ring.push(ring[0].slice());
+    return { type: "Polygon", coordinates: [ring] };
+  }
+  function haversineM(a, b) {
+    const r = Math.PI / 180, dLat = (b[1] - a[1]) * r, dLon = (b[0] - a[0]) * r;
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(a[1] * r) * Math.cos(b[1] * r) * Math.sin(dLon / 2) ** 2;
+    return 2 * 6371008.8 * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+  // Область «примерное место» для записи без точного места: круг вокруг точки или вокруг всей линии/площади.
+  function approxArea(g) {
+    if (!g) return null;
+    if (g.type === "Point") return circlePolygon(g.coordinates, APPROX_RADIUS_M);
+    const b = bboxOf(g);
+    const c = [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
+    return circlePolygon(c, Math.max(APPROX_RADIUS_M, haversineM([b[0], b[1]], [b[2], b[3]]) / 2 + 40));
+  }
+  const sameCoords = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+  // demo_snapped.json (engine/civic_geo/snap_demo.py): замена «линий от руки» участками по рёбрам графа.
+  // Замена применяется только если исходная геометрия записи не менялась с момента привязки
+  // (иначе запись уже исправили в хранилище — её и показываем). Запись не мутируется.
+  function applySnapped(items, snapped) {
+    const map = isObj(snapped) && isObj(snapped.items) ? snapped.items : null;
+    if (!map) return items;
+    return items.map((it) => {
+      const s = own(map, it.id) ? map[it.id] : null;
+      if (!isObj(s) || !it.geometry || !sameCoords(s.original_coordinates, it.geometry.coordinates)) return it;
+      if (s.status === "snapped" && isObj(s.geometry)) {
+        const g = normalizeGeometry(s.geometry, ASTANA_BBOX);
+        if (!g.geometry) return it;
+        return Object.assign({}, it, {
+          geometry: g.geometry, bbox: bboxOf(g.geometry),
+          snap: { source: str(s.geometry_source) || "osm-graph", street: str(s.street_ru), streetKk: str(s.street_kk),
+            lengthM: typeof s.length_m === "number" ? s.length_m : null, display: str(s.display) },
+        });
+      }
+      if (s.display === "approximate_area") return Object.assign({}, it, { forceApprox: true });
+      return it;
+    });
+  }
+  // Как запись показывается: line/area/point — точно; approx — областью «примерное место».
+  function displayMode(it) {
+    if (!it.geometry) return null;
+    if (it.snap) return "exact";
+    if (it.forceApprox || it.precision !== "source") return "approx";
+    return "exact";
+  }
+  function placeText(it) {
+    if (it.snap && it.snap.display === "street_line") return "Участок улицы по карте OSM" + (it.snap.street ? ": " + it.snap.street : "");
+    if (it.snap && it.snap.display === "yard") return "Двор по карте OSM";
+    if (displayMode(it) === "approx") return "Примерное место — показано областью";
+    return null;
+  }
+
   // ---------- map data ----------
   // Polygons go largest first so a small area inside a big one is drawn (and picked) on top.
+  // Записи без точного места дают ещё и мягкую область approx_area (свои слои, под точками).
   function featureCollection(items) {
     const features = [];
     const area = (it) => (it.bbox ? (it.bbox[2] - it.bbox[0]) * (it.bbox[3] - it.bbox[1]) : 0);
@@ -638,20 +706,26 @@
     // Partition (a mixed comparator is not a consistent order): polygons by area descending, then the rest.
     const ordered = withGeo.filter((it) => it.geometry.type === "Polygon").sort((a, b) => area(b) - area(a))
       .concat(withGeo.filter((it) => it.geometry.type !== "Polygon"));
+    const props = (it, extra) => Object.assign({
+      cid: it.id,
+      kind: it.kind,
+      status: it.status,
+      exact: displayMode(it) === "exact",
+      synthetic: it.evidence === "synthetic",
+      snapped: !!it.snap,
+      title: it.title.slice(0, 160),
+    }, it.snap && it.snap.street ? { street: it.snap.street } : null, extra || {});
+    const approx = ordered.filter((it) => displayMode(it) === "approx");
+    // Области «примерное место» — первыми (под всеми линиями и площадями).
+    for (const it of approx) {
+      const g = it.geometry.type === "Polygon" ? it.geometry : approxArea(it.geometry);
+      if (g) features.push({ type: "Feature", geometry: g, properties: props(it, { approx_area: true }) });
+    }
     for (const it of ordered) {
-      if (!it.geometry) continue;
-      features.push({
-        type: "Feature",
-        geometry: it.geometry,
-        properties: {
-          cid: it.id,
-          kind: it.kind,
-          status: it.status,
-          exact: it.precision === "source",
-          synthetic: it.evidence === "synthetic",
-          title: it.title.slice(0, 160),
-        },
-      });
+      const mode = displayMode(it);
+      // Примерная линия или площадь не рисуется уверенной линией: только областью (выше) — CONTRACT §8.4.
+      if (mode === "approx" && it.geometry.type !== "Point") continue;
+      features.push({ type: "Feature", geometry: it.geometry, properties: props(it) });
     }
     return { type: "FeatureCollection", features };
   }
@@ -722,5 +796,6 @@
     plannedInterval, matchPeriod, scheduleShift, staleness, plural, daysText, normalizeHistory, fieldLabel,
     shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters, EVIDENCE_FILTERS, evidenceGroup, pastPlan,
     applyFilters, sortItems, featureCollection, createSequence, unwrap, errorInfo, contrast,
+    APPROX_RADIUS_M, circlePolygon, approxArea, applySnapped, displayMode, placeText, haversineM,
   };
 });

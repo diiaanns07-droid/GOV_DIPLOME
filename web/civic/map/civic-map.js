@@ -10,6 +10,8 @@
   const P = "civic-r03-";
   const SRC = P + "objects";
   const L = {
+    approxFill: P + "approx-fill",
+    approxLine: P + "approx-line",
     areaFill: P + "area-fill",
     areaLine: P + "area-line",
     areaLineApprox: P + "area-line-approx",
@@ -23,10 +25,15 @@
     pointSynth: P + "point-synthetic",
     point: P + "point",
     selPoint: P + "selected-point",
+    streetLabel: P + "street-label",
   };
-  const BELOW_LABELS = [L.areaFill, L.areaLine, L.areaLineApprox, L.lineCasing, L.line, L.lineApprox, L.lineCore, L.synthLine, L.selLine];
+  // R12: всё «плоское» (области, линии) кладётся ПОД 3D-здания и подписи подложки, чтобы при наклоне
+  // дома закрывали линию, а не линия «резала» дома. Точки — сверху (их видно всегда, как в 2ГИС).
+  const BELOW_LABELS = [L.approxFill, L.approxLine, L.areaFill, L.areaLine, L.areaLineApprox, L.lineCasing, L.line, L.lineApprox, L.lineCore, L.synthLine, L.selLine];
   const ON_TOP = [L.pointHalo, L.pointSynth, L.point, L.selPoint];
-  const INTERACTIVE = [L.point, L.pointHalo, L.line, L.lineApprox, L.lineCasing, L.areaFill];
+  const LABELS = [L.streetLabel];   // только если у стиля есть шрифты (glyphs); иначе слоя нет
+  const INTERACTIVE = [L.point, L.pointHalo, L.line, L.lineApprox, L.lineCasing, L.areaFill, L.approxFill];
+  const SNAPPED_URL = "/civic/map/demo_snapped.json";
   const STORAGE_KEY = "civic-r03:filters:v1";
   const HASH_KEY = "civic-object";
   const PICK_MAX = 50;   // candidates listed in the overlap chooser
@@ -99,9 +106,11 @@
     } catch (e) { return null; }
   }
 
-  function layerDefs(demoImage) {
+  function layerDefs(demoImage, labelFont) {
     const kc = kindColorExpr();
-    const isPoly = ["==", ["geometry-type"], "Polygon"];
+    const approxArea = ["==", ["get", "approx_area"], true];
+    const notApprox = ["!=", ["get", "approx_area"], true];
+    const isPoly = ["all", ["==", ["geometry-type"], "Polygon"], notApprox];
     const isLine = ["==", ["geometry-type"], "LineString"];
     const isPoint = ["==", ["geometry-type"], "Point"];
     const exact = ["==", ["get", "exact"], true];
@@ -111,7 +120,12 @@
     const none = ["==", ["get", "cid"], "\u0000none"];
     const lineColor = ["match", ["get", "status"], "cancelled", "#8b939c", "unknown", "#4f5965", kc];
     const lineWidth = ["match", ["get", "status"], "in_progress", 5, "planned", 6, "unknown", 6, 3.5];
-    return [
+    const defs = [
+      // R12: «примерное место» — мягкая область с пунктирной границей, а не уверенная линия (CONTRACT §8.4).
+      { id: L.approxFill, type: "fill", source: SRC, filter: approxArea,
+        paint: { "fill-color": ["match", ["get", "status"], "cancelled", "#8b939c", kc], "fill-opacity": 0.1 } },
+      { id: L.approxLine, type: "line", source: SRC, filter: approxArea, layout: { "line-join": "round" },
+        paint: { "line-color": ["match", ["get", "status"], "cancelled", "#8b939c", kc], "line-width": 1.6, "line-dasharray": [2.2, 1.8], "line-opacity": 0.75 } },
       // Areas: planned/unknown without fill (like the hollow point), in progress filled, completed pale.
       { id: L.areaFill, type: "fill", source: SRC, filter: isPoly,
         paint: { "fill-color": ["match", ["get", "status"], "cancelled", "#8b939c", kc], "fill-opacity": ["match", ["get", "status"], "in_progress", 0.32, "completed", 0.12, "cancelled", 0.1, 0] } },
@@ -128,7 +142,7 @@
         paint: { "line-color": lineColor, "line-width": lineWidth, "line-dasharray": [1.4, 1.1], "line-opacity": statusOpacity(1, 1, 0.55, 0.8) } },
       { id: L.lineCore, type: "line", source: SRC, filter: ["all", isLine, ["match", ["get", "status"], ["planned", "unknown"], true, false]],
         layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#ffffff", "line-width": 2.2 } },
-      { id: L.synthLine, type: "line", source: SRC, filter: ["all", ["!", isPoint], ["==", ["get", "synthetic"], true]],
+      { id: L.synthLine, type: "line", source: SRC, filter: ["all", ["!", isPoint], notApprox, ["==", ["get", "synthetic"], true]], layout: { "line-join": "round", "line-cap": "round" },
         paint: { "line-color": "#4f5965", "line-width": 1.2, "line-gap-width": ["case", isLine, 12, 5], "line-dasharray": [1, 2], "line-opacity": 0.85 } },
       { id: L.selLine, type: "line", source: SRC, filter: ["all", ["!", isPoint], none], layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": "#152c26", "line-width": 3, "line-gap-width": ["case", isLine, 7, 0], "line-opacity": 0.95 } },
@@ -151,6 +165,14 @@
       { id: L.selPoint, type: "circle", source: SRC, filter: ["all", isPoint, none],
         paint: { "circle-radius": 17.5, "circle-opacity": 0, "circle-stroke-color": "#152c26", "circle-stroke-width": 3 } },
     ];
+    // Подпись улицы вдоль привязанного участка. MapLibre сам убирает подписи, которые наложились бы
+    // друг на друга или на подписи подложки (text-allow-overlap: false), — подписи без наложений.
+    if (labelFont) defs.push({ id: L.streetLabel, type: "symbol", source: SRC, minzoom: 14.5,
+      filter: ["all", isLine, ["==", ["get", "snapped"], true], ["has", "street"]],
+      layout: { "symbol-placement": "line", "text-field": ["get", "street"], "text-font": labelFont, "text-size": 13,
+        "text-max-angle": 30, "text-padding": 4, "text-allow-overlap": false, "text-optional": true, "symbol-spacing": 320 },
+      paint: { "text-color": "#152c26", "text-halo-color": "#ffffff", "text-halo-width": 1.6 } });
+    return defs;
   }
 
   function mount(options) {
@@ -225,6 +247,10 @@
     if (opt.filters) st.filters = C.sanitizeFilters(opt.filters);
 
     // ---------- root setup (restored in destroy) ----------
+    // R12: привязка демо-линий к улицам OSM (demo_snapped.json, собирает engine/civic_geo/snap_demo.py).
+    // Необязательна: без файла примерные линии всё равно показываются областью «примерное место».
+    let snapped = null;
+    const snappedUrl = opt.snappedUrl === false ? null : (typeof opt.snappedUrl === "string" && opt.snappedUrl ? opt.snappedUrl : SNAPPED_URL);
     const saved = { className: root.getAttribute("class"), role: root.getAttribute("role"), label: root.getAttribute("aria-label"), children: [...root.childNodes] };
     root.replaceChildren();
     root.classList.add(P + "root", P + "layout-" + layout);
@@ -748,7 +774,7 @@
       if (shift) meta.push(shift.days > 0 ? "срок перенесён" : "срок сдвинут раньше");
       const badges = [...evidenceBadges(it),
         stale ? badge(stale.kind === "old_start_no_end" ? "Старый план без срока" : "Срок по плану прошёл", "b-warn") : null,
-        !it.geometry ? badge("Нет на карте", "b-muted", it.geoIssue ? it.issues.find((x) => /координат|геометр/.test(x)) : "Координаты не указаны") : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
+        !it.geometry ? badge("Нет на карте", "b-muted", it.geoIssue ? it.issues.find((x) => /координат|геометр/.test(x)) : "Координаты не указаны") : it.snap ? badge(it.snap.display === "yard" ? "Двор по карте" : "По улице", "b-muted", C.placeText(it)) : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
         missing === "end" ? badge("Окончание неизвестно", "b-muted", "Плановая дата окончания не указана") : missing === "start" ? badge("Начало неизвестно", "b-muted", "Плановая дата начала не указана") : null].filter(Boolean);
       const btn = h("button", { type: "button", class: P + "item", "data-r03-action": "select", "data-id": it.id, "aria-current": st.selectedId === it.id ? "true" : null, style: { "--civic-r03-k": k.color } },
         h("span", { class: P + "item-kind" }, h("i", { class: P + "dot " + P + "st-" + it.status, "aria-hidden": "true" }), k.label),
@@ -800,7 +826,7 @@
           if (pages >= MAX_PAGES) { truncated = true; break; }
         }
         const norm = C.normalizeList(raw, { region });
-        st.items = C.sortItems(norm.items);
+        st.items = C.sortItems(C.applySnapped(norm.items, snapped));
         searchText.clear();
         st.excluded = norm.excluded.length;
         st.truncated = truncated;
@@ -826,6 +852,24 @@
       }
     }
 
+    async function loadSnapped() {
+      const ctl = typeof AbortController === "function" ? new AbortController() : null;
+      cleanups.push(() => { if (ctl) ctl.abort(); });
+      try {
+        const r = await fetch(snappedUrl, { credentials: "same-origin", signal: ctl ? ctl.signal : undefined });
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        const data = await r.json();
+        if (destroyed) return;
+        snapped = data;
+        // Список мог прийти раньше файла: применяем замену к уже загруженным записям и к открытой карточке.
+        if (st.items.length) st.items = C.sortItems(C.applySnapped(st.items, snapped));
+        if (st.detail.item) st.detail.item = C.applySnapped([st.detail.item], snapped)[0];
+        updateMapData();
+        if (st.detail.state === "ready") renderCard();
+      } catch (e) {
+        if (!destroyed && !(e && e.name === "AbortError")) warnOnce("snapped", "demo_snapped.json не загрузился (" + (e && e.message) + "): примерные линии показаны областью");
+      }
+    }
     function findItem(id) { return st.items.find((x) => x.id === id) || null; }
     function currentItem() { return st.detail.item || findItem(st.selectedId); }
     function publicCopy(it) {
@@ -894,13 +938,13 @@
           st.detail.item = null;
         } else {
           const hadItem = !!st.detail.item;
-          st.detail.item = norm.item;
+          st.detail.item = C.applySnapped([norm.item], snapped)[0];
           st.detail.history = C.normalizeHistory(data.history);
           st.detail.state = "ready";
           // Round 13 (R01's ask): the loaded card's public copy, geometry included — for a deep link opened
           // before the list, onSelect only had {id}. Called once per loaded card; never instead of onSelect.
-          if (typeof opt.onDetail === "function") safeCall(opt.onDetail, publicCopy(norm.item));
-          if (!hadItem && opts && opts.fly !== false && (opts.epoch === undefined || opts.epoch === camEpoch)) { const it = norm.item; afterLayout(() => (opts.source === "map" ? ensureVisible(it) : flyTo(it)), id, opts.epoch); }
+          if (typeof opt.onDetail === "function") safeCall(opt.onDetail, publicCopy(st.detail.item));
+          if (!hadItem && opts && opts.fly !== false && (opts.epoch === undefined || opts.epoch === camEpoch)) { const it = st.detail.item; afterLayout(() => (opts.source === "map" ? ensureVisible(it) : flyTo(it)), id, opts.epoch); }
         }
       } catch (err) {
         if (destroyed || !cardSeq.isCurrent(t) || st.selectedId !== id) return;
@@ -1172,7 +1216,7 @@
       // Place
       let placeText;
       if (!it.geometry) placeText = it.issues.find((x) => /координат|геометр/.test(x)) ? "Место не показано: " + it.issues.find((x) => /координат|геометр/.test(x)) + "." : "Координаты не указаны — объект есть только в списке, точку не придумываем.";
-      else placeText = C.PRECISION[it.precision] + ". " + ({ Point: "Точка", LineString: "Линия (участок)", Polygon: "Территория" }[it.geometry.type] || "") + ".";
+      else placeText = C.placeText(it) ? C.placeText(it) + "." : C.PRECISION[it.precision] + ". " + ({ Point: "Точка", LineString: "Линия (участок)", Polygon: "Территория" }[it.geometry.type] || "") + ".";
       cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Место" }), h("p", { text: placeText })));
 
       // Sources: short list first; technical provenance folded away.
@@ -1352,6 +1396,40 @@
       const l = layers.find((x) => x.type === "symbol" && x.layout && x.layout["text-field"] && !x.id.startsWith(P));
       return l ? l.id : undefined;
     }
+    // R12: «плоские» слои — под первым слоем 3D-зданий (fill-extrusion), а если его нет — под подписями.
+    function flatBefore() {
+      const layers = (map.getStyle() && map.getStyle().layers) || [];
+      const ext = layers.find((x) => x.type === "fill-extrusion" && !x.id.startsWith(P));
+      return ext ? ext.id : firstLabelLayer();
+    }
+    // Шрифт для подписи — тот же, что у подписей подложки; без glyphs в стиле подписи не добавляем.
+    function labelFont() {
+      const style = map.getStyle && map.getStyle();
+      if (!style || !style.glyphs) return null;
+      const l = (style.layers || []).find((x) => x.type === "symbol" && x.layout && Array.isArray(x.layout["text-font"]) && !x.id.startsWith(P));
+      return l ? l.layout["text-font"] : null;
+    }
+    // Хост может добавить 3D-здания ПОСЛЕ модуля (включение «3D», смена стиля): тогда опускаем наши слои под них.
+    function keepFlatBelow3d() {
+      if (!map || destroyed || !map.getLayer(L.approxFill)) return;
+      const layers = (map.getStyle() && map.getStyle().layers) || [];
+      const ids = layers.map((x) => x.id);
+      const ext = layers.find((x) => x.type === "fill-extrusion" && !x.id.startsWith(P));
+      if (!ext) return;
+      const extAt = ids.indexOf(ext.id);
+      const flatOk = BELOW_LABELS.every((id) => !map.getLayer(id) || ids.indexOf(id) < extAt);
+      const topOk = ON_TOP.concat(LABELS).every((id) => !map.getLayer(id) || ids.indexOf(id) > extAt);
+      if (flatOk && topOk) return;
+      try {
+        if (!flatOk) for (const id of BELOW_LABELS) if (map.getLayer(id)) map.moveLayer(id, ext.id);
+        if (!topOk) {
+          // Значки и подписи — сразу над 3D-зданиями (перед следующим чужим слоем), чтобы дома их не закрывали.
+          const now = map.getStyle().layers.map((x) => x.id);
+          const next = now.slice(now.indexOf(ext.id) + 1).find((id) => !id.startsWith(P));
+          for (const id of ON_TOP.concat(LABELS)) if (map.getLayer(id)) map.moveLayer(id, next);
+        }
+      } catch (e) { /* style switching: the next styledata repeats the check */ }
+    }
     function ensureLayers() {
       if (!map || destroyed || addingLayers) return;
       if (map.getSource(SRC) && map.getLayer(L.point)) return;
@@ -1363,8 +1441,8 @@
           const img = demoRingImage();
           if (img) { map.addImage(DEMO_IMG, img.image, { pixelRatio: img.ratio }); demo = true; }
         }
-        const defs = layerDefs(demo);
-        const before = firstLabelLayer();
+        const defs = layerDefs(demo, labelFont());
+        const before = flatBefore();
         for (const def of defs) {
           if (map.getLayer(def.id)) continue;
           map.addLayer(def, BELOW_LABELS.includes(def.id) ? before : undefined);
@@ -1377,7 +1455,7 @@
     }
     function removeLayers() {
       if (!map) return;
-      for (const id of BELOW_LABELS.concat(ON_TOP)) { try { if (map.getLayer(id)) map.removeLayer(id); } catch (e) { /* style gone */ } }
+      for (const id of BELOW_LABELS.concat(ON_TOP, LABELS)) { try { if (map.getLayer(id)) map.removeLayer(id); } catch (e) { /* style gone */ } }
       try { if (map.getSource(SRC)) map.removeSource(SRC); } catch (e) { /* style gone */ }
       try { if (map.hasImage(DEMO_IMG)) map.removeImage(DEMO_IMG); } catch (e) { /* style gone */ }
     }
@@ -1492,13 +1570,14 @@
         h("b", { text: it.title.length > 90 ? it.title.slice(0, 90) + "…" : it.title }),
         h("span", { text: k.label + " · " + C.STATUSES[it.status] }),
         it.evidence === "synthetic" ? h("span", { class: P + "tip-demo", text: "Демо-запись" }) : null,
-        it.precision !== "source" ? h("span", { class: P + "muted", text: C.PRECISION[it.precision] }) : null);
+        it.snap ? h("span", { class: P + "muted", text: C.placeText(it) }) : it.precision !== "source" ? h("span", { class: P + "muted", text: C.PRECISION[it.precision] }) : null);
       popup.setLngLat(lngLat).setDOMContent(node);
       if (!popup.isOpen || !popup.isOpen()) popup.addTo(map);
     }
     function hideTip() { if (popup) popup.remove(); }
     let styleRaf = 0;
     function onStyleData() {
+      if (!destroyed && map && map.getSource(SRC)) keepFlatBelow3d();
       if (destroyed || !map || map.getSource(SRC) || styleRaf) return;
       styleRaf = requestAnimationFrame(() => { styleRaf = 0; if (!destroyed && map && !map.getSource(SRC)) ensureLayers(); });
     }
@@ -1722,6 +1801,7 @@
     renderCard();
     attachMap(opt.map || null);
     if (opt.autoload !== false) refresh();
+    if (snappedUrl) loadSnapped();
     if (permalink) { const id = readHash(); if (id) selectObject(id, { source: "permalink" }); }
     return instance;
   }

@@ -225,11 +225,14 @@ test("unwrap/errorInfo handle raw envelopes and HTTP errors", () => {
 test("featureCollection skips null geometry and marks approximate/synthetic", () => {
   const { items } = C.normalizeList(fixtures);
   const fc = C.featureCollection(items);
-  assert.equal(fc.features.length, items.filter((x) => x.geometry).length);
+  // R12: у записи без точного места есть мягкая область approx_area; каждая запись с геометрией есть на карте.
+  assert.equal(new Set(fc.features.map((f) => f.properties.cid)).size, items.filter((x) => x.geometry).length);
   assert.ok(!fc.features.some((f) => f.properties.cid === "r03-demo-nogeo"));
   const approx = fc.features.find((f) => f.properties.cid === "r03-demo-nodata");
   assert.equal(approx.properties.exact, false);
   assert.equal(approx.properties.synthetic, true);
+  assert.equal(approx.properties.approx_area, true);
+  assert.equal(approx.geometry.type, "Polygon");
 });
 
 test("kind colours meet 4.5:1 on white (they double as legend text colours)", () => {
@@ -281,7 +284,8 @@ test("draw order: polygons largest first even with points in between; area count
   const poly = (id, w, s, e, n, end) => ({ id, title: id, publication: "published", schedule: { planned_start: "2026-01-01", current_planned_end: end }, geometry: { type: "Polygon", coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } });
   const pt = { id: "p1", title: "p1", publication: "published", schedule: { planned_start: "2026-01-01", current_planned_end: "2026-10-20" }, geometry: { type: "Point", coordinates: [71.45, 51.14] } };
   const { items } = C.normalizeList([poly("small", 71.44, 51.14, 71.444, 51.142, "2026-10-10"), pt, poly("big", 71.43, 51.13, 71.46, 51.15, "2026-11-30")]);
-  assert.deepEqual(C.featureCollection(C.sortItems(items)).features.map((f) => f.properties.cid), ["big", "small", "p1"]);
+  const cids = C.featureCollection(C.sortItems(items)).features.map((f) => f.properties.cid);
+  assert.deepEqual([...new Set(cids)], ["big", "small", "p1"]);
   const mk = (id, geo, dates) => ({ id, title: id, publication: "published", geometry: geo, schedule: dates });
   const P = (x, y) => ({ type: "Point", coordinates: [x, y] });
   const list = C.normalizeList([
@@ -345,4 +349,52 @@ test("r12 review: 'hide past plans' keeps overdue works in progress; every count
   const demo = C.normalizeObject({ id: "d", title: "d", evidence_type: "synthetic", source_refs: [{ id: "s", publisher: "x", fields: [] }] }).item;
   assert.deepEqual([C.evidenceGroup(hyp), C.evidenceGroup(obsNoRef), C.evidenceGroup(demo)], ["sourced", "unsourced", "demo"]);
   assert.equal(C.provenanceLine(hyp).text, "Акимат s1, 01.09.2026", "the card and the filter agree");
+});
+
+
+// ---------- R12 round 14: линии по улицам OSM и «примерное место» областью ----------
+test("r12: demo_snapped replaces a free-hand line only when the stored geometry is unchanged", () => {
+  const hand = [[71.4251, 51.1712], [71.4289, 51.1716], [71.4326, 51.1719]];
+  const street = [[71.4251, 51.17129], [71.4270, 51.17140], [71.4300, 51.17165], [71.4326, 51.17188]];
+  const raw = { id: "d1", title: "Демо", publication: "published", evidence_type: "synthetic", geometry_precision: "approximate",
+    geometry: { type: "LineString", coordinates: hand } };
+  const { items } = C.normalizeList([raw, Object.assign({}, raw, { id: "d2" })]);
+  const snapped = { items: {
+    d1: { status: "snapped", original_coordinates: hand, geometry: { type: "LineString", coordinates: street },
+      geometry_source: "osm-graph", street_ru: "улица Сакена Сейфуллина", display: "street_line", length_m: 528.2 },
+    d2: { status: "snapped", original_coordinates: [[71.0, 51.0], [71.1, 51.1]], geometry: { type: "LineString", coordinates: street } },
+  } };
+  const out = C.applySnapped(items, snapped);
+  assert.deepEqual(out[0].geometry.coordinates, street);
+  assert.equal(C.displayMode(out[0]), "exact", "линия по оси улицы рисуется сплошной");
+  assert.match(C.placeText(out[0]), /Участок улицы по карте OSM: улица Сакена Сейфуллина/);
+  assert.deepEqual(out[1].geometry.coordinates, hand, "геометрию в хранилище изменили — замена не применяется");
+  assert.equal(items[0].geometry.coordinates, hand, "исходная запись не мутируется");
+  const fc = C.featureCollection(out);
+  const d1 = fc.features.filter((f) => f.properties.cid === "d1");
+  assert.equal(d1.length, 1);
+  assert.equal(d1[0].geometry.type, "LineString");
+  assert.equal(d1[0].properties.snapped, true);
+  const d2 = fc.features.filter((f) => f.properties.cid === "d2");
+  assert.deepEqual(d2.map((f) => f.geometry.type), ["Polygon"], "непривязанная примерная линия — только область");
+  assert.equal(d2[0].properties.approx_area, true);
+  assert.deepEqual(C.applySnapped(items, null), items);
+  assert.deepEqual(C.applySnapped(items, { items: { d1: { status: "snapped", original_coordinates: hand, geometry: { type: "LineString", coordinates: [[1, 2], [3, 4]] } } } })[0].geometry.coordinates, hand,
+    "привязка вне Астаны отбрасывается");
+});
+
+test("r12: approximate point -> 120 m area plus its marker; exact point -> marker only", () => {
+  const { items } = C.normalizeList([
+    { id: "a", title: "a", publication: "published", geometry_precision: "approximate", geometry: { type: "Point", coordinates: [71.43, 51.16] } },
+    { id: "e", title: "e", publication: "published", geometry_precision: "source", geometry: { type: "Point", coordinates: [71.44, 51.16] } },
+  ]);
+  const fc = C.featureCollection(items);
+  const a = fc.features.filter((f) => f.properties.cid === "a");
+  assert.deepEqual(a.map((f) => f.geometry.type), ["Polygon", "Point"]);
+  const ring = a[0].geometry.coordinates[0];
+  for (const p of ring) assert.ok(Math.abs(C.haversineM([71.43, 51.16], p) - C.APPROX_RADIUS_M) < 1);
+  assert.deepEqual(ring[0], ring[ring.length - 1]);
+  assert.deepEqual(fc.features.filter((f) => f.properties.cid === "e").map((f) => f.geometry.type), ["Point"]);
+  assert.equal(C.placeText(items[0]), "Примерное место — показано областью");
+  assert.equal(C.placeText(items[1]), null);
 });
