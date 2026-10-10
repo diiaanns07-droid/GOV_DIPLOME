@@ -1,0 +1,283 @@
+{
+ "schema": "r12-accuracy-report-v1",
+ "graph": {
+  "id": "osm-astana-walking-20260506",
+  "digest": "a694be21cc08ef1bf8000387a5120e7e5ad810ee37a955a4c223c004aeba5e35"
+ },
+ "inputs": {
+  "demo": "data/civic/astana/demo_synthetic.json",
+  "snapped": "data/civic/astana/geo/demo_snapped.json",
+  "objects": 20,
+  "yards": 0
+ },
+ "rules": {
+  "line_tolerance_m": 5.0,
+  "stop_to_street_m": 60.0,
+  "boundary": "data/civic/astana/geofence.json (полигоны районов OSM)"
+ },
+ "summary": {
+  "approximate_place_as_area": {
+   "PASS": 4,
+   "FAIL": 0
+  },
+  "inside_astana": {
+   "PASS": 6,
+   "FAIL": 0
+  },
+  "line_within_5m_of_street": {
+   "PASS": 2,
+   "FAIL": 0
+  },
+  "stop_within_60m_of_street": {
+   "PASS": 20,
+   "FAIL": 0
+  },
+  "scenario_closure_on_graph": {
+   "PASS": 2,
+   "FAIL": 0
+  }
+ },
+ "total": 34,
+ "failed": 0,
+ "result": "PASS",
+ "rows": [
+  {
+   "check": "approximate_place_as_area",
+   "id": "demo-astana-construction-unknown",
+   "status": "PASS",
+   "value": null,
+   "detail": "примерная точка — карта рисует её областью «примерное место»"
+  },
+  {
+   "check": "inside_astana",
+   "id": "demo-astana-construction-unknown",
+   "status": "PASS",
+   "value": 0,
+   "detail": "все координаты внутри Астаны"
+  },
+  {
+   "check": "approximate_place_as_area",
+   "id": "demo-astana-event-weekend",
+   "status": "PASS",
+   "value": null,
+   "detail": "примерная точка — карта рисует её областью «примерное место»"
+  },
+  {
+   "check": "inside_astana",
+   "id": "demo-astana-event-weekend",
+   "status": "PASS",
+   "value": 0,
+   "detail": "все координаты внутри Астаны"
+  },
+  {
+   "check": "approximate_place_as_area",
+   "id": "demo-astana-landscaping-yard",
+   "status": "PASS",
+   "value": null,
+   "detail": "условный участок показан областью «примерное место» (двор OSM не найден)"
+  },
+  {
+   "check": "inside_astana",
+   "id": "demo-astana-landscaping-yard",
+   "status": "PASS",
+   "value": 0,
+   "detail": "все координаты внутри Астаны"
+  },
+  {
+   "check": "approximate_place_as_area",
+   "id": "demo-astana-roadworks-cancelled",
+   "status": "PASS",
+   "value": null,
+   "detail": "примерная точка — карта рисует её областью «примерное место»"
+  },
+  {
+   "check": "inside_astana",
+   "id": "demo-astana-roadworks-cancelled",
+   "status": "PASS",
+   "value": 0,
+   "detail": "все координаты внутри Астаны"
+  },
+  {
+   "check": "line_within_5m_of_street",
+   "id": "demo-astana-roadworks-completed",
+   "status": "PASS",
+   "value": 0.0,
+   "detail": "отклонение от формы улицы 0.00 м (допуск 5 м)"
+  },
+  {
+   "check": "inside_astana",
+   "id": "demo-astana-roadworks-completed",
+   "status": "PASS",
+   "value": 0,
+   "detail": "все координаты внутри Астаны"
+  },
+  {
+   "check": "line_within_5m_of_street",
+   "id": "demo-astana-roadworks-delay",
+   "status": "PASS",
+   "value": 0.01,
+   "detail": "отклонение от формы улицы 0.01 м (допуск 5 м)"
+  },
+  {
+   "check": "inside_astana",
+   "id": "demo-astana-roadworks-delay",
+   "status": "PASS",
+   "value": 0,
+   "detail": "все координаты внутри Астаны"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12702383598",
+   "status": "PASS",
+   "value": 13.16,
+   "detail": "до улицы 13.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12702383599",
+   "status": "PASS",
+   "value": 14.16,
+   "detail": "до улицы 14.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12702383600",
+   "status": "PASS",
+   "value": 12.51,
+   "detail": "до улицы 12.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12702383601",
+   "status": "PASS",
+   "value": 12.9,
+   "detail": "до улицы 12.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12709822069",
+   "status": "PASS",
+   "value": 11.67,
+   "detail": "до улицы 11.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12709822085",
+   "status": "PASS",
+   "value": 11.76,
+   "detail": "до улицы 11.8 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12712991343",
+   "status": "PASS",
+   "value": 5.5,
+   "detail": "до улицы 5.5 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12712991906",
+   "status": "PASS",
+   "value": 10.05,
+   "detail": "до улицы 10.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-12712991996",
+   "status": "PASS",
+   "value": 5.66,
+   "detail": "до улицы 5.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2196619764",
+   "status": "PASS",
+   "value": 12.61,
+   "detail": "до улицы 12.6 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2641004139",
+   "status": "PASS",
+   "value": 14.12,
+   "detail": "до улицы 14.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2641042140",
+   "status": "PASS",
+   "value": 4.12,
+   "detail": "до улицы 4.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2641042146",
+   "status": "PASS",
+   "value": 4.68,
+   "detail": "до улицы 4.7 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2641042155",
+   "status": "PASS",
+   "value": 4.14,
+   "detail": "до улицы 4.1 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-2641042195",
+   "status": "PASS",
+   "value": 4.39,
+   "detail": "до улицы 4.4 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4209555463",
+   "status": "PASS",
+   "value": 0.0,
+   "detail": "до улицы 0.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-4975687943",
+   "status": "PASS",
+   "value": 6.91,
+   "detail": "до улицы 6.9 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5126423957",
+   "status": "PASS",
+   "value": 9.23,
+   "detail": "до улицы 9.2 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-5127837951",
+   "status": "PASS",
+   "value": 15.0,
+   "detail": "до улицы 15.0 м (допуск 60 м)"
+  },
+  {
+   "check": "stop_within_60m_of_street",
+   "id": "osm-node-6552728605",
+   "status": "PASS",
+   "value": 1.89,
+   "detail": "до улицы 1.9 м (допуск 60 м)"
+  },
+  {
+   "check": "scenario_closure_on_graph",
+   "id": "astana-citywide-north-south-v1:A:osm-w1177858836-0",
+   "status": "PASS",
+   "value": null,
+   "detail": "перекрытие идёт по ребру графа (форма OSM)"
+  },
+  {
+   "check": "scenario_closure_on_graph",
+   "id": "astana-citywide-north-south-v1:B:osm-w515074716-0",
+   "status": "PASS",
+   "value": null,
+   "detail": "перекрытие идёт по ребру графа (форма OSM)"
+  }
+ ]
+}

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import threading
 from pathlib import Path
 
@@ -17,12 +18,16 @@ from . import geo
 from .graph import GridIndex
 from .paths import GEO_DIR
 
-# Сетка ячеек по умолчанию: начало — юго-запад bbox графа, шаг 150 м на широте 51.14°.
+# Сетка ячеек ~150 м — ОДНА на весь раунд: те же константы, что в ui/civic_heat/geo.py у R07
+# (CELL_ORIGIN, CELL_LAT0, CELL_DLON = 150 / (111320·cos 51.15°), CELL_DLAT = 150 / 110574), чтобы id cell-<ix>-<iy>
+# из /targets и с тепловой карты означали один и тот же квадрат. Меняется только вместе с R07.
 DEFAULT_CELLS = {
-    "schema": "r12-cells-v1",
-    "origin": [71.2079, 50.9206],
+    "schema": "r12-cells-v2",
+    "origin": [71.0, 50.8],
     "cell_m": 150,
-    "ref_lat": 51.14,
+    "ref_lat": 51.15,
+    "m_per_deg_lat": 110574.0,
+    "m_per_deg_lon_equator": 111320.0,
 }
 
 
@@ -84,8 +89,8 @@ class Cells:
         p.update(params or {})
         self.params = p
         self.lon0, self.lat0 = p["origin"]
-        self.dlat = p["cell_m"] / geo.M_PER_DEG
-        self.dlon = p["cell_m"] / (geo.M_PER_DEG * math.cos(math.radians(p["ref_lat"])))
+        self.dlat = p["cell_m"] / p["m_per_deg_lat"]
+        self.dlon = p["cell_m"] / (p["m_per_deg_lon_equator"] * math.cos(math.radians(p["ref_lat"])))
 
     def cell_id(self, p) -> str:
         ix = math.floor((p[0] - self.lon0) / self.dlon)
@@ -93,12 +98,14 @@ class Cells:
         return f"cell-{ix}-{iy}"
 
     def polygon(self, cell_id: str) -> list[list[list[float]]]:
-        _, ix, iy = cell_id.split("-")
-        ix, iy = int(ix), int(iy)
+        m = re.match(r"^cell-(-?\d+)-(-?\d+)$", cell_id or "")
+        if not m:
+            raise ValueError("неверный id ячейки")
+        ix, iy = int(m.group(1)), int(m.group(2))
         w, s = self.lon0 + ix * self.dlon, self.lat0 + iy * self.dlat
         e, n = w + self.dlon, s + self.dlat
         ring = [[w, s], [e, s], [e, n], [w, n], [w, s]]
-        return [[geo.round_coord(c) for c in ring]]
+        return [[geo.round_coord(c, 6) for c in ring]]  # 6 знаков — как у R07
 
     def center(self, cell_id: str) -> list[float]:
         ring = self.polygon(cell_id)[0]

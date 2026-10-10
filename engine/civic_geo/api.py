@@ -61,7 +61,7 @@ def targets_response(query: dict):
         except (TypeError, ValueError):
             raise TargetError("bad_point", "Нужны параметры lon и lat — числа.")
         lon, lat = _check_point(lon, lat)
-        category = _one(query, "category") or "other"
+        category = _one(query, "category") or None
         limit = _one(query, "limit")
         limit = max(1, min(3, int(limit))) if limit and str(limit).isdigit() else 3
         return 200, targets(lon, lat, category, limit=limit)
@@ -189,3 +189,45 @@ def warm_up():
     get_graph()
     get_layers()
     load_categories()
+
+
+# ---------- функции в стиле шлюза R01 (research/round-14-results/R01/INTEGRATION.txt §1) ----------
+# Возвращают словарь (-> 200) или бросают исключение с status/code/message (-> этот код).
+class GeoUnavailable(RuntimeError):
+    status = 503
+    code = "geo_unavailable"
+
+    def __init__(self, message: str):
+        super().__init__(message)
+        self.message = message
+
+
+def _unwrap(result):
+    status, body = result
+    if status == 200:
+        return body
+    err = body.get("error") or {}
+    exc = (TargetError if status == 400 else GeoUnavailable)(*((err.get("code"), err.get("message")) if status == 400 else (err.get("message"),)))
+    raise exc
+
+
+def street_snap(lon, lat, kind=None) -> dict:
+    return _unwrap(snap_response({"lon": str(lon), "lat": str(lat), "kind": kind}))
+
+
+def segment_between(from_point, to_point, kind=None) -> dict:
+    """from_point/to_point — [lon, lat] или строка «lon,lat»."""
+    as_text = lambda p: p if isinstance(p, str) else ",".join(str(x) for x in p)  # noqa: E731
+    return _unwrap(segment_response({"from": as_text(from_point), "to": as_text(to_point), "kind": kind}))
+
+
+def objects_near(lon, lat) -> dict:
+    return _unwrap(near_response({"lon": str(lon), "lat": str(lat)}))
+
+
+def yard_at(lon, lat) -> dict:
+    return _unwrap(yard_response({"lon": str(lon), "lat": str(lat)}))
+
+
+def geo_status() -> dict:
+    return _unwrap(status_response())

@@ -49,6 +49,8 @@ OBJECT_LABELS = {
 
 
 class TargetError(ValueError):
+    status = 400  # шлюз R01: исключение с status/code/message -> этот код ответа
+
     def __init__(self, code: str, message: str):
         super().__init__(message)
         self.code = code
@@ -129,15 +131,16 @@ def _geom_point(p):
     return {"type": "Point", "coordinates": geo.round_coord(p)}
 
 
-def targets(lon: float, lat: float, category: str, limit: int = 3, graph: StreetGraph | None = None,
+def targets(lon: float, lat: float, category: str | None = None, limit: int = 3, graph: StreetGraph | None = None,
             layers: tuple[FeatureSet, FeatureSet, Cells] | None = None, categories: dict | None = None) -> dict:
+    """Категория не указана (житель ещё не выбрал) — ищем всё рядом: объект, участок улицы, двор."""
     cats = categories or load_categories()
-    if category not in cats:
+    if category is not None and category not in cats:
         raise TargetError("unknown_category", "Неизвестная категория.")
     graph = graph or get_graph()
     objects, yards, cells = layers or get_layers()
     p = (float(lon), float(lat))
-    kinds = list(cats[category].get("target_kinds") or ["area"])
+    kinds = list(cats[category].get("target_kinds") or ["area"]) if category else ["object", "segment", "area"]
     found: list[tuple[float, dict]] = []  # (score, candidate)
     street_cache: list = []
 
@@ -187,6 +190,12 @@ def targets(lon: float, lat: float, category: str, limit: int = 3, graph: Street
                                                 "geometry": {"type": "Polygon", "coordinates": f.polygon},
                                                 "point": geo.round_coord(p), "approximate": False}))
     found.sort(key=lambda r: (r[0], r[1]["target"]["id"]))
+    if category is None:
+        # Без категории — по одному лучшему кандидату каждого вида: «остановка? участок улицы? двор?»
+        best: dict = {}
+        for score, c in found:
+            best.setdefault(c["target"]["kind"], (score, c))
+        found = sorted(best.values(), key=lambda r: (r[0], r[1]["target"]["id"]))
     out = [c for _, c in found[:limit]]
     # Ни одного кандидата рядом (или категория без «area») — честное «примерное место» ячейкой ~150 м.
     if not out or ("area" in kinds and not any(c["target"]["kind"] == "area" for c in out) and len(out) < limit):

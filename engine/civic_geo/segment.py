@@ -23,6 +23,7 @@ DEFAULT_SNAP_M = 60.0   # дальше 60 м от улицы точку не «�
 
 class GeoError(ValueError):
     """Ошибка с кодом для API и понятным текстом для человека."""
+    status = 400  # шлюз R01 отвечает этим кодом
 
     def __init__(self, code: str, message: str):
         super().__init__(message)

@@ -246,3 +246,48 @@ def test_freehand_line_fails_the_check(real):
     ok, off, _ = accuracy.check_line_on_edges(real, [[71.4251, 51.1712], [71.4326, 51.1719]],
                                               ["osm-w693873790-4", "osm-w693873790-5"])
     assert not ok and off > 5
+
+
+# ---------- соседи: одна сетка ячеек с R07, target_geometry ----------
+def test_cell_grid_matches_r07_constants():
+    """R07 (ui/civic_heat/geo.py): CELL_ORIGIN=(71.0, 50.8), CELL_LAT0=51.15, 111320/110574 м на градус."""
+    import math
+    import random
+    dlon = 150.0 / (111320.0 * math.cos(math.radians(51.15)))
+    dlat = 150.0 / 110574.0
+    c = Cells()
+    rnd = random.Random(7)
+    for _ in range(2000):
+        p = (rnd.uniform(71.2, 71.8), rnd.uniform(50.9, 51.36))
+        assert c.cell_id(p) == f"cell-{math.floor((p[0] - 71.0) / dlon)}-{math.floor((p[1] - 50.8) / dlat)}"
+    assert c.polygon("cell-143-245")[0][0] == [71.307178, 51.132357]  # как в fixtures/targets_demo.json R07
+
+
+def test_target_geometry_for_each_kind():
+    from engine.civic_geo import target_geometry
+    seg = target_geometry({"kind": "segment", "id": "osm-w693873790-4"})
+    assert seg["geometry"]["type"] == "LineString" and seg["label_ru"] == "Участок: улица Сакена Сейфуллина"
+    cell = target_geometry({"kind": "area", "id": "cell-143-245"})
+    assert cell["approximate"] and cell["geometry"]["type"] == "Polygon"
+    assert target_geometry({"kind": "area", "id": "cell-x"}) is None
+    assert target_geometry({"kind": "object", "id": "osm-node-0"}) is None
+    assert target_geometry({"kind": "segment", "id": "osm-w0-0"}) is None
+    assert target_geometry({}) is None
+
+
+def test_targets_without_category_offer_one_of_each_kind(tiny, tiny_layers):
+    layers = _layers(tiny_layers[0])
+    got = targets(71.4328, 51.1602, None, graph=tiny, layers=layers)["candidates"]
+    kinds = [c["target"]["kind"] for c in got]
+    assert len(kinds) == len(set(kinds)) and "object" in kinds and "segment" in kinds
+
+
+def test_r01_style_functions_raise_status_code_message():
+    import engine.civic_geo as g
+    with pytest.raises(Exception) as e:
+        g.targets(71.43, 51.16, "nope")
+    assert (e.value.status, e.value.code) == (400, "unknown_category")
+    with pytest.raises(Exception) as e2:
+        g.street_snap(71.30, 51.30)
+    assert e2.value.status == 400 and e2.value.code == "not_on_street" and "улиц" in e2.value.message
+    assert g.segment_between([71.4251, 51.1712], "71.4326,51.1719", "road")["names"] == ["улица Сакена Сейфуллина"]

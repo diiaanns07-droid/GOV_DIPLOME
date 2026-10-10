@@ -257,8 +257,8 @@ def write(result: dict, out_dir: Path, raw_dir: Path) -> dict:
              "count": len(result["yards"]), "items": result["yards"]}
     cells = dict(DEFAULT_CELLS) | {
         "note": "Ячейки там, где двора нет: id cell-<ix>-<iy>, ix = floor((lon - origin_lon) / dlon), "
-                "iy = floor((lat - origin_lat) / dlat), dlat = cell_m / 111195.08, dlon = dlat / cos(ref_lat).",
-        "m_per_deg": geo.M_PER_DEG,
+                "iy = floor((lat - origin_lat) / dlat), dlat = cell_m / m_per_deg_lat, "
+                "dlon = cell_m / (m_per_deg_lon_equator * cos(ref_lat)). Те же константы, что у R07 (ui/civic_heat/geo.py).",
     }
     for name, data in (("objects.json", objects), ("yards.json", yards), ("cells.json", cells)):
         (out_dir / name).write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n", "utf-8")

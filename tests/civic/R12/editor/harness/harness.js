@@ -74,7 +74,9 @@
   function mountWith(map) {
     window.__editor = window.CivicEditor.mount({
       root: document.getElementById("panel"), map, api,
-      geo: params.get("geo") === "off" ? false : mockGeo,
+      // ?geo=real&geoPrefix=<url> — настоящий engine/civic_geo (tests/civic/R12/geo_api_server.py)
+      geo: params.get("geo") === "off" ? false : params.get("geo") === "real" ? undefined : mockGeo,
+      geoPrefix: params.get("geoPrefix") || undefined,
       onPublished: (item, info) => window.__published.push({ item, info }),
     });
     if (params.get("open")) { window.__openDone = undefined; window.__editor.openObject(params.get("open")).then((r) => { window.__openDone = r; }); }

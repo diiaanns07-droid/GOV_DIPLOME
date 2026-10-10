@@ -1,6 +1,6 @@
 {
  "schema": "r12-geo-source-v1",
- "built_at": "2026-10-10T12:40:35Z",
+ "built_at": "2026-10-10T13:06:27Z",
  "builder": "engine/civic_geo/build_geo_data.py",
  "raw_dir": "/home/user/GOV_DIPLOME/data/civic/astana/osm-objects/raw",
  "raw_dir_present": false,
