@@ -4,8 +4,8 @@
  "branch": "claude/r14-R08",
  "base_sha": "2131c15 (claude/round-14-package)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "53ec68d",
- "tested_sha": "53ec68d",
+ "code_sha": "15276be",
+ "tested_sha": "15276be",
  "tested_with": {
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 328e793 (код 597ec4f) — временная копия, в git R08 не входит; также проверено с 35e6feb",
   "r11_ui_kit_i18n": "web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 8451468 — demo_server.py --kit-dir",
@@ -51,9 +51,9 @@
   "map_link_target_opening": "PASS (shell_check): оболочка R01 ловит birge:open-target, focusTarget R07 открывает карточку",
   "test_r08_cli.py": "3 PASS — python -m ui.civic_akim --lang kk и --json не падают при PYTHONIOENCODING=cp1251 (как R10 B-028), JSON верный, казахские буквы не теряются",
   "node tests/civic/R08/shell_check.cjs (сборка R01 d9a8895)": "28/28 PASS — экран в оболочке 1366/375 × ru/kk, ҚАЗ без русских названий, клик «горячее место → карточка цели» с тем же числом и 7 днями, печать из оболочки — только «Картина дня» на 2 листа A4 (screens/shell/shell-print.pdf)",
-  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 597ec4f)": "102/102 PASS — 1366/375 × ru/kk, состояния, клавиатура, печать, тихое обновление, B-018, пустой реестр объектов",
-  "pytest tests/civic/R08 (с R07 597ec4f)": "132 PASS + 1 SKIP (test_r08_hot_labels — нет данных R12 в ветке R08; в сборке R01: с R07 597ec4f PASS, с R07 306074b FAIL)",
-  "pytest tests/civic/R08 в сборке R01": "161 PASS + 1 SKIP за 107 с — 98 с из них старый тест классификатора v1 раунда 13 test_r08_train.py (восстановлен R01 в эту папку, не «Картина дня»)"
+  "pytest tests/civic/R08 (с R07 597ec4f)": "133 PASS + 1 SKIP (test_r08_hot_labels — нет данных R12 в ветке R08; в сборке R01: с R07 597ec4f PASS, с R07 306074b FAIL)",
+  "pytest tests/civic/R08 в сборке R01": "161 PASS + 1 SKIP за 107 с — 98 с из них старый тест классификатора v1 раунда 13 test_r08_train.py (восстановлен R01 в эту папку, не «Картина дня»)",
+  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 597ec4f)": "104/104 PASS — 1366/375 × ru/kk, состояния, клавиатура, печать, тихое обновление, B-018, пустой реестр, место без подписи"
  },
  "known_limits": [
   "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
@@ -66,7 +66,7 @@
   "В папке tests/civic/R08 сборки R01 лежат тесты классификатора v1 раунда 13 (test_r08_train/corpus/contract/reports/feedback_integration) — не мои, R08 их не трогает (INTEGRATION п. 8)."
  ],
  "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 328e793 (код 597ec4f: правдоподобные числа и подписи мест), R06 @ 224075b, R11 @ последний; прогнать pytest tests/civic/R08 и node tests/civic/R08/shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, B-029 и п. 13 R11 на FINAL.",
- "delivery": "3 (ночь, круги 1–5): + телефон — числа на первом экране, опция titleTag для оболочки",
+ "delivery": "3 (ночь, круги 1–6)",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -114,6 +114,10 @@
   "night_r5": {
    "Своя находка: на телефоне до чисел ~170 px полей даты и района": "подписи полей — только для диктора, 4 числа на первом экране 375 px",
    "Своя находка: в оболочке три h1": "опция titleTag; R01 — одна строка (INTEGRATION 4д), проверено в сборке"
+  },
+  "night_r6": {
+   "Своя находка: горячее место без подписи — пустая строка": "вид места из словаря R11 (heat.kind.*)",
+   "Своя находка: в сводке за прошлый год дата без года": "«30 дек 2025 — …», как BirgeI18n.formatDate"
   }
  }
 }
