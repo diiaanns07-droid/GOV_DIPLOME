@@ -5,13 +5,14 @@
 
 Что настоящее, а что заглушка:
   * /api/civic/v2/complaints...  — НАСТОЯЩИЙ модуль R09 (ui.civic_feedback.v2) на временной SQLite.
-  * /api/civic/v2/targets        — FIXTURE вместо R12: ближайшие РЕАЛЬНЫЕ рёбра OSM-графа
-                                   engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json
-                                   (форма улицы — настоящая), без объектов (их даст R12/LOCAL-1).
+  * /api/civic/v2/targets        — FIXTURE вместо R12, но на РЕАЛЬНЫХ данных: объекты OSM из
+                                   data/civic/astana/osm-objects (LOCAL-1: остановки, площадки, спортплощадки,
+                                   парки, дворы, школы, детсады, мусорные площадки) и рёбра OSM-графа
+                                   engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json.
   * /api/civic/v2/classify, /similar — FIXTURE вместо R04: ключевые слова и пересечение слов.
                                    --no-ml: оба отвечают 503 (проверка «форма работает без ML»).
   * Карта — MapLibre из web/vendor, без тайлов (в облаке их нет): фон + реальные улицы из того же графа.
-  * --seed — демо-записи (demo=true, «Пример») на реальных рёбрах, с «Я тоже».
+  * --seed — демо-записи (demo=true, «Пример») на реальной остановке (7 человек) и реальных участках улиц.
 Ничего не пишет в репозиторий: БД во временной папке, если не указан --db.
 """
 
@@ -34,6 +35,9 @@ sys.path.insert(0, str(ROOT))
 from ui.civic_feedback import text as textutil  # noqa: E402
 from ui.civic_feedback.v2 import ComplaintStore, ComplaintsV2Service  # noqa: E402
 from ui.civic_feedback.v2 import categories  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from osm_objects import OsmObjects  # noqa: E402
 
 GRAPH = ROOT / "engine" / "civic_scenarios" / "graphs" / "osm-astana-walking-20260506.graph.json"
 STAND_BBOX = (71.395, 51.075, 71.465, 51.125)   # левый берег, ЭКСПО и окрестности
@@ -91,12 +95,19 @@ class Stand:
         lon0, lat0, lon1, lat1 = STAND_BBOX
         self.edges = [e for e in graph["edges"] if e.get("geometry") and any(
             lon0 <= x <= lon1 and lat0 <= y <= lat1 for x, y in e["geometry"])]
+        self.objects = OsmObjects(STAND_BBOX)
         self.streets = {"type": "FeatureCollection", "features": [
             {"type": "Feature", "geometry": {"type": "LineString", "coordinates": e["geometry"]},
              "properties": {"named": bool(e.get("name"))}} for e in self.edges]}
 
     # ---------------------------------------------------------- FIXTURE R12
     def targets(self, lon, lat):
+        """До 3 кандидатов: реальные объекты OSM (остановки, площадки, дворы…) и участки улиц, ближайшие первыми."""
+        scored = []
+        for score, distance, item in self.objects.nearby(lon, lat):
+            scored.append((score, {"target": dict(item["target"]), "distance_m": round(distance, 1),
+                                   "geometry": item["geometry"],
+                                   "source": "FIXTURE R12: реальный объект OSM (data/civic/astana/osm-objects)"}))
         found = []
         for edge in self.edges:
             geom = edge["geometry"]
@@ -106,22 +117,23 @@ class Stand:
             if d <= 80:
                 found.append((d, edge))
         found.sort(key=lambda item: item[0])
-        result, names = [], set()
+        names = set()
         for d, edge in found:
             name = edge.get("name") or ""
-            key = name or edge["id"]
+            key = name or "<без названия>"   # безымянные рёбра — один вариант, иначе две одинаковые кнопки
             if key in names:
                 continue
             names.add(key)
             label_ru = f"Участок: {name}" if name else "Участок улицы"
             label_kk = f"Көше бөлігі: {name}" if name else "Көше бөлігі"
-            result.append({"target": {"kind": "segment", "id": edge["id"], "label_ru": label_ru, "label_kk": label_kk},
-                           "distance_m": round(d, 1),
-                           "geometry": {"type": "LineString", "coordinates": edge["geometry"]},
-                           "source": "FIXTURE: R12 недоступен на стенде, ребро — реальное из OSM-графа"})
-            if len(result) == 2:
+            scored.append((d, {"target": {"kind": "segment", "id": edge["id"], "label_ru": label_ru, "label_kk": label_kk},
+                               "distance_m": round(d, 1),
+                               "geometry": {"type": "LineString", "coordinates": edge["geometry"]},
+                               "source": "FIXTURE R12: ребро реального OSM-графа"}))
+            if len(names) == 2:
                 break
-        return result
+        scored.sort(key=lambda item: item[0])
+        return [candidate for _, candidate in scored[:3]]
 
     # ---------------------------------------------------------- FIXTURE R04
     def classify(self, text):
@@ -149,7 +161,7 @@ class Stand:
         return {"matches": matches[:3], "source": "FIXTURE"}
 
     def seed(self):
-        """Демо-записи на реальных рёбрах: одна «горячая» цель (7 человек) и несколько обычных."""
+        """Демо-записи: «горячая» реальная остановка (7 человек) и пара жалоб на реальных участках улиц."""
         named = [e for e in self.edges if e.get("name")]
         if not named:
             return
@@ -158,11 +170,20 @@ class Stand:
             g = edge["geometry"]
             i = max(0, (len(g) - 1) // 2)
             return [round((g[i][0] + g[i + 1][0]) / 2, 7), round((g[i][1] + g[i + 1][1]) / 2, 7)]
-        hot = named[len(named) // 3]
-        target = {"kind": "segment", "id": hot["id"], "label_ru": f"Участок: {hot['name']}",
-                  "label_kk": f"Көше бөлігі: {hot['name']}"}
-        rec, _ = self.store.create({"text": "Не убран снег на тротуаре, очень скользко", "category": "snow_ice",
-                                    "point": mid(hot), "target": target}, "seed-device-000000001", demo=True)
+        # «Горячая» цель — реальная остановка с названием (сценарий демо: «Это остановка «…»?»).
+        # Берём остановку, рядом с которой (60 м) нет другой остановки, чтобы выбор был однозначным.
+        stops = [i for i in self.objects.items if i["kind"] == "stop" and "«" in i["target"]["label_ru"]]
+        def lonely(stop):
+            x, y = stop["geometry"]["coordinates"]
+            return all(o is stop or math.hypot((o["geometry"]["coordinates"][0] - x) * 70_000,
+                                               (o["geometry"]["coordinates"][1] - y) * 111_320) > 60 for o in stops)
+        cx, cy = (STAND_BBOX[0] + STAND_BBOX[2]) / 2, (STAND_BBOX[1] + STAND_BBOX[3]) / 2
+        by_center = sorted(stops, key=lambda s: meters(cx, cy, *s["geometry"]["coordinates"]))
+        hot_stop = next(s for s in by_center if lonely(s))
+        point = hot_stop["geometry"]["coordinates"]
+        target = dict(hot_stop["target"])
+        rec, _ = self.store.create({"text": "Павильон остановки сломан, нет крыши", "category": "transport",
+                                    "point": point, "target": target}, "seed-device-000000001", demo=True)
         for i in range(6):
             self.store.metoo(rec["id"], f"seed-device-metoo-{i:06d}")
         for i, (edge, cat, txt) in enumerate([(named[len(named) // 2], "roads", "Яма на дороге"),
@@ -170,7 +191,7 @@ class Stand:
             self.store.create({"text": txt, "category": cat, "point": mid(edge),
                                "target": {"kind": "segment", "id": edge["id"], "label_ru": f"Участок: {edge['name']}"}},
                               f"seed-device-other-{i:04d}", demo=True)
-        self.hot = {"point": mid(hot), "target": target, "complaint_id": rec["id"]}
+        self.hot = {"point": point, "target": target, "complaint_id": rec["id"]}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -220,6 +241,8 @@ class Handler(BaseHTTPRequestHandler):
                                                                      data.get("days"))})
         if path == "/stand/streets.geojson":
             return self._send(200, stand.streets, "application/geo+json")
+        if path == "/stand/objects.geojson":
+            return self._send(200, stand.objects.geojson(), "application/geo+json")
         if path == "/stand/info":
             return self._send(200, {"hot": getattr(stand, "hot", None), "ml": stand.ml, "targets": stand.targets_on})
         reply = stand.api.handle(method, self.path, None, body, None, self._context())
@@ -230,7 +253,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlsplit(self.path).path
-        if path.startswith("/api/") or path.startswith("/stand/streets") or path == "/stand/info":
+        if path.startswith("/api/") or path.endswith(".geojson") or path == "/stand/info":
             return self._api("GET")
         if path == "/stand":
             self.send_response(302)

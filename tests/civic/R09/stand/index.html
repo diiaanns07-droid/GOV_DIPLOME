@@ -39,7 +39,7 @@
     </span>
   </header>
   <div id="map" aria-label="Карта"></div>
-  <p class="st-note" id="st-note">Стенд R09 · карта без подложки (в облаке нет тайлов): улицы — реальные из OSM</p>
+  <p class="st-note" id="st-note">Стенд R09 · карта без подложки (в облаке нет тайлов): улицы, остановки, площадки и дворы — реальные из OSM</p>
   <script src="/vendor/maplibre-gl.js"></script>
   <script src="/civic/feedback/categories_v2.js"></script>
   <script src="/civic/feedback/complaint-strings.js"></script>
@@ -57,6 +57,12 @@
         map.addLayer({ id: "streets", type: "line", source: "streets",
                        paint: { "line-color": ["case", ["get", "named"], "#ffffff", "#f7f8f4"],
                                 "line-width": ["case", ["get", "named"], 5, 2] } });
+        // Реальные объекты OSM (LOCAL-1): дворы и площадки бледной заливкой, остановки точками.
+        map.addSource("objects", { type: "geojson", data: "/stand/objects.geojson" });
+        map.addLayer({ id: "objects-fill", type: "fill", source: "objects", filter: ["!=", ["geometry-type"], "Point"],
+                       paint: { "fill-color": ["match", ["get", "kind"], "yard", "#e3e8df", "#d9ecd0"], "fill-opacity": 0.8 } }, "streets");
+        map.addLayer({ id: "objects-stop", type: "circle", source: "objects", filter: ["==", ["get", "kind"], "stop"],
+                       paint: { "circle-radius": 4, "circle-color": "#5b6a64", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5 } });
         document.documentElement.setAttribute("data-map-ready", "1");
       });
       window.standMap = map;

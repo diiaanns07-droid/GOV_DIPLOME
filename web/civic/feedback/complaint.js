@@ -482,9 +482,14 @@
       // Подписи целей приходят от R12 с заглавной буквы («Остановка «…»»), поэтому вопрос без вставки подписи.
       body.appendChild(h("h3", { "class": "bc-question" }, first ? t("complaint.step2.question") : t("complaint.step2.choose")));
       var list = h("div", { "class": "bc-options", role: "group" });
+      var labelCount = {};
+      state.candidates.forEach(function (c) { var l = targetLabel(c.target); labelCount[l] = (labelCount[l] || 0) + 1; });
       state.candidates.forEach(function (candidate, index) {
-        // «в 0 м» выглядит странно: расстояние показываем от 5 м.
-        var meters = typeof candidate.distance_m === "number" && candidate.distance_m >= 5 ? Math.round(candidate.distance_m) : null;
+        // «в 0 м» выглядит странно: расстояние показываем от 5 м — но всегда, если подписи совпали
+        // (две остановки с одним названием по разные стороны улицы), иначе кнопки не различить.
+        var d = candidate.distance_m;
+        var same = labelCount[targetLabel(candidate.target)] > 1;
+        var meters = typeof d === "number" && (d >= 5 || same) ? Math.max(1, Math.round(d)) : null;
         list.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-option" + (index === 0 ? " bc-option--first" : ""),
                                        type: "button", onclick: function () { chooseCandidate(candidate); } },
           [icon(candidate.target.kind === "segment" ? "road" : (candidate.target.kind === "area" ? "trees" : "pin")),

@@ -135,24 +135,29 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
     throw err;
   });
   const question = await page.textContent(".bc-option--first");
-  check(`${tag}: шаг 2 предлагает реальный участок улицы`, /Туран/.test(question), question);
+  const hotLabel = lang === "kk" ? hot.target.label_kk : hot.target.label_ru;
+  check(`${tag}: шаг 2 первым предлагает реальную остановку OSM`, question.includes(hotLabel), question);
+  const others = await page.$$eval(".bc-option:not(.bk-btn--ghost)", (n) => n.length);
+  check(`${tag}: рядом ещё участок улицы и «Другое место»`, others >= 2 && !!(await page.$(".bc-option.bk-btn--ghost")), String(others));
   await shot(page, `${tag}-2-candidates`);
   await page.click(".bc-option--first"); taps++;
   await page.waitForSelector(".bc-panel[data-step='3']");
   const hl = await page.evaluate(() => window.standAdapter.current().features.map((f) => f.geometry.type));
-  check(`${tag}: выбранный участок подсвечен линией по форме улицы`, hl.includes("LineString"), JSON.stringify(hl));
-  const text = lang === "kk" ? "Тротуарда қар тазаланбаған, өте тайғақ" : "Снег на тротуаре не убран, очень скользко";
+  const exact = await page.evaluate((p) => { const f = window.standAdapter.current().features[0];
+    return f && f.geometry.type === "Point" && f.geometry.coordinates[0] === p[0] && f.geometry.coordinates[1] === p[1]; }, hot.point);
+  check(`${tag}: выбранная остановка подсвечена в своей точке OSM`, exact, JSON.stringify(hl));
+  const text = lang === "kk" ? "Аялдаманың павильоны сынған, шатыры жоқ" : "Павильон остановки сломан, нет крыши";
   await page.fill("#bc-text", text);
   await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 6000 });
   const chip = await page.textContent(".bc-cat-row");
-  check(`${tag}: подсказка категории чипом`, lang === "kk" ? /Қар және көктайғақ/.test(chip) : /Снег и гололёд/.test(chip), chip.trim());
+  check(`${tag}: подсказка категории чипом`, lang === "kk" ? /Аялдамалар мен көлік/.test(chip) : /Остановки и транспорт/.test(chip), chip.trim());
   await shot(page, `${tag}-3-text`);
   await page.click(".bc-send"); taps++;
   await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 8000 });
   const title4 = await page.textContent(".bc-title");
   const before = Number((title4.match(/\d+/) || [0])[0]);
   check(`${tag}: шаг 4 «уже сообщили N» (N ≥ 7 по демо-цели)`, before >= 7, title4);
-  const leak = await page.evaluate(() => document.querySelector(".bc-panel").innerText.includes("очень скользко") &&
+  const leak = await page.evaluate(() => document.querySelector(".bc-panel").innerText.includes("нет крыши") &&
     !document.querySelector("#bc-text"));
   check(`${tag}: чужой текст жалобы не показан`, !leak);
   await shot(page, `${tag}-4-similar`);
@@ -164,7 +169,7 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   check(`${tag}: путь за ${taps} нажатий + текст, ${elapsed.toFixed(1)} с автоматом`, taps <= 6 && elapsed < 30);
   const events = await page.evaluate(() => window.standEvents);
   check(`${tag}: событие birge:complaint для тепловой карты`, events.length === 1 && events[0].type === "metoo" &&
-    events[0].target && events[0].target.kind === "segment" && events[0].reporters === before + 1, JSON.stringify(events));
+    events[0].target && events[0].target.id === hot.target.id && events[0].reporters === before + 1, JSON.stringify(events));
   await shot(page, `${tag}-5-done`);
   check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(page));
   const keys = await visibleKeys(page);
@@ -237,11 +242,11 @@ async function withoutMl(browser, base, hot, tag) {
   await clickMapAt(page, hot.point);
   await page.waitForSelector(".bc-option--first", { timeout: 8000 });
   await page.click(".bc-option--first");
-  await page.fill("#bc-text", "Снег не убран, скользко");
+  await page.fill("#bc-text", "Павильон остановки сломан");
   await page.waitForSelector(".bc-grid", { timeout: 8000 });
   check(`${tag}: /classify недоступен — сразу сетка категорий, без ошибки`,
         !(await page.isVisible(".bc-toast:not([hidden])")));
-  await page.click(".bc-grid__chip:nth-child(2)");
+  await page.click(".bc-grid__chip:nth-child(4)");  // «Остановки и транспорт»
   await page.click(".bc-send");
   await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 8000 });
   check(`${tag}: /similar недоступен — «Я тоже» по той же цели`, /\d/.test(await page.textContent(".bc-title")),
