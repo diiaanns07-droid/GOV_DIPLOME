@@ -37,12 +37,12 @@ R08 · «Картина дня» — как запустить и что мож�
   summary(date="2026-10-12", district="nura")   # dict, как ответ GET /api/civic/v2/akim/summary
 
 Тесты
-  python -m pytest tests/civic/R08 -q                               # 132 PASS + 1 SKIP (с R07 @ 35e6feb; SKIP — подписи в сборке, см. ниже)
+  python -m pytest tests/civic/R08 -q                               # 134 PASS + 1 SKIP (с R07 ≥ 597ec4f; SKIP — проверка подписей только в сборке)
   BIRGE_STRICT_DEMO=1 python -m pytest tests/civic/R08 -q           # для приёмки: правдоподобие демо-чисел — обычный FAIL
   python tests/civic/R08/demo_server.py --kit-dir /tmp/r11kit &
-  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 101 проверка, скриншоты в research/round-14-results/R08/screens
+  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 108 проверок, скриншоты в research/round-14-results/R08/screens
   В общей сборке R01 (сервер CIVIC_DEMO=1, база init + seed-demo + seed-r14-demo, порт 8611):
-  NODE_PATH=$(npm root -g) node tests/civic/R08/shell_check.cjs http://127.0.0.1:8611   # 28 проверок: экран в оболочке
+  NODE_PATH=$(npm root -g) node tests/civic/R08/shell_check.cjs http://127.0.0.1:8611   # 28 проверок (30 — если оболочка включит objectHref): экран в оболочке
       1366/375 × ru/kk, ҚАЗ без русских названий объектов, клик «горячее место → карточка цели» с тем же числом
   python -m pytest tests/civic/R08/test_r08_hot_labels.py           # в сборке: подписи мест не стёрты данными R12
 
@@ -54,5 +54,5 @@ R08 · «Картина дня» — как запустить и что мож�
     нерешённом). Тест test_r08_heat_match.py сверяет это число в число.
   - Данные сейчас — пример (demo): жалобы из демо-набора R07; объекты и предложения — R06
     (ui.civic_store.v2, когда шлюз R01 вызвал bind) или фикстуры R08. На странице помечено «Пример».
-  - Демо-числа R07 пока «как авария» (просрочено 56, за 7 дней 104 против 15): тест
-    test_r08_demo_plausible.py это показывает (XFAIL с перечнем) — исправляет R07 в demo_seed.py.
+  - Демо-числа: с R07 ≥ 35e6feb день выглядит обычным (новых ~50, неделю назад ~37, просрочено ~6) —
+    test_r08_demo_plausible.py PASS; на старом наборе R07 тест покажет XFAIL с перечнем нарушений.
