@@ -1,0 +1,410 @@
+{
+ "root": "<worktree 2b9e837/13ae790>",
+ "counts": {
+  "PASS": 25,
+  "FAIL": 4,
+  "NOT_RUN": 0
+ },
+ "checks": [
+  {
+   "name": "граница Астаны · R12 geo/objects.json",
+   "status": "PASS",
+   "owner": "R12",
+   "detail": {
+    "coords": 9488,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R12 geo/yards.json",
+   "status": "FAIL",
+   "owner": "R12",
+   "detail": {
+    "coords": 3962,
+    "outside": 19,
+    "examples": [
+     [
+      71.6718742,
+      51.3094308
+     ],
+     [
+      71.6742334,
+      51.3111448
+     ],
+     [
+      71.6704181,
+      51.3137676
+     ],
+     [
+      71.6733166,
+      51.3156608
+     ],
+     [
+      71.6716,
+      51.3165612
+     ]
+    ]
+   }
+  },
+  {
+   "name": "граница Астаны · R12 geo/demo_snapped.json",
+   "status": "PASS",
+   "owner": "R12",
+   "detail": {
+    "coords": 14,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R12 map/demo_snapped.json",
+   "status": "PASS",
+   "owner": "R12",
+   "detail": {
+    "coords": 14,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R07 targets_demo.json",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "coords": 255,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R05 proposals.fixture.json",
+   "status": "PASS",
+   "owner": "R05",
+   "detail": {
+    "coords": 5,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R05 nura-streets.json",
+   "status": "PASS",
+   "owner": "R05",
+   "detail": {
+    "coords": 2185,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R05 astana-existing.json",
+   "status": "FAIL",
+   "owner": "R05",
+   "detail": {
+    "coords": 6691,
+    "outside": 337,
+    "examples": [
+     [
+      71.37867,
+      51.00083
+     ],
+     [
+      71.377295,
+      51.000097
+     ],
+     [
+      71.375421,
+      50.9981
+     ],
+     [
+      71.37357,
+      50.996948
+     ],
+     [
+      71.369762,
+      50.993719
+     ]
+    ]
+   }
+  },
+  {
+   "name": "граница Астаны · R06 demo_r14.py",
+   "status": "PASS",
+   "owner": "R06",
+   "detail": {
+    "coords": 15,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "граница Астаны · R13 forecast targets.json",
+   "status": "PASS",
+   "owner": "R13",
+   "detail": {
+    "coords": 2334,
+    "outside": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "участки = рёбра OSM · R07 targets",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "segments": 26,
+    "worst_m": 0.066,
+    "bad": []
+   }
+  },
+  {
+   "name": "улицы Нуры R05 = рёбра OSM",
+   "status": "PASS",
+   "owner": "R05",
+   "detail": {
+    "edges": 924,
+    "worst_m": 0.066,
+    "bad": []
+   }
+  },
+  {
+   "name": "линии R05 proposals.fixture на улице",
+   "status": "PASS",
+   "owner": "R05",
+   "detail": {
+    "lines": 1,
+    "dev_m": [
+     0.06
+    ]
+   }
+  },
+  {
+   "name": "линии R06 demo_r14 на улице",
+   "status": "PASS",
+   "owner": "R06",
+   "detail": {
+    "lines": 1,
+    "dev_m": [
+     0.0
+    ]
+   }
+  },
+  {
+   "name": "нет линий «от руки» · R12 geo/demo_snapped.json",
+   "status": "PASS",
+   "owner": "R12",
+   "detail": {
+    "items": [
+     {
+      "id": "demo-astana-landscaping-yard",
+      "display": "approximate_area"
+     },
+     {
+      "id": "demo-astana-roadworks-completed",
+      "display": "approximate_area"
+     },
+     {
+      "id": "demo-astana-roadworks-delay",
+      "snapped_dev_m": 0.0
+     }
+    ],
+    "bad": []
+   }
+  },
+  {
+   "name": "нет линий «от руки» · R12 map/demo_snapped.json",
+   "status": "PASS",
+   "owner": "R12",
+   "detail": {
+    "items": [
+     {
+      "id": "demo-astana-landscaping-yard",
+      "display": "approximate_area"
+     },
+     {
+      "id": "demo-astana-roadworks-completed",
+      "display": "approximate_area"
+     },
+     {
+      "id": "demo-astana-roadworks-delay",
+      "snapped_dev_m": 0.0
+     }
+    ],
+    "bad": []
+   }
+  },
+  {
+   "name": "остановки — не ж/д платформы · R05",
+   "status": "FAIL",
+   "owner": "R05",
+   "detail": {
+    "stops": 1017,
+    "railway": 41,
+    "examples": [
+     "osm-way-1019455643",
+     "osm-way-1058647263",
+     "osm-way-1058647264",
+     "osm-way-1058647265",
+     "osm-way-1492444185",
+     "osm-way-1531992951",
+     "osm-way-1531992953",
+     "osm-way-1531992954"
+    ]
+   }
+  },
+  {
+   "name": "остановки — не ж/д платформы · R07",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "stops": 10,
+    "railway": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "остановки — не ж/д платформы · R12",
+   "status": "PASS",
+   "owner": "R12",
+   "detail": {
+    "stops": 940,
+    "railway": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "остановки — не ж/д платформы · R13",
+   "status": "PASS",
+   "owner": "R13",
+   "detail": {
+    "stops": 940,
+    "railway": 0,
+    "examples": []
+   }
+  },
+  {
+   "name": "остановки ≤ 60 м от улицы · R12",
+   "status": "PASS",
+   "owner": "R12",
+   "detail": {
+    "stops": 940,
+    "far_from_any_line": [],
+    "far_from_road": 0,
+    "far_road_examples": [],
+    "max_road_m": 34.7
+   }
+  },
+  {
+   "name": "остановки ≤ 60 м от улицы · R07",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "stops": 10,
+    "far_from_any_line": [],
+    "far_from_road": 0,
+    "far_road_examples": [],
+    "max_road_m": 18.8
+   }
+  },
+  {
+   "name": "остановки ≤ 60 м от улицы · R05",
+   "status": "FAIL",
+   "owner": "R05",
+   "detail": {
+    "stops": 1017,
+    "far_from_any_line": [
+     "osm-way-1492444185",
+     "osm-way-272757224"
+    ],
+    "far_from_road": 2,
+    "far_road_examples": [
+     {
+      "id": "osm-way-1492444185",
+      "road_m": 90.0,
+      "any_line_m": 75.2,
+      "point": [
+       71.408875,
+       51.19607
+      ]
+     },
+     {
+      "id": "osm-way-272757224",
+      "road_m": 109.9,
+      "any_line_m": 98.2,
+      "point": [
+       71.409403,
+       51.19609
+      ]
+     }
+    ],
+    "max_road_m": 109.9
+   }
+  },
+  {
+   "name": "остановки ≤ 60 м от улицы · R13",
+   "status": "PASS",
+   "owner": "R13",
+   "detail": {
+    "stops": 940,
+    "far_from_any_line": [],
+    "far_from_road": 0,
+    "far_road_examples": [],
+    "max_road_m": 34.7
+   }
+  },
+  {
+   "name": "объекты R12 = точки OSM",
+   "status": "PASS",
+   "owner": "R12",
+   "detail": {
+    "checked": 2282,
+    "total": 2283,
+    "missing": [],
+    "moved": []
+   }
+  },
+  {
+   "name": "объекты R05 = точки OSM",
+   "status": "PASS",
+   "owner": "R05",
+   "detail": {
+    "checked": 2478,
+    "missing": 0,
+    "missing_examples": [],
+    "moved": []
+   }
+  },
+  {
+   "name": "объекты R07 = точки OSM",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "objects": 14,
+    "missing": [],
+    "moved": []
+   }
+  },
+  {
+   "name": "id целей R07 по контракту §4",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "targets": 54,
+    "bad": []
+   }
+  },
+  {
+   "name": "офлайн-подложка Нуры = рёбра OSM",
+   "status": "PASS",
+   "owner": "R07",
+   "detail": {
+    "lines": 9363,
+    "matched_by_ends": 9363,
+    "checked_by_points": 0,
+    "worst_m": 0.652,
+    "bad": []
+   }
+  }
+ ]
+}

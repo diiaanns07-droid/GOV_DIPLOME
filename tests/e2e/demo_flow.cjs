@@ -143,6 +143,19 @@ async function apiFlow(A, staffInfo) {
     m.status === 200 ? { not_ready: notReady } : { status: m.status });
   ctx.modules = modules;
 
+  // 0б. Шаг 2 DEMO_SCRIPT на ЧИСТОЙ базе (как run-city.bat): ведущий пишет «Аялдамада жарық жоқ, вечером на остановке
+  //     темно» и ждёт «Освещение» и похожие обращения с «Я тоже». Проверяем ДО того, как тест сам создаст жалобы:
+  //     если похожих нет — на показе «Я тоже» не появится (с --url на уже использованном сервере проверка мягче).
+  const demoText = "Аялдамада жарық жоқ, вечером на остановке темно";
+  const c0 = await A.call("POST", "/api/civic/v2/classify", { text: demoText });
+  const d0 = A.data(c0) || {};
+  add("API", "2", "текст DEMO_SCRIPT (смесь kk/ru) → «Освещение» с подсказкой", c0.status === 200 && d0.category === "lighting" && d0.suggest !== false ? "PASS" : "FAIL",
+    { status: c0.status, category: d0.category, score: d0.score, suggest: d0.suggest, model: d0.model_version });
+  const s0 = await A.call("POST", "/api/civic/v2/similar", { text: demoText, point: STOP.point, days: 30 });
+  const m0 = (A.data(s0) || {}).matches || [];
+  add("API", "2", "чистая база демо: /similar по тексту DEMO_SCRIPT у остановки находит похожие (иначе «Я тоже» не будет)",
+    s0.status === 200 && m0.length > 0 ? "PASS" : "FAIL", { status: s0.status, n: m0.length, stop: STOP.name });
+
   // 1. Место на карте → «Это остановка «…»?» (R12 /targets).
   const [lon, lat] = STOP.point;
   const t = await A.call("GET", `/api/civic/v2/targets?lon=${lon}&lat=${lat}&category=transport`);

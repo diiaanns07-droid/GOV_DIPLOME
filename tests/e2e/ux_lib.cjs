@@ -92,9 +92,28 @@ function untranslated(kkLines, ruLines) {
 // TAB_LIMIT — сколько нажатий Tab допустимо до главной кнопки; считаем до 80, чтобы в отчёте было точное число.
 const TAB_LIMIT = 40;
 async function focusToPrimary(page, labelRe, maxTabs = 80) {
-  await page.mouse.click(2, 2).catch(() => null);
+  // Начать обход с самого начала документа (как после загрузки): фокус на body без следа клика.
+  await page.evaluate(() => { const b = document.body; b.setAttribute("tabindex", "-1"); b.focus(); b.removeAttribute("tabindex");
+    window.getSelection && window.getSelection().removeAllRanges(); }).catch(() => null);
   for (let i = 1; i <= maxTabs; i++) {
     await page.keyboard.press("Tab");
+    // Ссылка «Перейти к главной кнопке» (ui-kit .bk-skip) в первых нажатиях: Enter должен привести фокус к главной кнопке.
+    if (i <= 3) {
+      const skip = await page.evaluate(() => { const e = document.activeElement;
+        return !!e && (e.classList.contains("bk-skip") || /^(Перейти к главной кнопке|Негізгі түймеге өту)$/i.test((e.innerText || "").trim())); });
+      if (skip) {
+        await page.keyboard.press("Enter");
+        await new Promise((ok) => setTimeout(ok, 400));
+        const st = await page.evaluate((src) => {
+          const e = document.activeElement; if (!e || e === document.body) return null;
+          const s = getComputedStyle(e);
+          const ring = (s.outlineStyle !== "none" && parseFloat(s.outlineWidth) >= 2) || (s.boxShadow && s.boxShadow !== "none");
+          const primary = e.classList.contains("bk-btn--primary") || (src && new RegExp(src, "i").test((e.innerText || e.getAttribute("aria-label") || "").trim()));
+          return { primary, ring, text: (e.innerText || e.getAttribute("aria-label") || e.tagName).trim().slice(0, 40) };
+        }, labelRe ? labelRe.source : null);
+        if (st && st.primary) return { tabs: i, via: "skip-link + Enter", ...st };
+      }
+    }
     const st = await page.evaluate((src) => {
       const e = document.activeElement; if (!e || e === document.body) return null;
       const re = src ? new RegExp(src, "i") : null;
