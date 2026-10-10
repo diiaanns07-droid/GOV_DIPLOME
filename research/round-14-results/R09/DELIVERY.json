@@ -15,8 +15,8 @@
     ],
     "how": "git checkout 933cd90 -- ui/civic_feedback web/civic/feedback (побайтно, v1 не менялся)"
   },
-  "code_sha": "da295bec57bc99882b2750d2aea786137fba58c5",
-  "tested_sha": "da295bec57bc99882b2750d2aea786137fba58c5",
+  "code_sha": "a4ab5a4025cfd4e52872cbc408d0395d045d50f8",
+  "tested_sha": "a4ab5a4025cfd4e52872cbc408d0395d045d50f8",
   "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22.0, Playwright 1.56.1 + Chromium (headless, software WebGL), без интернета",
   "push_status": "см. итоговое сообщение и STATUS.md (этот файл коммитится после code_sha)",
   "changed_paths": [
@@ -36,9 +36,11 @@
     "data/civic/astana/osm-objects/raw/waste_disposal.json.gz",
     "research/handoffs/astana/R09/round14/STATUS.md",
     "research/round-14-results/R09/BROWSER_RESULT.txt",
+    "research/round-14-results/R09/BROWSER_RESULT_R11UI.txt",
     "research/round-14-results/R09/DELIVERY.json",
     "research/round-14-results/R09/I18N_KEYS.md",
     "research/round-14-results/R09/INTEGRATION.txt",
+    "research/round-14-results/R09/R11_REVIEW_FIXES.md",
     "research/round-14-results/R09/RUN.txt",
     "research/round-14-results/R09/screens/1366-ru-1-place.png",
     "research/round-14-results/R09/screens/1366-ru-2-candidates.png",
@@ -100,17 +102,27 @@
     {
       "name": "pytest tests/civic/R09/test_r09v2_*.py (store, migrate, api, frontend, stand_osm)",
       "result": "PASS",
-      "detail": "77 passed"
+      "detail": "83 passed (в т.ч. 6 проверок test_r11_1…6 по разбору R11)"
+    },
+    {
+      "name": "node tests/civic/R09/browser_r09.cjs (Chromium; 375/1366 × ru/kk; без ML; обрыв сети; клавиатура; проверки [R11-1…6])",
+      "result": "PASS",
+      "detail": "105/105 на code_sha, запасные стили R09 (BROWSER_RESULT.txt)"
+    },
+    {
+      "name": "node tests/civic/R09/browser_r09.cjs --r11 <ui-kit и i18n из claude/r14-R11 @ cc77761>",
+      "result": "PASS",
+      "detail": "105/105 на code_sha с настоящим ui-kit и словарями R11 (BROWSER_RESULT_R11UI.txt)"
+    },
+    {
+      "name": "Обратная проверка: те же проверки на старом коде",
+      "result": "PASS",
+      "detail": "32566a0: 6/6 pytest-проверок R11 падают; 4021818: падают ровно 2, 5, 6 (pytest и Chromium)"
     },
     {
       "name": "pytest tests/civic/R09 (вместе со старыми тестами помощника раунда 12)",
       "result": "PASS",
-      "detail": "199 passed"
-    },
-    {
-      "name": "node tests/civic/R09/browser_r09.cjs (Chromium; 375 ru/kk, 1366 ru; без ML; обрыв сети; клавиатура)",
-      "result": "PASS",
-      "detail": "69/69 на code_sha (+2 прогона 69/69 до коммита); первая предложенная цель — реальная остановка OSM"
+      "detail": "205 passed"
     },
     {
       "name": "pytest tests/civic (вся civic-сборка пакета)",
@@ -143,9 +155,15 @@
     "Синтетическое нажатие по карте в headless-Chromium проверено; на реальном телефоне путь не проверялся.",
     "Миграция v1 помечает записи demo=true (происхождение старых строк неизвестно); --real — только по решению владельца."
   ],
-  "next_step": "R01: подключить /api/civic/v2 жалоб и фронтенд по INTEGRATION.txt; R11: перенести ключи I18N_KEYS.md; R12/R04: отдать /targets, /classify, /similar по контракту — R09 проверит пару на стенде без FIXTURE; R07: слушать birge:complaint и events.",
+  "next_step": "R09: строки 7–12 разбора R11 (кнопка во всю ширину на телефоне, тост ui-kit, «Пример» и шкала в «Моих обращениях», даты через BirgeI18n.formatDate, точки прогресса .bk-wizard с ui-kit). R01: подключить /api/civic/v2 жалоб и фронтенд по INTEGRATION.txt; R11: перенести ключи I18N_KEYS.md; R12/R04: отдать /targets, /classify, /similar по контракту — R09 проверит пару на стенде без FIXTURE; R07: слушать birge:complaint и events.",
   "pr": "не создавался (не запрошен)",
   "inputs": {
     "osm_objects": "data/civic/astana/osm-objects из claude/round-14-package @ bdf12c8 (LOCAL-1, real, ODbL), копия без изменений, только чтение"
+  },
+  "r11_review": {
+    "source": "claude/r14-R11 @ cc77761, research/round-14-results/R11/UX_REVIEW.md, День 2, строки 1–6",
+    "status": "все 6 исправлены и проверены",
+    "report": "research/round-14-results/R09/R11_REVIEW_FIXES.md",
+    "not_in_scope": "строки 7–12 — следующий шаг"
   }
 }
