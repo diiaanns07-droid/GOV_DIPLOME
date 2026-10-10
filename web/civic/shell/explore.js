@@ -4,6 +4,15 @@
   "use strict";
   const PREFIX = "civic-explore-";
   const MAX_OPTIONS = 10;
+  // Тексты (раунд 14): BirgeShell.t — словари R11, затем запасной shell-text.js; в Node (тесты) — shell-text.js.
+  const TEXT = global.BirgeShellText || (typeof require === "function" ? require("./shell-text.js") : null);
+  const T = (key, params) => (global.BirgeShell ? global.BirgeShell.t(key, params) : TEXT ? TEXT.text(key, params, "ru") : key);
+  // Название района на языке интерфейса: district.<id> у R11, иначе имя из OSM.
+  function districtLabel(f) {
+    const key = "district." + (f?.properties?.id || "");
+    const value = T(key);
+    return value && value !== key ? value : f?.properties?.name || "";
+  }
   function bounds(geometry) {
     const box = [Infinity, Infinity, -Infinity, -Infinity];
     function visit(coords) {
@@ -34,14 +43,15 @@
     return inside;
   }
   function inPolygon(pt, rings) { return inRing(pt, rings[0]) && !rings.slice(1).some((hole) => inRing(pt, hole)); }
-  function districtAt(pt, features) {
+  function featureAt(pt, features) {
     for (const f of features || []) {
       const g = f.geometry;
       const polys = g?.type === "Polygon" ? [g.coordinates] : g?.type === "MultiPolygon" ? g.coordinates : [];
-      if (polys.some((rings) => inPolygon(pt, rings))) return f.properties?.name || null;
+      if (polys.some((rings) => inPolygon(pt, rings))) return f;
     }
     return null;
   }
+  function districtAt(pt, features) { return featureAt(pt, features)?.properties?.name || null; }
   // Each index entry gets a plain-language place hint instead of raw coordinates: the OSM district its
   // centre falls into ("район Есиль"), or "окрестности" outside all six; same-name parts in the same
   // place are numbered west -> east.
@@ -50,9 +60,10 @@
       && s.bbox.every(Number.isFinite))
       .map((s, i) => {
         const centre = [(s.bbox[0] + s.bbox[2]) / 2, (s.bbox[1] + s.bbox[3]) / 2];
-        const district = districtAt(centre, features);
+        const feature = featureAt(centre, features);
+        const district = feature?.properties?.name || null;
         return { key: String(i), name: s.name, bbox: s.bbox, centre, district,
-          place: district ? "район " + district : "окрестности, вне границ районов", norm: normalize(s.name) };
+          place: feature ? T("district.name", { name: districtLabel(feature) }) : T("shell.explore.place_outside"), norm: normalize(s.name) };
       });
     const groups = new Map(), sameName = new Map();
     for (const it of items) {
@@ -63,7 +74,7 @@
     }
     for (const list of groups.values()) {
       list.sort((a, b) => a.centre[0] - b.centre[0]);
-      if (list.length > 1) list.forEach((it, n) => { it.place += ` · участок ${n + 1} из ${list.length}`; });
+      if (list.length > 1) list.forEach((it, n) => { it.place = T("shell.explore.place_part", { place: it.place, i: n + 1, n: list.length }); });
     }
     for (const it of items) {
       it.ambiguous = sameName.get(it.norm) > 1;
@@ -91,13 +102,13 @@
     let selected = "", destroyed = false;
     const box = document.createElement("section");
     box.className = "civic-explore";
-    box.setAttribute("aria-label", "Навигация по Астане");
-    box.innerHTML = `<div class="civic-explore-row"><label><span>Территория</span><select aria-label="Район Астаны"><option value="">Вся Астана</option></select></label><button type="button" class="civic-explore-objects">К объектам</button><details><summary aria-label="Покрытие и слои карты">Слои</summary><div class="civic-explore-details"><label><input type="checkbox"> Границы районов</label><p>Карта доступна по всей Астане. Пустое место означает отсутствие опубликованных записей, а не отсутствие работ.</p><p class="civic-explore-count" role="status"></p><p>Границы: OpenStreetMap, снимок 23.09.2026. Это общественная карта, не кадастровые границы.</p></div></details></div><p class="civic-explore-view" aria-live="polite"></p>`;
+    // Разметка без текстов: подписи ставит relabel() на языке интерфейса (и заново при ҚАЗ/РУС).
+    box.innerHTML = `<div class="civic-explore-row"><label><span data-t="shell.explore.area"></span><select data-t-attr="aria-label:shell.explore.district_label"><option value="" data-t="shell.explore.all_city"></option></select></label><button type="button" class="civic-explore-objects" data-t="shell.explore.to_objects"></button><details><summary data-t="shell.explore.layers" data-t-attr="aria-label:shell.explore.layers_label"></summary><div class="civic-explore-details"><label><input type="checkbox"> <span data-t="shell.explore.district_borders"></span></label><p data-t="shell.explore.coverage"></p><p class="civic-explore-count" role="status"></p><p data-t="shell.explore.borders_source"></p></div></details></div><p class="civic-explore-view" aria-live="polite"></p>`;
     root.append(box);
     const search = document.createElement("form");
     search.className = "civic-explore-search";
     search.setAttribute("role", "search");
-    search.innerHTML = `<div class="civic-explore-field"><input type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="${PREFIX}listbox" placeholder="Улица Астаны" aria-label="Найти улицу в Астане" autocomplete="off" spellcheck="false" enterkeyhint="search"><button type="button" class="civic-explore-clear" aria-label="Очистить поиск" hidden>×</button></div><button type="submit" class="civic-explore-go">Найти</button><ul id="${PREFIX}listbox" class="civic-explore-list" role="listbox" aria-label="Улицы Астаны" hidden></ul><p class="civic-explore-status" role="status" aria-live="polite" hidden></p>`;
+    search.innerHTML = `<div class="civic-explore-field"><input type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="${PREFIX}listbox" data-t-attr="placeholder:shell.explore.street_placeholder;aria-label:shell.explore.street_label" autocomplete="off" spellcheck="false" enterkeyhint="search"><button type="button" class="civic-explore-clear" data-t-attr="aria-label:common.search.clear" hidden>×</button></div><button type="submit" class="civic-explore-go" data-t="shell.explore.find"></button><ul id="${PREFIX}listbox" class="civic-explore-list" role="listbox" data-t-attr="aria-label:shell.explore.streets_label" hidden></ul><p class="civic-explore-status" role="status" aria-live="polite" hidden></p>`;
     box.append(search);
     // Host notices (e.g. "basemap unavailable") are placed here so they never sit under this box.
     const notices = document.createElement("div");
@@ -112,16 +123,18 @@
     const list = search.querySelector("ul"), status = search.querySelector(".civic-explore-status");
     const select = box.querySelector("select"), checkbox = box.querySelector("details input");
 
-    function say(text, kind) {
+    let lastSay = null;  // [key, kind, params] — чтобы повторить сообщение на другом языке
+    function say(key, kind, params) {
       status.replaceChildren();
-      status.hidden = !text;
-      status.dataset.kind = text ? kind || "" : "";
-      if (!text) return;
-      status.append(text);
+      status.hidden = !key;
+      status.dataset.kind = key ? kind || "" : "";
+      lastSay = key ? [key, kind, params] : null;
+      if (!key) return;
+      status.append(T(key, params));
       if (kind === "error") {
         const retry = document.createElement("button");
-        retry.type = "button"; retry.className = "civic-explore-retry"; retry.textContent = "Повторить";
-        retry.addEventListener("click", () => { say("Загружаем список улиц…", "loading"); loadIndex(); });
+        retry.type = "button"; retry.className = "civic-explore-retry"; retry.textContent = T("common.action.retry");
+        retry.addEventListener("click", () => { say("shell.explore.loading", "loading"); loadIndex(); });
         status.append(" ", retry);
       }
     }
@@ -131,7 +144,7 @@
 
     // ---- street index: loading / ready / error (with retry)
     let index = { state: "loading", items: [] };
-    let controller = null;
+    let controller = null, rawStreets = null, snapshot = "";
     function loadIndex() {
       controller?.abort();
       controller = new AbortController();
@@ -142,16 +155,17 @@
       }).then((data) => {
         if (destroyed) return;
         if (!Array.isArray(data?.streets)) throw new Error("street index format");
-        const snapshot = String(data.source?.snapshot_at || "").slice(0, 10);
-        index = { state: "ready", items: labelStreets(data.streets, features) };
-        input.title = "Названия улиц из OpenStreetMap" + (snapshot ? " на " + snapshot : "") + ". Поиск по улицам, без номеров домов.";
+        snapshot = String(data.source?.snapshot_at || "").slice(0, 10);
+        rawStreets = data.streets;
+        index = { state: "ready", items: labelStreets(rawStreets, features) };
+        input.title = snapshot ? T("shell.explore.street_hint_date", { date: snapshot }) : T("shell.explore.street_hint");
         if (status.dataset.kind === "loading") say("");
         if (input.value.trim().length > 1 && document.activeElement === input) refresh();
       }).catch((e) => {
         if (destroyed || e.name === "AbortError") return;
         index = { state: "error", items: [] };
         close();
-        say("Поиск улиц недоступен: список улиц не загрузился. Выберите район или повторите.", "error");
+        say("shell.explore.index_error", "error");
       });
     }
 
@@ -165,7 +179,7 @@
       if (!map || !Marker) return;
       const el = document.createElement("div");
       el.className = "civic-explore-pin";
-      el.title = "Примерное место: центр участка улицы по OpenStreetMap";
+      el.title = T("shell.explore.pin_title");
       const label = document.createElement("span");
       label.textContent = it.name;
       el.append(label);
@@ -202,7 +216,7 @@
       if (matches.length > options.length) {
         const more = document.createElement("li");
         more.className = "civic-explore-more"; more.setAttribute("role", "presentation");
-        more.textContent = `Ещё ${matches.length - options.length} — уточните название`;
+        more.textContent = T("shell.explore.more", { n: matches.length - options.length });
         list.append(more);
       }
       list.hidden = !options.length;
@@ -213,19 +227,19 @@
       clear.hidden = !input.value;
       const q = input.value.trim();
       if (normalize(q).length < 2) { close(); quiet(); return; }
-      if (index.state === "loading") { close(); say("Загружаем список улиц…", "loading"); return; }
+      if (index.state === "loading") { close(); say("shell.explore.loading", "loading"); return; }
       if (index.state === "error") { close(); return; }
       const matches = matchStreets(index.items, q);
       render(matches);
-      if (!matches.length) say("Улица не найдена в снимке OpenStreetMap. Проверьте написание или выберите район.", "none");
-      else if (matches.length > 1 && matches.some((m) => m.ambiguous)) say(`Найдено вариантов: ${matches.length}. Одноимённые улицы подписаны районом.`, "count");
+      if (!matches.length) say("shell.explore.not_found", "none");
+      else if (matches.length > 1 && matches.some((m) => m.ambiguous)) say("shell.explore.found_ambiguous", "count", { n: matches.length });
       else say("");
     }
     function choose(it) {
       input.value = it.name; clear.hidden = false;
       close();
       selected = ""; select.value = ""; paint();
-      say(`Показана улица: ${it.name} (${it.place}). Список записей — по видимой части карты.`, "chosen");
+      say("shell.explore.chosen", "chosen", { name: it.name, place: it.place });
       pinStreet(it);
       onStreet?.({ name: it.name, label: it.label, place: it.place, district: it.district, bbox: it.bbox });
     }
@@ -248,23 +262,43 @@
       if (active >= 0 && options[active]) { choose(options[active]); return; }
       const q = input.value.trim();
       if (!q) { input.focus(); return; }
-      if (index.state === "loading") { say("Загружаем список улиц…", "loading"); return; }
+      if (index.state === "loading") { say("shell.explore.loading", "loading"); return; }
       if (index.state === "error") return;
       const matches = matchStreets(index.items, q);
       const exact = matches.filter((m) => m.norm === normalize(q));
       if (matches.length === 1 || exact.length === 1) { choose(exact.length === 1 ? exact[0] : matches[0]); return; }
       render(matches);
-      if (matches.length) { highlight(0); say(`Найдено вариантов: ${matches.length}. Выберите стрелками и Enter или касанием.`, "count"); input.focus(); }
-      else say("Улица не найдена в снимке OpenStreetMap. Проверьте написание или выберите район.", "none");
+      if (matches.length) { highlight(0); say("shell.explore.found_pick", "count", { n: matches.length }); input.focus(); }
+      else say("shell.explore.not_found", "none");
     });
     clear.addEventListener("click", () => { input.value = ""; unpin(); refresh(); input.focus(); });
 
     // ---- districts
     features.forEach((f) => {
       const option = document.createElement("option");
-      option.value = f.properties.id; option.textContent = f.properties.name;
+      option.value = f.properties.id; option.dataset.district = "1";
       select.append(option);
     });
+    // Все подписи блока на языке интерфейса; вызывается при запуске и при переключении ҚАЗ/РУС.
+    let records = null;
+    function relabel() {
+      if (destroyed) return;
+      box.setAttribute("aria-label", T("shell.explore.label"));
+      for (const node of box.querySelectorAll("[data-t]")) node.textContent = T(node.dataset.t);
+      for (const node of box.querySelectorAll("[data-t-attr]")) {
+        for (const pair of node.dataset.tAttr.split(";")) {
+          const [attr, key] = pair.split(":");
+          node.setAttribute(attr, T(key));
+        }
+      }
+      select.querySelectorAll("option[data-district]").forEach((option, i) => { option.textContent = districtLabel(features[i]); });
+      if (index.state === "ready") {
+        index = { state: "ready", items: labelStreets(rawStreets, features) };
+        input.title = snapshot ? T("shell.explore.street_hint_date", { date: snapshot }) : T("shell.explore.street_hint");
+      }
+      if (lastSay) say(...lastSay);
+      if (records) showRecords(records);
+    }
     function paint() {
       if (destroyed || !map || !map.getStyle()?.layers) return;
       if (!map.getSource(PREFIX + "districts")) map.addSource(PREFIX + "districts", { type: "geojson", data: { type: "FeatureCollection", features } });
@@ -290,22 +324,27 @@
     box.querySelector(".civic-explore-objects").addEventListener("click", onObjects);
     map?.on("style.load", paint);
     paint();
+    relabel();
+    const offLang = global.BirgeI18n?.onChange?.(relabel);
     loadIndex();
     const view = box.querySelector(".civic-explore-view");
+    function showRecords(items) {
+      records = items;
+      const demo = items.filter((x) => x.evidence === "synthetic").length;
+      box.querySelector(".civic-explore-count").textContent = T("shell.explore.count", { n: items.length, demo });
+      registry.hidden = items.length > 0;
+      registry.textContent = items.length ? "" : T("shell.explore.registry_empty");
+    }
     return {
       noticeSlot: notices,
       // What the camera shows now (city overview / district / street / all records), so the three
       // look different even when the map itself is plain (offline basemap).
       setView(text, kind) { view.textContent = text || ""; view.dataset.kind = kind || ""; },
       reset() { selected = ""; select.value = ""; input.value = ""; clear.hidden = true; close(); quiet(); unpin(); paint(); },
-      updateRecords(items) {
-        const demo = items.filter((x) => x.evidence === "synthetic").length;
-        box.querySelector(".civic-explore-count").textContent = `Опубликовано записей: ${items.length}. Из них демонстрационных: ${demo}.`;
-        registry.hidden = items.length > 0;
-        registry.textContent = items.length ? "" : "Реестр пуст: опубликованных записей пока нет. Пустая карта не значит, что в городе нет работ.";
-      },
+      updateRecords(items) { showRecords(items); },
       destroy() {
         destroyed = true; controller?.abort(); unpin(); map?.off("style.load", paint);
+        if (typeof offLang === "function") offLang();
         for (const id of [PREFIX + "selected", PREFIX + "lines"]) if (map?.getLayer(id)) map.removeLayer(id);
         if (map?.getSource(PREFIX + "districts")) map.removeSource(PREFIX + "districts");
         box.remove();

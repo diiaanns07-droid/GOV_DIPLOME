@@ -84,11 +84,21 @@ async function main() {
     check("1366: ҚАЗ switches header, tagline and <html lang>",
       h.htmlLang === "kk" && h.pressed.lang === "kk" && h.labels.includes("Күн қорытындысы") && h.labels.includes("Әкімдік") && /бірге/.test(h.tagline || "") && h.keys.length === 0, h);
     check("1366: Kazakh header still fits", h.out === 0 && h.scrollW <= 1366, h);
+    const panel = await page.evaluate(() => ({ title: document.querySelector("#civic-panel h1")?.textContent,
+      area: document.querySelector(".civic-explore-row label span")?.textContent, view: document.querySelector(".civic-explore-view")?.textContent,
+      staff: document.getElementById("civic-staff-button")?.textContent, find: document.querySelector(".civic-explore-go")?.textContent,
+      placeholder: document.querySelector(".civic-explore-field input")?.placeholder,
+      district: [...document.querySelectorAll(".civic-explore select option")].map((o) => o.textContent).join(",") }));
+    check("1366: ҚАЗ also switches the shell panel and city navigation",
+      panel.title === "Қалада не өзгеріп жатыр" && panel.area === "Аумақ" && /Шолу: бүкіл Астана/.test(panel.view || "") && panel.staff === "Қызметкерлерге"
+      && panel.find === "Табу" && panel.placeholder === "Астана көшесі" && /Нұра/.test(panel.district), panel);
     await page.screenshot({ path: path.join(OUT, "02_map_1366_kk.png") });
     await page.reload();
     await ready(page);
     h = await header(page);
     check("1366: language remembered after reload", h.htmlLang === "kk" && h.pressed.lang === "kk", h);
+    const panelAfter = await page.evaluate(() => document.querySelector("#civic-panel h1")?.textContent);
+    check("1366: shell panel opens in Kazakh after reload", panelAfter === "Қалада не өзгеріп жатыр", panelAfter);
 
     // «Картина дня»: hash, overlay with an understandable empty state and a way back
     await page.click("#birge-header [data-section=day]");
@@ -162,14 +172,16 @@ async function main() {
     check("1366: no page errors or warnings", page.errs.length === 0, page.errs);
     await ctx.close();
 
-    // ---------------------------------------------------------------- phone 375x812
-    for (const lang of ["ru", "kk"]) {
-      const m = await openPage(browser, base + "?lang=" + lang, 375, 812);
+    // ---------------------------------------------------------------- phone 375x812 and tablet 768x1024 (< 1024: ≡ menu)
+    for (const [w, hgt, lang] of [[375, 812, "ru"], [375, 812, "kk"], [768, 1024, "kk"]]) {
+      const tag = `${w} ${lang}`;
+      const m = await openPage(browser, base + "?lang=" + lang, w, hgt);
       let p = await header(m.page);
-      check(`375 ${lang}: resident view by default, ҚАЗ/РУС and ≡ visible, sections and view in the menu`,
-        p.mode === "resident" && p.htmlLang === lang && p.labels.length === 3 && p.pressed.lang === lang, p);
-      check(`375 ${lang}: header fits, no horizontal scroll`, p.out === 0 && p.scrollW <= 375, p);
-      await m.page.screenshot({ path: path.join(OUT, `05_map_375_${lang}.png`) });
+      const startMode = w < 761 ? "resident" : "akimat";
+      check(`${tag}: ${startMode} view by default, ҚАЗ/РУС and ≡ visible, sections and view in the menu`,
+        p.mode === startMode && p.htmlLang === lang && p.labels.length === 3 && p.pressed.lang === lang, p);
+      check(`${tag}: header fits, no horizontal scroll`, p.out === 0 && p.scrollW <= w, p);
+      await m.page.screenshot({ path: path.join(OUT, `05_map_${w}_${lang}.png`) });
       await m.page.click("#birge-header .birge-menu-btn");
       await m.page.waitForTimeout(300);
       const menu = await m.page.evaluate(() => { const box = document.getElementById("birge-menu").getBoundingClientRect();
@@ -177,18 +189,18 @@ async function main() {
         const hit = items.every((b) => { const r = b.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return e === b || b.contains(e); });
         return { open: document.getElementById("birge-header").dataset.menu, expanded: document.querySelector(".birge-menu-btn").getAttribute("aria-expanded"),
           inside: box.left >= 0 && box.right <= innerWidth, clickable: hit, items: items.map((b) => b.textContent.trim()) }; });
-      check(`375 ${lang}: ≡ opens the menu on top of the map, all items clickable and inside the screen`,
+      check(`${tag}: ≡ opens the menu on top of the map, all items clickable and inside the screen`,
         menu.open === "open" && menu.expanded === "true" && menu.inside && menu.clickable && menu.items.length === 4, menu);
-      await m.page.screenshot({ path: path.join(OUT, `06_menu_375_${lang}.png`) });
+      await m.page.screenshot({ path: path.join(OUT, `06_menu_${w}_${lang}.png`) });
       await m.page.click("#birge-header [data-section=day]");
       await m.page.waitForTimeout(400);
       p = await header(m.page);
       const dayBox = await m.page.evaluate(() => { const d = document.getElementById("birge-day").getBoundingClientRect(); return { l: d.left, r: d.right, t: d.top }; });
-      check(`375 ${lang}: «Картина дня» from the menu: menu closed, view akimat, screen inside the phone`,
-        p.section === "day" && p.mode === "akimat" && dayBox.l >= 0 && dayBox.r <= 375 && p.scrollW <= 375, { p, dayBox });
-      await m.page.screenshot({ path: path.join(OUT, `07_day_375_${lang}.png`) });
+      check(`${tag}: «Картина дня» from the menu: menu closed, view akimat, screen inside the window`,
+        p.section === "day" && p.mode === "akimat" && dayBox.l >= 0 && dayBox.r <= w && p.scrollW <= w, { p, dayBox });
+      await m.page.screenshot({ path: path.join(OUT, `07_day_${w}_${lang}.png`) });
       await m.page.keyboard.press("Escape");
-      check(`375 ${lang}: no page errors or warnings`, m.page.errs.length === 0, m.page.errs);
+      check(`${tag}: no page errors or warnings`, m.page.errs.length === 0, m.page.errs);
       await m.ctx.close();
     }
   } finally {

@@ -11,6 +11,9 @@
   "use strict";
   const API_BASE = "/api/civic/v1";
   const MODES = ["civic", "school", "training"];
+  // Тексты (раунд 14): словари R11 через BirgeShell.t, запасной словарь — shell-text.js. Русский — дословно прежний.
+  const T = (key, params) => (window.BirgeShell ? window.BirgeShell.t(key, params)
+    : window.BirgeShellText ? window.BirgeShellText.text(key, params, "ru") : key);
   const MODE_KEY = "civic.mode.v1";
   const $c = (id) => document.getElementById(id);
   const el = (tag, attrs, text) => {
@@ -33,7 +36,7 @@
   };
   class CivicApiError extends Error {
     constructor(status, code, message, fields, details) {
-      super(message || "Запрос не выполнен.");
+      super(message || T("shell.api.failed"));
       this.name = "CivicApiError";
       this.status = status;
       this.code = code || "error";
@@ -93,8 +96,8 @@
     } catch (error) {
       if (outer?.aborted) throw new CivicApiError(0, "aborted", "Запрос отменён.");
       throw error?.name === "AbortError"
-        ? new CivicApiError(0, "timeout", "Сервер не ответил вовремя. Повторите попытку.")
-        : new CivicApiError(0, "network", "Нет соединения с сервером приложения.");
+        ? new CivicApiError(0, "timeout", T("shell.api.timeout"))
+        : new CivicApiError(0, "network", T("shell.api.network"));
     } finally {
       clearTimeout(timer);
       outer?.removeEventListener("abort", onAbort);
@@ -102,7 +105,7 @@
     let envelope = null;
     try { envelope = await response.json(); } catch { envelope = null; }
     if (!envelope || typeof envelope !== "object" || typeof envelope.ok !== "boolean")
-      throw new CivicApiError(response.status, "bad_response", "Сервер вернул нечитаемый ответ.");
+      throw new CivicApiError(response.status, "bad_response", T("shell.api.bad_response"));
     if (!envelope.ok || !response.ok) {
       const error = envelope.error && typeof envelope.error === "object" ? envelope.error : {};
       const details = { ...error };
@@ -110,7 +113,7 @@
       const header = Number.parseInt(response.headers.get("Retry-After") || "", 10);
       if (!Number.isInteger(details.retry_after) && Number.isInteger(header)) details.retry_after = header;
       throw new CivicApiError(response.status, String(error.code || "error"),
-        typeof error.message === "string" ? error.message : "Запрос не выполнен.",
+        typeof error.message === "string" ? error.message : T("shell.api.failed"),
         error.fields && typeof error.fields === "object" ? error.fields : null, details);
     }
     return envelope.data;
@@ -122,7 +125,7 @@
     checkPath(path);
     // The public map never needs staff data: refuse /staff calls without a session.
     if (path.startsWith("/staff") && session.checked && !session.authenticated)
-      throw new CivicApiError(401, "unauthenticated", "Войдите как сотрудник, чтобы продолжить.");
+      throw new CivicApiError(401, "unauthenticated", T("shell.api.unauthenticated"));
     const isSessionPath = path === "/session" || path === "/session/login" || path === "/session/logout";
     // Only the latest /session-family request may change the session (no stale overwrite).
     const seq = isSessionPath ? ++sessionSeq : 0;
@@ -168,42 +171,42 @@
   const originalSub = brandSub ? brandSub.textContent : "";
 
   // DOM: one root with the public panel, editor drawer and scenarios drawer.
-  const root = el("section", { id: "civic-root", hidden: true, "aria-label": "Городская платформа Астаны" });
+  const root = el("section", { id: "civic-root", hidden: true, "data-t-attr": "aria-label:shell.root.label" });
   root.innerHTML = `
     <div id="civic-panel" class="civic-panel" data-sheet="half">
-      <button type="button" id="civic-sheet-handle" class="civic-sheet-handle" aria-label="Развернуть панель" aria-expanded="false"><i></i></button>
+      <button type="button" id="civic-sheet-handle" class="civic-sheet-handle" aria-expanded="false"><i></i></button>
       <header class="civic-head">
-        <span class="eyebrow">Астана · городские работы и события</span>
-        <h1>Что меняется в городе</h1>
+        <span class="eyebrow" data-t="shell.panel.eyebrow"></span>
+        <h1 data-t="shell.panel.title"></h1>
         <p id="civic-data-note" class="civic-data-note"></p>
       </header>
       <div id="civic-state" class="civic-state" role="status" aria-live="polite"></div>
       <div id="civic-scroll" class="civic-scroll">
         <div id="civic-map-root" class="civic-slot"></div>
-        <section id="civic-feedback-box" class="civic-box" hidden aria-label="Сообщение жителя">
-          <div class="civic-box-head"><h2>Сообщить о проблеме или предложении</h2><button type="button" class="civic-close" data-close="feedback" aria-label="Закрыть форму">×</button></div>
+        <section id="civic-feedback-box" class="civic-box" hidden data-t-attr="aria-label:shell.feedback.label">
+          <div class="civic-box-head"><h2 data-t="shell.feedback.title"></h2><button type="button" class="civic-close" data-close="feedback" data-t-attr="aria-label:shell.feedback.close">×</button></div>
           <div id="civic-feedback-root" class="civic-slot"></div>
         </section>
-        <section id="civic-assistant-box" class="civic-box" hidden aria-label="Вопрос по объекту">
+        <section id="civic-assistant-box" class="civic-box" hidden data-t-attr="aria-label:shell.assistant.label">
           <div id="civic-assistant-root" class="civic-slot"></div>
         </section>
       </div>
       <footer class="civic-foot">
-        <button type="button" id="civic-staff-button" class="btn">Для сотрудников</button>
-        <button type="button" id="civic-scenarios-button" class="btn">Сравнить ограничения</button>
-        <button type="button" id="civic-moderation-button" class="btn" hidden>Сообщения жителей</button>
+        <button type="button" id="civic-staff-button" class="btn" data-t="shell.staff.open"></button>
+        <button type="button" id="civic-scenarios-button" class="btn" data-t="shell.scenarios.open"></button>
+        <button type="button" id="civic-moderation-button" class="btn" hidden data-t="shell.moderation.open"></button>
       </footer>
     </div>
-    <section id="civic-editor" class="civic-drawer" hidden aria-label="Кабинет сотрудника">
-      <div class="civic-box-head"><h2>Кабинет сотрудника</h2><button type="button" class="civic-close" data-close="editor" aria-label="Закрыть кабинет">×</button></div>
+    <section id="civic-editor" class="civic-drawer" hidden data-t-attr="aria-label:shell.editor.title">
+      <div class="civic-box-head"><h2 data-t="shell.editor.title"></h2><button type="button" class="civic-close" data-close="editor" data-t-attr="aria-label:shell.editor.close">×</button></div>
       <div id="civic-editor-root" class="civic-slot civic-drawer-body"></div>
     </section>
-    <section id="civic-moderation" class="civic-drawer" hidden aria-label="Сообщения жителей">
-      <div class="civic-box-head"><h2>Сообщения жителей</h2><button type="button" class="civic-close" data-close="moderation" aria-label="Закрыть модерацию">×</button></div>
+    <section id="civic-moderation" class="civic-drawer" hidden data-t-attr="aria-label:shell.moderation.title">
+      <div class="civic-box-head"><h2 data-t="shell.moderation.title"></h2><button type="button" class="civic-close" data-close="moderation" data-t-attr="aria-label:shell.moderation.close">×</button></div>
       <div id="civic-moderation-root" class="civic-slot civic-drawer-body"></div>
     </section>
-    <section id="civic-scenarios" class="civic-drawer" hidden aria-label="Сравнение ограничений">
-      <div class="civic-box-head"><h2>Сравнение ограничений</h2><button type="button" class="civic-close" data-close="scenarios" aria-label="Закрыть сравнение">×</button></div>
+    <section id="civic-scenarios" class="civic-drawer" hidden data-t-attr="aria-label:shell.scenarios.title">
+      <div class="civic-box-head"><h2 data-t="shell.scenarios.title"></h2><button type="button" class="civic-close" data-close="scenarios" data-t-attr="aria-label:shell.scenarios.close">×</button></div>
       <p class="civic-note civic-scenario-limits">Сравните два варианта перекрытия на пешеходной сети. Расчёт показывает изменение длины пути; неизвестный доступ исключён. Это гипотеза, не прогноз пробок и не официальное перекрытие.</p>
       <div class="civic-drawer-body">
         <div id="civic-scenarios-root" class="civic-slot"></div>
@@ -217,6 +220,32 @@
     </section>`;
   document.body.append(root);
 
+  // ---------------------------------------------------------------- тексты на языке интерфейса (раунд 14)
+  // Строка «Открыта запись: …» на текущем языке.
+  function selectedViewText() {
+    return S.selectedTitle ? T("shell.view.object", { title: S.selectedTitle }) : T("shell.view.object_untitled");
+  }
+  // Подписи оболочки ([data-t], [data-t-attr]) и строки состояния; при ҚАЗ/РУС — заново.
+  // Модули ролей внутри панели перерисовывают свои тексты сами (BirgeI18n.onChange).
+  function relabelShell() {
+    for (const node of [root, ...root.querySelectorAll("[data-t-attr]")]) {
+      if (!node.dataset?.tAttr) continue;
+      for (const pair of node.dataset.tAttr.split(";")) {
+        const [attr, key] = pair.split(":");
+        node.setAttribute(attr, T(key));
+      }
+    }
+    for (const node of root.querySelectorAll("[data-t]")) node.textContent = T(node.dataset.t);
+    const handle = $c("civic-sheet-handle");
+    handle?.setAttribute("aria-label", T(S.sheet === "full" ? "shell.sheet.collapse" : "shell.sheet.expand"));
+    if (S.mode !== "civic") return;
+    describeData();
+    if (S.selected) S.mounted.explore?.setView?.(selectedViewText(), "object");
+    else if (S.view) S.mounted.explore?.setView?.(S.view.render(), S.view.kind);
+  }
+  relabelShell();
+  window.BirgeI18n?.onChange?.(relabelShell);
+
   // Role modules only (R03 map, R04 editor, R06 feedback, R07 scenarios, R09 assistant). The R01
   // fallbacks used before the deliveries were removed once the modules were integrated: one
   // implementation per function. A missing module is reported, never silently replaced.
@@ -225,11 +254,8 @@
     scenarios: window.CivicScenarios, assistant: window.CivicAssistant, scenarioAssistant: window.CivicAssistant,
   })[name] || null;
   const isFallback = () => false;
-  const MODULE_MISSING = {
-    map: "Модуль карты и карточек (R03) не загружен.", editor: "Кабинет редактора (R04) не загружен.",
-    feedback: "Форма сообщений (R06) не загружена.", scenarios: "Модуль сравнения (R07) не загружен.",
-    assistant: "Помощник (R09) не загружен.",
-  };
+  // Нет файла модуля / модуль упал при запуске: без технических слов (UX_BRIEF правило 4); подробности — в консоли.
+  const errorLine = (key) => el("p", { class: "civic-error", "data-t": key }, T(key));
 
   function currentMap() {
     return typeof mapReady !== "undefined" && mapReady && typeof map !== "undefined" ? map : null;
@@ -242,7 +268,7 @@
     box.dataset.kind = kind || "info";
     box.append(el("span", null, text));
     if (kind === "error") {
-      const retry = el("button", { type: "button", class: "text-button" }, "Повторить");
+      const retry = el("button", { type: "button", class: "text-button" }, T("common.action.retry"));
       retry.addEventListener("click", () => { void loadModules().then(() => remountAll()); });
       box.append(retry);
     }
@@ -258,7 +284,8 @@
     destroyMounted(name);
     const module = moduleFor(name);
     if (!module || typeof module.mount !== "function") {
-      rootNode.replaceChildren(el("p", { class: "civic-error" }, MODULE_MISSING[name] || "Модуль не загружен."));
+      console.warn("civic module not loaded:", name);
+      rootNode.replaceChildren(errorLine("shell.module.missing"));
       return null;
     }
     try {
@@ -267,7 +294,7 @@
       return S.mounted[name];
     } catch (error) {
       console.error("civic mount", name, error);
-      rootNode.replaceChildren(el("p", { class: "civic-error" }, "Модуль не запустился. Обновите страницу или вернитесь позже."));
+      rootNode.replaceChildren(errorLine("shell.module.failed"));
       return null;
     }
   }
@@ -284,10 +311,10 @@
   function describeData() {
     const note = $c("civic-data-note");
     const store = S.modules?.store?.status;
-    if (store === "ready") note.textContent = "Показаны только опубликованные записи. У каждой карточки — источник, тип сведений и история сроков.";
+    if (store === "ready") note.textContent = T("shell.panel.note");
     else note.textContent = "";
-    if (!S.modules) stateLine("Сервер городской платформы не отвечает.", "error");
-    else if (store !== "ready") stateLine("Сервис объектов не подключён в этой сборке: карта работ пока пуста. Учебная модель и школы доступны в переключателе сверху.", "warn");
+    if (!S.modules) stateLine(T("shell.state.no_server"), "error");
+    else if (store !== "ready") stateLine(T("shell.state.no_store"), "warn");
     else stateLine("");
     $c("civic-staff-button").hidden = store !== "ready";
     const scenarios = S.modules?.scenarios?.status === "ready" && !!moduleFor("scenarios");
@@ -325,7 +352,7 @@
   // R03 >= round 13 sends the loaded card (with geometry) here; no second GET /objects/{id} needed.
   function onDetail(detail) {
     if (!detail || detail.id !== S.selected) return;
-    if (detail.title) S.mounted.explore?.setView?.("Открыта запись: " + detail.title, "object");
+    if (detail.title) { S.selectedTitle = detail.title; S.mounted.explore?.setView?.(T("shell.view.object", { title: detail.title }), "object"); }
   }
   // Признак модуля карты раунда 13: он сам держит камеру (getPadding/getPitch) и ввод (setInteractionEnabled).
   const r03Camera = () => typeof S.mounted.map?.setInteractionEnabled === "function";
@@ -340,7 +367,7 @@
   function onSelect(item, info) {
     if (item && info?.source === "map" && mapToolActive()) {
       setTimeout(() => S.mounted.map?.selectObject?.(null), 0);  // not inside R03's own selectObject
-      if (!S.toolHintShown) { S.toolHintShown = true; toastSafe("Пока открыт инструмент на карте, щелчок не открывает карточки объектов."); }
+      if (!S.toolHintShown) { S.toolHintShown = true; toastSafe(T("shell.tool.click_hint")); }
       return;
     }
     const id = item && typeof item === "object" ? item.id : item;
@@ -352,13 +379,14 @@
         : request("GET", "/objects/" + encodeURIComponent(id)).then((data) => data?.item || null, () => null);
       located.then((it) => {
         if (S.selected !== id) return;
-        if (!item?.title && it?.title) S.mounted.explore?.setView?.("Открыта запись: " + it.title, "object");
+        if (!item?.title && it?.title) { S.selectedTitle = it.title; S.mounted.explore?.setView?.(T("shell.view.object", { title: it.title }), "object"); }
         const box = it?.geometry ? window.CivicExplore.bounds(it.geometry) : null;
         if (box) keepVisible([(box[0] + box[2]) / 2, (box[1] + box[3]) / 2]);
       });
     }
-    if (S.selected) S.mounted.explore?.setView?.("Открыта запись" + (item?.title ? ": " + item.title : ""), "object");
-    else S.mounted.explore?.setView?.(S.view?.text || "", S.view?.kind || "");
+    S.selectedTitle = S.selected ? item?.title || null : null;
+    if (S.selected) S.mounted.explore?.setView?.(selectedViewText(), "object");
+    else S.mounted.explore?.setView?.(S.view?.render?.() || "", S.view?.kind || "");
     const hash = S.selected ? "#object=" + encodeURIComponent(S.selected) : "";
     if (location.hash !== hash) history.replaceState(null, "", location.pathname + location.search + hash);
     closeFeedback();
@@ -399,7 +427,7 @@
   }
   function openFeedback(target) {
     if (S.modules?.feedback?.status !== "ready") {
-      toastSafe("Отправка сообщений пока не подключена в этой сборке.");
+      toastSafe(T("shell.feedback.unavailable"));
       return;
     }
     const objectId = target && typeof target === "object" ? (target.objectId ?? target.object_id ?? target.id ?? null) : (typeof target === "string" ? target : null);
@@ -493,7 +521,7 @@
         onOpenObject: (objectId) => { closeModeration(); S.selected = objectId; S.mounted.map?.selectObject?.(objectId); } }) || {};
     } catch (error) {
       console.error("civic moderation", error);
-      $c("civic-moderation-root").replaceChildren(el("p", { class: "civic-error" }, "Очередь сообщений не запустилась."));
+      $c("civic-moderation-root").replaceChildren(errorLine("shell.moderation.failed"));
     }
     $c("civic-moderation").querySelector(".civic-close")?.focus();
   }
@@ -580,7 +608,7 @@
     document.body.dataset.civicSheet = S.sheet;
     const handle = $c("civic-sheet-handle");
     handle.setAttribute("aria-expanded", String(S.sheet === "full"));
-    handle.setAttribute("aria-label", S.sheet === "full" ? "Свернуть панель" : "Развернуть панель");
+    handle.setAttribute("aria-label", T(S.sheet === "full" ? "shell.sheet.collapse" : "shell.sheet.expand"));
   }
   root.addEventListener("click", (event) => {
     const close = event.target.closest("[data-close]");
@@ -674,14 +702,15 @@
   }
 
   // The navigation box names what the camera shows; an open record overrides it until the card closes.
-  function showView(text, kind) {
-    S.view = { text, kind };
-    if (!S.selected) S.mounted.explore?.setView?.(text, kind);
+  // render — функция, дающая строку на текущем языке: при ҚАЗ/РУС строка пересчитывается (relabelShell).
+  function showView(render, kind) {
+    S.view = { render: typeof render === "function" ? render : () => render, kind };
+    if (!S.selected) S.mounted.explore?.setView?.(S.view.render(), kind);
   }
   function civicCamera() {
     const m = currentMap();
     if (!m) return;
-    showView("Обзор: вся Астана", "city");
+    showView(() => T("shell.view.city"), "city");
     const padding = freeArea();
     try {
       const bounds = typeof cityBounds === "function" ? cityBounds() : null;
@@ -714,8 +743,8 @@
         const layers = (S.mounted.map?.layerIds?.() || []).filter((id) => m.getLayer(id));
         let n = 0;
         try { n = new Set(m.queryRenderedFeatures({ layers }).map((f) => f.properties?.cid).filter(Boolean)).size; } catch { n = 0; }
-        if (S.recordCount === 0) showView(label + " · реестр пуст", kind);
-        else showView(label + (n ? ` · записей в кадре: ${n}` : " · в кадре опубликованных записей нет (это не значит, что работ нет)"), kind);
+        if (S.recordCount === 0) showView(() => T("shell.view.registry_empty", { label: label() }), kind);
+        else showView(() => T(n ? "shell.view.in_frame" : "shell.view.none_in_frame", { label: label(), n }), kind);
       }, 120));
     };
     const frame = (b, maxZoom) => {
@@ -741,7 +770,10 @@
         S.mounted.map?.setFilters?.({ area: !!feature });
         if (!feature) { civicCamera(); return; }
         const b = window.CivicExplore.bounds(feature.geometry);
-        const label = `Район ${feature.properties.name} (граница OSM)`;
+        const label = () => {
+          const key = "district." + feature.properties.id, name = T(key);
+          return T("shell.view.district", { name: name !== key ? name : feature.properties.name });
+        };
         showView(label, "district");
         reportFrame(label, "district");
         roomy(() => frame(b, 13.7));
@@ -749,8 +781,9 @@
       onStreet: (street) => {
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: true });
-        showView(`Улица: ${street.name}`, "street");
-        reportFrame(`Улица: ${street.name}`, "street");
+        const label = () => T("shell.view.street", { name: street.name });
+        showView(label, "street");
+        reportFrame(label, "street");
         roomy(() => frame(street.bbox, 16));
       },
       onObjects: () => {
@@ -758,8 +791,8 @@
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: false });
         roomy(() => {
-          if (fitAllObjects()) showView("Все опубликованные записи на карте", "objects");
-          else toastSafe(S.recordCount === 0 ? "В реестре пока нет опубликованных записей." : "Нет объектов с координатами для выбранных фильтров.");
+          if (fitAllObjects()) showView(() => T("shell.view.objects"), "objects");
+          else toastSafe(T(S.recordCount === 0 ? "shell.objects.none" : "shell.objects.no_coords"));
         });
       },
     });

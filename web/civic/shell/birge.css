@@ -31,8 +31,9 @@ body[data-birge-mode="resident"] #civic-moderation-button { display: none !impor
 .birge-day-empty .bk-btn { margin-top: var(--s-4, 16px); }
 body[data-birge-section="day"].civic-mode #civic-root { visibility: hidden; }
 
-/* Телефон (UX_SPEC §1): [логотип] [≡ Меню] [ҚАЗ|РУС]; разделы и «Акимат / Житель» — в выпадающем листе. */
-@media (max-width: 760px) {
+/* Ниже 1024 px — телефонная схема шапки (UX_SPEC §1): [логотип] [≡ Меню] [ҚАЗ|РУС];
+ * разделы и «Акимат / Житель» — в выпадающем листе под шапкой. */
+@media (max-width: 1023px) {
   .civic-mode #birge-header { gap: var(--s-2, 8px); }
   #birge-header .birge-menu-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 12px; }
   #birge-header .bk-seg > button { padding-left: 10px; padding-right: 10px; }
@@ -41,11 +42,15 @@ body[data-birge-section="day"].civic-mode #civic-root { visibility: hidden; }
   body[data-birge-menu="open"] .topbar { z-index: 45; }
   #birge-header[data-menu="open"] .birge-menu {
     display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3, 12px);
-    position: fixed; z-index: 40; top: 80px; left: 8px; right: 8px; padding: var(--s-4, 16px);
+    position: fixed; z-index: 40; top: 104px; right: 20px; width: min(420px, calc(100vw - 40px)); padding: var(--s-4, 16px);
     border-radius: var(--r-l, 16px); background: var(--c-surface, #fff); box-shadow: var(--shadow-3, 0 12px 36px #15362833);
   }
   #birge-header[data-menu="open"] .birge-menu .bk-seg { display: flex; }
   #birge-header[data-menu="open"] .birge-menu .bk-seg > button { flex: 1; white-space: normal; } /* казахский длиннее */
+}
+/* Телефон: шапка ниже (как у shell.css), лист меню и «Картина дня» — во всю ширину с отступом 8 px. */
+@media (max-width: 760px) {
+  #birge-header[data-menu="open"] .birge-menu { top: 80px; left: 8px; right: 8px; width: auto; }
   .birge-day { top: 80px; left: 8px; right: 8px; bottom: 8px; padding: var(--s-4, 16px); }
 }
 @media (prefers-reduced-motion: reduce) { .birge-day { scroll-behavior: auto; } }

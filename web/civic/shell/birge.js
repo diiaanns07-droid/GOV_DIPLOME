@@ -4,7 +4,7 @@
  * Что делает этот файл:
  *  - шапка: логотип Birge, разделы «Карта | Картина дня», «Акимат | Житель», «ҚАЗ | РУС» (UX_SPEC R11 §1);
  *  - язык — через BirgeI18n (R11, web/civic/i18n/). Ключа ещё нет в словаре R11 — берём запасной текст
- *    из SHELL_TEXT ниже (ключи переданы R11 в research/round-14-results/R01/INTEGRATION.txt);
+ *    из shell-text.js (ключи переданы R11 в research/round-14-results/R01/INTEGRATION.txt);
  *  - режим «Акимат / Житель»: body[data-birge-mode], событие document "birge:mode", выбор запоминается;
  *  - раздел «Картина дня»: модуль R08 (window.BirgeAkim.mount), пока его нет — понятное «скоро будет»;
  *  - клиент API v2 для модулей: BirgeShell.api.v2(method, path, body).
@@ -19,62 +19,14 @@
   const SECTIONS = ["map", "day"];
   const PHONE = 761;                         // как в shell.js: уже 761 px — телефонная схема
 
-  // Запасные тексты оболочки. Источник истины — словари R11 (web/civic/i18n/ru.json, kk.json):
-  // когда ключ там появится, используется он. Казахский — предложение R01, проверяет R11 и владелец.
-  const SHELL_TEXT = {
-    ru: {
-      "shell.brand.tagline": "Город и жители вместе",
-      "shell.title": "Birge · Астана",
-      "shell.nav.label": "Разделы",
-      "common.nav.map": "Карта",
-      "common.nav.day": "Картина дня",
-      "common.nav.menu": "Меню",
-      "shell.day.soon_title": "Картина дня скоро появится",
-      "shell.day.soon_text": "Здесь будет сводка за день: темы обращений, районы, горячие места, просрочки и объекты с отставанием.",
-      "shell.day.back": "Вернуться к карте",
-      "shell.day.error_title": "Картину дня не удалось открыть",
-      "shell.day.error_text": "Попробуйте ещё раз через минуту.",
-      "shell.map.label": "Карта Астаны",
-      "common.lang.label": "Язык интерфейса",
-      "common.lang.ru": "РУС",
-      "common.lang.kk": "ҚАЗ",
-      "common.role.label": "Чей вид",
-      "common.role.akimat": "Акимат",
-      "common.role.resident": "Житель",
-      "common.action.retry": "Повторить",
-      "akim.title": "Картина дня",
-    },
-    kk: {
-      "shell.brand.tagline": "Қала мен тұрғындар бірге",
-      "shell.title": "Birge · Астана",
-      "shell.nav.label": "Бөлімдер",
-      "common.nav.map": "Карта",
-      "common.nav.day": "Күн қорытындысы",
-      "common.nav.menu": "Мәзір",
-      "shell.day.soon_title": "Күн қорытындысы жақында қосылады",
-      "shell.day.soon_text": "Мұнда күн қорытындысы болады: өтініш тақырыптары, аудандар, шағымы көп орындар, мерзімі өткен және кестеден қалып жатқан нысандар.",
-      "shell.day.back": "Картаға оралу",
-      "shell.day.error_title": "Күн қорытындысы ашылмады",
-      "shell.day.error_text": "Бір минуттан кейін қайталап көріңіз.",
-      "shell.map.label": "Астана картасы",
-      "common.lang.label": "Интерфейс тілі",
-      "common.lang.ru": "РУС",
-      "common.lang.kk": "ҚАЗ",
-      "common.role.label": "Кімнің көрінісі",
-      "common.role.akimat": "Әкімдік",
-      "common.role.resident": "Тұрғын",
-      "common.action.retry": "Қайталау",
-      "akim.title": "Күн қорытындысы",
-    },
-  };
-
+  // Тексты: сначала словари R11 (BirgeI18n), затем запасной словарь оболочки (shell-text.js, ru + kk).
   const i18n = () => window.BirgeI18n || null;
   const lang = () => (i18n() && typeof i18n().getLang === "function" ? i18n().getLang() : "ru");
   function t(key, params) {
     const I = i18n();
     if (I && typeof I.has === "function" && I.has(key)) return I.t(key, params);
-    const l = lang();
-    return (SHELL_TEXT[l] && SHELL_TEXT[l][key]) || SHELL_TEXT.ru[key] || key;
+    const T = window.BirgeShellText;
+    return T ? T.text(key, params, lang()) : key;
   }
 
   // ------------------------------------------------------------------ API v2

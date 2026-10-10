@@ -34,6 +34,8 @@ const freePort = () => new Promise((ok, no) => { const s = net.createServer().on
       await page.waitForFunction(() => window.CivicShell?.mode === "civic" && mapReady && window.CivicShell.modules?.scenarios, null, { timeout: 40000 });
       const status = await page.evaluate(() => window.CivicShell.modules.scenarios.status);
       check(`[${tag}] scenarios module ready on server`, status === "ready", status);
+      // Round 14: a phone opens in the resident view where akimat tools are hidden; this smoke tests the tool itself.
+      if (w < 761) await page.evaluate(() => window.BirgeShell?.setMode("akimat"));
       if (w < 761) await page.click("#civic-sheet-handle");
       await page.click("#civic-scenarios-button");
       await page.waitForSelector("#civic-scenarios-root .civic-r07-panel select", { timeout: 15000 });
