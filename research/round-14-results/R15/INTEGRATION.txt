@@ -26,6 +26,14 @@ R15 (раунд 14) — INTEGRATION: исправления безопаснос
   python -m pytest tests/civic/R15 -q -rxX
   # затем R01 переносит ID в FIXED (tests/civic/R15/r15_common.py) и снимает xfail — или пишет R15, сделаю я.
 
+УТРО 11 окт — состояние FINAL-кандидата R01 2b9e837 (ветка claude/sharp-dijkstra-0t87gl, голова 13ae790):
+  - применены P-R01 P-R09 P-R07 P-R04 P-R02 — файлы побайтно равны patches/*.diff (проверено R15);
+  - тесты R15 (последняя версия из claude/r14-R15) на 13ae790: 115 passed, 5 xfailed — открыты только S15 и S16;
+  - что осталось R01: (1) применить P-R06 (S15, мелочь); (2) взять текущий R05 (S16: в сборке закреплён
+    R05 b0353ee, у R05 crypto с 7f42cb3; P-R05 тогда не нужен); (3) обновить tests/civic/R15 из claude/r14-R15:
+    git checkout origin/claude/r14-R15 -- tests/civic/R15  (в копии R01 нет тестов S15/S16 и механизма PENDING;
+    FIXED в моей ветке уже совпадает с копией R01).
+
 НОЧЬ 10→11 окт — что уже исправили сами владельцы (тогда соответствующий patch НЕ нужен):
   - S11: R07 @ 597ec4f (ветка claude/upbeat-knuth-i0rqaa) — тот же подход, что P-R07. Берите R07 597ec4f, P-R07 не применять.
   - S16: R05 с 7f42cb3 (ветка claude/r14-R05) — crypto.getRandomValues. В сборке закреплён старый R05 b0353ee;
