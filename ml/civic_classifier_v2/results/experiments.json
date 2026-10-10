@@ -1,0 +1,3756 @@
+{
+ "format": "birge-clf-v2-experiments",
+ "labels": [
+  "roads",
+  "snow_ice",
+  "sidewalks",
+  "transport",
+  "lighting",
+  "yards",
+  "waste",
+  "utilities",
+  "smell_air",
+  "noise_safety",
+  "parking",
+  "other"
+ ],
+ "regimes": [
+  "synth_v1",
+  "synth_template",
+  "synth_llm",
+  "synth_all",
+  "human",
+  "mix"
+ ],
+ "runs": {
+  "synth_v1/heuristic": {
+   "regime": "synth_v1",
+   "model": "heuristic",
+   "status": "OK",
+   "eval": {
+    "synth_test_template": {
+     "n": 656,
+     "accuracy": 0.7454,
+     "macro_f1": 0.7306,
+     "weighted_f1": 0.7387,
+     "classes_in_set": 12,
+     "per_class": {
+      "roads": {
+       "precision": 0.8551,
+       "recall": 0.6705,
+       "f1": 0.7516,
+       "support": 88,
+       "predicted": 69
+      },
+      "snow_ice": {
+       "precision": 0.9219,
+       "recall": 0.8939,
+       "f1": 0.9077,
+       "support": 66,
+       "predicted": 64
+      },
+      "sidewalks": {
+       "precision": 1.0,
+       "recall": 0.3485,
+       "f1": 0.5169,
+       "support": 66,
+       "predicted": 23
+      },
+      "transport": {
+       "precision": 0.7349,
+       "recall": 0.9242,
+       "f1": 0.8188,
+       "support": 66,
+       "predicted": 83
+      },
+      "lighting": {
+       "precision": 0.6721,
+       "recall": 0.9535,
+       "f1": 0.7885,
+       "support": 43,
+       "predicted": 61
+      },
+      "yards": {
+       "precision": 0.8026,
+       "recall": 0.9242,
+       "f1": 0.8592,
+       "support": 66,
+       "predicted": 76
+      },
+      "waste": {
+       "precision": 0.9697,
+       "recall": 0.7273,
+       "f1": 0.8312,
+       "support": 44,
+       "predicted": 33
+      },
+      "utilities": {
+       "precision": 0.4737,
+       "recall": 0.4186,
+       "f1": 0.4444,
+       "support": 43,
+       "predicted": 38
+      },
+      "smell_air": {
+       "precision": 1.0,
+       "recall": 0.9318,
+       "f1": 0.9647,
+       "support": 44,
+       "predicted": 41
+      },
+      "noise_safety": {
+       "precision": 0.525,
+       "recall": 0.9767,
+       "f1": 0.6829,
+       "support": 43,
+       "predicted": 80
+      },
+      "parking": {
+       "precision": 1.0,
+       "recall": 0.4545,
+       "f1": 0.625,
+       "support": 44,
+       "predicted": 20
+      },
+      "other": {
+       "precision": 0.4706,
+       "recall": 0.7442,
+       "f1": 0.5766,
+       "support": 43,
+       "predicted": 68
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "snow_ice",
+       "sidewalks",
+       "transport",
+       "lighting",
+       "yards",
+       "waste",
+       "utilities",
+       "smell_air",
+       "noise_safety",
+       "parking",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        59,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        20,
+        0,
+        0,
+        0,
+        7
+       ],
+       [
+        1,
+        59,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        6
+       ],
+       [
+        1,
+        1,
+        23,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        38,
+        0,
+        2
+       ],
+       [
+        0,
+        0,
+        0,
+        61,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        41,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+       ],
+       [
+        0,
+        1,
+        0,
+        0,
+        0,
+        61,
+        1,
+        0,
+        0,
+        0,
+        0,
+        3
+       ],
+       [
+        0,
+        1,
+        0,
+        0,
+        0,
+        10,
+        32,
+        0,
+        0,
+        0,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        20,
+        0,
+        0,
+        18,
+        0,
+        0,
+        0,
+        5
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        41,
+        0,
+        0,
+        3
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        42,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        22,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        20,
+        2
+       ],
+       [
+        8,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        32
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci": {
+      "macro_f1": {
+       "low": 0.5704,
+       "high": 0.8565
+      },
+      "accuracy": {
+       "low": 0.6164,
+       "high": 0.8593
+      },
+      "n_boot": 2000,
+      "level": 0.95,
+      "unit": "groups (n=30)",
+      "seed": 20261011
+     },
+     "slices": {
+      "lang": {
+       "kk": {
+        "n": 258,
+        "accuracy": 0.6085,
+        "macro_f1": 0.5486
+       },
+       "mixed": {
+        "n": 66,
+        "accuracy": 0.7424,
+        "macro_f1": 0.7436
+       },
+       "ru": {
+        "n": 332,
+        "accuracy": 0.8524,
+        "macro_f1": 0.8477
+       }
+      },
+      "style": {
+       "colloquial": {
+        "n": 272,
+        "accuracy": 0.7757,
+        "macro_f1": 0.7753
+       },
+       "long": {
+        "n": 78,
+        "accuracy": 0.7564,
+        "macro_f1": 0.7043
+       },
+       "official": {
+        "n": 112,
+        "accuracy": 0.8214,
+        "macro_f1": 0.7587
+       },
+       "question": {
+        "n": 15,
+        "accuracy": 0.9333,
+        "macro_f1": 0.9655
+       },
+       "slang": {
+        "n": 42,
+        "accuracy": 0.8095,
+        "macro_f1": 0.7249
+       },
+       "translit": {
+        "n": 43,
+        "accuracy": 0.1628,
+        "macro_f1": 0.0233
+       },
+       "typos": {
+        "n": 94,
+        "accuracy": 0.766,
+        "macro_f1": 0.755
+       }
+      },
+      "hard": {
+       "False": {
+        "n": 439,
+        "accuracy": 0.8018,
+        "macro_f1": 0.7731
+       },
+       "True": {
+        "n": 217,
+        "accuracy": 0.6313,
+        "macro_f1": 0.6885
+       }
+      }
+     }
+    },
+    "synth_test_v1": {
+     "n": 631,
+     "accuracy": 0.794,
+     "macro_f1": 0.7725,
+     "weighted_f1": 0.825,
+     "classes_in_set": 10,
+     "per_class": {
+      "roads": {
+       "precision": 0.9906,
+       "recall": 0.7394,
+       "f1": 0.8468,
+       "support": 142,
+       "predicted": 106
+      },
+      "snow_ice": {
+       "precision": 1.0,
+       "recall": 0.9062,
+       "f1": 0.9508,
+       "support": 32,
+       "predicted": 29
+      },
+      "sidewalks": {
+       "precision": 1.0,
+       "recall": 0.8545,
+       "f1": 0.9216,
+       "support": 110,
+       "predicted": 94
+      },
+      "transport": {
+       "precision": 1.0,
+       "recall": 0.963,
+       "f1": 0.9811,
+       "support": 81,
+       "predicted": 78
+      },
+      "lighting": {
+       "precision": 0.9206,
+       "recall": 0.8657,
+       "f1": 0.8923,
+       "support": 67,
+       "predicted": 63
+      },
+      "yards": {
+       "precision": 0.6961,
+       "recall": 0.7553,
+       "f1": 0.7245,
+       "support": 94,
+       "predicted": 102
+      },
+      "waste": {
+       "precision": 0.7143,
+       "recall": 1.0,
+       "f1": 0.8333,
+       "support": 5,
+       "predicted": 7
+      },
+      "utilities": {
+       "precision": 1.0,
+       "recall": 0.6863,
+       "f1": 0.814,
+       "support": 51,
+       "predicted": 35
+      },
+      "smell_air": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 0,
+       "predicted": 0
+      },
+      "noise_safety": {
+       "precision": 0.4054,
+       "recall": 0.9375,
+       "f1": 0.566,
+       "support": 16,
+       "predicted": 37
+      },
+      "parking": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 0,
+       "predicted": 0
+      },
+      "other": {
+       "precision": 0.1375,
+       "recall": 0.3333,
+       "f1": 0.1947,
+       "support": 33,
+       "predicted": 80
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "snow_ice",
+       "sidewalks",
+       "transport",
+       "lighting",
+       "yards",
+       "waste",
+       "utilities",
+       "smell_air",
+       "noise_safety",
+       "parking",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        105,
+        0,
+        0,
+        0,
+        5,
+        1,
+        0,
+        0,
+        0,
+        4,
+        0,
+        27
+       ],
+       [
+        0,
+        29,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        0,
+        94,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        9,
+        0,
+        4
+       ],
+       [
+        0,
+        0,
+        0,
+        78,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        58,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        71,
+        2,
+        0,
+        0,
+        5,
+        0,
+        16
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        35,
+        0,
+        0,
+        0,
+        14
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        15,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        19,
+        0,
+        0,
+        0,
+        3,
+        0,
+        11
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci": {
+      "macro_f1": {
+       "low": 0.6977,
+       "high": 0.8457
+      },
+      "accuracy": {
+       "low": 0.7026,
+       "high": 0.875
+      },
+      "n_boot": 2000,
+      "level": 0.95,
+      "unit": "groups (n=44)",
+      "seed": 20261011
+     },
+     "slices": {
+      "lang": {
+       "kk": {
+        "n": 249,
+        "accuracy": 0.7912,
+        "macro_f1": 0.755
+       },
+       "mixed": {
+        "n": 79,
+        "accuracy": 0.9114,
+        "macro_f1": 0.9442
+       },
+       "ru": {
+        "n": 303,
+        "accuracy": 0.7657,
+        "macro_f1": 0.7819
+       }
+      },
+      "style": {
+       "dogs": {
+        "n": 16,
+        "accuracy": 0.9375,
+        "macro_f1": 0.9677
+       },
+       "fence": {
+        "n": 15,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "flowers": {
+        "n": 14,
+        "accuracy": 0.8571,
+        "macro_f1": 0.9231
+       },
+       "frame": {
+        "n": 32,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "ice_water": {
+        "n": 32,
+        "accuracy": 0.9688,
+        "macro_f1": 0.9839
+       },
+       "lamps_off": {
+        "n": 15,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "landscaping_short": {
+        "n": 2,
+        "accuracy": 0.5,
+        "macro_f1": 0.6667
+       },
+       "lexicon_frame": {
+        "n": 239,
+        "accuracy": 0.7322,
+        "macro_f1": 0.6996
+       },
+       "lighting_short": {
+        "n": 4,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "marking": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "no_sidewalk": {
+        "n": 31,
+        "accuracy": 0.9677,
+        "macro_f1": 0.9836
+       },
+       "pavilion": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "question": {
+        "n": 14,
+        "accuracy": 0.6429,
+        "macro_f1": 0.7826
+       },
+       "shelter": {
+        "n": 16,
+        "accuracy": 0.9375,
+        "macro_f1": 0.9677
+       },
+       "signs": {
+        "n": 15,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "speed_bump": {
+        "n": 15,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "stop_snow": {
+        "n": 16,
+        "accuracy": 0.8125,
+        "macro_f1": 0.8966
+       },
+       "stops_short": {
+        "n": 1,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "thanks": {
+        "n": 13,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "tiles": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "traffic_light": {
+        "n": 48,
+        "accuracy": 0.875,
+        "macro_f1": 0.9333
+       },
+       "utilities": {
+        "n": 31,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "yard": {
+        "n": 14,
+        "accuracy": 0.9286,
+        "macro_f1": 0.963
+       }
+      },
+      "hard": {
+       "False": {
+        "n": 572,
+        "accuracy": 0.8112,
+        "macro_f1": 0.7734
+       },
+       "True": {
+        "n": 59,
+        "accuracy": 0.6271,
+        "macro_f1": 0.7881
+       }
+      }
+     }
+    }
+   },
+   "train": {
+    "n_train": 1512,
+    "n_val": 581,
+    "seconds": 0.1,
+    "synthetic_sources": [
+     "v1_in_v2"
+    ]
+   }
+  },
+  "synth_v1/logreg": {
+   "regime": "synth_v1",
+   "model": "logreg",
+   "status": "OK",
+   "eval": {
+    "synth_test_template": {
+     "n": 656,
+     "accuracy": 0.6341,
+     "macro_f1": 0.5478,
+     "weighted_f1": 0.5904,
+     "classes_in_set": 12,
+     "per_class": {
+      "roads": {
+       "precision": 0.7778,
+       "recall": 0.6364,
+       "f1": 0.7,
+       "support": 88,
+       "predicted": 72
+      },
+      "snow_ice": {
+       "precision": 0.8676,
+       "recall": 0.8939,
+       "f1": 0.8806,
+       "support": 66,
+       "predicted": 68
+      },
+      "sidewalks": {
+       "precision": 0.6289,
+       "recall": 0.9242,
+       "f1": 0.7485,
+       "support": 66,
+       "predicted": 97
+      },
+      "transport": {
+       "precision": 0.5536,
+       "recall": 0.9394,
+       "f1": 0.6966,
+       "support": 66,
+       "predicted": 112
+      },
+      "lighting": {
+       "precision": 0.6721,
+       "recall": 0.9535,
+       "f1": 0.7885,
+       "support": 43,
+       "predicted": 61
+      },
+      "yards": {
+       "precision": 0.7439,
+       "recall": 0.9242,
+       "f1": 0.8243,
+       "support": 66,
+       "predicted": 82
+      },
+      "waste": {
+       "precision": 0.96,
+       "recall": 0.5455,
+       "f1": 0.6957,
+       "support": 44,
+       "predicted": 25
+      },
+      "utilities": {
+       "precision": 0.2212,
+       "recall": 0.5349,
+       "f1": 0.3129,
+       "support": 43,
+       "predicted": 104
+      },
+      "smell_air": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 44,
+       "predicted": 0
+      },
+      "noise_safety": {
+       "precision": 1.0,
+       "recall": 0.5116,
+       "f1": 0.6769,
+       "support": 43,
+       "predicted": 22
+      },
+      "parking": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 44,
+       "predicted": 0
+      },
+      "other": {
+       "precision": 0.5385,
+       "recall": 0.1628,
+       "f1": 0.25,
+       "support": 43,
+       "predicted": 13
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "snow_ice",
+       "sidewalks",
+       "transport",
+       "lighting",
+       "yards",
+       "waste",
+       "utilities",
+       "smell_air",
+       "noise_safety",
+       "parking",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        56,
+        6,
+        0,
+        0,
+        0,
+        4,
+        0,
+        22,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        59,
+        0,
+        0,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        1,
+        61,
+        0,
+        0,
+        1,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        62,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        41,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        1,
+        0,
+        0,
+        0,
+        61,
+        1,
+        3,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        1,
+        0,
+        8,
+        0,
+        10,
+        24,
+        1,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        20,
+        0,
+        0,
+        23,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        7,
+        0,
+        14,
+        0,
+        0,
+        3,
+        0,
+        14,
+        0,
+        0,
+        0,
+        6
+       ],
+       [
+        0,
+        0,
+        20,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        22,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        42,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        7,
+        0,
+        2,
+        0,
+        0,
+        3,
+        0,
+        24,
+        0,
+        0,
+        0,
+        7
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci": {
+      "macro_f1": {
+       "low": 0.4239,
+       "high": 0.6753
+      },
+      "accuracy": {
+       "low": 0.4855,
+       "high": 0.7664
+      },
+      "n_boot": 2000,
+      "level": 0.95,
+      "unit": "groups (n=30)",
+      "seed": 20261011
+     },
+     "ece": 0.2474,
+     "slices": {
+      "lang": {
+       "kk": {
+        "n": 258,
+        "accuracy": 0.5388,
+        "macro_f1": 0.481
+       },
+       "mixed": {
+        "n": 66,
+        "accuracy": 0.5455,
+        "macro_f1": 0.478
+       },
+       "ru": {
+        "n": 332,
+        "accuracy": 0.7259,
+        "macro_f1": 0.5843
+       }
+      },
+      "style": {
+       "colloquial": {
+        "n": 272,
+        "accuracy": 0.6029,
+        "macro_f1": 0.568
+       },
+       "long": {
+        "n": 78,
+        "accuracy": 0.6795,
+        "macro_f1": 0.5374
+       },
+       "official": {
+        "n": 112,
+        "accuracy": 0.9018,
+        "macro_f1": 0.8254
+       },
+       "question": {
+        "n": 15,
+        "accuracy": 0.4,
+        "macro_f1": 0.5714
+       },
+       "slang": {
+        "n": 42,
+        "accuracy": 0.7619,
+        "macro_f1": 0.5914
+       },
+       "translit": {
+        "n": 43,
+        "accuracy": 0.1163,
+        "macro_f1": 0.0174
+       },
+       "typos": {
+        "n": 94,
+        "accuracy": 0.5851,
+        "macro_f1": 0.4833
+       }
+      },
+      "hard": {
+       "False": {
+        "n": 439,
+        "accuracy": 0.7631,
+        "macro_f1": 0.7101
+       },
+       "True": {
+        "n": 217,
+        "accuracy": 0.3733,
+        "macro_f1": 0.4302
+       }
+      }
+     }
+    },
+    "synth_test_v1": {
+     "n": 631,
+     "accuracy": 0.8605,
+     "macro_f1": 0.836,
+     "weighted_f1": 0.8574,
+     "classes_in_set": 10,
+     "per_class": {
+      "roads": {
+       "precision": 0.991,
+       "recall": 0.7746,
+       "f1": 0.8696,
+       "support": 142,
+       "predicted": 111
+      },
+      "snow_ice": {
+       "precision": 1.0,
+       "recall": 0.5938,
+       "f1": 0.7451,
+       "support": 32,
+       "predicted": 19
+      },
+      "sidewalks": {
+       "precision": 0.9153,
+       "recall": 0.9818,
+       "f1": 0.9474,
+       "support": 110,
+       "predicted": 118
+      },
+      "transport": {
+       "precision": 0.8587,
+       "recall": 0.9753,
+       "f1": 0.9133,
+       "support": 81,
+       "predicted": 92
+      },
+      "lighting": {
+       "precision": 0.9571,
+       "recall": 1.0,
+       "f1": 0.9781,
+       "support": 67,
+       "predicted": 70
+      },
+      "yards": {
+       "precision": 0.8061,
+       "recall": 0.8404,
+       "f1": 0.8229,
+       "support": 94,
+       "predicted": 98
+      },
+      "waste": {
+       "precision": 0.8333,
+       "recall": 1.0,
+       "f1": 0.9091,
+       "support": 5,
+       "predicted": 6
+      },
+      "utilities": {
+       "precision": 0.6076,
+       "recall": 0.9412,
+       "f1": 0.7385,
+       "support": 51,
+       "predicted": 79
+      },
+      "smell_air": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 0,
+       "predicted": 0
+      },
+      "noise_safety": {
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0,
+       "support": 16,
+       "predicted": 16
+      },
+      "parking": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 0,
+       "predicted": 0
+      },
+      "other": {
+       "precision": 0.5455,
+       "recall": 0.3636,
+       "f1": 0.4364,
+       "support": 33,
+       "predicted": 22
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "snow_ice",
+       "sidewalks",
+       "transport",
+       "lighting",
+       "yards",
+       "waste",
+       "utilities",
+       "smell_air",
+       "noise_safety",
+       "parking",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        110,
+        0,
+        9,
+        0,
+        3,
+        3,
+        0,
+        8,
+        0,
+        0,
+        0,
+        9
+       ],
+       [
+        0,
+        19,
+        0,
+        13,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        0,
+        108,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        1,
+        79,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        67,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        79,
+        1,
+        14,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        48,
+        0,
+        0,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        14,
+        0,
+        7,
+        0,
+        0,
+        0,
+        12
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci": {
+      "macro_f1": {
+       "low": 0.7027,
+       "high": 0.9041
+      },
+      "accuracy": {
+       "low": 0.7761,
+       "high": 0.9307
+      },
+      "n_boot": 2000,
+      "level": 0.95,
+      "unit": "groups (n=44)",
+      "seed": 20261011
+     },
+     "ece": 0.0443,
+     "slices": {
+      "lang": {
+       "kk": {
+        "n": 249,
+        "accuracy": 0.9036,
+        "macro_f1": 0.9146
+       },
+       "mixed": {
+        "n": 79,
+        "accuracy": 0.9367,
+        "macro_f1": 0.965
+       },
+       "ru": {
+        "n": 303,
+        "accuracy": 0.8053,
+        "macro_f1": 0.7217
+       }
+      },
+      "style": {
+       "dogs": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "fence": {
+        "n": 15,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "flowers": {
+        "n": 14,
+        "accuracy": 0.9286,
+        "macro_f1": 0.963
+       },
+       "frame": {
+        "n": 32,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "ice_water": {
+        "n": 32,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "lamps_off": {
+        "n": 15,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "landscaping_short": {
+        "n": 2,
+        "accuracy": 0.5,
+        "macro_f1": 0.6667
+       },
+       "lexicon_frame": {
+        "n": 239,
+        "accuracy": 0.9205,
+        "macro_f1": 0.9036
+       },
+       "lighting_short": {
+        "n": 4,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "marking": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "no_sidewalk": {
+        "n": 31,
+        "accuracy": 0.9677,
+        "macro_f1": 0.9836
+       },
+       "pavilion": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "question": {
+        "n": 14,
+        "accuracy": 0.5714,
+        "macro_f1": 0.7273
+       },
+       "shelter": {
+        "n": 16,
+        "accuracy": 0.9375,
+        "macro_f1": 0.9677
+       },
+       "signs": {
+        "n": 15,
+        "accuracy": 0.2,
+        "macro_f1": 0.3333
+       },
+       "speed_bump": {
+        "n": 15,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "stop_snow": {
+        "n": 16,
+        "accuracy": 0.1875,
+        "macro_f1": 0.3158
+       },
+       "stops_short": {
+        "n": 1,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "thanks": {
+        "n": 13,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "tiles": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "traffic_light": {
+        "n": 48,
+        "accuracy": 0.9375,
+        "macro_f1": 0.9677
+       },
+       "utilities": {
+        "n": 31,
+        "accuracy": 0.9355,
+        "macro_f1": 0.4833
+       },
+       "yard": {
+        "n": 14,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       }
+      },
+      "hard": {
+       "False": {
+        "n": 572,
+        "accuracy": 0.9038,
+        "macro_f1": 0.8748
+       },
+       "True": {
+        "n": 59,
+        "accuracy": 0.4407,
+        "macro_f1": 0.5802
+       }
+      }
+     }
+    }
+   },
+   "train": {
+    "n_train": 1512,
+    "n_val": 581,
+    "selection": {
+     "metric": "validation macro-F1",
+     "vocab_size": 7147,
+     "chosen": {
+      "C": 64.0,
+      "class_weight": "balanced",
+      "keyword_scale": 1.0
+     },
+     "candidates": [
+      {
+       "hyper": {
+        "C": 1.0,
+        "class_weight": null,
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.5833
+      },
+      {
+       "hyper": {
+        "C": 1.0,
+        "class_weight": "balanced",
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.7346
+      },
+      {
+       "hyper": {
+        "C": 4.0,
+        "class_weight": null,
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.6881
+      },
+      {
+       "hyper": {
+        "C": 4.0,
+        "class_weight": "balanced",
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.738
+      },
+      {
+       "hyper": {
+        "C": 16.0,
+        "class_weight": null,
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.691
+      },
+      {
+       "hyper": {
+        "C": 16.0,
+        "class_weight": "balanced",
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.7547
+      },
+      {
+       "hyper": {
+        "C": 64.0,
+        "class_weight": null,
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.6977
+      },
+      {
+       "hyper": {
+        "C": 64.0,
+        "class_weight": "balanced",
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.7594
+      }
+     ]
+    },
+    "seconds": 21.2,
+    "synthetic_sources": [
+     "v1_in_v2"
+    ]
+   }
+  },
+  "synth_template/heuristic": {
+   "regime": "synth_template",
+   "model": "heuristic",
+   "status": "OK",
+   "eval": {
+    "synth_test_template": {
+     "n": 656,
+     "accuracy": 0.7454,
+     "macro_f1": 0.7306,
+     "weighted_f1": 0.7387,
+     "classes_in_set": 12,
+     "per_class": {
+      "roads": {
+       "precision": 0.8551,
+       "recall": 0.6705,
+       "f1": 0.7516,
+       "support": 88,
+       "predicted": 69
+      },
+      "snow_ice": {
+       "precision": 0.9219,
+       "recall": 0.8939,
+       "f1": 0.9077,
+       "support": 66,
+       "predicted": 64
+      },
+      "sidewalks": {
+       "precision": 1.0,
+       "recall": 0.3485,
+       "f1": 0.5169,
+       "support": 66,
+       "predicted": 23
+      },
+      "transport": {
+       "precision": 0.7349,
+       "recall": 0.9242,
+       "f1": 0.8188,
+       "support": 66,
+       "predicted": 83
+      },
+      "lighting": {
+       "precision": 0.6721,
+       "recall": 0.9535,
+       "f1": 0.7885,
+       "support": 43,
+       "predicted": 61
+      },
+      "yards": {
+       "precision": 0.8026,
+       "recall": 0.9242,
+       "f1": 0.8592,
+       "support": 66,
+       "predicted": 76
+      },
+      "waste": {
+       "precision": 0.9697,
+       "recall": 0.7273,
+       "f1": 0.8312,
+       "support": 44,
+       "predicted": 33
+      },
+      "utilities": {
+       "precision": 0.4737,
+       "recall": 0.4186,
+       "f1": 0.4444,
+       "support": 43,
+       "predicted": 38
+      },
+      "smell_air": {
+       "precision": 1.0,
+       "recall": 0.9318,
+       "f1": 0.9647,
+       "support": 44,
+       "predicted": 41
+      },
+      "noise_safety": {
+       "precision": 0.525,
+       "recall": 0.9767,
+       "f1": 0.6829,
+       "support": 43,
+       "predicted": 80
+      },
+      "parking": {
+       "precision": 1.0,
+       "recall": 0.4545,
+       "f1": 0.625,
+       "support": 44,
+       "predicted": 20
+      },
+      "other": {
+       "precision": 0.4706,
+       "recall": 0.7442,
+       "f1": 0.5766,
+       "support": 43,
+       "predicted": 68
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "snow_ice",
+       "sidewalks",
+       "transport",
+       "lighting",
+       "yards",
+       "waste",
+       "utilities",
+       "smell_air",
+       "noise_safety",
+       "parking",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        59,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        20,
+        0,
+        0,
+        0,
+        7
+       ],
+       [
+        1,
+        59,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        6
+       ],
+       [
+        1,
+        1,
+        23,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        38,
+        0,
+        2
+       ],
+       [
+        0,
+        0,
+        0,
+        61,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        41,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+       ],
+       [
+        0,
+        1,
+        0,
+        0,
+        0,
+        61,
+        1,
+        0,
+        0,
+        0,
+        0,
+        3
+       ],
+       [
+        0,
+        1,
+        0,
+        0,
+        0,
+        10,
+        32,
+        0,
+        0,
+        0,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        20,
+        0,
+        0,
+        18,
+        0,
+        0,
+        0,
+        5
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        41,
+        0,
+        0,
+        3
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        42,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        22,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        20,
+        2
+       ],
+       [
+        8,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        32
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci": {
+      "macro_f1": {
+       "low": 0.5704,
+       "high": 0.8565
+      },
+      "accuracy": {
+       "low": 0.6164,
+       "high": 0.8593
+      },
+      "n_boot": 2000,
+      "level": 0.95,
+      "unit": "groups (n=30)",
+      "seed": 20261011
+     },
+     "slices": {
+      "lang": {
+       "kk": {
+        "n": 258,
+        "accuracy": 0.6085,
+        "macro_f1": 0.5486
+       },
+       "mixed": {
+        "n": 66,
+        "accuracy": 0.7424,
+        "macro_f1": 0.7436
+       },
+       "ru": {
+        "n": 332,
+        "accuracy": 0.8524,
+        "macro_f1": 0.8477
+       }
+      },
+      "style": {
+       "colloquial": {
+        "n": 272,
+        "accuracy": 0.7757,
+        "macro_f1": 0.7753
+       },
+       "long": {
+        "n": 78,
+        "accuracy": 0.7564,
+        "macro_f1": 0.7043
+       },
+       "official": {
+        "n": 112,
+        "accuracy": 0.8214,
+        "macro_f1": 0.7587
+       },
+       "question": {
+        "n": 15,
+        "accuracy": 0.9333,
+        "macro_f1": 0.9655
+       },
+       "slang": {
+        "n": 42,
+        "accuracy": 0.8095,
+        "macro_f1": 0.7249
+       },
+       "translit": {
+        "n": 43,
+        "accuracy": 0.1628,
+        "macro_f1": 0.0233
+       },
+       "typos": {
+        "n": 94,
+        "accuracy": 0.766,
+        "macro_f1": 0.755
+       }
+      },
+      "hard": {
+       "False": {
+        "n": 439,
+        "accuracy": 0.8018,
+        "macro_f1": 0.7731
+       },
+       "True": {
+        "n": 217,
+        "accuracy": 0.6313,
+        "macro_f1": 0.6885
+       }
+      }
+     }
+    },
+    "synth_test_v1": {
+     "n": 631,
+     "accuracy": 0.794,
+     "macro_f1": 0.7725,
+     "weighted_f1": 0.825,
+     "classes_in_set": 10,
+     "per_class": {
+      "roads": {
+       "precision": 0.9906,
+       "recall": 0.7394,
+       "f1": 0.8468,
+       "support": 142,
+       "predicted": 106
+      },
+      "snow_ice": {
+       "precision": 1.0,
+       "recall": 0.9062,
+       "f1": 0.9508,
+       "support": 32,
+       "predicted": 29
+      },
+      "sidewalks": {
+       "precision": 1.0,
+       "recall": 0.8545,
+       "f1": 0.9216,
+       "support": 110,
+       "predicted": 94
+      },
+      "transport": {
+       "precision": 1.0,
+       "recall": 0.963,
+       "f1": 0.9811,
+       "support": 81,
+       "predicted": 78
+      },
+      "lighting": {
+       "precision": 0.9206,
+       "recall": 0.8657,
+       "f1": 0.8923,
+       "support": 67,
+       "predicted": 63
+      },
+      "yards": {
+       "precision": 0.6961,
+       "recall": 0.7553,
+       "f1": 0.7245,
+       "support": 94,
+       "predicted": 102
+      },
+      "waste": {
+       "precision": 0.7143,
+       "recall": 1.0,
+       "f1": 0.8333,
+       "support": 5,
+       "predicted": 7
+      },
+      "utilities": {
+       "precision": 1.0,
+       "recall": 0.6863,
+       "f1": 0.814,
+       "support": 51,
+       "predicted": 35
+      },
+      "smell_air": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 0,
+       "predicted": 0
+      },
+      "noise_safety": {
+       "precision": 0.4054,
+       "recall": 0.9375,
+       "f1": 0.566,
+       "support": 16,
+       "predicted": 37
+      },
+      "parking": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 0,
+       "predicted": 0
+      },
+      "other": {
+       "precision": 0.1375,
+       "recall": 0.3333,
+       "f1": 0.1947,
+       "support": 33,
+       "predicted": 80
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "snow_ice",
+       "sidewalks",
+       "transport",
+       "lighting",
+       "yards",
+       "waste",
+       "utilities",
+       "smell_air",
+       "noise_safety",
+       "parking",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        105,
+        0,
+        0,
+        0,
+        5,
+        1,
+        0,
+        0,
+        0,
+        4,
+        0,
+        27
+       ],
+       [
+        0,
+        29,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        0,
+        94,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        9,
+        0,
+        4
+       ],
+       [
+        0,
+        0,
+        0,
+        78,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        58,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        71,
+        2,
+        0,
+        0,
+        5,
+        0,
+        16
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        35,
+        0,
+        0,
+        0,
+        14
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        15,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        19,
+        0,
+        0,
+        0,
+        3,
+        0,
+        11
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci": {
+      "macro_f1": {
+       "low": 0.6977,
+       "high": 0.8457
+      },
+      "accuracy": {
+       "low": 0.7026,
+       "high": 0.875
+      },
+      "n_boot": 2000,
+      "level": 0.95,
+      "unit": "groups (n=44)",
+      "seed": 20261011
+     },
+     "slices": {
+      "lang": {
+       "kk": {
+        "n": 249,
+        "accuracy": 0.7912,
+        "macro_f1": 0.755
+       },
+       "mixed": {
+        "n": 79,
+        "accuracy": 0.9114,
+        "macro_f1": 0.9442
+       },
+       "ru": {
+        "n": 303,
+        "accuracy": 0.7657,
+        "macro_f1": 0.7819
+       }
+      },
+      "style": {
+       "dogs": {
+        "n": 16,
+        "accuracy": 0.9375,
+        "macro_f1": 0.9677
+       },
+       "fence": {
+        "n": 15,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "flowers": {
+        "n": 14,
+        "accuracy": 0.8571,
+        "macro_f1": 0.9231
+       },
+       "frame": {
+        "n": 32,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "ice_water": {
+        "n": 32,
+        "accuracy": 0.9688,
+        "macro_f1": 0.9839
+       },
+       "lamps_off": {
+        "n": 15,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "landscaping_short": {
+        "n": 2,
+        "accuracy": 0.5,
+        "macro_f1": 0.6667
+       },
+       "lexicon_frame": {
+        "n": 239,
+        "accuracy": 0.7322,
+        "macro_f1": 0.6996
+       },
+       "lighting_short": {
+        "n": 4,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "marking": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "no_sidewalk": {
+        "n": 31,
+        "accuracy": 0.9677,
+        "macro_f1": 0.9836
+       },
+       "pavilion": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "question": {
+        "n": 14,
+        "accuracy": 0.6429,
+        "macro_f1": 0.7826
+       },
+       "shelter": {
+        "n": 16,
+        "accuracy": 0.9375,
+        "macro_f1": 0.9677
+       },
+       "signs": {
+        "n": 15,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "speed_bump": {
+        "n": 15,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "stop_snow": {
+        "n": 16,
+        "accuracy": 0.8125,
+        "macro_f1": 0.8966
+       },
+       "stops_short": {
+        "n": 1,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "thanks": {
+        "n": 13,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "tiles": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "traffic_light": {
+        "n": 48,
+        "accuracy": 0.875,
+        "macro_f1": 0.9333
+       },
+       "utilities": {
+        "n": 31,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "yard": {
+        "n": 14,
+        "accuracy": 0.9286,
+        "macro_f1": 0.963
+       }
+      },
+      "hard": {
+       "False": {
+        "n": 572,
+        "accuracy": 0.8112,
+        "macro_f1": 0.7734
+       },
+       "True": {
+        "n": 59,
+        "accuracy": 0.6271,
+        "macro_f1": 0.7881
+       }
+      }
+     }
+    }
+   },
+   "train": {
+    "n_train": 2654,
+    "n_val": 945,
+    "seconds": 0.0,
+    "synthetic_sources": [
+     "synth_v3"
+    ]
+   }
+  },
+  "synth_template/logreg": {
+   "regime": "synth_template",
+   "model": "logreg",
+   "status": "OK",
+   "eval": {
+    "synth_test_template": {
+     "n": 656,
+     "accuracy": 0.6799,
+     "macro_f1": 0.6319,
+     "weighted_f1": 0.6433,
+     "classes_in_set": 12,
+     "per_class": {
+      "roads": {
+       "precision": 0.8158,
+       "recall": 0.7045,
+       "f1": 0.7561,
+       "support": 88,
+       "predicted": 76
+      },
+      "snow_ice": {
+       "precision": 0.9677,
+       "recall": 0.9091,
+       "f1": 0.9375,
+       "support": 66,
+       "predicted": 62
+      },
+      "sidewalks": {
+       "precision": 0.75,
+       "recall": 0.1364,
+       "f1": 0.2308,
+       "support": 66,
+       "predicted": 12
+      },
+      "transport": {
+       "precision": 0.5909,
+       "recall": 0.9848,
+       "f1": 0.7386,
+       "support": 66,
+       "predicted": 110
+      },
+      "lighting": {
+       "precision": 0.6462,
+       "recall": 0.9767,
+       "f1": 0.7778,
+       "support": 43,
+       "predicted": 65
+      },
+      "yards": {
+       "precision": 0.7302,
+       "recall": 0.697,
+       "f1": 0.7132,
+       "support": 66,
+       "predicted": 63
+      },
+      "waste": {
+       "precision": 0.6471,
+       "recall": 0.75,
+       "f1": 0.6947,
+       "support": 44,
+       "predicted": 51
+      },
+      "utilities": {
+       "precision": 0.5714,
+       "recall": 0.4651,
+       "f1": 0.5128,
+       "support": 43,
+       "predicted": 35
+      },
+      "smell_air": {
+       "precision": 0.9773,
+       "recall": 0.9773,
+       "f1": 0.9773,
+       "support": 44,
+       "predicted": 44
+      },
+      "noise_safety": {
+       "precision": 0.4286,
+       "recall": 0.9767,
+       "f1": 0.5957,
+       "support": 43,
+       "predicted": 98
+      },
+      "parking": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 44,
+       "predicted": 9
+      },
+      "other": {
+       "precision": 0.7742,
+       "recall": 0.5581,
+       "f1": 0.6486,
+       "support": 43,
+       "predicted": 31
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "snow_ice",
+       "sidewalks",
+       "transport",
+       "lighting",
+       "yards",
+       "waste",
+       "utilities",
+       "smell_air",
+       "noise_safety",
+       "parking",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        62,
+        2,
+        0,
+        0,
+        1,
+        4,
+        1,
+        13,
+        0,
+        0,
+        1,
+        4
+       ],
+       [
+        3,
+        60,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        0,
+        9,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        52,
+        0,
+        1
+       ],
+       [
+        0,
+        0,
+        0,
+        65,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        0,
+        0,
+        0,
+        42,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        1,
+        0,
+        0,
+        0,
+        0,
+        46,
+        17,
+        0,
+        0,
+        1,
+        1,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        33,
+        1,
+        0,
+        0,
+        6,
+        2
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        20,
+        2,
+        0,
+        20,
+        1,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        43,
+        1,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        42,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        44,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        8,
+        0,
+        0,
+        0,
+        0,
+        8,
+        0,
+        0,
+        0,
+        2,
+        1,
+        24
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci": {
+      "macro_f1": {
+       "low": 0.4938,
+       "high": 0.7707
+      },
+      "accuracy": {
+       "low": 0.5282,
+       "high": 0.8159
+      },
+      "n_boot": 2000,
+      "level": 0.95,
+      "unit": "groups (n=30)",
+      "seed": 20261011
+     },
+     "ece": 0.204,
+     "slices": {
+      "lang": {
+       "kk": {
+        "n": 258,
+        "accuracy": 0.6008,
+        "macro_f1": 0.5294
+       },
+       "mixed": {
+        "n": 66,
+        "accuracy": 0.6515,
+        "macro_f1": 0.6308
+       },
+       "ru": {
+        "n": 332,
+        "accuracy": 0.747,
+        "macro_f1": 0.7072
+       }
+      },
+      "style": {
+       "colloquial": {
+        "n": 272,
+        "accuracy": 0.6507,
+        "macro_f1": 0.6315
+       },
+       "long": {
+        "n": 78,
+        "accuracy": 0.6795,
+        "macro_f1": 0.5701
+       },
+       "official": {
+        "n": 112,
+        "accuracy": 0.8036,
+        "macro_f1": 0.7265
+       },
+       "question": {
+        "n": 15,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "slang": {
+        "n": 42,
+        "accuracy": 0.7381,
+        "macro_f1": 0.6268
+       },
+       "translit": {
+        "n": 43,
+        "accuracy": 0.3721,
+        "macro_f1": 0.2921
+       },
+       "typos": {
+        "n": 94,
+        "accuracy": 0.6809,
+        "macro_f1": 0.6365
+       }
+      },
+      "hard": {
+       "False": {
+        "n": 439,
+        "accuracy": 0.7722,
+        "macro_f1": 0.7191
+       },
+       "True": {
+        "n": 217,
+        "accuracy": 0.4931,
+        "macro_f1": 0.5559
+       }
+      }
+     }
+    },
+    "synth_test_v1": {
+     "n": 631,
+     "accuracy": 0.7892,
+     "macro_f1": 0.7751,
+     "weighted_f1": 0.8298,
+     "classes_in_set": 10,
+     "per_class": {
+      "roads": {
+       "precision": 0.9898,
+       "recall": 0.6831,
+       "f1": 0.8083,
+       "support": 142,
+       "predicted": 98
+      },
+      "snow_ice": {
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0,
+       "support": 32,
+       "predicted": 32
+      },
+      "sidewalks": {
+       "precision": 0.988,
+       "recall": 0.7455,
+       "f1": 0.8497,
+       "support": 110,
+       "predicted": 83
+      },
+      "transport": {
+       "precision": 0.9872,
+       "recall": 0.9506,
+       "f1": 0.9686,
+       "support": 81,
+       "predicted": 78
+      },
+      "lighting": {
+       "precision": 1.0,
+       "recall": 0.8358,
+       "f1": 0.9106,
+       "support": 67,
+       "predicted": 56
+      },
+      "yards": {
+       "precision": 0.8471,
+       "recall": 0.766,
+       "f1": 0.8045,
+       "support": 94,
+       "predicted": 85
+      },
+      "waste": {
+       "precision": 0.5556,
+       "recall": 1.0,
+       "f1": 0.7143,
+       "support": 5,
+       "predicted": 9
+      },
+      "utilities": {
+       "precision": 0.95,
+       "recall": 0.7451,
+       "f1": 0.8352,
+       "support": 51,
+       "predicted": 40
+      },
+      "smell_air": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 0,
+       "predicted": 1
+      },
+      "noise_safety": {
+       "precision": 0.2308,
+       "recall": 0.9375,
+       "f1": 0.3704,
+       "support": 16,
+       "predicted": 65
+      },
+      "parking": {
+       "precision": 0.0,
+       "recall": 0.0,
+       "f1": 0.0,
+       "support": 0,
+       "predicted": 19
+      },
+      "other": {
+       "precision": 0.3692,
+       "recall": 0.7273,
+       "f1": 0.4898,
+       "support": 33,
+       "predicted": 65
+      }
+     },
+     "confusion": {
+      "labels": [
+       "roads",
+       "snow_ice",
+       "sidewalks",
+       "transport",
+       "lighting",
+       "yards",
+       "waste",
+       "utilities",
+       "smell_air",
+       "noise_safety",
+       "parking",
+       "other"
+      ],
+      "rows_true_cols_pred": [
+       [
+        97,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        15,
+        6,
+        22
+       ],
+       [
+        0,
+        32,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        82,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        19,
+        4,
+        3
+       ],
+       [
+        0,
+        0,
+        0,
+        77,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0,
+        0,
+        0,
+        0,
+        7,
+        2,
+        2
+       ],
+       [
+        1,
+        0,
+        1,
+        1,
+        0,
+        72,
+        4,
+        0,
+        1,
+        0,
+        4,
+        10
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        38,
+        0,
+        2,
+        3,
+        4
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        15,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        2,
+        0,
+        3,
+        0,
+        24
+       ]
+      ]
+     },
+     "macro_over": "классы с support > 0",
+     "ci": {
+      "macro_f1": {
+       "low": 0.7071,
+       "high": 0.8788
+      },
+      "accuracy": {
+       "low": 0.7055,
+       "high": 0.8609
+      },
+      "n_boot": 2000,
+      "level": 0.95,
+      "unit": "groups (n=44)",
+      "seed": 20261011
+     },
+     "ece": 0.0651,
+     "slices": {
+      "lang": {
+       "kk": {
+        "n": 249,
+        "accuracy": 0.739,
+        "macro_f1": 0.7331
+       },
+       "mixed": {
+        "n": 79,
+        "accuracy": 0.9241,
+        "macro_f1": 0.9521
+       },
+       "ru": {
+        "n": 303,
+        "accuracy": 0.7954,
+        "macro_f1": 0.8179
+       }
+      },
+      "style": {
+       "dogs": {
+        "n": 16,
+        "accuracy": 0.9375,
+        "macro_f1": 0.9677
+       },
+       "fence": {
+        "n": 15,
+        "accuracy": 0.7333,
+        "macro_f1": 0.8462
+       },
+       "flowers": {
+        "n": 14,
+        "accuracy": 0.9286,
+        "macro_f1": 0.963
+       },
+       "frame": {
+        "n": 32,
+        "accuracy": 0.8438,
+        "macro_f1": 0.9149
+       },
+       "ice_water": {
+        "n": 32,
+        "accuracy": 0.9062,
+        "macro_f1": 0.9483
+       },
+       "lamps_off": {
+        "n": 15,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "landscaping_short": {
+        "n": 2,
+        "accuracy": 0.5,
+        "macro_f1": 0.6667
+       },
+       "lexicon_frame": {
+        "n": 239,
+        "accuracy": 0.7029,
+        "macro_f1": 0.6771
+       },
+       "lighting_short": {
+        "n": 4,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "marking": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "no_sidewalk": {
+        "n": 31,
+        "accuracy": 0.871,
+        "macro_f1": 0.931
+       },
+       "pavilion": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "question": {
+        "n": 14,
+        "accuracy": 0.9286,
+        "macro_f1": 0.963
+       },
+       "shelter": {
+        "n": 16,
+        "accuracy": 0.9375,
+        "macro_f1": 0.9677
+       },
+       "signs": {
+        "n": 15,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "speed_bump": {
+        "n": 15,
+        "accuracy": 0.0,
+        "macro_f1": 0.0
+       },
+       "stop_snow": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "stops_short": {
+        "n": 1,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "thanks": {
+        "n": 13,
+        "accuracy": 0.8462,
+        "macro_f1": 0.9167
+       },
+       "tiles": {
+        "n": 16,
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+       },
+       "traffic_light": {
+        "n": 48,
+        "accuracy": 0.8958,
+        "macro_f1": 0.9451
+       },
+       "utilities": {
+        "n": 31,
+        "accuracy": 0.9355,
+        "macro_f1": 0.4833
+       },
+       "yard": {
+        "n": 14,
+        "accuracy": 0.8571,
+        "macro_f1": 0.9231
+       }
+      },
+      "hard": {
+       "False": {
+        "n": 572,
+        "accuracy": 0.7727,
+        "macro_f1": 0.7246
+       },
+       "True": {
+        "n": 59,
+        "accuracy": 0.9492,
+        "macro_f1": 0.9804
+       }
+      }
+     }
+    }
+   },
+   "train": {
+    "n_train": 2654,
+    "n_val": 945,
+    "selection": {
+     "metric": "validation macro-F1",
+     "vocab_size": 19398,
+     "chosen": {
+      "C": 64.0,
+      "class_weight": null,
+      "keyword_scale": 1.0
+     },
+     "candidates": [
+      {
+       "hyper": {
+        "C": 1.0,
+        "class_weight": null,
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.694
+      },
+      {
+       "hyper": {
+        "C": 1.0,
+        "class_weight": "balanced",
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.6904
+      },
+      {
+       "hyper": {
+        "C": 4.0,
+        "class_weight": null,
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.7159
+      },
+      {
+       "hyper": {
+        "C": 4.0,
+        "class_weight": "balanced",
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.7084
+      },
+      {
+       "hyper": {
+        "C": 16.0,
+        "class_weight": null,
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.7184
+      },
+      {
+       "hyper": {
+        "C": 16.0,
+        "class_weight": "balanced",
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.723
+      },
+      {
+       "hyper": {
+        "C": 64.0,
+        "class_weight": null,
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.728
+      },
+      {
+       "hyper": {
+        "C": 64.0,
+        "class_weight": "balanced",
+        "keyword_scale": 1.0
+       },
+       "val_macro_f1": 0.7229
+      }
+     ]
+    },
+    "seconds": 48.7,
+    "synthetic_sources": [
+     "synth_v3"
+    ]
+   }
+  },
+  "synth_llm/heuristic": {
+   "regime": "synth_llm",
+   "model": "heuristic",
+   "status": "NOT_RUN",
+   "reason": "нет корпуса: llm_v1"
+  },
+  "synth_llm/logreg": {
+   "regime": "synth_llm",
+   "model": "logreg",
+   "status": "NOT_RUN",
+   "reason": "нет корпуса: llm_v1"
+  },
+  "synth_all/heuristic": {
+   "regime": "synth_all",
+   "model": "heuristic",
+   "status": "NOT_RUN",
+   "reason": "нет корпуса: llm_v1"
+  },
+  "synth_all/logreg": {
+   "regime": "synth_all",
+   "model": "logreg",
+   "status": "NOT_RUN",
+   "reason": "нет корпуса: llm_v1"
+  },
+  "human/heuristic": {
+   "regime": "human",
+   "model": "heuristic",
+   "status": "NOT_EVALUATED",
+   "reason": "файл разметки людей не передан (--human)"
+  },
+  "human/logreg": {
+   "regime": "human",
+   "model": "logreg",
+   "status": "NOT_EVALUATED",
+   "reason": "файл разметки людей не передан (--human)"
+  },
+  "mix/heuristic": {
+   "regime": "mix",
+   "model": "heuristic",
+   "status": "NOT_EVALUATED",
+   "reason": "файл разметки людей не передан (--human)"
+  },
+  "mix/logreg": {
+   "regime": "mix",
+   "model": "logreg",
+   "status": "NOT_EVALUATED",
+   "reason": "файл разметки людей не передан (--human)"
+  },
+  "synth_v1/transformer": {
+   "regime": "synth_v1",
+   "model": "transformer",
+   "status": "NOT_RUN",
+   "reason": "облако без весов xlm-roberta-base (HF недоступен) — запуск на ноутбуке, RUN.txt шаг 6"
+  },
+  "synth_template/transformer": {
+   "regime": "synth_template",
+   "model": "transformer",
+   "status": "NOT_RUN",
+   "reason": "облако без весов xlm-roberta-base (HF недоступен) — запуск на ноутбуке, RUN.txt шаг 6"
+  },
+  "synth_llm/transformer": {
+   "regime": "synth_llm",
+   "model": "transformer",
+   "status": "NOT_RUN",
+   "reason": "облако без весов xlm-roberta-base (HF недоступен) — запуск на ноутбуке, RUN.txt шаг 6"
+  },
+  "synth_all/transformer": {
+   "regime": "synth_all",
+   "model": "transformer",
+   "status": "NOT_RUN",
+   "reason": "облако без весов xlm-roberta-base (HF недоступен) — запуск на ноутбуке, RUN.txt шаг 6"
+  },
+  "human/transformer": {
+   "regime": "human",
+   "model": "transformer",
+   "status": "NOT_RUN",
+   "reason": "облако без весов xlm-roberta-base (HF недоступен) — запуск на ноутбуке, RUN.txt шаг 6"
+  },
+  "mix/transformer": {
+   "regime": "mix",
+   "model": "transformer",
+   "status": "NOT_RUN",
+   "reason": "облако без весов xlm-roberta-base (HF недоступен) — запуск на ноутбуке, RUN.txt шаг 6"
+  }
+ },
+ "meta": {
+  "created_at": "2026-10-10T13:43:42+00:00",
+  "git_sha": "762c6a0",
+  "model_name": "FacebookAI/xlm-roberta-base",
+  "seed": 20261011,
+  "seeds": 1,
+  "mode": "full",
+  "k_folds": 5,
+  "val_ratio": 0.15,
+  "env_note": "облако: Intel Xeon 2.1 ГГц, 4 vCPU, Linux, Python 3.13, scikit-learn 1.9.1, без GPU; корпуса R02 из claude/r14-R02 @ 05b789e",
+  "train_config": {
+   "model_name": "FacebookAI/xlm-roberta-base",
+   "max_length": 128,
+   "batch_size": 16,
+   "grad_accum": 2,
+   "eval_batch_size": 64,
+   "lr": 2e-05,
+   "weight_decay": 0.01,
+   "warmup_ratio": 0.1,
+   "epochs": 8,
+   "patience": 2,
+   "min_delta": 0.001,
+   "fp16": true,
+   "class_weight": "sqrt_inv",
+   "label_smoothing": 0.0,
+   "max_grad_norm": 1.0,
+   "freeze_embeddings": false,
+   "seed": 20261011,
+   "num_workers": 0,
+   "review_target_precision": 0.9,
+   "extra": {}
+  }
+ },
+ "data": {
+  "synth_v3": {
+   "n": 4260,
+   "by_label": {
+    "lighting": 374,
+    "noise_safety": 311,
+    "other": 282,
+    "parking": 312,
+    "roads": 517,
+    "sidewalks": 355,
+    "smell_air": 260,
+    "snow_ice": 381,
+    "transport": 420,
+    "utilities": 332,
+    "waste": 313,
+    "yards": 403
+   },
+   "by_lang": {
+    "kk": 1542,
+    "mixed": 658,
+    "ru": 2060
+   },
+   "by_split": {
+    "test": 656,
+    "train": 2659,
+    "val": 945
+   },
+   "by_source": {
+    "synth_v3": 4260
+   },
+   "unsure": 0,
+   "load_report": {
+    "bad_lines": 0,
+    "files": 1,
+    "records": 4260
+   }
+  },
+  "llm_v1": {
+   "status": "NOT_AVAILABLE",
+   "reason": "нет файла или папки: /tmp/claude-0/-home-user-GOV-DIPLOME/607f6a7e-b90a-59d1-8689-cd57e7f549ba/scratchpad/r02/ml/datasets/llm_v1"
+  },
+  "v1_in_v2": {
+   "n": 2724,
+   "by_label": {
+    "lighting": 415,
+    "noise_safety": 69,
+    "other": 143,
+    "parking": 5,
+    "roads": 533,
+    "sidewalks": 434,
+    "snow_ice": 104,
+    "transport": 399,
+    "utilities": 149,
+    "waste": 61,
+    "yards": 412
+   },
+   "by_lang": {
+    "kk": 1041,
+    "mixed": 223,
+    "ru": 1460
+   },
+   "by_split": {
+    "test": 631,
+    "train": 1512,
+    "val": 581
+   },
+   "by_source": {
+    "v1_in_v2": 2724
+   },
+   "unsure": 0,
+   "load_report": {
+    "bad_lines": 0,
+    "excluded_split_excluded_near_dup": 1,
+    "files": 1,
+    "records": 2724
+   }
+  },
+  "human": {
+   "status": "NOT_AVAILABLE",
+   "reason": "не передан --human"
+  }
+ },
+ "notes": [
+  "synth_template: из синтетического train убрано 5 текстов, совпавших с оценочными"
+ ],
+ "human_eval": {
+  "status": "NOT_EVALUATED",
+  "reason": "файл разметки людей не передан (--human)"
+ },
+ "comparisons": [
+  {
+   "set": "synth_test_template",
+   "a": "synth_v1/logreg",
+   "b": "synth_v1/heuristic",
+   "title": "synth_v1: логрегрессия − эвристика",
+   "n": 656,
+   "delta": {
+    "delta": -0.1828,
+    "low": -0.3216,
+    "high": -0.0169,
+    "share_delta_gt_0": 0.018,
+    "n_boot": 2000,
+    "unit": "groups"
+   }
+  },
+  {
+   "set": "synth_test_template",
+   "a": "synth_template/logreg",
+   "b": "synth_template/heuristic",
+   "title": "synth_template: логрегрессия − эвристика",
+   "n": 656,
+   "delta": {
+    "delta": -0.0987,
+    "low": -0.1958,
+    "high": 0.014,
+    "share_delta_gt_0": 0.056,
+    "n_boot": 2000,
+    "unit": "groups"
+   }
+  },
+  {
+   "set": "synth_test_template",
+   "a": "synth_template/logreg",
+   "b": "synth_v1/logreg",
+   "title": "logreg: синтетика v3 − синтетика v1→v2",
+   "n": 656,
+   "delta": {
+    "delta": 0.0841,
+    "low": -0.0634,
+    "high": 0.2035,
+    "share_delta_gt_0": 0.878,
+    "n_boot": 2000,
+    "unit": "groups"
+   }
+  },
+  {
+   "set": "synth_test_v1",
+   "a": "synth_v1/logreg",
+   "b": "synth_v1/heuristic",
+   "title": "synth_v1: логрегрессия − эвристика",
+   "n": 631,
+   "delta": {
+    "delta": 0.0635,
+    "low": -0.0735,
+    "high": 0.1369,
+    "share_delta_gt_0": 0.765,
+    "n_boot": 2000,
+    "unit": "groups"
+   }
+  },
+  {
+   "set": "synth_test_v1",
+   "a": "synth_template/logreg",
+   "b": "synth_template/heuristic",
+   "title": "synth_template: логрегрессия − эвристика",
+   "n": 631,
+   "delta": {
+    "delta": 0.0026,
+    "low": -0.0476,
+    "high": 0.0801,
+    "share_delta_gt_0": 0.709,
+    "n_boot": 2000,
+    "unit": "groups"
+   }
+  },
+  {
+   "set": "synth_test_v1",
+   "a": "synth_template/logreg",
+   "b": "synth_v1/logreg",
+   "title": "logreg: синтетика v3 − синтетика v1→v2",
+   "n": 631,
+   "delta": {
+    "delta": -0.0609,
+    "low": -0.1501,
+    "high": 0.1224,
+    "share_delta_gt_0": 0.376,
+    "n_boot": 2000,
+    "unit": "groups"
+   }
+  }
+ ],
+ "best_on_human": null
+}

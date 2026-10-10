@@ -228,7 +228,14 @@ def render(results: dict) -> str:
               "- Словарь эвристики написан до появления текстов людей и после не менялся.",
               "- Разметка людей — один разметчик (владелец), если не указано иное; согласие разметчиков — отчёт R02 "
               "(ml/labeling/agreement.py).", ""]
-    notes = results.get("notes") or []
+    notes = list(results.get("notes") or [])
+    # Почему ячейки NOT_RUN / NOT_EVALUATED / FAILED — одной строкой на причину.
+    reasons: dict[str, list[str]] = {}
+    for key, e in runs.items():
+        if e.get("status") != "OK":
+            reasons.setdefault(f"{e.get('status')}: {e.get('reason', '')}", []).append(key)
+    for reason, keys in reasons.items():
+        notes.append(f"{reason} — {', '.join(sorted(keys))}")
     if notes:
         lines += ["## Замечания прогона", ""] + [f"- {n}" for n in notes] + [""]
     return "\n".join(lines)

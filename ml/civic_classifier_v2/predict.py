@@ -1,7 +1,8 @@
 """Применение модели v2 — то, что подключает R04 в POST /api/civic/v2/classify (CONTRACT §7).
 
     from ml.civic_classifier_v2.predict import Classifier, ModelUnavailable
-    clf = Classifier.load()            # artifacts/onnx (int8) -> artifacts/final (PyTorch); нет -> ModelUnavailable
+    clf = Classifier.load()            # $BIRGE_CLF_V2_DIR или artifacts/onnx (int8) -> artifacts/final (PyTorch);
+                                       # нет модели -> ModelUnavailable
     clf.classify("Во дворе не горят фонари")
     # {"category": "lighting", "score": 0.93, "needs_review": True, "model_version": "civic-clf-v2-…",
     #  "top3": [{"category": "lighting", "score": 0.93}, {"category": "yards", "score": 0.03}, …]}
@@ -23,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import threading
 import time
@@ -37,6 +39,7 @@ META_NAME = "birge_meta.json"
 MAX_TEXT = 5000
 MIN_LETTERS = 3
 DEFAULT_DIRS = (ARTIFACTS_DIR / "onnx", ARTIFACTS_DIR / "final")
+ENV_DIR = "BIRGE_CLF_V2_DIR"  # переменная окружения: папка модели вместо путей по умолчанию (для R04/сервера)
 
 
 class ModelUnavailable(RuntimeError):
@@ -137,7 +140,8 @@ class Classifier:
     # ---------- загрузка ----------
     @classmethod
     def load(cls, path: Path | None = None, backend: str = "auto", threads: int | None = None) -> "Classifier":
-        dirs = [Path(path)] if path else list(DEFAULT_DIRS)
+        env_dir = os.environ.get(ENV_DIR, "").strip()
+        dirs = [Path(path)] if path else [Path(env_dir)] if env_dir else list(DEFAULT_DIRS)
         errors = []
         for d in dirs:
             meta_path = d / META_NAME

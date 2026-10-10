@@ -230,3 +230,11 @@ def test_class_weights():
     w = class_weights([0, 0, 0, 1], 3, "sqrt_inv")
     assert w[2] == 0 and w[1] > w[0] and abs((w[0] + w[1]) / 2 - 1) < 1e-3
     assert class_weights([0, 1], 3, "none") == [1.0, 1.0, 0.0]
+
+
+def test_env_dir_overrides_default(tmp_path, monkeypatch):
+    from ml.civic_classifier_v2 import predict as P
+    monkeypatch.setenv(P.ENV_DIR, str(tmp_path / "custom"))
+    with pytest.raises(P.ModelUnavailable) as exc:
+        P.Classifier.load()
+    assert "custom" in str(exc.value)
