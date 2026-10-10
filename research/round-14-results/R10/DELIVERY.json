@@ -1,0 +1,50 @@
+{
+  "role": "R10",
+  "title": "Приёмка: сценарий демо, точность карты, UX",
+  "branch": "claude/r14-R10",
+  "base_sha": "4bbf456 (claude/round-14-package)",
+  "restored_from": "— (новые пути tests/e2e/, tests/civic/R10/; в раунде 13 их не было)",
+  "code_sha": "9c364c7",
+  "tested_sha": "9c364c7",
+  "status": "partial — инструменты приёмки готовы и проверены; приёмка до B1 сделана; B1/B2/FINAL — по мере сборок R01",
+  "push_status": "OK: checkpoints 05e5f7c, e73f1e8, 5b46239, c2ea4bb, cf9cbb3, 9c364c7 отправлены в origin/claude/r14-R10; этот файл — следующим коммитом",
+  "environment": "облачный Linux, Python 3.13.16 (+pytest 9.1.1), Node 22.22.0, Playwright 1.56.1 + Chromium headless (программный WebGL), без интернета (подложка OpenFreeMap недоступна)",
+  "changed_paths": [
+    "tests/civic/R10/accuracy.py",
+    "tests/civic/R10/test_r10_accuracy.py",
+    "tests/e2e/demo_flow.cjs",
+    "tests/e2e/ux_lib.cjs",
+    "tests/e2e/ux_screens.cjs",
+    "tests/e2e/run_acceptance.cjs",
+    "tests/e2e/screens_build.json",
+    "tests/e2e/README.md",
+    "research/round-14-results/R10/",
+    "research/handoffs/astana/R10/round14/STATUS.md"
+  ],
+  "builds_checked": {
+    "R01 claude/sharp-dijkstra-0t87gl @ bc7c961 (до B1)": "ACCEPTANCE_PRE_B1.md — сценарий не проходит (ожидаемо до B1): точность 6 PASS / 16 NOT_RUN; сценарий 18 PASS / 43 FAIL / 10 NOT_RUN; UX 36 / 18 / 8 NOT_RUN",
+    "B1": "NOT_RUN — сборки ещё нет (план 13 окт вечер)",
+    "B2": "NOT_RUN — план 14 окт",
+    "FINAL": "NOT_RUN — план 15 окт; после — Codex по CODEX_ACCEPTANCE_PROMPT.txt"
+  },
+  "tests": {
+    "pytest tests/civic/R10 (самопроверка геометрии: расстояние, Хаусдорф с уплотнением, кольца с дырой, разбор литералов без выполнения, сдвиг ребра на 6 м)": "PASS 7, остальные skip = NOT_RUN без данных модулей в ветке R10",
+    "accuracy.py на ветках R05, R06, R07, R12, R13 и сборке R01": "выполнено: R07 6/6, R06 2/2, R13 3/3 PASS; R12 8 PASS / 1 FAIL (B-009); R05 5 PASS / 3 FAIL (B-007, B-008)",
+    "demo_flow.cjs на настоящем интерфейсе жалобы R09 (стенд + ui-kit R11)": "PASS шаги 1–2 в 1366/375 × ru/kk (e2e/r09-stand/)",
+    "demo_flow.cjs на сборке R01 @ bc7c961": "выполнено — FAIL сценария по причинам сборки (B-001, B-002, B-011…B-014), не теста",
+    "ux_screens.cjs на 7 экранах ролей": "выполнено: PASS 178 / FAIL 20 (ux/README.md)",
+    "run_acceptance.cjs на сборке R01 @ bc7c961": "выполнено от начала до конца (e2e/pre-b1/SUMMARY.md)",
+    "повтор тестов ролей": "R03 58+7skip, R05 157 + node 25 + браузер 25/0/1, R06 445 + браузер 48/48, R07 97 + браузер 16/16, R08 101 + браузер 78/78 (в сборке R01), R09 205 + браузер 105/105, R11 14 + i18n + витрина, R12 29 + браузер точности 4/4 — совпадают с их DELIVERY (DELIVERIES_CHECK.md)",
+    "run_acceptance.cjs на Windows": "NOT_RUN — облако Linux; задача LOCAL-R10-1 (CODEX_ACCEPTANCE_PROMPT.txt)"
+  },
+  "bugs": "BUGS.md: B-001…B-018 — блокер 1 (B-001, до B1), важно 8 (B-002, B-003, B-007, B-011, B-012, B-013, B-014, B-016), мелочь 9",
+  "known_limits": [
+    "Облако без интернета: подложка с улицами и 3D-зданиями не проверена; линии по улицам сверены с графом OSM, а не с картинкой подложки (ручной пункт М1 у Codex).",
+    "Программный WebGL: плавность 3D и анимаций (200–800 мс) не измеряется.",
+    "Казахский проверяется на полноту (нет русских строк, нет ключей), не на качество — это делает владелец (KK_REVIEW R11).",
+    "Состояния «загрузка / пусто / ошибка» проверены тестами ролей (R06, R08, R09, R07 API), не ux_screens.",
+    "demo_flow ищет кнопки по словам из словарей R11; если ключи переименуют — нужен синоним в T(...).",
+    "Шаг 6 UI проверяет экран «Мои обращения» и слово статуса; жалоба API-шага подана другим устройством, поэтому «исправлено» у неё видно только через API."
+  ],
+  "next_step": "13 окт вечером: SHA B1 из STATUS.md R01 → node tests/e2e/run_acceptance.cjs --root <B1> --out <папка> --label B1 → ACCEPTANCE_B1.md, кадры e2e/b1/, статусы в BUGS.md. 14-го — B2, 15-го — FINAL; после — Codex по CODEX_ACCEPTANCE_PROMPT.txt."
+}
