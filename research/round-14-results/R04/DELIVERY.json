@@ -1,0 +1,116 @@
+{
+ "role": "R04",
+ "title": "Дубли и ML-API",
+ "branch": "claude/r14-R04",
+ "base_sha": "83d64bd89c4573e120683ba2036f2b29f591c282",
+ "base_branch": "claude/round-14-package",
+ "restored_from": null,
+ "read_only_inputs": {
+  "ml/civic_classifier (v1)": "claude/wizardly-ptolemy-qy8ltw @ 14c3384 (локальная копия, не в ветке R04)",
+  "ml/civic_classifier_v2 (R03)": "claude/r14-R03 @ f9370b0 (локальная копия, не в ветке R04)",
+  "ml/datasets (R02)": "claude/r14-R02 @ 05b789e (локальная копия, не в ветке R04)",
+  "ui/civic_feedback/v2 (R09)": "claude/modest-shannon-0ki93p @ 4021818 (локальная копия, не в ветке R04)",
+  "ui/web_server.py (R01)": "claude/sharp-dijkstra-0t87gl @ 2eaeacb (временная папка, проверка стыка шлюза)"
+ },
+ "code_sha": "c0b9fad21ee86722e3512a340670223058a3abb3",
+ "tested_sha": "c0b9fad21ee86722e3512a340670223058a3abb3",
+ "push_status": "OK — ветка claude/r14-R04 на GitHub (проверяется git ls-remote после каждого push; итог — в STATUS.md)",
+ "status": "ready_for_review (запасные пути); e5 и v2 — ждут LOCAL",
+ "changed_paths": [
+  "ml/civic_dedup/.gitignore",
+  "ml/civic_dedup/__init__.py",
+  "ml/civic_dedup/bench.py",
+  "ml/civic_dedup/concepts.py",
+  "ml/civic_dedup/config.py",
+  "ml/civic_dedup/dedup_config.json",
+  "ml/civic_dedup/e5.py",
+  "ml/civic_dedup/export_e5.py",
+  "ml/civic_dedup/fixtures.py",
+  "ml/civic_dedup/geo.py",
+  "ml/civic_dedup/loader.py",
+  "ml/civic_dedup/normalize.py",
+  "ml/civic_dedup/results/bench.json",
+  "ml/civic_dedup/results/dedup_eval_ngram.json",
+  "ml/civic_dedup/scorers.py",
+  "ml/civic_dedup/search.py",
+  "ml/civic_dedup/tune.py",
+  "research/handoffs/astana/R04/round14/STATUS.md",
+  "research/round-14-results/R04/DELIVERY.json",
+  "research/round-14-results/R04/INTEGRATION.txt",
+  "research/round-14-results/R04/RESULTS.md",
+  "research/round-14-results/R04/RUN.txt",
+  "research/round-14-results/R04/classify_eval.json",
+  "research/round-14-results/R04/r01_similar_target.patch",
+  "tests/civic/R04/round14/r04_helpers.py",
+  "tests/civic/R04/round14/test_r04_classify.py",
+  "tests/civic/R04/round14/test_r04_concurrency_speed.py",
+  "tests/civic/R04/round14/test_r04_dedup.py",
+  "tests/civic/R04/round14/test_r04_e5.py",
+  "tests/civic/R04/round14/test_r04_e5_runtime.py",
+  "tests/civic/R04/round14/test_r04_normalize.py",
+  "tests/civic/R04/round14/test_r04_similar.py",
+  "ui/civic_ml_api/__init__.py",
+  "ui/civic_ml_api/__main__.py",
+  "ui/civic_ml_api/categories.py",
+  "ui/civic_ml_api/classify_chain.py",
+  "ui/civic_ml_api/errors.py",
+  "ui/civic_ml_api/evaluate.py",
+  "ui/civic_ml_api/similar_search.py"
+ ],
+ "environment": "облачная сессия Claude Code: Linux, Intel Xeon 2.80 GHz ×4, Python 3.13.16, numpy 2.5.3, onnxruntime 1.29.0, onnx 1.23.2, tokenizers 0.23.3, без torch",
+ "tests": {
+  "tests/civic/R04/round14 (96)": "PASS",
+  "совместно tests/civic/R03/round14 + tests/civic/R04/round14": "PASS (137 passed, 6 skipped; на коде 0f196a8)",
+  "весь набор pytest tests (с локальными копиями v1, R03, R02, R09 v2)": "PASS (966 passed, 4 skipped)",
+  "шлюз R01 @ 2eaeacb: /classify, /similar, 503 source_not_connected, 400 на плохой ввод": "PASS (временная папка)",
+  "патч r01_similar_target.patch: target доходит до similar, плохой target -> 400": "PASS (временная папка)",
+  "e5: рантайм на настоящих onnxruntime + tokenizers, крошечная ONNX-модель, int8, оркестровка export_e5": "PASS",
+  "e5: экспорт настоящей multilingual-e5 из PyTorch и порог на dev": "NOT_RUN — веса только на ноутбуке, download.pytorch.org закрыт (LOCAL-R04-1)",
+  "classify на модели v2 R03 (ONNX)": "NOT_RUN — нет artifacts/onnx до LOCAL-4; путь проверен подставной моделью",
+  "скорость на CPU ноутбука": "NOT_RUN — облако; команда в RUN.txt",
+  "качество на текстах жителей": "NOT_EVALUATED — текстов людей нет"
+ },
+ "metrics": {
+  "dedup_test_geo": {
+   "precision": 0.88,
+   "recall": 0.906,
+   "f1": 0.893,
+   "precision_ci95": [
+    0.833,
+    0.922
+   ],
+   "recall_ci95": [
+    0.863,
+    0.945
+   ]
+  },
+  "dedup_dev_geo": {
+   "precision": 0.905,
+   "recall": 0.91
+  },
+  "dedup_method": "ngram-concept-v1 alpha 0.3, 3-5-граммы, пороги 0.18 / 0.40 (только текст)",
+  "classify_chain_accuracy": {
+   "val": 0.691,
+   "test": 0.784,
+   "v1_only_test": 0.518
+  },
+  "speed_cloud_cpu_ms": {
+   "classify_p95": 0.36,
+   "similar_city_p95": 8.2,
+   "similar_hotspot_5000_p95": 39.3,
+   "similar_r09_store_hotspot_p95": 67.2,
+   "similar_hotspot_first_query": 155.1
+  },
+  "evidence": "synthetic (R02); test просмотрен 5 раз за журнал экспериментов (RESULTS.md)"
+ },
+ "known_limits": [
+  "Все метрики — на синтетике R02; качество на настоящих обращениях не оценено.",
+  "e5 не подключён (LOCAL-R04-1); работает запасной путь ngram-concept-v1.",
+  "Словарь понятий — 48 тем: перефразы с другими словами вне словаря находятся только при близком тексте (порог 0.40).",
+  "Две разные проблемы одного понятия в 200 м (две ямы) считаются одной — житель может нажать «У меня другое».",
+  "Первый запрос в точке, где тысячи жалоб, без прогрева ~150 мс; connect_store прогревает кэш в фоне.",
+  "Без patch R01 (target) условие «та же цель» работает только через точку ≤ 200 м.",
+  "needs_review всегда true до проверки моделей на людях; для чипа жителя — поле suggest."
+ ],
+ "next_step": "R01: перенести пути, patch target, connect_store + warmup при старте. LOCAL: LOCAL-R04-1 (e5). После LOCAL-4 (v2 R03) — bench на ноутбуке. После формы LOCAL-6 — пары дублей из настоящих обращений и повтор tune."
+}

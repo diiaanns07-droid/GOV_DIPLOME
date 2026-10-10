@@ -1,0 +1,131 @@
+R04 · раунд 14 · INTEGRATION — как подключить ML-API (подсказка категории и «Я тоже») к общей сборке
+
+Ветка: claude/r14-R04 (от claude/round-14-package @ 83d64bd). SHA кода и проверок — DELIVERY.json.
+Мои пути: ml/civic_dedup/, ui/civic_ml_api/, tests/civic/R04/round14/, research/round-14-results/R04/.
+Чужие пути не менял. Для проверки локально лежали неотслеживаемые копии (в ветку НЕ входят):
+  ml/civic_classifier/ (v1) @ 14c3384 · ml/civic_classifier_v2/ (R03) @ f9370b0 · ml/datasets/ (R02) @ 05b789e ·
+  ui/civic_feedback/v2/ (R09) @ 4021818 · ui/web_server.py (R01) @ 2eaeacb — во временной папке, только для проверки стыка.
+
+=====================================================================================================
+R01 (интегратор)
+=====================================================================================================
+1. Перенести пути R04 (path-scoped, без merge):
+     git fetch origin claude/r14-R04
+     git checkout <code_sha из DELIVERY.json> -- ml/civic_dedup ui/civic_ml_api tests/civic/R04/round14
+   Зависимости в сборке (у R01 уже есть или придут от ролей): ml/civic_classifier/ (v1), ml/civic_classifier_v2/ (R03),
+   research/round-14/categories_v2.json. ml/datasets/ (R02) нужен только для tune/evaluate, не для сервера.
+
+2. Шлюз API v2: имена уже совпадают с V2_HANDLERS — ничего менять не нужно:
+     POST /classify -> ui.civic_ml_api.classify(text)
+     POST /similar  -> ui.civic_ml_api.similar(text, point=None, days=None)
+   Ошибки — по договору R01 §1: ValueError -> 400; MLServiceUnavailable (status=503, code, message) -> 503.
+   Функции потокобезопасны (ленивая загрузка под блокировкой; проверено 32 потоками с холодного старта).
+
+3. Patch (3 строки, проверен на ui/web_server.py @ 2eaeacb): передать в similar необязательную цель жалобы,
+   иначе условие «та же цель» работает только через точку (≤ 200 м), а участок улицы бывает длиннее.
+   Файл: research/round-14-results/R04/r01_similar_target.patch
+     в CivicV2Gateway.arguments, ветка key == "similar", перед return args:
+         if body.get("target") is not None:
+             # R04: «та же цель» ({kind, id} или id) — проверяет сама ui.civic_ml_api.similar (ValueError -> 400)
+             args["target"] = body["target"]
+   Проверка после патча: target чужого вида -> 400 «target: нужен объект {kind, id} или id цели.»
+
+4. Подключение хранилища жалоб при старте сервера — там, где создаётся ComplaintStore R09
+   (ui.civic_feedback.v2.integration.make_service(db_path) -> сервис с атрибутом .store):
+         import ui.civic_ml_api as civic_ml
+         civic_ml.connect_store(complaints_service)   # можно передать и сам ComplaintStore
+         civic_ml.warmup()                            # фоновый поток: загрузка моделей + прогрев кэша
+   connect_store подписывается на события R09 (store.subscribe): каждая новая жалоба заранее считается в фоне.
+   Без connect_store /similar отвечает 503 source_not_connected — форма R09 работает без «Я тоже» (так задумано).
+   Повторный connect_store (перезапуск сервиса) снимает старую подписку.
+
+5. Диагностика (для GET /api/civic/v2/modules или журнала старта, по желанию):
+         civic_ml.status() -> {"classify": {"model_version", "models": {v2, v1, kw, v1_heuristic}},
+                               "similar": {"method", "version", "threshold", "text_only_threshold", "radius_m",
+                                           "notes", "source"}}
+   Пути в причинах — относительно репозитория (абсолютные пути сервера наружу не уходят).
+
+6. Тесты: python -m pytest -q tests/civic/R04/round14   (96 тестов; без torch; e5-тесты на крошечной ONNX-модели
+   пропускаются, если нет onnx/tokenizers).
+   ВАЖНО для общей сборки: в tests/civic/R04/round14 НАРОЧНО нет conftest.py. Тесты R03 делают
+   `from conftest import needs_ml`; все conftest.py без пакета импортируются под одним именем «conftest», и любой
+   другой conftest.py, собранный в том же прогоне раньше, подменит модуль R03 (ImportError при сборе тестов).
+   Совместный прогон tests/civic/R03/round14 + tests/civic/R04/round14: 137 passed, 6 skipped.
+
+7. Зависимости рантайма: запасные пути (v1 + словарь, поиск n-грамм) — только стандартная библиотека.
+   Модель v2 R03 и e5 — numpy + onnxruntime + tokenizers в Python сервера; нет их — тихий переход на запасной путь
+   (status() покажет причину). .gitignore: ml/civic_dedup/.gitignore уже исключает artifacts/ (веса e5).
+
+=====================================================================================================
+R09 (жалоба жителя) — как пользоваться ответами
+=====================================================================================================
+POST /classify {text} ->
+  {category, score, needs_review, model_version, top3:[{category, score}],     <- контракт §7
+   suggest, source, score_kind}                                                <- сверх контракта
+  - suggest = true: можно сразу выделить чип «Похоже на: …» (житель подтверждает или меняет).
+    Точность при suggest на синтетике: 0.94 (val) / 0.83 (test).
+  - needs_review — для сотрудника (подсказка не проверена на людях): сейчас всегда true. Для чипа жителя смотрите
+    suggest, а не needs_review: иначе подсказка не покажется никогда.
+  - Пустой/бессодержательный текст -> category "other", top3 [], suggest false.
+POST /similar {text, point, days: 14, target?} ->
+  {matches:[{complaint_id, score, target, metoo, people, category, created_at, status, distance_m, same_target}],
+   people_total, method, model_version, threshold, days, radius_m}
+  - ВСЕ matches уже прошли порог R04. Не фильтруйте повторно по score ≥ 0.6: шкала зависит от режима
+    (в режиме «понятия» дубль начинается с 0.18). Берите matches[0] — список уже упорядочен:
+    самое похожее, при равенстве та же цель, ближе, больше людей.
+  - people = 1 + metoo (автор + «Я тоже»); people_total — сумма по matches. Для «Об этом уже сообщили N человек»
+    берите people у matches[0] (или GET /complaints/{id}, как сейчас).
+  - Закрытые (fixed, rejected) и помеченные дублем жалобы не возвращаются. Текстов чужих жалоб в ответе нет.
+  - Без point и target -> matches [] и note "no_location". Хранилище не подключено -> 503 source_not_connected.
+  - target передавайте ту, что житель выбрал на шаге ② (после патча R01 п. 3 она дойдёт до R04).
+
+=====================================================================================================
+R03 (модель v2)
+=====================================================================================================
+- R04 вызывает ml.civic_classifier_v2.predict.get_default() (artifacts/onnx, затем artifacts/final) и берёт
+  атрибуты model_version и threshold (threshold — для suggest). Модель с метками не из categories_v2.json R04
+  не примет (ответ с неизвестной категорией -> запасной путь). Три сбоя подряд при запросах — v2 выключается
+  до перезапуска сервера (не тормозить каждый запрос).
+- Ваши тесты используют `from conftest import needs_ml` — см. R01 п. 6: в общем прогоне это ломается от любого
+  чужого conftest.py. Надёжнее — модуль с уникальным именем (как tests/civic/R04/round14/r04_helpers.py).
+
+=====================================================================================================
+R10 (приёмка)
+=====================================================================================================
+- python -m pytest -q tests/civic/R04/round14
+- python -m ui.civic_ml_api status | classify "…" | similar "…" --lon 71.42 --lat 51.09 --demo
+- python -m ml.civic_dedup.bench   (скорость; требования classify ≤ 50 мс, similar ≤ 150 мс на 5 000)
+- Что смотреть руками: «Я тоже» не предлагается для другой проблемы в том же месте (снег vs скамейка на одной
+  остановке); казахский текст без спецбукв и латиница дают ту же категорию, что правильное написание.
+
+=====================================================================================================
+R11 (тексты)
+=====================================================================================================
+Видимых жителю строк у R04 нет: 503 source_not_connected R09 обрабатывает молча. Ключей i18n не нужно.
+
+=====================================================================================================
+LOCAL (ноутбук владельца, Codex) — LOCAL-R04-1: e5 для поиска дублей (≈ 15–25 минут)
+=====================================================================================================
+Нужно: venv C:\Users\LEGION\venvs\birge-ml (LOCAL-3) с кэшем intfloat/multilingual-e5-base (уже скачан, ENV.md).
+Скопируйте в Codex целиком:
+
+```
+Работаешь в репозитории C:\Users\LEGION\Desktop\hackalem\hack-d3b2c613-stupits (GOV_DIPLOME). Не читай .env.
+1. git fetch origin; git switch claude/r14-R04 (или сборку R01, если в ней уже есть ml/civic_dedup).
+2. Пары перефразов R02 (только для подбора порога, НЕ коммитить):
+   git restore --source origin/claude/r14-R02 --worktree -- ml/datasets/synth_v3/data/paraphrase_pairs_v3.jsonl
+3. $py = "C:\Users\LEGION\venvs\birge-ml\Scripts\python.exe"
+   & $py -m pip install tokenizers onnx   (если ещё нет)
+   & $py -m ml.civic_dedup.export_e5               # без сети, из кэша HF; печатает «проверка: PASS/FAIL»
+   & $py -m ml.civic_dedup.tune --method all --write-config
+   & $py -m ml.civic_dedup.bench --out ml/civic_dedup/results/bench_laptop.json
+   & $py -m pytest -q tests/civic/R04/round14
+4. Закоммить ТОЛЬКО: ml/civic_dedup/dedup_config.json, ml/civic_dedup/results/e5_export.json,
+   ml/civic_dedup/results/dedup_eval_all.json, ml/civic_dedup/results/bench_laptop.json -> push в claude/r14-R04.
+   НЕ коммитить ml/civic_dedup/artifacts/ (≈ 1.4 ГБ) и ml/datasets/.
+5. Отчёт: строка «проверка» из export_e5, строки tune (dev/test для ngram и e5), строки bench, SHA, ошибки.
+```
+Что будет: если e5 на dev даёт точность ≥ 0.90 и полноту выше n-грамм, tune поставит e5 первым в prefer, и сервер
+(после перезапуска) сам возьмёт e5; иначе e5 будет выключен (threshold null) — это нормальный честный исход.
+Если export_e5 пишет FAIL (не совпали токены или косинус < порога) — e5 не включать, прислать вывод.
+Сервер с e5 должен запускаться тем Python, где есть numpy/onnxruntime/tokenizers; иначе — запасной путь.

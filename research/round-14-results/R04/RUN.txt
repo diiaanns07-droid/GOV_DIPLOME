@@ -1,0 +1,44 @@
+R04 · раунд 14 · RUN — как запустить и проверить ML-API
+
+Что теперь умеет приложение (после подключения R01, INTEGRATION.txt):
+- Житель пишет жалобу — за доли миллисекунды приходит подсказка категории (12 категорий v2), в том числе для
+  казахского без специфических букв и для латиницы из чатов («qar tazalanbaidy», «yama na doroge»).
+- Перед отправкой система находит похожие открытые жалобы рядом (≤ 200 м или та же цель, за 14 дней) и говорит,
+  сколько человек уже сообщили, — житель жмёт «Я тоже» вместо новой жалобы. Без интернета и без видеокарты.
+- Когда на ноутбуке выполнены LOCAL-задачи, сервер сам берёт модель v2 R03 (ONNX) и e5 для дублей.
+
+Все команды — из корня репозитория. Python 3.10+; для запасных путей нужна только стандартная библиотека.
+На ноутбуке владельца вместо python: C:\Users\LEGION\venvs\birge-ml\Scripts\python.exe
+
+1. Тесты R04 (96; без torch; e5-тесты на крошечной ONNX-модели идут, если есть numpy, onnx, onnxruntime, tokenizers):
+     python -m pytest -q tests/civic/R04/round14
+
+2. Проверка без сервера:
+     python -m ui.civic_ml_api status
+     python -m ui.civic_ml_api classify "Во дворе не горят фонари" "Аялдамада кар тазаланбаган" "yama na doroge"
+     python -m ui.civic_ml_api similar "Не убран снег на остановке" --lon 71.42 --lat 51.09 --demo
+   (--demo — 5 000 синтетических обращений вокруг точки; без --demo — 503 source_not_connected: хранилище R09
+    подключает сервер R01.)
+
+3. Скорость (требования: classify ≤ 50 мс, similar ≤ 150 мс на 5 000 обращений):
+     python -m ml.civic_dedup.bench                                   # -> ml/civic_dedup/results/bench.json
+     python -m ml.civic_dedup.bench --out ml/civic_dedup/results/bench_laptop.json   # на ноутбуке
+
+4. Подбор порога дублей (нужны пары R02: ml/datasets/synth_v3/data/paraphrase_pairs_v3.jsonl):
+     python -m ml.civic_dedup.tune                                    # n-граммы + понятия; отчёт results/dedup_eval_ngram.json
+     python -m ml.civic_dedup.tune --method all --write-config        # + e5 (после export_e5), запись dedup_config.json
+
+5. Оценка подсказки категории на синтетике R02 (нужен ml/datasets/synth_v3/data/corpus_v3.jsonl):
+     python -m ui.civic_ml_api.evaluate                               # -> research/round-14-results/R04/classify_eval.json
+
+6. LOCAL: e5 для дублей (ноутбук, venv birge-ml; подробно — INTEGRATION.txt, LOCAL-R04-1):
+     python -m ml.civic_dedup.export_e5
+     python -m ml.civic_dedup.tune --method all --write-config
+     python -m ml.civic_dedup.bench --out ml/civic_dedup/results/bench_laptop.json
+
+В Python-коде сервера (R01):
+     import ui.civic_ml_api as civic_ml
+     civic_ml.connect_store(complaints_service)   # хранилище жалоб R09
+     civic_ml.warmup()                            # в фоне: модели + кэш признаков
+     civic_ml.classify("текст")                   # {category, score, needs_review, model_version, top3, suggest, …}
+     civic_ml.similar("текст", point=[lon, lat], days=14, target={"kind": "object", "id": "osm-node-…"})
