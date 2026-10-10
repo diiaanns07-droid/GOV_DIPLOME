@@ -29,7 +29,7 @@ import time
 from pathlib import Path
 
 from ml.labeling import guide
-from ml.labeling.anonymize import anonymize
+from ml.labeling.anonymize import anonymize, needs_review
 from ml.labeling.llm_client import BudgetExceeded, LLMError, make_client
 from ml.labeling.text_utils import PRIVATE, check_output_path
 
@@ -127,10 +127,15 @@ def run(args, transport=None) -> dict:
                          "(после повторного обезличивания). Если это допустимо по согласию участников — добавьте "
                          "--confirm-external.")
     check_output_path(args.out, args.allow_outside_private)
-    out_rows, stats = [], {"ok": 0, "invalid": 0, "errors": 0, "retried_strict": 0, "stopped_by_budget": False,
+    out_rows, stats = [], {"ok": 0, "invalid": 0, "errors": 0, "retried_strict": 0, "skipped_review": 0, "stopped_by_budget": False,
                            "labels": {}}
     for it in items:
         text, _ = anonymize(it["text"])  # повторно: в API не уходит ничего, что обезличивание может убрать
+        if it["evidence"] not in SYNTHETIC_EVIDENCE and needs_review(text):
+            # R15-S14: после обезличивания осталось похожее на личные данные (имя, длинный номер, почта) —
+            # настоящий текст жителя во внешний API (за рубеж) не отправляем; его размечает человек.
+            stats["skipped_review"] += 1
+            continue
         msgs = [{"role": "system", "content": system}, {"role": "user", "content": f"Текст обращения:\n<<<\n{text}\n>>>"}]
         try:
             resp = client.chat(msgs, temperature=0.0, max_tokens=args.max_tokens, seed=args.seed)

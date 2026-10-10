@@ -49,6 +49,18 @@ const api = (page, url, init) => page.evaluate(async ([u, i]) => {
   return { status: r.status, body };
 }, [url, init || null]);
 const deviceId = (page) => page.evaluate(() => localStorage.getItem("birge.device_id"));
+// R10 B-025: с начала страницы первый Tab — «Перейти к главной кнопке», Enter — фокус на главное действие вида.
+async function skipToMain(page) {
+  // Начало страницы: фокус на body (временный tabindex), иначе Chromium продолжит Tab от последней нажатой кнопки.
+  await page.evaluate(() => { const b = document.body; b.setAttribute("tabindex", "-1"); b.focus(); b.removeAttribute("tabindex"); });
+  await page.keyboard.press("Tab");
+  const first = await page.evaluate(() => { const a = document.activeElement, r = a.getBoundingClientRect();
+    return { skip: a.classList.contains("birge-skip"), text: a.textContent.trim(), top: Math.round(r.top) }; });
+  await page.keyboard.press("Enter");
+  const target = await page.evaluate(() => { const a = document.activeElement;
+    return { fab: a.classList.contains("bc-fab"), heat: !!a.closest("#birge-heat-root"), text: (a.textContent || "").trim().slice(0, 40) }; });
+  return { first, target };
+}
 
 async function main() {
   fs.mkdirSync(OUT, { recursive: true });
@@ -66,6 +78,10 @@ async function main() {
     await page.addInitScript(() => { try { if (!localStorage.getItem("birge.mode")) localStorage.setItem("birge.mode", "akimat"); } catch (e) {} });
     await page.goto(base);
     await ready(page);
+
+    const keysAkimat = await skipToMain(page);
+    check("keyboard (akimat): first Tab = «Перейти к главной кнопке», Enter -> «Карта жалоб» panel",
+      keysAkimat.first.skip && keysAkimat.first.top >= 0 && keysAkimat.first.text.length > 3 && keysAkimat.target.heat, keysAkimat);
 
     // ---- what B2 connects
     const modules = (await api(page, "/api/civic/v2/modules")).body.modules;
@@ -92,6 +108,9 @@ async function main() {
     // ---- step 1–2 with R12 and R04: the resident picks a real place and gets a category suggestion
     await page.click("#birge-header [data-mode=resident]");
     await page.waitForTimeout(300);
+    const keysResident = await skipToMain(page);
+    check("keyboard (resident): first Tab = «Перейти к главной кнопке», Enter -> «Сообщить о проблеме»",
+      keysResident.first.skip && keysResident.target.fab, keysResident);
     await page.click(".bc-fab");
     await page.waitForSelector(".bc-panel[data-step='2']", { timeout: 8000 });
     const tap = await page.evaluate((p) => { const c = map.getCanvas().getBoundingClientRect(); map.jumpTo({ center: p, zoom: 16 });
@@ -237,11 +256,14 @@ async function main() {
         bottom: Math.round(r.bottom), sheetTop: Math.round(q.top), w: innerWidth, scrollX: document.documentElement.scrollWidth > innerWidth }; });
     const half = await phoneDock();
     check("375 px akimat: the catalog does not cover the open «Карта жалоб» sheet", half && half.sheet !== "peek" && !half.shown && !half.scrollX, half);
-    // Акимат идёт к месту (выбор района в навигации) — шторка опускается (peek), каталог появляется над ней.
-    await p2.evaluate(() => { const sel = document.querySelector(".civic-explore select"); const opt = [...sel.options].find((o) => o.value);
-      sel.value = opt.value; sel.dispatchEvent(new Event("change", { bubbles: true })); });
-    await p2.waitForTimeout(1200);
-    await p2.click(".birge-b3d-toggle");  // B3: каталог раскрывается кнопкой «Что построить?» над шторкой
+    // R10 B-022: кнопка «Что построить?» видна над полуоткрытой шторкой; нажатие опускает шторку и раскрывает каталог.
+    const toggle = await p2.evaluate(() => { const b = document.querySelector(".birge-b3d-toggle"), s = document.querySelector(".civic-panel");
+      if (!b || getComputedStyle(b).display === "none") return null; const r = b.getBoundingClientRect();
+      return { text: b.textContent.trim(), h: Math.round(r.height), bottom: Math.round(r.bottom), sheetTop: Math.round(s.getBoundingClientRect().top) }; });
+    check("375 px akimat: «Что построить?» is reachable above the half-open sheet (48 px)", !!toggle && toggle.h >= 48
+      && toggle.bottom <= toggle.sheetTop + 1, toggle);
+    await p2.click(".birge-b3d-toggle");
+    await p2.waitForTimeout(600);
     await p2.waitForTimeout(300);
     const peek = await phoneDock();
     check("375 px akimat: sheet collapsed -> catalog above it, within the screen", peek && peek.sheet === "peek" && peek.shown

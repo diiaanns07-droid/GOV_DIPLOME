@@ -7,6 +7,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+from collections import deque
 from copy import deepcopy
 from http.cookies import CookieError, SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -14,10 +16,12 @@ import importlib
 import ipaddress
 import json
 import logging
+import hashlib
 import os
 from pathlib import Path
 import re
 import threading
+import time
 from urllib.parse import parse_qs, urlsplit
 import webbrowser
 
@@ -164,6 +168,57 @@ SCENARIO_CACHE_MAX_BYTES = 1_000_000
 LOGIN_LOCK = threading.Lock()
 # Headers a role service may set on its response; everything else is dropped.
 CIVIC_SERVICE_HEADERS = {"set-cookie", "retry-after", "vary"}
+
+# R15-S01: строгая CSP для HTML-страниц. Скрипты — только свои файлы (script-src 'self'); встроенный <script>
+# разрешается по sha256 его текста (считается при отдаче страницы, см. csp_for_html). Подложка карты (web/map.js) —
+# tiles.openfreemap.org: стиль, тайлы, шрифты и спрайты (данные и картинки, не скрипты). MapLibre создаёт
+# веб-воркер из blob:. Стили 'unsafe-inline' оставлены: MapLibre и модули ставят style="" (риск много ниже скриптов).
+CSP_TILES = "https://tiles.openfreemap.org"
+CSP_HTML = ("default-src 'self'; script-src 'self'{hashes}; style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data: blob: " + CSP_TILES + "; font-src 'self' data:; "
+            "connect-src 'self' " + CSP_TILES + "; worker-src 'self' blob:; child-src 'self' blob:; "
+            "object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
+_INLINE_SCRIPT = re.compile(rb"<script(?![^>]*\bsrc\s*=)[^>]*>(.*?)</script>", re.S | re.I)
+
+
+def csp_for_html(data: bytes) -> str:
+    """CSP страницы: хэши её встроенных <script> (без них строгая политика сломала бы ui-kit и «Картину дня»)."""
+    hashes = "".join(" 'sha256-%s'" % base64.b64encode(hashlib.sha256(m.group(1)).digest()).decode("ascii")
+                     for m in _INLINE_SCRIPT.finditer(data))
+    return CSP_HTML.format(hashes=hashes)
+
+
+# R15-S02/S08: лимиты частоты API v2 по адресу клиента. device_id придумывает сам браузер, поэтому «один голос
+# на устройство» без лимита по адресу ничего не ограничивает: скрипт с новыми device_id = новые «жители».
+# (окно в секундах, предел, считать отдельно для каждой цели {id}). Память процесса; после перезапуска — с нуля.
+# За обратным прокси client_ip — адрес прокси: тогда брать адрес из X-Forwarded-For доверенного прокси.
+V2_RATE_LIMITS = {
+    "complaints.create": ((60, 5, False), (3600, 30, False)),
+    "complaints.metoo": ((60, 30, False), (86400, 20, True)),
+    "proposals.vote": ((86400, 20, True),),
+    "classify": ((60, 60, False),),
+    "similar": ((60, 60, False),),
+}
+
+
+class RateLimiter:
+    """Скользящее окно в памяти: allow(ключ, окно, предел) -> 0, если можно, иначе секунды до повтора."""
+
+    def __init__(self, clock=time.monotonic, max_keys=50_000):
+        self._hits, self._lock, self._clock, self._max_keys = {}, threading.Lock(), clock, max_keys
+
+    def allow(self, key, window, limit):
+        now = self._clock()
+        with self._lock:
+            hits = self._hits.setdefault(key, deque())
+            while hits and now - hits[0] >= window:
+                hits.popleft()
+            if len(hits) >= limit:
+                return max(1, int(window - (now - hits[0])) + 1)
+            hits.append(now)
+            if len(self._hits) > self._max_keys:  # не копить адреса бесконечно
+                self._hits = {k: v for k, v in self._hits.items() if v and now - v[-1] < 86400}
+            return 0
 
 
 def _restrict_db_files(db_path: Path, own_parent: bool = False):
@@ -716,7 +771,8 @@ def _v2_text(raw, field="text"):
 class CivicV2Gateway:
     """Маршрутизатор API v2: проверяет параметры и вызывает функцию модуля роли."""
 
-    def __init__(self, store_gateway=None, modules=None, category_ids=None, db_path=None, demo=None):
+    def __init__(self, store_gateway=None, modules=None, category_ids=None, db_path=None, demo=None,
+                 rate_limits="default"):
         # store_gateway — шлюз v1: из него берётся R02 для проверки сессии сотрудника.
         self.store_gateway = store_gateway
         # Та же SQLite, что у v1 (R09 хранит жалобы v2 в своих таблицах рядом с v1).
@@ -729,6 +785,9 @@ class CivicV2Gateway:
         self._services = {}  # модуль -> экземпляр сервиса (kind="service")
         self._lock = threading.RLock()
         self._wired = False
+        # R15-S02/S08: лимиты по адресу клиента (V2_RATE_LIMITS); None — без лимитов (только для тестов роли).
+        self.rate_limits = V2_RATE_LIMITS if rate_limits == "default" else rate_limits
+        self.limiter = RateLimiter()
         self.category_ids = load_category_ids() if category_ids is None else frozenset(category_ids)
 
     # --- поиск функций модулей ---------------------------------------------
@@ -831,6 +890,14 @@ class CivicV2Gateway:
                 akim.configure()
         except Exception:
             LOGGER.exception("API v2: «Картина дня» (R08) не настроилась")
+        if store is not None and hasattr(store, "target_lookup"):
+            # R15-S04/S12: цель новой жалобы проверяется по карте R12 (существует, рядом с точкой, подписи из OSM).
+            try:
+                geo = self._import("engine.civic_geo")
+                if geo is not None and callable(getattr(geo, "target_geometry", None)):
+                    store.target_lookup = geo.target_geometry
+            except Exception:
+                LOGGER.exception("API v2: проверка цели жалобы по карте R12 не подключилась")
         if store is not None:
             # R04 (INTEGRATION п. 4): «Я тоже» ищет в том же хранилище R09; модели грузятся в фоне.
             # Без R04 или до подключения /similar отвечает 503 — форма R09 работает без подсказки.
@@ -1031,6 +1098,9 @@ class CivicV2Gateway:
         key, params = found
         if key == "modules":
             return {"status": 200, "headers": {}, "body": {"modules": self.modules()}}
+        limited = self._rate_limited(key, params, context)
+        if limited:
+            return limited
         handler = V2_HANDLERS[key]
         if handler.kind != "function":
             self.wire()
@@ -1086,6 +1156,23 @@ class CivicV2Gateway:
             LOGGER.error("API v2: %s вернул не объект JSON", key)
             return v2_error(500, "bad_module_response", "Модуль вернул некорректный ответ.")
         return {"status": status, "headers": {}, "body": result}
+
+    def _rate_limited(self, key, params, context):
+        """Ответ 429 с Retry-After или None (лимиты маршрутов жителя: жалоба, «Я тоже», голос, classify, similar)."""
+        rules = (self.rate_limits or {}).get(key)
+        if not rules:
+            return None
+        client = str((context or {}).get("client_ip") or "unknown")
+        for window, limit, per_target in rules:
+            bucket = (key, client, window) + ((params.get("id"),) if per_target else ())
+            retry = self.limiter.allow(bucket, window, limit)
+            if retry:
+                LOGGER.warning("API v2: лимит %s (%d за %d с) для адреса клиента", key, limit, window)
+                reply = v2_error(429, "too_many_requests", "Слишком много запросов. Повторите позже.",
+                                 retry_after=retry)
+                reply["headers"]["Retry-After"] = str(retry)
+                return reply
+        return None
 
     @staticmethod
     def _raw(fn, key, path, query, module, handler, staff=None):
@@ -1265,6 +1352,16 @@ class Backend:
 class Handler(BaseHTTPRequestHandler):
     server_version = "Akim/2.0"
 
+    def log_request(self, code="-", size="-"):
+        # R15-S10: в журнал — только метод и путь. В строке запроса бывают точки жителя (/targets?lon&lat,
+        # /complaints/place?lon&lat) и device_id (/proposals?device_id=…): вместе с адресом и временем это
+        # персональные данные, а журнал хранится и пересылается без защиты.
+        code = getattr(code, "value", code)
+        line = (self.requestline or "").split(" ")
+        if len(line) == 3:
+            line[1] = urlsplit(line[1]).path
+        self.log_message('"%s" %s %s', " ".join(line), str(code), str(size))
+
     def setup(self):
         super().setup()
         self.connection.settimeout(15)
@@ -1277,6 +1374,7 @@ class Handler(BaseHTTPRequestHandler):
             self.close_connection = True
 
     def send_bytes(self, status, data, content_type):
+        csp = csp_for_html(data) if content_type.startswith("text/html") else "frame-ancestors 'none'"
         try:
             self.send_response(status)
             self.send_header("Content-Type", content_type)
@@ -1286,7 +1384,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Referrer-Policy", "same-origin")
             # The page carries staff actions: no framing by another (e.g. neighbour loopback) origin.
             self.send_header("X-Frame-Options", "DENY")
-            self.send_header("Content-Security-Policy", "frame-ancestors 'none'")
+            self.send_header("Content-Security-Policy", csp)
             self.end_headers()
             if self.command != "HEAD":
                 self.wfile.write(data)

@@ -4,11 +4,11 @@
 // Шум среды: нет интернета для подложки, программный WebGL в headless Chromium.
 const NOISE = /openfreemap|Failed to load resource|ERR_TUNNEL|AJAXError|GL Driver|GPU stall|style diff|swiftshader|GroupMarkerNotSet|WebGL/i;
 // UX_BRIEF правило 4 + UX_SPEC §8: таких слов в интерфейсе быть не должно.
-const TECH_WORDS = /(?<![\p{L}-])(ребро|рёбра|граф|графа|геометри\p{L}*|сценари\p{L}*|payload|demo-ring|target|null|undefined|NaN)(?![\p{L}-])/iu;
+const TECH_WORDS = /(?<![\p{L}-])(ребро|рёбра|граф|графа|геометри\p{L}*|сценари\p{L}*|payload|demo-ring|target|null|undefined|NaN|editor|api|json|sqlite|\/(?:api|staff)\/[\w/.-]+)(?![\p{L}-])/iu;
 // Ключ перевода, попавший на экран: «complaint.step2.title».
 const RAW_KEY = /\b(shell|common|complaint|heat|akim|target|proposal|build3d|mine|status|stage|cat|district)\.[a-z_]+(\.[a-z_0-9]+)*\b/;
 // Имена собственные и слова, одинаковые в ru и kk, — не считаются «непереведёнными».
-const SAME_IN_BOTH = /^(Астана|Нура|Есиль|Алматы|Сарыарка|Байконур|Сарайшык|Birge|3D|Карта|РУС|ҚАЗ|[\d\s.,:%–—+-]+)$/i;
+const SAME_IN_BOTH = /^((Астана|Нура|Есиль|Алматы|Сарыарка|Байконур|Сарайшык|Birge|3D|Карта|РУС|ҚАЗ)( · \d+)?|[\d\s.,:%–—+-]+)$/i;  // «Алматы · 5» — подпись района с числом
 
 // Правила UX_BRIEF для того, что сейчас на экране: прокрутка, ключи, тех. слова, шрифт, зоны нажатия.
 function uiScreen(page) {
@@ -22,6 +22,7 @@ function uiScreen(page) {
       // Строка лицензии «© OpenStreetMap contributors» — служебная подпись карты, правило 16/14 px к ней не относится.
       if (!vis(el) || el.children.length || !el.textContent.trim() || el.closest("svg, .maplibregl-ctrl-attrib") || /©/.test(el.textContent)) continue;
       const fs = parseFloat(getComputedStyle(el).fontSize);
+      if (fs === 0) continue;  // текст спрятан намеренно (табличка-точка 3D-проекта на мелком масштабе)
       if (fs < 14) tiny.push(`${fs}px «${el.textContent.trim().slice(0, 30)}»`);
       else if (fs < 16) small.push(`${fs}px «${el.textContent.trim().slice(0, 30)}»`);
     }

@@ -127,6 +127,22 @@
       if (header.dataset.menu === "open" && !header.contains(event.target)) setMenu(false);
     });
   }
+  // Первая точка Tab — «Перейти к главной кнопке» (ui-kit .bk-skip, ключ R11): житель — «Сообщить о проблеме» (R09),
+  // акимат — «Карта жалоб» (R07) в панели. Без неё до главной кнопки было > 40 нажатий Tab (R10 B-025, LOCAL_B2 №7).
+  let skip = null;
+  function buildSkip() {
+    if (skip || !document.body) return;
+    skip = el("a", { class: "bk-skip birge-skip", href: "#birge-main" });
+    skip.addEventListener("click", (event) => {
+      event.preventDefault();
+      const fab = document.querySelector(".bc-fab");
+      const target = state.section === "day" ? document.getElementById("birge-day-title")
+        : state.mode === "resident" && fab && getComputedStyle(fab).display !== "none" ? fab
+        : document.querySelector("#birge-heat-root button, #birge-heat-root [tabindex], #birge-heat-root a[href]");
+      if (target) target.focus();
+    });
+    document.body.prepend(skip);
+  }
   function setMenu(open) {
     if (!header) return;
     header.dataset.menu = open ? "open" : "closed";
@@ -135,6 +151,7 @@
   }
 
   function render() {
+    if (skip) skip.textContent = t("common.action.skip_to_main");
     if (header) {
       header.querySelector(".birge-nav").setAttribute("aria-label", t("shell.nav.label"));
       header.querySelector(".birge-role").setAttribute("aria-label", t("common.role.label"));
@@ -259,6 +276,7 @@
     document.body.dataset.birgeTools = /[?&]tools=all(&|$)/.test(location.search) ? "all" : "off";
     state.mode = savedMode() || defaultMode();
     document.body.dataset.birgeMode = state.mode;
+    buildSkip();
     buildHeader();
     buildDay();
     setSection(location.hash === "#day" ? "day" : "map", { hash: false });

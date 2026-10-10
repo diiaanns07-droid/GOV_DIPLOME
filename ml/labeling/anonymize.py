@@ -111,6 +111,12 @@ _NAME_INTRO = re.compile(
     r"((?:меня зовут|мо[её] имя|я\s*[-—–]|менің атым|менің есімім|с уважением,?|құрметпен,?|"
     r"фио:?|автор:?|подпись:?)\s+)" + _NAME_WORD + r"(?:\s+" + _NAME_WORD + r"){0,2}(?:\s+" + _INITIALS + r")?",
     re.I)
+# R15-S07: ФИО с отчеством — «Иванов Иван Иванович», «Ахметова Динара Серикқызы», «Нұрлан Ерболұлы».
+# Отчество узнаётся по окончанию; перед ним 1–2 слова с большой буквы (фамилия, имя).
+_PATRONYMIC = r"[" + UP + r"][" + LO + r"]+(?:вич|вна|ична|инична|ұлы|улы|қызы|кызы)(?![" + LO + r"])"
+_NAME_PATRONYMIC = re.compile(_NOT_AFTER_WORD + r"(?:" + _NAME_WORD + r"\s+){1,2}" + _PATRONYMIC)
+# «Я, Сейткали Айгерим, …» / «Мен, Айгерим …» — подпись в начале обращения.
+_NAME_I_COMMA = re.compile(r"((?:^|(?<=[.!?]\s))(?:я|мен),\s+)" + _NAME_WORD + r"(?:\s+" + _NAME_WORD + r"){0,2}", re.I)
 _NAME_INITIALS = re.compile(_NOT_AFTER_WORD + _NAME_WORD + r"\s+[" + UP + r"]\.\s?[" + UP + r"]\.|" +
                             _NOT_AFTER_WORD + r"[" + UP + r"]\.\s?[" + UP + r"]\.\s?" + _NAME_WORD)
 
@@ -137,6 +143,8 @@ def anonymize(text: str) -> tuple[str, dict]:
     t = _sub(_CITY_PHONE, M_PHONE, t, counts, M_PHONE)
     t = _sub(_PLATE_NEW, M_PLATE, t, counts, M_PLATE)
     t = _sub(_PLATE_OLD, M_PLATE, t, counts, M_PLATE)
+    t = _sub(_NAME_PATRONYMIC, M_NAME, t, counts, M_NAME)
+    t = _sub(_NAME_I_COMMA, lambda m: m.group(1) + M_NAME, t, counts, M_NAME)
     t = _sub(_NAME_INTRO, lambda m: m.group(1) + M_NAME, t, counts, M_NAME)
     t = _sub(_NAME_INITIALS, M_NAME, t, counts, M_NAME)
     t = _sub(_ADDR_KK_AFTER, M_ADDR, t, counts, M_ADDR)
@@ -155,10 +163,13 @@ def anonymize(text: str) -> tuple[str, dict]:
 
 # Что могло остаться: числа из 5+ цифр, «@», латиница с цифрами — показать человеку.
 _SUSPICIOUS = re.compile(r"\d{5,}|@|\b[A-Za-z]+\d+[A-Za-z\d]*\b|\+\s?\d")
+# R15-S07: похоже на фамилию с именем («Петрова Анна», «Беков Ерлан») — тоже человеку, а не во внешний API.
+_SURNAME_LIKE = re.compile(_NOT_AFTER_WORD + r"[" + UP + r"][" + LO + r"]+(?:ов|ова|ев|ева|ин|ина|ский|ская|енко|бек|беков|бекова)"
+                           r"\s+[" + UP + r"][" + LO + r"]{2,}")
 
 
 def needs_review(clean_text: str) -> bool:
-    return bool(_SUSPICIOUS.search(clean_text))
+    return bool(_SUSPICIOUS.search(clean_text) or _SURNAME_LIKE.search(clean_text))
 
 
 def merge_counts(total: dict, part: dict) -> None:

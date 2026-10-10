@@ -14,6 +14,8 @@
 //         (web/civic/i18n/ru.json, kk.json), а не по внутренним классам — тест не зависит от вёрстки.
 // Итог: <out>/RESULT.json и RESULT.md; скриншоты <out>/<размер>-<язык>-<шаг>.jpg.
 // Статусы: PASS, FAIL (с причиной), NOT_RUN (нечего проверять: модуль не подключён и это уже FAIL шага API).
+// UI-шаги 5–6 меняют данные временной базы так же, как ведущий демо: вход сотрудника («Для сотрудников»),
+// проект сквера (в конце удаляется), «Взять в работу» → «Отметить исправленным» по остановке STOP.
 "use strict";
 const { chromium } = require("playwright");
 const { spawn, execFileSync } = require("child_process");
@@ -53,7 +55,8 @@ const freePort = () => new Promise((ok, no) => { const s = net.createServer().on
 async function startServer() {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r10-e2e-"));
   const db = path.join(tmp, "civic.sqlite3");
-  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1" };
+  // CIVIC_DEMO=1 — как run-city.bat на демо (синтетический набор R07 на карте); --no-demo — без него.
+  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1", CIVIC_DEMO: args["no-demo"] ? "" : "1" };
   const cli = (argv, input) => execFileSync(PY, ["-B", "-m", "ui.civic_store", "--db", db, ...argv],
     { cwd: ROOT, env, input, stdio: [input ? "pipe" : "ignore", "pipe", "pipe"] }).toString();
   cli(["init"]);
@@ -209,15 +212,19 @@ async function apiFlow(A, staffInfo) {
   // 5. Предложение акимата + голос жителя (R06).
   const login = staffInfo && staffInfo.user ? await A.login(staffInfo.user, staffInfo.pass) : { ok: false, why: staffInfo && staffInfo.error };
   add("API", "5", "вход сотрудника акимата (сессия + CSRF)", login.ok ? "PASS" : "FAIL", login);
-  const pl = await A.call("GET", `/api/civic/v2/proposals?bbox=${NURA_BBOX}`);
+  const pl = await A.call("GET", "/api/civic/v2/proposals");
   const plist = (A.data(pl) || {}).items || (A.data(pl) || {}).proposals || [];
-  add("API", "5", "GET /proposals: предложения Нуры со статусом «проект»", pl.status === 200 && plist.length > 0 && plist.every((p) => p.status === "proposal" || p.status) ? "PASS" : "FAIL",
-    { status: pl.status, n: plist.length });
+  add("API", "5", "GET /proposals: демо-предложения (seed-r14-demo) со статусом", pl.status === 200 && plist.length > 0 && plist.every((p) => p.status) ? "PASS" : "FAIL",
+    { status: pl.status, n: plist.length, statuses: [...new Set(plist.map((p) => p.status))] });
+  // Демо-проект с точкой — для голоса жителя на экране, где акимат не может поставить свой (телефон).
+  const seeded = plist.find((p) => p.geometry && p.geometry.type === "Point" && p.status === "proposal");
+  ctx.seededPoint = seeded ? seeded.geometry.coordinates : null;
   let prop = null;
   if (login.ok) {
     const pc = await A.call("POST", "/api/civic/v2/proposals", { kind: "square", geometry: { type: "Point", coordinates: [71.4021, 51.1288] },
       title_ru: "Сквер (приёмка R10)", title_kk: "Гүлзар (R10 қабылдау)", demo: true }, true);
-    prop = (A.data(pc) || {}).proposal || A.data(pc);
+    const pd = A.data(pc) || {};
+    prop = pd.item || pd.proposal || pd;  // R06 отвечает {item: …}
     add("API", "5", "POST /proposals (сквер) от сотрудника", [200, 201].includes(pc.status) && prop && prop.id && prop.status === "proposal" ? "PASS" : "FAIL",
       { status: pc.status, id: prop && prop.id, st: prop && prop.status, err: pc.body && pc.body.error });
   }
@@ -225,7 +232,8 @@ async function apiFlow(A, staffInfo) {
   if (pid) {
     const v1 = await A.call("POST", `/api/civic/v2/proposals/${pid}/vote`, { value: 1, device_id: DEVICE });
     const v2 = await A.call("POST", `/api/civic/v2/proposals/${pid}/vote`, { value: 1, device_id: DEVICE });
-    const a = (A.data(v1) || {}).proposal || A.data(v1) || {}, b = (A.data(v2) || {}).proposal || A.data(v2) || {};
+    const one = (r) => { const d = A.data(r) || {}; return d.item || d.proposal || d; };
+    const a = one(v1), b = one(v2);
     add("API", "5", "голос «За» +1, повтор с того же устройства не удваивает", [200, 201].includes(v1.status) && a.votes_up >= 1 && (b.votes_up === a.votes_up || [409, 429].includes(v2.status)) ? "PASS" : "FAIL",
       { first: [v1.status, a.votes_up], second: [v2.status, b.votes_up] });
   } else add("API", "5", "голос «За» по предложению", "NOT_RUN", "нет ни одного предложения");
@@ -249,48 +257,75 @@ async function apiFlow(A, staffInfo) {
 }
 
 // ------------------------------------------------------------------------------------------------ слой UI
-async function tapMap(page, point) {
-  // Ставим точку в центр свободной части карты (как в тесте R09) и нажимаем.
-  const xy = await page.evaluate(async (p) => {
-    // eslint-disable-next-line no-undef
-    const m = typeof map !== "undefined" && map && map.project ? map : (window.standMap || null);
-    if (!m) return null;
-    m.jumpTo({ center: p, zoom: 17 });
-    await new Promise((ok) => setTimeout(ok, 400));
-    const canvas = m.getCanvas(), c = canvas.getBoundingClientRect();
-    // Панель (ноутбук) или шторка (телефон) может закрывать центр карты: ищем свободную точку карты
-    // по вертикали от центра вверх и сдвигаем карту так, чтобы остановка оказалась там.
-    const free = (x, y) => { const e = document.elementFromPoint(x, y); return e === canvas || (e && canvas.parentElement.contains(e) && e.tagName === "CANVAS"); };
-    let want = { x: c.left + c.width / 2, y: c.top + c.height / 2 };
-    if (!free(want.x, want.y)) {
-      const xs = [c.left + c.width * 0.5, c.left + c.width * 0.3, c.left + c.width * 0.15];
-      outer: for (const x of xs) for (let y = c.top + c.height / 2; y > c.top + 40; y -= 20) if (free(x, y)) { want = { x, y: y - 10 }; break outer; }
-    }
-    for (let i = 0; i < 3; i++) {
-      const q = m.project(p);
-      m.panBy([c.left + q.x - want.x, c.top + q.y - want.y], { duration: 0 });
-      await new Promise((ok) => setTimeout(ok, 150));
-    }
-    const q = m.project(p);
-    return { x: c.left + q.x, y: c.top + q.y, free: free(c.left + q.x, c.top + q.y) };
-  }, point);
-  if (!xy) return false;
-  if (page.viewportSize().width < 1024) await page.touchscreen.tap(xy.x, xy.y); else await page.mouse.click(xy.x, xy.y);
-  await sleep(1200);
-  return true;
-}
+// Место для проекта сквера (шаг 5): левый берег, в стороне от демо-проектов seed-r14-demo (Жагалау).
+// Каждый вариант экрана ставит свой проект на ~130 м севернее предыдущего и в конце удаляет его.
+const PLACE = [71.4148, 51.1131];
+const esc = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const clickText = async (page, re, opts = {}) => {
-  const loc = page.getByRole(opts.role || "button", { name: re }).first();
-  if (!(await loc.count()) || !(await loc.isVisible().catch(() => false))) return false;
+// Первый ВИДИМЫЙ из найденных элементов: getByText/getByRole находят и скрытые копии (свёрнутая панель, другой вид).
+async function firstVisible(loc, max = 40) {
+  const n = Math.min(await loc.count().catch(() => 0), max);
+  for (let i = 0; i < n; i++) if (await loc.nth(i).isVisible().catch(() => false)) return loc.nth(i);
+  return null;
+}
+// Видимый элемент, ближайший к точке экрана (табличка «своего» проекта среди нескольких).
+async function nearestVisible(loc, xy, max = 40) {
+  const n = Math.min(await loc.count().catch(() => 0), max);
+  let best = null, bestD = Infinity;
+  for (let i = 0; i < n; i++) {
+    const it = loc.nth(i);
+    if (!(await it.isVisible().catch(() => false))) continue;
+    const b = await it.boundingBox().catch(() => null);
+    if (!b) continue;
+    const d = Math.hypot(b.x + b.width / 2 - xy.x, b.y + b.height / 2 - xy.y);
+    if (d < bestD) { best = it; bestD = d; }
+  }
+  return best ? { loc: best, d: Math.round(bestD) } : null;
+}
+const clickText = async (scope, re, opts = {}) => {
+  const loc = await firstVisible(scope.getByRole(opts.role || "button", { name: re }));
+  if (!loc) return false;
   await loc.click({ timeout: 4000 }).catch(() => null);
   await sleep(opts.wait || 900);
   return true;
 };
-const visibleText = async (page, re) => page.getByText(re).first().isVisible().catch(() => false);
+const visibleText = async (scope, re) => !!(await firstVisible(scope.getByText(re)));
+const tap = async (page, x, y) => { if (page.viewportSize().width < 1024) await page.touchscreen.tap(x, y); else await page.mouse.click(x, y); };
+// Нажать на найденный элемент по центру его рамки (касание на телефоне): так нажимает человек, а таблички
+// 3D-проектов двигаются вместе с картой — обычный click Playwright ждёт «неподвижности» и не срабатывает.
+const tapEl = async (page, loc) => { const b = await loc.boundingBox().catch(() => null); if (!b) return false; await tap(page, b.x + b.width / 2, b.y + b.height / 2); return true; };
 
-async function uiFlow(browser, base, [w, h], lang, apiCtx) {
-  const dict = loadDict(lang), ru = loadDict("ru");
+// Показать точку на карте и вернуть её место на экране: что лежит поверх (холст или значок) и ближайшую
+// свободную точку холста рядом. Панель (ноутбук) или шторка (телефон) может закрывать точку — тогда карта
+// сдвигается так, чтобы точка оказалась на открытой части карты.
+async function showPoint(page, point, zoom = 17) {
+  return page.evaluate(async ([p, z]) => {
+    // eslint-disable-next-line no-undef
+    const m = typeof map !== "undefined" && map && map.project ? map : (window.standMap || null);
+    if (!m) return null;
+    const wait = (ms) => new Promise((ok) => setTimeout(ok, ms));
+    m.jumpTo({ center: p, zoom: z, pitch: 0, bearing: 0 });
+    await wait(500);
+    const canvas = m.getCanvas(), c = canvas.getBoundingClientRect();
+    const free = (x, y) => document.elementFromPoint(x, y) === canvas;
+    let want = null;
+    for (const fx of [0.5, 0.3, 0.15, 0.7]) {
+      for (let y = c.top + c.height * 0.45; y > c.top + 60 && !want; y -= 20) if (free(c.left + c.width * fx, y)) want = { x: c.left + c.width * fx, y };
+      if (want) break;
+    }
+    if (want) for (let i = 0; i < 3; i++) { const q = m.project(p); m.panBy([c.left + q.x - want.x, c.top + q.y - want.y], { duration: 0 }); await wait(150); }
+    await wait(700);  // значки тепловой карты переставляются после сдвига
+    const q = m.project(p), x = c.left + q.x, y = c.top + q.y;
+    const under = document.elementFromPoint(x, y);
+    let near = null;
+    for (let r = 14; r <= 70 && !near; r += 8)
+      for (const [dx, dy] of [[r, 0], [-r, 0], [0, r], [0, -r], [r, r], [-r, -r], [r, -r], [-r, r]]) if (free(x + dx, y + dy)) { near = { x: x + dx, y: y + dy, r }; break; }
+    return { x, y, onCanvas: under === canvas, under: under ? String(under.className || under.tagName).slice(0, 40) : null, near };
+  }, [point, zoom]);
+}
+
+async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
+  const dict = loadDict(lang);
   const tag = `${w}-${lang}`;
   const mobile = w < 761;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
@@ -300,117 +335,253 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx) {
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
   page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errors.push(m.type() + ": " + m.text().slice(0, 200)); });
   // JPEG 70 %: кадр ~60 КБ вместо ~350 КБ PNG — отчёты лежат в Git.
-  const shot = async (step) => { const f = path.join(OUT, `${tag}-${step}.jpg`); await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null); return path.basename(f); };
+  const shot = async (s) => { const f = path.join(OUT, `${tag}-${s}.jpg`); await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null); return path.basename(f); };
   const step = (s, name, ok, detail, file) => add(`UI ${tag}`, s, name, ok === null ? "NOT_RUN" : ok ? "PASS" : "FAIL", detail, file);
+
+  const langRe = lang === "kk" ? /^ҚАЗ$/ : /^РУС$/;
+  const menuRe = new RegExp("^" + T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню") + "$", "i");
+  const setLang = async () => { const b = await firstVisible(page.getByRole("button", { name: langRe })); if (b) { await b.click().catch(() => null); await sleep(1000); } return !!b; };
+  // Кнопка из шапки; на телефоне — через «≡ Меню».
+  const header = async (re, wait = 1200) => {
+    let ok = await clickText(page, re, { wait });
+    if (!ok && mobile && (await clickText(page, menuRe))) { ok = await clickText(page, re, { wait }); if (!ok) await page.keyboard.press("Escape").catch(() => null); }
+    return ok;
+  };
+  const words = {
+    resident: T(dict, ["common.role.resident", "shell.mode.resident"], lang === "kk" ? "Тұрғын" : "Житель"),
+    akimat: T(dict, ["common.role.akimat", "shell.mode.akimat"], lang === "kk" ? "Әкімдік" : "Акимат"),
+  };
+  const setMode = (mode) => header(new RegExp("^" + esc(words[mode]) + "$", "i"));
+  const fresh = async () => { await page.goto(base); await sleep(2500); await setLang(); };
 
   await page.goto(base);
   await page.waitForFunction(() => document.readyState === "complete" && document.body.innerText.length > 50, null, { timeout: 40000 }).catch(() => null);
   await sleep(2500);
 
   // 0. Язык: переключатель ҚАЗ/РУС в шапке.
-  const langBtn = page.getByRole("button", { name: lang === "kk" ? /^ҚАЗ$/ : /^РУС$/ }).first();
-  const hasLang = await langBtn.isVisible().catch(() => false);
-  if (hasLang) { await langBtn.click(); await sleep(1200); }
+  const hasLang = await setLang();
   let scr = await uiScreen(page);
   step("0", "шапка: ҚАЗ/РУС на виду, язык страницы переключился", hasLang && scr.lang === lang, { lang: scr.lang }, await shot("0-start"));
   step("0", "нет горизонтальной прокрутки", scr.scrollW <= scr.innerW, { scrollW: scr.scrollW, w: scr.innerW });
   step("0", "нет ключей перевода и технических слов", scr.raw.length === 0 && scr.tech.length === 0, { raw: scr.raw, tech: scr.tech });
   step("0", "шрифт: нет текста мельче 14 px (основной ≥ 16 px)", scr.tinyN === 0, { tiny: scr.tinyN, ex: scr.tiny, under16: scr.smallN, ex16: scr.small });
-  step("0", "зоны нажатия ≥ 40 px (цель — 48 px)", scr.under40.length === 0, { under40: scr.under40, under48: `${scr.under48N}/${scr.targetsN}` });
+  step("0", "зоны нажатия ≥ 40 px (цель — 48 px)", scr.under40.length === 0, { under40N: scr.under40N, under40: scr.under40, under48: `${scr.under48N}/${scr.targetsN}` });
 
   // 0б. Казахский полный: на экране kk не должно остаться русских строк из экрана ru (кроме имён и чисел).
   if (lang === "kk") {
     const kkLines = await cyrLines(page);
-    const ruBtn = page.getByRole("button", { name: /^РУС$/ }).first();
-    if (await ruBtn.isVisible().catch(() => false)) {
-      await ruBtn.click(); await sleep(1000);
+    if (await clickText(page, /^РУС$/, { wait: 1000 })) {
       const same = untranslated(kkLines, await cyrLines(page));
-      await langBtn.click(); await sleep(1000);
+      await setLang();
       step("0", "ҚАЗ: нет строк, оставшихся по-русски", same.length === 0, { n: same.length, ex: same.slice(0, 8) });
     }
   }
 
-  // 1. Житель: «Сообщить о проблеме» → карта → «Это остановка «…»?»
-  const resident = T(dict, ["common.role.resident", "shell.mode.resident"], lang === "kk" ? "Тұрғын" : "Житель");
-  const menuRe = new RegExp(T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню"), "i");
-  let toResident = await clickText(page, new RegExp("^" + resident + "$", "i"));
-  if (!toResident && mobile) { // на телефоне вид — в меню ≡
-    if (await clickText(page, menuRe)) toResident = await clickText(page, new RegExp("^" + resident + "$", "i"));
-    await page.keyboard.press("Escape").catch(() => null);
-  }
+  // 1. Житель: «Сообщить о проблеме» → нажать на остановку → «Это здесь? Остановка «…»».
+  const toResident = await setMode("resident");
   const startLabel = T(dict, "complaint.start.button", lang === "kk" ? "Мәселе туралы хабарлау" : "Сообщить о проблеме");
   if (!mobile) {
     const f = await focusToPrimary(page, textRe(startLabel));
     step("1", "клавиатура: Tab доходит до главной кнопки, рамка фокуса видна", f.primary && f.ring, f);
   }
   const started = await clickText(page, textRe(startLabel), { wait: 1500 });
-  step("1", `главная кнопка «${startLabel}» есть и открывает шаги`, started, { resident_view: toResident }, await shot("1-start"));
+  // Форма жалобы — диалог с заголовком шага «Где проблема?»; всё дальше ищем только внутри него
+  // (на экране есть и другие поля и подписи: поиск улицы, панель «Карта жалоб»).
+  const formRe = textRe(T(dict, "complaint.step2.title", lang === "kk" ? "Мәселе қай жерде?" : "Где проблема?"));
+  const form = started ? await firstVisible(page.getByRole("dialog").filter({ hasText: formRe })) : null;
+  step("1", `главная кнопка «${startLabel}» есть и открывает шаг «Где проблема?»`, started && !!form, { resident_view: toResident }, await shot("1-start"));
   let picked = false;
-  if (started) {
-    const tapped = await tapMap(page, STOP.point);
-    // Имя остановки: из OSM-набора теста или подпись, которую вернул /targets (ru/kk могут отличаться).
+  if (form) {
     const t = apiCtx && apiCtx.target;
-    const names = [STOP.name, t && t.label_ru, t && t.label_kk].filter(Boolean)
-      .map((x) => x.replace(/^.*«(.+)».*$/, "$1").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    const names = [STOP.name, t && t.label_ru, t && t.label_kk].filter(Boolean).map((x) => esc(x.replace(/^.*«(.+)».*$/, "$1")));
     const nameRe = new RegExp(names.join("|"), "i");
-    const q = tapped && (await visibleText(page, nameRe));
-    step("1", `после нажатия на карту предложена остановка «${STOP.name}»`, q, { tapped, names }, await shot("1-target"));
-    picked = q && (await clickText(page, nameRe));
-  } else step("1", `предложена остановка «${STOP.name}»`, null, "нет главной кнопки");
+    const offered = async () => { await sleep(2500); return !!(await firstVisible(form.getByRole("button", { name: nameRe }))); };
+    const pt = await showPoint(page, STOP.point, 17);
+    let q = false;
+    if (pt && !pt.onCanvas) {
+      // Над остановкой — значок тепловой карты. Житель нажмёт именно на него: форма должна это принять.
+      await tap(page, pt.x, pt.y);
+      q = await offered();
+      step("1", "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)", q, { under: pt.under });
+      if (!q && pt.near) { await tap(page, pt.near.x, pt.near.y); q = await offered(); }  // обход для демо: нажать рядом
+    } else if (pt) { await tap(page, pt.x, pt.y); q = await offered(); }
+    step("1", `после нажатия на карту в форме предложена остановка «${STOP.name}»`, q, { point: pt, names }, await shot("1-target"));
+    if (q) picked = await clickText(form, nameRe, { wait: 1500 });
+    else {
+      // Остановки в списке нет (например, R12 /targets не подключён) — берём «Примерное место», чтобы проверить шаг 2.
+      picked = await clickText(form, textRe(T(dict, "complaint.step2.approximate", lang === "kk" ? "Шамамен орны" : "Примерное место")), { wait: 1500 });
+      if (picked) add(`UI ${tag}`, "1", "обход: выбрано «Примерное место», шаг 2 проверяется дальше", "NOT_RUN", null);
+    }
+  } else step("1", `предложена остановка «${STOP.name}»`, null, "форма жалобы не открылась");
 
-  // 2. Текст → категория → похожие / «Я тоже».
+  // 2. Текст → категория от модели → «Отправить» → «Я тоже» (если уже сообщали) или «Обращение отправлено».
   if (picked) {
-    const box = page.getByRole("textbox").first();
-    await box.fill(lang === "kk" ? "Аялдамада павильон сынған, шатыры жоқ" : "На остановке сломан павильон, нет крыши").catch(() => null);
-    await sleep(2500);
+    const dlg = (await firstVisible(page.getByRole("dialog"))) || page;
+    const box = await firstVisible(dlg.getByRole("textbox"));
+    if (box) await box.fill(lang === "kk" ? "Аялдамада павильон сынған, шатыры жоқ" : "На остановке сломан павильон, нет крыши").catch(() => null);
+    await sleep(3000);
     const cat = T(dict, "cat.transport", lang === "kk" ? "Аялдамалар мен көлік" : "Остановки и транспорт");
-    const suggested = await visibleText(page, textRe(T(dict, "complaint.step3.suggested", "Похоже на:")));
-    const catShown = await visibleText(page, new RegExp(cat, "i"));
-    step("2", `модель предложила категорию «${cat}» («${T(dict, "complaint.step3.suggested", "Похоже на:")}»)`, suggested && catShown, { suggested, catShown }, await shot("2-category"));
-    const sent = await clickText(page, textRe(T(dict, "complaint.send", "Отправить")), { wait: 2500 });
-    const metoo = await visibleText(page, new RegExp("^" + T(dict, "complaint.step4.metoo", "Я тоже") + "$", "i"));
-    const done = await visibleText(page, textRe(T(dict, "complaint.step5.title", "Обращение отправлено")));
-    step("2", "после отправки: «Я тоже» (если уже сообщали) или «Обращение отправлено» с номером", sent && (metoo || done), { sent, metoo, done }, await shot("2-sent"));
-  } else step("2", "категория и «Я тоже»", null, "шаг 1 не пройден");
+    const sugg = T(dict, "complaint.step3.suggested", lang === "kk" ? "Ұқсайды:" : "Похоже на:");
+    const suggested = await visibleText(dlg, textRe(sugg));
+    const catShown = await visibleText(dlg, new RegExp(esc(cat), "i"));
+    step("2", `модель предложила категорию «${cat}» («${sugg}»)`, !!box && suggested && catShown, { textbox: !!box, suggested, catShown }, await shot("2-category"));
+    const sent = await clickText(dlg, textRe(T(dict, ["complaint.step3.send", "complaint.send"], lang === "kk" ? "Жіберу" : "Отправить")), { wait: 3000 });
+    const metooRe = new RegExp("^" + esc(T(dict, "complaint.step4.metoo", lang === "kk" ? "Мен де" : "Я тоже")) + "$", "i");
+    const metoo = !!(await firstVisible(page.getByRole("button", { name: metooRe })));
+    if (metoo) await clickText(page, metooRe, { wait: 2500 });  // DEMO_SCRIPT: «Я тоже» на существующем
+    const done = await visibleText(page, textRe(T(dict, "complaint.step5.title", "Обращение отправлено")))
+      || await visibleText(page, textRe(T(dict, "complaint.step5.metoo_title", "Ваш голос учтён")));
+    step("2", "после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено»", sent && done, { sent, metoo, done }, await shot("2-sent"));
+  } else step("2", "категория и «Я тоже»", null, "место на шаге 1 не выбрано");
 
-  // 3. Акимат: тепловая карта Нуры.
-  await page.goto(base); await sleep(2500);
-  if (hasLang) { await page.getByRole("button", { name: lang === "kk" ? /^ҚАЗ$/ : /^РУС$/ }).first().click().catch(() => null); await sleep(800); }
+  // 3. Акимат: тепловая карта у остановки — цвет и число рядом, легенда с числами.
+  await fresh();
+  await setMode("akimat");
   const heat = await page.evaluate(async (p) => {
     // eslint-disable-next-line no-undef
     const m = typeof map !== "undefined" && map && map.getStyle ? map : null;
     if (!m) return { map: false };
-    m.jumpTo({ center: p, zoom: 15 }); await new Promise((ok) => setTimeout(ok, 1500));
-    const layers = (m.getStyle().layers || []).filter((l) => /heat/i.test(l.id)).map((l) => l.id);
+    m.jumpTo({ center: p, zoom: 15 }); await new Promise((ok) => setTimeout(ok, 1800));
+    const layers = (m.getStyle().layers || []).filter((l) => /heat|^r07-/i.test(l.id)).map((l) => l.id);
     let rendered = 0; try { rendered = layers.length ? m.queryRenderedFeatures({ layers }).length : 0; } catch {}
-    return { map: true, layers, rendered };
+    // Значки поверх карты (маркеры), на которых есть число людей.
+    const badges = [...document.querySelectorAll(".maplibregl-marker")].filter((e) => e.getBoundingClientRect().width > 0 && /\d/.test(e.innerText)).length;
+    return { map: true, layers: layers.length, rendered, badges };
   }, STOP.point);
-  const legend = await visibleText(page, textRe(T(dict, ["heat.legend", "heat.legend.title"], lang === "kk" ? "Қанша адам хабарлады" : "Сколько человек сообщили")));
-  step("3", "тепловая карта: слой жалоб нарисован в Нуре, легенда с числами видна", heat.map && heat.rendered > 0 && legend, { ...heat, legend }, await shot("3-heat"));
+  // Легенда: подпись из словаря R11 или запасная R07 (в ранних словарях ключа heat.legend ещё нет).
+  let legend = false;
+  for (const txt of [T(dict, "heat.legend", null), T(dict, "heat.legend.title", null), lang === "kk" ? "Қанша адам хабарлады" : "Сколько человек сообщили"])
+    if (txt && !legend) legend = await visibleText(page, textRe(txt));
+  step("3", "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна", heat.map && heat.rendered > 0 && heat.badges > 0 && legend, { ...heat, legend }, await shot("3-heat"));
 
   // 4. «Картина дня».
-  const dayRe = new RegExp("^" + T(dict, ["common.nav.day", "shell.section.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня") + "$", "i");
-  let day = await clickText(page, dayRe, { wait: 2500 });
-  if (!day && mobile && (await clickText(page, menuRe))) day = await clickText(page, dayRe, { wait: 2500 });
+  const dayRe = new RegExp("^" + esc(T(dict, ["common.nav.day", "shell.section.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня")) + "$", "i");
+  const day = await header(dayRe, 2500);
   const soon = day ? await visibleText(page, textRe(T(dict, "shell.day.soon_title", "скоро появится"))) : false;
-  const kpis = day ? await page.locator(".bk-kpi, .akim-kpi").count() : 0;
+  const kpis = day ? await page.locator(".bk-kpi, .akim-kpi").filter({ visible: true }).count() : 0;
   const kpiText = day ? await visibleText(page, textRe(T(dict, "akim.kpi.in_progress", "В работе"))) : false;
-  step("4", "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»", day && !soon && kpis >= 4 && kpiText, { day, placeholder_soon: soon, kpis, kpiText }, await shot("4-day"));
+  const overdue = day ? await visibleText(page, textRe(T(dict, "akim.kpi.overdue", "Просрочено"))) : false;
+  step("4", "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»", day && !soon && kpis >= 4 && kpiText && overdue, { day, placeholder_soon: soon, kpis, kpiText, overdue }, await shot("4-day"));
 
-  // 5. Предложение акимата в 3D: каталог из 5 объектов.
-  await page.goto(base); await sleep(2000);
-  if (hasLang) { await page.getByRole("button", { name: lang === "kk" ? /^ҚАЗ$/ : /^РУС$/ }).first().click().catch(() => null); await sleep(800); }
+  // 5. Акимат: вход сотрудника → «Что построить?» → «Сквер» → место → «Поставить»; житель «За»; акимат «Удалить».
+  await fresh();
+  await setMode("akimat");
+  const login = { opened: false, ok: false };
+  if (staff && staff.user) {
+    login.opened = await header(textRe(lang === "kk" ? "Қызметкерлерге" : "Для сотрудников"), 1800);
+    const user = login.opened ? await firstVisible(page.locator("input[autocomplete=username], input[name=username]")) : null;
+    const pass = login.opened ? await firstVisible(page.locator("input[type=password]")) : null;
+    if (user && pass) {
+      // Что видит сотрудник на форме входа: в ҚАЗ русских подписей быть не должно.
+      if (lang === "kk") login.ru_in_kk = (await page.evaluate(() => document.body.innerText)).match(/Вход для сотрудника|Имя пользователя|Пароль|Войти\b|Учётную запись создаёт/g) || [];
+      await user.fill(staff.user); await pass.fill(staff.pass); await pass.press("Enter");
+      await sleep(2500);
+      login.ok = !!(await firstVisible(page.getByRole("button", { name: /^(Выйти|Шығу)$/i })));
+      login.tech = (await uiScreen(page)).tech;
+      if (lang === "kk" && login.ok) login.ru_in_kk = [...new Set([...(login.ru_in_kk || []),
+        ...((await page.evaluate(() => document.body.innerText)).match(/Кабинет редактора|Вы вошли|Новый объект|Обновить список|Черновики|Опубликованные|Архив|Выйти\b/g) || [])])];
+    } else login.why = "нет полей имени и пароля";
+  } else login.why = "нет учётной записи сотрудника";
+  step("5", "вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт", login.ok, login, await shot("5-login"));
+  if (login.ok) {
+    step("5", "кабинет сотрудника: нет технических слов (адреса API, роли сервера)", login.tech.length === 0, { tech: login.tech });
+    if (lang === "kk") step("5", "ҚАЗ: форма входа и кабинет сотрудника по-казахски", login.ru_in_kk.length === 0, { ru: login.ru_in_kk });
+    if (!(await clickText(page, /^(Закрыть кабинет|Кабинетті жабу)$/i))) await page.keyboard.press("Escape").catch(() => null);
+    await sleep(800);
+  }
   const catalog = await visibleText(page, textRe(T(dict, "proposal.catalog.title", "Что построить?")));
+  // Карточка каталога: «Сквер» или «Сквер: поставить на карту» — не путать с табличкой «Сквер: проект 2027…».
+  const kindRe = (k) => { const name = T(dict, "proposal.kind." + k, k);
+    const aria = T(dict, "build3d.catalog.place", "{kind}: поставить на карту").replace("{kind}", name);
+    return new RegExp("^(" + esc(name) + "|" + esc(aria) + ")$", "i"); };
   const kinds = [];
-  for (const k of ["square", "playground", "sports", "stop", "lighting"]) if (await visibleText(page, new RegExp(T(dict, "proposal.kind." + k, k), "i"))) kinds.push(k);
+  for (const k of ["square", "playground", "sports", "stop", "lighting"])
+    if (await firstVisible(page.getByRole("button", { name: kindRe(k) }))) kinds.push(k);
   step("5", "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение", catalog && kinds.length === 5, { catalog, kinds }, await shot("5-catalog"));
+  if (catalog && kinds.includes("square") && login.ok) {
+    const place = [PLACE[0], PLACE[1] + 0.0012 * vi];
+    const kindName = T(dict, "proposal.kind.square", lang === "kk" ? "Гүлзар" : "Сквер");
+    await showPoint(page, place, 17);
+    await clickText(page, kindRe("square"), { wait: 1200 });
+    const hint = await visibleText(page, textRe(T(dict, "proposal.place_hint", "Нажмите на карту, где поставить")));
+    let pt = await showPoint(page, place, 17);
+    if (pt && !pt.onCanvas && pt.near) pt = { ...pt, x: pt.near.x, y: pt.near.y };
+    if (pt) { if (!mobile) await page.mouse.move(pt.x, pt.y); await tap(page, pt.x, pt.y); await sleep(1200); }
+    const placeRe = new RegExp("^" + esc(T(dict, "proposal.place", lang === "kk" ? "Орнату" : "Поставить")) + "$", "i");
+    const placedClick = await clickText(page, placeRe, { wait: 4000 });
+    const placedMsg = await visibleText(page, textRe(T(dict, "build3d.placed", "Проект поставлен")));
+    const projRe = new RegExp("^" + esc(kindName) + ":.*2027", "i");
+    const near = pt ? await nearestVisible(page.getByRole("button", { name: projRe }), pt) : null;
+    step("5", `«${kindName}» → нажать на карту → «Поставить»: «Проект поставлен», на карте табличка проекта 2027`, placedClick && placedMsg && !!near && near.d < 80,
+      { hint, placedClick, placedMsg, label_px_from_place: near && near.d }, await shot("5-placed"));
 
-  // 6. Житель видит «исправлено» (жалобу из API-шага 6 отметили исправленной).
-  const fixedWord = T(dict, "status.fixed", lang === "kk" ? "Түзетілді" : "Исправлено");
-  const mineLabel = T(dict, ["mine.title", "complaint.step5.to_mine"], lang === "kk" ? "Менің өтініштерім" : "Мои обращения");
-  const mineOpen = await clickText(page, textRe(mineLabel), { wait: 1500 });
-  step("6", `«${mineLabel}» доступны жителю; статус — цвет + слово «${fixedWord}»`, mineOpen ? await visibleText(page, new RegExp(fixedWord, "i")) : false,
-    { mineOpen, note: "жалоба API-шага подана с другого устройства — проверяется наличие экрана и слова статуса" }, await shot("6-mine"));
+    // Житель: карточка проекта → «За».
+    await setMode("resident");
+    await sleep(1200);
+    const p2 = await showPoint(page, place, 17);
+    const lbl = p2 ? await nearestVisible(page.getByRole("button", { name: projRe }), p2) : null;
+    if (lbl) { await tapEl(page, lbl.loc); await sleep(1500); }
+    const upRe = new RegExp("^" + esc(T(dict, "proposal.vote_up", lang === "kk" ? "Жақтаймын" : "За")) + "(\\s|:|\\d|$)", "i");
+    const voted = await clickText(page, upRe, { wait: 1800 });
+    const saved = (await visibleText(page, textRe(T(dict, "proposal.vote_saved", "Голос учтён"))))
+      || (await visibleText(page, textRe(T(dict, "build3d.card.your_vote_up", "Ваш голос: за"))));
+    step("5", "житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за»", !!lbl && voted && saved, { label: !!lbl, voted, saved }, await shot("5-vote"));
+
+    // Акимат: «Удалить» — заодно уборка, чтобы следующий прогон начинал с тех же демо-данных.
+    await setMode("akimat");
+    await sleep(1200);
+    const p3 = await showPoint(page, place, 17);
+    const lbl2 = p3 ? await nearestVisible(page.getByRole("button", { name: projRe }), p3) : null;
+    if (lbl2) { await tapEl(page, lbl2.loc); await sleep(1500); }
+    const delClick = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.delete", lang === "kk" ? "Жою" : "Удалить")) + "$", "i"), { wait: 2500 });
+    const deleted = await visibleText(page, textRe(T(dict, "build3d.deleted", "Проект удалён")));
+    step("5", "акимат: карточка проекта → «Удалить» → «Проект удалён»", delClick && deleted, { label: !!lbl2, delClick, deleted });
+  } else {
+    step("5", "постановка проекта и удаление", null, { catalog, kinds, login: login.ok });
+    // Голос жителя всё равно проверяем — по демо-проекту seed-r14-demo (DEMO_SCRIPT: житель голосует с телефона).
+    const sp = apiCtx && apiCtx.seededPoint;
+    if (sp) {
+      await setMode("resident");
+      await sleep(1200);
+      const p2 = await showPoint(page, sp, 17);
+      const anyProj = textRe(T(dict, "build3d.card.open", "{kind}: проект {year}, открыть карточку"));
+      const lbl = p2 ? await nearestVisible(page.getByRole("button", { name: anyProj }), p2) : null;
+      if (lbl) { await tapEl(page, lbl.loc); await sleep(1500); }
+      const upRe = new RegExp("^" + esc(T(dict, "proposal.vote_up", lang === "kk" ? "Жақтаймын" : "За")) + "(\\s|:|\\d|$)", "i");
+      const voted = await clickText(page, upRe, { wait: 1800 });
+      const saved = (await visibleText(page, textRe(T(dict, "proposal.vote_saved", "Голос учтён"))))
+        || (await visibleText(page, textRe(T(dict, "build3d.card.your_vote_up", "Ваш голос: за"))));
+      step("5", "житель: табличка демо-проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за»", !!lbl && voted && saved, { label: !!lbl, voted, saved }, await shot("5-vote"));
+    }
+  }
+
+  // 6. Акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «Исправлено» (зелёный);
+  //    житель: «Мои обращения» → статус «Исправлено».
+  const fixedWord = T(dict, ["heat.fixed_word", "status.fixed"], lang === "kk" ? "Түзетілді" : "Исправлено");
+  if (login.ok) {
+    await setMode("akimat");
+    const s = await showPoint(page, STOP.point, 17);
+    if (s) await tap(page, s.x, s.y);  // в виде «Акимат» нажатие по значку остановки открывает её карточку
+    await sleep(2000);
+    const take = await clickText(page, textRe(T(dict, ["target.take", "heat.take"], lang === "kk" ? "Жұмысқа алу" : "Взять в работу")), { wait: 2000 });
+    const fix = await clickText(page, textRe(T(dict, ["target.mark_fixed", "heat.mark_fixed"], "Отметить исправленным")), { wait: 2500 });
+    // С заглавной буквы и без флага i: в легенде карты то же слово строчными («исправлено») — его не считаем.
+    const fixedShown = await visibleText(page, new RegExp(esc(fixedWord)));
+    const green = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
+    // Нет «Взять в работу», а цель уже «Исправлено» — новых жалоб у неё нет (шаг 2 не дошёл до отправки): проверять нечего.
+    const nothingNew = !take && fixedShown;
+    step("6", `акимат: карточка остановки → «Взять в работу» → «Отметить исправленным» → «${fixedWord}», зелёным на карте`,
+      nothingNew ? null : take && fix && fixedShown && green,
+      { under: s && s.under, take, fix, fixedShown, green, note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : undefined }, await shot("6-fixed"));
+  } else step("6", "акимат отмечает исправленным", null, "нет входа сотрудника");
+  const mineLabel = T(dict, ["common.nav.mine", "mine.title", "complaint.step5.to_mine"], lang === "kk" ? "Менің өтініштерім" : "Мои обращения");
+  await setMode("resident");
+  const mineOpen = await header(textRe(mineLabel), 1800);
+  // Статус — в окне «Мои обращения»: шкала этапов обращения — список, его имя для экранного диктора = текущий статус
+  // (у новой жалобы на шкале тоже написано «Исправлено», но имя списка — «Новое»; легенда карты не в счёт).
+  const mineBox = mineOpen ? (await firstVisible(page.getByRole("dialog").filter({ hasText: textRe(mineLabel) }))) || page : null;
+  const mineFixed = mineBox ? !!(await firstVisible(mineBox.getByRole("list", { name: new RegExp("^" + esc(T(dict, "status.fixed", fixedWord)) + "$") }))) : false;
+  step("6", `житель: «${mineLabel}» → у обращения статус «${T(dict, "status.fixed", fixedWord)}»`, mineOpen && mineFixed, { mineOpen, mineFixed }, await shot("6-mine"));
 
   step("*", "консоль без ошибок (кроме шума среды: подложка, WebGL)", errors.length === 0, errors.slice(0, 6));
   await ctx.close();
@@ -427,8 +598,9 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx) {
   const browser = await chromium.launch();
   try {
     const apiCtx = await apiFlow(api(base), staff);
+    let vi = 0;  // номер варианта экрана: у каждого своё место для проекта на шаге 5
     for (const size of SIZES) for (const lang of LANGS) {
-      try { await uiFlow(browser, base, size, lang, apiCtx); }
+      try { await uiFlow(browser, base, size, lang, apiCtx, staff, vi++); }
       catch (e) { add(`UI ${size[0]}-${lang}`, "!", "прогон экрана прервался", "FAIL", String(e.message || e).slice(0, 300)); }
     }
   } finally {

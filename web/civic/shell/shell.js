@@ -453,7 +453,12 @@
     let button = root.querySelector(".birge-b3d-toggle");
     if (!button) {
       button = el("button", { type: "button", class: "bk-btn birge-b3d-toggle", "aria-expanded": "false" });
-      button.addEventListener("click", () => setBuild3dCatalog(root.dataset.catalog !== "open", { focus: true }));
+      button.addEventListener("click", () => {
+        const open = root.dataset.catalog !== "open";
+        // Телефон: каталог помещается только над опущенной шторкой — опускаем её сами (R10 B-022).
+        if (open && innerWidth < 761 && S.sheet !== "peek") setSheet("peek");
+        setBuild3dCatalog(open, { focus: true });
+      });
       root.prepend(button);
     }
     return button;

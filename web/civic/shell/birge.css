@@ -122,8 +122,10 @@ body[data-birge-mode="resident"] .birge-b3d-toggle,
 .civic-mode .civic-explore .civic-explore-clear { width: 40px; height: 40px; }
 @media (max-width: 760px) {
   .civic-mode .map-tools .icon-btn { width: 44px; height: 44px; }
-  /* Телефон: каталог акимата и его кнопка — только над свёрнутой шторкой (иначе закрыли бы «Карту жалоб»). */
-  body:has(.civic-panel:not([data-sheet="peek"])) .birge-b3d-toggle { display: none; }
+  /* Телефон: открытый каталог — только над свёрнутой шторкой (иначе закрыл бы «Карту жалоб»). Кнопка «Что построить?»
+     видна и над полуоткрытой шторкой: нажатие опускает шторку и открывает каталог (shell.js; R10 B-022, LOCAL_B2 №3). */
+  body[data-birge-mode="akimat"]:has(.civic-panel[data-sheet="half"]) .birge-build3d-root { bottom: calc(46% + 8px); }
+  body:has(.civic-panel[data-sheet="full"]) .birge-b3d-toggle { display: none; }
 }
 
 /* B3: выбор места жителем — значки R07 и подписи R05 пропускают нажатие к карте (shell.js, setPickMode). */
@@ -164,3 +166,7 @@ body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-pic
   /* Шторка раскрыта во весь экран: карты почти не видно, наверху слева — атрибуция OSM; легенда не нужна. */
   body[data-civic-sheet="full"].civic-mode .r07-maplegend { display: none; }
 }
+
+/* Кабинет сотрудника (редактор R12, раунд 13): служебная строка «роль по данным сервера: editor · правила проверки
+   с сервера (/staff/meta)» — техническая (UX_BRIEF правило 4, R10 B-021). В Birge скрыта; ?tools=all — видна. */
+body[data-birge-tools="off"] .civic-r04-who { display: none; }
