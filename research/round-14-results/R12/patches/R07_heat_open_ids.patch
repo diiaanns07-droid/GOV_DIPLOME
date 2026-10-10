@@ -1,0 +1,16 @@
+diff --git a/web/civic/heat/heat.js b/web/civic/heat/heat.js
+index dc547c42..3cdbcdc0 100644
+--- a/web/civic/heat/heat.js
++++ b/web/civic/heat/heat.js
+@@ -940,3 +940,10 @@
+       try {
+-        for (const id of it.open_ids || []) await post("/complaints/" + encodeURIComponent(id) + "/status", { status });
++        // В open_ids бывают записи демо-набора R07 (CIVIC_DEMO=1), которых нет в хранилище R09 (404), и обращения,
++        // уже стоящие в нужном статусе (422). Они не мешают остальным; ошибка — только если не обновилось ни одно.
++        let done = 0, lastErr = null;
++        for (const id of it.open_ids || []) {
++          try { await post("/complaints/" + encodeURIComponent(id) + "/status", { status }); done++; }
++          catch (e) { if (e && (e.status === 404 || e.status === 422)) { lastErr = e; continue; } throw e; }
++        }
++        if (!done && lastErr) throw lastErr;
+         toast(status === "fixed" ? t("heat.toast_fixed") : t("heat.toast_taken"));

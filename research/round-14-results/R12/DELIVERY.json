@@ -332,5 +332,14 @@
     "r12_steps": "шаг 1 «предложена остановка …» (цели R12) и шаг 5 «ҚАЗ: форма входа и кабинет сотрудника по-казахски» — PASS во всех вариантах"
    }
   ]
- }
+ },
+ "found_for_others": [
+  {
+   "for": "R07 + R01 (+R10)",
+   "what": "шаг 6 демо падает у остановок с демо-записями R07: heat.js setStatus обрывается на 404 по c-demo-* (нет в хранилище R09)",
+   "evidence": "research/round-14-results/R12/tools/repro_step6.py; R10 свежий тест 131/5 → с правкой 133/2/1",
+   "patch": "research/round-14-results/R12/patches/R07_heat_open_ids.patch",
+   "details": "INTEGRATION.txt §0в"
+  }
+ ]
 }
