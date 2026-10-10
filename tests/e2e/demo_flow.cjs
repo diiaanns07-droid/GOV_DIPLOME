@@ -34,11 +34,7 @@ const STOP = args.stop ? (([lon, lat, id, ...name]) => ({ id, name: name.join(",
   : { id: "osm-node-4109037549", name: "Хан Шатыр", point: [71.406553, 51.131155] };
 const NURA_BBOX = "71.375,51.115,71.420,51.140";
 const DEVICE = "r10-e2e-device-" + Date.now();
-// Шум среды: нет интернета для подложки, программный WebGL в headless Chromium.
-const NOISE = /openfreemap|Failed to load resource|ERR_TUNNEL|AJAXError|GL Driver|GPU stall|style diff|swiftshader|GroupMarkerNotSet|WebGL/i;
-// UX_BRIEF правило 4 + UX_SPEC §8: таких слов в интерфейсе быть не должно.
-const TECH_WORDS = /\b(ребро|рёбра|граф|геометри\w*|сценари\w*|payload|demo-ring|target|null|undefined|NaN)\b/i;
-const RAW_KEY = /\b(shell|common|complaint|heat|akim|target|proposal|build3d|mine|status|stage|cat|district)\.[a-z_]+(\.[a-z_0-9]+)*\b/;
+const { NOISE, uiScreen, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
 
 const results = [];
 const add = (layer, step, name, status, detail, shot) => {
@@ -250,35 +246,6 @@ async function apiFlow(A, staffInfo) {
 }
 
 // ------------------------------------------------------------------------------------------------ слой UI
-async function uiScreen(page) {
-  // Общие правила UX_BRIEF для того, что сейчас на экране.
-  return page.evaluate(({ tech, raw }) => {
-    const vis = (e) => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
-      return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; };
-    const text = document.body.innerText;
-    const small = [], tiny = [];
-    for (const el of document.querySelectorAll("body *")) {
-      if (!vis(el) || el.children.length || !el.textContent.trim()) continue;
-      const fs = parseFloat(getComputedStyle(el).fontSize);
-      if (fs < 14) tiny.push(`${fs}px «${el.textContent.trim().slice(0, 30)}»`);
-      else if (fs < 16) small.push(`${fs}px «${el.textContent.trim().slice(0, 30)}»`);
-    }
-    const targets = [...document.querySelectorAll("button, a[href], [role=button], input, select, summary")].filter(vis)
-      .map((e) => {
-        // У флажка зона нажатия — вся подпись <label>, а не 18-пиксельный квадрат.
-        const box = (/^(checkbox|radio)$/.test(e.type) && e.closest("label")) || e;
-        const r = box.getBoundingClientRect();
-        return { h: Math.round(r.height), w: Math.round(r.width), t: (box.innerText || e.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 24) };
-      });
-    return {
-      scrollW: document.documentElement.scrollWidth, innerW: innerWidth, lang: document.documentElement.lang,
-      tech: (text.match(new RegExp(tech, "ig")) || []).slice(0, 8), raw: (text.match(new RegExp(raw, "g")) || []).slice(0, 8),
-      tiny: tiny.slice(0, 8), tinyN: tiny.length, small: small.slice(0, 6), smallN: small.length,
-      under40: targets.filter((t) => t.h < 40 || t.w < 40).slice(0, 8), under48N: targets.filter((t) => t.h < 48).length, targetsN: targets.length,
-    };
-  }, { tech: TECH_WORDS.source, raw: RAW_KEY.source });
-}
-
 async function tapMap(page, point) {
   // Ставим точку в центр свободной части карты (как в тесте R09) и нажимаем.
   const xy = await page.evaluate(async (p) => {
@@ -350,16 +317,12 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx) {
 
   // 0б. Казахский полный: на экране kk не должно остаться русских строк из экрана ru (кроме имён и чисел).
   if (lang === "kk") {
-    const lines = async () => (await page.evaluate(() => document.body.innerText)).split("\n").map((x) => x.trim())
-      .filter((x) => /[а-яё]{3,}/i.test(x));
-    const kkLines = await lines();
+    const kkLines = await cyrLines(page);
     const ruBtn = page.getByRole("button", { name: /^РУС$/ }).first();
     if (await ruBtn.isVisible().catch(() => false)) {
       await ruBtn.click(); await sleep(1000);
-      const ruSet = new Set(await lines());
+      const same = untranslated(kkLines, await cyrLines(page));
       await langBtn.click(); await sleep(1000);
-      // Имена собственные одинаковы в обоих языках — их не считаем (районы, Birge, адреса).
-      const same = kkLines.filter((x) => ruSet.has(x) && !/^(Астана|Нура|Есиль|Алматы|Сарыарка|Байконур|Сарайшык|Birge|3D|Карта|РУС|ҚАЗ)$/i.test(x));
       step("0", "ҚАЗ: нет строк, оставшихся по-русски", same.length === 0, { n: same.length, ex: same.slice(0, 8) });
     }
   }
@@ -373,6 +336,10 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx) {
     await page.keyboard.press("Escape").catch(() => null);
   }
   const startLabel = T(dict, "complaint.start.button", lang === "kk" ? "Мәселе туралы хабарлау" : "Сообщить о проблеме");
+  if (!mobile) {
+    const f = await focusToPrimary(page, textRe(startLabel));
+    step("1", "клавиатура: Tab доходит до главной кнопки, рамка фокуса видна", f.primary && f.ring, f);
+  }
   const started = await clickText(page, textRe(startLabel), { wait: 1500 });
   step("1", `главная кнопка «${startLabel}» есть и открывает шаги`, started, { resident_view: toResident }, await shot("1-start"));
   let picked = false;
