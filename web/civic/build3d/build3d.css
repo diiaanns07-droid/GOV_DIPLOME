@@ -1,12 +1,14 @@
 /*
  * Birge · 3D-превью (R05, раунд 14) — нижняя панель (каталог, размещение, карточка), тосты, подписи.
  * Только токены ui-kit (tokens.css) и классы bk-*; свои цвета не вводим.
+ * У каждого var(--токен, значение) запасное значение = значение из tokens.css (сгенерировано скриптом):
+ * если страница ещё не подключила ui-kit, панель и подписи всё равно выглядят как задумано.
  * Ноутбук: панель по центру снизу, до 720 px. Телефон (< 640 px): панель во всю ширину, крупные кнопки 56 px.
  */
 
 .b3d {
-  font-family: var(--font);
-  color: var(--c-ink);
+  font-family: var(--font, "Birge Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif);
+  color: var(--c-ink, #152c26);
 }
 /* bk-app нужен ради общих правил фокуса ui-kit, но фон корня должен быть прозрачным — под ним карта. */
 .b3d.bk-app {
@@ -22,23 +24,23 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: var(--z-map-ui);
+  z-index: var(--z-map-ui, 10);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 var(--gap-edge) calc(var(--gap-edge) + env(safe-area-inset-bottom));
+  padding: 0 var(--gap-edge, 12px) calc(var(--gap-edge, 12px) + env(safe-area-inset-bottom));
   pointer-events: none; /* карта под пустыми краями остаётся доступной */
 }
 
 .b3d-dock {
   pointer-events: auto;
   display: grid;
-  gap: var(--s-3);
+  gap: var(--s-3, 12px);
   width: min(800px, 100%);
-  padding: var(--s-4) var(--s-5);
-  border-radius: var(--r-l);
-  background: var(--c-surface);
-  box-shadow: var(--shadow-2);
+  padding: var(--s-4, 16px) var(--s-5, 20px);
+  border-radius: var(--r-l, 16px);
+  background: var(--c-surface, #ffffff);
+  box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
 }
 .b3d-dock[data-state="empty"] {
   display: none;
@@ -48,20 +50,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--s-2);
+  gap: var(--s-2, 8px);
   min-height: 32px;
 }
 .b3d-title {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: var(--s-2, 8px);
   margin: 0;
-  font-size: var(--fs-lead);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-head);
+  font-size: var(--fs-lead, 18px);
+  font-weight: var(--fw-bold, 700);
+  line-height: var(--lh-head, 1.2);
 }
 .b3d-title .ic {
-  color: var(--c-brand);
+  color: var(--c-brand, #176b4a);
 }
 .b3d-note {
   margin: 0;
@@ -70,7 +72,7 @@
 /* ── Каталог: 5 карточек с иконкой и подписью ── */
 .b3d-cards {
   display: flex;
-  gap: var(--s-3);
+  gap: var(--s-3, 12px);
   overflow-x: auto; /* прокрутка внутри строки, а не страницы */
   scrollbar-width: none;
   padding: 4px 2px;
@@ -87,32 +89,32 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--s-2);
-  padding: var(--s-2);
-  border: 1px solid var(--c-line-strong);
-  border-radius: var(--r-m);
-  background: var(--c-surface);
-  color: var(--c-ink);
+  gap: var(--s-2, 8px);
+  padding: var(--s-2, 8px);
+  border: 1px solid var(--c-line-strong, #c9d3cb);
+  border-radius: var(--r-m, 12px);
+  background: var(--c-surface, #ffffff);
+  color: var(--c-ink, #152c26);
   font: inherit;
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semi);
+  font-size: var(--fs-body, 16px);
+  font-weight: var(--fw-semi, 600);
   line-height: 1.2;
   text-align: center;
   cursor: pointer;
   touch-action: manipulation;
   transition:
-    border-color var(--t-fast) var(--ease),
-    background var(--t-fast) var(--ease),
-    transform var(--t-fast) var(--ease);
+    border-color var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    background var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 .b3d-card .ic {
   width: 32px;
   height: 32px;
-  color: var(--c-brand);
+  color: var(--c-brand, #176b4a);
 }
 .b3d-card:hover {
-  border-color: var(--c-brand);
-  background: var(--c-brand-soft);
+  border-color: var(--c-brand, #176b4a);
+  background: var(--c-brand-soft, #e6f1eb);
 }
 .b3d-card:active {
   transform: translateY(1px);
@@ -133,19 +135,19 @@
 .b3d-hint {
   display: flex;
   align-items: flex-start;
-  gap: var(--s-2);
+  gap: var(--s-2, 8px);
   margin: 0;
-  font-size: var(--fs-body);
+  font-size: var(--fs-body, 16px);
   min-height: 1.4em;
 }
 .b3d-hint .ic {
   margin-top: 1px;
 }
 .b3d-hint--error {
-  color: var(--c-danger);
+  color: var(--c-danger, #b3362e);
 }
 .b3d-hint--info {
-  color: var(--c-info);
+  color: var(--c-info, #1f5fa8);
 }
 .b3d-hint--info .bk-meta {
   white-space: nowrap;
@@ -153,7 +155,7 @@
 .b3d-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-2);
+  gap: var(--s-2, 8px);
 }
 .b3d-act {
   flex: 1 1 auto;
@@ -173,19 +175,19 @@
 /* ── Карточка предложения ── */
 .b3d-pcard {
   display: grid;
-  gap: var(--s-3);
+  gap: var(--s-3, 12px);
 }
 .b3d-pcard__title {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: var(--s-2, 8px);
   margin: 0;
-  font-size: var(--fs-title);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-head);
+  font-size: var(--fs-title, 20px);
+  font-weight: var(--fw-bold, 700);
+  line-height: var(--lh-head, 1.2);
 }
 .b3d-pcard__title .ic {
-  color: var(--c-brand);
+  color: var(--c-brand, #176b4a);
 }
 .b3d-pcard p {
   margin: 0;
@@ -193,15 +195,15 @@
 .b3d-votes {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-2);
+  gap: var(--s-2, 8px);
 }
 .b3d-vote {
   flex: 1 1 140px;
 }
 .b3d-vote[aria-pressed="true"] {
-  border-color: var(--c-brand);
-  background: var(--c-brand-soft);
-  box-shadow: inset 0 0 0 1px var(--c-brand);
+  border-color: var(--c-brand, #176b4a);
+  background: var(--c-brand-soft, #e6f1eb);
+  box-shadow: inset 0 0 0 1px var(--c-brand, #176b4a);
 }
 
 /* ── Состояния: ошибка, нет 3D ── */
@@ -209,31 +211,31 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--s-3);
+  gap: var(--s-3, 12px);
 }
 .b3d-message > .ic {
   width: 32px;
   height: 32px;
-  color: var(--c-text-2);
+  color: var(--c-text-2, #5b6a64);
 }
 .b3d-message__text {
   flex: 1 1 200px;
 }
 .b3d-message__title {
   margin: 0;
-  font-size: var(--fs-lead);
-  font-weight: var(--fw-semi);
+  font-size: var(--fs-lead, 18px);
+  font-weight: var(--fw-semi, 600);
 }
 .b3d-message .bk-meta {
-  margin: var(--s-1) 0 0;
+  margin: var(--s-1, 4px) 0 0;
 }
 
 /* ── Тосты над панелью ── */
 .b3d-toasts {
   display: grid;
-  gap: var(--s-2);
+  gap: var(--s-2, 8px);
   width: min(480px, 100%);
-  margin-bottom: var(--s-3);
+  margin-bottom: var(--s-3, 12px);
   pointer-events: auto;
 }
 .b3d-toasts:empty {
@@ -257,17 +259,17 @@
   top: 0;
   min-height: 28px;
   padding: 3px 10px;
-  border: 2px solid var(--c-surface);
-  border-radius: var(--r-pill);
-  box-shadow: var(--shadow-1);
+  border: 2px solid var(--c-surface, #ffffff);
+  border-radius: var(--r-pill, 999px);
+  box-shadow: var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
   font: inherit;
-  font-family: var(--font);
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-semi);
+  font-family: var(--font, "Birge Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--fs-caption, 14px);
+  font-weight: var(--fw-semi, 600);
   line-height: 1.4;
   cursor: pointer;
   pointer-events: auto;
-  transition: opacity var(--t-fast) var(--ease);
+  transition: opacity var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 /* Невидимое расширение зоны нажатия до ~48 px (телефон). */
 .b3d-label::before {
@@ -284,16 +286,16 @@
   width: 10px;
   height: 10px;
   background: inherit;
-  border-right: 2px solid var(--c-surface);
-  border-bottom: 2px solid var(--c-surface);
+  border-right: 2px solid var(--c-surface, #ffffff);
+  border-bottom: 2px solid var(--c-surface, #ffffff);
   transform: translateX(-50%) rotate(45deg);
 }
 .b3d-label[aria-pressed="true"] {
-  outline: 3px solid var(--c-focus);
+  outline: 3px solid var(--c-focus, #2f7fd6);
   outline-offset: 2px;
 }
 .b3d-label:focus-visible {
-  outline: 3px solid var(--c-focus);
+  outline: 3px solid var(--c-focus, #2f7fd6);
   outline-offset: 2px;
 }
 /* Сжатая подпись (подписи перекрываются или карта далеко): точка цвета «проект». */
@@ -322,30 +324,30 @@
     padding: 0 0 env(safe-area-inset-bottom);
   }
   .b3d--overlay .b3d-toasts {
-    width: calc(100% - 2 * var(--gutter-phone));
+    width: calc(100% - 2 * var(--gutter-phone, 16px));
   }
   .b3d-dock {
     width: 100%;
-    padding: var(--s-3) var(--gutter-phone) var(--s-4);
-    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    padding: var(--s-3, 12px) var(--gutter-phone, 16px) var(--s-4, 16px);
+    border-radius: var(--r-xl, 20px) var(--r-xl, 20px) 0 0;
   }
   .b3d-card {
     flex: 0 0 144px; /* «Спортплощадка» одним словом — 16 px без переноса */
     min-width: 144px;
     min-height: 88px;
-    padding: var(--s-2) 6px;
+    padding: var(--s-2, 8px) 6px;
   }
   .b3d-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
   .b3d-actions .bk-btn {
-    min-height: var(--tap-lg);
-    padding-inline: var(--s-3);
+    min-height: var(--tap-lg, 56px);
+    padding-inline: var(--s-3, 12px);
   }
   .b3d-vote {
     flex-basis: 100%;
-    min-height: var(--tap-lg);
+    min-height: var(--tap-lg, 56px);
   }
   .b3d-act[data-action="place"] {
     grid-column: span 1;

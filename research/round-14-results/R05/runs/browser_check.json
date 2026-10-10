@@ -1,20 +1,20 @@
 {
  "role": "R05",
- "generated_at": "2026-10-10T13:33:45.728Z",
- "tested_sha": "43b80c5a7e67c374d33814aaf9126fc3fb632eee",
- "dirty": true,
+ "generated_at": "2026-10-10T13:42:40.258Z",
+ "tested_sha": "ac45672022cb1d0cf8cf83ca901ebe8e2ff2adec",
+ "dirty": false,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 8.3,
+  "fps_0_objects_swiftshader": 6.7,
   "fps_20_objects_swiftshader": 2.9,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 24,
+  "pass": 25,
   "fail": 0,
   "not_run": 1
  },
@@ -112,7 +112,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.9 кадр/с (без объектов 8.3)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.9 кадр/с (без объектов 6.7)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -138,6 +138,11 @@
    "id": "phone_375_touch_layout",
    "status": "PASS",
    "detail": "нет горизонтальной прокрутки, все кнопки ≥ 48 px, текст не обрезан; призрак идёт за центром карты"
+  },
+  {
+   "id": "catalog_labels_fit_ru_kk_1366_375",
+   "status": "PASS",
+   "detail": "подписи 5 карточек помещаются: ru и kk, 1366 / 375 / 360 px"
   },
   {
    "id": "keyboard_tab_enter_escape",
