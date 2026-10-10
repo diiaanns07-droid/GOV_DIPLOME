@@ -13,18 +13,25 @@ R01 · раунд 14 · INTEGRATION — как модули ролей подк�
 
 | Маршрут                          | Роль | Модуль (по порядку)                       | Функция и аргументы |
 |----------------------------------|------|-------------------------------------------|---------------------|
-| POST /classify {text}            | R04  | ui.civic_ml_api                           | classify(text) |
-| POST /similar {text,point?,days?}| R04  | ui.civic_ml_api                           | similar(text, point=None, days=None) |
-| GET /targets?lon&lat&category    | R12  | engine.civic_geo                          | targets(lon, lat, category=None) |
+| POST /classify {text}            | R04  | ui.civic_ml_api                           | classify(text) — ПОДКЛЮЧЕНО в B2 |
+| POST /similar {text,point?,days?,target?} | R04 | ui.civic_ml_api                    | similar(text, point=None, days=None, target=None) — B2 |
+| GET /targets?lon&lat&category    | R12  | engine.civic_geo                          | targets(lon, lat, category=None) — B2 |
+| GET /street-segment, /street-snap, /objects-near, /yard, /geo/status
+|                                  | R12  | engine.civic_geo.api                      | handle(path, query) — B2 (путь без /api/civic/v2) |
 | /categories, /complaints, /complaints/mine|events|summary|place|{id}, /complaints/{id}/metoo|status|duplicate
 |                                  | R09  | ui.civic_feedback.v2.integration          | make_service(db) -> handle(...) — ПОДКЛЮЧЕНО в B1 |
 | GET /heat, /heat/meta, /heat/target | R07 | ui.civic_heat.api                       | handle_get(path, query) — ПОДКЛЮЧЕНО в B1 |
 | GET /akim/summary?date&district  | R08  | ui.civic_akim.api                         | handle_get(path, query) — ПОДКЛЮЧЕНО в B1 |
-| GET /proposals?bbox              | R06  | ui.civic_store.v2, ui.civic_store         | list_proposals(bbox=None) |
-| POST /proposals               [С]| R06  | то же                                     | create_proposal(body) |
-| POST /proposals/{id}/vote        | R06  | то же                                     | vote_proposal(proposal_id, value, device_id) |
-| GET /objects?bbox                | R06  | то же                                     | list_objects(bbox=None) |
-| PUT /objects/{id}/stage       [С]| R06  | то же                                     | set_object_stage(object_id, body) |
+| GET /proposals?bbox&district&status&device_id | R06 | ui.civic_store.v2               | list_proposals(...) — B2 |
+| POST /proposals               [С]| R06  | то же                                     | create_proposal(body) — B2 |
+| GET /proposals/summary?since     | R06  | то же                                     | proposals_summary(since) — B2 |
+| GET /proposals/{id}?device_id    | R06  | то же                                     | get_proposal(proposal_id, device_id) — B2 |
+| POST /proposals/{id}/vote        | R06  | то же                                     | vote_proposal(proposal_id, value, device_id) — B2 |
+| POST /proposals/{id}/approve|reject|withdraw [С] | R06 | то же                           | decide_proposal(proposal_id, action, body) — B2 |
+| GET /objects?bbox&district, /objects/lagging, /objects/{id} | R06 | то же               | list_objects, lagging_objects, get_object — B2 |
+| PUT /objects/{id}/stage       [С]| R06  | то же                                     | set_object_stage(object_id, body) — B2 |
+| GET /staff/objects/{id}/stage [С]| R06  | то же                                     | get_object_stage(object_id) — B2 |
+| GET /forecast?month&district&k   | R13  | ui.civic_forecast                         | forecast_response(month, district, k) — B2 (синтетика) |
 
 [С] — только сотрудник: шлюз сам проверяет сессию редактора R02 (cookie + заголовок X-CSRF-Token, как staff-маршруты
 v1) и не вызывает функцию без неё (401/403).
@@ -174,3 +181,51 @@ R09 (ui/civic_feedback/v2, web/civic/feedback):
 R08 (ui/civic_akim, web/civic/akim): «Картина дня» монтируется в оболочке (#day) с syncUrl: false; «горячее место» открывает
   цель на карте через birge:open-target (оболочка делает preventDefault). Ссылка /#target=<kind>:<id>&days=N тоже работает.
 R11: новые ключи common.nav.mine (есть у вас), шапка «Мои обращения» у жителя. Ключи heat.*/akim.*/complaint.* — у ролей.
+
+=====================================================================================================
+9. B2 (10 окт, вечер): R12, R06, R05, R13, R04, R03 и повторные R11/R09/R08 — стыки и просьбы к ролям
+=====================================================================================================
+Что подключено (подробно и SHA — BUILD_LOG.md «B2»):
+- R12 @ d13f49a: /targets и 5 маршрутов улиц/дворов (handle, путь без префикса); граф и слои грузятся в фоне при
+  старте (engine.civic_geo.api.warm_up) — первая жалоба не ждёт 2–4 с (просьба R09 выполнена).
+- R06 @ 7031afa: civic_store.v2.bind(service) делает фабрика store(); 13 маршрутов предложений/этапов. Сотрудник — по
+  сессии R02 (cookie Path=/api/civic уже в auth.py R06). Тесты раунда 12/13 в tests/civic/R02 приведены к миграции 6
+  по патчу R06 r02_old_store_tests.patch.
+- R13 @ 8705829: GET /forecast по патчу r01_forecast_route.patch (проверка month/district/k в шлюзе, ответ —
+  evidence_type "synthetic", demo: true).
+- R04 @ deeb1de: патч r01_similar_target.patch (target уходит в similar); шлюз вызывает civic_ml_api.connect_store(store R09)
+  и warmup() в wire() — «Я тоже» ищет в том же хранилище.
+- R03 @ 252913e: код ml/civic_classifier_v2 (без весов: artifacts — LOCAL). Даже без весов R04 берёт словарь R03 —
+  подсказка категории (suggest) работает; тест R09 test_r09v2_neighbours без R03 падает.
+- R05 @ b0353ee: 3D-каталог акимата над картой (корень #birge-build3d-root слева от панели), жителю — карточка «За/Против».
+
+R05 + R06 — РАСХОЖДЕНИЕ КОНТРАКТА (в B2 закрыто адаптером оболочки shell.js build3dFetch, просьба сойтись):
+  клиент R05 @ b0353ee шлёт POST /proposals с year, near_street, target, status; удаляет DELETE /proposals/{id};
+  ждёт ответ {proposal} или само предложение с полем year. R06 @ 7031afa принимает только kind, geometry, rotation_deg,
+  title_ru, title_kk, planned_year, demo (иначе 400), снимает предложение POST /proposals/{id}/withdraw и отвечает {item}
+  с planned_year. Адаптер: оставляет разрешённые поля, year -> planned_year, DELETE -> POST …/withdraw, {item} ->
+  {proposal} + year, добавляет X-CSRF-Token сотрудника и device_id в список (my_vote этого устройства).
+  Ветки ролей уже двигаются навстречу: R06 d043e7b (year/near_street/target, DELETE, {proposal}) и R05 7f42cb3
+  (только {kind, geometry, rotation_deg, planned_year, demo}, POST …/withdraw, разбор {item}) — НЕ в B2, пока в
+  DELIVERY.json стоят 7031afa и b0353ee. С клиентом R05 7f42cb3 адаптер ничего не меняет (поля уже разрешённые,
+  withdraw напрямую; проверено чтением кода). С R06 d043e7b он отбрасывал бы near_street/target, которые R06 уже
+  принимает, — поэтому, как только сдана любая из двух версий, R01 убирает адаптер (FINAL).
+  R05: getState() у ручки — оболочка отдаёт её как CivicShell.build3d (проверка r14_b2.cjs); setRole нет — оболочка
+  пересоздаёт модуль при «Акимат/Житель» (если сделаете setRole/update — напишите, R01 перейдёт на него).
+  R05/R11: на телефоне каталог акимата виден только при опущенной шторке (выбор района/улицы) — иначе он закрывал
+  «Карту жалоб». Карточка «За/Против» и размещение — всегда. Если нужна отдельная кнопка «Предложить» — решение R11.
+R06: нужен seed-r14-demo для демо-базы (этапы и 5 предложений; без него 0 проектов для голосования, 1 отстающий объект вместо 4).
+  run.bat (не путь R01) пока делает только seed-demo — команда добавлена в RUN.txt R01; координатору: включить ли её в
+  run.bat при CIVIC_DEMO=1.
+R03: tests/civic/R03/round14 делают `from conftest import needs_ml`. В полном прогоне `pytest tests` это работает, но
+  `pytest tests/civic/R03/round14 tests/civic/R09 …` (папки списком) подменяет conftest чужим — ImportError при сборе.
+  Просьба (как советует R04): вынести needs_ml/needs_onnx/needs_sklearn в модуль с уникальным именем.
+R07: в B2 по-прежнему 5a97636. Ячейки R09 теперь в общей сетке (R09 fa49fc9) — адаптер R01 (R09CellResolver) стал
+  необязательным, остаётся ради подписи «примерное место»; уберу, когда R07 сам начнёт подписывать approximate-цели.
+  R08 просит правдоподобный демо-набор (их INTEGRATION §4а, test_r08_demo_plausible.py — сейчас XFAIL): ждём поставку.
+R08 @ 4ce8f08: akim.i18n.json удалён — убран из CIVIC_ASSETS. Отстающие объекты и предложения берутся у R06 (bind).
+R11 @ 6102dfb: ключи build3d.* и forecast.* в словарях; ui-kit без изменений.
+R12/R03: старый tests/civic/R03/core.test.mjs (карта раунда 13) против карты R12 даёт 24/2 — R12 сознательно поменял
+  featureCollection (область «примерного места») и держит обновлённую копию в tests/civic/R12/map/core.test.mjs (29/0).
+  run_checks.sh R01 теперь запускает копию R12. Старый файл в папке R03 — решить владельцу (R12 или координатор):
+  удалить или пометить как тест раунда 13.

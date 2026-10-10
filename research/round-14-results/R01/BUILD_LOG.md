@@ -154,3 +154,60 @@ R09 ≠ R07 (место жителя на ~7 км восточнее); разн�
 
 Состав B1-кандидата: I0 (раунд 13) + R11 @ ba8758b + R02 @ 229f1aa + R07 @ 5a97636 + R08 @ 9f1d9c0 + R09 @ da295be
 + база пакета d2a4351 (LOCAL-1 объекты OSM, LOCAL-2 three.js). Не включены (нет DELIVERY): R03, R04, R05, R06, R12.
+
+## B2 — шаг 1: поставки R11, R12, R06, R05, R09, R13 по SHA (коммит 915143f)
+
+Правило переноса то же (B1 — шаг 1). Для повторных поставок — файлы, изменённые между прежним и новым code_sha.
+
+| Роль | Ветка | code_sha (DELIVERY) | Пути | Примечание |
+|---|---|---|---|---|
+| R11 | claude/r14-R11 | cc77761 | web/civic/ui-kit/, web/civic/i18n/, tests/civic/R11/ | повтор поверх ba8758b |
+| R12 | claude/tender-brahmagupta-ef5ztl | d13f49a (tested; code 8810221 — предок, разница только в 3 тестах) | engine/civic_geo/, data/civic/astana/geo/, web/civic/map/, web/civic/editor/, tests/civic/R12/ | |
+| R06 | claude/round-14-r06 | 7031afa | ui/civic_store/, web/civic/proposals/, tests/civic/R06/ | + патч r02_old_store_tests.patch (тесты R02 под миграцию 6) |
+| R05 | claude/r14-R05 | b0353ee | web/civic/build3d/, tests/civic/R05/ | web/vendor/three уже в базе (LOCAL-2) |
+| R09 | claude/modest-shannon-0ki93p | a4ab5a4 | ui/civic_feedback/, web/civic/feedback/, tests/civic/R09/ | повтор поверх da295be |
+| R13 | claude/r14-R13 | 8705829 | ml/civic_forecast/, ui/civic_forecast/, tests/civic/R13/ | маршрут /forecast — по r01_forecast_route.patch |
+
+Шлюз: 5 маршрутов R12 (raw handle без префикса) + прогрев графа при старте; 13 маршрутов R06 (bind в фабрике
+store(), параметры district/status/device_id/since проверяются в шлюзе, лишние именованные аргументы функциям старой
+сигнатуры не передаются); GET /forecast (R13). Тесты ролей R12, R06, R09, R05, R11, R02, R07, R08: 1869 passed, 11 skipped.
+
+## B2 — шаг 2: повторные R11/R09/R08, R04 + R03, фронтенд R05/R06 (коммит b5c153d)
+
+| Роль | code_sha | Что |
+|---|---|---|
+| R11 | 6102dfb | словари: ключи build3d.* (R05) и forecast.* (R13); ui-kit без изменений |
+| R09 | fa49fc9 | совместный прогон с настоящими R12 и R04; ячейки в общей сетке |
+| R08 | 4ce8f08 | поставка 2: UX-правки R11, функции R06; akim.i18n.json удалён (убран из CIVIC_ASSETS) |
+| R04 | deeb1de | ml/civic_dedup/, ui/civic_ml_api/, tests/civic/R04/round14/; патч r01_similar_target.patch; connect_store(store R09) + warmup в wire() |
+| R03 | 252913e | ml/civic_classifier_v2/, tests/civic/R03/round14/ (без весов — LOCAL); нужен R04: словарь R03 даёт suggest |
+
+R03 и R04 в просьбе на B2 не было: взяты, потому что у обоих есть DELIVERY, R09 просит подключить R04 (INTEGRATION
+R09 «Совместный прогон»), а без кода R03 тест R09 test_r09v2_neighbours падает (suggest=false). Откат — один коммит.
+Найдено: тесты R03 `from conftest import needs_ml` ломаются, если запускать папки списком (pytest A B C) — conftest
+подменяется чужим; полный `pytest tests` и `pytest tests/civic/R03/round14` отдельно — работают (INTEGRATION §9).
+
+Оболочка: 3D-каталог R05 над картой слева от панели, на телефоне — над опущенной шторкой; пересоздаётся при смене
+«Акимат/Житель»; на «Картине дня» скрыт. Адаптер запросов R05 -> R06 @ 7031afa (контракты расходятся — INTEGRATION §9).
+Новая проверка tests/civic/R01/browser/r14_b2.cjs (в run_checks.sh).
+
+Не включены (нет новой DELIVERY на момент сборки): R07 (DELIVERY 5a97636; на ветке есть 9bc25e6 «day 3»), R06 d043e7b
+(DELIVERY всё ещё 7031afa), R05 305077f/7f42cb3 (checkpoint 6–7, DELIVERY b0353ee).
+
+## B2 — проверки
+
+Полный run_checks.sh на b5c153d в отдельной рабочей копии (git worktree, Linux, Python 3.13, Node 22, Chromium Playwright):
+
+| Шаг | Результат |
+|---|---|
+| pytest tests | **2377 passed, 20 skipped, 1 xfailed** (было 11 skip на B1; новые 9 — R03 7 и R04 1: нет scikit-learn/onnx/torch в облаке; R06 store 1: копия теста R02 для старого Handler b2cb2e0 — все с причиной в выводе pytest -rs; xfail — test_r08_demo_plausible: ждёт правдоподобный демо-набор R07) |
+| ui.web_check, node govtech ×5, node R04, node R01 explore | PASS |
+| node R03 core (тест карты раунда 13) | FAIL 24/2 — устарел: карта теперь R12 (область «примерного места», линии по улицам); у R12 своя копия теста с новыми ожиданиями. В run_checks.sh шаг заменён на node R12 map core (29/0) и R12 editor core+mock (40/0) |
+| браузер P0 | 62/1/2 — FAIL = известная гонка demo-ring модуля карты (R12/R03), как на I0 и B1; NOT_RUN — подложка OpenFreeMap |
+| браузер: сценарии / город / пустой реестр / шапка | 16/0 · 81/0 · 15/0 · 38/0 |
+| браузер: путь демо B1 (r14_b1.cjs) | **15/0** |
+| браузер: путь демо B2 (r14_b2.cjs на b5c153d) | **17/0** |
+
+После прогона в r14_b2.cjs добавлен путь жителя через R12/R04 (место «Спортплощадка» от /targets, подсказка
+«Освещение» от R04, жалоба привязана к объекту OSM, не к ячейке): на рабочем дереве **20/0**. Код приложения после
+b5c153d не менялся — только проверки и документы.

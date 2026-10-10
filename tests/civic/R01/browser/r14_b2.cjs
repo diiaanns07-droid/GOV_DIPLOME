@@ -1,5 +1,6 @@
 // R01 round 14, build B2: what B2 adds to the demo path in one app (CONTRACT §0, steps 2 and 5, «Картина дня»).
 //   API:      R12 /targets and street routes, R04 /classify and /similar, R06 proposals and stages, R13 /forecast
+//   resident: «Сообщить о проблеме» -> «Это здесь?» offers a real R12 place -> R04 suggests the category -> sent
 //   akimat:   R05 3D catalog over the map (left of the panel) -> «Сквер» -> place on the left bank -> «Поставить»
 //             -> R06 stores the proposal (planned_year from R05 year, via the shell adapter)
 //   resident: the same proposal card has «За / Против» -> vote counted by R06 (my_vote of this device)
@@ -87,6 +88,41 @@ async function main() {
     const lagging = await api(page, "/api/civic/v2/objects/lagging");
     check("R06: lagging objects for «Картина дня» come from the store (seed-r14-demo)", lagging.status === 200
       && (lagging.body?.late?.length || 0) + (lagging.body?.stale?.length || 0) > 0, lagging.body && { late: lagging.body.late?.length, stale: lagging.body.stale?.length });
+
+    // ---- step 1–2 with R12 and R04: the resident picks a real place and gets a category suggestion
+    await page.click("#birge-header [data-mode=resident]");
+    await page.waitForTimeout(300);
+    await page.click(".bc-fab");
+    await page.waitForSelector(".bc-panel[data-step='2']", { timeout: 8000 });
+    const tap = await page.evaluate((p) => { const c = map.getCanvas().getBoundingClientRect(); map.jumpTo({ center: p, zoom: 16 });
+      const q = map.project(p); return [c.left + q.x, c.top + q.y]; }, PLACE);
+    await page.waitForTimeout(400);
+    await page.mouse.click(tap[0], tap[1]);
+    const firstOption = await page.waitForSelector(".bc-option--first", { timeout: 12000 }).then((n) => n.textContent()).catch(() => null);
+    check("step 2 (R12 in the form): «Это здесь?» offers a real place first", !!firstOption && !/примерн/i.test(firstOption), firstOption && firstOption.trim());
+    if (firstOption) await page.click(".bc-option--first");
+    else if (await page.$(".bc-option")) await page.click(".bc-option");
+    await page.waitForSelector(".bc-panel[data-step='3']", { timeout: 10000 });
+    await page.fill("#bc-text", "Аялдамада жарық жоқ, вечером на остановке темно");
+    const suggested = await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 10000 })
+      .then(() => page.evaluate(() => ({ label: document.querySelector(".bc-cat-row__label")?.textContent.trim(),
+        chip: document.querySelector(".bc-cat-row .bk-chip")?.textContent.trim() }))).catch(() => null);
+    check("step 2 (R04 in the form): the category is suggested by the model", !!suggested && /Освещ/i.test(suggested.chip || ""), suggested);
+    if (!suggested && await page.$(".bc-change")) { await page.click(".bc-change"); await page.click(".bk-catgrid button:nth-child(5)"); }
+    await page.click(".bc-send");
+    await page.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 15000 });
+    if (await page.$(".bc-panel[data-step='4']")) await page.click(".bc-different");
+    await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
+    const mine = await page.evaluate(async () => {
+      const r = await fetch("/api/civic/v2/complaints/mine", { headers: { "X-Birge-Device": localStorage.getItem("birge.device") || "" } });
+      const b = await r.json(); const items = b?.data?.items || b?.data || []; return Array.isArray(items) ? items[0] : null;
+    });
+    check("the complaint is attached to the R12 place (not the approximate cell)", !!mine?.target && mine.target.approximate !== true
+      && ["object", "segment", "area"].includes(mine.target.kind), mine && { id: mine.id, target: mine.target, category: mine.category });
+    await page.screenshot({ path: path.join(OUT, "b2-1366-resident-sent.png") });
+    await page.keyboard.press("Escape");
+    await page.click("#birge-header [data-mode=akimat]");
+    await page.waitForTimeout(300);
 
     // ---- step 5: akimat places a proposal in 3D
     await b3dReady(page);
