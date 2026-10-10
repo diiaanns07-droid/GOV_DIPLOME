@@ -482,8 +482,13 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     m.jumpTo({ center: p, zoom: 15 }); await new Promise((ok) => setTimeout(ok, 1800));
     const layers = (m.getStyle().layers || []).filter((l) => /heat|^r07-/i.test(l.id)).map((l) => l.id);
     let rendered = 0; try { rendered = layers.length ? m.queryRenderedFeatures({ layers }).length : 0; } catch {}
-    // Значки поверх карты (маркеры), на которых есть число людей.
-    const badges = [...document.querySelectorAll(".maplibregl-marker")].filter((e) => e.getBoundingClientRect().width > 0 && /\d/.test(e.innerText)).length;
+    // Значки поверх карты (маркеры), на которых есть число людей. После перемещения карты R07 перерисовывает их не сразу —
+    // ждём до 5 с, иначе на загруженной машине тест видит 0 значков при полной карте (так было в прогоне e6d9d80).
+    let badges = 0;
+    for (let i = 0; i < 25 && !badges; i++) {
+      badges = [...document.querySelectorAll(".maplibregl-marker")].filter((e) => e.getBoundingClientRect().width > 0 && /\d/.test(e.innerText)).length;
+      if (!badges) await new Promise((ok) => setTimeout(ok, 200));
+    }
     return { map: true, layers: layers.length, rendered, badges };
   }, STOP.point);
   // Легенда: подпись из словаря R11 или запасная R07 (в ранних словарях ключа heat.legend ещё нет).
