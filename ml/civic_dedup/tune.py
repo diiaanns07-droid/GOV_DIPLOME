@@ -15,6 +15,8 @@
          места дальше 200 м друг от друга — в синтетике R02 у пар нет координат;
   text — только текст, все пары (нижняя граница: если точка жалобы неточная).
 Интервалы — бутстрэп по парам (1000 повторов, seed 20261011), 95 %.
+У смешанного метода два режима: пары, где понятия есть в обоих текстах, решает общий порог; пары
+«только текст» — порог чистого метода n-грамм (alpha = 1), подобранный на dev до смешанного.
 """
 
 from __future__ import annotations
@@ -54,16 +56,24 @@ def sha256_file(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def score_pairs(scorer, pairs: list[dict]) -> list[float]:
+def score_pairs(scorer, pairs: list[dict]) -> list[tuple[float, float | None]]:
+    """[(оценка, свой порог пары или None)]. Свой порог — режим «только текст» у n-грамм (scorers.py)."""
     texts = sorted({p["a"] for p in pairs} | {p["b"] for p in pairs})
     feats = dict(zip(texts, scorer.encode_many(texts)))
-    return [scorer.score(feats[p["a"]], feats[p["b"]]) for p in pairs]
+    out = []
+    for p in pairs:
+        a, b = feats[p["a"]], feats[p["b"]]
+        fixed = None
+        if getattr(scorer, "text_only_threshold", None) is not None and scorer.alpha < 1.0 and scorer.text_only(a, b):
+            fixed = scorer.text_only_threshold
+        out.append((scorer.score(a, b), fixed))
+    return out
 
 
-def confusion(ys: list[bool], scores: list[float], thr: float) -> dict:
+def confusion(ys: list[bool], scores: list[tuple[float, float | None]], thr: float) -> dict:
     tp = fp = fn = tn = 0
-    for y, s in zip(ys, scores):
-        pred = s >= thr
+    for y, (s, fixed) in zip(ys, scores):
+        pred = s >= (thr if fixed is None else fixed)
         if pred and y:
             tp += 1
         elif pred:
@@ -117,21 +127,37 @@ def by_kind(pairs, scores, thr: float) -> dict:
     """Для положительных видов — доля найденных (recall), для отрицательных — доля верно отвергнутых."""
     out = {}
     for kind in sorted({p["kind"] for p in pairs}):
-        sel = [(p["y"], s) for p, s in zip(pairs, scores) if p["kind"] == kind]
-        hit = sum(1 for y, s in sel if (s >= thr) == y)
+        sel = [(p["y"], s, f) for p, (s, f) in zip(pairs, scores) if p["kind"] == kind]
+        hit = sum(1 for y, s, f in sel if (s >= (thr if f is None else f)) == y)
         out[kind] = {"n": len(sel), "correct": hit, "rate": round(hit / len(sel), 4),
                      "meaning": "recall" if sel[0][0] else "rejected_correctly",
-                     "mean_score": round(sum(s for _y, s in sel) / len(sel), 4)}
+                     "mean_score": round(sum(s for _y, s, _f in sel) / len(sel), 4),
+                     "text_only_share": round(sum(1 for *_x, f in sel if f is not None) / len(sel), 4)}
     return out
 
 
-def candidates(method: str) -> list[tuple[str, dict, object]]:
+def text_only_thresholds(pairs: list[dict]) -> dict[tuple[int, int], float]:
+    """Порог чистого метода n-грамм (alpha = 1) на dev — он же порог режима «только текст» смешанного метода."""
+    out = {}
+    for ng in ((3, 5), (2, 4)):
+        scores = score_pairs(NgramConceptScorer(1.0, ng), pairs)
+        dev_p, dev_s = subset(pairs, scores, "dev", "geo")
+        out[ng] = choose_threshold([p["y"] for p in dev_p], dev_s)[0]
+    return out
+
+
+def candidates(method: str, pairs: list[dict]) -> list[tuple[str, dict, object]]:
     """(метод, параметры, оценщик) — сетка настроек, выбор между ними тоже только по dev."""
     out = []
     if method in ("ngram", "all"):
+        text_thr = text_only_thresholds(pairs)
         for alpha in (1.0, 0.7, 0.6, 0.5, 0.4, 0.3):
             for ng in ((3, 5), (2, 4)):
-                out.append((C.FALLBACK_METHOD, {"alpha": alpha, "ngram_range": list(ng)}, NgramConceptScorer(alpha, ng)))
+                params = {"alpha": alpha, "ngram_range": list(ng)}
+                t_text = None if alpha >= 1.0 else text_thr[ng]
+                if t_text is not None:
+                    params["text_only_threshold"] = t_text
+                out.append((C.FALLBACK_METHOD, params, NgramConceptScorer(alpha, ng, t_text)))
     if method in ("e5", "all"):
         from ml.civic_dedup.e5 import E5Scorer
         base = E5Scorer.load(C.E5_DIR)
@@ -150,7 +176,7 @@ def evaluate(method: str, pairs_path: Path) -> dict:
               "evidence": "synthetic (R02 synth_v3 paraphrase pairs); real resident texts NOT_EVALUATED",
               "selection_rule": f"dev, scenario geo: max recall at precision >= {TARGET_PRECISION}",
               "methods": {}}
-    for name, params, scorer in candidates(method):
+    for name, params, scorer in candidates(method, pairs):
         t0 = time.perf_counter()
         scores = score_pairs(scorer, pairs)
         elapsed = time.perf_counter() - t0
@@ -173,7 +199,7 @@ def evaluate(method: str, pairs_path: Path) -> dict:
             ys = [p["y"] for p in tp]
             entry[f"test_{scenario}"] = {**confusion(ys, ts, thr), **bootstrap(ys, ts, thr)}
         test_pairs = [p for p in pairs if p["split"] == "test"]
-        test_scores = [s for p, s in zip(pairs, scores) if p["split"] == "test"]
+        test_scores = [sf for p, sf in zip(pairs, scores) if p["split"] == "test"]
         entry["test_by_kind"] = by_kind(test_pairs, test_scores, thr)
     return report
 
@@ -182,7 +208,7 @@ def update_config(report: dict) -> dict:
     conf = C.load_config()
     for name, entry in report["methods"].items():
         conf["methods"].setdefault(name, {}).update({
-            **entry["params"], "threshold": entry["threshold"], "tuned_on": "dev (R02 paraphrase_pairs_v3)",
+            "text_only_threshold": None, **entry["params"], "threshold": entry["threshold"], "tuned_on": "dev (R02 paraphrase_pairs_v3)",
             "pairs_sha256": report["pairs_sha256"], "tuned_at": report["generated_at"],
             "dev_geo": {k: entry["dev_geo"][k] for k in ("precision", "recall", "f1")},
             "test_geo": {k: entry["test_geo"][k] for k in ("precision", "recall", "f1")}})

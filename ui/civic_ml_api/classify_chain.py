@@ -24,9 +24,11 @@ needs_review — для сотрудника: подсказку нужно пр
 from __future__ import annotations
 
 import logging
+import re
 import threading
+from functools import lru_cache
 
-from ml.civic_dedup.normalize import letters, to_cyrillic
+from ml.civic_dedup.normalize import KK_FOLD, letters, to_cyrillic
 from ui.civic_ml_api import categories as C
 
 LOGGER = logging.getLogger(__name__)
@@ -166,6 +168,66 @@ def _from_v2(v2, text: str) -> dict:
     return out
 
 
+# Признаки казахского текста, набранного без казахской раскладки (после сведения букв: қ -> к, й -> и …):
+# частые слова, корни тем обращений и окончания. По ним «Аялдамада кар тазаланбаган» — казахский.
+_KK_WORDS = frozenset(
+    "жок бар емес жане мен бул осы кашан неге калаи керек биз бизде сиздер олар уи уиде уидин тур жатыр "
+    "болды болып отиниш комектесиниздер ракмет салеметсиз туралы ушин барлык кун тунде кар мукан".split())
+_KK_ROOTS = ("аялдам", "аула", "коше", "аудан", "тазала", "жанбаи", "жарык", "кокыс", "жашик", "агаш", "алан",
+             "балалар", "колик", "турак", "шункыр", "тайгак", "коктаи", "суйк", "жаяу", "отинемиз", "отинемин")
+_KK_SUFFIXES = ("ында", "инде", "ынан", "инен", "ган", "ген", "маиды", "меиди", "баиды", "беиди", "паиды", "пеиди",
+                "лары", "лери", "дары", "дери", "тары", "тери", "ныз", "низ", "мыз", "миз", "ада", "еде")
+# Русские служебные слова: если их больше, текст русский (сведённое «кар» не ищем).
+_RU_WORDS = frozenset("не на и в во что это нет уже очень у с по за из как когда где или так все был была есть "
+                      "до от мы вы они его её их".split())
+_WORD = re.compile(r"\w+")
+
+
+def _fold(text: str) -> str:
+    return " ".join(_WORD.findall(str(text).casefold().translate(KK_FOLD)))
+
+
+def looks_kazakh_unmarked(text: str) -> bool:
+    """Казахский без специфических букв: нет ә/ғ/қ/ң/ө/ұ/ү/һ/і, казахских признаков ≥ 2 и больше, чем русских слов."""
+    low = str(text).casefold()
+    if any(ch in "әғқңөұүһі" for ch in low):
+        return False
+    words = _fold(low).split()
+    kk = sum(1 for w in words if w in _KK_WORDS or w.startswith(_KK_ROOTS)
+             or (len(w) >= 5 and w.endswith(_KK_SUFFIXES)))
+    ru = sum(1 for w in words if w in _RU_WORDS)
+    return kk >= 2 and kk > ru
+
+
+@lru_cache(maxsize=4)
+def _folded_stems(kw) -> dict[str, tuple[str, ...]]:
+    """Основы словаря R03 со сведёнными буквами (словарь R03 не меняется — только читается)."""
+    out = {}
+    for lab, stems in kw.STEMS.items():
+        folded = []
+        for stem in stems:
+            f = " ".join(_WORD.findall(stem.casefold().translate(KK_FOLD)))
+            if len(f) >= 3:  # короткие основы после сведения слишком часто совпадают с русскими словами
+                folded.append((" " if stem.startswith(" ") else "") + f + (" " if stem.endswith(" ") else ""))
+        out[lab] = tuple(folded)
+    return out
+
+
+def keyword_hits(kw, text: str) -> dict[str, int]:
+    """Совпадения словаря R03; для казахского без спецбукв — ещё проход по сведённым основам (берём максимум).
+
+    Только для текста, похожего на казахский: в русском сведённое «қар» = «кар» совпало бы с «карта».
+    Сведённая основа должна начинать слово, чтобы «кар» не ловилось внутри «пискарь».
+    """
+    hits = kw.keyword_hits(text)
+    if not looks_kazakh_unmarked(text):
+        return hits
+    t = " " + _fold(text) + " "
+    folded = {lab: sum(1 for stem in stems if (stem if stem.startswith(" ") else " " + stem) in t)
+              for lab, stems in _folded_stems(kw).items()}
+    return {lab: max(hits.get(lab, 0), folded.get(lab, 0)) for lab in hits}
+
+
 def _kw_result(hits: dict, order: tuple) -> tuple[str, float, list, int]:
     """(категория, доля совпадений, top3, число совпадений лучшей) по словарю."""
     total = sum(hits.values())
@@ -207,7 +269,7 @@ def classify(text) -> dict:
     cyr = to_cyrillic(text)
     kw, v1 = CHAIN.kw(), CHAIN.v1()
     if kw is not None:
-        cat, score, top3, best = _kw_result(kw.keyword_hits(cyr), tuple(kw.PRIORITY))
+        cat, score, top3, best = _kw_result(keyword_hits(kw, cyr), tuple(kw.PRIORITY))
         if best >= 1 or v1 is None:
             return {"category": cat, "score": score, "needs_review": True, "model_version": version, "top3": top3,
                     "suggest": best >= SUGGEST_KW_HITS, "source": "kw",

@@ -42,12 +42,15 @@ def _build(conf: dict) -> tuple[Deduper, list[str]]:
         if method == C.FALLBACK_METHOD:
             d = C.DEFAULTS["methods"][C.FALLBACK_METHOD]
             lo, hi = (mconf.get("ngram_range") or d["ngram_range"])[:2]
-            scorer = NgramConceptScorer(alpha=float(mconf.get("alpha", d["alpha"])), ngram_range=(int(lo), int(hi)))
+            text_thr = mconf.get("text_only_threshold", d.get("text_only_threshold"))
+            scorer = NgramConceptScorer(alpha=float(mconf.get("alpha", d["alpha"])), ngram_range=(int(lo), int(hi)),
+                                        text_only_threshold=None if text_thr is None else float(text_thr))
             return Deduper(scorer, float(thr if thr is not None else d["threshold"]), radius_m=radius), notes
         notes.append(f"{method}: неизвестный метод")
     # prefer испорчен — запасной путь всё равно работает.
     d = C.DEFAULTS["methods"][C.FALLBACK_METHOD]
-    return Deduper(NgramConceptScorer(d["alpha"], tuple(d["ngram_range"])), d["threshold"], radius_m=radius), notes
+    return Deduper(NgramConceptScorer(d["alpha"], tuple(d["ngram_range"]), d.get("text_only_threshold")),
+                   d["threshold"], radius_m=radius), notes
 
 
 def get_deduper() -> Deduper:
@@ -67,6 +70,7 @@ def get_deduper() -> Deduper:
 def deduper_info() -> dict:
     dd = get_deduper()
     return {"method": dd.scorer.method, "version": dd.version, "threshold": dd.threshold,
+            "text_only_threshold": getattr(dd.scorer, "text_only_threshold", None),
             "radius_m": dd.radius_m, "default_days": int(_state["config"].get("default_days") or 14),
             "notes": list(_state.get("notes") or [])}
 

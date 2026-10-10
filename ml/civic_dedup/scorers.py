@@ -1,10 +1,16 @@
 """Оценщики сходства двух текстов обращений: encode(text) -> признаки, score(a, b) -> число 0..1.
 
-NgramConceptScorer — запасной путь, работает всегда (только стандартная библиотека):
-    score = alpha · cos(n-граммы) + (1 − alpha) · cos(понятия), если понятия есть в ОБОИХ текстах;
-    score = cos(n-граммы), если хотя бы в одном тексте понятий нет (словарь не знает этих слов).
+NgramConceptScorer — запасной путь, работает всегда (только стандартная библиотека). Два режима:
+    «понятия» (понятия есть в обоих текстах и проблемы не противоречат друг другу) —
+        score = alpha · cos(n-граммы) + (1 − alpha) · cos(понятия), порог threshold;
+    «только текст» — score = cos(n-граммы), порог text_only_threshold (порог чистого метода n-грамм,
+        подобран tune.py), если:
+          - хотя бы в одном тексте словарь не нашёл ни одного понятия, или
+          - в обоих текстах есть понятия-проблемы (не места), но ни одного общего: «снег на остановке»
+            и «скамейка на остановке» — разные проблемы, совпасть могут только почти одинаковые тексты.
     n-граммы — символьные 3–5-граммы внутри слов (с границами слова), вес 1 + ln(tf), L2-нормировка.
-    Понятия — concepts.py (яма = шұңқыр, навес = шатыр …): дают совпадение русского и казахского текста.
+    Понятия — concepts.py (яма = шұңқыр, навес = шатыр …): дают совпадение русского и казахского текста;
+    понятия-места (остановка, тротуар, площадка) входят с весом 0.3 — место проверяет геофильтр.
 
 E5Scorer (ml/civic_dedup/e5.py) — основной путь, если на ноутбуке выполнена LOCAL-задача с весами
 multilingual-e5: косинус эмбеддингов, по желанию с той же добавкой понятий.
@@ -15,7 +21,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from ml.civic_dedup.concepts import concepts
+from ml.civic_dedup.concepts import PLACE_CONCEPTS, concepts, weight
 from ml.civic_dedup.normalize import normalize
 
 
@@ -41,10 +47,13 @@ def sparse_cosine(a: dict[str, float], b: dict[str, float]) -> float:
 
 
 def concept_cosine(a: frozenset, b: frozenset) -> float | None:
-    """Косинус множеств понятий; None, если в одном из текстов понятий нет."""
+    """Косинус взвешенных множеств понятий (понятия-места — с малым весом); None, если в тексте понятий нет."""
     if not a or not b:
         return None
-    return len(a & b) / math.sqrt(len(a) * len(b))
+    dot = sum(weight(c) ** 2 for c in a & b)
+    na = math.sqrt(sum(weight(c) ** 2 for c in a))
+    nb = math.sqrt(sum(weight(c) ** 2 for c in b))
+    return dot / (na * nb)
 
 
 @dataclass(frozen=True)
@@ -56,11 +65,13 @@ class NgramFeatures:
 class NgramConceptScorer:
     method = "ngram-concept-v1"
 
-    def __init__(self, alpha: float = 0.5, ngram_range: tuple[int, int] = (3, 5)):
+    def __init__(self, alpha: float = 0.5, ngram_range: tuple[int, int] = (3, 5),
+                 text_only_threshold: float | None = None):
         if not 0.0 <= alpha <= 1.0:
             raise ValueError("alpha must be in [0, 1]")
         self.alpha = float(alpha)
         self.ngram_range = (int(ngram_range[0]), int(ngram_range[1]))
+        self.text_only_threshold = None if text_only_threshold is None else float(text_only_threshold)
 
     @property
     def version(self) -> str:
@@ -74,8 +85,21 @@ class NgramConceptScorer:
     def encode_many(self, texts: list[str]) -> list[NgramFeatures]:
         return [self.encode(t) for t in texts]
 
+    def text_only(self, a: NgramFeatures, b: NgramFeatures) -> bool:
+        """Режим «только текст» (см. docstring модуля)."""
+        if self.alpha >= 1.0 or not a.concepts or not b.concepts:
+            return True
+        pa, pb = a.concepts - PLACE_CONCEPTS, b.concepts - PLACE_CONCEPTS
+        return bool(pa and pb and not (pa & pb))  # обе проблемы названы, и они разные
+
     def score(self, a: NgramFeatures, b: NgramFeatures) -> float:
         ng = sparse_cosine(a.ngrams, b.ngrams)
-        cc = concept_cosine(a.concepts, b.concepts)
-        s = ng if cc is None else self.alpha * ng + (1.0 - self.alpha) * cc
-        return max(0.0, min(1.0, s))
+        if self.text_only(a, b):
+            return max(0.0, min(1.0, ng))
+        cc = concept_cosine(a.concepts, b.concepts) or 0.0
+        return max(0.0, min(1.0, self.alpha * ng + (1.0 - self.alpha) * cc))
+
+    def threshold_for(self, a: NgramFeatures, b: NgramFeatures, threshold: float) -> float:
+        if self.text_only_threshold is not None and self.alpha < 1.0 and self.text_only(a, b):
+            return self.text_only_threshold
+        return threshold

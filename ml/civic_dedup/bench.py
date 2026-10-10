@@ -134,7 +134,7 @@ def run(n: int, queries: int, seed: int) -> dict:
         store = ComplaintStore(":memory:", clock=clock)
         for rec in city:
             store.import_record(dict(rec, due_at=rec["created_at"], schema="civic-complaint-v2"))
-        from ui.civic_ml_api.similar import StoreSource
+        from ui.civic_ml_api.similar_search import StoreSource
         report["similar_r09_store"] = bench_similar(city, make_queries(city, queries, seed), StoreSource(store))
         hstore = ComplaintStore(":memory:", clock=clock)
         for rec in hot:

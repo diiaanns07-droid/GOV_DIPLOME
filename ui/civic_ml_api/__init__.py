@@ -15,10 +15,10 @@ import threading
 
 from ml.civic_dedup import deduper_info
 from ml.civic_dedup import reset as _reset_dedup
-from ui.civic_ml_api import classify as _classify_mod
-from ui.civic_ml_api.classify import classify
+from ui.civic_ml_api import classify_chain as _classify_mod
+from ui.civic_ml_api.classify_chain import classify
 from ui.civic_ml_api.errors import MLServiceUnavailable
-from ui.civic_ml_api.similar import connect_store, records_source, set_complaint_source, similar, source_kind
+from ui.civic_ml_api.similar_search import connect_store, records_source, set_complaint_source, similar, source_kind
 
 __all__ = ["MLServiceUnavailable", "classify", "connect_store", "records_source", "reset", "set_complaint_source",
            "similar", "status", "warmup"]

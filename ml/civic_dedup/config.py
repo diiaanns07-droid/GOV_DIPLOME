@@ -24,7 +24,7 @@ DEFAULTS = {
     "radius_m": 200,
     "default_days": 14,
     "methods": {
-        FALLBACK_METHOD: {"threshold": 0.43, "alpha": 0.3, "ngram_range": [2, 4]},
+        FALLBACK_METHOD: {"threshold": 0.18, "alpha": 0.3, "ngram_range": [3, 5], "text_only_threshold": 0.4},
         "e5-onnx": {"threshold": None, "alpha": 1.0},
     },
     "prefer": ["e5-onnx", FALLBACK_METHOD],

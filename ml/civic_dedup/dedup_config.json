@@ -4,24 +4,25 @@
   "default_days": 14,
   "methods": {
     "ngram-concept-v1": {
-      "threshold": 0.43,
+      "threshold": 0.18,
       "alpha": 0.3,
       "ngram_range": [
-        2,
-        4
+        3,
+        5
       ],
+      "text_only_threshold": 0.4,
       "tuned_on": "dev (R02 paraphrase_pairs_v3)",
       "pairs_sha256": "1dab16b8be4463c525242b795b2f530bd2623032620c521f5e19dbb091611ac2",
-      "tuned_at": "2026-10-10T13:43:00+00:00",
+      "tuned_at": "2026-10-10T13:51:22+00:00",
       "dev_geo": {
-        "precision": 0.9032,
-        "recall": 0.8889,
-        "f1": 0.896
+        "precision": 0.9053,
+        "recall": 0.9101,
+        "f1": 0.9077
       },
       "test_geo": {
-        "precision": 0.88,
-        "recall": 0.8713,
-        "f1": 0.8756
+        "precision": 0.8798,
+        "recall": 0.9059,
+        "f1": 0.8927
       }
     },
     "e5-onnx": {

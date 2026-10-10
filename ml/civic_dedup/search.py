@@ -189,10 +189,12 @@ class Deduper:
             return []
         query = self.scorer.encode_many([text])[0]
         feats = self.cache.get_many(self.scorer, [(rec["id"], rec["text"]) for rec, _d, _s in cands])
+        threshold_for = getattr(self.scorer, "threshold_for", None)
         matches = []
         for (rec, dist, same), f in zip(cands, feats):
             s = self.scorer.score(query, f)
-            if s >= self.threshold:
+            thr = threshold_for(query, f, self.threshold) if threshold_for else self.threshold
+            if s >= thr:
                 tgt = rec.get("target")
                 matches.append(Match(
                     complaint_id=rec["id"], score=s,
