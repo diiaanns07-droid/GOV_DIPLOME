@@ -241,7 +241,7 @@ function fakeFetch(routes, log) {
   };
 }
 
-test("API R06 по настоящему контракту (claude/round-14-r06): только разрешённые поля, planned_year, {item}, withdraw", async () => {
+test("API R06 поставки 1 (3d10f7d/7031afa): контекст 3D отклонён → базовые поля, planned_year, {item}, withdraw", async () => {
   const log = [];
   const item = { id: "p-1", kind: "square", geometry: { type: "Point", coordinates: NURA }, status: "proposal", planned_year: 2027,
     votes_up: 2, votes_down: 0, my_vote: null, voting_open: true, demo: false, title_ru: "Сквер", title_kk: "Гүлзар" };
@@ -271,16 +271,24 @@ test("API R06 по настоящему контракту (claude/round-14-r06)
   assert.match(log[0][1], /device_id=dev-0123456789abcdef/, "device_id в запросе списка — «мой голос»");
   assert.equal(list[0].year, 2027, "planned_year → год на табличке");
   assert.equal(list[0].my_vote, 0);
-  // Черновик модуля несёт лишние поля (улица, двор, район) — на сервер уходят только поля R06.
-  const created = await api.create({ kind: "stop", geometry: { type: "Point", coordinates: NURA }, rotation_deg: 30.4, year: 2027,
-    status: "proposal", district: "nura", near_street: "улица Сыганак", target: { kind: "area", id: "yard-1" }, demo: false });
+  // Черновик модуля несёт улицу и двор: R06 поставки 1 отвечает 422 «Неизвестное поле» — клиент один раз
+  // повторяет базовым телом и дальше шлёт только его. status/district не уходят никогда.
+  const draft = { kind: "stop", geometry: { type: "Point", coordinates: NURA }, rotation_deg: 30.4, year: 2027,
+    status: "proposal", district: "nura", near_street: "улица Сыганак", target: { kind: "area", id: "yard-1" }, demo: false };
+  const created = await api.create(draft);
   assert.equal(created.id, "p-2");
   const byPath = (m, path) => log.filter((r) => r[0] === m && r[1].replace(/\?.*$/, "") === path);
   assert.ok(log.some((r) => r[1] === "/api/civic/v1/session"), "CSRF сотрудника берётся из сессии, как в карточке R06");
-  const sent = byPath("POST", "/api/civic/v2/proposals")[0][2];
+  const posts = byPath("POST", "/api/civic/v2/proposals");
+  assert.equal(posts.length, 2, "первый POST с контекстом 3D, повтор — базовым телом");
+  assert.deepEqual(Object.keys(posts[0][2]).sort(), ["demo", "geometry", "kind", "near_street", "planned_year", "rotation_deg", "target"]);
+  const sent = posts[1][2];
   assert.deepEqual(Object.keys(sent).sort(), ["demo", "geometry", "kind", "planned_year", "rotation_deg"]);
   assert.equal(sent.rotation_deg, 30);
   assert.equal(sent.planned_year, 2027);
+  await api.create(draft);
+  assert.equal(byPath("POST", "/api/civic/v2/proposals").length, 3, "после первого 422 — сразу базовое тело");
+  assert.deepEqual(Object.keys(byPath("POST", "/api/civic/v2/proposals")[2][2]).sort(), Object.keys(sent).sort());
   const voted = await api.vote("p-1", 1);
   assert.equal(voted.votes_up, 3);
   assert.equal(voted.my_vote, 1);
@@ -289,6 +297,65 @@ test("API R06 по настоящему контракту (claude/round-14-r06)
   assert.equal(byPath("POST", "/api/civic/v2/proposals/p-1/withdraw").length, 1, "«Удалить» = withdraw R06");
   await assert.rejects(api.remove("zz"), (e) => e.code === "not_found" && e.status === 404);
   assert.equal(byPath("DELETE", "/api/civic/v2/proposals/zz").length, 1, "запасной DELETE, если withdraw не найден");
+});
+
+test("API R06 поставки 2 (b42e790): near_street и target сохраняются, «Отменить» возвращает то же предложение с голосами", async () => {
+  const log = [];
+  const rows = {};
+  const ALLOWED = ["demo", "geometry", "kind", "planned_year", "year", "rotation_deg", "title_kk", "title_ru", "status", "near_street", "target"];
+  const SERVER = ["id", "votes_up", "votes_down", "my_vote", "voting_open", "created_at", "updated_at", "decided_at", "district", "proposal", "item"];
+  const ID_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}$/;
+  const api = C.createApiStore({
+    fetch: fakeFetch(
+      {
+        "POST /api/civic/v2/proposals": (init) => {
+          const body = JSON.parse(init.body);
+          const extra = Object.keys(body).filter((k) => !ALLOWED.includes(k) && !SERVER.includes(k));
+          if (extra.length) return [422, { ok: false, error: { code: "invalid_payload", fields: { [extra[0]]: "Неизвестное поле." } } }];
+          const t = body.target;
+          if (t && (!["object", "segment", "area"].includes(t.kind) || !ID_RE.test(t.id) || (t.ids || []).some((i) => !ID_RE.test(i))))
+            return [422, { ok: false, error: { code: "invalid_payload", fields: { target: "Цель" } } }];
+          if (body.id && rows[body.id] && rows[body.id].status === "withdrawn") {
+            rows[body.id].status = "proposal";
+            return [201, { item: rows[body.id], proposal: rows[body.id], restored: true, ignored_fields: ["id"] }];
+          }
+          const id = "p-" + (Object.keys(rows).length + 1);
+          rows[id] = { id, kind: body.kind, geometry: body.geometry, rotation_deg: body.rotation_deg, planned_year: body.planned_year,
+            year: body.planned_year, near_street: body.near_street || null, target: body.target || null, status: "proposal",
+            votes_up: 4, votes_down: 1, my_vote: null, voting_open: true, demo: false };
+          return [201, { item: rows[id], proposal: rows[id], restored: false, ignored_fields: [] }];
+        },
+        "POST /api/civic/v2/proposals/p-1/withdraw": () => {
+          rows["p-1"].status = "withdrawn";
+          return [200, { item: rows["p-1"] }];
+        },
+        "GET /api/civic/v1/session": [200, { authenticated: true, csrf_token: "tok" }],
+      },
+      log
+    ),
+  });
+  const lightingDraft = { kind: "lighting", geometry: { type: "LineString", coordinates: [NURA, [NURA[0] + 0.002, NURA[1]]] }, year: 2027,
+    near_street: "  улица Сыганак  ", demo: false,
+    target: { kind: "segment", id: "osm-w623788311-1", ids: ["osm-w623788311-1", "bad id с пробелом", "osm-w425997757-0"], label_ru: "улица Сыганак", label_kk: null } };
+  const saved = await api.create(lightingDraft);
+  const posts = () => log.filter((r) => r[0] === "POST" && r[1] === "/api/civic/v2/proposals");
+  assert.equal(posts().length, 1, "R06 поставки 2 принимает контекст с первого раза");
+  assert.deepEqual(posts()[0][2].target, { kind: "segment", id: "osm-w623788311-1", ids: ["osm-w623788311-1", "osm-w425997757-0"], label_ru: "улица Сыганак" },
+    "неверный id ребра и пустая подпись не уходят (иначе R06 отклонил бы всю цель)");
+  assert.equal(posts()[0][2].near_street, "улица Сыганак");
+  assert.equal(saved.near_street, "улица Сыганак");
+  assert.equal(saved.target.kind, "segment");
+  assert.equal(saved.year, 2027);
+  await api.remove(saved.id);
+  const back = await api.restore(Object.assign({}, saved));
+  assert.equal(posts()[1][2].id, "p-1", "restore шлёт id снятого предложения");
+  assert.equal(back.id, "p-1", "то же предложение, а не новое");
+  assert.equal(back.votes_up, 4, "голоса сохранены");
+  // Неверная цель (чужой формат id) не уходит вовсе — предложение всё равно создаётся.
+  assert.equal(C.toServerTarget({ kind: "area", id: "двор 5" }), null);
+  assert.equal(C.toServerTarget({ kind: "house", id: "yard-1" }), null);
+  assert.deepEqual(C.toServerTarget({ kind: "area", id: "yard-1148721825", label_ru: "Evolution", label_kk: "Evolution" }),
+    { kind: "area", id: "yard-1148721825", label_ru: "Evolution", label_kk: "Evolution" });
 });
 
 test("API: конверт сервиса R06 {ok, data}, ошибка без сессии сотрудника, клиент оболочки R01 api.v2", async () => {

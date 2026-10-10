@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-10-10T15:16:23.083Z",
+ "generated_at": "2026-10-10T15:14:00.695Z",
  "stand": {
-  "url": "http://127.0.0.1:8618/civic/proposals/demo.html",
-  "r06_sha": "b42e790",
-  "r06_generation": "delivery2"
+  "url": "http://127.0.0.1:8616/civic/proposals/demo.html",
+  "r06_sha": "3d10f7d",
+  "r06_generation": "delivery1"
  },
  "checks": [
   {
@@ -13,11 +13,11 @@
     "storeMode": "api",
     "count": 5,
     "kinds": [
-     "square:2027:demo",
-     "lighting:2027:demo",
      "playground:2027:demo",
+     "sports:2027:demo",
      "stop:2027:demo",
-     "sports:2027:demo"
+     "square:2027:demo",
+     "lighting:2027:demo"
     ]
    }
   },
@@ -25,7 +25,7 @@
    "id": "list_sends_device_id_no_bbox",
    "status": "PASS",
    "detail": [
-    "/api/civic/v2/proposals?device_id=dev-d555a57208cbae85d2b7976bc3f2f7f7"
+    "/api/civic/v2/proposals?device_id=dev-b5ca46a745fa6663957ac6a9383f8bc9"
    ]
   },
   {
@@ -71,18 +71,30 @@
    }
   },
   {
-   "id": "r06_d2_accepts_context_first_try",
+   "id": "r06_d1_rejects_context_then_basic_fields",
    "status": "PASS",
    "detail": {
-    "posts": 1,
-    "firstStatus": 201
+    "firstStatus": 422,
+    "retry": {
+     "kind": "stop",
+     "geometry": {
+      "type": "Point",
+      "coordinates": [
+       71.4009,
+       51.1283
+      ]
+     },
+     "rotation_deg": 11,
+     "demo": false,
+     "planned_year": 2027
+    }
    }
   },
   {
    "id": "created_on_server_with_year_and_rotation",
    "status": "PASS",
    "detail": {
-    "id": "p-6bb8d54510d4",
+    "id": "p-3f4302561d5e",
     "kind": "stop",
     "geometry": {
      "type": "Point",
@@ -101,23 +113,10 @@
     "title_ru": "Остановка",
     "title_kk": "Аялдама",
     "district": "nura",
-    "near_street": "улица Абикена Бектурова",
-    "target": {
-     "id": "yard-1148721825",
-     "kind": "area",
-     "label_kk": "Evolution",
-     "label_ru": "Evolution"
-    },
-    "created_at": "2026-10-10T15:16:00+00:00",
+    "near_street": null,
+    "target": null,
+    "created_at": "2026-10-10T15:13:38+00:00",
     "demo": false
-   }
-  },
-  {
-   "id": "r06_d2_stores_near_street",
-   "status": "PASS",
-   "detail": {
-    "sent": "улица Абикена Бектурова",
-    "got": "улица Абикена Бектурова"
    }
   },
   {
@@ -126,18 +125,9 @@
    "detail": "Остановка"
   },
   {
-   "id": "akimat_r06_card_tally_approve_and_3d_delete",
+   "id": "vote_through_r06_card_with_device_id",
    "status": "PASS",
-   "detail": {
-    "tally": true,
-    "approve": true,
-    "del": true
-   }
-  },
-  {
-   "id": "vote_with_device_id_then_refresh",
-   "status": "PASS",
-   "detail": 200
+   "detail": "{\"value\":1,\"device_id\":\"dev-ecd6944210d34c6bc6691b7e5286ddcc\"}"
   },
   {
    "id": "vote_synced_to_3d_object",
@@ -153,16 +143,17 @@
    "detail": [
     "POST /api/civic/v1/session/login",
     "POST /api/civic/v2/proposals",
-    "POST /api/civic/v2/proposals/p-6bb8d54510d4/vote",
-    "POST /api/civic/v2/proposals/p-6bb8d54510d4/withdraw"
+    "POST /api/civic/v2/proposals",
+    "POST /api/civic/v2/proposals/p-3f4302561d5e/vote",
+    "POST /api/civic/v2/proposals/p-3f4302561d5e/withdraw"
    ]
   },
   {
-   "id": "undo_restores_same_proposal_with_vote",
+   "id": "undo_recreates_on_old_r06",
    "status": "PASS",
    "detail": {
-    "id": "p-6bb8d54510d4",
-    "votes_up": 1
+    "id": "p-8af514c5bceb",
+    "votes_up": 0
    }
   },
   {

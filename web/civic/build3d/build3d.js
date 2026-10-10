@@ -94,8 +94,8 @@
     kk: {
       "build3d.loading": "3D жүктеліп жатыр…",
       "build3d.unsupported_title": "Көлемді көрініс қолжетімсіз",
-      "build3d.unsupported_text": "Браузер 3D-ді қолдамайды. Картаны Chrome, Edge немесе Firefox-та ашыңыз.",
-      "build3d.load_failed": "3D жүктелмеді. Байланысты тексеріп, қайталаңыз.",
+      "build3d.unsupported_text": "Браузер көлемді көріністі қолдамайды. Картаны Chrome, Edge немесе Firefox-та ашыңыз.",
+      "build3d.load_failed": "3D көрініс жүктелмеді. Байланысты тексеріп, қайталаңыз.",
       "build3d.hint.rotate": "Бұрып, «Орнату» түймесін басыңыз",
       "build3d.hint.touch": "Картаны жылжытыңыз немесе орынды түртіңіз. Содан кейін «Орнату» түймесін басыңыз",
       "build3d.hint.segment_start": "Көшені басыңыз — бөліктің басы",
@@ -108,7 +108,7 @@
       "build3d.err.too_long": "Бөлік 900 м-ден ұзын. Нүктелерді жақынырақ таңдаңыз",
       "build3d.err.no_path": "Осы көше бойымен жол табылмады. Басқа нүктелерді таңдаңыз",
       "build3d.err.no_streets": "Жарықтандыруды әзірге тек Нұра ауданында ұсынуға болады",
-      "build3d.err.outside_city": "Бұл жер Астанаға кірмейді. Қаладан орын таңдаңыз",
+      "build3d.err.outside_city": "Бұл жер Астанаға кірмейді. Қала ішінен орын таңдаңыз",
       "build3d.err.overlap": "Бұл жерде басқа жоба тұр. Нысанды жылжытыңыз",
       "build3d.placed": "Жоба орнатылды",
       "build3d.placed_local": "Жоба орнатылып, осы құрылғыда сақталды",
@@ -128,8 +128,8 @@
       "build3d.near.sports": "Жанында спорт алаңы бар, {m} м",
       "build3d.near.square": "Жанында саябақ немесе гүлзар бар, {m} м",
       "build3d.near.square_named": "Жанында саябақ немесе гүлзар бар: «{name}», {m} м",
-      "build3d.near.square_inside": "Бұл орын бұрыннан бар саябақ немесе гүлзардың ішінде",
-      "build3d.near.lamps": "Бөлікте шамдар белгіленген: {n}",
+      "build3d.near.square_inside": "Бұл орын бұрыннан бар саябақтың немесе гүлзардың ішінде",
+      "build3d.near.lamps": "Бұл бөлікте шамдар бұрыннан белгіленген: {n}",
       "build3d.near.source": "OpenStreetMap деректері бойынша",
       "build3d.card.yard": "Аула: {name}",
       "build3d.resident.hint": "Дауыс беру үшін жобаны басыңыз",
@@ -1203,6 +1203,7 @@
     function addObject(p, flags) {
       flags = flags || {};
       if (!scene) return null;
+      if (S.objects[p.id]) disposeObject(p.id); // тот же id ещё исчезает после «Удалить» — убрать сразу
       var geos = buildGeos(p);
       var mats = makeMaterials(false);
       var group = makeMeshes(geos, mats);
@@ -1372,7 +1373,8 @@
             m.userData.reveal.value = (1 - easeInOutCubic(k)) * H;
           });
           if (k >= 1) {
-            disposeObject(id);
+            // «Отменить» могло уже вернуть объект с тем же id (R06 ≥ d043e7b, заглушка) — новый не трогаем.
+            if (S.objects[id] === obj) disposeObject(id);
             if (done) done();
             return false;
           }

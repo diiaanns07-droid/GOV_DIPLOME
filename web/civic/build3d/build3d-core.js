@@ -776,16 +776,18 @@
     return e;
   }
 
-  // Клиент API R06 — по НАСТОЯЩЕМУ контракту поставки R06 (claude/round-14-r06 @ 3d10f7d, ui/civic_store/v2.py,
-  // proposals.py) и шлюза R01 (claude/sharp-dijkstra-0t87gl, ui/web_server.py V2_ROUTES):
+  // Клиент API R06 — по НАСТОЯЩЕМУ контракту R06 (claude/round-14-r06: поставка 1 @ 3d10f7d, поставка 2 @ b42e790,
+  // ui/civic_store/v2.py, proposals.py) и шлюза R01 (claude/sharp-dijkstra-0t87gl, ui/web_server.py V2_ROUTES):
   //   GET  /proposals?bbox&device_id            → {items:[…]}           (сервис R06 напрямую: {ok:true, data:{items}})
-  //   POST /proposals  [сотрудник, X-CSRF-Token] тело ТОЛЬКО {kind, geometry, rotation_deg, planned_year, demo}
-  //        (лишние поля R06 отклоняет: 422 «Неизвестное поле») → 201 {item}
+  //   POST /proposals  [сотрудник, X-CSRF-Token] {kind, geometry, rotation_deg, planned_year, demo, title_*}
+  //        + с R06 ≥ d043e7b контекст 3D: near_street, target {kind: segment|area|object, id, ids?, label_*}
+  //        и id снятого предложения в restore (возвращается то же, с голосами) → 201 {item, proposal, restored}.
+  //        R06 поставки 1 отвечает на эти поля 422 «Неизвестное поле» — тогда клиент один раз повторяет базовым
+  //        телом и дальше шлёт только его (контекст модуль всё равно вычисляет по геометрии при показе).
   //   POST /proposals/{id}/vote {value, device_id}                    → {item, changed, previous}
   //   POST /proposals/{id}/withdraw {} [сотрудник] — «Удалить» (строка остаётся в базе, в списках не видна);
   //        если маршрута нет (404/405) — запасной DELETE /proposals/{id}.
   // Ошибки: шлюз R01 {error:"код", message, field}; сервис R06 {ok:false, error:{code, message, fields}}.
-  // Контекст 3D (улица рядом, двор, участок) R06 не хранит — модуль вычисляет его по геометрии при показе.
   // opts.v2 — клиент оболочки R01 (BirgeShell.api.v2(method, path, body)): сам ставит CSRF и куки.
   var DEVICE_RE = /^[A-Za-z0-9_-]{16,128}$/;
 
@@ -799,13 +801,43 @@
   function unwrap(data) {
     return data && data.ok === true && Object.prototype.hasOwnProperty.call(data, "data") ? data.data : data;
   }
-  // Тело POST /proposals: только поля, которые принимает R06.
-  function toServerProposal(p) {
+  var TARGET_KINDS = { object: true, segment: true, area: true };
+  var TARGET_ID_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}$/; // как у R06 (proposals.py TARGET_ID_RE)
+  function shortText(v) {
+    return typeof v === "string" && v.trim() ? v.trim().slice(0, 200) : null;
+  }
+  // Цель 3D для R06: двор (area, yard-<osm id>), участок улицы (segment, рёбра OSM) или объект. Иначе null.
+  function toServerTarget(t) {
+    if (!t || typeof t !== "object" || !TARGET_KINDS[t.kind] || typeof t.id !== "string" || !TARGET_ID_RE.test(t.id)) return null;
+    var out = { kind: t.kind, id: t.id };
+    if (Array.isArray(t.ids)) {
+      var ids = t.ids
+        .filter(function (i) {
+          return typeof i === "string" && TARGET_ID_RE.test(i);
+        })
+        .slice(0, 200);
+      if (ids.length) out.ids = ids;
+    }
+    var ru = shortText(t.label_ru);
+    var kk = shortText(t.label_kk);
+    if (ru) out.label_ru = ru;
+    if (kk) out.label_kk = kk;
+    return out;
+  }
+  // Тело POST /proposals. Без rich — только поля R06 поставки 1 (3d10f7d/7031afa);
+  // rich — плюс near_street и target (R06 ≥ d043e7b хранит их и отдаёт обратно).
+  function toServerProposal(p, rich) {
     var body = { kind: p.kind, geometry: p.geometry, rotation_deg: Math.round(p.rotation_deg || 0), demo: p.demo === true };
     var year = p.year != null ? p.year : p.planned_year;
     if (year != null && isFinite(year)) body.planned_year = Math.round(year);
     if (typeof p.title_ru === "string" && p.title_ru) body.title_ru = p.title_ru;
     if (typeof p.title_kk === "string" && p.title_kk) body.title_kk = p.title_kk;
+    if (rich) {
+      var street = shortText(p.near_street);
+      var target = toServerTarget(p.target);
+      if (street) body.near_street = street;
+      if (target) body.target = target;
+    }
     return body;
   }
 
@@ -910,6 +942,21 @@
       if (!p) throw storeError("bad_response");
       return p;
     }
+    // Старый R06 (поставка 1) не знает near_street/target/id: после первого 422 шлём только базовое тело.
+    var basicOnly = opts.basicFields === true;
+    function post(p, withId) {
+      if (basicOnly) return call("POST", "/proposals", toServerProposal(p), true).then(one);
+      var body = toServerProposal(p, true);
+      if (withId && typeof p.id === "string" && TARGET_ID_RE.test(p.id)) body.id = p.id;
+      var extra = body.near_street || body.target || body.id;
+      return call("POST", "/proposals", body, true).then(one, function (err) {
+        if (!extra || (err.status !== 422 && err.status !== 400)) throw err;
+        return call("POST", "/proposals", toServerProposal(p), true).then(function (data) {
+          basicOnly = true;
+          return one(data);
+        });
+      });
+    }
     var deviceId = opts.deviceId || null;
     return {
       mode: "api",
@@ -932,11 +979,12 @@
         });
       },
       create: function (draft) {
-        return call("POST", "/proposals", toServerProposal(draft), true).then(one);
+        return post(draft, false);
       },
       restore: function (p) {
-        // Возврат удалённого: создаём заново (id выдаёт сервер; голоса R06 к новому id не переносятся).
-        return call("POST", "/proposals", toServerProposal(p), true).then(one);
+        // «Отменить» после «Удалить»: R06 ≥ d043e7b по id снятого предложения возвращает ТО ЖЕ (с голосами);
+        // R06 поставки 1 — создаётся новое (id выдаёт сервер, голоса к нему не переносятся).
+        return post(p, true);
       },
       remove: function (id) {
         var path = "/proposals/" + encodeURIComponent(id);
@@ -1049,6 +1097,7 @@
     createApiStore: createApiStore,
     createAutoStore: createAutoStore,
     toServerProposal: toServerProposal,
+    toServerTarget: toServerTarget,
     isMissingApi: isMissingApi,
     LOCAL_KEY: LOCAL_KEY,
   };

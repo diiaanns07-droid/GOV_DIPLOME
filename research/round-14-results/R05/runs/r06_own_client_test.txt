@@ -1,0 +1,19 @@
+# R06 tests/civic/R06/round14/r05_client_r14.cjs @ 6b9da27 (код R06 b42e790) против стенда serve_r14.py; клиент — web/civic/build3d/build3d-core.js этой ветки (рабочее дерево до коммита поставки 2 R05); 2026-10-10T15:16:37Z
+PASS вход сотрудника на стенде — 200
+PASS r06: list(bbox) → предложения в Нуре — 5
+PASS r06: create без входа → 401 — 401 unauthenticated
+PASS r06: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-f8fff75fa12c","year":2027,"rot":90}
+PASS r06: vote → my_vote и счётчик — {"up":1,"my":1}
+PASS r06: list с device_id → «мой голос» после перезагрузки — 1
+PASS r06: remove (withdraw) → в списке нет
+PASS r06: restore («Отменить») → предложение снова в списке — p-f8fff75fa12c (тот же id)
+PASS r06: remove без маршрута withdraw → запасной DELETE
+PASS r01: list(bbox) → предложения в Нуре — 5
+PASS r01: create без входа → 401 — 401 unauthenticated
+PASS r01: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-a4c5cacc95e7","year":2027,"rot":90}
+PASS r01: vote → my_vote и счётчик — {"up":1,"my":1}
+PASS r01: list с device_id → «мой голос» после перезагрузки — 1
+PASS r01: remove (withdraw) → в списке нет
+PASS r01: restore («Отменить») → предложение снова в списке — p-a4c5cacc95e7 (тот же id)
+PASS r01: remove без маршрута withdraw → запасной DELETE
+{"total":17,"failed":0}
