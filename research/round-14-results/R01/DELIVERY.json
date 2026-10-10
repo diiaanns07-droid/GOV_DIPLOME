@@ -56,11 +56,12 @@
     "night_6_final_candidate": "e6d9d80",
     "night_6c_final_candidate": "d99c8c2",
     "night_7_final_candidate": "fa117c3 (код 61a5a62)",
-    "night_8a_final_candidate": "0df9531"
+    "night_8a_final_candidate": "0df9531",
+    "night_8b_final_candidate": "8e67c65"
   },
-  "code_sha": "0df9531",
-  "tested_sha": "0df9531 (pytest и браузер на рабочем дереве = 0df9531)",
-  "push_status": "OK: 0df9531 в origin/claude/sharp-dijkstra-0t87gl; документы — следующим коммитом",
+  "code_sha": "8e67c65",
+  "tested_sha": "8e67c65 (браузер и приёмка R10 на 8e67c65; pytest на 0df9531 — после него только CSS и тесты)",
+  "push_status": "OK: 8e67c65 в origin/claude/sharp-dijkstra-0t87gl; документы — следующим коммитом",
   "changed_paths": [
     "ui/web_server.py",
     "web/index.html",
@@ -124,7 +125,9 @@
     "fa117c3: R10 acceptance": "PASS сценарий 140/0/0, UX 94/0/8 (NOT_RUN — стенды ролей), точность 29/0/0",
     "0df9531: pytest tests": "PASS 2695 passed, 21 skipped",
     "0df9531: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 27/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0",
-    "0df9531: R10 acceptance": "PASS сценарий 140/0/0, UX 94/0/8 (NOT_RUN — стенды ролей), точность 29/0/0"
+    "0df9531: R10 acceptance": "PASS сценарий 140/0/0, UX 94/0/8 (NOT_RUN — стенды ролей), точность 29/0/0",
+    "8e67c65: browser r14_b2 / r14_b1 / r14_shell / p0_flow / r12_city": "PASS 27/0 / 15/0 / 38/0 / 63/0 (1 NOT_RUN: OpenFreeMap) / 81/0",
+    "8e67c65: R10 acceptance": "PASS сценарий 140/0/0, UX 106/0/8 (NOT_RUN — стенды ролей), точность 29/0/0"
   },
   "known_limits": [
     "Все жалобы, объекты и предложения на демо — синтетика (demo: true, «Пример»); реальных обращений нет.",
