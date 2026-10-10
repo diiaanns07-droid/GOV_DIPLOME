@@ -476,6 +476,21 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   if (!legend) legend = (await visibleText(page, /^1[–-]2$/)) && (await visibleText(page, /^10\+$/));
   step("3", "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна", heat.map && heat.rendered > 0 && heat.badges > 0 && legend, { ...heat, legend }, await shot("3-heat"));
 
+  // 3б. DEMO_SCRIPT шаг 3.3: «Фильтры: Освещение, 30 дней → Сбросить». Пункт категории ищем вне табличек 3D-проектов.
+  const allCatRe = new RegExp("^" + esc(T(dict, ["heat.category_all", "heat.filter.all_categories"], lang === "kk" ? "Барлық санаттар" : "Все категории")), "i");
+  const opened = await clickText(page, allCatRe, { wait: 800 });
+  const lightRe = new RegExp("^" + esc(T(dict, "cat.lighting", lang === "kk" ? "Жарықтандыру" : "Освещение")) + "$", "i");
+  let chip = null;
+  if (opened) { const l = page.getByRole("button", { name: lightRe });
+    for (let i = 0; i < Math.min(await l.count(), 20) && !chip; i++) { const it = l.nth(i);
+      if (await it.isVisible().catch(() => false) && !(await it.evaluate((e) => !!e.closest(".b3d-labels")).catch(() => true))) chip = it; } }
+  if (chip) { await chip.click().catch(() => null); await sleep(1000); }
+  await clickText(page, new RegExp("^30 " + (lang === "kk" ? "күн" : "дней") + "$", "i"), { wait: 800 });
+  const resetRe = new RegExp("^" + esc(T(dict, ["heat.reset", "common.action.reset"], lang === "kk" ? "Тазарту" : "Сбросить")) + "$", "i");
+  const reset = await clickText(page, resetRe, { wait: 1000 });
+  const back = !!(await firstVisible(page.getByRole("button", { name: allCatRe })));
+  step("3", "фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории»", opened && !!chip && reset && back, { opened, chip: !!chip, reset, back });
+
   // 4. «Картина дня».
   const dayRe = new RegExp("^" + esc(T(dict, ["common.nav.day", "shell.section.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня")) + "$", "i");
   const day = await header(dayRe, 2500);
