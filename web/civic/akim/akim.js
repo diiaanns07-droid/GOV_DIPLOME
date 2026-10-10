@@ -616,7 +616,9 @@
         card.appendChild(unavailable());
         return card;
       }
-      if (!o.late.length) card.appendChild(emptyBlock("akim.late.empty"));
+      // Нет ни одного объекта в реестре (район без работ) — «Пока пусто», а не «Все объекты идут по графику».
+      if (!o.total) card.appendChild(emptyBlock("common.state.empty_title", "building"));
+      else if (!o.late.length) card.appendChild(emptyBlock("akim.late.empty"));
       else {
         var ul = h("ul", { class: "bk-list akim-obj__list" });
         o.late.slice(0, LATE_VISIBLE).forEach(function (x) {

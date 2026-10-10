@@ -346,6 +346,17 @@ async function shot(page, name, full) {
     }
   }
 
+  {
+    // Реестр объектов пуст (район без работ): не «Все объекты идут по графику», а «Пока пусто».
+    const none = JSON.parse(JSON.stringify(realSummary));
+    Object.assign(none.objects, { available: true, late: [], stale: [], late_count: 0, stale_count: 0, total: 0 });
+    const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru", route: (route) => route.fulfill({ json: none }) });
+    await waitState(page, "ok");
+    const t = await page.textContent(".akim-objects");
+    check("объекты: пустой реестр — «Пока пусто», а не «идут по графику»", t.includes("Пока пусто") && !t.includes("идут по графику"), t);
+    await ctx.close();
+  }
+
   // ───────────── 3б. Тихое обновление ─────────────
   {
     // Второй ответ сервера отличается (+1 новое обращение); третий — нет связи. Экран не мигает скелетоном,

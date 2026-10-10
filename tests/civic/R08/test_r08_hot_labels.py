@@ -3,7 +3,7 @@
 Найдено ночью 10 окт в сборке R01 (d9a8895 + R07 35e6feb): данные R12 data/civic/astana/geo/*.json читаются
 TargetResolver R07 после его готовых подписей (fixtures/targets_demo.json) и стирают их, если у R12 нет названия
 (двор yard-1071933339: name_ru = null) → на экране «Двор или квартал», в ҚАЗ у остановок «Нысан».
-Исправление — patch research/round-14-results/R08/patches/r07_registry_labels.patch (применяет R01 / R07).
+Исправлено у R07 @ 597ec4f (R01 I-01, R10 B-029): свой слой OSM главнее файлов R12. Тест остаётся сторожем.
 Тест работает там, где есть и R07, и данные R12 (общая сборка); в ветке R08 без них — пропуск с причиной.
 """
 import json
@@ -37,4 +37,4 @@ def test_resolver_keeps_curated_labels_when_r12_has_no_name(curated):
         got = resolver.resolve({"kind": t.get("kind") or "area", "id": tid}, None)
         if got and (got.get("label_ru") in GENERIC or got.get("label_kk") in GENERIC):
             lost.append((tid, t["label_ru"], got.get("label_ru"), got.get("label_kk")))
-    assert not lost, f"готовые подписи стёрты данными R12 ({len(lost)}), напр. {lost[:3]} — patch r07_registry_labels.patch"
+    assert not lost, f"готовые подписи стёрты данными R12 ({len(lost)}), напр. {lost[:3]} — нужен R07 не старше 597ec4f (R10 B-029)"
