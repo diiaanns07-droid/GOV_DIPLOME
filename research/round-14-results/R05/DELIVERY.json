@@ -252,7 +252,15 @@
   },
   "app_shell_smoke_r01_head": {
    "status": "PASS",
-   "detail": "15/15 PASS — на R01 13ae790 + proposed_r01_b3.patch, runs/app_b2_smoke.json"
+   "detail": "15/15 PASS — на FINAL-кандидате R01 ef1ef44 + proposed_r01_final.patch, runs/app_b2_smoke.json"
+  },
+  "r01_final_ef1ef44_own_test_with_patch": {
+   "status": "PASS",
+   "detail": "25/25 — r14_b2.cjs R01 на ef1ef44 + файлы R05 f946157 + proposed_r01_final.patch, runs/r01_final_ef1ef44_with_patch.txt"
+  },
+  "final_b033_kk_card": {
+   "status": "PASS",
+   "detail": "«Жанында: Керей Және Жәнібек Хандар көшесі» 1366/375 в FINAL ef1ef44 с R05 f946157 — runs/final_b033_kk.json"
   }
  },
  "screenshots": {
@@ -309,6 +317,11 @@
   "night_2": [
    "screens/kk_street_rule_1366_card.png",
    "screens/toast_429_1366_kk.png"
+  ],
+  "final_candidate": [
+   "screens/final_b033_1366_kk_card.png",
+   "screens/final_b033_375_kk_card.png",
+   "screens/final_kk_resident_card_1366.png"
   ]
  },
  "done_criteria": {
@@ -329,7 +342,7 @@
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: взять web/civic/build3d из f946157 и применить proposed_r01_b3.patch к 13ae790/2b9e837 (INTEGRATION §1.2а); R11: ключи build3d.card.segment_plain, build3d.street.this, common.error.too_many; LOCAL: LOCAL-R05-1/2/3.",
+ "next_step": "R01: в FINAL ef1ef44 заменить web/civic/build3d на f946157 и применить proposed_r01_final.patch (INTEGRATION §1.2б) — закроет R10 B-007/B-008/B-033 и п. 9 R11; R11: ключи build3d.card.segment_plain, build3d.street.this, common.error.too_many; LOCAL: LOCAL-R05-1/2/3.",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -412,5 +425,20 @@
    }
   },
   "r01_patch_for_head": "research/round-14-results/R05/proposed_r01_b3.patch (к 2b9e837 и 13ae790; git apply --check OK)"
+ },
+ "final_candidate": {
+  "r01": "claude/sharp-dijkstra-0t87gl @ ef1ef44 (FINAL-кандидат: R05 169c56b, патч R05 перенесён R01 по смыслу)",
+  "take": "web/civic/build3d/ из f946157 + research/round-14-results/R05/proposed_r01_final.patch (одна строка birge.css: легенда R07 скрыта под карточкой 3D; git apply --check на ef1ef44: OK)",
+  "closes_in_final": [
+   "R10 B-007 (ж/д платформы)",
+   "R10 B-008 (объекты за городом)",
+   "R10 B-033 (улица по-русски в kk-карточке)",
+   "R11 ночь B3 п. 9 (легенда под карточкой)"
+  ],
+  "checked": {
+   "r01_r14_b2": "25/25 PASS — runs/r01_final_ef1ef44_with_patch.txt",
+   "r05_shell_smoke": "15/15 PASS — runs/app_b2_smoke.json",
+   "b033_kk_card": "PASS 1366/375 — runs/final_b033_kk.json"
+  }
  }
 }
