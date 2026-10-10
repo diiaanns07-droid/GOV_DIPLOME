@@ -13,7 +13,7 @@
       "text_only_threshold": 0.4,
       "tuned_on": "dev (R02 paraphrase_pairs_v3)",
       "pairs_sha256": "1dab16b8be4463c525242b795b2f530bd2623032620c521f5e19dbb091611ac2",
-      "tuned_at": "2026-10-10T13:51:22+00:00",
+      "tuned_at": "2026-10-10T13:57:07+00:00",
       "dev_geo": {
         "precision": 0.9053,
         "recall": 0.9101,
@@ -23,7 +23,8 @@
         "precision": 0.8798,
         "recall": 0.9059,
         "f1": 0.8927
-      }
+      },
+      "status": "enabled"
     },
     "e5-onnx": {
       "threshold": null,
@@ -31,7 +32,6 @@
     }
   },
   "prefer": [
-    "e5-onnx",
     "ngram-concept-v1"
   ]
 }

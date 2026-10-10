@@ -81,16 +81,19 @@ class E5Scorer:
         return base if self.alpha >= 1.0 else f"{base}-a{self.alpha:g}"
 
     @classmethod
-    def load(cls, model_dir: Path, *, alpha: float = 1.0, threads: int | None = None) -> "E5Scorer":
+    def load(cls, model_dir: Path, *, alpha: float = 1.0, threads: int | None = None,
+             onnx_name: str | None = None) -> "E5Scorer":
+        """onnx_name — конкретный файл (проверка fp32 против int8); по умолчанию int8, затем fp32."""
         model_dir = Path(model_dir)
         meta_path = model_dir / META_NAME
         if not meta_path.exists():
-            raise E5Unavailable(f"нет {meta_path} (LOCAL-задача export_e5.py)")
-        onnx_file = next((model_dir / n for n in ("model.int8.onnx", "model.onnx") if (model_dir / n).exists()), None)
+            raise E5Unavailable(f"нет {META_NAME} в {model_dir.name}/ (LOCAL-задача export_e5.py)")
+        names = (onnx_name,) if onnx_name else ("model.int8.onnx", "model.onnx")
+        onnx_file = next((model_dir / n for n in names if (model_dir / n).exists()), None)
         if onnx_file is None:
-            raise E5Unavailable(f"нет model.int8.onnx / model.onnx в {model_dir}")
+            raise E5Unavailable(f"нет {' / '.join(names)} в {model_dir.name}/")
         if not (model_dir / "tokenizer.json").exists():
-            raise E5Unavailable(f"нет tokenizer.json в {model_dir}")
+            raise E5Unavailable(f"нет tokenizer.json в {model_dir.name}/")
         try:
             import onnxruntime as ort
             from tokenizers import Tokenizer
@@ -109,7 +112,7 @@ class E5Scorer:
         max_len = int(meta.get("max_length", DEFAULT_MAX_LENGTH))
         tok.enable_truncation(max_length=max_len)
         tok.no_padding()
-        meta.setdefault("file", onnx_file.name)
+        meta["file"] = onnx_file.name
         return cls(session, tok, meta=meta, alpha=alpha)
 
     # ------------------------------------------------------------------ эмбеддинги

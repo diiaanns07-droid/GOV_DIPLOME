@@ -204,14 +204,28 @@ def evaluate(method: str, pairs_path: Path) -> dict:
     return report
 
 
+def meets_target(entry: dict) -> bool:
+    return entry["dev_geo"]["precision"] >= TARGET_PRECISION and entry["dev_geo"]["tp"] > 0
+
+
 def update_config(report: dict) -> dict:
+    """Пороги -> dedup_config.json. Метод, не достигший точности 0.90 на dev, выключается (threshold = null).
+    Порядок prefer — по полноте на dev; запасной путь n-грамм всегда остаётся в списке последним средством."""
     conf = C.load_config()
     for name, entry in report["methods"].items():
+        ok = meets_target(entry)
         conf["methods"].setdefault(name, {}).update({
-            "text_only_threshold": None, **entry["params"], "threshold": entry["threshold"], "tuned_on": "dev (R02 paraphrase_pairs_v3)",
+            "text_only_threshold": None, **entry["params"], "threshold": entry["threshold"] if ok else None,
+            "status": "enabled" if ok else f"disabled: precision < {TARGET_PRECISION} on dev",
+            "tuned_on": "dev (R02 paraphrase_pairs_v3)",
             "pairs_sha256": report["pairs_sha256"], "tuned_at": report["generated_at"],
             "dev_geo": {k: entry["dev_geo"][k] for k in ("precision", "recall", "f1")},
             "test_geo": {k: entry["test_geo"][k] for k in ("precision", "recall", "f1")}})
+    ranked = sorted((name for name, m in conf["methods"].items() if m.get("threshold") is not None),
+                    key=lambda name: -(conf["methods"][name].get("dev_geo") or {}).get("recall", 0.0))
+    if C.FALLBACK_METHOD not in ranked:
+        ranked.append(C.FALLBACK_METHOD)
+    conf["prefer"] = ranked
     C.save_config(conf)
     return conf
 

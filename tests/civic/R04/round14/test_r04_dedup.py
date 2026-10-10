@@ -157,3 +157,19 @@ def test_tuned_config_in_git_is_used():
     dd = get_deduper()
     assert dd.threshold == m["threshold"] and dd.radius_m == 200
     assert isinstance(dd, Deduper)
+
+
+def test_tune_disables_method_below_target_precision(tmp_path, monkeypatch):
+    from ml.civic_dedup import tune
+    path = tmp_path / "dedup_config.json"
+    monkeypatch.setattr(C, "CONFIG_PATH", path)
+    good = {"params": {"alpha": 0.3, "ngram_range": [3, 5], "text_only_threshold": 0.4}, "threshold": 0.2,
+            "dev_geo": {"tp": 10, "precision": 0.91, "recall": 0.8, "f1": 0.85}, "test_geo": {"precision": 0.9, "recall": 0.8, "f1": 0.85}}
+    bad = {"params": {"alpha": 1.0}, "threshold": 0.05,
+           "dev_geo": {"tp": 10, "precision": 0.6, "recall": 1.0, "f1": 0.75}, "test_geo": {"precision": 0.6, "recall": 1.0, "f1": 0.75}}
+    report = {"pairs_sha256": "x", "generated_at": "t", "methods": {C.FALLBACK_METHOD: good, "e5-onnx": bad}}
+    conf = tune.update_config(report)
+    assert conf["methods"]["e5-onnx"]["threshold"] is None and conf["prefer"] == [C.FALLBACK_METHOD]
+    better = dict(bad, dev_geo={"tp": 10, "precision": 0.93, "recall": 0.95, "f1": 0.94})
+    conf = tune.update_config({**report, "methods": {"e5-onnx": better}})
+    assert conf["prefer"] == ["e5-onnx", C.FALLBACK_METHOD] and conf["methods"]["e5-onnx"]["threshold"] == 0.05
