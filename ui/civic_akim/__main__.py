@@ -8,7 +8,23 @@ import sys
 from .summary import AkimError, summary
 
 
+def _safe_console() -> None:
+    """Консоль Windows с кодировкой CP1251 не знает казахских букв (Ә, Ү, Қ…): print падал бы UnicodeEncodeError
+    (как seed-r14-demo у R06, R10 B-028). Недостающие буквы заменяются «?», вывод не прерывается.
+    Полностью по-казахски: PYTHONUTF8=1 или --json (там казахские буквы экранируются и не теряются)."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
+
+def _utf8(stream) -> bool:
+    return (getattr(stream, "encoding", "") or "").lower().replace("-", "") in ("utf8", "utf8sig")
+
+
 def main(argv=None) -> int:
+    _safe_console()
     ap = argparse.ArgumentParser(description="«Картина дня» для акима (R08)")
     ap.add_argument("--date", help="день, например 2026-10-12 (по умолчанию сегодня)")
     ap.add_argument("--district", help="id района: nura, esil, … (по умолчанию весь город)")
@@ -21,7 +37,8 @@ def main(argv=None) -> int:
         print(f"{exc.field}: {exc}", file=sys.stderr)
         return 2
     if args.json:
-        print(json.dumps(s, ensure_ascii=False, indent=1))
+        # Не UTF-8 консоль — экранируем (\u04d9), чтобы JSON остался верным, а не с «?» вместо букв.
+        print(json.dumps(s, ensure_ascii=not _utf8(sys.stdout), indent=1))
         return 0
     k = s["kpi"]
     print(f"Картина дня · {s['date']} · {(s['district'] or {}).get('ru', 'весь город')}"

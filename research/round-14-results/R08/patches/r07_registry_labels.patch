@@ -1,0 +1,16 @@
+diff --git a/ui/civic_heat/targets.py b/ui/civic_heat/targets.py
+index 2cc9f37..465f606 100644
+--- a/ui/civic_heat/targets.py
++++ b/ui/civic_heat/targets.py
+@@ -153,6 +153,11 @@ class TargetResolver:
+     def add_registry(self, items: dict) -> None:
+         for tid, item in (items or {}).items():
+             if isinstance(item, dict) and item.get("geometry"):
++                old = self._registry.get(tid)
++                if old and old.get("label_ru") and old.get("label_kk"):
++                    # Источник, прочитанный позже (данные R12 geo/*.json без названия), не стирает готовую пару
++                    # подписей: иначе «Двор у ул. Коксенгир» → «Двор или квартал» (R08, ночь 10 окт).
++                    item = {**item, "label_ru": old["label_ru"], "label_kk": old["label_kk"]}
+                 self._registry[tid] = item
+         self._cache.clear()
+ 
