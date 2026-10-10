@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-10T19:05:08.910Z",
- "url": "http://127.0.0.1:8805/",
- "r01": "claude/sharp-dijkstra-0t87gl@0a7a346 (FINAL-кандидат night 2c) + proposed_r01_final.patch",
+ "generated_at": "2026-10-10T19:17:37.926Z",
+ "url": "http://127.0.0.1:8804/",
+ "r01": "claude/sharp-dijkstra-0t87gl@4ca9aef (FINAL, ночь 3a) + R05 рабочее дерево + proposed_r01_final.patch",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
@@ -9,10 +9,10 @@
    "detail": {
     "labels": [
      "Проект · 2027",
+     "Проект · 20275",
      "Проект · 2027",
      "Проект · 2027",
-     "Проект · 2027",
-     "Проект · 20275"
+     "Проект · 2027"
     ],
     "catalog_folded_by_shell": true
    }
@@ -56,7 +56,7 @@
     "posts": [
      201
     ],
-    "id": "p-0e1448518e36",
+    "id": "p-2521d6e88ab7",
     "year": 2027
    }
   },
@@ -92,8 +92,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 674.9891918345941,
-     "y": 278.00518380224105
+     "x": 674.9891918415809,
+     "y": 278.0051838224197
     },
     "under": []
    }
@@ -174,6 +174,22 @@
     "bottom": 553,
     "sheetTop": 617,
     "scrollX": false
+   }
+  },
+  {
+   "id": "shell_reload_during_list_request_no_console_error",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "heldBefore": 1,
+     "count": 5,
+     "console_errors": []
+    },
+    "375_kk": {
+     "heldBefore": 1,
+     "count": 5,
+     "console_errors": []
+    }
    }
   },
   {

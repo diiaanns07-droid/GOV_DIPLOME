@@ -189,6 +189,32 @@ try {
   check("phone_ru_akimat_catalog_above_peek_sheet", ph.sheet === "peek" && ph.shown && ph.left >= 0 && ph.right <= 375 && ph.bottom <= ph.sheetTop + 1 && !ph.scrollX, ph);
   await shot(p, "b2_375_ru_akimat.png");
   await p.context().close();
+
+  // 9. R01 I-05: перезагрузка, пока запрос списка проектов в полёте, — в консоли нет «[build3d] … Failed to fetch».
+  const reloads = {};
+  for (const [vp, lang, extra] of [[{ width: 1366, height: 768 }, "ru", {}], [{ width: 375, height: 812 }, "kk", { hasTouch: true, isMobile: true }]]) {
+    const ctx = await browser.newContext(Object.assign({ viewport: vp }, extra));
+    await ctx.addInitScript((l) => { try { localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
+    const q = await ctx.newPage();
+    const own = [];
+    q.on("console", (m) => { if (m.type() === "error" && /build3d|Failed to fetch/.test(m.text())) own.push(m.text().slice(0, 200)); });
+    let hold = true, held = 0;
+    await q.route(/\/api\/civic\/v2\/proposals(\?|$)/, (route) => {
+      if (hold && route.request().method() === "GET") { held++; return; } // не отвечаем: запрос висит до перезагрузки
+      return route.continue();
+    });
+    await q.goto(URL0);
+    for (let i = 0; i < 600 && !held; i++) await q.waitForTimeout(100);
+    const heldBefore = held;
+    hold = false;
+    await q.reload();
+    await q.waitForFunction(() => { const s = window.CivicShell?.build3d?.getState?.(); return s && s.phase === "ready"; }, null, { timeout: 60000 });
+    await q.waitForTimeout(800);
+    const count = await q.evaluate(() => CivicShell.build3d.getState().count);
+    reloads[vp.width + "_" + lang] = { heldBefore, count, console_errors: own };
+    await ctx.close();
+  }
+  check("shell_reload_during_list_request_no_console_error", Object.values(reloads).every((r) => r.heldBefore >= 1 && r.count >= 1 && r.console_errors.length === 0), reloads);
 } catch (e) {
   check("run", false, e.message.split("\n")[0]);
 }

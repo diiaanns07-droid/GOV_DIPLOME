@@ -1,21 +1,21 @@
 {
  "role": "R05",
- "generated_at": "2026-10-10T18:51:24.443Z",
- "tested_sha": "a9d256d3b0b0657ced27333f00b5de9a8bea0426",
- "dirty": false,
+ "generated_at": "2026-10-10T19:28:43.175Z",
+ "tested_sha": "7c6bbcecacc7224b9ba50972cc4d39c162207885",
+ "dirty": true,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
-  "ui_kit_i18n": "выгрузка claude/r14-R11 @ 8451468 (git archive web/civic/ui-kit web/civic/i18n), флаг --kit",
+  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit3",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 6.1,
-  "fps_20_objects_swiftshader": 2.6,
+  "fps_0_objects_swiftshader": 7,
+  "fps_20_objects_swiftshader": 2.4,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 41,
+  "pass": 42,
   "fail": 0,
   "not_run": 1
  },
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.6 кадр/с (без объектов 6.1)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.4 кадр/с (без объектов 7)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -203,7 +203,7 @@
   {
    "id": "r11_21_selected_object_not_under_card_1366_375",
    "status": "PASS",
-   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (187, 287) на экране и не под карточкой"
+   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (188, 287) на экране и не под карточкой"
   },
   {
    "id": "r11_22_23_demo_header_title_and_3d_label",
@@ -330,6 +330,72 @@
     "kk": {
      "text": "Қатарынан тым көп әрекет жасалды. Бір минуттан кейін қайталаңыз.",
      "retry": false
+    }
+   }
+  },
+  {
+   "id": "reload_during_list_request_logs_no_console_error",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "heldBefore": 1,
+     "afterReload": {
+      "errors": [],
+      "count": 4
+     },
+     "net": {
+      "toast": "Не получилось загрузить 3D. Проверьте связь и повторите.\nПовторить",
+      "retry": true
+     },
+     "netErrors": [],
+     "warns": [
+      "[build3d] предложения не загрузились: network"
+     ]
+    },
+    "1366_kk": {
+     "heldBefore": 1,
+     "afterReload": {
+      "errors": [],
+      "count": 4
+     },
+     "net": {
+      "toast": "3D көрініс жүктелмеді. Байланысты тексеріп, қайталаңыз.\nҚайталау",
+      "retry": true
+     },
+     "netErrors": [],
+     "warns": [
+      "[build3d] предложения не загрузились: network"
+     ]
+    },
+    "375_ru": {
+     "heldBefore": 1,
+     "afterReload": {
+      "errors": [],
+      "count": 4
+     },
+     "net": {
+      "toast": "Не получилось загрузить 3D. Проверьте связь и повторите.\nПовторить",
+      "retry": true
+     },
+     "netErrors": [],
+     "warns": [
+      "[build3d] предложения не загрузились: network"
+     ]
+    },
+    "375_kk": {
+     "heldBefore": 1,
+     "afterReload": {
+      "errors": [],
+      "count": 4
+     },
+     "net": {
+      "toast": "3D көрініс жүктелмеді. Байланысты тексеріп, қайталаңыз.\nҚайталау",
+      "retry": true
+     },
+     "netErrors": [],
+     "warns": [
+      "[build3d] предложения не загрузились: network"
+     ]
     }
    }
   },
