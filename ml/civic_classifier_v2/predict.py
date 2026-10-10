@@ -40,6 +40,21 @@ MAX_TEXT = 5000
 MIN_LETTERS = 3
 DEFAULT_DIRS = (ARTIFACTS_DIR / "onnx", ARTIFACTS_DIR / "final")
 ENV_DIR = "BIRGE_CLF_V2_DIR"  # переменная окружения: папка модели вместо путей по умолчанию (для R04/сервера)
+# Потоки onnxruntime. «Все потоки» на гибридном процессоре ноутбука (24 потока, Intel P+E ядра) дали 103 мс на текст,
+# 4 потока — 21 мс; в облаке на 4 vCPU 4 потока тоже лучше одного (11 против 15 мс). Поэтому по умолчанию 4.
+ENV_THREADS = "BIRGE_CLF_V2_THREADS"
+DEFAULT_THREADS = 4
+
+
+def resolve_threads(threads: int | None) -> int:
+    """None -> $BIRGE_CLF_V2_THREADS или min(4, число ядер); 0 -> решает onnxruntime (все потоки)."""
+    if threads is None:
+        env = os.environ.get(ENV_THREADS, "").strip()
+        try:
+            threads = int(env) if env else min(DEFAULT_THREADS, os.cpu_count() or DEFAULT_THREADS)
+        except ValueError:
+            threads = min(DEFAULT_THREADS, os.cpu_count() or DEFAULT_THREADS)
+    return max(0, int(threads))
 
 
 class ModelUnavailable(RuntimeError):
@@ -59,8 +74,9 @@ class _OnnxBackend:
         except ImportError as exc:
             raise ModelUnavailable("не установлен onnxruntime") from exc
         so = ort.SessionOptions()
-        if threads:
-            so.intra_op_num_threads = threads
+        self.threads = resolve_threads(threads)
+        if self.threads:
+            so.intra_op_num_threads = self.threads
         so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         self.session = ort.InferenceSession(str(onnx_file), so, providers=["CPUExecutionProvider"])
         self.input_names = {i.name for i in self.session.get_inputs()}
@@ -193,6 +209,7 @@ class Classifier:
     def info(self) -> dict:
         return {"model_version": self.model_version, "backend": self.backend, "threshold": self.threshold,
                 "human_eval": self.human_eval, "always_review": self.always_review,
+                "threads": getattr(self._backend, "threads", None),
                 "training_data": self.training_data, "labels": list(self.labels)}
 
 

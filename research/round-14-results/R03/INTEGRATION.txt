@@ -43,7 +43,12 @@ R04 (ML-API: POST /api/civic/v2/classify)
 - Модель: папка ml/civic_classifier_v2/artifacts/onnx/ (model.int8.onnx ≈ 266 МБ, tokenizer.json, birge_meta.json)
   после RUN.txt шаг 8 на ноутбуке; другой путь — переменная окружения BIRGE_CLF_V2_DIR.
 - Пакеты на сервере: ml/civic_classifier_v2/requirements-runtime.txt (onnxruntime, tokenizers, numpy). torch не нужен.
-- Потоки: не ставить onnxruntime в 1 поток — при 128 токенах это ~58 мс (облако), со всеми потоками ~33 мс.
+- Потоки: predict по умолчанию берёт min(4, ядер) потоков onnxruntime (переменная BIRGE_CLF_V2_THREADS меняет число).
+  Не ставить «все потоки»: на ноутбуке владельца (24 потока, гибридный Intel) это 103 мс на текст, 4 потока — 21–23 мс.
+  Один поток — 76–92 мс на ноутбуке, 58 мс в облаке при 128 токенах.
+- Модель: итоговая civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (только синтетика, probe_v2 0.828,
+  needs_review всегда true). Брать artifacts/onnx ПОСЛЕ повторного экспорта (RUN.txt шаг 8, per-channel). До этого —
+  artifacts/onnx_per_channel из диагностики Codex (BIRGE_CLF_V2_DIR указать на неё).
 - Потокобезопасно: сессия onnxruntime и tokenizers можно вызывать из нескольких потоков; объект один на процесс.
 - Текст > 5000 символов обрезается, токенов ≤ 128; пусто/меньше 3 букв -> {"category":"other","score":0.0,
   "needs_review":true,"top3":[]} без вызова модели. Не строка -> TypeError (вернуть 400).
