@@ -202,7 +202,7 @@ DELIVERY R01 описывает B2, для B3 — только сообщени�
 | Кандидат B1 (d3c33d9), для истории | весь pytest 1 793 passed / 11 skipped; путь демо B1 15/0 | DELIVERY R01, `BUILD_LOG.md` |
 | B3 (d9a8895): весь pytest | 6 failed (чужие стыки R07/R08/данные) / 2 436 passed / 1 error сбора R08 | `research/handoffs/astana/R01/round14/STATUS.md` «История сборок», R01 @ 13ae790 |
 | **FINAL-кандидат 2b9e837** (ночь 10→11.10) | патчи R15 (5), тесты R10 08392e7, каталог 3D на телефоне, Tab к главной кнопке; pytest 2 535 passed / 21 skipped; 6 failed + 1 error сбора — те же стыки (I-01…I-03, данные R05/R12); путь демо r14_b2 25/0; R15 99/0 | сообщение коммита 2b9e837 и STATUS R01 @ 13ae790 |
-| FINAL-кандидат, повтор R14 | `tests/civic/R15` — **99 passed** за 36 с на голове 13ae790 | запуск R14, Linux, Python 3.13.16 |
+| FINAL-кандидат, повтор R14 | `tests/civic/R15` — **99 passed** за 36 с; весь pytest (`--continue-on-collection-errors`) — **2 535 passed / 21 skipped / 6 failed / 1 error** за 296 с: R07 ×2 (I-01, I-03), R10 точность ×4 (данные R05, R12), ошибка сбора R08 (I-02) — совпадает с R01 | запуск R14 на голове R01 13ae790, Linux, Python 3.13.16 |
 
 ## 11. Модули интерфейса и сервиса
 
@@ -245,6 +245,7 @@ DELIVERY R01 описывает B2, для B3 — только сообщени�
 | R12 @ d13f49a | `python3 -m pytest -q tests/civic/R12/test_civic_geo.py`; `python3 -m engine.civic_geo report` | 29 passed; 954/954 PASS | 29/29; 954/954 |
 | R01 @ bc7c961 | `python3 -B app.py --port 8711 --civic-db <tmp>` | старт OK, см. §10 | — |
 | **R01 B2 @ f54361d** | `python3 -m pytest -q tests` | **2 377 passed, 20 skipped, 1 xfailed** (256 с) | 2 377 / 20 / 1 xfailed |
+| **R01 FINAL-кандидат @ 13ae790** | `python3 -m pytest -q --continue-on-collection-errors tests`; `pytest tests/civic/R15` | 2 535 passed, 21 skipped, 6 failed, 1 error; R15 99 passed | 2 535 / 21 / 6 + 1 (R01) |
 | R01 B2 @ f54361d и d9a8895 | `CIVIC_DEMO=1 python3 -B app.py --port 872x --civic-db <tmp>` | старт OK; v2 37/37 ready (R04, R06, R07, R08, R09, R12, R13) | — |
 
 NOT_RUN в сессиях R14: браузерные проверки ролей (Playwright) — числа из DELIVERY и протоколов R10; Windows `run-city.bat` — выполнен Codex (LOCAL B2, §13). R04 и R13 входят в полный прогон B2 (0 FAIL).
