@@ -4,7 +4,7 @@
  "base_sha": "4bbf456",
  "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
  "code_sha": "c5b98a0 (tests/civic/R15); patches — b892532",
- "tested_sha": "4ca9aef (FINAL-кандидат R01, ветка claude/sharp-dijkstra-0t87gl); раньше 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
+ "tested_sha": "c2318b7 (FINAL-кандидат R01, ветка claude/sharp-dijkstra-0t87gl); раньше 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
  "push_status": "OK — claude/r14-R15 запушена (последний коммит — в финальном сообщении роли)",
  "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
  "changed_paths": [
@@ -115,7 +115,8 @@
   "browser_final_ef1ef44": "PASS — R01 r14_b1 15/15, r14_b2 25/25 со строгой CSP и лимитами; CSP-страницы PASS",
   "r15_on_final_0a7a346": "PASS — 121 passed, 0 xfail (все 16 находок исправлены; копия тестов в сборке R01 совпадает с веткой R15)",
   "browser_final_0a7a346": "PASS — R01 r14_b1 15/15, r14_b2 25/25; CSP-страницы ui-kit/akim/главная PASS",
-  "r15_on_final_4ca9aef": "PASS — 121 passed; браузер B1 15/15, B2 25/25; CSP-страницы PASS"
+  "r15_on_final_4ca9aef": "PASS — 121 passed; браузер B1 15/15, B2 25/25; CSP-страницы PASS",
+  "r15_on_final_c2318b7": "PASS — 121 passed; браузер B1 15/15, B2 25/25; CSP-страницы PASS"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
