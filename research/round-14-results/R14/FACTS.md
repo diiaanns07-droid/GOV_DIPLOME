@@ -102,7 +102,7 @@
 | Правило «похоже» | сходство ≥ порога И (та же цель ИЛИ ≤ 200 м) И не старше 14 дней И статус new/accepted/in_progress | `ml/civic_dedup/search.py`, R04 |
 | Качество на test-парах (с геофильтром) | P 0.880, R 0.906, F1 0.893 | `dedup_config.json` (`test_geo`), R04 @ 243526f — **предварительно, R04 ещё не сдал** |
 | Цепочка classify (без v2): точность на synth_v3 test | 0.784 (v1 одна 0.518; словарь 0.745) — метрика accuracy, не macro-F1 | `research/round-14-results/R04/classify_eval.json`, R04 @ 243526f |
-| Скорость similar | p95 ≈ 10–11 мс по городу, 44 мс в «горячей точке» на 5 000 синтетических жалоб | `ml/civic_dedup/results/bench.json`, R04 |
+| Скорость similar | p95 10.0–12.7 мс по городу, 39.5–45.1 мс в «горячей точке» на 5 000 синтетических жалоб (R04 @ 243526f) | `ml/civic_dedup/results/bench.json`, R04 |
 
 ## 7. Прогноз (R13) — прототип
 
