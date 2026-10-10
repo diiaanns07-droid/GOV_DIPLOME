@@ -131,3 +131,52 @@ def test_loader_and_deduper_use_real_e5_dir(tmp_path, monkeypatch):
     ids = [m.complaint_id for m in dd.find("не убран снег на остановке", recs, point=STOP, now=NOW)]
     assert ids == ["c-rt000001"]
     loader.reset()
+
+
+def test_export_main_orchestration_without_torch(tmp_path, monkeypatch):
+    """export_e5.main() целиком, где шаги с PyTorch заменены крошечной моделью: квантование, сверка токенов,
+    e5_meta.json, скорость, отчёт results/e5_export.json. Сам экспорт из PyTorch — только LOCAL."""
+    from ml.civic_dedup import export_e5 as X
+
+    src = tmp_path / "src"
+    src.mkdir()
+    build_model_dir(src)
+    tk = tokenizers.Tokenizer.from_file(str(src / "tokenizer.json"))
+
+    class HFTok:
+        pad_token_id = 1
+
+        def __call__(self, text, truncation=True, max_length=128):
+            return {"input_ids": tk.encode(text).ids[:max_length]}
+
+        def save_pretrained(self, out):
+            (tmp_path / "out" / "tokenizer.json").write_bytes((src / "tokenizer.json").read_bytes())
+
+    class Cfg:
+        hidden_size = DIM
+        _commit_hash = "abc1234"
+
+    class Model:
+        config = Cfg()
+
+    def fake_export(model, tokenizer, onnx_path, exporter="auto"):
+        onnx_path.write_bytes((src / "model.onnx").read_bytes())
+        return {"exporter": "test", "opset": 17}
+
+    def fake_torch_embed(model, tokenizer, texts, max_length):
+        return E5Scorer.load(src).embed(texts)  # «PyTorch» = fp32-граф той же модели
+
+    monkeypatch.setattr(X, "load_hf", lambda model, revision: (HFTok(), Model()))
+    monkeypatch.setattr(X, "export_fp32", fake_export)
+    monkeypatch.setattr(X, "torch_embed", fake_torch_embed)
+    monkeypatch.setattr(C, "RESULTS_DIR", tmp_path / "results")
+    out = tmp_path / "out"
+    code = X.main(["--out", str(out), "--n", "40", "--max-length", "16"])
+    meta = json.loads((out / META_NAME).read_text(encoding="utf-8"))
+    assert code == 0 and meta["verify"]["pass"] is True
+    assert meta["verify"]["token_ids_equal"] == 1.0 and meta["verify"]["model.onnx"]["cos_min"] > 0.999
+    assert meta["revision"] == "abc1234" and meta["dim"] == DIM and meta["pad_id"] == 1
+    assert {"model.onnx", "model.int8.onnx", "tokenizer.json"} <= set(meta["files"])
+    report = json.loads((tmp_path / "results" / "e5_export.json").read_text(encoding="utf-8"))
+    assert report["verify"]["pass"] and report["speed"]["file"] == "model.int8.onnx"
+    assert E5Scorer.load(out).meta["file"] == "model.int8.onnx"

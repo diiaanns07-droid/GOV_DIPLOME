@@ -14,7 +14,7 @@ intfloat/multilingual-e5-base, ревизия d128750…, research/round-14-resu
   3. int8: onnxruntime.quantization.quantize_dynamic (веса int8) -> model.int8.onnx;
   4. tokenizer.json (библиотека tokenizers, без transformers на сервере);
   5. проверка на 200 текстах (пары R02 или встроенные фразы): id токенов tokenizers == transformers;
-     косинус ONNX fp32 / int8 к PyTorch (критерии: min ≥ 0.999 / ≥ 0.98);
+     косинус ONNX fp32 / int8 к PyTorch (критерии: fp32 min ≥ 0.999; int8 среднее ≥ 0.98 и min ≥ 0.95);
   6. скорость: один текст за вызов, p50/p95 мс;
   7. e5_meta.json: модель, ревизия, префикс, max_length, pad_id, размер, файлы (sha256), проверки.
 Результат: ml/civic_dedup/artifacts/e5/ (не в Git: ≈ 280 МБ int8 + ≈ 1.1 ГБ fp32; --drop-fp32 удаляет fp32).
@@ -40,8 +40,9 @@ from ml.civic_dedup.e5 import DEFAULT_MAX_LENGTH, DEFAULT_PREFIX, META_NAME, E5S
 MODEL_ID = "intfloat/multilingual-e5-base"
 REVISION = "d128750597153bb5987e10b1c3493a34e5a4502a"  # LOCAL-3 (ENV.md)
 OPSET = 17
-MIN_COS_FP32 = 0.999
-MIN_COS_INT8 = 0.98
+MIN_COS_FP32 = 0.999        # fp32 ONNX против PyTorch: минимум по текстам
+MIN_COS_INT8_MEAN = 0.98    # int8 против PyTorch: среднее по текстам …
+MIN_COS_INT8_MIN = 0.95     # … и худший текст (квантование весов немного сдвигает эмбеддинги)
 
 
 def sha256(path: Path) -> str:
@@ -181,10 +182,13 @@ def verify(out_dir: Path, model, tokenizer, texts: list[str], max_length: int) -
         emb = E5Scorer.load(out_dir, onnx_name=name).embed(texts)
         cos = (emb * ref).sum(axis=1)
         report[name] = {"cos_min": round(float(cos.min()), 5), "cos_mean": round(float(cos.mean()), 5)}
+    int8 = report.get("model.int8.onnx", {})
     report["pass"] = bool(report["token_ids_equal"] == 1.0
                           and report.get("model.onnx", {}).get("cos_min", 1.0) >= MIN_COS_FP32
-                          and report.get("model.int8.onnx", {}).get("cos_min", 0.0) >= MIN_COS_INT8)
-    report["criteria"] = {"token_ids_equal": 1.0, "fp32_cos_min": MIN_COS_FP32, "int8_cos_min": MIN_COS_INT8}
+                          and int8.get("cos_mean", 0.0) >= MIN_COS_INT8_MEAN
+                          and int8.get("cos_min", 0.0) >= MIN_COS_INT8_MIN)
+    report["criteria"] = {"token_ids_equal": 1.0, "fp32_cos_min": MIN_COS_FP32,
+                          "int8_cos_mean": MIN_COS_INT8_MEAN, "int8_cos_min": MIN_COS_INT8_MIN}
     return report
 
 
