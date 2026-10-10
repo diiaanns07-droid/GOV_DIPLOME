@@ -239,6 +239,8 @@
  "heat.kind.recycling": "Қайталама шикізат қабылдау пункті",
  "heat.kind.kindergarten": "Балабақша",
  "heat.kind.approximate": "Картадағы аумақ",
+ "heat.too_many": "Қатарынан тым көп әрекет жасалды. Кейінірек қайталаңыз.",
+ "heat.need_login": "Әкімдік қызметкері ретінде кіріп, қайталаңыз.",
  "target.kind.stop": "«{name}» аялдамасы",
  "target.kind.stop_noname": "Атауы жоқ аялдама",
  "target.kind.playground": "Балалар алаңы",

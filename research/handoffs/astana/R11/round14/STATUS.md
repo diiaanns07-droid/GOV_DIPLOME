@@ -15,7 +15,7 @@
   у себя — войдёт, когда R01 возьмёт его поставку).
 - **Кабинет сотрудника на казахском** — готов патч для R12/R01 (`research/round-14-results/R11/patches/R12_staff_i18n.patch`).
 - **Для показа на казахском** — реплики ведущего с точными надписями кнопок: `research/round-14-results/R11/DEMO_PHRASES_KK.md`.
-- Словарь — **742 ключа** ru = kk. Что R01 берёт у R11 в FINAL — INTEGRATION.txt §7.
+- Словарь — **744 ключа** ru = kk. Что R01 берёт у R11 в FINAL — INTEGRATION.txt §7.
 
 ## Вопросы владельцу утром
 1. `cat.sidewalks` по-казахски: сейчас «Жаяу жүргіншілер жолы» (из categories_v2.json координатора) — в сетке категорий
@@ -37,7 +37,7 @@
   (ключи ролей вне словаря), `day_scroll_shots.cjs`, `browser_check.cjs --base`.
 
 ## Проверки (последний круг)
-i18n_tools check (742) — PASS · test_r11_ui_kit.py (16) — PASS · i18n.test.cjs — PASS · витрина и макеты — PASS ·
+i18n_tools check (744) — PASS · test_r11_ui_kit.py (16) — PASS · i18n.test.cjs — PASS · витрина и макеты — PASS ·
 build_shots.cjs на daec72a — 44/44 · ru_kk_same.cjs FULL — 0 русских строк у акимата и жителя ·
 missing_keys.py daec72a — 0 · R12_staff_i18n.patch: тесты редактора R12 78/78, ҚАЗ без русских строк.
 NOT_RUN: реальный телефон (LOCAL-7).
