@@ -227,14 +227,16 @@
     });
   }
 
-  function t(key, params) {
-    var used = lang;
-    var value = lookup(lang, key);
-    if (value === undefined && lang !== FALLBACK) {
+  // t(key, params, langOverride?) — третий аргумент нужен модулям, которые сами знают язык (R07: Birge.i18n.t).
+  function t(key, params, langOverride) {
+    var cur = (langOverride && normalizeLang(langOverride) && dicts[normalizeLang(langOverride)]) ? normalizeLang(langOverride) : lang;
+    var used = cur;
+    var value = lookup(cur, key);
+    if (value === undefined && cur !== FALLBACK) {
       value = lookup(FALLBACK, key);
       used = FALLBACK;
-      noteMissing(lang, key);
-      if (value !== undefined) warnOnce(lang + ":" + key, "нет перевода " + lang + ": " + key + " — показан ru");
+      noteMissing(cur, key);
+      if (value !== undefined) warnOnce(cur + ":" + key, "нет перевода " + cur + ": " + key + " — показан ru");
     }
     if (value === undefined) {
       noteMissing(FALLBACK, key);
@@ -301,8 +303,10 @@
         if (typeof console !== "undefined") console.error(e);
       }
     });
+    // Событие и на document, и на window: модули слушают по-разному (R09 — window).
     if (doc && typeof root.CustomEvent === "function") {
       doc.dispatchEvent(new root.CustomEvent("birge:lang", { detail: { lang: lang } }));
+      if (typeof root.dispatchEvent === "function") root.dispatchEvent(new root.CustomEvent("birge:lang", { detail: { lang: lang } }));
     }
   }
 
@@ -401,9 +405,18 @@
     report: report,
   };
 
+  // Совместимость: модуль R07 (heat.js) ищет переводы в window.Birge.i18n {has(key, lang), t(key, params, lang), lang()}.
+  if (root && typeof root === "object" && doc) {
+    root.Birge = root.Birge || {};
+    if (!root.Birge.i18n) {
+      root.Birge.i18n = { t: t, has: has, lang: function () { return lang; }, setLang: setLang, onChange: onChange, ready: null };
+    }
+  }
+
   // В браузере словари грузятся сразу; <script data-manual> отключает автозапуск.
   var manual = doc && doc.currentScript && doc.currentScript.hasAttribute("data-manual");
   api.ready = doc && !manual ? init() : Promise.resolve(lang);
+  if (root && root.Birge && root.Birge.i18n && root.Birge.i18n.t === t) root.Birge.i18n.ready = api.ready;
 
   return api;
 });

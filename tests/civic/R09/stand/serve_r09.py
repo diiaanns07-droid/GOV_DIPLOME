@@ -196,6 +196,7 @@ class Stand:
 
 class Handler(BaseHTTPRequestHandler):
     stand: Stand = None
+    r11_dir: Path | None = None
 
     def log_message(self, *args):
         pass
@@ -261,6 +262,20 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return None
         file = STATIC.get(path)
+        kit = Handler.r11_dir
+        if kit is not None and (path.startswith("/civic/ui-kit/") or path.startswith("/civic/i18n/")):
+            # Режим --r11: ui-kit и i18n R11 из распакованной папки (только чтение, вне репозитория).
+            candidate = (kit / path.lstrip("/")).resolve()
+            file = candidate if candidate.is_file() and kit.resolve() in candidate.parents else None
+        if path == "/stand/" and kit is not None:
+            html = (STAND / "index.html").read_text(encoding="utf-8")
+            html = html.replace('<link rel="stylesheet" href="/civic/feedback/kit-fallback.css">',
+                                '<link rel="stylesheet" href="/civic/ui-kit/tokens.css">\n'
+                                '  <link rel="stylesheet" href="/civic/ui-kit/components.css">')
+            html = html.replace('<script src="/civic/feedback/categories_v2.js"></script>',
+                                '<script src="/civic/i18n/i18n.js"></script>\n'
+                                '  <script src="/civic/feedback/categories_v2.js"></script>')
+            return self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
         if file is None or not file.exists():
             return self._send(404, b"not found", "text/plain; charset=utf-8")
         ctype = mimetypes.guess_type(str(file))[0] or "application/octet-stream"
@@ -279,9 +294,12 @@ def main(argv=None):
     parser.add_argument("--seed", action="store_true")
     parser.add_argument("--no-ml", action="store_true")
     parser.add_argument("--no-targets", action="store_true")
+    parser.add_argument("--r11", help="папка с web/civic/ui-kit и web/civic/i18n R11 (распакованная ветка R11) — "
+                                      "стенд подключает их вместо kit-fallback.css, как будет в сборке R01")
     args = parser.parse_args(argv)
     db = args.db or str(Path(tempfile.mkdtemp(prefix="r09-stand-")) / "complaints.sqlite3")
     Handler.stand = Stand(db, ml=not args.no_ml, targets=not args.no_targets)
+    Handler.r11_dir = Path(args.r11) if args.r11 else None
     if args.seed:
         Handler.stand.seed()
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)

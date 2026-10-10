@@ -79,12 +79,8 @@
 .bc-cat-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .bc-cat-row__label { font-weight: 600; }
 .bc-change { align-self: flex-start; }
-.bc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.bc-grid__chip { flex-direction: column; justify-content: center; text-align: center; height: auto; min-height: 72px;
-                 padding: 8px 4px; white-space: normal; line-height: 1.15; border-radius: var(--r-m, 12px);
-                 font-size: 15px; hyphens: auto; overflow-wrap: anywhere; }
-.bc-grid__chip[data-suggested="true"] { border-color: var(--c-brand, #176b4a); }
-@media (min-width: 1024px) { .bc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* Сетка категорий — .bk-catgrid ui-kit R11 (своей сетки нет). Подсказанная моделью категория — рамкой бренда. */
+.bk-catgrid > button[data-suggested="true"] { border-color: var(--c-brand, #176b4a); }
 
 .bc-send { margin-top: 4px; }
 .bc-loading { display: flex; flex-direction: column; gap: 8px; }

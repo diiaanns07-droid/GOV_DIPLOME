@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Birge · 3D-превью предложений</title>
+    <!--
+      Демо-страница модуля R05 (раунд 14). Работает без интернета: подложка — настоящие улицы OSM
+      фокус-области Нуры из data/demo-basemap.json (в общей сборке подложку даёт карта R01).
+      Запуск: python -m http.server 8765 -d web  →  http://127.0.0.1:8765/civic/build3d/demo.html
+      Параметры адреса: ?lang=kk · ?role=resident · ?pitch=0|60 · ?bearing=-20 · ?zoom=16.4
+                        ?center=71.398,51.1275 · ?store=local|api|auto · ?reset=1 (стереть сохранённое)
+                        для проверок: ?build_ms=6000 (медленная постройка) · ?three=/нет.js (ошибка загрузки 3D)
+    -->
+    <link rel="stylesheet" href="/vendor/maplibre-gl.css" />
+    <link rel="stylesheet" href="/civic/ui-kit/tokens.css" />
+    <link rel="stylesheet" href="/civic/ui-kit/components.css" />
+    <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      #map {
+        position: relative;
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+      .demo-maptools {
+        position: absolute;
+        z-index: var(--z-map-ui);
+        top: var(--gap-edge);
+        right: var(--gap-edge);
+      }
+      .demo-attrib {
+        position: absolute;
+        z-index: 1;
+        left: var(--s-2);
+        top: var(--s-2);
+        margin: 0;
+        padding: 2px 8px;
+        border-radius: var(--r-s);
+        background: rgba(255, 255, 255, 0.86);
+        font-size: 12px;
+        color: var(--c-text-2);
+      }
+      .demo-badge {
+        font-size: var(--fs-caption);
+      }
+      @media (max-width: 1023px) {
+        .demo-badge {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="bk-app">
+    <header class="bk-header">
+      <div class="bk-header__brand">
+        <span class="bk-header__mark" aria-hidden="true">B</span>
+        <span class="bk-header__brand-text">Birge</span>
+      </div>
+      <span class="bk-tag bk-tag--project demo-badge" data-i18n="common.tag.project">Проект</span>
+      <div class="bk-header__end">
+        <div class="bk-seg" role="group" data-i18n-attr="aria-label:common.role.label" aria-label="Чей вид">
+          <button type="button" data-role="akimat" data-i18n="common.role.akimat">Акимат</button>
+          <button type="button" data-role="resident" data-i18n="common.role.resident">Житель</button>
+        </div>
+        <div class="bk-seg" role="group" data-i18n-attr="aria-label:common.lang.label" aria-label="Язык интерфейса">
+          <button type="button" data-lang="kk" lang="kk">ҚАЗ</button>
+          <button type="button" data-lang="ru" lang="ru">РУС</button>
+        </div>
+      </div>
+    </header>
+    <main id="map" data-i18n-attr="aria-label:common.map.label" aria-label="Карта Астаны">
+      <p class="demo-attrib">© OpenStreetMap contributors</p>
+      <div class="demo-maptools bk-maptools">
+        <button type="button" class="bk-mapbtn" id="demo-3d" aria-pressed="true" data-i18n-attr="aria-label:common.map.view3d;title:common.map.view3d" aria-label="Объёмный вид" title="Объёмный вид">
+          <svg class="ic" aria-hidden="true"><use href="/civic/ui-kit/icons.svg#i-cube"></use></svg>
+        </button>
+      </div>
+    </main>
+
+    <script src="/vendor/maplibre-gl.js"></script>
+    <script src="/civic/i18n/i18n.js"></script>
+    <script src="/civic/build3d/build3d-core.js"></script>
+    <script src="/civic/build3d/build3d-models.js"></script>
+    <script src="/civic/build3d/build3d.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        var q = new URLSearchParams(location.search);
+        var num = function (k, d) {
+          var v = parseFloat(q.get(k));
+          return isFinite(v) ? v : d;
+        };
+        if (q.get("reset") === "1") {
+          try {
+            localStorage.removeItem(CivicBuild3DCore.LOCAL_KEY);
+          } catch (e) {}
+        }
+        var center = (q.get("center") || "71.3995,51.1268").split(",").map(Number);
+        var pitch = num("pitch", 58);
+        var role = q.get("role") === "resident" ? "resident" : "akimat";
+
+        // Подложка без интернета: улицы OSM (именованные — шире), граница Нуры пунктиром.
+        function lines(list, kind) {
+          return list.map(function (coords) {
+            return { type: "Feature", properties: { kind: kind }, geometry: { type: "LineString", coordinates: coords } };
+          });
+        }
+        fetch("/civic/build3d/data/demo-basemap.json")
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (base) {
+            var map = new maplibregl.Map({
+              container: "map",
+              center: center,
+              zoom: num("zoom", 16.4),
+              pitch: pitch,
+              bearing: num("bearing", -18),
+              maxPitch: 70,
+              attributionControl: false,
+              canvasContextAttributes: { antialias: true },
+              style: {
+                version: 8,
+                sources: {
+                  streets: {
+                    type: "geojson",
+                    data: { type: "FeatureCollection", features: lines(base.other, "other").concat(lines(base.named, "named")) },
+                  },
+                  nura: {
+                    type: "geojson",
+                    data: { type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: base.nura } },
+                  },
+                },
+                layers: [
+                  { id: "bg", type: "background", paint: { "background-color": "#e9ece4" } },
+                  { id: "nura-fill", type: "fill", source: "nura", paint: { "fill-color": "#f1f2ec" } },
+                  {
+                    id: "paths",
+                    type: "line",
+                    source: "streets",
+                    filter: ["==", ["get", "kind"], "other"],
+                    layout: { "line-cap": "round", "line-join": "round" },
+                    paint: { "line-color": "#ffffff", "line-width": ["interpolate", ["exponential", 1.6], ["zoom"], 13, 0.5, 18, 5] },
+                  },
+                  {
+                    id: "streets-case",
+                    type: "line",
+                    source: "streets",
+                    filter: ["==", ["get", "kind"], "named"],
+                    layout: { "line-cap": "round", "line-join": "round" },
+                    paint: { "line-color": "#cfd5c8", "line-width": ["interpolate", ["exponential", 1.6], ["zoom"], 13, 2, 18, 22] },
+                  },
+                  {
+                    id: "streets",
+                    type: "line",
+                    source: "streets",
+                    filter: ["==", ["get", "kind"], "named"],
+                    layout: { "line-cap": "round", "line-join": "round" },
+                    paint: { "line-color": "#ffffff", "line-width": ["interpolate", ["exponential", 1.6], ["zoom"], 13, 1.2, 18, 18] },
+                  },
+                  {
+                    id: "nura-line",
+                    type: "line",
+                    source: "nura",
+                    paint: { "line-color": "#176b4a", "line-width": 2, "line-dasharray": [2, 2], "line-opacity": 0.6 },
+                  },
+                ],
+              },
+            });
+            window.__map = map;
+            map.on("load", function () {
+              var handle = CivicBuild3D.mount({
+                map: map,
+                role: role,
+                store: q.get("store") || "auto",
+                buildMs: num("build_ms", 0) || undefined, // только для проверок: замедлить анимацию постройки
+                threeUrl: q.get("three") || undefined, // только для проверок: состояние «не загрузилось»
+                onToolChange: function (active, kind) {
+                  document.body.setAttribute("data-tool", active ? kind : "");
+                },
+              });
+              window.__b3d = handle;
+              document.querySelectorAll(".bk-seg [data-role]").forEach(function (b) {
+                b.setAttribute("aria-pressed", b.getAttribute("data-role") === role ? "true" : "false");
+                b.addEventListener("click", function () {
+                  q.set("role", b.getAttribute("data-role"));
+                  location.search = q.toString();
+                });
+              });
+            });
+            var btn3d = document.getElementById("demo-3d");
+            btn3d.setAttribute("aria-pressed", pitch > 0 ? "true" : "false");
+            btn3d.addEventListener("click", function () {
+              var on = map.getPitch() < 1;
+              map.easeTo({ pitch: on ? 58 : 0, bearing: on ? -18 : 0, duration: 600 });
+              btn3d.setAttribute("aria-pressed", on ? "true" : "false");
+            });
+          });
+
+        // ҚАЗ / РУС: выбор запоминает BirgeI18n.
+        function syncLang() {
+          var l = BirgeI18n.getLang();
+          document.querySelectorAll("[data-lang]").forEach(function (b) {
+            b.setAttribute("aria-pressed", b.getAttribute("data-lang") === l ? "true" : "false");
+          });
+          BirgeI18n.apply(document);
+        }
+        BirgeI18n.ready.then(syncLang);
+        BirgeI18n.onChange(syncLang);
+        document.querySelectorAll("[data-lang]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            BirgeI18n.setLang(b.getAttribute("data-lang"));
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

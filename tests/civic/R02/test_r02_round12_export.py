@@ -182,16 +182,16 @@ def test_existing_older_schema_with_data_migrates_without_loss(tmp_path, monkeyp
     before = all_rows(path)
     with pytest.raises(Exception, match="миграц"):
         CivicService(path, auto_migrate=False)  # старая схема не используется молча
-    assert Database(path).migrate() == [4, 5]
+    assert Database(path).migrate() == [4, 5, 6]  # раунд 14: миграция 6 R06 (как в tests/civic/R06/store)
     after = all_rows(path)
-    assert after == before  # данные и история не потеряны и не переписаны
+    assert {k: v for k, v in after.items() if k in before} == before  # данные и история не потеряны и не переписаны
     service = CivicService(path, auto_migrate=False)
     candidates = service.objects.list_candidates("ast-old")["items"]
     assert len(candidates) == 1 and candidates[0]["resolution"] is None
     assert Database(path).migrate() == []
     conn = sqlite3.connect(path)
     try:
-        assert [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")] == [1, 2, 3, 4, 5]
+        assert [r[0] for r in conn.execute("SELECT version FROM civic_schema_migrations ORDER BY 1")] == [1, 2, 3, 4, 5, 6]
     finally:
         conn.close()
 

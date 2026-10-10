@@ -280,8 +280,10 @@
       map.addLayer({ id: "bc-line", type: "line", source: SRC, filter: ["==", ["geometry-type"], "LineString"],
                      layout: { "line-cap": "round", "line-join": "round" },
                      paint: { "line-color": "#176b4a", "line-width": 7 } });
+      // Цель (остановка, объект) — крупный круг 11 px с белой обводкой, точка нажатия — маленькая 6 px поверх.
+      // coalesce: без свойства pick выражение ["get","pick"] даёт null и предупреждение MapLibre.
       map.addLayer({ id: "bc-point", type: "circle", source: SRC, filter: ["==", ["geometry-type"], "Point"],
-                     paint: { "circle-radius": ["case", ["get", "pick"], 6, 11], "circle-color": "#176b4a",
+                     paint: { "circle-radius": ["case", ["coalesce", ["get", "pick"], false], 6, 11], "circle-color": "#176b4a",
                               "circle-stroke-color": "#ffffff", "circle-stroke-width": 3 } });
     }
 
@@ -309,7 +311,7 @@
       highlight: function (target, geometry, point) {
         var features = [];
         if (geometry) features.push({ type: "Feature", geometry: geometry,
-                                      properties: { approximate: !!(target && target.approximate) } });
+                                      properties: { approximate: !!(target && target.approximate), pick: false } });
         if (point) features.push({ type: "Feature", geometry: { type: "Point", coordinates: point },
                                    properties: { pick: true } });
         current = { type: "FeatureCollection", features: features };
@@ -553,7 +555,8 @@
             state.categorySource === "model" ? t("complaint.step3.suggested") : t("complaint.step3.chosen")),
           h("button", { "class": "bk-chip", type: "button", "aria-pressed": "true",
                         onclick: function () { state.gridOpen = true; renderCategory(); } },
-            [icon(c ? c.icon : "dots"), h("span", {}, categoryLabel(state.category)), h("span", { "aria-hidden": "true" }, " ✓")]),
+            // Галочку у выбранного чипа рисует ui-kit (.bk-chip[aria-pressed=true]::before) — своей не добавляем.
+            [icon(c ? c.icon : "dots"), h("span", {}, categoryLabel(state.category))]),
           h("button", { "class": "bk-btn bk-btn--ghost bc-change", type: "button",
                         onclick: function () { state.gridOpen = true; renderCategory(); } }, t("complaint.step3.change"))
         ]));
@@ -567,9 +570,10 @@
         return;
       }
       box.appendChild(h("p", { "class": "bc-label", id: "bc-cat-title" }, t("complaint.step3.choose")));
-      var grid = h("div", { "class": "bc-grid", role: "group", "aria-labelledby": "bc-cat-title" });
+      // Сетка ui-kit R11: иконка слева + подпись, колонки ≥ 150 px (2 на телефоне), казахские слова не рвутся.
+      var grid = h("div", { "class": "bk-catgrid", role: "group", "aria-labelledby": "bc-cat-title" });
       categories().forEach(function (c) {
-        grid.appendChild(h("button", { "class": "bk-chip bc-grid__chip", type: "button",
+        grid.appendChild(h("button", { type: "button",
                                        "aria-pressed": state.category === c.id ? "true" : "false",
                                        "data-suggested": c.id === state.suggestion ? "true" : null,
                                        onclick: function () { pickCategory(c.id); } },
@@ -908,6 +912,10 @@
 
     function onLang() { relabel(); }
     window.addEventListener("birge:lang", onLang);
+    // Словари R11 грузятся асинхронно: после загрузки перерисовываем тексты из общего словаря.
+    if (window.BirgeI18n && window.BirgeI18n.ready && typeof window.BirgeI18n.ready.then === "function") {
+      window.BirgeI18n.ready.then(onLang, function () { /* остаётся запасной словарь R09 */ });
+    }
     if (mql && mql.addEventListener) mql.addEventListener("change", render);
     relabel();
 

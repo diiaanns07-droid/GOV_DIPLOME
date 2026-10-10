@@ -1,0 +1,109 @@
+/*
+ * R06 · предложения и этапы (раунд 14). Только раскладка поверх ui-kit R11:
+ * цвета, шрифт, кнопки, метки, полоса этапов — из web/civic/ui-kit/ (tokens.css, components.css).
+ */
+
+/* Карточка не шире правой панели и не уже телефона. */
+.r06-card {
+  width: 100%;
+  max-width: var(--panel-w, 400px);
+  min-width: 0;
+}
+.r06-card .bk-card__title {
+  overflow-wrap: anywhere; /* длинные казахские названия переносятся, а не обрезаются */
+}
+
+/* «За» / «Против»: две крупные кнопки в ряд, на узком экране — тоже в ряд (по 50 %). */
+.r06-vote {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+}
+.r06-vote__btn {
+  /* Две строки в обеих кнопках одинаково: «иконка + слово» сверху, крупное число снизу.
+     Так «За» и «Против» (и длинные «Жақтаймын» / «Қарсымын») всегда стоят ровно. */
+  display: grid;
+  grid-template-rows: auto auto;
+  justify-items: center;
+  align-content: center;
+  gap: var(--s-1);
+  min-height: 72px;
+  border-width: 2px;
+  text-align: center;
+}
+.r06-vote__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+.r06-vote__btn .bk-btn__count {
+  font-size: var(--fs-title);
+  line-height: 1;
+}
+/* Выбранный голос виден не только цветом: рамка толще, текст «Вы проголосовали…» под кнопками. */
+.r06-vote__btn[data-value="1"][aria-pressed="true"] {
+  border-color: var(--c-brand);
+  background: var(--c-brand-soft);
+  box-shadow: inset 0 0 0 2px var(--c-brand);
+}
+.r06-vote__btn[data-value="-1"][aria-pressed="true"] {
+  border-color: var(--c-danger);
+  background: var(--c-danger-soft);
+  box-shadow: inset 0 0 0 2px var(--c-danger);
+}
+.r06-vote__btn[aria-busy="true"] {
+  cursor: progress;
+  opacity: 0.7;
+}
+.r06-vote__note {
+  margin: 0;
+}
+
+/* Полоса «за/против» — доля голосов, подписи цифрами рядом (цвет не один). */
+.r06-share {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--c-line);
+}
+.r06-share__up {
+  background: var(--c-brand);
+}
+.r06-share__down {
+  background: var(--c-danger);
+}
+
+.r06-stages {
+  display: grid;
+  gap: var(--s-2);
+}
+.r06-stages .bk-stages__caption {
+  margin: 0;
+}
+.r06-dates {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+
+/* Состояние без этапа: серый текст вместо полосы. */
+.r06-stage-unknown {
+  margin: 0;
+  color: var(--c-text-2);
+}
+
+/* Блок «Этап работ» в кабинете сотрудника (stage-editor.js). */
+.r06-stage-editor__fields {
+  display: grid;
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.r06-stage-editor__fields .bk-btn {
+  justify-self: start;
+}

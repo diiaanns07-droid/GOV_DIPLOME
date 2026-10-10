@@ -65,6 +65,42 @@
       }, () => { STREETS.state = "unavailable"; STREETS.promise = null; });
     return STREETS.promise;
   }
+  // R12 (раунд 14): привязка к улицам и объектам OSM — функции engine/civic_geo, маршруты подключает R01
+  // под /api/civic/v2 (research/round-14-results/R12/INTEGRATION.txt). Ответ с ошибкой -> Error с .status/.code/.message.
+  function geoClient(prefix) {
+    const get = (path, params) => fetch(prefix + path + "?" + new URLSearchParams(params), { credentials: "same-origin", headers: { Accept: "application/json" } })
+      .then(async (r) => {
+        let body = null;
+        try { body = await r.json(); } catch (e) { body = null; }
+        if (r.ok && body) return body;
+        const err = new Error((body && body.error && body.error.message) || "HTTP " + r.status);
+        err.status = r.status; err.code = body && body.error ? body.error.code : null;
+        throw err;
+      });
+    const kindOf = (kind) => (kind === "foot" ? { kind: "foot" } : { kind: "road" });
+    return {
+      snap: (p, kind) => get("/street-snap", Object.assign({ lon: p[0], lat: p[1] }, kindOf(kind))),
+      segment: (a, b, kind) => get("/street-segment", Object.assign({ from: a.join(","), to: b.join(",") }, kindOf(kind))),
+      near: (p) => get("/objects-near", { lon: p[0], lat: p[1] }),
+      yard: (p) => get("/yard", { lon: p[0], lat: p[1] }),
+    };
+  }
+  // R11 i18n (раунд 14): новые строки R12 идут через ключи BirgeI18n, если словарь подключён и ключ в нём есть
+  // (ключи и черновик kk — research/round-14-results/R12/INTEGRATION.txt §7); иначе — русский текст как раньше.
+  function tr(key, ru, params) {
+    const B = typeof window !== "undefined" ? window.BirgeI18n : null;
+    if (B && typeof B.t === "function" && typeof B.has === "function" && (B.has(key) || B.has(key, "ru"))) return B.t(key, params);
+    return params ? String(ru).replace(/\{(\w+)\}/g, (w, n) => (params[n] == null ? w : String(params[n]))) : ru;
+  }
+  const metres = (n) => Math.round(Number(n) || 0).toLocaleString("ru-RU");  // «1 666», как просит UX_BRIEF
+  // Понятный текст ошибки привязки (без «Ошибка:» и без технических слов).
+  function geoErrorText(err) {
+    if (!err) return "Не получилось. Повторите.";
+    if (err.status === 404 || err.status === 405) return tr("editor.geo.not_wired", "Привязка к улицам на этом сервере не подключена. Отметьте точку или площадь.");
+    if (err.status === 400 && err.message && !/^HTTP/.test(err.message)) return err.message;
+    if (err.status >= 500) return "Сервер не ответил. Повторите через минуту.";
+    return "Нет связи с сервером. Проверьте подключение и повторите.";
+  }
   // Synchronous view of "is an editor drawing on the map right now" for neighbours (R03 click/hover, R01 Escape):
   // window.CivicEditor.isDrawing() / activeTool(), and <html data-civic-editor-tool="point|line|area|edit">.
   // The 'civic-editor:tool' event carries the same state; the attribute and getters do not depend on listener order.
@@ -133,6 +169,9 @@
     const SRC = P + "geom", LAYERS = [P + "geom-line", P + "geom-pt", P + "geom-fill"];
     const SRC_STREET = P + "street", LAYER_STREET = P + "street-box";  // dashed frame of a found street (approximate)
     const streetsUrl = typeof o.streetsUrl === "string" ? o.streetsUrl : "/civic/map/streets.json";
+    // R12: o.geo === false — без привязки (инструмент «Участок улицы» выключен); o.geo = {snap, segment, near, yard} — свой клиент.
+    const geoApi = o.geo === false ? null : o.geo && typeof o.geo.segment === "function" ? o.geo
+      : geoClient(typeof o.geoPrefix === "string" ? o.geoPrefix : "/api/civic/v2");
     const S = {
       epoch: 0, alive: true, session: null, view: "loading", alert: null,
       list: { items: [], next: null, filter: "draft", mine: false, loaded: false, loading: false },
@@ -140,6 +179,7 @@
       errors: {}, warnings: {}, server: {}, touched: {}, tried: false, busy: null, confirm: null, reason: "", reasonErr: null,
       conflict: null, reauth: false, uncertain: null, createKey: null, dup: null, restore: null, tool: null, cursor: "", preview: false, publicCopy: null,
       notice: null, logoutAsk: false, lastDirty: false, mapOn: false, diffOpen: true,
+      near: null, linked: null, segKind: "road",
     };
     const F = {};            // field key -> {control, err, warn}
     const V = {};            // edit view containers
@@ -649,7 +689,7 @@
     function buildEditor() {
       const it = S.item, acts = C.allowedActions(it, S.session), locked = C.isOriginalLocked(it);
       for (const k of Object.keys(F)) delete F[k];
-      for (const k of ["reauth", "restore", "conflict", "srcreview", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history", "rare"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
+      for (const k of ["reauth", "restore", "conflict", "srcreview", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history", "rare", "stage"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
       V.msg.setAttribute("class", "civic-r04-slot-msg");
       const meta = it
         ? el("p", { class: "civic-r04-meta" }, [badge(C.PUBLICATION[it.publication] || String(it.publication), "pub-" + it.publication),
@@ -727,7 +767,10 @@
         el("div", { class: "civic-r04-bar" }, [
           btn("← Все записи", () => showList(true), "link", "back"),
           el("h3", { id: P + "edit-h", tabindex: "-1", "data-fk": "edit-h" }, it ? it.title || "(без названия)" : "Новый объект"), meta]),
-        V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.preview, V.history, review, actions].filter(Boolean)));
+        V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.stage, V.preview, V.history, review, actions].filter(Boolean)));
+      // R06 раунд 14: этап работ — отдельный блок со своей кнопкой и ревизией (web/civic/proposals/stage-editor.js),
+      // форма и сохранение редактора не меняются. Только у сохранённой записи: у новой ещё нет ID.
+      if (it && window.BirgeStageEditor) window.BirgeStageEditor.mount(V.stage, { objectId: it.id, readOnly: !acts.edit });
       renderGeometry(); renderSources(); renderSchedNote(); renderSrcReview(); renderReauth(); renderRestore(); renderConflict(); renderPreview(); renderHistory();
       renderDiff(); renderReason(); renderButtons();
       V.msg.replaceChildren(...[msgBlock(S.notice)].filter(Boolean));
@@ -799,8 +842,12 @@
       edit: "Щёлкните по вершине на карте (или выберите её в списке), затем щёлкните, куда её перенести. Стрелки — сдвиг на ≈5 м, Delete — удалить вершину, Ctrl+Z — отменить шаг, Enter — готово, Esc — отмена без изменений.",
       point: "Щёлкните по карте в месте работ. Esc — отмена.",
       line: "Щёлкайте по карте вдоль участка улицы (не обязательно по каждому повороту). «Готово» — от двух точек. Esc — отмена.",
+      segment: "Нажмите на улицу в начале участка — точка встанет на ось улицы. Затем нажмите на конец участка: линия пройдёт точно по улице. Esc — отмена.",
+      yard: "Нажмите внутри двора на карте — выделится весь двор по карте OSM. Esc — отмена.",
       area: "Щёлкайте по карте по углам двора, сквера или площадки — по порядку обхода. «Готово» — от трёх точек, контур замкнётся сам. Esc — отмена.",
     };
+    const TOOL_KEYS = { segment: "editor.seg.hint", yard: "editor.yard.hint" };
+    const toolText = (mode) => (TOOL_KEYS[mode] ? tr(TOOL_KEYS[mode], TOOL_TEXT[mode]) : TOOL_TEXT[mode]);
     function placeNow() { return S.form.place || C.placeOf(S.form.geometry, S.form.geometry_precision); }
     function setPlace(v) {
       S.form.place = v;
@@ -842,9 +889,12 @@
       if (!ro && !t) kids.push(streetSearch());
       const drawRow = (withMarkTools) => el("p", { class: "civic-r04-row-btns" }, [
         btn(g && g.type === "Point" && withMarkTools ? "Поставить точку заново" : "Точка", () => startTool("point"), "", "tool-point", { disabled: (!map && !mapGetter) || ro, title: "Объект в одном месте: здание, остановка, перекрёсток" }),
-        btn(g && g.type === "LineString" && withMarkTools ? "Отметить линию заново" : "Линия (участок улицы)", () => startTool("line"), "", "tool-line", { disabled: (!map && !mapGetter) || ro, title: "Ремонт вдоль улицы или тротуара" }),
-        btn(g && g.type === "Polygon" && withMarkTools ? "Отметить площадь заново" : "Площадь (двор, сквер)", () => startTool("area"), "", "tool-area", { disabled: (!map && !mapGetter) || ro, title: "Благоустройство двора, сквера, площадки" }),
-        g && withMarkTools && g.type !== "Point" ? btn("Изменить вершины", () => startTool("edit"), "", "tool-edit", { disabled: (!map && !mapGetter) || ro, title: "Передвинуть, удалить вершины; отменить шаг" }) : null,
+        // R12: линии — только по улице (два нажатия), «от руки» линию больше не рисуем (CONTRACT §8.1).
+        btn(g && g.type === "LineString" && withMarkTools ? tr("editor.tool.segment_again", "Выбрать участок улицы заново") : tr("editor.tool.segment", "Участок улицы"), () => startTool("segment"), "", "tool-segment",
+          { disabled: (!map && !mapGetter) || ro || !geoApi, title: geoApi ? "Ремонт или перекрытие вдоль улицы: нажмите на начало и на конец участка" : "Привязка к улицам не подключена" }),
+        btn(tr("editor.tool.yard", "Выбрать двор"), () => startTool("yard"), "", "tool-yard", { disabled: (!map && !mapGetter) || ro || !geoApi, title: "Двор целиком по карте OSM" }),
+        btn(g && g.type === "Polygon" && withMarkTools ? "Отметить площадь заново" : tr("editor.tool.area_corners", "Площадь по углам"), () => startTool("area"), "", "tool-area", { disabled: (!map && !mapGetter) || ro, title: "Сквер, площадка: углы по порядку обхода" }),
+        g && withMarkTools && g.type === "Polygon" ? btn("Изменить вершины", () => startTool("edit"), "", "tool-edit", { disabled: (!map && !mapGetter) || ro, title: "Передвинуть, удалить вершины; отменить шаг" }) : null,
         g && withMarkTools ? btn("Показать на карте", fitToGeometry, "ghost", "geo-show", { disabled: !map }) : null,
         g && withMarkTools ? btn("Удалить отметку", () => { setGeometry(null); say("Отметка удалена."); focusKey("tool-point"); }, "danger", "geo-remove", { disabled: ro }) : null,
       ].filter(Boolean));
@@ -873,6 +923,28 @@
           btn("Отменить шаг", undoEdit, "", "tool-undo", { disabled: !t.undo.length }),
           btn("Удалить вершину", deleteVertex, "", "vx-del", { disabled: t.selected === null || t.vertices.length <= min }),
           btn("Отмена", () => { closeTool(); focusKey("tool-edit"); }, "ghost", "tool-cancel")]));
+      } else if (t && (t.mode === "segment" || t.mode === "yard")) {
+        kids.push(el("p", { class: "civic-r04-tool", role: "status" }, toolText(t.mode)));
+        if (t.mode === "segment") {
+          // Смена вида отменяет и ответ, который ещё в пути (t.seq++), — иначе начало «прилипнет» к старому виду.
+          const kindBtn = (k, label) => btn(label, () => { if (S.segKind !== k) { S.segKind = k; t.seq++; t.pending = false; t.start = null; t.result = null; t.problem = null; renderGeometry(); syncMap(); } }, S.segKind === k ? "primary" : "", "seg-kind-" + k, { "aria-pressed": String(S.segKind === k) });
+          kids.push(el("p", { class: "civic-r04-row-btns", role: "group", "aria-label": tr("editor.seg.kind.label", "Что ремонтируют") },
+            [kindBtn("road", tr("editor.seg.kind.road", "Проезжая часть")), kindBtn("foot", tr("editor.seg.kind.foot", "Тротуар"))]));
+          const step = t.pending ? tr("editor.seg.pending", "Строим участок по улице…") : t.result
+            ? tr("editor.seg.done", "Участок: {street}, {n} м. Можно нажать на другой конец — участок перестроится.", { street: t.result.street_ru || tr("editor.seg.noname", "улица без названия"), n: metres(t.result.length_m) })
+            : t.start ? tr("editor.seg.start", "Начало: {street}. Теперь нажмите на конец участка.", { street: t.start.street_ru || t.start.label_ru })
+              : tr("editor.seg.first", "Нажмите на начало участка.");
+          kids.push(el("p", { class: "civic-r04-step", "data-fk": "seg-step", "aria-live": "polite" }, step));
+          if (t.result && !t.result.same_street && t.result.names && t.result.names.length > 1)
+            kids.push(el("p", { class: "civic-r04-warn" }, tr("editor.seg.many_streets", "Участок проходит по нескольким улицам: {list}. Проверьте концы.", { list: t.result.names.join(", ") })));
+        } else {
+          kids.push(el("p", { class: "civic-r04-step", "data-fk": "yard-step", "aria-live": "polite" }, t.pending ? tr("editor.yard.pending", "Ищем двор…") : t.yard ? tr("editor.yard.picked", "Выбран: {name}.", { name: t.yard.label_ru }) : tr("editor.yard.first", "Нажмите внутри двора.")));
+        }
+        if (t.problem) kids.push(el("p", { class: "civic-r04-err", role: "alert" }, t.problem));
+        kids.push(el("p", { class: "civic-r04-row-btns" }, [
+          btn("Готово", finishShape, "primary", "tool-done", { disabled: !(t.mode === "segment" ? t.result : t.yard) || t.pending }),
+          t.mode === "segment" ? btn(tr("editor.seg.restart", "Начать заново"), () => { t.start = null; t.result = null; t.problem = null; t.seq++; t.pending = false; renderGeometry(); syncMap(); }, "", "tool-undo", { disabled: !t.start }) : null,
+          btn("Отмена", () => { closeTool(); focusKey("tool-point"); }, "ghost", "tool-cancel")].filter(Boolean)));
       } else if (t) {
         const n = t.vertices.length;
         const need = t.mode === "area" ? 3 : 2;
@@ -885,7 +957,14 @@
       } else {
         kids.push(el("p", { class: "civic-r04-help" }, g ? "Отмечено: " + C.describeGeometry(g) + "." : "Выберите, как отметить место:"));
         kids.push(drawRow(true));
-        kids.push(el("p", { class: "civic-r04-help" }, "Нарисованная линия — только отметка для жителей: она не привязывается к улицам и не меняет маршруты симулятора."));
+        kids.push(el("p", { class: "civic-r04-help" }, "Участок улицы строится по карте OSM: линия идёт точно по улице и не режет дома. Отметка не меняет маршруты симулятора."));
+        const near = nearFor(g);
+        if (near && !ro) kids.push(el("div", { class: "civic-r04-near", "data-fk": "near" }, [
+          el("p", {}, tr("editor.near.title", "Рядом есть объект на карте OSM:")),
+          el("ul", { class: "civic-r04-near-list" }, near.map((x, i) => el("li", {}, btn(x.label_ru + " — " + Math.round(x.distance_m) + " м", () => linkObject(x), "link", "near-" + i)))),
+          el("p", { class: "civic-r04-muted" }, "Нажмите, чтобы поставить точку точно на этот объект. © участники OpenStreetMap.")]));
+        if (S.linked && g && g.type === "Point" && S.linked.point[0] === g.coordinates[0] && S.linked.point[1] === g.coordinates[1])
+          kids.push(el("p", { class: "civic-r04-ok", "data-fk": "linked" }, tr("editor.near.linked", "Точка стоит на объекте OSM: {name}.", { name: S.linked.label_ru })));
       }
       // 3) Manual coordinates for specialists (collapsed by default).
       const pt = g && g.type === "Point" ? g.coordinates : null;
@@ -992,6 +1071,8 @@
     }
     function toolGeometry() {
       const t = S.tool, v = t.vertices;
+      if (t.mode === "segment") return t.result ? t.result.geometry : t.start ? { type: "Point", coordinates: t.start.point } : null;
+      if (t.mode === "yard") return t.yard ? t.yard.geometry : null;
       if (!v.length) return null;
       if (t.mode === "edit") return C.geometryFromVertices(t.type, v);
       if (t.mode === "point" || v.length === 1) return { type: "Point", coordinates: v[v.length - 1] };
@@ -1003,7 +1084,9 @@
       const features = [];
       if (g) {
         features.push({ type: "Feature", geometry: g, properties: {} });
-        const corners = S.tool && S.tool.mode === "edit" ? S.tool.vertices : g.type !== "Point" ? C.positionsOf(g) : [];
+        // У линии по улице десятки вершин OSM — показываем только начало и конец участка.
+        const corners = S.tool && S.tool.mode === "edit" ? S.tool.vertices : g.type === "LineString" ? [g.coordinates[0], g.coordinates[g.coordinates.length - 1]]
+          : g.type === "Polygon" && !(S.tool && S.tool.mode === "yard") ? C.positionsOf(g) : [];
         corners.forEach((p, i) => features.push({ type: "Feature", geometry: { type: "Point", coordinates: p },
           properties: { vertex: true, selected: !!(S.tool && S.tool.mode === "edit" && S.tool.selected === i) } }));
       }
@@ -1065,7 +1148,7 @@
       closeTool();
       const prevPlace = S.form.place;
       if (placeNow() === "unknown") S.form.place = "approximate";
-      S.tool = { mode, vertices: [], problem: null, dblZoom: false, prevPlace };
+      S.tool = { mode, vertices: [], problem: null, dblZoom: false, prevPlace, seq: 0, start: null, result: null, yard: null, pending: false };
       if (mode === "edit") Object.assign(S.tool, { type: S.form.geometry.type, vertices: C.editableVertices(S.form.geometry), selected: null, undo: [] });
       // A double click while drawing must not zoom the map (and must not add a zero-length segment).
       try { if (map.doubleClickZoom && map.doubleClickZoom.isEnabled()) { map.doubleClickZoom.disable(); S.tool.dblZoom = true; } } catch (e) { /* optional API */ }
@@ -1075,7 +1158,7 @@
       announceTool(true, mode);
       renderGeometry(); syncMap();
       focusKey("tool-cancel");
-      say(TOOL_TEXT[mode]);
+      say(toolText(mode));
     }
     function onMapClick(e) {
       if (!S.tool || !e || !e.lngLat) return;
@@ -1087,8 +1170,11 @@
         setGeometry({ type: "Point", coordinates: p });
         say("Точка поставлена: " + p[1].toFixed(5) + ", " + p[0].toFixed(5) + ". Подтвердите расположение.");
         focusKey("geometry_confirmed");
+        suggestObjects(p);
         return;
       }
+      if (S.tool.mode === "segment") { segmentClick(p); return; }
+      if (S.tool.mode === "yard") { yardClick(p); return; }
       const last = S.tool.vertices[S.tool.vertices.length - 1];
       if (last && last[0] === p[0] && last[1] === p[1]) return;  // a double click adds no zero-length segment
       S.tool.vertices.push(p);
@@ -1096,9 +1182,88 @@
       renderGeometry(); syncMap();
       say("Точек: " + S.tool.vertices.length + ".");
     }
+    // ----- R12: участок улицы двумя нажатиями, двор выбором полигона, точка -> объект OSM -----
+    // Каждый ответ сервера применяется, только если инструмент тот же и после запроса не было нового нажатия.
+    async function segmentClick(p) {
+      const t = S.tool, my = ++t.seq;
+      t.problem = null; t.pending = true; renderGeometry();
+      try {
+        if (!t.start) {
+          const r = await geoApi.snap(p, S.segKind);
+          if (S.tool !== t || t.seq !== my) return;
+          t.start = r;
+          say("Начало участка: " + (r.street_ru || r.label_ru) + ". Нажмите на конец участка.");
+        } else {
+          const r = await geoApi.segment(t.start.point, p, S.segKind);
+          if (S.tool !== t || t.seq !== my) return;
+          t.result = r;
+          say("Участок построен по улице: " + (r.street_ru || "без названия") + ", " + metres(r.length_m) + " м. «Готово» — сохранить.");
+        }
+      } catch (err) {
+        if (S.tool !== t || t.seq !== my) return;
+        t.problem = geoErrorText(err);
+        say(t.problem, true);
+      } finally {
+        if (S.tool === t && t.seq === my) { t.pending = false; if (S.alive) { renderGeometry(); syncMap(); if (t.result) focusKey("tool-done"); } }
+      }
+    }
+    async function yardClick(p) {
+      const t = S.tool, my = ++t.seq;
+      t.problem = null; t.pending = true; renderGeometry();
+      try {
+        const r = await geoApi.yard(p);
+        if (S.tool !== t || t.seq !== my) return;
+        if (r && r.yard) { t.yard = r.yard; say("Выбран двор: " + r.yard.label_ru + ". «Готово» — сохранить."); }
+        else {
+          t.yard = null;
+          t.problem = r && r.reason === "no_yards_data"
+            ? tr("editor.yard.no_data", "Дворов на карте пока нет (данные OSM ещё не загружены). Отметьте площадь по углам.")
+            : tr("editor.yard.none", "Здесь нет двора на карте OSM. Нажмите внутри жилого двора или отметьте площадь по углам.");
+          say(t.problem, true);
+        }
+      } catch (err) {
+        if (S.tool !== t || t.seq !== my) return;
+        t.problem = geoErrorText(err); say(t.problem, true);
+      } finally {
+        if (S.tool === t && t.seq === my) { t.pending = false; if (S.alive) { renderGeometry(); syncMap(); if (t.yard) focusKey("tool-done"); } }
+      }
+    }
+    // После точки — предложение поставить её точно на объект OSM рядом (остановка, площадка, парк).
+    async function suggestObjects(p) {
+      if (!geoApi || typeof geoApi.near !== "function") return;
+      const ask = (S.near = { at: p, items: null });
+      try {
+        const r = await geoApi.near(p);
+        if (S.near !== ask || !S.alive) return;
+        ask.items = Array.isArray(r && r.objects) ? r.objects.filter((x) => x && Array.isArray(x.point) && typeof x.label_ru === "string") : [];
+        if (ask.items.length && S.view === "edit") renderGeometry();
+      } catch (e) { if (S.near === ask) S.near = null; }  // без подсказки точка остаётся как есть
+    }
+    function nearFor(g) {
+      if (!g || g.type !== "Point" || !S.near || !S.near.items || !S.near.items.length) return null;
+      const [x, y] = S.near.at;
+      return g.coordinates[0] === x && g.coordinates[1] === y ? S.near.items : null;
+    }
+    function linkObject(x) {
+      S.near = null;
+      S.linked = { label_ru: x.label_ru, point: [round6(x.point[0]), round6(x.point[1])] };
+      setGeometry({ type: "Point", coordinates: S.linked.point });
+      say("Точка поставлена на объект: " + x.label_ru + ". Подтвердите расположение.");
+      focusKey("geometry_confirmed");
+    }
     function finishShape() {
       const t = S.tool;
       if (!t || t.mode === "point") return;
+      if (t.mode === "segment" || t.mode === "yard") {
+        const g = t.mode === "segment" ? t.result && t.result.geometry : t.yard && t.yard.geometry;
+        if (!g || t.pending) return;
+        const what = t.mode === "segment" ? "участок улицы " + (t.result.street_ru || "без названия") + ", " + metres(t.result.length_m) + " м" : t.yard.label_ru;
+        closeTool(true);
+        setGeometry({ type: g.type, coordinates: JSON.parse(JSON.stringify(g.coordinates)) });
+        say("Отмечено: " + what + ". Подтвердите расположение.");
+        focusKey("geometry_confirmed");
+        return;
+      }
       const v = t.vertices.slice();
       const g = t.mode === "area" ? C.polygonFromVertices(v) : { type: "LineString", coordinates: v };
       const problem = C.geometryProblem(g);
@@ -1167,6 +1332,7 @@
       }
       if (e.key === "Escape") { e.preventDefault(); closeTool(); focusKey("tool-point"); }
       else if (e.key === "Enter" && S.tool.mode !== "point" && !(e.target && /^(TEXTAREA|INPUT|SELECT)$/.test(e.target.tagName))) { e.preventDefault(); finishShape(); }
+      else if ((S.tool.mode === "segment" || S.tool.mode === "yard")) return;
       else if ((e.key === "Backspace" || (e.key === "z" && (e.ctrlKey || e.metaKey))) && S.tool.vertices.length && !(e.target && /^(TEXTAREA|INPUT|SELECT)$/.test(e.target.tagName))) {
         e.preventDefault(); S.tool.vertices.pop(); S.tool.problem = null; renderGeometry(); syncMap();
       }

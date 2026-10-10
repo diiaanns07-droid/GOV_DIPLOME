@@ -22,7 +22,8 @@ ROOT = Path(__file__).resolve().parents[3]
 I18N = ROOT / "web/civic/i18n"
 CATS_SRC = ROOT / "research/round-14/categories_v2.json"
 CATS_WEB = ROOT / "web/civic/ui-kit/categories_v2.json"
-NOTES = ROOT / "research/round-14-results/R11/kk_notes.json"
+NOTES = ROOT / "research/round-14-results/R11/kk_notes.json"  # ⚑ — настоящие сомнения в переводе
+SOURCES = ROOT / "research/round-14-results/R11/key_sources.json"  # кто прислал ключ и где он на экране
 REVIEW = ROOT / "research/round-14-results/R11/KK_REVIEW.md"
 
 LANGS = ("ru", "kk")
@@ -145,6 +146,7 @@ def insert_grouped(existing, new_items):
 def add(path):
     incoming = json.loads(Path(path).read_text("utf-8"))
     ru, kk, notes = load("ru"), load("kk"), load_notes()
+    sources = json.loads(SOURCES.read_text("utf-8")) if SOURCES.exists() else {}
     new_ru, new_kk = [], []
     for key, spec in incoming.items():
         if isinstance(spec, str) or (isinstance(spec, dict) and "ru" not in spec):
@@ -158,12 +160,14 @@ def add(path):
             continue
         new_ru.append((key, spec["ru"]))
         new_kk.append((key, spec.get("kk") or ""))  # пусто → check напомнит перевести
-        note = " · ".join(x for x in (spec.get("where"), spec.get("note")) if x)
-        if note:
-            notes[key] = note
+        if spec.get("note"):
+            notes[key] = spec["note"]
+        if spec.get("where"):
+            sources[key] = spec["where"]
     save("ru", insert_grouped(ru, new_ru))
     save("kk", insert_grouped(kk, new_kk))
     NOTES.write_text(json.dumps(notes, ensure_ascii=False, indent=1) + "\n", "utf-8")
+    SOURCES.write_text(json.dumps(sources, ensure_ascii=False, indent=1) + "\n", "utf-8")
     print(f"добавлено ключей: {len(new_ru)}")
 
 
@@ -175,6 +179,7 @@ def fmt(value):
 
 def review():
     ru, kk, notes = load("ru"), load("kk"), load_notes()
+    sources = json.loads(SOURCES.read_text("utf-8")) if SOURCES.exists() else {}
     flagged = [k for k in ru if k in notes]
     lines = [
         "# KK_REVIEW — казахский текст Birge для проверки владельцем",
@@ -196,7 +201,8 @@ def review():
     ]
     esc = lambda s: str(s).replace("|", "\\|").replace("\n", " ")
     for k in flagged:
-        lines.append(f"| `{k}` | {esc(fmt(ru[k]))} | {esc(fmt(kk.get(k, '')))} | ⚑ {esc(notes[k])} |")
+        src = f" <sub>{esc(sources[k])}</sub>" if k in sources else ""
+        lines.append(f"| `{k}` | {esc(fmt(ru[k]))} | {esc(fmt(kk.get(k, '')))} | ⚑ {esc(notes[k])}{src} |")
     lines += ["", "## 2. Весь словарь по разделам", ""]
     group = None
     titles = {
@@ -210,7 +216,7 @@ def review():
         if g != group:
             group = g
             lines += ["", f"### {titles.get(g, g)}", "", "| ключ | рус | қаз | комментарий |", "|---|---|---|---|"]
-        mark = "⚑ " + esc(notes[k]) if k in notes else ""
+        mark = " ".join(x for x in ("⚑ " + esc(notes[k]) if k in notes else "", "<sub>" + esc(sources[k]) + "</sub>" if k in sources else "") if x)
         lines.append(f"| `{k}` | {esc(fmt(ru[k]))} | {esc(fmt(kk.get(k, '')))} | {mark} |")
     REVIEW.write_text("\n".join(lines) + "\n", "utf-8")
     print(f"{REVIEW.relative_to(ROOT)}: {len(ru)} ключей, ⚑ {len(flagged)}")

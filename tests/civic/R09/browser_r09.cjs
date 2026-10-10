@@ -19,6 +19,8 @@ function loadPlaywright() {
 const { chromium } = loadPlaywright();
 const ROOT = path.resolve(__dirname, "../../..");
 const args = process.argv.slice(2);
+// --r11 <папка с web/civic/ui-kit и web/civic/i18n R11>: стенд подключает настоящий ui-kit и словари R11.
+const r11Dir = args.includes("--r11") ? path.resolve(args[args.indexOf("--r11") + 1]) : null;
 const shotDir = args.includes("--screenshots") ? path.resolve(args[args.indexOf("--screenshots") + 1]) : null;
 if (shotDir) fs.mkdirSync(shotDir, { recursive: true });
 
@@ -47,7 +49,9 @@ async function newPage(browser, base, width, height, lang) {
   page.problems = [];
   page.on("console", (msg) => {
     if (/Failed to load resource/.test(msg.text())) return;  // сетевые ответы проверяются ниже по URL
-    if (msg.type() === "error" || (msg.type() === "warning" && msg.text().includes("[i18n]"))) page.problems.push(msg.text());
+    // Ошибки, предупреждения i18n и предупреждения стиля MapLibre («Expected value…», «layers.…»).
+    const text = msg.text();
+    if (msg.type() === "error" || (msg.type() === "warning" && /\[i18n\]|Expected value|layers\.|неизвестный ключ/.test(text))) page.problems.push(text);
   });
   page.on("response", (res) => {
     // ui-kit и i18n R11 необязательны, пока их нет в дереве (запасные стили и тексты R09).
@@ -115,6 +119,36 @@ async function visibleKeys(page) {
   });
 }
 
+// R11 №5: ни одно слово подписи категории не разорвано на две строки и не вылезает за кнопку.
+async function checkGridWords(page, tag) {
+  const res = await page.evaluate(() => {
+    const broken = [];
+    const buttons = [...document.querySelectorAll(".bk-catgrid > button")];
+    buttons.forEach((b) => {
+      const span = b.querySelector("span");
+      const node = span && span.firstChild;
+      if (!node) return;
+      const text = node.textContent;
+      let i = 0;
+      text.split(/(\s+)/).forEach((part) => {
+        if (part.trim()) {
+          const r = document.createRange();
+          r.setStart(node, i); r.setEnd(node, i + part.length);
+          const lines = new Set([...r.getClientRects()].map((x) => Math.round(x.top)));
+          const br = b.getBoundingClientRect(), wr = r.getBoundingClientRect();
+          if (lines.size > 1 || wr.right > br.right + 0.5) broken.push(part);
+        }
+        i += part.length;
+      });
+    });
+    const columns = new Set(buttons.map((b) => Math.round(b.getBoundingClientRect().left))).size;
+    return { broken, columns, count: buttons.length };
+  });
+  // count === 12: без кнопок проверка не должна «проходить» впустую.
+  check(`${tag}: [R11-5] слова в сетке категорий не рвутся (кнопок: ${res.count}, колонок: ${res.columns})`,
+        res.count === 12 && res.broken.length === 0 && res.columns >= 1 && res.columns <= 3, res.broken.join(", "));
+}
+
 async function shot(page, name) {
   if (shotDir) await page.screenshot({ path: path.join(shotDir, name + ".png") });
 }
@@ -136,6 +170,11 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   });
   const question = await page.textContent(".bc-option--first");
   const hotLabel = lang === "kk" ? hot.target.label_kk : hot.target.label_ru;
+  // R11 №4: вопрос без вставки названия (иначе «Это Остановка …?»), варианты — сами названия.
+  const q = (await page.textContent(".bc-question")).trim();
+  check(`${tag}: [R11-4] вопрос «${q}» без названия цели, вариант без «Да,»`,
+        q === (lang === "kk" ? "Осы жерде ме?" : "Это здесь?") && !/^\s*(Да|Иә),/.test(question) &&
+        question.trim().startsWith(hotLabel), question.trim());
   check(`${tag}: шаг 2 первым предлагает реальную остановку OSM`, question.includes(hotLabel), question);
   const others = await page.$$eval(".bc-option:not(.bk-btn--ghost)", (n) => n.length);
   check(`${tag}: рядом ещё участок улицы и «Другое место»`, others >= 2 && !!(await page.$(".bc-option.bk-btn--ghost")), String(others));
@@ -146,9 +185,28 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   const exact = await page.evaluate((p) => { const f = window.standAdapter.current().features[0];
     return f && f.geometry.type === "Point" && f.geometry.coordinates[0] === p[0] && f.geometry.coordinates[1] === p[1]; }, hot.point);
   check(`${tag}: выбранная остановка подсвечена в своей точке OSM`, exact, JSON.stringify(hl));
+  // R11 №1: все слои подсветки добавились (раньше line-dasharray с выражением ронял bc-area-line).
+  const layers = await page.evaluate(() => ["bc-area", "bc-area-line", "bc-area-approx", "bc-line-casing", "bc-line", "bc-point"]
+    .filter((id) => !window.standMap.getLayer(id)));
+  check(`${tag}: [R11-1] все 6 слоёв подсветки на карте, ошибок стиля нет`, layers.length === 0 &&
+        !page.problems.some((p) => /layers\.|dasharray/.test(p)), layers.join(","));
+  // R11 №2: цель и точка нажатия различаются: у цели pick=false (11 px), у нажатия pick=true (6 px).
+  const pick = await page.evaluate(() => ({
+    radius: JSON.stringify(window.standMap.getPaintProperty("bc-point", "circle-radius")),
+    flags: window.standAdapter.current().features.map((f) => f.properties.pick) }));
+  check(`${tag}: [R11-2] цель 11 px и точка нажатия 6 px различаются, без предупреждения null`,
+        pick.radius.includes("coalesce") && JSON.stringify(pick.flags) === "[false,true]" &&
+        !page.problems.some((p) => /Expected value/.test(p)), JSON.stringify(pick));
   const text = lang === "kk" ? "Аялдаманың павильоны сынған, шатыры жоқ" : "Павильон остановки сломан, нет крыши";
   await page.fill("#bc-text", text);
   await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 6000 });
+  // R11 №3: кнопка «Отправить» активна сразу после подсказки модели, без нового нажатия клавиши.
+  const sendEnabled = await page.$eval(".bc-send", (b) => !b.disabled);
+  check(`${tag}: [R11-3] «Отправить» активна сразу после подсказки /classify`, sendEnabled);
+  // R11 №6: в чипе одна галочка — её рисует ui-kit (::before), своей в тексте нет.
+  const ticks = await page.$eval(".bc-cat-row .bk-chip[aria-pressed='true']", (c) => ({
+    inText: (c.textContent.match(/✓/g) || []).length, before: getComputedStyle(c, "::before").content }));
+  check(`${tag}: [R11-6] одна галочка в чипе категории`, ticks.inText === 0 && /✓/.test(ticks.before), JSON.stringify(ticks));
   const chip = await page.textContent(".bc-cat-row");
   check(`${tag}: подсказка категории чипом`, lang === "kk" ? /Аялдамалар мен көлік/.test(chip) : /Остановки и транспорт/.test(chip), chip.trim());
   await shot(page, `${tag}-3-text`);
@@ -196,10 +254,11 @@ async function newComplaintAndMine(browser, base, lang, width, height, tag, poin
   await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 6000 });
   // Житель меняет категорию вручную через сетку из 12.
   await page.click(".bc-change");
-  const chips = await page.$$eval(".bc-grid__chip", (n) => n.length);
+  const chips = await page.$$eval(".bk-catgrid > button", (n) => n.length);
   check(`${tag}: сетка из 12 категорий`, chips === 12, String(chips));
+  await checkGridWords(page, tag);
   await shot(page, `${tag}-grid`);
-  await page.click(".bc-grid__chip:nth-child(5)");
+  await page.click(".bk-catgrid > button:nth-child(5)");
   // Обрыв сети при отправке: тост с «Повторить», текст не теряется.
   await page.route("**/api/civic/v2/complaints", (route) => route.request().method() === "POST" ? route.abort() : route.continue());
   await page.click(".bc-send");
@@ -243,10 +302,11 @@ async function withoutMl(browser, base, hot, tag) {
   await page.waitForSelector(".bc-option--first", { timeout: 8000 });
   await page.click(".bc-option--first");
   await page.fill("#bc-text", "Павильон остановки сломан");
-  await page.waitForSelector(".bc-grid", { timeout: 8000 });
+  await page.waitForSelector(".bk-catgrid", { timeout: 8000 });
   check(`${tag}: /classify недоступен — сразу сетка категорий, без ошибки`,
         !(await page.isVisible(".bc-toast:not([hidden])")));
-  await page.click(".bc-grid__chip:nth-child(4)");  // «Остановки и транспорт»
+  await checkGridWords(page, tag);
+  await page.click(".bk-catgrid > button:nth-child(4)");  // «Остановки и транспорт»
   await page.click(".bc-send");
   await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 8000 });
   check(`${tag}: /similar недоступен — «Я тоже» по той же цели`, /\d/.test(await page.textContent(".bc-title")),
@@ -283,14 +343,16 @@ async function keyboard(browser, base, tag) {
   const procs = [];
   let exitCode = 0;
   try {
-    procs.push(await startStand(8791, []));
-    procs.push(await startStand(8792, ["--no-ml"]));
+    const kit = r11Dir ? ["--r11", r11Dir] : [];
+    procs.push(await startStand(8791, kit));
+    procs.push(await startStand(8792, ["--no-ml"].concat(kit)));
     const browser = await chromium.launch();
     const info1 = await (await fetch("http://127.0.0.1:8791/stand/info")).json();
     const info2 = await (await fetch("http://127.0.0.1:8792/stand/info")).json();
     await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 375, 812, "375-ru");
     await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk");
     await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru");
+    await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "kk", 1366, 768, "1366-kk");
     // Разные «пустые» точки: иначе вторая жалоба в той же ячейке правильно получит «Я тоже» к первой.
     await newComplaintAndMine(browser, "http://127.0.0.1:8791", "kk", 375, 812, "375-kk-new", [71.4605, 51.0785]);
     await newComplaintAndMine(browser, "http://127.0.0.1:8791", "ru", 1366, 768, "1366-ru-new", [71.3965, 51.0765]);

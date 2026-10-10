@@ -93,3 +93,44 @@ def test_device_id_and_ml_fallback_present():
     assert "X-Birge-Device" in JS
     assert "ML_TIMEOUT_MS" in JS and "/classify" in JS and "/similar" in JS
     assert '"birge:complaint"' in JS
+
+
+# ---- Ранний UX-разбор R11 (claude/r14-R11, UX_REVIEW.md «День 2», строки 1–6) ----
+
+def test_r11_1_dasharray_without_data_expression():
+    # MapLibre не принимает выражения по данным в line-dasharray: пунктир — отдельным слоем.
+    for match in re.finditer(r'"line-dasharray":\s*([^}]+?)\s*[},]', JS):
+        assert match.group(1).startswith("["), match.group(0)
+        assert '"get"' not in match.group(1) and '"case"' not in match.group(1), match.group(0)
+    assert '"bc-area-approx"' in JS and '"bc-area-line"' in JS
+
+
+def test_r11_2_target_and_click_point_differ():
+    assert '["case", ["coalesce", ["get", "pick"], false], 6, 11]' in JS
+    assert "pick: false" in JS and "pick: true" in JS
+
+
+def test_r11_3_send_enabled_after_classify():
+    handler = JS[JS.index('request("POST", "/classify"'):JS.index("}, CLASSIFY_DEBOUNCE_MS)")]
+    assert handler.rindex("updateSendButton();") > handler.rindex("renderCategory();")
+
+
+def test_r11_4_question_without_label():
+    data = strings()
+    assert data["ru"]["complaint.step2.question"] == "Это здесь?"
+    assert "{label}" not in data["kk"]["complaint.step2.question"]
+    assert "complaint.step2.yes" not in data["ru"]          # «Да, Остановка …» больше нет
+    assert 't("complaint.step2.question")' in JS
+
+
+def test_r11_5_category_grid_is_ui_kit_catgrid():
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    assert '"bk-catgrid"' in JS and "bc-grid" not in JS and ".bc-grid" not in css
+    fallback = (WEB / "kit-fallback.css").read_text(encoding="utf-8")
+    assert "minmax(min(150px, 100%), 1fr)" in fallback      # те же колонки ≥ 150 px, что в ui-kit R11
+
+
+def test_r11_6_single_check_mark_in_chip():
+    assert '" ✓"' not in JS                                  # галочку рисует ui-kit через ::before
+    fallback = (WEB / "kit-fallback.css").read_text(encoding="utf-8")
+    assert '.bk-chip[aria-pressed="true"]::before { content: "✓"' in fallback

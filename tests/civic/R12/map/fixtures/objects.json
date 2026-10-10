@@ -1,0 +1,506 @@
+{
+ "_comment": "R03 synthetic fixtures (civic-v1). Every record is evidence_type=synthetic; none describes real works in Astana. Synthetic records carry no tenge amounts (same rule as R02 validation). pack_civic_object.json is copied verbatim from PACK_SHA 9c2f5c0d research/round-11/fixtures/civic_object.json.",
+ "items": [
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-shifted",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Демо: ремонт пешеходного прохода у остановки",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "in_progress",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4304,
+     51.1282
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": "2026-09-20",
+    "original_planned_end": "2026-10-20",
+    "current_planned_end": "2026-11-05",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": "Демо-подрядчик (условная организация)",
+    "public_contact": "+7 700 000 00 00 (демо-номер)"
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [
+    {
+     "id": "src-demo-1",
+     "url": "https://example.org/civic-demo/notice-1",
+     "publisher": "Тестовый источник (fixture R03)",
+     "published_on": "2026-09-15",
+     "retrieved_at": "2026-10-06T10:00:00+05:00",
+     "access_status": "not_fetched",
+     "license": null,
+     "fields": [
+      "schedule.current_planned_end",
+      "budget.amount_kzt",
+      "budget.basis"
+     ]
+    }
+   ],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-05T16:40:00+05:00",
+   "revision": 3
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-nodata",
+   "city": "astana",
+   "kind": "landscaping",
+   "title": "Демо: благоустройство сквера — сведения неполные",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4121,
+     51.1563
+    ]
+   },
+   "geometry_precision": "approximate",
+   "schedule": {
+    "planned_start": null,
+    "original_planned_end": null,
+    "current_planned_end": null,
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-line",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Демо: замена покрытия на участке дороги",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.4398,
+      51.1405
+     ],
+     [
+      71.4452,
+      51.1421
+     ],
+     [
+      71.4513,
+      51.1438
+     ]
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": "2026-10-15",
+    "original_planned_end": "2026-11-30",
+    "current_planned_end": "2026-11-30",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": "Демо-заказчик (условный отдел)",
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-closure",
+   "city": "astana",
+   "kind": "event",
+   "title": "Демо: временное перекрытие для городского события",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "in_progress",
+   "publication": "published",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.4189,
+      51.1301
+     ],
+     [
+      71.4241,
+      51.1287
+     ]
+    ]
+   },
+   "geometry_precision": "approximate",
+   "schedule": {
+    "planned_start": "2026-10-05",
+    "original_planned_end": "2026-10-07",
+    "current_planned_end": "2026-10-07",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-area",
+   "city": "astana",
+   "kind": "construction",
+   "title": "Демо: строительство школы на 1200 мест",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "in_progress",
+   "publication": "published",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       71.3992,
+       51.0921
+      ],
+      [
+       71.4041,
+       51.0921
+      ],
+      [
+       71.4041,
+       51.0949
+      ],
+      [
+       71.3992,
+       51.0949
+      ],
+      [
+       71.3992,
+       51.0921
+      ]
+     ]
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": "2025-04-01",
+    "original_planned_end": "2026-08-31",
+    "current_planned_end": "2026-12-25",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": "Демо-управление строительства (условное)",
+    "public_contact": "demo@example.org"
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 4
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-nogeo",
+   "city": "astana",
+   "kind": "construction",
+   "title": "Демо: реконструкция объекта без указанного места",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "unknown",
+   "publication": "published",
+   "geometry": null,
+   "geometry_precision": "unknown",
+   "schedule": {
+    "planned_start": null,
+    "original_planned_end": null,
+    "current_planned_end": null,
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-historical",
+   "city": "astana",
+   "kind": "landscaping",
+   "title": "Демо: план озеленения прошлого сезона",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4602,
+     51.1702
+    ]
+   },
+   "geometry_precision": "approximate",
+   "schedule": {
+    "planned_start": "2024-05-01",
+    "original_planned_end": "2024-09-30",
+    "current_planned_end": "2024-09-30",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане. План прошлых лет: срок по плану прошёл, фактическое состояние не подтверждено.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-long-ru",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Демо: капитальный ремонт внутриквартальных проездов, тротуаров, парковочных карманов и наружного освещения вдоль жилых домов с устройством пандусов и переустройством ливневой канализации",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4705,
+     51.1355
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": "2026-10-01",
+    "original_planned_end": "2027-06-30",
+    "current_planned_end": "2027-06-30",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-long-kk",
+   "city": "astana",
+   "kind": "landscaping",
+   "title": "Демо: Қаланың оң жағалауындағы тұрғын үй аулаларын абаттандыру, балалар ойын алаңдарын жаңғырту және жасыл желектерді көбейту жұмыстары (синтетикалық жазба)",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4255,
+     51.1625
+    ]
+   },
+   "geometry_precision": "approximate",
+   "schedule": {
+    "planned_start": "2026-10-10",
+    "original_planned_end": "2026-12-15",
+    "current_planned_end": "2026-12-15",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-completed",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Демо: завершённый ремонт светофорного объекта",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "completed",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4511,
+     51.1209
+    ]
+   },
+   "geometry_precision": "source",
+   "schedule": {
+    "planned_start": "2026-08-01",
+    "original_planned_end": "2026-09-10",
+    "current_planned_end": "2026-09-10",
+    "actual_end": "2026-09-08"
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 2
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "r03-demo-cancelled",
+   "city": "astana",
+   "kind": "event",
+   "title": "Демо: отменённое уличное мероприятие",
+   "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "status": "cancelled",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.438,
+     51.155
+    ]
+   },
+   "geometry_precision": "approximate",
+   "schedule": {
+    "planned_start": "2026-10-12",
+    "original_planned_end": "2026-10-12",
+    "current_planned_end": "2026-10-12",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
+   "updated_at": "2026-10-06T12:00:00+05:00",
+   "revision": 1
+  },
+  {
+   "schema_version": "civic-v1",
+   "id": "demo-astana-work-01",
+   "city": "astana",
+   "kind": "roadworks",
+   "title": "Демонстрационный ремонт прохода",
+   "description": "Синтетическая запись для проверки интерфейса. Не сведения о реальных работах.",
+   "status": "planned",
+   "publication": "published",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.43,
+     51.17
+    ]
+   },
+   "geometry_precision": "approximate",
+   "schedule": {
+    "planned_start": "2026-10-14",
+    "original_planned_end": "2026-10-20",
+    "current_planned_end": "2026-10-22",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "synthetic",
+   "source_refs": [],
+   "evidence_notes": "Создано координатором для теста; не публиковать как реальный ремонт.",
+   "updated_at": "2026-10-06T12:00:00+06:00",
+   "revision": 2
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "evidence_type": "synthetic",
+ "generator": "ml/civic_forecast/weather.py make_fixture(seed=14)",
+ "note": "Синтетика по климатическим нормам Астаны. Заменяется реальным архивом LOCAL-9 автоматически.",
+ "columns": [
+  "date",
+  "temperature_2m_max",
+  "temperature_2m_min",
+  "precipitation_sum",
+  "snowfall_sum",
+  "rain_sum",
+  "wind_speed_10m_max"
+ ],
+ "days": 1378
+}

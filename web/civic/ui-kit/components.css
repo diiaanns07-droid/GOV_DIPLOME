@@ -25,6 +25,19 @@
 .bk-app *::after {
   box-sizing: border-box;
 }
+/* Атрибут hidden сильнее любого display у компонентов (иначе .bk-btn[hidden], .bk-toast[hidden] остаются видны).
+   Исключение — панель и шторка: у них своё скрытие с анимацией (.bk-panel[hidden], .bk-sheet[hidden]). */
+.bk-app [hidden]:not(.bk-panel):not(.bk-sheet),
+[hidden].bk-btn,
+[hidden].bk-toast,
+[hidden].bk-iconbtn {
+  display: none !important;
+}
+/* Сегменты не переносят подпись («7 күн» в одну строку) */
+.bk-seg > button {
+  white-space: nowrap;
+}
+
 /* Заголовки внутри ui-kit */
 .bk-h1 {
   margin: 0;
@@ -634,9 +647,18 @@
   margin: 0;
   font-size: var(--fs-lead);
   font-weight: var(--fw-bold);
+  line-height: 1.25;
+  /* до двух строк: казахские заголовки длиннее («Бұл туралы 12 адам хабарлаған») */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+}
+/* Без кнопки «Назад» заголовок выравнивается с содержимым панели */
+.bk-panel__head > [hidden]:first-child + .bk-panel__title,
+.bk-panel__head > .bk-panel__title:first-child {
+  padding-left: var(--s-3);
 }
 .bk-panel__body {
   flex: 1;
@@ -668,7 +690,8 @@
   background: var(--c-paper);
 }
 
-/* Нижняя шторка (телефон). data-snap: peek | half | full; перетаскивание — в JS модуля. */
+/* Нижняя шторка (телефон). data-snap: peek | half | full; перетаскивание — BirgeUI.sheet(el).
+   Меняется ВЫСОТА, а не сдвиг: нижняя строка (.bk-panel__foot с главной кнопкой) видна в любом положении. */
 .bk-sheet {
   position: fixed;
   z-index: var(--z-sheet);
@@ -677,30 +700,34 @@
   bottom: 0;
   display: flex;
   flex-direction: column;
-  height: var(--sheet-full);
+  height: var(--sheet-peek);
+  max-height: var(--sheet-full);
+  overflow: hidden;
   padding-bottom: env(safe-area-inset-bottom);
   border-radius: var(--r-xl) var(--r-xl) 0 0;
   background: var(--c-surface);
   box-shadow: var(--shadow-3);
-  transform: translateY(calc(var(--sheet-full) - var(--sheet-peek)));
-  transition: transform var(--t-base) var(--ease);
-  will-change: transform;
+  transition: height var(--t-base) var(--ease);
 }
 .bk-sheet[data-snap="half"] {
-  transform: translateY(calc(var(--sheet-full) - var(--sheet-half)));
+  height: var(--sheet-half);
 }
 .bk-sheet[data-snap="full"] {
-  transform: translateY(0);
+  height: var(--sheet-full);
+}
+.bk-sheet[data-snap="peek"] .bk-panel__foot {
+  display: none; /* в свёрнутом виде — только ручка и заголовок */
 }
 .bk-sheet[hidden] {
   display: flex;
-  transform: translateY(100%);
+  height: 0;
   visibility: hidden;
 }
 .bk-sheet__handle {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: none;
   width: 100%;
   height: 28px;
   border: 0;
@@ -715,21 +742,49 @@
   border-radius: 2px;
   background: var(--c-line-strong);
 }
-.bk-sheet__body {
+.bk-sheet__body,
+.bk-sheet .bk-panel__body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 0 var(--gutter-phone) var(--s-4);
+  padding: var(--s-3) var(--gutter-phone) var(--s-4);
   display: grid;
   grid-template-columns: minmax(0, 1fr); /* колонка не растягивается по длинному слову (важно для kk на 375 px) */
   align-content: start;
   gap: var(--s-4);
 }
+.bk-sheet .bk-panel__head {
+  flex: none;
+}
+.bk-sheet .bk-panel__foot {
+  flex: none;
+  padding: var(--s-3) var(--gutter-phone);
+}
 .bk-sheet--static {
   position: relative;
   height: auto;
-  transform: none;
   border-radius: var(--r-xl);
+}
+/* Панель и шторка получают фокус программно (tabindex="-1") — рамку вокруг всей панели не рисуем */
+[tabindex="-1"]:focus,
+[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+.bk-app [tabindex="-1"]:focus-visible:not(.bk-panel):not(.bk-sheet) {
+  box-shadow: none;
+}
+.bk-panel:focus,
+.bk-panel:focus-visible {
+  box-shadow: var(--shadow-2);
+}
+.bk-sheet:focus,
+.bk-sheet:focus-visible {
+  box-shadow: var(--shadow-3);
+}
+.bk-panel__body p,
+.bk-sheet__body p {
+  margin: 0; /* расстояния задаёт gap */
 }
 
 /* Затемнение под шторкой в положении full и под диалогом */
@@ -954,9 +1009,36 @@
   box-shadow: var(--shadow-3);
   animation: bk-rise var(--t-base) var(--ease);
 }
+/* Сетка тоста: иконка | текст | ✕ в первой строке; действие («Повторить») — под текстом.
+   Так длинный казахский текст не сжимается в узкую колонку и крестик всегда справа сверху. */
+.bk-toast {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--s-3);
+}
+.bk-toast > .ic {
+  grid-column: 1;
+  grid-row: 1;
+}
 .bk-toast__text {
-  flex: 1;
+  grid-column: 2;
+  grid-row: 1;
   min-width: 0;
+}
+.bk-toast > .bk-btn {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: start;
+  margin-left: calc(-1 * var(--s-3));
+}
+.bk-toast > .bk-iconbtn {
+  grid-column: 3;
+  grid-row: 1;
+  color: inherit;
+}
+.bk-toast > .bk-iconbtn:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 .bk-toast .bk-btn {
   min-height: 40px;
@@ -1275,15 +1357,14 @@
 }
 .bk-bar {
   display: grid;
-  grid-template-columns: minmax(0, 11em) 1fr auto;
+  grid-template-columns: minmax(0, 13em) minmax(48px, 1fr) auto;
   align-items: center;
   gap: var(--s-3);
   min-height: 32px;
 }
 .bk-bar__label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25; /* перенос, не многоточие: казахские названия тем длиннее */
+  overflow-wrap: break-word;
 }
 .bk-bar__track {
   height: 12px;

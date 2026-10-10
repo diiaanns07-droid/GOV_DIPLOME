@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>R11 · стенд разбора мастера жалобы R09</title>
+    <!-- Только для UX-разбора R11: ui-kit + i18n R11 (как после интеграции R01), мастер R09 из его ветки,
+         карта MapLibre с подложкой «оси улиц OSM» (тайлы в облаке недоступны). Ответы API подставляет r09_shots.cjs. -->
+    <link rel="stylesheet" href="/vendor/maplibre-gl.css" />
+    <link rel="stylesheet" href="/civic/ui-kit/tokens.css" />
+    <link rel="stylesheet" href="/civic/ui-kit/components.css" />
+    <link rel="stylesheet" href="/civic/feedback/complaint.css" />
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; }
+      #map { position: absolute; inset: 64px 0 0 0; }
+      @media (max-width: 1023px) { #map { top: 56px; } }
+      #lang { margin-left: auto; }
+    </style>
+  </head>
+  <body class="bk-app">
+    <header class="bk-header">
+      <div class="bk-header__brand"><span class="bk-header__mark"></span><span class="bk-header__brand-text">Birge</span></div>
+      <div id="lang"></div>
+    </header>
+    <div id="map"></div>
+    <div id="app"></div>
+    <script src="/vendor/maplibre-gl.js"></script>
+    <script src="/civic/i18n/i18n.js"></script>
+    <script src="/civic/ui-kit/ui-kit.js"></script>
+    <script src="/civic/feedback/categories_v2.js"></script>
+    <script src="/civic/feedback/complaint-strings.js"></script>
+    <script src="/civic/feedback/complaint.js"></script>
+    <script>
+      (async function () {
+        BirgeUI.langSwitch(document.getElementById("lang"));
+        const streets = await fetch("/__streets.json").then((r) => r.json()).catch(() => ({ type: "FeatureCollection", features: [] }));
+        const map = new maplibregl.Map({
+          container: "map", center: [71.4289, 51.1716], zoom: 15.5, attributionControl: false,
+          style: { version: 8, sources: { streets: { type: "geojson", data: streets } },
+            layers: [{ id: "bg", type: "background", paint: { "background-color": "#eef1ea" } },
+                     { id: "streets", type: "line", source: "streets", paint: { "line-color": "#c5cec4", "line-width": 5 } }] },
+        });
+        window.__map = map;
+        await new Promise((ok) => map.on("load", ok));
+        await BirgeI18n.ready;
+        window.__ui = BirgeComplaint.mount({ root: document.getElementById("app"), map: BirgeComplaint.maplibreAdapter(map) });
+        window.__ready = true;
+      })();
+    </script>
+  </body>
+</html>

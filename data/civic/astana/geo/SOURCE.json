@@ -1,0 +1,101 @@
+{
+ "schema": "r12-geo-source-v1",
+ "built_at": "2026-10-10T13:21:02Z",
+ "builder": "engine/civic_geo/build_geo_data.py",
+ "raw_dir": "/home/user/GOV_DIPLOME/data/civic/astana/osm-objects/raw",
+ "raw_dir_present": true,
+ "inputs": [
+  {
+   "path": "data/civic/astana/osm-objects/raw/bus_stops.json.gz",
+   "sha256": "5548c998f798f65242787037a3ec6a4ead5d9e21f13a35d58bb4bbd6f21ed5a5",
+   "bytes": 25227
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/gardens.json.gz",
+   "sha256": "d9a2159dafb6354094b25e95fbc61c64212db8e47329b50e02a74f5b25bba16f",
+   "bytes": 6253
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/kindergartens.json.gz",
+   "sha256": "be3b04a76b6e60a2b2576b466176218fe01842b9ec2ff934f1a1f970832fc0e4",
+   "bytes": 16435
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/parks.json.gz",
+   "sha256": "37be4641208f3056a4724985d54ac709506db8eff55aa248f5e3f40e4d552dd3",
+   "bytes": 31328
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/pitches.json.gz",
+   "sha256": "2fad47a6b61b438c76631205df453486138c9c0c7c21f5d3c25e9b7f5391a9ab",
+   "bytes": 65431
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/platforms.json.gz",
+   "sha256": "434ccf8f922d384d2ae5bb374630a6628075334082e92ad99018d4e17c3c23e0",
+   "bytes": 22692
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/playgrounds.json.gz",
+   "sha256": "b24d4c6b1acccf4915684cbe57bbe702341575e9a1cf39f299fc3630223cb639",
+   "bytes": 36727
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/recycling.json.gz",
+   "sha256": "5a96d0db83f475ed2442a528e8fe65f4190a238f36c136a52a4edcbe34deb427",
+   "bytes": 1880
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/residential.json.gz",
+   "sha256": "3d8f5354e738dae898dad2e12b1b79d4c8ebb21bcf4892a1001ce37e15059884",
+   "bytes": 77750
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/schools.json.gz",
+   "sha256": "07ee65438b016c7b6e1a4824afd9c95da6b050917f9be48aea36fce705b1f745",
+   "bytes": 26768
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/street_lamps.json.gz",
+   "sha256": "3af53611331d7fc3cc61338d28e02fcf48b4a1edf94535eed3be4879439809e3",
+   "bytes": 3116
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/waste_disposal.json.gz",
+   "sha256": "a3de1ec62d8cc6de377c8e05167b8882370a1e1356a1c1e6bd2bcb1dc997c133",
+   "bytes": 4261
+  },
+  {
+   "path": "data/civic/astana/osm-walking/overpass.json.gz",
+   "sha256": "93cbef9d4bf041b9d2157cdbdd80d603de9e4117b992fbc61a64e84e42ad8a46",
+   "bytes": 2974580,
+   "use": "только узлы-остановки на линиях дорог"
+  }
+ ],
+ "counts": {
+  "bus_stop": 940,
+  "park": 177,
+  "pitch": 696,
+  "playground": 334,
+  "waste": 136,
+  "yard": 538
+ },
+ "skipped": {
+  "outside_city": 108,
+  "no_geometry": 13,
+  "duplicate": 697
+ },
+ "not_used_tags": {
+  "street_lamp": 217,
+  "school": 175,
+  "kindergarten": 147,
+  "other": 41
+ },
+ "license": {
+  "id": "ODbL-1.0",
+  "attribution": "© OpenStreetMap contributors",
+  "url": "https://www.openstreetmap.org/copyright"
+ },
+ "evidence_type": "real",
+ "status": "full"
+}

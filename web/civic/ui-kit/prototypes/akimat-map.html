@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Birge · макет · карта акимата</title>
+    <!-- Макет R11 для R07 (тепловая карта) и R06 (этапы в карточке). Образец вида и поведения, данные — примеры.
+         Параметры: ?lang=kk · ?target=t-stop-sauran (открыть карточку) · ?state=loading|empty|error · ?role=resident -->
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../components.css" />
+    <link rel="stylesheet" href="proto.css" />
+  </head>
+  <body class="bk-app">
+    <a class="bk-skip" href="#pm-panel" data-i18n="common.action.skip_to_main"></a>
+    <div class="pm-page">
+      <header id="pm-header"></header>
+      <div id="pm-banner"></div>
+      <main class="pm-stage" id="pm-stage">
+        <div class="pm-map" id="pm-map"></div>
+
+        <div class="pm-filters" id="pm-filters">
+          <div class="bk-chips" id="pm-cats" role="group" data-i18n-attr="aria-label:heat.filter.category"></div>
+          <div class="bk-seg" id="pm-period" role="group" data-i18n-attr="aria-label:heat.filter.period">
+            <button type="button" value="7" aria-pressed="false" data-i18n="common.period.days" data-i18n-params='{"n":7}'></button>
+            <button type="button" value="30" aria-pressed="true" data-i18n="common.period.days" data-i18n-params='{"n":30}'></button>
+            <button type="button" value="90" aria-pressed="false" data-i18n="common.period.days" data-i18n-params='{"n":90}'></button>
+          </div>
+          <label class="bk-field pm-filters__wide"><select id="pm-district" data-i18n-attr="aria-label:heat.filter.district"></select></label>
+          <button class="bk-btn bk-btn--ghost pm-filters__wide" type="button" id="pm-reset" hidden></button>
+        </div>
+
+        <div class="pm-tools bk-maptools">
+          <button class="bk-mapbtn" type="button" id="pm-zoom-in" data-i18n-attr="aria-label:common.map.zoom_in;title:common.map.zoom_in"></button>
+          <button class="bk-mapbtn" type="button" id="pm-zoom-out" data-i18n-attr="aria-label:common.map.zoom_out;title:common.map.zoom_out"></button>
+        </div>
+
+        <div class="bk-legend pm-legend" id="pm-legend"></div>
+        <div class="pm-demo-tools"><button class="bk-btn" type="button" id="pm-new"></button></div>
+        <div class="pm-attrib">© OpenStreetMap</div>
+        <div class="pm-overlay-state" id="pm-overlay" hidden></div>
+
+        <!-- Панель справа (ноутбук) / шторка снизу (телефон): один и тот же контент -->
+        <section id="pm-panel" aria-live="polite" aria-labelledby="pm-panel-title" tabindex="-1">
+          <button class="bk-sheet__handle" type="button" id="pm-handle"></button>
+          <div class="bk-panel__head">
+            <button class="bk-iconbtn" type="button" id="pm-back" hidden data-i18n-attr="aria-label:common.action.back"></button>
+            <h2 class="bk-panel__title" id="pm-panel-title"></h2>
+            <button class="bk-iconbtn" type="button" id="pm-close" hidden data-i18n-attr="aria-label:common.action.close"></button>
+          </div>
+          <div class="bk-panel__body" id="pm-body"></div>
+          <div class="bk-panel__foot" id="pm-foot" hidden></div>
+        </section>
+      </main>
+    </div>
+    <div class="pm-search-results" id="pm-results" hidden></div>
+
+    <script src="../../i18n/i18n.js"></script>
+    <script src="../ui-kit.js"></script>
+    <script src="proto-streets.js"></script>
+    <script src="proto.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        var I = BirgeI18n, UI = BirgeUI, P = BirgeProto, t = I.t;
+        var $ = function (id) { return document.getElementById(id); };
+        var phone = window.matchMedia("(max-width: 1023px)");
+        var categories = [];
+        var targets = P.demoTargets();
+        var st = { cats: [], period: 30, district: "all", selected: null, role: P.query("role") === "resident" ? "resident" : "akimat",
+                   state: P.query("state") || "ready", cardLoading: false, metoo: {} };
+
+        var map; // создаётся после загрузки словарей (подписи карты переводятся)
+
+        // ── данные с учётом фильтров ──
+        function visible() {
+          if (st.state === "empty") return [];
+          return targets.filter(function (x) {
+            return (!st.cats.length || st.cats.indexOf(x.category) >= 0) && (st.district === "all" || x.district === st.district);
+          }).map(function (x) {
+            x.count = x.counts[st.period];
+            x.level = x.status === "fixed" ? "fixed" : P.levelOf(x.count);
+            return x;
+          }).filter(function (x) { return x.count > 0; });
+        }
+        function byId(id) { return targets.filter(function (x) { return x.id === id; })[0]; }
+        function filtersActive() { return st.cats.length || st.period !== 30 || st.district !== "all"; }
+
+        // ── карта, фильтры, легенда ──
+        function renderMap() {
+          var list = visible();
+          map.render(st.state === "ready" ? list : []);
+          map.select(st.selected);
+          var ov = $("pm-overlay");
+          ov.hidden = st.state === "ready" && list.length > 0;
+          if (st.state === "loading") UI.state(ov, "loading", { text: t("heat.loading") });
+          else if (st.state === "error") UI.state(ov, "error", { action: { onClick: function () { st.state = "loading"; renderAll(); P.later(700, function () { st.state = "ready"; renderAll(); }); } } });
+          else if (!list.length) UI.state(ov, "empty", { title: t("heat.empty.title", { n: st.period }), text: filtersActive() ? t("heat.empty.hint_filters") : t("heat.empty.hint"),
+            action: { label: t("heat.filter.reset"), onClick: resetFilters } });
+          if (!ov.hidden) ov.firstChild.classList.add("bk-card");
+        }
+        function renderFilters() {
+          $("pm-cats").innerHTML = '<button class="bk-chip" type="button" value="" aria-pressed="' + (!st.cats.length) + '">' + UI.esc(t("heat.filter.all_categories")) + "</button>" +
+            categories.map(function (c) {
+              return '<button class="bk-chip" type="button" value="' + c.id + '" aria-pressed="' + (st.cats.indexOf(c.id) >= 0) + '">' + UI.icon(c.icon, { size: 18 }) + "<span>" + UI.esc(I.cat(c.id)) + "</span></button>";
+            }).join("");
+          $("pm-district").innerHTML = ["all", "almaty", "baikonur", "esil", "nura", "saraishyk", "saryarka"].map(function (d) {
+            return '<option value="' + d + '"' + (st.district === d ? " selected" : "") + ">" + UI.esc(t("district." + d)) + "</option>";
+          }).join("");
+          var reset = $("pm-reset");
+          reset.hidden = !filtersActive();
+          reset.innerHTML = UI.icon("close") + "<span>" + UI.esc(t("heat.filter.reset")) + "</span>";
+          document.querySelectorAll("#pm-period button").forEach(function (b) { b.setAttribute("aria-pressed", String(+b.value === st.period)); });
+        }
+        function renderLegend() {
+          $("pm-legend").innerHTML = '<span class="bk-legend__title">' + UI.esc(t("heat.legend.title")) + "</span>" +
+            [1, 2, 3, 4].map(function (l) { return '<span class="bk-legend__item"><i class="bk-legend__swatch" data-level="' + l + '"></i>' + UI.esc(t("heat.level." + l)) + "</span>"; }).join("") +
+            '<span class="bk-legend__item"><i class="bk-legend__swatch" data-level="fixed"></i>' + UI.esc(t("heat.fixed")) + "</span>";
+        }
+        function resetFilters() { st.cats = []; st.period = 30; st.district = "all"; renderAll(); }
+
+        // ── панель / шторка ──
+        function layoutPanel() {
+          var p = $("pm-panel");
+          p.className = phone.matches ? "bk-sheet" : "bk-panel pm-panel";
+          if (phone.matches && !p.dataset.snap) p.dataset.snap = "peek";
+          $("pm-handle").hidden = !phone.matches;
+          $("pm-stage").classList.toggle("pm-has-panel", !phone.matches);
+        }
+        function sparkHtml(x) {
+          var max = Math.max.apply(null, x.spark) || 1;
+          return '<div class="bk-spark" role="img" aria-label="' + UI.esc(t("target.by_day")) + '">' +
+            x.spark.map(function (v) { return '<i style="height:' + Math.max(4, (v / max) * 100) + '%"></i>'; }).join("") + "</div>";
+        }
+        function stagesHtml(x) {
+          var names = ["planned", "design", "procurement", "construction", "acceptance", "operating"];
+          return '<ol class="bk-stages' + (x.works.late ? " bk-stages--late" : "") + '">' + names.map(function (s, i) {
+            var state = i < x.works.stage ? "done" : i === x.works.stage ? "current" : "todo";
+            return '<li data-state="' + state + '"' + (state === "current" ? ' aria-current="step"' : "") + "><span>" + UI.esc(t("stage." + s)) + "</span></li>";
+          }).join("") + "</ol>" +
+            (x.works.late ? '<div class="bk-card__row"><span class="bk-tag bk-tag--warn">' + UI.icon("clock") + UI.esc(t("object.late", { n: x.works.late })) + "</span></div>" : "");
+        }
+        function renderList() {
+          // Ничего не выбрано: список мест с наибольшим числом жалоб (как «Горячие места» в «Картине дня»)
+          $("pm-panel-title").textContent = t("akim.hot.title");
+          $("pm-back").hidden = $("pm-close").hidden = true;
+          $("pm-foot").hidden = true;
+          var body = $("pm-body");
+          if (st.state === "loading") { UI.state(body, "loading", { text: t("heat.loading") }); return; }
+          if (st.state === "error") { UI.state(body, "error", {}); return; }
+          var list = visible().sort(function (a, b) { return b.count - a.count; });
+          if (!list.length) { UI.state(body, "empty", { title: t("heat.empty.title", { n: st.period }), text: t("heat.empty.hint") }); return; }
+          body.innerHTML = '<p class="bk-meta">' + UI.esc(t("common.period.last_days", { n: st.period })) + " · " + UI.esc(t("common.complaints", { n: list.reduce(function (s, x) { return s + x.count; }, 0) })) + "</p>" +
+            '<ul class="bk-list">' + list.map(function (x) {
+              return '<li><button class="bk-list__item" type="button" data-open="' + x.id + '"><span class="bk-heat" data-level="' + x.level + '">' + x.count + '</span><span class="bk-list__main"><span class="bk-list__title">' +
+                UI.esc(P.shortLabel(x)) + '</span><span class="bk-list__sub">' + UI.esc(I.cat(x.category)) + " · " + UI.esc(t("status." + x.status)) + "</span></span>" + UI.icon("chevron-right") + "</button></li>";
+            }).join("") + "</ul>";
+        }
+        function renderCard(x) {
+          var body = $("pm-body"), foot = $("pm-foot");
+          $("pm-panel-title").textContent = typeLabelTitle(x);
+          $("pm-back").hidden = $("pm-close").hidden = false;
+          if (st.cardLoading) { UI.state(body, "loading"); foot.hidden = true; return; }
+          var cat = categories.filter(function (c) { return c.id === x.category; })[0] || {};
+          var l = I.getLang();
+          var html =
+            '<div class="bk-card__row"><span class="bk-card__eyebrow">' + UI.icon(cat.icon || "dots") + "<span>" + UI.esc(I.cat(x.category)) + "</span></span>" +
+            (x.demo ? '<span class="bk-tag bk-tag--demo" title="' + UI.esc(t("common.tag.demo_hint")) + '">' + UI.esc(t("common.tag.demo")) + "</span>" : "") + "</div>" +
+            '<h3 class="bk-card__title">' + UI.esc(P.label(x)) + "</h3>" +
+            (x.where ? '<p class="bk-meta">' + UI.esc(x.where[l]) + "</p>" : "") +
+            '<div class="bk-card__row"><span class="bk-heat bk-heat--lg" data-level="' + x.level + '">' + x.count + "</span><span><b>" + UI.esc(t("target.reported", { n: x.count })) + "</b> · " +
+            UI.esc(t("common.period.last_days", { n: st.period })) + "</span></div>" +
+            '<div class="bk-card__row"><span class="bk-meta">' + UI.esc(t("status.label")) + '</span><span class="bk-status" data-status="' + x.status + '">' + UI.esc(t("status." + x.status)) + "</span></div>" +
+            (x.status === "fixed" ? '<p class="bk-meta">' + UI.esc(t("target.fixed_note", { n: 7 - (x.fixedDaysAgo || 0) })) + "</p>" : "") +
+            '<p class="bk-section-title">' + UI.esc(t("target.by_day")) + "</p>" + sparkHtml(x) +
+            '<hr class="bk-divider" /><p class="bk-section-title">' + UI.esc(t("target.what_people_write")) + "</p>" +
+            '<ul class="bk-list">' + x.groups.map(function (g) {
+              return '<li class="bk-list__item" style="cursor:default"><span class="bk-list__main"><span class="bk-list__title">«' + UI.esc(g[l]) + '»</span><span class="bk-list__sub">' + UI.esc(t("common.people", { n: g.n })) + "</span></span></li>";
+            }).join("") + "</ul>" +
+            (x.works ? '<hr class="bk-divider" /><p class="bk-section-title">' + UI.esc(t("stage.title")) + "</p>" + stagesHtml(x) : "");
+          body.innerHTML = html;
+          // Действия: одна главная кнопка
+          var acts = "";
+          if (st.role === "resident") {
+            var done = st.metoo[x.id];
+            acts = '<button class="bk-btn bk-btn--primary bk-btn--block" type="button" data-act="metoo"' + (done ? " disabled" : "") + ">" + UI.icon(done ? "check" : "users") + "<span>" +
+              UI.esc(done ? t("target.metoo_done") : t("target.metoo")) + "</span></button>" + (done ? "" : '<p class="bk-meta" style="margin:8px 0 0">' + UI.esc(t("target.metoo_hint")) + "</p>");
+          } else if (x.status === "new" || x.status === "accepted") {
+            acts = '<div class="bk-actions"><button class="bk-btn bk-btn--primary" type="button" data-act="take">' + UI.esc(t("target.take")) + '</button><button class="bk-btn" type="button" data-act="fix">' + UI.icon("check") + "<span>" + UI.esc(t("target.mark_fixed")) + "</span></button></div>";
+          } else if (x.status === "in_progress") {
+            acts = '<button class="bk-btn bk-btn--primary bk-btn--block" type="button" data-act="fix">' + UI.icon("check") + "<span>" + UI.esc(t("target.mark_fixed")) + "</span></button>";
+          }
+          foot.innerHTML = acts;
+          foot.hidden = !acts;
+        }
+        function typeLabelTitle(x) { return P.typeLabel(x); }
+        function renderPanel() {
+          layoutPanel();
+          var x = st.selected && byId(st.selected);
+          if (x) renderCard(x); else renderList();
+          I.apply($("pm-panel"));
+        }
+
+        function open(id) {
+          if (!id) { if (!phone.matches) { st.selected = null; renderPanel(); map.select(null); } return; }
+          st.selected = id;
+          st.cardLoading = true;
+          map.select(id);
+          renderPanel();
+          if (phone.matches) $("pm-panel").dataset.snap = "half";
+          P.later(350, function () { st.cardLoading = false; renderPanel(); $("pm-panel-title").focus && $("pm-panel").focus({ preventScroll: true }); });
+        }
+        function closeCard() { st.selected = null; map.select(null); if (phone.matches) $("pm-panel").dataset.snap = "peek"; renderPanel(); }
+
+        function renderAll() { renderFilters(); renderLegend(); renderMap(); renderPanel(); $("pm-new").innerHTML = UI.icon("plus") + "<span>" + UI.esc(t("heat.new_complaint")) + "</span>"; }
+
+        function bind() {
+        // ── события ──
+        $("pm-cats").addEventListener("click", function (e) {
+          var b = e.target.closest(".bk-chip"); if (!b) return;
+          var id = b.value;
+          if (!id) st.cats = [];
+          else if (st.cats.indexOf(id) >= 0) st.cats = st.cats.filter(function (c) { return c !== id; });
+          else st.cats = st.cats.concat(id);
+          renderAll();
+        });
+        UI.seg($("pm-period"), function (v) { st.period = +v; renderAll(); });
+        $("pm-district").addEventListener("change", function (e) { st.district = e.target.value; renderAll(); });
+        $("pm-reset").addEventListener("click", resetFilters);
+        $("pm-zoom-in").innerHTML = UI.icon("plus"); $("pm-zoom-out").innerHTML = UI.icon("minus");
+        $("pm-zoom-in").addEventListener("click", map.zoomIn);
+        $("pm-zoom-out").addEventListener("click", map.zoomOut);
+        $("pm-back").innerHTML = UI.icon("back"); $("pm-close").innerHTML = UI.icon("close");
+        $("pm-back").addEventListener("click", closeCard);
+        $("pm-close").addEventListener("click", closeCard);
+        $("pm-body").addEventListener("click", function (e) { var b = e.target.closest("[data-open]"); if (b) open(b.getAttribute("data-open")); });
+        $("pm-foot").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-act]"); if (!b) return;
+          var x = byId(st.selected), act = b.getAttribute("data-act");
+          if (act === "take") { x.status = "in_progress"; UI.toast(t("target.taken"), { type: "ok" }); }
+          if (act === "fix") { x.status = "fixed"; x.fixedDaysAgo = 0; UI.toast(t("target.fixed_toast"), { type: "ok" }); }
+          if (act === "metoo") { x.counts[st.period] += 1; st.metoo[x.id] = true; map.flash(x.id); UI.toast(t("target.metoo_done"), { type: "ok" }); }
+          renderMap(); renderPanel();
+        });
+        // «Новая жалоба» (кнопка макета): +1 случайной цели, пульс, цвет перетекает за 0,8 с
+        $("pm-new").addEventListener("click", function () {
+          var list = visible().filter(function (x) { return x.status !== "fixed"; });
+          if (!list.length) return;
+          var x = list[Math.floor(Math.random() * list.length)];
+          [7, 30, 90].forEach(function (p) { x.counts[p] += 1; });
+          renderMap(); map.flash(x.id); if (st.selected === x.id || !st.selected) renderPanel();
+        });
+        var role = document.getElementById("pm-role");
+        if (role) {
+          role.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.value === st.role)); });
+          UI.seg(role, function (v) { st.role = v; map.setSoft(v === "resident"); renderPanel(); });
+        }
+        // Поиск: по названию места
+        var search = $("pm-search");
+        if (search) search.addEventListener("input", function () {
+          var q = search.value.trim().toLowerCase(), box = $("pm-results");
+          var found = q ? targets.filter(function (x) { return P.label(x).toLowerCase().indexOf(q) >= 0; }) : [];
+          box.hidden = !q;
+          box.innerHTML = '<div class="bk-card" style="padding:8px">' + (found.length ? '<ul class="bk-list">' + found.map(function (x) {
+            return '<li><button class="bk-list__item" type="button" data-open="' + x.id + '">' + UI.icon("pin") + '<span class="bk-list__main"><span class="bk-list__title">' + UI.esc(P.label(x)) + "</span></span></button></li>";
+          }).join("") + "</ul>" : '<p class="bk-meta" style="padding:8px">' + UI.esc(t("common.search.nothing")) + "</p>") + "</div>";
+        });
+        $("pm-results").addEventListener("click", function (e) { var b = e.target.closest("[data-open]"); if (b) { $("pm-results").hidden = true; search.value = ""; open(b.getAttribute("data-open")); } });
+        UI.sheet($("pm-panel"));
+        phone.addEventListener("change", renderPanel);
+        I.onChange(function () { renderAll(); });
+
+        }
+
+        Promise.all([I.ready, fetch("../categories_v2.json").then(function (r) { return r.json(); }).then(function (d) { categories = d.categories; })]).then(function () {
+          P.header($("pm-header"), "map", { search: true, nav: true, role: true });
+          P.banner($("pm-banner"));
+          map = P.createMap($("pm-map"), { onSelect: function (id) { open(id); }, soft: st.role === "resident" });
+          bind();
+          renderAll();
+          var first = P.query("target");
+          if (first) open(first);
+        });
+      })();
+    </script>
+  </body>
+</html>

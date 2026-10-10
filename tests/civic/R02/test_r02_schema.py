@@ -12,6 +12,9 @@ EXPECTED_TABLES = {
     "civic_schema_migrations", "civic_users", "civic_sessions", "civic_login_failures",
     "civic_objects", "civic_public_objects", "civic_history", "civic_imports",
     "civic_import_candidates", "civic_create_requests",
+    # R06 раунд 14, миграция 6 (патч R06 r02_old_store_tests.patch, перенесён R01 на версии раунда 13)
+    "civic_object_stages", "civic_stage_history", "civic_proposals", "civic_proposal_history",
+    "civic_votes", "civic_v2_settings",
 }
 
 

@@ -9,6 +9,7 @@
   revoke-sessions [USER]        выход везде
   import FILE [--dry-run]       идемпотентный импорт пакета civic-v1 (только draft)
   seed-demo [--package FILE]    синтетический демо-набор + демо-публикация (только synthetic)
+  seed-r14-demo                 R06 раунд 14: seed-demo (если пусто) + демо-этапы и 5 демо-предложений в Нуре
   backup DEST                   согласованная копия через SQLite backup API
   restore SRC --yes             восстановление с предварительной копией текущей базы
   verify-backup SRC             проверить копию только для чтения: целостность, схема, счётчики
@@ -173,6 +174,16 @@ def seed_demo(service, package, *, publish=True) -> dict:
 def cmd_seed_demo(args, service):
     package = load_package(args.package or DEMO_PACKAGE)
     _print(seed_demo(service, package, publish=not args.no_publish))
+
+
+def cmd_seed_r14_demo(args, service):
+    from .demo_r14 import seed_r14_demo
+    with service.db.read() as conn:
+        has_demo = conn.execute(
+            "SELECT 1 FROM civic_objects WHERE json_extract(data_json, '$.evidence_type') = 'synthetic'").fetchone()
+    report = {"seed_demo": None if has_demo else seed_demo(service, load_package(DEMO_PACKAGE))}
+    report.update(seed_r14_demo(service))
+    _print(report)
 
 
 def _integrity_ok(path: Path) -> bool:
@@ -464,6 +475,7 @@ def build_parser() -> argparse.ArgumentParser:
     cmd.add_argument("--package", help="синтетический пакет (по умолчанию встроенный demo_package.json)")
     cmd.add_argument("--no-publish", action="store_true")
     cmd.set_defaults(func=cmd_seed_demo)
+    sub.add_parser("seed-r14-demo").set_defaults(func=cmd_seed_r14_demo)
     cmd = sub.add_parser("backup")
     cmd.add_argument("dest")
     cmd.set_defaults(func=cmd_backup, no_service=True)

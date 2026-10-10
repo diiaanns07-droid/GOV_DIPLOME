@@ -22,7 +22,7 @@ import types
 import pytest
 
 from ui import web_server
-from ui.web_server import CivicGateway, CivicV2Gateway, V2_HANDLERS, V2_ROUTES
+from ui.web_server import CivicGateway, CivicV2Gateway, V2BadRequest, V2_HANDLERS, V2_ROUTES
 
 CTX = {"headers": {}, "cookies": {}, "client_ip": "127.0.0.1", "host_allowed": True,
        "is_same_origin": True, "is_https": False, "host": "127.0.0.1"}
@@ -63,11 +63,25 @@ ROUTE_SAMPLES = [
     ("GET", "/heat/meta", "", None),
     ("GET", "/heat/target", "kind=object&id=osm-node-1", None),
     ("GET", "/akim/summary", "", None),
+    ("GET", "/street-segment", "from=71.41,51.11&to=71.42,51.11", None),
+    ("GET", "/street-snap", "lon=71.41&lat=51.11", None),
+    ("GET", "/objects-near", "lon=71.41&lat=51.11", None),
+    ("GET", "/yard", "lon=71.41&lat=51.11", None),
+    ("GET", "/geo/status", "", None),
+    ("GET", "/proposals/summary", "", None),
+    ("GET", "/proposals/p-1", "", None),
+    ("POST", "/proposals/p-1/approve", "", {}),
+    ("POST", "/proposals/p-1/reject", "", {}),
+    ("POST", "/proposals/p-1/withdraw", "", {}),
+    ("GET", "/objects/lagging", "", None),
+    ("GET", "/objects/o-1", "", None),
+    ("GET", "/staff/objects/o-1/stage", "", None),
     ("GET", "/proposals", "", None),
     ("POST", "/proposals", "", {"kind": "park"}),
     ("POST", "/proposals/p-1/vote", "", {"value": 1, "device_id": "device-123"}),
     ("GET", "/objects", "", None),
     ("PUT", "/objects/o-1/stage", "", {"stage": "design"}),
+    ("GET", "/forecast", "month=2026-11&k=5", None),
 ]
 
 
@@ -82,7 +96,7 @@ def test_missing_module_answers_503_with_module_name(method, path, query, body):
     status, data = call(gw(), method, path, query, body)
     assert status == 503
     assert data["error"] == "module_not_ready"
-    assert data["module"] and data["role"] in {"R04", "R06", "R07", "R08", "R09", "R12"}
+    assert data["module"] and data["role"] in {"R04", "R06", "R07", "R08", "R09", "R12", "R13"}
     assert "Traceback" not in json.dumps(data, ensure_ascii=False)
 
 
@@ -445,3 +459,15 @@ def test_http_body_checks(server):
     conn.close()
     status, data, _ = request(server, "POST", "/api/civic/v2/classify", {"text": "x" * 70000})
     assert status == 413 and data["error"] == "too_large"
+
+
+def test_forecast_arguments_are_checked_before_the_module():
+    gateway = CivicV2Gateway()
+    assert gateway.arguments("forecast", {}, "", None) == {"month": None, "district": None, "k": 10}
+    assert gateway.arguments("forecast", {}, "month=2026-11&district=nura&k=3", None) == {
+        "month": "2026-11", "district": "nura", "k": 3}
+    for query, field in (("month=2026-13", "month"), ("month=11-2026", "month"), ("k=0", "k"), ("k=51", "k"),
+                         ("district=Нура", "district")):
+        with pytest.raises(V2BadRequest) as error:
+            gateway.arguments("forecast", {}, query, None)
+        assert error.value.field == field

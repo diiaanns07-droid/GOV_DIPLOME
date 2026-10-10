@@ -1,0 +1,82 @@
+{
+ "schema": "birge-proposals-fixture-v1",
+ "purpose": "Заглушка GET /api/civic/v2/proposals (CONTRACT §7) до подключения R06. Только примеры (demo: true).",
+ "source": {
+  "streets": "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json",
+  "edges": [
+   "osm-w1328815797-6",
+   "osm-w1328815797-7",
+   "osm-w1328815797-8",
+   "osm-w1189551423-0"
+  ],
+  "license": "ODbL-1.0",
+  "attribution": "© OpenStreetMap contributors"
+ },
+ "proposals": [
+  {
+   "status": "proposal",
+   "year": 2027,
+   "district": "nura",
+   "demo": true,
+   "created_at": "2026-10-10T12:00:00+05:00",
+   "id": "p-demo-light-syganak",
+   "kind": "lighting",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      71.398381,
+      51.12777
+     ],
+     [
+      71.399922,
+      51.12758
+     ],
+     [
+      71.400116,
+      51.127556
+     ],
+     [
+      71.401304,
+      51.127409
+     ]
+    ]
+   },
+   "rotation_deg": 0,
+   "votes_up": 128,
+   "votes_down": 12,
+   "near_street": "улица Сыганак",
+   "target": {
+    "kind": "segment",
+    "id": "osm-w1328815797-6",
+    "ids": [
+     "osm-w1328815797-6",
+     "osm-w1328815797-7",
+     "osm-w1328815797-8"
+    ],
+    "label_ru": "улица Сыганак",
+    "label_kk": "улица Сыганак"
+   }
+  },
+  {
+   "status": "proposal",
+   "year": 2027,
+   "district": "nura",
+   "demo": true,
+   "created_at": "2026-10-10T12:00:00+05:00",
+   "id": "p-demo-stop-syganak",
+   "kind": "stop",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.401473,
+     51.127621
+    ]
+   },
+   "rotation_deg": 11,
+   "votes_up": 64,
+   "votes_down": 5,
+   "near_street": "улица Сыганак"
+  }
+ ]
+}

@@ -38,6 +38,8 @@ ASSETS = {
     "/favicon.svg": ("favicon.svg", "image/svg+xml"),
     "/vendor/maplibre-gl.js": ("vendor/maplibre-gl.js", "text/javascript; charset=utf-8"),
     "/vendor/maplibre-gl.css": ("vendor/maplibre-gl.css", "text/css; charset=utf-8"),
+    # B2: three.js 0.169.0 (LOCAL-2) для 3D-превью R05; грузится модулем build3d только при монтировании.
+    "/vendor/three/three.module.min.js": ("vendor/three/three.module.min.js", "text/javascript; charset=utf-8"),
 }
 POST_ROUTES = {
     "/api/validate", "/api/simulate", "/api/plan-status", "/api/optimize",
@@ -78,7 +80,13 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "heat/heat.js", "heat/heat.css",
                 "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
                 "feedback/complaint.css",
-                "akim/index.html", "akim/akim.js", "akim/akim.css", "akim/akim.i18n.json")
+                "akim/index.html", "akim/akim.js", "akim/akim.css", "akim/akim.i18n.json",
+                "map/demo_snapped.json",  # B2: R12 демо-линии, привязанные к улицам OSM
+                "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
+                # B2: R05 3D-превью @ b0353ee. demo.html и data/demo-basemap.json не отдаём (только для демо R05).
+                "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
+                "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
+                "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json")
 # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
@@ -290,6 +298,11 @@ class CivicGateway:
             created = ensure_parent()
             service = service_class(str(db_path))
             _restrict_db_files(db_path, own_parent=created)
+            # R06 раунд 14: функции API v2 (предложения, голоса, этапы) работают с этой же базой и сессиями.
+            try:
+                importlib.import_module("ui.civic_store.v2").bind(service)
+            except ModuleNotFoundError:
+                pass  # хранилище раунда 13 без v2 — маршруты R06 ответят 503 module_not_ready
             return service
 
         def feedback():
@@ -520,6 +533,8 @@ CATEGORIES_V2_FILE = ROOT / "research" / "round-14" / "categories_v2.json"
 ASTANA_BOUNDS = (70.9, 50.9, 71.9, 51.4)
 V2_TEXT_MAX = 5000
 V2_DEVICE_ID = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
+V2_DISTRICT = re.compile(r"^[a-z][a-z0-9_-]{1,39}$")
+V2_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 class V2Handler:
@@ -532,9 +547,11 @@ class V2Handler:
                       ждёт этот конверт). Сотрудника и CSRF такой сервис проверяет сам по principal R02.
     """
 
-    def __init__(self, role, modules, function, staff=False, kind="function"):
+    def __init__(self, role, modules, function, staff=False, kind="function", strip_prefix=False):
         self.role, self.modules, self.function, self.staff = role, tuple(modules), function, staff
         self.kind = kind
+        # strip_prefix: raw-обработчик ждёт путь без /api/civic/v2 (R12 engine.civic_geo.api.handle).
+        self.strip_prefix = strip_prefix
 
 
 # (метод, шаблон пути, ключ маршрута). {id} проверяется тем же правилом CIVIC_ID, что и в v1.
@@ -560,11 +577,28 @@ V2_ROUTES = (
     ("GET", ("heat", "meta"), "heat.meta"),
     ("GET", ("heat", "target"), "heat.target"),
     ("GET", ("akim", "summary"), "akim.summary"),
+    # R12 точность карты @ d13f49a: привязка к улицам и дворам для редактора и формы (только чтение).
+    ("GET", ("street-segment",), "geo.segment"),
+    ("GET", ("street-snap",), "geo.snap"),
+    ("GET", ("objects-near",), "geo.objects"),
+    ("GET", ("yard",), "geo.yard"),
+    ("GET", ("geo", "status"), "geo.status"),
     ("GET", ("proposals",), "proposals.list"),
     ("POST", ("proposals",), "proposals.create"),
+    # R06 @ 7031afa: точные пути (summary, lagging) — раньше шаблонов с {id}.
+    ("GET", ("proposals", "summary"), "proposals.summary"),
+    ("GET", ("proposals", "{id}"), "proposals.get"),
     ("POST", ("proposals", "{id}", "vote"), "proposals.vote"),
+    ("POST", ("proposals", "{id}", "approve"), "proposals.approve"),
+    ("POST", ("proposals", "{id}", "reject"), "proposals.reject"),
+    ("POST", ("proposals", "{id}", "withdraw"), "proposals.withdraw"),
     ("GET", ("objects",), "objects.list"),
+    ("GET", ("objects", "lagging"), "objects.lagging"),
+    ("GET", ("objects", "{id}"), "objects.get"),
     ("PUT", ("objects", "{id}", "stage"), "objects.stage"),
+    ("GET", ("staff", "objects", "{id}", "stage"), "objects.stage.get"),
+    # R13 @ 8705829: прогноз проблемных территорий (прототип на синтетике, evidence_type="synthetic").
+    ("GET", ("forecast",), "forecast"),
 )
 # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
 V2_HANDLERS = {
@@ -577,11 +611,22 @@ V2_HANDLERS = {
         "complaints.duplicate")},
     **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta", "heat.target")},
     "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),
+    **{key: V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True)
+       for key in ("geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status")},
     "proposals.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_proposals"),
     "proposals.create": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "create_proposal", staff=True),
     "proposals.vote": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "vote_proposal"),
     "objects.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_objects"),
     "objects.stage": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "set_object_stage", staff=True),
+    "proposals.summary": V2Handler("R06", ("ui.civic_store.v2",), "proposals_summary"),
+    "proposals.get": V2Handler("R06", ("ui.civic_store.v2",), "get_proposal"),
+    "proposals.approve": V2Handler("R06", ("ui.civic_store.v2",), "decide_proposal", staff=True),
+    "proposals.reject": V2Handler("R06", ("ui.civic_store.v2",), "decide_proposal", staff=True),
+    "proposals.withdraw": V2Handler("R06", ("ui.civic_store.v2",), "decide_proposal", staff=True),
+    "objects.lagging": V2Handler("R06", ("ui.civic_store.v2",), "lagging_objects"),
+    "objects.get": V2Handler("R06", ("ui.civic_store.v2",), "get_object"),
+    "objects.stage.get": V2Handler("R06", ("ui.civic_store.v2",), "get_object_stage", staff=True),
+    "forecast": V2Handler("R13", ("ui.civic_forecast",), "forecast_response"),
 }
 
 
@@ -843,8 +888,41 @@ class CivicV2Gateway:
             return {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
                     "lat": _v2_number(q["lat"], "lat", ASTANA_BOUNDS[1], ASTANA_BOUNDS[3]),
                     "category": self._category(q.get("category"))}
-        if key in ("proposals.list", "objects.list"):
-            return {"bbox": _v2_bbox(q["bbox"]) if opt("bbox") else None}
+        district = q.get("district") or None
+        if district is not None and not V2_DISTRICT.match(district):
+            raise V2BadRequest("district", "district: неизвестный район.")
+        if key == "forecast":
+            month = q.get("month") or None
+            if month is not None and not re.match(r"^20\d{2}-(0[1-9]|1[0-2])$", month):
+                raise V2BadRequest("month", "month: месяц в формате ГГГГ-ММ.")
+            return {"month": month, "district": district, "k": _v2_int(q["k"], "k", 1, 50) if opt("k") else 10}
+        if key == "proposals.list":
+            device = q.get("device_id") or None
+            if device is not None and not V2_DEVICE_ID.match(device):
+                raise V2BadRequest("device_id", "device_id: строка 8–128 символов.")
+            status = q.get("status") or None
+            if status is not None and not re.fullmatch(r"[a-z_,]{1,60}", status):
+                raise V2BadRequest("status", "status: неизвестный статус.")
+            return {"bbox": _v2_bbox(q["bbox"]) if opt("bbox") else None, "district": district,
+                    "status": status, "device_id": device}
+        if key == "objects.list":
+            return {"bbox": _v2_bbox(q["bbox"]) if opt("bbox") else None, "district": district}
+        if key == "objects.lagging":
+            return {"district": district}
+        if key == "proposals.summary":
+            since = q.get("since") or None
+            if since is not None and not V2_DATE.match(since):
+                raise V2BadRequest("since", "since: дата в формате ГГГГ-ММ-ДД.")
+            return {"since": since}
+        if key == "proposals.get":
+            device = q.get("device_id") or None
+            if device is not None and not V2_DEVICE_ID.match(device):
+                raise V2BadRequest("device_id", "device_id: строка 8–128 символов.")
+            return {"proposal_id": params["id"], "device_id": device}
+        if key in ("proposals.approve", "proposals.reject", "proposals.withdraw"):
+            return {"proposal_id": params["id"], "action": key.split(".")[1], "body": body}
+        if key in ("objects.get", "objects.stage.get"):
+            return {"object_id": params["id"]}
         if key == "proposals.create":
             return {"body": body}
         if key == "proposals.vote":
@@ -884,6 +962,9 @@ class CivicV2Gateway:
         for name, value in (("context", context), ("principal", principal)):
             if takes_kwargs or name in accepted:
                 args[name] = value
+        if accepted and not takes_kwargs:
+            # Функция со старой сигнатурой (без нового необязательного параметра, напр. district) не должна падать.
+            args = {k: v for k, v in args.items() if k in accepted}
         return fn(**args)
 
     def handle(self, method, rel_path, query, body, context):
@@ -925,7 +1006,7 @@ class CivicV2Gateway:
                        else "Эта часть ещё не подключена в сборке.")
             return v2_error(503, reason, message, module=module, role=handler.role)
         if handler.kind == "raw":
-            return self._raw(fn, key, rel_path, query, module, handler)
+            return self._raw(fn, key, rel_path if handler.strip_prefix else CIVIC_V2_PREFIX + rel_path, query, module, handler)
         if handler.kind == "service":
             return self._delegate(fn, method, rel_path, query, body, context, module, handler)
         try:
@@ -947,8 +1028,14 @@ class CivicV2Gateway:
             status = getattr(exc, "status", None)
             if isinstance(status, int) and not isinstance(status, bool) and 400 <= status <= 599:
                 code = getattr(exc, "code", None)
+                extra = {}
+                # R06: поля с ошибкой (422) и текущая ревизия (409) — форма подсвечивает поле и показывает новую версию.
+                if isinstance(getattr(exc, "fields", None), dict) and exc.fields:
+                    extra["fields"] = exc.fields
+                if isinstance(getattr(exc, "current_revision", None), int):
+                    extra["current_revision"] = exc.current_revision
                 return v2_error(status, code if isinstance(code, str) and code else "error",
-                                str(getattr(exc, "message", None) or exc)[:300])
+                                str(getattr(exc, "message", None) or exc)[:300], **extra)
             if isinstance(exc, (LookupError,)):
                 return v2_error(404, "not_found", "Запись не найдена.")
             if isinstance(exc, ValueError):
@@ -965,10 +1052,13 @@ class CivicV2Gateway:
         return {"status": status, "headers": {}, "body": result}
 
     @staticmethod
-    def _raw(fn, key, rel_path, query, module, handler):
-        """R07/R08: handle_get(path, parse_qs(query)) -> (status, body); роль сама проверяет параметры."""
+    def _raw(fn, key, path, query, module, handler):
+        """R07/R08/R12: fn(path, parse_qs(query)) -> (status, body) | None; роль сама проверяет параметры."""
         try:
-            status, body = fn(CIVIC_V2_PREFIX + rel_path, parse_qs(query or "", keep_blank_values=True))
+            reply = fn(path, parse_qs(query or "", keep_blank_values=True))
+            if reply is None:
+                return v2_error(404, "not_found", "Адрес API не найден.")
+            status, body = reply
         except Exception:
             LOGGER.exception("API v2: %s (%s.%s) упал", key, module, handler.function)
             return v2_error(500, "internal", "Не удалось выполнить запрос. Попробуйте ещё раз.")
@@ -1535,6 +1625,11 @@ def main():
     try:
         server = create_server(port=args.port, host=args.host,
                                civic_db=resolve_db_path(args.civic_db), classifier=args.civic_classifier)
+        # R12: граф улиц и дворы грузятся ~2 с — прогреваем в фоне, чтобы первый житель не ждал.
+        try:
+            threading.Thread(target=importlib.import_module("engine.civic_geo.api").warm_up, daemon=True).start()
+        except Exception:  # R12 не сдан или сломан — /targets ответит 503, приложение работает
+            LOGGER.info("civic-v2: R12 warm-up skipped")
     except OSError as exc:
         if getattr(exc, "winerror", None) == 10048 or getattr(exc, "errno", None) in (48, 98, 10048):
             parser.exit(1, "Порт занят. Закройте прежнее приложение или задайте другой PORT.\n")

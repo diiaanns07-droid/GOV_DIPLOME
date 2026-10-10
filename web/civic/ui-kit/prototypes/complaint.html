@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Birge · макет · жалоба жителя</title>
+    <!-- Макет R11 для R09: путь жителя за 5 шагов и «Мои обращения». Образец вида и поведения, данные — примеры.
+         Параметры: ?lang=kk · ?view=mine · ?empty=1 (пустые «Мои обращения») · ?fail=send (ошибка отправки) · ?noml=1 (без подсказки модели) -->
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../components.css" />
+    <link rel="stylesheet" href="proto.css" />
+  </head>
+  <body class="bk-app">
+    <a class="bk-skip" href="#pc-fab" data-i18n="common.action.skip_to_main"></a>
+    <div class="pm-page">
+      <header id="pm-header"></header>
+      <div id="pm-banner"></div>
+      <main class="pm-stage" id="pm-stage">
+        <div class="pm-map" id="pm-map"></div>
+        <div class="pm-tools bk-maptools">
+          <button class="bk-mapbtn" type="button" id="pc-zoom-in" data-i18n-attr="aria-label:common.map.zoom_in;title:common.map.zoom_in"></button>
+          <button class="bk-mapbtn" type="button" id="pc-zoom-out" data-i18n-attr="aria-label:common.map.zoom_out;title:common.map.zoom_out"></button>
+        </div>
+        <div class="pm-attrib">© OpenStreetMap</div>
+        <button class="bk-btn bk-btn--primary bk-btn--lg pc-fab" type="button" id="pc-fab"></button>
+        <section id="pc-panel" role="dialog" aria-modal="false" aria-labelledby="pc-title" tabindex="-1" hidden>
+          <button class="bk-sheet__handle" type="button" id="pc-handle"></button>
+          <div class="bk-panel__head">
+            <button class="bk-iconbtn" type="button" id="pc-back" data-i18n-attr="aria-label:common.action.back"></button>
+            <h2 class="bk-panel__title" id="pc-title" tabindex="-1"></h2>
+            <button class="bk-iconbtn" type="button" id="pc-close" data-i18n-attr="aria-label:common.action.close"></button>
+          </div>
+          <div class="bk-panel__body" id="pc-body"></div>
+          <div class="bk-panel__foot" id="pc-foot"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../i18n/i18n.js"></script>
+    <script src="../ui-kit.js"></script>
+    <script src="proto-streets.js"></script>
+    <script src="proto.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        var I = BirgeI18n, UI = BirgeUI, P = BirgeProto, t = I.t, S = BirgeProtoStreets;
+        var $ = function (id) { return document.getElementById(id); };
+        var phone = window.matchMedia("(max-width: 1023px)");
+        var categories = [], map;
+        var targets = P.demoTargets().map(function (x) { x.count = x.counts[30]; x.level = x.status === "fixed" ? "fixed" : P.levelOf(x.count); return x; });
+        var NOW = new Date("2026-10-12T10:00:00+05:00");
+        var mine = P.query("empty") ? [] : [
+          { code: "B-0398", category: "roads", target: "t-seg-orynbor", status: "in_progress", created: "2026-10-05", demo: true },
+          { code: "B-0371", category: "waste", target: "t-yard-sauran", status: "fixed", created: "2026-09-28", demo: true },
+        ];
+        // Подсказка категории в макете — по словам (в продукте — /classify R04; без ML форма работает так же).
+        var WORDS = [["snow_ice", /снег|гололёд|гололед|налед|сосул|қар|мұз|көктайғақ/i], ["roads", /яма|асфальт|дорог|шұңқыр|жол/i],
+                     ["lighting", /фонар|темно|освещ|шам|жарық|қараңғы/i], ["waste", /мусор|бак|свалк|қоқыс|контейнер/i],
+                     ["transport", /остановк|автобус|павильон|аялдама/i], ["yards", /площадк|двор|качел|аула|алаң/i],
+                     ["noise_safety", /шум|опасн|шу|қауіп/i], ["utilities", /вода|отоплен|канализ|су\b|жылу/i]];
+        var st;
+        function fresh() { return { open: false, view: P.query("view") === "mine" ? "mine" : "wizard", step: 2, pick: null, cands: null, target: null, approx: false,
+                                    text: "", category: null, source: null, suggest: null, grid: false, similar: null, sending: false, result: null, locating: false }; }
+        st = fresh();
+
+        function cat(id) { return categories.filter(function (c) { return c.id === id; })[0] || { icon: "dots" }; }
+        function byId(id) { return targets.filter(function (x) { return x.id === id; })[0]; }
+        function placeLabel() { return st.approx ? t("common.tag.approx") : P.label(st.target); }
+
+        // ── каркас панели / шторки ──
+        function layout() {
+          var p = $("pc-panel");
+          p.className = phone.matches ? "bk-sheet" : "bk-panel pm-panel";
+          $("pc-handle").hidden = !phone.matches;
+          $("pm-stage").classList.toggle("pm-has-panel", st.open && !phone.matches);
+          // Шаг ② на телефоне — шторка наполовину: карта должна быть видна, чтобы на неё нажать
+          if (phone.matches) p.dataset.snap = st.view === "wizard" && st.step === 2 ? "half" : "full";
+        }
+        function wizardBar() {
+          var dots = "";
+          for (var i = 1; i <= 5; i++) dots += '<i data-state="' + (i < st.step ? "done" : i === st.step ? "current" : "todo") + '"></i>';
+          return '<div class="bk-wizard"><span class="bk-wizard__label">' + UI.esc(t("complaint.step_of", { i: st.step, total: 5 })) + '</span><span class="bk-wizard__dots" aria-hidden="true">' + dots + "</span></div>";
+        }
+        function placePill() {
+          return '<p class="pc-place">' + UI.icon("pin") + "<span>" + UI.esc(t("complaint.step2.selected", { label: placeLabel() })) + "</span></p>";
+        }
+        function stepsBar(status) {
+          var cur = { "new": 0, accepted: 0, in_progress: 1, fixed: 2 }[status] || 0;
+          return '<ol class="bk-steps' + (status === "fixed" ? " bk-steps--fixed" : "") + '">' + ["accepted", "in_progress", "fixed"].map(function (s, i) {
+            var state = i < cur || (i === cur && status === "fixed") ? "done" : i === cur ? "current" : "todo";
+            return '<li data-state="' + state + '"><span>' + UI.esc(t("status." + s)) + "</span></li>";
+          }).join("") + "</ol>";
+        }
+
+        function render() {
+          layout();
+          var body = $("pc-body"), foot = $("pc-foot"), title = "", html = "", f = "";
+          $("pc-back").hidden = !(st.view === "wizard" && (st.step === 3 || st.step === 4));
+          if (st.view === "mine") {
+            title = mine.length ? t("mine.title") + " (" + mine.length + ")" : t("mine.title");
+            if (!mine.length) {
+              body.innerHTML = ""; UI.state(body, "empty", { title: t("mine.empty.title"), text: t("mine.empty.hint"), icon: "list",
+                action: { label: t("complaint.cta"), onClick: function () { st = fresh(); st.view = "wizard"; st.open = true; render(); } } });
+              foot.hidden = true; $("pc-title").textContent = title; return;
+            }
+            html = mine.map(function (m) {
+              var x = byId(m.target), c = cat(m.category);
+              return '<article class="bk-card" style="box-shadow:none;border:1px solid var(--c-line)"><div class="bk-card__row" style="justify-content:space-between"><span class="bk-card__eyebrow">' + UI.icon(c.icon) + "<span>" + UI.esc(I.cat(m.category)) +
+                '</span></span><span class="bk-status" data-status="' + m.status + '">' + UI.esc(t("status." + m.status)) + "</span></div>" +
+                '<p style="margin:0;font-weight:600">' + UI.esc(x ? P.label(x) : t("common.tag.approx")) + '</p><p class="bk-meta" style="margin:0">' + UI.esc(I.formatDate(m.created, { now: NOW })) + " · " + m.code + "</p>" +
+                (m.metoo ? '<p class="bk-meta" style="margin:0">' + UI.esc(t("target.metoo_done")) + "</p>" : "") +
+                (m.demo ? '<div><span class="bk-tag bk-tag--demo">' + UI.esc(t("common.tag.demo")) + "</span></div>" : "") + stepsBar(m.status) + "</article>";
+            }).join("");
+            f = '<button class="bk-btn bk-btn--primary bk-btn--block" type="button" data-act="new">' + UI.icon("plus") + "<span>" + UI.esc(t("complaint.cta")) + "</span></button>";
+          } else if (st.step === 2) {
+            title = t("complaint.step2.title");
+            html = wizardBar() + "<p>" + UI.esc(t("complaint.step2.hint")) + "</p>" +
+              '<button class="bk-btn bk-btn--block" type="button" data-act="locate"' + (st.locating ? " disabled" : "") + ">" + UI.icon("locate") + "<span>" +
+              UI.esc(st.locating ? t("complaint.step2.locating") : t("common.map.locate")) + "</span></button>";
+            if (st.cands) {
+              html += '<h3 class="bk-h2">' + UI.esc(t("complaint.step2.is_this")) + '</h3><div role="radiogroup" style="display:grid;gap:8px">' +
+                st.cands.map(function (c, i) {
+                  var x = c.target, icon = x.kind === "segment" ? "road" : x.kind === "area" ? "trees" : "bus";
+                  return '<button class="bk-option" type="button" role="radio" aria-checked="' + (i === 0) + '" data-cand="' + i + '">' + UI.icon(icon) + "<span>" + UI.esc(P.label(x)) +
+                    '<span class="bk-option__sub">' + UI.esc(P.typeLabel(x)) + " · " + UI.esc(t("complaint.step2.distance", { n: c.distance_m })) + "</span></span></button>";
+                }).join("") +
+                '<button class="bk-option" type="button" role="radio" aria-checked="false" data-cand="approx">' + UI.icon("pin") + "<span>" + UI.esc(t("complaint.step2.other_place")) + "</span></button></div>";
+            }
+          } else if (st.step === 3) {
+            title = t("complaint.step3.title");
+            html = wizardBar() + placePill() +
+              '<label class="bk-field"><span class="bk-field__label">' + UI.esc(t("complaint.step3.label")) + '</span><textarea id="pc-text" maxlength="2000" placeholder="' + UI.esc(t("complaint.step3.placeholder")) + '">' + UI.esc(st.text) +
+              '</textarea><span class="bk-field__hint">' + UI.esc(t("complaint.step3.hint")) + '</span></label><p class="bk-field__hint">' + UI.esc(t("complaint.step3.privacy")) + '</p><div id="pc-cat" aria-live="polite"></div>';
+            f = '<button class="bk-btn bk-btn--primary bk-btn--block" type="button" id="pc-send">' + UI.icon("send") + "<span></span></button>";
+          } else if (st.step === 4) {
+            var s = st.similar;
+            title = t("complaint.step4.title", { n: s.count });
+            html = wizardBar() + '<div class="bk-card" style="background:var(--c-paper);box-shadow:none"><div class="bk-card__row"><span class="bk-heat bk-heat--lg" data-level="' + s.level + '">' + s.count + "</span><b>" + UI.esc(I.cat(s.category)) + "</b></div>" +
+              "<p>«" + UI.esc(s.groups[0][I.getLang()]) + '»</p><p class="bk-meta">' + UI.esc(P.label(s)) + " · " + UI.esc(I.formatRelative("2026-10-10", { now: NOW })) + '</p><div><span class="bk-status" data-status="' + s.status + '">' + UI.esc(t("status." + s.status)) + "</span></div></div>" +
+              "<p>" + UI.esc(t("complaint.step4.hint")) + "</p>";
+            f = '<div style="display:grid;gap:8px"><button class="bk-btn bk-btn--primary bk-btn--block" type="button" id="pc-metoo">' + UI.icon("users") + "<span>" + UI.esc(t("complaint.step4.metoo")) + '</span></button><button class="bk-btn bk-btn--block" type="button" data-act="different">' + UI.esc(t("complaint.step4.different")) + "</button></div>";
+          } else {
+            var r = st.result;
+            title = r.metoo ? t("complaint.step5.metoo_title") : t("complaint.step5.title");
+            html = wizardBar() + (r.metoo ? '<p class="bk-lead">' + UI.esc(t("complaint.step5.metoo_count", { n: r.count })) + "</p>" :
+              '<p class="pc-code"><span>' + UI.esc(t("complaint.step5.code_label")) + "</span><strong>" + r.code + '</strong><button class="bk-btn bk-btn--ghost" type="button" data-act="copy">' + UI.icon("copy") + "<span>" + UI.esc(t("common.action.copy")) + "</span></button></p>" +
+              '<p class="bk-meta">' + UI.esc(t("complaint.step5.due", { date: I.formatDate("2026-10-14", { now: NOW }) })) + "</p>") + placePill() + stepsBar(r.status);
+            f = '<div style="display:grid;gap:8px"><button class="bk-btn bk-btn--primary bk-btn--block" type="button" data-act="mine">' + UI.icon("list") + "<span>" + UI.esc(t("complaint.step5.to_mine")) + '</span></button><button class="bk-btn bk-btn--block" type="button" data-act="close">' + UI.esc(t("complaint.step5.to_map")) + "</button></div>";
+          }
+          $("pc-title").textContent = title;
+          body.innerHTML = html;
+          foot.innerHTML = f;
+          foot.hidden = !f;
+          if (st.view === "wizard" && st.step === 3) { renderCat(); updateSend(); var ta = $("pc-text"); ta.addEventListener("input", onText); }
+          map.setPickMode(st.open && st.view === "wizard" && st.step === 2);
+        }
+        function renderCat() {
+          var box = $("pc-cat"); if (!box) return;
+          if (st.category && !st.grid) {
+            var c = cat(st.category);
+            box.innerHTML = '<div class="bk-card__row"><span class="bk-chip' + (st.source === "model" ? " bk-chip--suggest" : "") + '" aria-pressed="true">' + UI.icon(c.icon) + "<span>" +
+              UI.esc(st.source === "model" ? t("complaint.step3.suggest", { category: I.cat(st.category) }) : I.cat(st.category)) + '</span></span><button class="bk-btn bk-btn--ghost" type="button" id="pc-change">' + UI.esc(t("complaint.step3.change_cat")) + "</button></div>";
+            return;
+          }
+          if (!st.grid) { box.innerHTML = '<button class="bk-btn bk-btn--ghost" type="button" id="pc-change">' + UI.esc(t("complaint.step3.choose_cat")) + "</button>"; return; }
+          box.innerHTML = '<p class="bk-field__label" id="pc-cat-title">' + UI.esc(t("complaint.step3.choose_cat")) + '</p><div class="bk-catgrid" role="group" aria-labelledby="pc-cat-title">' + categories.map(function (c) {
+            return '<button type="button" aria-pressed="' + (st.category === c.id) + '" data-cat="' + c.id + '">' + UI.icon(c.icon) + "<span>" + UI.esc(I.cat(c.id)) + "</span></button>";
+          }).join("") + "</div>";
+        }
+        function updateSend() {
+          var b = $("pc-send"); if (!b) return;
+          b.disabled = st.sending || st.text.trim().length < 3 || !st.category;
+          b.setAttribute("aria-busy", String(st.sending));
+          b.querySelector("span").textContent = st.sending ? t("complaint.sending") : t("complaint.send");
+        }
+        var classifyTimer;
+        function onText(e) {
+          st.text = e.target.value;
+          updateSend();
+          clearTimeout(classifyTimer);
+          if (st.source === "resident" || st.text.trim().length < 3) return;
+          classifyTimer = setTimeout(function () {
+            var hit = P.query("noml") ? null : WORDS.filter(function (w) { return w[1].test(st.text); })[0];
+            if (hit) { st.category = hit[0]; st.source = "model"; st.grid = false; }
+            else if (!st.category) st.grid = true; // модель молчит — сразу сетка категорий, без сообщений об ошибке
+            renderCat(); updateSend(); // ← кнопка «Отправить» обновляется вместе с подсказкой
+          }, 700);
+        }
+
+        // ── шаги ──
+        function pick(p) {
+          st.pick = [p.x, p.y];
+          st.cands = P.nearest(targets, p, 3);
+          if (!st.cands.length) { st.approx = true; st.target = null; map.highlight({ approx: st.pick, pick: st.pick }); st.step = 3; render(); return; }
+          map.highlight(Object.assign({ pick: st.pick }, st.cands[0].target.geom));
+          render();
+        }
+        function choose(i) {
+          if (i === "approx") { st.approx = true; st.target = null; map.highlight({ approx: st.pick, pick: st.pick }); }
+          else { st.approx = false; st.target = st.cands[+i].target; map.highlight(Object.assign({}, st.target.geom)); }
+          st.step = 3; render();
+          var ta = $("pc-text"); if (ta) ta.focus();
+        }
+        function send() {
+          st.sending = true; updateSend();
+          P.later(600, function () {
+            var x = st.target;
+            // «Я тоже»: уже сообщали об этой цели, она не исправлена
+            if (!st.skipSimilar && x && x.count > 0 && x.status !== "fixed") { st.sending = false; st.similar = x; st.step = 4; render(); return; }
+            if (P.query("fail") === "send" && !st.retried) {
+              st.sending = false; updateSend(); st.retried = true;
+              UI.toast(t("complaint.send_error"), { type: "error", action: { label: t("common.action.retry"), onClick: send } });
+              return;
+            }
+            st.sending = false;
+            st.result = { code: "B-04" + (13 + mine.length), status: "new" };
+            mine.unshift({ code: st.result.code, category: st.category, target: x ? x.id : null, status: "new", created: "2026-10-12", demo: true });
+            st.step = 5; render();
+          });
+        }
+        function metoo() {
+          var x = st.similar;
+          x.count += 1; x.level = P.levelOf(x.count);
+          map.render(targets); map.flash(x.id);
+          st.result = { metoo: true, count: x.count, status: x.status === "new" ? "accepted" : x.status };
+          mine.unshift({ code: "B-0412", category: x.category, target: x.id, status: st.result.status, created: "2026-10-12", metoo: true, demo: true });
+          st.step = 5; render();
+        }
+        function openWizard() { st = fresh(); st.view = "wizard"; st.open = true; $("pc-panel").hidden = false; $("pc-fab").hidden = true; map.highlight(null); render(); $("pc-title").focus({ preventScroll: true }); }
+        function close() { st.open = false; $("pc-panel").hidden = true; $("pc-fab").hidden = false; map.highlight(null); map.setPickMode(false); layout(); $("pc-fab").focus(); }
+
+        function bind() {
+          $("pc-fab").addEventListener("click", openWizard);
+          $("pc-close").addEventListener("click", close);
+          $("pc-back").addEventListener("click", function () { st.step = st.step === 4 ? 3 : 2; render(); });
+          $("pc-zoom-in").addEventListener("click", map.zoomIn); $("pc-zoom-out").addEventListener("click", map.zoomOut);
+          $("pc-panel").addEventListener("click", function (e) {
+            var b = e.target.closest("button"); if (!b) return;
+            if (b.hasAttribute("data-cand")) return choose(b.getAttribute("data-cand"));
+            if (b.hasAttribute("data-cat")) { st.category = b.getAttribute("data-cat"); st.source = "resident"; st.grid = false; renderCat(); updateSend(); return; }
+            if (b.id === "pc-change") { st.grid = true; renderCat(); return; }
+            if (b.id === "pc-send") return send();
+            if (b.id === "pc-metoo") return metoo();
+            var act = b.getAttribute("data-act");
+            if (act === "locate") { st.locating = true; render(); P.later(700, function () { st.locating = false; pick({ x: S.points.stop_orynbor.xy[0] + 6, y: S.points.stop_orynbor.xy[1] + 4 }); }); }
+            if (act === "different") { st.skipSimilar = true; st.step = 3; send(); }
+            if (act === "copy") UI.toast(t("common.action.copied"), { type: "ok" });
+            if (act === "mine") { st.view = "mine"; render(); }
+            if (act === "close") close();
+            if (act === "new") openWizard();
+          });
+          $("pc-panel").addEventListener("mouseover", function (e) {
+            var b = e.target.closest("[data-cand]"); if (!b || !st.cands) return;
+            var i = b.getAttribute("data-cand");
+            map.highlight(i === "approx" ? { approx: st.pick, pick: st.pick } : Object.assign({ pick: st.pick }, st.cands[+i].target.geom));
+          });
+          UI.sheet($("pc-panel"));
+          phone.addEventListener("change", render);
+          I.onChange(function () { $("pc-fab").innerHTML = UI.icon("plus") + "<span>" + UI.esc(t("complaint.cta")) + "</span>"; if (st.open) render(); });
+        }
+
+        Promise.all([I.ready, fetch("../categories_v2.json").then(function (r) { return r.json(); }).then(function (d) { categories = d.categories; })]).then(function () {
+          P.header($("pm-header"), "complaint", {});
+          P.banner($("pm-banner"));
+          map = P.createMap($("pm-map"), { soft: true, onPick: pick, onSelect: function () {} });
+          map.render(targets);
+          $("pc-fab").innerHTML = UI.icon("plus") + "<span>" + UI.esc(t("complaint.cta")) + "</span>";
+          $("pc-zoom-in").innerHTML = UI.icon("plus"); $("pc-zoom-out").innerHTML = UI.icon("minus");
+          $("pc-back").innerHTML = UI.icon("back");
+          $("pc-close").innerHTML = UI.icon("close"); I.apply($("pc-panel"));
+          bind();
+          if (st.view === "mine") { st.open = true; $("pc-panel").hidden = false; $("pc-fab").hidden = true; render(); }
+          // для автотестов и демонстрации: выбрать точку по имени из proto-streets.js или [x, y]
+          window.__proto = { pickAt: function (name) { var q = Array.isArray(name) ? name : (S.points[name] ? S.points[name].xy : [600, 600]); pick({ x: q[0] + 5, y: q[1] + 3 }); } };
+        });
+      })();
+    </script>
+  </body>
+</html>
