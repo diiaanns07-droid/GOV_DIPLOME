@@ -1,0 +1,1750 @@
+{
+ "as-start-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-start-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "66×42 «7 күн»",
+    "78×42 «30 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-start-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-start-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Панельді ашу немесе жабу»",
+    "66×42 «7 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-card-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Демо"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-card-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Демо"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-card-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Демо"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-card-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Демо"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Панельді ашу немесе жабу»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-city-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "138×38 «Нура · 185»",
+    "169×38 «Сарыарка · 14»",
+    "174×38 «Сарайшык · 10»",
+    "155×38 «Байконур · 5»",
+    "142×38 «Алматы · 5»",
+    "125×38 «Есиль · 6»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»",
+    "89×42 «90 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"districts\",\"status\":\"ready\",\"items\":6}"
+ },
+ "as-city-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "138×38 «Нура · 185»",
+    "169×38 «Сарыарка · 14»",
+    "155×38 «Байконур · 5»",
+    "125×38 «Есиль · 6»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»",
+    "89×42 «90 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 12",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"districts\",\"status\":\"ready\",\"items\":6}"
+ },
+ "as-resident-card-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Демо"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"resident\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-resident-card-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Демо"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"resident\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-fixed-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Демо"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «13»",
+    "79×38 «8»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 9",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"object:osm-node-4109037549\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-fixed-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Демо"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "373×28 «Развернуть или свернуть пане»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 7",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"object:osm-node-4109037549\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-pulse-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «14»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-pulse-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-cats-open-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-cats-open-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "as-filter-empty-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»",
+    "89×42 «90 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 7",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":\"other\",\"days\":7,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":0}"
+ },
+ "as-filter-empty-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»",
+    "89×42 «90 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 8",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":\"other\",\"days\":7,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":0}"
+ },
+ "kit-start-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-start-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "66×42 «7 күн»",
+    "78×42 «30 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-start-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-start-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Панельді ашу немесе жабу»",
+    "66×42 «7 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-card-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Пример"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-card-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Үлгі"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-card-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Пример"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-card-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Үлгі"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Панельді ашу немесе жабу»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-city-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "138×38 «Нура · 187»",
+    "169×38 «Сарыарка · 14»",
+    "174×38 «Сарайшык · 10»",
+    "155×38 «Байконур · 5»",
+    "142×38 «Алматы · 5»",
+    "125×38 «Есиль · 6»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»",
+    "89×42 «90 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"districts\",\"status\":\"ready\",\"items\":6}"
+ },
+ "kit-city-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "138×38 «Нұра · 187»",
+    "170×38 «Сарыарқа · 14»",
+    "175×38 «Сарайшық · 10»",
+    "160×38 «Байқоңыр · 5»",
+    "142×38 «Алматы · 5»",
+    "109×38 «Есіл · 6»",
+    "66×42 «7 күн»",
+    "78×42 «30 күн»",
+    "78×42 «90 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"districts\",\"status\":\"ready\",\"items\":6}"
+ },
+ "kit-city-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "138×38 «Нура · 187»",
+    "169×38 «Сарыарка · 14»",
+    "155×38 «Байконур · 5»",
+    "125×38 «Есиль · 6»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»",
+    "89×42 «90 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 12",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"districts\",\"status\":\"ready\",\"items\":6}"
+ },
+ "kit-city-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "138×38 «Нұра · 187»",
+    "170×38 «Сарыарқа · 14»",
+    "160×38 «Байқоңыр · 5»",
+    "109×38 «Есіл · 6»",
+    "373×28 «Панельді ашу немесе жабу»",
+    "66×42 «7 күн»",
+    "78×42 «30 күн»",
+    "78×42 «90 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 12",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"districts\",\"status\":\"ready\",\"items\":6}"
+ },
+ "kit-resident-card-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Пример"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"resident\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-resident-card-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Үлгі"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"resident\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-resident-card-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Пример"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"resident\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-resident-card-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Үлгі"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Панельді ашу немесе жабу»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"resident\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"segment:osm-w1181261286-8\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-fixed-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Пример"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «8»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 9",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"object:osm-node-4109037549\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-fixed-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Үлгі"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «15»",
+    "79×38 «8»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 9",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"object:osm-node-4109037549\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-fixed-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Пример"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "373×28 «Развернуть или свернуть пане»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 7",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"object:osm-node-4109037549\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-fixed-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ],
+    "13px": [
+     "Үлгі"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "373×28 «Панельді ашу немесе жабу»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1, 13px×1 · низкие кнопки: 7",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":\"object:osm-node-4109037549\",\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-pulse-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «16»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-pulse-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «17»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "66×42 «7 күн»",
+    "78×42 «30 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-pulse-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «18»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-pulse-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «19»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Панельді ашу немесе жабу»",
+    "66×42 «7 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-cats-open-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «19»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-cats-open-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "79×38 «19»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «5»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «3»",
+    "79×38 «1»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 13",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-cats-open-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «19»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-cats-open-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "79×38 «19»",
+    "79×38 «11»",
+    "79×38 «8»",
+    "79×38 «6»",
+    "79×38 «7»",
+    "79×38 «4»",
+    "79×38 «5»",
+    "79×38 «3»",
+    "79×38 «1»",
+    "373×28 «Панельді ашу немесе жабу»",
+    "66×42 «7 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 15",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":null,\"days\":30,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":43}"
+ },
+ "kit-filter-empty-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "86×42 «Акимат»",
+    "87×42 «Житель»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»",
+    "89×42 «90 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 7",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":\"other\",\"days\":7,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":0}"
+ },
+ "kit-filter-empty-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "87×42 «Әкімдік»",
+    "84×42 «Тұрғын»",
+    "58×42 «ҚАЗ»",
+    "57×42 «РУС»",
+    "66×42 «7 күн»",
+    "78×42 «30 күн»",
+    "78×42 «90 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 7",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":\"other\",\"days\":7,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":0}"
+ },
+ "kit-filter-empty-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "82×42 «Акимат»",
+    "83×42 «Житель»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "373×28 «Развернуть или свернуть пане»",
+    "77×42 «7 дней»",
+    "89×42 «30 дней»",
+    "89×42 «90 дней»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 8",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"ru\",\"filters\":{\"category\":\"other\",\"days\":7,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":0}"
+ },
+ "kit-filter-empty-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors (OD"
+    ]
+   },
+   "low": [
+    "83×42 «Әкімдік»",
+    "80×42 «Тұрғын»",
+    "54×42 «ҚАЗ»",
+    "53×42 «РУС»",
+    "373×28 «Панельді ашу немесе жабу»",
+    "66×42 «7 күн»",
+    "78×42 «30 күн»",
+    "78×42 «90 күн»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 8",
+  "console": [],
+  "state": "{\"role\":\"akimat\",\"lang\":\"kk\",\"filters\":{\"category\":\"other\",\"days\":7,\"district\":null},\"selected\":null,\"mode\":\"targets\",\"status\":\"ready\",\"items\":0}"
+ }
+}

@@ -1,0 +1,280 @@
+{
+ "kit-today-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-today-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-today-375-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-today-375-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-nura-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-nura-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-nura-375-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-nura-375-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-pastday-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-pastday-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-pastday-375-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "kit-network-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [
+   "error: Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+  ],
+  "state": "error",
+  "url": null
+ },
+ "kit-network-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": [
+   "error: Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+  ],
+  "state": "error",
+  "url": null
+ },
+ "kit-network-375-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [
+   "error: Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+  ],
+  "state": "error",
+  "url": null
+ },
+ "kit-hot-click-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": "http://127.0.0.1:8508/civic/akim/#target=segment:osm-w1181261286-8&days=7"
+ },
+ "kit-hot-click-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": "http://127.0.0.1:8508/civic/akim/#target=segment:osm-w1181261286-8&days=7"
+ },
+ "kit-hot-click-375-ru": {
+  "m": {
+   "small": {},
+   "low": [],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "чисто",
+  "console": [],
+  "state": "ok",
+  "url": "http://127.0.0.1:8508/civic/akim/#target=segment:osm-w1181261286-8&days=7"
+ }
+}

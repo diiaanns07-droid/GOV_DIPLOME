@@ -4,8 +4,8 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "см. последний коммит ветки claude/r14-R11 (день 2); предыдущий 3890314",
-  "tested_sha": "рабочее дерево поверх 3890314, проверено перед коммитом дня 2",
+  "code_sha": "cc77761 (код ui-kit/i18n не менялся в день 3); отчёты дня 3 — последний коммит ветки claude/r14-R11",
+  "tested_sha": "cc77761 — ui-kit/i18n подложены в стенды R05, R06, R07, R08 (день 3)",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
     "c75a9ac UX_SPEC.md v1",
@@ -18,6 +18,7 @@
     "research/round-14-results/R11/key_sources.json",
     "tests/civic/R11/",
     "tests/civic/R11/review/",
+    "tests/civic/R11/review/measure.cjs",
     "tests/civic/R11/tools/make_proto_streets.py",
     "web/civic/i18n/i18n.js",
     "web/civic/i18n/kk.json",
@@ -40,7 +41,8 @@
     "патч ui/web_server.py (статически, на копии)": "PASS",
     "живой запуск ui/web_server.py с патчем": "NOT_RUN — применяет R01 (по его INTEGRATION §6 п.8 уже применён в его ветке)",
     "проверка казахского владельцем": "NOT_RUN — KK_REVIEW.md отправлен",
-    "реальный телефон": "NOT_RUN — LOCAL-7"
+    "реальный телефон": "NOT_RUN — LOCAL-7",
+    "день 3: ui-kit/i18n @cc77761 в стендах R05/R06/R07/R08, 122 кадра 375/1366 × ru/kk: 0 ключей вместо текста, 0 прокрутки вбок, 0 ошибок JS": "PASS"
   },
   "known_limits": [
     "Казахский перевод — R11 и черновики ролей, не проверен носителем; 29 мест ⚑ в KK_REVIEW.md",
@@ -48,5 +50,5 @@
     "Скриншоты — headless Chromium с программным WebGL; бледная карта после выбора точки у R09 не подтверждена (п. 12 дня 2)",
     "cat.sidewalks kk («Жаяу жүргіншілер жолы») длинный — ждёт решения владельца"
   ],
-  "next_step": "13.10: правки владельца в kk.json; ключи ролей; UX_REVIEW день 3 (R07, R08, B1)"
+  "next_step": "14.10: правки владельца в kk.json; ключи R05; проверка сборки B1 по UX_REVIEW дня 3"
 }

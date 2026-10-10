@@ -1,0 +1,331 @@
+{
+ "as-today-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-today-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-today-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-today-375-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-nura-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-nura-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-nura-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-nura-375-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-pastday-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-pastday-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-pastday-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": null
+ },
+ "as-network-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [
+   "error: Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+  ],
+  "state": "error",
+  "url": null
+ },
+ "as-network-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [
+   "error: Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+  ],
+  "state": "error",
+  "url": null
+ },
+ "as-network-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [
+   "error: Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+  ],
+  "state": "error",
+  "url": null
+ },
+ "as-hot-click-1366-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": "http://127.0.0.1:8508/civic/akim/#target=segment:osm-w1181261286-8&days=7"
+ },
+ "as-hot-click-1366-kk": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": "http://127.0.0.1:8508/civic/akim/#target=segment:osm-w1181261286-8&days=7"
+ },
+ "as-hot-click-375-ru": {
+  "m": {
+   "small": {},
+   "low": [
+    "58×40 «ҚАЗ»",
+    "56×40 «РУС»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "низкие кнопки: 2",
+  "console": [],
+  "state": "ok",
+  "url": "http://127.0.0.1:8508/civic/akim/#target=segment:osm-w1181261286-8&days=7"
+ }
+}
