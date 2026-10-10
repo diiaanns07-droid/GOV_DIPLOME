@@ -309,3 +309,15 @@ def test_cell_target_is_stable_and_polygon_contains_point():
     assert min(lons) <= NURA[0] <= max(lons) and min(lats) <= NURA[1] <= max(lats)
     # сторона ячейки ~150 м
     assert 140 < (max(lats) - min(lats)) * 111_320 < 160
+
+
+def test_metoo_times_for_heat_weight(store, clock):
+    a, _ = store.create(payload(), DEV_A)
+    b, _ = store.create(payload(), DEV_B)
+    clock.advance(days=3)
+    store.metoo(a["id"], DEV_B)
+    clock.advance(days=1)
+    store.metoo(a["id"], DEV_C)
+    times = store.metoo_times([a["id"], b["id"]])
+    assert times == {a["id"]: ["2026-10-14T10:00:00+05:00", "2026-10-15T10:00:00+05:00"], b["id"]: []}
+    assert store.metoo_times([]) == {}

@@ -457,6 +457,21 @@ class ComplaintStore:
                 "complaints": len(items), "reporters": sum(rec.reporters(r) for r in items),
                 "top": rec.public_view(top) if top else None}
 
+    def metoo_times(self, complaint_ids) -> dict[str, list[str]]:
+        """Даты «Я тоже» по жалобам — для веса тепловой карты R07 (каждое «Я тоже» стареет само,
+        CONTRACT §6). -> {complaint_id: [ISO, ...]} по возрастанию."""
+        ids = list(complaint_ids)
+        result: dict[str, list[str]] = {cid: [] for cid in ids}
+        with self._lock:
+            for start in range(0, len(ids), 500):  # лимит параметров SQLite
+                chunk = ids[start:start + 500]
+                rows = self._db.execute(
+                    f"SELECT complaint_id, at FROM complaint_metoo_v2 WHERE complaint_id IN ({','.join('?' * len(chunk))}) "
+                    "ORDER BY at", chunk).fetchall()
+                for row in rows:
+                    result[row[0]].append(row[1])
+        return result
+
     def events_since(self, after: int = 0, limit: int = 500) -> list[dict]:
         """События для R07 (пульс на цели) и R08: опрос по возрастанию seq."""
         with self._lock:
