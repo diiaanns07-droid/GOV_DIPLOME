@@ -118,6 +118,21 @@ test("казахские названия улиц — из OSM (name:kk), ин�
   assert.equal(near.edge.name_kk, "Сығанақ көшесі");
 });
 
+test("казахская подпись улицы без name:kk — правило R07: тип по-казахски после имени; иначе не по-русски", () => {
+  assert.equal(C.kkStreetFromRu("улица Сыганак"), "Сыганак көшесі");
+  assert.equal(C.kkStreetFromRu("Улица Толе Би"), "Толе Би көшесі", "регистр типа не важен");
+  assert.equal(C.kkStreetFromRu("Центральная улица"), "Центральная көшесі", "тип в конце — как у R07");
+  assert.equal(C.kkStreetFromRu("проспект Туран"), "Туран даңғылы");
+  assert.equal(C.kkStreetFromRu("переулок Жана"), "Жана тұйық көшесі");
+  assert.equal(C.kkStreetFromRu("шоссе Коргалжын"), "Коргалжын тас жолы");
+  assert.equal(C.kkStreetFromRu("Култегін көшесі"), "Култегін көшесі", "уже по-казахски");
+  assert.equal(C.kkStreetFromRu("E 12"), "E 12", "номер дороги — как есть");
+  assert.equal(C.kkStreetFromRu("Объездная Астаны"), null, "тип неизвестен — null (улицу не показываем)");
+  // Все 59 улиц Нуры получают казахскую подпись: name:kk из OSM или правило R07.
+  const missing = STREETS.names.filter((n, i) => !STREETS.names_kk[i] && !C.kkStreetFromRu(n));
+  assert.deepEqual(missing, []);
+});
+
 test("ближайшая улица и направление для остановки", () => {
   const idx = new C.StreetIndex(STREETS);
   const stop = FIXTURE.proposals.find((p) => p.kind === "stop");

@@ -40,6 +40,9 @@ async function measure(page) {
     const buttons = [...document.querySelectorAll("button, select")].filter(visible);
     const small = buttons.map((b) => ({ t: (b.innerText || b.getAttribute("aria-label") || "").trim().slice(0, 30), h: Math.round(hitHeight(b)) }))
       .filter((b) => b.h < 48);
+    // R11 (ночь 5): видимый размер кнопок и переключателей ≥ 44 px (значки на карте — отдельно: ≥ 24 px + кайма 48)
+    const smallVisible = buttons.filter((b) => !b.closest(".r07-badge") && b.getBoundingClientRect().height < 43.5)
+      .map((b) => ({ t: (b.innerText || b.getAttribute("aria-label") || "").trim().slice(0, 30), h: Math.round(b.getBoundingClientRect().height) }));
     const primary = [...document.querySelectorAll(".r07-btn--primary")].filter(visible).map((b) => {
       const cs = getComputedStyle(b);
       return { t: b.innerText.trim().slice(0, 30), ratio: Math.round(contrast(cs.color, cs.backgroundColor) * 100) / 100 };
@@ -51,6 +54,7 @@ async function measure(page) {
       rawKeys: text.match(/heat\.[a-z_.0-9]+/g) || [],
       demoWord: /демо/i.test(text),
       smallButtons: small,
+      smallVisible,
       primary,
       badges: [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden).length,
       legendOnMap: (() => { const l = document.querySelector(".r07-maplegend"); if (!l || !visible(l)) return false; const r = l.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight && r.left >= 0; })(),
@@ -82,6 +86,7 @@ async function shot(browser, name, size, query, after, check) {
   if (m.rawKeys.length) problems.push("ключи без перевода: " + m.rawKeys.join(","));
   if (m.demoWord) problems.push("слово «демо» в интерфейсе (№7)");
   if (m.smallButtons.length) problems.push("зона нажатия < 48 (№6): " + JSON.stringify(m.smallButtons));
+  if (m.smallVisible.length) problems.push("видимая высота < 44 (R11): " + JSON.stringify(m.smallVisible));
   const lowContrast = m.primary.filter((b) => b.ratio < 4.5);
   if (lowContrast.length) problems.push("контраст главной кнопки < 4,5 (№1): " + JSON.stringify(lowContrast));
   if (m.state && m.state.mode === "targets" && !m.legendOnMap) problems.push("легенды нет на карте (№3)");
@@ -413,6 +418,7 @@ async function colorOnlyCheck(page) {
     if (m.rawKeys.length) problems.push("ключи без перевода: " + m.rawKeys.join(","));
     if (m.demoWord) problems.push("слово «демо» в интерфейсе");
     if (m.smallButtons.length) problems.push("зона нажатия < 48: " + JSON.stringify(m.smallButtons));
+    if (m.smallVisible.length) problems.push("видимая высота < 44 (R11): " + JSON.stringify(m.smallVisible));
     await page.screenshot({ path: path.join(OUT, name + ".jpg"), type: "jpeg", quality: 82 });
     results.push({ name, size, query: "", problems, badges: m.badges, extra });
     await page.close();
@@ -431,14 +437,25 @@ async function colorOnlyCheck(page) {
   }
 
   // ошибка первой загрузки: что случилось + что сделать + «Повторить», после связи — карта
+  // на телефоне — как в проверке R10 B-034: оборваны все запросы карты, и /heat, и /heat/meta
   for (const [size, lang] of [["desktop", "ru"], ["phone", "kk"]]) {
     let fail = true;
+    const pattern = size === "phone" ? /\/api\/civic\/v2\/heat/ : HEAT_GET;
     const { page, errors } = await rawPage(size, `?lang=${lang}&view=nura`, (pg) =>
-      pg.route(HEAT_GET, (r) => (fail ? r.abort() : r.continue())));
+      pg.route(pattern, (r) => (fail ? r.abort() : r.continue())));
     await page.waitForSelector(".r07-error", { timeout: 15000 }).catch(() => {});
-    const x = await page.evaluate(() => { const e = document.querySelector(".r07-error"); return e ? { text: e.innerText, retry: !!e.querySelector("[data-retry]") } : null; });
+    const x = await page.evaluate(() => {
+      const e = document.querySelector(".r07-error");
+      if (!e) return null;
+      const r = e.getBoundingClientRect(), b = e.querySelector("[data-retry]").getBoundingClientRect();
+      const l = document.querySelector(".r07-maplegend");
+      return { text: e.innerText, retry: !!e.querySelector("[data-retry]"), retryVisible: b.bottom <= innerHeight && b.top >= 0, top: Math.round(r.top),
+               emptyLegend: !!l && !l.hidden && l.getBoundingClientRect().height > 0 && !l.innerText.trim() };
+    });
     const problems = [];
     if (!x || !x.retry || x.text.split("\n").filter(Boolean).length < 3) problems.push("нет понятной ошибки с действием: " + JSON.stringify(x));
+    if (x && !x.retryVisible) problems.push("«Повторить» не видно без прокрутки (R10 B-034): " + JSON.stringify(x));
+    if (x && x.emptyLegend) problems.push("пустая плашка легенды над картой (R10 B-034)");
     if (x && /Ошибка:|!/.test(x.text)) problems.push("в тексте ошибки «Ошибка:» или «!»");
     const name = `state-error-${size === "phone" ? 375 : 1366}-${lang}`;
     await page.screenshot({ path: path.join(OUT, name + ".jpg"), type: "jpeg", quality: 82 });
@@ -484,6 +501,48 @@ async function colorOnlyCheck(page) {
     if (x.action !== "Қайталау" || !/Байланысты тексеріп/.test(x.text || "")) problems.push("тост ошибки действия: " + JSON.stringify(x));
     if (!x.btnEnabled) problems.push("кнопка осталась заблокированной после ошибки");
     await finish(page, errors, "action-error-toast-375-kk", "phone", problems, x);
+  }
+
+  // R15 U1: лимит (429) и нет входа (403) — понятный текст без «Повторить» (повтор не поможет)
+  for (const [code, lang, act, want] of [[429, "ru", "metoo", "Слишком много действий подряд"], [403, "kk", "take", "қызметкері ретінде кіріп"]]) {
+    const role = act === "metoo" ? "resident" : "akimat";
+    const { page, errors } = await rawPage("phone", `?lang=${lang}&role=${role}&view=nura&sheet=full`, (pg) =>
+      pg.route(act === "metoo" ? /\/complaints\/[^/]+\/metoo/ : /\/complaints\/[^/]+\/status/, (r) => r.fulfill({ status: code, contentType: "application/json", body: '{"error":"x"}' })));
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.evaluate(() => localStorage.removeItem("birge.heat.metoo"));
+    await page.click(".r07-item");
+    const sel = act === "metoo" ? '[data-act="metoo"]' : '[data-act="take"], [data-act="fixed"]';
+    await page.waitForSelector(sel);
+    await page.click(sel);
+    await page.waitForSelector(".r07-toast--error", { timeout: 10000 }).catch(() => {});
+    const x = await page.evaluate(() => { const t = document.querySelector(".r07-toast--error"); return { text: t && t.innerText, action: !!(t && t.querySelector(".r07-toast__action")) }; });
+    const problems = [];
+    if (!x.text || !x.text.includes(want)) problems.push(code + ": непонятный текст: " + JSON.stringify(x));
+    if (x.action) problems.push(code + ": «Повторить» не должно быть");
+    await finish(page, errors, `action-${code}-375-${lang}`, "phone", problems, x);
+  }
+
+  // R11 ночь 4 п.1: на телефоне легенда — одна строка, подсказка о масштабе — один тост, а не строка поверх карты
+  for (const lang of ["ru", "kk"]) {
+    const { page, errors } = await rawPage("phone", `?lang=${lang}&role=akimat&view=city`);
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.waitForTimeout(700);
+    const x = await page.evaluate(() => {
+      const l = document.querySelector(".r07-maplegend");
+      const r = l.getBoundingClientRect();
+      const tops = new Set([...l.querySelectorAll("li")].map((li) => Math.round(li.getBoundingClientRect().top)));
+      const zoomInLegend = [...l.querySelectorAll(".r07-legend__zoom")].some((z) => z.offsetParent !== null);
+      const btns = [...document.querySelectorAll(".mapbtns button")].map((b) => b.getBoundingClientRect());
+      const under = btns.some((b) => !(r.right <= b.left || b.right <= r.left || r.bottom <= b.top || b.bottom <= r.top));
+      const toasts = [...document.querySelectorAll(".r07-toast")].map((t) => t.innerText);
+      return { h: Math.round(r.height), rows: tops.size, right: Math.round(r.right), zoomInLegend, under, toasts };
+    });
+    const problems = [];
+    if (x.rows !== 1 || x.h > 40) problems.push("легенда не в одну строку: " + JSON.stringify(x));
+    if (x.zoomInLegend) problems.push("подсказка о масштабе строкой в легенде");
+    if (x.under) problems.push("легенда под кнопками карты");
+    if (x.toasts.length !== 1) problems.push("подсказка о масштабе не одним тостом: " + JSON.stringify(x.toasts));
+    await finish(page, errors, `legend-phone-375-${lang}`, "phone", problems, x);
   }
 
   // «Примерное место»: в карточке «Область на карте» + пометка, а не «Двор или квартал»

@@ -244,6 +244,32 @@
   // Участок улицы между двумя точками: по рёбрам ОДНОЙ улицы (одно имя), кратчайший путь (Дейкстра).
   // Возврат: {ok:true, name, coords:[[lon,lat]…], length_m, edge_ids:[…]} или {ok:false, reason}.
   // reason: "far_from_street" | "other_street" | "no_path" | "too_short" | "too_long".
+  // Казахская подпись улицы, когда в OSM нет name:kk — как у R07 (ui/civic_heat/targets.py kk_street_from_ru):
+  // тип улицы по-казахски ПОСЛЕ имени, имя собственное как есть («улица Сыганак» → «Сыганак көшесі»).
+  // Уже казахское («Култегін көшесі») и номер дороги («E 12») — как есть. Тип не знаем — null: интерфейс в kk
+  // улицу не показывает, а не пишет её по-русски (UX_REVIEW R11, ночь, B3 п. 5).
+  var KK_STREET_TYPES = [
+    ["улица", "көшесі"],
+    ["проспект", "даңғылы"],
+    ["переулок", "тұйық көшесі"],
+    ["шоссе", "тас жолы"],
+    ["бульвар", "бульвары"],
+    ["площадь", "алаңы"],
+  ];
+  function kkStreetFromRu(name) {
+    if (!name) return null;
+    var n = String(name).trim();
+    if (/[әғқңөұүһі]/i.test(n) || !/[а-яё]/i.test(n)) return n;
+    var low = n.toLowerCase();
+    for (var i = 0; i < KK_STREET_TYPES.length; i++) {
+      var ru = KK_STREET_TYPES[i][0],
+        kk = KK_STREET_TYPES[i][1];
+      if (low.indexOf(ru + " ") === 0) return n.slice(ru.length + 1).trim() + " " + kk;
+      if (low.length > ru.length + 1 && low.slice(-(ru.length + 1)) === " " + ru) return n.slice(0, n.length - ru.length - 1).trim() + " " + kk;
+    }
+    return null;
+  }
+
   // Казахское название улицы из OSM по русскому (null — в OSM его нет).
   StreetIndex.prototype.kkOf = function (name) {
     var i = this.names.indexOf(name);
@@ -1107,6 +1133,7 @@
     createAutoStore: createAutoStore,
     toServerProposal: toServerProposal,
     toServerTarget: toServerTarget,
+    kkStreetFromRu: kkStreetFromRu,
     isMissingApi: isMissingApi,
     LOCAL_KEY: LOCAL_KEY,
   };

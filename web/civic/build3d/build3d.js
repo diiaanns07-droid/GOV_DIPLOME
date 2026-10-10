@@ -76,6 +76,8 @@
       "build3d.vote_failed": "Голос не отправлен. Повторите",
       "build3d.card.near": "Рядом: {street}",
       "build3d.card.segment": "Участок: {street}, {length} м",
+      "build3d.card.segment_plain": "Участок улицы, {length} м",
+      "build3d.street.this": "эта улица",
       "build3d.card.your_vote_up": "Ваш голос: за",
       "build3d.card.your_vote_down": "Ваш голос: против",
       "build3d.card.open": "{kind}: проект {year}, открыть карточку",
@@ -123,6 +125,8 @@
       "build3d.vote_failed": "Дауыс жіберілмеді. Қайталап көріңіз",
       "build3d.card.near": "Жанында: {street}",
       "build3d.card.segment": "Бөлік: {street}, {length} м",
+      "build3d.card.segment_plain": "Көше бөлігі, {length} м",
+      "build3d.street.this": "осы көше",
       "build3d.card.your_vote_up": "Сіздің дауысыңыз: жақтаймын",
       "build3d.card.your_vote_down": "Сіздің дауысыңыз: қарсымын",
       "build3d.card.open": "{kind}: {year} жылғы жоба, карточканы ашу",
@@ -175,6 +179,8 @@
       "proposal.status.rejected": "Отклонено",
       "proposal.voting_closed": "Голосование по этому проекту закрыто",
       "proposal.need_staff": "Войдите как сотрудник акимата",
+      // Общий ключ из предложения R15 (U1) для ответа 429 — пока его нет в словаре R11, текст отсюда.
+      "common.error.too_many": "Слишком много действий подряд. Повторите через минуту.",
     },
     kk: {
       "proposal.catalog.title": "Не салайық?",
@@ -205,6 +211,7 @@
       "proposal.status.rejected": "Қабылданбады",
       "proposal.voting_closed": "Бұл жоба бойынша дауыс беру аяқталды",
       "proposal.need_staff": "Әкімдік қызметкері ретінде кіріңіз",
+      "common.error.too_many": "Қатарынан тым көп әрекет жасалды. Бір минуттан кейін қайталаңыз.",
     },
   };
 
@@ -790,6 +797,10 @@
     }
 
     // Создавать и снимать проекты может только вошедший сотрудник (шлюз R01/R06: 401, 403, csrf_failed).
+    // 429 — лимит с одного адреса (шлюз R01, R15 S02/S08): это не сбой связи, «Повторить» сразу снова упрётся в лимит.
+    function isTooMany(err) {
+      return !!err && (err.status === 429 || err.code === "too_many_requests" || err.code === "rate_limited");
+    }
     function isStaffError(err) {
       return !!err && (err.status === 401 || err.status === 403 || /unauth|csrf|forbidden|staff/.test(String(err.code || "")));
     }
@@ -798,11 +809,11 @@
       return i18n && i18n.formatNumber ? i18n.formatNumber(n) : formatNumberLocal(n);
     }
 
-    // Название улицы на языке интерфейса: в kk — name:kk из OSM, если он есть (у 13 из 59 улиц Нуры), иначе русское
-    // (как label_kk у R12). Машинного перевода названий нет.
+    // Название улицы на языке интерфейса. kk: name:kk из OSM (13 из 59 улиц Нуры) → тип улицы по-казахски, имя как
+    // есть (правило R07) → null (улицу не показываем — не по-русски внутри казахской фразы, R11 ночь B3 п. 5).
     function streetName(ru, kk) {
       if (!ru || t.lang() !== "kk") return ru;
-      return kk || (streets && streets.kkOf ? streets.kkOf(ru) : null) || ru;
+      return kk || (streets && streets.kkOf ? streets.kkOf(ru) : null) || Core.kkStreetFromRu(ru);
     }
 
     function placeText(p) {
@@ -810,8 +821,8 @@
         var len = Core.polylineLength(p.geometry.coordinates.map(function (c) {
           return Core.toLocal(p.geometry.coordinates[0], c);
         }));
-        var sname = t.lang() === "kk" && p.target.label_kk ? p.target.label_kk : p.target.label_ru;
-        return t("build3d.card.segment", { street: sname, length: Math.round(len) });
+        var sname = t.lang() === "kk" ? p.target.label_kk || streetName(p.target.label_ru) : p.target.label_ru;
+        return sname ? t("build3d.card.segment", { street: sname, length: Math.round(len) }) : t("build3d.card.segment_plain", { length: Math.round(len) });
       }
       // У R06 нет полей улицы и двора — вычисляем по геометрии (настоящие улицы OSM), одинаково на любом устройстве.
       var street = p.near_street;
@@ -826,10 +837,12 @@
           var L = Core.polylineLength(c.map(function (q) {
             return Core.toLocal(c[0], q);
           }));
-          return t("build3d.card.segment", { street: streetName(m.edge.name, m.edge.name_kk), length: Math.round(L) });
+          var segName = streetName(m.edge.name, m.edge.name_kk);
+          return segName ? t("build3d.card.segment", { street: segName, length: Math.round(L) }) : t("build3d.card.segment_plain", { length: Math.round(L) });
         }
       }
-      return street ? t("build3d.card.near", { street: streetName(street) }) : "";
+      var shown = streetName(street);
+      return shown ? t("build3d.card.near", { street: shown }) : "";
     }
 
     function yardOf(p) {
@@ -2044,7 +2057,7 @@
       return code === "not_on_street" ? "far_from_street" : code === "too_long" ? "too_long" : "no_path";
     }
     function streetLabel(sec) {
-      return streetName(sec.name, sec.name_kk);
+      return streetName(sec.name, sec.name_kk) || t("build3d.street.this");
     }
     function applySection(g, sec, ll) {
       if (sec && sec.ok) {
@@ -2054,7 +2067,7 @@
         setHint("build3d.hint.segment_ready", { street: streetLabel(sec), length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
       } else {
         g.section = null;
-        setHint("build3d.err." + ((sec && sec.reason) || "no_path"), { street: (sec && sec.name ? streetName(sec.name, sec.name_kk) : streetName(g.aStreet, g.aStreetKk)) || "" }, true);
+        setHint("build3d.err." + ((sec && sec.reason) || "no_path"), { street: (sec && sec.name ? streetName(sec.name, sec.name_kk) : streetName(g.aStreet, g.aStreetKk)) || t("build3d.street.this") }, true);
       }
       updateGhost(true);
       render();
@@ -2077,7 +2090,7 @@
           g.aStreet = snap.edge.name;
           g.aStreetKk = snap.edge.name_kk || null;
           g.dirHint = [Math.sin(snap.bearing * DEG), Math.cos(snap.bearing * DEG)];
-          setHint("build3d.hint.segment_end", { street: streetName(snap.edge.name, snap.edge.name_kk) });
+          setHint("build3d.hint.segment_end", { street: streetName(snap.edge.name, snap.edge.name_kk) || t("build3d.street.this") });
         } else {
           setHint(streets && inStreetArea(ll) ? "build3d.err.far_from_street" : "build3d.err.no_streets", null, true);
           // Вне своего индекса — спросим привязку к улице у R12.
@@ -2248,6 +2261,7 @@
           console.error("[build3d] не сохранилось", err);
           animateRemove(tempId);
           if (isStaffError(err)) return toast(t("proposal.need_staff"), { error: true });
+          if (isTooMany(err)) return toast(t("common.error.too_many"), { error: true });
           toast(t(err && err.code === "limit" ? "proposal.limit" : "build3d.save_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -2297,9 +2311,10 @@
             });
           }
         },
-        function () {
+        function (err) {
           S.cardBusy = null;
           render();
+          if (isTooMany(err)) return toast(t("common.error.too_many"), { error: true });
           toast(t("build3d.save_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -2334,6 +2349,7 @@
             toast(t("proposal.voting_closed"), { error: true });
             return loadProposals();
           }
+          if (isTooMany(err)) return toast(t("common.error.too_many"), { error: true });
           toast(t("build3d.vote_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -2509,6 +2525,9 @@
         var sec = S.ghost.section;
         var n = Core.sampleAlong(lightingOpts(sec.coords).line, Core.LIGHT_STEP_M).length;
         setHint("build3d.hint.segment_ready", { street: streetLabel(sec), length: Math.round(sec.length_m), poles: t("build3d.poles", { n: n }) });
+      } else if (S.mode === "placing" && S.kind === "lighting" && S.ghost && S.ghost.a && S.ghost.aStreet && S.hint && S.hint.key === "build3d.hint.segment_end") {
+        // Начало участка уже выбрано: название улицы — на новом языке (в подсказке оно подставлено текстом).
+        setHint("build3d.hint.segment_end", { street: streetName(S.ghost.aStreet, S.ghost.aStreetKk) || t("build3d.street.this") });
       }
       render(true);
       repaint();

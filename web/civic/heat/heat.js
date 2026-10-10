@@ -54,7 +54,7 @@
       "heat.fixed_word": "Исправлено",
       "heat.fixed_until": "На карте зелёным до {date}",
       "heat.chart": "Жалобы по дням",
-      "heat.chart_from": "14 дн. назад",
+      "heat.chart_from": "14 дней назад",
       "heat.chart_to": "сегодня",
       "heat.topics": "О чём сообщают",
       "heat.status": "Статус",
@@ -91,6 +91,8 @@
       "heat.not_ready": "Тепловая карта ещё не подключена к серверу",
       "heat.retry": "Повторить",
       "heat.zoom_hint": "Приблизьте карту, чтобы увидеть улицы, дворы и остановки",
+      "heat.too_many": "Слишком много действий подряд. Повторите позже.",
+      "heat.need_login": "Войдите как сотрудник акимата и повторите.",
       "heat.badge_label": "{target}: {reported}",
       "heat.open_on_map": "Показать на карте",
       "heat.district_targets": { one: "{count} место с жалобами", few: "{count} места с жалобами", many: "{count} мест с жалобами" },
@@ -160,6 +162,8 @@
       "heat.not_ready": "Шағымдар картасы серверге әлі қосылмаған",
       "heat.retry": "Қайталау",
       "heat.zoom_hint": "Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз",
+      "heat.too_many": "Қатарынан тым көп әрекет жасалды. Кейінірек қайталаңыз.",
+      "heat.need_login": "Әкімдік қызметкері ретінде кіріп, қайталаңыз.",
       "heat.badge_label": "{target}: {reported}",
       "heat.open_on_map": "Картадан көрсету",
       "heat.district_targets": { other: "{count} орында шағым бар" },
@@ -438,6 +442,11 @@
         draw(reason === "event");
         render();
         afterLoad();
+        // Телефон: подсказка «приблизьте карту» — один раз тостом, а не строкой в легенде поверх карты (R11, ночь 4, п. 1)
+        if (S.mode === "districts" && !S.zoomHintShown && window.matchMedia && window.matchMedia("(max-width: 760px)").matches) {
+          S.zoomHintShown = true;
+          toast(t("heat.zoom_hint"));
+        }
       } catch (err) {
         if (seq !== S.reqSeq || S.destroyed) return;
         S.status = err.status === 503 ? "not_ready" : "error";
@@ -913,8 +922,15 @@
       // X-Birge-Device — как у формы R09 (её API берёт id устройства из этого заголовка).
       const headers = { "Content-Type": "application/json", Accept: "application/json", "X-Birge-Device": deviceId() };
       const res = await fetchFn(apiBase + path, { method: "POST", headers, body: JSON.stringify(body || {}) });
-      if (!res.ok) throw new Error("HTTP " + res.status);
+      if (!res.ok) { const err = new Error("HTTP " + res.status); err.status = res.status; throw err; }
       try { return await res.json(); } catch (e) { return null; }
+    }
+    // Ошибка действия: что случилось + что сделать. Лимит (429) и нет входа (401/403) — без «Повторить»: повтор не поможет
+    // (R15 U1). Остальное — «Проверьте связь» с кнопкой «Повторить».
+    function actionFailed(e, btn) {
+      if (e && e.status === 429) toast(t("heat.too_many"), "error");
+      else if (e && (e.status === 401 || e.status === 403)) toast(t("heat.need_login"), "error");
+      else toast(t("heat.action_failed"), "error", { label: t("heat.retry"), onClick: () => { if (btn.isConnected) btn.click(); } });
     }
     async function setStatus(it, status, btn) {
       btn.setAttribute("aria-busy", "true");
@@ -924,7 +940,7 @@
         toast(status === "fixed" ? t("heat.toast_fixed") : t("heat.toast_taken"));
         await load("event");
       } catch (e) {
-        toast(t("heat.action_failed"), "error", { label: t("heat.retry"), onClick: () => { if (btn.isConnected) btn.click(); } });
+        actionFailed(e, btn);
         btn.disabled = false;
         btn.removeAttribute("aria-busy");
       }
@@ -941,7 +957,7 @@
         await load("event");
         pulse(keyOf(it.target));
       } catch (e) {
-        toast(t("heat.action_failed"), "error", { label: t("heat.retry"), onClick: () => { if (btn.isConnected) btn.click(); } });
+        actionFailed(e, btn);
         btn.disabled = false;
         btn.removeAttribute("aria-busy");
       }
@@ -986,7 +1002,9 @@
         host.append(S.legendEl);
       }
       S.legendEl.dataset.role = S.role;
-      S.legendEl.innerHTML = legendHtml(true);
+      const html = legendHtml(true);
+      S.legendEl.innerHTML = html;
+      S.legendEl.hidden = !html;   // нет данных (нет связи) — не пустая белая плашка над картой (R10 B-034)
     }
 
     function filtersHtml() {

@@ -21,11 +21,11 @@
     .logo { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: #152c26; color: #d7f57c; font-size: 20px; }
     .spacer { flex: 1; }
     .seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 12px; background: #eef2ea; }
-    .seg button { min-height: 42px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; color: #55655e; font: inherit; font-weight: 650; cursor: pointer; white-space: nowrap; }
+    .seg button { min-height: 44px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; color: #55655e; font: inherit; font-weight: 650; cursor: pointer; white-space: nowrap; }
     .seg button[aria-pressed="true"] { background: #fff; color: #152c26; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; }
     /* 42 px видимые + невидимая кайма по 3 px = 48 px для пальца (UX_REVIEW R11, день 3, №6) */
     .seg button { position: relative; }
-    .seg button::after { content: ""; position: absolute; inset: -3px 0; }
+    .seg button::after { content: ""; position: absolute; inset: -2px 0; }
     .demo-btn { min-height: 48px; padding: 0 14px; border: 1px dashed #b07823; border-radius: 12px; background: #faf5e7; color: #7a531a; font: inherit; font-weight: 650; cursor: pointer; white-space: nowrap; }
     :focus-visible { outline: 3px solid #2f7de1; outline-offset: 2px; }
     #map { position: absolute; top: 64px; left: 0; right: 0; bottom: 0; }

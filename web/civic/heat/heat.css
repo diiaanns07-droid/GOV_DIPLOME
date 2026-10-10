@@ -49,12 +49,12 @@
 .r07-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .r07-chip {
   position: relative; display: inline-flex; align-items: center; gap: 6px;
-  min-height: 40px; padding: 0 12px;
+  min-height: 44px; padding: 0 12px;
   border: 1px solid #c9d4c5; border-radius: 999px; background: #fff;
   font-size: 16px; font-weight: 600; white-space: nowrap; cursor: pointer;
   transition: background 0.2s var(--r07-ease), border-color 0.2s var(--r07-ease);
 }
-.r07-chip::after { content: ""; position: absolute; inset: -4px 0; } /* зона нажатия 48 px */
+.r07-chip::after { content: ""; position: absolute; inset: -2px 0; } /* 44 видимые + кайма = зона нажатия 48 px */
 .r07-chip:hover { border-color: #9fb59c; }
 .r07-chip .r07-ic { color: var(--r07-green); }
 .r07-chip[aria-pressed="true"] { background: var(--r07-lime); border-color: #b6d65a; }
@@ -70,12 +70,12 @@
 .r07-chips[hidden] { display: none; }
 .r07-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 12px; background: #eef2ea; }
 .r07-seg > button {
-  min-height: 42px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 9px;
+  min-height: 44px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 9px;
   background: transparent; color: var(--r07-ink-2); font-weight: 650; white-space: nowrap; cursor: pointer;
 }
-/* 42 px видимые + невидимая кайма 3 px сверху и снизу = 48 px для пальца (№6) */
+/* 44 px видимые (R11: элементы ≥ 44 на 1366) + невидимая кайма 2 px сверху и снизу = 48 px для пальца (№6) */
 .r07-seg > button { position: relative; }
-.r07-seg > button::after { content: ""; position: absolute; inset: -3px 0; }
+.r07-seg > button::after { content: ""; position: absolute; inset: -2px 0; }
 .r07-seg > button[aria-pressed="true"] { background: #fff; color: var(--r07-ink); box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; }
 .r07-select select {
   min-height: 48px; max-width: 100%; padding: 0 36px 0 12px; border: 1px solid #c9d4c5; border-radius: 12px;
@@ -153,15 +153,18 @@
 .r07-maplegend { position: absolute; z-index: 5; left: 12px; bottom: 34px; max-width: 360px; padding: 10px 12px;
   border: 1px solid var(--r07-line); border-radius: 14px; background: #fffffff2; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812;
   font-size: 15px; pointer-events: auto; }
+.r07-maplegend[hidden] { display: none; }
 .r07-maplegend .r07-legend__title { margin: 0 0 6px; font-size: 15px; font-weight: 700; }
 .r07-maplegend ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; }
 .r07-maplegend li { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
 .r07-maplegend .r07-legend__hint { margin: 6px 0 0; font-size: 14px; color: var(--r07-ink-2); }
 @media (max-width: 760px) {
-  .r07-maplegend { top: 8px; bottom: auto; left: 8px; right: 66px; max-width: none; padding: 6px 10px; font-size: 14px; }
-  .r07-maplegend .r07-legend__title, .r07-maplegend .r07-legend__fresh { display: none; }
-  .r07-maplegend ul { gap: 2px 10px; }
-  .r07-maplegend .r07-sw { width: 14px; height: 14px; }
+  /* Телефон: легенда — одна строка ~32 px (UX_REVIEW R11, ночь 4, п. 1); подсказка о масштабе — тостом один раз */
+  .r07-maplegend { box-sizing: border-box; top: 8px; bottom: auto; left: 8px; right: auto; max-width: calc(100% - 74px); padding: 5px 7px; font-size: 14px; }
+  .r07-maplegend .r07-legend__title, .r07-maplegend .r07-legend__fresh, .r07-maplegend .r07-legend__zoom { display: none; }
+  .r07-maplegend ul { flex-wrap: nowrap; gap: 0 5px; white-space: nowrap; }
+  .r07-maplegend li { gap: 3px; }
+  .r07-maplegend .r07-sw { width: 12px; height: 12px; border-radius: 4px; }
 }
 
 /* ---- «Что пишут жители» (№4) ---- */
@@ -198,8 +201,8 @@
 .r07-toast { min-height: 48px; display: flex; align-items: center; padding: 10px 16px; border-radius: 12px; background: #152c26; color: #fff; box-shadow: 0 12px 40px #19362818; animation: r07-in 0.4s var(--r07-ease); transition: opacity 0.3s; }
 .r07-toast--error { background: #a33a2f; }
 .r07-toast { gap: 12px; justify-content: space-between; }
-.r07-toast__action { pointer-events: auto; position: relative; min-height: 40px; padding: 0 14px; border: 1px solid #ffffff99; border-radius: 10px; background: transparent; color: #fff; font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap; }
-.r07-toast__action::after { content: ""; position: absolute; inset: -4px 0; }
+.r07-toast__action { pointer-events: auto; position: relative; min-height: 44px; padding: 0 14px; border: 1px solid #ffffff99; border-radius: 10px; background: transparent; color: #fff; font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.r07-toast__action::after { content: ""; position: absolute; inset: -2px 0; }
 .r07-toast--out { opacity: 0; }
 /* Выбор места жалобой (оболочка: body.birge-picking; без неё — heat.setPickMode). Оболочка B3 гасит нажатия
    на значках (birge.css: pointer-events: none) — здесь возвращаем: значок сам передаёт карте щелчок точно в цель. */
