@@ -894,6 +894,27 @@
 .bk-legend__swatch[data-level="fixed"] {
   background: var(--fixed);
 }
+/* Пояснение под легендой («Свежие жалобы ярче…», «Приблизьте карту…») */
+.bk-legend__note {
+  flex-basis: 100%;
+  color: var(--c-text-2);
+}
+/* Телефон: легенда — одна строка цветов с числами, без заголовка и пояснений (UX_SPEC v1.3):
+   над шторкой видна вся карта, а не треть. Пояснение остаётся в панели или в тосте. */
+@media (max-width: 1023px) {
+  .bk-legend {
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    gap: var(--s-2);
+    padding: 6px var(--s-2);
+    scrollbar-width: none;
+  }
+  .bk-legend__title,
+  .bk-legend__note {
+    display: none;
+  }
+}
 
 /* Пульс на цели при новой жалобе: два кольца по 800 мс */
 .bk-pulse {
