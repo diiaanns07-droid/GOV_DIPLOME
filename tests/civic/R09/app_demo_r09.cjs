@@ -6,6 +6,9 @@
  * Путь жителя: «Сообщить о проблеме» → нажать прямо на значок/место остановки «Хан Шатыр» → «Это здесь?» →
  * текст демо вперемешку kk/ru → подсказка «Освещение» → «Об этом уже сообщили N человек» → «Я тоже» → N+1.
  * Каждый вариант — новое устройство (новый контекст браузера), поэтому N растёт от варианта к варианту.
+ * Надписи на экране сверяются с тем, что говорит ведущий: DEMO_SCRIPT R01 (рус) и DEMO_PHRASES_KK R11 (қаз).
+ * Последний вариант проходит и шаг 6 демо: акимат «Взять в работу» → «Отметить исправленным» на той же остановке →
+ * у жителя в «Мои обращения» жалоба, к которой он присоединился «Я тоже», — «Исправлено» (статус дошёл до демо-жалобы R09).
  */
 "use strict";
 const path = require("path");
@@ -27,6 +30,13 @@ if (SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
 const STOP = [71.406553, 51.131155];   // остановка «Хан Шатыр», OSM node 4109037549 (Нура)
 const TEXT = "Аялдамада жарық жоқ, вечером на остановке темно";   // текст демо (DEMO_SCRIPT, шаг 1–2)
 const NOISE = /openfreemap|Failed to load resource|GL Driver|style diff|swiftshader|GroupMarkerNotSet|ReadPixels/i;
+// Надписи из реплик ведущего (R01 DEMO_SCRIPT, R11 DEMO_PHRASES_KK) — то, что житель должен увидеть на шагах 1–2 демо.
+const SAY = {
+  ru: { fab: "Сообщить о проблеме", title: "Где проблема?", question: "Это здесь?", suggested: "Похоже на:",
+        category: "Освещение", metoo: "Я тоже", done: "Ваш голос учтён" },
+  kk: { fab: "Мәселе туралы хабарлау", title: "Мәселе қай жерде?", question: "Осы жерде ме?", suggested: "Ұқсас санат:",
+        category: "Жарықтандыру", metoo: "Мен де", done: "Сіздің дауысыңыз есепке алынды" },
+};
 const results = [];
 const check = (name, ok, detail) => { results.push({ name, ok: !!ok });
   console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined ? " — " + JSON.stringify(detail).slice(0, 300) : "")); };
@@ -39,11 +49,17 @@ async function startServer(port, db) {
   const run = (a) => execSync(`python3 -B -m ui.civic_store --db "${db}" ${a}`, { cwd: ROOT, env, stdio: ["ignore", "ignore", "inherit"] });
   run("init");
   run("seed-demo --package data/civic/astana/demo_synthetic.json");
+  const staff = { user: "r09-operator", pass: "R09-app-" + Math.random().toString(36).slice(2) + "-Aa1!" };
+  execSync(`python3 -B -m ui.civic_store --db "${db}" create-editor ${staff.user} --password-stdin`,
+           { cwd: ROOT, env, input: staff.pass + "\n", stdio: ["pipe", "ignore", "inherit"] });
   const srv = spawn("python3", ["-B", "app.py", "--host", "127.0.0.1", "--port", String(port)], { cwd: ROOT, env, stdio: ["ignore", "pipe", "pipe"] });
   srv.log = ""; srv.stdout.on("data", (d) => (srv.log += d)); srv.stderr.on("data", (d) => (srv.log += d));
-  for (let i = 0; i < 150; i++) { try { if ((await fetch(`http://127.0.0.1:${port}/api/health`)).ok) return srv; } catch {} await sleep(200); }
+  for (let i = 0; i < 150; i++) { try { if ((await fetch(`http://127.0.0.1:${port}/api/health`)).ok) { srv.staff = staff; return srv; } } catch {} await sleep(200); }
   throw new Error("server did not start: " + srv.log.slice(-1500));
 }
+
+const shellReady = (page) => page.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined"
+  && mapReady && window.CivicShell.heat?.state?.().status === "ready", null, { timeout: 45000 });
 
 async function shot(page, name) {
   if (SHOTS) { await sleep(450); await page.screenshot({ path: path.join(SHOTS, name + ".png") }); }
@@ -70,7 +86,37 @@ async function tapStop(page, width) {
   return hit;
 }
 
-async function variant(browser, base, width, height, lang) {
+// Шаг 6 демо (DEMO_SCRIPT 2:25–2:50) на той же остановке: акимат закрывает жалобы → житель видит «Исправлено».
+async function step6(page, tag, width, lang, staff) {
+  const logged = await page.evaluate(async ([u, p]) => (await fetch("/api/civic/v1/session/login", { method: "POST",
+    headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: u, password: p }) })).ok, [staff.user, staff.pass]);
+  await page.reload();
+  await shellReady(page);
+  await page.evaluate(() => window.BirgeShell?.setMode?.("akimat"));
+  await sleep(1200);
+  await tapStop(page, width);
+  const take = await page.waitForSelector(".r07-card [data-act='take']", { timeout: 8000 }).then(() => true, () => false);
+  if (take) { await page.click(".r07-card [data-act='take']"); await sleep(1500); }
+  const fix = await page.waitForSelector(".r07-card [data-act='fixed']", { timeout: 8000 }).then(() => true, () => false);
+  if (fix) { await page.click(".r07-card [data-act='fixed']"); await sleep(2500); }
+  const word = lang === "kk" ? "Түзетілді" : "Исправлено";
+  const card = ((await page.textContent(".r07-card").catch(() => "")) || "").replace(/\s+/g, " ");
+  check(`${tag}: шаг 6 демо — акимат: «Взять в работу» → «Отметить исправленным» → «${word}»`,
+        logged && take && fix && card.includes(word), { logged, take, fix, card: card.slice(0, 160) });
+  await shot(page, `app-${tag}-6-fixed`);
+  await page.evaluate(() => window.BirgeShell?.setMode?.("resident"));
+  await sleep(800);
+  await page.evaluate(() => window.CivicShell?.openMine?.());
+  await page.waitForSelector(".bc-mine__card", { timeout: 8000 }).catch(() => null);
+  const cards = await page.$$eval(".bc-mine__card", (n) => n.map((c) => ({ status: c.querySelector(".bk-status")?.dataset.status,
+    text: c.textContent.replace(/\s+/g, " ").trim().slice(0, 140) })));
+  const joined = cards.filter((c) => /Я тоже|Мен де/.test(c.text));
+  check(`${tag}: шаг 6 демо — житель: в «Мои обращения» жалоба с «Я тоже» — «${word}»`,
+        joined.length >= 1 && joined.every((c) => c.status === "fixed"), cards);
+  await shot(page, `app-${tag}-6-mine`);
+}
+
+async function variant(browser, base, width, height, lang, staff) {
   const tag = `${width}-${lang}`;
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: width < 1024 });
   await ctx.addInitScript(([l]) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) {} }, [lang]);
@@ -79,11 +125,14 @@ async function variant(browser, base, width, height, lang) {
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
   page.on("console", (m) => { if (m.type() === "error" && !NOISE.test(m.text())) errors.push(m.text()); });
   await page.goto(base);
-  await page.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined" && mapReady
-    && window.CivicShell.heat?.state?.().status === "ready", null, { timeout: 45000 });
+  await shellReady(page);
   await sleep(800);
+  const seen = {};
+  const text = async (sel) => ((await page.textContent(sel).catch(() => "")) || "").replace(/\s+/g, " ").trim();
+  seen.fab = await text(".bc-fab");
   await page.click(".bc-fab");
   await page.waitForSelector(".bc-panel[data-step='2']", { timeout: 8000 });
+  seen.title = await text(".bc-title");
   const top = await page.evaluate(() => { const h = document.querySelector(".bc-panel .bc-close").getBoundingClientRect();
     const el = document.elementFromPoint(h.left + h.width / 2, h.top + h.height / 2); return !!(el && el.closest(".bc-panel")); });
   check(`${tag}: шторка жалобы сверху — кнопка «Закрыть» не перекрыта панелями карты`, top);
@@ -91,6 +140,7 @@ async function variant(browser, base, width, height, lang) {
   const hit = await tapStop(page, width);
   const offered = await page.waitForSelector(".bc-option--first", { timeout: 10000 }).then(() => true, () => false);
   const first = offered ? (await page.textContent(".bc-option--first")).trim() : "";
+  seen.question = offered ? await text(".bc-question") : "";
   check(`${tag}: нажатие на остановку (в том числе на значок карты) — «${first.slice(0, 40)}»`,
         /Хан Шатыр/.test(first), { hit });
   const approxHere = await page.$$eval(".bc-option", (n) => n.filter((x) => /Примерн|Шамамен/.test(x.textContent)
@@ -104,6 +154,8 @@ async function variant(browser, base, width, height, lang) {
   const chip = await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 8000 })
     .then(async () => (await page.textContent(".bc-cat-row")).trim(), () => "");
   check(`${tag}: модель подсказывает «Освещение»`, /Освещение|Жарықтандыру/.test(chip), chip);
+  seen.suggested = chip;
+  seen.category = chip;
   await shot(page, `app-${tag}-3-text`);
   await page.click(".bc-send");
   await page.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 15000 });
@@ -115,11 +167,17 @@ async function variant(browser, base, width, height, lang) {
   check(`${tag}: похожая демо-жалоба помечена «Пример»`, demoTag.length === 1 && /Пример|Үлгі/.test(demoTag[0]), demoTag);
   await shot(page, `app-${tag}-4-similar`);
   if (!step4) { await ctx.close(); return; }
+  seen.metoo = await text(".bc-panel[data-step='4'] .bk-btn--primary");
   await page.click(".bc-panel[data-step='4'] .bk-btn--primary");
   await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 10000 });
+  seen.done = await text(".bc-title");
   const lead = (await page.textContent(".bc-lead")).trim();
   check(`${tag}: «Я тоже» — стало ${n + 1}`, lead.includes(String(n + 1)), lead);
   await shot(page, `app-${tag}-5-done`);
+  const say = SAY[lang];
+  const off = Object.keys(say).filter((k) => !(seen[k] || "").includes(say[k])).map((k) => [k, say[k], seen[k]]);
+  check(`${tag}: надписи совпадают с репликами ведущего (${Object.keys(say).length})`, off.length === 0, off);
+  if (staff) await step6(page, tag, width, lang, staff);
   const scroll = await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1);
   check(`${tag}: нет прокрутки вбок`, scroll);
   check(`${tag}: нет ошибок на странице`, errors.length === 0, errors.slice(0, 3));
@@ -133,8 +191,9 @@ async function variant(browser, base, width, height, lang) {
   try {
     srv = await startServer(port, path.join(tmp, "civic.sqlite3"));
     browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
-    for (const [w, h, lang] of [[375, 812, "kk"], [375, 812, "ru"], [1366, 768, "ru"], [1366, 768, "kk"]]) {
-      await variant(browser, `http://127.0.0.1:${port}/`, w, h, lang);
+    const runs = [[375, 812, "kk"], [375, 812, "ru"], [1366, 768, "ru"], [1366, 768, "kk"]];
+    for (const [i, [w, h, lang]] of runs.entries()) {
+      await variant(browser, `http://127.0.0.1:${port}/`, w, h, lang, i === runs.length - 1 ? srv.staff : null);
     }
   } catch (err) {
     console.error(err);
