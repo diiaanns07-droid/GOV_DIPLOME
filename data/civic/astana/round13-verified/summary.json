@@ -1,0 +1,23 @@
+{
+  "schema": "r05-r13-summary-v1",
+  "as_of": "2026-10-07",
+  "verified_current": 0,
+  "verified_historical": 0,
+  "candidates": {
+    "round12_to_verify": 44,
+    "round12_current_priority": 19,
+    "queue_targets": 0,
+    "queue_targets_mappable": 0
+  },
+  "rejected": {
+    "round12_rejected": 20,
+    "round12_duplicates": 9,
+    "round13_review_rejected": 0
+  },
+  "fetched_sources": 0,
+  "sources_with_attached_text": 0,
+  "states": {},
+  "coverage_by_kind": {},
+  "coverage_by_district": {},
+  "note": "verified = цель прошла attach (каждая выдержка найдена в сохранённом тексте страницы) и review сотрудником и пропущена профилем real R05; районы — по OSM-границам data/astana_districts.geojson (не официальное описание) для геометрии-подсказки очереди. Неизвестное не равно нулю."
+}

@@ -47,7 +47,8 @@
       "status",
       "schedule.current_planned_end",
       "budget.amount_kzt",
-      "budget.basis"
+      "budget.basis",
+      "responsible.organization"
      ]
     }
    ],

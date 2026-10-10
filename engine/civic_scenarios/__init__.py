@@ -10,8 +10,9 @@
 """
 from .canon import canonical_json, graph_digest, sha256_hex
 from .compare import compare
+from .snap import SNAP_MAX_M, snap_point
 from .timeline import timeline
 from .errors import ScenarioError
 from .graph import prepare_graph
 
-__all__ = ["compare", "timeline", "prepare_graph", "ScenarioError", "canonical_json", "graph_digest", "sha256_hex"]
+__all__ = ["compare", "timeline", "snap_point", "SNAP_MAX_M", "prepare_graph", "ScenarioError", "canonical_json", "graph_digest", "sha256_hex"]

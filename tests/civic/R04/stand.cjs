@@ -29,9 +29,11 @@ function vendorDir() {
 async function startStand(opts) {
   const o = opts || {};
   const creds = { username: "editor-test", password: crypto.randomBytes(12).toString("base64url") };
+  const creds2 = { username: "editor-two", password: crypto.randomBytes(12).toString("base64url") };  // a second editor (session switch, two editors)
   const v = vendorDir();
   const mock = createMockServer({
-    users: [{ username: creds.username, password: creds.password, name: "Тестовый редактор", role: "editor" }],
+    users: [{ username: creds.username, password: creds.password, name: "Тестовый редактор", role: "editor" },
+      { username: creds2.username, password: creds2.password, name: "Второй редактор", role: "editor" }],
     pageSize: o.pageSize || 50,
     seed: o.seed || [],
     clock: o.clock,
@@ -39,14 +41,16 @@ async function startStand(opts) {
       "/": path.join(__dirname, "harness/index.html"),
       "/vendor/maplibre-gl.js": path.join(v, "maplibre-gl.js"),
       "/vendor/maplibre-gl.css": path.join(v, "maplibre-gl.css"),
+      // read-only: the public street index of the base app (R07's file), served at the same URL as in app.py
+      "/civic/map/streets.json": path.join(REPO, "web/civic/map/streets.json"),
     },
     staticDirs: [
       { prefix: "/harness/", dir: path.join(__dirname, "harness") },
       { prefix: "/web/civic/editor/", dir: path.join(REPO, "web/civic/editor") },
-    ],
+    ].concat(o.staticDirs || []),  // e.g. a neighbour module at a pinned SHA for a joint test
   });
   const url = await mock.listen(o.port || 0);
-  return { url, mock, creds, close: () => mock.close() };
+  return { url, mock, creds, creds2, close: () => mock.close() };
 }
 
 module.exports = { startStand, APP_SNAPSHOT };

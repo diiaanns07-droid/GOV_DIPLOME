@@ -55,14 +55,17 @@
       return env.data;
     }
     const api = { request };
-    window.__r09demo = { api, applied: [] };
+    window.__r09demo = { api, applied: [], stale: [] };
     const ids = ["r09-synth-full", "r09-synth-missing", "r09-synth-html", "r09-synth-draft"];
     const bar = document.getElementById("objects");
     let handle = null;
-    function select(id) {
+    function select(id, revision) {
       if (handle) handle.destroy();
       for (const b of bar.children) b.setAttribute("aria-pressed", String(b.dataset.id === id));
-      handle = window.CivicAssistant.mount({ root: document.getElementById("assistant-root"), api, objectId: id });
+      const rev = Number.parseInt(revision ?? new URLSearchParams(location.search).get("revision") ?? "", 10);
+      handle = window.CivicAssistant.mount({ root: document.getElementById("assistant-root"), api, objectId: id,
+        revision: Number.isInteger(rev) ? rev : undefined,
+        onStale: (info) => window.__r09demo.stale.push(info) });
       window.__r09demo.handle = handle;
       window.__r09demo.objectId = id;
     }
@@ -73,6 +76,8 @@
       bar.append(b);
     }
     window.__r09demo.select = select;
+    // Раунд 12: имитация обновления карточки (новая редакция) без перемонтирования компонента.
+    window.__r09demo.update = (next) => handle.update(next);
     select(new URLSearchParams(location.search).get("object") || ids[0]);
     window.CivicAssistant.mountDraftReview({ root: document.getElementById("draft-root"), api, sourceId: "synth-pub-demo",
       onApplyField(field, value, evidence) {

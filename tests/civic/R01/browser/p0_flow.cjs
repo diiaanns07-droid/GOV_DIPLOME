@@ -19,6 +19,15 @@ const fk = (k) => `[data-fk="${k}"]`;
 const checks = [];
 const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null }); console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined && detail !== null ? " — " + JSON.stringify(detail).slice(0, 400) : "")); };
 const notRun = (name, reason) => { checks.push({ name, status: "NOT_RUN", detail: reason }); console.log("NOT_RUN " + name + " — " + reason); };
+// R03's intermittent "Image civic-r03-demo-ring could not be loaded" (race after the offline style
+// swap; R03-owned, fix proposed in research/round-13-results/R01/proposed/r03_r01_proposal.patch) is
+// reported as its own FAIL so it neither hides other page errors nor masquerades as an R01 error.
+const R03_RING = /Image "civic-r03-demo-ring" could not be loaded/;
+function checkPageErrors(name, errs) {
+  const ring = errs.filter((e) => R03_RING.test(e)), other = errs.filter((e) => !R03_RING.test(e));
+  check(name, other.length === 0, other);
+  if (ring.length) check(name + " — R03 demo-ring image race (R03-owned)", false, ring.length + " warning(s)");
+}
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
 
@@ -112,6 +121,8 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await page.check("#civic-editor-root input[type=radio][value=synthetic]");
     await page.fill(fk("planned_start"), "2026-10-14");
     await page.fill(fk("original_planned_end"), "2026-10-30");
+    // R04 >= 69d5691: the place precision is chosen first; the drawing tools appear after it.
+    if (await page.locator(fk("place-approximate")).count()) await page.check(fk("place-approximate"));
     await page.click(fk("tool-point"));
     await page.evaluate(() => document.activeElement?.blur());
     await page.keyboard.press("Escape");
@@ -317,7 +328,7 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     const unknownLink = await page.evaluate(() => ({ assistantHidden: document.getElementById("civic-assistant-box").hidden,
       assistantEmpty: !document.getElementById("civic-assistant-root").textContent.trim(), hash: location.hash }));
     check("unknown/draft permalink: no assistant mounted, hash cleared", unknownLink.assistantHidden && unknownLink.assistantEmpty && !unknownLink.hash.includes("no-such"), unknownLink);
-    check("no page errors (desktop)", page.errs.length === 0, page.errs);
+    checkPageErrors("no page errors (desktop)", page.errs);
     await ctx.close();
 
     // ---- mobile 390x844
@@ -404,7 +415,7 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await m.page.waitForFunction(() => window.CivicShell?.mode === "civic" && mapReady, null, { timeout: 30000 });
     const f5staff = await m.page.waitForSelector("#civic-moderation-button:not([hidden])", { timeout: 10000 }).then(() => true).catch(() => false);
     check("F5 with a valid session: staff buttons return without re-login", f5staff);
-    check("no page errors (mobile)", m.page.errs.length === 0, m.page.errs);
+    checkPageErrors("no page errors (mobile)", m.page.errs);
     await m.ctx.close();
   } catch (error) {
     check("flow completed without exception", false, String(error && error.stack || error).slice(0, 1500));

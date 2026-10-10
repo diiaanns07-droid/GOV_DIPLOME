@@ -4,8 +4,13 @@ Runs R02's real service (imported from a directory given by --r02-root, e.g. an
 `git archive <R02 SHA> ui/civic_store` extraction) on a temporary SQLite file,
 seeds R03's synthetic fixtures through R02's own staff API, then serves:
   /api/civic/v1/...                    -> CivicService.handle (public reads by the browser)
-  /web/, /research/round-11-results/R03/, /tests/civic/R03/fixtures/  -> static (same allowlist as serve.mjs)
+  /web/, /tests/civic/R03/stand/, /tests/civic/R03/fixtures/  -> static (same allowlist as serve.mjs)
   /__r03/log                           -> JSON list of API requests made AFTER seeding (test probe)
+  POST /__r03/archive {"id"}           -> (round 13) archive a published object through R02's staff API, as an
+                                          editor would while a resident looks at it ("vanished object")
+  POST /__r03/delay {"ms"}             -> (round 13) delay every following public API answer (slow network)
+Round 13 options: --bulk N adds N EXPLICITLY SYNTHETIC test records (titles say so) to exercise R02's real cursor
+paging beyond one page of 100; --same-spot K puts K of them at exactly the same point. Test-only, temp DB.
 Prints one JSON line {"port":..,"ids":{fixture_id: server_id},"seeded":..} on stdout when ready.
 
 Nothing here edits R02 code or the repository; the DB lives in a temp dir and is deleted on exit.
@@ -25,7 +30,7 @@ import tempfile
 import threading
 
 REPO = Path(__file__).resolve().parents[3]
-ALLOWED = ("web/", "research/round-11-results/R03/", "tests/civic/R03/fixtures/")
+ALLOWED = ("web/", "tests/civic/R03/stand/", "tests/civic/R03/fixtures/")
 TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
          ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8",
          ".png": "image/png", ".svg": "image/svg+xml"}
@@ -36,9 +41,10 @@ CONTENT = ("kind", "title", "description", "status", "geometry", "geometry_preci
 class Clock:
     def __init__(self):
         self.now = datetime(2026, 10, 6, 6, 0, tzinfo=timezone.utc)
+        self.step = timedelta(minutes=3)
 
     def __call__(self):
-        self.now += timedelta(minutes=3)
+        self.now += self.step
         return self.now
 
 
@@ -52,7 +58,28 @@ def ctx(cookie=None, csrf=None):
             "is_same_origin": True, "is_https": False}
 
 
-def seed(service, auth_mod, fixtures, history):
+def bulk_fixtures(n, same_spot):
+    """N explicitly synthetic records for paging checks; never real works, never written to the repository."""
+    kinds = ("roadworks", "construction", "landscaping", "event")
+    out = []
+    for i in range(n):
+        if i < same_spot:
+            coords = [71.4000, 51.1500]
+        else:
+            coords = [round(71.36 + (i % 20) * 0.006, 6), round(51.10 + (i // 20) * 0.006, 6)]
+        out.append({"id": f"r03-bulk-{i:04d}", "kind": kinds[i % 4],
+                    "title": f"Тест R03 №{i + 1} — синтетика для проверки страниц, не реальная работа",
+                    "description": "Синтетическая запись теста R03 (раунд 13).", "status": "planned",
+                    "geometry": {"type": "Point", "coordinates": coords}, "geometry_precision": "approximate",
+                    "schedule": {"planned_start": "2026-10-01", "original_planned_end": None, "current_planned_end": "2026-11-30",
+                                 "actual_end": None},
+                    "budget": {"amount_kzt": None, "basis": "unknown", "source_id": None},
+                    "responsible": {"organization": None, "public_contact": None},
+                    "evidence_type": "synthetic", "source_refs": [], "evidence_notes": "Тест R03."})
+    return out
+
+
+def seed(service, auth_mod, fixtures, history, keep_session=False):
     """Create, publish and reschedule fixture objects through R02's staff API."""
     password = secrets.token_urlsafe(18) + "Aa1!"
     service.accounts.create_user("r03seed", password, display_name="R03 seed",
@@ -105,14 +132,18 @@ def seed(service, auth_mod, fixtures, history):
         if fx.get("_r03_archive"):
             post(f"/staff/objects/{item['id']}/archive", {"expected_revision": item["revision"],
                                                           "reason": "Демо R03: снято с публикации"})
+    if keep_session:
+        return ids, notes, post
     service.handle("POST", "/api/civic/v1/session/logout", None, b"{}", ctx(cookie, csrf))
-    return ids, notes
+    return ids, notes, None
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--r02-root", required=True)
     ap.add_argument("--port", type=int, default=0)
+    ap.add_argument("--bulk", type=int, default=0)
+    ap.add_argument("--same-spot", type=int, default=0)
     args = ap.parse_args()
     sys.path.insert(0, str(Path(args.r02_root).resolve()))
     from ui.civic_store import auth as auth_mod  # noqa: E402  (R02 code at the pinned SHA)
@@ -127,9 +158,21 @@ def main():
     gone.update(id="r03-r02-archived", title="Снятая с публикации запись R03", _r03_archive=True)
 
     tmp = tempfile.TemporaryDirectory(prefix="r03-r02-")
-    service = CivicService(Path(tmp.name) / "civic.sqlite3", clock=Clock())
-    ids, notes = seed(service, auth_mod, fixtures + [extra, gone], history)
+    clock = Clock()
+    service = CivicService(Path(tmp.name) / "civic.sqlite3", clock=clock)
+    control = bool(args.bulk)
+    ids, notes, staff_post = seed(service, auth_mod, fixtures + [extra, gone], history, keep_session=control)
+    if args.bulk:
+        clock.step = timedelta(seconds=1)  # hundreds of staff calls must not outlive the staff session
+        for fx in bulk_fixtures(args.bulk, args.same_spot):
+            body = {k: copy.deepcopy(fx[k]) for k in CONTENT if k in fx}
+            item = staff_post("/staff/objects", body)
+            ids[fx["id"]] = item["id"]
+            staff_post(f"/staff/objects/{item['id']}/publish", {"expected_revision": item["revision"],
+                                                                 "reason": "Тест R03: синтетика для проверки страниц"})
+        clock.step = timedelta(minutes=3)
     log, lock = [], threading.Lock()
+    delay = {"ms": 0}
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *a):
@@ -155,6 +198,8 @@ def main():
             body = self.rfile.read(length) if length else None
             context = {"headers": dict(self.headers.items()), "client_ip": self.client_address[0],
                        "host_allowed": True, "is_same_origin": None, "is_https": False}
+            if delay["ms"]:
+                threading.Event().wait(delay["ms"] / 1000)
             reply = service.handle(method, path, query, body, context)
             if reply is None:
                 reply = {"status": 404, "headers": {}, "body": {"ok": False, "error": {"code": "not_found", "message": "Адрес API не найден."}}}
@@ -177,6 +222,20 @@ def main():
         def do_POST(self):
             if self.path.startswith("/api/civic/v1"):
                 return self._api("POST")
+            if control and self.path in ("/__r03/archive", "/__r03/delay"):
+                length = int(self.headers.get("Content-Length") or 0)
+                req = json.loads(self.rfile.read(length) or b"{}")
+                if self.path == "/__r03/delay":
+                    delay["ms"] = max(0, min(10000, int(req.get("ms", 0))))
+                    return self._send(200, {"ok": True, "ms": delay["ms"]})
+                with lock:
+                    pub = service.handle("GET", "/api/civic/v1/objects/" + str(req.get("id")), None, None, ctx())
+                    if not pub or pub["status"] != 200:
+                        return self._send(404, {"ok": False})
+                    item = pub["body"]["data"]["item"]
+                    staff_post(f"/staff/objects/{item['id']}/archive", {"expected_revision": item["revision"],
+                                                                       "reason": "Тест R03: снято с публикации во время просмотра"})
+                return self._send(200, {"ok": True})
             self._send(405, b"", "text/plain")
 
     httpd = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)

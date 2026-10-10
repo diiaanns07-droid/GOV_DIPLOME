@@ -1,0 +1,168 @@
+{
+  "schema": "r05-r12-network-audit-v1",
+  "city": "astana",
+  "session_utc_window": "2026-10-07T10:10Z..",
+  "environment": "Claude Code cloud container; outbound HTTPS only via the environment egress proxy (policy chosen in environment settings)",
+  "summary": "All Kazakhstan official and news hosts, OSM services and even en.wikipedia.org are denied (HTTP CONNECT 403 / EGRESS_BLOCKED). No page body of any candidate source could be read in this session. Server-side WebSearch works and returns result titles, URLs and a generated summary; those are discovery hints, not source content.",
+  "websearch": {
+    "works": true,
+    "returns": "result link titles + URLs + model-generated summary",
+    "evidence_value": "discovery only: titles are as indexed by the search engine; summaries are unreliable paraphrase; neither replaces reading the page"
+  },
+  "circumvention": "Not attempted: no web archives, reader proxies or cached-page services were used for blocked hosts.",
+  "how_to_unblock": "Environment settings → Network access: broader level or add these domains to Allowed domains (gov.kz, www.gov.kz, astana.gov.kz, data.egov.kz, inform.kz, www.inform.kz, kazinform.kz, vechastana.kz, astana-akshamy.kz, tengrinews.kz, kapital.kz). See https://code.claude.com/docs/en/cloud-environments#network-access. A new session may be needed for the change to apply.",
+  "attempts": [
+    {
+      "at": "2026-10-07T10:12:13Z",
+      "host": "www.gov.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:13Z",
+      "host": "astana.gov.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:14Z",
+      "host": "data.egov.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:14Z",
+      "host": "www.kazinform.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:14Z",
+      "host": "tengrinews.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:14Z",
+      "host": "astana-akshamy.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:15Z",
+      "host": "www.openstreetmap.org",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:15Z",
+      "host": "overpass-api.de",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:15Z",
+      "host": "nominatim.openstreetmap.org",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:16Z",
+      "host": "egov.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:16Z",
+      "host": "primeminister.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:16Z",
+      "host": "stat.gov.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:16Z",
+      "host": "goszakup.gov.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:17Z",
+      "host": "www.inform.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:17Z",
+      "host": "lsm.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:12:17Z",
+      "host": "kapital.kz",
+      "method": "curl GET via environment egress proxy",
+      "outcome": "egress_denied",
+      "detail": "proxy relay: connect_rejected — gateway answered 403 to CONNECT (policy denial or upstream failure)"
+    },
+    {
+      "at": "2026-10-07T10:14:00Z",
+      "host": "www.gov.kz",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news?lang=ru",
+      "method": "Claude Code WebFetch tool",
+      "outcome": "egress_denied",
+      "detail": "EGRESS_BLOCKED: Access to www.gov.kz is blocked by the network egress proxy."
+    },
+    {
+      "at": "2026-10-07T10:14:00Z",
+      "host": "bes.media",
+      "url": "https://bes.media/news/dvuhurovnevuyu-razvyazku-na-peresechenii-ulits-beysekovoy-i-tlendieva-v-astane-zavershat-do-kontsa-goda/",
+      "method": "Claude Code WebFetch tool",
+      "outcome": "egress_denied",
+      "detail": "EGRESS_BLOCKED: Access to bes.media is blocked by the network egress proxy."
+    },
+    {
+      "at": "2026-10-07T10:14:00Z",
+      "host": "www.inform.kz",
+      "url": "https://www.inform.kz/ru/remont-60-ulits-v-astane-kogda-zakonchitsya-i-kto-sledit-za-kachestvom-5ddf07",
+      "method": "Claude Code WebFetch tool",
+      "outcome": "egress_denied",
+      "detail": "EGRESS_BLOCKED: Access to www.inform.kz is blocked by the network egress proxy."
+    },
+    {
+      "at": "2026-10-07T10:14:00Z",
+      "host": "finratings.kz",
+      "url": "https://finratings.kz/news/13809-astanu-perekopaiut-kakie-ulitsy-zakroiut-i-gde-poiaviatsia-novye-dorogi/",
+      "method": "Claude Code WebFetch tool",
+      "outcome": "egress_denied",
+      "detail": "EGRESS_BLOCKED: Access to finratings.kz is blocked by the network egress proxy."
+    },
+    {
+      "at": "2026-10-07T10:14:00Z",
+      "host": "en.wikipedia.org",
+      "url": "https://en.wikipedia.org/wiki/Astana",
+      "method": "Claude Code WebFetch tool",
+      "outcome": "egress_denied",
+      "detail": "EGRESS_BLOCKED: Access to en.wikipedia.org is blocked by the network egress proxy."
+    }
+  ]
+}

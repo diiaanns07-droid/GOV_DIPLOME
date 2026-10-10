@@ -122,6 +122,11 @@ CIVIC_MODULE_LABELS = {
 }
 # R07 compare can return megabytes for a small request: at most two run at once.
 SCENARIO_SLOTS = threading.BoundedSemaphore(2)
+# R09 ScenarioResultCache (round 13): only the server's own successful /scenarios/compare results are
+# kept for the assistant; bounded in count, age and size (a citywide result with routes can be large).
+SCENARIO_CACHE_ITEMS = 16
+SCENARIO_CACHE_TTL_S = 3600.0
+SCENARIO_CACHE_MAX_BYTES = 1_000_000
 # R02 review M1: the login rate-limit check and failure record are not atomic in R02 @92f7aba,
 # so parallel wrong passwords could all get 401. Logins are serialised here until R02 fixes it.
 LOGIN_LOCK = threading.Lock()
@@ -205,10 +210,50 @@ class CivicGateway:
         self._failed = {}
         # Re-entrant: the feedback/assistant factories ask for the store while the lock is held.
         self._lock = threading.RLock()
+        # R08 via R06: what the feedback service was started with (no resident texts here).
+        self.classifier_status = {"enabled": False, "available": False, "reason": "off"}
+        self._scenario_results = None  # R09 cache of server-computed A/B results (created on first use)
+
+    def scenario_results(self):
+        """Shared R09 ScenarioResultCache, or None when the assistant package (or the cache) is absent."""
+        with self._lock:
+            if self._scenario_results is None:
+                try:
+                    api = importlib.import_module("agent.civic_assistant.api")
+                except ModuleNotFoundError as exc:
+                    if not _role_package_missing(exc):
+                        raise
+                    return None
+                cache_class = getattr(api, "ScenarioResultCache", None)
+                if cache_class is None:
+                    return None
+                self._scenario_results = cache_class(max_items=SCENARIO_CACHE_ITEMS, ttl_s=SCENARIO_CACHE_TTL_S)
+            return self._scenario_results
+
+    def _remember_scenario(self, payload, result):
+        """After a successful compare: keep the server's result for the assistant (never client numbers).
+        R09 checks schema, result digest format and that payload is this result's input (payload_digest)."""
+        try:
+            size = len(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
+        except (TypeError, ValueError):
+            return None
+        if size > SCENARIO_CACHE_MAX_BYTES:
+            LOGGER.info("scenario result not cached for the assistant: %d bytes > %d", size, SCENARIO_CACHE_MAX_BYTES)
+            return None
+        cache = self.scenario_results()
+        if cache is None:
+            return None
+        try:
+            return cache.remember(payload, result)
+        except Exception:  # the compare answer must not fail because of the explanation cache
+            LOGGER.exception("scenario result cache failed")
+            return None
 
     @classmethod
-    def for_project(cls, project: Path, db_path: Path | None = None):
+    def for_project(cls, project: Path, db_path: Path | None = None, classifier: str | None = None):
         db_path = resolve_db_path(db_path) or Path(project).resolve() / ".runtime" / "civic.sqlite3"
+        # R08 is opt-in (round 13): --civic-classifier r08 or CIVIC_R08_CLASSIFIER=1. Default off.
+        classifier = classifier or ("r08" if os.environ.get("CIVIC_R08_CLASSIFIER") == "1" else "off")
 
         def ensure_parent():
             created = not db_path.parent.exists()
@@ -253,9 +298,21 @@ class CivicGateway:
                     return None  # published but no public view: never fall back to the staff copy
                 return staff_item
 
-            # classifier=None: the R08 model is not integrated/verified in this build.
+            # R08 through R06's adapter, only when switched on. The adapter imports the model and probes
+            # the civic-v1 contract with a timeout; a missing, failing, hanging or off-contract model gives
+            # no classifier, and messages are still saved (R06 also bounds each call, 2 s). The model is
+            # trained on synthetic data only: it suggests a category for staff (needs_review), never decides.
+            fn = None
+            if classifier == "r08":
+                adapter = importlib.import_module("ui.civic_feedback.classifier_adapter")
+                status = adapter.r08_status(timeout_s=3.0)
+                gateway.classifier_status = {"enabled": True, "available": bool(status.get("available")),
+                                             "reason": status.get("reason"), "model_version": status.get("model_version"),
+                                             "training_data_status": status.get("training_data_status"),
+                                             "score_kind": status.get("score_kind")}
+                fn = status.get("classify") if status.get("available") else None
             return service_module.FeedbackService(str(db_path), lookup, getattr(store_service, "clock", None),
-                                                  classifier=None)
+                                                  classifier=fn)
 
         def scenarios():
             # R07 @22fa413: graphs only by id from its MANIFEST; every graph is hashed at start so a
@@ -279,7 +336,7 @@ class CivicGateway:
                 scen_registry = importlib.import_module("engine.civic_scenarios.registry")
                 scen_compare = importlib.import_module("engine.civic_scenarios.compare")
                 load_scenario = api.r07_case_loader(scen_registry.list_cases, scen_registry.load_graph,
-                                                    scen_compare.compare)
+                                                    scen_compare.compare, result_cache=gateway.scenario_results())
             except ModuleNotFoundError as exc:
                 if not _role_package_missing(exc):
                     raise
@@ -325,6 +382,8 @@ class CivicGateway:
             ready = self.service(name) is not None
             result[name] = {"label": label, "status": "ready" if ready else
                             ("init_failed" if self._failed.get(name) == "init_failed" else "unavailable")}
+        if "feedback" in result:
+            result["feedback"]["classifier"] = dict(self.classifier_status)
         return result
 
     def public_object(self, object_id):
@@ -385,7 +444,12 @@ class CivicGateway:
                     return service.handle(method, full_path, query, body, context)
             return service.handle(method, full_path, query, body, context)
         if owner == "scenarios":
-            return self._scenarios(service, method, full_path, query, body)
+            reply = self._scenarios(service, method, full_path, query, body)
+            if (method == "POST" and rel_path == "/scenarios/compare" and isinstance(reply, dict)
+                    and reply.get("status") == 200):
+                # The assistant may explain exactly this computation as scenario_id "result:<result_digest>".
+                self._remember_scenario(body, (reply.get("body") or {}).get("data"))
+            return reply
         if owner == "assistant":
             if rel_path.startswith("/staff/"):
                 # Staff extraction: the gateway enforces R02 session + CSRF + origin like other staff POSTs.
@@ -889,12 +953,12 @@ def _invalid_number(value):
 
 
 def create_server(project: Path = ROOT, port: int = 8501, host: str = "127.0.0.1",
-                  civic: CivicGateway | None = None, civic_db: Path | None = None):
+                  civic: CivicGateway | None = None, civic_db: Path | None = None, classifier: str | None = None):
     backend = Backend(project)
     server = ThreadingHTTPServer((host, port), Handler)
     server.daemon_threads = True
     server.backend = backend
-    server.civic = civic if civic is not None else CivicGateway.for_project(Path(project), civic_db)
+    server.civic = civic if civic is not None else CivicGateway.for_project(Path(project), civic_db, classifier)
     return server
 
 
@@ -905,12 +969,15 @@ def main():
     parser.add_argument("--open", action="store_true", help="Открыть браузер после запуска")
     parser.add_argument("--civic-db", default=os.environ.get("CIVIC_DB_PATH") or os.environ.get("CIVIC_DB"),
                         help="SQLite городских объектов (по умолчанию .runtime/civic.sqlite3)")
+    parser.add_argument("--civic-classifier", choices=("off", "r08"),
+                        default="r08" if os.environ.get("CIVIC_R08_CLASSIFIER") == "1" else "off",
+                        help="Подсказка категории сообщений (R08, обучена только на синтетике). По умолчанию off")
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error("Порт должен быть от 1 до 65535.")
     try:
         server = create_server(port=args.port, host=args.host,
-                               civic_db=resolve_db_path(args.civic_db))
+                               civic_db=resolve_db_path(args.civic_db), classifier=args.civic_classifier)
     except OSError as exc:
         if getattr(exc, "winerror", None) == 10048 or getattr(exc, "errno", None) in (48, 98, 10048):
             parser.exit(1, "Порт занят. Закройте прежнее приложение или задайте другой PORT.\n")
@@ -919,6 +986,10 @@ def main():
     url = f"http://{address}:{args.port}"
     modules = server.civic.modules()
     print("civic-v1: " + ", ".join(f"{name}={item['status']}" for name, item in modules.items()), flush=True)
+    cls = server.civic.classifier_status
+    print("classifier: " + ("off" if not cls["enabled"] else
+          f"r08 {'connected' if cls['available'] else 'unavailable: ' + str(cls['reason'])}"
+          + (f" ({cls.get('model_version')}, {cls.get('training_data_status')})" if cls["available"] else "")), flush=True)
     print(f"Аким на 5 часов: {url}\nОстановить — Ctrl+C", flush=True)
     if args.open:
         opener = threading.Timer(0.3, webbrowser.open, args=(url,))

@@ -178,6 +178,13 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
         "ALTER TABLE civic_import_candidates ADD COLUMN resolution TEXT",
         "ALTER TABLE civic_import_candidates ADD COLUMN resolved_by INTEGER REFERENCES civic_users(id)",
     )),
+    # След решения редактора: причина, какие поля приняты (частичное принятие) и ревизия объекта
+    # после решения. resolution дополнительно может быть partially_applied.
+    (5, "import candidate review trail", (
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolution_reason TEXT",
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolution_fields_json TEXT",
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolved_revision INTEGER",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 

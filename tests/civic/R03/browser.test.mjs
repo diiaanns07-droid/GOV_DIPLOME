@@ -1,6 +1,6 @@
 // R03 browser tests on the verification stand (mock API, real MapLibre 5.6.2, real Chromium).
 //   node --test tests/civic/R03/browser.test.mjs
-//   R03_SHOTS=research/round-11-results/R03/screenshots node --test tests/civic/R03/browser.test.mjs
+//   R03_SHOTS=research/round-12-results/R03/screenshots node --test tests/civic/R03/browser.test.mjs
 // External hosts are blocked on purpose: OpenFreeMap is unreachable in the sandbox and
 // the stand must show its honest fallback. Results here are about the module, not R01/R02.
 import { test, before, after } from "node:test";
@@ -55,8 +55,10 @@ async function open(params, o = {}) {
   if (o.probe) await page.addInitScript(LISTENER_PROBE);
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
   const qs = new URLSearchParams(Object.assign({ today: TODAY }, params || {}));
-  await page.goto(base + "/research/round-11-results/R03/stand/?" + qs + (o.hash || ""));
+  await page.goto(base + "/tests/civic/R03/stand/?" + qs + (o.hash || ""));
   await page.waitForFunction(() => window.__stand && window.__stand.instance && ["ready", "error"].includes(window.__stand.instance.getState().list), null, { timeout: 30000 });
+  // r12: the filter box is folded by default; most tests drive its controls, so unfold it here.
+  if (!o.folded) await page.evaluate(() => { const d = document.querySelector(".civic-r03-filters"); if (d) d.open = true; });
   return { ctx, page, errors };
 }
 const state = (page) => page.evaluate(() => window.__stand.instance.getState());
@@ -137,7 +139,13 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   assert.match(demo, /Стоимость\s+нет данных/);
   assert.doesNotMatch(demo, /₸/, "no tenge on a synthetic record");
   assert.match(demo, /Демо\. Синтетическая демо-запись/);
-  assert.match(demo, /запись обновлена 5 октября 2026, 16:40 \(время Астаны\)/);
+  // r12: the short answer comes first; technical provenance is folded away
+  assert.match(demo, /Сейчас\s+Идут работы — источник статуса не указан/);
+  assert.match(demo, /Когда закончат\s+до 5 ноября 2026 \(по плану\)\s*перенесён на 16 дней/);
+  assert.match(demo, /Кто отвечает\s+не подтверждено источником/);
+  assert.match(demo, /Откуда сведения\s+Тестовый источник \(fixture R03\), 15\.09\.2026/);
+  assert.doesNotMatch(demo, /Демо-подрядчик/, "an unsourced organisation name is not shown");
+  assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /Запись обновлена: 5 октября 2026, 16:40 \(время Астаны\)/);
   assert.doesNotMatch(demo, /по данным на/);
   await select(page, "r03-format-derived");
   const card = await page.evaluate(() => {
@@ -151,10 +159,12 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   assert.match(card.text, /Причина: «Демо: перенос из-за поставки материалов/);
   assert.match(card.text, /48\u202f500\u202f000 ₸/);
   assert.match(card.text, /сумма договора · источник: Тестовый источник/);
-  assert.match(card.text, /Тестовая организация \(fixture\)/);
+  assert.match(card.text, /Кто отвечает\s+Тестовая организация \(fixture\) — по источнику/);
   assert.match(card.text, /Выведено из источников/);
-  assert.match(card.text, /статус по источнику от 15\.09\.2026 · запись обновлена 5 октября 2026, 16:40 \(время Астаны\)/);
-  assert.match(card.text, /подтверждает: статус, текущий срок, стоимость, основание стоимости/);
+  assert.match(card.text, /Сейчас\s+Идут работы — по источнику от 15\.09\.2026/);
+  assert.match(card.text, /Откуда сведения\s+Тестовый источник \(fixture R03, не реальный\), 15\.09\.2026/);
+  assert.match(card.text, /Изначально — до\s+20 октября 2026\s+Сейчас — до\s+5 ноября 2026\s+Фактически\s+нет данных/);
+  assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /подтверждает: статус, текущий срок, стоимость, основание стоимости, организация/);
   assert.equal(card.href, "https://example.org/civic-fixture/notice-1");
   assert.equal(card.target, "_blank");
   assert.match(card.rel, /noopener/);
@@ -175,11 +185,12 @@ test("card without data: every missing value reads 'нет данных', no inv
   const { ctx, page } = await open();
   await select(page, "r03-demo-nodata");
   const text = await page.locator(".civic-r03-card").innerText();
-  assert.match(text, /Организация\s+нет данных/);
-  assert.match(text, /Публичный контакт\s+нет данных/);
+  assert.match(text, /Ответственный\s+нет данных/);
+  assert.match(text, /Кто отвечает\s+не указано/);
+  assert.match(text, /Когда закончат\s+срок окончания не указан/);
   assert.match(text, /Стоимость\s+нет данных/);
   assert.match(text, /Начало по плану\s+нет данных/);
-  assert.match(text, /Текущий срок\s+нет данных/);
+  assert.match(text, /Сейчас — до\s+нет данных/);
   assert.match(text, /Место примерное/);
   assert.match(text, /Плановый интервал неполный/);
   assert.doesNotMatch(text, /0 ₸/);
@@ -425,6 +436,7 @@ test("mobile 390x844: bottom sheet states keep 3D toggle and attribution reachab
     if (s.sheet !== want) {
       await page.click(".civic-r03-handle");
       await page.waitForTimeout(350);
+      await sheetSettled(page);
     }
     assert.equal((await state(page)).sheet, want);
     heights[want] = await page.evaluate(() => Math.round(document.getElementById("civic-public").getBoundingClientRect().height));
@@ -495,7 +507,7 @@ test("filters persist across reload without private data", { skip: SKIP }, async
   await page.waitForFunction(() => window.__stand && window.__stand.instance && window.__stand.instance.getState().list === "ready");
   assert.equal(await page.getAttribute('[data-kind="roadworks"]', "aria-pressed"), "true");
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("civic-r03:filters:v1")));
-  assert.deepEqual(Object.keys(stored).sort(), ["area", "from", "kinds", "period", "statuses", "to"]);
+  assert.deepEqual(Object.keys(stored).sort(), ["area", "evidence", "from", "hidePast", "kinds", "period", "statuses", "to"]);
   assert.deepEqual(stored.kinds, ["roadworks"]);
   await ctx.close();
 });
@@ -600,6 +612,10 @@ test("review: a small polygon inside a big one is selectable on the map", { skip
   await page.waitForTimeout(400);
   const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.372, 51.171]); return { x: c.left + p.x, y: c.top + p.y }; });
   await page.mouse.click(pt.x, pt.y);
+  // r12: both areas are under the pointer -> the chooser lists the small one first
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll(".civic-r03-card .civic-r03-item")].map((b) => b.dataset.id)), ["small", "big"]);
+  await page.click('.civic-r03-card [data-id="small"]');
   await page.waitForFunction(() => window.__stand.instance.getState().selectedId !== null);
   assert.equal((await state(page)).selectedId, "small");
   await ctx.close();
@@ -765,7 +781,7 @@ test("review: a failed re-read after refresh shows the fresh list copy, not the 
   const t = await page.locator(".civic-r03-card").innerText();
   assert.match(t, /Демо: отменённый ремонт прохода \(ред\. 4\)/);
   assert.match(t, /Отменено/);
-  assert.match(t, /редакция 4/);
+  assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /редакция 4/);
   await ctx.close();
 });
 
@@ -873,5 +889,695 @@ test("buttons keep their own colours: primary text readable on its dark fill, li
   await page.selectOption('[data-r03-filter="period"]', "next30");
   const link = await page.evaluate(() => getComputedStyle(document.querySelector(".civic-r03-link-btn")).color);
   assert.equal(link, "rgb(23, 107, 74)");
+  await ctx.close();
+});
+
+// ---------- round 12 ----------
+test("r12: a street or district with no records does not read as 'no works here'", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  // what the R01 shell does on a street pick: frame an empty part of the city, then setFilters({area:true})
+  await page.evaluate(() => { window.__stand.map.jumpTo({ center: [71.36, 51.19], zoom: 16 }); window.__stand.instance.setFilters({ area: true }); });
+  await page.waitForTimeout(300);
+  const t = await page.locator(".civic-r03-state").innerText();
+  assert.match(t, /В видимой части карты нет опубликованных записей/);
+  assert.match(t, /Это не значит, что здесь не ведутся работы: реестр неполный/);
+  assert.match(t, /Подтверждённых реальных работ в нём пока нет, опубликовано 12 записей, все демонстрационные/);
+  assert.doesNotMatch(t, /ничего не найдено/);
+  assert.match(await page.locator(".civic-r03-demo-note").innerText(), /Подтверждённых реальных работ в реестре пока нет: все 12 записей — демонстрационные/);
+  await shot(page, "r12-desktop-1440-empty-street");
+  await page.click('[data-r03-action="area-off"]');
+  assert.equal(await page.locator(".civic-r03-item").count(), 12);
+  assert.equal((await state(page)).filters.area, false);
+  await ctx.close();
+});
+
+test("r12: filters are folded by default, objects are visible at once; active filters show as removable pills with counts", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { folded: true });
+  const r = await page.evaluate(() => {
+    const items = [...document.querySelectorAll(".civic-r03-item")].filter((b) => { const x = b.getBoundingClientRect(); return x.bottom <= innerHeight && x.top >= 0; });
+    return { open: document.querySelector(".civic-r03-filters").open, visibleItems: items.length, pills: document.querySelector(".civic-r03-pills").hidden };
+  });
+  assert.equal(r.open, false);
+  assert.ok(r.visibleItems >= 3, "at least three objects visible without scrolling at 1440x900: " + r.visibleItems);
+  assert.equal(r.pills, true, "no pills without filters");
+  await page.evaluate(() => window.__stand.instance.setFilters({ kinds: ["roadworks"], hidePast: true }));
+  const pills = await page.locator(".civic-r03-pill").allInnerTexts();
+  assert.deepEqual(pills.map((t) => t.replace(/\s*×\s*$/, "")), ["Дорожные работы", "без прошедших планов"]);
+  // counts in the status select follow the other filters (roadworks, no past plans)
+  const opts = await page.evaluate(() => [...document.querySelector('[data-r03-filter="status"]').options].map((o) => o.textContent));
+  assert.ok(opts.includes("Запланировано (1)") || opts.some((t) => /^Запланировано \(\d+\)$/.test(t)), opts.join("|"));
+  const shown = await page.locator(".civic-r03-item").count();
+  const sum = opts.slice(1).reduce((a, t) => a + Number((t.match(/\((\d+)\)$/) || [0, 0])[1]), 0);
+  assert.equal(sum, shown, "status counts add up to the shown list");
+  await page.click('.civic-r03-pill[data-key="kind"]');
+  assert.equal(await page.locator(".civic-r03-pill").count(), 1);
+  assert.notEqual(await page.evaluate(() => document.activeElement.className), "", "focus stays in the panel");
+  await shot(page, "r12-desktop-1440-list-folded-filters");
+  await ctx.close();
+});
+
+test("r12: 'Сведения' separates demo, sourced and unsourced records; past plans can be hidden", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", extra: "format" });
+  await page.selectOption('[data-r03-filter="evidence"]', "sourced");
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id)), ["r03-format-derived"]);
+  await page.selectOption('[data-r03-filter="evidence"]', "demo");
+  assert.equal(await page.locator(".civic-r03-item").count(), 12);
+  const opt = await page.evaluate(() => [...document.querySelector('[data-r03-filter="evidence"]').options].map((o) => o.textContent));
+  assert.deepEqual(opt, ["Все записи", "С источником (1)", "Демонстрационные (12)", "Без источника (0)"]);
+  await page.selectOption('[data-r03-filter="evidence"]', "all");
+  await page.check('[data-r03-filter="hidePast"]');
+  const ids = await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id));
+  assert.ok(!ids.includes("r03-demo-historical"));
+  assert.match(await page.locator(".civic-r03-list-notes").innerText(), /Скрыто планов с прошедшим сроком: 1/);
+  await ctx.close();
+});
+
+test("r12: overlapping objects: one click offers a choice, keyboard picks one, cancel goes back; copy link works", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" }, { viewport: DESKTOP });
+  await page.evaluate(async () => {
+    // three synthetic objects at the same spot (test-only, never in the registry)
+    const mk = (id, kind, geometry) => ({ schema_version: "civic-v1", id, city: "astana", kind, title: "Тест перекрытия " + id, status: "planned", publication: "published",
+      geometry, geometry_precision: "source", schedule: {}, budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 });
+    const o = window.__stand.api.options;
+    o.items.push(mk("ov-point", "event", { type: "Point", coordinates: [71.3800, 51.1800] }),
+      mk("ov-line", "roadworks", { type: "LineString", coordinates: [[71.3790, 51.1800], [71.3810, 51.1800]] }),
+      mk("ov-area", "landscaping", { type: "Polygon", coordinates: [[[71.3795, 51.1797], [71.3805, 51.1797], [71.3805, 51.1803], [71.3795, 51.1803], [71.3795, 51.1797]]] }));
+    await window.__stand.instance.refresh();
+    window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 });
+  });
+  await page.waitForTimeout(400);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.38, 51.18]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  assert.match(await page.locator(".civic-r03-card-title").innerText(), /Здесь 3 объекта рядом/);
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll(".civic-r03-card .civic-r03-item")].map((b) => b.dataset.id)), ["ov-point", "ov-line", "ov-area"]);
+  assert.equal(await page.evaluate(() => document.activeElement.className), "civic-r03-card-title");
+  assert.equal(await page.evaluate(() => window.__stand.selects.length), 0, "choosing is not a selection yet");
+  await shot(page, "r12-desktop-1440-overlap-chooser");
+  // keyboard: Tab to the area entry and open it
+  await page.focus('.civic-r03-card [data-id="ov-area"]');
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__stand.instance.getState().selectedId === "ov-area" && window.__stand.instance.getState().view === "card");
+  // copy link: clipboard may be unavailable headless -> a selectable field with the R01 link format appears
+  await page.click('[data-r03-action="copy-link"]');
+  assert.equal(await page.getAttribute(".civic-r03-copy-note", "role"), "status", "the live region exists before the copy");
+  await page.waitForFunction(() => document.querySelector(".civic-r03-copy-note").textContent.trim() !== "");
+  const note = await page.evaluate(() => { const n = document.querySelector(".civic-r03-copy-note"); const f = n.querySelector("input"); return { text: n.textContent, url: f ? f.value : null }; });
+  assert.ok(/Ссылка скопирована/.test(note.text) || /#object=ov-area$/.test(note.url), JSON.stringify(note));
+  // pick again, then cancel -> back to the open card
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "card");
+  assert.equal((await state(page)).selectedId, "ov-area");
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r12: back to the list restores its scroll position and the focused item", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { viewport: MOBILE, folded: true });
+  await page.click(".civic-r03-handle"); await page.waitForTimeout(320);
+  await page.click(".civic-r03-handle"); await page.waitForTimeout(320);
+  const before = await page.evaluate(() => { const sc = document.querySelector(".civic-r03-scroll"); sc.scrollTop = 400; return sc.scrollTop; });
+  const id = await page.evaluate(() => { const r = document.querySelector(".civic-r03-scroll").getBoundingClientRect(); return [...document.querySelectorAll(".civic-r03-item")].find((b) => b.getBoundingClientRect().top > r.top).dataset.id; });
+  await page.focus(`[data-id="${id}"]`);
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.keyboard.press("Escape");
+  const after = await page.evaluate(() => ({ top: document.querySelector(".civic-r03-scroll").scrollTop, focused: document.activeElement.dataset.id }));
+  assert.equal(after.focused, id);
+  assert.ok(Math.abs(after.top - before) < 60, JSON.stringify({ before, after }));
+  await ctx.close();
+});
+
+// Performance on a dense city: 500 and 2000 EXPLICITLY SYNTHETIC objects generated inside the test only
+// (never written to fixtures or any registry). Timings are recorded, thresholds are generous sanity bounds.
+for (const N of [500, 2000]) {
+  test(`r12: ${N} synthetic objects (test-only): loads in pages of 100, list capped, filters and map stay responsive`, { skip: SKIP }, async () => {
+    const { ctx, page, errors } = await open({ persist: "0", fit: "0", maxpage: "100", delay: "5" });
+    const r = await page.evaluate(async (n) => {
+      const kinds = ["construction", "roadworks", "landscaping", "event"], statuses = ["planned", "in_progress", "completed", "cancelled", "unknown"];
+      const o = window.__stand.api.options;
+      const gen = [];
+      for (let i = 0; i < n; i++) {
+        const lon = 71.33 + (i % 50) * 0.0045, lat = 51.08 + Math.floor(i / 50) * (0.12 / Math.ceil(n / 50));
+        const geometry = i % 10 === 0 ? { type: "LineString", coordinates: [[lon, lat], [lon + 0.002, lat + 0.001]] } : i % 25 === 0 ? null : { type: "Point", coordinates: [lon, lat] };
+        gen.push({ schema_version: "civic-v1", id: "perf-" + i, city: "astana", kind: kinds[i % 4], title: "Синтетический тестовый объект плотности №" + i, status: statuses[i % 5],
+          publication: "published", geometry, geometry_precision: i % 3 ? "source" : "approximate",
+          schedule: { planned_start: "2026-0" + (1 + (i % 9)) + "-01", original_planned_end: null, current_planned_end: "2026-1" + (i % 3) + "-15", actual_end: null },
+          budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 });
+      }
+      o.items = gen;
+      const t0 = performance.now();
+      await window.__stand.instance.refresh();
+      const loadMs = performance.now() - t0;
+      const st = window.__stand.instance.getState();
+      const pages = window.__stand.api.calls.filter((c) => c.path.startsWith("/objects?") && c.path.includes("limit=100")).length;
+      const rendered = document.querySelectorAll(".civic-r03-item").length;
+      const features = (await window.__stand.map.getSource("civic-r03-objects").getData()).features.length;
+      const t1 = performance.now();
+      document.querySelector('[data-kind="roadworks"]').click();
+      const filterMs = performance.now() - t1;
+      const afterFilter = document.querySelector(".civic-r03-count").textContent;
+      const t2 = performance.now();
+      window.__stand.instance.setFilters({ kinds: [], period: "month", hidePast: true });
+      const filter2Ms = performance.now() - t2;
+      return { loadMs, count: st.count, pages, rendered, features, filterMs, filter2Ms, afterFilter, more: !!document.querySelector('[data-r03-action="more"]') };
+    }, N);
+    assert.equal(r.count, N);
+    assert.ok(r.pages >= Math.ceil(N / 100), JSON.stringify(r));
+    assert.equal(r.rendered, 200, "list renders 200 rows at a time");
+    assert.equal(r.more, true);
+    let noGeo = 0; for (let i = 0; i < N; i++) if (i % 25 === 0 && i % 10 !== 0) noGeo++;
+    assert.equal(r.features, N - noGeo, "every object with geometry is drawn, none invented for the rest");
+    assert.match(r.afterFilter, /^Показано \d+ из \d+$/);
+    assert.ok(r.loadMs < 4000 && r.filterMs < 600 && r.filter2Ms < 600, JSON.stringify(r));
+    // a click in the dense grid still resolves (single object or chooser)
+    await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.33 + 10 * 0.0045, 51.08], zoom: 17 }));
+    await page.waitForFunction(() => window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point", "civic-r03-line"] }).length > 0, null, { timeout: 15000 });
+    // the object at the centre of the view (grid column 10, a line start) must be pickable
+    const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.33 + 10 * 0.0045, 51.08]); return { x: c.left + p.x, y: c.top + p.y }; });
+    await page.mouse.click(pt.x, pt.y);
+    await page.waitForFunction(() => { const s = window.__stand.instance.getState(); return s.view === "card" || s.view === "pick"; }, null, { timeout: 5000 });
+    console.log("PERF", N, JSON.stringify(r));
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  });
+}
+
+test("r12: onData keeps the base contract (one call per successful load, evidence only), not on errors", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  let d = await page.evaluate(() => window.__stand.data.map((x) => x.length));
+  assert.deepEqual(d, [12]);
+  const first = await page.evaluate(() => window.__stand.data[0][0]);
+  assert.deepEqual(Object.keys(first), ["evidence"]);
+  await page.evaluate(async () => { window.__stand.api.options.failList = 1; await window.__stand.instance.refresh(); await window.__stand.instance.refresh(); });
+  d = await page.evaluate(() => window.__stand.data.map((x) => x.length));
+  assert.deepEqual(d, [12, 12], "failed refresh does not report data; the next success does");
+  await ctx.close();
+});
+
+test("r12: narrow 320x640 phone: no horizontal scroll in list, pills, card and chooser", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0" }, { viewport: { width: 320, height: 640 }, touch: true });
+  await page.evaluate(() => window.__stand.instance.setFilters({ kinds: ["roadworks", "landscaping"], hidePast: true, evidence: "demo" }));
+  for (let i = 0; i < 2; i++) { await page.click(".civic-r03-handle"); await page.waitForTimeout(320); }
+  assert.deepEqual(await noHorizontalOverflow(page), []);
+  await select(page, "r03-demo-long-kk");
+  assert.deepEqual(await noHorizontalOverflow(page), []);
+  assert.equal(await reachable(page, "#toggle-3d"), true);
+  await shot(page, "r12-mobile-320-card-long-kk");
+  // the chooser on a 320px phone: opened from the peeking sheet, at least one candidate on screen
+  await page.click('[data-r03-action="back"]');
+  await page.evaluate(() => window.__stand.instance.setFilters({ kinds: [], hidePast: false, evidence: "all" }));
+  while ((await state(page)).sheet !== "peek") { await page.click(".civic-r03-handle"); await sheetSettled(page); }
+  await addItems(page, [
+    mkTest("ov320-a", { kind: "event", geometry: { type: "Point", coordinates: [71.3800, 51.1800] } }),
+    mkTest("ov320-b", { geometry: { type: "LineString", coordinates: [[71.3790, 51.1800], [71.3810, 51.1800]] } }),
+    mkTest("ov320-c", { kind: "landscaping", title: "Тест очень длинного названия объекта для узкого экрана телефона в Астане — благоустройство двора", geometry: { type: "Polygon", coordinates: [[[71.3795, 51.1797], [71.3805, 51.1797], [71.3805, 51.1803], [71.3795, 51.1803], [71.3795, 51.1797]]] } }),
+  ]);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 }));
+  await page.waitForTimeout(400);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.38, 51.18]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.touchscreen.tap(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  await sheetSettled(page);
+  assert.deepEqual(await noHorizontalOverflow(page), []);
+  const seen = await page.evaluate(() => {
+    const sc = document.querySelector(".civic-r03-scroll").getBoundingClientRect();
+    return [...document.querySelectorAll(".civic-r03-card .civic-r03-item")].filter((b) => { const r = b.getBoundingClientRect(); return r.top >= sc.top && r.bottom <= Math.min(sc.bottom, innerHeight); }).length;
+  });
+  assert.ok(seen >= 1, "candidates visible when the chooser opens: " + seen);
+  assert.equal(await page.getAttribute(".civic-r03-card", "aria-label"), "Выбор объекта");
+  // the tapped spot is moved out from under the sheet
+  await settle(page);
+  await page.waitForTimeout(400);
+  const spotY = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(); return c.top + m.project([71.38, 51.18]).y; });
+  const sheetTop = await page.evaluate(() => document.getElementById("civic-public").getBoundingClientRect().top);
+  assert.ok(spotY < sheetTop, JSON.stringify({ spotY, sheetTop }));
+  await shot(page, "r12-mobile-320-chooser");
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+// ---------- round 12, adversarial review: regressions ----------
+// Test-only synthetic records (never written to fixtures or any registry).
+const mkTest = (id, o) => Object.assign({ schema_version: "civic-v1", id, city: "astana", kind: "roadworks", title: "Тест " + id, status: "planned", publication: "published",
+  geometry: null, geometry_precision: "source", schedule: {}, budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 }, o);
+async function addItems(page, items) {
+  await page.evaluate(async (list) => { window.__stand.api.options.items.push(...list); await window.__stand.instance.refresh(); }, items);
+}
+
+test("r12 review: a server that refuses 'limit' still lists every record (retry without it)", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  const r = await page.evaluate(async () => {
+    const api = window.__stand.api;
+    api.options.rejectLimit = true;
+    api.calls.length = 0;
+    await window.__stand.instance.refresh();
+    return { paths: api.calls.map((c) => c.path), count: window.__stand.instance.getState().count, data: window.__stand.data.at(-1).length };
+  });
+  assert.deepEqual(r.paths, ["/objects?limit=100", "/objects", "/objects?cursor=5", "/objects?cursor=10"]);
+  assert.equal(r.count, 12);
+  assert.equal(r.data, 12, "the host gets all records, not an empty registry");
+  assert.equal(await page.locator(".civic-r03-item").count(), 12);
+  assert.doesNotMatch(await page.locator(".civic-r03-root").innerText(), /Опубликованных объектов пока нет/);
+  await ctx.close();
+});
+
+test("r12 review: mixed registry — no 'all demo' claim; a hypothesis with a source counts as 'С источником'", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await addItems(page, [
+    mkTest("hyp-src", { evidence_type: "hypothesis", source_refs: [{ id: "s1", publisher: "Акимат s1", published_on: "2026-09-01", fields: ["status"] }] }),
+    mkTest("hyp-none", { evidence_type: "hypothesis" }),
+  ]);
+  const note = await page.locator(".civic-r03-demo-note").innerText();
+  assert.doesNotMatch(note, /все 14/);
+  assert.match(note, /Подтверждённых реальных работ в реестре пока нет\. Демо-записей: 12 из 14/);
+  const opts = await page.evaluate(() => [...document.querySelector('[data-r03-filter="evidence"]').options].map((o) => o.textContent));
+  assert.deepEqual(opts, ["Все записи", "С источником (1)", "Демонстрационные (12)", "Без источника (1)"]);
+  await page.selectOption('[data-r03-filter="evidence"]', "sourced");
+  await page.click('[data-id="hyp-src"]');
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  assert.match(await page.locator(".civic-r03-summary").innerText(), /Откуда сведения\s+Акимат s1, 01\.09\.2026/);
+  await ctx.close();
+});
+
+test("r12 review: visible part with records hidden by other filters is not 'no published records here'", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  // city overview: the demo records are in view; 'С источником' hides them all
+  await page.evaluate(() => { window.__stand.map.jumpTo({ center: [71.43, 51.135], zoom: 11.4 }); window.__stand.instance.setFilters({ area: true, evidence: "sourced" }); });
+  await page.waitForTimeout(300);
+  const t = await page.locator(".civic-r03-state").innerText();
+  assert.match(t, /В видимой части карты нет записей по выбранным условиям/);
+  assert.match(t, /Здесь опубликовано записей: \d+ — их скрывают другие фильтры/);
+  assert.doesNotMatch(t, /нет опубликованных записей/);
+  await page.click('[data-r03-action="reset-other"]');
+  const s = await state(page);
+  assert.equal(s.filters.area, true, "the visible-part filter stays");
+  assert.equal(s.filters.evidence, "all");
+  assert.ok(await page.locator(".civic-r03-item").count() > 0);
+  await ctx.close();
+});
+
+test("r12 review: finished without a date never reads as going on; status is credited to the newest source", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await addItems(page, [mkTest("done-nodate", { status: "completed", evidence_type: "observed",
+    schedule: { planned_start: "2026-08-01", original_planned_end: "2026-11-30", current_planned_end: "2026-12-31" },
+    source_refs: [{ id: "s-old", publisher: "Акимат", published_on: "2025-03-01", fields: ["status"] }, { id: "s-new", publisher: "Акимат", published_on: "2026-09-20", fields: ["status"] }] })]);
+  await select(page, "done-nodate");
+  const t = await page.locator(".civic-r03-summary").innerText();
+  assert.match(t, /Когда закончат\s+завершено, дата окончания не указана \(план был до 31 декабря 2026\)/);
+  assert.doesNotMatch(t, /по плану\)|перенесён/);
+  assert.match(t, /по источнику от 20\.09\.2026/);
+  assert.match(t, /Откуда сведения\s+Акимат, 20\.09\.2026 и ещё 1/);
+  assert.doesNotMatch(t, /01\.03\.2025/);
+  await ctx.close();
+});
+
+test("r12 review: after a failed refresh the option counts still add up to the list on screen", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await page.evaluate(async () => { window.__stand.api.options.failList = 1; await window.__stand.instance.refresh(); });
+  assert.equal((await state(page)).list, "error");
+  await page.click('[data-kind="event"]');
+  const shown = await page.locator(".civic-r03-item").count();
+  const opts = await page.evaluate(() => [...document.querySelector('[data-r03-filter="status"]').options].slice(1).map((o) => o.textContent));
+  const sum = opts.reduce((a, t) => a + Number((t.match(/\((\d+)\)$/) || [0, -999])[1]), 0);
+  assert.equal(sum, shown, opts.join("|"));
+  await ctx.close();
+});
+
+test("r12 review: embedded in the R01-like host, back to the list restores the host's scroll and keeps focus visible", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", host: "r01" }, { folded: true });
+  const before = await page.evaluate(() => { const sc = document.querySelector(".stand-host-scroll"); sc.scrollTop = 500; return sc.scrollTop; });
+  assert.ok(before > 200, "the host panel scrolls: " + before);
+  const id = await page.evaluate(() => { const r = document.querySelector(".stand-host-scroll").getBoundingClientRect(); return [...document.querySelectorAll(".civic-r03-item")].find((b) => b.getBoundingClientRect().top > r.top + 10).dataset.id; });
+  await page.focus(`[data-id="${id}"]`);
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.click('[data-r03-action="back"]');
+  const after = await page.evaluate(() => {
+    const sc = document.querySelector(".stand-host-scroll"), r = sc.getBoundingClientRect(), f = document.activeElement.getBoundingClientRect();
+    return { top: sc.scrollTop, focused: document.activeElement.dataset.id, visible: f.top >= r.top - 1 && f.bottom <= r.bottom + 1 };
+  });
+  assert.equal(after.focused, id);
+  assert.ok(Math.abs(after.top - before) < 60, JSON.stringify({ before, after }));
+  assert.equal(after.visible, true, "the focused item is on screen");
+  await ctx.close();
+});
+
+test("r12 review: chooser keeps its origin and focus; list position survives the chooser; no stale jump later", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" }, { folded: true });
+  await page.evaluate(async () => {
+    const mk = (id, kind, geometry) => ({ schema_version: "civic-v1", id, city: "astana", kind, title: "Тест перекрытия " + id, status: "planned", publication: "published",
+      geometry, geometry_precision: "source", schedule: {}, budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 });
+    window.__stand.api.options.items.push(mk("ov-point", "event", { type: "Point", coordinates: [71.3800, 51.1800] }),
+      mk("ov-line", "roadworks", { type: "LineString", coordinates: [[71.3790, 51.1800], [71.3810, 51.1800]] }));
+    await window.__stand.instance.refresh();
+    window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 });
+  });
+  await page.waitForTimeout(400);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.38, 51.18]); return { x: c.left + p.x, y: c.top + p.y }; });
+  const scrollTo = (y) => page.evaluate((v) => { const sc = document.querySelector(".civic-r03-scroll"); sc.scrollTop = v; return sc.scrollTop; }, y);
+  const view = async () => page.evaluate(() => {
+    const sc = document.querySelector(".civic-r03-scroll"), r = sc.getBoundingClientRect(), a = document.activeElement, f = a.getBoundingClientRect();
+    return { top: sc.scrollTop, id: a.dataset.id || a.className, visible: f.top >= r.top - 1 && f.bottom <= r.bottom + 1 };
+  });
+  // list (scrolled) -> chooser -> «Отмена»: same place, focus on a visible item
+  const before = await scrollTo(400);
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  // every candidate is outlined on the map; «Приблизить все» frames them all
+  const outlined = await page.evaluate(() => JSON.stringify(window.__stand.map.getFilter("civic-r03-selected-line")));
+  assert.match(outlined, /ov-point/);
+  assert.match(outlined, /ov-line/);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.30, 51.10], zoom: 12 }));
+  await page.click('[data-r03-action="pick-fit"]');
+  await settle(page);
+  const framed = await page.evaluate(() => { const b = window.__stand.map.getBounds(); return [[71.3790, 51.18], [71.3810, 51.18]].every(([x, y]) => b.contains([x, y])); });
+  assert.equal(framed, true);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 }));
+  await page.waitForTimeout(300);
+  await page.click('[data-r03-action="pick-cancel"]');
+  let v = await view();
+  assert.ok(Math.abs(v.top - before) < 60 && v.visible, JSON.stringify({ before, v }));
+  // list -> chooser -> pick an object -> back: the focused object is visible
+  await scrollTo(400);
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  await page.click('.civic-r03-card [data-id="ov-line"]');
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.click('[data-r03-action="back"]');
+  v = await view();
+  assert.equal(v.id, "ov-line");
+  assert.equal(v.visible, true, JSON.stringify(v));
+  // card -> chooser -> chooser again -> Escape: back to the card, not to a list with a hidden selection
+  await select(page, "r03-demo-shifted");
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 }));
+  await page.waitForTimeout(300);
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForTimeout(200);
+  // focus inside the chooser survives a refresh (R01 refreshes after a publish)
+  await page.focus('.civic-r03-card [data-id="ov-line"]');
+  await page.evaluate(() => window.__stand.instance.refresh());
+  assert.equal(await page.evaluate(() => document.activeElement.dataset.id), "ov-line");
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "card");
+  assert.equal((await state(page)).selectedId, "r03-demo-shifted");
+  // a later close from the list itself (the R01 shell calls selectObject(null) on a street pick) does not jump
+  await page.click('[data-r03-action="back"]');
+  const mid = await scrollTo(300);
+  await page.evaluate(() => window.__stand.instance.selectObject(null));
+  assert.ok(Math.abs((await view()).top - mid) < 2);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r12 review: a street pick is judged after the camera arrives — no false 'no records' on the way", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" });
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.36, 51.19], zoom: 16 }));  // an empty part of the city
+  await page.waitForTimeout(300);
+  await page.evaluate(() => {
+    const seen = (window.__r03Seen = []);
+    const rec = () => seen.push(document.querySelector(".civic-r03-state").innerText + " | " + document.querySelector(".civic-r03-count").textContent);
+    new MutationObserver(rec).observe(document.querySelector(".civic-r03-root"), { subtree: true, childList: true, characterData: true });
+    // exactly what the R01 shell does on a street pick: setFilters({area:true}), then fitBounds in the same task
+    const g = window.__stand.api.options.items.find((x) => x.id === "r03-demo-shifted").geometry;
+    const pts = g.type === "Point" ? [g.coordinates] : g.coordinates.flat(g.type === "Polygon" ? 1 : 0);
+    const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+    window.__stand.instance.setFilters({ area: true });
+    window.__stand.map.fitBounds([[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]], { padding: 80, maxZoom: 16, duration: 800 });
+  });
+  await page.waitForFunction(() => !window.__stand.map.isMoving());
+  await page.waitForFunction(() => !/Обновляем/.test(document.querySelector(".civic-r03-count").textContent), null, { timeout: 5000 });
+  const seen = await page.evaluate(() => window.__r03Seen);
+  assert.ok(!seen.some((t) => /нет опубликованных записей|Показано 0 из/.test(t)), seen.join("\n"));
+  assert.ok(await page.locator(".civic-r03-item").count() >= 1, "the street's record is listed");
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+// ---------- round 13: host camera, input ownership, style reload (research/round-13-results/R03/CONTRACT.txt) ----------
+async function remount(page, extra) {
+  // Re-mount the module on the stand's map with options a URL cannot carry (functions).
+  await page.evaluate(async (src) => {
+    const s = window.__stand;
+    s.destroy();
+    const extra = (0, eval)("(" + src + ")");
+    s.instance = window.CivicMap.mount(Object.assign({ root: document.getElementById("civic-public"), map: s.map, api: s.api, persistFilters: false, fitOnLoad: false,
+      onSelect: (obj, meta) => s.selects.push({ id: obj && obj.id, source: meta.source }) }, extra));
+  }, extra);
+  await page.waitForFunction(() => window.__stand.instance.getState().list === "ready");
+}
+const warnings = (page) => { const w = []; page.on("console", (m) => { if (m.type() === "warning") w.push(m.text()); }); return w; };
+
+test("r13: getPadding/getPitch steer the module's camera; invalid values fall back once with a warning", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" });
+  const warn = warnings(page);
+  await remount(page, `{ getPadding: () => ({ top: 520, right: 40, bottom: 40, left: 700 }), getPitch: () => 0, getBearing: () => 0 }`);
+  await page.evaluate(() => window.__stand.map.jumpTo({ pitch: 50, bearing: -20 }));
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-closure"));
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await settle(page);
+  const r = await page.evaluate(() => {
+    const m = window.__stand.map, it = window.__stand.api.options.items.find((x) => x.id === "r03-demo-closure"), g = it.geometry;
+    const pts = g.type === "Point" ? [g.coordinates] : g.type === "LineString" ? g.coordinates : g.coordinates[0];
+    const c = pts.reduce((a, p) => [a[0] + p[0] / pts.length, a[1] + p[1] / pts.length], [0, 0]);
+    const p = m.project(c), cv = m.getCanvas().getBoundingClientRect();
+    return { x: p.x, y: p.y, w: cv.width, h: cv.height, pitch: m.getPitch(), bearing: m.getBearing() };
+  });
+  assert.ok(r.x > 700 && r.x < r.w - 40 && r.y > 520 && r.y < r.h - 40, "object inside the host's free area: " + JSON.stringify(r));
+  assert.equal(Math.round(r.pitch), 0, "host's intended pitch, not the current 50°");
+  assert.equal(Math.round(r.bearing), 0);
+  // invalid: negative / NaN / throwing -> own padding, one warning per instance
+  await remount(page, `{ getPadding: () => ({ top: -5, right: NaN, bottom: 0, left: 0 }) }`);
+  await page.evaluate(() => { window.__stand.instance.selectObject("r03-demo-shifted"); });
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.evaluate(() => { window.__stand.instance.fitAll(); window.__stand.instance.fitAll(); });
+  await settle(page);
+  assert.equal(warn.filter((t) => /getPadding\(\) must return/.test(t)).length, 1, warn.join("\n"));
+  await remount(page, `{ getPadding: () => { throw new Error("host layout not ready"); } }`);
+  assert.equal(await page.evaluate(() => window.__stand.instance.fitAll()), true, "camera still works");
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r13: a host or resident camera move cancels the module's pending move (the chosen street stays)", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" }, { viewport: MOBILE, touch: true });
+  // phone: the module waits for its sheet (~320 ms) before flying to a selection
+  await page.evaluate(() => {
+    window.__stand.instance.selectObject("r03-demo-closure", { source: "list" });
+    // ...and the host frames a street right after (as R01 does on a street pick)
+    window.__stand.map.fitBounds([[71.355, 51.185], [71.365, 51.195]], { duration: 0 });
+  });
+  await page.waitForTimeout(900);
+  await settle(page);
+  const c = await page.evaluate(() => { const m = window.__stand.map.getCenter(); return [m.lng, m.lat]; });
+  assert.ok(Math.abs(c[0] - 71.36) < 0.01 && Math.abs(c[1] - 51.19) < 0.01, "camera stayed on the host's street: " + c);
+  assert.equal((await state(page)).cameraPending, false);
+  // without a foreign move the module still flies after the sheet settles
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-shifted", { source: "list" }));
+  await page.waitForTimeout(900);
+  await settle(page);
+  const c2 = await page.evaluate(() => { const m = window.__stand.map.getCenter(); return [m.lng, m.lat]; });
+  assert.ok(Math.abs(c2[0] - 71.36) > 0.01 || Math.abs(c2[1] - 51.19) > 0.01, "module flew to its selection: " + c2);
+  await ctx.close();
+});
+
+test("r13: render -> style change -> editor draws -> cancel -> select: input belongs to the editor while it draws", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" }, { probe: true });
+  const warn = warnings(page);
+  // style change (full replace, then a refresh during the swap — the race R01 saw once in 4 runs)
+  await page.evaluate(() => {
+    const m = window.__stand.map;
+    m.setStyle({ version: 8, sources: {}, layers: [{ id: "bg-r13", type: "background", paint: { "background-color": "#eef1ea" } }] }, { diff: false });
+    window.__stand.instance.refresh();
+  });
+  await page.waitForFunction(() => ((window.__stand.map.getStyle() || {}).layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 8000 });
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4511, 51.1209], zoom: 15 }));
+  await page.waitForTimeout(500);
+  assert.equal(await page.evaluate(() => window.__stand.map.hasImage("civic-r03-demo-ring")), true);
+  assert.ok(await page.evaluate(() => window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point-synthetic"] }).length) > 0, "demo marks still distinct after the swap");
+  const target = await page.evaluate(() => {
+    const m = window.__stand.map, f = m.queryRenderedFeatures({ layers: ["civic-r03-point"] })[0], c = m.getCanvas().getBoundingClientRect(), p = m.project(f.geometry.coordinates);
+    return { id: f.properties.cid, x: c.left + p.x, y: c.top + p.y };
+  });
+  // the editor starts drawing: it sets its crosshair, then announces (R04 civic-editor:tool, bubbling)
+  await page.evaluate(() => {
+    const ed = document.createElement("div"); ed.id = "fake-editor"; document.body.append(ed);
+    window.__stand.map.getCanvas().style.cursor = "crosshair";
+    ed.dispatchEvent(new CustomEvent("civic-editor:tool", { bubbles: true, detail: { active: true, mode: "point" } }));
+  });
+  const before = await page.evaluate(() => window.__stand.selects.length);
+  await page.mouse.move(target.x, target.y);
+  await page.waitForTimeout(150);
+  await page.mouse.click(target.x, target.y);
+  await page.waitForTimeout(300);
+  const during = await page.evaluate(() => ({ s: window.__stand.instance.getState(), n: window.__stand.selects.length, cursor: window.__stand.map.getCanvas().style.cursor, tip: !!document.querySelector(".civic-r03-tip") }));
+  assert.equal(during.s.selectedId, null, "a vertex click does not select a public object");
+  assert.equal(during.n, before, "no onSelect -> the host does not touch #object=");
+  assert.equal(during.cursor, "crosshair", "the editor keeps its cursor");
+  assert.equal(during.tip, false, "no hover tooltip while drawing");
+  assert.deepEqual(during.s.interaction, { enabled: false, owners: ["civic-editor"] });
+  // a second owner (simulator via the API) keeps the input after the editor cancels
+  await page.evaluate(() => window.__stand.instance.setInteractionEnabled(false, "civic-scenarios"));
+  await page.evaluate(() => { window.__stand.map.getCanvas().style.cursor = ""; document.getElementById("fake-editor").dispatchEvent(new CustomEvent("civic-editor:tool", { bubbles: true, detail: { active: false } })); });
+  assert.deepEqual((await state(page)).interaction, { enabled: false, owners: ["civic-scenarios"] });
+  await page.evaluate(() => window.__stand.instance.setInteractionEnabled(true, "civic-scenarios"));
+  // cancel -> the same click selects again
+  await page.mouse.click(target.x, target.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().selectedId !== null);
+  // an editor that disappears while drawing (closed/failed without active:false) does not lock the map
+  await page.evaluate(() => { window.__stand.instance.selectObject(null); const ed = document.getElementById("fake-editor"); ed.dispatchEvent(new CustomEvent("civic-editor:tool", { bubbles: true, detail: { active: true, mode: "line" } })); ed.remove(); });
+  await page.mouse.click(target.x, target.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().selectedId !== null);
+  assert.equal(warn.filter((t) => /could not be loaded|civic-r03-demo-ring/.test(t)).length, 0, warn.join("\n"));
+  // listeners do not pile up over remounts and are all released
+  for (let i = 0; i < 3; i++) await page.evaluate(() => { window.__stand.destroy(); window.__stand.mount(); });
+  await page.waitForFunction(() => window.__stand.instance.getState().list === "ready");
+  const net = await page.evaluate(() => { window.__stand.destroy(); return window.__r03net; });
+  assert.ok(!net["document:civic-editor:tool"] && !net["document:civic-scenarios:tool"], JSON.stringify(net));
+  const mapListeners = await page.evaluate(() => ["click", "styledata", "styleimagemissing", "movestart"].map((t) => (window.__stand.map._listeners[t] || []).length));
+  assert.deepEqual(mapListeners.slice(2), [0, 0], "module map listeners removed: " + mapListeners);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r13: 3D tilt keeps picking and flying; three quick style swaps and a remount mid-swap leave exactly one set of layers", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" });
+  const warn = warnings(page);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4511, 51.1209], zoom: 15, pitch: 55, bearing: -20 }));
+  await page.waitForTimeout(500);
+  const t = await page.evaluate(() => {
+    const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect();
+    const f = m.queryRenderedFeatures({ layers: ["civic-r03-point"] }).find((x) => { const p = m.project(x.geometry.coordinates); return p.x > 480 && p.x < c.width - 80 && p.y > 140 && p.y < c.height - 40; });
+    const p = m.project(f.geometry.coordinates);
+    return { id: f.properties.cid, x: c.left + p.x, y: c.top + p.y };
+  });
+  await page.mouse.click(t.x, t.y);
+  await page.waitForFunction(() => ["card", "pick"].includes(window.__stand.instance.getState().view));
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-area", { source: "list" }));
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await settle(page);
+  assert.equal(await page.evaluate(() => Math.round(window.__stand.map.getPitch())), 55, "the module keeps the resident's 3D tilt");
+  // three swaps in a row, then a remount while the last style is still loading
+  await page.evaluate(() => {
+    const m = window.__stand.map, bg = (c) => ({ version: 8, sources: {}, layers: [{ id: "bg-" + c, type: "background", paint: { "background-color": c } }] });
+    m.setStyle(bg("#eef1ea"), { diff: false }); m.setStyle(bg("#f1f3ee"), { diff: false }); m.setStyle(bg("#f4f5f0"));
+    window.__stand.destroy(); window.__stand.mount();
+  });
+  await page.waitForFunction(() => ((window.__stand.map.getStyle() || {}).layers || []).filter((l) => l.id.startsWith("civic-r03")).length === 13, null, { timeout: 10000 });
+  await page.waitForTimeout(600);
+  const s = await page.evaluate(() => ({ ids: window.__stand.map.getStyle().layers.map((l) => l.id).filter((x) => x.startsWith("civic-r03")),
+    ring: window.__stand.map.hasImage("civic-r03-demo-ring"), synth: window.__stand.map.getLayer("civic-r03-point-synthetic").type }));
+  assert.equal(new Set(s.ids).size, 13);
+  assert.equal(s.ring, true);
+  assert.equal(s.synth, "symbol", "demo points keep their dashed-ring symbol");
+  assert.equal(warn.filter((x) => /could not be loaded|civic-r03/.test(x)).length, 0, warn.join("\n"));
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r13: onDetail gives the host the loaded card's geometry for a deep link opened before the list", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" });
+  const r = await page.evaluate(async () => {
+    const s = window.__stand, got = { select: [], detail: [] };
+    s.destroy();
+    s.api.options.slow["/objects"] = 1500;  // the list is late, the card is not
+    s.instance = window.CivicMap.mount({ root: document.getElementById("civic-public"), map: s.map, api: s.api, persistFilters: false,
+      onSelect: (o) => got.select.push(o && { id: o.id, geometry: !!o.geometry }), onDetail: (o) => got.detail.push({ id: o.id, geometry: o.geometry && o.geometry.type, frozen: Object.isFrozen(o) }) });
+    s.instance.selectObject("r03-demo-line", { source: "permalink" });
+    await new Promise((res) => { const t = setInterval(() => { if (s.instance.getState().detail === "ready") { clearInterval(t); res(); } }, 50); });
+    return got;
+  });
+  assert.deepEqual(r.select, [{ id: "r03-demo-line", geometry: false }], "onSelect once, before anything is known");
+  assert.deepEqual(r.detail, [{ id: "r03-demo-line", geometry: "LineString", frozen: true }]);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+// ---------- round 13, independent review: regressions ----------
+test("r13 review: a window resize is not a host move (the phone fly still happens)", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" }, { viewport: MOBILE, touch: true });
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.36, 51.19], zoom: 13 }));
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-closure", { source: "list" }));
+  await page.setViewportSize({ width: 390, height: 800 });  // rotation/resize inside the 320 ms sheet delay
+  await page.waitForTimeout(900);
+  await settle(page);
+  const c = await page.evaluate(() => { const m = window.__stand.map.getCenter(); return [m.lng, m.lat]; });
+  assert.ok(Math.abs(c[0] - 71.36) > 0.01 || Math.abs(c[1] - 51.19) > 0.01, "the module flew to its selection: " + c);
+  await ctx.close();
+});
+
+test("r13 review: tight host padding — the visible part uses the same clamped window as the camera; click pan keeps the host's tilt", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" }, { viewport: { width: 390, height: 340 }, touch: true });
+  await remount(page, `{ getPadding: () => ({ top: 90, right: 0, bottom: 250, left: 0 }), getPitch: () => 0, getBearing: () => 0 }`);
+  // an object at the canvas centre lies below the ~60px free band the camera would use
+  await page.evaluate(() => { window.__stand.map.jumpTo({ center: [71.4511, 51.1209], zoom: 15 }); window.__stand.instance.setFilters({ area: true }); });
+  await page.waitForTimeout(500);
+  const centre = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(); return { h: c.height, y: m.project([71.4511, 51.1209]).y }; });
+  const shown = await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id));
+  assert.ok(centre.y > 74 + 61, JSON.stringify(centre));
+  assert.ok(!shown.includes("r03-demo-completed") && !shown.includes("r03-demo-shifted"), "objects under the host's sheet are not 'visible': " + shown.join());
+  await ctx.close();
+  // desktop: a click on an object outside the host's free area pans with the host's intended tilt
+  const o = await open({ persist: "0", fit: "0" });
+  await remount(o.page, `{ getPadding: () => ({ top: 120, right: 40, bottom: 40, left: 760 }), getPitch: () => 0, getBearing: () => 0 }`);
+  await o.page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4511, 51.1209], zoom: 15, pitch: 40 }));
+  await o.page.waitForTimeout(500);
+  const t = await o.page.evaluate(() => {
+    const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect();
+    const f = m.queryRenderedFeatures({ layers: ["civic-r03-point"] }).find((x) => { const p = m.project(x.geometry.coordinates); return p.x > 460 && p.x < 740 && p.y > 140 && p.y < c.height - 60; });
+    if (!f) return null;
+    const p = m.project(f.geometry.coordinates); return { x: c.left + p.x, y: c.top + p.y };
+  });
+  assert.ok(t, "an object between the R03 panel and the host's free area");
+  await o.page.mouse.click(t.x, t.y);
+  await o.page.waitForFunction(() => ["card", "pick"].includes(window.__stand.instance.getState().view));
+  await o.page.waitForTimeout(400);
+  await settle(o.page);
+  assert.equal(await o.page.evaluate(() => Math.round(window.__stand.map.getPitch())), 0);
+  await o.ctx.close();
+});
+
+test("r13 review: two separate stacks are not called 'the same point'; another owner's pointer cursor is left alone", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" });
+  const stack = (prefix, x) => Array.from({ length: 30 }, (_, i) => mkTest(prefix + i, { geometry: { type: "Point", coordinates: [x, 51.1800] } }));
+  await addItems(page, [...stack("st-p-", 71.3800), ...stack("st-q-", 71.3803)]);
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.38015, 51.18], zoom: 14 }));
+  await page.waitForTimeout(500);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.38015, 51.18]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  const text = await page.locator(".civic-r03-card").innerText();
+  assert.match(text, /Ещё 10 — приблизьте карту/);
+  assert.doesNotMatch(text, /в этой же точке/);
+  // owner B (simulator) uses a pointer cursor; owner A (editor) finishing must not let the module clear it
+  await page.keyboard.press("Escape");
+  await page.evaluate(() => {
+    const i = window.__stand.instance;
+    i.setInteractionEnabled(false, "civic-scenarios");
+    i.setInteractionEnabled(false, "civic-editor");
+    window.__stand.map.getCanvas().style.cursor = "pointer";
+    i.setInteractionEnabled(true, "civic-editor");
+  });
+  await page.mouse.move(pt.x + 30, pt.y);
+  await page.mouse.move(pt.x, pt.y);
+  await page.mouse.move(200, 450, { steps: 5 });  // onto the R03 panel: the pointer leaves the map
+  await page.waitForTimeout(200);
+  assert.equal(await page.evaluate(() => window.__stand.map.getCanvas().style.cursor), "pointer");
+  await ctx.close();
+});
+
+test("r13 review: a host that moves the camera inside onSelect keeps its view (no module fly over it)", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" });
+  await remount(page, `{ onSelect: (o) => { if (o) window.__stand.map.jumpTo({ center: [71.36, 51.19], zoom: 14 }); } }`);
+  await page.evaluate(() => window.__stand.instance.selectObject("r03-demo-closure", { source: "list" }));
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.waitForTimeout(400);
+  await settle(page);
+  const c = await page.evaluate(() => { const m = window.__stand.map.getCenter(); return [m.lng, m.lat]; });
+  assert.ok(Math.abs(c[0] - 71.36) < 0.005 && Math.abs(c[1] - 51.19) < 0.005, "host's view kept: " + c);
   await ctx.close();
 });

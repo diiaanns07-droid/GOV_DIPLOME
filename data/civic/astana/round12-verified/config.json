@@ -1,0 +1,12 @@
+{
+  "schema": "r05-r12-config-v1",
+  "city": "astana",
+  "as_of": "2026-10-07",
+  "historical_cutoff_days": 365,
+  "status_max_age_days": 45,
+  "package_source": "r05-astana-r12-verified",
+  "package_version": "r05-r12-2026-10-07",
+  "osm_snapshot": "data/civic/astana/osm-walking/overpass.json.gz",
+  "osm_snapshot_at": "2026-05-06T03:25:00Z",
+  "notes": "as_of — дата среза; сборка не читает часы, повтор даёт те же байты. OSM-снимок майский, не наблюдение октября."
+}

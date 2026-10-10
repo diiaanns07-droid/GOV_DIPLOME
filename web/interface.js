@@ -30,6 +30,32 @@ const directionIcon = {
 };
 const motion = () =>
   matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1;
+
+// 3D button = the map's real tilt. A tilt animation can be interrupted (zoom, "К объектам",
+// a district jump); afterwards the button follows the pitch the map actually has.
+const THREE_D_PITCH = 52;
+function showThreeD(on) {
+  state.threeD = !!on;
+  const button = document.getElementById("toggle-3d");
+  button?.classList.toggle("active", state.threeD);
+  button?.setAttribute("aria-pressed", String(state.threeD));
+}
+// 30°: every 3D view tilts 40–56°, flat views use 0° or the training district's soft 22°.
+const THREE_D_MIN_PITCH = 30;
+function syncThreeD() {
+  if (!map || map.isMoving()) return;
+  const on = map.getPitch() >= THREE_D_MIN_PITCH;
+  if (on !== state.threeD) showThreeD(on);
+}
+// Zoom buttons keep the intended tilt when they interrupt a running camera animation: finish a 3D
+// tilt, or finish leaving 3D; any other tilt (e.g. the training district's soft 22°) is left as is.
+function zoomBy(delta) {
+  if (!map) return;
+  const moving = map.isMoving();
+  const intent = !moving ? {} : state.threeD ? { pitch: THREE_D_PITCH, bearing: -16 }
+    : map.getPitch() >= THREE_D_MIN_PITCH ? { pitch: 0, bearing: 0 } : {};
+  map.easeTo({ zoom: map.getZoom() + delta, ...intent, duration: 450 * motion() });
+}
 const clone = (value) => structuredClone(value);
 let catalog = null,
   baseline = null,
@@ -1953,16 +1979,14 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
     flyOverview();
   };
-  $("zoom-in").onclick = () => map?.zoomIn({ duration: 450 * motion() });
-  $("zoom-out").onclick = () => map?.zoomOut({ duration: 450 * motion() });
+  $("zoom-in").onclick = () => zoomBy(1);
+  $("zoom-out").onclick = () => zoomBy(-1);
   $("rotate-map").onclick = () =>
     map?.easeTo({ bearing: map.getBearing() + 35, duration: 1000 * motion() });
   $("toggle-3d").onclick = () => {
-    state.threeD = !state.threeD;
-    $("toggle-3d").classList.toggle("active", state.threeD);
-    $("toggle-3d").setAttribute("aria-pressed", String(state.threeD));
+    showThreeD(!state.threeD);
     map?.easeTo({
-      pitch: state.threeD ? 52 : 0,
+      pitch: state.threeD ? THREE_D_PITCH : 0,
       bearing: state.threeD ? -16 : 0,
       duration: 1100 * motion(),
     });

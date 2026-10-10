@@ -1,0 +1,26 @@
+{
+  "schema_version": "civic-v1",
+  "city": "astana",
+  "slice": {
+    "name": "r05-astana-r13-verified",
+    "version": "r05-r13-2026-10-07",
+    "demo": false,
+    "count": 0,
+    "content_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "source": "r05-astana-r13-verified",
+    "as_of": "2026-10-07",
+    "builder": "data/civic/astana/round13-verified/tools/r13.py",
+    "inputs": [
+      {
+        "path": "config.json",
+        "sha256": "fc3ea387acfcb966329402275bda8bd9efe351e049c80fa55bc15d3cce2c710b"
+      },
+      {
+        "path": "analysis/queue_analysis.json",
+        "sha256": null
+      }
+    ],
+    "notes": "Только цели, прошедшие attach (выдержки в сохранённом тексте страницы) и review сотрудником. Импорт R02 создаёт черновики; публикует сотрудник."
+  },
+  "items": []
+}

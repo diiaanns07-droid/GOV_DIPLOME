@@ -1,0 +1,3706 @@
+{
+  "schema": "r05-r12-candidates-v1",
+  "city": "astana",
+  "as_of": "2026-10-07",
+  "note": "Кандидаты НЕ подтверждены: найдены поиском, страницы не открывались. Не импортируются. hints с origin=search_summary — пересказ поисковой модели, самый ненадёжный уровень.",
+  "queries": [
+    "Астана ремонт дорог 2026 акимат [allowed_domains gov.kz]",
+    "Астана реконструкция улиц 2026 управление пассажирского транспорта и автомобильных дорог [allowed_domains gov.kz]",
+    "Астана строительство развязки 2026 [allowed_domains astana.gov.kz]",
+    "Астана перекрытие улицы ремонт 2026 май июнь [allowed_domains gov.kz]",
+    "Астана жөндеу жолдар 2026 көше [allowed_domains gov.kz]",
+    "мост Тәуелсіздік Есиль открытие 2026 Астана",
+    "временно закроют в Астане участок улицы средний ремонт [allowed_domains gov.kz]",
+    "Астана строительство улиц 2026 полное перекрытие движения до ноября [allowed_domains gov.kz]",
+    "Астана транспортная развязка строительство 2026 акимат",
+    "развязка Бейсековой Тлендиева Астана [allowed_domains gov.kz]",
+    "Астанада көшелерді жөндеу жұмыстары жүргізілуде 2026",
+    "Касымбек проверил ход строительства дорог Астана 2026 [allowed_domains gov.kz]",
+    "В Астане частично перекроют движение на ряде улиц из-за ремонта [allowed_domains gov.kz]",
+    "Астана Кенесары средний ремонт Сембинова Сарыарка перекрытие",
+    "Астана ремонт проспекта Аль-Фараби Валиханова Кудайбердыулы мост Тулпар 2026",
+    "пересечение пр. Туран и Кургальжинского шоссе перекроют Астана [allowed_domains gov.kz]",
+    "Улица Абая 150 лет строительство Тлендиева Бейбарыс султан Астана",
+    "Сокпакбаева строительство улицы Астана перекрытие",
+    "Астанада көлік қозғалысы ашылды жаңа көше жол айрығы [allowed_domains gov.kz]",
+    "Астана открыли движение по новой улице сентябрь 2026 [allowed_domains gov.kz, astana.gov.kz, inform.kz, kazinform.kz]",
+    "Астана мост Тауелсиздик открыто движение [allowed_domains gov.kz, inform.kz]",
+    "Анет баба ЕК-26 перекроют Астана [allowed_domains gov.kz]",
+    "Тлендиева Коктал Маскеу частично перекроют Астана сентябрь",
+    "Астанада бірқатар көшеде көлік қозғалысы ішінара жабылады жөндеу [allowed_domains gov.kz]",
+    "акимат Астаны дорожные работы 2026 улицы перекрыты август сентябрь развязка Бейсековой открыта [mode extended]",
+    "строительство тоннеля улица Алматы Мангилик Ел Сауран Астана [allowed_domains gov.kz, inform.kz, kazinform.kz]",
+    "Десятки улиц обновят в Астане основные дорожные проекты 2026",
+    "Астана перекрытие движения 2026",
+    "ограничение движения Астана улица 2026 [allowed_domains=gov.kz]",
+    "Астанада көлік қозғалысы шектеледі 2026 [allowed_domains=gov.kz]",
+    "перекрытие улицы Астана сентябрь 2026 inform.kz",
+    "В Астане перекроют движение улица [allowed_domains=inform.kz,kazinform.kz]",
+    "Астана временно закроют движение на участке улицы 2026 управление транспорта",
+    "\"2026\" Астана перекроют движение тоннель улица Алматы",
+    "Астана ограничение движения мероприятие октябрь 2026",
+    "Игры будущего 2026 Астана перекрытие улиц",
+    "Астана полумарафон 2026 перекроют улицы",
+    "Управление транспорта Астаны сообщает о перекрытии движения [allowed_domains=gov.kz]",
+    "Астана перекрытие движения прокладка инженерных сетей Атамура Кокарал Колтеген",
+    "Астана жабылады көше қозғалыс уақытша жабылады 2026 жол жөндеу",
+    "Хусейн бен Талал Аль-Фараби перекрытие 10 по 15 сентября Астана",
+    "В Астане частично перекроют движение на ряде улиц в связи с ремонтными работами [allowed_domains=gov.kz]",
+    "Астана ограничат движение Kazinform 2026 перекресток ремонт [allowed_domains=inform.kz,kazinform.kz,kazpravda.kz]",
+    "Участок улицы Баршын временно закроют в Астане",
+    "Астанада көше жабылады жөндеу жұмыстары қиылыс [allowed_domains=gov.kz]",
+    "cts.gov.kz LRT ограничение движения Мангилик Ел перекрытие",
+    "vechastana.kz перекрытие движения Астана 2026",
+    "Астана перекрытие движения улица Алматы тоннель до конца 2026 года акимат [mode=extended]",
+    "zakon.kz перекроют в Астане 2026 новость от сентября [allowed_domains=zakon.kz]",
+    "День столицы 2026 Астана ограничение движения перекрытие улиц",
+    "перекроют в Астане октябрь 2026 ᐈ новость zakon.kz [allowed_domains=zakon.kz]",
+    "Астана ұзақ уақытқа жабылады көше 2026 әкімдік хабарлайды тоннель Алматы көшесі",
+    "перекресток Акмешит Алматы перекрыт строительство тоннеля Есильский район [allowed_domains=gov.kz,inform.kz,kazinform.kz,vechastana.kz,astana-akshamy.kz]",
+    "Астана строительство завершение 2026 развязка мост акимат [allowed_domains=gov.kz]",
+    "LRT Астана запуск 2026 легкорельсовый транспорт сроки",
+    "Астана школы строительство сдача 2026 году",
+    "Тлендиева Бейсекова развязка Астана срок завершения",
+    "Астана поликлиника строительство 2026 завершить",
+    "Астана жол айрығы көпір құрылысы 2026 жылы аяқталады",
+    "Астана инженерные сети теплосети реконструкция 2026 Астана-Теплотранзит",
+    "Астана су арнасы строительство водовод канализация 2026",
+    "Астана мост через Есиль строительство 2026 открытие",
+    "Астана школа поликлиника ввод в эксплуатацию 2026 году строительство управление [allowed_domains=gov.kz]",
+    "LRT Астана вторая очередь Косшы продление линии строительство срок",
+    "vechastana.kz строительство дорог развязка 2026",
+    "проспект Тауелсиздик Кабанбай батыра Улы Дала строительство восьмиполосная завершение",
+    "мост Хусейн бен Талал Есиль Астана строительство",
+    "Астанада 2026 жылы мектептер емхана құрылысы аяқталады",
+    "Астана до конца 2026 года завершат строительство развязки улицы школы аким Касымбек [mode=extended]",
+    "inform.kz Астана LRT запуск май 2026",
+    "Астана транспортная развязка строительство завершат 2026 году акимат Астаны [allowed_domains=gov.kz]",
+    "Астана новая магистраль в обход Мангилик Ел строительство сроки",
+    "благоустройство парков скверов Астана 2026",
+    "Астана благоустройство 2026 сквер реконструкция [allowed_domains: gov.kz]",
+    "Астана 2026 озеленение высадят деревья районы акимат [allowed_domains: gov.kz]",
+    "Астанада 2026 жылы абаттандыру саябақ скверлер",
+    "в 2026 году в Астане благоустроят дворы и общественные пространства",
+    "Астана набережная реконструкция 2026 Есиль благоустройство",
+    "173 общественных и дворовых пространства благоустроят в Астане",
+    "благоустройство Астана 2026 [allowed_domains: gov.kz, astana.gov.kz]",
+    "Greenline вторая очередь Астана бульвар Омарова Толе би строительство",
+    "Астана реконструкция парка 2026 открытие после реконструкции",
+    "Центральный парк Астана закроют на реконструкцию",
+    "Президентский парк Астана реконструкция общественные обсуждения",
+    "Вечерняя Астана благоустройство сквер 2026 [allowed_domains: vechastana.kz]",
+    "Астана озеленение 2026 миллион саженцев весенняя посадка [allowed_domains: inform.kz, kazinform.kz]",
+    "Астана 2026 жылы көгалдандыру ағаш отырғызу аудан әкімдігі [allowed_domains: gov.kz]",
+    "аким района Астана благоустройство сквера 2026 подрядчик работы завершат",
+    "экопарк Малый Талдыколь строительство начало работ",
+    "аллея Мыңжылдық Нұрлы жол вокзал линейный парк Астана",
+    "Мыңжылдық аллеясы Малый Талдыколь экопарк [allowed_domains: gov.kz]",
+    "Astana 2026 park landscaping square reconstruction akimat [allowed_domains: astanatimes.com, inform.kz, kazinform.kz, gov.kz]",
+    "ко Дню столицы 2026 в Астане открыли новые скверы и общественные пространства [mode: extended]",
+    "Более 30 дворов и общественных пространств открыли в Астане ко Дню столицы [allowed_domains: gov.kz]",
+    "Нура ауданында жаңа скверлер ашылды Астана күні",
+    "сквер Паровоз Иллюзия вокзал Астана-1 реконструкция филармония",
+    "Масштабное благоустройство общественных пространств продолжается в Астане",
+    "набережная Триатлон-парк Астана реконструкция участка",
+    "Центральный парк Астана обновили открыли после ремонта Нура [allowed_domains: gov.kz, elordainfo.kz, inform.kz]",
+    "Кабанбай батыра 7500 крупномерных деревьев эстакада Астана",
+    "Астанада 2026 жылы 173 аула мен қоғамдық кеңістік абаттандырылады",
+    "началось строительство аллеи Мынжылдык Астана сквер театр Куанышбаева",
+    "Начались работы по благоустройству экопарка на Малом Талдыколе в Астане",
+    "Greenline жаяу жүргіншілер бульвары Мыңжылдық аллеясы құрылыс Астана әкімдігі [allowed_domains: gov.kz]",
+    "Астана перекрытие улиц мероприятие 2026",
+    "Астана марафон 2026 перекрытие дорог",
+    "День столицы 2026 Астана мероприятия программа",
+    "Astana Marathon 2026 сентябрь перекрытие улиц",
+    "Астана ярмарка сентябрь 2026 сельхозярмарка",
+    "Астана фестиваль август 2026",
+    "\"Astana Marathon\" 2026",
+    "Астанада көшелер жабылады іс-шара 2026 қыркүйек",
+    "Астана мероприятие ограничение движения [allowed_domains=gov.kz]",
+    "День Конституции 30 августа 2026 Астана праздничные мероприятия",
+    "Ironman 70.3 Astana 2026 перекрытие",
+    "Астана сельскохозяйственная ярмарка октябрь 2026 Астана Арена [allowed_domains=gov.kz]",
+    "Астана перекроют улицы сентябрь 2026 забег велопробег",
+    "куда сходить в Астане выходные сентябрь 2026",
+    "Астана фестиваль сентябрь 2026 площадь [allowed_domains=gov.kz]",
+    "День Республики 25 октября 2026 Астана мероприятия",
+    "Астана октябрь 2026 перекрытие движения мероприятие",
+    "Астанада фестиваль 2026 тамыз қала тұрғындары алаң",
+    "ночной забег Астана сентябрь 2026",
+    "Bala Fest 2026 Центральный парк Астана",
+    "Астана перекрытие улиц август 2026 мероприятие",
+    "UNICEF Charity Run 2026 Астана 20 сентября",
+    "Астана ноябрь декабрь 2026 фестиваль ярмарка новогодняя",
+    "Астанада 2026 жылы өтетін іс-шара қазан фестиваль [allowed_domains=gov.kz]",
+    "Астана октябрь 2026 фестиваль пройдет в столице",
+    "ярмарка выходного дня Астана сентябрь 2026 областей",
+    "Астана концерт стадион сентябрь 2026 ограничение движения шаттл",
+    "концерт Энрике Иглесиаса Астана Арена ограничат движение",
+    "Кайрат Нуртас концерт Астана Арена 27 сентября перекрытие [allowed_domains=gov.kz]",
+    "Астана Арена концерт қозғалыс шектеледі шаттл-бус 2026",
+    "Backstreet Boys Астана концерт дата шаттл",
+    "Астана 16 декабря 2026 День Независимости праздничные мероприятия",
+    "Astana Open 2026 теннис октябрь Астана",
+    "Когда и где пройдут забеги в Астане в этом году 2026 календарь забегов",
+    "Астана предстоящие мероприятия октябрь ноябрь 2026 перекрытие улиц концерт форум фестиваль [mode=extended]",
+    "чемпионат мира по борьбе 2026 Астана Барыс Арена октябрь",
+    "Астана жәрмеңке 2026 қыркүйек қазан ауылшаруашылық [allowed_domains=gov.kz]",
+    "ярмарка «Дала дәмі» Астана 2026",
+    "Астана велопробег 2026 перекрытие улиц август сентябрь",
+    "Астана су арнасы ремонт водопровода 2026 перекрытие улицы",
+    "Астана теплосети ремонт 2026 ограничение движения раскопки",
+    "Астана ремонт инженерных сетей 2026 перекрытие дорог [allowed_domains=gov.kz]",
+    "Астана-Теплотранзит ремонт теплосетей 2026 летняя ремонтная кампания",
+    "«Астана су арнасы» 2026 замена водопровода перекроют",
+    "Астана жылу желілері жөндеу 2026 көше жабылады",
+    "Астана перекрытие из-за прокладки инженерных сетей 2026 до [allowed_domains=gov.kz]",
+    "Промышленный Астана водоснабжение водоотведение Атамура Кокарал Колтеген перекрыты",
+    "Астана теплотрасса замена 2026 перекрыт участок улицы",
+    "Астана-РЭК ремонт кабельных линий 2026 Астана",
+    "inform.kz Астана су арнасы 2026 канализационный коллектор реконструкция",
+    "Астана газопровод строительство 2026 перекрытие движения QazaqGaz",
+    "инвестиционной программе 2026 года на 11 объектах вскрытие дорожного покрытия Астана",
+    "Астана вскрытие дорожного покрытия ремонт сетей теплоснабжения водоснабжения 2026 график [allowed_domains=gov.kz]",
+    "Астанада су құбыры жөндеу 2026 көше жабылады Астана су арнасы",
+    "Астана подготовка к отопительному сезону 2026-2027 замена тепловых сетей км",
+    "Астана отключение горячей воды гидравлические испытания 2026 график",
+    "Астана жылыту маусымына дайындық 2026 жылу желілері ауыстыру [allowed_domains=gov.kz]",
+    "\"Подготовка к отопительному сезону: в Астане реализуют крупные проекты в сфере теплоснабжения\"",
+    "Астана перекроют улицу прокладка водопровода канализации сентябрь октябрь 2026",
+    "Астана тепломагистраль реконструкция 2026 перекрытие проспект",
+    "ТМ-12 Карасай батыра Астана тепломагистраль перекрытие",
+    "Астана Ауэзова Кумисбекова Конституции перекрытие ремонт сетей 2026",
+    "Анет баба ЕК-26 перекрытие инженерные сети Астана",
+    "Перекрёсток закроют на левом берегу Астаны более чем на две недели Анет баба",
+    "Астана су арнасы инвестиционная программа 2026 реконструкция сетей водоснабжения км",
+    "Астана-Теплотранзит 2026 жылы жөндеу жұмыстары жылу трассасы",
+    "В Астане поменяют все потенциально дефектные трубопроводы",
+    "vechastana.kz перекрытие ремонт теплосети водопровода 2026",
+    "Жиренбаева Жирентаева теплотрасса реконструкция Астана 2026 791 метр",
+    "Астана 2026 перекрытие улиц ремонт теплосетей водопровода электросетей сроки завершения работ [mode=extended]",
+    "Астана теплотрасса перекроют участок дороги август 2026",
+    "Астанада инженерлік желілерді төсеуге байланысты көлік қозғалысы шектеледі [allowed_domains=gov.kz]",
+    "Астана водовод реконструкция 2026 Astana su arnasy перекрытие движения улица",
+    "Несколько улиц перекроют в Астане почти до конца года: что нужно знать жителям столицы",
+    "Астане выделили 16 млрд тенге на коммунальную инфраструктуру что изменится в столице",
+    "SABIS теплотрасса Кайсенова Рыскулова Астана перекрытие",
+    "inform.kz Астана 2026 ремонт сетей водоснабжения канализации завершат",
+    "Астана электр желілері жаңғырту 2026 қосалқы станция құрылысы",
+    "kursiv Астана жылыту маусымына дайындала бастады 2026",
+    "Ливневки, канализационные очистные сооружения и водовод строят в Астане",
+    "Астана ливневая канализация строительство 2026 перекрытие улицы до [allowed_domains=gov.kz]",
+    "Водовод для 80 предприятий реконструируют в Астане",
+    "Астана-Теплотранзит гидравлические испытания тепловых сетей 2026 сроки",
+    "50-летний водопровод обновляют в Астане 2,3 млрд тенге улица",
+    "В Астане полностью перекроют движение на одном из перекрестков: названы даты",
+    "Более 4,5 млрд тенге направят на обновление тепловых, электрических и водопроводных сетей Астаны",
+    "Хусейн бен Талал Аль-Фараби перекресток перекрытие инженерные сети Астана сентябрь",
+    "Астана жылу трассасы ауыстыру көше жабылады тамыз қыркүйек 2026",
+    "Управление топливно-энергетического комплекса и коммунального хозяйства Астаны 2026 перекрытие теплотрасса [allowed_domains=gov.kz]",
+    "В Астане на три дня перекроют участок дороги из-за работ на теплотрассе",
+    "Астана перекрытие улицы ремонт канализационного коллектора 2026 Астана су арнасы ночное",
+    "В Астане продолжаются плановые гидравлические испытания тепловых сетей [allowed_domains=gov.kz]",
+    "Какие улицы отремонтируют в Астане в 2026 году вскрытие инженерные сети",
+    "Астана прокладка кабельной линии перекрытие улицы 2026 Астана-РЭК подстанция",
+    "Астана тепломагистраль ТМ реконструкция 2026 Карасай батыра Ауэзова перекрытие сроки"
+  ],
+  "candidates": [
+    {
+      "id": "cand-r12-koncert-enrike-iglesiasa-gde-v-ast",
+      "decision": "rejected",
+      "reason": "State TV site, and the title names Astana, traffic restrictions and 3 September, but no year is visible anywhere; 2026 is only inferred. A one-off past traffic restriction with an unverified year could mislead on a map. The year could not be confirmed because the search budget was used up. Revisit if a source with the year appears.",
+      "kind": "event",
+      "title_as_listed": "Концерт Энрике Иглесиаса: где в Астане ограничат движение 3 сентября",
+      "source_ids": [
+        "src-r12-24-904669ed"
+      ],
+      "location_text": "район стадиона «Астана Арена»: ул. Марко Поло (со стороны ЛД «Алау»), ул. Месроп Маштоц (со стороны велотрека «Сарыарка») — per summary",
+      "date_hint": "3 сентября (year not shown); concert at 20:00 per summary",
+      "date_hint_origin": "search_title",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "event_date",
+          "text": "3 сентября",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "ограничат движение (traffic restricted)",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "ул. Марко Поло (у Ледового дворца «Алау») и ул. Месроп Маштоц (у велотрека «Сарыарка»)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "event_date",
+          "text": "концерт в 20:00",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "shuttle buses from four parking zones to Astana Arena",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-polnostyu-perekroyut-dviz",
+      "decision": "to_verify",
+      "reason": "State broadcaster site. The title confirms a full closure of an intersection in Astana with announced dates. The location (Hussein bin Talal St / Al-Farabi Ave), the 10–15 Sep 2026 window and the utility and road-base works come from summaries, though both this item's summary and the zakon.kz duplicate's summary agree. zakon.kz corroborates it independently, with title date 9 Sep 2026 and 'на пять дней'. The closure is over. No gov.kz confirmation because the budget ran out.",
+      "kind": "roadworks",
+      "title_as_listed": "В Астане полностью перекроют движение на одном из перекрестков: названы даты",
+      "source_ids": [
+        "src-r12-24-2ebb2ffc",
+        "src-r12-zakon-fc1fea08"
+      ],
+      "location_text": "перекресток ул. Хусейн бен Талал и пр. Аль-Фараби",
+      "date_hint": "2026-09-10..2026-09-15 (closure, per summaries); announced 2026-09-09 per zakon.kz title",
+      "date_hint_origin": "search_summary",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "zakon.kz says 'five days', while 10–15 Sep counts as 6 calendar days inclusive. Neither title names the intersection.",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "полностью перекроют движение на одном из перекрестков",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.planned_start",
+          "text": "10 сентября 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "15 сентября 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Подрядчик выполняет работы по устройству инженерных сетей и подготовке дорожного основания",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "пересечение ул. Хусейн бен Талал и пр. Аль-Фараби",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-uww-vybral-astanu-dlya-mirovogo-tu",
+      "decision": "to_verify",
+      "reason": "State broadcaster site. The title confirms that UWW chose Astana for a 2026 world tournament, which is upcoming. The 24 Oct–1 Nov dates, the Barys Arena venue and the move from Bahrain all come only from the summary and are unverified. No independent source because the budget ran out.",
+      "kind": "event",
+      "title_as_listed": "UWW выбрал Астану для мирового турнира 2026",
+      "source_ids": [
+        "src-r12-24-a62036ad"
+      ],
+      "location_text": "Barys Arena (per search summary)",
+      "date_hint": "2026-10-24..2026-11-01",
+      "date_hint_origin": "search_summary",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "UWW chose Astana for 2026 world tournament",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "24 октября – 1 ноября",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "Barys Arena",
+          "origin": "search_summary"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "United World Wrestling (UWW)",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "moved from Bahrain due to Middle East conflict",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-20-sentyabrya-proidet-bla",
+      "decision": "to_verify",
+      "reason": "State broadcaster site. The title names a specific public event in Astana on 20 September (UNICEF Charity Run), now past. The year is not in the title. The 24.kz ID 791320 sits just after 790905, which belongs to the Sept 2026 intersection closure corroborated by zakon.kz dated 9 Sep 2026, so the year is 2026 by inference. The Botanical Garden venue and the distances are summary-only. No second source because the budget ran out.",
+      "kind": "event",
+      "title_as_listed": "В Астане 20 сентября пройдет благотворительный забег UNICEF Charity Run",
+      "source_ids": [
+        "src-r12-24-e486a296"
+      ],
+      "location_text": "Ботанический сад (per search summary)",
+      "date_hint": "20 September (title); year 2026 inferred from 24.kz URL ID ordering",
+      "date_hint_origin": "search_title",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "event_date",
+          "text": "20 сентября",
+          "origin": "search_title"
+        },
+        {
+          "field": "location",
+          "text": "Ботанический сад",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "distances 2, 5, 10 km; 2 km for children 7–15",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-ekopark-na-malom-taldykole-nachnut",
+      "decision": "to_verify",
+      "reason": "Identifiable object: the eco-park at Maly Taldykol (an Astana lake, though neither the title nor the URL says Astana). The title gives a planned construction start in 2026 and 73 wells. The publication date is unknown. Per the summary only, the design correction is 85% done, over 12,000 plantings are planned, and a 5.3 bn tenge tender won by Sheberbuild was not completed, so whether work actually started in 2026 is unverified. kazpravda 'новые точки притяжения' also mentions Maly Taldykol, but only in its summary, which makes it weak corroboration. No official source could be searched because the budget ran out.",
+      "kind": "landscaping",
+      "title_as_listed": "Экопарк на Малом Талдыколе начнут строить в 2026 году: для сохранения уровня воды пробурят 73 скважины",
+      "source_ids": [
+        "src-r12-bes-31baedd3",
+        "src-r12-kazpravda-c3c0b72d"
+      ],
+      "location_text": "Малый Талдыколь, Астана",
+      "date_hint": "2026 (planned construction start)",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_only_in_summary",
+      "contradictions": "The summary note that the tender 'was not completed' makes the actual 2026 start uncertain. The corroborating mention is summary-only.",
+      "hints": [
+        {
+          "field": "schedule.planned_start",
+          "text": "2026",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "73 скважины для сохранения уровня воды",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "documentation correction 85% complete; over 12,000 green plantings planned; tender of 5.3 bn tenge won by Sheberbuild not completed",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-kakie-ulicy-otremontiruyut-v-astan",
+      "decision": "duplicate",
+      "reason": "Same 2026 citywide road-repair programme as the kursiv article. Its body may list the streets, but none are visible here. The publication date is unknown; kursiv has a URL date and the '50 streets' scope.",
+      "kind": "roadworks",
+      "title_as_listed": "Какие улицы отремонтируют в Астане в 2026 году",
+      "source_ids": [
+        "src-r12-bes-fd21add9"
+      ],
+      "location_text": "Astana, citywide",
+      "date_hint": "2026",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "улицы отремонтируют в Астане в 2026 году",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "official-roadworks"
+      ],
+      "duplicate_of": "cand-r12-srazu-50-ulic-kasymbek-rasskazal-o"
+    },
+    {
+      "id": "cand-r12-na-kakih-ulicah-astany-perekroyut",
+      "decision": "to_verify",
+      "reason": "Astana is in the title; the summary gives concrete streets and objects. In Promyshlenny, Atamura, Kokaral and Koltegen streets are closed for water, sewer and storm-drain networks, with completion by end of 2026 if funding allows. Karasai Batyr St is to be closed for the TM-12 project (part of a national project), with later closures on sections of Auezov, Kumisbekov and Konstitutsii streets. 11 sites fall under the 2026 investment programme. This is an AMP copy of a news page, not an official source, and the responsible operator is not named in the title. I could not search for a second source because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "На каких улицах Астаны перекроют движение из-за ремонта сетей",
+      "source_ids": [
+        "src-r12-bes-f00bbba0"
+      ],
+      "location_text": "ж/м Промышленный: ул. Атамура, Кокарал, Колтеген; ул. Карасай батыра (ТМ-12); участки ул. Ауэзова, Кумисбекова, Конституции",
+      "date_hint": "2026 investment programme; Promyshlenny networks by end of 2026 (subject to funding); TM-12 start late July – early August (year not explicit)",
+      "date_hint_origin": "search_summary",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The TM-12 start ('end of July – early August') has no explicit year. The end-2026 completion for Promyshlenny is conditional on funding.",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "перекроют движение из-за ремонта сетей",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "Временно перекрыты ул. Атамура, Кокарал и Колтеген (ж/м Промышленный) из-за прокладки сетей водоснабжения, водоотведения и ливневой канализации",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "до конца 2026 года при достаточном финансировании (сети в ж/м Промышленный)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "Временное перекрытие ул. Карасай батыра для строительно-монтажных работ по объекту ТМ-12 (в рамках национального проекта)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.planned_start",
+          "text": "ТМ-12: ориентировочно конец июля – начало августа (год в сводке явно не указан)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "Позже ограничения на участках ул. Карасай батыра, Ауэзова, Кумисбекова и Конституции",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "По инвестиционной программе 2026 года на 11 объектах вскрытие и восстановление благоустройства: 7 без вскрытия автодорог, 4 со вскрытием дорожного покрытия",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-dvuhurovnevuyu-razvyazku-na-perese",
+      "decision": "duplicate",
+      "reason": "Same Beisekova–Tlendiev two-level interchange as the official gov.kz release 1233855. The listed title is a Latin transliteration of the URL slug, not a real headline. The slug says 'до конца года' with no year. The 'closed until 1 August' detail comes from a related road-closure digest in the summary. The official akimat page is preferred.",
+      "kind": "construction",
+      "title_as_listed": "dvuhurovnevuyu razvyazku na peresechenii ulits beysekovoy i tlendieva v astane zavershat do kontsa goda",
+      "source_ids": [
+        "src-r12-bes-00377498",
+        "src-r12-gov-7b9c737a",
+        "src-r12-inform-ae29218b"
+      ],
+      "location_text": "пересечение улиц Бейсековой и Тлендиева, Астана",
+      "date_hint": "до конца года (год не указан); intersection closed until 1 August per summary",
+      "date_hint_origin": "url",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Completion 'by end of year' (here) vs traffic opening 'by end of October' (inform.kz summary).",
+      "hints": [
+        {
+          "field": "location",
+          "text": "пересечение улиц Бейсековой и Тлендиева",
+          "origin": "url"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "до конца года (year NOT stated)",
+          "origin": "url"
+        },
+        {
+          "field": "closure",
+          "text": "intersection closed until 1 August, traffic via temporary six-lane road (from a related bes.media road-closure digest)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            71.382253,
+            51.178849
+          ]
+        },
+        "geometry_precision": "approximate",
+        "geometry_basis": "OSM: пересечение «улица Шабал Бейсековой» и «проспект Нургисы Тлендиева», узлы 13418022861, снимок 2026-05-06, ODbL",
+        "query": {
+          "street": "Бейсековой",
+          "cross": "Тлендиева",
+          "from": null,
+          "to": null
+        },
+        "notes": [
+          "общего узла нет; ближайшие узлы улиц в 20 м (узел 12545777664)"
+        ],
+        "why": "пересечение названо в заголовке; точка — ближайшие узлы двух улиц в OSM, не проект развязки"
+      },
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": "cand-r12-stroitelstvo-razvyazok-i-dorog-kak"
+    },
+    {
+      "id": "cand-r12-bizmedia-kz",
+      "decision": "to_verify",
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL: «LRT в Астане запустят 16–17 мая» (дата 2026-05-12 в URL). Вердикт скептика: The LRT launch is a major Astana infrastructure event, and the URL gives Astana, the article date (2026-05-12) and the planned launch (16-17 May). The listed title is only the domain name. The 'launched on 16 May with the President; 22.4 km, 18 stations' details come only from the summary. Prefer an",
+      "kind": "construction",
+      "title_as_listed": "bizmedia.kz",
+      "source_ids": [
+        "src-r12-bizmedia-6da2f5d8"
+      ],
+      "location_text": "Астана, линия LRT первой очереди (аэропорт — центр, per summary)",
+      "date_hint": "article 2026-05-12; launch planned 16-17 May 2026",
+      "date_hint_origin": "url",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The URL says the launch was planned ('запустят 16-17 мая'). Only the summary says it actually took place on 16 May 2026.",
+      "hints": [
+        {
+          "field": "event_date",
+          "text": "LRT в Астане запустят 16-17 мая (article dated 2026-05-12)",
+          "origin": "url"
+        },
+        {
+          "field": "status",
+          "text": "launched 16 May 2026 with President Tokayev; 22.4 km, 18 stations, depot",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-bolee-4-5-mlrd-tenge-napravyat-na",
+      "decision": "to_verify",
+      "reason": "The URL date is 2026-06-05, and the title gives more than 4.5 bn tenge for renewing Astana's heat, power and water networks. The one specific object, Astana su arnasy's reconstruction of the technical water main on Dosmukhamedov St from Akzhol to Alash (2.47 bn tenge), is summary-only. The publisher is a business news site, not official. It is related to the gov.kz 1242774 water-infrastructure page but not clearly the same object. No official source could be searched because the budget ran out.",
+      "kind": "construction",
+      "title_as_listed": "Более 4,5 млрд тенге направят на обновление тепловых, электрических и водопроводных сетей Астаны",
+      "source_ids": [
+        "src-r12-bizmedia-d3e5a1cf"
+      ],
+      "location_text": "Астана; технический водовод по ул. Досмухамедулы от ул. Акжол до пр. Алаш",
+      "date_hint": "2026-06-05",
+      "date_hint_origin": "url",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The summary's parts (1.4 bn, 0.2 bn and 2.47 bn) do not add up to the title's 'более 4,5 млрд', so items are missing. '9.59 km for 200 mn tenge' looks implausibly low and may be a garbled summary.",
+      "hints": [
+        {
+          "field": "budget.amount_kzt",
+          "text": "Более 4,5 млрд тенге",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "1-й этап: обновление 7,08 км сетей за 1,4 млрд тенге; 4-й этап: реконструкция еще 9,59 км за 200 млн тенге",
+          "origin": "search_summary"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "КГП «Астана су арнасы» — реконструкция технического водовода по ул. Досмухамедулы (ул. Акжол – пр. Алаш)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "budget.amount_kzt",
+          "text": "Технический водовод: 2,47 млрд тенге, обновление более 3 км сетей",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-perekroyut-dorogi-iz-za-m",
+      "decision": "to_verify",
+      "reason": "Astana is in the title, and the URL date is 2026-06-05. Per the summary, the Astana Half Marathon ran on 7 June 2026 with about 7,000 participants. Tauelsizdik Ave was partly restricted from 06:00 on 6 June to 18:00 on 7 June. On 7 June there were short closures on Panfilov St, Nazhimedenov St and Tauelsizdik Ave, and all traffic was restored by 09:00. Past event, kept as 2026 history. Business news site, not official. I could not search for an official source because the search budget was used up.",
+      "kind": "event",
+      "title_as_listed": "В Астане перекроют дороги из-за марафона: проверьте, затронет ли это ваш маршрут",
+      "source_ids": [
+        "src-r12-digitalbusiness-b4fdfb12"
+      ],
+      "location_text": "Tauelsizdik Ave (N. Nazhimedenov St to A. Baitursynuly St), Ivan Panfilov St, Zh. Nazhimedenov St (per summary)",
+      "date_hint": "2026-06-05 (article); event 7 June 2026 per summary",
+      "date_hint_origin": "url",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "перекроют дороги из-за марафона",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "7 June (5th anniversary Astana Half Marathon, about 7,000 participants)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "Tauelsizdik Ave partially restricted from 06:00 6 June to 18:00 7 June; on 7 June: Panfilov St 07:00–08:45, Nazhimedenov St 07:14–08:45, Tauelsizdik Ave 07:00–08:55; traffic fully restored by 09:00",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-kuda-shodit-v-astane-5-i-6-sentyab",
+      "decision": "rejected",
+      "reason": "A 'where to go' listicle that aggregates many unrelated events. It is not a works or restriction notice, the events (5–6 Sep 2026) are over, and the venues (Bala Fest in Central Park and others) appear only in the summary.",
+      "kind": "event",
+      "title_as_listed": "Куда сходить в Астане 5 и 6 сентября: бесплатные и необычные события для детей и взрослых",
+      "source_ids": [
+        "src-r12-digitalbusiness-cff2c1cc"
+      ],
+      "location_text": "Центральный парк (Bala Fest), Astana Ballet, Дворец «Жастар» (per summary)",
+      "date_hint": "2026-09-05..2026-09-06 (published 2026-09-03 per URL)",
+      "date_hint_origin": "url",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "event_date",
+          "text": "5 и 6 сентября",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "publication date 2026-09-03 in URL path",
+          "origin": "url"
+        },
+        {
+          "field": "location",
+          "text": "Bala Fest – 2026 in Центральный парк on 5 September",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "конный фестиваль с поло, бесплатный ночной забег, арт-вечера; Astana Ballet 'Blind Forgiveness' 5 Sept 17:00; concert at Дворец «Жастар» 18:00",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-poyavitsya-novyi-most-che",
+      "decision": "to_verify",
+      "reason": "A recent (2026-09-21, from the URL) report on a planned new bridge over the Yesil in Astana. The location (continuation of Hussein bin Talal st between Al-Farabi and Sh. Kaldayakov, 8 lanes) and the note that the investor is still preparing the design and the cost is unknown come only from the summary. It is still at the planning stage and general news only; no official source was found because the search budget was used up.",
+      "kind": "construction",
+      "title_as_listed": "В Астане появится новый мост через Есиль: какие дороги он разгрузит",
+      "source_ids": [
+        "src-r12-digitalbusiness-b9532dd5"
+      ],
+      "location_text": "река Есиль, Астана; per summary: продолжение ул. Хусейн бен Талал между пр. Аль-Фараби и ул. Шамши Калдаякова",
+      "date_hint": "2026-09-21",
+      "date_hint_origin": "url",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "появится новый мост через Есиль (planned)",
+          "origin": "search_title"
+        },
+        {
+          "field": "location",
+          "text": "continuation of Hussein bin Talal street between Al-Farabi avenue and Shamshi Kaldayakov street; eight lanes",
+          "origin": "search_summary"
+        },
+        {
+          "field": "budget.amount_kzt",
+          "text": "final cost unknown; investor is developing the design (summary)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-bolee-30-novyh-dvorov-skverov-i-sp",
+      "decision": "rejected",
+      "reason": "The title format ('новости на сайте gurk.kz', city plus date) is typical of a news aggregator, not a primary publisher. The item is a citywide count (30+ courtyards, squares and sports grounds) with no identifiable object. The '173 spaces, 1.1 million plantings' programme figures are summary-only. The original akimat release could not be searched because the budget ran out.",
+      "kind": "landscaping",
+      "title_as_listed": "Более 30 новых дворов, скверов и спортплощадок открыли в Астане ко Дню города: Город Астана, 06 Июля 2026 года - новости на сайте gurk.kz",
+      "source_ids": [
+        "src-r12-gurk-62a200e3"
+      ],
+      "location_text": "Город Астана",
+      "date_hint": "2026-07-06",
+      "date_hint_origin": "search_title",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Its count of 30+ differs from the 60+ courtyards in gov.kz astana-uvp 1276562. These look like different programmes (City Day openings against the participatory budget), not a conflict.",
+      "hints": [
+        {
+          "field": "status",
+          "text": "открыли более 30 новых дворов, скверов и спортплощадок",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "06 Июля 2026 года (ко Дню города)",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "2026 programme: 173 courtyard and public spaces, over 1.1 million trees/shrubs/plantings",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-ekopark-na-malom-taldykole-poyavit",
+      "decision": "to_verify",
+      "reason": "Factual headline with a concrete planned date: an eco-park at Maly Taldykol opening in 2027. Astana is not named in the title or URL. Kept because Maly Taldykol is a lake area inside Astana (my general knowledge, not from this source) and because the Astana city newspaper Vechernyaya Astana covers the same object. Chosen over the vechastana item because that headline reads like a feature and has no date or status. Business news, not official. I could not search for an official source because the search budget was used up.",
+      "kind": "landscaping",
+      "title_as_listed": "Экопарк на Малом Талдыколе появится в 2027 году",
+      "source_ids": [
+        "src-r12-inbusiness-ca006aba",
+        "src-r12-vechastana-f09cd5ec"
+      ],
+      "location_text": "Малый Талдыколь, Астана",
+      "date_hint": "2027 (planned opening)",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "unclear",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "schedule.current_planned_end",
+          "text": "2027",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-milliardy-vlozhat-v-obnovlenie-kom",
+      "decision": "rejected",
+      "reason": "A generic programme headline from a non-official outlet with no visible date. All the specifics (73.09 bn tenge for 2025-2029, the Astana-Teplotranzit heat pipe on K. Mukhamedzhanov st, the TM-12 section) come only from the summary. Not mappable without an official or dated source.",
+      "kind": "construction",
+      "title_as_listed": "Миллиарды вложат в обновление коммунальной инфраструктуры Астаны",
+      "source_ids": [
+        "src-r12-inbusiness-a9438155"
+      ],
+      "location_text": "Астана (city-wide)",
+      "date_hint": "programme 2025-2029 (2025-2026 tranche)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "budget.amount_kzt",
+          "text": "73.09 bn tenge for 2025-2029 for heat supply, water supply and sewerage; 31.51 bn for 2025-2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "АО «Астана-Теплотранзит» (reconstruction of >10 km heat networks; 3 km in 2025-2026)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "400 mm heat pipe on K. Mukhamedzhanov street (492 m) before heating season; TM-12 section 347 m reconstruction",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-poyavilis-detali-i-sroki-stroitels",
+      "decision": "to_verify",
+      "reason": "Astana is in the title; this is the LRT construction project from Astana to Kosshy. Kosshy is a separate town in Akmola region, so only the Astana section is in scope. Per the summary, the project has two sections, the route passes 510 m from Taldykol lake and crosses the Ishim, and construction takes about 1.5 years from early 2026 (attributed to the akim). The article date is unknown, and this is business news, not an official source. I could not search for a second source because the search budget was used up.",
+      "kind": "construction",
+      "title_as_listed": "Появились детали и сроки строительства ЛРТ из Астаны в Косшы",
+      "source_ids": [
+        "src-r12-inbusiness-0f38949f"
+      ],
+      "location_text": "Астана — Косшы",
+      "date_hint": "construction from early 2026, ~1.5 years (per summary; article date unknown)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "location",
+          "text": "ЛРТ из Астаны в Косшы",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "project in two sections; route passes 510 m from Taldykol lake and crosses the Ishim river",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "construction to take 1.5 years from early 2026 (attributed to akim)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-perekrestok-zakroyut-na-levom-bere",
+      "decision": "to_verify",
+      "reason": "The title names Astana (left bank) and a closure of more than two weeks. Per the summary: full closure of the Anet baba / EK-26 intersection from 20 September to 5 October for laying utility networks. The year is not stated. If it is 2026, the closure ended 2 days ago. Needs its year checked. I could not search for a second source because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "Перекрёсток закроют на левом берегу Астаны более чем на две недели",
+      "source_ids": [
+        "src-r12-informburo-1ab7be83"
+      ],
+      "location_text": "перекресток ул. Анет баба и ул. ЕК-26 (левый берег)",
+      "date_hint": "20 сентября – 5 октября (год не указан)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "Перекрёсток закроют на левом берегу Астаны более чем на две недели",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.planned_start",
+          "text": "20 сентября",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "5 октября",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Прокладка инженерных сетей; полное ограничение движения автотранспорта",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-blagoustroyat-173-obshest",
+      "decision": "to_verify",
+      "reason": "The URL slug confirms Astana and the 173 public and courtyard spaces. The listed title is only the slug. The 2026 year and the one identifiable object, GreenLine linear park phase 2 (Omarova st - Tole bi st), come only from the summary. Mostly programme-level; keep mainly for GreenLine phase 2, pending an official source.",
+      "kind": "landscaping",
+      "title_as_listed": "v astane blagoustroyat 173 obshestvennyh i dvorovyh prostranstva",
+      "source_ids": [
+        "src-r12-kapital-6bc0a124"
+      ],
+      "location_text": "Астана (city-wide)",
+      "date_hint": "2026",
+      "date_hint_origin": "search_summary",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "благоустроят 173 общественных и дворовых пространства",
+          "origin": "url"
+        },
+        {
+          "field": "other",
+          "text": "in 2026; includes 39 major public spaces; over 1.1 million trees, shrubs and seedlings",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "GreenLine linear park 2nd phase, Omarova St to Tole bi St",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-astana-primet-chempionat-mira-po-v",
+      "decision": "to_verify",
+      "reason": "State newspaper. The title says Astana will host the wrestling World Championships 'seven years after' the last time. The previous Worlds were in Nur-Sultan in 2019, which fits 2026 (my inference). Per the summary: 24 October to 1 November 2026 at Barys Arena. Upcoming major event that will likely bring traffic measures. The dates and venue are summary-only and need official confirmation, which I could not search for because the search budget was used up.",
+      "kind": "event",
+      "title_as_listed": "Астана примет чемпионат мира по видам борьбы спустя семь лет",
+      "source_ids": [
+        "src-r12-kazpravda-f290cf3d"
+      ],
+      "location_text": "Barys Arena (per search summary)",
+      "date_hint": "2026-10-24..2026-11-01",
+      "date_hint_origin": "search_summary",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "Астана примет (will host) — seven years after previous",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "24 октября – 1 ноября 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "Barys Arena",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-ulicu-almaty-v-astane-chastichno-z",
+      "decision": "to_verify",
+      "reason": "State newspaper (Kazakhstanskaya Pravda). The title confirms that Almaty STREET in Astana (not Almaty city) is partially closed until the end of 2026, so this is a current item. The zakon.kz candidate, from an independent publisher, repeats it in its title and gives the reason (tunnel construction). The Akmeshit–Sauran section, the 20 July start and the Mangilik El–Sauran tunnel link come only from the summary. Of the duplicate URLs this one has the richest summary. No official gov.kz source could be searched because the WebSearch budget ran out.",
+      "kind": "roadworks",
+      "title_as_listed": "Улицу Алматы в Астане частично закроют до конца 2026 года",
+      "source_ids": [
+        "src-r12-kazpravda-e43cc86a",
+        "src-r12-zakon-e0e1795d"
+      ],
+      "location_text": "Astana, Almaty street (Akmeshit - Sauran section per summary)",
+      "date_hint": "until 2026-12-31 (title 'до конца 2026 года'); start 2026-07-20 per summary only",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Kazpravda's title says 'частично закроют' (partial closure). The zakon.kz title says 'перекроют', and the summary says the Akmeshit–Sauran section is fully closed. This may simply be partial at street level and full on one section. zakon.kz is dated 13 Aug 2026, but the summary gives the start as 20 July, so it may be a later report or a second phase. Neither title names the exact section.",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "улицу Алматы частично закроют до конца 2026 года",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "до конца 2026 года",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "from 20 July through end of 2026, section Akmeshit - Sauran fully closed, related to transport tunnel construction from Mangilik El to Sauran",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "official-roadworks"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-ulicu-kenesary-v-astane-chastichno",
+      "decision": "to_verify",
+      "reason": "State newspaper, with Astana and Kenesary street in the title. Per the summary, this is a medium repair on the Sembinov–Saryarka section. The year is not in the title, URL or summary. The dated windows (works from 20 April; full closure of the Kenesary/Sembinov intersection on 6–7 June) are past whatever the year. Kept only as an undated item that needs its year confirmed before it goes on the map. I could not search for a second source because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "Улицу Кенесары в Астане частично перекрыли",
+      "source_ids": [
+        "src-r12-kazpravda-7d59b698"
+      ],
+      "location_text": "Astana, Kenesary street (Sembinov - Saryarka section per summary)",
+      "date_hint": "works from 20 April; Kenesary/Sembinov intersection fully closed 6–7 June (year not stated)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The title says a partial closure; the summary also mentions a full intersection closure on 6–7 June. These are probably separate phases.",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "улицу Кенесары частично перекрыли",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "medium repair; top layer works from 20 April on Kenesary from Sembinov to Saryarka; Kenesary/Sembinov intersection fully closed 6-7 June",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "official-roadworks"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-poyavyatsya-novye-tochki",
+      "decision": "rejected",
+      "reason": "Undated roundup with a generic title. Every specific object comes only from the summary, so none is verifiable from title or URL: Maly Taldykol, the squares near TD Tulpar, school No.119, Pushkin St, Satpayev/Momyshuly, GreenLine stage 2 and 7,500 trees on Kabanbay batyr. It is used only as a weak secondary mention for the Maly Taldykol eco-park. A dated or official source for its other objects is still needed.",
+      "kind": "landscaping",
+      "title_as_listed": "В Астане появятся новые точки притяжения",
+      "source_ids": [
+        "src-r12-kazpravda-c3c0b72d"
+      ],
+      "location_text": "Астана: Малый Талдыколь; скверы у ТД «Тұлпар», школы №119, ул. Пушкина, пересечение ул. Сатпаева и пр. Момышулы; пр. Кабанбай батыра (per summary)",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "location",
+          "text": "squares near TD 'Tulpar', school No.119, Pushkin St, Satpayev St / Momyshuly Ave intersection",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "GreenLine pedestrian boulevard 2nd stage continues (ponds, play and sports zones)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "7,500 large trees on Kabanbay batyr Ave and comfortable spaces under the overpass",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-srazu-50-ulic-kasymbek-rasskazal-o",
+      "decision": "to_verify",
+      "reason": "Dated (URL 2026-09-04) report of the akim's 2026 road plans: '50 streets' in the title, and about 60 km with asphalt by end-2026 per the summary only. Kept as a citywide programme item: it cannot be mapped to a single object, since no streets are named in the title. bes.media (2026 street repairs) is the same programme. gov.kz 1042433 '50 көше' may be an earlier season. No official 2026 source could be searched because the budget ran out.",
+      "kind": "roadworks",
+      "title_as_listed": "Сразу 50 улиц: Касымбек рассказал о дорожных планах Астаны",
+      "source_ids": [
+        "src-r12-kz-ddff58c7",
+        "src-r12-bes-fd21add9"
+      ],
+      "location_text": "Астана (city-wide)",
+      "date_hint": "2026-09-04",
+      "date_hint_origin": "url",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "gov.kz 1042433 also says 50 streets but is undated, and its ID suggests an earlier publication. The count may recur across years.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "50 улиц",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "~50 streets, ~60 km repaired in 2026; asphalt on main carriageway and ramps by end of 2026 (summary)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-kz-kursiv-media",
+      "decision": "duplicate",
+      "reason": "Covers the same 2026 heating-season preparation and the Telman gas heating station as the official gov.kz item. The listed title is only the domain name. Its extra summary-only facts are 7.5 km of Astana-Teplotranzit heat-network repairs and the Astana-Energiya boiler and turbine overhauls, which can enrich the gov.kz record.",
+      "kind": "construction",
+      "title_as_listed": "kz.kursiv.media",
+      "source_ids": [
+        "src-r12-kz-ae2f2745"
+      ],
+      "location_text": "Астана (сети АО «Астана-Теплотранзит»; ТЭЦ/ГТС «Тельман»)",
+      "date_hint": "2026-06-15",
+      "date_hint_origin": "url",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The third stage of Telman is said to have started, while the gov.kz summary describes continued Telman construction at 76%.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "Капитальный ремонт и реконструкция тепловых сетей общей протяженностью 7,5 км по сетям АО «Астана-Теплотранзит»",
+          "origin": "search_summary"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "АО «Астана-Теплотранзит» (теплосети); АО «Астана-Энергия» (капремонт трех котлов, турбины, трансформатора, двух водогрейных котлов)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.planned_start",
+          "text": "работы по обслуживанию и модернизации инженерной инфраструктуры начаты в апреле",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Начаты установка двух дополнительных водогрейных котлов и третья очередь ГТС «Тельман»",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": "cand-r12-podgotovka-k-otopitelnomu-sezonu-v"
+    },
+    {
+      "id": "cand-r12-v-astane-na-tri-dnya-perekroyut-uc",
+      "decision": "to_verify",
+      "reason": "The title names Astana and a three-day road closure for heating-main works. The location (K. Kaisenov st at T. Ryskulov st), the window and the purpose (heat networks for the SABIS school) come only from the summary. The numeric suffix in the URL, 1786718808, decodes as a Unix timestamp of 2026-08-14 14:46 UTC, which matches the summary. It is a past 2026 item. No official confirmation was found because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "В Астане на три дня перекроют участок дороги из-за работ на теплотрассе",
+      "source_ids": [
+        "src-r12-liter-4a6c1245"
+      ],
+      "location_text": "ул. К. Кайсенова в районе пересечения с ул. Т. Рыскулова",
+      "date_hint": "21:00 14 Aug 2026 - 05:00 17 Aug 2026 (summary; matches the URL numeric suffix = 2026-08-14)",
+      "date_hint_origin": "search_summary",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "на три дня перекроют участок дороги из-за работ на теплотрассе",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.planned_start",
+          "text": "21:00 14 августа 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "05:00 17 августа 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Работы по монтажу теплотрассы в рамках проекта строительства тепловых сетей к международной школе SABIS",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "район ул. К. Кайсенова на пересечении с ул. Т. Рыскулова",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-prazdnichnyy-koncert-k-fest-2026",
+      "decision": "rejected",
+      "reason": "An event-listing and ticketing aggregator page, not a primary source. It is a past concert with no traffic or works information. The date (1 August 2026) and the venue (Central Park) come only from the summary.",
+      "kind": "event",
+      "title_as_listed": "prazdnichnyy koncert k fest 2026",
+      "source_ids": [
+        "src-r12-sxodim-971c7536"
+      ],
+      "location_text": "Центральный парк (per search summary)",
+      "date_hint": "2026 (URL); 1 August 2026 (summary)",
+      "date_hint_origin": "url",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "K-Fest 2026 concert",
+          "origin": "url"
+        },
+        {
+          "field": "event_date",
+          "text": "1 августа 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "Центральный парк Астаны",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-upravlenie-energetiki-goroda-astan",
+      "decision": "rejected",
+      "reason": "This is the landing page of the Astana Energy Department (Управление энергетики города Астаны), not an article. The claims about hydraulic tests and the TM-51 design tender come only from the summary of a listing page whose content changes, so they cannot be tied to a stable URL. Use the department's individual news items instead.",
+      "kind": "construction",
+      "title_as_listed": "Управление энергетики города Астаны - GOV.KZ",
+      "source_ids": [
+        "src-r12-gov-1c6d2bd8"
+      ],
+      "location_text": "Астана (тепловые сети; тепломагистраль ТМ-51)",
+      "date_hint": "2026-08-04 / 2026-08-12 (listing items per summary)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "responsible.organization",
+          "text": "Управление энергетики города Астаны",
+          "origin": "search_title"
+        },
+        {
+          "field": "status",
+          "text": "Плановые гидравлические испытания тепловых сетей продолжаются (публикация 12 августа 2026)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Конкурс по выбору проектной организации для II очереди проекта «Реконструкция ТМ-51» (04 августа 2026)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-astanada-halyk-katysatyn-byudzhet",
+      "decision": "to_verify",
+      "reason": "Official city department page (astana-uvp on gov.kz). The title confirms that more than 60 courtyards were landscaped in Astana under the 'Халық қатысатын бюджет' (participatory budget) project, and that the work is complete. Kept only as a programme-level item: no courtyard addresses are visible, the date is unknown, and its gov.kz ID (higher than 1242774, a mid-2026 item) suggests mid/late 2026. That is an inference only. There is no second source because the budget ran out.",
+      "kind": "landscaping",
+      "title_as_listed": "Астанада «Халық қатысатын бюджет» жобасы аясында 60-тан астам аула абаттандырылды",
+      "source_ids": [
+        "src-r12-gov-9adcb614"
+      ],
+      "location_text": "Астана (various districts, courtyards)",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "60-тан астам аула абаттандырылды (completed)",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "«Халық қатысатын бюджет» жобасы аясында",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-astanada-50-koshe-zhondeledi",
+      "decision": "rejected",
+      "reason": "Official page, but it is undated and covers the whole city with no identifiable street in the title. I cannot safely equate it with the 2026 '50 streets' programme (kursiv 2026-09-04). Its gov.kz ID 1042433 is about 170k lower than 1212421 (a spring-2026 item), which suggests it came out well before the 2026 season, probably 2025. That is an inference only. Keeping it would risk mixing up two seasons. The WebSearch budget ran out before I could date it.",
+      "kind": "roadworks",
+      "title_as_listed": "Астанада 50 көше жөнделеді",
+      "source_ids": [
+        "src-r12-gov-30bcde65"
+      ],
+      "location_text": "Astana, citywide",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Same '50 streets' figure as kz.kursiv.media 2026-09-04, but the publication year is unknown and possibly an earlier season.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "50 streets to be repaired (Астанада 50 көше жөнделеді)",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "official-roadworks"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-2026-godu-v-astane-postroyat-esh",
+      "decision": "to_verify",
+      "reason": "Official akimat release, with Astana and 2026 in the title. This is a programme-level commitment to build 13 schools in 2026. The title and summary name no individual sites, so it cannot be mapped to points without more data. Kept as a dated, city-wide official commitment. I could not search for a second source because the search budget was used up.",
+      "kind": "construction",
+      "title_as_listed": "В 2026 году в Астане построят еще 13 школ",
+      "source_ids": [
+        "src-r12-gov-a5870e38"
+      ],
+      "location_text": "Астана (city-wide)",
+      "date_hint": "2026",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "schedule.current_planned_end",
+          "text": "2026",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "13 школ",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "44 schools with 109,000 places built in recent years",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-postroyat-11-medicinskih",
+      "decision": "rejected",
+      "reason": "An official programme-level announcement (11 medical facilities) with no site or address in the title or the summary, so there is nothing to map. The date is unknown; the summary's mention of a trauma point by 15 February 2026 and the gov.kz ID suggest late 2025 or early 2026. Revisit if specific facility addresses turn up.",
+      "kind": "construction",
+      "title_as_listed": "В Астане построят 11 медицинских учреждений",
+      "source_ids": [
+        "src-r12-gov-f5f840ad"
+      ],
+      "location_text": "Астана (city-wide)",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "11 медицинских учреждений",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "multidisciplinary hospital, 8 polyclinics, 2 ambulance substations",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "second perinatal centre to be commissioned in 2028; children's trauma point by 15 Feb 2026 (summary, may come from other results)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-startoval-sezon-dorozhno",
+      "decision": "to_verify",
+      "reason": "Official akimat (gov.kz /entities/astana) announcement; the title names Astana and the 2026 road-construction season. The street sections and closure windows come only from search summaries and need checking before they go on the map. No new search could be run because the shared WebSearch budget for this turn (200 calls) was already used up. Corroboration is limited to another candidate URL that earlier searches returned.",
+      "kind": "roadworks",
+      "title_as_listed": "В Астане стартовал сезон дорожно-строительных работ 2026 года",
+      "source_ids": [
+        "src-r12-gov-2010a772",
+        "src-r12-inform-001616a2"
+      ],
+      "location_text": "Astana, citywide; summary names: Mangilik El / Syganak interchange; B. Sokpakbaev st (Sh. Beisekova - K. Kumisbekov); E68 st (A. Bekturov - Tole bi); 150 let Abaya st (Tlendiev - Beibarys Sultan; closure Beibarys Sultan - Sulukol); Kenesary st (A. Sembinov - Saryarka)",
+      "date_hint": "2026 season (title); summary: season start 3 April 2026; closures from 4-5 April, Sokpakbaev st until November 2026, 150 let Abaya (Beibarys Sultan - Sulukol) until 10 October 2026",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Number of streets differs: the summary for this page says more than 70 streets will be repaired; the inform.kz summary says about 50 streets / 60 km. The end of the E68 (Bekturov - Tole bi) closure is June in the Russian summary and May in the Kazakh summary. The inform.kz summary also lists Respubliki ave (Imanov - railway station) and the Beisekova-Tlendiev interchange, which do not appear in this page's summary. That is a difference in scope, not a direct conflict.",
+      "hints": [
+        {
+          "field": "status",
+          "text": "season started (стартовал сезон дорожно-строительных работ 2026 года)",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "season start 3 April 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "Mangilik El / Syganak interchange: medium repair, partial closure 4 April - 4 May",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "B. Sokpakbaev st from Sh. Beisekova to K. Kumisbekov: full closure 5 April - November (construction continues)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "E68 st from A. Bekturov to Tole bi: full closure 5 April - June (start of construction)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "150 let Abaya st: section Beibarys Sultan - Sulukol fully closed 5 April - 10 October",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "more than 70 streets planned for repair in 2026 (Al-Farabi Alash bridge - Pushkin, Valikhanov, Sh. Kudaiberdyuly, Tulpar bridge, Turan); 31 streets / 13 km to be built",
+          "origin": "search_summary"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "ГУ «Управление транспорта и развития дорожно-транспортной инфраструктуры города Астаны»",
+          "origin": "search_summary"
+        },
+        {
+          "field": "event_date",
+          "text": "сезон дорожно-строительных работ 2026 года",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "Mangilik El / Syganak interchange: medium repair from 4 April to 4 May, partial closure",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "E68 St from A. Bekturov St to Tole bi St: full closure from 5 April until June (Kazakh-language summary said May)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "B. Sokpakbayev St from Sh. Beisekova St to K. Kumisbekov St: full closure from 5 April to November (construction)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "150 let Abaya St from Beibarys Sultan St to Sulukol St: full closure from 5 April to 10 October",
+          "origin": "search_summary"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "Управление транспорта и развития дорожно-транспортной инфраструктуры города Астаны",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.planned_start",
+          "text": "сезон дорожно-строительных работ 2026 года стартовал",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "31 streets totalling 13 km to be built: 4 completed in full, 19 continued, 8 started (summary hint)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "over 70 streets to be repaired this year (summary hint; conflicts with other results saying ~50 streets)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "status",
+          "text": "стартовал сезон дорожно-строительных работ 2026 года",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "С 4 апреля по 4 мая средний ремонт на развязке пр. Мангилик Ел / ул. Сыганак, движение частично перекрыто",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "С 5 апреля по июнь полное перекрытие ул. Е68 от ул. А. Бектурова до ул. Толе би",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "Строительство ул. Б. Сокпакбаева (Ш. Бейсековой – К. Кумисбекова): полное перекрытие с 5 апреля по ноябрь",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "Участок ул. Бейбарыс Султан – ул. Сулуколь полностью закрыт с 5 апреля по 10 октября",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures",
+        "construction",
+        "official-roadworks",
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-uchastok-ulicy-barshyn-vremenno-za",
+      "decision": "to_verify",
+      "reason": "Official Astana akimat page (gov.kz/entities/astana); title names a specific street (Barshyn) and a temporary closure. Section (Tlendiev ave to Mukanov st), the 1-10 May window, the year 2026 and 'medium repair' come only from the search summary, so they are unreliable. The gov.kz ID 1212421 sits next to 1213149 (LRT stage 2, 2026), which fits spring 2026, but that is only an inference. No independent second source: the WebSearch budget for this turn ran out before any corroboration query could run.",
+      "kind": "roadworks",
+      "title_as_listed": "Участок улицы Баршын временно закроют в Астане",
+      "source_ids": [
+        "src-r12-gov-844b3675"
+      ],
+      "location_text": "Astana, Barshyn street, section from N. Tlendiev ave to S. Mukanov st (per summary)",
+      "date_hint": "2026-05-01..2026-05-10",
+      "date_hint_origin": "search_summary",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Summaries say 'текущего года'; only one summary says 2026. The year has not been checked against a title or URL.",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "участок улицы Баршын временно закроют",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "partial closure 1-10 May (\"текущего года\"; one summary stated 2026)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "from N. Tlendiev ave to S. Mukanov st",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "medium repair (средний ремонт)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "Участок улицы Баршын временно закроют",
+          "origin": "search_title"
+        },
+        {
+          "field": "location",
+          "text": "улица Баршын, Астана",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures",
+        "official-roadworks"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-nachalsya-vtoroi-etap-lrt",
+      "decision": "to_verify",
+      "reason": "Official akimat page. The title confirms that construction of LRT stage 2 has started in Astana (first pier poured), so this is ongoing in 2026. The Kosshy direction, the 1.5-year duration and the counts of supports and beams come only from the summary. It is a different object from the stage-1 launch reported by zakon.kz. No second source could be searched because the budget ran out.",
+      "kind": "construction",
+      "title_as_listed": "В Астане начался второй этап LRT: залита первая опора",
+      "source_ids": [
+        "src-r12-gov-5d47a9d5"
+      ],
+      "location_text": "Астана, линия LRT второй очереди (направление Косшы — per other result titles)",
+      "date_hint": "2026 (summary: Kosshy branch construction to start early 2026, ~1.5 years)",
+      "date_hint_origin": "search_summary",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The publication date is not visible. The gov.kz ID sits next to 1212421 (spring 2026), which is an inference only.",
+      "hints": [
+        {
+          "field": "status",
+          "text": "второй этап LRT начался, залита первая опора",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "akim Kassymbek earlier said Kosshy branch construction would start early 2026 and take 1.5 years",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "over 300 supports, 538 prefabricated reinforced concrete beams, 8 monolithic beams",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-astanada-zhondeu-zhumysyna-bailany",
+      "decision": "rejected",
+      "reason": "Official, and the title names Astana, but the visible evidence gives no street names and no dates ('бірқатар көшеде', a number of streets). That leaves no object or place to map. The gov.kz news ID falls between items from April and July 2026, so it is probably 2026, but that is an inference and not a stated date. It could not be checked further because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "Астанада жөндеу жұмысына байланысты бірқатар көшеде көлік қозғалысы ішінара жабылады",
+      "source_ids": [
+        "src-r12-gov-4cc9f2f9"
+      ],
+      "location_text": "Astana, several streets (names not visible in title)",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "бірқатар көшеде көлік қозғалысы ішінара жабылады (partial closure on a number of streets due to repair)",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "бірқатар көшеде көлік қозғалысы ішінара жабылады (жөндеу жұмысына байланысты)",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures",
+        "official-roadworks"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-novye-skvery-dvory-i-promenady-kak",
+      "decision": "rejected",
+      "reason": "Official page about Astana, but the title is a generic overview ('new squares, yards and promenades') with no named object, no date and no summary details. It overlaps in topic with the more detailed official landscaping release 1267167, but it is not clearly the same physical object, so I marked it reject rather than duplicate. Nothing specific to register.",
+      "kind": "landscaping",
+      "title_as_listed": "Новые скверы, дворы и променады: как благоустраивают Астану",
+      "source_ids": [
+        "src-r12-gov-31ffbdc4"
+      ],
+      "location_text": "Астана",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "новые скверы, дворы и променады",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-stroitelstvo-razvyazok-i-dorog-kak",
+      "decision": "to_verify",
+      "reason": "Official Astana akimat press release (gov.kz /entities/astana/), with Astana in the title. The concrete objects come only from the search summary: the Beisekova–Tlendiev two-level interchange, K. Mukhamedkhanov St, and the Tauelsizdik Ave section from Kabanbay Batyr to Uly Dala. Kept as the official anchor for the Beisekova–Tlendiev interchange. Two other candidates in this batch (inform.kz, bes.media) cover the same interchange and are marked as duplicates. I could not verify this myself: every WebSearch call was refused because the shared per-turn search budget (200) was used up. The corroborating URLs are other candidates from this batch that appeared in earlier search results, not new finds.",
+      "kind": "construction",
+      "title_as_listed": "Строительство развязок и дорог: как развивают дорожную сеть в Астане",
+      "source_ids": [
+        "src-r12-gov-7b9c737a",
+        "src-r12-inform-ae29218b",
+        "src-r12-bes-00377498"
+      ],
+      "location_text": "Astana; Tlendiev ave x Sh. Beisekova st interchange; K. Mukhamedkhanov st (per summary)",
+      "date_hint": "2026: interchange to be finished 'by end of year'; Mukhamedkhanov St to be finished in 2026 with landscaping (publication date unknown)",
+      "date_hint_origin": "search_summary",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Interchange timing differs between the summaries. This page says it will be finished 'by end of year'. inform.kz says traffic opens by end of October and the Tlendiev asphalting finishes by 10 September. bes.media says the intersection was closed until 1 August and finishes 'by end of year'. These may be different stages (opening vs full completion), but that is unresolved. The year 2026 for 'end of year' comes only from the summary.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "строительство развязок и дорог",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "Beisekova-Tlendiev two-level interchange: completion planned by end of year",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "K. Mukhamedkhanov street construction to be completed in 2026 with landscaping",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "two-level interchange at Beisekova / Tlendiyev: engineering networks and metal structure assembly under way, completion planned by end of year",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "до конца года (year implied 2026 by summary, not confirmed)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Tauelsizdik avenue section from Kabanbay Batyr to Uly Dala built as eight-lane highway",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Kazakh summary: in 2026 assembly of intermediate structures to be completed, then asphalt concrete laid on main carriageway and ramps",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction",
+        "official-roadworks"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-livnevki-kanalizacionnye-ochistnye",
+      "decision": "to_verify",
+      "reason": "Official akimat page. The title confirms that storm drains, sewage treatment plants and a water main are under construction in Astana. Every specific detail comes only from the summary: the 50k m3/day technical water main (3.2 km by end-2025, plus 5.8 km in Jan–May 2026), the Buzuluk reservoir (about 43 bn tenge, 2024–2027), Astana su arnasy, the local treatment plants in Koktal, Ondiris and the Industrial park, and the KOS-1 upgrade. These are several objects, not one point. bizmedia also mentions a technical water main by Astana su arnasy, but on Dosmukhamedov St with other figures, so it is not clearly the same object and is not listed as corroboration. The WebSearch budget ran out.",
+      "kind": "construction",
+      "title_as_listed": "Ливневки, канализационные очистные сооружения и водовод строят в Астане",
+      "source_ids": [
+        "src-r12-gov-a6b387ae"
+      ],
+      "location_text": "Астана (city-wide)",
+      "date_hint": "2026 (summary reports progress for the first five months of 2026)",
+      "date_hint_origin": "search_summary",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The summary's '1,512 млрд тенге' for storm sewers in 2024–2026 is ambiguous (1.512 bn or 1,512 bn) and needs checking.",
+      "hints": [
+        {
+          "field": "status",
+          "text": "строят (under construction)",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "technical water main for 50,000 m3/day: 3.2 km laid by end-2025, 5.8 km more in first 5 months of 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "budget.amount_kzt",
+          "text": "Buzuluk reservoir (Esil counter-regulator) ~43 bn tenge, 2024-2027",
+          "origin": "search_summary"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "Астана су арнасы",
+          "origin": "search_summary"
+        },
+        {
+          "field": "status",
+          "text": "Технический водовод: к концу 2025 г. проложено 3,2 км, за первые пять месяцев 2026 г. еще 5,8 км",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Технический водовод рассчитан на подачу 50 тыс. м3/сут на водоочистные станции",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Проектируются локальные очистные сооружения (Коктал, Ондирис, Индустриальный парк) общей мощностью 85 тыс. м3/сут; модернизация КОС-1 с увеличением на 25 тыс. м3/сут",
+          "origin": "search_summary"
+        },
+        {
+          "field": "budget.amount_kzt",
+          "text": "1,512 млрд тенге из городского бюджета на развитие ливневой канализации в 2024–2026 гг.",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction",
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-bolee-30-novyh-dvorov-skverov-i-sp-2",
+      "decision": "to_verify",
+      "reason": "Official akimat item; the title says more than 30 courtyards, squares and sports grounds were opened in Astana for City Day. The year is not in the title. The gov.kz news ID falls between items from April 2026 (1193903) and August 2026 (1269761), which points to July 2026; that is an inference. The district-level places (Kutpanov st, Saryarka ave, Nura district squares) come only from the summary.",
+      "kind": "landscaping",
+      "title_as_listed": "Более 30 новых дворов, скверов и спортплощадок открыли в Астане ко Дню города",
+      "source_ids": [
+        "src-r12-gov-c0c11753"
+      ],
+      "location_text": "Астана, all districts (per summary: Сарыарка — ул. Кутпанова, пр. Сарыарка; Нура — 2 сквера, 4 двора)",
+      "date_hint": "ко Дню города (City Day, 6 July); year not in title; gov.kz news ID order suggests July 2026 (inference)",
+      "date_hint_origin": "search_title",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "открыли (completed/opened) более 30 новых дворов, скверов и спортплощадок",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "ко Дню города",
+          "origin": "search_title"
+        },
+        {
+          "field": "location",
+          "text": "Saryarka district: two courtyards on Kutpanov St and Saryarka Ave; Nura district: two squares, four courtyards and a new sports field",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-podgotovka-k-otopitelnomu-sezonu-v",
+      "decision": "to_verify",
+      "reason": "Official akimat item on heat-supply projects ahead of the heating season. The objects are named in the summary only: the Telman gas heating station (76% built), the second stage of Turan, the TETs-2 expansion, and the design of the Yugo-Zapad gas heating station. The date is not visible. The gov.kz news ID falls between July and August 2026 items, which suggests mid-2026; that is an inference.",
+      "kind": "construction",
+      "title_as_listed": "Подготовка к отопительному сезону: в Астане реализуют крупные проекты в сфере теплоснабжения",
+      "source_ids": [
+        "src-r12-gov-a3d489bc",
+        "src-r12-kz-ae2f2745"
+      ],
+      "location_text": "Астана: газовая тепловая станция «Тельман», станция «Туран», ТЭЦ-2, ГТС «Юго-Запад» (проектирование)",
+      "date_hint": "probably mid-2026 (news ID between July and August 2026 gov.kz items; inference, not stated)",
+      "date_hint_origin": "none",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "This summary says Telman construction continues at 76% readiness. The kursiv summary (2026-06-15) says the third stage of the Telman gas heating station has started. These may be different stages of the same project rather than a real conflict.",
+      "hints": [
+        {
+          "field": "status",
+          "text": "Строительная готовность газовой тепловой станции «Тельман» 76%",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "В этом году планируется завершить вторую очередь станции «Туран», продолжить строительство «Тельмана», начать расширение ТЭЦ-2 и проектирование ГТС «Юго-Запад»",
+          "origin": "search_summary"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "Аким Астаны Женис Касымбек (рассказал о проектах)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-masshtabnoe-blagoustroistvo-obshes",
+      "decision": "to_verify",
+      "reason": "Official akimat release, with Astana in the title and the status 'продолжается' (ongoing). The concrete objects come from the summary: the GreenLine linear park 2nd phase (Omarova St to Tole bi St), a pedestrian boulevard over 3 km (Tole bi St to Aitmatov St), and 173 public and courtyard spaces 'this year'. The year is not explicit. I infer 2026 because the summary's 'over 1 million plantings this year' matches inform.kz's title '1.1 mln plantings in 2026'. The corroborating URL is another candidate from this batch; I could not run new searches because the search budget was used up.",
+      "kind": "landscaping",
+      "title_as_listed": "Масштабное благоустройство общественных пространств продолжается в Астане",
+      "source_ids": [
+        "src-r12-gov-118ae997",
+        "src-r12-inform-cb7478e4"
+      ],
+      "location_text": "Астана (city-wide); GreenLine: ул. Омарова – ул. Тöле би (per summary)",
+      "date_hint": "'this year' (2026 inferred from the matching inform.kz 2026 plantings headline)",
+      "date_hint_origin": "search_summary",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Plantings: 'over 1 million' (this summary) vs 'more than 1.1 million' (inform.kz title). Compatible, but not the same figure.",
+      "hints": [
+        {
+          "field": "status",
+          "text": "благоустройство общественных пространств продолжается",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "173 public and courtyard spaces to be improved this year (parks, squares, boulevards, courtyards, pedestrian zones)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "GreenLine linear park 2nd phase from Omarova St to Tole bi St; pedestrian boulevard >3 km from Tole bi St to Aitmatov St",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "over 1 million green plantings planned this year",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-festival-comic-con-astana-2026-sta",
+      "decision": "to_verify",
+      "reason": "Official akimat item; the title names Comic Con Astana 2026 and says it has started. It is a past 2026 public event. The dates (6-9 August) and venues (Barys Arena, Alau ice palace) come only from the summary. No traffic restrictions are mentioned.",
+      "kind": "event",
+      "title_as_listed": "Фестиваль Comic Con Astana 2026 стартовал в столице",
+      "source_ids": [
+        "src-r12-gov-3fa6af4f"
+      ],
+      "location_text": "Barys Arena and Ледовый дворец «Алау» (per search summary)",
+      "date_hint": "2026 (title); 6-9 August 2026 (summary)",
+      "date_hint_origin": "search_title",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "стартовал (festival started); year 2026 in title",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "6–9 августа 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "Barys Arena и Ледовый дворец «Алау»",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "more than 40 countries participating; fifth edition",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-bala-fest-astanada-200-ge-zhuyk-ba",
+      "decision": "to_verify",
+      "reason": "Official akimat page, with 'Астанада' (in Astana) in the title. A children's sport and creative festival with about 200 children. Per the summary: 5 September 2026, Central Park, 11 competitions. Past public event with low value for the map, kept as 2026 history only. I could not search for a second source because the search budget was used up.",
+      "kind": "event",
+      "title_as_listed": "Bala Fest: Астанада 200-ге жуық бала спорт пен шығармашылықтан сынға түсті",
+      "source_ids": [
+        "src-r12-gov-ca64318a"
+      ],
+      "location_text": "Центральный парк (per search summary)",
+      "date_hint": "2026-09-05",
+      "date_hint_origin": "search_summary",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "~200 children competed in sport and creative contests (200-ге жуық бала)",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "5 сентября 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "Центральный парк Астаны",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "11 competitions: robotics VEX, robo-sumo, asyk atu, boccia, traffic-safety classes",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-uchastok-dorogi-mezhdu-stadionom-a",
+      "decision": "rejected",
+      "reason": "Official akimat page (URL entity 'astana'). It names a section (the road between Astana Arena stadium and Saryarka velodrome) but gives no date, duration or reason in the title, URL or summary. Its news ID 826426 is far below the IDs of this batch's 2025-12 to 2026-09 gov.kz items (1141308 to 1294963), so it was probably published around 2024. That is my inference from the ID numbers, not a fact from the source. A short-term closure with no known year cannot go in the register, and I could not search to date it because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "Участок дороги между стадионом «Астана Арена» и велотреком «Сарыарка» закроют на ремонт",
+      "source_ids": [
+        "src-r12-gov-29873139"
+      ],
+      "location_text": "Astana, road between Astana Arena stadium and Saryarka velodrome",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "участок дороги закроют на ремонт",
+          "origin": "search_title"
+        },
+        {
+          "field": "location",
+          "text": "между стадионом «Астана Арена» и велотреком «Сарыарка»",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "official-roadworks"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-astanada-otken-algashky-unicef-cha",
+      "decision": "to_verify",
+      "reason": "Official page of the Ministry of Tourism and Sport. The title says the first UNICEF Charity Run was held in Astana ('Астанада өткен') with 2,000 participants. Per the summary: 20 September 2026, Botanical Garden. Past public event, kept as 2026 history. I could not search for a second source because the search budget was used up.",
+      "kind": "event",
+      "title_as_listed": "Астанада өткен алғашқы UNICEF Charity Run қайырымдылық жүгірісіне 2000 адам қатысты",
+      "source_ids": [
+        "src-r12-gov-823b8956"
+      ],
+      "location_text": "Ботанический сад (per search summary)",
+      "date_hint": "2026-09-20",
+      "date_hint_origin": "search_summary",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "өткен (held); first edition; 2000 participants",
+          "origin": "search_title"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "published by Ministry of Tourism and Sport (gov.kz entity 'tsm')",
+          "origin": "url"
+        },
+        {
+          "field": "event_date",
+          "text": "20 сентября 2026",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-800-metrovyi-tonnel-poyavitsya-na",
+      "decision": "to_verify",
+      "reason": "State news agency (Kazinform). The title names an 800 m tunnel on Astana's left bank, a specific major construction project. The street (Almaty st, Mangilik El - Sauran), the contractors (Integra Construction KZ / CRBC) and the 2027 completion come only from the summary. The publication year is not visible, so label the year as unverified. It ranks above the vechastana.kz item, which is treated as a duplicate of it.",
+      "kind": "construction",
+      "title_as_listed": "800-метровый тоннель появится на левобережье Астаны: что изменится для водителей",
+      "source_ids": [
+        "src-r12-inform-ab83093f",
+        "src-r12-vechastana-9b3b3aa4"
+      ],
+      "location_text": "Astana, Esil district, Almaty street from Mangilik El ave to Sauran st (intersections with Sauran, Akmeshit, Turkestan stay open per summary)",
+      "date_hint": "Almaty st closed from 15 August until the end of the year (year not stated); completion planned 2027",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Scope conflict: the inform.kz summary says the intersections with Sauran, Akmeshit and Turkestan stay open, while the vechastana.kz title says the Akmeshit-Almaty streets will be closed until the end of the year. Neither source shows the year.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "800-метровый тоннель на левобережье",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "Almaty street fully closed from Mangilik El to Sauran from 15 August until end of year",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "completion planned in 2027",
+          "origin": "search_summary"
+        },
+        {
+          "field": "responsible.organization",
+          "text": "general contractor Integra Construction KZ; works by China Road and Bridge Corporation (CRBC)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "official-roadworks"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-nacionalnyi-kurultai-nacionalnyi-k",
+      "decision": "rejected",
+      "reason": "The listed title 'Национальный курултай Национальный курултай' is site navigation, not the headline. The only claim (92 bn tenge for water-supply modernisation in Astana) comes from the URL slug, with no date, no specific object and no responsible body. A programme-level money claim like this cannot be verified or mapped. I could not search for a second source because the search budget was used up.",
+      "kind": "construction",
+      "title_as_listed": "Национальный курултай Национальный курултай",
+      "source_ids": [
+        "src-r12-inform-8b260c3c"
+      ],
+      "location_text": "Астана",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "budget.amount_kzt",
+          "text": "92 млрд тенге направят на модернизацию водоснабжения в Астане",
+          "origin": "url"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-bolee-1-1-mln-zelenyh-nasazhdenii",
+      "decision": "to_verify",
+      "reason": "State news agency, with Astana and 2026 in the title. City-wide planting programme. Per the summary: 70,000 trees, over 600,000 shrubs, 40,000 hedge plants and over 400,000 perennials across all six districts. It cannot be mapped to points, but it is dated and has figures. Consistent with the official akimat landscaping release in this batch. That cross-check is within this batch only; I could not run new searches because the search budget was used up.",
+      "kind": "landscaping",
+      "title_as_listed": "Более 1,1 млн зеленых насаждений высадят в Астане в 2026 году",
+      "source_ids": [
+        "src-r12-inform-cb7478e4",
+        "src-r12-gov-118ae997"
+      ],
+      "location_text": "Астана (all six districts per summary: Алматы, Байконыр, Есиль, Нура, Сарайшык, Сарыарка)",
+      "date_hint": "2026",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "'More than 1.1 million' (title) vs 'over 1 million' in the gov.kz summary. Minor.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "более 1,1 млн зеленых насаждений высадят в 2026 году",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "70,000 trees, 600,000+ flowering shrubs, 40,000 hedge plants, 400,000+ perennial flowers",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "all six districts: Almaty, Baikonyr, Yesil, Nura, Saraishyk, Saryarka",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-desyatki-ulic-obnovyat-v-astane-os",
+      "decision": "duplicate",
+      "reason": "Covers the same 2026 citywide road-repair programme as the official gov.kz season-start announcement (E68, Sokpakbaev, 150 let Abaya, Mangilik El/Syganak, Kenesary). It is useful as corroboration and for the extra items in its summary (Respubliki ave Imanov - station; Beisekova-Tlendiev interchange to be finished by the end of the year).",
+      "kind": "roadworks",
+      "title_as_listed": "Десятки улиц обновят в Астане: основные дорожные проекты",
+      "source_ids": [
+        "src-r12-inform-001616a2"
+      ],
+      "location_text": "Astana, citywide; summary names E68, Sokpakbaev, 150 let Abaya, Mangilik El, Syganak, Kenesary (Sembinov - Saryarka), Respubliki ave (Imanov - railway station)",
+      "date_hint": "2026",
+      "date_hint_origin": "search_summary",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "About 50 streets / 60 km here, against more than 70 streets in the gov.kz summary.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "десятки улиц обновят",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "about 50 streets / 60 km to be renewed in 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "Beisekova-Tlendiev interchange completion by end of year",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "official-roadworks"
+      ],
+      "duplicate_of": "cand-r12-v-astane-startoval-sezon-dorozhno"
+    },
+    {
+      "id": "cand-r12-dva-perekrestka-v-astane-perekroyu",
+      "decision": "rejected",
+      "reason": "The title names Astana and says two intersections will close for roadworks. The place (Koshkarbayev with Momyshuly and with Zhumabayev) and the overnight windows of 1-3 October appear only in the summary, and the year is not visible anywhere. A one-night closure with an unverified year could mislead people on a map, and it is already past if it was 2026. It could not be dated because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "Два перекрестка в Астане перекроют из-за дорожных работ",
+      "source_ids": [
+        "src-r12-inform-217a2ebb"
+      ],
+      "location_text": "R. Koshkarbayev Ave intersections with B. Momyshuly Ave and M. Zhumabayev Ave (per summary)",
+      "date_hint": "23:00 1 Oct - 07:00 2 Oct and 23:00 2 Oct - 07:00 3 Oct (year not stated)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "Два перекрестка в Астане перекроют",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "причина: дорожные работы",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "from 23:00 1 October to 07:00 2 October at Koshkarbayev / Momyshuly; from 23:00 2 October to 07:00 3 October at Koshkarbayev / Zhumabayev",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-kogda-i-gde-proidut-zabegi-v-astan",
+      "decision": "rejected",
+      "reason": "A season-roundup of about 26 races. The title says only 'в этом году', so the year is unknown. The summary claims 2026, but its half-marathon date (31 May) conflicts with the 7 June 2026 date noted in the candidate. Its objects and dates are summary-only.",
+      "kind": "event",
+      "title_as_listed": "Когда и где пройдут забеги в Астане в этом году",
+      "source_ids": [
+        "src-r12-inform-62624847"
+      ],
+      "location_text": "Триатлон-парк, Ботанический сад, Центральный парк; площадь у «Нур-Алем» (per summary)",
+      "date_hint": "year unclear (summary claims 2026 but lists Half Marathon on 31 May, which conflicts with 7 June 2026)",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The summary's half-marathon date of 31 May conflicts with the 7 June 2026 date, so the year is probably not 2026.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "~26 running competitions, season April to end of December ending with 'Новогодний забег'",
+          "origin": "search_summary"
+        },
+        {
+          "field": "event_date",
+          "text": "9 августа — благотворительный фестиваль «Juregimnin jenimpazy» (площадь у «Нур-Алем»)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "Триатлон-парк, Ботанический сад, Центральный парк",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-kogda-otkroyut-novuyu-razvyazku-be",
+      "decision": "to_verify",
+      "reason": "Куратор R05: заголовок называет конкретный объект (развязка Бейсековой — Тлендиева); скептик свёл его к общему обзору акимата 1233855, но обзор не заменяет предметную публикацию — проверять вместе, обзор как второй источник.",
+      "kind": "construction",
+      "title_as_listed": "Когда откроют новую развязку Бейсековой — Тлендиева в Астане",
+      "source_ids": [
+        "src-r12-inform-ae29218b",
+        "src-r12-gov-7b9c737a"
+      ],
+      "location_text": "Astana, intersection of N. Tlendiev ave and Sh. Beisekova st",
+      "date_hint": "traffic to open by end of October; asphalting by 10 September (year not stated)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Opening 'by end of October' here vs completion 'by end of year' in the gov.kz summary and the bes.media slug.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "новая развязка Бейсековой — Тлендиева",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "traffic on interchange planned to open by end of October; asphalting on Tlendiev to finish by 10 September",
+          "origin": "search_summary"
+        },
+        {
+          "field": "status",
+          "text": "as of late September metal span structures assembled, asphalt laid on Astykzhan side",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            71.382253,
+            51.178849
+          ]
+        },
+        "geometry_precision": "approximate",
+        "geometry_basis": "OSM: пересечение «улица Шабал Бейсековой» и «проспект Нургисы Тлендиева», узлы 13418022861, снимок 2026-05-06, ODbL",
+        "query": {
+          "street": "Бейсековой",
+          "cross": "Тлендиева",
+          "from": null,
+          "to": null
+        },
+        "notes": [
+          "общего узла нет; ближайшие узлы улиц в 20 м (узел 12545777664)"
+        ],
+        "why": "пересечение названо в заголовке; точка — ближайшие узлы двух улиц в OSM, не проект развязки"
+      },
+      "found_by_sweeps": [
+        "official-roadworks"
+      ],
+      "duplicate_of": "cand-r12-stroitelstvo-razvyazok-i-dorog-kak"
+    },
+    {
+      "id": "cand-r12-nacionalnyi-kurultai-nacionalnyi-k-2",
+      "decision": "to_verify",
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL: «начались работы по благоустройству экопарка на Малом Талдыколе». Вердикт скептика: A specific Astana landscaping object (the Maly Taldykol eco-park). The URL slug states that works have begun; the listed title is unusable ('Национальный курултай'). The publication year is not visible. The phasing (filtration, wells, first walking routes this year; trails and recreation zones in 20",
+      "kind": "landscaping",
+      "title_as_listed": "Национальный курултай Национальный курултай",
+      "source_ids": [
+        "src-r12-inform-69dbf4ea"
+      ],
+      "location_text": "Малый Талдыколь, Астана",
+      "date_hint": "works started (year not stated); trail network and recreation zones to be finished in 2027",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "начались работы по благоустройству экопарка на Малом Талдыколе",
+          "origin": "url"
+        },
+        {
+          "field": "other",
+          "text": "this year: technical facilities with filtration, wells to keep water level, first walking routes, start of large-scale greening",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "2027: completion of walking/ecological trail network and recreation zones",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-nochnoi-zabeg-na-1700-uchastnikov",
+      "decision": "rejected",
+      "reason": "A minor sports event with no visible year. According to the summary, no streets were closed and no traffic restrictions applied, so it has little value for the map. The venue (Triathlon Park) and the date (5 September) come only from the summary.",
+      "kind": "event",
+      "title_as_listed": "Ночной забег на 1700 участников пройдет в Астане",
+      "source_ids": [
+        "src-r12-inform-1559cfb9"
+      ],
+      "location_text": "Триатлон парк (per search summary)",
+      "date_hint": "5 сентября (year not shown)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "1700 участников",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "5 сентября; bib pickup 17:30–19:30",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "Триатлон парк",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "улицы не перекрывались, ограничений движения не вводилось",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-nacionalnyi-kurultai-nacionalnyi-k-3",
+      "decision": "to_verify",
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL: «новые точки притяжения в Астане: началось строительство аллеи Мынжылдык». Вердикт скептика: A specific Astana landscaping object (the Mynzhyldyk alley linear park). The URL slug states that construction has started; the listed title is unusable ('Национальный курултай'). No year is visible. The sections (square by the Kuanyshbaev theatre, the park by the station, the Nurly Zhol station are",
+      "kind": "landscaping",
+      "title_as_listed": "Национальный курултай Национальный курултай",
+      "source_ids": [
+        "src-r12-inform-ddac7182"
+      ],
+      "location_text": "Аллея Мыңжылдық, Астана (per summary: сквер у театра им. К. Куанышбаева, привокзальный парк, территория вокзала «Нұрлы жол»)",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "началось строительство аллеи Мынжылдык",
+          "origin": "url"
+        },
+        {
+          "field": "location",
+          "text": "work starting on three sections: square in front of Kuanyshbaev theatre, near-station park, Nurly Zhol station territory",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "linear park more than 4 km long between Baitursynov and Nazhimedenov streets",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-novyi-vosmipolosnyi-most-planiruyu",
+      "decision": "to_verify",
+      "reason": "State agency Kazinform. The title names an identifiable planned object (a new eight-lane bridge in Astana). Low confidence: the publication date is unknown, and the location (Hussein bin Talal extension across the Yesil, linking the left bank to Almaty district and Nurly Zhol) comes only from the summary. The URL format is the newer inform.kz slug style, which points to 2024 or later but proves nothing. Only planning status. It needs dating before use, and the WebSearch budget ran out.",
+      "kind": "construction",
+      "title_as_listed": "Новый восьмиполосный мост планируют построить в Астане",
+      "source_ids": [
+        "src-r12-inform-ab56e781"
+      ],
+      "location_text": "Астана (per summary: продолжение ул. Хусейн бен Талал через Есиль)",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "планируют построить (planned)",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "восьмиполосный мост",
+          "origin": "search_title"
+        },
+        {
+          "field": "location",
+          "text": "new road to link left bank with Almaty district and Nurly Zhol station area",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-perekrestok-akmeshit-almaty-polnos",
+      "decision": "to_verify",
+      "reason": "State news agency, with Astana and a specific intersection (Akmeshit / Almaty) in the title. The summary ties the closure to the project 'Строительство транспортного тоннеля по ул. Алматы в районе Есиль города Астаны', with a full closure from 21:00 on 19 September to the end of the year. The year is not visible anywhere. If it is 2026, the closure is in force now. Needs its year confirmed. I could not search for a second source because the search budget was used up.",
+      "kind": "construction",
+      "title_as_listed": "Перекресток Акмешит — Алматы полностью перекроют в Астане",
+      "source_ids": [
+        "src-r12-inform-46e9053b"
+      ],
+      "location_text": "Intersection of Akmeshit St and Almaty St, Yesil district, Astana",
+      "date_hint": "с 21:00 19 сентября до конца года (год не указан)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "Перекресток Акмешит — Алматы полностью перекроют",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.planned_start",
+          "text": "с 21:00 19 сентября",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "до конца года",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "проект «Строительство транспортного тоннеля по ул. Алматы в районе Есиль города Астаны»",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            71.424016,
+            51.116668
+          ]
+        },
+        "geometry_precision": "approximate",
+        "geometry_basis": "OSM: пересечение «Ақмешіт көшесі» и «Алматы көшесі», узлы 2671166709,6539398108, снимок 2026-05-06, ODbL",
+        "query": {
+          "street": "Акмешит",
+          "cross": "Алматы",
+          "from": null,
+          "to": null
+        },
+        "notes": [],
+        "why": "перекрёсток «Акмешит — Алматы» назван в заголовке; точка — общий узел улиц в OSM"
+      },
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-uchastok-dorogi-na-husein-ben-tala",
+      "decision": "rejected",
+      "reason": "Astana and the street are in the title, but there is no section, reason or date anywhere (title, URL or summary). A five-day closure with no known date cannot be placed in time and is almost certainly over. I could not search to date it because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "Участок дороги на Хусейн бен Талал перекроют на пять дней в Астане",
+      "source_ids": [
+        "src-r12-inform-5dcd4f53"
+      ],
+      "location_text": "Hussein bin Talal St, Astana",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "Участок дороги на Хусейн бен Талал перекроют на пять дней",
+          "origin": "search_title"
+        },
+        {
+          "field": "location",
+          "text": "Хусейн бен Талал, Астана",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-otkryli-novyi-most-po-tau",
+      "decision": "rejected",
+      "reason": "A real Astana object, but no year is visible. The summary says it opened one day before the planned 30 October. Since today is 7 October 2026, that opening must have been in October 2025 or earlier, so it is not a 2026 item. The rule allows older items only when clearly labelled with their year, and this one cannot be, so it is rejected. It could not be dated by a second search because the budget was used up.",
+      "kind": "construction",
+      "title_as_listed": "В Астане открыли новый мост по Тауелсиздик",
+      "source_ids": [
+        "src-r12-inform-28726f83"
+      ],
+      "location_text": "Astana, Tauelsizdik ave bridge over the Yesil river (links right bank with left bank)",
+      "date_hint": "opened about 29 October (one day before the planned 30 October); year not stated, logically 2025 or earlier",
+      "date_hint_origin": "search_summary",
+      "freshness": "historical_before_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "открыли новый мост (opened)",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.actual_end",
+          "text": "opened one day earlier than the planned 30 October (year not stated)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "8 lanes, length 910 m, width 36 m",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "official-roadworks"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-pomenyayut-vse-potencialn",
+      "decision": "rejected",
+      "reason": "A programme-level statement (replacing all potentially defective pipelines under 'tariff in exchange for investment', until 2030) with no identifiable pipe section or location and no visible date.",
+      "kind": "construction",
+      "title_as_listed": "В Астане поменяют все потенциально дефектные трубопроводы",
+      "source_ids": [
+        "src-r12-inform-efa48d7b"
+      ],
+      "location_text": "Астана (тепловые сети)",
+      "date_hint": "programme runs until 2030",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "schedule.current_planned_end",
+          "text": "программа модернизации теплосетей рассчитана до 2030 года",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Заменят трубопроводы, на которых были порывы зимой или которые не прошли ежегодную опрессовку; финансирование по программе «тариф в обмен на инвестиции»",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-nacionalnyi-kurultai-nacionalnyi-k-4",
+      "decision": "to_verify",
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL: «водовод для 80 предприятий реконструируют». Вердикт скептика: The URL slug gives Astana and the object: a water main for 80 enterprises is being rebuilt in Astana. The listed title ('Национальный курултай…') is site navigation and must not be used as the record title. Per the summary: a ~3 km technical water main on Dosmukhameduly St from Akzhol St to Alash Av",
+      "kind": "construction",
+      "title_as_listed": "Национальный курултай Национальный курултай",
+      "source_ids": [
+        "src-r12-inform-f8f1ffc0"
+      ],
+      "location_text": "ул. Досмухамедулы от ул. Акжол до пр. Алаш",
+      "date_hint": "до конца года (год не указан)",
+      "date_hint_origin": "search_summary",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "vodovod-dlya-80-predpriyatiy-rekonstruiruyut-v-astane",
+          "origin": "url"
+        },
+        {
+          "field": "location",
+          "text": "Технический водовод протяженностью ~3 км по ул. Досмухамедулы от ул. Акжол до пр. Алаш",
+          "origin": "search_summary"
+        },
+        {
+          "field": "budget.amount_kzt",
+          "text": "2,38 млрд тенге",
+          "origin": "search_summary"
+        },
+        {
+          "field": "status",
+          "text": "Готовность около 55%, уложено ~1,7 км из 3 км",
+          "origin": "search_summary"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "до конца года",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Параллельно готовится цифровая система управления водоснабжением и водоотведением стоимостью 916,4 млн тенге",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-ulicu-almaty-v-astane-chastichno-z-2",
+      "decision": "duplicate",
+      "reason": "Identical kazpravda article (same slug), listed with www and without the trailing slash.",
+      "kind": "construction",
+      "title_as_listed": "Улицу Алматы в Астане частично закроют до конца 2026 года",
+      "source_ids": [
+        "src-r12-kazpravda-851c791a"
+      ],
+      "location_text": "Almaty St, Astana (section not in title)",
+      "date_hint": "until end of 2026",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "Улицу Алматы в Астане частично закроют",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "до конца 2026 года",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": "cand-r12-ulicu-almaty-v-astane-chastichno-z"
+    },
+    {
+      "id": "cand-r12-13-07-2026-10-40-16251",
+      "decision": "to_verify",
+      "reason": "Заголовок в выдаче не является заголовком статьи (навигация/служебный текст); по URL (англ. версия kt.kz): «правительство выделяет более 16 млрд»; о чём именно — неизвестно до открытия страницы. Вердикт скептика: Kept with caution. The listed title holds only a timestamp and view count (13.07.2026). Astana and 'over 16 billion tenge' come from the URL slug. All specifics are summary-only: 16.2 bn under a PM Bektenov decree, 8.7 bn for wastewater, a sewer collector from the Yesil-district treatment plant to L",
+      "kind": "construction",
+      "title_as_listed": "13.07.2026, 10:40 16251",
+      "source_ids": [
+        "src-r12-kt-beff66d8"
+      ],
+      "location_text": "Астана: канализационный коллектор от очистных сооружений района Есиль до оз. Карабидаик (Акмолинская обл.); новая подстанция; ТЭЦ-2",
+      "date_hint": "2026-07-13",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The URL says 'over 16 billion' and the summary says 16.2 bn, which is consistent. Lake Karabidaik is in Akmola oblast, so the collector extends beyond the Astana city limits.",
+      "hints": [
+        {
+          "field": "budget.amount_kzt",
+          "text": "16,2 млрд тенге (постановление подписал премьер-министр Олжас Бектенов)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "budget.amount_kzt",
+          "text": "8,7 млрд тенге на строительство и модернизацию объектов водоотведения",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "Реконструкция канализационного коллектора от очистных сооружений района Есиль до озера Карабидаик; новая подстанция; турбина ТЭЦ-2 +30 МВт (с 80 до 110 МВт)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "utilities"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-do-konca-goda-zakroyut-ulicy-akmes",
+      "decision": "duplicate",
+      "reason": "Very likely the same closure: the Almaty st tunnel project between Mangilik El and Sauran, closed until the end of the year. The Kazinform item is the better state-agency source. The city name comes only from the domain (Вечерняя Астана); the title has no year.",
+      "kind": "construction",
+      "title_as_listed": "До конца года закроют улицы Акмешит-Алматы",
+      "source_ids": [
+        "src-r12-vechastana-9b3b3aa4"
+      ],
+      "location_text": "Akmeshit St / Almaty St, Astana",
+      "date_hint": "до конца года (year not stated)",
+      "date_hint_origin": "search_title",
+      "freshness": "unknown",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The title says Akmeshit-Almaty will be closed; the Kazinform summary says the Akmeshit intersection stays open.",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "закроют улицы Акмешит-Алматы",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "до конца года",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            71.424016,
+            51.116668
+          ]
+        },
+        "geometry_precision": "approximate",
+        "geometry_basis": "OSM: пересечение «Ақмешіт көшесі» и «Алматы көшесі», узлы 2671166709,6539398108, снимок 2026-05-06, ODbL",
+        "query": {
+          "street": "Акмешит",
+          "cross": "Алматы",
+          "from": null,
+          "to": null
+        },
+        "notes": [],
+        "why": "перекрёсток «Акмешит — Алматы» назван в заголовке; точка — общий узел улиц в OSM"
+      },
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": "cand-r12-800-metrovyi-tonnel-poyavitsya-na"
+    },
+    {
+      "id": "cand-r12-svoi-kopengagen-i-ekopark-na-malom",
+      "decision": "duplicate",
+      "reason": "Same object (the eco-park at Maly Taldykol). It is from the city newspaper Vechernyaya Astana, but the headline ('Свой «Копенгаген»…') reads like a feature and gives no date or status. The inbusiness headline has the concrete 2027 date, so that item is the anchor. This city-newspaper coverage supports the Astana location.",
+      "kind": "landscaping",
+      "title_as_listed": "Свой «Копенгаген» и экопарк на Малом Талдыколе",
+      "source_ids": [
+        "src-r12-vechastana-f09cd5ec",
+        "src-r12-inbusiness-ca006aba"
+      ],
+      "location_text": "Малый Талдыколь, Астана",
+      "date_hint": "",
+      "date_hint_origin": "none",
+      "freshness": "unknown",
+      "city_check": "unclear",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "other",
+          "text": "экопарк на Малом Талдыколе",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "landscaping"
+      ],
+      "duplicate_of": "cand-r12-ekopark-na-malom-taldykole-poyavit"
+    },
+    {
+      "id": "cand-r12-odnu-iz-ulic-polnostyu-perekroyut",
+      "decision": "to_verify",
+      "reason": "The title gives Astana and the publication date (25 September 2026) and says a street will be fully closed over the weekend. The street (Kosmonavtov, Alpamys Batyr - Kabanbay Batyr) and the 26-27 September window come only from the summary. It is a general news source and no official confirmation was found, because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "Одну из улиц полностью перекроют в Астане в выходные: названа причина ᐈ новость от 19:18, 25 сентября 2026 на zakon.kz",
+      "source_ids": [
+        "src-r12-zakon-bc223a78"
+      ],
+      "location_text": "Kosmonavtov St, from Alpamys Batyr St to Kabanbay Batyr Ave (per summaries)",
+      "date_hint": "published 2026-09-25 (title); closure 26-27 September 2026 (summary)",
+      "date_hint_origin": "search_title",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "Одну из улиц полностью перекроют в выходные",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "Kosmonavtov St fully closed on 26–27 September (Saturday and Sunday) for repair",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-gde-i-kogda-ogranichat-dvizhenie-v",
+      "decision": "to_verify",
+      "reason": "A dated 2026 traffic restriction in Astana for a public event (Kairat Nurtas concert), with the title confirming city and publication date (26 Sep 2026). The venue (Astana Arena area), the closed streets (Marco Polo and Mesrop Mashtots), the 27 Sep 19:00 time and the shuttles all come only from the summary. The summary's 'Sunday, 27 September' does match the 2026 calendar. The event is already over. No second source: the WebSearch budget ran out.",
+      "kind": "event",
+      "title_as_listed": "Где и когда ограничат движение в Астане из-за концерта Кайрата Нуртаса ᐈ новость от 13:58, 26 сентября 2026 на zakon.kz",
+      "source_ids": [
+        "src-r12-zakon-5ca5a9bc"
+      ],
+      "location_text": "Area around Astana Arena stadium (per summary)",
+      "date_hint": "2026-09-27 (event, per summary); article 2026-09-26 (title)",
+      "date_hint_origin": "search_summary",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "Street names around the stadium are summary-only and unverified.",
+      "hints": [
+        {
+          "field": "other",
+          "text": "ограничат движение в Астане из-за концерта Кайрата Нуртаса",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "Sunday, 27 September 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "location",
+          "text": "район стадиона «Астана Арена»",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "ограничат движение в Астане (traffic restricted)",
+          "origin": "search_title"
+        },
+        {
+          "field": "event_date",
+          "text": "27 сентября, 19:00",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "проезд закрыт по ул. Марко Поло и ул. Месроп Маштоц рядом со стадионом",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "free shuttle buses from 16:00 from four city parkings",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures",
+        "events"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-dva-zagruzhennyh-perekrestka-zakro",
+      "decision": "to_verify",
+      "reason": "Astana is in the title, and the title gives the publication date '01 октября 2026'. The summary lists two overnight closures for road works: Koshkarbayev/Momyshuly from 23:00 on 1 Oct to 07:00 on 2 Oct, and Koshkarbayev/Zhumabayev from 23:00 on 2 Oct to 07:00 on 3 Oct. Both ended before today (2026-10-07), so this is kept as 2026 history. General news site, not official. I could not search for an official confirmation because the search budget was used up.",
+      "kind": "roadworks",
+      "title_as_listed": "Два загруженных перекрестка закроют в Астане ᐈ новость от 16:55, 01 октября 2026 на zakon.kz",
+      "source_ids": [
+        "src-r12-zakon-f3d2c1b7"
+      ],
+      "location_text": "R. Koshkarbayev Ave / B. Momyshuly Ave and R. Koshkarbayev Ave / M. Zhumabayev Ave, Astana",
+      "date_hint": "2026-10-01 (publication); closures 1–3 Oct 2026 per summary",
+      "date_hint_origin": "search_title",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "Два загруженных перекрестка закроют",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "Koshkarbayev / Momyshuly intersection closed from 23:00 1 October to 07:00 2 October",
+          "origin": "search_summary"
+        },
+        {
+          "field": "closure",
+          "text": "Koshkarbayev / Zhumabayev intersection closed from 23:00 2 October to 07:00 3 October",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "reason: road works",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-masshtabnyi-remont-v-astane-zablok",
+      "decision": "rejected",
+      "reason": "The visible evidence does not identify the road. The 2026-04-06 date and the 7-month closure probably match one of the gov.kz season closures (Sokpakbaev st, 5 April - November, is about 7 months). That match cannot be confirmed, so it is not marked as a duplicate; the item adds nothing beyond the official announcement.",
+      "kind": "roadworks",
+      "title_as_listed": "Масштабный ремонт в Астане заблокирует важную дорогу на 7 месяцев ᐈ новость от 13:10, 06 апреля 2026 на zakon.kz",
+      "source_ids": [
+        "src-r12-zakon-85f32915"
+      ],
+      "location_text": "",
+      "date_hint": "2026-04-06 (publication)",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "заблокирует важную дорогу на 7 месяцев",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "причина: масштабный ремонт",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-v-astane-zapustili-lrt",
+      "decision": "to_verify",
+      "reason": "The title confirms that the LRT was launched in Astana, which completes the first line. The 16 May 2026 date, the 18 stations and the train details come only from the summary. The zakon.kz URL IDs give a consistency check: about 110 IDs per day between 6527998 (13 Aug 2026) and 6532842 (26 Sep 2026) puts 6518094 around mid-May 2026, which fits. That is an inference, not a source. It is a different object from the stage-2 construction. There is no independent source because the budget ran out.",
+      "kind": "construction",
+      "title_as_listed": "В Астане запустили LRT",
+      "source_ids": [
+        "src-r12-zakon-95af9e35"
+      ],
+      "location_text": "Астана",
+      "date_hint": "2026-05-16",
+      "date_hint_origin": "search_summary",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "",
+      "hints": [
+        {
+          "field": "status",
+          "text": "запустили LRT",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.actual_end",
+          "text": "16 May 2026 (launch by President Tokayev)",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "15 trains (4 reserve), driverless, 18 stations, ~40 min end-to-end, 5-6 min interval",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "construction"
+      ],
+      "duplicate_of": null
+    },
+    {
+      "id": "cand-r12-iz-za-stroitelstva-tonnelya-v-asta",
+      "decision": "duplicate",
+      "reason": "Same physical object: the closure of Almaty street in Astana until end of 2026 for tunnel construction. The kazpravda.kz state-media version is preferred. This URL serves as its independent corroboration and adds the reason (tunnel) in its title.",
+      "kind": "construction",
+      "title_as_listed": "Из-за строительства тоннеля в Астане перекроют улицу Алматы до конца 2026 года ᐈ новость от 17:28, 13 августа 2026 на zakon.kz",
+      "source_ids": [
+        "src-r12-zakon-e0e1795d"
+      ],
+      "location_text": "Almaty St, Astana (Yesil district per summaries); exact section not in title",
+      "date_hint": "2026-08-13",
+      "date_hint_origin": "search_title",
+      "freshness": "current_or_upcoming_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "'перекроют' here against 'частично закроют' in kazpravda. The 13 Aug 2026 publication date comes after the 20 July start given in the kazpravda summary.",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "перекроют улицу Алматы",
+          "origin": "search_title"
+        },
+        {
+          "field": "schedule.current_planned_end",
+          "text": "до конца 2026 года",
+          "origin": "search_title"
+        },
+        {
+          "field": "other",
+          "text": "причина: строительство тоннеля",
+          "origin": "search_title"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": "cand-r12-ulicu-almaty-v-astane-chastichno-z"
+    },
+    {
+      "id": "cand-r12-v-astane-na-pyat-dnei-polnostyu-pe",
+      "decision": "duplicate",
+      "reason": "Same full closure of an intersection (Hussein bin Talal / Al-Farabi per summaries) as the 24.kz item. 24.kz, which belongs to state broadcaster Khabar, is preferred. This URL corroborates it and adds the publication date 9 Sep 2026 and the 'five days' duration in its title.",
+      "kind": "roadworks",
+      "title_as_listed": "В Астане на пять дней полностью перекроют движение на одном из важных перекрестков ᐈ новость от 18:36, 09 сентября 2026 на zakon.kz",
+      "source_ids": [
+        "src-r12-zakon-fc1fea08"
+      ],
+      "location_text": "Intersection of Hussein bin Talal St and Al-Farabi Ave, Astana (per summary)",
+      "date_hint": "2026-09-09",
+      "date_hint_origin": "search_title",
+      "freshness": "past_2026",
+      "city_check": "astana_confirmed_in_title_or_url",
+      "contradictions": "The title says 5 days. The summary window of 10–15 Sep counts as 6 calendar days, unless the closure ended on the morning of the 15th.",
+      "hints": [
+        {
+          "field": "closure",
+          "text": "на пять дней полностью перекроют движение на одном из важных перекрестков",
+          "origin": "search_title"
+        },
+        {
+          "field": "closure",
+          "text": "Hussein bin Talal St / Al-Farabi Ave intersection fully closed 10–15 September 2026",
+          "origin": "search_summary"
+        },
+        {
+          "field": "other",
+          "text": "works on engineering networks and road base (repair works)",
+          "origin": "search_summary"
+        }
+      ],
+      "verify_checklist": [
+        "открыть URL; убедиться, что речь об Астане и указана дата публикации",
+        "выписать дословно: что за работы/событие, где (улицы/участок), сроки (начало, окончание), кто ведёт",
+        "сумму и основание (план/договор/освоено) — только если названы на странице",
+        "отметить, что страница НЕ говорит (фактическое завершение, перенос срока и т.п.)"
+      ],
+      "geocode": null,
+      "found_by_sweeps": [
+        "closures"
+      ],
+      "duplicate_of": "cand-r12-v-astane-polnostyu-perekroyut-dviz"
+    }
+  ]
+}

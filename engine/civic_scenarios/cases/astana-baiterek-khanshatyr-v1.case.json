@@ -1,0 +1,102 @@
+{
+ "case_id": "astana-baiterek-khanshatyr-v1",
+ "title": "Байтерек → Хан Шатыр: два гипотетических перекрытия бульвара (пешком)",
+ "evidence_type": "hypothesis",
+ "note": "Места заданы координатами на карте и привязаны к сети по правилу snap (≤150 м, только подтверждённый пеший доступ). Перекрытия вымышлены для сравнения вариантов; это не сведения о реальных работах. Снимок OSM 2026-05-06, не live.",
+ "places": {
+  "origin": {
+   "label": "у монумента Байтерек",
+   "input": [
+    71.4305,
+    51.1283
+   ]
+  },
+  "destination": {
+   "label": "у ТРЦ Хан Шатыр",
+   "input": [
+    71.404,
+    51.1324
+   ]
+  }
+ },
+ "payload": {
+  "schema_version": "civic-scenario-v1",
+  "city": "astana",
+  "graph_id": "osm-astana-walking-20260506",
+  "graph_digest": "a694be21cc08ef1bf8000387a5120e7e5ad810ee37a955a4c223c004aeba5e35",
+  "mode": "walking",
+  "analysis_at": "2026-10-10T12:00:00+05:00",
+  "origin_node_ids": [
+   "osm-n2389116244"
+  ],
+  "destination_node_ids": [
+   "osm-n2635117382"
+  ],
+  "plans": [
+   {
+    "id": "A",
+    "closures": [
+     {
+      "edge_ids": [
+       "osm-w409905017-3"
+      ],
+      "start_at": "2026-10-10T08:00:00+05:00",
+      "end_at": "2026-10-10T20:00:00+05:00"
+     }
+    ]
+   },
+   {
+    "id": "B",
+    "closures": [
+     {
+      "edge_ids": [
+       "osm-w409905017-3",
+       "osm-w696370629-0",
+       "osm-w696370629-1"
+      ],
+      "start_at": "2026-10-10T08:00:00+05:00",
+      "end_at": "2026-10-11T08:00:00+05:00"
+     }
+    ]
+   }
+  ]
+ },
+ "expected": {
+  "engine_version": "1.1.0",
+  "graph_id": "osm-astana-walking-20260506",
+  "graph_digest": "a694be21cc08ef1bf8000387a5120e7e5ad810ee37a955a4c223c004aeba5e35",
+  "snap": {
+   "origin": {
+    "node_id": "osm-n2389116244",
+    "distance_m": 5.3,
+    "status": "ok"
+   },
+   "destination": {
+    "node_id": "osm-n2635117382",
+    "distance_m": 88.2,
+    "status": "ok"
+   }
+  },
+  "baseline_length_m": 2230.228,
+  "plan_length_m": {
+   "A": 2290.625,
+   "B": 2387.062
+  },
+  "delta_vs_baseline_m": {
+   "A": 60.397,
+   "B": 156.834
+  },
+  "b_minus_a_m": 96.437,
+  "late": {
+   "analysis_at": "2026-10-10T21:00:00+05:00",
+   "active": {
+    "A": false,
+    "B": true
+   },
+   "plan_length_m": {
+    "A": 2230.228,
+    "B": 2387.062
+   }
+  }
+ }
+}

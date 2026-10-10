@@ -12,12 +12,14 @@ Endpoint'ы только читают подготовленные данные 
   GET  /api/civic/v1/scenarios/cases            подготовленные кейсы (payload-шаблоны)
   POST /api/civic/v1/scenarios/compare          compare(payload, load_graph(payload.graph_id))
 """
+import logging
 import time
 
 from .compare import compare
 from .errors import ScenarioError
 from .registry import list_cases, load_graph, load_graph_dict, manifest
 
+LOGGER = logging.getLogger(__name__)
 PREFIX = "/api/civic/v1/scenarios"
 MAX_BODY_BYTES = 64 * 1024
 HEADERS = {"Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store"}
@@ -34,7 +36,9 @@ def _err(status, code, message, fields=None):
     return {"status": status, "headers": dict(HEADERS), "body": {"ok": False, "error": e}}
 
 
-def handle(method, path, query=None, body=None):
+def handle(method, path, query=None, body=None, on_result=None):
+    """on_result(payload, result) — необязательный колбэк шлюза R01 после УСПЕШНОГО compare (например,
+    agent.civic_assistant.api.ScenarioResultCache.remember). Его ошибка не ломает ответ compare."""
     if path != PREFIX and not path.startswith(PREFIX + "/"):
         return None
     sub = path[len(PREFIX):].rstrip("/")
@@ -53,8 +57,13 @@ def handle(method, path, query=None, body=None):
                 return _err(400, "invalid_payload", "ожидается JSON-объект")
             t0 = time.perf_counter()
             res = compare(body, load_graph(body.get("graph_id")))
-            res = dict(res, timing_ms=round((time.perf_counter() - t0) * 1000, 1))
-            return _ok(res)
+            elapsed = round((time.perf_counter() - t0) * 1000, 1)
+            if on_result is not None:
+                try:
+                    on_result(body, res)          # тот же объект, что посчитал сервер; timing вне digest
+                except Exception:                 # noqa: BLE001 — кэш объяснений не важнее расчёта
+                    LOGGER.exception("scenario on_result callback failed")
+            return _ok(dict(res, timing_ms=elapsed))
         if sub in ("/graphs", "/cases", "/compare") or sub.startswith("/graphs/"):
             return _err(405, "method_not_allowed", "метод не поддерживается")
         return _err(404, "not_found", "неизвестный путь")

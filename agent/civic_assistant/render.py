@@ -88,15 +88,16 @@ T = {
         "shift_unknown": "Сравнить первоначальный и текущий срок нельзя: одной из дат нет.",
         "reason_quote": "В публичной истории (ревизия {r}, {at}) о сроках сказано: «{text}»",
         "reason_missing": "Причина изменения сроков в публичной истории не указана — нет данных.",
-        "organization": "Ответственная организация: {v}.",
+        "organization": "Ответственная организация (как в карточке): «{v}».",
         "organization_missing": "Ответственная организация в карточке не указана — нет данных.",
-        "contact": "Публичный контакт: {v}.",
+        "contact": "Публичный контакт (как в карточке): «{v}».",
         "contact_missing": "Публичный контакт: нет данных.",
         "amount": "Сумма: {v} ₸ ({basis}).",
         "amount_missing": "Сумма в карточке не указана — нет данных.",
         "amount_source": "Источник суммы: {src}.",
         "amount_source_missing": "Источник суммы не указан.",
-        "source": "Источник: {publisher}; опубликовано: {published}; доступ: {access}; лицензия: {license}{url}.",
+        "source": "Источник: «{publisher}»; опубликовано: {published}; получено системой: {retrieved}; доступ: {access}; "
+                  "лицензия: {license}{url}.",
         "source_url": "; ссылка: {u}",
         "no_sources": "У записи нет ссылок на источники.",
         "old_plan": "Публикация плана не доказывает фактическое состояние работ.",
@@ -112,8 +113,48 @@ T = {
         "unsupported": "Я отвечаю только по опубликованным сведениям карточки: что происходит, сроки, статус, "
                        "ответственный, сумма, источники и история изменений. Этот вопрос вне этих данных.",
         "unavailable": "Помощник сейчас не может ответить: опубликованные сведения по этому объекту недоступны.",
+        "clarify": "Вопрос не распознан, поэтому помощник не отвечает наугад. Можно спросить: что здесь происходит, "
+                   "когда закончат, почему перенесли срок, подтверждено ли завершение, кто отвечает, сколько стоит, откуда "
+                   "данные, насколько они свежие, что менялось, какие сведения отсутствуют.",
+        "clarify_scenario": "Вопрос не распознан, поэтому помощник не отвечает наугад. О сценарии можно спросить: "
+                            "чем план A отличается от B, как изменится проход, насколько полные данные сети.",
+        "unavailable_result_expired": "Сохранённый результат вашего расчёта больше не хранится на сервере. Выполните "
+                                      "сравнение заново — помощник не подставляет другой сценарий.",
+        "unavailable_result_unknown": "Результат расчёта с таким идентификатором на сервере не найден. Выполните "
+                                      "сравнение заново — помощник не подставляет другой сценарий.",
+        "unavailable_scenario": "Сценарий с таким идентификатором недоступен — помощник не подставляет другой сценарий.",
+        "unavailable_result_not_stored": "Результат этого расчёта сервер не сохранил для объяснения (не прошёл проверку "
+                                         "или слишком большой). Таблица сравнения остаётся верной; помощник не "
+                                         "объясняет его и не подставляет другой сценарий.",
+        "revision_changed": "Карточка объекта изменилась после того, как вы её открыли: сейчас опубликована редакция {r}. "
+                            "Обновите карточку и задайте вопрос снова — помощник не отвечает по устаревшей редакции.",
+        "freshness_card": "Карточка обновлена в системе {d} (редакция {r}). Это дата изменения записи, а не дата проверки "
+                          "работ на месте.",
+        "freshness_card_missing": "Дата обновления карточки: нет данных.",
+        "freshness_source": "Источник «{publisher}»: опубликован {published}; получен системой {retrieved}; доступ при "
+                            "проверке: {access}.",
+        "freshness_source_note": "Дата публикации — когда источник выпустил сведения; дата получения — когда система их "
+                                 "загрузила. Ни одна из них не подтверждает, что сведения верны сегодня.",
+        "freshness_no_sources": "У записи нет источников — подтвердить свежесть сведений нечем.",
+        "freshness_none": "Сведений о датах данных нет.",
+        "freshness_unknown_after": "Помощник не знает, менялось ли что-то после этих дат.",
+        "no_active_closure_claim": "Помощник не делает вывода, что перекрытие действует сейчас: объявление о работах или план "
+                                   "не подтверждают текущее состояние на месте.",
         "unknown_value": "нет данных",
         "unknown_actor": "",
+        "missing_list": "В опубликованной карточке не указано: {fields}.",
+        "missing_none": "Основные поля карточки заполнены: сроки, ответственный, сумма с источником, место и источники.",
+        "missing_reason": "Срок сдвинут, но причина в публичной истории не указана.",
+        "missing_note": "Пустое поле означает, что сведений нет, а не ноль и не «всё в порядке».",
+        "missing_labels": {"schedule.current_planned_end": "текущий плановый срок окончания",
+                           "schedule.original_planned_end": "первоначальный срок окончания",
+                           "schedule.planned_start": "плановое начало",
+                           "schedule.actual_end": "фактическая дата окончания",
+                           "budget.amount_kzt": "сумма", "budget.source_id": "источник суммы",
+                           "responsible.organization": "ответственная организация",
+                           "responsible.public_contact": "публичный контакт",
+                           "object.geometry_type": "место на карте", "sources": "источники сведений",
+                           "object.description": "описание"},
     },
     "kk": {
         "synthetic": "Бұл демонстрациялық (синтетикалық) жазба, нақты жұмыстар туралы мәлімет емес.",
@@ -141,15 +182,16 @@ T = {
         "shift_unknown": "Бастапқы және ағымдағы мерзімді салыстыру мүмкін емес: күндердің бірі жоқ.",
         "reason_quote": "Жария тарихта ({r}-нұсқа, {at}) мерзім туралы былай жазылған: «{text}»",
         "reason_missing": "Мерзімді өзгерту себебі жария тарихта көрсетілмеген — деректер жоқ.",
-        "organization": "Жауапты ұйым: {v}.",
+        "organization": "Жауапты ұйым (карточкадағыдай): «{v}».",
         "organization_missing": "Жауапты ұйым карточкада көрсетілмеген — деректер жоқ.",
-        "contact": "Жария байланыс: {v}.",
+        "contact": "Жария байланыс (карточкадағыдай): «{v}».",
         "contact_missing": "Жария байланыс: деректер жоқ.",
         "amount": "Сома: {v} ₸ ({basis}).",
         "amount_missing": "Сома карточкада көрсетілмеген — деректер жоқ.",
         "amount_source": "Сома дереккөзі: {src}.",
         "amount_source_missing": "Сома дереккөзі көрсетілмеген.",
-        "source": "Дереккөз: {publisher}; жарияланған күні: {published}; қолжетімділік: {access}; лицензия: {license}{url}.",
+        "source": "Дереккөз: «{publisher}»; жарияланған күні: {published}; жүйе алған күні: {retrieved}; қолжетімділік: "
+                  "{access}; лицензия: {license}{url}.",
         "source_url": "; сілтеме: {u}",
         "no_sources": "Жазбада дереккөзге сілтеме жоқ.",
         "old_plan": "Жоспардың жариялануы жұмыстың нақты жағдайын дәлелдемейді.",
@@ -165,8 +207,48 @@ T = {
         "unsupported": "Мен тек карточкадағы жарияланған мәліметтер бойынша жауап беремін: не болып жатыр, мерзімдер, "
                        "мәртебе, жауапты ұйым, сома, дереккөздер және өзгерістер тарихы. Бұл сұрақ осы деректерден тыс.",
         "unavailable": "Көмекші қазір жауап бере алмайды: бұл нысан бойынша жарияланған мәліметтер қолжетімсіз.",
+        "clarify": "Сұрақ танылмады, сондықтан көмекші болжап жауап бермейді. Мынаны сұрауға болады: мұнда не болып "
+                   "жатыр, қашан аяқталады, мерзім неге ауыстырылды, жұмыстың аяқталуы расталған ба, кім жауапты, қанша тұрады, "
+                   "деректер қайдан, олар қаншалықты өзекті, не өзгерді, қандай мәліметтер жоқ.",
+        "clarify_scenario": "Сұрақ танылмады, сондықтан көмекші болжап жауап бермейді. Сценарий туралы сұрауға болады: "
+                            "A жоспарының B-дан айырмашылығы, өту қалай өзгереді, желі деректері қаншалықты толық.",
+        "unavailable_result_expired": "Сіздің есебіңіздің сақталған нәтижесі серверде енді сақталмайды. Салыстыруды "
+                                      "қайта орындаңыз — көмекші басқа сценарийді қоймайды.",
+        "unavailable_result_unknown": "Мұндай идентификатормен есеп нәтижесі серверде табылмады. Салыстыруды қайта "
+                                      "орындаңыз — көмекші басқа сценарийді қоймайды.",
+        "unavailable_scenario": "Мұндай идентификатормен сценарий қолжетімсіз — көмекші басқа сценарийді қоймайды.",
+        "unavailable_result_not_stored": "Бұл есептің нәтижесін сервер түсіндіру үшін сақтамады (тексерістен өтпеді "
+                                         "немесе тым үлкен). Салыстыру кестесі дұрыс күйінде қалады; көмекші оны "
+                                         "түсіндірмейді және басқа сценарийді қоймайды.",
+        "revision_changed": "Сіз ашқаннан кейін нысан карточкасы өзгерді: қазір {r}-нұсқа жарияланған. Карточканы "
+                            "жаңартып, сұрақты қайта қойыңыз — көмекші ескірген нұсқа бойынша жауап бермейді.",
+        "freshness_card": "Карточка жүйеде {d} жаңартылды ({r}-нұсқа). Бұл жазбаның өзгерген күні, жұмыстың орнында "
+                          "тексерілген күні емес.",
+        "freshness_card_missing": "Карточканың жаңартылған күні: деректер жоқ.",
+        "freshness_source": "«{publisher}» дереккөзі: {published} жарияланған; жүйе {retrieved} алған; тексеру кезіндегі "
+                            "қолжетімділік: {access}.",
+        "freshness_source_note": "Жариялану күні — дереккөз мәліметті шығарған күн; алыну күні — жүйе оны жүктеген күн. "
+                                 "Екеуі де мәліметтің бүгін дұрыс екенін растамайды.",
+        "freshness_no_sources": "Жазбада дереккөз жоқ — мәліметтің өзектілігін растайтын ештеңе жоқ.",
+        "freshness_none": "Деректердің күндері туралы мәлімет жоқ.",
+        "freshness_unknown_after": "Осы күндерден кейін бірдеңе өзгергенін көмекші білмейді.",
+        "no_active_closure_claim": "Көмекші жабылу қазір әрекет етеді деп айтпайды: жұмыс туралы хабарландыру немесе "
+                                   "жоспар орындағы қазіргі жағдайды растамайды.",
         "unknown_value": "деректер жоқ",
         "unknown_actor": "",
+        "missing_list": "Жарияланған карточкада көрсетілмеген: {fields}.",
+        "missing_none": "Карточканың негізгі өрістері толтырылған: мерзімдер, жауапты ұйым, дереккөзі бар сома, орны және дереккөздер.",
+        "missing_reason": "Мерзім жылжыған, бірақ себебі жария тарихта көрсетілмеген.",
+        "missing_note": "Бос өріс мәлімет жоқ дегенді білдіреді, нөл немесе «бәрі дұрыс» дегенді емес.",
+        "missing_labels": {"schedule.current_planned_end": "ағымдағы жоспарлы аяқталу мерзімі",
+                           "schedule.original_planned_end": "бастапқы аяқталу мерзімі",
+                           "schedule.planned_start": "жоспарлы басталуы",
+                           "schedule.actual_end": "нақты аяқталу күні",
+                           "budget.amount_kzt": "сома", "budget.source_id": "соманың дереккөзі",
+                           "responsible.organization": "жауапты ұйым",
+                           "responsible.public_contact": "жария байланыс",
+                           "object.geometry_type": "картадағы орны", "sources": "мәліметтер дереккөздері",
+                           "object.description": "сипаттама"},
     },
 }
 
@@ -368,6 +450,7 @@ def _source_text(ref, lang):
     return t["source"].format(
         publisher=ref["publisher"] or NO_DATA[lang],
         published=fmt_date(ref["published_on"], lang),
+        retrieved=fmt_at(ref["retrieved_at"], lang),
         access=ACCESS_LABELS[lang][ref["access_status"]],
         license=ref["license"] or NO_DATA[lang],
         url=t["source_url"].format(u=ref["url"]) if ref["url"] else "",
@@ -437,8 +520,40 @@ def r_location(facts, lang):
 
 def r_access_impact(facts, lang):
     from agent.civic_assistant.scenario import render_scenario
-    out = render_scenario(facts, lang, focus="impact")
-    return out or [_st(T[lang]["access_none"], [], kind="missing")]
+    out = render_scenario(facts, lang, focus="impact") or [_st(T[lang]["access_none"], [], kind="missing")]
+    # Объявление/план не доказывает, что перекрытие действует сейчас; сценарий — только гипотеза.
+    return out + [_req(_st(T[lang]["no_active_closure_claim"], [], kind="notice"))]
+
+
+def r_freshness(facts, lang):
+    """Даты данных с явной основой: изменение карточки, публикация и получение источника, снимок сети."""
+    from agent.civic_assistant.scenario import render_scenario_freshness
+    t = T[lang]
+    out = []
+    if "object.title" in facts:
+        upd, rev = _v(facts, "object.updated_at"), _v(facts, "object.revision")
+        if upd and rev and fmt_at(upd, lang) != NO_DATA[lang]:
+            out.append(_st(t["freshness_card"].format(d=fmt_at(upd, lang), r=rev),
+                           ["object.updated_at", "object.revision"], facts=facts))
+        else:
+            out.append(_req(_st(t["freshness_card_missing"], ["object.updated_at"], kind="missing")))
+        refs = [f for fid, f in facts.items() if fid.startswith("source.")]
+        for f in refs:
+            ref = f["value"]
+            out.append(_st(t["freshness_source"].format(publisher=ref["publisher"] or NO_DATA[lang],
+                                                        published=fmt_date(ref["published_on"], lang),
+                                                        retrieved=fmt_at(ref["retrieved_at"], lang),
+                                                        access=ACCESS_LABELS[lang][ref["access_status"]]),
+                           [f["id"]], facts=facts))
+        if refs:
+            out.append(_req(_st(t["freshness_source_note"], [], kind="notice")))
+        else:
+            out.append(_req(_st(t["freshness_no_sources"], [], kind="missing")))
+    out += render_scenario_freshness(facts, lang)
+    if not out:
+        out.append(_st(t["freshness_none"], [], kind="missing"))
+    out.append(_req(_st(t["freshness_unknown_after"], [], kind="notice")))
+    return out
 
 
 def r_scenario_compare(facts, lang):
@@ -447,8 +562,53 @@ def r_scenario_compare(facts, lang):
     return out or [_st(T[lang]["scenario_none"], [], kind="missing")]
 
 
+# Поля, отсутствие которых важно жителю. actual_end ожидаемо пуст у незавершённых работ,
+# поэтому его отсутствие называем только при статусе «завершено».
+MISSING_FIELDS = ("schedule.current_planned_end", "schedule.original_planned_end", "schedule.planned_start",
+                  "budget.amount_kzt", "budget.source_id", "responsible.organization",
+                  "responsible.public_contact", "object.geometry_type", "object.description")
+
+
+def r_missing_data(facts, lang):
+    """Какие сведения в опубликованной карточке отсутствуют (known=False), без догадок о значениях."""
+    t = T[lang]
+    missing = [fid for fid in MISSING_FIELDS if fid in facts and not facts[fid]["known"]]
+    if _v(facts, "object.status") == "completed" and "schedule.actual_end" in facts \
+            and not facts["schedule.actual_end"]["known"]:
+        missing.append("schedule.actual_end")
+    has_sources = any(fid.startswith("source.") for fid in facts)
+    labels = [t["missing_labels"][fid] for fid in missing]
+    if not has_sources:
+        labels.append(t["missing_labels"]["sources"])
+    out = []
+    if labels:
+        out.append(_req(_st(t["missing_list"].format(fields=", ".join(labels)), missing, kind="missing")))
+    else:
+        out.append(_st(t["missing_none"], [], kind="notice"))
+    shift = _v(facts, "schedule.shift_days")
+    hist = _history(facts)
+    has_reason = any(h["value"]["reason"] and any(c == "schedule" or c.startswith("schedule.")
+                                                  for c in h["value"]["changed_fields"])
+                     and "publication" not in h["value"]["changed_fields"] for h in hist)
+    if shift and not has_reason:
+        out.append(_req(_st(t["missing_reason"], ["schedule.shift_days"] + [h["id"] for h in hist][-3:],
+                            kind="missing")))
+    out.append(_st(t["missing_note"], [], kind="notice"))
+    return out
+
+
 def r_unsupported(facts, lang):
     return [_st(T[lang]["unsupported"], [], kind="notice")]
+
+
+def r_clarify(facts, lang):
+    t = T[lang]
+    out = []
+    if "object.title" in facts:
+        out.append(_st(t["clarify"], [], kind="notice"))
+    if any(fid.startswith("scenario.") for fid in facts):
+        out.append(_st(t["clarify_scenario"], [], kind="notice"))
+    return out or [_st(t["clarify"], [], kind="notice")]
 
 
 RENDERERS = {
@@ -463,7 +623,10 @@ RENDERERS = {
     "location": r_location,
     "access_impact": r_access_impact,
     "scenario_compare": r_scenario_compare,
+    "freshness": r_freshness,
+    "missing_data": r_missing_data,
     "unsupported": r_unsupported,
+    "clarify": r_clarify,
 }
 INTENTS = tuple(RENDERERS)
 
@@ -480,7 +643,11 @@ INTENT_FACT_PREFIXES = {
     "location": ("object.geometry_type", "object.geometry_precision"),
     "access_impact": ("scenario.",),
     "scenario_compare": ("scenario.",),
+    "freshness": ("object.updated_at", "object.revision", "source.", "scenario.graph.", "scenario.known_access_share",
+                  "scenario.unknown_access_share", "scenario.engine_warnings"),
+    "missing_data": ("schedule.", "budget.", "responsible.", "object.", "source.", "history."),
     "unsupported": (),
+    "clarify": (),
 }
 
 

@@ -22,13 +22,28 @@
   };
 
   // ---------------------------------------------------------------- api.request
+  // Safe, structured error details modules may rely on (R04 conflict merge, R06 receipts, rate limits).
+  // Only these keys, type-checked; server text beyond `message` (stack traces, SQL) is never copied.
+  const ERROR_DETAILS = {
+    current_revision: (v) => Number.isInteger(v) && v >= 0,
+    retry_after: (v) => Number.isInteger(v) && v >= 0 && v <= 86400,
+    can_confirm: (v) => typeof v === "boolean",
+    allowed: (v) => Array.isArray(v) && v.length <= 20 && v.every((x) => typeof x === "string" && x.length <= 40),
+    previous_receipt: (v) => v && typeof v === "object" && !Array.isArray(v) && JSON.stringify(v).length <= 2000,
+  };
   class CivicApiError extends Error {
-    constructor(status, code, message, fields) {
+    constructor(status, code, message, fields, details) {
       super(message || "Запрос не выполнен.");
       this.name = "CivicApiError";
       this.status = status;
       this.code = code || "error";
       this.fields = fields || null;
+      // Same facts in both shapes modules read: err.current_revision and err.error.current_revision.
+      const error = { code: this.code, message: this.message, fields: this.fields };
+      for (const [key, ok] of Object.entries(ERROR_DETAILS)) {
+        if (details && Object.prototype.hasOwnProperty.call(details, key) && ok(details[key])) error[key] = this[key] = details[key];
+      }
+      this.error = error;
     }
   }
   const session = { checked: false, authenticated: false, user: null, csrfToken: null };
@@ -90,9 +105,13 @@
       throw new CivicApiError(response.status, "bad_response", "Сервер вернул нечитаемый ответ.");
     if (!envelope.ok || !response.ok) {
       const error = envelope.error && typeof envelope.error === "object" ? envelope.error : {};
+      const details = { ...error };
+      // Retry-After header (seconds) when the body does not carry retry_after itself.
+      const header = Number.parseInt(response.headers.get("Retry-After") || "", 10);
+      if (!Number.isInteger(details.retry_after) && Number.isInteger(header)) details.retry_after = header;
       throw new CivicApiError(response.status, String(error.code || "error"),
         typeof error.message === "string" ? error.message : "Запрос не выполнен.",
-        error.fields && typeof error.fields === "object" ? error.fields : null);
+        error.fields && typeof error.fields === "object" ? error.fields : null, details);
     }
     return envelope.data;
   }
@@ -137,7 +156,7 @@
   };
 
   // ---------------------------------------------------------------- page modes
-  const S = { mode: null, mapState: "pending", modules: null, mounted: {}, selected: null, assistantSeq: 0, editorTool: false,
+  const S = { keepSeq: 0, frameSeq: 0, view: null, recordCount: null, mode: null, mapState: "pending", modules: null, mounted: {}, selected: null, assistantSeq: 0, editorTool: false,
     panelOpen: true, sheet: "half", started: false };
   const originalTitle = document.title;
   const brandTitle = document.querySelector(".brand-title");
@@ -183,7 +202,14 @@
     <section id="civic-scenarios" class="civic-drawer" hidden aria-label="Сравнение ограничений">
       <div class="civic-box-head"><h2>Сравнение ограничений</h2><button type="button" class="civic-close" data-close="scenarios" aria-label="Закрыть сравнение">×</button></div>
       <p class="civic-note civic-scenario-limits">Сравните два варианта перекрытия на пешеходной сети. Расчёт показывает изменение длины пути; неизвестный доступ исключён. Это гипотеза, не прогноз пробок и не официальное перекрытие.</p>
-      <div id="civic-scenarios-root" class="civic-slot civic-drawer-body"></div>
+      <div class="civic-drawer-body">
+        <div id="civic-scenarios-root" class="civic-slot"></div>
+        <section id="civic-scenario-explain" class="civic-scenario-explain" hidden aria-label="Объяснение расчёта A/B">
+          <h3>Объяснение этого расчёта</h3>
+          <p class="civic-note">Помощник объясняет результат, который посчитал сервер для показанных вариантов; цифры из браузера не принимаются. Изменили варианты — нажмите «Сравнить» снова.</p>
+          <div id="civic-scenario-explain-root"></div>
+        </section>
+      </div>
       <p class="civic-attribution">© участники OpenStreetMap (ODbL-1.0). Дата и источник — у выбранной сети. Старый срез K03: Overture Maps Foundation, выпуск 2026-09-23.1.</p>
     </section>`;
   document.body.append(root);
@@ -193,7 +219,7 @@
   // implementation per function. A missing module is reported, never silently replaced.
   const moduleFor = (name) => ({
     map: window.CivicMap, editor: window.CivicEditor, feedback: window.CivicFeedback,
-    scenarios: window.CivicScenarios, assistant: window.CivicAssistant,
+    scenarios: window.CivicScenarios, assistant: window.CivicAssistant, scenarioAssistant: window.CivicAssistant,
   })[name] || null;
   const isFallback = () => false;
   const MODULE_MISSING = {
@@ -275,8 +301,11 @@
     mount("map", $c("civic-map-root"), {
       map: currentMap(),
       fitOnLoad: false,  // Open the city; fitting the small demo list is an explicit action.
-      onData: (items) => S.mounted.explore?.updateRecords?.(items),
-      onSelect: (item) => onSelect(item),
+      onData: (items) => { S.recordCount = items.length; S.mounted.explore?.updateRecords?.(items); refreshAssistantRevision(); },
+      onSelect: (item, info) => onSelect(item, info),
+      // Proposed R03 option (INTEGRATION.txt): camera padding from the host's live layout. An R03
+      // that does not know it ignores it; the shell's fitAll adapter/keepVisible cover that case.
+      getPadding: () => freeArea(),
       onFeedback: (target) => openFeedback(target),
     });
     if (S.selected) S.mounted.map?.selectObject?.(S.selected);
@@ -286,9 +315,35 @@
     mountPublic();
   }
 
-  function onSelect(item) {
+  // A map click belongs to the active tool: R04 drawing (civic-editor:tool) or the open scenario drawer
+  // (R07 picks closures/points by clicking the map). R03 does not know these tools, so a click that
+  // also hit a public object is undone here; list/card/permalink selections are not affected.
+  const mapToolActive = () => S.editorTool || !$c("civic-scenarios").hidden;
+  // An R03 with the proposed setInteractive() lock stops selecting/hovering by itself; the undo in
+  // onSelect stays as the fallback for R03 versions without it.
+  const syncMapInteractive = () => S.mounted.map?.setInteractive?.(!mapToolActive());
+  function onSelect(item, info) {
+    if (item && info?.source === "map" && mapToolActive()) {
+      setTimeout(() => S.mounted.map?.selectObject?.(null), 0);  // not inside R03's own selectObject
+      if (!S.toolHintShown) { S.toolHintShown = true; toastSafe("Пока открыт инструмент на карте, щелчок не открывает карточки объектов."); }
+      return;
+    }
     const id = item && typeof item === "object" ? item.id : item;
     S.selected = typeof id === "string" ? id : null;
+    if (S.selected && window.CivicExplore) {
+      // A permalink selects before R03's list has loaded ({id} only): read the public geometry then.
+      const id = S.selected;
+      const located = item?.geometry ? Promise.resolve(item)
+        : request("GET", "/objects/" + encodeURIComponent(id)).then((data) => data?.item || null, () => null);
+      located.then((it) => {
+        if (S.selected !== id) return;
+        if (!item?.title && it?.title) S.mounted.explore?.setView?.("Открыта запись: " + it.title, "object");
+        const box = it?.geometry ? window.CivicExplore.bounds(it.geometry) : null;
+        if (box) keepVisible([(box[0] + box[2]) / 2, (box[1] + box[3]) / 2]);
+      });
+    }
+    if (S.selected) S.mounted.explore?.setView?.("Открыта запись" + (item?.title ? ": " + item.title : ""), "object");
+    else S.mounted.explore?.setView?.(S.view?.text || "", S.view?.kind || "");
     const hash = S.selected ? "#object=" + encodeURIComponent(S.selected) : "";
     if (location.hash !== hash) history.replaceState(null, "", location.pathname + location.search + hash);
     closeFeedback();
@@ -298,10 +353,11 @@
     if (S.selected && assistant && S.modules?.assistant?.status === "ready") {
       // Mount R09 only for an object confirmed public (permalinks may name drafts/unknown ids).
       const id = S.selected, seq = ++S.assistantSeq;
-      request("GET", "/objects/" + encodeURIComponent(id)).then(() => {
+      request("GET", "/objects/" + encodeURIComponent(id)).then((data) => {
         if (seq !== S.assistantSeq || S.selected !== id || S.mode !== "civic") return;
         $c("civic-assistant-box").hidden = false;
-        mount("assistant", $c("civic-assistant-root"), { objectId: id });
+        // R09: the card's revision on screen; an answer built for another revision is not shown.
+        mount("assistant", $c("civic-assistant-root"), { objectId: id, revision: revisionOf(data) });
       }).catch((error) => {
         if (seq !== S.assistantSeq || S.selected !== id) return;
         if (error?.status === 404) {
@@ -311,6 +367,17 @@
       });
     }
     if (S.selected && innerWidth < 761 && S.sheet === "peek") setSheet("half");
+  }
+  const revisionOf = (data) => (Number.isInteger(data?.item?.revision) ? data.item.revision : undefined);
+  // Data changed (R03 refresh, a publish from the cabinet): the assistant learns the current revision of
+  // the open card, so an answer prepared for the previous revision is withdrawn by R09 itself.
+  function refreshAssistantRevision() {
+    const id = S.selected, handle = S.mounted.assistant;
+    if (!id || typeof handle?.update !== "function") return;
+    const seq = S.assistantSeq;
+    request("GET", "/objects/" + encodeURIComponent(id)).then((data) => {
+      if (seq === S.assistantSeq && S.selected === id && S.mounted.assistant === handle) handle.update({ revision: revisionOf(data) });
+    }, () => null);
   }
   function openFeedback(target) {
     if (S.modules?.feedback?.status !== "ready") {
@@ -335,15 +402,47 @@
     $c("civic-editor").hidden = false;
     syncDrawerFlag();
     document.body.classList.add("civic-editor-open");
+    // R04 boots with its own GET /session; openObject before that answer shows the login form and
+    // gives up. A freshly mounted cabinet opens the object after that /session reply was applied.
+    const fresh = !S.mounted.editor;
+    const sessionApplied = fresh && objectId ? nextSessionReply(8000) : Promise.resolve();
     const handle = S.mounted.editor || mount("editor", $c("civic-editor-root"), {
-      map: currentMap(),
-      onPublished: (item) => {
-        S.mounted.map?.refresh?.();
-        if (item?.id) { S.selected = item.id; S.mounted.map?.selectObject?.(item.id); }
-      },
+      // A getter: a cabinet opened before the map loads is not left with map=null (R04 resolves it).
+      map: () => currentMap(),
+      onPublished: (item, info) => onEditorPublished(item, info),
     });
-    if (objectId && handle?.openObject) handle.openObject(objectId);
+    if (objectId && handle?.openObject) {
+      sessionApplied.then(async () => {
+        if (S.mounted.editor !== handle) return;
+        const opened = await handle.openObject(objectId);
+        // Still booting (slow /session): one more try once its reply is in.
+        if (opened === false && session.authenticated && S.mounted.editor === handle)
+          nextSessionReply(4000).then(() => { if (S.mounted.editor === handle) handle.openObject(objectId); });
+      });
+    }
     $c("civic-editor").querySelector(".civic-close")?.focus();
+  }
+  // Resolves after the next /session-family reply has been applied by everyone (macrotask later).
+  function nextSessionReply(timeoutMs) {
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = () => { if (done) return; done = true; sessionListeners.delete(listener); setTimeout(resolve, 0); };
+      const listener = () => finish();
+      sessionListeners.add(listener);
+      setTimeout(finish, timeoutMs);
+    });
+  }
+  // R04 calls onPublished(publicItem, {action}) for publish, an edit of a published record and archive.
+  // Residents are shown only what is public now: an archived (or not published) record is never
+  // selected as public; if it was open, its card is closed.
+  function onEditorPublished(item, info) {
+    S.mounted.map?.refresh?.();
+    refreshAssistantRevision();
+    const id = typeof item?.id === "string" ? item.id : null;
+    if (!id) return;
+    const isPublic = info?.action !== "archive" && item.publication === "published";
+    if (isPublic) { S.selected = id; S.mounted.map?.selectObject?.(id); }
+    else if (S.selected === id) { S.selected = null; S.mounted.map?.selectObject?.(null); }
   }
   // Resident messages (R06 mountModeration): own staff-only drawer, as proposed in R06's
   // r01_integration.patch. The button exists only for a signed-in editor; the server still decides.
@@ -380,8 +479,17 @@
     const open = ["civic-editor", "civic-moderation", "civic-scenarios"].some((id) => !$c(id).hidden);
     if (open) document.body.dataset.civicDrawer = "open"; else delete document.body.dataset.civicDrawer;
   }
+  // R03 answers a click on overlapping objects with its own chooser ("pick") without calling onSelect,
+  // so a click made for a tool can leave it open behind the drawer. When the tool ends, a pick view
+  // that nobody chose is closed (R03 interaction lock proposed in INTEGRATION.txt).
+  function clearToolPick() {
+    S.toolHintShown = false;
+    syncMapInteractive();
+    if (S.mounted.map?.getState?.().view === "pick" && !S.selected) S.mounted.map.selectObject?.(null);
+  }
   function closeEditor() {
     S.editorTool = false;
+    clearToolPick();
     destroyMounted("editor");
     $c("civic-editor").hidden = true;
     syncDrawerFlag();
@@ -393,13 +501,47 @@
     if (!$c("civic-moderation").hidden) closeModeration();
     $c("civic-scenarios").hidden = false;
     syncDrawerFlag();
+    syncMapInteractive();
     // R07 review: the shell's api.request already adds /api/civic/v1 -> empty apiPrefix.
-    mount("scenarios", $c("civic-scenarios-root"), { map: currentMap(), apiPrefix: "" });
+    mount("scenarios", $c("civic-scenarios-root"), { map: currentMap(), apiPrefix: "", api: scenarioApi() });
+    watchScenarioResult();
+  }
+  // R09 x R07 (round 13): R07 has no result callback, so the shell watches the requests it makes through
+  // the shell API. A successful server compare is explained by the assistant as scenario_id
+  // "result:<result_digest>" (the gateway keeps that server result; the browser sends no numbers).
+  // A new compare, or R07 clearing its result after the inputs changed, withdraws the old explanation.
+  function scenarioApi() {
+    return { ...api, request: async (method, path, body, options) => {
+      const compare = String(method).toUpperCase() === "POST" && /\/scenarios\/compare$/.test(path);
+      if (compare) explainScenario(null);
+      const data = await api.request(method, path, body, options);
+      if (compare && typeof data?.result_digest === "string" && /^[0-9a-f]{16,64}$/.test(data.result_digest)) explainScenario(data.result_digest);
+      return data;
+    } };
+  }
+  function explainScenario(digest) {
+    if (digest === S.scenarioDigest && S.mounted.scenarioAssistant) return;
+    S.scenarioDigest = digest || null;
+    destroyMounted("scenarioAssistant");
+    $c("civic-scenario-explain-root").replaceChildren();
+    const ready = !!digest && !!moduleFor("assistant") && S.modules?.assistant?.status === "ready" && !$c("civic-scenarios").hidden;
+    $c("civic-scenario-explain").hidden = !ready;
+    if (ready) mount("scenarioAssistant", $c("civic-scenario-explain-root"), { objectId: null, scenarioId: "result:" + digest });
+  }
+  function watchScenarioResult() {
+    S.scenarioObserver?.disconnect();
+    const out = $c("civic-scenarios-root").querySelector(".civic-r07-result");
+    if (!out || typeof MutationObserver !== "function") return;
+    S.scenarioObserver = new MutationObserver(() => { if (!out.childElementCount && S.scenarioDigest) explainScenario(null); });
+    S.scenarioObserver.observe(out, { childList: true });
   }
   function closeScenarios() {
+    S.scenarioObserver?.disconnect(); S.scenarioObserver = null;
+    explainScenario(null);
     destroyMounted("scenarios");
     $c("civic-scenarios-root").replaceChildren();
     $c("civic-scenarios").hidden = true;
+    clearToolPick();  // after hiding: the map is interactive again
     syncDrawerFlag();
   }
   function setSheet(stateName) {
@@ -417,7 +559,8 @@
   });
   $c("civic-staff-button").addEventListener("click", () => openEditor());
   $c("civic-scenarios-button").addEventListener("click", openScenarios);
-  $c("civic-sheet-handle").addEventListener("click", () => setSheet(S.sheet === "full" ? "half" : "full"));
+  // peek -> half -> full -> half: a lowered sheet comes back to its usual height first.
+  $c("civic-sheet-handle").addEventListener("click", () => setSheet(S.sheet === "half" ? "full" : "half"));
 
   function toastSafe(text) {
     if (typeof toast === "function") toast(text);
@@ -433,27 +576,132 @@
     if (typeof markers !== "undefined") for (const { el: marker } of markers) marker.style.display = visible ? "" : "none";
     if (!visible && typeof popup !== "undefined") popup?.remove();
   }
+  // The part of the map not covered by the top bar, navigation box, map tools, panel/sheet or an open
+  // drawer, as MapLibre padding. Measured from the live layout, so sheet size and box height count.
+  function freeArea() {
+    const m = currentMap();
+    const c = m.getContainer().getBoundingClientRect();
+    const pad = { top: 12, right: 12, bottom: 12, left: 12 };
+    const mobile = innerWidth < 761;
+    const shown = (el) => el && el.getClientRects().length && getComputedStyle(el).visibility !== "hidden" ? el.getBoundingClientRect() : null;
+    for (const el of [document.querySelector(".topbar"), root.querySelector(".civic-explore")]) {
+      const r = shown(el);
+      if (r && r.top < c.top + c.height / 2) pad.top = Math.max(pad.top, r.bottom - c.top + 12);
+    }
+    const tools = shown(document.querySelector(".map-tools"));
+    if (tools) pad.right = Math.max(pad.right, c.right - tools.left + 10);
+    const panel = shown($c("civic-panel"));
+    if (panel) {
+      if (mobile) pad.bottom = Math.max(pad.bottom, c.bottom - panel.top + 12);
+      else pad.left = Math.max(pad.left, panel.right - c.left + 20);
+    }
+    for (const id of ["civic-editor", "civic-moderation", "civic-scenarios"]) {
+      const r = shown($c(id));
+      if (!r) continue;
+      if (mobile) pad.bottom = Math.max(pad.bottom, c.bottom - r.top + 12);
+      else pad.right = Math.max(pad.right, c.right - r.left + 16);
+    }
+    // Never ask for more than the map has: keep at least a 120px free window each way.
+    const fit = (a, b, size) => { const max = Math.max(0, size - 120); if (pad[a] + pad[b] > max) { const k = max / (pad[a] + pad[b]); pad[a] = Math.floor(pad[a] * k); pad[b] = Math.floor(pad[b] * k); } };
+    fit("left", "right", c.width); fit("top", "bottom", c.height);
+    return pad;
+  }
+  // Pitch for camera moves started by the shell: the intended 3D state, not a mid-animation value.
+  const intendedPitch = () => (typeof state !== "undefined" && state?.threeD ? 45 : 0);
+  const intendedBearing = () => (typeof state !== "undefined" && state?.threeD ? -14 : 0);
+
+  // R03's fitAll frames with its own padding (it does not know the navigation box) and the current,
+  // possibly mid-animation pitch. Until R03 accepts a padding callback (see INTEGRATION.txt), its one
+  // synchronous fitBounds call gets the shell's free area and intended tilt; the map is restored after.
+  function fitAllObjects() {
+    const m = currentMap(), r03 = S.mounted.map;
+    if (!m || typeof r03?.fitAll !== "function") return false;
+    const original = m.fitBounds;
+    m.fitBounds = function (bounds, options) {
+      const pitch = intendedPitch();
+      return original.call(this, bounds, Object.assign({}, options, { padding: freeArea(), pitch, bearing: pitch ? intendedBearing() : 0 }));
+    };
+    try { return r03.fitAll(); } finally { m.fitBounds = original; }
+  }
+  // After R03's own selection camera settles, the selected place must not sit under the shell's
+  // overlays (navigation box, sheet, drawers); if it does, pan it into the free area.
+  function keepVisible(lngLat) {
+    const m = currentMap();
+    if (!m || !lngLat) return;
+    const seq = ++S.keepSeq;
+    const run = () => {
+      if (seq !== S.keepSeq || m.isMoving()) return;
+      const pad = freeArea(), c = m.getContainer().getBoundingClientRect();
+      let p;
+      try { p = m.project(lngLat); } catch { return; }
+      const free = { l: pad.left, t: pad.top, r: c.width - pad.right, b: c.height - pad.bottom };
+      if (p.x >= free.l && p.x <= free.r && p.y >= free.t && p.y <= free.b) return;
+      m.panBy([p.x - (free.l + free.r) / 2, p.y - (free.t + free.b) / 2], { duration: motionSafe() ? 350 : 0 });
+    };
+    m.once("moveend", () => setTimeout(run, 60));
+    setTimeout(run, 1600);  // R03 may not move the camera at all
+  }
+
+  // The navigation box names what the camera shows; an open record overrides it until the card closes.
+  function showView(text, kind) {
+    S.view = { text, kind };
+    if (!S.selected) S.mounted.explore?.setView?.(text, kind);
+  }
   function civicCamera() {
     const m = currentMap();
     if (!m) return;
-    const mobile = innerWidth < 761;
-    const padding = mobile ? { top: 90, left: 20, right: 60, bottom: Math.round(innerHeight * 0.48) }
-      : { top: 120, left: 470, right: 90, bottom: 60 };
+    showView("Обзор: вся Астана", "city");
+    const padding = freeArea();
     try {
       const bounds = typeof cityBounds === "function" ? cityBounds() : null;
-      if (bounds) m.fitBounds(bounds, { padding, maxZoom: 12.2, pitch: state?.threeD ? 45 : 0,
-        bearing: state?.threeD ? -14 : 0, duration: S.started ? 700 * (motionSafe() ? 1 : 0) : 0 });
+      if (bounds) m.fitBounds(bounds, { padding, maxZoom: 12.2, pitch: intendedPitch(),
+        bearing: intendedBearing(), duration: S.started ? 700 * (motionSafe() ? 1 : 0) : 0 });
     } catch (error) { console.warn("civic camera", error); }
   }
 
+  // The map's status notice (map.js writes it, e.g. "basemap unavailable") lives inside the navigation
+  // box while the city mode is on, so the box can never cover it; it goes back for the other modes.
+  const mapStatus = document.getElementById("map-status");
+  const mapStatusHome = document.createComment("map-status home");
+  mapStatus?.after(mapStatusHome);
+  function placeMapStatus(inside) {
+    if (!mapStatus) return;
+    const slot = inside ? S.mounted.explore?.noticeSlot : null;
+    if (slot) { if (mapStatus.parentNode !== slot) slot.append(mapStatus); }
+    else if (mapStatus.parentNode !== mapStatusHome.parentNode) mapStatusHome.before(mapStatus);
+  }
+
   function mountExplore() {
-    if (S.mounted.explore || !currentMap() || !window.CivicExplore) return;
+    if (S.mounted.explore) { placeMapStatus(true); return; }
+    if (!currentMap() || !window.CivicExplore) return;
+    // After a district/street is framed, say how many published records are in frame; zero in frame
+    // is stated as "none published here", never as "no works here".
+    const reportFrame = (label, kind) => {
+      const m = currentMap(), seq = ++S.frameSeq;
+      m?.once("moveend", () => setTimeout(() => {
+        if (seq !== S.frameSeq || S.view?.kind !== kind) return;
+        const layers = (S.mounted.map?.layerIds?.() || []).filter((id) => m.getLayer(id));
+        let n = 0;
+        try { n = new Set(m.queryRenderedFeatures({ layers }).map((f) => f.properties?.cid).filter(Boolean)).size; } catch { n = 0; }
+        if (S.recordCount === 0) showView(label + " · реестр пуст", kind);
+        else showView(label + (n ? ` · записей в кадре: ${n}` : " · в кадре опубликованных записей нет (это не значит, что работ нет)"), kind);
+      }, 120));
+    };
     const frame = (b, maxZoom) => {
-      const mobile = innerWidth < 761;
-      const padding = mobile ? { top: 185, left: 24, right: 60, bottom: Math.round(innerHeight * 0.48) }
-        : { top: 220, left: 470, right: 90, bottom: 60 };
-      currentMap().fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding, maxZoom,
-        pitch: currentMap().getPitch(), bearing: currentMap().getBearing(), duration: motionSafe() ? 800 : 0 });
+      // Measure after the navigation box has updated its status line (its height changes).
+      requestAnimationFrame(() => {
+        const m = currentMap();
+        if (!m || !b) return;
+        const pitch = intendedPitch();
+        m.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freeArea(), maxZoom,
+          pitch, bearing: pitch ? m.getBearing() || intendedBearing() : 0, duration: motionSafe() ? 800 : 0 });
+      });
+    };
+    // Phones: exploring the map lowers the sheet to its peek height first, otherwise the free map
+    // window between the navigation box and a half sheet is ~120px; framing waits for the sheet.
+    const roomy = (fn) => {
+      if (innerWidth < 761 && S.sheet !== "peek") { setSheet("peek"); setTimeout(fn, motionSafe() ? 300 : 0); }
+      else fn();
     };
     S.mounted.explore = window.CivicExplore.mount({ root, map: currentMap(),
       districts: typeof geojson !== "undefined" ? geojson : null,
@@ -462,20 +710,29 @@
         S.mounted.map?.setFilters?.({ area: !!feature });
         if (!feature) { civicCamera(); return; }
         const b = window.CivicExplore.bounds(feature.geometry);
-        frame(b, 13.7);
+        const label = `Район ${feature.properties.name} (граница OSM)`;
+        showView(label, "district");
+        reportFrame(label, "district");
+        roomy(() => frame(b, 13.7));
       },
       onStreet: (street) => {
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: true });
-        frame(street.bbox, 16);
+        showView(`Улица: ${street.name}`, "street");
+        reportFrame(`Улица: ${street.name}`, "street");
+        roomy(() => frame(street.bbox, 16));
       },
       onObjects: () => {
         S.mounted.explore?.reset?.();
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: false });
-        if (!S.mounted.map?.fitAll?.()) toastSafe("Нет объектов с координатами для выбранных фильтров.");
+        roomy(() => {
+          if (fitAllObjects()) showView("Все опубликованные записи на карте", "objects");
+          else toastSafe(S.recordCount === 0 ? "В реестре пока нет опубликованных записей." : "Нет объектов с координатами для выбранных фильтров.");
+        });
       },
     });
+    placeMapStatus(true);
   }
 
   function syncModeButtons() {
@@ -498,8 +755,11 @@
     void loadModules().then(() => mountPublic());
   }
   function deactivateCivic() {
+    placeMapStatus(false);  // before the navigation box (its current parent) is destroyed
     for (const name of Object.keys(S.mounted)) destroyMounted(name);
-    for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-moderation-root", "civic-scenarios-root"])
+    S.scenarioObserver?.disconnect(); S.scenarioObserver = null; S.scenarioDigest = null;
+    $c("civic-scenario-explain").hidden = true;
+    for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-moderation-root", "civic-scenarios-root", "civic-scenario-explain-root"])
       $c(id).replaceChildren();
     $c("civic-feedback-box").hidden = $c("civic-assistant-box").hidden = true;
     $c("civic-editor").hidden = $c("civic-scenarios").hidden = $c("civic-moderation").hidden = true;
@@ -544,7 +804,7 @@
     setTimeout(() => { if (!window.GOVTECH?.active && S.mode === "school") { S.mode = "training"; syncModeButtons(); } }, 0);
   });
   // R04 announces its map drawing tool; while it is active, Escape cancels the tool, not the cabinet.
-  root.addEventListener("civic-editor:tool", (event) => { S.editorTool = !!event.detail?.active; });
+  root.addEventListener("civic-editor:tool", (event) => { S.editorTool = !!event.detail?.active; if (S.editorTool) syncMapInteractive(); else clearToolPick(); });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || S.mode !== "civic") return;
     // A module that handled Escape itself (confirmation, tool, menu) calls preventDefault.
@@ -576,6 +836,7 @@
   function onMapReady() {
     S.mapState = "ready";
     if (S.mode === "civic") { trainingLayers(false); mountExplore(); civicCamera(); remountAll(); }
+    S.mounted.editor?.setMap?.(currentMap());  // a cabinet opened before the map gets it now
     S.started = true;
   }
   function onMapUnavailable() {
@@ -590,6 +851,7 @@
     get active() { return S.mode === "civic"; },
     get mode() { return S.mode; },
     get selected() { return S.selected; },
+    get mapView() { return S.mounted.map?.getState?.().view || null; },  // R03 view: list | card | pick (read-only)
     get modules() { return S.modules ? JSON.parse(JSON.stringify(S.modules)) : null; },
     isFallback,
     setMode, openEditor, closeEditor, openFeedback, closeFeedback, onMapReady, onMapUnavailable,

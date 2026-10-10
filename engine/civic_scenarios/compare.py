@@ -20,7 +20,7 @@ from .payload import SCHEMA, active_closed, utc_iso, validate_payload
 from .routing import dijkstra, path_to, reachable
 
 RESULT_SCHEMA = "civic-scenario-result-v1"
-ENGINE = {"name": "engine.civic_scenarios", "version": "1.0.0", "policy": "strict-allowed-only"}
+ENGINE = {"name": "engine.civic_scenarios", "version": "1.1.0", "policy": "strict-allowed-only"}
 STRICT = ("allowed",)
 EXPLORATORY = ("allowed", "unknown")
 
@@ -41,13 +41,13 @@ LIMITATIONS = [
 
 def _route_set(pg, origins, dests, closed):
     """Маршруты для всех пар при заданном множестве закрытых рёбер."""
-    strict = pg.adjacency(STRICT, closed)
-    explo = pg.adjacency(EXPLORATORY, closed)
-    explo_rev = pg.adjacency(EXPLORATORY, closed, reverse=True) if pg.boundary else None
+    # Базовая смежность строится один раз на граф; закрытые рёбра пропускаются в поиске (blocked).
+    strict = pg.adjacency(STRICT, frozenset())
+    explo = explo_rev = None
     rows = []
     back_cache = {}
     for o in origins:
-        dist, pred, count = dijkstra(strict, o)
+        dist, pred, count = dijkstra(strict, o, closed, targets=dests)
         edist = None
         fwd_boundary = None
         for d in dests:
@@ -57,8 +57,10 @@ def _route_set(pg, origins, dests, closed):
                 row.update(status="ok", length_m=dist[d] / 1000, edge_ids=edges, node_ids=nodes,
                            equal_cost_alternatives=count[d] > 1, reason=None)
             else:
+                if explo is None:
+                    explo = pg.adjacency(EXPLORATORY, frozenset())
                 if edist is None:
-                    edist = dijkstra(explo, o)[0]
+                    edist = dijkstra(explo, o, closed, targets=dests)[0]
                 row.update(status=None, length_m=None, edge_ids=[], node_ids=[], equal_cost_alternatives=False)
                 if d in edist:
                     row.update(status="unknown", reason="path_only_via_unknown_access",
@@ -67,10 +69,12 @@ def _route_set(pg, origins, dests, closed):
                     may_outside = False
                     if pg.boundary:
                         if fwd_boundary is None:
-                            fwd_boundary = bool(reachable(explo, o) & pg.boundary)
+                            fwd_boundary = bool(reachable(explo, o, closed) & pg.boundary)
                         if fwd_boundary:
+                            if explo_rev is None:
+                                explo_rev = pg.adjacency(EXPLORATORY, frozenset(), reverse=True)
                             if d not in back_cache:
-                                back_cache[d] = bool(reachable(explo_rev, d) & pg.boundary)
+                                back_cache[d] = bool(reachable(explo_rev, d, closed) & pg.boundary)
                             may_outside = back_cache[d]
                     if may_outside:
                         row.update(status="unknown", reason="path_may_exist_outside_graph")
@@ -165,11 +169,17 @@ def compare(payload, graph):
         plan_rows[p["id"]] = rows
         pairs, summary = _diff(base_rows, rows, closed)
         pw = _closure_warnings(pg, closed)
+        base_used = {e for r in base_rows if r["status"] == "ok" for e in r["edge_ids"]}
+        on_base = sorted(closed & base_used)
         if not closed:
             pw.append({"code": "no_active_closures", "message": "в момент analysis_at ни одно перекрытие плана не действует"})
+        elif not on_base:
+            pw.append({"code": "closure_not_on_baseline_routes",
+                       "message": "закрытые участки не лежат на базовых путях выбранных пар — длины не меняются"})
         result_plans.append({
             "id": p["id"],
             "active_closed_edge_ids": sorted(closed),
+            "closed_on_baseline_routes": on_base,
             "inactive_closures": sorted(inactive, key=lambda c: (c["start_at"], c["end_at"], c["edge_ids"])),
             "routes": rows,
             "status_summary": _status_counts(rows),
@@ -179,7 +189,13 @@ def compare(payload, graph):
     a_vs_b = None
     if "A" in plan_rows and "B" in plan_rows:
         pairs, summary = _diff(plan_rows["A"], plan_rows["B"])
-        a_vs_b = {"from_plan": "A", "to_plan": "B", "pairs": pairs, "summary": summary}
+        closed_sets = {p["id"]: set(p["active_closed_edge_ids"]) for p in result_plans}
+        identical = closed_sets["A"] == closed_sets["B"]
+        a_vs_b = {"from_plan": "A", "to_plan": "B", "pairs": pairs, "summary": summary,
+                  "identical_active_closures": identical}
+        if identical:
+            warnings.append({"code": "plans_identical_at_analysis_at",
+                             "message": "в момент analysis_at у планов A и B закрыты одни и те же участки — результаты совпадают"})
 
     unknown_pairs = sum(1 for r in base_rows if r["status"] == "unknown")
     if unknown_pairs:

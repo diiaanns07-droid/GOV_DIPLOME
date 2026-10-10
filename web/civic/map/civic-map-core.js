@@ -356,6 +356,43 @@
     return { items, excluded };
   }
 
+  // ---------- provenance ----------
+  // A source supports a field when one of its `fields` paths is that field, a parent of it
+  // ("responsible" covers "responsible.organization") or a child of it.
+  function sourceFor(item, path) {
+    const refs = (item && item.sourceRefs) || [];
+    return refs.find((r) => r.fields.some((f) => f === path || path.startsWith(f + ".") || f.startsWith(path + "."))) || null;
+  }
+  // Money is shown only with a source: the ref named by budget.source_id or one covering the amount.
+  function costView(item) {
+    const b = item.budget;
+    if (b.state !== "ok") return { show: false, state: b.state, text: b.text };
+    const src = (b.sourceId && item.sourceRefs.find((r) => r.id === b.sourceId)) || sourceFor(item, "budget.amount_kzt");
+    if (!src) return { show: false, state: "unsourced", text: "сумма в записи есть, но источник не указан — не показываем" };
+    return { show: true, state: "ok", text: b.text, approx: b.approx, basisLabel: b.basisLabel, source: src };
+  }
+  // The responsible organisation/contact is shown only when a source covers it.
+  function responsibleView(item) {
+    const r = item.responsible || {};
+    if (!r.organization && !r.public_contact) return { show: false, state: "missing" };
+    const orgSrc = r.organization ? sourceFor(item, "responsible.organization") : null;
+    const contactSrc = r.public_contact ? sourceFor(item, "responsible.public_contact") : null;
+    if (!orgSrc && !contactSrc) return { show: false, state: "unsourced" };
+    return { show: true, state: "ok", organization: orgSrc ? r.organization : null, contact: contactSrc ? r.public_contact : null, source: orgSrc || contactSrc };
+  }
+  // One plain-language line about where the record comes from.
+  function provenanceLine(item) {
+    const refs = item.sourceRefs || [];
+    if (!refs.length) {
+      if (item.evidence === "synthetic") return { state: "demo", text: "Демонстрационная запись — источника нет." };
+      return { state: "none", text: "Источник не указан — сведения нельзя проверить по документу." };
+    }
+    // The newest dated source leads (dates are YYYY-MM-DD strings); undated ones only when nothing is dated.
+    const r = refs.reduce((a, x) => (x.published_on && (!a.published_on || x.published_on > a.published_on) ? x : a), refs[0]);
+    const name = r.publisher || r.host || "источник без названия";
+    return { state: "ok", ref: r, text: name + (r.published_on ? ", " + formatDay(r.published_on) : "") + (refs.length > 1 ? " и ещё " + (refs.length - 1) : "") };
+  }
+
   // ---------- schedule semantics ----------
   // Planned interval only: [planned_start, current_planned_end ?? original_planned_end].
   // Planned interval exactly as civic-v1 §2 and R02 define it: [planned_start, current_planned_end].
@@ -504,8 +541,23 @@
     }
     return { from: null, to: null };
   }
+  // evidence: which records by provenance — all | sourced (at least one source shown on the card) | demo
+  // (synthetic) | unsourced (no source). Grouped by the sources the card lists, so the filter never
+  // contradicts the card's «Откуда сведения» (R02 lets a hypothesis carry a source).
+  // hidePast: hide plans that never started (planned/unknown) whose planned end passed; overdue works in
+  // progress stay visible — a delay is what the resident needs to see (see pastPlan()).
+  const EVIDENCE_FILTERS = { all: "Все записи", sourced: "С источником", demo: "Демонстрационные", unsourced: "Без источника" };
+  function evidenceGroup(item) {
+    if (item.evidence === "synthetic") return "demo";
+    return Array.isArray(item.sourceRefs) && item.sourceRefs.length ? "sourced" : "unsourced";
+  }
+  function pastPlan(item, today) {
+    if (item.status !== "planned" && item.status !== "unknown") return false;
+    const st = staleness(item, today);
+    return !!st && st.kind === "plan_end_passed";   // an old start with no end has no passed deadline
+  }
   function defaultFilters() {
-    return { kinds: [], statuses: [], period: "all", from: null, to: null, area: false };
+    return { kinds: [], statuses: [], period: "all", from: null, to: null, area: false, evidence: "all", hidePast: false };
   }
   function sanitizeFilters(f) {
     const d = defaultFilters();
@@ -519,11 +571,13 @@
       from: parseDay(f.from) ? f.from : null,
       to: parseDay(f.to) ? f.to : null,
       area: f.area === true,
+      evidence: enumOf(EVIDENCE_FILTERS, f.evidence, "all"),
+      hidePast: f.hidePast === true,
     };
   }
   function isDefaultFilters(f) {
     const s = sanitizeFilters(f);
-    return !s.kinds.length && !s.statuses.length && s.period === "all" && !s.area;
+    return !s.kinds.length && !s.statuses.length && s.period === "all" && !s.area && s.evidence === "all" && !s.hidePast;
   }
   // Returns visible items plus honest counters for what was left out and why. Every
   // counter only counts records that pass all the other active filters (ctx.match is the
@@ -534,19 +588,28 @@
     const match = typeof c.match === "function" ? c.match : null;
     const range = periodRange(f.period, c.today, { from: f.from, to: f.to });
     const shown = [];
-    const counts = { total: items.length, shown: 0, undated: 0, partial: 0, outsideArea: 0, noGeometry: 0, mappedOut: 0, byKind: {} };
+    const counts = { total: items.length, shown: 0, undated: 0, partial: 0, outsideArea: 0, noGeometry: 0, mappedOut: 0, past: 0, byKind: {}, byStatus: {}, byEvidence: {} };
     for (const it of items) {
-      if (f.statuses.length && !f.statuses.includes(it.status)) continue;
       if (match && !match(it)) continue;
+      const eg = evidenceGroup(it);
+      const kindOk = !f.kinds.length || f.kinds.includes(it.kind);
+      const statusOk = !f.statuses.length || f.statuses.includes(it.status);
+      const evOk = f.evidence === "all" || f.evidence === eg;
+      const pastOk = !f.hidePast || !pastPlan(it, c.today);
       let areaOut = null;
       if (f.area && c.viewBox) areaOut = !it.bbox ? "noGeometry" : !bboxIntersects(it.bbox, c.viewBox) ? "outsideArea" : null;
       const pm = matchPeriod(it, range.from, range.to);
-      // Facet counts: everything except the kind filter, so a chip shows what choosing it gives.
-      if (pm.match && !areaOut) counts.byKind[it.kind] = (counts.byKind[it.kind] || 0) + 1;
-      if (f.kinds.length && !f.kinds.includes(it.kind)) continue;
-      // Period first: an area counter must not promise records the period would hide anyway.
-      if (!pm.match) { if (pm.undated && !areaOut) counts.undated++; continue; }
-      if (areaOut) { counts[areaOut]++; continue; }
+      // Facets: each counts what choosing that value would give, i.e. all other filters applied.
+      const rest = pm.match && !areaOut && pastOk;
+      if (rest && statusOk && evOk) counts.byKind[it.kind] = (counts.byKind[it.kind] || 0) + 1;
+      if (rest && kindOk && evOk) counts.byStatus[it.status] = (counts.byStatus[it.status] || 0) + 1;
+      if (rest && kindOk && statusOk) counts.byEvidence[eg] = (counts.byEvidence[eg] || 0) + 1;
+      if (!kindOk || !statusOk || !evOk) continue;
+      // Each counter promises what its «show» action yields, so it only counts records every other
+      // filter lets through: undated (period) needs area and past, area needs past, past needs both.
+      if (!pm.match) { if (pm.undated && !areaOut && pastOk) counts.undated++; continue; }
+      if (areaOut) { if (pastOk) counts[areaOut]++; continue; }
+      if (!pastOk) { counts.past++; continue; }
       if (pm.partial) counts.partial++;
       if (!it.bbox) counts.mappedOut++;
       shown.push({ item: it, partial: pm.partial, missing: pm.missing });
@@ -654,9 +717,10 @@
     kindInfo: (k) => KINDS[k] || OTHER_KIND,
     evidenceInfo: (e) => EVIDENCE[e] || EVIDENCE_UNKNOWN,
     parseDay, addDays, dayDiff, localDay, formatDay, parseTimestamp, formatTimestamp, timestampDay, formatNumber,
+    sourceFor, costView, responsibleView, provenanceLine,
     budgetInfo, safeUrl, urlHost, normalizeGeometry, bboxOf, bboxIntersects, normalizeObject, normalizeList,
     plannedInterval, matchPeriod, scheduleShift, staleness, plural, daysText, normalizeHistory, fieldLabel,
-    shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters,
+    shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters, EVIDENCE_FILTERS, evidenceGroup, pastPlan,
     applyFilters, sortItems, featureCollection, createSequence, unwrap, errorInfo, contrast,
   };
 });

@@ -1,0 +1,15 @@
+{
+  "schema": "r05-r13-config-v1",
+  "city": "astana",
+  "as_of": "2026-10-07",
+  "status_max_age_days": 45,
+  "min_page_chars": 400,
+  "package_source": "r05-astana-r13-verified",
+  "package_version": "r05-r13-2026-10-07",
+  "base_sources": "../round12-verified/sources.json",
+  "base_candidates": "../round12-verified/candidates.json",
+  "osm_snapshot": "data/civic/astana/osm-walking/overpass.json.gz",
+  "osm_snapshot_at": "2026-05-06T03:25:00Z",
+  "city_bbox": [71.2079, 50.9206, 71.7953, 51.3612],
+  "notes": "as_of — дата среза; сборка не читает часы (кроме отметок attach/review по умолчанию). Реестр и кандидаты раунда 12 только читаются. OSM-снимок майский, не наблюдение октября."
+}
