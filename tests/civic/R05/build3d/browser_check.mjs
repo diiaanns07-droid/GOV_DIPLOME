@@ -952,6 +952,31 @@ await check("kk_no_russian_street_names_in_card_and_hint", async () => {
   assert(card.includes("Жанында: " + expected) && hint.includes(expected) && !/улица|проспект/.test(card + hint), JSON.stringify({ noKk, card, hint }));
   return { status: "PASS", detail: { street_ru: noKk, card: (card.match(/Жанында:[^\n]*/) || [""])[0], hint: hint.trim() } };
 });
+await check("rate_limit_429_says_too_many_without_retry_ru_kk", async () => {
+  // R15 U1: ответ 429 (лимит шлюза R01 по адресу) — не «Проверьте связь…» и без «Повторить» (повтор снова упрётся в лимит).
+  const out = {};
+  for (const lang of ["ru", "kk"]) {
+    const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+    const p = await ctx.newPage();
+    p.on("pageerror", (e) => pageErrors.push("429: " + e.message));
+    await p.route("**/api/civic/v2/proposals**", (route) => {
+      const req = route.request();
+      if (req.method() === "GET") return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ items: FIXTURE.proposals }) });
+      return route.fulfill({ status: 429, contentType: "application/json", headers: { "Retry-After": "60" },
+        body: JSON.stringify({ error: "too_many_requests", message: "Слишком много запросов" }) });
+    });
+    await p.goto(BASE + `?store=api&lang=${lang}&` + MAIN_Q.slice(1));
+    await waitReady(p);
+    await p.evaluate((id) => __b3d.select(id), FIXTURE.proposals[0].id);
+    await p.click("[data-action=vote-up]");
+    await p.waitForSelector(".bk-toast--error", { timeout: 10000 });
+    out[lang] = await p.evaluate(() => ({ text: document.querySelector(".bk-toast--error").innerText.trim(), retry: !!document.querySelector(".bk-toast [data-action^=retry]") }));
+    if (SHOTS && lang === "kk") await p.screenshot({ path: path.join(OUT, "screens", "toast_429_1366_kk.png") });
+    await ctx.close();
+  }
+  assert(/Слишком много/.test(out.ru.text) && /тым көп/.test(out.kk.text) && !out.ru.retry && !out.kk.retry && !/связ|Байланыс/.test(out.ru.text + out.kk.text), JSON.stringify(out));
+  return { status: "PASS", detail: out };
+});
 await check("r01_map_getter_waits_for_map", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   const r = await p.evaluate(async () => {

@@ -179,6 +179,8 @@
       "proposal.status.rejected": "Отклонено",
       "proposal.voting_closed": "Голосование по этому проекту закрыто",
       "proposal.need_staff": "Войдите как сотрудник акимата",
+      // Общий ключ из предложения R15 (U1) для ответа 429 — пока его нет в словаре R11, текст отсюда.
+      "common.error.too_many": "Слишком много действий подряд. Повторите через минуту.",
     },
     kk: {
       "proposal.catalog.title": "Не салайық?",
@@ -209,6 +211,7 @@
       "proposal.status.rejected": "Қабылданбады",
       "proposal.voting_closed": "Бұл жоба бойынша дауыс беру аяқталды",
       "proposal.need_staff": "Әкімдік қызметкері ретінде кіріңіз",
+      "common.error.too_many": "Қатарынан тым көп әрекет жасалды. Бір минуттан кейін қайталаңыз.",
     },
   };
 
@@ -794,6 +797,10 @@
     }
 
     // Создавать и снимать проекты может только вошедший сотрудник (шлюз R01/R06: 401, 403, csrf_failed).
+    // 429 — лимит с одного адреса (шлюз R01, R15 S02/S08): это не сбой связи, «Повторить» сразу снова упрётся в лимит.
+    function isTooMany(err) {
+      return !!err && (err.status === 429 || err.code === "too_many_requests" || err.code === "rate_limited");
+    }
     function isStaffError(err) {
       return !!err && (err.status === 401 || err.status === 403 || /unauth|csrf|forbidden|staff/.test(String(err.code || "")));
     }
@@ -2254,6 +2261,7 @@
           console.error("[build3d] не сохранилось", err);
           animateRemove(tempId);
           if (isStaffError(err)) return toast(t("proposal.need_staff"), { error: true });
+          if (isTooMany(err)) return toast(t("common.error.too_many"), { error: true });
           toast(t(err && err.code === "limit" ? "proposal.limit" : "build3d.save_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -2303,9 +2311,10 @@
             });
           }
         },
-        function () {
+        function (err) {
           S.cardBusy = null;
           render();
+          if (isTooMany(err)) return toast(t("common.error.too_many"), { error: true });
           toast(t("build3d.save_failed"), {
             error: true,
             action: t("common.action.retry"),
@@ -2340,6 +2349,7 @@
             toast(t("proposal.voting_closed"), { error: true });
             return loadProposals();
           }
+          if (isTooMany(err)) return toast(t("common.error.too_many"), { error: true });
           toast(t("build3d.vote_failed"), {
             error: true,
             action: t("common.action.retry"),
