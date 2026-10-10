@@ -7,7 +7,9 @@
 - неверный ввод (координаты вне Астаны, неизвестная категория, голос 2) -> 400 до вызова модуля;
 - ошибки модуля превращаются в понятные ответы, сервер не падает;
 - маршруты сотрудника требуют сессию R02 (как staff-маршруты v1);
-- настоящий HTTP: Host/Origin, PUT только в v2, 404/405, размер тела.
+- настоящий HTTP: Host/Origin, PUT только в v2, 404/405, размер тела;
+- B1: обработчики ролей R07/R08 (handle_get) и сервис жалоб R09 (конверт ok/data) подключены как есть;
+  связка R09 -> тепловая карта R07 -> «Картина дня» R08 на настоящих модулях.
 """
 
 from __future__ import annotations
@@ -46,11 +48,20 @@ ROUTE_SAMPLES = [
     ("POST", "/classify", "", {"text": "яма"}),
     ("POST", "/similar", "", {"text": "яма"}),
     ("GET", "/targets", "lon=71.41&lat=51.11", None),
-    ("POST", "/complaints", "", {"text": "яма"}),
+    ("GET", "/categories", "", None),
     ("GET", "/complaints", "", None),
+    ("POST", "/complaints", "", {"text": "яма"}),
+    ("GET", "/complaints/mine", "", None),
+    ("GET", "/complaints/events", "", None),
+    ("GET", "/complaints/summary", "", None),
+    ("GET", "/complaints/place", "lon=71.41&lat=51.11", None),
+    ("GET", "/complaints/c-1", "", None),
     ("POST", "/complaints/c-1/metoo", "", {"device_id": "device-123"}),
     ("POST", "/complaints/c-1/status", "", {"status": "fixed"}),
+    ("POST", "/complaints/c-1/duplicate", "", {"of": "c-2"}),
     ("GET", "/heat", "", None),
+    ("GET", "/heat/meta", "", None),
+    ("GET", "/heat/target", "kind=object&id=osm-node-1", None),
     ("GET", "/akim/summary", "", None),
     ("GET", "/proposals", "", None),
     ("POST", "/proposals", "", {"kind": "park"}),
@@ -83,9 +94,10 @@ def test_real_import_of_absent_packages_is_not_ready():
 
 
 def test_modules_route_lists_each_route_with_role():
-    status, data = call(gw({"ui.civic_heat": fake_module(heat=lambda **kw: {"items": []})}), "GET", "/modules")
+    status, data = call(gw({"ui.civic_heat.api": fake_module(handle_get=lambda path, query: (200, {"items": []}))}),
+                        "GET", "/modules")
     assert status == 200
-    assert data["modules"]["heat"] == {"role": "R07", "module": "ui.civic_heat", "function": "heat",
+    assert data["modules"]["heat"] == {"role": "R07", "module": "ui.civic_heat.api", "function": "handle_get",
                                        "status": "ready"}
     assert data["modules"]["classify"]["status"] == "module_not_ready"
 
@@ -98,7 +110,7 @@ def test_module_without_the_function_is_not_ready():
 
 def test_broken_module_is_reported_and_app_keeps_working(monkeypatch):
     def broken_import(name):
-        if name == "ui.civic_heat":
+        if name.startswith("ui.civic_heat"):
             raise ImportError("broken dependency inside the module")
         raise ModuleNotFoundError(f"No module named '{name}'", name=name)
 
@@ -143,45 +155,105 @@ def test_targets_query_is_parsed_to_numbers():
     assert seen == {"lon": 71.4148, "lat": 51.1131, "category": "transport"}
 
 
-def test_heat_filters_are_parsed():
-    seen = {}
-
-    def heat(bbox=None, days=None, category=None, zoom=None):
-        seen.update(bbox=bbox, days=days, category=category, zoom=zoom)
-        return {"generated_at": "x", "items": []}
-
-    module = fake_module(heat=heat)
-    status, _ = call(gw({"ui.civic_heat": module}), "GET", "/heat",
-                     "bbox=71.3,51.0,71.6,51.2&days=30&category=roads&zoom=14.5")
-    assert status == 200
-    assert seen == {"bbox": (71.3, 51.0, 71.6, 51.2), "days": 30, "category": "roads", "zoom": 14.5}
-
-
 def test_context_and_principal_only_for_functions_that_declare_them():
     seen = {}
 
-    def create_complaint(body, context=None):
-        seen["body"], seen["context"] = body, context
-        return 201, {"id": "c-1", "status": "new"}
+    def list_objects(bbox=None, context=None):
+        seen["bbox"], seen["context"] = bbox, context
+        return 201, {"items": []}
 
-    status, data = call(gw({"ui.civic_feedback.v2": fake_module(create_complaint=create_complaint)}),
-                        "POST", "/complaints", "", {"text": "Яма у остановки", "point": NURA, "category": "roads"})
-    assert status == 201 and data["id"] == "c-1"
-    assert seen["body"]["text"] == "Яма у остановки" and seen["context"] is CTX
+    status, data = call(gw({"ui.civic_store.v2": fake_module(list_objects=list_objects)}), "GET", "/objects", "", None)
+    assert status == 201 and data == {"items": []}
+    assert seen == {"bbox": None, "context": CTX}
 
 
 def test_function_with_var_kwargs_also_gets_context_and_principal():
     seen = {}
-    status, _ = call(gw({"ui.civic_akim": fake_module(summary=lambda **kw: seen.update(kw) or {"topics": []})}),
-                     "GET", "/akim/summary", "date=2026-10-11&district=nura")
-    assert status == 200 and seen["date"] == "2026-10-11" and seen["district"] == "nura"
+    status, _ = call(gw({"ui.civic_store.v2": fake_module(list_proposals=lambda **kw: seen.update(kw) or {"items": []})}),
+                     "GET", "/proposals", "bbox=71.3,51.0,71.6,51.2")
+    assert status == 200 and seen["bbox"] == (71.3, 51.0, 71.6, 51.2)
     assert seen["context"] is CTX and seen["principal"] is None
 
 
 def test_package_level_function_is_found_when_v2_submodule_is_absent():
-    module = fake_module(list_complaints=lambda bbox=None, since=None: {"items": [], "bbox": bbox})
-    status, data = call(gw({"ui.civic_feedback": module}), "GET", "/complaints", "bbox=71.3,51.0,71.6,51.2")
+    module = fake_module(list_proposals=lambda bbox=None: {"items": [], "bbox": bbox})
+    status, data = call(gw({"ui.civic_store": module}), "GET", "/proposals", "bbox=71.3,51.0,71.6,51.2")
     assert status == 200 and tuple(data["bbox"]) == (71.3, 51.0, 71.6, 51.2)
+
+
+# --- B1: обработчики ролей как есть ------------------------------------------------
+
+def test_raw_role_handler_gets_full_path_and_parsed_query():
+    seen = {}
+
+    def handle_get(path, query):
+        seen.update(path=path, query=query)
+        return 200, {"items": [], "demo": True}
+
+    status, data = call(gw({"ui.civic_heat.api": fake_module(handle_get=handle_get)}), "GET", "/heat/target",
+                        "kind=object&id=osm-node-1&days=7")
+    assert status == 200 and data == {"items": [], "demo": True}
+    assert seen == {"path": "/api/civic/v2/heat/target", "query": {"kind": ["object"], "id": ["osm-node-1"], "days": ["7"]}}
+
+
+@pytest.mark.parametrize("result,status,code", [((400, {"error": "bad_request", "field": "days"}), 400, "bad_request"),
+                                                ((200, [1]), 500, "bad_module_response"),
+                                                ("nonsense", 500, "internal")])
+def test_raw_role_handler_errors_pass_or_become_500(result, status, code):
+    module = fake_module(handle_get=lambda path, query: result)
+    got, data = call(gw({"ui.civic_akim.api": module}), "GET", "/akim/summary", "date=2026-10-11")
+    assert (got, data["error"]) == (status, code)
+
+
+class FakeComplaints:
+    def __init__(self, db):
+        self.db, self.calls = db, []
+
+    def handle(self, method, path, query, body, principal, context):
+        self.calls.append((method, path, query, body, principal))
+        if path.endswith("/boom"):
+            raise RuntimeError("секрет")
+        return {"status": 201, "headers": {"Retry-After": "3"}, "body": {"ok": True, "data": {"id": "c-1"}}}
+
+
+def test_service_role_answers_whole_request_in_its_envelope(tmp_path):
+    made = []
+    module = fake_module(make_service=lambda db: made.append(FakeComplaints(db)) or made[-1])
+    gateway = CivicV2Gateway(modules={"ui.civic_feedback.v2.integration": module}, db_path=tmp_path / "civic.sqlite3")
+    status, data = call(gateway, "POST", "/complaints", "", {"text": "Яма", "category": "roads"})
+    assert status == 201 and data == {"ok": True, "data": {"id": "c-1"}}
+    call(gateway, "GET", "/complaints/mine", "x=1")
+    assert len(made) == 1 and made[0].db == str(tmp_path / "civic.sqlite3")  # один сервис на процесс
+    assert made[0].calls[0][:2] == ("POST", "/api/civic/v2/complaints") and made[0].calls[1][2] == "x=1"
+    assert made[0].calls[0][4] is None  # без шлюза v1 сотрудника нет
+
+
+def test_service_role_without_database_is_not_ready():
+    module = fake_module(make_service=lambda db: FakeComplaints(db))
+    status, data = call(CivicV2Gateway(modules={"ui.civic_feedback.v2.integration": module}), "GET", "/complaints")
+    assert status == 503 and data["error"] == "module_not_ready" and data["role"] == "R09"
+
+
+def test_real_b1_chain_complaint_reaches_heat_and_day(tmp_path, monkeypatch):
+    """Настоящие R09 + R07 + R08: новая жалоба сразу видна на карте и в «Картине дня»."""
+    pytest.importorskip("ui.civic_feedback.v2.integration")
+    pytest.importorskip("ui.civic_heat.api")
+    pytest.importorskip("ui.civic_akim.api")
+    import ui.civic_heat as civic_heat
+    monkeypatch.setattr(civic_heat.service, "_default", None)  # не трогаем общий сервис других тестов
+    v1 = CivicGateway.for_project(tmp_path, tmp_path / "civic.sqlite3")
+    gateway = CivicV2Gateway(v1, demo=False)
+    status, before = call(gateway, "GET", "/heat", "days=30&zoom=16")
+    assert status == 200 and before["items"] == []  # без демо-набора и без жалоб — пусто, а не выдумано
+    ctx = dict(CTX, headers={"x-birge-device": "test-device-0001"})
+    status, made = call(gateway, "POST", "/complaints", "", {"text": "На остановке не горит свет", "category": "lighting",
+                                                              "point": NURA}, ctx)
+    assert status in (200, 201) and made["ok"] is True
+    status, after = call(gateway, "GET", "/heat", "days=30&zoom=16")
+    assert status == 200 and len(after["items"]) == 1 and after["items"][0]["count"] == 1
+    status, day = call(gateway, "GET", "/akim/summary")
+    assert status == 200 and day["kpi"]["new_day"]["value"] == 1
+    monkeypatch.setattr(civic_heat.service, "_default", None)
 
 
 def test_vote_body_is_checked_and_passed():
@@ -195,6 +267,7 @@ def test_vote_body_is_checked_and_passed():
 
 # --- неверный ввод: 400 до вызова модуля ----------------------------------------
 
+# Жалобы R09, тепловая карта R07 и «Картина дня» R08 проверяют свои параметры сами (их тесты в tests/civic/R07–R09).
 BAD_INPUT = [
     ("POST", "/classify", "", {"text": "   "}, "text"),
     ("POST", "/classify", "", {"text": "я" * 5001}, "text"),
@@ -204,15 +277,11 @@ BAD_INPUT = [
     ("GET", "/targets", "lon=37.6&lat=55.7", None, "lon"),  # Москва — вне Астаны
     ("GET", "/targets", "lon=nan&lat=51.1", None, "lon"),
     ("GET", "/targets", "lon=71.4&lat=51.1&category=potholes", None, "category"),
-    ("GET", "/heat", "bbox=71.6,51.0,71.3,51.2", None, "bbox"),
-    ("GET", "/heat", "bbox=1,2,3", None, "bbox"),
-    ("GET", "/heat", "days=abc", None, "days"),
-    ("GET", "/akim/summary", "date=11.10.2026", None, "date"),
-    ("GET", "/akim/summary", "district=Нура", None, "district"),
+    ("GET", "/objects", "bbox=71.6,51.0,71.3,51.2", None, "bbox"),
+    ("GET", "/proposals", "bbox=1,2,3", None, "bbox"),
     ("POST", "/proposals/p-1/vote", "", {"value": 2, "device_id": "device-123"}, "value"),
     ("POST", "/proposals/p-1/vote", "", {"value": True, "device_id": "device-123"}, "value"),
     ("POST", "/proposals/p-1/vote", "", {"value": 1, "device_id": "x"}, "device_id"),
-    ("POST", "/complaints", "", {"text": "яма", "category": "potholes"}, "category"),
 ]
 
 
@@ -220,8 +289,8 @@ BAD_INPUT = [
 def test_bad_input_is_400_and_module_is_not_called(method, path, query, body, field):
     called = []
     any_fn = lambda *a, **kw: called.append(1) or {}  # noqa: E731
-    names = {h.function: any_fn for h in V2_HANDLERS.values()}
-    modules = {name: fake_module(**names) for h in V2_HANDLERS.values() for name in h.modules}
+    names = {h.function: any_fn for h in V2_HANDLERS.values() if h.kind == "function"}
+    modules = {name: fake_module(**names) for h in V2_HANDLERS.values() if h.kind == "function" for name in h.modules}
     status, data = call(gw(modules), method, path, query, body)
     assert status == 400 and data["error"] == "bad_request" and data["field"] == field
     assert data["message"] and not called
@@ -250,23 +319,22 @@ class ModuleError(Exception):
     (RuntimeError("секретная подробность"), 500, "internal"),
 ])
 def test_module_errors_become_clear_answers(exc, status, code):
-    def heat(**kw):
+    def list_objects(**kw):
         raise exc
 
-    got_status, data = call(gw({"ui.civic_heat": fake_module(heat=heat)}), "GET", "/heat")
+    got_status, data = call(gw({"ui.civic_store.v2": fake_module(list_objects=list_objects)}), "GET", "/objects")
     assert (got_status, data["error"]) == (status, code)
     assert "секретная" not in json.dumps(data, ensure_ascii=False)
 
 
 def test_non_object_result_is_500_not_a_crash():
-    status, data = call(gw({"ui.civic_heat": fake_module(heat=lambda **kw: [1, 2])}), "GET", "/heat")
+    status, data = call(gw({"ui.civic_store.v2": fake_module(list_objects=lambda **kw: [1, 2])}), "GET", "/objects")
     assert status == 500 and data["error"] == "bad_module_response"
 
 
 # --- маршруты сотрудника --------------------------------------------------------
 
 @pytest.mark.parametrize("method,path,body", [
-    ("POST", "/complaints/c-1/status", {"status": "fixed"}),
     ("POST", "/proposals", {"kind": "park"}),
     ("PUT", "/objects/o-1/stage", {"stage": "design"}),
 ])
@@ -274,8 +342,7 @@ def test_staff_routes_need_r02_session(tmp_path, method, path, body):
     pytest.importorskip("ui.civic_store")
     called = []
     fn = lambda **kw: called.append(kw) or {"ok": 1}  # noqa: E731
-    modules = {"ui.civic_feedback.v2": fake_module(set_complaint_status=fn),
-               "ui.civic_store.v2": fake_module(create_proposal=fn, set_object_stage=fn)}
+    modules = {"ui.civic_store.v2": fake_module(create_proposal=fn, set_object_stage=fn)}
     gateway = gw(modules, CivicGateway.for_project(tmp_path, tmp_path / "civic.sqlite3"))
     status, data = call(gateway, method, path, "", body)
     assert status == 401 and data["error"] == "unauthenticated" and not called
@@ -309,7 +376,8 @@ def test_signed_in_staff_reaches_the_function(tmp_path):
 
 @pytest.fixture()
 def server(tmp_path):
-    v2 = gw({"ui.civic_heat": fake_module(heat=lambda **kw: {"generated_at": "t", "items": [], "seen": kw["days"]}),
+    v2 = gw({"ui.civic_heat.api": fake_module(handle_get=lambda path, q: (200, {"generated_at": "t", "items": [],
+                                                                               "seen": int(q["days"][0])})),
              "ui.civic_store.v2": fake_module(set_object_stage=lambda **kw: {"stage": "x"})})
     srv = web_server.create_server(port=0, civic_db=tmp_path / "civic.sqlite3", civic_v2=v2)
     thread = threading.Thread(target=srv.serve_forever, daemon=True)

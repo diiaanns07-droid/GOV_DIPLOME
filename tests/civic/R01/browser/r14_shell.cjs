@@ -92,7 +92,7 @@ async function main() {
     check("1366: ҚАЗ switches header, tagline and <html lang>",
       h.htmlLang === "kk" && h.pressed.lang === "kk" && h.labels.includes("Күн қорытындысы") && h.labels.includes("Әкімдік") && /бірге/.test(h.tagline || "") && h.keys.length === 0, h);
     check("1366: Kazakh header still fits", h.out === 0 && h.scrollW <= 1366, h);
-    const panel = await page.evaluate(() => ({ title: document.querySelector("#civic-panel h1")?.textContent,
+    const panel = await page.evaluate(() => ({ title: document.getElementById("civic-works-title")?.textContent,
       area: document.querySelector(".civic-explore-row label span")?.textContent, view: document.querySelector(".civic-explore-view")?.textContent,
       staff: document.getElementById("civic-staff-button")?.textContent, find: document.querySelector(".civic-explore-go")?.textContent,
       placeholder: document.querySelector(".civic-explore-field input")?.placeholder,
@@ -105,19 +105,24 @@ async function main() {
     await ready(page);
     h = await header(page);
     check("1366: language remembered after reload", h.htmlLang === "kk" && h.pressed.lang === "kk", h);
-    const panelAfter = await page.evaluate(() => document.querySelector("#civic-panel h1")?.textContent);
+    const panelAfter = await page.evaluate(() => document.getElementById("civic-works-title")?.textContent);
     check("1366: shell panel opens in Kazakh after reload", panelAfter === "Қалада не өзгеріп жатыр", panelAfter);
 
     // «Картина дня»: hash, overlay with an understandable empty state and a way back
     await page.click("#birge-header [data-section=day]");
-    await page.waitForTimeout(400);
-    const day = await page.evaluate(() => { const d = document.getElementById("birge-day");
-      return { visible: !!d && !d.hidden && d.getBoundingClientRect().height > 200, title: d?.querySelector("h1")?.textContent,
-        empty: d?.querySelector(".birge-day-empty")?.innerText || "", button: d?.querySelector(".bk-btn")?.textContent, hash: location.hash }; });
-    check("1366: «Картина дня» opens with title, explanation and «back to map» button (kk)",
-      day.visible && day.hash === "#day" && day.title === "Күн қорытындысы" && day.empty.length > 20 && day.button === "Картаға оралу", day);
+    // B1: the R08 module renders the day summary; without it the shell shows «скоро появится» + «Картаға оралу».
+    await page.waitForFunction(() => { const r = document.getElementById("birge-day-root"); return r && r.innerText.trim().length > 20; }, null, { timeout: 15000 }).catch(() => null);
+    const day = await page.evaluate(() => { const d = document.getElementById("birge-day"), root = document.getElementById("birge-day-root");
+      return { visible: !!d && !d.hidden && d.getBoundingClientRect().height > 200, title: d?.querySelector("#birge-day-title")?.textContent,
+        module: d?.classList.contains("birge-day--module"), text: root?.innerText.slice(0, 160) || "",
+        emptyButton: d?.querySelector(".birge-day-empty .bk-btn")?.textContent || null, hash: location.hash,
+        keys: (root?.innerText.match(/\b(akim|common|shell)\.[a-z_.]+\b/g) || []) }; });
+    check("1366: «Картина дня» opens in Kazakh — R08 summary, or a clear empty state with «Картаға оралу»",
+      day.visible && day.hash === "#day" && day.title === "Күн қорытындысы" && day.keys.length === 0
+      && (day.module ? /Күн қорытындысы/.test(day.text) : day.emptyButton === "Картаға оралу"), day);
     await page.screenshot({ path: path.join(OUT, "03_day_1366_kk.png") });
-    await page.click("#birge-day .bk-btn");
+    if (day.emptyButton) await page.click("#birge-day .birge-day-empty .bk-btn");
+    else await page.click("#birge-header [data-section=map]");
     await page.waitForTimeout(400);
     h = await header(page);
     check("1366: back to map clears #day", h.section === "map" && h.hash === "" && h.pressed.section === "map", h);
@@ -180,7 +185,7 @@ async function main() {
     const toolsOn = await page.evaluate(() => getComputedStyle(document.getElementById("civic-scenarios-button")).display);
     check("?tools=all brings the scenario comparison back (akimat view)", toolsOn !== "none", toolsOn);
     const v2 = await page.evaluate(async () => { const r = await fetch("/api/civic/v2/modules"); return { status: r.status, keys: Object.keys((await r.json()).modules || {}).length }; });
-    check("API v2 /modules answers from the page", v2.status === 200 && v2.keys === 14, v2);
+    check("API v2 /modules answers from the page", v2.status === 200 && v2.keys >= 14, v2);
     check("1366: no page errors or warnings", page.errs.length === 0, page.errs);
     await ctx.close();
 
@@ -197,12 +202,12 @@ async function main() {
       await m.page.click("#birge-header .birge-menu-btn");
       await m.page.waitForTimeout(300);
       const menu = await m.page.evaluate(() => { const box = document.getElementById("birge-menu").getBoundingClientRect();
-        const items = [...document.querySelectorAll("#birge-menu button")];
+        const items = [...document.querySelectorAll("#birge-menu button")].filter((b) => getComputedStyle(b).display !== "none");
         const hit = items.every((b) => { const r = b.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return e === b || b.contains(e); });
         return { open: document.getElementById("birge-header").dataset.menu, expanded: document.querySelector(".birge-menu-btn").getAttribute("aria-expanded"),
           inside: box.left >= 0 && box.right <= innerWidth, clickable: hit, items: items.map((b) => b.textContent.trim()) }; });
       check(`${tag}: ≡ opens the menu on top of the map, all items clickable and inside the screen`,
-        menu.open === "open" && menu.expanded === "true" && menu.inside && menu.clickable && menu.items.length === 4, menu);
+        menu.open === "open" && menu.expanded === "true" && menu.inside && menu.clickable && menu.items.length === (startMode === "resident" ? 5 : 4), menu);
       await m.page.screenshot({ path: path.join(OUT, `06_menu_${w}_${lang}.png`) });
       await m.page.click("#birge-header [data-section=day]");
       await m.page.waitForTimeout(400);

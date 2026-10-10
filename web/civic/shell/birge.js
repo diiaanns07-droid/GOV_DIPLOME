@@ -100,6 +100,8 @@
           SECTIONS.map((s) => segButton("section", s, s === state.section))),
         el("div", { class: "bk-seg birge-role", role: "group", "data-group": "mode" },
           MODES.map((m) => segButton("mode", m, m === state.mode))),
+        // «Мои обращения» (R09) — только в виде «Житель»; на телефоне — в меню ≡ (UX_SPEC §1).
+        el("button", { type: "button", class: "bk-btn birge-mine-btn", "data-action": "mine" }),
       ]),
       el("div", { class: "bk-seg birge-lang", role: "group", "data-group": "lang" },
         ["kk", "ru"].map((l) => segButton("lang", l, l === lang()))),
@@ -109,6 +111,7 @@
       const button = event.target.closest("button");
       if (!button || !header.contains(button)) return;
       if (button === menuButton) { setMenu(header.dataset.menu !== "open"); return; }
+      if (button.dataset.action === "mine") { setSection("map"); setMenu(false); window.CivicShell?.openMine?.(); return; }
       if (button.dataset.section) setSection(button.dataset.section);
       else if (button.dataset.mode) setMode(button.dataset.mode);
       else if (button.dataset.lang && i18n()) i18n().setLang(button.dataset.lang);
@@ -135,6 +138,8 @@
       header.querySelector(".birge-lang").setAttribute("aria-label", t("common.lang.label"));
       const menuLabel = header.querySelector(".birge-menu-btn span");
       if (menuLabel) menuLabel.textContent = t("common.nav.menu");
+      const mine = header.querySelector(".birge-mine-btn");
+      if (mine) mine.textContent = t("common.nav.mine");
       for (const b of header.querySelectorAll("[data-section]")) {
         b.textContent = t("common.nav." + b.dataset.section);
         b.setAttribute("aria-pressed", String(b.dataset.section === state.section));
@@ -201,14 +206,15 @@
     if (akim && typeof akim.mount === "function") {
       if (!state.dayHandle) {
         try {
-          state.dayHandle = akim.mount({ root, api: { v2 }, lang: lang(), mode: state.mode }) || {};
+          // R08 @ 9f1d9c0: mount(элемент, опции); адрес страницы меняет оболочка, не модуль (syncUrl: false).
+          state.dayHandle = akim.mount(root, { apiBase: "/api/civic/v2", mapHref: "/#target={kind}:{id}&days={days}",
+            syncUrl: false }) || {};
+          day.classList.add("birge-day--module");  // у модуля свой заголовок с датой — наш остаётся только для чтения с экрана
         } catch (e) {
           console.error(e);
           state.dayHandle = null;
           root.replaceChildren(emptyDay("error"));
         }
-      } else if (typeof state.dayHandle.update === "function") {
-        state.dayHandle.update({ lang: lang(), mode: state.mode });
       }
       return;
     }
@@ -224,6 +230,7 @@
     if (section !== "day" && state.dayHandle) {
       try { state.dayHandle.destroy?.(); } catch (e) { /* модуль R08 не ломает оболочку */ }
       state.dayHandle = null;
+      day?.classList.remove("birge-day--module");
       day?.querySelector("#birge-day-root")?.replaceChildren();
     }
     if (options?.hash !== false) {
@@ -252,6 +259,8 @@
     const I = i18n();
     if (I) {
       I.onChange(() => render());
+      // R07 и R09 слушают "birge:lang" на window, а i18n R11 шлёт его на document — передаём дальше.
+      I.onChange((l) => { try { window.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang: l } })); } catch (e) { /* старый браузер */ } });
       if (I.ready && typeof I.ready.then === "function") I.ready.then(render, render);
     }
     // shell.js переключает режимы старого приложения; при возврате на карту перерисовываем бренд.

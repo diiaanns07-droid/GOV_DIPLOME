@@ -8,6 +8,13 @@
 .civic-mode #birge-header { display: flex; align-items: center; gap: var(--s-3, 12px); }
 .civic-mode .top-actions > #birge-header { display: flex !important; } /* сильнее правила shell.css для старых кнопок */
 #birge-header .bk-seg > button { min-width: 48px; white-space: nowrap; }
+/* «Мои обращения» — только у жителя. Кнопка «Сообщить о проблеме» (R09) — тоже только у жителя
+ * (акимат принимает жалобы, а не пишет их); на экране «Картина дня» её нет. */
+#birge-header .birge-mine-btn { min-height: 40px; white-space: nowrap; }
+body:not([data-birge-mode="resident"]) #birge-header .birge-mine-btn { display: none; }
+body:not([data-birge-mode="resident"]) .bc-fab,
+body[data-birge-section="day"] .bc-fab { display: none !important; }
+
 /* Ноутбук: меню раскрыто в строку, кнопки ≡ нет. */
 .birge-menu { display: contents; }
 #birge-header .birge-menu-btn { display: none; }
@@ -34,6 +41,8 @@ body[data-birge-mode="resident"] #civic-moderation-button { display: none !impor
 .birge-day[hidden] { display: none; }
 .birge-day-title { margin: 0 0 var(--s-4, 16px); font-size: var(--fs-h1, 24px); line-height: 1.2; outline: none; }
 .birge-day-empty { max-width: 560px; margin: var(--s-8, 32px) auto; text-align: center; }
+/* Модуль R08 рисует свой заголовок «Картина дня · 11 окт»: наш скрыт визуально, но остаётся подписью раздела. */
+.birge-day--module .birge-day-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .birge-day-empty .bk-btn { margin-top: var(--s-4, 16px); }
 body[data-birge-section="day"].civic-mode #civic-root { visibility: hidden; }
 
@@ -56,6 +65,8 @@ body[data-birge-section="day"].civic-mode #civic-root { visibility: hidden; }
 }
 /* Телефон: шапка ниже (как у shell.css), лист меню и «Картина дня» — во всю ширину с отступом 8 px. */
 @media (max-width: 760px) {
+  /* Житель на телефоне: внизу одна главная кнопка «Сообщить о проблеме»; вход сотрудника — в виде «Акимат». */
+  body[data-birge-mode="resident"] .civic-foot { display: none; }
   #birge-header[data-menu="open"] .birge-menu { top: 80px; left: 8px; right: 8px; width: auto; }
   .birge-day { top: 80px; left: 8px; right: 8px; bottom: 8px; padding: var(--s-4, 16px); }
 }

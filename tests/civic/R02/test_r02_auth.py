@@ -19,7 +19,8 @@ def test_login_sets_hardened_cookie_and_session_reports_user(service):
     result = login(service)
     assert result["status"] == 200
     cookie = result["headers"]["Set-Cookie"]
-    for part in ("civic_session=", "HttpOnly", "SameSite=Strict", "Path=/api/civic/v1", "Max-Age=28800"):
+    # Раунд 14: путь /api/civic — одна сессия на API v1 и v2 (BUILD_LOG R01, B1).
+    for part in ("civic_session=", "HttpOnly", "SameSite=Strict", "Path=/api/civic;", "Max-Age=28800"):
         assert part in cookie
     assert "Secure" not in cookie
     data = result["body"]["data"]

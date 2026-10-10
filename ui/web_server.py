@@ -73,7 +73,12 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "ui-kit/categories_v2.json", "ui-kit/index.html",
                 "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-SemiBold.woff2", "ui-kit/fonts/Inter-Bold.woff2",
                 "ui-kit/fonts/OFL.txt",
-                "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json")
+                "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json",
+                # B1: R07 тепловая карта @ 5a97636, R09 путь жителя v2 @ da295be, R08 «Картина дня» @ 9f1d9c0.
+                "heat/heat.js", "heat/heat.css",
+                "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
+                "feedback/complaint.css",
+                "akim/index.html", "akim/akim.js", "akim/akim.css", "akim/akim.i18n.json")
 # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
@@ -224,6 +229,7 @@ class CivicGateway:
         self._factories = dict(factories or {})
         self._services = {}
         self._failed = {}
+        self.db_path = None  # for_project задаёт путь к SQLite; API v2 (R09) пишет в тот же файл
         # Re-entrant: the feedback/assistant factories ask for the store while the lock is held.
         self._lock = threading.RLock()
         # R08 via R06: what the feedback service was started with (no resident texts here).
@@ -364,6 +370,7 @@ class CivicGateway:
                                          resolve_principal=store_service.resolve_principal)
 
         gateway = cls({"store": store, "feedback": feedback, "scenarios": scenarios, "assistant": assistant})
+        gateway.db_path = db_path  # раунд 14: та же база для жалоб v2 (R09)
         return gateway
 
     def service(self, name):
@@ -513,15 +520,21 @@ CATEGORIES_V2_FILE = ROOT / "research" / "round-14" / "categories_v2.json"
 ASTANA_BOUNDS = (70.9, 50.9, 71.9, 51.4)
 V2_TEXT_MAX = 5000
 V2_DEVICE_ID = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
-V2_DISTRICT = re.compile(r"^[a-z][a-z0-9_-]{1,39}$")
-V2_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 class V2Handler:
-    """Где живёт функция маршрута: роль, модули-кандидаты (первый найденный), имя функции."""
+    """Где живёт функция маршрута: роль, модули-кандидаты (первый найденный), имя функции, вид вызова.
 
-    def __init__(self, role, modules, function, staff=False):
+    kind="function" — функция по CONTRACT §7, шлюз заранее проверяет параметры (R04, R06, R12);
+    kind="raw"      — роль сама разбирает запрос: fn(path, parse_qs(query)) -> (status, body) (R07, R08);
+    kind="service"  — сервис роли отвечает целиком: make_service(db_path).handle(method, path, query, body,
+                      principal, context) -> {"status","headers","body"} в конверте ok/data (R09; его фронтенд
+                      ждёт этот конверт). Сотрудника и CSRF такой сервис проверяет сам по principal R02.
+    """
+
+    def __init__(self, role, modules, function, staff=False, kind="function"):
         self.role, self.modules, self.function, self.staff = role, tuple(modules), function, staff
+        self.kind = kind
 
 
 # (метод, шаблон пути, ключ маршрута). {id} проверяется тем же правилом CIVIC_ID, что и в v1.
@@ -530,11 +543,22 @@ V2_ROUTES = (
     ("POST", ("classify",), "classify"),
     ("POST", ("similar",), "similar"),
     ("GET", ("targets",), "targets"),
-    ("POST", ("complaints",), "complaints.create"),
+    # R09 жалобы v2 (ui.civic_feedback.v2.integration.ROUTES @ da295be). Порядок важен: точные пути раньше {id}.
+    ("GET", ("categories",), "complaints.categories"),
     ("GET", ("complaints",), "complaints.list"),
+    ("POST", ("complaints",), "complaints.create"),
+    ("GET", ("complaints", "mine"), "complaints.mine"),
+    ("GET", ("complaints", "events"), "complaints.events"),
+    ("GET", ("complaints", "summary"), "complaints.summary"),
+    ("GET", ("complaints", "place"), "complaints.place"),
+    ("GET", ("complaints", "{id}"), "complaints.get"),
     ("POST", ("complaints", "{id}", "metoo"), "complaints.metoo"),
     ("POST", ("complaints", "{id}", "status"), "complaints.status"),
+    ("POST", ("complaints", "{id}", "duplicate"), "complaints.duplicate"),
+    # R07 тепловая карта @ 5a97636 (ui.civic_heat.api.handle_get) и R08 «Картина дня» @ 9f1d9c0.
     ("GET", ("heat",), "heat"),
+    ("GET", ("heat", "meta"), "heat.meta"),
+    ("GET", ("heat", "target"), "heat.target"),
     ("GET", ("akim", "summary"), "akim.summary"),
     ("GET", ("proposals",), "proposals.list"),
     ("POST", ("proposals",), "proposals.create"),
@@ -547,13 +571,12 @@ V2_HANDLERS = {
     "classify": V2Handler("R04", ("ui.civic_ml_api",), "classify"),
     "similar": V2Handler("R04", ("ui.civic_ml_api",), "similar"),
     "targets": V2Handler("R12", ("engine.civic_geo",), "targets"),
-    "complaints.create": V2Handler("R09", ("ui.civic_feedback.v2", "ui.civic_feedback"), "create_complaint"),
-    "complaints.list": V2Handler("R09", ("ui.civic_feedback.v2", "ui.civic_feedback"), "list_complaints"),
-    "complaints.metoo": V2Handler("R09", ("ui.civic_feedback.v2", "ui.civic_feedback"), "add_metoo"),
-    "complaints.status": V2Handler("R09", ("ui.civic_feedback.v2", "ui.civic_feedback"), "set_complaint_status",
-                                   staff=True),
-    "heat": V2Handler("R07", ("ui.civic_heat",), "heat"),
-    "akim.summary": V2Handler("R08", ("ui.civic_akim",), "summary"),
+    **{key: V2Handler("R09", ("ui.civic_feedback.v2.integration",), "make_service", kind="service") for key in (
+        "complaints.categories", "complaints.list", "complaints.create", "complaints.mine", "complaints.events",
+        "complaints.summary", "complaints.place", "complaints.get", "complaints.metoo", "complaints.status",
+        "complaints.duplicate")},
+    **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta", "heat.target")},
+    "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),
     "proposals.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_proposals"),
     "proposals.create": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "create_proposal", staff=True),
     "proposals.vote": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "vote_proposal"),
@@ -641,13 +664,19 @@ def _v2_text(raw, field="text"):
 class CivicV2Gateway:
     """Маршрутизатор API v2: проверяет параметры и вызывает функцию модуля роли."""
 
-    def __init__(self, store_gateway=None, modules=None, category_ids=None):
+    def __init__(self, store_gateway=None, modules=None, category_ids=None, db_path=None, demo=None):
         # store_gateway — шлюз v1: из него берётся R02 для проверки сессии сотрудника.
         self.store_gateway = store_gateway
+        # Та же SQLite, что у v1 (R09 хранит жалобы v2 в своих таблицах рядом с v1).
+        self.db_path = db_path if db_path is not None else getattr(store_gateway, "db_path", None)
+        # Демо-сборка (run-city.bat, CIVIC_DEMO=1): к жалобам R09 добавляется синтетический набор R07 (demo: true).
+        self.demo = (os.environ.get("CIVIC_DEMO") == "1") if demo is None else bool(demo)
         # modules: {имя_модуля: объект} — подмена для тестов; иначе importlib.
         self._override = dict(modules) if modules is not None else None
         self._resolved = {}  # route_key -> (callable | None, причина, имя модуля)
-        self._lock = threading.Lock()
+        self._services = {}  # модуль -> экземпляр сервиса (kind="service")
+        self._lock = threading.RLock()
+        self._wired = False
         self.category_ids = load_category_ids() if category_ids is None else frozenset(category_ids)
 
     # --- поиск функций модулей ---------------------------------------------
@@ -678,11 +707,101 @@ class CivicV2Gateway:
                     result = (None, "module_failed", name)
                     break
                 fn = getattr(module, handler.function, None) if module is not None else None
+                if callable(fn) and handler.kind == "service":
+                    service = self._service(name, fn)
+                    fn = getattr(service, "handle", None)
+                    if not callable(fn):
+                        result = (None, "module_failed" if self.db_path else "module_not_ready", name)
+                        break
                 if callable(fn):
                     result = (fn, "ready", name)
                     break
             self._resolved[key] = result
             return result
+
+    def _service(self, name, factory):
+        """Один экземпляр сервиса роли на процесс (R09: make_service(db_path)); None — нет базы или сбой."""
+        if name in self._services:
+            return self._services[name]
+        service = None
+        if self.db_path is not None:
+            try:
+                Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+                service = factory(str(self.db_path))
+            except Exception:
+                LOGGER.exception("API v2: сервис %s не запустился", name)
+        self._services[name] = service
+        return service
+
+    def wire(self):
+        """Связать модули раунда 14 (один раз): жалобы R09 -> тепловая карта R07 -> «Картина дня» R08.
+
+        - Источник жалоб для карты — хранилище R09 (те же записи, что видит житель); в демо-сборке к нему
+          добавляется синтетический набор R07 (demo: true), чтобы карта не была пустой.
+        - Новая жалоба, «Я тоже», смена статуса (подписка R09) сбрасывают кэш карты — цвет меняется сразу.
+        - R08 берёт записи у того же сервиса карты, поэтому числа «Картины дня» совпадают с картой.
+        Подмена модулей в тестах (modules=...) связку не трогает.
+        """
+        with self._lock:
+            if self._wired or self._override is not None:
+                return
+            self._wired = True
+        complaints, _reason, _module = self.resolve("complaints.list")
+        store = getattr(getattr(complaints, "__self__", None), "store", None)
+        try:
+            heat = self._import("ui.civic_heat")
+        except Exception:
+            LOGGER.exception("API v2: тепловая карта (R07) не загрузилась")
+            heat = None
+        if heat is not None and store is not None:
+            demo_records = []
+            if self.demo:
+                try:
+                    from datetime import datetime, timezone
+                    demo_records = list(importlib.import_module("ui.civic_heat.demo_seed").demo_records(
+                        now=datetime.now(timezone.utc)))
+                except Exception:
+                    LOGGER.exception("API v2: демо-набор R07 не построен")
+
+            def source(since):
+                return demo_records + store.list(since=since)
+
+            heat.configure(source=source, **self._cell_resolver())
+            store.subscribe(lambda _event: heat.invalidate())
+            LOGGER.info("civic-v2: heat <- R09 complaints%s", " + R07 demo set" if demo_records else "")
+        try:
+            akim = self._import("ui.civic_akim")
+            if akim is not None and hasattr(akim, "configure"):
+                akim.configure()
+        except Exception:
+            LOGGER.exception("API v2: «Картина дня» (R08) не настроилась")
+
+    def _cell_resolver(self):
+        """Ячейки «примерного места» R09 рисуются там, где их посчитал R09.
+
+        R09 (автор id ячейки) и R07 считают сетку 150 м от разных углов (70.9/50.8 и 71.0/50.8) — без этого
+        адаптера жалоба из Нуры попадала на карту на ~7 км восточнее. Цели R09 помечены approximate: true;
+        для них контур — ui.civic_feedback.v2.record.cell_polygon и подпись «примерное место» (CONTRACT §8.4).
+        Остальные цели (в т. ч. демо-ячейки R07) R07 решает сам. Передано R07/R09: договориться об одной сетке.
+        """
+        try:
+            targets = self._import("ui.civic_heat.targets")
+            record = self._import("ui.civic_feedback.v2.record")
+        except Exception:
+            return {}
+        if targets is None or record is None or not hasattr(record, "cell_polygon"):
+            return {}
+
+        class R09CellResolver(targets.TargetResolver):
+            def _resolve(self, kind, tid, target, point):
+                if kind == "area" and tid.startswith("cell-") and (target or {}).get("approximate") is True:
+                    ring = record.cell_polygon(tid)
+                    if ring:
+                        return {"geometry": {"type": "Polygon", "coordinates": [ring]}, "label_ru": "Примерное место",
+                                "label_kk": "Шамамен орны", "approximate": True, "source": "r09-cell"}
+                return super()._resolve(kind, tid, target, point)
+
+        return {"resolver": R09CellResolver()}
 
     def modules(self):
         """Состояние каждого маршрута v2 — для оболочки и приёмки (R10)."""
@@ -707,7 +826,7 @@ class CivicV2Gateway:
         return raw
 
     def arguments(self, key, params, query, body):
-        """Именованные аргументы функции. Ошибка ввода — V2BadRequest (ответ 400)."""
+        """Именованные аргументы функции (только kind="function"). Ошибка ввода — V2BadRequest (ответ 400)."""
         q = {k: v[-1] for k, v in parse_qs(query or "", keep_blank_values=True).items()}
         body = body if isinstance(body, dict) else {}
         opt = lambda name: q.get(name) not in (None, "")  # noqa: E731 — короткая проверка «параметр задан»
@@ -724,33 +843,6 @@ class CivicV2Gateway:
             return {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
                     "lat": _v2_number(q["lat"], "lat", ASTANA_BOUNDS[1], ASTANA_BOUNDS[3]),
                     "category": self._category(q.get("category"))}
-        if key == "complaints.create":
-            _v2_text(body.get("text"))
-            if body.get("point") is not None:
-                _v2_point(body["point"])
-            if body.get("category") is not None:
-                self._category(body.get("category"))
-            return {"body": body}
-        if key == "complaints.list":
-            since = q.get("since") or None
-            if since is not None and len(since) > 40:
-                raise V2BadRequest("since", "since: дата и время в формате ISO 8601.")
-            return {"bbox": _v2_bbox(q["bbox"]) if opt("bbox") else None, "since": since}
-        if key in ("complaints.metoo", "complaints.status"):
-            return {"complaint_id": params["id"], "body": body}
-        if key == "heat":
-            return {"bbox": _v2_bbox(q["bbox"]) if opt("bbox") else None,
-                    "days": _v2_int(q["days"], "days", 1, 365) if opt("days") else None,
-                    "category": self._category(q.get("category")),
-                    "zoom": _v2_number(q["zoom"], "zoom", 0, 24) if opt("zoom") else None}
-        if key == "akim.summary":
-            date = q.get("date") or None
-            if date is not None and not V2_DATE.match(date):
-                raise V2BadRequest("date", "date: дата в формате ГГГГ-ММ-ДД.")
-            district = q.get("district") or None
-            if district is not None and not V2_DISTRICT.match(district):
-                raise V2BadRequest("district", "district: неизвестный район.")
-            return {"date": date, "district": district}
         if key in ("proposals.list", "objects.list"):
             return {"bbox": _v2_bbox(q["bbox"]) if opt("bbox") else None}
         if key == "proposals.create":
@@ -825,11 +917,17 @@ class CivicV2Gateway:
         if key == "modules":
             return {"status": 200, "headers": {}, "body": {"modules": self.modules()}}
         handler = V2_HANDLERS[key]
+        if handler.kind != "function":
+            self.wire()
         fn, reason, module = self.resolve(key)
         if fn is None:
             message = ("Модуль не загрузился, подробности в журнале сервера." if reason == "module_failed"
                        else "Эта часть ещё не подключена в сборке.")
             return v2_error(503, reason, message, module=module, role=handler.role)
+        if handler.kind == "raw":
+            return self._raw(fn, key, rel_path, query, module, handler)
+        if handler.kind == "service":
+            return self._delegate(fn, method, rel_path, query, body, context, module, handler)
         try:
             args = self.arguments(key, params, query, body)
         except V2BadRequest as exc:
@@ -865,6 +963,37 @@ class CivicV2Gateway:
             LOGGER.error("API v2: %s вернул не объект JSON", key)
             return v2_error(500, "bad_module_response", "Модуль вернул некорректный ответ.")
         return {"status": status, "headers": {}, "body": result}
+
+    @staticmethod
+    def _raw(fn, key, rel_path, query, module, handler):
+        """R07/R08: handle_get(path, parse_qs(query)) -> (status, body); роль сама проверяет параметры."""
+        try:
+            status, body = fn(CIVIC_V2_PREFIX + rel_path, parse_qs(query or "", keep_blank_values=True))
+        except Exception:
+            LOGGER.exception("API v2: %s (%s.%s) упал", key, module, handler.function)
+            return v2_error(500, "internal", "Не удалось выполнить запрос. Попробуйте ещё раз.")
+        if (not isinstance(status, int) or isinstance(status, bool) or not 200 <= status <= 599
+                or not isinstance(body, dict)):
+            LOGGER.error("API v2: %s вернул некорректный ответ", key)
+            return v2_error(500, "bad_module_response", "Модуль вернул некорректный ответ.")
+        return {"status": status, "headers": {}, "body": body}
+
+    def _delegate(self, service_handle, method, rel_path, query, body, context, module, handler):
+        """R09: сервис отвечает целиком (конверт ok/data). principal — сессия R02 или None."""
+        store = self.store_gateway.service("store") if self.store_gateway is not None else None
+        principal = store.resolve_principal(context) if store is not None and hasattr(store, "resolve_principal") else None
+        try:
+            reply = service_handle(method, CIVIC_V2_PREFIX + rel_path, query or "", body, principal, context or {})
+        except Exception:
+            LOGGER.exception("API v2: %s.%s упал", module, handler.function)
+            return v2_error(500, "internal", "Не удалось выполнить запрос. Попробуйте ещё раз.")
+        if reply is None:
+            return v2_error(404, "not_found", "Адрес API не найден.")
+        if (not isinstance(reply, dict) or not isinstance(reply.get("status"), int)
+                or not isinstance(reply.get("body"), dict)):
+            LOGGER.error("API v2: %s вернул некорректный ответ", module)
+            return v2_error(500, "bad_module_response", "Модуль вернул некорректный ответ.")
+        return {"status": reply["status"], "headers": dict(reply.get("headers") or {}), "body": reply["body"]}
 
 
 def event_id(value):

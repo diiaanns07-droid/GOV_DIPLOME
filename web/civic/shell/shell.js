@@ -14,6 +14,9 @@
   // Тексты (раунд 14): словари R11 через BirgeShell.t, запасной словарь — shell-text.js. Русский — дословно прежний.
   const T = (key, params) => (window.BirgeShell ? window.BirgeShell.t(key, params)
     : window.BirgeShellText ? window.BirgeShellText.text(key, params, "ru") : key);
+  // Вид «Акимат / Житель» и язык из шапки Birge (birge.js).
+  const birgeMode = () => window.BirgeShell?.mode || "akimat";
+  const birgeLang = () => window.BirgeShell?.lang?.() || "ru";
   const MODE_KEY = "civic.mode.v1";
   const $c = (id) => document.getElementById(id);
   const el = (tag, attrs, text) => {
@@ -175,14 +178,18 @@
   root.innerHTML = `
     <div id="civic-panel" class="civic-panel" data-sheet="half">
       <button type="button" id="civic-sheet-handle" class="civic-sheet-handle" aria-expanded="false"><i></i></button>
-      <header class="civic-head">
-        <span class="eyebrow" data-t="shell.panel.eyebrow"></span>
-        <h1 data-t="shell.panel.title"></h1>
-        <p id="civic-data-note" class="civic-data-note"></p>
-      </header>
       <div id="civic-state" class="civic-state" role="status" aria-live="polite"></div>
       <div id="civic-scroll" class="civic-scroll">
-        <div id="civic-map-root" class="civic-slot"></div>
+        <!-- B1: «Карта жалоб» (R07) — главное содержимое панели Birge; ниже — реестр работ раунда 13. -->
+        <div id="birge-heat-root" class="civic-slot birge-heat-slot"></div>
+        <section class="civic-works" aria-labelledby="civic-works-title">
+          <header class="civic-head">
+            <span class="eyebrow" data-t="shell.panel.eyebrow"></span>
+            <h2 id="civic-works-title" data-t="shell.panel.title"></h2>
+            <p id="civic-data-note" class="civic-data-note"></p>
+          </header>
+          <div id="civic-map-root" class="civic-slot"></div>
+        </section>
         <section id="civic-feedback-box" class="civic-box" hidden data-t-attr="aria-label:shell.feedback.label">
           <div class="civic-box-head"><h2 data-t="shell.feedback.title"></h2><button type="button" class="civic-close" data-close="feedback" data-t-attr="aria-label:shell.feedback.close">×</button></div>
           <div id="civic-feedback-root" class="civic-slot"></div>
@@ -191,6 +198,7 @@
           <div id="civic-assistant-root" class="civic-slot"></div>
         </section>
       </div>
+      <div id="birge-complaint-root" class="birge-complaint-root"></div>
       <footer class="civic-foot">
         <button type="button" id="civic-staff-button" class="btn" data-t="shell.staff.open"></button>
         <button type="button" id="civic-scenarios-button" class="btn" data-t="shell.scenarios.open"></button>
@@ -238,6 +246,7 @@
     for (const node of root.querySelectorAll("[data-t]")) node.textContent = T(node.dataset.t);
     const handle = $c("civic-sheet-handle");
     handle?.setAttribute("aria-label", T(S.sheet === "full" ? "shell.sheet.collapse" : "shell.sheet.expand"));
+    S.mounted.heat?.setLang?.(birgeLang());
     if (S.mode !== "civic") return;
     describeData();
     if (S.selected) S.mounted.explore?.setView?.(selectedViewText(), "object");
@@ -252,6 +261,7 @@
   const moduleFor = (name) => ({
     map: window.CivicMap, editor: window.CivicEditor, feedback: window.CivicFeedback,
     scenarios: window.CivicScenarios, assistant: window.CivicAssistant, scenarioAssistant: window.CivicAssistant,
+    heat: window.CivicHeat, complaint: window.BirgeComplaint,  // B1: R07, R09 (раунд 14)
   })[name] || null;
   const isFallback = () => false;
   // Нет файла модуля / модуль упал при запуске: без технических слов (UX_BRIEF правило 4); подробности — в консоли.
@@ -344,6 +354,65 @@
       onFeedback: (target) => openFeedback(target),
     });
     if (S.selected) S.mounted.map?.selectObject?.(S.selected);
+    mountBirgeModules();
+  }
+  // ---------------------------------------------------------------- модули раунда 14 (B1)
+  // Запросы тепловой карты R07 (её опция fetch): сотруднику — X-CSRF-Token (R09 требует его для «Взять в работу»
+  // и «Исправлено»), «Я тоже» — X-Birge-Device того же устройства, что у формы жалобы R09 (ключ birge.device),
+  // чтобы одно устройство не отметилось дважды через карту и через форму.
+  function birgeDevice() {
+    let id = null;
+    try { id = localStorage.getItem("birge.device"); } catch { /* приватный режим */ }
+    if (!id || !/^[A-Za-z0-9_-]{16,80}$/.test(id)) {
+      const bytes = new Uint8Array(18);
+      crypto.getRandomValues(bytes);
+      id = "d-" + Array.from(bytes, (b) => (b % 36).toString(36)).join("");
+      try { localStorage.setItem("birge.device", id); } catch { /* только на эту вкладку */ }
+    }
+    return id;
+  }
+  function birgeFetch(url, init = {}) {
+    if (String(init.method || "GET").toUpperCase() === "GET") return fetch(url, init);
+    const headers = new Headers(init.headers || {});
+    if (session.authenticated && session.csrfToken) headers.set("X-CSRF-Token", session.csrfToken);
+    if (/\/metoo$/.test(new URL(url, location.href).pathname)) headers.set("X-Birge-Device", birgeDevice());
+    return fetch(url, { ...init, headers, credentials: "same-origin" });
+  }
+  // R07 «Карта жалоб» в панели и R09 «Сообщить о проблеме» (кнопка видна только жителю, birge.css).
+  function mountBirgeModules() {
+    if (!S.mounted.heat && moduleFor("heat")) {
+      mount("heat", $c("birge-heat-root"), { map: currentMap(), role: birgeMode(), lang: birgeLang(), fetch: birgeFetch });
+      openTargetFromLink();
+    }
+    if (!S.mounted.complaint && moduleFor("complaint")) {
+      const m = currentMap(), complaint = window.BirgeComplaint;
+      let adapter;
+      if (m && typeof complaint.maplibreAdapter === "function") {
+        adapter = complaint.maplibreAdapter(m);
+        // Пока житель выбирает место, карта записей не открывает свои карточки по нажатию.
+        const setPickMode = adapter.setPickMode;
+        adapter.setPickMode = (on) => {
+          S.mounted.map?.setInteractionEnabled?.(!on, "birge-complaint");
+          return typeof setPickMode === "function" ? setPickMode.call(adapter, on) : undefined;
+        };
+      }
+      // Свой контейнер: модуль ставит туда кнопку, панель и тост (position: fixed).
+      try {
+        S.mounted.complaint = complaint.mount({ root: $c("birge-complaint-root"), map: adapter, fab: true }) || {};
+      } catch (error) {
+        console.error("birge complaint mount", error);
+      }
+    }
+  }
+  // Ссылка «#target=<kind>:<id>&days=N» (R08 «Картина дня», R07): открыть цель на тепловой карте.
+  function openTargetFromLink(hash = location.hash) {
+    const m = /^#target=([a-z]+):([^&]+)(?:&days=(\d+))?$/.exec(hash || "");
+    if (!m || !S.mounted.heat) return false;
+    let id = m[2];
+    try { id = decodeURIComponent(id); } catch { /* как есть */ }
+    if (m[3]) S.mounted.heat.setFilters?.({ days: Number(m[3]) });
+    S.mounted.heat.focusTarget?.(m[1], id);
+    return true;
   }
   function remountAll() {
     if (S.mode !== "civic") return;
@@ -874,7 +943,19 @@
     setTimeout(() => { if (!window.GOVTECH?.active && S.mode === "school") { S.mode = "training"; syncModeButtons(); } }, 0);
   });
   // Раунд 14: в виде «Житель» инструменты акимата скрыты (birge.css) — открытые ящики тоже закрываем.
+  // B1: «Горячее место» в «Картине дня» (R08) открывает цель здесь, без перезагрузки страницы.
+  document.addEventListener("birge:open-target", (event) => {
+    const target = event.detail?.target;
+    if (!target?.kind || !target?.id || S.mode !== "civic" || !S.mounted.heat) return;
+    event.preventDefault();
+    window.BirgeShell?.setSection?.("map");
+    if (event.detail.days) S.mounted.heat.setFilters?.({ days: Number(event.detail.days) });
+    S.mounted.heat.focusTarget?.(target.kind, target.id);
+  });
   document.addEventListener("birge:mode", (event) => {
+    S.mounted.heat?.setRole?.(event.detail?.mode);
+    // Вид «Акимат»: панель жителя (форма жалобы, «Мои обращения») закрывается — она перекрыла бы карточку цели.
+    if (event.detail?.mode === "akimat") S.mounted.complaint?.close?.();
     if (event.detail?.mode !== "resident") return;
     if (!$c("civic-scenarios").hidden) closeScenarios();
     if (!$c("civic-moderation").hidden) closeModeration();
@@ -898,6 +979,7 @@
     const hash = location.hash.replace(/^#/, "");
     if (hash === "training" || hash === "school") return hash;
     if (hash.startsWith("civic-receipt=")) return "civic";   // R06 receipt link opens the civic map
+    if (hash.startsWith("target=")) return "civic";          // B1: цель тепловой карты (R07/R08)
     if (hash.startsWith("object=")) {
       try { S.selected = decodeURIComponent(hash.slice(7)) || null; } catch { S.selected = null; }
       return "civic";
@@ -928,6 +1010,9 @@
     get selected() { return S.selected; },
     get mapView() { return S.mounted.map?.getState?.().view || null; },  // R03 view: list | card | pick (read-only)
     get modules() { return S.modules ? JSON.parse(JSON.stringify(S.modules)) : null; },
+    // B1: «Мои обращения» жителя (R09) — из шапки Birge.
+    openMine() { S.mounted.complaint?.openMine?.(); },
+    get heat() { return S.mounted.heat || null; },
     // Раунд 14: CSRF-токен вошедшего сотрудника для клиента API v2 (birge.js); null, если не вошёл.
     csrfToken() { return session.authenticated ? session.csrfToken : null; },
     isFallback,
@@ -955,6 +1040,7 @@
   window.addEventListener("hashchange", () => {
     const hash = location.hash.replace(/^#/, "");
     if (hash.startsWith("civic-receipt=")) { if (S.mode !== "civic") setMode("civic"); else openReceiptFromLink(); return; }
+    if (hash.startsWith("target=")) { if (S.mode !== "civic") setMode("civic"); else openTargetFromLink(); return; }
     if (hash === "training" || hash === "school" || hash === "civic") { setMode(hash); return; }
     if (!hash.startsWith("object=")) return;
     let id = null;

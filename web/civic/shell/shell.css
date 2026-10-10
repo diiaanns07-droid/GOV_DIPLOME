@@ -197,3 +197,13 @@ body[data-civic-drawer="open"].civic-mode .civic-panel { visibility: hidden; }
   body[data-civic-drawer="open"].civic-mode .map-tools,
   body[data-civic-drawer="open"].civic-mode:has(#civic-scenarios:not([hidden])) .map-tools { right: 412px; }
 }
+
+/* B1: в панели сначала «Карта жалоб» (R07), ниже — раздел реестра работ раунда 13 со своим заголовком. */
+.birge-heat-slot:empty { display: none; }
+.civic-works { margin-top: 16px; }
+.civic-works .civic-head { margin: 0 -16px 8px; padding: 14px 16px 10px; border-top: 1px solid var(--line); }
+.civic-head h2 { margin: 2px 0 4px; font-size: 20px; line-height: 1.2; letter-spacing: -.3px; }
+@media (max-width: 760px) {
+  .civic-works .civic-head { margin: 0 -12px 8px; padding: 10px 12px 8px; }
+  .civic-head h2 { font-size: 18px; }
+}

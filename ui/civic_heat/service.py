@@ -66,6 +66,16 @@ class HeatService:
         self._demo_records = list(records)
         self.invalidate()
 
+    def records(self, since=None):
+        """Записи жалоб v2 — те же, по которым считается карта (для «Картины дня» R08).
+        Патч R08 (research/round-14-results/R08/INTEGRATION.txt §4), применён R01 в сборке B1."""
+        return self._records(since)
+
+    @property
+    def generation(self) -> int:
+        """Растёт при каждом invalidate(): по нему R08 сбрасывает свой кэш."""
+        return self._generation
+
     def invalidate(self) -> None:
         """Сбросить кэш: новая жалоба, «Я тоже» или смена статуса. Вызывать из R09."""
         with self._lock:
