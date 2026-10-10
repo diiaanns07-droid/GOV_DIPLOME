@@ -160,7 +160,7 @@ web/civic/build3d/demo.html и data/demo-basemap.json — только для д
      «Қатарынан тым көп әрекет жасалды. Бір минуттан кейін қайталаңыз.» — вычитать и добавить в словарь.
 3.0 Ночь 1: в словаре R11 (8451468) все 43 ключа R05 есть, kk совпадает. НОВЫЕ 2 (метка группы проектов, R10 B-026):
       build3d.cluster        ru {one:"{n} проект", few:"{n} проекта", many:"{n} проектов"} | kk "{n} жоба"
-      build3d.cluster.open   «{count} рядом — показать ближе» | «Қатар {count} — жақыннан көрсету» (aria; вычитать kk)
+      build3d.cluster.open   «{count} рядом — показать ближе» | «Жақын жерде {count} — жақындатып көрсету» (aria; вычитать kk)
     Файл i18n_build3d.json — 45 ключей; i18n_tools add добавит только эти 2.
 3.1 Ключи: research/round-14-results/R05/i18n_build3d.json — 43 ключа build3d.* в вашем формате
     {key:{ru, kk, where}} (i18n_tools add/check — PASS). В вашей 6102dfb — 40; НОВЫЕ 3 (вычитать kk):

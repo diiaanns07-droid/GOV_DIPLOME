@@ -164,7 +164,8 @@ async function waitReady(page, phase = "ready") {
   if (phase === "ready") await idle(page);
 }
 async function idle(page) {
-  await page.waitForFunction(() => __map.loaded() && __map.areTilesLoaded() && !__b3d.getState().animating, null, { timeout: 60000 });
+  // !isMoving: «тайлы загружены» бывает и посреди полёта камеры (fitBounds/easeTo) — ждать и его конца.
+  await page.waitForFunction(() => __map.loaded() && __map.areTilesLoaded() && !__map.isMoving() && !__b3d.getState().animating, null, { timeout: 60000 });
 }
 const state = (page) => page.evaluate(() => __b3d.getState());
 // Вернуть модуль в исходное состояние между проверками и поставить камеру на известный вид.
@@ -880,7 +881,9 @@ await check("r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk", async () =
       if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `b026_cluster_${vp.width}_${lang}.png`) });
       const z0 = await p.evaluate(() => __map.getZoom());
       await (touch.hasTouch ? p.tap(".b3d-label--cluster") : p.click(".b3d-label--cluster"));
-      await p.waitForTimeout(200);
+      // Полёт камеры (fitBounds, 700 мс) — ждать его конца: «тайлы загружены» бывает и посреди полёта.
+      await p.waitForFunction(() => __map.isMoving(), null, { timeout: 2000 }).catch(() => {});
+      await p.waitForFunction(() => !__map.isMoving(), null, { timeout: 10000 });
       await idle(p);
       const near = await p.evaluate(() => ({ zoom: +__map.getZoom().toFixed(2), full: document.querySelectorAll(".b3d-label:not(.b3d-label--dot)").length,
         clusters: document.querySelectorAll(".b3d-label--cluster").length }));
