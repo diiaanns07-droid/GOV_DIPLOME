@@ -14,7 +14,7 @@
 "use strict";
 const { chromium } = require("playwright");
 const fs = require("fs"), path = require("path");
-const { NOISE, uiScreen, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
+const { NOISE, TAB_LIMIT, uiScreen, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
 
 const args = Object.fromEntries(process.argv.slice(2).reduce((acc, a, i, all) => {
   if (a.startsWith("--")) acc.push([a.slice(2), all[i + 1] && !all[i + 1].startsWith("--") ? all[i + 1] : true]);
@@ -67,7 +67,7 @@ async function open(browser, url, w, h, lang, storage) {
         await ru.ctx.close();
         continue;
       }
-      const ruLines = await cyrLines(ru.page);
+      const ruLines = await cyrLines(ru.page), ruAll = await cyrLines(ru.page, { all: true });
       await ru.ctx.close();
       for (const lang of ["ru", "kk"]) {
         const { ctx, page } = await open(browser, screen.url, w, h, lang, screen.storage);
@@ -82,11 +82,13 @@ async function open(browser, url, w, h, lang, storage) {
         if (s.mapBadges) add(screen, size, lang, "значки на карте ≥ 24 px (UX_SPEC §5)", s.mapBadgesUnder24 === 0 ? "PASS" : "FAIL", { badges: s.mapBadges, under24: s.mapBadgesUnder24 });
         if (lang === "kk") {
           const same = untranslated(await cyrLines(page), ruLines);
-          add(screen, size, lang, "казахский полный (нет русских строк)", same.length === 0 ? "PASS" : "FAIL", { n: same.length, ex: same.slice(0, 6) });
+          add(screen, size, lang, "казахский полный — на экране (нет русских строк)", same.length === 0 ? "PASS" : "FAIL", { n: same.length, ex: same.slice(0, 6) });
+          const sameAll = untranslated(await cyrLines(page, { all: true }), ruAll);
+          add(screen, size, lang, "казахский полный — вся страница с прокруткой панелей", sameAll.length === 0 ? "PASS" : "FAIL", { n: sameAll.length, ex: sameAll.slice(0, 6) });
         }
         if (w >= 1024 && screen.primary) {
           const f = await focusToPrimary(page, new RegExp(screen.primary, "i"));
-          add(screen, size, lang, "Tab до главной кнопки, рамка фокуса видна", f.primary && f.ring ? "PASS" : "FAIL", f);
+          add(screen, size, lang, `Tab до главной кнопки (≤ ${TAB_LIMIT}), рамка фокуса видна`, f.primary && f.ring && f.tabs <= TAB_LIMIT ? "PASS" : "FAIL", f);
         }
         add(screen, size, lang, "консоль без ошибок", page.errs.length === 0 ? "PASS" : "FAIL", page.errs.slice(0, 4));
         await ctx.close();

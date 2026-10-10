@@ -36,7 +36,7 @@ const STOP = args.stop ? (([lon, lat, id, ...name]) => ({ id, name: name.join(",
   : { id: "osm-node-4109037549", name: "Хан Шатыр", point: [71.406553, 51.131155] };
 const NURA_BBOX = "71.375,51.115,71.420,51.140";
 const DEVICE = "r10-e2e-device-" + Date.now();
-const { NOISE, uiScreen, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
+const { NOISE, TAB_LIMIT, uiScreen, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
 
 // Python: переменная PYTHON (например .venv\Scripts\python на Windows), иначе python3 / python.
 const PY = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
@@ -369,11 +369,12 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
 
   // 0б. Казахский полный: на экране kk не должно остаться русских строк из экрана ru (кроме имён и чисел).
   if (lang === "kk") {
-    const kkLines = await cyrLines(page);
+    const kkLines = await cyrLines(page), kkAll = await cyrLines(page, { all: true });
     if (await clickText(page, /^РУС$/, { wait: 1000 })) {
-      const same = untranslated(kkLines, await cyrLines(page));
+      const same = untranslated(kkLines, await cyrLines(page)), sameAll = untranslated(kkAll, await cyrLines(page, { all: true }));
       await setLang();
-      step("0", "ҚАЗ: нет строк, оставшихся по-русски", same.length === 0, { n: same.length, ex: same.slice(0, 8) });
+      step("0", "ҚАЗ: на экране нет строк, оставшихся по-русски", same.length === 0, { n: same.length, ex: same.slice(0, 8) });
+      step("0", "ҚАЗ: во всей странице (с прокруткой панелей) нет строк по-русски", sameAll.length === 0, { n: sameAll.length, ex: sameAll.slice(0, 8) });
     }
   }
 
@@ -382,7 +383,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const startLabel = T(dict, "complaint.start.button", lang === "kk" ? "Мәселе туралы хабарлау" : "Сообщить о проблеме");
   if (!mobile) {
     const f = await focusToPrimary(page, textRe(startLabel));
-    step("1", "клавиатура: Tab доходит до главной кнопки, рамка фокуса видна", f.primary && f.ring, f);
+    step("1", `клавиатура: Tab доходит до главной кнопки (≤ ${TAB_LIMIT}), рамка фокуса видна`, f.primary && f.ring && f.tabs <= TAB_LIMIT, f);
   }
   const started = await clickText(page, textRe(startLabel), { wait: 1500 });
   // Форма жалобы — диалог с заголовком шага «Где проблема?»; всё дальше ищем только внутри него
@@ -449,9 +450,11 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     return { map: true, layers: layers.length, rendered, badges };
   }, STOP.point);
   // Легенда: подпись из словаря R11 или запасная R07 (в ранних словарях ключа heat.legend ещё нет).
+  // На телефоне R07 показывает компактную легенду без заголовка — тогда достаточно видимых ступеней «1–2» и «10+».
   let legend = false;
   for (const txt of [T(dict, "heat.legend", null), T(dict, "heat.legend.title", null), lang === "kk" ? "Қанша адам хабарлады" : "Сколько человек сообщили"])
     if (txt && !legend) legend = await visibleText(page, textRe(txt));
+  if (!legend) legend = (await visibleText(page, /^1[–-]2$/)) && (await visibleText(page, /^10\+$/));
   step("3", "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна", heat.map && heat.rendered > 0 && heat.badges > 0 && legend, { ...heat, legend }, await shot("3-heat"));
 
   // 4. «Картина дня».
