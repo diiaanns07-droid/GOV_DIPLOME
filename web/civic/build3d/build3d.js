@@ -82,6 +82,9 @@
       "build3d.near.lamps": "На участке уже отмечены фонари: {n}",
       "build3d.near.source": "по данным OpenStreetMap",
       "build3d.card.yard": "Двор: {name}",
+      "build3d.resident.hint": "Нажмите на проект, чтобы проголосовать",
+      "build3d.resident.empty": "Здесь пока нет проектов",
+      "build3d.demo.title": "3D-превью",
     },
     kk: {
       "build3d.loading": "3D жүктеліп жатыр…",
@@ -124,6 +127,9 @@
       "build3d.near.lamps": "Бөлікте шамдар белгіленген: {n}",
       "build3d.near.source": "OpenStreetMap деректері бойынша",
       "build3d.card.yard": "Аула: {name}",
+      "build3d.resident.hint": "Дауыс беру үшін жобаны басыңыз",
+      "build3d.resident.empty": "Мұнда әзірге жоба жоқ",
+      "build3d.demo.title": "3D-көрініс",
     },
   };
 
@@ -280,6 +286,8 @@
   var BUILD_MS = 1200; // анимация постройки
   var REMOVE_MS = 320;
   var ROTATE_STEP = 15;
+  var PLACE_ZOOM = 17.5; // масштаб, на котором модели хорошо видны (UX_REVIEW день 3 #20)
+  var VIEW_ZOOM = 17.4; // «показать проекты» — тот же крупный план
   var LAYER_ID = "civic-build3d";
   var OUTLINE_COLOR = 0x176b4a; // пунктир границы проекта (бренд)
   var OUTLINE_SELECTED = 0x2f7fd6; // выбранный проект — цвет фокуса ui-kit
@@ -396,7 +404,17 @@
       if (S.mode === "placing") return renderPlacing();
       if (S.selected && S.objects[S.selected] && o.renderCard) return renderCard(S.objects[S.selected].p);
       if (o.role === "akimat") return renderCatalog();
-      dock.setAttribute("data-state", "empty");
+      renderResidentHint();
+    }
+
+    // Житель: каталога нет, но есть понятная подсказка, что делать (UX_REVIEW день 3 #24).
+    function renderResidentHint() {
+      var count = Object.keys(S.objects).length;
+      dock.setAttribute("data-state", "hint");
+      var line = el("p", "b3d-hint b3d-hint--lead", { role: "status" });
+      line.appendChild(icon(count ? "thumb-up" : "info", o.iconsUrl));
+      line.appendChild(el("span", "", { text: t(count ? "build3d.resident.hint" : "build3d.resident.empty") }));
+      dock.appendChild(line);
     }
 
     function renderLoading() {
@@ -1179,8 +1197,8 @@
         var lab = it.obj.label;
         var compact = zoom < 14;
         var hiddenNow = lab.classList.contains("b3d-label--hidden"); // строится/удаляется — места не занимает
-        var lw = compact ? 18 : it.obj.labelSize.w,
-          lh = compact ? 18 : it.obj.labelSize.h;
+        var lw = compact ? 20 : it.obj.labelSize.w,
+          lh = compact ? 20 : it.obj.labelSize.h;
         var rect = { x: it.sp.x - lw / 2, y: it.sp.y - lh, w: lw, h: lh };
         if (!compact && !hiddenNow) {
           for (var i = 0; i < placed.length; i++) {
@@ -1270,8 +1288,10 @@
       } else setHint(touch ? "build3d.hint.touch" : "proposal.place_hint");
       setTool(true);
       ensureExisting();
-      if (o.autoZoom && map.getZoom() < 15.5) {
-        map.easeTo({ zoom: 16.2, duration: reducedMotion() ? 0 : 700 });
+      // UX_REVIEW день 3 #20: на 16-м масштабе сквер — 70 px, фонари — штрихи. Выбрав объект в каталоге,
+      // пользователь сам просит размещение, поэтому плавно приближаем до 17.5 (наклон и поворот не трогаем).
+      if (o.autoZoom && map.getZoom() < PLACE_ZOOM - 0.5) {
+        map.easeTo({ zoom: PLACE_ZOOM, duration: reducedMotion() ? 0 : 700 });
       }
       updateGhost(true);
       render();
@@ -1505,8 +1525,35 @@
 
     // ── Ввод на карте ──
 
+    // Подсказка, что модель можно нажать: курсор-указатель над объектом (UX_REVIEW день 3 #21).
+    var hoverScheduled = false,
+      hoverPoint = null,
+      cursorOwned = false;
+    function onHover(e) {
+      hoverPoint = e.point;
+      if (hoverScheduled) return;
+      hoverScheduled = true;
+      (root.requestAnimationFrame || setTimeout)(function () {
+        hoverScheduled = false;
+        if (S.mode === "placing" || !hoverPoint) return;
+        var hit = hitTest(hoverPoint);
+        var cv = map.getCanvas();
+        if (hit) {
+          cv.style.cursor = "pointer";
+          cursorOwned = true;
+        } else if (cursorOwned) {
+          cv.style.cursor = ""; // возвращаем только свой курсор, чужой (например, перекрестие редактора) не трогаем
+          cursorOwned = false;
+        }
+        Object.keys(S.objects).forEach(function (id) {
+          if (S.objects[id].label) S.objects[id].label.classList.toggle("b3d-label--hover", id === hit);
+        });
+      });
+    }
+
     function onMouseMove(e) {
-      if (S.mode !== "placing" || !S.ghost) return;
+      if (S.mode !== "placing") return onHover(e);
+      if (!S.ghost) return;
       var g = S.ghost;
       var ll = [e.lngLat.lng, e.lngLat.lat];
       if (S.kind === "lighting") {
@@ -1840,8 +1887,63 @@
       });
       render();
       emitSelect(id ? S.objects[id].p : null);
-      if (id) focusDock("[data-action=vote-up]");
+      if (id) {
+        focusDock("[data-action=vote-up]");
+        keepAboveDock(S.objects[id]);
+      }
       repaint();
+    }
+
+    // Выбранный объект не должен прятаться под карточкой (UX_REVIEW день 3 #21): если его точка на земле
+    // ниже верха панели (или у края экрана), плавно сдвигаем карту так, чтобы объект встал над карточкой.
+    // Это ответ на нажатие пользователя, поэтому правило «карта сама не двигается» не нарушается.
+    function keepAboveDock(obj) {
+      if (!obj || !lastMatrix) return;
+      var canvas = map.getCanvas();
+      var cr = canvas.getBoundingClientRect();
+      var w = canvas.clientWidth,
+        h = canvas.clientHeight;
+      var dr = dock.getBoundingClientRect();
+      var dockTop = dr.height ? Math.min(h, dr.top - cr.top) : h;
+      var ground = worldOf(obj, obj.p.kind === "lighting" ? [obj.labelPoint[0], obj.labelPoint[1], 0] : [0, 0, 0]);
+      var sp = projectLocal(ground.x, ground.y, 0);
+      if (!sp) return;
+      var margin = 40;
+      var targetY = Math.max(margin + 60, Math.min(dockTop - 90, dockTop * 0.6));
+      var dx = sp.x < margin || sp.x > w - margin ? sp.x - w / 2 : 0;
+      var dy = sp.y > dockTop - 70 || sp.y < margin + 40 ? sp.y - targetY : 0;
+      if (Math.abs(dx) < 2 && Math.abs(dy) < 2) return;
+      map.panBy([dx, dy], { duration: reducedMotion() ? 0 : 450 });
+    }
+
+    // Крупный план проектов (для оболочки: открыли «3D-превью» — камера к проектам; UX_REVIEW день 3 #20).
+    // Не «вписать всё»: с наклоном 60° это даёт масштаб ~16, где модели не видны. Берём проект, ближайший
+    // к центру группы, и ставим его над панелью на масштабе 17.4; соседние проекты остаются в кадре.
+    function flyToProposals(how) {
+      how = how || {};
+      var anchors = Object.keys(S.objects).map(function (id) {
+        var p = S.objects[id].p;
+        return p.kind === "lighting" ? p.geometry.coordinates[Math.floor(p.geometry.coordinates.length / 2)] : p.geometry.coordinates;
+      });
+      if (!anchors.length) return false;
+      var cx = 0,
+        cy = 0;
+      anchors.forEach(function (a) {
+        cx += a[0] / anchors.length;
+        cy += a[1] / anchors.length;
+      });
+      var best = anchors[0];
+      anchors.forEach(function (a) {
+        if (Core.haversineM(a, [cx, cy]) < Core.haversineM(best, [cx, cy])) best = a;
+      });
+      var dh = dock.getBoundingClientRect().height || 0;
+      map.easeTo({
+        center: best,
+        zoom: how.zoom || VIEW_ZOOM,
+        padding: { top: 40, right: 0, bottom: Math.round(dh * 0.8), left: 0 },
+        duration: how.duration != null ? how.duration : reducedMotion() ? 0 : 900,
+      });
+      return true;
     }
 
     function emitSelect(p) {
@@ -1890,6 +1992,7 @@
       },
       cancel: cancel,
       select: select,
+      flyToProposals: flyToProposals,
       refresh: function () {
         return store ? loadProposals() : ready;
       },
@@ -1924,6 +2027,9 @@
           proposals: Object.keys(S.objects).map(function (id) {
             return JSON.parse(JSON.stringify(S.objects[id].p));
           }),
+          get items() {
+            return this.proposals; // то же под именем items (так их ищет сценарий R11)
+          },
           animating: anims.length > 0,
           memory: renderer ? { geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs ? renderer.info.programs.length : null } : null,
           origin: origin ? origin.slice() : null,
@@ -1964,5 +2070,13 @@
     return handle;
   }
 
-  root.CivicBuild3D = { mount: mount, STRINGS: STRINGS, version: "r14-1" };
+  root.CivicBuild3D = {
+    mount: mount,
+    STRINGS: STRINGS,
+    // Перевод ключей модуля для страницы-хозяина (демо): словарь R11, если ключ уже там, иначе строки модуля.
+    t: function (key, params) {
+      return makeT(root.BirgeI18n || null)(key, params);
+    },
+    version: "r14-2",
+  };
 })(typeof self !== "undefined" ? self : this);

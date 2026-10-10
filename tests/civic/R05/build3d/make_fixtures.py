@@ -174,6 +174,12 @@ def main(out_dir=None):
         line = [[r(x), r(y)] for x, y in e["geometry"]]
         (named if (e.get("name") or "").strip() else other).append(line)
     nura = [d for d in districts if d["id"] == "nura"]
+    # Здания для офлайн-демо — только если LOCAL их скачал (INTEGRATION.txt, LOCAL-R05-3). Нет файла — подложка без домов.
+    buildings_raw = os.path.join(OSM_OBJECTS, "raw", "buildings_nura.json.gz")
+    buildings_file = None
+    if os.path.exists(buildings_raw):
+        buildings_file = "demo-buildings.json"
+        write_buildings(buildings_raw, os.path.join(out_dir, buildings_file))
     basemap = {
         "schema": "birge-build3d-demo-basemap-v1",
         "purpose": "Только для web/civic/build3d/demo.html без интернета. В сборке — подложка R01.",
@@ -183,10 +189,38 @@ def main(out_dir=None):
         "other": other,
         "nura": nura[0]["rings"] if nura else [],
     }
+    if buildings_file:
+        basemap["buildings"] = buildings_file
     print(dump("demo-basemap.json", basemap, out_dir), len(named), "named", len(other), "other")
     print(write_demo_proposals(graph, out_dir))
     existing = build_existing()
     print(dump("astana-existing.json", existing, out_dir), {k: len(v) for k, v in existing["points"].items()}, len(existing["yards"]), "yards")
+
+
+def write_buildings(raw_path, out_path):
+    """Контуры зданий OSM фокус-области → GeoJSON для fill-extrusion в demo.html (высота из height / этажей)."""
+    with gzip.open(raw_path, "rt", encoding="utf-8") as fh:
+        elements = json.load(fh)["elements"]
+    feats = []
+    for el in elements:
+        ring = [[r(g["lon"]), r(g["lat"])] for g in el.get("geometry", []) if g]
+        if el.get("type") != "way" or len(ring) < 4 or ring[0] != ring[-1]:
+            continue
+        tags = el.get("tags", {})
+        height = None
+        try:
+            height = float(str(tags.get("height", "")).replace("m", "").strip())
+        except ValueError:
+            pass
+        if not height and str(tags.get("building:levels", "")).isdigit():
+            height = int(tags["building:levels"]) * 3.2
+        feats.append({"type": "Feature", "properties": {"id": "osm-way-%d" % el["id"], "height": round(height or 9.0, 1)},
+                      "geometry": {"type": "Polygon", "coordinates": [ring]}})
+    feats.sort(key=lambda f: f["properties"]["id"])
+    with open(out_path, "w", encoding="utf-8") as fh:
+        json.dump({"type": "FeatureCollection", "license": "ODbL-1.0", "attribution": ATTRIBUTION, "features": feats},
+                  fh, ensure_ascii=False, separators=(",", ":"))
+        fh.write("\n")
 
 
 # ── Реальные объекты OSM (LOCAL-1) ──
@@ -372,13 +406,86 @@ def demo_proposals(graph):
     ]
 
 
+# Сквер и детская площадка — примеры ВНУТРИ настоящих дворов OSM (landuse=residential) у ул. Сыганак,
+# чтобы стартовый вид демо показывал модели, а не одни подписи (UX_REVIEW R11, день 3 #20).
+# Пятно (с запасом 3 м) целиком внутри полигона двора; поворот — вдоль самой длинной стороны двора.
+YARD_EXAMPLE_CENTER = (71.4009, 51.1276)
+YARD_EXAMPLE_KINDS = (("square", 40, 30), ("playground", 24, 18))
+YARD_MARGIN_M = 3.0
+
+
+def point_in_ring_xy(x, y, ring):
+    c = False
+    j = len(ring) - 1
+    for i in range(len(ring)):
+        xi, yi = ring[i]
+        xj, yj = ring[j]
+        if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / (yj - yi) + xi:
+            c = not c
+        j = i
+    return c
+
+
+def fit_in_yard(ring_ll, w, d):
+    """Место и поворот (азимут, по часовой) для прямоугольника w×d внутри кольца двора или None."""
+    c0 = (sum(p[0] for p in ring_ll) / len(ring_ll), sum(p[1] for p in ring_ll) / len(ring_ll))
+    ring = [to_local(c0, p) for p in ring_ll]
+    best_len, angle = 0, 0.0
+    for (ax, ay), (bx, by) in zip(ring, ring[1:]):
+        L = math.hypot(bx - ax, by - ay)
+        if L > best_len:
+            best_len, angle = L, math.atan2(by - ay, bx - ax)
+    xs = [p[0] for p in ring]
+    ys = [p[1] for p in ring]
+    hw, hd = w / 2 + YARD_MARGIN_M, d / 2 + YARD_MARGIN_M
+    # Перебор центров по сетке 2 м от центра двора наружу — первый, где все 4 угла и середины сторон внутри.
+    cands = []
+    for gx in range(int(min(xs)), int(max(xs)) + 1, 2):
+        for gy in range(int(min(ys)), int(max(ys)) + 1, 2):
+            cands.append((math.hypot(gx, gy), gx, gy))
+    cands.sort()
+    ca, sa = math.cos(angle), math.sin(angle)
+    for _, cx, cy in cands:
+        pts = [(sx * hw, sy * hd) for sx in (-1, 0, 1) for sy in (-1, 0, 1) if sx or sy]
+        if all(point_in_ring_xy(cx + px * ca - py * sa, cy + px * sa + py * ca, ring) for px, py in pts):
+            lon, lat = from_local(c0, (cx, cy))
+            # Ось x модели (ширина) — вдоль стороны angle; азимут оси x = 90 + rotation_deg.
+            bearing_x = (90 - math.degrees(angle)) % 360
+            return (lon, lat), round((bearing_x - 90) % 360)
+    return None
+
+
+def yard_examples(existing):
+    out = []
+    used = set()
+    yards = sorted(existing["yards"], key=lambda y: mf_dist(YARD_EXAMPLE_CENTER, (
+        sum(p[0] for p in y[4]) / len(y[4]), sum(p[1] for p in y[4]) / len(y[4]))))
+    for kind, w, d in YARD_EXAMPLE_KINDS:
+        for y in yards[:40]:
+            if y[0] in used:
+                continue
+            fit = fit_in_yard(y[4], w, d)
+            if not fit:
+                continue
+            (lon, lat), rot = fit
+            used.add(y[0])
+            out.append({"id": "p-demo-%s-%s" % (kind, y[0]), "kind": kind,
+                        "geometry": {"type": "Point", "coordinates": [r(lon), r(lat)]}, "rotation_deg": rot,
+                        "status": "proposal", "year": 2027, "district": "nura", "demo": True,
+                        "created_at": "2026-10-10T12:00:00+05:00", "votes_up": 41 if kind == "square" else 87,
+                        "votes_down": 3 if kind == "square" else 6, "near_street": None,
+                        "target": {"kind": "area", "id": y[0], "label_ru": y[2], "label_kk": y[3]}})
+            break
+    return out
+
+
 def write_demo_proposals(graph, out_dir=None):
     data = {
         "schema": "birge-proposals-fixture-v1",
         "purpose": "Заглушка GET /api/civic/v2/proposals (CONTRACT §7) до подключения R06. Только примеры (demo: true).",
         "source": {"streets": "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json",
                    "edges": LIGHT_EDGES + [STOP_EDGE], "license": "ODbL-1.0", "attribution": ATTRIBUTION},
-        "proposals": demo_proposals(graph),
+        "proposals": demo_proposals(graph) + yard_examples(build_existing()),
     }
     path = os.path.join(out_dir or OUT, "proposals.fixture.json")
     with open(path, "w", encoding="utf-8") as fh:
