@@ -329,6 +329,40 @@ async function colorOnlyCheck(page) {
     });
   }
 
+  // Вместе с новым R09 (ветка R09 night, complaint.js): класс html.bc-picking и свой перехват нажатий по маркерам
+  // в фазе захвата. Нажатие по значку должно дать ровно ОДИН выбор места, карточка R07 не открывается.
+  await shot(browser, "pick-with-r09-capture-1366-ru", "desktop", "?lang=ru&role=resident&view=nura", async (page) => {
+    const pre = await page.evaluate(() => {
+      const map = window.__map, container = map.getContainer();
+      document.documentElement.classList.add("bc-picking");
+      window.__picks = [];
+      map.on("click", (e) => window.__picks.push(["map", e.lngLat.lng, e.lngLat.lat]));
+      container.addEventListener("click", (e) => {            // как onMarkerClick у R09
+        const marker = e.target.closest && e.target.closest(".maplibregl-marker");
+        if (!marker || !container.contains(marker)) return;
+        e.preventDefault(); e.stopPropagation();
+        const b = marker.getBoundingClientRect(), c = map.getCanvas().getBoundingClientRect();
+        const at = map.unproject([b.left + b.width / 2 - c.left, b.top + b.height / 2 - c.top]);
+        window.__picks.push(["r09-capture", at.lng, at.lat]);
+      }, true);
+      const badge = [...document.querySelectorAll('.r07-badge[data-kind="object"]')].find((b) => {
+        const r = b.getBoundingClientRect(); return !b.hidden && r.left > 0 && r.right < innerWidth - 420 && r.top > 70 && r.bottom < innerHeight; });
+      if (!badge) return { error: "нет значка объекта" };
+      const r = badge.getBoundingClientRect();
+      return { x: r.left + r.width * 0.5, y: r.top + r.height * 0.5 };
+    });
+    if (pre.error) return pre;
+    await page.mouse.click(pre.x, pre.y);
+    await page.waitForTimeout(300);
+    return page.evaluate(() => ({ picks: window.__picks, card: !!document.querySelector(".r07-card") }));
+  }, async (page, m, x) => {
+    if (x.error) return [x.error];
+    const out = [];
+    if (!x.picks || x.picks.length !== 1) out.push("выборов места не один: " + JSON.stringify(x.picks));
+    if (x.card) out.push("в режиме выбора открылась карточка цели");
+    return out;
+  });
+
   // R10 B-025: значки — одна остановка Tab, между ними — стрелки; Enter открывает карточку
   {
     const { page, errors } = await open(browser, "desktop", "?lang=ru&role=akimat&view=nura");
@@ -591,6 +625,65 @@ async function colorOnlyCheck(page) {
     if (!/^Новая жалоба: .+\. Сообщил/.test(x.sr || "")) problems.push("экранный диктор не услышит новую жалобу: " + x.sr);
     await page.screenshot({ path: path.join(OUT, "reduced-motion-1366-ru.jpg"), type: "jpeg", quality: 82 });
     results.push({ name: "reduced-motion-1366-ru", size: "desktop", query: "", problems: problems.concat(errors), badges: 0, extra: x });
+    await page.close();
+  }
+
+  // Ревью кода (ночь): 1) прокрученная панель не прячет значки; 2) ошибка обновления — один тост, успех его закрывает;
+  // 3) «Повторить» после перерисовки панели (смена языка) повторяет действие
+  {
+    const { page, errors } = await rawPage("phone", "?lang=ru&role=akimat&view=nura");
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.waitForTimeout(800);
+    const pan = () => page.evaluate(() => new Promise((ok) => { const m = window.__map; m.once("moveend", ok); m.panBy([4, 0], { duration: 0 }); }));
+    const count = () => page.evaluate(() => window.__heat.badges().length);
+    const before = await count();
+    await page.evaluate(() => { document.getElementById("panel").scrollTop = 400; });
+    await pan();
+    await page.waitForTimeout(300);
+    const after = await count();
+    const problems = [];
+    if (!before || after < before - 2) problems.push("после прокрутки панели значки пропали: " + before + " → " + after);
+    await finish(page, errors, "panel-scrolled-375-ru", "phone", problems, { before, after });
+  }
+  {
+    let fail = false;
+    const { page, errors } = await rawPage("desktop", "?lang=ru&role=akimat&view=nura", (pg) =>
+      pg.route(HEAT_GET, (r) => (fail ? r.abort() : r.continue())));
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.waitForTimeout(500);
+    fail = true;
+    for (const d of ["7", "90", "30"]) { await page.click(`[data-days="${d}"]`); await page.waitForTimeout(700); }
+    const stacked = await page.evaluate(() => document.querySelectorAll(".r07-toast--error").length);
+    fail = false;
+    await page.click('[data-days="7"]');
+    await page.waitForFunction(() => window.__heat.state().status === "ready" && window.__heat.state().filters.days === 7, null, { timeout: 10000 }).catch(() => {});
+    await page.waitForTimeout(500);
+    const left = await page.evaluate(() => [...document.querySelectorAll(".r07-toast--error")].filter((t) => !t.classList.contains("r07-toast--out")).length);
+    const problems = [];
+    if (stacked !== 1) problems.push("тостов ошибки сразу: " + stacked + " (нужен один)");
+    if (left !== 0) problems.push("после удачной загрузки тост ошибки остался");
+    results.push({ name: "error-toast-once-1366-ru", size: "desktop", query: "", problems: problems.concat(errors), badges: 0, extra: { stacked, left } });
+    await page.close();
+  }
+  {
+    let posts = 0;
+    const { page, errors } = await rawPage("desktop", "?lang=ru&role=akimat&view=nura", (pg) =>
+      pg.route(/\/complaints\/[^/]+\/status/, (r) => { posts++; return posts === 1 ? r.fulfill({ status: 500, contentType: "application/json", body: "{}" }) : r.continue(); }));
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.click(".r07-item");
+    await page.waitForSelector('[data-act="take"], [data-act="fixed"]');
+    await page.click('[data-act="take"], [data-act="fixed"]');
+    await page.waitForSelector(".r07-toast__action", { timeout: 10000 }).catch(() => {});
+    await page.evaluate(() => document.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang: "kk" } })));   // панель перерисована
+    await page.waitForTimeout(300);
+    const firstPosts = posts;
+    await page.click(".r07-toast__action");
+    await page.waitForTimeout(1200);
+    const ok = await page.evaluate(() => [...document.querySelectorAll(".r07-toast:not(.r07-toast--error)")].map((t) => t.innerText).join(" | "));
+    const problems = [];
+    if (posts <= firstPosts) problems.push("«Повторить» после перерисовки ничего не отправил");
+    if (!/алынды|белгіленді/.test(ok)) problems.push("нет сообщения об успехе после повтора: " + ok);
+    results.push({ name: "retry-after-rerender-1366-kk", size: "desktop", query: "", problems: problems.concat(errors), badges: 0, extra: { posts, ok } });
     await page.close();
   }
 

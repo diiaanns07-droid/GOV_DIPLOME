@@ -206,7 +206,7 @@
 .r07-toast--out { opacity: 0; }
 /* Выбор места жалобой (оболочка: body.birge-picking; без неё — heat.setPickMode). Оболочка B3 гасит нажатия
    на значках (birge.css: pointer-events: none) — здесь возвращаем: значок сам передаёт карте щелчок точно в цель. */
-body.birge-picking .r07-badge[data-mode], .r07-badge.r07-badge--pick { pointer-events: auto; cursor: crosshair; }
+body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode], .r07-badge.r07-badge--pick { pointer-events: auto; cursor: crosshair; }
 @keyframes r07-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 /* ---- Значок цели на карте: кружок цвета уровня с иконкой + белая плашка с числом ---- */

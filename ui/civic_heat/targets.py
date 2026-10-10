@@ -236,31 +236,37 @@ class TargetResolver:
         return {"geometry": poly, "label_ru": "Квартал", "label_kk": "Орам", "approximate": False, "source": "cell-grid"}
 
     def resolve(self, target: dict | None, point=None) -> dict | None:
-        """→ {geometry, label_ru, label_kk, approximate, anchor, source} или None, если нечего показать."""
+        """→ {geometry, label_ru, label_kk, approximate, anchor, source} или None, если нечего показать.
+
+        В кэше — только то, что зависит от id цели (и для ячейки — от сетки и флага approximate); подпись из
+        записи жалобы накладывается на КОПИЮ: иначе текст одной жалобы приставал бы к ячейке для всех остальных."""
         target = target or {}
         tid = str(target.get("id") or "")
         kind = target.get("kind") or "area"
         key = (kind, tid) if tid else ("point", tuple(point) if point else None)
-        if tid.startswith("cell-"):
-            key = (kind, tid, cell_family(tid, point, target))   # одна id — два места (сетки R07 и R09)
+        if tid.startswith("cell-"):   # одна id — два места (сетки R07 и R09); флаг решает «Квартал» / «Примерное место»
+            key = (kind, tid, cell_family(tid, point, target), bool(target.get("approximate")))
         if key in self._cache:
-            return self._cache[key]
-        found = self._resolve(kind, tid, target, point)
-        if found:
-            found.setdefault("anchor", geo.anchor_of(found["geometry"]))
-            # R15-S11: подпись из записи жалобы — только у ячейки «примерного места», где своего названия у карты нет.
-            # Объект, участок улицы, двор подписываются по OSM/R12: запись приходит от жителя, и её подпись иначе
-            # показывалась бы всем на карте и в «Картине дня» (подмена названия любым текстом).
-            if found.get("source") in RECORD_LABEL_SOURCES:
-                if target.get("label_ru"):
-                    found["label_ru"] = str(target["label_ru"])[:80]
-                if target.get("label_kk"):
-                    found["label_kk"] = str(target["label_kk"])[:80]
-                # R09/R12 пишут «Шамамен орны»; в словаре R11 (target.kind.cell, common.tag.approx) — «Шамамен көрсетілген орын».
-                if found["label_kk"].startswith(_APPROX_KK_SHORT):
-                    found["label_kk"] = APPROX_LABELS[1] + found["label_kk"][len(_APPROX_KK_SHORT):]
-        if tid:
-            self._cache[key] = found
+            found = self._cache[key]
+        else:
+            found = self._resolve(kind, tid, target, point)
+            if found:
+                found.setdefault("anchor", geo.anchor_of(found["geometry"]))
+            # «примерное место» у точки жалобы зависит от точки — его не кэшируем по id
+            if tid and not (found and found.get("source") == "complaint-point"):
+                self._cache[key] = found
+        # R15-S11: подпись из записи жалобы — только у ячейки «примерного места», где своего названия у карты нет.
+        # Объект, участок улицы, двор подписываются по OSM/R12: запись приходит от жителя, и её подпись иначе
+        # показывалась бы всем на карте и в «Картине дня» (подмена названия любым текстом).
+        if found and found.get("source") in RECORD_LABEL_SOURCES and (target.get("label_ru") or target.get("label_kk")):
+            found = dict(found)
+            if target.get("label_ru"):
+                found["label_ru"] = str(target["label_ru"])[:80]
+            if target.get("label_kk"):
+                found["label_kk"] = str(target["label_kk"])[:80]
+            # R09/R12 пишут «Шамамен орны»; в словаре R11 (target.kind.cell, common.tag.approx) — «Шамамен көрсетілген орын».
+            if found["label_kk"].startswith(_APPROX_KK_SHORT):
+                found["label_kk"] = APPROX_LABELS[1] + found["label_kk"][len(_APPROX_KK_SHORT):]
         return found
 
     def _resolve(self, kind, tid, target, point):
@@ -371,6 +377,16 @@ def _street_labels() -> dict:
     return _street_labels_cache
 
 
+def _placeholder(name: str | None) -> bool:
+    """Общее слово вместо имени («Двор или квартал», «Нысан», «Остановка»…) — имени нет."""
+    if not name:
+        return False
+    n = name.strip().casefold()
+    words = {w.casefold() for pair in KIND_WORD.values() for w in pair}
+    words |= {w.casefold() for s in osm_objects.SETS.values() for w in s[2:4]}
+    return n in words
+
+
 def _load_json_targets(path: Path, origin: str | None = None) -> dict:
     """Читает реестр целей: {"targets": {id: {...}}} или {"items": [{id, geometry, ...}]}; иначе пусто.
     origin: "r07" — своя демо-фикстура (подписи выверены), "r12" — файлы R12 (kind = подтип, имя без типа)."""
@@ -395,14 +411,19 @@ def _load_json_targets(path: Path, origin: str | None = None) -> dict:
             c = it.get("point") or it.get("coordinates") or ([it["lon"], it["lat"]] if "lon" in it and "lat" in it else None)
             if not it.get("geometry") and c and len(c) == 2 and all(isinstance(v, (int, float)) for v in c):
                 it["geometry"] = {"type": "Point", "coordinates": [float(c[0]), float(c[1])]}
-        if origin == "r12" and not it.get("subtype") and osm_objects.plain_labels(it.get("kind")):
-            it["subtype"] = it["kind"]             # у R12 kind = bus_stop / playground / yard …
-        made = osm_objects.labels_for_subtype(it.get("subtype"), it.get("name_ru") or it.get("name"), it.get("name_kk")) \
-            if origin == "r12" and not it.get("label_ru") else None
-        if made:
-            it["label_ru"], it["label_kk"] = made
-        it.setdefault("label_ru", it.get("name_ru") or it.get("name"))
-        it.setdefault("label_kk", it.get("name_kk"))
+        name_ru, name_kk = it.get("name_ru") or it.get("name"), it.get("name_kk")
+        if origin == "r12":
+            if not it.get("subtype") and osm_objects.plain_labels(it.get("kind")):
+                it["subtype"] = it["kind"]             # у R12 kind = bus_stop / playground / yard …
+            # «Двор или квартал», «Объект» … у R12 — заглушка, а не имя: не превращать в «Двор ЖК «Двор или квартал»»
+            name_ru = None if _placeholder(name_ru) else name_ru
+            name_kk = None if _placeholder(name_kk) else name_kk
+            if not it.get("label_ru"):
+                made = osm_objects.labels_for_subtype(it.get("subtype"), name_ru, name_kk)
+                if made:
+                    it["label_ru"], it["label_kk"] = made
+        it.setdefault("label_ru", name_ru)
+        it.setdefault("label_kk", name_kk)
         if origin:
             it["_origin"] = origin
         if it.get("geometry"):

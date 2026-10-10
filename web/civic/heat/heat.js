@@ -380,11 +380,17 @@
     const toastBox = root.querySelector(".r07-toasts");
 
     // action — {label, onClick}: у ошибки есть понятное действие («Повторить»), UX_BRIEF «Тексты».
+    // Ошибка на экране одна: новая заменяет прежнюю (тост ui-kit с действием сам не закрывается), успех её закрывает.
+    function closeErrorToast() {
+      if (S.errorToast) { try { S.errorToast.close(); } catch (e) { /* уже закрыт */ } S.errorToast = null; }
+    }
     function toast(text, kind, action) {
+      if (kind === "error") closeErrorToast();
+      const keep = (h) => { if (kind === "error") S.errorToast = h; return h; };
       // В оболочке — общий тост ui-kit R11 (body, z-toast 60): не прячется под каталогом R05 и шторками (R10 B-023).
       const ui = window.BirgeUI;
       if (ui && typeof ui.toast === "function") {
-        try { ui.toast(text, { type: kind === "error" ? "error" : "ok", action }); return; } catch (e) { /* свой запасной */ }
+        try { return keep(ui.toast(text, { type: kind === "error" ? "error" : "ok", action }) || null); } catch (e) { /* свой запасной */ }
       }
       const el = document.createElement("div");
       el.className = "r07-toast" + (kind === "error" ? " r07-toast--error" : "");
@@ -392,7 +398,7 @@
       const span = document.createElement("span");
       span.textContent = text;
       el.append(span);
-      const close = () => { el.classList.add("r07-toast--out"); setTimeout(() => el.remove(), 300); };
+      const close = () => { el.classList.add("r07-toast--out"); setTimeout(() => el.remove(), 300); if (S.errorToast && S.errorToast.el === el) S.errorToast = null; };
       if (action) {
         const b = document.createElement("button");
         b.type = "button";
@@ -403,6 +409,7 @@
       }
       toastBox.append(el);
       setTimeout(close, action ? 8000 : 3600);
+      return keep({ close, el });
     }
 
     // ----- загрузка -----
@@ -440,6 +447,7 @@
         S.data = data;
         S.mode = data.mode;
         S.status = "ready";
+        closeErrorToast();   // связь вернулась — старое «Нет связи · Повторить» больше не нужно
         if (S.selected && !findItem(S.selected) && S.mode === "targets") S.selected = null;
         draw(reason === "event");
         render();
@@ -793,6 +801,24 @@
 
     // Значки не налезают друг на друга: сначала самые горячие. Не хватает места для полного значка —
     // маленькая плашка с числом (UX_REVIEW R11, день 3, №2: «а не пусто»); совсем некуда — прячем до приближения.
+    // Видимая часть элемента: панель модуля длиннее экрана и прокручивается внутри своей шторки, а скрытая
+    // (visibility: hidden у оболочки) значкам не мешает. Обрезаем по всем прокручиваемым / обрезающим предкам.
+    function visibleRect(el) {
+      if (!el || !el.isConnected || getComputedStyle(el).visibility === "hidden") return null;
+      const r = el.getBoundingClientRect();
+      let { left, top, right, bottom } = r;
+      for (let p = el.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+        const cs = getComputedStyle(p);
+        if (cs.display === "none") return null;
+        if (/(auto|scroll|hidden|clip)/.test(cs.overflowX + " " + cs.overflowY)) {
+          const q = p.getBoundingClientRect();
+          left = Math.max(left, q.left); top = Math.max(top, q.top); right = Math.min(right, q.right); bottom = Math.min(bottom, q.bottom);
+        }
+      }
+      left = Math.max(left, 0); top = Math.max(top, 0); right = Math.min(right, innerWidth); bottom = Math.min(bottom, innerHeight);
+      return right > left && bottom > top ? { left, top, right, bottom, width: right - left, height: bottom - top } : null;
+    }
+
     function declutter() {
       if (!map) return;
       const z = map.getZoom();
@@ -802,7 +828,7 @@
       const overlays = [];
       if (S.legendEl && S.legendEl.isConnected) overlays.push(S.legendEl.getBoundingClientRect());
       // Своя панель / шторка поверх карты и кнопки MapLibre: значок наполовину под ними выглядит обрезанным.
-      if (!root.contains(map.getContainer())) overlays.push(root.getBoundingClientRect());
+      if (!root.contains(map.getContainer())) { const vr = visibleRect(root); if (vr) overlays.push(vr); }
       map.getContainer().querySelectorAll(".maplibregl-ctrl-group, .maplibregl-ctrl-attrib").forEach((el) => overlays.push(el.getBoundingClientRect()));
       if (typeof opts.avoidRects === "function") overlays.push(...(opts.avoidRects() || []));
       overlays.forEach((r) => { if (r && r.width) placed.push([r.left - host.left, r.top - host.top, r.right - host.left, r.bottom - host.top]); });
@@ -865,16 +891,22 @@
       S.markers.get(next)?.el.focus({ preventScroll: true });
     }
 
-    // Житель выбирает место для жалобы (оболочка ставит body.birge-picking, R09 слушает щелчок по карте).
-    // Тогда значок не открывает карточку, а передаёт карте щелчок в точке своей цели: житель нажал на «13»
-    // у остановки — мастер получает саму остановку (UX_REVIEW R11 B1 п. 3, R10 B-019, LOCAL_B2 P1).
-    const isPicking = () => S.picking || document.body.classList.contains("birge-picking");
+    // Житель выбирает место для жалобы (оболочка ставит body.birge-picking, мастер R09 — html.bc-picking и слушает
+    // щелчок по карте). Тогда значок не открывает карточку, а передаёт карте щелчок в точке своей цели: житель нажал
+    // на «13» у остановки — мастер получает саму остановку (UX_REVIEW R11 B1 п. 3, R10 B-019, LOCAL_B2 P1).
+    // Новый R09 ловит нажатие по маркерам сам (фаза захвата) — тогда сюда событие не доходит, двойного выбора нет.
+    const isPicking = () => S.picking || document.body.classList.contains("birge-picking") ||
+      document.documentElement.classList.contains("bc-picking");
 
     function forwardPick(key, ev) {
       const m = S.markers.get(key);
       const it = m && m.item;
       if (!it || !map || !window.maplibregl) return;
       const ll = it.target.kind === "object" ? it.anchor : (m.spot || it.anchor);   // участок, двор — место значка
+      if (it.target.kind === "district") {   // район — не место жалобы: только приблизить (как у R09)
+        map.easeTo({ center: ll, zoom: Math.max(map.getZoom() + 2, 13), duration: moveMs(600) });
+        return;
+      }
       const lngLat = new window.maplibregl.LngLat(ll[0], ll[1]);
       map.fire("click", { lngLat, point: map.project(lngLat), originalEvent: ev });
     }
@@ -929,11 +961,14 @@
     }
     // Ошибка действия: что случилось + что сделать. Лимит (429) и нет входа (401/403) — без «Повторить»: повтор не поможет
     // (R15 U1). Остальное — «Проверьте связь» с кнопкой «Повторить».
-    function actionFailed(e, btn) {
+    // retry — повтор того же действия с ТЕКУЩЕЙ кнопкой: панель могла перерисоваться (язык, Esc, новая жалоба).
+    function actionFailed(e, retry) {
       if (e && e.status === 429) toast(t("heat.too_many"), "error");
       else if (e && (e.status === 401 || e.status === 403)) toast(t("heat.need_login"), "error");
-      else toast(t("heat.action_failed"), "error", { label: t("heat.retry"), onClick: () => { if (btn.isConnected) btn.click(); } });
+      else toast(t("heat.action_failed"), "error", { label: t("heat.retry"), onClick: retry });
     }
+    // Кнопка действия в панели сейчас (или временная — тогда занятость просто не видна) и та же цель по ключу.
+    const actButton = (act) => panel.querySelector('[data-act="' + act + '"]') || document.createElement("button");
     async function setStatus(it, status, btn) {
       btn.setAttribute("aria-busy", "true");
       btn.disabled = true;
@@ -942,7 +977,10 @@
         toast(status === "fixed" ? t("heat.toast_fixed") : t("heat.toast_taken"));
         await load("event");
       } catch (e) {
-        actionFailed(e, btn);
+        actionFailed(e, () => {
+          const cur = findItem(keyOf(it.target));
+          if (cur) void setStatus(cur, status, actButton(status === "fixed" ? "fixed" : "take"));
+        });
         btn.disabled = false;
         btn.removeAttribute("aria-busy");
       }
@@ -959,7 +997,10 @@
         await load("event");
         pulse(keyOf(it.target));
       } catch (e) {
-        actionFailed(e, btn);
+        actionFailed(e, () => {
+          const cur = findItem(keyOf(it.target));
+          if (cur) void metoo(cur, actButton("metoo"));
+        });
         btn.disabled = false;
         btn.removeAttribute("aria-busy");
       }

@@ -423,6 +423,24 @@
   }
  },
  {
+  "name": "pick-with-r09-capture-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=resident&view=nura",
+  "problems": [],
+  "badges": 22,
+  "primary": [],
+  "extra": {
+   "picks": [
+    [
+     "r09-capture",
+     71.40605423411466,
+     51.126592082277284
+    ]
+   ],
+   "card": false
+  }
+ },
+ {
   "name": "keyboard-badges-roving-1366-ru",
   "size": "desktop",
   "query": "",
@@ -661,6 +679,39 @@
    "key": "area:yard-1071933339",
    "anim": "none/none",
    "sr": "Новая жалоба: Двор у ул. Коксенгир. Сообщили 11 человек"
+  }
+ },
+ {
+  "name": "panel-scrolled-375-ru",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 12,
+  "extra": {
+   "before": 12,
+   "after": 12
+  }
+ },
+ {
+  "name": "error-toast-once-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "stacked": 1,
+   "left": 0
+  }
+ },
+ {
+  "name": "retry-after-rerender-1366-kk",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "posts": 4,
+   "ok": "Түзетілді деп белгіленді"
   }
  },
  {
