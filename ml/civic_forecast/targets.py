@@ -183,6 +183,6 @@ def label(target: dict, lang: str) -> str:
     if near:
         near_name = near.get("name_kk") if lang == "kk" and near.get("name_kk") else near["name_ru"]
         if near["kind"] == "bus_stop":
-            return f"{base}, жанында: «{near_name}» аялдамасы" if lang == "kk" else f"{base} рядом: остановка «{near_name}»"
-        return f"{base}, жанында: {near_name}" if lang == "kk" else f"{base} рядом: {near_name}"
+            return f"{base} · жанында «{near_name}» аялдамасы" if lang == "kk" else f"{base} рядом: остановка «{near_name}»"
+        return f"{base} · жанында {near_name}" if lang == "kk" else f"{base} рядом: {near_name}"
     return base
