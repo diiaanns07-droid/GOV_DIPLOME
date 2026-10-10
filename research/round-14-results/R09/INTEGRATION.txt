@@ -1,3 +1,40 @@
+R09 · РАУНД 14 · INTEGRATION — НОЧЬ 10→11 ОКТ (сначала этот раздел)
+Ветка R09 этой ночи: claude/wizardly-ptolemy-qy8ltw, код 1b3b639 (см. DELIVERY.json, NIGHT_FIXES.md).
+Забрать в сборку (пути R09 целиком; в них уже есть патч R15 P-R09 с доработками):
+    git fetch origin claude/wizardly-ptolemy-qy8ltw
+    git checkout 1b3b639 -- ui/civic_feedback web/civic/feedback tests/civic/R09
+
+=== R01 — нужно сделать ===
+N1) B-030 («Я тоже» на чистой демо-базе): research/round-14-results/R09/r01_seed_r09_demo.patch — метод
+    CivicV2Gateway.seed_complaints_demo() и его вызов в seed_demo() (только при CIVIC_DEMO=1). Засев R09
+    идемпотентен, пишет только demo: true. git apply --check: OK на 13ae790 и d9a8895. Без патча то же даёт команда
+    python -m ui.civic_feedback.v2 seed-demo --db <civic.sqlite3>.
+N2) Карта R12 для проверки цели (R15 S04/S12): как у вас в wire() — store.target_lookup = engine.civic_geo.target_geometry.
+    make_service(db) по умолчанию карту НЕ подключает (тесты соседей создают жалобы с условными id);
+    make_service(db, target_lookup="auto") — взять R12 из сборки, если он есть.
+N3) Наблюдение: первый POST /api/civic/v2/similar сразу после старта сервера даёт 503 source_not_connected — шлюз
+    связывает модули (wire) лениво, по первому запросу к другим маршрутам. В демо до /similar страница уже грузит /heat,
+    поэтому сценарий проходит; надёжнее вызвать wire() при старте (как warm_up R12).
+N4) Выбор места: R09 сам перехватывает нажатие по маркерам карты (значки R07) на фазе захвата, пока житель выбирает место,
+    и ставит html.bc-picking. Ваш CSS body.birge-picking … { pointer-events: none } совместим — можно оставить.
+    Escape теперь закрывает мастер и «Мои обращения» при любом фокусе (ваша просьба §8).
+N5) Кнопка «Сообщить о проблеме» на телефоне и её скрытие при карточке R07 теперь в complaint.css R09
+    (@media max-width 1023px) — ваше правило в birge.css дублирует его, можно оставить или убрать.
+
+=== R11 ===
+- Новый ключ: complaint.step2.here — ru «Вы здесь», kk «Сіз осындасыз» (цель с расстоянием 0, R11 B2 №3).
+- Запасные тексты R09 выровнены с вашим словарём @ 52d7c59 (20 строк). Даты — BirgeI18n.formatDate, числа — formatNumber.
+
+=== R07 ===
+- Нажатие по значку во время выбора места жалобы забирает R09 (ваш обработчик значка в это время не вызывается).
+- Демо-жалобы R09 стоят у вашей цели osm-node-4109037549 «Хан Шатыр»: +3 и +2 человека к числу на значке в демо.
+
+=== R10 ===
+- Перепроверить на FINAL: B-019 (значок), B-030 (после патча N1), R11 №7–11 на 375 kk.
+
+====================================================================================================================
+(ниже — INTEGRATION предыдущей сессии R09, ветка claude/modest-shannon-0ki93p; остаётся в силе)
+
 R09 · РАУНД 14 · INTEGRATION — как подключить жалобы v2 и что нужно от соседей
 Ветка R09: claude/modest-shannon-0ki93p. Пути R09: ui/civic_feedback/, web/civic/feedback/, tests/civic/R09/.
 Модуль v1 (раунды 11–13, модерация и квитанции, /api/civic/v1/feedback...) восстановлен из 933cd90 побайтно и
