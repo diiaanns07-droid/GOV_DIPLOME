@@ -101,6 +101,7 @@
 56а. ONNX Runtime [Электронный ресурс] / Microsoft. – Версия 1.31.0. – URL: https://onnxruntime.ai (дата обращения: __.10.2026). – Лицензия MIT. [ПРОВЕРИТЬ ИСТОЧНИК; динамическое квантование int8 — раздел документации Quantize ONNX models]
 56б. Jacob B., Kligys S., Chen B. [et al.] Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference // Proceedings of CVPR 2018. – 2018. – P. 2704–2713. [ПРОВЕРИТЬ ИСТОЧНИК; квантование int8, в т. ч. по каналам]
 56в. Hersbach H., Bell B., Berrisford P. [et al.] The ERA5 global reanalysis // Quarterly Journal of the Royal Meteorological Society. – 2020. – Vol. 146, № 730. – P. 1999–2049. [ПРОВЕРИТЬ ИСТОЧНИК; на каком реанализе построен Historical Weather API Open-Meteo — сверить по документации сервиса]
+56д. Northcutt C. G., Jiang L., Chuang I. L. Confident Learning: Estimating Uncertainty in Dataset Labels // Journal of Artificial Intelligence Research. – 2021. – Vol. 70. – P. 1373–1411. [ПРОВЕРИТЬ ИСТОЧНИК; идея аудита меток LLM-синтетики по out-of-fold вероятностям, глава 4]
 56г. OpenAI. GPT-4.1 mini [Электронный ресурс] : описание модели. – URL: https://platform.openai.com/docs/models (дата обращения: __.10.2026). [ПРОВЕРИТЬ ИСТОЧНИК; модель, которой сгенерирована LLM-синтетика llm_v1, `ml/datasets/llm_v1/manifest_llm_v1.json`]
 
 ## Материалы проекта (внутренние документы)
