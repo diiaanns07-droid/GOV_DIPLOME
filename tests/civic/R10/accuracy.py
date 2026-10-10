@@ -407,6 +407,46 @@ def check_segments(rep: Report, graph: Graph, sources):
         rep.add(f"нет линий «от руки» · {name}", "FAIL" if bad else "PASS", {"items": info, "bad": bad}, "R12")
 
 
+BASEMAP_NURA = "web/civic/heat/fixtures/basemap-nura.geojson"
+
+
+def check_basemap(rep: Report, graph: Graph, root: Path):
+    """Офлайн-подложка Нуры (R07 build_fixtures → R01 web/map.js, B3+): улицы рисуются без интернета.
+    Каждая линия должна быть ребром графа OSM (≤ 5 м в обе стороны), иначе подложка «врёт» под участками."""
+    path = root / BASEMAP_NURA
+    if not path.is_file():
+        rep.add("офлайн-подложка Нуры = рёбра OSM", "NOT_RUN", "набора нет", "R07")
+        return
+    feats = json.loads(path.read_text(encoding="utf-8")).get("features", [])
+    # Подложка копирует рёбра графа с округлением до 5 знаков: ищем рёбра по концам, затем меряем Хаусдорфа.
+    # Между двумя узлами бывает несколько рёбер (параллельные проезды, петли) — берём ближайшее из них.
+    key = lambda c: (round(c[0], 5), round(c[1], 5))
+    by_ends = {}
+    for eid, e in graph.edges.items():
+        g = e["geometry"]
+        by_ends.setdefault((key(g[0]), key(g[-1])), []).append(eid)
+        by_ends.setdefault((key(g[-1]), key(g[0])), []).append(eid)
+    bad, worst, matched, near_only = [], 0.0, 0, 0
+    for i, f in enumerate(feats):
+        line = (f.get("geometry") or {}).get("coordinates") or []
+        if len(line) < 2:
+            continue
+        eids = by_ends.get((key(line[0]), key(line[-1])))
+        if eids:
+            matched += 1
+            d = min(hausdorff_m(line, graph.edges[eid]["geometry"]) for eid in eids)
+        else:
+            # Ребро не нашлось по концам — проверяем, что каждая точка линии лежит на графе.
+            near_only += 1
+            d = max(graph.nearest(p, radius_m=SEGMENT_TOL_M * 4)[0] for p in line)
+        worst = max(worst, d)
+        if d > SEGMENT_TOL_M:
+            bad.append({"i": i, "dev_m": None if d == math.inf else round(d, 2), "from": line[0]})
+    rep.add("офлайн-подложка Нуры = рёбра OSM", "FAIL" if bad else ("PASS" if feats else "NOT_RUN"),
+            {"lines": len(feats), "matched_by_ends": matched, "checked_by_points": near_only,
+             "worst_m": None if worst == math.inf else round(worst, 3), "bad": bad[:10]}, "R07")
+
+
 def check_stops(rep: Report, graph: Graph, sources, root: Path):
     """§8.3: остановка не дальше 60 м от улицы."""
     stops = []
@@ -563,6 +603,7 @@ def run(root: Path) -> Report:
     check_stops(rep, graph, sources, root)
     check_osm_points(rep, root, sources)
     check_target_ids(rep, graph, sources)
+    check_basemap(rep, graph, root)
     return rep
 
 

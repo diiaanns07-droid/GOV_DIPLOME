@@ -494,10 +494,17 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const kindRe = (k) => { const name = T(dict, "proposal.kind." + k, k);
     const aria = T(dict, "build3d.catalog.place", "{kind}: поставить на карту").replace("{kind}", name);
     return new RegExp("^(" + esc(name) + "|" + esc(aria) + ")$", "i"); };
-  const kinds = [];
-  for (const k of ["square", "playground", "sports", "stop", "lighting"])
-    if (await firstVisible(page.getByRole("button", { name: kindRe(k) }))) kinds.push(k);
-  step("5", "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение", catalog && kinds.length === 5, { catalog, kinds }, await shot("5-catalog"));
+  const kindsShown = async () => { const out = [];
+    for (const k of ["square", "playground", "sports", "stop", "lighting"]) if (await firstVisible(page.getByRole("button", { name: kindRe(k) }))) out.push(k);
+    return out; };
+  let kinds = await kindsShown();
+  // С B3 каталог свёрнут в одну кнопку «Что построить?» — человек сначала нажимает её.
+  let unfolded = false;
+  if (catalog && kinds.length === 0) {
+    unfolded = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.catalog.title", "Что построить?")) + "$", "i"), { wait: 1000 });
+    kinds = await kindsShown();
+  }
+  step("5", "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение", catalog && kinds.length === 5, { catalog, unfolded, kinds }, await shot("5-catalog"));
   if (catalog && kinds.includes("square") && login.ok) {
     const place = [PLACE[0], PLACE[1] + 0.0012 * vi];
     const kindName = T(dict, "proposal.kind.square", lang === "kk" ? "Гүлзар" : "Сквер");
