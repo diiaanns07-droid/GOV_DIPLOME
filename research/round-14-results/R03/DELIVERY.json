@@ -4,8 +4,8 @@
  "base_sha": "3c5ac25 (claude/round-14-package)",
  "restored_from": "нет: v1 (claude/wizardly-ptolemy-qy8ltw @ 14c3384, ml/civic_classifier/) только прочитан; признаки v1 повторены в logreg.py",
  "data_from": "R02 claude/r14-R02 @ 05b789e: ml/datasets/synth_v3/data/corpus_v3.jsonl, ml/datasets/v1_in_v2/corpus_v1_in_v2.jsonl (читаются по путям, в ветку R03 не копировались)",
- "code_sha": "30c1c09",
- "tested_sha": "30c1c09",
+ "code_sha": "847bf31",
+ "tested_sha": "847bf31",
  "push_status": "OK (claude/r14-R03)",
  "changed_paths": [
   "ml/civic_classifier_v2/.gitignore",
@@ -41,8 +41,8 @@
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 62/62",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 56, NOT_RUN 6 (skipped с причиной)",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 65/65",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 58, NOT_RUN 7 (skipped с причиной)",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
@@ -52,7 +52,9 @@
   "обучение xlm-roberta-base на GPU, качество v2": "NOT_RUN — в облаке нет весов (HF недоступен); LOCAL-4 по RUN.txt",
   "оценка на текстах людей": "NOT_EVALUATED — разметка ≥ 200 текстов ещё не готова",
   "LLM zero-shot с настоящим API": "NOT_RUN — только локально с ключом (RUN.txt шаг 5); проверено на подставном клиенте",
-  "R02 llm_v1": "NOT_RUN — корпуса ещё нет (LOCAL-8)"
+  "R02 llm_v1": "NOT_RUN — корпуса ещё нет (LOCAL-8)",
+  "кривая обучения --human-fraction (spy-тест: меньше людей в обучении, оценка на всех)": "PASS",
+  "малые наборы: ранняя остановка не раньше min_train_steps (тест на крошечной модели)": "PASS"
  },
  "results_so_far": {
   "synthetic_v3_test_macro_f1": {

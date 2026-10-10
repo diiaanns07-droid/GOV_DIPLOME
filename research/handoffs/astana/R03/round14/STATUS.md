@@ -5,7 +5,7 @@
 Обновлено: 2026-10-10 (UTC; точное время — у коммита).
 Статус: **код готов (цель 12 окт выполнена 10 окт); ждём LOCAL-4 (обучение на GPU) и разметку людей.**
 Рабочая ветка: claude/r14-R03 (от claude/round-14-package @ 3c5ac25). В claude/round-14-package не пушу.
-Последний код: 30c1c09 (tested_sha). Push: OK.
+Последний код: см. DELIVERY.json code_sha (= tested_sha). Push: OK.
 Назначенные пути: ml/civic_classifier_v2/, tests/civic/R03/round14/ (старые tests/civic/R03/*.mjs раунда 13 —
 другой модуль, не трогаю), research/round-14-results/R03/, этот файл.
 
@@ -19,7 +19,9 @@
 - [x] 3. export_onnx.py: ONNX (torchscript, запасной dynamo) + int8 + сверка с PyTorch + скорость CPU.
 - [x] 4. research/round-14-results/R03/RUN.txt — команды PowerShell для ноутбука (шаги 0–9), время, память.
 - [x] 5. MODEL_CARD.md v2 (данные, протокол, текущие числа, ограничения).
-- [x] Тесты: 62 PASS (tests/civic/R03/round14), без ML-библиотек 56 PASS + 6 NOT_RUN.
+- [x] Тесты: 65 PASS (tests/civic/R03/round14), без ML-библиотек 58 PASS + 7 NOT_RUN.
+- [x] Честность режима «только люди»: на малых данных до 30 эпох, ранняя остановка не раньше 300 шагов.
+- [x] Кривая обучения: experiments --human-fraction 0.25/0.5 (RUN.txt шаг 6б, по желанию).
 - [x] Облако: базовые модели на корпусах R02 → results/RESULTS.md, experiments.json; модель размера xlm-r-base со
       случайными весами → results/cloud_check_2026-10-10.json (int8 266 МБ, 11–33 мс/текст).
 - [x] DELIVERY.json, INTEGRATION.txt (R01 .gitignore, R04 подключение /classify, R10 тесты, LOCAL-4).
@@ -38,4 +40,4 @@
    дописать в MODEL_CARD.md раздел «Результаты на людях» с выводами (потеря на людях, вклад людей/синтетики,
    трансформер против словаря), обновить DELIVERY.json (tested_sha, tests), push.
 2. Если людей < 200 к 13 окт — оставить NOT_EVALUATED, всё остальное — по синтетике.
-3. Необязательно (если останется время): кривая обучения «сколько текстов людей нужно» (mix с долями 25/50/100%).
+3. Если был шаг 6б — описать кривую обучения (lc_0.25 / lc_0.5 / experiments) в MODEL_CARD.md.
