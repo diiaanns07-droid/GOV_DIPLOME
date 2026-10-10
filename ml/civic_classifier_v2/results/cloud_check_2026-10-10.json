@@ -1,0 +1,122 @@
+{
+ "what": "Облачная проверка R03 10.10.2026: код v2 на модели РАЗМЕРА xlm-roberta-base (278.1 млн параметров, 192.0 млн — словарь) со СЛУЧАЙНЫМИ весами. HuggingFace из облака недоступен, настоящие веса не скачивались.",
+ "not_a_result": "Качество (macro-F1) здесь не измерялось и не имеет смысла: веса случайные. Значимы только скорость, размер, память и совпадение ONNX с PyTorch.",
+ "env": {
+  "cpu": "Intel Xeon @ 2.10GHz, 4 vCPU (облачный контейнер)",
+  "ram_gb": 15,
+  "gpu": null,
+  "python": "3.13",
+  "torch": "2.14.1+cu130 (CPU)",
+  "transformers": "5.19.0",
+  "onnxruntime": "1.31.0",
+  "onnx": "1.23.2"
+ },
+ "train_cpu_fp32": {
+  "texts": 144,
+  "epochs": 1,
+  "batch": "8x2",
+  "epoch_seconds": 42.2,
+  "peak_rss_mb": 7076,
+  "note": "только проверка, что цикл обучения работает на полном размере; на ноутбуке обучение идёт на GPU"
+ },
+ "onnx_export": {
+  "exporter": "torchscript",
+  "export_seconds": 23.2,
+  "quantize_seconds": 60.1,
+  "sizes_mb": {
+   "model.onnx": 1060.9,
+   "model.int8.onnx": 265.8
+  },
+  "peak_rss_mb": 6534
+ },
+ "parity_vs_pytorch": {
+  "n_texts": 60,
+  "texts_source": "human.jsonl",
+  "onnx_fp32_vs_torch": {
+   "argmax_agreement": 1.0,
+   "argmax_agreement_confident": 1.0,
+   "n_confident": 50,
+   "confident_margin": 0.05,
+   "max_abs_diff_prob": 0.0,
+   "mean_abs_diff_prob": 0.0
+  },
+  "onnx_int8_vs_torch": {
+   "argmax_agreement": 1.0,
+   "argmax_agreement_confident": 1.0,
+   "n_confident": 50,
+   "confident_margin": 0.05,
+   "max_abs_diff_prob": 0.002374,
+   "mean_abs_diff_prob": 0.00034
+  },
+  "onnx_fp32_vs_torch_batch1": {
+   "argmax_agreement": 1.0,
+   "argmax_agreement_confident": 1.0,
+   "n_confident": 42,
+   "confident_margin": 0.05,
+   "max_abs_diff_prob": 0.0,
+   "mean_abs_diff_prob": 0.0
+  }
+ },
+ "latency_texts_fixture": {
+  "cpu": {
+   "machine": "x86_64",
+   "processor": "x86_64",
+   "cpu_count": 4,
+   "system": "Linux"
+  },
+  "unit": "один текст за вызов, включая токенизацию",
+  "int8_all_threads": {
+   "n": 60,
+   "mean_ms": 11.6,
+   "p50_ms": 10.6,
+   "p95_ms": 16.15,
+   "max_ms": 31.75
+  },
+  "int8_1_thread": {
+   "n": 60,
+   "mean_ms": 15.28,
+   "p50_ms": 14.65,
+   "p95_ms": 21.29,
+   "max_ms": 26.28
+  },
+  "fp32_all_threads": {
+   "n": 60,
+   "mean_ms": 33.63,
+   "p50_ms": 32.93,
+   "p95_ms": 49.9,
+   "max_ms": 57.58
+  }
+ },
+ "latency_int8_by_tokens": {
+  "threads=all len=32": {
+   "mean_ms": 11.3,
+   "p95_ms": 13.2
+  },
+  "threads=all len=64": {
+   "mean_ms": 19.1,
+   "p95_ms": 22.8
+  },
+  "threads=all len=128": {
+   "mean_ms": 32.9,
+   "p95_ms": 38.0
+  },
+  "threads=1 len=32": {
+   "mean_ms": 17.7,
+   "p95_ms": 25.3
+  },
+  "threads=1 len=64": {
+   "mean_ms": 28.3,
+   "p95_ms": 29.1
+  },
+  "threads=1 len=128": {
+   "mean_ms": 57.9,
+   "p95_ms": 75.0
+  }
+ },
+ "verdict": {
+  "fp32_matches_torch": "PASS",
+  "int8_agreement": "PASS",
+  "int8_mean_lt_50ms": "PASS"
+ },
+ "conclusion": "int8 на 4 vCPU: 11–33 мс на текст при 32–128 токенах (все потоки) — критерий < 50 мс выполняется; в 1 поток при 128 токенах 58 мс — R04 не должен ограничивать onnxruntime одним потоком. Повторить на ноутбуке с настоящими весами: export_onnx.py пишет results/onnx_export.json."
+}

@@ -32,8 +32,10 @@ _SPACE = re.compile(r"\s+")
 CHAR_NGRAMS = (2, 5)
 WORD_PREFIX = 5
 MIN_DF = 2
-GRID = [{"C": c, "class_weight": cw, "keyword_scale": ks}
-        for c in (1.0, 4.0, 16.0) for cw in (None, "balanced") for ks in (0.0, 1.0)]
+# Сетка отбора (по validation). Признаки словаря включены всегда: в облачном прогоне 10.10 на корпусах R02
+# вариант без словаря был хуже при каждом C и class_weight (v3: 0.674 против 0.728 на val; v1→v2: 0.623 против
+# 0.759) — так же, как у v1 в раунде 12. Убрали его, чтобы k-fold на ноутбуке шёл вдвое быстрее.
+GRID = [{"C": c, "class_weight": cw, "keyword_scale": 1.0} for c in (1.0, 4.0, 16.0, 64.0) for cw in (None, "balanced")]
 
 
 def v1_normalize(text: str) -> str:

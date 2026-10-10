@@ -15,7 +15,8 @@ from ml.civic_classifier_v2 import labels as L
 
 
 def _args(data_dir: Path, tmp: Path, *extra: str) -> list[str]:
-    return ["--synth-v3", str(data_dir / "synth_v3"), "--llm-v1", str(tmp / "no_llm"),
+    # Явные пути: тесты не должны зависеть от того, лежат ли настоящие корпуса R02 в ml/datasets/.
+    return ["--synth-v3", str(data_dir / "synth_v3"), "--llm-v1", str(tmp / "no_llm"), "--v1-in-v2", str(tmp / "no_v1"),
             "--human", str(data_dir / "human.jsonl"), "--results", str(tmp / "results"),
             "--artifacts", str(tmp / "art"), *extra]
 

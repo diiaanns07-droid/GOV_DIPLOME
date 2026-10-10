@@ -23,15 +23,17 @@ def test_labels_come_from_categories_file():
 
 
 @pytest.mark.parametrize("raw,expected", [
-    ("roads", "roads"), ("transport_stops", "transport"), ("landscaping", "yards"), ("not_complaint", "other"),
+    ("roads", "roads"), ("transport_stops", "transport"), ("landscaping", "yards"), ("not_complaint", None),
     ("", None), ("skip", None), (None, None), ("какая-то", None), (" lighting ", "lighting"),
 ])
 def test_normalize_label(raw, expected):
     assert L.normalize_label(raw) == expected
 
 
-def test_not_complaint_can_be_dropped():
-    assert L.normalize_label("not_complaint", not_complaint="drop") is None
+def test_not_complaint_dropped_by_default_or_mapped_on_request():
+    # LABELING_GUIDE_v2 п. 5: «Не жалоба» не входит в 12 категорий и исключается из обучения и оценки.
+    assert L.normalize_label("not_complaint") is None
+    assert L.normalize_label("not_complaint", not_complaint="other") == "other"
 
 
 # ---------- данные ----------
@@ -80,12 +82,15 @@ def test_load_human_labeling_export(tmp_path):
     path = F.write_jsonl(tmp_path / "h.jsonl", rows)
     path.write_text(path.read_text(encoding="utf-8") + "это не json\n\n", encoding="utf-8")
     recs, rep = D.load_human([path])
-    assert rep["bad_lines"] == 1 and rep["not_complaint"] == 1 and rep["skipped_or_unknown_label"] == 1
+    assert rep["bad_lines"] == 1 and rep["not_complaint"] == 1
+    assert rep["skipped_or_unknown_label"] == 2          # skip + not_complaint (исключён по гайду)
     assert rep["duplicate_id"] == 1 and rep["duplicate_text"] == 1
-    assert recs[0]["label"] == "other" and recs[0]["source"] == "human"
-    assert len(recs) == 20 - 1 - 1 - 1
-    dropped, rep2 = D.load_human([path], not_complaint="drop", drop_unsure=True)
-    assert all(not r["unsure"] for r in dropped) and len(dropped) < len(recs)
+    assert all(r["id"] != rows[0]["id"] for r in recs) and recs[0]["source"] == "human"
+    assert len(recs) == 20 - 1 - 1 - 1 - 1
+    as_other, _ = D.load_human([path], not_complaint="other")
+    assert len(as_other) == len(recs) + 1 and as_other[0]["label"] == "other"
+    no_unsure, _ = D.load_human([path], drop_unsure=True)
+    assert all(not r["unsure"] for r in no_unsure) and len(no_unsure) < len(recs)
 
 
 def test_first_file_wins_on_conflict(tmp_path):

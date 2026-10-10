@@ -24,6 +24,7 @@ from ml.civic_classifier_v2.config import RESULTS_DIR
 from ml.civic_classifier_v2.metrics import bootstrap, ece, report
 
 REGIME_TITLES = {
+    "synth_v1": "Синтетика v1→v2 (R08)",
     "synth_template": "Шаблонная синтетика v3",
     "synth_llm": "LLM-синтетика llm_v1",
     "synth_all": "Синтетика v3 + LLM",
@@ -41,6 +42,7 @@ SET_TITLES = {
     "human": "Тексты людей",
     "synth_test_template": "Синтетика v3 — test (невиданные шаблоны)",
     "synth_test_llm": "LLM-синтетика — test",
+    "synth_test_v1": "Синтетика v1→v2 — test",
 }
 
 
@@ -56,7 +58,7 @@ def evaluate_set(records: list[dict], pred: list[int], proba: np.ndarray | None,
         top = proba[np.arange(len(pred)), np.asarray(pred, dtype=int)]
         rep["ece"] = ece([int(p == t) for p, t in zip(pred, y)], top.tolist())
     slices = {}
-    for key in ("lang", "unsure"):
+    for key in ("lang", "style", "hard", "unsure"):
         vals = sorted({str(r.get(key)) for r in records})
         if len(vals) < 2:
             continue
@@ -138,7 +140,8 @@ def render(results: dict) -> str:
     lines += ["## 2. Синтетический test (справочно, НЕ качество на людях)", "",
               "Test синтетики — шаблоны, которых не было в обучении (ДИ — бутстрэп по шаблонам). "
               "«Потеря» = macro-F1 на синтетическом test − macro-F1 на людях (разные наборы, не парная разница).", "",
-              "| Режим | Модель | Синтетика v3 test | LLM test | Люди | Потеря на людях |", "|---|---|---|---|---|---|"]
+              "| Режим | Модель | Синтетика v3 test | LLM test | v1→v2 test | Люди | Потеря на людях |",
+              "|---|---|---|---|---|---|---|"]
     for r in regimes:
         if not r.startswith("synth"):
             continue
@@ -147,23 +150,27 @@ def render(results: dict) -> str:
             if not e:
                 continue
             ev = e.get("eval") or {}
-            syn = [ev.get(s, {}).get("macro_f1") for s in ("synth_test_template", "synth_test_llm")]
+            own_set = {"synth_llm": "synth_test_llm", "synth_v1": "synth_test_v1"}.get(r, "synth_test_template")
+            own = ev.get(own_set, {}).get("macro_f1")
             hum = ev.get("human", {}).get("macro_f1")
-            own = syn[0] if r != "synth_llm" else syn[1]
             gap = (own - hum) if (own is not None and hum is not None) else None
             lines.append(f"| {REGIME_TITLES[r]} | {MODEL_TITLES[m]} | {_cell(e, 'synth_test_template')} | "
-                         f"{_cell(e, 'synth_test_llm')} | {_cell(e, 'human')} | "
+                         f"{_cell(e, 'synth_test_llm')} | {_cell(e, 'synth_test_v1')} | {_cell(e, 'human')} | "
                          f"{'—' if gap is None else f'{gap:+.3f}'} |")
     lines.append("")
 
     # 3. Парные сравнения.
     comps = results.get("comparisons") or []
     if comps:
-        lines += ["## 3. Парные сравнения на текстах людей (Δ macro-F1, парный бутстрэп)", "",
-                  "| Сравнение | Δ | 95% ДИ | доля ресэмплов Δ>0 | n |", "|---|---|---|---|---|"]
-        for c in comps:
+        lines += ["## 3. Парные сравнения (Δ macro-F1 = a − b, парный бутстрэп на одном наборе)", "",
+                  "Главные — на текстах людей (ресэмплинг текстов); на синтетическом test — справочно "
+                  "(ресэмплинг шаблонов).", "",
+                  "| Набор | Сравнение | Δ | 95% ДИ | доля ресэмплов Δ>0 | n |", "|---|---|---|---|---|---|"]
+        order = {"human": 0}
+        for c in sorted(comps, key=lambda c: order.get(c.get("set", "human"), 1)):
             d = c["delta"]
-            lines.append(f"| {c['title']} | {d['delta']:+.3f} | [{d['low']:+.3f}; {d['high']:+.3f}] | "
+            set_title = SET_TITLES.get(c.get("set", "human"), c.get("set", "human"))
+            lines.append(f"| {set_title} | {c['title']} | {d['delta']:+.3f} | [{d['low']:+.3f}; {d['high']:+.3f}] | "
                          f"{d['share_delta_gt_0']} | {c['n']} |")
         lines += ["", "Если 95% ДИ разницы содержит 0 — преимущество не доказано на этом объёме данных.", ""]
 
@@ -277,7 +284,7 @@ def main(argv=None) -> int:
     m = sub.add_parser("model", help="оценить сохранённую модель на разметке людей")
     m.add_argument("--model", required=True)
     m.add_argument("--human", nargs="+", required=True)
-    m.add_argument("--not-complaint", choices=("other", "drop"), default="other")
+    m.add_argument("--not-complaint", choices=("drop", "other"), default="drop")
     m.add_argument("--out")
     args = ap.parse_args(argv)
     return _cmd_render(args) if args.cmd == "render" else _cmd_model(args)

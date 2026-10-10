@@ -154,8 +154,13 @@ def fit(train: list[dict], val: list[dict], cfg: TrainConfig, labels: tuple[str,
     model = AutoModelForSequenceClassification.from_pretrained(
         cfg.model_name, num_labels=k, id2label={i: lab for i, lab in enumerate(labels)},
         label2id={lab: i for i, lab in enumerate(labels)}, ignore_mismatched_sizes=True)
+    if cfg.freeze_embeddings:
+        emb = model.get_input_embeddings()
+        emb.weight.requires_grad_(False)
     model.to(device)
     tm = TrainedModel(model, tokenizer, tuple(labels), cfg, device, info=device_info())
+    tm.info["params_total"] = sum(p.numel() for p in model.parameters())
+    tm.info["params_trainable"] = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
     texts = [r["text"] for r in train]
     y = [index[r["label"]] for r in train]
@@ -163,11 +168,10 @@ def fit(train: list[dict], val: list[dict], cfg: TrainConfig, labels: tuple[str,
     loss_fn = torch.nn.CrossEntropyLoss(weight=torch.tensor(weights, dtype=torch.float32, device=device),
                                         label_smoothing=cfg.label_smoothing)
     no_decay = ("bias", "LayerNorm.weight", "layer_norm.weight", "LayerNorm.bias")
+    trainable = [(n, p) for n, p in model.named_parameters() if p.requires_grad]
     groups = [
-        {"params": [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
-         "weight_decay": cfg.weight_decay},
-        {"params": [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)],
-         "weight_decay": 0.0},
+        {"params": [p for n, p in trainable if not any(nd in n for nd in no_decay)], "weight_decay": cfg.weight_decay},
+        {"params": [p for n, p in trainable if any(nd in n for nd in no_decay)], "weight_decay": 0.0},
     ]
     optim = torch.optim.AdamW(groups, lr=cfg.lr)
     steps_per_epoch = math.ceil(math.ceil(len(texts) / cfg.batch_size) / cfg.grad_accum)

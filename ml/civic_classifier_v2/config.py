@@ -3,7 +3,8 @@
 Значения подобраны под RTX 4060 Laptop (8 ГБ): xlm-roberta-base, длина 128 токенов, fp16,
 batch 16 × накопление 2 = эффективный batch 32. Пиковая память GPU при этом ≈ 4–5 ГБ
 (оценка; фактическое значение train.py пишет в лог: torch.cuda.max_memory_allocated).
-Если не хватает памяти — уменьшить batch_size до 8 и поставить grad_accum 4: эффективный batch тот же.
+Если не хватает памяти — уменьшить batch_size до 8 и поставить grad_accum 4: эффективный batch тот же;
+если всё равно мало — freeze_embeddings=true (см. ниже).
 
 Все поля можно переопределить из командной строки train.py / experiments.py (--set key=value).
 """
@@ -23,17 +24,20 @@ RESULTS_DIR = PKG_DIR / "results"
 # Реальные тексты людей лежат только здесь (папка вне Git, см. ml/labeling/import_form.py у R02).
 PRIVATE_DIR = REPO_ROOT / "private"
 
-# Корпуса R02 (раунд 14). Точные имена файлов — в ml/datasets/README.md у R02; data.py ищет
-# JSONL в этих папках, если путь не задан явно.
-SYNTH_V3_DIR = REPO_ROOT / "ml" / "datasets" / "synth_v3"
-LLM_V1_DIR = REPO_ROOT / "ml" / "datasets" / "llm_v1"
+# Корпуса R02 (раунд 14), см. ml/datasets/README.md (ветка claude/r14-R02): data.py берёт corpus*.jsonl
+# из папки (или из её подпапки data/), пары перефразов для R04 пропускает.
+SYNTH_V3_DIR = REPO_ROOT / "ml" / "datasets" / "synth_v3" / "data"     # corpus_v3.jsonl
+LLM_V1_DIR = REPO_ROOT / "ml" / "datasets" / "llm_v1"                  # corpus_llm_v1.jsonl (после LOCAL-8)
+V1_IN_V2_DIR = REPO_ROOT / "ml" / "datasets" / "v1_in_v2"              # corpus_v1_in_v2.jsonl (корпус R08 в 12 кат.)
 
 DEFAULT_SEED = 20261011
 
 
 @dataclass
 class TrainConfig:
-    model_name: str = "xlm-roberta-base"   # имя на HuggingFace или путь к локальной папке модели
+    # Каноническое имя на HuggingFace (старый алиас «xlm-roberta-base» отдаёт 404 — LOCAL/ENV.md);
+    # на ноутбуке веса уже в кэше, путь к snapshot тоже подходит.
+    model_name: str = "FacebookAI/xlm-roberta-base"
     max_length: int = 128                  # токенов; длиннее — обрезается (жалобы обычно < 80 токенов)
     batch_size: int = 16
     grad_accum: int = 2                    # эффективный batch = batch_size * grad_accum
@@ -48,6 +52,9 @@ class TrainConfig:
     class_weight: str = "sqrt_inv"         # none | inv | sqrt_inv — вес класса в CrossEntropy
     label_smoothing: float = 0.0
     max_grad_norm: float = 1.0
+    # Заморозить матрицу словаря (250 тыс. × 768 у xlm-roberta-base = 70% параметров): без её градиентов
+    # и состояний AdamW пик памяти GPU ниже ≈ на 2 ГБ. Включать, только если не хватает памяти.
+    freeze_embeddings: bool = False
     seed: int = DEFAULT_SEED
     num_workers: int = 0                   # 0 — надёжно на Windows
     # Политика needs_review (порог подбирается на validation, не на тесте).

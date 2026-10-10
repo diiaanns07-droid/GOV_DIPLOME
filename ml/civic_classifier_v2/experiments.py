@@ -1,7 +1,8 @@
 """Эксперимент диплома: режимы обучения × модели, оценка на ОДНОМ наборе текстов людей.
 
 Режимы (на чём обучаем):
-  synth_template — шаблонная синтетика v3 (R02, ml/datasets/synth_v3/), split по шаблонам;
+  synth_v1       — старый корпус v1 (R08, раунд 12), переразмеченный R02 в 12 категорий (ml/datasets/v1_in_v2/);
+  synth_template — шаблонная синтетика v3 (R02, ml/datasets/synth_v3/data/), split по шаблонам;
   synth_llm      — LLM-синтетика llm_v1 (R02, ml/datasets/llm_v1/);
   synth_all      — обе синтетики вместе;
   human          — только тексты людей: стратифицированный k-fold, прогнозы вне фолда;
@@ -40,11 +41,16 @@ from ml.civic_classifier_v2 import data as D
 from ml.civic_classifier_v2 import heuristic
 from ml.civic_classifier_v2 import labels as L
 from ml.civic_classifier_v2.config import (ARTIFACTS_DIR, LLM_V1_DIR, REPO_ROOT, RESULTS_DIR, SMOKE_OVERRIDES,
-                                           SYNTH_V3_DIR, TrainConfig)
+                                           SYNTH_V3_DIR, V1_IN_V2_DIR, TrainConfig)
 from ml.civic_classifier_v2.evaluate import evaluate_set, write_results
 from ml.civic_classifier_v2.metrics import paired_delta
 
-REGIMES = ("synth_template", "synth_llm", "synth_all", "human", "mix")
+REGIMES = ("synth_v1", "synth_template", "synth_llm", "synth_all", "human", "mix")
+# Какие синтетические корпуса входят в режим. synth_all и mix — новые корпуса раунда 14 (v3 + LLM);
+# старый v1→v2 идёт отдельным столбцом для сравнения генераторов.
+REGIME_SOURCES = {"synth_v1": ["v1_in_v2"], "synth_template": ["synth_v3"], "synth_llm": ["llm_v1"],
+                  "synth_all": ["synth_v3", "llm_v1"], "human": [], "mix": ["synth_v3", "llm_v1"]}
+TEST_SET_OF = {"synth_v3": "synth_test_template", "llm_v1": "synth_test_llm", "v1_in_v2": "synth_test_v1"}
 MODELS = ("heuristic", "logreg", "transformer")
 MIN_HUMAN = 200  # prompts/R03.txt: оценка на людях — если размечено ≥ 200 текстов
 
@@ -98,7 +104,8 @@ def load_sources(args, notes: list[str]) -> dict:
     """Загружает всё доступное; отсутствующее помечается NOT_AVAILABLE (а не падает)."""
     src: dict = {}
     for key, path, source, evidence in (("synth_v3", args.synth_v3, "synth_v3", "synthetic_template"),
-                                        ("llm_v1", args.llm_v1, "llm_v1", "synthetic_llm")):
+                                        ("llm_v1", args.llm_v1, "llm_v1", "synthetic_llm"),
+                                        ("v1_in_v2", args.v1_in_v2, "v1_in_v2", "synthetic_template_v1")):
         try:
             recs, rep = D.load_corpus(Path(path), source=source, evidence=evidence,
                                       not_complaint=args.not_complaint)
@@ -138,7 +145,7 @@ def run(args) -> dict:
     log_path = out_art / "train_log.jsonl"
 
     src = load_sources(args, notes)
-    syn = {"synth_v3": src["synth_v3"]["records"], "llm_v1": src["llm_v1"]["records"]}
+    syn = {k: src[k]["records"] for k in ("synth_v3", "llm_v1", "v1_in_v2")}
     human = src["human"]["records"]
     if args.max_human and len(human) > args.max_human:
         human = human[:args.max_human]
@@ -155,10 +162,9 @@ def run(args) -> dict:
     eval_sets_common = {}
     if eval_human:
         eval_sets_common["human"] = eval_human
-    if syn["synth_v3"]:
-        eval_sets_common["synth_test_template"] = _split(syn["synth_v3"], "test")
-    if syn["llm_v1"]:
-        eval_sets_common["synth_test_llm"] = _split(syn["llm_v1"], "test")
+    for key, set_name in TEST_SET_OF.items():
+        if syn[key]:
+            eval_sets_common[set_name] = _split(syn[key], "test")
     all_eval = [r for recs in eval_sets_common.values() for r in recs]
 
     results: dict = {
@@ -169,7 +175,7 @@ def run(args) -> dict:
                  "env_note": args.env_note, "train_config": cfg.to_dict()},
         "data": {}, "notes": notes,
     }
-    for key in ("synth_v3", "llm_v1", "human"):
+    for key in ("synth_v3", "llm_v1", "v1_in_v2", "human"):
         s = src[key]
         results["data"][key] = (D.summary(s["records"]) | {"load_report": s.get("load_report")}
                                 if s["records"] else {"status": s.get("status", "EMPTY"), "reason": s.get("reason", "")})
@@ -189,8 +195,7 @@ def run(args) -> dict:
 
     store: dict[str, dict] = {}  # run_key -> {set: pred list} для парных сравнений
     for regime in args.regimes:
-        need_syn = {"synth_template": ["synth_v3"], "synth_llm": ["llm_v1"], "synth_all": ["synth_v3", "llm_v1"],
-                    "human": [], "mix": ["synth_v3", "llm_v1"]}[regime]
+        need_syn = REGIME_SOURCES[regime]
         avail = [k for k in need_syn if syn[k]]
         if regime.startswith("synth") and len(avail) < len(need_syn):
             for m in args.models:
@@ -290,7 +295,12 @@ def run(args) -> dict:
         if args.v1:
             results["runs"]["none/v1_shipped"] = _v1_shipped(eval_human, labels, store)
 
-    results["comparisons"] = _comparisons(store, eval_human, labels, args.regimes)
+    # Модели, которые в этом прогоне не запускались (например, трансформер в облаке без весов), — явно NOT_RUN.
+    for regime in results["regimes"]:
+        for m in MODELS:
+            results["runs"].setdefault(f"{regime}/{m}", {"regime": regime, "model": m, "status": "NOT_RUN",
+                                                         "reason": args.not_run_reason})
+    results["comparisons"] = _comparisons(store, eval_sets_common, labels, args.regimes)
     best = [(k, v["eval"]["human"]["macro_f1"]) for k, v in results["runs"].items()
             if v.get("status") == "OK" and (v.get("eval") or {}).get("human")]
     results["best_on_human"] = max(best, key=lambda kv: kv[1])[0] if best else None
@@ -347,29 +357,34 @@ def _v1_shipped(human: list[dict], labels, store: dict) -> dict:
             "note": "v1 умеет только 6 категорий; snow_ice, waste, utilities, smell_air, noise_safety, parking недостижимы"}
 
 
-def _comparisons(store: dict, human: list[dict], labels, regimes) -> list[dict]:
-    """Парные бутстрэп-сравнения на людях: что даёт трансформер и что дают тексты людей."""
-    if not human:
-        return []
-    index = {lab: i for i, lab in enumerate(labels)}
-    y = [index[r["label"]] for r in human]
+def _comparisons(store: dict, sets: dict[str, list[dict]], labels, regimes) -> list[dict]:
+    """Парные бутстрэп-сравнения на одном и том же наборе: люди (по текстам) и синтетический test
+    (по шаблонам). Главные — на людях; синтетические — справочно."""
     k = len(labels)
+    index = {lab: i for i, lab in enumerate(labels)}
     out = []
+    for set_name, recs in sets.items():
+        if not recs:
+            continue
+        y = [index[r["label"]] for r in recs]
+        groups = None if set_name == "human" else [r["group"] for r in recs]
 
-    def add(a: str, b: str, title: str):
-        pa, pb = (store.get(a) or {}).get("human"), (store.get(b) or {}).get("human")
-        if pa is not None and pb is not None and len(pa) == len(pb) == len(y):
-            out.append({"a": a, "b": b, "title": title, "n": len(y), "delta": paired_delta(y, pa, pb, k)})
+        def add(a: str, b: str, title: str):
+            pa, pb = (store.get(a) or {}).get(set_name), (store.get(b) or {}).get(set_name)
+            if pa is not None and pb is not None and len(pa) == len(pb) == len(y):
+                out.append({"set": set_name, "a": a, "b": b, "title": title, "n": len(y),
+                            "delta": paired_delta(y, pa, pb, k, groups)})
 
-    for r in regimes:
-        add(f"{r}/transformer", f"{r}/logreg", f"{r}: трансформер − логрегрессия")
-        add(f"{r}/transformer", f"{r}/heuristic", f"{r}: трансформер − эвристика")
-        add(f"{r}/logreg", f"{r}/heuristic", f"{r}: логрегрессия − эвристика")
-    for m in ("transformer", "logreg"):
-        add(f"synth_llm/{m}", f"synth_template/{m}", f"{m}: LLM-синтетика − шаблонная синтетика")
-        add(f"mix/{m}", f"synth_all/{m}", f"{m}: смесь − только синтетика (вклад текстов людей)")
-        add(f"mix/{m}", f"human/{m}", f"{m}: смесь − только люди (вклад синтетики)")
-    add("none/zeroshot_llm", "mix/transformer", "LLM zero-shot − трансформер (смесь)")
+        for r in regimes:
+            add(f"{r}/transformer", f"{r}/logreg", f"{r}: трансформер − логрегрессия")
+            add(f"{r}/transformer", f"{r}/heuristic", f"{r}: трансформер − эвристика")
+            add(f"{r}/logreg", f"{r}/heuristic", f"{r}: логрегрессия − эвристика")
+        for m in ("transformer", "logreg"):
+            add(f"synth_template/{m}", f"synth_v1/{m}", f"{m}: синтетика v3 − синтетика v1→v2")
+            add(f"synth_llm/{m}", f"synth_template/{m}", f"{m}: LLM-синтетика − шаблонная синтетика")
+            add(f"mix/{m}", f"synth_all/{m}", f"{m}: смесь − только синтетика (вклад текстов людей)")
+            add(f"mix/{m}", f"human/{m}", f"{m}: смесь − только люди (вклад синтетики)")
+        add("none/zeroshot_llm", "mix/transformer", "LLM zero-shot − трансформер (смесь)")
     return out
 
 
@@ -378,6 +393,7 @@ def build_parser() -> argparse.ArgumentParser:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--synth-v3", default=str(SYNTH_V3_DIR), help="файл или папка шаблонной синтетики v3")
     ap.add_argument("--llm-v1", default=str(LLM_V1_DIR), help="файл или папка LLM-синтетики llm_v1")
+    ap.add_argument("--v1-in-v2", default=str(V1_IN_V2_DIR), help="корпус v1, переразмеченный в 12 категорий")
     ap.add_argument("--human", nargs="*", help="JSONL разметки людей (первым — файл владельца)")
     ap.add_argument("--regimes", nargs="+", default=list(REGIMES), choices=REGIMES)
     ap.add_argument("--models", nargs="+", default=list(MODELS), choices=MODELS)
@@ -387,9 +403,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--seeds", type=int, default=1, help="повторы трансформера с seed, seed+1, …")
     ap.add_argument("--min-human", type=int, default=MIN_HUMAN)
     ap.add_argument("--max-human", type=int, default=0, help="для отладки: взять первые N текстов людей")
-    ap.add_argument("--not-complaint", choices=("other", "drop"), default="other")
+    ap.add_argument("--not-complaint", choices=("drop", "other"), default="drop")
     ap.add_argument("--drop-unsure", action="store_true", help="исключить тексты, где разметчик сомневался")
-    ap.add_argument("--model-name", help="трансформер: имя HF или путь (по умолчанию xlm-roberta-base)")
+    ap.add_argument("--model-name", help="трансформер: имя HF или путь (по умолчанию FacebookAI/xlm-roberta-base)")
     ap.add_argument("--set", action="append", help="параметр TrainConfig key=value (можно несколько)")
     ap.add_argument("--zeroshot-preds", help="JSONL {id,label} от zeroshot.py")
     ap.add_argument("--v1", action="store_true", help="добавить строку «v1 как есть» (нужен пакет ml/civic_classifier)")
@@ -399,6 +415,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--name", default="experiments", help="имя файла результатов (experiments -> RESULTS.md)")
     ap.add_argument("--artifacts", default=str(ARTIFACTS_DIR))
     ap.add_argument("--env-note", default="", help="описание среды для отчёта: «RTX 4060 Laptop, Windows 11, …»")
+    ap.add_argument("--not-run-reason", default="не запускалась в этом прогоне (--models)",
+                    help="пояснение для моделей, не вошедших в --models")
     return ap
 
 

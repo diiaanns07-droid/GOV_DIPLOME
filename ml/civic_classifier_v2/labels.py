@@ -50,14 +50,15 @@ def names(lang: str = "ru", path: Path = CATEGORIES_PATH) -> dict[str, str]:
     return {c["id"]: c.get(lang) or c["id"] for c in categories(path)}
 
 
-def normalize_label(raw, *, not_complaint: str = "other", path: Path = CATEGORIES_PATH) -> str | None:
+def normalize_label(raw, *, not_complaint: str = "drop", path: Path = CATEGORIES_PATH) -> str | None:
     """Метка из любого источника -> id категории v2 или None (пропустить запись).
 
     - id v2 возвращается как есть;
     - старая метка v1 (transport_stops, landscaping) переводится по v1_to_v2;
-    - 'not_complaint' («Не жалоба» в инструменте разметки): not_complaint='other' -> 'other',
-      'drop' -> None (запись исключается). По умолчанию 'other': синтетика v3 тоже кладёт
-      благодарности и вопросы в other (prompts/R02.txt п. 5);
+    - 'not_complaint' («Не жалоба»: спам, реклама, «тест», бессмыслица): по умолчанию 'drop' -> None —
+      запись исключается из обучения и оценки 12 классов (ml/datasets/LABELING_GUIDE_v2.md п. 5);
+      not_complaint='other' -> 'other' (для отдельного опыта). Благодарности и вопросы без проблемы —
+      это уже 'other' по гайду, их разметчик ставит в other, а не в not_complaint;
     - пусто / skip / неизвестная метка -> None.
     """
     if raw is None:

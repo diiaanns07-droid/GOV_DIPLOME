@@ -2,14 +2,15 @@
 
 Единая запись после загрузки (dict):
   id, text, label (id категории v2), lang (ru|kk|mixed|…), group (шаблон или id — для бутстрэпа и split),
-  split (train|val|test|None), source (synth_v3|llm_v1|human|…), evidence (synthetic_template|
-  synthetic_llm|real_human_text|…), unsure (сомнение разметчика), style (если есть).
+  split (train|val|test|None), source (synth_v3|llm_v1|v1_in_v2|human), evidence (synthetic_template|
+  synthetic_llm|real_human_text|…), unsure (сомнение разметчика), style и hard (трудный случай) — если есть.
 
 Форматы на входе (все — JSONL, одна запись на строку; плохие строки пропускаются и считаются):
-  * корпуса R02: {"id","text","label" или "category", "lang"/"language", "template_id", "split", "style"};
+  * корпуса R02: {"id","text","label" или "category", "lang"/"language", "template_id", "split", "style", "hard"};
+    split вне train/val/test (например excluded_near_dup) -> строка пропускается;
   * разметка людей — экспорт web/labeling (schema birge-labels-v1):
-    {"id","text","lang","label","unsure","annotator","role",…}; метка 'not_complaint' -> other
-    (или исключается: --not-complaint drop). Подходит и CSV с колонками id,text,label.
+    {"id","text","lang","label","unsure","annotator","role",…}; метка 'not_complaint' исключается
+    (LABELING_GUIDE_v2 п. 5; опыт «как other» — --not-complaint other). Подходит и CSV с колонками id,text,label.
 
 Реальные тексты людей лежат только в private/ (вне Git). Модуль их не копирует и в отчёты
 не пишет — в results/ попадают только числа и id.
@@ -82,6 +83,8 @@ def corpus_files(path: Path) -> list[Path]:
     if not path.is_dir():
         raise FileNotFoundError(f"нет файла или папки: {path}")
     files = sorted(p for p in path.glob("*.jsonl") if "pair" not in p.name.lower())
+    if not files and (path / "data").is_dir():  # R02 кладёт корпус в synth_v3/data/
+        return corpus_files(path / "data")
     preferred = [p for p in files if p.name.lower().startswith("corpus")]
     files = preferred or files
     if not files:
@@ -140,7 +143,7 @@ def _id(row: dict, text: str, prefix: str) -> str:
 
 # ---------- корпуса ----------
 
-def load_corpus(path: Path, *, source: str, evidence: str, not_complaint: str = "other") -> tuple[list[dict], dict]:
+def load_corpus(path: Path, *, source: str, evidence: str, not_complaint: str = "drop") -> tuple[list[dict], dict]:
     """Синтетический корпус R02 -> (записи, отчёт). Метка из 'label' или 'category'."""
     records, report = [], Counter()
     for f in corpus_files(path):
@@ -158,8 +161,11 @@ def load_corpus(path: Path, *, source: str, evidence: str, not_complaint: str = 
             split = str(row.get("split") or "").strip().lower() or None
             if split in ("dev", "valid", "validation"):
                 split = "val"
-            if split not in SPLITS:
-                split = None
+            if split is not None and split not in SPLITS:
+                # R02 помечает почти-дубли val/test как excluded_near_dup: такие строки не берём никуда
+                # (иначе ensure_splits назначил бы им новый split и вернул утечку).
+                report["excluded_split_" + split] += 1
+                continue
             rid = _id(row, text, source)
             records.append({
                 "id": rid, "text": text, "label": label, "lang": _lang(row, text),
@@ -167,13 +173,14 @@ def load_corpus(path: Path, *, source: str, evidence: str, not_complaint: str = 
                 "split": split, "source": source,
                 "evidence": str(row.get("evidence") or evidence),
                 "unsure": False, "style": str(row.get("style") or row.get("family") or ""),
+                "hard": bool(row.get("hard") or row.get("ambiguous")),
             })
     report["files"] = len(corpus_files(path))
     report["records"] = len(records)
     return records, dict(report)
 
 
-def load_human(paths: list[Path], *, not_complaint: str = "other", drop_unsure: bool = False) -> tuple[list[dict], dict]:
+def load_human(paths: list[Path], *, not_complaint: str = "drop", drop_unsure: bool = False) -> tuple[list[dict], dict]:
     """Разметка людей (web/labeling или CSV). Один id в нескольких файлах -> берётся ПЕРВЫЙ файл
     (первым указывайте разметку владельца), расхождения считаются в отчёте."""
     by_id: dict[str, dict] = {}
