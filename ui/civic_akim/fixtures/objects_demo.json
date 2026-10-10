@@ -1,0 +1,16 @@
+{
+ "_meta": {
+  "synthetic": true,
+  "owner": "R08 (временная замена функции R06)",
+  "anchor": "2026-10-12",
+  "note": "ПРИДУМАННЫЕ объекты для показа «Картины дня», пока R06 не отдал реестр. Не сведения о реальных работах. Координат нет специально: точки на карте — только реальные объекты OSM (CONTRACT §8). Все даты сдвигаются на (сегодня − anchor), чтобы пример выглядел одинаково в любой день. Формат — CONTRACT §7: stage, planned_end, forecast_end, delay_days, stale."
+ },
+ "objects": [
+  {"id": "obj-demo-school", "kind": "school", "title_ru": "Школа на 1200 мест", "title_kk": "1200 орындық мектеп", "district": "nura", "stage": "construction", "planned_end": "2026-11-01", "forecast_end": "2026-11-24", "updated_at": "2026-10-09T11:00:00+05:00", "demo": true},
+  {"id": "obj-demo-road", "kind": "road", "title_ru": "Ремонт дороги и тротуаров", "title_kk": "Жол мен тротуарларды жөндеу", "district": "nura", "stage": "construction", "planned_end": "2026-10-07", "forecast_end": "2026-10-19", "updated_at": "2026-09-26T16:30:00+05:00", "demo": true},
+  {"id": "obj-demo-square", "kind": "square", "title_ru": "Благоустройство сквера", "title_kk": "Скверді абаттандыру", "district": "esil", "stage": "procurement", "planned_end": "2026-11-21", "forecast_end": "2026-11-26", "updated_at": "2026-10-10T09:15:00+05:00", "demo": true},
+  {"id": "obj-demo-light", "kind": "lighting", "title_ru": "Освещение улицы", "title_kk": "Көше жарығын орнату", "district": "nura", "stage": "design", "planned_end": "2026-12-11", "forecast_end": "2026-12-11", "updated_at": "2026-09-22T10:00:00+05:00", "demo": true},
+  {"id": "obj-demo-playground", "kind": "playground", "title_ru": "Детская площадка во дворе", "title_kk": "Ауладағы балалар алаңы", "district": "saraishyk", "stage": "acceptance", "planned_end": "2026-10-15", "forecast_end": "2026-10-15", "updated_at": "2026-10-11T18:00:00+05:00", "demo": true},
+  {"id": "obj-demo-stop", "kind": "stop", "title_ru": "Остановка с тёплым павильоном", "title_kk": "Жылы павильоны бар аялдама", "district": "nura", "stage": "planned", "planned_end": "2027-01-10", "forecast_end": "2027-01-10", "updated_at": "2026-10-08T12:00:00+05:00", "demo": true}
+ ]
+}

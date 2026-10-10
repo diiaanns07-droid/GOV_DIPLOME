@@ -1,0 +1,14 @@
+{
+ "_meta": {
+  "synthetic": true,
+  "owner": "R08 (временная замена функции R06)",
+  "anchor": "2026-10-12",
+  "note": "ПРИДУМАННЫЕ предложения акимата и голоса для показа «Картины дня», пока R06 не отдал свои. Геометрии нет специально (CONTRACT §8). Даты сдвигаются на (сегодня − anchor). Формат — CONTRACT §7: {id, kind, geometry, status, votes_up, votes_down} + created_at, district, подписи."
+ },
+ "proposals": [
+  {"id": "prop-demo-square", "kind": "square", "title_ru": "Сквер у школы", "title_kk": "Мектеп жанындағы сквер", "district": "nura", "geometry": null, "status": "proposal", "created_at": "2026-10-11T10:00:00+05:00", "votes_up": 128, "votes_down": 12, "demo": true},
+  {"id": "prop-demo-playground", "kind": "playground", "title_ru": "Детская площадка во дворе", "title_kk": "Ауладағы балалар алаңы", "district": "nura", "geometry": null, "status": "proposal", "created_at": "2026-10-09T15:30:00+05:00", "votes_up": 64, "votes_down": 5, "demo": true},
+  {"id": "prop-demo-light", "kind": "lighting", "title_ru": "Освещение пешеходной дорожки", "title_kk": "Жаяу жүргіншілер жолын жарықтандыру", "district": "nura", "geometry": null, "status": "proposal", "created_at": "2026-10-10T12:00:00+05:00", "votes_up": 31, "votes_down": 2, "demo": true},
+  {"id": "prop-demo-sports", "kind": "sports", "title_ru": "Спортплощадка", "title_kk": "Спорт алаңы", "district": "esil", "geometry": null, "status": "proposal", "created_at": "2026-10-02T09:00:00+05:00", "votes_up": 40, "votes_down": 8, "demo": true}
+ ]
+}
