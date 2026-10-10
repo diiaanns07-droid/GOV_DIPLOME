@@ -3,7 +3,8 @@
 Задача: R13 — прогноз проблемных кварталов (прототип), prompts/R13.txt.
 Агент / город: Claude Code (облачная сессия), Астана, Birge.
 Статус: DONE; поставка 2 (ночь 10→11 окт) — **уже в FINAL-кандидате R01 0a7a346** (R13 a0133e9): тесты R13 в дереве FINAL
-и через шлюз R01 FINAL — PASS. Код: DELIVERY.json code_sha (a0133e9).
+и через шлюз R01 FINAL — PASS (последняя сборка R01 a2d90dd — R13 тот же). Код: DELIVERY.json code_sha (a0133e9).
+**Ночные круги завершены**: новых замечаний к R13 нет, последняя проверка источников — 22:44 UTC.
 Рабочая ветка: claude/r14-R13 (от claude/round-14-package @ 46f2308). Поставка 1: 8705829 (в B2/B3 R01).
 Назначенные пути: ml/civic_forecast/, ui/civic_forecast/, tests/civic/R13/, research/round-14-results/R13/, этот файл.
 
