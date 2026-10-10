@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from . import geo
+from .names import kk_street
 from .paths import GRAPH_ID, GRAPHS_DIR, GEO_DIR
 
 # Группы типов дорог OSM (ключ highway), чтобы предлагать «улицу» для жалобы на дорогу
@@ -69,8 +70,8 @@ class Edge:
         return self.name
 
     def label_kk(self) -> str | None:
-        """Казахское название, если оно есть в OSM; иначе — то же, что по-русски."""
-        return self.name_kk or self.name
+        """Казахское название из OSM; иначе тип улицы по-казахски после имени («Сыганак көшесі», names.kk_street)."""
+        return kk_street(self.name, self.name_kk)
 
 
 class GridIndex:

@@ -5,7 +5,8 @@
      имя файла не важно: тип объекта определяется по тегам.
   2. data/civic/astana/osm-walking/overpass.json.gz — снимок пешеходной сети: в нём есть узлы-остановки,
      которые лежат прямо на линиях дорог (highway=bus_stop / public_transport=platform).
-Объекты вне границы Астаны (полигоны районов из geofence.json) отбрасываются. Ничего не придумывается:
+Объекты вне границы Астаны (полигоны районов из geofence.json) отбрасываются; двор берётся, только если внутри
+весь его контур, контур парка/площадки — только целиком в городе (иначе объект — точка). Ничего не придумывается:
 каждая запись — реальный объект OSM с его id и координатами.
 
     python3 -m engine.civic_geo.build_geo_data            # из data/civic/astana/osm-objects/raw
@@ -185,7 +186,9 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
                 if len(ring) < 4:
                     continue
                 center = geo.bbox_center(ring)
-                if not boundary.contains(center):
+                # Внутри Астаны должен быть весь двор, а не только центр (R10 B-009: двор на окраине,
+                # 19 из 26 вершин за границей). Двор на границе не обрезаем — жалоба там идёт в ячейку 150 м.
+                if not boundary.contains(center) or not all(boundary.contains(c) for c in ring):
                     skipped["outside_city"] += 1
                     continue
                 yid = f"yard-{el['id']}" if el["type"] == "way" else f"yard-r{el['id']}" + (f"-{n}" if len(polys) > 1 else "")
@@ -197,8 +200,10 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
         if polys:
             ring = geo.simplify(polys[0][0], AREA_SIMPLIFY_M)
             if len(ring) >= 4:
-                polygon = [[geo.round_coord(c) for c in ring]]
                 point = geo.bbox_center(ring)
+                # Контур парка/площадки рисуем, только если он целиком в городе; иначе объект остаётся точкой.
+                if all(boundary.contains(c) for c in ring):
+                    polygon = [[geo.round_coord(c) for c in ring]]
         if point is None:
             skipped["no_geometry"] += 1
             continue

@@ -18,7 +18,7 @@ def target_geometry(target: dict) -> dict | None:
     from . import geo
     from .graph import get_graph
     from .objects import get_layers
-    from .targets import _street_near, cell_target, object_target, segment_target, yard_target
+    from .targets import _street_near, cell_target, object_target, segment_street, segment_target, yard_target
 
     kind, tid = (target or {}).get("kind"), str((target or {}).get("id") or "")
     if not tid:
@@ -51,7 +51,7 @@ def target_geometry(target: dict) -> dict | None:
         e = get_graph().by_id.get(tid)
         if e is None:
             return None
-        t = segment_target(e)
+        t = segment_target(e, segment_street(get_graph(), e))
         coords = [geo.round_coord(c) for c in e.geometry]
         return {"geometry": {"type": "LineString", "coordinates": coords}, "point": coords[len(coords) // 2],
                 "label_ru": t["label_ru"], "label_kk": t["label_kk"], "approximate": False}

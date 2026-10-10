@@ -25,6 +25,7 @@ for t in plan resilience whatif school_case school_vs_k05; do step "node govtech
 # «примерного места», линии по улицам). Старый tests/civic/R03/core.test.mjs карту R12 не описывает (BUILD_LOG B2).
 step "node R12 map core" node --test tests/civic/R12/map/core.test.mjs
 step "node R12 editor core+mock" node --test tests/civic/R12/editor/core.test.cjs tests/civic/R12/editor/contract_mock.test.cjs
+step "node R12 offline glyphs" node --test tests/civic/R12/map/r12_offline_glyphs.test.mjs
 step "node R04 core+mock" node --test tests/civic/R04/core.test.cjs tests/civic/R04/contract_mock.test.cjs
 step "node R01 explore" node --test tests/civic/R01/explore.test.cjs
 if node -e "require('playwright')" >/dev/null 2>&1; then

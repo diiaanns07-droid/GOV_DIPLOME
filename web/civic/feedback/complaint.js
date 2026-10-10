@@ -907,8 +907,10 @@
       panel.innerHTML = "";
       var mine = state.view === "mine";
       // Шаг 2 на телефоне: пока места нет — низкая шторка (вопрос и «Моё местоположение»), карта почти вся видна
-      // (R11 B1 №2); когда пришли варианты — до половины; дальше — полная.
-      var snap = mine || state.step !== 2 ? "full" : (state.candidates || state.candidatesLoading ? "half" : "peek");
+      // (R11 B1 №2); когда пришли варианты — до половины; дальше — полная. «Мои обращения»: список — полная,
+      // загрузка — половина (скелетон), «пока пусто» и «нет связи» — по содержимому, без пустого белого низа.
+      var snap = mine ? (state.mineError || (state.mine && !state.mine.length) ? "peek" : (state.mine ? "full" : "half"))
+        : (state.step !== 2 ? "full" : (state.candidates || state.candidatesLoading ? "half" : "peek"));
       panel.setAttribute("data-snap", snap);
       panel.setAttribute("data-step", mine ? "mine" : String(state.step));
       var canBack = !mine && state.step > 2 && state.step < 5;

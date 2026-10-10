@@ -701,9 +701,17 @@
     if (it.precision === "source") return "exact";
     return it.geometry.type === "LineString" ? "approx_line" : "approx";
   }
+  // Название улицы на языке интерфейса: в ҚАЗ — казахское из OSM (street_kk в demo_snapped / ответе привязки), иначе ru.
+  function snapStreet(it) {
+    if (!it || !it.snap) return null;
+    const B = typeof self !== "undefined" ? self.BirgeI18n : null;
+    const kk = !!(B && typeof B.getLang === "function" && B.getLang() === "kk");
+    return (kk && it.snap.streetKk) || it.snap.street || null;
+  }
   function placeText(it) {
-    if (it.snap && it.snap.display === "street_line") return it.snap.street
-      ? tr("geo.place.street_line", "Участок улицы по карте OSM: {street}", { street: it.snap.street }) : tr("geo.place.street_line_noname", "Участок улицы по карте OSM");
+    const street = snapStreet(it);
+    if (it.snap && it.snap.display === "street_line") return street
+      ? tr("geo.place.street_line", "Участок улицы по карте OSM: {street}", { street }) : tr("geo.place.street_line_noname", "Участок улицы по карте OSM");
     if (it.snap && it.snap.display === "yard") return tr("geo.place.yard", "Двор по карте OSM");
     if (displayMode(it) === "approx") return tr("geo.place.approx", "Примерное место — показано областью");
     if (displayMode(it) === "approx_line") return tr("geo.place.approx_line", "Участок улицы, границы примерные — показан пунктиром");
@@ -728,7 +736,7 @@
       synthetic: it.evidence === "synthetic",
       snapped: !!it.snap,
       title: it.title.slice(0, 160),
-    }, it.snap && it.snap.street ? { street: it.snap.street } : null, extra || {});
+    }, snapStreet(it) ? { street: snapStreet(it) } : null, extra || {});
     const approx = ordered.filter((it) => displayMode(it) === "approx");
     // Области «примерное место» — первыми (под всеми линиями и площадями).
     for (const it of approx) {
@@ -810,6 +818,6 @@
     plannedInterval, matchPeriod, scheduleShift, staleness, plural, daysText, normalizeHistory, fieldLabel,
     shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters, EVIDENCE_FILTERS, evidenceGroup, pastPlan,
     applyFilters, sortItems, featureCollection, createSequence, unwrap, errorInfo, contrast,
-    APPROX_RADIUS_M, circlePolygon, approxArea, applySnapped, displayMode, placeText, haversineM, tr,
+    APPROX_RADIUS_M, circlePolygon, approxArea, applySnapped, displayMode, placeText, snapStreet, haversineM, tr,
   };
 });

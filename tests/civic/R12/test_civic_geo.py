@@ -138,6 +138,30 @@ def test_build_geo_data_from_fixture(tiny_layers):
     assert src["license"]["id"] == "ODbL-1.0" and src["inputs"][0]["sha256"]
 
 
+def test_yard_must_be_inside_the_city_whole_not_only_its_centre(tmp_path):
+    """R10 B-009: двор на северо-восточной окраине — центр в городе, 19 из 26 вершин за границей. Не берём."""
+    import gzip
+    raw = json.loads(gzip.decompress((build_geo_data.OSM_OBJECTS_DIR / "raw" / "residential.json.gz").read_bytes()))
+    el = next(e for e in raw["elements"] if e.get("type") == "way" and e.get("id") == 619707707)
+    inside = {"type": "way", "id": 1, "tags": {"landuse": "residential"},
+              "geometry": [{"lon": x, "lat": y} for x, y in [(71.430, 51.130), (71.432, 51.130), (71.432, 51.131), (71.430, 51.131), (71.430, 51.130)]]}
+    (tmp_path / "raw").mkdir()
+    (tmp_path / "raw" / "yards.json").write_text(json.dumps({"elements": [el, inside]}), "utf-8")
+    boundary = build_geo_data.CityBoundary()
+    ring = [[p["lon"], p["lat"]] for p in el["geometry"]]
+    assert boundary.contains(geo.bbox_center(ring)), "центр двора — в городе (старое правило его пропускало)"
+    result = build_geo_data.build(tmp_path / "raw", walking_raw=None, evidence_type="real")
+    assert [y["id"] for y in result["yards"]] == ["yard-1"]
+    assert result["skipped"]["outside_city"] == 1
+
+
+def test_real_yards_and_object_outlines_are_inside_the_city_vertex_by_vertex(real):
+    r = accuracy.report(real)
+    rows = {x["id"]: x for x in r["rows"] if x["check"] == "inside_astana" and x["id"].startswith("geo/")}
+    assert set(rows) == {"geo/objects.json", "geo/yards.json"}
+    assert all(x["status"] == "PASS" and x["value"] == 0 for x in rows.values()), rows
+
+
 def test_kazakh_name_rules():
     assert kazakh_name({"name": "Қабанбай Батыр даңғылы", "name:ru": "проспект Кабанбай Батыра"}) == "Қабанбай Батыр даңғылы"
     assert kazakh_name({"name": "улица Мира"}) is None
@@ -167,7 +191,7 @@ def test_targets_by_category(tiny, tiny_layers):
     assert stop[0]["target"]["label_kk"] == "«Тестілік» аялдамасы"
     road = targets(71.4312, 51.16001, "roads", graph=tiny, layers=layers)["candidates"]
     assert road[0]["target"] == {"kind": "segment", "id": "osm-w900001-0", "label_ru": "Участок: улица Тестовая",
-                                 "label_kk": "Учаске: Тестілік көшесі"}
+                                 "label_kk": "Тестілік көшесінің бөлігі"}
     assert road[0]["geometry"]["type"] == "LineString" and road[0]["distance_m"] < 1.5  # 0.00001° ≈ 1.1 м
     yard = targets(71.4320, 51.1610, "utilities", graph=tiny, layers=layers)["candidates"]
     assert yard[0]["target"]["kind"] == "area" and yard[0]["target"]["id"] == "yard-3001" and not yard[0]["approximate"]
@@ -343,3 +367,29 @@ def test_report_checks_store_lines(real, tmp_path):
     rows = {x["id"]: x for x in r["rows"] if x["check"] == "store_line_on_street"}
     assert rows["editor-line"]["status"] == "PASS" and rows["hand-line"]["status"] == "FAIL"
     assert set(rows) == {"editor-line", "hand-line"}
+
+
+# ---------- подписи на двух языках (R11 UX_REVIEW B3 п. 4 «бөлік», B2 п. 2 безымянные; таблица как у R07) ----------
+def test_kazakh_street_names_without_invented_translations():
+    from engine.civic_geo import names
+    assert names.kk_street("улица Сыганак") == "Сыганак көшесі"
+    assert names.kk_street("Улица Тулебаева") == "Тулебаева көшесі"
+    assert names.kk_street("проспект Туран", "Тұран даңғылы") == "Тұран даңғылы", "name:kk из OSM главнее"
+    assert names.kk_street("шоссе Алаш") == "Алаш тас жолы"
+    assert names.kk_street("Объездная Астаны") == "Объездная Астаны", "без типа — имя как есть"
+    assert names.segment_labels("проспект Туран", "Тұран даңғылы") == ("Участок: проспект Туран", "Тұран даңғылының бөлігі")
+    assert names.segment_labels("Объездная Астаны") == ("Участок: Объездная Астаны", "Объездная Астаны: көше бөлігі")
+    assert names.unnamed_labels("service", "улица Сауран", None) == ("Проезд у улицы Сауран", "Сауран көшесі маңындағы өтпе жол")
+    assert names.unnamed_labels("foot", "проспект Туран", "Тұран даңғылы") == ("Тротуар или дорожка у проспекта Туран", "Тұран даңғылы маңындағы жаяу жол")
+    assert names.unnamed_labels("service") == ("Проезд без названия", "Атауы жоқ өтпе жол")
+    assert names.unnamed_labels("road", "Объездная Астаны") == ("Улица без названия — Объездная Астаны", "Объездная Астаны маңындағы атауы жоқ көше")
+    for ru, kk in [names.segment_labels("улица Сыганак"), names.unnamed_labels("other")]:
+        assert "учаске" not in kk.lower()
+
+
+def test_real_targets_name_unnamed_segments_by_the_nearest_street(real):
+    r = targets(71.4045, 51.1285, "roads", graph=real)
+    labels = [c["target"]["label_ru"] for c in r["candidates"]]
+    assert labels[0] == "Участок: проспект Туран" and r["candidates"][0]["target"]["label_kk"] == "Тұран даңғылының бөлігі"
+    assert "Проезд без названия" not in labels, labels
+    assert len(labels) == len(set(labels)), "одинаковые подписи не повторяются: " + str(labels)

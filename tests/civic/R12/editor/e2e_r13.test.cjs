@@ -83,7 +83,7 @@ describe("R04 round 13 (contract mock)", { skip: PW ? false : "playwright not in
       await fetch("/api/civic/v1/session/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(c), credentials: "same-origin" });
     }, stand.creds2);
     await p.click(fk("save"));
-    await p.waitForSelector('.civic-r04-msg-warn:has-text("сессия сменилась")');
+    await p.waitForSelector('.civic-r04-msg-warn:has-text("теперь вход")');
     assert.equal(K.objects().filter((o) => o.title === "Черновик первого редактора").length, 0, "nothing was created under the second editor");
     assert.equal(await p.$(fk("title")), null, "the first editor's form is not shown to the second");
     assert.match(await p.textContent(".civic-r04-head"), /Второй редактор/);

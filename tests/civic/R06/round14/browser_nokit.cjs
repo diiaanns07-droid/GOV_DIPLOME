@@ -102,7 +102,7 @@ async function open(browser, width, block) {
     d.on("console", (m) => { if (/\[i18n\]/.test(m.text())) warns.push(m.text()); });
     await d.route(/\/api\/civic\/v2\/proposals\/[^/]+\/vote$/, (route) => route.fulfill({
       status: 429, headers: { "Content-Type": "application/json", "Retry-After": "86000" },
-      body: JSON.stringify({ ok: false, error: { code: "rate_limited", message: "С этого адреса уже много голосов за этот проект. Повторите завтра." } }),
+      body: JSON.stringify({ ok: false, error: { code: "rate_limited", message: "С этого устройства или сети уже много голосов за этот проект. Попробуйте завтра." } }),
     }));
     await d.goto(stand.url + "?lang=" + lang, { waitUntil: "load" });
     await d.waitForSelector(".r06-vote__btn:not([disabled])");

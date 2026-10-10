@@ -600,7 +600,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     assert.ok(!/csrf/i.test(stored), "no CSRF token in the tab copy");
     await p.reload();
     await p.waitForSelector(fk("rec-new"));  // the list offers the local copy after reload
-    assert.match(await p.textContent(".civic-r04-listview"), /локальная копия, не на сервере/);
+    assert.match(await p.textContent(".civic-r04-listview"), /копия на этом устройстве, не на сервере/);
     await p.click(fk("rec-new"));
     await p.waitForSelector(fk("restore"));
     await p.click(fk("restore"));

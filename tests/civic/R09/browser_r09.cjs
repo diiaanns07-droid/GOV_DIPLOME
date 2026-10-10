@@ -342,6 +342,61 @@ async function newComplaintAndMine(browser, base, lang, width, height, tag, poin
   await page.context().close();
 }
 
+// UX_BRIEF правило 7: у «Мои обращения» есть загрузка (скелетон), «пока пусто» с подсказкой и ошибка с «Повторить».
+async function mineStates(browser, base, lang, width, height, tag) {
+  const page = await newPage(browser, base, width, height, lang);
+  const MINE = "**/api/civic/v2/complaints/mine";
+  await page.route(MINE, async (route) => { await new Promise((ok) => setTimeout(ok, 2500)); await route.continue(); });
+  await page.evaluate(() => window.standUi.openMine());
+  const loading = await page.waitForSelector(".bc-panel .bc-loading .bk-skel", { timeout: 3000 }).then(() => true, () => false);
+  const loadingText = loading ? (await page.textContent(".bc-panel .bc-loading")).trim() : "";
+  check(`${tag}: «Мои обращения» — загрузка: скелетон и «${loadingText}»`, loading && /Загружаем|жүктелуде/.test(loadingText));
+  await shot(page, `${tag}-mine-loading`);
+  await page.waitForSelector(".bc-panel .bk-empty", { timeout: 8000 });
+  if (width < 1024) {
+    // Пусто — шторка по содержимому, без пустого белого низа (UX_BRIEF правило 7); карта над ней видна.
+    await page.waitForTimeout(400);
+    const sheet = await page.evaluate(() => { const p = document.querySelector(".bc-panel"); const r = p.getBoundingClientRect();
+      const last = p.querySelector(".bk-empty button").getBoundingClientRect();
+      return { snap: p.dataset.snap, top: Math.round(r.top), gap: Math.round(r.bottom - last.bottom), h: innerHeight }; });
+    check(`${tag}: «Мои обращения» пусто — шторка по содержимому (верх ${sheet.top} px, под кнопкой ${sheet.gap} px)`,
+          sheet.snap === "peek" && sheet.top > sheet.h * 0.4 && sheet.gap < 120, JSON.stringify(sheet));
+  }
+  const empty = await page.evaluate(() => {
+    const box = document.querySelector(".bc-panel .bk-empty"); const b = box.querySelector("button").getBoundingClientRect();
+    return { title: box.querySelector(".bk-empty__title").textContent.trim(), text: box.textContent.trim(), h: Math.round(b.height) };
+  });
+  check(`${tag}: «Мои обращения» — пусто: «${empty.title}», подсказка и кнопка «Сообщить» (${empty.h} px)`,
+        /ничего не отправляли|ештеңе жібермедіңіз/.test(empty.title) && /Сообщить о проблеме|Мәселе туралы хабарлау/.test(empty.text)
+        && empty.h >= 48, JSON.stringify(empty));
+  await shot(page, `${tag}-mine-empty`);
+  await page.unroute(MINE);
+  await page.route(MINE, (route) => route.abort());
+  await page.evaluate(() => window.standUi.openMine());
+  await page.waitForSelector(".bc-panel .bk-error", { timeout: 8000 });
+  const error = await page.evaluate(() => {
+    const box = document.querySelector(".bc-panel .bk-error"); const b = box.querySelector("button").getBoundingClientRect();
+    return { title: box.querySelector(".bk-error__title").textContent.trim(), button: box.querySelector("button").textContent.trim(),
+             role: box.getAttribute("role"), h: Math.round(b.height) };
+  });
+  check(`${tag}: «Мои обращения» — нет связи: «${error.title}» и «${error.button}» (${error.h} px)`,
+        /Нет связи|байланыс жоқ/.test(error.title) && /Повторить|Қайталау/.test(error.button) && error.role === "alert" && error.h >= 48, JSON.stringify(error));
+  await shot(page, `${tag}-mine-error`);
+  await page.unroute(MINE);
+  await page.click(".bc-panel .bk-error button");
+  const back = await page.waitForSelector(".bc-panel .bk-empty", { timeout: 8000 }).then(() => true, () => false);
+  check(`${tag}: «Повторить» загружает снова`, back);
+  await page.click(".bc-panel .bk-empty button");
+  const wizard = await page.waitForSelector(".bc-panel[data-step='2']", { timeout: 5000 }).then(() => true, () => false);
+  check(`${tag}: кнопка из пустого списка открывает «Где проблема?»`, wizard);
+  check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(page));
+  const keys = await visibleKeys(page);
+  check(`${tag}: нет ключей и технических слов`, keys.length === 0, keys.join(", "));
+  check(`${tag}: нет ошибок консоли`, page.problems.filter((p) => !/Failed to load resource|ERR_FAILED/.test(p)).length === 0,
+        page.problems.join(" | "));
+  await page.context().close();
+}
+
 async function withoutMl(browser, base, hot, tag) {
   const page = await newPage(browser, base, 375, 812, "ru");
   await page.click(".bc-fab");
@@ -543,6 +598,9 @@ async function keyboard(browser, base, tag) {
     await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "kk", "375-kk-layout");
     await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru-badge");
     await keyboard(browser, "http://127.0.0.1:8791", "1366-kbd");
+    for (const [lang, w, h] of [["ru", 375, 812], ["kk", 375, 812], ["ru", 1366, 768], ["kk", 1366, 768]]) {
+      await mineStates(browser, "http://127.0.0.1:8791", lang, w, h, `${w}-${lang}-states`);
+    }
     await browser.close();
   } catch (err) {
     console.error(err);

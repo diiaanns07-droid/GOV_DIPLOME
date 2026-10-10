@@ -38,6 +38,39 @@ DEFAULT_TITLES = {
     "stop": ("Остановка", "Аялдама"),
     "lighting": ("Освещение улицы", "Көше жарығы"),
 }
+# Название нового проекта без названия, но с улицей рядом: «вид + улица» (UX_REVIEW R11, ночь, п. 3), как у демо.
+# ru — тип улицы в родительном падеже («Сквер у улицы X»); kk — улица из near_street_kk или по правилу R07/R13:
+# тип улицы по-казахски после имени («улица X» → «X көшесі»), имя собственное как есть.
+_RU_STREET_GENITIVE = (("улица ", "улицы "), ("проспект ", "проспекта "), ("переулок ", "переулка "),
+                       ("бульвар ", "бульвара "), ("шоссе ", "шоссе "), ("площадь ", "площади "))
+_KK_STREET_TYPES = (("улица ", "көшесі"), ("проспект ", "даңғылы"), ("переулок ", "тұйық көшесі"),
+                    ("шоссе ", "тас жолы"), ("бульвар ", "бульвары"), ("площадь ", "алаңы"))
+
+
+def kk_street_from_ru(street_ru):
+    if not street_ru:
+        return None
+    for ru_type, kk_type in _KK_STREET_TYPES:
+        if street_ru.startswith(ru_type):
+            return f"{street_ru[len(ru_type):]} {kk_type}"
+    return street_ru
+
+
+def street_titles(kind, street_ru, street_kk):
+    """(title_ru, title_kk) для нового проекта без названия: вид + улица рядом."""
+    base_ru, base_kk = DEFAULT_TITLES[kind]
+    gen = next((g + street_ru[len(full):] for full, g in _RU_STREET_GENITIVE
+                if street_ru and street_ru.startswith(full)), None)
+    kk = street_kk or kk_street_from_ru(street_ru)
+    if kind == "lighting":
+        ru = (f"Освещение {gen}" if gen else f"Освещение: {street_ru}") if street_ru else base_ru
+        kk_title = (f"{kk}н жарықтандыру" if kk.endswith(("і", "ы")) else f"{base_kk} · {kk}") if kk else base_kk
+    else:
+        ru = (f"{base_ru} у {gen}" if gen else f"{base_ru} · {street_ru}") if street_ru else base_ru
+        kk_title = f"{base_kk} · {kk} маңында" if kk else base_kk
+    return ru[:MAX_TITLE], kk_title[:MAX_TITLE]
+
+
 DEVICE_RE = re.compile(r"^[A-Za-z0-9._:-]{8,128}\Z")  # как V2_DEVICE_ID шлюза R01
 MAX_TITLE = 200
 MAX_REASON = 500
@@ -266,6 +299,8 @@ class ProposalRepository:
             raise ValidationError(errors.fields)
         now = iso(utc_now(self.clock))
         district = district_of(geometry)  # район считает сервер по полигонам OSM; присланный клиентом — подсказка
+        if not title_ru and not title_kk and (near_street or near_street_kk):
+            default_ru, default_kk = street_titles(kind, near_street, near_street_kk)
         with self.db.write() as conn:
             restored = self._restore(conn, actor, payload.get("id"), kind, now)
             if restored is not None:
@@ -340,7 +375,7 @@ class ProposalRepository:
                 target_key = f"{client_key}|{proposal_id}"
                 if not self.target_limiter.allow(target_key):
                     raise _VoteRateLimited(
-                        "С этого адреса уже много голосов за этот проект. Повторите завтра.",
+                        "С этого устройства или сети уже много голосов за этот проект. Попробуйте завтра.",
                         self.target_limiter.retry_after(target_key))
                 conn.execute("""INSERT INTO civic_votes(proposal_id, device_hash, value, created_at, updated_at)
                                 VALUES (?, ?, ?, ?, ?)""", (proposal_id, device, value, now, now))

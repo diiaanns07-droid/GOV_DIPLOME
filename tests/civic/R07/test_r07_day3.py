@@ -210,6 +210,43 @@ def test_r12_registry_does_not_strip_osm_labels(tmp_path, monkeypatch):
     assert unnamed["label_kk"] != "Нысан" and unnamed["label_ru"] != "Объект"
 
 
+# ---------- ночь, ревью кода: кэш целей и заглушки имён R12 ----------
+
+def test_record_label_of_one_complaint_does_not_stick_to_the_cell_cache():
+    r = TargetResolver(graph_path=None, use_r12=False)
+    cid = geo.cell_id_for(POINT)
+    first = r.resolve({"kind": "area", "id": cid, "approximate": True, "label_ru": "Примерное место у дома 5"})
+    assert first["label_ru"] == "Примерное место у дома 5" and first["approximate"] is True
+    plain = r.resolve({"kind": "area", "id": cid})
+    assert plain["label_ru"] == "Квартал" and plain["approximate"] is False
+    again = r.resolve({"kind": "area", "id": cid, "approximate": True})
+    assert again["label_ru"] == "Примерное место"          # без подписи записи — своя, а не чужая
+
+
+def test_point_fallback_is_not_cached_by_id():
+    r = TargetResolver(graph_path=None, use_r12=False, use_osm_objects=False)
+    a = r.resolve({"kind": "object", "id": "osm-node-1"}, point=[71.40, 51.12])
+    b = r.resolve({"kind": "object", "id": "osm-node-1"}, point=[71.45, 51.15])
+    assert geo.point_in_ring([71.45, 51.15], b["geometry"]["coordinates"][0]) and a["geometry"] != b["geometry"]
+
+
+def test_r12_placeholder_names_are_not_wrapped_as_real_names(tmp_path, monkeypatch):
+    from ui.civic_heat import targets as tg
+    geo_dir = tmp_path / "geo"
+    geo_dir.mkdir()
+    (geo_dir / "yards.json").write_text(json.dumps({"items": [
+        {"id": "yard-1", "kind": "yard", "name_ru": "Двор или квартал", "name_kk": None,
+         "polygon": [[[71.4, 51.1], [71.401, 51.1], [71.401, 51.101], [71.4, 51.1]]]}]}), "utf-8")
+    (geo_dir / "objects.json").write_text(json.dumps({"items": [
+        {"id": "osm-node-2", "kind": "bus_stop", "name_ru": "Остановка", "name_kk": None, "point": [71.41, 51.12]}]}), "utf-8")
+    monkeypatch.setattr(tg, "R12_GEO_DIR", geo_dir)
+    r = tg.TargetResolver(graph_path=None, use_r12=False, use_osm_objects=False)
+    yard = r.resolve({"kind": "area", "id": "yard-1"})
+    stop = r.resolve({"kind": "object", "id": "osm-node-2"})
+    assert "«" not in yard["label_ru"] and "«" not in yard["label_kk"], yard
+    assert (stop["label_ru"], stop["label_kk"]) == ("Остановка", "Аялдама")
+
+
 # ---------- R07 №4: «Что пишут жители» — тексты только примеров или сотруднику ----------
 
 def test_text_groups_show_demo_texts_and_hide_real_ones_from_public():

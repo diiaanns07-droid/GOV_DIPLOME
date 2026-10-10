@@ -13,7 +13,7 @@ import json
 import threading
 from pathlib import Path
 
-from . import geo
+from . import geo, names
 from .graph import StreetGraph, get_graph
 from .objects import Cells, FeatureSet, get_layers
 from .paths import CATEGORIES
@@ -88,16 +88,22 @@ def object_target(f) -> dict:
             "label_kk": kk.format(n=name_kk) if name_kk else kk0}
 
 
-def segment_target(e) -> dict:
+def segment_target(e, street=None) -> dict:
+    """Участок: «Участок: проспект Туран» / «Тұран даңғылының бөлігі». Безымянный — по ближайшей улице с названием
+    (street = (ru, kk) из _street_near): «Проезд у улицы Сауран» / «Сауран көшесі маңындағы өтпе жол»."""
     if e.name:
-        ru, kk = f"Участок: {e.name}", f"Учаске: {e.label_kk()}"
-    elif e.group == "foot":
-        ru, kk = "Тротуар или дорожка без названия", "Атауы жоқ жаяу жол"
-    elif e.group == "service":
-        ru, kk = "Проезд без названия", "Атауы жоқ өтпе жол"
+        ru, kk = names.segment_labels(e.name, e.name_kk)
     else:
-        ru, kk = "Участок улицы без названия", "Атауы жоқ көше учаскесі"
+        s_ru, s_kk = street or (None, None)
+        ru, kk = names.unnamed_labels(e.group, s_ru, s_kk)
     return {"kind": "segment", "id": e.id, "label_ru": ru, "label_kk": kk}
+
+
+def segment_street(graph: StreetGraph, e) -> tuple[str | None, str | None]:
+    """Ближайшая улица с названием для безымянного участка (по его середине); у названного — не нужна."""
+    if e.name:
+        return None, None
+    return _street_near(graph, e.geometry[len(e.geometry) // 2])
 
 
 def yard_target(f, street) -> dict:
@@ -166,12 +172,14 @@ def targets(lon: float, lat: float, category: str | None = None, limit: int = 3,
             ranked = sorted(near, key=lambda r: (r[0] + _segment_penalty(r[1], groups), r[1].id))
             seen_names: set = set()
             for d, e, pr in ranked:
-                # Одна улица — один кандидат (ближайший кусок); безымянная линия OSM — тоже один.
-                key = e.name or f"way-{e.way_id}"
+                # Одна улица — один кандидат (ближайший кусок). Безымянные — по подписи: два «Проезд у улицы Сауран»
+                # подряд житель не различит, остаётся ближайший (UX_REVIEW R11 B2 п. 2).
+                t = segment_target(e, segment_street(graph, e))
+                key = e.name or t["label_ru"]
                 if key in seen_names:
                     continue
                 seen_names.add(key)
-                found.append((d + penalty + _segment_penalty(e, groups), {"target": segment_target(e), "distance_m": round(d, 1),
+                found.append((d + penalty + _segment_penalty(e, groups), {"target": t, "distance_m": round(d, 1),
                                             "geometry": {"type": "LineString",
                                                          "coordinates": [geo.round_coord(c) for c in e.geometry]},
                                             "point": geo.round_coord(pr.point), "approximate": False}))

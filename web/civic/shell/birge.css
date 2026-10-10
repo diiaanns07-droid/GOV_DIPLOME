@@ -170,9 +170,6 @@ body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-pic
   body[data-civic-sheet="full"].civic-mode .r07-maplegend { display: none; }
 }
 
-/* Кабинет сотрудника (редактор R12, раунд 13): служебная строка «роль по данным сервера: editor · правила проверки
-   с сервера (/staff/meta)» — техническая (UX_BRIEF правило 4, R10 B-021). В Birge скрыта; ?tools=all — видна. */
-body[data-birge-tools="off"] .civic-r04-who { display: none; }
 
 /* Лента работ раунда 13 («Что меняется в городе», модуль карты R12) в сценарий демо Birge не входит, а в ҚАЗ она
    по-русски (R10 B-012, R11 UX_REVIEW B1 п. 11): в Birge панель — только «Карта жалоб» R07. Объекты работ остаются

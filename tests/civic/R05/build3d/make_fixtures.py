@@ -158,7 +158,8 @@ def main(out_dir=None):
         # интерфейс показывает русское с lang="ru" (так же делает R12 label_kk). Машинного перевода нет.
         "names_kk": names_kk,
         "names_kk_source": {"path": "data/civic/astana/osm-walking/overpass.json.gz", "tag": "name:kk",
-                            "evidence_type": "real (OSM)", "found": sum(1 for x in names_kk if x), "of": len(names)},
+                            "evidence_type": "real (OSM)", "found": sum(1 for x in names_kk if x), "of": len(names),
+                            "normalized": "служебные слова и титулы после первого слова — строчные: " + ", ".join(sorted(KK_LOWER_WORDS))},
         "nodes": nodes,
         "edges": edges,
     }
@@ -340,7 +341,17 @@ def street_names_kk(edges, names):
         kk = (way_kk.get(way) or "").strip()
         if kk:
             votes[row[1]][kk] += 1
-    return [v.most_common(1)[0][0] if v else None for v in votes]
+    return [kk_case(v.most_common(1)[0][0]) if v else None for v in votes]
+
+
+# В name:kk OSM служебные слова и титулы бывают с заглавной («Керей Және Жәнібек Хандар көшесі»). По правилам
+# казахского письма они строчные: «Керей және Жәнібек хандар көшесі», «Қабанбай батыр даңғылы» (UX_REVIEW R11, ночь 7, п. 2).
+KK_LOWER_WORDS = {"Және", "Мен", "Хан", "Хандар", "Батыр", "Би"}
+
+
+def kk_case(name):
+    words = name.split(" ")
+    return " ".join([words[0]] + [w.lower() if w in KK_LOWER_WORDS else w for w in words[1:]])
 
 
 def is_rail(el):

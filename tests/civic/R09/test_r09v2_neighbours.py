@@ -2,6 +2,8 @@
 
 В ветке R09 этих пакетов нет — тесты пропускаются. В общей сборке R01 (или в интеграционном дереве, RUN.txt п.6)
 проверяют стык: цели R12 принимает запись R09, ячейки совпадают, R04 находит жалобу R09 для «Я тоже».
+Подсказку категории (suggest) R04 даёт только со словарём/моделью R03 (ml.civic_classifier_v2); без R03 — категория
+есть, suggest=false, и форма R09 открывает сетку категорий (R01 INTEGRATION §9: тест падал в дереве R04 без R03).
 """
 
 import importlib.util
@@ -14,6 +16,7 @@ from ui.civic_feedback.v2 import record as rec
 
 HAS_GEO = importlib.util.find_spec("engine.civic_geo") is not None
 HAS_ML = importlib.util.find_spec("ui.civic_ml_api") is not None
+HAS_R03 = importlib.util.find_spec("ml.civic_classifier_v2") is not None
 
 
 @pytest.mark.skipif(not HAS_GEO, reason="нет engine.civic_geo (R12) в этом дереве")
@@ -53,5 +56,12 @@ def test_r04_finds_r09_complaint_for_metoo(tmp_path):
     assert matches and matches[0]["complaint_id"] == record["id"] and matches[0]["people"] == 2
     assert "text" not in matches[0]                          # чужие тексты не уходят жителю
     assert ml.similar("Сломана скамейка во дворе", point=point, days=14)["matches"] == []
+
+
+@pytest.mark.skipif(not HAS_ML, reason="нет ui.civic_ml_api (R04) в этом дереве")
+def test_r04_classify_suggests_only_with_r03():
+    import ui.civic_ml_api as ml
     c = ml.classify("Павильон остановки сломан, нет крыши")
-    assert c["category"] == "transport" and c["suggest"] is True
+    assert c["category"] == "transport" and isinstance(c["suggest"], bool)
+    if HAS_R03:
+        assert c["suggest"] is True                          # с R03 форма сама выбирает «Остановки и транспорт»
