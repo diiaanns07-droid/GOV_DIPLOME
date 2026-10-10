@@ -56,5 +56,7 @@
  "proposal.vote_limit": "у R06 «С этого адреса» / «Бұл мекенжайдан»: житель поймёт «адрес» как домашний (мекенжай = почтовый адрес), а лимит — по сети",
  "shell.map.error.offline": "без «панели слева» — в Birge её нет",
  "shell.map.error.waiting": "без названия сервиса OpenFreeMap",
- "shell.map.error.no_webgl": "без слова «WebGL» (UX_BRIEF, правило 4)"
+ "shell.map.error.no_webgl": "без слова «WebGL» (UX_BRIEF, правило 4)",
+ "staff.cabinet.only_mine": "у R12 «Тек менікі» — без существительного звучит обрывисто",
+ "staff.logout.retry": "у R12 «Қайта шығу» («выйти снова/ещё раз выйти наружу»)"
 }

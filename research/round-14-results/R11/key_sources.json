@@ -495,5 +495,20 @@
  "shell.map.error.waiting": "R01 · web/map.js showMapError (ждёт подложку)",
  "shell.map.error.no_webgl": "R01 · web/map.js showMapError (нет WebGL)",
  "heat.example_readonly": "R07 · карточка места, где только примеры (R10 B-037)",
- "heat.not_found": "R07 · тост на 404 при действии сотрудника"
+ "heat.not_found": "R07 · тост на 404 при действии сотрудника",
+ "staff.cabinet.empty_section": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.cabinet.escape_hint": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.cabinet.filter_label": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.cabinet.only_mine": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.cabinet.recovery_note": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.login.logged_out": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.login.to_open": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.logout.failed": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.logout.retry": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.msg.server_detail": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.row.end": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.row.no_kind": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.row.revision": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.row.unpublished": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12",
+ "staff.session.switched": "R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12"
 }
