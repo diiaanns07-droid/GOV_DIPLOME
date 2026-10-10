@@ -11,7 +11,7 @@ Python 3.12.10, torch 2.14.1+cu126, transformers 5.19.0, onnxruntime 1.31.0; м�
 Шаг 0 (переменные) — как ниже, затем:
 cd $REPO; git fetch origin claude/r14-R03 claude/r14-R02 claude/r14-R04
 cd $WT; git pull origin claude/r14-R03
-& $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider                 (ожидается 109 passed, 1 xfailed)
+& $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider                 (ожидается 112 passed, 1 xfailed)
 Шаг 8 (повторный экспорт ONNX per-channel; ожидаются три PASS):
 & $PY -m ml.civic_classifier_v2.export_onnx --texts "$R02\ml\datasets\synth_v3\data\corpus_v3.jsonl" --n 200
 Шаг 8б (int8 на probe_v2 + разбор ошибок трансформера):
@@ -80,7 +80,7 @@ $HUMAN = "$REPO\private\labels_owner.jsonl"      # <- подставьте фа�
 & $PY -c "from transformers import AutoTokenizer, AutoModelForSequenceClassification as M; AutoTokenizer.from_pretrained('FacebookAI/xlm-roberta-base'); M.from_pretrained('FacebookAI/xlm-roberta-base', num_labels=12); print('OK: веса из кэша')"
 
 -----------------------------------------------------------------
-3. Тесты R03 (CPU, крошечная модель, без сети) — ~1–3 мин, ожидается 109 passed, 1 xfailed
+3. Тесты R03 (CPU, крошечная модель, без сети) — ~1–3 мин, ожидается 112 passed, 1 xfailed
 -----------------------------------------------------------------
 & $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider
 

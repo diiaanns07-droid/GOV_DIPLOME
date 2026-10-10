@@ -55,6 +55,7 @@
   "ml/civic_classifier_v2/results/train_log_experiments.jsonl",
   "ml/civic_classifier_v2/results/train_log_final.jsonl",
   "ml/civic_classifier_v2/results/translit_to_cyrillic_probe_v2.json",
+  "ml/civic_classifier_v2/synth_curve.py",
   "ml/civic_classifier_v2/train.py",
   "ml/civic_classifier_v2/transformer.py",
   "ml/civic_classifier_v2/translit.py",
@@ -72,8 +73,8 @@
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 109, xfailed 1 (известное ограничение словаря: благодарность с темой)",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 101, NOT_RUN 8 (skipped с причиной), xfailed 1",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 112, xfailed 1 (известное ограничение словаря: благодарность с темой)",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 103, NOT_RUN 9 (skipped с причиной), xfailed 1",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",

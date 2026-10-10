@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 
 import r03_fixtures as F
+from r03_markers import needs_sklearn
 from ml.civic_classifier_v2 import analysis as A
 from ml.civic_classifier_v2 import labels as L
 from ml.civic_classifier_v2.config import RESULTS_DIR
@@ -262,3 +263,56 @@ def test_morning_files_reach_tables(tmp_path):
     assert t7["probe_v2: macro-F1 PyTorch (итоговая модель)"] == "0.828 [0.750–0.860]"
     t8 = tables["t8_translit_to_cyrillic"].rows
     assert len(t8) == 1 and t8[0][0] == "трансформер (итоговая, int8) — другая модель other"   # чужая модель помечена
+
+
+# ---------- объём синтетики (synth_curve.py) ----------
+
+def test_synth_curve_subsample_is_stratified_and_deterministic():
+    from collections import Counter
+    from ml.civic_classifier_v2 import synth_curve as SC
+    rows = F.synth_corpus()
+    full = Counter(r["label"] for r in rows)
+    half = SC.subsample(rows, 0.5, 1)
+    assert Counter(r["label"] for r in half) == {lab: round(0.5 * n) for lab, n in full.items()}
+    assert [r["id"] for r in half] == [r["id"] for r in SC.subsample(rows, 0.5, 1)]
+    assert [r["id"] for r in half] != [r["id"] for r in SC.subsample(rows, 0.5, 2)]
+    assert SC.subsample(rows, 1.0, 1) == rows and SC.subsample(rows, 0.0, 1) == []
+
+
+@needs_sklearn
+def test_synth_curve_run_small():
+    from ml.civic_classifier_v2 import synth_curve as SC
+    rows = F.synth_corpus()
+    tr = [r for r in rows if r["split"] == "train"]
+    va = [r for r in rows if r["split"] == "val"]
+    v3, llm = tr[::2], tr[1::2]
+    res = SC.run(v3, llm, va, F.probe_like(), seeds=[1, 2], grid=[{"C": 4.0, "class_weight": None, "keyword_scale": 1.0}],
+                 log=lambda *a: None)
+    a = res["llm_share"]
+    assert [a[k]["n_train"] for k in ("0.0", "0.25", "0.5", "1.0")] == sorted(a[k]["n_train"] for k in a)
+    assert a["0.5"]["seeds"] == 2 and a["0.0"]["seeds"] == 1 and res["total_share"]["1.0"] == a["1.0"]
+    assert [p["title"] for p in res["paired"]] == ["v3 + 100 % LLM − одна v3", "v3 + 100 % LLM − v3 + 50 % LLM",
+                                                   "всё v3 + LLM − половина v3 + LLM"]
+    json.dumps(res)                                                       # без служебных прогнозов, сериализуется
+
+
+def test_synth_curve_table_and_paired_rows(tmp_path):
+    ci = {"low": 0.70, "high": 0.80}
+    pt = lambda n, m, lo, hi, s: {"n_train": n, "seeds": s, "macro_f1_mean": m, "macro_f1_min": lo, "macro_f1_max": hi,  # noqa: E731
+                                  "ci_first_seed": ci}
+    curve = {"subsample_seeds": [1, 2, 3], "hyperparameters": "validation",
+             "llm_share": {"0.0": pt(2654, 0.751, 0.751, 0.751, 1), "0.25": pt(3349, 0.79, 0.785, 0.796, 3),
+                           "1.0": pt(5435, 0.797, 0.797, 0.797, 1)},
+             "total_share": {"0.5": pt(2716, 0.778, 0.77, 0.78, 3), "1.0": pt(5435, 0.797, 0.797, 0.797, 1)},
+             "paired": [{"title": "v3 + 100 % LLM − одна v3", "delta": {"delta": 0.046, "low": 0.007, "high": 0.087,
+                                                                        "share_delta_gt_0": 0.99}},
+                        {"title": "v3 + 100 % LLM − v3 + 50 % LLM", "delta": {"delta": 0.0, "low": -0.022, "high": 0.021,
+                                                                              "share_delta_gt_0": 0.5}}]}
+    (tmp_path / "synth_curve_probe_v2.json").write_text(json.dumps(curve), encoding="utf-8")
+    tables = {t.slug: t for t in A.build_tables(_fake_exp(), {}, {}, tmp_path)}
+    rows = tables["t11_synth_curve"].rows
+    assert [r[0] for r in rows] == ["v3 + 0 % LLM", "v3 + 25 % LLM", "v3 + 100 % LLM", "50 % от v3 + LLM"]
+    assert rows[1] == ["v3 + 25 % LLM", "3349", "0.790", "0.785–0.796", "0.700–0.800"] and rows[0][3] == "—"
+    t3 = [r[0] for r in tables["t3_paired_probe_v2"].rows]
+    assert "логрегрессия, доля синтетики: v3 + 100 % LLM − v3 + 50 % LLM" in t3
+    assert not any("одна v3" in r for r in t3)                            # дубль Δ из experiments не добавляется

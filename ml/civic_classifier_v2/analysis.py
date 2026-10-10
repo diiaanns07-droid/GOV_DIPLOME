@@ -132,7 +132,11 @@ def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None)
         verdict = "доказано" if (d["low"] > 0 or d["high"] < 0) else "не доказано"
         t.add(_ru_title(c["title"]), f"{d['delta']:+.3f}", f"[{d['low']:+.3f}; {d['high']:+.3f}]", d["share_delta_gt_0"], verdict)
     have = {r[0] for r in t.rows}
-    for title, d in paired_files(Path(folder) if folder else RESULTS_DIR):
+    curve = _load((Path(folder) if folder else RESULTS_DIR) / "synth_curve_probe_v2.json")
+    extra = paired_files(Path(folder) if folder else RESULTS_DIR)
+    extra += [(f"логрегрессия, доля синтетики: {p['title']}", p["delta"]) for p in curve.get("paired") or []
+              if p["title"] != "v3 + 100 % LLM − одна v3"]                # эта Δ уже есть из experiments/paired
+    for title, d in extra:
         if title not in have:
             verdict = "доказано" if (d["low"] > 0 or d["high"] < 0) else "не доказано"
             t.add(title, f"{d['delta']:+.3f}", f"[{d['low']:+.3f}; {d['high']:+.3f}]", d["share_delta_gt_0"], verdict)
@@ -228,7 +232,7 @@ def paired_files(folder: Path) -> list[tuple[str, dict]]:
 
 
 def extra_tables(folder: Path) -> list[Table]:
-    """Дополнительные опыты (если файлы есть): перевод транслита, чистка шумных меток llm_v1, нагрузка /classify."""
+    """Дополнительные опыты (если файлы есть): перевод транслита, шум меток llm_v1, нагрузка /classify, объём синтетики."""
     out = []
     tr = dict(_load(folder / "translit_to_cyrillic_probe_v2.json"))
     cyr8 = _load(folder / "onnx_int8_on_probe_v2_to_cyrillic.json")
@@ -288,6 +292,21 @@ def extra_tables(folder: Path) -> list[Table]:
                   f"{_f(longest['mean_ms'], 1)} / {_f(longest['p95_ms'], 1)}",
                   "; ".join(f"{w} → {v['requests_per_minute']}" for w, v in sorted(conc.items(), key=lambda kv: int(kv[0]))),
                   _f(top["p95_ms"], 0), _f(r.get("peak_rss_mb"), 0))
+        out.append(t)
+    curve = _load(folder / "synth_curve_probe_v2.json")
+    if curve.get("llm_share"):
+        t = Table("t11_synth_curve", "Таблица 11. Сколько синтетики нужно: логрегрессия на probe_v2",
+                  ["Обучение", "Текстов в train", "macro-F1 (среднее по seed)", "Мин–макс по seed", "95% ДИ (первый seed)"],
+                  f"synth_curve.py: подвыборки стратифицированы по категории; seed подвыборки — "
+                  f"{len(curve.get('subsample_seeds') or [])}; гиперпараметры — {curve.get('hyperparameters')}. "
+                  "Validation — v3 + LLM целиком. probe_v2 — тексты агента, не жителей.")
+        rows = [(f"v3 + {float(sh):.0%} LLM", v) for sh, v in curve["llm_share"].items()]
+        rows += [(f"{float(sh):.0%} от v3 + LLM", v) for sh, v in curve.get("total_share", {}).items() if float(sh) < 1]
+        for name, v in rows:
+            ci = v.get("ci_first_seed") or {}
+            t.add(name.replace("%", " %"), v["n_train"], _f(v["macro_f1_mean"]),
+                  f"{_f(v['macro_f1_min'])}–{_f(v['macro_f1_max'])}" if v.get("seeds", 1) > 1 else "—",
+                  f"{_f(ci.get('low'))}–{_f(ci.get('high'))}")
         out.append(t)
     return out
 
