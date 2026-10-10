@@ -12,6 +12,7 @@
   "ml/civic_classifier_v2/MODEL_CARD.md",
   "ml/civic_classifier_v2/__init__.py",
   "ml/civic_classifier_v2/analysis.py",
+  "ml/civic_classifier_v2/bench.py",
   "ml/civic_classifier_v2/config.py",
   "ml/civic_classifier_v2/data.py",
   "ml/civic_classifier_v2/evaluate.py",
@@ -31,6 +32,7 @@
   "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.json",
   "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.md",
   "ml/civic_classifier_v2/results/RESULTS.md",
+  "ml/civic_classifier_v2/results/classify_load_cloud.json",
   "ml/civic_classifier_v2/results/cloud_check_2026-10-10.json",
   "ml/civic_classifier_v2/results/experiments.json",
   "ml/civic_classifier_v2/results/final_model_meta.json",
@@ -69,8 +71,8 @@
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 101, xfailed 1 (известное ограничение словаря: благодарность с темой)",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 94, NOT_RUN 7 (skipped с причиной), xfailed 1",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 104, xfailed 1 (известное ограничение словаря: благодарность с темой)",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 96, NOT_RUN 8 (skipped с причиной), xfailed 1",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
@@ -102,7 +104,9 @@
   "ревью собственного кода: 9 исправлений с регрессионными тестами; логрегрессия/translit воспроизводятся бит в бит": "PASS",
   "логрегрессия: v3 + LLM − только v3 на probe_v2 (парный бутстрэп)": "PASS — +0.046 [+0.004; +0.089]",
   "FINAL R01 ef1ef44 + пути R03 @ c1654aa: tests R03/R04/R09/R01": "PASS 794, skipped 1",
-  "демо-фразы R02/R10 → продуктовый словарь (запасной путь R04 без модели)": "PASS 11 из 11; «Спасибо за новый сквер!» → yards вместо other — strict xfail, ограничение в MODEL_CARD"
+  "демо-фразы R02/R10 → продуктовый словарь (запасной путь R04 без модели)": "PASS 11 из 11; «Спасибо за новый сквер!» → yards вместо other — strict xfail, ограничение в MODEL_CARD",
+  "нагрузка /classify (bench.py, облако 4 vCPU, модель размера xlm-roberta-base, случайные веса, int8 per-channel)": "PASS — 5000 знаков: mean 35–37 мс, p95 ≤ 49 мс; 8 одновременных: 2300–2900 запросов/мин; память ≈ 510 МБ (3 прогона)",
+  "нагрузка /classify настоящей моделью на ноутбуке": "NOT_RUN — по желанию, RUN.txt (bench, ≈ 1 мин)"
  },
  "results_so_far": {
   "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",
@@ -140,14 +144,15 @@
   "Слабые места: транслит латиницей (0.53), трудные случаи (0.67), noise_safety/roads (0.71–0.72).",
   "guess_lang считает казахский без специфических букв русским — срезы берут язык из записи."
  ],
- "next_step": "Утро: RUN.txt блок «УТРО 11 ОКТ» на ноутбуке (ONNX per-channel, int8 на probe_v2, перевод транслита, парный вклад LLM-синтетики для трансформера) → commit/push results. R01: взять ac0e954 в FINAL. Когда будет ≥ 200 текстов людей — шаги 6/7 с --human.",
+ "next_step": "Утро: RUN.txt блок «УТРО 11 ОКТ» на ноутбуке (ONNX per-channel, int8 на probe_v2, перевод транслита, парный вклад LLM-синтетики для трансформера, по желанию bench) → commit/push results. R01: в ef1ef44 уже R03 937f665 — для показа достаточно. Когда будет ≥ 200 текстов людей — шаги 6/7 с --human.",
  "local4_results_sha": "c19b889 (Codex на ноутбуке владельца: experiments.json, RESULTS.md, final_model_meta.json, onnx_export.json, train_log_*.jsonl; код 477f97b)",
  "deliverables_night": {
   "DIPLOMA_TABLES.md": "ml/civic_classifier_v2/results/DIPLOMA_TABLES.md (+ results/tables/*.csv)",
   "ERROR_ANALYSIS.md": "ml/civic_classifier_v2/results/ERROR_ANALYSIS.md",
   "per-text predictions": "results/preds_probe_v2_synth_all_{heuristic,logreg}.jsonl (id и метки)",
   "translit": "ml/civic_classifier_v2/results/translit_to_cyrillic_probe_v2.json",
-  "label_audit": "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.md (+ .json), llm_label_cleaning_effect.json"
+  "label_audit": "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.md (+ .json), llm_label_cleaning_effect.json",
+  "classify_load": "ml/civic_classifier_v2/bench.py → results/classify_load_cloud.json (для R15/R04)"
  },
  "for_R01": "В R01 ef1ef44 уже R03 937f665 (B-004 исправлен, проверено: «машины стоят на газоне во дворе» → parking) — для показа достаточно. Если обновлять перед FINAL — последний SHA ветки: две мелочи predict.py (гонка get_default, запасной torch при отсутствии onnxruntime), в связке R04 не проявляются; остальное — анализ, отчёты, тесты. Проверено: ef1ef44 + пути R03 @ c1654aa — 794 passed."
 }

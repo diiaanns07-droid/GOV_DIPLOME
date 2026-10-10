@@ -1,0 +1,88 @@
+{
+ "what": "Classifier.classify() — путь R04 /classify: обрезка, токенизация, ONNX, ответ CONTRACT §7",
+ "texts": "синтетика: фразы-жалобы ru/kk подряд до нужной длины (тексты людей не используются)",
+ "model_version": "civic-clf-v2-rand-synth_template-dfe74e187-s20261011",
+ "backend": "onnx:model.int8.onnx",
+ "threads_per_request": 4,
+ "max_text_chars": 5000,
+ "cpu": {
+  "cpu_count": 4,
+  "machine": "x86_64",
+  "system": "Linux",
+  "processor": "x86_64"
+ },
+ "sequential_by_length": {
+  "40": {
+   "n": 200,
+   "mean_ms": 10.87,
+   "p50_ms": 10.57,
+   "p95_ms": 14.7,
+   "max_ms": 25.02,
+   "tokens_mean": 23.9
+  },
+  "300": {
+   "n": 200,
+   "mean_ms": 29.7,
+   "p50_ms": 28.72,
+   "p95_ms": 39.11,
+   "max_ms": 55.65,
+   "tokens_mean": 128.0
+  },
+  "1000": {
+   "n": 200,
+   "mean_ms": 31.83,
+   "p50_ms": 31.21,
+   "p95_ms": 41.83,
+   "max_ms": 66.81,
+   "tokens_mean": 128.0
+  },
+  "5000": {
+   "n": 200,
+   "mean_ms": 34.9,
+   "p50_ms": 34.66,
+   "p95_ms": 43.53,
+   "max_ms": 71.35,
+   "tokens_mean": 128.0
+  }
+ },
+ "concurrent_longest": {
+  "length": 5000,
+  "by_workers": {
+   "1": {
+    "n": 200,
+    "mean_ms": 36.22,
+    "p50_ms": 35.97,
+    "p95_ms": 46.43,
+    "max_ms": 72.15,
+    "wall_s": 7.258,
+    "requests_per_minute": 1653
+   },
+   "4": {
+    "n": 200,
+    "mean_ms": 100.68,
+    "p50_ms": 98.05,
+    "p95_ms": 152.97,
+    "max_ms": 179.02,
+    "wall_s": 5.08,
+    "requests_per_minute": 2362
+   },
+   "8": {
+    "n": 200,
+    "mean_ms": 201.92,
+    "p50_ms": 198.41,
+    "p95_ms": 291.61,
+    "max_ms": 329.43,
+    "wall_s": 5.123,
+    "requests_per_minute": 2342
+   }
+  }
+ },
+ "capacity": {
+  "requests_per_minute_at_longest": 2362,
+  "limit_per_address_per_minute": 60,
+  "addresses_at_full_limit": 39.4
+ },
+ "peak_rss_mb": 509.0,
+ "note": "облако (4 vCPU), случайные веса размера xlm-roberta-base (278 млн параметров, int8 per-channel) — только скорость, не качество; токенизатор игрушечный (128 токенов уже при 300 знаках), худший случай 128 токенов совпадает с настоящей моделью; три прогона: 2342–2925 запросов/мин при 8 потоках, 5000 знаков mean 35–37 мс",
+ "code": "ml/civic_classifier_v2/bench.py"
+}
