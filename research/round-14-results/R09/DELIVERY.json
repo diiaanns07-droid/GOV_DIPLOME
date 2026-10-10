@@ -165,14 +165,19 @@
    "detail": "474 passed, 2 skipped (skip: стык с R12/R04 в ветке без их кода)"
   },
   {
-   "name": "node tests/civic/R09/browser_r09.cjs (стенд, запасные стили)",
+   "name": "tests/civic/R09/test_r09v2_neighbours.py в дереве R04 без R03 (ml.civic_classifier_v2 недоступен) и с R03 (ef1ef44)",
    "status": "PASS",
-   "detail": "152/152"
+   "detail": "3 passed в обоих случаях; прежняя версия без R03 — 1 FAIL (R01 INTEGRATION §9)"
   },
   {
-   "name": "node tests/civic/R09/browser_r09.cjs --r11 <R11 52d7c59 web> (настоящий ui-kit и словарь R11)",
+   "name": "node tests/civic/R09/browser_r09.cjs (стенд, запасные стили)",
    "status": "PASS",
-   "detail": "152/152"
+   "detail": "186/186 (вкл. состояния «Мои обращения»: загрузка, пусто, нет связи — 375/1366 ru/kk)"
+  },
+  {
+   "name": "node tests/civic/R09/browser_r09.cjs --r11 <папка web R11 c03a6c5/52d7c59> (настоящий ui-kit и словарь R11)",
+   "status": "PASS",
+   "detail": "186/186 (вкл. состояния «Мои обращения»: загрузка, пусто, нет связи — 375/1366 ru/kk)"
   },
   {
    "name": "node tests/civic/R09/app_demo_r09.cjs на FINAL-кандидате R01 ef1ef44 + R09 + r01_seed_r09_demo.patch",
