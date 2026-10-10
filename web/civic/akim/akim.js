@@ -89,10 +89,16 @@
   function todayAstana() {
     return new Date(Date.now() + ASTANA_OFFSET_MS).toISOString().slice(0, 10);
   }
-  function label(obj, base) {
-    // Подпись на текущем языке: label_kk / title_kk, если есть, иначе русская.
+  // Подпись на текущем языке: label_kk / title_kk, если есть, иначе русская.
+  // kindPrefix: если казахского названия нет (сервер ставит title_kk_missing), в ҚАЗ показываем вид объекта
+  // по-казахски из словаря R11 («object.kind.roadworks» → «Жол жөндеу»), а не русскую строку (R10 B-018).
+  function label(obj, base, kindPrefix) {
     var l = lang();
-    return (obj && (obj[base + "_" + l] || obj[base + "_ru"])) || "";
+    if (!obj) return "";
+    if (l !== "ru" && obj[base + "_" + l + "_missing"] && kindPrefix && obj.kind && I() && I().has(kindPrefix + obj.kind)) {
+      return tr(kindPrefix + obj.kind);
+    }
+    return obj[base + "_" + l] || obj[base + "_ru"] || "";
   }
   function districtName(id) {
     return id ? tr("district." + id) : tr("akim.district.all_city");
@@ -523,7 +529,7 @@
       if (o.delay_days > 0) tags.push(h("span", { class: "bk-tag bk-tag--warn", text: tr("object.late", { n: o.delay_days }) }));
       if (o.stale && o.days_since_update != null)
         tags.push(h("span", { class: "bk-tag akim-stale", text: tr("object.stale_days", { n: o.days_since_update }) }));
-      var main = [h("span", { class: "bk-list__title", text: label(o, "title") })];
+      var main = [h("span", { class: "bk-list__title", text: label(o, "title", "object.kind.") })];
       if (o.district) main.push(h("span", { class: "bk-list__sub", text: tr("district." + o.district) }));
       main.push(stagesEl(o));
       return h("li", { class: "akim-obj" }, [h("span", { class: "bk-list__main" }, main), h("span", { class: "akim-obj__tags" }, tags)]);
@@ -596,7 +602,7 @@
           h("li", { class: "akim-obj" }, [
             h("span", { class: "bk-list__main" }, [
               h("span", { class: "bk-list__title" }, [
-                label(x, "title"),
+                label(x, "title", "proposal.kind."),
                 x.is_new ? h("span", { class: "bk-tag bk-tag--project akim-new", text: tr("akim.proposals.new_badge") }) : null,
               ]),
               h("span", { class: "bk-list__sub", text: tr("akim.proposals.votes", { up: x.votes_up, down: x.votes_down }) }),

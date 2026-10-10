@@ -241,10 +241,13 @@ def normalize_object(o: dict, as_of: datetime) -> dict:
     title = o.get("title")
     if isinstance(title, dict):  # civic-v1 может хранить {ru, kk}
         title_ru = o.get("title_ru") or title.get("ru") or title.get("kk") or o.get("id")
-        title_kk = o.get("title_kk") or title.get("kk") or title_ru
+        real_kk = o.get("title_kk") or title.get("kk")
     else:
         title_ru = o.get("title_ru") or title or o.get("name") or o.get("id")
-        title_kk = o.get("title_kk") or title_ru
+        real_kk = o.get("title_kk")
+    # Нет казахского названия (у настоящих записей R06 title_kk = null) — в ҚАЗ интерфейс покажет вид объекта
+    # по-казахски (object.kind.*), а не русское название (R10 B-018, LOCAL_B2 №4).
+    title_kk = real_kk or title_ru
     if o.get("demo"):
         title_ru, title_kk = demo_title(title_ru), demo_title(title_kk)
     return {
@@ -252,6 +255,7 @@ def normalize_object(o: dict, as_of: datetime) -> dict:
         "kind": o.get("kind"),
         "title_ru": title_ru,
         "title_kk": title_kk,
+        "title_kk_missing": not real_kk,
         "district": o.get("district"),
         "stage": o.get("stage"),
         "planned_end": planned.isoformat() if planned else None,

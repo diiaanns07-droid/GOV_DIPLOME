@@ -18,25 +18,33 @@ civic_heat = pytest.importorskip("ui.civic_heat", reason="модуль тепл�
 
 from r08_helpers import NOW  # noqa: E402
 from ui.civic_akim import AkimService  # noqa: E402
-from ui.civic_akim.summary import snapshot  # noqa: E402
+from ui.civic_akim.summary import snapshot, status_at  # noqa: E402
 from ui.civic_heat import HeatService, demo_seed  # noqa: E402
 
 WEEK = timedelta(days=7)
 CATS = [c["id"] for c in civic_heat.load_config().categories]
 
 
+def changed_last_week(records):
+    """Сколько обращений сменили статус за последнюю неделю (иначе «неделю назад» ничего не проверяет)."""
+    return sum(1 for r in records if status_at(r, NOW - WEEK) not in (None, status_at(r, NOW)))
+
+
 def demo_records():
-    """Демо R07 + обращения, которые за эту неделю сменили статус (чтобы «неделю назад» отличалось)."""
+    """Демо-набор R07 как есть. Если в нём мало смен статуса за неделю — добавляем «исправлено» нескольким
+    старым открытым обращениям. Никаких assert при сборе: набор R07 меняется (5-недельный поток с 9bc25e6),
+    и падение здесь превращалось в «ошибку сбора» всего файла (R15 DELIVERY)."""
     records = demo_seed.demo_records(now=NOW)
-    changed = 0
+    if changed_last_week(records) >= 3:
+        return records
+    added = 0
     for r in records:
         created = datetime.fromisoformat(r["created_at"])
-        if r["status"] == "new" and NOW - created > timedelta(days=9) and changed < 6:
-            fixed_at = NOW - timedelta(days=2 + changed % 3)
+        if r["status"] in ("new", "accepted", "in_progress") and NOW - created > timedelta(days=9) and added < 6:
+            fixed_at = NOW - timedelta(days=2 + added % 3)
             r["status"] = "fixed"
             r["status_history"] = r["status_history"] + [{"at": fixed_at.isoformat(), "status": "fixed"}]
-            changed += 1
-    assert changed >= 3
+            added += 1
     return records
 
 
@@ -85,6 +93,24 @@ def same_places(summary_hot, top):
         assert (h["target"]["kind"], h["target"]["id"]) == (it["target"]["kind"], it["target"]["id"])
         assert (h["count"], h["level"], h["weight"]) == (it["count"], it["level"], it["weight"])
         assert h["target"]["label_ru"] == it["target"]["label_ru"] and h["target"]["label_kk"] == it["target"]["label_kk"]
+
+
+def test_week_ago_is_not_trivial():
+    assert changed_last_week(RECORDS) >= 3, "за неделю должны быть смены статуса, иначе сравнение ничего не проверяет"
+
+
+def test_snapshot_drops_later_metoo():
+    with_times = [r for r in RECORDS if r.get("metoo_times")]
+    if not with_times:
+        pytest.skip("в демо-наборе R07 нет metoo_times")
+    for r in with_times[:50]:
+        for moment in (NOW - WEEK, NOW - timedelta(days=3)):
+            s = snapshot(r, moment)
+            if s is None:
+                continue
+            later = sum(1 for t in r["metoo_times"] if datetime.fromisoformat(t) > moment)
+            assert s["metoo"] == r["metoo"] - later
+            assert all(datetime.fromisoformat(t) <= moment for t in s["metoo_times"])
 
 
 def test_demo_data_is_marked(city):
