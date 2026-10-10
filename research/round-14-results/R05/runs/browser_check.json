@@ -1,7 +1,7 @@
 {
  "role": "R05",
- "generated_at": "2026-10-10T13:42:40.258Z",
- "tested_sha": "ac45672022cb1d0cf8cf83ca901ebe8e2ff2adec",
+ "generated_at": "2026-10-10T13:50:44.994Z",
+ "tested_sha": "b0353ee6e1052fddf792b4550dfb4bc754b7eded",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
@@ -9,8 +9,8 @@
   "renderer": "SwiftShader (без GPU)",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 6.7,
-  "fps_20_objects_swiftshader": 2.9,
+  "fps_0_objects_swiftshader": 7.3,
+  "fps_20_objects_swiftshader": 2.5,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
@@ -112,7 +112,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.9 кадр/с (без объектов 6.7)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.5 кадр/с (без объектов 7.3)"
   },
   {
    "id": "build_animation_grows_then_shows_label",

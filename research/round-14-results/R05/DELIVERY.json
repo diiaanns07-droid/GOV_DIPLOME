@@ -1,0 +1,143 @@
+{
+ "role": "R05",
+ "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
+ "branch": "claude/r14-R05",
+ "base_sha": "7ff639a (claude/round-14-package при старте)",
+ "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/SOURCE.txt (LOCAL-2; three.module.min.js совпал байт в байт, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
+ "restored_from": null,
+ "code_sha": "b0353ee",
+ "tested_sha": "b0353ee",
+ "push_status": "OK (см. финальный коммит с этим файлом)",
+ "changed_paths": [
+  {
+   "path": "web/civic/build3d/",
+   "files": 10
+  },
+  {
+   "path": "web/vendor/three/",
+   "files": 3
+  },
+  {
+   "path": "tests/civic/R05/build3d/",
+   "files": 6
+  },
+  {
+   "path": "data/civic/astana/osm-objects/",
+   "files": 14
+  },
+  {
+   "path": "research/round-14-results/R05/",
+   "files": 23
+  },
+  {
+   "path": "research/handoffs/astana/R05/round14/",
+   "files": 1
+  }
+ ],
+ "owned_paths_only": true,
+ "not_changed": "web/map.js, web/civic/map/, web/index.html, ui/web_server.py, web/civic/shell/ — подключение описано патчами в research/round-14-results/R05/proposed_r01*.patch",
+ "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3, Chromium 141.0.7390.37 headless, WebGL2 через SwiftShader (без GPU)",
+ "tests": {
+  "node_core_models": {
+   "status": "PASS",
+   "detail": "25/25 — node --test tests/civic/R05/build3d/test_core.mjs test_models.mjs (three.js 0.169 из web/vendor)"
+  },
+  "python_fixtures": {
+   "status": "PASS",
+   "detail": "9/9 — данные из OSM, генератор воспроизводим байт в байт, освещение ≤ 0.5 м от рёбер (допуск 5 м), остановка 3–60 м от улицы, всё внутри Астаны"
+  },
+  "browser_check": {
+   "status": "PASS",
+   "detail": "25 PASS, 0 FAIL, 1 NOT_RUN — research/round-14-results/R05/runs/browser_check.json"
+  },
+  "browser_checks": {
+   "load_auto_falls_back_to_local_store": "PASS",
+   "maplibre_mercator_matches_core": "PASS",
+   "place_all_five_kinds": "PASS",
+   "labels_project_on_every_object": "PASS",
+   "anchor_precision_pitch_0_60_rotation": "PASS",
+   "labels_follow_objects_when_tilted": "PASS",
+   "reload_keeps_objects_without_animation": "PASS",
+   "vote_in_card_one_per_device": "PASS",
+   "delete_frees_gpu_memory_and_undo_restores": "PASS",
+   "undo_after_place_removes_object": "PASS",
+   "overlap_is_blocked_with_message": "PASS",
+   "outside_astana_is_blocked": "PASS",
+   "style_swap_keeps_layer_and_objects": "PASS",
+   "real_osm_nearby_hint_and_yard_target": "PASS",
+   "limit_20_objects": "PASS",
+   "build_animation_grows_then_shows_label": "PASS",
+   "resident_sees_objects_and_votes_no_catalog": "PASS",
+   "kk_locale_no_raw_keys_no_i18n_warnings": "PASS",
+   "phone_375_touch_layout": "PASS",
+   "catalog_labels_fit_ru_kk_1366_375": "PASS",
+   "keyboard_tab_enter_escape": "PASS",
+   "three_load_error_state": "PASS",
+   "api_store_contract_roundtrip": "PASS",
+   "screenshots_1366_375_pitch_0_60_ru_kk": "PASS",
+   "no_page_errors": "PASS",
+   "smooth_on_laptop_gpu": "NOT_RUN"
+  },
+  "app_smoke_real_r01_server": {
+   "status": "PASS",
+   "detail": "5/5 — python -m ui.web_server + proposed_r01.patch + proposed_r01_uikit.patch, настоящие web/index.html и web/map.js; runs/app_smoke.json"
+  },
+  "smooth_on_laptop_gpu": {
+   "status": "NOT_RUN",
+   "detail": "в облаке нет GPU: SwiftShader 7.3 кадр/с без объектов и 2.5 с 20 объектами — программная отрисовка, не оценка ноутбука; LOCAL-R05-1"
+  },
+  "shell_integration_r01": {
+   "status": "NOT_RUN",
+   "detail": "shell.js — путь R01; модуль смонтирован на карту приложения из теста, образец монтирования — INTEGRATION.txt §1.3"
+  },
+  "r06_real_api": {
+   "status": "NOT_RUN",
+   "detail": "R06 ещё не поставил /api/civic/v2/proposals; клиент проверен на макете API по CONTRACT §7 (api_store_contract_roundtrip)"
+  }
+ },
+ "screenshots": {
+  "required_1366_375_pitch0_60_ru_kk": [
+   "screens/1366_ru_p60.png",
+   "screens/1366_ru_p0.png",
+   "screens/1366_kk_p60.png",
+   "screens/1366_kk_p0.png",
+   "screens/375_ru_p60.png",
+   "screens/375_ru_p0.png",
+   "screens/375_kk_p60.png",
+   "screens/375_kk_p0.png"
+  ],
+  "flow": [
+   "screens/1366_ru_ghost_stop.png",
+   "screens/1366_ru_lighting_ghost.png",
+   "screens/1366_ru_building.png",
+   "screens/1366_ru_card_votes.png",
+   "screens/1366_ru_overlap.png",
+   "screens/1366_ru_resident_card.png",
+   "screens/1366_ru_20_objects.png",
+   "screens/1366_ru_error.png",
+   "screens/375_kk_placing.png",
+   "screens/375_kk_card.png",
+   "screens/app_1366_ru_smoke.png"
+  ],
+  "note": "Сняты в реально запущенном интерфейсе (Chromium, SwiftShader). Демо-подложка — улицы OSM без зданий; в приложении без интернета — запасной стиль карты."
+ },
+ "done_criteria": {
+  "five_objects_in_nura": "PASS — сквер, детская площадка, спортплощадка, остановка, освещение вдоль ул. Сыганак (place_all_five_kinds)",
+  "survive_reload_without_animation": "PASS (reload_keeps_objects_without_animation)",
+  "voting_in_card": "PASS на заглушке и макете API (vote_in_card_one_per_device, api_store_contract_roundtrip); с настоящим R06 — после его поставки",
+  "screenshots_1366_375_pitch_0_60_both_locales": "PASS",
+  "project_mark_always": "PASS — табличка «Проект · 2027» на каждом объекте, пунктир границы проекта на земле, в карточке метка «Проект»; примеры помечены «Пример»"
+ },
+ "known_limits": [
+  "Плавность 20 объектов на ноутбуке с GPU не проверена (в облаке нет GPU) — LOCAL-R05-1.",
+  "Пересечение с настоящими зданиями не проверяется: контуров зданий в репозитории нет; проверяется только наложение проектов друг на друга. Примеры на ул. Сыганак посмотреть с 3D-зданиями — LOCAL-R05-2.",
+  "Освещение — только в фокус-области Нуры (71.375–71.420 × 51.115–51.140) до участков улиц от R12; вне неё — понятное сообщение.",
+  "Опоры освещения ставятся в 5 м от оси улицы (ширины проезжей части в графе нет); на улицах с двумя проезжими частями опоры могут оказаться на разделительной полосе.",
+  "Сохранение до R06 — только на этом устройстве (localStorage), о чём панель пишет прямо; голоса примеров — синтетические числа (demo:true, метка «Пример»).",
+  "DELETE /proposals/{id} нет в CONTRACT §7 — запрошен у R06 (INTEGRATION §2.3).",
+  "Подсказка «рядом уже есть …» опирается на OSM: отсутствие объекта в OSM не значит, что его нет (поэтому о фонарях пишем только найденные).",
+  "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
+  "Казахские строки (40 новых ключей) — на проверку владельцу через R11."
+ ],
+ "next_step": "R01: применить proposed_r01.patch (+ proposed_r01_uikit.patch, если ui-kit ещё не подключён) и смонтировать по образцу INTEGRATION §1.3; R06: DELETE и поля 3D; R11: ключи i18n_build3d.json; R12: событие civic-build3d:tool и участки улиц; LOCAL: проверка на ноутбуке с GPU и 3D-зданиями."
+}

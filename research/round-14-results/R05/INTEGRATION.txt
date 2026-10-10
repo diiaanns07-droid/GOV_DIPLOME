@@ -1,0 +1,139 @@
+R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14
+3D-превью предложений: акимат ставит объект на карту, он «строится», жители голосуют
+
+Источник: ветка claude/r14-R05. Переносить ТОЛЬКО по путям (код — code_sha из DELIVERY.json):
+  web/civic/build3d/              модуль (build3d-core.js, build3d-models.js, build3d.js, build3d.css, data/)
+  web/vendor/three/               three.js 0.169.0 — байт в байт тот же файл, что положил LOCAL-2 (sha256 f7cee3c7…),
+                                  SOURCE.txt взят из claude/round-14-package — конфликта не будет
+  tests/civic/R05/build3d/        тесты модуля
+В ветке также лежит копия data/civic/astana/osm-objects/ из claude/round-14-package (только чтение, не менялась).
+web/civic/build3d/demo.html и data/demo-basemap.json — только для демо без интернета, в сервер R01 НЕ добавлять.
+
+────────────────────────────────────────────────────────────────────────────
+1. R01 (интегратор): сервер, index.html, оболочка
+────────────────────────────────────────────────────────────────────────────
+1.1 Патч research/round-14-results/R05/proposed_r01.patch (ui/web_server.py + web/index.html, +14 строк):
+    - ASSETS: /vendor/three/three.module.min.js (text/javascript) и 8 файлов /civic/build3d/…;
+    - index.html: build3d.css и три скрипта (core, models, build3d) перед /civic/shell/explore.js.
+    git apply --check на базе claude/round-14-package (7ff639a и 83d64bd — эти файлы не менялись) — OK.
+1.2 Если ui-kit и переводы R11 ещё не подключены: research/round-14-results/R05/proposed_r01_uikit.patch
+    (поверх 1.1): tokens.css, components.css, icons.svg (с MIME image/svg+xml — без него <use href> иконок
+    не работает), i18n.js, ru.json, kk.json. Если R01 подключил их сам — этот патч не нужен.
+    Без ui-kit модуль всё равно выглядит правильно (в build3d.css у каждого токена запасное значение), но
+    кнопки bk-btn и иконки берутся из ui-kit.
+    Проверено: сервер R01 (python -m ui.web_server) с обоими патчами + настоящий web/index.html и web/map.js →
+    tests/civic/R05/build3d/app_smoke.mjs: 5/5 PASS (runs/app_smoke.json, screens/app_1366_ru_smoke.png).
+1.3 Монтирование в оболочке (shell.js — путь R01, поэтому здесь только образец). Когда карта готова (onMapReady)
+    и включён режим «Город»:
+
+      // корень — в свободной части карты (НЕ поверх левой панели оболочки), снизу по центру
+      const root = $c("civic-build3d-root");               // <div id="civic-build3d-root" class="b3d-host"></div>
+      S.mounted.build3d = window.CivicBuild3D?.mount({
+        map: currentMap(),
+        root,                                              // без root модуль кладёт панель на всю ширину карты
+        role: S.role === "resident" ? "resident" : "akimat",
+        onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "civic-build3d"),
+        onSelect: (proposal) => { /* R06 может открыть свою карточку предложения; см. 2.4 */ },
+      });
+      // при смене режима/роли: S.mounted.build3d?.destroy(); затем mount заново
+      // спрятать без уничтожения (например, «Картина дня»): S.mounted.build3d?.setVisible(false)
+
+    CSS для корня (пример): .b3d-host{position:absolute;left:<ширина левой панели + 12px>;right:12px;bottom:12px;
+    z-index:var(--z-map-ui);pointer-events:none;display:flex;flex-direction:column;align-items:center}
+    .b3d-host .b3d-dock,.b3d-host .b3d-toasts{pointer-events:auto}. На телефоне — left:0;right:0;bottom:0.
+    Пока модуль размещает объект, он забирает щелчки по карте: onToolChange(true/false) и событие document
+    "civic-build3d:tool" {active, kind} (та же форма, что "civic-editor:tool" у редактора). Щелчок по объекту
+    помечает исходное событие: e.originalEvent.civicBuild3d = true — по нему хост может не открывать свою карточку.
+1.4 Камеру модуль не трогает, кроме одного случая: при выборе объекта в каталоге, если зум < 15.5, плавно
+    приближает до 16.2 (opts.autoZoom:false — выключить). Наклон и поворот не меняет (кнопка 3D — у R01).
+1.5 map.js: рекомендую canvasContextAttributes:{antialias:true} в new maplibregl.Map — края low-poly ровнее
+    (на демо-странице так). Не обязательно; на слабом ноутбуке можно оставить как есть.
+1.6 Порядок слоёв: модуль вставляет custom-слой "civic-build3d" (renderingMode "3d") перед первым symbol-слоем:
+    объекты над зданиями fill-extrusion (общий буфер глубины), подписи улиц остаются сверху. После map.setStyle
+    слой возвращается сам (проверено: style_swap_keeps_layer_and_objects).
+
+────────────────────────────────────────────────────────────────────────────
+2. R06 (предложения): API /api/civic/v2/proposals
+────────────────────────────────────────────────────────────────────────────
+2.1 Что модуль отправляет (POST /proposals, JSON) — поля CONTRACT §7 + поля 3D:
+      kind            "square" | "playground" | "sports" | "stop" | "lighting"
+      geometry        Point [lon,lat] (центр пятна) | LineString (освещение — ось участка улицы по OSM)
+      status          "proposal"
+      rotation_deg    0–359, по часовой от севера (для освещения 0)          ← хранить и отдавать обратно
+      year            2027 (табличка «Проект · 2027»)
+      district        "nura" и т. п. (по границам районов OSM) или null
+      near_street     ближайшая улица OSM («улица Сыганак») или null
+      target          освещение: {kind:"segment", id:"osm-w<way>-<n>", ids:[…рёбра участка], label_ru, label_kk};
+                      объект во дворе: {kind:"area", id:"yard-<osm id>", label_ru, label_kk} (CONTRACT §4);
+                      иначе null. Это связывает предложение с жалобами на ту же цель (R07/R09).
+      demo            false (примеры из фикстуры — true)
+    Ответ: созданное предложение целиком (с выданным id, votes_up:0, votes_down:0), код 201.
+2.2 GET /proposals?bbox=w,s,e,n → {items:[…]} (или просто массив). Модуль отбрасывает неверные записи.
+2.3 POST /proposals/{id}/vote {value: 1|-1, device_id} → предложение (или {proposal:…}); полезно поле my_vote.
+    Один голос с устройства: повтор того же значения ничего не меняет, другое значение переносит голос.
+    НУЖНО ДОБАВИТЬ (нет в CONTRACT §7): DELETE /proposals/{id} → 204 — кнопка «Удалить» и «Отменить» после
+    «Поставить». Ошибки — в форме civic_error {error:{code, message}}; при лимите — code "limit".
+2.4 Пока R06 не подключён: GET /proposals отвечает 404/405/501/503 → модуль честно работает на заглушке этого
+    устройства (localStorage + 2 примера demo:true из data/proposals.fixture.json) и пишет в панели
+    «Сохраняется только на этом устройстве…». 500 и обрыв запроса после подключения — ошибка с «Повторить».
+    Клиент проверен на макете API по контракту: api_store_contract_roundtrip (GET, POST, vote, DELETE, GET).
+2.5 Своя карточка R06 (одобрить/отклонить): mount({renderCard:false, onSelect(p){…}}) — модуль не рисует
+    карточку, а отдаёт копию выбранного предложения. Без этого — встроенная карточка с «За/Против» и «Удалить».
+
+────────────────────────────────────────────────────────────────────────────
+3. R11 (UX и казахский): новые ключи
+────────────────────────────────────────────────────────────────────────────
+3.1 40 ключей build3d.* (ru + kk) — research/round-14-results/R05/i18n_build3d.json, готово для слияния в
+    web/civic/i18n/ru.json и kk.json (build3d.poles — формы числа {one,few,many} в ru, одна строка в kk).
+    Пока ключей нет в словарях, модуль берёт те же строки из себя, без предупреждений [i18n] и без показа ключей.
+    Казахские строки — на проверку владельцу (KK_REVIEW). Основные:
+      build3d.hint.rotate          Поверните и нажмите «Поставить» | Бұрып, «Орнату» түймесін басыңыз
+      build3d.hint.segment_start   Нажмите на улицу — начало участка | Көшені басыңыз — бөліктің басы
+      build3d.hint.segment_ready   {street}, {length} м · {poles}. Нажмите «Поставить»
+      build3d.err.outside_city     Это место за пределами Астаны. Выберите место в городе
+      build3d.err.overlap          Здесь уже стоит другой проект. Сдвиньте объект
+      build3d.near.stop_named      Рядом уже есть остановка: «{name}», {m} м (по данным OpenStreetMap)
+      build3d.placed_local         Проект поставлен и сохранён на этом устройстве
+      build3d.card.yard            Двор: {name} | Аула: {name}
+3.2 Используются и уже существующие ключи: proposal.* (каталог, повороты, «Поставить», «Удалить», «Проект · {year}»,
+    голоса, лимит), common.action.cancel/close/retry, common.tag.project/demo.
+3.3 Иконки: trees, playground, ball, bus, bulb, rotate-left, rotate-right, check, close, thumb-up, thumb-down,
+    info, alert, refresh, wifi-off — все есть в ui-kit/icons.svg.
+
+────────────────────────────────────────────────────────────────────────────
+4. R12 (точность карты)
+────────────────────────────────────────────────────────────────────────────
+4.1 Освещение строится по участку улицы между двумя щелчками: рёбра ОДНОЙ улицы графа
+    osm-astana-walking-20260506 (id osm-w<way>-<n>, как у /targets), кратчайший путь, форма OSM без «руки».
+    Сейчас источник — web/civic/build3d/data/nura-streets.json (фокус-область Нуры 71.375–71.420 × 51.115–51.140).
+    Вне неё — сообщение «Освещение пока можно предложить только в районе Нура». Когда у R12 будет участок между
+    двумя точками, передайте в mount свой источник: streets = { nearest(lngLat, maxM, name?) → {edge:{id,name},
+    dist, lngLat, bearing} | null, section(a, b) → {ok, name, coords, length_m, edge_ids} | {ok:false, reason},
+    bbox? } — интерфейс как у CivicBuild3DCore.StreetIndex.
+4.2 Модуль карты: прошу слушать document "civic-build3d:tool" {active} так же, как "civic-editor:tool"
+    (одна строка) — тогда R01 не нужен onToolChange.
+4.3 Формат двора: модуль пишет target.id = "yard-<osm id>" (CONTRACT §4). Если R12 выберет другой вид
+    (например, yard-way-<id>), сообщите — это одна строка в tests/civic/R05/build3d/make_fixtures.py.
+4.4 Проверено: вершины и точки через 5 м участка освещения — не дальше 0.5 м от рёбер графа (допуск 5 м);
+    пример-остановка — в 3–60 м от улицы; все координаты внутри Астаны; объект стоит в своих lon/lat при
+    наклоне 0°/45°/60° и повороте −35°/120°/250° с ошибкой 0.000 px (anchor_precision_pitch_0_60_rotation).
+
+────────────────────────────────────────────────────────────────────────────
+5. R10 (приёмка): как проверить
+────────────────────────────────────────────────────────────────────────────
+    node --test tests/civic/R05/build3d/test_core.mjs tests/civic/R05/build3d/test_models.mjs   (25)
+    python -m unittest discover -s tests/civic/R05/build3d -p "test_*.py"                        (9)
+    node tests/civic/R05/build3d/browser_check.mjs          (26 проверок в Chromium, сам поднимает сервер)
+    node tests/civic/R05/build3d/app_smoke.mjs http://127.0.0.1:8799/   (в приложении R01 с патчами 1.1–1.2)
+    Старые тесты в tests/civic/R05/*.py — от роли R05 прошлых раундов (данные data/civic/astana/tools), не трогал.
+
+────────────────────────────────────────────────────────────────────────────
+6. LOCAL (ноутбук владельца, Codex) — то, что облако проверить не может
+────────────────────────────────────────────────────────────────────────────
+LOCAL-R05-1. Плавность на ноутбуке с GPU и настоящей подложкой (openfreemap, 3D-здания):
+    python -m http.server 8765 -d web → http://127.0.0.1:8765/civic/build3d/demo.html?reset=1
+    (демо — своя подложка без зданий) и в приложении R01 после интеграции. Поставить 20 объектов
+    (или открыть ?store=local и поставить вручную), вращать карту правой кнопкой 10 с: кадры не рвутся.
+    Записать: модель ноутбука/GPU, браузер, на глаз кадров в секунду, скриншоты 1366 px в 3D (наклон 60°).
+LOCAL-R05-2. С настоящими 3D-зданиями посмотреть, не стоят ли примеры (ул. Сыганак: освещение и остановка)
+    внутри зданий. В облаке контуров зданий нет — пересечение с домами не проверяется (только между проектами).
