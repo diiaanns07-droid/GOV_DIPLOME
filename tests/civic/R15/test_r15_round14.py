@@ -275,7 +275,7 @@ def _seed_proposal(srv):
     return (body.get("item") or body.get("proposal") or body)["id"]
 
 
-@xfail("S08")
+@xfail("S08", pending="ветке R06 681a4ef (≤ 20 голосов в сутки за предложение с адреса)")
 def test_votes_for_one_proposal_from_one_address_are_capped(srv):
     """25 «жителей» за 25 секунд с одного адреса за одно предложение — всё принято (лимит R06 — 30 в минуту).
 
@@ -373,6 +373,8 @@ def test_object_source_url_plain_https_is_kept():
 # --- 3/4. id устройства R05: ключ к «Мои обращения» должен быть криптографически случайным ---------------------
 
 DEVICE_PROBE = r"""
+// Как в браузере: self и crypto.getRandomValues есть (Node 19+ — globalThis.crypto).
+if (typeof globalThis.self === "undefined") globalThis.self = globalThis;
 const core = require(process.argv[2]);
 const mem = () => { const m = {}; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); } }; };
 Date.now = () => 1791700000000;

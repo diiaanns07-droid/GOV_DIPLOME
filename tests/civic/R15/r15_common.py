@@ -39,8 +39,21 @@ FIXED = {
 }
 
 
-def xfail(finding_id: str):
+# Исправлено в ветке роли, но ещё не в сборке R01: xfail НЕстрогий — в сборке без исправления тест xfail, с ним
+# xpass (не падение). Когда R01 возьмёт поставку и тест пройдёт на сборке — ID переезжает в FIXED.
+PENDING = {
+    "S11": "ветке R07 597ec4f (ночь 10→11 окт)",
+    "S16": "ветке R05 с 7f42cb3 (10 окт; в сборке R01 закреплён старый R05 b0353ee)",
+}
+
+
+def xfail(finding_id: str, pending: str | None = None):
+    """pending — исправлено в ветке роли только для части находки (например, S08: голоса R06, а «Я тоже» R09 — нет)."""
     owner, level, title = FINDINGS[finding_id]
+    where = pending or PENDING.get(finding_id)
+    if where:
+        return pytest.mark.xfail(strict=False, reason=f"R15-{finding_id} ({owner}, {level}): {title} — "
+                                                      f"исправлено в {where}, ждёт сборки R01")
     return pytest.mark.xfail(strict=True, reason=f"R15-{finding_id} ({owner}, {level}): {title}")
 
 

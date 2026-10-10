@@ -96,7 +96,12 @@
    "S14",
    "S15",
    "S16"
-  ]
+  ],
+  "fixed_in_role_branch_pending_build": {
+   "S11": "R07 597ec4f",
+   "S16": "R05 7f42cb3 (в сборке старый R05 b0353ee)",
+   "S08 (голоса)": "R06 681a4ef"
+  }
  },
  "tests": {
   "r15_on_be82fa8": "PASS — 80 passed, 19 xfailed (каждая открытая находка воспроизводится)",
@@ -122,7 +127,8 @@
   "r15_on_d9a8895": "PASS — 96 passed, 24 xfailed (все открытые находки воспроизводятся; патчи R15 в сборку ещё не применены)",
   "roles_R01_R06_d9a8895_all_6_patches": "PASS — 717 passed, 3 skipped, 0 failed",
   "r15_on_d9a8895_all_7_patches": "PASS — 96 passed, 24 XPASS(strict): все открытые находки закрыты",
-  "r05_core_with_P-R05": "PASS — node --test tests/civic/R05/build3d/test_core.mjs 16/16"
+  "r05_core_with_P-R05": "PASS — node --test tests/civic/R05/build3d/test_core.mjs 16/16",
+  "r15_on_final_approx": "PASS — d9a8895 + ночные R05 f350787, R06 224075b, R07 328e793, R08 b9c089a, R13 7d60222: 96 passed, 20 xfailed, 4 xpassed (S11×2, S08 голоса, S16)"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
