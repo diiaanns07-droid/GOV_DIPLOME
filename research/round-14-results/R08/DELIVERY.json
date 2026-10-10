@@ -56,7 +56,8 @@
   "R10 ux_screens.cjs (инструмент R10 3623f65) по «Картине дня» — оболочка d9a8895 + R08 15276be и отдельная страница": "56/56 PASS (1366/375 × ru/kk: прокрутка, ключи, тех. слова, шрифт, зоны нажатия, русские строки в kk, консоль) — research/round-14-results/R08/r10_ux/",
   "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 597ec4f)": "108/108 PASS — + объекты: по умолчанию не ссылки, с objectHref — ссылка и событие; телефон: подписи тем и районов в одну строку",
   "FINAL-кандидат R01 0a7a346 (R08 c7646a1)": "pytest tests/civic/R08 — 163 PASS + 1 SKIP (вместе со старыми тестами v1); shell_check 28/28; с файлами R08 bedb753 — 28/28 (с objectHref — 30/30)",
-  "FINAL-кандидат R01 85c16e2 (R08 bedb753)": "pytest tests/civic/R08 — 162 PASS + 1 SKIP + 1 XFAIL (демо-правдоподобие в 00:38 по Астане: новых за день 0) → тест исправлен в 51fdbcd5 (фиксированный полдень), на FINAL с ним — PASS; shell_check 28/28; объекты: карточки объекта в оболочке по-прежнему нет — objectHref не включать"
+  "FINAL-кандидат R01 85c16e2 (R08 bedb753)": "pytest tests/civic/R08 — 162 PASS + 1 SKIP + 1 XFAIL (демо-правдоподобие в 00:38 по Астане: новых за день 0) → тест исправлен в 51fdbcd5 (фиксированный полдень), на FINAL с ним — PASS; shell_check 28/28; объекты: карточки объекта в оболочке по-прежнему нет — objectHref не включать",
+  "Сборка R01 8807b28 (после FINAL d99c8c2; R08 = 51fdbcd)": "pytest tests/civic/R08 — 163 PASS + 1 SKIP (XFAIL больше нет); shell_check 28/28; новых замечаний к R08 у R10/R11/R15 нет"
  },
  "known_limits": [
   "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
@@ -69,7 +70,7 @@
   "В папке tests/civic/R08 сборки R01 лежат тесты классификатора v1 раунда 13 (test_r08_train/corpus/contract/reports/feedback_integration) — не мои, R08 их не трогает (INTEGRATION п. 8)."
  ],
  "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 328e793 (код 597ec4f: правдоподобные числа и подписи мест), R06 @ 224075b, R11 @ последний; прогнать pytest tests/civic/R08 и node tests/civic/R08/shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, B-029 и п. 13 R11 на FINAL.",
- "delivery": "3 (ночь, круги 1–10)",
+ "delivery": "3 (ночь, круги 1–11)",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -136,7 +137,7 @@
  },
  "for_r01_final": {
   "take": "claude/r14-R08 @ код 51fdbcd5: изменился только тест test_r08_demo_plausible.py (модуль и страница = bedb753, уже в FINAL)",
-  "replaces": "R08 bedb753 в FINAL R01 85c16e2 (pytest R08 162 + 1 skip + 1 xfail ночью; shell_check 28/28)",
+  "replaces": "ничего: R08 51fdbcd уже в FINAL d99c8c2 и в 8807b28",
   "fixes_in_build": [
    "R01 I-02 / R15: test_r08_heat_match — ошибка сбора исчезает (проверено с R07 306074b и 597ec4f)",
    "R10 B-018: в ҚАЗ нет русских названий объектов (вместе с R06 ≥ 6b9da27)",
