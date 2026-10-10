@@ -292,6 +292,9 @@ async function emptyRegistry(browser, base) {
       await item.scrollIntoViewIfNeeded();
       await item.click();
       await page.waitForTimeout(2800);
+      // Под нагрузкой (параллельные прогоны) полёт камеры дольше 2,8 с: ждём остановки карты, иначе проверка ловит старт.
+      await page.waitForFunction(() => window.CivicShell?.selected && !map.isMoving(), null, { timeout: 10000 }).catch(() => {});
+      await page.waitForTimeout(300);
       const sel = await page.evaluate(() => {
         const id = window.CivicShell.selected;
         const feats = id ? map.querySourceFeatures("civic-r03-objects", { filter: ["==", ["get", "cid"], id] }) : [];
