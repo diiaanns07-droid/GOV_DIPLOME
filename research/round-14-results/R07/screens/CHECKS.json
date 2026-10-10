@@ -615,6 +615,42 @@
   }
  },
  {
+  "name": "hot-outside-nura-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&role=akimat&view=nura#target=area:yard-1071933339&days=7",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Түзетілді деп белгілеу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {
+   "selected": "area:yard-1071933339",
+   "zoom": 15,
+   "streets": 368
+  }
+ },
+ {
+  "name": "hot-outside-nura-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&role=akimat&view=nura#target=area:yard-1071933339&days=7",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {
+   "selected": "area:yard-1071933339",
+   "zoom": 15,
+   "streets": 96
+  }
+ },
+ {
   "name": "reduced-motion-1366-ru",
   "size": "desktop",
   "query": "",

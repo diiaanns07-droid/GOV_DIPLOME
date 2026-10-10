@@ -545,6 +545,24 @@ async function colorOnlyCheck(page) {
     await finish(page, errors, `legend-phone-375-${lang}`, "phone", problems, x);
   }
 
+  // R11 ночь 7 п.1: горячее место вне Нуры (двор у ул. Коксенгир, Байконур) на офлайн-подложке — на улицах, не в пустом поле
+  for (const [size, lang] of [["desktop", "kk"], ["phone", "ru"]]) {
+    await shot(browser, `hot-outside-nura-${size === "phone" ? 375 : 1366}-${lang}`, size, `?lang=${lang}&role=akimat&view=nura#target=area:yard-1071933339&days=7`, async (page) => {
+      await page.waitForFunction(() => window.__heat.state().selected === "area:yard-1071933339", null, { timeout: 10000 }).catch(() => {});
+      await page.waitForTimeout(1500);
+      return page.evaluate(() => {
+        const map = window.__map;
+        const streets = map.queryRenderedFeatures({ layers: ["nura-street", "nura-minor"].filter((l) => map.getLayer(l)) }).length;
+        return { selected: window.__heat.state().selected, zoom: Math.round(map.getZoom() * 10) / 10, streets };
+      });
+    }, async (page, m, x) => {
+      const out = [];
+      if (x.selected !== "area:yard-1071933339") out.push("цель не открылась: " + x.selected);
+      if (x.streets < 20) out.push("вокруг горячего места почти нет улиц на офлайн-подложке: " + x.streets);
+      return out;
+    });
+  }
+
   // UX_BRIEF правило 8: «меньше движения» в системе — карта не пролетает, пульса и анимаций нет
   {
     const page = await browser.newPage({ viewport: SIZES.desktop, deviceScaleFactor: 1, reducedMotion: "reduce" });
