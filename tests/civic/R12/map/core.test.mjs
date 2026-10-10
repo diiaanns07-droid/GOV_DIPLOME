@@ -84,7 +84,7 @@ test("geometry: valid shapes kept; invalid, out-of-contract or swapped coords be
   assert.ok(C.normalizeGeometry({ type: "LineString", coordinates: [[71.43, 51.1], [71.55, 50.8]] }, C.ASTANA_BBOX).geometry);
   const far = C.normalizeGeometry({ type: "Point", coordinates: [76.9, 43.2] }, C.ASTANA_BBOX);
   assert.equal(far.issue, "координаты вне области карты Астаны", "no swap hint when swapping does not help");
-  assert.match(C.normalizeGeometry({ type: "MultiPoint", coordinates: [[71.4, 51.1]] }).issue, /не входит в civic-v1/);
+  assert.match(C.normalizeGeometry({ type: "MultiPoint", coordinates: [[71.4, 51.1]] }).issue, /в неизвестном виде/);
   assert.match(C.normalizeGeometry({ type: "LineString", coordinates: [[71.4, 51.1]] }).issue, /некорректны/);
   const open = { type: "Polygon", coordinates: [[[71.4, 51.1], [71.41, 51.1], [71.41, 51.11], [71.4, 51.11]]] };
   assert.equal(C.normalizeGeometry(open).geometry, null, "unclosed ring is not silently repaired");
@@ -424,7 +424,7 @@ test("r12: in ҚАЗ the street name on the map and in the card is the Kazakh on
   try {
     globalThis.self = { BirgeI18n: { getLang: () => "kk", has: () => false, t: () => "" } };
     assert.equal(C.snapStreet(it), "Сәкен Сейфуллин көшесі");
-    assert.equal(C.placeText(it), "Участок улицы по карте OSM: Сәкен Сейфуллин көшесі");
+    assert.equal(C.placeText(it), "OSM картасы бойынша көше бөлігі: Сәкен Сейфуллин көшесі");
     const f = C.featureCollection([it]).features.find((x) => x.geometry.type === "LineString");
     assert.equal(f.properties.street, "Сәкен Сейфуллин көшесі");
     globalThis.self = { BirgeI18n: { getLang: () => "ru", has: () => false, t: () => "" } };

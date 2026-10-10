@@ -393,6 +393,72 @@ test("API R06 поставки 2 (b42e790): near_street и target сохраня
     { kind: "area", id: "yard-1148721825", label_ru: "Evolution", label_kk: "Evolution" });
 });
 
+test("API R06 ≥ d707efc: near_street_kk для казахского заголовка; R06 b42e790 без него — повтор без near_street_kk, контекст цел", async () => {
+  // Ночь 9: в ҚАЗ заголовок нового проекта был «Гүлзар · Керей и Жанибек хандар көшесі маңында» — R06 собирал его из
+  // русского near_street. R06 d707efc принимает near_street_kk (имя улицы из OSM name:kk) — модуль шлёт его.
+  const base = ["demo", "geometry", "kind", "planned_year", "year", "rotation_deg", "title_kk", "title_ru", "status", "near_street", "target"];
+  const make = (allowed, log) => C.createApiStore({
+    fetch: fakeFetch(
+      {
+        "POST /api/civic/v2/proposals": (init) => {
+          const body = JSON.parse(init.body);
+          const extra = Object.keys(body).filter((k) => !allowed.includes(k));
+          if (extra.length) return [422, { ok: false, error: { code: "invalid_payload", fields: { [extra[0]]: "Неизвестное поле." } } }];
+          return [201, { item: Object.assign({ id: "p-" + log.length, status: "proposal", votes_up: 0, votes_down: 0, my_vote: null, voting_open: true }, body) }];
+        },
+        "GET /api/civic/v1/session": [200, { authenticated: true, csrf_token: "tok" }],
+      },
+      log
+    ),
+  });
+  const draft = { kind: "square", geometry: { type: "Point", coordinates: NURA }, year: 2027, demo: false,
+    near_street: "улица Керей и Жанибек хандар", near_street_kk: "Керей және Жәнібек хандар көшесі", target: { kind: "area", id: "yard-1" } };
+  const posts = (log) => log.filter((r) => r[0] === "POST" && r[1] === "/api/civic/v2/proposals").map((r) => r[2]);
+  // R06 d707efc (в R01 FINAL с 85c16e2): одно обращение, near_street_kk уходит и возвращается.
+  const logNew = [];
+  const saved = await make(base.concat("near_street_kk"), logNew).create(draft);
+  assert.equal(posts(logNew).length, 1);
+  assert.equal(posts(logNew)[0].near_street_kk, "Керей және Жәнібек хандар көшесі");
+  assert.equal(saved.near_street_kk, "Керей және Жәнібек хандар көшесі");
+  // R06 b42e790: 422 на near_street_kk → повтор без него, но с улицей и двором; дальше сразу без него.
+  const logOld = [];
+  const old = make(base, logOld);
+  const s2 = await old.create(draft);
+  assert.equal(posts(logOld).length, 2, "один повтор");
+  assert.equal(posts(logOld)[1].near_street_kk, undefined);
+  assert.equal(posts(logOld)[1].near_street, "улица Керей и Жанибек хандар", "улица не теряется");
+  assert.deepEqual(posts(logOld)[1].target, { kind: "area", id: "yard-1" }, "двор не теряется");
+  assert.equal(s2.near_street, "улица Керей и Жанибек хандар");
+  await old.create(draft);
+  assert.equal(posts(logOld).length, 3, "запомнил: дальше сразу без near_street_kk");
+  assert.equal(posts(logOld)[2].near_street_kk, undefined);
+  assert.equal(posts(logOld)[2].near_street, "улица Керей и Жанибек хандар");
+  // R06 поставки 1: 422 → без near_street_kk → 422 → базовое тело (как раньше, контекст 3D он не хранит).
+  const logD1 = [];
+  const d1 = make(["demo", "geometry", "kind", "planned_year", "rotation_deg", "title_kk", "title_ru"], logD1);
+  await d1.create(draft);
+  assert.equal(posts(logD1).length, 3);
+  assert.deepEqual(Object.keys(posts(logD1)[2]).sort(), ["demo", "geometry", "kind", "planned_year", "rotation_deg"]);
+  await d1.create(draft);
+  assert.equal(posts(logD1).length, 4, "запомнил: дальше сразу базовое тело");
+  // Без near_street_kk в черновике (в OSM нет name:kk; казахское имя R06 строит сам по правилу R07) — как раньше.
+  const logPlain = [];
+  await make(base, logPlain).create(Object.assign({}, draft, { near_street_kk: null }));
+  assert.equal(posts(logPlain).length, 1);
+  assert.equal("near_street_kk" in posts(logPlain)[0], false);
+});
+
+test("улица рядом с безымянным проездом — из подписи R12 /street-snap (вне Нуры, просьба R06)", () => {
+  // Форматы — engine/civic_geo/names.py unnamed_labels (R12): «{вид} у {тип в род. падеже} {имя}», «{вид} — {имя}»,
+  // kk «{улица} маңындағы {вид}». Без улицы рядом и подписи участков с названием — null (их улица есть в street_ru).
+  assert.deepEqual(C.streetFromR12Label("Проезд у улицы Сауран", "Сауран көшесі маңындағы өтпе жол"), { ru: "улица Сауран", kk: "Сауран көшесі" });
+  assert.deepEqual(C.streetFromR12Label("Тротуар или дорожка у проспекта Туран", "Тұран даңғылы маңындағы жаяу жол"), { ru: "проспект Туран", kk: "Тұран даңғылы" });
+  assert.deepEqual(C.streetFromR12Label("Проезд — Абая", null), { ru: "Абая", kk: null });
+  assert.equal(C.streetFromR12Label("Проезд без названия", "Атауы жоқ өтпе жол"), null);
+  assert.equal(C.streetFromR12Label("Участок: проспект Туран", "Тұран даңғылының бөлігі"), null);
+  assert.equal(C.streetFromR12Label(null, null), null);
+});
+
 test("API: конверт сервиса R06 {ok, data}, ошибка без сессии сотрудника, клиент оболочки R01 api.v2", async () => {
   const env = C.createApiStore({ fetch: fakeFetch({ "GET /api/civic/v2/proposals": [200, { ok: true, data: { items: [{ id: "p-9", kind: "stop", geometry: { type: "Point", coordinates: NURA }, planned_year: null }] } }],
     "POST /api/civic/v2/proposals": [401, { ok: false, error: { code: "unauthenticated", message: "Войдите" } }], "GET /api/civic/v1/session": [200, { authenticated: false }] }, []) });

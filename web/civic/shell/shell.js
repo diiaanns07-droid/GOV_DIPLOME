@@ -471,6 +471,9 @@
         avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools"),
         // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
         onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
+        // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —
+        // опускаем, как для каталога (R10 B-022). У жителя карточка лежит поверх шторки — там не трогаем.
+        onSelect: (p) => { if (p && innerWidth < 761 && birgeMode() !== "resident" && S.sheet !== "peek") setSheet("peek"); },
       }) || null;
     } catch (error) {
       console.error("birge build3d mount", error);

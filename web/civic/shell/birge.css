@@ -85,6 +85,14 @@ body[data-birge-section="day"].civic-mode #civic-root { visibility: hidden; }
 /* Житель: внизу по центру кнопка «Сообщить о проблеме» (R09) — карточку проекта ставим над ней. */
 body[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
 @media (min-width: 761px) and (max-width: 1100px) { .birge-build3d-root { right: 392px; } }
+/* Житель, ноутбук: подсказка R05 «Нажмите на проект, чтобы проголосовать» не ложится на легенду R07 внизу слева
+   (R10 B-039): на широком экране — правее легенды (12 + 360 + 20), на узком — над ней. */
+@media (min-width: 1200px) {
+  body[data-birge-mode="resident"]:has(.r07-maplegend) .birge-build3d-root:has(.b3d-dock[data-state="hint"]) { left: 392px; }
+}
+@media (min-width: 761px) and (max-width: 1199px) {
+  body[data-birge-mode="resident"]:has(.r07-maplegend) .birge-build3d-root:has(.b3d-dock[data-state="hint"]) { bottom: 168px; }
+}
 @media (max-width: 760px) {
   /* Телефон: панель — нижняя шторка; каталог и карточка поверх неё во всю ширину. */
   .birge-build3d-root { left: 0; right: 0; bottom: 0; z-index: 7; }
@@ -149,6 +157,8 @@ body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-pic
   .civic-mode .civic-explore[data-open="true"] .civic-explore-toggle::after { margin-top: 4px; transform: rotate(-135deg); }
   /* Легенда R07 на телефоне — под кнопкой «Территория», а не на шапке (закрывала «Меню»). */
   .civic-mode .r07-maplegend { top: 138px; left: 10px; right: 66px; }
+  /* Открыта карточка проекта 3D — объект стоит над ней, под шапкой; легенда жалоб закрывала бы его (R05, ночь 9). */
+  body:has(.birge-build3d-root .b3d-dock[data-state="card"]) .r07-maplegend { visibility: hidden; }
   /* Мастер жалобы открыт — панель «Территория» не нужна (R11 B1 п. 1–2). */
   html.bc-open .civic-mode .civic-explore, html.bc-open .civic-mode .r07-maplegend { display: none; }
   /* «Сообщить о проблеме» — во всю ширину в одну строку (kk не в три строки); пока открыта карточка места со своей

@@ -214,6 +214,16 @@ async function main() {
       return d ? { state: d.dataset.state || null, cards: d.querySelectorAll(".b3d-card[data-kind]").length } : null; });
     check("resident: no catalog (view and vote only)", st?.phase === "ready" && residentDock && residentDock.cards === 0
       && ["empty", "hint"].includes(residentDock.state), { phase: st?.phase, dock: residentDock });
+    // R10 B-039: подсказка R05 о голосовании не лежит на легенде R07 внизу слева (1366).
+    const hintLegend = await page.evaluate(() => {
+      const box = (el) => { if (!el || !el.getClientRects().length || getComputedStyle(el).visibility === "hidden") return null;
+        const r = el.getBoundingClientRect(); return r.width && r.height ? r : null; };
+      const h = box(document.querySelector('#birge-build3d-root .b3d-dock[data-state="hint"]')), l = box(document.querySelector(".r07-maplegend"));
+      if (!h || !l) return { hint: !!h, legend: !!l, overlap: false };
+      const overlap = h.left < l.right && h.right > l.left && h.top < l.bottom && h.bottom > l.top;
+      return { hint: true, legend: true, overlap, h: [Math.round(h.left), Math.round(h.top), Math.round(h.right), Math.round(h.bottom)], l: [Math.round(l.left), Math.round(l.top), Math.round(l.right), Math.round(l.bottom)] };
+    });
+    check("resident 1366: the vote hint (R05) does not cover the heat legend (R07, B-039)", !hintLegend.overlap, hintLegend);
     if (newItem) await page.evaluate((id) => window.CivicShell.build3d.select(id), newItem.id);
     // Голос — в карточке R06 внутри панели 3D (BirgeProposals) или в своей карточке R05, если карточки R06 нет.
     const VOTE_UP = '#birge-build3d-root .r06-vote__btn[data-value="1"], #birge-build3d-root [data-action=vote-up]';

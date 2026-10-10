@@ -101,13 +101,13 @@
     "staff.logout.retry": "Қайта шығу",
     "staff.msg.server_detail": "Сервер: {text}",
     "staff.pub.draft": "Қаралама",
-    "staff.pub.published": "Жарияланған",
+    "staff.pub.published": "Жарияланды",
     "staff.pub.archived": "Мұрағатта",
     "staff.row.end": "аяқталуы: {date}",
     "staff.row.no_kind": "Түрі көрсетілмеген",
     "staff.row.revision": "нұсқа {n}",
-    "staff.row.unpublished": "Жарияланбаған өзгерістер бар",
-    "staff.row.unsaved": "Сақталмаған түзетулер бар",
+    "staff.row.pending": "жарияланбаған өзгерістер бар",
+    "staff.row.unsaved": "сақталмаған түзетулер бар",
     "staff.session.switched": "Бұл қойындыда енді «{user}» кірді (мысалы, басқа қойындыда кіргеннен кейін). «{prev}» пайдаланушысының формасы жабылды және жіберілмеді; оның сақталмаған түзетулері осы қойындыда қалды және ол қайта кіргенде оралады.",
     "works.kind.construction": "Құрылыс", "works.kind.roadworks": "Жол жұмыстары", "works.kind.landscaping": "Абаттандыру", "works.kind.event": "Іс-шара, жолды жабу",
     "works.status.planned": "Жоспарланған", "works.status.in_progress": "Жұмыс жүріп жатыр", "works.status.completed": "Аяқталды",
@@ -598,8 +598,8 @@
         const badges = [badge(pubLabel(it.publication), "pub-" + it.publication)];
         if (it.evidence_type === "synthetic") badges.push(badge(tr("works.evidence.synthetic", "Пример"), "synthetic"));
         if (!it.geometry) badges.push(badge(tr("works.not_on_map", "Нет на карте"), "muted"));
-        if (C.pendingInfo(it).pending) badges.push(badge(tr("staff.row.unpublished", "Есть неопубликованные изменения"), "warn"));
-        if (RECOVERY.has(it.id)) badges.push(badge(tr("staff.row.unsaved", "Есть несохранённые правки"), "warn"));
+        if (C.pendingInfo(it).pending) badges.push(badge(tr("staff.row.pending", "есть неопубликованные изменения"), "warn"));
+        if (RECOVERY.has(it.id)) badges.push(badge(tr("staff.row.unsaved", "есть несохранённые правки"), "warn"));
         const end = sc.current_planned_end ? tr("staff.row.end", "окончание: {date}", { date: shortDate(sc.current_planned_end) }) : tr("works.no_dates", "сроки: нет данных");
         return el("li", {}, el("button", { type: "button", class: "civic-r04-row", "data-fk": "row-" + it.id, onclick: () => openObject(it.id) }, [
           el("span", { class: "civic-r04-row-title" }, it.title || tr("staff.cabinet.untitled", "(без названия)")),
@@ -844,7 +844,7 @@
       const actions = el("div", { class: "civic-r04-actions", role: "region", "aria-label": "Сохранение и публикация" }, [V.buttons, V.msg]);  // buttons first: always reachable in a capped bar
       body.replaceChildren(el("div", { class: "civic-r04-edit" }, [
         el("div", { class: "civic-r04-bar" }, [
-          btn("← Все записи", () => showList(true), "link", "back"),
+          btn(tr("staff.cabinet.back_to_list", "← Все записи"), () => showList(true), "link", "back"),
           el("h3", { id: P + "edit-h", tabindex: "-1", "data-fk": "edit-h" }, it ? it.title || "(без названия)" : "Новый объект"), meta]),
         V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.stage, V.preview, V.history, review, actions].filter(Boolean)));
       // R06 раунд 14: этап работ — отдельный блок со своей кнопкой и ревизией (web/civic/proposals/stage-editor.js),

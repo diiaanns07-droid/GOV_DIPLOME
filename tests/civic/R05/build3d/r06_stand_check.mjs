@@ -5,10 +5,11 @@
 //   cp -r web/civic/build3d ../r06/web/civic/ && mkdir -p ../r06/web/vendor/three && cp web/vendor/three/* ../r06/web/vendor/three/
 //   (cd ../r06 && python3 tests/civic/R06/round14/serve_r14.py --port 8616 > /tmp/stand.json &)
 //   node tests/civic/R05/build3d/r06_stand_check.mjs /tmp/stand.json
-// Проверяет: список с сервера (демо R06), вход сотрудника, «Поставить» (CSRF; контекст 3D near_street/target —
-// R06 поставки 2 его хранит, поставки 1 отвечает 422 и клиент повторяет базовым телом), голос с device_id,
-// карточку R06 внутри панели 3D, «Удалить» = withdraw, «Отменить» (поставка 2 — то же предложение с голосом),
-// «Войдите…» без сессии. Поколение R06 определяется по ответу на первый POST и пишется в отчёт.
+// Проверяет: список с сервера (демо R06), вход сотрудника, «Поставить» (CSRF; контекст 3D near_street/near_street_kk/
+// target: R06 d707efc+ хранит всё и строит казахский заголовок из near_street_kk; b42e790 отвечает 422 на near_street_kk —
+// клиент повторяет без него; поставка 1 — 422 и на контекст — базовое тело), голос с device_id, карточку R06 внутри
+// панели 3D, «Удалить» = withdraw, «Отменить» (поставка 2+ — то же предложение с голосом), «Войдите…» без сессии.
+// Поколение R06 определяется по телу, которое сервер принял, и пишется в отчёт.
 // Отчёт: research/round-14-results/R05/runs/r06_stand_check.json, скриншоты screens/r06_*.png.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -59,8 +60,11 @@ const screenOf = (p, ll) =>
     return [q.x + r.left, q.y + r.top];
   }, ll);
 await mkdir(path.join(OUT, "screens"), { recursive: true });
-const PLACE_AT = [71.4009, 51.1283]; // в верхней половине вида (не под панелью каталога), свободное место
-let generation = "unknown"; // поколение API R06: delivery1 (3d10f7d/7031afa) | delivery2 (d043e7b+)
+// В верхней половине вида (не под панелью каталога), свободное место у ул. Сыганак — в OSM есть name:kk «Сығанақ көшесі»,
+// значит в POST уходит и near_street_kk.
+const PLACE_AT = [71.4009, 51.1279];
+// Поколение API R06: delivery1 (3d10f7d/7031afa) | delivery2 (d043e7b…b42e790: near_street, target, id) | delivery3 (d707efc+: и near_street_kk)
+let generation = "unknown";
 try {
   // 1. Без входа: список с сервера R06, «Поставить» → «Войдите как сотрудник акимата».
   let p = await open("?store=api&r06=1&center=71.4012,51.1278&zoom=17.4&pitch=58&bearing=-20");
@@ -97,21 +101,26 @@ try {
     const res = await r.r.response();
     return res ? res.status() : 0;
   };
-  const firstStatus = await statusOf(posts[0]);
+  const statuses = [];
+  for (const r of posts) statuses.push(await statusOf(r));
   const first = JSON.parse(posts[0].body);
   const body = JSON.parse(posts[posts.length - 1].body);
-  generation = firstStatus === 201 ? "delivery2" : "delivery1";
+  generation = "near_street_kk" in body ? "delivery3" : "near_street" in body ? "delivery2" : "delivery1";
   check("placed_where_clicked", Math.abs(body.geometry.coordinates[0] - PLACE_AT[0]) < 2e-5 && Math.abs(body.geometry.coordinates[1] - PLACE_AT[1]) < 2e-5, body.geometry.coordinates);
-  check("create_sends_3d_context", typeof first.near_street === "string" && first.near_street.length > 0 && !("status" in first) && !("district" in first), first);
-  if (generation === "delivery2") {
-    check("r06_d2_accepts_context_first_try", posts.length === 1 && firstStatus === 201, { posts: posts.length, firstStatus });
-  } else {
-    check("r06_d1_rejects_context_then_basic_fields", posts.length === 2 && (firstStatus === 422 || firstStatus === 400) &&
-      Object.keys(body).sort().join(",") === "demo,geometry,kind,planned_year,rotation_deg", { firstStatus, retry: body });
-  }
+  check("create_sends_3d_context", typeof first.near_street === "string" && first.near_street.length > 0 && first.near_street_kk === "Сығанақ көшесі" &&
+    !("status" in first) && !("district" in first), first);
+  // Каждый шаг вниз — только после 422/400 и только то, чего сервер не знает: d3 — 1 запрос, d2 — 2, d1 — 3.
+  const expectPosts = { delivery3: 1, delivery2: 2, delivery1: 3 }[generation];
+  check("r06_" + generation + "_steps_down_keeping_known_fields", posts.length === expectPosts && statuses[statuses.length - 1] === 201 &&
+    statuses.slice(0, -1).every((st) => st === 422 || st === 400) &&
+    (generation !== "delivery2" || (body.near_street === first.near_street && !("near_street_kk" in body))) &&
+    (generation !== "delivery1" || Object.keys(body).sort().join(",") === "demo,geometry,kind,planned_year,rotation_deg"), { statuses, retry: body });
   const created = (await p.evaluate(() => __b3d.getState())).proposals.find((q) => !before.includes(q.id));
   check("created_on_server_with_year_and_rotation", created.year === 2027 && created.rotation_deg === body.rotation_deg && created.status === "proposal", created);
-  if (generation === "delivery2") check("r06_d2_stores_near_street", created.near_street === first.near_street, { sent: first.near_street, got: created.near_street });
+  if (generation !== "delivery1") check("r06_stores_near_street", created.near_street === first.near_street, { sent: first.near_street, got: created.near_street });
+  if (generation === "delivery3")
+    check("r06_d3_kk_title_from_osm_kk_street", /Сығанақ көшесі/.test(created.title_kk || "") && !/улица|Сыганак/.test(created.title_kk || ""),
+      { title_ru: created.title_ru, title_kk: created.title_kk, near_street_kk: created.near_street_kk });
   // Карточка: открыть щелчком по самой модели (не по подписи).
   const g = await p.evaluate((id) => __b3d._project(id, [0, 0, 1]), created.id);
   const cr = await p.evaluate(() => { const r = __map.getCanvas().getBoundingClientRect(); return [r.left, r.top]; });
@@ -149,7 +158,7 @@ try {
   await p.waitForFunction((n) => __b3d.getState().proposals.length === n && !__b3d.getState().animating, before.length + 1, { timeout: 15000 });
   const back = (await p.evaluate(() => __b3d.getState())).proposals.find((q) => !before.includes(q.id));
   const restorePost = p._req.filter(isCreate).slice(posts.length)[0];
-  if (generation === "delivery2") {
+  if (generation !== "delivery1") {
     check("undo_restores_same_proposal_with_vote", back.id === created.id && back.votes_up === 1 && JSON.parse(restorePost.body).id === created.id,
       { id: back.id, votes_up: back.votes_up });
   } else {
@@ -183,8 +192,8 @@ try {
 check("no_page_errors", errors.length === 0, errors.slice(0, 3));
 await browser.close();
 await mkdir(path.join(OUT, "runs"), { recursive: true });
-// Отчёт: поставка 2 R06 — r06_stand_check.json, поставка 1 — r06_stand_check_r06d1.json (R06_SHA — какой код стенда).
-const report = generation === "delivery1" ? "r06_stand_check_r06d1.json" : "r06_stand_check.json";
+// Отчёт: поставка 2 R06 — r06_stand_check.json, поставка 1 — …_r06d1.json, d707efc+ — …_r06d3.json (R06_SHA — код стенда).
+const report = { delivery1: "r06_stand_check_r06d1.json", delivery3: "r06_stand_check_r06d3.json" }[generation] || "r06_stand_check.json";
 await writeFile(path.join(OUT, "runs", report), JSON.stringify({ generated_at: new Date().toISOString(),
   stand: { url: stand.url, r06_sha: process.env.R06_SHA || null, r06_generation: generation }, checks: results }, null, 1) + "\n");
 process.exit(results.every((r) => r.status === "PASS") ? 0 : 1);

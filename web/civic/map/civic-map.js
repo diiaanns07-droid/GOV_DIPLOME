@@ -780,7 +780,7 @@
       if (shift) meta.push(shift.days > 0 ? "срок перенесён" : "срок сдвинут раньше");
       const badges = [...evidenceBadges(it),
         stale ? badge(stale.kind === "old_start_no_end" ? "Старый план без срока" : "Срок по плану прошёл", "b-warn") : null,
-        !it.geometry ? badge("Нет на карте", "b-muted", it.geoIssue ? it.issues.find((x) => /координат|геометр/.test(x)) : "Координаты не указаны") : it.snap ? badge(it.snap.display === "yard" ? C.tr("geo.badge.yard", "Двор по карте") : C.tr("geo.badge.street", "По улице"), "b-muted", C.placeText(it)) : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
+        !it.geometry ? badge("Нет на карте", "b-muted", it.geoIssue ? it.issues.find((x) => /координат|место на карте/.test(x)) : "Координаты не указаны") : it.snap ? badge(it.snap.display === "yard" ? C.tr("geo.badge.yard", "Двор по карте") : C.tr("geo.badge.street", "По улице"), "b-muted", C.placeText(it)) : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
         missing === "end" ? badge("Окончание неизвестно", "b-muted", "Плановая дата окончания не указана") : missing === "start" ? badge("Начало неизвестно", "b-muted", "Плановая дата начала не указана") : null].filter(Boolean);
       const btn = h("button", { type: "button", class: P + "item", "data-r03-action": "select", "data-id": it.id, "aria-current": st.selectedId === it.id ? "true" : null, style: { "--civic-r03-k": k.color } },
         h("span", { class: P + "item-kind" }, h("i", { class: P + "dot " + P + "st-" + it.status, "aria-hidden": "true" }), k.label),
@@ -1116,14 +1116,18 @@
       if (st.view !== "card") return;
       const d = st.detail;
       const it = d.item;
+      // ҚАЗ (R12 день 2): главное в карточке — по-казахски (ключи R11 works.*, common.*, geo.* и map.card.*),
+      // подробности раунда 13 (источники, стоимость, история) — в разделе «Толық мәліметтер (орыс тілінде)».
+      const kk = C.lang() === "kk";
       const top = h("div", { class: P + "card-top" },
-        h("button", { type: "button", class: P + "btn " + P + "btn-quiet", "data-r03-action": "back" }, svgIcon(ICON.back), "Все объекты"),
-        it && it.geometry && map ? h("button", { type: "button", class: P + "btn " + P + "btn-quiet", "data-r03-action": "fly" }, svgIcon(ICON.pin), "На карте") : null);
+        h("button", { type: "button", class: P + "btn " + P + "btn-quiet", "data-r03-action": "back" }, svgIcon(ICON.back), C.tr("map.card.back", "Все объекты")),
+        it && it.geometry && map ? h("button", { type: "button", class: P + "btn " + P + "btn-quiet", "data-r03-action": "fly" }, svgIcon(ICON.pin), C.tr("map.card.on_map", "На карте")) : null);
       cardView.append(top);
       if (!it) {
-        if (d.state === "loading") cardView.append(h("h3", { class: P + "card-title " + P + "sr", tabindex: "-1", text: "Карточка объекта" }), h("div", { class: P + "loading" }, h("span", { class: P + "spinner", "aria-hidden": "true" }), "Загружаем карточку…"));
-        else if (d.state === "notfound") cardView.append(h("div", { class: P + "empty", role: "alert" }, h("h3", { class: P + "card-title", tabindex: "-1", text: "Объект не найден" }), h("p", { text: "Возможно, его сняли с публикации или ссылка устарела." })));
-        else if (d.state === "error") cardView.append(h("h3", { class: P + "card-title " + P + "sr", tabindex: "-1", text: "Карточка объекта" }), h("div", { class: P + "error", role: "alert" }, h("p", { text: d.error ? d.error.text : "Не удалось загрузить карточку." }), h("button", { type: "button", class: P + "btn", "data-r03-action": "retry-card" }, svgIcon(ICON.retry), "Повторить")));
+        const cardTitle = C.tr("map.card.title", "Карточка объекта");
+        if (d.state === "loading") cardView.append(h("h3", { class: P + "card-title " + P + "sr", tabindex: "-1", text: cardTitle }), h("div", { class: P + "loading" }, h("span", { class: P + "spinner", "aria-hidden": "true" }), C.tr("map.card.loading", "Загружаем карточку…")));
+        else if (d.state === "notfound") cardView.append(h("div", { class: P + "empty", role: "alert" }, h("h3", { class: P + "card-title", tabindex: "-1", text: C.tr("map.card.not_found", "Объект не найден") }), h("p", { text: C.tr("map.card.not_found_hint", "Возможно, его сняли с публикации или ссылка устарела.") })));
+        else if (d.state === "error") cardView.append(h("h3", { class: P + "card-title " + P + "sr", tabindex: "-1", text: cardTitle }), h("div", { class: P + "error", role: "alert" }, h("p", { text: d.error && !kk ? d.error.text : C.tr("map.card.error", "Не удалось загрузить карточку.") }), h("button", { type: "button", class: P + "btn", "data-r03-action": "retry-card" }, svgIcon(ICON.retry), C.tr("common.action.retry", "Повторить"))));
         if (focus) focusCard();
         else if (keep) restoreFocus("title");
         return;
@@ -1133,12 +1137,16 @@
       // The newest source that covers the status (published_on is YYYY-MM-DD, so strings compare as dates).
       const statusSrc = it.sourceRefs.filter((r) => r.published_on && r.fields.includes("status"))
         .reduce((a, r) => (!a || r.published_on > a.published_on ? r : a), null);
-      if (it.evidence !== "observed") {
+      if (it.evidence === "synthetic" && kk) {
+        cardView.append(h("p", { class: P + "banner " + P + "banner-demo", role: "note" },
+          h("b", { text: C.tr("common.tag.demo", "Пример") + ". " }), C.tr("works.evidence.synthetic_hint", "Пример для показа — не сведения о реальных работах") + "."));
+      } else if (it.evidence !== "observed") {
         cardView.append(h("p", { class: P + "banner " + (it.evidence === "synthetic" ? P + "banner-demo" : P + "banner-warn"), role: "note" },
           it.evidence === "synthetic" ? h("b", { text: "Демо. " }) : null, ev.label + "."));
       }
+      const kindText = kk ? C.tr("works.kind." + (C.KINDS[it.kind] ? it.kind : "other"), k.label) : k.label;
       cardView.append(
-        h("div", { class: P + "card-kind", style: { "--civic-r03-k": k.color } }, h("i", { class: P + "dot " + P + "st-" + it.status, "aria-hidden": "true" }), k.label + (it.kind === "other" && it.rawKind ? " (" + it.rawKind.slice(0, 40) + ")" : "")),
+        h("div", { class: P + "card-kind", style: { "--civic-r03-k": k.color } }, h("i", { class: P + "dot " + P + "st-" + it.status, "aria-hidden": "true" }), kindText + (it.kind === "other" && it.rawKind ? " (" + it.rawKind.slice(0, 40) + ")" : "")),
         h("h3", { class: P + "card-title", tabindex: "-1", text: it.title }));
 
       // ---- "Коротко": what, until when, who, from where — before anything technical ----
@@ -1170,7 +1178,30 @@
           : h("span", { class: P + "nodata", text: resp.state === "unsourced" ? "не подтверждено источником" : "не указано" })),
         h("dt", { text: "Откуда сведения" }),
         h("dd", null, h("span", { class: prov.state === "ok" ? null : P + "nodata", text: prov.text })));
-      cardView.append(summary);
+      // В ҚАЗ: «Қазір» и «Қашан аяқталады» по-казахски, место — тоже; остальное (раунд 13) — в раскрывающемся разделе.
+      let sink = cardView;
+      if (kk) {
+        const day = (v) => C.formatDayKk(v);
+        let whenKk;
+        if (s.actual_end) whenKk = C.tr("map.card.done_on", "завершено {date}", { date: day(s.actual_end) });
+        else if (it.status === "completed") whenKk = C.tr("works.status.completed", "Завершено");
+        else if (it.status === "cancelled") whenKk = C.tr("works.status.cancelled", "Отменено");
+        else if (s.current_planned_end) whenKk = C.tr("works.until", "до {date}", { date: day(s.current_planned_end) });
+        else whenKk = C.tr("works.no_dates", "сроки: нет данных");
+        cardView.append(h("dl", { class: P + "summary", "aria-label": C.tr("map.card.summary", "Коротко об объекте") },
+          h("dt", { text: C.tr("map.card.now", "Сейчас") }),
+          h("dd", null, h("span", { class: P + "status " + P + "status-" + it.status, text: C.tr("works.status." + (C.STATUSES[it.status] ? it.status : "unknown"), C.STATUSES[it.status] || "") }),
+            stale ? h("span", { class: P + "warn-text", text: " · " + C.tr("map.card.plan_passed", "срок по плану уже прошёл") }) : null),
+          h("dt", { text: C.tr("map.card.when", "Когда закончат") }),
+          h("dd", null, h("span", { text: whenKk }),
+            shift && !s.actual_end && it.status !== "completed" && it.status !== "cancelled" ? h("span", { class: P + "shift-chip", text: shift.days > 0 ? C.tr("works.shift_later", "срок перенесён") : C.tr("works.shift_earlier", "срок сдвинут раньше") }) : null)));
+        const placeKk = !it.geometry ? C.tr("works.not_on_map", "Нет на карте") : C.placeText(it) || C.tr("map.card.precision." + it.precision, C.PRECISION[it.precision] || "");
+        cardView.append(h("section", { class: P + "sec" }, h("h4", { text: C.tr("map.card.place", "Место") }), h("p", { text: placeKk })));
+        const more = h("div", { class: P + "more-body", lang: "ru" });
+        cardView.append(h("details", { class: P + "more" }, h("summary", { text: C.tr("map.card.more_ru", "Подробнее (на русском языке)") }), more));
+        sink = more;
+      }
+      sink.append(summary);
 
       // Moved deadline with its reason, right under the summary.
       const reasonInfo = C.shiftReason(d.history);
@@ -1181,7 +1212,7 @@
         else if (d.state === "loading") reasonText = h("span", { class: P + "muted", text: "Причина: загружаем историю…" });
         else if (d.state === "error") reasonText = h("span", { class: P + "muted", text: "Причина: история не загрузилась." });
         else reasonText = h("span", { class: P + "muted", text: "Причина переноса в опубликованной истории не указана." });
-        cardView.append(h("div", { class: P + "shift", role: "note" },
+        sink.append(h("div", { class: P + "shift", role: "note" },
           h("b", { text: "Срок перенесён на " + C.daysText(shift.days) + " " + dir + ": " }),
           h("span", { text: C.formatDay(shift.from) + " → " + C.formatDay(shift.to) }), h("br"), reasonText));
       }
@@ -1192,13 +1223,13 @@
           : stale.original
             ? "Первоначальный срок окончания (" + C.formatDay(stale.end) + ") прошёл " + C.daysText(stale.days) + " назад, новый срок не опубликован, в записи статус " + st0 + "."
             : "Плановый срок окончания (" + C.formatDay(stale.end) + ") прошёл " + C.daysText(stale.days) + " назад, а в записи статус " + st0 + ".";
-        cardView.append(h("p", { class: P + "banner " + P + "banner-warn", role: "note" }, text + " Фактическое состояние работ эта запись не подтверждает."));
+        sink.append(h("p", { class: P + "banner " + P + "banner-warn", role: "note" }, text + " Фактическое состояние работ эта запись не подтверждает."));
       }
-      if (it.description) cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Назначение" }), h("p", { class: P + "desc", text: it.description })));
+      if (it.description) sink.append(h("section", { class: P + "sec" }, h("h4", { text: "Назначение" }), h("p", { class: P + "desc", text: it.description })));
 
       // Dates: originally / now / actually.
       const iv = C.plannedInterval(it);
-      cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Сроки" }),
+      sink.append(h("section", { class: P + "sec" }, h("h4", { text: "Сроки" }),
         h("dl", { class: P + "dl" },
           dlRow("Начало по плану", s.planned_start ? C.formatDay(s.planned_start, "long") : null),
           dlRow("Изначально — до", s.original_planned_end ? C.formatDay(s.original_planned_end, "long") : null),
@@ -1216,14 +1247,14 @@
         ? h("span", null, resp.organization ? h("span", { text: resp.organization }) : null, resp.contact ? h("span", { class: P + "basis", text: resp.contact }) : null,
           h("span", { class: P + "basis", text: "источник: " + (resp.source.publisher || resp.source.host || resp.source.id) }))
         : h("span", { class: P + "nodata", text: resp.state === "unsourced" ? "в записи указан, но источник не подтверждает — не показываем" : C.NO_DATA });
-      cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Кто отвечает и сколько стоит" }),
+      sink.append(h("section", { class: P + "sec" }, h("h4", { text: "Кто отвечает и сколько стоит" }),
         h("dl", { class: P + "dl" }, dlRow("Ответственный", respNode), dlRow("Стоимость", costNode))));
 
       // Place
       let placeText;
-      if (!it.geometry) placeText = it.issues.find((x) => /координат|геометр/.test(x)) ? "Место не показано: " + it.issues.find((x) => /координат|геометр/.test(x)) + "." : "Координаты не указаны — объект есть только в списке, точку не придумываем.";
+      if (!it.geometry) placeText = it.issues.find((x) => /координат|место на карте/.test(x)) ? "Место не показано: " + it.issues.find((x) => /координат|место на карте/.test(x)) + "." : "Координаты не указаны — объект есть только в списке, точку не придумываем.";
       else placeText = C.placeText(it) ? C.placeText(it) + "." : C.PRECISION[it.precision] + ". " + ({ Point: "Точка", LineString: "Линия (участок)", Polygon: "Территория" }[it.geometry.type] || "") + ".";
-      cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Место" }), h("p", { text: placeText })));
+      if (!kk) cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Место" }), h("p", { text: placeText })));
 
       // Sources: short list first; technical provenance folded away.
       const srcSec = h("section", { class: P + "sec" }, h("h4", { text: "Источники" }));
@@ -1252,7 +1283,7 @@
       if (it.issues.length) tech.append(h("p", { class: P + "warn-text", text: "Проблемы записи: " + it.issues.join("; ") + "." }));
       tech.append(h("p", { class: P + "meta", text: "Запись обновлена: " + (it.updatedAt ? C.formatTimestamp(it.updatedAt) : C.NO_DATA) + (it.revision ? " · редакция " + it.revision : "") }));
       srcSec.append(h("details", { class: P + "tech" }, h("summary", { text: "Подробнее о сведениях" }), tech));
-      cardView.append(srcSec);
+      sink.append(srcSec);
 
       // History
       const hist = h("section", { class: P + "sec" }, h("h4", { text: "История изменений" }));
@@ -1272,13 +1303,16 @@
         hist.append(ol);
         if (d.history.filter((r) => r.revision !== null).length >= 2) hist.append(compareBlock(d.history));
       }
-      cardView.append(hist);
+      sink.append(hist);
 
       // Actions
       const actions = h("div", { class: P + "actions" });
-      if (onFeedback) actions.append(h("button", { type: "button", class: P + "btn " + P + "btn-primary", "data-r03-action": "feedback" }, svgIcon(ICON.chat), "Задать вопрос по объекту"));
-      actions.append(h("button", { type: "button", class: P + "btn", "data-r03-action": "copy-link" }, svgIcon(ICON.link), "Скопировать ссылку"));
-      cardView.append(actions, h("p", { class: P + "copy-note", role: "status" }));
+      if (onFeedback) actions.append(h("button", { type: "button", class: P + "btn " + P + "btn-primary", "data-r03-action": "feedback" }, svgIcon(ICON.chat), C.tr("map.card.ask", "Задать вопрос по объекту")));
+      actions.append(h("button", { type: "button", class: P + "btn", "data-r03-action": "copy-link" }, svgIcon(ICON.link), C.tr("map.card.copy_link", "Скопировать ссылку")));
+      // В ҚАЗ кнопки идут до раздела «на русском языке», чтобы главное действие было сразу под карточкой.
+      const more = kk ? cardView.querySelector("." + P + "more") : null;
+      if (more) cardView.insertBefore(actions, more); else cardView.append(actions);
+      cardView.append(h("p", { class: P + "copy-note", role: "status" }));
       paintCopyNote(false);
       if (focus) focusCard();
       else if (keep) restoreFocus(keep);
@@ -1598,11 +1632,16 @@
       if (!it) return;
       if (!popup) popup = new window.maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 14, maxWidth: "280px", className: P + "tip" });
       const k = C.kindInfo(it.kind);
+      // В ҚАЗ подсказка — по-казахски (как карточка); в РУС — как в раунде 13.
+      const kk = C.lang() === "kk";
+      const kindText = kk ? C.tr("works.kind." + (C.KINDS[it.kind] ? it.kind : "other"), k.label) : k.label;
+      const statusText = kk ? C.tr("works.status." + (C.STATUSES[it.status] ? it.status : "unknown"), C.STATUSES[it.status] || "") : C.STATUSES[it.status];
       const node = h("div", { class: P + "tip-body" },
         h("b", { text: it.title.length > 90 ? it.title.slice(0, 90) + "…" : it.title }),
-        h("span", { text: k.label + " · " + C.STATUSES[it.status] }),
-        it.evidence === "synthetic" ? h("span", { class: P + "tip-demo", text: "Демо-запись" }) : null,
-        it.snap ? h("span", { class: P + "muted", text: C.placeText(it) }) : it.precision !== "source" ? h("span", { class: P + "muted", text: C.PRECISION[it.precision] }) : null);
+        h("span", { text: kindText + " · " + statusText }),
+        it.evidence === "synthetic" ? h("span", { class: P + "tip-demo", text: kk ? C.tr("common.tag.demo", "Пример") : "Демо-запись" }) : null,
+        it.snap ? h("span", { class: P + "muted", text: C.placeText(it) }) : it.precision !== "source"
+          ? h("span", { class: P + "muted", text: kk ? C.tr("map.card.precision." + it.precision, C.PRECISION[it.precision] || "") : C.PRECISION[it.precision] }) : null);
       popup.setLngLat(lngLat).setDOMContent(node);
       if (!popup.isOpen || !popup.isOpen()) popup.addTo(map);
     }

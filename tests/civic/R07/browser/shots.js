@@ -55,6 +55,8 @@ async function measure(page) {
       demoWord: /демо/i.test(text),
       smallButtons: small,
       smallVisible,
+      smallDistricts: [...document.querySelectorAll('.r07-badge[data-kind="district"]:not(.r07-badge--mini)')].filter((b) => !b.hidden)
+        .map((b) => Math.round(b.getBoundingClientRect().height)).filter((h) => h < 43.5),
       primary,
       badges: [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden).length,
       legendOnMap: (() => { const l = document.querySelector(".r07-maplegend"); if (!l || !visible(l)) return false; const r = l.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight && r.left >= 0; })(),
@@ -87,6 +89,7 @@ async function shot(browser, name, size, query, after, check) {
   if (m.demoWord) problems.push("слово «демо» в интерфейсе (№7)");
   if (m.smallButtons.length) problems.push("зона нажатия < 48 (№6): " + JSON.stringify(m.smallButtons));
   if (m.smallVisible.length) problems.push("видимая высота < 44 (R11): " + JSON.stringify(m.smallVisible));
+  if (m.smallDistricts.length) problems.push("значки районов ниже 44 px (R11): " + JSON.stringify(m.smallDistricts));
   const lowContrast = m.primary.filter((b) => b.ratio < 4.5);
   if (lowContrast.length) problems.push("контраст главной кнопки < 4,5 (№1): " + JSON.stringify(lowContrast));
   if (m.state && m.state.mode === "targets" && !m.legendOnMap) problems.push("легенды нет на карте (№3)");
