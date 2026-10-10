@@ -45,11 +45,14 @@ TEXT_MIN, TEXT_MAX = 3, 2000
 LABEL_MAX = 160
 CATEGORY_SOURCES = ("resident", "model", "staff")
 
-# Ячейка ~150 м там, где нет двора (CONTRACT §4: cell-<id>). Шаг по широте 150 м,
-# по долготе 150 м на широте Астаны (51.15°). Id = номер столбца и строки от угла ASTANA_BBOX.
+# Ячейка ~150 м там, где нет двора (CONTRACT §4: cell-<ix>-<iy>). ОБЩАЯ сетка с R07 (ui/civic_heat/geo.py) и
+# R12 (data/civic/astana/geo/cells.json, схема r12-cells-v2): иначе жалоба на «примерное место» попала бы в другую
+# ячейку тепловой карты. Константы меняются только вместе с R07 и R12 (тест сверяет с cells.json, если он есть).
 CELL_M = 150.0
-_LAT_STEP = CELL_M / 111_320.0
-_LON_STEP = CELL_M / (111_320.0 * math.cos(math.radians(51.15)))
+CELL_ORIGIN = (71.0, 50.8)
+CELL_LAT0 = 51.15
+_LAT_STEP = CELL_M / 110_574.0
+_LON_STEP = CELL_M / (111_320.0 * math.cos(math.radians(CELL_LAT0)))
 
 # Слова, которых нет в казахском (для «mixed»): частые русские служебные слова.
 _RU_MARKERS = frozenset("не на и в у с нет возле около уже очень уже где когда что это из за по до "
@@ -109,8 +112,8 @@ def parse_point(value) -> list[float]:
 
 
 def cell_id(lon: float, lat: float) -> str:
-    col = int((lon - ASTANA_BBOX[0]) // _LON_STEP)
-    row = int((lat - ASTANA_BBOX[1]) // _LAT_STEP)
+    col = math.floor((lon - CELL_ORIGIN[0]) / _LON_STEP)
+    row = math.floor((lat - CELL_ORIGIN[1]) / _LAT_STEP)
     return f"cell-{col}-{row}"
 
 
@@ -128,8 +131,8 @@ def cell_polygon(target_id: str) -> list[list[float]] | None:
     if not match:
         return None
     col, row = int(match.group(1)), int(match.group(2))
-    lon0 = ASTANA_BBOX[0] + col * _LON_STEP
-    lat0 = ASTANA_BBOX[1] + row * _LAT_STEP
+    lon0 = CELL_ORIGIN[0] + col * _LON_STEP
+    lat0 = CELL_ORIGIN[1] + row * _LAT_STEP
     lon1, lat1 = lon0 + _LON_STEP, lat0 + _LAT_STEP
     ring = [[lon0, lat0], [lon1, lat0], [lon1, lat1], [lon0, lat1], [lon0, lat0]]
     return [[round(x, 6), round(y, 6)] for x, y in ring]

@@ -32,7 +32,9 @@
   var NET_TIMEOUT_MS = 12000;
   var CLASSIFY_DEBOUNCE_MS = 700;
   var CLASSIFY_MIN_CHARS = 8;
-  var SIMILAR_MIN_SCORE = 0.6;   // ниже — не предлагаем «Я тоже» по тексту (только по той же цели)
+  // R12 /targets: первая загрузка графа на холодном сервере ~2–4 с (R01 прогревает при старте). Место —
+  // главный шаг, поэтому ждём дольше, чем подсказки модели; не дождались — «примерное место».
+  var TARGETS_TIMEOUT_MS = 5000;
   var DEVICE_KEY = "birge.device";
   var LANG_KEY = "birge.lang";
   var DRAFT_KEY = "birge.complaint.draft";
@@ -42,6 +44,8 @@
     ru: ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"],
     kk: ["қаң", "ақп", "нау", "сәу", "мам", "мау", "шіл", "там", "қыр", "қаз", "қар", "жел"]
   };
+  // Подписи ячейки «примерное место» без уточнения (record.cell_target R09 и R12 без улицы рядом).
+  var GENERIC_APPROX = { "Примерное место": true, "Шамамен орны": true };
   var KIND_FALLBACK = {
     ru: { object: "объект", segment: "участок улицы", area: "двор" },
     kk: { object: "нысан", segment: "көше бөлігі", area: "аула" }
@@ -146,8 +150,10 @@
   function targetLabel(target) {
     if (!target) return "";
     var lang = currentLang();
-    if (target.approximate) return t("complaint.step2.approximate");
     var label = target["label_" + lang] || target.label_ru || target.label_kk;
+    // «Примерное место»: подробную подпись R12 («Примерное место — проспект Кабанбай Батыра») показываем как есть;
+    // общую подпись (своя ячейка R09 или её нет) — из словаря, чтобы перевод был единым с R11.
+    if (target.approximate && (!label || GENERIC_APPROX[label])) return t("complaint.step2.approximate");
     return label || KIND_FALLBACK[lang][target.kind] || "";
   }
 
@@ -402,19 +408,25 @@
       if (map.highlight) map.highlight(null, null, state.point);
       render();
       var seq = state.pickSeq = (state.pickSeq || 0) + 1;
-      request("GET", "/targets?lon=" + state.point[0] + "&lat=" + state.point[1], undefined, ML_TIMEOUT_MS)
+      request("GET", "/targets?lon=" + state.point[0] + "&lat=" + state.point[1], undefined, TARGETS_TIMEOUT_MS)
         .then(function (res) {
           if (seq !== state.pickSeq) return;
           var list = res.ok && res.data && Array.isArray(res.data.candidates) ? res.data.candidates : [];
           state.candidates = list.filter(function (c) { return c && c.target && c.target.kind && c.target.id; }).slice(0, 3);
           state.candidatesLoading = false;
           if (!state.candidates.length) return chooseApproximate();
+          // Только «примерное место» (рядом нет ни объекта, ни улицы) — выбирать нечего: сразу шаг ③.
+          if (state.candidates.every(function (c) { return c.approximate || (c.target && c.target.approximate); })) {
+            return chooseCandidate(state.candidates[0]);
+          }
           render();
         });
     }
 
     function chooseCandidate(candidate) {
-      state.target = candidate.target;
+      // R12 ставит признак «примерное место» на кандидате, а не внутри target: переносим, чтобы подпись,
+      // пунктир на карте и запись жалобы знали, что место неточное (CONTRACT §8.4).
+      state.target = Object.assign({}, candidate.target, candidate.approximate ? { approximate: true } : {});
       state.geometry = candidate.geometry || null;
       if (map.highlight) map.highlight(state.target, state.geometry, state.point);
       state.step = 3;
@@ -494,13 +506,18 @@
         var meters = typeof d === "number" && (d >= 5 || same) ? Math.max(1, Math.round(d)) : null;
         list.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-option" + (index === 0 ? " bc-option--first" : ""),
                                        type: "button", onclick: function () { chooseCandidate(candidate); } },
-          [icon(candidate.target.kind === "segment" ? "road" : (candidate.target.kind === "area" ? "trees" : "pin")),
+          [icon(candidate.approximate ? "pin" : (candidate.target.kind === "segment" ? "road" : (candidate.target.kind === "area" ? "trees" : "pin"))),
            h("span", { "class": "bc-option__label" }, targetLabel(candidate.target)),
            meters !== null ? h("span", { "class": "bc-option__meta" }, t("complaint.step2.distance", { n: meters })) : null]));
       });
-      list.appendChild(h("button", { "class": "bk-btn bk-btn--block bk-btn--ghost bc-option", type: "button",
-                                     onclick: chooseApproximate },
-        [icon("pin"), h("span", { "class": "bc-option__label" }, t("complaint.step2.other_place"))]));
+      // «Другое место» = примерная область. Если R12 уже предложил её своим вариантом (с улицей в подписи),
+      // вторую такую кнопку не показываем.
+      var hasApprox = state.candidates.some(function (c) { return c.approximate || (c.target && c.target.approximate); });
+      if (!hasApprox) {
+        list.appendChild(h("button", { "class": "bk-btn bk-btn--block bk-btn--ghost bc-option", type: "button",
+                                       onclick: chooseApproximate },
+          [icon("pin"), h("span", { "class": "bc-option__label" }, t("complaint.step2.other_place"))]));
+      }
       body.appendChild(list);
       // Варианты уже на экране — им место сверху шторки, остальное ниже (меньше прокрутки на телефоне).
       body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step2.pick_again")));
@@ -525,7 +542,10 @@
           state.model = { label: data.category, score: typeof data.score === "number" ? data.score : null,
                           version: data.model_version || null, needs_review: !!data.needs_review };
           state.suggestion = data.category;
-          if (!data.needs_review) {
+          // R04: needs_review — пометка для сотрудника (сейчас всегда true), жителю подсказку показываем по
+          // suggest. Если поставщик не знает suggest — старое правило «нет needs_review».
+          var suggest = typeof data.suggest === "boolean" ? data.suggest : !data.needs_review;
+          if (suggest) {
             state.category = data.category; state.categorySource = "model"; state.gridOpen = false;
           } else if (!state.category) {
             state.gridOpen = true;
@@ -636,13 +656,15 @@
 
     function findSimilar() {
       // 1) R04 /similar по тексту и месту; 2) запасной путь без ML — та же цель и та же категория.
-      var byText = request("POST", "/similar", { text: state.text, point: state.point, days: 14 }, ML_TIMEOUT_MS)
+      // Цель шага ② передаём R04: «та же цель» надёжнее точки (участок улицы бывает длиннее 200 м).
+      var body = { text: state.text, point: state.point, days: 14 };
+      if (state.target && state.target.id) body.target = { kind: state.target.kind, id: state.target.id };
+      var byText = request("POST", "/similar", body, ML_TIMEOUT_MS)
         .then(function (res) {
           var matches = res.ok && res.data && Array.isArray(res.data.matches) ? res.data.matches : [];
-          var targetId = state.target && state.target.id;
-          matches = matches.filter(function (m) {
-            return m && m.complaint_id && ((targetId && m.target && m.target.id === targetId) || m.score >= SIMILAR_MIN_SCORE);
-          });
+          // Порог и порядок — забота R04: все matches уже прошли его порог (в режиме «понятий» дубль
+          // начинается с 0.18), список упорядочен. Повторно по score не фильтруем — берём первое.
+          matches = matches.filter(function (m) { return m && m.complaint_id; });
           if (!matches.length) return null;
           return request("GET", "/complaints/" + encodeURIComponent(matches[0].complaint_id)).then(function (r) {
             return r.ok && r.data && r.data.complaint ? r.data.complaint : null;

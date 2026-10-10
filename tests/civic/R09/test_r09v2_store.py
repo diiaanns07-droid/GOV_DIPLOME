@@ -1,6 +1,8 @@
 """R09 раунд 14: хранилище жалоб v2 — запись §5, «Я тоже», статусы, дубли, события, выборки."""
 
+import json
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import pytest
 
@@ -321,3 +323,17 @@ def test_metoo_times_for_heat_weight(store, clock):
     times = store.metoo_times([a["id"], b["id"]])
     assert times == {a["id"]: ["2026-10-14T10:00:00+05:00", "2026-10-15T10:00:00+05:00"], b["id"]: []}
     assert store.metoo_times([]) == {}
+
+
+def test_cell_grid_is_shared_with_r07_and_r12():
+    """Сетка «примерного места» общая с R07 (ui/civic_heat/geo.py) и R12 (cells.json r12-cells-v2):
+    точка и контур взяты из ответа настоящего R12 targets(71.4605, 51.0785, "lighting") @ 8810221."""
+    assert rec.cell_id(71.4605, 51.0785) == "cell-214-205"
+    assert rec.cell_polygon("cell-214-205") == [[71.459693, 51.078094], [71.461841, 51.078094],
+                                                [71.461841, 51.079451], [71.459693, 51.079451],
+                                                [71.459693, 51.078094]]
+    cells = Path(__file__).resolve().parents[3] / "data" / "civic" / "astana" / "geo" / "cells.json"
+    if cells.exists():  # в общей сборке (R12 доставил) — сверяем параметры с их файлом
+        data = json.loads(cells.read_text(encoding="utf-8"))
+        assert tuple(data["origin"]) == rec.CELL_ORIGIN and data["cell_m"] == rec.CELL_M
+        assert data["ref_lat"] == rec.CELL_LAT0 and data["m_per_deg_lat"] == 110574.0
