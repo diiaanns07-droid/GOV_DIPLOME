@@ -829,10 +829,12 @@
       // Своя панель / шторка поверх карты и кнопки MapLibre: значок наполовину под ними выглядит обрезанным.
       if (!root.contains(map.getContainer())) { const vr = visibleRect(root); if (vr) overlays.push(vr); }
       map.getContainer().querySelectorAll(".maplibregl-ctrl-group, .maplibregl-ctrl-attrib").forEach((el) => overlays.push(el.getBoundingClientRect()));
-      // Чужие маркеры на той же карте (таблички проектов R05 и др.): значок R07 не ложится поверх них (кадр Codex OFFLINE)
-      map.getContainer().querySelectorAll(".maplibregl-marker:not(.r07-badge):not(.r07-pulse)").forEach((el) => {
+      // Чужие значки на той же карте: маркеры MapLibre и таблички проектов R05 (.b3d-label — свои кнопки в контейнере
+      // холста, не маркеры): значок R07 не ложится поверх них (кадр Codex OFFLINE). Скрытые и прозрачные не мешают.
+      map.getContainer().querySelectorAll(".maplibregl-marker:not(.r07-badge):not(.r07-pulse), .b3d-label:not(.b3d-label--hidden)").forEach((el) => {
         const r = el.getBoundingClientRect();
-        if (r.width && r.height && getComputedStyle(el).visibility !== "hidden") overlays.push(r);
+        const cs = getComputedStyle(el);
+        if (r.width && r.height && cs.visibility !== "hidden" && Number(cs.opacity) > 0.1) overlays.push(r);
       });
       if (typeof opts.avoidRects === "function") overlays.push(...(opts.avoidRects() || []));
       overlays.forEach((r) => { if (r && r.width) placed.push([r.left - host.left, r.top - host.top, r.right - host.left, r.bottom - host.top]); });
@@ -976,6 +978,9 @@
     // Кнопка действия в панели сейчас (или временная — тогда занятость просто не видна) и та же цель по ключу.
     const actButton = (act) => panel.querySelector('[data-act="' + act + '"]') || document.createElement("button");
     async function setStatus(it, status, btn) {
+      // После перезагрузки у цели могли остаться только примеры или всё уже исправлено — тогда отправлять нечего
+      // (иначе «Взято в работу» без единого запроса): просто перерисовать карточку.
+      if (!(it.open_ids || []).length) { render(); return; }
       btn.setAttribute("aria-busy", "true");
       btn.disabled = true;
       try {
