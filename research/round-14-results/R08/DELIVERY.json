@@ -4,14 +4,15 @@
  "branch": "claude/r14-R08",
  "base_sha": "2131c15 (claude/round-14-package)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "463901f",
- "tested_sha": "463901f",
+ "code_sha": "23702ad",
+ "tested_sha": "23702ad",
  "tested_with": {
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 35e6feb (код 306074b: records()/generation, 5-недельный демо-поток, metoo_times) — временная копия, в git R08 не входит",
   "r11_ui_kit_i18n": "web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 8451468 — demo_server.py --kit-dir",
   "r06_store": "claude/round-14-r06 @ 6b9da27 (код b42e790) — отдельная рабочая копия, init + seed-r14-demo, demo_server --r06-db",
   "environment": "облачная сессия Claude Code, Linux, Python 3.13.16, Node 22.22.0, Playwright 1.56.1 + Chromium 1194",
-  "date": "2026-10-10 (ночь)"
+  "date": "2026-10-10 (ночь)",
+  "r01_build": "claude/r14-R01 @ d9a8895 — рабочая копия + R08 этой поставки + R07 35e6feb (+ patch r07_registry_labels.patch), CIVIC_DEMO=1, база init + seed-demo + seed-r14-demo"
  },
  "push_status": "OK — claude/r14-R08; DELIVERY и STATUS отдельным коммитом поверх code_sha",
  "changed_paths": [
@@ -41,15 +42,17 @@
  ],
  "api": "GET /api/civic/v2/akim/summary?date=YYYY-MM-DD&district=<id|all> → ui.civic_akim.api.handle_get (подключает R01)",
  "tests": {
-  "pytest tests/civic/R08 (с R07 35e6feb)": "129 PASS (было 126 + 1 XFAIL): test_r08_demo_plausible теперь PASS на наборе R07 35e6feb; BIRGE_STRICT_DEMO=1 — тоже 129 PASS",
-  "pytest tests/civic/R08 без ui/civic_heat": "114 PASS + 2 SKIP с причиной (heat_match, demo_plausible) — ошибки сбора больше нет",
+  "pytest tests/civic/R08 (с R07 35e6feb)": "132 PASS + 1 SKIP (test_r08_hot_labels — нет данных R12 в ветке R08; в сборке R01: без patch FAIL, с patch PASS)",
+  "pytest tests/civic/R08 без ui/civic_heat": "117 PASS + 3 SKIP с причиной",
   "pytest tests/civic/R08 в рабочей копии R06 6b9da27": "129 PASS",
   "test_r08_heat_match.py": "без assert при сборе (R15: «ошибка сбора, assert 0 >= 3» на 5-недельном наборе R07); новые проверки: «неделю назад» не пустое, снимок отбрасывает «Я тоже», нажатые позже",
   "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 35e6feb)": "97/97 PASS — прежние 95 + B-018: объект и предложение без казахского названия → в ҚАЗ вид объекта по-казахски, в РУС — название",
   "живой R06 6b9da27": "PASS — объекты и предложения из базы R06, в ҚАЗ названия казахские («Тротуарды жөндеу», «Ілияс Омаров көшесі маңындағы гүлзар»); кадры akim-1366-ru/kk-r06-objects.png, akim-375-kk-r06-objects.png",
   "screenshots": "research/round-14-results/R08/screens/: akim-1366-ru/kk, akim-375-ru/kk (.png и -full.jpg), состояния, печать PDF, *-r06-objects.png — пересняты в эту ночь",
-  "integration_with_R01_server": "по ACCEPTANCE_B2 R10: шаг 4 «Картина дня» PASS 4/4 в сборке f54361d (R08 4ce8f08); эту поставку в сборке R01 не проверял — NOT_RUN",
-  "map_link_target_opening": "NOT_RUN — разбор #target=…&days=7 делает R01/R07"
+  "integration_with_R01_server": "PASS в рабочей копии сборки d9a8895 с этой поставкой (shell_check 26/26); в самой сборке R01 эта поставка ещё не взята",
+  "map_link_target_opening": "PASS (shell_check): оболочка R01 ловит birge:open-target, focusTarget R07 открывает карточку",
+  "test_r08_cli.py": "3 PASS — python -m ui.civic_akim --lang kk и --json не падают при PYTHONIOENCODING=cp1251 (как R10 B-028), JSON верный, казахские буквы не теряются",
+  "node tests/civic/R08/shell_check.cjs (сборка R01 d9a8895)": "26/26 PASS — «Картина дня» в оболочке 1366/375 × ru/kk, ҚАЗ без русских названий, клик «горячее место → карточка цели» с тем же числом и 7 днями; ошибки сети подложки (нет интернета) не считаются; кадры screens/shell/"
  },
  "known_limits": [
   "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
@@ -58,10 +61,11 @@
   "Записи берутся у источника R07/R09 целиком (since=None); R09 store.list отдаёт не больше 5000 последних — для демо достаточно.",
   "Формат поля даты (10/10/2026 или 10.10.2026) задаёт браузер по языку системы.",
   "У настоящих объектов R06 без казахского названия в ҚАЗ показывается вид объекта («Жол жөндеу»), а не название — точнее назвать нельзя без перевода данных.",
-  "Ветка R08 одна, без словаря R11 покажет ключи вместо текста — стенд предупреждает; в сборке словарь R11."
+  "Ветка R08 одна, без словаря R11 покажет ключи вместо текста — стенд предупреждает; в сборке словарь R11.",
+  "В сборке R01 без patch r07_registry_labels.patch подписи горячих мест общие («Двор или квартал», «Нысан») — данные R12 стирают подписи R07 (INTEGRATION 4б)."
  ],
- "next_step": "R01 (FINAL): взять R08 этой поставки, R07 @ 35e6feb (правдоподобные числа, records()/generation), R06 @ 6b9da27 (title_kk), R11 @ последний; прогнать pytest tests/civic/R08 и ui_check.cjs на сервере сборки. R10: перепроверить B-005, B-018 и п. 13 R11 на FINAL.",
- "delivery": "3 (ночь, круг 1): замечания R15 (ошибка сбора test_r08_heat_match), R10 B-018 / LOCAL_B2 №4 (русские названия в ҚАЗ), R11 п. 13 (демо-числа) — проверено с R07 35e6feb",
+ "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 35e6feb + patch research/round-14-results/R08/patches/r07_registry_labels.patch (или R07 возьмёт его к себе), R06 @ 6b9da27, R11 @ последний; прогнать pytest tests/civic/R08 и shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, п. 13 R11 на FINAL.",
+ "delivery": "3 (ночь, круги 1–2): R15 ошибка сбора, B-018, п. 13 R11, консоль CP1251, проверка в сборке R01, patch подписей R07",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -92,6 +96,11 @@
    "R11 п. 13 (B1/B2): демо-числа как авария": "закрывается R07 35e6feb: просрочено 6, новых 51 против 37, за 7 дней 153 против 140; test_r08_demo_plausible PASS",
    "R10 B-005: стенд без R07": "закрыто в поставке 2 (RUN.txt, предупреждение demo_server); R10 — перепроверить",
    "R07 records()/generation": "ЗАКРЫТО в R07 35e6feb; R08 берёт публичные (запасной путь _records оставлен)"
+  },
+  "night_r2": {
+   "R10 B-028 (по аналогии): казахский вывод в консоли CP1251": "R08 CLI исправлен 23702ad, test_r08_cli.py",
+   "Проверка R08 в сборке R01 (раньше NOT_RUN)": "PASS 26/26 (shell_check.cjs)",
+   "Новая находка: общие подписи горячих мест в сборке": "patch для R07 + тест (INTEGRATION 4б) — ОТКРЫТО до применения R01/R07"
   }
  }
 }

@@ -29,16 +29,22 @@ R08 · «Картина дня» — как запустить и что мож�
   python -m ui.civic_akim                       # сводка на сегодня, весь город
   python -m ui.civic_akim --district nura --lang kk
   python -m ui.civic_akim --date 2026-10-09 --json
+  Windows: консоль с CP1251 не знает казахских букв — команда не падает, буквы заменяются «?»;
+  полностью по-казахски: set PYTHONUTF8=1 перед командой (--json и так сохраняет буквы как \u04d9).
 
 Функция для соседей
   from ui.civic_akim import summary
   summary(date="2026-10-12", district="nura")   # dict, как ответ GET /api/civic/v2/akim/summary
 
 Тесты
-  python -m pytest tests/civic/R08 -q                               # 126 PASS + 1 XFAIL (демо-набор R07, см. ниже)
+  python -m pytest tests/civic/R08 -q                               # 132 PASS + 1 SKIP (с R07 @ 35e6feb; SKIP — подписи в сборке, см. ниже)
   BIRGE_STRICT_DEMO=1 python -m pytest tests/civic/R08 -q           # для приёмки: правдоподобие демо-чисел — обычный FAIL
   python tests/civic/R08/demo_server.py --kit-dir /tmp/r11kit &
-  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 95 проверок, скриншоты в research/round-14-results/R08/screens
+  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 97 проверок, скриншоты в research/round-14-results/R08/screens
+  В общей сборке R01 (сервер CIVIC_DEMO=1, база init + seed-demo + seed-r14-demo, порт 8611):
+  NODE_PATH=$(npm root -g) node tests/civic/R08/shell_check.cjs http://127.0.0.1:8611   # 26 проверок: экран в оболочке
+      1366/375 × ru/kk, ҚАЗ без русских названий объектов, клик «горячее место → карточка цели» с тем же числом
+  python -m pytest tests/civic/R08/test_r08_hot_labels.py           # в сборке: подписи мест не стёрты данными R12
 
 Что считается (подробно — в начале ui/civic_akim/summary.py)
   - «Новые» за день — с полуночи до текущего момента; сравнение — с тем же отрезком неделю назад.
