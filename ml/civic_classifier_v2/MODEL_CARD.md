@@ -25,6 +25,8 @@ smell_air, noise_safety, parking, other`). Используется в `POST /ap
 - Обучение (`transformer.py`, цикл PyTorch без Trainer): длина ≤ 128 токенов, fp16 (CUDA), batch 16 × накопление 2,
   AdamW lr 2e-5, weight decay 0.01, warmup 10 %, линейное затухание, ≤ 8 эпох, **ранняя остановка по macro-F1 на
   validation** (терпение 2), веса классов `sqrt(N / (K·n_c))`, seed 20261011, лог каждой эпохи в JSONL.
+  Малые наборы (только люди): эпох добавляется до 300 шагов оптимизатора (не больше 30 эпох), и ранняя остановка
+  не срабатывает раньше этих шагов — иначе обучение обрывалось бы на разгоне и режим «люди» был бы занижен.
 - Продукт: ONNX (opset 17) + динамическое квантование int8 (`onnxruntime.quantization.quantize_dynamic`, веса QInt8),
   токенизатор `tokenizers` — без torch на сервере. Файлы > 50 МБ — в `artifacts/` (вне Git).
 - Версия: `civic-clf-v2-<модель>-<режим>-d<sha данных>-s<seed>` в `birge_meta.json`.

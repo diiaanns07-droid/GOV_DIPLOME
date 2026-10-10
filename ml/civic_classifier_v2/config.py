@@ -47,6 +47,12 @@ class TrainConfig:
     warmup_ratio: float = 0.1
     epochs: int = 8                        # максимум; обычно останавливается раньше
     patience: int = 2                      # ранняя остановка: столько эпох без роста val macro-F1
+    # Малые наборы (только люди, ~200 текстов = ~7 шагов на эпоху): эпох становится больше, чтобы набрать
+    # min_train_steps шагов оптимизатора (но не больше max_epochs), и ранняя остановка не срабатывает,
+    # пока эти шаги не пройдены — иначе обучение обрывалось бы ещё на разгоне (warmup) и режим «люди»
+    # выглядел бы хуже, чем он есть. Лучшая эпоха всё равно выбирается по val.
+    min_train_steps: int = 300
+    max_epochs: int = 30
     min_delta: float = 0.001               # «рост» = больше чем на min_delta
     fp16: bool = True                      # только на CUDA; на CPU игнорируется
     class_weight: str = "sqrt_inv"         # none | inv | sqrt_inv — вес класса в CrossEntropy
@@ -94,4 +100,4 @@ class TrainConfig:
 
 # Быстрый режим для проверки конвейера (облако/CPU, крошечная модель): не для результатов.
 SMOKE_OVERRIDES = {"epochs": 2, "batch_size": 8, "grad_accum": 1, "eval_batch_size": 16, "patience": 1,
-                   "fp16": False, "max_length": 48, "lr": 1e-3}
+                   "fp16": False, "max_length": 48, "lr": 1e-3, "min_train_steps": 0}

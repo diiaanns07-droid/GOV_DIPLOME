@@ -181,7 +181,12 @@ def fit(train: list[dict], val: list[dict], cfg: TrainConfig, labels: tuple[str,
     ]
     optim = torch.optim.AdamW(groups, lr=cfg.lr)
     steps_per_epoch = math.ceil(math.ceil(len(texts) / cfg.batch_size) / cfg.grad_accum)
-    total = max(1, steps_per_epoch * cfg.epochs)
+    epochs = cfg.epochs
+    if cfg.min_train_steps and steps_per_epoch * epochs < cfg.min_train_steps:
+        epochs = max(epochs, min(cfg.max_epochs, math.ceil(cfg.min_train_steps / steps_per_epoch)))
+    tm.info["epochs_planned"] = epochs
+    tm.info["steps_per_epoch"] = steps_per_epoch
+    total = max(1, steps_per_epoch * epochs)
     sched = get_linear_schedule_with_warmup(optim, int(cfg.warmup_ratio * total), total)
     use_amp = device == "cuda" and cfg.fp16
     scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
@@ -189,10 +194,10 @@ def fit(train: list[dict], val: list[dict], cfg: TrainConfig, labels: tuple[str,
     if device == "cuda":
         torch.cuda.reset_peak_memory_stats()
 
-    best_state, best_f1, best_epoch, bad = None, -1.0, 0, 0
+    best_state, best_f1, best_epoch, bad, opt_steps = None, -1.0, 0, 0, 0
     log_fh = open(log_path, "a", encoding="utf-8") if log_path else None
     try:
-        for epoch in range(1, cfg.epochs + 1):
+        for epoch in range(1, epochs + 1):
             model.train()
             t0 = time.time()
             run_loss, n_seen = 0.0, 0
@@ -214,8 +219,10 @@ def fit(train: list[dict], val: list[dict], cfg: TrainConfig, labels: tuple[str,
                     scaler.update()
                     sched.step()
                     optim.zero_grad(set_to_none=True)
+                    opt_steps += 1
             val_f1, val_acc, _ = _val_metrics(tm, val)
-            row = {"tag": tag, "epoch": epoch, "train_loss": round(run_loss / max(1, n_seen), 5),
+            row = {"tag": tag, "epoch": epoch, "of": epochs, "steps": opt_steps,
+                   "train_loss": round(run_loss / max(1, n_seen), 5),
                    "val_macro_f1": round(val_f1, 4), "val_accuracy": round(val_acc, 4),
                    "lr": float(sched.get_last_lr()[0]), "seconds": round(time.time() - t0, 1)}
             if device == "cuda":
@@ -233,7 +240,7 @@ def fit(train: list[dict], val: list[dict], cfg: TrainConfig, labels: tuple[str,
                 best_state = {n: t.detach().to("cpu", copy=True) for n, t in model.state_dict().items()}
             else:
                 bad += 1
-                if bad >= cfg.patience:
+                if bad >= cfg.patience and opt_steps >= cfg.min_train_steps:
                     break
     finally:
         if log_fh:

@@ -238,3 +238,21 @@ def test_env_dir_overrides_default(tmp_path, monkeypatch):
     with pytest.raises(P.ModelUnavailable) as exc:
         P.Classifier.load()
     assert "custom" in str(exc.value)
+
+
+@needs_ml
+def test_small_data_trains_min_steps_before_early_stop(tiny_model):
+    """Только люди (~200 текстов = единицы шагов на эпоху): ранняя остановка не должна сработать на разгоне."""
+    from ml.civic_classifier_v2 import data as D
+    from ml.civic_classifier_v2 import transformer as T
+    from ml.civic_classifier_v2.config import TrainConfig
+    recs = [dict(r, group=r["id"], split=None, source="human") for r in F.human_like(48)]
+    tr, va = D.stratified_split(recs, 0.25, 1)
+    cfg = TrainConfig(model_name=str(tiny_model), fp16=False, max_length=32, batch_size=8, grad_accum=1,
+                      epochs=2, patience=1, min_train_steps=20, max_epochs=6, lr=1e-3)
+    tm = T.fit(tr, va, cfg, L.labels())
+    spe = tm.info["steps_per_epoch"]
+    assert tm.info["epochs_planned"] == min(6, -(-20 // spe)) > 2       # эпох прибавилось
+    ran_steps = tm.history[-1]["steps"]
+    assert ran_steps >= min(20, spe * 6)                                  # остановка не раньше min_train_steps
+    assert 1 <= tm.best_epoch <= len(tm.history)
