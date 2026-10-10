@@ -135,7 +135,7 @@ R08 · «Картина дня» для акима — как подключит
 
 8. R10 · приёмка
 ----------------
-  pytest tests/civic/R08 (111 тестов; test_r08_heat_match.py нужен ui/civic_heat в сборке)
+  pytest tests/civic/R08 (112 тестов; test_r08_heat_match.py нужен ui/civic_heat в сборке)
   python tests/civic/R08/demo_server.py & NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs
   В общей сборке ui_check.cjs можно направить на сервер R01: node ui_check.cjs http://127.0.0.1:8501
 

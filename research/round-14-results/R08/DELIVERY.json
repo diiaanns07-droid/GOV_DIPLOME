@@ -1,0 +1,61 @@
+{
+ "role": "R08",
+ "title": "Картина дня для акима",
+ "branch": "claude/r14-R08",
+ "base_sha": "2131c15 (claude/round-14-package)",
+ "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
+ "code_sha": "9f1d9c0",
+ "tested_sha": "9f1d9c0",
+ "tested_with": {
+  "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ c3c9777 — временная копия в рабочей папке, в git R08 не входит",
+  "environment": "облачная сессия Claude Code, Linux, Python 3.13.16, pytest, Node 22.22.0, Playwright 1.56.1 + Chromium из /opt/pw-browsers",
+  "date": "2026-10-10"
+ },
+ "push_status": "OK — claude/r14-R08; DELIVERY и STATUS добавлены отдельным коммитом поверх code_sha",
+ "changed_paths": [
+  "ui/civic_akim/__init__.py",
+  "ui/civic_akim/__main__.py",
+  "ui/civic_akim/api.py",
+  "ui/civic_akim/deadlines.py",
+  "ui/civic_akim/sources.py",
+  "ui/civic_akim/summary.py",
+  "ui/civic_akim/text.py",
+  "ui/civic_akim/fixtures/objects_demo.json",
+  "ui/civic_akim/fixtures/proposals_demo.json",
+  "web/civic/akim/index.html",
+  "web/civic/akim/akim.js",
+  "web/civic/akim/akim.css",
+  "web/civic/akim/akim.i18n.json",
+  "tests/civic/R08/r08_helpers.py",
+  "tests/civic/R08/test_r08_summary.py",
+  "tests/civic/R08/test_r08_text.py",
+  "tests/civic/R08/test_r08_api.py",
+  "tests/civic/R08/test_r08_heat_match.py",
+  "tests/civic/R08/demo_server.py",
+  "tests/civic/R08/ui_check.cjs",
+  "research/round-14-results/R08/",
+  "research/handoffs/astana/R08/round14/STATUS.md"
+ ],
+ "api": "GET /api/civic/v2/akim/summary?date=YYYY-MM-DD&district=<id|all> → ui.civic_akim.api.handle_get (подключает R01)",
+ "tests": {
+  "pytest tests/civic/R08/test_r08_summary.py": "PASS 38/38 — окна времени, KPI, сроки, статус «на момент», дубли, район, прошлые даты, объекты, предложения, «жалобы не подключены» ≠ ноль",
+  "pytest tests/civic/R08/test_r08_text.py": "PASS 58/58 — склонения ru (1/2/5/11/21/22/1666), неизменяемые существительные kk, «40 %», «в 2,5 раза», пример из задания",
+  "pytest tests/civic/R08/test_r08_api.py": "PASS 5/5 — 200/400/404/500, нет текстов жителей в ответе",
+  "pytest tests/civic/R08/test_r08_heat_match.py": "PASS 11/11 (с R07 @ c3c9777) — горячие места = HeatService.top, темы = карта с фильтром категории, районы = карта на мелком масштабе, главная проблема, «неделю назад» и прошлые даты = карта R07 по снимку записей; ~2000 записей за 0,23 с. Без ui/civic_heat в сборке — SKIP с причиной",
+  "screenshots": "research/round-14-results/R08/screens/akim-1366-ru.png, akim-1366-kk.png, akim-375-ru.png, akim-375-kk.png (+ -full.jpg), akim-1366-ru-nura.png, akim-1366-ru-yesterday.png, akim-state-loading/network/empty.png, akim-print.pdf — реально запущенный интерфейс (demo_server.py)",
+  "integration_with_R01_server": "NOT_RUN — маршрут и файлы в ui/web_server.py подключает R01 (INTEGRATION.txt п.1–2)",
+  "map_link_target_opening": "NOT_RUN — открытие цели по /#target=…&days=7 или событию birge:open-target делает R01/R07 (INTEGRATION.txt п.3); проверено только, что страница отдаёт правильную ссылку и событие",
+  "node tests/civic/R08/ui_check.cjs": "PASS 77/77 — 1366×768 и 375×812, ru и kk: без прокрутки, без ключей и технических слов, шрифт ≥ 14, зоны ≥ 44, 4 числа + сводка + 1-е горячее место без прокрутки на ноутбуке; загрузка, нет связи → «Повторить», 500, пусто, карта не отвечает, неверная дата, жалобы не подключены; клик → birge:open-target; район и дата в адресе; ҚАЗ/РУС без запроса; Tab до «Распечатать» с рамкой; печать 2 листа A4",
+  "без модуля R07": "PASS 100 + SKIP 1 (test_r08_heat_match.py пропускается с причиной; блоки карты честно «не отвечает», без R07/R09 — «обращения не подключены», а не нули)"
+ },
+ "known_limits": [
+  "Данные — пример: жалобы из демо-набора R07 (synthetic, demo: true), объекты и предложения — фикстуры R08 (synthetic, без координат). На странице помечено «Пример». Функций R06 ещё нет.",
+  "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
+  "«Неделю назад» восстанавливается по status_history; у записи v2 нет времени каждого «Я тоже», поэтому metoo берётся текущим (то же ограничение у R07).",
+  "Используются внутренние _records/_generation HeatService R07, пока R07 не добавит публичные records()/generation (patch в INTEGRATION.txt п.4).",
+  "Записи берутся у источника R07/R09 целиком (since=None); R09 store.list отдаёт не больше 5000 последних — для демо достаточно.",
+  "Формат поля даты (10/10/2026 или 10.10.2026) задаёт браузер по языку системы.",
+  "Казахские фразы сводки и новые ключи — на проверку владельцу (INTEGRATION.txt п.7)."
+ ],
+ "next_step": "R01: подключить маршрут /api/civic/v2/akim/summary и файлы web/civic/akim в ui/web_server.py, ссылку «Картина дня» в шапке; R01/R07: открывать цель по /#target=<kind>:<id>&days=7 (или birge:open-target); R06: отдать akim_objects/akim_proposals; R11: перенести ключи akim.* из akim.i18n.json; R10: прогнать ui_check.cjs на общей сборке."
+}

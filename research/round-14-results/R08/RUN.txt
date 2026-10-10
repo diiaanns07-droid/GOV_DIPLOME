@@ -27,9 +27,9 @@ R08 · «Картина дня» — как запустить и что мож�
   summary(date="2026-10-12", district="nura")   # dict, как ответ GET /api/civic/v2/akim/summary
 
 Тесты
-  python -m pytest tests/civic/R08 -q                               # 111 тестов
+  python -m pytest tests/civic/R08 -q                               # 112 тестов
   python tests/civic/R08/demo_server.py &
-  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 75 проверок, скриншоты в research/round-14-results/R08/screens
+  NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 77 проверок, скриншоты в research/round-14-results/R08/screens
 
 Что считается (подробно — в начале ui/civic_akim/summary.py)
   - «Новые» за день — с полуночи до текущего момента; сравнение — с тем же отрезком неделю назад.
