@@ -53,7 +53,10 @@
 | R10 Приёмка | `tests/civic/R10/`, `tests/e2e/` |
 | R11 UX и казахский | `web/civic/ui-kit/`, `web/civic/i18n/`, `tests/civic/R11/` |
 | R12 Точность карты | `engine/civic_geo/`, `data/civic/astana/geo/`, `web/civic/map/`, `web/civic/editor/`, `tests/civic/R12/` |
-| LOCAL (Codex на ноутбуке) | `data/civic/astana/osm-objects/`, `data/civic/astana/nura-real/`, `web/vendor/three/` (первичная загрузка) |
+| R13 Прогноз (прототип) | `ml/civic_forecast/`, `ui/civic_forecast/`, `tests/civic/R13/` |
+| R14 Диплом и документация | `docs/birge/`, `docs/diploma/` |
+| R15 Ревью безопасности | `tests/civic/R15/` (чужой код — только patch в INTEGRATION.txt) |
+| LOCAL (Codex на ноутбуке) | `data/civic/astana/osm-objects/`, `data/civic/astana/nura-real/`, `data/civic/astana/weather/`, `web/vendor/three/` (первичная загрузка) |
 
 Заморожено в этом раунде: `engine/` (кроме `engine/civic_scenarios/` только чтение), `agent/`, `web/govtech/`, Шымкент, `legacy/`.
 
