@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Birge · стенд R09 · жалоба жителя</title>
+  <link rel="stylesheet" href="/vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="/civic/feedback/kit-fallback.css">
+  <link rel="stylesheet" href="/civic/feedback/complaint.css">
+  <style>
+    html, body { margin: 0; height: 100%; background: var(--c-paper); color: var(--c-ink); font-family: var(--font); }
+    .st-header { position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 20; display: flex; align-items: center;
+                 gap: 12px; padding: 0 16px; background: #fff; box-shadow: 0 1px 4px rgba(21,44,38,.12); box-sizing: border-box; }
+    .st-logo { font-weight: 800; font-size: 20px; }
+    .st-logo b { background: var(--c-accent); padding: 0 6px; border-radius: 6px; }
+    .st-spacer { flex: 1; }
+    .st-seg { display: inline-flex; border: 1px solid var(--c-line); border-radius: 12px; overflow: hidden; }
+    .st-seg button { min-height: 44px; min-width: 52px; border: 0; background: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+    .st-seg button[aria-pressed="true"] { background: var(--c-accent); }
+    .st-note { position: fixed; left: 12px; top: 76px; z-index: 10; background: #fff; border-radius: 12px; padding: 6px 10px;
+               font-size: 14px; color: var(--c-text-2); box-shadow: 0 1px 4px rgba(21,44,38,.12); max-width: calc(100vw - 48px);
+               pointer-events: none; }
+    #map { position: fixed; top: 64px; left: 0; right: 0; bottom: 0; }
+    @media (max-width: 1023px) {
+      .st-header { height: 56px; } #map { top: 56px; } .st-note { top: 64px; }
+      .bc-panel { --header-h: 56px; }
+      .st-mine-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    }
+  </style>
+</head>
+<body>
+  <header class="st-header">
+    <span class="st-logo"><b>Birge</b></span>
+    <span class="st-spacer"></span>
+    <button class="bk-btn bk-btn--ghost" type="button" id="st-mine"><span class="st-mine-label" data-k="mine.title"></span>
+      <span aria-hidden="true">☰</span></button>
+    <span class="st-seg" role="group" aria-label="Язык / Тіл">
+      <button type="button" data-lang="kk">ҚАЗ</button><button type="button" data-lang="ru">РУС</button>
+    </span>
+  </header>
+  <div id="map" aria-label="Карта"></div>
+  <p class="st-note" id="st-note">Стенд R09 · карта без подложки (в облаке нет тайлов): улицы — реальные из OSM</p>
+  <script src="/vendor/maplibre-gl.js"></script>
+  <script src="/civic/feedback/categories_v2.js"></script>
+  <script src="/civic/feedback/complaint-strings.js"></script>
+  <script src="/civic/feedback/complaint.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var map = new maplibregl.Map({
+        container: "map", center: [71.430, 51.100], zoom: 15, attributionControl: false,
+        style: { version: 8, sources: {}, layers: [{ id: "bg", type: "background", paint: { "background-color": "#eef1ea" } }] }
+      });
+      map.addControl(new maplibregl.AttributionControl({ customAttribution: "© OpenStreetMap contributors" }));
+      map.on("load", function () {
+        map.addSource("streets", { type: "geojson", data: "/stand/streets.geojson" });
+        map.addLayer({ id: "streets", type: "line", source: "streets",
+                       paint: { "line-color": ["case", ["get", "named"], "#ffffff", "#f7f8f4"],
+                                "line-width": ["case", ["get", "named"], 5, 2] } });
+        document.documentElement.setAttribute("data-map-ready", "1");
+      });
+      window.standMap = map;
+      window.standClicks = 0;   // проверка стенда: сколько нажатий карта реально получила
+      map.on("click", function () { window.standClicks++; });
+      window.standAdapter = BirgeComplaint.maplibreAdapter(map);
+      var ui = BirgeComplaint.mount({ root: document.body, map: window.standAdapter });
+      window.standUi = ui;
+      document.getElementById("st-mine").addEventListener("click", function () { ui.openMine(); });
+      function paintLang() {
+        var lang = BirgeComplaint.lang();
+        document.querySelectorAll("[data-lang]").forEach(function (b) {
+          b.setAttribute("aria-pressed", b.getAttribute("data-lang") === lang ? "true" : "false");
+        });
+        document.querySelectorAll("[data-k]").forEach(function (n) { n.textContent = BirgeComplaint.t(n.getAttribute("data-k")); });
+        document.getElementById("st-mine").setAttribute("aria-label", BirgeComplaint.t("mine.title"));
+        document.documentElement.lang = lang;
+      }
+      document.querySelectorAll("[data-lang]").forEach(function (b) {
+        b.addEventListener("click", function () { BirgeComplaint.setLang(b.getAttribute("data-lang")); });
+      });
+      window.addEventListener("birge:lang", paintLang);
+      paintLang();
+      window.standEvents = [];
+      window.addEventListener("birge:complaint", function (e) { window.standEvents.push(e.detail); });
+    })();
+  </script>
+</body>
+</html>

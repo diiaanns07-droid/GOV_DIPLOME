@@ -251,6 +251,7 @@
     var SRC = "bc-target";
     var picking = false, listeners = [];
     var empty = { type: "FeatureCollection", features: [] };
+    var current = empty;   // последняя подсветка (для проверок и повторной отрисовки после смены стиля)
 
     function ensureLayers() {
       if (!map.getSource || map.getSource(SRC)) return;
@@ -258,9 +259,13 @@
       // Выбор цели — цветом бренда (не цветом тепловой карты: он занят уровнем жалоб).
       map.addLayer({ id: "bc-area", type: "fill", source: SRC, filter: ["==", ["geometry-type"], "Polygon"],
                      paint: { "fill-color": "#176b4a", "fill-opacity": 0.22 } });
-      map.addLayer({ id: "bc-area-line", type: "line", source: SRC, filter: ["==", ["geometry-type"], "Polygon"],
-                     paint: { "line-color": "#176b4a", "line-width": 2,
-                              "line-dasharray": ["case", ["get", "approximate"], ["literal", [2, 2]], ["literal", [1, 0]]] } });
+      // Точная область — сплошной контур, «примерное место» — пунктир (dasharray не принимает выражения по данным).
+      map.addLayer({ id: "bc-area-line", type: "line", source: SRC,
+                     filter: ["all", ["==", ["geometry-type"], "Polygon"], ["!", ["get", "approximate"]]],
+                     paint: { "line-color": "#176b4a", "line-width": 2 } });
+      map.addLayer({ id: "bc-area-approx", type: "line", source: SRC,
+                     filter: ["all", ["==", ["geometry-type"], "Polygon"], ["get", "approximate"]],
+                     paint: { "line-color": "#176b4a", "line-width": 2, "line-dasharray": [2, 2] } });
       map.addLayer({ id: "bc-line-casing", type: "line", source: SRC, filter: ["==", ["geometry-type"], "LineString"],
                      layout: { "line-cap": "round", "line-join": "round" },
                      paint: { "line-color": "#ffffff", "line-width": 12 } });
@@ -278,8 +283,10 @@
     }
     map.on("click", onClick);
 
+    // isStyleLoaded() = false и пока грузится любой источник (например, слой улиц хоста), а «load»
+    // уже не повторится. Поэтому пробуем сразу и только при ошибке ждём, пока карта станет «idle».
     function whenReady(fn) {
-      if (map.isStyleLoaded && map.isStyleLoaded()) fn(); else map.once("load", fn);
+      try { fn(); } catch (e) { map.once("idle", function () { try { fn(); } catch (err) { console.error(err); } }); }
     }
 
     return {
@@ -292,22 +299,27 @@
         map.getCanvas().style.cursor = on ? "crosshair" : "";
       },
       highlight: function (target, geometry, point) {
+        var features = [];
+        if (geometry) features.push({ type: "Feature", geometry: geometry,
+                                      properties: { approximate: !!(target && target.approximate) } });
+        if (point) features.push({ type: "Feature", geometry: { type: "Point", coordinates: point },
+                                   properties: { pick: true } });
+        current = { type: "FeatureCollection", features: features };
+        var data = current;
         whenReady(function () {
           ensureLayers();
-          var features = [];
-          if (geometry) features.push({ type: "Feature", geometry: geometry,
-                                        properties: { approximate: !!(target && target.approximate) } });
-          if (point) features.push({ type: "Feature", geometry: { type: "Point", coordinates: point },
-                                     properties: { pick: true } });
-          map.getSource(SRC).setData({ type: "FeatureCollection", features: features });
+          if (data === current) map.getSource(SRC).setData(data);
         });
       },
       clear: function () {
+        current = empty;
         whenReady(function () { if (map.getSource(SRC)) map.getSource(SRC).setData(empty); });
       },
-      flyTo: function (point) {
-        map.easeTo({ center: point, zoom: Math.max(map.getZoom(), 16), duration: 600 });
+      flyTo: function (point, offset) {
+        // offset не сохраняется в камере карты (в отличие от padding) — чужой модуль карты не задеваем.
+        map.easeTo({ center: point, zoom: Math.max(map.getZoom(), 16), duration: 600, offset: offset || [0, 0] });
       },
+      current: function () { return current; },
       destroy: function () { map.off("click", onClick); listeners = []; }
     };
   }
@@ -421,13 +433,20 @@
       });
     }
 
+    // Сдвиг центра карты, чтобы точка была видна рядом с панелью, а не под ней.
+    function visibleOffset() {
+      var rect = els.panel.getBoundingClientRect();
+      if (els.panel.hidden || !rect.width) return [0, 0];
+      return mql && mql.matches ? [0, -rect.height / 2] : [-(rect.width + 12) / 2, 0];
+    }
+
     function locate() {
       if (!navigator.geolocation) { toast(t("complaint.step2.locate_failed")); return; }
       state.locating = true; render();
       navigator.geolocation.getCurrentPosition(function (pos) {
         state.locating = false;
         var point = [pos.coords.longitude, pos.coords.latitude];
-        if (map.flyTo) map.flyTo(point);
+        if (map.flyTo) map.flyTo(point, visibleOffset());
         pickPoint(point);
       }, function () {
         state.locating = false; render();
@@ -448,16 +467,16 @@
       }
       if (!state.candidates) return;
       var first = state.candidates[0];
-      body.appendChild(h("h3", { "class": "bc-question" },
-        first ? t("complaint.step2.question", { label: targetLabel(first.target) }) : t("complaint.step2.choose")));
+      // Подписи целей приходят от R12 с заглавной буквы («Остановка «…»»), поэтому вопрос без вставки подписи.
+      body.appendChild(h("h3", { "class": "bc-question" }, first ? t("complaint.step2.question") : t("complaint.step2.choose")));
       var list = h("div", { "class": "bc-options", role: "group" });
       state.candidates.forEach(function (candidate, index) {
-        var meters = typeof candidate.distance_m === "number" ? Math.round(candidate.distance_m) : null;
+        // «в 0 м» выглядит странно: расстояние показываем от 5 м.
+        var meters = typeof candidate.distance_m === "number" && candidate.distance_m >= 5 ? Math.round(candidate.distance_m) : null;
         list.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-option" + (index === 0 ? " bc-option--first" : ""),
                                        type: "button", onclick: function () { chooseCandidate(candidate); } },
           [icon(candidate.target.kind === "segment" ? "road" : (candidate.target.kind === "area" ? "trees" : "pin")),
-           h("span", { "class": "bc-option__label" },
-             index === 0 ? t("complaint.step2.yes", { label: targetLabel(candidate.target) }) : targetLabel(candidate.target)),
+           h("span", { "class": "bc-option__label" }, targetLabel(candidate.target)),
            meters !== null ? h("span", { "class": "bc-option__meta" }, t("complaint.step2.distance", { n: meters })) : null]));
       });
       list.appendChild(h("button", { "class": "bk-btn bk-btn--block bk-btn--ghost bc-option", type: "button",
@@ -491,6 +510,7 @@
             state.gridOpen = true;
           }
           renderCategory();
+          updateSendButton();
         });
       }, CLASSIFY_DEBOUNCE_MS);
     }
@@ -630,7 +650,7 @@
       body.appendChild(h("button", { "class": "bk-btn bk-btn--primary bk-btn--block", type: "button",
                                      onclick: function (e) { metoo(match, e.currentTarget); } },
         [icon("users"), h("span", {}, t("complaint.step4.metoo"))]));
-      body.appendChild(h("button", { "class": "bk-btn bk-btn--block", type: "button", onclick: function () { send(); } },
+      body.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-different", type: "button", onclick: function () { send(); } },
         t("complaint.step4.different")));
     }
 
@@ -811,9 +831,13 @@
       setPicking(!mine && state.step === 2);
       if (state.lastFocusStep !== panel.getAttribute("data-step")) {
         state.lastFocusStep = panel.getAttribute("data-step");
-        var heading = panel.querySelector("#bc-title");
-        if (heading) heading.focus({ preventScroll: true });
+        focusTitle();
       }
+    }
+
+    function focusTitle() {
+      var heading = els.panel.querySelector("#bc-title");
+      if (heading && !els.panel.hidden) heading.focus({ preventScroll: true });
     }
 
     function back() {
@@ -828,21 +852,24 @@
       state.view = "wizard";
       if (state.step === 5) state = freshState();
       els.textarea = null;
+      // Сначала рисуем (высота шторки уже нужная), потом показываем — без прыжка «полная → половина».
+      render();
       els.panel.hidden = false;
       els.fab.hidden = true;
       document.documentElement.classList.add("bc-open");
-      render();
+      focusTitle();
     }
 
     function openMine() {
       if (!state) state = freshState();
       if (state.step === 5) { var keep = freshState(); keep.mine = null; state = keep; }
       state.view = "mine";
+      if (map.clear) map.clear();
+      loadMine();
       els.panel.hidden = false;
       els.fab.hidden = true;
-      if (map.clear) map.clear();
       document.documentElement.classList.add("bc-open");
-      loadMine();
+      focusTitle();
     }
 
     function close() {
