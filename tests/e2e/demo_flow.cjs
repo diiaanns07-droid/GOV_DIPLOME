@@ -151,6 +151,11 @@ async function apiFlow(A, staffInfo) {
   const d0 = A.data(c0) || {};
   add("API", "2", "текст DEMO_SCRIPT (смесь kk/ru) → «Освещение» с подсказкой", c0.status === 200 && d0.category === "lighting" && d0.suggest !== false ? "PASS" : "FAIL",
     { status: c0.status, category: d0.category, score: d0.score, suggest: d0.suggest, model: d0.model_version });
+  // Страница при загрузке запрашивает /heat — только после этого шлюз подключает /similar к жалобам R09 (B-032).
+  const sCold = await A.call("POST", "/api/civic/v2/similar", { text: demoText, point: STOP.point, days: 30 });
+  add("API", "2", "/similar сразу после запуска сервера (до первой загрузки страницы) отвечает 200", sCold.status === 200 ? "PASS" : "FAIL",
+    { status: sCold.status, error: sCold.body && sCold.body.error });
+  await A.call("GET", "/api/civic/v2/heat?days=30&zoom=12");
   const s0 = await A.call("POST", "/api/civic/v2/similar", { text: demoText, point: STOP.point, days: 30 });
   const m0 = (A.data(s0) || {}).matches || [];
   add("API", "2", "чистая база демо: /similar по тексту DEMO_SCRIPT у остановки находит похожие (иначе «Я тоже» не будет)",
@@ -432,9 +437,10 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   if (picked) {
     const dlg = (await firstVisible(page.getByRole("dialog"))) || page;
     const box = await firstVisible(dlg.getByRole("textbox"));
-    if (box) await box.fill(lang === "kk" ? "Аялдамада павильон сынған, шатыры жоқ" : "На остановке сломан павильон, нет крыши").catch(() => null);
+    // Текст ведущего из DEMO_SCRIPT (смесь kk/ru) — ждём «Освещение», как обещает сценарий.
+    if (box) await box.fill("Аялдамада жарық жоқ, вечером на остановке темно").catch(() => null);
     await sleep(3000);
-    const cat = T(dict, "cat.transport", lang === "kk" ? "Аялдамалар мен көлік" : "Остановки и транспорт");
+    const cat = T(dict, "cat.lighting", lang === "kk" ? "Жарықтандыру" : "Освещение");
     const sugg = T(dict, "complaint.step3.suggested", lang === "kk" ? "Ұқсайды:" : "Похоже на:");
     const suggested = await visibleText(dlg, textRe(sugg));
     const catShown = await visibleText(dlg, new RegExp(esc(cat), "i"));
