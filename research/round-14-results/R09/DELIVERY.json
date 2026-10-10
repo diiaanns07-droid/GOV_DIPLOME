@@ -21,10 +21,10 @@
    "how": "git checkout 933cd90 -- ui/civic_feedback web/civic/feedback (побайтно, v1 не менялся)"
   }
  },
- "code_sha": "b6cadb35ed21d76a13b35908334ea35fdd434123",
- "tested_sha": "b6cadb35ed21d76a13b35908334ea35fdd434123",
+ "code_sha": "f4fb7b9f8de211ed24e75eca001933b9a1f6b2cb",
+ "tested_sha": "f4fb7b9f8de211ed24e75eca001933b9a1f6b2cb",
  "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22, Playwright + Chromium headless (программный WebGL), без интернета",
- "push_status": "OK (код и проверки b6cadb3; этот файл — следующим коммитом, SHA в STATUS.md)",
+ "push_status": "OK (код и проверки f4fb7b9; этот файл — следующим коммитом, SHA в STATUS.md)",
  "changed_paths": {
   "code_and_tests": [
    "tests/civic/R09/app_demo_r09.cjs",
@@ -195,6 +195,11 @@
    "detail": "15/15 и 25/25"
   },
   {
+   "name": "тот же FINAL + R09: приёмка R10 tests/e2e/demo_flow.cjs (R10 3fa9315), рядом — чистый 4ca9aef",
+   "status": "PASS (без новых FAIL)",
+   "detail": "131/5/0 и на чистом FINAL, и с R09 этой ночи; 5 FAIL одинаковые и не R09 (шаг 6 «зелёным» — R07/R01, строка ҚАЗ)"
+  },
+  {
    "name": "tests/civic/R09/test_r09v2_place_count.py",
    "status": "PASS",
    "detail": "3 passed: люди по месту и категории в «Мои обращения» (place_reporters), без отклонённых, дублей и старых"
@@ -213,11 +218,6 @@
    "name": "та же сборка ef1ef44: pytest tests/civic/R09 tests/civic/R15 tests/civic/R01",
    "status": "PASS",
    "detail": "732 passed, 1 skipped"
-  },
-  {
-   "name": "та же сборка ef1ef44: приёмка R10 tests/e2e/demo_flow.cjs (R10 068f36e)",
-   "status": "PASS с оговоркой",
-   "detail": "107/7/4 против 114/4/0 без демо-жалоб R09: новые FAIL/NOT_RUN — шаг 6 UI, из-за порядка в тесте (слой API закрывает свою жалобу у той же остановки до UI). В настоящем демо шаг 6 проходит (app_demo_r09, 1366-kk). Остальные FAIL — B-032 (R01) и B-021 (R12/R01). Подробно — INTEGRATION.txt, R10."
   },
   {
    "name": "node tests/civic/R09/app_demo_r09.cjs на сборке R01 13ae790 + R09 + r01_seed_r09_demo.patch",
