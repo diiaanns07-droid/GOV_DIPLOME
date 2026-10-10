@@ -239,6 +239,8 @@ class AkimService:
             raise AkimError("date", "date — дата вида 2026-10-12")
         if day > today:
             raise AkimError("date", "картина дня ещё не наступила: выберите сегодня или прошлый день")
+        if isinstance(district, str):
+            district = district.strip().lower()  # «Nura», « nura » из адресной строки — тот же район
         if district in (None, "", "all"):
             district = None
         elif district not in districts():

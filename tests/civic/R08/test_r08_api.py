@@ -53,3 +53,11 @@ def test_no_resident_texts_in_answer():
     status, body = handle_get(PATH, {}, service=service(records))
     dump = json.dumps(body, ensure_ascii=False)
     assert status == 200 and "секретный текст" not in dump and "device" not in dump
+
+
+def test_district_is_case_and_space_insensitive():
+    svc = service([rec(1, age_days=0.1)])
+    for value in ("Nura", " nura ", "NURA"):
+        status, body = handle_get(PATH, {"district": value}, service=svc)
+        assert status == 200 and body["district"]["id"] == "nura", value
+    assert handle_get(PATH, {"district": "ALL"}, service=svc)[1]["district"] is None
