@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-10T14:32:39.689Z",
+ "generated_at": "2026-10-10T15:06:22.787Z",
  "stand": {
   "url": "http://127.0.0.1:8616/civic/proposals/demo.html"
  },
@@ -23,7 +23,7 @@
    "id": "list_sends_device_id_no_bbox",
    "status": "PASS",
    "detail": [
-    "/api/civic/v2/proposals?device_id=dev-17462e37467f0c0e26d3cae395b486d4"
+    "/api/civic/v2/proposals?device_id=dev-0c1db580d9c7c4a9bb797508f977889e"
    ]
   },
   {
@@ -65,7 +65,7 @@
    "id": "created_on_server_with_year_and_rotation",
    "status": "PASS",
    "detail": {
-    "id": "p-b55c7f6575ea",
+    "id": "p-23200f9cf279",
     "kind": "stop",
     "geometry": {
      "type": "Point",
@@ -86,7 +86,7 @@
     "district": "nura",
     "near_street": null,
     "target": null,
-    "created_at": "2026-10-10T14:32:19+00:00",
+    "created_at": "2026-10-10T15:06:03+00:00",
     "demo": false
    }
   },
@@ -98,7 +98,7 @@
   {
    "id": "vote_through_r06_card_with_device_id",
    "status": "PASS",
-   "detail": "{\"value\":1,\"device_id\":\"dev-e049df818d9f38dbf3fba0edc88b79c6\"}"
+   "detail": "{\"value\":1,\"device_id\":\"dev-9b823eae3366c1f00015f96b1a2d11d9\"}"
   },
   {
    "id": "vote_synced_to_3d_object",
@@ -114,8 +114,8 @@
    "detail": [
     "POST /api/civic/v1/session/login",
     "POST /api/civic/v2/proposals",
-    "POST /api/civic/v2/proposals/p-b55c7f6575ea/vote",
-    "POST /api/civic/v2/proposals/p-b55c7f6575ea/withdraw"
+    "POST /api/civic/v2/proposals/p-23200f9cf279/vote",
+    "POST /api/civic/v2/proposals/p-23200f9cf279/withdraw"
    ]
   },
   {
