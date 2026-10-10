@@ -60,6 +60,8 @@ async function layoutProblems(page) {
     for (const el of all) {
       const cs = getComputedStyle(el);
       if (cs.display === "none" || cs.visibility === "hidden") continue;
+      const box = el.getBoundingClientRect();
+      if (box.width <= 1 && box.height <= 1) continue; // только для экранного диктора — на экране не видно
       const hasText = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
       if (hasText && parseFloat(cs.fontSize) < 14) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
       if (hasText && el.scrollWidth > el.clientWidth + 1 && cs.overflow !== "visible" && el.clientWidth > 0)
