@@ -1,18 +1,22 @@
 {
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
- "delivery": 6,
- "for_build": "FINAL (R01 claude/sharp-dijkstra-0t87gl @ 2b9e837 ещё содержит поставку 1 = b0353ee)",
+ "delivery": 7,
+ "for_build": "FINAL (R01 claude/sharp-dijkstra-0t87gl @ 4ca9aef содержит R05 f946157)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "38cfc4a",
- "tested_sha": "38cfc4a",
- "tested_note": "Код 38cfc4a отличается от a9d256d (полный прогон: browser 41 PASS / 1 NOT_RUN, R11 д. 3 29/29, R11 measure 24/24, R06 18/18 + 16/16 + 17/17, R12 5/5) только строками names_kk в web/civic/build3d/data/nura-streets.json (git diff a9d256d 38cfc4a -- web/: 1 строка). На 38cfc4a заново: Python 12/12, Node 32/32, R10 accuracy 8/8, browser kk-проверки 4/4, в FINAL-кандидате R01 0a7a346 + proposed_r01_final.patch: r14_b2.cjs R01 25/25, app_b2_smoke 15/15, карточка kk «Жанында: Керей және Жәнібек хандар көшесі» 1366/375.",
+ "code_sha": "05f8e52",
+ "tested_sha": "05f8e52",
+ "tested_note": "На 05f8e52 полностью: browser_check 42 PASS / 1 NOT_RUN (GPU), R11 день 3 29/29, Node 32/32, Python 12/12; внутри R01 FINAL 4ca9aef + proposed_r01_final.patch: r14_shell.cjs R01 38/38 три раза подряд, r14_b2.cjs R01 25/25, app_b2_smoke 16/16. Стенды R06 (18/18, 16/16, 17/17), R11 measure (24/24) и R12 (5/5) — последний прогон на a9d256d; с тех пор в web/ — строки names_kk (38cfc4a) и запись ошибок в консоль (05f8e52), клиент API и вид экранов не менялись.",
  "previous_delivery": {
-  "code_sha": "a9d256d",
-  "delivery_commit": "7323f61",
+  "code_sha": "38cfc4a",
+  "delivery_commit": "7c6bbce",
   "before": [
+   {
+    "code_sha": "a9d256d",
+    "delivery_commit": "7323f61"
+   },
    {
     "code_sha": "f946157",
     "delivery_commit": "5095b1b"
@@ -155,7 +159,8 @@
   "R01": "B2 §9: «setRole/update» — сделано (birge:mode сам, setMode, update({mode,dock,visible})); адаптер build3dFetch и пересоздание больше не нужны — патч proposed_r01_b2.patch; r14_b2.cjs R01: 20/20 с патчем, 18/20 без (ожидания теста о b0353ee)",
   "R06": "клиент на настоящем контракте обеих поставок: 3d10f7d/7031afa (базовые поля, 422 → повтор) и b42e790 (near_street, target, restore по id с голосами, {item, proposal}); DELETE — запасной путь после withdraw; карточка R06 внутри панели 3D",
   "R11": "пп. 20–26 дня 3; 3 новых ключа на вычитку; правки kk дня 4 внесены",
-  "R12": "маршруты street-snap/street-segment используются (освещение по всему городу), подписи безымянных участков — их label_ru/kk; формат yard-<osm id> совпадает; просьба о событии civic-build3d:tool снята (в B2 работает onToolChange → setInteractionEnabled)"
+  "R12": "маршруты street-snap/street-segment используются (освещение по всему городу), подписи безымянных участков — их label_ru/kk; формат yard-<osm id> совпадает; просьба о событии civic-build3d:tool снята (в B2 работает onToolChange → setInteractionEnabled)",
+  "R01_I05": "BUGS.md I-05 (мелочь): «[build3d] предложения не загрузились TypeError: Failed to fetch» при перезагрузке — исправлено в 05f8e52 (pagehide → без console.error и без тоста; настоящий обрыв — console.warn и тост «Повторить»)."
  },
  "tests": {
   "node_core_models": {
@@ -168,7 +173,7 @@
   },
   "browser_check": {
    "status": "PASS",
-   "detail": "41 PASS, 0 FAIL, 1 NOT_RUN — runs/browser_check.json (ui-kit/i18n R11 @ 8451468) — прогон на a9d256d (см. tested_note)"
+   "detail": "42 PASS, 0 FAIL, 1 NOT_RUN — runs/browser_check.json (ui-kit/i18n R11 @ 8451468), прогон на 05f8e52"
   },
   "browser_checks": {
    "load_auto_falls_back_to_local_store": "PASS",
@@ -208,6 +213,7 @@
    "kk_street_names_from_osm_card_and_lighting_hint_1366_375": "PASS",
    "kk_no_russian_street_names_in_card_and_hint": "PASS",
    "rate_limit_429_says_too_many_without_retry_ru_kk": "PASS",
+   "reload_during_list_request_logs_no_console_error": "PASS",
    "r01_map_getter_waits_for_map": "PASS",
    "lighting_outside_nura_without_r12_says_so": "PASS",
    "screenshots_1366_375_pitch_0_60_ru_kk": "PASS",
@@ -334,6 +340,12 @@
    "screens/final_b033_1366_kk_card.png",
    "screens/final_b033_375_kk_card.png",
    "screens/final_kk_resident_card_1366.png"
+  ],
+  "night_8_network_toast": [
+   "screens/net_toast_1366_ru.png",
+   "screens/net_toast_1366_kk.png",
+   "screens/net_toast_375_ru.png",
+   "screens/net_toast_375_kk.png"
   ]
  },
  "done_criteria": {
@@ -354,7 +366,7 @@
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: в FINAL 0a7a346 заменить web/civic/build3d на 38cfc4a и применить proposed_r01_final.patch (INTEGRATION §1.2б); R11: ключи build3d.card.segment_plain, build3d.street.this, common.error.too_many; R06: заголовок нового проекта из near_street (R11 ночь 7 п. 3); LOCAL: LOCAL-R05-1/2/3.",
+ "next_step": "R01: в FINAL 4ca9aef заменить web/civic/build3d на 05f8e52 и применить proposed_r01_final.patch (INTEGRATION §1.2б); R11: ключи build3d.cluster, build3d.cluster.open, build3d.card.segment_plain, build3d.street.this, common.error.too_many; R06: заголовок нового проекта из near_street (R11 ночь 7 п. 3); LOCAL: LOCAL-R05-1/2/3.",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -439,19 +451,17 @@
   "r01_patch_for_head": "research/round-14-results/R05/proposed_r01_b3.patch (к 2b9e837 и 13ae790; git apply --check OK)"
  },
  "final_candidate": {
-  "r01": "claude/sharp-dijkstra-0t87gl @ 0a7a346 (FINAL night 2c: R05 fc03e19)",
-  "take": "web/civic/build3d/ из 38cfc4a + research/round-14-results/R05/proposed_r01_final.patch (одна строка birge.css: легенда R07 скрыта под карточкой 3D; git apply --check на 0a7a346 и ef1ef44: OK)",
+  "r01": "claude/sharp-dijkstra-0t87gl @ 4ca9aef (FINAL night 3a: R05 f946157)",
+  "take": "web/civic/build3d/ из 05f8e52 + research/round-14-results/R05/proposed_r01_final.patch (одна строка birge.css: легенда R07 скрыта под карточкой 3D; git apply --check на 4ca9aef: OK)",
   "closes_in_final": [
+   "R01 I-05 (console.error при перезагрузке)",
    "регистр kk-названий улиц (R11 ночь 7 п. 2)",
-   "опоры освещения у края проезжей части",
-   "в kk улица никогда не по-русски (правило R07)",
-   "429 — понятный текст",
    "R11 ночь B3 п. 9 (легенда под карточкой)"
   ],
   "checked": {
-   "r01_r14_b2": "25/25 PASS — runs/r01_final_0a7a346_with_patch.txt",
-   "r05_shell_smoke": "15/15 PASS — runs/app_b2_smoke.json",
-   "b033_kk_card": "PASS 1366/375 — runs/final_b033_kk.json"
+   "r01_r14_shell": "38/38 PASS ×3, сообщений build3d в консоли 0 — runs/r01_final_4ca9aef_with_patch.txt",
+   "r01_r14_b2": "25/25 PASS — runs/r01_final_4ca9aef_with_patch.txt",
+   "r05_shell_smoke": "16/16 PASS (в т. ч. перезагрузка во время запроса списка, 1366 ru и 375 kk) — runs/app_b2_smoke.json"
   }
  },
  "night_4": {
@@ -478,5 +488,21 @@
    }
   },
   "for_R06": "R11 ночь 7 п. 3 (заголовок нового проекта «Гүлзар» одним словом) — R06: near_street приходит от R05 в теле POST и хранится (b42e790+), из него можно собрать заголовок «вид · улица»."
+ },
+ "night_8": {
+  "sources_checked": "R10 b6303bb, R11 61cfea6, R15 8b3717a, Codex LOCAL_B2 a38da11 — новых замечаний к R05 нет; R01 4ca9aef (взял R05 f946157, без 38cfc4a и патча легенды), BUGS.md I-05 — R05",
+  "fixed": {
+   "R01_I05": {
+    "status": "FIXED",
+    "detail": "перезагрузка/переход обрывают запросы старой страницы — по pagehide модуль молчит (нет console.error и тоста); обрыв связи без ухода — тост «Повторить» и console.warn",
+    "check": "browser_check reload_during_list_request_logs_no_console_error (1366/375 × ru/kk; FAIL на 38cfc4a, PASS на 05f8e52); app_b2_smoke shell_reload_during_list_request_no_console_error; r14_shell.cjs R01 3/3",
+    "screens": [
+     "screens/net_toast_1366_ru.png",
+     "screens/net_toast_1366_kk.png",
+     "screens/net_toast_375_ru.png",
+     "screens/net_toast_375_kk.png"
+    ]
+   }
+  }
  }
 }

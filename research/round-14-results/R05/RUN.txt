@@ -34,8 +34,8 @@ R05 · раунд 14 · 3D-превью предложений — как зап
    открывает карточку и голосует (один голос с устройства). После перезагрузки всё на месте, без повторной анимации.
 
 3. ПРОВЕРКИ (из корня репозитория; Node 20+, Python 3, пакет playwright и Chromium)
-   node --test tests/civic/R05/build3d/test_core.mjs tests/civic/R05/build3d/test_models.mjs      (29)
-   python -m unittest discover -s tests/civic/R05/build3d -p "test_*.py"                           (10)
+   node --test tests/civic/R05/build3d/test_core.mjs tests/civic/R05/build3d/test_models.mjs      (32)
+   python -m unittest discover -s tests/civic/R05/build3d -p "test_*.py"                           (12)
    node tests/civic/R05/build3d/browser_check.mjs [--kit <выгрузка R11>] [--no-shots] [--only <regexp>]
         → runs/browser_check.json, screens/*.png (сам поднимает сервер; --kit — ui-kit/i18n из ветки R11)
    node tests/civic/R05/build3d/ux_day3_check.mjs [--kit <выгрузка R11>]

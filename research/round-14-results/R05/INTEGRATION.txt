@@ -1,7 +1,18 @@
-R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14, поставка 6 (ночь 5, для FINAL)
+R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14, поставка 7 (ночь 8, для FINAL)
 3D-превью предложений: акимат ставит объект на карту, он «строится», жители голосуют
 
-Источник: ветка claude/r14-R05. Код — code_sha из DELIVERY.json (38cfc4a), проверен на нём же (полный прогон — на a9d256d, разница — 1 строка данных).
+Источник: ветка claude/r14-R05. Код — code_sha из DELIVERY.json (05f8e52), проверен на нём же.
+
+НОЧЬ 8 (поставка 7) — что нового с поставки 6 (38cfc4a):
+- R01 BUGS I-05: перезагрузка страницы обрывает запрос списка — модуль больше не пишет «[build3d] предложения не
+  загрузились TypeError: Failed to fetch». По pagehide он молчит (нет console.error и тоста); настоящий обрыв связи без
+  ухода со страницы — тост «Повторить» и console.warn. Проверка: browser_check reload_during_list_request_logs_no_console_error
+  (1366/375 × ru/kk, до правки FAIL), app_b2_smoke п. 9.
+- R01: FINAL 4ca9aef (в нём R05 f946157) — заменить web/civic/build3d на 05f8e52 и применить proposed_r01_final.patch
+  (git apply --check на 4ca9aef: OK). Проверено там же: ваш r14_shell.cjs 38/38 три раза подряд без сообщений build3d,
+  r14_b2.cjs 25/25, мой smoke 16/16 (runs/r01_final_4ca9aef_with_patch.txt).
+- I-05 в вашей голове 4ca9aef с R05 f946157 у меня не воспроизвёлся (0 из 15 перезагрузок): ваш клиент v2 уже отдаёт
+  «network». Правка R05 — на случай другого клиента и обрыва в другой момент; на демо-странице R05 воспроизводится всегда.
 
 НОЧЬ 5 (поставка 6) — что нового с поставки 5 (a9d256d):
 - Регистр казахских названий улиц из OSM (R11 ночь 7 п. 2): «Керей және Жәнібек хандар көшесі», «Қабанбай батыр даңғылы».
@@ -72,11 +83,12 @@ web/civic/build3d/demo.html и data/demo-basemap.json — только для д
     tests/civic/R01/browser/r14_b2.cjs — ожидания под поставку 2: у жителя dock "hint" или "empty" (не только "empty");
       «За» — в карточке R06 (.r06-vote__btn[data-value="1"]) или в своей ([data-action=vote-up]); «Поставить» ждёт
       успешный POST (с R06 7031afa первый POST с контекстом 3D получает 422, R05 повторяет базовым телом).
-1.2б FINAL-кандидат R01 ef1ef44 (R05 169c56b, мой патч b3 перенесён вами по смыслу): заменить web/civic/build3d/ на
-    a9d256d (поставка 5) и применить research/round-14-results/R05/proposed_r01_final.patch — одна строка birge.css (легенда R07
-    скрыта, пока открыта карточка 3D; R11 ночь B3 п. 9). git apply --check на ef1ef44: OK. Проверено на ef1ef44 + a9d256d +
-    patch: ваш r14_b2.cjs 25/25 (runs/r01_final_ef1ef44_with_patch.txt), мой app_b2_smoke 15/15, B-033 в kk-карточке —
-    «Жанында: Керей Және Жәнібек Хандар көшесі» 1366/375 (runs/final_b033_kk.json). Закрывает R10 B-007, B-008, B-033.
+1.2б FINAL R01 4ca9aef (R05 f946157): заменить web/civic/build3d/ на 05f8e52 (поставка 7) и применить
+    research/round-14-results/R05/proposed_r01_final.patch — одна строка birge.css (легенда R07 скрыта, пока открыта
+    карточка 3D; R11 ночь B3 п. 9). git apply --check на 4ca9aef: OK (и на 0a7a346, ef1ef44). Проверено на 4ca9aef + 05f8e52 +
+    патч: ваш r14_shell.cjs 38/38 ×3, r14_b2.cjs 25/25, мой app_b2_smoke 16/16 (runs/r01_final_4ca9aef_with_patch.txt).
+    Что добавится к f946157: регистр kk-названий улиц (38cfc4a), без console.error при перезагрузке (I-05), легенда (патч).
+    Раньше: ef1ef44 + a9d256d — 25/25 и 15/15, B-033 kk-карточка (runs/final_b033_kk.json); закрыты R10 B-007, B-008, B-033.
 1.2а На голове R01 2b9e837 и 13ae790 (B3 + ночь 1; файлы оболочки одинаковые) — patch
     research/round-14-results/R05/proposed_r01_b3.patch (git apply --check на обеих: OK):
     shell.js — убрать остаток адаптера build3dFetch (DELETE→withdraw и device_id R05 делает сам), mount({mode, api:
