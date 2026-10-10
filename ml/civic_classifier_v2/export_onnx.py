@@ -44,13 +44,20 @@ FALLBACK_TEXTS = [
 ]
 
 
-def export_fp32(model_dir: Path, onnx_path: Path) -> dict:
+def export_fp32(model_dir: Path, onnx_path: Path, exporter: str = "auto") -> dict:
     """PyTorch -> ONNX. Сначала классический экспортёр (dynamo=False), при ошибке — dynamo."""
     import torch
     from ml.civic_classifier_v2 import transformer as T
 
     tm = T.load(model_dir, device="cpu")
-    model = tm.model.float().eval()
+    try:
+        # «eager»-внимание трассируется без условий по форме входа (у sdpa в трассировке остаются
+        # константы); веса те же, результат сверяется с PyTorch ниже.
+        from transformers import AutoModelForSequenceClassification
+        model = AutoModelForSequenceClassification.from_pretrained(model_dir, attn_implementation="eager")
+    except (TypeError, ValueError):
+        model = tm.model
+    model = model.float().eval()
 
     class Wrapper(torch.nn.Module):
         def __init__(self, m):
@@ -68,7 +75,8 @@ def export_fp32(model_dir: Path, onnx_path: Path) -> dict:
                                 "logits": {0: "batch"}}, opset_version=OPSET, do_constant_folding=True)
     has_dynamo = "dynamo" in inspect.signature(torch.onnx.export).parameters
     errors = []
-    for use_dynamo in ([False, True] if has_dynamo else [None]):
+    order = {"auto": [False, True], "torchscript": [False], "dynamo": [True]}[exporter] if has_dynamo else [None]
+    for use_dynamo in order:
         try:
             extra = {} if use_dynamo is None else {"dynamo": use_dynamo}
             if use_dynamo:
@@ -86,22 +94,35 @@ def export_fp32(model_dir: Path, onnx_path: Path) -> dict:
     raise RuntimeError("экспорт ONNX не удался: " + " | ".join(errors))
 
 
+def _clean_copy(src: Path, dst: Path) -> None:
+    """Копия графа без value_info: dynamo-экспортёр сохраняет формы промежуточных тензоров, и вывод форм
+    при квантовании на них спотыкается («Inferred shape and existing shape differ»)."""
+    import onnx
+    model = onnx.load(str(src))
+    del model.graph.value_info[:]
+    big = model.ByteSize() > 1_800_000_000  # protobuf ограничен 2 ГБ — большие веса во внешний файл
+    onnx.save(model, str(dst), save_as_external_data=big, location=dst.name + ".data" if big else None)
+
+
 def quantize(fp32: Path, int8: Path) -> dict:
     from onnxruntime.quantization import QuantType, quantize_dynamic
     import onnxruntime
-    src = fp32
+    clean = fp32.with_name("model.clean.onnx")
     pre = fp32.with_name("model.pre.onnx")
+    _clean_copy(fp32, clean)
+    src, preprocessed = clean, False
     try:  # рекомендуемая предобработка (вывод форм); не обязательна
         from onnxruntime.quantization.shape_inference import quant_pre_process
-        quant_pre_process(str(fp32), str(pre), skip_symbolic_shape=True)
-        src = pre
+        quant_pre_process(str(clean), str(pre), skip_symbolic_shape=True)
+        src, preprocessed = pre, True
     except Exception:
         pass
     quantize_dynamic(str(src), str(int8), weight_type=QuantType.QInt8)
-    if pre.exists():
-        pre.unlink()
+    for f in (clean, pre, clean.with_name(clean.name + ".data")):
+        if f.exists():
+            f.unlink()
     return {"method": "onnxruntime.quantization.quantize_dynamic", "weight_type": "QInt8",
-            "onnxruntime": onnxruntime.__version__}
+            "preprocessed": preprocessed, "onnxruntime": onnxruntime.__version__}
 
 
 def load_texts(path: str | None, n: int) -> tuple[list[str], str]:
@@ -161,6 +182,8 @@ def main(argv=None) -> int:
     ap.add_argument("--min-int8-agreement", type=float, default=0.97)
     ap.add_argument("--max-mean-ms", type=float, default=50.0)
     ap.add_argument("--keep-fp32", action="store_true", help="оставить model.onnx (fp32) рядом с int8")
+    ap.add_argument("--exporter", choices=("auto", "torchscript", "dynamo"), default="auto",
+                    help="auto: классический, при ошибке — dynamo (для новых версий torch)")
     ap.add_argument("--results", default=str(RESULTS_DIR / "onnx_export.json"))
     args = ap.parse_args(argv)
 
@@ -173,7 +196,7 @@ def main(argv=None) -> int:
     fp32, int8 = out / "model.onnx", out / "model.int8.onnx"
 
     t0 = time.time()
-    report["export"] = export_fp32(model_dir, fp32)
+    report["export"] = export_fp32(model_dir, fp32, args.exporter)
     report["export"]["seconds"] = round(time.time() - t0, 1)
     t0 = time.time()
     report["quantize"] = quantize(fp32, int8)
@@ -184,7 +207,9 @@ def main(argv=None) -> int:
     meta = json.loads((model_dir / META_NAME).read_text(encoding="utf-8"))
     meta["onnx"] = {"fp32": fp32.name, "int8": int8.name, "opset": OPSET, "exported_from": model_dir.name}
     (out / META_NAME).write_text(json.dumps(meta, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    report["sizes_mb"] = {f.name: round(f.stat().st_size / 2 ** 20, 1) for f in (fp32, int8)}
+    # dynamo-экспортёр кладёт веса fp32 во внешний файл model.onnx.data — учитываем его в размере.
+    report["sizes_mb"] = {f.name: round(sum(x.stat().st_size for x in (f, f.with_name(f.name + ".data"))
+                                            if x.exists()) / 2 ** 20, 1) for f in (fp32, int8)}
     report["model_version"] = meta.get("model_version")
 
     texts, source = load_texts(args.texts, args.n)
@@ -199,8 +224,12 @@ def main(argv=None) -> int:
     p8 = clf8.predict_proba(texts)
     report["check"]["onnx_fp32_vs_torch"] = compare(ref, p32)
     report["check"]["onnx_int8_vs_torch"] = compare(ref, p8)
-    ok32 = (report["check"]["onnx_fp32_vs_torch"]["argmax_agreement"] == 1.0
-            and report["check"]["onnx_fp32_vs_torch"]["max_abs_diff_prob"] < 1e-3)
+    # Как в /classify: по одному тексту без паддинга (выше — пачки по 32 с паддингом).
+    k1 = min(50, len(texts))
+    p32_single = np.vstack([tmp_fp32.predict_proba([t]) for t in texts[:k1]])
+    report["check"]["onnx_fp32_vs_torch_batch1"] = compare(ref[:k1], p32_single)
+    ok32 = all(report["check"][k]["argmax_agreement"] == 1.0 and report["check"][k]["max_abs_diff_prob"] < 1e-3
+               for k in ("onnx_fp32_vs_torch", "onnx_fp32_vs_torch_batch1"))
     ok8 = report["check"]["onnx_int8_vs_torch"]["argmax_agreement"] >= args.min_int8_agreement
 
     cpu = {"machine": platform.machine(), "processor": platform.processor() or platform.machine(),
@@ -214,7 +243,9 @@ def main(argv=None) -> int:
                          "int8_agreement": "PASS" if ok8 else "FAIL",
                          f"int8_mean_lt_{int(args.max_mean_ms)}ms": "PASS" if fast else "FAIL"}
     if not args.keep_fp32:
-        fp32.unlink()
+        for f in (fp32, fp32.with_name(fp32.name + ".data")):
+            if f.exists():
+                f.unlink()
         report["note"] = "model.onnx (fp32) удалён после проверки; R04 использует model.int8.onnx"
     text = json.dumps(report, ensure_ascii=False, indent=1)
     (out / "export_report.json").write_text(text + "\n", encoding="utf-8")
