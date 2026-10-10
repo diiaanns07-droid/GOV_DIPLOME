@@ -5,17 +5,17 @@ research/handoffs/astana/<роль>/round14/STATUS.md в этой ветке и 
 
 | Роль | Ветка | Последний checkpoint (10 окт) |
 |---|---|---|
-| R01 Интегратор | claude/sharp-dijkstra-0t87gl | шлюз API v2 с ответом module_not_ready |
-| R02 Данные | claude/r14-R02 (первые коммиты ушли в claude/round-14-package @ 887ef4b) | инструмент разметки, обезличивание, импорт формы, kappa |
-| R03 Модель v2 | — | не запущена или ещё без push |
+| R01 Интегратор | claude/sharp-dijkstra-0t87gl | база I0 готова, оболочка ru/kk, шлюз API v2; дальше включение поставок → B1 |
+| R02 Данные | claude/r14-R02 (первые коммиты ушли в claude/round-14-package @ 887ef4b) | ГОТОВО (ready_for_review): разметка, synth_v3, v1_in_v2, LLM-скрипты (запуск локально) |
+| R03 Модель v2 | claude/r14-R03 | конвейер v2 готов (проверен на крошечной модели); дальше тесты, RUN.txt, обучение на GPU |
 | R04 Дубли и ML-API | — | не запущена |
-| R05 3D-превью | claude/r14-R05 | three.js 0.169.0, ядро build3d |
-| R06 Предложения и этапы | claude/round-14-r06 | предложения, голоса, демо на реальных участках OSM |
-| R07 Тепловая карта | claude/upbeat-knuth-i0rqaa | демо-цели из OSM, демо-жалобы, API тепловой карты |
-| R08 Картина дня | — | не запущена или ещё без push |
-| R09 Жалоба жителя v2 | claude/modest-shannon-0ki93p | мастер жалобы v2, «Мои обращения» |
+| R05 3D-превью | claude/r14-R05 | все 5 объектов ставятся; дальше тесты, скриншоты, DELIVERY |
+| R06 Предложения и этапы | claude/round-14-r06 | функции для шлюза R01, тесты голосов |
+| R07 Тепловая карта | claude/upbeat-knuth-i0rqaa | ГОТОВО на демо-данных (ready_for_review); ждёт R01 и живые данные R09/R12 |
+| R08 Картина дня | claude/r14-R08 | ПОСТАВКА 1 (код 9f1d9c0), UI 77/77; ждёт функции R06 и сборку B1 |
+| R09 Жалоба жителя v2 | claude/modest-shannon-0ki93p | ПОСТАВКА: мастер жалобы v2, «Мои обращения», ключи для R11 |
 | R10 Приёмка | — | запуск 13 окт |
 | R11 UX и казахский | claude/r14-R11 | день 1 закрыт: UX_SPEC v1.1, ui-kit, 257 ключей ru/kk, KK_REVIEW |
-| R12 Точность карты | claude/tender-brahmagupta-ef5ztl | линии улиц по форме OSM, «примерное место» |
+| R12 Точность карты | claude/tender-brahmagupta-ef5ztl | geo-данные из реальных OSM (940 остановок, 334 площадки…), карта по OSM |
 
 Входные данные LOCAL готовы в claude/round-14-package @ bdf12c8: data/civic/astana/osm-objects/ (12 наборов OSM, 3513 объектов), web/vendor/three/ (three.js 0.169.0), research/round-14-results/LOCAL/ENV.md (Python 3.12 + CUDA, модели в кэше). Забрать в свою ветку: git fetch origin claude/round-14-package && git checkout origin/claude/round-14-package -- <путь>
