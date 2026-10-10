@@ -1,17 +1,17 @@
 {
  "role": "R05",
- "generated_at": "2026-10-10T19:28:43.175Z",
- "tested_sha": "7c6bbcecacc7224b9ba50972cc4d39c162207885",
+ "generated_at": "2026-10-10T19:44:18.050Z",
+ "tested_sha": "b38654a43d6e199ce67a5514981c869edb931267",
  "dirty": true,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
-  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit3",
+  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit4",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 7,
-  "fps_20_objects_swiftshader": 2.4,
+  "fps_0_objects_swiftshader": 5.6,
+  "fps_20_objects_swiftshader": 2.9,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.4 кадр/с (без объектов 7)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.9 кадр/с (без объектов 5.6)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -203,7 +203,7 @@
   {
    "id": "r11_21_selected_object_not_under_card_1366_375",
    "status": "PASS",
-   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (188, 287) на экране и не под карточкой"
+   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (187, 287) на экране и не под карточкой"
   },
   {
    "id": "r11_22_23_demo_header_title_and_3d_label",
@@ -292,7 +292,7 @@
   {
    "id": "r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk",
    "status": "PASS",
-   "detail": "1366 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 36 px, зона 48 → масштаб 16.17, полных подписей 4; 1366 kk: метка «4» (Қатар 4 жоба — жақыннан көрсету), точка ≥ 36 px, зона 48 → масштаб 16.17, полных подписей 4; 375 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 36 px, зона 48 → масштаб 15.33, полных подписей 3; 375 kk: метка «4» (Қатар 4 жоба — жақыннан көрсету), точка ≥ 36 px, зона 48 → масштаб 15.33, полных подписей 3"
+   "detail": "1366 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 36 px, зона 48 → масштаб 16.17, полных подписей 4; 1366 kk: метка «4» (Жақын жерде 4 жоба — жақындатып көрсету), точка ≥ 36 px, зона 48 → масштаб 16.17, полных подписей 4; 375 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 36 px, зона 48 → масштаб 15.33, полных подписей 3; 375 kk: метка «4» (Жақын жерде 4 жоба — жақындатып көрсету), точка ≥ 36 px, зона 48 → масштаб 15.33, полных подписей 3"
   },
   {
    "id": "kk_street_names_from_osm_card_and_lighting_hint_1366_375",

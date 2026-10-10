@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-10T19:17:37.926Z",
+ "generated_at": "2026-10-10T19:46:37.351Z",
  "url": "http://127.0.0.1:8804/",
- "r01": "claude/sharp-dijkstra-0t87gl@4ca9aef (FINAL, ночь 3a) + R05 рабочее дерево + proposed_r01_final.patch",
+ "r01": "claude/sharp-dijkstra-0t87gl@4ca9aef (FINAL, ночь 3a) + R05 b38654a + proposed_r01_final.patch",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
@@ -9,10 +9,10 @@
    "detail": {
     "labels": [
      "Проект · 2027",
-     "Проект · 20275",
      "Проект · 2027",
      "Проект · 2027",
-     "Проект · 2027"
+     "Проект · 2027",
+     "Проект · 20275"
     ],
     "catalog_folded_by_shell": true
    }
@@ -56,7 +56,7 @@
     "posts": [
      201
     ],
-    "id": "p-2521d6e88ab7",
+    "id": "p-db79b1c7a692",
     "year": 2027
    }
   },
@@ -92,8 +92,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 674.9891918415809,
-     "y": 278.0051838224197
+     "x": 674.9891919520591,
+     "y": 278.0051837839085
     },
     "under": []
    }

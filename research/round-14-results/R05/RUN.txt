@@ -41,6 +41,8 @@ R05 · раунд 14 · 3D-превью предложений — как зап
    node tests/civic/R05/build3d/ux_day3_check.mjs [--kit <выгрузка R11>]
         → runs/ux_day3_check.json, screens/d3_*.png — пункты 20–26 разбора R11, 1366/375 × ru/kk
    Выгрузка R11: mkdir /tmp/r11kit && git archive origin/claude/r14-R11 web/civic/ui-kit web/civic/i18n | tar -x -C /tmp/r11kit
+   node tests/civic/R05/build3d/i18n_sync_check.mjs /tmp/r11kit [метка R11]
+        → runs/i18n_sync_r11.json — строки модуля и i18n_build3d.json = словарь R11 (расхождения печатает построчно)
 
    Стенд R06 (их сервер предложений; пароль сотрудника стенд печатает в первую строку файла — не публиковать):
      git worktree add --detach ../r06 origin/claude/round-14-r06
