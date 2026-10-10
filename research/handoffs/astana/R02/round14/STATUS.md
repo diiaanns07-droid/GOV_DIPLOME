@@ -30,16 +30,20 @@ research/round-14-results/R02/, этот файл. Старые тесты tests
       все 12 категорий в каждом split, ru/kk/mixed, 9 стилей, 1067 трудных случаев; обезличено; split по шаблонам.
       paraphrase_pairs_v3.jsonl — 781 пар для R04. ml/datasets/v1_in_v2/ — v1 (2725) → v2: label (уточнённая)
       и label_table (строго v1_to_v2), 393 строки отличаются.
-- [ ] 6. ml/datasets/llm_synth.py, ml/labeling/llm_label.py (проверка на подставном клиенте)
+- [x] 6. ml/labeling/llm_client.py (stdlib, OpenAI/NVIDIA, ключ только из окружения, кэш, повторы 429/5xx с
+      Retry-After, бюджет --max-usd до отправки), ml/labeling/guide.py (правила для промптов из LABELING_GUIDE_v2),
+      ml/datasets/llm_synth.py (корпус llm_v1, сетка категория×стиль×язык, --dry-run, --mock),
+      ml/labeling/llm_label.py (строго одна метка, повтор при болтливом ответе, повторное обезличивание,
+      --confirm-external). Проверено только на подставном транспорте — реальный API в облаке NOT_RUN.
 - [ ] 7. ml/datasets/README.md, DELIVERY.json, RUN.txt, INTEGRATION.txt
 
 ## Проверки (Linux, Python 3.13, Node 22, Chromium из /opt/pw-browsers через playwright 1.56)
 - node --test tests/civic/R02/round14/labeling_core.test.mjs — 12 PASS
 - node --test tests/civic/R02/round14/labeling_browser.test.mjs — 7 PASS (file://, без сети, 1366×768 и 375×812)
-- python -m pytest tests/civic/R02/round14 — 62 PASS (категории, офлайн, обезличивание, импорт, kappa, synth_v3, v1→v2)
+- python -m pytest tests/civic/R02/round14 — 89 PASS (+ LLM-клиент/синтетика/разметчик на подставном транспорте)
 - сквозная проверка: экспорт страницы (первый и второй разметчик) → agreement.py — PASS (в labeling_browser.test.mjs)
 - Скриншоты: research/round-14-results/R02/screens/ (реально запущенная страница, синтетические фикстуры).
 
 ## Следующий шаг
-Задача 6: ml/datasets/llm_synth.py и ml/labeling/llm_label.py (OpenAI-совместимый API, ключ из окружения, кэш,
-повторы, --max-usd), проверка на подставном клиенте. Затем README.md, DELIVERY.json, RUN.txt, INTEGRATION.txt.
+Задача 7: ml/datasets/README.md, DELIVERY.json, RUN.txt (команды ноутбука + стоимость), INTEGRATION.txt
+(private/ в .gitignore для R01, корпус для R03, пары для R04, ключи i18n для R11).
