@@ -1,13 +1,12 @@
-# R10 · приёмка FINAL-candidate-6096be8 · сборка 9b6f0de
+# R10 · приёмка FINAL-candidate-85c16e2 · сборка a8e05d0
 
-Папка сборки: <worktree 9b6f0de>
-Когда: 2026-10-10T19:27:22.622Z · Node v22.22.0 · Python: python3
+Папка сборки: <worktree a8e05d0>
+Когда: 2026-10-10T19:40:25.229Z · Node v22.22.0 · Python: python3
 
 ## 1. Точность карты (CONTRACT §8)
 
-PASS 28 · FAIL 1 · NOT_RUN 0 (pytest код 1)
+PASS 29 · FAIL 0 · NOT_RUN 0 (pytest код 0)
 
-- FAIL [R12] граница Астаны · R12 geo/yards.json: {"coords":3962,"outside":19,"examples":[[71.6718742,51.3094308],[71.6742334,51.3111448],[71.6704181,51.3137676],[71.6733166,51.3156608],[71.6716,51.3165612]]}
 
 ## 2. Сервер сборки
 

@@ -1,8 +1,8 @@
 {
- "root": "<worktree 9b6f0de>",
+ "root": "<worktree a8e05d0>",
  "counts": {
-  "PASS": 28,
-  "FAIL": 1,
+  "PASS": 29,
+  "FAIL": 0,
   "NOT_RUN": 0
  },
  "checks": [
@@ -18,33 +18,12 @@
   },
   {
    "name": "граница Астаны · R12 geo/yards.json",
-   "status": "FAIL",
+   "status": "PASS",
    "owner": "R12",
    "detail": {
-    "coords": 3962,
-    "outside": 19,
-    "examples": [
-     [
-      71.6718742,
-      51.3094308
-     ],
-     [
-      71.6742334,
-      51.3111448
-     ],
-     [
-      71.6704181,
-      51.3137676
-     ],
-     [
-      71.6733166,
-      51.3156608
-     ],
-     [
-      71.6716,
-      51.3165612
-     ]
-    ]
+    "coords": 3936,
+    "outside": 0,
+    "examples": []
    }
   },
   {
