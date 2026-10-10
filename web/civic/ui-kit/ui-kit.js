@@ -129,14 +129,14 @@
       });
       // Перетаскивание: шторка идёт за пальцем, при отпускании прилипает к ближайшему положению.
       var startY = 0;
-      var startTop = 0;
+      var startH = 0;
       var moved = false;
       var dragging = false;
       handle.addEventListener("pointerdown", function (e) {
         dragging = true;
         moved = false;
         startY = e.clientY;
-        startTop = el.getBoundingClientRect().top;
+        startH = el.getBoundingClientRect().height;
         handle.setPointerCapture(e.pointerId);
         el.style.transition = "none";
       });
@@ -144,20 +144,19 @@
         if (!dragging) return;
         var dy = e.clientY - startY;
         if (Math.abs(dy) > 4) moved = true;
-        var fullTop = areaHeight() - el.offsetHeight;
-        var top = Math.max(fullTop, startTop + dy);
-        el.style.transform = "translateY(" + (top - fullTop) + "px)";
+        // шторка идёт за пальцем: высота = исходная − сдвиг, в пределах [peek, full]
+        var h = Math.max(cssLen("--sheet-peek", 120), Math.min(cssLen("--sheet-full", areaHeight() * 0.92), startH - dy));
+        el.style.height = h + "px";
       });
       function end() {
         if (!dragging) return;
         dragging = false;
+        var h = el.getBoundingClientRect().height; // видимая высота шторки
         el.style.transition = "";
-        el.style.transform = "";
+        el.style.height = "";
         if (!moved) return;
         var area = areaHeight();
-        var areaTop = el.offsetParent && getComputedStyle(el).position === "absolute" ? el.offsetParent.getBoundingClientRect().top : 0;
-        var h = area - (el.getBoundingClientRect().top - areaTop); // видимая высота шторки
-        var targets = { peek: cssLen("--sheet-peek", 120), half: cssLen("--sheet-half", area * 0.5), full: el.offsetHeight };
+        var targets = { peek: cssLen("--sheet-peek", 120), half: cssLen("--sheet-half", area * 0.5), full: cssLen("--sheet-full", area * 0.92) };
         var best = "peek";
         SNAPS.forEach(function (s) {
           if (Math.abs(targets[s] - h) < Math.abs(targets[best] - h)) best = s;

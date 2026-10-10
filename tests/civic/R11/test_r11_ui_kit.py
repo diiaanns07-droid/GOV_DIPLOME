@@ -94,6 +94,31 @@ def test_showcase_keys_exist():
     assert not missing, missing
 
 
+def test_prototype_keys_exist():
+    """Все ключи, которые вызывают макеты (t("..."), data-i18n), есть в ru.json и kk.json."""
+    ru, kk = i18n_tools.load("ru"), i18n_tools.load("kk")
+    missing = []
+    for f in sorted((KIT / "prototypes").glob("*.*")):
+        if f.suffix not in (".html", ".js") or f.name == "proto-streets.js":
+            continue
+        text = f.read_text("utf-8")
+        keys = set(re.findall(r'data-i18n="([^"]+)"', text)) | set(re.findall(r'\bt\("([a-z0-9_.]+)"', text))
+        keys |= set(re.findall(r'"((?:common|target|heat|akim|complaint|mine|proposal|status|stage|object|district|proto)\.[a-z0-9_.]+)"', text))
+        for attr in re.findall(r'data-i18n-attr="([^"]+)"', text):
+            keys |= {pair.split(":", 1)[1] for pair in attr.split(";") if ":" in pair and "'" not in pair}
+        keys = {k for k in keys if not re.search(r"\.(css|js|html|json|svg)$", k)}  # имена файлов — не ключи
+        missing += [f"{f.name}: {k}" for k in sorted(keys) if not k.endswith(".") and (k not in ru or k not in kk)]
+    assert not missing, missing
+
+
+def test_prototype_streets_are_generated_from_graph():
+    js = (KIT / "prototypes/proto-streets.js").read_text("utf-8")
+    assert js.startswith("/* СГЕНЕРИРОВАНО") and "OpenStreetMap" in js
+    data = json.loads(js.split("=", 1)[1].strip().rstrip(";"))
+    for seg in data["segments"].values():
+        assert seg["edges"] and all(e.startswith("osm-w") for e in seg["edges"])  # участки — рёбра графа OSM
+
+
 def test_touch_targets_and_font_sizes():
     assert re.search(r"--tap:\s*48px", TOKENS)
     sizes = [int(x) for x in re.findall(r"font-size:\s*(\d+)px", COMPONENTS)]

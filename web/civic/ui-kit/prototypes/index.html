@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Birge · макеты</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../components.css" />
+    <link rel="stylesheet" href="proto.css" />
+  </head>
+  <body class="bk-app">
+    <div class="pm-page pm-page--scroll">
+      <header id="pm-header"></header>
+      <div id="pm-banner"></div>
+      <main class="pd-main">
+        <h1 class="bk-h1" data-i18n="proto.title"></h1>
+        <p class="bk-lead" data-i18n="proto.intro"></p>
+        <div class="pd-grid" id="pi-list"></div>
+        <p class="bk-meta"><a href="../index.html" data-i18n="uikit.title"></a></p>
+      </main>
+    </div>
+    <script src="../../i18n/i18n.js"></script>
+    <script src="../ui-kit.js"></script>
+    <script src="proto-streets.js"></script>
+    <script src="proto.js"></script>
+    <script>
+      (function () {
+        var I = BirgeI18n, UI = BirgeUI, P = BirgeProto, t = I.t;
+        // [страница, иконка, заголовок, для кого, примеры состояний]
+        var ITEMS = [
+          ["akimat-map.html", "layers", "proto.map.title", "proto.map.for", [["?target=t-stop-sauran", "target.type.stop"], ["?target=t-seg-kabanbay", "target.type.segment"], ["?role=resident&target=t-seg-orynbor", "common.role.resident"], ["?state=loading", "common.state.loading"], ["?state=empty", "common.state.empty_title"], ["?state=error", "common.state.network_title"]]],
+          ["complaint.html", "plus", "proto.complaint.title", "proto.complaint.for", [["?view=mine", "mine.title"], ["?view=mine&empty=1", "mine.empty.title"], ["?noml=1", "complaint.step3.choose_cat"], ["?fail=send", "complaint.send_error"]]],
+          ["day.html", "chart", "proto.day.title", "proto.day.for", [["?date=2026-10-05", "akim.empty_day"], ["?state=loading", "common.state.loading"], ["?state=error", "common.state.network_title"]]],
+        ];
+        function render() {
+          document.getElementById("pi-list").innerHTML = ITEMS.map(function (it) {
+            return '<article class="bk-card"><div class="bk-card__row">' + UI.icon(it[1], { size: 24 }) + '<span class="bk-meta">' + UI.esc(t(it[3])) + "</span></div>" +
+              '<h2 class="bk-card__title"><a href="' + it[0] + '">' + UI.esc(t(it[2])) + "</a></h2>" +
+              '<p class="bk-meta">' + UI.esc(t("proto.states")) + "</p>" +
+              '<ul class="bk-list">' + it[4].map(function (s) { return '<li><a class="bk-list__item" href="' + it[0] + s[0] + '"><span class="bk-list__main"><span class="bk-list__title">' + UI.esc(t(s[1])) + '</span><span class="bk-list__sub"><code>' + UI.esc(s[0]) + "</code></span></span>" + UI.icon("chevron-right") + "</a></li>"; }).join("") + "</ul>" +
+              '<a class="bk-btn bk-btn--primary" href="' + it[0] + '">' + UI.esc(t("common.action.open")) + "</a></article>";
+          }).join("");
+        }
+        I.ready.then(function () { P.header(document.getElementById("pm-header"), "index", {}); P.banner(document.getElementById("pm-banner")); render(); I.apply(document); });
+        I.onChange(render);
+      })();
+    </script>
+  </body>
+</html>

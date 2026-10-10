@@ -1,0 +1,504 @@
+/*
+ * Birge · макеты R11 — раскладка страниц и SVG-карты. Компоненты — из ui-kit (components.css), здесь только
+ * то, что относится к самим макетам: сетка страницы, карта-схема, плашка «это макет».
+ */
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+.pm-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+.pm-page--scroll {
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
+.pm-nav {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-s);
+  color: var(--c-text-2);
+  font-weight: var(--fw-semi);
+  text-decoration: none;
+  position: relative;
+}
+.pm-nav::after {
+  content: "";
+  position: absolute;
+  inset: -4px 0;
+}
+.pm-nav[aria-current="page"] {
+  background: var(--c-surface);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-1);
+}
+.pm-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px var(--s-4);
+  background: var(--c-demo-soft);
+  color: var(--c-demo);
+  font-size: var(--fs-caption);
+}
+
+/* ── Карта ── */
+.pm-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+.pm-map {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #eef1ea;
+}
+.pm-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  --pm-k: 1;
+}
+.pm-svg.is-picking {
+  cursor: crosshair;
+}
+.pm-bg {
+  fill: #eef1ea;
+}
+.pm-path {
+  fill: none;
+  stroke: #dde3da;
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+.pm-street-casing {
+  fill: none;
+  stroke: #d2dacf;
+  stroke-width: 9px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.pm-street {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.pm-street-label {
+  font-family: var(--font);
+  font-size: calc(13px * var(--pm-k));
+  font-weight: var(--fw-semi);
+  fill: #6b7a73;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: calc(3px * var(--pm-k));
+  pointer-events: none;
+}
+
+/* Цели тепловой карты: участок — линия по форме улицы, двор — заливка, объект — ореол + значок */
+.pm-area {
+  fill-opacity: var(--heat-fill-opacity);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transition:
+    fill var(--t-heat) var(--ease),
+    opacity var(--t-base);
+}
+.pm-seg {
+  cursor: pointer;
+}
+.pm-seg-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 28px; /* широкая невидимая зона нажатия ≥ 48 px вместе с линией */
+  vector-effect: non-scaling-stroke;
+}
+.pm-seg-casing {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: calc(var(--w) * 1px + 4px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.pm-seg-line {
+  fill: none;
+  stroke-width: calc(var(--w) * 1px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: stroke var(--t-heat) var(--ease);
+}
+.pm-halo {
+  r: calc(var(--r) * 1px * var(--pm-k) * 1.6);
+  fill-opacity: 0.28;
+  transition:
+    fill var(--t-heat) var(--ease),
+    r var(--t-heat) var(--ease);
+}
+.pm-obj {
+  cursor: pointer;
+}
+.pm-obj-label {
+  font-family: var(--font);
+  font-size: calc(14px * var(--pm-k));
+  font-weight: var(--fw-bold);
+  fill: var(--c-ink);
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: calc(3px * var(--pm-k));
+  pointer-events: none;
+  transform: translate(calc(4px * var(--pm-k)), 0);
+}
+.pm-svg[data-zoom="mid"] .pm-obj-label {
+  display: none; /* смысловой зум: имена остановок — только вблизи */
+}
+.pm-badge {
+  cursor: pointer;
+}
+.pm-badge > * {
+  transform: scale(var(--pm-k));
+}
+.pm-badge-bg {
+  fill: var(--c-surface);
+  stroke: #ffffff;
+  stroke-width: 2.5px;
+  transition: fill var(--t-heat) var(--ease);
+}
+.pm-badge-text {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  text-anchor: middle;
+  fill: var(--c-ink);
+  pointer-events: none;
+}
+.pm-badge[data-level="1"] .pm-badge-bg {
+  fill: var(--heat-1-badge);
+}
+.pm-badge[data-level="2"] .pm-badge-bg {
+  fill: var(--heat-2-badge);
+}
+.pm-badge[data-level="3"] .pm-badge-bg {
+  fill: var(--heat-3-badge);
+}
+.pm-badge[data-level="4"] .pm-badge-bg {
+  fill: var(--heat-4-badge);
+}
+.pm-badge[data-level="fixed"] .pm-badge-bg {
+  fill: var(--fixed-badge);
+}
+.pm-badge[data-level="3"] .pm-badge-text,
+.pm-badge[data-level="4"] .pm-badge-text,
+.pm-badge[data-level="fixed"] .pm-badge-text {
+  fill: #ffffff;
+}
+/* Выбор и затемнение остальных */
+.is-dim {
+  opacity: 0.45;
+}
+.pm-badge.is-selected .pm-badge-bg {
+  stroke: var(--c-ink);
+  stroke-width: 3px;
+}
+.pm-seg.is-selected .pm-seg-casing {
+  stroke: var(--c-ink);
+}
+.pm-area.is-selected {
+  stroke: var(--c-ink);
+  stroke-width: 3px;
+}
+[data-id]:focus-visible {
+  outline: none;
+}
+[data-id]:focus-visible .pm-badge-bg,
+.pm-area:focus-visible {
+  stroke: var(--c-focus);
+  stroke-width: 4px;
+}
+/* Житель видит ту же карту мягче (UX_BRIEF): прозрачнее, без пульса */
+.heat-soft .pm-area {
+  fill-opacity: var(--heat-fill-opacity-soft);
+}
+.heat-soft .pm-seg-line,
+.heat-soft .pm-halo {
+  opacity: 0.7;
+}
+.pm-pulse {
+  fill: none;
+  stroke: var(--heat-3);
+  stroke-width: 3px;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bk-pulse var(--t-heat) var(--ease) 2;
+  pointer-events: none;
+}
+.heat-soft .is-selected .pm-seg-line,
+.heat-soft .is-selected .pm-halo {
+  opacity: 1;
+}
+.heat-soft .pm-pulse {
+  display: none;
+}
+/* Выбор жителя — цвет бренда (цвет тепловой карты занят уровнем жалоб) */
+.pm-sel-casing {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 14px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.pm-sel-line {
+  fill: none;
+  stroke: var(--c-brand);
+  stroke-width: 8px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.pm-sel-area {
+  fill: var(--c-brand);
+  fill-opacity: 0.22;
+  stroke: var(--c-brand);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+.pm-sel {
+  pointer-events: none;
+}
+.pm-sel-point {
+  r: calc(24px * var(--pm-k));
+  fill: var(--c-brand);
+  fill-opacity: 0.14;
+  stroke: var(--c-brand);
+  stroke-width: 4px;
+  vector-effect: non-scaling-stroke;
+}
+.pm-sel-approx {
+  fill: var(--c-brand);
+  fill-opacity: 0.12;
+  stroke: var(--c-brand);
+  stroke-width: 2px;
+  stroke-dasharray: 6 5;
+  vector-effect: non-scaling-stroke;
+}
+.pm-pick {
+  r: calc(6px * var(--pm-k));
+  fill: var(--c-ink);
+  stroke: #ffffff;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Элементы поверх карты */
+.pm-filters {
+  position: absolute;
+  z-index: var(--z-map-ui);
+  top: var(--s-3);
+  left: var(--s-3);
+  right: calc(var(--panel-w) + 2 * var(--gap-edge) + 56px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  align-items: center;
+}
+.pm-filters .bk-chips {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+.pm-tools {
+  position: absolute;
+  z-index: var(--z-map-ui);
+  top: var(--s-3);
+  right: var(--s-3);
+}
+.pm-has-panel .pm-tools {
+  right: calc(var(--panel-w) + 2 * var(--gap-edge));
+}
+.pm-legend {
+  position: absolute;
+  z-index: var(--z-map-ui);
+  left: var(--s-3);
+  bottom: var(--s-3);
+  max-width: calc(100% - 2 * var(--s-3));
+}
+.pm-attrib {
+  position: absolute;
+  z-index: var(--z-map-ui);
+  right: var(--s-3);
+  bottom: var(--s-1);
+  font-size: var(--fs-caption);
+  color: var(--c-text-2);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0 6px;
+  border-radius: 4px;
+}
+.pm-has-panel .pm-attrib {
+  right: calc(var(--panel-w) + 2 * var(--gap-edge));
+}
+.pm-overlay-state {
+  position: absolute;
+  z-index: var(--z-map-ui);
+  left: 50%;
+  top: 30%;
+  transform: translateX(-50%);
+  width: min(360px, calc(100% - 32px));
+}
+.pm-demo-tools {
+  position: absolute;
+  z-index: var(--z-map-ui);
+  left: var(--s-3);
+  bottom: calc(var(--s-3) + 72px);
+}
+.pm-panel {
+  top: calc(var(--gap-edge));
+}
+.pm-search-results {
+  position: absolute;
+  z-index: var(--z-header);
+  top: calc(var(--header-h) - 4px);
+  left: 120px;
+  width: min(440px, calc(100vw - 32px));
+}
+
+/* Телефон: фильтры строкой, панель → шторка, легенда над шторкой */
+@media (max-width: 1023px) {
+  .pm-banner {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .pm-banner__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pm-filters {
+    right: var(--s-3);
+    left: var(--s-3);
+  }
+  .pm-filters .bk-chips {
+    flex: 1 1 100%;
+  }
+  .pm-filters .pm-filters__wide {
+    display: none;
+  }
+  .pm-tools {
+    top: 116px;
+  }
+  .pm-has-panel .pm-tools,
+  .pm-has-panel .pm-attrib {
+    right: var(--s-3);
+  }
+  .pm-legend {
+    bottom: calc(var(--sheet-peek) + var(--s-3));
+  }
+  .pm-search-results {
+    left: var(--s-3);
+  }
+  .pm-demo-tools {
+    left: auto;
+    right: var(--s-3);
+    bottom: calc(var(--sheet-peek) + 96px);
+  }
+}
+
+/* ── Страница «Картина дня» ── */
+.pd-main {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--s-6) var(--gutter-phone) var(--s-8);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-6);
+}
+.pd-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+}
+.pd-head .bk-h1 {
+  flex: 1 1 260px;
+}
+.pd-head .bk-field select {
+  min-width: 170px;
+}
+.pd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+  gap: var(--s-4);
+  align-items: start;
+}
+.pd-summary {
+  margin: 0;
+  padding: var(--s-4) var(--s-5);
+  border-left: 4px solid var(--c-brand);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+@media print {
+  .pm-banner,
+  .pd-head .bk-field {
+    display: none !important;
+  }
+}
+
+/* ── Мастер жалобы ── */
+.pc-fab {
+  position: absolute;
+  z-index: var(--z-sheet);
+  left: 50%;
+  bottom: var(--s-6);
+  transform: translateX(-50%);
+  width: auto;
+  min-width: 320px;
+}
+@media (max-width: 1023px) {
+  .pc-fab {
+    left: var(--gutter-phone);
+    right: var(--gutter-phone);
+    bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
+    transform: none;
+    min-width: 0;
+  }
+}
+.pc-place {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-m);
+  background: var(--c-paper);
+  font-weight: var(--fw-semi);
+}
+.pc-code {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--fs-lead);
+}
+.pc-code strong {
+  font-size: var(--fs-h1);
+  letter-spacing: 0.04em;
+}

@@ -22,7 +22,11 @@ text/plain (браузер не нарисует иконки). Минималь
 +                "ui-kit/categories_v2.json", "ui-kit/index.html",
 +                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-SemiBold.woff2", "ui-kit/fonts/Inter-Bold.woff2",
 +                "ui-kit/fonts/OFL.txt",
-+                "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json")
++                "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json",
++                # макеты для сверки вида (не продукт; можно не подключать в FINAL)
++                "ui-kit/prototypes/index.html", "ui-kit/prototypes/akimat-map.html", "ui-kit/prototypes/complaint.html",
++                "ui-kit/prototypes/day.html", "ui-kit/prototypes/proto.js", "ui-kit/prototypes/proto.css",
++                "ui-kit/prototypes/proto-streets.js")
 +_CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
 +               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
 +               ".html": "text/html; charset=utf-8", ".woff2": "font/woff2"}

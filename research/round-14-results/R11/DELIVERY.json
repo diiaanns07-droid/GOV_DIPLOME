@@ -4,32 +4,49 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "см. последний коммит ветки claude/r14-R11 (этот файл входит в него); предыдущий a924ced",
-  "tested_sha": "рабочее дерево поверх a924ced, проверено перед коммитом",
+  "code_sha": "см. последний коммит ветки claude/r14-R11 (день 2); предыдущий 3890314",
+  "tested_sha": "рабочее дерево поверх 3890314, проверено перед коммитом дня 2",
   "push_status": "см. STATUS.md и финальное сообщение",
-  "also_in_package_branch": ["c75a9ac UX_SPEC.md v1", "608e367 tokens/components/icons/i18n (ранняя версия)"],
+  "also_in_package_branch": [
+    "c75a9ac UX_SPEC.md v1",
+    "608e367 tokens/components/icons/i18n (ранняя версия)"
+  ],
   "environment": "облачная сессия Claude Code, Linux, Python 3.13, Node 22, Playwright 1.56.1 + Chromium 1194",
   "changed_paths": [
-    "web/civic/ui-kit/tokens.css", "web/civic/ui-kit/components.css", "web/civic/ui-kit/ui-kit.js",
-    "web/civic/ui-kit/icons.svg", "web/civic/ui-kit/index.html", "web/civic/ui-kit/categories_v2.json",
-    "web/civic/ui-kit/fonts/", "web/civic/i18n/i18n.js", "web/civic/i18n/ru.json", "web/civic/i18n/kk.json",
-    "tests/civic/R11/", "research/round-14-results/R11/", "research/handoffs/astana/R11/round14/STATUS.md"
+    "research/handoffs/astana/R11/round14/STATUS.md",
+    "research/round-14-results/R11/",
+    "research/round-14-results/R11/key_sources.json",
+    "tests/civic/R11/",
+    "tests/civic/R11/review/",
+    "tests/civic/R11/tools/make_proto_streets.py",
+    "web/civic/i18n/i18n.js",
+    "web/civic/i18n/kk.json",
+    "web/civic/i18n/ru.json",
+    "web/civic/ui-kit/categories_v2.json",
+    "web/civic/ui-kit/components.css",
+    "web/civic/ui-kit/fonts/",
+    "web/civic/ui-kit/icons.svg",
+    "web/civic/ui-kit/index.html",
+    "web/civic/ui-kit/prototypes/",
+    "web/civic/ui-kit/tokens.css",
+    "web/civic/ui-kit/ui-kit.js"
   ],
   "tests": {
-    "i18n_tools check (257 ключей ru=kk, параметры, формы, категории)": "PASS",
-    "test_r11_ui_kit.py (12 проверок: контраст, цвета тепловой карты = categories_v2, иконки, шрифт, ключи витрины)": "PASS",
-    "i18n.test.cjs (склонения, даты UTC+5, запасной ru, kz→kk, onChange)": "PASS",
-    "browser_check витрины 375/1366 × ru/kk": "PASS",
-    "патч ui/web_server.py: карта ASSETS на копии файла, все 13 файлов существуют, MIME верные": "PASS",
-    "живой запуск ui/web_server.py с патчем": "NOT_RUN — патч применяет R01",
-    "экраны других ролей на ui-kit": "NOT_RUN — веток ролей раунда 14 ещё нет",
-    "проверка казахского владельцем": "NOT_RUN — KK_REVIEW.md отправлен"
+    "i18n_tools check (509 ключей ru=kk, параметры, формы, категории)": "PASS",
+    "test_r11_ui_kit.py (14 проверок, в т.ч. ключи макетов и участки из рёбер OSM)": "PASS",
+    "i18n.test.cjs (склонения, даты UTC+5, запасной ru, явный язык для Birge.i18n)": "PASS",
+    "browser_check: витрина + prototypes/{index,akimat-map,complaint,day} × 375/1366 × ru/kk": "PASS",
+    "proto_shots.cjs: 72 кадра, 0 ошибок консоли, 0 прокрутки вбок": "PASS",
+    "патч ui/web_server.py (статически, на копии)": "PASS",
+    "живой запуск ui/web_server.py с патчем": "NOT_RUN — применяет R01 (по его INTEGRATION §6 п.8 уже применён в его ветке)",
+    "проверка казахского владельцем": "NOT_RUN — KK_REVIEW.md отправлен",
+    "реальный телефон": "NOT_RUN — LOCAL-7"
   },
   "known_limits": [
-    "Казахский перевод выполнен R11 и не проверен носителем; 22 места помечены ⚑ в KK_REVIEW.md",
-    "cat.sidewalks kk из пакета («Жаяу жүргіншілер жолы») длинный для чипа — ждёт решения владельца",
-    "Модули ролей пока не на i18n: ≈1350 русских строк в коде (UX_REVIEW.md, день 1)",
-    "Скриншоты — только витрины ui-kit (Chromium в облаке, шрифт Inter); экранов продукта ещё нет"
+    "Казахский перевод — R11 и черновики ролей, не проверен носителем; 29 мест ⚑ в KK_REVIEW.md",
+    "Макеты — образец: данные примеры, карта — SVG по осям улиц OSM (подписи улиц из OSM name, по-русски)",
+    "Скриншоты — headless Chromium с программным WebGL; бледная карта после выбора точки у R09 не подтверждена (п. 12 дня 2)",
+    "cat.sidewalks kk («Жаяу жүргіншілер жолы») длинный — ждёт решения владельца"
   ],
-  "next_step": "Ежедневно: забрать ключи из INTEGRATION.txt ролей (i18n_tools add), перевести, UX_REVIEW по веткам ролей; внести правки владельца в kk.json"
+  "next_step": "13.10: правки владельца в kk.json; ключи ролей; UX_REVIEW день 3 (R07, R08, B1)"
 }

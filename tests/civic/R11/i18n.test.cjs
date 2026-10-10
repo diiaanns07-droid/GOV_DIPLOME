@@ -50,6 +50,12 @@ const NB = " ";
   assert.strictEqual(I.cat("snow_ice"), "Қар және көктайғақ");
   assert.strictEqual(warnings.length, 0, warnings.join("\n"));
 
+  // Явный язык третьим аргументом (так зовёт R07 через Birge.i18n.t)
+  assert.strictEqual(I.t("target.metoo", null, "ru"), "Я тоже");
+  assert.strictEqual(I.t("target.metoo", null, "kk"), "Мен де");
+  assert.strictEqual(I.t("heat.reported", { count: 3 }, "ru"), "Сообщили 3 человека");
+  assert.strictEqual(I.has("heat.title", "kk"), true);
+
   // Запасной ru с одним предупреждением
   const ruOnly = Object.assign({}, ru, { "test.only_ru": "Только по-русски" });
   await I.init({ dicts: { ru: ruOnly, kk }, lang: "kk" });

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Birge · макет · картина дня</title>
+    <!-- Макет R11 для R08: «Картина дня» — аким за 10 секунд видит темы, районы, горячие места, просрочки и отставания.
+         Данные — примеры. Параметры: ?lang=kk · ?date=2026-10-05 (пустой день) · ?state=loading|error -->
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../components.css" />
+    <link rel="stylesheet" href="proto.css" />
+  </head>
+  <body class="bk-app">
+    <a class="bk-skip" href="#pd-main" data-i18n="common.action.skip_to_main"></a>
+    <div class="pm-page pm-page--scroll">
+      <header id="pm-header"></header>
+      <div id="pm-banner"></div>
+      <main class="pd-main" id="pd-main" tabindex="-1">
+        <div class="pd-head">
+          <h1 class="bk-h1" id="pd-title"></h1>
+          <label class="bk-field"><span class="bk-sr-only" data-i18n="akim.date"></span><select id="pd-date"></select></label>
+          <label class="bk-field"><span class="bk-sr-only" data-i18n="heat.filter.district"></span><select id="pd-district"></select></label>
+          <button class="bk-btn" type="button" id="pd-print"></button>
+        </div>
+        <div id="pd-content" style="display:grid;gap:var(--s-5);grid-template-columns:minmax(0,1fr)"></div>
+      </main>
+    </div>
+
+    <script src="../../i18n/i18n.js"></script>
+    <script src="../ui-kit.js"></script>
+    <script src="proto-streets.js"></script>
+    <script src="proto.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        var I = BirgeI18n, UI = BirgeUI, P = BirgeProto, t = I.t;
+        var $ = function (id) { return document.getElementById(id); };
+        var NOW = new Date("2026-10-12T10:00:00+05:00");
+        var categories = [];
+        // Демо-сводки по дням (demo). В продукте — GET /api/civic/v2/akim/summary (R08); числа сходятся с тепловой картой.
+        var DAYS = {
+          "2026-10-12": { kpi: { new: [34, 24], in_progress: [18, 20], overdue: [5, 4], fixed_week: [9, 9] },
+            topics: [["snow_ice", 12], ["roads", 7], ["transport", 5], ["waste", 4], ["lighting", 3], ["yards", 3]],
+            districts: [["nura", 15], ["esil", 8], ["almaty", 5], ["saryarka", 3], ["baikonur", 2], ["saraishyk", 1]] },
+          "2026-10-11": { kpi: { new: [27, 25], in_progress: [20, 19], overdue: [4, 4], fixed_week: [9, 7] },
+            topics: [["snow_ice", 9], ["roads", 6], ["transport", 5], ["yards", 4], ["waste", 2], ["lighting", 1]],
+            districts: [["nura", 11], ["esil", 7], ["almaty", 4], ["saryarka", 3], ["baikonur", 1], ["saraishyk", 1]] },
+          "2026-10-05": null,
+        };
+        var LATE = [
+          { name: { ru: "Ремонт павильона остановки «Сауран»", kk: "«Сауран» аялдамасы павильонын жөндеу" }, stage: 2, late: 23, target: "t-stop-sauran" },
+          { name: { ru: "Благоустройство двора · ул. Орынбор, 21", kk: "Ауланы абаттандыру · Орынбор көшесі, 21" }, stage: 3, late: 9, stale: 16, target: "t-yard-orynbor" },
+          { name: { ru: "Освещение · ул. Бухар жырау", kk: "Жарықтандыру · Бұқар жырау көшесі" }, stage: 1, late: 4, target: "t-seg-bukhar" },
+        ];
+        var PROPOSALS = [
+          { name: { ru: "Сквер у ул. Сауран", kk: "Сауран көшесі жанындағы гүлзар" }, kind: "square", up: 128, down: 12 },
+          { name: { ru: "Спортплощадка во дворе · ул. Орынбор, 21", kk: "Аула ішіндегі спорт алаңы · Орынбор көшесі, 21" }, kind: "sports", up: 64, down: 5 },
+        ];
+        var st = { date: P.query("date") || "2026-10-12", district: "all", state: P.query("state") || "ready" };
+
+        function lower(s) { return s.charAt(0).toLowerCase() + s.slice(1); }
+        function delta(cur, prev, moreIsBad) {
+          var d = cur - prev;
+          var trend = d > 0 ? "up" : d < 0 ? "down" : "flat";
+          var good = d === 0 || moreIsBad === null ? null : (d > 0) !== moreIsBad; // null — изменение нейтрально (цвет не ставим)
+          var v = prev ? (Math.abs(d) >= 5 && prev >= 10 ? Math.round((Math.abs(d) / prev) * 100) + " %" : Math.abs(d)) : Math.abs(d);
+          var text = d === 0 ? t("akim.delta.same") : t(d > 0 ? "akim.delta.more" : "akim.delta.less", { v: v });
+          return '<span class="bk-kpi__delta" data-trend="' + trend + '"' + (good === null ? "" : ' data-good="' + good + '"') + ">" + UI.esc(text) + "</span>";
+        }
+        function bars(rows, labelOf) {
+          var max = Math.max.apply(null, rows.map(function (r) { return r[1]; })) || 1;
+          return '<ul class="bk-bars">' + rows.map(function (r) {
+            return '<li class="bk-bar"><span class="bk-bar__label">' + UI.esc(labelOf(r[0])) + '</span><span class="bk-bar__track"><i class="bk-bar__fill" style="width:' + (r[1] / max) * 100 + '%"></i></span><span class="bk-bar__value">' + r[1] + "</span></li>";
+          }).join("") + "</ul>";
+        }
+        function stagesCompact(x) {
+          var names = ["planned", "design", "procurement", "construction", "acceptance", "operating"];
+          return '<ol class="bk-stages bk-stages--compact bk-stages--late">' + names.map(function (s, i) {
+            return '<li data-state="' + (i < x.stage ? "done" : i === x.stage ? "current" : "todo") + '"><span>' + UI.esc(t("stage." + s)) + "</span></li>";
+          }).join("") + '</ol><p class="bk-stages__caption">' + UI.esc(t("stage.caption", { i: x.stage + 1, total: 6, name: t("stage." + names[x.stage]) })) + "</p>";
+        }
+
+        function render() {
+          var day = DAYS[st.date];
+          var dateText = I.formatDate(st.date, { now: NOW });
+          var prefix = st.date === "2026-10-12" ? t("akim.date.today_on", { date: dateText }) : st.date === "2026-10-11" ? t("akim.date.yesterday_on", { date: dateText }) : dateText;
+          $("pd-title").textContent = t("akim.title") + " · " + dateText;
+          $("pd-date").innerHTML = Object.keys(DAYS).map(function (d) {
+            var dt = I.formatDate(d, { now: NOW });
+            var label = d === "2026-10-12" ? t("akim.date.today_on", { date: dt }) : d === "2026-10-11" ? t("akim.date.yesterday_on", { date: dt }) : dt;
+            return '<option value="' + d + '"' + (d === st.date ? " selected" : "") + ">" + UI.esc(label) + "</option>";
+          }).join("");
+          $("pd-district").innerHTML = ["all", "almaty", "baikonur", "esil", "nura", "saraishyk", "saryarka"].map(function (d) {
+            return '<option value="' + d + '"' + (d === st.district ? " selected" : "") + ">" + UI.esc(t("district." + d)) + "</option>";
+          }).join("");
+          $("pd-print").innerHTML = UI.icon("print") + "<span>" + UI.esc(t("common.action.print")) + "</span>";
+          var box = $("pd-content");
+          if (st.state === "loading") { UI.state(box, "loading", { text: t("akim.loading") }); return; }
+          if (st.state === "error") { UI.state(box, "error", { action: { onClick: function () { st.state = "loading"; render(); P.later(600, function () { st.state = "ready"; render(); }); } } }); return; }
+          if (!day) { UI.state(box, "empty", { title: t("akim.empty_day"), text: t("akim.empty_hint"), icon: "calendar" }); return; }
+          var k = day.kpi, top = day.topics[0], topDistrict = day.districts[0];
+          var hot = P.demoTargets().map(function (x) { x.count = x.counts[7]; x.level = x.status === "fixed" ? "fixed" : P.levelOf(x.count); return x; })
+            .filter(function (x) { return x.status !== "fixed" && x.count > 0; }).sort(function (a, b) { return b.count - a.count; }).slice(0, 5);
+          var summary = [
+            t("akim.summary.new", { n: k.new[0] }),
+            t("akim.summary.top", { category: lower(I.cat(top[0])), district: t("district." + topDistrict[0]), n: top[1] }),
+            k.new[1] ? t("akim.summary.growth", { v: Math.round(((k.new[0] - k.new[1]) / k.new[1]) * 100) + " %" }) : "",
+            t("akim.summary.overdue", { n: k.overdue[0] }),
+            t("akim.summary.late", { n: LATE.length }),
+          ].filter(Boolean).join(" ");
+          box.innerHTML =
+            '<section aria-labelledby="pd-kpi-h"><h2 class="bk-sr-only" id="pd-kpi-h">' + UI.esc(t("akim.title")) + '</h2><div class="bk-kpis">' +
+              kpi(k.new, "akim.kpi.new", true) + kpi(k.in_progress, "akim.kpi.in_progress", null) + kpi(k.overdue, "akim.kpi.overdue", true) + kpi(k.fixed_week, "akim.kpi.fixed_week", false) +
+            "</div></section>" +
+            '<p class="pd-summary">' + UI.esc(summary) + "</p>" +
+            '<div class="pd-grid">' +
+              '<section class="bk-card"><h2 class="bk-section-title">' + UI.esc(t("akim.hot.title")) + '</h2><p class="bk-meta">' + UI.esc(t("common.period.last_days", { n: 7 })) + '</p><ul class="bk-list">' + hot.map(function (x, i) {
+                return '<li><a class="bk-list__item" href="akimat-map.html?target=' + x.id + '"><span class="bk-heat" data-level="' + x.level + '">' + x.count + '</span><span class="bk-list__main"><span class="bk-list__title">' +
+                  UI.esc(P.shortLabel(x)) + '</span><span class="bk-list__sub">' + UI.esc(I.cat(x.category)) + "</span></span>" + UI.icon("chevron-right") + "</a></li>";
+              }).join("") + "</ul></section>" +
+              '<section class="bk-card"><h2 class="bk-section-title">' + UI.esc(t("akim.topics.title")) + "</h2>" + bars(day.topics, function (id) { return I.cat(id); }) + "</section>" +
+              '<section class="bk-card"><h2 class="bk-section-title">' + UI.esc(t("akim.districts.title")) + "</h2>" + bars(day.districts, function (id) { return t("district." + id); }) + "</section>" +
+              '<section class="bk-card"><h2 class="bk-section-title">' + UI.esc(t("akim.late.title")) + '</h2><ul class="bk-list">' + LATE.map(function (x) {
+                return '<li style="padding:12px 4px;display:grid;gap:8px"><a href="akimat-map.html?target=' + x.target + '" style="color:inherit;font-weight:600">' + UI.esc(x.name[I.getLang()]) + "</a>" + stagesCompact(x) +
+                  '<div class="bk-card__row"><span class="bk-tag bk-tag--warn">' + UI.icon("clock") + UI.esc(t("object.late", { n: x.late })) + "</span>" +
+                  (x.stale ? '<span class="bk-tag">' + UI.icon("alert") + UI.esc(t("object.stale_days", { n: x.stale })) + "</span>" : "") + "</div></li>";
+              }).join("") + "</ul></section>" +
+              '<section class="bk-card"><h2 class="bk-section-title">' + UI.esc(t("akim.proposals.title")) + '</h2><ul class="bk-list">' + PROPOSALS.map(function (x) {
+                return '<li style="padding:12px 4px;display:grid;gap:6px"><span style="font-weight:600">' + UI.esc(x.name[I.getLang()]) + ' <span class="bk-tag bk-tag--project">' + UI.esc(t("common.tag.project")) + "</span></span>" +
+                  '<span class="bk-meta">' + UI.icon("thumb-up") + " " + UI.esc(t("proposal.vote_up")) + " · " + x.up + " &nbsp; " + UI.icon("thumb-down") + " " + UI.esc(t("proposal.vote_down")) + " · " + x.down + "</span></li>";
+              }).join("") + "</ul></section>" +
+            "</div>";
+        }
+        function kpi(pair, key, moreIsBad) {
+          return '<div class="bk-kpi"><span class="bk-kpi__value">' + I.formatNumber(pair[0]) + '</span><span class="bk-kpi__label">' + UI.esc(t(key)) + "</span>" +
+            (key === "akim.kpi.fixed_week" ? '<span class="bk-kpi__delta">' + UI.esc(t("akim.kpi.fixed_period")) + "</span>" : delta(pair[0], pair[1], moreIsBad)) + "</div>";
+        }
+        function reload() { st.state = "loading"; render(); P.later(450, function () { st.state = "ready"; render(); }); }
+
+        Promise.all([I.ready, fetch("../categories_v2.json").then(function (r) { return r.json(); }).then(function (d) { categories = d.categories; })]).then(function () {
+          P.header($("pm-header"), "day", { nav: true, role: false });
+          P.banner($("pm-banner"));
+          $("pd-date").addEventListener("change", function (e) { st.date = e.target.value; reload(); });
+          $("pd-district").addEventListener("change", function (e) { st.district = e.target.value; reload(); });
+          $("pd-print").addEventListener("click", function () { window.print(); });
+          $("pd-date").setAttribute("aria-label", t("akim.date"));
+          I.onChange(render);
+          render();
+        });
+      })();
+    </script>
+  </body>
+</html>
