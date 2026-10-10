@@ -1,0 +1,124 @@
+{
+ "_comment": "Public history (civic-v1 shape) for R03 synthetic fixtures.",
+ "history": {
+  "r03-demo-shifted": [
+   {
+    "id": "h-1",
+    "object_id": "r03-demo-shifted",
+    "revision": 1,
+    "at": "2026-09-10T09:00:00+05:00",
+    "changed_fields": [
+     "title",
+     "schedule",
+     "budget"
+    ],
+    "reason": "Демо: создана запись",
+    "public_actor_label": "Редактор (демо)"
+   },
+   {
+    "id": "h-2",
+    "object_id": "r03-demo-shifted",
+    "revision": 2,
+    "at": "2026-09-12T11:30:00+05:00",
+    "changed_fields": [
+     "publication"
+    ],
+    "reason": "Демо: опубликовано",
+    "public_actor_label": "Редактор (демо)"
+   },
+   {
+    "id": "h-3",
+    "object_id": "r03-demo-shifted",
+    "revision": 3,
+    "at": "2026-10-05T16:40:00+05:00",
+    "changed_fields": [
+     "schedule.current_planned_end",
+     "status"
+    ],
+    "reason": "Демо: перенос из-за поставки материалов (синтетическая причина)",
+    "public_actor_label": "Редактор (демо)"
+   }
+  ],
+  "r03-demo-area": [
+   {
+    "id": "h-a1",
+    "object_id": "r03-demo-area",
+    "revision": 2,
+    "at": "2025-03-20T10:00:00+05:00",
+    "changed_fields": [
+     "publication"
+    ],
+    "reason": "Демо: опубликовано",
+    "public_actor_label": "Редактор (демо)"
+   },
+   {
+    "id": "h-a2",
+    "object_id": "r03-demo-area",
+    "revision": 3,
+    "at": "2026-06-01T10:00:00+05:00",
+    "changed_fields": [
+     {
+      "field": "schedule.current_planned_end",
+      "before": "2026-08-31",
+      "after": "2026-11-30"
+     }
+    ],
+    "reason": "Демо: первый перенос",
+    "public_actor_label": "Редактор (демо)"
+   },
+   {
+    "id": "h-a3",
+    "object_id": "r03-demo-area",
+    "revision": 4,
+    "at": "2026-09-15T10:00:00+05:00",
+    "changed_fields": [
+     {
+      "field": "schedule.current_planned_end",
+      "before": "2026-11-30",
+      "after": "2026-12-25"
+     }
+    ],
+    "reason": "Демо: второй перенос",
+    "public_actor_label": "Редактор (демо)"
+   }
+  ],
+  "r03-format-derived": [
+   {
+    "id": "h-1",
+    "object_id": "r03-format-derived",
+    "revision": 1,
+    "at": "2026-09-10T09:00:00+05:00",
+    "changed_fields": [
+     "title",
+     "schedule",
+     "budget"
+    ],
+    "reason": "Демо: создана запись",
+    "public_actor_label": "Редактор (демо)"
+   },
+   {
+    "id": "h-2",
+    "object_id": "r03-format-derived",
+    "revision": 2,
+    "at": "2026-09-12T11:30:00+05:00",
+    "changed_fields": [
+     "publication"
+    ],
+    "reason": "Демо: опубликовано",
+    "public_actor_label": "Редактор (демо)"
+   },
+   {
+    "id": "h-3",
+    "object_id": "r03-format-derived",
+    "revision": 3,
+    "at": "2026-10-05T16:40:00+05:00",
+    "changed_fields": [
+     "schedule.current_planned_end",
+     "status"
+    ],
+    "reason": "Демо: перенос из-за поставки материалов (синтетическая причина)",
+    "public_actor_label": "Редактор (демо)"
+   }
+  ]
+ }
+}
