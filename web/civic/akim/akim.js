@@ -379,7 +379,8 @@
           tr("akim.kpi.week", { n: week.value }) + " · ",
           deltaEl(week, false),
         ]),
-        kpiCard("in_progress", k.in_progress, "akim.kpi.in_progress", null, [tr("akim.kpi.waiting", { n: k.in_progress.waiting })]),
+        kpiCard("in_progress", k.in_progress, "akim.kpi.in_progress", null,
+          k.in_progress.waiting ? [tr("akim.kpi.waiting", { n: k.in_progress.waiting })] : null),
         kpiCard("overdue", k.overdue, "akim.kpi.overdue", false, [tr("akim.kpi.overdue_hint")]),
         kpiCard("fixed", k.fixed_week, "akim.kpi.fixed_week", true, [tr("akim.kpi.fixed_hint")]),
       ]);

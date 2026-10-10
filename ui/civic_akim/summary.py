@@ -238,7 +238,9 @@ class AkimService:
         now = now or self._clock()
         day, district = self._params(date, district, now)
         # Поколение кэша карты R07 в ключе: R09 сбрасывает кэш карты после новой жалобы — сбросится и наш.
-        key = (day.isoformat(), district, int(now.timestamp() // 60), getattr(self.heat, "_generation", 0))
+        gen = getattr(self.heat, "generation", None)
+        gen = getattr(self.heat, "_generation", 0) if gen is None else gen  # публичное имя — после patch R07
+        key = (day.isoformat(), district, int(now.timestamp() // 60), gen)
         with self._lock:
             hit = self._cache.get(key)
             if hit and time.monotonic() - hit[0] < CACHE_TTL_S:

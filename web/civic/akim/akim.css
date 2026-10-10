@@ -357,21 +357,74 @@
   .akim-skip {
     display: none !important;
   }
+  /* Лист A4 уже 720 px — без этих правил включилась бы телефонная раскладка (одна колонка, 4+ листа).
+     Для бумаги шрифт меньше экранного: правило «≥ 16 px» — про экран. */
   .akim {
     max-width: none;
     padding: 0;
+    --fs-caption: 10px;
+    --fs-body: 12px;
+    --fs-lead: 13px;
+    --fs-title: 15px;
+    --fs-h1: 20px;
+    --fs-num: 24px;
+    font-size: var(--fs-body); /* наследуемый размер: body задаёт экранные 16 px */
+  }
+  .akim__top {
+    margin-bottom: 8px;
+  }
+  .akim-bars .bk-bar {
+    grid-template-columns: minmax(0, 10em) 1fr 3ch;
+  }
+  .akim-grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) !important;
+    gap: 8px;
+  }
+  .akim-col {
+    display: grid !important;
+    gap: 8px;
+  }
+  .bk-card,
+  .bk-kpi {
+    padding: 10px 12px;
+  }
+  .akim-kpi {
+    min-height: 0;
+  }
+  .akim-kpi__vs {
+    display: block !important;
+  }
+  .akim-kpis,
+  .akim-summary,
+  .akim-demo {
+    margin-bottom: 8px;
+  }
+  .akim-card__head {
+    margin-bottom: 4px;
+  }
+  .akim-hot__item,
+  .akim-obj {
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+  .akim-hot__item .bk-heat {
+    min-width: 26px;
+    height: 22px;
+  }
+  .bk-bars {
+    gap: 2px;
+  }
+  .akim-bars .bk-bar {
+    min-height: 20px;
+  }
+  .akim-empty {
+    padding: 8px;
   }
   .bk-kpi,
   .akim-card {
     box-shadow: none !important;
     border: 1px solid #c9d3cb;
     break-inside: avoid;
-  }
-  .akim-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .akim-hot {
-    grid-column: 1 / -1;
   }
   .bk-kpis {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
