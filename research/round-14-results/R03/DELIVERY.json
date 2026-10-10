@@ -4,8 +4,8 @@
  "base_sha": "3c5ac25 (claude/round-14-package)",
  "restored_from": "нет: v1 (claude/wizardly-ptolemy-qy8ltw @ 14c3384, ml/civic_classifier/) только прочитан; признаки v1 повторены в logreg.py",
  "data_from": "R02 claude/r14-R02: synth_v3, v1_in_v2, probe_v2 (@ 73b97d2), llm_v1 (@ 2a95286, gpt-4.1-mini, 3979 текстов) — читаются по путям, в ветку R03 не копировались",
- "code_sha": "73df2bc",
- "tested_sha": "73df2bc",
+ "code_sha": "1f78f66",
+ "tested_sha": "1f78f66",
  "push_status": "OK (claude/r14-R03)",
  "changed_paths": [
   "ml/civic_classifier_v2/.gitignore",
@@ -67,8 +67,8 @@
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 83/83",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 76, NOT_RUN 7 (skipped с причиной)",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 87/87",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 80, NOT_RUN 7 (skipped с причиной)",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
@@ -96,7 +96,8 @@
   "to_cyrillic для трансформера (RUN.txt шаг 8в)": "NOT_RUN — ждёт ноутбук",
   "аудит меток llm_v1 (label_audit.py, облако)": "PASS — 115 кандидатов из 3979 (2.9 %), воспроизводится",
   "чистка шумных меток llm_v1: логрегрессия synth_all на probe_v2": "PASS — +0.008 [−0.008; +0.025], не доказано",
-  "FINAL-кандидат R01 2b9e837 + пути R03 @ 73df2bc: tests R03/R04/R09/R01": "PASS 787, skipped 1"
+  "FINAL-кандидат R01 2b9e837 + пути R03 @ 1f78f66: tests R03/R04/R09/R01": "PASS 791, skipped 1",
+  "ревью собственного кода: 9 исправлений с регрессионными тестами; логрегрессия/translit воспроизводятся бит в бит": "PASS"
  },
  "results_so_far": {
   "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",
@@ -143,5 +144,5 @@
   "translit": "ml/civic_classifier_v2/results/translit_to_cyrillic_probe_v2.json",
   "label_audit": "ml/civic_classifier_v2/results/LLM_LABEL_AUDIT.md (+ .json), llm_label_cleaning_effect.json"
  },
- "for_R01": "Взять 73df2bc вместо d472baf: B-004 исправлен, маркеры тестов (§9); проверено на 2b9e837 — 787 passed."
+ "for_R01": "Взять 1f78f66 вместо d472baf: B-004, маркеры тестов (§9), гонка get_default; проверено на 2b9e837 — 791 passed."
 }
