@@ -6,7 +6,7 @@
 - Трансформер: `FacebookAI/xlm-roberta-base`; seed 20261011; повторов с разными seed: 1
 - Режим запуска: **full**
 
-**Оценка на текстах людей: NOT_EVALUATED** — NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались.
+**Оценка на текстах людей: NOT_EVALUATED** — NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались.
 
 ## 1. Macro-F1 на текстах людей (95% ДИ, бутстрэп по текстам)
 
@@ -28,7 +28,7 @@ NOT_EVALUATED — таблица появится после разметки �
 
 | Модель | Люди: macro-F1 [95% ДИ] | probe_v2: macro-F1 [95% ДИ] | Покрытие | Примечание |
 |---|---|---|---|---|
-| LLM zero-shot (без обучения) | NOT_RUN | NOT_RUN | — | нет --zeroshot-preds (запуск zeroshot.py только локально с ключом API) |
+| LLM zero-shot (без обучения) | NOT_RUN | NOT_RUN | — | Шаг 5 пропущен: необязательный API-прогон с $HUMAN не выполнялся. |
 
 ## 2. Синтетический test (справочно, НЕ качество на людях)
 
@@ -184,5 +184,14 @@ Test синтетики — шаблоны, которых не было в об
 - synth_template: из синтетического train убрано 5 текстов, совпавших с оценочными
 - synth_all: из синтетического train убрано 5 текстов, совпавших с оценочными
 - NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались.
-- NOT_RUN: NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались. — human/heuristic, human/logreg, human/transformer, mix/heuristic, mix/logreg, mix/transformer
-- NOT_RUN: нет --zeroshot-preds (запуск zeroshot.py только локально с ключом API) — none/zeroshot_llm
+- NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались.
+- Шаги 5 и 6б: NOT_RUN; необязательный zero-shot API и кривая обучения на текстах людей пропущены.
+- LOCAL-4: CPU-тесты 65 PASS (19.00 с), GPU-check 1 эпоха PASS; только в GPU-check min_train_steps=0.
+- Пик torch.cuda.max_memory_allocated: 5.24 GiB. Время измеренных этапов: 1621.45 с.
+- Все оценки относятся к синтетическим данным; probe_v2 написан агентом вне шаблонов. Тексты людей не использовались. Итоговый режим synth_all задан правилом RUN.txt, не выбран по probe.
+- ONNX (штатный RUN): fp32 PASS; int8 agreement FAIL (96.5% < 97%); latency FAIL (102.86 ms >= 50 ms). Пороги не менялись.
+- Дополнительный вариант artifacts/onnx_per_channel: per_channel=True (QInt8), совпадение с PyTorch 98% в batch32 и batch1; CPU threads=4: mean 22.68 ms, p95 32.89 ms. Исходный export и код сохранены без изменения.
+- Кандидат требует явного Classifier.load(Path('ml/civic_classifier_v2/artifacts/onnx_per_channel'), backend='onnx', threads=4); путь по умолчанию по-прежнему использует штатный export.
+- Дополнительная диагностика ONNX: 219.81 с. Все измеренные этапы: 1841.26 с.
+- NOT_RUN: NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались. — human/heuristic, human/logreg, human/transformer, mix/heuristic, mix/logreg, mix/transformer
+- NOT_RUN: Шаг 5 пропущен: необязательный API-прогон с $HUMAN не выполнялся. — none/zeroshot_llm

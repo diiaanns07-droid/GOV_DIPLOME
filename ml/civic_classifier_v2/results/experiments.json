@@ -18958,41 +18958,41 @@
    "regime": "human",
    "model": "heuristic",
    "status": "NOT_RUN",
-   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались."
+   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались."
   },
   "human/logreg": {
    "regime": "human",
    "model": "logreg",
    "status": "NOT_RUN",
-   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались."
+   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались."
   },
   "human/transformer": {
    "regime": "human",
    "model": "transformer",
    "status": "NOT_RUN",
-   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались."
+   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались."
   },
   "mix/heuristic": {
    "regime": "mix",
    "model": "heuristic",
    "status": "NOT_RUN",
-   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались."
+   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались."
   },
   "mix/logreg": {
    "regime": "mix",
    "model": "logreg",
    "status": "NOT_RUN",
-   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались."
+   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались."
   },
   "mix/transformer": {
    "regime": "mix",
    "model": "transformer",
    "status": "NOT_RUN",
-   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались."
+   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались."
   },
   "none/zeroshot_llm": {
    "status": "NOT_RUN",
-   "reason": "нет --zeroshot-preds (запуск zeroshot.py только локально с ключом API)"
+   "reason": "Шаг 5 пропущен: необязательный API-прогон с $HUMAN не выполнялся."
   }
  },
  "meta": {
@@ -19182,11 +19182,20 @@
  "notes": [
   "synth_template: из синтетического train убрано 5 текстов, совпавших с оценочными",
   "synth_all: из синтетического train убрано 5 текстов, совпавших с оценочными",
-  "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались."
+  "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались.",
+  "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались.",
+  "Шаги 5 и 6б: NOT_RUN; необязательный zero-shot API и кривая обучения на текстах людей пропущены.",
+  "LOCAL-4: CPU-тесты 65 PASS (19.00 с), GPU-check 1 эпоха PASS; только в GPU-check min_train_steps=0.",
+  "Пик torch.cuda.max_memory_allocated: 5.24 GiB. Время измеренных этапов: 1621.45 с.",
+  "Все оценки относятся к синтетическим данным; probe_v2 написан агентом вне шаблонов. Тексты людей не использовались. Итоговый режим synth_all задан правилом RUN.txt, не выбран по probe.",
+  "ONNX (штатный RUN): fp32 PASS; int8 agreement FAIL (96.5% < 97%); latency FAIL (102.86 ms >= 50 ms). Пороги не менялись.",
+  "Дополнительный вариант artifacts/onnx_per_channel: per_channel=True (QInt8), совпадение с PyTorch 98% в batch32 и batch1; CPU threads=4: mean 22.68 ms, p95 32.89 ms. Исходный export и код сохранены без изменения.",
+  "Кандидат требует явного Classifier.load(Path('ml/civic_classifier_v2/artifacts/onnx_per_channel'), backend='onnx', threads=4); путь по умолчанию по-прежнему использует штатный export.",
+  "Дополнительная диагностика ONNX: 219.81 с. Все измеренные этапы: 1841.26 с."
  ],
  "human_eval": {
   "status": "NOT_EVALUATED",
-  "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; тексты людей не читались."
+  "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались."
  },
  "comparisons": [
   {
@@ -20153,18 +20162,169 @@
  "best_on_human": null,
  "best_on_probe": "synth_all/transformer",
  "local_execution": {
-  "status": "IN_PROGRESS",
-  "completed": [
-   "CPU tests: 65 PASS, 19.00 s",
-   "GPU check: PASS, 5.24 GiB",
-   "experiments: 12 synthetic runs OK, 924.84 s"
-  ],
-  "remaining": [
-   "final synth_all training",
-   "ONNX int8 export and validation"
-  ],
+  "status": "COMPLETE_WITH_EXPORT_CHECK_FAILURES",
   "data_git_sha": "2a95286b6ea52b4460ea37ce7cfc2f17fb70f4e5",
-  "step_5": "NOT_RUN",
-  "step_6b": "NOT_RUN"
+  "data_files": {
+   "ml/datasets/synth_v3/data/corpus_v3.jsonl": {
+    "git_blob_sha256": "90be30b0bd0358be44af4797a510a56ee9240e72f69743892739202fef83d0a7",
+    "git_blob_bytes": 2021209,
+    "checkout_sha256": "de7a78730f41cbb6dd110692b6b37b0d5d9c87f986dca05863d2282751deaf19",
+    "checkout_bytes": 2025469
+   },
+   "ml/datasets/llm_v1/corpus_llm_v1.jsonl": {
+    "git_blob_sha256": "12924d2bfc88843c27858e9b6e647a180701d470993ac69d250b02eb19fbe158",
+    "git_blob_bytes": 2294121,
+    "checkout_sha256": "87ae91c73860c2c9606b2a52b736f0b7d5b11b2043477f18d73748aa9b07c076",
+    "checkout_bytes": 2298100
+   },
+   "ml/datasets/v1_in_v2/corpus_v1_in_v2.jsonl": {
+    "git_blob_sha256": "156fe6f616a3294390c7d69ca4691a80c830bf0599cc05a54ec91093d626abfb",
+    "git_blob_bytes": 1187261,
+    "checkout_sha256": "616e3f01327c1eab296e3234a8c584c7878d0235dd9bb0ca4570d08d62b48c78",
+    "checkout_bytes": 1189986
+   },
+   "ml/datasets/probe_v2/probe_v2.jsonl": {
+    "git_blob_sha256": "cba3c7dbb0dc05b0b673545ab4fd64c3fa3bbf711151736e69436e6a10186172",
+    "git_blob_bytes": 159439,
+    "checkout_sha256": "05bf72faf04090a987dfeed16e342877056a93916ebba88d1166e4216a38a31b",
+    "checkout_bytes": 159739
+   }
+  },
+  "tests": {
+   "status": "PASS",
+   "passed": 65,
+   "seconds": 19.0,
+   "warnings": 6,
+   "device": "CPU"
+  },
+  "stages": {
+   "experiments": {
+    "status": "PASS",
+    "started_utc": "2026-10-10T14:37:47.977732+00:00",
+    "finished_utc": "2026-10-10T14:53:12.868917+00:00",
+    "seconds": 924.84,
+    "exit_code": 0,
+    "args": [
+     "-m",
+     "ml.civic_classifier_v2.experiments",
+     "--synth-v3",
+     "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r02-data\\ml\\datasets\\synth_v3",
+     "--v1-in-v2",
+     "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r02-data\\ml\\datasets\\v1_in_v2",
+     "--llm-v1",
+     "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r02-data\\ml\\datasets\\llm_v1",
+     "--probe-v2",
+     "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r02-data\\ml\\datasets\\probe_v2",
+     "--env-note",
+     "RTX 4060 Laptop 8 GB, Windows, Python 3.12.10, torch 2.14.1+cu126; R02 data commit 2a95286; no human data"
+    ]
+   },
+   "export": {
+    "status": "FAILED",
+    "started_utc": "2026-10-10T15:02:28.512764+00:00",
+    "finished_utc": "2026-10-10T15:05:27.830179+00:00",
+    "seconds": 179.31,
+    "exit_code": 1,
+    "args": [
+     "-m",
+     "ml.civic_classifier_v2.export_onnx",
+     "--texts",
+     "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r02-data\\ml\\datasets\\synth_v3\\data\\corpus_v3.jsonl",
+     "--n",
+     "200"
+    ]
+   },
+   "final": {
+    "status": "PASS",
+    "started_utc": "2026-10-10T14:53:32.410868+00:00",
+    "finished_utc": "2026-10-10T15:01:38.859310+00:00",
+    "seconds": 486.43,
+    "exit_code": 0,
+    "args": [
+     "-m",
+     "ml.civic_classifier_v2.train",
+     "--synth-v3",
+     "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r02-data\\ml\\datasets\\synth_v3",
+     "--llm-v1",
+     "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r02-data\\ml\\datasets\\llm_v1",
+     "--probe-v2",
+     "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r02-data\\ml\\datasets\\probe_v2"
+    ]
+   },
+   "gpu_check": {
+    "status": "PASS",
+    "started_utc": "2026-10-10T14:36:59.296793+00:00",
+    "finished_utc": "2026-10-10T14:37:28.811175+00:00",
+    "seconds": 29.51,
+    "exit_code": 0,
+    "args": [
+     "-m",
+     "ml.civic_classifier_v2.train",
+     "--regime",
+     "synth_template",
+     "--synth-v3",
+     "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-r02-data\\ml\\datasets\\synth_v3",
+     "--set",
+     "epochs=1",
+     "--set",
+     "min_train_steps=0",
+     "--out",
+     "ml\\civic_classifier_v2\\artifacts\\gpu_check"
+    ]
+   },
+   "onnx_diagnostics": {
+    "status": "PASS",
+    "started_utc": "2026-10-10T15:07:08.349980+00:00",
+    "finished_utc": "2026-10-10T15:10:48.168527+00:00",
+    "seconds": 219.81,
+    "exit_code": 0,
+    "args": [
+     "C:\\Users\\LEGION\\Documents\\Codex\\2026-10-10\\c-users-legion-desktop-hackalem-hack\\work\\diagnose_r03_onnx.py"
+    ]
+   },
+   "predict": {
+    "status": "PASS",
+    "started_utc": "2026-10-10T15:06:11.797934+00:00",
+    "finished_utc": "2026-10-10T15:06:13.154567+00:00",
+    "seconds": 1.36,
+    "exit_code": 0,
+    "args": [
+     "-m",
+     "ml.civic_classifier_v2.predict",
+     "Во дворе не горят фонари уже неделю",
+     "Аулада шам жанбайды, қараңғы",
+     "Не вывозят мусор, баки переполнены"
+    ]
+   }
+  },
+  "step_5": {
+   "status": "NOT_RUN",
+   "reason": "Optional zero-shot API step skipped; no human inputs or API calls."
+  },
+  "step_6b": {
+   "status": "NOT_RUN",
+   "reason": "Human learning curve excluded by owner."
+  },
+  "human_steps": {
+   "status": "NOT_RUN",
+   "reason": "NOT_RUN по запросу владельца: шаги с $HUMAN пропущены; файлы текстов людей не читались."
+  },
+  "gpu_peak_allocated_gib": 5.24,
+  "timed_stages_seconds": 1621.45,
+  "diagnostic_seconds": 219.81,
+  "all_timed_stages_seconds": 1841.26,
+  "gpu_check_override": {
+   "min_train_steps": 0,
+   "reason": "Ensure exactly one epoch as required by RUN step 4; training default otherwise expands to 300 steps."
+  },
+  "versions": {
+   "torch": "2.14.1+cu126",
+   "transformers": "5.19.0",
+   "onnx": "1.23.2",
+   "onnxruntime": "1.31.0",
+   "onnxscript": "0.7.2",
+   "scikit-learn": "1.9.1",
+   "pytest": "9.1.1"
+  }
  }
 }
