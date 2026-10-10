@@ -43,7 +43,27 @@ function uiScreen(page) {
         const r = box.getBoundingClientRect();
         return { h: Math.round(r.height), w: Math.round(r.width), t: (box.innerText || e.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 24) };
       });
+    // Текст, который ЧАСТИЧНО закрыт чужим элементом (одна панель наехала на другую, как B-039): у надписи есть видимые
+    // и закрытые точки. Полностью закрытое (панель под «Картиной дня») и значки на карте не считаем.
+    const onMapLayer = (e) => !!(e && e.closest && e.closest(".maplibregl-marker, .b3d-labels, .maplibregl-canvas-container, .maplibregl-ctrl-attrib"));
+    const clipped = [];
+    for (const el of document.querySelectorAll("body *")) {
+      const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+      if (own.length < 3 || onMapLayer(el)) continue;
+      if (el.closest("details:not([open])") && !el.closest("summary")) continue;  // содержимое свёрнутого <details> не рисуется
+      const r = el.getBoundingClientRect(), st = getComputedStyle(el);
+      if (r.width < 20 || r.height < 8 || st.visibility === "hidden" || st.opacity === "0" || r.top < 0 || r.bottom > innerHeight || r.left < 0 || r.right > innerWidth) continue;
+      const y = r.top + r.height / 2, pts = [r.left + 3, r.left + r.width / 2, r.right - 3];
+      let seen = 0, hidden = 0, by = null;
+      for (const x of pts) {
+        const h = document.elementFromPoint(x, y);
+        if (!h || h === el || el.contains(h) || h.contains(el)) seen++;
+        else if (!onMapLayer(h)) { hidden++; by = by || h; }
+      }
+      if (seen && hidden) clipped.push(`«${own.slice(0, 28)}» под «${(by.innerText || by.getAttribute("aria-label") || by.tagName).trim().replace(/\s+/g, " ").slice(0, 28)}»`);
+    }
     return {
+      clipped: clipped.slice(0, 6), clippedN: clipped.length,
       scrollW: document.documentElement.scrollWidth, innerW: innerWidth, lang: document.documentElement.lang,
       tech: (text.match(new RegExp(tech, "igu")) || []).slice(0, 8), raw: (text.match(new RegExp(raw, "g")) || []).slice(0, 8),
       tiny: tiny.slice(0, 8), tinyN: tiny.length, small: small.slice(0, 6), smallN: small.length,
