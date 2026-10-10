@@ -167,9 +167,27 @@ def load_targets(path: Path = TARGETS_PATH) -> list[dict]:
     return json.loads(Path(path).read_text(encoding="utf-8"))["items"]
 
 
+# Русский тип улицы → казахский после названия, когда в OSM нет name:kk: «улица Кенгир» → «Кенгир көшесі»
+# (то же правило, что kk_street_from_ru у R07; UX_REVIEW R11, ночь, п. 5: в ҚАЗ не оставлять «улица …» по-русски).
+_KK_STREET_TYPES = (("улица ", "көшесі"), ("проспект ", "даңғылы"), ("переулок ", "тұйық көшесі"),
+                    ("шоссе ", "тас жолы"), ("бульвар ", "бульвары"), ("площадь ", "алаңы"))
+
+
+def kk_street(name_ru: str | None) -> str | None:
+    """Казахская подпись улицы без name:kk: тип по-казахски, имя собственное как есть; не улица — без изменений."""
+    if not name_ru:
+        return name_ru
+    for ru_type, kk_type in _KK_STREET_TYPES:
+        if name_ru.startswith(ru_type):
+            return f"{name_ru[len(ru_type):]} {kk_type}"
+        if name_ru.endswith(" " + ru_type.strip()):
+            return f"{name_ru[: -len(ru_type)]} {kk_type}"
+    return name_ru
+
+
 def label(target: dict, lang: str) -> str:
     """Подпись для интерфейса: «Остановка «Нура»», «Двор: ЖК Инжу Арена», «Участок ул. …»."""
-    name = target.get("name_kk") if lang == "kk" and target.get("name_kk") else target.get("name_ru")
+    name = (target.get("name_kk") or kk_street(target.get("name_ru"))) if lang == "kk" else target.get("name_ru")
     kind = target["kind"]
     if lang == "kk":
         base = {"yard": "Аула", "bus_stop": "Аялдама", "playground": "Балалар алаңы", "park": "Саябақ",
@@ -181,7 +199,7 @@ def label(target: dict, lang: str) -> str:
         return f"{base} «{name}»"
     near = target.get("near")
     if near:
-        near_name = near.get("name_kk") if lang == "kk" and near.get("name_kk") else near["name_ru"]
+        near_name = (near.get("name_kk") or kk_street(near["name_ru"])) if lang == "kk" else near["name_ru"]
         if near["kind"] == "bus_stop":
             return f"{base} · жанында «{near_name}» аялдамасы" if lang == "kk" else f"{base} рядом: остановка «{near_name}»"
         return f"{base} · жанында {near_name}" if lang == "kk" else f"{base} рядом: {near_name}"

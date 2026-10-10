@@ -289,3 +289,18 @@ def test_score_month_fallback_without_sklearn(small):
         "almaty", "baikonur", "esil", "nura", "saraishyk", "saryarka"}
     first = block["items"][block["rank_city"][0]]
     assert "confirmed" in first and first["reasons"]
+
+
+# --- подписи территорий по-казахски (UX_REVIEW R11, ночь, п. 5) ---------------------------------------
+
+def test_kk_labels_have_no_russian_street_words():
+    import re
+    from ml.civic_forecast.targets import kk_street, label, load_targets
+    assert kk_street("улица Кенгир") == "Кенгир көшесі"
+    assert kk_street("проспект Нургисы Тлендиева") == "Нургисы Тлендиева даңғылы"
+    assert kk_street("ЖК Үркер city") == "ЖК Үркер city"  # не улица — как есть
+    assert label({"kind": "yard", "near": {"kind": "segment", "name_ru": "улица Кенгир"}}, "kk") == "Аула · жанында Кенгир көшесі"
+    assert label({"kind": "yard", "near": {"kind": "segment", "name_ru": "улица Кенгир"}}, "ru") == "Двор рядом: улица Кенгир"
+    words = re.compile(r"\b(улица|проспект|переулок|шоссе|бульвар|площадь)\b")
+    bad = [t["id"] for t in load_targets() if words.search(label(t, "kk"))]
+    assert bad == [], bad[:5]
