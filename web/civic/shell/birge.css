@@ -134,7 +134,7 @@ body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-pic
   /* Панель «Территория» свёрнута в кнопку 48 px; раскрытая — как раньше. */
   .civic-mode .civic-explore[data-open="false"] { right: auto; padding: 0; }
   .civic-mode .civic-explore[data-open="false"] > :not(.civic-explore-toggle) { display: none; }
-  .civic-mode .civic-explore-toggle {
+  .civic-mode .civic-explore .civic-explore-toggle {
     display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 14px;
     font-size: 16px; font-weight: 650; color: var(--c-ink, #152c26); background: transparent; border: 0;
   }
@@ -164,3 +164,6 @@ body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-pic
   /* Шторка раскрыта во весь экран: карты почти не видно, наверху слева — атрибуция OSM; легенда не нужна. */
   body[data-civic-sheet="full"].civic-mode .r07-maplegend { display: none; }
 }
+/* Заголовок блока «Астана · городские работы» в панели (R01) — не мельче 14 px (R10 B-013). Счётчик и пояснения
+   внутри блока рисует модуль карты R12 (civic-map.js) — просьба в INTEGRATION §10. */
+.civic-mode .civic-works .eyebrow, .civic-mode .civic-data-note { font-size: 14px; }

@@ -1,6 +1,7 @@
 R01 · раунд 14 · RUN — как запустить Birge на Windows с нуля
 
-Ветка R01: claude/sharp-dijkstra-0t87gl (актуальный SHA сборки — research/handoffs/astana/R01/round14/STATUS.md).
+Ветка R01: claude/r14-R01 (с 10 окт, B3; до B2 включительно — claude/sharp-dijkstra-0t87gl, история та же).
+Актуальный SHA сборки — research/handoffs/astana/R01/round14/STATUS.md.
 
 =====================================================================================================
 1. Первый запуск на ноутбуке владельца (Windows 10/11)
@@ -10,7 +11,7 @@ R01 · раунд 14 · RUN — как запустить Birge на Windows с 
 2) Получить сборку:
        cd C:\Users\LEGION\Desktop\hackalem\hack-d3b2c613-stupits
        git fetch origin
-       git switch --detach origin/claude/sharp-dijkstra-0t87gl      (или нужный SHA сборки B1/B2/FINAL)
+       git switch --detach origin/claude/r14-R01      (или нужный SHA сборки B1/B2/B3/FINAL)
 3) Запуск одной командой (двойной щелчок или из консоли):
        run-city.bat
    Что делает: создаёт .venv, ставит зависимости (первый раз несколько минут), загружает СИНТЕТИЧЕСКИЙ демо-срез
@@ -18,14 +19,14 @@ R01 · раунд 14 · RUN — как запустить Birge на Windows с 
    В консоли должно быть:
        civic-v1: store=ready, feedback=ready, scenarios=ready, assistant=ready
        civic-v2: ready R04, R06, R07, R08, R09, R12, R13
+       civic-demo: R06 synthetic projects 5 (new 5), object stages 7      (при повторном запуске — new 0)
        Birge: http://127.0.0.1:8611
    Остановить — Ctrl+C. Порт занят — закрыть прежнее окно или:  set PORT=8612 && run-city.bat
 
-4) Демо-этапы объектов и 5 демо-предложений (R06, синтетика; повторный запуск ничего не дублирует), один раз после
-   первого run-city.bat (окно приложения можно не закрывать):
+4) Демо-этапы объектов и 5 демо-предложений (R06, синтетика) сборка с B3 загружает САМА при запуске run-city.bat
+   (CIVIC_DEMO=1; повторный запуск ничего не дублирует, снятые проекты не возвращает) — строка civic-demo в консоли.
+   Ручная команда осталась для базы без CIVIC_DEMO:
        .venv\Scripts\python -B -m ui.civic_store --db .runtime\round11-local.sqlite3 seed-r14-demo
-   Без этого на карте нет примеров проектов для голосования (проверено: 0 предложений), а в «Картине дня» —
-   1 отстающий объект вместо 4. После команды обновите страницу (F5).
 5) Вход сотрудника акимата (нужен для «Взять в работу», этапов объектов, предложений; один раз):
        .venv\Scripts\python -m ui.civic_store --db .runtime\round11-local.sqlite3 create-editor operator
    Пароль вводится скрыто. В интерфейсе: «Для сотрудников» → логин и пароль.
@@ -48,7 +49,8 @@ R01 · раунд 14 · RUN — как запустить Birge на Windows с 
 - Старые режимы: только по ссылке …/#training и …/#school; инструменты раунда 13 — …/?tools=all.
 - API v2: http://127.0.0.1:8611/api/civic/v2/modules — какие модули ролей подключены.
 
-Подложка карты (улицы, 3D-здания) грузится с OpenFreeMap — нужен интернет; без него — упрощённый фон с сообщением.
+Подложка карты (улицы с подписями, 3D-здания) грузится с OpenFreeMap — нужен интернет. Без него (с B3) — настоящие
+оси улиц OSM без подписей на простом фоне и плашка «Карта улиц не загрузилась…»; жалобы и объекты на месте.
 
 =====================================================================================================
 3. Проверки (разработчику; облако или ноутбук с Node 20+ и Playwright)
@@ -58,6 +60,9 @@ R01 · раунд 14 · RUN — как запустить Birge на Windows с 
     bash tests/civic/R01/run_checks.sh <папка>             всё сразу: pytest, web_check, node, браузер
     node tests/civic/R01/browser/r14_shell.cjs <папка>     шапка Birge: 1366 и 375, ru и kk (скриншоты в папке)
     node tests/civic/R01/browser/r14_b2.cjs <папка>        путь демо B2: предложение в 3D, голос жителя, «Удалить»
+    node tests/civic/R01/browser/r14_shots.cjs <папка>     скриншоты главных экранов (акимат/житель × 1366/375 × ru/kk)
+                                                           и короткий отчёт: прокрутка вбок, наложения плашек
+В облаке Claude Playwright стоит глобально: перед node задайте NODE_PATH=$(npm root -g).
 Тесты R03 запускайте в общем прогоне (pytest tests) или отдельно (pytest tests/civic/R03/round14), не списком
 папок вместе с другими — см. INTEGRATION.txt §9.
 Windows без bash: те же команды python/node по одной (run_checks.sh — список шагов).

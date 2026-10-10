@@ -17,6 +17,12 @@ const checks = [];
 const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null });
   console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined && detail !== null ? " — " + JSON.stringify(detail).slice(0, 400) : "")); };
 const notRun = (name, reason) => { checks.push({ name, status: "NOT_RUN", detail: reason }); console.log("NOT_RUN " + name + " — " + reason); };
+// B3: на телефоне (≤ 760 px) панель «Территория» свёрнута в одну кнопку (explore.js) и сама сворачивается после
+// выбора района или улицы — перед действием с панелью раскрываем её, как это сделал бы житель.
+async function openExplore(page) {
+  const toggle = await page.$('.civic-explore[data-open="false"] .civic-explore-toggle');
+  if (toggle && await toggle.isVisible()) { await toggle.click(); await page.waitForTimeout(150); }
+}
 // R03's intermittent "Image civic-r03-demo-ring could not be loaded" (race after the offline style
 // swap; R03-owned, fix proposed in research/round-13-results/R01/proposed/r03_r01_proposal.patch) is
 // reported as its own FAIL so it neither hides other page errors nor masquerades as an R01 error.
@@ -177,10 +183,12 @@ async function emptyRegistry(browser, base) {
     const lay = await layout(page);
     check(`${tag}: empty registry: no overlaps`, lay.over.length === 0, lay.over);
     await page.screenshot({ path: path.join(OUT, `07_empty_registry_${tag}.png`) });
+    await openExplore(page);
     await page.click(".civic-explore-objects");
     await page.waitForTimeout(600);
     const toastText = await page.evaluate(() => document.querySelector(".toast")?.textContent || "");
     check(`${tag}: "К объектам" on an empty registry says the registry is empty`, /реестре пока нет/.test(toastText), toastText);
+    await openExplore(page);
     await page.selectOption(".civic-explore select", { index: 1 });
     await page.waitForTimeout(2600);
     const view = await page.textContent(".civic-explore-view");
@@ -202,6 +210,13 @@ async function emptyRegistry(browser, base) {
     else for (const [w, h] of VIEWPORTS) {
       const tag = `${w}x${h}`;
       const { ctx, page } = await openPage(browser, base, w, h);
+      if (w < 761) {
+        const folded = await page.evaluate(() => { const t = document.querySelector(".civic-explore-toggle"), r = t?.getBoundingClientRect();
+          return { open: document.querySelector(".civic-explore")?.dataset.open, h: r && Math.round(r.height), label: t?.textContent || "" }; });
+        check(`${tag}: phone: «Территория» folded into one button (≥ 48 px), the map stays free`,
+          folded.open === "false" && folded.h >= 48 && /Территория/.test(folded.label), folded);
+        await openExplore(page);
+      }
       const lay = await layout(page);
       check(`${tag}: no horizontal scroll`, lay.scrollW <= lay.innerW, lay);
       check(`${tag}: navigation box, map tools, top bar and panel do not overlap`, lay.over.length === 0, lay.over);
@@ -247,6 +262,7 @@ async function emptyRegistry(browser, base) {
       check(`${tag}: street view line says how many published records are in frame (zero is not "no works")`,
         /Улица: .*(записей в кадре: \d+|в кадре опубликованных записей нет \(это не значит, что работ нет\))/.test(streetView || ""), streetView);
       await page.screenshot({ path: path.join(OUT, `03_street_${tag}.png`) });
+      await openExplore(page);
       await input.fill("Егемен Қазақстан");
       await page.waitForSelector("#civic-explore-listbox:not([hidden]) [role=option]", { timeout: 8000 });
       const longName = await page.evaluate(() => { const l = document.getElementById("civic-explore-listbox"), b = l.getBoundingClientRect();
@@ -267,6 +283,7 @@ async function emptyRegistry(browser, base) {
       // ---- camera: a fast 3D -> zoom -> "К объектам" sequence ends in a consistent 3D state
       await page.click("#toggle-3d"); await page.waitForTimeout(120);
       await page.click("#zoom-in"); await page.waitForTimeout(80);
+      await openExplore(page);
       await page.click(".civic-explore-objects"); await page.waitForTimeout(2600);
       const cam = await page.evaluate(() => ({ pitch: Math.round(map.getPitch()), pressed: document.getElementById("toggle-3d").getAttribute("aria-pressed") === "true",
         moving: map.isMoving() }));
@@ -323,6 +340,7 @@ async function emptyRegistry(browser, base) {
       await page.goto(base);
       await page.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined" && mapReady, null, { timeout: 40000 });
       await page.waitForSelector(".civic-explore", { timeout: 15000 });
+      await openExplore(page);
       const input = page.locator(".civic-explore-field input");
       await input.fill("Кабанбай");
       const loading = await page.textContent(".civic-explore-status");
@@ -337,6 +355,7 @@ async function emptyRegistry(browser, base) {
         retryKept: !!document.querySelector(".civic-explore-retry") }));
       check("360x800: district navigation works while street search is down (retry stays offered)",
         !!district.value && district.zoom > cityZoom + 0.3 && district.retryKept, { cityZoom, ...district });
+      await openExplore(page);  // выбор района свернул панель
       await page.click(".civic-explore-retry");
       await input.fill("Кабанбай");
       const recovered = await page.waitForSelector("#civic-explore-listbox:not([hidden]) [role=option]", { timeout: 8000 }).then(() => true).catch(() => false);
