@@ -136,8 +136,10 @@
       // Safe to repeat: a 403 CSRF rejection means the server did not act.
       if (error instanceof CivicApiError && error.status === 403 && /csrf/i.test(error.code)
           && method === "POST" && !options?.retried) {
+        const who = session.user?.name || null;
         await refreshSession().catch(() => null);
-        if (session.authenticated) return request(method, path, body, { ...options, retried: true });
+        // R04 r13 patch: never re-send a staff POST as a different user (another tab signed in).
+        if (session.authenticated && (session.user?.name || null) === who) return request(method, path, body, { ...options, retried: true });
       }
       throw error;
     }
@@ -148,7 +150,8 @@
   const api = {
     request,
     login: (username, password) => request("POST", "/session/login", { username, password }),
-    logout: () => request("POST", "/session/logout", {}),
+    // R06 round 13: drafts and receipt numbers of this tab are dropped on logout.
+    logout: () => request("POST", "/session/logout", {}).finally(() => { try { window.CivicFeedback?.clearDrafts?.(); } catch { /* optional module */ } }),
     refreshSession,
     get session() { return publicSession(); },
     onSession(listener) { sessionListeners.add(listener); return () => sessionListeners.delete(listener); },
@@ -306,6 +309,11 @@
       // Proposed R03 option (INTEGRATION.txt): camera padding from the host's live layout. An R03
       // that does not know it ignores it; the shell's fitAll adapter/keepVisible cover that case.
       getPadding: () => freeArea(),
+      // R03 round 13 (proposed_r01_shell.patch, CONTRACT.txt): the module frames its camera with the
+      // shell's tilt and reports the loaded card's geometry. Older modules ignore these options.
+      getPitch: () => intendedPitch(),
+      getBearing: () => (intendedPitch() ? intendedBearing() : 0),
+      onDetail: (detail) => onDetail(detail),
       onFeedback: (target) => openFeedback(target),
     });
     if (S.selected) S.mounted.map?.selectObject?.(S.selected);
@@ -314,6 +322,13 @@
     if (S.mode !== "civic") return;
     mountPublic();
   }
+  // R03 >= round 13 sends the loaded card (with geometry) here; no second GET /objects/{id} needed.
+  function onDetail(detail) {
+    if (!detail || detail.id !== S.selected) return;
+    if (detail.title) S.mounted.explore?.setView?.("Открыта запись: " + detail.title, "object");
+  }
+  // Признак модуля карты раунда 13: он сам держит камеру (getPadding/getPitch) и ввод (setInteractionEnabled).
+  const r03Camera = () => typeof S.mounted.map?.setInteractionEnabled === "function";
 
   // A map click belongs to the active tool: R04 drawing (civic-editor:tool) or the open scenario drawer
   // (R07 picks closures/points by clicking the map). R03 does not know these tools, so a click that
@@ -330,7 +345,7 @@
     }
     const id = item && typeof item === "object" ? item.id : item;
     S.selected = typeof id === "string" ? id : null;
-    if (S.selected && window.CivicExplore) {
+    if (S.selected && window.CivicExplore && !r03Camera()) {
       // A permalink selects before R03's list has loaded ({id} only): read the public geometry then.
       const id = S.selected;
       const located = item?.geometry ? Promise.resolve(item)
@@ -357,7 +372,10 @@
         if (seq !== S.assistantSeq || S.selected !== id || S.mode !== "civic") return;
         $c("civic-assistant-box").hidden = false;
         // R09: the card's revision on screen; an answer built for another revision is not shown.
-        mount("assistant", $c("civic-assistant-root"), { objectId: id, revision: revisionOf(data) });
+        // onStale (R09 r13 patch): сервер ответил object_revision_changed — перечитываем карточку,
+        // чтобы и карточка, и помощник показывали текущую редакцию.
+        mount("assistant", $c("civic-assistant-root"), { objectId: id, revision: revisionOf(data),
+          onStale: () => { if (seq === S.assistantSeq && S.selected === id) onSelect({ id }); } });
       }).catch((error) => {
         if (seq !== S.assistantSeq || S.selected !== id) return;
         if (error?.status === 404) {
@@ -390,6 +408,18 @@
     mount("feedback", $c("civic-feedback-root"), { objectId, geometry });
     $c("civic-feedback-box").scrollIntoView({ block: "nearest", behavior: motionSafe() ? "smooth" : "auto" });
     if (innerWidth < 761) setSheet("full");
+  }
+  // R06 round 13: a receipt link (#civic-receipt=fbr_…, fragment never reaches the server) opens the
+  // resident's status card: platform status, platform reply and timeline without staff data.
+  function openReceiptFromLink() {
+    const feedback = window.CivicFeedback;
+    if (S.modules?.feedback?.status !== "ready" || typeof feedback?.mountReceipt !== "function") return false;
+    if (!feedback.receiptFromLocation?.()) return false;
+    destroyMounted("feedback");
+    $c("civic-feedback-box").hidden = false;
+    S.mounted.feedback = feedback.mountReceipt({ root: $c("civic-feedback-root"), api }) || {};
+    if (innerWidth < 761) setSheet("full");
+    return true;
   }
   function closeFeedback() {
     destroyMounted("feedback");
@@ -616,6 +646,7 @@
   function fitAllObjects() {
     const m = currentMap(), r03 = S.mounted.map;
     if (!m || typeof r03?.fitAll !== "function") return false;
+    if (r03Camera()) return r03.fitAll();  // getPadding/getPitch already passed at mount: no fitBounds swap
     const original = m.fitBounds;
     m.fitBounds = function (bounds, options) {
       const pitch = intendedPitch();
@@ -752,7 +783,7 @@
     mountExplore();
     civicCamera();
     setSheet("half");
-    void loadModules().then(() => mountPublic());
+    void loadModules().then(() => { mountPublic(); openReceiptFromLink(); });
   }
   function deactivateCivic() {
     placeMapStatus(false);  // before the navigation box (its current parent) is destroyed
@@ -821,6 +852,7 @@
   function initialMode() {
     const hash = location.hash.replace(/^#/, "");
     if (hash === "training" || hash === "school") return hash;
+    if (hash.startsWith("civic-receipt=")) return "civic";   // R06 receipt link opens the civic map
     if (hash.startsWith("object=")) {
       try { S.selected = decodeURIComponent(hash.slice(7)) || null; } catch { S.selected = null; }
       return "civic";
@@ -877,6 +909,7 @@
   // In-page navigation to #object=<id>, #training or #school (links, back/forward).
   window.addEventListener("hashchange", () => {
     const hash = location.hash.replace(/^#/, "");
+    if (hash.startsWith("civic-receipt=")) { if (S.mode !== "civic") setMode("civic"); else openReceiptFromLink(); return; }
     if (hash === "training" || hash === "school" || hash === "civic") { setMode(hash); return; }
     if (!hash.startsWith("object=")) return;
     let id = null;

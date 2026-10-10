@@ -1,0 +1,99 @@
+R01 · раунд 14 · INTEGRATION — как модули ролей подключаются к общей сборке Birge
+
+Ветка R01: claude/sharp-dijkstra-0t87gl (ветка сессии R01; правило «claude/r14-<роль>» появилось в пакете позже
+запуска этой сессии — см. research/handoffs/astana/R01/round14/STATUS.md). SHA сборок — там же.
+
+=====================================================================================================
+1. API v2: какие функции ищет шлюз ui/web_server.py
+=====================================================================================================
+Все маршруты /api/civic/v2/* (CONTRACT §7) уже есть в шлюзе. Для каждого шлюз ищет функцию по таблице ниже
+(первый найденный модуль). Нет модуля или функции — ответ 503:
+    {"error": "module_not_ready", "message": "...", "module": "ui.civic_ml_api", "role": "R04"}
+Приложение при этом работает. Состояние всех маршрутов: GET /api/civic/v2/modules.
+
+| Маршрут                          | Роль | Модуль (по порядку)                       | Функция и аргументы |
+|----------------------------------|------|-------------------------------------------|---------------------|
+| POST /classify {text}            | R04  | ui.civic_ml_api                           | classify(text) |
+| POST /similar {text,point?,days?}| R04  | ui.civic_ml_api                           | similar(text, point=None, days=None) |
+| GET /targets?lon&lat&category    | R12  | engine.civic_geo                          | targets(lon, lat, category=None) |
+| POST /complaints                 | R09  | ui.civic_feedback.v2, ui.civic_feedback   | create_complaint(body) |
+| GET /complaints?bbox&since       | R09  | то же                                     | list_complaints(bbox=None, since=None) |
+| POST /complaints/{id}/metoo      | R09  | то же                                     | add_metoo(complaint_id, body) |
+| POST /complaints/{id}/status  [С]| R09  | то же                                     | set_complaint_status(complaint_id, body) |
+| GET /heat?bbox&days&category&zoom| R07  | ui.civic_heat                             | heat(bbox=None, days=None, category=None, zoom=None) |
+| GET /akim/summary?date&district  | R08  | ui.civic_akim                             | summary(date=None, district=None) |
+| GET /proposals?bbox              | R06  | ui.civic_store.v2, ui.civic_store         | list_proposals(bbox=None) |
+| POST /proposals               [С]| R06  | то же                                     | create_proposal(body) |
+| POST /proposals/{id}/vote        | R06  | то же                                     | vote_proposal(proposal_id, value, device_id) |
+| GET /objects?bbox                | R06  | то же                                     | list_objects(bbox=None) |
+| PUT /objects/{id}/stage       [С]| R06  | то же                                     | set_object_stage(object_id, body) |
+
+[С] — только сотрудник: шлюз сам проверяет сессию редактора R02 (cookie + заголовок X-CSRF-Token, как staff-маршруты
+v1) и не вызывает функцию без неё (401/403).
+
+Если у вас функция называется иначе или лежит в другом модуле — напишите в своём INTEGRATION.txt строку
+«R01: маршрут → модуль.функция», R01 поправит одну строку таблицы V2_HANDLERS. Не нужно подстраивать имена под меня.
+
+Что шлюз уже проверил ДО вызова функции (ответ 400 {"error":"bad_request","field":...,"message":...}):
+- text: непустая строка ≤ 5000 символов (classify, similar, complaints).
+- point: [lon, lat] внутри Астаны (70.9–71.9, 50.9–51.4); lon/lat — так же; bbox — 4 числа, min < max, пересекается с Астаной.
+  bbox приходит в функцию кортежем (minLon, minLat, maxLon, maxLat).
+- category: id из research/round-14/categories_v2.json.
+- days: целое 1..365; zoom: 0..24; date: ГГГГ-ММ-ДД; district: латиница [a-z0-9_-] (id района, напр. "nura").
+- vote: value ∈ {1, -1}, device_id — строка 8–128 символов [A-Za-z0-9._:-].
+- {id} в пути: правило v1 ^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}$.
+- Тело — JSON-объект ≤ 64 КБ; Host — этот сервер; POST/PUT с чужим Origin отклоняются.
+Остальные поля body (статус, этап, вид предложения…) проверяет сама функция.
+
+Что функция возвращает:
+    return {...}                 -> 200, этот объект уходит как есть (без обёртки ok/data)
+    return (201, {...})          -> свой код
+    raise ValueError("текст")    -> 400 bad_request (текст пишите по-русски, он может попасть пользователю)
+    raise KeyError / LookupError -> 404 not_found
+    raise PermissionError        -> 403 forbidden
+    исключение с атрибутами status (400..599) и code (str), message (необязательно) -> этот код
+    любое другое исключение      -> 500 internal; подробности только в журнале сервера
+Необязательные именованные параметры: если функция объявляет context=None — получит заголовки/cookies/адрес клиента;
+principal=None — {"username", "role"} сотрудника (для [С]) или None. Не объявили — не передаются.
+
+Функции вызываются из потоков сервера одновременно: ленивую загрузку модели/данных защищайте блокировкой.
+Без сети. Модель > 50 МБ — не в Git (см. LOCAL-задачи).
+
+Проверка без браузера:
+    python -m pytest -q tests/civic/R01/test_r01_api_v2.py
+    python -c "from ui.web_server import CivicV2Gateway; import json; print(json.dumps(CivicV2Gateway().modules(), ensure_ascii=False, indent=1))"
+
+=====================================================================================================
+2. Фронтенд: как модуль экрана подключается к оболочке
+=====================================================================================================
+Оболочка (web/civic/shell/) — шапка Birge, ҚАЗ/РУС, «Акимат / Житель», разделы «Карта» и «Картина дня».
+Модули экранов (R05 3D, R06 предложения, R07 тепловая карта, R08 картина дня, R09 жалоба) — свои файлы в своих
+папках. Шлюз раздаёт ТОЛЬКО файлы из белого списка CIVIC_ASSETS в ui/web_server.py: напишите в INTEGRATION.txt
+точный список своих .js/.css/.json, которые должен отдавать сервер, и порядок <script> в web/index.html.
+Точку монтирования опишите в духе раунда 13: window.<Имя>.mount({root, api, lang, mode, map}) -> {update, destroy}.
+- api — клиент оболочки: api.v2(method, path, body) -> Promise<JSON>; ошибки — объект с полями status, error, message.
+- Язык: модуль сам подписывается на BirgeI18n.onChange (R11) и перерисовывается; весь текст — через ключи R11.
+- mode: "akimat" | "resident" (переключатель в шапке); событие document "birge:mode" {detail:{mode}}.
+- map: экземпляр MapLibre (может быть null, пока карта грузится: передаётся функцией map(), как у R04 в раунде 13).
+
+=====================================================================================================
+3. Что R01 уже применил из раунда 13 (сборка I0)
+=====================================================================================================
+Таблица переноса и проверки — research/round-14-results/R01/BUILD_LOG.md.
+Патчи к общим файлам (web/civic/shell/shell.js, ui/web_server.py) перенесены вручную, т. к. писались к старой оболочке:
+  R02 gateway_routes.patch (staff/meta, audit, import-candidates) — применён как есть;
+  R03 proposed_r01_shell.patch (getPadding/getPitch/getBearing/onDetail, fitAll без подмены fitBounds) — перенесён;
+  R04 r01_editor_integration.patch — маршруты вошли с патчем R02; повтор POST после CSRF только тем же пользователем — перенесён;
+      map-getter и обработка архива уже были в оболочке раунда 13;
+  R06 r01_r13_integration.patch — ссылка квитанции #civic-receipt=, очистка черновиков при выходе, classifier_source="r08";
+      r08_test_score_hidden.patch (тест R08) — применён как есть;
+  R09 r01_integration_r13.patch — кэш результатов сравнения уже был; onStale при смене редакции — перенесён.
+Не применялись (устарели): R07 r01_scenarios_tool.patch и r03_pause_map_input.patch, R04 r03_editor_tool.patch,
+R01 r03_r01_proposal.patch — карта f0a52f7 сама слушает civic-editor:tool / civic-scenarios:tool и styleimagemissing.
+
+=====================================================================================================
+4. Для других ролей: папки тестов раунда 13
+=====================================================================================================
+tests/civic/R02…R09 содержат тесты раунда 13 по СТАРОЙ нумерации ролей (R02 хранилище, R03 карта, R04 редактор,
+R05 данные, R06 жалобы v1, R07 сценарии, R08 классификатор v1, R09 помощник). Они проверяют восстановленные модули.
+Свои тесты раунда 14 кладите новыми файлами; старые не удаляйте без записи в INTEGRATION.txt (R01 решит при сборке).

@@ -97,6 +97,12 @@ CIVIC_ROUTES = (
     ("POST", ("staff", "objects", "{id}", "update"), "store"),
     ("POST", ("staff", "objects", "{id}", "publish"), "store"),
     ("POST", ("staff", "objects", "{id}", "archive"), "store"),
+    # R02 round 13 (compatible additions): editor reference data, audit page, import candidates.
+    ("GET", ("staff", "meta"), "store"),
+    ("GET", ("staff", "audit"), "store"),
+    ("GET", ("staff", "objects", "{id}", "import-candidates"), "store"),
+    ("POST", ("staff", "objects", "{id}", "import-candidates", "{id}", "apply"), "store"),
+    ("POST", ("staff", "objects", "{id}", "import-candidates", "{id}", "dismiss"), "store"),
     ("POST", ("feedback",), "feedback"),
     ("GET", ("staff", "feedback"), "feedback"),
     ("POST", ("staff", "feedback", "{id}", "moderate"), "feedback"),
@@ -311,8 +317,10 @@ class CivicGateway:
                                              "training_data_status": status.get("training_data_status"),
                                              "score_kind": status.get("score_kind")}
                 fn = status.get("classify") if status.get("available") else None
+            # classifier_source="r08" (R06 r13 patch): staff and reports see that the hint came from the R08 model.
             return service_module.FeedbackService(str(db_path), lookup, getattr(store_service, "clock", None),
-                                                  classifier=fn)
+                                                  classifier=fn,
+                                                  classifier_source="r08" if fn is not None else None)
 
         def scenarios():
             # R07 @22fa413: graphs only by id from its MANIFEST; every graph is hashed at start so a
