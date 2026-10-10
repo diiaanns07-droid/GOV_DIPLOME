@@ -1,7 +1,7 @@
 {
  "meta": {
-  "root": "<worktree fa117c3>",
-  "sha": "fa117c3",
+  "root": "<worktree 0df9531>",
+  "sha": "0df9531",
   "base": "http://127.0.0.1:<порт>/",
   "seeds": [],
   "sizes": [
@@ -12,11 +12,11 @@
    "ru",
    "kk"
   ],
-  "when": "2026-10-10T20:43:52.188Z",
+  "when": "2026-10-10T21:02:57.389Z",
   "node": "v22.22.0"
  },
  "counts": {
-  "PASS": 140,
+  "PASS": 144,
   "FAIL": 0,
   "NOT_RUN": 0
  },
@@ -132,7 +132,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "c-b8bd4335bafc02f7",
+    "id": "c-2ea94ce1333ed719",
     "st": "new"
    },
    "shot": null
@@ -146,7 +146,7 @@
     "status": 200,
     "n": 1,
     "top": {
-     "complaint_id": "c-b8bd4335bafc02f7",
+     "complaint_id": "c-2ea94ce1333ed719",
      "score": 0.798,
      "target": {
       "id": "osm-node-13394597038",
@@ -157,7 +157,7 @@
      "metoo": 0,
      "people": 1,
      "category": "transport",
-     "created_at": "2026-10-11T01:34:26+05:00",
+     "created_at": "2026-10-11T01:53:32+05:00",
      "status": "new",
      "distance_m": 44.3,
      "same_target": false
@@ -268,7 +268,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "p-72009d557cc9",
+    "id": "p-61a1d9093bd1",
     "st": "proposal"
    },
    "shot": null
@@ -310,7 +310,7 @@
     "item": {
      "level": "fixed",
      "weight": 0,
-     "fixed_until": "2026-10-18T01:34:26+05:00"
+     "fixed_until": "2026-10-18T01:53:33+05:00"
     }
    },
    "shot": null
@@ -345,6 +345,17 @@
    "detail": {
     "scrollW": 1366,
     "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
    },
    "shot": null
   },
@@ -714,6 +725,17 @@
    "detail": {
     "scrollW": 1366,
     "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
    },
    "shot": null
   },
@@ -1122,6 +1144,17 @@
   {
    "layer": "UI 375-ru",
    "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
    "name": "нет ключей перевода и технических слов",
    "status": "PASS",
    "detail": {
@@ -1462,6 +1495,17 @@
    "detail": {
     "scrollW": 375,
     "w": 375
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
    },
    "shot": null
   },
