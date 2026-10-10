@@ -1,6 +1,6 @@
 # Список использованных источников
 
-> Черновик R14 (10 октября 2026). Оформление — по ГОСТ 7.1-2003 «Библиографическая запись. Библиографическое описание»
+> Черновик R14 (10 октября 2026; дополнен ночью 10→11.10: записи 56а–56г, 60–62). Нумерация с буквами — временная, перенумеровать при оформлении. Оформление — по ГОСТ 7.1-2003 «Библиографическая запись. Библиографическое описание»
 > и ГОСТ 7.0.5-2008 (ссылки) [ТРЕБОВАНИЕ ВУЗА: какой стандарт требует кафедра — ГОСТ 7.1-2003, ГОСТ Р 7.0.100-2018 или СТ РК; порядок — алфавитный или по порядку цитирования].
 >
 > **Важно.** Облачная среда, где готовился черновик, не имеет доступа к arXiv, doi.org, gov.kz (ответ прокси 403).
@@ -92,15 +92,22 @@
 ## Программные средства и открытые данные
 
 50. OpenStreetMap contributors. OpenStreetMap [Электронный ресурс]. – URL: https://www.openstreetmap.org (дата выгрузки: см. `data/civic/astana/osm-objects/SOURCE.json`). – Лицензия ODbL 1.0.
-51. Open-Meteo. Historical Weather API [Электронный ресурс]. – URL: https://open-meteo.com/en/docs/historical-weather-api (дата обращения: __.10.2026). – Лицензия CC BY 4.0. [ПРОВЕРИТЬ ИСТОЧНИК; использовать, только если LOCAL-9 выполнена]
+51. Open-Meteo. Historical Weather API [Электронный ресурс]. – URL: https://open-meteo.com/en/docs/historical-weather-api (дата обращения: 10.10.2026; данные выгружены 10.10.2026, см. `data/civic/astana/weather/SOURCE.json`). – Лицензия CC BY 4.0. [ПРОВЕРИТЬ ИСТОЧНИК; рекомендуемая самим сервисом форма ссылки — на странице лицензии]
 52. Pedregosa F., Varoquaux G., Gramfort A. [et al.] Scikit-learn: Machine Learning in Python // Journal of Machine Learning Research. – 2011. – Vol. 12. – P. 2825–2830. [ПРОВЕРИТЬ ИСТОЧНИК]
 53. Paszke A., Gross S., Massa F. [et al.] PyTorch: An Imperative Style, High-Performance Deep Learning Library // Advances in Neural Information Processing Systems 32 (NeurIPS 2019). – 2019. – P. 8024–8035. [ПРОВЕРИТЬ ИСТОЧНИК]
 54. Wolf T., Debut L., Sanh V. [et al.] Transformers: State-of-the-Art Natural Language Processing // Proceedings of EMNLP 2020: System Demonstrations. – 2020. – P. 38–45. [ПРОВЕРИТЬ ИСТОЧНИК]
 55. three.js : JavaScript 3D library [Электронный ресурс]. – Версия 0.169.0. – URL: https://threejs.org (дата обращения: __.10.2026). – Лицензия MIT. (Версия — `web/vendor/three/SOURCE.txt`.)
-56. MapLibre GL JS [Электронный ресурс]. – URL: https://maplibre.org (дата обращения: __.10.2026). – Лицензия BSD-3-Clause. [ПРОВЕРИТЬ ИСТОЧНИК; версия — по `web/` сборки R01]
+56. MapLibre GL JS [Электронный ресурс]. – Версия 5.6.2. – URL: https://maplibre.org (дата обращения: __.10.2026). – Лицензия BSD-3-Clause. (Версия и совпадение файла с npm-пакетом — ревью R15, `research/round-14-results/R15/SECURITY_REVIEW.md`.)
+56а. ONNX Runtime [Электронный ресурс] / Microsoft. – Версия 1.31.0. – URL: https://onnxruntime.ai (дата обращения: __.10.2026). – Лицензия MIT. [ПРОВЕРИТЬ ИСТОЧНИК; динамическое квантование int8 — раздел документации Quantize ONNX models]
+56б. Jacob B., Kligys S., Chen B. [et al.] Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference // Proceedings of CVPR 2018. – 2018. – P. 2704–2713. [ПРОВЕРИТЬ ИСТОЧНИК; квантование int8, в т. ч. по каналам]
+56в. Hersbach H., Bell B., Berrisford P. [et al.] The ERA5 global reanalysis // Quarterly Journal of the Royal Meteorological Society. – 2020. – Vol. 146, № 730. – P. 1999–2049. [ПРОВЕРИТЬ ИСТОЧНИК; на каком реанализе построен Historical Weather API Open-Meteo — сверить по документации сервиса]
+56г. OpenAI. GPT-4.1 mini [Электронный ресурс] : описание модели. – URL: https://platform.openai.com/docs/models (дата обращения: __.10.2026). [ПРОВЕРИТЬ ИСТОЧНИК; модель, которой сгенерирована LLM-синтетика llm_v1, `ml/datasets/llm_v1/manifest_llm_v1.json`]
 
 ## Материалы проекта (внутренние документы)
 
 57. Birge. Контракт раунда 14 / проект GOV_DIPLOME. – Ветка claude/round-14-package, файл `research/round-14/CONTRACT.md`. – 2026.
 58. Birge. UX-спецификация раунда 14 (R11) / проект GOV_DIPLOME. – Файл `research/round-14-results/R11/UX_SPEC.md`. – 2026.
 59. «Аким на 5 часов» : AI-симулятор управления Астаной / проект GOV_DIPLOME. – Файлы `README.md`, `PROJECT_CONTEXT.md`. – 2026.
+60. Birge. Model card классификатора обращений v2 / проект GOV_DIPLOME. – Ветка claude/r14-R03, файл `ml/civic_classifier_v2/MODEL_CARD.md` (коммит d472baf); результаты — `results/RESULTS.md` (коммит c19b889). – 2026.
+61. Birge. Приёмка сборки B2 (R10) / проект GOV_DIPLOME. – Ветка claude/r14-R10, файлы `research/round-14-results/R10/ACCEPTANCE_B2.md`, `BUGS.md`. – 2026.
+62. Birge. Ревью безопасности и защиты данных (R15) / проект GOV_DIPLOME. – Ветка claude/r14-R15, файл `research/round-14-results/R15/SECURITY_REVIEW.md`. – 2026.
