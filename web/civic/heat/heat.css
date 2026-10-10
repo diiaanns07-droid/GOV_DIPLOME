@@ -51,7 +51,7 @@
   position: relative; display: inline-flex; align-items: center; gap: 6px;
   min-height: 40px; padding: 0 12px;
   border: 1px solid #c9d4c5; border-radius: 999px; background: #fff;
-  font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer;
+  font-size: 16px; font-weight: 600; white-space: nowrap; cursor: pointer;
   transition: background 0.2s var(--r07-ease), border-color 0.2s var(--r07-ease);
 }
 .r07-chip::after { content: ""; position: absolute; inset: -4px 0; } /* зона нажатия 48 px */
@@ -197,6 +197,9 @@
 .r07-toasts { position: fixed; z-index: 50; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; width: min(420px, calc(100vw - 24px)); pointer-events: none; }
 .r07-toast { min-height: 48px; display: flex; align-items: center; padding: 10px 16px; border-radius: 12px; background: #152c26; color: #fff; box-shadow: 0 12px 40px #19362818; animation: r07-in 0.4s var(--r07-ease); transition: opacity 0.3s; }
 .r07-toast--error { background: #a33a2f; }
+.r07-toast { gap: 12px; justify-content: space-between; }
+.r07-toast__action { pointer-events: auto; position: relative; min-height: 40px; padding: 0 14px; border: 1px solid #ffffff99; border-radius: 10px; background: transparent; color: #fff; font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.r07-toast__action::after { content: ""; position: absolute; inset: -4px 0; }
 .r07-toast--out { opacity: 0; }
 /* Выбор места жалобой (оболочка: body.birge-picking; без неё — heat.setPickMode). Оболочка B3 гасит нажатия
    на значках (birge.css: pointer-events: none) — здесь возвращаем: значок сам передаёт карте щелчок точно в цель. */

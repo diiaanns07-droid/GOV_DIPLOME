@@ -363,6 +363,118 @@ async function colorOnlyCheck(page) {
     await page.close();
   }
 
+  // UX_BRIEF правило 7 и «Тексты»: загрузка, ошибка с действием, ошибка обновления и действия — у каждой «Повторить»
+  async function rawPage(size, query, setup) {
+    const page = await browser.newPage({ viewport: SIZES[size], deviceScaleFactor: 1 });
+    const errors = [];
+    // отказ сети здесь подстроен самим тестом — такие строки консоли не ошибка модуля
+    page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource|ERR_FAILED|status of 50/.test(m.text())) errors.push(m.text()); });
+    page.on("pageerror", (e) => errors.push(String(e)));
+    if (setup) await setup(page);
+    await page.goto(BASE + query, { waitUntil: "domcontentloaded" });
+    return { page, errors };
+  }
+  async function finish(page, errors, name, size, problems, extra) {
+    const m = await measure(page);
+    if (errors.length) problems.push("console: " + errors.join(" | "));
+    if (m.hscroll) problems.push("горизонтальная прокрутка");
+    if (m.rawKeys.length) problems.push("ключи без перевода: " + m.rawKeys.join(","));
+    if (m.demoWord) problems.push("слово «демо» в интерфейсе");
+    if (m.smallButtons.length) problems.push("зона нажатия < 48: " + JSON.stringify(m.smallButtons));
+    await page.screenshot({ path: path.join(OUT, name + ".jpg"), type: "jpeg", quality: 82 });
+    results.push({ name, size, query: "", problems, badges: m.badges, extra });
+    await page.close();
+  }
+  const HEAT_GET = (u) => /\/api\/civic\/v2\/heat\?/.test(u.toString());
+
+  // загрузка: скелетон, а не пустая панель
+  for (const [size, lang] of [["phone", "kk"], ["desktop", "ru"]]) {
+    const { page, errors } = await rawPage(size, `?lang=${lang}&view=nura`, (pg) =>
+      pg.route(HEAT_GET, async (r) => { await new Promise((ok) => setTimeout(ok, 4000)); await r.continue(); }));
+    await page.waitForTimeout(1200);
+    const x = await page.evaluate(() => { const sk = document.querySelector(".r07-skeleton"); return { skeleton: !!sk && sk.getBoundingClientRect().height > 40, busy: sk && sk.getAttribute("aria-busy"), label: sk && sk.getAttribute("aria-label") }; });
+    const problems = [];
+    if (!x.skeleton || x.busy !== "true" || !x.label) problems.push("нет скелетона загрузки: " + JSON.stringify(x));
+    await finish(page, errors, `state-loading-${size === "phone" ? 375 : 1366}-${lang}`, size, problems, x);
+  }
+
+  // ошибка первой загрузки: что случилось + что сделать + «Повторить», после связи — карта
+  for (const [size, lang] of [["desktop", "ru"], ["phone", "kk"]]) {
+    let fail = true;
+    const { page, errors } = await rawPage(size, `?lang=${lang}&view=nura`, (pg) =>
+      pg.route(HEAT_GET, (r) => (fail ? r.abort() : r.continue())));
+    await page.waitForSelector(".r07-error", { timeout: 15000 }).catch(() => {});
+    const x = await page.evaluate(() => { const e = document.querySelector(".r07-error"); return e ? { text: e.innerText, retry: !!e.querySelector("[data-retry]") } : null; });
+    const problems = [];
+    if (!x || !x.retry || x.text.split("\n").filter(Boolean).length < 3) problems.push("нет понятной ошибки с действием: " + JSON.stringify(x));
+    if (x && /Ошибка:|!/.test(x.text)) problems.push("в тексте ошибки «Ошибка:» или «!»");
+    const name = `state-error-${size === "phone" ? 375 : 1366}-${lang}`;
+    await page.screenshot({ path: path.join(OUT, name + ".jpg"), type: "jpeg", quality: 82 });
+    fail = false;
+    await page.click("[data-retry]");
+    const ok = await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready" && window.__heat.state().items > 0, null, { timeout: 15000 }).then(() => true, () => false);
+    if (!ok) problems.push("«Повторить» не загрузил карту");
+    results.push({ name, size, query: "", problems: problems.concat(errors), badges: 0, extra: x });
+    await page.close();
+  }
+
+  // ошибка обновления (данные уже есть): тост с «Повторить»; ошибка действия «Взять в работу»: тост с «Қайталау»
+  {
+    let fail = false;
+    const { page, errors } = await rawPage("desktop", "?lang=ru&role=akimat&view=nura", (pg) =>
+      pg.route(HEAT_GET, (r) => (fail ? r.abort() : r.continue())));
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.waitForTimeout(600);
+    fail = true;
+    await page.click('[data-days="7"]');
+    await page.waitForSelector(".r07-toast__action", { timeout: 10000 }).catch(() => {});
+    const x = await page.evaluate(() => { const t = document.querySelector(".r07-toast--error"); return t ? { text: t.innerText, role: t.getAttribute("role"), action: t.querySelector(".r07-toast__action")?.innerText } : null; });
+    const problems = [];
+    if (!x || x.action !== "Повторить" || x.role !== "alert") problems.push("тост ошибки обновления без «Повторить»: " + JSON.stringify(x));
+    await page.screenshot({ path: path.join(OUT, "refresh-error-toast-1366-ru.jpg"), type: "jpeg", quality: 82 });
+    fail = false;
+    await page.click(".r07-toast__action");
+    const ok = await page.waitForFunction(() => window.__heat.state().status === "ready" && window.__heat.state().filters.days === 7, null, { timeout: 10000 }).then(() => true, () => false);
+    if (!ok) problems.push("«Повторить» в тосте не загрузил 7 дней");
+    results.push({ name: "refresh-error-toast-1366-ru", size: "desktop", query: "", problems: problems.concat(errors), badges: 0, extra: x });
+    await page.close();
+  }
+  {
+    const { page, errors } = await rawPage("phone", "?lang=kk&role=akimat&view=nura&sheet=full", (pg) =>
+      pg.route(/\/complaints\/[^/]+\/status/, (r) => r.fulfill({ status: 500, contentType: "application/json", body: '{"error":"x"}' })));
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.click(".r07-item");
+    await page.waitForSelector('[data-act="take"], [data-act="fixed"]');
+    await page.click('[data-act="take"], [data-act="fixed"]');
+    await page.waitForSelector(".r07-toast__action", { timeout: 10000 }).catch(() => {});
+    const x = await page.evaluate(() => { const t = document.querySelector(".r07-toast--error"); const b = document.querySelector('[data-act="take"], [data-act="fixed"]'); return { text: t && t.innerText, action: t && t.querySelector(".r07-toast__action")?.innerText, btnEnabled: b && !b.disabled }; });
+    const problems = [];
+    if (x.action !== "Қайталау" || !/Байланысты тексеріп/.test(x.text || "")) problems.push("тост ошибки действия: " + JSON.stringify(x));
+    if (!x.btnEnabled) problems.push("кнопка осталась заблокированной после ошибки");
+    await finish(page, errors, "action-error-toast-375-kk", "phone", problems, x);
+  }
+
+  // «Примерное место»: в карточке «Область на карте» + пометка, а не «Двор или квартал»
+  for (const [size, lang] of [["desktop", "ru"], ["phone", "kk"]]) {
+    const { page, errors } = await rawPage(size, `?lang=${lang}&role=akimat&view=nura&sheet=full`, (pg) =>
+      pg.route(HEAT_GET, async (r) => {
+        const res = await r.fetch();
+        const d = await res.json();
+        const it = d.items.find((x) => x.target.kind === "area");
+        if (it) { it.approximate = true; it.target.label_ru = "Примерное место"; it.target.label_kk = "Шамамен көрсетілген орын"; }
+        await r.fulfill({ response: res, json: d });
+      }));
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.evaluate(() => { const b = [...document.querySelectorAll(".r07-item")].find((x) => /Примерное место|Шамамен/.test(x.innerText)); if (b) b.click(); });
+    await page.waitForSelector(".r07-card", { timeout: 5000 }).catch(() => {});
+    await page.waitForTimeout(400);
+    const x = await page.evaluate(() => ({ eyebrow: document.querySelector(".r07-eyebrow")?.textContent, note: document.querySelector(".r07-note--warn")?.innerText }));
+    const want = lang === "kk" ? "Картадағы аумақ" : "Область на карте";
+    const problems = [];
+    if (!x.eyebrow || !x.eyebrow.includes(want) || !x.note) problems.push("карточка примерного места: " + JSON.stringify(x));
+    await finish(page, errors, `card-approximate-${size === "phone" ? 375 : 1366}-${lang}`, size, problems, x);
+  }
+
   // Клавиатура: Tab до главной кнопки, рамка фокуса, Esc закрывает карточку
   {
     const { page, errors } = await open(browser, "desktop", "?lang=ru&view=nura");

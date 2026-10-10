@@ -451,6 +451,98 @@
   }
  },
  {
+  "name": "state-loading-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "skeleton": true,
+   "busy": "true",
+   "label": "Шағымдар жүктеліп жатыр…"
+  }
+ },
+ {
+  "name": "state-loading-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "skeleton": true,
+   "busy": "true",
+   "label": "Загружаем жалобы…"
+  }
+ },
+ {
+  "name": "state-error-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "text": "Нет связи с сервером\n\nПроверьте интернет и нажмите «Повторить».\n\nПовторить",
+   "retry": true
+  }
+ },
+ {
+  "name": "state-error-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "text": "Сервермен байланыс жоқ\n\nИнтернетті тексеріп, «Қайталау» түймесін басыңыз.\n\nҚайталау",
+   "retry": true
+  }
+ },
+ {
+  "name": "refresh-error-toast-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "text": "Нет связи с сервером\nПовторить",
+   "role": "alert",
+   "action": "Повторить"
+  }
+ },
+ {
+  "name": "action-error-toast-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 53,
+  "extra": {
+   "text": "Сақталмады. Байланысты тексеріп, қайталап көріңіз\nҚайталау",
+   "action": "Қайталау",
+   "btnEnabled": true
+  }
+ },
+ {
+  "name": "card-approximate-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 53,
+  "extra": {
+   "eyebrow": "Область на карте Пример",
+   "note": "Примерное место: точный объект не выбран, показана область."
+  }
+ },
+ {
+  "name": "card-approximate-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 53,
+  "extra": {
+   "eyebrow": "Картадағы аумақ Үлгі",
+   "note": "Шамамен көрсетілген орын: нақты нысан таңдалмаған, аумақ көрсетілген."
+  }
+ },
+ {
   "name": "keyboard-card-1366-ru",
   "size": "desktop",
   "query": "",
