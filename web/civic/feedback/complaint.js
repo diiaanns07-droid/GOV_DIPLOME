@@ -120,6 +120,14 @@
     return Math.max(0, Math.floor((Date.now() - d.getTime()) / 86400000));
   }
 
+  // Уровень значка по числу сообщивших — пороги heat_levels из categories_v2.json (цвет + число).
+  function heatLevel(count) {
+    var levels = ((window.BirgeCategoriesV2 || {}).heat_levels) || [];
+    var level = 0;
+    levels.forEach(function (l) { if (count >= l.min_weight) level = l.level; });
+    return level;
+  }
+
   function categories() {
     return ((window.BirgeCategoriesV2 || {}).categories) || [];
   }
@@ -455,10 +463,14 @@
     }
 
     function renderPlace(body) {
-      body.appendChild(h("p", { "class": "bc-hint" }, t("complaint.step2.hint")));
-      body.appendChild(h("button", { "class": "bk-btn bk-btn--block", type: "button", disabled: state.locating || null,
-                                     onclick: locate },
-        [icon("locate"), h("span", {}, state.locating ? t("complaint.step2.locating") : t("complaint.step2.locate"))]));
+      var locateButton = h("button", { "class": "bk-btn bk-btn--block", type: "button", disabled: state.locating || null,
+                                       onclick: locate },
+        [icon("locate"), h("span", {}, state.locating ? t("complaint.step2.locating") : t("complaint.step2.locate"))]);
+      if (!state.candidates || state.candidatesLoading) {
+        // Точка ещё не выбрана: подсказка и «Моё местоположение» сверху.
+        body.appendChild(h("p", { "class": "bc-hint" }, t("complaint.step2.hint")));
+        body.appendChild(locateButton);
+      }
       if (state.candidatesLoading) {
         body.appendChild(h("div", { "class": "bc-loading", role: "status" },
           [h("span", { "class": "bk-skel bc-skel-line" }), h("span", { "class": "bk-skel bc-skel-line" }),
@@ -483,7 +495,9 @@
                                      onclick: chooseApproximate },
         [icon("pin"), h("span", { "class": "bc-option__label" }, t("complaint.step2.other_place"))]));
       body.appendChild(list);
+      // Варианты уже на экране — им место сверху шторки, остальное ниже (меньше прокрутки на телефоне).
       body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step2.pick_again")));
+      body.appendChild(locateButton);
     }
 
     // ---------------------------------------------------------------- шаг 3: текст и категория
@@ -640,7 +654,7 @@
       var match = state.similar;
       var ago = daysAgo(match.created_at);
       body.appendChild(h("div", { "class": "bc-similar" }, [
-        h("p", { "class": "bc-similar__count" }, [h("span", { "class": "bk-heat bc-similar__badge", "data-level": "2" },
+        h("p", { "class": "bc-similar__count" }, [h("span", { "class": "bk-heat bc-similar__badge", "data-level": String(heatLevel(match.reporters)) },
           String(match.reporters)), h("span", {}, categoryLabel(match.category))]),
         h("p", { "class": "bc-meta" }, [targetLabel(match.target),
           " · ", ago === 0 ? t("complaint.step4.today") : t("complaint.step4.ago_days", { n: ago })]),

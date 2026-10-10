@@ -31,7 +31,10 @@
 .bk-status[data-status="fixed"] { color: var(--c-ok); background: var(--c-ok-bg); }
 .bk-status[data-status="rejected"] { color: var(--c-danger); background: #fbe9e7; }
 .bk-heat { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 6px;
-           border-radius: 999px; font-size: 14px; font-weight: 700; background: var(--heat-2); color: var(--c-ink); }
+           border-radius: 999px; font-size: 14px; font-weight: 700; background: var(--heat-1); color: var(--c-ink); }
+.bk-heat[data-level="2"] { background: var(--heat-2); }
+.bk-heat[data-level="3"] { background: var(--heat-3-badge); color: #fff; }
+.bk-heat[data-level="4"] { background: var(--heat-4); color: #fff; }
 .bk-tag { display: inline-block; align-self: flex-start; padding: 2px 8px; border-radius: 6px; font-size: 14px; }
 .bk-tag--demo { background: #e6ecf3; color: #2d4a66; }
 .bk-steps { list-style: none; display: flex; gap: 0; margin: 4px 0; padding: 0; }
