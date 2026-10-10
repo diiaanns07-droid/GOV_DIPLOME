@@ -4,8 +4,8 @@
  "base_sha": "3c5ac25 (claude/round-14-package)",
  "restored_from": "нет: v1 (claude/wizardly-ptolemy-qy8ltw @ 14c3384, ml/civic_classifier/) только прочитан; признаки v1 повторены в logreg.py",
  "data_from": "R02 claude/r14-R02: synth_v3, v1_in_v2, probe_v2 (@ 73b97d2), llm_v1 (@ 2a95286, gpt-4.1-mini, 3979 текстов) — читаются по путям, в ветку R03 не копировались",
- "code_sha": "3291133",
- "tested_sha": "3291133",
+ "code_sha": "937f665",
+ "tested_sha": "937f665",
  "push_status": "OK (claude/r14-R03)",
  "changed_paths": [
   "ml/civic_classifier_v2/.gitignore",
@@ -43,8 +43,10 @@
   "ml/civic_classifier_v2/results/tables/t7_onnx.csv",
   "ml/civic_classifier_v2/results/train_log_experiments.jsonl",
   "ml/civic_classifier_v2/results/train_log_final.jsonl",
+  "ml/civic_classifier_v2/results/translit_to_cyrillic_probe_v2.json",
   "ml/civic_classifier_v2/train.py",
   "ml/civic_classifier_v2/transformer.py",
+  "ml/civic_classifier_v2/translit.py",
   "ml/civic_classifier_v2/zeroshot.py",
   "research/handoffs/astana/R03/round14/STATUS.md",
   "research/round-14-results/R03/DELIVERY.json",
@@ -59,8 +61,8 @@
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 78/78",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 71, NOT_RUN 7 (skipped с причиной)",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 81/81",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 74, NOT_RUN 7 (skipped с причиной)",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
@@ -83,7 +85,9 @@
   "совместимость с R04 @ 94bd9ac (tests/civic/R04/round14 с новым словарём)": "PASS 74, skipped 1",
   "сбор тестов вместе с R06/R09 (просьба R01 §9)": "PASS — без ImportError",
   "воспроизводимость: synth_all словарь и логрегрессия, облако против ноутбука": "PASS — матрицы ошибок совпадают на 4 наборах",
-  "analysis.py: таблицы для диплома и разбор ошибок; строки human не печатаются": "PASS"
+  "analysis.py: таблицы для диплома и разбор ошибок; строки human не печатаются": "PASS",
+  "translit.py check: to_cyrillic перед моделью на probe_v2 (облако)": "PASS — логрегрессия +0.020 [−0.001; +0.042], словарь +0.029 [+0.012; +0.050]",
+  "to_cyrillic для трансформера (RUN.txt шаг 8в)": "NOT_RUN — ждёт ноутбук"
  },
  "results_so_far": {
   "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",
@@ -126,6 +130,7 @@
  "deliverables_night": {
   "DIPLOMA_TABLES.md": "ml/civic_classifier_v2/results/DIPLOMA_TABLES.md (+ results/tables/*.csv)",
   "ERROR_ANALYSIS.md": "ml/civic_classifier_v2/results/ERROR_ANALYSIS.md",
-  "per-text predictions": "results/preds_probe_v2_synth_all_{heuristic,logreg}.jsonl (id и метки)"
+  "per-text predictions": "results/preds_probe_v2_synth_all_{heuristic,logreg}.jsonl (id и метки)",
+  "translit": "ml/civic_classifier_v2/results/translit_to_cyrillic_probe_v2.json"
  }
 }
