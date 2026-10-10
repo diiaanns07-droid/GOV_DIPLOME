@@ -1,0 +1,42 @@
+diff --git a/ui/civic_ml_api/similar_search.py b/ui/civic_ml_api/similar_search.py
+index 09d47ed..fadcd25 100644
+--- a/ui/civic_ml_api/similar_search.py
++++ b/ui/civic_ml_api/similar_search.py
+@@ -26,6 +26,11 @@ from ui.civic_ml_api.errors import MLServiceUnavailable
+ LOGGER = logging.getLogger(__name__)
+ DEFAULT_LIMIT = 5
+ BBOX_MARGIN_M = 25.0     # запас к радиусу: округления координат в БД
++# R15-S13: чужие жалобы ищутся и меряются от той же огрублённой точки, что R09 показывает всем (3 знака ≈ 100 м).
++# С точной точкой distance_m (0,1 м) — и даже граница радиуса (совпадение есть / нет) — из нескольких запросов
++# с разных мест выдаёт место жителя до метра (трилатерация). COARSE_MARGIN_M — насколько огрубление сдвигает точку.
++PUBLIC_POINT_DIGITS = 3
++COARSE_MARGIN_M = 70.0
+ # Граница Астаны с запасом (как ASTANA_BBOX у R09) — для прогрева кэша всеми открытыми жалобами.
+ ASTANA_BBOX = (70.9, 50.8, 72.0, 51.5)
+ WARM_DAYS = 30
+@@ -218,6 +223,14 @@ def source_kind() -> str | None:
+     return getattr(src, "kind", "custom") if src is not None else None
+ 
+ 
++def _coarse(rec):
++    """Копия записи с точкой, огрублённой как в публичной выдаче R09 (R15-S13)."""
++    p = rec.get("point") if isinstance(rec, dict) else None
++    if isinstance(p, (list, tuple)) and len(p) == 2 and all(isinstance(v, (int, float)) for v in p):
++        return dict(rec, point=[round(float(p[0]), PUBLIC_POINT_DIGITS), round(float(p[1]), PUBLIC_POINT_DIGITS)])
++    return rec
++
++
+ def similar(text, point=None, days=None, target=None, limit=DEFAULT_LIMIT) -> dict:
+     """Похожие открытые обращения рядом с точкой / на той же цели за последние days дней (по умолчанию 14).
+ 
+@@ -253,8 +266,8 @@ def similar(text, point=None, days=None, target=None, limit=DEFAULT_LIMIT) -> di
+         return reply
+     now = src.now()
+     since = now - timedelta(days=days)
+-    bbox = bbox_around(here, dd.radius_m + BBOX_MARGIN_M) if here is not None else None
+-    records = src.fetch(since=since, bbox=bbox, target=tid)
++    bbox = bbox_around(here, dd.radius_m + BBOX_MARGIN_M + COARSE_MARGIN_M) if here is not None else None
++    records = [_coarse(rec) for rec in src.fetch(since=since, bbox=bbox, target=tid)]
+     matches = dd.find(text, records, point=here, target=tid, days=days, now=now, limit=limit)
+     reply["matches"] = [m.as_dict() for m in matches]
+     reply["people_total"] = sum(m["people"] for m in reply["matches"])

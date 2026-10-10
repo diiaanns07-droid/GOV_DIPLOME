@@ -1,0 +1,154 @@
+diff --git a/ui/civic_feedback/v2/api.py b/ui/civic_feedback/v2/api.py
+index 2ecbb85..1feed7c 100644
+--- a/ui/civic_feedback/v2/api.py
++++ b/ui/civic_feedback/v2/api.py
+@@ -21,6 +21,7 @@ from __future__ import annotations
+ 
+ import json
+ import logging
++import re
+ import sqlite3
+ from datetime import timedelta
+ from urllib.parse import parse_qs, unquote, urlsplit
+@@ -187,7 +188,8 @@ class ComplaintsV2Service:
+         if not _is_staff(principal):
+             raise ApiError(403, "forbidden", "Действие доступно только сотрудникам акимата.")
+         check = getattr(principal, "check_csrf", None)
+-        if callable(check) and not check(_header(context, "X-CSRF-Token")):
++        # R15-S05: нет проверки CSRF у principal (другой формат сессии) — отказ, а не пропуск.
++        if not callable(check) or not check(_header(context, "X-CSRF-Token")):
+             raise ApiError(403, "csrf_failed", "Сессия устарела. Обновите страницу.")
+ 
+     @staticmethod
+@@ -266,7 +268,9 @@ class ComplaintsV2Service:
+         category = params.get("category") or None
+         if category and not categories.is_category(category):
+             raise ApiError(422, "invalid", "Неизвестная категория.", {"category": ",".join(categories.ids())})
+-        days = int(params["days"]) if params.get("days", "").isdigit() else 14
++        # R15-S06: только ASCII-цифры: str.isdigit() пропускает «²», а int() на нём падает (500).
++        raw_days = params.get("days", "")
++        days = int(raw_days) if re.fullmatch(r"[0-9]{1,4}", raw_days) else 14
+         return _ok(200, self.store.target_summary(target_id, days=max(1, min(days, 90)), category=category))
+ 
+     def _place(self, *, params, body, principal, context):
+diff --git a/ui/civic_feedback/v2/record.py b/ui/civic_feedback/v2/record.py
+index 4f90593..d1df863 100644
+--- a/ui/civic_feedback/v2/record.py
++++ b/ui/civic_feedback/v2/record.py
+@@ -220,11 +220,84 @@ PUBLIC_FIELDS = ("id", "created_at", "category", "point", "target", "district",
+                  "status_history", "metoo", "duplicate_of", "demo", "due_at", "lang")
+ 
+ 
++# R15-S03: другим жителям — точка не точнее 3 знаков (≈ 110 м по широте, ≈ 70 м по долготе). Точка с 6 знаками
++# (≈ 10 см) и временем до секунды показывает, из какого подъезда писал автор. Карте (R07) хватает цели.
++PUBLIC_POINT_DIGITS = 3
++# R15-S12: цель жалобы не дальше этого от точки жителя (объект R12 ищется в радиусе ~100 м, парк бывает большим).
++TARGET_MAX_M = 300.0
++
++
++def public_point(point):
++    if not isinstance(point, (list, tuple)) or len(point) != 2:
++        return None
++    return [round(float(point[0]), PUBLIC_POINT_DIGITS), round(float(point[1]), PUBLIC_POINT_DIGITS)]
++
++
++def _xy(lon: float, lat: float, lat0: float) -> tuple[float, float]:
++    return (lon * 111_320.0 * math.cos(math.radians(lat0)), lat * 110_540.0)
++
++
++def distance_to_geometry_m(point, geometry) -> float | None:
++    """Расстояние (м) от точки до Point / LineString / Polygon (внутри многоугольника — 0). None — форма неизвестна."""
++    if not isinstance(geometry, dict):
++        return None
++    kind, coords = geometry.get("type"), geometry.get("coordinates")
++    lat0 = float(point[1])
++    px, py = _xy(float(point[0]), lat0, lat0)
++    if kind == "Point":
++        x, y = _xy(coords[0], coords[1], lat0)
++        return math.hypot(x - px, y - py)
++    lines = [coords] if kind == "LineString" else list(coords or []) if kind == "Polygon" else []
++    if not lines:
++        return None
++    best, inside = float("inf"), False
++    for ring in lines:
++        pts = [_xy(c[0], c[1], lat0) for c in ring]
++        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
++            dx, dy = bx - ax, by - ay
++            t = 0.0 if dx == dy == 0 else max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)))
++            best = min(best, math.hypot(ax + t * dx - px, ay + t * dy - py))
++            if kind == "Polygon" and (ay > py) != (by > py) and px < ax + (py - ay) * dx / (dy or 1e-12):
++                inside = not inside
++    return 0.0 if inside else best
++
++
++def checked_target(target: dict, point: list[float], lookup=None) -> dict:
++    """R15-S04/S12: цель, которой можно верить. Подписи — только с карты (R12), не из запроса жителя.
++
++    lookup(target) -> {"geometry", "label_ru", "label_kk"} | None — R12 engine.civic_geo.target_geometry
++    (подключает R01). Цель неизвестна карте или дальше TARGET_MAX_M от точки -> «примерное место» у точки.
++    Без lookup подписи жителя не сохраняются (интерфейс покажет общее слово по виду цели).
++    """
++    own_cell = cell_target(*point)
++    if target["id"] == own_cell["id"]:
++        return own_cell  # «Другое место»: ячейка R09 у точки жителя, подписи — свои
++    clean = {"kind": target["kind"], "id": target["id"]}
++    if target.get("approximate") is True:
++        clean["approximate"] = True
++    if lookup is None:
++        return clean
++    try:
++        found = lookup(clean)
++    except Exception:
++        found = None
++    distance = distance_to_geometry_m(point, (found or {}).get("geometry")) if found else None
++    if distance is None or distance > TARGET_MAX_M:
++        return own_cell
++    for name in ("label_ru", "label_kk"):
++        if isinstance(found.get(name), str) and found[name]:
++            clean[name] = found[name][:LABEL_MAX]
++    if found.get("approximate") is True:
++        clean["approximate"] = True
++    return clean
++
++
+ def public_view(record: dict) -> dict:
+     """Что видят другие жители и карта: без текста, без модели, без устройства.
+     Правило R09: чужие тексты (могут содержать личные данные) жителям не показываем —
+     только «сообщили N человек»."""
+     view = {key: record.get(key) for key in PUBLIC_FIELDS}
++    view["point"] = public_point(record.get("point"))
+     view["status_history"] = [{"at": h["at"], "status": h["status"]} for h in record.get("status_history", [])]
+     view["reporters"] = reporters(record)
+     return view
+@@ -233,6 +306,7 @@ def public_view(record: dict) -> dict:
+ def author_view(record: dict) -> dict:
+     """Автору (его устройство) — его собственный текст и шкала статуса, без служебных заметок."""
+     view = public_view(record)
++    view["point"] = record.get("point")  # своё место автор видит точно
+     view["text"] = record.get("text")
+     view["category_source"] = record.get("category_source")
+     view["code"] = record.get("code")
+diff --git a/ui/civic_feedback/v2/store.py b/ui/civic_feedback/v2/store.py
+index a74de36..5901109 100644
+--- a/ui/civic_feedback/v2/store.py
++++ b/ui/civic_feedback/v2/store.py
+@@ -101,6 +101,8 @@ class ComplaintStore:
+     def __init__(self, db_path, *, clock: Callable[[], datetime] | None = None, limits: dict | None = None):
+         self.clock = clock or (lambda: datetime.now(rec.ASTANA_TZ))
+         self.limits = {**DEFAULT_LIMITS, **(limits or {})}
++        # R15-S04/S12: target_lookup(target) -> форма и подписи цели с карты R12 (подключает R01) или None.
++        self.target_lookup = None
+         self._lock = threading.RLock()
+         self._listeners: list[Callable[[dict], None]] = []
+         self.db_path = str(db_path)
+@@ -235,8 +237,8 @@ class ComplaintStore:
+             source = "resident"
+         point = rec.parse_point(payload.get("point"))
+         # Жалоба всегда имеет цель: нет выбранной цели -> ячейка «примерное место».
+-        target = rec.parse_target(payload["target"]) if payload.get("target") is not None \
+-            else rec.cell_target(*point)
++        target = rec.checked_target(rec.parse_target(payload["target"]), point, self.target_lookup) \
++            if payload.get("target") is not None else rec.cell_target(*point)
+         district = payload.get("district")
+         if district is not None and (not isinstance(district, str) or not rec.DISTRICT.match(district)):
+             district = None

@@ -1,0 +1,46 @@
+R15 (раунд 14) — как запустить ревью безопасности
+==================================================
+
+Что теперь можно сделать
+- Одной командой проверить любую сборку R01 (или ветку роли) на все находки ревью: каждая открытая находка —
+  тест xfail с ID (S01…S14), исправленная — XPASS (pytest помечает её как failed «XPASS(strict)»: снять пометку).
+- Применить готовые исправления (INTEGRATION.txt, папка patches/) и увидеть по тем же тестам, что всё закрыто.
+- Взять текст для диплома и жюри: SECURITY_REVIEW.md, раздел «Как Birge защищает данные».
+
+Требования: Python 3.11+ и pytest (pip install pytest). Без сети: всё на 127.0.0.1 и во временной SQLite.
+
+1) Тесты R15 на сборке R01 (тесты лежат в ветке claude/r14-R15, проверяемая копия — через R15_ROOT)
+   git fetch origin claude/r14-R01 claude/r14-R15
+   git worktree add ../birge-b3 origin/claude/r14-R01
+   git checkout origin/claude/r14-R15 -- tests/civic/R15
+   R15_ROOT=../birge-b3 python -m pytest tests/civic/R15 -q -rxX
+   (Windows PowerShell: $env:R15_ROOT="..\birge-b3"; python -m pytest tests/civic/R15 -q -rxX)
+
+   Ожидается на be82fa8: 80 passed, 19 xfailed.
+   Модуля роли нет в сборке — его тесты пропускаются (skip) с причиной, а не падают.
+
+2) Применить исправления и проверить
+   cd ../birge-b3
+   for p in P-R01 P-R09 P-R07 P-R04 P-R02; do
+     git show origin/claude/r14-R15:research/round-14-results/R15/patches/$p.diff | git apply -
+   done
+   cd -
+   R15_ROOT=../birge-b3 python -m pytest tests/civic/R15 -q -rX
+   Ожидается: 80 passed и 19 «failed» с пометкой XPASS(strict) — все находки закрыты.
+
+3) Одна находка руками (пример S11+S04, локальный сервер)
+   python app.py --host 127.0.0.1 --port 8501        # сборка R01
+   # жалоба с поддельной подписью реального объекта OSM:
+   curl -s -X POST http://127.0.0.1:8501/api/civic/v2/complaints \
+     -H "Content-Type: application/json" -H "Origin: http://127.0.0.1:8501" -H "X-Birge-Device: device-r15-demo-0001" \
+     -d '{"text":"Здесь всё плохо","category":"transport","point":[71.55,51.18],"target":{"kind":"object","id":"osm-way-258818058","label_ru":"ТЕСТ R15"}}'
+   curl -s "http://127.0.0.1:8501/api/civic/v2/akim/summary" | grep -o "ТЕСТ R15"
+   # до patch: «ТЕСТ R15» в «Картине дня»; после P-R09/P-R07: подпись из OSM («Парк или сквер»).
+   Только на своём локальном сервере и временной базе (CIVIC_DB_PATH=/tmp/r15.sqlite3).
+
+Файлы
+- SECURITY_REVIEW.md — находки, персональные данные, текст для жюри.
+- INTEGRATION.txt, patches/*.diff — исправления по владельцам.
+- DELIVERY.json — SHA, результаты тестов, ограничения.
+- tests/civic/R15/: test_r15_server.py (R01: статика, заголовки, CSRF, сессия, лимиты, журнал),
+  test_r15_complaints.py (R09), test_r15_round14.py (R06 R07 R08 R04 R12 R13 R02), r15_common.py (каталог находок).

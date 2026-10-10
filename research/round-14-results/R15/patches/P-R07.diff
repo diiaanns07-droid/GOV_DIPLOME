@@ -1,0 +1,35 @@
+diff --git a/ui/civic_heat/targets.py b/ui/civic_heat/targets.py
+index 2cc9f37..ff0e750 100644
+--- a/ui/civic_heat/targets.py
++++ b/ui/civic_heat/targets.py
+@@ -123,6 +123,10 @@ def segment_labels(street_ru: str | None, street_kk: str | None, from_ru=None, t
+     return ru, kk
+ 
+ 
++# Источники формы без собственного названия: только здесь подпись из записи жалобы допустима (R15-S11).
++RECORD_LABEL_SOURCES = frozenset({"cell-grid", "cell-grid-r09"})
++
++
+ class TargetResolver:
+     """Ищет форму и подпись цели. Потокобезопасен; граф грузится один раз и только при нужде."""
+ 
+@@ -240,11 +244,14 @@ class TargetResolver:
+         found = self._resolve(kind, tid, target, point)
+         if found:
+             found.setdefault("anchor", geo.anchor_of(found["geometry"]))
+-            # Подписи из записи жалобы (label_ru/label_kk) главнее автоматических.
+-            if target.get("label_ru"):
+-                found["label_ru"] = target["label_ru"]
+-            if target.get("label_kk"):
+-                found["label_kk"] = target["label_kk"]
++            # R15-S11: подпись из записи жалобы — только для ячейки «примерного места», где своего названия у карты
++            # нет. Реальный объект, участок улицы, двор подписываются по OSM/R12: запись приходит от жителя, и её
++            # подпись («Остановка «…»» с любым текстом) иначе показывалась бы всем на карте и в «Картине дня».
++            if found.get("source") in RECORD_LABEL_SOURCES:
++                if target.get("label_ru"):
++                    found["label_ru"] = target["label_ru"]
++                if target.get("label_kk"):
++                    found["label_kk"] = target["label_kk"]
+         if tid:
+             self._cache[key] = found
+         return found
