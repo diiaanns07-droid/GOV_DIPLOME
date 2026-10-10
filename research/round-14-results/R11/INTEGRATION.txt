@@ -110,7 +110,7 @@ LOCAL-7 (скриншоты сборок): снимать и в ?lang=kk — п�
 Брать R11 только с последнего коммита ветки claude/r14-R11 (путь-ограниченно, как раньше):
     git checkout origin/claude/r14-R11 -- web/civic/ui-kit web/civic/i18n
 Что изменилось с 52d7c59 (его взяли в B3):
-  - словари: 563 → 732 ключа. Новое: shell.* (70, из shell-text.js — словарь главнее, shell-text.js остаётся запасным),
+  - словари: 563 → 737 ключей (и дальше — см. последний коммит). Новое: shell.* (70, из shell-text.js — словарь главнее, shell-text.js остаётся запасным),
     staff.login/cabinet/logout.* (33, кабинет сотрудника — для R12 editor.js), works.* (51, лента работ раунда 13 — нужна
     только при ?tools=all), heat.* (8, R07), build3d.cluster* и resident.* (5, R05), complaint.step2.here (R09),
     geo.place.approx_line (R12); akim.delta.ratio получил форму other (просьба R08).

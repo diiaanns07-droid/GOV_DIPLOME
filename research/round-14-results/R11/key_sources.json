@@ -475,5 +475,10 @@
  "works.legend.approx": "R12 · лента работ раунда 13 «Что меняется в городе» (web/civic/map/civic-map.js / civic-map-core.js) — R10 B-012",
  "works.legend.demo": "R12 · лента работ раунда 13 «Что меняется в городе» (web/civic/map/civic-map.js / civic-map-core.js) — R10 B-012",
  "works.legend.no_coords": "R12 · лента работ раунда 13 «Что меняется в городе» (web/civic/map/civic-map.js / civic-map-core.js) — R10 B-012",
- "complaint.step2.here": "R09 · шаг ②, у цели, внутри которой стоит точка (вместо расстояния)"
+ "complaint.step2.here": "R09 · шаг ②, у цели, внутри которой стоит точка (вместо расстояния)",
+ "build3d.card.segment_plain": "R05 · карточка освещения без названия улицы",
+ "build3d.street.this": "R05 · подсказка освещения, когда у улицы нет названия",
+ "common.error.too_many": "R05 (и все модули) · тост на ответ 429 сервера (лимиты R15)",
+ "heat.kind.approximate": "R07 · тип цели «примерное место» в карточке",
+ "proposal.vote_limit": "R06 · тост после голоса, если сервер ответил 429"
 }
