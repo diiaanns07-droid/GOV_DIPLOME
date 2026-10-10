@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-10T18:14:01.902Z",
- "url": "http://127.0.0.1:8802/",
- "r01": "claude/sharp-dijkstra-0t87gl@2b9e837 (night 1, R06 b42e790) + proposed_r01_b3.patch",
+ "generated_at": "2026-10-10T18:30:10.068Z",
+ "url": "http://127.0.0.1:8803/",
+ "r01": "claude/sharp-dijkstra-0t87gl@13ae790 (night 1 handoff, R06 b42e790) + proposed_r01_b3.patch (с легендой R07)",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
@@ -9,10 +9,10 @@
    "detail": {
     "labels": [
      "Проект · 2027",
-     "Проект · 20275",
      "Проект · 2027",
      "Проект · 2027",
-     "Проект · 2027"
+     "Проект · 2027",
+     "Проект · 20275"
     ],
     "catalog_folded_by_shell": true
    }
@@ -56,7 +56,7 @@
     "posts": [
      201
     ],
-    "id": "p-84014f147cbf",
+    "id": "p-3d991d1abdf3",
     "year": 2027
    }
   },
@@ -83,12 +83,17 @@
    }
   },
   {
+   "id": "r07_legend_hidden_while_3d_card_open",
+   "status": "PASS",
+   "detail": "hidden"
+  },
+  {
    "id": "selected_object_visible_in_free_part_of_shell_map",
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 674.9891965778313,
-     "y": 278.0062945633497
+     "x": 674.9891965852051,
+     "y": 278.00629455567537
     },
     "under": []
    }

@@ -1,7 +1,7 @@
 {
  "role": "R05",
- "generated_at": "2026-10-10T18:08:19.042Z",
- "tested_sha": "8d11dc3649ddfbe3dff7cc42ff34233b1552c354",
+ "generated_at": "2026-10-10T18:25:31.945Z",
+ "tested_sha": "d39d5458e79c6744fcd9ccdb38b0c77ecd654133",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
@@ -10,12 +10,12 @@
   "ui_kit_i18n": "выгрузка claude/r14-R11 @ 8451468 (git archive web/civic/ui-kit web/civic/i18n), флаг --kit",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 6.5,
-  "fps_20_objects_swiftshader": 2.6,
+  "fps_0_objects_swiftshader": 6.6,
+  "fps_20_objects_swiftshader": 2.8,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 39,
+  "pass": 41,
   "fail": 0,
   "not_run": 1
  },
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.6 кадр/с (без объектов 6.5)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.8 кадр/с (без объектов 6.6)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -309,6 +309,29 @@
      "hint": "Енді бөліктің соңын таңдаңыз: Сығанақ көшесі"
     }
    ]
+  },
+  {
+   "id": "kk_no_russian_street_names_in_card_and_hint",
+   "status": "PASS",
+   "detail": {
+    "street_ru": "улица Карасакал Еримбет",
+    "card": "Жанында: Карасакал Еримбет көшесі",
+    "hint": "Енді бөліктің соңын таңдаңыз: Карасакал Еримбет көшесі"
+   }
+  },
+  {
+   "id": "rate_limit_429_says_too_many_without_retry_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "ru": {
+     "text": "Слишком много действий подряд. Повторите через минуту.",
+     "retry": false
+    },
+    "kk": {
+     "text": "Қатарынан тым көп әрекет жасалды. Бір минуттан кейін қайталаңыз.",
+     "retry": false
+    }
+   }
   },
   {
    "id": "r01_map_getter_waits_for_map",

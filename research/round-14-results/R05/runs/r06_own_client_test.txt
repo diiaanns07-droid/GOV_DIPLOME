@@ -1,19 +1,19 @@
-# R06 tests/civic/R06/round14/r05_client_r14.cjs @ 6b9da27 (код R06 b42e790) против стенда serve_r14.py; клиент — web/civic/build3d/build3d-core.js @ fc03e19; 2026-10-10T18:14:17Z
+# R06 tests/civic/R06/round14/r05_client_r14.cjs @ 6b9da27 (код R06 b42e790) против стенда serve_r14.py; клиент — build3d-core.js @ f946157; 2026-10-10T18:32:11Z
 PASS вход сотрудника на стенде — 200
 PASS r06: list(bbox) → предложения в Нуре — 5
 PASS r06: create без входа → 401 — 401 unauthenticated
-PASS r06: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-22606879247e","year":2027,"rot":90}
+PASS r06: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-620c6effb34e","year":2027,"rot":90}
 PASS r06: vote → my_vote и счётчик — {"up":1,"my":1}
 PASS r06: list с device_id → «мой голос» после перезагрузки — 1
 PASS r06: remove (withdraw) → в списке нет
-PASS r06: restore («Отменить») → предложение снова в списке — p-22606879247e (тот же id)
+PASS r06: restore («Отменить») → предложение снова в списке — p-620c6effb34e (тот же id)
 PASS r06: remove без маршрута withdraw → запасной DELETE
 PASS r01: list(bbox) → предложения в Нуре — 5
 PASS r01: create без входа → 401 — 401 unauthenticated
-PASS r01: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-415e813919a3","year":2027,"rot":90}
+PASS r01: create сотрудником (CSRF из сессии) → поля 3D — {"id":"p-8b7ae394d6ad","year":2027,"rot":90}
 PASS r01: vote → my_vote и счётчик — {"up":1,"my":1}
 PASS r01: list с device_id → «мой голос» после перезагрузки — 1
 PASS r01: remove (withdraw) → в списке нет
-PASS r01: restore («Отменить») → предложение снова в списке — p-415e813919a3 (тот же id)
+PASS r01: restore («Отменить») → предложение снова в списке — p-8b7ae394d6ad (тот же id)
 PASS r01: remove без маршрута withdraw → запасной DELETE
 {"total":17,"failed":0}
