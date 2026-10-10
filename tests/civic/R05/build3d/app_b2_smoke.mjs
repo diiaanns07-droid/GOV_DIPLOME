@@ -101,6 +101,7 @@ try {
   const login = PASSWORD ? await p.evaluate((pw) => window.CivicShell.api.login("operator", pw).then(() => true, () => false), PASSWORD) : false;
   check("staff_login_through_shell", login === true, login);
   const before = await p.evaluate(() => CivicShell.build3d.getState().count);
+  const beforeIds = await p.evaluate(() => CivicShell.build3d.getState().proposals.map((q) => q.id));
   const posts = [];
   p.on("response", (r) => { if (/\/api\/civic\/v2\/proposals$/.test(new URL(r.url()).pathname) && r.request().method() === "POST") posts.push(r.status()); });
   // Свободное место в Нуре (вдали от демо-проектов R06) — там ставим сквер.
@@ -113,7 +114,8 @@ try {
   await p.mouse.click(pt[0], pt[1]);
   await p.click("#birge-build3d-root [data-action=place]");
   await p.waitForFunction((n) => { const s = CivicShell.build3d.getState(); return s.count === n + 1 && s.proposals.every((q) => !/^tmp-/.test(q.id)) && !s.animating; }, before, { timeout: 30000 });
-  const placed = await p.evaluate((n) => CivicShell.build3d.getState().proposals.find((q) => /^p-/.test(q.id) && !q.demo && q.kind === "square"), before);
+  // Новый проект — тот, которого не было до «Поставить» (в базе стенда могут быть скверы прежних прогонов).
+  const placed = await p.evaluate((ids) => CivicShell.build3d.getState().proposals.find((q) => !ids.includes(q.id) && q.kind === "square"), beforeIds);
   check("place_square_stored_by_r06_via_shell_client", !!placed && posts[posts.length - 1] === 201, { posts, id: placed && placed.id, year: placed && placed.year });
   await shot(p, "b2_1366_ru_akimat.png");
   // 3. Карточка: не над панелью оболочки; «Удалить» — у акимата.

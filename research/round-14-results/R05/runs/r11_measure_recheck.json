@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-10T18:32:11Z",
+ "generated_at": "2026-10-10T19:00:19Z",
  "script": "claude/r14-R11 @ 52d7c59: tests/civic/R11/review/r05_build3d_shots.cjs + measure.cjs (запуск без изменений)",
- "r05_code": "web/civic/build3d этой ветки = code_sha f946157; ui-kit/i18n — выгрузка claude/r14-R11 @ 8451468",
+ "r05_code": "web/civic/build3d этой ветки = code_sha a9d256d; ui-kit/i18n — выгрузка claude/r14-R11 @ 8451468",
  "what_is_measured": "шрифт < 14 px, кнопки < 44 px, ключи вместо текста, запрещённые слова, прокрутка вбок (measure.cjs R11)",
  "scenarios": {
   "start-1366-ru": {

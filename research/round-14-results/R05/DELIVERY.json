@@ -1,18 +1,22 @@
 {
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
- "delivery": 4,
+ "delivery": 5,
  "for_build": "FINAL (R01 claude/sharp-dijkstra-0t87gl @ 2b9e837 ещё содержит поставку 1 = b0353ee)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "f946157",
- "tested_sha": "f946157",
- "tested_note": "Все проверки поставки 4 прогнаны на коде f946157 (web/ во время прогона не менялся; коммиты во время прогона — только документы, тесты и скриншоты). Стенды R06 перезапущены и проверены повторно: прежний стенд держал порт.",
+ "code_sha": "a9d256d",
+ "tested_sha": "a9d256d",
+ "tested_note": "Все проверки поставки 5 прогнаны одним прогоном на коде a9d256d (web/ во время прогона не менялся). Оболочка R01 — FINAL-кандидат ef1ef44 + proposed_r01_final.patch.",
  "previous_delivery": {
-  "code_sha": "fc03e19",
-  "delivery_commit": "4a7eba7",
+  "code_sha": "f946157",
+  "delivery_commit": "5095b1b",
   "before": [
+   {
+    "code_sha": "fc03e19",
+    "delivery_commit": "4a7eba7"
+   },
    {
     "code_sha": "169c56b",
     "delivery_commit": "3b57c11"
@@ -152,11 +156,11 @@
  "tests": {
   "node_core_models": {
    "status": "PASS",
-   "detail": "31/31 — node --test test_core.mjs test_models.mjs"
+   "detail": "32/32 — node --test test_core.mjs test_models.mjs"
   },
   "python_fixtures": {
    "status": "PASS",
-   "detail": "11/11 — данные OSM, без ж/д платформ, внутри Астаны, name:kk только из OSM, генератор байт в байт"
+   "detail": "12/12 — данные OSM, без ж/д платформ, внутри Астаны, name:kk только из OSM, отступ опор по lanes/width, генератор байт в байт"
   },
   "browser_check": {
    "status": "PASS",
@@ -228,7 +232,7 @@
   },
   "r06_own_client_test": {
    "status": "PASS",
-   "detail": "r06 own exit 0 {\"total\":17,\"failed\":0} (повтор) — runs/r06_own_client_test.txt"
+   "detail": "17/17 — runs/r06_own_client_test.txt"
   },
   "r12_engine_geo_check": {
    "status": "PASS",
@@ -236,11 +240,11 @@
   },
   "smooth_on_laptop_gpu": {
    "status": "NOT_RUN",
-   "detail": "в облаке нет GPU: SwiftShader 6.6 кадр/с без объектов и 2.8 с 20 объектами — программная отрисовка; LOCAL-R05-1"
+   "detail": "в облаке нет GPU: SwiftShader 6.1 кадр/с без объектов и 2.6 с 20 объектами — программная отрисовка; LOCAL-R05-1"
   },
   "r10_accuracy_r05": {
    "status": "PASS",
-   "detail": "8/8 PASS для R05 (tests/civic/R10/accuracy.py @ 64cffc3) — runs/r10_accuracy_r05.json"
+   "detail": "8/8 PASS для R05 (tests/civic/R10/accuracy.py) на a9d256d — runs/r10_accuracy_r05.json"
   },
   "r01_b3_head_own_test_with_patch": {
    "status": "PASS",
@@ -256,11 +260,11 @@
   },
   "r01_final_ef1ef44_own_test_with_patch": {
    "status": "PASS",
-   "detail": "25/25 — r14_b2.cjs R01 на ef1ef44 + файлы R05 f946157 + proposed_r01_final.patch, runs/r01_final_ef1ef44_with_patch.txt"
+   "detail": "25/25 — r14_b2.cjs R01 на ef1ef44 + файлы R05 a9d256d + proposed_r01_final.patch, runs/r01_final_ef1ef44_with_patch.txt"
   },
   "final_b033_kk_card": {
    "status": "PASS",
-   "detail": "«Жанында: Керей Және Жәнібек Хандар көшесі» 1366/375 в FINAL ef1ef44 с R05 f946157 — runs/final_b033_kk.json"
+   "detail": "«Жанында: Керей Және Жәнібек Хандар көшесі» 1366/375 в FINAL ef1ef44 с R05 f946157 — runs/final_b033_kk.json (проба на f946157; код подписи улиц после неё не менялся)"
   }
  },
  "screenshots": {
@@ -337,12 +341,12 @@
   "С R06 поставки 1 (7031afa, сейчас в B2) контекст 3D (улица, двор, участок) не сохраняется на сервере — модуль вычисляет его по геометрии при показе; «Отменить» после «Удалить» создаёт новое предложение без голосов. С R06 ≥ b42e790 — сохраняется и возвращается то же.",
   "Без патча R01 (адаптер оставлен): на телефоне подсказка жителя закрывает фильтры открытой шторки, объект открытой карточки может уйти под «Территорию».",
   "В kk названия улиц: name:kk из OSM (13 из 59 улиц Нуры) или правило R07 (тип улицы по-казахски, имя собственное как есть) — это не перевод имени; улицы без известного типа в kk не показываются.",
-  "Опоры освещения — в 5 м от оси улицы (ширины проезжей части в графе нет).",
+  "Опоры освещения — у края проезжей части по тегам OSM width/lanes (иначе типовое число полос по классу улицы); вне улиц Нуры (участки R12) — 5 м от оси: ширины в ответе R12 нет.",
   "Подсказка «рядом уже есть …» опирается на OSM: отсутствие объекта в OSM не значит, что его нет.",
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: в FINAL ef1ef44 заменить web/civic/build3d на f946157 и применить proposed_r01_final.patch (INTEGRATION §1.2б) — закроет R10 B-007/B-008/B-033 и п. 9 R11; R11: ключи build3d.card.segment_plain, build3d.street.this, common.error.too_many; LOCAL: LOCAL-R05-1/2/3.",
+ "next_step": "R01: в FINAL ef1ef44 заменить web/civic/build3d на a9d256d и применить proposed_r01_final.patch (INTEGRATION §1.2б) — закроет R10 B-007/B-008/B-033 и п. 9 R11; R11: ключи build3d.card.segment_plain, build3d.street.this, common.error.too_many; LOCAL: LOCAL-R05-1/2/3.",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -428,7 +432,7 @@
  },
  "final_candidate": {
   "r01": "claude/sharp-dijkstra-0t87gl @ ef1ef44 (FINAL-кандидат: R05 169c56b, патч R05 перенесён R01 по смыслу)",
-  "take": "web/civic/build3d/ из f946157 + research/round-14-results/R05/proposed_r01_final.patch (одна строка birge.css: легенда R07 скрыта под карточкой 3D; git apply --check на ef1ef44: OK)",
+  "take": "web/civic/build3d/ из a9d256d + research/round-14-results/R05/proposed_r01_final.patch (одна строка birge.css: легенда R07 скрыта под карточкой 3D; git apply --check на ef1ef44: OK)",
   "closes_in_final": [
    "R10 B-007 (ж/д платформы)",
    "R10 B-008 (объекты за городом)",
@@ -436,9 +440,19 @@
    "R11 ночь B3 п. 9 (легенда под карточкой)"
   ],
   "checked": {
-   "r01_r14_b2": "25/25 PASS — runs/r01_final_ef1ef44_with_patch.txt",
-   "r05_shell_smoke": "15/15 PASS — runs/app_b2_smoke.json",
+   "r01_r14_b2": "25/25 — r14_b2.cjs R01 на ef1ef44 + файлы R05 a9d256d + proposed_r01_final.patch, runs/r01_final_ef1ef44_with_patch.txt",
+   "r05_shell_smoke": "15/15 PASS — на FINAL-кандидате R01 ef1ef44 + proposed_r01_final.patch, runs/app_b2_smoke.json",
    "b033_kk_card": "PASS 1366/375 — runs/final_b033_kk.json"
+  }
+ },
+ "night_4": {
+  "sources_checked": "R10 37f1292, R11 c03a6c5, R15 054b056, R01 ef1ef44 — новых замечаний к R05 нет",
+  "self_review_UX_BRIEF": {
+   "lighting_poles_at_kerb": {
+    "status": "DONE",
+    "detail": "опоры освещения — у края проезжей части: отступ от оси по OSM width/lanes/highway (половина ширины + 1,5 м, не меньше 5 м); ул. Сыганак 8 м, 7-полосный пр. Туран 12,9 м (было 5 м везде — на широких улицах опоры стояли на полосах)",
+    "check": "test_pole_offset_from_osm_lanes_and_width; test_core «опоры освещения — у края проезжей части»"
+   }
   }
  }
 }

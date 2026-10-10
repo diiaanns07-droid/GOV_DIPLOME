@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-10T17:46:26Z",
+ "generated_at": "2026-10-10T18:44:31Z",
  "script": "claude/r14-R10 @ 64cffc3: tests/civic/R10/accuracy.py --root <ветка R05> (без изменений; только чтение данных)",
  "bugs": "R10 BUGS.md B-007 (ж/д платформы как остановки), B-008 (объекты вне границы Астаны); Codex LOCAL_B2 №5, №6",
  "before_169c56b": [
@@ -209,5 +209,6 @@
     "moved": []
    }
   }
- ]
+ ],
+ "after_code": "a9d256d"
 }

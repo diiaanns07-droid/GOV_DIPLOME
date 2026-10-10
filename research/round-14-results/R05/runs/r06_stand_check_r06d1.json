@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-10T18:31:53.893Z",
+ "generated_at": "2026-10-10T18:56:15.239Z",
  "stand": {
   "url": "http://127.0.0.1:8616/civic/proposals/demo.html",
   "r06_sha": "3d10f7d",
@@ -13,11 +13,11 @@
     "storeMode": "api",
     "count": 5,
     "kinds": [
-     "lighting:2027:demo",
-     "square:2027:demo",
-     "stop:2027:demo",
      "playground:2027:demo",
-     "sports:2027:demo"
+     "stop:2027:demo",
+     "square:2027:demo",
+     "sports:2027:demo",
+     "lighting:2027:demo"
     ]
    }
   },
@@ -25,7 +25,7 @@
    "id": "list_sends_device_id_no_bbox",
    "status": "PASS",
    "detail": [
-    "/api/civic/v2/proposals?device_id=dev-47f129c68d437d1e50cec57d35975d7f"
+    "/api/civic/v2/proposals?device_id=dev-c51eccaab604c0ddc28163c9cc685ed4"
    ]
   },
   {
@@ -94,7 +94,7 @@
    "id": "created_on_server_with_year_and_rotation",
    "status": "PASS",
    "detail": {
-    "id": "p-766d86dcc89d",
+    "id": "p-d21978efe8bc",
     "kind": "stop",
     "geometry": {
      "type": "Point",
@@ -115,7 +115,7 @@
     "district": "nura",
     "near_street": null,
     "target": null,
-    "created_at": "2026-10-10T18:31:31+00:00",
+    "created_at": "2026-10-10T18:55:51+00:00",
     "demo": false
    }
   },
@@ -127,7 +127,7 @@
   {
    "id": "vote_through_r06_card_with_device_id",
    "status": "PASS",
-   "detail": "{\"value\":1,\"device_id\":\"dev-b67409910980a33d12626d97dc07c35b\"}"
+   "detail": "{\"value\":1,\"device_id\":\"dev-9ea1e83f9d23ac4fec7b751a4bec670f\"}"
   },
   {
    "id": "vote_synced_to_3d_object",
@@ -144,15 +144,15 @@
     "POST /api/civic/v1/session/login",
     "POST /api/civic/v2/proposals",
     "POST /api/civic/v2/proposals",
-    "POST /api/civic/v2/proposals/p-766d86dcc89d/vote",
-    "POST /api/civic/v2/proposals/p-766d86dcc89d/withdraw"
+    "POST /api/civic/v2/proposals/p-d21978efe8bc/vote",
+    "POST /api/civic/v2/proposals/p-d21978efe8bc/withdraw"
    ]
   },
   {
    "id": "undo_recreates_on_old_r06",
    "status": "PASS",
    "detail": {
-    "id": "p-accd0b143a62",
+    "id": "p-44336315de4d",
     "votes_up": 0
    }
   },
