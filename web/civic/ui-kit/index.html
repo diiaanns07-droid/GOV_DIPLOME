@@ -104,6 +104,12 @@
         left: var(--s-3);
         bottom: var(--s-3);
       }
+      @media (max-width: 1023px) {
+        .kit-map .bk-legend {
+          right: var(--s-3);
+          max-width: none;
+        }
+      }
       .kit-map .bk-maptools {
         position: absolute;
         right: var(--s-3);
@@ -497,7 +503,8 @@
             [1, 2, 3, 4].map(function (l) {
               return '<span class="bk-legend__item"><i class="bk-legend__swatch" data-level="' + l + '"></i>' + UI.esc(t("heat.level." + l)) + "</span>";
             }).join("") +
-            '<span class="bk-legend__item"><i class="bk-legend__swatch" data-level="fixed"></i>' + UI.esc(t("heat.fixed")) + "</span>";
+            '<span class="bk-legend__item"><i class="bk-legend__swatch" data-level="fixed"></i>' + UI.esc(t("heat.fixed")) + "</span>" +
+            '<span class="bk-legend__note">' + UI.esc(t("heat.legend_hint")) + "</span>";
           $("kit-district").innerHTML = DISTRICTS.map(function (d) {
             return '<option value="' + d + '">' + UI.esc(t("district." + d)) + "</option>";
           }).join("");

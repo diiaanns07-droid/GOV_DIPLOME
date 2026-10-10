@@ -1,0 +1,16 @@
+{
+ "set": "probe_v2",
+ "n": 300,
+ "a": "preds_probe_v2_synth_all_logreg.jsonl",
+ "b": "preds_probe_v2_synth_template_logreg.jsonl",
+ "macro_f1_a": 0.7966,
+ "macro_f1_b": 0.7507,
+ "delta": {
+  "delta": 0.0459,
+  "low": 0.0042,
+  "high": 0.0889,
+  "share_delta_gt_0": 0.986,
+  "n_boot": 2000,
+  "unit": "texts"
+ }
+}

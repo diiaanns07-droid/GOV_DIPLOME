@@ -99,7 +99,8 @@ async function main() {
       district: [...document.querySelectorAll(".civic-explore select option")].map((o) => o.textContent).join(",") }));
     check("1366: ҚАЗ also switches the shell panel and city navigation",
       panel.title === "Қалада не өзгеріп жатыр" && panel.area === "Аумақ" && /Шолу: бүкіл Астана/.test(panel.view || "") && panel.staff === "Қызметкерлерге"
-      && panel.find === "Табу" && panel.placeholder === "Астана көшесі" && /Нұра/.test(panel.district), panel);
+      // «Іздеу» — слово словаря R11 после казахской вычитки (f0e5e80); «Табу» — запасной текст оболочки.
+      && ["Іздеу", "Табу"].includes(panel.find) && panel.placeholder === "Астана көшесі" && /Нұра/.test(panel.district), panel);
     await page.screenshot({ path: path.join(OUT, "02_map_1366_kk.png") });
     await page.reload();
     await ready(page);

@@ -36,6 +36,11 @@ def macro_f1_cm(cm: np.ndarray) -> float:
     return float(f1[mask].mean()) if mask.any() else 0.0
 
 
+def macro_f1(y_true, y_pred, k: int) -> float:
+    """macro-F1 по индексам классов — одно правило для выбора модели (val) и для отчёта."""
+    return macro_f1_cm(_cm(np.asarray(y_true, dtype=int), np.asarray(y_pred, dtype=int), k))
+
+
 def report(y_true: list[int], y_pred: list[int], labels: tuple[str, ...]) -> dict:
     """Полный отчёт для одного набора: accuracy, macro-F1, weighted-F1, по классам, матрица."""
     k = len(labels)

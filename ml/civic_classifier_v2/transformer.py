@@ -24,7 +24,7 @@ from pathlib import Path
 import numpy as np
 
 from ml.civic_classifier_v2.config import TrainConfig
-from ml.civic_classifier_v2.metrics import choose_threshold, macro_f1_cm
+from ml.civic_classifier_v2.metrics import choose_threshold, macro_f1
 
 META_NAME = "birge_meta.json"
 META_FORMAT = "birge-civic-clf-v2"
@@ -132,8 +132,7 @@ def _val_metrics(tm: TrainedModel, val: list[dict]) -> tuple[float, float, np.nd
     y = np.array([index[r["label"]] for r in val])
     proba = predict_proba(tm, [r["text"] for r in val])
     pred = proba.argmax(axis=1)
-    cm = np.bincount(y * k + pred, minlength=k * k).reshape(k, k)
-    return macro_f1_cm(cm), float((y == pred).mean()), proba
+    return macro_f1(y, pred, k), float((y == pred).mean()), proba
 
 
 def fit(train: list[dict], val: list[dict], cfg: TrainConfig, labels: tuple[str, ...],

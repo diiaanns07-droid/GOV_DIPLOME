@@ -28,8 +28,23 @@ from ml.civic_classifier_v2 import metrics as M
 from ml.civic_classifier_v2.config import LLM_V1_DIR, PROBE_V2_DIR, RESULTS_DIR, SYNTH_V3_DIR, V1_IN_V2_DIR
 
 
-def load_to_cyrillic(normalize_file: str | None = None):
-    """Функция to_cyrillic R04: из сборки (ml.civic_dedup) или из указанного файла."""
+NORMALIZE_PATH_IN_REPO = "ml/civic_dedup/normalize.py"
+
+
+def load_to_cyrillic(normalize_file: str | None = None, git_ref: str | None = None):
+    """Функция to_cyrillic R04: из сборки (ml.civic_dedup), из файла или из ветки git (`git show <ref>:<путь>`).
+
+    git_ref читается через subprocess в байтах — без перенаправления оболочки (в Windows PowerShell 5 `>` пишет
+    UTF-16 и портит казахские буквы в коде R04)."""
+    if git_ref:
+        import subprocess
+        import tempfile
+        from ml.civic_classifier_v2.config import REPO_ROOT
+        code = subprocess.run(["git", "-C", str(REPO_ROOT), "show", f"{git_ref}:{NORMALIZE_PATH_IN_REPO}"],
+                              capture_output=True, check=True, timeout=60).stdout
+        tmp = Path(tempfile.mkdtemp(prefix="r03_r04norm_")) / "normalize.py"
+        tmp.write_bytes(code)
+        normalize_file = str(tmp)
     if normalize_file:
         spec = importlib.util.spec_from_file_location("r04_civic_dedup_normalize", normalize_file)
         if spec is None or spec.loader is None:
@@ -68,15 +83,18 @@ def compare(records: list[dict], pred_raw: list[int], pred_cyr: list[int], chang
 def _cmd_check(args) -> int:
     from ml.civic_classifier_v2 import logreg
 
-    to_cyr = load_to_cyrillic(args.normalize_file)
+    to_cyr = load_to_cyrillic(args.normalize_file, args.normalize_ref)
     labs = L.labels()
     idx = {lab: i for i, lab in enumerate(labs)}
     v3, _ = D.load_corpus(Path(args.synth_v3), source="synth_v3", evidence="synthetic_template")
     llm, _ = D.load_corpus(Path(args.llm_v1), source="llm_v1", evidence="synthetic_llm")
     probe, _ = D.load_corpus(Path(args.probe_v2), source="probe_v2", evidence="synthetic_agent_written")
+    for corpus in (v3, llm):  # как experiments.py: нет поля split — детерминированный split по шаблонам
+        D.ensure_splits(corpus, args.seed)
     evals = list(probe) + [r for r in v3 + llm if r["split"] == "test"]
     try:
         v1, _ = D.load_corpus(Path(args.v1_in_v2), source="v1_in_v2", evidence="synthetic_template_v1")
+        D.ensure_splits(v1, args.seed)
         evals += [r for r in v1 if r["split"] == "test"]
     except FileNotFoundError:
         pass
@@ -117,6 +135,7 @@ def main(argv=None) -> int:
     c.add_argument("--v1-in-v2", default=str(V1_IN_V2_DIR))
     c.add_argument("--probe-v2", default=str(PROBE_V2_DIR))
     c.add_argument("--normalize-file", help="файл ml/civic_dedup/normalize.py R04, если его нет в сборке")
+    c.add_argument("--normalize-ref", help="ветка git с кодом R04, например origin/claude/r14-R04 (после git fetch)")
     c.add_argument("--seed", type=int, default=20261011)
     c.add_argument("--out", default=str(RESULTS_DIR / "translit_to_cyrillic_probe_v2.json"))
     args = ap.parse_args(argv)

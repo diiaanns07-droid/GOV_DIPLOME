@@ -526,3 +526,24 @@ def test_offline_basemap_files_are_served_and_nothing_else_from_fixtures():
         rel, mime = web_server.ASSETS["/civic/heat/fixtures/" + name]
         assert (web_server.ROOT / "web" / rel).is_file() and mime.startswith("application/geo+json")
     assert not any(k.startswith("/civic/heat/fixtures/") and not k.endswith(".geojson") for k in web_server.ASSETS)
+
+
+def test_demo_complaints_are_seeded_once_and_marked_demo():
+    """R10 B-030: CIVIC_DEMO=1 — три синтетические жалобы R09 у остановки сценария, повтор ничего не дублирует."""
+    calls, saved = [], {}
+
+    class FakeStore:
+        def create(self, payload, device_id, *, demo=False):
+            calls.append((payload, device_id, demo))
+            key = (device_id, payload["request_id"])
+            created = key not in saved
+            saved.setdefault(key, {"id": "c-" + payload["request_id"], "demo": demo})
+            return saved[key], created
+
+    gateway = CivicV2Gateway(demo=True)
+    assert gateway._seed_demo_complaints(FakeStore()) == 3
+    store = FakeStore()
+    store.create = FakeStore.create.__get__(store)
+    assert gateway._seed_demo_complaints(store) == 0  # те же request_id — дублей нет
+    assert all(demo is True for _payload, _device, demo in calls)
+    assert all(p["category"] == "lighting" and p["target"]["id"] == "osm-node-4109037549" for p, _d, _demo in calls)

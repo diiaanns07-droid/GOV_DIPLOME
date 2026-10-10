@@ -60,6 +60,8 @@ async function layoutProblems(page) {
     for (const el of all) {
       const cs = getComputedStyle(el);
       if (cs.display === "none" || cs.visibility === "hidden") continue;
+      const box = el.getBoundingClientRect();
+      if (box.width <= 1 && box.height <= 1) continue; // только для экранного диктора — на экране не видно
       const hasText = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
       if (hasText && parseFloat(cs.fontSize) < 14) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
       if (hasText && el.scrollWidth > el.clientWidth + 1 && cs.overflow !== "visible" && el.clientWidth > 0)
@@ -355,6 +357,21 @@ async function shot(page, name, full) {
     const t = await page.textContent(".akim-objects");
     check("объекты: пустой реестр — «Пока пусто», а не «идут по графику»", t.includes("Пока пусто") && !t.includes("идут по графику"), t);
     await ctx.close();
+  }
+
+  {
+    // Горячее место без подписи (новая цель) — вид места словами, а не пустая строка.
+    const noLabel = JSON.parse(JSON.stringify(realSummary));
+    noLabel.hot.items[0].target.label_ru = null;
+    noLabel.hot.items[0].target.label_kk = null;
+    noLabel.hot.items[0].target.kind = "segment";
+    for (const [lang, word] of [["ru", "Участок улицы"], ["kk", "Көше бөлігі"]]) {
+      const { ctx, page } = await open(browser, { width: 1366, height: 768, lang, route: (route) => route.fulfill({ json: noLabel }) });
+      await waitState(page, "ok");
+      const t = (await page.textContent(".akim-hot__item .bk-list__title")).trim();
+      check(`${lang}: горячее место без подписи — «${word}», а не пусто`, t === word, t);
+      await ctx.close();
+    }
   }
 
   // ───────────── 3б. Тихое обновление ─────────────

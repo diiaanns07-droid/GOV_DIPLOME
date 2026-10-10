@@ -23,6 +23,7 @@
 Данные © OpenStreetMap contributors, ODbL 1.0 (производные).
 """
 
+import collections
 import gzip
 import json
 import math
@@ -137,6 +138,7 @@ def main(out_dir=None):
             round(e["length_m"], 2), [[r(x), r(y)] for x, y in e["geometry"]],
         ])
     edges.sort(key=lambda row: row[0])
+    names_kk = street_names_kk(edges, names)
     streets = {
         "schema": "birge-build3d-streets-v1",
         "purpose": "Улицы для освещения вдоль участка, подписи «рядом» и разворота остановки. "
@@ -145,10 +147,16 @@ def main(out_dir=None):
         "source": source,
         "fields": ["id", "name_index", "from_node_index", "to_node_index", "length_m", "geometry"],
         "names": names,
+        # Казахское название — только если оно есть в OSM (name:kk тех же путей, снимок osm-walking); иначе null и
+        # интерфейс показывает русское с lang="ru" (так же делает R12 label_kk). Машинного перевода нет.
+        "names_kk": names_kk,
+        "names_kk_source": {"path": "data/civic/astana/osm-walking/overpass.json.gz", "tag": "name:kk",
+                            "evidence_type": "real (OSM)", "found": sum(1 for x in names_kk if x), "of": len(names)},
         "nodes": nodes,
         "edges": edges,
     }
-    print(dump("nura-streets.json", streets, out_dir), len(edges), "edges", len(names), "names")
+    print(dump("nura-streets.json", streets, out_dir), len(edges), "edges", len(names), "names",
+          sum(1 for x in names_kk if x), "kk")
 
     # 2. Районы: упрощённые кольца + bbox города.
     districts = []
@@ -279,7 +287,57 @@ def outer_rings(el):
     return rings
 
 
+OSM_WALKING = os.path.join(REPO, "data", "civic", "astana", "osm-walking", "overpass.json.gz")
+
+
+def street_names_kk(edges, names):
+    """name:kk из снимка OSM для каждого русского названия: самое частое среди путей (way) его рёбер, иначе None."""
+    with gzip.open(OSM_WALKING, "rt", encoding="utf-8") as fh:
+        way_kk = {el["id"]: (el.get("tags") or {}).get("name:kk") for el in json.load(fh).get("elements", [])
+                  if el.get("type") == "way"}
+    votes = [collections.Counter() for _ in names]
+    for row in edges:
+        way = int(row[0].split("-")[1][1:])  # osm-w<way>-<n>
+        kk = (way_kk.get(way) or "").strip()
+        if kk:
+            votes[row[1]][kk] += 1
+    return [v.most_common(1)[0][0] if v else None for v in votes]
+
+
+def is_rail(el):
+    """Ж/д и трамвайные платформы — не автобусные остановки (R10 BUGS B-007; то же правило в R10 accuracy.py)."""
+    t = el.get("tags") or {}
+    return bool(t.get("railway")) or t.get("train") == "yes" or t.get("tram") == "yes"
+
+
+def point_in_rings(p, rings):
+    """Чётно-нечётное правило по всем кольцам полигона (внешние и дыры) — как в R10 accuracy.py."""
+    x, y = p
+    inside = False
+    for ring in rings:
+        n = len(ring)
+        for i in range(n):
+            x1, y1 = ring[i][0], ring[i][1]
+            x2, y2 = ring[(i + 1) % n][0], ring[(i + 1) % n][1]
+            if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
+                inside = not inside
+    return inside
+
+
+def city_polygons():
+    with open(GEOFENCE, encoding="utf-8") as fh:
+        return [poly["rings"] for poly in json.load(fh)["polygons"]]
+
+
+def in_city(p, city):
+    """Внутри Астаны = в одном из полигонов районов OSM (data/civic/astana/geofence.json), CONTRACT §8.3."""
+    return any(point_in_rings(p, rings) for rings in city)
+
+
 def build_existing():
+    # Выгрузка LOCAL-1 взята с запасом 0,05° вокруг города: объекты вне районов Астаны не берём (R10 B-008),
+    # как и R12 (build_geo_data.py). Проверяются уже округлённые координаты — те, что попадут в файл.
+    city = city_polygons()
     seen = set()
     stops = []
     for name in ("bus_stops", "platforms"):  # одна остановка бывает в обоих наборах — убираем повтор по (type, id)
@@ -288,7 +346,11 @@ def build_existing():
             if key in seen:
                 continue
             seen.add(key)
+            if is_rail(el):
+                continue
             x, y = center(el)
+            if not in_city((r(x), r(y)), city):
+                continue
             stops.append([r(x), r(y), osm_id(el)] + list(names(el)))
     points = {"stop": sorted(stops, key=lambda row: row[2])}
     for kind, sets in (("playground", ("playgrounds",)), ("sports", ("pitches",)), ("square", ("parks", "gardens")), ("lamp", ("street_lamps",))):
@@ -299,6 +361,8 @@ def build_existing():
                     continue
                 ids.add((el["type"], el["id"]))
                 x, y = center(el)
+                if not in_city((r(x), r(y)), city):
+                    continue
                 pts = element_points(el)
                 # Радиус пятна (м) — для парков и площадок: «рядом» считаем от края, а не от центра.
                 rad = max(mf_dist((x, y), p) for p in pts) if len(pts) > 1 else 0.0
@@ -308,6 +372,9 @@ def build_existing():
     for el in osm_elements("residential"):
         for ring in outer_rings(el):
             simple = simplify([list(p) for p in ring], YARD_SIMPLIFY_M)
+            # Двор берём, только если ВСЕ вершины внутри города (двор на границе — не наш объект для привязки).
+            if not all(in_city(p, city) for p in simple):
+                continue
             yards.append(["yard-%d" % el["id"], el["type"]] + list(names(el)) + [simple])
     yards.sort(key=lambda row: (row[0], len(row[-1])))
     with open(os.path.join(OSM_OBJECTS, "SOURCE.json"), encoding="utf-8") as fh:

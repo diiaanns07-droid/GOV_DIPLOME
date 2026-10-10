@@ -90,7 +90,7 @@ class Table:
 
 # ---------- таблицы для диплома ----------
 
-def build_tables(exp: dict, final: dict, onnx: dict) -> list[Table]:
+def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None) -> list[Table]:
     runs = exp.get("runs") or {}
     labels = tuple(exp.get("labels") or L.labels())
     names = L.names("ru")
@@ -196,7 +196,46 @@ def build_tables(exp: dict, final: dict, onnx: dict) -> list[Table]:
             t.add("Диагностика LOCAL-4: per-channel, 4 потока", f"{diag['isolated_4_threads']['mean_ms']} мс "
                                                                f"(p95 {diag['isolated_4_threads']['p95_ms']})")
         tables.append(t)
+    tables += extra_tables(Path(folder) if folder else RESULTS_DIR)
     return tables
+
+
+def extra_tables(folder: Path) -> list[Table]:
+    """Дополнительные опыты (если файлы есть): перевод транслита и чистка шумных меток llm_v1."""
+    out = []
+    tr = _load(folder / "translit_to_cyrillic_probe_v2.json")
+    if tr:
+        t = Table("t8_translit_to_cyrillic", "Таблица 8. Перевод транслита в кириллицу перед моделью (probe_v2)",
+                  ["Модель", "macro-F1 без / с переводом", "Δ [95% ДИ]", "Транслит: accuracy без / с", "Текстов изменено"],
+                  "to_cyrillic — функция R04; меняет только тексты, где латиницы ≥ 50 % (24 текста стиля translit). "
+                  "Обучение как synth_all.")
+        for key, name in (("heuristic_v1", "словарь (v1)"), ("logreg", "логрегрессия")):
+            r = tr.get(key)
+            if r:
+                d = r["paired_delta_cyr_minus_raw"]
+                t.add(name, f"{_f(r['raw']['macro_f1'])} / {_f(r['to_cyrillic']['macro_f1'])}",
+                      f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}]",
+                      f"{_f(r['raw']['translit_accuracy'], 2)} / {_f(r['to_cyrillic']['translit_accuracy'], 2)}",
+                      r["texts_changed"])
+        out.append(t)
+    cl = _load(folder / "llm_label_cleaning_effect.json")
+    audit = _load(folder / "LLM_LABEL_AUDIT.json")
+    if cl or audit:
+        t = Table("t9_llm_label_noise", "Таблица 9. Шум меток LLM-синтетики llm_v1 (без людей)", ["Показатель", "Значение"],
+                  "Кандидаты — confident learning (логрегрессия 5-fold): p(своей метки) < 0.2 и другая категория ≥ 0.6.")
+        if audit:
+            t.add("Кандидатов на неверную метку", f"{audit['candidates']} из {audit['n']} ({audit['share']:.1%})")
+            other = (audit.get("by_label") or {}).get("other") or {}
+            if other:
+                t.add("Из них в «Другом»", f"{other['candidates']} из {other['n']} ({other['share']:.1%})")
+        if cl:
+            d = cl["paired_delta_clean_minus_original"]
+            t.add("Логрегрессия v3 + LLM на probe_v2: исходно / без кандидатов",
+                  f"{_f(cl['probe_v2_macro_f1']['original'])} / {_f(cl['probe_v2_macro_f1']['clean'])}")
+            t.add("Δ [95% ДИ]", f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}] — "
+                                f"{'доказано' if d['low'] > 0 or d['high'] < 0 else 'не доказано'}")
+        out.append(t)
+    return out
 
 
 def render_tables(tables: list[Table], exp: dict) -> str:
@@ -303,9 +342,13 @@ def render_errors(exp: dict, preds: dict[str, dict[str, dict]], probe: dict[str,
             goes = sorted(((labels[j], n) for j, n in enumerate(row) if n and labels[j] != lab), key=lambda x: -x[1])[:3]
             out.append(f"- {names[lab]}: F1 {_f(pc['f1'], 2)}, support {pc['support']}, предсказано {pc['predicted']}; "
                        "уходят в " + ", ".join(f"{names[g]} ({n})" for g, n in goes))
-        out += ["", "Train loss падает до 0.03 при val 0.756: модель запоминает формулировки шаблонов. Невиданные "
-                "шаблоны тех же категорий (другие слова) она относит к соседним темам. Добавление LLM-синтетики "
-                "(другие формулировки) поднимает test v3 до 0.779 — разнообразие данных важнее размера модели.", ""]
+        tr_info = (runs.get("synth_template/transformer") or {}).get("train") or {}
+        loss = _last_train_loss(RESULTS_DIR / "train_log_experiments.jsonl", "synth_template/transformer")
+        all_v3 = (_ev(runs, "synth_all/transformer", "synth_test_template") or {}).get("macro_f1")
+        out += ["", f"Train loss в конце обучения {_f(loss, 2)} при val macro-F1 {_f(tr_info.get('best_val_macro_f1'))}: "
+                "модель запоминает формулировки шаблонов. Невиданные шаблоны тех же категорий (другие слова) она "
+                "относит к соседним темам. С LLM-синтетикой (другие формулировки) test v3 — "
+                f"{_f(all_v3)}: разнообразие данных важнее размера модели.", ""]
 
     if preds and probe:
         out += ["## 4. Примеры ошибок (тексты probe_v2)", ""]
@@ -334,11 +377,54 @@ def render_errors(exp: dict, preds: dict[str, dict[str, dict]], probe: dict[str,
                            f"{pr.get('hard_rule') or ''} |")
             out.append("")
         out += _hard_rules_section(preds, probe)
+        out += _suggest_section(preds, probe)
     elif not preds:
         out += ["## 4. Примеры ошибок", "",
                 "Нет файлов прогнозов по текстам. Для трансформера их даёт ноутбук: RUN.txt шаг 8б "
                 "(`--preds-out`), для словаря и логрегрессии — `experiments.py` (artifacts/experiments/*.jsonl).", ""]
     return "\n".join(out)
+
+
+def _last_train_loss(log_path: Path, tag_prefix: str) -> float | None:
+    """train_loss последней эпохи прогона из лога обучения (если лог сохранён в results/)."""
+    if not Path(log_path).exists():
+        return None
+    last = None
+    for line in Path(log_path).read_text(encoding="utf-8").splitlines():
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if str(r.get("tag", "")).startswith(tag_prefix):
+            last = r.get("train_loss")
+    return last
+
+
+SUGGEST_THRESHOLDS = (0.3, 0.5, 0.7, 0.9)
+
+
+def _suggest_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:
+    """Подсказка жителю «Похоже на …» (R04 suggest: категория не other и score ≥ порога модели):
+    какая доля текстов получает предвыбор и как часто он верен — по прогнозам со score."""
+    rows = []
+    for name, pr in preds.items():
+        items = [r for i, r in pr.items() if i in probe and r.get("score") is not None]
+        if not items:
+            continue
+        for t in SUGGEST_THRESHOLDS:
+            sel = [r for r in items if r["score"] >= t and r["pred"] != "other"]
+            prec = sum(r["pred"] == r["true"] for r in sel) / len(sel) if sel else None
+            rows.append((name, t, len(sel) / len(items), prec, len(items)))
+    if not rows:
+        return []
+    out = ["## 6. Подсказка «Похоже на …»: доля предвыбора и его точность на probe_v2", "",
+           "R04 предвыбирает категорию жителю, если она не «Другое» и score ≥ порога модели (у итоговой — 0.3, "
+           "подобран на синтетической validation). Точность — доля верных среди предвыбранных; житель всегда может "
+           "сменить категорию. score не калиброван, на людях эти числа будут другими.", "",
+           "| Прогнозы | Порог | Доля текстов с предвыбором | Точность предвыбора | n |", "|---|---|---|---|---|"]
+    for name, t, cov, prec, n in rows:
+        out.append(f"| `{name}` | {t} | {cov:.0%} | {'—' if prec is None else f'{prec:.0%}'} | {n} |")
+    return out + [""]
 
 
 def _hard_rules_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:
@@ -367,6 +453,27 @@ def _hard_rules_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict
     return out + [""]
 
 
+def paired_from_files(path_a: Path, path_b: Path, set_name: str = "probe_v2") -> dict:
+    """Парная Δ macro-F1 (a − b) по двум файлам прогнозов {set,id,true,pred} на общих id набора."""
+    from ml.civic_classifier_v2.metrics import paired_delta, report
+    labs = L.labels()
+    idx = {lab: i for i, lab in enumerate(labs)}
+
+    def load(p):
+        rows = (json.loads(x) for x in Path(p).read_text(encoding="utf-8").splitlines() if x.strip())
+        return {str(r["id"]): r for r in rows if r.get("set", set_name) == set_name}
+
+    a, b = load(path_a), load(path_b)
+    ids = sorted(set(a) & set(b))
+    if not ids:
+        raise ValueError(f"нет общих id набора {set_name}")
+    y = [idx[a[i]["true"]] for i in ids]
+    pa, pb = [idx[a[i]["pred"]] for i in ids], [idx[b[i]["pred"]] for i in ids]
+    return {"set": set_name, "n": len(ids), "a": Path(path_a).name, "b": Path(path_b).name,
+            "macro_f1_a": report(y, pa, labs)["macro_f1"], "macro_f1_b": report(y, pb, labs)["macro_f1"],
+            "delta": paired_delta(y, pa, pb, len(labs))}
+
+
 def load_probe(path: Path | None) -> dict[str, dict]:
     if not path:
         return {}
@@ -389,7 +496,21 @@ def main(argv=None) -> int:
     sub.choices["errors"].add_argument("--out", default=str(RESULTS_DIR / "ERROR_ANALYSIS.md"))
     sub.choices["errors"].add_argument("--preds", nargs="*", default=[], help="JSONL {set,id,true,pred[,score]}")
     sub.choices["errors"].add_argument("--probe", help="probe_v2.jsonl (тексты для примеров)")
+    pr = sub.add_parser("paired", help="парная Δ macro-F1 по двум файлам прогнозов (a − b)")
+    pr.add_argument("--a", required=True)
+    pr.add_argument("--b", required=True)
+    pr.add_argument("--set", default="probe_v2")
+    pr.add_argument("--out", help="JSON с результатом")
     args = ap.parse_args(argv)
+
+    if args.cmd == "paired":
+        res = paired_from_files(Path(args.a), Path(args.b), args.set)
+        d = res["delta"]
+        print(f"{res['a']} − {res['b']} на {res['set']} (n={res['n']}): {res['macro_f1_a']} − {res['macro_f1_b']} = "
+              f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}]")
+        if args.out:
+            Path(args.out).write_text(json.dumps(res, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        return 0
 
     exp = _load(Path(args.results))
     if not exp:
@@ -397,7 +518,7 @@ def main(argv=None) -> int:
         return 2
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     if args.cmd == "tables":
-        tables = build_tables(exp, _load(Path(args.final)), _load(Path(args.onnx)))
+        tables = build_tables(exp, _load(Path(args.final)), _load(Path(args.onnx)), Path(args.results).parent)
         Path(args.out).write_text(render_tables(tables, exp) + "\n", encoding="utf-8")
         for t in tables:
             t.write_csv(Path(args.csv_dir))

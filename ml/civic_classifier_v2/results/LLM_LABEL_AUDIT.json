@@ -1,0 +1,258 @@
+{
+ "n": 3979,
+ "candidates": 115,
+ "share": 0.0289,
+ "v3_agrees": 93,
+ "by_label": {
+  "roads": {
+   "candidates": 6,
+   "n": 340,
+   "share": 0.018
+  },
+  "snow_ice": {
+   "candidates": 8,
+   "n": 339,
+   "share": 0.024
+  },
+  "sidewalks": {
+   "candidates": 8,
+   "n": 340,
+   "share": 0.024
+  },
+  "transport": {
+   "candidates": 8,
+   "n": 320,
+   "share": 0.025
+  },
+  "lighting": {
+   "candidates": 9,
+   "n": 340,
+   "share": 0.026
+  },
+  "yards": {
+   "candidates": 10,
+   "n": 339,
+   "share": 0.029
+  },
+  "waste": {
+   "candidates": 6,
+   "n": 341,
+   "share": 0.018
+  },
+  "utilities": {
+   "candidates": 9,
+   "n": 340,
+   "share": 0.026
+  },
+  "smell_air": {
+   "candidates": 6,
+   "n": 320,
+   "share": 0.019
+  },
+  "noise_safety": {
+   "candidates": 13,
+   "n": 320,
+   "share": 0.041
+  },
+  "parking": {
+   "candidates": 5,
+   "n": 320,
+   "share": 0.016
+  },
+  "other": {
+   "candidates": 27,
+   "n": 320,
+   "share": 0.084
+  }
+ },
+ "top_pairs": [
+  {
+   "label": "other",
+   "suggested": "lighting",
+   "n": 5
+  },
+  {
+   "label": "yards",
+   "suggested": "waste",
+   "n": 5
+  },
+  {
+   "label": "other",
+   "suggested": "yards",
+   "n": 4
+  },
+  {
+   "label": "utilities",
+   "suggested": "lighting",
+   "n": 4
+  },
+  {
+   "label": "other",
+   "suggested": "transport",
+   "n": 4
+  },
+  {
+   "label": "transport",
+   "suggested": "other",
+   "n": 4
+  },
+  {
+   "label": "noise_safety",
+   "suggested": "yards",
+   "n": 3
+  },
+  {
+   "label": "other",
+   "suggested": "noise_safety",
+   "n": 3
+  },
+  {
+   "label": "other",
+   "suggested": "waste",
+   "n": 3
+  },
+  {
+   "label": "sidewalks",
+   "suggested": "parking",
+   "n": 3
+  },
+  {
+   "label": "noise_safety",
+   "suggested": "utilities",
+   "n": 2
+  },
+  {
+   "label": "lighting",
+   "suggested": "roads",
+   "n": 2
+  }
+ ],
+ "candidate_ids": [
+  "llm-9a422bc941",
+  "llm-bcab865e2f",
+  "llm-161d61f63a",
+  "llm-26b02e925c",
+  "llm-7e95fabab8",
+  "llm-d250346cc6",
+  "llm-740888057a",
+  "llm-18abd34178",
+  "llm-d5f389cefc",
+  "llm-6553a5cd16",
+  "llm-cdd87ea616",
+  "llm-7c47c5d0bd",
+  "llm-b49aaaf700",
+  "llm-b432920abe",
+  "llm-70bba38e07",
+  "llm-a4f977331b",
+  "llm-9486480979",
+  "llm-7af93bff27",
+  "llm-513b20e872",
+  "llm-e50e080cc4",
+  "llm-9aef108e93",
+  "llm-b4f302d40c",
+  "llm-4fca0fedcc",
+  "llm-c66cd0ae2c",
+  "llm-383bb25680",
+  "llm-2a53b1249f",
+  "llm-7cd014e3c3",
+  "llm-8a4c201e0f",
+  "llm-7ad8813163",
+  "llm-ce89e7931e",
+  "llm-f4b677088e",
+  "llm-6d723b64ee",
+  "llm-a0e2ac09e2",
+  "llm-5c5ff1271d",
+  "llm-c1b9a7aec6",
+  "llm-d3b3ae407d",
+  "llm-6b2440e475",
+  "llm-0b357c4e79",
+  "llm-8df32242fb",
+  "llm-8c03a676b9",
+  "llm-ed0c1f74d0",
+  "llm-6bb1cd4a52",
+  "llm-07a72660b7",
+  "llm-434834e885",
+  "llm-cf76dafdb9",
+  "llm-36af038544",
+  "llm-0f601e37a3",
+  "llm-db7dfaf055",
+  "llm-fe1f2a8498",
+  "llm-7f7666940b",
+  "llm-d03ca4ffdb",
+  "llm-6f5168393d",
+  "llm-29ead3b1c1",
+  "llm-98a9e1564b",
+  "llm-8882a5ce3c",
+  "llm-4019df3bb0",
+  "llm-ace87bdfcd",
+  "llm-1bc2be7be5",
+  "llm-0a8d9d8490",
+  "llm-f3243cb0a0",
+  "llm-f3256e3965",
+  "llm-4a020e2f55",
+  "llm-ee2b9573fb",
+  "llm-81aeab245e",
+  "llm-30c0f28f48",
+  "llm-7f2eaf7262",
+  "llm-854eac2368",
+  "llm-6043b40d9a",
+  "llm-9a7a90fd73",
+  "llm-f7062c3010",
+  "llm-143fdd3e7c",
+  "llm-c5505f73dd",
+  "llm-d7af66de17",
+  "llm-c824f92910",
+  "llm-f3a4bb30d2",
+  "llm-ed59b1cab6",
+  "llm-cf159b1e96",
+  "llm-1bbcfbc5c0",
+  "llm-59f29652c7",
+  "llm-5ae4cb272e",
+  "llm-23f8cba912",
+  "llm-b7bd514c53",
+  "llm-ad548b242a",
+  "llm-f5eda5fe5d",
+  "llm-6538a14a59",
+  "llm-7d4401bf2e",
+  "llm-abb332483a",
+  "llm-09d2836fc0",
+  "llm-0ae066f666",
+  "llm-1f2f84eb40",
+  "llm-36db2833d4",
+  "llm-b770f96dec",
+  "llm-84bd84f0f5",
+  "llm-22e2f0b139",
+  "llm-a844d79f7b",
+  "llm-cb93f33407",
+  "llm-f18af4e16d",
+  "llm-63bc2bb7d4",
+  "llm-8125df6338",
+  "llm-03d2cd5153",
+  "llm-f04f3911b4",
+  "llm-0f2ab2b1b2",
+  "llm-c0df13a0d0",
+  "llm-4249fa544d",
+  "llm-5546889138",
+  "llm-f4019c1e5c",
+  "llm-1ccb64b97f",
+  "llm-0672bafdb4",
+  "llm-f89638f4e8",
+  "llm-41a4cc9e44",
+  "llm-27ce4cca57",
+  "llm-23ff8f5b9f",
+  "llm-87b2c07a3f",
+  "llm-29ea0f39fe",
+  "llm-38f23f1b77"
+ ],
+ "rule": {
+  "low": 0.2,
+  "high": 0.6,
+  "folds": 5,
+  "seed": 20261011,
+  "logreg": {
+   "C": 64.0,
+   "class_weight": null,
+   "keyword_scale": 1.0
+  }
+ }
+}

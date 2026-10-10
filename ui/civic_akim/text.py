@@ -75,9 +75,19 @@ def plural_ru(n, one: str, few: str, many: str) -> str:
     return many
 
 
-def fmt_date(iso_date: str, lang: str) -> str:
+def fmt_date(iso_date: str, lang: str, ref_year: int | None = None) -> str:
+    """«5 окт»; год добавляется, если он не текущий (как BirgeI18n.formatDate): «5 окт 2025»."""
     d = Date.fromisoformat(iso_date)
-    return f"{d.day}{NBSP}{month_short(d.month, lang)}"
+    out = f"{d.day}{NBSP}{month_short(d.month, lang)}"
+    return out + f"{NBSP}{d.year}" if ref_year is not None and d.year != ref_year else out
+
+
+def _ref_year(s: dict) -> int | None:
+    """Текущий год по Астане — из момента расчёта сводки (generated_at)."""
+    try:
+        return int(str(s.get("generated_at") or "")[:4])
+    except ValueError:
+        return None
 
 
 # ---------------------------------------------------------------- изменение «чем неделю назад»
@@ -123,7 +133,7 @@ def _new_ru(s: dict) -> str:
             return f"Сегодня{place} новых обращений нет."
         noun = plural_ru(n, "новое обращение", "новых обращения", "новых обращений")
         return f"Сегодня{place} {fmt_num(n)} {noun}."
-    when = fmt_date(s["date"], "ru")
+    when = fmt_date(s["date"], "ru", _ref_year(s))
     if n == 0:
         return f"{when}{place} новых обращений не было."
     noun = plural_ru(n, "новое обращение", "новых обращения", "новых обращений")
@@ -138,7 +148,7 @@ def _new_kk(s: dict) -> str:
         if n == 0:
             return f"Бүгін{place} жаңа өтініш жоқ."
         return f"Бүгін{place} {fmt_num(n)} жаңа өтініш түсті."
-    when = fmt_date(s["date"], "kk")
+    when = fmt_date(s["date"], "kk", _ref_year(s))
     if n == 0:
         return f"{when} күні{place} жаңа өтініш болған жоқ."
     return f"{when} күні{place} {fmt_num(n)} жаңа өтініш түсті."

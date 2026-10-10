@@ -344,6 +344,19 @@
     min-width: 0;
     width: 100%;
   }
+  /* Подписи «Дата» и «Район» на телефоне видны только диктору: поле с датой и «Все районы» говорят сами за себя,
+     а четыре числа поднимаются на ~50 px выше. */
+  .akim__field-label {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .akim__controls {
+    gap: var(--s-2);
+  }
   .akim__today {
     width: 100%;
   }

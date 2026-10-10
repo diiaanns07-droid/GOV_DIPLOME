@@ -2,17 +2,21 @@
  * R11 · остатки непереведённого: видимые (и не перекрытые) строки с кириллицей, одинаковые в ru и kk,
  * на трёх экранах сборки R01 (акимат, житель, «Картина дня») × 1366/375. Имена в «ёлочках» не считаются.
  *   NODE_PATH="$(npm root -g)" node tests/civic/R11/review/ru_kk_same.cjs http://127.0.0.1:<порт>/ > out.json
+ *   FULL=1 … — вся страница, включая то, что ниже прокрутки панелей (без проверки перекрытия и границ экрана).
  */
 const { chromium } = require("playwright");
-const texts = (p) => p.evaluate(() => {
+const FULL = !!process.env.FULL;
+const texts = (p) => p.evaluate((FULL) => {
   const out = new Set(); const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let n; (n = w.nextNode());) { const t = n.textContent.replace(/\s+/g, " ").trim(); if (!/[А-Яа-яЁё]{3}/.test(t)) continue;
     const e = n.parentElement; const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
-    if (!r.width || !r.height || cs.visibility === "hidden" || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
+    if (!r.width || !r.height || cs.visibility === "hidden") continue;
+    if (FULL) { out.add(t); continue; }
+    if (r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
     const top = document.elementFromPoint(Math.min(innerWidth - 1, Math.max(0, r.left + 4)), Math.min(innerHeight - 1, Math.max(0, r.top + r.height / 2)));
     if (top && !e.contains(top) && !top.contains(e)) continue; // перекрыто
     out.add(t); }
-  return [...out]; });
+  return [...out]; }, FULL);
 (async () => {
   const b = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
   const res = {};

@@ -898,6 +898,8 @@ class CivicV2Gateway:
                     store.target_lookup = geo.target_geometry
             except Exception:
                 LOGGER.exception("API v2: проверка цели жалобы по карте R12 не подключилась")
+        if store is not None and self.demo:
+            self._seed_demo_complaints(store)
         if store is not None:
             # R04 (INTEGRATION п. 4): «Я тоже» ищет в том же хранилище R09; модели грузятся в фоне.
             # Без R04 или до подключения /similar отвечает 503 — форма R09 работает без подсказки.
@@ -910,6 +912,38 @@ class CivicV2Gateway:
                     LOGGER.info("civic-v2: similar <- R09 complaints")
             except Exception:
                 LOGGER.exception("API v2: поиск похожих (R04) не подключился")
+
+    # R10 B-030: на свежей демо-базе в хранилище R09 нет жалоб — шаг 2 демо («похожие обращения → Я тоже») не показать:
+    # синтетический набор R07 живёт только в карте, «Я тоже» на нём не сработает. При CIVIC_DEMO=1 R01 кладёт в R09
+    # три синтетические жалобы «Освещение» у остановки из DEMO_SCRIPT (demo: true — «Пример»). Повторный запуск ничего
+    # не дублирует (постоянные request_id с одного синтетического устройства).
+    DEMO_COMPLAINT_DEVICE = "birge-demo-seed-r01-2026"
+    DEMO_COMPLAINT_STOP = ({"kind": "object", "id": "osm-node-4109037549"}, [71.4065528, 51.1311545])  # «Хан Шатыр», Нура
+    DEMO_COMPLAINTS = (
+        ("r01-demo-khan-shatyr-1", "Вечером на остановке нет света, темно, страшно ждать автобус", "ru"),
+        ("r01-demo-khan-shatyr-2", "Аялдамада кешке жарық жоқ, қараңғы", "kk"),
+        ("r01-demo-khan-shatyr-3", "Фонарь у остановки не горит уже неделю", "ru"),
+    )
+
+    def _seed_demo_complaints(self, store):
+        """Синтетические жалобы R09 для шага 2 демо (только CIVIC_DEMO=1). Сбой не мешает приложению."""
+        create = getattr(getattr(store, "store", store), "create", None)
+        if not callable(create):
+            return 0
+        target, point = self.DEMO_COMPLAINT_STOP
+        made = 0
+        for request_id, text, lang in self.DEMO_COMPLAINTS:
+            try:
+                _record, created = create({"text": text, "lang": lang, "category": "lighting", "point": list(point),
+                                           "target": dict(target), "district": "nura", "request_id": request_id},
+                                          self.DEMO_COMPLAINT_DEVICE, demo=True)
+                made += 1 if created else 0
+            except Exception:
+                LOGGER.exception("civic-demo: синтетическая жалоба R09 не добавлена")
+                break
+        if made:
+            LOGGER.info("civic-demo: R09 synthetic complaints added: %d", made)
+        return made
 
     def seed_demo(self):
         """Демо-сборка (run-city.bat, CIVIC_DEMO=1): этапы демо-объектов и 5 демо-предложений R06 в Нуре.
@@ -1102,8 +1136,9 @@ class CivicV2Gateway:
         if limited:
             return limited
         handler = V2_HANDLERS[key]
-        if handler.kind != "function":
-            self.wire()
+        # Связка модулей — при первом же запросе v2, в т. ч. /classify и /similar (R10 B-032: /similar отвечал 503
+        # «не подключён к хранилищу», пока кто-нибудь не открыл /heat).
+        self.wire()
         fn, reason, module = self.resolve(key)
         if fn is None:
             message = ("Модуль не загрузился, подробности в журнале сервера." if reason == "module_failed"
@@ -1782,6 +1817,10 @@ def main():
         created = sum(1 for p in demo.get("proposals", []) if p.get("action") == "create")
         print(f"civic-demo: R06 synthetic projects {len(demo.get('proposals', []))} (new {created}), "
               f"object stages {len(demo.get('stages', []))}", flush=True)
+    try:
+        server.civic_v2.wire()  # связка R09 -> R07/R08/R04 сразу при старте (B-032), демо-жалобы R09 при CIVIC_DEMO=1
+    except Exception:
+        LOGGER.exception("civic-v2: связка модулей при старте не удалась — повторится при первом запросе")
     ready_v2 = sorted({item["role"] for item in server.civic_v2.modules().values() if item["status"] == "ready"})
     print("civic-v2: ready " + (", ".join(ready_v2) if ready_v2 else "none yet"), flush=True)
     cls = server.civic.classifier_status

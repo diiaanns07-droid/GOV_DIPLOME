@@ -146,6 +146,24 @@ def test_kazakh_letters_in_dictionary():
         assert ch in kk_text, ch
 
 
+def test_phone_legend_is_one_row():
+    """UX_SPEC v1.3: на телефоне легенда — одна строка, заголовок и пояснение скрыты."""
+    m = re.search(r"@media \(max-width: 1023px\) \{\s*\.bk-legend \{(?P<rule>[^}]*)\}(?P<rest>.*?)\n\}", COMPONENTS, re.S)
+    assert m, "нет телефонного правила .bk-legend"
+    assert "flex-wrap: nowrap" in m.group("rule") and "overflow-x: auto" in m.group("rule")
+    assert ".bk-legend__title" in m.group("rest") and ".bk-legend__note" in m.group("rest") and "display: none" in m.group("rest")
+
+
+def test_ru_plural_other_is_optional():
+    """ru: one/few/many обязательны, other — по желанию (дробные); лишние формы — ошибка."""
+    ru, kk = i18n_tools.load("ru"), i18n_tools.load("kk")
+    assert set(ru["akim.delta.ratio"]) == {"one", "few", "many", "other"}
+    assert not [x for x in i18n_tools.check(ru, kk) if "akim.delta.ratio" in x]
+    ru2 = dict(ru, **{"test.plural.bad": {"one": "{n}", "few": "{n}", "many": "{n}", "two": "{n}"}})
+    kk2 = dict(kk, **{"test.plural.bad": "{n}"})
+    assert any("test.plural.bad" in x for x in i18n_tools.check(ru2, kk2))
+
+
 def test_i18n_js_in_node():
     node = shutil.which("node")
     if not node:

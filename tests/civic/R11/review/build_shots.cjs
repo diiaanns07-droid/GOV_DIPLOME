@@ -161,8 +161,11 @@ async function clickMapAt(p, ll) {
           });
           if (!ok) throw new Error("нет проекта ни на карте, ни в getState()");
           if (ok === "select") logs.push("R11: подписи проекта на карте нет — карточка открыта через select()");
-          await p.waitForSelector("[data-action=vote-up]", { timeout: 8000 });
-          await p.click("[data-action=vote-up]"); await p.waitForTimeout(1200);
+          // Карточка голосования: R05 (data-action=vote-up) или R06 (.r06-vote__btn[data-value="1"]) — в зависимости от сборки.
+          const UP = "[data-action=vote-up], .r06-vote__btn[data-value='1']";
+          await p.waitForSelector(UP, { timeout: 8000 });
+          logs.push("R11: карточка голоса — " + ((await p.$("[data-action=vote-up]")) ? "R05" : "R06"));
+          await p.click(UP); await p.waitForTimeout(1200);
         });
       }
       await ctx.close();

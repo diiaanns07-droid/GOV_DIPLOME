@@ -71,8 +71,9 @@ def check(ru=None, kk=None):
             if not KEY_RE.match(key):
                 problems.append(f"{lang}: неверное имя ключа {key!r} (нужно модуль.экран.что, латиница)")
             if isinstance(value, dict):
-                if lang == "ru" and set(value) != RU_FORMS:
-                    problems.append(f"ru: {key} — формы числа должны быть one/few/many, есть {sorted(value)}")
+                # ru: one/few/many обязательны; other — по желанию (дробные: «в 7,2 раза»; без неё i18n.js берёт few).
+                if lang == "ru" and not (RU_FORMS <= set(value) <= RU_FORMS | {"other"}):
+                    problems.append(f"ru: {key} — формы числа должны быть one/few/many (+ other), есть {sorted(value)}")
                 if not params(value) & {"n", "count"}:
                     problems.append(f"{lang}: {key} — формы числа без {{n}}")
             elif not isinstance(value, str):

@@ -43,19 +43,24 @@ OMAROVA_SEGMENT = {  # рёбра osm-w1482578141-0…8, 396 м, район Ну
                     [71.3688499, 51.1358187], [71.3687441, 51.1354795], [71.3686656, 51.1352723],
                     [71.3686027, 51.1351064], [71.3682669, 51.1342208]],
 }
+# Улицы рядом — ближайшая улица с названием по пешеходному графу OSM (≤ 100 м, проверка в test_r06r14_demo_osm.py);
+# казахское название улицы — для «Жанында: …» в ҚАЗ (UX_REVIEW R11, ночь, п. 5), без него R05 улицу не показывает.
+OMAROVA = ("улица Ильяса Омарова", "Ілияс Омаров көшесі")
+AITMATOVA = ("улица Чингиза Айтматова", "Шыңғыс Айтматов көшесі")
 DEMO_PROPOSALS = (
-    # kind, точка/линия, ru, kk, голоса за/против (демо), откуда место (OSM)
+    # kind, точка/линия, ru, kk, голоса за/против (демо), откуда место (OSM), улица рядом (ru, kk)
     # kk-название упрощено по UX_REVIEW R11 (день 3, п. 19): «шағын аудандағы» лишнее.
-    ("square", {"type": "Point", "coordinates": [71.36554, 51.139097]}, "Сквер у улицы Ильяса Омарова",
-     "Ілияс Омаров көшесі маңындағы гүлзар", 128, 12, "inside osm-way-1526197869 (landuse=residential)"),
+    # Сквер: ближайшая улица по OSM — Айтматова (68 м), а не Омарова (308 м) — название исправлено (ночь 10→11 окт).
+    ("square", {"type": "Point", "coordinates": [71.36554, 51.139097]}, "Сквер у улицы Чингиза Айтматова",
+     "Шыңғыс Айтматов көшесі маңындағы гүлзар", 128, 12, "inside osm-way-1526197869 (landuse=residential)", AITMATOVA),
     ("playground", {"type": "Point", "coordinates": [71.366889, 51.132499]}, "Детская площадка в микрорайоне Жагалау",
-     "Жағалау шағын ауданындағы балалар алаңы", 64, 5, "inside osm-way-257962279 «Жағалау шағын ауданы»"),
+     "Жағалау шағын ауданындағы балалар алаңы", 64, 5, "inside osm-way-257962279 «Жағалау шағын ауданы»", OMAROVA),
     ("sports", {"type": "Point", "coordinates": [71.36403, 51.135544]}, "Спортплощадка в микрорайоне Жагалау",
-     "Жағалау шағын ауданындағы спорт алаңы", 41, 9, "inside osm-way-257962279 «Жағалау шағын ауданы»"),
+     "Жағалау шағын ауданындағы спорт алаңы", 41, 9, "inside osm-way-257962279 «Жағалау шағын ауданы»", AITMATOVA),
     ("stop", {"type": "Point", "coordinates": [71.3691001, 51.136005]}, "Павильон на остановке «Жағалау-3»",
-     "«Жағалау-3» аялдамасындағы павильон", 23, 2, "osm-node-5254203835 highway=bus_stop «Жағалау-3»"),
+     "«Жағалау-3» аялдамасындағы павильон", 23, 2, "osm-node-5254203835 highway=bus_stop «Жағалау-3»", OMAROVA),
     ("lighting", OMAROVA_SEGMENT, "Освещение улицы Ильяса Омарова", "Ілияс Омаров көшесін жарықтандыру", 87, 3,
-     "osm-w1482578141-0…8 (пешеходный граф OSM)"),
+     "osm-w1482578141-0…8 (пешеходный граф OSM)", OMAROVA),
 )
 # Этапы синтетических объектов — по их статусу и виду, чтобы карточка не спорила со своим названием
 # (свой проход по UX_BRIEF: «Ремонт со сдвигом срока» шёл «по графику», а «Завершённый ремонт» — «отставал»).
@@ -119,12 +124,21 @@ def seed_r14_demo(service) -> dict:
         report["stages"].append({"object_id": row["id"], "action": "set", "stage": stage,
                                  "planned_end": planned, "forecast_end": forecast})
     now = utc_now(service.clock)
-    for number, (kind, geometry, title_ru, title_kk, up, down, osm_ref) in enumerate(DEMO_PROPOSALS):
+    for number, (kind, geometry, title_ru, title_kk, up, down, osm_ref, street) in enumerate(DEMO_PROPOSALS):
         if kind in have_demo:
-            report["proposals"].append({"kind": kind, "action": "kept"})
+            # Уже засеянная база (ноутбук владельца): обновить только тексты ДЕМО-записи этого вида, если они
+            # устарели (например, название сквера). Голоса, статус и настоящие предложения не трогаются.
+            with service.db.write() as conn:
+                changed = conn.execute(
+                    """UPDATE civic_proposals SET title_ru = ?, title_kk = ?, near_street = ?, near_street_kk = ?
+                       WHERE demo = 1 AND kind = ? AND (title_ru IS NOT ? OR title_kk IS NOT ? OR near_street IS NOT ?
+                             OR near_street_kk IS NOT ?)""",
+                    (title_ru, title_kk, street[0], street[1], kind, title_ru, title_kk, street[0], street[1])).rowcount
+            report["proposals"].append({"kind": kind, "action": "updated" if changed else "kept"})
             continue
         item = proposals.create(DEMO_ACTOR, {"kind": kind, "geometry": geometry, "title_ru": title_ru,
-                                             "title_kk": title_kk, "planned_year": 2027, "demo": True})["item"]
+                                             "title_kk": title_kk, "planned_year": 2027, "demo": True,
+                                             "near_street": street[0], "near_street_kk": street[1]})["item"]
         # Демо-голоса пишутся напрямую одной транзакцией (без ограничителя частоты HTTP).
         with service.db.write() as conn:
             for n in range(up + down):

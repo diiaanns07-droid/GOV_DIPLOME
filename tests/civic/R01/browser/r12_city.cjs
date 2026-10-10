@@ -255,8 +255,9 @@ async function emptyRegistry(browser, base) {
       });
       check(`${tag}: chosen street is marked in the free map area (not under panel/navigation/tools)`, pinFree.pin && pinFree.inView && pinFree.covered.length === 0, pinFree);
       const streetView = await page.textContent(".civic-explore-view");
+      // Текст — из словаря R11 (с a62a67c: «на видимой части карты»), запасной shell-text.js — «в кадре».
       check(`${tag}: street view line says how many published records are in frame (zero is not "no works")`,
-        /Улица: .*(записей в кадре: \d+|в кадре опубликованных записей нет \(это не значит, что работ нет\))/.test(streetView || ""), streetView);
+        /Улица: .*(записей (в кадре|на видимой части карты): \d+|(в кадре|на этой части карты) опубликованных записей нет \(это не значит, что работ нет\))/.test(streetView || ""), streetView);
       await page.screenshot({ path: path.join(OUT, `03_street_${tag}.png`) });
       await openExplore(page);
       await input.fill("Егемен Қазақстан");

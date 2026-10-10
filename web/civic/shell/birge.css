@@ -197,3 +197,7 @@ body:not(.civic-mode) .birge-complaint-root { display: none; }
   body:has(.civic-panel[data-sheet="half"]) .civic-mode .civic-explore[data-open="true"],
   body.civic-mode:has(.civic-panel[data-sheet="half"]) .civic-explore[data-open="true"] { max-height: calc(54% - 100px); overflow-y: auto; }
 }
+
+/* Открыт кабинет сотрудника или другой ящик (body[data-civic-drawer="open"]): кнопка «Что построить?» и каталог R05
+   не лежат поверх его заголовка (R10 B-031, телефон). */
+body[data-civic-drawer="open"] .birge-build3d-root { display: none; }

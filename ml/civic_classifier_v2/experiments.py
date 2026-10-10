@@ -138,6 +138,21 @@ def load_sources(args, notes: list[str]) -> dict:
     return src
 
 
+def load_exclude_ids(path: str | None) -> set[str]:
+    """id синтетических текстов, которые не брать в обучение: JSONL/JSON-список или {"candidate_ids": [...]}
+    (например, кандидаты на шумную метку из label_audit.py). Оценочные наборы не трогаются."""
+    if not path:
+        return set()
+    raw = Path(path).read_text(encoding="utf-8")
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        data = [json.loads(line) for line in raw.splitlines() if line.strip()]
+    if isinstance(data, dict):
+        data = data.get("candidate_ids") or data.get("ids") or []
+    return {str(x["id"] if isinstance(x, dict) else x) for x in data}
+
+
 def _split(recs: list[dict], name: str) -> list[dict]:
     return [r for r in recs if r["split"] == name]
 
@@ -163,6 +178,7 @@ def run(args) -> dict:
     log_path = out_art / "train_log.jsonl"
 
     src = load_sources(args, notes)
+    exclude_ids = load_exclude_ids(args.exclude_train_ids)
     syn = {k: src[k]["records"] for k in ("synth_v3", "llm_v1", "v1_in_v2")}
     human = src["human"]["records"]
     if args.max_human and len(human) > args.max_human:
@@ -193,7 +209,9 @@ def run(args) -> dict:
         "meta": {"created_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
                  "git_sha": git_sha(), "model_name": cfg.model_name, "seed": cfg.seed, "seeds": args.seeds,
                  "mode": "smoke" if args.smoke else "full", "k_folds": args.folds, "val_ratio": args.val_ratio,
-                 "human_fraction": args.human_fraction, "heuristic_dict": "v1", "heuristic_dict_sha256": heuristic.DICT_V1_SHA256,
+                 "human_fraction": args.human_fraction,
+                 "exclude_train_ids": (Path(args.exclude_train_ids).name if args.exclude_train_ids else None),
+                 "excluded_ids_n": len(exclude_ids), "heuristic_dict": "v1", "heuristic_dict_sha256": heuristic.DICT_V1_SHA256,
                  "env_note": args.env_note, "train_config": cfg.to_dict()},
         "data": {}, "notes": notes,
     }
@@ -238,10 +256,19 @@ def run(args) -> dict:
         if regime == "mix" and len(avail) < len(need_syn):
             notes.append(f"mix: синтетика только {avail} (нет {sorted(set(need_syn) - set(avail))})")
         syn_train = [r for k in avail for r in _split(syn[k], "train")]
+        if exclude_ids:
+            before = len(syn_train)
+            syn_train = [r for r in syn_train if r["id"] not in exclude_ids]
+            if before != len(syn_train):
+                notes.append(f"{regime}: из синтетического train исключено по --exclude-train-ids {before - len(syn_train)}")
         syn_val = [r for k in avail for r in _split(syn[k], "val")]
         syn_train, leaked = D.drop_leaks(syn_train, all_eval)
         if leaked:
             notes.append(f"{regime}: из синтетического train убрано {leaked} текстов, совпавших с оценочными")
+        # validation выбирает эпоху, порог и гиперпараметры — оценочных текстов в ней тоже быть не должно.
+        syn_val, leaked_val = D.drop_leaks(syn_val, all_eval)
+        if leaked_val:
+            notes.append(f"{regime}: из синтетической validation убрано {leaked_val} текстов, совпавших с оценочными")
 
         for m in args.models:
             key = f"{regime}/{m}"
@@ -440,6 +467,7 @@ def _comparisons(store: dict, sets: dict[str, list[dict]], labels, regimes) -> l
             add(f"{r}/logreg", f"{r}/heuristic", f"{r}: логрегрессия − эвристика")
         for m in ("transformer", "logreg"):
             add(f"synth_template/{m}", f"synth_v1/{m}", f"{m}: синтетика v3 − синтетика v1→v2")
+            add(f"synth_all/{m}", f"synth_template/{m}", f"{m}: v3 + LLM − только v3 (вклад LLM-синтетики)")
             add(f"synth_llm/{m}", f"synth_template/{m}", f"{m}: LLM-синтетика − шаблонная синтетика")
             add(f"mix/{m}", f"synth_all/{m}", f"{m}: смесь − только синтетика (вклад текстов людей)")
             add(f"mix/{m}", f"human/{m}", f"{m}: смесь − только люди (вклад синтетики)")
@@ -466,6 +494,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--seeds", type=int, default=1, help="повторы трансформера с seed, seed+1, …")
     ap.add_argument("--min-human", type=int, default=MIN_HUMAN)
     ap.add_argument("--max-human", type=int, default=0, help="для отладки: взять первые N текстов людей")
+    ap.add_argument("--exclude-train-ids", help="JSON/JSONL с id синтетических текстов, исключаемых из обучения "
+                    "(например results/LLM_LABEL_AUDIT.json — опыт «чистка шумных меток»)")
     ap.add_argument("--human-fraction", type=float, default=1.0,
                     help="кривая обучения: доля текстов людей в обучении фолда (0.25, 0.5…); оценка — на всех. "
                          "Запускать с --regimes human mix и своим --name (например lc_050)")

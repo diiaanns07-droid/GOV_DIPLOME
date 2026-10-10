@@ -140,3 +140,12 @@ def test_names_come_from_i18n_dictionaries():
     assert text.district_name("nura", "kk") == "Нұра" and text.district_name("esil", "ru") == "Есиль"
     assert text.month_short(10, "ru") == "окт" and text.month_short(10, "kk") == "қазан"
     assert text.district_name(None, "ru") is None
+
+
+def test_past_year_date_has_year_like_interface():
+    s = fake(3, today=False, date="2025-12-30")
+    s["generated_at"] = "2026-10-12T10:00:00+05:00"
+    assert text.render(s, "ru").startswith(f"30{NB}дек{NB}2025 — 3 новых обращения.")
+    assert text.render(s, "kk").startswith(f"30{NB}желтоқсан{NB}2025 күні 3 жаңа өтініш түсті.")
+    s["date"] = "2026-10-05"
+    assert text.render(s, "ru").startswith(f"5{NB}окт — 3"), "текущий год — без года"

@@ -135,3 +135,63 @@ def test_load_human_keeps_style_for_probe(tmp_path):
     from ml.civic_classifier_v2 import data as D
     recs, _ = D.load_human([F.write_jsonl(tmp_path / "p.jsonl", F.probe_like())])
     assert {r["style"] for r in recs} == {"colloquial"} and any(r["hard"] for r in recs)
+
+
+# ---------- аудит меток llm_v1 ----------
+
+def test_label_audit_flags_confident_disagreement():
+    import numpy as np
+    from ml.civic_classifier_v2 import label_audit as LA
+    labs = L.labels()
+    recs = [{"id": f"x{i}", "text": f"t{i}", "label": "other", "split": "train", "lang": "ru"} for i in range(4)]
+    proba = np.full((4, 12), 0.01)
+    proba[0, labs.index("noise_safety")] = 0.85                         # уверенно другая тема -> кандидат
+    proba[1, labs.index("noise_safety")] = 0.55                         # не уверенно -> нет
+    proba[2, labs.index("other")] = 0.9                                 # согласна с меткой -> нет
+    proba[3, labs.index("waste")] = 0.7
+    proba[3, labs.index("other")] = 0.25                                # p(метки) не низкая -> нет
+    v3 = proba.copy()
+    res = LA.audit(recs, proba, v3, low=0.2, high=0.6)
+    assert res["candidates"] == 1 and res["items"][0]["id"] == "x0"
+    assert res["items"][0]["suggested"] == "noise_safety" and res["items"][0]["v3_agrees"] is True
+    assert res["by_label"]["other"] == {"candidates": 1, "n": 4, "share": 0.25}
+
+
+def test_load_to_cyrillic_from_git_ref_reads_bytes(monkeypatch):
+    """--normalize-ref: код R04 берётся через git show в байтах (без перенаправления оболочки)."""
+    import subprocess
+    from ml.civic_classifier_v2 import translit as T
+    calls = []
+
+    class Done:
+        stdout = FAKE_NORMALIZE.encode("utf-8")
+
+    def fake_run(cmd, **kw):
+        calls.append(cmd)
+        return Done()
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    f = T.load_to_cyrillic(git_ref="origin/claude/r14-R04")
+    assert calls and calls[0][-1] == "origin/claude/r14-R04:ml/civic_dedup/normalize.py"
+    assert f("na doroge yama") == "na doroge яма" and f("Яма во дворе") == "Яма во дворе"
+
+
+def test_paired_from_files(tmp_path):
+    rows_a = [{"set": "probe_v2", "id": str(i), "true": "roads", "pred": "roads"} for i in range(10)]
+    rows_b = [dict(r, pred="other" if i < 5 else "roads") for i, r in enumerate(rows_a)]
+    rows_b.append({"set": "human", "id": "h", "true": "roads", "pred": "other"})   # чужой набор не учитывается
+    fa, fb = tmp_path / "a.jsonl", tmp_path / "b.jsonl"
+    for f, rows in ((fa, rows_a), (fb, rows_b)):
+        f.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    res = A.paired_from_files(fa, fb)
+    assert res["n"] == 10 and res["macro_f1_a"] == 1.0 and res["delta"]["delta"] > 0
+
+
+def test_suggest_section_precision():
+    probe = {str(i): {"id": str(i)} for i in range(4)}
+    preds = {"m": {"0": {"true": "roads", "pred": "roads", "score": 0.95},
+                   "1": {"true": "roads", "pred": "waste", "score": 0.8},
+                   "2": {"true": "other", "pred": "other", "score": 0.99},     # other не предвыбирается
+                   "3": {"true": "roads", "pred": "roads", "score": 0.2}}}
+    md = "\n".join(A._suggest_section(preds, probe))
+    assert "| `m` | 0.3 | 50% | 50% | 4 |" in md and "| `m` | 0.9 | 25% | 100% | 4 |" in md

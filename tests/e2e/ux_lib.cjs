@@ -8,14 +8,19 @@ const TECH_WORDS = /(?<![\p{L}-])(ребро|рёбра|граф|графа|ге
 // Ключ перевода, попавший на экран: «complaint.step2.title».
 const RAW_KEY = /\b(shell|common|complaint|heat|akim|target|proposal|build3d|mine|status|stage|cat|district)\.[a-z_]+(\.[a-z_0-9]+)*\b/;
 // Имена собственные и слова, одинаковые в ru и kk, — не считаются «непереведёнными».
-const SAME_IN_BOTH = /^((Астана|Нура|Есиль|Алматы|Сарыарка|Байконур|Сарайшык|Birge|3D|Карта|РУС|ҚАЗ)( · \d+)?|[\d\s.,:%–—+-]+)$/i;  // «Алматы · 5» — подпись района с числом
+const SAME_IN_BOTH = /^((Астана|Нура|Есиль|Алматы|Сарыарка|Байконур|Сарайшык|Birge|3D|Карта|РУС|ҚАЗ)( ·( \d+)?)?|[\d\s.,:%–—+-]+)$/i;  // «Алматы · 5» — подпись района с числом
 
 // Правила UX_BRIEF для того, что сейчас на экране: прокрутка, ключи, тех. слова, шрифт, зоны нажатия.
 function uiScreen(page) {
   return page.evaluate(({ tech, raw }) => {
+    // Элемент виден человеку, только если сверху в его середине — он сам (или его часть): закрытое другой панелью
+    // (например, карта под «Картиной дня») не считаем. Слои с pointer-events: none elementFromPoint пропускает.
+    const onTop = (e) => { const r = e.getBoundingClientRect();
+      const x = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1), y = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
+      const h = document.elementFromPoint(x, y); return !h || h === e || e.contains(h) || h.contains(e); };
     const vis = (e) => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
       return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && s.opacity !== "0"
-        && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; };
+        && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth && onTop(e); };
     const text = document.body.innerText;
     const small = [], tiny = [];
     for (const el of document.querySelectorAll("body *")) {
@@ -49,9 +54,33 @@ function uiScreen(page) {
   }, { tech: TECH_WORDS.source, raw: RAW_KEY.source });
 }
 
-// Строки экрана с кириллицей (для сравнения ru и kk).
-async function cyrLines(page) {
-  return (await page.evaluate(() => document.body.innerText)).split("\n").map((x) => x.trim()).filter((x) => /[а-яё]{3,}/i.test(x));
+// Строки экрана с кириллицей (для сравнения ru и kk): только текст, который человек видит, — элемент не скрыт,
+// в пределах окна и не закрыт другой панелью (в середине элемента сверху он сам). Текст в прокручиваемой панели
+// ниже видимой части тоже не считается — его покажет прокрутка (такие экраны проверяются отдельно).
+async function cyrLines(page, opts = {}) {
+  // opts.all — весь текст страницы, включая скрытое прокруткой панелей (то, до чего человек докрутит).
+  if (opts.all) return (await page.evaluate(() => document.body.innerText)).split("\n").map((x) => x.trim()).filter((x) => /[а-яё]{3,}/i.test(x));
+  return page.evaluate(() => {
+    const out = [];
+    for (const el of document.querySelectorAll("body *")) {
+      const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join(" ").replace(/\s+/g, " ").trim();
+      if (!/[а-яё]{3,}/i.test(own)) continue;
+      const r = el.getBoundingClientRect(), s = getComputedStyle(el);
+      if (!(r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.opacity !== "0" && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth)) continue;
+      // Видимая часть с учётом обрезки прокручиваемыми родителями (overflow).
+      let top = Math.max(r.top, 0), bottom = Math.min(r.bottom, innerHeight);
+      for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+        const ps = getComputedStyle(p);
+        if (/(auto|scroll|hidden)/.test(ps.overflowY)) { const pr = p.getBoundingClientRect(); top = Math.max(top, pr.top); bottom = Math.min(bottom, pr.bottom); }
+      }
+      if (bottom - top < 4) continue;
+      const x = Math.min(Math.max(r.left + Math.min(r.width / 2, 20), 0), innerWidth - 1), y = (top + bottom) / 2;
+      const h = document.elementFromPoint(x, y);
+      if (h && h !== el && !el.contains(h) && !h.contains(el)) continue;
+      out.push(own);
+    }
+    return out;
+  });
 }
 // Строки kk-экрана, совпавшие со строками ru-экрана, — непереведённые.
 function untranslated(kkLines, ruLines) {
@@ -60,10 +89,31 @@ function untranslated(kkLines, ruLines) {
 }
 
 // Клавиатура: Tab доходит до главной кнопки (.bk-btn--primary или текст), рамка фокуса видна.
-async function focusToPrimary(page, labelRe, maxTabs = 40) {
-  await page.mouse.click(2, 2).catch(() => null);
+// TAB_LIMIT — сколько нажатий Tab допустимо до главной кнопки; считаем до 80, чтобы в отчёте было точное число.
+const TAB_LIMIT = 40;
+async function focusToPrimary(page, labelRe, maxTabs = 80) {
+  // Начать обход с самого начала документа (как после загрузки): фокус на body без следа клика.
+  await page.evaluate(() => { const b = document.body; b.setAttribute("tabindex", "-1"); b.focus(); b.removeAttribute("tabindex");
+    window.getSelection && window.getSelection().removeAllRanges(); }).catch(() => null);
   for (let i = 1; i <= maxTabs; i++) {
     await page.keyboard.press("Tab");
+    // Ссылка «Перейти к главной кнопке» (ui-kit .bk-skip) в первых нажатиях: Enter должен привести фокус к главной кнопке.
+    if (i <= 3) {
+      const skip = await page.evaluate(() => { const e = document.activeElement;
+        return !!e && (e.classList.contains("bk-skip") || /^(Перейти к главной кнопке|Негізгі түймеге өту)$/i.test((e.innerText || "").trim())); });
+      if (skip) {
+        await page.keyboard.press("Enter");
+        await new Promise((ok) => setTimeout(ok, 400));
+        const st = await page.evaluate((src) => {
+          const e = document.activeElement; if (!e || e === document.body) return null;
+          const s = getComputedStyle(e);
+          const ring = (s.outlineStyle !== "none" && parseFloat(s.outlineWidth) >= 2) || (s.boxShadow && s.boxShadow !== "none");
+          const primary = e.classList.contains("bk-btn--primary") || (src && new RegExp(src, "i").test((e.innerText || e.getAttribute("aria-label") || "").trim()));
+          return { primary, ring, text: (e.innerText || e.getAttribute("aria-label") || e.tagName).trim().slice(0, 40) };
+        }, labelRe ? labelRe.source : null);
+        if (st && st.primary) return { tabs: i, via: "skip-link + Enter", ...st };
+      }
+    }
     const st = await page.evaluate((src) => {
       const e = document.activeElement; if (!e || e === document.body) return null;
       const re = src ? new RegExp(src, "i") : null;
@@ -77,4 +127,4 @@ async function focusToPrimary(page, labelRe, maxTabs = 40) {
   return { tabs: null, primary: false, ring: false };
 }
 
-module.exports = { NOISE, TECH_WORDS, RAW_KEY, SAME_IN_BOTH, uiScreen, cyrLines, untranslated, focusToPrimary };
+module.exports = { NOISE, TECH_WORDS, RAW_KEY, SAME_IN_BOTH, TAB_LIMIT, uiScreen, cyrLines, untranslated, focusToPrimary };

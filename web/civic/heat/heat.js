@@ -60,6 +60,7 @@
       "heat.status": "Статус",
       "heat.status.new": "Новое", "heat.status.accepted": "Принято", "heat.status.in_progress": "В работе", "heat.status.fixed": "Исправлено",
       "heat.kind.object": "Объект", "heat.kind.segment": "Участок улицы", "heat.kind.area": "Двор или квартал", "heat.kind.district": "Район",
+      "heat.kind.approximate": "Область на карте",
       "heat.approximate": "Примерное место: точный объект не выбран, показана область.",
       "heat.take": "Взять в работу",
       "heat.mark_fixed": "Отметить исправленным",
@@ -130,6 +131,7 @@
       "heat.status": "Мәртебесі",
       "heat.status.new": "Жаңа", "heat.status.accepted": "Қабылданды", "heat.status.in_progress": "Орындалуда", "heat.status.fixed": "Түзетілді",
       "heat.kind.object": "Нысан", "heat.kind.segment": "Көше бөлігі", "heat.kind.area": "Аула немесе орам", "heat.kind.district": "Аудан",
+      "heat.kind.approximate": "Картадағы аумақ",
       "heat.approximate": "Шамамен көрсетілген орын: нақты нысан таңдалмаған, аумақ көрсетілген.",
       "heat.take": "Жұмысқа алу",
       "heat.mark_fixed": "Түзетілді деп белгілеу",
@@ -163,7 +165,7 @@
       "heat.district_targets": { other: "{count} орында шағым бар" },
       "heat.kind.bus_stop": "Аялдама", "heat.kind.playground": "Балалар алаңы", "heat.kind.pitch": "Спорт алаңы",
       "heat.kind.park": "Саябақ", "heat.kind.garden": "Гүлзар", "heat.kind.waste_disposal": "Қоқыс алаңы",
-      "heat.kind.recycling": "Қайта өңдеу пункті", "heat.kind.street_lamp": "Көше шамы", "heat.kind.school": "Мектеп",
+      "heat.kind.recycling": "Қайталама шикізат қабылдау пункті", "heat.kind.street_lamp": "Көше шамы", "heat.kind.school": "Мектеп",
       "heat.kind.kindergarten": "Балабақша", "heat.kind.yard": "Аула",
       "heat.role.akimat": "Әкімдік", "heat.role.resident": "Тұрғын",
     },
@@ -288,9 +290,10 @@
     try {
       let id = localStorage.getItem(DEVICE_KEY);
       if (!id || !DEVICE_RE.test(id)) {
-        const old = localStorage.getItem("birge.device_id");
-        id = old && DEVICE_RE.test(old) ? old : memoryDevice || "d-" + randomId(24);
-        localStorage.setItem(DEVICE_KEY, id);
+        // Старый ключ "birge.device_id" НЕ переносим: им же пользуется 3D-превью R05, и там id из Date.now + Math.random
+        // (R15 S16) — по "birge.device" R09 открывает «Мои обращения». Новый id — только из crypto.
+        id = memoryDevice || "d-" + randomId(24);
+        if (window.crypto && window.crypto.getRandomValues) localStorage.setItem(DEVICE_KEY, id);   // без crypto — только в памяти
       }
       memoryDevice = id;
       return id;
@@ -370,17 +373,30 @@
     const srBox = root.querySelector(".r07-sr");
     const toastBox = root.querySelector(".r07-toasts");
 
-    function toast(text, kind) {
+    // action — {label, onClick}: у ошибки есть понятное действие («Повторить»), UX_BRIEF «Тексты».
+    function toast(text, kind, action) {
       // В оболочке — общий тост ui-kit R11 (body, z-toast 60): не прячется под каталогом R05 и шторками (R10 B-023).
       const ui = window.BirgeUI;
       if (ui && typeof ui.toast === "function") {
-        try { ui.toast(text, { type: kind === "error" ? "error" : "ok" }); return; } catch (e) { /* свой запасной */ }
+        try { ui.toast(text, { type: kind === "error" ? "error" : "ok", action }); return; } catch (e) { /* свой запасной */ }
       }
       const el = document.createElement("div");
       el.className = "r07-toast" + (kind === "error" ? " r07-toast--error" : "");
-      el.textContent = text;
+      el.setAttribute("role", kind === "error" ? "alert" : "status");
+      const span = document.createElement("span");
+      span.textContent = text;
+      el.append(span);
+      const close = () => { el.classList.add("r07-toast--out"); setTimeout(() => el.remove(), 300); };
+      if (action) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "r07-toast__action";
+        b.textContent = action.label;
+        b.addEventListener("click", () => { close(); action.onClick(); });
+        el.append(b);
+      }
       toastBox.append(el);
-      setTimeout(() => { el.classList.add("r07-toast--out"); setTimeout(() => el.remove(), 300); }, 3600);
+      setTimeout(close, action ? 8000 : 3600);
     }
 
     // ----- загрузка -----
@@ -425,7 +441,9 @@
       } catch (err) {
         if (seq !== S.reqSeq || S.destroyed) return;
         S.status = err.status === 503 ? "not_ready" : "error";
-        if (!S.data) render(); else toast(S.status === "not_ready" ? t("heat.not_ready") : t("heat.error_title"), "error");
+        if (!S.data) render();
+        else toast(S.status === "not_ready" ? t("heat.not_ready") : t("heat.error_title"), "error",
+          { label: t("heat.retry"), onClick: () => void load() });
       }
     }
     function findItem(key) { return S.data ? S.data.items.find((it) => keyOf(it.target) === key) : null; }
@@ -772,10 +790,15 @@
       const host = map.getContainer().getBoundingClientRect();
       const overlays = [];
       if (S.legendEl && S.legendEl.isConnected) overlays.push(S.legendEl.getBoundingClientRect());
+      // Своя панель / шторка поверх карты и кнопки MapLibre: значок наполовину под ними выглядит обрезанным.
+      if (!root.contains(map.getContainer())) overlays.push(root.getBoundingClientRect());
+      map.getContainer().querySelectorAll(".maplibregl-ctrl-group, .maplibregl-ctrl-attrib").forEach((el) => overlays.push(el.getBoundingClientRect()));
       if (typeof opts.avoidRects === "function") overlays.push(...(opts.avoidRects() || []));
       overlays.forEach((r) => { if (r && r.width) placed.push([r.left - host.left, r.top - host.top, r.right - host.left, r.bottom - host.top]); });
       const boxAt = (p, w, h) => [p.x - w / 2, p.y - h / 2, p.x + w / 2, p.y + h / 2];
-      const free = (box) => !placed.some((b) => !(box[2] < b[0] || b[2] < box[0] || box[3] < b[1] || b[3] < box[1]));
+      // Значок — только целиком внутри карты (обрезанный краем выглядит сломанным) и не поверх уже поставленных.
+      const inside = (box) => box[0] >= 2 && box[1] >= 2 && box[2] <= host.width - 2 && box[3] <= host.height - 2;
+      const free = (box) => inside(box) && !placed.some((b) => !(box[2] < b[0] || b[2] < box[0] || box[3] < b[1] || b[3] < box[1]));
       const list = [...S.markers.values()].sort((a, b) =>
         (keyOf(b.item.target) === S.selected) - (keyOf(a.item.target) === S.selected) ||
         (b.item.weight || 0) - (a.item.weight || 0) || (b.item.count || 0) - (a.item.count || 0));
@@ -901,7 +924,7 @@
         toast(status === "fixed" ? t("heat.toast_fixed") : t("heat.toast_taken"));
         await load("event");
       } catch (e) {
-        toast(t("heat.action_failed"), "error");
+        toast(t("heat.action_failed"), "error", { label: t("heat.retry"), onClick: () => { if (btn.isConnected) btn.click(); } });
         btn.disabled = false;
         btn.removeAttribute("aria-busy");
       }
@@ -918,7 +941,7 @@
         await load("event");
         pulse(keyOf(it.target));
       } catch (e) {
-        toast(t("heat.action_failed"), "error");
+        toast(t("heat.action_failed"), "error", { label: t("heat.retry"), onClick: () => { if (btn.isConnected) btn.click(); } });
         btn.disabled = false;
         btn.removeAttribute("aria-busy");
       }
@@ -934,8 +957,9 @@
       const sub = top ? t("heat.top_line", { target: label(top.target), people: t("heat.people_short", { count: top.count }) }) : t("heat.subtitle");
       parts.push('<header class="r07-head"><div><h2 class="r07-h">' + esc(t("heat.title")) + '</h2><p class="r07-sub">' + esc(sub) + "</p></div></header>");
       const cardItem = S.selected && findItem(S.selected);
-      // В карточке цели фильтры не нужны: так кнопки действий видны без прокрутки.
-      if (!cardItem) {
+      // В карточке цели фильтры не нужны: так кнопки действий видны без прокрутки. Пока данных нет (загрузка,
+      // нет связи) — тоже: на телефоне в шторке сразу видно скелетон или «Нет связи · Повторить», а не фильтры.
+      if (!cardItem && S.data) {
         if ((S.data && S.data.demo) || (S.meta && S.meta.demo)) parts.push('<p class="r07-note r07-note--demo">' + esc(t("heat.demo_note")) + "</p>");
         parts.push(filtersHtml());
       }
@@ -1057,8 +1081,8 @@
       return '<article class="r07-card">' +
         '<div class="r07-card__nav"><button type="button" class="r07-btn r07-btn--ghost" data-back>' + svgIcon("back", 20) + esc(t("heat.back")) + "</button>" +
         '<button type="button" class="r07-icon-btn" data-back aria-label="' + esc(t("heat.close")) + '" title="' + esc(t("heat.close")) + '">' + svgIcon("close", 22) + "</button></div>" +
-        '<p class="r07-eyebrow">' + svgIcon(SUBTYPE_ICON[it.target.subtype] || KIND_ICON[it.target.kind] || "pin", 16) +
-          esc(t("heat.kind." + (it.target.subtype || it.target.kind))) + (it.demo ? ' <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") + "</p>" +
+        '<p class="r07-eyebrow">' + svgIcon(it.approximate ? "pin" : SUBTYPE_ICON[it.target.subtype] || KIND_ICON[it.target.kind] || "pin", 16) +
+          esc(t("heat.kind." + (it.approximate ? "approximate" : it.target.subtype || it.target.kind))) + (it.demo ? ' <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") + "</p>" +
         '<h3 class="r07-card__title" tabindex="-1">' + esc(label(it.target)) + "</h3>" +
         levelBadge +
         '<p class="r07-card__reported">' + esc(t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count })) + " · " + esc(t("heat.for_days", { count: S.filters.days })) + "</p>" +
@@ -1218,6 +1242,11 @@
       setFilters: (f) => { Object.assign(S.filters, f || {}); void load(); },
       // Режим выбора места жалобой без класса body.birge-picking (другая оболочка): значки передают щелчок карте.
       setPickMode: (on) => { S.picking = !!on; for (const m of S.markers.values()) m.el.classList.toggle("r07-badge--pick", !!on); },
+      // Видимые значки: id цели, вид (full / mini), точка на карте и центр на экране — для проверок точности (R10, тесты R07).
+      badges: () => [...S.markers.entries()].filter(([, m]) => !m.el.hidden).map(([key, m]) => {
+        const r = m.el.getBoundingClientRect();
+        return { key, mode: m.el.dataset.mode, spot: m.spot, cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+      }),
       state: () => ({ role: S.role, lang: S.lang, filters: { ...S.filters }, selected: S.selected, mode: S.mode, status: S.status,
         items: S.data ? S.data.items.length : 0, pending: S.pendingSelect, fittedKeys: S.fittedKeys || [] }),
       destroy,

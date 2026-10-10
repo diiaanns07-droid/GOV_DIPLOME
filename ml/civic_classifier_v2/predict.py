@@ -167,15 +167,25 @@ class Classifier:
             meta = json.loads(meta_path.read_text(encoding="utf-8"))
             max_len = int((meta.get("train_config") or {}).get("max_length", 128))
             if backend in ("auto", "onnx"):
-                for name in ("model.int8.onnx", "model.onnx"):
-                    f = d / name
-                    if f.exists():
-                        return cls(d, meta, _OnnxBackend(d, f, max_len, threads), f"onnx:{name}")
-                if backend == "onnx":
+                onnx_files = [d / name for name in ("model.int8.onnx", "model.onnx") if (d / name).exists()]
+                if onnx_files:
+                    try:
+                        return cls(d, meta, _OnnxBackend(d, onnx_files[0], max_len, threads), f"onnx:{onnx_files[0].name}")
+                    except ModelUnavailable as exc:  # нет onnxruntime/токенизатора — в auto пробуем torch и дальше
+                        if backend == "onnx":
+                            raise
+                        errors.append(f"{d}: onnx недоступен ({exc})")
+                elif backend == "onnx":
                     errors.append(f"{d}: нет model.int8.onnx / model.onnx")
                     continue
             if backend in ("auto", "torch") and (d / "config.json").exists():
-                return cls(d, meta, _TorchBackend(d), "torch")
+                try:
+                    return cls(d, meta, _TorchBackend(d), "torch")
+                except ModelUnavailable as exc:
+                    if backend == "torch":
+                        raise
+                    errors.append(f"{d}: torch недоступен ({exc})")
+                    continue
             errors.append(f"{d}: нет файлов модели для backend={backend}")
         raise ModelUnavailable("; ".join(errors) or "модель не найдена")
 
@@ -230,6 +240,8 @@ def get_default() -> Classifier:
             except ModelUnavailable as exc:
                 _default["error"] = str(exc)
                 raise
+        if "error" in _default:  # поток ждал блокировку, пока другой поток запоминал ошибку загрузки
+            raise ModelUnavailable(_default["error"])
     return _default["clf"]
 
 

@@ -58,8 +58,17 @@
     } catch (e) {
       throw new BirgeApiError(0, { error: "network" });   // нет связи: модули показывают «Нет связи. Повторить»
     }
+    // Пустое тело — null; оборванное (страница перезагружается, связь пропала) или не-JSON при 2xx — та же ошибка
+    // «нет связи», что и у fetch: иначе модули получали null и писали «неверный ответ» (R05 bad_response в r14_shell).
+    let text = "";
+    try { text = await response.text(); } catch (e) { throw new BirgeApiError(0, { error: "network" }); }
     let data = null;
-    try { data = await response.json(); } catch (e) { data = null; }
+    if (text) {
+      try { data = JSON.parse(text); } catch (e) {
+        if (response.ok) throw new BirgeApiError(0, { error: "network" });
+        data = null;
+      }
+    }
     if (!response.ok) throw new BirgeApiError(response.status, data);
     return data;
   }
@@ -235,7 +244,7 @@
         try {
           // R08 @ 9f1d9c0: mount(элемент, опции); адрес страницы меняет оболочка, не модуль (syncUrl: false).
           state.dayHandle = akim.mount(root, { apiBase: "/api/civic/v2", mapHref: "/#target={kind}:{id}&days={days}",
-            syncUrl: false }) || {};
+            syncUrl: false, titleTag: "h2" }) || {};  // R08 4д: свой h1 у оболочки, заголовок модуля — h2
           day.classList.add("birge-day--module");  // у модуля свой заголовок с датой — наш остаётся только для чтения с экрана
         } catch (e) {
           console.error(e);

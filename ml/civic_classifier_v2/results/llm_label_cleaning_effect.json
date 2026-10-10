@@ -1,0 +1,22 @@
+{
+ "what": "логрегрессия synth_all: llm_v1 train без 80 кандидатов LLM_LABEL_AUDIT против исходного (probe_v2)",
+ "excluded_from_train": 80,
+ "probe_v2_macro_f1": {
+  "clean": 0.8042,
+  "original": 0.7966
+ },
+ "paired_delta_clean_minus_original": {
+  "delta": 0.0077,
+  "low": -0.008,
+  "high": 0.0246,
+  "share_delta_gt_0": 0.825,
+  "n_boot": 2000,
+  "unit": "texts"
+ },
+ "changed_predictions": 10,
+ "synth_llm_logreg_probe_v2": {
+  "clean": 0.7448,
+  "original": 0.7459
+ },
+ "conclusion": "эффект чистки мал и не доказан: шум меток llm_v1 (≈3 %) почти не мешает логрегрессии"
+}

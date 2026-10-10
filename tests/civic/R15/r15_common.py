@@ -30,23 +30,37 @@ FINDINGS = {
     "S12": ("R09", "важно", "цель жалобы не сверяется с точкой: можно привязать жалобу к любому объекту города"),
     "S13": ("R04", "важно", "/similar отдаёт distance_m до 0,1 м: три запроса восстанавливают точку жителя"),
     "S14": ("R02", "важно", "llm_label отправляет настоящие тексты во внешний API; ФИО, пропущенные обезличиванием, уходят за рубеж"),
+    "S15": ("R06", "мелочь", "простые пароли сотрудника «password12345», «Astana2026!!!» проходят: список — 10 точных строк"),
+    "S16": ("R05", "мелочь", "id устройства R05 = время + Math.random; R07 перенимает его как ключ к «Мои обращения» R09"),
 }
-# Исправленные находки: ID -> где исправлено. Их тесты — обычные (регрессия), без xfail.
+# Исправленные находки: ID -> где исправлено. Их тесты — обычные (регрессия), без xfail: в сборке без исправления
+# тест падает — это сигнал, что исправление потеряно.
 FIXED = {
     "S09": "R06 ef35fb6 (COOKIE_PATH=/api/civic) и сборка R01 d3c33d9",
-    # Ночь 10/11 окт: R01 применил patches R15 (b892532) в сборку R01 (claude/sharp-dijkstra-0t87gl, ночной круг 1);
-    # без patch эти тесты снова xfail -> упадут как регрессия. SHA сборки — research/handoffs/astana/R01/round14/STATUS.md.
-    **{fid: "сборка R01, patch R15 " + patch for fid, patch in (
-        ("S01", "P-R01"), ("S02", "P-R01"), ("S08", "P-R01"), ("S10", "P-R01"),
+    # Ночь 10→11 окт: R01 применил patches R15 в FINAL-кандидат 2b9e837 (ветка claude/sharp-dijkstra-0t87gl);
+    # файлы побайтно совпадают с patches/*.diff R15 (проверено R15 на 13ae790).
+    **{fid: "FINAL-кандидат R01 2b9e837, patch R15 " + patch for fid, patch in (
+        ("S01", "P-R01"), ("S02", "P-R01"), ("S08", "P-R01 (голоса — ещё и R06 681a4ef)"), ("S10", "P-R01"),
         ("S03", "P-R09"), ("S04", "P-R09 + P-R01 (target_lookup)"), ("S05", "P-R09"), ("S06", "P-R09"),
-        ("S12", "P-R09 + P-R01 (target_lookup)"), ("S11", "P-R07"), ("S13", "P-R04"), ("S07", "P-R02"), ("S14", "P-R02"))},
+        ("S12", "P-R09 + P-R01 (target_lookup)"), ("S11", "P-R07 (= R07 597ec4f)"), ("S13", "P-R04"),
+        ("S07", "P-R02"), ("S14", "P-R02"))},
+    "S16": "R05 7f42cb3 (crypto); в сборке R01 с ef1ef44 (R05 169c56b)",
+    "S15": "R06 7b99e6c (P-R06); в сборке R01 с ночного круга 2 (R06 efafee9) — перенёс R01, тест проходит",
 }
+# Исправлено в ветке роли, но ещё не в сборке R01: xfail НЕстрогий — в сборке без исправления тест xfail, с ним
+# xpass (не падение). Когда R01 возьмёт поставку и тест пройдёт на сборке — ID переезжает в FIXED.
+PENDING = {}
 
 
-def xfail(finding_id: str):
-    if finding_id in FIXED:  # исправлено: обычный тест-регрессия (R01, по INTEGRATION R15)
+def xfail(finding_id: str, pending: str | None = None):
+    """Открытая находка — xfail(strict); исправленная (FIXED) — обычный тест; PENDING — нестрогий xfail."""
+    if finding_id in FIXED:  # исправлено: обычный тест-регрессия (так же в копии R01)
         return lambda test: test
     owner, level, title = FINDINGS[finding_id]
+    where = pending or PENDING.get(finding_id)
+    if where:
+        return pytest.mark.xfail(strict=False, reason=f"R15-{finding_id} ({owner}, {level}): {title} — "
+                                                      f"исправлено в {where}, ждёт сборки R01")
     return pytest.mark.xfail(strict=True, reason=f"R15-{finding_id} ({owner}, {level}): {title}")
 
 

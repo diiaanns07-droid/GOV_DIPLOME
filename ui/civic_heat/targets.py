@@ -37,7 +37,7 @@ _NEAR_WORDS = {
     "pitch": ("Спортплощадка", "маңындағы спорт алаңы"),
     "yard": ("Двор", "маңындағы аула"),
     "waste_disposal": ("Контейнерная площадка", "маңындағы қоқыс алаңы"),
-    "recycling": ("Пункт приёма вторсырья", "маңындағы қайта өңдеу пункті"),
+    "recycling": ("Пункт приёма вторсырья", "маңындағы қайталама шикізат қабылдау пункті"),
     "street_lamp": ("Фонарь", "маңындағы көше шамы"),
     "park": ("Парк", "маңындағы саябақ"),
     "garden": ("Сквер", "маңындағы гүлзар"),
@@ -160,6 +160,9 @@ class TargetResolver:
     def add_registry(self, items: dict) -> None:
         for tid, item in (items or {}).items():
             if isinstance(item, dict) and item.get("geometry"):
+                old = self._registry.get(tid)
+                if old and old.get("_origin") == "r07" and item.get("_origin") == "r12":
+                    continue   # выверенная цель демо-фикстуры не стирается файлом R12 без названия (R08 4б, R10 B-029)
                 self._registry[tid] = item
         self._cache.clear()
 

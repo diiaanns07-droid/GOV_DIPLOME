@@ -6,6 +6,7 @@
  *   <script src="/civic/i18n/i18n.js"></script>
  *   <script src="/civic/akim/akim.js"></script>
  *   BirgeAkim.mount(document.getElementById("akim"), { apiBase: "/api/civic/v2" });
+ *   Опции: mapHref, syncUrl, refreshMs (тихое обновление, 0 — выкл.), titleTag ("h1"; в оболочке со своим h1 — "h2").
  *
  * Данные: GET {apiBase}/akim/summary?date=YYYY-MM-DD&district=<id> (ui/civic_akim, R08). Все числа
  * считает сервер; здесь только показ. Текст сводки приходит сразу на ru и kk — смена языка без запроса.
@@ -25,6 +26,7 @@
     mapHref: "/#target={kind}:{id}&days={days}",
     syncUrl: true, // хранить дату и район в адресе: F5, печать и ссылка показывают то же
     refreshMs: 120000, // тихое обновление, пока вкладка видна (0 — выключить)
+    titleTag: "h1", // в оболочке со своим h1 передайте "h2" — на странице будет один заголовок первого уровня
   };
   var STALE_ON_RETURN_MS = 60000; // вернулись на вкладку, а данным больше минуты — обновить
   var TIMEOUT_MS = 15000;
@@ -302,7 +304,7 @@
         meta.push(tr("akim.compare_to", { date: I().formatDate(d.compare_to) }));
       }
       var title = h("div", { class: "akim__titlebox" }, [
-        h("h1", { class: "akim__title" }, [
+        h(/^h[1-3]$/.test(opts.titleTag) ? opts.titleTag : "h1", { class: "akim__title" }, [
           tr("akim.title"),
           h("span", { class: "akim__title-date", text: " · " + I().formatDate(date) }),
           // Метка «Пример» — одна на страницу, здесь; в карточках её нет (UX_REVIEW день 3, п. 11).
@@ -467,7 +469,8 @@
       }
       var list = h("ol", { class: "bk-list akim-hot__list" });
       d.hot.items.forEach(function (it) {
-        var name = label(it.target, "label");
+        // Подписи нет (новая цель без названия) — вид места из словаря R11, а не пустая строка.
+        var name = label(it.target, "label") || (I() && I().has("heat.kind." + it.target.kind) ? tr("heat.kind." + it.target.kind) : "");
         var sub = [it.category ? I().cat(it.category) : null, it.district ? tr("district." + it.district) : null].filter(Boolean).join(" · ");
         var a = h(
           "a",

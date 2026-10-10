@@ -229,6 +229,11 @@
       el.innerHTML = proposalHtml(state.p, opts);
     }
     function failed(err, retry) {
+      if (err.status === 429) {
+        // Лимит голосов с адреса (R15 S08): «Повторить» тут не поможет — без кнопки, понятными словами.
+        toast(known("proposal.vote_limit"), { type: "error" });
+        return;
+      }
       var key = err.code === "voting_closed" ? "proposal.voting_closed"
         : err.code === "already_decided" ? "proposal.already_decided"
         : err.status === 401 || err.code === "csrf_failed" ? "proposal.need_staff"
@@ -290,6 +295,21 @@
     draw();
     if (I()) I().onChange(draw);
     return { get: function () { return state.p; }, redraw: draw };
+  }
+
+  // Новый ключ (ночь 10→11 окт), передан R11 в INTEGRATION §5: пока его нет в словаре — текст отсюда, без
+  // предупреждений; как только ключ есть в ru.json/kk.json — побеждает словарь.
+  var NEW_KEYS = {
+    "proposal.vote_limit": {
+      ru: "С этого адреса уже много голосов за этот проект. Попробуйте завтра.",
+      kk: "Бұл мекенжайдан осы жобаға дауыс көп берілді. Ертең қайталап көріңіз.",
+    },
+  };
+  function known(key, params) {
+    var i18n = I();
+    if (i18n && i18n.has && i18n.has(key)) return i18n.t(key, params);
+    var p = NEW_KEYS[key];
+    return p ? p[lang()] || p.ru : t(key, params);
   }
 
   // Запасные тексты, если не загрузился даже словарь (i18n.js): ru + kk в одной строке (R10 B-006).

@@ -155,7 +155,8 @@
     };
     const heat = window.CivicHeat.mount({ root: document.getElementById("heat-root"), map, role, lang, fitPadding,
       fit: !P.get("z") && !P.get("c"), handleOpenTarget: true,
-      avoidRects: () => [document.querySelector(".attr").getBoundingClientRect()] });   // значки не под подписью OSM
+      // значки не под подписью OSM и не под кнопками карты (панель модуль обходит сам)
+      avoidRects: () => [...document.querySelectorAll(".attr, .mapbtns button, #demo-new")].map((el) => el.getBoundingClientRect()) });
     window.__heat = heat;
     document.querySelectorAll("#role [data-role]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.role === role)));
 
