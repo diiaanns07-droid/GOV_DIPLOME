@@ -4,8 +4,8 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "последний коммит ветки claude/r14-R11 (ночь: словари 732 ключа; ui-kit — легенда на телефоне; i18n.js как в 52d7c59)",
-  "tested_sha": "6102dfb + словари этого коммита — ui-kit/i18n подложены в сборку B1 R01 (вариант «kit», 38/38 шагов); cc77761 — в стенды R05–R08 (день 3)",
+  "code_sha": "46fcd5e2 — последний коммит web/civic/ui-kit и web/civic/i18n (волна 1 и схемы волны 2: словарь 1036 ключей ru=kk)",
+  "tested_sha": "ui-kit/i18n @ 46fcd5e2 (витрина browser_check 4/4, test_r11_ui_kit 17/17); сборки R01: 61a5a62 44/44, предпросмотр FINAL+ 44/44, FINAL-кандидат 8e67c65 — эталон первого кадра",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
     "c75a9ac UX_SPEC.md v1",
@@ -35,7 +35,15 @@
     "web/civic/ui-kit/index.html",
     "web/civic/ui-kit/prototypes/",
     "web/civic/ui-kit/tokens.css",
-    "web/civic/ui-kit/ui-kit.js"
+    "web/civic/ui-kit/ui-kit.js",
+    "research/round-14-results/R11/IA_WAVE2.md",
+    "research/round-14-results/R11/first_frame_8e67c65.json",
+    "tests/civic/R11/ui_kit.test.cjs",
+    "tests/civic/R11/review/first_frame_check.cjs",
+    "tests/civic/R11/review/badges_covered_check.cjs",
+    "tests/civic/R11/review/phone_select_check.cjs",
+    "tests/civic/R11/review/review_build.sh",
+    "research/round-14/categories_v2.json (вход из claude/round-14-package, без правок)"
   ],
   "tests": {
     "browser_check: витрина + prototypes/{index,akimat-map,complaint,day} × 375/1366 × ru/kk": "PASS",
@@ -53,13 +61,35 @@
     "ночь, круг 2: сборка R01 @ 13ae790 (CSP R15): build_shots 44/44; витрина ui-kit под CSP (browser_check --base) 4/4": "PASS",
     "i18n_tools check (732 ключа ru=kk, параметры, формы + other, категории)": "PASS",
     "ночь, круг 4: предпросмотр FINAL (13ae790 + фронтенд ночных голов R05–R09 + R11) — build_shots 44/44": "PASS",
-    "test_r11_ui_kit.py (16 проверок: ключи макетов, участки из рёбер OSM, легенда телефона, формы ru + other)": "PASS"
+    "test_r11_ui_kit.py (16 проверок: ключи макетов, участки из рёбер OSM, легенда телефона, формы ru + other)": "PASS",
+    "волна 1–2: i18n_tools check (1036 ключей ru=kk, формы, параметры, категории = categories_v2.json пакета c86c515)": "PASS",
+    "волна 1–2: test_r11_ui_kit.py (17: + цвета heat_states, новые классы, seasonOrder в node)": "PASS",
+    "волна 1–2: browser_check витрины 375/1366 × ru/kk (новые статусы, баннер срочного случая)": "PASS",
+    "ночь, круг 16–17: R01 61a5a62 review_build 44/44; phone_select_check и badges_covered_check с патчами R11 — 0 закрытых; тесты R01 с патчами r14_b1 15/0, r14_b2 26/0, r14_shell 38/0, r12_city 81/0, p0_flow 63/0/1": "PASS",
+    "first_frame_check на 8e67c65 против эталона (себя)": "PASS",
+    "экраны волны 2 ролей": "NOT_RUN — экранов ещё нет (11 октября: только бэкенд R09, R08, R12)"
   },
   "known_limits": [
-    "Казахский перевод — R11 и черновики ролей, не проверен носителем; 29 мест ⚑ в KK_REVIEW.md",
     "Макеты — образец: данные примеры, карта — SVG по осям улиц OSM (подписи улиц из OSM name, по-русски)",
     "Скриншоты — headless Chromium с программным WebGL; бледная карта после выбора точки у R09 не подтверждена (п. 12 дня 2)",
-    "cat.sidewalks kk («Жаяу жүргіншілер жолы») длинный — ждёт решения владельца"
+    "cat.sidewalks kk («Жаяу жүргіншілер жолы») длинный — ждёт решения владельца",
+    "Казахский — R11 и черновики ролей, не проверен носителем; 63 места ⚑ в KK_REVIEW.md (1а — видно на демо)"
   ],
-  "next_step": "R01 FINAL: взять R11 по INTEGRATION.txt §7; R11 проверяет каждый новый SHA R01 (build_shots, ru_kk_same FULL)"
+  "next_step": "R01 FINAL: взять R11 по INTEGRATION.txt §7; R11 проверяет каждый новый SHA R01 (build_shots, ru_kk_same FULL)",
+  "wave_1": {
+    "subtopics_kk": "39 уточнений вычитаны → ключи subtopic.<id>; 7 правок к черновику координатора — kk_review_extra.md",
+    "emergency": "complaint.emergency.* + emergency.service.<номер>; ui-kit .bk-banner--danger; правило — UX_SPEC §10",
+    "season_order": "BirgeUI.seasonOrder(categories, date) в ui-kit.js + tests/civic/R11/ui_kit.test.cjs",
+    "keys": "81 ключ волны 1: фото, рабочие дни (deadline.*), «Жауапты» (service.assigned + 20 служб R08), модерация, черновик и сеть, новые цели"
+  },
+  "wave_2": {
+    "ia_schemes": "research/round-14-results/R11/IA_WAVE2.md — меню (житель/акимат по 5), правила защиты от перегруза, схемы для R09, R07, R08, R06, R05, R12, R13",
+    "keys": "158 ключей схем (shell.nav/layers, status, heat.legend, mine.changes, verify, passport, fix, broadcast, inbox, nearby, akim.decision/pulse, report, qr, ask, idea)",
+    "ui_kit": "токены --reported-fixed/--nodata из heat_states; .bk-heat reported_fixed/[data-reopened]; .bk-status reported_fixed/verified/reopened; легенда nodata/reported_fixed",
+    "review": "UX_REVIEW.md «Волна 2 · разбор 1» (R09, R08, R12); first_frame_check.cjs + эталон first_frame_8e67c65.json",
+    "patches_for_r01": [
+      "patches/R01_toggle_card.patch (взят в 8e67c65)",
+      "patches/R01_legend_free_area.patch (Нұра · 73 на первом кадре ноутбука; ждёт R01)"
+    ]
+  }
 }
