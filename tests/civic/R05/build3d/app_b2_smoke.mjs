@@ -248,6 +248,9 @@ try {
     await q.evaluate((c) => map.jumpTo({ center: c, zoom: 17.4, pitch: 50, bearing: -20 }), ll);
     await q.waitForTimeout(500);
     await q.evaluate((c) => { const s = map.project(c); map.panBy([s.x - map.getCanvas().clientWidth / 2, s.y - 230], { duration: 0 }); }, ll);
+    // Карта наклонена — объёмный вид включается, когда догрузится three.js (данные слоя «Проекты» грузятся при его
+    // включении): тогда метка встаёт над моделью. Место метки берём после этого, а не до.
+    await q.waitForFunction(() => { const s = CivicShell.build3d.getState(); return s.view !== "3d" || s.three === "ready" || s.three === "error"; }, null, { timeout: 30000 }).catch(() => {});
     await q.waitForTimeout(1200);
     const sheet0 = await q.evaluate(() => document.querySelector(".civic-panel").dataset.sheet);
     const lab = await q.evaluate(() => { for (const b of document.querySelectorAll(".b3d-label")) { if (b.style.visibility === "hidden") continue; const r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, t = document.elementFromPoint(x, y); if (t && b.contains(t) && y < 420) return [Math.round(x), Math.round(y)]; } return null; });
