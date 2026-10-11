@@ -232,7 +232,9 @@ def test_seasonal_order_in_grid():
 
 def test_staff_component_has_one_primary_and_required_what_done():
     """Волна 2, п. 1: «Отметить исправленным» требует строку «что сделали»; главная кнопка одна."""
-    assert STAFF_JS.count("bk-btn--primary") == 1
+    # Две главные кнопки в коде, но на экране одна: «Отметить исправленным» (форма свёрнута) или «Сообщить жителям».
+    assert STAFF_JS.count("bk-btn--primary") == 2
+    assert "if (isOpen() && !fixing) {" in STAFF_JS and "if (isOpen() && fixing) {" in STAFF_JS
     assert re.search(r'name: "what_done", maxlength: String\(WHAT_DONE_MAX\), required: true', STAFF_JS)
     assert "var WHAT_DONE_MAX = 120;" in STAFF_JS                     # R11 §2.3: одна строка ≤ 120 знаков
     assert "staff.fixed.need_what" in STAFF_JS

@@ -55,6 +55,7 @@
     var current = null;
     var photo = null;
     var editing = false;
+    var fixing = false;    // R11 §2.3: «Отметить исправленным» открывает форму в той же карточке (не модальное окно)
     var lastNote = null;
 
     function call(method, path, body) {
@@ -79,6 +80,7 @@
       if (!res || !res.ok) { note((res && res.error && res.error.message) || t("complaint.error.send"), true); return false; }
       current = res.data.complaint;
       editing = false;
+      fixing = false;
       if (typeof opts.onChange === "function") opts.onChange(current);
       lastNote = { text: t("fix.will_see", { n: res.data.notified || 0 }), error: false };
       render();
@@ -196,8 +198,18 @@
         yes: (r.votes || {}).yes || 0, no: (r.votes || {}).no || 0, cant: (r.votes || {}).cant || 0 })));
       var willSee = t("fix.will_see", { n: current.subscribers || current.reporters || 1 });
 
-      // 1) «Сообщить жителям об устранении» — главное действие карточки (одна главная кнопка).
-      if (isOpen()) {
+      // 1) «Отметить исправленным» → форма «Сообщить жителям об устранении» — главное действие карточки.
+      if (isOpen() && !fixing) {
+        root.appendChild(h("div", { "class": "bc-staff__form" }, [
+          h("button", { "class": "bk-btn bk-btn--primary bk-btn--block bc-staff__open-fix", type: "button",
+                        onclick: function () {
+                          fixing = true; render();
+                          var what = root.querySelector("[name=what_done]");
+                          if (what) what.focus();
+                        } }, t("heat.mark_fixed")),
+          h("p", { "class": "bc-meta" }, willSee)]));
+      }
+      if (isOpen() && fixing) {
         var preview = h("ul", { "class": "bc-thumbs bc-thumbs--small" });
         var input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", "class": "bc-photo-input" });
         input.addEventListener("change", function () {

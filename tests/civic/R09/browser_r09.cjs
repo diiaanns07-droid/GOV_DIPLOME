@@ -928,10 +928,13 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
     window.staffCtl = BirgeComplaintStaff.mount(box, { complaintId: cid, csrf: "stand" });
   }, id);
   await staff.waitForSelector(".bc-staff__summary", { timeout: 8000 });
-  const willSee = (await staff.textContent(".bc-staff__fix .bc-meta")).trim();
-  const staffPrim = await staff.$$eval("#staff-box .bk-btn--primary", (n) => n.length);
-  check(`${tag}: [W2-1/§2.3] «${willSee}» до действия; одна главная кнопка «Сообщить жителям»`,
-        /2/.test(willSee) && staffPrim === 1, willSee);
+  // R11 §2.3: «Отметить исправленным» открывает форму в той же карточке; до действия видно «Увидят N человек».
+  const willSee = (await staff.textContent(".bc-staff .bc-staff__open-fix + .bc-meta")).trim();
+  const staffPrim = await staff.$$eval("#staff-box .bk-btn--primary", (n) => n.map((b) => b.textContent.trim()));
+  const formHidden = !(await staff.$("[name=what_done]"));
+  check(`${tag}: [W2-1/§2.3] «${staffPrim[0]}» — одна главная кнопка, форма свёрнута, «${willSee}»`,
+        /2/.test(willSee) && staffPrim.length === 1 && formHidden &&
+        staffPrim[0] === (lang === "kk" ? "Түзетілді деп белгілеу" : "Отметить исправленным"), staffPrim.join(" | "));
   // Паспорт: «Изменить» → 3 поля (кто отвечает, следующий шаг, ориентир), без полей задержки.
   await staff.click(".bc-staff__edit");
   const fields = await staff.$$eval(".bc-staff__passport-form [name]", (n) => n.map((x) => x.name));
@@ -960,6 +963,11 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   const noteUpdate = (await staff.textContent(".bc-staff__note")).trim();
   check(`${tag}: [W2-2/W2-3] паспорт и одно обновление — «${noteUpdate}»`, /2/.test(notePassport) && /2/.test(noteUpdate), notePassport + " | " + noteUpdate);
   // «Сообщить жителям» без строки «что сделали» — подсказка, не отправка.
+  await staff.click(".bc-staff__open-fix");
+  await staff.waitForSelector(".bc-staff__fix [name=what_done]");
+  const fixPrim = await staff.$$eval("#staff-box .bk-btn--primary", (n) => n.map((b) => b.textContent.trim()));
+  check(`${tag}: [§2.3] в открытой форме главная — «${fixPrim[0]}»`, fixPrim.length === 1 &&
+        fixPrim[0] === (lang === "kk" ? "Тұрғындарға хабарлау" : "Сообщить жителям"), fixPrim.join(" | "));
   await staff.click(".bc-staff__fix button[type=submit]");
   const blocked = await staff.evaluate(() => document.querySelector("[name=what_done]").validity.valueMissing &&
     document.querySelector("[name=what_done]").maxLength === 120);
@@ -1017,8 +1025,9 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
 
   // Служба исправила ещё раз (раунд 2) — теперь обновление увидит только автор.
   await staff.evaluate(() => window.staffCtl.refresh());
-  await staff.waitForSelector("[name=what_done]", { timeout: 8000 });
-  const willSee2 = (await staff.textContent(".bc-staff__fix .bc-meta")).trim();
+  await staff.waitForSelector(".bc-staff__open-fix", { timeout: 8000 });
+  const willSee2 = (await staff.textContent(".bc-staff .bc-staff__open-fix + .bc-meta")).trim();
+  await staff.click(".bc-staff__open-fix");
   check(`${tag}: после «Отписаться» — «${willSee2}»`, /\b1\b/.test(willSee2), willSee2);
   await staff.fill("[name=what_done]", lang === "kk" ? "Тағы 2 шам ауыстырылды" : "Заменили ещё 2 лампы");
   await staff.click(".bc-staff__fix button[type=submit]");
@@ -1104,7 +1113,7 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
         (lang === "kk" ? /Жолдар · Шұңқыр/.test(rowText) && /1 адам/.test(rowText) && /жұмыс күні қалды/.test(rowText)
                        : /Дороги · Яма, разбитый асфальт/.test(rowText) && /1 человек/.test(rowText) && /Осталось \d+ рабоч/.test(rowText)), rowText);
   await page.click(`.bc-inbox__row[data-key="${key}"]`);
-  await page.waitForSelector(".bc-inbox__item--open .bc-staff__fix", { timeout: 8000 });
+  await page.waitForSelector(".bc-inbox__item--open .bc-staff__open-fix", { timeout: 8000 });
   const prim = await page.$$eval(".bc-inbox .bk-btn--primary", (n) => n.map((b) => b.textContent.trim()));
   check(`${tag}: [защита п.4] раскрыта одна группа, одна главная кнопка «${prim[0]}»`, prim.length === 1, prim.join(" | "));
   await page.click(".bc-inbox__map");
@@ -1126,6 +1135,7 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
         [...document.querySelectorAll(".bc-inbox *")].every((n) => { const r = n.getBoundingClientRect(); return !r.width || r.right <= innerWidth + 1; })));
   await shot(page, `${tag}-inbox`);
   // Сотрудник сообщает об устранении прямо из списка → группа уходит во «Ждут проверки».
+  await page.click(".bc-inbox__item--open .bc-staff__open-fix");
   await page.fill(".bc-inbox__item--open [name=what_done]", lang === "kk" ? "Шұңқыр жамалды" : "Заделали яму");
   await page.click(".bc-inbox__item--open .bc-staff__fix button[type=submit]");
   await page.waitForFunction(() => !document.querySelector(".bc-inbox__item--open [name=what_done]"), null, { timeout: 15000 });
