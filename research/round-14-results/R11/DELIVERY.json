@@ -47,7 +47,8 @@
     "tests/civic/R11/i18n_lang_order.test.cjs",
     "tests/civic/R11/review/wave2_shots.cjs",
     "research/round-14-results/R11/patches/R01_wave2_phone_menu.patch",
-    "research/round-14-results/R11/first_frame_8bbace7c.json"
+    "research/round-14-results/R11/first_frame_8bbace7c.json",
+    "tests/civic/R11/review/demo_step67_check.cjs"
   ],
   "tests": {
     "browser_check: витрина + prototypes/{index,akimat-map,complaint,day} × 375/1366 × ru/kk": "PASS",
@@ -82,7 +83,9 @@
     "волна 2, разбор 5: badges_covered_check с R07 4be0490 — 0 наложений на 375/360; на 1366/1280 у Нұра нет значка (ждёт патч R01_legend_free_area)": "FAIL — открыто",
     "волна 2, разбор 6: R01 8bbace7 + ui-kit/i18n R11 — review_build 44/44, kk 0, Нұра · 73 со значком, выбранное место не закрыто": "PASS",
     "FINAL-2 шаг 1 R01 34677e0: review_build 44/44, kk 0, кабинет 0, все значки видны, первый кадр = эталон; wave2_shots — меню телефона столбиком, «Маңайда», «Қызметтер»": "PASS",
-    "волна 2, разбор 8: FINAL-2 шаг 1 + R07 868de08 — badges_covered_check: без патча 2 закрытых на 375, с R01_badge_avoid — 0; r12_city 81/0": "PASS с патчем"
+    "волна 2, разбор 8: FINAL-2 шаг 1 + R07 868de08 — badges_covered_check: без патча 2 закрытых на 375, с R01_badge_avoid — 0; r12_city 81/0": "PASS с патчем",
+    "FINAL-2 шаг 3 R01 28e23e3: review_build 44/44, kk 0, кабинет 0, первый кадр = эталон; demo_step67_check (1366 kk) — «Иә, түзетілді» → «Тұрғындар тексерді»": "PASS",
+    "FINAL-2 шаг 3: badges_covered_check на 375/360 — 2 закрытых (патч R01_badge_avoid ждёт R01)": "FAIL — открыто"
   },
   "known_limits": [
     "Макеты — образец: данные примеры, карта — SVG по осям улиц OSM (подписи улиц из OSM name, по-русски)",
@@ -101,7 +104,7 @@
     "ia_schemes": "research/round-14-results/R11/IA_WAVE2.md — меню (житель/акимат по 5), правила защиты от перегруза, схемы для R09, R07, R08, R06, R05, R12, R13",
     "keys": "158 ключей схем (shell.nav/layers, status, heat.legend, mine.changes, verify, passport, fix, broadcast, inbox, nearby, akim.decision/pulse, report, qr, ask, idea)",
     "ui_kit": "токены --reported-fixed/--nodata из heat_states; .bk-heat reported_fixed/[data-reopened]; .bk-status reported_fixed/verified/reopened; легенда nodata/reported_fixed",
-    "review": "UX_REVIEW.md: разборы 1–8 волны 2 (R01, R04, R05, R07, R08, R09, R12), FINAL 8e67c65, FINAL-2 шаг 1",
+    "review": "UX_REVIEW.md: разборы 1–9 волны 2 (R01, R04, R05, R07, R08, R09, R12), FINAL 8e67c65, FINAL-2 шаги 1–3",
     "patches_for_r01": [
       "patches/R01_toggle_card.patch — взят (8e67c65)",
       "patches/R01_legend_free_area.patch — не нужен (8bbace7)",
