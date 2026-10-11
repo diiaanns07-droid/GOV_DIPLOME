@@ -144,6 +144,14 @@
     return level;
   }
 
+  // Сколько человек сообщили: автор + «Я тоже». Не полагаемся на одно поле ответа (LOCAL_FINAL №1: ответ для
+  // сотрудника не содержал reporters, и шаг «Я тоже» пропускался).
+  function reportersOf(c) {
+    if (!c) return 0;
+    if (typeof c.reporters === "number" && c.reporters > 0) return c.reporters;
+    return 1 + (Number(c.metoo) || 0);
+  }
+
   function categories() {
     return ((window.BirgeCategoriesV2 || {}).categories) || [];
   }
@@ -463,9 +471,10 @@
       if (map.highlight) map.highlight(null, null, state.point);
       render();
       var seq = state.pickSeq = (state.pickSeq || 0) + 1;
+      var owner = state;
       request("GET", "/targets?lon=" + state.point[0] + "&lat=" + state.point[1], undefined, TARGETS_TIMEOUT_MS)
         .then(function (res) {
-          if (seq !== state.pickSeq) return;
+          if (state !== owner || seq !== state.pickSeq) return;
           var list = res.ok && res.data && Array.isArray(res.data.candidates) ? res.data.candidates : [];
           state.candidates = list.filter(function (c) { return c && c.target && c.target.kind && c.target.id; }).slice(0, 3);
           state.candidatesLoading = false;
@@ -492,9 +501,9 @@
       // «Другое место» / нет кандидатов R12: область ~150 м с подписью «примерное место».
       state.candidatesLoading = true;
       render();
-      var seq = state.pickSeq;
+      var seq = state.pickSeq, owner = state;
       request("GET", "/complaints/place?lon=" + state.point[0] + "&lat=" + state.point[1]).then(function (res) {
-        if (seq !== state.pickSeq) return;
+        if (state !== owner || seq !== state.pickSeq) return;
         state.candidatesLoading = false;
         if (!res.ok) {
           if (res.error && res.error.code === "invalid") { toast(t("complaint.error.outside")); state.point = null; render(); return; }
@@ -520,12 +529,15 @@
     function locate() {
       if (!navigator.geolocation) { toast(t("complaint.step2.locate_failed")); return; }
       state.locating = true; render();
+      var owner = state;
       navigator.geolocation.getCurrentPosition(function (pos) {
+        if (state !== owner) return;
         state.locating = false;
         var point = [pos.coords.longitude, pos.coords.latitude];
         if (map.flyTo) map.flyTo(point, visibleOffset());
         pickPoint(point);
       }, function () {
+        if (state !== owner) return;
         state.locating = false; render();
         toast(t("complaint.step2.locate_failed"));
       }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 });
@@ -589,10 +601,13 @@
       clearTimeout(classifyTimer);
       if (state.categorySource === "resident") return;   // житель выбрал сам — модель не спорит
       if (state.text.trim().length < CLASSIFY_MIN_CHARS) return;
+      var owner = state;
       classifyTimer = setTimeout(function () {
+        // LOCAL_FINAL №2: мастер могли закрыть (state = null) или открыть заново, пока шёл таймер.
+        if (state !== owner || !state) return;
         var seq = ++classifySeq;
         request("POST", "/classify", { text: state.text }, ML_TIMEOUT_MS).then(function (res) {
-          if (seq !== classifySeq || !state || state.categorySource === "resident") return;
+          if (seq !== classifySeq || !state || state !== owner || state.categorySource === "resident") return;
           var data = res.ok ? res.data : null;
           if (!data || !category(data.category)) {
             // Модель недоступна или ответ странный — молча открываем сетку категорий.
@@ -703,10 +718,12 @@
     function checkSimilarThenSend() {
       if (state.sending) return;
       state.sending = true; updateSendButton();
+      var owner = state;
       findSimilar().then(function (match) {
+        if (state !== owner) return;
         state.sending = false;
         state.similarChecked = true;
-        if (match && match.reporters > 0) {
+        if (match && placeCount(match) > 0) {
           state.similar = match; state.step = 4; render();
         } else {
           send();
@@ -726,7 +743,8 @@
           // начинается с 0.18), список упорядочен. Повторно по score не фильтруем — берём первое.
           matches = matches.filter(function (m) { return m && m.complaint_id; });
           if (!matches.length) return null;
-          return request("GET", "/complaints/" + encodeURIComponent(matches[0].complaint_id)).then(function (r) {
+          // view=public: мастер жителя всегда получает ответ «как житель», даже если в браузере вошёл сотрудник.
+          return request("GET", "/complaints/" + encodeURIComponent(matches[0].complaint_id) + "?view=public").then(function (r) {
             return r.ok && r.data && r.data.complaint ? r.data.complaint : null;
           });
         });
@@ -751,7 +769,8 @@
     }
 
     function withCount(match, placeReporters) {
-      match.placeReporters = Math.max(match.reporters || 0, Number(placeReporters) || 0);
+      match.reporters = reportersOf(match);
+      match.placeReporters = Math.max(match.reporters, Number(placeReporters) || 0);
       return match;
     }
 
@@ -762,7 +781,7 @@
     }
 
     function placeCount(match) {
-      return match.placeReporters || match.reporters;
+      return match.placeReporters || reportersOf(match);
     }
 
     function renderSimilar(body) {
@@ -795,13 +814,15 @@
 
     function metoo(match, button) {
       if (button) button.disabled = true;
+      var owner = state;
       request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", {}).then(function (res) {
         if (button) button.disabled = false;
+        if (state !== owner) return;
         // Лимит (429, R15): повтор снова упрётся в лимит — сообщаем без «Повторить», как при отправке жалобы.
         if (!res.ok && res.status === 429) { toast(t("complaint.error.too_many")); return; }
         if (!res.ok) { toast(t("complaint.error.send"), function () { metoo(match); }); return; }
         // Сколько людей теперь сообщили об этом на месте: прежнее N + этот житель (если «Я тоже» засчитан).
-        var joined = res.data.complaint, place = placeCount(match) + Math.max(0, (joined.reporters || 0) - (match.reporters || 0));
+        var joined = res.data.complaint, place = placeCount(match) + Math.max(0, reportersOf(joined) - reportersOf(match));
         state.result = { kind: "metoo", outcome: res.data.result, complaint: joined, place: place };
         if (res.data.result === "added") announce("metoo", res.data.complaint);
         clearDraft();
@@ -821,7 +842,9 @@
       updateSendButton();
       var body = { text: state.text, category: state.category, category_source: state.categorySource || "resident",
                    model: state.model, point: state.point, target: state.target, request_id: state.requestId };
+      var owner = state;
       request("POST", "/complaints", body).then(function (res) {
+        if (state !== owner) return;   // мастер закрыли во время отправки: жалоба на сервере, экран не трогаем
         state.sending = false;
         if (res.ok && res.data && res.data.complaint) {
           state.result = { kind: "created", complaint: res.data.complaint };
@@ -877,8 +900,9 @@
     // ---------------------------------------------------------------- «Мои обращения»
     function loadMine() {
       state.mine = null; state.mineError = false; render();
+      var owner = state;
       request("GET", "/complaints/mine").then(function (res) {
-        if (!state || state.view !== "mine") return;
+        if (!state || state !== owner || state.view !== "mine") return;
         if (!res.ok) { state.mineError = true; render(); return; }
         state.mine = res.data.items || [];
         render();
@@ -1013,6 +1037,9 @@
     }
 
     function close() {
+      // LOCAL_FINAL №2: отложенная подсказка модели не должна сработать после закрытия.
+      clearTimeout(classifyTimer);
+      classifySeq++;
       setPicking(false);
       if (map.clear) map.clear();
       els.panel.hidden = true;

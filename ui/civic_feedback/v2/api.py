@@ -260,6 +260,8 @@ class ComplaintsV2Service:
 
     def _staff(self, record):
         view = rec.staff_view(record)
+        # LOCAL_FINAL №1: у ответа сотруднику то же поле «сколько человек сообщили», что у публичного.
+        view["reporters"] = rec.reporters(record)
         now = self.store._now()
         view["heat_state"] = lifecycle.heat_state(record, now)
         view["passport_view"] = lifecycle.passport_view(record, now, self.store.assignee_lookup)
@@ -341,6 +343,10 @@ class ComplaintsV2Service:
         record = self.store.get(complaint_id) or self.store.get_by_code(complaint_id)
         if record is None:
             raise ApiError(404, "not_found", "Обращение не найдено.")
+        # LOCAL_FINAL №1: мастер жителя (шаг «Я тоже») просит ?view=public — тот же ответ, что у любого жителя,
+        # даже если в этом браузере уже вошёл сотрудник. Права это не расширяет: публичная проекция — минимум.
+        if params.get("view") == "public":
+            return _ok(200, {"complaint": self._public(record)})
         return _ok(200, {"complaint": self._view(record, principal, context)})
 
     def _metoo(self, complaint_id, *, params, body, principal, context):

@@ -423,3 +423,20 @@ def test_http_bad_photo_chunk(store):
     status, body = call(api, "POST", f"/complaints/{record['id']}/photos/{start['data']['upload_id']}",
                         {"offset": 0, "data": "@@@"})
     assert status == 422
+
+
+# ---------------------------------------------------------------- LOCAL_FINAL (Codex, Windows) №1
+def test_staff_session_does_not_hide_people_count_from_resident_wizard(store):
+    """Сотрудник вошёл раньше жителя: ответ сотруднику содержит reporters, а мастер жителя (?view=public)
+    получает ровно публичную проекцию — без текста и с тем же числом людей."""
+    api = ComplaintsV2Service(store)
+    record = make(store)
+    store.metoo(record["id"], DEV_B)
+    store.metoo(record["id"], DEV_C)
+    _, staff = call(api, "GET", f"/complaints/{record['id']}", principal=Staff(), context=ctx(DEV_D, csrf="tok"))
+    assert staff["data"]["complaint"]["reporters"] == 3 and "text" in staff["data"]["complaint"]
+    _, public = call(api, "GET", f"/complaints/{record['id']}", query="view=public", principal=Staff(),
+                     context=ctx(DEV_D, csrf="tok"))
+    assert public["data"]["complaint"]["reporters"] == 3 and "text" not in public["data"]["complaint"]
+    _, by_code = call(api, "GET", f"/complaints/{record['code']}", query="view=public", context=ctx(DEV_A))
+    assert "text" not in by_code["data"]["complaint"]        # даже автору view=public — публичная проекция

@@ -116,8 +116,8 @@ async function step6(page, tag, width, lang, staff) {
   await shot(page, `app-${tag}-6-mine`);
 }
 
-async function variant(browser, base, width, height, lang, staff) {
-  const tag = `${width}-${lang}`;
+async function variant(browser, base, width, height, lang, staff, opts = {}) {
+  const tag = `${width}-${lang}` + (opts.prelogin ? "-prelogin" : "") + (opts.different ? "-different" : "");
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: width < 1024 });
   await ctx.addInitScript(([l]) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) {} }, [lang]);
   const page = await ctx.newPage();
@@ -126,6 +126,16 @@ async function variant(browser, base, width, height, lang, staff) {
   page.on("console", (m) => { if (m.type() === "error" && !NOISE.test(m.text())) errors.push(m.text()); });
   await page.goto(base);
   await shellReady(page);
+  if (opts.prelogin) {
+    // LOCAL_FINAL №1 (Codex): сотрудник вошёл ЗАРАНЕЕ в том же браузере, потом режим «Житель» и путь жалобы.
+    const logged = await page.evaluate(async ([u, p]) => (await fetch("/api/civic/v1/session/login", { method: "POST",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: u, password: p }) })).ok,
+      [opts.prelogin.user, opts.prelogin.pass]);
+    await page.reload();
+    await shellReady(page);
+    await page.evaluate(() => window.BirgeShell?.setMode?.("resident"));
+    check(`${tag}: сотрудник вошёл до пути жителя`, logged);
+  }
   await sleep(800);
   const seen = {};
   const text = async (sel) => ((await page.textContent(sel).catch(() => "")) || "").replace(/\s+/g, " ").trim();
@@ -167,6 +177,17 @@ async function variant(browser, base, width, height, lang, staff) {
   check(`${tag}: похожая демо-жалоба помечена «Пример»`, demoTag.length === 1 && /Пример|Үлгі/.test(demoTag[0]), demoTag);
   await shot(page, `app-${tag}-4-similar`);
   if (!step4) { await ctx.close(); return; }
+  if (opts.different) {
+    // LOCAL_FINAL №2: «У меня другое» -> успех -> сразу Escape; отложенная подсказка не должна читать null.
+    await page.click(".bc-different");
+    await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 10000 });
+    await page.keyboard.press("Escape");
+    await sleep(2500);
+    const late = errors.filter((e) => /null|undefined|TypeError/.test(e));
+    check(`${tag}: «У меня другое» и сразу закрыть — без ошибок JavaScript`, late.length === 0, late.slice(0, 3));
+    await ctx.close();
+    return;
+  }
   seen.metoo = await text(".bc-panel[data-step='4'] .bk-btn--primary");
   await page.click(".bc-panel[data-step='4'] .bk-btn--primary");
   await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 10000 });
@@ -192,9 +213,18 @@ async function variant(browser, base, width, height, lang, staff) {
     srv = await startServer(port, path.join(tmp, "civic.sqlite3"));
     browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
     const runs = [[375, 812, "kk"], [375, 812, "ru"], [1366, 768, "ru"], [1366, 768, "kk"]];
-    for (const [i, [w, h, lang]] of runs.entries()) {
+    // R09_ONLY_LOCAL=1 — только проверки LOCAL_FINAL №1–2 (быстро; основной сценарий пропускается).
+    for (const [i, [w, h, lang]] of (process.env.R09_ONLY_LOCAL ? [] : runs).entries()) {
       await variant(browser, `http://127.0.0.1:${port}/`, w, h, lang, i === runs.length - 1 ? srv.staff : null);
     }
+    // LOCAL_FINAL №1–2 — на ОТДЕЛЬНОЙ свежей демо-базе: в основном прогоне шаг 6 уже закрыл жалобы на остановке,
+    // и похожих открытых жалоб там не осталось бы.
+    srv.kill();
+    const port2 = await freePort();
+    srv = await startServer(port2, path.join(tmp, "civic-local.sqlite3"));
+    await variant(browser, `http://127.0.0.1:${port2}/`, 375, 812, "ru", null, { prelogin: srv.staff });
+    await variant(browser, `http://127.0.0.1:${port2}/`, 1366, 768, "kk", null, { prelogin: srv.staff });
+    await variant(browser, `http://127.0.0.1:${port2}/`, 375, 812, "ru", null, { different: true });
   } catch (err) {
     console.error(err);
     check("приложение и браузер запустились", false, String(err && err.message));

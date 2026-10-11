@@ -23,6 +23,8 @@ const args = process.argv.slice(2);
 const r11Dir = args.includes("--r11") ? path.resolve(args[args.indexOf("--r11") + 1]) : null;
 // --real: стенд вызывает настоящие R12 engine.civic_geo и R04 ui.civic_ml_api (их пакеты должны лежать в дереве).
 const real = args.includes("--real");
+// --only local_final: только проверки LOCAL_FINAL №1–2 (быстро).
+const only = args.includes("--only") ? args[args.indexOf("--only") + 1] : null;
 const shotDir = args.includes("--screenshots") ? path.resolve(args[args.indexOf("--screenshots") + 1]) : null;
 if (shotDir) fs.mkdirSync(shotDir, { recursive: true });
 
@@ -44,9 +46,11 @@ function startStand(port, extra) {
   });
 }
 
-async function newPage(browser, base, width, height, lang) {
+async function newPage(browser, base, width, height, lang, opts = {}) {
   const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1,
                                              hasTouch: width < 1024, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+  // Сессия сотрудника в том же браузере (стенд: cookie stand_staff=1 — как вход R02 в приложении).
+  if (opts.staff) await context.addCookies([{ name: "stand_staff", value: "1", url: base }]);
   const page = await context.newPage();
   page.problems = [];
   page.on("console", (msg) => {
@@ -597,6 +601,72 @@ async function phoneLayout(browser, base, hot, lang, tag) {
   await page.context().close();
 }
 
+// LOCAL_FINAL №1 (Codex, Windows): сотрудник вошёл раньше жителя в том же браузере -> ответы API для сотрудника
+// (без поля reporters) -> мастер пропускал шаг «Я тоже» и создавал новую жалобу. Стенд: cookie stand_staff=1.
+async function staffFirst(browser, base, hot, lang, width, height, tag) {
+  const page = await newPage(browser, base, width, height, lang, { staff: true });
+  const staffSeen = await page.evaluate(async (id) => {
+    const r = await fetch("/api/civic/v2/complaints/" + id); return (await r.json()).data.complaint;
+  }, hot.complaint_id);
+  check(`${tag}: сессия сотрудника активна (ответ API — для сотрудника)`, staffSeen && "text" in staffSeen,
+        staffSeen ? Object.keys(staffSeen).slice(0, 6).join(",") : "");
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  await clickMapAt(page, hot.point);
+  await page.waitForSelector(".bc-option--first", { timeout: 8000 });
+  await page.click(".bc-option--first");
+  await page.waitForSelector(".bc-panel[data-step='3']");
+  await page.fill("#bc-text", lang === "kk" ? "Аялдаманың павильоны сынған, шатыры жоқ" : "Павильон остановки сломан, нет крыши");
+  await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 6000 });
+  await page.click(".bc-send");
+  const step = await page.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 10000 })
+    .then((el) => el.getAttribute("data-step"));
+  const title = await page.textContent(".bc-title");
+  check(`${tag}: [LOCAL-1] при входе сотрудника шаг «Я тоже» не пропущен`, step === "4" && /\d/.test(title), `шаг ${step}: ${title}`);
+  check(`${tag}: [LOCAL-1] текст чужой жалобы жителю не показан и при входе сотрудника`,
+        !(await page.textContent(".bc-panel")).includes("нет крыши") || !!(await page.$("#bc-text")));
+  await shot(page, `${tag}-similar`);
+  check(`${tag}: нет ошибок консоли`, page.problems.length === 0, page.problems.join(" | "));
+  await page.context().close();
+}
+
+// LOCAL_FINAL №2: «У меня другое» -> успех -> сразу Escape. Отложенная подсказка /classify (таймер шага ③) читала
+// state уже после закрытия: «Cannot read properties of null (reading 'text')».
+async function quickClose(browser, base, hot, lang, width, height, tag) {
+  const page = await newPage(browser, base, width, height, lang);
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  await clickMapAt(page, hot.point);
+  await page.waitForSelector(".bc-option--first", { timeout: 8000 });
+  await page.click(".bc-option--first");
+  await page.waitForSelector(".bc-panel[data-step='3']");
+  await page.fill("#bc-text", lang === "kk" ? "Аялдаманың павильоны сынған, шатыры жоқ" : "Павильон остановки сломан, нет крыши");
+  await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 6000 });
+  await page.click(".bc-send");
+  await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 10000 });
+  await page.click(".bc-different");
+  for (const how of ["escape"]) {
+    await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 10000 });
+    if (how === "escape") await page.keyboard.press("Escape");
+  }
+  await page.waitForTimeout(2500);   // дольше таймера подсказки (0,7 с) и ответа /classify
+  const nullErrors = page.problems.filter((p) => /null|undefined|TypeError/.test(p));
+  check(`${tag}: [LOCAL-2] после быстрого закрытия нет ошибок JavaScript`, nullErrors.length === 0, nullErrors.join(" | "));
+  check(`${tag}: панель закрыта, главная кнопка видна`, (await page.isHidden(".bc-panel")) && (await page.isVisible(".bc-fab")));
+  // То же сразу после «Я тоже» и после закрытия с шага ③ во время ожидания подсказки.
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  await clickMapAt(page, hot.point);
+  await page.waitForSelector(".bc-option--first", { timeout: 8000 });
+  await page.click(".bc-option--first");
+  await page.fill("#bc-text", "Павильон сломан, крыши нет совсем");
+  await page.keyboard.press("Escape");                          // закрыли, пока таймер подсказки ещё идёт
+  await page.waitForTimeout(2000);
+  const late = page.problems.filter((p) => /null|undefined|TypeError/.test(p));
+  check(`${tag}: [LOCAL-2] закрытие во время подсказки модели без ошибок`, late.length === 0, late.join(" | "));
+  await page.context().close();
+}
+
 async function keyboard(browser, base, tag) {
   const page = await newPage(browser, base, 1366, 768, "ru");
   let reached = false;
@@ -635,23 +705,31 @@ async function keyboard(browser, base, tag) {
     if (real) check("стенд вызывает настоящие R12 /targets и R04 /classify, /similar (не FIXTURE)",
                     info1.real_geo && info1.real_ml && info2.real_geo && !info2.real_ml, JSON.stringify([info1, info2].map(
                       (i) => ({ geo: i.real_geo, ml: i.real_ml }))));
-    await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 375, 812, "375-ru");
-    await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk");
-    await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru");
-    await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "kk", 1366, 768, "1366-kk");
-    // Разные «пустые» точки: иначе вторая жалоба в той же ячейке правильно получит «Я тоже» к первой.
-    await newComplaintAndMine(browser, "http://127.0.0.1:8791", "kk", 375, 812, "375-kk-new", [71.4605, 51.0785]);
-    await newComplaintAndMine(browser, "http://127.0.0.1:8791", "ru", 1366, 768, "1366-ru-new", [71.3965, 51.0765]);
-    await withoutMl(browser, "http://127.0.0.1:8792", info2.hot, "375-noml");
-    await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk-badge");
-    await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "ru", "375-ru-layout");
-    await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "kk", "375-kk-layout");
-    await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru-badge");
-    await keyboard(browser, "http://127.0.0.1:8791", "1366-kbd");
-    await placeTotal(browser, "http://127.0.0.1:8791", "ru", 375, 812, "375-ru-place", [71.4410, 51.0860]);
-    await placeTotal(browser, "http://127.0.0.1:8791", "kk", 1366, 768, "1366-kk-place", [71.4130, 51.1010]);
-    for (const [lang, w, h] of [["ru", 375, 812], ["kk", 375, 812], ["ru", 1366, 768], ["kk", 1366, 768]]) {
-      await mineStates(browser, "http://127.0.0.1:8791", lang, w, h, `${w}-${lang}-states`);
+    if (only !== "local_final") {
+      await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 375, 812, "375-ru");
+      await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk");
+      await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru");
+      await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "kk", 1366, 768, "1366-kk");
+      // Разные «пустые» точки: иначе вторая жалоба в той же ячейке правильно получит «Я тоже» к первой.
+      await newComplaintAndMine(browser, "http://127.0.0.1:8791", "kk", 375, 812, "375-kk-new", [71.4605, 51.0785]);
+      await newComplaintAndMine(browser, "http://127.0.0.1:8791", "ru", 1366, 768, "1366-ru-new", [71.3965, 51.0765]);
+      await withoutMl(browser, "http://127.0.0.1:8792", info2.hot, "375-noml");
+      await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk-badge");
+      await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "ru", "375-ru-layout");
+      await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "kk", "375-kk-layout");
+      await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru-badge");
+      await keyboard(browser, "http://127.0.0.1:8791", "1366-kbd");
+      await placeTotal(browser, "http://127.0.0.1:8791", "ru", 375, 812, "375-ru-place", [71.4410, 51.0860]);
+      await placeTotal(browser, "http://127.0.0.1:8791", "kk", 1366, 768, "1366-kk-place", [71.4130, 51.1010]);
+      for (const [lang, w, h] of [["ru", 375, 812], ["kk", 375, 812], ["ru", 1366, 768], ["kk", 1366, 768]]) {
+        await mineStates(browser, "http://127.0.0.1:8791", lang, w, h, `${w}-${lang}-states`);
+      }
+    }
+    // LOCAL_FINAL №1–2 (они ломали демо) — в конце: «У меня другое» создаёт настоящую жалобу на демо-остановке,
+    // и в сценариях после неё похожей оказалась бы она, а не демо-жалоба с меткой «Пример».
+    for (const [lang, w, h] of [["ru", 375, 812], ["kk", 1366, 768]]) {
+      await staffFirst(browser, "http://127.0.0.1:8791", info1.hot, lang, w, h, `${w}-${lang}-staff-first`);
+      await quickClose(browser, "http://127.0.0.1:8791", info1.hot, lang, w, h, `${w}-${lang}-quick-close`);
     }
     await browser.close();
   } catch (err) {
