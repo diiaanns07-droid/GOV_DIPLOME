@@ -13,7 +13,9 @@
 #birge-header .birge-mine-btn { min-height: 40px; white-space: nowrap; }
 body:not([data-birge-mode="resident"]) #birge-header .birge-mine-btn { display: none; }
 body:not([data-birge-mode="resident"]) .bc-fab,
-body[data-birge-section="day"] .bc-fab { display: none !important; }
+body[data-birge-section]:not([data-birge-section="map"]) .bc-fab { display: none !important; }
+/* Меню по виду (волна 2, защита п. 2): пункты другого вида и разделы без модуля — скрыты (birge.js buildNav). */
+#birge-header .birge-nav > [hidden] { display: none !important; }
 
 /* Ноутбук: меню раскрыто в строку, кнопки ≡ нет. */
 .birge-menu { display: contents; }
@@ -47,7 +49,24 @@ body[data-birge-mode="resident"] #civic-moderation-button { display: none !impor
 /* Модуль R08 рисует свой заголовок «Картина дня · 11 окт»: наш скрыт визуально, но остаётся подписью раздела. */
 .birge-day--module .birge-day-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .birge-day-empty .bk-btn { margin-top: var(--s-4, 16px); }
-body[data-birge-section="day"].civic-mode #civic-root { visibility: hidden; }
+body.civic-mode[data-birge-section]:not([data-birge-section="map"]) #civic-root { visibility: hidden; }
+
+/* Экраны новых разделов (#birge-screen, волна 2) — тот же лист, что «Картина дня» (класс .birge-day). «Ещё» — список. */
+.birge-more-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2, 8px); max-width: 560px; }
+.birge-more-item { display: flex; width: 100%; min-height: 48px; justify-content: flex-start; text-decoration: none; }
+
+/* Один дополнительный слой карты (волна 2, защита п. 1): кнопка «слои» внизу колонки кнопок карты; есть, только когда
+   модуль роли зарегистрировал слой. Список вариантов открывается слева от кнопки. */
+.birge-layer { position: relative; display: contents; }
+.birge-layer[hidden] { display: none; }
+.birge-layer-btn[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--c-accent, #1f6f50); }
+.birge-layer__list { position: absolute; right: calc(100% + 8px); bottom: 0; z-index: 8; display: grid; gap: 2px; min-width: 200px;
+  padding: 8px 12px; border-radius: var(--r-m, 12px); background: var(--c-surface, #fff); box-shadow: var(--shadow-2, 0 8px 28px #15362824);
+  font-size: var(--fs-body, 14px); }
+.birge-layer__list[hidden] { display: none; }
+.birge-layer__title { font-weight: var(--fw-semi, 600); color: var(--c-text-2, #3c514b); }
+.birge-layer__opt { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
+.birge-layer__opt input { width: 20px; height: 20px; margin: 0; }
 
 /* Ниже 1024 px — телефонная схема шапки (UX_SPEC §1): [логотип] [≡ Меню] [ҚАЗ|РУС];
  * разделы и «Акимат / Житель» — в выпадающем листе под шапкой. */
@@ -216,3 +235,29 @@ body:not(.civic-mode) .birge-complaint-root { display: none; }
 /* Открыт кабинет сотрудника или другой ящик (body[data-civic-drawer="open"]): кнопка «Что построить?» и каталог R05
    не лежат поверх его заголовка (R10 B-031, телефон). */
 body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
+
+/* LOCAL_FINAL (Codex, Windows, 8e67c65) №9 / P3 и UX_BRIEF: всё управление оболочки — зона нажатия 48 px (было 40–44).
+   Шапка (разделы, вид, язык, ≡), колонка кнопок карты, «Для сотрудников», панель «Территория», подпись карты. */
+.civic-mode #birge-header .bk-seg > button,
+.civic-mode #birge-header .birge-menu-btn { min-height: 48px; }
+.civic-mode .map-tools .icon-btn { width: 48px; height: 48px; }
+.civic-mode .civic-foot .btn { min-height: 48px; }
+.civic-mode .civic-explore button, .civic-mode .civic-explore summary,
+.civic-mode .civic-explore .civic-explore-toggle,
+.civic-mode .civic-explore select, .civic-mode .civic-explore-field input { min-height: 48px; }
+.civic-mode .civic-explore .civic-explore-clear { width: 48px; height: 48px; min-height: 48px; }
+.civic-mode .civic-explore-details label { min-height: 48px; }
+/* Кнопка ⓘ подписи карты (MapLibre, 24 px): та же картинка, зона нажатия 48 px. */
+.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact { min-height: 48px; }
+.civic-mode .maplibregl-ctrl-attrib-button { width: 48px; height: 48px; background-position: center; }
+.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact-show { padding-right: 52px; }
+@media (max-width: 760px) {
+  .civic-mode .map-tools .icon-btn { width: 48px; height: 48px; }
+  /* Колонка кнопок карты шире на 4 px (right 15 + 48): «Территория» отступает (на 360 — ровно 280 px ширины, r12_city). */
+  .civic-mode .civic-explore { right: 70px; }
+}
+
+/* Маркеры MapLibre: элемент из new Marker({element}) MapLibre двигает через transform на каждом кадре — transition на
+   transform/left/top делает значки отстающими от карты при движении (так было у значков R07 .r07-badge). Страховка
+   оболочки для всех модулей; эффекты наведения — только на внутренних обёртках (R07: .r07-badge__dot/__count). */
+.civic-mode .maplibregl-marker { transition: none !important; }

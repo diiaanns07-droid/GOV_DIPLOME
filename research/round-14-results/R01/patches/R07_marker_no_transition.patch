@@ -1,0 +1,38 @@
+--- a/web/civic/heat/heat.css	2026-10-11 17:43:19.754778577 +0000
++++ b/web/civic/heat/heat.css	2026-10-11 17:43:19.769013381 +0000
+@@ -216,7 +216,6 @@
+   display: inline-flex; align-items: center; padding: 0; border: 0; background: transparent; cursor: pointer;
+   font-family: var(--b-font, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
+   filter: drop-shadow(0 1px 3px #19362840);
+-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+ }
+ .r07-badge[hidden] { display: none; }
+ /* Зона нажатия значка ≥ 48 px (видимый значок 34–38 px). Маркер MapLibre уже position:absolute. */
+@@ -227,10 +226,16 @@
+   border-left: 5px solid var(--r07-c, #999); font-size: 14px; }
+ .r07-badge--mini::after { inset: -13px -7px; }
+ .r07-badge--mini .r07-badge__name { display: none; }
+-.r07-badge:hover, .r07-badge--selected { transform: scale(1.12); z-index: 3; }
++/* Элемент маркера двигает MapLibre (transform на каждом кадре): на нём ни transition, ни своего transform — иначе значок
++   отстаёт от карты при движении. Увеличение при наведении — у внутренних обёрток. */
++.r07-badge:hover, .r07-badge--selected { z-index: 3; }
++.r07-badge__count { transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); }
++.r07-badge:hover :is(.r07-badge__dot, .r07-badge__count),
++.r07-badge--selected :is(.r07-badge__dot, .r07-badge__count) { transform: scale(1.12); }
+ .r07-badge__dot {
+   display: grid; place-items: center; width: 34px; height: 34px; border: 2px solid #fff; border-radius: 50%;
+-  background: var(--r07-c, #ccc); color: #152c26; transition: background 0.8s cubic-bezier(0.22, 1, 0.36, 1);
++  background: var(--r07-c, #ccc); color: #152c26;
++  transition: background 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+ }
+ .r07-badge[data-level="3"] .r07-badge__dot, .r07-badge[data-level="4"] .r07-badge__dot, .r07-badge[data-level="fixed"] .r07-badge__dot { color: #fff; }
+ .r07-badge__count {
+@@ -258,7 +263,7 @@
+ 
+ @media (prefers-reduced-motion: reduce) {
+   .r07-pulse::before, .r07-pulse::after, .r07-skeleton i, .r07-toast { animation: none; }
+-  .r07-badge, .r07-badge__dot { transition: none; }
++  .r07-badge, .r07-badge__dot, .r07-badge__count { transition: none; }
+ }
+ @media (max-width: 760px) {
+   .r07-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; margin: 0 -2px; }

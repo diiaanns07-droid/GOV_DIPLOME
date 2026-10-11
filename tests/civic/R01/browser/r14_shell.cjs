@@ -148,7 +148,10 @@ async function main() {
     await ready(page);
     h = await header(page);
     check("1366: view «Житель» remembered after reload", h.mode === "resident" && h.pressed.mode === "resident" && h.htmlLang === "ru", h);
-    await page.click("#birge-header [data-section=day]");
+    // Волна 2 (защита п. 2): в меню жителя «Картины дня» нет — Карта · Мои обращения (· Рядом · Идеи · Ещё, когда есть модули).
+    check("1366: resident menu has no «Картина дня» (wave 2 menu: Карта · Мои обращения …)",
+      !h.labels.includes("Картина дня") && h.labels.includes("Мои обращения") && h.labels.includes("Карта"), h.labels);
+    await page.evaluate(() => document.querySelector("#birge-header [data-section=day]").click());  // как ссылка #day
     await page.waitForTimeout(300);
     h = await header(page);
     check("1366: «Картина дня» is an akimat screen — opening it switches the view to «Акимат»", h.section === "day" && h.mode === "akimat", h);
@@ -208,8 +211,14 @@ async function main() {
         return { open: document.getElementById("birge-header").dataset.menu, expanded: document.querySelector(".birge-menu-btn").getAttribute("aria-expanded"),
           inside: box.left >= 0 && box.right <= innerWidth, clickable: hit, items: items.map((b) => b.textContent.trim()) }; });
       check(`${tag}: ≡ opens the menu on top of the map, all items clickable and inside the screen`,
-        menu.open === "open" && menu.expanded === "true" && menu.inside && menu.clickable && menu.items.length === (startMode === "resident" ? 5 : 4), menu);
+        menu.open === "open" && menu.expanded === "true" && menu.inside && menu.clickable && menu.items.length === 4, menu);
       await m.page.screenshot({ path: path.join(OUT, `06_menu_${w}_${lang}.png`) });
+      if (startMode === "resident") {  // у жителя «Картины дня» в меню нет: «Акимат» → снова ≡ → «Картина дня»
+        await m.page.click("#birge-header [data-mode=akimat]");
+        await m.page.waitForTimeout(200);
+        await m.page.click("#birge-header .birge-menu-btn");
+        await m.page.waitForTimeout(300);
+      }
       await m.page.click("#birge-header [data-section=day]");
       await m.page.waitForTimeout(400);
       p = await header(m.page);
