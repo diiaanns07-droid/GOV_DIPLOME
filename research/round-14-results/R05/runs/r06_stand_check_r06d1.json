@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-11T19:12:26.926Z",
+ "generated_at": "2026-10-11T20:28:51.170Z",
  "stand": {
   "url": "http://127.0.0.1:8616/civic/proposals/demo.html",
   "r06_sha": "3d10f7d",
@@ -13,11 +13,11 @@
     "storeMode": "api",
     "count": 5,
     "kinds": [
+     "stop:2027:demo",
      "playground:2027:demo",
      "square:2027:demo",
      "sports:2027:demo",
-     "lighting:2027:demo",
-     "stop:2027:demo"
+     "lighting:2027:demo"
     ]
    }
   },
@@ -25,7 +25,7 @@
    "id": "list_sends_device_id_no_bbox",
    "status": "PASS",
    "detail": [
-    "/api/civic/v2/proposals?device_id=dev-20e70594d84fec957f02059e5147bcbf"
+    "/api/civic/v2/proposals?device_id=dev-96ad54f11324680551bfe6d7fa67e9dc"
    ]
   },
   {
@@ -99,7 +99,7 @@
    "id": "created_on_server_with_year_and_rotation",
    "status": "PASS",
    "detail": {
-    "id": "p-fc8d2a84e5e6",
+    "id": "p-8733bfad80b5",
     "kind": "stop",
     "geometry": {
      "type": "Point",
@@ -121,7 +121,7 @@
     "near_street": null,
     "near_street_kk": null,
     "target": null,
-    "created_at": "2026-10-11T19:11:52+00:00",
+    "created_at": "2026-10-11T20:28:30+00:00",
     "demo": false,
     "idea": null
    }
@@ -134,7 +134,7 @@
   {
    "id": "vote_through_r06_card_with_device_id",
    "status": "PASS",
-   "detail": "{\"value\":1,\"device_id\":\"dev-e1f5d9b86e179ea44f34ea7b427371c6\"}"
+   "detail": "{\"value\":1,\"device_id\":\"dev-2fad170dea2c0507dd328ef1d26decdb\"}"
   },
   {
    "id": "vote_synced_to_3d_object",
@@ -152,15 +152,15 @@
     "POST /api/civic/v2/proposals",
     "POST /api/civic/v2/proposals",
     "POST /api/civic/v2/proposals",
-    "POST /api/civic/v2/proposals/p-fc8d2a84e5e6/vote",
-    "POST /api/civic/v2/proposals/p-fc8d2a84e5e6/withdraw"
+    "POST /api/civic/v2/proposals/p-8733bfad80b5/vote",
+    "POST /api/civic/v2/proposals/p-8733bfad80b5/withdraw"
    ]
   },
   {
    "id": "undo_recreates_on_old_r06",
    "status": "PASS",
    "detail": {
-    "id": "p-edc3e772cc47",
+    "id": "p-eac7c98c5be4",
     "votes_up": 0
    }
   },
