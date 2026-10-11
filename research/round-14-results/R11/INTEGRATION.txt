@@ -160,4 +160,8 @@ ui-kit: BirgeUI.seasonOrder(categories) — сезонный порядок ка
   r14_wave2 31/0, r14_shell 39/0, сценарий R11 44/44. Ещё ждёт R01: patches/R01_legend_free_area.patch (Нұра · 73).
 Правило словаря на время волны 2: R11 ключи НЕ удаляет (лишние — один раз перед заморозкой FINAL-2). Если в схеме
 IA_WAVE2 ключ назван, а у вас свой — оба живут, R11 переведёт ваш в день получения.
+R01 8bbace7 (читаемость карты): research/round-14-results/R11/patches/R01_legend_free_area.patch БОЛЬШЕ НЕ НУЖЕН (легенда
+— строка в контейнере оболочки, Нұра · 73 на месте). patches/R01_wave2_phone_menu.patch пересобран на 8bbace7 — только
+меню телефона столбиком (правило ⓘ R01 переписал сам). ui-kit: токены --map-* = basemap-style.js (§12.1).
+Эталон первого кадра для review_build.sh — research/round-14-results/R11/first_frame_8bbace7c.json.
 

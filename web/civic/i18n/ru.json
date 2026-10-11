@@ -902,6 +902,9 @@
  "shell.nav.projects": "Проекты и идеи",
  "shell.nav.questions": "Вопрос акиму",
  "shell.layers.title": "Слой на карте",
+ "shell.layers.projects": "Проекты",
+ "shell.legend.less": "Свернуть пояснение",
+ "shell.legend.more": "Что значат цвета",
  "editor.geo.not_wired": "Привязка к улицам на этом сервере не подключена. Отметьте точку или площадь.",
  "editor.near.linked": "Точка стоит на объекте OSM: {name}.",
  "editor.near.title": "Рядом есть объект на карте OSM:",
@@ -989,6 +992,22 @@
  "build3d.card.segment_plain": "Участок улицы, {length} м",
  "build3d.street.this": "эта улица",
  "build3d.card.view3d": "Посмотреть в 3D",
+ "build3d.card.from_idea": {
+  "one": "По идее жителей · {n} голос",
+  "few": "По идее жителей · {n} голоса",
+  "many": "По идее жителей · {n} голосов"
+ },
+ "build3d.card.from_idea_plain": "По идее жителей",
+ "build3d.idea.done": "Готово",
+ "build3d.idea.label": "Идея · {n}",
+ "build3d.idea.open": {
+  "one": "Идея жителей, {n} голос — открыть",
+  "few": "Идея жителей, {n} голоса — открыть",
+  "many": "Идея жителей, {n} голосов — открыть"
+ },
+ "build3d.idea.pick_note": "Это эскиз к идее, а не проект: решение принимает акимат",
+ "build3d.idea.pick_title": "Как это может выглядеть?",
+ "build3d.idea.tag": "Идея",
  "forecast.title": "На что обратить внимание в следующем месяце",
  "forecast.prototype": "Прототип: прогноз обучен на синтетической истории, не реальная оценка",
  "forecast.risk": "Риск {pct} %",

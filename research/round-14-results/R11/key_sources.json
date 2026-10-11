@@ -976,5 +976,16 @@
  "inbox.complaints": "Волна 2 · R09 · акимат «Обращения» (web/civic/feedback/complaint-list.js, IA_WAVE2 §2.5)",
  "inbox.empty": "Волна 2 · R09 · акимат «Обращения» (web/civic/feedback/complaint-list.js, IA_WAVE2 §2.5)",
  "inbox.people": "Волна 2 · R09 · акимат «Обращения» (web/civic/feedback/complaint-list.js, IA_WAVE2 §2.5)",
- "mine.unsubscribed": "Волна 2 · R09 · «Менің өтініштерім», отписка"
+ "mine.unsubscribed": "Волна 2 · R09 · «Менің өтініштерім», отписка",
+ "shell.layers.projects": "Волна 2 · R01 · читаемость карты: слой «Проекты», компактная легенда с «?» (INTEGRATION R01 §12)",
+ "shell.legend.less": "Волна 2 · R01 · читаемость карты: слой «Проекты», компактная легенда с «?» (INTEGRATION R01 §12)",
+ "shell.legend.more": "Волна 2 · R01 · читаемость карты: слой «Проекты», компактная легенда с «?» (INTEGRATION R01 §12)",
+ "build3d.card.from_idea": "Волна 2 · R05 · идея жителей → эскиз 3D (POLISH_WAVE_2 п. 7)",
+ "build3d.card.from_idea_plain": "Волна 2 · R05 · идея жителей → эскиз 3D (POLISH_WAVE_2 п. 7)",
+ "build3d.idea.done": "Волна 2 · R05 · идея жителей → эскиз 3D (POLISH_WAVE_2 п. 7)",
+ "build3d.idea.label": "Волна 2 · R05 · идея жителей → эскиз 3D (POLISH_WAVE_2 п. 7)",
+ "build3d.idea.open": "Волна 2 · R05 · идея жителей → эскиз 3D (POLISH_WAVE_2 п. 7)",
+ "build3d.idea.pick_note": "Волна 2 · R05 · идея жителей → эскиз 3D (POLISH_WAVE_2 п. 7)",
+ "build3d.idea.pick_title": "Волна 2 · R05 · идея жителей → эскиз 3D (POLISH_WAVE_2 п. 7)",
+ "build3d.idea.tag": "Волна 2 · R05 · идея жителей → эскиз 3D (POLISH_WAVE_2 п. 7)"
 }
