@@ -3,27 +3,412 @@
   "created": "2026-10-10",
   "note": "Единственный источник списка категорий для раунда 14. Порядок важен для интерфейса. target_kinds — к чему по умолчанию привязывается жалоба: object, segment, area.",
   "categories": [
-    {"id": "roads", "ru": "Дороги", "kk": "Жолдар", "examples_ru": "яма, разбитый асфальт, стёртая разметка", "target_kinds": ["segment"], "icon": "road"},
-    {"id": "snow_ice", "ru": "Снег и гололёд", "kk": "Қар және көктайғақ", "examples_ru": "не убран снег, наледь, сосульки", "target_kinds": ["segment", "area"], "icon": "snowflake"},
-    {"id": "sidewalks", "ru": "Тротуары", "kk": "Жаяу жүргіншілер жолы", "examples_ru": "разбит тротуар, нет пандуса, бордюр", "target_kinds": ["segment"], "icon": "walk"},
-    {"id": "transport", "ru": "Остановки и транспорт", "kk": "Аялдамалар мен көлік", "examples_ru": "сломан павильон, нет расписания, автобус не ходит", "target_kinds": ["object"], "icon": "bus"},
-    {"id": "lighting", "ru": "Освещение", "kk": "Жарықтандыру", "examples_ru": "не горят фонари, темно во дворе", "target_kinds": ["segment", "area"], "icon": "bulb"},
-    {"id": "yards", "ru": "Дворы и площадки", "kk": "Аулалар мен алаңдар", "examples_ru": "сломана площадка, деревья, благоустройство двора", "target_kinds": ["object", "area"], "icon": "trees"},
-    {"id": "waste", "ru": "Мусор", "kk": "Қоқыс", "examples_ru": "переполнены баки, свалка, не вывозят", "target_kinds": ["area", "object"], "icon": "trash"},
-    {"id": "utilities", "ru": "ЖКХ: тепло и вода", "kk": "ТКШ: жылу мен су", "examples_ru": "нет отопления, нет воды, канализация", "target_kinds": ["area"], "icon": "droplet"},
-    {"id": "smell_air", "ru": "Запахи и воздух", "kk": "Иіс және ауа", "examples_ru": "вонь, дым, пыль, выбросы", "target_kinds": ["area"], "icon": "wind"},
-    {"id": "noise_safety", "ru": "Шум и безопасность", "kk": "Шу және қауіпсіздік", "examples_ru": "шум ночью, опасное место, нет перехода", "target_kinds": ["area", "segment"], "icon": "shield"},
-    {"id": "parking", "ru": "Парковки", "kk": "Тұрақтар", "examples_ru": "заставлены дворы, нет мест, парковка на газоне", "target_kinds": ["segment", "area"], "icon": "parking"},
-    {"id": "other", "ru": "Другое", "kk": "Басқа", "examples_ru": "всё, что не подошло", "target_kinds": ["area"], "icon": "dots"}
+    {
+      "id": "roads",
+      "ru": "Дороги",
+      "kk": "Жолдар",
+      "examples_ru": "яма, разбитый асфальт, стёртая разметка",
+      "target_kinds": [
+        "segment"
+      ],
+      "icon": "road",
+      "subtopics": [
+        {
+          "id": "pothole",
+          "ru": "Яма, разбитый асфальт",
+          "kk": "Шұңқыр, бұзылған асфальт"
+        },
+        {
+          "id": "traffic_light_broken",
+          "ru": "Светофор не работает",
+          "kk": "Бағдаршам істемейді"
+        },
+        {
+          "id": "traffic_light_timing",
+          "ru": "Светофор: долго красный или зелёный",
+          "kk": "Бағдаршам: қызыл не жасыл тым ұзақ"
+        },
+        {
+          "id": "intersection",
+          "ru": "Опасный или неудобный перекрёсток",
+          "kk": "Қауіпті не ыңғайсыз қиылыс"
+        },
+        {
+          "id": "marking",
+          "ru": "Стёрлась разметка",
+          "kk": "Жол таңбасы өшіп қалған"
+        },
+        {
+          "id": "speed_bump",
+          "ru": "Лежачий полицейский",
+          "kk": "Жасанды кедір-бұдыр"
+        }
+      ]
+    },
+    {
+      "id": "snow_ice",
+      "ru": "Снег и гололёд",
+      "kk": "Қар және көктайғақ",
+      "examples_ru": "не убран снег, наледь, сосульки",
+      "target_kinds": [
+        "segment",
+        "area"
+      ],
+      "icon": "snowflake",
+      "subtopics": [
+        {
+          "id": "snow_not_cleared",
+          "ru": "Не убран снег",
+          "kk": "Қар тазаланбаған"
+        },
+        {
+          "id": "ice",
+          "ru": "Гололёд, не посыпано",
+          "kk": "Көктайғақ, құм себілмеген"
+        },
+        {
+          "id": "icicles",
+          "ru": "Сосульки, снег с крыши",
+          "kk": "Сүңгілер, шатырдан қар"
+        }
+      ]
+    },
+    {
+      "id": "sidewalks",
+      "ru": "Тротуары",
+      "kk": "Жаяу жүргіншілер жолы",
+      "examples_ru": "разбит тротуар, нет пандуса, бордюр",
+      "target_kinds": [
+        "segment"
+      ],
+      "icon": "walk",
+      "subtopics": [
+        {
+          "id": "crossing",
+          "ru": "Пешеходный переход",
+          "kk": "Жаяу жүргіншілер өткелі"
+        },
+        {
+          "id": "broken_sidewalk",
+          "ru": "Разбит тротуар",
+          "kk": "Тротуар бұзылған"
+        },
+        {
+          "id": "accessibility",
+          "ru": "Нет пандуса, высокий бордюр",
+          "kk": "Пандус жоқ, биік жиек"
+        }
+      ]
+    },
+    {
+      "id": "transport",
+      "ru": "Остановки и транспорт",
+      "kk": "Аялдамалар мен көлік",
+      "examples_ru": "сломан павильон, нет расписания, автобус не ходит",
+      "target_kinds": [
+        "object"
+      ],
+      "icon": "bus",
+      "subtopics": [
+        {
+          "id": "stop_shelter",
+          "ru": "Остановка: павильон, скамья",
+          "kk": "Аялдама: павильон, орындық"
+        },
+        {
+          "id": "schedule",
+          "ru": "Долго ждать, нет расписания",
+          "kk": "Ұзақ күту, кесте жоқ"
+        },
+        {
+          "id": "route",
+          "ru": "Нужен маршрут или остановка",
+          "kk": "Бағыт не аялдама керек"
+        }
+      ]
+    },
+    {
+      "id": "lighting",
+      "ru": "Освещение",
+      "kk": "Жарықтандыру",
+      "examples_ru": "не горят фонари, темно во дворе",
+      "target_kinds": [
+        "segment",
+        "area"
+      ],
+      "icon": "bulb",
+      "subtopics": [
+        {
+          "id": "lamp_off",
+          "ru": "Не горит фонарь",
+          "kk": "Шам жанбайды"
+        },
+        {
+          "id": "dark_yard",
+          "ru": "Темно во дворе",
+          "kk": "Аулада қараңғы"
+        },
+        {
+          "id": "blinking",
+          "ru": "Фонарь мигает",
+          "kk": "Шам жыпылықтайды"
+        },
+        {
+          "id": "wire_down",
+          "ru": "Оборван провод",
+          "kk": "Сым үзілген",
+          "emergency_phone": "112"
+        }
+      ]
+    },
+    {
+      "id": "yards",
+      "ru": "Дворы и площадки",
+      "kk": "Аулалар мен алаңдар",
+      "examples_ru": "сломана площадка, деревья, благоустройство двора",
+      "target_kinds": [
+        "object",
+        "area"
+      ],
+      "icon": "trees",
+      "subtopics": [
+        {
+          "id": "playground",
+          "ru": "Сломана детская площадка",
+          "kk": "Балалар алаңы бұзылған"
+        },
+        {
+          "id": "trees_lawn",
+          "ru": "Деревья, газон",
+          "kk": "Ағаштар, көгал"
+        },
+        {
+          "id": "benches",
+          "ru": "Скамейки, благоустройство",
+          "kk": "Орындықтар, абаттандыру"
+        }
+      ]
+    },
+    {
+      "id": "waste",
+      "ru": "Мусор",
+      "kk": "Қоқыс",
+      "examples_ru": "переполнены баки, свалка, не вывозят",
+      "target_kinds": [
+        "area",
+        "object"
+      ],
+      "icon": "trash",
+      "subtopics": [
+        {
+          "id": "bins_full",
+          "ru": "Переполнены баки",
+          "kk": "Контейнерлер толып кеткен"
+        },
+        {
+          "id": "dump",
+          "ru": "Стихийная свалка",
+          "kk": "Заңсыз қоқыс үйіндісі"
+        },
+        {
+          "id": "not_collected",
+          "ru": "Не вывозят мусор",
+          "kk": "Қоқыс шығарылмайды"
+        }
+      ]
+    },
+    {
+      "id": "utilities",
+      "ru": "ЖКХ: тепло и вода",
+      "kk": "ТКШ: жылу мен су",
+      "examples_ru": "нет отопления, нет воды, канализация",
+      "target_kinds": [
+        "area"
+      ],
+      "icon": "droplet",
+      "subtopics": [
+        {
+          "id": "no_heating",
+          "ru": "Нет отопления",
+          "kk": "Жылу жоқ"
+        },
+        {
+          "id": "no_water",
+          "ru": "Нет воды",
+          "kk": "Су жоқ"
+        },
+        {
+          "id": "sewage",
+          "ru": "Канализация",
+          "kk": "Кәріз"
+        },
+        {
+          "id": "power_building",
+          "ru": "Нет света в доме",
+          "kk": "Үйде жарық жоқ"
+        }
+      ]
+    },
+    {
+      "id": "smell_air",
+      "ru": "Запахи и воздух",
+      "kk": "Иіс және ауа",
+      "examples_ru": "вонь, дым, пыль, выбросы",
+      "target_kinds": [
+        "area"
+      ],
+      "icon": "wind",
+      "subtopics": [
+        {
+          "id": "gas",
+          "ru": "Запах газа",
+          "kk": "Газ иісі",
+          "emergency_phone": "104"
+        },
+        {
+          "id": "smoke_fire",
+          "ru": "Дым, что-то горит",
+          "kk": "Түтін, бірдеңе жанып жатыр",
+          "emergency_phone": "112"
+        },
+        {
+          "id": "dust",
+          "ru": "Пыль",
+          "kk": "Шаң"
+        },
+        {
+          "id": "bad_smell",
+          "ru": "Неприятный запах",
+          "kk": "Жағымсыз иіс"
+        }
+      ]
+    },
+    {
+      "id": "noise_safety",
+      "ru": "Шум и безопасность",
+      "kk": "Шу және қауіпсіздік",
+      "examples_ru": "шум ночью, опасное место, нет перехода",
+      "target_kinds": [
+        "area",
+        "segment"
+      ],
+      "icon": "shield",
+      "subtopics": [
+        {
+          "id": "noise_night",
+          "ru": "Шум ночью",
+          "kk": "Түнгі шу"
+        },
+        {
+          "id": "dangerous_place",
+          "ru": "Опасное место",
+          "kk": "Қауіпті орын"
+        },
+        {
+          "id": "stray_dogs",
+          "ru": "Бродячие собаки",
+          "kk": "Қаңғыбас иттер"
+        }
+      ]
+    },
+    {
+      "id": "parking",
+      "ru": "Парковки",
+      "kk": "Тұрақтар",
+      "examples_ru": "заставлены дворы, нет мест, парковка на газоне",
+      "target_kinds": [
+        "segment",
+        "area"
+      ],
+      "icon": "parking",
+      "subtopics": [
+        {
+          "id": "yard_cars",
+          "ru": "Машины во дворе, на газоне",
+          "kk": "Аулада, көгалда көліктер"
+        },
+        {
+          "id": "sidewalk_parking",
+          "ru": "Парковка на тротуаре",
+          "kk": "Тротуарға көлік қою"
+        },
+        {
+          "id": "no_spaces",
+          "ru": "Нет мест",
+          "kk": "Орын жоқ"
+        }
+      ]
+    },
+    {
+      "id": "other",
+      "ru": "Другое",
+      "kk": "Басқа",
+      "examples_ru": "всё, что не подошло",
+      "target_kinds": [
+        "area"
+      ],
+      "icon": "dots",
+      "subtopics": []
+    }
   ],
-  "v1_to_v2": {"roads": "roads", "sidewalks": "sidewalks", "transport_stops": "transport", "lighting": "lighting", "landscaping": "yards", "other": "other"},
+  "v1_to_v2": {
+    "roads": "roads",
+    "sidewalks": "sidewalks",
+    "transport_stops": "transport",
+    "lighting": "lighting",
+    "landscaping": "yards",
+    "other": "other"
+  },
   "heat_levels": [
-    {"min_weight": 0, "level": 0, "ru": "нет жалоб", "kk": "шағым жоқ", "color": null},
-    {"min_weight": 1, "level": 1, "ru": "1–2", "kk": "1–2", "color": "#FAC775"},
-    {"min_weight": 3, "level": 2, "ru": "3–5", "kk": "3–5", "color": "#EF9F27"},
-    {"min_weight": 6, "level": 3, "ru": "6–9", "kk": "6–9", "color": "#E24B4A"},
-    {"min_weight": 10, "level": 4, "ru": "10+", "kk": "10+", "color": "#A32D2D"}
+    {
+      "min_weight": 0,
+      "level": 0,
+      "ru": "нет жалоб",
+      "kk": "шағым жоқ",
+      "color": null
+    },
+    {
+      "min_weight": 1,
+      "level": 1,
+      "ru": "1–2",
+      "kk": "1–2",
+      "color": "#FAC775"
+    },
+    {
+      "min_weight": 3,
+      "level": 2,
+      "ru": "3–5",
+      "kk": "3–5",
+      "color": "#EF9F27"
+    },
+    {
+      "min_weight": 6,
+      "level": 3,
+      "ru": "6–9",
+      "kk": "6–9",
+      "color": "#E24B4A"
+    },
+    {
+      "min_weight": 10,
+      "level": 4,
+      "ru": "10+",
+      "kk": "10+",
+      "color": "#A32D2D"
+    }
   ],
-  "fixed_state": {"color": "#639922", "ru": "исправлено", "kk": "түзетілді", "days_visible": 7},
-  "weight_half_life_days": 14
+  "fixed_state": {
+    "color": "#639922",
+    "ru": "исправлено",
+    "kk": "түзетілді",
+    "days_visible": 7
+  },
+  "weight_half_life_days": 14,
+  "subtopics_note": "Уточнения выбирает житель (чипы); модель предсказывает только категорию. kk уточнений — черновик координатора, вычитка R11 и владельца. emergency_phone: показать баннер «Это срочно — звоните N» до отправки.",
+  "emergency_numbers": {
+    "112": "Единая служба спасения",
+    "101": "Пожарная",
+    "102": "Полиция",
+    "103": "Скорая",
+    "104": "Газовая служба"
+  }
 }
