@@ -1,0 +1,40 @@
+/* R12 · лист печати QR-табличек. Экран — форма для сотрудника; печать — только таблички, по две на A4. */
+.bqp { box-sizing: border-box; max-width: 980px; margin: 0 auto; padding: 16px; color: var(--c-ink, #152c26); font-size: 16px; }
+.bqp *, .bqp *::before, .bqp *::after { box-sizing: border-box; }
+.bqp-h1 { margin: 0 0 6px; font-size: 24px; }
+.bqp-lead { margin: 0 0 16px; color: var(--c-text-2, #5b6a64); max-width: 60ch; }
+.bqp-label { display: block; margin: 12px 0 4px; font-weight: 600; }
+.bqp-form textarea, .bqp-form input { width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; border: 1px solid var(--c-line-strong, #c9d3cb); border-radius: 10px; }
+.bqp-hint { margin: 4px 0 0; color: var(--c-text-2, #5b6a64); font-size: 14px; }
+.bqp-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; }
+.bqp-buttons .bk-btn { min-height: 48px; }
+.bqp-msg { margin: 6px 0; padding: 8px 12px; border-radius: 10px; }
+.bqp-msg--error { background: var(--c-danger-soft, #fdecea); color: var(--c-danger, #b3362e); }
+.bqp-msg--warn { background: var(--c-warn-soft, #fff4dc); color: var(--c-warn, #8a5a12); }
+.bqp-msg--ok { background: var(--c-ok-soft, #eaf4dc); color: var(--c-ok, #2f6b12); }
+.bqp-msg--info { color: var(--c-text-2, #5b6a64); }
+.bqp-sheet { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 16px; margin-top: 16px; }
+.bqp-sign { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px; border: 2px solid var(--c-ink, #152c26);
+  border-radius: 16px; background: #fff; break-inside: avoid; page-break-inside: avoid; overflow-wrap: anywhere; }
+.bqp-sign__call { margin: 0 0 4px; font-size: 18px; font-weight: 600; }
+.bqp-qr { width: min(100%, 260px); aspect-ratio: 1; margin: 12px 0 6px; }
+.bqp-qr__svg { width: 100%; height: 100%; display: block; }
+.bqp-qr--missing { display: flex; align-items: center; justify-content: center; padding: 16px; border: 2px dashed var(--c-line-strong, #c9d3cb); border-radius: 12px; }
+.bqp-qr__missing { margin: 0; color: var(--c-warn, #8a5a12); font-size: 15px; }
+.bqp-sign__domain { margin: 0 0 10px; font-size: 26px; font-weight: 800; letter-spacing: 0.02em; }
+.bqp-sign__title { margin: 0; font-size: 22px; line-height: 1.25; }
+.bqp-sign__title-ru { margin: 4px 0 0; font-size: 18px; }
+.bqp-sign__number { margin: 8px 0 0; font-size: 18px; font-variant-numeric: tabular-nums; }
+.bqp-sign__url { margin: 8px 0 0; color: var(--c-text-2, #5b6a64); font-size: 13px; }
+@media print {
+  @page { size: A4; margin: 12mm; }
+  body { background: #fff; }
+  .no-print, .bqp-form { display: none !important; }
+  .bqp { max-width: none; padding: 0; }
+  .bqp-sheet { display: block; margin: 0; }
+  .bqp-sign { height: 132mm; margin: 0 0 8mm; justify-content: center; }
+  .bqp-sign:nth-child(2n) { break-after: page; page-break-after: always; }
+  .bqp-qr { width: 70mm; }
+}
+/* .bk-btn задаёт display — атрибут hidden должен побеждать (иначе «Печать» видна без генератора QR). */
+.bqp [hidden] { display: none !important; }

@@ -1,0 +1,104 @@
+{
+ "_comment": "СИНТЕТИКА для стенда R12 (QR-паспорт): ответы R07 /heat/target. Объекты — настоящие id OSM, жалобы — выдуманные.",
+ "items": {
+  "osm-node-10272524280": {
+   "target": {
+    "kind": "object",
+    "id": "osm-node-10272524280"
+   },
+   "count": 3,
+   "status": "new",
+   "level": 2,
+   "color": "#EF9F27",
+   "daily": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "by_category": {
+    "transport": 2,
+    "lighting": 1
+   },
+   "open_ids": [
+    "c-demo-qr-1",
+    "c-demo-qr-2"
+   ],
+   "demo": true
+  },
+  "osm-node-10185771782": {
+   "target": {
+    "kind": "object",
+    "id": "osm-node-10185771782"
+   },
+   "count": 2,
+   "status": "fixed",
+   "level": 0,
+   "color": "#639922",
+   "daily": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1
+   ],
+   "by_category": {
+    "roads": 2
+   },
+   "open_ids": [],
+   "demo": true,
+   "fixed_until": "2026-10-18"
+  }
+ }
+}

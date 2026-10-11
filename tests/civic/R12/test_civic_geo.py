@@ -445,3 +445,39 @@ def test_real_signal_target_and_geometry(real):
     assert first["object_kind"] == "traffic_signal" and first["label_ru"].startswith("Светофор на перекрёстке")
     assert g.target_geometry({"kind": "object", "id": first["id"]})["object_kind"] == "traffic_signal"
     assert sum(1 for f in objects.items if f.kind == "intersection") > 1000
+
+
+
+def test_without_category_a_nearby_junction_is_the_object_candidate(tiny, tiny_layers):
+    """R09 спрашивает место до категории: у перекрёстка вариант «объект» — перекрёсток или светофор."""
+    layers = _layers(tiny_layers[0])
+    got = targets(71.4351, 51.16002, None, graph=tiny, layers=layers)["candidates"]
+    obj = [c for c in got if c["target"]["kind"] == "object"]
+    assert len(obj) == 1 and obj[0]["target"]["object_kind"] in ("intersection", "traffic_signal")
+
+
+# ---------- POLISH_WAVE_2 п. 6: QR-паспорт ----------
+def test_target_info_for_qr_passport(real):
+    import engine.civic_geo as g
+    from engine.civic_geo import api as geo_api
+    info = g.target_info("osm-node-10185771782")
+    assert info["target"]["object_kind"] == "traffic_signal" and info["number"] == "10185771782"
+    assert info["point"] and info["geometry"]["type"] == "Point"
+    assert g.target_info("osm-w693873790-4")["target"]["kind"] == "segment"
+    assert g.target_info("cell-143-245")["approximate"] is True
+    assert g.target_info("cell-143-245")["number"] == "К-143-245"
+    assert geo_api.handle("/target", {"id": ["osm-node-1"]})[0] == 404
+    for bad in ("<script>", "osm-node-", "osm-node-1/../x", "javascript:1", "", "yard-12-1234"):
+        assert geo_api.handle("/target", {"id": bad})[0] == 400, bad
+
+
+def test_report_id_rule_is_the_same_in_js_and_python():
+    """Ссылка /?report=<id>: одно правило в engine/civic_geo, web/civic/qr/report.js и print.js."""
+    import re
+    from engine.civic_geo import REPORT_ID_RE
+    root = HERE.parents[2]
+    for js in ("web/civic/qr/report.js", "web/civic/qr/print.js"):
+        text = (root / js).read_text("utf-8")
+        m = re.search(r"/\^\((osm-\(node.*?)\)\$/", text)
+        assert m, js
+        assert REPORT_ID_RE.pattern == "^(" + m.group(1).replace("\\/", "/") + ")$", js

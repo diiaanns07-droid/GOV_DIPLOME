@@ -184,6 +184,15 @@ def targets(lon: float, lat: float, category: str | None = None, limit: int = 3,
 
     # Светофор / переход / перекрёсток рядом — первыми (POLISH_WAVE п. 1), не больше двух.
     point_order = SUBTOPIC_POINTS.get(subtopic) or STREET_POINTS_FIRST.get(category)
+    if category is None:
+        # Без категории (R09 спрашивает место до текста): светофор/переход/перекрёсток — на равных с остановкой
+        # и площадкой за вариант «объект», выигрывает ближайший (ниже — по одному кандидату каждого вида).
+        for kind in STREET_POINT_KINDS:
+            near = objects.near(p, STREET_POINT_RADIUS_M[kind], (kind,))
+            if near:
+                d, f = near[0]
+                found.append((d, {"target": object_target(f), "distance_m": round(d, 1), "geometry": _geom_point(f.point),
+                                  "point": geo.round_coord(f.point), "approximate": False}))
     segment_first = subtopic in SUBTOPIC_SEGMENT_FIRST
     best_point = None
     if point_order:

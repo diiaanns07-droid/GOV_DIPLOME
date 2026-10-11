@@ -154,7 +154,20 @@ def yard_response(query: dict):
         return _error(503, "geo_unavailable", "Дворы сейчас недоступны. Повторите позже.")
 
 
+def target_response(query: dict):
+    """GET /target?id=<target_id> — QR-паспорт объекта (R12, POLISH_WAVE_2 п. 6)."""
+    from . import target_info
+    try:
+        return 200, target_info(_one(query, "id") or "")
+    except TargetError as exc:
+        return _error(getattr(exc, "status", 400), exc.code, exc.message)
+    except Exception:
+        LOGGER.exception("civic_geo target failed")
+        return _error(503, "geo_unavailable", "Данные объекта сейчас недоступны. Повторите позже.")
+
+
 ROUTES = {
+    "/target": target_response,
     "/targets": targets_response,
     "/street-segment": segment_response,
     "/street-snap": snap_response,
