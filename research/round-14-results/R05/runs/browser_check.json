@@ -1,21 +1,21 @@
 {
  "role": "R05",
- "generated_at": "2026-10-11T19:09:36.501Z",
- "tested_sha": "c8e1b0641d811b9e236d10c03a09879074dd405e",
+ "generated_at": "2026-10-11T20:26:46.740Z",
+ "tested_sha": "d83eba6b50e8e6c5f6786d47a9206a939f16c3c9",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
-  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit9",
+  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit10",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
   "fps_0_objects_swiftshader": 5.6,
-  "fps_20_objects_swiftshader": 2.8,
+  "fps_20_objects_swiftshader": 2.6,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 49,
+  "pass": 51,
   "fail": 0,
   "not_run": 1
  },
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.8 кадр/с (без объектов 5.6)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.6 кадр/с (без объектов 5.6)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -204,7 +204,7 @@
   {
    "id": "r11_21_selected_object_not_under_card_1366_375",
    "status": "PASS",
-   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (187, 287) на экране и не под карточкой"
+   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (188, 287) на экране и не под карточкой"
   },
   {
    "id": "r11_22_23_demo_header_title_and_3d_label",
@@ -920,10 +920,13 @@
    "detail": {
     "375": {
      "hidden": {
+      "phase": "idle",
       "view": "light",
       "three": "idle",
+      "dock_hidden": true,
       "projectLabels": 0,
-      "three_requests": 0
+      "three_requests": 0,
+      "data_requests": []
      },
      "withIdeas": {
       "view": "3d",
@@ -937,14 +940,27 @@
       "near": true,
       "label": true
      },
-     "cleared": 0
+     "cleared": 0,
+     "on": {
+      "count": 4,
+      "dock_hidden": false,
+      "projectLabels": 4,
+      "data_requests": [
+       "nura-streets.json",
+       "astana-districts.json",
+       "proposals.fixture.json"
+      ]
+     }
     },
     "1366": {
      "hidden": {
+      "phase": "idle",
       "view": "light",
       "three": "idle",
+      "dock_hidden": true,
       "projectLabels": 0,
-      "three_requests": 0
+      "three_requests": 0,
+      "data_requests": []
      },
      "withIdeas": {
       "view": "3d",
@@ -958,7 +974,164 @@
       "near": true,
       "label": true
      },
-     "cleared": 0
+     "cleared": 0,
+     "on": {
+      "count": 4,
+      "dock_hidden": false,
+      "projectLabels": 4,
+      "data_requests": [
+       "nura-streets.json",
+       "astana-districts.json",
+       "proposals.fixture.json"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "idea_pick_works_with_projects_layer_off_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "cat": {
+      "hidden": false,
+      "picking": true,
+      "title": "Объект из каталога (по желанию)",
+      "kinds": 4,
+      "projectLabels": 0
+     },
+     "ghostLayer": "visible",
+     "hint": {
+      "key": "build3d.idea.hint_rotate",
+      "done": "Готово"
+     },
+     "res": {
+      "kind": "sports",
+      "at": [
+       71.400299,
+       51.128601
+      ]
+     },
+     "after": {
+      "hidden": true,
+      "picking": false,
+      "projectLabels": 0,
+      "layer": "none"
+     }
+    },
+    "1366_kk": {
+     "cat": {
+      "hidden": false,
+      "picking": true,
+      "title": "Каталогтағы нысан (қаласаңыз)",
+      "kinds": 4,
+      "projectLabels": 0
+     },
+     "ghostLayer": "visible",
+     "hint": {
+      "key": "build3d.idea.hint_rotate",
+      "done": "Дайын"
+     },
+     "res": {
+      "kind": "sports",
+      "at": [
+       71.400299,
+       51.128601
+      ]
+     },
+     "after": {
+      "hidden": true,
+      "picking": false,
+      "projectLabels": 0,
+      "layer": "none"
+     }
+    },
+    "375_ru": {
+     "cat": {
+      "hidden": false,
+      "picking": true,
+      "title": "Объект из каталога (по желанию)",
+      "kinds": 4,
+      "projectLabels": 0
+     },
+     "ghostLayer": "visible",
+     "hint": {
+      "key": "build3d.idea.hint_rotate",
+      "done": "Готово"
+     },
+     "res": {
+      "kind": "sports",
+      "at": [
+       71.400301,
+       51.128601
+      ]
+     },
+     "after": {
+      "hidden": true,
+      "picking": false,
+      "projectLabels": 0,
+      "layer": "none"
+     }
+    },
+    "375_kk": {
+     "cat": {
+      "hidden": false,
+      "picking": true,
+      "title": "Каталогтағы нысан (қаласаңыз)",
+      "kinds": 4,
+      "projectLabels": 0
+     },
+     "ghostLayer": "visible",
+     "hint": {
+      "key": "build3d.idea.hint_rotate",
+      "done": "Дайын"
+     },
+     "res": {
+      "kind": "sports",
+      "at": [
+       71.400301,
+       51.128601
+      ]
+     },
+     "after": {
+      "hidden": true,
+      "picking": false,
+      "projectLabels": 0,
+      "layer": "none"
+     }
+    }
+   }
+  },
+  {
+   "id": "phone_placing_rotate_in_title_row_ghost_visible_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "375_ru": {
+     "in_head": true,
+     "in_actions": false,
+     "title": "Повернуть вправо",
+     "dock_h": 201,
+     "ghost_on_map": true,
+     "rot0": 0,
+     "rot1": 15
+    },
+    "375_kk": {
+     "in_head": true,
+     "in_actions": false,
+     "title": "Оңға бұру",
+     "dock_h": 223,
+     "ghost_on_map": true,
+     "rot0": 0,
+     "rot1": 15
+    },
+    "1366_ru": {
+     "in_head": false,
+     "in_actions": true,
+     "title": null,
+     "dock_h": 214,
+     "ghost_on_map": true,
+     "rot0": 0,
+     "rot1": 15
     }
    }
   },
