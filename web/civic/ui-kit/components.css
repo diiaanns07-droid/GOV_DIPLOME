@@ -843,6 +843,21 @@
   content: "✓";
   margin-right: 2px;
 }
+/* Волна 2, п. 1: «служба сообщила» — светлый зелёный с пунктиром; «вернули жители» — цвет по весу + ↺ */
+.bk-heat[data-level="reported_fixed"] {
+  background: var(--reported-fixed);
+  color: var(--c-ink);
+  outline: 2px dashed var(--fixed-badge);
+  outline-offset: 1px;
+}
+.bk-heat[data-level="reported_fixed"]::before {
+  content: "✓?";
+  margin-right: 2px;
+}
+.bk-heat[data-reopened]::before {
+  content: "↺";
+  margin-right: 2px;
+}
 .bk-heat--lg {
   min-width: 36px;
   height: 36px;
@@ -893,6 +908,13 @@
 }
 .bk-legend__swatch[data-level="fixed"] {
   background: var(--fixed);
+}
+.bk-legend__swatch[data-level="reported_fixed"] {
+  background: var(--reported-fixed);
+  border: 1.5px dashed var(--fixed-badge);
+}
+.bk-legend__swatch[data-level="nodata"] {
+  background: var(--nodata);
 }
 /* Пояснение под легендой («Свежие жалобы ярче…», «Приблизьте карту…») */
 .bk-legend__note {
@@ -971,6 +993,62 @@
 .bk-status[data-status="rejected"] {
   background: var(--c-danger-soft);
   color: var(--c-danger);
+}
+/* Волна 2, п. 1: два «исправлено» — сообщила служба / проверили жители; «осталось» — снова в работе */
+.bk-status[data-status="reported_fixed"] {
+  background: var(--c-ok-soft);
+  color: var(--c-ok);
+}
+.bk-status[data-status="reported_fixed"]::before {
+  background: transparent;
+  border: 2px dashed currentColor;
+}
+.bk-status[data-status="verified"] {
+  background: var(--c-ok);
+  color: #fff;
+}
+.bk-status[data-status="reopened"] {
+  background: var(--c-danger-soft);
+  color: var(--c-danger);
+}
+
+/* Баннер в потоке экрана (не модальное окно): срочный случай (волна 1, п. 3), предупреждение, справка.
+   Внутри — .bk-banner__title, .bk-banner__text и одна кнопка; баннер сам не исчезает. */
+.bk-banner {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-m);
+  border: 1px solid var(--c-info);
+  background: var(--c-info-soft);
+  color: var(--c-ink);
+  font-size: var(--fs-body);
+  line-height: var(--lh-text);
+}
+.bk-banner__title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-bold);
+}
+.bk-banner__note {
+  font-size: var(--fs-caption);
+  color: var(--c-text-2);
+}
+.bk-banner > .bk-btn {
+  justify-self: start;
+}
+.bk-banner--danger {
+  border: 2px solid var(--c-danger);
+  background: var(--c-danger-soft);
+}
+.bk-banner--danger .bk-banner__title {
+  color: var(--c-danger);
+}
+.bk-banner--warn {
+  border-color: var(--c-warn);
+  background: var(--c-warn-soft);
 }
 
 .bk-tag {

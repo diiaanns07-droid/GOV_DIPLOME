@@ -43,6 +43,13 @@ def test_heat_colors_match_categories():
     for level, color in levels.items():
         assert token(f"heat-{level}") == color.lower()
     assert token("fixed") == CATS["fixed_state"]["color"].lower()
+    hs = CATS["heat_states"]  # волна 2
+    assert token("fixed") == hs["verified_fixed"]["color"].lower()
+    assert token("reported-fixed") == hs["reported_fixed"]["color"].lower()
+    assert token("nodata") == hs["no_data"]["color"].lower()
+    for sel in ('data-level="reported_fixed"', 'data-level="nodata"', 'data-status="reported_fixed"',
+                'data-status="verified"', 'data-status="reopened"', ".bk-banner--danger"):
+        assert sel in COMPONENTS, sel
 
 
 def test_text_contrast_at_least_4_5():
@@ -170,6 +177,15 @@ def test_i18n_js_in_node():
         import pytest
         pytest.skip("нет node")
     r = subprocess.run([node, str(HERE / "i18n.test.cjs")], capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_ui_kit_js_in_node():
+    node = shutil.which("node")
+    if not node:
+        import pytest
+        pytest.skip("нет node")
+    r = subprocess.run([node, str(HERE / "ui_kit.test.cjs")], capture_output=True, text=True, timeout=60)
     assert r.returncode == 0, r.stdout + r.stderr
 
 
