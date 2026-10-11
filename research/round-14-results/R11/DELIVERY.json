@@ -4,7 +4,7 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "892f406e — последний коммит web/civic/ui-kit и web/civic/i18n (словарь 1223 ключа ru=kk; все ключи веток R01, R04, R05, R08, R09, R12 на 11 октября — в словаре)",
+  "code_sha": "c2031cf6 — последний коммит web/civic/ui-kit и web/civic/i18n (словарь 1233 ключа ru=kk; 0 ключей вне словаря у веток R01, R04, R05, R07, R08, R09, R12 на 11 октября)",
   "tested_sha": "ui-kit/i18n @ 537dbd3f подложены в FINAL-кандидат R01 8e67c65: review_build 44/44, 0 русских строк в ҚАЗ, витрина 4/4, первый кадр = эталон; test_r11_ui_kit 18/18",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
@@ -76,7 +76,9 @@
     "FINAL 8e67c65: badges_covered_check — у Нұра · 73 нет значка на 1366/1280 (патч R01_legend_free_area ждёт R01); на 375/360 значок «Сарайшық» под соседним (R07 58f5a56)": "FAIL — открыто, см. UX_REVIEW «FINAL-кандидат R01 8e67c65»",
     "волна 2, разбор 3: стенд R01 a96f6e3 + R08 acb6d98 + R09 a9cd441 + R05 6e12bf0 + R11 488190f0: сценарий 44/44, kk 0, витрина 4/4, первый кадр = эталон; патч R01_wave2_phone_menu — r14_wave2 31/0, r14_shell 39/0": "PASS",
     "волна 2, разбор 4: missing_keys.py по головам R01 a96f6e3, R04 be08d5d, R05 237718d, R08 ce06cec, R09 2bf9a92, R12 73ccec4 — 0 ключей вне словаря": "PASS",
-    "волна 2: экран «Қызметтер» R08 на стенде R11": "NOT_RUN — в шлюзе R01 a96f6e3 нет маршрута; патч R08 для R01 ещё не в ветке R08"
+    "волна 2: экран «Қызметтер» R08 на стенде R11": "NOT_RUN — в шлюзе R01 a96f6e3 нет маршрута; патч R08 для R01 ещё не в ветке R08",
+    "волна 2, разбор 5: R09 browser_r09.cjs --only wave с ui-kit/i18n R11 — 115/116 (FAIL: «Обращения» не перерисовывают заголовок при setLang, когда ключ в словаре — правка R09)": "PASS с замечанием",
+    "волна 2, разбор 5: badges_covered_check с R07 4be0490 — 0 наложений на 375/360; на 1366/1280 у Нұра нет значка (ждёт патч R01_legend_free_area)": "FAIL — открыто"
   },
   "known_limits": [
     "Макеты — образец: данные примеры, карта — SVG по осям улиц OSM (подписи улиц из OSM name, по-русски)",
@@ -95,7 +97,7 @@
     "ia_schemes": "research/round-14-results/R11/IA_WAVE2.md — меню (житель/акимат по 5), правила защиты от перегруза, схемы для R09, R07, R08, R06, R05, R12, R13",
     "keys": "158 ключей схем (shell.nav/layers, status, heat.legend, mine.changes, verify, passport, fix, broadcast, inbox, nearby, akim.decision/pulse, report, qr, ask, idea)",
     "ui_kit": "токены --reported-fixed/--nodata из heat_states; .bk-heat reported_fixed/[data-reopened]; .bk-status reported_fixed/verified/reopened; легенда nodata/reported_fixed",
-    "review": "UX_REVIEW.md: разборы 1–4 волны 2 (R09, R08, R12, R01, R05, R04) и FINAL 8e67c65; инструменты first_frame_check.cjs, wave2_shots.cjs",
+    "review": "UX_REVIEW.md: разборы 1–5 волны 2 (R01, R04, R05, R07, R08, R09, R12) и FINAL 8e67c65",
     "patches_for_r01": [
       "patches/R01_toggle_card.patch (взят в 8e67c65)",
       "patches/R01_legend_free_area.patch (Нұра · 73 на первом кадре ноутбука; ждёт R01)",
