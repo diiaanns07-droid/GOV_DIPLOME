@@ -135,6 +135,7 @@ try {
     check("акимат: в карточке места есть «Распечатать QR» на лист этого объекта", link === "/civic/qr/print.html?ids=" + STOP, link);
     const prim = await p.locator("#birge-heat-root .r07-card .r07-btn--primary").count();
     check("в карточке места по-прежнему одна главная кнопка", prim <= 1, prim);
+    await p.screenshot({ path: path.join(OUT, "app-r07-card-qr-link-1366-ru.png") });
     await p.goto(BASE + "/civic/qr/print.html?ids=" + STOP);
     await p.waitForSelector(".bqp-sign", { timeout: 20000 }).catch(() => null);
     const sheet = await p.locator("#bqp-root").innerText().catch(() => "");

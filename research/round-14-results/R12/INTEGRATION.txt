@@ -32,6 +32,8 @@ W.1 R01 · patches/R01_qr_report.patch (git apply --check OK на R01 a2d90dd = 
   - Меню (IA_WAVE2 §1): акимат «Ещё» → «QR-таблички» (shell.nav.qr) → /civic/qr/print.html. Страница без встроенных
     скриптов (CSP R01 script-src 'self' — проверено в приложении, нарушений 0); print.js сам запускается на
     #bqp-root[data-autostart]; ?ids=<id,…> — сразу таблички этих объектов.
+  - tests/civic/R01/test_r01_api_v2.py: образец маршрута ("GET", "/target", …) — без него test_every_contract_route_is_in_the_table
+    падает (37 ≠ 38). С patch на сборке: pytest tests/civic/R01 159/0 (1 skip), r14_shell 38/0, r14_b2 27/0.
   Проверка: NODE_PATH=$(npm root -g) node tests/civic/R12/qr/app_qr_acceptance.mjs http://127.0.0.1:8611 <папка>
 
 W.2 R09 · patches/R09_open_with_place.patch (13 строк): ui.open(preset) — {target, point, geometry, approximate} → сразу
