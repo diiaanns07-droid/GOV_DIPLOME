@@ -76,7 +76,7 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   assert.deepEqual((await page.evaluate(() => window.__events.at(-1))).type, "metoo");
   await page.waitForFunction(() => /Сообщили 4 человека/.test(document.querySelector(".bq-report").innerText));
   assert.match(await page.locator(".bk-btn--primary").innerText(), /Сообщить о другом/);
-  assert.match(await page.locator(".bq-report").innerText(), /Вы уже отметились/);
+  assert.match(await page.locator(".bq-report").innerText(), /Вы отметили «Я тоже»/);
   // «Сообщить о другом» отдаёт оболочке цель, точку и форму (мастер R09 откроется с этим местом)
   await page.click('[data-act="report"]');
   const rep = await page.evaluate(() => window.__reports.at(-1));
@@ -87,12 +87,12 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   await ctx.close();
 });
 
-test("QR: object without complaints — honest «никто не сообщал», main button «Сообщить о проблеме здесь»; details open the map", { skip: SKIP }, async () => {
+test("QR: object without complaints — no empty block (IA_WAVE2 §0 п. 6), main button «Сообщить о проблеме здесь»; details open the map", { skip: SKIP }, async () => {
   const { ctx, page, errors } = await open("?report=" + QUIET);
   await ready(page);
   const card = await page.locator(".bq-report").innerText();
   assert.match(card, /Перекрёсток пр\. Богенбай Батыра и ул\. Щорса/);
-  assert.match(card, /Здесь пока никто не сообщал/);
+  assert.doesNotMatch(card, /Сообщил|Статус/, "жалоб нет — блока с числом и статусом нет");
   assert.match(await page.locator(".bk-btn--primary").innerText(), /Сообщить о проблеме здесь/);
   await page.click('[data-act="report"]');
   assert.equal((await page.evaluate(() => window.__reports.at(-1))).target.object_kind, "intersection");
@@ -118,19 +118,19 @@ test("QR: fixed object — status «Исправлено», no «Я тоже», 
 test("QR: unknown, malformed and failing links say what happened and what to do", { skip: SKIP }, async () => {
   let r = await open("?report=osm-node-1");
   await ready(r.page);
-  assert.match(await r.page.locator(".bq-report").innerText(), /Объект не найден\. Возможно, QR-код устарел/);
+  assert.match(await r.page.locator(".bq-report").innerText(), /Объект не найден[\s\S]*ссылка устарела/);
   assert.equal(await r.page.locator('[data-act="map"]').count(), 1);
   await r.ctx.close();
   r = await open("?report=%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E");
   await ready(r.page);
   assert.equal(await r.page.evaluate(() => window.__parsed), null);
-  assert.match(await r.page.locator(".bq-report").innerText(), /В ссылке неверный номер объекта/);
+  assert.match(await r.page.locator(".bq-report").innerText(), /Объект не найден/);
   assert.equal(await r.page.locator(".bq-report img").count(), 0);
   await r.ctx.close();
   await set("fail_target=1");
   r = await open("?report=" + STOP);
   await ready(r.page);
-  assert.match(await r.page.locator(".bq-report").innerText(), /Сервер не ответил/);
+  assert.match(await r.page.locator(".bq-report").innerText(), /Не удалось загрузить карточку/);
   await r.page.click('[data-act="retry"]');
   await r.page.waitForFunction(() => /Исатай батыр/.test(document.querySelector(".bq-report").innerText));
   await r.ctx.close();
@@ -140,7 +140,7 @@ test("QR: unknown, malformed and failing links say what happened and what to do"
   await ready(r.page);
   const txt = await r.page.locator(".bq-report").innerText();
   assert.match(txt, /Исатай батыр/);
-  assert.doesNotMatch(txt, /Сообщили|никто не сообщал/);
+  assert.doesNotMatch(txt, /Сообщили/);
   assert.match(await r.page.locator(".bk-btn--primary").innerText(), /Сообщить о проблеме здесь/);
   await r.ctx.close();
 });
@@ -185,12 +185,20 @@ test("print sheet: QR + domain + bilingual address + number; bad and unknown ids
   assert.match(msgs, /«<x>» — не номер объекта/);
   assert.match(msgs, /Объект osm-node-1 не найден/);
   assert.equal(await r.page.locator('[data-act="print"]').isVisible(), true);
-  assert.equal(await r.page.locator(".bqp-buttons .bk-btn--primary").count(), 1, "одна главная кнопка: «Печать»");
-  assert.match(await r.page.locator(".bqp-buttons .bk-btn--primary").innerText(), /Печать/);
+  assert.equal(await r.page.locator(".bqp-buttons .bk-btn--primary").count(), 1, "одна главная кнопка: «Распечатать QR»");
+  assert.match(await r.page.locator(".bqp-buttons .bk-btn--primary").innerText(), /Распечатать QR/);
   assert.ok((await overflow(r.page)) <= 0);
   await shot(r.page, "qr-print-sheet-1366-ru");
   await r.page.emulateMedia({ media: "print" });
   assert.equal(await r.page.locator(".bqp-form").isVisible(), false, "в печать идут только таблички");
+  // IA_WAVE2 §6.2: A4, одна табличка на лист, QR ≥ 6 см, название ≥ 28 pt, без чисел жалоб и статусов
+  const pm = await r.page.evaluate(() => ({ qr: document.querySelector(".bqp-qr").getBoundingClientRect().width,
+    title: parseFloat(getComputedStyle(document.querySelector(".bqp-sign__title")).fontSize),
+    brk: getComputedStyle(document.querySelector(".bqp-sign")).breakAfter }));
+  assert.ok(pm.qr >= (6 / 2.54) * 96, "QR " + pm.qr + " px");
+  assert.ok(pm.title >= (28 * 96) / 72 - 0.5, "название " + pm.title + " px");
+  assert.equal(pm.brk, "page");
+  assert.doesNotMatch(first, /Сообщил|Статус|адам хабарлады|Мәртебе/);
   await r.ctx.close();
   // без генератора QR — честное предупреждение, печать не предлагается
   await set("fake_qr=0");

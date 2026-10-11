@@ -19,6 +19,7 @@ from .graph import StreetGraph
 CLUSTER_M = 60.0           # узлы одной развязки (двойные проспекты, съезды)
 SIGNAL_TO_JUNCTION_M = 60.0  # светофор «на подходе» относится к перекрёстку не дальше 60 м
 ON_STREET_M = 15.0           # светофор/переход дальше 15 м от улиц графа — не на открытой улице
+NEAR_STREET_M = 150.0        # без своей улицы — подпись по ближайшей улице с названием (как у безымянного участка)
 NODE_PREFIX = "osm-n"
 
 
@@ -127,16 +128,27 @@ def annotate(obj: dict, graph: StreetGraph, junctions: _PointIndex | None = None
             obj["junction"] = osm_node_id(j[1]["node"])
     obj["streets_ru"] = streets[:2]
     obj["streets_kk"] = [names.kk_street(n, k) for n, k in zip(streets[:2], streets_kk[:2])]
+    obj.pop("near_ru", None)
+    obj.pop("near_kk", None)
+    if not streets:  # переход на дворовом проезде: «… у улицы X» по ближайшей улице с названием (как безымянный участок)
+        near = graph.nearest(obj["point"], NEAR_STREET_M, limit=1, accept=lambda e: bool(e.name))
+        if near:
+            e = near[0][1]
+            obj["near_ru"], obj["near_kk"] = e.name, names.kk_street(e.name, e.name_kk)
     return obj
 
 
 def labels(obj: dict) -> tuple[str, str]:
     s_ru, s_kk = obj.get("streets_ru") or [], obj.get("streets_kk") or []
     if obj["kind"] == "intersection":
-        return names.intersection_labels(s_ru, s_kk)
-    if obj["kind"] == "traffic_signal":
-        return names.signal_labels(s_ru, s_kk)
-    return names.crossing_labels(s_ru, s_kk, signals=obj.get("subkind") == "signals")
+        ru, kk = names.intersection_labels(s_ru, s_kk)
+    elif obj["kind"] == "traffic_signal":
+        ru, kk = names.signal_labels(s_ru, s_kk)
+    else:
+        ru, kk = names.crossing_labels(s_ru, s_kk, signals=obj.get("subkind") == "signals")
+    if not s_ru:  # голое «Пешеходный переход» в списке «Это здесь?» ничего не говорит
+        ru, kk = names.near_labels(ru, kk, obj.get("near_ru"), obj.get("near_kk"))
+    return ru, kk
 
 
 def build_street_points(objects: dict, graph: StreetGraph, inside) -> dict:

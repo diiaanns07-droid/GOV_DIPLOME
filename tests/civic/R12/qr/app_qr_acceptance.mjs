@@ -28,6 +28,22 @@ async function page(viewport, lang, url) {
   await p.goto(BASE + url);
   return { ctx, p, errors };
 }
+// Место объекта на карте видно: не под панелью/шторкой и не за краем (IA_WAVE2 §6.1 «карта на объекте»).
+async function pointVisible(p, lngLat) {
+  await p.waitForFunction(() => typeof map !== "undefined" && map && !map.isMoving(), null, { timeout: 10000 }).catch(() => null);
+  await p.waitForTimeout(700);
+  return p.evaluate((ll) => {
+    const q = map.project(ll), c = map.getCanvas().getBoundingClientRect();
+    const x = c.left + q.x, y = c.top + q.y;
+    const under = [document.getElementById("civic-panel"), document.querySelector(".topbar")].some((el) => {
+      if (!el || !el.getClientRects().length) return false;
+      const r = el.getBoundingClientRect();
+      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+    });
+    return { x: Math.round(x), y: Math.round(y), inside: x > c.left && x < c.right && y > c.top && y < c.bottom, under };
+  }, lngLat);
+}
+const STOP_LL = [71.4065528, 51.1311545];  // точка остановки в data/civic/astana/geo/objects.json
 const reportState = (p) => p.waitForFunction(() => /ready|error/.test(document.querySelector("#birge-report-root .bq-report")?.dataset.state || ""), null, { timeout: 30000 });
 
 try {
@@ -40,6 +56,11 @@ try {
     check("в паспорте видно, сколько людей сообщили, и статус", /Сообщил/.test(card) && /Статус/.test(card), card.slice(0, 300));
     check("одна главная кнопка в паспорте", (await p.locator("#birge-report-root .bk-btn--primary").count()) === 1, null);
     check("«Карта жалоб» спрятана, пока открыт паспорт (одна карточка)", !(await p.locator("#birge-heat-root").isVisible()), null);
+    check("ссылка открывается в виде «Житель» (IA_WAVE2 §6.1), выбор не запоминается",
+      (await p.evaluate(() => document.body.dataset.birgeMode)) === "resident" && (await p.evaluate(() => localStorage.getItem("birge.mode"))) === null,
+      await p.evaluate(() => [document.body.dataset.birgeMode, localStorage.getItem("birge.mode")]));
+    const vis = await pointVisible(p, STOP_LL);
+    check("ноутбук: остановка на карте видна, не под панелью", vis.inside && !vis.under, vis);
     await p.screenshot({ path: path.join(OUT, "app-qr-1366-ru.png") });
     if (await p.locator('#birge-report-root [data-act="metoo"]').count()) {
       await p.click('#birge-report-root [data-act="metoo"]');
@@ -67,6 +88,10 @@ try {
     check("ссылка не переключила язык", (await p.evaluate(() => document.documentElement.lang)) === "kk", null);
     const btn = await p.locator("#birge-report-root .bk-btn--primary").boundingBox();
     check("главная кнопка видна без прокрутки страницы", !!btn && btn.y + btn.height <= 740 && btn.height >= 44, btn);
+    check("телефон: шторка наполовину (IA_WAVE2 §6.1)", (await p.locator("#civic-panel").getAttribute("data-sheet")) === "half",
+      await p.locator("#civic-panel").getAttribute("data-sheet"));
+    const vis = await pointVisible(p, STOP_LL);
+    check("телефон: остановка на карте видна над шторкой", vis.inside && !vis.under, vis);
     const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     check("нет горизонтальной прокрутки на 375 px", over <= 0, over);
     await p.screenshot({ path: path.join(OUT, "app-qr-375-kk.png") });
@@ -78,8 +103,11 @@ try {
     const { ctx, p, errors } = await page({ width: 1366, height: 768 }, "ru", "/?report=%3Cimg%20src%3Dx%20onerror%3Dwindow.__x%3D1%3E");
     await reportState(p);
     const card = await p.locator("#birge-report-root").innerText();
-    check("подменённая ссылка: «неверный номер объекта», ничего не исполняется",
-      /неверный номер объекта/.test(card) && !(await p.evaluate(() => window.__x)), card.slice(0, 200));
+    check("подменённая ссылка: «Объект не найден» + «На карту», ничего не исполняется",
+      /Объект не найден/.test(card) && /На карту/.test(card) && !(await p.evaluate(() => window.__x)), card.slice(0, 200));
+    await p.click('#birge-report-root [data-act="map"]');
+    await p.waitForTimeout(300);
+    check("«На карту» — обычная карта жалоб, не пустой экран", (await p.locator("#birge-heat-root").isVisible()) && !/report=/.test(p.url()), p.url());
     check("нет ошибок страницы (подмена)", errors.length === 0, errors.slice(0, 3));
     await ctx.close();
   }
@@ -93,6 +121,27 @@ try {
       layers: typeof map !== "undefined" && map && map.getStyle ? (map.getStyle()?.layers || []).filter((l) => /report|qr/i.test(l.id)).length : -1 }));
     check("без ссылки паспорт скрыт и слоёв QR на карте нет", st.hidden === true && st.layers === 0, st);
     check("нет ошибок страницы (карта по умолчанию)", errors.length === 0, errors.slice(0, 3));
+    await ctx.close();
+  }
+  // 4б. Акимат (ноутбук по умолчанию): в карточке места R07 — ссылка «Распечатать QR» (IA_WAVE2 §6.2, patch R07); лист печати под CSP R01
+  {
+    const { ctx, p, errors } = await page({ width: 1366, height: 768 }, "ru", "/");
+    const csp = [];
+    // Нарушения CSP. «Refused … MIME type» от /vendor/qrcode/qrcode.js — это 404, пока нет LOCAL-11 (лист честно предупреждает).
+    p.on("console", (m) => { if (/Content Security Policy/.test(m.text())) csp.push(m.text()); });
+    await p.waitForFunction(() => document.querySelector("#birge-heat-root .r07-item, #birge-heat-root .r07-list"), null, { timeout: 30000 }).catch(() => null);
+    await p.goto(BASE + "/#target=object:" + STOP);
+    const link = await p.waitForSelector("#birge-heat-root .r07-qr a", { timeout: 20000 }).then((h) => h.getAttribute("href"), () => null);
+    check("акимат: в карточке места есть «Распечатать QR» на лист этого объекта", link === "/civic/qr/print.html?ids=" + STOP, link);
+    const prim = await p.locator("#birge-heat-root .r07-card .r07-btn--primary").count();
+    check("в карточке места по-прежнему одна главная кнопка", prim <= 1, prim);
+    await p.goto(BASE + "/civic/qr/print.html?ids=" + STOP);
+    await p.waitForSelector(".bqp-sign", { timeout: 20000 }).catch(() => null);
+    const sheet = await p.locator("#bqp-root").innerText().catch(() => "");
+    check("лист QR открывается в приложении: табличка остановки", /Хан Шатыр/.test(await p.locator(".bqp-sheet").innerText().catch(() => "")), sheet.slice(0, 300));
+    check("лист QR без нарушений CSP R01 (встроенных скриптов нет)", csp.length === 0, csp);
+    await p.screenshot({ path: path.join(OUT, "app-qr-print-1366-ru.png") });
+    check("нет ошибок страницы (акимат, лист QR)", errors.length === 0, errors.slice(0, 3));
     await ctx.close();
   }
   // 5. POLISH_WAVE п. 1 в мастере R09: нажали у перекрёстка — «Это здесь?» предлагает светофор этого перекрёстка

@@ -448,6 +448,21 @@ def test_real_signal_target_and_geometry(real):
 
 
 
+def test_street_point_without_its_street_is_named_by_the_nearest_one(real):
+    """UX_REVIEW R11 волна 2 п. 4: голое «Пешеходный переход» в «Это здесь?» ничего не говорит — «у улицы …»."""
+    from engine.civic_geo import names, objects as o, street_points
+    assert names.near_labels("Пешеходный переход", "Жаяу жүргіншілер өткелі", "улица Сыганак", "Сығанақ көшесі") == \
+        ("Пешеходный переход у улицы Сыганак", "Жаяу жүргіншілер өткелі · Сығанақ көшесі маңында")
+    assert names.near_labels("Светофор", "Бағдаршам", None) == ("Светофор", "Бағдаршам")
+    o.clear_cache()
+    objects, _, _ = o.get_layers()
+    pts = [f for f in objects.items if f.kind in ("crossing", "traffic_signal")]
+    near = [f for f in pts if not f.raw.get("streets_ru") and f.raw.get("near_ru")]
+    bare = [f for f in pts if street_points.labels(f.raw)[0] in ("Пешеходный переход", "Светофор")]
+    assert len(near) > 100 and all(" у " in street_points.labels(f.raw)[0] or " — " in street_points.labels(f.raw)[0] for f in near)
+    assert len(bare) < 0.06 * len(pts)  # улиц с названием в 150 м нет (внутри микрорайонов): остаётся как есть
+
+
 def test_without_category_a_nearby_junction_is_the_object_candidate(tiny, tiny_layers):
     """R09 спрашивает место до категории: у перекрёстка вариант «объект» — перекрёсток или светофор."""
     layers = _layers(tiny_layers[0])

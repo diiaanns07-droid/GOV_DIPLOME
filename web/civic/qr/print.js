@@ -22,34 +22,33 @@
   var MAX_IDS = 24;
   var ID_RE = /^(osm-(node|way|relation)-[0-9]{1,15}|osm-w[0-9]{1,15}-[0-9]{1,6}|yard-r?[0-9]{1,15}(-[0-9]{1,3})?|cell--?[0-9]{1,6}--?[0-9]{1,6})$/;
 
-  // Тексты листа. Табличка — всегда ru + kk; интерфейс страницы — на языке BirgeI18n (если подключён).
+  // Тексты. Ключи словаря R11 (qr.title, qr.print, qr.call, qr.object_no — IA_WAVE2 §6.2) берутся из BirgeI18n;
+  // остальное — форма для сотрудника (ключи qr.form.* переданы R11 в i18n_keys.json). Табличка — всегда kk + ru.
   var TEXT = {
     ru: {
-      title: "QR-таблички для объектов", lead: "Распечатайте и повесьте на остановке, площадке или у перекрёстка. Житель наводит камеру — открывается карточка объекта.",
-      ids: "Номера объектов", ids_hint: "Через запятую или с новой строки, например osm-node-10185771782. Не больше 24.",
-      base: "Адрес сайта на табличке", base_hint: "Только адрес сайта, например https://birge.astana.kz",
-      show: "Показать таблички", print: "Печать", none: "Добавьте номера объектов, чтобы увидеть таблички.",
-      not_found: "Объект {id} не найден — табличка не будет напечатана.", bad_id: "«{id}» — не номер объекта.",
-      too_many: "Не больше {n} объектов за раз.", bad_base: "Адрес сайта должен начинаться с https:// или http:// и не содержать пути.",
-      no_qr: "Генератор QR ещё не подключён (LOCAL-11). Пока на табличке будет только ссылка.",
-      network: "Нет связи. Повторите.", retry: "Повторить", loading: "Загружаем…", ready: "Готово табличек: {n}",
+      "qr.title": "QR-таблички объектов", "qr.print": "Распечатать QR", "qr.call": "Есть проблема? Сканируйте",
+      "qr.object_no": "Объект № {id}",
+      "qr.form.lead": "Распечатайте и повесьте на остановке, площадке или у перекрёстка. Житель наводит камеру — открывается карточка объекта.",
+      "qr.form.ids": "Номера объектов", "qr.form.ids_hint": "Через запятую или с новой строки, например osm-node-10185771782. Не больше 24.",
+      "qr.form.base": "Адрес сайта на табличке", "qr.form.base_hint": "Только адрес сайта, например https://birge.astana.kz",
+      "qr.form.show": "Показать таблички", "qr.form.none": "Добавьте номера объектов, чтобы увидеть таблички.",
+      "qr.form.not_found": "Объект {id} не найден — табличка не будет напечатана.", "qr.form.bad_id": "«{id}» — не номер объекта.",
+      "qr.form.too_many": "Не больше {n} объектов за раз.", "qr.form.bad_base": "Адрес сайта должен начинаться с https:// или http:// и не содержать пути.",
+      "qr.form.no_qr": "Генератор QR ещё не подключён (LOCAL-11). Пока на табличке будет только ссылка.",
+      "qr.form.network": "Нет связи. Повторите.", "qr.form.loading": "Загружаем…", "qr.form.ready": "Готово табличек: {n}",
     },
     kk: {
-      title: "Нысандарға арналған QR-тақтайшалар", lead: "Басып шығарып, аялдамаға, алаңға немесе қиылысқа іліңіз. Тұрғын камераны бағыттайды — нысан картасы ашылады.",
-      ids: "Нысан нөмірлері", ids_hint: "Үтір арқылы немесе жаңа жолдан, мысалы osm-node-10185771782. 24-тен аспасын.",
-      base: "Тақтайшадағы сайт мекенжайы", base_hint: "Тек сайт мекенжайы, мысалы https://birge.astana.kz",
-      show: "Тақтайшаларды көрсету", print: "Басып шығару", none: "Тақтайшаларды көру үшін нысан нөмірлерін қосыңыз.",
-      not_found: "{id} нысаны табылмады — тақтайша басылмайды.", bad_id: "«{id}» — нысан нөмірі емес.",
-      too_many: "Бір реттен {n} нысаннан аспасын.", bad_base: "Сайт мекенжайы https:// немесе http:// деп басталып, жолсыз болуы керек.",
-      no_qr: "QR генераторы әлі қосылмаған (LOCAL-11). Әзірге тақтайшада тек сілтеме болады.",
-      network: "Байланыс жоқ. Қайталаңыз.", retry: "Қайталау", loading: "Жүктелуде…", ready: "Дайын тақтайшалар: {n}",
+      "qr.title": "Нысандардың QR-тақтайшалары", "qr.print": "QR басып шығару", "qr.call": "Мәселе бар ма? Сканерлеңіз",
+      "qr.object_no": "Нысан № {id}",
+      "qr.form.lead": "Басып шығарып, аялдамаға, алаңға немесе қиылысқа іліңіз. Тұрғын камераны бағыттайды — нысан картасы ашылады.",
+      "qr.form.ids": "Нысан нөмірлері", "qr.form.ids_hint": "Үтір арқылы немесе жаңа жолдан, мысалы osm-node-10185771782. 24-тен аспасын.",
+      "qr.form.base": "Тақтайшадағы сайт мекенжайы", "qr.form.base_hint": "Тек сайт мекенжайы, мысалы https://birge.astana.kz",
+      "qr.form.show": "Тақтайшаларды көрсету", "qr.form.none": "Тақтайшаларды көру үшін нысан нөмірлерін қосыңыз.",
+      "qr.form.not_found": "{id} нысаны табылмады — тақтайша басылмайды.", "qr.form.bad_id": "«{id}» — нысан нөмірі емес.",
+      "qr.form.too_many": "Бір реттен {n} нысаннан аспасын.", "qr.form.bad_base": "Сайт мекенжайы https:// немесе http:// деп басталып, жолсыз болуы керек.",
+      "qr.form.no_qr": "QR генераторы әлі қосылмаған (LOCAL-11). Әзірге тақтайшада тек сілтеме болады.",
+      "qr.form.network": "Байланыс жоқ. Қайталаңыз.", "qr.form.loading": "Жүктелуде…", "qr.form.ready": "Дайын тақтайшалар: {n}",
     },
-  };
-  // Надпись на самой табличке (оба языка сразу).
-  var SIGN = {
-    ru: "Есть проблема с этим местом? Наведите камеру телефона на код",
-    kk: "Осы жерде мәселе бар ма? Телефон камерасын кодқа бағыттаңыз",
-    number_ru: "Объект № {n}", number_kk: "Нысан № {n}",
   };
 
   function lang() {
@@ -57,8 +56,11 @@
     var l = B && B.getLang ? B.getLang() : (root.document && root.document.documentElement.lang) || "ru";
     return l === "kk" ? "kk" : "ru";
   }
-  function tx(key, params) {
-    var s = (TEXT[lang()] || TEXT.ru)[key] || TEXT.ru[key] || key;
+  // l — язык явно (табличка печатается на обоих языках сразу); без него — язык интерфейса.
+  function tx(key, params, l) {
+    var B = root.BirgeI18n, use = l || lang();
+    if (B && B.has && B.has(key, use) && typeof B.t === "function") return B.t(key, params, use);
+    var s = (TEXT[use] || TEXT.ru)[key] || TEXT.ru[key] || key;
     return params ? s.replace(/\{(\w+)\}/g, function (w, n) { return params[n] == null ? w : String(params[n]); }) : s;
   }
 
@@ -121,19 +123,21 @@
     return e;
   }
 
+  // Табличка (IA_WAVE2 §6.2): призыв kk · ru, QR ≥ 6 см, под ним адрес сайта, крупно название kk и ru, номер объекта.
+  // Чисел жалоб и статусов нет — табличка висит годами и не должна устаревать.
   function sign(doc, info, base) {
     var url = reportUrl(base, info.target.id);
     var qr = qrSvg(doc, url);
     if (qr) qr.setAttribute("aria-label", "QR: " + url);
-    var fill = function (s) { return s.replace("{n}", info.number); };
+    var ru = info.target.label_ru, kk = info.target.label_kk || ru;
     return h(doc, "article", { class: "bqp-sign", "data-id": info.target.id }, [
-      h(doc, "p", { class: "bqp-sign__call", lang: "kk", text: SIGN.kk }),
-      h(doc, "p", { class: "bqp-sign__call", lang: "ru", text: SIGN.ru }),
-      h(doc, "div", { class: "bqp-qr" + (qr ? "" : " bqp-qr--missing") }, [qr || h(doc, "p", { class: "bqp-qr__missing", text: tx("no_qr") })]),
+      h(doc, "p", { class: "bqp-sign__call" }, [h(doc, "span", { lang: "kk", text: tx("qr.call", null, "kk") }),
+        h(doc, "span", { lang: "ru", text: tx("qr.call", null, "ru") })]),
+      h(doc, "div", { class: "bqp-qr" + (qr ? "" : " bqp-qr--missing") }, [qr || h(doc, "p", { class: "bqp-qr__missing", text: tx("qr.form.no_qr") })]),
       h(doc, "p", { class: "bqp-sign__domain", text: domainOf(base) }),
-      h(doc, "h2", { class: "bqp-sign__title", lang: "kk", text: info.target.label_kk || info.target.label_ru }),
-      h(doc, "p", { class: "bqp-sign__title-ru", lang: "ru", text: info.target.label_ru }),
-      h(doc, "p", { class: "bqp-sign__number" }, [fill(SIGN.number_kk) + " · " + fill(SIGN.number_ru)]),
+      h(doc, "h2", { class: "bqp-sign__title", lang: "kk", text: kk }),
+      kk !== ru ? h(doc, "p", { class: "bqp-sign__title bqp-sign__title--ru", lang: "ru", text: ru }) : null,
+      h(doc, "p", { class: "bqp-sign__number" }, [tx("qr.object_no", { id: info.number }, "kk") + " · " + tx("qr.object_no", { id: info.number }, "ru")]),
       h(doc, "p", { class: "bqp-sign__url", text: url }),
     ]);
   }
@@ -152,20 +156,21 @@
     baseField.value = params.get("base") || root.location.origin;
     var status = h(doc, "div", { class: "bqp-status", role: "status", "aria-live": "polite" });
     var sheet = h(doc, "div", { class: "bqp-sheet" });
-    var showBtn = h(doc, "button", { type: "submit", class: "bk-btn bk-btn--primary", "data-act": "show" }, [tx("show")]);
-    var printBtn = h(doc, "button", { type: "button", class: "bk-btn bqp-print", "data-act": "print", onclick: function () { root.print(); } }, [tx("print")]);
+    var showBtn = h(doc, "button", { type: "submit", class: "bk-btn bk-btn--primary", "data-act": "show" }, [tx("qr.form.show")]);
+    var printBtn = h(doc, "button", { type: "button", class: "bk-btn bqp-print", "data-act": "print", onclick: function () { root.print(); } }, [tx("qr.print")]);
     var form = h(doc, "form", { class: "bqp-form no-print", novalidate: true }, [
-      h(doc, "h1", { class: "bqp-h1", text: tx("title") }),
-      h(doc, "p", { class: "bqp-lead", text: tx("lead") }),
-      h(doc, "label", { for: "bqp-ids", class: "bqp-label", text: tx("ids") }), idsField,
-      h(doc, "p", { id: "bqp-ids-hint", class: "bqp-hint", text: tx("ids_hint") }),
-      h(doc, "label", { for: "bqp-base", class: "bqp-label", text: tx("base") }), baseField,
-      h(doc, "p", { id: "bqp-base-hint", class: "bqp-hint", text: tx("base_hint") }),
+      h(doc, "h1", { class: "bqp-h1", text: tx("qr.title") }),
+      h(doc, "p", { class: "bqp-lead", text: tx("qr.form.lead") }),
+      h(doc, "label", { for: "bqp-ids", class: "bqp-label", text: tx("qr.form.ids") }), idsField,
+      h(doc, "p", { id: "bqp-ids-hint", class: "bqp-hint", text: tx("qr.form.ids_hint") }),
+      h(doc, "label", { for: "bqp-base", class: "bqp-label", text: tx("qr.form.base") }), baseField,
+      h(doc, "p", { id: "bqp-base-hint", class: "bqp-hint", text: tx("qr.form.base_hint") }),
       h(doc, "div", { class: "bqp-buttons" }, [
         showBtn, printBtn]),
       status]);
     form.addEventListener("submit", function (e) { e.preventDefault(); load(); });
     host.replaceChildren(form, sheet);
+    doc.title = "Birge · " + tx("qr.title");
 
     function paintStatus() {
       status.replaceChildren.apply(status, S.messages.map(function (m) { return h(doc, "p", { class: "bqp-msg bqp-msg--" + m.kind, text: m.text }); }));
@@ -178,17 +183,17 @@
 
     function load() {
       var my = ++S.seq, parsed = parseIds(idsField.value), base = normalizeBase(baseField.value);
-      S.messages = parsed.bad.map(function (b) { return { kind: "error", text: tx("bad_id", { id: b }) }; });
-      if (!base) S.messages.push({ kind: "error", text: tx("bad_base") });
-      if (parsed.ids.length > MAX_IDS) S.messages.push({ kind: "error", text: tx("too_many", { n: MAX_IDS }) });
-      if (typeof root.qrcode !== "function") S.messages.push({ kind: "warn", text: tx("no_qr") });
+      S.messages = parsed.bad.map(function (b) { return { kind: "error", text: tx("qr.form.bad_id", { id: b }) }; });
+      if (!base) S.messages.push({ kind: "error", text: tx("qr.form.bad_base") });
+      if (parsed.ids.length > MAX_IDS) S.messages.push({ kind: "error", text: tx("qr.form.too_many", { n: MAX_IDS }) });
+      if (typeof root.qrcode !== "function") S.messages.push({ kind: "warn", text: tx("qr.form.no_qr") });
       S.signs = [];
       if (!base || !parsed.ids.length || parsed.ids.length > MAX_IDS) {
-        if (!parsed.ids.length && !parsed.bad.length) S.messages.push({ kind: "info", text: tx("none") });
+        if (!parsed.ids.length && !parsed.bad.length) S.messages.push({ kind: "info", text: tx("qr.form.none") });
         sheet.replaceChildren(); paintStatus(); return Promise.resolve(false);
       }
       S.state = "loading";
-      S.messages.push({ kind: "info", text: tx("loading") });
+      S.messages.push({ kind: "info", text: tx("qr.form.loading") });
       paintStatus();
       return Promise.all(parsed.ids.map(function (id) {
         return fetchFn(api + "/target?id=" + encodeURIComponent(id), { credentials: "same-origin", headers: { Accept: "application/json" } })
@@ -196,15 +201,15 @@
             function () { return { id: id, status: 0, body: null }; });
       })).then(function (rows) {
         if (my !== S.seq) return false;
-        S.messages = S.messages.filter(function (m) { return m.text !== tx("loading"); });
+        S.messages = S.messages.filter(function (m) { return m.text !== tx("qr.form.loading"); });
         var offline = false;
         rows.forEach(function (row) {
           if (row.status === 200 && row.body && row.body.target) S.signs.push(row.body);
-          else if (row.status === 404 || row.status === 400) S.messages.push({ kind: "error", text: tx("not_found", { id: row.id }) });
+          else if (row.status === 404 || row.status === 400) S.messages.push({ kind: "error", text: tx("qr.form.not_found", { id: row.id }) });
           else offline = true;
         });
-        if (offline) S.messages.push({ kind: "error", text: tx("network") });
-        if (S.signs.length) S.messages.push({ kind: "ok", text: tx("ready", { n: S.signs.length }) });
+        if (offline) S.messages.push({ kind: "error", text: tx("qr.form.network") });
+        if (S.signs.length) S.messages.push({ kind: "ok", text: tx("qr.form.ready", { n: S.signs.length }) });
         sheet.replaceChildren.apply(sheet, S.signs.map(function (info) { return sign(doc, info, base); }));
         S.state = "ready";
         paintStatus();
@@ -216,5 +221,19 @@
     return { load: load, state: function () { return { signs: S.signs.length, messages: S.messages.slice(), state: S.state }; } };
   }
 
-  return { mount: mount, parseIds: parseIds, normalizeBase: normalizeBase, reportUrl: reportUrl, qrSvg: qrSvg, ID_RE: ID_RE, MAX_IDS: MAX_IDS };
+  // Страница print.html: <main id="bqp-root" data-autostart> — запуск без встроенного скрипта (CSP R01 script-src 'self').
+  function autostart() {
+    var doc = root.document, el = doc && doc.getElementById && doc.getElementById("bqp-root");
+    if (!el || !el.hasAttribute("data-autostart") || el.getAttribute("data-started")) return;
+    el.setAttribute("data-started", "1");
+    var B = root.BirgeI18n, go = function () { mount({ root: el }); };
+    if (B && B.ready && typeof B.ready.then === "function") B.ready.then(go, go); else go();
+  }
+  if (root.document && root.document.getElementById) {
+    if (root.document.readyState === "loading") root.document.addEventListener("DOMContentLoaded", autostart);
+    else autostart();
+  }
+
+  return { mount: mount, parseIds: parseIds, normalizeBase: normalizeBase, reportUrl: reportUrl, qrSvg: qrSvg, ID_RE: ID_RE, MAX_IDS: MAX_IDS,
+    TEXT: TEXT };
 });

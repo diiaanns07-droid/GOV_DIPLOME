@@ -71,8 +71,23 @@ index 6d86409..282a705 100644
 +body.birge-report-open #birge-heat-root, body.birge-report-open .civic-works { display: none; }
 +/* …и кнопка «Сообщить о проблеме» R09 не перекрывает главную кнопку паспорта (как при карточке R07). */
 +body.birge-report-open .bc-fab { display: none !important; }
+diff --git a/web/civic/shell/birge.js b/web/civic/shell/birge.js
+index 581d989..4b4e4b0 100644
+--- a/web/civic/shell/birge.js
++++ b/web/civic/shell/birge.js
+@@ -283,7 +283,9 @@
+     // Сравнение перекрытий и помощник по объекту (модули раунда 13) в сценарий демо Birge не входят:
+     // скрыты, код и API v1 целы. ?tools=all в адресе возвращает их (проверки ролей, показ сотрудникам).
+     document.body.dataset.birgeTools = /[?&]tools=all(&|$)/.test(location.search) ? "all" : "off";
+-    state.mode = savedMode() || defaultMode();
++    // R12 волна 2 п. 6 (IA_WAVE2 §6.1): ссылка с QR-таблички (/?report=…) открывается в виде «Житель».
++    // Выбор не запоминается — сохранённый вид устройства остаётся прежним для обычного запуска.
++    state.mode = /[?&]report=/.test(location.search) ? "resident" : savedMode() || defaultMode();
+     document.body.dataset.birgeMode = state.mode;
+     buildSkip();
+     buildHeader();
 diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
-index f44771a..e726eee 100644
+index f44771a..fe990d6 100644
 --- a/web/civic/shell/shell.js
 +++ b/web/civic/shell/shell.js
 @@ -181,6 +181,8 @@
@@ -84,7 +99,7 @@ index f44771a..e726eee 100644
          <div id="birge-heat-root" class="civic-slot birge-heat-slot"></div>
          <section class="civic-works" aria-labelledby="civic-works-title">
            <header class="civic-head">
-@@ -426,6 +428,36 @@
+@@ -426,6 +428,39 @@
        }
      }
      mountBuild3d();
@@ -110,14 +125,17 @@ index f44771a..e726eee 100644
 +      onReport: (p) => S.mounted.complaint?.open?.(p),
 +      onOpenMap: (t) => { S.mounted.report?.destroy?.(); close(); if (t) S.mounted.heat?.focusTarget?.(t.kind, t.id); },
 +      onClose: close });
++    // Телефон: шторка наполовину (IA_WAVE2 §6.1) — сверху видно место на карте, в шторке — главная кнопка.
++    if (innerWidth < 761 && S.sheet !== "half") setSheet("half");
 +    S.mounted.report.open(id || "bad").then((ok) => {
-+      // Камера — к объекту, мягко и только если житель её ещё не трогал.
++      // Камера — к объекту, мягко и только если житель её ещё не трогал; место — в свободной части карты (не под панелью).
 +      const info = ok && S.mounted.report?.info?.();
 +      const m = currentMap();
-+      if (m && info?.point && !m.isMoving()) m.easeTo({ center: info.point, zoom: Math.max(m.getZoom(), 16), duration: 600 });
++      if (!m || !info?.point || m.isMoving()) return;
++      const pad = freeArea();
++      m.easeTo({ center: info.point, zoom: Math.max(m.getZoom(), 16), offset: [(pad.left - pad.right) / 2, (pad.top - pad.bottom) / 2],
++        duration: motionSafe() ? 600 : 0 });
 +    });
-+    // Телефон: человек пришёл по QR ради этого объекта — шторка во весь рост, главная кнопка видна сразу.
-+    if (innerWidth < 761) setSheet("full");
    }
    // ---------------------------------------------------------------- 3D-превью предложений (R05 + R06)
    // R05 поставки 2 (169c56b) сам говорит на контракте R06 через клиент оболочки BirgeShell.api.v2 (CSRF сотрудника,

@@ -4,7 +4,8 @@
  * Что на экране (UX: одна главная кнопка, остальное свёрнуто — POLISH_WAVE_2 «Защита от перегруза» п. 3–4):
  *   что это (остановка / перекрёсток / участок улицы / двор) и номер объекта; сколько людей сообщили и статус;
  *   ГЛАВНАЯ кнопка: «Я тоже», если есть открытые обращения, иначе «Сообщить о проблеме здесь»;
- *   вторая — «Сообщить о другом» (только рядом с «Я тоже»); «Подробнее»: жалобы по дням, темы, «Открыть на карте».
+ *   вторая — «Сообщить о другом» (только рядом с «Я тоже»); «Подробнее»: жалобы по дням, темы, «На карту».
+ * Тексты — ключи словаря R11 (IA_WAVE2 §6): report.here/other, qr.object_no, target.*, map.card.not_found*, status.*.
  * Карту не трогает и слоёв не добавляет: карточка живёт в панели/шторке, которую даёт оболочка R01.
  *
  * Данные — те же API, что у карточки тепловой карты (числа совпадут):
@@ -36,61 +37,57 @@
   // Те же формы id, что принимает сервер (engine/civic_geo.REPORT_ID_RE): в ссылке — только id цели.
   var REPORT_ID_RE = /^(osm-(node|way|relation)-[0-9]{1,15}|osm-w[0-9]{1,15}-[0-9]{1,6}|yard-r?[0-9]{1,15}(-[0-9]{1,3})?|cell--?[0-9]{1,6}--?[0-9]{1,6})$/;
 
-  // Запасные тексты, пока ключей нет в словарях R11 (как только ключ появится в ru.json/kk.json — побеждает словарь).
+  // Тексты — только ключи словаря R11 (IA_WAVE2 §6, UX_REVIEW волна 2 п. 4); новых ключей паспорт не вводит.
+  // Ниже — те же тексты на случай, если словарь не загрузился (стенд, старая сборка): словарь всегда побеждает.
   var PENDING = {
     ru: {
-      "qr.card.eyebrow_qr": "По QR-коду",
-      "qr.kind.bus_stop": "Остановка", "qr.kind.playground": "Детская площадка", "qr.kind.pitch": "Спортплощадка",
-      "qr.kind.park": "Парк или сквер", "qr.kind.waste": "Контейнерная площадка", "qr.kind.traffic_signal": "Светофор",
-      "qr.kind.crossing": "Пешеходный переход", "qr.kind.intersection": "Перекрёсток", "qr.kind.segment": "Участок улицы",
-      "qr.kind.yard": "Двор", "qr.kind.cell": "Примерное место", "qr.kind.object": "Объект",
-      "qr.card.number": "Объект № {number}",
-      "qr.card.none": "Здесь пока никто не сообщал о проблемах",
-      "qr.card.for_days": "за {n} дней",
-      "qr.card.metoo": "Я тоже", "qr.card.metoo_done": "Вы уже отметились — сообщим о ходе решения",
-      "qr.card.metoo_thanks": "Спасибо. Будем сообщать о ходе решения",
-      "qr.card.report_here": "Сообщить о проблеме здесь", "qr.card.report_other": "Сообщить о другом",
-      "qr.card.more": "Подробнее", "qr.card.by_day": "Жалобы по дням", "qr.card.topics": "О чём сообщают",
-      "qr.card.open_map": "Открыть на карте", "qr.card.approximate": "Место примерное — показано областью",
-      "qr.card.demo": "Пример", "qr.card.demo_note": "Демонстрационные данные, не реальные обращения",
-      "qr.card.loading": "Загружаем объект…",
-      "qr.error.not_found": "Объект не найден. Возможно, QR-код устарел.",
-      "qr.error.bad_link": "В ссылке неверный номер объекта.",
-      "qr.error.network": "Нет связи. Проверьте интернет и повторите.",
-      "qr.error.server": "Сервер не ответил. Повторите через минуту.",
-      "qr.error.metoo": "Не удалось отметиться. Повторите.",
-      "qr.error.open_map": "Открыть карту",
+      "common.tag.demo": "Пример", "common.tag.approx": "Примерное место",
+      "qr.object_no": "Объект № {id}",
+      "common.period.last_days": "за {n} дней",
+      "target.metoo": "Я тоже", "target.metoo_done": "Вы отметили «Я тоже»", "heat.toast_metoo": "Спасибо. Ваш голос учтён",
+      "report.here": "Сообщить о проблеме здесь", "report.other": "Сообщить о другом",
+      "common.action.more": "Подробнее", "target.by_day": "Жалобы по дням", "heat.topics": "О чём сообщают",
+      "complaint.step5.to_map": "На карту",
+      "map.card.loading": "Загружаем карточку…",
+      "map.card.not_found": "Объект не найден",
+      "map.card.not_found_hint": "Возможно, его сняли с публикации или ссылка устарела.",
+      "common.state.network_title": "Нет связи с сервером",
+      "map.card.error": "Не удалось загрузить карточку.",
+      "complaint.send_error": "Не удалось отправить. Проверьте связь и повторите.",
+      "target.type.stop": "Остановка", "target.type.traffic_signal": "Светофор", "target.type.crossing": "Пешеходный переход",
+      "target.type.intersection": "Перекрёсток", "target.type.segment": "Участок улицы", "target.type.yard": "Двор",
       "status.new": "Новое", "status.accepted": "Принято", "status.in_progress": "В работе", "status.fixed": "Исправлено",
-      "status.rejected": "Отклонено", "status.label": "Статус",
+      "status.rejected": "Отклонено", "status.reported_fixed": "Служба сообщила об устранении",
+      "status.verified": "Проверено жителями", "status.reopened": "Проблема осталась — снова в работе", "status.label": "Статус",
       "common.action.close": "Закрыть", "common.action.retry": "Повторить",
     },
     kk: {
-      "qr.card.eyebrow_qr": "QR-код бойынша",
-      "qr.kind.bus_stop": "Аялдама", "qr.kind.playground": "Балалар алаңы", "qr.kind.pitch": "Спорт алаңы",
-      "qr.kind.park": "Саябақ немесе гүлзар", "qr.kind.waste": "Қоқыс алаңы", "qr.kind.traffic_signal": "Бағдаршам",
-      "qr.kind.crossing": "Жаяу жүргіншілер өткелі", "qr.kind.intersection": "Қиылыс", "qr.kind.segment": "Көше бөлігі",
-      "qr.kind.yard": "Аула", "qr.kind.cell": "Шамамен орны", "qr.kind.object": "Нысан",
-      "qr.card.number": "Нысан № {number}",
-      "qr.card.none": "Мұнда әзірге ешкім мәселе туралы хабарламаған",
-      "qr.card.for_days": "{n} күнде",
-      "qr.card.metoo": "Мен де", "qr.card.metoo_done": "Сіз белгі қойғансыз — шешілу барысын хабарлаймыз",
-      "qr.card.metoo_thanks": "Рақмет. Шешілу барысын хабарлап отырамыз",
-      "qr.card.report_here": "Осы жердегі мәселе туралы хабарлау", "qr.card.report_other": "Басқа мәселе туралы хабарлау",
-      "qr.card.more": "Толығырақ", "qr.card.by_day": "Күндер бойынша шағымдар", "qr.card.topics": "Не туралы хабарлайды",
-      "qr.card.open_map": "Картадан ашу", "qr.card.approximate": "Орны шамамен — аймақпен көрсетілген",
-      "qr.card.demo": "Мысал", "qr.card.demo_note": "Демонстрациялық деректер, нақты өтініштер емес",
-      "qr.card.loading": "Нысан жүктелуде…",
-      "qr.error.not_found": "Нысан табылмады. QR-код ескірген болуы мүмкін.",
-      "qr.error.bad_link": "Сілтемеде нысан нөмірі қате.",
-      "qr.error.network": "Байланыс жоқ. Интернетті тексеріп, қайталаңыз.",
-      "qr.error.server": "Сервер жауап бермеді. Бір минуттан соң қайталаңыз.",
-      "qr.error.metoo": "Белгі қою мүмкін болмады. Қайталаңыз.",
-      "qr.error.open_map": "Картаны ашу",
+      "common.tag.demo": "Үлгі", "common.tag.approx": "Шамамен көрсетілген орын",
+      "qr.object_no": "Нысан № {id}",
+      "common.period.last_days": "соңғы {n} күнде",
+      "target.metoo": "Мен де", "target.metoo_done": "Сіз «Мен де» деп белгіледіңіз", "heat.toast_metoo": "Рақмет. Дауысыңыз есепке алынды",
+      "report.here": "Осы жердегі мәселе туралы хабарлау", "report.other": "Басқа мәселе туралы хабарлау",
+      "common.action.more": "Толығырақ", "target.by_day": "Күндер бойынша шағымдар", "heat.topics": "Не туралы хабарлайды",
+      "complaint.step5.to_map": "Картаға",
+      "map.card.loading": "Карточка жүктеліп жатыр…",
+      "map.card.not_found": "Нысан табылмады",
+      "map.card.not_found_hint": "Мүмкін, ол жарияланымнан алынған немесе сілтеме ескірген.",
+      "common.state.network_title": "Сервермен байланыс жоқ",
+      "map.card.error": "Карточканы жүктеу мүмкін болмады.",
+      "complaint.send_error": "Жіберу мүмкін болмады. Байланысты тексеріп, қайталаңыз.",
+      "target.type.stop": "Аялдама", "target.type.traffic_signal": "Бағдаршам", "target.type.crossing": "Жаяу жүргіншілер өткелі",
+      "target.type.intersection": "Қиылыс", "target.type.segment": "Көше бөлігі", "target.type.yard": "Аула",
       "status.new": "Жаңа", "status.accepted": "Қабылданды", "status.in_progress": "Орындалуда", "status.fixed": "Түзетілді",
-      "status.rejected": "Қабылданбады", "status.label": "Мәртебе",
+      "status.rejected": "Қабылданбады", "status.reported_fixed": "Қызмет түзетілгенін хабарлады",
+      "status.verified": "Тұрғындар тексерді", "status.reopened": "Мәселе қалды — қайта жұмыста", "status.label": "Мәртебесі",
       "common.action.close": "Жабу", "common.action.retry": "Қайталау",
     },
   };
+  // Подпись «за 30 дней»: в ru — формы числа, как в словаре R11.
+  function plural(n, forms) {
+    var m10 = n % 10, m100 = n % 100;
+    return m10 === 1 && m100 !== 11 ? forms[0] : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? forms[1] : forms[2];
+  }
 
   function i18n() { return root && root.BirgeI18n && typeof root.BirgeI18n.t === "function" ? root.BirgeI18n : null; }
   function lang() {
@@ -103,9 +100,11 @@
   }
   // Ключ словаря R11, если он там есть; иначе запасной текст нужного языка (без предупреждений в консоли).
   function t(key, params) {
-    var B = i18n();
-    if (B && B.has && (B.has(key) || B.has(key, "ru"))) return B.t(key, params);
-    var l = lang();
+    var B = i18n(), l = lang();
+    // Словарь на языке жителя → свой запасной текст на том же языке → русский словарь (а не наоборот: без русского в ҚАЗ).
+    if (B && B.has && B.has(key, l)) return B.t(key, params);
+    if (B && B.has && !(PENDING[l] && PENDING[l][key]) && B.has(key, "ru")) return B.t(key, params);
+    if (key === "common.period.last_days" && l === "ru" && params) return "за " + params.n + " " + plural(params.n, ["день", "дня", "дней"]);
     return fill((PENDING[l] && PENDING[l][key]) || PENDING.ru[key] || key, params);
   }
   function reportedText(n) {
@@ -131,12 +130,17 @@
     try { id = decodeURIComponent(m[1].replace(/\+/g, " ")); } catch (e) { return null; }
     return REPORT_ID_RE.test(id) ? id : null;
   }
+  // Слово вида над заголовком — ключ target.type.* словаря R11; для парков/площадок слова нет (заголовок и так говорит).
+  var TYPE_KEY = { bus_stop: "stop", traffic_signal: "traffic_signal", crossing: "crossing", intersection: "intersection" };
   function kindKey(target) {
-    if (!target) return "qr.kind.object";
-    if (target.kind === "object") return "qr.kind." + (target.object_kind || "object");
-    if (target.kind === "segment") return "qr.kind.segment";
-    return String(target.id || "").indexOf("cell-") === 0 ? "qr.kind.cell" : "qr.kind.yard";
+    if (!target) return null;
+    if (target.kind === "object") return TYPE_KEY[target.object_kind] ? "target.type." + TYPE_KEY[target.object_kind] : null;
+    if (target.kind === "segment") return "target.type.segment";
+    return String(target.id || "").indexOf("yard-") === 0 ? "target.type.yard" : null;
   }
+  // Состояния волны 2 (categories_v2 heat_states): verified_fixed → «Проверено жителями».
+  function statusKey(status) { return "status." + (status === "verified_fixed" ? "verified" : status || "new"); }
+  function isFixed(it) { return !!it && (it.status === "fixed" || it.status === "verified_fixed" || it.state === "fixed"); }
   function metooKey(target) { return target.kind + ":" + target.id; }
   function metooDone(target) {
     try { return JSON.parse(root.localStorage.getItem(METOO_KEY) || "{}")[metooKey(target)] === true; } catch (e) { return false; }
@@ -164,7 +168,7 @@
   }
   // Главная кнопка: «Я тоже» — если есть открытые обращения и житель ещё не отмечался; иначе «Сообщить».
   function mainAction(heatItem, target) {
-    var open = heatItem && heatItem.status !== "fixed" && (heatItem.open_ids || []).length > 0;
+    var open = heatItem && !isFixed(heatItem) && (heatItem.open_ids || []).length > 0;
     if (open && !metooDone(target)) return "metoo";
     return "report";
   }
@@ -267,13 +271,13 @@
       postJson("/complaints/" + encodeURIComponent(id) + "/metoo", { device_id: deviceId() }).then(function () {
         if (destroyed) return;
         rememberMetoo(tg);
-        S.busy = false; S.notice = { ok: true, text: t("qr.card.metoo_thanks") };
+        S.busy = false; S.notice = { ok: true, text: t("heat.toast_metoo") };
         // R07 слушает это событие и перерисует тепловую карту (как после «Я тоже» в мастере R09).
         try { root.dispatchEvent(new root.CustomEvent("birge:complaint", { detail: { type: "metoo", complaint_id: id, target: tg } })); } catch (e) { /* */ }
         return loadHeat(S.seq);
       }, function () {
         if (destroyed) return;
-        S.busy = false; S.notice = { ok: false, text: t("qr.error.metoo") }; render();
+        S.busy = false; S.notice = { ok: false, text: t("complaint.send_error") }; render();
       });
     }
     function report() {
@@ -291,16 +295,19 @@
         onclick: function () { if (typeof opts.onClose === "function") opts.onClose(); destroy(); } }, [icon("close", sprite)]));
       if (S.state === "loading" || S.state === "idle") {
         kids.push(h("div", { class: "bq-skel", "aria-busy": "true" }, [
-          h("span", { class: "bk-sr-only", text: t("qr.card.loading") }),
+          h("span", { class: "bk-sr-only", text: t("map.card.loading") }),
           h("i", { class: "bk-skel bk-skel--line" }), h("i", { class: "bk-skel bk-skel--title" }), h("i", { class: "bk-skel bk-skel--block" })]));
       } else if (S.state === "error") {
         var retry = S.error === "network" || S.error === "server";
-        kids.push(h("div", { class: "bk-error bq-error", role: "alert" }, [
-          h("p", { class: "bk-error__title", text: t("qr.error." + S.error) }),
+        // Неизвестный или испорченный номер — «Объект не найден» + подсказка и «На карту» (IA_WAVE2 §6.1), не пустая карта.
+        var gone = !retry;
+        kids.push(h("div", { class: "bk-error bq-error", role: "alert", "data-error": S.error }, [
+          h("p", { class: "bk-error__title", text: t(gone ? "map.card.not_found" : S.error === "server" ? "map.card.error" : "common.state.network_title") }),
+          gone ? h("p", { class: "bk-error__text", text: t("map.card.not_found_hint") }) : null,
           h("div", { class: "bq-actions" }, [
             retry ? h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--block", "data-act": "retry", onclick: function () { open(S.id); } }, [icon("refresh", sprite), t("common.action.retry")]) : null,
-            typeof opts.onOpenMap === "function" ? h("button", { type: "button", class: "bk-btn bk-btn--ghost bk-btn--block", "data-act": "map",
-              onclick: function () { opts.onOpenMap(null); } }, [t("qr.error.open_map")]) : null])]));
+            typeof opts.onOpenMap === "function" ? h("button", { type: "button", class: "bk-btn bk-btn--block " + (retry ? "bk-btn--ghost" : "bk-btn--primary"),
+              "data-act": "map", onclick: function () { opts.onOpenMap(null); } }, [t("complaint.step5.to_map")]) : null])]));
       } else {
         kids = kids.concat(card());
       }
@@ -312,34 +319,33 @@
       var title = (l === "kk" ? tg.label_kk : tg.label_ru) || tg.label_ru;
       var demo = !!(it && it.demo);
       var out = [];
+      var kk = kindKey(tg);
       out.push(h("p", { class: "bk-card__eyebrow bq-eyebrow" }, [
-        icon(tg.kind === "segment" ? "road" : tg.kind === "area" ? "pin" : tg.object_kind === "bus_stop" ? "bus" : "pin", sprite),
-        t(kindKey(tg)), h("span", { class: "bq-sep", text: "·" }), t("qr.card.eyebrow_qr"),
-        demo ? h("span", { class: "bk-tag bk-tag--demo", text: t("qr.card.demo") }) : null]));
+        icon(tg.kind === "segment" ? "road" : tg.object_kind === "bus_stop" ? "bus" : "pin", sprite),
+        kk ? t(kk) : null,
+        demo ? h("span", { class: "bk-tag bk-tag--demo", text: t("common.tag.demo") }) : null]));
       out.push(h("h2", { class: "bq-title", tabindex: "-1", text: title }));
-      out.push(h("p", { class: "bq-number", text: t("qr.card.number", { number: info.number }) }));
-      if (info.approximate) out.push(h("p", { class: "bk-tag bk-tag--approx bq-approx", text: t("qr.card.approximate") }));
-      // Сколько людей и статус — сразу под заголовком: видно без прокрутки на 375 px.
+      out.push(h("p", { class: "bq-number", text: t("qr.object_no", { id: info.number }) }));
+      if (info.approximate) out.push(h("p", { class: "bk-tag bk-tag--approx bq-approx", text: t("common.tag.approx") }));
+      // Сколько людей и статус — сразу под заголовком: видно без прокрутки на 375 px. Жалоб нет — блока нет (IA_WAVE2 §0 п. 6).
       if (it && it.count > 0) {
-        out.push(h("p", { class: "bq-reported" }, [h("b", { text: reportedText(it.count) }), " · " + t("qr.card.for_days", { n: DAYS })]));
+        out.push(h("p", { class: "bq-reported" }, [h("b", { text: reportedText(it.count) }), " · " + t("common.period.last_days", { n: DAYS })]));
         out.push(h("p", { class: "bq-status" }, [t("status.label") + ": ",
-          h("span", { class: "bk-status", "data-status": it.status, text: t("status." + it.status) })]));
-      } else if (!S.heatUnavailable) {
-        out.push(h("p", { class: "bq-none", text: t("qr.card.none") }));
+          h("span", { class: "bk-status", "data-status": it.status, text: t(statusKey(it.status)) })]));
       }
       // Одна главная кнопка (UX_BRIEF п. 3, POLISH_WAVE_2 защита п. 4).
       var main = mainAction(it, tg), actions = [];
       if (main === "metoo") {
         actions.push(h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--lg bk-btn--block", "data-act": "metoo",
-          "aria-busy": S.busy ? "true" : null, disabled: S.busy, onclick: metoo }, [icon("users", sprite), t("qr.card.metoo")]));
+          "aria-busy": S.busy ? "true" : null, disabled: S.busy, onclick: metoo }, [icon("users", sprite), t("target.metoo")]));
         actions.push(h("button", { type: "button", class: "bk-btn bk-btn--ghost bk-btn--block", "data-act": "report-other", onclick: report },
-          [t("qr.card.report_other")]));
+          [t("report.other")]));
       } else {
-        if (it && it.status !== "fixed" && (it.open_ids || []).length && metooDone(tg)) {
-          out.push(h("p", { class: "bq-done" }, [icon("check", sprite), t("qr.card.metoo_done")]));
+        if (it && !isFixed(it) && (it.open_ids || []).length && metooDone(tg)) {
+          out.push(h("p", { class: "bq-done" }, [icon("check", sprite), t("target.metoo_done")]));
         }
         actions.push(h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--lg bk-btn--block", "data-act": "report", onclick: report },
-          [icon("send", sprite), t(it && it.count > 0 && it.status !== "fixed" ? "qr.card.report_other" : "qr.card.report_here")]));
+          [icon("send", sprite), t(it && it.count > 0 && !isFixed(it) ? "report.other" : "report.here")]));
       }
       out.push(h("div", { class: "bq-actions" }, actions));
       if (S.notice) out.push(h("p", { class: "bq-notice" + (S.notice.ok ? " bq-notice--ok" : " bq-notice--error"), role: S.notice.ok ? "status" : "alert", text: S.notice.text }));
@@ -347,21 +353,21 @@
       var more = [];
       if (it && (it.daily || []).length) {
         var max = Math.max.apply(null, it.daily.concat([1]));
-        more.push(h("h3", { class: "bq-h3", text: t("qr.card.by_day") }));
+        more.push(h("h3", { class: "bq-h3", text: t("target.by_day") }));
         more.push(h("div", { class: "bk-spark bq-spark", "aria-hidden": "true" }, it.daily.map(function (n) {
           var bar = h("i"); bar.style.height = Math.max(n ? 8 : 2, Math.round((n / max) * 100)) + "%"; return bar; })));
       }
       var topics = it && it.by_category ? Object.keys(it.by_category) : [];
       if (topics.length) {
-        more.push(h("h3", { class: "bq-h3", text: t("qr.card.topics") }));
+        more.push(h("h3", { class: "bq-h3", text: t("heat.topics") }));
         more.push(h("ul", { class: "bq-topics" }, topics.map(function (c) { return h("li", {}, [h("span", { text: catName(c) }), h("b", { text: String(it.by_category[c]) })]); })));
       }
       if (typeof opts.onOpenMap === "function") {
         more.push(h("button", { type: "button", class: "bk-btn bk-btn--ghost bq-map", "data-act": "map", onclick: function () { opts.onOpenMap(tg); } },
-          [icon("pin", sprite), t("qr.card.open_map")]));
+          [icon("pin", sprite), t("complaint.step5.to_map")]));
       }
       if (more.length) {
-        var det = h("details", { class: "bq-more", open: S.detailsOpen ? true : null }, [h("summary", { text: t("qr.card.more") })].concat(more));
+        var det = h("details", { class: "bq-more", open: S.detailsOpen ? true : null }, [h("summary", { text: t("common.action.more") })].concat(more));
         det.addEventListener("toggle", function () { S.detailsOpen = det.open; });
         out.push(det);
       }
@@ -384,5 +390,5 @@
   }
 
   return { mount: mount, parseReportId: parseReportId, kindKey: kindKey, mainAction: mainAction, REPORT_ID_RE: REPORT_ID_RE,
-    PENDING: PENDING, version: "r12-wave2-qr-1" };
+    statusKey: statusKey, PENDING: PENDING, version: "r12-wave2-qr-2" };
 });

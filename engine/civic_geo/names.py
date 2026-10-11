@@ -135,6 +135,15 @@ def signal_labels(streets_ru: list, streets_kk: list) -> tuple[str, str]:
     return "Светофор", "Бағдаршам"
 
 
+def near_labels(ru0: str, kk0: str, near_ru: str | None, near_kk: str | None = None) -> tuple[str, str]:
+    """Точка без своей улицы — по ближайшей улице с названием (UX_REVIEW R11 волна 2 п. 4):
+    «Пешеходный переход у улицы Сауран» / «Жаяу жүргіншілер өткелі · Сауран көшесі маңында»; улицы нет — как есть."""
+    if not near_ru:
+        return ru0, kk0
+    near = ru_near(near_ru)
+    return (f"{ru0} {near}" if near else f"{ru0} — {near_ru}"), f"{kk0} · {kk_street(near_ru, near_kk)} маңында"
+
+
 def crossing_labels(streets_ru: list, streets_kk: list, signals: bool = False) -> tuple[str, str]:
     """Пешеходный переход через улицу: «Пешеходный переход: ул. Кенесары» / «Жаяу жүргіншілер өткелі: Кенесары көшесі»."""
     ru0 = "Пешеходный переход со светофором" if signals else "Пешеходный переход"
