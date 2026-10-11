@@ -8,7 +8,7 @@ R11 вносит их в `kk.json` сразу.
 значения, их не переводить. Формы числа в русском: one (1, 21), few (2–4), many (5–20); в казахском одна форма —
 существительное после числа не меняется («12 адам»).
 
-Ключей: 1036. С пометкой ⚑: 63.
+Ключей: 1068. С пометкой ⚑: 63.
 
 ## 1. Сначала проверьте — места с пометкой ⚑
 
@@ -1238,21 +1238,48 @@ R11 вносит их в `kk.json` сразу.
 | `nearby.subscribe_yard` | Следить за моим двором | Ауламды бақылау | <sub>Волна 2 · R08/R06 · «Рядом» (IA_WAVE2 §4)</sub> |
 | `nearby.empty` | Рядом сейчас ничего не делают | Қазір маңайда жұмыс жүріп жатқан жоқ | <sub>Волна 2 · R08/R06 · «Рядом» (IA_WAVE2 §4)</sub> |
 
-### report
-
-| ключ | рус | қаз | комментарий |
-|---|---|---|---|
-| `report.here` | Сообщить о проблеме здесь | Осы жердегі мәселе туралы хабарлау | <sub>Волна 2 · R12 · QR и ссылка на объект (IA_WAVE2 §6)</sub> |
-| `report.other` | Сообщить о другом | Басқа мәселе туралы хабарлау | <sub>Волна 2 · R12 · QR и ссылка на объект (IA_WAVE2 §6)</sub> |
-
 ### qr
 
 | ключ | рус | қаз | комментарий |
 |---|---|---|---|
-| `qr.call` | Есть проблема? Сканируйте | Мәселе бар ма? Сканерлеңіз | <sub>Волна 2 · R12 · QR и ссылка на объект (IA_WAVE2 §6)</sub> |
-| `qr.object_no` | Объект № {id} | Нысан № {id} | <sub>Волна 2 · R12 · QR и ссылка на объект (IA_WAVE2 §6)</sub> |
+| `qr.call` | Есть проблема с этим местом? Наведите камеру телефона на код | Осы жерде мәселе бар ма? Телефон камерасын кодқа бағыттаңыз | <sub>R12 · надпись на табличке (web/civic/qr/print.js SIGN, волна 2 п. 6) — формулировка R12</sub> |
 | `qr.print` | Распечатать QR | QR басып шығару | <sub>Волна 2 · R12 · QR и ссылка на объект (IA_WAVE2 §6)</sub> |
 | `qr.title` | QR-таблички объектов | Нысандардың QR-тақтайшалары | <sub>Волна 2 · R12 · QR и ссылка на объект (IA_WAVE2 §6)</sub> |
+| `qr.card.eyebrow_qr` | По QR-коду | QR-код бойынша | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.bus_stop` | Остановка | Аялдама | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.playground` | Детская площадка | Балалар алаңы | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.pitch` | Спортплощадка | Спорт алаңы | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.park` | Парк или сквер | Саябақ немесе гүлзар | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.waste` | Контейнерная площадка | Контейнер алаңы | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.traffic_signal` | Светофор | Бағдаршам | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.crossing` | Пешеходный переход | Жаяу жүргіншілер өткелі | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.intersection` | Перекрёсток | Қиылыс | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.segment` | Участок улицы | Көше бөлігі | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.yard` | Двор | Аула | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.cell` | Примерное место | Шамамен көрсетілген орын | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.kind.object` | Объект | Нысан | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.number` | Объект № {number} | Нысан № {number} | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.none` | Здесь пока никто не сообщал о проблемах | Мұнда әзірге ешкім мәселе туралы хабарламаған | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.for_days` | one: за {n} день / few: за {n} дня / many: за {n} дней | соңғы {n} күнде | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.metoo` | Я тоже | Мен де | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.metoo_done` | Вы уже отметились — сообщим о ходе решения | Сіз белгі қойғансыз — шешілу барысын хабарлаймыз | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.metoo_thanks` | Спасибо. Будем сообщать о ходе решения | Рақмет. Шешілу барысын хабарлап отырамыз | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.report_here` | Сообщить о проблеме здесь | Осы жердегі мәселе туралы хабарлау | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.report_other` | Сообщить о другом | Басқа мәселе туралы хабарлау | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.more` | Подробнее | Толығырақ | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.by_day` | Жалобы по дням | Күндер бойынша шағымдар | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.topics` | О чём сообщают | Не туралы хабарлайды | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.open_map` | Открыть на карте | Картадан ашу | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.approximate` | Место примерное — показано областью | Орны шамамен — аймақпен көрсетілген | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.demo` | Пример | Үлгі | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.demo_note` | Демонстрационные данные, не реальные обращения | Үлгі деректер, нақты өтініштер емес | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.card.loading` | Загружаем объект… | Нысан жүктелуде… | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.error.not_found` | Объект не найден. Возможно, QR-код устарел. | Нысан табылмады. QR-код ескірген болуы мүмкін. | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.error.bad_link` | В ссылке неверный номер объекта. | Сілтемеде нысан нөмірі қате. | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.error.network` | Нет связи. Проверьте интернет и повторите. | Байланыс жоқ. Интернетті тексеріп, қайталаңыз. | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.error.server` | Сервер не ответил. Повторите через минуту. | Сервер жауап бермеді. Бір минуттан соң қайталаңыз. | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.error.metoo` | Не удалось отметиться. Повторите. | Белгі қою мүмкін болмады. Қайталаңыз. | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
+| `qr.error.open_map` | Открыть карту | Картаны ашу | <sub>R12 · QR-паспорт /?report= (web/civic/qr/report.js, волна 2 п. 6)</sub> |
 
 ### ask
 

@@ -92,6 +92,21 @@
     }
   }
 
+  // Язык браузера — только для первого входа без сохранённого выбора (kk-KZ → kk, ru-* → ru).
+  function fromBrowser() {
+    try {
+      var nav = root.navigator;
+      var list = (nav && (nav.languages && nav.languages.length ? nav.languages : [nav.language])) || [];
+      for (var i = 0; i < list.length; i++) {
+        var l = normalizeLang(list[i]);
+        if (l) return l;
+      }
+    } catch (e) {
+      /* нет navigator */
+    }
+    return null;
+  }
+
   function loadDict(l) {
     if (dicts[l]) return Promise.resolve(dicts[l]);
     if (typeof fetch !== "function") return Promise.reject(new Error("fetch недоступен"));
@@ -310,7 +325,8 @@
     }
   }
 
-  function setLang(next) {
+  // persist === false — показать язык, не запоминая (адрес, браузер, явный язык хоста при запуске).
+  function setLang(next, persist) {
     var l = normalizeLang(next);
     if (!l) {
       warnOnce("lang:" + next, "неизвестный язык " + next + ", остаётся " + lang);
@@ -320,7 +336,7 @@
       .then(
         function () {
           lang = l;
-          save(l); // запоминаем только удачный выбор
+          if (persist !== false) save(l); // запоминаем только удачный выбор человека
         },
         function (err) {
           // Словарь не загрузился (нет связи) — показываем ru, выбор пользователя не перезаписываем.
@@ -345,7 +361,9 @@
     };
   }
 
-  // Порядок выбора языка: явный параметр → ?lang= в адресе → сохранённый → ru.
+  // Порядок выбора языка: явный параметр хоста → сохранённый выбор человека → ?lang= в адресе → язык браузера → ru.
+  // Волна 2 (обязательная мелочь): ссылка или QR не переключают язык, выбранный человеком, и ничего не запоминают —
+  // запоминается только нажатие ҚАЗ / РУС (setLang из интерфейса).
   function init(opts) {
     opts = opts || {};
     if (opts.baseUrl) baseUrl = opts.baseUrl;
@@ -354,7 +372,7 @@
         if (opts.dicts[l]) dicts[l] = opts.dicts[l];
       });
     }
-    var wanted = normalizeLang(opts.lang) || fromUrl() || readSaved() || FALLBACK;
+    var wanted = normalizeLang(opts.lang) || readSaved() || fromUrl() || fromBrowser() || FALLBACK;
     // ru нужен всегда — это запасной словарь.
     return loadDict(FALLBACK)
       .catch(function (err) {
@@ -368,7 +386,7 @@
           apply(doc);
           return lang;
         }
-        return setLang(wanted);
+        return setLang(wanted, false);
       });
   }
 

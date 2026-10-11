@@ -189,6 +189,15 @@ def test_ui_kit_js_in_node():
     assert r.returncode == 0, r.stdout + r.stderr
 
 
+def test_lang_order_in_node():
+    node = shutil.which("node")
+    if not node:
+        import pytest
+        pytest.skip("нет node")
+    r = subprocess.run([node, str(HERE / "i18n_lang_order.test.cjs")], capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
 if __name__ == "__main__":
     failed = 0
     for name, fn in list(globals().items()):
