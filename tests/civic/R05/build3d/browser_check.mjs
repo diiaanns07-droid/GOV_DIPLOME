@@ -160,7 +160,8 @@ async function openPage(ctxOpts, query, opts = {}) {
   return page;
 }
 async function waitReady(page, phase = "ready") {
-  await page.waitForFunction((ph) => window.__b3d && window.__b3d.getState().phase === ph, phase, { timeout: 60000 });
+  // «Готово» модуля теперь раньше 3D (лёгкий вид, POLISH_WAVE_2): в объёмном виде ждём и сам three.js.
+  await page.waitForFunction((ph) => { const s = window.__b3d && window.__b3d.getState(); return !!s && s.phase === ph && (ph !== "ready" || s.view !== "3d" || s.three === "ready" || s.three === "error" || s.three === "unsupported"); }, phase, { timeout: 60000 });
   if (phase === "ready") await idle(page);
 }
 async function idle(page) {

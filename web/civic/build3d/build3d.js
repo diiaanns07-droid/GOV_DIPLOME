@@ -1767,6 +1767,7 @@
         if (it.obj.labelSize) return;
         var lab = it.obj.label;
         lab.classList.remove("b3d-label--dot", "b3d-label--cluster");
+        lab._clusterKey = null; // группу (число, aria) setCluster вернёт заново, а не сочтёт уже показанной
         var pill = lab.firstChild || lab; // наложение считаем по видимой таблетке, а не по зоне нажатия
         it.obj.labelSize = { w: pill.offsetWidth || 120, h: pill.offsetHeight || 40 };
       });
