@@ -1,0 +1,153 @@
+diff --git a/ui/civic_feedback/v2/photos.py b/ui/civic_feedback/v2/photos.py
+index 9970dd3c..c7d65587 100644
+--- a/ui/civic_feedback/v2/photos.py
++++ b/ui/civic_feedback/v2/photos.py
+@@ -17,6 +17,10 @@ MAX_RESIDENT = 3               # фото жителя на жалобу
+ MAX_AFTER = 3                  # фото «после» на один раунд «исправлено»
+ CHUNK_BYTES = 36_000           # часть загрузки: base64 ≈ 48 КБ, шлюз R01 пропускает ≤ 64 КБ тела
+ MIMES = ("image/jpeg", "image/png", "image/webp")
++# R15-S23: стороны не больше 4096 px — иначе PNG 16000×16000 одного цвета весит < 1 МБ, а у сотрудника в браузере
++# разворачивается в ~1 ГБ и вешает карточку («фото-бомба»). Интерфейс и так уменьшает фото до 1600 px.
++MAX_SIDE = 4096
++_JPEG_SOF = {0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF}
+ 
+ _JPEG_KEEP_APP = {0xE0, 0xE2, 0xEE}            # APP0 JFIF, APP2 ICC-профиль, APP14 Adobe (цвета)
+ _PNG_DROP = {b"eXIf", b"tEXt", b"zTXt", b"iTXt", b"tIME"}
+@@ -37,8 +41,9 @@ def sniff(data: bytes) -> str | None:
+     return None
+ 
+ 
+-def _strip_jpeg(data: bytes) -> bytes:
++def _strip_jpeg(data: bytes) -> tuple[bytes, tuple[int, int] | None]:
+     out = bytearray(b"\xff\xd8")
++    size = None
+     i = 2
+     while i < len(data):
+         if data[i] != 0xFF:
+@@ -61,9 +66,27 @@ def _strip_jpeg(data: bytes) -> bytes:
+             raise PhotoError("Фото повреждено.")
+         segment = data[i:i + length]
+         i += length
+-        if marker == 0xDA:                            # SOS: дальше сжатые данные до конца файла — без изменений
+-            out += bytes((0xFF, marker)) + segment + data[i:]
+-            return bytes(out)
++        if marker == 0xDA:
++            # SOS: сжатые данные идут до следующего маркера (FF00 и RSTn — часть данных). R15-S22: после EOI телефоны
++            # дописывают второе изображение (MPF) или видео «живого фото» со своими EXIF/GPS — их не берём.
++            out += bytes((0xFF, marker)) + segment
++            j = i
++            while True:
++                k = data.find(b"\xff", j)
++                if k < 0 or k + 1 >= len(data):
++                    raise PhotoError("Фото повреждено.")
++                nxt = data[k + 1]
++                if nxt == 0x00 or 0xD0 <= nxt <= 0xD7 or nxt == 0xFF:
++                    j = k + (1 if nxt == 0xFF else 2)
++                    continue
++                break
++            out += data[i:k]
++            if nxt == 0xD9:                           # EOI — конец картинки, хвост отбрасываем
++                return bytes(out) + b"\xff\xd9", size
++            i = k                                     # прогрессивный JPEG: следующий проход (DHT, SOS …)
++            continue
++        if marker in _JPEG_SOF and length >= 7:
++            size = (struct.unpack(">H", segment[5:7])[0], struct.unpack(">H", segment[3:5])[0])
+         if (0xE0 <= marker <= 0xEF and marker not in _JPEG_KEEP_APP) or marker == 0xFE:
+             continue                                  # EXIF/GPS, XMP, IPTC, комментарии — выбрасываем
+         out += bytes((0xFF, marker)) + segment
+@@ -120,6 +143,26 @@ def _strip_webp(data: bytes) -> bytes:
+     return b"RIFF" + struct.pack("<I", len(payload)) + payload
+ 
+ 
++def _size(mime: str, clean: bytes) -> tuple[int, int] | None:
++    """Ширина и высота из заголовка PNG/WebP (без декодирования картинки)."""
++    if mime == "image/png" and len(clean) >= 24:
++        return struct.unpack(">II", clean[16:24])
++    if mime == "image/webp":
++        i = 12
++        while i + 8 <= len(clean):
++            kind, size = clean[i:i + 4], struct.unpack("<I", clean[i + 4:i + 8])[0]
++            body = clean[i + 8:i + 8 + size]
++            if kind == b"VP8X" and len(body) >= 10:
++                return int.from_bytes(body[4:7], "little") + 1, int.from_bytes(body[7:10], "little") + 1
++            if kind == b"VP8 " and len(body) >= 10:
++                return struct.unpack("<H", body[6:8])[0] & 0x3FFF, struct.unpack("<H", body[8:10])[0] & 0x3FFF
++            if kind == b"VP8L" and len(body) >= 5:
++                bits = int.from_bytes(body[1:5], "little")
++                return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
++            i += 8 + size + (size & 1)
++    return None
++
++
+ def sanitize(data: bytes) -> tuple[str, bytes]:
+     """-> (mime, байты без метаданных). PhotoError — не фото, повреждено или больше MAX_BYTES."""
+     if not isinstance(data, (bytes, bytearray)) or not data:
+@@ -129,5 +172,11 @@ def sanitize(data: bytes) -> tuple[str, bytes]:
+     mime = sniff(bytes(data[:16]))
+     if mime is None:
+         raise PhotoError("Подходят только фото JPEG, PNG или WebP.")
+-    clean = {"image/jpeg": _strip_jpeg, "image/png": _strip_png, "image/webp": _strip_webp}[mime](bytes(data))
++    if mime == "image/jpeg":
++        clean, size = _strip_jpeg(bytes(data))
++    else:
++        clean = {"image/png": _strip_png, "image/webp": _strip_webp}[mime](bytes(data))
++        size = _size(mime, clean)
++    if size is None or not (0 < size[0] <= MAX_SIDE and 0 < size[1] <= MAX_SIDE):
++        raise PhotoError("Фото слишком большое по размеру сторон.")
+     return mime, clean
+diff --git a/ui/civic_feedback/v2/store.py b/ui/civic_feedback/v2/store.py
+index 6af95c72..cbb1b807 100644
+--- a/ui/civic_feedback/v2/store.py
++++ b/ui/civic_feedback/v2/store.py
+@@ -382,6 +382,10 @@ class ComplaintStore:
+             if status == "fixed":
+                 after = self._photo_ids(db, record["id"], "after", photos)
+                 record["resolution"] = lifecycle.new_resolution(record.get("resolution"), now, what_done, actor, after)
++                # R15-S24: кто нажал «Я тоже» до этой минуты, может проверить ремонт; кто после — нет. Порядок вставки
++                # (rowid) точнее времени: «Я тоже» и «исправлено» могут прийти в одну секунду.
++                record["resolution"]["metoo_upto"] = db.execute(
++                    "SELECT COALESCE(MAX(rowid), 0) FROM complaint_metoo_v2").fetchone()[0]
+                 db.execute("UPDATE complaint_photos_v2 SET round = ? WHERE complaint_id = ? AND kind = 'after' "
+                            "AND round IS NULL", (record["resolution"]["round"], record["id"]))
+                 self._add_update(record, now, "fixed", what_done)
+@@ -406,6 +410,22 @@ class ComplaintStore:
+             return "metoo"
+         return None
+ 
++    def _verifier(self, db, record: dict, device: str) -> str | None:
++        """Кто может проверить ремонт (R15-S24): автор и «Я тоже», нажатые ДО «служба сообщила об устранении».
++        Иначе любой посторонний: «Я тоже» после ремонта -> «Проблема осталась» -> проверенный ремонт снова «в работе»."""
++        relation = self._participant(db, record, device)
++        if relation != "metoo":
++            return relation
++        resolution = record.get("resolution") or {}
++        row = db.execute("SELECT rowid, at FROM complaint_metoo_v2 WHERE complaint_id = ? AND device_hash = ?",
++                         (record["id"], device)).fetchone()
++        if row is None:
++            return None
++        if isinstance(resolution.get("metoo_upto"), int):
++            return "metoo" if row[0] <= resolution["metoo_upto"] else None
++        reported = resolution.get("reported_at")      # записи до patch: по времени
++        return "metoo" if reported and row[1] <= reported else None
++
+     def participant(self, complaint_id: str, device_id) -> str | None:
+         try:
+             device = self.device_hash(device_id)
+@@ -431,7 +451,7 @@ class ComplaintStore:
+             resolution = record.get("resolution") or {}
+             if record["status"] != "fixed" or resolution.get("state") not in ("reported", "verified"):
+                 return False
+-            if self._participant(self._db, record, device) is None:
++            if self._verifier(self._db, record, device) is None:
+                 return False
+             voted = self._db.execute("SELECT 1 FROM complaint_votes_v2 WHERE complaint_id = ? AND round = ? "
+                                      "AND device_hash = ?", (record["id"], resolution["round"], device)).fetchone()
+@@ -449,7 +469,7 @@ class ComplaintStore:
+         events = []
+         with self._tx() as db:
+             record = self._root(db, complaint_id)
+-            if self._participant(db, record, device) is None:
++            if self._verifier(db, record, device) is None:
+                 return record, "not_participant"
+             resolution = record.get("resolution")
+             if record["status"] != "fixed" or not resolution or resolution.get("state") not in ("reported", "verified"):

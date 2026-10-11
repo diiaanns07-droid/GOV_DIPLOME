@@ -15,6 +15,7 @@ R15 (раунд 14) — INTEGRATION: исправления безопаснос
   P-R06.diff  ui/civic_store/auth.py                            S15 (мелочь; добавлен ночью 10→11 окт)
   P-R05.diff  web/civic/build3d/build3d-core.js                 S16 (мелочь; добавлен ночью 10→11 окт)
   P-R06-2.diff ui/civic_store/{v2,stages,proposals,demo_r14}.py  S17 S18 S19 S20 S21 (мелочи; добавлен 11 окт)
+  P-R09-2.diff ui/civic_feedback/v2/{photos,store}.py             S22 S23 (мелочи) S24 (важно) — волны 1–2, ночь 11→12
 
 Как применить (из корня рабочей копии сборки R01):
   git fetch origin claude/r14-R15
@@ -167,6 +168,20 @@ S16  getDeviceId: «dev-» + 24 символа из crypto.getRandomValues вм�
      только если crypto нет совсем). Формат и ключ хранения прежние (birge.device_id, /^dev-/): тесты R05
      tests/civic/R05/build3d/test_core.mjs — 16/16 PASS с patch. Уже выданные id в браузерах не меняются.
      Почему важно: R07 heat.js перенимает birge.device_id как birge.device, а по нему R09 отдаёт «Мои обращения».
+
+
+--------------------------------------------------------------------------------
+P-R09-2  ui/civic_feedback/v2/{photos,store}.py  (R09; ночь 11→12 окт, ветка claude/modest-shannon-0ki93p @ 2bf9a92)
+--------------------------------------------------------------------------------
+S22  photos._strip_jpeg: после SOS сжатые данные копируются до следующего маркера (FF00, RSTn и FFFF — часть данных);
+     EOI — конец, хвост отбрасывается (MPF-превью, «живое фото» с EXIF/GPS); прогрессивный JPEG — дальше разбор сегментов.
+S23  photos.sanitize: ширина/высота из заголовка (JPEG SOF, PNG IHDR, WebP VP8X/VP8/VP8L), MAX_SIDE = 4096, иначе
+     PhotoError «Фото слишком большое по размеру сторон». Обычные 1600×1200 JPEG/PNG/WebP проходят.
+S24  store: в момент «исправлено» resolution.metoo_upto = MAX(rowid) таблицы «Я тоже»; _verifier(): проверить ремонт
+     может автор и «Я тоже» с rowid <= metoo_upto (нажавшие позже — только подписка на обновления); can_verify и
+     verify используют _verifier. Записи до patch — по времени (at <= reported_at).
+Проверено: tests/civic/R09 (без старых тестов ассистента раундов 12–13, они падают и без patch) — 279 passed,
+те же 4 старых падения; тесты R15 test_r15_photos.py: S22 S23 S24 -> XPASS, остальные PASS.
 
 
 --------------------------------------------------------------------------------
