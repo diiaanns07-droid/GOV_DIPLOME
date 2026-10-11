@@ -19,6 +19,7 @@ import threading
 from datetime import datetime, timedelta
 
 from ml.civic_dedup import OPEN_STATUSES, get_deduper
+from ml.civic_dedup import feedback as _feedback
 from ml.civic_dedup.geo import bbox_around, distance_m, parse_point
 from ml.civic_dedup.search import ASTANA_TZ, MAX_TEXT, clamp_days, parse_time, target_id
 from ui.civic_ml_api.errors import MLServiceUnavailable
@@ -173,21 +174,25 @@ def warm_cache(days: int = WARM_DAYS) -> int:
     return len(records)
 
 
-def connect_store(store, *, warm: bool = True) -> None:
+def connect_store(store, *, warm: bool = True, feedback_path=None) -> None:
     """R01 вызывает один раз при старте: similar() начинает искать в хранилище жалоб R09.
 
     warm=True: открытые жалобы за 30 дней сразу считаются в фоне, а каждая новая жалоба —
     по событию created хранилища R09 (store.subscribe), чтобы «Я тоже» отвечал быстро и после старта.
+    Решения акимата (дубль / «Это разные проблемы», п. 9) пишутся в журнал ml/civic_dedup/feedback.py:
+    feedback_path или CIVIC_DEDUP_FEEDBACK, иначе рядом с базой жалоб (.runtime/dedup_feedback.jsonl).
     """
     src = StoreSource(store)
+    path = feedback_path if feedback_path is not None else _feedback.default_path(getattr(store, "db_path", None))
     with _lock:
         old = _source.pop("unsubscribe", None)
         if callable(old):
             old()
         _source["src"] = src
+        _source["feedback"] = _feedback.FeedbackLog(path)
         subscribe = getattr(src.store, "subscribe", None)
-        if warm and callable(subscribe):
-            _source["unsubscribe"] = subscribe(lambda event: _on_store_event(src, event))
+        if callable(subscribe):
+            _source["unsubscribe"] = subscribe(lambda event: _on_store_event(src, event, warm=warm))
     if warm:
         try:
             warm_cache()
@@ -195,13 +200,53 @@ def connect_store(store, *, warm: bool = True) -> None:
             LOGGER.exception("civic_ml_api: прогрев при подключении не удался")
 
 
-def _on_store_event(src: StoreSource, event: dict) -> None:
-    """Событие R09 приходит синхронно после COMMIT — здесь только постановка в очередь."""
-    if not isinstance(event, dict) or event.get("type") != "created":
+def _on_store_event(src: StoreSource, event: dict, warm: bool = True) -> None:
+    """Событие R09 приходит синхронно после COMMIT — здесь только очередь прогрева и журнал решений."""
+    if not isinstance(event, dict):
         return
-    rec = src.store.get(event.get("complaint_id"))
-    if rec:
-        WARMER.put([rec])
+    kind = event.get("type")
+    if kind == "created" and warm:
+        rec = src.store.get(event.get("complaint_id"))
+        if rec:
+            WARMER.put([rec])
+    elif kind in ("duplicate", "separated"):
+        try:
+            _record_decision(src, event)
+        except Exception:  # noqa: BLE001 — журнал не должен мешать акимату
+            LOGGER.exception("civic_ml_api: журнал решений о дублях не записан")
+
+
+def _record_decision(src: StoreSource, event: dict) -> None:
+    """«duplicate» — сотрудник объединил (пара одинаковая); «separated» — «Это разные проблемы» (пара разная).
+    Оценка модели пары — чтобы видеть, как часто подсказка «Похоже на» ошибается."""
+    log = _source.get("feedback")
+    if log is None:
+        return
+    a = src.store.get(event.get("complaint_id"))
+    if not a:
+        return
+    if event["type"] == "duplicate":
+        b_id, decision, source = a.get("duplicate_of"), _feedback.SAME, "staff_duplicate"
+    else:
+        b_id, decision, source = event.get("original_id"), _feedback.DIFFERENT, "staff_separate"
+    b = src.store.get(b_id) if b_id else None
+    if not b:
+        return
+    score = threshold = method = None
+    try:
+        dd = get_deduper()
+        score, threshold = dd.pair_score(str(a.get("text") or ""), str(b.get("text") or ""))
+        method = dd.version
+    except Exception:  # noqa: BLE001 — без оценки решение всё равно записываем
+        LOGGER.warning("civic_ml_api: оценка пары для журнала не посчитана")
+    log.record(a["id"], b["id"], decision, source, score=score, threshold=threshold, method=method,
+               at=event.get("at"))
+
+
+def feedback_stats() -> dict | None:
+    """Счётчики журнала решений (для status()): None — хранилище не подключено."""
+    log = _source.get("feedback")
+    return log.stats() if log is not None else None
 
 
 def set_complaint_source(fn_or_source, clock=None) -> None:
@@ -212,6 +257,7 @@ def set_complaint_source(fn_or_source, clock=None) -> None:
             old()
         if fn_or_source is None:
             _source.pop("src", None)
+            _source.pop("feedback", None)
         elif hasattr(fn_or_source, "fetch") and hasattr(fn_or_source, "now"):
             _source["src"] = fn_or_source
         else:

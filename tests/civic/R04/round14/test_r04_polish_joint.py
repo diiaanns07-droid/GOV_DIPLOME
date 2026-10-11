@@ -19,7 +19,7 @@ import pytest
 
 web_server = pytest.importorskip("ui.web_server")
 if not hasattr(web_server, "public_text"):
-    pytest.skip("patch шлюза R01 (п. 8, research/round-14-results/R04/patches/r01_web_server.patch) ещё не применён",
+    pytest.skip("patch шлюза R01 (п. 8, research/round-14-results/R04/patches/r01_polish_r04.patch) ещё не применён",
                 allow_module_level=True)
 pytest.importorskip("ui.civic_store.service")
 pytest.importorskip("ui.civic_feedback.v2.integration")
@@ -131,3 +131,61 @@ def test_clean_complaint_has_no_flag_and_is_unchanged(app):
     app.login()
     status, data, _ = app.call("GET", f"/api/civic/v2/complaints/{created['id']}", staff=True)
     assert status == 200 and "moderation" not in data["data"]["complaint"]
+
+
+# --------------------------------------------------------------------------- п. 9
+FAR_POINT = [71.4400, 51.1000]       # ~1,8 км от остановки: другая цель
+
+
+def _heat_counts(app, staff=False):
+    status, data, _ = app.call("GET", "/api/civic/v2/heat?bbox=71.40,51.08,71.46,51.11&days=14&zoom=16", staff=staff)
+    assert status == 200, data
+    return {item["target"]["id"]: item["count"] for item in data["items"] if item.get("count")}
+
+
+def test_wrong_metoo_is_separated_in_one_action_and_heat_recounts(app):
+    if not hasattr(__import__("ui.civic_feedback.v2.store", fromlist=["x"]).ComplaintStore, "separate"):
+        pytest.skip("patch R09 п. 9 (r09_polish_r04.patch) ещё не применён")
+    original = app.complaint("Разбит павильон остановки, стекло на земле", "device-author-0009")
+    here = original["target"]["id"]
+    # Житель написал о другой проблеме в другом месте, «Похоже на» ошиблось, он нажал «Я тоже» (текст ушёл с ним).
+    note = {"text": "Не горит фонарь во дворе, очень темно вечером", "point": FAR_POINT, "category": "lighting"}
+    status, data, _ = app.call("POST", f"/api/civic/v2/complaints/{original['id']}/metoo", {"note": note},
+                               device="device-metoo-00000009")
+    assert status == 200 and data["data"]["result"] == "added"
+    counts = _heat_counts(app)
+    assert counts.get(here) == 2 and len(counts) == 1
+
+    # Житель не видит чужих объединений; сотрудник видит и разделяет одним действием.
+    status, _, _ = app.call("GET", f"/api/civic/v2/complaints/merged?target_id={here}")
+    assert status == 403
+    app.login()
+    status, data, _ = app.call("GET", f"/api/civic/v2/complaints/merged?target_id={here}", staff=True)
+    assert status == 200 and [i["text"] for i in data["data"]["items"]] == [note["text"]]
+    item_id = data["data"]["items"][0]["id"]
+    status, data, _ = app.call("POST", f"/api/civic/v2/complaints/{item_id}/separate", {}, staff=True)
+    assert status == 200, data
+    separated = data["data"]["complaint"]
+    assert separated["text"] == note["text"] and separated["category"] == "lighting"
+    assert separated["target"]["id"] != here and data["data"]["original"]["metoo"] == 0
+
+    counts = _heat_counts(app)                       # обе цели пересчитаны сразу (кэш R07 сброшен событием)
+    assert counts == {here: 1, separated["target"]["id"]: 1}
+    status, data, _ = app.call("GET", "/api/civic/v2/complaints/mine", device="device-metoo-00000009")
+    assert [(i["id"], i["relation"]) for i in data["data"]["items"]] == [(separated["id"], "author")]
+    status, data, _ = app.call("POST", f"/api/civic/v2/complaints/{item_id}/separate", {}, staff=True)
+    assert status == 409                            # повтор — не вторая жалоба
+
+
+def test_staff_duplicate_mark_is_undone(app):
+    if not hasattr(__import__("ui.civic_feedback.v2.store", fromlist=["x"]).ComplaintStore, "separate"):
+        pytest.skip("patch R09 п. 9 (r09_polish_r04.patch) ещё не применён")
+    a = app.complaint("Разбит павильон остановки", "device-author-0010")
+    b = app.complaint("Не горит фонарь у дома 5", "device-author-0011", point=FAR_POINT, category="lighting")
+    app.login()
+    status, data, _ = app.call("POST", f"/api/civic/v2/complaints/{b['id']}/duplicate", {"of": a["id"]}, staff=True)
+    assert status == 200 and data["data"]["complaint"]["metoo"] == 1
+    assert _heat_counts(app) == {a["target"]["id"]: 2}
+    status, data, _ = app.call("POST", f"/api/civic/v2/complaints/{b['id']}/separate", {}, staff=True)
+    assert status == 200 and data["data"]["complaint"]["duplicate_of"] is None
+    assert _heat_counts(app) == {a["target"]["id"]: 1, b["target"]["id"]: 1}

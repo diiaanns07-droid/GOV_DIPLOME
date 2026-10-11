@@ -181,6 +181,13 @@ class Deduper:
             out.append((rec, dist, same))
         return out
 
+    def pair_score(self, a: str, b: str) -> tuple[float, float]:
+        """Оценка пары текстов и порог для неё (журнал решений акимата, ml/civic_dedup/feedback.py)."""
+        fa, fb = self.scorer.encode_many([a[:MAX_TEXT], b[:MAX_TEXT]])
+        threshold_for = getattr(self.scorer, "threshold_for", None)
+        thr = threshold_for(fa, fb, self.threshold) if threshold_for else self.threshold
+        return self.scorer.score(fa, fb), thr
+
     def find(self, text: str, records, *, point=None, target=None, days=None, now: datetime | None = None,
              limit: int = 5) -> list[Match]:
         if not isinstance(text, str) or letters(text) < MIN_LETTERS:
