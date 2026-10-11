@@ -966,5 +966,15 @@
  "merge.kind.duplicate": "Волна 2 · R04 · акимат: разъединить объединённое (волна 1 п. 9)",
  "merge.separate": "Волна 2 · R04 · акимат: разъединить объединённое (волна 1 п. 9)",
  "merge.separated": "Волна 2 · R04 · акимат: разъединить объединённое (волна 1 п. 9)",
- "merge.already": "Волна 2 · R04 · акимат: разъединить объединённое (волна 1 п. 9)"
+ "merge.already": "Волна 2 · R04 · акимат: разъединить объединённое (волна 1 п. 9)",
+ "shell.nav.ideas": "Волна 2 · R01/R09 · меню (IA_WAVE2 §1); возвращён — роли берут ключ из схемы",
+ "shell.nav.more": "Волна 2 · R01/R09 · меню (IA_WAVE2 §1); возвращён — роли берут ключ из схемы",
+ "shell.nav.inbox": "Волна 2 · R01/R09 · меню (IA_WAVE2 §1); возвращён — роли берут ключ из схемы",
+ "shell.nav.projects": "Волна 2 · R01/R09 · меню (IA_WAVE2 §1); возвращён — роли берут ключ из схемы",
+ "shell.nav.questions": "Волна 2 · R01/R09 · меню (IA_WAVE2 §1); возвращён — роли берут ключ из схемы",
+ "shell.layers.title": "Волна 2 · R01 · слои (IA_WAVE2 §0.2); возвращён",
+ "inbox.complaints": "Волна 2 · R09 · акимат «Обращения» (web/civic/feedback/complaint-list.js, IA_WAVE2 §2.5)",
+ "inbox.empty": "Волна 2 · R09 · акимат «Обращения» (web/civic/feedback/complaint-list.js, IA_WAVE2 §2.5)",
+ "inbox.people": "Волна 2 · R09 · акимат «Обращения» (web/civic/feedback/complaint-list.js, IA_WAVE2 §2.5)",
+ "mine.unsubscribed": "Волна 2 · R09 · «Менің өтініштерім», отписка"
 }

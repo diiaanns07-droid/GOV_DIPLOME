@@ -713,6 +713,7 @@
  "mine.verify.what": "Что сделали: {text}",
  "mine.verify.yes": "Да, исправлено",
  "mine.transferred": "Передано: {name}",
+ "mine.unsubscribed": "Вы отписались. Ваш голос остаётся в числе сообщивших",
  "proposal.catalog.title": "Что построить?",
  "proposal.kind.square": "Сквер",
  "proposal.kind.playground": "Детская площадка",
@@ -895,6 +896,12 @@
  "shell.screen.soon_text": "Этот раздел ещё не подключён к сборке. Карта и обращения работают.",
  "shell.screen.soon_title": "Раздел скоро появится",
  "shell.nav.nearby": "Рядом",
+ "shell.nav.ideas": "Идеи",
+ "shell.nav.more": "Ещё",
+ "shell.nav.inbox": "Обращения",
+ "shell.nav.projects": "Проекты и идеи",
+ "shell.nav.questions": "Вопрос акиму",
+ "shell.layers.title": "Слой на карте",
  "editor.geo.not_wired": "Привязка к улицам на этом сервере не подключена. Отметьте точку или площадь.",
  "editor.near.linked": "Точка стоит на объекте OSM: {name}.",
  "editor.near.title": "Рядом есть объект на карте OSM:",
@@ -1268,6 +1275,17 @@
  "inbox.tab.waiting_check": "Ждут проверки",
  "inbox.tab.overdue": "Просрочено",
  "inbox.tab.reopened": "Вернули жители",
+ "inbox.complaints": {
+  "one": "{n} обращение",
+  "few": "{n} обращения",
+  "many": "{n} обращений"
+ },
+ "inbox.empty": "В этой вкладке пусто",
+ "inbox.people": {
+  "one": "{n} человек",
+  "few": "{n} человека",
+  "many": "{n} человек"
+ },
  "nearby.title": "Что делают рядом",
  "nearby.district": "Район: {name}",
  "nearby.tab.now": "Ремонтируют сейчас",
