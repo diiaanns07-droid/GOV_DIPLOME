@@ -405,7 +405,9 @@ async function checkCentral(ctx) {
         await shotOf(K.page, `${tag}-W2-1-6-akimat`));
       await K.page.keyboard.press("Escape").catch(() => null);
       const day = await header(K.page, lang, exact(W(lang, ["common.nav.day", "shell.section.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня")), 2500);
-      const counter = await L.visibleText(K.page, /подтвердил|проверено жител|проверили жител|тексерді|растады/i);
+      // R08 akim.verify.split: «Служба сообщила {a} · жители проверили {b} · вернули {c}» (kk «тұрғындар тексерді»).
+      const counter = await L.visibleText(K.page, new RegExp([part(W(lang, "akim.verify.split", "Служба сообщила {a} · жители проверили {b}")).source,
+        "подтвердил|проверено жител|проверили жител|жители проверили|тексерді|растады"].join("|"), "i"));
       add("W2-1", tag, "«Картина дня» (R08): сколько исправлений проверили жители", st(day && counter), { day, counter }, await shotOf(K.page, `${tag}-W2-1-7-day`));
     } finally { await K.ctx.close(); }
   }
@@ -742,10 +744,13 @@ async function checkClutter(ctx) {
   const P = await openPage(browser, [1366, 768], "ru", { "birge.mode": "resident" });
   try {
     await goto(P.page, base, "ru");
+    // Список слоёв открывается кнопкой «Слой на карте» (последняя в колонке кнопок карты, R01 §11.3).
+    const lb = await L.firstVisible(P.page.getByRole("button", { name: exact(W("ru", ["shell.layers.label", "shell.layers.title"], "Слой на карте")) }));
+    if (lb) { await lb.click().catch(() => null); await L.sleep(600); }
     const layers = await P.page.evaluate(() => [...document.querySelectorAll("[role=radio], input[type=radio]")].filter((e) => e.getClientRects().length || (e.labels && e.labels[0] && e.labels[0].getClientRects().length))
       .map((e) => ({ name: (e.getAttribute("aria-label") || (e.labels && e.labels[0] && e.labels[0].innerText) || e.innerText || "").trim(), on: e.checked || e.getAttribute("aria-checked") === "true" })));
     const none = W("ru", "shell.layers.none");
-    const options = layers.filter((l) => /слой|жалоб|рядом|иде/i.test(l.name));
+    const options = layers.filter((l) => /слой|жалоб|рядом|иде|проект/i.test(l.name));
     add("P-12", "слои", `слои карты: по умолчанию «${none}», включено не больше одного`, options.length ? st(options.filter((l) => l.on).length <= 1 && options.some((l) => l.on && l.name.startsWith(none.slice(0, 10)))) : "NOT_RUN",
       options.length ? { options } : "переключатель слоёв не найден (слоёв ещё нет) — по умолчанию карту сторожит compare_baseline.cjs", await shotOf(P.page, "1366-ru-P-12-layers"));
   } finally { await P.ctx.close(); }
