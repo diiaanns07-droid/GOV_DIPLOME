@@ -251,9 +251,9 @@ async function staffFixApi(A, id) {
 async function checkEmergency(ctx) {
   const { browser, base, variants } = ctx;
   const cases = [
-    { name: "газ (текст)", text: { ru: "Сильно пахнет газом в подъезде", kk: "Подъездде газ иісі қатты шығып тұр" }, phone: "104", cat: "smell_air" },
-    { name: "пожар (текст)", text: { ru: "Во дворе что-то горит, идёт дым", kk: "Аулада бірдеңе жанып жатыр, түтін шығып тұр" }, phone: "112", cat: "smell_air" },
-    { name: "оборванный провод (уточнение)", text: { ru: "Фонарь не горит, провод висит до земли", kk: "Шам жанбайды, сым жерге дейін салбырап тұр" }, phone: "112", cat: "lighting", chip: "subtopic.wire_down" },
+    { id: "gas", name: "газ (текст)", text: { ru: "Сильно пахнет газом в подъезде", kk: "Подъездде газ иісі қатты шығып тұр" }, phone: "104", cat: "smell_air" },
+    { id: "fire", name: "пожар (текст)", text: { ru: "Во дворе что-то горит, идёт дым", kk: "Аулада бірдеңе жанып жатыр, түтін шығып тұр" }, phone: "112", cat: "smell_air" },
+    { id: "wire", name: "оборванный провод (уточнение)", text: { ru: "Фонарь не горит, провод висит до земли", kk: "Шам жанбайды, сым жерге дейін салбырап тұр" }, phone: "112", cat: "lighting", chip: "subtopic.wire_down" },
   ];
   for (const [size, lang] of variants) {
     const tag = `${size[0]}-${lang}`;
@@ -278,7 +278,7 @@ async function checkEmergency(ctx) {
         const link = await L.firstVisible(P.page.locator(`a[href^="tel:${c.phone}"]`));
         const linkPrimary = link ? await link.evaluate((e) => /primary/.test(e.className)).catch(() => null) : null;
         add("W1-3", tag, `${c.name}: на шаге текста — баннер «${title}» и главная кнопка — ссылка tel:${c.phone}`, st(bannerText && !!link && linkPrimary === true),
-          { banner: bannerText, tel: !!link, linkPrimary, text: link ? (await link.innerText().catch(() => "")).trim() : null }, await shotOf(P.page, `${tag}-W1-3-${c.phone}-${c.chip ? "chip" : c.name.split(" ")[0]}`));
+          { banner: bannerText, tel: !!link, linkPrimary, text: link ? (await link.innerText().catch(() => "")).trim() : null }, await shotOf(P.page, `${tag}-W1-3-${c.phone}-${c.id}`));
         // До «Отправить»: «Далее» (при необходимости — категория) → шаг проверки; баннер всё ещё виден и стоит над кнопкой.
         const sendRe = exact(W(lang, ["complaint.step3.send", "complaint.send"], lang === "kk" ? "Жіберу" : "Отправить"));
         const nextRe = exact(W(lang, "complaint.wizard.next", lang === "kk" ? "Әрі қарай" : "Далее"));
@@ -305,7 +305,7 @@ async function checkEmergency(ctx) {
         const sendTop = send ? (await send.boundingBox().catch(() => null) || {}).y : null;
         add("W1-3", tag, `${c.name}: на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:${c.phone})`,
           st(!!send && !!at && at.banner && at.banner_top !== null && sendTop !== null && at.banner_top < sendTop && sendEnabled && sendPrimary === false && at.tel_primary === true && prim.length === 1),
-          { send: !!send, sendEnabled, sendPrimary, sendTop: sendTop && Math.round(sendTop), primary: prim, ...(at || {}) }, await shotOf(P.page, `${tag}-W1-3-${c.phone}-${c.chip ? "chip" : c.name.split(" ")[0]}-send`));
+          { send: !!send, sendEnabled, sendPrimary, sendTop: sendTop && Math.round(sendTop), primary: prim, ...(at || {}) }, await shotOf(P.page, `${tag}-W1-3-${c.phone}-${c.id}-send`));
       } finally { await P.ctx.close(); }
     }
   }
