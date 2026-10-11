@@ -459,6 +459,26 @@ test("улица рядом с безымянным проездом — из п
   assert.equal(C.streetFromR12Label(null, null), null);
 });
 
+test("идеи жителей (POLISH_WAVE_2 п. 7): normalizeIdea и пометка «по идее жителей» у проекта", () => {
+  // Идея с объектом каталога — модель у объекта; без объекта — только метка у точки; освещение к идее — без модели.
+  const a = C.normalizeIdea({ id: 7, title: "Сквер", geometry: { type: "Point", coordinates: [71.4, 51.12] },
+    object: { kind: "square", geometry: { type: "Point", coordinates: [71.401, 51.121] }, rotation_deg: 370 }, votes: 47, demo: true });
+  assert.deepEqual([a.id, a.kind, a.geometry.coordinates, a.rotation_deg, a.votes, a.demo], ["7", "square", [71.401, 51.121], 10, 47, true]);
+  const b = C.normalizeIdea({ id: "i2", text: "Переход у школы", geometry: { type: "Point", coordinates: [71.4, 51.12] }, votes_up: 12 });
+  assert.equal(b.kind, null);
+  assert.equal(b.title, "Переход у школы");
+  assert.equal(b.votes, 12);
+  assert.equal(C.normalizeIdea({ id: "i3", geometry: { type: "Point", coordinates: [71.4, 51.12] }, object: { kind: "lighting" } }).kind, null);
+  assert.equal(C.normalizeIdea({ id: "x" }), null, "без точки — не рисуем");
+  assert.equal(C.normalizeIdea(null), null);
+  // Проект, сделанный из идеи: три формы ссылки на идею от R06 — одна пометка.
+  const base = { id: "p", kind: "square", geometry: { type: "Point", coordinates: [71.4, 51.12] } };
+  assert.deepEqual(C.normalizeProposal(Object.assign({ idea: { id: "i1", votes: 47 } }, base)).idea, { id: "i1", votes: 47 });
+  assert.deepEqual(C.normalizeProposal(Object.assign({ source: { kind: "idea", id: 5, votes_up: 9 } }, base)).idea, { id: "5", votes: 9 });
+  assert.deepEqual(C.normalizeProposal(Object.assign({ idea_id: "i9" }, base)).idea, { id: "i9", votes: null });
+  assert.equal(C.normalizeProposal(base).idea, null);
+});
+
 test("API: конверт сервиса R06 {ok, data}, ошибка без сессии сотрудника, клиент оболочки R01 api.v2", async () => {
   const env = C.createApiStore({ fetch: fakeFetch({ "GET /api/civic/v2/proposals": [200, { ok: true, data: { items: [{ id: "p-9", kind: "stop", geometry: { type: "Point", coordinates: NURA }, planned_year: null }] } }],
     "POST /api/civic/v2/proposals": [401, { ok: false, error: { code: "unauthenticated", message: "Войдите" } }], "GET /api/civic/v1/session": [200, { authenticated: false }] }, []) });

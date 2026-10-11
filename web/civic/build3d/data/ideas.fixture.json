@@ -1,0 +1,33 @@
+{
+ "schema": "birge-ideas-fixture-v1",
+ "purpose": "Пример слоя «Идеи» (POLISH_WAVE_2 п. 7) до API идей R06: демо-страница R05 с ?ideas=1. Только примеры (demo: true), не обращения жителей.",
+ "source": "R05, вручную; места — свободные точки района Нура рядом с примерами проектов",
+ "ideas": [
+  {
+   "id": "idea-demo-1",
+   "title": "Сквер со скамейками и тенью во дворе",
+   "geometry": { "type": "Point", "coordinates": [71.40002, 51.12905] },
+   "object": { "kind": "square", "geometry": { "type": "Point", "coordinates": [71.40002, 51.12905] }, "rotation_deg": 15 },
+   "votes": 47,
+   "status": "voting",
+   "demo": true
+  },
+  {
+   "id": "idea-demo-2",
+   "title": "Спортплощадка для подростков",
+   "geometry": { "type": "Point", "coordinates": [71.39955, 51.12685] },
+   "object": { "kind": "sports", "geometry": { "type": "Point", "coordinates": [71.39955, 51.12685] }, "rotation_deg": 0 },
+   "votes": 23,
+   "status": "voting",
+   "demo": true
+  },
+  {
+   "id": "idea-demo-3",
+   "title": "Пешеходный переход у школы",
+   "geometry": { "type": "Point", "coordinates": [71.40305, 51.12815] },
+   "votes": 12,
+   "status": "voting",
+   "demo": true
+  }
+ ]
+}

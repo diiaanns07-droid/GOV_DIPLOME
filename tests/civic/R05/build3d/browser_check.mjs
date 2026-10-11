@@ -1193,6 +1193,105 @@ await check("light_card_first_3d_by_button_1366_375_ru_kk", async () => {
   }
   return { status: "PASS", detail: out };
 });
+await check("idea_pick_object_sketch_not_saved_1366_375_ru_kk", async () => {
+  // POLISH_WAVE_2 п. 7 (R06 + R05): житель предлагает идею и по желанию прикладывает объект 3D-каталога. pickObject()
+  // показывает «Как это может выглядеть?» (без освещения, с честной строкой «эскиз, а не проект»), размещение — «Готово»;
+  // результат — эскиз для формы идеи R06, проектов на карте не прибавляется. «Отмена» — null.
+  const out = {};
+  for (const [w, h, lang] of [[1366, 768, "ru"], [1366, 768, "kk"], [375, 812, "ru"], [375, 812, "kk"]]) {
+    const phone = w < 640;
+    const p = await openPage(Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {}),
+      `?reset=1&store=local&role=resident&lang=${lang}&center=71.4006,51.1283&zoom=17.4&pitch=50&bearing=-20`);
+    const before = (await state(p)).count;
+    await p.evaluate(() => { window.__pick = null; __b3d.pickObject().then((r) => { window.__pick = { done: true, value: r }; }); });
+    await p.waitForSelector(".b3d-dock[data-state=catalog] .b3d-card", { timeout: 10000 });
+    const cat = await p.evaluate(() => ({ title: document.querySelector(".b3d-title").textContent, kinds: [...document.querySelectorAll(".b3d-card")].map((b) => b.dataset.kind),
+      note: document.querySelector(".b3d-note") ? document.querySelector(".b3d-note").textContent : null, tag: document.querySelector(".b3d-head .b3d-tag--idea") ? document.querySelector(".b3d-head .b3d-tag--idea").textContent : null }));
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `idea_pick_catalog_${w}_${lang}.png`) });
+    await (phone ? p.tap(".b3d-card[data-kind=square]") : p.click(".b3d-card[data-kind=square]"));
+    await p.waitForFunction(() => __b3d.getState().mode === "placing" && !!__b3d.getState().ghost, null, { timeout: 15000 });
+    const at = await screenOf(p, [71.4003, 51.1286]);
+    if (phone) await p.touchscreen.tap(at[0], at[1]);
+    else {
+      await p.mouse.move(at[0], at[1]);
+      await p.mouse.click(at[0], at[1]);
+    }
+    await p.waitForTimeout(400);
+    const placing = await p.evaluate(() => ({ done: document.querySelector("[data-action=place]").textContent.trim(), tag: document.querySelector(".b3d-head .b3d-tag--idea") ? document.querySelector(".b3d-head .b3d-tag--idea").textContent : null }));
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `idea_pick_placing_${w}_${lang}.png`) });
+    await p.click("[data-action=place]");
+    await p.waitForFunction(() => window.__pick && window.__pick.done, null, { timeout: 10000 });
+    const res = await p.evaluate(() => window.__pick.value);
+    const after = await state(p);
+    // «Отмена» — эскиза нет
+    await p.evaluate(() => { window.__pick2 = null; __b3d.pickObject({ kind: "sports" }).then((r) => { window.__pick2 = { done: true, value: r }; }); });
+    await p.waitForFunction(() => __b3d.getState().mode === "placing", null, { timeout: 10000 });
+    await p.click("[data-action=cancel]");
+    await p.waitForFunction(() => window.__pick2 && window.__pick2.done, null, { timeout: 10000 });
+    const cancelled = await p.evaluate(() => window.__pick2.value);
+    const dock = await p.evaluate(() => document.querySelector(".b3d-dock").dataset.state);
+    await p.context().close();
+    out[`${w}_${lang}`] = { cat, placing, res, count: [before, after.count], picking: after.picking, cancelled, dock_after: dock };
+    const ok = cat.kinds.length === 4 && !cat.kinds.includes("lighting") && /эскиз|эскиз/.test(cat.note || "") &&
+      (lang === "ru" ? cat.title === "Как это может выглядеть?" && placing.done === "Готово" : cat.title === "Бұл қалай көрінуі мүмкін?" && placing.done === "Дайын") &&
+      placing.tag === "Идея" && res && res.kind === "square" && Math.abs(res.geometry.coordinates[0] - 71.4003) < 3e-5 && Math.abs(res.geometry.coordinates[1] - 51.1286) < 3e-5 &&
+      after.count === before && after.picking === false && cancelled === null && dock === "hint";
+    assert(ok, JSON.stringify(out[`${w}_${lang}`]));
+  }
+  return { status: "PASS", detail: out };
+});
+await check("ideas_layer_off_by_default_shown_by_host_1366_375_ru_kk", async () => {
+  // Защита от перегруза (правило 1): по умолчанию идей на карте нет; хозяин включает слой — метки «Идея · 47», в 3D
+  // полупрозрачные модели (у идеи без объекта — только метка); нажатие — onIdeaSelect; выключил — меток нет.
+  const out = {};
+  for (const [w, h, lang] of [[1366, 768, "ru"], [1366, 768, "kk"], [375, 812, "ru"], [375, 812, "kk"]]) {
+    const phone = w < 640;
+    const p = await openPage(Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {}),
+      `?reset=1&store=local&role=resident&lang=${lang}&center=71.4002,51.1282&zoom=16.9&pitch=50&bearing=-20`);
+    const off = await p.evaluate(() => ({ ideas: __b3d.getState().ideas, labels: document.querySelectorAll(".b3d-label--idea").length, geo: __b3d.getState().memory.geometries }));
+    const ideas = JSON.parse(await (await fetch(BASE.replace("demo.html", "data/ideas.fixture.json"))).text()).ideas;
+    await p.evaluate((list) => __b3d.setIdeas(list), ideas);
+    // Модели идей попадают на GPU со следующим кадром карты — ждём его, а не фиксированную паузу.
+    await p.waitForFunction((g) => __b3d.getState().memory.geometries > g, off.geo, { timeout: 5000 }).catch(() => {});
+    await idle(p);
+    await p.waitForTimeout(300);
+    const on = await p.evaluate(() => ({ ideas: __b3d.getState().ideas, geo: __b3d.getState().memory.geometries,
+      labels: [...document.querySelectorAll(".b3d-label--idea")].filter((b) => b.style.visibility !== "hidden").map((b) => b.textContent.trim()) }));
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `ideas_layer_${w}_${lang}.png`) });
+    const lab = await p.$('.b3d-label--idea[data-idea="idea-demo-1"]');
+    if (lab) await (phone ? lab.tap() : lab.click());
+    await p.waitForTimeout(200);
+    const picked = await p.evaluate(() => window.__lastIdea && window.__lastIdea.id);
+    await p.evaluate(() => __b3d.setIdeas(null));
+    await p.waitForTimeout(200);
+    const after = await p.evaluate(() => ({ ideas: __b3d.getState().ideas, labels: document.querySelectorAll(".b3d-label--idea").length, geo: __b3d.getState().memory.geometries }));
+    await p.context().close();
+    out[`${w}_${lang}`] = { off, on, picked, after };
+    // На телефоне в кадре одна идея (остальные за краем узкого экрана), на ноутбуке — все три.
+    assert(off.ideas === 0 && off.labels === 0 && on.ideas === 3 && on.labels.length >= (phone ? 1 : 2) && on.labels.every((x) => /^Идея · \d+$/.test(x)) &&
+      on.geo > off.geo && picked === "idea-demo-1" && after.ideas === 0 && after.labels === 0 && after.geo === off.geo, JSON.stringify(out[`${w}_${lang}`]));
+  }
+  return { status: "PASS", detail: out };
+});
+await check("project_from_idea_card_says_by_residents_idea_ru_kk", async () => {
+  // Акимат превратил идею в проект (R06): в карточке «По идее жителей · 47 голосов» / «Тұрғындар идеясы бойынша · 47 дауыс».
+  const out = {};
+  for (const lang of ["ru", "kk"]) {
+    const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+    const p = await ctx.newPage();
+    const item = Object.assign(JSON.parse(JSON.stringify(FIXTURE.proposals.find((x) => x.kind === "square"))), { id: "p-from-idea", idea: { id: "idea-demo-1", votes: 47 }, demo: false });
+    await p.route("**/api/civic/v2/proposals**", (route) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ items: [item] }) }));
+    await p.goto(BASE + `?store=api&lang=${lang}&` + MAIN_Q.slice(1));
+    await waitReady(p);
+    await p.evaluate(() => __b3d.select("p-from-idea"));
+    await p.waitForSelector(".b3d-pcard__idea", { timeout: 10000 });
+    out[lang] = (await p.textContent(".b3d-pcard__idea")).trim();
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `project_from_idea_1366_${lang}.png`) });
+    await ctx.close();
+  }
+  assert(out.ru === "По идее жителей · 47 голосов" && out.kk === "Тұрғындар идеясы бойынша · 47 дауыс", JSON.stringify(out));
+  return { status: "PASS", detail: out };
+});
 await check("r01_map_getter_waits_for_map", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   const r = await p.evaluate(async () => {

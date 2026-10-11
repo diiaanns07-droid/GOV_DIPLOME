@@ -61,6 +61,14 @@
       "build3d.poles": { one: "{n} фонарь", few: "{n} фонаря", many: "{n} фонарей" },
       "build3d.cluster": { one: "{n} проект", few: "{n} проекта", many: "{n} проектов" },
       "build3d.cluster.open": "{count} рядом — показать ближе",
+      "build3d.idea.pick_title": "Как это может выглядеть?",
+      "build3d.idea.pick_note": "Это эскиз к идее, а не проект: решение принимает акимат",
+      "build3d.idea.done": "Готово",
+      "build3d.idea.tag": "Идея",
+      "build3d.idea.label": "Идея · {n}",
+      "build3d.idea.open": { one: "Идея жителей, {n} голос — открыть", few: "Идея жителей, {n} голоса — открыть", many: "Идея жителей, {n} голосов — открыть" },
+      "build3d.card.from_idea": { one: "По идее жителей · {n} голос", few: "По идее жителей · {n} голоса", many: "По идее жителей · {n} голосов" },
+      "build3d.card.from_idea_plain": "По идее жителей",
       "build3d.err.far_from_street": "Нажмите ближе к улице",
       "build3d.err.other_street": "Выберите конец на той же улице: {street}",
       "build3d.err.too_short": "Участок слишком короткий. Выберите точки дальше друг от друга",
@@ -111,6 +119,14 @@
       "build3d.poles": "{n} шам",
       "build3d.cluster": "{n} жоба",
       "build3d.cluster.open": "Жақын жерде {count} — жақындатып көрсету",
+      "build3d.idea.pick_title": "Бұл қалай көрінуі мүмкін?",
+      "build3d.idea.pick_note": "Бұл — жоба емес, идеяға арналған эскиз: шешімді әкімдік қабылдайды",
+      "build3d.idea.done": "Дайын",
+      "build3d.idea.tag": "Идея",
+      "build3d.idea.label": "Идея · {n}",
+      "build3d.idea.open": "Тұрғындар идеясы, {n} дауыс — ашу",
+      "build3d.card.from_idea": "Тұрғындар идеясы бойынша · {n} дауыс",
+      "build3d.card.from_idea_plain": "Тұрғындар идеясы бойынша",
       "build3d.err.far_from_street": "Көшеге жақынырақ басыңыз",
       "build3d.err.other_street": "Соңын сол көшеден таңдаңыз: {street}",
       "build3d.err.too_short": "Бөлік тым қысқа. Нүктелерді бір-бірінен алысырақ таңдаңыз",
@@ -367,10 +383,11 @@
       return function () {
         var args = arguments;
         if (inner) return inner[name].apply(inner, args);
-        if (name === "update" || name === "setVisible" || name === "setMode")
+        if (name === "update" || name === "setVisible" || name === "setMode" || name === "setIdeas")
           queued.push(function (h) {
             h[name].apply(h, args);
           });
+        if (name === "pickObject") return Promise.resolve(null); // карты ещё нет — эскиза нет
         return name === "start" || name === "flyToProposals" ? false : undefined;
       };
     }
@@ -382,6 +399,8 @@
       flyToProposals: later("flyToProposals"),
       refresh: later("refresh"),
       view3d: later("view3d"),
+      pickObject: later("pickObject"),
+      setIdeas: later("setIdeas"),
       setVisible: later("setVisible"),
       setMode: later("setMode"),
       update: later("update"),
@@ -664,6 +683,7 @@
       if (S.phase === "error") return renderMessage("wifi-off", t("build3d.load_failed"), "", true);
       if (S.mode === "placing") return S.three === "ready" ? renderPlacing() : renderLoading();
       if (pendingStart && S.three === "loading") return renderLoading();
+      if (pick) return renderPickCatalog();
       if (S.selected && S.objects[S.selected] && o.renderCard) return renderCard(S.objects[S.selected].p);
       // Без WebGL2 жители видят проекты и голосуют (лёгкие метки), а поставить объект нельзя — говорим прямо.
       if (o.role === "akimat" && o.dock && S.three === "unsupported") return renderMessage("alert", t("build3d.unsupported_title"), t("build3d.unsupported_text"), false);
@@ -747,7 +767,7 @@
       title.appendChild(icon(k.icon, o.iconsUrl));
       title.appendChild(el("span", "", { text: t(k.key) }));
       head.appendChild(title);
-      head.appendChild(el("span", "bk-tag bk-tag--project", { text: t("common.tag.project") }));
+      head.appendChild(pick ? el("span", "bk-tag b3d-tag--idea", { text: t("build3d.idea.tag") }) : el("span", "bk-tag bk-tag--project", { text: t("common.tag.project") }));
       dock.appendChild(head);
       var hint = el("p", "b3d-hint" + (S.hint && S.hint.error ? " b3d-hint--error" : ""), { role: "status", "aria-live": "polite" });
       if (S.hint && S.hint.error) hint.appendChild(icon("alert", o.iconsUrl));
@@ -774,7 +794,7 @@
       }
       actions.appendChild(actionBtn("close", t("common.action.cancel"), "", cancel, "cancel"));
       var canPlace = g && g.valid && g.valid.ok && (!k.line || (g.section && g.section.ok));
-      var place = actionBtn("check", t("proposal.place"), "bk-btn--primary", place_, "place");
+      var place = actionBtn("check", t(pick ? "build3d.idea.done" : "proposal.place"), "bk-btn--primary", place_, "place");
       if (!canPlace) place.setAttribute("aria-disabled", "true");
       actions.appendChild(place);
       dock.appendChild(actions);
@@ -835,6 +855,9 @@
         dock.textContent = "";
         return renderOwnCard(p);
       }
+      // Проект по идее жителей: строку даёт карточка R06, если умеет (BirgeProposals.showsIdea), иначе — модуль.
+      var fromIdea = !(root.BirgeProposals && root.BirgeProposals.showsIdea) && ideaLine(p);
+      if (fromIdea) dock.appendChild(fromIdea);
       var where = placeText(p);
       var whereRow = el("div", "b3d-pcard__whererow");
       if (where) whereRow.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
@@ -867,6 +890,13 @@
       });
       if (loading) b.setAttribute("aria-busy", "true");
       return b;
+    }
+    function ideaLine(p) {
+      if (!p.idea) return null;
+      var line = el("p", "bk-meta b3d-pcard__idea");
+      line.appendChild(icon("users", o.iconsUrl));
+      line.appendChild(el("span", "", { text: p.idea.votes != null ? t("build3d.card.from_idea", { n: p.idea.votes }) : t("build3d.card.from_idea_plain") }));
+      return line;
     }
     // Строка карточки с кнопкой «3D» справа (строка «Рядом: …» или ряд меток).
     function withView3d(row) {
@@ -913,6 +943,8 @@
       var st = p.status === "approved" || p.status === "rejected" ? p.status : "proposal";
       tags.appendChild(el("span", "bk-status", { "data-status": st === "approved" ? "fixed" : st === "rejected" ? "rejected" : "accepted", text: t("proposal.status." + st) }));
       card.appendChild(withView3d(tags));
+      var fromIdea = ideaLine(p);
+      if (fromIdea) card.appendChild(fromIdea);
       var where = placeText(p);
       if (where) card.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
       var yard = yardOf(p);
@@ -1348,6 +1380,9 @@
       Object.keys(S.objects).forEach(function (id) {
         if (!S.objects[id].group) buildGroup(S.objects[id]);
       });
+      Object.keys(ideas).forEach(function (id) {
+        if (!ideas[id].group && ideas[id].p.kind) buildIdeaGroup(ideas[id]);
+      });
       setLayerVisibility();
       render();
       repaint();
@@ -1433,9 +1468,9 @@
       return mat;
     }
 
-    function makeMaterials(ghost, invalid) {
+    function makeMaterials(ghost, invalid, tint) {
       if (ghost) {
-        var color = invalid ? 0xb3362e : 0x176b4a;
+        var color = tint || (invalid ? 0xb3362e : 0x176b4a);
         return {
           solid: new THREE.MeshLambertMaterial({ color: color, emissive: color, emissiveIntensity: 0.25, transparent: true, opacity: 0.55 }),
           glass: null,
@@ -1590,6 +1625,97 @@
       delete S.objects[id];
       if (S.selected === id) S.selected = null;
       repaint();
+    }
+
+    // ── Слой «Идеи» (POLISH_WAVE_2 п. 7) ──
+    // По умолчанию пуст: идеи показывает хозяин переключателем слоя (защита от перегруза, правило 1) — setIdeas(list),
+    // убирает setIdeas(null). Идея — метка «Идея · 47» и, если житель приложил объект, полупрозрачная модель в 3D.
+    // Нажатие — opts.onIdeaSelect(идея) и событие civic-build3d:idea: карточку идеи рисует R06.
+    var IDEA_TINT = 0xb7791f;
+    var ideas = {};
+    function setIdeas(list) {
+      Object.keys(ideas).forEach(removeIdea);
+      (Array.isArray(list) ? list : []).forEach(function (raw) {
+        var p = Core.normalizeIdea(raw);
+        if (!p || ideas[p.id]) return;
+        var it = { p: p, group: null, label: null };
+        it.label = makeIdeaLabel(it);
+        ideas[p.id] = it;
+        if (scene && p.kind) buildIdeaGroup(it);
+      });
+      updateLabels();
+      repaint();
+      return Object.keys(ideas).length;
+    }
+    function buildIdeaGroup(it) {
+      var k = Core.KINDS[it.p.kind];
+      var geos = Models.build(it.p.kind, { seed: it.p.id, w: k.w, d: k.d });
+      it.mats = makeMaterials(true, false, IDEA_TINT);
+      it.group = makeMeshes(geos, it.mats);
+      it.height = geos.height;
+      placeGroup(it.group, it.p);
+      scene.add(it.group);
+    }
+    function removeIdea(id) {
+      var it = ideas[id];
+      if (!it) return;
+      if (it.group) disposeGroup(it.group);
+      if (it.label && it.label.parentNode) it.label.parentNode.removeChild(it.label);
+      delete ideas[id];
+    }
+    function makeIdeaLabel(it) {
+      var b = el("button", "b3d-label b3d-label--idea", { type: "button", "data-idea": it.p.id });
+      var pill = el("span", "b3d-label__pill bk-tag b3d-tag--idea");
+      var ic = icon("users", o.iconsUrl);
+      ic.setAttribute("class", "ic b3d-label__icon");
+      pill.appendChild(ic);
+      pill.appendChild(el("span", "b3d-label__text", { text: t("build3d.idea.label", { n: it.p.votes }) }));
+      b.appendChild(pill);
+      b.setAttribute("aria-label", t("build3d.idea.open", { n: it.p.votes }));
+      b.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        if (S.mode === "placing") return;
+        var copy = JSON.parse(JSON.stringify(it.p));
+        if (typeof opts.onIdeaSelect === "function") {
+          try {
+            opts.onIdeaSelect(copy);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        try {
+          doc.dispatchEvent(new CustomEvent("civic-build3d:idea", { detail: copy }));
+        } catch (e) {
+          /* старые браузеры */
+        }
+      });
+      labelsLayer.appendChild(b);
+      return b;
+    }
+    function positionIdeas() {
+      var canvas = map.getCanvas();
+      var w = canvas.clientWidth,
+        h = canvas.clientHeight,
+        compact = map.getZoom() < 14;
+      Object.keys(ideas).forEach(function (id) {
+        var it = ideas[id];
+        var sp;
+        if (S.view === "3d" && it.group && lastMatrix) {
+          var wp = new THREE.Vector3(0, 0, (it.height || 0) + 1.5).applyMatrix4(it.group.matrixWorld);
+          sp = projectLocal(wp.x, wp.y, wp.z);
+        } else {
+          var q = map.project(it.p.geometry.coordinates);
+          sp = { x: q.x, y: q.y - 4 };
+        }
+        if (!sp || sp.x < -80 || sp.x > w + 80 || sp.y < -40 || sp.y > h + 40) {
+          it.label.style.visibility = "hidden";
+          return;
+        }
+        it.label.style.visibility = "";
+        it.label.classList.toggle("b3d-label--dot", compact);
+        it.label.style.transform = "translate(" + Math.round(sp.x) + "px," + Math.round(sp.y) + "px) translate(-50%,-100%)";
+        it.label.style.zIndex = String(500 + Math.round(sp.y)); // под метками проектов
+      });
     }
 
     // ── Анимации ──
@@ -1835,6 +1961,7 @@
         lab.style.transform = "translate(" + Math.round(it.pos.x) + "px," + Math.round(it.pos.y) + "px) translate(-50%,-100%)";
         lab.style.zIndex = String(1000 + Math.round(it.pos.y) + (lab._cluster ? 2000 : 0));
       });
+      positionIdeas();
     }
 
     // Метка группы: число проектов, aria «5 проектов рядом — показать ближе»; нажатие приближает к ним.
@@ -1926,10 +2053,67 @@
     }
 
     var pendingStart = null;
+
+    // ── Объект к идее жителя (POLISH_WAVE_2 п. 7, с R06) ──
+    // Хозяин (экран идеи R06) просит: «Как это может выглядеть?» — житель выбирает вид, ставит и поворачивает объект,
+    // «Готово» отдаёт эскиз {kind, geometry, rotation_deg, near_street, near_street_kk, target}; ничего не сохраняем.
+    // «Отмена» — null. Освещение (участок улицы) к идее не предлагаем.
+    var pick = null;
+    function pickObject(how) {
+      how = how || {};
+      if (pick) finishPick(null);
+      if (S.phase !== "ready" || S.three === "unsupported") return Promise.resolve(null);
+      if (S.mode === "placing") cancel();
+      return new Promise(function (resolve) {
+        pick = { resolve: resolve };
+        S.selected = null;
+        if (how.kind && Core.KINDS[how.kind] && how.kind !== "lighting") start(how.kind, { pick: true });
+        else render(true);
+        focusDock(".b3d-card");
+      });
+    }
+    function finishPick(result) {
+      var pk = pick;
+      pick = null;
+      if (pk) pk.resolve(result);
+    }
+    function cancelPick() {
+      if (S.mode === "placing") cancel();
+      else {
+        finishPick(null);
+        render(true);
+      }
+    }
+    function renderPickCatalog() {
+      dock.setAttribute("data-state", "catalog");
+      var head = el("div", "b3d-head");
+      head.appendChild(el("p", "b3d-title", { text: t("build3d.idea.pick_title"), id: "b3d-catalog-title" }));
+      head.appendChild(el("span", "bk-tag b3d-tag--idea", { text: t("build3d.idea.tag") }));
+      dock.appendChild(head);
+      var row = el("div", "b3d-cards", { role: "group", "aria-labelledby": "b3d-catalog-title" });
+      Core.KIND_ORDER.forEach(function (kind) {
+        if (kind === "lighting") return;
+        var k = Core.KINDS[kind];
+        var b = el("button", "b3d-card", { type: "button", "data-kind": kind, "aria-label": t(k.key) });
+        b.appendChild(icon(k.icon, o.iconsUrl));
+        b.appendChild(el("span", "b3d-card__label", { text: t(k.key) }));
+        b.addEventListener("click", function (ev) {
+          start(kind, { keyboard: ev.detail === 0, pick: true });
+        });
+        row.appendChild(b);
+      });
+      dock.appendChild(row);
+      dock.appendChild(el("p", "bk-meta b3d-note", { text: t("build3d.idea.pick_note") }));
+      var actions = el("div", "b3d-actions");
+      actions.appendChild(actionBtn("close", t("common.action.cancel"), "", cancelPick, "cancel"));
+      dock.appendChild(actions);
+    }
+
     function start(kind, how) {
       how = how || {};
-      if (!Core.KINDS[kind] || S.phase !== "ready" || o.role !== "akimat" || S.three === "unsupported") return false;
-      if (Object.keys(S.objects).length >= Core.MAX_OBJECTS) {
+      if (!Core.KINDS[kind] || S.phase !== "ready" || (o.role !== "akimat" && !pick) || S.three === "unsupported") return false;
+      if (pick && kind === "lighting") return false;
+      if (!pick && Object.keys(S.objects).length >= Core.MAX_OBJECTS) {
         toast(t("proposal.limit"), { error: true });
         return false;
       }
@@ -1992,7 +2176,8 @@
       S.ghost = null;
       S.hint = null;
       setTool(false);
-      render();
+      if (pick) finishPick(null); // «Отмена» при эскизе идеи — эскиза нет
+      render(true);
       focusDock(".b3d-card");
     }
 
@@ -2137,6 +2322,7 @@
       }
       var draft = draftFromGhost();
       var v = Core.checkPlacement(draft, existingList(), districts);
+      if (pick && !v.ok && v.reason === "limit") v = { ok: true };
       var wasInvalid = g.valid && !g.valid.ok;
       g.valid = v;
       if (!v.ok) setHint("build3d.err." + (v.reason === "limit" ? "overlap" : v.reason), null, true);
@@ -2569,8 +2755,22 @@
       if (S.mode !== "placing" || !S.ghost) return;
       var draft = draftFromGhost();
       var v = draft ? Core.checkPlacement(draft, existingList(), districts) : { ok: false, reason: "invalid" };
+      if (pick && !v.ok && v.reason === "limit") v = { ok: true }; // эскиз идеи — не проект, лимит проектов не про него
       if (!v.ok) {
         if (v.reason === "limit") toast(t("proposal.limit"), { error: true });
+        return;
+      }
+      if (pick) {
+        var sketch = { kind: draft.kind, geometry: draft.geometry, rotation_deg: draft.rotation_deg, near_street: draft.near_street || null,
+          near_street_kk: draft.near_street_kk || null, target: draft.target || null };
+        clearGhost();
+        S.mode = "idle";
+        S.kind = null;
+        S.ghost = null;
+        S.hint = null;
+        setTool(false);
+        finishPick(sketch);
+        render(true);
         return;
       }
       // Сразу строим (отзывчиво), а сохраняем параллельно. Не сохранилось — убираем и предлагаем повторить.
@@ -2907,6 +3107,7 @@
       var r = mode === "resident" ? "resident" : "akimat";
       if (r === o.role) return;
       if (S.mode === "placing") cancel();
+      finishPick(null);
       // «Проект поставлен · Отменить» акимата — не для жителя (и закрывал бы объект над карточкой).
       clearToast();
       o.role = r;
@@ -2974,6 +3175,9 @@
       refresh: function () {
         return store ? loadProposals() : ready;
       },
+      // Идеи жителей (R06): объект к идее — Promise эскиза или null; слой «Идеи» — список или null (выключить).
+      pickObject: pickObject,
+      setIdeas: setIdeas,
       // Объёмный вид по кнопке хозяина: view3d(true) — включить (и наклонить карту), view3d(false) — лёгкий вид.
       view3d: function (on) {
         if (on === false) {
@@ -3029,6 +3233,8 @@
           origin: origin ? origin.slice() : null,
           view: S.view, // light — лёгкие метки и карточки; 3d — модели (POLISH_WAVE_2: «3D — по кнопке»)
           three: S.three,
+          ideas: Object.keys(ideas).length,
+          picking: !!pick,
         };
       },
       // Для проверок точности (tests/civic/R05): экранная точка 3D-точки объекта (x, y, z в метрах модели).
@@ -3041,6 +3247,8 @@
       destroy: function () {
         if (S.destroyed) return;
         if (S.mode === "placing") cancel();
+        finishPick(null);
+        Object.keys(ideas).forEach(removeIdea);
         S.destroyed = true;
         map.off("mousemove", onMouseMove);
         map.off("click", onMapClick);

@@ -245,8 +245,23 @@
                 onToolChange: function (active, kind) {
                   document.body.setAttribute("data-tool", active ? kind : "");
                 },
+                // Идея жителя нажата: карточку идеи рисует R06 (здесь — только запомнить для проверок).
+                onIdeaSelect: function (idea) {
+                  window.__lastIdea = idea;
+                },
               });
               window.__b3d = handle;
+              // ?ideas=1 — слой «Идеи» из примера (в оболочке его включает переключатель слоя R01, по умолчанию выключен).
+              if (q.get("ideas") === "1")
+                handle.ready.then(function () {
+                  return fetch("/civic/build3d/data/ideas.fixture.json")
+                    .then(function (r) {
+                      return r.json();
+                    })
+                    .then(function (d) {
+                      handle.setIdeas(d.ideas);
+                    });
+                });
               // Без ?center — крупный план всех проектов над панелью (UX_REVIEW день 3 #20).
               if (!q.get("center"))
                 handle.ready.then(function () {

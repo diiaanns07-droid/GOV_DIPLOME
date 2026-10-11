@@ -463,6 +463,19 @@
   opacity: 0;
   pointer-events: none;
 }
+/* Идея жителя (слой «Идеи», POLISH_WAVE_2 п. 7): тёплая метка, отличается от зелёной метки проекта; под ней. */
+.b3d-tag--idea {
+  background: var(--c-warn-soft, #fff4dc);
+  color: var(--c-warn, #8a5a12);
+  border: 1px solid currentColor;
+}
+.b3d-pcard__idea {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1, 4px);
+  margin: 0;
+  color: var(--c-warn, #8a5a12);
+}
 .b3d-labels--passive .b3d-label {
   pointer-events: none;
 }
