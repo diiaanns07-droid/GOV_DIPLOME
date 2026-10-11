@@ -1,0 +1,26 @@
+[
+  {
+    "duration_seconds": 246,
+    "width": 1366,
+    "height": 768,
+    "language": "ru",
+    "path": "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-final\\video\\Birge_FINAL_RU_1366x768.webm",
+    "bytes": 18690925,
+    "sha256": "7ca3d11316554e6109f0b0415470e9e200f5e585267585dfcc3897aab80aacd3",
+    "codec": "VP8/WebM",
+    "recorded_by": "Playwright",
+    "playback_verified": true
+  },
+  {
+    "duration_seconds": 205.08,
+    "width": 1366,
+    "height": 768,
+    "language": "kk",
+    "path": "C:\\Users\\LEGION\\Desktop\\hackalem\\birge-final\\video\\Birge_FINAL_KK_1366x768.webm",
+    "bytes": 17013012,
+    "sha256": "e6bc90b39de5e275daecc322d5d1690a2dbddb1faf39de2be200dc75c1c7cbaf",
+    "codec": "VP8/WebM",
+    "recorded_by": "Playwright",
+    "playback_verified": true
+  }
+]

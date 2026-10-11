@@ -1,0 +1,44 @@
+{
+  "target": "osm-node-4109037549",
+  "heat": [
+    {
+      "days": 14,
+      "category": "all",
+      "count": 8,
+      "by_category": {
+        "lighting": 6,
+        "transport": 2
+      },
+      "examples_open": 0
+    },
+    {
+      "days": 14,
+      "category": "lighting",
+      "count": 6,
+      "by_category": {
+        "lighting": 6
+      },
+      "examples_open": 0
+    },
+    {
+      "days": 30,
+      "category": "all",
+      "count": 8,
+      "by_category": {
+        "lighting": 6,
+        "transport": 2
+      },
+      "examples_open": 0
+    },
+    {
+      "days": 30,
+      "category": "lighting",
+      "count": 6,
+      "by_category": {
+        "lighting": 6
+      },
+      "examples_open": 0
+    }
+  ],
+  "summary": 6
+}
