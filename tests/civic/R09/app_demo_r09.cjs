@@ -104,6 +104,17 @@ async function step6(page, tag, width, lang, staff) {
   check(`${tag}: шаг 6 демо — акимат: «Взять в работу» → «Отметить исправленным» → «${word}»`,
         logged && take && fix && card.includes(word), { logged, take, fix, card: card.slice(0, 160) });
   await shot(page, `app-${tag}-6-fixed`);
+  // Волна 2: раздел акимата «Обращения» (#complaints, R01 INTEGRATION §11.2) — экран R09 BirgeComplaintList.
+  if (await page.evaluate(() => !!window.BirgeComplaintList && !!window.BirgeShell?.setSection)) {
+    await page.evaluate(() => window.BirgeShell.setSection("complaints"));
+    const inbox = await page.waitForSelector(".bc-inbox__tab", { timeout: 8000 }).then(() => true, () => false);
+    const tabs = inbox ? await page.$$eval(".bc-inbox__tab", (n) => n.map((b) => b.textContent.replace(/\s+/g, " ").trim())) : [];
+    const rows = inbox ? await page.$$eval(".bc-inbox__row", (n) => n.length) : 0;
+    check(`${tag}: раздел «Обращения» акимата — экран R09: вкладки и цели (${rows})`, inbox && tabs.length === 5, tabs);
+    await shot(page, `app-${tag}-6-inbox`);
+    await page.evaluate(() => window.BirgeShell.setSection("map"));
+    await sleep(600);
+  }
   await page.evaluate(() => window.BirgeShell?.setMode?.("resident"));
   await sleep(800);
   await page.evaluate(() => window.CivicShell?.openMine?.());
@@ -111,9 +122,19 @@ async function step6(page, tag, width, lang, staff) {
   const cards = await page.$$eval(".bc-mine__card", (n) => n.map((c) => ({ status: c.querySelector(".bk-status")?.dataset.status,
     text: c.textContent.replace(/\s+/g, " ").trim().slice(0, 140) })));
   const joined = cards.filter((c) => /Я тоже|Мен де/.test(c.text));
-  check(`${tag}: шаг 6 демо — житель: в «Мои обращения» жалоба с «Я тоже» — «${word}»`,
-        joined.length >= 1 && joined.every((c) => c.status === "fixed"), cards);
+  // Волна 2, п. 1: «исправлено» службы — это «Служба сообщила об устранении»; жители проверяют сами.
+  const ask = await page.$(".bc-wait .bc-verify__yes");
+  check(`${tag}: шаг 6 демо — житель: «Служба сообщила об устранении» и «Проблема решена?»`,
+        joined.length >= 1 && joined.every((c) => c.status === "reported_fixed") && !!ask, cards);
   await shot(page, `app-${tag}-6-mine`);
+  if (!ask) return;
+  await page.click(".bc-wait .bc-verify__yes");
+  const verified = await page.waitForSelector(".bc-mine__card .bk-status[data-status='verified']", { timeout: 8000 })
+    .then(() => true, () => false);
+  const label = verified ? ((await page.textContent(".bc-mine__card .bk-status[data-status='verified']")) || "").trim() : "";
+  check(`${tag}: шаг 7 (волна 2) — житель «Да, исправлено» → «${label}»`, verified &&
+        label === (lang === "kk" ? "Тұрғындар тексерді" : "Проверено жителями"), label);
+  await shot(page, `app-${tag}-7-verified`);
 }
 
 async function variant(browser, base, width, height, lang, staff, opts = {}) {

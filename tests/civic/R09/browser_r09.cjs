@@ -982,10 +982,12 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
     what: document.querySelector(".bc-wait").textContent,
     buttons: [...document.querySelectorAll(".bc-wait .bc-verify__buttons button")].map((b) => b.textContent.trim()),
     after: document.querySelectorAll(".bc-wait .bc-thumb").length,
-    badge: (document.querySelector(".bc-mine__card .bk-status") || {}).textContent || "" }));
+    badge: (document.querySelector(".bc-mine__card .bk-status") || {}).textContent || "",
+    lastStep: (document.querySelector(".bc-mine__card .bk-steps__item:last-child") || { dataset: {} }).dataset.state }));
   check(`${tag}: [W2-1] «${verifyB.title}»: что сделали, фото «после», 3 ответа; статус «${verifyB.badge}»`,
         verifyB.buttons.length === 3 && (lang === "kk" ? /4 шам/.test(verifyB.what) && verifyB.badge === "Қызмет түзетілгенін хабарлады"
-          : /Что сделали: Заменили 4 лампы/.test(verifyB.what) && verifyB.badge === "Служба сообщила об устранении") && verifyB.after === 1,
+          : /Что сделали: Заменили 4 лампы/.test(verifyB.what) && verifyB.badge === "Служба сообщила об устранении") && verifyB.after === 1 &&
+        verifyB.lastStep === "current",   // «Исправлено» не пройдено, пока жители не проверили
         JSON.stringify(verifyB));
   await pageB.waitForFunction(() => [...document.querySelectorAll(".bc-wait .bc-thumb img")].every((i) => i.src.startsWith("data:image/")), null, { timeout: 8000 })
     .catch(() => {});
@@ -1142,6 +1144,9 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
   }
   await page.evaluate((l) => BirgeComplaint.setLang(l === "kk" ? "ru" : "kk"), lang);
   await page.evaluate(() => window.inboxCtl.setLang());
+  // Словарь R11 грузится асинхронно — экран перерисуется по событию "birge:lang".
+  await page.waitForFunction((want) => document.querySelector(".bc-inbox__title").textContent.trim() === want,
+                             lang === "kk" ? "Обращения" : "Өтініштер", { timeout: 5000 }).catch(() => {});
   const other = (await page.textContent(".bc-inbox__title")).trim();
   check(`${tag}: setLang перерисовывает экран («${other}»)`, lang === "kk" ? other === "Обращения" : other === "Өтініштер", other);
   await page.evaluate(() => window.inboxCtl.destroy());
@@ -1190,14 +1195,19 @@ async function keyboard(browser, base, tag) {
                     info1.real_geo && info1.real_ml && info2.real_geo && !info2.real_ml, JSON.stringify([info1, info2].map(
                       (i) => ({ geo: i.real_geo, ml: i.real_ml }))));
     if (!only || only === "wave") {
-      // Волна 1–2: свои точки на пустых местах (иначе «Я тоже» к жалобам других сценариев).
-      await waveWizard(browser, "http://127.0.0.1:8791", "ru", 375, 812, "375-ru-wave", [71.4520, 51.0700]);
-      await waveWizard(browser, "http://127.0.0.1:8791", "kk", 1366, 768, "1366-kk-wave", [71.3880, 51.0690]);
+      // Волна 1–2: все 4 сочетания 375/1366 × ru/kk; свои точки на пустых местах (иначе «Я тоже» к жалобам
+      // других сценариев).
+      const combos = [["ru", 375, 812], ["kk", 375, 812], ["ru", 1366, 768], ["kk", 1366, 768]];
+      for (const [i, [lang, w, h]] of combos.entries()) {
+        await waveWizard(browser, "http://127.0.0.1:8791", lang, w, h, `${w}-${lang}-wave`, [71.4520 - 0.02 * i, 51.0700]);
+      }
       await draftSurvives(browser, "http://127.0.0.1:8791", "ru", "375-ru-draft", [71.4700, 51.0900]);
-      await centralScene(browser, "http://127.0.0.1:8791", "ru", 375, 812, "375-ru-scene", [71.4800, 51.1000]);
-      await centralScene(browser, "http://127.0.0.1:8791", "kk", 1366, 768, "1366-kk-scene", [71.3800, 51.1100]);
-      await inboxScreen(browser, "http://127.0.0.1:8791", "ru", 1366, 768, "1366-ru-inbox", [71.4900, 51.0600]);
-      await inboxScreen(browser, "http://127.0.0.1:8791", "kk", 375, 812, "375-kk-inbox", [71.3700, 51.0650]);
+      for (const [i, [lang, w, h]] of combos.entries()) {
+        await centralScene(browser, "http://127.0.0.1:8791", lang, w, h, `${w}-${lang}-scene`, [71.4800 - 0.03 * i, 51.1150]);
+      }
+      for (const [i, [lang, w, h]] of combos.entries()) {
+        await inboxScreen(browser, "http://127.0.0.1:8791", lang, w, h, `${w}-${lang}-inbox`, [71.4900 - 0.035 * i, 51.0600]);
+      }
     }
     if (!only) {
       await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 375, 812, "375-ru");

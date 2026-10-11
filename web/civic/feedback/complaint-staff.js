@@ -247,9 +247,16 @@
       });
     }
 
+    // Смена языка (в том числе после асинхронной загрузки словаря R11) — перерисовать подписи; открытая правка
+    // паспорта закрывается без потери сохранённого (несохранённые поля — как после «Отмена»).
+    function onLang() { if (current) render(); }
+    window.addEventListener("birge:lang", onLang);
     render();
     refresh();
-    return { refresh: refresh, destroy: function () { if (root.parentNode) root.parentNode.removeChild(root); } };
+    return { refresh: refresh, destroy: function () {
+      window.removeEventListener("birge:lang", onLang);
+      if (root.parentNode) root.parentNode.removeChild(root);
+    } };
   }
 
   window.BirgeComplaintStaff = { mount: mount };

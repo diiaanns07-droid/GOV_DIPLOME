@@ -423,7 +423,10 @@
     // лишний значок сдвигал подписи вниз.
     var list = h("ol", { "class": "bk-steps" + (complaint.status === "fixed" ? " bk-steps--fixed" : ""),
                          "aria-label": t("status." + complaint.status) });
-    residentSteps(complaint).forEach(function (step) {
+    var steps = residentSteps(complaint);
+    // Служба сообщила, жители ещё не проверили: «Исправлено» — текущий шаг, а не пройденный (волна 2, п. 1).
+    if (displayStatus(complaint) === "reported_fixed") steps[steps.length - 1].state = "current";
+    steps.forEach(function (step) {
       list.appendChild(h("li", { "class": "bk-steps__item", "data-state": step.state, "data-status": step.status,
                                  "aria-current": step.state === "current" ? "step" : null },
         h("span", { "class": "bk-steps__label" }, t("status." + step.status))));

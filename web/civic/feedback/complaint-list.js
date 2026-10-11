@@ -203,11 +203,17 @@
       box.appendChild(h("ul", { "class": "bc-inbox__list", role: "tabpanel" }, items.map(row)));
     }
 
+    // Язык: оболочка зовёт setLang(lang); словарь R11 грузится асинхронно и потом шлёт "birge:lang" — перерисуем и тогда.
+    function onLang() { if (alive) render(); }
+    window.addEventListener("birge:lang", onLang);
     load();
     return {
       refresh: load,
       setLang: function () { render(); },
-      destroy: function () { alive = false; closeStaff(); if (box.parentNode) box.parentNode.removeChild(box); }
+      destroy: function () {
+        alive = false; closeStaff(); window.removeEventListener("birge:lang", onLang);
+        if (box.parentNode) box.parentNode.removeChild(box);
+      }
     };
   }
 
