@@ -154,4 +154,8 @@ moderation.*, complaint.draft|queue.*, target.kind.traffic_signal|crossing|inter
 ui-kit: BirgeUI.seasonOrder(categories) — сезонный порядок категорий; .bk-banner(--danger|--warn); токены
 --reported-fixed, --nodata; .bk-heat[data-level="reported_fixed"], [data-reopened]; .bk-status reported_fixed|verified|reopened;
 .bk-legend__swatch nodata|reported_fixed. Подключение — как раньше: пути web/civic/ui-kit и web/civic/i18n из последнего SHA.
+Патч для R01 (волна 2): research/round-14-results/R11/patches/R01_wave2_phone_menu.patch — web/civic/shell/birge.css:
+  разделы в листе «Мәзір» на телефоне столбиком (5 пунктов по 48 px вместо ряда, где kk-подписи налезали) и
+  background-repeat: no-repeat у кнопки ⓘ подписи карты (значок размножался 3×3). Проверено на a96f6e3 + R08/R09/R05:
+  r14_wave2 31/0, r14_shell 39/0, сценарий R11 44/44. Ещё ждёт R01: patches/R01_legend_free_area.patch (Нұра · 73).
 

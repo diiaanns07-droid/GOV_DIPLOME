@@ -1,0 +1,23 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -84,6 +84,10 @@
+   }
+   #birge-header[data-menu="open"] .birge-menu .bk-seg { display: flex; }
+   #birge-header[data-menu="open"] .birge-menu .bk-seg > button { flex: 1; white-space: normal; } /* казахский длиннее */
++  /* Волна 2: разделов до 5 — в листе меню столбиком, а не в ряд (на 375 kk «Маңайда · Идеялар · Тағы» налезали
++     друг на друга; IA_WAVE2 §1 «5 пунктов списком», R11 волна 2 разбор 3). */
++  #birge-header[data-menu="open"] .birge-menu .birge-nav { flex-direction: column; align-items: stretch; }
++  #birge-header[data-menu="open"] .birge-menu .birge-nav > button { flex: none; min-height: 48px; justify-content: flex-start; text-align: start; padding: 0 16px; }
+ }
+ /* Телефон: шапка ниже (как у shell.css), лист меню и «Картина дня» — во всю ширину с отступом 8 px. */
+ @media (max-width: 760px) {
+@@ -249,7 +253,7 @@
+ .civic-mode .civic-explore-details label { min-height: 48px; }
+ /* Кнопка ⓘ подписи карты (MapLibre, 24 px): та же картинка, зона нажатия 48 px. */
+ .civic-mode .maplibregl-ctrl-attrib.maplibregl-compact { min-height: 48px; }
+-.civic-mode .maplibregl-ctrl-attrib-button { width: 48px; height: 48px; background-position: center; }
++.civic-mode .maplibregl-ctrl-attrib-button { width: 48px; height: 48px; background-position: center; background-repeat: no-repeat; }
+ .civic-mode .maplibregl-ctrl-attrib.maplibregl-compact-show { padding-right: 52px; }
+ @media (max-width: 760px) {
+   .civic-mode .map-tools .icon-btn { width: 48px; height: 48px; }

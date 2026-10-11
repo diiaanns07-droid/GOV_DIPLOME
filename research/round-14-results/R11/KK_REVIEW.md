@@ -8,7 +8,7 @@ R11 вносит их в `kk.json` сразу.
 значения, их не переводить. Формы числа в русском: one (1, 21), few (2–4), many (5–20); в казахском одна форма —
 существительное после числа не меняется («12 адам»).
 
-Ключей: 1068. С пометкой ⚑: 63.
+Ключей: 1181. С пометкой ⚑: 63.
 
 ## 1. Сначала проверьте — места с пометкой ⚑
 
@@ -182,6 +182,12 @@ R11 вносит их в `kk.json` сразу.
 | `common.search.short` | Поиск | Іздеу | <sub>шапка на телефоне</sub> |
 | `common.demo` | Пример | Үлгі | <sub>R09</sub> |
 | `common.error.too_many` | Слишком много действий подряд. Повторите через минуту. | Қатарынан тым көп әрекет жасалды. Бір минуттан кейін қайталаңыз. | <sub>R05 (и все модули) · тост на ответ 429 сервера (лимиты R15)</sub> |
+| `common.nav.ask` | Вопрос акиму | Әкімге сұрақ | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
+| `common.nav.complaints` | Обращения | Өтініштер | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
+| `common.nav.ideas` | Идеи | Идеялар | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
+| `common.nav.more` | Ещё | Тағы | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
+| `common.nav.nearby` | Рядом | Маңайда | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
+| `common.nav.projects` | Проекты и идеи | Жобалар мен идеялар | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
 
 ### Даты
 
@@ -492,6 +498,18 @@ R11 вносит их в `kk.json` сразу.
 | `akim.pulse.new_hot` | Новое горячее место: {place} | Жаңа ыстық орын: {place} | <sub>Волна 2 · R08 · «Картина дня» (IA_WAVE2 §5)</sub> |
 | `akim.pulse.metoo_growth` | Чаще жмут «Я тоже»: {place}, +{n} за неделю | «Мен де» жиі басылады: {place}, аптасына +{n} | <sub>Волна 2 · R08 · «Картина дня» (IA_WAVE2 §5)</sub> |
 | `akim.pulse.none` | Резких всплесков нет | Күрт өсу жоқ | <sub>Волна 2 · R08 · «Картина дня» (IA_WAVE2 §5)</sub> |
+| `akim.decision.forbidden` | Выбрать вариант может только сотрудник акимата | Нұсқаны тек әкімдік қызметкері таңдай алады | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.decision.no_options` | Варианты не предложены — служба должна их подготовить | Нұсқалар ұсынылмаған — оларды қызмет дайындауы керек | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.decision.save_error` | Выбор не сохранился — попробуйте ещё раз | Таңдау сақталмады — қайталап көріңіз | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.overdue.longest` | Дольше всех: {place} | Ең ұзақ кешіккені: {place} | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.pulse.more` | one: Ещё {n} тревога / few: Ещё {n} тревоги / many: Ещё {n} тревог | Тағы {n} | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.pulse.reason.city` | Больше всего: {list} | Ең көбі: {list} | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.pulse.reason.metoo` | Неделей раньше — {n} | Алдыңғы аптада — {n} | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.pulse.reason.new_hot` | one: {n} человек за 7 дней, неделю назад места на карте не было / few: {n} человека за 7 дней, неделю назад места на карте не было / many: {n} человек за 7 дней, неделю назад места на карте не было | 7 күнде {n} адам, бір апта бұрын бұл орын картада болмаған | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.pulse.reason.spike` | one: {n} сообщение за 7 дней, обычно {base} в неделю / few: {n} сообщения за 7 дней, обычно {base} в неделю / many: {n} сообщений за 7 дней, обычно {base} в неделю | 7 күнде {n} хабарлама, әдетте аптасына {base} | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.pulse.reason.spike_new` | one: {n} сообщение за 7 дней, раньше — ни одного / few: {n} сообщения за 7 дней, раньше — ни одного / many: {n} сообщений за 7 дней, раньше — ни одного | 7 күнде {n} хабарлама, бұрын бірде-бір болмаған | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.pulse.spike_city` | one: {category}: всплеск в {n} районе, ×{k} / few: {category}: всплеск в {n} районах, ×{k} / many: {category}: всплеск в {n} районах, ×{k} | {category}: {n} ауданда күрт өсу, ×{k} | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
+| `akim.pulse.spike_new` | {category} · {district}: раньше такого не было | {category} · {district}: бұрын мұндай болмаған | <sub>Волна 2 · R08 · «Картина дня»: решения и пульс (web/civic/akim/akim.js)</sub> |
 
 ### Путь жителя
 
@@ -590,6 +608,32 @@ R11 вносит их в `kk.json` сразу.
 | `complaint.draft.restored` | Черновик восстановлен | Қаралама қалпына келтірілді | <sub>R09 · мастер жалобы (волна 1), п. 10</sub> |
 | `complaint.queue.offline` | Нет связи. Обращение сохранено на телефоне и отправится само, когда связь вернётся. | Байланыс жоқ. Өтініш телефонда сақталды, байланыс қалпына келгенде өзі жіберіледі. | <sub>R09 · мастер жалобы (волна 1), п. 10</sub> |
 | `complaint.queue.sent` | Сохранённое обращение отправлено | Сақталған өтініш жіберілді | <sub>R09 · мастер жалобы (волна 1), п. 10</sub> |
+| `complaint.emergency.service.104` | Газовая служба | Газ қызметі | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.emergency.service.112` | Единая служба спасения | Бірыңғай құтқару қызметі | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.emergency.still` | Обращение всё равно можно отправить. | Өтінішті бәрібір жіберуге болады. | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.photo.bad` | Это не фото. Подойдёт JPEG, PNG или WebP. | Бұл фото емес. JPEG, PNG немесе WebP жарайды. | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.photo.count` | Фото: {n} из 3 | Фото: {n} / 3 | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.photo.failed` | Обращение отправлено, но фото не загрузилось. | Өтініш жіберілді, бірақ фото жүктелмеді. | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.photo.hint` | До 3 фото. Их увидит только служба. Не снимайте лица и номера машин. | 3 фотоға дейін. Оларды тек қызмет көреді. Адамдардың бетін және көлік нөмірлерін түсірмеңіз. | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.photo.uploading` | Загружаем фото {n} из {total}… | Фото жүктелуде: {n} / {total}… | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.queue.send_now` | Отправить сейчас | Қазір жіберу | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.queue.text` | Нет связи. Отправим автоматически, как только появится сеть. | Байланыс жоқ. Желі пайда болысымен автоматты түрде жібереміз. | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.queue.title` | Обращение сохранено на телефоне | Өтініш телефонда сақталды | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.edit` | Изменить | Өзгерту | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.no_photos` | без фото | фотосыз | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.personal` | Уберите личное: телефон, ИИН, номер машины, лица на фото. | Жеке деректерді алып тастаңыз: телефон, ЖСН, көлік нөмірі, фотодағы адамдардың беті. | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.photos` | Фото | Фото | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.place` | Место | Орны | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.private` | Только служба: ваш текст и фото. | Тек қызмет көреді: мәтініңіз бен фотоларыңыз. | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.public` | Увидят все: место, категория и сколько человек сообщили. | Барлығы көреді: орны, санаты және қанша адам хабарлағаны. | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.text` | Текст | Мәтін | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.title` | Проверьте перед отправкой | Жіберер алдында тексеріңіз | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.review.what` | Проблема | Мәселе | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.step3.subtopic_label` | Уточните (по желанию) | Нақтылаңыз (қаласаңыз) | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.step4.metoo_caption` | Будем сообщать о ходе решения | Шешу барысы туралы хабарлап отырамыз | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.step5.find` | Найти обращение: «Мои обращения», номер {code} | Өтінішті табу: «Менің өтініштерім», нөмірі {code} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.step5.metoo_follow` | Будем сообщать о ходе решения в «Мои обращения» | Шешу барысы туралы «Менің өтініштерім» бөлімінде хабарлаймыз | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `complaint.step5.next` | Дальше: служба ответит до {date} | Әрі қарай: қызмет жауабының мерзімі — {date} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
 
 ### Мои обращения
 
@@ -611,6 +655,47 @@ R11 вносит их в `kk.json` сразу.
 | `mine.waiting` | one: Ещё {n} обращение ждёт решения / few: Ещё {n} обращения ждут решения / many: Ещё {n} обращений ждут решения | Тағы {n} өтініш шешімін күтуде | <sub>Волна 2 · R09 · «Мои обращения», проверка исправления (IA_WAVE2 §2.1)</sub> |
 | `mine.subscriptions` | Подписки | Жазылымдар | <sub>Волна 2 · R09 · «Мои обращения», проверка исправления (IA_WAVE2 §2.1)</sub> |
 | `mine.unsubscribe` | Отписаться | Жазылымнан шығу | <sub>Волна 2 · R09 · «Мои обращения», проверка исправления (IA_WAVE2 §2.1)</sub> |
+| `mine.changes.note` | Сообщение службы | Қызмет хабарламасы | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.changes.passport` | План решения обновлён | Шешу жоспары жаңартылды | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.changes.reopened` | Жители вернули в работу | Тұрғындар жұмысқа қайтарды | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.changes.status` | Статус: {status} | Мәртебесі: {status} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.changes.summary` | Проверено жителями: {verified} · Ждут решения: {waiting} | Тұрғындар тексерді: {verified} · Шешімді күтуде: {waiting} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.changes.verified` | Проверено жителями | Тұрғындар тексерді | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.details` | Подробнее | Толығырақ | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.answered` | Служба ответила | Қызмет жауап берді | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.assignee` | Отвечает: {name} | Жауапты: {name} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.delay` | Причина задержки: {text} | Кідіріс себебі: {text} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.fix_eta` | Устранение: ориентир {date} | Түзету: шамамен {date} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.fix_unknown` | Устранение: срок пока не определён | Түзету мерзімі әлі белгіленбеген | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.next` | Следующий шаг: {text} | Келесі қадам: {text} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.next_default.accepted` | Служба планирует работы | Қызмет жұмысты жоспарлап жатыр | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.next_default.fixed` | Проверьте результат на месте | Нәтижені орнында тексеріңіз | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.next_default.in_progress` | Идут работы | Жұмыс жүріп жатыр | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.next_default.new` | Служба рассмотрит обращение | Қызмет өтінішті қарайды | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.next_default.rejected` | Обращение отклонено | Өтініш қабылданбады | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.next_update` | Следующее обновление: {date} | Келесі жаңарту: {date} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.response` | Ответ службы до {date} | Қызмет жауабының мерзімі: {date} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.passport.temp` | Временная мера: {text} | Уақытша шара: {text} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.pending` | Ждёт отправки | Жіберуді күтуде | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.photos.after` | Фото после работ | Жұмыстан кейінгі фото | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.photos.title` | Ваши фото | Сіздің фотоларыңыз | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.state.reopened` | Проблема осталась — снова в работе | Мәселе қалды — қайта жұмыста | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.state.reported` | Служба сообщила об устранении — ждёт проверки | Қызмет түзетілгенін хабарлады — тексеруді күтуде | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.state.verified` | Проверено жителями | Тұрғындар тексерді | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.update.fixed` | Служба сообщила об устранении | Қызмет түзетілгенін хабарлады | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.update.note` | Сообщение службы | Қызмет хабарламасы | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.update.passport` | План решения | Шешу жоспары | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.update.reopened` | Жители: проблема осталась | Тұрғындар: мәселе қалды | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.updates.title` | Обновления | Жаңартулар | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.verify.cant` | Не могу проверить | Тексере алмаймын | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.verify.no` | Проблема осталась | Мәселе қалды | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.verify.question` | Проблема решена? | Мәселе шешілді ме? | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.verify.reported` | Служба сообщила: проблема устранена | Қызмет мәселе түзетілгенін хабарлады | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.verify.thanks_cant` | Спасибо, учли | Рақмет, ескердік | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.verify.thanks_no` | Обращение снова в работе. Служба увидит всю историю | Өтініш қайта жұмыста. Қызмет бүкіл тарихын көреді | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.verify.thanks_yes` | Спасибо. Отмечено: проверено жителями | Рақмет. Тұрғындар тексерді деп белгіленді | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.verify.what` | Что сделали: {text} | Не істелді: {text} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `mine.verify.yes` | Да, исправлено | Иә, түзетілді | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
 
 ### Предложения и 3D
 
@@ -791,21 +876,19 @@ R11 вносит их в `kk.json` сразу.
 | `shell.map.error.layers` | Не удалось показать слои карты. Обновите страницу. | Карта қабаттарын көрсету мүмкін болмады. Бетті жаңартыңыз. | <sub>R01 · web/map.js showMapError (ошибка слоёв)</sub> |
 | `shell.map.error.waiting` | Карта ждёт подключения. Жалобы и «Картина дня» работают. | Карта қосылуды күтуде. Шағымдар мен «Күн қорытындысы» жұмыс істейді. | ⚑ без названия сервиса OpenFreeMap <sub>R01 · web/map.js showMapError (ждёт подложку)</sub> |
 | `shell.map.error.no_webgl` | Этот браузер не показывает карту. Откройте Birge в Chrome или Edge. | Бұл браузер картаны көрсетпейді. Birge-ді Chrome немесе Edge браузерінде ашыңыз. | ⚑ без слова «WebGL» (UX_BRIEF, правило 4) <sub>R01 · web/map.js showMapError (нет WebGL)</sub> |
-| `shell.nav.nearby` | Рядом | Маңайда | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
-| `shell.nav.ideas` | Идеи | Идеялар | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
-| `shell.nav.more` | Ещё | Тағы | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
-| `shell.nav.inbox` | Обращения | Өтініштер | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
-| `shell.nav.projects` | Проекты и идеи | Жобалар мен идеялар | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
-| `shell.nav.questions` | Вопрос акиму | Әкімге сұрақ | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
 | `shell.nav.questions_staff` | Вопросы жителей | Тұрғындар сұрақтары | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
 | `shell.nav.works_staff` | Работы и отключения | Жұмыстар мен өшірулер | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
 | `shell.nav.qr` | QR-таблички | QR-тақтайшалар | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
 | `shell.nav.services` | Службы | Қызметтер | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1)</sub> |
 | `shell.nav.badge` | one: {n} новое изменение / few: {n} новых изменения / many: {n} новых изменений | {n} жаңа өзгеріс | <sub>Волна 2 · R01 · меню (IA_WAVE2 §1): aria-label бейджа</sub> |
-| `shell.layers.title` | Слой на карте | Картадағы қабат | <sub>Волна 2 · R01 · «Слои» в панели «Территория» (IA_WAVE2 §0.2)</sub> |
 | `shell.layers.none` | Только жалобы и работы | Тек шағымдар мен жұмыстар | <sub>Волна 2 · R01 · «Слои» в панели «Территория» (IA_WAVE2 §0.2)</sub> |
 | `shell.layers.nearby` | Работы рядом | Маңайдағы жұмыстар | <sub>Волна 2 · R01 · «Слои» в панели «Территория» (IA_WAVE2 §0.2)</sub> |
 | `shell.layers.ideas` | Идеи жителей | Тұрғындар идеялары | <sub>Волна 2 · R01 · «Слои» в панели «Территория» (IA_WAVE2 §0.2)</sub> |
+| `shell.layers.label` | Слой на карте | Картадағы қабат | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
+| `shell.screen.error_text` | Попробуйте ещё раз через минуту. | Бір минуттан кейін қайталап көріңіз. | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
+| `shell.screen.error_title` | Раздел не удалось открыть | Бөлім ашылмады | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
+| `shell.screen.soon_text` | Этот раздел ещё не подключён к сборке. Карта и обращения работают. | Бұл бөлім әзірге жинаққа қосылмаған. Карта мен өтініштер жұмыс істейді. | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
+| `shell.screen.soon_title` | Раздел скоро появится | Бөлім жақында қосылады | <sub>Волна 2 · R01 · меню волны 2 (web/civic/shell/shell-text.js)</sub> |
 
 ### Редактор карты (R12)
 
@@ -899,6 +982,7 @@ R11 вносит их в `kk.json` сразу.
 | `build3d.cluster.open` | {count} рядом — показать ближе | Жақын жерде {count} — жақындатып көрсету | ⚑ у R05 «Қатар {count} — жақыннан көрсету»: «қатар» — «в ряд», здесь нужно «рядом/поблизости» <sub>R05 · aria-label метки группы проектов</sub> |
 | `build3d.card.segment_plain` | Участок улицы, {length} м | Көше бөлігі, {length} м | <sub>R05 · карточка освещения без названия улицы</sub> |
 | `build3d.street.this` | эта улица | осы көше | <sub>R05 · подсказка освещения, когда у улицы нет названия</sub> |
+| `build3d.card.view3d` | Посмотреть в 3D | 3D көріністе қарау | <sub>Волна 2 · R05 · лёгкая карточка, 3D по кнопке (web/civic/build3d/build3d.js)</sub> |
 
 ### Прогноз на месяц — прототип (R13)
 
@@ -970,6 +1054,25 @@ R11 вносит их в `kk.json` сразу.
 | `staff.row.revision` | ред. {n} | нұсқа {n} | <sub>R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12</sub> |
 | `staff.row.unpublished` | Есть неопубликованные изменения | Жарияланбаған өзгерістер бар | <sub>R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12</sub> |
 | `staff.session.switched` | В этой вкладке теперь вход «{user}» (например, после входа в другой вкладке). Форма пользователя «{prev}» закрыта и не отправлена; его несохранённые правки остались в этой вкладке и вернутся, когда он снова войдёт. | Бұл қойындыда енді «{user}» кірді (мысалы, басқа қойындыда кіргеннен кейін). «{prev}» пайдаланушысының формасы жабылды және жіберілмеді; оның сақталмаған түзетулері осы қойындыда қалды және ол қайта кіргенде оралады. | <sub>R12 · кабинет сотрудника (claude/r14-R12, d6c788e9), черновик kk R12</sub> |
+| `staff.fixed.need_what` | Напишите одной строкой, что сделали — жители проверят это на месте | Не істелгенін бір жолмен жазыңыз — тұрғындар оны орнында тексереді | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.fixed.photo` | Добавить фото «после» | «Кейін» фотосын қосу | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.fixed.submit` | Сообщить: устранено | Хабарлау: түзетілді | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.fixed.title` | Отметить исправленным | Түзетілді деп белгілеу | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.fixed.what` | Что сделали (одна строка) | Не істелді (бір жол) | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.fixed.what_hint` | Например: заменили лампу и проверили линию | Мысалы: шамды ауыстырып, желіні тексердік | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.notified` | one: Обновление увидит {n} человек / few: Обновление увидят {n} человека / many: Обновление увидят {n} человек | Жаңартуды {n} адам көреді | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.passport.delay_reason` | Причина задержки (если есть) | Кідіріс себебі (болса) | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.passport.fix_eta` | Устранение — ориентир (можно пусто) | Түзету — шамамен (бос қалдыруға болады) | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.passport.next_step` | Следующий шаг | Келесі қадам | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.passport.next_update` | Следующее обновление | Келесі жаңарту | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.passport.save` | Сохранить паспорт | Паспортты сақтау | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.passport.temp_measure` | Временная мера | Уақытша шара | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.passport.title` | Паспорт решения | Шешім паспорты | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.title` | Действия по обращению | Өтініш бойынша әрекеттер | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.update.send` | Отправить всем ({n}) | Барлығына жіберу ({n}) | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.update.title` | Сообщение всем, кто сообщил о проблеме | Мәселе туралы хабарлағандардың барлығына хабарлама | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.update_overdue` | Обещанное обновление просрочено | Уәде етілген жаңарту мерзімі өтті | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
+| `staff.votes` | Проверка жителями: да — {yes}, осталось — {no}, не могут проверить — {cant} | Тұрғындар тексерді: иә — {yes}, қалды — {no}, тексере алмайды — {cant} | <sub>Волна 2 · R09 · мастер и «Мои обращения» волн 1–2 (web/civic/feedback/complaint-strings.js)</sub> |
 
 ### works
 
@@ -1340,6 +1443,21 @@ R11 вносит их в `kk.json` сразу.
 | `idea.reject` | Отклонить с причиной | Себебін көрсетіп бас тарту | <sub>Волна 2 · R06/R05 · «Идеи» (IA_WAVE2 §8), акимат</sub> |
 | `idea.tab.review` | Идеи на проверке | Тексерудегі идеялар | <sub>Волна 2 · R06/R05 · «Идеи» (IA_WAVE2 §8), акимат</sub> |
 | `idea.tab.projects` | Проекты | Жобалар | <sub>Волна 2 · R06/R05 · «Идеи» (IA_WAVE2 §8), акимат</sub> |
+
+### services
+
+| ключ | рус | қаз | комментарий |
+|---|---|---|---|
+| `services.edited` | изменено акиматом | әкімдік өзгертті | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
+| `services.for` | Служба для «{name}» | «{name}» үшін қызмет | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
+| `services.forbidden` | Менять таблицу может только сотрудник акимата | Кестені тек әкімдік қызметкері өзгерте алады | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
+| `services.hint` | Кому передаётся обращение. Названия общие — акимат может выбрать другую службу. | Өтініш кімге жіберіледі. Атаулар жалпы — әкімдік басқа қызметті таңдай алады. | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
+| `services.nothing` | Изменений нет | Өзгеріс жоқ | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
+| `services.same` | Как у категории | Санаттағыдай | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
+| `services.save_error` | Не сохранилось — попробуйте ещё раз | Сақталмады — қайталап көріңіз | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
+| `services.saved` | Сохранено | Сақталды | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
+| `services.subtopics` | Уточнения ({n}) | Нақтылаулар ({n}) | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
+| `services.title` | Службы | Қызметтер | <sub>Волна 2 · R08 · экран «Службы» (web/civic/akim/services.js)</sub> |
 
 ## 3. Тексты вне словаря (живут в коде и данных ролей — правки вносит роль)
 
