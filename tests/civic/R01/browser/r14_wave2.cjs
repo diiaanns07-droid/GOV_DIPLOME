@@ -39,9 +39,23 @@ async function newPage(ctx) {
   const page = await ctx.newPage();
   page.errs = [];
   page.on("pageerror", (e) => page.errs.push("pageerror: " + e.message));
-  page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text()) && !R03_RING.test(m.text())) page.errs.push(m.type() + ": " + m.text()); });
+  page.on("console", (m) => {
+    if (!["error", "warning"].includes(m.type()) || NOISE.test(m.text()) || R03_RING.test(m.text())) return;
+    // Ключа модуля роли ещё нет в словаре R11 — у модуля свой запасной текст: это список для R11, не ошибка страницы.
+    const key = /\[i18n\] неизвестный ключ: (\S+)/.exec(m.text());
+    if (key) { MISSING_KEYS.add(key[1]); return; }
+    page.errs.push(m.type() + ": " + m.text());
+  });
   return page;
 }
+const MISSING_KEYS = new Set();
+// Меню по схеме R11 IA_WAVE2 §1; в сборке видны только разделы с модулем роли (BirgeShell.navItems).
+const IA = { akimat: ["map", "day", "inbox", "projects", "more"], resident: ["map", "mine", "nearby", "ideas", "more"] };
+const inOrder = (ids, mode) => { let i = 0; for (const id of ids) { i = IA[mode].indexOf(id, i); if (i < 0) return false; i++; } return true; };
+const menuOk = async (page, n, mode, must) => {
+  const expected = await page.evaluate((m) => window.BirgeShell.navItems(m), mode);
+  return JSON.stringify(n.ids) === JSON.stringify(expected) && inOrder(n.ids, mode) && must.every((id) => n.ids.includes(id));
+};
 // Visible menu items (labels and ids), pressed item, overflow.
 const nav = (page) => page.evaluate(() => {
   const vis = (e) => e.getClientRects().length && getComputedStyle(e).display !== "none" && getComputedStyle(e).visibility !== "hidden";
@@ -77,7 +91,8 @@ async function main() {
     await page.goto(base);
     await ready(page);
     let n = await nav(page);
-    check("default akimat menu = Карта · Картина дня (no empty sections in the demo build)", JSON.stringify(n.ids) === '["map","day"]', n);
+    check("default akimat menu: IA order, only sections whose module is in the build (Карта · Картина дня always)",
+      await menuOk(page, n, "akimat", ["map", "day"]), n);
     const layers0 = await page.evaluate(() => ({ active: window.BirgeShell.layer,
       options: [...document.querySelectorAll("#birge-layer-list input")].map((i) => i.value) }));
     check("default map: one «слои» button with «Проекты» (R05), no extra layer on — map shows complaints and city works only",
@@ -109,7 +124,8 @@ async function main() {
     await page.click("#birge-header [data-mode=resident]");
     await page.waitForTimeout(300);
     n = await nav(page);
-    check("default resident menu = Карта · Мои обращения", JSON.stringify(n.ids) === '["map","mine"]' && n.labels.includes("Мои обращения"), n);
+    check("default resident menu: IA order, only sections with a module (Карта · Мои обращения always)",
+      await menuOk(page, n, "resident", ["map", "mine"]) && n.labels.includes("Мои обращения"), n);
     // ---- читаемость карты (владелец, 11 окт): п. 3 панели, п. 7 границы районов, п. 8 наклон
     await page.click("#birge-header [data-mode=akimat]");
     await page.waitForTimeout(400);
@@ -191,12 +207,28 @@ async function main() {
       n.hash === "#nearby" && n.section === "nearby" && sc.shown && sc.screen === "nearby" && sc.title === "Рядом" && JSON.stringify(n.pressed) === '["nearby"]', { n, sc });
     check("section screen covers the map (map hidden, no «Сообщить о проблеме» on top), focus on the screen title",
       sc.mapHidden && sc.fab === "none" && sc.focus === "birge-screen-title", sc);
-    check("without the module: understandable «скоро появится» with a way back (UX_BRIEF rule 7)", /скоро появится/.test(sc.text) && /Вернуться к карте/.test(sc.text), sc.text);
-    await page.screenshot({ path: path.join(OUT, "w2_1366_nearby_soon.png") });
-    await page.click("#birge-screen .birge-day-empty .bk-btn");
-    await page.waitForTimeout(300);
-    n = await nav(page); sc = await screenState(page);
-    check("«Вернуться к карте» → map, address without #nearby", n.section === "map" && n.hash === "" && !sc.shown && !sc.mapHidden, { n, sc });
+    // «Рядом» — модуль R08 (с FINAL-2): экран роли, а не заглушка. Заглушку «скоро появится» проверяем на разделе
+    // жителя, модуля которого в сборке нет (Идеи — R06 волна 2); есть все — NOT_RUN с причиной.
+    const nearbyModule = await page.evaluate(() => typeof window.BirgeNearby?.mount === "function");
+    if (nearbyModule) check("with the module: «Рядом» is the R08 screen (no «скоро появится»)", !/скоро появится/.test(sc.text) && sc.text.length > 40, sc.text.slice(0, 120));
+    await page.screenshot({ path: path.join(OUT, "w2_1366_nearby.png") });
+    const soonId = await page.evaluate(() => {
+      const has = { nearby: ["BirgeNearby"], ideas: ["BirgeIdeas"] };
+      return Object.keys(has).find((id) => !has[id].some((g) => typeof window[g]?.mount === "function")) || null; });
+    if (soonId) {
+      await page.goto(base + "?screens=all#" + soonId);
+      await page.waitForFunction(() => window.BirgeShell && document.getElementById("birge-screen") && !document.getElementById("birge-screen").hidden, null, { timeout: 15000 }).catch(() => {});
+      await page.waitForTimeout(300);
+      sc = await screenState(page);
+      check(`without the module (#${soonId}): understandable «скоро появится» with a way back (UX_BRIEF rule 7)`, /скоро появится/.test(sc.text) && /Вернуться к карте/.test(sc.text), sc.text);
+      await page.screenshot({ path: path.join(OUT, `w2_1366_${soonId}_soon.png`) });
+      await page.click("#birge-screen .birge-day-empty .bk-btn");
+      await page.waitForTimeout(300);
+      n = await nav(page); sc = await screenState(page);
+      check(`«Вернуться к карте» → map, address without #${soonId}`, n.section === "map" && n.hash === "" && !sc.shown && !sc.mapHidden, { n, sc });
+    } else {
+      console.log("NOT_RUN «скоро появится»: у всех разделов жителя есть модули в этой сборке");
+    }
 
     // «Ещё» — маленькое меню, не страница (IA_WAVE2 §1); у жителя в нём «Вопрос акиму».
     await page.click("#birge-header .birge-nav [data-section=more]");
@@ -260,7 +292,7 @@ async function main() {
     await page.waitForTimeout(200);
     n = await nav(page);
     check("registerScreen(nearby): «Рядом» appears in the resident menu only when the module is there", registered
-      && JSON.stringify(n.ids) === '["map","mine","nearby"]' && n.labels[2] === "Рядом", n);
+      && await menuOk(page, n, "resident", ["map", "mine", "nearby"]) && n.labels[n.ids.indexOf("nearby")] === "Рядом", n);
     await page.click("#birge-header [data-section=nearby]");
     await page.waitForTimeout(300);
     const mounted = await page.evaluate(() => ({ w2: window.__w2, html: document.getElementById("birge-screen-root").innerText }));
@@ -279,7 +311,8 @@ async function main() {
     await page.waitForTimeout(200);
     const akimatMore = await page.evaluate(() => [...document.querySelectorAll("#birge-header .birge-more-menu [role=menuitem]")].map((a) => [a.textContent, a.getAttribute("href")]));
     check("akimat «Ещё» appears with a registered role link (QR sheets) and lists it; «Рядом» stays a resident section",
-      JSON.stringify(n.ids) === '["map","day","more"]' && JSON.stringify(akimatMore) === '[["Листы QR для остановок","/civic/qr/"]]', { ids: n.ids, akimatMore });
+      n.ids.includes("more") && !n.ids.includes("nearby") && akimatMore.length <= 4
+      && akimatMore.some(([label, href]) => label === "Листы QR для остановок" && href === "/civic/qr/"), { ids: n.ids, akimatMore });
     await page.keyboard.press("Escape");
 
     // ---------------------------------------------------------------- one extra map layer at a time
@@ -340,6 +373,7 @@ async function main() {
   }
   const summary = { pass: checks.filter((c) => c.status === "PASS").length, fail: checks.filter((c) => c.status === "FAIL").length };
   fs.writeFileSync(path.join(OUT, "r14_wave2.json"), JSON.stringify({ summary, checks }, null, 1));
+  if (MISSING_KEYS.size) console.log("INFO keys of role modules missing in the R11 dictionary (module fallback text shown): " + [...MISSING_KEYS].sort().join(", "));
   console.log(JSON.stringify(summary));
   process.exit(summary.fail ? 1 : 0);
 }

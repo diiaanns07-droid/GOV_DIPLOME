@@ -211,9 +211,12 @@ async function main() {
         const items = [...document.querySelectorAll("#birge-menu button")].filter((b) => getComputedStyle(b).display !== "none");
         const hit = items.every((b) => { const r = b.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return e === b || b.contains(e); });
         return { open: document.getElementById("birge-header").dataset.menu, expanded: document.querySelector(".birge-menu-btn").getAttribute("aria-expanded"),
-          inside: box.left >= 0 && box.right <= innerWidth, clickable: hit, items: items.map((b) => b.textContent.trim()) }; });
+          inside: box.left >= 0 && box.right <= innerWidth, clickable: hit, items: items.map((b) => b.textContent.trim()),
+          nav: window.BirgeShell.navItems().length }; });
+      // Разделы — те, чьи модули есть в сборке (IA_WAVE2 §1: не больше 5), плюс два вида «Акимат / Житель».
       check(`${tag}: ≡ opens the menu on top of the map, all items clickable and inside the screen`,
-        menu.open === "open" && menu.expanded === "true" && menu.inside && menu.clickable && menu.items.length === 4, menu);
+        menu.open === "open" && menu.expanded === "true" && menu.inside && menu.clickable && menu.nav >= 2 && menu.nav <= 5
+          && menu.items.length === menu.nav + 2, menu);
       await m.page.screenshot({ path: path.join(OUT, `06_menu_${w}_${lang}.png`) });
       if (startMode === "resident") {  // у жителя «Картины дня» в меню нет: «Акимат» → снова ≡ → «Картина дня»
         await m.page.click("#birge-header [data-mode=akimat]");

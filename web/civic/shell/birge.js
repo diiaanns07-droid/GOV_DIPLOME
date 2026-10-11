@@ -469,21 +469,80 @@
   }
 
   // ------------------------------------------------------------------ «Территория» и поиск в шапке (читаемость п. 3)
-  // Ноутбук (≥ 1024 px): панель района и поиска улицы встаёт в шапку между логотипом и меню, если там ≥ 300 px —
-  // карта свободна от панели. Места мало (узкий экран, длинное меню) или телефон — панель остаётся на карте, как была.
+  // Ноутбук (≥ 1024 px): панель района и поиска улицы встаёт в шапку между логотипом и меню — карта свободна от панели.
+  // Места мало (меню из 5 пунктов, ҚАЗ) — по ступеням: прячется подзаголовок «Город и жители вместе» (название
+  // остаётся), кнопки меню плотнее (отступ 8 px вместо 12), поиск улицы сворачивается в лупу (поле — под шапкой по
+  // нажатию). Не хватает и так или телефон — панель остаётся на карте, как была.
+  const EXPLORE_STEPS = [
+    { brand: null, nav: null, size: "full", min: 300 },
+    { brand: "short", nav: null, size: "full", min: 300 },
+    { brand: "short", nav: "tight", size: "full", min: 300 },
+    { brand: "short", nav: "tight", size: "compact", min: 206 },  // район 150 + 8 + лупа 48
+  ];
+  function setExploreStep(step) {
+    const d = document.body.dataset;
+    if (step && step.brand) d.birgeBrand = step.brand; else delete d.birgeBrand;
+    if (step && step.nav) d.birgeNav = step.nav; else delete d.birgeNav;
+    if (step) d.birgeExploreSize = step.size; else delete d.birgeExploreSize;
+  }
   function placeExplore() {
     const box = document.querySelector(".civic-explore"), brand = document.querySelector(".topbar .brand");
     const civic = document.body.classList.contains("civic-mode");
-    if (!box || !brand || !header || !civic || innerWidth < 1024) { document.body.dataset.birgeExplore = "map"; return; }
+    const toMap = () => { document.body.dataset.birgeExplore = "map"; setExploreStep(null); closeExploreSearch(); };
+    if (!box || !brand || !header || !civic || innerWidth < 1024) { toMap(); return; }
     const bar = brand.closest(".topbar").getBoundingClientRect();
-    const left = brand.getBoundingClientRect().right + 16, right = header.getBoundingClientRect().left - 16;
-    if (right - left < 300) { document.body.dataset.birgeExplore = "map"; return; }
-    document.body.dataset.birgeExplore = "header";
-    box.style.setProperty("--be-left", Math.round(left) + "px");
-    box.style.setProperty("--be-width", Math.round(Math.min(460, right - left)) + "px");
-    box.style.setProperty("--be-top", Math.round(bar.top + (bar.height - 48) / 2) + "px");
+    // Замер по ступеням синхронно, до отрисовки кадра: промежуточные ступени на экране не мигают.
+    for (const step of EXPLORE_STEPS) {
+      setExploreStep(step);
+      const left = brand.getBoundingClientRect().right + 16, right = header.getBoundingClientRect().left - 16;
+      if (right - left < step.min) continue;
+      document.body.dataset.birgeExplore = "header";
+      if (step.size !== "compact") closeExploreSearch();
+      box.style.setProperty("--be-left", Math.round(left) + "px");
+      box.style.setProperty("--be-width", Math.round(Math.min(460, right - left)) + "px");
+      box.style.setProperty("--be-top", Math.round(bar.top + (bar.height - 48) / 2) + "px");
+      return;
+    }
+    toMap();
+  }
+  // Компактный поиск: лупа открывает поле под шапкой; повторное нажатие с текстом — «Найти»; Esc и щелчок мимо — закрыть.
+  function exploreSearchForm() { return document.querySelector(".civic-explore .civic-explore-search"); }
+  function closeExploreSearch() {
+    const form = exploreSearchForm();
+    if (!form || form.dataset.open !== "true") return;
+    form.dataset.open = "false";
+    form.querySelector(".civic-explore-go")?.setAttribute("aria-expanded", "false");
+  }
+  function compactSearch() { return document.body.dataset.birgeExplore === "header" && document.body.dataset.birgeExploreSize === "compact"; }
+  function watchExploreSearch() {
+    document.addEventListener("click", (event) => {
+      const go = event.target.closest?.(".civic-explore .civic-explore-go");
+      if (!go || !compactSearch()) return;
+      const form = go.closest(".civic-explore-search"), input = form && form.querySelector("input");
+      if (!form || !input) return;
+      if (form.dataset.open === "true" && input.value.trim()) return;  // поле открыто и есть текст — обычный «Найти»
+      event.preventDefault();
+      event.stopPropagation();
+      const open = form.dataset.open !== "true";
+      form.dataset.open = String(open);
+      go.setAttribute("aria-expanded", String(open));
+      if (open) input.focus();
+    }, true);
+    document.addEventListener("pointerdown", (event) => {
+      const form = exploreSearchForm();
+      if (form && form.dataset.open === "true" && !form.contains(event.target)) closeExploreSearch();
+    }, true);
+    document.addEventListener("keydown", (event) => {
+      const form = exploreSearchForm();
+      if (event.key !== "Escape" || !form || form.dataset.open !== "true" || !form.contains(document.activeElement)) return;
+      const list = form.querySelector(".civic-explore-list");
+      if (list && !list.hidden) return;  // сначала Esc закрывает список подсказок (explore.js)
+      closeExploreSearch();
+      form.querySelector(".civic-explore-go")?.focus();
+    });
   }
   function watchExplore() {
+    watchExploreSearch();
     const again = () => requestAnimationFrame(placeExplore);
     window.addEventListener("resize", again);
     document.addEventListener("civic:mode", again);
