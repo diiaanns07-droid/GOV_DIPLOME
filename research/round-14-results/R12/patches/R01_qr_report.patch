@@ -1,3 +1,15 @@
+diff --git a/tests/civic/R01/test_r01_api_v2.py b/tests/civic/R01/test_r01_api_v2.py
+index ef9089f..d9cd53b 100644
+--- a/tests/civic/R01/test_r01_api_v2.py
++++ b/tests/civic/R01/test_r01_api_v2.py
+@@ -68,6 +68,7 @@ ROUTE_SAMPLES = [
+     ("GET", "/objects-near", "lon=71.41&lat=51.11", None),
+     ("GET", "/yard", "lon=71.41&lat=51.11", None),
+     ("GET", "/geo/status", "", None),
++    ("GET", "/target", "id=osm-node-4109037549", None),  # R12 волна 2 п. 6: QR-паспорт
+     ("GET", "/proposals/summary", "", None),
+     ("GET", "/proposals/p-1", "", None),
+     ("POST", "/proposals/p-1/approve", "", {}),
 diff --git a/ui/web_server.py b/ui/web_server.py
 index 8f242c6..5058484 100644
 --- a/ui/web_server.py

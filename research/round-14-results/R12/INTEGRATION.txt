@@ -1,8 +1,87 @@
 R12 · раунд 14 · INTEGRATION — точность карты: как подключить к общей сборке
 
-Ветка R12 с 11 октября: claude/r14-R12 — продолжение claude/tender-brahmagupta-ef5ztl @ 8bb7bf8 (день 1). SHA — в DELIVERY.json.
-Пути R12: engine/civic_geo/, data/civic/astana/geo/, web/civic/map/, web/civic/editor/, tests/civic/R12/.
+Ветки R12: день 1 — claude/tender-brahmagupta-ef5ztl; ночь 10→11 — claude/r14-R12; поставка 4 (волны 1–2) — снова
+claude/tender-brahmagupta-ef5ztl (перемотана до r14-R12, история одна). SHA — в DELIVERY.json.
+Пути R12: engine/civic_geo/, data/civic/astana/geo/, web/civic/map/, web/civic/editor/, web/civic/qr/ (волна 2 п. 6), tests/civic/R12/.
 Переносить ПО ПУТЯМ (git checkout <sha> -- <пути>), без слияния ветки.
+
+=====================================================================================================
+W. 11 ОКТ · поставка 4 · ВОЛНА 1 п. 1 (светофор / переход / перекрёсток) и ВОЛНА 2 п. 6 (QR-паспорт)
+=====================================================================================================
+Ветка поставки 4: claude/tender-brahmagupta-ef5ztl (ветка этой сессии; перемотана вперёд до claude/r14-R12 @ 7f0f1ab,
+то есть содержит всё из r14-R12, + merge пакета c86c515). SHA — в DELIVERY.json (code_sha / tested_sha).
+Взять:  git fetch origin claude/tender-brahmagupta-ef5ztl
+        git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/map web/civic/editor web/civic/qr tests/civic/R12
+Новое: engine/civic_geo/street_points.py, web/civic/qr/{report.js,report.css,print.html,print.js,print.css}.
+Обязательно вместе: research/round-14/categories_v2.json из пакета c86c515 (subtopics). Со старой копией (у R01 a2d90dd
+в ней 0 уточнений) уточнение тихо игнорируется — порядок «светофор/перекрёсток первым» по категории остаётся.
+
+W.1 R01 · patches/R01_qr_report.patch (git apply --check OK на R01 a2d90dd = FINAL-кандидат 8e67c65 + тесты;
+  сборка a2d90dd + пути R12 + этот patch + R07/R09 patch + словарь R11 @ 34bc855 — runs/app_qr_acceptance.json 29/0)
+  - ui/web_server.py: маршрут GET /target → engine.civic_geo.api.handle (raw, как geo.*); /targets принимает subtopic
+    (форма [a-z][a-z0-9_]{0,40}, иначе 400 bad_request); CIVIC_ASSETS + qr/report.js, report.css, print.html, print.js,
+    print.css; ASSETS + /vendor/qrcode/qrcode.js (LOCAL-11; пока файла нет — 404, лист печати честно предупреждает).
+  - web/index.html: <link /civic/qr/report.css> и <script defer /civic/qr/report.js> (после complaint.js).
+  - web/civic/shell/shell.js: контейнер #birge-report-root в панели перед #birge-heat-root; openReportFromLink() в конце
+    mountBirgeModules(): ?report=<id> → BirgeReport.mount({root, onReport: (p) => complaint.open(p), onOpenMap, onClose}).
+    Закрыли — панель обычная, адрес без ?report. Телефон — шторка НАПОЛОВИНУ (IA_WAVE2 §6.1). Камера мягко к объекту
+    со сдвигом на свободную часть карты (freeArea): место не под панелью и не под шторкой (проверено 1366 и 375).
+  - web/civic/shell/birge.js: по ссылке ?report= — вид «Житель» (IA_WAVE2 §6.1); выбор НЕ запоминается (birge.mode не
+    пишется), обычный запуск — как раньше.
+  - web/civic/shell/birge.css: пока открыт паспорт — #birge-heat-root, .civic-works и кнопка R09 .bc-fab скрыты.
+  - Меню (IA_WAVE2 §1): акимат «Ещё» → «QR-таблички» (shell.nav.qr) → /civic/qr/print.html. Страница без встроенных
+    скриптов (CSP R01 script-src 'self' — проверено в приложении, нарушений 0); print.js сам запускается на
+    #bqp-root[data-autostart]; ?ids=<id,…> — сразу таблички этих объектов.
+  Проверка: NODE_PATH=$(npm root -g) node tests/civic/R12/qr/app_qr_acceptance.mjs http://127.0.0.1:8611 <папка>
+
+W.2 R09 · patches/R09_open_with_place.patch (13 строк): ui.open(preset) — {target, point, geometry, approximate} → сразу
+  шаг ③ (текст) с этим местом и подсветкой; без preset — как раньше. Нужен «Сообщить о проблеме здесь / о другом» из паспорта.
+  Мастер спрашивает /targets без категории — светофор/переход/перекрёсток там уже есть (вариант «объект»). Если после
+  выбора категории и уточнения мастер переспросит /targets?…&category=…&subtopic=…, порядок станет точнее
+  («Светофор: долго красный» → светофор первым; «Яма» → участок первым, точка третьей).
+  Иконки в «Это здесь?»: target.object_kind = traffic_signal | crossing | intersection (сейчас у них общий значок места).
+
+W.3 R07 · patches/R07_qr_print_link.patch (IA_WAVE2 §6.2 «кнопка QR басып шығару в карточке цели»; git apply --check OK
+  и на R01 a2d90dd, и на ветке R07 5e2789e): у акимата внизу карточки места — ссылка-кнопка (ghost) «Распечатать QR» /
+  «QR басып шығару» (ключ R11 qr.print) → /civic/qr/print.html?ids=<id>; только для объектов, участков и дворов (не для
+  районов и примерных клеток). Главная кнопка карточки не меняется (проверено: одна). Жителю ссылки нет.
+  Новые цели (POLISH_WAVE п. 12), R07 и R08:
+  - id светофора/перехода/перекрёстка — osm-node-<id> (формат R09 record.TARGET_ID). Вид — object_kind в /targets и в
+    engine.civic_geo.target_geometry({kind, id}) → {geometry, point, label_ru, label_kk, object_kind, approximate}.
+  - Подписи: «Светофор на перекрёстке пр. Богенбай Батыра и ул. Щорса», «Пешеходный переход: ул. Таттимбета»,
+    «Перекрёсток ул. Кенесары и ул. Тараз»; kk — «Бағдаршам: Бөгенбай Батыр даңғылы мен Щорса көшесінің қиылысы» и т. п.
+    Без своей улицы (дворовый проезд) — по ближайшей улице с названием в 150 м (UX_REVIEW R11 волна 2 п. 4):
+    «Пешеходный переход у улицы Сыганак» / «Жаяу жүргіншілер өткелі · Сығанақ көшесі маңында» (203 точки); без улиц в
+    150 м остаётся «Пешеходный переход» или «Светофор» (186 из 3 820, внутри микрорайонов).
+  - Данные: data/civic/astana/geo/objects.json — 767 светофоров, 3 053 перехода, 2 388 перекрёстков (поля streets_ru,
+    streets_kk, near_ru/near_kk; у светофора на подходе — junction: id перекрёстка). Правило — SOURCE.json.intersection_rule.
+
+W.4 R11 · разбор по IA_WAVE2 §6 (схема R11 вышла после кода R12; приведено к ней, QR_SCHEME.md — что сделано и вопросы).
+  - Тексты паспорта и таблички — только ключи словаря R11: report.here, report.other, qr.object_no, qr.call, qr.title,
+    qr.print, target.metoo, target.metoo_done, target.by_day, target.type.*, heat.topics, heat.toast_metoo,
+    map.card.not_found(+_hint), map.card.loading, map.card.error, common.tag.demo/approx, common.period.last_days,
+    common.action.more, complaint.step5.to_map, complaint.send_error, status.* (verified_fixed → status.verified).
+    Новых ключей паспорта нет. Новые — 15 qr.form.* формы листа печати (i18n_keys.json, kk — черновик R12).
+  - Жалоб нет — блока с числом и статусом нет (§0 п. 6); главная кнопка «Сообщить о проблеме здесь».
+  - Неизвестный и испорченный id — «Объект не найден» + подсказка + главная кнопка «На карту» (не пустая карта).
+  - Табличка: A4 книжный, ОДНА на лист; qr.call kk и ru; QR 9 см; под QR адрес сайта 30 pt; название kk и ru 28 pt;
+    «Нысан № … · Объект № …»; ссылка мелко. Чисел жалоб и статусов на табличке нет.
+
+W.5 R15 · QR (подмена ссылки): id в ссылке — только по правилу REPORT_ID_RE (одно в engine/civic_geo, report.js,
+  print.js; тест сверяет); текст выводится через textContent; на табличке крупно адрес сайта и мелко вся ссылка;
+  «Адрес сайта на табличке» — только схема http(s) и хост, без пути, запроса и логина. Подменённая ссылка в приложении —
+  «Объект не найден» (разметка не исполняется — проверено). В ссылке нет lang и меток отслеживания; «Я тоже» по скану
+  само не ставится; print.html — без встроенных скриптов (CSP).
+
+W.6 R10 · приёмка: tests/civic/R12/qr/app_qr_acceptance.mjs (настоящее приложение, 29 проверок: паспорт, вид «Житель»,
+  место видно на 1366 и 375, шторка наполовину, «Я тоже», мастер R09 с местом, подмена ссылки, «карта по умолчанию без
+  слоёв QR», ссылка «Распечатать QR» у акимата, лист под CSP, мастер R09 со светофором), tests/civic/R12/qr/qr.test.mjs
+  (стенд, 6 тестов, в т. ч. размеры печати: QR ≥ 6 см, название ≥ 28 pt, одна табличка на лист).
+
+W.7 LOCAL-10 (светофоры/переходы) и LOCAL-11 (qrcode.js): ничего менять не надо. После LOCAL-10:
+  python3 -m engine.civic_geo build-data && python3 -m engine.civic_geo report — новые узлы (не на линиях графа)
+  подпишутся по ближайшей улице; дальше 15 м от улиц не берутся. После LOCAL-11 лист печати рисует настоящий QR,
+  появляется «Распечатать QR». Пока файла нет, в консоли листа — строка о 404 /vendor/qrcode/qrcode.js (не ошибка кода).
 
 =====================================================================================================
 0. ДЕНЬ 2 (ночь 10 → 11 окт) · поставка 2 · что взять R01 и что изменилось
