@@ -1,8 +1,78 @@
 R08 · «Картина дня» для акима — как подключить к общей сборке (раунд 14)
 =========================================================================
 
-Мои пути: ui/civic_akim/, web/civic/akim/, tests/civic/R08/, research/round-14-results/R08/.
-Чужие файлы я не менял. Ниже — что сделать владельцам соседних модулей. Применяет R01.
+Мои пути: ui/civic_akim/, web/civic/akim/, web/civic/nearby/ (новый, волна 2 п. 4), tests/civic/R08/,
+research/round-14-results/R08/. Чужие файлы я не менял. Ниже — что сделать владельцам соседних модулей. Применяет R01.
+
+§8. ВОЛНА МЕЛОЧЕЙ (п. 4, 6, 7, 12) И ВОЛНА 2 (п. 1, 4, 5, 8) — 11 окт, что подключить
+----------------------------------------------------------------------------------------
+8.1 R01 · маршруты и файлы — готовый patch research/round-14-results/R08/r01_wave2_r08.patch (git apply из корня):
+    ui/web_server.py: 7 маршрутов v2 — GET akim/routing, PUT akim/routing [сотрудник], POST akim/decisions/{id}
+      [сотрудник], GET nearby, GET/POST nearby/subscriptions, GET nearby/updates; функции записи для V2Handler
+      kind="function" (ui.civic_akim.api.routing_update / decision_choose / nearby_subscribe), чтение — raw handle_get;
+      лимит nearby.subscribe 20/мин и 200/сутки; файлы akim/services.*, nearby/* в CIVIC_ASSETS.
+    web/index.html: nearby.css, services.css, nearby.js, services.js (после birge.js; «Службы» сами встают в «Ещё»
+      акимата через BirgeShell.registerScreen, «Рядом» — window.BirgeNearby по §11.2 R01).
+    tests/civic/R01/test_r01_api_v2.py: 7 строк ROUTE_SAMPLES (иначе test_every_contract_route_is_in_the_table).
+    Проверено: сборка R01 a96f6e3 + R08 (эта ветка) + R11 537dbd3 + patch — pytest tests/civic/R01 tests/civic/R08
+    419 PASS + 3 SKIP; shell_wave2_check.cjs 20/20 (вход сотрудника, «Выбрать», «Ещё → Службы», житель → «Рядом»,
+    1366/375 × ru/kk); shell_check.cjs 28/28 (прежний сценарий не стал хуже).
+    Без patch: «Картина дня» работает (маршрут summary уже есть), «Выбрать» ответит 404 → «Выбор не сохранился»;
+    «Рядом» и «Службы» не загрузятся.
+    Данные записей — в .runtime/civic_akim/ (в .gitignore уже есть .runtime/): routing.json (правки служб),
+    decisions.json (выбор акима), subscriptions.json (подписки «Рядом»). Пути — env BIRGE_AKIM_ROUTING,
+    BIRGE_AKIM_DECISIONS, BIRGE_AKIM_SUBSCRIPTIONS. Сброс демо (R10 demo_reset) — удалить decisions.json и subscriptions.json.
+
+8.2 R09 · связи с жалобой v2 (ветка claude/modest-shannon-0ki93p, lifecycle.py 8c07864 — R08 уже читает её форму):
+    а) «Кому передано»: store.assignee_lookup = ui.civic_akim.routing.assignee_lookup (название по-русски);
+       для ҚАЗ — id службы: routing.service_for(category, subtopic)["id"] → t("service." + id) (ключи у R11).
+    б) «Нужно решение акима»: в форму паспорта — отметка «Нужно решение руководителя» и два варианта:
+       passport.delay.needs_decision = true, delay.options = [{ru, kk?}, {ru, kk?}], delay.decision = «что нужно
+       от акима». delay.reason (уже есть) R08 показывает как «Что мешает», temp_measure — «Временная мера».
+       Без отметки задержка в блок не попадает (критерий — ui/civic_akim/decisions.py, с комментарием).
+    в) Выбор акима: ui.civic_akim.decisions.choice_for(complaint_id) → {option, at, by} | None — показать службе
+       в паспорте («Решение акима: вариант 1»).
+    г) «Мои обращения → Что изменилось»: события подписок «Рядом» — ui.civic_akim.nearby.updates_for(device_id,
+       since) или GET /api/civic/v2/nearby/updates?device_id=…; device_id — тот же birge.device, что у мастера.
+    д) Календарь: R08 берёт ui.civic_feedback.v2.workdays (holidays_kz.json), если он есть — один календарь;
+       свои правила R08 для 2026 дают те же 365 дней (сверено с holidays_kz.json). Срок «подано + N рабочих дней,
+       время суток сохраняется» — как add_working_days R09.
+    е) Проверка жителями: resolution {state reported|verified|reopened, verified_at}, шаг истории
+       reopened_by_residents — так R08 считает «Служба сообщила · жители проверили · вернули» (плитка KPI).
+
+8.3 R06 · «Что делают рядом» (волна 2 п. 4, данные):
+    ui.civic_store(.v2).nearby_items(district) → список карточек; формат ITEM — в начале ui/civic_akim/nearby.py
+    (type work|outage, status, title_ru/kk, why {problem, reason, result, inconvenience}_ru/kk, у отключения —
+    start/end, zone, detour, source = id службы, updated_at). Форма сотрудника «Ещё → Работы и отключения» (R11 §1):
+    4 строки «Зачем» и у отключения источник + время — обязательны. Пока функции нет — пример (fixtures/nearby_demo.json,
+    помечен «Пример»). Объекты R06 уже в ленте (этап → вкладка); поле why у объекта — и карточка покажет «Зачем?».
+
+8.4 R07 · демо-набор (к сведению): у 22 из 483 демо-записей история не по времени («исправлено» раньше «принято»,
+    хотя в списке последним) — R08 больше не считает это возвратом в работу (порядок шагов — по списку), но статус
+    «на момент» по времени у этих записей скачет. В демо нет subtopic и resolution — на стенде R08 их дописывает
+    tests/civic/R08/wave2_demo.py (синтетика, только тесты); если R07 добавит их в demo_seed, «Картина дня» покажет
+    уточнения у горячих мест и «жители проверили» и в сборке. Цвета heat_states — у R07; R08 их не рисует.
+
+8.5 R11 · 37 новых ключей — research/round-14-results/R08/I18N_WAVE2.json (ru и черновик kk). До слияния в коде —
+    запасной текст; как только ключ есть в словаре, берётся словарь. Схемы IA_WAVE2 §4 и §5 соблюдены; отступления
+    на разбор: (1) плитка «Просрочено» — строка «Дольше всех: <место> · Просрочено на N дней» (таймер в «Картине дня»,
+    волна мелочей п. 6); (2) телефон: блок решений сразу после чисел, сводка — следующим блоком (сдвиг на один блок),
+    иначе заголовок «Әкімнің шешімі керек» не попадает в первый экран 375; (3) экран «Службы» — схемы не было, сделан
+    по §0 (колонка 960 px, одна главная кнопка «Сохранить», уточнения свёрнуты). Разбор 2, п. 6–8 — исправлены.
+
+8.6 R13 · «Пульс района»: метод — ui/civic_akim/pulse.py (объяснимый, без модели: всплеск темы в районе против
+    среднего за 4 недели, ×k с шагом 0,5; новое горячее место; рост «Я тоже» за неделю; снегопад в нескольких районах —
+    одна строка «по городу»). R13 может заменить расчёт, сохранив формат тревоги
+    {kind, category, district, value, base, ratio, k, weeks, target}; тексты — ключи akim.pulse.* (R11).
+
+8.7 R15 · записи и проверки: PUT /akim/routing и POST /akim/decisions/{id} — только сотрудник (шлюз R01 + CSRF);
+    POST /nearby/subscriptions — житель без входа: device_id ^[A-Za-z0-9_-]{16,80}$, не больше 20 подписок на
+    устройство (429), лимит шлюза; названия служб ≤ 80 знаков, без < > { }; выбор — только из пунктов, которые аким
+    сейчас видит, вариант 1|2; запись файлов атомарно (tmp + replace). В ответах нет текстов жалоб и данных жителей.
+
+8.8 R10 · проверки (стенд: tests/civic/R08/demo_server.py --kit-dir <R11> --wave2-demo):
+    ui_check.cjs 137, services_check.cjs 26, nearby_check.cjs 44; в сборке — shell_wave2_check.cjs 20 (нужен
+    редактор: R08_STAFF_USER / R08_STAFF_PASS) и прежний shell_check.cjs 28.
 
 1. R01 · ui/web_server.py — маршрут API (CONTRACT §7)
 ------------------------------------------------------

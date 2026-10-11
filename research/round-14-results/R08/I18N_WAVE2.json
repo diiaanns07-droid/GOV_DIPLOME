@@ -1,0 +1,113 @@
+{
+ "_meta": {
+  "for": "R11",
+  "note": "Ключи экранов R08 волны 2, которых нет в словаре R11 (claude/r14-R11 @ 537dbd3). В коде R08 — запасной текст до слияния; как только ключ есть в словаре, берётся словарь. kk — черновик R08, вычитка R11.",
+  "count": 37
+ },
+ "ru": {
+  "akim.decision.forbidden": "Выбрать вариант может только сотрудник акимата",
+  "akim.decision.no_options": "Варианты не предложены — служба должна их подготовить",
+  "akim.decision.save_error": "Выбор не сохранился — попробуйте ещё раз",
+  "akim.overdue.longest": "Дольше всех: {place}",
+  "akim.pulse.more": {
+   "one": "Ещё {n} тревога",
+   "few": "Ещё {n} тревоги",
+   "many": "Ещё {n} тревог"
+  },
+  "akim.pulse.reason.city": "Больше всего: {list}",
+  "akim.pulse.reason.metoo": "Неделей раньше — {n}",
+  "akim.pulse.reason.new_hot": {
+   "one": "{n} человек за 7 дней, неделю назад места на карте не было",
+   "few": "{n} человека за 7 дней, неделю назад места на карте не было",
+   "many": "{n} человек за 7 дней, неделю назад места на карте не было"
+  },
+  "akim.pulse.reason.spike": {
+   "one": "{n} сообщение за 7 дней, обычно {base} в неделю",
+   "few": "{n} сообщения за 7 дней, обычно {base} в неделю",
+   "many": "{n} сообщений за 7 дней, обычно {base} в неделю"
+  },
+  "akim.pulse.reason.spike_new": {
+   "one": "{n} сообщение за 7 дней, раньше — ни одного",
+   "few": "{n} сообщения за 7 дней, раньше — ни одного",
+   "many": "{n} сообщений за 7 дней, раньше — ни одного"
+  },
+  "akim.pulse.spike_city": {
+   "one": "{category}: всплеск в {n} районе, ×{k}",
+   "few": "{category}: всплеск в {n} районах, ×{k}",
+   "many": "{category}: всплеск в {n} районах, ×{k}"
+  },
+  "akim.pulse.spike_new": "{category} · {district}: раньше такого не было",
+  "common.time.hours_ago": {
+   "one": "{n} час назад",
+   "few": "{n} часа назад",
+   "many": "{n} часов назад"
+  },
+  "common.time.minutes_ago": {
+   "one": "{n} минуту назад",
+   "few": "{n} минуты назад",
+   "many": "{n} минут назад"
+  },
+  "common.time.tomorrow": "завтра",
+  "nearby.done_on": "завершено {date}",
+  "nearby.notify_hint": "Изменения появятся в «Моих обращениях»",
+  "nearby.starts": "начало {date}",
+  "nearby.subscribe_district": "Следить за районом",
+  "nearby.subscribe_error": "Не получилось — попробуйте ещё раз",
+  "nearby.subscribed_district": "Вы следите за районом {name}",
+  "nearby.unsubscribe": "Отписаться",
+  "nearby.utility.gas": "Газ",
+  "nearby.utility.heating": "Тепло",
+  "nearby.utility.power": "Свет",
+  "nearby.utility.road_closure": "Перекрытие",
+  "nearby.utility.water": "Вода",
+  "services.edited": "изменено акиматом",
+  "services.for": "Служба для «{name}»",
+  "services.forbidden": "Менять таблицу может только сотрудник акимата",
+  "services.hint": "Кому передаётся обращение. Названия общие — акимат может выбрать другую службу.",
+  "services.nothing": "Изменений нет",
+  "services.same": "Как у категории",
+  "services.save_error": "Не сохранилось — попробуйте ещё раз",
+  "services.saved": "Сохранено",
+  "services.subtopics": "Уточнения ({n})",
+  "services.title": "Службы"
+ },
+ "kk": {
+  "akim.decision.forbidden": "Нұсқаны тек әкімдік қызметкері таңдай алады",
+  "akim.decision.no_options": "Нұсқалар ұсынылмаған — оларды қызмет дайындауы керек",
+  "akim.decision.save_error": "Таңдау сақталмады — қайталап көріңіз",
+  "akim.overdue.longest": "Ең ұзағы: {place}",
+  "akim.pulse.more": "Тағы {n}",
+  "akim.pulse.reason.city": "Ең көбі: {list}",
+  "akim.pulse.reason.metoo": "Алдыңғы аптада — {n}",
+  "akim.pulse.reason.new_hot": "7 күнде {n} адам, бір апта бұрын бұл орын картада болмаған",
+  "akim.pulse.reason.spike": "7 күнде {n} хабарлама, әдетте аптасына {base}",
+  "akim.pulse.reason.spike_new": "7 күнде {n} хабарлама, бұрын — бірде-бір",
+  "akim.pulse.spike_city": "{category}: {n} ауданда күрт өсу, ×{k}",
+  "akim.pulse.spike_new": "{category} · {district}: бұрын болмаған",
+  "common.time.hours_ago": "{n} сағат бұрын",
+  "common.time.minutes_ago": "{n} минут бұрын",
+  "common.time.tomorrow": "ертең",
+  "nearby.done_on": "{date} аяқталды",
+  "nearby.notify_hint": "Өзгерістер «Менің өтініштерім» бөлімінде көрінеді",
+  "nearby.starts": "басталуы: {date}",
+  "nearby.subscribe_district": "Ауданды бақылау",
+  "nearby.subscribe_error": "Болмады — қайталап көріңіз",
+  "nearby.subscribed_district": "Сіз {name} ауданын бақылап отырсыз",
+  "nearby.unsubscribe": "Жазылымнан шығу",
+  "nearby.utility.gas": "Газ",
+  "nearby.utility.heating": "Жылу",
+  "nearby.utility.power": "Жарық",
+  "nearby.utility.road_closure": "Жол жабылады",
+  "nearby.utility.water": "Су",
+  "services.edited": "әкімдік өзгертті",
+  "services.for": "«{name}» үшін қызмет",
+  "services.forbidden": "Кестені тек әкімдік қызметкері өзгерте алады",
+  "services.hint": "Өтініш кімге жіберіледі. Атаулар жалпы — әкімдік басқа қызметті таңдай алады.",
+  "services.nothing": "Өзгеріс жоқ",
+  "services.same": "Санаттағыдай",
+  "services.save_error": "Сақталмады — қайталап көріңіз",
+  "services.saved": "Сақталды",
+  "services.subtopics": "Нақтылаулар ({n})",
+  "services.title": "Қызметтер"
+ }
+}

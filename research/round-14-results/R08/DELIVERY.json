@@ -1,76 +1,101 @@
 {
  "role": "R08",
- "title": "Картина дня для акима",
+ "title": "Картина дня для акима + волна мелочей (п. 4, 6, 7, 12) + волна 2 (п. 1, 4, 5, 8)",
  "branch": "claude/r14-R08",
- "base_sha": "2131c15 (claude/round-14-package)",
+ "base_sha": "2131c15 (claude/round-14-package); волны — claude/round-14-package @ c86c515 (POLISH_WAVE_2 утверждена, categories_v2 heat_states)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "51fdbcd5",
- "tested_sha": "51fdbcd5",
+ "code_sha": "ce06cece",
+ "tested_sha": "ce06cece",
  "tested_with": {
-  "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 328e793 (код 597ec4f) — временная копия, в git R08 не входит; также проверено с 35e6feb",
-  "r11_ui_kit_i18n": "web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 8451468 — demo_server.py --kit-dir",
-  "r06_store": "claude/round-14-r06 @ 224075b (код 681a4ef) и 6b9da27 — рабочие копии, init + seed-r14-demo",
-  "environment": "облачная сессия Claude Code, Linux, Python 3.13.16, Node 22.22.0, Playwright 1.56.1 + Chromium 1194",
-  "date": "2026-10-10 (ночь)",
-  "r01_build": "claude/r14-R01 @ d9a8895 — рабочая копия + R08 этой поставки + R07 597ec4f, CIVIC_DEMO=1, база init + seed-demo + seed-r14-demo"
+  "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 5e2789e (код 58f5a56/597ec4f) — временная копия, в git R08 не входит",
+  "r11_ui_kit_i18n": "claude/r14-R11 @ 537dbd3 (DELIVERY b0614f9): словарь с ключами волны 2 (akim.decision.*, akim.pulse.*, akim.verify.split, nearby.*, service.*, deadline.*)",
+  "r01_shell": "claude/sharp-dijkstra-0t87gl @ a96f6e3 (меню волны 2) + R08 ce06cec + R11 537dbd3 + research/round-14-results/R08/r01_wave2_r08.patch",
+  "r09_formats": "claude/modest-shannon-0ki93p @ 8c07864/a9cd441 (lifecycle.py: resolution, reopened_by_residents, passport.delay; workdays.py + holidays_kz.json) — прочитаны, R08 читает их форму; модуль R09 в рабочей копии R08 не запускался",
+  "env": "облачная сессия Claude Code, Linux, Python 3.13, Chromium (Playwright), без интернета"
  },
- "push_status": "OK — claude/r14-R08; DELIVERY и STATUS отдельным коммитом поверх code_sha",
+ "push_status": "OK — claude/r14-R08 (код ce06cec); DELIVERY, STATUS, скриншоты — отдельным коммитом поверх",
  "changed_paths": [
   "research/handoffs/astana/R08/round14/STATUS.md",
   "research/round-14-results/R08/",
+  "research/round-14/categories_v2.json (копия из claude/round-14-package c86c515 без правок)",
   "tests/civic/R08/demo_server.py",
+  "tests/civic/R08/nearby_check.cjs",
   "tests/civic/R08/r08_helpers.py",
+  "tests/civic/R08/services_check.cjs",
+  "tests/civic/R08/shell_wave2_check.cjs",
   "tests/civic/R08/test_r08_api.py",
   "tests/civic/R08/test_r08_demo_plausible.py",
   "tests/civic/R08/test_r08_heat_match.py",
+  "tests/civic/R08/test_r08_nearby.py",
   "tests/civic/R08/test_r08_r06_sources.py",
+  "tests/civic/R08/test_r08_routing.py",
   "tests/civic/R08/test_r08_summary.py",
   "tests/civic/R08/test_r08_text.py",
+  "tests/civic/R08/test_r08_wave2.py",
   "tests/civic/R08/ui_check.cjs",
+  "tests/civic/R08/wave2_demo.py",
   "ui/civic_akim/__init__.py",
   "ui/civic_akim/__main__.py",
   "ui/civic_akim/api.py",
   "ui/civic_akim/deadlines.py",
+  "ui/civic_akim/decisions.py",
+  "ui/civic_akim/fixtures/decisions_demo.json",
+  "ui/civic_akim/fixtures/nearby_demo.json",
   "ui/civic_akim/fixtures/objects_demo.json",
   "ui/civic_akim/fixtures/proposals_demo.json",
+  "ui/civic_akim/nearby.py",
+  "ui/civic_akim/pulse.py",
+  "ui/civic_akim/routing.py",
   "ui/civic_akim/sources.py",
   "ui/civic_akim/summary.py",
   "ui/civic_akim/text.py",
+  "ui/civic_akim/workdays.py",
   "web/civic/akim/akim.css",
   "web/civic/akim/akim.js",
-  "web/civic/akim/index.html"
+  "web/civic/akim/index.html",
+  "web/civic/akim/services.css",
+  "web/civic/akim/services.html",
+  "web/civic/akim/services.js",
+  "web/civic/nearby/index.html",
+  "web/civic/nearby/nearby.css",
+  "web/civic/nearby/nearby.js"
  ],
- "api": "GET /api/civic/v2/akim/summary?date=YYYY-MM-DD&district=<id|all> → ui.civic_akim.api.handle_get (подключает R01)",
+ "api": [
+  "GET /api/civic/v2/akim/summary?date&district → handle_get (+ поля overdue, decisions, pulse, kpi.fixed_week.verified/awaiting/reopened, kpi.verification_available, hot.items[].subtopic)",
+  "GET /api/civic/v2/akim/routing[?category&subtopic] → handle_get (таблица служб / одна служба)",
+  "PUT /api/civic/v2/akim/routing {rules, services} → routing_update(body, principal) [сотрудник]",
+  "POST /api/civic/v2/akim/decisions/{id} {option: 1|2} → decision_choose(decision_id, body, principal) [сотрудник]",
+  "GET /api/civic/v2/nearby?district&tab → handle_get",
+  "GET /api/civic/v2/nearby/subscriptions?device_id; POST /api/civic/v2/nearby/subscriptions {device_id, scope, id, on} → nearby_subscribe(body)",
+  "GET /api/civic/v2/nearby/updates?device_id&since → handle_get (для R09 «Что изменилось»)",
+  "Функции для соседей: routing.service_for / assignee_lookup (R09), decisions.choice_for (R09), nearby.updates_for (R09), workdays (общий календарь с R09)"
+ ],
  "tests": {
-  "pytest tests/civic/R08 без ui/civic_heat": "117 PASS + 3 SKIP с причиной",
-  "pytest tests/civic/R08 в рабочей копии R06 6b9da27": "129 PASS",
-  "test_r08_heat_match.py": "без assert при сборе (R15: «ошибка сбора, assert 0 >= 3» на 5-недельном наборе R07); новые проверки: «неделю назад» не пустое, снимок отбрасывает «Я тоже», нажатые позже",
-  "живой R06 6b9da27": "PASS — объекты и предложения из базы R06, в ҚАЗ названия казахские («Тротуарды жөндеу», «Ілияс Омаров көшесі маңындағы гүлзар»); кадры akim-1366-ru/kk-r06-objects.png, akim-375-kk-r06-objects.png",
-  "screenshots": "research/round-14-results/R08/screens/: akim-1366-ru/kk, akim-375-ru/kk (.png и -full.jpg), состояния, печать PDF, *-r06-objects.png — пересняты в эту ночь",
-  "integration_with_R01_server": "PASS в рабочей копии сборки d9a8895 с этой поставкой (shell_check 26/26); в самой сборке R01 эта поставка ещё не взята",
-  "map_link_target_opening": "PASS (shell_check): оболочка R01 ловит birge:open-target, focusTarget R07 открывает карточку",
-  "test_r08_cli.py": "3 PASS — python -m ui.civic_akim --lang kk и --json не падают при PYTHONIOENCODING=cp1251 (как R10 B-028), JSON верный, казахские буквы не теряются",
-  "node tests/civic/R08/shell_check.cjs (сборка R01 d9a8895)": "28/28 PASS — экран в оболочке 1366/375 × ru/kk, ҚАЗ без русских названий, клик «горячее место → карточка цели» с тем же числом и 7 днями, печать из оболочки — только «Картина дня» на 2 листа A4 (screens/shell/shell-print.pdf)",
-  "pytest tests/civic/R08 (с R07 597ec4f)": "134 PASS + 1 SKIP (test_r08_hot_labels — нет данных R12 в ветке R08; в сборке R01: с R07 597ec4f PASS, с R07 306074b FAIL)",
-  "pytest tests/civic/R08 в сборке R01": "161 PASS + 1 SKIP за 107 с — 98 с из них старый тест классификатора v1 раунда 13 test_r08_train.py (восстановлен R01 в эту папку, не «Картина дня»)",
-  "R10 ux_screens.cjs (инструмент R10 3623f65) по «Картине дня» — оболочка d9a8895 + R08 15276be и отдельная страница": "56/56 PASS (1366/375 × ru/kk: прокрутка, ключи, тех. слова, шрифт, зоны нажатия, русские строки в kk, консоль) — research/round-14-results/R08/r10_ux/",
-  "node tests/civic/R08/ui_check.cjs (kit R11 8451468, R07 597ec4f)": "108/108 PASS — + объекты: по умолчанию не ссылки, с objectHref — ссылка и событие; телефон: подписи тем и районов в одну строку",
-  "FINAL-кандидат R01 0a7a346 (R08 c7646a1)": "pytest tests/civic/R08 — 163 PASS + 1 SKIP (вместе со старыми тестами v1); shell_check 28/28; с файлами R08 bedb753 — 28/28 (с objectHref — 30/30)",
-  "FINAL-кандидат R01 85c16e2 (R08 bedb753)": "pytest tests/civic/R08 — 162 PASS + 1 SKIP + 1 XFAIL (демо-правдоподобие в 00:38 по Астане: новых за день 0) → тест исправлен в 51fdbcd5 (фиксированный полдень), на FINAL с ним — PASS; shell_check 28/28; объекты: карточки объекта в оболочке по-прежнему нет — objectHref не включать",
-  "Сборка R01 8807b28 (после FINAL d99c8c2; R08 = 51fdbcd)": "pytest tests/civic/R08 — 163 PASS + 1 SKIP (XFAIL больше нет); shell_check 28/28; новых замечаний к R08 у R10/R11/R15 нет"
+  "pytest tests/civic/R08 (с копией R07)": "225 PASS + 2 SKIP (SKIP: подписи мест — только в сборке; сверка календаря с модулем R09 — его нет в рабочей копии R08)",
+  "pytest tests/civic/R08 без ui/civic_heat": "210 PASS + 4 SKIP с причиной",
+  "BIRGE_STRICT_DEMO=1 pytest tests/civic/R08": "PASS (правдоподобие демо-чисел)",
+  "календарь R08 против holidays_kz.json R09": "PASS — 365 дней 2026 совпадают (скрипт по файлу R09 из claude/modest-shannon-0ki93p)",
+  "ui_check.cjs (стенд --wave2-demo, 1366/375 × ru/kk)": "137/137 PASS",
+  "services_check.cjs": "26/26 PASS",
+  "nearby_check.cjs": "44/44 PASS",
+  "сборка R01 a96f6e3 + R08 + R11 537dbd3 + patch: pytest tests/civic/R01 tests/civic/R08": "419 PASS + 3 SKIP",
+  "сборка: shell_wave2_check.cjs (вход редактора, «Выбрать», «Ещё → Службы», житель → «Рядом»)": "20/20 PASS",
+  "сборка: shell_check.cjs (прежний сценарий «Картины дня»)": "28/28 PASS",
+  "R10 ux_screens / R11 review_build на волне 2": "NOT_RUN — инструменты R10/R11 запускают они на FINAL-2"
  },
  "known_limits": [
-  "Сроки «Просрочено» (deadlines.py) — демо-норматив R08, не утверждён акиматом; это срок ИСПРАВЛЕНИЯ, у R09 отдельно срок ПЕРВОГО ОТВЕТА.",
-  "Правдоподобные демо-числа — только с R07 @ 35e6feb (5-недельный поток). С R07 5a97636 (в B2) числа «как авария» (R11 п. 13) — R01 должен взять новый R07.",
-  "«Я тоже» без времени (старые записи без metoo_times) при расчёте «неделю назад» считаются нажатыми в момент подачи.",
-  "Записи берутся у источника R07/R09 целиком (since=None); R09 store.list отдаёт не больше 5000 последних — для демо достаточно.",
-  "Формат поля даты (10/10/2026 или 10.10.2026) задаёт браузер по языку системы.",
-  "У настоящих объектов R06 без казахского названия в ҚАЗ показывается вид объекта («Жол жөндеу»), а не название — точнее назвать нельзя без перевода данных.",
-  "Ветка R08 одна, без словаря R11 покажет ключи вместо текста — стенд предупреждает; в сборке словарь R11.",
-  "В папке tests/civic/R08 сборки R01 лежат тесты классификатора v1 раунда 13 (test_r08_train/corpus/contract/reports/feedback_integration) — не мои, R08 их не трогает (INTEGRATION п. 8)."
+  "Сроки «Просрочено» — демо-норматив R08 (deadlines.py), в рабочих днях РК 2026; у аварийных категорий — календарные. Переносы рабочих дней постановлением Правительства и точная дата Курбан айта не сверены (как и у R09).",
+  "«Нужно решение акима»: у R09 в паспорте пока нет отметки «нужно решение руководителя» и двух вариантов (INTEGRATION §8.2б) — на демо-данных блок показывает 3 ПРИМЕРА (fixtures/decisions_demo.json, «Пример»), среди настоящих обращений пример не подмешивается.",
+  "«Пульс района» — простой метод R08 (pulse.py), не модель R13; на 5-недельном демо R07 снегопад даёт тревогу «по городу» — это свойство демо-набора.",
+  "«Служба сообщила · жители проверили · вернули» появляется, только когда в данных есть проверка жителями (R09 resolution); в демо R07 её нет — на стенде её дописывает wave2_demo.py (синтетика).",
+  "Уточнения у горячих мест — только когда у записей есть subtopic (R09 волна 1); в демо R07 их нет.",
+  "«Рядом»: данные работ и отключений с «Зачем» — пример R08, пока R06 не даст nearby_items; объекты R06 показываются без строк «Зачем».",
+  "Подписки «Рядом» хранятся в .runtime/civic_akim/subscriptions.json (файл, не база) — для демо; события в «Мои обращения» покажет R09.",
+  "Длинные названия служб в ҚАЗ на 375 px в поле выбора обрезаются браузером («Бағдаршам және жол таңбасы қыз…»).",
+  "37 ключей волны 2 ещё не в словаре R11 (I18N_WAVE2.json) — в коде запасной текст, kk — черновик R08."
  ],
- "next_step": "R01 (FINAL): R08 @ этой поставки, R07 @ 328e793 (код 597ec4f: правдоподобные числа и подписи мест), R06 @ 224075b, R11 @ последний; прогнать pytest tests/civic/R08 и node tests/civic/R08/shell_check.cjs на сервере сборки. R10: перепроверить B-005, B-018, B-029 и п. 13 R11 на FINAL.",
- "delivery": "3 (ночь, круги 1–11)",
+ "next_step": "R01 (FINAL-2): взять claude/r14-R08 @ ce06cec и применить research/round-14-results/R08/r01_wave2_r08.patch (маршруты, файлы, ROUTE_SAMPLES); прогнать pytest tests/civic/R08 tests/civic/R01, shell_check.cjs и shell_wave2_check.cjs. R09: assignee_lookup, отметка «нужно решение руководителя» + 2 варианта в паспорте, choice_for в паспорте, updates_for в «Что изменилось» (INTEGRATION §8.2). R06: nearby_items (§8.3). R11: 37 ключей (I18N_WAVE2.json) и разбор экранов «Рядом», «Службы», блоков «Картины дня».",
+ "delivery": "4 (11 окт: волна мелочей и волна 2)",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
  ],
@@ -133,25 +158,53 @@
   },
   "night_r10": {
    "Своя находка: test_r08_demo_plausible зависел от часа запуска (XFAIL после полуночи)": "фиксированный полдень, PASS в любое время (51fdbcd5)"
+  },
+  "wave2": {
+   "R11 UX_REVIEW волна 2 разбор 1, п. 3: kk названий служб": "исправлено (Бағдаршам және жол таңбасы қызметі, Көшелерді тазалау қызметі), на экране t(\"service.\"+id)",
+   "R11 разбор 2, п. 6: «растағаны», «қайта» дважды": "исправлено: «тұрғындар тексергені», «жұмысқа қайтарылғаны»; ru — «жители проверили»",
+   "R11 разбор 2, п. 7: «ыстық нүкте»": "исправлено: «Жаңа ыстық орын»",
+   "R11 разбор 2, п. 8: kk примеров решений": "исправлено: «Ауладағы балалар алаңы», «…алып тастау, жөндеуді … енгізу», «…1 күнде жасай алады»",
+   "R11 разбор 2, п. 9: экран по IA_WAVE2 §5": "сделано: после сводки, пусто — блока нет, ≤ 3 решений и ≤ 5 тревог, «Таңдау» второстепенные; проверено ui_check"
   }
  },
- "for_r01_final": {
-  "take": "claude/r14-R08 @ код 51fdbcd5: изменился только тест test_r08_demo_plausible.py (модуль и страница = bedb753, уже в FINAL)",
-  "replaces": "ничего: R08 51fdbcd уже в FINAL d99c8c2 и в 8807b28",
-  "fixes_in_build": [
-   "R01 I-02 / R15: test_r08_heat_match — ошибка сбора исчезает (проверено с R07 306074b и 597ec4f)",
-   "R10 B-018: в ҚАЗ нет русских названий объектов (вместе с R06 ≥ 6b9da27)",
-   "печать из оболочки — вся «Картина дня» на 2 листа A4, без шапки и карты",
-   "тихое обновление раз в 2 минуты; телефон — 4 числа на первом экране; пустой реестр — «Пока пусто»",
-   "телефон: темы и районы — подпись и число строкой, полоса под ними (длинные казахские названия не рвутся)",
-   "объекты → карта: готово, но выключено до карточки объекта в оболочке (INTEGRATION 4е, objectHref)"
-  ],
-  "files": [
-   "ui/civic_akim/*",
-   "web/civic/akim/{index.html,akim.js,akim.css}",
-   "tests/civic/R08/{r08_helpers.py,test_r08_*.py кроме старых v1,ui_check.cjs,shell_check.cjs,demo_server.py}"
-  ],
-  "optional_one_line": "web/civic/shell/birge.js: titleTag: \"h2\" (INTEGRATION 4д)",
-  "check_after": "pytest tests/civic/R08; node tests/civic/R08/shell_check.cjs http://127.0.0.1:8611 (28 проверок)"
+ "wave_items": {
+  "волна мелочей п. 4 «Житель подтверждает ремонт» (R08 счётчик)": "СДЕЛАНО — плитка «Исправлено»: служба сообщила · жители проверили · вернули; сводка «жители проверили N»",
+  "волна мелочей п. 6 «Сроки в рабочих днях» (R08 вывод)": "СДЕЛАНО — «Просрочено» по рабочим дням (календарь R09/R08), «Дольше всех: … · Просрочено на N дней», таймер в карточках решений; API overdue.items",
+  "волна мелочей п. 7 «Кому передано» (R08)": "СДЕЛАНО — routing.py (20 общих служб, категория/уточнение), экран «Службы», PUT для акимата, assignee_lookup для R09",
+  "волна мелочей п. 12 «Новые цели и уточнения в Картине дня» (R08)": "СДЕЛАНО — уточнение у горячих мест; подписи светофоров/переходов/перекрёстков приходят от R07/R12 (label_*), без подписи — вид места",
+  "волна 2 п. 1 «Исправлено — проверьте» (R08 счётчики)": "СДЕЛАНО — читает resolution R09 (reported/verified/reopened), reopened_by_residents",
+  "волна 2 п. 4 «Что делают рядом» (R08 экран)": "СДЕЛАНО — web/civic/nearby (схема R11 §4), API nearby, подписка; данные R06 — по контракту, до них пример",
+  "волна 2 п. 5 «Нужно решение акима» (R08)": "СДЕЛАНО — блок по схеме R11 §5, критерий в decisions.py, «Выбрать» с сохранением; ждёт отметку R09",
+  "волна 2 п. 8 «Пульс района» (R08 вывод)": "СДЕЛАНО — pulse.py (простой метод), блок «Аудан пульсі» ≤ 3 + «Тағы N», пусто — одна строка",
+  "защита от перегруза": "карта по умолчанию не тронута (слоёв не добавлял); новые разделы — свои экраны (#nearby, «Ещё → Службы»); одна главная кнопка на экран; «Зачем?» и уточнения свёрнуты"
+ },
+ "previous_delivery": {
+  "delivery": "3 (ночь, круги 1–11)",
+  "code_sha": "51fdbcd5",
+  "for_r01_final": {
+   "take": "claude/r14-R08 @ код 51fdbcd5: изменился только тест test_r08_demo_plausible.py (модуль и страница = bedb753, уже в FINAL)",
+   "replaces": "ничего: R08 51fdbcd уже в FINAL d99c8c2 и в 8807b28",
+   "fixes_in_build": [
+    "R01 I-02 / R15: test_r08_heat_match — ошибка сбора исчезает (проверено с R07 306074b и 597ec4f)",
+    "R10 B-018: в ҚАЗ нет русских названий объектов (вместе с R06 ≥ 6b9da27)",
+    "печать из оболочки — вся «Картина дня» на 2 листа A4, без шапки и карты",
+    "тихое обновление раз в 2 минуты; телефон — 4 числа на первом экране; пустой реестр — «Пока пусто»",
+    "телефон: темы и районы — подпись и число строкой, полоса под ними (длинные казахские названия не рвутся)",
+    "объекты → карта: готово, но выключено до карточки объекта в оболочке (INTEGRATION 4е, objectHref)"
+   ],
+   "files": [
+    "ui/civic_akim/*",
+    "web/civic/akim/{index.html,akim.js,akim.css}",
+    "tests/civic/R08/{r08_helpers.py,test_r08_*.py кроме старых v1,ui_check.cjs,shell_check.cjs,demo_server.py}"
+   ],
+   "optional_one_line": "web/civic/shell/birge.js: titleTag: \"h2\" (INTEGRATION 4д)",
+   "check_after": "pytest tests/civic/R08; node tests/civic/R08/shell_check.cjs http://127.0.0.1:8611 (28 проверок)"
+  }
+ },
+ "for_r01_final2": {
+  "take": "claude/r14-R08 @ ce06cec (ui/civic_akim, web/civic/akim, web/civic/nearby, tests/civic/R08)",
+  "apply": "research/round-14-results/R08/r01_wave2_r08.patch → ui/web_server.py, web/index.html, tests/civic/R01/test_r01_api_v2.py",
+  "check": "pytest tests/civic/R08 tests/civic/R01; shell_check.cjs (28); R08_STAFF_USER/PASS shell_wave2_check.cjs (20)",
+  "runtime": ".runtime/civic_akim/{routing,decisions,subscriptions}.json; demo_reset — удалить decisions.json и subscriptions.json"
  }
 }
