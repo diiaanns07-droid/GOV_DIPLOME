@@ -515,7 +515,7 @@ async function checkNearby(ctx) {
       const toMap = await header(P.page, lang, exact(W(lang, "common.nav.map", "Карта")), 1500);
       const back = await P.page.evaluate(() => { const c = document.querySelector(".maplibregl-canvas"); if (!c) return false; const b = c.getBoundingClientRect();
         return document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2) === c; }).catch(() => false);
-      add("W2-4", tag, "«Карта» в меню возвращает к карте", st(toMap && back), { toMap, back });
+      add("W2-4", tag, "«Карта» в меню возвращает к карте", st(opened && toMap && back), { opened, toMap, back });
     } finally { await P.ctx.close(); }
   }
   add("W2-4", "R09", "события подписки «Рядом» — в «Мои обращения → Что изменилось»", "NOT_RUN", "дописать при поставке R09 (mine.changes) — R08 отдаёт /nearby/updates");
