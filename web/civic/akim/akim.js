@@ -69,7 +69,7 @@
   // Как только ключ есть в словаре — берётся словарь (вычитанный kk), этот запас не используется.
   var WAVE2_KEYS = {
     ru: {
-      "akim.pulse.spike_new": "{category} · {district}: раньше такого не было",
+      "akim.pulse.spike_new": "{category} · {district}: новое",
       "akim.pulse.spike_city": { one: "{category}: всплеск в {n} районе, ×{k}", few: "{category}: всплеск в {n} районах, ×{k}", many: "{category}: всплеск в {n} районах, ×{k}" },
       "akim.pulse.reason.spike": { one: "{n} сообщение за 7 дней, обычно {base} в неделю", few: "{n} сообщения за 7 дней, обычно {base} в неделю", many: "{n} сообщений за 7 дней, обычно {base} в неделю" },
       "akim.pulse.reason.spike_new": { one: "{n} сообщение за 7 дней, раньше — ни одного", few: "{n} сообщения за 7 дней, раньше — ни одного", many: "{n} сообщений за 7 дней, раньше — ни одного" },
@@ -83,15 +83,15 @@
       "akim.decision.save_error": "Выбор не сохранился — попробуйте ещё раз",
     },
     kk: {
-      "akim.pulse.spike_new": "{category} · {district}: бұрын болмаған",
+      "akim.pulse.spike_new": "{category} · {district}: жаңа",
       "akim.pulse.spike_city": "{category}: {n} ауданда күрт өсу, ×{k}",
       "akim.pulse.reason.spike": "7 күнде {n} хабарлама, әдетте аптасына {base}",
-      "akim.pulse.reason.spike_new": "7 күнде {n} хабарлама, бұрын — бірде-бір",
+      "akim.pulse.reason.spike_new": "7 күнде {n} хабарлама, бұрын бірде-бір болмаған",
       "akim.pulse.reason.city": "Ең көбі: {list}",
       "akim.pulse.reason.new_hot": "7 күнде {n} адам, бір апта бұрын бұл орын картада болмаған",
       "akim.pulse.reason.metoo": "Алдыңғы аптада — {n}",
       "akim.pulse.more": "Тағы {n}",
-      "akim.overdue.longest": "Ең ұзағы: {place}",
+      "akim.overdue.longest": "Ең ұзақ кешіккені: {place}",
       "akim.decision.no_options": "Нұсқалар ұсынылмаған — оларды қызмет дайындауы керек",
       "akim.decision.forbidden": "Нұсқаны тек әкімдік қызметкері таңдай алады",
       "akim.decision.save_error": "Таңдау сақталмады — қайталап көріңіз",

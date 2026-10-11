@@ -428,8 +428,9 @@ def test_r09_passport_delay_reason_is_the_blocker():
 
 def test_assignee_lookup_for_r09():
     from ui.civic_akim import routing
-    assert routing.assignee_lookup("roads", "traffic_light_broken") == "Служба светофоров и разметки"
-    assert routing.assignee_lookup("unknown", None) == routing.SERVICES[routing.DEFAULT_RULES["other"]]["ru"]
+    a = routing.assignee_lookup("roads", "traffic_light_broken")
+    assert (a["ru"], a["kk"], a["id"]) == ("Служба светофоров и разметки", "Бағдаршам және жол таңбасы қызметі", "traffic")
+    assert routing.assignee_lookup("unknown", None)["ru"] == routing.SERVICES[routing.DEFAULT_RULES["other"]]["ru"]
 
 
 def test_gateway_functions_for_r01(tmp_path, monkeypatch):

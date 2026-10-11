@@ -243,7 +243,11 @@ def update(changes: dict, *, actor: str | None = None, path: Path | None = None,
     return table(p)
 
 
-def assignee_lookup(category: str | None, subtopic: str | None = None) -> str:
-    """Для R09 (store.assignee_lookup, паспорт решения «Отвечает: …»): название службы по-русски.
-    Интерфейсу на казахском лучше брать id из service_for() и показывать t("service." + id)."""
-    return service_for(category, subtopic)["ru"]
+def assignee_lookup(category: str | None, subtopic: str | None = None) -> dict:
+    """Для R09 (store.assignee_lookup, паспорт решения «Отвечает: …»): {"ru", "kk", "id"}.
+
+    R09 lifecycle.passport_view принимает строку или словарь {ru, kk} (claude/modest-shannon-0ki93p @ 2bf9a92);
+    id — чтобы интерфейс мог взять t("service." + id) из словаря R11, если акимат службу не переименовывал.
+    """
+    s = service_for(category, subtopic)
+    return {"ru": s["ru"], "kk": s["kk"], "id": s["id"], "edited": s["name_edited"]}
