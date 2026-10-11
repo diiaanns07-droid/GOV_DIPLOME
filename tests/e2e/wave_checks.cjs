@@ -72,6 +72,18 @@ function W(lang, keys, fallback = null) {
   return fallback;
 }
 const exact = (s) => new RegExp("^" + esc(s).replace(/\s+/g, "\\s+") + "$", "i");
+// Все формы числа ключа (one / few / many / other): «Увидит 1 человек», «Увидят 3 человека», «Увидят 5 человек».
+function Wany(lang, key) {
+  const forms = [];
+  for (const d of [DICTS[lang], WORDS[lang]]) { const v = d && d[key]; if (typeof v === "string") forms.push(v); else if (v) forms.push(...Object.values(v)); }
+  return forms.length ? new RegExp([...new Set(forms)].map((x) => L.textRe(x).source).join("|"), "i") : /$^/;
+}
+// Ждать, пока запись обращения не станет такой, как нужно (фото «после» загружается до смены статуса).
+async function waitRecord(A, id, ok, ms = 15000) {
+  const t = Date.now(); let rec = null;
+  while (Date.now() - t < ms) { rec = await complaintById(A, id); if (rec && ok(rec)) return rec; await L.sleep(700); }
+  return rec;
+}
 const part = (s) => L.textRe(s);  // неизменная часть строки с {параметрами}
 
 // ------------------------------------------------------------------------------------------------ есть ли пункт в сборке
@@ -141,6 +153,7 @@ async function openPage(browser, [w, h], lang, storage = {}) {
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message.slice(0, 160)));
+  page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource|openfreemap|ERR_TUNNEL|WebGL/i.test(m.text())) errors.push("console: " + m.text().slice(0, 160)); });
   return { ctx, page, mobile, errors };
 }
 async function goto(page, url, lang, { fixLang = true } = {}) {
@@ -185,7 +198,8 @@ async function openCard(page, stop) {
   const p = await L.showPoint(page, stop.point, 17);
   if (p) await L.tap(page, p.x, p.y);
   await L.sleep(2500);
-  return L.firstVisible(page.locator(".r07-card, article").filter({ hasText: new RegExp(esc(stop.name), "i") }));
+  // По названию (ru) — или первая открытая карточка R07 (в ҚАЗ название места другое).
+  return (await L.firstVisible(page.locator(".r07-card, article").filter({ hasText: new RegExp(esc(stop.name), "i") }))) || L.firstVisible(page.locator(".r07-card"));
 }
 // Мастер жалобы до шага текста: «Сообщить о проблеме» → нажать на карту у точки → место из списка.
 async function wizardToText(page, lang, point) {
@@ -211,6 +225,9 @@ const devId = (p) => `r10${p}${Math.random().toString(36).slice(2, 14)}${Date.no
 // Состояние цели на тепловой карте: reported (служба сообщила), verified (проверено жителями), fixed (как в 8e67c65), open.
 function heatState(it) {
   if (!it) return null;
+  // R07 9e337dc: fixed_kind = reported | verified (POLISH_WAVE_2 п. 1), цвет — heat_states из categories_v2.json.
+  if (it.fixed_kind === "reported") return "reported";
+  if (it.fixed_kind === "verified") return "verified";
   const vals = [it.state, it.heat_state, it.fixed_state, it.status, it.level].map((x) => String(x ?? ""));
   if (vals.some((v) => /reported/.test(v))) return "reported";
   if (vals.some((v) => /verified/.test(v))) return "verified";
@@ -221,7 +238,7 @@ async function heatItem(A, id) {
   const h = await A.call("GET", `/api/civic/v2/heat?bbox=${NURA_BBOX}&days=30&zoom=16`);
   const it = ((A.data(h) || {}).items || []).find((i) => i.target && i.target.id === id);
   return it ? { level: it.level, weight: it.weight, count: it.count, fixed_until: it.fixed_until, state: it.state || it.heat_state || it.fixed_state || null,
-    reopened: it.reopened || null, derived: heatState(it) } : null;
+    fixed_kind: it.fixed_kind ?? null, color: it.color || null, reopened: it.reopened || null, derived: heatState(it) } : null;
 }
 // Жалоба устройства на остановку. Текст с номером — чтобы одинаковые тексты не склеивались; при отказе — код и ошибка.
 let filed = 0;
@@ -349,7 +366,7 @@ async function checkCentral(ctx) {
         if (!fs.existsSync(img)) await S.page.screenshot({ path: img, type: "jpeg", quality: 60, clip: { x: 0, y: 0, width: 320, height: 240 } });
         photo = await files.first().setInputFiles(img).then(() => true, () => false);
       }
-      const willSee = await L.visibleText(scope, part(W(lang, "fix.will_see")));
+      const willSee = await L.visibleText(scope, Wany(lang, "fix.will_see"));
       const prim = await primaries(scope);
       const send = await L.clickText(scope, exact(W(lang, "fix.send")), { wait: 2500 });
       add("W2-1", tag, "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
@@ -441,6 +458,94 @@ async function checkCentral(ctx) {
       add("W2-1", `1366-${lang}`, `карта (R07): цель снова красная, в карточке «${W(lang, "heat.reopened_mark")}»`, st(!!hi && hi.derived === "open" && mark), { heat: hi, card: !!card, mark },
         await shotOf(K.page, `1366-${lang}-W2-1-9-reopened-card`));
     } finally { await K.ctx.close(); }
+  }
+}
+
+// Форма сотрудника R09 (complaint-staff.js) в экране «Обращения» акимата (R09 complaint-list.js, IA_WAVE2 §2.5):
+// по схеме R11 её же встраивает R07 в карточку на карте — строка выше; здесь — есть ли форма вообще.
+async function checkStaffInbox(ctx) {
+  const { browser, base, staff } = ctx;
+  const A = L.api(base);
+  if (!(staff && staff.user && (await A.login(staff.user, staff.pass)).ok)) { add("W2-1", "API", "вход сотрудника для «Обращений»", "FAIL"); return; }
+  for (const [size, lang] of [[[1366, 768], "ru"], [[375, 812], "kk"]].filter(([, l]) => LANGS.includes(l))) {
+    const tag = `${size[0]}-${lang}`;
+    const stop = STOPS[size[0] < 761 ? 1 : 0];
+    const c = await fileComplaint(A, stop, devId("s"), "Павильон остановки сломан");
+    if (!c.id) { add("W2-1", tag, "подготовка «Обращения»", "FAIL", c); continue; }
+    await A.call("POST", `/api/civic/v2/complaints/${c.id}/status`, { status: "in_progress" }, true);
+    // Раскрыть строку цели во вкладке «В работе» экрана «Обращения».
+    const openRow = async (page) => {
+      const logged = await staffLogin(page, lang, staff);
+      const opened = await header(page, lang, exact(W(lang, ["common.nav.complaints", "shell.nav.inbox"], lang === "kk" ? "Өтініштер" : "Обращения")), 2200);
+      await L.clickText(page, part(W(lang, "inbox.tab.in_progress", lang === "kk" ? "Орындалуда" : "В работе")), { role: "tab", wait: 1500 });
+      const rows = page.locator(".bc-inbox__row, [aria-expanded]").filter({ hasText: new RegExp(esc(stop.name).slice(0, 18), "i") });
+      const row = (await L.firstVisible(rows)) || (await L.firstVisible(page.locator(".bc-inbox__row")));
+      if (row) { await row.click().catch(() => null); await L.sleep(1500); }
+      return { logged, opened, row: !!row };
+    };
+    // W2-2: паспорт сотрудника — «Изменить» → 3 поля (служба, следующий шаг, ориентир устранения), IA_WAVE2 §2.3.
+    const Q = await openPage(browser, size, lang, { "birge.mode": "akimat" });
+    try {
+      await goto(Q.page, base, lang);
+      const o = await openRow(Q.page);
+      const edit = await L.clickText(Q.page, exact(W(lang, "passport.edit")), { wait: 1200 });
+      const fields = [];
+      for (const k of ["passport.field.service", "passport.field.next", "passport.field.eta"]) fields.push(!!(await L.firstVisible(Q.page.getByLabel(part(W(lang, k))))));
+      add("W2-2", tag, "сотрудник через «Обращения»: «Изменить» → 3 поля «Кто отвечает», «Следующий шаг», «Когда устраним (ориентир)»",
+        st(o.logged && o.opened && o.row && edit && fields.every(Boolean)), { ...o, edit, fields }, await shotOf(Q.page, `${tag}-W2-2-inbox-passport`));
+    } finally { await Q.ctx.close(); }
+    const P = await openPage(browser, size, lang, { "birge.mode": "akimat" });
+    try {
+      await goto(P.page, base, lang);
+      const { logged, opened, row } = await openRow(P.page);
+      // Кнопка в строке — «Отметить исправленным» (как в карточке), затем форма «Что сделали» и фото «после».
+      if (!(await L.clickText(P.page, part(W(lang, "fix.title", lang === "kk" ? "Тұрғындарға түзетілгені туралы хабарлау" : "Сообщить жителям об устранении")), { wait: 1200 })))
+        await L.clickText(P.page, exact(W(lang, ["target.mark_fixed", "heat.mark_fixed"], lang === "kk" ? "Түзетілді деп белгілеу" : "Отметить исправленным")), { wait: 1200 });
+      const whatBox = await L.firstVisible(P.page.getByRole("textbox", { name: part(W(lang, "fix.what_done")) }));
+      if (whatBox) await whatBox.fill("Заменили крышу павильона").catch(() => null);
+      const files = P.page.locator("input[type=file]");
+      let photo = false;
+      if (await files.count().catch(() => 0)) {
+        const img = path.join(OUT, "_after.jpg");
+        if (!fs.existsSync(img)) await P.page.screenshot({ path: img, type: "jpeg", quality: 60, clip: { x: 0, y: 0, width: 320, height: 240 } });
+        photo = await files.first().setInputFiles(img).then(() => true, () => false);
+      }
+      await L.sleep(800);
+      const willSee = await L.visibleText(P.page, Wany(lang, "fix.will_see"));
+      const shot = await shotOf(P.page, `${tag}-W2-1-inbox-form`);
+      const calls = [];
+      const onResp = (r) => { const u = new URL(r.url()); if (/\/api\/civic\/v2\/complaints\//.test(u.pathname) && r.request().method() !== "GET") calls.push(`${r.request().method()} ${u.pathname.replace(/c-[0-9a-f]+/, "{id}")} ${r.status()}`); };
+      P.page.on("response", onResp);
+      // Кнопка активна не сразу (фото «после» обрабатывается) — ждать, пока станет доступной, потом нажать.
+      const sendBtn = await L.firstVisible(P.page.getByRole("button", { name: exact(W(lang, "fix.send")) }));
+      let enabled = false;
+      for (let i = 0; i < 30 && sendBtn && !enabled; i++) { enabled = await sendBtn.isEnabled().catch(() => false); if (!enabled) await L.sleep(500); }
+      const send = !!sendBtn && enabled && (await sendBtn.click({ timeout: 5000 }).then(() => true, () => false));
+      await L.sleep(2500);
+      const rec = send ? await waitRecord(A, c.id, (r) => resolutionOf(r) === "reported") : await complaintById(A, c.id);
+      await shotOf(P.page, `${tag}-W2-1-inbox-sent`);
+      const res = rec && rec.resolution;
+      // Не прошло с фото — то же без фото: отделить «форма не работает» от «не грузится фото „после“» (B-056).
+      let withoutPhoto = null;
+      if (resolutionOf(rec) !== "reported") {
+        const P2 = await openPage(browser, size, lang, { "birge.mode": "akimat" });
+        try {
+          await goto(P2.page, base, lang);
+          await openRow(P2.page);
+          if (!(await L.clickText(P2.page, part(W(lang, "fix.title", "Сообщить жителям об устранении")), { wait: 1200 })))
+            await L.clickText(P2.page, exact(W(lang, ["target.mark_fixed", "heat.mark_fixed"], lang === "kk" ? "Түзетілді деп белгілеу" : "Отметить исправленным")), { wait: 1200 });
+          const box2 = await L.firstVisible(P2.page.getByRole("textbox", { name: part(W(lang, "fix.what_done")) }));
+          if (box2) await box2.fill("Заменили крышу павильона").catch(() => null);
+          const b2 = await L.firstVisible(P2.page.getByRole("button", { name: exact(W(lang, "fix.send")) }));
+          if (b2) await b2.click({ timeout: 5000 }).catch(() => null);
+          const r2 = await waitRecord(A, c.id, (r) => resolutionOf(r) === "reported", 10000);
+          withoutPhoto = resolutionOf(r2) === "reported";
+        } finally { await P2.ctx.close(); }
+      }
+      add("W2-1", tag, "сотрудник через «Обращения» (форма R09): «Что сделали» + «Фото «после»» + «Увидят N человек» → «Сообщить жителям» → этап reported, строка сохранена",
+        st(logged && opened && row && !!whatBox && photo && willSee && send && resolutionOf(rec) === "reported"),
+        { logged, opened, row, whatBox: !!whatBox, photo, willSee, button: !!sendBtn, enabled, send, calls, errors: P.errors.slice(-4), without_photo_works: withoutPhoto, status: rec && rec.status, resolution: resolutionOf(rec), what_done: res && (res.what_done || res.note) }, shot);
+    } finally { await P.ctx.close(); }
   }
 }
 
@@ -760,7 +865,9 @@ async function checkClutter(ctx) {
 const ITEMS = [
   { id: "W1-3", title: "Срочные случаи: газ 104, дым/пожар 112, провод 112", owner: "R09 (+R11)", run: checkEmergency, probe: (s) => s.emergency.length > 0,
     done: "Ни одна жалоба про газ или пожар не уходит без подсказки позвонить 104/112" },
-  { id: "W2-1", title: "Центральная сцена: «Исправлено — проверьте» → житель подтвердил → зелёный «проверено»", owner: "R09, R07, R08", run: checkCentral, probe: (s) => s.central.length > 0,
+  { id: "W2-1", title: "Центральная сцена: «Исправлено — проверьте» → житель подтвердил → зелёный «проверено»", owner: "R09, R07, R08",
+    run: async (ctx) => { await checkCentral(ctx); if (ctx.runtime.globals.BirgeComplaintList) await checkStaffInbox(ctx); else add("W2-1", "R09", "форма сотрудника в «Обращениях»", "PENDING", "нет модуля BirgeComplaintList"); },
+    probe: (s) => s.central.length > 0,
     done: "исправили → житель подтвердил → объект зелёный «проверено»; при «осталось» — снова красный, история сохранена" },
   { id: "W2-2", title: "Паспорт решения", owner: "R09", run: checkPassport, probe: (s) => s.passport.length > 0, done: "Житель понимает, что происходит, без звонка" },
   { id: "W2-4", title: "«Что делают рядом»", owner: "R08 + R06", run: checkNearby, probe: (s, r) => !!r.globals.BirgeNearby || !!STAND.nearby, done: "Житель видит «Завтра 10–16 нет воды в вашем дворе» и «Зачем перекопали улицу»" },
