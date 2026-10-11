@@ -11,7 +11,7 @@ Python 3.12.10, torch 2.14.1+cu126, transformers 5.19.0, onnxruntime 1.31.0; м�
 Шаг 0 (переменные) — как ниже, затем:
 cd $REPO; git fetch origin claude/r14-R03 claude/r14-R02 claude/r14-R04
 cd $WT; git pull origin claude/r14-R03
-& $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider                 (ожидается 112 passed, 1 xfailed)
+& $PY -m pytest tests\civic\R03\round14 -q -p no:cacheprovider                 (ожидается ≈ 220 passed, 1 xfailed; в облаке без torch — 213 passed, 7 skipped)
 Шаг 8 (повторный экспорт ONNX per-channel; ожидаются три PASS):
 & $PY -m ml.civic_classifier_v2.export_onnx --texts "$R02\ml\datasets\synth_v3\data\corpus_v3.jsonl" --n 200
 Шаг 8б (int8 на probe_v2 + разбор ошибок трансформера):
@@ -23,11 +23,15 @@ cd $WT; git pull origin claude/r14-R03
 & $PY -m ml.civic_classifier_v2.analysis paired --a ml\civic_classifier_v2\artifacts\experiments\synth_all__transformer.jsonl --b ml\civic_classifier_v2\artifacts\experiments\synth_template__transformer.jsonl --out ml\civic_classifier_v2\results\paired_transformer_synth_all_vs_template.json
 (по желанию, ≈ 1 мин) Нагрузка на /classify настоящей моделью: 5000 знаков, 1/4/8 запросов одновременно (для R15):
 & $PY -m ml.civic_classifier_v2.bench --label laptop --note "ноутбук владельца, настоящая модель"
+(по желанию, ≈ 1 мин) Волна 2: настоящая модель v2 на подписях 39 чипов уточнений ru/kk — найдёт ли житель нужный чип
+(в облаке посчитаны словарь и логрегрессия; папка модели — artifacts\onnx после шага 8 или artifacts\onnx_per_channel):
+& $PY -m ml.civic_classifier_v2.subtopics --synth-v3 "$R02\ml\datasets\synth_v3\data" --llm-v1 $LLM --probe-v2 $PROBE --v1-in-v2 "$R02\ml\datasets\v1_in_v2" --logreg --model ml\civic_classifier_v2\artifacts\onnx
 Таблицы для диплома — последними (берут файлы 8б, 8в и парного сравнения):
 & $PY -m ml.civic_classifier_v2.analysis tables
 Сохранить (только числа и id; без artifacts\, private\, *.onnx):
 git add ml/civic_classifier_v2/results/paired_transformer_synth_all_vs_template.json      (если был шаг выше)
 git add ml/civic_classifier_v2/results/classify_load_laptop.json                          (если был шаг bench)
+git add ml/civic_classifier_v2/results/subtopic_check.json ml/civic_classifier_v2/results/SUBTOPIC_CHECK.md   (если был шаг чипов)
 git add ml/civic_classifier_v2/results/onnx_export.json ml/civic_classifier_v2/results/onnx_int8_on_probe_v2.json ml/civic_classifier_v2/results/onnx_int8_on_probe_v2_to_cyrillic.json ml/civic_classifier_v2/results/preds_probe_v2_final_onnx_int8.jsonl ml/civic_classifier_v2/results/ERROR_ANALYSIS.md ml/civic_classifier_v2/results/DIPLOMA_TABLES.md ml/civic_classifier_v2/results/tables
 git commit -m "R03: LOCAL morning: ONNX per-channel re-export, int8 on probe_v2, translit check"
 git push origin claude/r14-R03
