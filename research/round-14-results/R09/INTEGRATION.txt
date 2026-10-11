@@ -1,3 +1,84 @@
+R09 · РАУНД 14 · INTEGRATION — ВОЛНА 2 (11 окт; сначала этот раздел, ниже — прежние ночные)
+Ветка R09: claude/modest-shannon-0ki93p (BRANCHES.md), код 8a1d390 (DELIVERY.json, WAVE2.md). Забрать пути R09 целиком:
+    git fetch origin claude/modest-shannon-0ki93p
+    git checkout 8a1d390 -- ui/civic_feedback web/civic/feedback tests/civic/R09
+Схемы экранов — по R11 IA_WAVE2 §2 (claude/r14-R11 @ 537dbd3); сверка схема ↔ экран: SCREENS_WAVE2.md.
+Проверено: pytest R09 168 passed / 3 skip; стенд 450/450 (ui-kit R09) и 450/450 (ui-kit и словарь R11);
+настоящее приложение R01 a96f6e3 + пути R09 + патч ниже: 73/73 (375/1366 ru/kk, шаги 1–7); R01 pytest — зелёный.
+
+=== R01 — нужно сделать (волна 2) ===
+W0) Применить research/round-14-results/R09/r01_wave2_assets.patch (проверен git apply на a96f6e3):
+    - ui/web_server.py: маршруты v2 волн 1–2 в V2_ROUTES (точные пути changes, inbox — раньше {id}; фото частями —
+      ("complaints","{id}","photos","{id}")), те же ключи — в V2_HANDLERS R09 (kind="service");
+      CIVIC_ASSETS + feedback/complaint-staff.js, feedback/complaint-list.js;
+    - web/index.html: <script defer> complaint-staff.js и complaint-list.js сразу после complaint.js;
+    - tests/civic/R01/test_r01_api_v2.py: образцы новых маршрутов (иначе test_every_contract_route_is_in_the_table).
+    Полный список маршрутов — ui.civic_feedback.v2.integration.ROUTES. Тело части фото ≈ 48 КБ (< 64 КБ шлюза).
+W1) Раздел акимата «Обращения» (#complaints, ваш §11.2): window.BirgeComplaintList есть — mount(root, opts) с вашими
+    opts (api.v2, titleTag, openTarget, setLang/destroy). Внутри — действия сотрудника R09 (CSRF берётся у
+    CivicShell.csrfToken()). Ваш r14_wave2.cjs на дереве с R09: 29/31 — две проверки ждут меню акимата
+    «Карта · Картина дня»; по вашему же §11.1 с модулем R09 в сборке появляется «Обращения» — обновите ожидание.
+W2) «Мои обращения» в меню жителя: значок новых изменений (R11 IA_WAVE2 §1 — единственный бейдж в меню):
+    ui.changesCount() -> Promise<n> и событие window "birge:complaint-changes" {detail:{n}} (после открытия
+    «Мои обращения» n=0). Ссылки из уведомлений: #mine/event=<id> (строка изменения + карточка), #complaint=<номер>,
+    #mine. Язык ссылкой не меняется. Если оболочка разбирает #mine сама — просто зовите ui.openMine().
+W3) Таблица служб R08: make_service(db) теперь сам подключает ui.civic_akim.routing.service_for, если R08 в сборке
+    (assignee_lookup="auto"); отключить — make_service(db, assignee_lookup=None). Паспорт показывает t("service.<id>"),
+    а переименованную акиматом службу — её названием.
+W4) Демо-сценарий меняется (POLISH_WAVE_2 п. 1, центральная сцена) — для DEMO_SCRIPT и R10:
+    шаг 6: акимат «Отметить исправленным» → у жителя «Служба сообщила об устранении» (не «Исправлено») и блок
+    «Ждут вашей проверки» с «Да, исправлено / Проблема осталась / Не могу проверить»;
+    шаг 7 (новый): «Да, исправлено» → «Проверено жителями» (heat_state verified_fixed, 7 дней зелёным на карте);
+    «Проблема осталась» → та же карточка снова «в работе», история сохранена (heat_state reopened).
+    Чтобы показать «что сделали» и фото «после», сотрудник отмечает исправление в форме R09 (карточка «Обращения» или
+    компонент R09 в карточке R07, см. R07 ниже); старый вызов {status:"fixed"} тоже работает (без строки и фото).
+
+=== R07 (тепловая карта, карточка цели) ===
+- Цвет состояния: публичная проекция жалобы (GET /complaints, /complaints/{id}) отдаёт heat_state:
+  reported_fixed | verified_fixed | reopened | null (обычный вес) — ключи categories_v2.json → heat_states;
+  ui.civic_feedback.v2.lifecycle.heat_state(record, now) — то же на сервере. resolution {state, round, votes, …}.
+- События window "birge:complaint": новые type "verified" и "reopened" (кроме created/metoo) — перекрасить цель сразу.
+- Действия сотрудника в карточке цели: BirgeComplaintStaff.mount(el, {complaintId, csrf: () => токен, onChange}) —
+  «Отметить исправленным» → форма «Сообщить жителям» (строка «что сделали» обязательна, 1 фото «после»), паспорт (3 поля, +3 при
+  задержке), «Обновление для всех»; перед действием «Увидят N человек». Ваша кнопка «Отметить исправленным»
+  может открывать эту форму вместо прямого {status:"fixed"}. Новых слоёв карты R09 не добавляет.
+
+=== R08 (картина дня, службы) ===
+- Срок ответа — рабочие дни (workdays.py + holidays_kz.json, derived; вы уже читаете их, 9dbd62c — спасибо).
+- passport_view: assignee_id/assignee/assignee_kk/assignee_custom/assignee_source, next_step, response_due,
+  deadline{state, working_days_left, overdue_working_days}, fix_eta, delay{reason,temp_measure,next_update_at},
+  update_overdue (обещанное обновление просрочено — видно руководителю). Список акимата: GET /complaints/inbox
+  (counts по вкладкам new/in_progress/waiting_check/overdue/reopened; lifecycle.inbox_tab — та же логика на сервере).
+- Таблица служб R09 = копия ваших DEFAULT_RULES/SERVICES @ 9dbd62c (тест сверяет, если ui.civic_akim в дереве).
+
+=== R11 (UX, словарь) ===
+- Тексты волны — ВАШИ ключи (verify.*, passport.*, service.<id>, deadline.*, broadcast.*, fix.*, subtopic.*,
+  status.reported_fixed|verified|reopened, complaint.subtopic.*, complaint.emergency.still_send, complaint.queue.offline,
+  mine.changes.more, mine.waiting, mine.subscriptions, mine.unsubscribe, inbox.tab.*); запасной словарь R09 повторяет
+  ваши тексты 1:1 (@ 537dbd3). Ключей R09, которых у вас нет (42), — I18N_KEYS.md, раздел «Волна 2»: экран проверки
+  перед отправкой, «Дальше / Найти обращение», очередь без сети, строки «Что изменилось», «Вы отписались» и др.
+- Просьба: значки i-phone (звонок 104/112) и i-camera (фото) в icons.svg — сейчас кнопки с одной подписью.
+- Отступления от IA_WAVE2 — SCREENS_WAVE2.md (коротко: «Не могу проверить» вопрос больше не задаёт — да; звонок —
+  главная кнопка при срочном случае — да; карта внутри «Мои обращения» — нет).
+
+=== R04 ===
+- «Это разные проблемы»: POST /complaints/{id}/unduplicate (сотрудник) — «Я тоже», перенесённые из дубля, уходят
+  обратно (колонка via), число людей пересчитывается; события "unmerged" (дубль) и "metoo" (исходная) — пересчитать /similar.
+
+=== R15 (безопасность) ===
+- Фото: только jpeg/png/webp по сигнатуре, ≤ 1,5 МБ после уменьшения до 1600 px; сервер вырезает EXIF/GPS/XMP/IPTC/
+  комментарии (photos.py, без PIL); загрузка частями ≤ 36 000 байт. Видят: акимат — все; автор — свои и «после»;
+  «Я тоже» — «после»; чужие — 403; в публичных ответах и на карте фото нет. Лица и номера на фото «после» —
+  проверка R15 (подсказка сотруднику в форме — нет, только в форме жителя).
+- «Отписаться» (POST /complaints/{id}/unsubscribe, устройство) не уменьшает «сообщили N»; повторное «Я тоже» снова
+  подписывает без второго голоса. Голоса проверки — одно устройство на раунд (PK complaint_id+round+device_hash).
+
+=== R10 (приёмка) ===
+- Новые проверки R09: tests/civic/R09/browser_r09.cjs --only wave (232 проверки, 375/1366 ru/kk) и
+  app_demo_r09.cjs шаги 6–7. Карта по умолчанию не меняется: до открытия мастера нет слоёв bc-* и элементов R09,
+  кроме кнопки «Сообщить о проблеме» (проверка [защита п.1]).
+
+
 R09 · РАУНД 14 · INTEGRATION — НОЧЬ 10→11 ОКТ (сначала этот раздел)
 Ветка R09 этой ночи: claude/wizardly-ptolemy-qy8ltw, код f4fb7b9 (см. DELIVERY.json, NIGHT_FIXES.md).
 Забрать в сборку (пути R09 целиком; в них уже есть патч R15 P-R09 с доработками):

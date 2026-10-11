@@ -96,3 +96,59 @@
 
 Запасные тексты `complaint-strings.js` выровнены со словарём R11 @ 52d7c59 (20 значений: подсказки шага 2, расстояние
 «{n} м», подсказка шага 4, срок «Ответ до {date}» / «Жауап мерзімі: {date}», «Орындалуда» и др.). Главный — словарь R11.
+
+## Волна 2 (11 окт) — ключи R09, которых нет в словаре R11 (claude/r14-R11 @ 537dbd3)
+
+Остальные тексты волны R09 берёт ВАШИМИ ключами (verify.*, passport.*, service.<id>, deadline.*, broadcast.*, fix.*,
+subtopic.*, status.reported_fixed|verified|reopened, complaint.subtopic.*, complaint.emergency.still_send,
+complaint.queue.offline, mine.changes.more, mine.waiting, mine.subscriptions, mine.unsubscribe, inbox.tab.*); запасной
+словарь R09 повторяет ваши тексты 1:1. Убраны свои дубли: mine.verify.*, mine.state.*, mine.passport.* (кроме
+next_default.*), mine.transferred, mine.details, mine.overdue, staff.fixed/passport/update.*, complaint.emergency.service.*,
+complaint.photo.bad/hint, complaint.queue.text, complaint.step3.subtopic_label, complaint.step4.metoo_caption.
+
+Всего 42 ключей:
+
+| ключ | рус | қаз | комментарий |
+|---|---|---|---|
+| `complaint.photo.count` | Фото: {n} из 3 | Фото: {n} / 3 | kk «Фото: 1 / 3» — без падежа после числа |
+| `complaint.photo.uploading` | Загружаем фото {n} из {total}… | Фото жүктелуде: {n} / {total}… |  |
+| `complaint.photo.failed` | Обращение отправлено, но фото не загрузилось. | Өтініш жіберілді, бірақ фото жүктелмеді. |  |
+| `complaint.review.title` | Проверьте перед отправкой | Жіберер алдында тексеріңіз |  |
+| `complaint.review.place` | Место | Орны |  |
+| `complaint.review.what` | Проблема | Мәселе |  |
+| `complaint.review.text` | Текст | Мәтін |  |
+| `complaint.review.photos` | Фото | Фото |  |
+| `complaint.review.no_photos` | без фото | фотосыз |  |
+| `complaint.review.public` | Увидят все: место, категория и сколько человек сообщили. | Барлығы көреді: орны, санаты және қанша адам хабарлағаны. |  |
+| `complaint.review.private` | Только служба: ваш текст и фото. | Тек қызмет көреді: мәтініңіз бен фотоларыңыз. | «Тек қызмет көреді» — проверить, не лучше ли «Тек әкімдік қызметкерлері көреді» (как complaint.photo.private) |
+| `complaint.review.personal` | Уберите личное: телефон, ИИН, номер машины, лица на фото. | Жеке деректерді алып тастаңыз: телефон, ЖСН, көлік нөмірі, фотодағы адамдардың беті. | длинно на 375 px (2 строки) — можно короче |
+| `complaint.review.edit` | Изменить | Өзгерту |  |
+| `complaint.step5.next` | Дальше: служба ответит до {date} | Әрі қарай: қызмет {date} дейін жауап береді | «{date} дейін» — дата в именительном (formatDate), «дейін» после даты допустимо? иначе «Жауап мерзімі: {date}» |
+| `complaint.step5.find` | Найти обращение: «Мои обращения», номер {code} | Өтінішті табу: «Менің өтініштерім», нөмірі {code} |  |
+| `complaint.step5.metoo_follow` | Будем сообщать о ходе решения в «Мои обращения» | Шешу барысы туралы «Менің өтініштерім» бөлімінде хабарлаймыз | шаг ⑤ после «Я тоже»: где будут обновления (под кнопкой на шаге ④ — ваш broadcast.metoo_hint) |
+| `complaint.queue.title` | Обращение сохранено на телефоне | Өтініш телефонда сақталды |  |
+| `complaint.queue.send_now` | Отправить сейчас | Қазір жіберу |  |
+| `mine.pending` | Ждёт отправки | Жіберуді күтуде |  |
+| `mine.changes.status` | Статус: {status} | Мәртебесі: {status} |  |
+| `mine.changes.reopened` | Жители вернули в работу | Тұрғындар қайта жұмысқа қайтарды | «қайта жұмысқа қайтарды» — тавтология? вариант «Тұрғындар жұмысқа қайтарды» |
+| `mine.changes.verified` | Проверено жителями | Тұрғындар тексерді |  |
+| `mine.changes.note` | Сообщение службы | Қызмет хабарламасы |  |
+| `mine.changes.passport` | План решения обновлён | Шешу жоспары жаңартылды |  |
+| `mine.passport.next_default.new` | Служба рассмотрит обращение | Қызмет өтінішті қарайды |  |
+| `mine.passport.next_default.accepted` | Служба планирует работы | Қызмет жұмысты жоспарлап жатыр |  |
+| `mine.passport.next_default.in_progress` | Идут работы | Жұмыс жүріп жатыр |  |
+| `mine.passport.next_default.fixed` | Проверьте результат на месте | Нәтижені орнында тексеріңіз |  |
+| `mine.passport.next_default.rejected` | Обращение отклонено | Өтініш қабылданбады |  |
+| `mine.update.fixed` | Служба сообщила об устранении | Қызмет түзетілгенін хабарлады |  |
+| `mine.update.reopened` | Жители: проблема осталась | Тұрғындар: мәселе қалды |  |
+| `mine.update.passport` | План решения | Шешу жоспары |  |
+| `mine.update.note` | Сообщение службы | Қызмет хабарламасы |  |
+| `mine.photos.title` | Ваши фото | Сіздің фотоларыңыз |  |
+| `staff.title` | Действия по обращению | Өтініш бойынша әрекеттер |  |
+| `staff.fixed.what_hint` | Например: заменили лампу и проверили линию | Мысалы: шамды ауыстырып, желіні тексердік |  |
+| `staff.fixed.need_what` | Напишите одной строкой, что сделали — жители проверят это на месте | Не істелгенін бір жолмен жазыңыз — тұрғындар оны орнында тексереді |  |
+| `staff.votes` | Проверка жителями: да — {yes}, осталось — {no}, не могут проверить — {cant} | Тұрғындар тексерді: иә — {yes}, қалды — {no}, тексере алмайды — {cant} | строка для сотрудника, числа голосов текущего раунда |
+| `mine.unsubscribed` | Вы отписались. Ваш голос остаётся в числе сообщивших | Жазылымнан шықтыңыз. Дауысыңыз хабарлағандар санында қалады |  |
+| `inbox.people` | one: {n} человек / few: {n} человека / many: {n} человек | {n} адам | ru формы как mine.reporters, без глагола |
+| `inbox.empty` | В этой вкладке пусто | Бұл қойындыда бос |  |
+| `inbox.complaints` | one: {n} обращение / few: {n} обращения / many: {n} обращений | {n} өтініш |  |

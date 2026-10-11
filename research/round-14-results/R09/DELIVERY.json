@@ -1,275 +1,112 @@
 {
  "role": "R09",
  "round": 14,
- "title": "Жалоба жителя v2: место, «Я тоже», статус",
- "status": "READY_FOR_FINAL (ночь 10→11 окт: исправлены все замечания к R09; FINAL R01 уже с R09 b6cadb3, осталось взять f4fb7b9 — INTEGRATION.txt N0)",
- "branch": "claude/wizardly-ptolemy-qy8ltw",
- "branch_note": "Среда ночной сессии разрешает push только в эту ветку; claude/modest-shannon-0ki93p (BRANCHES.md) продолжена здесь: пути R09 взяты из неё @ 5dd6465 побайтно, без merge её истории. R01 берёт R09 отсюда с 85c16e2 (b6cadb3): git checkout <code_sha> -- ui/civic_feedback web/civic/feedback tests/civic/R09.",
- "base_sha": "a38da114 (claude/round-14-package; рабочее дерево проверки = пакет + пути R09)",
- "restored_from": {
-  "branch": "claude/modest-shannon-0ki93p",
-  "sha": "5dd6465",
-  "code_sha": "fa49fc9",
-  "originally": {
-   "branch": "claude/focused-hypatia-z8h0no",
-   "sha": "933cd9011853c717a3011c4c9a4dc940cd7a570f",
-   "code_sha": "12b3170",
-   "paths": [
-    "ui/civic_feedback",
-    "web/civic/feedback"
-   ],
-   "how": "git checkout 933cd90 -- ui/civic_feedback web/civic/feedback (побайтно, v1 не менялся)"
-  }
- },
- "code_sha": "f4fb7b9f8de211ed24e75eca001933b9a1f6b2cb",
- "tested_sha": "f4fb7b9f8de211ed24e75eca001933b9a1f6b2cb",
- "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22, Playwright + Chromium headless (программный WebGL), без интернета",
- "push_status": "OK (код и проверки f4fb7b9; этот файл — следующим коммитом, SHA в STATUS.md)",
+ "title": "Жалоба жителя v2 — волны 1–2 (POLISH_WAVE, POLISH_WAVE_2) и LOCAL_FINAL №1–2",
+ "status": "READY_FOR_FINAL_2 (волны 1–2 сделаны по схемам R11 IA_WAVE2 §2; R01 нужно взять пути R09 @ 8a1d390 и применить r01_wave2_assets.patch)",
+ "branch": "claude/modest-shannon-0ki93p",
+ "branch_note": "Ветка по BRANCHES.md. Ночной код (wizardly-ptolemy-qy8ltw @ ee94ef1, код f4fb7b9) перенесён сюда побайтно в 38e6d67; ночную ветку больше не трогаем.",
+ "base_sha": "38e6d67 (пути R09 = ночной код f4fb7b9) поверх claude/round-14-package",
+ "code_sha": "8a1d39077edf0055620145fdb81c9d39c88ce88f",
+ "tested_sha": "8a1d39077edf0055620145fdb81c9d39c88ce88f",
+ "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout 8a1d390 -- ui/civic_feedback web/civic/feedback tests/civic/R09 && git apply research/round-14-results/R09/r01_wave2_assets.patch",
+ "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22, Playwright + Chromium headless (программный WebGL), без интернета; настоящий телефон — NOT_RUN",
+ "push_status": "OK (код 8a1d390; документы и этот файл — следующим коммитом, SHA в STATUS.md и финальном сообщении)",
  "changed_paths": {
   "code_and_tests": [
    "tests/civic/R09/app_demo_r09.cjs",
    "tests/civic/R09/browser_r09.cjs",
-   "tests/civic/R09/eval_r12_live.py",
-   "tests/civic/R09/fixtures/intent_questions.json",
-   "tests/civic/R09/gateway_check_r13.py",
-   "tests/civic/R09/integration_r13.py",
+   "tests/civic/R09/stand/index.html",
    "tests/civic/R09/stand/serve_r09.py",
-   "tests/civic/R09/test_r09_facts_template.py",
-   "tests/civic/R09/test_r09_round12_questions.py",
-   "tests/civic/R09/test_r09_round12_robustness.py",
-   "tests/civic/R09/test_r09_round12_scenario.py",
-   "tests/civic/R09/test_r09_round13_cache.py",
-   "tests/civic/R09/test_r09_round13_grounding.py",
-   "tests/civic/R09/test_r09_round13_integration.py",
-   "tests/civic/R09/test_r09_round13_object.py",
-   "tests/civic/R09/test_r09_scenario_api.py",
-   "tests/civic/R09/test_r09_ui.py",
-   "tests/civic/R09/test_r09v2_demo_seed.py",
-   "tests/civic/R09/test_r09v2_security.py",
-   "tests/civic/R09/ui_check.cjs",
-   "ui/civic_feedback/v2/__main__.py",
+   "tests/civic/R09/test_r09v2_frontend.py",
+   "tests/civic/R09/test_r09v2_neighbours.py",
+   "tests/civic/R09/test_r09v2_store.py",
+   "tests/civic/R09/test_r09v2_wave.py",
+   "tests/civic/R09/test_r09v2_workdays.py",
    "ui/civic_feedback/v2/api.py",
-   "ui/civic_feedback/v2/demo_seed.py",
+   "ui/civic_feedback/v2/categories.py",
+   "ui/civic_feedback/v2/holidays_kz.json",
    "ui/civic_feedback/v2/integration.py",
+   "ui/civic_feedback/v2/lifecycle.py",
+   "ui/civic_feedback/v2/photos.py",
    "ui/civic_feedback/v2/record.py",
    "ui/civic_feedback/v2/store.py",
+   "ui/civic_feedback/v2/workdays.py",
+   "web/civic/feedback/categories_v2.js",
+   "web/civic/feedback/complaint-list.js",
+   "web/civic/feedback/complaint-staff.js",
    "web/civic/feedback/complaint-strings.js",
    "web/civic/feedback/complaint.css",
    "web/civic/feedback/complaint.js",
    "web/civic/feedback/kit-fallback.css"
   ],
-  "results_and_handoff": [
-   "research/handoffs/astana/R09/round14/STATUS.md",
-   "research/round-14-results/R09/DELIVERY.json",
-   "research/round-14-results/R09/I18N_KEYS.md",
+  "results": [
+   "research/round-14-results/R09/WAVE2.md",
+   "research/round-14-results/R09/SCREENS_WAVE2.md",
    "research/round-14-results/R09/INTEGRATION.txt",
-   "research/round-14-results/R09/NIGHT_FIXES.md",
-   "research/round-14-results/R09/RUN.txt",
-   "research/round-14-results/R09/r01_seed_r09_demo.patch",
-   "research/round-14-results/R09/screens-app-night/README.txt",
-   "research/round-14-results/R09/screens-app-night/app-1366-kk-1-place.png",
-   "research/round-14-results/R09/screens-app-night/app-1366-kk-2-candidates.png",
-   "research/round-14-results/R09/screens-app-night/app-1366-kk-3-text.png",
-   "research/round-14-results/R09/screens-app-night/app-1366-kk-4-similar.png",
-   "research/round-14-results/R09/screens-app-night/app-1366-kk-5-done.png",
-   "research/round-14-results/R09/screens-app-night/app-1366-ru-1-place.png",
-   "research/round-14-results/R09/screens-app-night/app-1366-ru-2-candidates.png",
-   "research/round-14-results/R09/screens-app-night/app-1366-ru-3-text.png",
-   "research/round-14-results/R09/screens-app-night/app-1366-ru-4-similar.png",
-   "research/round-14-results/R09/screens-app-night/app-1366-ru-5-done.png",
-   "research/round-14-results/R09/screens-app-night/app-375-kk-1-place.png",
-   "research/round-14-results/R09/screens-app-night/app-375-kk-2-candidates.png",
-   "research/round-14-results/R09/screens-app-night/app-375-kk-3-text.png",
-   "research/round-14-results/R09/screens-app-night/app-375-kk-4-similar.png",
-   "research/round-14-results/R09/screens-app-night/app-375-kk-5-done.png",
-   "research/round-14-results/R09/screens-app-night/app-375-ru-1-place.png",
-   "research/round-14-results/R09/screens-app-night/app-375-ru-2-candidates.png",
-   "research/round-14-results/R09/screens-app-night/app-375-ru-3-text.png",
-   "research/round-14-results/R09/screens-app-night/app-375-ru-4-similar.png",
-   "research/round-14-results/R09/screens-app-night/app-375-ru-5-done.png",
-   "research/round-14-results/R09/screens-night/1366-kk-1-place.png",
-   "research/round-14-results/R09/screens-night/1366-kk-2-candidates.png",
-   "research/round-14-results/R09/screens-night/1366-kk-3-text.png",
-   "research/round-14-results/R09/screens-night/1366-kk-4-similar.png",
-   "research/round-14-results/R09/screens-night/1366-kk-5-done.png",
-   "research/round-14-results/R09/screens-night/1366-ru-1-place.png",
-   "research/round-14-results/R09/screens-night/1366-ru-2-candidates.png",
-   "research/round-14-results/R09/screens-night/1366-ru-3-text.png",
-   "research/round-14-results/R09/screens-night/1366-ru-4-similar.png",
-   "research/round-14-results/R09/screens-night/1366-ru-5-done.png",
-   "research/round-14-results/R09/screens-night/1366-ru-new-grid.png",
-   "research/round-14-results/R09/screens-night/1366-ru-new-mine.png",
-   "research/round-14-results/R09/screens-night/1366-ru-new-offline.png",
-   "research/round-14-results/R09/screens-night/1366-ru-new-sent.png",
-   "research/round-14-results/R09/screens-night/375-kk-1-place.png",
-   "research/round-14-results/R09/screens-night/375-kk-2-candidates.png",
-   "research/round-14-results/R09/screens-night/375-kk-3-text.png",
-   "research/round-14-results/R09/screens-night/375-kk-4-similar.png",
-   "research/round-14-results/R09/screens-night/375-kk-5-done.png",
-   "research/round-14-results/R09/screens-night/375-kk-layout-mine.png",
-   "research/round-14-results/R09/screens-night/375-kk-layout-toast.png",
-   "research/round-14-results/R09/screens-night/375-kk-new-grid.png",
-   "research/round-14-results/R09/screens-night/375-kk-new-mine.png",
-   "research/round-14-results/R09/screens-night/375-kk-new-offline.png",
-   "research/round-14-results/R09/screens-night/375-kk-new-sent.png",
-   "research/round-14-results/R09/screens-night/375-noml-done.png",
-   "research/round-14-results/R09/screens-night/375-ru-1-place.png",
-   "research/round-14-results/R09/screens-night/375-ru-2-candidates.png",
-   "research/round-14-results/R09/screens-night/375-ru-3-text.png",
-   "research/round-14-results/R09/screens-night/375-ru-4-similar.png",
-   "research/round-14-results/R09/screens-night/375-ru-5-done.png",
-   "research/round-14-results/R09/screens-night/375-ru-layout-mine.png",
-   "research/round-14-results/R09/screens-night/375-ru-layout-toast.png",
-   "research/round-14-results/R09/screens-night/README.txt"
-  ],
-  "screens": [
-   "research/round-14-results/R09/screens-night/ (33 png)",
-   "research/round-14-results/R09/screens-app-night/ (20 png)"
+   "research/round-14-results/R09/I18N_KEYS.md",
+   "research/round-14-results/R09/r01_wave2_assets.patch",
+   "research/round-14-results/R09/PYTEST_WAVE2.txt",
+   "research/round-14-results/R09/BROWSER_RESULT_WAVE2.txt",
+   "research/round-14-results/R09/BROWSER_RESULT_WAVE2_R11UI.txt",
+   "research/round-14-results/R09/APP_RESULT_WAVE2.txt",
+   "research/round-14-results/R09/screens-wave2/",
+   "research/round-14-results/R09/LOCAL_FINAL_FIXES.md",
+   "research/round-14-results/R09/APP_RESULT_LOCAL_FINAL.txt",
+   "research/round-14-results/R09/APP_RESULT_LOCAL_FINAL_BEFORE_FIX.txt",
+   "research/round-14-results/R09/DELIVERY.json",
+   "research/handoffs/astana/R09/round14/STATUS.md"
   ]
  },
- "fixed_reviews": {
-  "R15": [
-   "S03 точка жителя другим — 3 знака",
-   "S04 подписи цели только с карты R12",
-   "S05 нет check_csrf -> 403",
-   "S06 days только ASCII-цифры",
-   "S12 цель не дальше 300 м и известна карте"
-  ],
-  "R10": [
-   "B-019 нажатие на значок R07 выбирает место (и в R09, не только CSS R01)",
-   "B-030 демо-жалобы R09 для «Я тоже» (нужна вставка R01: r01_seed_r09_demo.patch)"
-  ],
-  "R11": [
-   "день 2 №7 кнопка во всю ширину",
-   "№8 тост",
-   "№9 «Мои обращения»",
-   "№10 даты и формат чисел",
-   "№11 подсказка шага 4 kk",
-   "B1 №2 низкая шторка шага 2",
-   "B1 №3 значок R07",
-   "B1 №8 кнопка и карточка R07",
-   "B1 №10 срок ответа kk",
-   "B2 №3 «Вы здесь»"
-  ],
-  "LOCAL_B2": [
-   "№2 значок перехватывал нажатие (R07+R09)"
-  ],
-  "R01": [
-   "§8 Escape закрывает панель при фокусе вне её"
-  ]
- },
- "tests": [
-  {
-   "name": "pytest tests/civic/R09 (пакет a38da11 + R09, вкл. Chromium помощника раунда 13)",
-   "status": "PASS",
-   "detail": "474 passed, 2 skipped (skip: стык с R12/R04 в ветке без их кода)"
+ "done": {
+  "local_final": {
+   "1_staff_first_skipped_metoo": "fixed 437c5f3",
+   "2_quick_close_null_errors": "fixed 437c5f3"
   },
-  {
-   "name": "tests/civic/R09/test_r09v2_neighbours.py в дереве R04 без R03 (ml.civic_classifier_v2 недоступен) и с R03 (ef1ef44)",
-   "status": "PASS",
-   "detail": "3 passed в обоих случаях; прежняя версия без R03 — 1 FAIL (R01 INTEGRATION §9)"
+  "wave1": {
+   "2_subtopics": "done",
+   "3_emergency_banner": "done",
+   "4_resident_confirms": "done (= wave2 #1)",
+   "5_photos_no_exif": "done",
+   "6_working_days": "done (holidays_kz.json derived)",
+   "7_transferred_to": "done (R08 ids; R08 table auto-connected)",
+   "9_unmerge_duplicates": "done (API)",
+   "10_draft_and_offline_queue": "done",
+   "11_seasonal_order": "done"
   },
-  {
-   "name": "node tests/civic/R09/browser_r09.cjs (стенд, запасные стили)",
-   "status": "PASS",
-   "detail": "198/198 (вкл. состояния «Мои обращения» и «несколько отдельных жалоб на месте» — 375/1366 ru/kk)"
+  "wave2": {
+   "1_reported_vs_verified": "done",
+   "2_solution_passport": "done",
+   "3_one_update_to_all_metoo": "done",
+   "10_what_changed": "done",
+   "mandatory_details": "done (review before sending, who sees what, number + next step + how to find, link opens the exact change, language not switched by link)"
   },
-  {
-   "name": "node tests/civic/R09/browser_r09.cjs --r11 <папка web R11 c03a6c5/52d7c59> (настоящий ui-kit и словарь R11)",
-   "status": "PASS",
-   "detail": "198/198 (вкл. состояния «Мои обращения» и «несколько отдельных жалоб на месте» — 375/1366 ru/kk)"
-  },
-  {
-   "name": "FINAL R01 b6d9ecf (R09 b6cadb3, засев модулем R09) + R09 f4fb7b9: node tests/civic/R09/app_demo_r09.cjs",
-   "status": "PASS",
-   "detail": "42/42: 375/1366 ru/kk, «Об этом уже сообщили 3 человека» -> «Я тоже» -> 4, надписи = реплики ведущего, шаг 6 — у жителя «Исправлено»"
-  },
-  {
-   "name": "тот же b6d9ecf + f4fb7b9: R01 r14_b1.cjs / r14_b2.cjs",
-   "status": "PASS",
-   "detail": "15/15 и 26/26"
-  },
-  {
-   "name": "тот же b6d9ecf + f4fb7b9: pytest tests/civic/R09 R15 R01 R07 R04",
-   "status": "PASS (1 случайное падение в 1 из 3 прогонов)",
-   "detail": "1001 passed, 2 skipped во 2-м и 3-м прогонах; в 1-м — 1 failed, имя не сохранилось, не повторилось; R09+R04 трижды подряд 570 passed"
-  },
-  {
-   "name": "FINAL R01 4ca9aef + пути R09 этой ветки (без патча засева — засев R01 0a7a346): node tests/civic/R09/app_demo_r09.cjs",
-   "status": "PASS",
-   "detail": "42/42: «Об этом уже сообщили 3 человека» (3 отдельные жалобы R01) -> «Я тоже» -> 4; надписи = реплики ведущего; шаг 6 — у жителя «Исправлено»"
-  },
-  {
-   "name": "тот же FINAL + R09: pytest tests/civic/R09 R15 R01 R07 R04",
-   "status": "PASS",
-   "detail": "983 passed, 2 skipped"
-  },
-  {
-   "name": "тот же FINAL + R09: R01 browser r14_b1.cjs / r14_b2.cjs",
-   "status": "PASS",
-   "detail": "15/15 и 25/25"
-  },
-  {
-   "name": "тот же FINAL + R09: приёмка R10 tests/e2e/demo_flow.cjs (R10 3fa9315), рядом — чистый 4ca9aef",
-   "status": "PASS (без новых FAIL)",
-   "detail": "131/5/0 и на чистом FINAL, и с R09 этой ночи; 5 FAIL одинаковые и не R09 (шаг 6 «зелёным» — R07/R01, строка ҚАЗ)"
-  },
-  {
-   "name": "tests/civic/R09/test_r09v2_place_count.py",
-   "status": "PASS",
-   "detail": "3 passed: люди по месту и категории в «Мои обращения» (place_reporters), без отклонённых, дублей и старых"
-  },
-  {
-   "name": "node tests/civic/R09/app_demo_r09.cjs на FINAL-кандидате R01 ef1ef44 + R09 + r01_seed_r09_demo.patch",
-   "status": "PASS",
-   "detail": "42/42: 375/1366 × ru/kk — «Хан Шатыр» (нажатие по значку R07) -> «Об этом уже сообщили 3 человека» («Пример») -> «Я тоже» -> 4; надписи = реплики ведущего (DEMO_SCRIPT R01, DEMO_PHRASES_KK R11, 7/7); шаг 6: «Взять в работу» -> «Отметить исправленным» -> у жителя присоединённая жалоба «Исправлено»"
-  },
-  {
-   "name": "та же сборка ef1ef44: R01 browser r14_b1.cjs / r14_b2.cjs",
-   "status": "PASS",
-   "detail": "15/15 и 25/25"
-  },
-  {
-   "name": "та же сборка ef1ef44: pytest tests/civic/R09 tests/civic/R15 tests/civic/R01",
-   "status": "PASS",
-   "detail": "732 passed, 1 skipped"
-  },
-  {
-   "name": "node tests/civic/R09/app_demo_r09.cjs на сборке R01 13ae790 + R09 + r01_seed_r09_demo.patch",
-   "status": "PASS",
-   "detail": "36/36: 375/1366 × ru/kk, «Хан Шатыр» -> «Об этом уже сообщили 3 человека» -> «Я тоже»"
-  },
-  {
-   "name": "та же сборка: R01 browser r14_b1.cjs / r14_b2.cjs",
-   "status": "PASS",
-   "detail": "15/15 и 20/20"
-  },
-  {
-   "name": "та же сборка: tests/civic/R15 (ветка R15 68c92a2)",
-   "status": "PASS",
-   "detail": "S03, S04, S05, S06, S12 — XPASS(strict) = исправлено; остальные XPASS/XFAIL — других ролей"
-  },
-  {
-   "name": "та же сборка: tests/civic/R01 R04 R07 R10",
-   "status": "PASS (без новых падений)",
-   "detail": "6 старых падений (R07 ×2, R10 accuracy ×4) — те же на чистой 13ae790"
-  },
-  {
-   "name": "R09 + настоящие R12 /targets и R04 в стенде (--real-geo --real-ml)",
-   "status": "NOT_RUN",
-   "detail": "этой ночью вместо него — прогон в сборке R01, где R12 и R04 настоящие"
-  },
-  {
-   "name": "телефон вживую (LOCAL-7)",
-   "status": "NOT_RUN",
-   "detail": "нет устройства в облаке; R11 №12 (бледная карта) не подтверждён"
+  "extra": {
+   "akimat_inbox_screen": "window.BirgeComplaintList for R01 #complaints (R11 IA_WAVE2 §2.5)",
+   "unsubscribe": "R11 IA_WAVE2 §2.1 «Жазылымдар» — vote stays",
+   "menu_badge": "changesCount() / window event birge:complaint-changes"
   }
- ],
+ },
+ "tests": {
+  "pytest_r09_v2": "168 passed, 3 skipped (R12/R04 packages absent in R09 branch) — PYTEST_WAVE2.txt",
+  "stand_r09_kit": "450/450 — BROWSER_RESULT_WAVE2.txt",
+  "stand_r11_kit_and_dictionary": "450/450 (claude/r14-R11 @ 537dbd3) — BROWSER_RESULT_WAVE2_R11UI.txt",
+  "wave_scenarios": "232 checks, 375/1366 × ru/kk (--only wave)",
+  "real_app_r01_a96f6e3_plus_r09_plus_patch": "73/73 (steps 1–7, akimat «Обращения») — APP_RESULT_WAVE2.txt",
+  "r01_pytest_same_tree": "all passed (1 skipped)",
+  "r01_r14_wave2_same_tree": "29/31 — expected: with R09 module the akimat menu gains «Обращения» (R01 §11.1); R01 updates 2 expectations",
+  "default_map_unchanged": "checked on 4 combos: no bc-* layers, only the FAB before opening the wizard",
+  "phone_device": "NOT_RUN (no device in the cloud session)"
+ },
+ "evidence": {
+  "holidays_kz.json": "derived (Labour Code art. 85 + holiday law; Kurban ait 2026-05-27 expected; transfer decree 2026 not verified)",
+  "demo_complaints": "synthetic, demo:true, «Пример»",
+  "service_table": "copy of R08 defaults @ 9dbd62c (generic names, no real organisations)"
+ },
  "known_limits": [
-  "FINAL R01 b6d9ecf содержит R09 b6cadb3; последний круг f4fb7b9 (люди по месту) — после шага R01 (INTEGRATION.txt N0).",
-  "DEMO_SCRIPT R01 и DEMO_PHRASES_KK R11: на шаге 1–2 текст стоит раньше места и есть кнопка «Да», которой нет на экране — правка текста предложена в INTEGRATION.txt (N6).",
-  "«Один голос/«Я тоже» на устройство» без входа — по-прежнему накручивается сменой device_id; лимит по адресу — в шлюзе R01 (S08).",
-  "Срок хранения жалоб и удаление автором не сделаны (R15, раздел для жюри) — решение владельца."
+  "Push/SMS notifications are not implemented: «notification» = menu badge + #mine/event link.",
+  "Faces and number plates on photos are not detected (hint only); review of «after» photos — R15.",
+  "One verification vote per device per round; device switching is not prevented (same as «Я тоже»).",
+  "R07 card does not embed the staff component yet (R07 code); API and example in INTEGRATION.txt."
  ],
- "next_step": "R01: взять f4fb7b9 (INTEGRATION.txt N0), поправить DEMO_SCRIPT шаг 1–2 (N6). R11 — строки 2 и 3 в DEMO_PHRASES_KK. Координатор — реестр R09 = claude/wizardly-ptolemy-qy8ltw."
+ "next_step": "R01: take 8a1d390 + r01_wave2_assets.patch into FINAL-2, update 2 expectations in r14_wave2.cjs and DEMO_SCRIPT steps 6–7; R11: review SCREENS_WAVE2.md and add 42 R09 keys; R07: heat_state colours and verified/reopened events; then R09 re-runs app_demo_r09.cjs on FINAL-2."
 }
