@@ -1,0 +1,45 @@
+{
+ "label": "shell-after-targets",
+ "base": "http://127.0.0.1:8630/",
+ "tolerance_px": 2,
+ "runs": [
+  {
+   "size": "desktop",
+   "mode": "targets",
+   "frames": 361,
+   "badges": 8,
+   "at_edge_on_release": 5,
+   "drag_worst_px": 0.6,
+   "fling_worst_px": 0.6,
+   "moved_after_release": [],
+   "moved_after_fling": [],
+   "overlaps_after_zoom": {
+    "n": 0,
+    "badges": 2,
+    "pairs": [],
+    "zoom": "targets"
+   },
+   "errors": [],
+   "pass": true
+  },
+  {
+   "size": "phone",
+   "mode": "targets",
+   "frames": 374,
+   "badges": 1,
+   "at_edge_on_release": 0,
+   "drag_worst_px": 0.5,
+   "fling_worst_px": 0.5,
+   "moved_after_release": [],
+   "moved_after_fling": [],
+   "overlaps_after_zoom": {
+    "n": 0,
+    "badges": 1,
+    "pairs": [],
+    "zoom": "targets"
+   },
+   "errors": [],
+   "pass": true
+  }
+ ]
+}

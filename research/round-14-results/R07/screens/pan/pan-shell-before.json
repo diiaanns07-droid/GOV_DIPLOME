@@ -1,0 +1,73 @@
+{
+ "label": "shell-before",
+ "base": "http://127.0.0.1:8630/",
+ "tolerance_px": 2,
+ "runs": [
+  {
+   "size": "desktop",
+   "frames": 311,
+   "badges": 5,
+   "at_edge_on_release": 2,
+   "drag_worst_px": 0,
+   "fling_worst_px": 0,
+   "moved_after_release": [
+    {
+     "key": "district:baikonur",
+     "spotSame": true,
+     "px": 6.3,
+     "mode": "full→full"
+    },
+    {
+     "key": "district:saraishyk",
+     "spotSame": true,
+     "px": 6.3,
+     "mode": "full→full"
+    },
+    {
+     "key": "district:almaty",
+     "spotSame": true,
+     "px": 6.3,
+     "mode": "full→full"
+    }
+   ],
+   "moved_after_fling": [],
+   "overlaps_after_zoom": {
+    "n": 0,
+    "badges": 1,
+    "pairs": [],
+    "zoom": "districts"
+   },
+   "errors": [
+    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "pass": false
+  },
+  {
+   "size": "phone",
+   "frames": 296,
+   "badges": 6,
+   "at_edge_on_release": 2,
+   "drag_worst_px": 0,
+   "fling_worst_px": 0,
+   "moved_after_release": [
+    {
+     "key": "district:almaty",
+     "spotSame": false,
+     "px": 23,
+     "mode": "mini→full"
+    }
+   ],
+   "moved_after_fling": [],
+   "overlaps_after_zoom": {
+    "n": 0,
+    "badges": 6,
+    "pairs": [],
+    "zoom": "districts"
+   },
+   "errors": [
+    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "pass": false
+  }
+ ]
+}

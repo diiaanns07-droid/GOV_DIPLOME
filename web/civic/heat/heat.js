@@ -18,7 +18,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "r07-round14-2";
+  const VERSION = "r07-round14-3";
   const NBSP = " ";
   const ANIM_MS = 800;           // перетекание цвета при новой жалобе (UX_BRIEF: ~0.8 с)
   const BADGE_W = 64, BADGE_H = 40;   // полный значок: кружок с иконкой + число
@@ -742,20 +742,25 @@
           m = { marker, el, item: it, spot: it.anchor };
           S.markers.set(key, m);
         }
+        // Точку значка не сбрасываем к якорю у уже стоящего значка: её выбирает declutter (стабильность при сдвиге карты).
+        if (!m.anchor || m.anchor[0] !== it.anchor[0] || m.anchor[1] !== it.anchor[1]) { m.marker.setLngLat(it.anchor); m.spot = it.anchor; }
+        m.anchor = it.anchor;
         m.item = it;
-        m.marker.setLngLat(it.anchor);
-        m.spot = it.anchor;
         fillBadge(m.el, it);
         m.el.classList.toggle("r07-badge--pick", !!S.picking);
         // Настоящий размер значка (у района с названием ~130 px, а не 64) — для честной проверки наложений.
         m.el.hidden = false;
         m.el.classList.remove("r07-badge--mini");
         if (m.el.offsetWidth) { m.w = m.el.offsetWidth; m.h = m.el.offsetHeight; }
+        // И размер маленькой плашки: с двузначным числом она ~47 px, а не 34 — иначе плашки налезали на соседей.
+        m.el.classList.add("r07-badge--mini");
+        if (m.el.offsetWidth) { m.mw = m.el.offsetWidth; m.mh = m.el.offsetHeight; }
+        m.el.classList.remove("r07-badge--mini");
       });
       for (const [key, m] of S.markers) {
         if (!keep.has(key)) { m.marker.remove(); S.markers.delete(key); }
       }
-      declutter();
+      declutter("full");   // новые данные — раскладываем заново
     }
 
     function fillBadge(el, it) {
@@ -769,8 +774,9 @@
       const reported = t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count });
       el.setAttribute("aria-label", t("heat.badge_label", { target: label(it.target), reported }) + (fixed ? ". " + t("heat.fixed_word") : ""));
       el.title = label(it.target);
-      el.innerHTML = '<span class="r07-badge__dot" style="--r07-c:' + esc(it.color || "#999") + '">' + svgIcon(icon, 18) + "</span>" +
-        '<span class="r07-badge__count">' + (district ? '<span class="r07-badge__name">' + esc(label(it.target)) + " · </span>" : "") + fmtNum(it.count) + "</span>";
+      // Обёртка __inner — для увеличения при наведении/выборе: сам el — маркер MapLibre, его transform двигает карта.
+      el.innerHTML = '<span class="r07-badge__inner"><span class="r07-badge__dot" style="--r07-c:' + esc(it.color || "#999") + '">' + svgIcon(icon, 18) + "</span>" +
+        '<span class="r07-badge__count">' + (district ? '<span class="r07-badge__name">' + esc(label(it.target)) + " · </span>" : "") + fmtNum(it.count) + "</span></span>";
     }
 
     // Где можно поставить значок цели: у участка улицы — середина и ещё две точки на линии (30 % и 70 %),
@@ -818,12 +824,19 @@
       return right > left && bottom > top ? { left, top, right, bottom, width: right - left, height: bottom - top } : null;
     }
 
-    function declutter() {
+    // Раскладка значков. how: "full" — заново (новые данные); без аргумента — заново только если сменились масштаб,
+    // поворот, наклон или размер карты. При простом сдвиге карты (и при перерисовке панели) уже поставленный значок
+    // остаётся в своей точке: двигается, только если ушёл за край карты или налез на плашку / более горячий значок.
+    // Иначе значки перепрыгивали после каждой остановки карты (замечание владельца на демо).
+    function declutter(how) {
       if (!map) return;
-      const z = map.getZoom();
+      const z = map.getZoom(), bearing = map.getBearing(), pitch = map.getPitch();
       const placed = [];
       // Значки не прячутся под легендой и другими плашками поверх карты (opts.avoidRects — от оболочки).
       const host = map.getContainer().getBoundingClientRect();
+      const L = S.layout;
+      const full = how === "full" || !L || Math.abs(L.z - z) > 0.01 || Math.abs(L.bearing - bearing) > 0.5 ||
+        Math.abs(L.pitch - pitch) > 0.5 || Math.abs(L.w - host.width) > 1 || Math.abs(L.h - host.height) > 1;
       const overlays = [];
       if (S.legendEl && S.legendEl.isConnected) overlays.push(S.legendEl.getBoundingClientRect());
       // Своя панель / шторка поверх карты и кнопки MapLibre: значок наполовину под ними выглядит обрезанным.
@@ -845,23 +858,46 @@
       const list = [...S.markers.values()].sort((a, b) =>
         (keyOf(b.item.target) === S.selected) - (keyOf(a.item.target) === S.selected) ||
         (b.item.weight || 0) - (a.item.weight || 0) || (b.item.count || 0) - (a.item.count || 0));
+      const sizeOf = (m, mode) => (mode === "mini" ? [Math.max(m.mw || MINI_W, MINI_W), Math.max(m.mh || MINI_H, MINI_H)]
+        : [Math.max(m.w || BADGE_W, 40), Math.max(m.h || BADGE_H, 30)]);
+      const result = new Map();   // marker → [mode, spot]
+      // Ниже 15-го масштаба объекты уровней 1–2 не рисуются вовсе (ни цветом, ни значком) — правило 5 UX_BRIEF.
+      const quiet = (it) => it.target.kind === "object" && z < 15 && it.state !== "fixed" && Number(it.level) < 3;
+      if (!full) {
+        // Выбранная цель — всегда полный значок в своей точке; остальные его обходят.
+        const sel = list.find((m) => keyOf(m.item.target) === S.selected);
+        if (sel) {
+          const ll = badgeSpots(sel.item)[0];
+          const [w, h] = sizeOf(sel, "full");
+          placed.push(boxAt(map.project(ll), w, h));
+          result.set(sel, ["full", ll]);
+        }
+        // 1-й проход: значки, которые уже стоят, остаются на месте, если им там по-прежнему свободно.
+        list.forEach((m) => {
+          const prev = m.el.dataset.mode;
+          if (result.has(m) || (prev !== "full" && prev !== "mini") || !m.spot || quiet(m.item)) return;
+          const [w, h] = sizeOf(m, prev);
+          const box = boxAt(map.project(m.spot), w, h);
+          if (free(box)) { placed.push(box); result.set(m, [prev, m.spot]); }
+        });
+      }
+      // 2-й проход (или вся раскладка заново): остальным ищем место — сначала самые горячие.
       list.forEach((m) => {
+        if (result.has(m)) return;
         const it = m.item;
         const selected = keyOf(it.target) === S.selected;
-        // Ниже 15-го масштаба объекты уровней 1–2 не рисуются вовсе (ни цветом, ни значком) — правило 5 UX_BRIEF.
-        const quietObject = it.target.kind === "object" && z < 15 && it.state !== "fixed" && Number(it.level) < 3;
         let mode = "hidden";
-        let spot = it.anchor;
-        if (!quietObject || selected) {
+        let spot = m.spot || it.anchor;
+        if (!quiet(it) || selected) {
           const spots = badgeSpots(it).map((ll) => ({ ll, p: map.project(ll) }));
-          const fw = Math.max(m.w || BADGE_W, 40), fh = Math.max(m.h || BADGE_H, 30);
+          const [fw, fh] = sizeOf(m, "full");
           // маленький вариант — только число (у района название остаётся в подсказке, aria-label и списке)
-          const mw = MINI_W, mh = MINI_H;
-          const full = selected ? spots[0] : spots.find((sp) => free(boxAt(sp.p, fw, fh)));
-          if (full) {
+          const [mw, mh] = sizeOf(m, "mini");
+          const best = selected ? spots[0] : spots.find((sp) => free(boxAt(sp.p, fw, fh)));
+          if (best) {
             mode = "full";
-            spot = full.ll;
-            placed.push(boxAt(full.p, fw, fh));
+            spot = best.ll;
+            placed.push(boxAt(best.p, fw, fh));
           } else {
             const mini = spots.find((sp) => free(boxAt(sp.p, mw, mh)));
             if (mini) {
@@ -871,12 +907,17 @@
             }
           }
         }
+        result.set(m, [mode, spot]);
+      });
+      list.forEach((m) => {
+        const [mode, spot] = result.get(m);
         if (mode !== "hidden" && (spot[0] !== m.spot?.[0] || spot[1] !== m.spot?.[1])) { m.marker.setLngLat(spot); m.spot = spot; }
         m.el.hidden = mode === "hidden";
         m.el.classList.toggle("r07-badge--mini", mode === "mini");
         m.el.tabIndex = -1;
         m.el.dataset.mode = mode;
       });
+      if (full) S.layout = { z, bearing, pitch, w: host.width, h: host.height };
       // Значки — одна остановка Tab (R10 B-025): внутрь входит Tab, между значками — стрелки (самый горячий первый).
       S.badgeOrder = list.filter((m) => m.el.dataset.mode !== "hidden").map((m) => keyOf(m.item.target));
       const roving = S.badgeOrder.includes(S.rovingKey) ? S.rovingKey : S.badgeOrder[0];
@@ -1322,10 +1363,14 @@
       // Режим выбора места жалобой без класса body.birge-picking (другая оболочка): значки передают щелчок карте.
       setPickMode: (on) => { S.picking = !!on; for (const m of S.markers.values()) m.el.classList.toggle("r07-badge--pick", !!on); },
       // Видимые значки: id цели, вид (full / mini), точка на карте и центр на экране — для проверок точности (R10, тесты R07).
+      // Для проверок: центр значка на экране (cx, cy) и где он должен быть по карте (px, py = map.project точки значка).
       badges: () => [...S.markers.entries()].filter(([, m]) => !m.el.hidden).map(([key, m]) => {
         const r = m.el.getBoundingClientRect();
-        return { key, mode: m.el.dataset.mode, spot: m.spot, cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+        const host = map.getContainer().getBoundingClientRect();
+        const p = map.project(m.spot);
+        return { key, mode: m.el.dataset.mode, spot: m.spot, cx: r.left + r.width / 2, cy: r.top + r.height / 2, px: host.left + p.x, py: host.top + p.y };
       }),
+      isMoving: () => Boolean(map && map.isMoving()),
       state: () => ({ role: S.role, lang: S.lang, filters: { ...S.filters }, selected: S.selected, mode: S.mode, status: S.status,
         items: S.data ? S.data.items.length : 0, pending: S.pendingSelect, fittedKeys: S.fittedKeys || [] }),
       destroy,

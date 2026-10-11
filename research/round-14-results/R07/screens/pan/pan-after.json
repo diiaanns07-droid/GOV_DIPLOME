@@ -1,0 +1,45 @@
+{
+ "label": "after",
+ "base": "http://127.0.0.1:8619/civic/heat/demo.html",
+ "tolerance_px": 2,
+ "runs": [
+  {
+   "size": "desktop",
+   "mode": "targets",
+   "frames": 390,
+   "badges": 21,
+   "at_edge_on_release": 7,
+   "drag_worst_px": 0.6,
+   "fling_worst_px": 0.6,
+   "moved_after_release": [],
+   "moved_after_fling": [],
+   "overlaps_after_zoom": {
+    "n": 0,
+    "badges": 16,
+    "pairs": [],
+    "zoom": "targets"
+   },
+   "errors": [],
+   "pass": true
+  },
+  {
+   "size": "phone",
+   "mode": "targets",
+   "frames": 394,
+   "badges": 12,
+   "at_edge_on_release": 6,
+   "drag_worst_px": 0.6,
+   "fling_worst_px": 0.6,
+   "moved_after_release": [],
+   "moved_after_fling": [],
+   "overlaps_after_zoom": {
+    "n": 0,
+    "badges": 7,
+    "pairs": [],
+    "zoom": "targets"
+   },
+   "errors": [],
+   "pass": true
+  }
+ ]
+}

@@ -1,0 +1,153 @@
+{
+ "label": "before",
+ "base": "http://127.0.0.1:8618/civic/heat/demo.html",
+ "tolerance_px": 2,
+ "runs": [
+  {
+   "size": "desktop",
+   "mode": "targets",
+   "frames": 384,
+   "badges": 21,
+   "at_edge_on_release": 6,
+   "drag_worst_px": 47.2,
+   "fling_worst_px": 36.1,
+   "moved_after_release": [
+    {
+     "key": "object:osm-node-13394597038",
+     "spotSame": true,
+     "px": 6.2,
+     "mode": "full→full"
+    },
+    {
+     "key": "segment:osm-w1181261286-8",
+     "spotSame": true,
+     "px": 6.2,
+     "mode": "full→full"
+    },
+    {
+     "key": "segment:osm-w1175582593-4",
+     "spotSame": true,
+     "px": 5.8,
+     "mode": "full→full"
+    },
+    {
+     "key": "segment:osm-w513046076-0",
+     "spotSame": true,
+     "px": 6.3,
+     "mode": "full→full"
+    },
+    {
+     "key": "area:yard-1461758835",
+     "spotSame": true,
+     "px": 6.1,
+     "mode": "full→full"
+    },
+    {
+     "key": "segment:osm-w1318422301-2",
+     "spotSame": true,
+     "px": 6.5,
+     "mode": "full→full"
+    },
+    {
+     "key": "segment:osm-w689189362-2",
+     "spotSame": true,
+     "px": 6.8,
+     "mode": "full→full"
+    },
+    {
+     "key": "segment:osm-w171875547-1",
+     "spotSame": true,
+     "px": 6.4,
+     "mode": "mini→mini"
+    },
+    {
+     "key": "segment:osm-w661337975-3",
+     "spotSame": true,
+     "px": 6.7,
+     "mode": "full→full"
+    },
+    {
+     "key": "area:yard-1549054977",
+     "spotSame": true,
+     "px": 5.9,
+     "mode": "full→full"
+    },
+    {
+     "key": "segment:osm-w736834155-17",
+     "spotSame": true,
+     "px": 6.4,
+     "mode": "full→full"
+    },
+    {
+     "key": "object:osm-node-13335403725",
+     "spotSame": true,
+     "px": 5.9,
+     "mode": "full→mini"
+    },
+    {
+     "key": "object:osm-node-4109037549",
+     "spotSame": true,
+     "px": 6.3,
+     "mode": "full→full"
+    },
+    {
+     "key": "segment:osm-w1456068829-1",
+     "spotSame": true,
+     "px": 5.9,
+     "mode": "full→full"
+    },
+    {
+     "key": "segment:osm-w607127142-3",
+     "spotSame": true,
+     "px": 6.7,
+     "mode": "full→full"
+    }
+   ],
+   "moved_after_fling": [],
+   "overlaps_after_zoom": {
+    "n": 1,
+    "badges": 17,
+    "pairs": [
+     [
+      "full",
+      "mini",
+      [
+       281,
+       107,
+       79,
+       38
+      ],
+      [
+       236,
+       116,
+       47,
+       24
+      ]
+     ]
+    ],
+    "zoom": "targets"
+   },
+   "errors": [],
+   "pass": false
+  },
+  {
+   "size": "phone",
+   "mode": "targets",
+   "frames": 413,
+   "badges": 12,
+   "at_edge_on_release": 6,
+   "drag_worst_px": 47.2,
+   "fling_worst_px": 20.2,
+   "moved_after_release": [],
+   "moved_after_fling": [],
+   "overlaps_after_zoom": {
+    "n": 0,
+    "badges": 7,
+    "pairs": [],
+    "zoom": "targets"
+   },
+   "errors": [],
+   "pass": false
+  }
+ ]
+}
