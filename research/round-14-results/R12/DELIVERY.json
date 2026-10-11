@@ -56,7 +56,7 @@
    "file": "research/round-14-results/R12/patches/R01_qr_report.patch",
    "applies": "git apply --check OK на a2d90dd",
    "what": "web_server: GET /target, subtopic в /targets, ассеты qr/* и /vendor/qrcode/qrcode.js; index.html: report.css/js; shell.js: #birge-report-root и openReportFromLink (шторка наполовину, камера с учётом панели); birge.js: вид «Житель» по ?report= без запоминания; birge.css: пока открыт паспорт — карта жалоб, работы и кнопка R09 скрыты; tests/civic/R01/test_r01_api_v2.py: образец маршрута /target. Плюс пункт меню «Ещё → QR-таблички».",
-   "tested": "сборка a2d90dd + R12 + этот patch: pytest tests/civic/R01 159 passed / 1 skipped (без образца /target в тесте — 1 FAIL, поэтому образец в patch); r14_shell.cjs 38/0; r14_b2.cjs 27/0 (логи runs/r01_r14_*_with_r12_patch.log)"
+   "tested": "сборка a2d90dd + R12 + этот patch: pytest tests/civic/R01 159 passed / 1 skipped (без образца /target в тесте — 1 FAIL, поэтому образец в patch); r14_shell.cjs 38/0; r14_b2.cjs 27/0 (итоги проверок — runs/r01_r14_shell_with_r12_patch.txt, runs/r01_r14_b2_with_r12_patch.txt)"
   },
   {
    "for": "R09",
