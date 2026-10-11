@@ -1,7 +1,7 @@
 # R10 · приёмка PATCHED-8e67c65-small · сборка 8e67c65
 
 Папка сборки: /home/user/n11p
-Когда: 2026-10-10T23:48:09.023Z · Node v22.22.0 · Python: python3
+Когда: 2026-10-11T00:22:27.974Z · Node v22.22.0 · Python: python3
 
 ## 1. Точность карты (CONTRACT §8)
 
@@ -10,7 +10,7 @@ PASS 29 · FAIL 0 · NOT_RUN 0 (pytest код 0)
 
 ## 2. Сервер сборки
 
-запущен на http://127.0.0.1:35183/; CIVIC_DEMO=1; база: init:0, seed-demo:0, seed-r14-demo:0; сотрудник: создан
+запущен на http://127.0.0.1:36859/; CIVIC_DEMO=1; база: init:0, seed-demo:0, seed-r14-demo:0; сотрудник: создан
 
 | Маршрут v2 | Роль | Статус |
 |---|---|---|
@@ -54,12 +54,12 @@ PASS 29 · FAIL 0 · NOT_RUN 0 (pytest код 0)
 
 ## 3. Сценарий демо (tests/e2e/demo_flow.cjs)
 
-PASS 156 · FAIL 0 · NOT_RUN 0 — подробно e2e/RESULT.md
+PASS 160 · FAIL 0 · NOT_RUN 0 — подробно e2e/RESULT.md
 
 | Шаг | PASS | FAIL | NOT_RUN |
 |---|---|---|---|
 | * | 4 | 0 | 0 |
-| 0 | 37 | 0 | 0 |
+| 0 | 41 | 0 | 0 |
 | 1 | 14 | 0 | 0 |
 | 2 | 17 | 0 | 0 |
 | 3 | 14 | 0 | 0 |
@@ -70,4 +70,4 @@ PASS 156 · FAIL 0 · NOT_RUN 0 — подробно e2e/RESULT.md
 
 ## 4. UX по экранам (tests/e2e/ux_screens.cjs)
 
-PASS 116 · FAIL 0 · NOT_RUN 8 — подробно ux/UX_RESULT.md
+PASS 128 · FAIL 0 · NOT_RUN 8 — подробно ux/UX_RESULT.md
