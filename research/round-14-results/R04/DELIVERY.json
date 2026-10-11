@@ -1,116 +1,106 @@
 {
- "role": "R04",
- "title": "Дубли и ML-API",
- "branch": "claude/r14-R04",
- "base_sha": "83d64bd89c4573e120683ba2036f2b29f591c282",
- "base_branch": "claude/round-14-package",
- "restored_from": null,
- "read_only_inputs": {
-  "ml/civic_classifier (v1)": "claude/wizardly-ptolemy-qy8ltw @ 14c3384 (локальная копия, не в ветке R04)",
-  "ml/civic_classifier_v2 (R03)": "claude/r14-R03 @ f9370b0 (локальная копия, не в ветке R04)",
-  "ml/datasets (R02)": "claude/r14-R02 @ 05b789e (локальная копия, не в ветке R04)",
-  "ui/civic_feedback/v2 (R09)": "claude/modest-shannon-0ki93p @ 4021818 (локальная копия, не в ветке R04)",
-  "ui/web_server.py (R01)": "claude/sharp-dijkstra-0t87gl @ 2eaeacb (временная папка, проверка стыка шлюза)"
- },
- "code_sha": "deeb1dec0d4215fde3580411a7af477393b19b06",
- "tested_sha": "deeb1dec0d4215fde3580411a7af477393b19b06",
- "push_status": "OK — ветка claude/r14-R04 на GitHub (проверяется git ls-remote после каждого push; итог — в STATUS.md)",
- "status": "ready_for_review (запасные пути); e5 и v2 — ждут LOCAL",
- "changed_paths": [
-  "ml/civic_dedup/.gitignore",
-  "ml/civic_dedup/__init__.py",
-  "ml/civic_dedup/bench.py",
-  "ml/civic_dedup/concepts.py",
-  "ml/civic_dedup/config.py",
-  "ml/civic_dedup/dedup_config.json",
-  "ml/civic_dedup/e5.py",
-  "ml/civic_dedup/export_e5.py",
-  "ml/civic_dedup/fixtures.py",
-  "ml/civic_dedup/geo.py",
-  "ml/civic_dedup/loader.py",
-  "ml/civic_dedup/normalize.py",
-  "ml/civic_dedup/results/bench.json",
-  "ml/civic_dedup/results/dedup_eval_ngram.json",
-  "ml/civic_dedup/scorers.py",
-  "ml/civic_dedup/search.py",
-  "ml/civic_dedup/tune.py",
-  "research/handoffs/astana/R04/round14/STATUS.md",
-  "research/round-14-results/R04/DELIVERY.json",
-  "research/round-14-results/R04/INTEGRATION.txt",
-  "research/round-14-results/R04/RESULTS.md",
-  "research/round-14-results/R04/RUN.txt",
-  "research/round-14-results/R04/classify_eval.json",
-  "research/round-14-results/R04/r01_similar_target.patch",
-  "tests/civic/R04/round14/r04_helpers.py",
-  "tests/civic/R04/round14/test_r04_classify.py",
-  "tests/civic/R04/round14/test_r04_concurrency_speed.py",
-  "tests/civic/R04/round14/test_r04_dedup.py",
-  "tests/civic/R04/round14/test_r04_e5.py",
-  "tests/civic/R04/round14/test_r04_e5_runtime.py",
-  "tests/civic/R04/round14/test_r04_normalize.py",
-  "tests/civic/R04/round14/test_r04_similar.py",
-  "ui/civic_ml_api/__init__.py",
-  "ui/civic_ml_api/__main__.py",
-  "ui/civic_ml_api/categories.py",
-  "ui/civic_ml_api/classify_chain.py",
-  "ui/civic_ml_api/errors.py",
-  "ui/civic_ml_api/evaluate.py",
-  "ui/civic_ml_api/similar_search.py"
- ],
- "environment": "облачная сессия Claude Code: Linux, Intel Xeon 2.80 GHz ×4, Python 3.13.16, numpy 2.5.3, onnxruntime 1.29.0, onnx 1.23.2, tokenizers 0.23.3, без torch",
- "tests": {
-  "совместно tests/civic/R03/round14 + tests/civic/R04/round14": "PASS (137 passed, 6 skipped; на коде 0f196a8)",
-  "весь набор pytest tests (с локальными копиями v1, R03, R02, R09 v2)": "PASS (967 passed, 4 skipped)",
-  "шлюз R01 @ 2eaeacb: /classify, /similar, 503 source_not_connected, 400 на плохой ввод": "PASS (временная папка)",
-  "патч r01_similar_target.patch: target доходит до similar, плохой target -> 400": "PASS (временная папка)",
-  "e5: рантайм на настоящих onnxruntime + tokenizers, крошечная ONNX-модель, int8, оркестровка export_e5": "PASS",
-  "e5: экспорт настоящей multilingual-e5 из PyTorch и порог на dev": "NOT_RUN — веса только на ноутбуке, download.pytorch.org закрыт (LOCAL-R04-1)",
-  "classify на модели v2 R03 (ONNX)": "NOT_RUN — нет artifacts/onnx до LOCAL-4; путь проверен подставной моделью",
-  "скорость на CPU ноутбука": "NOT_RUN — облако; команда в RUN.txt",
-  "качество на текстах жителей": "NOT_EVALUATED — текстов людей нет",
-  "tests/civic/R04/round14 (97)": "PASS"
- },
- "metrics": {
-  "dedup_test_geo": {
-   "precision": 0.88,
-   "recall": 0.906,
-   "f1": 0.893,
-   "precision_ci95": [
-    0.833,
-    0.922
-   ],
-   "recall_ci95": [
-    0.863,
-    0.945
-   ]
+  "role": "R04",
+  "title": "Волна мелочей: п. 8 «Мат и оскорбления» (фильтр ru/kk на публичных выводах, акимат видит оригинал с пометкой); п. 9 «Разъединить дубли» вместе с R09 («Это разные проблемы» одним действием, цель пересчитывается)",
+  "branch": "claude/r14-R04",
+  "base_sha": "8e67c65fb0d6d6b3956c421993f7530fa1767ec9",
+  "base_branch": "claude/sharp-dijkstra-0t87gl (FINAL-кандидат R01)",
+  "restored_from": "пути R04 (ml/civic_dedup, ui/civic_ml_api, tests/civic/R04) взяты из 8e67c65 — там правка R01 R15-S13 в similar_search.py и тесты R04 раунда 13; поверх — работа волны",
+  "code_sha": "8e2b2ae561696ae639ddf62ae7f8ddd8d10cdc78",
+  "tested_sha": "8e2b2ae561696ae639ddf62ae7f8ddd8d10cdc78",
+  "tested_build": "8e67c65 + пути R04 @ code_sha (побайтно, diff -rq) + 4 patch'а из research/round-14-results/R04/patches/",
+  "push_status": "OK — claude/r14-R04 запушена (git push после каждого checkpoint; последний SHA — в STATUS.md)",
+  "status": "ready_for_review",
+  "changed_paths": [
+    "ui/civic_ml_api/profanity.py (новый: фильтр)",
+    "ui/civic_ml_api/__init__.py, __main__.py (CLI profanity), similar_search.py (журнал решений по событиям R09)",
+    "ml/civic_dedup/feedback.py (новый: журнал решений акимата о дублях), ml/civic_dedup/search.py (pair_score)",
+    "tests/civic/R04/round14/test_r04_profanity.py, test_r04_separate.py, test_r04_polish_joint.py, app_polish_r04.cjs",
+    "research/round-14-results/R04/{RESULTS.md, INTEGRATION.txt, RUN.txt, DELIVERY.json, patches/, screens-polish/}",
+    "research/handoffs/astana/R04/round14/STATUS.md"
+  ],
+  "patches_for_others": {
+    "R01": "patches/r01_polish_r04.patch — ui/web_server.py: public_text (фильтр в одной точке, v1+v2) и 2 маршрута R09; tests/civic/R01/test_r01_api_v2.py: +2 строки ROUTE_SAMPLES",
+    "R09": "patches/r09_polish_r04.patch — ui/civic_feedback/v2/{separate.py (новый), store.py, record.py, api.py, integration.py}, web/civic/feedback/complaint.js (note с «Я тоже»)",
+    "R07": "patches/r07_polish_r04.patch — ui/civic_heat/engine.py (rude у группы текстов), web/civic/heat/heat.js и heat.css (метка, блок «Объединено с этим», кнопка «Это разные проблемы»)",
+    "R11": "patches/r11_i18n_polish_r04.patch — web/civic/i18n/ru.json, kk.json: moderation.rude, merge.* (kk — черновик на вычитку)",
+    "apply_check": "git apply --check: все 4 — PASS на 8e67c65; r09 — PASS и на 38e6d67 (голова ветки R09 claude/modest-shannon-0ki93p)"
   },
-  "dedup_dev_geo": {
-   "precision": 0.905,
-   "recall": 0.91
+  "apply": [
+    "git fetch origin claude/r14-R04",
+    "git checkout 8e2b2ae5 -- ml/civic_dedup ui/civic_ml_api tests/civic/R04/round14",
+    "git apply research/round-14-results/R04/patches/r01_polish_r04.patch",
+    "git apply research/round-14-results/R04/patches/r09_polish_r04.patch   # если R09 не взял сам",
+    "git apply research/round-14-results/R04/patches/r07_polish_r04.patch   # если R07 не взял сам",
+    "git apply research/round-14-results/R04/patches/r11_i18n_polish_r04.patch   # если R11 не взял сам"
+  ],
+  "environment": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22, Playwright 1.56 + Chromium headless (swiftshader), без интернета (офлайн-подложка карты); ноутбук владельца — NOT_RUN",
+  "tests": {
+    "tests/civic/R04/round14 (в сборке)": "PASS — 350 passed, 1 skipped (e5_runtime: нет onnx)",
+    "tests/civic/R04/round14 (ветка R04 без чужих путей)": "PASS — 304 passed, 12 skipped (нет R09/R03/onnx — skip с причиной)",
+    "test_r04_profanity.py": "PASS 245 (115 грубых слов/фраз ловятся, 119 обычных не трогаются, 0 ложных на корпусах репозитория, скорость)",
+    "test_r04_separate.py": "PASS 10 (хранилище R09 с patch: откат дубля, цепочка, перепривязанные дубли, «Я тоже» -> своя жалоба, права, журнал R04)",
+    "test_r04_polish_joint.py": "PASS 5 (настоящий HTTP-сервер: звёздочки жителю, оригинал + пометка сотруднику, карточка R07, разделение и пересчёт тепловой карты)",
+    "app_polish_r04.cjs (Chromium 375/1366 × ru/kk)": "PASS 39/39 — screens-polish/STAND_RESULT.txt",
+    "R09 app_demo_r09.cjs на этой сборке (регресс формы «Я тоже»)": "PASS 42/42",
+    "pytest R09+R07+R11+R01+R04+R15+R08 на сборке": "PASS — 1444 passed, 3 skipped",
+    "pytest tests (весь) на сборке": "RUNNING — итог допишу в STATUS.md",
+    "живой телефон, ноутбук владельца": "NOT_RUN"
   },
-  "dedup_method": "ngram-concept-v1 alpha 0.3, 3-5-граммы, пороги 0.18 / 0.40 (только текст)",
-  "classify_chain_accuracy": {
-   "val": 0.691,
-   "test": 0.784,
-   "v1_only_test": 0.518
-  },
-  "speed_cloud_cpu_ms": {
-   "classify_p95": 0.36,
-   "similar_city_p95": 8.2,
-   "similar_hotspot_5000_p95": 39.3,
-   "similar_r09_store_hotspot_p95": 67.2,
-   "similar_hotspot_first_query": 155.1
-  },
-  "evidence": "synthetic (R02); test просмотрен 5 раз за журнал экспериментов (RESULTS.md)"
- },
- "known_limits": [
-  "Все метрики — на синтетике R02; качество на настоящих обращениях не оценено.",
-  "e5 не подключён (LOCAL-R04-1); работает запасной путь ngram-concept-v1.",
-  "Словарь понятий — 48 тем: перефразы с другими словами вне словаря находятся только при близком тексте (порог 0.40).",
-  "Две разные проблемы одного понятия в 200 м (две ямы) считаются одной — житель может нажать «У меня другое».",
-  "Первый запрос в точке, где тысячи жалоб, без прогрева ~150 мс; connect_store прогревает кэш в фоне.",
-  "Без patch R01 (target) условие «та же цель» работает только через точку ≤ 200 м.",
-  "needs_review всегда true до проверки моделей на людях; для чипа жителя — поле suggest."
- ],
- "next_step": "R01: перенести пути, patch target, connect_store + warmup при старте. LOCAL: LOCAL-R04-1 (e5). После LOCAL-4 (v2 R03) — bench на ноутбуке. После формы LOCAL-6 — пары дублей из настоящих обращений и повтор tune."
+  "screenshots": "research/round-14-results/R04/screens-polish/*.jpg — 375×812 и 1366×768, ru и kk: 1 житель (карточка без чужих текстов), 2 акимат (оригинал + «Содержит грубые слова»), 3 «Объединено с этим», 4 после «Это разные проблемы» (тост, число −1), 5 разделённый дубль (1366 ru)",
+  "known_limits": [
+    "Фильтр — словарь корней с якорями и списками приставок, не модель: новый придуманный обход пропустит (добавляется строкой в _RU/_KK_*/_LATIN + тест). Слово «сука» маскируется и в прямом смысле (бездомная собака) — сознательно, это публичный текст.",
+    "Публичных экранов с текстами жителей в FINAL нет (R07 жителю — только примеры, «Мои обращения» текст не выводят); фильтр в шлюзе закрывает будущие экраны второй волны (идеи, «Вопрос акиму», «Рядом») без их доработки.",
+    "Автор тоже получает свой текст со звёздочками (решение «всё, что уходит на устройство жителя, — без мата»; см. вопрос владельцу).",
+    "«Я тоже» с карточки места R07 (без текста) разделить нечем — житель согласился с проблемой места; разделяются дубли и «Я тоже» из формы жалобы.",
+    "Дубли, объединённые до patch R09 без записи времени в истории, откатываются без удаления перенесённых людей (на практике таких нет: mark_duplicate всегда пишет запись истории).",
+    "kk-тексты новых ключей — черновик R04, вычитывает R11.",
+    "Качество фильтра на настоящих текстах жителей: NOT_EVALUATED (их нет в Git)."
+  ],
+  "questions_for_owner": [
+    "Показывать ли автору в «Моих обращениях» его оригинальный текст (сейчас и автору — со звёздочками)? Если да — R01 исключает complaints.mine в public_text (1 строка).",
+    "«Я тоже» из формы теперь сохраняет текст и место жителя для службы — R09 упомянет это в «Это увидит только служба». Согласны?"
+  ],
+  "next_step": "R01: применить 4 patch'а и пути R04 (INTEGRATION.txt, раздел «ВОЛНА МЕЛОЧЕЙ») в FINAL-2, прогнать tests/civic/R04/round14 и app_polish_r04.cjs. R09/R07/R11: взять свои patch'и или подтвердить, что R01 применит. R10: добавить сценарии п. 8/9 в приёмку (готовый стенд). После демо (LOCAL, по желанию): ml.civic_dedup.feedback export -> проверить порог на настоящих решениях акимата.",
+  "previous_delivery": {
+    "title": "Дубли и ML-API",
+    "base_sha": "83d64bd89c4573e120683ba2036f2b29f591c282",
+    "code_sha": "deeb1dec0d4215fde3580411a7af477393b19b06",
+    "tested_sha": "deeb1dec0d4215fde3580411a7af477393b19b06",
+    "status": "ready_for_review (запасные пути); e5 и v2 — ждут LOCAL",
+    "metrics": {
+      "dedup_test_geo": {
+        "precision": 0.88,
+        "recall": 0.906,
+        "f1": 0.893,
+        "precision_ci95": [
+          0.833,
+          0.922
+        ],
+        "recall_ci95": [
+          0.863,
+          0.945
+        ]
+      },
+      "dedup_dev_geo": {
+        "precision": 0.905,
+        "recall": 0.91
+      },
+      "dedup_method": "ngram-concept-v1 alpha 0.3, 3-5-граммы, пороги 0.18 / 0.40 (только текст)",
+      "classify_chain_accuracy": {
+        "val": 0.691,
+        "test": 0.784,
+        "v1_only_test": 0.518
+      },
+      "speed_cloud_cpu_ms": {
+        "classify_p95": 0.36,
+        "similar_city_p95": 8.2,
+        "similar_hotspot_5000_p95": 39.3,
+        "similar_r09_store_hotspot_p95": 67.2,
+        "similar_hotspot_first_query": 155.1
+      },
+      "evidence": "synthetic (R02); test просмотрен 5 раз за журнал экспериментов (RESULTS.md)"
+    },
+    "next_step": "R01: перенести пути, patch target, connect_store + warmup при старте. LOCAL: LOCAL-R04-1 (e5). После LOCAL-4 (v2 R03) — bench на ноутбуке. После формы LOCAL-6 — пары дублей из настоящих обращений и повтор tune.",
+    "note": "Поставка R04 раунда 14 до волны мелочей (classify/similar, дубли, e5). R01 FINAL 8e67c65 её уже несёт."
+  }
 }
