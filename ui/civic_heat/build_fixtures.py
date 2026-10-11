@@ -13,6 +13,13 @@
       в Байконуре, Есиле… на демо без сети тоже стоит на улицах, а не на пустом поле (UX_REVIEW R11, ночь 7, п. 1).
       Офлайн-фон оболочки R01 (web/map.js) уже читает этот файл — менять в оболочке ничего не нужно.
   Только эти улицы, без пересборки целей:  python -m ui.civic_heat.build_fixtures --around
+  ui/civic_heat/fixtures/street_nodes.json.gz — светофоры (highway=traffic_signals), пешеходные переходы
+      (highway=crossing) и перекрёстки (узел графа, где сходятся ≥ 3 ребра и ≥ 2 разных улицы) — цели волны 1, п. 12.
+      Источник — тот же снимок OSM 2026-05-06, что и граф улиц (LOCAL-10 ещё нет; когда придут свои наборы
+      raw/traffic_signals.json.gz и raw/crossings.json.gz, osm_objects возьмёт их первыми). Подписи — по улицам узла.
+      Только этот файл:  python -m ui.civic_heat.build_fixtures --street-nodes
+  В targets_demo.json — три такие цели для демо (светофор, переход, перекрёсток в Нуре), без пересборки остальных:
+      python -m ui.civic_heat.build_fixtures --street-targets
 
 Отбор детерминированный: одинаковые данные → одинаковые файлы. Объекты не выдумываются.
 Место промзоны в OSM-наборе нет (landuse=industrial не выгружали) — «запахи» пока на ячейках у Коргалжинского шоссе.
@@ -28,7 +35,7 @@ from pathlib import Path
 
 from . import geo, osm_objects
 from .config import GRAPH_PATH, ROOT
-from .targets import kk_street_from_ru, near_street_labels, segment_labels, short_street_ru
+from .targets import kk_street_from_ru, near_street_labels, node_labels, segment_labels, short_street_ru
 
 SNAPSHOT = ROOT / "data" / "civic" / "astana" / "osm-walking" / "overpass.json.gz"
 OUT_TARGETS = Path(__file__).resolve().parent / "fixtures" / "targets_demo.json"
@@ -36,6 +43,10 @@ OUT_STREET_LABELS = Path(__file__).resolve().parent / "fixtures" / "osm_street_l
 OUT_BASEMAP_NURA = ROOT / "web" / "civic" / "heat" / "fixtures" / "basemap-nura.geojson"
 OUT_BASEMAP_CITY = ROOT / "web" / "civic" / "heat" / "fixtures" / "basemap-city.geojson"
 AROUND_M = 700.0     # улицы на 700 м вокруг каждой демо-цели вне Нуры
+OUT_STREET_NODES = osm_objects.STREET_NODES_PATH
+# Важность улицы для подписи перекрёстка: проспект раньше переулка.
+_HW_RANK = {"motorway": 0, "trunk": 1, "primary": 2, "secondary": 3, "tertiary": 4, "unclassified": 5, "residential": 6,
+            "living_street": 7, "pedestrian": 8, "service": 9}
 
 # Крупный план Нуры: самая плотная по улицам часть района (подсчёт рёбер по сетке 1 км).
 FOCUS = (71.405, 51.128)
@@ -390,6 +401,137 @@ def write_basemap_around(graph, ways, targets: dict):
     return len(boxes), len(extra)
 
 
+def write_street_nodes(graph, ways, nodes) -> dict:
+    """Светофоры, переходы и перекрёстки как цели (CONTRACT §4: id osm-node-<id>). Подпись — по улицам, которые
+    сходятся в узле графа; если узла нет в пешеходном графе — по ближайшим улицам в 40 м."""
+    by_node = defaultdict(list)
+    for e in graph["edges"]:
+        by_node[e["from"]].append(e)
+        by_node[e["to"]].append(e)
+    graph_nodes = {n["id"]: n for n in graph["nodes"]}
+
+    def way_of(e):
+        return ways.get(e.get("osm_way_id") or _way_id(e["id"]))
+
+    def street_of(e):
+        w = way_of(e)
+        tags = (w or {}).get("tags", {})
+        name_ru = tags.get("name:ru") or e.get("name")
+        first = name_ru.split(" ", 1)[0]
+        if first in ("Улица", "Проспект", "Переулок", "Шоссе", "Бульвар"):
+            name_ru = first.lower() + name_ru[len(first):]      # «Улица Толе Би» и «улица Толе Би» — одна улица
+        return name_ru, kk_name(w), _HW_RANK.get(tags.get("highway"), 10)
+
+    def streets(edges) -> list:
+        best: dict = {}
+        for e in edges:
+            if not e.get("name"):
+                continue
+            ru, kk, rank = street_of(e)
+            k = short_street_ru(ru).casefold()
+            if k not in best or rank < best[k][2]:
+                best[k] = (ru, kk, rank)
+        return [(ru, kk) for ru, kk, _ in sorted(best.values(), key=lambda x: (x[2], x[0]))]
+
+    cell = 0.002
+    grid = defaultdict(list)
+    for e in graph["edges"]:
+        if e.get("name"):
+            mid = geo.line_midpoint(e["geometry"])
+            grid[(int(mid[0] // cell), int(mid[1] // cell))].append((mid, e))
+
+    def near(pt, max_m=40.0) -> list:
+        cx, cy = int(pt[0] // cell), int(pt[1] // cell)
+        cand = []
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for mid, e in grid.get((cx + dx, cy + dy), ()):
+                    d = geo.haversine_m(pt, mid)
+                    if d <= max_m:
+                        cand.append((d, e))
+        return [e for _, e in sorted(cand, key=lambda x: x[0])]
+
+    out: dict = {}
+    counts = defaultdict(int)
+
+    def add(nid: int, subtype: str, pt, names) -> None:
+        lab = node_labels(subtype, names)
+        if not lab:
+            return
+        out[f"osm-node-{nid}"] = [subtype, round(pt[0], 7), round(pt[1], 7), lab[0], lab[1], geo.district_of(pt)]
+        counts[subtype] += 1
+
+    # Светофоры и переходы — узлы OSM с тегом highway (первым — светофор: переход со светофором на нём же)
+    for n in sorted(nodes.values(), key=lambda x: x["id"]):
+        tags = n.get("tags") or {}
+        hw = tags.get("highway", "")
+        subtype = "traffic_signal" if "traffic_signals" in hw else ("crossing" if "crossing" in hw else None)
+        if not subtype:
+            continue
+        pt = [n["lon"], n["lat"]]
+        names = streets(by_node.get(f"osm-n{n['id']}", [])) or streets(near(pt))
+        add(n["id"], subtype, pt, names)
+    # Перекрёстки — узлы графа: ≥ 3 ребра и ≥ 2 разных улицы
+    for gid, edges in sorted(by_node.items()):
+        nid = int(gid[len("osm-n"):]) if gid.startswith("osm-n") and gid[5:].isdigit() else None
+        if nid is None or f"osm-node-{nid}" in out or len(edges) < 3 or gid not in graph_nodes:
+            continue
+        names = streets(edges)
+        if len(names) >= 2:
+            g = graph_nodes[gid]
+            add(nid, "intersection", [g["lon"], g["lat"]], names)
+    payload = {"_meta": {"built_by": "ui/civic_heat/build_fixtures.py --street-nodes",
+                         "source": "data/civic/astana/osm-walking/overpass.json.gz (snapshot 2026-05-06T03:25:00Z) + "
+                                   "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json",
+                         "license": "ODbL-1.0 © OpenStreetMap contributors",
+                         "fields": ["subtype", "lon", "lat", "label_ru", "label_kk", "district"],
+                         "counts": dict(counts)},
+               "nodes": out}
+    OUT_STREET_NODES.write_bytes(gzip.compress(json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8"), mtime=0))
+    return dict(counts)
+
+
+# Демо-цели волны 1, п. 12 (роль → подтип, точка, около которой берём ближайший такой узел OSM, сколько улиц в подписи).
+# Светофор — у Кабанбай батыра и Сыганак (крупный план Нуры); перекрёсток и переход — в других районах (роли city_*),
+# чтобы демо не стало «Нура против всех» (tests/civic/R07: правдоподобие чисел по районам).
+STREET_TARGETS = (
+    ("signal", "traffic_signal", (71.4130121, 51.1256266), 2),
+    ("city_crossroads", "intersection", (71.4470, 51.1690), 2),
+    ("city_zebra", "crossing", (71.4300, 51.0900), 1),
+)
+
+
+def add_street_targets() -> dict:
+    """Добавляет в targets_demo.json светофор, переход и перекрёсток (настоящие узлы OSM из street_nodes.json.gz).
+    Остальные цели не трогает; повторный запуск ничего не меняет."""
+    nodes = json.loads(gzip.open(OUT_STREET_NODES).read().decode("utf-8"))["nodes"]
+    data = json.loads(OUT_TARGETS.read_text("utf-8"))
+    targets = data["targets"]
+    added = {}
+    for role, subtype, pt, min_streets in STREET_TARGETS:
+        if any(v.get("role") == role for v in targets.values()):
+            continue
+        best = None
+        for tid, (sub, lon, lat, ru, kk, district) in sorted(nodes.items()):
+            if sub != subtype or tid in targets:
+                continue
+            streets = ru.count("ул.") + ru.count("пр.") + ru.count("ш.")
+            if streets < min_streets:
+                continue
+            d = geo.haversine_m(pt, (lon, lat))
+            if best is None or d < best[0]:
+                best = (d, tid, lon, lat, ru, kk, district)
+        if not best:
+            continue
+        _, tid, lon, lat, ru, kk, district = best
+        targets[tid] = {"kind": "object", "subtype": subtype, "role": role, "geometry": {"type": "Point", "coordinates": [lon, lat]},
+                        "label_ru": ru, "label_kk": kk, "district": district, "source": f"osm-walking/{subtype}",
+                        "osm": {"type": "node", "id": int(tid.rsplit("-", 1)[1])}}
+        added[role] = (tid, ru)
+    OUT_TARGETS.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", "utf-8")
+    return added
+
+
 def write_basemaps(graph, ways, nodes):
     """Офлайн-подложка демо: настоящие улицы OSM (тайлы в облаке недоступны, на финале может не быть сети)."""
     half_lat = BASEMAP_HALF_M / 110574.0
@@ -434,6 +576,13 @@ def write_basemaps(graph, ways, nodes):
 if __name__ == "__main__":
     import sys
 
+    if "--street-targets" in sys.argv:   # три демо-цели волны 1 п. 12 в targets_demo.json
+        print(add_street_targets())
+        raise SystemExit(0)
+    if "--street-nodes" in sys.argv:   # только светофоры / переходы / перекрёстки
+        g, w, nd = load_inputs()
+        print(OUT_STREET_NODES.relative_to(ROOT), write_street_nodes(g, w, nd), round(OUT_STREET_NODES.stat().st_size / 1024), "КБ")
+        raise SystemExit(0)
     if "--around" in sys.argv:   # только подложка вокруг целей: цели и числа демо не меняются
         g, w, _ = load_inputs()
         n_boxes, n_feats = write_basemap_around(g, w, json.loads(OUT_TARGETS.read_text("utf-8"))["targets"])

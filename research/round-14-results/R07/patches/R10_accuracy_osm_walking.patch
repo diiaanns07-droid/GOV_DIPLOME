@@ -1,0 +1,48 @@
+--- a/tests/civic/R10/accuracy.py
++++ b/tests/civic/R10/accuracy.py
+@@ -179,6 +179,19 @@
+         return any(point_in_rings(p, poly["rings"]) for poly in self.polygons)
+ 
+ 
++OSM_WALKING = "data/civic/astana/osm-walking/overpass.json.gz"
++
++
++def load_walking_nodes(root: Path):
++    """Узлы снимка пешеходной сети OSM (osm-walking): {id: [lon, lat]}. Из него R07 берёт светофоры, переходы и
++    перекрёстки (волна 1, п. 12) — в LOCAL-1 (osm-objects) их нет."""
++    f = root / OSM_WALKING
++    if not f.exists():
++        return None
++    data = json.load(gzip.open(f, "rt", encoding="utf-8"))
++    return {el["id"]: [el["lon"], el["lat"]] for el in data.get("elements", []) if el.get("type") == "node"}
++
++
+ def load_osm_raw(root: Path):
+     """Все узлы, пути и отношения из выгрузки LOCAL-1: {('node'|'way'|'relation', id): [lon, lat] | None}."""
+     out = {}
+@@ -548,7 +561,7 @@
+     if r07 is None:
+         rep.add("объекты R07 = точки OSM", "NOT_RUN", "набора нет", "R07")
+     else:
+-        missing, moved, n = [], [], 0
++        missing, moved, n, walking = [], [], 0, None
+         for tid, t in r07["targets"].items():
+             osm = t.get("osm")
+             if t.get("kind") != "object":
+@@ -558,6 +571,16 @@
+                 missing.append({"id": tid, "why": "нет ссылки на OSM"})
+                 continue
+             key = (osm["type"], int(osm["id"]))
++            if key not in raw and str(t.get("source", "")).startswith("osm-walking/") and key[0] == "node":
++                # светофор / переход / перекрёсток R07 — узел снимка osm-walking: сверяем с ним
++                if walking is None:
++                    walking = load_walking_nodes(root) or {}
++                ref = walking.get(key[1])
++                if ref is None:
++                    missing.append({"id": tid, "osm": osm, "src": t.get("source")})
++                elif dist_m(ref, t["geometry"]["coordinates"]) > OSM_POINT_TOL_M:
++                    moved.append({"id": tid, "moved_m": round(dist_m(ref, t["geometry"]["coordinates"]), 2)})
++                continue
+             if key not in raw:
+                 missing.append({"id": tid, "osm": osm})
+                 continue

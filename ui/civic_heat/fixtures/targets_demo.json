@@ -1950,6 +1950,66 @@
     "type": "way",
     "id": 736834153
    }
+  },
+  "osm-node-13389177523": {
+   "kind": "object",
+   "subtype": "traffic_signal",
+   "role": "signal",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4125305,
+     51.1257016
+    ]
+   },
+   "label_ru": "Светофор на перекрёстке пр. Кабанбай Батыра и ул. Сыганак",
+   "label_kk": "Қабанбай Батыр даңғылы мен Сығанақ көшесінің қиылысындағы бағдаршам",
+   "district": "nura",
+   "source": "osm-walking/traffic_signal",
+   "osm": {
+    "type": "node",
+    "id": 13389177523
+   }
+  },
+  "osm-node-459863774": {
+   "kind": "object",
+   "subtype": "intersection",
+   "role": "city_crossroads",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4473125,
+     51.1688156
+    ]
+   },
+   "label_ru": "Перекрёсток ул. Луи Пастера и ул. Сырдария",
+   "label_kk": "Луи Пастера көшесі мен Сырдария көшесінің қиылысы",
+   "district": "baikonur",
+   "source": "osm-walking/intersection",
+   "osm": {
+    "type": "node",
+    "id": 459863774
+   }
+  },
+  "osm-node-13355349235": {
+   "kind": "object",
+   "subtype": "crossing",
+   "role": "city_zebra",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.4289602,
+     51.0905814
+    ]
+   },
+   "label_ru": "Пешеходный переход у ул. Абиша Кекильбаева",
+   "label_kk": "Әбіш Кекілбайұлы көшесі маңындағы жаяу жүргіншілер өткелі",
+   "district": "esil",
+   "source": "osm-walking/crossing",
+   "osm": {
+    "type": "node",
+    "id": 13355349235
+   }
   }
  }
 }

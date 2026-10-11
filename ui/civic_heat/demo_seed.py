@@ -65,6 +65,53 @@ HOT = {("snow", 0), ("transport", 0), ("smell_air", 0),
        ("city_snow", 0), ("city_stop", 0), ("city_stop", 1), ("city_yard", 0), ("city_yard", 1)}
 # Ещё две цели отремонтированы и стоят зелёными (кроме остановки transport/2): пример «исправлено» на карте.
 CALM = {("roads", 2), ("city_roads", 4)}
+# Волна 2, п. 1: эти ремонты жители уже проверили («Да, исправлено») — зелёные «проверено жителями», как на первом кадре
+# FINAL 8e67c65. Остальные ремонты старше VERIFIED_AFTER_DAYS жители подтвердили у ~3 из 4 мест (успели проверить);
+# свежие — «служба сообщила об устранении», ждут проверки. Остановка transport/2 (ремонт 2 дня назад) ждёт всегда:
+# светло-зелёный пунктир, центральная сцена демо («житель подтверждает»).
+VERIFIED = {("roads", 2), ("city_roads", 4)}
+WAITING = {("transport", 2)}
+VERIFIED_AFTER_DAYS = 1.5
+VERIFIED_SHARE = 0.75
+# Волна 2, п. 1: здесь служба отметила «исправлено», а житель ответил «Проблема осталась» — жалоба снова в работе,
+# история сохранена (первая цель из списка, у которой есть подходящая открытая жалоба «в работе»).
+REOPENED_CANDIDATES = (("sidewalks", 0), ("yards", 2), ("transport", 4))
+
+# Волна 1, п. 12: светофор, перекрёсток и переход — настоящие узлы OSM (build_fixtures --street-targets). Записи этих
+# целей строятся ОТДЕЛЬНЫМ генератором после основного набора: прежние записи и числа «Картины дня» не меняются.
+STREET_CLUSTERS = {
+    "signal": ("roads", 4, ("traffic_light_timing", "traffic_light_timing", "traffic_light_broken")),
+    "city_crossroads": ("roads", 3, ("intersection",)),
+    "city_zebra": ("sidewalks", 3, ("crossing",)),
+}
+STREET_TEXTS = {
+    "traffic_light_timing": [("ru", "Светофор очень долго красный, пешеходы бегут на красный"), ("kk", "Бағдаршамның қызыл жарығы тым ұзақ жанады")],
+    "traffic_light_broken": [("ru", "Светофор не работает, мигает жёлтым"), ("kk", "Бағдаршам істемей тұр")],
+    "intersection": [("ru", "Опасный перекрёсток, машины не пропускают пешеходов"), ("kk", "Қиылыс қауіпті, көліктер жаяуларды өткізбейді")],
+    "crossing": [("ru", "Стёрлась зебра на переходе, водители не видят"), ("kk", "Жаяу жүргіншілер өткелінің сызығы өшіп қалған")],
+}
+# Уточнение (волна 1, п. 2) — по тексту демо-жалобы; у части жалоб его нет (житель мог не выбрать).
+SUBTOPIC_BY_TEXT = {
+    "Не убран снег на тротуаре, очень скользко": "snow_not_cleared", "Тротуардағы қар тазаланбаған, өте тайғақ": "snow_not_cleared",
+    "Гололёд у перехода, люди падают": "ice", "Қар тазаланбаған, пройти невозможно": "snow_not_cleared",
+    "Көктайғақ, балалар мектепке әрең барады": "ice",
+    "Большая яма на дороге, машины объезжают": "pothole", "Жолда үлкен шұңқыр бар": "pothole", "Разбитый асфальт после ремонта": "pothole",
+    "Разбит тротуар, с коляской не пройти": "broken_sidewalk", "Жаяу жүргіншілер жолы бұзылған": "broken_sidewalk",
+    "Сломан павильон остановки, нет скамейки": "stop_shelter", "Аялдамада кесте жоқ, автобус сирек келеді": "schedule",
+    "Аялдама шатыры сынған, под дождём стоим": "stop_shelter",
+    "Не горят фонари, вечером темно": "lamp_off", "Ауладағы шамдар жанбайды, кешке қараңғы": "dark_yard",
+    "Сломана детская площадка во дворе": "playground", "Ауладағы балалар алаңы сынған": "playground", "Во дворе вырубили деревья": "trees_lawn",
+    "Переполнены мусорные баки, не вывозят": "bins_full", "Қоқыс шығарылмайды, жәшіктер толы": "not_collected",
+    "В доме нет горячей воды третий день": "no_water", "Үйде жылу жоқ, пәтер суық": "no_heating",
+    "Сильный запах гари по вечерам": "smoke_fire", "Кешке түтін иісі қатты шығады": "smoke_fire", "Иіс өте қатты, окна не открыть": "bad_smell",
+    "Машины паркуются на газоне": "yard_cars", "Аулада көлік қоятын орын жоқ": "no_spaces",
+}
+SUBTOPIC_SHARE = 0.85
+# Срок первого ответа (волна 1, п. 6) у новых демо-жалоб: копия демо-норматива R09 (ui/civic_feedback/v2/categories.py,
+# RESPONSE_DAYS — «ДЕМО-НОРМАТИВ R09, не утверждён акиматом»), календарные дни, как сейчас считает R09. В общей сборке
+# у настоящих жалоб due_at ставит сам R09; здесь — только чтобы на стенде R07 была видна строка срока.
+DEMO_RESPONSE_DAYS = {"roads": 10, "snow_ice": 1, "sidewalks": 10, "transport": 5, "lighting": 3, "yards": 10, "waste": 3,
+                      "utilities": 1, "smell_air": 3, "noise_safety": 3, "parking": 7, "other": 10}
 
 TEXTS = {
     "snow_ice": [("ru", "Не убран снег на тротуаре, очень скользко"), ("kk", "Тротуардағы қар тазаланбаған, өте тайғақ"),
@@ -236,8 +283,94 @@ def demo_records(now: datetime | None = None, seed: int = DEFAULT_SEED, targets:
                     "duplicate_of": None,
                     "demo": True,
                 })
+    _wave2_fields(records, by_role, now)
+    records.extend(_street_records(targets, by_role, now, seed, start=n))
     records.sort(key=lambda r: r["created_at"])
     return records
+
+
+def _wave2_fields(records: list, by_role: dict, now: datetime) -> None:
+    """Поля волн 1–2 у основного набора — без нового случайного потока (числа и статусы прежние):
+    уточнение по тексту, проверка жителями у VERIFIED, «вернули жители» у одной жалобы в работе."""
+    for r in records:
+        sub = SUBTOPIC_BY_TEXT.get(r["text"])
+        if sub and random.Random("sub-" + r["id"]).random() < SUBTOPIC_SHARE:
+            r["subtopic"] = sub
+        if r["status"] == "new":
+            r["due_at"] = iso(datetime.fromisoformat(r["created_at"]) + timedelta(days=DEMO_RESPONSE_DAYS.get(r["category"], 10)))
+    by_target: dict = {}
+    for r in records:
+        by_target.setdefault(r["target"]["id"], []).append(r)
+    must = {by_role[role][idx] for role, idx in VERIFIED if idx < len(by_role.get(role, []))}
+    wait = {by_role[role][idx] for role, idx in WAITING if idx < len(by_role.get(role, []))}
+    for tid in sorted(by_target):
+        fixed = sorted((r for r in by_target[tid] if r["status"] == "fixed"), key=_fix_time)
+        if not fixed or tid in wait:
+            continue
+        last_fix = _fix_time(fixed[-1])
+        old_enough = (now - last_fix).total_seconds() >= VERIFIED_AFTER_DAYS * 86400
+        if tid in must or (old_enough and random.Random("check-" + tid).random() < VERIFIED_SHARE):
+            for k, r in enumerate(fixed[-2:]):   # один-двое из сообщивших подтвердили последний ремонт
+                at = _fix_time(r) + timedelta(hours=6 + 7 * k)
+                if at < now:
+                    r["resident_check"] = {"answer": "confirmed", "at": iso(at)}
+    for role, idx in REOPENED_CANDIDATES:
+        tids = by_role.get(role, [])
+        if idx >= len(tids):
+            continue
+        cands = [r for r in by_target.get(tids[idx], []) if r["status"] == "in_progress"
+                 and (now - datetime.fromisoformat(r["created_at"])).total_seconds() > 0.4 * 86400]
+        if not cands:
+            continue
+        r = max(cands, key=lambda x: x["created_at"])
+        created = datetime.fromisoformat(r["created_at"])
+        age = now - created
+        work = [h for h in r["status_history"] if h["status"] in ("new", "accepted", "in_progress")]
+        t_fix, t_back = created + age * 0.55, created + age * 0.8
+        work = [h for h in work if datetime.fromisoformat(h["at"]) < t_fix]
+        r["status_history"] = work + [{"at": iso(t_fix), "status": "fixed"},
+                                      {"at": iso(t_back), "status": "in_progress", "resident_check": "not_fixed"}]
+        r["resident_check"] = {"answer": "not_fixed", "at": iso(t_back)}
+        break
+
+
+def _fix_time(r: dict) -> datetime:
+    for h in reversed(r.get("status_history") or []):
+        if h.get("status") == "fixed":
+            return datetime.fromisoformat(h["at"])
+    return datetime.fromisoformat(r["created_at"])
+
+
+def _street_records(targets: dict, by_role: dict, now: datetime, seed: int, start: int) -> list:
+    """Светофор, перекрёсток, переход (волна 1, п. 12): свежие открытые жалобы с уточнением. Свой генератор."""
+    rnd = random.Random(seed * 31 + 7)
+    out = []
+    n = start
+    for role in sorted(STREET_CLUSTERS):
+        category, count, subs = STREET_CLUSTERS[role]
+        for tid in by_role.get(role, [])[:1]:
+            t = targets[tid]
+            for k in range(count):
+                n += 1
+                created = now - timedelta(days=rnd.uniform(0.2, 9.0))
+                sub = subs[k % len(subs)]
+                lang, text = STREET_TEXTS[sub][rnd.randrange(len(STREET_TEXTS[sub]))]
+                status = "new" if (now - created).total_seconds() < 0.5 * 86400 else ("accepted" if rnd.random() < 0.6 else "in_progress")
+                metoo = rnd.choice((0, 1, 1, 2)) if role == "signal" else rnd.choice((0, 0, 1))
+                span = max(0.0, min((now - created).total_seconds(), 12 * 3600))
+                score = round(rnd.uniform(0.62, 0.95), 2)
+                out.append({
+                    "id": f"c-demo-{n:04d}", "created_at": iso(created), "text": text, "lang": lang, "category": category,
+                    "category_source": "model",
+                    "model": {"label": category, "score": score, "version": "demo-synthetic", "needs_review": score < 0.7},
+                    "subtopic": sub, "point": _point_on(t["geometry"], rnd), "target": {"kind": t["kind"], "id": tid},
+                    "district": t.get("district"), "status": status, "status_history": _history(created, status, None, now, rnd),
+                    "metoo": metoo, "metoo_times": sorted(iso(created + timedelta(seconds=rnd.uniform(0, span))) for _ in range(metoo)),
+                    "duplicate_of": None, "demo": True,
+                })
+                if status == "new":
+                    out[-1]["due_at"] = iso(created + timedelta(days=DEMO_RESPONSE_DAYS.get(category, 10)))
+    return out
 
 
 def add_demo_complaint(records: list, target_id: str, *, now: datetime | None = None, targets: dict | None = None,

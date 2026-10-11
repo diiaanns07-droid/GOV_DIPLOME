@@ -298,3 +298,23 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
   .r07-chips::-webkit-scrollbar { display: none; }
   .r07-h { font-size: 20px; }
 }
+
+/* ---- Волна 2: состояния после ремонта (categories_v2.json → heat_states; R11 IA_WAVE2 §3) ---- */
+/* «Служба сообщила об устранении» — светло-зелёный с пунктирной каймой; «проверено жителями» — зелёный (как было) */
+.r07-badge[data-fixed="reported"] .r07-badge__dot { border: 2px dashed #3b6d11; }
+.r07-sw--dashed { box-shadow: inset 0 0 0 2px #3b6d11; border: 1px dashed #3b6d11; }
+/* «Вернули жители» — отметка ↺ у кружка (цвет — по весу) */
+.r07-badge__dot { position: relative; }
+.r07-badge__mark {
+  position: absolute; top: -7px; right: -7px; display: grid; place-items: center; width: 18px; height: 18px;
+  border: 2px solid #fff; border-radius: 50%; background: #152c26; color: #fff; font-size: 12px; font-weight: 800; line-height: 1;
+}
+.r07-status[data-status="reported_fixed"] { background: #eef6e4; color: #2f5410; }
+.r07-status[data-status="verified"] { background: #e3f1d6; color: #27500a; }
+.r07-note--wait { background: #f2f7ea; color: #2f5410; border-left: 4px dashed #97C459; }
+.r07-note--reopened { font-weight: 700; }
+/* Срок ответа (волна 1, п. 6) — одна строка под статусом, просрочка — красным словом */
+.r07-card__due { display: flex; align-items: center; gap: 6px; margin: 2px 0 0; font-size: 16px; color: var(--r07-ink-2, #3d4b45); }
+.r07-card__due[data-overdue="true"] { color: #a32d2d; font-weight: 700; }
+/* «О чём сообщают»: уточнение под категорией */
+.r07-topics__sub { display: block; font-size: 14px; color: var(--r07-ink-2, #3d4b45); font-weight: 400; }

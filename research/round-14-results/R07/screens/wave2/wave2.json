@@ -1,0 +1,918 @@
+[
+ {
+  "name": "demo-has-all-states",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "reported": "object:osm-node-4109037549",
+   "verified": "segment:osm-w649739915-1",
+   "reopened": "segment:osm-w1420153729-0",
+   "signal": "object:osm-node-13389177523",
+   "crossing": "object:osm-node-13355349235",
+   "intersection": "object:osm-node-459863774",
+   "due": "area:yard-1071934265"
+  }
+ },
+ {
+  "name": "reported-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "reported_fixed",
+   "statusText": "Служба сообщила об устранении",
+   "notes": [
+    "Ждёт проверки жителями · на карте до 17 окт"
+   ],
+   "due": null,
+   "eyebrow": "Остановка Пример",
+   "topics": [
+    "Остановка: павильон, скамья · 5"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base",
+    "reported"
+   ],
+   "badge": {
+    "fixed": "reported",
+    "mark": false,
+    "border": "dashed",
+    "aria": "Остановка «Хан Шатыр»: Сообщали 6 человек. Служба сообщила об устранении"
+   }
+  }
+ },
+ {
+  "name": "verified-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "verified",
+   "statusText": "Проверено жителями",
+   "notes": [
+    "Подтвердили 2 жителя · на карте до 16 окт"
+   ],
+   "due": null,
+   "eyebrow": "Участок улицы Пример",
+   "topics": [
+    "Яма, разбитый асфальт · 13"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": "verified",
+    "mark": false,
+    "border": "solid",
+    "aria": "Участок ул. Ащысай: Сообщали 17 человек. Проверено жителями"
+   }
+  }
+ },
+ {
+  "name": "reopened-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "В работе",
+   "notes": [
+    "↺ Проблема осталась — снова в работе · вернули жители"
+   ],
+   "due": null,
+   "eyebrow": "Участок улицы Пример",
+   "topics": [
+    "Разбит тротуар · 2"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base",
+    "reported"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": true,
+    "border": "solid",
+    "aria": "Участок ул. Кунаева: Сообщили 2 человека. вернули жители"
+   }
+  }
+ },
+ {
+  "name": "signal-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "В работе",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Светофор Пример",
+   "topics": [
+    "Светофор: долго красный или зелёный · 5"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Светофор на перекрёстке пр. Кабанбай Батыра и ул. Сыганак: Сообщили 8 человек"
+   }
+  }
+ },
+ {
+  "name": "crossing-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "В работе",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Пешеходный переход Пример",
+   "topics": [
+    "Пешеходный переход · 3"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Пешеходный переход у ул. Абиша Кекильбаева: Сообщили 3 человека"
+   }
+  }
+ },
+ {
+  "name": "intersection-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "В работе",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Перекрёсток Пример",
+   "topics": [
+    "Опасный или неудобный перекрёсток · 3"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Перекрёсток ул. Луи Пастера и ул. Сырдария: Сообщили 3 человека"
+   }
+  }
+ },
+ {
+  "name": "due-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "new",
+   "statusText": "Новое",
+   "notes": [],
+   "due": "Осталось 7 рабочих дней",
+   "eyebrow": "Двор Пример",
+   "topics": [
+    "Сломана детская площадка · 4"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Двор у ул. Таргабатай: Сообщили 4 человека"
+   }
+  }
+ },
+ {
+  "name": "nodata-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "nodata": 5
+  }
+ },
+ {
+  "name": "reported-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "reported_fixed",
+   "statusText": "Қызмет түзетілгенін хабарлады",
+   "notes": [
+    "Тұрғындардың тексеруін күтуде · картада 17 қазан дейін"
+   ],
+   "due": null,
+   "eyebrow": "Аялдама Үлгі",
+   "topics": [
+    "Аялдама: павильон, орындық · 5"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base",
+    "reported"
+   ],
+   "badge": {
+    "fixed": "reported",
+    "mark": false,
+    "border": "dashed",
+    "aria": "«Хан Шатыр» аялдамасы: 6 адам хабарлаған. Қызмет түзетілгенін хабарлады"
+   }
+  }
+ },
+ {
+  "name": "verified-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "verified",
+   "statusText": "Тұрғындар тексерді",
+   "notes": [
+    "2 тұрғын растады · картада 16 қазан дейін"
+   ],
+   "due": null,
+   "eyebrow": "Көше бөлігі Үлгі",
+   "topics": [
+    "Шұңқыр, бұзылған асфальт · 13"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": "verified",
+    "mark": false,
+    "border": "solid",
+    "aria": "Ащысай көшесінің бөлігі: 17 адам хабарлаған. Тұрғындар тексерді"
+   }
+  }
+ },
+ {
+  "name": "reopened-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "Орындалуда",
+   "notes": [
+    "↺ Мәселе қалды — қайта жұмыста · тұрғындар қайтарды"
+   ],
+   "due": null,
+   "eyebrow": "Көше бөлігі Үлгі",
+   "topics": [
+    "Тротуар бұзылған · 2"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base",
+    "reported"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": true,
+    "border": "solid",
+    "aria": "Қонаев көшесінің бөлігі: 2 адам хабарлады. тұрғындар қайтарды"
+   }
+  }
+ },
+ {
+  "name": "signal-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "Орындалуда",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Бағдаршам Үлгі",
+   "topics": [
+    "Бағдаршам: қызыл не жасыл тым ұзақ · 5"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Қабанбай Батыр даңғылы мен Сығанақ көшесінің қиылысындағы бағдаршам: 8 адам хабарлады"
+   }
+  }
+ },
+ {
+  "name": "crossing-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "Орындалуда",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Жаяу жүргіншілер өткелі Үлгі",
+   "topics": [
+    "Жаяу жүргіншілер өткелі · 3"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Әбіш Кекілбайұлы көшесі маңындағы жаяу жүргіншілер өткелі: 3 адам хабарлады"
+   }
+  }
+ },
+ {
+  "name": "intersection-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "Орындалуда",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Қиылыс Үлгі",
+   "topics": [
+    "Қауіпті не ыңғайсыз қиылыс · 3"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Луи Пастера көшесі мен Сырдария көшесінің қиылысы: 3 адам хабарлады"
+   }
+  }
+ },
+ {
+  "name": "due-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "new",
+   "statusText": "Жаңа",
+   "notes": [],
+   "due": "7 жұмыс күні қалды",
+   "eyebrow": "Аула Үлгі",
+   "topics": [
+    "Балалар алаңы бұзылған · 4"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Таргабатай көшесі маңындағы аула: 4 адам хабарлады"
+   }
+  }
+ },
+ {
+  "name": "nodata-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "nodata": 5
+  }
+ },
+ {
+  "name": "reported-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "reported_fixed",
+   "statusText": "Служба сообщила об устранении",
+   "notes": [
+    "Ждёт проверки жителями · на карте до 17 окт"
+   ],
+   "due": null,
+   "eyebrow": "Остановка Пример",
+   "topics": [
+    "Остановка: павильон, скамья · 5"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base",
+    "reported"
+   ],
+   "badge": {
+    "fixed": "reported",
+    "mark": false,
+    "border": "dashed",
+    "aria": "Остановка «Хан Шатыр»: Сообщали 6 человек. Служба сообщила об устранении"
+   }
+  }
+ },
+ {
+  "name": "verified-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "verified",
+   "statusText": "Проверено жителями",
+   "notes": [
+    "Подтвердили 2 жителя · на карте до 16 окт"
+   ],
+   "due": null,
+   "eyebrow": "Участок улицы Пример",
+   "topics": [
+    "Яма, разбитый асфальт · 13"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": "verified",
+    "mark": false,
+    "border": "solid",
+    "aria": "Участок ул. Ащысай: Сообщали 17 человек. Проверено жителями"
+   }
+  }
+ },
+ {
+  "name": "reopened-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "В работе",
+   "notes": [
+    "↺ Проблема осталась — снова в работе · вернули жители"
+   ],
+   "due": null,
+   "eyebrow": "Участок улицы Пример",
+   "topics": [
+    "Разбит тротуар · 2"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base",
+    "reported"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": true,
+    "border": "solid",
+    "aria": "Участок ул. Кунаева: Сообщили 2 человека. вернули жители"
+   }
+  }
+ },
+ {
+  "name": "signal-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "В работе",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Светофор Пример",
+   "topics": [
+    "Светофор: долго красный или зелёный · 5"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Светофор на перекрёстке пр. Кабанбай Батыра и ул. Сыганак: Сообщили 8 человек"
+   }
+  }
+ },
+ {
+  "name": "crossing-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "В работе",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Пешеходный переход Пример",
+   "topics": [
+    "Пешеходный переход · 3"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Пешеходный переход у ул. Абиша Кекильбаева: Сообщили 3 человека"
+   }
+  }
+ },
+ {
+  "name": "intersection-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "В работе",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Перекрёсток Пример",
+   "topics": [
+    "Опасный или неудобный перекрёсток · 3"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Перекрёсток ул. Луи Пастера и ул. Сырдария: Сообщили 3 человека"
+   }
+  }
+ },
+ {
+  "name": "due-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "new",
+   "statusText": "Новое",
+   "notes": [],
+   "due": "Осталось 7 рабочих дней",
+   "eyebrow": "Двор Пример",
+   "topics": [
+    "Сломана детская площадка · 4"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Двор у ул. Таргабатай: Сообщили 4 человека"
+   }
+  }
+ },
+ {
+  "name": "nodata-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "nodata": 5
+  }
+ },
+ {
+  "name": "reported-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "reported_fixed",
+   "statusText": "Қызмет түзетілгенін хабарлады",
+   "notes": [
+    "Тұрғындардың тексеруін күтуде · картада 17 қазан дейін"
+   ],
+   "due": null,
+   "eyebrow": "Аялдама Үлгі",
+   "topics": [
+    "Аялдама: павильон, орындық · 5"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base",
+    "reported"
+   ],
+   "badge": {
+    "fixed": "reported",
+    "mark": false,
+    "border": "dashed",
+    "aria": "«Хан Шатыр» аялдамасы: 6 адам хабарлаған. Қызмет түзетілгенін хабарлады"
+   }
+  }
+ },
+ {
+  "name": "verified-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "verified",
+   "statusText": "Тұрғындар тексерді",
+   "notes": [
+    "2 тұрғын растады · картада 16 қазан дейін"
+   ],
+   "due": null,
+   "eyebrow": "Көше бөлігі Үлгі",
+   "topics": [
+    "Шұңқыр, бұзылған асфальт · 13"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": "verified",
+    "mark": false,
+    "border": "solid",
+    "aria": "Ащысай көшесінің бөлігі: 17 адам хабарлаған. Тұрғындар тексерді"
+   }
+  }
+ },
+ {
+  "name": "reopened-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "Орындалуда",
+   "notes": [
+    "↺ Мәселе қалды — қайта жұмыста · тұрғындар қайтарды"
+   ],
+   "due": null,
+   "eyebrow": "Көше бөлігі Үлгі",
+   "topics": [
+    "Тротуар бұзылған · 2"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base",
+    "reported"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": true,
+    "border": "solid",
+    "aria": "Қонаев көшесінің бөлігі: 2 адам хабарлады. тұрғындар қайтарды"
+   }
+  }
+ },
+ {
+  "name": "signal-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "Орындалуда",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Бағдаршам Үлгі",
+   "topics": [
+    "Бағдаршам: қызыл не жасыл тым ұзақ · 5"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Қабанбай Батыр даңғылы мен Сығанақ көшесінің қиылысындағы бағдаршам: 8 адам хабарлады"
+   }
+  }
+ },
+ {
+  "name": "crossing-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "Орындалуда",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Жаяу жүргіншілер өткелі Үлгі",
+   "topics": [
+    "Жаяу жүргіншілер өткелі · 3"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Әбіш Кекілбайұлы көшесі маңындағы жаяу жүргіншілер өткелі: 3 адам хабарлады"
+   }
+  }
+ },
+ {
+  "name": "intersection-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "in_progress",
+   "statusText": "Орындалуда",
+   "notes": [],
+   "due": null,
+   "eyebrow": "Қиылыс Үлгі",
+   "topics": [
+    "Қауіпті не ыңғайсыз қиылыс · 3"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Луи Пастера көшесі мен Сырдария көшесінің қиылысы: 3 адам хабарлады"
+   }
+  }
+ },
+ {
+  "name": "due-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "status": "new",
+   "statusText": "Жаңа",
+   "notes": [],
+   "due": "7 жұмыс күні қалды",
+   "eyebrow": "Аула Үлгі",
+   "topics": [
+    "Балалар алаңы бұзылған · 4"
+   ],
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ],
+   "badge": {
+    "fixed": null,
+    "mark": false,
+    "border": "solid",
+    "aria": "Таргабатай көшесі маңындағы аула: 4 адам хабарлады"
+   }
+  }
+ },
+ {
+  "name": "nodata-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "nodata": 5
+  }
+ },
+ {
+  "name": "first-frame-legend-1366",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ]
+  }
+ },
+ {
+  "name": "first-frame-legend-375",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "legend": [
+    "base",
+    "base",
+    "base",
+    "base",
+    "base"
+   ]
+  }
+ },
+ {
+  "name": "role-switch-no-warnings",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "layers": 14
+  }
+ },
+ {
+  "name": "status-per-id-first404",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "posts": 4,
+   "open": 4
+  }
+ },
+ {
+  "name": "status-per-id-all422",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "posts": 4,
+   "open": 4
+  }
+ }
+]

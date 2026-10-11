@@ -92,7 +92,9 @@ def test_fixed_target_is_green_for_7_days_with_zero_weight():
     rs = [rec(i, age_days=5, status="fixed", history=fixed_history(5, 2)) for i in range(4)]
     item = svc_for(rs).heat(days=30)["items"][0]
     assert item["state"] == "fixed" and item["level"] == "fixed" and item["weight"] == 0
-    assert item["color"] == CATS["fixed_state"]["color"] and item["count"] == 4
+    # Ответов жителей нет → «служба сообщила об устранении» (волна 2: heat_states.reported_fixed, пунктир)
+    assert item["color"] == CATS["heat_states"]["reported_fixed"]["color"] and item["count"] == 4
+    assert item["fixed_kind"] == "reported" and item["checks"] is None
     assert engine.parse_time(item["fixed_until"]) == NOW - timedelta(days=2) + timedelta(days=7)
 
 
@@ -275,6 +277,8 @@ def test_object_and_yard_targets_are_real_osm_elements():
     for tid, t in TARGETS.items():
         if t["kind"] == "segment" or tid.startswith("cell-"):
             continue
+        if t.get("subtype") in ("traffic_signal", "crossing", "intersection"):
+            continue   # светофоры / переходы / перекрёстки — из снимка osm-walking: test_r07_wave2.py
         osm = t["osm"]
         fname, el = raw[(osm["type"], osm["id"])]
         # район — по настоящему положению объекта; роли без «city_» — крупный план Нуры
