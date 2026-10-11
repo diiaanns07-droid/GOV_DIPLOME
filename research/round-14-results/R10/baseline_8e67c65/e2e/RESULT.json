@@ -1,7 +1,7 @@
 {
  "meta": {
   "root": "<worktree 8e67c65>",
-  "sha": "8e67c65",
+  "sha": "8e67c65f",
   "base": "(свой сервер)",
   "seeds": [
    "seed-demo",
@@ -15,88 +15,92 @@
    "ru",
    "kk"
   ],
-  "when": "2026-10-11T17:47:09.325Z",
+  "when": "2026-10-11T20:34:13.246Z",
   "node": "v22.22.0",
-  "total_ms": 633877
+  "total_ms": 624619
  },
  "counts": {
   "PASS": 160,
   "FAIL": 4,
-  "NOT_RUN": 0
+  "NOT_RUN": 4
  },
  "timing": {
   "API": {
    "start_ms": 0,
    "steps": {
-    "0": 9643,
-    "1": 10,
-    "2": 71,
-    "3": 28,
-    "4": 60,
-    "5": 307,
-    "6": 30
+    "0": 6658,
+    "1": 7,
+    "2": 46,
+    "3": 20,
+    "4": 54,
+    "5": 224,
+    "6": 20
    },
-   "total_ms": 10149
+   "total_ms": 7029
   },
   "UI 1366-ru": {
-   "start_ms": 10160,
+   "start_ms": 7034,
    "steps": {
-    "0": 11799,
-    "1": 9369,
-    "2": 10357,
-    "3": 24502,
-    "4": 3576,
-    "5": 50816,
-    "6": 14775,
+    "0": 9082,
+    "1": 9205,
+    "2": 10332,
+    "3": 23970,
+    "4": 3582,
+    "5": 50433,
+    "6": 14516,
+    "7": 5,
     "*": 0,
-    "E": 32490
+    "E": 32837
    },
-   "total_ms": 157684
+   "total_ms": 153962
   },
   "UI 1366-kk": {
-   "start_ms": 167853,
+   "start_ms": 161004,
    "steps": {
-    "0": 11762,
-    "1": 8572,
-    "2": 7793,
-    "3": 23126,
-    "4": 3633,
-    "5": 50349,
-    "6": 15244,
+    "0": 11847,
+    "1": 8549,
+    "2": 7747,
+    "3": 23691,
+    "4": 3628,
+    "5": 50164,
+    "6": 15203,
+    "7": 3,
     "*": 0,
-    "E": 33556
+    "E": 32534
    },
-   "total_ms": 154035
+   "total_ms": 153366
   },
   "UI 375-ru": {
-   "start_ms": 321902,
+   "start_ms": 314380,
    "steps": {
-    "0": 7761,
-    "1": 8633,
-    "2": 7728,
-    "3": 22932,
-    "4": 4415,
-    "5": 53680,
-    "6": 14319,
+    "0": 7703,
+    "1": 8312,
+    "2": 7716,
+    "3": 22924,
+    "4": 4423,
+    "5": 53818,
+    "6": 14346,
+    "7": 4,
     "*": 0,
-    "E": 33345
+    "E": 33206
    },
-   "total_ms": 152813
+   "total_ms": 152452
   },
   "UI 375-kk": {
-   "start_ms": 474723,
+   "start_ms": 466844,
    "steps": {
-    "0": 10374,
-    "1": 8395,
-    "2": 7707,
-    "3": 23120,
-    "4": 4431,
-    "5": 53882,
-    "6": 16286,
+    "0": 10407,
+    "1": 8376,
+    "2": 7729,
+    "3": 22997,
+    "4": 4416,
+    "5": 54045,
+    "6": 16356,
+    "7": 3,
     "*": 0,
-    "E": 34894
+    "E": 33390
    },
-   "total_ms": 159089
+   "total_ms": 157719
   }
  },
  "results": [
@@ -109,7 +113,7 @@
     "not_ready": []
    },
    "shot": null,
-   "ms": 9643
+   "ms": 6658
   },
   {
    "layer": "API",
@@ -124,7 +128,7 @@
     "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
    },
    "shot": null,
-   "ms": 9653
+   "ms": 6665
   },
   {
    "layer": "API",
@@ -135,7 +139,7 @@
     "status": 200
    },
    "shot": null,
-   "ms": 9658
+   "ms": 6669
   },
   {
    "layer": "API",
@@ -148,7 +152,7 @@
     "stop": "Хан Шатыр"
    },
    "shot": null,
-   "ms": 9680
+   "ms": 6683
   },
   {
    "layer": "API",
@@ -165,7 +169,7 @@
     "n": 1
    },
    "shot": null,
-   "ms": 9684
+   "ms": 6685
   },
   {
    "layer": "API",
@@ -180,7 +184,7 @@
     "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
    },
    "shot": null,
-   "ms": 9689
+   "ms": 6690
   },
   {
    "layer": "API",
@@ -195,7 +199,7 @@
     "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
    },
    "shot": null,
-   "ms": 9694
+   "ms": 6693
   },
   {
    "layer": "API",
@@ -210,7 +214,7 @@
     "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
    },
    "shot": null,
-   "ms": 9703
+   "ms": 6697
   },
   {
    "layer": "API",
@@ -219,11 +223,11 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "c-dbbbd6e5fcc472c6",
+    "id": "c-7770f99221432cf0",
     "st": "new"
    },
    "shot": null,
-   "ms": 9709
+   "ms": 6702
   },
   {
    "layer": "API",
@@ -234,7 +238,7 @@
     "status": 200,
     "n": 1,
     "top": {
-     "complaint_id": "c-dbbbd6e5fcc472c6",
+     "complaint_id": "c-7770f99221432cf0",
      "score": 0.798,
      "target": {
       "id": "osm-node-13394597038",
@@ -245,14 +249,14 @@
      "metoo": 0,
      "people": 1,
      "category": "transport",
-     "created_at": "2026-10-11T22:36:45+05:00",
+     "created_at": "2026-10-12T01:23:55+05:00",
      "status": "new",
      "distance_m": 44.3,
      "same_target": false
     }
    },
    "shot": null,
-   "ms": 9713
+   "ms": 6705
   },
   {
    "layer": "API",
@@ -264,7 +268,7 @@
     "metoo": 1
    },
    "shot": null,
-   "ms": 9717
+   "ms": 6709
   },
   {
    "layer": "API",
@@ -276,7 +280,7 @@
     "metoo": 1
    },
    "shot": null,
-   "ms": 9724
+   "ms": 6711
   },
   {
    "layer": "API",
@@ -294,7 +298,7 @@
     }
    },
    "shot": null,
-   "ms": 9738
+   "ms": 6721
   },
   {
    "layer": "API",
@@ -309,7 +313,7 @@
     ]
    },
    "shot": null,
-   "ms": 9752
+   "ms": 6731
   },
   {
    "layer": "API",
@@ -328,7 +332,7 @@
     "hot": 10
    },
    "shot": null,
-   "ms": 9812
+   "ms": 6785
   },
   {
    "layer": "API",
@@ -340,7 +344,7 @@
     "status": 200
    },
    "shot": null,
-   "ms": 10089
+   "ms": 6991
   },
   {
    "layer": "API",
@@ -355,7 +359,7 @@
     ]
    },
    "shot": null,
-   "ms": 10097
+   "ms": 6995
   },
   {
    "layer": "API",
@@ -364,11 +368,11 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "p-aba0e4a61c62",
+    "id": "p-f0491736053c",
     "st": "proposal"
    },
    "shot": null,
-   "ms": 10105
+   "ms": 7001
   },
   {
    "layer": "API",
@@ -386,7 +390,7 @@
     ]
    },
    "shot": null,
-   "ms": 10119
+   "ms": 7009
   },
   {
    "layer": "API",
@@ -398,7 +402,7 @@
     "fixed": 200
    },
    "shot": null,
-   "ms": 10131
+   "ms": 7018
   },
   {
    "layer": "API",
@@ -409,11 +413,11 @@
     "item": {
      "level": "fixed",
      "weight": 0,
-     "fixed_until": "2026-10-18T22:36:45+05:00"
+     "fixed_until": "2026-10-19T01:23:55+05:00"
     }
    },
    "shot": null,
-   "ms": 10145
+   "ms": 7026
   },
   {
    "layer": "API",
@@ -426,7 +430,7 @@
     "history": 3
    },
    "shot": null,
-   "ms": 10149
+   "ms": 7029
   },
   {
    "layer": "UI 1366-ru",
@@ -437,7 +441,7 @@
     "lang": "ru"
    },
    "shot": "1366-ru-0-start.jpg",
-   "ms": 18201
+   "ms": 12689
   },
   {
    "layer": "UI 1366-ru",
@@ -449,7 +453,7 @@
     "w": 1366
    },
    "shot": null,
-   "ms": 18201
+   "ms": 12689
   },
   {
    "layer": "UI 1366-ru",
@@ -461,7 +465,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 18201
+   "ms": 12689
   },
   {
    "layer": "UI 1366-ru",
@@ -473,7 +477,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 18201
+   "ms": 12689
   },
   {
    "layer": "UI 1366-ru",
@@ -488,7 +492,7 @@
     ]
    },
    "shot": null,
-   "ms": 18201
+   "ms": 12689
   },
   {
    "layer": "UI 1366-ru",
@@ -500,7 +504,7 @@
     "tech": []
    },
    "shot": null,
-   "ms": 18201
+   "ms": 12689
   },
   {
    "layer": "UI 1366-ru",
@@ -521,7 +525,7 @@
     ]
    },
    "shot": null,
-   "ms": 18201
+   "ms": 12689
   },
   {
    "layer": "UI 1366-ru",
@@ -534,7 +538,7 @@
     "under48": "19/26"
    },
    "shot": null,
-   "ms": 18201
+   "ms": 12689
   },
   {
    "layer": "UI 1366-ru",
@@ -543,7 +547,7 @@
    "status": "PASS",
    "detail": null,
    "shot": null,
-   "ms": 21959
+   "ms": 16116
   },
   {
    "layer": "UI 1366-ru",
@@ -558,7 +562,7 @@
     "text": "Сообщить о проблеме"
    },
    "shot": null,
-   "ms": 24169
+   "ms": 18530
   },
   {
    "layer": "UI 1366-ru",
@@ -569,7 +573,7 @@
     "resident_view": true
    },
    "shot": "1366-ru-1-start.jpg",
-   "ms": 25806
+   "ms": 20139
   },
   {
    "layer": "UI 1366-ru",
@@ -580,7 +584,7 @@
     "under": "r07-badge maplibregl-marker maplibregl-m"
    },
    "shot": null,
-   "ms": 31230
+   "ms": 25263
   },
   {
    "layer": "UI 1366-ru",
@@ -604,7 +608,7 @@
     ]
    },
    "shot": "1366-ru-1-target.jpg",
-   "ms": 31328
+   "ms": 25321
   },
   {
    "layer": "UI 1366-ru",
@@ -617,7 +621,7 @@
     "catShown": true
    },
    "shot": "1366-ru-2-category.jpg",
-   "ms": 36012
+   "ms": 29976
   },
   {
    "layer": "UI 1366-ru",
@@ -626,11 +630,12 @@
    "status": "PASS",
    "detail": {
     "sent": true,
+    "next": false,
     "metoo": true,
     "done": true
    },
    "shot": "1366-ru-2-sent.jpg",
-   "ms": 41685
+   "ms": 35653
   },
   {
    "layer": "UI 1366-ru",
@@ -645,7 +650,7 @@
     "legend": true
    },
    "shot": "1366-ru-3-heat.jpg",
-   "ms": 51030
+   "ms": 44424
   },
   {
    "layer": "UI 1366-ru",
@@ -659,7 +664,7 @@
     "back": true
    },
    "shot": null,
-   "ms": 54949
+   "ms": 48268
   },
   {
    "layer": "UI 1366-ru",
@@ -699,7 +704,7 @@
     }
    ],
    "shot": "1366-ru-3-hot.jpg",
-   "ms": 66187
+   "ms": 59623
   },
   {
    "layer": "UI 1366-ru",
@@ -714,7 +719,7 @@
     "overdue": true
    },
    "shot": "1366-ru-4-day.jpg",
-   "ms": 69763
+   "ms": 63205
   },
   {
    "layer": "UI 1366-ru",
@@ -727,7 +732,7 @@
     "tech": []
    },
    "shot": "1366-ru-5-login.jpg",
-   "ms": 81116
+   "ms": 74619
   },
   {
    "layer": "UI 1366-ru",
@@ -738,7 +743,7 @@
     "tech": []
    },
    "shot": null,
-   "ms": 81116
+   "ms": 74619
   },
   {
    "layer": "UI 1366-ru",
@@ -754,10 +759,11 @@
      "sports",
      "stop",
      "lighting"
-    ]
+    ],
+    "projects_layer": null
    },
    "shot": "1366-ru-5-catalog.jpg",
-   "ms": 84031
+   "ms": 77536
   },
   {
    "layer": "UI 1366-ru",
@@ -775,7 +781,7 @@
     "label_px_from_place": 26
    },
    "shot": "1366-ru-5-placed.jpg",
-   "ms": 99230
+   "ms": 92840
   },
   {
    "layer": "UI 1366-ru",
@@ -791,7 +797,7 @@
     "at_label": null
    },
    "shot": "1366-ru-5-placed.jpg",
-   "ms": 99248
+   "ms": 92856
   },
   {
    "layer": "UI 1366-ru",
@@ -804,7 +810,7 @@
     "pitch1": 51.99999999999999
    },
    "shot": "1366-ru-5-3d.jpg",
-   "ms": 101201
+   "ms": 94689
   },
   {
    "layer": "UI 1366-ru",
@@ -817,7 +823,7 @@
     "saved": true
    },
    "shot": "1366-ru-5-vote.jpg",
-   "ms": 111584
+   "ms": 104765
   },
   {
    "layer": "UI 1366-ru",
@@ -830,7 +836,7 @@
     "deleted": true
    },
    "shot": null,
-   "ms": 120579
+   "ms": 113638
   },
   {
    "layer": "UI 1366-ru",
@@ -847,7 +853,7 @@
     "covered": null
    },
    "shot": null,
-   "ms": 126347
+   "ms": 119177
   },
   {
    "layer": "UI 1366-ru",
@@ -862,7 +868,7 @@
     "green": true
    },
    "shot": "1366-ru-6-fixed.jpg",
-   "ms": 130982
+   "ms": 123816
   },
   {
    "layer": "UI 1366-ru",
@@ -873,19 +879,29 @@
     "stillOpen": false
    },
    "shot": null,
-   "ms": 131858
+   "ms": 124676
   },
   {
    "layer": "UI 1366-ru",
    "step": "6",
-   "name": "житель: «Мои обращения» → у обращения статус «Исправлено»",
+   "name": "житель: «Мои обращения» → у обращения статус «Исправлено» (с волны 2 — «Служба сообщила об устранении»)",
    "status": "PASS",
    "detail": {
     "mineOpen": true,
-    "mineFixed": true
+    "mineFixed": true,
+    "mineReported": false
    },
    "shot": "1366-ru-6-mine.jpg",
-   "ms": 135354
+   "ms": 128154
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "житель проверяет ремонт («Да, исправлено» → «Проверено жителями»)",
+   "status": "NOT_RUN",
+   "detail": "в сборке нет проверки жителем (до волны 2)",
+   "shot": null,
+   "ms": 128159
   },
   {
    "layer": "UI 1366-ru",
@@ -894,7 +910,7 @@
    "status": "PASS",
    "detail": [],
    "shot": null,
-   "ms": 135354
+   "ms": 128159
   },
   {
    "layer": "UI 1366-ru",
@@ -908,7 +924,7 @@
     "recovered": true
    },
    "shot": "1366-ru-E-heat.jpg",
-   "ms": 144621
+   "ms": 137324
   },
   {
    "layer": "UI 1366-ru",
@@ -922,7 +938,7 @@
     "recovered": true
    },
    "shot": "1366-ru-E-mine.jpg",
-   "ms": 156204
+   "ms": 148860
   },
   {
    "layer": "UI 1366-ru",
@@ -936,7 +952,7 @@
     "recovered": true
    },
    "shot": "1366-ru-E-summary.jpg",
-   "ms": 167844
+   "ms": 160996
   },
   {
    "layer": "UI 1366-kk",
@@ -947,7 +963,7 @@
     "lang": "kk"
    },
    "shot": "1366-kk-0-start.jpg",
-   "ms": 172894
+   "ms": 166032
   },
   {
    "layer": "UI 1366-kk",
@@ -959,7 +975,7 @@
     "w": 1366
    },
    "shot": null,
-   "ms": 172894
+   "ms": 166032
   },
   {
    "layer": "UI 1366-kk",
@@ -971,7 +987,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 172894
+   "ms": 166032
   },
   {
    "layer": "UI 1366-kk",
@@ -983,7 +999,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 172894
+   "ms": 166032
   },
   {
    "layer": "UI 1366-kk",
@@ -998,7 +1014,7 @@
     ]
    },
    "shot": null,
-   "ms": 172894
+   "ms": 166032
   },
   {
    "layer": "UI 1366-kk",
@@ -1010,7 +1026,7 @@
     "tech": []
    },
    "shot": null,
-   "ms": 172894
+   "ms": 166032
   },
   {
    "layer": "UI 1366-kk",
@@ -1031,7 +1047,7 @@
     ]
    },
    "shot": null,
-   "ms": 172894
+   "ms": 166032
   },
   {
    "layer": "UI 1366-kk",
@@ -1044,7 +1060,7 @@
     "under48": "19/25"
    },
    "shot": null,
-   "ms": 172894
+   "ms": 166032
   },
   {
    "layer": "UI 1366-kk",
@@ -1053,7 +1069,7 @@
    "status": "PASS",
    "detail": null,
    "shot": null,
-   "ms": 176397
+   "ms": 169441
   },
   {
    "layer": "UI 1366-kk",
@@ -1065,7 +1081,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 179615
+   "ms": 172851
   },
   {
    "layer": "UI 1366-kk",
@@ -1077,7 +1093,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 179615
+   "ms": 172851
   },
   {
    "layer": "UI 1366-kk",
@@ -1092,7 +1108,7 @@
     "text": "Мәселе туралы хабарлау"
    },
    "shot": null,
-   "ms": 181560
+   "ms": 174819
   },
   {
    "layer": "UI 1366-kk",
@@ -1103,7 +1119,7 @@
     "resident_view": true
    },
    "shot": "1366-kk-1-start.jpg",
-   "ms": 183143
+   "ms": 176419
   },
   {
    "layer": "UI 1366-kk",
@@ -1114,7 +1130,7 @@
     "under": "r07-badge maplibregl-marker maplibregl-m"
    },
    "shot": null,
-   "ms": 188117
+   "ms": 181357
   },
   {
    "layer": "UI 1366-kk",
@@ -1138,7 +1154,7 @@
     ]
    },
    "shot": "1366-kk-1-target.jpg",
-   "ms": 188187
+   "ms": 181400
   },
   {
    "layer": "UI 1366-kk",
@@ -1151,7 +1167,7 @@
     "catShown": true
    },
    "shot": "1366-kk-2-category.jpg",
-   "ms": 192866
+   "ms": 186038
   },
   {
    "layer": "UI 1366-kk",
@@ -1160,11 +1176,12 @@
    "status": "PASS",
    "detail": {
     "sent": true,
+    "next": false,
     "metoo": false,
     "done": true
    },
    "shot": "1366-kk-2-sent.jpg",
-   "ms": 195980
+   "ms": 189147
   },
   {
    "layer": "UI 1366-kk",
@@ -1179,7 +1196,7 @@
     "legend": true
    },
    "shot": "1366-kk-3-heat.jpg",
-   "ms": 204666
+   "ms": 197735
   },
   {
    "layer": "UI 1366-kk",
@@ -1193,7 +1210,7 @@
     "back": true
    },
    "shot": null,
-   "ms": 208497
+   "ms": 201547
   },
   {
    "layer": "UI 1366-kk",
@@ -1233,7 +1250,7 @@
     }
    ],
    "shot": "1366-kk-3-hot.jpg",
-   "ms": 219106
+   "ms": 212838
   },
   {
    "layer": "UI 1366-kk",
@@ -1248,7 +1265,7 @@
     "overdue": true
    },
    "shot": "1366-kk-4-day.jpg",
-   "ms": 222739
+   "ms": 216466
   },
   {
    "layer": "UI 1366-kk",
@@ -1262,7 +1279,7 @@
     "tech": []
    },
    "shot": "1366-kk-5-login.jpg",
-   "ms": 233596
+   "ms": 227783
   },
   {
    "layer": "UI 1366-kk",
@@ -1273,7 +1290,7 @@
     "tech": []
    },
    "shot": null,
-   "ms": 233596
+   "ms": 227783
   },
   {
    "layer": "UI 1366-kk",
@@ -1284,7 +1301,7 @@
     "ru": []
    },
    "shot": null,
-   "ms": 233596
+   "ms": 227783
   },
   {
    "layer": "UI 1366-kk",
@@ -1300,10 +1317,11 @@
      "sports",
      "stop",
      "lighting"
-    ]
+    ],
+    "projects_layer": null
    },
    "shot": "1366-kk-5-catalog.jpg",
-   "ms": 236526
+   "ms": 230716
   },
   {
    "layer": "UI 1366-kk",
@@ -1321,7 +1339,7 @@
     "label_px_from_place": 26
    },
    "shot": "1366-kk-5-placed.jpg",
-   "ms": 251894
+   "ms": 245962
   },
   {
    "layer": "UI 1366-kk",
@@ -1337,7 +1355,7 @@
     "at_label": null
    },
    "shot": "1366-kk-5-placed.jpg",
-   "ms": 251913
+   "ms": 245980
   },
   {
    "layer": "UI 1366-kk",
@@ -1350,7 +1368,7 @@
     "pitch1": 51.99999999999999
    },
    "shot": "1366-kk-5-3d.jpg",
-   "ms": 253895
+   "ms": 247728
   },
   {
    "layer": "UI 1366-kk",
@@ -1363,7 +1381,7 @@
     "saved": true
    },
    "shot": "1366-kk-5-vote.jpg",
-   "ms": 264309
+   "ms": 257500
   },
   {
    "layer": "UI 1366-kk",
@@ -1376,7 +1394,7 @@
     "deleted": true
    },
    "shot": null,
-   "ms": 273088
+   "ms": 266630
   },
   {
    "layer": "UI 1366-kk",
@@ -1393,7 +1411,7 @@
     "covered": null
    },
    "shot": null,
-   "ms": 279227
+   "ms": 272824
   },
   {
    "layer": "UI 1366-kk",
@@ -1408,7 +1426,7 @@
     "green": true
    },
    "shot": "1366-kk-6-fixed.jpg",
-   "ms": 283874
+   "ms": 277463
   },
   {
    "layer": "UI 1366-kk",
@@ -1419,19 +1437,29 @@
     "stillOpen": false
    },
    "shot": null,
-   "ms": 284742
+   "ms": 278320
   },
   {
    "layer": "UI 1366-kk",
    "step": "6",
-   "name": "житель: «Менің өтініштерім» → у обращения статус «Түзетілді»",
+   "name": "житель: «Менің өтініштерім» → у обращения статус «Түзетілді» (с волны 2 — «Қызмет түзетілгенін хабарлады»)",
    "status": "PASS",
    "detail": {
     "mineOpen": true,
-    "mineFixed": true
+    "mineFixed": true,
+    "mineReported": false
    },
    "shot": "1366-kk-6-mine.jpg",
-   "ms": 288332
+   "ms": 281833
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "житель проверяет ремонт («Да, исправлено» → «Проверено жителями»)",
+   "status": "NOT_RUN",
+   "detail": "в сборке нет проверки жителем (до волны 2)",
+   "shot": null,
+   "ms": 281836
   },
   {
    "layer": "UI 1366-kk",
@@ -1440,7 +1468,7 @@
    "status": "PASS",
    "detail": [],
    "shot": null,
-   "ms": 288332
+   "ms": 281836
   },
   {
    "layer": "UI 1366-kk",
@@ -1454,7 +1482,7 @@
     "recovered": true
    },
    "shot": "1366-kk-E-heat.jpg",
-   "ms": 297551
+   "ms": 291036
   },
   {
    "layer": "UI 1366-kk",
@@ -1468,7 +1496,7 @@
     "recovered": true
    },
    "shot": "1366-kk-E-mine.jpg",
-   "ms": 309350
+   "ms": 302819
   },
   {
    "layer": "UI 1366-kk",
@@ -1482,7 +1510,7 @@
     "recovered": true
    },
    "shot": "1366-kk-E-summary.jpg",
-   "ms": 321888
+   "ms": 314370
   },
   {
    "layer": "UI 375-ru",
@@ -1493,7 +1521,7 @@
     "lang": "ru"
    },
    "shot": "375-ru-0-start.jpg",
-   "ms": 326494
+   "ms": 318917
   },
   {
    "layer": "UI 375-ru",
@@ -1505,7 +1533,7 @@
     "w": 375
    },
    "shot": null,
-   "ms": 326494
+   "ms": 318917
   },
   {
    "layer": "UI 375-ru",
@@ -1517,7 +1545,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 326494
+   "ms": 318917
   },
   {
    "layer": "UI 375-ru",
@@ -1529,7 +1557,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 326494
+   "ms": 318917
   },
   {
    "layer": "UI 375-ru",
@@ -1541,7 +1569,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 326494
+   "ms": 318917
   },
   {
    "layer": "UI 375-ru",
@@ -1553,7 +1581,7 @@
     "tech": []
    },
    "shot": null,
-   "ms": 326495
+   "ms": 318917
   },
   {
    "layer": "UI 375-ru",
@@ -1574,7 +1602,7 @@
     ]
    },
    "shot": null,
-   "ms": 326495
+   "ms": 318917
   },
   {
    "layer": "UI 375-ru",
@@ -1587,7 +1615,7 @@
     "under48": "6/11"
    },
    "shot": null,
-   "ms": 326495
+   "ms": 318917
   },
   {
    "layer": "UI 375-ru",
@@ -1596,7 +1624,7 @@
    "status": "PASS",
    "detail": null,
    "shot": null,
-   "ms": 329663
+   "ms": 322083
   },
   {
    "layer": "UI 375-ru",
@@ -1607,7 +1635,7 @@
     "resident_view": true
    },
    "shot": "375-ru-1-start.jpg",
-   "ms": 333445
+   "ms": 325862
   },
   {
    "layer": "UI 375-ru",
@@ -1618,7 +1646,7 @@
     "under": "r07-badge maplibregl-marker maplibregl-m"
    },
    "shot": null,
-   "ms": 338280
+   "ms": 330379
   },
   {
    "layer": "UI 375-ru",
@@ -1642,7 +1670,7 @@
     ]
    },
    "shot": "375-ru-1-target.jpg",
-   "ms": 338296
+   "ms": 330395
   },
   {
    "layer": "UI 375-ru",
@@ -1655,7 +1683,7 @@
     "catShown": true
    },
    "shot": "375-ru-2-category.jpg",
-   "ms": 342924
+   "ms": 335012
   },
   {
    "layer": "UI 375-ru",
@@ -1664,11 +1692,12 @@
    "status": "PASS",
    "detail": {
     "sent": true,
+    "next": false,
     "metoo": false,
     "done": true
    },
    "shot": "375-ru-2-sent.jpg",
-   "ms": 346024
+   "ms": 338111
   },
   {
    "layer": "UI 375-ru",
@@ -1683,7 +1712,7 @@
     "legend": true
    },
    "shot": "375-ru-3-heat.jpg",
-   "ms": 354657
+   "ms": 346676
   },
   {
    "layer": "UI 375-ru",
@@ -1697,7 +1726,7 @@
     "back": true
    },
    "shot": null,
-   "ms": 358509
+   "ms": 350502
   },
   {
    "layer": "UI 375-ru",
@@ -1737,7 +1766,7 @@
     }
    ],
    "shot": "375-ru-3-hot.jpg",
-   "ms": 368956
+   "ms": 361035
   },
   {
    "layer": "UI 375-ru",
@@ -1752,7 +1781,7 @@
     "overdue": true
    },
    "shot": "375-ru-4-day.jpg",
-   "ms": 373371
+   "ms": 365458
   },
   {
    "layer": "UI 375-ru",
@@ -1765,7 +1794,7 @@
     "tech": []
    },
    "shot": "375-ru-5-login.jpg",
-   "ms": 384439
+   "ms": 376410
   },
   {
    "layer": "UI 375-ru",
@@ -1776,7 +1805,7 @@
     "tech": []
    },
    "shot": null,
-   "ms": 384439
+   "ms": 376410
   },
   {
    "layer": "UI 375-ru",
@@ -1792,10 +1821,11 @@
      "sports",
      "stop",
      "lighting"
-    ]
+    ],
+    "projects_layer": null
    },
    "shot": "375-ru-5-catalog.jpg",
-   "ms": 387322
+   "ms": 379327
   },
   {
    "layer": "UI 375-ru",
@@ -1813,7 +1843,7 @@
     "label_px_from_place": 26
    },
    "shot": "375-ru-5-placed.jpg",
-   "ms": 399255
+   "ms": 391358
   },
   {
    "layer": "UI 375-ru",
@@ -1830,7 +1860,7 @@
     "after_6s": null
    },
    "shot": "375-ru-5-placed.jpg",
-   "ms": 405807
+   "ms": 397893
   },
   {
    "layer": "UI 375-ru",
@@ -1843,7 +1873,7 @@
     "pitch1": 51.99999999999999
    },
    "shot": "375-ru-5-3d.jpg",
-   "ms": 407419
+   "ms": 399458
   },
   {
    "layer": "UI 375-ru",
@@ -1856,7 +1886,7 @@
     "saved": true
    },
    "shot": "375-ru-5-vote.jpg",
-   "ms": 417672
+   "ms": 409807
   },
   {
    "layer": "UI 375-ru",
@@ -1869,7 +1899,7 @@
     "deleted": true
    },
    "shot": null,
-   "ms": 427051
+   "ms": 419276
   },
   {
    "layer": "UI 375-ru",
@@ -1886,7 +1916,7 @@
     "covered": null
    },
    "shot": null,
-   "ms": 433566
+   "ms": 425854
   },
   {
    "layer": "UI 375-ru",
@@ -1902,19 +1932,29 @@
     "note": "место уже «В работе» — кнопки «Взять в работу» нет"
    },
    "shot": "375-ru-6-fixed.jpg",
-   "ms": 436173
+   "ms": 428441
   },
   {
    "layer": "UI 375-ru",
    "step": "6",
-   "name": "житель: «Мои обращения» → у обращения статус «Исправлено»",
+   "name": "житель: «Мои обращения» → у обращения статус «Исправлено» (с волны 2 — «Служба сообщила об устранении»)",
    "status": "PASS",
    "detail": {
     "mineOpen": true,
-    "mineFixed": true
+    "mineFixed": true,
+    "mineReported": false
    },
    "shot": "375-ru-6-mine.jpg",
-   "ms": 441370
+   "ms": 433622
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "житель проверяет ремонт («Да, исправлено» → «Проверено жителями»)",
+   "status": "NOT_RUN",
+   "detail": "в сборке нет проверки жителем (до волны 2)",
+   "shot": null,
+   "ms": 433626
   },
   {
    "layer": "UI 375-ru",
@@ -1923,7 +1963,7 @@
    "status": "PASS",
    "detail": [],
    "shot": null,
-   "ms": 441370
+   "ms": 433626
   },
   {
    "layer": "UI 375-ru",
@@ -1937,7 +1977,7 @@
     "recovered": true
    },
    "shot": "375-ru-E-heat.jpg",
-   "ms": 450424
+   "ms": 442681
   },
   {
    "layer": "UI 375-ru",
@@ -1951,7 +1991,7 @@
     "recovered": true
    },
    "shot": "375-ru-E-mine.jpg",
-   "ms": 462594
+   "ms": 454745
   },
   {
    "layer": "UI 375-ru",
@@ -1965,7 +2005,7 @@
     "recovered": true
    },
    "shot": "375-ru-E-summary.jpg",
-   "ms": 474715
+   "ms": 466832
   },
   {
    "layer": "UI 375-kk",
@@ -1976,7 +2016,7 @@
     "lang": "kk"
    },
    "shot": "375-kk-0-start.jpg",
-   "ms": 479056
+   "ms": 471125
   },
   {
    "layer": "UI 375-kk",
@@ -1988,7 +2028,7 @@
     "w": 375
    },
    "shot": null,
-   "ms": 479057
+   "ms": 471125
   },
   {
    "layer": "UI 375-kk",
@@ -2000,7 +2040,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 479057
+   "ms": 471125
   },
   {
    "layer": "UI 375-kk",
@@ -2012,7 +2052,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 479057
+   "ms": 471125
   },
   {
    "layer": "UI 375-kk",
@@ -2024,7 +2064,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 479057
+   "ms": 471125
   },
   {
    "layer": "UI 375-kk",
@@ -2036,7 +2076,7 @@
     "tech": []
    },
    "shot": null,
-   "ms": 479057
+   "ms": 471125
   },
   {
    "layer": "UI 375-kk",
@@ -2056,7 +2096,7 @@
     ]
    },
    "shot": null,
-   "ms": 479057
+   "ms": 471125
   },
   {
    "layer": "UI 375-kk",
@@ -2069,7 +2109,7 @@
     "under48": "9/13"
    },
    "shot": null,
-   "ms": 479057
+   "ms": 471125
   },
   {
    "layer": "UI 375-kk",
@@ -2078,7 +2118,7 @@
    "status": "PASS",
    "detail": null,
    "shot": null,
-   "ms": 482212
+   "ms": 474309
   },
   {
    "layer": "UI 375-kk",
@@ -2090,7 +2130,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 485097
+   "ms": 477251
   },
   {
    "layer": "UI 375-kk",
@@ -2102,7 +2142,7 @@
     "ex": []
    },
    "shot": null,
-   "ms": 485097
+   "ms": 477251
   },
   {
    "layer": "UI 375-kk",
@@ -2113,7 +2153,7 @@
     "resident_view": true
    },
    "shot": "375-kk-1-start.jpg",
-   "ms": 488862
+   "ms": 481022
   },
   {
    "layer": "UI 375-kk",
@@ -2124,7 +2164,7 @@
     "under": "r07-badge maplibregl-marker maplibregl-m"
    },
    "shot": null,
-   "ms": 493477
+   "ms": 485611
   },
   {
    "layer": "UI 375-kk",
@@ -2149,7 +2189,7 @@
     ]
    },
    "shot": "375-kk-1-target.jpg",
-   "ms": 493492
+   "ms": 485627
   },
   {
    "layer": "UI 375-kk",
@@ -2162,7 +2202,7 @@
     "catShown": true
    },
    "shot": "375-kk-2-category.jpg",
-   "ms": 498103
+   "ms": 490259
   },
   {
    "layer": "UI 375-kk",
@@ -2171,11 +2211,12 @@
    "status": "PASS",
    "detail": {
     "sent": true,
+    "next": false,
     "metoo": false,
     "done": true
    },
    "shot": "375-kk-2-sent.jpg",
-   "ms": 501199
+   "ms": 493356
   },
   {
    "layer": "UI 375-kk",
@@ -2190,7 +2231,7 @@
     "legend": true
    },
    "shot": "375-kk-3-heat.jpg",
-   "ms": 509899
+   "ms": 502141
   },
   {
    "layer": "UI 375-kk",
@@ -2204,7 +2245,7 @@
     "back": true
    },
    "shot": null,
-   "ms": 513731
+   "ms": 505973
   },
   {
    "layer": "UI 375-kk",
@@ -2244,7 +2285,7 @@
     }
    ],
    "shot": "375-kk-3-hot.jpg",
-   "ms": 524319
+   "ms": 516353
   },
   {
    "layer": "UI 375-kk",
@@ -2259,7 +2300,7 @@
     "overdue": true
    },
    "shot": "375-kk-4-day.jpg",
-   "ms": 528750
+   "ms": 520769
   },
   {
    "layer": "UI 375-kk",
@@ -2273,7 +2314,7 @@
     "tech": []
    },
    "shot": "375-kk-5-login.jpg",
-   "ms": 539652
+   "ms": 531871
   },
   {
    "layer": "UI 375-kk",
@@ -2284,7 +2325,7 @@
     "tech": []
    },
    "shot": null,
-   "ms": 539653
+   "ms": 531871
   },
   {
    "layer": "UI 375-kk",
@@ -2295,7 +2336,7 @@
     "ru": []
    },
    "shot": null,
-   "ms": 539653
+   "ms": 531871
   },
   {
    "layer": "UI 375-kk",
@@ -2311,10 +2352,11 @@
      "sports",
      "stop",
      "lighting"
-    ]
+    ],
+    "projects_layer": null
    },
    "shot": "375-kk-5-catalog.jpg",
-   "ms": 542550
+   "ms": 534807
   },
   {
    "layer": "UI 375-kk",
@@ -2332,7 +2374,7 @@
     "label_px_from_place": 26
    },
    "shot": "375-kk-5-placed.jpg",
-   "ms": 554867
+   "ms": 546801
   },
   {
    "layer": "UI 375-kk",
@@ -2349,7 +2391,7 @@
     "after_6s": null
    },
    "shot": "375-kk-5-placed.jpg",
-   "ms": 561415
+   "ms": 553350
   },
   {
    "layer": "UI 375-kk",
@@ -2362,7 +2404,7 @@
     "pitch1": 51.99999999999999
    },
    "shot": "375-kk-5-3d.jpg",
-   "ms": 562999
+   "ms": 554934
   },
   {
    "layer": "UI 375-kk",
@@ -2375,7 +2417,7 @@
     "saved": true
    },
    "shot": "375-kk-5-vote.jpg",
-   "ms": 573264
+   "ms": 565268
   },
   {
    "layer": "UI 375-kk",
@@ -2388,7 +2430,7 @@
     "deleted": true
    },
    "shot": null,
-   "ms": 582632
+   "ms": 574814
   },
   {
    "layer": "UI 375-kk",
@@ -2405,7 +2447,7 @@
     "covered": null
    },
    "shot": null,
-   "ms": 589131
+   "ms": 581336
   },
   {
    "layer": "UI 375-kk",
@@ -2420,19 +2462,29 @@
     "green": true
    },
    "shot": "375-kk-6-fixed.jpg",
-   "ms": 593747
+   "ms": 585972
   },
   {
    "layer": "UI 375-kk",
    "step": "6",
-   "name": "житель: «Менің өтініштерім» → у обращения статус «Түзетілді»",
+   "name": "житель: «Менің өтініштерім» → у обращения статус «Түзетілді» (с волны 2 — «Қызмет түзетілгенін хабарлады»)",
    "status": "PASS",
    "detail": {
     "mineOpen": true,
-    "mineFixed": true
+    "mineFixed": true,
+    "mineReported": false
    },
    "shot": "375-kk-6-mine.jpg",
-   "ms": 598918
+   "ms": 591170
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "житель проверяет ремонт («Да, исправлено» → «Проверено жителями»)",
+   "status": "NOT_RUN",
+   "detail": "в сборке нет проверки жителем (до волны 2)",
+   "shot": null,
+   "ms": 591173
   },
   {
    "layer": "UI 375-kk",
@@ -2441,7 +2493,7 @@
    "status": "PASS",
    "detail": [],
    "shot": null,
-   "ms": 598918
+   "ms": 591173
   },
   {
    "layer": "UI 375-kk",
@@ -2455,7 +2507,7 @@
     "recovered": true
    },
    "shot": "375-kk-E-heat.jpg",
-   "ms": 608123
+   "ms": 600290
   },
   {
    "layer": "UI 375-kk",
@@ -2469,7 +2521,7 @@
     "recovered": true
    },
    "shot": "375-kk-E-mine.jpg",
-   "ms": 621322
+   "ms": 612490
   },
   {
    "layer": "UI 375-kk",
@@ -2483,7 +2535,7 @@
     "recovered": true
    },
    "shot": "375-kk-E-summary.jpg",
-   "ms": 633812
+   "ms": 624563
   }
  ]
 }

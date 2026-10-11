@@ -1,21 +1,21 @@
-# R10 · эталон карты · 8e67c65
+# R10 · эталон карты · 8e67c65f
 
 ```
-{"root":"<worktree 8e67c65>","sha":"8e67c65","when":"2026-10-11T18:07:02.038Z","base":"(свой сервер, временная база, CIVIC_DEMO=1)","repeat":3,"sizes":["1366x768","375x812"],"langs":["ru","kk"],"modes":["resident","akimat"],"chromium":"141.0.7390.37","machine":{"cpu":"Intel(R) Xeon(R) Processor @ 2.10GHz","cores":4,"mem_gb":16,"platform":"linux 6.18.44-fc-v114","node":"v22.22.0"}}
+{"root":"<worktree 8e67c65>","sha":"8e67c65f","when":"2026-10-11T20:39:07.868Z","base":"(свой сервер, временная база, CIVIC_DEMO=1)","repeat":3,"sizes":["1366x768","375x812"],"langs":["ru","kk"],"modes":["resident","akimat"],"chromium":"141.0.7390.37","machine":{"cpu":"Intel(R) Xeon(R) Processor @ 2.10GHz","cores":4,"mem_gb":16,"platform":"linux 6.18.44-fc-v114","node":"v22.22.0"}}
 ```
 
 Загрузка, медиана из 3 окон без кэша, секунды от начала навигации (WebGL программный — сравнивать с прогоном на той же машине):
 
 | Вариант | DOM готов | load | карта загружена | 1-й значок с числом | главная кнопка | карта успокоилась | запросов | КБ | длинные задачи, мс |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1366x768-ru-resident | 0.18 | 0.20 | 4.15 | 3.05 | 1.50 | 4.61 | 89 | 8272 | 3388 |
-| 1366x768-ru-akimat | 0.20 | 0.22 | 4.06 | 3.13 | 3.13 | 4.67 | 89 | 8272 | 3251 |
-| 1366x768-kk-resident | 0.20 | 0.21 | 4.04 | 3.07 | 1.53 | 4.64 | 90 | 8330 | 3259 |
-| 1366x768-kk-akimat | 0.21 | 0.23 | 3.82 | 2.84 | 2.84 | 4.41 | 90 | 8330 | 2854 |
-| 375x812-ru-resident | 0.19 | 0.20 | 2.96 | 2.22 | 1.28 | 3.79 | 89 | 8272 | 2083 |
-| 375x812-ru-akimat | 0.19 | 0.21 | 2.97 | 2.25 | 2.25 | 3.80 | 89 | 8272 | 1980 |
-| 375x812-kk-resident | 0.19 | 0.21 | 3.03 | 2.32 | 1.31 | 3.92 | 90 | 8330 | 2060 |
-| 375x812-kk-akimat | 0.19 | 0.20 | 3.02 | 2.27 | — | 3.78 | 90 | 8330 | 2016 |
+| 1366x768-ru-resident | 0.19 | 0.21 | 3.83 | 2.76 | 1.42 | 4.36 | 89 | 8272 | 3040 |
+| 1366x768-ru-akimat | 0.19 | 0.21 | 3.85 | 2.76 | 2.76 | 4.33 | 89 | 8272 | 3126 |
+| 1366x768-kk-resident | 0.18 | 0.20 | 3.79 | 2.76 | 1.41 | 4.33 | 90 | 8330 | 3030 |
+| 1366x768-kk-akimat | 0.16 | 0.17 | 3.79 | 2.81 | 2.81 | 4.37 | 90 | 8330 | 3122 |
+| 375x812-ru-resident | 0.18 | 0.20 | 2.92 | 2.20 | 1.31 | 3.74 | 89 | 8272 | 2018 |
+| 375x812-ru-akimat | 0.18 | 0.20 | 2.89 | 2.18 | 2.18 | 3.74 | 89 | 8272 | 1908 |
+| 375x812-kk-resident | 0.17 | 0.18 | 2.92 | 2.04 | 1.19 | 3.76 | 90 | 8330 | 2059 |
+| 375x812-kk-akimat | 0.17 | 0.18 | 2.95 | 2.06 | — | 3.61 | 90 | 8330 | 1985 |
 
 Вид по умолчанию (первое окно):
 
@@ -34,14 +34,14 @@
 
 | Вариант | сдвиг | полёт 12→15 | отклик |
 |---|---|---|---|
-| 1366x768-ru-resident | 4 · 300 · 11 | 3 · 383 · 9 | complaint_form: 24, mine: 60, to_akimat: 420, lang_switch: 416 |
-| 1366x768-ru-akimat | 4 · 267 · 11 | 3 · 417 · 9 | hot_select: 764, day_kpi: 4, lang_switch: 513 |
-| 1366x768-kk-resident | 4 · 300 · 11 | 3 · 400 · 10 | complaint_form: 23, mine: 58, to_akimat: 363, lang_switch: 190 |
-| 1366x768-kk-akimat | 5 · 267 · 11 | 3 · 417 · 9 | hot_select: 1010, day_kpi: 3, lang_switch: 9 |
-| 375x812-ru-resident | 17 · 83 · 28 | 11 · 150 · 26 | complaint_form: 25, mine: 56, to_akimat: 136, lang_switch: 431 |
-| 375x812-ru-akimat | 11 · 117 · 27 | 10 · 150 · 23 | hot_select: 563, day_kpi: 7, lang_switch: 441 |
-| 375x812-kk-resident | 12 · 117 · 28 | 10 · 183 · 23 | complaint_form: 29, mine: 7, to_akimat: 128, lang_switch: 109 |
-| 375x812-kk-akimat | 14 · 83 · 30 | 11 · 133 · 25 | hot_select: 628, day_kpi: 2, lang_switch: 120 |
+| 1366x768-ru-resident | 4 · 267 · 10 | 3 · 367 · 9 | complaint_form: 21, mine: 56, to_akimat: 314, lang_switch: 563 |
+| 1366x768-ru-akimat | 4 · 250 · 12 | 4 · 333 · 11 | hot_select: 507, day_kpi: 3, lang_switch: 524 |
+| 1366x768-kk-resident | 4 · 283 · 11 | 3 · 333 · 10 | complaint_form: 25, mine: 56, to_akimat: 154, lang_switch: 157 |
+| 1366x768-kk-akimat | 4 · 283 · 12 | 4 · 333 · 11 | hot_select: 518, day_kpi: 7, lang_switch: 171 |
+| 375x812-ru-resident | 15 · 83 · 28 | 11 · 150 · 25 | complaint_form: 22, mine: 55, to_akimat: 119, lang_switch: 382 |
+| 375x812-ru-akimat | 16 · 83 · 28 | 12 · 150 · 24 | hot_select: 581, day_kpi: 6, lang_switch: 373 |
+| 375x812-kk-resident | 14 · 83 · 30 | 12 · 133 · 24 | complaint_form: 43, mine: 58, to_akimat: 103, lang_switch: 121 |
+| 375x812-kk-akimat | 14 · 83 · 31 | 11 · 167 · 20 | hot_select: 652, day_kpi: 3, lang_switch: 113 |
 
 Карточка места «Хан Шатыр» (правила 3–4 POLISH_WAVE_2):
 
@@ -60,12 +60,12 @@ API (6 запросов: первый и медиана остальных):
 
 | Запрос | первый, мс | медиана, мс | КБ | статус |
 |---|---:|---:|---:|---|
-| GET /api/civic/v2/modules | 14 | 2 | 4 | 200 |
-| GET /api/civic/v2/heat z12 | 11 | 3 | 37 | 200 |
-| GET /api/civic/v2/heat z16 | 9 | 2 | 22 | 200 |
-| GET /api/civic/v2/akim/summary | 55 | 2 | 11 | 200 |
+| GET /api/civic/v2/modules | 13 | 3 | 4 | 200 |
+| GET /api/civic/v2/heat z12 | 10 | 3 | 37 | 200 |
+| GET /api/civic/v2/heat z16 | 7 | 2 | 22 | 200 |
+| GET /api/civic/v2/akim/summary | 70 | 2 | 11 | 200 |
 | POST /api/civic/v2/classify | 7 | 2 | 0 | 200 |
-| POST /api/civic/v2/similar | 3 | 2 | 0 | 200 |
+| POST /api/civic/v2/similar | 2 | 2 | 0 | 200 |
 | GET /api/civic/v2/targets | 2 | 2 | 0 | 200 |
 | GET /api/civic/v2/proposals | 3 | 3 | 3 | 200 |
 

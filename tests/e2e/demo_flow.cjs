@@ -626,7 +626,8 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     await btn.click().catch(() => null); await sleep(600);
     const radio = await firstVisible(page.getByRole("radio", { name: new RegExp("^" + esc(T(dict, key, fallback)), "i") }));
     if (!radio) { await page.keyboard.press("Escape").catch(() => null); return false; }
-    await radio.check({ force: true }).catch(() => radio.click({ force: true }).catch(() => null)); await sleep(1500);
+    // Нажатие по пункту: список закрывается и перерисовывается — check()/click() Playwright ждали бы его по 30 с.
+    await radio.evaluate((e) => e.click()).catch(() => null); await sleep(1500);
     return true;
   };
   let projectsLayer = null;

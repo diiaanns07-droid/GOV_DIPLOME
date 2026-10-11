@@ -54,17 +54,31 @@ function compareScenario(base, now, timeRef) {
   // Время шагов: тот же сценарий, то же время (с запасом на разброс).
   const ref = timeRef || base;
   if (!ref.timing || !now.timing) { add("СМОТРЕТЬ", "сценарий · время", "нет времени шагов (прогон старой версией demo_flow.cjs)"); return; }
+  // Шаг, которого в эталоне не было (все строки NOT_RUN — например, шаг 7 «житель проверяет ремонт» до волны 2),
+  // по времени не сравнивается и не входит в «целиком». Одобренная добавка времени шагу — ACCEPTED.json → steps:
+  // {"2": {"extra_ms": 4000, "why": "…"}}: в её пределах — «ИНФО: принято».
+  const notRunSteps = new Set(Object.entries(ref.results.reduce((acc, r) => { const k = `${r.layer}|${r.step}`; (acc[k] = acc[k] || []).push(r.status); return acc; }, {}))
+    .filter(([, sts]) => sts.every((x) => x === "NOT_RUN")).map(([k]) => k));
+  const allow = ACCEPTED.steps || {};
   for (const [layer, t] of Object.entries(ref.timing)) {
     const n = now.timing[layer];
     if (!n) continue;
+    let extraTotal = 0, skipped = 0;
     for (const [st, ms] of Object.entries(t.steps)) {
       const m = n.steps[st];
       if (m === undefined) continue;
+      if (notRunSteps.has(`${layer}|${st}`)) { skipped += m; add("ИНФО", "сценарий · время", `${layer} шаг ${st}: в эталоне не выполнялся — ${(m / 1000).toFixed(1)} с, не сравнивается`); continue; }
+      const extra = (allow[st] && allow[st].extra_ms) || 0;
       const slow = m > ms * 1.25 && m - ms > 2000;
-      add(slow ? "FAIL" : "OK", "сценарий · время", `${layer} шаг ${st}: ${(ms / 1000).toFixed(1)} → ${(m / 1000).toFixed(1)} с`, slow ? { ratio: +(m / ms).toFixed(2) } : null);
+      const okAccepted = slow && extra && m - ms <= extra;
+      if (okAccepted) extraTotal += m - ms;
+      add(okAccepted ? "ИНФО" : slow ? "FAIL" : "OK", "сценарий · время", `${layer} шаг ${st}: ${(ms / 1000).toFixed(1)} → ${(m / 1000).toFixed(1)} с` + (okAccepted ? " — принято" : ""),
+        okAccepted ? allow[st].why : slow ? { ratio: +(m / ms).toFixed(2) } : null);
     }
-    const slow = n.total_ms > t.total_ms * 1.15 && n.total_ms - t.total_ms > 5000;
-    add(slow ? "FAIL" : "OK", "сценарий · время", `${layer} целиком: ${(t.total_ms / 1000).toFixed(0)} → ${(n.total_ms / 1000).toFixed(0)} с`);
+    const total = n.total_ms - skipped - extraTotal;
+    const slow = total > t.total_ms * 1.15 && total - t.total_ms > 5000;
+    add(slow ? "FAIL" : "OK", "сценарий · время", `${layer} целиком: ${(t.total_ms / 1000).toFixed(0)} → ${(n.total_ms / 1000).toFixed(0)} с` +
+      (skipped || extraTotal ? ` (без нового шага и принятых добавок — ${(total / 1000).toFixed(0)} с)` : ""));
   }
 }
 

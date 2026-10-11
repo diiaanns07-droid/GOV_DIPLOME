@@ -1,10 +1,10 @@
-# R10 e2e · сценарий демо · 8e67c65
+# R10 e2e · сценарий демо · 8e67c65f
 
 ```
-{"root":"<worktree 8e67c65>","sha":"8e67c65","base":"(свой сервер)","seeds":["seed-demo","seed-r14-demo"],"sizes":["1366x768","375x812"],"langs":["ru","kk"],"when":"2026-10-11T17:47:09.325Z","node":"v22.22.0","total_ms":633877}
+{"root":"<worktree 8e67c65>","sha":"8e67c65f","base":"(свой сервер)","seeds":["seed-demo","seed-r14-demo"],"sizes":["1366x768","375x812"],"langs":["ru","kk"],"when":"2026-10-11T20:34:13.246Z","node":"v22.22.0","total_ms":624619}
 ```
 
-Итого: PASS 160, FAIL 4, NOT_RUN 0
+Итого: PASS 160, FAIL 4, NOT_RUN 4
 
 | Слой | Шаг | Проверка | Итог | Подробно | Кадр |
 |---|---|---|---|---|---|
@@ -16,8 +16,8 @@
 | API | 2 | /classify (ru) → «Остановки и транспорт», ответ по §7 | **PASS** | {"status":200,"category":"transport","score":1,"needs_review":true,"model":"civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"} |  |
 | API | 2 | /classify (kk) → «Остановки и транспорт», ответ по §7 | **PASS** | {"status":200,"category":"transport","score":1,"needs_review":true,"model":"civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"} |  |
 | API | 2 | /classify (mixed) → «Остановки и транспорт», ответ по §7 | **PASS** | {"status":200,"category":"transport","score":1,"needs_review":true,"model":"civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"} |  |
-| API | 1 | POST /complaints: запись §5 (id c-…, status new, target сохранён) | **PASS** | {"status":201,"id":"c-dbbbd6e5fcc472c6","st":"new"} |  |
-| API | 2 | /similar находит только что поданную жалобу на ту же остановку | **PASS** | {"status":200,"n":1,"top":{"complaint_id":"c-dbbbd6e5fcc472c6","score":0.798,"target":{"id":"osm-node-13394597038","kind":"object","label_kk":"«Республиканский диагностический центр» аялдамасы","label_ru":"Остановка «Рес |  |
+| API | 1 | POST /complaints: запись §5 (id c-…, status new, target сохранён) | **PASS** | {"status":201,"id":"c-7770f99221432cf0","st":"new"} |  |
+| API | 2 | /similar находит только что поданную жалобу на ту же остановку | **PASS** | {"status":200,"n":1,"top":{"complaint_id":"c-7770f99221432cf0","score":0.798,"target":{"id":"osm-node-13394597038","kind":"object","label_kk":"«Республиканский диагностический центр» аялдамасы","label_ru":"Остановка «Рес |  |
 | API | 2 | «Я тоже» другим устройством: metoo +1 | **PASS** | {"status":200,"metoo":1} |  |
 | API | 2 | повторное «Я тоже» с того же устройства не увеличивает счёт | **PASS** | {"status":200,"metoo":1} |  |
 | API | 3 | /heat (Нура, 30 дней, z16): цель жалобы есть, level ≥ 1, count ≥ 1, форма есть | **PASS** | {"status":200,"items":31,"target":{"level":4,"count":21,"weight":15.609,"kind":"object"}} |  |
@@ -25,10 +25,10 @@
 | API | 4 | /akim/summary: KPI, темы, районы, горячие места, просрочки, отставание, текст ru/kk | **PASS** | {"status":200,"complaints_available":true,"sources":{"complaints":"r07","objects":"r06","proposals":"r06","heat":"r07"},"hot":10} |  |
 | API | 5 | вход сотрудника акимата (сессия + CSRF) | **PASS** | {"ok":true,"status":200} |  |
 | API | 5 | GET /proposals: демо-предложения (seed-r14-demo) со статусом | **PASS** | {"status":200,"n":5,"statuses":["proposal"]} |  |
-| API | 5 | POST /proposals (сквер) от сотрудника | **PASS** | {"status":201,"id":"p-aba0e4a61c62","st":"proposal"} |  |
+| API | 5 | POST /proposals (сквер) от сотрудника | **PASS** | {"status":201,"id":"p-f0491736053c","st":"proposal"} |  |
 | API | 5 | голос «За» +1, повтор с того же устройства не удваивает | **PASS** | {"first":[200,1],"second":[200,1]} |  |
 | API | 6 | сотрудник: «Взять в работу» → «Исправлено» | **PASS** | {"in_progress":200,"fixed":200} |  |
-| API | 6 | после «исправлено» цель зелёная (fixed_until задан, вес обнулён) | **PASS** | {"item":{"level":"fixed","weight":0,"fixed_until":"2026-10-18T22:36:45+05:00"}} |  |
+| API | 6 | после «исправлено» цель зелёная (fixed_until задан, вес обнулён) | **PASS** | {"item":{"level":"fixed","weight":0,"fixed_until":"2026-10-19T01:23:55+05:00"}} |  |
 | API | 6 | GET /complaints: статус fixed и история статусов | **PASS** | {"status":200,"st":"fixed","history":3} |  |
 | UI 1366-ru | 0 | шапка: ҚАЗ/РУС на виду, язык страницы переключился | **PASS** | {"lang":"ru"} | 1366-ru-0-start.jpg |
 | UI 1366-ru | 0 | нет горизонтальной прокрутки | **PASS** | {"scrollW":1366,"w":1366} |  |
@@ -44,14 +44,14 @@
 | UI 1366-ru | 1 | нажатие по значку на остановке выбирает место (значок не перехватывает нажатие) | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m"} |  |
 | UI 1366-ru | 1 | после нажатия на карту в форме предложена остановка «Хан Шатыр» | **PASS** | {"point":{"x":682.9999999933773,"y":345.60000001721914,"onCanvas":false,"under":"r07-badge maplibregl-marker maplibregl-m","near":{"x":682.9999999933773,"y":375.60000001721914,"r":30}},"names":["Хан Шатыр"]} | 1366-ru-1-target.jpg |
 | UI 1366-ru | 2 | модель предложила категорию «Освещение» («Похоже на:») | **PASS** | {"textbox":true,"suggested":true,"catShown":true} | 1366-ru-2-category.jpg |
-| UI 1366-ru | 2 | после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено» | **PASS** | {"sent":true,"metoo":true,"done":true} | 1366-ru-2-sent.jpg |
+| UI 1366-ru | 2 | после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено» | **PASS** | {"sent":true,"next":false,"metoo":true,"done":true} | 1366-ru-2-sent.jpg |
 | UI 1366-ru | 3 | тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна | **PASS** | {"map":true,"layers":13,"rendered":54,"badges":17,"legend":true} | 1366-ru-3-heat.jpg |
 | UI 1366-ru | 3 | фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории» | **PASS** | {"opened":true,"chip":true,"reset":true,"back":true} |  |
 | UI 1366-ru | 3 | «Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт | **PASS** | [{"title":"1 11 Двор у ул. Коксенгир Дворы и площадки · 11 че","badge":true,"inView":true,"at":[683,384],"covered":null},{"title":"2 8 Участок ул. Е-308 Снег и гололёд · 8 чел.","badge":true,"inView":true,"at":[683,384], | 1366-ru-3-hot.jpg |
 | UI 1366-ru | 4 | «Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено» | **PASS** | {"day":true,"placeholder_soon":false,"kpis":4,"kpiText":true,"overdue":true} | 1366-ru-4-day.jpg |
 | UI 1366-ru | 5 | вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт | **PASS** | {"opened":true,"ok":true,"tech":[]} | 1366-ru-5-login.jpg |
 | UI 1366-ru | 5 | кабинет сотрудника: нет технических слов (адреса API, роли сервера) | **PASS** | {"tech":[]} |  |
-| UI 1366-ru | 5 | каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение | **PASS** | {"catalog":true,"unfolded":true,"kinds":["square","playground","sports","stop","lighting"]} | 1366-ru-5-catalog.jpg |
+| UI 1366-ru | 5 | каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение | **PASS** | {"catalog":true,"unfolded":true,"kinds":["square","playground","sports","stop","lighting"],"projects_layer":null} | 1366-ru-5-catalog.jpg |
 | UI 1366-ru | 5 | «Сквер» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027 | **PASS** | {"hint":true,"rotate":[true,true],"placedClick":true,"placedMsg":true,"label_px_from_place":26} | 1366-ru-5-placed.jpg |
 | UI 1366-ru | 5 | после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом | **PASS** | {"place":[683,346],"at_place":null,"at_label":null} | 1366-ru-5-placed.jpg |
 | UI 1366-ru | 5 | кнопка «3D» наклоняет карту | **PASS** | {"b3d":true,"pitch0":0,"pitch1":51.99999999999999} | 1366-ru-5-3d.jpg |
@@ -60,7 +60,8 @@
 | UI 1366-ru | 6 | карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки) | **PASS** | {"badge":true,"inView":true,"at":[683,346],"covered":null} |  |
 | UI 1366-ru | 6 | акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Исправлено», зелёным на карте | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":true,"fix":true,"fixedShown":true,"green":true} | 1366-ru-6-fixed.jpg |
 | UI 1366-ru | 6 | клавиатура: Esc закрывает карточку остановки | **PASS** | {"stillOpen":false} |  |
-| UI 1366-ru | 6 | житель: «Мои обращения» → у обращения статус «Исправлено» | **PASS** | {"mineOpen":true,"mineFixed":true} | 1366-ru-6-mine.jpg |
+| UI 1366-ru | 6 | житель: «Мои обращения» → у обращения статус «Исправлено» (с волны 2 — «Служба сообщила об устранении») | **PASS** | {"mineOpen":true,"mineFixed":true,"mineReported":false} | 1366-ru-6-mine.jpg |
+| UI 1366-ru | 7 | житель проверяет ремонт («Да, исправлено» → «Проверено жителями») | **NOT_RUN** | "в сборке нет проверки жителем (до волны 2)" |  |
 | UI 1366-ru | * | консоль без ошибок (кроме шума среды: подложка, WebGL) | **PASS** | [] |  |
 | UI 1366-ru | E | нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 1366-ru-E-heat.jpg |
 | UI 1366-ru | E | нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 1366-ru-E-mine.jpg |
@@ -81,7 +82,7 @@
 | UI 1366-kk | 1 | нажатие по значку на остановке выбирает место (значок не перехватывает нажатие) | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m"} |  |
 | UI 1366-kk | 1 | после нажатия на карту в форме предложена остановка «Центр материнства и детства» | **PASS** | {"point":{"x":682.9999999933773,"y":345.60000000066225,"onCanvas":false,"under":"r07-badge maplibregl-marker maplibregl-m","near":{"x":682.9999999933773,"y":375.60000000066225,"r":30}},"names":["Центр материнства и детст | 1366-kk-1-target.jpg |
 | UI 1366-kk | 2 | модель предложила категорию «Жарықтандыру» («Ұқсас санат:») | **PASS** | {"textbox":true,"suggested":true,"catShown":true} | 1366-kk-2-category.jpg |
-| UI 1366-kk | 2 | после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено» | **PASS** | {"sent":true,"metoo":false,"done":true} | 1366-kk-2-sent.jpg |
+| UI 1366-kk | 2 | после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено» | **PASS** | {"sent":true,"next":false,"metoo":false,"done":true} | 1366-kk-2-sent.jpg |
 | UI 1366-kk | 3 | тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна | **PASS** | {"map":true,"layers":13,"rendered":54,"badges":17,"legend":true} | 1366-kk-3-heat.jpg |
 | UI 1366-kk | 3 | фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории» | **PASS** | {"opened":true,"chip":true,"reset":true,"back":true} |  |
 | UI 1366-kk | 3 | «Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт | **PASS** | [{"title":"1 11 Коксенгир көшесі маңындағы аула Аулалар мен а","badge":true,"inView":true,"at":[683,384],"covered":null},{"title":"2 8 Е-308 көшесінің бөлігі Қар және көктайғақ · 8 ","badge":true,"inView":true,"at":[683, | 1366-kk-3-hot.jpg |
@@ -89,7 +90,7 @@
 | UI 1366-kk | 5 | вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт | **PASS** | {"opened":true,"ok":true,"ru_in_kk":[],"tech":[]} | 1366-kk-5-login.jpg |
 | UI 1366-kk | 5 | кабинет сотрудника: нет технических слов (адреса API, роли сервера) | **PASS** | {"tech":[]} |  |
 | UI 1366-kk | 5 | ҚАЗ: форма входа и кабинет сотрудника по-казахски | **PASS** | {"ru":[]} |  |
-| UI 1366-kk | 5 | каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение | **PASS** | {"catalog":true,"unfolded":true,"kinds":["square","playground","sports","stop","lighting"]} | 1366-kk-5-catalog.jpg |
+| UI 1366-kk | 5 | каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение | **PASS** | {"catalog":true,"unfolded":true,"kinds":["square","playground","sports","stop","lighting"],"projects_layer":null} | 1366-kk-5-catalog.jpg |
 | UI 1366-kk | 5 | «Гүлзар» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027 | **PASS** | {"hint":true,"rotate":[true,true],"placedClick":true,"placedMsg":true,"label_px_from_place":26} | 1366-kk-5-placed.jpg |
 | UI 1366-kk | 5 | после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом | **PASS** | {"place":[683,346],"at_place":null,"at_label":null} | 1366-kk-5-placed.jpg |
 | UI 1366-kk | 5 | кнопка «3D» наклоняет карту | **PASS** | {"b3d":true,"pitch0":0,"pitch1":51.99999999999999} | 1366-kk-5-3d.jpg |
@@ -98,7 +99,8 @@
 | UI 1366-kk | 6 | карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки) | **PASS** | {"badge":true,"inView":true,"at":[683,346],"covered":null} |  |
 | UI 1366-kk | 6 | акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Түзетілді», зелёным на карте | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":true,"fix":true,"fixedShown":true,"green":true} | 1366-kk-6-fixed.jpg |
 | UI 1366-kk | 6 | клавиатура: Esc закрывает карточку остановки | **PASS** | {"stillOpen":false} |  |
-| UI 1366-kk | 6 | житель: «Менің өтініштерім» → у обращения статус «Түзетілді» | **PASS** | {"mineOpen":true,"mineFixed":true} | 1366-kk-6-mine.jpg |
+| UI 1366-kk | 6 | житель: «Менің өтініштерім» → у обращения статус «Түзетілді» (с волны 2 — «Қызмет түзетілгенін хабарлады») | **PASS** | {"mineOpen":true,"mineFixed":true,"mineReported":false} | 1366-kk-6-mine.jpg |
+| UI 1366-kk | 7 | житель проверяет ремонт («Да, исправлено» → «Проверено жителями») | **NOT_RUN** | "в сборке нет проверки жителем (до волны 2)" |  |
 | UI 1366-kk | * | консоль без ошибок (кроме шума среды: подложка, WebGL) | **PASS** | [] |  |
 | UI 1366-kk | E | нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 1366-kk-E-heat.jpg |
 | UI 1366-kk | E | нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 1366-kk-E-mine.jpg |
@@ -116,14 +118,14 @@
 | UI 375-ru | 1 | нажатие по значку на остановке выбирает место (значок не перехватывает нажатие) | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m"} |  |
 | UI 375-ru | 1 | после нажатия на карту в форме предложена остановка «Жилой комплекс Зелёный Квартал» | **PASS** | {"point":{"x":187.50000000626386,"y":365.40000000375835,"onCanvas":false,"under":"r07-badge maplibregl-marker maplibregl-m","near":{"x":187.50000000626386,"y":395.40000000375835,"r":30}},"names":["Жилой комплекс Зелёный  | 375-ru-1-target.jpg |
 | UI 375-ru | 2 | модель предложила категорию «Освещение» («Похоже на:») | **PASS** | {"textbox":true,"suggested":true,"catShown":true} | 375-ru-2-category.jpg |
-| UI 375-ru | 2 | после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено» | **PASS** | {"sent":true,"metoo":false,"done":true} | 375-ru-2-sent.jpg |
+| UI 375-ru | 2 | после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено» | **PASS** | {"sent":true,"next":false,"metoo":false,"done":true} | 375-ru-2-sent.jpg |
 | UI 375-ru | 3 | тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна | **PASS** | {"map":true,"layers":13,"rendered":20,"badges":2,"legend":true} | 375-ru-3-heat.jpg |
 | UI 375-ru | 3 | фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории» | **PASS** | {"opened":true,"chip":true,"reset":true,"back":true} |  |
 | UI 375-ru | 3 | «Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт | **PASS** | [{"title":"1 11 Двор у ул. Коксенгир Дворы и площадки · 11 че","badge":true,"inView":true,"at":[188,406],"covered":null},{"title":"2 8 Участок ул. Е-308 Снег и гололёд · 8 чел.","badge":true,"inView":true,"at":[188,406], | 375-ru-3-hot.jpg |
 | UI 375-ru | 4 | «Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено» | **PASS** | {"day":true,"placeholder_soon":false,"kpis":4,"kpiText":true,"overdue":true} | 375-ru-4-day.jpg |
 | UI 375-ru | 5 | вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт | **PASS** | {"opened":true,"ok":true,"tech":[]} | 375-ru-5-login.jpg |
 | UI 375-ru | 5 | кабинет сотрудника: нет технических слов (адреса API, роли сервера) | **PASS** | {"tech":[]} |  |
-| UI 375-ru | 5 | каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение | **PASS** | {"catalog":true,"unfolded":true,"kinds":["square","playground","sports","stop","lighting"]} | 375-ru-5-catalog.jpg |
+| UI 375-ru | 5 | каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение | **PASS** | {"catalog":true,"unfolded":true,"kinds":["square","playground","sports","stop","lighting"],"projects_layer":null} | 375-ru-5-catalog.jpg |
 | UI 375-ru | 5 | «Сквер» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027 | **PASS** | {"hint":false,"rotate":[true,true],"placedClick":true,"placedMsg":true,"label_px_from_place":26} | 375-ru-5-placed.jpg |
 | UI 375-ru | 5 | после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом | **FAIL** | {"place":[188,345],"at_place":"Проект поставленОтменить","at_label":"Проект поставленОтменить","after_6s":null} | 375-ru-5-placed.jpg |
 | UI 375-ru | 5 | кнопка «3D» наклоняет карту | **PASS** | {"b3d":true,"pitch0":0,"pitch1":51.99999999999999} | 375-ru-5-3d.jpg |
@@ -131,7 +133,8 @@
 | UI 375-ru | 5 | акимат: карточка проекта → «Удалить» → «Проект удалён» | **PASS** | {"label":true,"delClick":true,"deleted":true} |  |
 | UI 375-ru | 6 | карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки) | **PASS** | {"badge":true,"inView":true,"at":[188,365],"covered":null} |  |
 | UI 375-ru | 6 | акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Исправлено», зелёным на карте | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":false,"fix":true,"fixedShown":true,"green":true,"note":"место уже «В работе» — кнопки «Взять в работу» нет"} | 375-ru-6-fixed.jpg |
-| UI 375-ru | 6 | житель: «Мои обращения» → у обращения статус «Исправлено» | **PASS** | {"mineOpen":true,"mineFixed":true} | 375-ru-6-mine.jpg |
+| UI 375-ru | 6 | житель: «Мои обращения» → у обращения статус «Исправлено» (с волны 2 — «Служба сообщила об устранении») | **PASS** | {"mineOpen":true,"mineFixed":true,"mineReported":false} | 375-ru-6-mine.jpg |
+| UI 375-ru | 7 | житель проверяет ремонт («Да, исправлено» → «Проверено жителями») | **NOT_RUN** | "в сборке нет проверки жителем (до волны 2)" |  |
 | UI 375-ru | * | консоль без ошибок (кроме шума среды: подложка, WebGL) | **PASS** | [] |  |
 | UI 375-ru | E | нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 375-ru-E-heat.jpg |
 | UI 375-ru | E | нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 375-ru-E-mine.jpg |
@@ -151,7 +154,7 @@
 | UI 375-kk | 1 | нажатие по значку на остановке выбирает место (значок не перехватывает нажатие) | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m"} |  |
 | UI 375-kk | 1 | после нажатия на карту в форме предложена остановка «Национальный кардиологический центр» | **PASS** | {"point":{"x":187.50000000626386,"y":365.4000000006264,"onCanvas":false,"under":"r07-badge maplibregl-marker maplibregl-m","near":{"x":187.50000000626386,"y":395.4000000006264,"r":30}},"names":["Национальный кардиологиче | 375-kk-1-target.jpg |
 | UI 375-kk | 2 | модель предложила категорию «Жарықтандыру» («Ұқсас санат:») | **PASS** | {"textbox":true,"suggested":true,"catShown":true} | 375-kk-2-category.jpg |
-| UI 375-kk | 2 | после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено» | **PASS** | {"sent":true,"metoo":false,"done":true} | 375-kk-2-sent.jpg |
+| UI 375-kk | 2 | после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено» | **PASS** | {"sent":true,"next":false,"metoo":false,"done":true} | 375-kk-2-sent.jpg |
 | UI 375-kk | 3 | тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна | **PASS** | {"map":true,"layers":13,"rendered":20,"badges":2,"legend":true} | 375-kk-3-heat.jpg |
 | UI 375-kk | 3 | фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории» | **PASS** | {"opened":true,"chip":true,"reset":true,"back":true} |  |
 | UI 375-kk | 3 | «Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт | **PASS** | [{"title":"1 11 Коксенгир көшесі маңындағы аула Аулалар мен а","badge":true,"inView":true,"at":[188,406],"covered":null},{"title":"2 8 Е-308 көшесінің бөлігі Қар және көктайғақ · 8 ","badge":true,"inView":true,"at":[188, | 375-kk-3-hot.jpg |
@@ -159,7 +162,7 @@
 | UI 375-kk | 5 | вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт | **PASS** | {"opened":true,"ok":true,"ru_in_kk":[],"tech":[]} | 375-kk-5-login.jpg |
 | UI 375-kk | 5 | кабинет сотрудника: нет технических слов (адреса API, роли сервера) | **PASS** | {"tech":[]} |  |
 | UI 375-kk | 5 | ҚАЗ: форма входа и кабинет сотрудника по-казахски | **PASS** | {"ru":[]} |  |
-| UI 375-kk | 5 | каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение | **PASS** | {"catalog":true,"unfolded":true,"kinds":["square","playground","sports","stop","lighting"]} | 375-kk-5-catalog.jpg |
+| UI 375-kk | 5 | каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение | **PASS** | {"catalog":true,"unfolded":true,"kinds":["square","playground","sports","stop","lighting"],"projects_layer":null} | 375-kk-5-catalog.jpg |
 | UI 375-kk | 5 | «Гүлзар» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027 | **PASS** | {"hint":false,"rotate":[true,true],"placedClick":true,"placedMsg":true,"label_px_from_place":26} | 375-kk-5-placed.jpg |
 | UI 375-kk | 5 | после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом | **FAIL** | {"place":[188,325],"at_place":"Жоба орнатылдыБолдырмау","at_label":"Жоба орнатылдыБолдырмау","after_6s":null} | 375-kk-5-placed.jpg |
 | UI 375-kk | 5 | кнопка «3D» наклоняет карту | **PASS** | {"b3d":true,"pitch0":0,"pitch1":51.99999999999999} | 375-kk-5-3d.jpg |
@@ -167,7 +170,8 @@
 | UI 375-kk | 5 | акимат: карточка проекта → «Удалить» → «Проект удалён» | **PASS** | {"label":true,"delClick":true,"deleted":true} |  |
 | UI 375-kk | 6 | карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки) | **PASS** | {"badge":true,"inView":true,"at":[187,365],"covered":null} |  |
 | UI 375-kk | 6 | акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Түзетілді», зелёным на карте | **PASS** | {"under":"r07-badge maplibregl-marker maplibregl-m","take":true,"fix":true,"fixedShown":true,"green":true} | 375-kk-6-fixed.jpg |
-| UI 375-kk | 6 | житель: «Менің өтініштерім» → у обращения статус «Түзетілді» | **PASS** | {"mineOpen":true,"mineFixed":true} | 375-kk-6-mine.jpg |
+| UI 375-kk | 6 | житель: «Менің өтініштерім» → у обращения статус «Түзетілді» (с волны 2 — «Қызмет түзетілгенін хабарлады») | **PASS** | {"mineOpen":true,"mineFixed":true,"mineReported":false} | 375-kk-6-mine.jpg |
+| UI 375-kk | 7 | житель проверяет ремонт («Да, исправлено» → «Проверено жителями») | **NOT_RUN** | "в сборке нет проверки жителем (до волны 2)" |  |
 | UI 375-kk | * | консоль без ошибок (кроме шума среды: подложка, WebGL) | **PASS** | [] |  |
 | UI 375-kk | E | нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 375-kk-E-heat.jpg |
 | UI 375-kk | E | нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные | **PASS** | {"opened":true,"message":true,"retry":true,"recovered":true} | 375-kk-E-mine.jpg |
@@ -175,10 +179,10 @@
 
 Время шагов, с (паузы теста + ожидание страницы):
 
-| Слой | 0 | 1 | 2 | 3 | 4 | 5 | 6 | * | E | всего |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| API | 9.6 | 0.0 | 0.1 | 0.0 | 0.1 | 0.3 | 0.0 |  |  | 10.1 |
-| UI 1366-ru | 11.8 | 9.4 | 10.4 | 24.5 | 3.6 | 50.8 | 14.8 | 0.0 | 32.5 | 157.7 |
-| UI 1366-kk | 11.8 | 8.6 | 7.8 | 23.1 | 3.6 | 50.3 | 15.2 | 0.0 | 33.6 | 154.0 |
-| UI 375-ru | 7.8 | 8.6 | 7.7 | 22.9 | 4.4 | 53.7 | 14.3 | 0.0 | 33.3 | 152.8 |
-| UI 375-kk | 10.4 | 8.4 | 7.7 | 23.1 | 4.4 | 53.9 | 16.3 | 0.0 | 34.9 | 159.1 |
+| Слой | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | * | E | всего |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| API | 6.7 | 0.0 | 0.0 | 0.0 | 0.1 | 0.2 | 0.0 |  |  |  | 7.0 |
+| UI 1366-ru | 9.1 | 9.2 | 10.3 | 24.0 | 3.6 | 50.4 | 14.5 | 0.0 | 0.0 | 32.8 | 154.0 |
+| UI 1366-kk | 11.8 | 8.5 | 7.7 | 23.7 | 3.6 | 50.2 | 15.2 | 0.0 | 0.0 | 32.5 | 153.4 |
+| UI 375-ru | 7.7 | 8.3 | 7.7 | 22.9 | 4.4 | 53.8 | 14.3 | 0.0 | 0.0 | 33.2 | 152.5 |
+| UI 375-kk | 10.4 | 8.4 | 7.7 | 23.0 | 4.4 | 54.0 | 16.4 | 0.0 | 0.0 | 33.4 | 157.7 |
