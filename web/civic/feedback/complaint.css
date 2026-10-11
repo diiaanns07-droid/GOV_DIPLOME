@@ -123,3 +123,74 @@
 /* Выбор места: значки на карте (тепловая карта R07 и др.) выбирают место, как нажатие по карте (B-019). */
 html.bc-picking .maplibregl-marker,
 html.bc-picking .maplibregl-marker * { cursor: crosshair; }
+
+/* ───────────── Волны 1–2 (POLISH_WAVE, POLISH_WAVE_2) — всё внутри мастера и «Моих обращений», не на карте ───────────── */
+/* Уточнения: чипы в несколько строк, без прокрутки вбок (казахские подписи длиннее). */
+.bc-subtopics { display: flex; flex-wrap: wrap; gap: 8px; }
+.bc-subtopics .bk-chip { white-space: normal; text-align: left; min-height: 44px; }
+
+/* Срочный случай: крупно, цвет + слово + действие (UX_BRIEF: цвет никогда не один). */
+.bc-emergency { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: var(--r-l, 16px);
+                border: 2px solid var(--c-danger, #b3362e); background: #fdecea; }
+.bc-emergency__title { display: flex; align-items: center; gap: 8px; margin: 0; font-size: var(--fs-lead, 18px);
+                       font-weight: 700; color: var(--c-danger, #b3362e); }
+.bc-emergency__text { margin: 0; font-weight: 600; }
+.bc-emergency__call { min-height: 56px; text-decoration: none; white-space: normal; }
+
+/* Фото: миниатюры 72 px, крестик удаления ≥ 44 px. */
+.bc-photos { display: flex; flex-direction: column; gap: 8px; }
+.bc-photo-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.bc-photo-add { align-self: flex-start; }
+.bc-thumbs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.bc-thumb { position: relative; width: 72px; height: 72px; border-radius: var(--r-m, 12px); overflow: hidden;
+            background: var(--c-paper, #f7f8f4); border: 1px solid var(--c-line, #e4e9e3); }
+.bc-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bc-thumb__remove { position: absolute; top: -2px; right: -2px; width: 44px; height: 44px; background: transparent; }
+.bc-thumb__remove .ic { width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: rgba(21, 44, 38, .75); color: #fff; }
+.bc-thumbs--small .bc-thumb { width: 56px; height: 56px; }
+
+/* Экран проверки перед отправкой. */
+.bc-review { display: grid; grid-template-columns: minmax(80px, auto) 1fr; gap: 6px 12px; margin: 0; }
+.bc-review__row { display: contents; }
+.bc-review dt { color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 14px); padding-top: 2px; }
+.bc-review dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.bc-review__text { font-weight: 400; white-space: pre-wrap; }
+.bc-visibility { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: var(--r-m, 12px);
+                 background: var(--c-paper, #f7f8f4); }
+.bc-visibility p { display: flex; gap: 8px; align-items: flex-start; margin: 0; }
+.bc-next { margin: 0; font-weight: 600; }
+.bc-metoo-caption { margin-top: -4px; text-align: center; }
+
+/* «Мои обращения»: что изменилось, проверка ремонта, состояние, «Подробнее». */
+.bc-changes { display: flex; flex-direction: column; gap: 6px; border-color: var(--c-brand, #176b4a); }
+.bc-changes__title { margin: 0; font-size: var(--fs-lead, 18px); font-weight: 700; }
+.bc-changes__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.bc-changes__item { display: block; width: 100%; min-height: 44px; padding: 8px 0; border: 0; background: none;
+                    text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.bc-changes__item:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+.bc-verify { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: var(--r-m, 12px);
+             background: #eaf4dc; border: 1px dashed var(--fixed, #639922); }
+.bc-verify p { margin: 0; }
+.bc-verify__reported { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--c-ok, #2f6b12); }
+.bc-verify__question { font-weight: 700; font-size: var(--fs-lead, 18px); }
+.bc-verify__buttons { display: flex; flex-direction: column; gap: 8px; }
+.bc-state { display: flex; align-items: center; gap: 6px; margin: 0; font-weight: 600; }
+.bc-state--verified { color: var(--c-ok, #2f6b12); }
+.bc-state--reopened { color: var(--c-danger, #b3362e); }
+.bc-more summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600;
+                   color: var(--c-brand, #176b4a); }
+.bc-more summary:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+.bc-passport, .bc-updates { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.bc-mine__card--focus { box-shadow: 0 0 0 3px var(--c-accent, #d7f57c), var(--shadow-1, none); }
+.bc-mine__card--pending { border-style: dashed; }
+.bk-status[data-status="pending"] { color: var(--c-warn, #8a5a12); background: var(--c-warn-bg, #fff4dc); }
+
+/* Компонент сотрудника (complaint-staff.js) — внутри карточки акимата, не поверх карты. */
+.bc-staff { display: flex; flex-direction: column; gap: 12px; }
+.bc-staff__summary { margin: 0; }
+.bc-staff__form { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px solid var(--c-line, #e4e9e3); }
+.bc-staff__field { display: flex; flex-direction: column; gap: 4px; }
+.bc-staff__field input { min-height: 44px; padding: 8px 12px; font: inherit; font-size: 16px; border: 1px solid var(--c-line, #e4e9e3);
+                         border-radius: var(--r-m, 12px); }
+.bc-staff__note { margin: 0; min-height: 1.4em; font-weight: 600; color: var(--c-ok, #2f6b12); }
+.bc-staff__note--error { color: var(--c-danger, #b3362e); }

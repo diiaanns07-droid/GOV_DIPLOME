@@ -54,7 +54,9 @@ def test_ru_kk_same_keys_and_no_empty():
 def test_every_key_used_in_code_exists():
     data = strings()
     used = set(re.findall(r'\bt\("([a-z0-9_.]+)"', JS))
-    dynamic_prefixes = {"status.", "complaint.example.", "cat."}  # t("status." + x) — проверяются ниже
+    # t("status." + x) и т. п. — составные ключи; каждый вариант проверяется ниже.
+    dynamic_prefixes = {"status.", "complaint.example.", "cat.", "complaint.emergency.service.",
+                        "mine.passport.next_default.", "mine.update."}
     missing = sorted(k for k in used if k not in data["ru"] and k not in dynamic_prefixes)
     assert not missing, missing
     # Ключи, собираемые в коде из частей: status.<статус>, complaint.example.<категория>
@@ -62,6 +64,13 @@ def test_every_key_used_in_code_exists():
         assert "status." + status in data["ru"]
     for cat in categories.ids():
         assert "complaint.example." + cat in data["ru"]
+    phones = {s.get("emergency_phone") for c in categories.ids() for s in categories.subtopics(c)} - {None}
+    for phone in phones | {"104", "112"}:
+        assert "complaint.emergency.service." + phone in data["ru"]
+    for status in ("new", "accepted", "in_progress", "fixed", "rejected"):
+        assert "mine.passport.next_default." + status in data["ru"]
+    for kind in ("fixed", "reopened", "passport", "note"):
+        assert "mine.update." + kind in data["ru"]
 
 
 def test_placeholders_match_between_languages():
@@ -86,7 +95,8 @@ def test_no_runtime_internet_and_no_innerhtml_with_data():
         text = (WEB / name).read_text(encoding="utf-8")
         assert "http://" not in text.replace("http://www.w3.org/2000/svg", "") and "https://" not in text, name
     # Тексты пользователей вставляются только через textContent/узлы, не через innerHTML.
-    assert re.findall(r"innerHTML\s*=\s*([^;]+);", JS) == ['""', '""', '""']
+    assignments = re.findall(r"innerHTML\s*=\s*([^;]+);", JS)
+    assert assignments and all(value == '""' for value in assignments)   # только очистка контейнера
 
 
 def test_device_id_and_ml_fallback_present():

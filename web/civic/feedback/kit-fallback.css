@@ -86,3 +86,6 @@
 .bk-iconbtn { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 12px;
               background: transparent; color: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .bk-skel { animation: none; } }
+.bk-btn--danger { background: var(--c-danger); border-color: var(--c-danger); color: #fff; }
+.bk-chips { display: flex; gap: 8px; }
+.bk-chips--wrap { flex-wrap: wrap; }
