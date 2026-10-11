@@ -4,7 +4,7 @@
  "base_sha": "4bbf456",
  "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
  "code_sha": "c5b98a0 (tests/civic/R15); patches — b892532",
- "tested_sha": "a2d90dd (FINAL-кандидат R01, ветка claude/sharp-dijkstra-0t87gl); раньше 96c1f99, 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
+ "tested_sha": "a2d90dd (FINAL-кандидат R01, перепроверен 11 окт новой сессией R15); раньше 96c1f99, 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
  "push_status": "OK — claude/r14-R15 запушена (последний коммит — в финальном сообщении роли)",
  "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
  "changed_paths": [
@@ -24,12 +24,14 @@
   "research/round-14-results/R15/patches/P-R02.diff",
   "research/handoffs/astana/R15/round14/STATUS.md",
   "research/round-14-results/R15/patches/P-R06.diff",
-  "research/round-14-results/R15/patches/P-R05.diff"
+  "research/round-14-results/R15/patches/P-R05.diff",
+  "tests/civic/R15/test_r15_r06_stages.py",
+  "research/round-14-results/R15/patches/P-R06-2.diff"
  ],
  "findings": {
   "critical": 0,
   "important": 11,
-  "minor": 5,
+  "minor": 10,
   "fixed": {
    "S09": "R06 ef35fb6, R01 d3c33d9",
    "S01": "FINAL-кандидат R01 2b9e837 (patches R15)",
@@ -78,10 +80,24 @@
    ],
    "P-R05": [
     "S16"
+   ],
+   "P-R06-2": [
+    "S17",
+    "S18",
+    "S19",
+    "S20",
+    "S21"
    ]
   },
   "fixed_in_role_branch_pending_build": {},
-  "open_in_final_candidate": []
+  "open_in_final_candidate": [
+   "S17",
+   "S18",
+   "S19",
+   "S20",
+   "S21"
+  ],
+  "open_note": "S17–S21 — мелочи R06 (защита в глубину, честность «отстающих», геометрия, демо-голоса, черновые сроки); найдены 11 окт, patch P-R06-2 проверен на a2d90dd"
  },
  "tests": {
   "r15_on_be82fa8": "PASS — 80 passed, 19 xfailed (каждая открытая находка воспроизводится)",
@@ -129,7 +145,16 @@
   "r15_on_final_17dccd9": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
   "r15_on_final_293dc40": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
   "r15_on_final_96c1f99": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
-  "r15_on_final_a2d90dd": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS"
+  "r15_on_final_a2d90dd": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
+  "r15_on_final_a2d90dd_recheck_11oct": "PASS — 136 passed, 7 xfailed (новые S17–S21 воспроизводятся); браузер B1 15/15, B2 27/27; CSP-страницы PASS",
+  "r15_on_final_a2d90dd_with_P-R06-2": "PASS — 136 passed + 7 XPASS(strict): S17–S21 закрыты",
+  "roles_R06_R01_R02_R08_a2d90dd_with_P-R06-2": "PASS — 1241 passed, 5 skipped, 0 failed",
+  "r06_branch_8102eaf_with_P-R06-2": "PASS — tests/civic/R06: 490 passed, 7 skipped",
+  "browser_final_a2d90dd_with_P-R06-2": "PASS — R01 r14_b1 15/15, r14_b2 27/27",
+  "r06_stand_browser_r14": "NOT_RUN — стенд R06 (serve_r14.py + browser_r14.cjs) в облачной среде не дошёл до карточек и без patch (таймаут ожидания .r06-card): сравнить нельзя; приложение R01 с patch — PASS",
+  "supply_chain_pmtiles_recheck_11oct": "PASS — npm pack pmtiles@4.5.0: dist/pmtiles.js sha256 caf981bc… = web/vendor/pmtiles/pmtiles.js; sha512 tarball = SOURCE.txt = registry",
+  "r15_on_own_branch_package_base_11oct": "39 passed, 98 skipped, 6 failed — ожидаемо: регрессия исправленных S01/S10/S15 на старой базе пакета (исправлений в ней нет); модулей раунда 14 нет -> skip",
+  "new_deliveries_after_a2d90dd": "PASS — R06 8102eaf (только demo.html, сервер не отдаёт), R13 956e6f7 (только документы), R03 68350d5 (офлайн-скрипты без сети/pickle/eval): новых рисков нет"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
@@ -137,7 +162,9 @@
   "CSP оставляет style-src 'unsafe-inline' (MapLibre и модули ставят style=\"\")",
   "подложка карты грузится с tiles.openfreemap.org (не скрипты): IP посетителя видит сторонний сервис",
   "согласие в форме сбора текстов не упоминает внешний ИИ-сервис за рубежом (S14) — решение владельца",
-  "patch не применены в сборку R01 — это делает R01; статусы обновлю на B3/FINAL 13–15 окт"
+  "patch не применены в сборку R01 — это делает R01; статусы обновлю на B3/FINAL 13–15 окт",
+  "S17–S21 (мелочи R06) открыты на FINAL a2d90dd — patch P-R06-2 должен взять R06/R01",
+  "S18 после P-R06-2: первый этап объекта после миграции из v1 задаётся без причины (так работает редактор R06)"
  ],
- "next_step": "R15: перепроверять каждый новый SHA FINAL R01 (tests/civic/R15 + браузер со строгой CSP). Для R01 по R15 ничего не осталось."
+ "next_step": "R06 берёт P-R06-2, R01 — поставку R06 и tests/civic/R15 (test_r15_r06_stages.py); R15 переносит S17–S21 в FIXED, когда тесты пройдут на сборке. Каждый новый SHA FINAL: тесты R15 + браузер B1/B2 + CSP-страницы; 13–15 окт — финальная проверка и статусы."
 }

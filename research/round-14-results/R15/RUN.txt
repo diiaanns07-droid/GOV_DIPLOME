@@ -43,4 +43,10 @@ R15 (раунд 14) — как запустить ревью безопасно�
 - INTEGRATION.txt, patches/*.diff — исправления по владельцам.
 - DELIVERY.json — SHA, результаты тестов, ограничения.
 - tests/civic/R15/: test_r15_server.py (R01: статика, заголовки, CSRF, сессия, лимиты, журнал),
-  test_r15_complaints.py (R09), test_r15_round14.py (R06 R07 R08 R04 R12 R13 R02), r15_common.py (каталог находок).
+  test_r15_complaints.py (R09), test_r15_round14.py (R06 R07 R08 R04 R12 R13 R02), r15_common.py (каталог находок),
+  test_r15_r06_stages.py (R06: S17–S21 — функции шлюза, сроки этапов, геометрия, демо-голоса, черновики; 11 окт).
+
+Ожидается на FINAL-кандидате a2d90dd (11 окт): 136 passed, 7 xfailed (S17–S21). С P-R06-2 — 136 passed и 7 XPASS(strict).
+Проверить P-R06-2 на ветке R06: git worktree add ../r06 origin/claude/round-14-r06 && cd ../r06 &&
+  git show origin/claude/r14-R15:research/round-14-results/R15/patches/P-R06-2.diff | git apply - &&
+  python -m pytest tests/civic/R06 -q      # 11 окт: 490 passed, 7 skipped
