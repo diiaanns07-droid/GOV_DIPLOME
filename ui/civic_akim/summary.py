@@ -624,7 +624,7 @@ class AkimService:
                          "target": {"kind": target.get("kind"), "id": target.get("id")} if target.get("id") else None,
                          "on_map": bool(label),
                          "people": 1 + int(r.get("metoo") or 0), "timer": timer,
-                         "service": {"id": service["id"], "ru": service["ru"], "kk": service["kk"]},
+                         "service": {k: service[k] for k in ("id", "ru", "kk", "name_edited")},
                          "demo": bool(r.get("demo"))})
         # Одно место — одна строка: несколько просроченных обращений об одной остановке не повторяем.
         places: dict = {}
@@ -653,6 +653,18 @@ class AkimService:
             demo = bool(items)
         return {"available": self._records is not None, "items": items[:decisions.MAX_ITEMS], "count": len(items),
                 "demo": demo, "source": "example" if demo else "complaints"}
+
+    def choose_decision(self, item_id: str, option, *, actor: str | None = None, district=None) -> dict:
+        """«Выбрать» вариант (R11 IA_WAVE2 §5). Выбирать можно только из пунктов, которые аким сейчас видит."""
+        now = self._clock()
+        day, district = self._params(None, district, now)
+        all_records, _ = self._load_records()
+        scoped = [r for r in all_records if not r.get("duplicate_of")
+                  and (district is None or self._district_of(r) == district)]
+        part = self._decisions_part(scoped, district, now.astimezone(ASTANA_TZ), {})
+        record = decisions.choose(item_id, option, items=part["items"], actor=actor)
+        self.invalidate()
+        return {"id": item_id, "chosen": record}
 
     def _pulse_part(self, recs: list[dict], as_of: datetime, items_now, items_prev) -> dict:
         """«Пульс» (волна 2 п. 8): метод — pulse.py."""

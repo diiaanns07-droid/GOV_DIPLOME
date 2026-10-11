@@ -8,7 +8,8 @@
      Было 0 — «раньше такого не было» (spike_new), если сообщений не меньше MIN_REPORTS.
   2. Новое горячее место (new_hot): цель тепловой карты, о которой за 7 дней сообщили не меньше MIN_REPORTS
      человек, а неделю назад на карте её не было.
-  3. Растёт «Я тоже» (metoo): у одной цели не меньше MIN_METOO_DAY нажатий «Я тоже» за последние сутки.
+  3. Растёт «Я тоже» (metoo): у одной цели за 7 дней не меньше MIN_METOO_WEEK нажатий «Я тоже»
+     и вдвое больше, чем за 7 дней до того (нужны времена нажатий metoo_times).
 Одна тема всплеснула сразу в нескольких районах (снегопад) — одна тревога «по городу» со списком районов
 (spike_city), а не пять одинаковых строк. Порядок — по силе сигнала (score), не больше MAX_ALARMS.
 Ссылка: место на карте (у всплеска — самое горячее место этой категории в районе / в городе).
@@ -25,7 +26,7 @@ BASE_WEEKS = 4
 MIN_BASE_WEEKS = 2
 MIN_REPORTS = 5
 SPIKE_RATIO = 2.0
-MIN_METOO_DAY = 5
+MIN_METOO_WEEK = 8
 MAX_ALARMS = 5
 
 
@@ -100,15 +101,18 @@ def alarms(records: list[dict], as_of: datetime, *, parse_time, district_of, cat
         times = r.get("metoo_times")
         if not tid or not isinstance(times, (list, tuple)):
             continue
-        n = sum(1 for t in (parse_time(x) for x in times) if t is not None and as_of - DAY < t <= as_of)
-        if n:
-            metoo_by_target[tid] = metoo_by_target.get(tid, 0) + n
-    for tid, n in metoo_by_target.items():
-        if n >= MIN_METOO_DAY and tid in labels:
+        acc = metoo_by_target.setdefault(tid, [0, 0])
+        for t in (parse_time(x) for x in times):
+            if t is not None and as_of - WEEK < t <= as_of:
+                acc[0] += 1
+            elif t is not None and as_of - 2 * WEEK < t <= as_of - WEEK:
+                acc[1] += 1
+    for tid, (n, prev) in metoo_by_target.items():
+        if n >= MIN_METOO_WEEK and n >= 2 * prev and tid in labels:
             it = labels[tid]
             cat = next(iter(it.get("by_category") or {}), None)
-            out.append({"kind": "metoo", "category": cat, "district": it.get("district"), "value": n,
-                        "score": n * 2.0, "target": _target(it)})
+            out.append({"kind": "metoo", "category": cat, "district": it.get("district"), "value": n, "prev": prev,
+                        "score": n * 1.5, "target": _target(it)})
 
     out.sort(key=lambda a: (-a["score"], a["kind"], str(a.get("category")), str(a.get("district"))))
     out = out[:MAX_ALARMS]
@@ -119,10 +123,12 @@ def alarms(records: list[dict], as_of: datetime, *, parse_time, district_of, cat
         for row in a.get("districts") or []:
             n = district_names.get(row["district"]) or {}
             row.update(ru=n.get("ru") or row["district"], kk=n.get("kk") or row["district"])
+        # «×{k}» для экрана — с шагом 0,5 (R11 IA_WAVE2 §7): «×4», «×3,5», без ложной точности.
+        a["k"] = max(1.0, round(a["ratio"] * 2) / 2) if a.get("ratio") else None
         a["text"] = {"ru": T.pulse_ru(a), "kk": T.pulse_kk(a)}
     return {"available": True, "items": out, "base_weeks": len(weeks),
             "method": {"min_reports": MIN_REPORTS, "spike_ratio": SPIKE_RATIO, "base_weeks": BASE_WEEKS,
-                       "min_metoo_day": MIN_METOO_DAY},
+                       "min_metoo_week": MIN_METOO_WEEK},
             "note": None if len(weeks) >= MIN_BASE_WEEKS else "too_little_history"}
 
 

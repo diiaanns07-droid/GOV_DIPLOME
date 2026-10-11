@@ -10,6 +10,8 @@
     GET /api/civic/v2/akim/routing?category=roads&subtopic=marking   → одна служба (для карточки R09)
     PUT /api/civic/v2/akim/routing  {"rules": {...}, "services": {...}}   правка акимата:
         handle_put(path, body, staff=True, actor=…) — только для сотрудника; кто сотрудник и CSRF — решает шлюз R01.
+    POST /api/civic/v2/akim/decisions/<id>  {"option": 1|2}   «Выбрать» вариант в «Нужно решение акима»:
+        handle_post(path, body, staff=True, actor=…) — тоже только сотрудник.
 Ошибка в параметрах → 400 {"error":"bad_request","field":…,"message":…}. Сбой расчёта → 500, сервер не падает.
 В ответе нет текстов жалоб и данных жителей — только числа и подписи мест.
 """
@@ -18,7 +20,7 @@ from __future__ import annotations
 import logging
 import traceback
 
-from . import routing
+from . import decisions, routing
 from .summary import AkimError, default_service
 
 PREFIX = "/api/civic/v2"
@@ -63,3 +65,24 @@ def handle_put(path: str, body, *, staff: bool = False, actor: str | None = None
     except Exception:
         log.error("akim routing update failed: %s", traceback.format_exc())
         return 500, {"error": "akim_failed", "message": "таблица служб не сохранилась"}
+
+
+def handle_post(path: str, body, *, staff: bool = False, actor: str | None = None, service=None) -> tuple[int, dict]:
+    """POST /api/civic/v2/akim/decisions/<id> {"option": 1|2}. staff=False → 403."""
+    prefix = PREFIX + "/akim/decisions/"
+    if not path.startswith(prefix):
+        return 404, {"error": "not_found", "message": "нет такого адреса"}
+    if not staff:
+        return 403, {"error": "forbidden", "message": "выбрать вариант может только сотрудник акимата"}
+    svc = service or default_service()
+    try:
+        option = (body or {}).get("option") if isinstance(body, dict) else None
+        return 200, svc.choose_decision(path[len(prefix):], option, actor=actor)
+    except decisions.DecisionError as exc:
+        return exc.status, {"error": "bad_request" if exc.status == 400 else "not_found", "field": exc.field,
+                            "message": str(exc)}
+    except AkimError as exc:
+        return 400, {"error": "bad_request", "field": exc.field, "message": str(exc)}
+    except Exception:
+        log.error("akim decision choice failed: %s", traceback.format_exc())
+        return 500, {"error": "akim_failed", "message": "выбор не сохранился"}

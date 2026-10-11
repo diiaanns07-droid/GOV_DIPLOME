@@ -12,7 +12,8 @@
   .runtime/civic_akim/routing.json (в Git не попадает; путь можно задать BIRGE_AKIM_ROUTING) — так
   обновление кода не стирает их, а «сбросить» = удалить файл.
 - Категории и уточнения — из categories_v2.json (единственный источник); validate() сверяет таблицу с ним.
-- kk названий служб — черновик R08, вычитка R11 (как и kk уточнений в categories_v2.json).
+- kk названий служб вычитан R11 (словарь service.<id>, разбор волны 2 №1); на экране — t("service." + id),
+  а если акимат переименовал службу (edited) — его название как есть.
 """
 from __future__ import annotations
 
@@ -30,8 +31,8 @@ NAME_MAX = 80
 
 SERVICES = {
     "road":            {"ru": "Дорожная служба", "kk": "Жол қызметі"},
-    "traffic":         {"ru": "Служба светофоров и разметки", "kk": "Бағдаршам және жол белгілері қызметі"},
-    "street_cleaning": {"ru": "Служба уборки улиц", "kk": "Көше тазалау қызметі"},
+    "traffic":         {"ru": "Служба светофоров и разметки", "kk": "Бағдаршам және жол таңбасы қызметі"},
+    "street_cleaning": {"ru": "Служба уборки улиц", "kk": "Көшелерді тазалау қызметі"},
     "transport":       {"ru": "Служба общественного транспорта", "kk": "Қоғамдық көлік қызметі"},
     "lighting":        {"ru": "Служба освещения", "kk": "Жарықтандыру қызметі"},
     "landscaping":     {"ru": "Служба благоустройства", "kk": "Абаттандыру қызметі"},
@@ -180,8 +181,9 @@ def service_for(category: str | None, subtopic: str | None = None, path: Path | 
     if isinstance(custom, dict):
         names.update({lang: custom[lang] for lang in ("ru", "kk") if isinstance(custom.get(lang), str) and custom[lang].strip()})
     key = f"{cat}/{subtopic}" if rule == "subtopic" else (cat or "other")
+    # name_edited — акимат переименовал службу: интерфейс показывает его название, а не service.<id> из словаря.
     return {"id": sid, "ru": names["ru"], "kk": names["kk"], "rule": rule,
-            "edited": bool(custom) or key in over["rules"]}
+            "edited": bool(custom) or key in over["rules"], "name_edited": bool(custom)}
 
 
 def _clean_name(value, field: str) -> str:

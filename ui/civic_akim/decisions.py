@@ -14,16 +14,32 @@
   options: [{ru, kk}, {ru, kk}], decision_ru/kk, temp_measure_ru/kk, next_update}.
 Пока R09 не даёт причин, а жалобы — демо (R07), блок показывает пример из fixtures/decisions_demo.json
 (помечен «Пример»): эти записи проходят тот же критерий, что и настоящие.
+
+ВЫБОР АКИМА («Выбрать» у варианта, R11 IA_WAVE2 §5): choose() пишет {option, at, by} в
+.runtime/civic_akim/decisions.json (в Git не попадает; путь — BIRGE_AKIM_DECISIONS). Служба видит выбор
+через choice_for(id) — R09 показывает его в паспорте решения («Решение акима: вариант 1»).
 """
 from __future__ import annotations
 
 import json
-from datetime import date, datetime
+import os
+import re
+import threading
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from . import deadlines, routing
 
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "decisions_demo.json"
+STORE_PATH = Path(os.environ.get("BIRGE_AKIM_DECISIONS") or deadlines.ROOT / ".runtime" / "civic_akim" / "decisions.json")
+ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,95}$")
+_lock = threading.Lock()
+
+
+class DecisionError(ValueError):
+    def __init__(self, field: str, message: str, status: int = 400):
+        super().__init__(message)
+        self.field, self.status = field, status
 NEEDS_DECISION = {"needs_decision", "leader_decision", "akim_decision", "needs_akim_decision", "management_decision"}
 MAX_ITEMS = 3
 
@@ -95,7 +111,7 @@ def build(records: list[dict], as_of: datetime, *, status_at, parse_time, labels
             "target": {"kind": target.get("kind"), "id": target.get("id")} if target and label else None,
             "people": 1 + int(r.get("metoo") or 0),
             "timer": timer,
-            "service": {"id": service["id"], "ru": service["ru"], "kk": service["kk"]},
+            "service": {k: service[k] for k in ("id", "ru", "kk", "name_edited")},
             "problem_ru": _txt(d, "problem", "ru") or (sub or cat)["ru"],
             "problem_kk": _txt(d, "problem", "kk"),
             "blocker_ru": _txt(d, "blocker", "ru"), "blocker_kk": _txt(d, "blocker", "kk"),
@@ -104,6 +120,7 @@ def build(records: list[dict], as_of: datetime, *, status_at, parse_time, labels
             "decision_ru": _txt(d, "decision", "ru"), "decision_kk": _txt(d, "decision", "kk"),
             "temp_measure_ru": _txt(d, "temp_measure", "ru"), "temp_measure_kk": _txt(d, "temp_measure", "kk"),
             "demo": bool(r.get("demo")),
+            "chosen": choice_for(str(r.get("id"))),
         }
         # kk нет — интерфейс покажет русский текст с пометкой (как у объектов без kk), а не пустое место.
         for key in ("problem", "blocker", "decision", "temp_measure"):
@@ -128,3 +145,44 @@ def fixture_records(today: date) -> list[dict]:
             h["at"] = _shift(h.get("at"), days)
         out.append(r)
     return out
+
+
+# ---------------------------------------------------------------- выбор акима
+
+def _load(path: Path | None = None) -> dict:
+    try:
+        data = json.loads(Path(path or STORE_PATH).read_text("utf-8"))
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def choice_for(item_id: str, path: Path | None = None) -> dict | None:
+    """Выбор акима по обращению: {option, at, by} или None. Для R09 (паспорт решения) и для «Картины дня»."""
+    c = _load(path).get(str(item_id))
+    return c if isinstance(c, dict) and c.get("option") in (1, 2) else None
+
+
+def choose(item_id: str, option, *, items: list[dict], actor: str | None = None, path: Path | None = None,
+           now: datetime | None = None) -> dict:
+    """Записать выбор варианта. items — текущие пункты блока: выбирать можно только из них и только из 2 вариантов."""
+    if not isinstance(item_id, str) or not ID_RE.match(item_id):
+        raise DecisionError("id", "неверный номер обращения")
+    item = next((i for i in items if i.get("id") == item_id), None)
+    if item is None:
+        raise DecisionError("id", "этого вопроса нет среди «Нужно решение акима»", 404)
+    if isinstance(option, bool) or option not in (1, 2):
+        raise DecisionError("option", "вариант — 1 или 2")
+    if len(item.get("options") or []) < option:
+        raise DecisionError("option", "у вопроса нет такого варианта")
+    stamp = (now or datetime.now(timezone.utc)).astimezone(timezone(timedelta(hours=5))).isoformat(timespec="seconds")
+    record = {"option": option, "at": stamp, "by": (str(actor)[:80] if actor else None)}
+    p = Path(path or STORE_PATH)
+    with _lock:
+        data = _load(p)
+        data[item_id] = record
+        p.parent.mkdir(parents=True, exist_ok=True)
+        tmp = p.with_suffix(p.suffix + ".tmp")
+        tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")
+        os.replace(tmp, p)
+    return record

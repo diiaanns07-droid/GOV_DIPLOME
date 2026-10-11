@@ -256,7 +256,7 @@ def test_pulse_spike_against_four_week_mean():
     assert a["base_weeks"] == 4
     assert [x["kind"] for x in a["items"]] == ["spike"]
     x = a["items"][0]
-    assert (x["category"], x["district"], x["value"], x["base"], x["ratio"]) == ("snow_ice", "nura", 12, 3.0, 4.0)
+    assert (x["category"], x["district"], x["value"], x["base"], x["ratio"], x["k"]) == ("snow_ice", "nura", 12, 3.0, 4.0, 4.0)
     assert x["text"]["ru"] == ("«Снег и гололёд» в районе Нура: 12 сообщений за 7 дней — в 4 раза больше обычного "
                                "(в среднем 3 в неделю за 4 недели).")
     assert "Нұра ауданында «Қар және көктайғақ»" in x["text"]["kk"] and "4 есе көп" in x["text"]["kk"]
@@ -282,13 +282,14 @@ def test_pulse_new_topic_and_city_merge():
 def test_pulse_metoo_and_new_hot_place():
     target = {"kind": "segment", "id": "seg-1"}
     r = rec("m", age_days=3, category="roads", target=target, district="nura")
-    r["metoo_times"] = [(NOW - timedelta(hours=h)).isoformat() for h in (1, 2, 3, 5, 8, 30)]
-    r["metoo"] = 6
+    r["metoo_times"] = [(NOW - timedelta(days=d)).isoformat() for d in (0.1, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 9, 10)]
+    r["metoo"] = 11
     item = {"target": {**target, "label_ru": "Участок ул. Примерной", "label_kk": "Примерная көшесінің бөлігі"},
             "count": 7, "district": "nura", "by_category": {"roads": 7}, "state": "active"}
     a = _alarms([r], items_now=[item], items_prev=[])
     kinds = {x["kind"]: x for x in a["items"]}
-    assert kinds["metoo"]["value"] == 5 and kinds["metoo"]["text"]["ru"] == "Быстро растёт «Я тоже»: Участок ул. Примерной — +5 за сутки."
+    assert (kinds["metoo"]["value"], kinds["metoo"]["prev"]) == (9, 2)
+    assert kinds["metoo"]["text"]["ru"] == "Чаще жмут «Я тоже»: Участок ул. Примерной — +9 за неделю (неделей раньше — 2)."
     assert kinds["new_hot"]["target"]["id"] == "seg-1"
     # неделю назад место уже было на карте — не «новое»
     assert "new_hot" not in {x["kind"] for x in _alarms([r], items_now=[item], items_prev=[item])["items"]}
@@ -340,3 +341,27 @@ def test_api_payload_has_no_private_fields():
     r["delay"] = _delay()
     body = _j.dumps(summary([r, _fixed(2, check="yes")]), ensure_ascii=False)
     assert "секретный текст" not in body and "_items_now" not in body
+
+
+# ---------------------------------------------------------------- «Выбрать» вариант (R11 IA_WAVE2 §5)
+
+def test_choose_option_persists_and_shows(tmp_path, monkeypatch):
+    from ui.civic_akim import api
+    monkeypatch.setattr(decisions, "STORE_PATH", tmp_path / "decisions.json")
+    r = rec(1, age_days=20, category="roads", status="in_progress")
+    r["delay"] = _delay()
+    no_opts = rec(2, age_days=25, category="roads", status="in_progress")
+    no_opts["delay"] = _delay(options=0)
+    s = svc([r, no_opts])
+    assert api.handle_post("/api/civic/v2/akim/decisions/c-r08-1", {"option": 2}, service=s)[0] == 403
+    code, body = api.handle_post("/api/civic/v2/akim/decisions/c-r08-1", {"option": 2}, staff=True, actor="akim", service=s)
+    assert code == 200 and body["chosen"]["option"] == 2 and body["chosen"]["by"] == "akim"
+    item = next(i for i in s.summary(now=NOW)["decisions"]["items"] if i["id"] == "c-r08-1")
+    assert item["chosen"]["option"] == 2
+    assert decisions.choice_for("c-r08-1")["option"] == 2  # то, что прочтёт R09
+    for bad_id, bad_option, code_expected, field in [("c-r08-1", 3, 400, "option"), ("c-r08-1", True, 400, "option"),
+                                                     ("c-r08-1", "1", 400, "option"), ("c-r08-9", 1, 404, "id"),
+                                                     ("../etc", 1, 400, "id"), ("c-r08-2", 1, 400, "option")]:
+        code, body = api.handle_post(f"/api/civic/v2/akim/decisions/{bad_id}", {"option": bad_option}, staff=True, service=s)
+        assert (code, body.get("field")) == (code_expected, field), (bad_id, bad_option, body)
+    assert api.handle_post("/api/civic/v2/akim/other", {}, staff=True, service=s)[0] == 404

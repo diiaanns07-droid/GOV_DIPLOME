@@ -293,7 +293,7 @@ def pulse_ru(a: dict) -> str:
     if a["kind"] == "new_hot":
         people = plural_ru(n, "человек", "человека", "человек")
         return f"Новое горячее место: {_place(a, 'ru')} — {fmt_num(n)} {people} за 7 дней, неделю назад его на карте не было."
-    return f"Быстро растёт «Я тоже»: {_place(a, 'ru')} — +{fmt_num(n)} за сутки."
+    return f"Чаще жмут «Я тоже»: {_place(a, 'ru')} — +{fmt_num(n)} за неделю (неделей раньше — {fmt_num(a.get('prev') or 0)})."
 
 
 def pulse_kk(a: dict) -> str:
@@ -310,7 +310,7 @@ def pulse_kk(a: dict) -> str:
         return f"{where}: 7 күнде {fmt_num(n)} хабарлама — алдыңғы {fmt_num(a['weeks'])} аптада мұндай болмаған."
     if a["kind"] == "new_hot":
         return f"Жаңа ыстық нүкте: {_place(a, 'kk')} — 7 күнде {fmt_num(n)} адам, бір апта бұрын картада болмаған."
-    return f"«Мен де» тез өсіп жатыр: {_place(a, 'kk')} — бір тәулікте +{fmt_num(n)}."
+    return f"«Мен де» жиі басылады: {_place(a, 'kk')} — аптасына +{fmt_num(n)} (алдыңғы аптада — {fmt_num(a.get('prev') or 0)})."
 
 
 def render_parts(summary: dict, lang: str = "ru") -> list[dict]:
