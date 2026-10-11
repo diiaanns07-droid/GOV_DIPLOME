@@ -596,7 +596,8 @@ await check("phone_375_touch_layout", async () => {
       scroll: document.documentElement.scrollWidth - innerWidth,
       small: [...document.querySelectorAll(".b3d-dock button")].filter((b) => b.getBoundingClientRect().height < 47.5 && b.offsetParent).map((b) => b.textContent),
       cut: [...document.querySelectorAll(".b3d-dock .bk-btn, .b3d-card")]
-        .filter((b) => b.scrollWidth > b.clientWidth + 1 || [...b.querySelectorAll("span")].some((s) => s.scrollWidth > b.clientWidth))
+        // .b3d-sr — подпись кнопки-значка только для экранного диктора (↺ ↻ на телефоне), на экране её нет по замыслу
+        .filter((b) => b.scrollWidth > b.clientWidth + 1 || [...b.querySelectorAll("span:not(.b3d-sr)")].some((s) => s.scrollWidth > b.clientWidth))
         .map((b) => b.textContent),
     }));
   const m1 = await metrics();
@@ -1372,6 +1373,34 @@ await check("idea_pick_works_with_projects_layer_off_1366_375_ru_kk", async () =
     assert(/^build3d\.idea\.hint_/.test(hint.key || "") && hint.done === (lang === "ru" ? "Готово" : "Дайын") && !cat.hidden && cat.picking && cat.kinds === 4 && cat.projectLabels === 0 && ghostLayer === "visible" && res && res.kind === "sports" &&
       after.hidden && !after.picking && after.projectLabels === 0 && after.layer === "none", JSON.stringify(out[`${w}_${lang}`]));
   }
+  return { status: "PASS", detail: out };
+});
+await check("phone_placing_rotate_in_title_row_ghost_visible_375_ru_kk", async () => {
+  // R10 B-041: на телефоне ↺ ↻ — значками в строке названия (имя для экранного диктора и title — «Повернуть вправо»),
+  // панель размещения на ряд ниже; призрак — в видимой части карты. На ноутбуке ряд кнопок как был.
+  const out = {};
+  for (const [w, h, lang] of [[375, 667, "ru"], [375, 667, "kk"], [1366, 768, "ru"]]) {
+    const phone = w < 640;
+    const p = await openPage(Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {}), `?reset=1&store=local&role=akimat&lang=${lang}&` + MAIN_Q.slice(1));
+    await p.evaluate(() => __b3d.start("square"));
+    await p.waitForFunction(() => __b3d.getState().mode === "placing" && !!__b3d.getState().ghost, null, { timeout: 15000 });
+    await idle(p);
+    const r = await p.evaluate(() => {
+      const d = document.querySelector(".b3d-dock"), s = __b3d.getState(), g = __map.project(s.ghost.pos), e = document.elementFromPoint(g.x, g.y);
+      const head = d.querySelector('.b3d-head [data-action="rotate-right"]'), row = d.querySelector('.b3d-actions [data-action="rotate-right"]');
+      return { in_head: !!head, in_actions: !!row, title: head && head.getAttribute("title"), dock_h: Math.round(d.getBoundingClientRect().height),
+        ghost_on_map: !!e && (e.tagName === "CANVAS" || !!e.closest(".b3d-labels")), rot0: s.ghost.rot };
+    });
+    const name = lang === "ru" ? "Повернуть вправо" : "Оңға бұру";
+    const btn = p.getByRole("button", { name, exact: true });
+    await (phone ? btn.tap() : btn.click());
+    r.rot1 = (await state(p)).ghost.rot;
+    if (SHOTS && phone) await p.screenshot({ path: path.join(OUT, "screens", `phone_placing_compact_${w}x${h}_${lang}.png`) });
+    await p.context().close();
+    out[`${w}_${lang}`] = r;
+    assert(r.ghost_on_map && r.rot1 !== r.rot0 && (phone ? r.in_head && !r.in_actions && r.title === name : !r.in_head && r.in_actions), JSON.stringify(r));
+  }
+  assert(out["375_ru"].dock_h < 260 && out["375_kk"].dock_h < 280, JSON.stringify(out));
   return { status: "PASS", detail: out };
 });
 await check("project_from_idea_card_says_by_residents_idea_ru_kk", async () => {

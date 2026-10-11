@@ -775,6 +775,24 @@
       title.appendChild(icon(k.icon, o.iconsUrl));
       title.appendChild(el("span", "", { text: t(k.key) }));
       head.appendChild(title);
+      // Телефон (R10 B-041): ↺ ↻ — значками в строке названия, а не отдельным рядом: панель ниже на 64 px, и над ней
+      // видно место, куда встанет объект (имя кнопки для экранного диктора — то же).
+      var compact = phoneLayout();
+      var rotBtns = k.line ? [] : [
+        actionBtn("rotate-left", t("proposal.rotate_left"), compact ? "b3d-act--icon" : "", function () {
+          rotate(-ROTATE_STEP);
+        }, "rotate-left"),
+        actionBtn("rotate-right", t("proposal.rotate_right"), compact ? "b3d-act--icon" : "", function () {
+          rotate(ROTATE_STEP);
+        }, "rotate-right"),
+      ];
+      if (compact) {
+        var tools = el("div", "b3d-head__tools");
+        rotBtns.forEach(function (b) {
+          tools.appendChild(b);
+        });
+        head.appendChild(tools);
+      }
       head.appendChild(pick ? el("span", "bk-tag b3d-tag--idea", { text: t("build3d.idea.tag") }) : el("span", "bk-tag bk-tag--project", { text: t("common.tag.project") }));
       dock.appendChild(head);
       var hint = el("p", "b3d-hint" + (S.hint && S.hint.error ? " b3d-hint--error" : ""), { role: "status", "aria-live": "polite" });
@@ -792,14 +810,10 @@
         dock.appendChild(line);
       }
       var actions = el("div", "b3d-actions");
-      if (!k.line) {
-        actions.appendChild(actionBtn("rotate-left", t("proposal.rotate_left"), "", function () {
-          rotate(-ROTATE_STEP);
-        }, "rotate-left"));
-        actions.appendChild(actionBtn("rotate-right", t("proposal.rotate_right"), "", function () {
-          rotate(ROTATE_STEP);
-        }, "rotate-right"));
-      }
+      if (!compact)
+        rotBtns.forEach(function (b) {
+          actions.appendChild(b);
+        });
       actions.appendChild(actionBtn("close", t("common.action.cancel"), "", cancel, "cancel"));
       var canPlace = g && g.valid && g.valid.ok && (!k.line || (g.section && g.section.ok));
       var place = actionBtn("check", t(pick ? "common.action.done" : "proposal.place"), "bk-btn--primary", place_, "place");
@@ -811,7 +825,9 @@
     function actionBtn(iconName, label, extra, onClick, action) {
       var b = el("button", "bk-btn b3d-act " + (extra || ""), { type: "button", "data-action": action });
       b.appendChild(icon(iconName, o.iconsUrl));
-      b.appendChild(el("span", "", { text: label }));
+      // Кнопка-значок: подпись остаётся в кнопке для экранного диктора (и подсказкой title), на экране её не видно.
+      b.appendChild(el("span", /b3d-act--icon/.test(extra || "") ? "b3d-sr" : "", { text: label }));
+      if (/b3d-act--icon/.test(extra || "")) b.setAttribute("title", label);
       b.addEventListener("click", function () {
         if (b.getAttribute("aria-disabled") === "true") return;
         onClick();
@@ -2218,6 +2234,12 @@
       }
       updateGhost(true);
       render();
+      // Панель размещения уже на месте — призрак в видимую часть карты, если центр холста ею закрыт.
+      if (S.ghost.follow === "center") {
+        S.ghost.pos = focusLngLat();
+        updateGhost(false);
+        render();
+      }
       focusDock("[data-action=place]");
       return true;
     }
@@ -2521,9 +2543,28 @@
     function onMapMove() {
       if (S.mode !== "placing" || !S.ghost || S.kind === "lighting") return;
       if (S.ghost.follow !== "center") return;
-      var c = map.getCenter();
-      S.ghost.pos = [c.lng, c.lat];
+      S.ghost.pos = focusLngLat();
       scheduleGhost();
+    }
+    // Палец и клавиатура ставят объект «за центром карты». На телефоне в оболочке центр холста закрыт панелью
+    // размещения и шторкой (R10 B-041: призрак и поставленный проект не видно) — тогда точка — центр видимой части
+    // карты (freeArea). Где центр холста виден, всё как раньше.
+    function focusLngLat() {
+      var c = map.getCenter();
+      var f = freeArea(80),
+        cp = map.project(c),
+        m = 24;
+      if (cp.x > f.x0 + m && cp.x < f.x1 - m && cp.y > f.y0 + m && cp.y < f.y1 - m) return [c.lng, c.lat];
+      // Ниже середины полосы: над объектом встанет табличка «Проект · 2027».
+      var q = map.unproject([(f.x0 + f.x1) / 2, f.y0 + (f.y1 - f.y0) * 0.7]);
+      return [q.lng, q.lat];
+    }
+    function phoneLayout() {
+      try {
+        return !!(root.matchMedia && root.matchMedia("(max-width: 760px)").matches);
+      } catch (e) {
+        return false;
+      }
     }
 
     function onMapClick(e) {
@@ -3018,30 +3059,64 @@
         return r && r.width && r.height;
       });
     }
-    // Вычесть из свободной области панель r: отрезаем ту сторону, после которой остаётся больше места
-    // (шапка — сверху, колонка справа — справа, плашка «Территория» в углу — слева). Панель вне области — без изменений.
-    function cutBest(a, r) {
-      var g = 12;
-      if (r.x1 <= a.x0 || r.x0 >= a.x1 || r.y1 <= a.y0 || r.y0 >= a.y1) return a;
-      var opts2 = [
-        { x0: Math.max(a.x0, r.x1 + g), y0: a.y0, x1: a.x1, y1: a.y1 },
-        { x0: a.x0, y0: a.y0, x1: Math.min(a.x1, r.x0 - g), y1: a.y1 },
-        { x0: a.x0, y0: Math.max(a.y0, r.y1 + g), x1: a.x1, y1: a.y1 },
-        { x0: a.x0, y0: a.y0, x1: a.x1, y1: Math.min(a.y1, r.y0 - g) },
-      ];
+    // Самый большой прямоугольник внутри a, не задевающий панели хозяина (с зазором 12 px). Перебор по краям панелей:
+    // их немного (шапка, «Территория», легенда, кнопки карты, шторка), поэтому быстро и не зависит от порядка панелей
+    // в разметке (прежнее «отрезать по одной» в оболочке R01 выбирало полосу над легендой — под шапкой, R10 B-041).
+    // Нет места не меньше minW × minH — оставляем a: лучше частично, чем никак.
+    function largestFree(a, rects, minH) {
+      var g = 12,
+        minW = 160;
+      minH = minH || 120;
+      var obs = rects
+        .map(function (r) {
+          return { x0: r.x0 - g, y0: r.y0 - g, x1: r.x1 + g, y1: r.y1 + g };
+        })
+        .filter(function (r) {
+          return r.x1 > a.x0 && r.x0 < a.x1 && r.y1 > a.y0 && r.y0 < a.y1;
+        });
+      if (!obs.length) return a;
+      var edges = function (lo, hi, k0, k1) {
+        var v = [lo, hi];
+        obs.forEach(function (r) {
+          v.push(r[k0], r[k1]);
+        });
+        return v
+          .map(function (x) {
+            return Math.min(hi, Math.max(lo, x));
+          })
+          .sort(function (p, q) {
+            return p - q;
+          })
+          .filter(function (x, i, arr) {
+            return i === 0 || x !== arr[i - 1];
+          });
+      };
+      var xs = edges(a.x0, a.x1, "x0", "x1"),
+        ys = edges(a.y0, a.y1, "y0", "y1");
       var best = null,
         bestArea = 0;
-      opts2.forEach(function (b) {
-        var ar = Math.max(0, b.x1 - b.x0) * Math.max(0, b.y1 - b.y0);
-        if (ar > bestArea) {
-          best = b;
-          bestArea = ar;
+      for (var i = 0; i < xs.length; i++)
+        for (var j = i + 1; j < xs.length; j++) {
+          var w = xs[j] - xs[i];
+          if (w < minW) continue;
+          for (var k = 0; k < ys.length; k++)
+            for (var l = k + 1; l < ys.length; l++) {
+              var h = ys[l] - ys[k];
+              if (h < minH || w * h <= bestArea) continue;
+              var c = { x0: xs[i], y0: ys[k], x1: xs[j], y1: ys[l] };
+              var hit = obs.some(function (r) {
+                return r.x0 < c.x1 && r.x1 > c.x0 && r.y0 < c.y1 && r.y1 > c.y0;
+              });
+              if (!hit) {
+                best = c;
+                bestArea = w * h;
+              }
+            }
         }
-      });
-      // Слишком мало места (панели закрывают почти всё) — оставляем как было: лучше частично, чем никак.
-      return best && best.x1 - best.x0 >= 160 && best.y1 - best.y0 >= 120 ? best : a;
+      return best || a;
     }
-    function freeArea() {
+    // minH — самая низкая полоса карты, которую ещё считаем свободной (по умолчанию 120 px; призраку хватает 80).
+    function freeArea(minH) {
       var canvas = map.getCanvas();
       var cr = canvas.getBoundingClientRect();
       var w = canvas.clientWidth,
@@ -3060,9 +3135,13 @@
         if (left > a.x0 + (a.x1 - a.x0) * 0.45 && top < a.y0 + (a.y1 - a.y0) * 0.3) a.x1 = Math.max(a.x0 + 120, left); // карточка справа
         else a.y1 = Math.max(a.y0 + 120, top); // панель снизу
       }
-      avoidRects().forEach(function (r) {
-        a = cutBest(a, { x0: r.left - cr.left, y0: r.top - cr.top, x1: r.right - cr.left, y1: r.bottom - cr.top });
-      });
+      a = largestFree(
+        a,
+        avoidRects().map(function (r) {
+          return { x0: r.left - cr.left, y0: r.top - cr.top, x1: r.right - cr.left, y1: r.bottom - cr.top };
+        }),
+        minH
+      );
       // Видимый тост («Проект поставлен… Отменить») тоже занимает место над панелью — объект ставим выше него.
       var tr = toasts.getBoundingClientRect();
       if (tr.height && tr.top - cr.top < a.y1 && tr.left - cr.left < a.x1) a.y1 = Math.max(a.y0 + 120, tr.top - cr.top);

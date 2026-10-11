@@ -14,3 +14,18 @@ index 19fda9ff..48b52f1a 100644
  
  /* Компактная легенда (читаемость карты п. 3): ступени цвета одной строкой, «?» раскрывает заголовок и пояснения.
     Контейнер — оболочки (shell.js legendHost), сама легенда — R07 (legendContainer), здесь она без своей позиции. */
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index dc46bd5d..76c38f28 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -508,7 +508,9 @@
+         api: window.BirgeShell?.api,
+         // Шапка, «Территория», панель/шторка и кнопки карты лежат поверх карты: открыв карточку проекта, R05 ставит
+         // объект в свободную часть карты, а не под них.
+-        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools"),
++        // Легенда тепловой карты тоже: на телефоне она строкой под «Территорией» — призрак и табличка поставленного
++        // проекта (R10 B-041) встают ниже неё, а не под неё.
++        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools, #birge-legend"),
+         // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
+         onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
+         // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —
