@@ -12,6 +12,9 @@
 smell_air, noise_safety, parking, other`). Используется в `POST /api/civic/v2/classify` (R04) и в мастере жалобы (R09):
 «Похоже на: …». Модель **не** публикует и не отклоняет обращение, не определяет срочность и исполнителя;
 житель и сотрудник всегда могут сменить категорию. Нет модели или ошибка — интерфейс даёт выбрать вручную.
+Уточнения (subtopics, 39 шт.) модель не предсказывает — их выбирает житель чипом. Подсказку «опасно — звоните 104/112»
+тоже даёт не модель, а отдельные словесные правила (`emergency_rules.json`, `emergency.py`, разбор —
+`results/EMERGENCY_KEYWORDS.md`): срочность нельзя оставлять на вероятность модели, обученной без людей.
 
 ## Ответ (CONTRACT §7)
 `{category, score, needs_review, model_version, top3:[{category, score}]}` — `predict.Classifier.classify(text)`.
@@ -180,9 +183,16 @@ smell_air, noise_safety, parking, other`). Используется в `POST /ap
 - С кода d472baf по умолчанию: квантование per-channel и `min(4, ядер)` потоков в `predict.py`
   (`BIRGE_CLF_V2_THREADS` меняет число потоков).
 - Проверка в облаке на модели того же размера со случайными весами: 266 МБ, 17.8 мс, три PASS.
-- Сборка B2 на ноутбуке уже работает с `artifacts\onnx_per_channel` из диагностики Codex (LOCAL_B2.md:
-  «Аялдамада жарық жоқ…» → lighting 0.9939, один HTTP-замер 155 мс). Штатный `artifacts\onnx` ещё старый: шаг 8
-  RUN.txt пересоберёт его (per-channel по умолчанию). Пока не повторено, критерии 97 % и 50 мс подтверждены только
+- Сборка B2 на ноутбуке работала с `artifacts\onnx_per_channel` из диагностики Codex (LOCAL_B2.md:
+  «Аялдамада жарық жоқ…» → lighting 0.9939, один HTTP-замер 155 мс).
+- **FINAL-кандидат 8e67c65 на ноутбуке (LOCAL_FINAL.md, 11.10):** в `artifacts/onnx/model.int8.onnx` —
+  279 147 957 байт (sha256 a5c91b5f…, `screens/FINAL/RUNTIME.json`). Это ровно размер per-channel кандидата из
+  диагностики Codex (`results/onnx_export.json`, `diagnostics.candidate_bytes`). Старый int8 с одной шкалой на
+  матрицу (FAIL) весил 265.8 МиБ ≈ 278.7 млн байт. Размер int8 зависит от архитектуры и способа квантования, не от
+  значений весов, поэтому **в FINAL стоит исправленная модель (98 % совпадения с PyTorch)**, а не провалившая сверку.
+  Реальный `/classify` в FINAL: «Аялдамада жарық жоқ…» → lighting 0.9939, `source=v2`, `needs_review=true`
+  (`screens/FINAL/OWNER_MODEL.json`). Повтор шага 8 RUN.txt ничего не изменит в продукте; он нужен только, чтобы
+  в `results/onnx_export.json` были три PASS кодом d472baf. Пока его нет, критерии 97 % и 50 мс подтверждены
   диагностикой Codex (98 %, 22.7 мс).
 - Нагрузка на `/classify` (`bench.py`, облако, 4 vCPU, модель того же размера со случайными весами): текст 5000 знаков
   обрезается до 128 токенов — mean 35–37 мс, p95 ≤ 49 мс. Сервер R01 многопоточный: при 8 одновременных запросах —
@@ -223,5 +233,5 @@ smell_air, noise_safety, parking, other`). Используется в `POST /ap
 
 ## Воспроизведение
 `research/round-14-results/R03/RUN.txt` (ноутбук: тесты → проверка GPU → zero-shot (люди + probe_v2) → эксперимент → итоговая модель →
-ONNX → predict → commit результатов). Облако/CPU: `python -m pytest tests/civic/R03/round14 -q` (112 passed + 1 xfailed,
-крошечная случайная модель). Перегенерация таблицы: `python -m ml.civic_classifier_v2.evaluate render`.
+ONNX → predict → commit результатов). Облако/CPU: `python -m pytest tests/civic/R03/round14 -q` (190 passed + 1 xfailed,
+крошечная случайная модель; 78 из них — правила срочных случаев для R09, `emergency.py`). Перегенерация таблицы: `python -m ml.civic_classifier_v2.evaluate render`.
