@@ -30,7 +30,8 @@ def target_geometry(target: dict) -> dict | None:
             return None
         t = object_target(f)
         g = {"type": "Polygon", "coordinates": f.polygon} if f.polygon else {"type": "Point", "coordinates": geo.round_coord(f.point)}
-        return {"geometry": g, "point": geo.round_coord(f.point), "label_ru": t["label_ru"], "label_kk": t["label_kk"], "approximate": False}
+        return {"geometry": g, "point": geo.round_coord(f.point), "label_ru": t["label_ru"], "label_kk": t["label_kk"],
+                "object_kind": f.kind, "approximate": False}
     if tid.startswith("yard-"):
         f = yards.by_id.get(tid)
         if f is None:

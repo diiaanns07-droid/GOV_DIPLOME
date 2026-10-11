@@ -64,7 +64,7 @@ def targets_response(query: dict):
         category = _one(query, "category") or None
         limit = _one(query, "limit")
         limit = max(1, min(3, int(limit))) if limit and str(limit).isdigit() else 3
-        return 200, targets(lon, lat, category, limit=limit)
+        return 200, targets(lon, lat, category, limit=limit, subtopic=_one(query, "subtopic") or None)
     except TargetError as exc:
         return _error(400, exc.code, exc.message)
     except Exception:  # граф не загрузился, файл испорчен и т. п.

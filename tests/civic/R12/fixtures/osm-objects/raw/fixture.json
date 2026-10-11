@@ -178,6 +178,34 @@
    "tags": {
     "highway": "street_lamp"
    }
+  },
+  {
+   "type": "node",
+   "id": 8001,
+   "lat": 51.16,
+   "lon": 71.43490000000001,
+   "tags": {
+    "highway": "traffic_signals"
+   }
+  },
+  {
+   "type": "node",
+   "id": 8002,
+   "lat": 51.16,
+   "lon": 71.4375,
+   "tags": {
+    "highway": "crossing",
+    "crossing": "traffic_signals"
+   }
+  },
+  {
+   "type": "node",
+   "id": 8003,
+   "lat": 51.169999999999995,
+   "lon": 71.45,
+   "tags": {
+    "highway": "crossing"
+   }
   }
  ]
 }

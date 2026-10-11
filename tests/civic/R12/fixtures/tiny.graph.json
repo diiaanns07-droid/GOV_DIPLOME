@@ -17,55 +17,55 @@
  },
  "nodes": [
   {
-   "id": "fx-n0",
+   "id": "osm-n990000",
    "lon": 71.43,
    "lat": 51.16,
    "boundary": false
   },
   {
-   "id": "fx-n1",
+   "id": "osm-n990001",
    "lon": 71.4325,
    "lat": 51.16,
    "boundary": false
   },
   {
-   "id": "fx-n2",
+   "id": "osm-n990002",
    "lon": 71.435,
    "lat": 51.16,
    "boundary": false
   },
   {
-   "id": "fx-n3",
+   "id": "osm-n990003",
    "lon": 71.4375,
    "lat": 51.16,
    "boundary": false
   },
   {
-   "id": "fx-n4",
+   "id": "osm-n990004",
    "lon": 71.44000000000001,
    "lat": 51.16,
    "boundary": false
   },
   {
-   "id": "fx-n10",
+   "id": "osm-n9900010",
    "lon": 71.435,
    "lat": 51.157999999999994,
    "boundary": false
   },
   {
-   "id": "fx-n11",
+   "id": "osm-n9900011",
    "lon": 71.435,
    "lat": 51.162,
    "boundary": false
   },
   {
-   "id": "fx-n20",
+   "id": "osm-n9900020",
    "lon": 71.43050000000001,
    "lat": 51.160053999999995,
    "boundary": false
   },
   {
-   "id": "fx-n21",
+   "id": "osm-n9900021",
    "lon": 71.43950000000001,
    "lat": 51.160053999999995,
    "boundary": false
@@ -74,8 +74,8 @@
  "edges": [
   {
    "id": "osm-w900001-0",
-   "from": "fx-n0",
-   "to": "fx-n1",
+   "from": "osm-n990000",
+   "to": "osm-n990001",
    "name": "улица Тестовая",
    "geometry": [
     [
@@ -94,8 +94,8 @@
   },
   {
    "id": "osm-w900001-1",
-   "from": "fx-n1",
-   "to": "fx-n2",
+   "from": "osm-n990001",
+   "to": "osm-n990002",
    "name": "улица Тестовая",
    "geometry": [
     [
@@ -118,8 +118,8 @@
   },
   {
    "id": "osm-w900001-2",
-   "from": "fx-n2",
-   "to": "fx-n3",
+   "from": "osm-n990002",
+   "to": "osm-n990003",
    "name": "улица Тестовая",
    "geometry": [
     [
@@ -138,8 +138,8 @@
   },
   {
    "id": "osm-w900001-3",
-   "from": "fx-n3",
-   "to": "fx-n4",
+   "from": "osm-n990003",
+   "to": "osm-n990004",
    "name": "улица Тестовая",
    "geometry": [
     [
@@ -158,8 +158,8 @@
   },
   {
    "id": "osm-w900002-0",
-   "from": "fx-n10",
-   "to": "fx-n2",
+   "from": "osm-n9900010",
+   "to": "osm-n990002",
    "name": "улица Поперечная",
    "geometry": [
     [
@@ -178,8 +178,8 @@
   },
   {
    "id": "osm-w900002-1",
-   "from": "fx-n2",
-   "to": "fx-n11",
+   "from": "osm-n990002",
+   "to": "osm-n9900011",
    "name": "улица Поперечная",
    "geometry": [
     [
@@ -198,8 +198,8 @@
   },
   {
    "id": "osm-w900003-0",
-   "from": "fx-n20",
-   "to": "fx-n21",
+   "from": "osm-n9900020",
+   "to": "osm-n9900021",
    "name": null,
    "geometry": [
     [
@@ -218,8 +218,8 @@
   },
   {
    "id": "osm-w900003-1",
-   "from": "fx-n0",
-   "to": "fx-n20",
+   "from": "osm-n990000",
+   "to": "osm-n9900020",
    "name": null,
    "geometry": [
     [
@@ -238,8 +238,8 @@
   },
   {
    "id": "osm-w900003-2",
-   "from": "fx-n21",
-   "to": "fx-n4",
+   "from": "osm-n9900021",
+   "to": "osm-n990004",
    "name": null,
    "geometry": [
     [

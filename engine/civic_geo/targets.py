@@ -13,7 +13,7 @@ import json
 import threading
 from pathlib import Path
 
-from . import geo, names
+from . import geo, names, street_points
 from .graph import StreetGraph, get_graph
 from .objects import Cells, FeatureSet, get_layers
 from .paths import CATEGORIES
@@ -37,6 +37,26 @@ CATEGORY_SEGMENT_GROUPS = {
     "parking": ("service", "road"),
     "snow_ice": ("road", "service", "foot"),
 }
+
+# POLISH_WAVE п. 1: светофор, переход, перекрёсток. Для этих категорий они идут ПЕРВЫМИ (если рядом),
+# порядок между ними — по категории или по уточнению (subtopic из categories_v2.json).
+STREET_POINT_KINDS = ("intersection", "traffic_signal", "crossing")
+STREET_POINT_RADIUS_M = {"intersection": 60.0, "traffic_signal": 50.0, "crossing": 40.0}
+STREET_POINTS_FIRST = {
+    "roads": ("intersection", "traffic_signal", "crossing"),
+    "sidewalks": ("crossing", "intersection", "traffic_signal"),
+    "noise_safety": ("crossing", "intersection", "traffic_signal"),
+}
+SUBTOPIC_POINTS = {
+    "traffic_light_broken": ("traffic_signal", "intersection"),
+    "traffic_light_timing": ("traffic_signal", "intersection"),
+    "intersection": ("intersection", "traffic_signal", "crossing"),
+    "crossing": ("crossing", "traffic_signal", "intersection"),
+    "dangerous_place": ("crossing", "intersection", "traffic_signal"),
+}
+# Уточнения «про покрытие», а не про точку: участок улицы остаётся первым, точка рядом — вторым вариантом.
+SUBTOPIC_SEGMENT_FIRST = {"pothole", "marking", "speed_bump", "broken_sidewalk", "accessibility", "noise_night", "stray_dogs"}
+MAX_STREET_POINTS = 2
 
 # Подписи. Казахские формы — на проверку R11/владельцу (KK_REVIEW), см. INTEGRATION.txt.
 OBJECT_LABELS = {
@@ -79,6 +99,9 @@ def _street_near(graph: StreetGraph, p) -> tuple[str | None, str | None]:
 
 
 def object_target(f) -> dict:
+    if f.kind in STREET_POINT_KINDS:
+        ru, kk = street_points.labels(f.raw)
+        return {"kind": "object", "id": f.id, "object_kind": f.kind, "label_ru": ru, "label_kk": kk}
     ru, kk, ru0, kk0 = OBJECT_LABELS.get(f.kind, ("{n}", "{n}", "Объект", "Нысан"))
     name_ru, name_kk = f.name_ru or f.name_kk, f.name_kk or f.name_ru
     if f.kind == "park" and f.raw.get("subkind") == "garden" and name_ru:
@@ -138,11 +161,15 @@ def _geom_point(p):
 
 
 def targets(lon: float, lat: float, category: str | None = None, limit: int = 3, graph: StreetGraph | None = None,
-            layers: tuple[FeatureSet, FeatureSet, Cells] | None = None, categories: dict | None = None) -> dict:
-    """Категория не указана (житель ещё не выбрал) — ищем всё рядом: объект, участок улицы, двор."""
+            layers: tuple[FeatureSet, FeatureSet, Cells] | None = None, categories: dict | None = None,
+            subtopic: str | None = None) -> dict:
+    """Категория не указана (житель ещё не выбрал) — ищем всё рядом: объект, участок улицы, двор.
+    subtopic — уточнение из categories_v2.json (например traffic_light_timing): меняет, какая точка идёт первой."""
     cats = categories or load_categories()
     if category is not None and category not in cats:
         raise TargetError("unknown_category", "Неизвестная категория.")
+    if subtopic is not None and category is not None and subtopic not in {s.get("id") for s in cats[category].get("subtopics") or []}:
+        subtopic = None  # чужое или неизвестное уточнение не ломает выбор места
     graph = graph or get_graph()
     objects, yards, cells = layers or get_layers()
     p = (float(lon), float(lat))
@@ -155,11 +182,31 @@ def targets(lon: float, lat: float, category: str | None = None, limit: int = 3,
             street_cache.append(_street_near(graph, p))
         return street_cache[0]
 
+    # Светофор / переход / перекрёсток рядом — первыми (POLISH_WAVE п. 1), не больше двух.
+    point_order = SUBTOPIC_POINTS.get(subtopic) or STREET_POINTS_FIRST.get(category)
+    segment_first = subtopic in SUBTOPIC_SEGMENT_FIRST
+    best_point = None
+    if point_order:
+        picked = 0
+        for i, kind in enumerate(point_order):
+            near = objects.near(p, STREET_POINT_RADIUS_M[kind], (kind,))
+            if not near or picked >= MAX_STREET_POINTS:
+                continue
+            d, f = near[0]
+            # «первыми»: отрицательный счёт ставит точку перед любым участком; при уточнении «про покрытие» — после.
+            score = (d + 30.0 + i) if segment_first else (-1000.0 + i * 10.0 + d / 100.0)
+            cand = {"target": object_target(f), "distance_m": round(d, 1),
+                    "geometry": _geom_point(f.point), "point": geo.round_coord(f.point), "approximate": False}
+            found.append((score, cand))
+            best_point = best_point or cand
+            picked += 1
+
     for rank, kind in enumerate(kinds):
         penalty = rank * KIND_STEP_M
         if kind == "object":
             obj_kinds = CATEGORY_OBJECT_KINDS.get(category)
-            for d, f in objects.near(p, OBJECT_RADIUS_M, obj_kinds)[:3]:
+            near_objects = objects.near(p, OBJECT_RADIUS_M, obj_kinds or OBJECT_LABELS.keys())
+            for d, f in near_objects[:3]:
                 geom = {"type": "Polygon", "coordinates": f.polygon} if f.polygon else _geom_point(f.point)
                 found.append((d + penalty, {"target": object_target(f), "distance_m": round(d, 1),
                                             "geometry": geom, "point": geo.round_coord(f.point), "approximate": False}))
@@ -205,6 +252,8 @@ def targets(lon: float, lat: float, category: str | None = None, limit: int = 3,
             best.setdefault(c["target"]["kind"], (score, c))
         found = sorted(best.values(), key=lambda r: (r[0], r[1]["target"]["id"]))
     out = [c for _, c in found[:limit]]
+    if segment_first and best_point is not None and best_point not in out and len(out) >= limit:
+        out[limit - 1] = best_point  # «яма у перекрёстка»: участок первым, но перекрёсток/светофор остаётся вариантом
     # Ни одного кандидата рядом (или категория без «area») — честное «примерное место» ячейкой ~150 м.
     if not out or ("area" in kinds and not any(c["target"]["kind"] == "area" for c in out) and len(out) < limit):
         cid = cells.cell_id(p)

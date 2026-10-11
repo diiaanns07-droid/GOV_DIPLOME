@@ -1,8 +1,8 @@
 {
  "schema": "r12-geo-source-v1",
- "built_at": "2026-10-10T18:48:10Z",
+ "built_at": "2026-10-11T17:29:32Z",
  "builder": "engine/civic_geo/build_geo_data.py",
- "raw_dir": "data/civic/astana/osm-objects/raw",
+ "raw_dir": "/home/user/GOV_DIPLOME/data/civic/astana/osm-objects/raw",
  "raw_dir_present": true,
  "inputs": [
   {
@@ -69,19 +69,28 @@
    "path": "data/civic/astana/osm-walking/overpass.json.gz",
    "sha256": "93cbef9d4bf041b9d2157cdbdd80d603de9e4117b992fbc61a64e84e42ad8a46",
    "bytes": 2974580,
-   "use": "только узлы-остановки на линиях дорог"
+   "use": "узлы на линиях дорог: остановки, светофоры, переходы"
   }
  ],
  "counts": {
   "bus_stop": 940,
+  "crossing": 3053,
+  "intersection": 2388,
   "park": 177,
   "pitch": 696,
   "playground": 334,
+  "traffic_signal": 767,
   "waste": 136,
   "yard": 537
  },
+ "street_points": {
+  "intersections": 2388,
+  "intersections_on_signal_nodes": 234,
+  "off_street_dropped": 1
+ },
+ "intersection_rule": "узел графа: ≥ 3 рёбра проезжей части и ≥ 2 названия; узлы той же пары улиц ближе 60 м — один перекрёсток",
  "skipped": {
-  "outside_city": 109,
+  "outside_city": 175,
   "no_geometry": 13,
   "duplicate": 697
  },
