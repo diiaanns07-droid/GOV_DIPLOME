@@ -9,7 +9,8 @@
 //                       с CIVIC_DEMO=1, как run-city.bat (--no-demo — без синтетического набора R07)
 //   3. сценарий демо:   tests/e2e/demo_flow.cjs --url <сервер> (API + UI, 1366/375 × ru/kk) → <out>/e2e/
 //   4. UX по экранам:   tests/e2e/ux_screens.cjs --screens tests/e2e/screens_build.json → <out>/ux/
-//   5. сводка:          <out>/SUMMARY.md — числа PASS/FAIL/NOT_RUN по каждому блоку и список FAIL
+//   5. демо «как в первый раз»: tests/e2e/demo_reset_check.cjs (после репетиции и через 2 недели) → <out>/reset/
+//   6. сводка:          <out>/SUMMARY.md — числа PASS/FAIL/NOT_RUN по каждому блоку и список FAIL
 // Тесты R10 берутся из ЭТОЙ папки (tests/e2e рядом со скриптом), сборка — из --root: так можно проверять любой SHA.
 // Нужно: Python 3.11+ (переменная PYTHON, например .venv\Scripts\python), Node 20+, Playwright с Chromium
 // (NODE_PATH="$(npm root -g)" или npm i playwright в папке).
@@ -95,6 +96,8 @@ function run(cmd, argv, opts = {}) {
   await sleep(500);
   fs.closeSync(srvFd);
   fs.rmSync(tmp, { recursive: true, force: true });
+  // 4б. Демо после репетиции и через две недели (B-048, B-049): своя временная база, только API, ~1 мин.
+  if (!args["no-reset"]) run(process.execPath, [path.join(HERE, "demo_reset_check.cjs"), "--root", ROOT, "--out", path.join(OUT, "reset")], { log: "reset.log" });
 
   // 5. Сводка
   const read = (f) => { try { return JSON.parse(fs.readFileSync(path.join(OUT, f), "utf8")); } catch { return null; } };
@@ -108,6 +111,10 @@ function run(cmd, argv, opts = {}) {
   }
   summary.push("", "## 4. UX по экранам (tests/e2e/ux_screens.cjs)", "", ux ? `PASS ${ux.counts.PASS} · FAIL ${ux.counts.FAIL} · NOT_RUN ${ux.counts.NOT_RUN || 0} — подробно ux/UX_RESULT.md` : "не выполнен — см. ux.log");
   if (ux) ux.rows.filter((r) => r.status === "FAIL").forEach((r) => summary.push(`- FAIL [${r.owner}] ${r.screen} ${r.size} ${r.lang}: ${r.check}`));
+  const reset = read("reset/RESET_RESULT.json");
+  summary.push("", "## 5. Демо после репетиции и через две недели (tests/e2e/demo_reset_check.cjs)", "",
+    reset ? `PASS ${reset.counts.PASS} · FAIL ${reset.counts.FAIL} · NOT_RUN ${reset.counts.NOT_RUN} — подробно reset/RESET_RESULT.md` : (args["no-reset"] ? "пропущено (--no-reset)" : "не выполнен — см. reset.log"));
+  if (reset) reset.results.filter((r) => r.status === "FAIL").forEach((r) => summary.push(`- FAIL шаг ${r.step}: ${r.name}`));
   fs.writeFileSync(path.join(OUT, "SUMMARY.md"), summary.join("\n") + "\n");
   console.log(summary.slice(0, 12).join("\n"));
   console.log("Сводка:", path.join(OUT, "SUMMARY.md"));
