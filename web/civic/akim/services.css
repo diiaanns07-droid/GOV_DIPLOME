@@ -1,0 +1,114 @@
+/*
+ * Birge · «Службы» (R08). Раскладка поверх ui-kit R11; своих цветов нет.
+ * Ноутбук — колонка до 960 px по центру (R11 IA_WAVE2 §0.3), телефон — во всю ширину.
+ */
+.svc {
+  display: block;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--s-5) var(--s-6) var(--s-8);
+}
+.svc__title {
+  margin: 0;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-head);
+  font-weight: var(--fw-bold);
+}
+.svc__hint {
+  margin: var(--s-1) 0 var(--s-4);
+}
+.svc__list,
+.svc__subs {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.svc__cat {
+  display: grid;
+  gap: var(--s-2);
+}
+.svc__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 24em) auto;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+.svc__label {
+  min-width: 0;
+}
+.svc__label--cat {
+  font-weight: var(--fw-semi);
+}
+.svc__select {
+  min-height: 48px;
+  width: 100%;
+  min-width: 0;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+}
+.svc__details > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  color: var(--c-brand);
+  font-weight: var(--fw-semi);
+}
+.svc__subs {
+  padding: var(--s-2) 0 0 var(--s-4);
+  border-left: 2px solid var(--c-line);
+}
+.svc__edited {
+  white-space: nowrap;
+}
+.svc__actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-top: var(--s-4);
+  padding: var(--s-3) 0;
+  background: var(--c-paper);
+}
+.svc__status {
+  margin: 0;
+}
+.svc__status[data-kind="error"] {
+  color: var(--c-danger);
+}
+.svc__status[data-kind="ok"] {
+  color: var(--c-ok);
+  font-weight: var(--fw-semi);
+}
+@media (max-width: 720px) {
+  .svc {
+    padding: var(--s-3) var(--s-4) var(--s-6);
+  }
+  .svc__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-1);
+  }
+  .svc__cat.bk-card {
+    padding: var(--s-3);
+  }
+  /* без отступа слева: длинные названия служб («Служба светофоров и разметки») помещаются в поле целиком */
+  .svc__subs {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .svc__select {
+    padding: 0 var(--s-2);
+  }
+  .svc__save {
+    width: 100%;
+  }
+}
