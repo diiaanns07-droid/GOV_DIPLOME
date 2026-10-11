@@ -73,6 +73,7 @@
 - `object` — реальный объект из OSM: остановка, площадка, спортплощадка, парк. `id` = `osm-node-<id>` / `osm-way-<id>`.
 - `segment` — участок улицы. `id` = id ребра пешеходного графа `osm-w<way>-<n>` из `engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json` (у каждого ребра есть настоящая форма улицы).
 - `area` — двор/квартал (`yard-<id>`, из OSM landuse=residential) или ячейка ~150 м (`cell-<id>`) там, где двора нет.
+- Для объектов-отношений OSM допускается `osm-relation-<id>` (R10 B-010).
 
 Выбор target делает R12 (`engine/civic_geo`): по точке и категории возвращает 1–3 ближайших кандидата.
 
