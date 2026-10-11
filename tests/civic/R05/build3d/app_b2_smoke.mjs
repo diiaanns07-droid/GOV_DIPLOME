@@ -247,6 +247,29 @@ try {
     halfCards[lang] = Object.assign({ sheet_before: sheet0, tapped: lab }, m);
     await ctx.close();
   }
+  // 11. R10 B-039: ноутбук, житель — подсказка «Нажмите на проект…» не лежит на легенде R07 (с патчем 2 легенда в avoid).
+  const hints = {};
+  for (const [vp, lang] of [[{ width: 1366, height: 768 }, "ru"], [{ width: 1366, height: 768 }, "kk"], [{ width: 1100, height: 700 }, "kk"]]) {
+    const ctx = await browser.newContext({ viewport: vp });
+    await ctx.addInitScript((l) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
+    const q = await ctx.newPage();
+    q.on("pageerror", (e) => errors.push(e.message));
+    await q.goto(URL0);
+    await q.waitForFunction(() => window.CivicShell?.build3d?.getState?.().phase === "ready", null, { timeout: 60000 });
+    await q.waitForFunction(() => document.querySelector(".r07-maplegend"), null, { timeout: 30000 }).catch(() => {});
+    await q.waitForTimeout(2500);
+    const m = await q.evaluate(() => {
+      const R = (n) => { if (!n || getComputedStyle(n).visibility === "hidden") return null; const r = n.getBoundingClientRect(); return r.width ? { l: Math.round(r.left), t: Math.round(r.top), r: Math.round(r.right), b: Math.round(r.bottom) } : null; };
+      const d = document.querySelector("#birge-build3d-root .b3d-dock"), hint = R(d), lg = R(document.querySelector(".r07-maplegend")), fab = R(document.querySelector(".bc-fab"));
+      const ov = (a, b) => !!(a && b && a.l < b.r && a.r > b.l && a.t < b.b && a.b > b.t);
+      return { state: d && d.dataset.state, hint, legend: lg, over_legend: ov(hint, lg), over_fab: ov(hint, fab) };
+    });
+    await shot(q, `hint_legend_shell_${vp.width}_${lang}.png`);
+    hints[vp.width + "_" + lang] = m;
+    await ctx.close();
+  }
+  check("resident_hint_not_over_r07_legend_1366_1100", Object.values(hints).every((r) => r.state === "hint" && r.hint && r.legend && !r.over_legend && !r.over_fab), hints);
+
   check("phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
     Object.values(halfCards).every((r) => r.tapped && r.state === "card" && r.header_free && r.dock[0] >= r.header_bottom && (r.sheet !== "peek" || r.object_above_card)), halfCards);
 } catch (e) {

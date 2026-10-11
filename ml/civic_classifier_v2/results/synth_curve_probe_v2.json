@@ -1,0 +1,228 @@
+{
+ "what": "логрегрессия (метод v1) на доле синтетики; оценка — probe_v2 (тексты агента R02, не жителей)",
+ "train_pool": {
+  "synth_v3": 2654,
+  "llm_v1": 2781,
+  "val": 1664,
+  "dropped_leaks": 5
+ },
+ "hyperparameters": "validation, сетка метода v1",
+ "subsample_seeds": [
+  20261011,
+  20261012,
+  20261013
+ ],
+ "seconds_total": 1178.9,
+ "llm_share": {
+  "0.0": {
+   "n_train": 2654,
+   "seeds": 1,
+   "macro_f1_mean": 0.7507,
+   "macro_f1_min": 0.7507,
+   "macro_f1_max": 0.7507,
+   "ci_first_seed": {
+    "low": 0.6964,
+    "high": 0.7947
+   },
+   "chosen": [
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    }
+   ],
+   "seconds": 63.2
+  },
+  "0.25": {
+   "n_train": 3349,
+   "seeds": 3,
+   "macro_f1_mean": 0.7901,
+   "macro_f1_min": 0.784,
+   "macro_f1_max": 0.7955,
+   "ci_first_seed": {
+    "low": 0.7448,
+    "high": 0.8365
+   },
+   "chosen": [
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    },
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    },
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    }
+   ],
+   "seconds": 344.3
+  },
+  "0.5": {
+   "n_train": 4044,
+   "seeds": 3,
+   "macro_f1_mean": 0.7987,
+   "macro_f1_min": 0.7937,
+   "macro_f1_max": 0.8049,
+   "ci_first_seed": {
+    "low": 0.7416,
+    "high": 0.8359
+   },
+   "chosen": [
+    {
+     "C": 64.0,
+     "class_weight": "balanced",
+     "keyword_scale": 1.0
+    },
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    },
+    {
+     "C": 64.0,
+     "class_weight": "balanced",
+     "keyword_scale": 1.0
+    }
+   ],
+   "seconds": 267.9
+  },
+  "1.0": {
+   "n_train": 5435,
+   "seeds": 1,
+   "macro_f1_mean": 0.7966,
+   "macro_f1_min": 0.7966,
+   "macro_f1_max": 0.7966,
+   "ci_first_seed": {
+    "low": 0.7456,
+    "high": 0.838
+   },
+   "chosen": [
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    }
+   ],
+   "seconds": 117.7
+  }
+ },
+ "total_share": {
+  "0.25": {
+   "n_train": 1359,
+   "seeds": 3,
+   "macro_f1_mean": 0.766,
+   "macro_f1_min": 0.7644,
+   "macro_f1_max": 0.7668,
+   "ci_first_seed": {
+    "low": 0.7136,
+    "high": 0.8098
+   },
+   "chosen": [
+    {
+     "C": 64.0,
+     "class_weight": "balanced",
+     "keyword_scale": 1.0
+    },
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    },
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    }
+   ],
+   "seconds": 149.0
+  },
+  "0.5": {
+   "n_train": 2716,
+   "seeds": 3,
+   "macro_f1_mean": 0.7857,
+   "macro_f1_min": 0.7783,
+   "macro_f1_max": 0.7939,
+   "ci_first_seed": {
+    "low": 0.7264,
+    "high": 0.8193
+   },
+   "chosen": [
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    },
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    },
+    {
+     "C": 64.0,
+     "class_weight": "balanced",
+     "keyword_scale": 1.0
+    }
+   ],
+   "seconds": 235.1
+  },
+  "1.0": {
+   "n_train": 5435,
+   "seeds": 1,
+   "macro_f1_mean": 0.7966,
+   "macro_f1_min": 0.7966,
+   "macro_f1_max": 0.7966,
+   "ci_first_seed": {
+    "low": 0.7456,
+    "high": 0.838
+   },
+   "chosen": [
+    {
+     "C": 64.0,
+     "class_weight": null,
+     "keyword_scale": 1.0
+    }
+   ],
+   "seconds": 117.7
+  }
+ },
+ "paired": [
+  {
+   "title": "v3 + 100 % LLM − одна v3",
+   "delta": {
+    "delta": 0.0459,
+    "low": 0.0066,
+    "high": 0.0871,
+    "share_delta_gt_0": 0.99,
+    "n_boot": 2000,
+    "unit": "texts"
+   }
+  },
+  {
+   "title": "v3 + 100 % LLM − v3 + 50 % LLM",
+   "delta": {
+    "delta": 0.0029,
+    "low": -0.0203,
+    "high": 0.0244,
+    "share_delta_gt_0": 0.602,
+    "n_boot": 2000,
+    "unit": "texts"
+   }
+  },
+  {
+   "title": "всё v3 + LLM − половина v3 + LLM",
+   "delta": {
+    "delta": 0.0183,
+    "low": -0.0072,
+    "high": 0.0447,
+    "share_delta_gt_0": 0.931,
+    "n_boot": 2000,
+    "unit": "texts"
+   }
+  }
+ ]
+}

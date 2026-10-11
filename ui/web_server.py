@@ -87,6 +87,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
                 "feedback/complaint.css",
                 "akim/index.html", "akim/akim.js", "akim/akim.css",  # B2: akim.i18n.json удалён R08 (ключи у R11)
+                # Волна 2, R08: «Службы» (Ещё → Службы, акимат) и «Что делают рядом» (раздел #nearby).
+                "akim/services.html", "akim/services.js", "akim/services.css",
+                "nearby/index.html", "nearby/nearby.js", "nearby/nearby.css",
                 "map/demo_snapped.json",  # B2: R12 демо-линии, привязанные к улицам OSM
                 "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
                 # B2: R05 3D-превью @ b0353ee. demo.html и data/demo-basemap.json не отдаём (только для демо R05).
@@ -200,6 +203,7 @@ V2_RATE_LIMITS = {
     "proposals.vote": ((86400, 20, True),),
     "classify": ((60, 60, False),),
     "similar": ((60, 60, False),),
+    "nearby.subscribe": ((60, 20, False), (86400, 200, False)),  # R08: подписка жителя на район/карточку
 }
 
 
@@ -631,15 +635,26 @@ V2_ROUTES = (
     ("GET", ("complaints", "events"), "complaints.events"),
     ("GET", ("complaints", "summary"), "complaints.summary"),
     ("GET", ("complaints", "place"), "complaints.place"),
+    ("GET", ("complaints", "merged"), "complaints.merged"),
     ("GET", ("complaints", "{id}"), "complaints.get"),
     ("POST", ("complaints", "{id}", "metoo"), "complaints.metoo"),
     ("POST", ("complaints", "{id}", "status"), "complaints.status"),
     ("POST", ("complaints", "{id}", "duplicate"), "complaints.duplicate"),
+    # Волна мелочей п. 9 (R04 + R09): «Это разные проблемы» — разъединить дубль или «Я тоже».
+    ("POST", ("complaints", "{id}", "separate"), "complaints.separate"),
     # R07 тепловая карта @ 5a97636 (ui.civic_heat.api.handle_get) и R08 «Картина дня» @ 9f1d9c0.
     ("GET", ("heat",), "heat"),
     ("GET", ("heat", "meta"), "heat.meta"),
     ("GET", ("heat", "target"), "heat.target"),
     ("GET", ("akim", "summary"), "akim.summary"),
+    # R08 волна 2: таблица служб (чтение всем, правка — сотрудник), выбор варианта акимом, «Что делают рядом».
+    ("GET", ("akim", "routing"), "akim.routing"),
+    ("PUT", ("akim", "routing"), "akim.routing.update"),
+    ("POST", ("akim", "decisions", "{id}"), "akim.decision"),
+    ("GET", ("nearby",), "nearby"),
+    ("GET", ("nearby", "subscriptions"), "nearby.subscriptions"),
+    ("POST", ("nearby", "subscriptions"), "nearby.subscribe"),
+    ("GET", ("nearby", "updates"), "nearby.updates"),
     # R12 точность карты @ d13f49a: привязка к улицам и дворам для редактора и формы (только чтение).
     ("GET", ("street-segment",), "geo.segment"),
     ("GET", ("street-snap",), "geo.snap"),
@@ -671,10 +686,15 @@ V2_HANDLERS = {
     **{key: V2Handler("R09", ("ui.civic_feedback.v2.integration",), "make_service", kind="service") for key in (
         "complaints.categories", "complaints.list", "complaints.create", "complaints.mine", "complaints.events",
         "complaints.summary", "complaints.place", "complaints.get", "complaints.metoo", "complaints.status",
-        "complaints.duplicate")},
+        "complaints.duplicate", "complaints.merged", "complaints.separate")},
     **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta")},
     "heat.target": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", staff_view=True),
     "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),
+    **{key: V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw")
+       for key in ("akim.routing", "nearby", "nearby.subscriptions", "nearby.updates")},
+    "akim.routing.update": V2Handler("R08", ("ui.civic_akim.api",), "routing_update", staff=True),
+    "akim.decision": V2Handler("R08", ("ui.civic_akim.api",), "decision_choose", staff=True),
+    "nearby.subscribe": V2Handler("R08", ("ui.civic_akim.api",), "nearby_subscribe"),
     **{key: V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True)
        for key in ("geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status")},
     "proposals.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_proposals"),
@@ -1029,6 +1049,10 @@ class CivicV2Gateway:
             return {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
                     "lat": _v2_number(q["lat"], "lat", ASTANA_BOUNDS[1], ASTANA_BOUNDS[3]),
                     "category": self._category(q.get("category"))}
+        if key in ("akim.routing.update", "nearby.subscribe"):  # R08: тело проверяет сам модуль (ValueError -> 400)
+            return {"body": body}
+        if key == "akim.decision":
+            return {"decision_id": params["id"], "body": body}
         district = q.get("district") or None
         if district is not None and not V2_DISTRICT.match(district):
             raise V2BadRequest("district", "district: неизвестный район.")
@@ -1265,6 +1289,28 @@ class CivicV2Gateway:
             LOGGER.error("API v2: %s вернул некорректный ответ", module)
             return v2_error(500, "bad_module_response", "Модуль вернул некорректный ответ.")
         return {"status": reply["status"], "headers": dict(reply.get("headers") or {}), "body": reply["body"]}
+
+
+def public_text(reply, context, gateway):
+    """Волна мелочей п. 8 (R04): мат и оскорбления в ответах API — звёздочками для всех, кроме сотрудника акимата.
+
+    Одна точка для v1 и v2 и для будущих экранов (идеи, «Рядом», «Вопрос акиму»): модулю роли не нужно помнить
+    о фильтре. Сотрудник (сессия R02) получает оригинал, пометку «Содержит грубые слова» ставит модуль роли.
+    Ответ без грубых слов возвращается тем же объектом (быстрая проверка, ~16 мс на 5 000 целей тепловой карты).
+    Фильтр не загрузился или упал — ответ уходит как есть (журнал), приложение не останавливается.
+    """
+    body = reply.get("body") if isinstance(reply, dict) else None
+    if not isinstance(body, (dict, list)):
+        return reply
+    try:
+        from ui.civic_ml_api import profanity
+        masked, changed = profanity.mask_json(body)
+    except Exception:
+        LOGGER.exception("фильтр грубых слов (R04) не сработал — ответ без фильтра")
+        return reply
+    if not changed or (gateway is not None and gateway._is_staff(context)):
+        return reply
+    return dict(reply, body=masked)
 
 
 def event_id(value):
@@ -1624,7 +1670,7 @@ class Handler(BaseHTTPRequestHandler):
             reply = error(500, "internal", "Не удалось выполнить запрос. Попробуйте ещё раз.")
         if reply is None:
             reply = error(404, "not_found", "Адрес API не найден.")
-        send(reply)
+        send(public_text(reply, context, self.server.civic_v2))
 
     def do_GET(self):
         parsed = urlsplit(self.path)

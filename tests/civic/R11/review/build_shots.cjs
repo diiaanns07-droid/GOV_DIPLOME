@@ -76,6 +76,12 @@ async function clickMapAt(p, ll) {
         const m = await measure(p, null);
         report[tag] = { m, brief: brief(m), console: [...new Set(logs.splice(0))].slice(0, 8) };
       };
+      // Слой «Проекты» оболочки R01 (BirgeShell.setLayer; запасной путь — кнопка слоёв и пункт списка).
+      const enableProjects = async () => {
+        const ok = await p.evaluate(() => { const s = window.BirgeShell; if (s && typeof s.setLayer === "function") { s.setLayer("projects"); return true; } return false; });
+        if (!ok && (await p.$("#birge-layer-btn"))) { await p.click("#birge-layer-btn"); await p.click("#birge-layer-list input[value=projects]").catch(() => {}); }
+        logs.push("R11: включён слой «Проекты»"); await p.waitForTimeout(1200);
+      };
       const step = async (name, fn, full) => { try { await fn(); await shot(name, full); } catch (e) {
         await p.screenshot({ path: path.join(OUT, `b-${TAG}-${name}-${size}-${lang}-FAIL.png`) }).catch(() => {});
         const why = e.message.split("\n").filter((l) => /intercepts|not visible|not stable|disabled|outside|НЕ |«/.test(l)).slice(0, 2).join(" | ");
@@ -135,6 +141,9 @@ async function clickMapAt(p, ll) {
         await step("11-catalog", async () => {
           await p.keyboard.press("Escape");
           await clickHidden(p, "#birge-header [data-mode=akimat]"); await p.waitForTimeout(900);
+          // С R01 8bbace7 (читаемость карты, решение владельца 11 окт) проекты и «Что построить?» — за слоем «Проекты»
+          // (по умолчанию выключен): DEMO_SCRIPT шаг 5 — «Слои → Проекты».
+          if (!(await p.isVisible(".birge-b3d-toggle").catch(() => false))) await enableProjects();
           if (!(await p.$(".birge-b3d-toggle"))) throw new Error("нет кнопки «Что построить?»");
           await p.click(".birge-b3d-toggle"); await p.waitForSelector(".b3d-card[data-kind=square]", { timeout: 10000 });
         });
@@ -155,6 +164,7 @@ async function clickMapAt(p, ll) {
         });
         await step("13-vote", async () => {
           await clickHidden(p, "#birge-header [data-mode=resident]"); await p.waitForTimeout(1500);
+          if (!(await p.$(".b3d-label"))) await enableProjects();
           // Подпись «Проект · 2027» у только что поставленного проекта; на мелком масштабе — точка (b3d-label--dot).
           await p.waitForSelector(".b3d-label", { timeout: 10000 }).catch(() => {});
           const ok = await p.evaluate(() => {

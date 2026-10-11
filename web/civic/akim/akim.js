@@ -18,6 +18,10 @@
  *
  * Тексты: только ключи общего словаря R11 (web/civic/i18n, ветка claude/r14-R11) — свой akim.i18n.json
  * больше не нужен, все ключи akim.* перенесены R11 (UX_REVIEW, день 2).
+ * Волна 2 (схема R11 IA_WAVE2 §5): «Нужно решение акима» (нет случаев — блока нет), «Пульс района»
+ * (нет тревог — одна строка), вторая строка плитки «Исправлено» (akim.verify.split). Ключи, которых в словаре
+ * R11 ещё нет, — в WAVE2_KEYS ниже (запасной текст до слияния; список для R11 — INTEGRATION.txt §8).
+ * «Выбрать» вариант: POST {apiBase}/akim/decisions/<id> {option}, сотрудник, X-CSRF-Token как у R05/R06.
  */
 (function (root) {
   "use strict";
@@ -61,9 +65,54 @@
       return typeof params[name] === "number" ? num(params[name]) : String(params[name]);
     });
   }
+  // Ключи волны 2, которых ещё нет в словаре R11: показываем этот текст, пока R11 не добавит ключ к себе.
+  // Как только ключ есть в словаре — берётся словарь (вычитанный kk), этот запас не используется.
+  var WAVE2_KEYS = {
+    ru: {
+      "akim.pulse.spike_new": "{category} · {district}: новое",
+      "akim.pulse.spike_city": { one: "{category}: всплеск в {n} районе, ×{k}", few: "{category}: всплеск в {n} районах, ×{k}", many: "{category}: всплеск в {n} районах, ×{k}" },
+      "akim.pulse.reason.spike": { one: "{n} сообщение за 7 дней, обычно {base} в неделю", few: "{n} сообщения за 7 дней, обычно {base} в неделю", many: "{n} сообщений за 7 дней, обычно {base} в неделю" },
+      "akim.pulse.reason.spike_new": { one: "{n} сообщение за 7 дней, раньше — ни одного", few: "{n} сообщения за 7 дней, раньше — ни одного", many: "{n} сообщений за 7 дней, раньше — ни одного" },
+      "akim.pulse.reason.city": "Больше всего: {list}",
+      "akim.pulse.reason.new_hot": { one: "{n} человек за 7 дней, неделю назад места на карте не было", few: "{n} человека за 7 дней, неделю назад места на карте не было", many: "{n} человек за 7 дней, неделю назад места на карте не было" },
+      "akim.pulse.reason.metoo": "Неделей раньше — {n}",
+      "akim.pulse.more": { one: "Ещё {n} тревога", few: "Ещё {n} тревоги", many: "Ещё {n} тревог" },
+      "akim.overdue.longest": "Дольше всех: {place}",
+      "akim.decision.no_options": "Варианты не предложены — служба должна их подготовить",
+      "akim.decision.forbidden": "Выбрать вариант может только сотрудник акимата",
+      "akim.decision.save_error": "Выбор не сохранился — попробуйте ещё раз",
+    },
+    kk: {
+      "akim.pulse.spike_new": "{category} · {district}: жаңа",
+      "akim.pulse.spike_city": "{category}: {n} ауданда күрт өсу, ×{k}",
+      "akim.pulse.reason.spike": "7 күнде {n} хабарлама, әдетте аптасына {base}",
+      "akim.pulse.reason.spike_new": "7 күнде {n} хабарлама, бұрын бірде-бір болмаған",
+      "akim.pulse.reason.city": "Ең көбі: {list}",
+      "akim.pulse.reason.new_hot": "7 күнде {n} адам, бір апта бұрын бұл орын картада болмаған",
+      "akim.pulse.reason.metoo": "Алдыңғы аптада — {n}",
+      "akim.pulse.more": "Тағы {n}",
+      "akim.overdue.longest": "Ең ұзақ кешіккені: {place}",
+      "akim.decision.no_options": "Нұсқалар ұсынылмаған — оларды қызмет дайындауы керек",
+      "akim.decision.forbidden": "Нұсқаны тек әкімдік қызметкері таңдай алады",
+      "akim.decision.save_error": "Таңдау сақталмады — қайталап көріңіз",
+    },
+  };
+  function wave2(key, params) {
+    var l = lang() === "kk" ? "kk" : "ru";
+    var v = WAVE2_KEYS[l][key];
+    if (v == null) return null;
+    if (typeof v === "object") {
+      var n = params && params.n != null ? Number(params.n) : 0;
+      var cat = I() ? I().plural(l, n) : "many";
+      v = v[cat] || v.other || v.many || v.few || v.one;
+    }
+    return interpolate(v, params);
+  }
   function tr(key, params) {
     var i18n = I();
-    return i18n ? i18n.t(key, params) : interpolate(key, params);
+    if (!i18n) return wave2(key, params) || interpolate(key, params);
+    if (!i18n.has(key) && !i18n.has(key, "ru") && WAVE2_KEYS.ru[key] != null) return wave2(key, params);
+    return i18n.t(key, params);
   }
 
   // ───────────── мелкие помощники ─────────────
@@ -316,6 +365,11 @@
           d && state.status === "ok" && d.demo && d.demo.any ? demoTag() : null,
         ]),
         h("p", { class: "akim__meta bk-meta", text: meta.join(" · ") }),
+        // Пояснение к метке «Пример» — в шапке под датой, а не отдельной строкой над числами: так первая карточка
+        // «Нужно решение акима» помещается в первый экран ноутбука (R11 IA_WAVE2 §5).
+        d && state.status === "ok" && d.demo && d.demo.any
+          ? h("p", { class: "akim-demo", text: tr("common.tag.demo") + ": " + lowerFirst(tr("akim.demo_note")) })
+          : null,
       ]);
 
       var dateInput = h("input", {
@@ -435,9 +489,228 @@
         ]),
         kpiCard("in_progress", k.in_progress, "akim.kpi.in_progress", null,
           k.in_progress.waiting ? [tr("akim.kpi.waiting", { n: k.in_progress.waiting })] : null),
-        kpiCard("overdue", k.overdue, "akim.kpi.overdue", false, [tr("akim.kpi.overdue_hint")]),
-        kpiCard("fixed", k.fixed_week, "akim.kpi.fixed_week", true, [tr("akim.kpi.fixed_hint")]),
+        kpiCard("overdue", k.overdue, "akim.kpi.overdue", false, overdueExtra(d)),
+        // Волна 2 п. 1: «Служба сообщила 12 · жители проверили 8 · вернули 2». Нет проверки жителями в данных —
+        // прежняя подсказка, а не «проверили 0».
+        kpiCard("fixed", k.fixed_week, "akim.kpi.fixed_week", true, [
+          k.verification_available
+            ? tr("akim.verify.split", { a: k.fixed_week.awaiting, b: k.fixed_week.verified, c: k.fixed_week.reopened || 0 })
+            : tr("akim.kpi.fixed_hint"),
+        ]),
       ]);
+    }
+    // Волна мелочей п. 6: таймер в «Картине дня» — самое давнее просроченное место прямо в плитке.
+    function overdueExtra(d) {
+      var o = d.overdue && d.overdue.items && d.overdue.items[0];
+      if (!o) return [tr("akim.kpi.overdue_hint")];
+      return [
+        tr("akim.overdue.longest", { place: placeName(o) }) + " · ",
+        h("span", { class: "akim-late-days", text: timerText(o.timer) }),
+      ];
+    }
+    function placeName(x) {
+      var l = lang();
+      if (x["place_" + l] || x.place_ru) return x["place_" + l] || x.place_ru;
+      if (x.subtopic && x.subtopic.id) return tr("subtopic." + x.subtopic.id);
+      return x.category ? I().cat(x.category) : "";
+    }
+    function timerText(t) {
+      if (!t) return "";
+      if (t.state === "overdue") return tr("deadline.overdue", { n: t.overdue_by });
+      if (t.state === "today") return tr("deadline.today");
+      return tr("deadline.left", { n: t.left });
+    }
+    function serviceName(svc) {
+      if (!svc) return "";
+      if (svc.name_edited) return svc[lang()] || svc.ru; // акимат переименовал службу — его название как есть
+      return I() && I().has("service." + svc.id) ? tr("service." + svc.id) : svc[lang()] || svc.ru;
+    }
+
+    // ── «Нужно решение акима» (волна 2 п. 5) ──
+    var csrfCache = null;
+    function csrf() {
+      try {
+        var shell = root.CivicShell && typeof root.CivicShell.csrfToken === "function" ? root.CivicShell.csrfToken() : null;
+        if (shell) return Promise.resolve(shell);
+      } catch (e) {
+        /* оболочки нет */
+      }
+      if (csrfCache) return Promise.resolve(csrfCache);
+      return fetch("/api/civic/v1/session", { credentials: "same-origin", headers: { Accept: "application/json" } })
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (b) {
+          var data = b && b.data && typeof b.data === "object" ? b.data : b || {};
+          csrfCache = data.authenticated && typeof data.csrf_token === "string" ? data.csrf_token : null;
+          return csrfCache;
+        })
+        .catch(function () {
+          return null;
+        });
+    }
+    function chooseOption(item, n, statusEl) {
+      statusEl.textContent = "";
+      return csrf()
+        .then(function (token) {
+          var headers = { Accept: "application/json", "Content-Type": "application/json" };
+          if (token) headers["X-CSRF-Token"] = token;
+          return fetch(opts.apiBase + "/akim/decisions/" + encodeURIComponent(item.id), {
+            method: "POST",
+            credentials: "same-origin",
+            headers: headers,
+            body: JSON.stringify({ option: n }),
+          });
+        })
+        .then(function (r) {
+          if (r.ok) {
+            item.chosen = { option: n };
+            render();
+            var again = rootEl.querySelector('[data-key="decision:' + item.id + '"]');
+            if (again) again.focus({ preventScroll: true });
+            load(true);
+            return;
+          }
+          statusEl.textContent = tr(r.status === 401 || r.status === 403 ? "akim.decision.forbidden" : "akim.decision.save_error");
+        })
+        .catch(function () {
+          statusEl.textContent = tr("akim.decision.save_error");
+        });
+    }
+    function renderDecisions(d) {
+      var items = (d.decisions && d.decisions.items) || [];
+      if (!items.length) return null; // нет случаев — блока нет (IA_WAVE2 §5)
+      var card = h("section", { class: "bk-card akim-card akim-decisions", "aria-labelledby": "akim-decisions-title" }, [
+        h("h2", { class: "bk-h2", id: "akim-decisions-title", text: tr("akim.decision.title") }),
+      ]);
+      var list = h("ol", { class: "akim-decisions__list" });
+      items.forEach(function (it) {
+        var l = lang();
+        var where = [placeName(it), it.district ? tr("district." + it.district) : null].filter(Boolean).join(" · ");
+        var status = h("p", { class: "akim-decision__status", role: "status" });
+        var opts2 = h("ol", { class: "akim-decision__options" });
+        (it.options || []).forEach(function (o, i) {
+          var n = i + 1;
+          var chosen = it.chosen && it.chosen.option === n;
+          opts2.appendChild(
+            h("li", { class: "akim-decision__option" + (chosen ? " is-chosen" : "") }, [
+              h("span", { class: "akim-decision__option-text", text: tr("akim.decision.option", { n: n, text: o[l] || o.ru }) }),
+              chosen
+                ? h("span", { class: "bk-tag akim-decision__chosen" }, [icon("check", 18), tr("akim.decision.chosen", { n: n })])
+                : h("button", {
+                    type: "button",
+                    class: "bk-btn akim-decision__choose",
+                    "data-key": "decision:" + it.id + ":" + n,
+                    "aria-label": tr("akim.decision.choose") + ": " + tr("akim.decision.option", { n: n, text: o[l] || o.ru }),
+                    text: tr("akim.decision.choose"),
+                    onclick: function () {
+                      chooseOption(it, n, status);
+                    },
+                  }),
+            ])
+          );
+        });
+        // Слева — проблема и что мешает; справа — что нужно и два варианта (на телефоне всё одной колонкой).
+        list.appendChild(
+          h("li", { class: "akim-decision", tabindex: "-1", "data-key": "decision:" + it.id }, [
+            h("div", { class: "akim-decision__info" }, [
+              h("p", { class: "akim-decision__problem" }, [h("strong", { text: it["problem_" + l] || it.problem_ru })]),
+              h("p", { class: "akim-decision__meta bk-meta" }, [
+                where ? where + " · " : "",
+                h("span", { class: "akim-late-days", text: timerText(it.timer) }),
+                " · " + tr("service.assigned", { service: serviceName(it.service) }),
+              ]),
+              it.blocker_ru ? h("p", { class: "akim-decision__blocker", text: tr("akim.decision.blocker", { text: it["blocker_" + l] || it.blocker_ru }) }) : null,
+              it.temp_measure_ru ? h("p", { class: "bk-meta", text: tr("passport.temp_measure", { text: it["temp_measure_" + l] || it.temp_measure_ru }) }) : null,
+            ]),
+            h("div", { class: "akim-decision__choice" }, [
+              it.decision_ru ? h("p", { class: "akim-decision__needed", text: tr("akim.decision.needed", { text: it["decision_" + l] || it.decision_ru }) }) : null,
+              it.options && it.options.length ? opts2 : h("p", { class: "akim-decision__blocker bk-meta", text: tr("akim.decision.no_options") }),
+              status,
+            ]),
+          ])
+        );
+      });
+      card.appendChild(list);
+      return card;
+    }
+
+    // ── «Пульс района» (волна 2 п. 8) ──
+    function fmtK(k) {
+      return num(k);
+    }
+    function pulseRow(a) {
+      var l = lang();
+      var cat = a.category ? I().cat(a.category) : "";
+      var dist = a.district ? tr("district." + a.district) : "";
+      var place = a.target ? label(a.target, "label") || (I().has("heat.kind." + a.target.kind) ? tr("heat.kind." + a.target.kind) : "") : "";
+      var title, reason;
+      if (a.kind === "spike") {
+        title = tr("akim.pulse.spike", { category: cat, district: dist, k: fmtK(a.k) });
+        reason = tr("akim.pulse.reason.spike", { n: a.value, base: num(a.base >= 3 ? Math.round(a.base) : a.base) });
+      } else if (a.kind === "spike_new") {
+        title = tr("akim.pulse.spike_new", { category: cat, district: dist });
+        reason = tr("akim.pulse.reason.spike_new", { n: a.value });
+      } else if (a.kind === "spike_city") {
+        var names = (a.districts || []).slice(0, 3).map(function (x) {
+          return tr("district." + x.district) + " — " + num(x.value);
+        });
+        title = tr("akim.pulse.spike_city", { category: cat, n: (a.districts || []).length, k: fmtK(a.k) });
+        reason = tr("akim.pulse.reason.city", { list: names.join(", ") });
+      } else if (a.kind === "new_hot") {
+        title = tr("akim.pulse.new_hot", { place: place });
+        reason = tr("akim.pulse.reason.new_hot", { n: a.value });
+      } else {
+        title = tr("akim.pulse.metoo_growth", { place: place, n: a.value });
+        reason = tr("akim.pulse.reason.metoo", { n: a.prev || 0 });
+      }
+      var link = a.target
+        ? h("a", {
+            class: "akim-pulse__map",
+            href: mapLink(a.target, (d0() && d0().hot && d0().hot.days) || 7),
+            "data-key": "pulse:" + a.kind + ":" + (a.category || "") + ":" + (a.district || "") + ":" + a.target.id,
+            text: tr("common.action.show_on_map"),
+            onclick: function (e) {
+              var ev = new CustomEvent("birge:open-target", { cancelable: true, detail: { target: a.target, days: 7, from: "akim-pulse" } });
+              if (!doc.dispatchEvent(ev)) e.preventDefault();
+            },
+          })
+        : null;
+      return h("li", { class: "akim-pulse__item", "data-kind": a.kind }, [
+        h("span", { class: "akim-pulse__title", text: title }),
+        h("span", { class: "akim-pulse__reason bk-meta", text: reason }),
+        link,
+      ]);
+    }
+    function d0() {
+      return state.data;
+    }
+    function renderPulse(d) {
+      var p = d.pulse;
+      if (!p || !p.available) return null;
+      var items = p.items || [];
+      if (!items.length) {
+        // Нет тревог — одна строка мелко, без пустой карточки (IA_WAVE2 §5).
+        return h("p", { class: "akim-pulse-none bk-meta" }, [h("strong", { text: tr("akim.pulse.title") + ": " }), tr("akim.pulse.none")]);
+      }
+      var card = h("section", { class: "bk-card akim-card akim-pulse", "aria-labelledby": "akim-pulse-title" }, [
+        h("h2", { class: "bk-h2", id: "akim-pulse-title", text: tr("akim.pulse.title") }),
+      ]);
+      var first = h("ul", { class: "akim-pulse__list" });
+      items.slice(0, 3).forEach(function (a) {
+        first.appendChild(pulseRow(a));
+      });
+      card.appendChild(first);
+      if (items.length > 3) {
+        var rest = h("ul", { class: "akim-pulse__list" });
+        items.slice(3).forEach(function (a) {
+          rest.appendChild(pulseRow(a));
+        });
+        card.appendChild(
+          h("details", { class: "bk-details akim-pulse__more" }, [h("summary", { text: tr("akim.pulse.more", { n: items.length - 3 }) }), rest])
+        );
+      }
+      return card;
     }
 
     function cardHead(titleKey, hintKey, extra) {
@@ -476,7 +749,9 @@
       d.hot.items.forEach(function (it) {
         // Подписи нет (новая цель без названия) — вид места из словаря R11, а не пустая строка.
         var name = label(it.target, "label") || (I() && I().has("heat.kind." + it.target.kind) ? tr("heat.kind." + it.target.kind) : "");
-        var sub = [it.category ? I().cat(it.category) : null, it.district ? tr("district." + it.district) : null].filter(Boolean).join(" · ");
+        // Волна мелочей п. 12: не просто «Дороги», а что именно — уточнение, которое чаще всего выбрали жители.
+        var what = it.subtopic && it.subtopic.id ? tr("subtopic." + it.subtopic.id) : it.category ? I().cat(it.category) : null;
+        var sub = [what, it.district ? tr("district." + it.district) : null].filter(Boolean).join(" · ");
         var a = h(
           "a",
           {
@@ -709,9 +984,6 @@
     }
 
     function renderOk(d) {
-      if (d.demo && d.demo.any) {
-        body.appendChild(h("p", { class: "akim-demo", text: tr("common.tag.demo") + ": " + lowerFirst(tr("akim.demo_note")) }));
-      }
       if (d.complaints_available === false) {
         // Нет источника жалоб: показываем это прямо, а не четыре нуля.
         body.appendChild(h("div", { class: "akim-unavailable akim-no-complaints", role: "status" }, [icon("alert"), h("span", { text: tr("akim.no_complaints") })]));
@@ -724,6 +996,11 @@
           summaryText(d),
         ])
       );
+      // Порядок по схеме R11 (IA_WAVE2 §5): KPI → сводка → «Нужно решение акима» → «Пульс» → прежние блоки.
+      var decisionsEl = renderDecisions(d);
+      if (decisionsEl) body.appendChild(decisionsEl);
+      var pulseEl = renderPulse(d);
+      if (pulseEl) body.appendChild(pulseEl);
       // Две колонки на ноутбуке: слева «Горячие места» и объекты, справа темы, районы, предложения.
       // На телефоне колонки «растворяются» (display: contents), порядок задаёт CSS order.
       body.appendChild(
@@ -770,12 +1047,21 @@
     // В оболочке R01 «Картина дня» — прокручиваемая панель фиксированной высоты поверх карты: браузер напечатал бы
     // только видимую часть и шапку с картой. Перед печатью помечаем свою ветку DOM (от элемента до body), а печатные
     // стили akim.css прячут всё остальное и снимают ограничения высоты. После печати метки снимаются.
+    var openedForPrint = [];
     function preparePrint() {
       if (!rootEl.isConnected || !rootEl.getClientRects().length) return; // экран скрыт — печатает тот, кто на виду
+      // На бумаге «Ещё N тревог» не раскрыть — раскрываем перед печатью и сворачиваем после.
+      Array.prototype.forEach.call(rootEl.querySelectorAll("details:not([open])"), function (el) {
+        el.open = true;
+        openedForPrint.push(el);
+      });
       doc.documentElement.classList.add("akim-printing");
       for (var el = rootEl.parentElement; el && el !== doc.documentElement; el = el.parentElement) el.classList.add("akim-print-path");
     }
     function cleanupPrint() {
+      openedForPrint.splice(0).forEach(function (el) {
+        el.open = false;
+      });
       doc.documentElement.classList.remove("akim-printing");
       Array.prototype.forEach.call(doc.querySelectorAll(".akim-print-path"), function (el) {
         el.classList.remove("akim-print-path");
@@ -824,5 +1110,5 @@
     return handle;
   }
 
-  root.BirgeAkim = { mount: mount, version: "akim-r14-3" };
+  root.BirgeAkim = { mount: mount, version: "akim-r14-w2" };
 })(window);

@@ -1,0 +1,167 @@
+{
+ "rules_version": "r03-emergency-v1",
+ "corpora": {
+  "synth_v3": {
+   "n": 4260,
+   "naive": 192,
+   "rules": 0,
+   "naive_by_label": {
+    "parking": 54,
+    "yards": 33,
+    "roads": 27,
+    "lighting": 26,
+    "transport": 11,
+    "sidewalks": 8,
+    "utilities": 7,
+    "snow_ice": 6,
+    "noise_safety": 6,
+    "waste": 5,
+    "smell_air": 5,
+    "other": 4
+   },
+   "rules_by_label": {},
+   "naive_only_words": {
+    "магазином": 79,
+    "газоне": 40,
+    "горит": 34,
+    "газон": 27,
+    "газону": 12,
+    "пожарная": 3,
+    "магазиом": 1,
+    "газное": 1,
+    "газоге": 1
+   },
+   "hit_ids": []
+  },
+  "llm_v1": {
+   "n": 3979,
+   "naive": 139,
+   "rules": 19,
+   "naive_by_label": {
+    "parking": 64,
+    "yards": 25,
+    "utilities": 17,
+    "lighting": 16,
+    "smell_air": 4,
+    "roads": 3,
+    "snow_ice": 3,
+    "sidewalks": 2,
+    "waste": 2,
+    "other": 2,
+    "noise_safety": 1
+   },
+   "rules_by_label": {
+    "smell_air": 10,
+    "utilities": 9
+   },
+   "naive_only_words": {
+    "горит": 26,
+    "газонға": 25,
+    "газон": 18,
+    "газоне": 18,
+    "газонах": 10,
+    "магазина": 6,
+    "газондар": 6,
+    "газонды": 2,
+    "газону": 2,
+    "магазинов": 2,
+    "газоны": 2,
+    "газов": 2,
+    "газондарды": 1,
+    "газонына": 1,
+    "газдарының": 1,
+    "пожарной": 1,
+    "магазин": 1,
+    "газона": 1,
+    "газондарға": 1,
+    "пожарным": 1,
+    "магазину": 1,
+    "магазином": 1,
+    "газондары": 1,
+    "пожарная": 1,
+    "газға": 1
+   },
+   "hit_ids": [
+    "llm-38f90f806d",
+    "llm-5638cc0d3f",
+    "llm-443b61bb10",
+    "llm-2d56d114a5",
+    "llm-92136be06b",
+    "llm-cf811df052",
+    "llm-01c7c5cb33",
+    "llm-eb71c9e89e",
+    "llm-0ed6b50818",
+    "llm-67f6a63d5d",
+    "llm-6623986f4c",
+    "llm-a844d79f7b",
+    "llm-ec4246699a",
+    "llm-6c70a9b122",
+    "llm-bdd39c3228",
+    "llm-ccb29007b9",
+    "llm-6be51c7178",
+    "llm-a6b7db87e9",
+    "llm-05919b8308"
+   ]
+  },
+  "v1_in_v2": {
+   "n": 2724,
+   "naive": 41,
+   "rules": 0,
+   "naive_by_label": {
+    "yards": 21,
+    "lighting": 16,
+    "transport": 4
+   },
+   "rules_by_label": {},
+   "naive_only_words": {
+    "газон": 21,
+    "горит": 20
+   },
+   "hit_ids": []
+  },
+  "probe_v2": {
+   "n": 300,
+   "naive": 16,
+   "rules": 4,
+   "naive_by_label": {
+    "parking": 6,
+    "yards": 2,
+    "utilities": 2,
+    "smell_air": 2,
+    "sidewalks": 1,
+    "lighting": 1,
+    "noise_safety": 1,
+    "other": 1
+   },
+   "rules_by_label": {
+    "utilities": 2,
+    "smell_air": 2
+   },
+   "naive_only_words": {
+    "газон": 4,
+    "газону": 2,
+    "газонах": 2,
+    "газоне": 2,
+    "горит": 1,
+    "магазину": 1,
+    "газонға": 1
+   },
+   "hit_ids": [
+    "probe2-utilities-16",
+    "probe2-utilities-23",
+    "probe2-smell_air-12",
+    "probe2-smell_air-25"
+   ]
+  }
+ },
+ "cases": {
+  "n": 78,
+  "rules_ok": 78,
+  "naive_ok": 40,
+  "rules_miss": []
+ },
+ "js": {
+  "n": 11341,
+  "same": 11341
+ }
+}

@@ -339,9 +339,26 @@ def author_view(record: dict) -> dict:
     return view
 
 
+def moderation(text) -> dict | None:
+    """Пометка для акимата «Содержит грубые слова» (п. 8 волны мелочей, фильтр R04 ui.civic_ml_api.profanity).
+    -> {"rude": True, "count", "kinds", "version"} или None (грубых слов нет / фильтр не загрузился).
+    Публично текст жалобы и так не отдаётся; если отдаётся (автору, будущим экранам) — шлюз R01 ставит звёздочки."""
+    try:
+        from ui.civic_ml_api.profanity import moderation as check
+        result = check(text)
+    except Exception:  # фильтр — не причина не принять жалобу
+        return None
+    return result if result.get("rude") else None
+
+
 def staff_view(record: dict) -> dict:
-    """Акимату — всё, кроме хэшей устройства."""
-    return {key: value for key, value in record.items() if key not in ("device_hash", "request_id")}
+    """Акимату — всё, кроме хэшей устройства. Текст — оригинал; грубые слова — пометкой moderation."""
+    view = {key: value for key, value in record.items() if key not in ("device_hash", "request_id")}
+    if "moderation" not in view:          # записи до п. 8 и импортированные
+        flag = moderation(view.get("text"))
+        if flag:
+            view["moderation"] = flag
+    return view
 
 
 def resident_steps(record: dict) -> list[dict]:

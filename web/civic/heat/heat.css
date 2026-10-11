@@ -131,6 +131,17 @@
 .r07-card__title { margin: 0; font-size: 22px; line-height: 1.25; font-weight: 750; overflow-wrap: anywhere; }
 .r07-root .r07-card__title:focus, .r07-root .r07-card__title:focus-visible { outline: none; } /* фокус ставится программно — рамка не нужна */
 .r07-tag { margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: #f1efe6; color: #5b5442; font-size: 14px; letter-spacing: 0; text-transform: none; }
+/* п. 8 (R04): пометка у акимата «Содержит грубые слова» — заметно, но не тревожно (цвет + текст, не только цвет). */
+.r07-tag--rude { background: #fbe9e7; color: #8a2d1f; }
+/* п. 9 (R04 + R09): «Объединено с этим» — свёрнуто, у каждого пункта своя кнопка «Это разные проблемы». */
+.r07-merged { display: flex; flex-direction: column; gap: 8px; }
+.r07-merged > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 8px; list-style: none; }
+.r07-merged > summary::-webkit-details-marker { display: none; }
+.r07-merged > summary::before { content: "▸"; color: var(--r07-green); }   /* как «▸ Слои»: видно, что раскрывается */
+.r07-merged[open] > summary::before { content: "▾"; }
+.r07-merged__count { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 8px; border-radius: 999px; background: #f1efe6; color: #5b5442; font-size: 14px; }
+.r07-merged .r07-quotes { margin-top: 8px; }
+.r07-merged__btn { margin-top: 8px; width: 100%; }
 .r07-level { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; }
 .r07-card__reported { margin: 0; font-size: 17px; }
 .r07-spark { display: flex; align-items: flex-end; gap: 3px; height: 56px; padding: 4px; border-radius: 10px; background: var(--r07-paper); }
@@ -216,8 +227,14 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
   display: inline-flex; align-items: center; padding: 0; border: 0; background: transparent; cursor: pointer;
   font-family: var(--b-font, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
   filter: drop-shadow(0 1px 3px #19362840);
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Без transition: этот элемент — element маркера MapLibre, карта двигает его через transform каждый кадр.
+     С transition значки «плыли» за картой и догоняли свои места (замечание владельца на демо). */
 }
+/* Оболочка R01 (style.css) даёт всем кнопкам transition: transform 0.18s — значок тоже <button>, поэтому запрещаем явно,
+   селектором сильнее «button:not(:disabled)». Оставляем только плавную прозрачность маркера MapLibre. */
+.r07-badge.r07-badge, .maplibregl-marker.r07-badge { transition: opacity 0.2s; }
+/* Увеличение при наведении и выборе — у внутренней обёртки, а не у маркера */
+.r07-badge__inner { display: inline-flex; align-items: center; transform-origin: 17px 50%; transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); }
 .r07-badge[hidden] { display: none; }
 /* Зона нажатия значка ≥ 48 px (видимый значок 34–38 px). Маркер MapLibre уже position:absolute. */
 .r07-badge::after { content: ""; position: absolute; inset: -6px -3px; }
@@ -227,7 +244,8 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
   border-left: 5px solid var(--r07-c, #999); font-size: 14px; }
 .r07-badge--mini::after { inset: -13px -7px; }
 .r07-badge--mini .r07-badge__name { display: none; }
-.r07-badge:hover, .r07-badge--selected { transform: scale(1.12); z-index: 3; }
+.r07-badge:hover, .r07-badge--selected { z-index: 3; }
+.r07-badge:hover .r07-badge__inner, .r07-badge--selected .r07-badge__inner { transform: scale(1.12); }
 .r07-badge__dot {
   display: grid; place-items: center; width: 34px; height: 34px; border: 2px solid #fff; border-radius: 50%;
   background: var(--r07-c, #ccc); color: #152c26; transition: background 0.8s cubic-bezier(0.22, 1, 0.36, 1);
@@ -258,7 +276,7 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 
 @media (prefers-reduced-motion: reduce) {
   .r07-pulse::before, .r07-pulse::after, .r07-skeleton i, .r07-toast { animation: none; }
-  .r07-badge, .r07-badge__dot { transition: none; }
+  .r07-badge__inner, .r07-badge__dot { transition: none; }
 }
 @media (max-width: 760px) {
   .r07-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; margin: 0 -2px; }

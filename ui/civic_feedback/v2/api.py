@@ -15,6 +15,8 @@ handle(...) возвращает None для чужих путей — шлюз 
   POST /complaints/{id}/metoo            «Я тоже» (одно на устройство)
   POST /complaints/{id}/status           смена статуса (только сотрудник)
   POST /complaints/{id}/duplicate        отметить дублем {of} (только сотрудник)
+  GET  /complaints/merged?target_id      что объединено с жалобами цели: дубли и «Я тоже» с текстом (сотрудник)
+  POST /complaints/{id}/separate         «Это разные проблемы»: id дубля (c-…) или «Я тоже» (mt-…) (сотрудник)
 """
 
 from __future__ import annotations
@@ -136,12 +138,14 @@ class ComplaintsV2Service:
         if parts == ["complaints"]:
             return need(("GET", "POST"), self._list if method in ("GET", "HEAD") else self._create)
         if len(parts) == 2:
-            special = {"mine": self._mine, "events": self._events, "summary": self._summary, "place": self._place}
+            special = {"mine": self._mine, "events": self._events, "summary": self._summary, "place": self._place,
+                       "merged": self._merged}
             if parts[1] in special:
                 return need(("GET",), special[parts[1]])
             return need(("GET",), self._detail, parts[1])
         if len(parts) == 3:
-            action = {"metoo": self._metoo, "status": self._status, "duplicate": self._duplicate}.get(parts[2])
+            action = {"metoo": self._metoo, "status": self._status, "duplicate": self._duplicate,
+                      "separate": self._separate}.get(parts[2])
             if action:
                 return need(("POST",), action, parts[1])
         raise ApiError(404, "not_found", "Адрес не найден.")
@@ -291,7 +295,7 @@ class ComplaintsV2Service:
 
     def _metoo(self, complaint_id, *, params, body, principal, context):
         data = self._json(body)
-        record, result = self.store.metoo(complaint_id, self._device(context, data))
+        record, result = self.store.metoo(complaint_id, self._device(context, data), note=data.get("note"))
         return _ok(200, {"result": result, "complaint": rec.public_view(record)})
 
     def _status(self, complaint_id, *, params, body, principal, context):
@@ -308,3 +312,19 @@ class ComplaintsV2Service:
             raise ApiError(422, "invalid", "Укажите исходное обращение.", {"of": "id обращения"})
         record = self.store.mark_duplicate(complaint_id, data["of"], actor=_actor(principal))
         return _ok(200, {"complaint": rec.staff_view(record)})
+
+    # ------------------------------------------------------------ «Это разные проблемы» (п. 9)
+    def _merged(self, *, params, body, principal, context):
+        if not _is_staff(principal):  # тексты жителей — только акимату (чтение: без CSRF, как список)
+            raise ApiError(403, "forbidden", "Действие доступно только сотрудникам акимата.")
+        target_id = params.get("target_id") or ""
+        if not target_id or len(target_id) > 100:
+            raise ApiError(422, "invalid", "Не указана цель.", {"target_id": "id объекта, участка или двора"})
+        items = self.store.merged(target_id)
+        return _ok(200, {"items": items, "count": len(items)})
+
+    def _separate(self, item_id, *, params, body, principal, context):
+        self._require_staff(principal, context)
+        separated, original = self.store.separate(item_id, actor=_actor(principal))
+        return _ok(200, {"complaint": rec.staff_view(separated),
+                         "original": rec.staff_view(original) if original else None})

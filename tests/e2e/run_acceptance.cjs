@@ -1,6 +1,7 @@
 // R10 · раунд 14 · полная приёмка сборки одной командой (B1 / B2 / FINAL; повтор Codex на ноутбуке владельца).
 //
 //   node tests/e2e/run_acceptance.cjs --root <папка сборки> --out <папка отчёта> [--label FINAL]
+//        [--sizes 360x800,375x667] [--langs ru,kk]   (по умолчанию 1366x768,375x812 и ru,kk)
 //
 // Что делает (ничего не пишет в репозиторий, база — временная):
 //   1. точность карты:  <PY> tests/civic/R10/accuracy.py --root <сборка> --json <out>/accuracy.json  (+ pytest tests/civic/R10)
@@ -8,7 +9,11 @@
 //                       с CIVIC_DEMO=1, как run-city.bat (--no-demo — без синтетического набора R07)
 //   3. сценарий демо:   tests/e2e/demo_flow.cjs --url <сервер> (API + UI, 1366/375 × ru/kk) → <out>/e2e/
 //   4. UX по экранам:   tests/e2e/ux_screens.cjs --screens tests/e2e/screens_build.json → <out>/ux/
-//   5. сводка:          <out>/SUMMARY.md — числа PASS/FAIL/NOT_RUN по каждому блоку и список FAIL
+//   5. демо «как в первый раз»: tests/e2e/demo_reset_check.cjs (после репетиции и через 2 недели) → <out>/reset/
+//   6. новые пункты волн: tests/e2e/wave_checks.cjs (POLISH_WAVE*.md; пункт без кода роли — ЖДЁТ) → <out>/wave/ (--no-wave — пропустить)
+//   7. регресс к эталону (--baseline <папка>, например research/round-14-results/R10/baseline_8e67c65; --control <прогон 8e67c65
+//      на этой машине> — для строгого времени): tests/e2e/map_baseline.cjs → <out>/map/, compare_baseline.cjs → <out>/compare/
+//   8. сводка:          <out>/SUMMARY.md — числа PASS/FAIL/NOT_RUN по каждому блоку и список FAIL
 // Тесты R10 берутся из ЭТОЙ папки (tests/e2e рядом со скриптом), сборка — из --root: так можно проверять любой SHA.
 // Нужно: Python 3.11+ (переменная PYTHON, например .venv\Scripts\python), Node 20+, Playwright с Chromium
 // (NODE_PATH="$(npm root -g)" или npm i playwright в папке).
@@ -82,16 +87,30 @@ function run(cmd, argv, opts = {}) {
   if (up) {
     // 3. Сценарий демо
     const nodeEnv = { NODE_PATH: process.env.NODE_PATH || "", PYTHON: PY };
-    run(process.execPath, [path.join(HERE, "demo_flow.cjs"), "--root", ROOT, "--url", base, "--user", user, "--pass", pass, "--out", path.join(OUT, "e2e")],
+    // --sizes / --langs — те же размеры и языки для сценария и UX (например, малые телефоны: --sizes 360x800,375x667).
+    const pass_ = [...(args.sizes ? ["--sizes", String(args.sizes)] : []), ...(args.langs ? ["--langs", String(args.langs)] : [])];
+    run(process.execPath, [path.join(HERE, "demo_flow.cjs"), "--root", ROOT, "--url", base, "--user", user, "--pass", pass, "--out", path.join(OUT, "e2e"), ...pass_],
       { log: "e2e.log", env: nodeEnv });
     // 4. UX по экранам
-    run(process.execPath, [path.join(HERE, "ux_screens.cjs"), "--screens", path.join(HERE, "screens_build.json"), "--base", base, "--out", path.join(OUT, "ux")],
-      { log: "ux.log", env: nodeEnv });
+    run(process.execPath, [path.join(HERE, "ux_screens.cjs"), "--screens", path.join(HERE, "screens_build.json"), "--base", base, "--out", path.join(OUT, "ux"),
+      ...(args.sizes ? ["--sizes", String(args.sizes)] : [])], { log: "ux.log", env: nodeEnv });
   }
   srv.kill();
   await sleep(500);
   fs.closeSync(srvFd);
   fs.rmSync(tmp, { recursive: true, force: true });
+  // 4б. Демо после репетиции и через две недели (B-048, B-049): своя временная база, только API, ~1 мин.
+  if (!args["no-reset"]) run(process.execPath, [path.join(HERE, "demo_reset_check.cjs"), "--root", ROOT, "--out", path.join(OUT, "reset")], { log: "reset.log" });
+  // 4в. Новые пункты волн 1–2 (своя временная база): пункт без кода роли — ЖДЁТ, не FAIL.
+  const nodeEnv2 = { NODE_PATH: process.env.NODE_PATH || "", PYTHON: PY };
+  if (!args["no-wave"]) run(process.execPath, [path.join(HERE, "wave_checks.cjs"), "--root", ROOT, "--out", path.join(OUT, "wave"),
+    ...(args.sizes ? ["--sizes", String(args.sizes)] : []), ...(args.langs ? ["--langs", String(args.langs)] : [])], { log: "wave.log", env: nodeEnv2 });
+  // 4г. Регресс к эталону 8e67c65 (POLISH_WAVE_2 правило 7): вид карты и замеры, затем сравнение.
+  if (args.baseline) {
+    run(process.execPath, [path.join(HERE, "map_baseline.cjs"), "--root", ROOT, "--out", path.join(OUT, "map"), "--repeat", String(args.repeat || 3)], { log: "map.log", env: nodeEnv2 });
+    run(process.execPath, [path.join(HERE, "compare_baseline.cjs"), "--base", path.resolve(String(args.baseline)), "--new", OUT, "--out", path.join(OUT, "compare"),
+      ...(args.control ? ["--control", path.resolve(String(args.control))] : [])], { log: "compare.log", env: nodeEnv2 });
+  }
 
   // 5. Сводка
   const read = (f) => { try { return JSON.parse(fs.readFileSync(path.join(OUT, f), "utf8")); } catch { return null; } };
@@ -105,6 +124,18 @@ function run(cmd, argv, opts = {}) {
   }
   summary.push("", "## 4. UX по экранам (tests/e2e/ux_screens.cjs)", "", ux ? `PASS ${ux.counts.PASS} · FAIL ${ux.counts.FAIL} · NOT_RUN ${ux.counts.NOT_RUN || 0} — подробно ux/UX_RESULT.md` : "не выполнен — см. ux.log");
   if (ux) ux.rows.filter((r) => r.status === "FAIL").forEach((r) => summary.push(`- FAIL [${r.owner}] ${r.screen} ${r.size} ${r.lang}: ${r.check}`));
+  const reset = read("reset/RESET_RESULT.json");
+  summary.push("", "## 5. Демо после репетиции и через две недели (tests/e2e/demo_reset_check.cjs)", "",
+    reset ? `PASS ${reset.counts.PASS} · FAIL ${reset.counts.FAIL} · NOT_RUN ${reset.counts.NOT_RUN} — подробно reset/RESET_RESULT.md` : (args["no-reset"] ? "пропущено (--no-reset)" : "не выполнен — см. reset.log"));
+  if (reset) reset.results.filter((r) => r.status === "FAIL").forEach((r) => summary.push(`- FAIL шаг ${r.step}: ${r.name}`));
+  const wave = read("wave/WAVE_RESULT.json");
+  summary.push("", "## 6. Новые пункты волн 1–2 (tests/e2e/wave_checks.cjs)", "",
+    wave ? `PASS ${wave.counts.PASS} · FAIL ${wave.counts.FAIL} · ЖДЁТ ${wave.counts.PENDING} · NOT_RUN ${wave.counts.NOT_RUN} — подробно wave/WAVE_RESULT.md` : (args["no-wave"] ? "пропущено (--no-wave)" : "не выполнен — см. wave.log"));
+  if (wave) wave.results.filter((r) => r.status === "FAIL").forEach((r) => summary.push(`- FAIL ${r.item} ${r.scope}: ${r.name}`));
+  const cmp = read("compare/COMPARE.json");
+  summary.push("", "## 7. Регресс к эталону (map_baseline.cjs + compare_baseline.cjs)", "",
+    cmp ? `**${cmp.verdict}** · ${Object.entries(cmp.counts).map(([k, v]) => `${k} ${v}`).join(" · ")} — подробно compare/COMPARE.md` : (args.baseline ? "не выполнен — см. map.log, compare.log" : "пропущено (нет --baseline)"));
+  if (cmp) cmp.items.filter((i) => i.status === "FAIL").forEach((i) => summary.push(`- FAIL ${i.area}: ${i.what}`));
   fs.writeFileSync(path.join(OUT, "SUMMARY.md"), summary.join("\n") + "\n");
   console.log(summary.slice(0, 12).join("\n"));
   console.log("Сводка:", path.join(OUT, "SUMMARY.md"));

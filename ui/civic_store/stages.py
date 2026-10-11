@@ -232,7 +232,8 @@ class StageRepository:
             stage_row = self._stage_row(conn, object_id)
             history = conn.execute(
                 """SELECT revision, at, stage, planned_end, forecast_end, public_actor_label
-                   FROM civic_stage_history WHERE object_id = ? ORDER BY revision""", (object_id,)).fetchall()
+                   FROM civic_stage_history WHERE object_id = ? AND public_actor_label != ''
+                   ORDER BY revision""", (object_id,)).fetchall()
         item = self._item(dto.sanitize_public(_loads(row["dto_json"])), stage_row, self.today())
         return {"item": item, "stage_history": [
             {"revision": h["revision"], "at": h["at"], "stage": h["stage"], "planned_end": h["planned_end"],
@@ -302,12 +303,22 @@ class StageRepository:
         stage, planned_end, forecast_end, reason, expected = self._clean(payload)
         now = iso(utc_now(self.clock))
         with self.db.write() as conn:
-            if conn.execute("SELECT 1 FROM civic_objects WHERE id = ?", (object_id,)).fetchone() is None:
+            obj = conn.execute("SELECT first_published_at FROM civic_objects WHERE id = ?", (object_id,)).fetchone()
+            if obj is None:
                 raise NotFound(object_id)
             row = self._stage_row(conn, object_id)
             current = row["revision"] if row else 0
             if current != expected:
                 raise Conflict("Этап уже изменил другой сотрудник: обновите карточку.", current)
+            # R15-S18: после публикации срок этапа — база отставания для «Картины дня» (в v1 original_planned_end
+            # после публикации закрыт). Перенос срока позже (или снятие срока) и возврат этапа назад — только
+            # с причиной (она остаётся в служебной истории), иначе объект тихо уходит из списка отстающих.
+            # Первый этап объекта задаётся как раньше (так его задаёт редактор R06 после миграции).
+            if row is not None and obj["first_published_at"] and not reason:
+                later = row["planned_end"] is not None and (planned_end is None or planned_end > row["planned_end"])
+                back = row["stage"] in STAGES and stage in STAGES and STAGES.index(stage) < STAGES.index(row["stage"])
+                if later or back:
+                    raise ValidationError({"reason": "После публикации перенос срока или возврат этапа — с причиной."})
             unchanged = (row is not None and row["stage"] == stage and row["planned_end"] == planned_end
                          and row["forecast_end"] == forecast_end)
             if not unchanged:
@@ -330,7 +341,8 @@ class StageRepository:
                            forecast_end, reason, actor_user_id, actor_label, public_actor_label)
                        VALUES (?, ?, ?, 'set', ?, ?, ?, ?, ?, ?, ?)""",
                     (object_id, revision, now, stage, planned_end, forecast_end, reason, actor.user_id,
-                     actor.label, actor.public_label))
+                     # R15-S21: '' — правка черновика: жителям не показывается (как неопубликованное в v1).
+                     actor.label, actor.public_label if obj["first_published_at"] else ""))
         result = self.get_staff(object_id)
         result["changed"] = not unchanged
         return result

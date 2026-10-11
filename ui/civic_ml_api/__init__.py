@@ -6,7 +6,8 @@
 Подключение при старте сервера (INTEGRATION.txt):
     connect_store(store)    — хранилище жалоб R09 для similar() (+ фоновый прогрев кэша признаков);
     warmup()                — загрузить модели заранее (в фоне), чтобы первый запрос жителя был быстрым.
-Диагностика: status() — какие модели загружены и почему нет остальных.
+Диагностика: status() — какие модели загружены и почему нет остальных; журнал решений акимата о дублях (п. 9).
+Фильтр мата для публичных выводов (п. 8): ui.civic_ml_api.profanity (mask, check, mask_json, moderation).
 """
 
 from __future__ import annotations
@@ -18,8 +19,8 @@ from ml.civic_dedup import reset as _reset_dedup
 from ui.civic_ml_api import classify_chain as _classify_mod
 from ui.civic_ml_api.classify_chain import classify
 from ui.civic_ml_api.errors import MLServiceUnavailable
-from ui.civic_ml_api.similar_search import (connect_store, records_source, set_complaint_source, similar,
-                                            source_kind, warm_cache)
+from ui.civic_ml_api.similar_search import (connect_store, feedback_stats, records_source, set_complaint_source,
+                                            similar, source_kind, warm_cache)
 
 __all__ = ["MLServiceUnavailable", "classify", "connect_store", "records_source", "reset", "set_complaint_source",
            "similar", "status", "warm_cache", "warmup"]
@@ -28,7 +29,8 @@ __all__ = ["MLServiceUnavailable", "classify", "connect_store", "records_source"
 def status() -> dict:
     """Состояние для R01/R10: цепочка classify, метод поиска дублей, подключён ли источник жалоб."""
     return {"classify": {"model_version": _classify_mod.CHAIN.version(), "models": _classify_mod.CHAIN.status()},
-            "similar": {**deduper_info(), "source": source_kind() or "not_connected"}}
+            "similar": {**deduper_info(), "source": source_kind() or "not_connected",
+                        "feedback": feedback_stats()}}
 
 
 def warmup(background: bool = True):

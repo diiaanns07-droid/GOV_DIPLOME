@@ -296,8 +296,20 @@ def text_groups(complaints, *, kind: str, target_id: str, now: datetime, days: i
     out = []
     for g in ordered:
         text = g["text"] if len(g["text"]) <= TEXT_MAX else g["text"][: TEXT_MAX - 1].rstrip() + "…"
-        out.append({"text": text, "people": g["people"], "demo": g["demo"], "lang": g["lang"]})
+        item = {"text": text, "people": g["people"], "demo": g["demo"], "lang": g["lang"]}
+        if _rude(g["text"]):
+            item["rude"] = True   # п. 8: сотрудник видит оригинал с пометкой; жителю шлюз R01 ставит звёздочки
+        out.append(item)
     return {"groups": out, "hidden_people": hidden}
+
+
+def _rude(text: str) -> bool:
+    """Есть ли грубые слова (фильтр R04 ui.civic_ml_api.profanity); фильтр недоступен — False."""
+    try:
+        from ui.civic_ml_api.profanity import is_rude
+    except Exception:
+        return False
+    return is_rude(text)
 
 
 def districts_summary(target_items: list, config: HeatConfig) -> list:

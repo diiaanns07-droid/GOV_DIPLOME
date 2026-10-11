@@ -29,6 +29,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
+import secrets
 
 from .objects import Actor, iso, utc_now
 from .proposals import ProposalRepository
@@ -142,7 +143,8 @@ def seed_r14_demo(service) -> dict:
         # Демо-голоса пишутся напрямую одной транзакцией (без ограничителя частоты HTTP).
         with service.db.write() as conn:
             for n in range(up + down):
-                device = proposals.device_hash(conn, f"demo-seed-{number}-{n:05d}-device")
+                # R15-S20: случайный id — id, известный по исходникам, позволял любому перевернуть демо-голос.
+                device = proposals.device_hash(conn, f"demo-seed-{secrets.token_hex(16)}")
                 conn.execute("""INSERT OR IGNORE INTO civic_votes(proposal_id, device_hash, value, created_at,
                                     updated_at) VALUES (?, ?, ?, ?, ?)""",
                              (item["id"], device, 1 if n < up else -1, iso(now), iso(now)))

@@ -289,6 +289,12 @@ body.civic-mode[data-birge-explore="header"] .civic-explore-field { flex: 1 1 au
 /* Шапка ниже на 8 px (76 → 68): карта на 1366×768 — не меньше 60 % экрана (читаемость п. 3). */
 @media (min-width: 1024px) { .civic-mode .topbar { height: 68px; } }
 body.civic-mode[data-birge-explore="header"] .civic-explore-field input { min-height: 48px; border-radius: var(--r-m, 12px); }
+/* «Найти / Іздеу» — кнопка с рамкой, как bk-btn ui-kit (R11 разбор 6, п. 2: без рамки читалась как надпись). */
+body.civic-mode[data-birge-explore="header"] .civic-explore .civic-explore-go {
+  min-height: 48px; min-width: 48px; padding: 0 14px; border: 1px solid var(--c-line-strong, #b9c2b9);
+  border-radius: var(--r-m, 12px); background: var(--c-surface, #fff); color: var(--c-ink, #17251d); font-size: 15px;
+}
+body.civic-mode[data-birge-explore="header"] .civic-explore .civic-explore-go:hover { border-color: var(--c-ink, #17251d); }
 body.civic-mode[data-birge-explore="header"] .civic-explore-notices,
 body.civic-mode[data-birge-explore="header"] .civic-explore-registry {
   position: absolute; top: calc(100% + 18px); left: 0; width: min(420px, 100%); margin: 0;

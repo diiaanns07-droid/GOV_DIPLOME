@@ -32,10 +32,12 @@ ROUTES = (
     ("GET", "/complaints/events"),
     ("GET", "/complaints/summary"),
     ("GET", "/complaints/place"),
+    ("GET", "/complaints/merged"),            # только сотрудник: что объединено с жалобами цели (п. 9)
     ("GET", "/complaints/{id}"),
     ("POST", "/complaints/{id}/metoo"),
     ("POST", "/complaints/{id}/status"),      # только сотрудник (R02 session + CSRF)
     ("POST", "/complaints/{id}/duplicate"),   # только сотрудник
+    ("POST", "/complaints/{id}/separate"),    # только сотрудник: «Это разные проблемы» (п. 9)
 )
 
 

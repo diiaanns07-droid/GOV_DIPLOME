@@ -23,6 +23,7 @@ from typing import Callable
 
 from . import categories
 from . import record as rec
+from . import separate as sep
 from .record import RecordError
 
 SCHEMA_SQL = """
@@ -61,6 +62,7 @@ CREATE TABLE IF NOT EXISTS complaint_metoo_v2 (
   PRIMARY KEY (complaint_id, device_hash)
 );
 CREATE INDEX IF NOT EXISTS complaint_metoo_v2_device ON complaint_metoo_v2 (device_hash);
+""" + sep.SCHEMA_SQL + """
 CREATE TABLE IF NOT EXISTS complaint_events_v2 (
   seq INTEGER PRIMARY KEY AUTOINCREMENT,
   at TEXT NOT NULL,
@@ -95,8 +97,9 @@ class Conflict(RecordError):
     pass
 
 
-class ComplaintStore:
-    """Потокобезопасно: одно соединение под RLock (как FeedbackService v1)."""
+class ComplaintStore(sep.SeparateMixin):
+    """Потокобезопасно: одно соединение под RLock (как FeedbackService v1).
+    «Это разные проблемы» (separate, merged, текст «Я тоже») — в separate.py (волна мелочей п. 9)."""
 
     def __init__(self, db_path, *, clock: Callable[[], datetime] | None = None, limits: dict | None = None):
         self.clock = clock or (lambda: datetime.now(rec.ASTANA_TZ))
@@ -273,18 +276,24 @@ class ComplaintStore:
                 "due_at": rec.due_at(created_at, category),
                 "schema": rec.SCHEMA,
             }
+            flag = rec.moderation(text)   # п. 8: акимат видит оригинал с пометкой «Содержит грубые слова»
+            if flag:
+                record["moderation"] = flag
             self._save(db, record, device_hash=device, request_id=request_id)
             event = self._event(db, "created", record, created_at)
         self._emit([event])
         return record, True
 
     # ------------------------------------------------------------ «Я тоже»
-    def metoo(self, complaint_id: str, device_id: str) -> tuple[dict, str]:
+    def metoo(self, complaint_id: str, device_id: str, note: dict | None = None) -> tuple[dict, str]:
         """«Я тоже» — одно на устройство. -> (исходная запись, result):
         added | already (уже нажимал) | author (это его собственная жалоба).
-        Новую запись не создаёт никогда; если нажали на дубль — засчитывается исходной."""
+        Новую запись не создаёт никогда; если нажали на дубль — засчитывается исходной.
+        note — текст, место, цель, категория из формы жалобы: сохраняются для акимата, чтобы ошибочное
+        «Я тоже» можно было выделить в отдельную жалобу одним действием (separate.py)."""
         device = self.device_hash(device_id)
         now = rec.iso(self._now())
+        parsed = self.parse_metoo_note(note)
         with self._tx() as db:
             record = self._root(db, complaint_id)
             author = db.execute("SELECT device_hash FROM complaints_v2 WHERE id = ?", (record["id"],)).fetchone()[0]
@@ -294,6 +303,8 @@ class ComplaintStore:
                              "VALUES (?,?,?)", (record["id"], device, now))
             if cur.rowcount == 0:
                 return record, "already"
+            if parsed:
+                self._add_metoo_note(db, record["id"], device, now, parsed)
             self._recount_metoo(db, record)
             self._save(db, record)
             event = self._event(db, "metoo", record, now)

@@ -131,6 +131,15 @@ def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None)
         d = c["delta"]
         verdict = "доказано" if (d["low"] > 0 or d["high"] < 0) else "не доказано"
         t.add(_ru_title(c["title"]), f"{d['delta']:+.3f}", f"[{d['low']:+.3f}; {d['high']:+.3f}]", d["share_delta_gt_0"], verdict)
+    have = {r[0] for r in t.rows}
+    curve = _load((Path(folder) if folder else RESULTS_DIR) / "synth_curve_probe_v2.json")
+    extra = paired_files(Path(folder) if folder else RESULTS_DIR)
+    extra += [(f"логрегрессия, доля синтетики: {p['title']}", p["delta"]) for p in curve.get("paired") or []
+              if p["title"] != "v3 + 100 % LLM − одна v3"]                # эта Δ уже есть из experiments/paired
+    for title, d in extra:
+        if title not in have:
+            verdict = "доказано" if (d["low"] > 0 or d["high"] < 0) else "не доказано"
+            t.add(title, f"{d['delta']:+.3f}", f"[{d['low']:+.3f}; {d['high']:+.3f}]", d["share_delta_gt_0"], verdict)
     tables.append(t)
 
     keys = [f"synth_all/{m}" for m in MODELS]
@@ -190,6 +199,13 @@ def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None)
                 t.add(f"Время на текст, {key}", f"{lat[key]['mean_ms']} мс (p95 {lat[key]['p95_ms']})")
         for k, v in (onnx.get("verdict") or {}).items():
             t.add(f"Проверка {k}", v)
+        probe8 = _load((Path(folder) if folder else RESULTS_DIR) / "onnx_int8_on_probe_v2.json")
+        if probe8.get("human", {}).get("macro_f1") is not None:
+            same = not final.get("model_version") or probe8.get("model") == final.get("model_version")
+            t.add("probe_v2: macro-F1 int8 (ONNX)" + ("" if same else f" — другая модель {probe8.get('model')}"),
+                  _ci(probe8["human"]))
+            if final.get("probe_v2_eval", {}).get("macro_f1") is not None:
+                t.add("probe_v2: macro-F1 PyTorch (итоговая модель)", _ci(final["probe_v2_eval"]))
         diag = (onnx.get("diagnostics") or {}).get("per_channel")
         if diag:
             t.add("Диагностика LOCAL-4: per-channel, совпадение", f"{diag['batch32_vs_torch']['argmax_agreement'] * 100:.1f} %")
@@ -200,19 +216,41 @@ def build_tables(exp: dict, final: dict, onnx: dict, folder: Path | None = None)
     return tables
 
 
-def extra_tables(folder: Path) -> list[Table]:
-    """Дополнительные опыты (если файлы есть): перевод транслита и чистка шумных меток llm_v1."""
+def paired_files(folder: Path) -> list[tuple[str, dict]]:
+    """Строки таблицы 3 из файлов `analysis paired`: results/paired_<модель>_<режим a>_vs_<режим b>.json."""
     out = []
-    tr = _load(folder / "translit_to_cyrillic_probe_v2.json")
+    for f in sorted(Path(folder).glob("paired_*_vs_*.json")):
+        r = _load(f)
+        if r.get("set") != "probe_v2" or not r.get("delta"):
+            continue
+        left, right = f.stem[len("paired_"):].split("_vs_", 1)
+        model, _, reg_a = left.partition("_")
+        reg = lambda x: REGIME_RU.get(x) or REGIME_RU.get(f"synth_{x}") or x  # noqa: E731 — «template» = synth_template
+        title = (f"{MODEL_RU[model]}: {reg(reg_a)} − {reg(right)}" if model in MODEL_RU else f"{r.get('a')} − {r.get('b')}")
+        out.append((title, r["delta"]))
+    return out
+
+
+def extra_tables(folder: Path) -> list[Table]:
+    """Дополнительные опыты (если файлы есть): перевод транслита, шум меток llm_v1, нагрузка /classify, объём синтетики."""
+    out = []
+    tr = dict(_load(folder / "translit_to_cyrillic_probe_v2.json"))
+    cyr8 = _load(folder / "onnx_int8_on_probe_v2_to_cyrillic.json")
+    if cyr8.get("to_cyrillic"):
+        final_version = _load(folder / "final_model_meta.json").get("model_version")
+        tr["transformer_int8"] = dict(cyr8["to_cyrillic"], other_model=bool(final_version) and cyr8.get("model") != final_version,
+                                      model=cyr8.get("model"))
     if tr:
         t = Table("t8_translit_to_cyrillic", "Таблица 8. Перевод транслита в кириллицу перед моделью (probe_v2)",
                   ["Модель", "macro-F1 без / с переводом", "Δ [95% ДИ]", "Транслит: accuracy без / с", "Текстов изменено"],
-                  "to_cyrillic — функция R04; меняет только тексты, где латиницы ≥ 50 % (24 текста стиля translit). "
-                  "Обучение как synth_all.")
-        for key, name in (("heuristic_v1", "словарь (v1)"), ("logreg", "логрегрессия")):
+                  "to_cyrillic — функция R04; меняет только тексты, где латиницы ≥ 50 % (их число — в последней колонке). "
+                  "Словарь и логрегрессия обучены как synth_all; трансформер — итоговая модель (ONNX int8).")
+        for key, name in (("heuristic_v1", "словарь (v1)"), ("logreg", "логрегрессия"),
+                          ("transformer_int8", "трансформер (итоговая, int8)")):
             r = tr.get(key)
             if r:
                 d = r["paired_delta_cyr_minus_raw"]
+                name = name + (f" — другая модель {r['model']}" if r.get("other_model") else "")
                 t.add(name, f"{_f(r['raw']['macro_f1'])} / {_f(r['to_cyrillic']['macro_f1'])}",
                       f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}]",
                       f"{_f(r['raw']['translit_accuracy'], 2)} / {_f(r['to_cyrillic']['translit_accuracy'], 2)}",
@@ -234,6 +272,41 @@ def extra_tables(folder: Path) -> list[Table]:
                   f"{_f(cl['probe_v2_macro_f1']['original'])} / {_f(cl['probe_v2_macro_f1']['clean'])}")
             t.add("Δ [95% ДИ]", f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}] — "
                                 f"{'доказано' if d['low'] > 0 or d['high'] < 0 else 'не доказано'}")
+        out.append(t)
+    loads = [(f, _load(f)) for f in sorted(folder.glob("classify_load*.json"))]
+    loads = [(f, r) for f, r in loads if r.get("sequential_by_length")]
+    if loads:
+        t = Table("t10_classify_load", "Таблица 10. Нагрузка на /classify: ONNX int8, CPU",
+                  ["Замер", "Ядер / потоков на запрос", "Текст 40 знаков: mean, мс", "5000 знаков: mean / p95, мс",
+                   "Одновременно → запросов в минуту", "p95 при наибольшем числе, мс", "Память, МБ"],
+                  "bench.py: путь R04 /classify (обрезка до 5000 знаков и 128 токенов, токенизация, ONNX). Облако — "
+                  "модель того же размера со случайными весами: скорость, не качество. Лимит R15 — 60 запросов в минуту "
+                  "с адреса.")
+        for f, r in loads:
+            seq = r["sequential_by_length"]
+            short, longest = seq[min(seq, key=int)], seq[max(seq, key=int)]
+            conc = r["concurrent_longest"]["by_workers"]
+            top = conc[max(conc, key=int)]
+            t.add(f.stem.replace("classify_load", "").lstrip("_") or "—",
+                  f"{r['cpu'].get('cpu_count')} / {r.get('threads_per_request')}", _f(short["mean_ms"], 1),
+                  f"{_f(longest['mean_ms'], 1)} / {_f(longest['p95_ms'], 1)}",
+                  "; ".join(f"{w} → {v['requests_per_minute']}" for w, v in sorted(conc.items(), key=lambda kv: int(kv[0]))),
+                  _f(top["p95_ms"], 0), _f(r.get("peak_rss_mb"), 0))
+        out.append(t)
+    curve = _load(folder / "synth_curve_probe_v2.json")
+    if curve.get("llm_share"):
+        t = Table("t11_synth_curve", "Таблица 11. Сколько синтетики нужно: логрегрессия на probe_v2",
+                  ["Обучение", "Текстов в train", "macro-F1 (среднее по seed)", "Мин–макс по seed", "95% ДИ (первый seed)"],
+                  f"synth_curve.py: подвыборки стратифицированы по категории; seed подвыборки — "
+                  f"{len(curve.get('subsample_seeds') or [])}; гиперпараметры — {curve.get('hyperparameters')}. "
+                  "Validation — v3 + LLM целиком. probe_v2 — тексты агента, не жителей.")
+        rows = [(f"v3 + {float(sh):.0%} LLM", v) for sh, v in curve["llm_share"].items()]
+        rows += [(f"{float(sh):.0%} от v3 + LLM", v) for sh, v in curve.get("total_share", {}).items() if float(sh) < 1]
+        for name, v in rows:
+            ci = v.get("ci_first_seed") or {}
+            t.add(name.replace("%", " %"), v["n_train"], _f(v["macro_f1_mean"]),
+                  f"{_f(v['macro_f1_min'])}–{_f(v['macro_f1_max'])}" if v.get("seeds", 1) > 1 else "—",
+                  f"{_f(ci.get('low'))}–{_f(ci.get('high'))}")
         out.append(t)
     return out
 
@@ -378,6 +451,8 @@ def render_errors(exp: dict, preds: dict[str, dict[str, dict]], probe: dict[str,
             out.append("")
         out += _hard_rules_section(preds, probe)
         out += _suggest_section(preds, probe)
+        out += _lang_section(preds, probe)
+        out += _calibration_section(preds, probe)
     elif not preds:
         out += ["## 4. Примеры ошибок", "",
                 "Нет файлов прогнозов по текстам. Для трансформера их даёт ноутбук: RUN.txt шаг 8б "
@@ -425,6 +500,89 @@ def _suggest_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) 
     for name, t, cov, prec, n in rows:
         out.append(f"| `{name}` | {t} | {cov:.0%} | {'—' if prec is None else f'{prec:.0%}'} | {n} |")
     return out + [""]
+
+
+CALIB_BINS = (0.0, 0.5, 0.7, 0.9, 0.97, 1.0)
+
+
+def _calibration_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:
+    """Насколько score (softmax top-1) похож на вероятность верного ответа: по корзинам score — доля верных."""
+    from ml.civic_classifier_v2.metrics import ece
+    rows = []
+    for name, pr in preds.items():
+        items = [r for i, r in pr.items() if i in probe and r.get("score") is not None]
+        if not items:
+            continue
+        e = ece([int(r["pred"] == r["true"]) for r in items], [float(r["score"]) for r in items])
+        for lo, hi in zip(CALIB_BINS[:-1], CALIB_BINS[1:]):
+            b = [r for r in items if lo <= r["score"] < hi or (hi == 1.0 and r["score"] == 1.0)]
+            if b:
+                sc = sum(r["score"] for r in b) / len(b)
+                acc = sum(r["pred"] == r["true"] for r in b) / len(b)
+                rows.append((name, f"{lo:.2f}–{hi:.2f}", len(b), sc, acc, e))
+    if not rows:
+        return []
+    out = ["## 8. Калибровка score на probe_v2", "",
+           "score — softmax top-1. Если он калиброван, в корзине «0.90–0.97» верны около 93 % ответов. Разница «score − "
+           "доля верных» > 0 — модель самоуверенна. ECE — средняя по 10 равным корзинам разница, взвешенная по числу "
+           "текстов. Это тексты агента, не жителей: на людях калибровка не проверена.", "",
+           "| Прогнозы | score | n | Средний score | Доля верных | score − доля | ECE (10 корзин) |",
+           "|---|---|---|---|---|---|---|"]
+    for name, rng, n, sc, acc, e in rows:
+        out.append(f"| `{name}` | {rng} | {n} | {sc:.2f} | {acc:.0%} | {sc - acc:+.2f} | {_f(e)} |")
+    return out + [""]
+
+
+LANGS = ("ru", "kk", "mixed")
+
+
+def _lang_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict], weak_n: int = 4,
+                  weak_acc: float = 0.6) -> list[str]:
+    """Категории × язык: macro-F1 по языку, разрыв kk − ru с 95% ДИ и «верно / всего» по ячейкам."""
+    from ml.civic_classifier_v2.metrics import report, unpaired_delta
+    labs = L.labels()
+    idx = {lab: i for i, lab in enumerate(labs)}
+    names_ru = L.names("ru")
+    out = ["## 7. Категории и языки на probe_v2", "",
+           "Macro-F1 внутри языка и разрыв kk − ru. Тексты на разных языках разные, поэтому ДИ — бутстрэп отдельно "
+           "внутри каждого языка (не парный). Ниже — «верно / всего» по категориям: в ячейке {cell_n} текстов, "
+           "отдельная ячейка — пример, а не закономерность.", "",
+           "| Прогнозы | " + " | ".join(f"{g} (n)" for g in LANGS) + " | kk − ru [95% ДИ] |", "|---|" + "---|" * (len(LANGS) + 1)]
+    cells = {}
+    for name, pr in preds.items():
+        ids = [i for i in probe if i in pr]
+        if not ids:
+            continue
+        by = {g: [i for i in ids if probe[i].get("lang") == g] for g in LANGS}
+        row = []
+        for g in LANGS:
+            y = [idx[pr[i]["true"]] for i in by[g]]
+            p = [idx[pr[i]["pred"]] for i in by[g]]
+            row.append(f"{_f(report(y, p, labs)['macro_f1'])} ({len(y)})" if y else "—")
+        yk, pk = [idx[pr[i]["true"]] for i in by["kk"]], [idx[pr[i]["pred"]] for i in by["kk"]]
+        yr, prr = [idx[pr[i]["true"]] for i in by["ru"]], [idx[pr[i]["pred"]] for i in by["ru"]]
+        d = unpaired_delta(yk, pk, yr, prr, len(labs))
+        gap = "—" if d["delta"] is None else (f"{d['delta']:+.3f} [{d['low']:+.3f}; {d['high']:+.3f}] — "
+                                               f"{'доказано' if d['low'] > 0 or d['high'] < 0 else 'не доказано'}")
+        out.append(f"| `{name}` | " + " | ".join(row) + f" | {gap} |")
+        cells[name] = {(lab, g): (sum(pr[i]["pred"] == pr[i]["true"] for i in by[g] if pr[i]["true"] == lab),
+                                  sum(1 for i in by[g] if pr[i]["true"] == lab)) for lab in labs for g in LANGS}
+    if not cells:
+        return []
+    sizes = [b for c in cells.values() for (_, b) in c.values() if b]
+    out[2] = out[2].replace("{cell_n}", f"{min(sizes)}–{max(sizes)}" if min(sizes) != max(sizes) else str(min(sizes)))
+    out.append("")
+    for name, c in cells.items():
+        out += [f"### `{name}`: верно / всего по категориям и языкам", "",
+                "| Категория | " + " | ".join(LANGS) + " | всего |", "|---|" + "---|" * (len(LANGS) + 1)]
+        for lab in labs:
+            parts = [c[(lab, g)] for g in LANGS]
+            ok, n = sum(a for a, _ in parts), sum(b for _, b in parts)
+            out.append(f"| {names_ru[lab]} | " + " | ".join(f"{a} / {b}" if b else "—" for a, b in parts) + f" | {ok} / {n} |")
+        weak = sorted(((a / b, lab, g, a, b) for (lab, g), (a, b) in c.items() if b >= weak_n and a / b < weak_acc))
+        out += ["", "Слабые ячейки (n ≥ %d, верно < %d %%): " % (weak_n, round(weak_acc * 100)) +
+                ("; ".join(f"{names_ru[lab]} / {g} — {a} из {b}" for _, lab, g, a, b in weak) if weak else "нет") + ".", ""]
+    return out
 
 
 def _hard_rules_section(preds: dict[str, dict[str, dict]], probe: dict[str, dict]) -> list[str]:

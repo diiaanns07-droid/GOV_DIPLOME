@@ -795,7 +795,10 @@
 
     function metoo(match, button) {
       if (button) button.disabled = true;
-      request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", {}).then(function (res) {
+      // Волна мелочей п. 9: текст и место жителя уходят вместе с «Я тоже» — их видит только акимат, и если
+      // «Похоже на» ошиблось, сотрудник одним действием выделит это в отдельную жалобу жителя («Это разные проблемы»).
+      var note = { text: state.text, point: state.point, target: state.target, category: state.category };
+      request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", { note: note }).then(function (res) {
         if (button) button.disabled = false;
         // Лимит (429, R15): повтор снова упрётся в лимит — сообщаем без «Повторить», как при отправке жалобы.
         if (!res.ok && res.status === 429) { toast(t("complaint.error.too_many")); return; }

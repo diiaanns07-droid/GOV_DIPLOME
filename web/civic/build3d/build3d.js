@@ -553,11 +553,36 @@
       if (S.destroyed) return;
       watchHost();
       dock.style.maxHeight = "";
+      dock.style.transform = "";
       dock.classList.remove("b3d-dock--fit");
       var st = dock.getAttribute("data-state");
       if (!st || st === "empty" || ui.hidden) return;
       var r = dock.getBoundingClientRect();
       if (!r.height) return;
+      // Узкая панель хозяина внизу (легенда R07 слева) под лёгкой панелью модуля (подсказка жителю, каталог)
+      // (R10 B-039): сдвигаем панель вбок в той же строке, если рядом хватает места в области хозяина, иначе
+      // поднимаем над ней (вверх — значит закрыть саму карту). Полосы во всю ширину (шторка телефона) не трогаем:
+      // карточка и подсказка лежат поверх шторки по замыслу оболочки.
+      if (st !== "card" && !ui.classList.contains("b3d--overlay")) {
+        var cw = map.getCanvas().getBoundingClientRect().width;
+        var box = ui.parentNode && ui.parentNode.getBoundingClientRect ? ui.parentNode.getBoundingClientRect() : r;
+        var dx = 0,
+          lift = 0;
+        avoidRects().forEach(function (a) {
+          if (a.width > cw * 0.6) return;
+          if (!(a.left < r.right && a.right > r.left && a.top < r.bottom && a.bottom > r.top && a.top > r.top - 8)) return;
+          var toRight = a.right + 8 - r.left,
+            toLeft = r.right - (a.left - 8);
+          var onLeft = a.left + a.right < box.left + box.right; // панель хозяина в левой половине области
+          if (onLeft && r.right + toRight <= box.right) dx = Math.max(dx, toRight);
+          else if (!onLeft && r.left - toLeft >= box.left) dx = Math.min(dx, -toLeft);
+          else lift = Math.max(lift, r.bottom - a.top + 8);
+        });
+        if (dx || lift) {
+          dock.style.transform = "translate(" + Math.round(dx) + "px, " + -Math.round(lift) + "px)";
+          r = dock.getBoundingClientRect();
+        }
+      }
       var top = topLimit();
       if (r.top >= top - 0.5) return;
       var avail = Math.floor(r.bottom - top);
@@ -2508,7 +2533,11 @@
         list = [];
       }
       return Array.prototype.slice.call(list).map(function (node) {
-        return node && node.getBoundingClientRect && !node.hidden ? node.getBoundingClientRect() : null;
+        if (!node || !node.getBoundingClientRect || node.hidden) return null;
+        // Скрытая хозяином панель (visibility: hidden — легенда R07 под карточкой) места не занимает.
+        var cs = root.getComputedStyle ? root.getComputedStyle(node) : null;
+        if (cs && (cs.visibility === "hidden" || cs.display === "none")) return null;
+        return node.getBoundingClientRect();
       }).filter(function (r) {
         return r && r.width && r.height;
       });
@@ -2665,6 +2694,7 @@
     map.on("click", onMapClick);
     map.on("move", onMapMove);
     map.on("styledata", onStyleData);
+    map.on("idle", refitSoon); // панели хозяина появляются позже модуля (легенда R07 — после загрузки жалоб)
     doc.addEventListener("keydown", onKey);
     if (opts.followShellMode !== false) doc.addEventListener("birge:mode", onShellMode);
     var onResize = function () {
@@ -2775,6 +2805,7 @@
         map.off("click", onMapClick);
         map.off("move", onMapMove);
         map.off("styledata", onStyleData);
+        map.off("idle", refitSoon);
         doc.removeEventListener("keydown", onKey);
         doc.removeEventListener("birge:mode", onShellMode);
         root.removeEventListener("resize", onResize);

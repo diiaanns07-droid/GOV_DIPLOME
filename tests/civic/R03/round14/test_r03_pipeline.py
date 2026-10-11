@@ -412,3 +412,39 @@ def test_auto_set_name_never_marks_human_as_probe():
     assert auto_set_name([{"evidence": "synthetic_agent_written"}] * 3) == "probe_v2"
     assert auto_set_name([{"evidence": "synthetic_agent_written"}, {"evidence": "real_human_text"}]) == "human"
     assert auto_set_name([{}]) == "human" and auto_set_name([]) == "human"
+
+
+# ---------- нагрузка на /classify (bench.py) ----------
+
+def test_bench_texts_are_synthetic_and_exact_length():
+    import random
+    from ml.civic_classifier_v2 import bench
+    rng = random.Random(1)
+    for n in (40, 300, 5000):
+        t = bench.make_text(n, rng)
+        assert len(t) == n and any(p[:20] in t for p in bench.PHRASES)
+
+
+def test_bench_without_model_exits_2(tmp_path, capsys):
+    from ml.civic_classifier_v2 import bench
+    assert bench.main(["--model", str(tmp_path / "нет"), "--out", str(tmp_path / "b.json")]) == 2
+    assert not (tmp_path / "b.json").exists()
+
+
+@needs_ml
+@needs_onnx
+def test_bench_classify_load(exported, tmp_path):
+    from ml.civic_classifier_v2 import bench
+    out, _, _ = exported
+    rc = bench.main(["--model", str(out / "onnx"), "--n", "6", "--lengths", "40,5000", "--workers", "1,2",
+                     "--out", str(tmp_path / "b.json")])
+    assert rc == 0
+    rep = json.loads((tmp_path / "b.json").read_text(encoding="utf-8"))
+    max_len = json.loads((out / "onnx" / "birge_meta.json").read_text(encoding="utf-8"))["train_config"]["max_length"]
+    seq = rep["sequential_by_length"]
+    assert set(seq) == {"40", "5000"} and seq["5000"]["n"] == 6
+    assert seq["40"]["tokens_mean"] < seq["5000"]["tokens_mean"] <= max_len           # обрезка до max_length
+    conc = rep["concurrent_longest"]
+    assert conc["length"] == 5000 and set(conc["by_workers"]) == {"1", "2"}
+    assert all(r["n"] == 6 and r["requests_per_minute"] > 0 for r in conc["by_workers"].values())
+    assert rep["capacity"]["limit_per_address_per_minute"] == 60 and rep["backend"] == "onnx:model.int8.onnx"

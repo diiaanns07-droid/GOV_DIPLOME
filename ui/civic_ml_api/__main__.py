@@ -3,6 +3,7 @@
     python -m ui.civic_ml_api status
     python -m ui.civic_ml_api classify "Во дворе не горят фонари" "Аялдамада қар тазаланбаған"
     python -m ui.civic_ml_api similar "Не убран снег на остановке" --lon 71.42 --lat 51.09 --demo
+    python -m ui.civic_ml_api profanity "Опять эта блядская яма" "Аулада жарық жоқ"   # п. 8: что увидят публично
 
 --demo: вместо хранилища R09 — 5 000 синтетических обращений (demo) вокруг точки; без --demo similar
 отвечает 503 source_not_connected (хранилище подключает сервер R01).
@@ -31,10 +32,17 @@ def main(argv=None) -> int:
     s.add_argument("--days", type=int, default=14)
     s.add_argument("--target", help="id цели (osm-node-…, osm-w…-…, yard-…, cell-…)")
     s.add_argument("--demo", action="store_true", help="синтетические обращения вокруг точки")
+    p = sub.add_parser("profanity", help="фильтр мата: текст со звёздочками и пометка для акимата")
+    p.add_argument("texts", nargs="+")
     args = ap.parse_args(argv)
 
     if args.cmd == "status":
         print(json.dumps(api.status(), ensure_ascii=False, indent=1))
+        return 0
+    if args.cmd == "profanity":
+        from ui.civic_ml_api import profanity
+        for text in args.texts:
+            print(json.dumps(profanity.check(text).as_dict(), ensure_ascii=False))
         return 0
     if args.cmd == "classify":
         for text in args.texts:

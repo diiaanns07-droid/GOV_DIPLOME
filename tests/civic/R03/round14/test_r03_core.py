@@ -229,8 +229,10 @@ def test_stratified_subsample_keeps_every_class():
 def test_dict_v1_frozen():
     """Словарь v1 — базовая модель эксперимента (c19b889); правка сделала бы результаты невоспроизводимыми."""
     assert H.dict_sha256(H.STEMS_V1) == H.DICT_V1_SHA256
-    for lab in L.labels():                                   # product = v1 + добавки, ничего не удалено
-        assert H.STEMS[lab][:len(H.STEMS_V1[lab])] == H.STEMS_V1[lab]
+    for lab in L.labels():                  # product = v1 (кроме явно заменённых основ) + добавки, ничего не потеряно
+        repl = H.PRODUCT_REPLACE.get(lab, {})
+        for stem in H.STEMS_V1[lab]:
+            assert all(s in H.STEMS[lab] for s in repl.get(stem, (stem,))), (lab, stem)
 
 
 @pytest.mark.parametrize("text,label", [
@@ -244,6 +246,58 @@ def test_product_dict_b004(text, label):
     assert H.heuristic_label(text)[0] == label
 
 
+@pytest.mark.parametrize("text,label", [
+    # волна 2: подписи чипов уточнений (subtopics.py), которые словарь относил не туда
+    ("Аулада қараңғы", "lighting"),                          # «қар» внутри «қараңғы» давал snow_ice
+    ("Мұнда күн сайын балалар мен қарттар жүреді, шам жоқ", "lighting"),   # «қарттар»
+    ("Қар тазаланбаған", "snow_ice"), ("Шатырдан қар құлап жатыр", "snow_ice"), ("Қардан жол жабылды", "snow_ice"),
+    ("Оборван провод", "lighting"), ("Сым үзілген", "lighting"),
+    ("Проводятся работы на дороге", "roads"),                # «проводятся» — не провод
+    ("Жасанды кедір-бұдыр", "roads"), ("Ұзақ күту, кесте жоқ", "transport"),
+    ("Нет света в доме", "utilities"), ("Үйде жарық жоқ", "utilities"),       # гайд R02: свет в доме -> utilities
+    ("В подъезде не горят лампочки", "utilities"),
+    ("Светофор не горит", "roads"),                          # гайд R02: светофор -> roads
+    ("Не горят фонари во дворе", "lighting"),                # уличный свет — по-прежнему lighting
+    ("Тротуарға көлік қою", "parking"), ("Аулада көліктерді қояды", "parking"),   # «қой» не ловит «қою/қояды»
+])
+def test_product_dict_wave2(text, label):
+    assert H.heuristic_label(text)[0] == label
+
+
+def test_product_dict_wave2_v1_untouched():
+    assert H.heuristic_label("Аулада қараңғы", "v1")[0] == "snow_ice"          # ошибка v1 остаётся (эксперимент)
+    assert H.keyword_hits("Светофор не горит")["roads"] == 1 + H.STRONG_WEIGHT
+
+
 def test_v1_dict_still_has_b004_error():
     # Эксперимент считает по v1: ошибка B-004 там остаётся — это честная базовая модель, не исправленная по тесту.
     assert H.heuristic_label("машины стоят на газоне во дворе", "v1")[0] == "yards"
+
+
+# ---------- демо-фразы (набор R02/R10) на продуктовом словаре — запасной путь R04 без модели ----------
+
+DEMO_PHRASES = [
+    ("Яма на дороге возле школы, машины бьют колёса", "roads"),
+    ("Тротуарда көктайғақ, құм себілмеген", "snow_ice"),
+    ("На остановке разбито стекло павильона", "transport"),
+    ("Не горят фонари во дворе уже месяц", "lighting"),
+    ("Аулада балалар алаңы сынған", "yards"),
+    ("Переполнены мусорные баки у дома", "waste"),
+    ("Нет горячей воды третий день", "utilities"),
+    ("Воняет с ТЭЦ, дышать нечем", "smell_air"),
+    ("Ночью гоняют на машинах, шумно и опасно", "noise_safety"),
+    ("Машины стоят на газоне во дворе", "parking"),
+    ("Аялдамада жарық жоқ, вечером на остановке темно", "lighting"),   # главная фраза демо
+]
+
+
+@pytest.mark.parametrize("text,label", DEMO_PHRASES)
+def test_demo_phrases_product_dict(text, label):
+    assert H.heuristic_label(text)[0] == label
+
+
+@pytest.mark.xfail(strict=True, reason="известное ограничение словаря: благодарность с темой («спасибо за сквер») "
+                                       "уходит в тему; правило «спасибо → other» ломало бы жалобы с вежливым «Спасибо» "
+                                       "в конце. Обученные модели: логрегрессия 71 % на правиле «благодарность → other».")
+def test_thanks_with_topic_is_other():
+    assert H.heuristic_label("Спасибо за новый сквер!")[0] == "other"

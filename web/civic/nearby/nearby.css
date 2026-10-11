@@ -1,0 +1,177 @@
+/*
+ * Birge · «Что делают рядом» (R08). Раскладка поверх ui-kit R11; своих цветов нет.
+ * Ноутбук — колонка до 960 px по центру, телефон — во весь экран (R11 IA_WAVE2 §0.3, §4).
+ */
+.nb {
+  display: grid;
+  gap: var(--s-3);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--s-5) var(--s-6) var(--s-8);
+}
+.nb__title {
+  margin: 0;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-head);
+  font-weight: var(--fw-bold);
+}
+.nb__district {
+  display: grid;
+  gap: 2px;
+  max-width: 320px;
+}
+.nb__district-label {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  color: var(--c-text-2);
+}
+.nb__select {
+  min-height: 48px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+}
+.nb-banner p {
+  margin: 0;
+}
+/* вкладки: в одну строку; не помещаются (kk на 375) — прокрутка вкладок, а не перенос (R11 §4) */
+.nb-tabs-wrap {
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 calc(-1 * var(--s-1));
+  padding: 0 var(--s-1);
+}
+.nb-tabs-wrap::-webkit-scrollbar {
+  display: none;
+}
+.nb-tabs > button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.nb-tabs__count {
+  min-width: 22px;
+  padding: 0 6px;
+  border-radius: 11px;
+  background: var(--c-line);
+  font-size: var(--fs-caption);
+  line-height: 22px;
+  text-align: center;
+}
+.nb-list {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nb-card {
+  display: grid;
+  gap: var(--s-1);
+}
+.nb-card p {
+  margin: 0;
+}
+.nb-card__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+}
+.nb-card__kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nb-card__title {
+  margin: 0;
+  font-size: var(--fs-title);
+  line-height: var(--lh-head);
+}
+.nb-card__status-word {
+  font-weight: var(--fw-semi);
+}
+.nb-card__late {
+  margin-left: var(--s-2);
+}
+.nb-card__when {
+  font-weight: var(--fw-semi);
+}
+.nb-why > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  color: var(--c-brand);
+  font-weight: var(--fw-semi);
+}
+.nb-why dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--s-1) var(--s-3);
+  margin: 0 0 var(--s-2);
+}
+.nb-why dt {
+  color: var(--c-text-2);
+  font-weight: var(--fw-semi);
+}
+.nb-why dd {
+  margin: 0;
+}
+.nb-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-1);
+}
+.nb-card__actions .bk-btn {
+  min-height: 44px;
+}
+.nb-card__sub[aria-pressed="true"] {
+  color: var(--c-ok);
+}
+.nb-follow {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+.nb-follow p {
+  margin: 0;
+}
+.nb-follow__done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--c-ok);
+  font-weight: var(--fw-semi);
+}
+.nb-follow__error {
+  color: var(--c-danger);
+}
+@media (max-width: 720px) {
+  .nb {
+    padding: var(--s-3) var(--s-4) var(--s-6);
+  }
+  .nb__district {
+    max-width: none;
+  }
+  .nb-why dl {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .nb-why dd {
+    margin-bottom: var(--s-2);
+  }
+  .nb-follow .bk-btn--primary {
+    width: 100%;
+  }
+}

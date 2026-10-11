@@ -2,7 +2,7 @@
 //
 //   node tests/e2e/demo_flow.cjs --root <папка сборки> --out <папка отчёта>
 //        [--sizes 1366x768,375x812] [--langs ru,kk] [--url http://127.0.0.1:8611/ --user U --pass P]
-//        [--stop "lon,lat,osm-node-…,Имя"]
+//        [--stop "lon,lat,osm-node-…,Имя"] [--inject-css <файл>  — проверка предлагаемой правки CSS, не приёмка]
 //
 // Без --url тест сам поднимает сервер сборки (python3 app.py) на свободном порту с ВРЕМЕННОЙ базой:
 // init → seed-demo (синтетика R02) → seed-r14-demo (если есть у R06) → сотрудник «r10-operator».
@@ -30,6 +30,9 @@ const ROOT = path.resolve(args.root || path.join(__dirname, "../.."));
 const OUT = path.resolve(args.out || path.join(os.tmpdir(), "r10-e2e"));
 const SIZES = String(args.sizes || "1366x768,375x812").split(",").map((s) => s.split("x").map(Number));
 const LANGS = String(args.langs || "ru,kk").split(",");
+// --inject-css <файл> — проверить ПРЕДЛАГАЕМУЮ правку CSS (для INTEGRATION.txt): стиль добавляется на каждую загрузку
+// страницы. Такой прогон — не приёмка сборки: в RESULT пометка «С ПРАВКОЙ CSS».
+const INJECT_CSS = args["inject-css"] ? fs.readFileSync(path.resolve(String(args["inject-css"])), "utf8") : null;
 // Реальная остановка Нуры из OSM (есть в целях R07 и в geo/objects.json R12).
 // --stop "lon,lat,id,Имя" — другая остановка (например, для стенда роли с узкой областью данных).
 const STOP = args.stop ? (([lon, lat, id, ...name]) => ({ id, name: name.join(","), point: [Number(lon), Number(lat)] }))(String(args.stop).split(","))
@@ -52,8 +55,11 @@ const { NOISE, TAB_LIMIT, uiScreen, cyrLines, untranslated, focusToPrimary } = r
 const PY = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 
 const results = [];
+// Время: у каждой строки ms — от старта теста; marks — начало каждого варианта экрана. Из них — время шагов
+// в RESULT.json (timing), для сравнения с эталоном «сценарий не стал медленнее» (POLISH_WAVE_2 правило 7).
+const T0 = Date.now(), marks = {};
 const add = (layer, step, name, status, detail, shot) => {
-  results.push({ layer, step, name, status, detail: detail ?? null, shot: shot || null });
+  results.push({ layer, step, name, status, detail: detail ?? null, shot: shot || null, ms: Date.now() - T0 });
   console.log(`${status.padEnd(7)} ${layer} ${step} ${name}` + (detail ? " — " + JSON.stringify(detail).slice(0, 300) : ""));
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -337,6 +343,19 @@ async function selectedPlace(page) {
   });
 }
 
+// Что человек видит в точке экрана: карту (холст, значки и таблички на ней) или панель / сообщение поверх неё.
+async function mapAt(page, x, y) {
+  return page.evaluate(([px, py]) => {
+    const inView = px >= 0 && py >= 0 && px <= innerWidth && py <= innerHeight;
+    const over = inView ? document.elementFromPoint(px, py) : null;
+    if (!over) return { inView, map: false, covered: null };
+    const map = !!over.closest(".maplibregl-canvas-container, .maplibregl-marker, .b3d-labels") || over.tagName === "CANVAS";
+    const who = ((over.closest("button, [role=button], [role=status], [role=dialog], section, aside") || over).textContent || "").trim().replace(/\s+/g, " ").slice(0, 40)
+      || over.getAttribute("class") || over.tagName;
+    return { inView, map, covered: map ? null : who };
+  }, [x, y]);
+}
+
 // Показать точку на карте и вернуть её место на экране: что лежит поверх (холст или значок) и ближайшую
 // свободную точку холста рядом. Панель (ноутбук) или шторка (телефон) может закрывать точку — тогда карта
 // сдвигается так, чтобы точка оказалась на открытой части карты.
@@ -369,10 +388,13 @@ async function showPoint(page, point, zoom = 17) {
 async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const dict = loadDict(lang);
   const tag = `${w}-${lang}`;
+  marks[`UI ${tag}`] = Date.now() - T0;
   const mobile = w < 761;
   const st = UI_STOPS[vi % UI_STOPS.length];  // остановка этого варианта (шаги 1–2 и 6)
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
     locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+  if (INJECT_CSS) await ctx.addInitScript((css) => { document.addEventListener("DOMContentLoaded", () => {
+    const s = document.createElement("style"); s.setAttribute("data-r10-patch", ""); s.textContent = css; document.head.appendChild(s); }); }, INJECT_CSS);
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
@@ -384,10 +406,10 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const langRe = lang === "kk" ? /^ҚАЗ$/ : /^РУС$/;
   const menuRe = new RegExp("^" + T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню") + "$", "i");
   const setLang = async () => { const b = await firstVisible(page.getByRole("button", { name: langRe })); if (b) { await b.click().catch(() => null); await sleep(1000); } return !!b; };
-  // Кнопка из шапки; на телефоне — через «≡ Меню».
+  // Кнопка из шапки; в компактной шапке (телефон и узкий экран ниже 1024) — через «≡ Меню».
   const header = async (re, wait = 1200) => {
     let ok = await clickText(page, re, { wait });
-    if (!ok && mobile && (await clickText(page, menuRe))) { ok = await clickText(page, re, { wait }); if (!ok) await page.keyboard.press("Escape").catch(() => null); }
+    if (!ok && (await clickText(page, menuRe))) { ok = await clickText(page, re, { wait }); if (!ok) await page.keyboard.press("Escape").catch(() => null); }
     return ok;
   };
   const words = {
@@ -407,6 +429,8 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   step("0", "шапка: ҚАЗ/РУС на виду, язык страницы переключился", hasLang && scr.lang === lang, { lang: scr.lang }, await shot("0-start"));
   step("0", "нет горизонтальной прокрутки", scr.scrollW <= scr.innerW, { scrollW: scr.scrollW, w: scr.innerW });
   step("0", "надписи не закрыты другими панелями (частично)", scr.clippedN === 0, { n: scr.clippedN, ex: scr.clipped });
+  step("0", "короткие надписи не обрезаны многоточием (название в шапке, кнопки)", scr.cutN === 0, { n: scr.cutN, ex: scr.cut });
+  step("0", "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2", scr.lowContrastN === 0, { n: scr.lowContrastN, ex: scr.lowContrast });
   step("0", "нет ключей перевода и технических слов", scr.raw.length === 0 && scr.tech.length === 0, { raw: scr.raw, tech: scr.tech });
   step("0", "шрифт: нет текста мельче 14 px (основной ≥ 16 px)", scr.tinyN === 0, { tiny: scr.tinyN, ex: scr.tiny, under16: scr.smallN, ex16: scr.small });
   step("0", "зоны нажатия ≥ 40 px (цель — 48 px)", scr.under40.length === 0, { under40N: scr.under40N, under40: scr.under40, under48: `${scr.under48N}/${scr.targetsN}` });
@@ -610,6 +634,8 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     const hint = await visibleText(page, textRe(T(dict, "proposal.place_hint", "Нажмите на карту, где поставить")));
     let pt = await showPoint(page, place, 17);
     if (pt && !pt.onCanvas && pt.near) pt = { ...pt, x: pt.near.x, y: pt.near.y };
+    // Место нажатия в координатах карты — после «Поставить» камера может сдвинуться, экранная точка тогда другая.
+    const tapLL = pt ? await page.evaluate(([x, y]) => { try { const q = map.unproject([x, y]); return [q.lng, q.lat]; } catch { return null; } }, [pt.x, pt.y]) : null;
     if (pt) { if (!mobile) await page.mouse.move(pt.x, pt.y); await tap(page, pt.x, pt.y); await sleep(1200); }
     // DEMO_SCRIPT 5.2: «повернуть ↺ ↻ при желании» — кнопки поворота есть, пока объект не поставлен.
     const rotR = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.rotate_right", lang === "kk" ? "Оңға бұру" : "Повернуть вправо")) + "$", "i"), { wait: 500 });
@@ -619,8 +645,24 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     const placedMsg = await visibleText(page, textRe(T(dict, "build3d.placed", "Проект поставлен")));
     const projRe = new RegExp("^" + esc(kindName) + ":.*2027", "i");
     const near = pt ? await nearestVisible(page.getByRole("button", { name: projRe }), pt) : null;
+    const placedShot = await shot("5-placed");
     step("5", `«${kindName}» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027`, placedClick && placedMsg && !!near && near.d < 80 && rotR && rotL,
-      { hint, rotate: [rotL, rotR], placedClick, placedMsg, label_px_from_place: near && near.d }, await shot("5-placed"));
+      { hint, rotate: [rotL, rotR], placedClick, placedMsg, label_px_from_place: near && near.d }, placedShot);
+    // Сразу после «Поставить» поставленный проект виден: место и табличку не закрывают сообщение «Проект поставлен»
+    // и каталог «Что построить?» (то, что человек видит в эту секунду; кадр — тот же).
+    if (placedClick && pt) {
+      const now = tapLL ? await page.evaluate((ll) => { try { const q = map.project(ll); return { x: q.x, y: q.y }; } catch { return null; } }, tapLL) : null;
+      const at = now || pt;
+      const atPlace = await mapAt(page, at.x, at.y);
+      const lb = near ? await near.loc.boundingBox().catch(() => null) : null;
+      const atLabel = lb ? await mapAt(page, lb.x + lb.width / 2, lb.y + lb.height / 2) : null;
+      // Если закрыто — посмотреть ещё раз, когда сообщение уйдёт (R05: 6 с): закрыто ли место и после него.
+      let later = null;
+      if (!(atPlace.inView && atPlace.map)) { await sleep(6500); later = (await mapAt(page, at.x, at.y)).covered; await shot("5-placed-later"); }
+      step("5", "после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом", atPlace.inView && atPlace.map,
+        { place: [Math.round(at.x), Math.round(at.y)], at_place: atPlace.covered, at_label: atLabel && atLabel.covered,
+          ...(later !== null || !(atPlace.inView && atPlace.map) ? { after_6s: later } : {}) }, placedShot);
+    }
     // DEMO_SCRIPT 5.2: «кнопка 3D справа — наклон».
     const pitch0 = await page.evaluate(() => (typeof map !== "undefined" && map.getPitch ? map.getPitch() : null));
     // У кнопки видимый текст «3D», а имя для экранного диктора — «Объёмный вид» (ключ common.map.view3d).
@@ -728,7 +770,7 @@ async function networkErrors(browser, base, [w, h], lang) {
   const retryRe = new RegExp("^" + esc(T(dict, ["heat.retry", "common.action.retry"], lang === "kk" ? "Қайталау" : "Повторить")) + "$", "i");
   const menuRe = new RegExp("^" + esc(T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню")) + "$", "i");
   const header = async (page, re) => { let ok = await clickText(page, re, { wait: 2000 });
-    if (!ok && mobile && (await clickText(page, menuRe))) ok = await clickText(page, re, { wait: 2000 }); return ok; };
+    if (!ok && (await clickText(page, menuRe))) ok = await clickText(page, re, { wait: 2000 }); return ok; };
   const cases = [
     { name: "тепловая карта", route: "**/api/civic/v2/heat**", mode: "akimat" },
     { name: "«Мои обращения»", route: "**/api/civic/v2/complaints/mine**", mode: "resident",
@@ -786,12 +828,25 @@ async function networkErrors(browser, base, [w, h], lang) {
   }
   const counts = { PASS: 0, FAIL: 0, NOT_RUN: 0 };
   results.forEach((r) => counts[r.status]++);
+  // Время шагов по вариантам: шаг = от предыдущей строки этого варианта (или его начала) до последней строки шага.
+  // В нём фиксированные паузы теста и ожидание страницы; рост — значит, экран стал отвечать медленнее или кнопку
+  // пришлось искать дольше (таймауты). Шаг «E» — проверка «нет связи» в отдельном окне.
+  const timing = {};
+  for (const r of results) {
+    const t = (timing[r.layer] = timing[r.layer] || { start_ms: marks[r.layer] ?? 0, prev: marks[r.layer] ?? 0, steps: {} });
+    t.steps[r.step] = (t.steps[r.step] || 0) + (r.ms - t.prev);
+    t.prev = r.ms;
+  }
+  for (const t of Object.values(timing)) { t.total_ms = t.prev - t.start_ms; delete t.prev; }
   const meta = { root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
-    when: new Date().toISOString(), node: process.version };
-  fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, results }, null, 1));
-  const md = [`# R10 e2e · сценарий демо · ${sha}`, "", "```", JSON.stringify(meta), "```", "",
+    when: new Date().toISOString(), node: process.version, total_ms: Date.now() - T0, ...(INJECT_CSS ? { inject_css: String(args["inject-css"]) } : {}) };
+  fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results }, null, 1));
+  const md = [`# R10 e2e · сценарий демо · ${sha}${INJECT_CSS ? " · С ПРАВКОЙ CSS (не приёмка сборки)" : ""}`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, NOT_RUN ${counts.NOT_RUN}`, "", "| Слой | Шаг | Проверка | Итог | Подробно | Кадр |", "|---|---|---|---|---|---|",
     ...results.map((r) => `| ${r.layer} | ${r.step} | ${r.name} | **${r.status}** | ${r.detail ? JSON.stringify(r.detail).replace(/\|/g, "/").slice(0, 220) : ""} | ${r.shot || ""} |`)];
+  const stepIds = [...new Set(Object.values(timing).flatMap((t) => Object.keys(t.steps)))];
+  md.push("", "Время шагов, с (паузы теста + ожидание страницы):", "", `| Слой | ${stepIds.join(" | ")} | всего |`, `|---|${stepIds.map(() => "---:").join("|")}|---:|`,
+    ...Object.entries(timing).map(([l, t]) => `| ${l} | ${stepIds.map((s) => (t.steps[s] !== undefined ? (t.steps[s] / 1000).toFixed(1) : "")).join(" | ")} | ${(t.total_ms / 1000).toFixed(1)} |`));
   fs.writeFileSync(path.join(OUT, "RESULT.md"), md.join("\n") + "\n");
   console.log("ИТОГ:", counts, "→", OUT);
   process.exit(counts.FAIL ? 1 : 0);

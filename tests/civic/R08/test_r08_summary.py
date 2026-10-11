@@ -131,8 +131,8 @@ def test_overdue_uses_category_deadlines():
     records = [
         rec(1, age_days=3, category="snow_ice"),                                  # срок 2 → просрочено
         rec(2, age_days=1, category="snow_ice"),                                  # ещё в сроке
-        rec(3, age_days=8, category="roads", history=[(1, "accepted")]),          # срок 7, принято → просрочено
-        rec(4, age_days=6, category="roads"),                                     # в сроке
+        rec(3, age_days=12, category="roads", history=[(1, "accepted")]),         # 7 рабочих: ср 30 сен → пт 9 окт → просрочено
+        rec(4, age_days=8, category="roads"),                                     # вс 4 окт → вт 13 окт: выходные не съели срок
         rec(5, age_days=1.5, category="utilities", history=[(0.1, "in_progress")]),  # срок 1 → просрочено
         rec(6, age_days=10, category="yards"),                                    # срок 14 → в сроке
         rec(7, age_days=5, category="snow_ice", history=[(1, "fixed")]),          # исправлено
@@ -141,7 +141,7 @@ def test_overdue_uses_category_deadlines():
     ]
     k = summary(records)["kpi"]["overdue"]
     assert k["value"] == 4
-    # Неделю назад: №3 было 1 день от роду, №9 — 23 дня (уже просрочено), остальных не было.
+    # Неделю назад: №3 было 5 дней от роду (в сроке), №9 — 23 дня (уже просрочено), остальных не было.
     assert k["prev"] == 1
 
 
