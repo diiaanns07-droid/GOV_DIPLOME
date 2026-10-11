@@ -236,7 +236,7 @@ async function complaintById(A, id) {
 const historyOf = (rec) => ((rec && rec.status_history) || []).map((h) => h.status || h.to || h.event || h);
 // «Исправлено» сотрудником через API: волна 2 может требовать строку «что сделали» и другое имя статуса.
 async function staffFixApi(A, id) {
-  const tries = [{ status: "reported_fixed", what_done: "Заменили крышу павильона" }, { status: "fixed", what_done: "Заменили крышу павильона" }, { status: "fixed" }];
+  const tries = [{ status: "fixed", what_done: "Заменили крышу павильона" }, { status: "reported_fixed", what_done: "Заменили крышу павильона" }, { status: "fixed" }];
   for (const b of tries) { const r = await A.call("POST", `/api/civic/v2/complaints/${id}/status`, b, true); if ([200, 201].includes(r.status)) return { ok: true, body: b }; }
   return { ok: false };
 }
@@ -283,6 +283,11 @@ async function checkEmergency(ctx) {
 }
 
 // ------------------------------------------------------------------------------------------------ W2-1 центральная сцена
+// Строки разделены по владельцам: запись обращения (R09: status + resolution.state reported → verified / reopened),
+// цвет цели на карте (R07: heat_states из categories_v2.json), карточка сотрудника (R07 встраивает форму R09),
+// счётчик «Картины дня» (R08). Если «Сообщить жителям» через интерфейс не сработало, «исправлено» ставится через API,
+// чтобы шаги жителя всё равно проверялись (строка сотрудника остаётся FAIL).
+const resolutionOf = (rec) => (rec && ((rec.resolution && rec.resolution.state) || rec.resolution_state)) || null;
 async function checkCentral(ctx) {
   const { browser, base, variants, staff } = ctx;
   const A = L.api(base);
@@ -298,7 +303,7 @@ async function checkCentral(ctx) {
     await A.call("POST", `/api/civic/v2/complaints/${c.id}/metoo`, { device_id: E }, false, E);
     await A.call("POST", `/api/civic/v2/complaints/${c.id}/status`, { status: "in_progress" }, true);
     // 1. Сотрудник (IA_WAVE2 §2.3): карточка → «Отметить исправленным» → форма в той же карточке: «Что сделали
-    //    (одна строка)», «Фото «после»», «Увидят N человек», главная «Сообщить жителям» → «служба сообщила», не зелёный.
+    //    (одна строка)», «Фото «после»», «Увидят N человек», главная «Сообщить жителям».
     const S = await openPage(browser, size, lang, { "birge.mode": "akimat" });
     try {
       await goto(S.page, base, lang);
@@ -318,13 +323,19 @@ async function checkCentral(ctx) {
       const willSee = await L.visibleText(scope, part(W(lang, "fix.will_see")));
       const prim = await primaries(scope);
       const send = await L.clickText(scope, exact(W(lang, "fix.send")), { wait: 2500 });
-      const shot1 = await shotOf(S.page, `${tag}-W2-1-1-reported`);
-      add("W2-1", tag, "сотрудник: «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
-        st(logged && !!card && fix && !!whatBox && photo && willSee && send), { logged, card: !!card, fix, whatBox: !!whatBox, photo, willSee, send, primary: prim }, shot1);
+      add("W2-1", tag, "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
+        st(logged && !!card && fix && !!whatBox && photo && willSee && send), { logged, card: !!card, fix, whatBox: !!whatBox, photo, willSee, send, primary: prim },
+        await shotOf(S.page, `${tag}-W2-1-1-staff`));
+      let rec = await complaintById(A, c.id);
+      let via = "интерфейс";
+      if (resolutionOf(rec) !== "reported") { const fx = await staffFixApi(A, c.id); via = fx.ok ? "API (интерфейс сотрудника не сработал)" : "не удалось"; rec = await complaintById(A, c.id); }
+      add("W2-1", tag, "запись (R09): «служба сообщила об устранении» — status fixed, этап reported, ещё не «проверено»",
+        st(!!rec && rec.status === "fixed" && resolutionOf(rec) === "reported"), { via, status: rec && rec.status, resolution: resolutionOf(rec) });
       const hi = await heatItem(A, stop.id);
-      const word = await L.visibleText(S.page, part(W(lang, "status.reported_fixed")));
-      add("W2-1", tag, `после «Сообщить жителям» объект — «${W(lang, "status.reported_fixed")}» (светло-зелёный с пунктиром), ещё не «проверено»`,
-        st(!!hi && hi.derived === "reported" && word), { heat: hi, card_text: word });
+      const card2 = await openCard(S.page, stop);
+      const word = card2 ? await L.visibleText(card2, part(W(lang, "status.reported_fixed"))) : false;
+      add("W2-1", tag, `карта (R07): цель — «${W(lang, "status.reported_fixed")}» (светло-зелёный с пунктиром), не зелёный`,
+        st(!!hi && hi.derived === "reported" && word), { heat: hi, card_text: word }, await shotOf(S.page, `${tag}-W2-1-2-reported`));
     } finally { await S.ctx.close(); }
     // 2. «Я тоже» (E) — тот же вопрос, что у автора (POLISH_WAVE_2 п. 1, IA §2.1, §2.4): до ответа автора.
     const M = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": E });
@@ -333,8 +344,8 @@ async function checkCentral(ctx) {
       const opened = await header(M.page, lang, mineRe(lang), 1800);
       const wait = await L.visibleText(M.page, part(W(lang, "verify.wait_title")));
       const yes = await L.firstVisible(M.page.getByRole("button", { name: exact(W(lang, "verify.yes")) }));
-      add("W2-1", tag, `«Я тоже» (другое устройство): в «Моих обращениях» блок «${W(lang, "verify.wait_title")}» и «${W(lang, "verify.yes")}»`, st(opened && wait && !!yes),
-        { opened, wait, yes: !!yes }, await shotOf(M.page, `${tag}-W2-1-2-metoo`));
+      add("W2-1", tag, `«Я тоже» (R09, другое устройство): в «Моих обращениях» блок «${W(lang, "verify.wait_title")}» и «${W(lang, "verify.yes")}»`, st(opened && wait && !!yes),
+        { opened, wait, yes: !!yes }, await shotOf(M.page, `${tag}-W2-1-3-metoo`));
     } finally { await M.ctx.close(); }
     // 3. Автор (D): «Ждут вашей проверки» → «Да, исправлено» (главная) / «Проблема осталась» / «Не могу проверить» → «Да».
     const R = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": D });
@@ -345,27 +356,28 @@ async function checkCentral(ctx) {
       for (const k of ["yes", "no", "cant"]) btn[k] = await L.firstVisible(R.page.getByRole("button", { name: exact(W(lang, "verify." + k)) }));
       const yesPrimary = btn.yes ? await btn.yes.evaluate((e) => /primary/.test(e.className)).catch(() => null) : null;
       const prim = await primaries(R.page);
-      add("W2-1", tag, `автор: «${W(lang, "verify.question")}» — «${W(lang, "verify.yes")}» (главная) / «${W(lang, "verify.no")}» / «${W(lang, "verify.cant")}»`,
+      add("W2-1", tag, `автор (R09): «${W(lang, "verify.question")}» — «${W(lang, "verify.yes")}» (одна главная) / «${W(lang, "verify.no")}» / «${W(lang, "verify.cant")}»`,
         st(opened && !!btn.yes && !!btn.no && !!btn.cant && yesPrimary === true && prim.length === 1), { opened, yes: !!btn.yes, no: !!btn.no, cant: !!btn.cant, yesPrimary, primary: prim },
-        await shotOf(R.page, `${tag}-W2-1-3-verify`));
+        await shotOf(R.page, `${tag}-W2-1-4-verify`));
       if (btn.yes) { await btn.yes.click().catch(() => null); await L.sleep(2500); }
       const thanks = await L.visibleText(R.page, part(W(lang, "verify.thanks")));
       const rec = await complaintById(A, c.id);
-      const hi = await heatItem(A, stop.id);
-      add("W2-1", tag, `«${W(lang, "verify.yes")}» → «${W(lang, "verify.thanks")}», объект зелёный «${W(lang, "status.verified")}»`, st(!!btn.yes && thanks && !!hi && hi.derived === "verified"),
-        { thanks, heat: hi, status: rec && rec.status, history: historyOf(rec).slice(-4) }, await shotOf(R.page, `${tag}-W2-1-4-verified`));
+      add("W2-1", tag, `«${W(lang, "verify.yes")}» (R09) → «${W(lang, "verify.thanks")}», запись — «проверено жителями»`, st(!!btn.yes && thanks && resolutionOf(rec) === "verified"),
+        { thanks, status: rec && rec.status, resolution: resolutionOf(rec), history: historyOf(rec).slice(-4) }, await shotOf(R.page, `${tag}-W2-1-5-verified`));
     } finally { await R.ctx.close(); }
-    // 4. Акимат: карточка «Проверено жителями» и счётчик в «Картине дня» (R08).
+    // 4. Карта и акимат: зелёный «проверено жителями» (R07) и счётчик в «Картине дня» (R08).
+    const hi = await heatItem(A, stop.id);
     const K = await openPage(browser, size, lang, { "birge.mode": "akimat" });
     try {
       await goto(K.page, base, lang);
       const card = await openCard(K.page, stop);
       const verified = card ? await L.visibleText(card, part(W(lang, "status.verified"))) : false;
-      add("W2-1", tag, `акимат: карточка места — «${W(lang, "status.verified")}»`, st(verified), { card: !!card, verified }, await shotOf(K.page, `${tag}-W2-1-5-akimat`));
+      add("W2-1", tag, `карта (R07): цель зелёная — «${W(lang, "status.verified")}»`, st(!!hi && hi.derived === "verified" && verified), { heat: hi, card: !!card, verified },
+        await shotOf(K.page, `${tag}-W2-1-6-akimat`));
       await K.page.keyboard.press("Escape").catch(() => null);
       const day = await header(K.page, lang, exact(W(lang, ["common.nav.day", "shell.section.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня")), 2500);
       const counter = await L.visibleText(K.page, /подтвердил|проверено жител|проверили жител|тексерді|растады/i);
-      add("W2-1", tag, "«Картина дня»: сколько исправлений проверили жители (R08)", st(day && counter), { day, counter }, await shotOf(K.page, `${tag}-W2-1-6-day`));
+      add("W2-1", tag, "«Картина дня» (R08): сколько исправлений проверили жители", st(day && counter), { day, counter }, await shotOf(K.page, `${tag}-W2-1-7-day`));
     } finally { await K.ctx.close(); }
   }
   // 5. «Проблема осталась» → та же карточка снова в работе («вернули жители»), история сохранена, объект снова красный.
@@ -385,17 +397,18 @@ async function checkCentral(ctx) {
       const toast = await L.visibleText(R.page, part(W(lang, "verify.reopened_toast")));
       const rec = await complaintById(A, c.id);
       const hist = historyOf(rec);
-      const hi = await heatItem(A, stop.id);
-      add("W2-1", `1366-${lang}`, `«${W(lang, "verify.no")}» → «${W(lang, "verify.reopened_toast")}»: снова «в работе», в истории есть «исправлено», объект снова красный`,
-        st(fx.ok && !!no && toast && rec && rec.status === "in_progress" && hist.some((h) => /fixed|reported/.test(h)) && !!hi && hi.derived === "open"),
-        { staff_fix: fx, button: !!no, toast, status: rec && rec.status, history: hist, heat: hi }, await shotOf(R.page, `1366-${lang}-W2-1-7-reopened`));
+      add("W2-1", `1366-${lang}`, `«${W(lang, "verify.no")}» (R09) → «${W(lang, "verify.reopened_toast")}»: та же запись снова «в работе», этап reopened, история сохранена`,
+        st(fx.ok && !!no && toast && !!rec && rec.status === "in_progress" && resolutionOf(rec) === "reopened" && hist.length >= 3),
+        { staff_fix: fx, button: !!no, toast, status: rec && rec.status, resolution: resolutionOf(rec), history: hist }, await shotOf(R.page, `1366-${lang}-W2-1-8-reopened`));
     } finally { await R.ctx.close(); }
+    const hi = await heatItem(A, stop.id);
     const K = await openPage(browser, [1366, 768], lang, { "birge.mode": "akimat" });
     try {
       await goto(K.page, base, lang);
       const card = await openCard(K.page, stop);
       const mark = card ? await L.visibleText(card, part(W(lang, "heat.reopened_mark"))) : false;
-      add("W2-1", `1366-${lang}`, `акимат: в карточке отметка «${W(lang, "heat.reopened_mark")}»`, st(mark), { card: !!card, mark }, await shotOf(K.page, `1366-${lang}-W2-1-8-reopened-card`));
+      add("W2-1", `1366-${lang}`, `карта (R07): цель снова красная, в карточке «${W(lang, "heat.reopened_mark")}»`, st(!!hi && hi.derived === "open" && mark), { heat: hi, card: !!card, mark },
+        await shotOf(K.page, `1366-${lang}-W2-1-9-reopened-card`));
     } finally { await K.ctx.close(); }
   }
 }
