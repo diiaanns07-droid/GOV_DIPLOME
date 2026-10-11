@@ -99,7 +99,14 @@ function compareMap(base, now, timeRef) {
     const fb = b.fingerprint || {}, fn = n.fingerprint || {};
     const lb = (fb.style && fb.style.layers_visible) || [], ln = (fn.style && fn.style.layers_visible) || [];
     const plus = ln.filter((x) => !lb.includes(x)), minus = lb.filter((x) => !ln.includes(x));
-    add(plus.length ? "FAIL" : "OK", "карта · вид", `${tag}: видимые слои по умолчанию ${lb.length} → ${ln.length}` + (plus.length ? " — новые слои видны сразу (правило 1)" : ""), plus.length ? { new: plus } : null);
+    // Новые слои подложки (источник vector / raster — стиль карты, решение владельца) — «СМОТРЕТЬ»; новые функциональные
+    // слои (geojson, image, custom 3D) по умолчанию — FAIL (правило 1). Без сведений об источнике — FAIL (строже).
+    const kind = (fn.style && fn.style.layer_kind) || {};
+    const basemap = plus.filter((x) => /^(vector|raster|raster-dem|background)$/.test(kind[x] || ""));
+    const thematic = plus.filter((x) => !basemap.includes(x));
+    add(thematic.length ? "FAIL" : "OK", "карта · вид", `${tag}: видимые слои по умолчанию ${lb.length} → ${ln.length}` + (thematic.length ? " — новые функциональные слои видны сразу (правило 1)" : ""),
+      thematic.length ? { new: thematic, kinds: thematic.map((x) => kind[x] || "?") } : null);
+    if (basemap.length) add("СМОТРЕТЬ", "карта · вид", `${tag}: новые слои подложки (стиль карты) — сверить кадр`, { new: basemap.slice(0, 30), n: basemap.length });
     if (minus.length) add("СМОТРЕТЬ", "карта · вид", `${tag}: слои пропали или переименованы`, minus);
     for (const id of ln.filter((x) => lb.includes(x))) {
       const was = fb.style.rendered[id], is = fn.style.rendered[id];

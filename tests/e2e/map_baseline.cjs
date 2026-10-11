@@ -91,8 +91,12 @@ const FINGERPRINT = () => {
     const shown = layers.filter((l) => l.visible);
     const rendered = {};
     for (const l of shown) { try { rendered[l.id] = m.queryRenderedFeatures({ layers: [l.id] }).length; } catch (e) { rendered[l.id] = null; } }
+    // Тип источника слоя: подложка (vector / raster) или функциональный слой (geojson, image, custom 3D) — правило 1
+    // запрещает новые функциональные слои по умолчанию; смена стиля подложки — решение владельца, её смотрят глазами.
+    const srcs = m.getStyle().sources || {};
+    const layer_kind = Object.fromEntries(shown.map((l) => [l.id, l.type === "custom" ? "custom" : (srcs[l.source] && srcs[l.source].type) || (l.type === "background" ? "background" : "?")]));
     const c = m.getCenter();
-    style = { center: [Number(c.lng.toFixed(4)), Number(c.lat.toFixed(4))], zoom: Number(m.getZoom().toFixed(2)), pitch: Math.round(m.getPitch()), bearing: Math.round(m.getBearing()),
+    style = { layer_kind, center: [Number(c.lng.toFixed(4)), Number(c.lat.toFixed(4))], zoom: Number(m.getZoom().toFixed(2)), pitch: Math.round(m.getPitch()), bearing: Math.round(m.getBearing()),
       layers_total: layers.length, layers_visible: shown.map((l) => l.id), layers_hidden: layers.filter((l) => !l.visible).map((l) => l.id),
       rendered, sources: Object.keys(m.getStyle().sources || {}) };
   }
