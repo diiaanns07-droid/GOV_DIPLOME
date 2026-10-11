@@ -4,7 +4,9 @@
 # Что делает: сценарий демо 1366/375 × ru/kk (build_shots), непереведённые строки на 5 экранах (ru_kk_same FULL),
 # витрина ui-kit на сервере сборки (browser_check --base), ключи модулей вне словаря R11 (missing_keys, если дан SHA),
 # кабинет сотрудника в ҚАЗ (staff_kk_check), шаги 1–2 демо у «Хан Шатыр» (demo_step2_check), кнопки шага 6 (demo_step6_check)
-# и выбранное место на телефоне не закрыто шторкой или кнопкой (phone_select_check, 360×800 и 375×667).
+# выбранное место на телефоне не закрыто шторкой или кнопкой (phone_select_check, 360×800 и 375×667)
+# значки тепловой карты на первом кадре не закрыты, у первого в списке значок есть (badges_covered_check)
+# и первый кадр не стал сложнее FINAL-кандидата 8e67c65 (first_frame_check, волна 2, защита от перегруза).
 # Пароль сотрудника читается из файла и нигде не печатается. Итог — <папка>/SUMMARY.txt.
 set -u
 PORT="$1"; OUT="$2"; PW="$3"; SHA="${4:-}"
@@ -21,6 +23,8 @@ node "$HERE/staff_kk_check.cjs" "$BASE/" "$OUT/staff" "$PW" > "$OUT/staff.log" 2
 node "$HERE/demo_step6_check.cjs" "$BASE/" "$PW" "$OUT/step6-1366-kk.png" > "$OUT/step6.log" 2>&1
 node "$HERE/demo_step2_check.cjs" "$BASE/" "$OUT" > "$OUT/step2.log" 2>&1
 node "$HERE/phone_select_check.cjs" "$BASE/" "$OUT" > "$OUT/phone_select.log" 2>&1
+node "$HERE/badges_covered_check.cjs" "$BASE/" "$OUT" > "$OUT/badges.log" 2>&1
+node "$HERE/first_frame_check.cjs" "$BASE/" "$OUT/first_frame.json" "$ROOT/research/round-14-results/R11/first_frame_8e67c65.json" > "$OUT/first_frame.log" 2>&1
 {
   echo "Сборка: ${SHA:-(SHA не указан)} · $BASE"
   steps=$(grep -c . "$OUT/build_shots.log"); fails=$(grep -c "НЕ ПРОШЛО" "$OUT/build_shots.log")
@@ -42,5 +46,7 @@ PY
   echo "Шаги 1–2 демо («Хан Шатыр» → «Я тоже»):"; grep -v "^    at " "$OUT/step2.log" | cut -c1-230 | sed 's/^/   /'
   echo "Шаг 6 демо («Хан Шатыр»):"; sed 's/^/   /' "$OUT/step6.log"
   echo "Телефон, выбранное место (акимат):"; grep "ИТОГ" "$OUT/phone_select.log" | sed 's/^/   /'
+  echo "Значки на первом кадре (акимат):"; grep -E "ИТОГ|НЕТ ЗНАЧКА|закрыто [1-9]" "$OUT/badges.log" | cut -c1-200 | sed 's/^/   /'
+  echo "Первый кадр против FINAL 8e67c65 (защита от перегруза):"; grep -vE "^\s*at " "$OUT/first_frame.log" | cut -c1-220 | sed 's/^/   /'
 } > "$OUT/SUMMARY.txt"
 cat "$OUT/SUMMARY.txt"

@@ -854,6 +854,10 @@
     }
     const tools = shown(document.querySelector(".map-tools"));
     if (tools) pad.right = Math.max(pad.right, c.right - tools.left + 10);
+    // Ноутбук: компактная легенда внизу слева — препятствие снизу (R11 patches/R01_legend_free_area.patch, по-нашему:
+    // легенда стала одной строкой, поэтому отступ снизу, а не 420 px слева): Нұра на обзоре города не уходит под неё.
+    const legend = innerWidth >= 1024 && shown(document.getElementById("birge-legend"));
+    if (legend && legend.top > c.top + c.height / 2) pad.bottom = Math.max(pad.bottom, c.bottom - legend.top + 12);
     const panel = shown($c("civic-panel"));
     if (panel) {
       if (mobile) pad.bottom = Math.max(pad.bottom, c.bottom - panel.top + 12);

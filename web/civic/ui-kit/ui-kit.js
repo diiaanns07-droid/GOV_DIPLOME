@@ -9,6 +9,9 @@
  *   BirgeUI.seg(el, onChange)                    → сегментный переключатель (aria-pressed)
  *   BirgeUI.langSwitch(el)                       → ҚАЗ | РУС, связан с BirgeI18n
  *   BirgeUI.state(el, "loading"|"empty"|"error", {title, text, action:{label,onClick}})
+ *   BirgeUI.seasonOrder(categories, date?)       → категории в порядке сезона (волна 1, п. 11): с ноября по март
+ *                                                  первая «Снег и гололёд», с апреля по октябрь — «Дороги»; остальные
+ *                                                  — как в categories_v2.json. Принимает id или объекты с .id; копия.
  *
  * Тексты берутся из BirgeI18n, если он подключён; сам ui-kit.js слов не содержит.
  */
@@ -240,5 +243,18 @@
     }
   }
 
-  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, esc: esc, SPRITE: SPRITE };
+  // Сезонный порядок категорий (POLISH_WAVE п. 11). Месяц — по часам устройства: зимой житель не ищет снег в конце.
+  function seasonOrder(categories, date) {
+    var list = (categories || []).slice();
+    var month = (date || new Date()).getMonth() + 1;
+    var first = month >= 11 || month <= 3 ? "snow_ice" : "roads";
+    var idOf = function (c) { return c && typeof c === "object" ? c.id : c; };
+    for (var i = 0; i < list.length; i++) {
+      if (idOf(list[i]) === first) { list.unshift(list.splice(i, 1)[0]); break; }
+    }
+    return list;
+  }
+
+  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, esc: esc,
+    seasonOrder: seasonOrder, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);

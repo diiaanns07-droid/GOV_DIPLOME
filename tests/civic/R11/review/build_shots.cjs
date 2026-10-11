@@ -106,8 +106,15 @@ async function clickMapAt(p, ll) {
         if (await p.$(".bk-catgrid")) await p.click(".bk-catgrid > button:nth-child(5)");
         else if (await p.$(".bc-grid")) await p.click(".bc-grid__chip:nth-child(5)");
         await p.click(".bc-send");
-        await p.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 15000 });
-        if (await p.$(".bc-panel[data-step='4']")) await p.click(".bc-different");
+        // Шаг 4 бывает двух видов: похожие жалобы («У меня другое») и, с волны 1 R09, проверка перед отправкой
+        // (.bc-panel[data-review="1"], «Жіберу»). Идём до шага 5, нажимая то, что на экране.
+        for (let i = 0; i < 4; i++) {
+          await p.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 15000 });
+          if (await p.$(".bc-panel[data-step='5']")) break;
+          if (await p.$(".bc-panel[data-review='1']")) { logs.push("R11: шаг «Жіберер алдында тексеріңіз»"); await p.click(".bc-panel[data-review='1'] .bc-send"); }
+          else if (await p.$(".bc-different")) await p.click(".bc-different");
+          await p.waitForTimeout(900);
+        }
         await p.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
       });
       await step("9-mine", async () => { await p.keyboard.press("Escape"); await clickHidden(p, "#birge-header [data-action=mine]"); await p.waitForSelector(".bc-mine__card", { timeout: 8000 }); });

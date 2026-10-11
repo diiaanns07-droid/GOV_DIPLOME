@@ -159,8 +159,19 @@ async function main() {
     await ready(page);
     n = await nav(page);
     check("akimat menu (wave 2): Карта · Картина дня · Обращения · Проекты и идеи · Ещё",
-      JSON.stringify(n.ids) === '["map","day","complaints","projects","more"]'
+      JSON.stringify(n.ids) === '["map","day","inbox","projects","more"]'
       && JSON.stringify(n.labels) === '["Карта","Картина дня","Обращения","Проекты и идеи","Ещё"]', n);
+    // «Ещё» у акимата — его инструменты (IA_WAVE2 §1): вопросы жителей, работы и отключения, QR-таблички, службы.
+    await page.click("#birge-header .birge-nav [data-section=more]");
+    await page.waitForTimeout(200);
+    const akimatMenu = await page.evaluate(() => { const m = document.querySelector("#birge-header .birge-more-menu");
+      return { role: m?.getAttribute("role"), shown: !!m && !m.hidden, items: [...(m?.querySelectorAll("[role=menuitem]") || [])].map((i) => i.textContent),
+        expanded: document.querySelector("#birge-header .birge-nav [data-section=more]").getAttribute("aria-expanded") }; });
+    check("akimat «Ещё» is a small menu (role=menu, ≤ 4): Вопросы жителей · Работы и отключения · QR-таблички · Службы",
+      akimatMenu.role === "menu" && akimatMenu.shown && akimatMenu.expanded === "true"
+      && JSON.stringify(akimatMenu.items) === '["Вопросы жителей","Работы и отключения","QR-таблички","Службы"]', akimatMenu);
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(150);
     check("1366 akimat: header with 5 items fits, no horizontal scroll", n.out === 0 && n.scrollW <= 1366, n);
     await page.screenshot({ path: path.join(OUT, "w2_1366_akimat_menu.png") });
     await page.click("#birge-header [data-mode=resident]");
@@ -187,20 +198,26 @@ async function main() {
     n = await nav(page); sc = await screenState(page);
     check("«Вернуться к карте» → map, address without #nearby", n.section === "map" && n.hash === "" && !sc.shown && !sc.mapHidden, { n, sc });
 
-    // «Ещё»: the rare sections of the view («Вопрос акиму»); the screen opened from it keeps «Ещё» pressed.
-    await page.click("#birge-header [data-section=more]");
-    await page.waitForTimeout(300);
+    // «Ещё» — маленькое меню, не страница (IA_WAVE2 §1); у жителя в нём «Вопрос акиму».
+    await page.click("#birge-header .birge-nav [data-section=more]");
+    await page.waitForTimeout(200);
+    const moreItems = await page.evaluate(() => [...document.querySelectorAll("#birge-header .birge-more-menu [role=menuitem]")].map((b) => b.dataset.section));
     sc = await screenState(page);
-    const moreItems = await page.evaluate(() => [...document.querySelectorAll("#birge-screen .birge-more-item")].map((b) => b.dataset.section));
-    check("«Ещё» (resident) lists the rare sections: «Вопрос акиму»", sc.shown && sc.screen === "more" && JSON.stringify(moreItems) === '["ask"]', { sc, moreItems });
-    await page.click("#birge-screen .birge-more-item[data-section=ask]");
+    check("«Ещё» (resident) opens a menu over the map (no screen): «Вопрос акиму»", !sc.shown && JSON.stringify(moreItems) === '["questions"]', { sc, moreItems });
+    await page.click("#birge-header .birge-more-menu [data-section=questions]");
     await page.waitForTimeout(300);
     n = await nav(page); sc = await screenState(page);
-    check("«Вопрос акиму» from «Ещё»: #ask screen, «Ещё» stays pressed", n.hash === "#ask" && sc.screen === "ask" && sc.title === "Вопрос акиму" && JSON.stringify(n.pressed) === '["more"]', { n, sc });
+    check("«Вопрос акиму» from «Ещё»: #questions screen, «Ещё» stays pressed, menu closed",
+      n.hash === "#questions" && sc.screen === "questions" && sc.title === "Вопрос акиму" && JSON.stringify(n.pressed) === '["more"]'
+      && await page.evaluate(() => document.querySelector("#birge-header .birge-more-menu").hidden), { n, sc });
     await page.goBack();
     await page.waitForTimeout(300);
-    sc = await screenState(page);
-    check("browser Back returns to the previous section («Ещё»)", sc.screen === "more", sc);
+    n = await nav(page); sc = await screenState(page);
+    check("browser Back returns to the previous place (the map)", n.section === "map" && !sc.shown, { n, sc });
+    await page.evaluate(() => { location.hash = "#ask"; });  // прежний адрес волны 2 — тот же раздел
+    await page.waitForTimeout(300);
+    n = await nav(page);
+    check("old link #ask still opens «Вопрос акиму» (#questions)", n.section === "questions", n);
     await page.click("#birge-header [data-section=map]");
     await page.waitForTimeout(200);
 
@@ -258,12 +275,12 @@ async function main() {
     await page.click("#birge-header [data-mode=akimat]");
     await page.waitForTimeout(300);
     n = await nav(page);
-    const akimatMore = await page.evaluate(() => { window.BirgeShell.setSection("more"); return [...document.querySelectorAll("#birge-screen .birge-more-item")].map((a) => [a.textContent, a.getAttribute("href")]); });
-    // У акимата «Рядом» не в главном меню — в «Ещё» (сотрудник добавляет записи «Рядом», POLISH_WAVE_2 п. 4).
-    check("akimat «Ещё»: «Рядом» (not in the akimat main menu) and the registered QR-sheets link",
-      JSON.stringify(n.ids) === '["map","day","more"]'
-      && JSON.stringify(akimatMore) === '[["Рядом",null],["Листы QR для остановок","/civic/qr/"]]', { ids: n.ids, akimatMore });
-    await page.evaluate(() => window.BirgeShell.setSection("map"));
+    await page.click("#birge-header .birge-nav [data-section=more]");
+    await page.waitForTimeout(200);
+    const akimatMore = await page.evaluate(() => [...document.querySelectorAll("#birge-header .birge-more-menu [role=menuitem]")].map((a) => [a.textContent, a.getAttribute("href")]));
+    check("akimat «Ещё» appears with a registered role link (QR sheets) and lists it; «Рядом» stays a resident section",
+      JSON.stringify(n.ids) === '["map","day","more"]' && JSON.stringify(akimatMore) === '[["Листы QR для остановок","/civic/qr/"]]', { ids: n.ids, akimatMore });
+    await page.keyboard.press("Escape");
 
     // ---------------------------------------------------------------- one extra map layer at a time
     const layerLog = await page.evaluate(() => {

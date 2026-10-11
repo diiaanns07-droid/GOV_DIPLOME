@@ -18,21 +18,30 @@
   const MODES = ["akimat", "resident"];
   // Меню по виду (POLISH_WAVE_2, «Защита интерфейса от перегруза», п. 2): не больше 5 пунктов, редкое — в «Ещё».
   // «mine» — не экран, а окно «Мои обращения» модуля R09 поверх карты (как раньше).
+  // Схема R11 (IA_WAVE2 §1): «Ещё» — маленькое меню (≤ 4 пункта), не страница; у жителя — «Вопрос акиму»,
+  // у акимата — «Вопросы жителей», «Работы и отключения», «QR-таблички», «Службы».
   const NAV = {
     resident: ["map", "mine", "nearby", "ideas", "more"],
-    akimat: ["map", "day", "complaints", "projects", "more"],
+    akimat: ["map", "day", "inbox", "projects", "more"],
   };
   // Экраны новых разделов (п. 2: свои экраны, не поверх карты). Модуль роли: window[global].mount(root, опции) →
   // {destroy?, setLang?}. Пункт меню виден, только когда модуль подключён; ?screens=all — показать все (разбор R11/R10).
   // modes — в каких видах раздел есть; пункт, которого нет в NAV этого вида, попадает в «Ещё».
+  // key — подпись по виду (ключи словаря R11); адрес раздела — #<id> (IA_WAVE2 §1).
   const SCREENS = {
-    complaints: { global: ["BirgeComplaintList"], modes: ["akimat"], owner: "R09" },
+    inbox: { global: ["BirgeInbox", "BirgeComplaintList"], modes: ["akimat"], owner: "R09", key: { akimat: "common.nav.complaints" } },
     projects: { global: ["BirgeProjects", "BirgeIdeas"], modes: ["akimat"], owner: "R06 + R05" },
-    nearby: { global: ["BirgeNearby"], modes: ["resident", "akimat"], owner: "R08 + R06" },
+    nearby: { global: ["BirgeNearby"], modes: ["resident"], owner: "R08 + R06" },
     ideas: { global: ["BirgeIdeas"], modes: ["resident"], owner: "R06 + R05" },
-    ask: { global: ["BirgeAsk"], modes: ["resident", "akimat"], owner: "R13" },
+    questions: { global: ["BirgeAsk", "BirgeQuestions"], modes: ["resident", "akimat"], owner: "R13",
+      key: { resident: "common.nav.ask", akimat: "shell.nav.questions_staff" } },
+    works: { global: ["BirgeWorks"], modes: ["akimat"], owner: "R06 + R08", key: { akimat: "shell.nav.works_staff" } },
+    qr: { global: ["BirgeQr"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.qr" } },
+    services: { global: ["BirgeServices"], modes: ["akimat"], owner: "R08", key: { akimat: "shell.nav.services" } },
   };
-  const SECTIONS = ["map", "day", "more", ...Object.keys(SCREENS)];
+  const SECTIONS = ["map", "day", ...Object.keys(SCREENS)];
+  // Прежние адреса волны 2 (до схемы R11) ведут в те же разделы.
+  const ROUTE_ALIAS = { complaints: "inbox", ask: "questions" };
   const PHONE = 761;                         // как в shell.js: уже 761 px — телефонная схема
   // Кнопки карты из web/index.html и их ключи перевода (словари R11, shell.map.*).
   const MAP_BUTTONS = [["overview-map", "shell.map.fit_city"], ["zoom-in", "shell.map.zoom_in"],
@@ -136,13 +145,14 @@
   // «Ещё»: разделы этого вида, которых нет в его главном меню (п. 2: «Вопрос акиму» и прочее редкое).
   function moreItems(mode) {
     const ids = [...Object.keys(SCREENS), ...state.extra.map((x) => x.id)];
-    return ids.filter((id, i) => ids.indexOf(id) === i && !NAV[mode].includes(id) && id !== "more" && available(id, mode));
+    return ids.filter((id, i) => ids.indexOf(id) === i && !NAV[mode].includes(id) && id !== "more" && available(id, mode)).slice(0, 4);
   }
-  const navTitle = (id) => {
+  const navTitle = (id, mode = state.mode) => {
     const extra = state.extra.find((x) => x.id === id);
     if (extra?.titleKey) return t(extra.titleKey);
     if (extra?.title) return extra.title[lang()] || extra.title.ru || id;
-    return t("common.nav." + id);  // известный раздел (SCREENS) — ключ меню, даже если модуль зарегистрирован
+    const key = SCREENS[id]?.key?.[mode];
+    return t(key || "common.nav." + id);  // известный раздел (SCREENS) — ключ меню, даже если модуль зарегистрирован
   };
   // Кнопки меню: порядок — NAV текущего вида; кнопки другого вида остаются в DOM скрытыми (проверки R11 нажимают
   // [data-section=day] из кода и в виде «Житель» — оболочка сама переключит вид).
@@ -158,11 +168,47 @@
         b = id === "mine"
           ? el("button", { type: "button", class: "bk-seg__btn birge-mine-btn", "data-action": "mine", "aria-pressed": "false" })
           : segButton("section", id, id === state.section);
+        if (id === "more") { b.setAttribute("aria-haspopup", "menu"); b.setAttribute("aria-expanded", "false"); }
       }
       b.hidden = !NAV[state.mode].includes(id) || !available(id, state.mode);
       return b;
     });
     nav.replaceChildren(...buttons);
+  }
+
+  // «Ещё» — маленькое меню (role="menu", ≤ 4 пункта; IA_WAVE2 §1), не отдельная страница. Ноутбук — под кнопкой,
+  // телефон — в листе ≡ сразу под ней.
+  const moreMenu = () => header?.querySelector(".birge-more-menu");
+  const moreOpen = () => !!moreMenu() && !moreMenu().hidden;
+  function toggleMore(button) {
+    if (moreOpen()) { closeMore(true); return; }
+    let menu = moreMenu();
+    if (!menu) {
+      menu = el("div", { class: "birge-more-menu bk-app", role: "menu", hidden: true });
+      header.querySelector(".birge-nav").after(menu);
+    }
+    menu.replaceChildren(...moreItems(state.mode).map((id) => {
+      const extra = state.extra.find((x) => x.id === id);
+      const item = extra?.href
+        ? el("a", { role: "menuitem", class: "birge-more-item", href: extra.href, target: extra.target || null, rel: extra.target ? "noopener" : null })
+        : el("button", { type: "button", role: "menuitem", class: "birge-more-item", "data-section": id });
+      item.textContent = navTitle(id);
+      if (id === state.section) item.setAttribute("aria-current", "page");
+      return item;
+    }));
+    const r = button.getBoundingClientRect(), box = header.getBoundingClientRect();
+    menu.style.setProperty("--more-left", Math.round(r.left - box.left) + "px");
+    menu.hidden = false;
+    button.setAttribute("aria-expanded", "true");
+    menu.querySelector("[role=menuitem]")?.focus();
+  }
+  function closeMore(focusButton) {
+    const menu = moreMenu();
+    if (!menu || menu.hidden) return;
+    menu.hidden = true;
+    const button = header.querySelector(".birge-nav [data-section=more]");
+    button?.setAttribute("aria-expanded", "false");
+    if (focusButton) button?.focus();
   }
 
   // ------------------------------------------------------------------ шапка
@@ -193,15 +239,19 @@
       if (!button || !header.contains(button)) return;
       if (button === menuButton) { setMenu(header.dataset.menu !== "open"); return; }
       if (button.dataset.action === "mine") { setSection("map"); setMenu(false); window.CivicShell?.openMine?.(); return; }
+      if (button.dataset.section === "more" && !button.closest(".birge-more-menu")) { toggleMore(button); return; }
+      if (button.closest(".birge-more-menu")) closeMore();
       if (button.dataset.section) setSection(button.dataset.section);
       else if (button.dataset.mode) setMode(button.dataset.mode);
       else if (button.dataset.lang && i18n()) i18n().setLang(button.dataset.lang);
       if (!button.dataset.lang) setMenu(false);
     });
     document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && moreOpen()) { closeMore(true); return; }
       if (event.key === "Escape" && header.dataset.menu === "open") { setMenu(false); menuButton.focus(); }
     });
     document.addEventListener("click", (event) => {
+      if (moreOpen() && !event.target.closest?.(".birge-more-menu, [data-section=more]")) closeMore();
       if (header.dataset.menu === "open" && !header.contains(event.target)) setMenu(false);
     });
   }
@@ -240,7 +290,7 @@
       buildNav();
       const mine = header.querySelector(".birge-mine-btn");
       if (mine) mine.textContent = t("common.nav.mine");
-      for (const b of header.querySelectorAll("[data-section]")) {
+      for (const b of header.querySelectorAll(".birge-nav > [data-section]")) {
         b.textContent = navTitle(b.dataset.section);
         // «Ещё» подсвечен и на экранах, открытых из него.
         const current = b.dataset.section === state.section
@@ -380,25 +430,12 @@
       close: () => setSection("map"),
     };
   }
-  function renderMore(root) {
-    const list = el("ul", { class: "birge-more-list" });
-    for (const id of moreItems(state.mode)) {
-      const extra = state.extra.find((x) => x.id === id);
-      const item = extra?.href
-        ? el("a", { class: "bk-btn birge-more-item", href: extra.href, target: extra.target || null, rel: extra.target ? "noopener" : null, text: navTitle(id) })
-        : el("button", { type: "button", class: "bk-btn birge-more-item", "data-section": id, text: navTitle(id) });
-      if (!extra?.href) item.addEventListener("click", () => setSection(id));
-      list.append(el("li", {}, [item]));
-    }
-    root.replaceChildren(list);
-  }
   function renderScreen() {
     if (!screen) return;
     const id = state.section;
     if (id === "map" || id === "day") return;
-    screen.querySelector("#birge-screen-title").textContent = id === "more" ? t("common.nav.more") : navTitle(id);
+    screen.querySelector("#birge-screen-title").textContent = navTitle(id);
     const root = screen.querySelector("#birge-screen-root");
-    if (id === "more") { screen.dataset.screen = "more"; renderMore(root); return; }
     if (state.screenHandle && screen.dataset.screen === id) {
       try { state.screenHandle.setLang?.(lang()); } catch (e) { /* язык модуль может менять сам по birge:lang */ }
       return;
@@ -530,7 +567,7 @@
     if (!SECTIONS.includes(section)) section = "map";
     // «Картина дня» — экран акимата; житель всегда на карте. Раздел другого вида переключает вид (ссылка, «Ещё»).
     if (section === "day" && state.mode === "resident") setMode("akimat");
-    else if (section !== "map" && section !== "day" && section !== "more" && !screenModes(section).includes(state.mode)) {
+    else if (section !== "map" && section !== "day" && !screenModes(section).includes(state.mode)) {
       setMode(screenModes(section)[0]);
     }
     state.section = section;
@@ -570,7 +607,7 @@
     buildScreen();
     watchExplore();
     // Разделы — адрес #day, #nearby, #ideas, #more…; прочие адреса (#object=, #target=, #school) — карта, как раньше.
-    const routeOf = () => { const h = location.hash.slice(1); return SECTIONS.includes(h) ? h : "map"; };
+    const routeOf = () => { const h = ROUTE_ALIAS[location.hash.slice(1)] || location.hash.slice(1); return SECTIONS.includes(h) ? h : "map"; };
     setSection(routeOf(), { hash: false });
     window.addEventListener("hashchange", () => {
       const route = routeOf();

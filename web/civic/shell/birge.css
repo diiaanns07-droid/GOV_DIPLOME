@@ -84,6 +84,11 @@ body.civic-mode[data-birge-section]:not([data-birge-section="map"]) #civic-root 
   }
   #birge-header[data-menu="open"] .birge-menu .bk-seg { display: flex; }
   #birge-header[data-menu="open"] .birge-menu .bk-seg > button { flex: 1; white-space: normal; } /* казахский длиннее */
+  /* Волна 2: разделов до 5 — в листе меню столбиком, а не в ряд (на 375 kk «Маңайда · Идеялар · Тағы» налезали
+     друг на друга; IA_WAVE2 §1 «5 пунктов списком», R11 волна 2 разбор 3, patches/R01_wave2_phone_menu.patch). */
+  #birge-header[data-menu="open"] .birge-menu .birge-nav { flex-direction: column; align-items: stretch; }
+  #birge-header[data-menu="open"] .birge-menu .birge-nav > button { flex: none; min-height: 48px; justify-content: flex-start; text-align: start; padding: 0 16px; }
+  #birge-header[data-menu="open"] .birge-more-menu { position: static; box-shadow: none; padding: 0 0 0 16px; min-width: 0; }
 }
 /* Телефон: шапка ниже (как у shell.css), лист меню и «Картина дня» — во всю ширину с отступом 8 px. */
 @media (max-width: 760px) {
@@ -335,3 +340,17 @@ body.birge-picking .birge-legend { pointer-events: none; }
 @media (min-width: 1024px) {
   body.civic-mode:has(#birge-legend .r07-maplegend:not([hidden])) .birge-build3d-root:not([data-catalog="open"]):not(:has(.b3d-dock:is([data-state="placing"], [data-state="card"]))) { left: 470px; }
 }
+
+/* «Ещё» — маленькое меню разделов (IA_WAVE2 §1: role="menu", ≤ 4 пункта), под своей кнопкой в шапке. */
+#birge-header { position: relative; }
+.birge-more-menu { position: absolute; z-index: 50; top: calc(100% + 10px); left: var(--more-left, 0); display: grid; gap: 2px;
+  min-width: 240px; padding: 6px; border-radius: var(--r-m, 12px); background: var(--c-surface, #fff);
+  box-shadow: var(--shadow-3, 0 12px 36px #15362833); }
+.birge-more-menu[hidden] { display: none; }
+.birge-more-item { display: flex; align-items: center; min-height: 48px; padding: 0 14px; border: 0; border-radius: var(--r-s, 8px);
+  background: transparent; color: var(--c-ink, #152c26); font: inherit; font-size: var(--fs-body, 15px); font-weight: 600;
+  text-align: start; text-decoration: none; cursor: pointer; }
+.birge-more-item:hover, .birge-more-item:focus-visible { background: var(--c-paper, #f6f7f3); }
+.birge-more-item[aria-current="page"] { box-shadow: inset 3px 0 0 var(--c-accent, #1f6f50); }
+/* Шапка — свой слой ниже панели «Карта жалоб»: пока открыто «Ещё», она выше панелей (иначе пункты меню под панелью). */
+body:has(#birge-header .birge-more-menu:not([hidden])) .topbar { z-index: 45; }

@@ -237,6 +237,8 @@
           <span class="bk-heat" data-level="3">7</span>
           <span class="bk-heat bk-heat--lg bk-pulse" data-level="4" id="kit-pulse">12</span>
           <span class="bk-heat" data-level="fixed">5</span>
+          <span class="bk-heat" data-level="reported_fixed" data-i18n-attr="title:heat.legend.reported_fixed">6</span>
+          <span class="bk-heat" data-level="3" data-reopened data-i18n-attr="title:heat.reopened_mark">8</span>
           <div class="bk-maptools">
             <button class="bk-mapbtn" type="button" data-kit-icon="plus" data-i18n-attr="aria-label:common.map.zoom_in;title:common.map.zoom_in"></button>
             <button class="bk-mapbtn" type="button" data-kit-icon="minus" data-i18n-attr="aria-label:common.map.zoom_out;title:common.map.zoom_out"></button>
@@ -260,6 +262,11 @@
           <span class="bk-status" data-status="in_progress" data-i18n="status.in_progress"></span>
           <span class="bk-status" data-status="fixed" data-i18n="status.fixed"></span>
           <span class="bk-status" data-status="rejected" data-i18n="status.rejected"></span>
+        </div>
+        <div class="kit-row">
+          <span class="bk-status" data-status="reported_fixed" data-i18n="status.reported_fixed"></span>
+          <span class="bk-status" data-status="verified" data-i18n="status.verified"></span>
+          <span class="bk-status" data-status="reopened" data-i18n="status.reopened"></span>
         </div>
         <div class="kit-row">
           <span class="bk-tag bk-tag--demo" data-i18n="common.tag.demo" data-i18n-attr="title:common.tag.demo_hint"></span>
@@ -409,6 +416,12 @@
           <div class="bk-card" id="kit-loading"></div>
           <div class="bk-card" id="kit-empty"></div>
           <div class="bk-card" id="kit-error"></div>
+        </div>
+        <div class="bk-banner bk-banner--danger" role="alert" id="kit-emergency">
+          <div class="bk-banner__title" data-kit-icon="alert"><span data-i18n="complaint.emergency.title"></span></div>
+          <div data-i18n="complaint.emergency.text" data-i18n-params='{"phone":"104"}'></div>
+          <a class="bk-btn bk-btn--primary" href="tel:104" data-i18n="complaint.emergency.call" data-i18n-params='{"phone":"104"}'></a>
+          <div class="bk-banner__note"><span data-i18n="emergency.service.104"></span> · <span data-i18n="complaint.emergency.still_send"></span></div>
         </div>
         <div class="kit-row">
           <button class="bk-btn" type="button" id="kit-toast-ok"><span data-i18n="uikit.toast.show"></span> · <span data-i18n="common.state.saved"></span></button>
