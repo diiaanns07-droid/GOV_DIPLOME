@@ -13,7 +13,8 @@
   откат дубля точно по времени объединения (цепочки, перепривязанные дубли), ошибочное «Я тоже» из формы -> отдельная
   жалоба жителя с его текстом; обе цели пересчитываются; журнал решений R04 (ml/civic_dedup/feedback.py) без текстов.
 - Проверки: R04 в сборке 350 passed / 1 skipped; app_polish_r04.cjs (Chromium 375/1366 × ru/kk) 39/39;
-  стенд R09 app_demo_r09.cjs 42/42; pytest R09+R07+R11+R01+R04+R15+R08 — 1444 passed, 3 skipped; весь pytest — ниже.
+  стенд R09 app_demo_r09.cjs 42/42; pytest R09+R07+R11+R01+R04+R15+R08 — 1444 passed, 3 skipped;
+  весь `pytest tests` на сборке — 2957 passed, 21 skipped, 0 failed.
 - Скриншоты: research/round-14-results/R04/screens-polish/ (16 кадров + STAND_RESULT.txt).
 
 ### Ждём

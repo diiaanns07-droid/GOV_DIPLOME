@@ -45,7 +45,7 @@
 (как из «Картины дня»/QR): место нажатия совпадает с кнопкой «Что построить?» — это учтено R11 (круг 16), не ошибка.
 
 Регресс: стенд R09 `app_demo_r09.cjs` на этой сборке — 42/42 PASS (форма «Я тоже» теперь шлёт текст);
-pytest R09/R07/R11/R01/R04/R15/R08 — 1444 passed, 3 skipped; весь `pytest tests` — в DELIVERY.json.
+pytest R09/R07/R11/R01/R04/R15/R08 — 1444 passed, 3 skipped; весь `pytest tests` — 2957 passed, 21 skipped, 0 failed.
 
 ---
 

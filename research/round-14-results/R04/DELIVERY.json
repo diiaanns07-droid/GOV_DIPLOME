@@ -43,7 +43,7 @@
     "app_polish_r04.cjs (Chromium 375/1366 × ru/kk)": "PASS 39/39 — screens-polish/STAND_RESULT.txt",
     "R09 app_demo_r09.cjs на этой сборке (регресс формы «Я тоже»)": "PASS 42/42",
     "pytest R09+R07+R11+R01+R04+R15+R08 на сборке": "PASS — 1444 passed, 3 skipped",
-    "pytest tests (весь) на сборке": "RUNNING — итог допишу в STATUS.md",
+    "pytest tests (весь) на сборке": "PASS — 2957 passed, 21 skipped, 0 failed (7 мин 09 с)",
     "живой телефон, ноутбук владельца": "NOT_RUN"
   },
   "screenshots": "research/round-14-results/R04/screens-polish/*.jpg — 375×812 и 1366×768, ru и kk: 1 житель (карточка без чужих текстов), 2 акимат (оригинал + «Содержит грубые слова»), 3 «Объединено с этим», 4 после «Это разные проблемы» (тост, число −1), 5 разделённый дубль (1366 ru)",
