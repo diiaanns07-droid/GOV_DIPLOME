@@ -1075,6 +1075,82 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   await pageA.context().close();
 }
 
+// Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01; R11 IA_WAVE2 §2.5).
+async function inboxScreen(browser, base, lang, width, height, tag, point) {
+  const suffix = tag.replace(/[^a-z0-9]/gi, "").toLowerCase();
+  const made = await deviceApi(base, "POST", "/complaints", { text: lang === "kk" ? "Жолда үлкен шұңқыр" : "Большая яма на дороге",
+    category: "roads", subtopic: "pothole", point, target: { kind: "object", id: "osm-node-1" } }, "dev-r09-inbox-" + suffix + "-0001");
+  const tid = made.data.complaint.target.id;
+  const page = await newPage(browser, base, width, height, lang, { staff: true });
+  await page.evaluate(() => {
+    window.CivicShell = { csrfToken: () => "stand" };   // в сборке токен даёт оболочка R01
+    const box = document.createElement("div");
+    box.id = "inbox-box";
+    box.style.cssText = "position:fixed;inset:0;overflow:auto;background:#fff;z-index:50;padding:16px";
+    document.body.appendChild(box);
+    window.opened = null;
+    window.inboxCtl = BirgeComplaintList.mount(box, { titleTag: "h2", openTarget: (kind, id) => { window.opened = [kind, id]; } });
+  });
+  await page.waitForSelector(".bc-inbox__tab", { timeout: 8000 });
+  const tabs = await page.$$eval(".bc-inbox__tab", (n) => n.map((b) => ({ id: b.dataset.tab, text: b.textContent.trim(), sel: b.getAttribute("aria-selected") })));
+  check(`${tag}: [§2.5] вкладки ${tabs.map((x) => x.text).join(" · ")}`, tabs.map((x) => x.id).join() === "new,in_progress,waiting_check,overdue,reopened" &&
+        tabs[0].sel === "true" && (lang === "kk" ? /^Жаңа \d+$/.test(tabs[0].text) : /^Новые \d+$/.test(tabs[0].text)), JSON.stringify(tabs));
+  const key = `${tid}|roads`;
+  const row = await page.$(`.bc-inbox__row[data-key="${key}"]`);
+  const rowText = row ? (await row.textContent()).replace(/\s+/g, " ") : "";
+  check(`${tag}: [§2.5] строка: место · категория · уточнение · людей · срок — «${rowText.slice(0, 90)}»`, !!row &&
+        (lang === "kk" ? /Жолдар · Шұңқыр/.test(rowText) && /1 адам/.test(rowText) && /жұмыс күні қалды/.test(rowText)
+                       : /Дороги · Яма, разбитый асфальт/.test(rowText) && /1 человек/.test(rowText) && /Осталось \d+ рабоч/.test(rowText)), rowText);
+  await page.click(`.bc-inbox__row[data-key="${key}"]`);
+  await page.waitForSelector(".bc-inbox__item--open .bc-staff__fix", { timeout: 8000 });
+  const prim = await page.$$eval(".bc-inbox .bk-btn--primary", (n) => n.map((b) => b.textContent.trim()));
+  check(`${tag}: [защита п.4] раскрыта одна группа, одна главная кнопка «${prim[0]}»`, prim.length === 1, prim.join(" | "));
+  await page.click(".bc-inbox__map");
+  const opened = await page.evaluate(() => window.opened);
+  check(`${tag}: «Показать на карте» — та же цель`, opened && opened[1] === tid, JSON.stringify(opened));
+  const sizes = await page.evaluate(() => {
+    const bad = [];
+    document.querySelectorAll(".bc-inbox *").forEach((n) => {
+      const r = n.getBoundingClientRect();
+      if (!r.width || getComputedStyle(n).display === "none") return;
+      const own = [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim());
+      if (own && parseFloat(getComputedStyle(n).fontSize) < 14) bad.push("text " + n.textContent.trim().slice(0, 24));
+      if (/^(BUTTON|A|INPUT|SELECT)$/.test(n.tagName) && r.height < 44) bad.push("tap " + (n.name || n.textContent.trim().slice(0, 24)) + " " + Math.round(r.height));
+    });
+    return bad;
+  });
+  check(`${tag}: [UX] «Обращения» — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: нет горизонтальной прокрутки`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1 &&
+        [...document.querySelectorAll(".bc-inbox *")].every((n) => { const r = n.getBoundingClientRect(); return !r.width || r.right <= innerWidth + 1; })));
+  await shot(page, `${tag}-inbox`);
+  // Сотрудник сообщает об устранении прямо из списка → группа уходит во «Ждут проверки».
+  await page.fill(".bc-inbox__item--open [name=what_done]", lang === "kk" ? "Шұңқыр жамалды" : "Заделали яму");
+  await page.click(".bc-inbox__item--open .bc-staff__fix button[type=submit]");
+  await page.waitForFunction(() => !document.querySelector(".bc-inbox__item--open [name=what_done]"), null, { timeout: 15000 });
+  await page.click(".bc-inbox__tab[data-tab='waiting_check']");
+  const moved = await page.waitForSelector(`.bc-inbox__row[data-key="${key}"]`, { timeout: 8000 }).then(() => true, () => false);
+  check(`${tag}: [§2.5] после «Сообщить жителям» — во вкладке «Ждут проверки»`, moved);
+  // Пример (demo) — только просмотр, без формы (как карточка R07).
+  await page.click(".bc-inbox__tab[data-tab='new']");
+  const demoRow = await page.$(".bc-inbox__item .bk-tag--demo");
+  if (demoRow) {
+    await page.evaluate(() => document.querySelector(".bc-inbox__item .bk-tag--demo").closest(".bc-inbox__row").click());
+    await page.waitForSelector(".bc-inbox__item--open", { timeout: 5000 });
+    const ro = await page.evaluate(() => ({ form: !!document.querySelector(".bc-inbox__item--open .bc-staff"),
+      text: document.querySelector(".bc-inbox__item--open .bc-inbox__detail").textContent }));
+    check(`${tag}: пример «Пример» — без действий, с пояснением`, !ro.form && (lang === "kk" ? /үлгі/.test(ro.text) : /пример/.test(ro.text)), ro.text.slice(0, 80));
+  }
+  await page.evaluate((l) => BirgeComplaint.setLang(l === "kk" ? "ru" : "kk"), lang);
+  await page.evaluate(() => window.inboxCtl.setLang());
+  const other = (await page.textContent(".bc-inbox__title")).trim();
+  check(`${tag}: setLang перерисовывает экран («${other}»)`, lang === "kk" ? other === "Обращения" : other === "Өтініштер", other);
+  await page.evaluate(() => window.inboxCtl.destroy());
+  check(`${tag}: destroy снимает экран`, !(await page.$(".bc-inbox")));
+  check(`${tag}: нет ключей и технических слов`, (await visibleKeys(page)).length === 0);
+  check(`${tag}: нет ошибок консоли`, page.problems.length === 0, page.problems.join(" | "));
+  await page.context().close();
+}
+
 async function keyboard(browser, base, tag) {
   const page = await newPage(browser, base, 1366, 768, "ru");
   let reached = false;
@@ -1120,6 +1196,8 @@ async function keyboard(browser, base, tag) {
       await draftSurvives(browser, "http://127.0.0.1:8791", "ru", "375-ru-draft", [71.4700, 51.0900]);
       await centralScene(browser, "http://127.0.0.1:8791", "ru", 375, 812, "375-ru-scene", [71.4800, 51.1000]);
       await centralScene(browser, "http://127.0.0.1:8791", "kk", 1366, 768, "1366-kk-scene", [71.3800, 51.1100]);
+      await inboxScreen(browser, "http://127.0.0.1:8791", "ru", 1366, 768, "1366-ru-inbox", [71.4900, 51.0600]);
+      await inboxScreen(browser, "http://127.0.0.1:8791", "kk", 375, 812, "375-kk-inbox", [71.3700, 51.0650]);
     }
     if (!only) {
       await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 375, 812, "375-ru");

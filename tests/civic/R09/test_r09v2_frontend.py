@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[3]
 WEB = ROOT / "web" / "civic" / "feedback"
 JS = (WEB / "complaint.js").read_text(encoding="utf-8")
 STAFF_JS = (WEB / "complaint-staff.js").read_text(encoding="utf-8")
+LIST_JS = (WEB / "complaint-list.js").read_text(encoding="utf-8")
 
 
 def strings():
@@ -54,10 +55,10 @@ def test_ru_kk_same_keys_and_no_empty():
 
 def test_every_key_used_in_code_exists():
     data = strings()
-    used = set(re.findall(r'\bt\("([a-z0-9_.]+)"', JS + STAFF_JS))
+    used = set(re.findall(r'\bt\("([a-z0-9_.]+)"', JS + STAFF_JS + LIST_JS))
     # t("status." + x) и т. п. — составные ключи; каждый вариант проверяется ниже.
     dynamic_prefixes = {"status.", "complaint.example.", "cat.", "emergency.service.", "service.", "subtopic.",
-                        "mine.passport.next_default.", "mine.update."}
+                        "mine.passport.next_default.", "mine.update.", "inbox.tab."}
     missing = sorted(k for k in used if k not in data["ru"] and k not in dynamic_prefixes)
     assert not missing, missing
     # Ключи, собираемые в коде из частей: status.<статус>, complaint.example.<категория>
@@ -100,11 +101,12 @@ def test_no_technical_words_in_texts():
 
 
 def test_no_runtime_internet_and_no_innerhtml_with_data():
-    for name in ("complaint.js", "complaint-staff.js", "complaint.css", "kit-fallback.css", "complaint-strings.js"):
+    for name in ("complaint.js", "complaint-staff.js", "complaint-list.js", "complaint.css", "kit-fallback.css",
+                 "complaint-strings.js"):
         text = (WEB / name).read_text(encoding="utf-8")
         assert "http://" not in text.replace("http://www.w3.org/2000/svg", "") and "https://" not in text, name
     # Тексты пользователей вставляются только через textContent/узлы, не через innerHTML.
-    assignments = re.findall(r"innerHTML\s*=\s*([^;]+);", JS + STAFF_JS)
+    assignments = re.findall(r"innerHTML\s*=\s*([^;]+);", JS + STAFF_JS + LIST_JS)
     assert assignments and all(value == '""' for value in assignments)   # только очистка контейнера
 
 
@@ -256,3 +258,13 @@ def test_emergency_call_is_the_only_primary_button():
     """UX_SPEC §10: при срочном случае главная кнопка — звонок, «Далее/Отправить» становится второстепенной."""
     assert 'bk-btn bk-btn--primary bk-btn--block bc-emergency__call' in JS
     assert 'els.send.classList.toggle("bk-btn--primary", !emergencyNow())' in JS
+
+
+def test_inbox_screen_contract_for_r01():
+    """R01 INTEGRATION §11.2: window.BirgeComplaintList.mount(root, opts) -> {destroy, setLang}; вкладки R11 §2.5."""
+    assert "window.BirgeComplaintList = { mount: mount }" in LIST_JS
+    assert all(k in LIST_JS for k in ("destroy:", "setLang:", "opts.api.v2", "opts.openTarget", "opts.titleTag"))
+    assert 'var TABS = ["new", "in_progress", "waiting_check", "overdue", "reopened"];' in LIST_JS
+    assert "bk-btn--primary" not in LIST_JS            # главная кнопка — у карточки действий (одна на экран)
+    from ui.civic_feedback.v2 import lifecycle
+    assert list(lifecycle.INBOX_TABS) == ["new", "in_progress", "waiting_check", "overdue", "reopened"]
