@@ -176,17 +176,25 @@
     var c = category(catId);
     return (c && c.subtopics) || [];
   }
+  function hasKey(key) {
+    var strings = window.BirgeComplaintStrings || {};
+    return !!((window.BirgeI18n && typeof window.BirgeI18n.has === "function" && window.BirgeI18n.has(key)) ||
+              (strings.ru && strings.ru[key] !== undefined));
+  }
   function subtopicLabel(catId, subId) {
     var key = "subtopic." + subId;
-    if (window.BirgeI18n && typeof window.BirgeI18n.has === "function" && window.BirgeI18n.has(key)) return t(key);
+    if (hasKey(key)) return t(key);           // словарь R11 (kk вычитан), запасной — из /categories
     var list = subtopicsOf(catId);
     for (var i = 0; i < list.length; i++) if (list[i].id === subId) return list[i][currentLang()] || list[i].ru;
     return "";
   }
 
-  // С ноября по март «Снег и гололёд» первым в сетке, с апреля по октябрь — «Дороги» (месяц по Астане, UTC+5).
+  // С ноября по март «Снег и гололёд» первым в сетке, с апреля по октябрь — «Дороги». Если есть ui-kit R11 —
+  // его BirgeUI.seasonOrder (один порядок для мастера, фильтра карты и «Картины дня», UX_SPEC §10).
   function seasonalCategories(nowMs) {
-    var month = new Date((typeof nowMs === "number" ? nowMs : Date.now()) + 5 * 3600 * 1000).getUTCMonth() + 1;
+    var at = typeof nowMs === "number" ? nowMs : Date.now();
+    if (window.BirgeUI && typeof window.BirgeUI.seasonOrder === "function") return window.BirgeUI.seasonOrder(categories(), new Date(at));
+    var month = new Date(at + 5 * 3600 * 1000).getUTCMonth() + 1;   // месяц по Астане (UTC+5)
     var first = (month >= 11 || month <= 3) ? "snow_ice" : "roads";
     var list = categories();
     return list.filter(function (c) { return c.id === first; }).concat(list.filter(function (c) { return c.id !== first; }));
@@ -384,6 +392,16 @@
 
   function statusBadge(status) {
     return h("span", { "class": "bk-status", "data-status": status }, t("status." + status));
+  }
+
+  // Статус для жителя с учётом проверки ремонта (R11 IA_WAVE2 §2.2): «Служба сообщила об устранении»,
+  // «Проверено жителями», «Проблема осталась — снова в работе» — свои цвета ui-kit (.bk-status[data-status]).
+  function displayStatus(item) {
+    var state = (item.resolution || {}).state;
+    if (item.status === "fixed" && state === "verified") return "verified";
+    if (item.status === "fixed" && state === "reported") return "reported_fixed";
+    if (state === "reopened" && (item.status === "accepted" || item.status === "in_progress" || item.status === "new")) return "reopened";
+    return item.status;
   }
 
   // Шкала жителя: принято → в работе → исправлено (как record.resident_steps на сервере).
@@ -764,11 +782,13 @@
           // suggest. Если поставщик не знает suggest — старое правило «нет needs_review».
           var suggest = typeof data.suggest === "boolean" ? data.suggest : !data.needs_review;
           if (suggest) {
+            if (state.category !== data.category) state.subtopic = null;   // уточнение другой категории не подходит
             state.category = data.category; state.categorySource = "model"; state.gridOpen = false;
           } else if (!state.category) {
             state.gridOpen = true;
           }
           renderCategory();
+          renderEmergency();
           updateSendButton();
         });
       }, CLASSIFY_DEBOUNCE_MS);
@@ -781,12 +801,13 @@
       state.gridOpen = false;
       saveDraft();
       renderCategory();
+      renderEmergency();
       updateSendButton();
     }
 
     function pickSubtopic(id) {
-      // Повторное нажатие снимает уточнение (оно необязательно).
-      state.subtopic = state.subtopic === id ? null : id;
+      // Повторное нажатие или «Без уточнения» снимает уточнение (оно необязательно).
+      state.subtopic = id && state.subtopic !== id ? id : null;
       saveDraft();
       renderCategory();
       renderEmergency();
@@ -798,16 +819,23 @@
       if (!box) return;
       box.innerHTML = "";
       var found = emergency(state.category, state.subtopic, state.text);
+      if (els.send) els.send.classList.toggle("bk-btn--primary", !found);
       if (!found) return;
       state.emergencyShown = true;
-      box.appendChild(h("div", { "class": "bc-emergency", role: "alert" }, [
-        h("p", { "class": "bc-emergency__title" }, [icon("alert"), h("span", {}, t("complaint.emergency.title"))]),
+      // UX_SPEC §10: баннер .bk-banner--danger в потоке; ГЛАВНАЯ кнопка экрана — звонок, «Далее/Отправить» —
+      // второстепенная (одна главная кнопка). Кто ответит — мелко под номером. Баннер не прячется сам.
+      box.appendChild(h("div", { "class": "bk-banner bk-banner--danger bc-emergency", role: "alert" }, [
+        h("p", { "class": "bk-banner__title" }, [icon("alert"), h("span", {}, t("complaint.emergency.title"))]),
         h("p", { "class": "bc-emergency__text" }, t("complaint.emergency.text", { phone: found.phone })),
-        h("a", { "class": "bk-btn bk-btn--danger bk-btn--block bc-emergency__call", href: "tel:" + found.phone },
-          // Значка «телефон» в ui-kit пока нет (попросили R11) — кнопка с одной подписью.
-          h("span", {}, t("complaint.emergency.call", { phone: found.phone }) + " · " +
-            t("complaint.emergency.service." + found.phone))),
-        h("p", { "class": "bc-meta" }, t("complaint.emergency.still"))]));
+        // Значка «телефон» в ui-kit пока нет (попросили R11) — кнопка с одной подписью.
+        h("a", { "class": "bk-btn bk-btn--primary bk-btn--block bc-emergency__call", href: "tel:" + found.phone },
+          h("span", {}, t("complaint.emergency.call", { phone: found.phone }))),
+        h("p", { "class": "bk-banner__note" }, t("emergency.service." + found.phone)),
+        h("p", { "class": "bk-banner__note" }, t("complaint.emergency.still_send"))]));
+    }
+
+    function emergencyNow() {
+      return !!emergency(state.category, state.subtopic, state.text);
     }
 
     // ---------------------------------------------------------------- фото жителя (волна 1, п. 5)
@@ -821,7 +849,7 @@
         return chain.then(function () {
           return shrinkPhoto(file).then(function (photo) {
             if (state === owner && state.photos.length < PHOTO_MAX) state.photos.push(photo);
-          }, function () { toast(t("complaint.photo.bad")); });
+          }, function () { toast(t("complaint.photo.bad_type")); });
         });
       }, Promise.resolve()).then(function () {
         if (state !== owner) return;
@@ -857,7 +885,7 @@
           [icon("plus"), h("span", {}, state.photos.length ? t("complaint.photo.count", { n: state.photos.length })
                                                              : t("complaint.photo.add"))]));
       }
-      box.appendChild(h("p", { "class": "bc-meta" }, t("complaint.photo.hint")));
+      box.appendChild(h("p", { "class": "bc-meta" }, t("complaint.photo.limit") + " · " + t("complaint.photo.private")));
     }
 
     function renderCategory() {
@@ -879,7 +907,7 @@
         // Уточнение — одним нажатием, по желанию (волна 1, п. 2). Модель уточнение не предсказывает.
         var subs = subtopicsOf(state.category);
         if (subs.length) {
-          box.appendChild(h("p", { "class": "bc-label", id: "bc-sub-title" }, t("complaint.step3.subtopic_label")));
+          box.appendChild(h("p", { "class": "bc-label", id: "bc-sub-title" }, t("complaint.subtopic.title")));
           var chips = h("div", { "class": "bk-chips bk-chips--wrap bc-subtopics", role: "group", "aria-labelledby": "bc-sub-title" });
           subs.forEach(function (sub) {
             chips.appendChild(h("button", { "class": "bk-chip bc-subtopic", type: "button", "data-subtopic": sub.id,
@@ -887,6 +915,11 @@
                                             onclick: function () { pickSubtopic(sub.id); } },
               h("span", {}, subtopicLabel(state.category, sub.id))));
           });
+          // Последний чип — «Без уточнения» (UX_SPEC §10): уточнение необязательно.
+          chips.appendChild(h("button", { "class": "bk-chip bc-subtopic", type: "button", "data-subtopic": "",
+                                          "aria-pressed": state.subtopic ? "false" : "true",
+                                          onclick: function () { pickSubtopic(null); } },
+            h("span", {}, t("complaint.subtopic.none"))));
           box.appendChild(chips);
         }
         return;
@@ -916,6 +949,8 @@
       if (!els.send) return;
       var ready = state.text.trim().length >= 3 && !!state.category && !state.sending && !state.checking && !state.photoBusy;
       els.send.disabled = !ready;
+      // Срочный случай: главная кнопка — звонок, «Далее/Отправить» второстепенная (UX_SPEC §10, одна главная).
+      els.send.classList.toggle("bk-btn--primary", !emergencyNow());
       // Шаг ③ — «Далее» (дальше «Я тоже» или проверка перед отправкой); проверка — «Отправить».
       var label = state.uploading ? t("complaint.photo.uploading", state.uploading)
         : (state.sending ? t("complaint.step3.sending") : (state.reviewing ? t("complaint.step3.send") : t("complaint.wizard.next")));
@@ -1046,7 +1081,7 @@
                                      onclick: function (e) { metoo(match, e.currentTarget); } },
         [icon("users"), h("span", {}, t("complaint.step4.metoo"))]));
       // «Я тоже» = подписка на общий случай (волна 2, п. 3): одно обновление службы видят все.
-      body.appendChild(h("p", { "class": "bc-meta bc-metoo-caption" }, t("complaint.step4.metoo_caption")));
+      body.appendChild(h("p", { "class": "bc-meta bc-metoo-caption" }, t("broadcast.metoo_hint")));
       body.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-different", type: "button", onclick: openReview },
         t("complaint.step4.different")));
     }
@@ -1257,7 +1292,7 @@
     function renderDone(body) {
       var result = state.result, complaint = result.complaint;
       if (result.kind === "queued") {
-        body.appendChild(h("p", { "class": "bc-lead" }, t("complaint.queue.text")));
+        body.appendChild(h("p", { "class": "bc-lead" }, t("complaint.queue.offline")));
         body.appendChild(h("p", { "class": "bc-place" }, [icon("pin"), h("span", {}, result.entry.label)]));
         body.appendChild(h("button", { "class": "bk-btn bk-btn--primary bk-btn--block", type: "button",
                                        onclick: function () { flushOutbox(); } },
@@ -1292,9 +1327,10 @@
     }
 
     // ---------------------------------------------------------------- «Мои обращения»
-    function loadMine(focusCode) {
-      state.mine = null; state.mineError = false; state.changes = null;
+    function loadMine(focusCode, focusEvent) {
+      state.mine = null; state.mineError = false; state.changes = null; state.changesAll = false;
       if (focusCode) state.focusCode = focusCode;
+      if (focusEvent) { state.focusEvent = focusEvent; state.changesAll = true; }
       render();
       var owner = state;
       var seen = storageGet("localStorage", SEEN_KEY);
@@ -1308,6 +1344,7 @@
           state.changes = changes && changes.ok ? changes.data : null;
           // «Что изменилось» — с прошлого визита; первый визит только запоминает момент.
           storageSet("localStorage", SEEN_KEY, new Date().toISOString());
+          announceChanges(0);   // житель увидел изменения — значок у «Мои обращения» гаснет
           render();
           focusCard();
         });
@@ -1316,6 +1353,10 @@
     // Карточка из ссылки/уведомления остаётся выделенной и раскрытой и после перерисовки (язык, ответ «Да/Осталось»);
     // прокрутка к ней — один раз.
     function focusCard() {
+      if (state && state.focusEvent) {
+        var row = els.panel.querySelector('.bc-changes__item[data-event="' + state.focusEvent.replace(/"/g, "") + '"]');
+        if (row) row.classList.add("bc-changes__item--focus");
+      }
       if (!state || !state.focusCode) return;
       var code = state.focusCode;
       state.focusCode = null;
@@ -1330,22 +1371,34 @@
 
     var CHANGE_TEXT = { reopened: "mine.changes.reopened", verified: "mine.changes.verified", note: "mine.changes.note",
                         passport: "mine.changes.passport" };
+    var CHANGES_SHOWN = 3;
 
+    // «Что изменилось» (волна 2, п. 10; R11 IA_WAVE2 §2.1): только если есть новое, ≤ 3 строки, остальное — «Ещё N».
     function renderChanges(body) {
       var data = state.changes;
       if (!data || !data.items || !data.items.length) return;
       var box = h("section", { "class": "bk-card bc-changes", "aria-labelledby": "bc-changes-title" }, [
-        h("h3", { "class": "bc-changes__title", id: "bc-changes-title" }, t("mine.changes.title")),
-        h("p", { "class": "bc-meta" }, t("mine.changes.summary", { verified: data.summary.verified, waiting: data.summary.waiting }))]);
+        h("h3", { "class": "bc-changes__title", id: "bc-changes-title" }, t("mine.changes.title"))]);
       var list = h("ul", { "class": "bc-changes__list" });
-      data.items.slice(0, 3).forEach(function (item) {
+      var shown = state.changesAll ? data.items : data.items.slice(0, CHANGES_SHOWN);
+      shown.forEach(function (item) {
         var what = item.kind === "status" ? t("mine.changes.status", { status: t("status." + item.status) }) : t(CHANGE_TEXT[item.kind]);
-        list.appendChild(h("li", {}, h("button", { "class": "bc-changes__item", type: "button",
-                                                   onclick: function () { state.focusCode = item.code; focusCard(); } },
+        var row = h("button", { "class": "bc-changes__item" + (state.focusEvent === item.id ? " bc-changes__item--focus" : ""),
+                                type: "button", "data-event": item.id || "",
+                                onclick: function () { state.focusCode = item.code; focusCard(); } },
           [h("strong", {}, targetLabel(item.target)), h("span", {}, " — " + what + (item.text ? ": " + item.text : "")),
-           h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))])));
+           h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
+        list.appendChild(h("li", {}, row));
       });
       box.appendChild(list);
+      if (!state.changesAll && data.items.length > CHANGES_SHOWN) {
+        box.appendChild(h("button", { "class": "bk-btn bk-btn--ghost bc-changes__more", type: "button",
+                                      onclick: function () { state.changesAll = true; render(); } },
+          t("mine.changes.more", { n: data.items.length - CHANGES_SHOWN })));
+      }
+      if (data.summary && data.summary.waiting > 0) {
+        box.appendChild(h("p", { "class": "bc-meta" }, t("mine.waiting", { n: data.summary.waiting })));
+      }
       body.appendChild(box);
     }
 
@@ -1371,8 +1424,19 @@
       request("POST", "/complaints/" + encodeURIComponent(item.id) + "/verify", { answer: answer }).then(function (res) {
         if (state !== owner) return;
         if (!res.ok) { if (button) button.disabled = false; toast(t("complaint.error.send"), function () { verify(item, answer); }); return; }
-        toast(t({ yes: "mine.verify.thanks_yes", no: "mine.verify.thanks_no", cant: "mine.verify.thanks_cant" }[answer]));
+        toast(t(answer === "no" ? "verify.reopened_toast" : "verify.thanks"));
         if (answer !== "cant" && res.data.result === "recorded") announce(answer === "yes" ? "verified" : "reopened", res.data.complaint);
+        loadMine();
+      });
+    }
+
+    function unsubscribe(item, button) {
+      if (button) button.disabled = true;
+      var owner = state;
+      request("POST", "/complaints/" + encodeURIComponent(item.id) + "/unsubscribe", {}).then(function (res) {
+        if (state !== owner) return;
+        if (!res.ok) { if (button) button.disabled = false; toast(t("complaint.error.send"), function () { unsubscribe(item); }); return; }
+        toast(t("mine.unsubscribed"));
         loadMine();
       });
     }
@@ -1386,18 +1450,20 @@
       return h("li", { "class": "bc-thumb" }, img);
     }
 
-    // Проверка ремонта жителями (волна 2, п. 1): служба сообщила — автор и все «Я тоже» отвечают.
-    function verifyBlock(item, primary) {
+    // «Ждут вашей проверки» (волна 2, п. 1; R11 §2.1): служба сообщила — автор и все «Я тоже» отвечают.
+    // Главная кнопка экрана — «Да, исправлено» в первом блоке; если проверять нечего — главной кнопки нет.
+    function verifyCard(item, primary) {
       var resolution = item.resolution || {};
       var after = resolution.photos_after || [];
-      var box = h("div", { "class": "bc-verify" }, [
-        h("p", { "class": "bc-verify__reported" }, [icon("check"), h("span", {}, t("mine.verify.reported"))]),
-        resolution.what_done ? h("p", {}, t("mine.verify.what", { text: resolution.what_done })) : null,
-        after.length ? h("ul", { "class": "bc-thumbs bc-thumbs--small", "aria-label": t("mine.photos.after") },
+      var box = h("li", { "class": "bc-verify", "data-code": item.code || "" }, [
+        h("p", { "class": "bc-verify__place" }, [icon("pin"), h("strong", {}, targetLabel(item.target))]),
+        h("p", { "class": "bc-verify__reported" }, t("verify.reported", { date: formatDate(resolution.reported_at || item.updated_at) })),
+        resolution.what_done ? h("p", {}, t("verify.what_done", { text: resolution.what_done })) : null,
+        after.length ? h("ul", { "class": "bc-thumbs bc-thumbs--small", "aria-label": t("verify.after_photo") },
           after.map(function (id) { return photoThumb(item.id, id); })) : null,
-        h("p", { "class": "bc-verify__question" }, t("mine.verify.question"))]);
+        h("p", { "class": "bc-verify__question" }, t("verify.question"))]);
       var buttons = h("div", { "class": "bc-verify__buttons" });
-      [["yes", "mine.verify.yes", primary ? " bk-btn--primary" : ""], ["no", "mine.verify.no", ""], ["cant", "mine.verify.cant", " bk-btn--ghost"]]
+      [["yes", "verify.yes", primary ? " bk-btn--primary" : ""], ["no", "verify.no", ""], ["cant", "verify.cant", " bk-btn--ghost"]]
         .forEach(function (b) {
           buttons.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-verify__" + b[0] + b[2], type: "button",
                                             onclick: function (e) { verify(item, b[0], e.currentTarget); } }, t(b[1])));
@@ -1406,45 +1472,65 @@
       return box;
     }
 
-    function stateLine(item) {
-      var state_ = (item.resolution || {}).state;
-      if (item.status === "fixed" && state_ === "verified") return h("p", { "class": "bc-state bc-state--verified" }, [icon("check"), h("span", {}, t("mine.state.verified"))]);
-      if (item.status === "fixed" && !item.can_verify) return h("p", { "class": "bc-state" }, t("mine.state.reported"));
-      if (state_ === "reopened" && item.status !== "fixed") return h("p", { "class": "bc-state bc-state--reopened" }, t("mine.state.reopened"));
-      return null;
+    function renderWaitCheck(body) {
+      var waiting = state.mine.filter(function (item) { return item.can_verify; });
+      if (!waiting.length) return;
+      body.appendChild(h("section", { "class": "bk-card bc-wait", "aria-labelledby": "bc-wait-title" }, [
+        h("h3", { "class": "bc-changes__title", id: "bc-wait-title" }, t("verify.wait_title")),
+        h("ul", { "class": "bc-wait__list" }, waiting.map(function (item, index) { return verifyCard(item, index === 0); }))]));
     }
 
-    // Название службы на языке жителя: казахское из паспорта (R09/R08), иначе как есть (текст сотрудника).
+    // Название службы на языке жителя: ключ словаря service.<id> (R08 ids, kk вычитан R11); если акимат
+    // переименовал службу — его название как есть.
     function serviceName(p) {
+      if (p.assignee_id && !p.assignee_custom && hasKey("service." + p.assignee_id)) return t("service." + p.assignee_id);
       return currentLang() === "kk" && p.assignee_kk ? p.assignee_kk : p.assignee;
     }
 
-    // «Передано: служба» (волна 1, п. 7) — на карточке, пока служба работает; остальное — в «Подробнее».
-    function transferredLine(item) {
-      var p = item.passport || {};
-      if (!p.assignee || (item.status !== "accepted" && item.status !== "in_progress")) return null;
-      return h("p", { "class": "bc-meta bc-assignee" }, t("mine.transferred", { name: serviceName(p) }));
+    // Срок в рабочих днях (волна 1, п. 6; UX_SPEC §10): цвет + слово, не только цвет.
+    function deadlineNode(d) {
+      if (!d || d.state === "answered") return null;
+      if (d.state === "overdue") return h("span", { "class": "bc-deadline bc-deadline--danger" }, t("deadline.overdue", { n: d.overdue_working_days || 1 }));
+      if (d.state === "today") return h("span", { "class": "bc-deadline bc-deadline--warn" }, t("deadline.today"));
+      var left = d.working_days_left || 0;
+      return h("span", { "class": "bc-deadline" + (left <= 1 ? " bc-deadline--warn" : "") }, t("deadline.left", { n: left }));
     }
 
-    // «Паспорт решения» (волна 2, п. 2) и обновления — свёрнуто: карточка не растёт (защита от перегруза, п. 3).
+    // Строка паспорта на карточке (R11 §2.1): «Передано: служба · Осталось N рабочих дней».
+    function passportLine(item) {
+      var p = item.passport || {};
+      if (item.status === "rejected" || (!p.assignee && !p.assignee_id)) return null;
+      var due = item.status === "new" ? deadlineNode(p.deadline) : null;
+      return h("p", { "class": "bc-meta bc-assignee" }, [h("span", {}, t("service.assigned", { service: serviceName(p) })),
+        due ? " · " : null, due]);
+    }
+
+    // Задержка — баннер-предупреждение в карточке (R11 §2.2): причина · временная мера · следующее обновление.
+    function delayBanner(item) {
+      var delay = (item.passport || {}).delay;
+      if (!delay || (item.status !== "accepted" && item.status !== "in_progress" && item.status !== "new")) return null;
+      var parts = [];
+      if (delay.reason) parts.push(t("passport.delay_reason", { text: delay.reason }));
+      if (delay.temp_measure) parts.push(t("passport.temp_measure", { text: delay.temp_measure }));
+      if (delay.next_update_at) parts.push(t("passport.next_update", { date: formatDate(delay.next_update_at + "T12:00:00+05:00") }));
+      if (!parts.length) return null;
+      return h("p", { "class": "bk-banner bk-banner--warn bc-delay" }, parts.join(" · "));
+    }
+
+    // «Подробнее»: паспорт целиком и история (свёрнуто — карточка не растёт, защита от перегруза п. 3).
     function detailsBlock(item, open) {
       var p = item.passport || {};
-      var lines = [];
-      if (p.assignee) lines.push(t("mine.passport.assignee", { name: serviceName(p) }));
-      lines.push(t("mine.passport.next", { text: p.next_step || t("mine.passport.next_default." + item.status) }));
-      if (p.deadline && p.deadline.state === "answered") lines.push(t("mine.passport.answered"));
-      else if (p.response_due) lines.push(t("mine.passport.response", { date: formatDate(p.response_due) }));
-      lines.push(p.fix_eta ? t("mine.passport.fix_eta", { date: formatDate(p.fix_eta + "T12:00:00+05:00") }) : t("mine.passport.fix_unknown"));
-      if (p.delay) {
-        if (p.delay.reason) lines.push(t("mine.passport.delay", { text: p.delay.reason }));
-        if (p.delay.temp_measure) lines.push(t("mine.passport.temp", { text: p.delay.temp_measure }));
-        if (p.delay.next_update_at) lines.push(t("mine.passport.next_update", { date: formatDate(p.delay.next_update_at + "T12:00:00+05:00") }));
+      var lines = [t("passport.next", { text: p.next_step || t("mine.passport.next_default." + item.status) })];
+      if (item.status === "new" && p.response_due) lines.push(t("passport.answer_due", { date: formatDate(p.response_due) }));
+      if (item.status !== "rejected") {
+        lines.push(p.fix_eta ? t("passport.fix_eta", { date: formatDate(p.fix_eta + "T12:00:00+05:00") }) : t("passport.fix_unknown"));
       }
-      var more = h("details", { "class": "bc-more", open: open || null }, [h("summary", {}, t("mine.details")),
+      var more = h("details", { "class": "bc-more", open: open || null }, [h("summary", {}, t("common.action.more")),
+        h("p", { "class": "bc-label" }, t("passport.title")),
         h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); }))]);
       var updates = (item.updates || []).slice(-5).reverse();
       if (updates.length) {
-        more.appendChild(h("p", { "class": "bc-label" }, t("mine.updates.title")));
+        more.appendChild(h("p", { "class": "bc-label" }, t("passport.history")));
         more.appendChild(h("ul", { "class": "bc-updates" }, updates.map(function (u) {
           return h("li", {}, [h("span", { "class": "bc-meta" }, formatDate(u.at) + " · "), h("span", {}, t("mine.update." + u.kind) + (u.text ? ": " + u.text : ""))]);
         })));
@@ -1453,13 +1539,30 @@
       if (own.length) {
         more.appendChild(h("p", { "class": "bc-label" }, t("mine.photos.title")));
         var ul = h("ul", { "class": "bc-thumbs bc-thumbs--small" });
-        more.addEventListener("toggle", function once() {
+        var load = function () {
           if (!more.open || ul.childNodes.length) return;
           own.forEach(function (ph) { ul.appendChild(photoThumb(item.id, ph.id)); });
-        });
+        };
+        more.addEventListener("toggle", load);
         more.appendChild(ul);
+        if (open) setTimeout(load, 0);
       }
       return more;
+    }
+
+    // «Подписки (N)» — свёрнуто внизу (R11 §2.1): «Я тоже» = подписка; «Отписаться» — голос остаётся.
+    function renderSubscriptions(body) {
+      var subs = state.mine.filter(function (item) { return item.relation === "metoo"; });
+      if (!subs.length) return;
+      var more = h("details", { "class": "bc-more bc-subs" }, [
+        h("summary", {}, t("mine.subscriptions") + " (" + subs.length + ")"),
+        h("ul", { "class": "bc-subs__list" }, subs.map(function (item) {
+          return h("li", { "class": "bc-subs__item" }, [
+            h("span", {}, [h("strong", {}, categoryLabel(item.category)), " · ", targetLabel(item.target)]),
+            h("button", { "class": "bk-btn bk-btn--ghost bc-unsubscribe", type: "button",
+                          onclick: function (e) { unsubscribe(item, e.currentTarget); } }, t("mine.unsubscribe"))]);
+        }))]);
+      body.appendChild(more);
     }
 
     function renderMine(body) {
@@ -1487,35 +1590,30 @@
             [icon("plus"), h("span", {}, t("complaint.start.button"))])]));
         return;
       }
+      renderWaitCheck(body);
       var list = h("ul", { "class": "bc-mine" });
-      var primaryUsed = false;   // одна главная кнопка на экран: «Да, исправлено» — только у первой карточки
       state.mine.forEach(function (item) {
         var c = category(item.category);
-        var overdue = item.passport && item.passport.deadline ? item.passport.deadline.state === "overdue"
-          : (item.status === "new" && item.due_at && new Date(item.due_at).getTime() < Date.now());
         var title = categoryLabel(item.category) + (item.subtopic ? " · " + subtopicLabel(item.category, item.subtopic) : "");
-        var primary = item.can_verify && !primaryUsed;
-        if (primary) primaryUsed = true;
         var focused = !!item.code && state.focused === item.code;
         list.appendChild(h("li", { "class": "bk-card bc-mine__card" + (focused ? " bc-mine__card--focus" : ""),
                                    "data-code": item.code || "", "data-id": item.id }, [
           h("div", { "class": "bc-mine__head" }, [
             h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)]),
-            statusBadge(item.status)]),
+            statusBadge(displayStatus(item))]),
           h("p", { "class": "bc-meta" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
             item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null]),
           item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
           item.relation === "metoo" ? h("p", { "class": "bc-meta" }, t("mine.metoo_badge")) : null,
           // Все люди, сообщившие о том же на этом месте (как на шаге «Я тоже»), а не только по этой жалобе.
           h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || reportersOf(item) || 1 })),
-          overdue ? h("p", { "class": "bc-overdue" }, [icon("clock"), h("span", {}, t("mine.overdue"))]) : null,
-          stateLine(item),
-          transferredLine(item),
-          item.can_verify ? verifyBlock(item, primary) : null,
+          passportLine(item),
+          delayBanner(item),
           stepsBar(item),
           detailsBlock(item, focused)]));
       });
       body.appendChild(list);
+      renderSubscriptions(body);
     }
 
     // ---------------------------------------------------------------- каркас панели
@@ -1594,12 +1692,12 @@
       focusTitle();
     }
 
-    function openMine(focusCode) {
+    function openMine(focusCode, focusEvent) {
       if (!state) state = freshState();
       if (state.step === 5) { var keep = freshState(); keep.mine = null; state = keep; }
       state.view = "mine";
       if (map.clear) map.clear();
-      loadMine(typeof focusCode === "string" ? focusCode : null);
+      loadMine(typeof focusCode === "string" ? focusCode : null, typeof focusEvent === "string" ? focusEvent : null);
       els.panel.hidden = false;
       els.fab.hidden = true;
       document.documentElement.classList.add("bc-open");
@@ -1633,18 +1731,42 @@
     if (mql && mql.addEventListener) mql.addEventListener("change", render);
     relabel();
 
-    // Уведомление/ссылка открывает конкретное обращение (волна 2, мелочи): #complaint=B-0001 -> «Мои обращения»,
-    // карточка раскрыта. Язык не трогаем — он остаётся выбранным жителем (защита: «не переключать язык по ссылке»).
-    function complaintFromHash() {
-      var m = /(?:^#|&)complaint=([A-Za-z0-9-]{3,40})(?:&|$)/.exec(window.location.hash || "");
-      return m ? m[1] : null;
+    // Уведомление/ссылка открывает конкретное изменение (волна 2, мелочи; R11 IA_WAVE2 §2.1):
+    //   #mine/event=B-0001.verified.20261011T2303 — «Мои обращения», строка изменения подсвечена, карточка раскрыта;
+    //   #complaint=B-0001 — карточка обращения; #mine — экран «Мои обращения».
+    // Язык не трогаем — он остаётся выбранным жителем (защита: «не переключать язык по ссылке»).
+    function linkFromHash() {
+      var hash = window.location.hash || "";
+      var ev = /^#mine\/event=([A-Za-z0-9.-]{3,80})$/.exec(hash);
+      if (ev) return { code: ev[1].split(".")[0], event: ev[1] };
+      var m = /(?:^#|&)complaint=([A-Za-z0-9-]{3,40})(?:&|$)/.exec(hash);
+      if (m) return { code: m[1] };
+      return hash === "#mine" ? {} : null;
     }
     function onHash() {
-      var code = complaintFromHash();
-      if (code) openMine(code);
+      var link = linkFromHash();
+      if (link) openMine(link.code || null, link.event || null);
     }
     window.addEventListener("hashchange", onHash);
-    if (complaintFromHash()) setTimeout(onHash, 0);
+    if (linkFromHash()) setTimeout(onHash, 0);
+
+    // Значок у пункта меню «Мои обращения» (R11 IA_WAVE2 §1: единственный бейдж — число новых изменений).
+    // Оболочка R01 слушает window "birge:complaint-changes" {n} или спрашивает ui.changesCount().
+    var lastChanges = 0;
+    function announceChanges(n) {
+      lastChanges = n;
+      try { window.dispatchEvent(new CustomEvent("birge:complaint-changes", { detail: { n: n } })); } catch (e) { /* старый браузер */ }
+    }
+    function changesCount() {
+      var seen = storageGet("localStorage", SEEN_KEY);
+      if (!seen) return Promise.resolve(0);           // первый визит ещё не было — сравнивать не с чем
+      return request("GET", "/complaints/changes?since=" + encodeURIComponent(seen)).then(function (res) {
+        var n = res.ok && res.data && res.data.items ? res.data.items.length : lastChanges;
+        if (n !== lastChanges) announceChanges(n);
+        return n;
+      });
+    }
+    setTimeout(function () { changesCount(); }, 0);
 
     // Очередь без сети: при открытии страницы и когда сеть вернулась.
     function onOnline() { scheduleFlush(0); flushOutbox(); }
@@ -1654,6 +1776,7 @@
     return {
       open: open, openMine: openMine, close: close, relabel: relabel,
       openComplaint: function (code) { openMine(code); },
+      changesCount: changesCount,
       flushOutbox: flushOutbox,
       state: function () { return state; },
       destroy: function () {
@@ -1681,7 +1804,10 @@
   window.BirgeComplaint = {
     mount: mount, maplibreAdapter: maplibreAdapter, setLang: setLang, lang: currentLang,
     t: t, pluralForm: pluralForm, residentSteps: residentSteps, formatDate: formatDate,
-    emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round14-wave2"
+    emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round14-wave2",
+    // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
+    displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
+    targetLabel: targetLabel, statusBadge: statusBadge
   };
   // Помощники фото для компонента сотрудника (complaint-staff.js): то же уменьшение и загрузка частями.
   window.BirgeComplaintPhotos = {

@@ -346,8 +346,8 @@ async function newComplaintAndMine(browser, base, lang, width, height, tag, poin
     lead: (document.querySelector(".bc-lead") || {}).textContent || "",
     outbox: JSON.parse(localStorage.getItem("birge.complaint.outbox") || "[]") }));
   check(`${tag}: [W1-10] нет сети — «${queued.title}», в очереди 1 обращение с текстом`,
-        (lang === "kk" ? /телефонда сақталды/.test(queued.title) && /автоматты/.test(queued.lead)
-                       : /сохранено на телефоне/.test(queued.title) && /автоматически/.test(queued.lead)) &&
+        (lang === "kk" ? /телефонда сақталды/.test(queued.title) && /өзі жіберіледі/.test(queued.lead)
+                       : /сохранено на телефоне/.test(queued.title) && /отправится само/.test(queued.lead)) &&
         queued.outbox.length === 1 && queued.outbox[0].body.text.length > 5, JSON.stringify({ t: queued.title, n: queued.outbox.length }));
   await shot(page, `${tag}-offline`);
   await page.unroute("**/api/civic/v2/complaints");
@@ -784,9 +784,10 @@ async function waveWizard(browser, base, lang, width, height, tag, point) {
   await page.fill("#bc-text", lang === "kk" ? "Подъезде газ иісі шығып тұр" : "В подъезде сильно пахнет газом");
   await page.waitForSelector(".bc-emergency", { timeout: 3000 });
   const banner = await page.$eval(".bc-emergency", (b) => { const a = b.querySelector("a"); const r = a.getBoundingClientRect();
-    return { role: b.getAttribute("role"), href: a.getAttribute("href"), h: Math.round(r.height), text: b.textContent }; });
+    return { role: b.getAttribute("role"), href: a.getAttribute("href"), h: Math.round(r.height), text: b.textContent,
+             danger: b.classList.contains("bk-banner--danger") }; });
   check(`${tag}: [W1-3] баннер «Это может быть опасно. Звоните 104 сейчас», кнопка tel:104 ≥ 44 px`,
-        banner.role === "alert" && banner.href === "tel:104" && banner.h >= 44 &&
+        banner.role === "alert" && banner.href === "tel:104" && banner.h >= 44 && banner.danger &&
         (lang === "kk" ? /104/.test(banner.text) : /опасно/.test(banner.text) && /Звоните 104 сейчас/.test(banner.text)), JSON.stringify(banner));
   // Категория «Запахи и воздух» и уточнение «Запах газа» одним нажатием (волна 1, п. 2).
   await page.waitForTimeout(1200);   // подсказка модели по новому тексту успела прийти
@@ -794,9 +795,13 @@ async function waveWizard(browser, base, lang, width, height, tag, point) {
   await page.click(".bk-catgrid > button[data-category='smell_air']");
   await page.waitForSelector(".bc-subtopic[data-subtopic='gas']", { timeout: 3000 });
   const subs = await page.$$eval(".bc-subtopic", (n) => n.map((x) => x.dataset.subtopic));
+  const noneFirst = await page.$eval(".bc-subtopic[data-subtopic='']", (b) => ({ pressed: b.getAttribute("aria-pressed"), text: b.textContent.trim() }));
   await page.click(".bc-subtopic[data-subtopic='gas']");
   const pressed = await page.$eval(".bc-subtopic[data-subtopic='gas']", (b) => b.getAttribute("aria-pressed"));
-  check(`${tag}: [W1-2] уточнения категории чипами, выбор одним нажатием`, subs.length === 4 && pressed === "true", subs.join());
+  const noneAfter = await page.$eval(".bc-subtopic[data-subtopic='']", (b) => b.getAttribute("aria-pressed"));
+  check(`${tag}: [W1-2] уточнения чипами (4 + «${noneFirst.text}» последним), выбор одним нажатием`,
+        subs.length === 5 && subs[4] === "" && noneFirst.pressed === "true" && pressed === "true" && noneAfter === "false" &&
+        (lang === "kk" ? noneFirst.text === "Нақтылаусыз" : noneFirst.text === "Без уточнения"), subs.join());
   // Фото (волна 1, п. 5): до 3, уменьшается до 1600 px, EXIF/GPS не уходит; подпись «увидит только служба».
   const jpeg = await exifJpeg(page, 2400, 1800);
   await page.setInputFiles("#bc-photo-input", { name: "IMG_0001.jpg", mimeType: "image/jpeg", buffer: jpeg });
@@ -804,11 +809,12 @@ async function waveWizard(browser, base, lang, width, height, tag, point) {
   const photoUi = await page.evaluate(() => ({ thumbs: document.querySelectorAll(".bc-photos .bc-thumb").length,
     add: (document.querySelector(".bc-photo-add") || {}).textContent || "", hint: [...document.querySelectorAll(".bc-photos .bc-meta")].map((n) => n.textContent).join() }));
   check(`${tag}: [W1-5] фото добавлено: миниатюра, счётчик «1 из 3», «увидит только служба»`,
-        photoUi.thumbs === 1 && /1/.test(photoUi.add) && (lang === "kk" ? /қызмет/.test(photoUi.hint) : /только служба/.test(photoUi.hint)), JSON.stringify(photoUi));
+        photoUi.thumbs === 1 && /1/.test(photoUi.add) && (lang === "kk" ? /қызметкер/.test(photoUi.hint) : /только сотрудники/.test(photoUi.hint)), JSON.stringify(photoUi));
   const sizes = await uxSizes(page);
   check(`${tag}: [UX] шаг 3 с баннером, уточнением и фото — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
-  const primaries = await page.$$eval(".bc-panel .bk-btn--primary", (n) => n.length);
-  check(`${tag}: [защита п.4] на шаге 3 одна главная кнопка (звонок — красная, не главная)`, primaries === 1, String(primaries));
+  const primaries = await page.$$eval(".bc-panel .bk-btn--primary", (n) => n.map((b) => b.className));
+  check(`${tag}: [защита п.4, UX_SPEC §10] одна главная кнопка — звонок 104, «Далее» второстепенная`,
+        primaries.length === 1 && /bc-emergency__call/.test(primaries[0]), primaries.join(" | "));
   await shot(page, `${tag}-3-emergency-photo`);
   await page.click(".bc-send");
   const similarFirst = await page.waitForSelector(".bc-panel[data-review='1'], .bc-different", { timeout: 10000 })
@@ -903,11 +909,16 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   const pageA = await newPage(browser, base, width, height, lang, { device: devA });
   await pageA.evaluate(() => window.standUi.openMine());
   await pageA.waitForSelector(".bc-mine__card");
-  const caption = await pageA.$$eval(".bc-changes", (n) => n.length);
-  check(`${tag}: первый визит — без блока «Что изменилось»`, caption === 0);
+  const first = await pageA.evaluate(() => ({ changes: document.querySelectorAll(".bc-changes").length,
+    line: (document.querySelector(".bc-mine__card .bc-assignee") || {}).textContent || "",
+    primaries: document.querySelectorAll(".bc-panel .bk-btn--primary").length }));
+  check(`${tag}: первый визит — без «Что изменилось»; на карточке «${first.line}»; главной кнопки нет`,
+        first.changes === 0 && first.primaries === 0 &&
+        (lang === "kk" ? /^Жауапты: Жарықтандыру қызметі · \d+ жұмыс күні қалды$/.test(first.line)
+                       : /^Передано: Служба освещения · Осталось \d+ рабоч(ий день|их дня|их дней)$/.test(first.line)), JSON.stringify(first));
   await pageA.keyboard.press("Escape");
 
-  // Сотрудник: компонент complaint-staff.js в карточке (как встроят R07/R01).
+  // Сотрудник: компонент complaint-staff.js в карточке (как встроят R07 и «Обращения» акимата).
   const staff = await newPage(browser, base, width, height, lang, { staff: true });
   await staff.evaluate((cid) => {
     const box = document.createElement("div");
@@ -917,26 +928,47 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
     window.staffCtl = BirgeComplaintStaff.mount(box, { complaintId: cid, csrf: "stand" });
   }, id);
   await staff.waitForSelector(".bc-staff__summary", { timeout: 8000 });
+  const willSee = (await staff.textContent(".bc-staff__fix .bc-meta")).trim();
+  const staffPrim = await staff.$$eval("#staff-box .bk-btn--primary", (n) => n.length);
+  check(`${tag}: [W2-1/§2.3] «${willSee}» до действия; одна главная кнопка «Сообщить жителям»`,
+        /2/.test(willSee) && staffPrim === 1, willSee);
+  // Паспорт: «Изменить» → 3 поля (кто отвечает, следующий шаг, ориентир), без полей задержки.
+  await staff.click(".bc-staff__edit");
+  const fields = await staff.$$eval(".bc-staff__passport-form [name]", (n) => n.map((x) => x.name));
+  check(`${tag}: [W2-2/§2.3] паспорт — 3 поля, поля задержки скрыты`, fields.join() === "service,next_step,fix_eta", fields.join());
+  const options = await staff.$$eval("[name=service] option", (n) => n.length);
   await staff.fill("[name=next_step]", lang === "kk" ? "Тіректердегі шамдарды ауыстыру" : "Заменить лампы на опорах");
   await staff.fill("[name=fix_eta]", "2026-10-20");
-  await staff.fill("[name=delay_reason]", lang === "kk" ? "Көтергіш күтілуде" : "Ждём подъёмник");
-  await staff.click(".bc-staff__form:nth-of-type(2) button[type=submit]");
-  await staff.waitForFunction(() => /2/.test((document.querySelector(".bc-staff__note") || {}).textContent || ""), null, { timeout: 8000 });
+  await staff.click(".bc-staff__passport-form button[type=submit]");
+  await staff.waitForSelector(".bc-staff__edit", { timeout: 8000 });
   const notePassport = (await staff.textContent(".bc-staff__note")).trim();
+  // Служба задержалась (причина и дата обновления пришли раньше) — «Изменить» показывает ещё 3 поля.
+  await staffApi(base, "POST", `/complaints/${id}/passport`, { delay_reason: lang === "kk" ? "Көтергіш күтілуде" : "Ждём подъёмник",
+                                                              next_update_at: "2026-10-16" });
+  await staff.evaluate(() => window.staffCtl.refresh());
+  await staff.waitForSelector(".bc-staff__edit");
+  await staff.click(".bc-staff__edit");
+  const delayFields = await staff.$$eval(".bc-staff__passport-form [name]", (n) => n.map((x) => x.name + (x.required ? "*" : "")));
+  check(`${tag}: [W2-2/§2.3] при задержке — ещё причина, мера, дата обновления (обязательна) · служб ${options - 1}`,
+        delayFields.join() === "service,next_step,fix_eta,delay_reason,temp_measure,next_update_at*" && options === 21, delayFields.join());
+  await staff.fill("[name=temp_measure]", lang === "kk" ? "Уақытша шам қойылды" : "Поставили временный фонарь");
+  await staff.click(".bc-staff__passport-form button[type=submit]");
+  await staff.waitForSelector(".bc-staff__edit", { timeout: 8000 });
   await staff.fill("[name=text]", lang === "kk" ? "Көтергіш сәрсенбіде келеді" : "Подъёмник приедет в среду");
-  await staff.click(".bc-staff__form:last-of-type button[type=submit]");
-  await staff.waitForFunction((p) => { const t = (document.querySelector(".bc-staff__note") || {}).textContent || ""; return t && /2/.test(t); }, null, { timeout: 8000 });
+  await staff.click(".bc-staff__broadcast button[type=submit]");
+  await staff.waitForFunction(() => !document.querySelector("[name=text]").value, null, { timeout: 8000 });
   const noteUpdate = (await staff.textContent(".bc-staff__note")).trim();
-  check(`${tag}: [W2-2/W2-3] паспорт и одно обновление дошли до 2 участников`, /2/.test(notePassport) && /2/.test(noteUpdate), notePassport + " | " + noteUpdate);
-  // «Исправлено» без «что сделали» — подсказка, не отправка.
-  await staff.click(".bc-staff__form:first-of-type button[type=submit]");
-  const blocked = await staff.evaluate(() => document.querySelector("[name=what_done]").validity.valueMissing);
-  check(`${tag}: [W2-1] без строки «что сделали» отметить исправленным нельзя`, blocked);
+  check(`${tag}: [W2-2/W2-3] паспорт и одно обновление — «${noteUpdate}»`, /2/.test(notePassport) && /2/.test(noteUpdate), notePassport + " | " + noteUpdate);
+  // «Сообщить жителям» без строки «что сделали» — подсказка, не отправка.
+  await staff.click(".bc-staff__fix button[type=submit]");
+  const blocked = await staff.evaluate(() => document.querySelector("[name=what_done]").validity.valueMissing &&
+    document.querySelector("[name=what_done]").maxLength === 120);
+  check(`${tag}: [W2-1] без «что сделали» (≤ 120 знаков) сообщить нельзя`, blocked);
   await staff.fill("[name=what_done]", lang === "kk" ? "4 шам ауыстырылды" : "Заменили 4 лампы");
   await staff.setInputFiles(".bc-staff .bc-photo-input", { name: "after.jpg", mimeType: "image/jpeg", buffer: await exifJpeg(staff, 1200, 900) });
   await staff.waitForSelector(".bc-staff .bc-thumb img", { timeout: 8000 });
   await shot(staff, `${tag}-staff`);
-  await staff.click(".bc-staff__form:first-of-type button[type=submit]");
+  await staff.click(".bc-staff__fix button[type=submit]");
   await staff.waitForFunction(() => !document.querySelector("[name=what_done]"), null, { timeout: 15000 });
   let pub = (await deviceApi(base, "GET", `/complaints/${id}`, null, "dev-r09-wave-stranger-02")).data.complaint;
   check(`${tag}: [W2-1] карта: «служба сообщила» = reported_fixed (пунктир), ещё не «проверено»`,
@@ -945,73 +977,95 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   // «Я тоже» отвечает: «Проблема осталась» -> та же карточка снова в работе.
   const pageB = await newPage(browser, base, width, height, lang, { device: devB });
   await pageB.evaluate(() => window.standUi.openMine());
-  await pageB.waitForSelector(".bc-mine__card .bc-verify", { timeout: 8000 });
-  const verifyB = await pageB.evaluate(() => ({ what: (document.querySelector(".bc-verify") || {}).textContent || "",
-    buttons: [...document.querySelectorAll(".bc-verify__buttons button")].map((b) => b.textContent.trim()),
-    after: document.querySelectorAll(".bc-verify .bc-thumb").length }));
-  check(`${tag}: [W2-1] «Я тоже» видит «Служба сообщила», что сделали, фото «после» и 3 ответа`,
-        verifyB.buttons.length === 3 && (lang === "kk" ? /4 шам/.test(verifyB.what) : /Заменили 4 лампы/.test(verifyB.what)) && verifyB.after === 1, JSON.stringify(verifyB));
-  await pageB.waitForFunction(() => [...document.querySelectorAll(".bc-verify .bc-thumb img")].every((i) => i.src.startsWith("data:image/")), null, { timeout: 8000 })
+  await pageB.waitForSelector(".bc-wait .bc-verify", { timeout: 8000 });
+  const verifyB = await pageB.evaluate(() => ({ title: document.querySelector(".bc-wait h3").textContent.trim(),
+    what: document.querySelector(".bc-wait").textContent,
+    buttons: [...document.querySelectorAll(".bc-wait .bc-verify__buttons button")].map((b) => b.textContent.trim()),
+    after: document.querySelectorAll(".bc-wait .bc-thumb").length,
+    badge: (document.querySelector(".bc-mine__card .bk-status") || {}).textContent || "" }));
+  check(`${tag}: [W2-1] «${verifyB.title}»: что сделали, фото «после», 3 ответа; статус «${verifyB.badge}»`,
+        verifyB.buttons.length === 3 && (lang === "kk" ? /4 шам/.test(verifyB.what) && verifyB.badge === "Қызмет түзетілгенін хабарлады"
+          : /Что сделали: Заменили 4 лампы/.test(verifyB.what) && verifyB.badge === "Служба сообщила об устранении") && verifyB.after === 1,
+        JSON.stringify(verifyB));
+  await pageB.waitForFunction(() => [...document.querySelectorAll(".bc-wait .bc-thumb img")].every((i) => i.src.startsWith("data:image/")), null, { timeout: 8000 })
     .catch(() => {});
   await shot(pageB, `${tag}-verify`);
-  await pageB.click(".bc-verify__no");
-  await pageB.waitForSelector(".bc-state--reopened", { timeout: 8000 });
+  await pageB.click(".bc-wait .bc-verify__no");
+  await pageB.waitForSelector(".bc-mine__card .bk-status[data-status='reopened']", { timeout: 8000 });
   pub = (await deviceApi(base, "GET", `/complaints/${id}`, null, "dev-r09-wave-stranger-02")).data.complaint;
   const eventsB = await pageB.evaluate(() => (window.standEvents || []).map((e) => e.type));
   check(`${tag}: [W2-1] «Проблема осталась» — снова в работе, heat_state=reopened, событие для карты`,
         pub.status === "in_progress" && pub.heat_state === "reopened" && pub.resolution.reopen_count === 1 && eventsB.includes("reopened"),
         JSON.stringify({ s: pub.status, h: pub.heat_state, e: eventsB }));
-  const transferred = await pageB.$eval(".bc-mine__card .bc-assignee", (n) => n.textContent.trim()).catch(() => "");
-  check(`${tag}: [W1-7] на карточке «${transferred}» (общее название службы, на языке жителя)`,
-        transferred === (lang === "kk" ? "Берілді: Жарықтандыру қызметі" : "Передано: Служба освещения"), transferred);
+  const card = await pageB.evaluate(() => ({ line: (document.querySelector(".bc-mine__card .bc-assignee") || {}).textContent || "",
+    delay: (document.querySelector(".bc-mine__card .bc-delay") || {}).textContent || "" }));
+  check(`${tag}: [W1-7/§2.2] «${card.line}» и баннер задержки «${card.delay.slice(0, 60)}…»`,
+        (lang === "kk" ? card.line === "Жауапты: Жарықтандыру қызметі" && /Себебі: Көтергіш күтілуде/.test(card.delay)
+                       : card.line === "Передано: Служба освещения" && /Причина: Ждём подъёмник/.test(card.delay) && /Временная мера/.test(card.delay)),
+        JSON.stringify(card));
   await shot(pageB, `${tag}-reopened`);
+  // «Подписки (1)» → «Отписаться»: голос остаётся, обновления больше не приходят.
+  await pageB.click(".bc-subs summary");
+  await pageB.click(".bc-unsubscribe");
+  await pageB.waitForSelector(".bc-panel .bk-empty", { timeout: 8000 });
+  pub = (await deviceApi(base, "GET", `/complaints/${id}`, null, "dev-r09-wave-stranger-02")).data.complaint;
+  check(`${tag}: [§2.1] «Отписаться» — карточка ушла из «Мои обращения», людей по-прежнему 2`, pub.reporters === 2, String(pub.reporters));
+  check(`${tag}: нет ошибок консоли у «Я тоже»`, pageB.problems.length === 0, pageB.problems.join(" | "));
   await pageB.context().close();
 
-  // Служба исправила ещё раз (раунд 2) — автор проверяет.
+  // Служба исправила ещё раз (раунд 2) — теперь обновление увидит только автор.
   await staff.evaluate(() => window.staffCtl.refresh());
   await staff.waitForSelector("[name=what_done]", { timeout: 8000 });
+  const willSee2 = (await staff.textContent(".bc-staff__fix .bc-meta")).trim();
+  check(`${tag}: после «Отписаться» — «${willSee2}»`, /\b1\b/.test(willSee2), willSee2);
   await staff.fill("[name=what_done]", lang === "kk" ? "Тағы 2 шам ауыстырылды" : "Заменили ещё 2 лампы");
-  await staff.click(".bc-staff__form:first-of-type button[type=submit]");
+  await staff.click(".bc-staff__fix button[type=submit]");
   await staff.waitForFunction(() => !document.querySelector("[name=what_done]"), null, { timeout: 15000 });
   check(`${tag}: нет ошибок консоли у сотрудника`, staff.problems.length === 0, staff.problems.join(" | "));
   await staff.context().close();
 
-  // Автор: уведомление ведёт на конкретную жалобу (#complaint=код), язык ссылкой не меняется.
-  await pageA.goto(base + "/stand/#complaint=" + code);
+  // Автор: значок новых изменений для меню R01, затем уведомление ведёт на конкретное изменение.
+  const badge = await pageA.evaluate(() => window.standUi.changesCount());
+  const feed = await deviceApi(base, "GET", "/complaints/changes", null, devA);
+  const event = feed.data.items.find((i) => i.kind === "status" && i.status === "fixed") || feed.data.items[0];
+  await pageA.goto(base + "/stand/#mine/event=" + event.id);
   await pageA.waitForFunction(() => document.documentElement.getAttribute("data-map-ready") === "1", null, { timeout: 15000 });
-  await pageA.evaluate((l) => BirgeComplaint.setLang(l), lang);
   await pageA.waitForSelector(".bc-mine__card--focus", { timeout: 8000 });
   const focus = await pageA.evaluate(() => ({ code: document.querySelector(".bc-mine__card--focus").dataset.code,
-    open: !!document.querySelector(".bc-mine__card--focus details[open]"), lang: document.documentElement.lang }));
-  check(`${tag}: [W2] ссылка #complaint=${code} открыла именно эту карточку, «Подробнее» раскрыто`,
-        focus.code === code && focus.open, JSON.stringify(focus));
+    open: !!document.querySelector(".bc-mine__card--focus details[open]"),
+    row: (document.querySelector(".bc-changes__item--focus") || {}).dataset ? document.querySelector(".bc-changes__item--focus").dataset.event : null,
+    lang: document.documentElement.lang }));
+  check(`${tag}: [W2-10] значок «Мои обращения»: ${badge} новых изменений`, badge >= 4, String(badge));
+  check(`${tag}: [W2] ссылка #mine/event=… — строка изменения подсвечена, карточка ${code} раскрыта, язык ${focus.lang} не сменился`,
+        focus.code === code && focus.open && focus.row === event.id && focus.lang === lang, JSON.stringify(focus));
+  await pageA.evaluate((l) => BirgeComplaint.setLang(l), lang);
   const mine = await pageA.evaluate(() => {
     const card = document.querySelector(".bc-mine__card--focus");
     return { changes: (document.querySelector(".bc-changes") || {}).textContent || "",
              items: document.querySelectorAll(".bc-changes__item").length,
              passport: [...card.querySelectorAll(".bc-passport li")].map((n) => n.textContent),
              updates: (card.querySelector(".bc-updates") || {}).textContent || "",
-             primaries: document.querySelectorAll(".bc-panel .bk-btn--primary").length,
-             verify: !!card.querySelector(".bc-verify__yes") };
+             primaries: [...document.querySelectorAll(".bc-panel .bk-btn--primary")].map((b) => b.className),
+             open: !!card.querySelector("details[open]") };
   });
-  check(`${tag}: [W2-10] «Что изменилось» — изменения с прошлого визита и итог одной строкой`,
-        mine.items >= 1 && (lang === "kk" ? /өзгерді/i.test(mine.changes) : /Что изменилось/.test(mine.changes)), mine.changes.slice(0, 200));
+  check(`${tag}: [W2-10] «Что изменилось» — изменения с прошлого визита (≤ 3 строки + «Ещё N»)`,
+        mine.items >= 1 && mine.items <= 3 + 10 && (lang === "kk" ? /Не өзгерді/.test(mine.changes) : /Что изменилось/.test(mine.changes)), mine.changes.slice(0, 200));
   const pl = mine.passport.join(" | ");
-  check(`${tag}: [W2-2] паспорт: отвечает служба, следующий шаг, ответ дан, ориентир 20 октября, причина задержки`,
-        mine.passport.length >= 5 && (lang === "kk" ? /Жауапты: Жарықтандыру қызметі/.test(pl) && /Көтергіш күтілуде/.test(pl) : /Отвечает: Служба освещения/.test(pl) &&
-        /Следующий шаг: Заменить лампы на опорах/.test(pl) && /Служба ответила/.test(pl) && /ориентир 20/.test(pl) && /Ждём подъёмник/.test(pl)), pl);
-  check(`${tag}: [W2-3] обновление службы видно автору`, lang === "kk" ? /сәрсенбіде/.test(mine.updates) : /Подъёмник приедет в среду/.test(mine.updates), mine.updates.slice(0, 200));
-  check(`${tag}: [защита п.4] на экране одна главная кнопка («Да, исправлено»)`, mine.primaries === 1 && mine.verify, String(mine.primaries));
+  check(`${tag}: [W2-2] паспорт: следующий шаг, ориентир 20 октября; карточка осталась раскрытой после смены языка`,
+        mine.open && (lang === "kk" ? /Келесі қадам: Тіректердегі шамдарды ауыстыру/.test(pl) && /Түзету: шамамен 20/.test(pl)
+                                    : /Следующий шаг: Заменить лампы на опорах/.test(pl) && /Устранение: ориентир 20/.test(pl)), pl);
+  check(`${tag}: [W2-3] обновление службы и история видны автору`, lang === "kk" ? /сәрсенбіде/.test(mine.updates) : /Подъёмник приедет в среду/.test(mine.updates), mine.updates.slice(0, 200));
+  check(`${tag}: [защита п.4] на экране одна главная кнопка — «Да, исправлено» в «Ждут вашей проверки»`,
+        mine.primaries.length === 1 && /bc-verify__yes/.test(mine.primaries[0]), mine.primaries.join(" | "));
   await shot(pageA, `${tag}-mine-changes`);
-  // Нажатие на изменение подсвечивает ту же карточку.
-  await pageA.click(".bc-changes__item");
-  check(`${tag}: [W2-10] изменение открывает свою карточку`, !!(await pageA.$(`.bc-mine__card--focus[data-code="${code}"]`)));
-  await pageA.click(".bc-mine__card--focus .bc-verify__yes");
-  await pageA.waitForSelector(".bc-state--verified", { timeout: 8000 });
+  await pageA.click(".bc-wait .bc-verify__yes");
+  await pageA.waitForSelector(".bc-mine__card .bk-status[data-status='verified']", { timeout: 8000 });
   pub = (await deviceApi(base, "GET", `/complaints/${id}`, null, "dev-r09-wave-stranger-02")).data.complaint;
   check(`${tag}: [W2-1] автор «Да, исправлено» — verified_fixed (7 дней на карте), голос засчитан`,
         pub.status === "fixed" && pub.heat_state === "verified_fixed" && pub.resolution.state === "verified" && pub.resolution.votes.yes === 1 &&
         pub.resolution.round === 2, JSON.stringify(pub.resolution));
+  const after = await pageA.evaluate(() => window.standUi.changesCount());
+  check(`${tag}: значок погас после просмотра`, after === 0 || after === 1, String(after));   // 1 — своё «Проверено» после визита
   await shot(pageA, `${tag}-verified`);
   check(`${tag}: нет ключей и технических слов`, (await visibleKeys(pageA)).length === 0, (await visibleKeys(pageA)).join(", "));
   check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(pageA));

@@ -18,13 +18,16 @@ handle(...) возвращает None для чужих путей — шлюз 
 Волны 1–2 (POLISH_WAVE.md, POLISH_WAVE_2.md):
   GET  /complaints/changes?since=ISO     «Что изменилось с вашим участием» (устройство)
   POST /complaints/{id}/verify           житель проверяет ремонт {answer: yes|no|cant} (автор и «Я тоже»)
-  POST /complaints/{id}/passport         паспорт решения (сотрудник): next_step, fix_eta, delay_*, assignee
+  POST /complaints/{id}/passport         паспорт решения (сотрудник): service, next_step, fix_eta, delay_*
   POST /complaints/{id}/update           одно обновление всем «Я тоже» {text} (сотрудник)
   POST /complaints/{id}/unduplicate      «Это разные проблемы» — разъединить (сотрудник)
   POST /complaints/{id}/photos           начать загрузку фото {kind: resident|after, size}
   POST /complaints/{id}/photos/{upload}  часть фото {offset, data: base64} (≤ 36 000 байт)
   GET  /complaints/{id}/photos/{photo}   фото data:URL — акимат; автор — свои и «после»; «Я тоже» — «после»
   POST /complaints/{id}/status           + what_done, photos при status=fixed («служба сообщила об устранении»)
+  POST /complaints/{id}/unsubscribe      «Отписаться» от «Я тоже» (голос остаётся, обновлений нет)
+  GET  /complaints/inbox?tab=            акимат: цели с открытыми обращениями по вкладкам (new, in_progress,
+                                         waiting_check, overdue, reopened) — экран «Обращения» (#complaints)
 """
 
 from __future__ import annotations
@@ -150,14 +153,15 @@ class ComplaintsV2Service:
             return need(("GET", "POST"), self._list if method in ("GET", "HEAD") else self._create)
         if len(parts) == 2:
             special = {"mine": self._mine, "events": self._events, "summary": self._summary, "place": self._place,
-                       "changes": self._changes}
+                       "changes": self._changes, "inbox": self._inbox}
             if parts[1] in special:
                 return need(("GET",), special[parts[1]])
             return need(("GET",), self._detail, parts[1])
         if len(parts) == 3:
             action = {"metoo": self._metoo, "status": self._status, "duplicate": self._duplicate,
                       "verify": self._verify, "passport": self._passport, "update": self._update,
-                      "unduplicate": self._unduplicate, "photos": self._photo_start}.get(parts[2])
+                      "unduplicate": self._unduplicate, "photos": self._photo_start,
+                      "unsubscribe": self._unsubscribe}.get(parts[2])
             if action:
                 return need(("POST",), action, parts[1])
         if len(parts) == 4 and parts[2] == "photos":
@@ -266,6 +270,9 @@ class ComplaintsV2Service:
         view["heat_state"] = lifecycle.heat_state(record, now)
         view["passport_view"] = lifecycle.passport_view(record, now, self.store.assignee_lookup)
         view["deadline"] = lifecycle.deadline(record, now)
+        # «Увидят N человек» до действия (R11 §2.3: fix.will_see) — автор и «Я тоже» без «Отписаться».
+        view["subscribers"] = self.store.subscribers(record["id"])
+        view["inbox_tab"] = lifecycle.inbox_tab(record, now)
         return view
 
     # ------------------------------------------------------------ обработчики
@@ -360,7 +367,7 @@ class ComplaintsV2Service:
         record = self.store.set_status(complaint_id, data.get("status"), actor=_actor(principal),
                                        note=data.get("note"), expected=data.get("expected"),
                                        what_done=data.get("what_done"), photos=data.get("photos"))
-        return _ok(200, {"complaint": self._staff(record), "notified": rec.reporters(record)})
+        return _ok(200, {"complaint": self._staff(record), "notified": self.store.subscribers(record["id"])})
 
     def _duplicate(self, complaint_id, *, params, body, principal, context):
         self._require_staff(principal, context)
@@ -376,6 +383,23 @@ class ComplaintsV2Service:
         if since and rec.parse_iso(since) is None:
             raise ApiError(422, "invalid", "Неверная дата.", {"since": "ISO-дата"})
         return _ok(200, self.store.changes(self._device(context), since))
+
+    def _inbox(self, *, params, body, principal, context):
+        """Акимат · «Обращения»: цели с открытыми обращениями по вкладкам (R11 IA_WAVE2 §2.5, R01 #complaints)."""
+        if not _is_staff(principal):
+            raise ApiError(403, "forbidden", "Действие доступно только сотрудникам акимата.")
+        tab = params.get("tab") or None
+        if tab is not None and tab not in lifecycle.INBOX_TABS:
+            raise ApiError(422, "invalid", "Неизвестная вкладка.", {"tab": ",".join(lifecycle.INBOX_TABS)})
+        records = self.store.list(status=list(rec.OPEN_STATUSES) + ["fixed"])
+        data = lifecycle.inbox(records, self.store._now(), tab)
+        data["tab"] = tab
+        return _ok(200, data)
+
+    def _unsubscribe(self, complaint_id, *, params, body, principal, context):
+        data = self._json(body)
+        result = self.store.unsubscribe(complaint_id, self._device(context, data))
+        return _ok(200, {"result": result})
 
     def _verify(self, complaint_id, *, params, body, principal, context):
         data = self._json(body)

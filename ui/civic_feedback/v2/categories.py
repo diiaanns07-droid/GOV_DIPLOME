@@ -118,4 +118,11 @@ def public_payload() -> dict:
         "weight_half_life_days": data.get("weight_half_life_days"),
         "heat_states": data.get("heat_states"),
         "emergency_numbers": data.get("emergency_numbers"),
+        # Службы для «Кто отвечает» в паспорте решения (id = R08, тексты — service.<id> словаря R11).
+        "services": _services(),
     }
+
+
+def _services() -> list[dict]:
+    from . import lifecycle   # lifecycle импортирует categories — импорт здесь, без цикла при загрузке
+    return [{"id": sid, "ru": names["ru"], "kk": names["kk"]} for sid, names in lifecycle.SERVICES.items()]

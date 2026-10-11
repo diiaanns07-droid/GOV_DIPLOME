@@ -38,6 +38,7 @@ ROUTES = (
     ("POST", "/complaints/{id}/duplicate"),   # только сотрудник
     # Волны 1–2 (POLISH_WAVE.md, POLISH_WAVE_2.md). «changes» — точный путь, в таблице R01 раньше {id}.
     ("GET", "/complaints/changes"),
+    ("GET", "/complaints/inbox"),             # только сотрудник: экран «Обращения» (#complaints)
     ("POST", "/complaints/{id}/verify"),      # житель: автор или «Я тоже»
     ("POST", "/complaints/{id}/passport"),    # только сотрудник
     ("POST", "/complaints/{id}/update"),      # только сотрудник
@@ -45,6 +46,7 @@ ROUTES = (
     ("POST", "/complaints/{id}/photos"),      # житель (автор) — resident; сотрудник — after
     ("POST", "/complaints/{id}/photos/{upload}"),
     ("GET", "/complaints/{id}/photos/{photo}"),
+    ("POST", "/complaints/{id}/unsubscribe"), # житель: «Отписаться» от «Я тоже»
 )
 
 
@@ -57,10 +59,23 @@ def geo_target_lookup():
     return target_geometry
 
 
-def make_service(db_path, *, target_lookup=None, demo_seed: bool = False, **store_options) -> ComplaintsV2Service:
+def r08_assignee_lookup():
+    """ui.civic_akim.routing.service_for (R08: таблица «категория/уточнение → служба» с правками акимата), если
+    модуль есть в сборке; иначе None — паспорт берёт таблицу R09 (копия умолчаний R08)."""
+    try:
+        from ui.civic_akim.routing import service_for
+    except ImportError:
+        return None
+    return service_for
+
+
+def make_service(db_path, *, target_lookup=None, assignee_lookup="auto", demo_seed: bool = False,
+                 **store_options) -> ComplaintsV2Service:
     store = ComplaintStore(db_path, **store_options)
     # "auto" — взять R12 из сборки, если он есть. По умолчанию None: тесты соседей создают жалобы с условными id.
     store.target_lookup = geo_target_lookup() if target_lookup == "auto" else target_lookup
+    # «Кому передано» (волна 1, п. 7): по умолчанию — таблица R08, если она в сборке.
+    store.assignee_lookup = r08_assignee_lookup() if assignee_lookup == "auto" else assignee_lookup
     if demo_seed:
         from .demo_seed import seed_demo
         seed_demo(store)

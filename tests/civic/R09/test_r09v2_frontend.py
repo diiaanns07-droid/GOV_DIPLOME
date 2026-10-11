@@ -56,7 +56,7 @@ def test_every_key_used_in_code_exists():
     data = strings()
     used = set(re.findall(r'\bt\("([a-z0-9_.]+)"', JS + STAFF_JS))
     # t("status." + x) и т. п. — составные ключи; каждый вариант проверяется ниже.
-    dynamic_prefixes = {"status.", "complaint.example.", "cat.", "complaint.emergency.service.",
+    dynamic_prefixes = {"status.", "complaint.example.", "cat.", "emergency.service.", "service.", "subtopic.",
                         "mine.passport.next_default.", "mine.update."}
     missing = sorted(k for k in used if k not in data["ru"] and k not in dynamic_prefixes)
     assert not missing, missing
@@ -67,7 +67,15 @@ def test_every_key_used_in_code_exists():
         assert "complaint.example." + cat in data["ru"]
     phones = {s.get("emergency_phone") for c in categories.ids() for s in categories.subtopics(c)} - {None}
     for phone in phones | {"104", "112"}:
-        assert "complaint.emergency.service." + phone in data["ru"]
+        assert "emergency.service." + phone in data["ru"]
+    from ui.civic_feedback.v2 import lifecycle
+    for sid in lifecycle.SERVICES:                                   # service.<id> — ключи R11 по id R08
+        assert "service." + sid in data["ru"]
+    for cat in categories.ids():
+        for sub in categories.subtopics(cat):
+            assert "subtopic." + sub["id"] in data["ru"]
+    for status in ("reported_fixed", "verified", "reopened"):         # статусы проверки ремонта (R11 §2.2)
+        assert "status." + status in data["ru"]
     for status in ("new", "accepted", "in_progress", "fixed", "rejected"):
         assert "mine.passport.next_default." + status in data["ru"]
     for kind in ("fixed", "reopened", "passport", "note"):
@@ -223,5 +231,28 @@ def test_seasonal_order_in_grid():
 def test_staff_component_has_one_primary_and_required_what_done():
     """Волна 2, п. 1: «Отметить исправленным» требует строку «что сделали»; главная кнопка одна."""
     assert STAFF_JS.count("bk-btn--primary") == 1
-    assert re.search(r'name: "what_done", maxlength: "200", required: true', STAFF_JS)
+    assert re.search(r'name: "what_done", maxlength: String\(WHAT_DONE_MAX\), required: true', STAFF_JS)
+    assert "var WHAT_DONE_MAX = 120;" in STAFF_JS                     # R11 §2.3: одна строка ≤ 120 знаков
     assert "staff.fixed.need_what" in STAFF_JS
+
+
+def test_wave_texts_come_from_r11_keys():
+    """R11 IA_WAVE2 §2: тексты волны — ключами словаря R11 (verify.*, passport.*, service.assigned, deadline.*,
+    broadcast.*, fix.*), а не своими копиями mine.verify.* / staff.* — иначе правка перевода у R11 до экрана не дойдёт."""
+    for key in ("verify.wait_title", "verify.question", "verify.yes", "passport.next", "passport.fix_unknown",
+                "service.assigned", "deadline.left", "deadline.overdue", "broadcast.metoo_hint", "mine.changes.more",
+                "mine.waiting", "mine.subscriptions", "mine.unsubscribe", "complaint.subtopic.title",
+                "complaint.subtopic.none", "complaint.emergency.still_send", "complaint.queue.offline"):
+        assert f'"{key}"' in JS, key          # t("…") или таблица ключей кнопок
+    for key in ("fix.title", "fix.what_done", "fix.send", "fix.will_see", "passport.edit", "passport.field.service",
+                "passport.field.reason", "broadcast.title", "broadcast.send", "passport.update_overdue"):
+        assert f't("{key}"' in STAFF_JS, key
+    old = re.findall(r'"(mine\.verify\.[a-z_]+|mine\.state\.[a-z_]+|mine\.passport\.(?!next_default)[a-z_]+|'
+                     r'staff\.(?:fixed|passport|update)\.[a-z_]+)"', JS + STAFF_JS)
+    assert set(old) <= {"staff.fixed.need_what", "staff.fixed.what_hint"}, old   # у R11 таких ключей нет
+
+
+def test_emergency_call_is_the_only_primary_button():
+    """UX_SPEC §10: при срочном случае главная кнопка — звонок, «Далее/Отправить» становится второстепенной."""
+    assert 'bk-btn bk-btn--primary bk-btn--block bc-emergency__call' in JS
+    assert 'els.send.classList.toggle("bk-btn--primary", !emergencyNow())' in JS

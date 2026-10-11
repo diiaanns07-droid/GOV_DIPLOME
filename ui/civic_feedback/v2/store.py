@@ -158,7 +158,11 @@ class ComplaintStore:
             columns = {row[1] for row in self._db.execute("PRAGMA table_info(complaint_metoo_v2)")}
             if "via" not in columns:
                 self._db.execute("ALTER TABLE complaint_metoo_v2 ADD COLUMN via TEXT")
-        # assignee_lookup(category, subtopic) -> название службы из таблицы R08 (подключает R01) или None.
+            # Волна 2 (R11 IA_WAVE2 §2.1): «Отписаться» — голос остаётся, обновления и «Мои обращения» — нет.
+            if "muted" not in columns:
+                self._db.execute("ALTER TABLE complaint_metoo_v2 ADD COLUMN muted INTEGER NOT NULL DEFAULT 0")
+        # assignee_lookup(category, subtopic) — таблица R08 (подключает R01): лучше routing.service_for
+        # ({"id","ru","kk","name_edited"}), можно и routing.assignee_lookup (строка). None — таблица R09.
         self.assignee_lookup = None
 
     def close(self) -> None:
@@ -342,6 +346,9 @@ class ComplaintStore:
             cur = db.execute("INSERT OR IGNORE INTO complaint_metoo_v2 (complaint_id, device_hash, at) "
                              "VALUES (?,?,?)", (record["id"], device, now))
             if cur.rowcount == 0:
+                # Повторное «Я тоже» после «Отписаться» снова подписывает (голос не удваивается).
+                db.execute("UPDATE complaint_metoo_v2 SET muted = 0 WHERE complaint_id = ? AND device_hash = ?",
+                           (record["id"], device))
                 return record, "already"
             self._recount_metoo(db, record)
             self._save(db, record)
@@ -401,10 +408,36 @@ class ComplaintStore:
         row = db.execute("SELECT device_hash FROM complaints_v2 WHERE id = ?", (record["id"],)).fetchone()
         if row and row[0] == device:
             return "author"
-        if db.execute("SELECT 1 FROM complaint_metoo_v2 WHERE complaint_id = ? AND device_hash = ?",
+        if db.execute("SELECT 1 FROM complaint_metoo_v2 WHERE complaint_id = ? AND device_hash = ? AND muted = 0",
                       (record["id"], device)).fetchone():
             return "metoo"
         return None
+
+    def _subscribers(self, db, record: dict) -> int:
+        """Сколько человек увидят обновление: автор + «Я тоже» без «Отписаться»."""
+        return 1 + db.execute("SELECT COUNT(*) FROM complaint_metoo_v2 WHERE complaint_id = ? AND muted = 0",
+                              (record["id"],)).fetchone()[0]
+
+    def subscribers(self, complaint_id: str) -> int:
+        with self._lock:
+            if self._load(self._db, complaint_id) is None:
+                raise NotFound("Обращение не найдено.", {"id": complaint_id})
+            return self._subscribers(self._db, self._root(self._db, complaint_id))
+
+    def unsubscribe(self, complaint_id: str, device_id: str) -> str:
+        """«Отписаться» от «Я тоже»: голос («сообщили N») остаётся, обновления и карточка в «Мои обращения» — нет.
+        -> unsubscribed | not_subscribed (не нажимал «Я тоже» или уже отписался) | author (своя жалоба)."""
+        device = self.device_hash(device_id)
+        with self._tx() as db:
+            if self._load(db, complaint_id) is None:
+                raise NotFound("Обращение не найдено.", {"id": complaint_id})
+            record = self._root(db, complaint_id)
+            author = db.execute("SELECT device_hash FROM complaints_v2 WHERE id = ?", (record["id"],)).fetchone()[0]
+            if author == device:
+                return "author"
+            cur = db.execute("UPDATE complaint_metoo_v2 SET muted = 1 WHERE complaint_id = ? AND device_hash = ? "
+                             "AND muted = 0", (record["id"], device))
+            return "unsubscribed" if cur.rowcount else "not_subscribed"
 
     def participant(self, complaint_id: str, device_id) -> str | None:
         try:
@@ -483,13 +516,17 @@ class ComplaintStore:
         record.setdefault("updates", []).append({"at": at, "kind": kind, "text": text})
 
     def update_passport(self, complaint_id: str, fields: dict, *, actor: str | None = None) -> tuple[dict, int]:
-        """Сотрудник заполняет паспорт: next_step, fix_eta (YYYY-MM-DD или пусто = «пока не определено»),
-        delay_reason, temp_measure, next_update_at (YYYY-MM-DD), assignee (по желанию; иначе таблица R08 / общий).
-        -> (запись, сколько человек увидят обновление)."""
+        """Сотрудник заполняет паспорт (R11 IA_WAVE2 §2.3 — 3 поля): service (id службы из lifecycle.SERVICES,
+        пусто = по таблице R08/R09), next_step, fix_eta (YYYY-MM-DD или пусто = «пока не определено»); при задержке
+        ещё delay_reason, temp_measure, next_update_at (YYYY-MM-DD). -> (запись, сколько человек увидят обновление)."""
         if not isinstance(fields, dict):
             raise RecordError("Пустой запрос.")
         clean = {}
-        for name in ("next_step", "delay_reason", "temp_measure", "assignee"):
+        service = fields.get("service")
+        if service not in (None, "") and service not in lifecycle.SERVICES:
+            raise RecordError("Неизвестная служба.", {"service": ",".join(lifecycle.SERVICES)})
+        clean["service"] = service or None
+        for name in ("next_step", "delay_reason", "temp_measure"):
             value = fields.get(name)
             if value is None or value == "":
                 clean[name] = None
@@ -512,9 +549,12 @@ class ComplaintStore:
             if record is None:
                 raise NotFound("Обращение не найдено.", {"id": complaint_id})
             passport = dict(record.get("passport") or {})
-            for name in ("next_step", "fix_eta", "assignee"):
+            for name in ("next_step", "fix_eta"):
                 if name in fields:
                     passport[name] = clean[name]
+            if "service" in fields:
+                passport["assignee_id"] = clean["service"]
+                passport.pop("assignee", None)          # свободный текст старых версий уступает выбору из списка
             if any(name in fields for name in ("delay_reason", "temp_measure", "next_update_at")):
                 delay = {"reason": clean["delay_reason"], "temp_measure": clean["temp_measure"],
                          "next_update_at": clean["next_update_at"]}
@@ -527,8 +567,9 @@ class ComplaintStore:
             self._add_update(record, now, "passport", summary)
             self._save(db, record)
             event = self._event(db, "update", record, now)
+            notified = self._subscribers(db, record)
         self._emit([event])
-        return record, rec.reporters(record)
+        return record, notified
 
     def post_update(self, complaint_id: str, text, *, actor: str | None = None) -> tuple[dict, int]:
         """Одно сообщение сотрудника всем затронутым (автор + «Я тоже»). -> (запись, сколько человек увидят)."""
@@ -540,8 +581,9 @@ class ComplaintStore:
             self._add_update(record, now, "note", " ".join(text.split())[:lifecycle.PASSPORT_TEXT_MAX * 2])
             self._save(db, record)
             event = self._event(db, "update", record, now)
+            notified = self._subscribers(db, record)
         self._emit([event])
-        return record, rec.reporters(record)
+        return record, notified
 
     def changes(self, device_id: str, since: str | None = None) -> dict:
         """«Что изменилось с вашим участием» (волна 2, п. 10): события по жалобам устройства после since."""
@@ -772,7 +814,7 @@ class ComplaintStore:
                                    "ORDER BY created_ts DESC", (device,)).fetchall()
             joined = self._db.execute(
                 "SELECT c.record_json, m.at FROM complaint_metoo_v2 m JOIN complaints_v2 c ON c.id = m.complaint_id "
-                "WHERE m.device_hash = ? ORDER BY m.at DESC", (device,)).fetchall()
+                "WHERE m.device_hash = ? AND m.muted = 0 ORDER BY m.at DESC", (device,)).fetchall()
         result = []
         for row in own:
             item = json.loads(row[0])

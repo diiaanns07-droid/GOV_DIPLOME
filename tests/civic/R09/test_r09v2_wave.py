@@ -182,25 +182,44 @@ def test_passport_three_fields_and_overdue_update(store, clock):
 
 def test_assignee_from_r08_table_wins_and_failure_falls_back(store, clock):
     record = make(store, category="utilities", subtopic="no_water", text="Нет воды третий день")
-    assert lifecycle.passport_view(record, clock.now)["assignee"] == "Водоканал"
+    own = lifecycle.passport_view(record, clock.now)
+    assert (own["assignee_id"], own["assignee"], own["assignee_kk"], own["assignee_source"]) == \
+        ("water", "Водоканал", "Сумен жабдықтау қызметі", "default")
+    # R08 service_for(): id и названия (акимат мог переименовать — name_edited).
+    r08 = lambda c, s: {"id": "water", "ru": "Горводоканал", "kk": "Қалалық су арнасы", "name_edited": True}
+    view = lifecycle.passport_view(record, clock.now, r08)
+    assert (view["assignee_id"], view["assignee"], view["assignee_kk"], view["assignee_custom"], view["assignee_source"]) == \
+        ("water", "Горводоканал", "Қалалық су арнасы", True, "r08")
+    # R08 assignee_lookup() — только имя по-русски: показываем как есть.
     assert lifecycle.passport_view(record, clock.now, lambda c, s: "Служба R08")["assignee"] == "Служба R08"
-    assert lifecycle.passport_view(record, clock.now, lambda c, s: 1 / 0)["assignee"] == "Водоканал"
-    # Казахская подпись: своя для общих названий R09, от R08 — если таблица дала {"ru", "kk"}.
-    assert lifecycle.passport_view(record, clock.now)["assignee_kk"] == "Су арнасы"
-    both = lifecycle.passport_view(record, clock.now, lambda c, s: {"ru": "Служба R08", "kk": "R08 қызметі"})
-    assert (both["assignee"], both["assignee_kk"], both["assignee_source"]) == ("Служба R08", "R08 қызметі", "r08")
-    assert lifecycle.passport_view(record, clock.now, lambda c, s: "Служба R08")["assignee_kk"] is None
+    # Таблица R08 упала — таблица R09.
+    assert lifecycle.passport_view(record, clock.now, lambda c, s: 1 / 0)["assignee_id"] == "water"
 
 
-def test_every_generic_service_has_kazakh_name():
-    names = set(lifecycle.DEFAULT_SERVICES.values()) | set(lifecycle.SUBTOPIC_SERVICES.values())
-    assert names <= set(lifecycle.SERVICES_KK)
+def test_staff_chooses_service_from_list(store, clock):
+    record = make(store)
+    with pytest.raises(RecordError) as exc:
+        store.update_passport(record["id"], {"service": "Моя служба"})
+    assert "service" in exc.value.fields
+    chosen = store.update_passport(record["id"], {"service": "power"})[0]
+    view = lifecycle.passport_view(chosen, clock.now, lambda c, s: {"id": "lighting", "ru": "x", "kk": "y"})
+    assert (view["assignee_id"], view["assignee"], view["assignee_source"]) == ("power", "Электросети", "staff")
+    back = store.update_passport(record["id"], {"service": ""})[0]
+    assert lifecycle.passport_view(back, clock.now)["assignee_id"] == "lighting"
 
 
-def test_subtopic_services_use_real_ids():
-    known = {s["id"] for c in categories.ids() for s in categories.subtopics(c)}
-    assert set(lifecycle.SUBTOPIC_SERVICES) <= known
-    assert set(lifecycle.DEFAULT_SERVICES) == set(categories.ids())
+def test_service_table_matches_categories_and_r08_ids():
+    known = {f"{c}/{s['id']}" for c in categories.ids() for s in categories.subtopics(c)} | set(categories.ids())
+    assert set(lifecycle.SERVICE_RULES) <= known
+    assert set(categories.ids()) <= set(lifecycle.SERVICE_RULES)               # у каждой категории есть служба
+    assert set(lifecycle.SERVICE_RULES.values()) <= set(lifecycle.SERVICES)
+    assert all(names["ru"] and names["kk"] for names in lifecycle.SERVICES.values())
+    try:
+        from ui.civic_akim import routing                                       # сборка с R08: таблицы совпадают
+    except ImportError:
+        return
+    assert set(lifecycle.SERVICES) == set(routing.SERVICES)
+    assert lifecycle.SERVICE_RULES == routing.DEFAULT_RULES
 
 
 def test_one_update_reaches_author_and_every_metoo(store):
@@ -227,6 +246,10 @@ def test_changes_since_last_visit_and_summary(store, clock):
     feed = store.changes(DEV_A, seen)
     assert [i["kind"] for i in feed["items"]] == ["verified", "status", "status"]
     assert feed["summary"] == {"verified": 1, "waiting": 0, "total": 1}
+    # id события для ссылки из уведомления: номер + вид + время, уникальный и тот же при следующем запросе.
+    ids = [i["id"] for i in feed["items"]]
+    assert len(set(ids)) == 3 and all(i.startswith(record["code"] + ".") for i in ids)
+    assert ids == [i["id"] for i in store.changes(DEV_A, seen)["items"]]
     assert store.changes(DEV_A, rec.iso(clock.now))["items"] == []
     assert fixed_rec["code"] in {i["code"] for i in feed["items"]}
     assert all("by" not in i and "note" not in i for i in feed["items"])   # без имён сотрудников
@@ -450,3 +473,73 @@ def test_staff_session_does_not_hide_people_count_from_resident_wizard(store):
     assert public["data"]["complaint"]["reporters"] == 3 and "text" not in public["data"]["complaint"]
     _, by_code = call(api, "GET", f"/complaints/{record['code']}", query="view=public", context=ctx(DEV_A))
     assert "text" not in by_code["data"]["complaint"]        # даже автору view=public — публичная проекция
+
+
+# ---------------------------------------------------------------- R11 IA_WAVE2 §2.1: «Отписаться»
+def test_unsubscribe_keeps_vote_and_stops_updates(store):
+    record = make(store)
+    store.metoo(record["id"], DEV_B)
+    store.metoo(record["id"], DEV_C)
+    assert store.unsubscribe(record["id"], DEV_B) == "unsubscribed"
+    assert store.unsubscribe(record["id"], DEV_B) == "not_subscribed"
+    assert store.unsubscribe(record["id"], DEV_A) == "author"
+    assert store.unsubscribe(record["id"], DEV_D) == "not_subscribed"
+    assert rec.reporters(store.get(record["id"])) == 3                       # голос остаётся
+    assert store.mine(DEV_B) == [] and store.participant(record["id"], DEV_B) is None
+    _, notified = store.post_update(record["id"], "Бригада выехала", actor="operator1")
+    assert notified == 2                                                     # автор и DEV_C
+    assert store.changes(DEV_B)["items"] == []
+    # Снова «Я тоже» — снова подписан, голос не удвоился.
+    assert store.metoo(record["id"], DEV_B)[1] == "already"
+    assert store.participant(record["id"], DEV_B) == "metoo" and rec.reporters(store.get(record["id"])) == 3
+
+
+def test_fixed_notifies_subscribers_only_via_http(store):
+    service = ComplaintsV2Service(store)
+    record = make(store)
+    store.metoo(record["id"], DEV_B)
+    store.unsubscribe(record["id"], DEV_B)
+    reply = service.handle("POST", f"/api/civic/v2/complaints/{record['id']}/unsubscribe", None, b"{}", None,
+                           {"headers": {"X-Birge-Device": DEV_B}})
+    assert reply["body"]["data"]["result"] == "not_subscribed"
+
+
+# ---------------------------------------------------------------- R11 IA_WAVE2 §2.5: «Обращения» акимата
+def test_inbox_tabs_and_grouping(store, clock):
+    new = make(store)                                                        # освещение у остановки — новое
+    make(store, device=DEV_B, text="И второй фонарь не горит")              # та же цель и категория — та же группа
+    road = make(store, device=DEV_C, category="roads", text="Яма на дороге",
+                target={"kind": "segment", "id": "osm-w1-0", "label_ru": "Улица"})
+    store.set_status(road["id"], "in_progress")
+    fixed = make(store, device=DEV_D, category="waste", text="Баки переполнены",
+                 target={"kind": "object", "id": "osm-node-9", "label_ru": "Двор"})
+    store.set_status(fixed["id"], "fixed", what_done="Вывезли")
+    board = lifecycle.inbox(store.list(), clock.now)
+    assert board["counts"] == {"new": 1, "in_progress": 1, "waiting_check": 1, "overdue": 0, "reopened": 0}
+    group = next(g for g in board["items"] if g["category"] == "lighting")
+    assert group["people"] == 2 and len(group["complaints"]) == 2 and group["tab"] == "new"
+    clock.now = datetime(2026, 10, 20, 10, 0, tzinfo=rec.ASTANA_TZ)          # срок ответа по освещению прошёл
+    store.verify(fixed["id"], DEV_D, "no")                                    # вернули жители
+    board = lifecycle.inbox(store.list(), clock.now, "overdue")
+    assert [g["category"] for g in board["items"]] == ["lighting"]
+    assert board["counts"]["reopened"] == 1 and board["counts"]["waiting_check"] == 0
+    assert board["items"][0]["deadline"]["state"] == "overdue"
+
+
+def test_inbox_http_is_staff_only(store):
+    service = ComplaintsV2Service(store)
+    make(store)
+    reply = service.handle("GET", "/api/civic/v2/complaints/inbox", "tab=new", None, None, {"headers": {}})
+    assert reply["status"] == 403
+
+    class Staff:
+        is_staff, username = True, "operator1"
+
+        def check_csrf(self, token):
+            return token == "t"
+    reply = service.handle("GET", "/api/civic/v2/complaints/inbox", "tab=new", None, Staff(), {"headers": {}})
+    data = reply["body"]["data"]
+    assert reply["status"] == 200 and data["tab"] == "new" and len(data["items"]) == 1
+    assert "text" not in json.dumps(data["items"], ensure_ascii=False)       # в списке нет текстов жителей
+    bad = service.handle("GET", "/api/civic/v2/complaints/inbox", "tab=all", None, Staff(), {"headers": {}})
+    assert bad["status"] == 422

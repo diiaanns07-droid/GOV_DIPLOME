@@ -98,35 +98,61 @@ def participant_resolution(record: dict) -> dict | None:
 
 # ---------------------------------------------------------------- паспорт решения (волна 2, п. 2; волна 1, п. 7)
 PASSPORT_TEXT_MAX = 160
-# Общие названия служб (POLISH_WAVE п. 7: реальные организации не придумывать). Таблицу ведёт R08; это запасной
-# вариант R09 — пока таблицы R08 нет в сборке. assignee_lookup(category, subtopic) из R08 имеет приоритет.
-DEFAULT_SERVICES = {
-    "roads": "Дорожная служба", "snow_ice": "Дорожная служба", "sidewalks": "Служба благоустройства",
-    "transport": "Служба пассажирского транспорта", "lighting": "Служба освещения",
-    "yards": "Служба благоустройства", "waste": "Оператор вывоза мусора", "utilities": "Теплосеть или водоканал",
-    "smell_air": "Служба экологии", "noise_safety": "Полиция", "parking": "Полиция", "other": "Акимат района",
+# «Кому передано»: службы и таблица «категория/уточнение → служба» — КОПИЯ умолчаний R08
+# (ui/civic_akim/routing.py @ 9dbd62c: SERVICES, DEFAULT_RULES; kk вычитан R11, словарь service.<id>).
+# Общие названия — реальные организации не придумываем (POLISH_WAVE п. 7). В сборке R01 подключает таблицу R08
+# с правками акимата: store.assignee_lookup = ui.civic_akim.routing.service_for (она имеет приоритет).
+SERVICES = {
+    "road": {"ru": "Дорожная служба", "kk": "Жол қызметі"},
+    "traffic": {"ru": "Служба светофоров и разметки", "kk": "Бағдаршам және жол таңбасы қызметі"},
+    "street_cleaning": {"ru": "Служба уборки улиц", "kk": "Көшелерді тазалау қызметі"},
+    "transport": {"ru": "Служба общественного транспорта", "kk": "Қоғамдық көлік қызметі"},
+    "lighting": {"ru": "Служба освещения", "kk": "Жарықтандыру қызметі"},
+    "landscaping": {"ru": "Служба благоустройства", "kk": "Абаттандыру қызметі"},
+    "greenery": {"ru": "Служба озеленения", "kk": "Көгалдандыру қызметі"},
+    "waste": {"ru": "Оператор вывоза мусора", "kk": "Қоқыс шығару операторы"},
+    "utilities": {"ru": "Служба ЖКХ", "kk": "ТКШ қызметі"},
+    "heating": {"ru": "Теплосеть", "kk": "Жылу желісі"},
+    "water": {"ru": "Водоканал", "kk": "Сумен жабдықтау қызметі"},
+    "power": {"ru": "Электросети", "kk": "Электр желілері"},
+    "gas": {"ru": "Газовая служба", "kk": "Газ қызметі"},
+    "housing": {"ru": "Управляющая компания дома", "kk": "Үйді басқарушы компания"},
+    "ecology": {"ru": "Служба экологии", "kk": "Экология қызметі"},
+    "emergency": {"ru": "Служба спасения", "kk": "Құтқару қызметі"},
+    "police": {"ru": "Полиция", "kk": "Полиция"},
+    "animals": {"ru": "Служба отлова животных", "kk": "Жануарларды аулау қызметі"},
+    "parking": {"ru": "Служба парковок", "kk": "Тұрақ қызметі"},
+    "akimat": {"ru": "Аппарат акима района", "kk": "Аудан әкімінің аппараты"},
 }
-# id уточнений — из categories_v2.json (проверяет тест test_subtopic_services_use_real_ids).
-SUBTOPIC_SERVICES = {"no_heating": "Теплосеть", "no_water": "Водоканал", "sewage": "Водоканал",
-                     "power_building": "Служба электроснабжения", "gas": "Газовая служба",
-                     "stray_dogs": "Служба отлова бездомных животных"}
-
-
-# Казахские подписи тех же общих названий (перевод R09 — сверить R11; таблица R08 может дать свои ru/kk).
-SERVICES_KK = {
-    "Дорожная служба": "Жол қызметі", "Служба благоустройства": "Абаттандыру қызметі",
-    "Служба пассажирского транспорта": "Жолаушылар көлігі қызметі", "Служба освещения": "Жарықтандыру қызметі",
-    "Оператор вывоза мусора": "Қоқыс шығару операторы", "Теплосеть или водоканал": "Жылу желісі немесе су арнасы",
-    "Служба экологии": "Экология қызметі", "Полиция": "Полиция", "Акимат района": "Аудан әкімдігі",
-    "Теплосеть": "Жылу желісі", "Водоканал": "Су арнасы", "Служба электроснабжения": "Электрмен жабдықтау қызметі",
-    "Газовая служба": "Газ қызметі", "Служба отлова бездомных животных": "Қаңғыбас жануарларды аулау қызметі",
+# Ключ — категория или «категория/уточнение»; уточнение, которого нет, идёт в службу категории.
+SERVICE_RULES = {
+    "roads": "road", "roads/traffic_light_broken": "traffic", "roads/traffic_light_timing": "traffic",
+    "roads/intersection": "traffic", "roads/marking": "traffic",
+    "snow_ice": "street_cleaning", "snow_ice/icicles": "housing",
+    "sidewalks": "road", "sidewalks/crossing": "traffic",
+    "transport": "transport",
+    "lighting": "lighting", "lighting/wire_down": "power",
+    "yards": "landscaping", "yards/trees_lawn": "greenery",
+    "waste": "waste",
+    "utilities": "utilities", "utilities/no_heating": "heating", "utilities/no_water": "water",
+    "utilities/sewage": "water", "utilities/power_building": "power",
+    "smell_air": "ecology", "smell_air/gas": "gas", "smell_air/smoke_fire": "emergency",
+    "noise_safety": "police", "noise_safety/stray_dogs": "animals",
+    "parking": "parking", "parking/sidewalk_parking": "police",
+    "other": "akimat",
 }
 
 
-def default_assignee(category: str | None, subtopic: str | None) -> str | None:
-    if subtopic and subtopic in SUBTOPIC_SERVICES:
-        return SUBTOPIC_SERVICES[subtopic]
-    return DEFAULT_SERVICES.get(category or "")
+def default_service(category: str | None, subtopic: str | None) -> str:
+    """id службы по таблице R09 (= умолчания R08): уточнение → категория → «Другое»."""
+    if category and subtopic and f"{category}/{subtopic}" in SERVICE_RULES:
+        return SERVICE_RULES[f"{category}/{subtopic}"]
+    return SERVICE_RULES.get(category or "", SERVICE_RULES["other"])
+
+
+def default_assignee(category: str | None, subtopic: str | None) -> str:
+    """Название службы по-русски (для старых вызовов и текстов сотрудника)."""
+    return SERVICES[default_service(category, subtopic)]["ru"]
 
 
 def deadline(record: dict, now: datetime) -> dict | None:
@@ -135,33 +161,42 @@ def deadline(record: dict, now: datetime) -> dict | None:
     return workdays.deadline_info(rec.parse_iso(record.get("due_at")), now, done=answered)
 
 
+def _assignee(record: dict, assignee_lookup) -> dict:
+    """Кто отвечает: выбор сотрудника (id из SERVICES) → таблица R08 с правками акимата → таблица R09."""
+    passport = record.get("passport") or {}
+    category, subtopic = record.get("category"), record.get("subtopic")
+    sid, names, source = passport.get("assignee_id"), None, None
+    if sid in SERVICES:
+        source = "staff"
+    elif passport.get("assignee"):                        # свободный текст старых записей
+        sid, names, source = None, {"ru": passport["assignee"], "name_edited": True}, "staff"
+    elif assignee_lookup is not None:
+        try:
+            found = assignee_lookup(category, subtopic)
+        except Exception:  # noqa: BLE001 — таблица R08 недоступна: берём таблицу R09
+            found = None
+        if isinstance(found, dict) and (found.get("id") or found.get("ru")):   # R08 service_for()
+            sid, names, source = found.get("id"), found, "r08"
+        elif isinstance(found, str) and found:                                 # R08 assignee_lookup() — имя
+            sid, names, source = None, {"ru": found, "name_edited": True}, "r08"
+    if source is None:
+        sid, source = default_service(category, subtopic), "default"
+    base = SERVICES.get(sid or "", {})
+    names = names or {}
+    return {"assignee_id": sid, "assignee": names.get("ru") or base.get("ru"),
+            "assignee_kk": names.get("kk") or base.get("kk"),
+            # Акимат переименовал службу (R08 name_edited): интерфейс показывает его название, а не service.<id>.
+            "assignee_custom": bool(names.get("name_edited")), "assignee_source": source}
+
+
 def passport_view(record: dict, now: datetime, assignee_lookup=None) -> dict:
     """«Паспорт решения» для карточки: кто отвечает, следующий шаг, два срока, задержка.
-    next_step — текст сотрудника; без него интерфейс показывает шаг по статусу (ключ complaint.passport.step.*)."""
+    next_step — текст сотрудника; без него интерфейс показывает шаг по статусу (ключ mine.passport.next_default.*)."""
     passport = dict(record.get("passport") or {})
-    assignee = passport.get("assignee")
-    assignee_kk = None
-    source = "staff" if assignee else None
-    if not assignee and assignee_lookup is not None:
-        try:
-            found = assignee_lookup(record.get("category"), record.get("subtopic"))
-            # R08 может вернуть строку или {"ru": ..., "kk": ...}.
-            if isinstance(found, dict):
-                assignee, assignee_kk = found.get("ru"), found.get("kk")
-            else:
-                assignee = found
-            source = "r08" if assignee else None
-        except Exception:  # noqa: BLE001 — таблица R08 недоступна: берём общий вариант
-            assignee = None
-    if not assignee:
-        assignee = default_assignee(record.get("category"), record.get("subtopic"))
-        source = "default" if assignee else None
-    if assignee and not assignee_kk:
-        assignee_kk = SERVICES_KK.get(assignee)
     delay = passport.get("delay") or None
     next_update = rec.parse_iso((delay or {}).get("next_update_at"))
     return {
-        "assignee": assignee, "assignee_kk": assignee_kk, "assignee_source": source,
+        **_assignee(record, assignee_lookup),
         "next_step": passport.get("next_step"),
         "response_due": record.get("due_at"),
         "deadline": deadline(record, now),
@@ -208,7 +243,10 @@ def changes(records: list[dict], since: str | None) -> dict:
             moment = rec.parse_iso(event["at"])
             if edge is not None and (moment is None or moment <= edge):
                 continue
-            items.append({**event, "_order": order, "complaint_id": record["id"], "code": record.get("code"),
+            # id для ссылки из уведомления (#mine/event=<id>): номер жалобы + вид + время — не меняется со временем.
+            stamp = re.sub(r"[^0-9T]", "", event["at"])[:15]
+            items.append({**event, "_order": order, "id": f"{record.get('code') or record['id']}.{event['kind']}.{stamp}",
+                          "complaint_id": record["id"], "code": record.get("code"),
                           "relation": record.get("relation"), "category": record.get("category"),
                           "target": {k: v for k, v in (record.get("target") or {}).items()
                                      if k in ("kind", "id", "label_ru", "label_kk", "approximate")}})
@@ -218,3 +256,82 @@ def changes(records: list[dict], since: str | None) -> dict:
         item.pop("_order")
     fixed_verified = sum(1 for r in records if (r.get("resolution") or {}).get("state") == "verified")
     return {"items": items, "summary": {"verified": fixed_verified, "waiting": waiting, "total": len(records)}}
+
+
+# ---------------------------------------------------------------- акимат: «Обращения» (R11 IA_WAVE2 §2.5)
+INBOX_TABS = ("new", "in_progress", "waiting_check", "overdue", "reopened")
+_TAB_ORDER = ("reopened", "overdue", "waiting_check", "new", "in_progress")   # срочнее — раньше
+
+
+def inbox_tab(record: dict, now: datetime) -> str | None:
+    """Вкладка списка акимата для одной жалобы (одна, самая срочная) или None — решено/отклонено."""
+    status = record.get("status")
+    state = (record.get("resolution") or {}).get("state")
+    if record.get("duplicate_of"):
+        return None
+    if status in rec.OPEN_STATUSES and state == "reopened":
+        return "reopened"
+    if status in rec.OPEN_STATUSES:
+        info = deadline(record, now) or {}
+        next_update = rec.parse_iso(((record.get("passport") or {}).get("delay") or {}).get("next_update_at"))
+        if info.get("state") == "overdue" or (next_update and now > next_update):
+            return "overdue"
+        return "new" if status == "new" else "in_progress"
+    if status == "fixed" and state == "reported":
+        return "waiting_check"
+    return None
+
+
+def _deadline_rank(info: dict | None) -> tuple:
+    """Какой срок показать у группы: просроченный сильнее, затем «сегодня», затем меньше всего дней осталось."""
+    if not info:
+        return (-1, 0)
+    state = info.get("state")
+    if state == "overdue":
+        return (3, info.get("overdue_working_days") or 0)
+    if state == "today":
+        return (2, 0)
+    if state == "ok":
+        return (1, -(info.get("working_days_left") or 0))
+    return (0, 0)                                         # ответ уже дан
+
+
+def inbox(records: list[dict], now: datetime, tab: str | None = None) -> dict:
+    """Список целей с открытыми обращениями (не отдельных жалоб): группа = цель + категория.
+    -> {"counts": {вкладка: групп}, "items": [группа]} — items только выбранной вкладки (или все)."""
+    groups: dict[tuple, dict] = {}
+    for record in records:
+        rtab = inbox_tab(record, now)
+        if rtab is None:
+            continue
+        target = record.get("target") or {}
+        key = (target.get("id") or record["id"], record.get("category"))
+        group = groups.setdefault(key, {"key": f"{key[0]}|{key[1]}", "tab": rtab, "category": record.get("category"),
+                                        "subtopic": record.get("subtopic"), "people": 0, "complaints": [],
+                                        "target": {k: v for k, v in target.items()
+                                                   if k in ("kind", "id", "label_ru", "label_kk", "approximate")},
+                                        "point": record.get("point"), "deadline": None, "demo": True,
+                                        "created_at": record.get("created_at")})
+        if _TAB_ORDER.index(rtab) < _TAB_ORDER.index(group["tab"]):
+            group["tab"] = rtab
+        group["people"] += rec.reporters(record)
+        group["demo"] = group["demo"] and bool(record.get("demo"))
+        group["complaints"].append({"id": record["id"], "code": record.get("code"), "status": record.get("status"),
+                                    "reporters": rec.reporters(record), "tab": rtab, "demo": bool(record.get("demo"))})
+        info = deadline(record, now)
+        if info and _deadline_rank(info) > _deadline_rank(group["deadline"]):
+            group["deadline"] = info
+        if group["subtopic"] is None and record.get("subtopic"):
+            group["subtopic"] = record.get("subtopic")
+        if (record.get("created_at") or "") < (group["created_at"] or "~"):
+            group["created_at"] = record.get("created_at")
+    counts = {name: 0 for name in INBOX_TABS}
+    for group in groups.values():
+        counts[group["tab"]] += 1
+    items = [g for g in groups.values() if tab is None or g["tab"] == tab]
+    # Сначала дольше всех просроченные, затем больше людей, затем старше.
+    items.sort(key=lambda g: (-_deadline_rank(g["deadline"])[0] if (g["deadline"] or {}).get("state") == "overdue" else 0,
+                              -((g["deadline"] or {}).get("overdue_working_days") or 0), -g["people"], g["created_at"] or ""))
+    for group in items:
+        group["complaints"].sort(key=lambda c: (_TAB_ORDER.index(c["tab"]), -c["reporters"]))
+    return {"counts": counts, "items": items}

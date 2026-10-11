@@ -129,13 +129,10 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-subtopics { display: flex; flex-wrap: wrap; gap: 8px; }
 .bc-subtopics .bk-chip { white-space: normal; text-align: left; min-height: 44px; }
 
-/* Срочный случай: крупно, цвет + слово + действие (UX_BRIEF: цвет никогда не один). */
-.bc-emergency { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: var(--r-l, 16px);
-                border: 2px solid var(--c-danger, #b3362e); background: #fdecea; }
-.bc-emergency__title { display: flex; align-items: center; gap: 8px; margin: 0; font-size: var(--fs-lead, 18px);
-                       font-weight: 700; color: var(--c-danger, #b3362e); }
-.bc-emergency__text { margin: 0; font-weight: 600; }
-.bc-emergency__call { min-height: 56px; text-decoration: none; white-space: normal; }
+/* Срочный случай: баннер ui-kit .bk-banner--danger (UX_SPEC §10); звонок — главная кнопка экрана. */
+.bc-emergency p { margin: 0; }
+.bc-emergency__text { font-weight: 600; }
+.bc-emergency .bc-emergency__call { justify-self: stretch; min-height: 56px; text-decoration: none; white-space: normal; }
 
 /* Фото: миниатюры 72 px, крестик удаления ≥ 44 px. */
 .bc-photos { display: flex; flex-direction: column; gap: 8px; }
@@ -168,15 +165,25 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-changes__item { display: block; width: 100%; min-height: 44px; padding: 8px 0; border: 0; background: none;
                     text-align: left; font: inherit; color: inherit; cursor: pointer; }
 .bc-changes__item:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
-.bc-verify { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: var(--r-m, 12px);
-             background: #eaf4dc; border: 1px dashed var(--fixed, #639922); }
+.bc-changes__item--focus { background: var(--c-accent-soft, #f1fbd3); border-radius: var(--r-s, 8px); padding-inline: 8px; }
+.bc-changes__more { align-self: flex-start; }
+/* «Ждут вашей проверки» — сверху экрана, пунктир = «служба сообщила», как на карте (heat_states.reported_fixed). */
+.bc-wait { display: flex; flex-direction: column; gap: 8px; border: 1px dashed var(--fixed, #639922); }
+.bc-wait__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.bc-verify { display: flex; flex-direction: column; gap: 8px; }
+.bc-verify + .bc-verify { padding-top: 12px; border-top: 1px solid var(--c-line, #e4e9e3); }
 .bc-verify p { margin: 0; }
-.bc-verify__reported { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--c-ok, #2f6b12); }
+.bc-verify__place { display: flex; align-items: center; gap: 6px; }
+.bc-verify__reported { font-weight: 600; color: var(--c-ok, #2f6b12); }
 .bc-verify__question { font-weight: 700; font-size: var(--fs-lead, 18px); }
 .bc-verify__buttons { display: flex; flex-direction: column; gap: 8px; }
-.bc-state { display: flex; align-items: center; gap: 6px; margin: 0; font-weight: 600; }
-.bc-state--verified { color: var(--c-ok, #2f6b12); }
-.bc-state--reopened { color: var(--c-danger, #b3362e); }
+/* Сроки в рабочих днях: цвет + слово (UX_SPEC §10). */
+.bc-deadline--warn { color: var(--c-warn, #8a5a12); font-weight: 600; }
+.bc-deadline--danger { color: var(--c-danger, #b3362e); font-weight: 700; }
+.bc-assignee { margin: 0; }
+.bc-delay { margin: 0; }
+.bc-subs__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.bc-subs__item { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
 .bc-more summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600;
                    color: var(--c-brand, #176b4a); }
 .bc-more summary:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
@@ -190,7 +197,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-staff__summary { margin: 0; }
 .bc-staff__form { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px solid var(--c-line, #e4e9e3); }
 .bc-staff__field { display: flex; flex-direction: column; gap: 4px; }
-.bc-staff__field input { min-height: 44px; padding: 8px 12px; font: inherit; font-size: 16px; border: 1px solid var(--c-line, #e4e9e3);
+.bc-staff__field input, .bc-staff__field select { min-height: 44px; padding: 8px 12px; font: inherit; font-size: 16px; border: 1px solid var(--c-line, #e4e9e3);
                          border-radius: var(--r-m, 12px); }
 .bc-staff__note { margin: 0; min-height: 1.4em; font-weight: 600; color: var(--c-ok, #2f6b12); }
 .bc-staff__note--error { color: var(--c-danger, #b3362e); }
