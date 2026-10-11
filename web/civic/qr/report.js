@@ -219,8 +219,9 @@
       });
     }
     function postJson(path, body) {
+      // Id устройства — и в теле, и в заголовке X-Birge-Device (так шлёт R07; R09 принимает оба).
       return fetchFn(api + path, { method: "POST", credentials: "same-origin",
-        headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(body) })
+        headers: { Accept: "application/json", "Content-Type": "application/json", "X-Birge-Device": body.device_id || "" }, body: JSON.stringify(body) })
         .then(function (r) { if (!r.ok) { var e = new Error("HTTP " + r.status); e.status = r.status; throw e; } return r.json().catch(function () { return {}; }); });
     }
 
@@ -285,10 +286,9 @@
       box.setAttribute("data-state", S.state);
       box.lang = lang();
       var kids = [];
-      var head = h("div", { class: "bq-report__nav" }, [
-        h("button", { type: "button", class: "bk-iconbtn bq-report__close", "aria-label": t("common.action.close"), title: t("common.action.close"),
-          onclick: function () { if (typeof opts.onClose === "function") opts.onClose(); destroy(); } }, [icon("close", sprite)])]);
-      kids.push(head);
+      // Крестик — в углу карточки, а не отдельной строкой: на телефоне главная кнопка остаётся видна без прокрутки.
+      kids.push(h("button", { type: "button", class: "bk-iconbtn bq-report__close", "aria-label": t("common.action.close"), title: t("common.action.close"),
+        onclick: function () { if (typeof opts.onClose === "function") opts.onClose(); destroy(); } }, [icon("close", sprite)]));
       if (S.state === "loading" || S.state === "idle") {
         kids.push(h("div", { class: "bq-skel", "aria-busy": "true" }, [
           h("span", { class: "bk-sr-only", text: t("qr.card.loading") }),
@@ -327,7 +327,6 @@
       } else if (!S.heatUnavailable) {
         out.push(h("p", { class: "bq-none", text: t("qr.card.none") }));
       }
-      if (demo) out.push(h("p", { class: "bq-demo-note", text: t("qr.card.demo_note") }));
       // Одна главная кнопка (UX_BRIEF п. 3, POLISH_WAVE_2 защита п. 4).
       var main = mainAction(it, tg), actions = [];
       if (main === "metoo") {
@@ -381,7 +380,7 @@
       if (box.parentNode) box.parentNode.removeChild(box);
     }
     render();
-    return { open: open, destroy: destroy, state: function () { return { id: S.id, state: S.state, error: S.error, main: S.info ? mainAction(S.heat, S.info.target) : null }; } };
+    return { open: open, destroy: destroy, info: function () { return S.info; }, state: function () { return { id: S.id, state: S.state, error: S.error, main: S.info ? mainAction(S.heat, S.info.target) : null }; } };
   }
 
   return { mount: mount, parseReportId: parseReportId, kindKey: kindKey, mainAction: mainAction, REPORT_ID_RE: REPORT_ID_RE,

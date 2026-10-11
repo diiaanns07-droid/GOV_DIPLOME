@@ -1,5 +1,6 @@
 /* R12 · QR-паспорт объекта (web/civic/qr/report.js). Токены и кнопки — ui-kit R11 (tokens.css, components.css). */
 .bq-report {
+  position: relative;
   box-sizing: border-box;
   max-width: 480px;
   padding: 8px 16px 20px;
@@ -9,9 +10,8 @@
   overflow-wrap: anywhere;
 }
 .bq-report *, .bq-report *::before, .bq-report *::after { box-sizing: border-box; }
-.bq-report__nav { display: flex; justify-content: flex-end; min-height: 48px; }
-.bq-report__close { min-width: 48px; min-height: 48px; }
-.bq-eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 4px; color: var(--c-text-2, #5b6a64); font-size: 14px; }
+.bq-report__close { position: absolute; top: 4px; right: 4px; min-width: 48px; min-height: 48px; }
+.bq-eyebrow { padding-right: 52px; min-height: 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 4px; color: var(--c-text-2, #5b6a64); font-size: 14px; }
 .bq-eyebrow .ic { width: 18px; height: 18px; }
 .bq-sep { color: var(--c-text-3, #7d8a85); }
 .bq-title { margin: 0 0 4px; font-size: 22px; line-height: 1.25; font-weight: 700; }
@@ -21,7 +21,6 @@
 .bq-reported { margin: 0 0 6px; font-size: 18px; }
 .bq-status { margin: 0 0 14px; }
 .bq-none { margin: 0 0 14px; color: var(--c-text-2, #5b6a64); }
-.bq-demo-note { margin: 0 0 12px; padding: 8px 10px; border-radius: 10px; background: var(--c-demo-soft, #edf1f7); color: var(--c-demo, #4b5d7a); font-size: 14px; }
 .bq-done { display: flex; gap: 6px; align-items: center; margin: 0 0 12px; color: var(--c-ok, #2f6b12); }
 .bq-actions { display: grid; gap: 8px; margin: 0 0 12px; }
 .bq-actions .bk-btn { min-height: 48px; }
