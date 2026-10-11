@@ -213,6 +213,9 @@
   6 failed: регрессия исправленных S01/S10/S15 там ожидаемо падает (исправлений в базе нет).
 
 ## Следующий шаг
+0. «Волна мелочей» (research/round-14/POLISH_WAVE.md, 11 окт): R15 проверяет п. 5 (фото R09) и п. 8 (фильтр R04).
+   Чек-лист и готовое предложение clean_photo — INTEGRATION.txt и proposals/photo/. Когда R09/R04 сдадут — тесты
+   в tests/civic/R15 (GPS удалён, подмена типа, размеры, доступ, нет в публичных ответах; фильтр — время и вывод).
 1. R06 берёт P-R06-2, R01 — поставку R06 с ним и tests/civic/R15 (новый test_r15_r06_stages.py). Когда тесты S17–S21
    пройдут на сборке R01 — перенести их в FIXED (tests/civic/R15/r15_common.py), обновить SECURITY_REVIEW/DELIVERY.
 2. Каждый новый SHA FINAL R01 (ветка claude/sharp-dijkstra-0t87gl): R15_ROOT=<копия сборки> pytest tests/civic/R15
