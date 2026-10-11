@@ -23,7 +23,7 @@
  /* Панель «Территория» (раунд 13, explore.js): весь текст ≥ 14 px, кнопки ≥ 44 px (R11 B1 п. 7, R10 B-013/B-014). */
  .civic-mode .civic-explore-row > label > span,
  .civic-mode .civic-explore button, .civic-mode .civic-explore summary,
-@@ -216,3 +217,23 @@
+@@ -216,3 +217,26 @@
  /* Открыт кабинет сотрудника или другой ящик (body[data-civic-drawer="open"]): кнопка «Что построить?» и каталог R05
     не лежат поверх его заголовка (R10 B-031, телефон). */
  body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
@@ -47,3 +47,6 @@
 +@media (max-width: 370px) {
 +  .civic-mode .topbar { padding-left: 8px; padding-right: 8px; }
 +}
++/* R10 B-047: подписи раунда 13 в оболочке (подзаголовок шапки, «Территория») — серый --muted #6d7c76 давал 4.3:1 при
++   норме 4.5:1 (UX_BRIEF правило 2); в Birge — тон ui-kit для второстепенного текста. */
++.civic-mode { --muted: var(--c-text-2, #5b6a64); }

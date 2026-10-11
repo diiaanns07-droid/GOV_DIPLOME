@@ -2,7 +2,7 @@
  "meta": {
   "root": "/home/user/n11",
   "sha": "8e67c65",
-  "base": "http://127.0.0.1:39321/",
+  "base": "http://127.0.0.1:33837/",
   "seeds": [],
   "sizes": [
    "1366x768",
@@ -12,12 +12,12 @@
    "ru",
    "kk"
   ],
-  "when": "2026-10-10T22:42:31.073Z",
+  "when": "2026-10-11T00:19:32.718Z",
   "node": "v22.22.0"
  },
  "counts": {
-  "PASS": 154,
-  "FAIL": 2,
+  "PASS": 160,
+  "FAIL": 4,
   "NOT_RUN": 0
  },
  "results": [
@@ -132,7 +132,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "c-fbfc91ed37f946be",
+    "id": "c-a66ca4ee73f5d901",
     "st": "new"
    },
    "shot": null
@@ -146,7 +146,7 @@
     "status": 200,
     "n": 1,
     "top": {
-     "complaint_id": "c-fbfc91ed37f946be",
+     "complaint_id": "c-a66ca4ee73f5d901",
      "score": 0.798,
      "target": {
       "id": "osm-node-13394597038",
@@ -157,7 +157,7 @@
      "metoo": 0,
      "people": 1,
      "category": "transport",
-     "created_at": "2026-10-11T03:32:03+05:00",
+     "created_at": "2026-10-11T05:08:38+05:00",
      "status": "new",
      "distance_m": 44.3,
      "same_target": false
@@ -268,7 +268,7 @@
    "status": "PASS",
    "detail": {
     "status": 201,
-    "id": "p-930fc9f7b781",
+    "id": "p-c68acdcd3d92",
     "st": "proposal"
    },
    "shot": null
@@ -310,7 +310,7 @@
     "item": {
      "level": "fixed",
      "weight": 0,
-     "fixed_until": "2026-10-18T03:32:03+05:00"
+     "fixed_until": "2026-10-18T05:08:39+05:00"
     }
    },
    "shot": null
@@ -356,6 +356,31 @@
    "detail": {
     "n": 0,
     "ex": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
+   "status": "FAIL",
+   "detail": {
+    "n": 2,
+    "ex": [
+     "4.32:1 «Город и жители вместе» rgb(109, 124, 118) на rgb(253,254,253)",
+     "4.35:1 «Территория» rgb(109, 124, 118) на rgb(254,254,254)"
+    ]
    },
    "shot": null
   },
@@ -806,6 +831,31 @@
    "detail": {
     "n": 0,
     "ex": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
+   "status": "FAIL",
+   "detail": {
+    "n": 2,
+    "ex": [
+     "4.32:1 «Қала мен тұрғындар бірге» rgb(109, 124, 118) на rgb(253,254,253)",
+     "4.35:1 «Аумақ» rgb(109, 124, 118) на rgb(254,254,254)"
+    ]
    },
    "shot": null
   },
@@ -1295,6 +1345,28 @@
   {
    "layer": "UI 375-ru",
    "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
    "name": "нет ключей перевода и технических слов",
    "status": "PASS",
    "detail": {
@@ -1713,6 +1785,28 @@
    "layer": "UI 375-kk",
    "step": "0",
    "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
    "status": "PASS",
    "detail": {
     "n": 0,

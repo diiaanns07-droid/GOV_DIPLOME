@@ -70,7 +70,44 @@ function uiScreen(page) {
       const t = (el.textContent || "").trim().replace(/\s+/g, " ");
       if (t && t.length <= 24) cut.push(`«${t}» видно ${el.clientWidth} из ${el.scrollWidth} px`);
     }
+    // Контраст текста ≥ 4.5:1 (UX_BRIEF правило 2; крупный текст ≥ 24 px или ≥ 18.66 px полужирный — 3:1, WCAG).
+    // Фон — первый непрозрачный слой вверх по предкам (полупрозрачные смешиваются). Текст поверх карты (фона нет
+    // до холста), картинки и градиенты, полупрозрачные предки и неактивные кнопки не оцениваем.
+    const rgba = (c) => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const v = m[1].split(/[ ,\/]+/).filter(Boolean).map(Number);
+      return [v[0], v[1], v[2], v.length > 3 ? v[3] : 1]; };
+    const lum = (c) => { const f = (x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+      return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+    const over = (top, bot) => { const a = top[3]; return [0, 1, 2].map((i) => top[i] * a + bot[i] * (1 - a)).concat(1); };
+    const bgOf = (e) => {
+      const layers = [];
+      for (let n = e; n && n.nodeType === 1; n = n.parentElement) {
+        const cs = getComputedStyle(n);
+        if (Number(cs.opacity) < 0.99) return null;
+        if (cs.backgroundImage && cs.backgroundImage !== "none") return null;
+        if (n.classList.contains("maplibregl-map") || n.classList.contains("maplibregl-canvas-container")) return null;
+        const c = rgba(cs.backgroundColor);
+        if (c && c[3] > 0) { layers.push(c); if (c[3] >= 0.99) break; }
+        if (n === document.documentElement && (!c || c[3] < 0.99)) layers.push([255, 255, 255, 1]);
+      }
+      if (!layers.length) return null;
+      let col = layers[layers.length - 1]; if (col[3] < 0.99) col = over(col, [255, 255, 255, 1]);
+      for (let i = layers.length - 2; i >= 0; i--) col = over(layers[i], col);
+      return col;
+    };
+    const lowContrast = [];
+    for (const el of document.querySelectorAll("body *")) {
+      const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+      if (own.length < 2 || !vis(el) || el.closest("svg, .maplibregl-ctrl-attrib, [disabled], [aria-disabled=true]")) continue;
+      const cs = getComputedStyle(el); const fg = rgba(cs.color); const bg = bgOf(el);
+      if (!fg || !bg) continue;
+      const f = fg[3] < 0.99 ? over(fg, bg) : fg;
+      const L1 = lum(f), L2 = lum(bg), ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+      const fs = parseFloat(cs.fontSize), bold = Number(cs.fontWeight) >= 700;
+      const need = fs >= 24 || (bold && fs >= 18.66) ? 3 : 4.5;
+      if (ratio < need) lowContrast.push(`${ratio.toFixed(2)}:1 «${own.slice(0, 26)}» ${cs.color} на rgb(${bg.slice(0, 3).map(Math.round).join(",")})`);
+    }
     return {
+      lowContrast: lowContrast.slice(0, 6), lowContrastN: lowContrast.length,
       cut: cut.slice(0, 6), cutN: cut.length,
       clipped: clipped.slice(0, 6), clippedN: clipped.length,
       scrollW: document.documentElement.scrollWidth, innerW: innerWidth, lang: document.documentElement.lang,

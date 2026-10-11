@@ -78,6 +78,7 @@ async function open(browser, url, w, h, lang, storage) {
         add(screen, size, lang, "нет горизонтальной прокрутки", s.scrollW <= s.innerW ? "PASS" : "FAIL", { scrollW: s.scrollW, w: s.innerW });
         add(screen, size, lang, "надписи не закрыты другими панелями (частично)", s.clippedN === 0 ? "PASS" : "FAIL", { n: s.clippedN, ex: s.clipped });
         add(screen, size, lang, "короткие надписи не обрезаны многоточием («Bir…»)", s.cutN === 0 ? "PASS" : "FAIL", { n: s.cutN, ex: s.cut });
+        add(screen, size, lang, "контраст текста ≥ 4.5:1 (крупный ≥ 3:1)", s.lowContrastN === 0 ? "PASS" : "FAIL", { n: s.lowContrastN, ex: s.lowContrast });
         add(screen, size, lang, "нет ключей перевода и технических слов", !s.raw.length && !s.tech.length ? "PASS" : "FAIL", { raw: s.raw, tech: s.tech });
         add(screen, size, lang, "шрифт ≥ 14 px (основной 16)", s.tinyN === 0 ? "PASS" : "FAIL", { tiny: s.tinyN, ex: s.tiny, under16: s.smallN });
         add(screen, size, lang, "зоны нажатия ≥ 40 px (цель 48)", s.under40N === 0 ? "PASS" : "FAIL", { under40: s.under40N, ex: s.under40, under48: `${s.under48N}/${s.targetsN}` });

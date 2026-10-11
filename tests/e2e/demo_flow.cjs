@@ -426,6 +426,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   step("0", "нет горизонтальной прокрутки", scr.scrollW <= scr.innerW, { scrollW: scr.scrollW, w: scr.innerW });
   step("0", "надписи не закрыты другими панелями (частично)", scr.clippedN === 0, { n: scr.clippedN, ex: scr.clipped });
   step("0", "короткие надписи не обрезаны многоточием (название в шапке, кнопки)", scr.cutN === 0, { n: scr.cutN, ex: scr.cut });
+  step("0", "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2", scr.lowContrastN === 0, { n: scr.lowContrastN, ex: scr.lowContrast });
   step("0", "нет ключей перевода и технических слов", scr.raw.length === 0 && scr.tech.length === 0, { raw: scr.raw, tech: scr.tech });
   step("0", "шрифт: нет текста мельче 14 px (основной ≥ 16 px)", scr.tinyN === 0, { tiny: scr.tinyN, ex: scr.tiny, under16: scr.smallN, ex16: scr.small });
   step("0", "зоны нажатия ≥ 40 px (цель — 48 px)", scr.under40.length === 0, { under40N: scr.under40N, under40: scr.under40, under48: `${scr.under48N}/${scr.targetsN}` });
