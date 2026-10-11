@@ -103,3 +103,11 @@ precipitation_sum, snowfall_sum, rain_sum, wind_speed_10m_max (и snow_depth_mea
 Как в LOCAL-1 (тот же bbox, тот же формат gzip JSON с out geom), скачай через Overpass: highway=traffic_signals и highway=crossing (узлы).
 Сохрани data/civic/astana/osm-objects/raw/traffic_signals.json.gz и crossings.json.gz, дополни README.md и SOURCE.json. Коммить только эти файлы, push. Отчёт: число объектов, SHA.
 ```
+
+## LOCAL-11: генератор QR-кодов (Codex desktop)
+
+```
+Работай в C:\Users\LEGION\Desktop\hackalem\birge-coord (ветка claude/round-14-package; git pull --rebase до и перед push).
+Скачай qrcode-generator (Kazuhiko Arase, MIT) версии 1.4.4 из npm: файл qrcode.js → web/vendor/qrcode/qrcode.js, LICENSE и SOURCE.txt (версия, URL, sha256).
+Проверь в Node, что генерирует QR для строки «http://127.0.0.1:8611/?report=osm-node-1». Коммить только web/vendor/qrcode/, push. Отчёт: SHA.
+```
