@@ -1,22 +1,22 @@
 {
  "role": "R05",
- "generated_at": "2026-10-11T18:22:44.001Z",
- "tested_sha": "237718d093caf548c05dc9a5a4a5ee3f8005c8d6",
+ "generated_at": "2026-10-11T19:09:36.501Z",
+ "tested_sha": "c8e1b0641d811b9e236d10c03a09879074dd405e",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
-  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit7",
+  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit9",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 7.2,
-  "fps_20_objects_swiftshader": 2.2,
+  "fps_0_objects_swiftshader": 5.6,
+  "fps_20_objects_swiftshader": 2.8,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 44,
-  "fail": 1,
+  "pass": 49,
+  "fail": 0,
   "not_run": 1
  },
  "checks": [
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.2 кадр/с (без объектов 7.2)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.8 кадр/с (без объектов 5.6)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -204,7 +204,7 @@
   {
    "id": "r11_21_selected_object_not_under_card_1366_375",
    "status": "PASS",
-   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (187, 256) на экране и не под карточкой"
+   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (187, 287) на экране и не под карточкой"
   },
   {
    "id": "r11_22_23_demo_header_title_and_3d_label",
@@ -292,8 +292,8 @@
   },
   {
    "id": "r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk",
-   "status": "FAIL",
-   "detail": "page.click: Timeout 30000ms exceeded."
+   "status": "PASS",
+   "detail": "1366 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 36 px, зона 48 → масштаб 16.17, полных подписей 4; 1366 kk: метка «4» (Жақын жерде 4 жоба — жақындатып көрсету), точка ≥ 36 px, зона 48 → масштаб 16.17, полных подписей 4; 375 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 36 px, зона 48 → масштаб 15.33, полных подписей 3; 375 kk: метка «4» (Жақын жерде 4 жоба — жақындатып көрсету), точка ≥ 36 px, зона 48 → масштаб 15.33, полных подписей 3"
   },
   {
    "id": "kk_street_names_from_osm_card_and_lighting_hint_1366_375",
@@ -664,6 +664,310 @@
      "three": "ready",
      "pitch": 0
     }
+   }
+  },
+  {
+   "id": "idea_pick_object_sketch_not_saved_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "cat": {
+      "title": "Объект из каталога (по желанию)",
+      "kinds": [
+       "square",
+       "playground",
+       "sports",
+       "stop"
+      ],
+      "note": "Это опрос для выбора концепции, решение принимает акимат.",
+      "tag": "Идея"
+     },
+     "placing": {
+      "done": "Готово",
+      "tag": "Идея"
+     },
+     "res": {
+      "kind": "square",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        71.400296,
+        51.128602
+       ]
+      },
+      "rotation_deg": 0,
+      "near_street": "улица Абикена Бектурова",
+      "near_street_kk": null,
+      "target": null
+     },
+     "count": [
+      4,
+      4
+     ],
+     "picking": false,
+     "cancelled": null,
+     "dock_after": "hint"
+    },
+    "1366_kk": {
+     "cat": {
+      "title": "Каталогтағы нысан (қаласаңыз)",
+      "kinds": [
+       "square",
+       "playground",
+       "sports",
+       "stop"
+      ],
+      "note": "Бұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды.",
+      "tag": "Идея"
+     },
+     "placing": {
+      "done": "Дайын",
+      "tag": "Идея"
+     },
+     "res": {
+      "kind": "square",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        71.400296,
+        51.128602
+       ]
+      },
+      "rotation_deg": 0,
+      "near_street": "улица Абикена Бектурова",
+      "near_street_kk": null,
+      "target": null
+     },
+     "count": [
+      4,
+      4
+     ],
+     "picking": false,
+     "cancelled": null,
+     "dock_after": "hint"
+    },
+    "375_ru": {
+     "cat": {
+      "title": "Объект из каталога (по желанию)",
+      "kinds": [
+       "square",
+       "playground",
+       "sports",
+       "stop"
+      ],
+      "note": "Это опрос для выбора концепции, решение принимает акимат.",
+      "tag": "Идея"
+     },
+     "placing": {
+      "done": "Готово",
+      "tag": "Идея"
+     },
+     "res": {
+      "kind": "square",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        71.400301,
+        51.128601
+       ]
+      },
+      "rotation_deg": 0,
+      "near_street": "улица Абикена Бектурова",
+      "near_street_kk": null,
+      "target": null
+     },
+     "count": [
+      4,
+      4
+     ],
+     "picking": false,
+     "cancelled": null,
+     "dock_after": "hint"
+    },
+    "375_kk": {
+     "cat": {
+      "title": "Каталогтағы нысан (қаласаңыз)",
+      "kinds": [
+       "square",
+       "playground",
+       "sports",
+       "stop"
+      ],
+      "note": "Бұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды.",
+      "tag": "Идея"
+     },
+     "placing": {
+      "done": "Дайын",
+      "tag": "Идея"
+     },
+     "res": {
+      "kind": "square",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        71.400301,
+        51.128601
+       ]
+      },
+      "rotation_deg": 0,
+      "near_street": "улица Абикена Бектурова",
+      "near_street_kk": null,
+      "target": null
+     },
+     "count": [
+      4,
+      4
+     ],
+     "picking": false,
+     "cancelled": null,
+     "dock_after": "hint"
+    }
+   }
+  },
+  {
+   "id": "ideas_layer_off_by_default_shown_by_host_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "off": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 15
+     },
+     "on": {
+      "ideas": 3,
+      "geo": 20,
+      "labels": [
+       "Идея · 47",
+       "Идея · 23",
+       "Идея · 12"
+      ]
+     },
+     "picked": "idea-demo-1",
+     "after": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 15
+     }
+    },
+    "1366_kk": {
+     "off": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 15
+     },
+     "on": {
+      "ideas": 3,
+      "geo": 20,
+      "labels": [
+       "Идея · 47",
+       "Идея · 23",
+       "Идея · 12"
+      ]
+     },
+     "picked": "idea-demo-1",
+     "after": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 15
+     }
+    },
+    "375_ru": {
+     "off": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 15
+     },
+     "on": {
+      "ideas": 3,
+      "geo": 20,
+      "labels": [
+       "Идея · 47"
+      ]
+     },
+     "picked": "idea-demo-1",
+     "after": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 15
+     }
+    },
+    "375_kk": {
+     "off": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 15
+     },
+     "on": {
+      "ideas": 3,
+      "geo": 20,
+      "labels": [
+       "Идея · 47"
+      ]
+     },
+     "picked": "idea-demo-1",
+     "after": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 15
+     }
+    }
+   }
+  },
+  {
+   "id": "projects_layer_off_ideas_on_and_view3d_idea_1366_375",
+   "status": "PASS",
+   "detail": {
+    "375": {
+     "hidden": {
+      "view": "light",
+      "three": "idle",
+      "projectLabels": 0,
+      "three_requests": 0
+     },
+     "withIdeas": {
+      "view": "3d",
+      "ideaLabels": 2,
+      "projectLabels": 0
+     },
+     "focus": {
+      "ideas": 1,
+      "view": "3d",
+      "pitch": 52,
+      "near": true,
+      "label": true
+     },
+     "cleared": 0
+    },
+    "1366": {
+     "hidden": {
+      "view": "light",
+      "three": "idle",
+      "projectLabels": 0,
+      "three_requests": 0
+     },
+     "withIdeas": {
+      "view": "3d",
+      "ideaLabels": 3,
+      "projectLabels": 0
+     },
+     "focus": {
+      "ideas": 1,
+      "view": "3d",
+      "pitch": 52,
+      "near": true,
+      "label": true
+     },
+     "cleared": 0
+    }
+   }
+  },
+  {
+   "id": "project_from_idea_card_says_by_residents_idea_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "ru": "По идее жителей · 47 голосов",
+    "kk": "Тұрғындар идеясы бойынша · 47 дауыс"
    }
   },
   {

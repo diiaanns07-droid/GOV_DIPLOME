@@ -1204,7 +1204,7 @@ await check("idea_pick_object_sketch_not_saved_1366_375_ru_kk", async () => {
       `?reset=1&store=local&role=resident&lang=${lang}&center=71.4006,51.1283&zoom=17.4&pitch=50&bearing=-20`);
     const before = (await state(p)).count;
     await p.evaluate(() => { window.__pick = null; __b3d.pickObject().then((r) => { window.__pick = { done: true, value: r }; }); });
-    await p.waitForSelector(".b3d-dock[data-state=catalog] .b3d-card", { timeout: 10000 });
+    await p.waitForSelector(".b3d-dock[data-state=pick] .b3d-card", { timeout: 10000 });
     const cat = await p.evaluate(() => ({ title: document.querySelector(".b3d-title").textContent, kinds: [...document.querySelectorAll(".b3d-card")].map((b) => b.dataset.kind),
       note: document.querySelector(".b3d-note") ? document.querySelector(".b3d-note").textContent : null, tag: document.querySelector(".b3d-head .b3d-tag--idea") ? document.querySelector(".b3d-head .b3d-tag--idea").textContent : null }));
     if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `idea_pick_catalog_${w}_${lang}.png`) });
@@ -1284,16 +1284,23 @@ await check("projects_layer_off_ideas_on_and_view3d_idea_1366_375", async () => 
     const phone = w < 640;
     const ctx = await browser.newContext(Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {}));
     const p = await ctx.newPage();
-    const threeReq = [];
-    p.on("request", (r) => { if (/three\.module/.test(r.url())) threeReq.push(r.url()); });
+    const threeReq = [], dataReq = [];
+    p.on("request", (r) => {
+      if (/three\.module/.test(r.url())) threeReq.push(r.url());
+      if (/build3d\/data\/(nura-streets|astana-districts|proposals\.fixture)\.json|\/api\/civic\/v2\/proposals/.test(r.url())) dataReq.push(r.url().replace(/^.*\//, ""));
+    });
     // projects=0 — как оболочка: слой «Проекты» выключен сразу при монтировании
     await p.goto(BASE + "?reset=1&store=local&view=auto&role=akimat&lang=kk&projects=0&center=71.4002,51.1282&zoom=16.9&pitch=0&bearing=0");
-    await p.waitForFunction(() => window.__b3d && __b3d.getState().phase === "ready", null, { timeout: 60000 });
+    await p.waitForFunction(() => window.__b3d && __b3d.getState().phase === "idle", null, { timeout: 60000 });
+    await p.evaluate(() => __b3d.ready);
     await p.evaluate(() => __map.easeTo({ pitch: 52, duration: 0 })); // оболочка наклонила карту
     await p.waitForTimeout(1500);
-    const hidden = await p.evaluate(() => ({ view: __b3d.getState().view, three: __b3d.getState().three,
+    // Правило 5 защиты: слой выключен — модуль не грузит ни three.js, ни свои данные (улицы, районы, список проектов).
+    const hidden = await p.evaluate(() => ({ phase: __b3d.getState().phase, view: __b3d.getState().view, three: __b3d.getState().three,
+      dock_hidden: document.querySelector(".b3d").hidden,
       projectLabels: [...document.querySelectorAll(".b3d-label:not(.b3d-label--idea)")].filter((b) => getComputedStyle(b).display !== "none").length }));
     hidden.three_requests = threeReq.length;
+    hidden.data_requests = dataReq.slice();
     const ideas = JSON.parse(await (await fetch(BASE.replace("demo.html", "data/ideas.fixture.json"))).text()).ideas;
     await p.evaluate((list) => __b3d.setIdeas(list), ideas);
     await p.waitForFunction(() => __b3d.getState().three === "ready", null, { timeout: 30000 });
@@ -1311,10 +1318,59 @@ await check("projects_layer_off_ideas_on_and_view3d_idea_1366_375", async () => 
     if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `idea_view3d_${w}_kk.png`) });
     await p.evaluate(() => __b3d.view3dIdea(null));
     const cleared = await p.evaluate(() => __b3d.getState().ideas);
+    // Включили слой «Проекты» — только теперь модуль грузит данные, проекты на карте.
+    await p.evaluate(() => { __map.jumpTo({ center: [71.4002, 51.1282], zoom: 16.9 }); __b3d.setVisible(true); });
+    await p.waitForFunction(() => __b3d.getState().phase === "ready" && __b3d.getState().count > 0, null, { timeout: 30000 });
+    await p.waitForTimeout(800);
+    const on = await p.evaluate(() => ({ count: __b3d.getState().count, dock_hidden: document.querySelector(".b3d").hidden,
+      projectLabels: [...document.querySelectorAll(".b3d-label:not(.b3d-label--idea)")].filter((b) => getComputedStyle(b).display !== "none").length }));
+    on.data_requests = dataReq.slice();
     await ctx.close();
-    out[w] = { hidden, withIdeas, focus, cleared };
-    assert(hidden.three === "idle" && hidden.three_requests === 0 && hidden.projectLabels === 0 && withIdeas.view === "3d" && withIdeas.ideaLabels >= 1 &&
-      withIdeas.projectLabels === 0 && focus.ideas === 1 && focus.view === "3d" && focus.pitch >= 30 && focus.near && focus.label && cleared === 0, JSON.stringify(out[w]));
+    out[w] = { hidden, withIdeas, focus, cleared, on };
+    assert(hidden.phase === "idle" && hidden.data_requests.length === 0 && hidden.dock_hidden && hidden.three === "idle" && hidden.three_requests === 0 && hidden.projectLabels === 0 &&
+      withIdeas.view === "3d" && withIdeas.ideaLabels >= 1 && withIdeas.projectLabels === 0 && focus.ideas === 1 && focus.view === "3d" && focus.pitch >= 30 && focus.near && focus.label && cleared === 0 &&
+      on.count > 0 && !on.dock_hidden && on.projectLabels >= 1 && on.data_requests.length >= 3, JSON.stringify(out[w]));
+  }
+  return { status: "PASS", detail: out };
+});
+await check("idea_pick_works_with_projects_layer_off_1366_375_ru_kk", async () => {
+  // Мастер идеи R06 (шаг 3 «Объект из каталога») открывается, когда слой «Проекты» выключен (по умолчанию в оболочке):
+  // каталог эскиза виден (у корня атрибут data-b3d-picking — оболочке, чтобы не прятать его вместе со слоем), призрак
+  // модели виден, «Готово» отдаёт эскиз; после — панель и объёмный слой снова скрыты, проектов на карте нет.
+  const out = {};
+  for (const [w, h, lang] of [[1366, 768, "ru"], [1366, 768, "kk"], [375, 812, "ru"], [375, 812, "kk"]]) {
+    const phone = w < 640;
+    const p = await openPage(Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {}),
+      `?reset=1&store=local&view=auto&role=resident&lang=${lang}&projects=0&center=71.4006,51.1283&zoom=17.4&pitch=0&bearing=0`, { phase: "idle" });
+    await p.evaluate(() => __b3d.ready);
+    await p.waitForFunction(() => __map.loaded() && __map.areTilesLoaded() && !__map.isMoving(), null, { timeout: 60000 });
+    await p.evaluate(() => { window.__pick = null; __b3d.pickObject().then((r) => { window.__pick = { done: true, value: r }; }); });
+    await p.waitForSelector(".b3d-dock[data-state=pick] .b3d-card", { timeout: 20000 });
+    const cat = await p.evaluate(() => ({ hidden: document.querySelector(".b3d").hidden, picking: document.querySelector(".b3d").hasAttribute("data-b3d-picking"),
+      title: document.querySelector(".b3d-title").textContent, kinds: document.querySelectorAll(".b3d-card").length,
+      projectLabels: [...document.querySelectorAll(".b3d-label:not(.b3d-label--idea)")].filter((b) => getComputedStyle(b).display !== "none").length }));
+    await (phone ? p.tap(".b3d-card[data-kind=sports]") : p.click(".b3d-card[data-kind=sports]"));
+    await p.waitForFunction(() => __b3d.getState().mode === "placing" && !!__b3d.getState().ghost && __b3d.getState().three === "ready", null, { timeout: 30000 });
+    const at = await screenOf(p, [71.4003, 51.1286]);
+    if (phone) await p.touchscreen.tap(at[0], at[1]);
+    else { await p.mouse.move(at[0], at[1]); await p.mouse.click(at[0], at[1]); }
+    await p.waitForTimeout(600);
+    const layerVis = () => p.evaluate(() => { try { return __map.getLayoutProperty("civic-build3d", "visibility") || "visible"; } catch (e) { return "absent"; } });
+    const ghostLayer = await layerVis();
+    // Подсказка называет ту же кнопку, что на экране: «Готово» / «Дайын», а не «Поставить» / «Орнату».
+    const hint = await p.evaluate(() => ({ key: __b3d.getState().hint, done: document.querySelector("[data-action=place]").textContent.trim() }));
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `idea_pick_projects_off_${w}_${lang}.png`) });
+    await p.click("[data-action=place]");
+    await p.waitForFunction(() => window.__pick && window.__pick.done, null, { timeout: 10000 });
+    const res = await p.evaluate(() => window.__pick.value);
+    await p.waitForTimeout(300);
+    const after = await p.evaluate(() => ({ hidden: document.querySelector(".b3d").hidden, picking: document.querySelector(".b3d").hasAttribute("data-b3d-picking"),
+      projectLabels: [...document.querySelectorAll(".b3d-label:not(.b3d-label--idea)")].filter((b) => getComputedStyle(b).display !== "none").length }));
+    after.layer = await layerVis();
+    await p.context().close();
+    out[`${w}_${lang}`] = { cat, ghostLayer, hint, res: res && { kind: res.kind, at: res.geometry.coordinates }, after };
+    assert(/^build3d\.idea\.hint_/.test(hint.key || "") && hint.done === (lang === "ru" ? "Готово" : "Дайын") && !cat.hidden && cat.picking && cat.kinds === 4 && cat.projectLabels === 0 && ghostLayer === "visible" && res && res.kind === "sports" &&
+      after.hidden && !after.picking && after.projectLabels === 0 && after.layer === "none", JSON.stringify(out[`${w}_${lang}`]));
   }
   return { status: "PASS", detail: out };
 });

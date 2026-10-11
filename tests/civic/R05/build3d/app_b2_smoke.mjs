@@ -336,6 +336,72 @@ try {
     r.button === (k.endsWith("_kk") ? "3D көріністе қарау" : "Посмотреть в 3D") && r.after.view === "3d" && r.after.pitch >= 30 && r.after.geometries > 0 && !!r.after.selected &&
     (!r.after_shell_3d_button || r.after_shell_3d_button.view === "light")), light);
 
+  // 13. Волна 2, защита от перегруза п. 5 и п. 7 (идеи): слой «Проекты» выключен (по умолчанию) — R05 не грузит ни
+  // three.js, ни свои данные (улицы, районы, список проектов). Мастер идеи R06 зовёт pickObject() — каталог эскиза
+  // виден и при выключенном слое (нужен proposed_r01_wave2.patch: оболочка прячет корень R05 вместе со слоем), «Готово»
+  // отдаёт эскиз, после — корень снова скрыт. Включили слой — только тогда проекты грузятся и видны.
+  const lazy = {};
+  for (const [vp, lang, extra] of [[{ width: 1366, height: 768 }, "ru", {}], [{ width: 375, height: 812 }, "kk", { hasTouch: true, isMobile: true }]]) {
+    const ctx = await browser.newContext(Object.assign({ viewport: vp }, extra));
+    await ctx.addInitScript((l) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
+    const q = await ctx.newPage();
+    q.on("pageerror", (e) => errors.push(e.message));
+    const threeReq = [], dataReq = [];
+    q.on("request", (r) => {
+      if (/three\.module/.test(r.url())) threeReq.push(r.url());
+      if (/civic\/build3d\/data\/(nura-streets|astana-districts|proposals\.fixture)\.json/.test(r.url())) dataReq.push(r.url().replace(/^.*\//, ""));
+    });
+    await q.goto(URL0);
+    await q.waitForFunction(() => typeof map !== "undefined" && map && map.loaded() && window.CivicShell?.build3d?.getState, null, { timeout: 60000 });
+    await q.waitForTimeout(2500);
+    const off = await q.evaluate(() => { const s = CivicShell.build3d.getState(), r = document.getElementById("birge-build3d-root");
+      return { layer: window.BirgeShell && BirgeShell.layer, phase: s.phase, three: s.three, root: r ? getComputedStyle(r).display : "absent",
+        labels: [...document.querySelectorAll(".b3d-label")].filter((b) => getComputedStyle(b).display !== "none").length }; });
+    off.data_requests = dataReq.slice();
+    off.three_requests = threeReq.length;
+    await q.evaluate(() => { map.jumpTo({ center: [71.4006, 51.1283], zoom: 17.4, pitch: 0, bearing: 0 }); window.__pick = null;
+      CivicShell.build3d.pickObject().then((r) => { window.__pick = { done: true, value: r }; }); });
+    const shown = await q.waitForSelector("#birge-build3d-root .b3d-dock[data-state=pick] .b3d-card", { state: "visible", timeout: 20000 }).then(() => true, () => false);
+    const pick = { catalog_visible: shown };
+    if (shown) {
+      await shot(q, `shell_idea_pick_catalog_${vp.width}_${lang}.png`);
+      const card = await q.$('#birge-build3d-root .b3d-card[data-kind="sports"]');
+      if (extra.hasTouch) await card.tap(); else await card.click();
+      await q.waitForFunction(() => { const s = CivicShell.build3d.getState(); return s.mode === "placing" && !!s.ghost && s.three === "ready"; }, null, { timeout: 30000 });
+      await q.waitForFunction(() => !map.isMoving(), null, { timeout: 10000 }).catch(() => {});
+      const at = await q.evaluate(() => { const pt = map.project([71.4003, 51.1286]); return [pt.x, pt.y]; });
+      if (extra.hasTouch) await q.touchscreen.tap(at[0], at[1]);
+      else { await q.mouse.move(at[0], at[1]); await q.mouse.click(at[0], at[1]); }
+      await q.waitForTimeout(600);
+      pick.done_button = (await q.textContent("#birge-build3d-root [data-action=place]")).trim();
+      pick.toggle_hidden = await q.evaluate(() => { const t = document.querySelector(".birge-b3d-toggle"); return !t || getComputedStyle(t).display === "none"; });
+      await shot(q, `shell_idea_pick_placing_${vp.width}_${lang}.png`);
+      await q.click("#birge-build3d-root [data-action=place]");
+      await q.waitForFunction(() => window.__pick && window.__pick.done, null, { timeout: 10000 });
+      pick.result = await q.evaluate(() => window.__pick.value && window.__pick.value.kind);
+      await q.waitForTimeout(400);
+      pick.root_after = await q.evaluate(() => getComputedStyle(document.getElementById("birge-build3d-root")).display);
+    } else {
+      await q.evaluate(() => CivicShell.build3d.cancel());
+      await shot(q, `shell_idea_pick_hidden_${vp.width}_${lang}.png`);
+    }
+    // Слой «Проекты» включили — данные и проекты появляются.
+    await q.evaluate(() => BirgeShell.setLayer("projects"));
+    await q.waitForFunction(() => { const s = CivicShell.build3d.getState(); return s.phase === "ready" && s.count > 0; }, null, { timeout: 60000 }).catch(() => {});
+    await q.evaluate(() => CivicShell.build3d.flyToProposals({ duration: 0 }));
+    await q.waitForTimeout(1200);
+    const on = await q.evaluate(() => { const s = CivicShell.build3d.getState();
+      return { phase: s.phase, count: s.count, labels: [...document.querySelectorAll(".b3d-label")].filter((b) => getComputedStyle(b).display !== "none").length }; });
+    on.data_requests = dataReq.slice();
+    lazy[vp.width + "_" + lang] = { off, pick, on };
+    await ctx.close();
+  }
+  check("projects_layer_off_r05_loads_nothing_then_loads_when_on", Object.values(lazy).every((r) => r.off.layer !== "projects" && r.off.phase === "idle" && r.off.three === "idle" &&
+    r.off.data_requests.length === 0 && r.off.three_requests === 0 && r.off.root === "none" && r.off.labels === 0 && r.on.phase === "ready" && r.on.count > 0 && r.on.labels > 0 &&
+    r.on.data_requests.length >= 3), lazy);
+  check("idea_pick_visible_with_projects_layer_off (proposed_r01_wave2.patch)", Object.entries(lazy).every(([k, r]) => r.pick.catalog_visible &&
+    r.pick.done_button === (k.endsWith("_kk") ? "Дайын" : "Готово") && r.pick.toggle_hidden && r.pick.result === "sports" && r.pick.root_after === "none"), Object.fromEntries(Object.entries(lazy).map(([k, r]) => [k, r.pick])));
+
   check("phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
     Object.values(halfCards).every((r) => r.tapped && r.state === "card" && r.header_free && r.dock[0] >= r.header_bottom && (r.sheet !== "peek" || r.object_above_card)), halfCards);
 } catch (e) {

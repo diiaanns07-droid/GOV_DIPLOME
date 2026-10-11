@@ -1,0 +1,16 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index 19fda9ff..48b52f1a 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -299,7 +299,10 @@ body.civic-mode[data-birge-explore="header"] .civic-explore #map-status {
+ 
+ /* Режим «Проекты» (читаемость карты п. 3): 3D-проекты R05, «Что построить?» и подсказка о голосовании — только когда
+    включён слой «Проекты» (кнопка «слои» у кнопок карты, shell.js registerLayer). По умолчанию — жалобы и работы города. */
+-body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root { display: none !important; }
++body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root:not(:has(.b3d[data-b3d-picking])) { display: none !important; }
++/* Эскиз к идее (R06 зовёт CivicShell.build3d.pickObject(), волна 2 п. 7): каталог «Объект из каталога» и «Готово» R05
++   видны и при выключенном слое «Проекты» (проекты при этом скрыты самим R05); кнопка «Что построить?» — не к месту. */
++.birge-build3d-root:has(.b3d[data-b3d-picking]) .birge-b3d-toggle { display: none; }
+ 
+ /* Компактная легенда (читаемость карты п. 3): ступени цвета одной строкой, «?» раскрывает заголовок и пояснения.
+    Контейнер — оболочки (shell.js legendHost), сама легенда — R07 (legendContainer), здесь она без своей позиции. */

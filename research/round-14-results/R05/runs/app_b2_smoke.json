@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-11T18:32:04.669Z",
- "url": "http://127.0.0.1:8807/",
- "r01": "claude/sharp-dijkstra-0t87gl@a2d90dd (FINAL-кандидат 8e67c65) + R05 237718d",
+ "generated_at": "2026-10-11T19:19:39.628Z",
+ "url": "http://127.0.0.1:8808/",
+ "r01": "claude/sharp-dijkstra-0t87gl@d791fc0 (волна 2, база FINAL-2) + R05 c8e1b064",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
@@ -58,7 +58,7 @@
     "posts": [
      201
     ],
-    "id": "p-b5e376cac6b4",
+    "id": "p-9b76084e0e06",
     "year": 2027
    }
   },
@@ -94,8 +94,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 674.9895972052565,
-     "y": 258.078786024225
+     "x": 436.6818894381255,
+     "y": 254.88900779082724
     },
     "under": []
    }
@@ -201,15 +201,15 @@
     "1366_ru": {
      "state": "hint",
      "hint": {
-      "l": 439,
+      "l": 478,
       "t": 623,
-      "r": 887,
+      "r": 926,
       "b": 672
      },
      "legend": {
       "l": 12,
-      "t": 639,
-      "r": 372,
+      "t": 694,
+      "r": 396,
       "b": 734
      },
      "over_legend": false,
@@ -218,14 +218,14 @@
     "1366_kk": {
      "state": "hint",
      "hint": {
-      "l": 471,
+      "l": 510,
       "t": 623,
-      "r": 855,
+      "r": 894,
       "b": 672
      },
      "legend": {
       "l": 12,
-      "t": 639,
+      "t": 694,
       "r": 372,
       "b": 734
      },
@@ -235,14 +235,14 @@
     "1100_kk": {
      "state": "hint",
      "hint": {
-      "l": 172,
-      "t": 483,
-      "r": 556,
+      "l": 470,
+      "t": 458,
+      "r": 708,
       "b": 532
      },
      "legend": {
       "l": 12,
-      "t": 571,
+      "t": 626,
       "r": 372,
       "b": 666
      },
@@ -267,7 +267,7 @@
       "view": "3d",
       "pitch": 52,
       "geometries": 27,
-      "selected": "p-3b461a946cd8"
+      "selected": "p-f214ed65eba5"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -286,7 +286,7 @@
       "view": "3d",
       "pitch": 52,
       "geometries": 27,
-      "selected": "p-3b461a946cd8"
+      "selected": "p-f214ed65eba5"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -305,7 +305,7 @@
       "view": "3d",
       "pitch": 52,
       "geometries": 27,
-      "selected": "p-3b461a946cd8"
+      "selected": "p-f214ed65eba5"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -324,7 +324,7 @@
       "view": "3d",
       "pitch": 52,
       "geometries": 27,
-      "selected": "p-3b461a946cd8"
+      "selected": "p-f214ed65eba5"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -341,7 +341,7 @@
      "sheet_before": "half",
      "tapped": [
       188,
-      186
+      187
      ],
      "state": "card",
      "sheet": "peek",
@@ -352,7 +352,7 @@
      "header_bottom": 72,
      "header_free": true,
      "object": [
-      204,
+      202,
       160
      ],
      "object_above_card": true
@@ -361,7 +361,7 @@
      "sheet_before": "half",
      "tapped": [
       188,
-      186
+      187
      ],
      "state": "card",
      "sheet": "peek",
@@ -372,7 +372,7 @@
      "header_bottom": 72,
      "header_free": true,
      "object": [
-      152,
+      150,
       160
      ],
      "object_above_card": true

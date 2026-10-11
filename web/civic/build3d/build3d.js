@@ -65,6 +65,8 @@
       "build3d.idea.label": "Идея · {n}",
       "build3d.idea.open": { one: "Идея жителей, {n} голос — открыть", few: "Идея жителей, {n} голоса — открыть", many: "Идея жителей, {n} голосов — открыть" },
       "build3d.card.from_idea_plain": "По идее жителей",
+      "build3d.idea.hint_rotate": "Поверните и нажмите «Готово»",
+      "build3d.idea.hint_touch": "Двигайте карту или коснитесь места. Затем нажмите «Готово»",
       "build3d.err.far_from_street": "Нажмите ближе к улице",
       "build3d.err.other_street": "Выберите конец на той же улице: {street}",
       "build3d.err.too_short": "Участок слишком короткий. Выберите точки дальше друг от друга",
@@ -119,6 +121,8 @@
       "build3d.idea.label": "Идея · {n}",
       "build3d.idea.open": "Тұрғындар идеясы, {n} дауыс — ашу",
       "build3d.card.from_idea_plain": "Тұрғындар идеясы бойынша",
+      "build3d.idea.hint_rotate": "Бұрып, «Дайын» түймесін басыңыз",
+      "build3d.idea.hint_touch": "Картаны жылжытыңыз немесе орынды түртіңіз. Содан кейін «Дайын» түймесін басыңыз",
       "build3d.err.far_from_street": "Көшеге жақынырақ басыңыз",
       "build3d.err.other_street": "Соңын сол көшеден таңдаңыз: {street}",
       "build3d.err.too_short": "Бөлік тым қысқа. Нүктелерді бір-бірінен алысырақ таңдаңыз",
@@ -447,7 +451,7 @@
 
     // Состояние модуля. Всё, что видит пользователь, перерисовывается из него.
     var S = {
-      phase: "loading", // loading | ready | error | unsupported
+      phase: "idle", // idle (данные ещё не нужны: слой выключен) | loading | ready | error | unsupported
       mode: "idle", // idle | placing
       kind: null,
       ghost: null, // {pos, rot, shownRot, follow, valid, manualRot, a, aStreet, section, hover}
@@ -456,7 +460,7 @@
       visible: true,
       destroyed: false,
       leaving: false, // страница уходит (перезагрузка, переход): обрыв запросов — не сбой
-      storeMode: "pending",
+      storeMode: "idle", // idle (данные не грузили) | pending (грузим) | api | local
       error: null,
       hint: null, // {key, params, error:true}
       cardBusy: null,
@@ -676,10 +680,13 @@
     }
 
     function renderDock() {
-      ui.hidden = !S.visible;
+      // Эскиз к идее (pickObject) показываем и при выключенном слое «Проекты»: мастер идеи R06 — свой путь, не слой.
+      ui.hidden = !S.visible && !pick;
+      if (pick) ui.setAttribute("data-b3d-picking", "");
+      else ui.removeAttribute("data-b3d-picking");
       dock.textContent = "";
       dock.removeAttribute("data-state");
-      if (S.phase === "loading") return renderLoading();
+      if (S.phase === "loading" || S.phase === "idle") return renderLoading();
       if (S.phase === "unsupported") return renderMessage("alert", t("build3d.unsupported_title"), t("build3d.unsupported_text"), false);
       if (S.phase === "error") return renderMessage("wifi-off", t("build3d.load_failed"), "", true);
       if (S.mode === "placing") return S.three === "ready" ? renderPlacing() : renderLoading();
@@ -1089,6 +1096,7 @@
 
     function boot() {
       S.phase = "loading";
+      if (!store) S.storeMode = "pending";
       S.error = null;
       render();
       // Улицы и районы нужны для освещения и проверки места; без них модуль работает, но беднее.
@@ -1359,7 +1367,7 @@
     // Видно ли что-то объёмное: проекты (слой «Проекты» оболочки — setVisible) или идеи (setIdeas). Невидимому модулю
     // three.js не грузим, даже если оболочка сама наклонила карту (R01: 52° с 15-го масштаба).
     function anyVisible() {
-      return S.visible || Object.keys(ideas).length > 0;
+      return S.visible || Object.keys(ideas).length > 0 || !!pick;
     }
     function want3d() {
       return anyVisible() && (o.view === "3d" || (o.view === "auto" && map.getPitch() >= PITCH_3D));
@@ -1449,7 +1457,7 @@
     // поставленную на плоской карте, следующий сдвиг карты не прячет.
     var wasTilted = false;
     function onViewMoveEnd() {
-      if (o.view !== "auto" || S.destroyed || S.phase !== "ready") return;
+      if (o.view !== "auto" || S.destroyed || (S.phase !== "ready" && S.phase !== "idle")) return;
       var tilted = map.getPitch() >= PITCH_3D;
       if (tilted && S.view !== "3d" && anyVisible()) enable3d();
       else if (!tilted && wasTilted && S.view === "3d" && S.mode !== "placing" && !anims.length) disable3d();
@@ -1657,7 +1665,7 @@
         if (scene && p.kind) buildIdeaGroup(it);
       });
       setLayerVisibility();
-      if (S.phase === "ready" && S.view !== "3d" && want3d()) enable3d();
+      if ((S.phase === "ready" || S.phase === "idle") && S.view !== "3d" && want3d()) enable3d(); // идеи не ждут данных проектов
       updateLabels();
       return Object.keys(ideas).length;
     }
@@ -2102,6 +2110,11 @@
     function pickObject(how) {
       how = how || {};
       if (pick) finishPick(null);
+      // Слой «Проекты» не включали — данные модуля (улицы для «у улицы …») ещё не грузили: сначала они.
+      if (S.phase === "idle" || S.phase === "loading")
+        return ensureBoot().then(function () {
+          return S.phase === "ready" ? pickObject(how) : null;
+        });
       if (S.phase !== "ready" || S.three === "unsupported") return Promise.resolve(null);
       if (S.mode === "placing") cancel();
       return new Promise(function (resolve) {
@@ -2115,6 +2128,7 @@
     function finishPick(result) {
       var pk = pick;
       pick = null;
+      if (pk) setLayerVisibility(); // слой «Проекты» выключен и идей нет — объёмный слой снова скрыт
       if (pk) pk.resolve(result);
     }
     function cancelPick() {
@@ -2125,7 +2139,8 @@
       }
     }
     function renderPickCatalog() {
-      dock.setAttribute("data-state", "catalog");
+      // Своё состояние «pick», не «catalog»: оболочка прячет свёрнутый каталог акимата «Что построить?» по data-state.
+      dock.setAttribute("data-state", "pick");
       var head = el("div", "b3d-head");
       head.appendChild(el("p", "b3d-title", { text: t("idea.object"), id: "b3d-catalog-title" }));
       head.appendChild(el("span", "bk-tag b3d-tag--idea", { text: t("build3d.idea.tag") }));
@@ -2237,7 +2252,10 @@
       }
     }
 
+    // Эскиз к идее: кнопка — «Готово», а не «Поставить»; подсказки называют её же.
+    var PICK_HINTS = { "build3d.hint.rotate": "build3d.idea.hint_rotate", "build3d.hint.touch": "build3d.idea.hint_touch" };
     function setHint(key, params, error) {
+      if (pick && PICK_HINTS[key]) key = PICK_HINTS[key];
       S.hint = key ? { key: key, params: params || null, error: !!error } : null;
     }
 
@@ -3153,7 +3171,7 @@
       o.role = r;
       ui.setAttribute("data-b3d-role", r);
       render(true);
-      if (r === "akimat" && S.phase === "ready" && !THREE) loadThree().catch(function () {}); // заранее, без слоя
+      if (r === "akimat" && S.phase === "ready" && S.visible && !THREE) loadThree().catch(function () {}); // заранее, без слоя
     }
     function onShellMode(e) {
       if (e && e.detail && e.detail.mode) setMode(e.detail.mode);
@@ -3185,15 +3203,35 @@
     if (i18n && typeof i18n.onChange === "function") unsubLang = i18n.onChange(onLang);
 
     render();
-    var ready = (i18n && i18n.ready ? Promise.resolve(i18n.ready).catch(function () {}) : Promise.resolve()).then(function () {
+    var i18nReady = (i18n && i18n.ready ? Promise.resolve(i18n.ready).catch(function () {}) : Promise.resolve()).then(function () {
       render();
-      return boot();
+    });
+    // Данные модуля (улицы, районы, список проектов) — только когда они нужны: слой «Проекты» включён, начали эскиз
+    // к идее или размещение (защита от перегруза, правило 5: «новые слои грузятся только когда включены»).
+    // Хозяин выключает слой сразу после mount (setVisible(false) синхронно) — тогда на первой отрисовке карты
+    // модуль ничего не запрашивает.
+    var bootP = null;
+    function ensureBoot() {
+      if (!bootP)
+        bootP = i18nReady.then(function () {
+          if (!S.destroyed) return boot();
+        });
+      return bootP;
+    }
+    var ready = i18nReady.then(function () {
+      if (S.visible) return ensureBoot();
     });
 
     // ───────────── Handle ─────────────
     var handle = {
       ready: ready,
       start: function (kind) {
+        if (S.phase === "idle") {
+          ensureBoot().then(function () {
+            start(kind, { keyboard: true });
+          });
+          return Core.KINDS[kind] ? true : false;
+        }
         return start(kind, { keyboard: true });
       },
       cancel: cancel,
@@ -3213,7 +3251,7 @@
         return handle;
       },
       refresh: function () {
-        return store ? loadProposals() : ready;
+        return store ? loadProposals() : S.visible ? ensureBoot() : ready;
       },
       // Идеи жителей (R06): объект к идее — Promise эскиза или null; слой «Идеи» — список или null (выключить).
       pickObject: pickObject,
@@ -3231,6 +3269,7 @@
         S.visible = !!v;
         setLayerVisibility();
         if (!S.visible) cancel();
+        else if (S.phase === "idle") ensureBoot(); // первое включение слоя — теперь грузим данные
         else if (S.phase === "ready" && S.view !== "3d" && want3d()) enable3d(); // слой включили на наклонённой карте
         else if (S.phase === "ready" && o.role === "akimat" && !THREE) loadThree().catch(function () {});
         render();
