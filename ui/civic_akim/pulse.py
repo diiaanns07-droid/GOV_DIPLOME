@@ -148,7 +148,9 @@ def _merge_city(spikes: list[dict], hottest: dict) -> list[dict]:
         out.append({"kind": "spike_city", "category": cat, "district": None, "value": cur,
                     "base": round(base, 1), "ratio": round(cur / base, 1) if base else None, "weeks": top["weeks"],
                     "score": sum(a["score"] for a in group),
-                    "districts": [{"district": a["district"], "value": a["value"], "ratio": a["ratio"]} for a in group],
+                    # районы — по числу сообщений («больше всего: Нура — 41, …»)
+                    "districts": [{"district": a["district"], "value": a["value"], "ratio": a["ratio"]}
+                                  for a in sorted(group, key=lambda a: (-a["value"], a["district"]))],
                     "target": top["target"]})
     return out
 

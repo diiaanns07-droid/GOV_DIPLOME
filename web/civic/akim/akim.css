@@ -71,7 +71,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s-2);
-  margin: 0 0 var(--s-3);
+  margin: var(--s-1) 0 0;
   color: var(--c-text-2);
   font-size: var(--fs-caption);
 }
@@ -139,9 +139,148 @@
 }
 .akim-summary__text {
   margin: 0;
-  max-width: 80ch;
+  max-width: 110ch;
   font-size: var(--fs-lead);
   line-height: 1.45;
+}
+
+/* ── волна 2: «Нужно решение акима» и «Пульс района» (схема R11 IA_WAVE2 §5) ──
+   Красное — только число просрочки; блок целиком не красим. */
+.akim-late-days {
+  color: var(--c-danger);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+}
+.akim-decisions,
+.akim-pulse {
+  margin-bottom: var(--s-3);
+}
+.akim-decisions .bk-h2,
+.akim-pulse .bk-h2 {
+  margin: 0 0 var(--s-2);
+}
+.akim-decisions__list {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Ноутбук: карточка во всю ширину — слева суть, справа два варианта; первая карточка видна без прокрутки. */
+.akim-decision {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--s-2) var(--s-4);
+  padding: var(--s-3);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+}
+.akim-decision__info,
+.akim-decision__choice {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+}
+.akim-decision p {
+  margin: 0;
+}
+.akim-decision__problem {
+  font-size: var(--fs-body);
+  line-height: 1.35;
+}
+.akim-decision__blocker {
+  color: var(--c-text-2);
+}
+.akim-decision__options {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.akim-decision__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-2);
+  padding: var(--s-1) var(--s-1) var(--s-1) var(--s-3);
+  border-radius: var(--r-m);
+  background: var(--c-paper);
+}
+.akim-decision__option.is-chosen {
+  background: var(--c-ok-soft);
+}
+.akim-decision__option-text {
+  flex: 1 1 14em;
+  min-width: 0;
+}
+.akim-decision__choose {
+  flex: none;
+  min-height: 44px;
+}
+.akim-decision__chosen {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.akim-decision__needed {
+  font-weight: var(--fw-semi);
+}
+.akim-decision__status:empty {
+  display: none;
+}
+.akim-decision__status {
+  color: var(--c-danger);
+  font-size: var(--fs-caption);
+}
+.akim-pulse__list {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.akim-pulse__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "title map" "reason map";
+  align-items: center;
+  column-gap: var(--s-3);
+  padding: var(--s-2) 0;
+  border-top: 1px solid var(--c-line);
+}
+.akim-pulse__list > .akim-pulse__item:first-child {
+  border-top: 0;
+}
+.akim-pulse__title {
+  grid-area: title;
+  font-weight: var(--fw-semi);
+}
+.akim-pulse__reason {
+  grid-area: reason;
+}
+.akim-pulse__map {
+  grid-area: map;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s-2);
+  color: var(--c-brand);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+}
+.akim-pulse__more > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  color: var(--c-brand);
+  font-weight: var(--fw-semi);
+}
+.akim-pulse-none {
+  margin: 0 0 var(--s-3);
 }
 
 /* ── сетка блоков: слева «Горячие места», справа темы и районы, ниже объекты и предложения ── */
@@ -384,6 +523,40 @@
   .akim-summary__text {
     font-size: var(--fs-body);
   }
+  .akim-pulse__item {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "title" "reason" "map";
+  }
+  .akim-pulse__map {
+    padding: 0;
+  }
+  .akim-decision {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .akim-decision__option {
+    flex-wrap: wrap;
+  }
+  /* Телефон (схема R11 §5: на 375 видны KPI 2×2 и заголовок «Нужно решение акима»): решения — сразу после чисел,
+     сводка — следующим блоком (сдвиг на один блок). Дата и район — в одну строку. */
+  .akim__body {
+    display: flex;
+    flex-direction: column;
+  }
+  .akim-kpis { order: 1; }
+  .akim-no-complaints { order: 1; }
+  .akim-decisions { order: 2; }
+  .akim-summary { order: 3; }
+  .akim-pulse,
+  .akim-pulse-none { order: 4; }
+  .akim-grid { order: 5; }
+  .akim-print-bottom { order: 6; }
+  .akim__controls {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+  .akim__today {
+    grid-column: 1 / -1;
+    order: 3;
+  }
 }
 /* Телефон: в карточке одно изменение — к прошлой неделе. «За 7 дней» — только на ноутбуке (UX_REVIEW день 3, п. 10). */
 @media (max-width: 479px) {
@@ -457,6 +630,8 @@
   .akim-print-hide,
   .akim__controls,
   .akim-print-bottom,
+  .akim-decision__choose,
+  .akim-pulse__map,
   .bk-list__item > .ic,
   .akim-obj--link > .ic,
   .akim-skip {
@@ -524,6 +699,17 @@
   }
   .akim-empty {
     padding: 8px;
+  }
+  .akim-pulse__more > summary { /* на бумаге «Ещё N» раскрыто (akim.js открывает details перед печатью) */
+    display: none;
+  }
+  .akim-decision {
+    break-inside: avoid;
+    padding: 6px 8px;
+  }
+  .akim-decisions__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
   }
   .bk-kpi,
   .akim-card {

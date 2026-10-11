@@ -268,7 +268,7 @@ def _base_txt(base: float) -> str:
 
 def _city_list(a: dict, lang: str) -> str:
     rows = a.get("districts") or []
-    names = ", ".join(r[lang] for r in rows[:3])
+    names = ", ".join(f"{r[lang]} — {fmt_num(r['value'])}" for r in rows[:3])
     rest = len(rows) - 3
     if rest > 0:
         names += f" и ещё {fmt_num(rest)}" if lang == "ru" else f" және тағы {fmt_num(rest)}"

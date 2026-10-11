@@ -12,6 +12,10 @@
  *  клавиатура (Tab до кнопки печати, видна рамка фокуса), вид для печати (PDF A4).
  *  UX_REVIEW R11 день 3: одна метка «Пример» (п. 11), одно изменение в карточке на телефоне (п. 10),
  *  полоса этапов у объектов (п. 14), снимок поля даты в ru-RU/kk-KZ (п. 13).
+ *  Волна 2 (R11 IA_WAVE2 §5): «Нужно решение акима» 1–3 карточки с двумя вариантами и «Выбрать», «Пульс района»
+ *  ≤ 3 строки + «Ещё N», плитка «Исправлено» со строкой проверки жителями, уточнение у горячих мест,
+ *  первый экран: на 1366 — числа и первая карточка решения, на 375 — числа 2×2 и заголовок блока решений;
+ *  нет решений — блока нет; нет тревог — одна строка. Стенд: demo_server.py --wave2-demo.
  * Как в сборке (ui-kit и i18n R11): demo_server.py --kit-dir <папка с web/civic/ui-kit и web/civic/i18n R11>.
  * Итог — ui_check.json в папке скриншотов; код выхода 1, если есть FAIL.
  */
@@ -159,14 +163,52 @@ async function shot(page, name, full) {
         const box = await page.$(".akim__controls");
         if (box) await box.screenshot({ path: path.join(OUT, `akim-date-${lang}.png`) });
       }
-      if (width === 1366) {
-        const fold = await page.evaluate(() => {
-          const r = (s) => document.querySelector(s).getBoundingClientRect();
-          return { kpi: Math.max(...Array.from(document.querySelectorAll(".akim-kpi")).map((e) => e.getBoundingClientRect().bottom)),
-                   text: r(".akim-summary__text").bottom, hot1: r(".akim-hot__item").bottom, h: innerHeight };
-        });
-        check(`${tag}: числа, сводка и первое горячее место видны без прокрутки`, fold.kpi < fold.h && fold.text < fold.h && fold.hot1 <= fold.h, fold);
-      }
+      // Первый экран по схеме R11 (IA_WAVE2 §5): ноутбук — числа, сводка и первая карточка «Нужно решение акима»
+      // (нет решений — первое горячее место); телефон — числа 2×2 и заголовок блока решений.
+      const fold = await page.evaluate(() => {
+        const r = (s) => (document.querySelector(s) || { getBoundingClientRect: () => ({ top: -1, bottom: -1 }) }).getBoundingClientRect();
+        return { kpi: Math.max(...Array.from(document.querySelectorAll(".akim-kpi")).map((e) => e.getBoundingClientRect().bottom)),
+                 text: r(".akim-summary__text").bottom, dec1: r(".akim-decision").bottom, decTitle: r("#akim-decisions-title").bottom,
+                 hasDec: !!document.querySelector(".akim-decision"), hot1: r(".akim-hot__item").bottom, h: innerHeight };
+      });
+      if (width === 1366)
+        check(`${tag}: без прокрутки — числа, сводка и ${fold.hasDec ? "первая карточка решения" : "первое горячее место"}`,
+          fold.kpi < fold.h && fold.text < fold.h && (fold.hasDec ? fold.dec1 > 0 && fold.dec1 <= fold.h : fold.hot1 <= fold.h), fold);
+      else check(`${tag}: без прокрутки — числа 2×2 и заголовок «Нужно решение акима»`,
+          fold.kpi < fold.h && (!fold.hasDec || (fold.decTitle > 0 && fold.decTitle <= fold.h)), fold);
+      // Волна 2: блоки и счётчики (стенд --wave2-demo: проверка жителями и уточнения есть в данных).
+      const w2 = await page.evaluate(() => {
+        const q = (s) => Array.from(document.querySelectorAll(s));
+        return {
+          cards: q(".akim-decision").map((c) => ({ opts: c.querySelectorAll(".akim-decision__option").length,
+            btns: c.querySelectorAll(".akim-decision__choose").length + c.querySelectorAll(".akim-decision__chosen").length,
+            late: (c.querySelector(".akim-late-days") || {}).textContent || "", needed: !!c.querySelector(".akim-decision__needed") })),
+          decTitle: (document.querySelector("#akim-decisions-title") || {}).textContent || "",
+          pulseVisible: q(".akim-pulse > .akim-pulse__list > li").length,
+          pulseMore: q(".akim-pulse__more li").length,
+          pulseMoreSummary: (document.querySelector(".akim-pulse__more > summary") || {}).textContent || "",
+          pulseRows: q(".akim-pulse__item").map((li) => [li.querySelector(".akim-pulse__title").textContent, li.querySelector(".akim-pulse__reason").textContent]),
+          split: (document.querySelector('.akim-kpi[data-kind="fixed"] .akim-kpi__extra') || {}).textContent || "",
+          overdue: (document.querySelector('.akim-kpi[data-kind="overdue"] .akim-kpi__extra') || {}).textContent || "",
+          hotSubs: q(".akim-hot__sub").map((e) => e.textContent),
+        };
+      });
+      const kk = lang === "kk";
+      check(`${tag}: «${kk ? "Әкімнің шешімі керек" : "Нужно решение акима"}» — 1–3 карточки, у каждой 2 варианта и «Выбрать», срок красным`,
+        w2.cards.length >= 1 && w2.cards.length <= 3 && w2.cards.every((c) => c.opts === 2 && c.btns === 2 && c.late && c.needed)
+          && w2.decTitle === (kk ? "Әкімнің шешімі керек" : "Нужно решение акима"), w2.cards);
+      check(`${tag}: «Пульс района» — не больше 3 строк сразу, остальное в «${kk ? "Тағы" : "Ещё"} N»`,
+        w2.pulseVisible >= 1 && w2.pulseVisible <= 3 && w2.pulseVisible + w2.pulseMore <= 5
+          && (w2.pulseMore === 0 || w2.pulseMoreSummary.startsWith(kk ? "Тағы" : "Ещё")), { v: w2.pulseVisible, more: w2.pulseMore, s: w2.pulseMoreSummary });
+      check(`${tag}: у каждой тревоги есть причина (без «сигма», «аномалия»)`,
+        w2.pulseRows.every(([t, r]) => t.length > 5 && r.length > 5 && !/сигм|аномал|z-/i.test(t + r)), w2.pulseRows.slice(0, 2));
+      check(`${tag}: плитка «Исправлено» — служба сообщила · жители проверили · вернули`,
+        kk ? /^Қызмет хабарлады \d+ · тұрғындар тексерді \d+ · қайтарылды \d+$/.test(w2.split.trim())
+           : /^Служба сообщила \d+ · жители проверили \d+ · вернули \d+$/.test(w2.split.trim()), w2.split);
+      check(`${tag}: плитка «Просрочено» — самое долгое место и срок`, kk ? /^Ең ұзағы: .+ · \d+ күнге кешікті$/.test(w2.overdue.trim())
+        : /^Дольше всех: .+ · Просрочено на \d+ д(ень|ня|ней)$/.test(w2.overdue.trim()), w2.overdue);
+      check(`${tag}: у горячих мест — уточнение жителей, а не только категория`,
+        w2.hotSubs.filter((t) => /Сломана детская|Не убран снег|Долго ждать|Яма|Балалар алаңы бұзылған|Қар тазаланбаған|Ұзақ күту|Шұңқыр/.test(t)).length >= 3, w2.hotSubs.slice(0, 4));
       // Смена языка — без нового запроса (текст сводки пришёл сразу на двух языках).
       const before = calls;
       const other = lang === "ru" ? "kk" : "ru";
@@ -299,6 +341,10 @@ async function shot(page, name, full) {
   empty.districts.items.forEach((d) => Object.assign(d, { value: 0, prev: 0, abs: 0, trend: "flat", mode: "abs" }));
   empty.main_problem = null;
   empty.empty = true;
+  empty.decisions = { available: true, items: [], count: 0, demo: false, source: "complaints" };
+  empty.pulse = { available: true, items: [], base_weeks: 4 };
+  empty.overdue = { count: 0, places: 0, items: [], top: 5 };
+  empty.kpi.verification_available = false;
   Object.assign(empty.objects, { late: [], stale: [], late_count: 0, stale_count: 0 });
   Object.assign(empty.proposals, { top: [], new_count: 0, open_count: 0 });
   empty.text = { ru: "Сегодня новых обращений нет. Просроченных обращений нет. Объектов с отставанием нет.",
@@ -311,6 +357,10 @@ async function shot(page, name, full) {
       "akim-state-empty");
     const lp = await layoutProblems(page);
     check("состояние: пусто — нет пустых белых блоков и прокрутки", lp.hscroll <= 0);
+    const quiet = await page.evaluate(() => ({ dec: !!document.querySelector(".akim-decisions"),
+      pulse: (document.querySelector(".akim-pulse-none") || {}).textContent || "", card: !!document.querySelector(".akim-pulse") }));
+    check("волна 2: нет решений — блока нет; нет тревог — одна строка «Резких всплесков нет»",
+      !quiet.dec && !quiet.card && quiet.pulse.includes("Резких всплесков нет"), quiet);
     await ctx.close();
   }
   {
@@ -454,6 +504,44 @@ async function shot(page, name, full) {
     const st = await page.evaluate(() => document.getElementById("akim").dataset.state);
     check("тихое обновление: нет связи — числа остаются, ошибкой экран не сменяется",
       st === "ok" && (await page.textContent(".akim-kpi .bk-kpi__value")) === after, { st });
+    await ctx.close();
+  }
+
+  // ───────────── 3в. «Выбрать» вариант (волна 2 п. 5) ─────────────
+  {
+    // Сотрудник (стенд отдаёт CSRF в /api/civic/v1/session): выбор сохраняется на сервере и виден после перезагрузки.
+    const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru" });
+    await waitState(page, "ok");
+    const card = page.locator(".akim-decision").first();
+    const id = await card.getAttribute("data-key");
+    const btn = card.locator(".akim-decision__choose").first();
+    const label = await btn.getAttribute("aria-label");
+    const n = /Вариант 2/.test(label) ? 2 : 1;
+    let posted = null;
+    page.on("request", (r) => { if (r.method() === "POST" && r.url().includes("/akim/decisions/")) posted = { url: r.url(), body: r.postData(), csrf: r.headers()["x-csrf-token"] }; });
+    await btn.click();
+    await page.waitForSelector(`[data-key="${id}"] .akim-decision__chosen`);
+    const chosen = await page.textContent(`[data-key="${id}"] .akim-decision__chosen`);
+    await page.reload();
+    await waitState(page, "ok");
+    const after = await page.textContent(`[data-key="${id}"] .akim-decision__chosen`).catch(() => "");
+    check("«Выбрать»: POST с вариантом и CSRF, «Выбран вариант N» остаётся после перезагрузки",
+      posted && JSON.parse(posted.body).option === n && posted.csrf && chosen.includes(`Выбран вариант ${n}`) && after.includes(`Выбран вариант ${n}`),
+      { posted, chosen, after });
+    await shot(page, "akim-1366-ru-chosen");
+    await ctx.close();
+  }
+  {
+    // Житель или вход истёк: сервер ответил 403 — понятный текст, выбор не показан как сделанный.
+    const { ctx, page } = await open(browser, { width: 375, height: 812, lang: "kk" });
+    await page.route("**/api/civic/v2/akim/decisions/**", (route) => route.fulfill({ status: 403, json: { error: "forbidden" } }));
+    await waitState(page, "ok");
+    const card = page.locator(".akim-decision").last();
+    await card.locator(".akim-decision__choose").first().click();
+    await page.waitForFunction(() => Array.from(document.querySelectorAll(".akim-decision__status")).some((e) => e.textContent));
+    const msg = await page.$$eval(".akim-decision__status", (els) => els.map((e) => e.textContent).filter(Boolean).join(" "));
+    check("«Выбрать»: 403 — «Нұсқаны тек әкімдік қызметкері таңдай алады», выбор не отмечен",
+      msg.includes("тек әкімдік қызметкері") && (await card.locator(".akim-decision__chosen").count()) <= 1, msg);
     await ctx.close();
   }
 

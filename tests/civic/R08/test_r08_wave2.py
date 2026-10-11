@@ -275,7 +275,7 @@ def test_pulse_new_topic_and_city_merge():
     assert set(kinds) == {"spike_new", "spike_city"}
     city = kinds["spike_city"]
     assert city["value"] == 19 and [d["district"] for d in city["districts"]] == ["nura", "esil"]
-    assert city["text"]["ru"].startswith("«Снег и гололёд» — всплеск в 2 районах (Нура, Есиль)")
+    assert city["text"]["ru"].startswith("«Снег и гололёд» — всплеск в 2 районах (Нура — 10, Есиль — 9)")
     assert "таких не было" in kinds["spike_new"]["text"]["ru"]
 
 
