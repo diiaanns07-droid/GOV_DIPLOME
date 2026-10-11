@@ -55,8 +55,11 @@ const { NOISE, TAB_LIMIT, uiScreen, cyrLines, untranslated, focusToPrimary } = r
 const PY = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 
 const results = [];
+// Время: у каждой строки ms — от старта теста; marks — начало каждого варианта экрана. Из них — время шагов
+// в RESULT.json (timing), для сравнения с эталоном «сценарий не стал медленнее» (POLISH_WAVE_2 правило 7).
+const T0 = Date.now(), marks = {};
 const add = (layer, step, name, status, detail, shot) => {
-  results.push({ layer, step, name, status, detail: detail ?? null, shot: shot || null });
+  results.push({ layer, step, name, status, detail: detail ?? null, shot: shot || null, ms: Date.now() - T0 });
   console.log(`${status.padEnd(7)} ${layer} ${step} ${name}` + (detail ? " — " + JSON.stringify(detail).slice(0, 300) : ""));
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -385,6 +388,7 @@ async function showPoint(page, point, zoom = 17) {
 async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const dict = loadDict(lang);
   const tag = `${w}-${lang}`;
+  marks[`UI ${tag}`] = Date.now() - T0;
   const mobile = w < 761;
   const st = UI_STOPS[vi % UI_STOPS.length];  // остановка этого варианта (шаги 1–2 и 6)
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
@@ -824,12 +828,25 @@ async function networkErrors(browser, base, [w, h], lang) {
   }
   const counts = { PASS: 0, FAIL: 0, NOT_RUN: 0 };
   results.forEach((r) => counts[r.status]++);
+  // Время шагов по вариантам: шаг = от предыдущей строки этого варианта (или его начала) до последней строки шага.
+  // В нём фиксированные паузы теста и ожидание страницы; рост — значит, экран стал отвечать медленнее или кнопку
+  // пришлось искать дольше (таймауты). Шаг «E» — проверка «нет связи» в отдельном окне.
+  const timing = {};
+  for (const r of results) {
+    const t = (timing[r.layer] = timing[r.layer] || { start_ms: marks[r.layer] ?? 0, prev: marks[r.layer] ?? 0, steps: {} });
+    t.steps[r.step] = (t.steps[r.step] || 0) + (r.ms - t.prev);
+    t.prev = r.ms;
+  }
+  for (const t of Object.values(timing)) { t.total_ms = t.prev - t.start_ms; delete t.prev; }
   const meta = { root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
-    when: new Date().toISOString(), node: process.version, ...(INJECT_CSS ? { inject_css: String(args["inject-css"]) } : {}) };
-  fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, results }, null, 1));
+    when: new Date().toISOString(), node: process.version, total_ms: Date.now() - T0, ...(INJECT_CSS ? { inject_css: String(args["inject-css"]) } : {}) };
+  fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results }, null, 1));
   const md = [`# R10 e2e · сценарий демо · ${sha}${INJECT_CSS ? " · С ПРАВКОЙ CSS (не приёмка сборки)" : ""}`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, NOT_RUN ${counts.NOT_RUN}`, "", "| Слой | Шаг | Проверка | Итог | Подробно | Кадр |", "|---|---|---|---|---|---|",
     ...results.map((r) => `| ${r.layer} | ${r.step} | ${r.name} | **${r.status}** | ${r.detail ? JSON.stringify(r.detail).replace(/\|/g, "/").slice(0, 220) : ""} | ${r.shot || ""} |`)];
+  const stepIds = [...new Set(Object.values(timing).flatMap((t) => Object.keys(t.steps)))];
+  md.push("", "Время шагов, с (паузы теста + ожидание страницы):", "", `| Слой | ${stepIds.join(" | ")} | всего |`, `|---|${stepIds.map(() => "---:").join("|")}|---:|`,
+    ...Object.entries(timing).map(([l, t]) => `| ${l} | ${stepIds.map((s) => (t.steps[s] !== undefined ? (t.steps[s] / 1000).toFixed(1) : "")).join(" | ")} | ${(t.total_ms / 1000).toFixed(1)} |`));
   fs.writeFileSync(path.join(OUT, "RESULT.md"), md.join("\n") + "\n");
   console.log("ИТОГ:", counts, "→", OUT);
   process.exit(counts.FAIL ? 1 : 0);
