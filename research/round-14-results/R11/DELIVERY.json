@@ -4,7 +4,7 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "9d076d12 — последний коммит web/civic/ui-kit и web/civic/i18n (словарь 1244 ключа ru=kk; иконки i-phone, i-camera; токены --map-*)",
+  "code_sha": "a18bae91 — последний коммит web/civic/ui-kit и web/civic/i18n (словарь 1251 ключ ru=kk)",
   "tested_sha": "FINAL-2 шаг 1 R01 34677e0 (содержит R11 8d58318): review_build 44/44, kk 0, все значки видны, первый кадр = эталон 8bbace7; ui-kit @ 9d076d12: test_r11_ui_kit 18/18, витрина 4/4",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
@@ -81,7 +81,8 @@
     "волна 2, разбор 5: R09 browser_r09.cjs --only wave с ui-kit/i18n R11 — 115/116 (FAIL: «Обращения» не перерисовывают заголовок при setLang, когда ключ в словаре — правка R09)": "PASS с замечанием",
     "волна 2, разбор 5: badges_covered_check с R07 4be0490 — 0 наложений на 375/360; на 1366/1280 у Нұра нет значка (ждёт патч R01_legend_free_area)": "FAIL — открыто",
     "волна 2, разбор 6: R01 8bbace7 + ui-kit/i18n R11 — review_build 44/44, kk 0, Нұра · 73 со значком, выбранное место не закрыто": "PASS",
-    "FINAL-2 шаг 1 R01 34677e0: review_build 44/44, kk 0, кабинет 0, все значки видны, первый кадр = эталон; wave2_shots — меню телефона столбиком, «Маңайда», «Қызметтер»": "PASS"
+    "FINAL-2 шаг 1 R01 34677e0: review_build 44/44, kk 0, кабинет 0, все значки видны, первый кадр = эталон; wave2_shots — меню телефона столбиком, «Маңайда», «Қызметтер»": "PASS",
+    "волна 2, разбор 8: FINAL-2 шаг 1 + R07 868de08 — badges_covered_check: без патча 2 закрытых на 375, с R01_badge_avoid — 0; r12_city 81/0": "PASS с патчем"
   },
   "known_limits": [
     "Макеты — образец: данные примеры, карта — SVG по осям улиц OSM (подписи улиц из OSM name, по-русски)",
@@ -100,11 +101,12 @@
     "ia_schemes": "research/round-14-results/R11/IA_WAVE2.md — меню (житель/акимат по 5), правила защиты от перегруза, схемы для R09, R07, R08, R06, R05, R12, R13",
     "keys": "158 ключей схем (shell.nav/layers, status, heat.legend, mine.changes, verify, passport, fix, broadcast, inbox, nearby, akim.decision/pulse, report, qr, ask, idea)",
     "ui_kit": "токены --reported-fixed/--nodata из heat_states; .bk-heat reported_fixed/[data-reopened]; .bk-status reported_fixed/verified/reopened; легенда nodata/reported_fixed",
-    "review": "UX_REVIEW.md: разборы 1–7 волны 2 (R01, R04, R05, R07, R08, R09, R12), FINAL 8e67c65, FINAL-2 шаг 1",
+    "review": "UX_REVIEW.md: разборы 1–8 волны 2 (R01, R04, R05, R07, R08, R09, R12), FINAL 8e67c65, FINAL-2 шаг 1",
     "patches_for_r01": [
       "patches/R01_toggle_card.patch — взят (8e67c65)",
       "patches/R01_legend_free_area.patch — не нужен (8bbace7)",
-      "patches/R01_wave2_phone_menu.patch — взят (d791fc0)"
+      "patches/R01_wave2_phone_menu.patch — взят (d791fc0)",
+      "patches/R01_badge_avoid.patch (значки R07 не под «Аймақ», кнопками карты, легендой и шторкой; ждёт R01)"
     ]
   }
 }
