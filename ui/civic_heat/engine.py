@@ -72,7 +72,7 @@ def fixed_at(c: dict) -> datetime | None:
 
 # Ответ жителя после ремонта (волна 2, п. 1). Слова — с запасом: поле R09 ещё не утверждено (INTEGRATION R07 §2е).
 _YES = {"yes", "confirmed", "fixed", "verified", "resolved", "ok", "да", "иә"}
-_NO = {"no", "not_fixed", "still", "remains", "reopened", "problem_remains", "нет", "жоқ"}
+_NO = {"no", "not_fixed", "still", "still_there", "remains", "reopened", "problem_remains", "нет", "жоқ"}
 _CANT = {"cant_check", "cant", "cannot_check", "unknown", "skip", "not_sure"}
 _ANSWER_KEYS = ("answer", "state", "result", "value")
 
@@ -146,17 +146,38 @@ def resident_answers(c: dict) -> list[tuple[str, datetime | None]]:
                 break
         else:
             st = str(h.get("status") or h.get("event") or "")
-            if st in ("verified", "confirmed", "resident_confirmed"):
+            if h.get("reopened_by_residents") is True:     # R09: шаг истории возврата в работу
+                add("no", h.get("at"))
+            elif st in ("verified", "verified_fixed", "confirmed", "resident_confirmed", "resident_verified"):
                 add("yes", h.get("at"))
-            elif st in ("reopened", "resident_not_fixed"):
+            elif st in ("reopened", "resident_not_fixed", "resident_reopened"):
                 add("no", h.get("at"))
     return out
 
 
+def _resolution_state(c: dict, f: datetime | None) -> tuple[str, datetime, dict] | None:
+    """Основная форма R09 (lifecycle.py, claude/modest-shannon-0ki93p): resolution = {round, state: reported | verified |
+    reopened, reported_at, verified_at, reopened_at, votes {yes, no, cant}}. Её и берём, если она есть."""
+    res = c.get("resolution")
+    if not isinstance(res, dict) or res.get("state") not in ("reported", "verified", "reopened"):
+        return None
+    votes = res.get("votes") if isinstance(res.get("votes"), dict) else {}
+    counts = {k: int(votes.get(k) or 0) for k in ("yes", "no", "cant")}
+    state = res["state"]
+    at = parse_time(res.get(state + "_at" if state != "reported" else "reported_at")) or f or parse_time(c.get("updated_at"))
+    if at is None:
+        return None
+    return state, at, counts
+
+
 def repair_state(c: dict) -> tuple[str, datetime, dict] | None:
     """Что с последним ремонтом жалобы: ("reported" | "verified" | "reopened", когда, {yes, no, cant}).
-    None — ремонта не было. Решает последний ответ после ремонта; «не могу проверить» не решает ничего."""
+    None — ремонта не было. Решает последний ответ после ремонта; «не могу проверить» не решает ничего.
+    Есть resolution R09 — решает она (так же считает «Картина дня» R08)."""
     f = fixed_at(c)
+    res = _resolution_state(c, f)
+    if res is not None:
+        return res
     if f is None:
         return None
     after = [(a, t or f) for a, t in resident_answers(c) if t is None or t >= f - timedelta(minutes=1)]

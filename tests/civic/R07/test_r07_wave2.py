@@ -319,3 +319,47 @@ def test_demo_has_signal_with_subtopic_for_day_summary():
     assert sig["top_subtopic"]["id"].startswith("traffic_light") and sig["count"] >= 4
     assert any(it.get("reopened") for it in items)                                   # «вернули жители» в демо есть
     assert {it.get("fixed_kind") for it in items if it["state"] == "fixed"} >= {"reported", "verified"}
+
+
+# ---------- формат R09 (lifecycle.py, claude/modest-shannon-0ki93p): resolution + votes ----------
+
+def test_r09_resolution_verified_reported_reopened():
+    fixed_h = [{"at": at(5), "status": "new"}, {"at": at(2), "status": "fixed"}]
+    v = rec(1, age=5, status="fixed", history=list(fixed_h),
+            resolution={"round": 1, "state": "verified", "reported_at": at(2), "verified_at": at(1), "reopened_at": None,
+                        "votes": {"yes": 3, "no": 0, "cant": 1}})
+    it = only([v])
+    assert it["fixed_kind"] == "verified" and it["checks"] == {"yes": 3, "no": 0, "cant": 1}
+    r = rec(2, age=5, status="fixed", history=list(fixed_h), resolution={"round": 1, "state": "reported", "reported_at": at(2), "votes": {}})
+    assert only([r])["fixed_kind"] == "reported"
+    back = rec(3, age=5, status="in_progress", history=fixed_h + [{"at": at(1), "status": "in_progress", "reopened_by_residents": True}],
+               resolution={"round": 1, "state": "reopened", "reported_at": at(2), "reopened_at": at(1), "votes": {"yes": 0, "no": 2, "cant": 0}})
+    it = only([back])
+    assert it["reopened"] and it["reopened_at"] == at(1) and it["checks"]["no"] == 2
+
+
+def test_history_reopened_by_residents_without_resolution():
+    h = [{"at": at(4), "status": "new"}, {"at": at(2), "status": "fixed"}, {"at": at(1), "status": "in_progress", "reopened_by_residents": True}]
+    assert only([rec(1, age=4, status="in_progress", history=h)])["reopened"]
+
+
+def test_r09_calendar_is_working_day_is_used(monkeypatch):
+    import sys
+    import types
+    fake = types.ModuleType("ui.civic_feedback.v2.workdays")
+    holiday = date(2026, 10, 13)
+    fake.is_working_day = lambda d: d.weekday() < 5 and d != holiday
+    pkg = types.ModuleType("ui.civic_feedback.v2")
+    pkg.workdays = fake
+    monkeypatch.setitem(sys.modules, "ui.civic_feedback.v2", pkg)
+    monkeypatch.setitem(sys.modules, "ui.civic_feedback.v2.workdays", fake)
+    deadline.set_calendar(None)
+    try:
+        assert deadline._load_calendar()[1] == "r09"
+        it = only([rec(1, age=0.1, due_at=(NOW + timedelta(days=2)).isoformat())])
+        assert it["due"]["workdays_left"] == 1 and it["due"]["calendar"] == "r09"
+        # просрочка — в рабочих днях, как у R09 deadline_info: срок пт 12:00, сейчас пн 12:00 → 1 рабочий день
+        it = only([rec(2, age=4, due_at=(NOW - timedelta(days=3)).isoformat())])
+        assert it["due"]["overdue_days"] == 1
+    finally:
+        deadline.set_calendar(None)
