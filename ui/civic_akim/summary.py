@@ -656,10 +656,15 @@ class AkimService:
         return {"count": len(rows), "places": len(grouped), "items": grouped[:OVERDUE_TOP], "top": OVERDUE_TOP}
 
     def _decisions_part(self, recs: list[dict], district, as_of: datetime, labels: dict) -> dict:
-        """«Нужно решение акима» (волна 2 п. 5). Критерий — decisions.py. Пример — только при демо-жалобах."""
+        """«Нужно решение акима» (волна 2 п. 5). Критерий — decisions.py.
+
+        Пример из фикстуры — только когда все жалобы демо (источник R07-демо или каждая запись demo: true, как в
+        демо-сборке R01): среди настоящих обращений пример не подмешиваем никогда.
+        """
         items = decisions.build(recs, as_of, status_at=status_at, parse_time=parse_time, labels=labels)
         demo = False
-        if not items and self.source_names.get("complaints") == "r07-demo":
+        all_demo = self.source_names.get("complaints") == "r07-demo" or (bool(recs) and all(r.get("demo") is True for r in recs))
+        if not items and all_demo:
             example = [r for r in decisions.fixture_records(as_of.date())
                        if district is None or r.get("district") == district]
             items = decisions.build(example, as_of, status_at=status_at, parse_time=parse_time)

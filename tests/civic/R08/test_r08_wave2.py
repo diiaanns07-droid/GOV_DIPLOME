@@ -222,13 +222,16 @@ def test_decisions_max_three_and_district_filter():
 
 def test_decision_example_only_for_demo_complaints():
     """Пример из фикстуры — только когда жалобы сами демо (R07), и он проходит тот же критерий."""
-    assert summary([rec(1, age_days=1)])["decisions"]["items"] == []  # свои записи без причин — пусто
+    assert summary([rec(1, age_days=1, demo=False)])["decisions"]["items"] == []  # настоящие записи без причин — пусто
+    mixed = summary([rec(1, age_days=1, demo=False), rec(2, age_days=1)])["decisions"]
+    assert mixed["items"] == [] and mixed["demo"] is False  # среди настоящих пример не подмешиваем
+    assert summary([rec(1, age_days=1)])["decisions"]["source"] == "example"  # все записи demo (демо-сборка R01)
     ex = decisions.fixture_records(NOW.date())
     built = decisions.build(ex, NOW, status_at=status_at, parse_time=parse_time)
     ids = [i["id"] for i in built]
     assert "c-demo-decision-4" not in ids, "погода — не решение акима"
     assert len(ids) == 3 and all(i["demo"] for i in built)
-    s = svc([rec(1, age_days=1)])
+    s = svc([rec(1, age_days=1, demo=False)])
     s.source_names["complaints"] = "r07-demo"
     d = s.summary(now=NOW)["decisions"]
     assert d["demo"] is True and d["source"] == "example" and len(d["items"]) == 3
@@ -427,3 +430,22 @@ def test_assignee_lookup_for_r09():
     from ui.civic_akim import routing
     assert routing.assignee_lookup("roads", "traffic_light_broken") == "Служба светофоров и разметки"
     assert routing.assignee_lookup("unknown", None) == routing.SERVICES[routing.DEFAULT_RULES["other"]]["ru"]
+
+
+def test_gateway_functions_for_r01(tmp_path, monkeypatch):
+    """Функции записи для шлюза R01 (kind="function"): ошибки — ValueError со status/code/field."""
+    from ui.civic_akim import api, nearby as nb, routing
+    monkeypatch.setattr(routing, "OVERRIDE_PATH", tmp_path / "r.json")
+    monkeypatch.setattr(nb, "SUBS_PATH", tmp_path / "s.json")
+    out = api.routing_update({"rules": {"roads/marking": "road"}}, principal={"username": "akim1", "role": "staff"})
+    assert next(r for r in out["rules"] if r["key"] == "roads/marking")["service"] == "road"
+    with pytest.raises(ValueError) as exc:
+        api.routing_update({"rules": {"roads": "nasa"}})
+    assert (exc.value.status, exc.value.code, exc.value.field) == (400, "bad_request", "service")
+    assert api.nearby_subscribe({"device_id": "d-abcdefghijklmnopqrstuvwx", "scope": "district", "id": "nura"})["items"]
+    with pytest.raises(ValueError) as exc:
+        api.nearby_subscribe({"device_id": "x"})
+    assert exc.value.status == 400
+    with pytest.raises(ValueError) as exc:
+        api.decision_choose("c-nope", {"option": 1})
+    assert (exc.value.status, exc.value.code) == (404, "not_found")

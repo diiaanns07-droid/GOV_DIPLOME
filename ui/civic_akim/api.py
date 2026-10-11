@@ -110,3 +110,39 @@ def handle_post(path: str, body, *, staff: bool = False, actor: str | None = Non
     except Exception:
         log.error("akim decision choice failed: %s", traceback.format_exc())
         return 500, {"error": "akim_failed", "message": "выбор не сохранился"}
+
+
+# ---------------------------------------------------------------- для шлюза R01 (V2Handler kind="function")
+# Чтение — raw: handle_get (akim/summary, akim/routing, nearby, nearby/subscriptions, nearby/updates).
+# Запись — функции ниже: шлюз R01 сам проверяет сотрудника и CSRF (staff=True в V2Handler) и передаёт principal;
+# ошибки ввода — ValueError с полями status/code/field (шлюз отвечает 400/404/429), см. INTEGRATION.txt §8.
+
+def routing_update(body, principal=None):
+    """PUT /akim/routing — staff. body: {"rules": {...}, "services": {...}}."""
+    actor = (principal or {}).get("username") if isinstance(principal, dict) else None
+    try:
+        return routing.update(body if isinstance(body, dict) else {}, actor=actor)
+    except routing.RoutingError as exc:
+        exc.status, exc.code = 400, "bad_request"
+        raise
+
+
+def decision_choose(decision_id, body, principal=None):
+    """POST /akim/decisions/{id} — staff. body: {"option": 1|2}."""
+    actor = (principal or {}).get("username") if isinstance(principal, dict) else None
+    option = body.get("option") if isinstance(body, dict) else None
+    try:
+        return default_service().choose_decision(str(decision_id), option, actor=actor)
+    except decisions.DecisionError as exc:
+        exc.code = "bad_request" if exc.status == 400 else "not_found"
+        raise
+
+
+def nearby_subscribe(body):
+    """POST /nearby/subscriptions — житель, без входа (лимит запросов — у шлюза). body: {device_id, scope, id, on}."""
+    b = body if isinstance(body, dict) else {}
+    try:
+        return {"items": nearby.subscribe(b.get("device_id"), b.get("scope"), b.get("id"), on=b.get("on", True) is not False)}
+    except nearby.NearbyError as exc:
+        exc.code = "too_many_requests" if exc.status == 429 else "bad_request"
+        raise

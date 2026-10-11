@@ -7,6 +7,8 @@
  *   BirgeNearby.mount(document.getElementById("nearby"), { apiBase: "/api/civic/v2", titleTag: "h1" });
  *   Опции: mapHref ("/#target={kind}:{id}&days=7"; у объекта R06 — objectHref, по умолчанию null: оболочка пока не
  *   показывает карточку объекта по #object=, кнопку «На карте» у объекта не рисуем), district (по умолчанию — запомненный).
+ *   В оболочке R01 (INTEGRATION R01 §11.2, раздел #nearby): api.v2 — клиент шлюза, openTarget(kind, id, days) —
+ *   показать цель на карте; handle.setLang(lang), handle.destroy().
  *
  * Данные: GET {apiBase}/nearby?district=<id> (ui/civic_akim/nearby.py): вкладки now | done | planned | outages,
  * баннеры отключений (≤ 2). Подписка: POST {apiBase}/nearby/subscriptions {device_id, scope: district|item, id, on}
@@ -194,6 +196,19 @@
       request: 0,
     };
     rootEl.classList.add("nb");
+    var api = opts.api && typeof opts.api.v2 === "function" ? opts.api.v2 : null;
+    // Запрос к API: клиент оболочки R01 (тот же шлюз, ошибки «network») или fetch на отдельной странице.
+    function request(method, path, body) {
+      if (api) return Promise.resolve().then(function () { return api(method, path, body); });
+      return fetch(opts.apiBase + path, {
+        method: method,
+        credentials: "same-origin",
+        headers: body !== undefined ? { Accept: "application/json", "Content-Type": "application/json" } : { Accept: "application/json" },
+        body: body !== undefined ? JSON.stringify(body) : undefined,
+      }).then(function (r) {
+        return r.ok ? r.json() : Promise.reject(r.status);
+      });
+    }
 
     function readSubs() {
       try {
@@ -210,15 +225,7 @@
     }
     function setSub(scope, id, on) {
       state.message = "";
-      return fetch(opts.apiBase + "/nearby/subscriptions", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: { Accept: "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify({ device_id: deviceId(), scope: scope, id: id, on: on }),
-      })
-        .then(function (r) {
-          return r.ok ? r.json() : Promise.reject(r.status);
-        })
+      return request("POST", "/nearby/subscriptions", { device_id: deviceId(), scope: scope, id: id, on: on })
         .then(function (b) {
           state.subs = (b.items || []).map(function (s) {
             return { scope: s.scope, id: s.id };
@@ -240,10 +247,7 @@
       var id = ++state.request;
       state.status = "loading";
       render();
-      fetch(opts.apiBase + "/nearby?district=" + encodeURIComponent(state.district), { headers: { Accept: "application/json" } })
-        .then(function (r) {
-          return r.ok ? r.json() : Promise.reject(r.status);
-        })
+      request("GET", "/nearby?district=" + encodeURIComponent(state.district))
         .then(function (d) {
           if (id !== state.request) return;
           state.data = d;
@@ -317,7 +321,24 @@
       var href = null;
       if (x.target && x.target.kind === "object") href = opts.objectHref ? opts.objectHref.replace("{id}", encodeURIComponent(x.target.id)) : null;
       else if (x.target) href = opts.mapHref.replace("{kind}", encodeURIComponent(x.target.kind)).replace("{id}", encodeURIComponent(x.target.id));
-      if (href) actions.push(h("a", { class: "bk-btn nb-card__map", href: href }, [icon("pin", 18), tr("map.card.on_map")]));
+      if (href)
+        actions.push(
+          h(
+            "a",
+            {
+              class: "bk-btn nb-card__map",
+              href: href,
+              onclick: function (e) {
+                // В оболочке R01 — её переход на карту с карточкой цели (openTarget), а не перезагрузка страницы.
+                if (typeof opts.openTarget === "function" && x.target && x.target.kind !== "object") {
+                  e.preventDefault();
+                  opts.openTarget(x.target.kind, x.target.id, 7);
+                }
+              },
+            },
+            [icon("pin", 18), tr("map.card.on_map")]
+          )
+        );
       var subbed = isSub("item", x.id);
       actions.push(
         h(
@@ -460,6 +481,9 @@
     });
     var handle = {
       reload: load,
+      setLang: function () {
+        render(); // язык уже сменил BirgeI18n; перерисовать подписи
+      },
       setDistrict: function (d) {
         if (DISTRICTS.indexOf(d) >= 0) {
           state.district = d;

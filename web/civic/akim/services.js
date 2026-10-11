@@ -11,6 +11,9 @@
  * (X-CSRF-Token: из оболочки CivicShell.csrfToken() или GET /api/civic/v1/session — как у R05/R06).
  * Названия служб — t("service.<id>") из словаря R11; если акимат переименовал службу (edited) — его название.
  * Одна главная кнопка — «Сохранить». Уточнения категории свёрнуты в «Уточнения (N)».
+ * В оболочке R01 экран встаёт в «Ещё» акимата сам: при загрузке файла вызывается
+ * BirgeShell.registerScreen({id: "services", mount, modes: ["akimat"], titleKey: "shell.nav.services"})
+ * (R01 INTEGRATION §11.2); opts.api.v2 — клиент шлюза оболочки (CSRF сотрудника).
  */
 (function (root) {
   "use strict";
@@ -81,6 +84,7 @@
     });
     var state = { status: "loading", data: null, changes: {}, message: "", messageKind: "" };
     rootEl.classList.add("svc");
+    var api = opts.api && typeof opts.api.v2 === "function" ? opts.api.v2 : null;
 
     function serviceName(id) {
       var svc = state.data && state.data.services[id];
@@ -98,10 +102,12 @@
     function load() {
       state.status = "loading";
       render();
-      fetch(opts.apiBase + "/akim/routing", { headers: { Accept: "application/json" }, credentials: "same-origin" })
-        .then(function (r) {
-          return r.ok ? r.json() : Promise.reject(r.status);
-        })
+      (api
+        ? Promise.resolve().then(function () { return api("GET", "/akim/routing"); })
+        : fetch(opts.apiBase + "/akim/routing", { headers: { Accept: "application/json" }, credentials: "same-origin" }).then(function (r) {
+            return r.ok ? r.json() : Promise.reject(r.status);
+          })
+      )
         .then(function (d) {
           state.data = d;
           state.status = "ok";
@@ -141,6 +147,24 @@
       var keys = Object.keys(state.changes);
       if (!keys.length) {
         say(tr("services.nothing"), "info");
+        return;
+      }
+      if (api) {
+        // Клиент оболочки сам ставит CSRF сотрудника; ошибка — объект со status.
+        Promise.resolve()
+          .then(function () {
+            return api("PUT", "/akim/routing", { rules: state.changes });
+          })
+          .then(function (d) {
+            state.data = d;
+            state.changes = {};
+            render();
+            say(tr("services.saved"), "ok");
+          })
+          .catch(function (err) {
+            var st = err && err.status;
+            say(tr(st === 401 || st === 403 ? "services.forbidden" : "services.save_error"), "error");
+          });
         return;
       }
       csrf()
@@ -296,4 +320,15 @@
   }
 
   root.BirgeServices = { mount: mount, version: "services-r14-w1" };
+  // Оболочка R01: экран «Службы» — в «Ещё» акимата (контракт R01 INTEGRATION §11.2).
+  function register() {
+    var shell = root.BirgeShell;
+    if (shell && typeof shell.registerScreen === "function") {
+      return shell.registerScreen({ id: "services", mount: mount, modes: ["akimat"], titleKey: "shell.nav.services" });
+    }
+    return false;
+  }
+  root.BirgeServices.register = register;
+  // birge.js может загрузиться позже (defer по порядку): тогда — после разбора страницы.
+  if (!register() && doc.readyState !== "complete") doc.addEventListener("DOMContentLoaded", register);
 })(window);
