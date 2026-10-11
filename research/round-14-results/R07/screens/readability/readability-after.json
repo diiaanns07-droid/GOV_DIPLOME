@@ -1,0 +1,190 @@
+[
+ {
+  "name": "open-fit-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "mode": "districts",
+   "n": 10
+  }
+ },
+ {
+  "name": "semantic-zoom-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "objects": 0,
+   "clusters": 9,
+   "members": 13,
+   "overlaps": 0,
+   "clusterHalo": "rgb(21, 44, 38) 0px 0px 2px, rgb(21, 44, 38) 0px 0px 2px",
+   "countHalo": "rgb(255, 255, 255) 0px 0px 2px, rgb(255, 255, 255) 0px 0px 2px | rgb(255, 255, 255) 0px 0px 0px 2px"
+  }
+ },
+ {
+  "name": "cluster-click-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "n": 24,
+   "sum": 24,
+   "z": [
+    13.4,
+    16.7165457978798
+   ]
+  }
+ },
+ {
+  "name": "focus-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "dimmed": 6
+  }
+ },
+ {
+  "name": "tooltip-1366-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "text": "Остановка «Жилой комплекс Зелёный Квартал» · 1 человек · Остановки и транспорт"
+  }
+ },
+ {
+  "name": "open-fit-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "mode": "districts",
+   "n": 10
+  }
+ },
+ {
+  "name": "semantic-zoom-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "objects": 0,
+   "clusters": 9,
+   "members": 13,
+   "overlaps": 0,
+   "clusterHalo": "rgb(21, 44, 38) 0px 0px 2px, rgb(21, 44, 38) 0px 0px 2px",
+   "countHalo": "rgb(255, 255, 255) 0px 0px 2px, rgb(255, 255, 255) 0px 0px 2px | rgb(255, 255, 255) 0px 0px 0px 2px"
+  }
+ },
+ {
+  "name": "cluster-click-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "n": 24,
+   "sum": 24,
+   "z": [
+    13.4,
+    16.7165457978798
+   ]
+  }
+ },
+ {
+  "name": "focus-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "dimmed": 6
+  }
+ },
+ {
+  "name": "tooltip-1366-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "text": "«Жилой комплекс Зелёный Квартал» аялдамасы · 1 адам · Аялдамалар мен көлік"
+  }
+ },
+ {
+  "name": "open-fit-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "mode": "districts",
+   "n": 10
+  }
+ },
+ {
+  "name": "semantic-zoom-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "objects": 0,
+   "clusters": 10,
+   "members": 15,
+   "overlaps": 0,
+   "clusterHalo": "rgb(21, 44, 38) 0px 0px 2px, rgb(21, 44, 38) 0px 0px 2px",
+   "countHalo": "rgb(255, 255, 255) 0px 0px 2px, rgb(255, 255, 255) 0px 0px 2px | rgb(255, 255, 255) 0px 0px 0px 2px"
+  }
+ },
+ {
+  "name": "cluster-click-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "n": 24,
+   "sum": 24,
+   "z": [
+    13.4,
+    15.901903394114267
+   ]
+  }
+ },
+ {
+  "name": "focus-375-ru",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "dimmed": 1
+  }
+ },
+ {
+  "name": "open-fit-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "mode": "districts",
+   "n": 10
+  }
+ },
+ {
+  "name": "semantic-zoom-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "objects": 0,
+   "clusters": 10,
+   "members": 15,
+   "overlaps": 0,
+   "clusterHalo": "rgb(21, 44, 38) 0px 0px 2px, rgb(21, 44, 38) 0px 0px 2px",
+   "countHalo": "rgb(255, 255, 255) 0px 0px 2px, rgb(255, 255, 255) 0px 0px 2px | rgb(255, 255, 255) 0px 0px 0px 2px"
+  }
+ },
+ {
+  "name": "cluster-click-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "n": 24,
+   "sum": 24,
+   "z": [
+    13.4,
+    15.901903394114267
+   ]
+  }
+ },
+ {
+  "name": "focus-375-kk",
+  "pass": true,
+  "problems": [],
+  "extra": {
+   "dimmed": 1
+  }
+ }
+]

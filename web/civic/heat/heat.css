@@ -234,7 +234,33 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 .r07-badge--mini::after { inset: -13px -7px; }
 .r07-badge--mini .r07-badge__name { display: none; }
 .r07-badge:hover, .r07-badge--selected { z-index: 3; }
-.r07-badge:hover .r07-badge__inner, .r07-badge--selected .r07-badge__inner { transform: scale(1.12); }
+.r07-badge:hover .r07-badge__inner { transform: scale(1.12); }
+/* Режим фокуса (просьба владельца, п. 6): выбранная цель крупнее, остальные значки бледнеют до 40 %, Esc — сброс */
+.r07-badge--selected .r07-badge__inner { transform: scale(1.25); }
+.r07-focusing .r07-badge:not(.r07-badge--selected) .r07-badge__inner { opacity: 0.4; }
+.r07-focusing .r07-badge:not(.r07-badge--selected):hover .r07-badge__inner { opacity: 0.85; }
+/* Обводка подписей (п. 5): белый ореол у текста и белая кайма у плашки — читается и на цветной улице */
+.r07-badge__count { text-shadow: 0 0 2px #fff, 0 0 2px #fff; box-shadow: 0 0 0 2px #fff; }
+.r07-badge__name { text-shadow: 0 0 2px #fff, 0 0 3px #fff; }
+/* Кружок-кластер (п. 2): число людей, цвет — самого высокого уровня; «стопка» — второе кольцо */
+.r07-cluster {
+  display: grid; place-items: center; min-width: 36px; height: 36px; padding: 0 6px; box-sizing: border-box;
+  border: 2px solid #fff; border-radius: 18px; background: var(--r07-c, #ccc); color: #152c26;
+  font-size: 15px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 2px #fff, 0 0 2px #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--r07-c, #ccc) 35%, transparent), 0 1px 3px #19362840;
+}
+.r07-badge--cluster[data-level="3"] .r07-cluster, .r07-badge--cluster[data-level="4"] .r07-cluster, .r07-badge--cluster[data-level="fixed"] .r07-cluster {
+  color: #fff; text-shadow: 0 0 2px #152c26, 0 0 2px #152c26;
+}
+.r07-badge--cluster::after { inset: -6px; }
+/* Подсказка при наведении (п. 9): название · сколько человек · категория */
+.r07-tip {
+  position: absolute; z-index: 6; max-width: min(320px, calc(100% - 8px)); padding: 6px 10px; border-radius: 8px;
+  background: #152c26; color: #fff; font: 600 14px/1.35 var(--b-font, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
+  box-shadow: 0 6px 20px #19362833; pointer-events: none; white-space: normal;
+}
+.r07-tip[hidden] { display: none; }
 .r07-badge__dot {
   display: grid; place-items: center; width: 34px; height: 34px; border: 2px solid #fff; border-radius: 50%;
   background: var(--r07-c, #ccc); color: #152c26; transition: background 0.8s cubic-bezier(0.22, 1, 0.36, 1);
