@@ -47,6 +47,29 @@
 .b3d-dock[data-state="card"] {
   position: relative;
 }
+/* Ноутбук, корень хозяина (оболочка R01): карточка проекта — 440 px, как карточки целей, а не полоса 720 px;
+   рядом с панелью «Территория» её сдвигает fitDock. */
+@media (min-width: 761px) {
+  .b3d:not(.b3d--overlay) .b3d-dock[data-state="card"] {
+    width: min(440px, 100%);
+  }
+}
+/* Кнопка «3D» лёгкой карточки — справа в строке «Рядом: …» или в ряду меток, карточка от неё не растёт. */
+.b3d-row3d {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2, 8px);
+}
+.b3d-row3d > .b3d-view3d {
+  margin-left: auto;
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding-inline: var(--s-3, 12px);
+}
+.b3d-pcard__whererow > .bk-meta {
+  margin: 0;
+  min-width: 0;
+}
 /* Высота ограничена местом под шапкой хозяина (fitDock): остальное — прокрутка внутри панели. */
 .b3d-dock--fit {
   overflow-y: auto;

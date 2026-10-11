@@ -1152,7 +1152,7 @@ await check("light_card_first_3d_by_button_1366_375_ru_kk", async () => {
     if (phone) await lab.tap();
     else await lab.click();
     await p.waitForSelector(".b3d-dock[data-state=card] [data-action=view3d]", { timeout: 10000 });
-    const btn = (await p.textContent("[data-action=view3d]")).trim();
+    const btn = await p.getAttribute("[data-action=view3d]", "aria-label"); // видно «3D», имя — полное
     if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `light_card_${w}_${lang}.png`) });
     await p.click("[data-action=view3d]");
     await p.waitForFunction(() => { const s = __b3d.getState(); return s.view === "3d" && s.three === "ready" && !__map.isMoving(); }, null, { timeout: 30000 });

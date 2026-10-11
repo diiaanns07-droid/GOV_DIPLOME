@@ -270,6 +270,51 @@ try {
   }
   check("resident_hint_not_over_r07_legend_1366_1100", Object.values(hints).every((r) => r.state === "hint" && r.hint && r.legend && !r.over_legend && !r.over_fab), hints);
 
+  // 12. POLISH_WAVE_2 «Лёгкая карточка раньше 3D; 3D — по кнопке»: житель, плоская карта оболочки — three.js не грузится,
+  // карточка проекта лёгкая; «Посмотреть в 3D» — объёмный вид и наклон; кнопка «3D» оболочки ещё раз — снова лёгкий вид.
+  const light = {};
+  for (const [vp, lang, extra] of [[{ width: 1366, height: 768 }, "ru", {}], [{ width: 1366, height: 768 }, "kk", {}],
+    [{ width: 375, height: 812 }, "ru", { hasTouch: true, isMobile: true }], [{ width: 375, height: 812 }, "kk", { hasTouch: true, isMobile: true }]]) {
+    const ctx = await browser.newContext(Object.assign({ viewport: vp }, extra));
+    await ctx.addInitScript((l) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
+    const q = await ctx.newPage();
+    q.on("pageerror", (e) => errors.push(e.message));
+    const threeReq = [];
+    q.on("request", (r) => { if (/three\.module/.test(r.url())) threeReq.push(r.url()); });
+    await q.goto(URL0);
+    await q.waitForFunction(() => window.CivicShell?.build3d?.getState?.().phase === "ready", null, { timeout: 60000 });
+    await q.waitForTimeout(1500);
+    const s0 = await q.evaluate(() => { const s = CivicShell.build3d.getState(); return { view: s.view, three: s.three, pitch: Math.round(map.getPitch()) }; });
+    const req0 = threeReq.length;
+    const target = await q.evaluate(() => CivicShell.build3d.getState().proposals.find((x) => x.kind !== "lighting"));
+    await q.evaluate((c) => map.jumpTo({ center: c, zoom: 17.2, pitch: 0, bearing: 0 }), target.geometry.coordinates);
+    await q.waitForTimeout(900);
+    const lab = await q.$(`.b3d-label[data-id="${target.id}"]`);
+    if (extra.hasTouch) await lab.tap();
+    else await lab.click();
+    await q.waitForSelector("#birge-build3d-root .b3d-dock[data-state=card] [data-action=view3d]", { timeout: 10000 });
+    const btn = await q.getAttribute("#birge-build3d-root [data-action=view3d]", "aria-label"); // видно «3D», имя — полное
+    await shot(q, `light_shell_card_${vp.width}_${lang}.png`);
+    await q.click("#birge-build3d-root [data-action=view3d]");
+    await q.waitForFunction(() => { const s = CivicShell.build3d.getState(); return s.view === "3d" && s.three === "ready" && !map.isMoving(); }, null, { timeout: 30000 });
+    await q.waitForTimeout(800);
+    const s1 = await q.evaluate(() => { const s = CivicShell.build3d.getState(); return { view: s.view, pitch: Math.round(map.getPitch()), geometries: s.memory && s.memory.geometries, selected: s.selected }; });
+    await shot(q, `light_shell_3d_${vp.width}_${lang}.png`);
+    // Кнопка «3D» оболочки (карта ровно в её наклоне) — ещё раз: плоская карта, лёгкий вид.
+    const tool = await q.$("#toggle-3d");
+    let s2 = null;
+    if (tool && (await tool.isVisible())) {
+      await tool.click();
+      await q.waitForFunction(() => CivicShell.build3d.getState().view === "light" && !map.isMoving(), null, { timeout: 10000 }).catch(() => {});
+      s2 = await q.evaluate(() => ({ view: CivicShell.build3d.getState().view, pitch: Math.round(map.getPitch()) }));
+    }
+    light[vp.width + "_" + lang] = { start: s0, three_requests_before: req0, button: btn, after: s1, after_shell_3d_button: s2 };
+    await ctx.close();
+  }
+  check("light_card_first_3d_by_button_in_shell", Object.entries(light).every(([k, r]) => r.start.view === "light" && r.start.three === "idle" && r.three_requests_before === 0 &&
+    r.button === (k.endsWith("_kk") ? "3D көріністе қарау" : "Посмотреть в 3D") && r.after.view === "3d" && r.after.pitch >= 30 && r.after.geometries > 0 && !!r.after.selected &&
+    (!r.after_shell_3d_button || r.after_shell_3d_button.view === "light")), light);
+
   check("phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
     Object.values(halfCards).every((r) => r.tapped && r.state === "card" && r.header_free && r.dock[0] >= r.header_bottom && (r.sheet !== "peek" || r.object_above_card)), halfCards);
 } catch (e) {

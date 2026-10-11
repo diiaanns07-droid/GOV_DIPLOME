@@ -553,12 +553,15 @@
     var fitObserver = null;
     var fitWatched = [];
     var fitFrame = 0;
-    function topLimit() {
+    function topLimit(d) {
       var cr = map.getCanvas().getBoundingClientRect();
       var lim = Math.max(0, cr.top);
       avoidRects().forEach(function (r) {
         // полоса во всю ширину у верхнего края карты (шапка), а не шторка или колонка
         if (r.width > cr.width * 0.6 && r.top - cr.top < cr.height * 0.2 && r.bottom - cr.top < cr.height * 0.4) lim = Math.max(lim, r.bottom);
+        // панель хозяина над панелью модуля, закрывающая заметную часть её ширины («Территория» слева на ноутбуке);
+        // узкая колонка кнопок карты не в счёт
+        else if (d && Math.min(r.right, d.right) - Math.max(r.left, d.left) >= d.width * 0.25 && r.bottom < d.bottom - 160) lim = Math.max(lim, r.bottom);
       });
       return lim + 8;
     }
@@ -566,37 +569,61 @@
       if (S.destroyed) return;
       watchHost();
       dock.style.maxHeight = "";
+      dock.style.maxWidth = "";
       dock.style.transform = "";
       dock.classList.remove("b3d-dock--fit");
       var st = dock.getAttribute("data-state");
       if (!st || st === "empty" || ui.hidden) return;
       var r = dock.getBoundingClientRect();
       if (!r.height) return;
-      // Узкая панель хозяина внизу (легенда R07 слева) под лёгкой панелью модуля (подсказка жителю, каталог)
-      // (R10 B-039): сдвигаем панель вбок в той же строке, если рядом хватает места в области хозяина, иначе
-      // поднимаем над ней (вверх — значит закрыть саму карту). Полосы во всю ширину (шторка телефона) не трогаем:
-      // карточка и подсказка лежат поверх шторки по замыслу оболочки.
-      if (st !== "card" && !ui.classList.contains("b3d--overlay")) {
+      if (!ui.classList.contains("b3d--overlay")) {
         var cw = map.getCanvas().getBoundingClientRect().width;
         var box = ui.parentNode && ui.parentNode.getBoundingClientRect ? ui.parentNode.getBoundingClientRect() : r;
-        var dx = 0,
-          lift = 0;
-        avoidRects().forEach(function (a) {
-          if (a.width > cw * 0.6) return;
-          if (!(a.left < r.right && a.right > r.left && a.top < r.bottom && a.bottom > r.top && a.top > r.top - 8)) return;
-          var toRight = a.right + 8 - r.left,
-            toLeft = r.right - (a.left - 8);
-          var onLeft = a.left + a.right < box.left + box.right; // панель хозяина в левой половине области
-          if (onLeft && r.right + toRight <= box.right) dx = Math.max(dx, toRight);
-          else if (!onLeft && r.left - toLeft >= box.left) dx = Math.min(dx, -toLeft);
-          else lift = Math.max(lift, r.bottom - a.top + 8);
-        });
-        if (dx || lift) {
-          dock.style.transform = "translate(" + Math.round(dx) + "px, " + -Math.round(lift) + "px)";
-          r = dock.getBoundingClientRect();
+        if (st === "card") {
+          // Карточка проекта (ноутбук, корень хозяина): в промежуток между узкими панелями хозяина слева
+          // («Территория») и справа (кнопки карты), по центру, до 440 px. Промежуток уже 360 px — не двигаем,
+          // ниже ограничим высоту (topLimit) с прокруткой.
+          var L = box.left,
+            Rb = box.right,
+            hit = false;
+          avoidRects().forEach(function (a) {
+            if (a.width > cw * 0.6 || a.bottom <= r.top || a.top >= r.bottom) return;
+            if (a.left + a.right < box.left + box.right) L = Math.max(L, a.right + 8);
+            else Rb = Math.min(Rb, a.left - 8);
+            if (a.left < r.right && a.right > r.left) hit = true;
+          });
+          if (hit && Rb - L >= 360) {
+            if (r.width > Rb - L) {
+              dock.style.maxWidth = Math.floor(Rb - L) + "px";
+              r = dock.getBoundingClientRect(); // уже — значит и левый край другой (панель по центру корня)
+            }
+            var dx2 = L + (Rb - L - r.width) / 2 - r.left;
+            dock.style.transform = "translateX(" + Math.round(dx2) + "px)";
+            r = dock.getBoundingClientRect();
+          }
+        } else {
+          // Подсказка жителю, каталог: узкая панель хозяина внизу (легенда R07 слева) — сдвиг вбок в той же строке,
+          // если хватает места в области хозяина, иначе подъём над ней (R10 B-039). Полосы во всю ширину (шторка
+          // телефона) не трогаем: карточка и подсказка лежат поверх шторки по замыслу оболочки.
+          var dx = 0,
+            lift = 0;
+          avoidRects().forEach(function (a) {
+            if (a.width > cw * 0.6) return;
+            if (!(a.left < r.right && a.right > r.left && a.top < r.bottom && a.bottom > r.top && a.top > r.top - 8)) return;
+            var toRight = a.right + 8 - r.left,
+              toLeft = r.right - (a.left - 8);
+            var onLeft = a.left + a.right < box.left + box.right; // панель хозяина в левой половине области
+            if (onLeft && r.right + toRight <= box.right) dx = Math.max(dx, toRight);
+            else if (!onLeft && r.left - toLeft >= box.left) dx = Math.min(dx, -toLeft);
+            else lift = Math.max(lift, r.bottom - a.top + 8);
+          });
+          if (dx || lift) {
+            dock.style.transform = "translate(" + Math.round(dx) + "px, " + -Math.round(lift) + "px)";
+            r = dock.getBoundingClientRect();
+          }
         }
       }
-      var top = topLimit();
+      var top = topLimit(r);
       if (r.top >= top - 0.5) return;
       var avail = Math.floor(r.bottom - top);
       if (avail < 160) return; // места почти нет — не превращать панель в щель
@@ -809,29 +836,45 @@
         return renderOwnCard(p);
       }
       var where = placeText(p);
-      if (where) dock.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
+      var whereRow = el("div", "b3d-pcard__whererow");
+      if (where) whereRow.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
+      withView3d(whereRow);
+      if (whereRow.firstChild) dock.appendChild(whereRow);
       var yard = yardOf(p);
       if (yard) {
         var yardName = t.lang() === "kk" ? yard.label_kk || yard.label_ru : yard.label_ru || yard.label_kk;
         dock.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
       }
-      var v3 = view3dBtn();
-      if (v3) dock.appendChild(v3);
       if (o.role === "akimat") dock.appendChild(deleteBtn(p));
     }
 
-    // «Посмотреть в 3D» — второстепенная кнопка лёгкой карточки (главная — голос). Наклоняет карту, как кнопка «3D».
+    // «Посмотреть в 3D» — второстепенная кнопка лёгкой карточки (главная — голос). Компактная, как кнопка «3D» карты:
+    // значок и «3D», полное «Посмотреть в 3D» — в имени кнопки и подсказке; карточка от неё не растёт.
     function view3dBtn() {
       if (S.view === "3d" && S.three === "ready") return null;
       if (S.three === "unsupported") return null;
       var loading = S.three === "loading";
-      var b = actionBtn("cube", t(loading ? "build3d.loading" : "build3d.card.view3d"), "b3d-view3d", function () {
-        enable3d({ tilt: true }).then(function (ok) {
-          if (ok && S.selected && S.objects[S.selected]) keepAboveDock(S.objects[S.selected]);
-        });
-      }, "view3d");
+      var name = t(loading ? "build3d.loading" : "build3d.card.view3d");
+      var b = el("button", "bk-btn bk-btn--ghost b3d-view3d", { type: "button", "data-action": "view3d", "aria-label": name, title: name });
+      b.appendChild(icon("cube", o.iconsUrl));
+      b.appendChild(el("span", "", { text: "3D" }));
+      b.addEventListener("click", function () {
+        // Наклон и «объект над карточкой» — одним движением камеры: второе easeTo оборвало бы наклон.
+        var sel = S.selected && S.objects[S.selected];
+        var tilt = o.view !== "3d" && map.getPitch() < PITCH_3D;
+        enable3d({ tilt: tilt && !sel });
+        if (sel && tilt) keepAboveDock(sel, { pitch: TILT_3D, bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
+      });
       if (loading) b.setAttribute("aria-busy", "true");
       return b;
+    }
+    // Строка карточки с кнопкой «3D» справа (строка «Рядом: …» или ряд меток).
+    function withView3d(row) {
+      var v3 = view3dBtn();
+      if (!v3) return row;
+      row.classList.add("b3d-row3d");
+      row.appendChild(v3);
+      return row;
     }
 
     function deleteBtn(p) {
@@ -869,7 +912,7 @@
       // Статус словом и цветом (R06: proposal | approved | rejected).
       var st = p.status === "approved" || p.status === "rejected" ? p.status : "proposal";
       tags.appendChild(el("span", "bk-status", { "data-status": st === "approved" ? "fixed" : st === "rejected" ? "rejected" : "accepted", text: t("proposal.status." + st) }));
-      card.appendChild(tags);
+      card.appendChild(withView3d(tags));
       var where = placeText(p);
       if (where) card.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
       var yard = yardOf(p);
@@ -884,8 +927,6 @@
       var note = p.my_vote === 1 ? t("build3d.card.your_vote_up") : p.my_vote === -1 ? t("build3d.card.your_vote_down") : t("proposal.one_vote");
       if (p.voting_open === false) note = t("proposal.voting_closed");
       card.appendChild(el("p", "bk-meta", { text: note }));
-      var v3 = view3dBtn();
-      if (v3) card.appendChild(v3);
       if (o.role === "akimat") card.appendChild(deleteBtn(p));
       dock.appendChild(card);
     }
@@ -2771,7 +2812,7 @@
     // Выбранный объект не должен прятаться под карточкой (UX_REVIEW день 3 #21): считаем свободную часть карты
     // (слева от карточки на ноутбуке, над панелью на телефоне) и, если объект вне её, плавно ставим его в её
     // центр. Это ответ на нажатие пользователя, поэтому правило «карта сама не двигается» не нарушается.
-    function keepAboveDock(obj) {
+    function keepAboveDock(obj, extra) {
       if (!obj) return;
       var sp;
       if (S.view === "3d" && obj.group && lastMatrix) {
@@ -2782,18 +2823,25 @@
       var f = freeArea();
       var m = 48; // запас: подпись над объектом тоже должна быть видна
       var inside = sp.x > f.x0 + m && sp.x < f.x1 - m && sp.y > f.y0 + m + 60 && sp.y < f.y1 - m;
-      if (inside) return;
+      if (inside && !extra) return;
       var tx = (f.x0 + f.x1) / 2,
         ty = f.y0 + (f.y1 - f.y0) * 0.6;
       // easeTo с offset: MapLibre ставит точку объекта в нужное место экрана с учётом наклона
       // (panBy двигает центр, а при наклоне точки у края экрана смещаются на другое расстояние).
-      var canvas = map.getCanvas();
+      // Смещение — от центра карты с учётом её отступов (оболочка R01 задаёт padding): от середины холста объект
+      // уезжал под шапку.
+      var cpt = map.project(map.getCenter());
       var anchor = obj.p.kind === "lighting" ? obj.p.geometry.coordinates[Math.floor(obj.p.geometry.coordinates.length / 2)] : obj.p.geometry.coordinates;
-      map.easeTo({
-        center: anchor,
-        offset: [tx - canvas.clientWidth / 2, ty - canvas.clientHeight / 2],
-        duration: reducedMotion() ? 0 : 450,
-      });
+      map.easeTo(
+        Object.assign(
+          {
+            center: anchor,
+            offset: [tx - cpt.x, ty - cpt.y],
+            duration: reducedMotion() ? 0 : 450,
+          },
+          extra || {} // «Посмотреть в 3D»: тот же сдвиг вместе с наклоном
+        )
+      );
     }
 
     // Крупный план проектов (для оболочки: открыли «3D-превью» — камера к проектам; UX_REVIEW день 3 #20).
