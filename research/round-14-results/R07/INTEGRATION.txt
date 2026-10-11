@@ -125,9 +125,47 @@ R07 · Тепловая карта объектов — как подключи�
     просьба R09); только примеры R07 (их статус в общей сборке не поменять) закрывает более поздний ремонт места;
     цель зелёная «исправлено», когда открытых жалоб нет; записи с duplicate_of НЕ считаются (их люди уже в «Я тоже» исходной).
 
+2е) Волна 2, п. 1 — «служба сообщила» / «проверено жителями» / «вернули жители» (R07 читает, R09 пишет).
+    ОСНОВНОЕ — формат R09 lifecycle.py (claude/modest-shannon-0ki93p, d3f9c1e; так же читает R08): resolution =
+    {round, state: reported | verified | reopened, reported_at, verified_at, reopened_at, votes {yes, no, cant}} и шаг
+    истории {"status": "in_progress", "reopened_by_residents": true}. Есть resolution — решает она (engine._resolution_state).
+    Запасные варианты (если формат поменяется) — R07 читает и их (engine.resident_answers):
+      · resident_check: {"answer": "confirmed" | "not_fixed" | "cant_check", "at": ISO}
+      · resident_checks: [{answer, at}, …] (по одному на автора и каждого «Я тоже»); verification: "verified" | {state, at};
+      · verified / verified_by_residents / resident_confirmed = true (+ verified_at); false НЕ значит «осталось»;
+      · запись status_history с полем resident_check / check / answer, или со статусом "verified" (да) / "reopened" (осталось).
+    Слова ответа: да — confirmed, yes, fixed, verified, resolved; осталось — not_fixed, no, still, remains, reopened;
+    не могу проверить — cant_check, cant, unknown, skip (на цвет не влияет).
+    Правило карты: после последнего «fixed» последний решающий ответ «осталось» → жалоба снова открыта (даже если статус
+    ещё fixed), цвет по весу, отметка ↺ «вернули жители», её люди снова в счёте, вес — от момента возврата; «да» хотя бы
+    одного → цель «проверено жителями» (#639922, 7 дней от ответа); ответов нет → «служба сообщила об устранении»
+    (#97C459 пунктиром, 7 дней от ремонта). Ремонт, который жители вернули, не закрывает примеры R07.
+    Просьба к R09: при «Проблема осталась» — статус in_progress + запись истории {status: "in_progress", resident_check:
+    "not_fixed", at} (так история сохраняется); после ответа — invalidate() и событие "birge:complaint" {type: "check"}.
+2ж) Волна 1, п. 6 — срок ответа: R07 показывает акимату строку под статусом («Осталось 2 рабочих дня» / «Срок ответа —
+    сегодня» / «Просрочено на 1 день», ключи R11 deadline.*) по самому раннему due_at среди НОВЫХ жалоб места (R09:
+    просрочено = новое и срок прошёл). Рабочие дни считает ui/civic_heat/deadline.py: календарь праздников — R09
+    (ui.civic_feedback.v2.workdays.is_working_day, holidays_kz.json), иначе R08 (ui.civic_akim.workdays.days_off), иначе
+    пн–пт без праздников (due.calendar = "r09" | "r08" | "weekdays"). Просрочка — в рабочих днях, минимум 1, как у
+    R09 deadline_info. Своего списка праздников у R07 нет: в 2026 календарь РК менялся.
+2з) Волна 1, п. 2 и 12 — уточнение: поле записи subtopic (id из categories_v2.json или {id}); R07 считает людей по
+    уточнениям (item.subtopics) и даёт top_subtopic {id, ru, kk, count} — в карточке «О чём сообщают» и в строке списка
+    («Светофор: долго красный или зелёный · 8 чел.»), если уточнение выбрали хотя бы половина сообщивших.
+
+2и) R04 + R09, волна 1, п. 8–9: патч R04 r07_polish_r04 (пометка «Содержит грубые слова» у текстов жителей для
+    сотрудника; свёрнутый блок «Объединено с этим» с кнопкой «Это разные проблемы» → POST /complaints/{id}/separate)
+    ВСТРОЕН в модуль с 9e337dc — накладывать его поверх больше не нужно. Без маршрута /complaints/merged (как в FINAL-2)
+    блока нет. Когда R04 и R09 договорятся (R01 INTEGRATION §13.3: separate R04 или unduplicate R09) — кнопка будет
+    звать выбранный маршрут; пришлите его, поправлю одну строку.
+
 ======================================================================
 3. R08 · «Картина дня» — те же числа, что на карте
 ======================================================================
+3-волна-2) Новые поля элемента /heat (для счётчиков и «Картины дня»; прежние поля не менялись):
+    fixed_kind ("reported" | "verified" | null), checks {yes, no, cant}, reopened (bool), reopened_at, due {at, workdays_left,
+    overdue_days, calendar}, subtopics {id: людей}, top_subtopic {id, ru, kk, count}; в stats — fixed_reported,
+    fixed_verified, reopened. Районы: state "no_data" (серые, count 0) — фильтруйте state == "active", как сейчас.
+    «Перекрёсток Кенесары и Иманова — светофор, 9 жалоб»: target.label_* + top_subtopic.ru/kk + count.
     from ui.civic_heat import default_service
     svc = default_service()
     svc.records(since=None)                 # те же записи, по которым считается карта (публичный метод — просьба R08 закрыта)
@@ -166,6 +204,17 @@ R07 · Тепловая карта объектов — как подключи�
     Значок с числом ставится ВНУТРИ контура (geo.inside_point; найден и исправлен сдвиг центра у мелких площадок на 60–100 м).
     Порядок слоёв относительно 3D-зданий решаете вы: передайте нужный id в mount({ beforeId }).
 
+4-волна-1) Светофоры, переходы, перекрёстки (п. 12; у R12 п. 1). Пока нет LOCAL-10, R07 берёт их из того же снимка
+    OSM 2026-05-06, что граф улиц (data/civic/astana/osm-walking/overpass.json.gz): ui/civic_heat/fixtures/
+    street_nodes.json.gz — 782 светофора (highway=traffic_signals), 2545 переходов (highway=crossing), 3534 перекрёстка
+    (узел графа: ≥ 3 ребра и ≥ 2 разных улицы). id — osm-node-<id>, подтип traffic_signal | crossing | intersection,
+    подписи «Светофор на перекрёстке пр. Кабанбай Батыра и ул. Сыганак» / «Қабанбай батыр даңғылы мен Сығанақ
+    көшесінің қиылысындағы бағдаршам». Цель R12 с kind = traffic_signal / crossing / intersection тоже понимается.
+    Когда придут наборы LOCAL-10 raw/traffic_signals.json.gz и raw/crossings.json.gz — osm_objects возьмёт их первыми.
+    Если R12 даст свой id перекрёстка — пришлите формат, добавлю (сейчас — osm-node-<id узла графа>).
+    R10: проверка точности c26 сверяет объекты R07 только с LOCAL-1 — патч research/round-14-results/R07/patches/
+    R10_accuracy_osm_walking.patch (узлы из osm-walking сверяются со снимком osm-walking, как остановки R12); с ним 36/36.
+
 ======================================================================
 5. Координатор · research/round-14/categories_v2.json (предложение, сам файл не менял)
 ======================================================================
@@ -182,6 +231,13 @@ R07 · Тепловая карта объектов — как подключи�
     после подключения tokens.css цвета совпадут сами. Иконки нарисованы внутри heat.js теми же контурами, что в icons.svg R11.
     Если общий Birge.i18n подключён и знает ключ heat.*, модуль берёт его перевод; иначе — свой словарь (window.CivicHeat.messages).
     Множественное число: ru — one/few/many, kk — одна форма other. Подстановки: {count} {target} {people} {period} {date}.
+    11 окт, волна 2 — ключи R11, которые модуль берёт из общего словаря (свой запасной текст тот же): heat.legend.
+    reported_fixed | verified | nodata | nodata_hint, heat.reopened_mark, deadline.left | today | overdue, subtopic.<id>.
+    НОВЫЕ ключи R07 (+10): heat.kind.traffic_signal | crossing | intersection (Светофор / Бағдаршам, Пешеходный переход /
+    Жаяу жүргіншілер өткелі, Перекрёсток / Қиылыс), heat.status.reported_fixed | verified (= status.* R11),
+    heat.level_word.reported (Исправлено — ждёт проверки / Түзетілді — тексеруді күтуде), heat.reopened_note,
+    heat.reported_wait, heat.verified_note, heat.already_changed (Статус уже изменён — карта обновлена / Мәртебесі бұрын
+    өзгертілген — карта жаңартылды). Итого в модуле 111 ключей (ru = kk, проверено).
     11 окт, читаемость карты (просьба владельца) — НОВЫЕ ключи для R11 (+5, всего 93):
       heat.tip.people | {count} человек (one/few/many) | {count} адам — подсказка при наведении «название · люди · категория»;
       heat.cluster.places | {count} место / места / мест | {count} орын;
