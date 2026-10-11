@@ -1,17 +1,15 @@
 {
- "generated_at": "2026-10-11T20:37:19.158Z",
- "url": "http://127.0.0.1:8809/",
- "r01": "claude/sharp-dijkstra-0t87gl@28e23e3 (FINAL-2 шаг 3) + R05 426b25d5",
+ "generated_at": "2026-10-11T21:18:45.058Z",
+ "url": "http://127.0.0.1:8810/",
+ "r01": "claude/sharp-dijkstra-0t87gl@28e23e3 + proposed_r01_wave2.patch + R05 426b25d5",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
    "status": "PASS",
    "detail": {
     "labels": [
-     "Проект · 20272",
      "Проект · 2027",
-     "Проект · 2027",
-     "Проект · 2027",
+     "Проект · 20275",
      "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027"
@@ -58,7 +56,7 @@
     "posts": [
      201
     ],
-    "id": "p-5c5790642d99",
+    "id": "p-ed1ac8627f74",
     "year": 2027
    }
   },
@@ -94,8 +92,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 436.6818894776243,
-     "y": 254.88900772888553
+     "x": 436.6818651379933,
+     "y": 254.88881197200638
     },
     "under": []
    }
@@ -184,12 +182,12 @@
    "detail": {
     "1366_ru": {
      "heldBefore": 1,
-     "count": 7,
+     "count": 5,
      "console_errors": []
     },
     "375_kk": {
      "heldBefore": 1,
-     "count": 7,
+     "count": 5,
      "console_errors": []
     }
    }
@@ -266,8 +264,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-99202142606e"
+      "geometries": 19,
+      "selected": "p-cfcf11ab87ba"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -285,8 +283,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-99202142606e"
+      "geometries": 19,
+      "selected": "p-cfcf11ab87ba"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -304,8 +302,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-99202142606e"
+      "geometries": 19,
+      "selected": "p-cfcf11ab87ba"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -323,8 +321,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-99202142606e"
+      "geometries": 19,
+      "selected": "p-cfcf11ab87ba"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -348,12 +346,16 @@
       "three_requests": 0
      },
      "pick": {
-      "catalog_visible": false
+      "catalog_visible": true,
+      "done_button": "Готово",
+      "toggle_hidden": true,
+      "result": "sports",
+      "root_after": "none"
      },
      "on": {
       "phase": "ready",
-      "count": 7,
-      "labels": 7,
+      "count": 5,
+      "labels": 5,
       "data_requests": [
        "nura-streets.json",
        "astana-districts.json",
@@ -372,12 +374,16 @@
       "three_requests": 0
      },
      "pick": {
-      "catalog_visible": false
+      "catalog_visible": true,
+      "done_button": "Дайын",
+      "toggle_hidden": true,
+      "result": "sports",
+      "root_after": "none"
      },
      "on": {
       "phase": "ready",
-      "count": 7,
-      "labels": 7,
+      "count": 5,
+      "labels": 5,
       "data_requests": [
        "nura-streets.json",
        "astana-districts.json",
@@ -389,13 +395,21 @@
   },
   {
    "id": "idea_pick_visible_with_projects_layer_off (proposed_r01_wave2.patch)",
-   "status": "FAIL",
+   "status": "PASS",
    "detail": {
     "1366_ru": {
-     "catalog_visible": false
+     "catalog_visible": true,
+     "done_button": "Готово",
+     "toggle_hidden": true,
+     "result": "sports",
+     "root_after": "none"
     },
     "375_kk": {
-     "catalog_visible": false
+     "catalog_visible": true,
+     "done_button": "Дайын",
+     "toggle_hidden": true,
+     "result": "sports",
+     "root_after": "none"
     }
    }
   },
@@ -408,7 +422,7 @@
      "placing": {
       "ghost": [
        150,
-       252
+       248
       ],
       "ghost_on_map": true,
       "rotate_in_head": true,
@@ -418,8 +432,8 @@
      "now": {
       "place_on_map": true,
       "toast": [
-       568,
-       663
+       556,
+       651
       ],
       "toast_visible": true,
       "toast_over_place": false,
@@ -428,8 +442,8 @@
       "label_visible": false,
       "label_over_legend": false,
       "label": [
-       16,
-       64
+       185,
+       233
       ],
       "legend": [
        138,
@@ -441,8 +455,8 @@
       "label_visible": true,
       "label_over_legend": false,
       "label": [
-       189,
-       237
+       185,
+       233
       ],
       "legend": [
        138,
@@ -456,7 +470,7 @@
      "placing": {
       "ghost": [
        150,
-       329
+       341
       ],
       "ghost_on_map": true,
       "rotate_in_head": true,
@@ -476,8 +490,8 @@
       "label_visible": false,
       "label_over_legend": false,
       "label": [
-       22,
-       71
+       23,
+       72
       ],
       "legend": [
        138,
@@ -489,8 +503,8 @@
       "label_visible": true,
       "label_over_legend": false,
       "label": [
-       266,
-       314
+       277,
+       325
       ],
       "legend": [
        138,
@@ -504,7 +518,7 @@
      "placing": {
       "ghost": [
        142,
-       323
+       334
       ],
       "ghost_on_map": true,
       "rotate_in_head": true,
@@ -524,8 +538,8 @@
       "label_visible": false,
       "label_over_legend": false,
       "label": [
-       259,
-       307
+       23,
+       71
       ],
       "legend": [
        138,
@@ -537,8 +551,8 @@
       "label_visible": true,
       "label_over_legend": false,
       "label": [
-       259,
-       307
+       270,
+       318
       ],
       "legend": [
        138,
@@ -555,8 +569,8 @@
    "detail": {
     "375x667_kk": {
      "label": [
-      189,
-      237
+      185,
+      233
      ],
      "legend": [
       138,
@@ -566,8 +580,8 @@
     },
     "375x812_ru": {
      "label": [
-      266,
-      314
+      277,
+      325
      ],
      "legend": [
       138,
@@ -577,8 +591,8 @@
     },
     "360x800_ru": {
      "label": [
-      259,
-      307
+      270,
+      318
      ],
      "legend": [
       138,
@@ -590,42 +604,45 @@
   },
   {
    "id": "phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
-   "status": "FAIL",
+   "status": "PASS",
    "detail": {
     "kk": {
      "sheet_before": "half",
      "tapped": [
-      188,
-      186
-     ],
-     "state": "catalog",
-     "sheet": "half",
-     "dock": [
-      0,
-      0
-     ],
-     "header_bottom": 72,
-     "header_free": true,
-     "object": null,
-     "object_above_card": false
-    },
-    "ru": {
-     "sheet_before": "half",
-     "tapped": [
-      188,
+      187,
       186
      ],
      "state": "card",
      "sheet": "peek",
      "dock": [
-      210,
+      192,
+      609
+     ],
+     "header_bottom": 72,
+     "header_free": true,
+     "object": [
+      187,
+      115
+     ],
+     "object_above_card": true
+    },
+    "ru": {
+     "sheet_before": "half",
+     "tapped": [
+      187,
+      186
+     ],
+     "state": "card",
+     "sheet": "peek",
+     "dock": [
+      242,
       609
      ],
      "header_bottom": 72,
      "header_free": true,
      "object": [
       188,
-      126
+      145
      ],
      "object_above_card": true
     }

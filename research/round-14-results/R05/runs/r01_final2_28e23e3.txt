@@ -1,0 +1,31 @@
+R05 395d9ea (код; голова ветки 999cdc8) — полный прогон 11.10.2026, Chromium headless, SwiftShader без GPU
+словарь/ui-kit R11 @ 41dd006; R10 tests/e2e @ c131fcd; оболочка R01 claude/sharp-dijkstra-0t87gl @ 28e23e3 (FINAL-2 шаг 3)
+
+code 999cdc88
+browser_check exit 0 Итого: 51 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json
+ux_day3 exit 0 Итого: 29 PASS, 0 FAIL
+i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0
+node exit 0 # pass 35 # fail 0 
+python exit 0 OK
+r06 r06d1 (3d10f7d) exit 0 pass=16 fail=0
+r06 r06d2 (b42e790) exit 0 pass=18 fail=0
+r06 r06d3 (d707efc) exit 0 pass=19 fail=0
+r06 own r06d2 exit 0 {"total":17,"failed":0}
+r06 own r06d3 exit 0 {"total":17,"failed":0}
+как есть: build3d = HEAD
+как есть: final_kk_street+titles exit 0 PASS
+как есть: shell smoke (первый прогон; п. 10 ещё без ожидания 3D) exit 1 pass=21 fail=2 FAIL idea_pick_visible_with_projects_layer_off (proposed_r01_wave2.patch) — {"1366_ru":{ FAIL phone_akimat_card_with_half_sheet_does_not_cover_shell_header — {"kk":{"sheet_befor 
+как есть: r01 r14_b2 exit 0 pass=28 fail=0
+как есть: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0
+как есть: r01 r14_wave2 exit 0 pass=41 fail=0
+как есть: r10 demo_flow exit 0 ИТОГ: { PASS: 172, FAIL: 0, NOT_RUN: 0 } → <scratch>/w2cdemo
+как есть: r10 wave_checks exit 1 NOT_RUN P-12 слои слои карты: по умолчанию «Только жалобы и работы», включено не больше одного — "переключатель слоёв не найден (слоёв ещё нет) — по умолчанию карту сторожит compare_baseline.cjs" ИТОГ: { PASS: 101, FAIL: 21, PENDING: 2, NOT_RUN: 3, INFO: 6 } → <scratch>/w2cwave 
+proposed_r01_wave2.patch применён (git apply) к копии 28e23e3
+с proposed_r01_wave2.patch: build3d = HEAD
+с proposed_r01_wave2.patch: shell smoke exit 0 pass=23 fail=0 
+с proposed_r01_wave2.patch: r01 r14_b2 exit 0 pass=28 fail=0
+с proposed_r01_wave2.patch: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0
+с proposed_r01_wave2.patch: r01 r14_wave2 exit 0 pass=41 fail=0
+как есть: shell smoke (тест с ожиданием 3D в п. 10, повтор) pass=22 fail=1 — FAIL только idea_pick_visible_with_projects_layer_off (нужен proposed_r01_wave2.patch)
+
+R10 wave_checks: 21 FAIL — W2-1 (R07/R08/R09) и W2-2 (R09), не R05; W2-7 «Идеи» — ЖДЁТ window.BirgeIdeas (R06).
