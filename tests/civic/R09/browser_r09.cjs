@@ -961,6 +961,9 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   check(`${tag}: [W2-1] «Проблема осталась» — снова в работе, heat_state=reopened, событие для карты`,
         pub.status === "in_progress" && pub.heat_state === "reopened" && pub.resolution.reopen_count === 1 && eventsB.includes("reopened"),
         JSON.stringify({ s: pub.status, h: pub.heat_state, e: eventsB }));
+  const transferred = await pageB.$eval(".bc-mine__card .bc-assignee", (n) => n.textContent.trim()).catch(() => "");
+  check(`${tag}: [W1-7] на карточке «${transferred}» (общее название службы, на языке жителя)`,
+        transferred === (lang === "kk" ? "Берілді: Жарықтандыру қызметі" : "Передано: Служба освещения"), transferred);
   await shot(pageB, `${tag}-reopened`);
   await pageB.context().close();
 
@@ -995,7 +998,7 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
         mine.items >= 1 && (lang === "kk" ? /өзгерді/i.test(mine.changes) : /Что изменилось/.test(mine.changes)), mine.changes.slice(0, 200));
   const pl = mine.passport.join(" | ");
   check(`${tag}: [W2-2] паспорт: отвечает служба, следующий шаг, ответ дан, ориентир 20 октября, причина задержки`,
-        mine.passport.length >= 5 && (lang === "kk" ? /Көтергіш күтілуде/.test(pl) : /Отвечает: Служба освещения/.test(pl) &&
+        mine.passport.length >= 5 && (lang === "kk" ? /Жауапты: Жарықтандыру қызметі/.test(pl) && /Көтергіш күтілуде/.test(pl) : /Отвечает: Служба освещения/.test(pl) &&
         /Следующий шаг: Заменить лампы на опорах/.test(pl) && /Служба ответила/.test(pl) && /ориентир 20/.test(pl) && /Ждём подъёмник/.test(pl)), pl);
   check(`${tag}: [W2-3] обновление службы видно автору`, lang === "kk" ? /сәрсенбіде/.test(mine.updates) : /Подъёмник приедет в среду/.test(mine.updates), mine.updates.slice(0, 200));
   check(`${tag}: [защита п.4] на экране одна главная кнопка («Да, исправлено»)`, mine.primaries === 1 && mine.verify, String(mine.primaries));

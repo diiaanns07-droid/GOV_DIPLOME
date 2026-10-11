@@ -1414,11 +1414,23 @@
       return null;
     }
 
+    // Название службы на языке жителя: казахское из паспорта (R09/R08), иначе как есть (текст сотрудника).
+    function serviceName(p) {
+      return currentLang() === "kk" && p.assignee_kk ? p.assignee_kk : p.assignee;
+    }
+
+    // «Передано: служба» (волна 1, п. 7) — на карточке, пока служба работает; остальное — в «Подробнее».
+    function transferredLine(item) {
+      var p = item.passport || {};
+      if (!p.assignee || (item.status !== "accepted" && item.status !== "in_progress")) return null;
+      return h("p", { "class": "bc-meta bc-assignee" }, t("mine.transferred", { name: serviceName(p) }));
+    }
+
     // «Паспорт решения» (волна 2, п. 2) и обновления — свёрнуто: карточка не растёт (защита от перегруза, п. 3).
     function detailsBlock(item, open) {
       var p = item.passport || {};
       var lines = [];
-      if (p.assignee) lines.push(t("mine.passport.assignee", { name: p.assignee }));
+      if (p.assignee) lines.push(t("mine.passport.assignee", { name: serviceName(p) }));
       lines.push(t("mine.passport.next", { text: p.next_step || t("mine.passport.next_default." + item.status) }));
       if (p.deadline && p.deadline.state === "answered") lines.push(t("mine.passport.answered"));
       else if (p.response_due) lines.push(t("mine.passport.response", { date: formatDate(p.response_due) }));
@@ -1498,6 +1510,7 @@
           h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || reportersOf(item) || 1 })),
           overdue ? h("p", { "class": "bc-overdue" }, [icon("clock"), h("span", {}, t("mine.overdue"))]) : null,
           stateLine(item),
+          transferredLine(item),
           item.can_verify ? verifyBlock(item, primary) : null,
           stepsBar(item),
           detailsBlock(item, focused)]));

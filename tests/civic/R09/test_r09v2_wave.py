@@ -185,6 +185,16 @@ def test_assignee_from_r08_table_wins_and_failure_falls_back(store, clock):
     assert lifecycle.passport_view(record, clock.now)["assignee"] == "Водоканал"
     assert lifecycle.passport_view(record, clock.now, lambda c, s: "Служба R08")["assignee"] == "Служба R08"
     assert lifecycle.passport_view(record, clock.now, lambda c, s: 1 / 0)["assignee"] == "Водоканал"
+    # Казахская подпись: своя для общих названий R09, от R08 — если таблица дала {"ru", "kk"}.
+    assert lifecycle.passport_view(record, clock.now)["assignee_kk"] == "Су арнасы"
+    both = lifecycle.passport_view(record, clock.now, lambda c, s: {"ru": "Служба R08", "kk": "R08 қызметі"})
+    assert (both["assignee"], both["assignee_kk"], both["assignee_source"]) == ("Служба R08", "R08 қызметі", "r08")
+    assert lifecycle.passport_view(record, clock.now, lambda c, s: "Служба R08")["assignee_kk"] is None
+
+
+def test_every_generic_service_has_kazakh_name():
+    names = set(lifecycle.DEFAULT_SERVICES.values()) | set(lifecycle.SUBTOPIC_SERVICES.values())
+    assert names <= set(lifecycle.SERVICES_KK)
 
 
 def test_subtopic_services_use_real_ids():

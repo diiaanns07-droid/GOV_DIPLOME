@@ -112,6 +112,17 @@ SUBTOPIC_SERVICES = {"no_heating": "Теплосеть", "no_water": "Водок
                      "stray_dogs": "Служба отлова бездомных животных"}
 
 
+# Казахские подписи тех же общих названий (перевод R09 — сверить R11; таблица R08 может дать свои ru/kk).
+SERVICES_KK = {
+    "Дорожная служба": "Жол қызметі", "Служба благоустройства": "Абаттандыру қызметі",
+    "Служба пассажирского транспорта": "Жолаушылар көлігі қызметі", "Служба освещения": "Жарықтандыру қызметі",
+    "Оператор вывоза мусора": "Қоқыс шығару операторы", "Теплосеть или водоканал": "Жылу желісі немесе су арнасы",
+    "Служба экологии": "Экология қызметі", "Полиция": "Полиция", "Акимат района": "Аудан әкімдігі",
+    "Теплосеть": "Жылу желісі", "Водоканал": "Су арнасы", "Служба электроснабжения": "Электрмен жабдықтау қызметі",
+    "Газовая служба": "Газ қызметі", "Служба отлова бездомных животных": "Қаңғыбас жануарларды аулау қызметі",
+}
+
+
 def default_assignee(category: str | None, subtopic: str | None) -> str | None:
     if subtopic and subtopic in SUBTOPIC_SERVICES:
         return SUBTOPIC_SERVICES[subtopic]
@@ -129,20 +140,28 @@ def passport_view(record: dict, now: datetime, assignee_lookup=None) -> dict:
     next_step — текст сотрудника; без него интерфейс показывает шаг по статусу (ключ complaint.passport.step.*)."""
     passport = dict(record.get("passport") or {})
     assignee = passport.get("assignee")
+    assignee_kk = None
     source = "staff" if assignee else None
     if not assignee and assignee_lookup is not None:
         try:
-            assignee = assignee_lookup(record.get("category"), record.get("subtopic"))
+            found = assignee_lookup(record.get("category"), record.get("subtopic"))
+            # R08 может вернуть строку или {"ru": ..., "kk": ...}.
+            if isinstance(found, dict):
+                assignee, assignee_kk = found.get("ru"), found.get("kk")
+            else:
+                assignee = found
             source = "r08" if assignee else None
         except Exception:  # noqa: BLE001 — таблица R08 недоступна: берём общий вариант
             assignee = None
     if not assignee:
         assignee = default_assignee(record.get("category"), record.get("subtopic"))
         source = "default" if assignee else None
+    if assignee and not assignee_kk:
+        assignee_kk = SERVICES_KK.get(assignee)
     delay = passport.get("delay") or None
     next_update = rec.parse_iso((delay or {}).get("next_update_at"))
     return {
-        "assignee": assignee, "assignee_source": source,
+        "assignee": assignee, "assignee_kk": assignee_kk, "assignee_source": source,
         "next_step": passport.get("next_step"),
         "response_due": record.get("due_at"),
         "deadline": deadline(record, now),
