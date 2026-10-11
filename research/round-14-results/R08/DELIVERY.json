@@ -4,16 +4,16 @@
  "branch": "claude/r14-R08",
  "base_sha": "2131c15 (claude/round-14-package); волны — claude/round-14-package @ c86c515 (POLISH_WAVE_2 утверждена, categories_v2 heat_states)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "ce06cece",
- "tested_sha": "ce06cece",
+ "code_sha": "d3444215",
+ "tested_sha": "d3444215",
  "tested_with": {
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 5e2789e (код 58f5a56/597ec4f) — временная копия, в git R08 не входит",
-  "r11_ui_kit_i18n": "claude/r14-R11 @ 537dbd3 (DELIVERY b0614f9): словарь с ключами волны 2 (akim.decision.*, akim.pulse.*, akim.verify.split, nearby.*, service.*, deadline.*)",
-  "r01_shell": "claude/sharp-dijkstra-0t87gl @ a96f6e3 (меню волны 2) + R08 ce06cec + R11 537dbd3 + research/round-14-results/R08/r01_wave2_r08.patch",
+  "r11_ui_kit_i18n": "claude/r14-R11 @ a4368e5 (разбор 3): 22 ключа R08 в словаре; также проверено с 537dbd3",
+  "r01_shell": "claude/sharp-dijkstra-0t87gl @ a96f6e3 (меню волны 2) + R08 d3444215 + R11 a4368e5 + research/round-14-results/R08/r01_wave2_r08.patch",
   "r09_formats": "claude/modest-shannon-0ki93p @ 8c07864/a9cd441 (lifecycle.py: resolution, reopened_by_residents, passport.delay; workdays.py + holidays_kz.json) — прочитаны, R08 читает их форму; модуль R09 в рабочей копии R08 не запускался",
   "env": "облачная сессия Claude Code, Linux, Python 3.13, Chromium (Playwright), без интернета"
  },
- "push_status": "OK — claude/r14-R08 (код ce06cec); DELIVERY, STATUS, скриншоты — отдельным коммитом поверх",
+ "push_status": "OK — claude/r14-R08 (код d3444215); DELIVERY, STATUS — отдельным коммитом поверх",
  "changed_paths": [
   "research/handoffs/astana/R08/round14/STATUS.md",
   "research/round-14-results/R08/",
@@ -75,11 +75,11 @@
   "pytest tests/civic/R08 без ui/civic_heat": "210 PASS + 4 SKIP с причиной",
   "BIRGE_STRICT_DEMO=1 pytest tests/civic/R08": "PASS (правдоподобие демо-чисел)",
   "календарь R08 против holidays_kz.json R09": "PASS — 365 дней 2026 совпадают (скрипт по файлу R09 из claude/modest-shannon-0ki93p)",
-  "ui_check.cjs (стенд --wave2-demo, 1366/375 × ru/kk)": "137/137 PASS",
+  "ui_check.cjs (стенд --wave2-demo, 1366/375 × ru/kk)": "137/137 PASS (словарь R11 a4368e5 и 537dbd3)",
   "services_check.cjs": "26/26 PASS",
   "nearby_check.cjs": "44/44 PASS",
   "сборка R01 a96f6e3 + R08 + R11 537dbd3 + patch: pytest tests/civic/R01 tests/civic/R08": "419 PASS + 3 SKIP",
-  "сборка: shell_wave2_check.cjs (вход редактора, «Выбрать», «Ещё → Службы», житель → «Рядом»)": "20/20 PASS",
+  "сборка: shell_wave2_check.cjs (вход редактора, «Выбрать», «Ещё → Службы», житель → «Рядом»)": "20/20 PASS (R11 a4368e5 и 537dbd3)",
   "сборка: shell_check.cjs (прежний сценарий «Картины дня»)": "28/28 PASS",
   "R10 ux_screens / R11 review_build на волне 2": "NOT_RUN — инструменты R10/R11 запускают они на FINAL-2"
  },
@@ -92,9 +92,9 @@
   "«Рядом»: данные работ и отключений с «Зачем» — пример R08, пока R06 не даст nearby_items; объекты R06 показываются без строк «Зачем».",
   "Подписки «Рядом» хранятся в .runtime/civic_akim/subscriptions.json (файл, не база) — для демо; события в «Мои обращения» покажет R09.",
   "Длинные названия служб в ҚАЗ на 375 px в поле выбора обрезаются браузером («Бағдаршам және жол таңбасы қыз…»).",
-  "37 ключей волны 2 ещё не в словаре R11 (I18N_WAVE2.json) — в коде запасной текст, kk — черновик R08."
+  "15 ключей экрана «Рядом» ещё не в словаре R11 (I18N_WAVE2.json) — в коде запасной текст, kk — черновик R08."
  ],
- "next_step": "R01 (FINAL-2): взять claude/r14-R08 @ ce06cec и применить research/round-14-results/R08/r01_wave2_r08.patch (маршруты, файлы, ROUTE_SAMPLES); прогнать pytest tests/civic/R08 tests/civic/R01, shell_check.cjs и shell_wave2_check.cjs. R09: assignee_lookup, отметка «нужно решение руководителя» + 2 варианта в паспорте, choice_for в паспорте, updates_for в «Что изменилось» (INTEGRATION §8.2). R06: nearby_items (§8.3). R11: 37 ключей (I18N_WAVE2.json) и разбор экранов «Рядом», «Службы», блоков «Картины дня».",
+ "next_step": "R01 (FINAL-2): взять claude/r14-R08 @ d3444215 и применить research/round-14-results/R08/r01_wave2_r08.patch (маршруты, файлы, ROUTE_SAMPLES); прогнать pytest tests/civic/R08 tests/civic/R01, shell_check.cjs и shell_wave2_check.cjs. R09: assignee_lookup, отметка «нужно решение руководителя» + 2 варианта в паспорте, choice_for в паспорте, updates_for в «Что изменилось» (INTEGRATION §8.2). R06: nearby_items (§8.3). R11: 37 ключей (I18N_WAVE2.json) и разбор экранов «Рядом», «Службы», блоков «Картины дня».",
  "delivery": "4 (11 окт: волна мелочей и волна 2)",
  "removed_paths": [
   "web/civic/akim/akim.i18n.json — ключи перенесены R11 в общий словарь (R01: убрать из CIVIC_ASSETS)"
@@ -164,7 +164,9 @@
    "R11 разбор 2, п. 6: «растағаны», «қайта» дважды": "исправлено: «тұрғындар тексергені», «жұмысқа қайтарылғаны»; ru — «жители проверили»",
    "R11 разбор 2, п. 7: «ыстық нүкте»": "исправлено: «Жаңа ыстық орын»",
    "R11 разбор 2, п. 8: kk примеров решений": "исправлено: «Ауладағы балалар алаңы», «…алып тастау, жөндеуді … енгізу», «…1 күнде жасай алады»",
-   "R11 разбор 2, п. 9: экран по IA_WAVE2 §5": "сделано: после сводки, пусто — блока нет, ≤ 3 решений и ≤ 5 тревог, «Таңдау» второстепенные; проверено ui_check"
+   "R11 разбор 2, п. 9: экран по IA_WAVE2 §5": "сделано: после сводки, пусто — блока нет, ≤ 3 решений и ≤ 5 тревог, «Таңдау» второстепенные; проверено ui_check",
+   "R11 разбор 3, п. 6: «бұрын» дважды в «Пульсе»": "R08: запасной текст «{category} · {district}: жаңа» / «новое»; в словаре R11 ключ akim.pulse.spike_new — просьба поправить так же (I18N_WAVE2.json)",
+   "R11 разбор 3, п. 5: «Қызметтер» в «Тағы» акимата": "services.js сам регистрирует экран через BirgeShell.registerScreen (нужен patch R01: services.js в index.html) — проверено в сборке, shell_wave2_check 20/20"
   }
  },
  "wave_items": {
@@ -202,7 +204,7 @@
   }
  },
  "for_r01_final2": {
-  "take": "claude/r14-R08 @ ce06cec (ui/civic_akim, web/civic/akim, web/civic/nearby, tests/civic/R08)",
+  "take": "claude/r14-R08 @ d3444215 (ui/civic_akim, web/civic/akim, web/civic/nearby, tests/civic/R08)",
   "apply": "research/round-14-results/R08/r01_wave2_r08.patch → ui/web_server.py, web/index.html, tests/civic/R01/test_r01_api_v2.py",
   "check": "pytest tests/civic/R08 tests/civic/R01; shell_check.cjs (28); R08_STAFF_USER/PASS shell_wave2_check.cjs (20)",
   "runtime": ".runtime/civic_akim/{routing,decisions,subscriptions}.json; demo_reset — удалить decisions.json и subscriptions.json"

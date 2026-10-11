@@ -24,8 +24,8 @@ research/round-14-results/R08/. Чужие файлы я не менял. Ниж
     BIRGE_AKIM_DECISIONS, BIRGE_AKIM_SUBSCRIPTIONS. Сброс демо (R10 demo_reset) — удалить decisions.json и subscriptions.json.
 
 8.2 R09 · связи с жалобой v2 (ветка claude/modest-shannon-0ki93p, lifecycle.py 8c07864 — R08 уже читает её форму):
-    а) «Кому передано»: store.assignee_lookup = ui.civic_akim.routing.assignee_lookup (название по-русски);
-       для ҚАЗ — id службы: routing.service_for(category, subtopic)["id"] → t("service." + id) (ключи у R11).
+    а) «Кому передано»: store.assignee_lookup = ui.civic_akim.routing.assignee_lookup → {"ru", "kk", "id", "edited"}
+       (R09 passport_view уже принимает словарь {ru, kk}); kk — вычитан R11; id — для t("service." + id).
     б) «Нужно решение акима»: в форму паспорта — отметка «Нужно решение руководителя» и два варианта:
        passport.delay.needs_decision = true, delay.options = [{ru, kk?}, {ru, kk?}], delay.decision = «что нужно
        от акима». delay.reason (уже есть) R08 показывает как «Что мешает», temp_measure — «Временная мера».
@@ -53,7 +53,8 @@ research/round-14-results/R08/. Чужие файлы я не менял. Ниж
     tests/civic/R08/wave2_demo.py (синтетика, только тесты); если R07 добавит их в demo_seed, «Картина дня» покажет
     уточнения у горячих мест и «жители проверили» и в сборке. Цвета heat_states — у R07; R08 их не рисует.
 
-8.5 R11 · 37 новых ключей — research/round-14-results/R08/I18N_WAVE2.json (ru и черновик kk). До слияния в коде —
+8.5 R11 · ключи — research/round-14-results/R08/I18N_WAVE2.json: после разбора 3 в словаре уже 22 ключа R08, осталось 15
+    (экран «Рядом», «N минут назад»); просьба — akim.pulse.spike_new kk «… : жаңа» (разбор 3, п. 6). До слияния в коде —
     запасной текст; как только ключ есть в словаре, берётся словарь. Схемы IA_WAVE2 §4 и §5 соблюдены; отступления
     на разбор: (1) плитка «Просрочено» — строка «Дольше всех: <место> · Просрочено на N дней» (таймер в «Картине дня»,
     волна мелочей п. 6); (2) телефон: блок решений сразу после чисел, сводка — следующим блоком (сдвиг на один блок),
