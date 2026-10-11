@@ -10,7 +10,7 @@ import re
 from datetime import datetime, timedelta, timezone
 
 from .. import text as textutil
-from . import categories
+from . import categories, workdays
 
 SCHEMA = "civic-complaint-v2"
 ASTANA_TZ = timezone(timedelta(hours=5))
@@ -200,8 +200,9 @@ def parse_model(value) -> dict | None:
 
 
 def due_at(created_at: str, category: str) -> str:
+    """Срок ответа: N РАБОЧИХ дней РК от подачи (POLISH_WAVE п. 6; праздники — workdays/holidays_kz.json)."""
     created = parse_iso(created_at)
-    return iso(created + timedelta(days=categories.response_days(category)))
+    return iso(workdays.add_working_days(created, categories.response_days(category)))
 
 
 def is_overdue(record: dict, now: datetime) -> bool:

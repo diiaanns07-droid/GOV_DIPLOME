@@ -22,6 +22,7 @@
       "common.nav.day": "Картина дня",
       "common.nav.menu": "Меню",
       "common.nav.mine": "Мои обращения",
+      "shell.nav.badge": "новых изменений: {n}",
       // Волна 2: меню по виду и экраны разделов (ключи переданы R11, INTEGRATION.txt §11).
       "common.nav.nearby": "Рядом",
       "common.nav.ideas": "Идеи",
@@ -149,6 +150,7 @@
       "common.nav.day": "Күн қорытындысы",
       "common.nav.menu": "Мәзір",
       "common.nav.mine": "Менің өтініштерім",
+      "shell.nav.badge": "{n} жаңа өзгеріс",
       "common.nav.nearby": "Жақын маңда",
       "common.nav.ideas": "Идеялар",
       "common.nav.more": "Тағы",

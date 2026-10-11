@@ -104,6 +104,17 @@ async function step6(page, tag, width, lang, staff) {
   check(`${tag}: шаг 6 демо — акимат: «Взять в работу» → «Отметить исправленным» → «${word}»`,
         logged && take && fix && card.includes(word), { logged, take, fix, card: card.slice(0, 160) });
   await shot(page, `app-${tag}-6-fixed`);
+  // Волна 2: раздел акимата «Обращения» (#complaints, R01 INTEGRATION §11.2) — экран R09 BirgeComplaintList.
+  if (await page.evaluate(() => !!window.BirgeComplaintList && !!window.BirgeShell?.setSection)) {
+    await page.evaluate(() => window.BirgeShell.setSection("complaints"));
+    const inbox = await page.waitForSelector(".bc-inbox__tab", { timeout: 8000 }).then(() => true, () => false);
+    const tabs = inbox ? await page.$$eval(".bc-inbox__tab", (n) => n.map((b) => b.textContent.replace(/\s+/g, " ").trim())) : [];
+    const rows = inbox ? await page.$$eval(".bc-inbox__row", (n) => n.length) : 0;
+    check(`${tag}: раздел «Обращения» акимата — экран R09: вкладки и цели (${rows})`, inbox && tabs.length === 5, tabs);
+    await shot(page, `app-${tag}-6-inbox`);
+    await page.evaluate(() => window.BirgeShell.setSection("map"));
+    await sleep(600);
+  }
   await page.evaluate(() => window.BirgeShell?.setMode?.("resident"));
   await sleep(800);
   await page.evaluate(() => window.CivicShell?.openMine?.());
@@ -111,13 +122,23 @@ async function step6(page, tag, width, lang, staff) {
   const cards = await page.$$eval(".bc-mine__card", (n) => n.map((c) => ({ status: c.querySelector(".bk-status")?.dataset.status,
     text: c.textContent.replace(/\s+/g, " ").trim().slice(0, 140) })));
   const joined = cards.filter((c) => /Я тоже|Мен де/.test(c.text));
-  check(`${tag}: шаг 6 демо — житель: в «Мои обращения» жалоба с «Я тоже» — «${word}»`,
-        joined.length >= 1 && joined.every((c) => c.status === "fixed"), cards);
+  // Волна 2, п. 1: «исправлено» службы — это «Служба сообщила об устранении»; жители проверяют сами.
+  const ask = await page.$(".bc-wait .bc-verify__yes");
+  check(`${tag}: шаг 6 демо — житель: «Служба сообщила об устранении» и «Проблема решена?»`,
+        joined.length >= 1 && joined.every((c) => c.status === "reported_fixed") && !!ask, cards);
   await shot(page, `app-${tag}-6-mine`);
+  if (!ask) return;
+  await page.click(".bc-wait .bc-verify__yes");
+  const verified = await page.waitForSelector(".bc-mine__card .bk-status[data-status='verified']", { timeout: 8000 })
+    .then(() => true, () => false);
+  const label = verified ? ((await page.textContent(".bc-mine__card .bk-status[data-status='verified']")) || "").trim() : "";
+  check(`${tag}: шаг 7 (волна 2) — житель «Да, исправлено» → «${label}»`, verified &&
+        label === (lang === "kk" ? "Тұрғындар тексерді" : "Проверено жителями"), label);
+  await shot(page, `app-${tag}-7-verified`);
 }
 
-async function variant(browser, base, width, height, lang, staff) {
-  const tag = `${width}-${lang}`;
+async function variant(browser, base, width, height, lang, staff, opts = {}) {
+  const tag = `${width}-${lang}` + (opts.prelogin ? "-prelogin" : "") + (opts.different ? "-different" : "");
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: width < 1024 });
   await ctx.addInitScript(([l]) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) {} }, [lang]);
   const page = await ctx.newPage();
@@ -126,6 +147,16 @@ async function variant(browser, base, width, height, lang, staff) {
   page.on("console", (m) => { if (m.type() === "error" && !NOISE.test(m.text())) errors.push(m.text()); });
   await page.goto(base);
   await shellReady(page);
+  if (opts.prelogin) {
+    // LOCAL_FINAL №1 (Codex): сотрудник вошёл ЗАРАНЕЕ в том же браузере, потом режим «Житель» и путь жалобы.
+    const logged = await page.evaluate(async ([u, p]) => (await fetch("/api/civic/v1/session/login", { method: "POST",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: u, password: p }) })).ok,
+      [opts.prelogin.user, opts.prelogin.pass]);
+    await page.reload();
+    await shellReady(page);
+    await page.evaluate(() => window.BirgeShell?.setMode?.("resident"));
+    check(`${tag}: сотрудник вошёл до пути жителя`, logged);
+  }
   await sleep(800);
   const seen = {};
   const text = async (sel) => ((await page.textContent(sel).catch(() => "")) || "").replace(/\s+/g, " ").trim();
@@ -158,8 +189,9 @@ async function variant(browser, base, width, height, lang, staff) {
   seen.category = chip;
   await shot(page, `app-${tag}-3-text`);
   await page.click(".bc-send");
+  // Волна 2: шаг 4 — либо «Я тоже» (похожая жалоба), либо проверка перед отправкой (data-review=1).
   await page.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 15000 });
-  const step4 = await page.$(".bc-panel[data-step='4']");
+  const step4 = await page.$(".bc-panel[data-step='4']:not([data-review])");
   const title = (await page.textContent(".bc-title")).trim();
   const n = Number((title.match(/\d+/) || [0])[0]);
   check(`${tag}: шаг 2 демо — «${title}» (похожая жалоба нашлась на чистой демо-базе)`, !!step4 && n >= 3, title);
@@ -167,6 +199,19 @@ async function variant(browser, base, width, height, lang, staff) {
   check(`${tag}: похожая демо-жалоба помечена «Пример»`, demoTag.length === 1 && /Пример|Үлгі/.test(demoTag[0]), demoTag);
   await shot(page, `app-${tag}-4-similar`);
   if (!step4) { await ctx.close(); return; }
+  if (opts.different) {
+    // LOCAL_FINAL №2: «У меня другое» -> успех -> сразу Escape; отложенная подсказка не должна читать null.
+    await page.click(".bc-different");
+    await page.waitForSelector(".bc-panel[data-review='1'] .bc-send:not([disabled])", { timeout: 10000 });
+    await page.click(".bc-panel[data-review='1'] .bc-send");   // экран проверки -> «Отправить»
+    await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 10000 });
+    await page.keyboard.press("Escape");
+    await sleep(2500);
+    const late = errors.filter((e) => /null|undefined|TypeError/.test(e));
+    check(`${tag}: «У меня другое» и сразу закрыть — без ошибок JavaScript`, late.length === 0, late.slice(0, 3));
+    await ctx.close();
+    return;
+  }
   seen.metoo = await text(".bc-panel[data-step='4'] .bk-btn--primary");
   await page.click(".bc-panel[data-step='4'] .bk-btn--primary");
   await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 10000 });
@@ -192,9 +237,18 @@ async function variant(browser, base, width, height, lang, staff) {
     srv = await startServer(port, path.join(tmp, "civic.sqlite3"));
     browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
     const runs = [[375, 812, "kk"], [375, 812, "ru"], [1366, 768, "ru"], [1366, 768, "kk"]];
-    for (const [i, [w, h, lang]] of runs.entries()) {
+    // R09_ONLY_LOCAL=1 — только проверки LOCAL_FINAL №1–2 (быстро; основной сценарий пропускается).
+    for (const [i, [w, h, lang]] of (process.env.R09_ONLY_LOCAL ? [] : runs).entries()) {
       await variant(browser, `http://127.0.0.1:${port}/`, w, h, lang, i === runs.length - 1 ? srv.staff : null);
     }
+    // LOCAL_FINAL №1–2 — на ОТДЕЛЬНОЙ свежей демо-базе: в основном прогоне шаг 6 уже закрыл жалобы на остановке,
+    // и похожих открытых жалоб там не осталось бы.
+    srv.kill();
+    const port2 = await freePort();
+    srv = await startServer(port2, path.join(tmp, "civic-local.sqlite3"));
+    await variant(browser, `http://127.0.0.1:${port2}/`, 375, 812, "ru", null, { prelogin: srv.staff });
+    await variant(browser, `http://127.0.0.1:${port2}/`, 1366, 768, "kk", null, { prelogin: srv.staff });
+    await variant(browser, `http://127.0.0.1:${port2}/`, 375, 812, "ru", null, { different: true });
   } catch (err) {
     console.error(err);
     check("приложение и браузер запустились", false, String(err && err.message));

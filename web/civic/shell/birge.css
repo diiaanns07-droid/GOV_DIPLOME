@@ -12,6 +12,14 @@
  * (акимат принимает жалобы, а не пишет их); на экране «Картина дня» её нет. */
 #birge-header .birge-mine-btn { min-height: 40px; white-space: nowrap; }
 body:not([data-birge-mode="resident"]) #birge-header .birge-mine-btn { display: none; }
+/* Бейдж новых изменений у «Мои обращения» (R09: событие birge:complaint-changes); на телефоне — точка на ≡ Меню. */
+#birge-header .birge-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px;
+  margin-left: 6px; padding: 0 6px; border-radius: 10px; background: var(--c-ink, #152c26); color: #fff;
+  font-size: 12px; font-weight: 700; line-height: 1; }
+#birge-header .birge-menu-btn { position: relative; }
+body[data-birge-mode="resident"] #birge-header[data-mine-changes="yes"]:not([data-menu="open"]) .birge-menu-btn::after {
+  content: ""; position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--c-ink, #152c26); box-shadow: 0 0 0 2px var(--c-surface, #fff); }
 body:not([data-birge-mode="resident"]) .bc-fab,
 body[data-birge-section]:not([data-birge-section="map"]) .bc-fab { display: none !important; }
 /* Меню по виду (волна 2, защита п. 2): пункты другого вида и разделы без модуля — скрыты (birge.js buildNav). */

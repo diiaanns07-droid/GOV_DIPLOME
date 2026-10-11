@@ -126,6 +126,19 @@ async function main() {
     n = await nav(page);
     check("default resident menu: IA order, only sections with a module (Карта · Мои обращения always)",
       await menuOk(page, n, "resident", ["map", "mine"]) && n.labels.includes("Мои обращения"), n);
+    // Единственный бейдж меню (IA_WAVE2 §1): число новых изменений у «Мои обращения» — событие R09 birge:complaint-changes.
+    const badge = await page.evaluate(async () => {
+      const read = () => { const b = document.querySelector("#birge-header .birge-mine-btn"), s = b.querySelector(".birge-badge");
+        return { text: s ? s.textContent : null, label: b.getAttribute("aria-label"), shown: !!s && s.getBoundingClientRect().width > 0 }; };
+      window.dispatchEvent(new CustomEvent("birge:complaint-changes", { detail: { n: 3 } }));
+      await new Promise((r) => setTimeout(r, 50));
+      const three = read();
+      window.dispatchEvent(new CustomEvent("birge:complaint-changes", { detail: { n: 0 } }));
+      await new Promise((r) => setTimeout(r, 50));
+      return { three, zero: read() };
+    });
+    check("«Мои обращения»: badge with the number of new changes (R09 event), gone at 0; screen reader hears the count",
+      badge.three.text === "3" && badge.three.shown && /3/.test(badge.three.label || "") && badge.zero.text === null && badge.zero.label === null, badge);
     // ---- читаемость карты (владелец, 11 окт): п. 3 панели, п. 7 границы районов, п. 8 наклон
     await page.click("#birge-header [data-mode=akimat]");
     await page.waitForTimeout(400);

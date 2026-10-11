@@ -12,7 +12,39 @@ window.BirgeCategoriesV2 = {
    "target_kinds": [
     "segment"
    ],
-   "response_days": 10
+   "response_days": 10,
+   "subtopics": [
+    {
+     "id": "pothole",
+     "ru": "Яма, разбитый асфальт",
+     "kk": "Шұңқыр, бұзылған асфальт"
+    },
+    {
+     "id": "traffic_light_broken",
+     "ru": "Светофор не работает",
+     "kk": "Бағдаршам істемейді"
+    },
+    {
+     "id": "traffic_light_timing",
+     "ru": "Светофор: долго красный или зелёный",
+     "kk": "Бағдаршам: қызыл не жасыл тым ұзақ"
+    },
+    {
+     "id": "intersection",
+     "ru": "Опасный или неудобный перекрёсток",
+     "kk": "Қауіпті не ыңғайсыз қиылыс"
+    },
+    {
+     "id": "marking",
+     "ru": "Стёрлась разметка",
+     "kk": "Жол таңбасы өшіп қалған"
+    },
+    {
+     "id": "speed_bump",
+     "ru": "Лежачий полицейский",
+     "kk": "Жасанды кедір-бұдыр"
+    }
+   ]
   },
   {
    "id": "snow_ice",
@@ -24,7 +56,24 @@ window.BirgeCategoriesV2 = {
     "segment",
     "area"
    ],
-   "response_days": 1
+   "response_days": 1,
+   "subtopics": [
+    {
+     "id": "snow_not_cleared",
+     "ru": "Не убран снег",
+     "kk": "Қар тазаланбаған"
+    },
+    {
+     "id": "ice",
+     "ru": "Гололёд, не посыпано",
+     "kk": "Көктайғақ, құм себілмеген"
+    },
+    {
+     "id": "icicles",
+     "ru": "Сосульки, снег с крыши",
+     "kk": "Сүңгілер, шатырдан қар"
+    }
+   ]
   },
   {
    "id": "sidewalks",
@@ -35,7 +84,24 @@ window.BirgeCategoriesV2 = {
    "target_kinds": [
     "segment"
    ],
-   "response_days": 10
+   "response_days": 10,
+   "subtopics": [
+    {
+     "id": "crossing",
+     "ru": "Пешеходный переход",
+     "kk": "Жаяу жүргіншілер өткелі"
+    },
+    {
+     "id": "broken_sidewalk",
+     "ru": "Разбит тротуар",
+     "kk": "Тротуар бұзылған"
+    },
+    {
+     "id": "accessibility",
+     "ru": "Нет пандуса, высокий бордюр",
+     "kk": "Пандус жоқ, биік жиек"
+    }
+   ]
   },
   {
    "id": "transport",
@@ -46,7 +112,24 @@ window.BirgeCategoriesV2 = {
    "target_kinds": [
     "object"
    ],
-   "response_days": 5
+   "response_days": 5,
+   "subtopics": [
+    {
+     "id": "stop_shelter",
+     "ru": "Остановка: павильон, скамья",
+     "kk": "Аялдама: павильон, орындық"
+    },
+    {
+     "id": "schedule",
+     "ru": "Долго ждать, нет расписания",
+     "kk": "Ұзақ күту, кесте жоқ"
+    },
+    {
+     "id": "route",
+     "ru": "Нужен маршрут или остановка",
+     "kk": "Бағыт не аялдама керек"
+    }
+   ]
   },
   {
    "id": "lighting",
@@ -58,7 +141,30 @@ window.BirgeCategoriesV2 = {
     "segment",
     "area"
    ],
-   "response_days": 3
+   "response_days": 3,
+   "subtopics": [
+    {
+     "id": "lamp_off",
+     "ru": "Не горит фонарь",
+     "kk": "Шам жанбайды"
+    },
+    {
+     "id": "dark_yard",
+     "ru": "Темно во дворе",
+     "kk": "Аулада қараңғы"
+    },
+    {
+     "id": "blinking",
+     "ru": "Фонарь мигает",
+     "kk": "Шам жыпылықтайды"
+    },
+    {
+     "id": "wire_down",
+     "ru": "Оборван провод",
+     "kk": "Сым үзілген",
+     "emergency_phone": "112"
+    }
+   ]
   },
   {
    "id": "yards",
@@ -70,7 +176,24 @@ window.BirgeCategoriesV2 = {
     "object",
     "area"
    ],
-   "response_days": 10
+   "response_days": 10,
+   "subtopics": [
+    {
+     "id": "playground",
+     "ru": "Сломана детская площадка",
+     "kk": "Балалар алаңы бұзылған"
+    },
+    {
+     "id": "trees_lawn",
+     "ru": "Деревья, газон",
+     "kk": "Ағаштар, көгал"
+    },
+    {
+     "id": "benches",
+     "ru": "Скамейки, благоустройство",
+     "kk": "Орындықтар, абаттандыру"
+    }
+   ]
   },
   {
    "id": "waste",
@@ -82,7 +205,24 @@ window.BirgeCategoriesV2 = {
     "area",
     "object"
    ],
-   "response_days": 3
+   "response_days": 3,
+   "subtopics": [
+    {
+     "id": "bins_full",
+     "ru": "Переполнены баки",
+     "kk": "Контейнерлер толып кеткен"
+    },
+    {
+     "id": "dump",
+     "ru": "Стихийная свалка",
+     "kk": "Заңсыз қоқыс үйіндісі"
+    },
+    {
+     "id": "not_collected",
+     "ru": "Не вывозят мусор",
+     "kk": "Қоқыс шығарылмайды"
+    }
+   ]
   },
   {
    "id": "utilities",
@@ -93,7 +233,29 @@ window.BirgeCategoriesV2 = {
    "target_kinds": [
     "area"
    ],
-   "response_days": 1
+   "response_days": 1,
+   "subtopics": [
+    {
+     "id": "no_heating",
+     "ru": "Нет отопления",
+     "kk": "Жылу жоқ"
+    },
+    {
+     "id": "no_water",
+     "ru": "Нет воды",
+     "kk": "Су жоқ"
+    },
+    {
+     "id": "sewage",
+     "ru": "Канализация",
+     "kk": "Кәріз"
+    },
+    {
+     "id": "power_building",
+     "ru": "Нет света в доме",
+     "kk": "Үйде жарық жоқ"
+    }
+   ]
   },
   {
    "id": "smell_air",
@@ -104,7 +266,31 @@ window.BirgeCategoriesV2 = {
    "target_kinds": [
     "area"
    ],
-   "response_days": 3
+   "response_days": 3,
+   "subtopics": [
+    {
+     "id": "gas",
+     "ru": "Запах газа",
+     "kk": "Газ иісі",
+     "emergency_phone": "104"
+    },
+    {
+     "id": "smoke_fire",
+     "ru": "Дым, что-то горит",
+     "kk": "Түтін, бірдеңе жанып жатыр",
+     "emergency_phone": "112"
+    },
+    {
+     "id": "dust",
+     "ru": "Пыль",
+     "kk": "Шаң"
+    },
+    {
+     "id": "bad_smell",
+     "ru": "Неприятный запах",
+     "kk": "Жағымсыз иіс"
+    }
+   ]
   },
   {
    "id": "noise_safety",
@@ -116,7 +302,24 @@ window.BirgeCategoriesV2 = {
     "area",
     "segment"
    ],
-   "response_days": 3
+   "response_days": 3,
+   "subtopics": [
+    {
+     "id": "noise_night",
+     "ru": "Шум ночью",
+     "kk": "Түнгі шу"
+    },
+    {
+     "id": "dangerous_place",
+     "ru": "Опасное место",
+     "kk": "Қауіпті орын"
+    },
+    {
+     "id": "stray_dogs",
+     "ru": "Бродячие собаки",
+     "kk": "Қаңғыбас иттер"
+    }
+   ]
   },
   {
    "id": "parking",
@@ -128,7 +331,24 @@ window.BirgeCategoriesV2 = {
     "segment",
     "area"
    ],
-   "response_days": 7
+   "response_days": 7,
+   "subtopics": [
+    {
+     "id": "yard_cars",
+     "ru": "Машины во дворе, на газоне",
+     "kk": "Аулада, көгалда көліктер"
+    },
+    {
+     "id": "sidewalk_parking",
+     "ru": "Парковка на тротуаре",
+     "kk": "Тротуарға көлік қою"
+    },
+    {
+     "id": "no_spaces",
+     "ru": "Нет мест",
+     "kk": "Орын жоқ"
+    }
+   ]
   },
   {
    "id": "other",
@@ -139,7 +359,8 @@ window.BirgeCategoriesV2 = {
    "target_kinds": [
     "area"
    ],
-   "response_days": 10
+   "response_days": 10,
+   "subtopics": []
   }
  ],
  "heat_levels": [
@@ -185,5 +406,141 @@ window.BirgeCategoriesV2 = {
   "kk": "түзетілді",
   "days_visible": 7
  },
- "weight_half_life_days": 14
+ "weight_half_life_days": 14,
+ "heat_states": {
+  "no_data": {
+   "color": "#B4B2A9",
+   "ru": "нет свежих данных",
+   "kk": "жаңа дерек жоқ",
+   "note": "нет жалоб и осмотров за период — это не значит «всё хорошо»"
+  },
+  "reported_fixed": {
+   "color": "#97C459",
+   "dashed": true,
+   "ru": "служба сообщила об устранении",
+   "kk": "қызмет түзетілгенін хабарлады",
+   "note": "ждёт проверки жителями"
+  },
+  "verified_fixed": {
+   "color": "#639922",
+   "ru": "проверено жителями",
+   "kk": "тұрғындар тексерді",
+   "days_visible": 7
+  },
+  "reopened": {
+   "color": null,
+   "ru": "проблема осталась — снова в работе",
+   "kk": "мәселе қалды — қайта жұмыста",
+   "note": "цвет по весу, отметка «вернули жители»"
+  }
+ },
+ "emergency_numbers": {
+  "112": "Единая служба спасения",
+  "101": "Пожарная",
+  "102": "Полиция",
+  "103": "Скорая",
+  "104": "Газовая служба"
+ },
+ "services": [
+  {
+   "id": "road",
+   "ru": "Дорожная служба",
+   "kk": "Жол қызметі"
+  },
+  {
+   "id": "traffic",
+   "ru": "Служба светофоров и разметки",
+   "kk": "Бағдаршам және жол таңбасы қызметі"
+  },
+  {
+   "id": "street_cleaning",
+   "ru": "Служба уборки улиц",
+   "kk": "Көшелерді тазалау қызметі"
+  },
+  {
+   "id": "transport",
+   "ru": "Служба общественного транспорта",
+   "kk": "Қоғамдық көлік қызметі"
+  },
+  {
+   "id": "lighting",
+   "ru": "Служба освещения",
+   "kk": "Жарықтандыру қызметі"
+  },
+  {
+   "id": "landscaping",
+   "ru": "Служба благоустройства",
+   "kk": "Абаттандыру қызметі"
+  },
+  {
+   "id": "greenery",
+   "ru": "Служба озеленения",
+   "kk": "Көгалдандыру қызметі"
+  },
+  {
+   "id": "waste",
+   "ru": "Оператор вывоза мусора",
+   "kk": "Қоқыс шығару операторы"
+  },
+  {
+   "id": "utilities",
+   "ru": "Служба ЖКХ",
+   "kk": "ТКШ қызметі"
+  },
+  {
+   "id": "heating",
+   "ru": "Теплосеть",
+   "kk": "Жылу желісі"
+  },
+  {
+   "id": "water",
+   "ru": "Водоканал",
+   "kk": "Сумен жабдықтау қызметі"
+  },
+  {
+   "id": "power",
+   "ru": "Электросети",
+   "kk": "Электр желілері"
+  },
+  {
+   "id": "gas",
+   "ru": "Газовая служба",
+   "kk": "Газ қызметі"
+  },
+  {
+   "id": "housing",
+   "ru": "Управляющая компания дома",
+   "kk": "Үйді басқарушы компания"
+  },
+  {
+   "id": "ecology",
+   "ru": "Служба экологии",
+   "kk": "Экология қызметі"
+  },
+  {
+   "id": "emergency",
+   "ru": "Служба спасения",
+   "kk": "Құтқару қызметі"
+  },
+  {
+   "id": "police",
+   "ru": "Полиция",
+   "kk": "Полиция"
+  },
+  {
+   "id": "animals",
+   "ru": "Служба отлова животных",
+   "kk": "Жануарларды аулау қызметі"
+  },
+  {
+   "id": "parking",
+   "ru": "Служба парковок",
+   "kk": "Тұрақ қызметі"
+  },
+  {
+   "id": "akimat",
+   "ru": "Аппарат акима района",
+   "kk": "Аудан әкімінің аппараты"
+  }
+ ]
 };

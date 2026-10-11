@@ -86,6 +86,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "heat/heat.js", "heat/heat.css",
                 "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
                 "feedback/complaint.css",
+                # Волна 2 (R09): действия сотрудника по обращению и экран акимата «Обращения» (#complaints).
+                "feedback/complaint-staff.js", "feedback/complaint-list.js",
                 "akim/index.html", "akim/akim.js", "akim/akim.css",  # B2: akim.i18n.json удалён R08 (ключи у R11)
                 # Волна 2, R08: «Службы» (Ещё → Службы, акимат) и «Что делают рядом» (раздел #nearby).
                 "akim/services.html", "akim/services.js", "akim/services.css",
@@ -204,6 +206,11 @@ V2_RATE_LIMITS = {
     "classify": ((60, 60, False),),
     "similar": ((60, 60, False),),
     "nearby.subscribe": ((60, 20, False), (86400, 200, False)),  # R08: подписка жителя на район/карточку
+    # R09 волна 2 (просьба R15): фото частями — начатые загрузки и части по адресу (300 частей ≈ 10 МБ в минуту;
+    # незаконченная загрузка держит до 1,5 МБ в базе час); проверка ремонта — как «Я тоже», на одну жалобу.
+    "complaints.photos.start": ((60, 20, False), (3600, 60, False)),
+    "complaints.photos.chunk": ((60, 300, False),),
+    "complaints.verify": ((60, 30, False), (86400, 20, True)),
 }
 
 
@@ -635,13 +642,22 @@ V2_ROUTES = (
     ("GET", ("complaints", "events"), "complaints.events"),
     ("GET", ("complaints", "summary"), "complaints.summary"),
     ("GET", ("complaints", "place"), "complaints.place"),
-    ("GET", ("complaints", "merged"), "complaints.merged"),
+    # R09 волны 1–2 (POLISH_WAVE, POLISH_WAVE_2): точные пути — раньше {id}.
+    ("GET", ("complaints", "changes"), "complaints.changes"),
+    ("GET", ("complaints", "inbox"), "complaints.inbox"),
     ("GET", ("complaints", "{id}"), "complaints.get"),
     ("POST", ("complaints", "{id}", "metoo"), "complaints.metoo"),
     ("POST", ("complaints", "{id}", "status"), "complaints.status"),
     ("POST", ("complaints", "{id}", "duplicate"), "complaints.duplicate"),
-    # Волна мелочей п. 9 (R04 + R09): «Это разные проблемы» — разъединить дубль или «Я тоже».
-    ("POST", ("complaints", "{id}", "separate"), "complaints.separate"),
+    ("POST", ("complaints", "{id}", "verify"), "complaints.verify"),
+    ("POST", ("complaints", "{id}", "passport"), "complaints.passport"),
+    ("POST", ("complaints", "{id}", "update"), "complaints.update"),
+    ("POST", ("complaints", "{id}", "unduplicate"), "complaints.unduplicate"),
+    ("POST", ("complaints", "{id}", "unsubscribe"), "complaints.unsubscribe"),
+    ("POST", ("complaints", "{id}", "photos"), "complaints.photos.start"),
+    # Фото частями (≤ 36 000 байт в части, тело ≈ 48 КБ < 64 КБ шлюза); второй {id} — u-… или p-….
+    ("POST", ("complaints", "{id}", "photos", "{id}"), "complaints.photos.chunk"),
+    ("GET", ("complaints", "{id}", "photos", "{id}"), "complaints.photos.get"),
     # R07 тепловая карта @ 5a97636 (ui.civic_heat.api.handle_get) и R08 «Картина дня» @ 9f1d9c0.
     ("GET", ("heat",), "heat"),
     ("GET", ("heat", "meta"), "heat.meta"),
@@ -686,7 +702,9 @@ V2_HANDLERS = {
     **{key: V2Handler("R09", ("ui.civic_feedback.v2.integration",), "make_service", kind="service") for key in (
         "complaints.categories", "complaints.list", "complaints.create", "complaints.mine", "complaints.events",
         "complaints.summary", "complaints.place", "complaints.get", "complaints.metoo", "complaints.status",
-        "complaints.duplicate", "complaints.merged", "complaints.separate")},
+        "complaints.duplicate", "complaints.changes", "complaints.inbox", "complaints.verify", "complaints.passport",
+        "complaints.update", "complaints.unduplicate", "complaints.unsubscribe", "complaints.photos.start",
+        "complaints.photos.chunk", "complaints.photos.get")},
     **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta")},
     "heat.target": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", staff_view=True),
     "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),

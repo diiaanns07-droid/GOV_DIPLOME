@@ -123,3 +123,96 @@
 /* Выбор места: значки на карте (тепловая карта R07 и др.) выбирают место, как нажатие по карте (B-019). */
 html.bc-picking .maplibregl-marker,
 html.bc-picking .maplibregl-marker * { cursor: crosshair; }
+
+/* ───────────── Волны 1–2 (POLISH_WAVE, POLISH_WAVE_2) — всё внутри мастера и «Моих обращений», не на карте ───────────── */
+/* Уточнения: чипы в несколько строк, без прокрутки вбок (казахские подписи длиннее). */
+.bc-subtopics { display: flex; flex-wrap: wrap; gap: 8px; }
+.bc-subtopics .bk-chip { white-space: normal; text-align: left; min-height: 44px; }
+
+/* Срочный случай: баннер ui-kit .bk-banner--danger (UX_SPEC §10); звонок — главная кнопка экрана. */
+.bc-emergency p { margin: 0; }
+.bc-emergency__text { font-weight: 600; }
+.bc-emergency .bc-emergency__call { justify-self: stretch; min-height: 56px; text-decoration: none; white-space: normal; }
+
+/* Фото: миниатюры 72 px, крестик удаления ≥ 44 px. */
+.bc-photos { display: flex; flex-direction: column; gap: 8px; }
+.bc-photo-input { display: none; }  /* открывается кнопкой «Добавить фото» (input.click работает и со скрытым полем) */
+.bc-photo-add { align-self: flex-start; }
+.bc-thumbs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.bc-thumb { position: relative; width: 72px; height: 72px; border-radius: var(--r-m, 12px); overflow: hidden;
+            background: var(--c-paper, #f7f8f4); border: 1px solid var(--c-line, #e4e9e3); }
+.bc-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bc-thumb__remove { position: absolute; top: -2px; right: -2px; width: 44px; height: 44px; background: transparent; }
+.bc-thumb__remove .ic { width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: rgba(21, 44, 38, .75); color: #fff; }
+.bc-thumbs--small .bc-thumb { width: 56px; height: 56px; }
+
+/* Экран проверки перед отправкой. */
+.bc-review { display: grid; grid-template-columns: minmax(80px, auto) 1fr; gap: 6px 12px; margin: 0; }
+.bc-review__row { display: contents; }
+.bc-review dt { color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 14px); padding-top: 2px; }
+.bc-review dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.bc-review__text { font-weight: 400; white-space: pre-wrap; }
+.bc-visibility { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: var(--r-m, 12px);
+                 background: var(--c-paper, #f7f8f4); }
+.bc-visibility p { display: flex; gap: 8px; align-items: flex-start; margin: 0; }
+.bc-next { margin: 0; font-weight: 600; }
+.bc-metoo-caption { margin-top: -4px; text-align: center; }
+
+/* «Мои обращения»: что изменилось, проверка ремонта, состояние, «Подробнее». */
+.bc-changes { display: flex; flex-direction: column; gap: 6px; border-color: var(--c-brand, #176b4a); }
+.bc-changes__title { margin: 0; font-size: var(--fs-lead, 18px); font-weight: 700; }
+.bc-changes__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.bc-changes__item { display: block; width: 100%; min-height: 44px; padding: 8px 0; border: 0; background: none;
+                    text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.bc-changes__item:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+.bc-changes__item--focus { background: var(--c-accent-soft, #f1fbd3); border-radius: var(--r-s, 8px); padding-inline: 8px; }
+.bc-changes__more { align-self: flex-start; }
+/* «Ждут вашей проверки» — сверху экрана, пунктир = «служба сообщила», как на карте (heat_states.reported_fixed). */
+.bc-wait { display: flex; flex-direction: column; gap: 8px; border: 1px dashed var(--fixed, #639922); }
+.bc-wait__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.bc-verify { display: flex; flex-direction: column; gap: 8px; }
+.bc-verify + .bc-verify { padding-top: 12px; border-top: 1px solid var(--c-line, #e4e9e3); }
+.bc-verify p { margin: 0; }
+.bc-verify__place { display: flex; align-items: center; gap: 6px; }
+.bc-verify__reported { font-weight: 600; color: var(--c-ok, #2f6b12); }
+.bc-verify__question { font-weight: 700; font-size: var(--fs-lead, 18px); }
+.bc-verify__buttons { display: flex; flex-direction: column; gap: 8px; }
+/* Сроки в рабочих днях: цвет + слово (UX_SPEC §10). */
+.bc-deadline--warn { color: var(--c-warn, #8a5a12); font-weight: 600; }
+.bc-deadline--danger { color: var(--c-danger, #b3362e); font-weight: 700; }
+.bc-assignee { margin: 0; }
+.bc-delay { margin: 0; }
+.bc-subs__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.bc-subs__item { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.bc-more summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600;
+                   color: var(--c-brand, #176b4a); }
+.bc-more summary:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+.bc-passport, .bc-updates { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.bc-mine__card--focus { box-shadow: 0 0 0 3px var(--c-accent, #d7f57c), var(--shadow-1, none); }
+.bc-mine__card--pending { border-style: dashed; }
+.bk-status[data-status="pending"] { color: var(--c-warn, #8a5a12); background: var(--c-warn-bg, #fff4dc); }
+
+/* Компонент сотрудника (complaint-staff.js) — внутри карточки акимата, не поверх карты. */
+.bc-staff { display: flex; flex-direction: column; gap: 12px; }
+.bc-staff__summary { margin: 0; }
+.bc-staff__form { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px solid var(--c-line, #e4e9e3); }
+.bc-staff__field { display: flex; flex-direction: column; gap: 4px; }
+.bc-staff__field input, .bc-staff__field select { min-height: 44px; padding: 8px 12px; font: inherit; font-size: 16px; border: 1px solid var(--c-line, #e4e9e3);
+                         border-radius: var(--r-m, 12px); }
+.bc-staff__note { margin: 0; min-height: 1.4em; font-weight: 600; color: var(--c-ok, #2f6b12); }
+.bc-staff__note--error { color: var(--c-danger, #b3362e); }
+
+/* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01): список целей, вкладки, карточка действий. */
+.bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 960px; margin: 0 auto; }
+.bc-inbox__title { margin: 0; font-size: var(--fs-title, 22px); }
+.bc-inbox__tabs .bk-chip { min-height: 44px; }
+.bc-inbox__count { font-weight: 700; }
+.bc-inbox__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.bc-inbox__item { padding: 0; overflow: hidden; }
+.bc-inbox__row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 56px;
+                 padding: 12px 16px; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.bc-inbox__row:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: -3px; }
+.bc-inbox__place { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.bc-inbox__item--open { box-shadow: 0 0 0 2px var(--c-brand, #176b4a); }
+.bc-inbox__detail { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 16px; }
+.bc-inbox__map { align-self: flex-start; }

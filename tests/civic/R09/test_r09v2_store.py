@@ -279,7 +279,11 @@ def test_overdue_by_category_deadline(store, clock):
     assert [r["id"] for r in store.overdue()] == [snow["id"]]
     store.set_status(snow["id"], "accepted")
     assert store.overdue() == []
-    clock.advance(days=9)
+    # «Дороги» — 10 РАБОЧИХ дней: от вс 11 окт срок пт 23 окт 10:00 (выходные не считаются).
+    assert road["due_at"] == "2026-10-23T10:00:00+05:00"
+    clock.advance(days=9)                       # чт 22 окт — ещё в срок
+    assert store.overdue() == []
+    clock.advance(days=2)                       # сб 24 окт — просрочено
     assert [r["id"] for r in store.overdue()] == [road["id"]]
 
 

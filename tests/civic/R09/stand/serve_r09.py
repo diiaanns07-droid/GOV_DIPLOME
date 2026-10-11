@@ -52,7 +52,7 @@ STATIC = {
     "/vendor/maplibre-gl.css": WEB / "vendor" / "maplibre-gl.css",
     "/stand/": STAND / "index.html",
 }
-for name in ("complaint.js", "complaint.css", "complaint-strings.js", "categories_v2.js", "kit-fallback.css"):
+for name in ("complaint.js", "complaint-staff.js", "complaint-list.js", "complaint.css", "complaint-strings.js", "categories_v2.js", "kit-fallback.css"):
     STATIC["/civic/feedback/" + name] = WEB / "civic" / "feedback" / name
 for name in ("tokens.css", "components.css", "icons.svg"):  # ui-kit R11, если уже есть в дереве
     STATIC["/civic/ui-kit/" + name] = WEB / "civic" / "ui-kit" / name
@@ -225,6 +225,16 @@ class Stand:
         self.hot = {"point": point, "target": target, "complaint_id": rec["id"]}
 
 
+class StandStaff:
+    """Двойник Principal R02 для стенда: сотрудник с CSRF-токеном «stand»."""
+    is_staff = True
+    username = "stand-operator"
+
+    @staticmethod
+    def check_csrf(value):
+        return value == "stand"
+
+
 class Handler(BaseHTTPRequestHandler):
     stand: Stand = None
     r11_dir: Path | None = None
@@ -242,6 +252,13 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header(key, value)
         self.end_headers()
         self.wfile.write(body)
+
+    def _principal(self):
+        """Стенд: «сотрудник вошёл» = cookie stand_staff=1 (как сессия R02 в приложении; только для проверок).
+        Так воспроизводится LOCAL_FINAL №1: вход сотрудника раньше жителя в том же браузере."""
+        if "stand_staff=1" not in (self.headers.get("Cookie") or ""):
+            return None
+        return StandStaff()
 
     def _context(self):
         origin = self.headers.get("Origin")
@@ -288,7 +305,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/stand/info":
             return self._send(200, {"hot": getattr(stand, "hot", None), "ml": stand.ml, "targets": stand.targets_on,
                                     "real_geo": stand.geo is not None, "real_ml": stand.mlapi is not None})
-        reply = stand.api.handle(method, self.path, None, body, None, self._context())
+        reply = stand.api.handle(method, self.path, None, body, self._principal(), self._context())
         if reply is None:
             return self._send(404, {"ok": False, "error": {"code": "not_found"}})
         return self._send(reply["status"], reply["body"], headers={k: v for k, v in reply["headers"].items()

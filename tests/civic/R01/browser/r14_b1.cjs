@@ -93,7 +93,10 @@ async function main() {
     if (await page.$(".bc-grid")) await page.click(".bc-grid__chip:nth-child(5)");  // «Освещение» (no R04 model yet)
     await page.click(".bc-send");
     await page.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 15000 });
-    if (await page.$(".bc-panel[data-step='4']")) await page.click(".bc-different");
+    // R09 волна 2: шаг 4 — либо похожая жалоба («Я тоже» / «У меня другое»), либо проверка перед отправкой (data-review).
+    if (await page.$(".bc-panel[data-step='4']:not([data-review])")) await page.click(".bc-different");
+    await page.waitForSelector(".bc-panel[data-review='1'] .bc-send:not([disabled]), .bc-panel[data-step='5']", { timeout: 15000 });
+    if (await page.$(".bc-panel[data-review='1']")) await page.click(".bc-panel[data-review='1'] .bc-send");
     await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
     const code = ((await page.textContent(".bc-code__value")) || "").trim();
     check("resident: sent, complaint number shown", /^B-\d{4,}$/.test(code), code);

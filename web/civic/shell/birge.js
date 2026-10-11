@@ -279,6 +279,28 @@
     header.querySelector(".birge-menu-btn").setAttribute("aria-expanded", String(open));
   }
 
+  // «Мои обращения»: единственный бейдж меню (IA_WAVE2 §1) — число новых изменений по обращениям жителя. R09 шлёт
+  // window "birge:complaint-changes" {detail: {n}} (после открытия «Мои обращения» n = 0). На телефоне — точка на ≡.
+  let mineChanges = 0;
+  function labelMine() {
+    const mine = header && header.querySelector(".birge-mine-btn");
+    if (!mine) return;
+    mine.textContent = t("common.nav.mine");
+    if (mineChanges > 0) {
+      const badge = el("span", { class: "birge-badge", "aria-hidden": "true" });
+      badge.textContent = mineChanges > 9 ? "9+" : String(mineChanges);
+      mine.append(badge);
+      mine.setAttribute("aria-label", t("common.nav.mine") + " · " + t("shell.nav.badge", { n: mineChanges }));
+    } else mine.removeAttribute("aria-label");
+    header.dataset.mineChanges = mineChanges > 0 ? "yes" : "no";
+  }
+  window.addEventListener("birge:complaint-changes", (event) => {
+    const n = Math.max(0, Math.floor(Number(event && event.detail && event.detail.n) || 0));
+    if (n === mineChanges) return;
+    mineChanges = n;
+    labelMine();
+  });
+
   function render() {
     if (skip) skip.textContent = t("common.action.skip_to_main");
     if (header) {
@@ -288,8 +310,7 @@
       const menuLabel = header.querySelector(".birge-menu-btn span");
       if (menuLabel) menuLabel.textContent = t("common.nav.menu");
       buildNav();
-      const mine = header.querySelector(".birge-mine-btn");
-      if (mine) mine.textContent = t("common.nav.mine");
+      labelMine();
       for (const b of header.querySelectorAll(".birge-nav > [data-section]")) {
         b.textContent = navTitle(b.dataset.section);
         // «Ещё» подсвечен и на экранах, открытых из него.

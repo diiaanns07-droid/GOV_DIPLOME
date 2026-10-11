@@ -37,7 +37,11 @@
   var TARGETS_TIMEOUT_MS = 5000;
   var DEVICE_KEY = "birge.device";
   var LANG_KEY = "birge.lang";
-  var DRAFT_KEY = "birge.complaint.draft";
+  var DRAFT_KEY = "birge.complaint.draft";      // черновик на устройстве (волна 1, п. 10): переживает закрытие вкладки
+  var DRAFT_DAYS = 7;
+  var OUTBOX_KEY = "birge.complaint.outbox";    // очередь отправки без сети
+  var SEEN_KEY = "birge.complaint.changes_seen"; // когда житель последний раз видел «Что изменилось»
+  var RETRY_DELAYS = [5000, 15000, 30000, 60000];
   var TOTAL_STEPS = 5;
   var MOBILE_QUERY = "(max-width: 1023px)";
   // Запасные названия месяцев (основной формат — BirgeI18n.formatDate R11). kk — полные: «қаз» читается как «гусь».
@@ -144,6 +148,14 @@
     return level;
   }
 
+  // Сколько человек сообщили: автор + «Я тоже». Не полагаемся на одно поле ответа (LOCAL_FINAL №1: ответ для
+  // сотрудника не содержал reporters, и шаг «Я тоже» пропускался).
+  function reportersOf(c) {
+    if (!c) return 0;
+    if (typeof c.reporters === "number" && c.reporters > 0) return c.reporters;
+    return 1 + (Number(c.metoo) || 0);
+  }
+
   function categories() {
     return ((window.BirgeCategoriesV2 || {}).categories) || [];
   }
@@ -157,6 +169,141 @@
     if (fromI18n) return fromI18n;
     var c = category(id);
     return c ? (c[currentLang()] || c.ru) : "";
+  }
+
+  // ------------------------------------------------------------------ уточнения и сезон (волна 1, п. 2 и 11)
+  function subtopicsOf(catId) {
+    var c = category(catId);
+    return (c && c.subtopics) || [];
+  }
+  function hasKey(key) {
+    var strings = window.BirgeComplaintStrings || {};
+    return !!((window.BirgeI18n && typeof window.BirgeI18n.has === "function" && window.BirgeI18n.has(key)) ||
+              (strings.ru && strings.ru[key] !== undefined));
+  }
+  function subtopicLabel(catId, subId) {
+    var key = "subtopic." + subId;
+    if (hasKey(key)) return t(key);           // словарь R11 (kk вычитан), запасной — из /categories
+    var list = subtopicsOf(catId);
+    for (var i = 0; i < list.length; i++) if (list[i].id === subId) return list[i][currentLang()] || list[i].ru;
+    return "";
+  }
+
+  // С ноября по март «Снег и гололёд» первым в сетке, с апреля по октябрь — «Дороги». Если есть ui-kit R11 —
+  // его BirgeUI.seasonOrder (один порядок для мастера, фильтра карты и «Картины дня», UX_SPEC §10).
+  function seasonalCategories(nowMs) {
+    var at = typeof nowMs === "number" ? nowMs : Date.now();
+    if (window.BirgeUI && typeof window.BirgeUI.seasonOrder === "function") return window.BirgeUI.seasonOrder(categories(), new Date(at));
+    var month = new Date(at + 5 * 3600 * 1000).getUTCMonth() + 1;   // месяц по Астане (UTC+5)
+    var first = (month >= 11 || month <= 3) ? "snow_ice" : "roads";
+    var list = categories();
+    return list.filter(function (c) { return c.id === first; }).concat(list.filter(function (c) { return c.id !== first; }));
+  }
+
+  // ------------------------------------------------------------------ срочные случаи (волна 1, п. 3)
+  // Та же логика, что lifecycle.emergency на сервере (pytest сверяет оба на одном наборе фраз).
+  // В JS \b не работает с кириллицей — границы слова задаём набором букв.
+  var WL = "A-Za-z0-9_А-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі";
+  var B = "(?:^|[^" + WL + "])", E = "(?=$|[^" + WL + "])";
+  var RX_GAS = new RegExp(B + "газ(?:а|ом|у)?" + E + "|" + B + "газ\\S* утечк|" + B + "утечк\\S* газ|" + B + "газ иіс|" + B + "газдың иіс", "i");
+  var RX_FIRE = new RegExp(B + "пожар|" + B + "задымлен|" + B + "дым" + E + "|" + B + "дымит|" + B + "өрт|" + B + "түтін|" + B + "жанып жатыр", "i");
+  var RX_BURNS = new RegExp("(^|[^" + WL + "])(гор(?:ит|ят))" + E + "|" + B + "загорел", "i");
+  var RX_LIGHT = new RegExp("фонар|свет|ламп|освещ|" + B + "шам" + E + "|шамдар|жарық", "i");
+  var RX_WIRE = /оборван\S* провод|провод\S* оборван|обрыв\S* провод|провод\S* (?:лежит|висит|упал)|сым үзіл|үзілген сым|сым жерде/i;
+
+  function emergency(catId, subId, text) {
+    var list = subtopicsOf(catId);
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === subId && list[i].emergency_phone) return { phone: list[i].emergency_phone, reason: "subtopic" };
+    }
+    var value = String(text || "").replace(/ё/g, "е").replace(/Ё/g, "Е");
+    if (RX_GAS.test(value)) return { phone: "104", reason: "text" };
+    if (RX_WIRE.test(value) || RX_FIRE.test(value)) return { phone: "112", reason: "text" };
+    var burns = RX_BURNS.exec(value);
+    // «не горят фонари», «фонарь горит днём» — жалобы на свет, не пожар.
+    if (burns && !/не\s*$/i.test(value.slice(0, burns.index + (burns[1] || "").length)) && !RX_LIGHT.test(value)) {
+      return { phone: "112", reason: "text" };
+    }
+    return null;
+  }
+
+  // ------------------------------------------------------------------ фото (волна 1, п. 5)
+  var PHOTO_MAX = 3, PHOTO_SIDE = 1600, PHOTO_QUALITY = 0.82;
+  // Уменьшаем до 1600 px и перекодируем в JPEG через canvas: метаданные (EXIF, GPS) при этом не переносятся.
+  // Сервер всё равно чистит ещё раз (photos.py) — интерфейсу не доверяет.
+  function shrinkPhoto(file) {
+    return new Promise(function (resolve, reject) {
+      if (!file || !/^image\//.test(file.type || "")) { reject(new Error("not an image")); return; }
+      var draw = function (source, width, height) {
+        var scale = Math.min(1, PHOTO_SIDE / Math.max(width, height));
+        var canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(width * scale));
+        canvas.height = Math.max(1, Math.round(height * scale));
+        canvas.getContext("2d").drawImage(source, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(function (blob) {
+          if (!blob) { reject(new Error("encode failed")); return; }
+          resolve({ blob: blob, url: URL.createObjectURL(blob) });
+        }, "image/jpeg", PHOTO_QUALITY);
+      };
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: "from-image" }).then(function (bmp) {
+          draw(bmp, bmp.width, bmp.height);
+        }, function () { reject(new Error("decode failed")); });
+        return;
+      }
+      var img = new Image();
+      var url = URL.createObjectURL(file);
+      img.onload = function () { URL.revokeObjectURL(url); draw(img, img.naturalWidth, img.naturalHeight); };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error("decode failed")); };
+      img.src = url;
+    });
+  }
+
+  function bytesToBase64(bytes) {
+    var out = "", step = 0x8000;
+    for (var i = 0; i < bytes.length; i += step) out += String.fromCharCode.apply(null, bytes.subarray(i, i + step));
+    return btoa(out);
+  }
+
+  function blobBytes(blob) {
+    if (blob.arrayBuffer) return blob.arrayBuffer().then(function (b) { return new Uint8Array(b); });
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(new Uint8Array(reader.result)); };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(blob);
+    });
+  }
+
+  // Загрузка частями: шлюз R01 пропускает в /api/civic/v2 не больше 64 КБ тела, фото — сотни КБ.
+  function uploadPhoto(complaintId, blob, kind, csrf) {
+    var base = "/complaints/" + encodeURIComponent(complaintId) + "/photos";
+    var extra = csrf ? { "X-CSRF-Token": csrf } : undefined;   // фото «после» грузит сотрудник (сессия R02)
+    return blobBytes(blob).then(function (bytes) {
+      return request("POST", base, { kind: kind || "resident", size: bytes.length }, undefined, extra).then(function (res) {
+        if (!res.ok) throw new Error("start");
+        var chunk = res.data.chunk_bytes || 36000, upload = res.data.upload_id;
+        var offset = 0;
+        function next() {
+          if (offset >= bytes.length) return Promise.resolve(null);
+          var part = bytes.subarray(offset, offset + chunk);
+          return request("POST", base + "/" + encodeURIComponent(upload), { offset: offset, data: bytesToBase64(part) }, undefined, extra)
+            .then(function (r) {
+              if (!r.ok) throw new Error("chunk");
+              offset += part.length;
+              return r.data && r.data.done ? r.data.photo : next();
+            });
+        }
+        return next();
+      });
+    });
+  }
+
+  function dataUrlToBlob(dataUrl) {
+    var parts = String(dataUrl).split(","), mime = (parts[0].match(/data:([^;]+)/) || [])[1] || "image/jpeg";
+    var bin = atob(parts[1] || ""), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new Blob([bytes], { type: mime });
   }
 
   function targetLabel(target) {
@@ -190,10 +337,10 @@
     return id;
   }
 
-  function request(method, path, body, timeoutMs) {
+  function request(method, path, body, timeoutMs, extraHeaders) {
     var controller = window.AbortController ? new AbortController() : null;
     var timer = controller ? setTimeout(function () { controller.abort(); }, timeoutMs || NET_TIMEOUT_MS) : null;
-    var headers = { "Accept": "application/json", "X-Birge-Device": deviceId() };
+    var headers = Object.assign({ "Accept": "application/json", "X-Birge-Device": deviceId() }, extraHeaders || {});
     if (body !== undefined) headers["Content-Type"] = "application/json";
     return fetch(API + path, {
       method: method, headers: headers, credentials: "same-origin",
@@ -247,6 +394,16 @@
     return h("span", { "class": "bk-status", "data-status": status }, t("status." + status));
   }
 
+  // Статус для жителя с учётом проверки ремонта (R11 IA_WAVE2 §2.2): «Служба сообщила об устранении»,
+  // «Проверено жителями», «Проблема осталась — снова в работе» — свои цвета ui-kit (.bk-status[data-status]).
+  function displayStatus(item) {
+    var state = (item.resolution || {}).state;
+    if (item.status === "fixed" && state === "verified") return "verified";
+    if (item.status === "fixed" && state === "reported") return "reported_fixed";
+    if (state === "reopened" && (item.status === "accepted" || item.status === "in_progress" || item.status === "new")) return "reopened";
+    return item.status;
+  }
+
   // Шкала жителя: принято → в работе → исправлено (как record.resident_steps на сервере).
   function residentSteps(complaint) {
     var status = complaint.status;
@@ -266,7 +423,10 @@
     // лишний значок сдвигал подписи вниз.
     var list = h("ol", { "class": "bk-steps" + (complaint.status === "fixed" ? " bk-steps--fixed" : ""),
                          "aria-label": t("status." + complaint.status) });
-    residentSteps(complaint).forEach(function (step) {
+    var steps = residentSteps(complaint);
+    // Служба сообщила, жители ещё не проверили: «Исправлено» — текущий шаг, а не пройденный (волна 2, п. 1).
+    if (displayStatus(complaint) === "reported_fixed") steps[steps.length - 1].state = "current";
+    steps.forEach(function (step) {
       list.appendChild(h("li", { "class": "bk-steps__item", "data-state": step.state, "data-status": step.status,
                                  "aria-current": step.state === "current" ? "step" : null },
         h("span", { "class": "bk-steps__label" }, t("status." + step.status))));
@@ -412,23 +572,35 @@
     }
     document.addEventListener("keydown", onKey);
 
-    function freshState() {
+    function loadDraft() {
       var draft = null;
-      try { draft = JSON.parse(storageGet("sessionStorage", DRAFT_KEY) || "null"); } catch (e) { draft = null; }
+      try { draft = JSON.parse(storageGet("localStorage", DRAFT_KEY) || "null"); } catch (e) { draft = null; }
+      if (!draft || typeof draft !== "object") return null;
+      if (!draft.saved_at || Date.now() - draft.saved_at > DRAFT_DAYS * 86400000) { storageSet("localStorage", DRAFT_KEY, null); return null; }
+      return draft;
+    }
+
+    function freshState() {
+      var draft = loadDraft();
+      var cat = draft && category(draft.category) ? draft.category : null;
       return {
         view: "wizard", step: 2,
         point: null, candidates: null, candidatesLoading: false, target: null, geometry: null,
         text: (draft && typeof draft.text === "string") ? draft.text : "",
-        category: null, categorySource: null, model: null, suggestion: null, gridOpen: false,
-        similar: null, similarChecked: false,
-        sending: false, requestId: (draft && draft.requestId) || ("r-" + randomId(20)),
+        category: cat, categorySource: cat ? "resident" : null, model: null, suggestion: null, gridOpen: false,
+        subtopic: cat && draft.subtopic ? draft.subtopic : null,
+        photos: [], photoBusy: false, emergencyShown: false,
+        similar: null, similarChecked: false, reviewing: false,
+        sending: false, uploading: null, requestId: (draft && draft.requestId) || ("r-" + randomId(20)),
         result: null, mine: null, mineError: false, locating: false
       };
     }
 
+    // Черновик (текст, категория, уточнение, номер запроса) — на устройстве, 7 дней: случайно закрыли — не потеряли.
     function saveDraft() {
-      storageSet("sessionStorage", DRAFT_KEY, state && state.text
-        ? JSON.stringify({ text: state.text, requestId: state.requestId }) : null);
+      storageSet("localStorage", DRAFT_KEY, state && state.text ? JSON.stringify({
+        text: state.text, requestId: state.requestId, category: state.category, subtopic: state.subtopic,
+        saved_at: Date.now() }) : null);
     }
 
     // Тост по разметке ui-kit R11 (.bk-toast: текст | ✕, «Повторить» под текстом; ширина до 480 px):
@@ -463,9 +635,10 @@
       if (map.highlight) map.highlight(null, null, state.point);
       render();
       var seq = state.pickSeq = (state.pickSeq || 0) + 1;
+      var owner = state;
       request("GET", "/targets?lon=" + state.point[0] + "&lat=" + state.point[1], undefined, TARGETS_TIMEOUT_MS)
         .then(function (res) {
-          if (seq !== state.pickSeq) return;
+          if (state !== owner || seq !== state.pickSeq) return;
           var list = res.ok && res.data && Array.isArray(res.data.candidates) ? res.data.candidates : [];
           state.candidates = list.filter(function (c) { return c && c.target && c.target.kind && c.target.id; }).slice(0, 3);
           state.candidatesLoading = false;
@@ -492,9 +665,9 @@
       // «Другое место» / нет кандидатов R12: область ~150 м с подписью «примерное место».
       state.candidatesLoading = true;
       render();
-      var seq = state.pickSeq;
+      var seq = state.pickSeq, owner = state;
       request("GET", "/complaints/place?lon=" + state.point[0] + "&lat=" + state.point[1]).then(function (res) {
-        if (seq !== state.pickSeq) return;
+        if (state !== owner || seq !== state.pickSeq) return;
         state.candidatesLoading = false;
         if (!res.ok) {
           if (res.error && res.error.code === "invalid") { toast(t("complaint.error.outside")); state.point = null; render(); return; }
@@ -520,12 +693,15 @@
     function locate() {
       if (!navigator.geolocation) { toast(t("complaint.step2.locate_failed")); return; }
       state.locating = true; render();
+      var owner = state;
       navigator.geolocation.getCurrentPosition(function (pos) {
+        if (state !== owner) return;
         state.locating = false;
         var point = [pos.coords.longitude, pos.coords.latitude];
         if (map.flyTo) map.flyTo(point, visibleOffset());
         pickPoint(point);
       }, function () {
+        if (state !== owner) return;
         state.locating = false; render();
         toast(t("complaint.step2.locate_failed"));
       }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 });
@@ -589,10 +765,13 @@
       clearTimeout(classifyTimer);
       if (state.categorySource === "resident") return;   // житель выбрал сам — модель не спорит
       if (state.text.trim().length < CLASSIFY_MIN_CHARS) return;
+      var owner = state;
       classifyTimer = setTimeout(function () {
+        // LOCAL_FINAL №2: мастер могли закрыть (state = null) или открыть заново, пока шёл таймер.
+        if (state !== owner || !state) return;
         var seq = ++classifySeq;
         request("POST", "/classify", { text: state.text }, ML_TIMEOUT_MS).then(function (res) {
-          if (seq !== classifySeq || !state || state.categorySource === "resident") return;
+          if (seq !== classifySeq || !state || state !== owner || state.categorySource === "resident") return;
           var data = res.ok ? res.data : null;
           if (!data || !category(data.category)) {
             // Модель недоступна или ответ странный — молча открываем сетку категорий.
@@ -606,11 +785,13 @@
           // suggest. Если поставщик не знает suggest — старое правило «нет needs_review».
           var suggest = typeof data.suggest === "boolean" ? data.suggest : !data.needs_review;
           if (suggest) {
+            if (state.category !== data.category) state.subtopic = null;   // уточнение другой категории не подходит
             state.category = data.category; state.categorySource = "model"; state.gridOpen = false;
           } else if (!state.category) {
             state.gridOpen = true;
           }
           renderCategory();
+          renderEmergency();
           updateSendButton();
         });
       }, CLASSIFY_DEBOUNCE_MS);
@@ -618,10 +799,96 @@
 
     function pickCategory(id) {
       // Выбор в сетке — всегда решение жителя («resident»), даже если совпал с подсказкой модели.
+      if (state.category !== id) state.subtopic = null;
       state.category = id; state.categorySource = "resident";
       state.gridOpen = false;
+      saveDraft();
       renderCategory();
+      renderEmergency();
       updateSendButton();
+    }
+
+    function pickSubtopic(id) {
+      // Повторное нажатие или «Без уточнения» снимает уточнение (оно необязательно).
+      state.subtopic = id && state.subtopic !== id ? id : null;
+      saveDraft();
+      renderCategory();
+      renderEmergency();
+    }
+
+    // Баннер «Звоните N» до отправки (волна 1, п. 3): по уточнению или словам в тексте. Отправить всё равно можно.
+    function renderEmergency() {
+      var box = els.emergencyBox;
+      if (!box) return;
+      box.innerHTML = "";
+      var found = emergency(state.category, state.subtopic, state.text);
+      if (els.send) els.send.classList.toggle("bk-btn--primary", !found);
+      if (!found) return;
+      state.emergencyShown = true;
+      // UX_SPEC §10: баннер .bk-banner--danger в потоке; ГЛАВНАЯ кнопка экрана — звонок, «Далее/Отправить» —
+      // второстепенная (одна главная кнопка). Кто ответит — мелко под номером. Баннер не прячется сам.
+      box.appendChild(h("div", { "class": "bk-banner bk-banner--danger bc-emergency", role: "alert" }, [
+        h("p", { "class": "bk-banner__title" }, [icon("alert"), h("span", {}, t("complaint.emergency.title"))]),
+        h("p", { "class": "bc-emergency__text" }, t("complaint.emergency.text", { phone: found.phone })),
+        // Значка «телефон» в ui-kit пока нет (попросили R11) — кнопка с одной подписью.
+        h("a", { "class": "bk-btn bk-btn--primary bk-btn--block bc-emergency__call", href: "tel:" + found.phone },
+          h("span", {}, t("complaint.emergency.call", { phone: found.phone }))),
+        h("p", { "class": "bk-banner__note" }, t("emergency.service." + found.phone)),
+        h("p", { "class": "bk-banner__note" }, t("complaint.emergency.still_send"))]));
+    }
+
+    function emergencyNow() {
+      return !!emergency(state.category, state.subtopic, state.text);
+    }
+
+    // ---------------------------------------------------------------- фото жителя (волна 1, п. 5)
+    function addPhotos(files) {
+      var free = PHOTO_MAX - state.photos.length;
+      var list = Array.prototype.slice.call(files || [], 0, Math.max(0, free));
+      if (!list.length) return;
+      var owner = state;
+      state.photoBusy = true; renderPhotos();
+      list.reduce(function (chain, file) {
+        return chain.then(function () {
+          return shrinkPhoto(file).then(function (photo) {
+            if (state === owner && state.photos.length < PHOTO_MAX) state.photos.push(photo);
+          }, function () { toast(t("complaint.photo.bad_type")); });
+        });
+      }, Promise.resolve()).then(function () {
+        if (state !== owner) return;
+        state.photoBusy = false; renderPhotos();
+      });
+    }
+
+    function removePhoto(index) {
+      var removed = state.photos.splice(index, 1)[0];
+      if (removed && removed.url) URL.revokeObjectURL(removed.url);
+      renderPhotos();
+    }
+
+    function renderPhotos() {
+      var box = els.photoBox;
+      if (!box) return;
+      box.innerHTML = "";
+      var input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", multiple: true,
+                               "class": "bc-photo-input", id: "bc-photo-input", tabindex: "-1", "aria-hidden": "true" });
+      input.addEventListener("change", function () { addPhotos(input.files); input.value = ""; });
+      var thumbs = h("ul", { "class": "bc-thumbs" });
+      state.photos.forEach(function (photo, index) {
+        thumbs.appendChild(h("li", { "class": "bc-thumb" }, [
+          h("img", { src: photo.url, alt: "" }),
+          h("button", { "class": "bk-iconbtn bc-thumb__remove", type: "button", "aria-label": t("complaint.photo.remove"),
+                        onclick: function () { removePhoto(index); } }, icon("close"))]));
+      });
+      box.appendChild(input);
+      if (state.photos.length) box.appendChild(thumbs);
+      if (state.photos.length < PHOTO_MAX) {
+        box.appendChild(h("button", { "class": "bk-btn bc-photo-add", type: "button", disabled: state.photoBusy || null,
+                                      onclick: function () { input.click(); } },
+          [icon("plus"), h("span", {}, state.photos.length ? t("complaint.photo.count", { n: state.photos.length })
+                                                             : t("complaint.photo.add"))]));
+      }
+      box.appendChild(h("p", { "class": "bc-meta" }, t("complaint.photo.limit") + " · " + t("complaint.photo.private")));
     }
 
     function renderCategory() {
@@ -640,6 +907,24 @@
           h("button", { "class": "bk-btn bk-btn--ghost bc-change", type: "button",
                         onclick: function () { state.gridOpen = true; renderCategory(); } }, t("complaint.step3.change"))
         ]));
+        // Уточнение — одним нажатием, по желанию (волна 1, п. 2). Модель уточнение не предсказывает.
+        var subs = subtopicsOf(state.category);
+        if (subs.length) {
+          box.appendChild(h("p", { "class": "bc-label", id: "bc-sub-title" }, t("complaint.subtopic.title")));
+          var chips = h("div", { "class": "bk-chips bk-chips--wrap bc-subtopics", role: "group", "aria-labelledby": "bc-sub-title" });
+          subs.forEach(function (sub) {
+            chips.appendChild(h("button", { "class": "bk-chip bc-subtopic", type: "button", "data-subtopic": sub.id,
+                                            "aria-pressed": state.subtopic === sub.id ? "true" : "false",
+                                            onclick: function () { pickSubtopic(sub.id); } },
+              h("span", {}, subtopicLabel(state.category, sub.id))));
+          });
+          // Последний чип — «Без уточнения» (UX_SPEC §10): уточнение необязательно.
+          chips.appendChild(h("button", { "class": "bk-chip bc-subtopic", type: "button", "data-subtopic": "",
+                                          "aria-pressed": state.subtopic ? "false" : "true",
+                                          onclick: function () { pickSubtopic(null); } },
+            h("span", {}, t("complaint.subtopic.none"))));
+          box.appendChild(chips);
+        }
         return;
       }
       if (!state.gridOpen && !state.category) {
@@ -652,8 +937,9 @@
       box.appendChild(h("p", { "class": "bc-label", id: "bc-cat-title" }, t("complaint.step3.choose")));
       // Сетка ui-kit R11: иконка слева + подпись, колонки ≥ 150 px (2 на телефоне), казахские слова не рвутся.
       var grid = h("div", { "class": "bk-catgrid", role: "group", "aria-labelledby": "bc-cat-title" });
-      categories().forEach(function (c) {
-        grid.appendChild(h("button", { type: "button",
+      // Сезонный порядок (волна 1, п. 11): зимой «Снег и гололёд» первым, летом — «Дороги».
+      seasonalCategories(opts.now ? opts.now() : Date.now()).forEach(function (c) {
+        grid.appendChild(h("button", { type: "button", "data-category": c.id,
                                        "aria-pressed": state.category === c.id ? "true" : "false",
                                        "data-suggested": c.id === state.suggestion ? "true" : null,
                                        onclick: function () { pickCategory(c.id); } },
@@ -664,9 +950,14 @@
 
     function updateSendButton() {
       if (!els.send) return;
-      var ready = state.text.trim().length >= 3 && !!state.category && !state.sending;
+      var ready = state.text.trim().length >= 3 && !!state.category && !state.sending && !state.checking && !state.photoBusy;
       els.send.disabled = !ready;
-      els.send.querySelector("span").textContent = state.sending ? t("complaint.step3.sending") : t("complaint.step3.send");
+      // Срочный случай: главная кнопка — звонок, «Далее/Отправить» второстепенная (UX_SPEC §10, одна главная).
+      els.send.classList.toggle("bk-btn--primary", !emergencyNow());
+      // Шаг ③ — «Далее» (дальше «Я тоже» или проверка перед отправкой); проверка — «Отправить».
+      var label = state.uploading ? t("complaint.photo.uploading", state.uploading)
+        : (state.sending ? t("complaint.step3.sending") : (state.reviewing ? t("complaint.step3.send") : t("complaint.wizard.next")));
+      els.send.querySelector("span").textContent = label;
     }
 
     function renderText(body) {
@@ -682,6 +973,7 @@
           state.text = els.textarea.value;
           saveDraft();
           updateSendButton();
+          renderEmergency();
           scheduleClassify();
         });
       }
@@ -692,8 +984,14 @@
       els.categoryBox = h("div", { "class": "bc-category", "aria-live": "polite" });
       body.appendChild(els.categoryBox);
       renderCategory();
+      els.emergencyBox = h("div", { "class": "bc-emergency-box" });
+      body.appendChild(els.emergencyBox);
+      renderEmergency();
+      els.photoBox = h("div", { "class": "bc-photos" });
+      body.appendChild(els.photoBox);
+      renderPhotos();
       els.send = h("button", { "class": "bk-btn bk-btn--primary bk-btn--block bc-send", type: "button",
-                               onclick: checkSimilarThenSend }, [icon("send"), h("span")]);
+                               onclick: checkSimilarThenSend }, [icon("forward"), h("span")]);
       body.appendChild(els.send);
       updateSendButton();
       if (state.text) scheduleClassify();
@@ -701,15 +999,17 @@
 
     // ---------------------------------------------------------------- шаг 4: похожие
     function checkSimilarThenSend() {
-      if (state.sending) return;
-      state.sending = true; updateSendButton();
+      if (state.sending || state.checking) return;
+      state.checking = true; updateSendButton();
+      var owner = state;
       findSimilar().then(function (match) {
-        state.sending = false;
+        if (state !== owner) return;
+        state.checking = false;
         state.similarChecked = true;
-        if (match && match.reporters > 0) {
-          state.similar = match; state.step = 4; render();
+        if (match && placeCount(match) > 0) {
+          state.similar = match; state.reviewing = false; state.step = 4; render();
         } else {
-          send();
+          openReview();
         }
       });
     }
@@ -726,7 +1026,8 @@
           // начинается с 0.18), список упорядочен. Повторно по score не фильтруем — берём первое.
           matches = matches.filter(function (m) { return m && m.complaint_id; });
           if (!matches.length) return null;
-          return request("GET", "/complaints/" + encodeURIComponent(matches[0].complaint_id)).then(function (r) {
+          // view=public: мастер жителя всегда получает ответ «как житель», даже если в браузере вошёл сотрудник.
+          return request("GET", "/complaints/" + encodeURIComponent(matches[0].complaint_id) + "?view=public").then(function (r) {
             return r.ok && r.data && r.data.complaint ? r.data.complaint : null;
           });
         });
@@ -751,7 +1052,8 @@
     }
 
     function withCount(match, placeReporters) {
-      match.placeReporters = Math.max(match.reporters || 0, Number(placeReporters) || 0);
+      match.reporters = reportersOf(match);
+      match.placeReporters = Math.max(match.reporters, Number(placeReporters) || 0);
       return match;
     }
 
@@ -762,7 +1064,7 @@
     }
 
     function placeCount(match) {
-      return match.placeReporters || match.reporters;
+      return match.placeReporters || reportersOf(match);
     }
 
     function renderSimilar(body) {
@@ -781,8 +1083,48 @@
       body.appendChild(h("button", { "class": "bk-btn bk-btn--primary bk-btn--block", type: "button",
                                      onclick: function (e) { metoo(match, e.currentTarget); } },
         [icon("users"), h("span", {}, t("complaint.step4.metoo"))]));
-      body.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-different", type: "button", onclick: function () { send(); } },
+      // «Я тоже» = подписка на общий случай (волна 2, п. 3): одно обновление службы видят все.
+      body.appendChild(h("p", { "class": "bc-meta bc-metoo-caption" }, t("broadcast.metoo_hint")));
+      body.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-different", type: "button", onclick: openReview },
         t("complaint.step4.different")));
+    }
+
+    // ---------------------------------------------------------------- проверка перед отправкой (волна 2, мелочи)
+    function openReview() {
+      state.reviewing = true;
+      state.step = 4;
+      render();
+    }
+
+    function reviewRow(label, value) {
+      return h("div", { "class": "bc-review__row" }, [h("dt", {}, label), h("dd", {}, value)]);
+    }
+
+    function renderReview(body) {
+      var what = categoryLabel(state.category) + (state.subtopic ? " · " + subtopicLabel(state.category, state.subtopic) : "");
+      var thumbs = state.photos.length ? h("ul", { "class": "bc-thumbs bc-thumbs--small" }, state.photos.map(function (p) {
+        return h("li", { "class": "bc-thumb" }, h("img", { src: p.url, alt: "" }));
+      })) : t("complaint.review.no_photos");
+      body.appendChild(h("dl", { "class": "bc-review" }, [
+        reviewRow(t("complaint.review.place"), targetLabel(state.target || { approximate: true })),
+        reviewRow(t("complaint.review.what"), what),
+        reviewRow(t("complaint.review.text"), h("span", { "class": "bc-review__text" }, state.text)),
+        reviewRow(t("complaint.review.photos"), thumbs)]));
+      // Кто что увидит (волна 2, мелочи): публичное — место, категория, число людей; текст и фото — только служба.
+      body.appendChild(h("div", { "class": "bc-visibility" }, [
+        h("p", {}, [icon("users"), h("span", {}, t("complaint.review.public"))]),
+        h("p", {}, [icon("shield"), h("span", {}, t("complaint.review.private"))]),
+        h("p", { "class": "bc-meta" }, t("complaint.review.personal"))]));
+      els.emergencyBox = h("div", { "class": "bc-emergency-box" });
+      body.appendChild(els.emergencyBox);
+      renderEmergency();
+      els.send = h("button", { "class": "bk-btn bk-btn--primary bk-btn--block bc-send", type: "button", onclick: send },
+        [icon("send"), h("span")]);
+      body.appendChild(els.send);
+      body.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-edit", type: "button",
+                                     onclick: function () { state.reviewing = false; state.step = 3; render(); } },
+        t("complaint.review.edit")));
+      updateSendButton();
     }
 
     function announce(type, complaint) {
@@ -795,16 +1137,15 @@
 
     function metoo(match, button) {
       if (button) button.disabled = true;
-      // Волна мелочей п. 9: текст и место жителя уходят вместе с «Я тоже» — их видит только акимат, и если
-      // «Похоже на» ошиблось, сотрудник одним действием выделит это в отдельную жалобу жителя («Это разные проблемы»).
-      var note = { text: state.text, point: state.point, target: state.target, category: state.category };
-      request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", { note: note }).then(function (res) {
+      var owner = state;
+      request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", {}).then(function (res) {
         if (button) button.disabled = false;
+        if (state !== owner) return;
         // Лимит (429, R15): повтор снова упрётся в лимит — сообщаем без «Повторить», как при отправке жалобы.
         if (!res.ok && res.status === 429) { toast(t("complaint.error.too_many")); return; }
         if (!res.ok) { toast(t("complaint.error.send"), function () { metoo(match); }); return; }
         // Сколько людей теперь сообщили об этом на месте: прежнее N + этот житель (если «Я тоже» засчитан).
-        var joined = res.data.complaint, place = placeCount(match) + Math.max(0, (joined.reporters || 0) - (match.reporters || 0));
+        var joined = res.data.complaint, place = placeCount(match) + Math.max(0, reportersOf(joined) - reportersOf(match));
         state.result = { kind: "metoo", outcome: res.data.result, complaint: joined, place: place };
         if (res.data.result === "added") announce("metoo", res.data.complaint);
         clearDraft();
@@ -814,30 +1155,127 @@
 
     // ---------------------------------------------------------------- отправка
     function clearDraft() {
-      storageSet("sessionStorage", DRAFT_KEY, null);
+      storageSet("localStorage", DRAFT_KEY, null);
+      storageSet("sessionStorage", DRAFT_KEY, null);   // черновик старых версий (раньше — только вкладка)
+    }
+
+    function complaintBody() {
+      return { text: state.text, category: state.category, category_source: state.categorySource || "resident",
+               subtopic: state.subtopic || undefined, emergency_shown: state.emergencyShown || undefined,
+               model: state.model, point: state.point, target: state.target, request_id: state.requestId };
+    }
+
+    function uploadAll(complaintId, blobs, progress) {
+      var failed = 0;
+      return blobs.reduce(function (chain, blob, index) {
+        return chain.then(function () {
+          if (progress) progress(index + 1, blobs.length);
+          return uploadPhoto(complaintId, blob, "resident").catch(function () { failed += 1; });
+        });
+      }, Promise.resolve()).then(function () { return failed; });
     }
 
     function send() {
       if (state.sending) return;
       state.sending = true;
-      if (state.step !== 3) { state.step = 3; render(); }
+      if (state.step !== 4 || !state.reviewing) { state.reviewing = true; state.step = 4; render(); }
       updateSendButton();
-      var body = { text: state.text, category: state.category, category_source: state.categorySource || "resident",
-                   model: state.model, point: state.point, target: state.target, request_id: state.requestId };
+      var body = complaintBody();
+      var owner = state;
       request("POST", "/complaints", body).then(function (res) {
-        state.sending = false;
+        if (state !== owner) return;   // мастер закрыли во время отправки: жалоба на сервере, экран не трогаем
         if (res.ok && res.data && res.data.complaint) {
-          state.result = { kind: "created", complaint: res.data.complaint };
-          if (!res.data.replayed) announce("created", res.data.complaint);
+          var complaint = res.data.complaint;
+          if (!res.data.replayed) announce("created", complaint);
           clearDraft();
-          state.step = 5; render();
-          return;
+          var blobs = res.data.replayed ? [] : state.photos.map(function (p) { return p.blob; });
+          return uploadAll(complaint.id, blobs, function (n, total) {
+            if (state !== owner) return;
+            state.uploading = { n: n, total: total }; updateSendButton();
+          }).then(function (failed) {
+            if (state !== owner) return;
+            state.sending = false; state.uploading = null;
+            state.result = { kind: "created", complaint: complaint, photoFailed: failed > 0 };
+            state.step = 5; render();
+            if (failed) toast(t("complaint.photo.failed"));
+          });
         }
+        state.sending = false;
         updateSendButton();
         var code = res.error && res.error.code;
         if (res.status === 429) toast(t("complaint.error.too_many"));
         else if (code === "invalid" && res.error.fields && res.error.fields.point) toast(t("complaint.error.outside"));
-        else toast(t("complaint.error.send"), send);   // текст остаётся в поле и в черновике
+        else if (res.status === 0) queueAndShow(body);   // нет сети: очередь и автоповтор (волна 1, п. 10)
+        else toast(t("complaint.error.send"), send);     // текст остаётся в поле и в черновике
+      });
+    }
+
+    // ---------------------------------------------------------------- очередь без сети (волна 1, п. 10)
+    function readOutbox() {
+      try { var list = JSON.parse(storageGet("localStorage", OUTBOX_KEY) || "[]"); return Array.isArray(list) ? list : []; }
+      catch (e) { return []; }
+    }
+    function writeOutbox(list) {
+      try { window.localStorage.setItem(OUTBOX_KEY, JSON.stringify(list)); return true; } catch (e) { return false; }
+    }
+
+    function queueAndShow(body) {
+      var owner = state;
+      var photos = state.photos.slice();
+      Promise.all(photos.map(function (p) {
+        return blobBytes(p.blob).then(function (b) { return "data:image/jpeg;base64," + bytesToBase64(b); });
+      })).then(function (urls) {
+        var list = readOutbox().filter(function (item) { return item.body.request_id !== body.request_id; });
+        var entry = { body: body, photos: urls, queued_at: new Date().toISOString(),
+                      label: targetLabel(state.target || { approximate: true }), category: state.category };
+        list.push(entry);
+        // Фото могут не влезть в память браузера — тогда очередь без фото, жалоба важнее.
+        if (!writeOutbox(list)) { entry.photos = []; entry.photos_dropped = true; writeOutbox(list); }
+        clearDraft();
+        if (state !== owner) return;
+        state.sending = false;
+        state.result = { kind: "queued", entry: entry };
+        state.step = 5; render();
+        scheduleFlush(0);
+      });
+    }
+
+    var flushTimer = null, flushAttempt = 0, flushing = false;
+    function scheduleFlush(attempt) {
+      clearTimeout(flushTimer);
+      if (!readOutbox().length) return;
+      flushAttempt = attempt;
+      flushTimer = setTimeout(flushOutbox, RETRY_DELAYS[Math.min(attempt, RETRY_DELAYS.length - 1)]);
+    }
+
+    // Отправить всё из очереди по порядку. Повтор безопасен: тот же request_id сервер не дублирует.
+    function flushOutbox() {
+      if (flushing) return Promise.resolve();
+      var list = readOutbox();
+      if (!list.length) return Promise.resolve();
+      flushing = true;
+      var entry = list[0];
+      return request("POST", "/complaints", entry.body).then(function (res) {
+        if (res.ok && res.data && res.data.complaint) {
+          var complaint = res.data.complaint;
+          writeOutbox(readOutbox().filter(function (item) { return item.body.request_id !== entry.body.request_id; }));
+          if (!res.data.replayed) announce("created", complaint);
+          return uploadAll(complaint.id, (entry.photos || []).map(dataUrlToBlob)).then(function () {
+            flushing = false;
+            toast(t("complaint.queue.sent", { code: complaint.code }));
+            if (state && state.result && state.result.kind === "queued" && state.result.entry.body.request_id === entry.body.request_id) {
+              state.result = { kind: "created", complaint: complaint };
+              render();
+            } else if (state && state.view === "mine") loadMine();
+            return flushOutbox();
+          });
+        }
+        flushing = false;
+        if (res.status === 0 || res.status === 429 || res.status >= 500) { scheduleFlush(flushAttempt + 1); return null; }
+        // Сервер отклонил (данные устарели): убираем из очереди, чтобы не повторять вечно.
+        writeOutbox(readOutbox().filter(function (item) { return item.body.request_id !== entry.body.request_id; }));
+        toast(t("complaint.error.send"));
+        return flushOutbox();
       });
     }
 
@@ -856,6 +1294,15 @@
 
     function renderDone(body) {
       var result = state.result, complaint = result.complaint;
+      if (result.kind === "queued") {
+        body.appendChild(h("p", { "class": "bc-lead" }, t("complaint.queue.offline")));
+        body.appendChild(h("p", { "class": "bc-place" }, [icon("pin"), h("span", {}, result.entry.label)]));
+        body.appendChild(h("button", { "class": "bk-btn bk-btn--primary bk-btn--block", type: "button",
+                                       onclick: function () { flushOutbox(); } },
+          [icon("refresh"), h("span", {}, t("complaint.queue.send_now"))]));
+        body.appendChild(h("button", { "class": "bk-btn bk-btn--block", type: "button", onclick: close }, t("complaint.step5.to_map")));
+        return;
+      }
       if (result.kind === "metoo") {
         var message = result.outcome === "added"
           ? t("complaint.step5.metoo_count", { n: result.place || complaint.reporters })
@@ -867,7 +1314,12 @@
           h("strong", { "class": "bc-code__value" }, complaint.code),
           h("button", { "class": "bk-btn bk-btn--ghost", type: "button",
                         onclick: function (e) { copyCode(complaint.code, e.currentTarget); } }, t("complaint.step5.copy"))]));
-        if (complaint.due_at) body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step5.due", { date: formatDate(complaint.due_at) })));
+        // После отправки — что дальше и как найти обращение снова (волна 2, мелочи).
+        if (complaint.due_at) body.appendChild(h("p", { "class": "bc-next" }, t("complaint.step5.next", { date: formatDate(complaint.due_at) })));
+        body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step5.find", { code: complaint.code })));
+      }
+      if (result.kind === "metoo" && result.outcome === "added") {
+        body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step5.metoo_follow")));
       }
       body.appendChild(h("p", { "class": "bc-place" }, [icon("pin"), h("span", {}, targetLabel(complaint.target))]));
       body.appendChild(stepsBar(complaint));
@@ -878,14 +1330,242 @@
     }
 
     // ---------------------------------------------------------------- «Мои обращения»
-    function loadMine() {
-      state.mine = null; state.mineError = false; render();
-      request("GET", "/complaints/mine").then(function (res) {
-        if (!state || state.view !== "mine") return;
-        if (!res.ok) { state.mineError = true; render(); return; }
-        state.mine = res.data.items || [];
-        render();
+    function loadMine(focusCode, focusEvent) {
+      state.mine = null; state.mineError = false; state.changes = null; state.changesAll = false;
+      if (focusCode) state.focusCode = focusCode;
+      if (focusEvent) { state.focusEvent = focusEvent; state.changesAll = true; }
+      render();
+      var owner = state;
+      var seen = storageGet("localStorage", SEEN_KEY);
+      Promise.all([request("GET", "/complaints/mine"),
+                   seen ? request("GET", "/complaints/changes?since=" + encodeURIComponent(seen)) : Promise.resolve(null)])
+        .then(function (replies) {
+          var res = replies[0], changes = replies[1];
+          if (!state || state !== owner || state.view !== "mine") return;
+          if (!res.ok) { state.mineError = true; render(); return; }
+          state.mine = res.data.items || [];
+          state.changes = changes && changes.ok ? changes.data : null;
+          // «Что изменилось» — с прошлого визита; первый визит только запоминает момент.
+          storageSet("localStorage", SEEN_KEY, new Date().toISOString());
+          announceChanges(0);   // житель увидел изменения — значок у «Мои обращения» гаснет
+          render();
+          focusCard();
+        });
+    }
+
+    // Карточка из ссылки/уведомления остаётся выделенной и раскрытой и после перерисовки (язык, ответ «Да/Осталось»);
+    // прокрутка к ней — один раз.
+    function focusCard() {
+      if (state && state.focusEvent) {
+        var row = els.panel.querySelector('.bc-changes__item[data-event="' + state.focusEvent.replace(/"/g, "") + '"]');
+        if (row) row.classList.add("bc-changes__item--focus");
+      }
+      if (!state || !state.focusCode) return;
+      var code = state.focusCode;
+      state.focusCode = null;
+      var card = els.panel.querySelector('.bc-mine__card[data-code="' + code.replace(/"/g, "") + '"]');
+      if (!card) return;
+      state.focused = code;
+      card.classList.add("bc-mine__card--focus");
+      var more = card.querySelector("details");
+      if (more) more.open = true;
+      card.scrollIntoView({ block: "start", behavior: "auto" });
+    }
+
+    var CHANGE_TEXT = { reopened: "mine.changes.reopened", verified: "mine.changes.verified", note: "mine.changes.note",
+                        passport: "mine.changes.passport" };
+    var CHANGES_SHOWN = 3;
+
+    // «Что изменилось» (волна 2, п. 10; R11 IA_WAVE2 §2.1): только если есть новое, ≤ 3 строки, остальное — «Ещё N».
+    function renderChanges(body) {
+      var data = state.changes;
+      if (!data || !data.items || !data.items.length) return;
+      var box = h("section", { "class": "bk-card bc-changes", "aria-labelledby": "bc-changes-title" }, [
+        h("h3", { "class": "bc-changes__title", id: "bc-changes-title" }, t("mine.changes.title"))]);
+      var list = h("ul", { "class": "bc-changes__list" });
+      var shown = state.changesAll ? data.items : data.items.slice(0, CHANGES_SHOWN);
+      shown.forEach(function (item) {
+        var what = item.kind === "status" ? t("mine.changes.status", { status: t("status." + item.status) }) : t(CHANGE_TEXT[item.kind]);
+        var row = h("button", { "class": "bc-changes__item" + (state.focusEvent === item.id ? " bc-changes__item--focus" : ""),
+                                type: "button", "data-event": item.id || "",
+                                onclick: function () { state.focusCode = item.code; focusCard(); } },
+          [h("strong", {}, targetLabel(item.target)), h("span", {}, " — " + what + (item.text ? ": " + item.text : "")),
+           h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
+        list.appendChild(h("li", {}, row));
       });
+      box.appendChild(list);
+      if (!state.changesAll && data.items.length > CHANGES_SHOWN) {
+        box.appendChild(h("button", { "class": "bk-btn bk-btn--ghost bc-changes__more", type: "button",
+                                      onclick: function () { state.changesAll = true; render(); } },
+          t("mine.changes.more", { n: data.items.length - CHANGES_SHOWN })));
+      }
+      if (data.summary && data.summary.waiting > 0) {
+        box.appendChild(h("p", { "class": "bc-meta" }, t("mine.waiting", { n: data.summary.waiting })));
+      }
+      body.appendChild(box);
+    }
+
+    function renderPending(body) {
+      var list = readOutbox();
+      if (!list.length) return;
+      var ul = h("ul", { "class": "bc-mine" });
+      list.forEach(function (entry) {
+        ul.appendChild(h("li", { "class": "bk-card bc-mine__card bc-mine__card--pending" }, [
+          h("div", { "class": "bc-mine__head" }, [
+            h("span", { "class": "bc-mine__cat" }, h("span", {}, categoryLabel(entry.category))),
+            h("span", { "class": "bk-status", "data-status": "pending" }, t("mine.pending"))]),
+          h("p", { "class": "bc-meta" }, entry.label + " · " + formatDate(entry.queued_at)),
+          h("button", { "class": "bk-btn bk-btn--block", type: "button", onclick: function () { flushOutbox(); } },
+            [icon("refresh"), h("span", {}, t("complaint.queue.send_now"))])]));
+      });
+      body.appendChild(ul);
+    }
+
+    function verify(item, answer, button) {
+      if (button) button.disabled = true;
+      var owner = state;
+      request("POST", "/complaints/" + encodeURIComponent(item.id) + "/verify", { answer: answer }).then(function (res) {
+        if (state !== owner) return;
+        if (!res.ok) { if (button) button.disabled = false; toast(t("complaint.error.send"), function () { verify(item, answer); }); return; }
+        toast(t(answer === "no" ? "verify.reopened_toast" : "verify.thanks"));
+        if (answer !== "cant" && res.data.result === "recorded") announce(answer === "yes" ? "verified" : "reopened", res.data.complaint);
+        loadMine();
+      });
+    }
+
+    function unsubscribe(item, button) {
+      if (button) button.disabled = true;
+      var owner = state;
+      request("POST", "/complaints/" + encodeURIComponent(item.id) + "/unsubscribe", {}).then(function (res) {
+        if (state !== owner) return;
+        if (!res.ok) { if (button) button.disabled = false; toast(t("complaint.error.send"), function () { unsubscribe(item); }); return; }
+        toast(t("mine.unsubscribed"));
+        loadMine();
+      });
+    }
+
+    function photoThumb(complaintId, photoId) {
+      // Фото грузим только когда их показывают (свёрнутые блоки не тянут сотни КБ).
+      var img = h("img", { alt: "", loading: "lazy" });
+      request("GET", "/complaints/" + encodeURIComponent(complaintId) + "/photos/" + encodeURIComponent(photoId)).then(function (res) {
+        if (res.ok && res.data && res.data.photo) img.src = res.data.photo.data_url;
+      });
+      return h("li", { "class": "bc-thumb" }, img);
+    }
+
+    // «Ждут вашей проверки» (волна 2, п. 1; R11 §2.1): служба сообщила — автор и все «Я тоже» отвечают.
+    // Главная кнопка экрана — «Да, исправлено» в первом блоке; если проверять нечего — главной кнопки нет.
+    function verifyCard(item, primary) {
+      var resolution = item.resolution || {};
+      var after = resolution.photos_after || [];
+      var box = h("li", { "class": "bc-verify", "data-code": item.code || "" }, [
+        h("p", { "class": "bc-verify__place" }, [icon("pin"), h("strong", {}, targetLabel(item.target))]),
+        h("p", { "class": "bc-verify__reported" }, t("verify.reported", { date: formatDate(resolution.reported_at || item.updated_at) })),
+        resolution.what_done ? h("p", {}, t("verify.what_done", { text: resolution.what_done })) : null,
+        after.length ? h("ul", { "class": "bc-thumbs bc-thumbs--small", "aria-label": t("verify.after_photo") },
+          after.map(function (id) { return photoThumb(item.id, id); })) : null,
+        h("p", { "class": "bc-verify__question" }, t("verify.question"))]);
+      var buttons = h("div", { "class": "bc-verify__buttons" });
+      [["yes", "verify.yes", primary ? " bk-btn--primary" : ""], ["no", "verify.no", ""], ["cant", "verify.cant", " bk-btn--ghost"]]
+        .forEach(function (b) {
+          buttons.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-verify__" + b[0] + b[2], type: "button",
+                                            onclick: function (e) { verify(item, b[0], e.currentTarget); } }, t(b[1])));
+        });
+      box.appendChild(buttons);
+      return box;
+    }
+
+    function renderWaitCheck(body) {
+      var waiting = state.mine.filter(function (item) { return item.can_verify; });
+      if (!waiting.length) return;
+      body.appendChild(h("section", { "class": "bk-card bc-wait", "aria-labelledby": "bc-wait-title" }, [
+        h("h3", { "class": "bc-changes__title", id: "bc-wait-title" }, t("verify.wait_title")),
+        h("ul", { "class": "bc-wait__list" }, waiting.map(function (item, index) { return verifyCard(item, index === 0); }))]));
+    }
+
+    // Название службы на языке жителя: ключ словаря service.<id> (R08 ids, kk вычитан R11); если акимат
+    // переименовал службу — его название как есть.
+    function serviceName(p) {
+      if (p.assignee_id && !p.assignee_custom && hasKey("service." + p.assignee_id)) return t("service." + p.assignee_id);
+      return currentLang() === "kk" && p.assignee_kk ? p.assignee_kk : p.assignee;
+    }
+
+    // Срок в рабочих днях (волна 1, п. 6; UX_SPEC §10): цвет + слово, не только цвет.
+    function deadlineNode(d) {
+      if (!d || d.state === "answered") return null;
+      if (d.state === "overdue") return h("span", { "class": "bc-deadline bc-deadline--danger" }, t("deadline.overdue", { n: d.overdue_working_days || 1 }));
+      if (d.state === "today") return h("span", { "class": "bc-deadline bc-deadline--warn" }, t("deadline.today"));
+      var left = d.working_days_left || 0;
+      return h("span", { "class": "bc-deadline" + (left <= 1 ? " bc-deadline--warn" : "") }, t("deadline.left", { n: left }));
+    }
+
+    // Строка паспорта на карточке (R11 §2.1): «Передано: служба · Осталось N рабочих дней».
+    function passportLine(item) {
+      var p = item.passport || {};
+      if (item.status === "rejected" || (!p.assignee && !p.assignee_id)) return null;
+      var due = item.status === "new" ? deadlineNode(p.deadline) : null;
+      return h("p", { "class": "bc-meta bc-assignee" }, [h("span", {}, t("service.assigned", { service: serviceName(p) })),
+        due ? " · " : null, due]);
+    }
+
+    // Задержка — баннер-предупреждение в карточке (R11 §2.2): причина · временная мера · следующее обновление.
+    function delayBanner(item) {
+      var delay = (item.passport || {}).delay;
+      if (!delay || (item.status !== "accepted" && item.status !== "in_progress" && item.status !== "new")) return null;
+      var parts = [];
+      if (delay.reason) parts.push(t("passport.delay_reason", { text: delay.reason }));
+      if (delay.temp_measure) parts.push(t("passport.temp_measure", { text: delay.temp_measure }));
+      if (delay.next_update_at) parts.push(t("passport.next_update", { date: formatDate(delay.next_update_at + "T12:00:00+05:00") }));
+      if (!parts.length) return null;
+      return h("p", { "class": "bk-banner bk-banner--warn bc-delay" }, parts.join(" · "));
+    }
+
+    // «Подробнее»: паспорт целиком и история (свёрнуто — карточка не растёт, защита от перегруза п. 3).
+    function detailsBlock(item, open) {
+      var p = item.passport || {};
+      var lines = [t("passport.next", { text: p.next_step || t("mine.passport.next_default." + item.status) })];
+      if (item.status === "new" && p.response_due) lines.push(t("passport.answer_due", { date: formatDate(p.response_due) }));
+      if (item.status !== "rejected") {
+        lines.push(p.fix_eta ? t("passport.fix_eta", { date: formatDate(p.fix_eta + "T12:00:00+05:00") }) : t("passport.fix_unknown"));
+      }
+      var more = h("details", { "class": "bc-more", open: open || null }, [h("summary", {}, t("common.action.more")),
+        h("p", { "class": "bc-label" }, t("passport.title")),
+        h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); }))]);
+      var updates = (item.updates || []).slice(-5).reverse();
+      if (updates.length) {
+        more.appendChild(h("p", { "class": "bc-label" }, t("passport.history")));
+        more.appendChild(h("ul", { "class": "bc-updates" }, updates.map(function (u) {
+          return h("li", {}, [h("span", { "class": "bc-meta" }, formatDate(u.at) + " · "), h("span", {}, t("mine.update." + u.kind) + (u.text ? ": " + u.text : ""))]);
+        })));
+      }
+      var own = item.photos || [];
+      if (own.length) {
+        more.appendChild(h("p", { "class": "bc-label" }, t("mine.photos.title")));
+        var ul = h("ul", { "class": "bc-thumbs bc-thumbs--small" });
+        var load = function () {
+          if (!more.open || ul.childNodes.length) return;
+          own.forEach(function (ph) { ul.appendChild(photoThumb(item.id, ph.id)); });
+        };
+        more.addEventListener("toggle", load);
+        more.appendChild(ul);
+        if (open) setTimeout(load, 0);
+      }
+      return more;
+    }
+
+    // «Подписки (N)» — свёрнуто внизу (R11 §2.1): «Я тоже» = подписка; «Отписаться» — голос остаётся.
+    function renderSubscriptions(body) {
+      var subs = state.mine.filter(function (item) { return item.relation === "metoo"; });
+      if (!subs.length) return;
+      var more = h("details", { "class": "bc-more bc-subs" }, [
+        h("summary", {}, t("mine.subscriptions") + " (" + subs.length + ")"),
+        h("ul", { "class": "bc-subs__list" }, subs.map(function (item) {
+          return h("li", { "class": "bc-subs__item" }, [
+            h("span", {}, [h("strong", {}, categoryLabel(item.category)), " · ", targetLabel(item.target)]),
+            h("button", { "class": "bk-btn bk-btn--ghost bc-unsubscribe", type: "button",
+                          onclick: function (e) { unsubscribe(item, e.currentTarget); } }, t("mine.unsubscribe"))]);
+        }))]);
+      body.appendChild(more);
     }
 
     function renderMine(body) {
@@ -893,7 +1573,8 @@
         body.appendChild(h("div", { "class": "bk-error", role: "alert" }, [icon("wifi-off"),
           h("p", { "class": "bk-error__title" }, t("mine.error.title")),
           h("p", {}, t("mine.error.hint")),
-          h("button", { "class": "bk-btn", type: "button", onclick: loadMine }, [icon("refresh"), h("span", {}, t("complaint.error.retry"))])]));
+          h("button", { "class": "bk-btn", type: "button", onclick: function () { loadMine(); } }, [icon("refresh"), h("span", {}, t("complaint.error.retry"))])]));
+        renderPending(body);
         return;
       }
       if (state.mine === null) {
@@ -902,7 +1583,9 @@
           h("span", { "class": "bc-loading__text" }, t("mine.loading"))]));
         return;
       }
-      if (!state.mine.length) {
+      renderChanges(body);
+      renderPending(body);
+      if (!state.mine.length && !readOutbox().length) {
         body.appendChild(h("div", { "class": "bk-empty" }, [icon("list"),
           h("p", { "class": "bk-empty__title" }, t("mine.empty.title")),
           h("p", {}, t("mine.empty.hint")),
@@ -910,24 +1593,30 @@
             [icon("plus"), h("span", {}, t("complaint.start.button"))])]));
         return;
       }
+      renderWaitCheck(body);
       var list = h("ul", { "class": "bc-mine" });
       state.mine.forEach(function (item) {
         var c = category(item.category);
-        var overdue = item.status === "new" && item.due_at && new Date(item.due_at).getTime() < Date.now();
-        list.appendChild(h("li", { "class": "bk-card bc-mine__card" }, [
+        var title = categoryLabel(item.category) + (item.subtopic ? " · " + subtopicLabel(item.category, item.subtopic) : "");
+        var focused = !!item.code && state.focused === item.code;
+        list.appendChild(h("li", { "class": "bk-card bc-mine__card" + (focused ? " bc-mine__card--focus" : ""),
+                                   "data-code": item.code || "", "data-id": item.id }, [
           h("div", { "class": "bc-mine__head" }, [
-            h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, categoryLabel(item.category))]),
-            statusBadge(item.status)]),
+            h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)]),
+            statusBadge(displayStatus(item))]),
           h("p", { "class": "bc-meta" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
             item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null]),
           item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
           item.relation === "metoo" ? h("p", { "class": "bc-meta" }, t("mine.metoo_badge")) : null,
           // Все люди, сообщившие о том же на этом месте (как на шаге «Я тоже»), а не только по этой жалобе.
-          h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || item.reporters || 1 })),
-          overdue ? h("p", { "class": "bc-overdue" }, [icon("clock"), h("span", {}, t("mine.overdue"))]) : null,
-          stepsBar(item)]));
+          h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || reportersOf(item) || 1 })),
+          passportLine(item),
+          delayBanner(item),
+          stepsBar(item),
+          detailsBlock(item, focused)]));
       });
       body.appendChild(list);
+      renderSubscriptions(body);
     }
 
     // ---------------------------------------------------------------- каркас панели
@@ -943,6 +1632,8 @@
         : (state.step !== 2 ? "full" : (state.candidates || state.candidatesLoading ? "half" : "peek"));
       panel.setAttribute("data-snap", snap);
       panel.setAttribute("data-step", mine ? "mine" : String(state.step));
+      if (!mine && state.reviewing && state.step === 4) panel.setAttribute("data-review", "1");
+      else panel.removeAttribute("data-review");
       var canBack = !mine && state.step > 2 && state.step < 5;
       var head = h("header", { "class": "bc-head" }, [
         canBack ? h("button", { "class": "bk-btn bk-btn--ghost bc-back", type: "button", onclick: back },
@@ -961,15 +1652,16 @@
       }
       var titles = { 2: "complaint.step2.title", 3: "complaint.step3.title", 4: "complaint.step4.title", 5: "complaint.step5.title" };
       var title = mine ? (state.mine && state.mine.length ? t("mine.count", { n: state.mine.length }) : t("mine.title"))
-        : (state.step === 4 ? t("complaint.step4.title", { n: placeCount(state.similar) })
-          : (state.step === 5 && state.result.kind === "metoo" ? t("complaint.step5.metoo_title") : t(titles[state.step])));
+        : (state.step === 4 ? (state.reviewing ? t("complaint.review.title") : t("complaint.step4.title", { n: placeCount(state.similar) }))
+          : (state.step === 5 && state.result.kind === "metoo" ? t("complaint.step5.metoo_title")
+            : (state.step === 5 && state.result.kind === "queued" ? t("complaint.queue.title") : t(titles[state.step]))));
       panel.appendChild(h("h2", { id: "bc-title", "class": "bc-title", tabindex: "-1" }, title));
       var body = h("div", { "class": "bc-body" });
       panel.appendChild(body);
       if (mine) renderMine(body);
       else if (state.step === 2) renderPlace(body);
       else if (state.step === 3) renderText(body);
-      else if (state.step === 4) renderSimilar(body);
+      else if (state.step === 4) { if (state.reviewing) renderReview(body); else renderSimilar(body); }
       else renderDone(body);
       setPicking(!mine && state.step === 2);
       if (state.lastFocusStep !== panel.getAttribute("data-step")) {
@@ -984,7 +1676,7 @@
     }
 
     function back() {
-      if (state.step === 4) state.step = 3;
+      if (state.step === 4) { state.step = 3; state.reviewing = false; }
       else if (state.step === 3) { state.step = 2; state.candidatesLoading = false; }
       render();
     }
@@ -1003,12 +1695,12 @@
       focusTitle();
     }
 
-    function openMine() {
+    function openMine(focusCode, focusEvent) {
       if (!state) state = freshState();
       if (state.step === 5) { var keep = freshState(); keep.mine = null; state = keep; }
       state.view = "mine";
       if (map.clear) map.clear();
-      loadMine();
+      loadMine(typeof focusCode === "string" ? focusCode : null, typeof focusEvent === "string" ? focusEvent : null);
       els.panel.hidden = false;
       els.fab.hidden = true;
       document.documentElement.classList.add("bc-open");
@@ -1016,6 +1708,9 @@
     }
 
     function close() {
+      // LOCAL_FINAL №2: отложенная подсказка модели не должна сработать после закрытия.
+      clearTimeout(classifyTimer);
+      classifySeq++;
       setPicking(false);
       if (map.clear) map.clear();
       els.panel.hidden = true;
@@ -1039,12 +1734,60 @@
     if (mql && mql.addEventListener) mql.addEventListener("change", render);
     relabel();
 
+    // Уведомление/ссылка открывает конкретное изменение (волна 2, мелочи; R11 IA_WAVE2 §2.1):
+    //   #mine/event=B-0001.verified.20261011T2303 — «Мои обращения», строка изменения подсвечена, карточка раскрыта;
+    //   #complaint=B-0001 — карточка обращения; #mine — экран «Мои обращения».
+    // Язык не трогаем — он остаётся выбранным жителем (защита: «не переключать язык по ссылке»).
+    function linkFromHash() {
+      var hash = window.location.hash || "";
+      var ev = /^#mine\/event=([A-Za-z0-9.-]{3,80})$/.exec(hash);
+      if (ev) return { code: ev[1].split(".")[0], event: ev[1] };
+      var m = /(?:^#|&)complaint=([A-Za-z0-9-]{3,40})(?:&|$)/.exec(hash);
+      if (m) return { code: m[1] };
+      return hash === "#mine" ? {} : null;
+    }
+    function onHash() {
+      var link = linkFromHash();
+      if (link) openMine(link.code || null, link.event || null);
+    }
+    window.addEventListener("hashchange", onHash);
+    if (linkFromHash()) setTimeout(onHash, 0);
+
+    // Значок у пункта меню «Мои обращения» (R11 IA_WAVE2 §1: единственный бейдж — число новых изменений).
+    // Оболочка R01 слушает window "birge:complaint-changes" {n} или спрашивает ui.changesCount().
+    var lastChanges = 0;
+    function announceChanges(n) {
+      lastChanges = n;
+      try { window.dispatchEvent(new CustomEvent("birge:complaint-changes", { detail: { n: n } })); } catch (e) { /* старый браузер */ }
+    }
+    function changesCount() {
+      var seen = storageGet("localStorage", SEEN_KEY);
+      if (!seen) return Promise.resolve(0);           // первый визит ещё не было — сравнивать не с чем
+      return request("GET", "/complaints/changes?since=" + encodeURIComponent(seen)).then(function (res) {
+        var n = res.ok && res.data && res.data.items ? res.data.items.length : lastChanges;
+        if (n !== lastChanges) announceChanges(n);
+        return n;
+      });
+    }
+    setTimeout(function () { changesCount(); }, 0);
+
+    // Очередь без сети: при открытии страницы и когда сеть вернулась.
+    function onOnline() { scheduleFlush(0); flushOutbox(); }
+    window.addEventListener("online", onOnline);
+    if (readOutbox().length) setTimeout(function () { flushOutbox(); }, 0);
+
     return {
       open: open, openMine: openMine, close: close, relabel: relabel,
+      openComplaint: function (code) { openMine(code); },
+      changesCount: changesCount,
+      flushOutbox: flushOutbox,
       state: function () { return state; },
       destroy: function () {
         setPicking(false);
         document.removeEventListener("keydown", onKey);
+        window.removeEventListener("hashchange", onHash);
+        window.removeEventListener("online", onOnline);
+        clearTimeout(flushTimer);
         window.removeEventListener("birge:lang", onLang);
         if (mql && mql.removeEventListener) mql.removeEventListener("change", render);
         [els.fab, els.panel, els.toast].forEach(function (node) { if (node.parentNode) node.parentNode.removeChild(node); });
@@ -1063,6 +1806,15 @@
 
   window.BirgeComplaint = {
     mount: mount, maplibreAdapter: maplibreAdapter, setLang: setLang, lang: currentLang,
-    t: t, pluralForm: pluralForm, residentSteps: residentSteps, formatDate: formatDate, version: "r09-round14-1"
+    t: t, pluralForm: pluralForm, residentSteps: residentSteps, formatDate: formatDate,
+    emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round14-wave2",
+    // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
+    displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
+    targetLabel: targetLabel, statusBadge: statusBadge
+  };
+  // Помощники фото для компонента сотрудника (complaint-staff.js): то же уменьшение и загрузка частями.
+  window.BirgeComplaintPhotos = {
+    shrink: shrinkPhoto,
+    upload: function (complaintId, blob, kind, csrf) { return uploadPhoto(complaintId, blob, kind, csrf); }
   };
 })();

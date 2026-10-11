@@ -22,7 +22,10 @@
   const NBSP = " ";
   const ANIM_MS = 800;           // перетекание цвета при новой жалобе (UX_BRIEF: ~0.8 с)
   const BADGE_W = 64, BADGE_H = 40;   // полный значок: кружок с иконкой + число
-  const MINI_W = 34, MINI_H = 26;     // маленькая плашка с числом, когда полному значку тесно
+  const MINI_W = 34, MINI_H = 26;     // маленькая плашка с числом (районы), когда полному значку тесно
+  const CLUSTER_R = 56;          // значки ближе 56 px на экране собираются в один кластер
+  const CLUSTER_W = 40;          // кружок-кластер ~40 px
+  const TOP_N = 10;              // «Горячие места»: список и стартовая подгонка карты — одни и те же 10 мест
   const DISTRICT_ZOOM = 12;      // меньше — районы (CONTRACT §6); сервер присылает то же значение в meta
   // «Меньше движения» в системе: карта не пролетает, а сразу встаёт на место (UX_BRIEF правило 8).
   const moveMs = (ms) => (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : ms);
@@ -108,6 +111,11 @@
       "heat.badge_label": "{target}: {reported}",
       "heat.open_on_map": "Показать на карте",
       "heat.district_targets": { one: "{count} место с жалобами", few: "{count} места с жалобами", many: "{count} мест с жалобами" },
+      "heat.tip.people": { one: "{count} человек", few: "{count} человека", many: "{count} человек" },
+      "heat.cluster.places": { one: "{count} место", few: "{count} места", many: "{count} мест" },
+      "heat.cluster.label": "Рядом {places}: {people}. Нажмите, чтобы приблизить",
+      "heat.cluster.tip": "{places} · {people} — нажмите, чтобы приблизить",
+      "heat.cluster.zoom": "Нажмите, чтобы приблизить",
       "heat.kind.bus_stop": "Остановка", "heat.kind.playground": "Детская площадка", "heat.kind.pitch": "Спортплощадка",
       "heat.kind.park": "Парк", "heat.kind.garden": "Сквер", "heat.kind.waste_disposal": "Контейнерная площадка",
       "heat.kind.recycling": "Приём вторсырья", "heat.kind.street_lamp": "Фонарь", "heat.kind.school": "Школа",
@@ -189,6 +197,11 @@
       "heat.badge_label": "{target}: {reported}",
       "heat.open_on_map": "Картадан көрсету",
       "heat.district_targets": { other: "{count} орында шағым бар" },
+      "heat.tip.people": { other: "{count} адам" },
+      "heat.cluster.places": { other: "{count} орын" },
+      "heat.cluster.label": "Жақын жерде {places}: {people}. Жақындату үшін басыңыз",
+      "heat.cluster.tip": "{places} · {people} — жақындату үшін басыңыз",
+      "heat.cluster.zoom": "Жақындату үшін басыңыз",
       "heat.kind.bus_stop": "Аялдама", "heat.kind.playground": "Балалар алаңы", "heat.kind.pitch": "Спорт алаңы",
       "heat.kind.park": "Саябақ", "heat.kind.garden": "Гүлзар", "heat.kind.waste_disposal": "Қоқыс алаңы",
       "heat.kind.recycling": "Қайталама шикізат қабылдау пункті", "heat.kind.street_lamp": "Көше шамы", "heat.kind.school": "Мектеп",
@@ -366,6 +379,10 @@
       pendingSelect: null,    // цель из ссылки / «Картины дня», ждёт загрузки данных
       prevColors: new Map(),  // ключ → цвет до обновления (для плавного перехода)
       markers: new Map(),     // ключ → { marker, el, item }
+      clusters: [],           // кружки-кластеры: { key, marker, el, members: [ключи], ll, w, h }
+      clusterSeq: 0,
+      top: [],                // 10 самых горячих мест (и в режиме районов) — список «Горячие места» и подгонка карты
+      topItems: new Map(),    // ключ → место из top (в режиме районов его нет в S.data.items)
       anim: null,
       reqSeq: 0,
       destroyed: false,
@@ -458,13 +475,22 @@
       if (!S.data) { S.status = "loading"; render(); }
       try {
         if (!S.meta) S.meta = await getJson("/heat/meta");
-        const q = new URLSearchParams();
-        q.set("days", String(S.filters.days));
-        if (S.filters.category) q.set("category", S.filters.category);
-        if (S.filters.district) q.set("district", S.filters.district);
-        q.set("zoom", String(Math.floor(zoomNow() * 10) / 10));
-        const data = await getJson("/heat?" + q.toString());
+        const query = (zoom) => {
+          const q = new URLSearchParams();
+          q.set("days", String(S.filters.days));
+          if (S.filters.category) q.set("category", S.filters.category);
+          if (S.filters.district) q.set("district", S.filters.district);
+          q.set("zoom", String(Math.floor(zoom * 10) / 10));
+          return "/heat?" + q.toString();
+        };
+        // На мелком масштабе карта — районы, а список «Горячие места» — всё равно 10 мест: их берём вторым запросом.
+        const districtsView = modeFor(zoomNow()) === "districts";
+        const [data, places] = await Promise.all([getJson(query(zoomNow())),
+          districtsView ? getJson(query(DISTRICT_ZOOM + 2)).catch(() => null) : Promise.resolve(null)]);
         if (seq !== S.reqSeq || S.destroyed) return;   // пришёл устаревший ответ — пропускаем
+        const placeItems = ((places && places.mode === "targets") ? places : data).items || [];
+        S.top = placeItems.filter((it) => it.state === "active" && it.count > 0 && it.target.kind !== "district").slice(0, TOP_N);
+        S.topItems = new Map(S.top.map((it) => [keyOf(it.target), it]));
         S.prevColors = new Map((S.data ? S.data.items : []).map((it) => [keyOf(it.target), it.color]));
         S.data = data;
         S.mode = data.mode;
@@ -473,7 +499,7 @@
         if (S.selected && !findItem(S.selected) && S.mode === "targets") S.selected = null;
         draw(reason === "event");
         render();
-        afterLoad();
+        afterLoad(reason);
       } catch (err) {
         if (seq !== S.reqSeq || S.destroyed) return;
         S.status = err.status === 503 ? "not_ready" : "error";
@@ -484,8 +510,9 @@
     }
     function findItem(key) { return S.data ? S.data.items.find((it) => keyOf(it.target) === key) : null; }
 
-    // После каждой загрузки: открыть цель из ссылки / «Картины дня» или один раз подогнать карту.
-    function afterLoad() {
+    // После каждой загрузки: открыть цель из ссылки / «Картины дня», иначе при открытии и при смене фильтра —
+    // вписать 10 горячих мест из списка.
+    function afterLoad(reason) {
       if (S.pendingSelect) {
         const key = S.pendingSelect;
         if (findItem(key)) { S.pendingSelect = null; select(key, false); return; }
@@ -495,49 +522,66 @@
         }
         return;
       }
-      fitToHot();
+      if (S.refitDistricts && S.mode === "districts") { S.refitDistricts = false; fitTop(reason === "filter"); return; }
+      if (reason === "filter") { if (!fitTop(true)) fitDistrict(); return; }
+      if (!S.fitted && !userMoved.value) { S.fitted = true; fitTop(false); }
+    }
+    // Фильтр района, а жалоб в нём за период нет — показать сам район (а не оставить карту где была).
+    function fitDistrict() {
+      const d = S.filters.district && S.meta && S.meta.districts.find((x) => x.id === S.filters.district);
+      if (d && map && d.bbox) map.fitBounds([[d.bbox[0], d.bbox[1]], [d.bbox[2], d.bbox[3]]], { padding: fitPaddingNow(true), duration: moveMs(700) });
     }
 
-    // Телефон 375: стартовый вид не обрезает значки и не прячет их под шторкой (UX_REVIEW R11, день 3, №5).
-    // Один раз, сразу после первой загрузки и только если пользователь ещё не трогал карту (UX_BRIEF, правило 8).
-    // Берём горячие места рядом с тем, что показала оболочка (не весь город), и подгоняем с отступами
-    // под шапку, шторку/панель и кнопки карты (opts.fitPadding — объект или функция, её даёт оболочка).
-    function fitToHot() {
-      if (!map || opts.fit === false || S.fitted || userMoved.value || !S.data) return;
-      S.fitted = true;
-      const districts = S.mode === "districts";
-      const b = map.getBounds();
-      const cx = (b.getWest() + b.getEast()) / 2, cy = (b.getSouth() + b.getNorth()) / 2;
-      const hw = (b.getEast() - b.getWest()) * 0.8, hh = (b.getNorth() - b.getSouth()) * 0.8;
-      // Мелкий масштаб: все районы с числами; крупный — горячие места рядом с тем, что показала оболочка.
-      const near = districts
-        ? S.data.items.filter((it) => it.anchor && it.count > 0)
-        : S.data.items.filter((it) => it.state === "active" && it.anchor &&
-          Math.abs(it.anchor[0] - cx) <= hw && Math.abs(it.anchor[1] - cy) <= hh).slice(0, 8);
-      if (near.length < 2) return;
-      S.fittedKeys = near.map((it) => keyOf(it.target));
-      let w = 180, s = 90, e = -180, n = -90;
-      near.forEach((it) => { w = Math.min(w, it.anchor[0]); e = Math.max(e, it.anchor[0]); s = Math.min(s, it.anchor[1]); n = Math.max(n, it.anchor[1]); });
+    // Отступы для подгонки карты: шапка, шторка/панель и кнопки (opts.fitPadding — объект или функция, её даёт оболочка),
+    // плюс половина значка (отступ считается до ЯКОРЯ, а значок шире точки) и место под легенду сверху/снизу.
+    function fitPaddingNow(districts) {
       const padding = Object.assign({ top: 40, bottom: 40, left: 40, right: 40 },
         typeof opts.fitPadding === "function" ? opts.fitPadding() : opts.fitPadding || {});
-      // Отступ считается до ЯКОРЯ значка, а значок шире точки: добавляем половину значка
-      // (у района с названием — около 70 px) и место под легенду, если она сверху или снизу карты.
       const halfW = districts ? 72 : BADGE_W / 2, halfH = BADGE_H / 2;
       padding.left += halfW; padding.right += halfW; padding.top += halfH; padding.bottom += halfH;
-      if (S.legendEl && S.legendEl.isConnected) {
+      if (map && S.legendEl && S.legendEl.isConnected) {
         const host = map.getContainer().getBoundingClientRect(), lr = S.legendEl.getBoundingClientRect();
         if (lr.top - host.top < host.height / 3) padding.top = Math.max(padding.top, lr.bottom - host.top + halfH + 8);
         else if (host.bottom - lr.bottom < host.height / 3 && lr.width > host.width * 0.6) padding.bottom = Math.max(padding.bottom, host.bottom - lr.top + halfH + 8);
       }
-      const edge = (S.meta && S.meta.district_zoom_max) || DISTRICT_ZOOM;
+      return padding;
+    }
+
+    // Карта сама вписывает 10 горячих мест из списка (просьба владельца, п. 1): при открытии и при смене фильтров.
+    // Список и карта совпадают: в списке те же места, что видны на карте (на мелком масштабе — внутри своих районов).
+    // При открытии — только если пользователь ещё не трогал карту (UX_BRIEF, правило 8); при смене фильтра — всегда
+    // (это действие пользователя), плавно и с учётом «меньше движения».
+    function fitTop(animate) {
+      if (!map || opts.fit === false) return false;
+      const pts = (S.top || []).filter((it) => it.anchor);
+      if (!pts.length) return false;
       const host = map.getContainer();
+      // Отступы с учётом значков районов: если 10 мест разбросаны по городу, карта покажет районы.
+      const padding = fitPaddingNow(false);
       // отступы больше самой карты — подгонять некуда (очень маленькое окно)
-      if (padding.left + padding.right >= host.clientWidth - 20 || padding.top + padding.bottom >= host.clientHeight - 20) return;
-      // fitBounds сам учитывает несимметричные отступы (шторка снизу, панель справа). Крупный план не уходит
-      // в «районы» и не приближается сильнее, чем показала оболочка; вид районов не приближается до улиц.
-      const maxZoom = districts ? Math.min(map.getZoom(), edge - 0.2) : map.getZoom();
-      try { map.fitBounds([[w, s], [e, n]], { padding, maxZoom, duration: 0 }); } catch (err) { return; }
-      if (!districts && map.getZoom() < edge + 0.6) map.jumpTo({ zoom: edge + 0.6 });
+      if (padding.left + padding.right >= host.clientWidth - 20 || padding.top + padding.bottom >= host.clientHeight - 20) return false;
+      const camFor = (list, pad, maxZoom) => {
+        let a = 180, b = 90, c = -180, d = -90;
+        list.forEach((it) => { a = Math.min(a, it.anchor[0]); c = Math.max(c, it.anchor[0]); b = Math.min(b, it.anchor[1]); d = Math.max(d, it.anchor[1]); });
+        try { return map.cameraForBounds([[a, b], [c, d]], { padding: pad, maxZoom, bearing: map.getBearing() }); } catch (err) { return null; }
+      };
+      let cam = camFor(pts, padding, 16);
+      if (!cam) return false;
+      // 10 мест разбросаны по городу → карта покажет районы: тогда вписываем и сами районы с жалобами (значки районов
+      // шире значков мест). Данных районов ещё нет (старт на крупном плане) — впишем их после загрузки (refitDistricts).
+      const edge = (S.meta && S.meta.district_zoom_max) || DISTRICT_ZOOM;
+      S.refitDistricts = false;
+      if (cam.zoom < edge) {
+        const ds = S.mode === "districts" ? S.data.items.filter((it) => it.target.kind === "district" && it.count > 0 && it.anchor) : [];
+        const camD = ds.length >= 2 ? camFor(ds.concat(pts), fitPaddingNow(true), edge - 0.2) : null;
+        if (camD) cam = camD;
+        else if (S.mode !== "districts") S.refitDistricts = true;
+      }
+      S.fittedKeys = pts.map((it) => keyOf(it.target));
+      const view = { center: cam.center, zoom: Math.max(cam.zoom, 9), bearing: map.getBearing() };
+      if (animate) map.easeTo(Object.assign(view, { duration: moveMs(700) }));
+      else map.jumpTo(view);
+      return true;
     }
 
     // Открыть цель: из «Картины дня» (R08), по ссылке #target=kind:id&days=N или из оболочки R01.
@@ -653,6 +697,21 @@
       add({ id: "r07-obj-dot", type: "circle", source: SRC_PTS, minzoom: 15,
         paint: { "circle-color": color, "circle-radius": 6, "circle-stroke-color": "#ffffff", "circle-stroke-width": 2 } });
 
+      // Прозрачность слоёв без фокуса — режим фокуса умножает её на 0,4 у всех целей, кроме выбранной.
+      S.layerOpacity = {
+        "r07-district-fill": ["fill-opacity", ["case", ["==", ["get", "level"], 0], 0, 0.28 * soft]],
+        "r07-district-line": ["line-opacity", 0.8],
+        "r07-area-glow": ["line-opacity", 0.45 * soft],
+        "r07-area-fill": ["fill-opacity", ["case", ["get", "fixed"], 0.2, 0.34 * soft]],
+        "r07-area-line": ["line-opacity", 0.9],
+        "r07-area-approx": ["line-opacity", 1],
+        "r07-seg-casing": ["line-opacity", 1],
+        "r07-seg": ["line-opacity", 1],
+        "r07-obj-halo-lo": ["circle-opacity", 0.32 * soft],
+        "r07-obj-halo": ["circle-opacity", 0.32 * soft],
+        "r07-obj-dot": ["circle-opacity", 1],
+      };
+      applyFocus();
       if (handlersBound) return;
       handlersBound = true;
       const clickable = ["r07-seg", "r07-area-fill", "r07-obj-dot", "r07-district-fill"];
@@ -733,6 +792,7 @@
     }
 
     function updateSelectionLayer() {
+      applyFocus();
       if (!map || !layersReady) return;
       const key = S.selected || "";
       map.setFilter("r07-sel-line", ["all", ["==", ["get", "key"], key], ["==", ["get", "kind"], "segment"]]);
@@ -754,8 +814,9 @@
           el.type = "button";
           el.className = "r07-badge";
           el.tabIndex = -1;
-          el.addEventListener("click", (ev) => { ev.stopPropagation(); onBadgeClick(key, ev); });
+          el.addEventListener("click", (ev) => { ev.stopPropagation(); hideTip(); onBadgeClick(key, ev); });
           el.addEventListener("keydown", (ev) => onBadgeKey(key, ev));
+          bindTip(el, () => { const cur = S.markers.get(key); return cur ? badgeTip(cur.item) : ""; });
           const marker = new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(it.anchor).addTo(map);
           m = { marker, el, item: it, spot: it.anchor };
           S.markers.set(key, m);
@@ -781,6 +842,58 @@
       declutter("full");   // новые данные — раскладываем заново
     }
 
+    // ----- подсказка при наведении (просьба владельца, п. 9): название · сколько человек · категория -----
+    function badgeTip(it) {
+      if (!it) return "";
+      if (it.target.kind === "district") {
+        return label(it.target) + " · " + t("heat.tip.people", { count: it.count }) + " · " + t("heat.district_targets", { count: it.targets || 0 });
+      }
+      if (it.state === "fixed") return label(it.target) + " · " + t("heat.fixed_word");
+      const cat = Object.keys(it.by_category || {})[0];
+      return label(it.target) + " · " + t("heat.tip.people", { count: it.count }) + (cat ? " · " + catName(cat) : "");
+    }
+    const canHover = () => !window.matchMedia || window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    function bindTip(el, text) {
+      const show = (viaFocus) => {
+        if (!viaFocus && !canHover()) return;
+        const s2 = text();
+        if (!s2 || el.hidden) return;
+        if (!S.tipEl || !S.tipEl.isConnected) {
+          S.tipEl = document.createElement("div");
+          S.tipEl.className = "r07-tip";
+          S.tipEl.setAttribute("aria-hidden", "true");   // то же говорит aria-label значка
+          map.getContainer().append(S.tipEl);
+        }
+        S.tipEl.textContent = s2;
+        S.tipEl.hidden = false;
+        const host = map.getContainer().getBoundingClientRect(), r = el.getBoundingClientRect();
+        const tw = S.tipEl.offsetWidth, th = S.tipEl.offsetHeight;
+        const x = Math.min(Math.max(r.left + r.width / 2 - host.left - tw / 2, 4), host.width - tw - 4);
+        const below = r.top - host.top - th - 10 < 4;     // у верхнего края — под значком
+        S.tipEl.style.left = Math.round(x) + "px";
+        S.tipEl.style.top = Math.round(below ? r.bottom - host.top + 8 : r.top - host.top - th - 8) + "px";
+      };
+      el.addEventListener("mouseenter", () => show(false));
+      el.addEventListener("mouseleave", hideTip);
+      el.addEventListener("focus", () => { if (el.matches(":focus-visible")) show(true); });
+      el.addEventListener("blur", hideTip);
+    }
+    function hideTip() { if (S.tipEl) S.tipEl.hidden = true; }
+
+    // ----- режим фокуса (просьба владельца, п. 6): выбранная цель крупнее, остальное бледнеет до 40 %, Esc — сброс -----
+    const FOCUS_DIM = 0.4;
+    function applyFocus() {
+      if (!map) return;
+      const key = S.selected || "";
+      map.getContainer().classList.toggle("r07-focusing", Boolean(key));
+      if (!layersReady) return;
+      for (const [id, [prop, base]] of Object.entries(S.layerOpacity || {})) {
+        if (!map.getLayer(id)) continue;
+        const v = key ? ["*", base, ["case", ["==", ["get", "key"], key], 1, FOCUS_DIM]] : base;
+        try { map.setPaintProperty(id, prop, v); } catch (err) { /* слой пересоздаётся — поставим при следующей отрисовке */ }
+      }
+    }
+
     function fillBadge(el, it) {
       const fixed = it.state === "fixed";
       const district = it.target.kind === "district";
@@ -791,7 +904,8 @@
       el.classList.toggle("r07-badge--selected", S.selected === keyOf(it.target));
       const reported = t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count });
       el.setAttribute("aria-label", t("heat.badge_label", { target: label(it.target), reported }) + (fixed ? ". " + t("heat.fixed_word") : ""));
-      el.title = label(it.target);
+      el.removeAttribute("title");   // подсказка при наведении — своя (название · люди · категория), без двойной системной
+      el.dataset.label = label(it.target);   // для проверок (R10, тесты R07): какое место у значка
       // Обёртка __inner — для увеличения при наведении/выборе: сам el — маркер MapLibre, его transform двигает карта.
       el.innerHTML = '<span class="r07-badge__inner"><span class="r07-badge__dot" style="--r07-c:' + esc(it.color || "#999") + '">' + svgIcon(icon, 18) + "</span>" +
         '<span class="r07-badge__count">' + (district ? '<span class="r07-badge__name">' + esc(label(it.target)) + " · </span>" : "") + fmtNum(it.count) + "</span></span>";
@@ -846,6 +960,9 @@
     // поворот, наклон или размер карты. При простом сдвиге карты (и при перерисовке панели) уже поставленный значок
     // остаётся в своей точке: двигается, только если ушёл за край карты или налез на плашку / более горячий значок.
     // Иначе значки перепрыгивали после каждой остановки карты (замечание владельца на демо).
+    // Смысловой зум (просьба владельца, п. 2): город (< 12) — районы; 12–15 — дворы и участки улиц; с 15 — и объекты.
+    // Значок, которому тесно, и объекты на 12–15 не пропадают — собираются в кружок-кластер с числом людей и цветом
+    // самого высокого уровня; нажатие на кластер приближает карту к его местам.
     function declutter(how) {
       if (!map) return;
       const z = map.getZoom(), bearing = map.getBearing(), pitch = map.getPitch();
@@ -873,14 +990,21 @@
       // Значок — только целиком внутри карты (обрезанный краем выглядит сломанным) и не поверх уже поставленных.
       const inside = (box) => box[0] >= 2 && box[1] >= 2 && box[2] <= host.width - 2 && box[3] <= host.height - 2;
       const free = (box) => inside(box) && !placed.some((b) => !(box[2] < b[0] || b[2] < box[0] || box[3] < b[1] || b[3] < box[1]));
-      const list = [...S.markers.values()].sort((a, b) =>
-        (keyOf(b.item.target) === S.selected) - (keyOf(a.item.target) === S.selected) ||
-        (b.item.weight || 0) - (a.item.weight || 0) || (b.item.count || 0) - (a.item.count || 0));
+      const prio = (a, b) => (keyOf(b.item.target) === S.selected) - (keyOf(a.item.target) === S.selected) ||
+        (b.item.weight || 0) - (a.item.weight || 0) || (b.item.count || 0) - (a.item.count || 0);
+      const list = [...S.markers.values()].sort(prio);
+      const districts = S.mode === "districts";
       const sizeOf = (m, mode) => (mode === "mini" ? [Math.max(m.mw || MINI_W, MINI_W), Math.max(m.mh || MINI_H, MINI_H)]
         : [Math.max(m.w || BADGE_W, 40), Math.max(m.h || BADGE_H, 30)]);
       const result = new Map();   // marker → [mode, spot]
-      // Ниже 15-го масштаба объекты уровней 1–2 не рисуются вовсе (ни цветом, ни значком) — правило 5 UX_BRIEF.
-      const quiet = (it) => it.target.kind === "object" && z < 15 && it.state !== "fixed" && Number(it.level) < 3;
+      const pool = [];            // кому нет места / объекты на 12–15 → в кластеры
+      // Объекты (остановки, площадки, фонари…) по отдельности — с 15-го масштаба; выбранная цель видна всегда.
+      // На 12–15 горячие объекты (уровни 3–4) и исправленные входят в кластеры; объекты уровней 1–2 там не рисуются
+      // вовсе (UX_BRIEF, правило 5; R11 день 3, № 2) — иначе карта среднего масштаба стала бы пестрее, а не чище.
+      const quiet = (it) => it.target.kind === "object" && z < 15 && keyOf(it.target) !== S.selected;
+      const silent = (it) => quiet(it) && it.state !== "fixed" && Number(it.level) < 3;
+      // Кластеры с прошлой раскладки: при сдвиге карты остаются, если им по-прежнему свободно.
+      const keptClusters = [];
       if (!full) {
         // Выбранная цель — всегда полный значок в своей точке; остальные его обходят.
         const sel = list.find((m) => keyOf(m.item.target) === S.selected);
@@ -890,7 +1014,7 @@
           placed.push(boxAt(map.project(ll), w, h));
           result.set(sel, ["full", ll]);
         }
-        // 1-й проход: значки, которые уже стоят, остаются на месте, если им там по-прежнему свободно.
+        // 1-й проход: значки и кластеры, которые уже стоят, остаются на месте, если им там по-прежнему свободно.
         list.forEach((m) => {
           const prev = m.el.dataset.mode;
           if (result.has(m) || (prev !== "full" && prev !== "mini") || !m.spot || quiet(m.item)) return;
@@ -898,48 +1022,160 @@
           const box = boxAt(map.project(m.spot), w, h);
           if (free(box)) { placed.push(box); result.set(m, [prev, m.spot]); }
         });
+        S.clusters.forEach((c) => {
+          const box = boxAt(map.project(c.ll), c.w, c.h);
+          if (c.members.every((m) => S.markers.get(m) && !result.has(S.markers.get(m))) && free(box)) {
+            placed.push(box);
+            keptClusters.push(c);
+            c.members.forEach((k) => result.set(S.markers.get(k), ["cluster", S.markers.get(k).spot || S.markers.get(k).item.anchor]));
+          }
+        });
       }
       // 2-й проход (или вся раскладка заново): остальным ищем место — сначала самые горячие.
       list.forEach((m) => {
         if (result.has(m)) return;
         const it = m.item;
         const selected = keyOf(it.target) === S.selected;
-        let mode = "hidden";
-        let spot = m.spot || it.anchor;
-        if (!quiet(it) || selected) {
-          const spots = badgeSpots(it).map((ll) => ({ ll, p: map.project(ll) }));
-          const [fw, fh] = sizeOf(m, "full");
-          // маленький вариант — только число (у района название остаётся в подсказке, aria-label и списке)
-          const [mw, mh] = sizeOf(m, "mini");
-          const best = selected ? spots[0] : spots.find((sp) => free(boxAt(sp.p, fw, fh)));
-          if (best) {
-            mode = "full";
-            spot = best.ll;
-            placed.push(boxAt(best.p, fw, fh));
-          } else {
-            const mini = spots.find((sp) => free(boxAt(sp.p, mw, mh)));
-            if (mini) {
-              mode = "mini";
-              spot = mini.ll;
-              placed.push(boxAt(mini.p, mw, mh));
-            }
-          }
+        if (silent(it)) { result.set(m, ["hidden", m.spot || it.anchor]); return; }
+        if (quiet(it)) { pool.push(m); return; }
+        const spots = badgeSpots(it).map((ll) => ({ ll, p: map.project(ll) }));
+        const [fw, fh] = sizeOf(m, "full");
+        const best = selected ? spots[0] : spots.find((sp) => free(boxAt(sp.p, fw, fh)));
+        if (best) {
+          placed.push(boxAt(best.p, fw, fh));
+          result.set(m, ["full", best.ll]);
+          return;
         }
-        result.set(m, [mode, spot]);
+        if (districts) {
+          // районов шесть — маленькая плашка с числом (название остаётся в подсказке, aria-label и списке)
+          const [mw, mh] = sizeOf(m, "mini");
+          const mini = spots.find((sp) => free(boxAt(sp.p, mw, mh)));
+          result.set(m, mini ? ["mini", mini.ll] : ["hidden", m.spot || it.anchor]);
+          if (mini) placed.push(boxAt(mini.p, mw, mh));
+          return;
+        }
+        pool.push(m);
       });
+      // Кластеры: близкие (≤ 56 px на экране) собираются вместе; кластер стоит в середине своих мест.
+      const fresh = [];
+      pool.forEach((m) => {
+        const p = map.project(m.item.anchor);
+        if (p.x < -40 || p.y < -40 || p.x > host.width + 40 || p.y > host.height + 40) { result.set(m, ["hidden", m.spot || m.item.anchor]); return; }
+        const c = fresh.find((q) => Math.hypot(q.seed.x - p.x, q.seed.y - p.y) <= CLUSTER_R);
+        if (c) { c.members.push(m); c.pts.push(p); } else fresh.push({ seed: p, members: [m], pts: [p] });
+      });
+      S.clusters.filter((c) => !keptClusters.includes(c)).forEach((c) => c.marker.remove());
+      const clusters = keptClusters.slice();
+      fresh.forEach((c) => {
+        const cx = c.pts.reduce((a, q) => a + q.x, 0) / c.pts.length, cy = c.pts.reduce((a, q) => a + q.y, 0) / c.pts.length;
+        const keys = c.members.map((m) => keyOf(m.item.target));
+        const el = makeClusterEl(c.members.map((m) => m.item));
+        const [w, h] = [el.offsetWidth || CLUSTER_W, el.offsetHeight || CLUSTER_W];
+        // в середине; тесно — рядом (кольцо 26 и 48 px); совсем некуда — к ближайшему уже стоящему кластеру
+        const tries = [[0, 0]];
+        for (const r of [26, 48]) for (let k = 0; k < 8; k++) tries.push([r * Math.cos((k * Math.PI) / 4), r * Math.sin((k * Math.PI) / 4)]);
+        const at = tries.map(([dx, dy]) => ({ x: cx + dx, y: cy + dy })).find((q) => free(boxAt(q, w, h)));
+        if (!at) {
+          const near = clusters.filter((q) => q.fresh).sort((a, b) => Math.hypot(a.px.x - cx, a.px.y - cy) - Math.hypot(b.px.x - cx, b.px.y - cy))[0];
+          el.remove();
+          if (near && Math.hypot(near.px.x - cx, near.px.y - cy) < 120) {
+            near.members.push(...keys);
+            c.members.forEach((m) => result.set(m, ["cluster", m.spot || m.item.anchor]));
+          } else {
+            // у самого края или под плашкой (легенда, панель) — не рисуем обрезанным: появится при сдвиге карты
+            c.members.forEach((m) => result.set(m, ["hidden", m.spot || m.item.anchor]));
+          }
+          return;
+        }
+        const q = at;
+        const ll = map.unproject([q.x, q.y]);
+        const marker = new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(ll).addTo(map);
+        placed.push(boxAt(q, w, h));
+        const cl = { key: "cluster:" + (++S.clusterSeq), marker, el, members: keys, ll: [ll.lng, ll.lat], w, h, px: q, fresh: true };
+        el.dataset.key = cl.key;
+        clusters.push(cl);
+        c.members.forEach((m) => result.set(m, ["cluster", m.spot || m.item.anchor]));
+      });
+      clusters.forEach((c) => {
+        c.fresh = false;
+        if (c.el.dataset.n !== String(c.members.length)) fillCluster(c.el, c.members.map((k) => S.markers.get(k)).filter(Boolean).map((m) => m.item));
+        c.el.classList.toggle("r07-badge--pick", !!S.picking);
+        c.el.tabIndex = -1;
+      });
+      S.clusters = clusters;
       list.forEach((m) => {
-        const [mode, spot] = result.get(m);
-        if (mode !== "hidden" && (spot[0] !== m.spot?.[0] || spot[1] !== m.spot?.[1])) { m.marker.setLngLat(spot); m.spot = spot; }
-        m.el.hidden = mode === "hidden";
+        const [mode, spot] = result.get(m) || ["hidden", m.spot || m.item.anchor];
+        if ((mode === "full" || mode === "mini") && (spot[0] !== m.spot?.[0] || spot[1] !== m.spot?.[1])) { m.marker.setLngLat(spot); m.spot = spot; }
+        m.el.hidden = mode === "hidden" || mode === "cluster";
         m.el.classList.toggle("r07-badge--mini", mode === "mini");
         m.el.tabIndex = -1;
         m.el.dataset.mode = mode;
       });
       if (full) S.layout = { z, bearing, pitch, w: host.width, h: host.height };
       // Значки — одна остановка Tab (R10 B-025): внутрь входит Tab, между значками — стрелки (самый горячий первый).
-      S.badgeOrder = list.filter((m) => m.el.dataset.mode !== "hidden").map((m) => keyOf(m.item.target));
+      const order = list.filter((m) => m.el.dataset.mode === "full" || m.el.dataset.mode === "mini").map((m) => keyOf(m.item.target));
+      S.badgeOrder = order.concat(clusters.map((c) => c.key));
       const roving = S.badgeOrder.includes(S.rovingKey) ? S.rovingKey : S.badgeOrder[0];
-      if (roving && S.markers.get(roving)) S.markers.get(roving).el.tabIndex = 0;
+      const node = roving && nodeFor(roving);
+      if (node) node.tabIndex = 0;
+    }
+
+    const nodeFor = (key) => (S.markers.get(key) || S.clusters.find((c) => c.key === key) || {}).el || null;
+
+    // Кружок-кластер: число людей во всех его местах, цвет — самого высокого уровня (исправленные — зелёным, только
+    // если в кластере одни исправленные). Это тоже .r07-badge: на карте не появляется новый вид значков.
+    function makeClusterEl(items) {
+      const el = document.createElement("button");
+      el.type = "button";
+      el.className = "r07-badge r07-badge--cluster";
+      el.tabIndex = -1;
+      el.addEventListener("click", (ev) => { ev.stopPropagation(); onClusterClick(el, ev); });
+      el.addEventListener("keydown", (ev) => onBadgeKey(el.dataset.key, ev));
+      bindTip(el, () => clusterTip(el));
+      fillCluster(el, items);
+      map.getContainer().append(el);   // чтобы измерить размер до установки маркера
+      return el;
+    }
+    function clusterTop(items) {
+      const active = items.filter((it) => it.state !== "fixed");
+      return (active.length ? active : items).slice().sort((a, b) => (b.weight || 0) - (a.weight || 0) || (b.count || 0) - (a.count || 0))[0];
+    }
+    function fillCluster(el, items) {
+      const top = clusterTop(items);
+      const people = items.reduce((a, it) => a + (Number(it.count) || 0), 0);
+      const allFixed = items.every((it) => it.state === "fixed");
+      el.dataset.level = allFixed ? "fixed" : String(top.level);
+      el.dataset.n = String(items.length);
+      el.style.setProperty("--r07-c", top.color || "#999");
+      el.setAttribute("aria-label", items.length === 1
+        ? t("heat.badge_label", { target: label(top.target), reported: t("heat.reported", { count: top.count }) }) + ". " + t("heat.cluster.zoom")
+        : t("heat.cluster.label", { places: t("heat.cluster.places", { count: items.length }), people: t("heat.tip.people", { count: people }) }));
+      el.innerHTML = '<span class="r07-badge__inner"><span class="r07-cluster" style="--r07-c:' + esc(top.color || "#999") + '">' + fmtNum(people) + "</span></span>";
+    }
+    function clusterItems(el) {
+      const c = S.clusters.find((q) => q.el === el);
+      return c ? c.members.map((k) => S.markers.get(k)).filter(Boolean).map((m) => m.item) : [];
+    }
+    function clusterTip(el) {
+      const items = clusterItems(el);
+      if (items.length === 1) return badgeTip(items[0]);
+      const people = items.reduce((a, it) => a + (Number(it.count) || 0), 0);
+      return t("heat.cluster.tip", { places: t("heat.cluster.places", { count: items.length }), people: t("heat.tip.people", { count: people }) });
+    }
+    // Нажатие на кластер — приблизить к его местам (не меньше 15-го масштаба, если в нём объекты: там они видны поштучно).
+    function onClusterClick(el, ev) {
+      hideTip();
+      const items = clusterItems(el);
+      if (!items.length || !map) return;
+      let w = 180, so = 90, e = -180, n = -90;
+      items.forEach((it) => { const a = it.anchor; w = Math.min(w, a[0]); e = Math.max(e, a[0]); so = Math.min(so, a[1]); n = Math.max(n, a[1]); });
+      const need = items.some((it) => it.target.kind === "object") ? 15.2 : map.getZoom() + 1;
+      let cam = null;
+      try { cam = map.cameraForBounds([[w, so], [e, n]], { padding: fitPaddingNow(), maxZoom: 17, bearing: map.getBearing() }); } catch (err) { cam = null; }
+      const center = cam ? cam.center : [(w + e) / 2, (so + n) / 2];
+      const zoom = Math.max(cam ? cam.zoom : 0, need, map.getZoom() + 1);
+      map.easeTo({ center, zoom: Math.min(zoom, 18), duration: moveMs(600) });
+      if (ev && ev.detail === 0) setTimeout(() => { const first = S.badgeOrder && S.badgeOrder[0]; const nd = first && nodeFor(first); if (nd) nd.focus({ preventScroll: true }); }, moveMs(650) + 50);
     }
 
     function onBadgeKey(key, ev) {
@@ -951,9 +1187,9 @@
       ev.preventDefault();
       ev.stopPropagation();   // стрелки не двигают карту
       const next = order[(moves[ev.key] + order.length) % order.length];
-      order.forEach((k) => { const m = S.markers.get(k); if (m) m.el.tabIndex = k === next ? 0 : -1; });
+      order.forEach((k) => { const el = nodeFor(k); if (el) el.tabIndex = k === next ? 0 : -1; });
       S.rovingKey = next;
-      S.markers.get(next)?.el.focus({ preventScroll: true });
+      nodeFor(next)?.focus({ preventScroll: true });
     }
 
     // Житель выбирает место для жалобы (оболочка ставит body.birge-picking, мастер R09 — html.bc-picking и слушает
@@ -991,6 +1227,7 @@
       S.selected = key;
       updateSelectionLayer();
       for (const [k, m] of S.markers) m.el.classList.toggle("r07-badge--selected", k === key);
+      hideTip();
       const it = findItem(key);
       if (it && moveMap && map && it.anchor) {
         // Плавно и только по просьбе пользователя (клик в списке). Наклон и поворот не трогаем.
@@ -1083,7 +1320,7 @@
       root.dataset.role = S.role;
       const parts = [];
       // Подзаголовок — главное за 10 секунд: самое горячее место (на телефоне видно даже в свёрнутой шторке).
-      const top = S.data && S.data.items.find((x) => x.state === "active" && x.count > 0);
+      const top = S.data && (S.top || [])[0];
       const sub = top ? t("heat.top_line", { target: label(top.target), people: t("heat.people_short", { count: top.count }) }) : t("heat.subtitle");
       parts.push('<header class="r07-head"><div><h2 class="r07-h">' + esc(t("heat.title")) + '</h2><p class="r07-sub">' + esc(sub) + "</p></div></header>");
       // Телефон, районы: «Приблизьте карту…» — строкой в шторке, на текущем языке (не тостом над главной кнопкой и не
@@ -1169,7 +1406,8 @@
     }
 
     function listHtml() {
-      const items = (S.data ? S.data.items : []).filter((it) => it.state === "active" && it.count > 0);
+      // Всегда места (и на мелком масштабе, где карта — районы): те же 10, что карта вписывает при открытии.
+      const items = S.top || [];
       if (!items.length) {
         // Пусто ≠ «всё исправлено»: иконка поиска, «За 7 дней жалоб нет» и действие «Показать 30 дней» (№8).
         const filtered = Boolean(S.filters.category || S.filters.district);
@@ -1181,9 +1419,7 @@
       }
       const rows = items.slice(0, 10).map((it, i) => {
         const top = Object.keys(it.by_category || {})[0];
-        const meta = it.target.kind === "district"
-          ? t("heat.district_targets", { count: it.targets || 0 })
-          : (top ? catName(top) + " · " : "") + t("heat.people_short", { count: it.count });
+        const meta = (top ? catName(top) + " · " : "") + t("heat.people_short", { count: it.count });
         return '<li><button type="button" class="r07-item" data-key="' + esc(keyOf(it.target)) + '">' +
           '<span class="r07-item__rank">' + (i + 1) + "</span>" +
           '<span class="r07-mini" data-level="' + esc(it.level) + '" style="--r07-c:' + esc(it.color) + '">' + fmtNum(it.count) + "</span>" +
@@ -1329,7 +1565,7 @@
 
     function bindPanel() {
       panel.querySelectorAll("[data-cat]").forEach((b) => b.addEventListener("click", () => {
-        S.filters.category = b.dataset.cat || null; S.selected = null; S.catsOpen = false; void load();
+        S.filters.category = b.dataset.cat || null; S.selected = null; S.catsOpen = false; void load("filter");
       }));
       panel.querySelectorAll("[data-cats-toggle]").forEach((b) => b.addEventListener("click", () => {
         S.catsOpen = !S.catsOpen; render();
@@ -1337,25 +1573,26 @@
         if (first) first.focus();
       }));
       panel.querySelectorAll("[data-days]").forEach((b) => b.addEventListener("click", () => {
-        S.filters.days = Number(b.dataset.days); void load();
+        S.filters.days = Number(b.dataset.days); void load("filter");
       }));
       const sel = panel.querySelector("[data-district]");
       if (sel) sel.addEventListener("change", () => {
-        S.filters.district = sel.value || null; S.selected = null; void load();
-        const d = S.meta && S.meta.districts.find((x) => x.id === sel.value);
-        if (d && map && d.bbox) map.fitBounds([[d.bbox[0], d.bbox[1]], [d.bbox[2], d.bbox[3]]], { padding: 40, duration: moveMs(700) });
+        S.filters.district = sel.value || null; S.selected = null; void load("filter");   // карта впишет 10 мест района
       });
       panel.querySelectorAll("[data-days-next]").forEach((b) => b.addEventListener("click", () => {
-        S.filters.days = Number(b.dataset.daysNext); void load();
+        S.filters.days = Number(b.dataset.daysNext); void load("filter");
       }));
       panel.querySelectorAll("[data-reset]").forEach((b) => b.addEventListener("click", () => {
-        S.filters = { category: null, days: (S.meta && S.meta.default_days) || 30, district: null }; S.selected = null; void load();
+        S.filters = { category: null, days: (S.meta && S.meta.default_days) || 30, district: null }; S.selected = null; void load("filter");
       }));
       panel.querySelectorAll("[data-retry]").forEach((b) => b.addEventListener("click", () => { S.meta = null; void load(); }));
       panel.querySelectorAll(".r07-item").forEach((b) => b.addEventListener("click", () => {
         const it = findItem(b.dataset.key);
         if (it && it.target.kind === "district") { map && map.easeTo({ center: it.anchor, zoom: 13, duration: moveMs(700) }); return; }
-        select(b.dataset.key, true);
+        if (it) { select(b.dataset.key, true); return; }
+        // Карта сейчас — районы: приблизить к месту и открыть его карточку.
+        const place = S.topItems.get(b.dataset.key);
+        if (place) void focusTarget(place.target.kind, place.target.id);
       }));
       panel.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => {
         S.selected = null; updateSelectionLayer(); render(); drawBadges();
@@ -1404,6 +1641,7 @@
       map.on("moveend", onMoveEnd);
       map.on("styledata", onStyleData);
       map.on("dragstart", () => { userMoved.value = true; });
+      map.on("movestart", hideTip);
       map.on("movestart", (e) => { if (e && e.originalEvent) userMoved.value = true; });   // колесо, щипок, кнопки
     }
     window.addEventListener("birge:complaint", onComplaintEvent);
@@ -1436,15 +1674,23 @@
       setLang: (lang) => { S.lang = lang === "kk" ? "kk" : "ru"; render(); drawBadges(); },
       setFilters: (f) => { Object.assign(S.filters, f || {}); void load(); },
       // Режим выбора места жалобой без класса body.birge-picking (другая оболочка): значки передают щелчок карте.
-      setPickMode: (on) => { S.picking = !!on; for (const m of S.markers.values()) m.el.classList.toggle("r07-badge--pick", !!on); },
+      setPickMode: (on) => {
+        S.picking = !!on;
+        for (const m of S.markers.values()) m.el.classList.toggle("r07-badge--pick", !!on);
+        for (const c of S.clusters) c.el.classList.toggle("r07-badge--pick", !!on);
+      },
       // Видимые значки: id цели, вид (full / mini), точка на карте и центр на экране — для проверок точности (R10, тесты R07).
       // Для проверок: центр значка на экране (cx, cy) и где он должен быть по карте (px, py = map.project точки значка).
-      badges: () => [...S.markers.entries()].filter(([, m]) => !m.el.hidden).map(([key, m]) => {
-        const r = m.el.getBoundingClientRect();
-        const host = map.getContainer().getBoundingClientRect();
-        const p = map.project(m.spot);
-        return { key, mode: m.el.dataset.mode, spot: m.spot, cx: r.left + r.width / 2, cy: r.top + r.height / 2, px: host.left + p.x, py: host.top + p.y };
-      }),
+      badges: () => [...S.markers.entries()].filter(([, m]) => !m.el.hidden).map(([key, m]) => ({ key, mode: m.el.dataset.mode, spot: m.spot, el: m.el }))
+        .concat(S.clusters.map((c) => ({ key: c.key, mode: "cluster", spot: c.ll, el: c.el, members: c.members.slice() })))
+        .map((b) => {
+          const r = b.el.getBoundingClientRect();
+          const host = map.getContainer().getBoundingClientRect();
+          const p = map.project(b.spot);
+          const out = { key: b.key, mode: b.mode, spot: b.spot, cx: r.left + r.width / 2, cy: r.top + r.height / 2, px: host.left + p.x, py: host.top + p.y };
+          if (b.members) out.members = b.members;
+          return out;
+        }),
       isMoving: () => Boolean(map && map.isMoving()),
       state: () => ({ role: S.role, lang: S.lang, filters: { ...S.filters }, selected: S.selected, mode: S.mode, status: S.status,
         items: S.data ? S.data.items.length : 0, pending: S.pendingSelect, fittedKeys: S.fittedKeys || [] }),
@@ -1469,6 +1715,10 @@
       if (S.legendEl) S.legendEl.remove();
       for (const m of S.markers.values()) m.marker.remove();
       S.markers.clear();
+      for (const c of S.clusters) c.marker.remove();
+      S.clusters = [];
+      if (S.tipEl) S.tipEl.remove();
+      if (map) map.getContainer().classList.remove("r07-focusing");
       if (map) {
         map.off("moveend", onMoveEnd);
         map.off("styledata", onStyleData);
