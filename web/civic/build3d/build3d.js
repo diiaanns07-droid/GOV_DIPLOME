@@ -61,13 +61,9 @@
       "build3d.poles": { one: "{n} фонарь", few: "{n} фонаря", many: "{n} фонарей" },
       "build3d.cluster": { one: "{n} проект", few: "{n} проекта", many: "{n} проектов" },
       "build3d.cluster.open": "{count} рядом — показать ближе",
-      "build3d.idea.pick_title": "Как это может выглядеть?",
-      "build3d.idea.pick_note": "Это эскиз к идее, а не проект: решение принимает акимат",
-      "build3d.idea.done": "Готово",
       "build3d.idea.tag": "Идея",
       "build3d.idea.label": "Идея · {n}",
       "build3d.idea.open": { one: "Идея жителей, {n} голос — открыть", few: "Идея жителей, {n} голоса — открыть", many: "Идея жителей, {n} голосов — открыть" },
-      "build3d.card.from_idea": { one: "По идее жителей · {n} голос", few: "По идее жителей · {n} голоса", many: "По идее жителей · {n} голосов" },
       "build3d.card.from_idea_plain": "По идее жителей",
       "build3d.err.far_from_street": "Нажмите ближе к улице",
       "build3d.err.other_street": "Выберите конец на той же улице: {street}",
@@ -119,13 +115,9 @@
       "build3d.poles": "{n} шам",
       "build3d.cluster": "{n} жоба",
       "build3d.cluster.open": "Жақын жерде {count} — жақындатып көрсету",
-      "build3d.idea.pick_title": "Бұл қалай көрінуі мүмкін?",
-      "build3d.idea.pick_note": "Бұл — жоба емес, идеяға арналған эскиз: шешімді әкімдік қабылдайды",
-      "build3d.idea.done": "Дайын",
       "build3d.idea.tag": "Идея",
       "build3d.idea.label": "Идея · {n}",
       "build3d.idea.open": "Тұрғындар идеясы, {n} дауыс — ашу",
-      "build3d.card.from_idea": "Тұрғындар идеясы бойынша · {n} дауыс",
       "build3d.card.from_idea_plain": "Тұрғындар идеясы бойынша",
       "build3d.err.far_from_street": "Көшеге жақынырақ басыңыз",
       "build3d.err.other_street": "Соңын сол көшеден таңдаңыз: {street}",
@@ -187,6 +179,10 @@
       "proposal.status.proposal": "Предложение",
       "proposal.limit": "Можно поставить до 20 объектов",
       "common.action.cancel": "Отменить",
+      "common.action.done": "Готово",
+      "idea.object": "Объект из каталога (по желанию)",
+      "idea.honest": "Это опрос для выбора концепции, решение принимает акимат.",
+      "idea.by_residents": { one: "По идее жителей · {n} голос", few: "По идее жителей · {n} голоса", many: "По идее жителей · {n} голосов" },
       "common.action.close": "Закрыть",
       "common.action.retry": "Повторить",
       "common.tag.project": "Проект",
@@ -219,6 +215,10 @@
       "proposal.status.proposal": "Ұсыныс",
       "proposal.limit": "20 нысанға дейін қоюға болады",
       "common.action.cancel": "Болдырмау",
+      "common.action.done": "Дайын",
+      "idea.object": "Каталогтағы нысан (қаласаңыз)",
+      "idea.honest": "Бұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды.",
+      "idea.by_residents": "Тұрғындар идеясы бойынша · {n} дауыс",
       "common.action.close": "Жабу",
       "common.action.retry": "Қайталау",
       "common.tag.project": "Жоба",
@@ -387,7 +387,7 @@
           queued.push(function (h) {
             h[name].apply(h, args);
           });
-        if (name === "pickObject") return Promise.resolve(null); // карты ещё нет — эскиза нет
+        if (name === "pickObject" || name === "view3dIdea") return Promise.resolve(name === "pickObject" ? null : false); // карты ещё нет
         return name === "start" || name === "flyToProposals" ? false : undefined;
       };
     }
@@ -401,6 +401,7 @@
       view3d: later("view3d"),
       pickObject: later("pickObject"),
       setIdeas: later("setIdeas"),
+      view3dIdea: later("view3dIdea"),
       setVisible: later("setVisible"),
       setMode: later("setMode"),
       update: later("update"),
@@ -794,7 +795,7 @@
       }
       actions.appendChild(actionBtn("close", t("common.action.cancel"), "", cancel, "cancel"));
       var canPlace = g && g.valid && g.valid.ok && (!k.line || (g.section && g.section.ok));
-      var place = actionBtn("check", t(pick ? "build3d.idea.done" : "proposal.place"), "bk-btn--primary", place_, "place");
+      var place = actionBtn("check", t(pick ? "common.action.done" : "proposal.place"), "bk-btn--primary", place_, "place");
       if (!canPlace) place.setAttribute("aria-disabled", "true");
       actions.appendChild(place);
       dock.appendChild(actions);
@@ -895,7 +896,7 @@
       if (!p.idea) return null;
       var line = el("p", "bk-meta b3d-pcard__idea");
       line.appendChild(icon("users", o.iconsUrl));
-      line.appendChild(el("span", "", { text: p.idea.votes != null ? t("build3d.card.from_idea", { n: p.idea.votes }) : t("build3d.card.from_idea_plain") }));
+      line.appendChild(el("span", "", { text: p.idea.votes != null ? t("idea.by_residents", { n: p.idea.votes }) : t("build3d.card.from_idea_plain") }));
       return line;
     }
     // Строка карточки с кнопкой «3D» справа (строка «Рядом: …» или ряд меток).
@@ -1128,7 +1129,7 @@
           if (S.destroyed || S.phase !== "ready") return;
           if (want3d()) return enable3d();
           // Акимат ставит объекты — модуль three.js подгружаем заранее в фоне (без слоя), чтобы «Поставить» не ждало.
-          if (o.role === "akimat") loadThree().catch(function () {});
+          if (o.role === "akimat" && S.visible) loadThree().catch(function () {});
         })
         .catch(function (err) {
           if (S.destroyed) return;
@@ -1355,15 +1356,26 @@
         );
       return threeP;
     }
+    // Видно ли что-то объёмное: проекты (слой «Проекты» оболочки — setVisible) или идеи (setIdeas). Невидимому модулю
+    // three.js не грузим, даже если оболочка сама наклонила карту (R01: 52° с 15-го масштаба).
+    function anyVisible() {
+      return S.visible || Object.keys(ideas).length > 0;
+    }
     function want3d() {
-      return o.view === "3d" || (o.view === "auto" && map.getPitch() >= PITCH_3D);
+      return anyVisible() && (o.view === "3d" || (o.view === "auto" && map.getPitch() >= PITCH_3D));
     }
     function setLayerVisibility() {
+      // Проекты прячет слой «Проекты» оболочки (setVisible), идеи — свой слой (setIdeas): у моделей — своя видимость.
+      Object.keys(S.objects).forEach(function (id) {
+        if (S.objects[id].group) S.objects[id].group.visible = S.visible;
+      });
+      labelsLayer.classList.toggle("b3d-labels--projects-off", !S.visible);
       try {
-        if (layerAdded && map.getLayer(LAYER_ID)) map.setLayoutProperty(LAYER_ID, "visibility", S.visible && S.view === "3d" ? "visible" : "none");
+        if (layerAdded && map.getLayer(LAYER_ID)) map.setLayoutProperty(LAYER_ID, "visibility", anyVisible() && S.view === "3d" ? "visible" : "none");
       } catch (e) {
         /* стиль ещё не готов — слой вернётся в onStyleData */
       }
+      repaint();
     }
     // Слой и модели всех проектов (без анимации постройки — они уже стоят). Синхронно, если three.js уже загружен.
     function finish3d() {
@@ -1439,7 +1451,7 @@
     function onViewMoveEnd() {
       if (o.view !== "auto" || S.destroyed || S.phase !== "ready") return;
       var tilted = map.getPitch() >= PITCH_3D;
-      if (tilted && S.view !== "3d") enable3d();
+      if (tilted && S.view !== "3d" && anyVisible()) enable3d();
       else if (!tilted && wasTilted && S.view === "3d" && S.mode !== "placing" && !anims.length) disable3d();
       wasTilted = tilted;
     }
@@ -1565,6 +1577,7 @@
       obj.height = geos.height;
       obj.labelPoint = labelPointOf(obj.p, geos);
       placeGroup(obj.group, obj.p);
+      obj.group.visible = S.visible;
       scene.add(obj.group);
       var outline = obj.group.children.find(function (m) {
         return m.userData.part === "outline";
@@ -1643,9 +1656,36 @@
         ideas[p.id] = it;
         if (scene && p.kind) buildIdeaGroup(it);
       });
+      setLayerVisibility();
+      if (S.phase === "ready" && S.view !== "3d" && want3d()) enable3d();
       updateLabels();
-      repaint();
       return Object.keys(ideas).length;
+    }
+    // «3D-де көру» в карточке идеи (R06, по кнопке — R11 IA_WAVE2 §8): объёмный вид у этой идеи. Идеи нет на карте
+    // (слой «Идеи» выключен) — показываем только её, до следующего setIdeas / view3dIdea(null).
+    function view3dIdea(raw) {
+      Object.keys(ideas).forEach(function (id) {
+        if (ideas[id].temp) removeIdea(id);
+      });
+      var p = raw ? Core.normalizeIdea(raw) : null;
+      if (!p) {
+        setLayerVisibility();
+        updateLabels();
+        return Promise.resolve(false);
+      }
+      if (!ideas[p.id]) {
+        var it = { p: p, group: null, label: null, temp: true };
+        it.label = makeIdeaLabel(it);
+        ideas[p.id] = it;
+        if (scene && p.kind) buildIdeaGroup(it);
+      }
+      setLayerVisibility();
+      map.easeTo({ center: p.geometry.coordinates, zoom: Math.max(map.getZoom(), VIEW_ZOOM), pitch: Math.max(map.getPitch(), TILT_3D),
+        bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
+      return enable3d().then(function (ok) {
+        updateLabels();
+        return ok;
+      });
     }
     function buildIdeaGroup(it) {
       var k = Core.KINDS[it.p.kind];
@@ -2087,7 +2127,7 @@
     function renderPickCatalog() {
       dock.setAttribute("data-state", "catalog");
       var head = el("div", "b3d-head");
-      head.appendChild(el("p", "b3d-title", { text: t("build3d.idea.pick_title"), id: "b3d-catalog-title" }));
+      head.appendChild(el("p", "b3d-title", { text: t("idea.object"), id: "b3d-catalog-title" }));
       head.appendChild(el("span", "bk-tag b3d-tag--idea", { text: t("build3d.idea.tag") }));
       dock.appendChild(head);
       var row = el("div", "b3d-cards", { role: "group", "aria-labelledby": "b3d-catalog-title" });
@@ -2103,7 +2143,7 @@
         row.appendChild(b);
       });
       dock.appendChild(row);
-      dock.appendChild(el("p", "bk-meta b3d-note", { text: t("build3d.idea.pick_note") }));
+      dock.appendChild(el("p", "bk-meta b3d-note", { text: t("idea.honest") }));
       var actions = el("div", "b3d-actions");
       actions.appendChild(actionBtn("close", t("common.action.cancel"), "", cancelPick, "cancel"));
       dock.appendChild(actions);
@@ -2646,7 +2686,7 @@
 
     // Попадание щелчком в объект: экранный прямоугольник его 3D-габарита (у освещения — опоры).
     function hitTest(point) {
-      if (!lastMatrix || S.view !== "3d") return null; // в лёгком виде проект открывают по его метке
+      if (!lastMatrix || S.view !== "3d" || !S.visible) return null; // в лёгком виде проект открывают по его метке
       var best = null;
       Object.keys(S.objects).forEach(function (id) {
         var obj = S.objects[id];
@@ -3178,6 +3218,7 @@
       // Идеи жителей (R06): объект к идее — Promise эскиза или null; слой «Идеи» — список или null (выключить).
       pickObject: pickObject,
       setIdeas: setIdeas,
+      view3dIdea: view3dIdea,
       // Объёмный вид по кнопке хозяина: view3d(true) — включить (и наклонить карту), view3d(false) — лёгкий вид.
       view3d: function (on) {
         if (on === false) {
@@ -3188,10 +3229,12 @@
       },
       setVisible: function (v) {
         S.visible = !!v;
-        labelsLayer.hidden = !S.visible;
         setLayerVisibility();
         if (!S.visible) cancel();
+        else if (S.phase === "ready" && S.view !== "3d" && want3d()) enable3d(); // слой включили на наклонённой карте
+        else if (S.phase === "ready" && o.role === "akimat" && !THREE) loadThree().catch(function () {});
         render();
+        updateLabels();
       },
       getState: function () {
         return {

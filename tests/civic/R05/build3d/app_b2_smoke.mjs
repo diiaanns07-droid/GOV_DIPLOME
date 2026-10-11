@@ -39,8 +39,24 @@ const overlap = (a, b) => a && b && a.left < b.right - 1 && a.right > b.left + 1
 const browser = await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
 const errors = [];
 const NOISE = /openfreemap|Failed to load resource|GL Driver|swiftshader|GPU stall|WebGL|civic-r03-demo-ring/i;
+// Оболочка R01 волны 2 (8bbace7+): проекты R05 — слой «Проекты», по умолчанию выключен. Включаем его, как человек в
+// «Слоях» (BirgeShell.setLayer). У старых сборок без слоёв — ничего не делаем.
+const PROJECTS_ON = () => {
+  const tick = setInterval(() => {
+    try {
+      if (window.BirgeShell && typeof BirgeShell.setLayer === "function") {
+        if (BirgeShell.layer !== "projects") BirgeShell.setLayer("projects");
+        if (BirgeShell.layer === "projects") clearInterval(tick);
+      }
+    } catch (e) {
+      /* оболочка ещё грузится */
+    }
+  }, 200);
+  setTimeout(() => clearInterval(tick), 30000);
+};
 async function open(vp, mode, lang, extra) {
   const ctx = await browser.newContext(Object.assign({ viewport: vp }, extra || {}));
+  await ctx.addInitScript(PROJECTS_ON);
   await ctx.addInitScript(([m, l]) => {
     try {
       localStorage.setItem("birge.mode", m);
@@ -194,6 +210,7 @@ try {
   const reloads = {};
   for (const [vp, lang, extra] of [[{ width: 1366, height: 768 }, "ru", {}], [{ width: 375, height: 812 }, "kk", { hasTouch: true, isMobile: true }]]) {
     const ctx = await browser.newContext(Object.assign({ viewport: vp }, extra));
+    await ctx.addInitScript(PROJECTS_ON);
     await ctx.addInitScript((l) => { try { localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
     const q = await ctx.newPage();
     const own = [];
@@ -221,6 +238,7 @@ try {
   const halfCards = {};
   for (const lang of ["kk", "ru"]) {
     const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true });
+    await ctx.addInitScript(PROJECTS_ON);
     await ctx.addInitScript((l) => { try { localStorage.setItem("birge.mode", "akimat"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
     const q = await ctx.newPage();
     q.on("pageerror", (e) => errors.push(e.message));
@@ -251,6 +269,7 @@ try {
   const hints = {};
   for (const [vp, lang] of [[{ width: 1366, height: 768 }, "ru"], [{ width: 1366, height: 768 }, "kk"], [{ width: 1100, height: 700 }, "kk"]]) {
     const ctx = await browser.newContext({ viewport: vp });
+    await ctx.addInitScript(PROJECTS_ON);
     await ctx.addInitScript((l) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
     const q = await ctx.newPage();
     q.on("pageerror", (e) => errors.push(e.message));
@@ -276,6 +295,7 @@ try {
   for (const [vp, lang, extra] of [[{ width: 1366, height: 768 }, "ru", {}], [{ width: 1366, height: 768 }, "kk", {}],
     [{ width: 375, height: 812 }, "ru", { hasTouch: true, isMobile: true }], [{ width: 375, height: 812 }, "kk", { hasTouch: true, isMobile: true }]]) {
     const ctx = await browser.newContext(Object.assign({ viewport: vp }, extra));
+    await ctx.addInitScript(PROJECTS_ON);
     await ctx.addInitScript((l) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
     const q = await ctx.newPage();
     q.on("pageerror", (e) => errors.push(e.message));
@@ -287,7 +307,8 @@ try {
     const s0 = await q.evaluate(() => { const s = CivicShell.build3d.getState(); return { view: s.view, three: s.three, pitch: Math.round(map.getPitch()) }; });
     const req0 = threeReq.length;
     const target = await q.evaluate(() => CivicShell.build3d.getState().proposals.find((x) => x.kind !== "lighting"));
-    await q.evaluate((c) => map.jumpTo({ center: c, zoom: 17.2, pitch: 0, bearing: 0 }), target.geometry.coordinates);
+    // 14,5 — ниже автонаклона оболочки R01 (52° с 15-го масштаба): плоская карта, лёгкий вид.
+    await q.evaluate((c) => map.jumpTo({ center: c, zoom: 14.5, pitch: 0, bearing: 0 }), target.geometry.coordinates);
     await q.waitForTimeout(900);
     const lab = await q.$(`.b3d-label[data-id="${target.id}"]`);
     if (extra.hasTouch) await lab.tap();

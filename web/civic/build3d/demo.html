@@ -251,6 +251,8 @@
                 },
               });
               window.__b3d = handle;
+              // ?projects=0 — как оболочка R01 (волна 2): слой «Проекты» по умолчанию выключен.
+              if (q.get("projects") === "0") handle.setVisible(false);
               // ?ideas=1 — слой «Идеи» из примера (в оболочке его включает переключатель слоя R01, по умолчанию выключен).
               if (q.get("ideas") === "1")
                 handle.ready.then(function () {

@@ -28,6 +28,20 @@ for (const id of ["playwright", "/opt/node22/lib/node_modules/playwright"]) {
     /* следующий */
   }
 }
+// Оболочка R01 волны 2: проекты — слой «Проекты», по умолчанию выключен; включаем его (у старых сборок — ничего).
+const PROJECTS_ON = () => {
+  const tick = setInterval(() => {
+    try {
+      if (window.BirgeShell && typeof BirgeShell.setLayer === "function") {
+        if (BirgeShell.layer !== "projects") BirgeShell.setLayer("projects");
+        if (BirgeShell.layer === "projects") clearInterval(tick);
+      }
+    } catch (e) {
+      /* оболочка ещё грузится */
+    }
+  }, 200);
+  setTimeout(() => clearInterval(tick), 30000);
+};
 const PLACE = [71.402341, 51.117181]; // точка шага 5 сценария R01/R10
 const browser = await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
 await mkdir(path.join(OUT, "screens"), { recursive: true });
@@ -36,6 +50,7 @@ let placedId = null;
 for (const vp of [{ width: 1366, height: 768 }, { width: 375, height: 812 }]) {
   for (const lang of ["kk", "ru"]) {
     const ctx = await browser.newContext(Object.assign({ viewport: vp }, vp.width < 640 ? { hasTouch: true, isMobile: true } : {}));
+    await ctx.addInitScript(PROJECTS_ON);
     await ctx.addInitScript(() => {
       try {
         localStorage.setItem("birge.mode", "akimat");
@@ -98,6 +113,7 @@ const LEFT_BANK = [71.4148, 51.1131];
 const titles = {};
 {
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+  await ctx.addInitScript(PROJECTS_ON);
   await ctx.addInitScript(() => {
     try {
       localStorage.setItem("birge.mode", "akimat");
@@ -133,6 +149,7 @@ const titles = {};
   for (const vp of [{ width: 1366, height: 768 }, { width: 375, height: 812 }]) {
     for (const lang of ["ru", "kk"]) {
       const c2 = await browser.newContext(Object.assign({ viewport: vp }, vp.width < 640 ? { hasTouch: true, isMobile: true } : {}));
+      await c2.addInitScript(PROJECTS_ON);
       await c2.addInitScript((l) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
       const q = await c2.newPage();
       await q.goto(URL0);

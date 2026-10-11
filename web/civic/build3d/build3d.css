@@ -479,6 +479,10 @@
 .b3d-labels--passive .b3d-label {
   pointer-events: none;
 }
+/* Слой «Проекты» оболочки выключен (setVisible(false)): метки проектов скрыты, метки идей (свой слой) — нет. */
+.b3d-labels--projects-off .b3d-label:not(.b3d-label--idea) {
+  display: none;
+}
 
 /* ── Телефон ── */
 @media (max-width: 639px) {

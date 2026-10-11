@@ -1,9 +1,55 @@
 {
- "generated_at": "2026-10-10T20:55:37.455Z",
- "r11": "claude/r14-R11 @ eac07c4",
- "build3d_keys": 47,
- "common_fallback_keys": 28,
- "compared": 244,
+ "generated_at": "2026-10-11T18:52:34.375Z",
+ "r11": "claude/r14-R11 @ 7cc4f10",
+ "build3d_keys": 52,
+ "common_fallback_keys": 32,
+ "compared": 272,
  "diffs": [],
+ "new_for_r11": [
+  {
+   "lang": "ru",
+   "key": "build3d.idea.tag",
+   "module": "Идея"
+  },
+  {
+   "lang": "ru",
+   "key": "build3d.idea.label",
+   "module": "Идея · {n}"
+  },
+  {
+   "lang": "ru",
+   "key": "build3d.idea.open",
+   "module": {
+    "one": "Идея жителей, {n} голос — открыть",
+    "few": "Идея жителей, {n} голоса — открыть",
+    "many": "Идея жителей, {n} голосов — открыть"
+   }
+  },
+  {
+   "lang": "ru",
+   "key": "build3d.card.from_idea_plain",
+   "module": "По идее жителей"
+  },
+  {
+   "lang": "kk",
+   "key": "build3d.idea.tag",
+   "module": "Идея"
+  },
+  {
+   "lang": "kk",
+   "key": "build3d.idea.label",
+   "module": "Идея · {n}"
+  },
+  {
+   "lang": "kk",
+   "key": "build3d.idea.open",
+   "module": "Тұрғындар идеясы, {n} дауыс — ашу"
+  },
+  {
+   "lang": "kk",
+   "key": "build3d.card.from_idea_plain",
+   "module": "Тұрғындар идеясы бойынша"
+  }
+ ],
  "status": "PASS"
 }

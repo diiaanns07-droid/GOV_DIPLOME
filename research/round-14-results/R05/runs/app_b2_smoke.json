@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-10T21:00:46.918Z",
- "url": "http://127.0.0.1:8806/",
- "r01": "claude/sharp-dijkstra-0t87gl@eb9bb59 (FINAL fa117c3, code 61a5a62) + R05 15fb40d + proposed_r01_final2.patch",
+ "generated_at": "2026-10-11T18:32:04.669Z",
+ "url": "http://127.0.0.1:8807/",
+ "r01": "claude/sharp-dijkstra-0t87gl@a2d90dd (FINAL-кандидат 8e67c65) + R05 237718d",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
@@ -58,7 +58,7 @@
     "posts": [
      201
     ],
-    "id": "p-20fa0be226e2",
+    "id": "p-b5e376cac6b4",
     "year": 2027
    }
   },
@@ -67,11 +67,11 @@
    "status": "PASS",
    "detail": {
     "card": {
-     "left": 117,
+     "left": 257,
      "top": 362.4375,
-     "right": 837,
+     "right": 697,
      "bottom": 734,
-     "w": 720,
+     "w": 440,
      "h": 371.5625
     },
     "panel": {
@@ -94,8 +94,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 674.9891918411511,
-     "y": 278.00518385794715
+     "x": 674.9895972052565,
+     "y": 258.078786024225
     },
     "under": []
    }
@@ -201,9 +201,9 @@
     "1366_ru": {
      "state": "hint",
      "hint": {
-      "l": 380,
+      "l": 439,
       "t": 623,
-      "r": 828,
+      "r": 887,
       "b": 672
      },
      "legend": {
@@ -218,9 +218,9 @@
     "1366_kk": {
      "state": "hint",
      "hint": {
-      "l": 380,
+      "l": 471,
       "t": 623,
-      "r": 764,
+      "r": 855,
       "b": 672
      },
      "legend": {
@@ -236,9 +236,9 @@
      "state": "hint",
      "hint": {
       "l": 172,
-      "t": 514,
+      "t": 483,
       "r": 556,
-      "b": 563
+      "b": 532
      },
      "legend": {
       "l": 12,
@@ -252,6 +252,88 @@
    }
   },
   {
+   "id": "light_card_first_3d_by_button_in_shell",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "start": {
+      "view": "light",
+      "three": "idle",
+      "pitch": 0
+     },
+     "three_requests_before": 0,
+     "button": "Посмотреть в 3D",
+     "after": {
+      "view": "3d",
+      "pitch": 52,
+      "geometries": 27,
+      "selected": "p-3b461a946cd8"
+     },
+     "after_shell_3d_button": {
+      "view": "light",
+      "pitch": 0
+     }
+    },
+    "1366_kk": {
+     "start": {
+      "view": "light",
+      "three": "idle",
+      "pitch": 0
+     },
+     "three_requests_before": 0,
+     "button": "3D көріністе қарау",
+     "after": {
+      "view": "3d",
+      "pitch": 52,
+      "geometries": 27,
+      "selected": "p-3b461a946cd8"
+     },
+     "after_shell_3d_button": {
+      "view": "light",
+      "pitch": 0
+     }
+    },
+    "375_ru": {
+     "start": {
+      "view": "light",
+      "three": "idle",
+      "pitch": 0
+     },
+     "three_requests_before": 0,
+     "button": "Посмотреть в 3D",
+     "after": {
+      "view": "3d",
+      "pitch": 52,
+      "geometries": 27,
+      "selected": "p-3b461a946cd8"
+     },
+     "after_shell_3d_button": {
+      "view": "light",
+      "pitch": 0
+     }
+    },
+    "375_kk": {
+     "start": {
+      "view": "light",
+      "three": "idle",
+      "pitch": 0
+     },
+     "three_requests_before": 0,
+     "button": "3D көріністе қарау",
+     "after": {
+      "view": "3d",
+      "pitch": 52,
+      "geometries": 27,
+      "selected": "p-3b461a946cd8"
+     },
+     "after_shell_3d_button": {
+      "view": "light",
+      "pitch": 0
+     }
+    }
+   }
+  },
+  {
    "id": "phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
    "status": "PASS",
    "detail": {
@@ -259,7 +341,7 @@
      "sheet_before": "half",
      "tapped": [
       188,
-      188
+      186
      ],
      "state": "card",
      "sheet": "peek",
@@ -279,7 +361,7 @@
      "sheet_before": "half",
      "tapped": [
       188,
-      188
+      186
      ],
      "state": "card",
      "sheet": "peek",

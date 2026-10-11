@@ -1232,8 +1232,10 @@ await check("idea_pick_object_sketch_not_saved_1366_375_ru_kk", async () => {
     const dock = await p.evaluate(() => document.querySelector(".b3d-dock").dataset.state);
     await p.context().close();
     out[`${w}_${lang}`] = { cat, placing, res, count: [before, after.count], picking: after.picking, cancelled, dock_after: dock };
-    const ok = cat.kinds.length === 4 && !cat.kinds.includes("lighting") && /эскиз|эскиз/.test(cat.note || "") &&
-      (lang === "ru" ? cat.title === "Как это может выглядеть?" && placing.done === "Готово" : cat.title === "Бұл қалай көрінуі мүмкін?" && placing.done === "Дайын") &&
+    // Тексты — ключи словаря R11 (IA_WAVE2 §8): idea.object, idea.honest, common.action.done.
+    const ok = cat.kinds.length === 4 && !cat.kinds.includes("lighting") &&
+      (lang === "ru" ? cat.title === "Объект из каталога (по желанию)" && /решение принимает акимат/.test(cat.note || "") && placing.done === "Готово"
+        : cat.title === "Каталогтағы нысан (қаласаңыз)" && /шешімді әкімдік қабылдайды/.test(cat.note || "") && placing.done === "Дайын") &&
       placing.tag === "Идея" && res && res.kind === "square" && Math.abs(res.geometry.coordinates[0] - 71.4003) < 3e-5 && Math.abs(res.geometry.coordinates[1] - 51.1286) < 3e-5 &&
       after.count === before && after.picking === false && cancelled === null && dock === "hint";
     assert(ok, JSON.stringify(out[`${w}_${lang}`]));
@@ -1270,6 +1272,49 @@ await check("ideas_layer_off_by_default_shown_by_host_1366_375_ru_kk", async () 
     // На телефоне в кадре одна идея (остальные за краем узкого экрана), на ноутбуке — все три.
     assert(off.ideas === 0 && off.labels === 0 && on.ideas === 3 && on.labels.length >= (phone ? 1 : 2) && on.labels.every((x) => /^Идея · \d+$/.test(x)) &&
       on.geo > off.geo && picked === "idea-demo-1" && after.ideas === 0 && after.labels === 0 && after.geo === off.geo, JSON.stringify(out[`${w}_${lang}`]));
+  }
+  return { status: "PASS", detail: out };
+});
+await check("projects_layer_off_ideas_on_and_view3d_idea_1366_375", async () => {
+  // Оболочка R01 (волна 2): проекты — слой «Проекты», по умолчанию выключен (setVisible(false)); одновременно включён
+  // один дополнительный слой — при «Идеях» проекты скрыты. Невидимому модулю three.js не грузится даже на наклонённой
+  // карте (R01 наклоняет с 15-го масштаба); идеи видны без проектов; «3D-де көру» в карточке идеи — view3dIdea(идея).
+  const out = {};
+  for (const [w, h] of [[1366, 768], [375, 812]]) {
+    const phone = w < 640;
+    const ctx = await browser.newContext(Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {}));
+    const p = await ctx.newPage();
+    const threeReq = [];
+    p.on("request", (r) => { if (/three\.module/.test(r.url())) threeReq.push(r.url()); });
+    // projects=0 — как оболочка: слой «Проекты» выключен сразу при монтировании
+    await p.goto(BASE + "?reset=1&store=local&view=auto&role=akimat&lang=kk&projects=0&center=71.4002,51.1282&zoom=16.9&pitch=0&bearing=0");
+    await p.waitForFunction(() => window.__b3d && __b3d.getState().phase === "ready", null, { timeout: 60000 });
+    await p.evaluate(() => __map.easeTo({ pitch: 52, duration: 0 })); // оболочка наклонила карту
+    await p.waitForTimeout(1500);
+    const hidden = await p.evaluate(() => ({ view: __b3d.getState().view, three: __b3d.getState().three,
+      projectLabels: [...document.querySelectorAll(".b3d-label:not(.b3d-label--idea)")].filter((b) => getComputedStyle(b).display !== "none").length }));
+    hidden.three_requests = threeReq.length;
+    const ideas = JSON.parse(await (await fetch(BASE.replace("demo.html", "data/ideas.fixture.json"))).text()).ideas;
+    await p.evaluate((list) => __b3d.setIdeas(list), ideas);
+    await p.waitForFunction(() => __b3d.getState().three === "ready", null, { timeout: 30000 });
+    await p.waitForTimeout(800);
+    const withIdeas = await p.evaluate(() => ({ view: __b3d.getState().view,
+      ideaLabels: [...document.querySelectorAll(".b3d-label--idea")].filter((b) => getComputedStyle(b).display !== "none" && b.style.visibility !== "hidden").length,
+      projectLabels: [...document.querySelectorAll(".b3d-label:not(.b3d-label--idea)")].filter((b) => getComputedStyle(b).display !== "none").length }));
+    // Слой «Идеи» выключили, житель в карточке идеи нажал «3D-де көру» — объёмный вид у этой идеи.
+    await p.evaluate(() => { __b3d.setIdeas(null); __map.jumpTo({ center: [71.39, 51.12], zoom: 15, pitch: 0 }); });
+    await p.evaluate((idea) => __b3d.view3dIdea(idea), ideas[1]);
+    await p.waitForFunction(() => !__map.isMoving(), null, { timeout: 10000 });
+    await p.waitForTimeout(500);
+    const focus = await p.evaluate((ll) => { const c = __map.getCenter(); return { ideas: __b3d.getState().ideas, view: __b3d.getState().view, pitch: Math.round(__map.getPitch()),
+      near: Math.hypot(c.lng - ll[0], c.lat - ll[1]) < 1e-4, label: !!document.querySelector('.b3d-label--idea[data-idea="idea-demo-2"]') }; }, ideas[1].geometry.coordinates);
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `idea_view3d_${w}_kk.png`) });
+    await p.evaluate(() => __b3d.view3dIdea(null));
+    const cleared = await p.evaluate(() => __b3d.getState().ideas);
+    await ctx.close();
+    out[w] = { hidden, withIdeas, focus, cleared };
+    assert(hidden.three === "idle" && hidden.three_requests === 0 && hidden.projectLabels === 0 && withIdeas.view === "3d" && withIdeas.ideaLabels >= 1 &&
+      withIdeas.projectLabels === 0 && focus.ideas === 1 && focus.view === "3d" && focus.pitch >= 30 && focus.near && focus.label && cleared === 0, JSON.stringify(out[w]));
   }
   return { status: "PASS", detail: out };
 });
