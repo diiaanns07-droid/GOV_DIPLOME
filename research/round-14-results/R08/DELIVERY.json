@@ -82,7 +82,10 @@
   "сборка: shell_wave2_check.cjs (вход редактора, «Выбрать», «Ещё → Службы», житель → «Рядом»)": "20/20 PASS (R11 a4368e5 и 537dbd3)",
   "сборка: shell_check.cjs (прежний сценарий «Картины дня»)": "28/28 PASS",
   "R10 ux_screens / R11 review_build на волне 2": "NOT_RUN — инструменты R10/R11 запускают они на FINAL-2",
-  "тесты R15 по R08 (test_r15_akim.py, test_r15_nearby.py из claude/r14-R15 @ b1e2316)": "6 XPASS (strict) — по правилу R15 «исправлено» + 4 PASS"
+  "тесты R15 по R08 (test_r15_akim.py, test_r15_nearby.py из claude/r14-R15 @ b1e2316)": "6 XPASS (strict) — по правилу R15 «исправлено» + 4 PASS",
+  "FINAL-2 R01 28e23e3 (R08 = код ветки побайтно): pytest tests/civic/R08": "255 PASS + 1 SKIP",
+  "FINAL-2 R01 28e23e3: shell_wave2_check.cjs (меню «Ещё» в шапке)": "20/20 PASS",
+  "FINAL-2 R01 28e23e3: shell_check.cjs": "28/28 PASS"
  },
  "known_limits": [
   "Сроки «Просрочено» — демо-норматив R08 (deadlines.py), в рабочих днях РК 2026; у аварийных категорий — календарные. Переносы рабочих дней постановлением Правительства и точная дата Курбан айта не сверены (как и у R09).",
@@ -212,5 +215,9 @@
   "apply": "research/round-14-results/R08/r01_wave2_r08.patch → ui/web_server.py, web/index.html, tests/civic/R01/test_r01_api_v2.py",
   "check": "pytest tests/civic/R08 tests/civic/R01; shell_check.cjs (28); R08_STAFF_USER/PASS shell_wave2_check.cjs (20)",
   "runtime": ".runtime/civic_akim/{routing,decisions,subscriptions}.json; demo_reset — удалить decisions.json и subscriptions.json"
+ },
+ "checks_after_delivery": {
+  "круг 1 (00:06)": "R15 S27–S29 исправлены (P-R08)",
+  "круг 2 (00:50)": "новых замечаний к R08 нет; FINAL-2 28e23e3 проверен; shell_wave2_check — под новое меню «Ещё» R01"
  }
 }
