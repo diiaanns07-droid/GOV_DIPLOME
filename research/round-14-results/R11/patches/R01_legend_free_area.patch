@@ -1,0 +1,15 @@
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index d054891d..7c485957 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -799,6 +799,10 @@
+     }
+     const tools = shown(document.querySelector(".map-tools"));
+     if (tools) pad.right = Math.max(pad.right, c.right - tools.left + 10);
++    // Ноутбук (≥ 1024): легенда R07 внизу слева закрывала район Нұра на обзоре города, и R07 прятал его значок
++    // (R11 ночь, круг 17). На планшете 768 места слева нет — там как было (r12_city 768×1024).
++    const legend = innerWidth >= 1024 && shown(document.querySelector(".r07-maplegend"));
++    if (legend) pad.left = Math.max(pad.left, legend.right - c.left + 12);
+     const panel = shown($c("civic-panel"));
+     if (panel) {
+       if (mobile) pad.bottom = Math.max(pad.bottom, c.bottom - panel.top + 12);
