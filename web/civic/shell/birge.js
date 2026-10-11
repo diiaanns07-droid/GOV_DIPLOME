@@ -275,6 +275,7 @@
     renderDay();
     renderScreen();
     renderLayers();
+    requestAnimationFrame(placeExplore);  // длина меню и языка меняет место для панели в шапке
   }
 
   // ------------------------------------------------------------------ режим
@@ -430,6 +431,35 @@
     return true;
   }
 
+  // ------------------------------------------------------------------ «Территория» и поиск в шапке (читаемость п. 3)
+  // Ноутбук (≥ 1024 px): панель района и поиска улицы встаёт в шапку между логотипом и меню, если там ≥ 300 px —
+  // карта свободна от панели. Места мало (узкий экран, длинное меню) или телефон — панель остаётся на карте, как была.
+  function placeExplore() {
+    const box = document.querySelector(".civic-explore"), brand = document.querySelector(".topbar .brand");
+    const civic = document.body.classList.contains("civic-mode");
+    if (!box || !brand || !header || !civic || innerWidth < 1024) { document.body.dataset.birgeExplore = "map"; return; }
+    const bar = brand.closest(".topbar").getBoundingClientRect();
+    const left = brand.getBoundingClientRect().right + 16, right = header.getBoundingClientRect().left - 16;
+    if (right - left < 300) { document.body.dataset.birgeExplore = "map"; return; }
+    document.body.dataset.birgeExplore = "header";
+    box.style.setProperty("--be-left", Math.round(left) + "px");
+    box.style.setProperty("--be-width", Math.round(Math.min(460, right - left)) + "px");
+    box.style.setProperty("--be-top", Math.round(bar.top + (bar.height - 48) / 2) + "px");
+  }
+  function watchExplore() {
+    const again = () => requestAnimationFrame(placeExplore);
+    window.addEventListener("resize", again);
+    document.addEventListener("civic:mode", again);
+    if (typeof ResizeObserver === "function" && header) new ResizeObserver(again).observe(header);
+    // Панель монтирует shell.js, когда готова карта: ловим её появление (и пересоздание при смене режима).
+    const root = document.getElementById("civic-root") || document.body;
+    const isExplore = (n) => n.nodeType === 1 && (n.classList?.contains("civic-explore") || n.querySelector?.(".civic-explore"));
+    if (typeof MutationObserver === "function") new MutationObserver((records) => {
+      if (records.some((r) => [...r.addedNodes].some(isExplore))) again();
+    }).observe(root, { childList: true, subtree: true });
+    again();
+  }
+
   // ------------------------------------------------------------------ один дополнительный слой карты (защита п. 1)
   // По умолчанию на карте только тепловая карта объектов и работы города. «Рядом», «Идеи», «Объявления» — слои
   // по одному переключателю, одновременно не больше одного; слой грузит данные только когда включён (п. 5).
@@ -538,6 +568,7 @@
     buildHeader();
     buildDay();
     buildScreen();
+    watchExplore();
     // Разделы — адрес #day, #nearby, #ideas, #more…; прочие адреса (#object=, #target=, #school) — карта, как раньше.
     const routeOf = () => { const h = location.hash.slice(1); return SECTIONS.includes(h) ? h : "map"; };
     setSection(routeOf(), { hash: false });

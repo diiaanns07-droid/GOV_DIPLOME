@@ -144,6 +144,14 @@ async function main() {
     await page.waitForTimeout(300);
 
     // ---- step 5: akimat places a proposal in 3D
+    // Читаемость карты п. 3: по умолчанию проектов и «Что построить?» нет — режим «Проекты» включают кнопкой слоёв.
+    const offByDefault = await page.evaluate(() => { const r = document.getElementById("birge-build3d-root");
+      return { root: r ? getComputedStyle(r).display : "absent", layerBtn: !!document.getElementById("birge-layer-btn"), layer: window.BirgeShell.layer }; });
+    check("default akimat map: no projects and no «Что построить?» until the «Проекты» layer is on (wave 2, readability)",
+      offByDefault.root === "none" && offByDefault.layerBtn && offByDefault.layer === null, offByDefault);
+    await page.click("#birge-layer-btn");
+    await page.check("#birge-layer-list input[value=projects]");
+    await page.waitForTimeout(500);
     await b3dReady(page);
     let st = await b3dState(page);
     check("akimat: 3D catalog (R05) is mounted over the map with the R06 store", st?.phase === "ready" && st?.storeMode === "api", st && { phase: st.phase, storeMode: st.storeMode, count: st.count });
@@ -272,6 +280,8 @@ async function main() {
     await p2.goto(base);
     await ready(p2);
     await b3dReady(p2);
+    await p2.evaluate(() => window.BirgeShell.setLayer("projects"));  // режим «Проекты» (слои у кнопок карты)
+    await p2.waitForTimeout(400);
     const phoneDock = () => p2.evaluate(() => { const d = document.querySelector("#birge-build3d-root .b3d-dock"), s = document.querySelector(".civic-panel");
       if (!d) return null; const r = d.getBoundingClientRect(), q = s.getBoundingClientRect();
       return { sheet: s.dataset.sheet, state: d.dataset.state, shown: getComputedStyle(d).display !== "none", left: Math.round(r.left), right: Math.round(r.right),

@@ -257,6 +257,7 @@
     const handle = $c("civic-sheet-handle");
     handle?.setAttribute("aria-label", T(S.sheet === "full" ? "shell.sheet.collapse" : "shell.sheet.expand"));
     S.mounted.heat?.setLang?.(birgeLang());
+    labelLegend();
     const build3dRoot = $c("birge-build3d-root");
     if (build3dRoot?.dataset.catalog) setBuild3dCatalog(build3dRoot.dataset.catalog === "open");
     if (S.mode !== "civic") return;
@@ -390,11 +391,50 @@
     }
     return rects;
   }
+  // Компактная легенда (читаемость карты п. 3): ступени цвета одной строкой поверх карты, «?» — заголовок и пояснения.
+  function legendHost() {
+    const m = currentMap();
+    if (!m) return null;
+    let wrap = document.getElementById("birge-legend");
+    if (!wrap) {
+      wrap = document.createElement("div");
+      wrap.id = "birge-legend";
+      wrap.className = "birge-legend";
+      wrap.dataset.open = "false";
+      const host = document.createElement("div");
+      host.className = "birge-legend-host";
+      const more = document.createElement("button");
+      more.type = "button";
+      more.className = "birge-legend-q";
+      more.textContent = "?";
+      more.setAttribute("aria-expanded", "false");
+      more.addEventListener("click", () => {
+        const open = wrap.dataset.open !== "true";
+        wrap.dataset.open = String(open);
+        more.setAttribute("aria-expanded", String(open));
+        labelLegend();
+      });
+      wrap.append(host, more);
+      m.getContainer().append(wrap);
+      labelLegend();
+    }
+    return wrap.querySelector(".birge-legend-host");
+  }
+  function labelLegend() {
+    const wrap = document.getElementById("birge-legend"), more = wrap?.querySelector(".birge-legend-q");
+    if (!more) return;
+    const text = T(wrap.dataset.open === "true" ? "shell.legend.less" : "shell.legend.more");
+    more.setAttribute("aria-label", text);
+    more.title = text;
+  }
   // R07 «Карта жалоб» в панели и R09 «Сообщить о проблеме» (кнопка видна только жителю, birge.css).
   function mountBirgeModules() {
     if (!S.mounted.heat && moduleFor("heat")) {
       mount("heat", $c("birge-heat-root"), {
         map: currentMap(), role: birgeMode(), lang: birgeLang(), fetch: birgeFetch,
+        // Легенда R07 — в контейнере оболочки (опция R07 legendContainer): компактная строка ступеней, «?» раскрывает
+        // пояснение (читаемость карты п. 3). Без контейнера R07 рисует её сам, как раньше.
+        legendContainer: legendHost(),
         // Стартовая подгонка под горячие места — в свободную часть карты (без шапки, панели, кнопок карты).
         fitPadding: () => freeArea(),
         avoidRects: birgeOverlayRects,
@@ -478,6 +518,18 @@
     } catch (error) {
       console.error("birge build3d mount", error);
       S.mounted.build3d = null;
+    }
+    // Проекты и «Что построить?» — режим карты «Проекты» (читаемость карты п. 3; защита от перегруза п. 1): по умолчанию
+    // карта показывает только жалобы и работы города, проекты включаются переключателем слоёв (один слой за раз).
+    if (S.mounted.build3d && window.BirgeShell?.registerLayer) {
+      const projects = (on) => {
+        document.body.dataset.birgeProjects = on ? "on" : "";
+        try { S.mounted.build3d?.setVisible?.(on); } catch (error) { console.error("birge build3d visible", error); }
+        if (!on) setBuild3dCatalog(false);
+      };
+      projects(window.BirgeShell.layer === "projects");
+      window.BirgeShell.registerLayer({ id: "projects", titleKey: "shell.layers.projects", modes: ["akimat", "resident"],
+        show: () => projects(true), hide: () => projects(false) });
     }
   }
   // Ссылка «#target=<kind>:<id>&days=N» (R08 «Картина дня», R07): открыть цель на тепловой карте.

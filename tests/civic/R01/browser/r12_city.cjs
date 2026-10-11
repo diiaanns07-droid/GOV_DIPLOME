@@ -70,6 +70,10 @@ const layout = (page) => page.evaluate(() => {
   const rect = (sel) => { const e = document.querySelector(sel); if (!e || !e.getClientRects().length || getComputedStyle(e).visibility === "hidden") return null;
     const b = e.getBoundingClientRect(); return b.width && b.height ? { l: b.left, t: b.top, r: b.right, b: b.bottom } : null; };
   const boxes = { topbar: rect(".topbar"), explore: rect(".civic-explore"), tools: rect(".map-tools"), panel: rect("#civic-panel") };
+  // Читаемость карты п. 3: на ноутбуке «Территория» и поиск встают в шапку — тогда пересечение с шапкой задумано,
+  // но не с логотипом и меню шапки.
+  const inHeader = document.body.dataset.birgeExplore === "header";
+  if (inHeader) { boxes.brand = rect(".topbar .brand"); boxes.menu = rect("#birge-header"); }
   const status = document.getElementById("map-status");
   let statusInfo = null;
   if (status && !status.classList.contains("hidden") && status.getClientRects().length) {
@@ -82,7 +86,9 @@ const layout = (page) => page.evaluate(() => {
   for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++) {
     const a = boxes[names[i]], c = boxes[names[j]];
     const ix = Math.min(a.r, c.r) - Math.max(a.l, c.l), iy = Math.min(a.b, c.b) - Math.max(a.t, c.t);
-    if (ix > 1 && iy > 1) over.push(names[i] + "×" + names[j]);
+    const pair = names[i] + "×" + names[j];
+    if (inHeader && /^(topbar×(explore|brand|menu)|brand×menu)$/.test(pair)) continue;
+    if (ix > 1 && iy > 1) over.push(pair);
   }
   return { scrollW: document.documentElement.scrollWidth, innerW: innerWidth, over, status: statusInfo,
     explore: boxes.explore && Math.round(boxes.explore.r - boxes.explore.l) };

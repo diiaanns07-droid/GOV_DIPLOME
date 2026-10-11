@@ -78,7 +78,10 @@ async function main() {
     await ready(page);
     let n = await nav(page);
     check("default akimat menu = Карта · Картина дня (no empty sections in the demo build)", JSON.stringify(n.ids) === '["map","day"]', n);
-    check("default map: no extra layer switch until a module registers a layer", !n.layerBtn, n);
+    const layers0 = await page.evaluate(() => ({ active: window.BirgeShell.layer,
+      options: [...document.querySelectorAll("#birge-layer-list input")].map((i) => i.value) }));
+    check("default map: one «слои» button with «Проекты» (R05), no extra layer on — map shows complaints and city works only",
+      n.layerBtn && layers0.active === null && JSON.stringify(layers0.options) === '["","projects"]', { n, layers0 });
     // Маркеры MapLibre (элемент из new Marker({element})): без transition на transform/left/top — значок не отстаёт.
     await page.waitForFunction(() => window.CivicShell?.heat?.state?.().status === "ready"
       && [...document.querySelectorAll(".maplibregl-marker")].some((e) => e.getBoundingClientRect().width > 0), null, { timeout: 20000 }).catch(() => null);
@@ -107,6 +110,45 @@ async function main() {
     await page.waitForTimeout(300);
     n = await nav(page);
     check("default resident menu = Карта · Мои обращения", JSON.stringify(n.ids) === '["map","mine"]' && n.labels.includes("Мои обращения"), n);
+    // ---- читаемость карты (владелец, 11 окт): п. 3 панели, п. 7 границы районов, п. 8 наклон
+    await page.click("#birge-header [data-mode=akimat]");
+    await page.waitForTimeout(400);
+    const read = await page.evaluate(() => {
+      const box = (sel) => { const e = document.querySelector(sel); if (!e || !e.getClientRects().length || getComputedStyle(e).display === "none") return null;
+        const r = e.getBoundingClientRect(); return { l: r.left, t: r.top, r: r.right, b: r.bottom, w: r.width, h: r.height }; };
+      const bar = box(".topbar"), ex = box(".civic-explore"), legend = box("#birge-legend"), b3d = document.getElementById("birge-build3d-root");
+      const lines = map.getLayer("civic-explore-lines") ? { color: map.getPaintProperty("civic-explore-lines", "line-color"),
+        visible: map.getLayoutProperty("civic-explore-lines", "visibility") !== "none" } : null;
+      let free = 0, total = 0;
+      for (let y = 4; y < innerHeight; y += 8) for (let x = 4; x < innerWidth; x += 8) {
+        total++; const e = document.elementFromPoint(x, y);
+        if (e && (e.tagName === "CANVAS" || e.closest(".maplibregl-canvas-container"))) free++;
+      }
+      return { explore: document.body.dataset.birgeExplore, exploreInBar: !!(ex && bar && ex.t >= bar.t && ex.b <= bar.b + 1), barH: bar && Math.round(bar.h),
+        legendH: legend && Math.round(legend.h), legendOpen: document.getElementById("birge-legend")?.dataset.open,
+        titleShown: !!box("#birge-legend .r07-legend__title"), projects: b3d ? getComputedStyle(b3d).display : "absent",
+        lines, pitch: Math.round(map.getPitch()), free: Math.round((free / total) * 1000) / 10 };
+    });
+    check("readability 3: district + street search in the header (1366), header 68 px", read.explore === "header" && read.exploreInBar && read.barH === 68, read);
+    check("readability 3: legend is one compact row (no title) next to «?»; projects and «Что построить?» hidden by default",
+      read.legendOpen === "false" && !read.titleShown && read.legendH <= 56 && read.projects === "none", read);
+    check("readability 3: free map ≥ 60 % of the 1366×768 screen (akimat)", read.free >= 60, read.free);
+    check("readability 7: thin neutral district borders on the city map (not green)", !!read.lines && read.lines.visible && read.lines.color === "#8e8a80", read.lines);
+    await page.click("#birge-legend .birge-legend-q");
+    await page.waitForTimeout(200);
+    const opened = await page.evaluate(() => ({ open: document.getElementById("birge-legend").dataset.open,
+      title: !!document.querySelector("#birge-legend .r07-legend__title")?.getClientRects().length,
+      label: document.querySelector("#birge-legend .birge-legend-q").getAttribute("aria-label") }));
+    check("legend «?» expands the title and hints (aria-label says how to fold it back)", opened.open === "true" && opened.title && /Свернуть/.test(opened.label || ""), opened);
+    await page.click("#birge-legend .birge-legend-q");
+    // п. 8: город — 0°, приближение ≥ 15 — плавный наклон 3D, отдаление < 14 — снова плоско.
+    const tilt = async (z) => { await page.evaluate((zz) => map.easeTo({ zoom: zz, center: [71.4065, 51.1312], duration: 0 }), z);
+      await page.waitForFunction(() => !map.isMoving(), null, { timeout: 8000 }).catch(() => {}); await page.waitForTimeout(1300);
+      await page.waitForFunction(() => !map.isMoving(), null, { timeout: 8000 }).catch(() => {});
+      return page.evaluate(() => ({ pitch: Math.round(map.getPitch()), pressed: document.getElementById("toggle-3d").getAttribute("aria-pressed") })); };
+    const near = await tilt(15.6), far = await tilt(11);
+    check("readability 8: city view flat (0°); zoom ≥ 15 tilts to 3D smoothly, zoom < 14 flattens; 3D button follows",
+      read.pitch === 0 && near.pitch >= 35 && near.pressed === "true" && far.pitch === 0 && far.pressed === "false", { start: read.pitch, near, far });
     check("no page errors (default build)", page.errs.length === 0, page.errs);
     await ctx.close();
 

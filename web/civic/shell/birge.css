@@ -107,7 +107,7 @@ body[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
 /* Житель, ноутбук: подсказка R05 «Нажмите на проект, чтобы проголосовать» не ложится на легенду R07 внизу слева
    (R10 B-039): на широком экране — правее легенды (12 + 360 + 20), на узком — над ней. */
 @media (min-width: 1200px) {
-  body[data-birge-mode="resident"]:has(.r07-maplegend) .birge-build3d-root:has(.b3d-dock[data-state="hint"]) { left: 392px; }
+  body[data-birge-mode="resident"]:has(.r07-maplegend) .birge-build3d-root:has(.b3d-dock[data-state="hint"]) { left: 470px; }
 }
 @media (min-width: 761px) and (max-width: 1199px) {
   body[data-birge-mode="resident"]:has(.r07-maplegend) .birge-build3d-root:has(.b3d-dock[data-state="hint"]) { bottom: 168px; }
@@ -237,7 +237,7 @@ body:not(.civic-mode) .birge-complaint-root { display: none; }
 body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
 
 /* LOCAL_FINAL (Codex, Windows, 8e67c65) №9 / P3 и UX_BRIEF: всё управление оболочки — зона нажатия 48 px (было 40–44).
-   Шапка (разделы, вид, язык, ≡), колонка кнопок карты, «Для сотрудников», панель «Территория», подпись карты. */
+   Шапка (разделы, вид, язык, ≡), колонка кнопок карты, «Для сотрудников», панель «Территория». */
 .civic-mode #birge-header .bk-seg > button,
 .civic-mode #birge-header .birge-menu-btn { min-height: 48px; }
 .civic-mode .map-tools .icon-btn { width: 48px; height: 48px; }
@@ -247,10 +247,7 @@ body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
 .civic-mode .civic-explore select, .civic-mode .civic-explore-field input { min-height: 48px; }
 .civic-mode .civic-explore .civic-explore-clear { width: 48px; height: 48px; min-height: 48px; }
 .civic-mode .civic-explore-details label { min-height: 48px; }
-/* Кнопка ⓘ подписи карты (MapLibre, 24 px): та же картинка, зона нажатия 48 px. */
-.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact { min-height: 48px; }
-.civic-mode .maplibregl-ctrl-attrib-button { width: 48px; height: 48px; background-position: center; }
-.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact-show { padding-right: 52px; }
+/* Кнопка ⓘ подписи карты (MapLibre) остаётся 24 px: при 48 px подпись © OpenStreetMap уходит под правую панель. */
 @media (max-width: 760px) {
   .civic-mode .map-tools .icon-btn { width: 48px; height: 48px; }
   /* Колонка кнопок карты шире на 4 px (right 15 + 48): «Территория» отступает (на 360 — ровно 280 px ширины, r12_city). */
@@ -261,3 +258,80 @@ body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
    transform/left/top делает значки отстающими от карты при движении (так было у значков R07 .r07-badge). Страховка
    оболочки для всех модулей; эффекты наведения — только на внутренних обёртках (R07: .r07-badge__dot/__count). */
 .civic-mode .maplibregl-marker { transition: none !important; }
+
+/* Читаемость карты п. 3 (владелец): «Территория» и поиск улицы — в шапке, между логотипом и меню (birge.js placeExplore).
+   Одна строка: район ▾ + поиск улицы. Подпись «Территория» и строка «Обзор…» — для экранного диктора; «Слои» на ноутбуке
+   не нужны (границы районов видны на уровне города сами). Уведомления (запасной фон и т. п.) — плашкой под шапкой. */
+body.civic-mode[data-birge-explore="header"] .civic-explore {
+  position: fixed; z-index: 46; top: var(--be-top, 34px); left: var(--be-left, 300px); right: auto; width: var(--be-width, 400px);
+  max-width: none; display: flex; align-items: center; gap: 8px; padding: 0; margin: 0;
+  background: transparent; box-shadow: none; border: 0; border-radius: 0;
+}
+body.civic-mode[data-birge-explore="header"] .civic-explore-row { flex: 0 0 auto; display: flex; align-items: center; gap: 0; margin: 0; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-row > label { display: flex; align-items: center; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-row > label > span,
+body.civic-mode[data-birge-explore="header"] .civic-explore-view {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+body.civic-mode[data-birge-explore="header"] .civic-explore-row details { display: none; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-objects { min-height: 48px; margin-left: 8px; white-space: nowrap; }
+body.civic-mode[data-birge-explore="header"] .civic-explore select {
+  width: 150px; min-height: 48px; padding: 0 8px; border: 1px solid var(--c-line, #dfe5df); border-radius: var(--r-m, 12px);
+  background: var(--c-paper, #f6f7f3); font-size: 15px;
+}
+body.civic-mode[data-birge-explore="header"] .civic-explore-search { flex: 1 1 auto; min-width: 0; margin: 0; padding: 0; border: 0; display: flex; align-items: center; gap: 4px; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-field { flex: 1 1 auto; min-width: 0; }
+/* Шапка ниже на 8 px (76 → 68): карта на 1366×768 — не меньше 60 % экрана (читаемость п. 3). */
+@media (min-width: 1024px) { .civic-mode .topbar { height: 68px; } }
+body.civic-mode[data-birge-explore="header"] .civic-explore-field input { min-height: 48px; border-radius: var(--r-m, 12px); }
+body.civic-mode[data-birge-explore="header"] .civic-explore-notices,
+body.civic-mode[data-birge-explore="header"] .civic-explore-registry {
+  position: absolute; top: calc(100% + 18px); left: 0; width: min(420px, 100%); margin: 0;
+}
+body.civic-mode[data-birge-explore="header"] .civic-explore #map-status {
+  padding: 8px 12px; border-radius: var(--r-m, 12px); box-shadow: var(--shadow-1, 0 2px 10px #15362818);
+}
+
+/* Режим «Проекты» (читаемость карты п. 3): 3D-проекты R05, «Что построить?» и подсказка о голосовании — только когда
+   включён слой «Проекты» (кнопка «слои» у кнопок карты, shell.js registerLayer). По умолчанию — жалобы и работы города. */
+body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root { display: none !important; }
+
+/* Компактная легенда (читаемость карты п. 3): ступени цвета одной строкой, «?» раскрывает заголовок и пояснения.
+   Контейнер — оболочки (shell.js legendHost), сама легенда — R07 (legendContainer), здесь она без своей позиции. */
+.birge-legend { position: absolute; z-index: 5; left: 12px; bottom: 34px; display: flex; align-items: flex-end; gap: 6px; max-width: min(440px, calc(100% - 24px)); }
+.birge-legend:not(:has(.r07-maplegend:not([hidden]))) { display: none; }
+.birge-legend .r07-maplegend { position: static !important; inset: auto !important; max-width: none !important; margin: 0; }
+.birge-legend[data-open="false"] .r07-maplegend .r07-legend__title,
+.birge-legend[data-open="false"] .r07-maplegend .r07-legend__hint { display: none; }
+@media (min-width: 761px) {
+  .birge-legend[data-open="false"] .r07-maplegend ul { flex-wrap: nowrap; white-space: nowrap; gap: 0 10px; }
+  .birge-legend[data-open="false"] .r07-maplegend { padding: 8px 12px; }
+}
+.birge-legend-q { flex: 0 0 auto; width: 48px; height: 48px; border: 0; border-radius: 50%; cursor: pointer;
+  background: var(--c-surface, #fff); color: var(--c-ink, #152c26); font: 700 18px/1 var(--b-font, system-ui, sans-serif);
+  box-shadow: var(--shadow-1, 0 2px 10px #15362818); }
+.birge-legend-q[aria-expanded="true"] { background: var(--c-ink, #152c26); color: #fff; }
+.birge-legend-q:focus-visible { outline: 3px solid var(--c-focus, #1f6f50); outline-offset: 2px; }
+/* Состояния, в которых легенда R07 прячется (каталог, размещение, карточка проекта, мастер жалобы, полная шторка), —
+   прячут и контейнер с «?». */
+@media (min-width: 761px) {
+  body:has(.birge-build3d-root[data-catalog="open"] .b3d-dock[data-state="catalog"]) .birge-legend,
+  body:has(.birge-build3d-root .b3d-dock[data-state="placing"]) .birge-legend,
+  body:has(.birge-build3d-root .b3d-dock[data-state="card"]) .birge-legend { visibility: hidden; }
+}
+@media (max-width: 760px) {
+  .civic-mode .birge-legend { top: 138px; bottom: auto; left: 10px; right: 66px; max-width: none; align-items: flex-start; }
+  .civic-mode .birge-legend { overflow: hidden; }  /* строка легенды не заходит под кнопки карты (r12_city 360: «+» был под ней) */
+  .civic-mode .birge-legend .r07-maplegend { flex: 1 1 auto; min-width: 0; overflow: hidden; }
+  .civic-mode .birge-legend-q { display: none; }  /* телефон: легенда R07 и так одной строкой, места для «?» нет */
+  body:has(.birge-build3d-root .b3d-dock[data-state="card"]) .birge-legend { visibility: hidden; }
+  html.bc-open .civic-mode .birge-legend { display: none; }
+  body[data-civic-sheet="full"].civic-mode .birge-legend { display: none; }
+}
+body.birge-picking .birge-legend { pointer-events: none; }
+
+/* Режим «Проекты», ноутбук: кнопка «Что построить?» и подсказки — правее компактной легенды с «?» (12 + ≈ 440 + 18);
+   открытый каталог, размещение и карточка прячут легенду и получают всю ширину слева. */
+@media (min-width: 1024px) {
+  body.civic-mode:has(#birge-legend .r07-maplegend:not([hidden])) .birge-build3d-root:not([data-catalog="open"]):not(:has(.b3d-dock:is([data-state="placing"], [data-state="card"]))) { left: 470px; }
+}

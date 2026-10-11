@@ -25,7 +25,7 @@
       "id": "offline-background",
       "type": "background",
       "paint": {
-        "background-color": "#f3f4ee"
+        "background-color": "#F4F3EF"
       }
     },
     {
@@ -34,7 +34,7 @@
       "source": "protomaps",
       "source-layer": "earth",
       "paint": {
-        "fill-color": "#f3f4ee"
+        "fill-color": "#F4F3EF"
       }
     },
     {
@@ -60,7 +60,7 @@
             "meadow",
             "scrub"
           ],
-          "#dce8ce",
+          "#DFECD5",
           [
             "school",
             "university",
@@ -75,7 +75,7 @@
             "industrial"
           ],
           "#e7e5e1",
-          "#e9eddf"
+          "#EEECE6"
         ],
         "fill-opacity": 0.8
       }
@@ -93,7 +93,7 @@
         "Polygon"
       ],
       "paint": {
-        "fill-color": "#a9d3df"
+        "fill-color": "#C3DFEC"
       }
     },
     {
@@ -109,7 +109,7 @@
         "LineString"
       ],
       "paint": {
-        "line-color": "#a9d3df",
+        "line-color": "#C3DFEC",
         "line-width": [
           "interpolate",
           [
@@ -142,8 +142,8 @@
         "address"
       ],
       "paint": {
-        "fill-color": "#dce2d4",
-        "fill-outline-color": "#becab6"
+        "fill-color": "#ECE9E2",
+        "fill-outline-color": "#D9D4CB"
       }
     },
     {
@@ -559,8 +559,54 @@
       "source-layer": "pois",
       "minzoom": 15,
       "filter": [
-        "has",
-        "name"
+        "all",
+        [
+          "has",
+          "name"
+        ],
+        [
+          "in",
+          [
+            "get",
+            "kind"
+          ],
+          [
+            "literal",
+            [
+              "attraction",
+              "monument",
+              "memorial",
+              "artwork",
+              "museum",
+              "theatre",
+              "place_of_worship",
+              "mosque",
+              "church",
+              "townhall",
+              "town_hall",
+              "stadium",
+              "landmark",
+              "castle",
+              "viewpoint",
+              "bus_stop",
+              "bus_station",
+              "bus",
+              "station",
+              "train_station",
+              "railway",
+              "tram_stop",
+              "subway",
+              "aerodrome",
+              "airport",
+              "school",
+              "kindergarten",
+              "university",
+              "college",
+              "hospital",
+              "clinic"
+            ]
+          ]
+        ]
       ],
       "layout": {
         "text-field": [

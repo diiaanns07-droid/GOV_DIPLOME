@@ -80,9 +80,11 @@ async function main() {
     check("1366: round-13 tools outside the Birge demo (scenarios, assistant) hidden even for akimat; sign-in shown",
       tools.scen === "none" && tools.assistant === "none" && tools.staff !== "none", tools);
     const panelBox = await page.evaluate(() => { const p = document.getElementById("civic-panel").getBoundingClientRect(), t = document.querySelector(".map-tools").getBoundingClientRect(),
-      e = document.querySelector(".civic-explore").getBoundingClientRect(); return { panelRight: Math.round(innerWidth - p.right), panelW: Math.round(p.width), toolsLeftOfPanel: t.right <= p.left, exploreLeft: Math.round(e.left) }; });
-    check("1366: panel on the right (400 px), map buttons left of it, city navigation top-left (UX_SPEC §1)",
-      panelBox.panelW === 400 && panelBox.panelRight === 20 && panelBox.toolsLeftOfPanel && panelBox.exploreLeft === 20, panelBox);
+      e = document.querySelector(".civic-explore").getBoundingClientRect(), bar = document.querySelector(".topbar").getBoundingClientRect();
+      return { panelRight: Math.round(innerWidth - p.right), panelW: Math.round(p.width), toolsLeftOfPanel: t.right <= p.left,
+        exploreMode: document.body.dataset.birgeExplore, exploreInBar: e.top >= bar.top && e.bottom <= bar.bottom + 1 && e.width >= 300 }; });
+    check("1366: panel on the right (400 px), map buttons left of it, district + street search in the header (readability п. 3)",
+      panelBox.panelW === 400 && panelBox.panelRight === 20 && panelBox.toolsLeftOfPanel && panelBox.exploreMode === "header" && panelBox.exploreInBar, panelBox);
     await page.screenshot({ path: path.join(OUT, "01_map_1366_ru.png") });
 
     // ҚАЗ: labels, brand, <html lang>; choice survives reload

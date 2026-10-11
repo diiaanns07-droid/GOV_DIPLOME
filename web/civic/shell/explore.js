@@ -308,6 +308,7 @@
         }
       }
       select.querySelectorAll("option[data-district]").forEach((option, i) => { option.textContent = districtLabel(features[i]); });
+      map?.getSource?.(PREFIX + "labels")?.setData(labelPoints());  // подписи районов — на новом языке
       if (index.state === "ready") {
         index = { state: "ready", items: labelStreets(rawStreets, features) };
         input.title = snapshot ? T("shell.explore.street_hint_date", { date: snapshot }) : T("shell.explore.street_hint");
@@ -315,19 +316,41 @@
       if (lastSay) say(...lastSay);
       if (records) showRecords(records);
     }
+    // Подписи районов на уровне города (владелец, читаемость карты п. 7): точка — центр района из данных или его рамки.
+    function labelPoints() {
+      return { type: "FeatureCollection", features: features.map((f) => {
+        const p = f.properties || {}, b = bounds(f.geometry);
+        const at = Number.isFinite(p.center_lon) && Number.isFinite(p.center_lat) ? [p.center_lon, p.center_lat] : [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
+        return { type: "Feature", properties: { id: p.id, name: districtLabel(f) }, geometry: { type: "Point", coordinates: at } };
+      }) };
+    }
+    // Границы районов: тонкие и нейтральные (зелёный на карте — только «исправлено»), видны на уровне города и гаснут
+    // к 13-му масштабу; «Слои → Границы районов» оставляет их на любом масштабе.
+    const cityOpacity = ["interpolate", ["linear"], ["zoom"], 9, 0.7, 12, 0.5, 13, 0];
     function paint() {
       if (destroyed || !map || !map.getStyle()?.layers) return;
       if (!map.getSource(PREFIX + "districts")) map.addSource(PREFIX + "districts", { type: "geojson", data: { type: "FeatureCollection", features } });
       if (!map.getLayer(PREFIX + "lines")) {
         const before = map.getStyle().layers.find((l) => l.type === "symbol")?.id;
         map.addLayer({ id: PREFIX + "lines", type: "line", source: PREFIX + "districts", paint: {
-          "line-color": "#39745f", "line-width": 1.5, "line-opacity": 0.65, "line-dasharray": [3, 2],
+          "line-color": "#8e8a80", "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.8, 14, 1.2], "line-opacity": cityOpacity,
         } }, before);
         map.addLayer({ id: PREFIX + "selected", type: "line", source: PREFIX + "districts", paint: {
-          "line-color": "#246c51", "line-width": 3,
+          "line-color": "#4f5a55", "line-width": 2.5,
         }, filter: ["==", ["get", "id"], selected] }, before);
       }
-      map.setLayoutProperty(PREFIX + "lines", "visibility", checkbox.checked ? "visible" : "none");
+      const style = map.getStyle();
+      if (style.glyphs && !map.getLayer(PREFIX + "names")) {  // без шрифтов (запасной фон) подписи не рисуем
+        const font = style.layers.find((l) => l.type === "symbol" && l.layout?.["text-font"])?.layout["text-font"];
+        if (!map.getSource(PREFIX + "labels")) map.addSource(PREFIX + "labels", { type: "geojson", data: labelPoints() });
+        map.addLayer({ id: PREFIX + "names", type: "symbol", source: PREFIX + "labels", maxzoom: 12.5,
+          layout: { "text-field": ["get", "name"], "text-font": Array.isArray(font) ? font : ["Noto Sans Regular"], "text-size": 13,
+            "text-offset": [0, 1.9], "text-anchor": "top", "text-allow-overlap": false },
+          paint: { "text-color": "#5f5b53", "text-halo-color": "#ffffff", "text-halo-width": 1.5,
+            "text-opacity": ["interpolate", ["linear"], ["zoom"], 11.5, 1, 12.5, 0] } });
+      }
+      map.setLayoutProperty(PREFIX + "lines", "visibility", "visible");
+      map.setPaintProperty(PREFIX + "lines", "line-opacity", checkbox.checked ? 0.7 : cityOpacity);
       map.setFilter(PREFIX + "selected", ["==", ["get", "id"], selected]);
     }
     select.addEventListener("change", () => {

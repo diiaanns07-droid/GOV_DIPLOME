@@ -46,7 +46,10 @@
     return { id: "akim-3d", type: "fill-extrusion", source: "protomaps", "source-layer": "buildings", minzoom: 14,
       filter: ["in", ["get", "kind"], ["literal", ["building", "building_part"]]],
       paint: {
-        "fill-extrusion-color": ["interpolate", ["linear"], height, 0, "#e1e6d9", 60, "#b7c9a2", 180, "#87a489"],
+        // Палитра Birge (web/civic/shell/basemap-style.js): тёплый светло-серый по высоте; зелёный — только статусы.
+        "fill-extrusion-color": window.BirgeBasemapStyle ? window.BirgeBasemapStyle.buildingColor(height)
+          : ["interpolate", ["linear"], height, 0, "#ECE9E2", 60, "#DEDAD2", 150, "#D2CDC4"],
+        "fill-extrusion-vertical-gradient": true,
         "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 14, 0, 15.4, height],
         "fill-extrusion-base": ["coalesce", ["get", "min_height"], 0],
         "fill-extrusion-opacity": 0.92

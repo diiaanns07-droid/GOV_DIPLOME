@@ -204,7 +204,7 @@ function offlineStyle() {
       "offline-nura": { type: "geojson", data: "/civic/heat/fixtures/basemap-nura.geojson", attribution: OFFLINE_OSM },
     },
     layers: [
-      { id: "offline-bg", type: "background", paint: { "background-color": "#eef1ea" } },
+      { id: "offline-bg", type: "background", paint: { "background-color": "#f3f2ee" } },  // нейтральный: зелёный = «исправлено»
       { id: "offline-nura-minor", type: "line", source: "offline-nura", filter: ["==", ["get", "c"], "minor"], minzoom: 13,
         paint: { "line-color": "#e2ded2", "line-width": width(13, 0.8, 17, 4) } },
       { id: "offline-nura-street-case", type: "line", source: "offline-nura", filter: ["==", ["get", "c"], "street"], minzoom: 12,
@@ -296,7 +296,10 @@ async function loadMap() {
       if (!id || /^(civic|r0\d|r1\d|b3d|bk)-/.test(id) || map.hasImage(id)) return;
       try { map.addImage(id, { width: 1, height: 1, data: new Uint8Array(4) }); } catch (err) { /* уже добавлен */ }
     });
-    map.on("moveend", () => { if (typeof syncThreeD === "function") syncThreeD(); });
+    map.on("moveend", () => {
+      if (typeof syncThreeD === "function") syncThreeD();
+      if (typeof autoTilt === "function") autoTilt();  // Birge: город — 0°, приближение ≥ 15 — плавный 3D
+    });
     map.on("load", () => {
       try {
         const layers = map.getStyle().layers,
@@ -408,17 +411,12 @@ async function loadMap() {
             minzoom: 14,
             filter: ["!=", ["get", "hide_3d"], true],
             paint: {
-              "fill-extrusion-color": [
-                "interpolate",
-                ["linear"],
-                ["to-number", ["get", "render_height"], 4],
-                0,
-                "#e1e6d9",
-                60,
-                "#b7c9a2",
-                180,
-                "#87a489",
-              ],
+              // Тёплый светло-серый по высоте (палитра — web/civic/shell/basemap-style.js, решение владельца 11 окт):
+              // зелёный на карте только у статусов «исправлено/проверено».
+              "fill-extrusion-color": window.BirgeBasemapStyle
+                ? window.BirgeBasemapStyle.buildingColor(["to-number", ["get", "render_height"], 4])
+                : "#e4e0d8",
+              "fill-extrusion-vertical-gradient": true,
               "fill-extrusion-height": [
                 "interpolate",
                 ["linear"],
@@ -437,19 +435,16 @@ async function loadMap() {
                 15.4,
                 ["to-number", ["get", "render_min_height"], 0],
               ],
-              "fill-extrusion-opacity": 0.9,
+              "fill-extrusion-opacity": 0.92,
             },
           },
           label,
         );
         }
         window.BirgeOffline?.attach?.(map);
-        map.setLight({
-          anchor: "viewport",
-          color: "#fff9e8",
-          intensity: 0.38,
-          position: [1.3, 190, 45],
-        });
+        // Подложка Birge: здания по высоте, ориентиры с подписью ru/kk, парки и вода, мягкий свет (basemap-style.js).
+        if (!window.BirgeBasemapStyle?.install(map))
+          map.setLight({ anchor: "viewport", color: "#fffaf0", intensity: 0.32, position: [1.2, 200, 40] });
         popup = new maplibregl.Popup({
           closeButton: false,
           closeOnClick: false,

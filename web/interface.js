@@ -47,6 +47,24 @@ function syncThreeD() {
   const on = map.getPitch() >= THREE_D_MIN_PITCH;
   if (on !== state.threeD) showThreeD(on);
 }
+// Birge (владелец, читаемость карты п. 8): на уровне города карта плоская (0°); при приближении до 15 наклон 3D
+// включается плавно, при отдалении ниже 14 — снимается. Между 14 и 15 положение не меняется (без дёрганья у порога).
+// Кнопка 3D — ручной выбор, он действует до следующей смены уровня. Только в режиме карты Birge (civic-mode).
+const AUTO_TILT_ON = 15, AUTO_TILT_OFF = 14;
+let tiltLevel = null;  // "city" | "near"
+function autoTilt() {
+  if (!map || map.isMoving() || !document.body.classList.contains("civic-mode")) return;
+  const z = map.getZoom();
+  const level = z >= AUTO_TILT_ON ? "near" : z < AUTO_TILT_OFF ? "city" : tiltLevel || "city";
+  if (level === tiltLevel) return;
+  const first = tiltLevel === null;
+  tiltLevel = level;
+  const want = level === "near" ? THREE_D_PITCH : 0;
+  if (first && level === "city" && map.getPitch() < 1) return;
+  if (Math.abs(map.getPitch() - want) < 3) { syncThreeD(); return; }
+  showThreeD(level === "near");
+  map.easeTo({ pitch: want, bearing: want ? map.getBearing() || -16 : 0, duration: 900 * motion() });
+}
 // Zoom buttons keep the intended tilt when they interrupt a running camera animation: finish a 3D
 // tilt, or finish leaving 3D; any other tilt (e.g. the training district's soft 22°) is left as is.
 function zoomBy(delta) {
