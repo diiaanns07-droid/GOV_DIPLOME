@@ -121,6 +121,15 @@ function compareMap(base, now, timeRef) {
     add(overMap.length ? "СМОТРЕТЬ" : "OK", "интерфейс", `${tag}: кнопок вне карты ${cb.size} → ${cn.length}` + (overMap.length ? " — новые кнопки поверх карты (правило 1)" : ""),
       newCtl.length || goneCtl.length ? { new: newCtl.slice(0, 20), gone: goneCtl.slice(0, 20) } : null);
     if (JSON.stringify(b.menu) !== JSON.stringify(n.menu)) add("СМОТРЕТЬ", "интерфейс", `${tag}: пункты меню изменились (правило 2: житель ≤ 5, акимат ≤ 5)`, { was: b.menu, now: n.menu });
+    // Карточка места: правило 3 (не растёт бесконечно — главное сверху, остальное в «Подробнее») и правило 4 (одна главная кнопка).
+    const kb_ = b.card, kn_ = n.card;
+    if (kb_ && !kn_) add("FAIL", "карточка", `${tag}: карточка «${kb_.title}» не открылась нажатием по значку`);
+    else if (kb_ && kn_) {
+      add(kn_.primary > 1 ? "FAIL" : "OK", "карточка", `${tag}: главных кнопок ${kb_.primary} → ${kn_.primary} (правило 4: одна)`, kn_.primary > 1 ? kn_.primary_names : null);
+      if (kb_.primary_in_view && kn_.primary_in_view === false) add("FAIL", "карточка", `${tag}: главная кнопка карточки больше не видна без прокрутки`, kn_.primary_names);
+      const grew = kn_.content_h > kb_.content_h * 1.25 && kn_.content_h - kb_.content_h > 120;
+      add(grew ? "СМОТРЕТЬ" : "OK", "карточка", `${tag}: высота содержимого ${kb_.content_h} → ${kn_.content_h} px, кнопок ${kb_.buttons} → ${kn_.buttons}, «Подробнее» ${kb_.details} → ${kn_.details}` + (grew ? " — карточка выросла (правило 3)" : ""));
+    }
     // 3. Плавность и отклик.
     for (const k of ["pan", "fly"]) {
       const was = r.smooth && r.smooth[k], is = n.smooth && n.smooth[k];

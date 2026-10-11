@@ -2,6 +2,7 @@
 //
 //   node tests/e2e/wave_checks.cjs --root <папка сборки> --out <папка> [--sizes 1366x768,375x812] [--langs ru,kk]
 //        [--only W2-1,W1-3]   — только эти пункты
+//        [--force]            — проверять и без кода роли (проверка самой проверки: на 8e67c65 ждём FAIL без падений, не приёмка)
 //
 // Каждый пункт сначала спрашивает сборку, есть ли он вообще (код роли в web/ и ui/, маршрут API, раздел меню).
 // Нет — статус ЖДЁТ с причиной («нет кода R09: complaint.emergency»): это не дефект, роль ещё не сдала.
@@ -515,7 +516,7 @@ const ITEMS = [
   const variants = SIZES.flatMap((s) => LANGS.map((l) => [s, l]));
   const todo = ITEMS.filter((i) => !ONLY || ONLY.includes(i.id));
   const status = {};
-  for (const it of todo) { status[it.id] = delivered(it.id); }
+  for (const it of todo) { status[it.id] = delivered(it.id); if (args.force && !status[it.id].ok) status[it.id] = { ok: true, forced: true, hits: [] }; }
   const need = todo.filter((it) => status[it.id].ok);
   for (const it of todo.filter((x) => !status[x.id].ok))
     add(it.id, "сборка", `${it.title} — ЖДЁТ поставки (${it.owner})`, "PENDING", "в коде сборки нет: " + PROBE_TEXT[it.id]);
@@ -526,7 +527,7 @@ const ITEMS = [
     const browser = await chromium.launch();
     try {
       for (const it of need) {
-        add(it.id, "сборка", `${it.title}: код есть — проверяю`, "INFO", status[it.id].hits);
+        add(it.id, "сборка", `${it.title}: ${status[it.id].forced ? "кода нет, --force — проверяю механику" : "код есть — проверяю"}`, "INFO", status[it.id].hits);
         try { await it.run({ browser, base: server.base, dicts, variants, staff: server.staff }); }
         catch (e) { add(it.id, "!", "проверка прервалась", "FAIL", String(e.message || e).slice(0, 300)); }
       }
@@ -534,9 +535,9 @@ const ITEMS = [
   }
   const counts = { PASS: 0, FAIL: 0, PENDING: 0, NOT_RUN: 0, INFO: 0 };
   results.forEach((r) => counts[r.status]++);
-  const meta = { root: ROOT, sha, when: new Date().toISOString(), sizes: SIZES.map((s) => s.join("x")), langs: LANGS, node: process.version };
+  const meta = { root: ROOT, sha, when: new Date().toISOString(), sizes: SIZES.map((s) => s.join("x")), langs: LANGS, node: process.version, ...(args.force ? { force: "проверка механики, не приёмка" } : {}) };
   fs.writeFileSync(path.join(OUT, "WAVE_RESULT.json"), JSON.stringify({ meta, counts, items: todo.map(({ run, ...i }) => ({ ...i, delivered: status[i.id] })), results }, null, 1));
-  const md = [`# R10 · новые пункты волн 1–2 · ${sha}`, "", "```", JSON.stringify(meta), "```", "",
+  const md = [`# R10 · новые пункты волн 1–2 · ${sha}${args.force ? " · --force (проверка механики, не приёмка)" : ""}`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, ЖДЁТ ${counts.PENDING}, NOT_RUN ${counts.NOT_RUN}`, "",
     "| Пункт | Что | Владелец | Готово, когда | Состояние |", "|---|---|---|---|---|",
     ...todo.map((i) => { const rs = results.filter((r) => r.item === i.id && r.status !== "INFO");

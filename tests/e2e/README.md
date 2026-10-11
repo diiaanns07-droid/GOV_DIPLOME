@@ -7,6 +7,11 @@
 | `ux_screens.cjs` | UX-чек-лист UX_BRIEF по списку экранов (`screens_build.json` для сборки; для стендов ролей — свой JSON) |
 | `ux_lib.cjs` | общие правила экрана: прокрутка вбок, ключи перевода, технические слова, шрифт < 14 px, зоны нажатия < 40 px (значки на карте ≥ 24 px), русские строки в ҚАЗ, Tab до главной кнопки (≤ 40 или через «Перейти к главной кнопке») |
 | `screens_build.json` | экраны сборки: главная карта, «Картина дня» (`#day`), страницы модулей (если сервер их отдаёт; иначе NOT_RUN) |
+| `map_baseline.cjs` | **эталон карты** (POLISH_WAVE_2 правило 7): вид по умолчанию житель/акимат × 1366/375 × ru/kk — кадр PNG, видимые слои, значки, кнопки по зонам, меню, камера; загрузка (медиана 3 окон), запросы, плавность, отклик интерфейса, карточка места, API |
+| `compare_baseline.cjs` | новый прогон против эталона (`research/round-14-results/R10/baseline_8e67c65/`): «НЕ ХУЖЕ» / «ХУЖЕ», FAIL и СМОТРЕТЬ, кадры `diff-*.jpg`; `--control` — свежий 8e67c65 на той же машине для времени |
+| `wave_checks.cjs` | **новые пункты POLISH_WAVE.md / POLISH_WAVE_2.md**, написаны до поставок: W1-3 срочные 104/112, W2-1 «исправлено → житель подтвердил → зелёный», W2-2 паспорт, W2-4 «Рядом», W2-6 QR, W2-7 идеи, P-12 меню ≤ 5. Нет кода роли в сборке — **ЖДЁТ** (не FAIL) |
+| `r10_lib.cjs` | общие помощники трёх скриптов выше (сервер сборки, API, словари, поиск по видимым словам) |
+| `fixtures/regress_inject.js` | отрицательный контроль сравнения: новый слой по умолчанию, свои значки, +1.5 с к тепловой карте → должно быть «ХУЖЕ» |
 
 Элементы ищутся по видимым словам из словарей R11 (`web/civic/i18n/*.json`), а не по классам — тест не ломается от
 вёрстки. Реальная точка сценария — остановка «Хан Шатыр» (`osm-node-4109037549`, Нура); тексты жалоб синтетические.
@@ -35,11 +40,18 @@
   через две недели после первого запуска у «Хан Шатыра» есть похожие жалобы (иначе на шаге 2 нет «Я тоже»). Только API,
   своя временная база, ~1 мин; запускается и из run_acceptance.cjs (`--no-reset` — пропустить).
 - `demo_flow.cjs --inject-css <файл>` — проверить предлагаемую правку CSS без изменения сборки (не приёмка).
+- С 12 окт `demo_flow.cjs` пишет время каждого шага по вариантам (`timing` в RESULT.json, таблица в конце RESULT.md) —
+  для сравнения «то же время» с эталоном 8e67c65.
+- `run_acceptance.cjs` запускает и `wave_checks.cjs` (`--no-wave` — пропустить); с `--baseline <папка эталона>
+  [--control <прогон 8e67c65 здесь же>]` — ещё `map_baseline.cjs` и `compare_baseline.cjs` (раздел 7 SUMMARY.md).
 
     # Python 3.11+ с pytest, Node 20+, Playwright с Chromium
     NODE_PATH="$(npm root -g)" node tests/e2e/run_acceptance.cjs --root <папка сборки> --out <папка отчёта> --label B1
     NODE_PATH="$(npm root -g)" node tests/e2e/demo_flow.cjs --root <сборка> --out <папка>          # только сценарий
     NODE_PATH="$(npm root -g)" node tests/e2e/ux_screens.cjs --screens tests/e2e/screens_build.json --base http://127.0.0.1:8611/ --out <папка>
+    NODE_PATH="$(npm root -g)" node tests/e2e/wave_checks.cjs --root <сборка> --out <папка>                  # новые пункты волн
+    NODE_PATH="$(npm root -g)" node tests/e2e/map_baseline.cjs --root <сборка> --out <папка>/map --repeat 3   # эталон карты
+    NODE_PATH="$(npm root -g)" node tests/e2e/compare_baseline.cjs --base research/round-14-results/R10/baseline_8e67c65 --new <папка> [--control <папка 8e67c65>]
     # Windows: $env:PYTHON = "<сборка>\.venv\Scripts\python.exe"
 
 Ничего не пишут в репозиторий; база — временная. Код возврата demo_flow — 1 при любом FAIL.

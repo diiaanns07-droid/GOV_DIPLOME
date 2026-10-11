@@ -17,7 +17,8 @@
 //   4. Время отклика интерфейса (мс от нажатия до результата): «Сообщить о проблеме» → форма; «Мои обращения»;
 //      «Житель → Акимат» → «Что построить?»; «Картина дня» → 4 числа; место из «Горячих мест» → значок выбран;
 //      ҚАЗ ↔ РУС.
-//   5. API: медиана 5 запросов /heat (город z12, Нура z16), /akim/summary, /classify, /similar, /targets, /proposals.
+//   5. Карточка места «Хан Шатыр» (правила 3–4): высота содержимого, кнопки, главные кнопки, главная видна без прокрутки.
+//   6. API: медиана 5 запросов /heat (город z12, Нура z16), /akim/summary, /classify, /similar, /targets, /proposals.
 // Итог: <out>/BASELINE.json, BASELINE.md, кадры default-<w>x<h>-<lang>-<mode>.png. Сравнение — compare_baseline.cjs.
 "use strict";
 const { chromium } = require("playwright");
@@ -120,6 +121,38 @@ const SMOOTH = async (stop) => {
   return { pan, fly };
 };
 
+// Карточка места (правило 3 — «не растёт бесконечно», правило 4 — одна главная кнопка): открыть «Хан Шатыр» нажатием
+// по значку и измерить: высота на экране и всего содержимого (с прокруткой), кнопки, главные кнопки, видна ли главная
+// без прокрутки, сколько свёрнутых блоков «Подробнее».
+const CARD = () => {
+  const vis = (e) => { const b = e.getBoundingClientRect(); const s = getComputedStyle(e);
+    return b.width > 0 && b.height > 0 && s.visibility !== "hidden" && s.display !== "none" && b.bottom > 0 && b.top < innerHeight && b.right > 0 && b.left < innerWidth; };
+  const card = [...document.querySelectorAll(".r07-card, [role=dialog] article, article")].find(vis);
+  if (!card) return null;
+  let sc = card;
+  for (let e = card; e && e !== document.body; e = e.parentElement) { const o = getComputedStyle(e).overflowY; if ((o === "auto" || o === "scroll") && e.scrollHeight > e.clientHeight + 2) { sc = e; break; } }
+  const box = sc.getBoundingClientRect();
+  const btns = [...card.querySelectorAll("button, a[href], [role=button]")].filter((e) => e.getClientRects().length);
+  const primary = btns.filter((e) => /primary/.test(e.className));
+  const inView = (e) => { const b = e.getBoundingClientRect(); return b.top >= Math.max(0, box.top) - 1 && b.bottom <= Math.min(innerHeight, box.bottom) + 1; };
+  const title = card.querySelector("h1, h2, h3, [role=heading]");
+  return { title: title ? title.innerText.trim().slice(0, 60) : null, visible_h: Math.round(Math.min(box.bottom, innerHeight) - Math.max(box.top, 0)),
+    content_h: Math.round(card.scrollHeight), buttons: btns.length, primary: primary.length,
+    primary_names: primary.map((e) => (e.innerText || e.getAttribute("aria-label") || "").trim().slice(0, 40)),
+    primary_in_view: primary.length ? primary.every(inView) : null, details: card.querySelectorAll("details, [aria-expanded]").length,
+    text_chars: card.innerText.replace(/\s+/g, " ").length };
+};
+async function cardMetrics(page, tag) {
+  await page.keyboard.press("Escape").catch(() => null); await L.sleep(600);
+  const pt = await L.showPoint(page, STOP, 17);
+  if (!pt) return null;
+  await L.tap(page, pt.x, pt.y); await L.sleep(2500);
+  const m = await page.evaluate(CARD).catch(() => null);
+  if (m) { m.shot = `card-${tag}.jpg`; await page.screenshot({ path: path.join(OUT, m.shot), type: "jpeg", quality: 70 }).catch(() => null); }
+  await page.keyboard.press("Escape").catch(() => null); await L.sleep(600);
+  return m;
+}
+
 async function settle(page, maxMs = 30000) {
   const t = Date.now();
   let lastReq = Date.now();
@@ -209,6 +242,7 @@ async function variant(browser, base, size, lang, mode) {
       await r.page.screenshot({ path: path.join(OUT, out.shot) }).catch(() => null);
       out.smooth = await r.page.evaluate(SMOOTH, STOP).catch((e) => ({ error: String(e.message).slice(0, 120) }));
       out.transitions = await transitions(r.page, dict, lang, mode, r.mobile);
+      out.card = await cardMetrics(r.page, tag);
     }
     await r.ctx.close();
   }
@@ -357,6 +391,12 @@ function report(meta, cases, apis) {
     if (c.error || !c.smooth) continue;
     const f = (x) => (x ? `${x.fps} · ${x.p95_ms} · ${x.over50}` : "—");
     md.push(`| ${tag} | ${f(c.smooth.pan)} | ${f(c.smooth.fly)} | ${Object.entries(c.transitions || {}).map(([k, v]) => `${k.replace(/_ms$/, "")}: ${v ?? "—"}`).join(", ")} |`);
+  }
+  md.push("", "Карточка места «Хан Шатыр» (правила 3–4 POLISH_WAVE_2):", "", "| Вариант | заголовок | видно, px | содержимое, px | кнопок | главных | главная без прокрутки | «Подробнее» | кадр |", "|---|---|---:|---:|---:|---:|---|---:|---|");
+  for (const [tag, c] of Object.entries(cases)) {
+    if (c.error) continue;
+    const k = c.card;
+    md.push(k ? `| ${tag} | ${k.title} | ${k.visible_h} | ${k.content_h} | ${k.buttons} | ${k.primary} (${k.primary_names.join(", ")}) | ${k.primary_in_view} | ${k.details} | ${k.shot} |` : `| ${tag} | карточка не открылась ||||||||`);
   }
   if (apis) {
     md.push("", "API (6 запросов: первый и медиана остальных):", "", "| Запрос | первый, мс | медиана, мс | КБ | статус |", "|---|---:|---:|---:|---|");
