@@ -1,0 +1,84 @@
+.......F.....F........F.....F......                                      [100%]
+================================== FAILURES ===================================
+_________________________ test_map_accuracy[c01-R12] __________________________
+
+name = 'граница Астаны · R12 geo/yards.json'
+
+    @pytest.mark.parametrize("name", _NAMES, ids=_ids(_NAMES))
+    def test_map_accuracy(name):
+        if name.startswith("ошибка запуска"):
+            pytest.fail(name)
+        check = next(c for c in report().checks if c["name"] == name)
+        if check["status"] == "NOT_RUN":
+            pytest.skip(f"NOT_RUN: {check['detail']}")
+>       assert check["status"] == "PASS", name + ": " + json.dumps(check["detail"], ensure_ascii=False)[:1500]
+E       AssertionError: граница Астаны · R12 geo/yards.json: {"coords": 3962, "outside": 19, "examples": [[71.6718742, 51.3094308], [71.6742334, 51.3111448], [71.6704181, 51.3137676], [71.6733166, 51.3156608], [71.6716, 51.3165612]]}
+E       assert 'FAIL' == 'PASS'
+E
+E         - PASS
+E         + FAIL
+
+..\..\..\Documents\Codex\2026-10-10\c-users-legion-desktop-hackalem-hack\work\r10\tests\civic\R10\test_r10_accuracy.py:109: AssertionError
+_________________________ test_map_accuracy[c07-R05] __________________________
+
+name = 'граница Астаны · R05 astana-existing.json'
+
+    @pytest.mark.parametrize("name", _NAMES, ids=_ids(_NAMES))
+    def test_map_accuracy(name):
+        if name.startswith("ошибка запуска"):
+            pytest.fail(name)
+        check = next(c for c in report().checks if c["name"] == name)
+        if check["status"] == "NOT_RUN":
+            pytest.skip(f"NOT_RUN: {check['detail']}")
+>       assert check["status"] == "PASS", name + ": " + json.dumps(check["detail"], ensure_ascii=False)[:1500]
+E       AssertionError: граница Астаны · R05 astana-existing.json: {"coords": 6691, "outside": 337, "examples": [[71.37867, 51.00083], [71.377295, 51.000097], [71.375421, 50.9981], [71.37357, 50.996948], [71.369762, 50.993719]]}
+E       assert 'FAIL' == 'PASS'
+E
+E         - PASS
+E         + FAIL
+
+..\..\..\Documents\Codex\2026-10-10\c-users-legion-desktop-hackalem-hack\work\r10\tests\civic\R10\test_r10_accuracy.py:109: AssertionError
+_________________________ test_map_accuracy[c16-R05] __________________________
+
+name = 'остановки — не ж/д платформы · R05'
+
+    @pytest.mark.parametrize("name", _NAMES, ids=_ids(_NAMES))
+    def test_map_accuracy(name):
+        if name.startswith("ошибка запуска"):
+            pytest.fail(name)
+        check = next(c for c in report().checks if c["name"] == name)
+        if check["status"] == "NOT_RUN":
+            pytest.skip(f"NOT_RUN: {check['detail']}")
+>       assert check["status"] == "PASS", name + ": " + json.dumps(check["detail"], ensure_ascii=False)[:1500]
+E       AssertionError: остановки — не ж/д платформы · R05: {"stops": 1017, "railway": 41, "examples": ["osm-way-1019455643", "osm-way-1058647263", "osm-way-1058647264", "osm-way-1058647265", "osm-way-1492444185", "osm-way-1531992951", "osm-way-1531992953", "osm-way-1531992954"]}
+E       assert 'FAIL' == 'PASS'
+E
+E         - PASS
+E         + FAIL
+
+..\..\..\Documents\Codex\2026-10-10\c-users-legion-desktop-hackalem-hack\work\r10\tests\civic\R10\test_r10_accuracy.py:109: AssertionError
+_________________________ test_map_accuracy[c22-R05] __________________________
+
+name = 'остановки ≤ 60 м от улицы · R05'
+
+    @pytest.mark.parametrize("name", _NAMES, ids=_ids(_NAMES))
+    def test_map_accuracy(name):
+        if name.startswith("ошибка запуска"):
+            pytest.fail(name)
+        check = next(c for c in report().checks if c["name"] == name)
+        if check["status"] == "NOT_RUN":
+            pytest.skip(f"NOT_RUN: {check['detail']}")
+>       assert check["status"] == "PASS", name + ": " + json.dumps(check["detail"], ensure_ascii=False)[:1500]
+E       AssertionError: остановки ≤ 60 м от улицы · R05: {"stops": 1017, "far_from_any_line": ["osm-way-1492444185", "osm-way-272757224"], "far_from_road": 2, "far_road_examples": [{"id": "osm-way-1492444185", "road_m": 90.0, "any_line_m": 75.2, "point": [71.408875, 51.19607]}, {"id": "osm-way-272757224", "road_m": 109.9, "any_line_m": 98.2, "point": [71.409403, 51.19609]}], "max_road_m": 109.9}
+E       assert 'FAIL' == 'PASS'
+E
+E         - PASS
+E         + FAIL
+
+..\..\..\Documents\Codex\2026-10-10\c-users-legion-desktop-hackalem-hack\work\r10\tests\civic\R10\test_r10_accuracy.py:109: AssertionError
+=========================== short test summary info ===========================
+FAILED ..\..\..\Documents\Codex\2026-10-10\c-users-legion-desktop-hackalem-hack\work\r10\tests\civic\R10\test_r10_accuracy.py::test_map_accuracy[c01-R12]
+FAILED ..\..\..\Documents\Codex\2026-10-10\c-users-legion-desktop-hackalem-hack\work\r10\tests\civic\R10\test_r10_accuracy.py::test_map_accuracy[c07-R05]
+FAILED ..\..\..\Documents\Codex\2026-10-10\c-users-legion-desktop-hackalem-hack\work\r10\tests\civic\R10\test_r10_accuracy.py::test_map_accuracy[c16-R05]
+FAILED ..\..\..\Documents\Codex\2026-10-10\c-users-legion-desktop-hackalem-hack\work\r10\tests\civic\R10\test_r10_accuracy.py::test_map_accuracy[c22-R05]
+4 failed, 31 passed in 17.14s

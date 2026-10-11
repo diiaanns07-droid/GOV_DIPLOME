@@ -1,0 +1,15 @@
+three.js
+Version: 0.169.0 (r169)
+License: MIT
+NPM metadata: https://registry.npmjs.org/three/0.169.0
+Package URL: https://registry.npmjs.org/three/-/three-0.169.0.tgz
+NPM integrity (verified): sha512-Ed906MA3dR4TS5riErd4QBsRGPcx+HBDX2O5yYE5GqJeFQTPU+M56Va/f/Oph9X7uZo3W3o4l2ZhBZ6f6qUv0w==
+Downloaded at (UTC): 2026-10-10T13:00:45.924373+00:00
+
+three.module.min.js: 687458 bytes
+SHA-256: f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee
+CDN URL: https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js
+
+LICENSE: 1081 bytes
+SHA-256: 4c40a1ef62450b857c3b2aaf294936304cd552d965fbcd9d32d4c5bcf4ba4454
+CDN URL: https://cdn.jsdelivr.net/npm/three@0.169.0/LICENSE

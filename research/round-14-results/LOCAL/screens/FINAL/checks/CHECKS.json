@@ -1,0 +1,4859 @@
+[
+  {
+    "profile": "online-1366-ru",
+    "network": [
+      {
+        "url": "http://127.0.0.1:8616/",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/style.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/components.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/tokens.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/app.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/interface.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/pmtiles/pmtiles.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/map.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/boot.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/evidence.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/facts.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/whatif.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/routing.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/data.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/school-access-routing.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/note.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/case.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/i18n.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/ui-kit.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/stage-editor.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/categories_v2.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint-strings.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell-text.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-models.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/SCHOOL_MANIFEST.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/explore.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/ru.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/modules",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/session",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/bootstrap",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.meta.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/plan-status",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.case.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.match-review.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/status.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/style.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.png",
+        "status": 200
+      },
+      {
+        "url": "blob:http://127.0.0.1:8616/3620dd97-b49f-48d7-b21f-c0b088499fe5",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/streets.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/demo_snapped.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/objects?limit=100",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat/meta",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/astana-districts.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/proposals.fixture.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/nura-streets.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/three/three.module.min.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=8.9",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/proposals?device_id=dev-1603a3b74d9c29056af55b09f7e5ee38",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Bold.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=16.7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/8448-8703.pbf",
+        "status": 200
+      }
+    ],
+    "errors": [
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x3c2c00acf800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x3c2c00acf800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x3c2c00acf800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x3c2c00acf800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+      }
+    ],
+    "ready_seconds": 1.313,
+    "navigation": {
+      "dom_ms": 78.40000000037253,
+      "load_ms": 93.09999999962747
+    },
+    "automatic_mode": {
+      "navigatorOnline": true,
+      "basemap": {
+        "active": true,
+        "reason": "installed-local-first"
+      },
+      "lang": "ru"
+    },
+    "map": {
+      "pitch": 50,
+      "buildingParts": 35,
+      "labels": 26,
+      "renderer": "WebKit WebGL"
+    }
+  },
+  {
+    "profile": "online-1366-kk",
+    "network": [
+      {
+        "url": "http://127.0.0.1:8616/",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/style.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/tokens.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/components.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/app.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/map.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/interface.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/boot.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/pmtiles/pmtiles.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/school-access-routing.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/whatif.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/facts.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/routing.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/case.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/note.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/ui-kit.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/evidence.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/i18n.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/stage-editor.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/categories_v2.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint-strings.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-models.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell-text.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/explore.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/data.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/SCHOOL_MANIFEST.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/ru.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/modules",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/session",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/bootstrap",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/plan-status",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/kk.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.meta.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.case.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/status.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.match-review.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/style.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.png",
+        "status": 200
+      },
+      {
+        "url": "blob:http://127.0.0.1:8616/78ac8034-6730-45a7-a018-79a3daabdab5",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/streets.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/demo_snapped.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/objects?limit=100",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat/meta",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/astana-districts.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/nura-streets.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/proposals.fixture.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/three/three.module.min.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=8.9",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/proposals?device_id=dev-1d0ecffae57f3edfb441048a8d820a01",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Bold.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=16.7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/8448-8703.pbf",
+        "status": 200
+      }
+    ],
+    "errors": [],
+    "ready_seconds": 2.078,
+    "navigation": {
+      "dom_ms": 152.7000000011176,
+      "load_ms": 163
+    },
+    "automatic_mode": {
+      "navigatorOnline": true,
+      "basemap": {
+        "active": true,
+        "reason": "installed-local-first"
+      },
+      "lang": "kk"
+    },
+    "map": {
+      "pitch": 50,
+      "buildingParts": 35,
+      "labels": 26,
+      "renderer": "WebKit WebGL"
+    }
+  },
+  {
+    "profile": "online-375-ru",
+    "network": [
+      {
+        "url": "http://127.0.0.1:8616/",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/style.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/tokens.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/components.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/app.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/pmtiles/pmtiles.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/interface.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/map.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/boot.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/facts.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/whatif.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/evidence.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/data.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/routing.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/school-access-routing.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/note.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/case.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/i18n.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/ui-kit.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/stage-editor.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/categories_v2.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint-strings.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-models.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell-text.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/explore.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/SCHOOL_MANIFEST.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/ru.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/modules",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/session",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/bootstrap",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/plan-status",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.meta.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.case.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.match-review.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/status.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/style.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.png",
+        "status": 200
+      },
+      {
+        "url": "blob:http://127.0.0.1:8616/0e1d219f-7a6c-4883-9637-763ce4eb6d51",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/streets.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/objects?limit=100",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/demo_snapped.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat/meta",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/nura-streets.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/astana-districts.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/proposals.fixture.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/three/three.module.min.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=8.2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/proposals?device_id=dev-80a739cff0d0dca4326dfb1e2a586d18",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Bold.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=16.7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/8448-8703.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Regular.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/targets?lon=71.406556&lat=51.131155",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/classify",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/similar",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints/c-demo4eca27874085ec47",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints/summary?target_id=osm-node-4109037549&category=lighting&days=14",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints",
+        "status": 201
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=17",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      }
+    ],
+    "errors": [
+      {
+        "type": "pageerror",
+        "text": "Cannot read properties of null (reading 'text')"
+      }
+    ],
+    "ready_seconds": 1.547,
+    "navigation": {
+      "dom_ms": 120.19999999925494,
+      "load_ms": 129
+    },
+    "automatic_mode": {
+      "navigatorOnline": true,
+      "basemap": {
+        "active": true,
+        "reason": "installed-local-first"
+      },
+      "lang": "ru"
+    },
+    "map": {
+      "pitch": 50,
+      "buildingParts": 10,
+      "labels": 9,
+      "renderer": "WebKit WebGL"
+    },
+    "complaint_header_visibility": {
+      "title": "Что случилось?",
+      "uncovered": true,
+      "top": "bc-title"
+    },
+    "rapid_close_test": "separate complaint -> success -> immediate Escape"
+  },
+  {
+    "profile": "online-375-kk",
+    "network": [
+      {
+        "url": "http://127.0.0.1:8616/",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/style.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/tokens.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/components.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/app.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/pmtiles/pmtiles.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/map.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/interface.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/evidence.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/boot.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/facts.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/whatif.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/note.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/categories_v2.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/ui-kit.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/school-access-routing.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/i18n.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/case.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint-strings.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school-ui.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/routing.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell-text.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/stage-editor.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-models.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/explore.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-core.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/data.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/SCHOOL_MANIFEST.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/ru.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/modules",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/session",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/bootstrap",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/kk.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/plan-status",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.meta.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.case.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.match-review.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/status.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/style.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.png",
+        "status": 200
+      },
+      {
+        "url": "blob:http://127.0.0.1:8616/6af7a751-d92d-4804-b693-1b3858bbc768",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/streets.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/demo_snapped.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/objects?limit=100",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat/meta",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/nura-streets.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/proposals.fixture.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/astana-districts.json",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/three/three.module.min.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=8.2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/proposals?device_id=dev-1ee39c7d7144f4958205ddeac71e705d",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Bold.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=16.7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/8448-8703.pbf",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Regular.woff2",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "status": 206
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/targets?lon=71.406556&lat=51.131155",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/classify",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/similar",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints/c-8ce9dd362d96cce6",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints/summary?target_id=osm-node-4109037549&category=lighting&days=14",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints",
+        "status": 201
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=17",
+        "status": 200
+      }
+    ],
+    "errors": [
+      {
+        "type": "pageerror",
+        "text": "Cannot read properties of null (reading 'text')"
+      }
+    ],
+    "ready_seconds": 1.609,
+    "navigation": {
+      "dom_ms": 138.5,
+      "load_ms": 153.59999999962747
+    },
+    "automatic_mode": {
+      "navigatorOnline": true,
+      "basemap": {
+        "active": true,
+        "reason": "installed-local-first"
+      },
+      "lang": "kk"
+    },
+    "map": {
+      "pitch": 50,
+      "buildingParts": 10,
+      "labels": 9,
+      "renderer": "WebKit WebGL"
+    },
+    "complaint_header_visibility": {
+      "title": "Не болды?",
+      "uncovered": true,
+      "top": "bc-title"
+    },
+    "rapid_close_test": "separate complaint -> success -> immediate Escape"
+  },
+  {
+    "profile": "offline-1366-ru",
+    "network": [
+      {
+        "url": "http://127.0.0.1:8616/",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/style.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/tokens.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/components.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/app.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/interface.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/pmtiles/pmtiles.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/boot.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/map.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/data.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/evidence.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/facts.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/whatif.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/routing.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/school-access-routing.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/note.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/case.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/i18n.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/ui-kit.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/stage-editor.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/categories_v2.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint-strings.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-models.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell-text.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/explore.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/SCHOOL_MANIFEST.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/ru.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/modules",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/session",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/bootstrap",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/plan-status",
+        "method": "POST",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.meta.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.case.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.match-review.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/status.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/style.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=0-16383"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.png",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=746652-776062"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=706944-722603"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=734662-746651"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=722604-734661"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=688177-699589"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=699590-706943"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/streets.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/objects?limit=100",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/demo_snapped.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat/meta",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/nura-streets.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/astana-districts.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/three/three.module.min.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/proposals.fixture.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=529852-549082"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=549083-594819"
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=8.9",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/proposals?device_id=dev-8b6b08cf5231ac790cd557969a11f32a",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Bold.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=16.7",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7923837-7936619"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7862432-7878251"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7894805-7906767"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7916315-7923836"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/8448-8703.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      }
+    ],
+    "errors": [],
+    "ready_seconds": 2.547,
+    "navigation": {
+      "dom_ms": 367.19999999925494,
+      "load_ms": 367.80000000074506
+    },
+    "automatic_mode": {
+      "navigatorOnline": false,
+      "basemap": {
+        "active": true,
+        "reason": "forced-or-network-offline"
+      },
+      "lang": "ru"
+    },
+    "map": {
+      "pitch": 50,
+      "buildingParts": 35,
+      "labels": 26,
+      "renderer": "WebKit WebGL"
+    }
+  },
+  {
+    "profile": "offline-1366-kk",
+    "network": [
+      {
+        "url": "http://127.0.0.1:8616/",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/tokens.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/style.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/components.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/app.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/interface.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/pmtiles/pmtiles.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/boot.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/map.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/evidence.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/data.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/facts.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/whatif.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/routing.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/school-access-routing.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/case.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/note.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/i18n.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/ui-kit.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/stage-editor.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/categories_v2.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint-strings.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-models.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell-text.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/explore.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/SCHOOL_MANIFEST.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/ru.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/modules",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/session",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/bootstrap",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/kk.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.meta.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/plan-status",
+        "method": "POST",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.case.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.match-review.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/status.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/style.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=0-16383"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.png",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=746652-776062"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=706944-722603"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=734662-746651"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=722604-734661"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=688177-699589"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=699590-706943"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/streets.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/demo_snapped.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/objects?limit=100",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat/meta",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/three/three.module.min.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/nura-streets.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/astana-districts.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/proposals.fixture.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=529852-549082"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=549083-594819"
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=8.9",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/proposals?device_id=dev-0c19df755ba5eb894d6ef13db59b2ab3",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Bold.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=16.7",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7894805-7906767"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7923837-7936619"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7862432-7878251"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7916315-7923836"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/8448-8703.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      }
+    ],
+    "errors": [],
+    "ready_seconds": 2.453,
+    "navigation": {
+      "dom_ms": 255,
+      "load_ms": 268
+    },
+    "automatic_mode": {
+      "navigatorOnline": false,
+      "basemap": {
+        "active": true,
+        "reason": "forced-or-network-offline"
+      },
+      "lang": "kk"
+    },
+    "map": {
+      "pitch": 50,
+      "buildingParts": 35,
+      "labels": 26,
+      "renderer": "WebKit WebGL"
+    }
+  },
+  {
+    "profile": "offline-375-ru",
+    "network": [
+      {
+        "url": "http://127.0.0.1:8616/",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/style.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/tokens.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/components.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/app.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/interface.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/pmtiles/pmtiles.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/map.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/boot.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/data.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/evidence.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/facts.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/whatif.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/routing.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/school-access-routing.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/case.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/note.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/i18n.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/ui-kit.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/stage-editor.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/categories_v2.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint-strings.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-models.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell-text.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/explore.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/SCHOOL_MANIFEST.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/ru.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/modules",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/session",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/bootstrap",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/plan-status",
+        "method": "POST",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.meta.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.case.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.match-review.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/status.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/style.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=0-16383"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.png",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=746652-776062"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=706944-722603"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/streets.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/objects?limit=100",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat/meta",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/demo_snapped.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/nura-streets.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/three/three.module.min.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/astana-districts.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/proposals.fixture.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=549083-594819"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=529852-549082"
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=8.2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/proposals?device_id=dev-4fa3b0f19e4f62be64d41650fd326266",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Bold.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7923837-7936619"
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=16.7",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7894805-7906767"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/8448-8703.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Regular.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7894805-7906767"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7923837-7936619"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/targets?lon=71.406556&lat=51.131155",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/classify",
+        "method": "POST",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/similar",
+        "method": "POST",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints/c-8ce9dd362d96cce6",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints/summary?target_id=osm-node-4109037549&category=lighting&days=14",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints",
+        "method": "POST",
+        "status": 201,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=17",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      }
+    ],
+    "errors": [
+      {
+        "type": "pageerror",
+        "text": "Cannot read properties of null (reading 'text')"
+      }
+    ],
+    "ready_seconds": 2.531,
+    "navigation": {
+      "dom_ms": 274.5,
+      "load_ms": 285
+    },
+    "automatic_mode": {
+      "navigatorOnline": false,
+      "basemap": {
+        "active": true,
+        "reason": "forced-or-network-offline"
+      },
+      "lang": "ru"
+    },
+    "map": {
+      "pitch": 50,
+      "buildingParts": 10,
+      "labels": 9,
+      "renderer": "WebKit WebGL"
+    },
+    "complaint_header_visibility": {
+      "title": "Что случилось?",
+      "uncovered": true,
+      "top": "bc-title"
+    },
+    "rapid_close_test": "separate complaint -> success -> immediate Escape"
+  },
+  {
+    "profile": "offline-375-kk",
+    "network": [
+      {
+        "url": "http://127.0.0.1:8616/",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/style.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/tokens.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/components.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.css",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/app.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/interface.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/pmtiles/pmtiles.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/boot.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/map.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/data.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/evidence.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/facts.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/whatif.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/shell.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/resilience-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/core/plan-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/routing.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/k03/school-access-routing.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/case.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/note.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/i18n.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/school-ui.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/ui-kit.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/civic-map.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/stage-editor.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/editor/editor.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/feedback.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/scenarios/scenarios.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/assistant/assistant.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/heat/heat.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/categories_v2.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint-strings.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/feedback/complaint.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/akim/akim.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/proposals/proposals.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-core.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d-models.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/build3d.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell-text.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/birge.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/explore.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/shell/shell.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/SCHOOL_MANIFEST.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/ru.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/modules",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/session",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/bootstrap",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/i18n/kk.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/shymkent.case.meta.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/plan-status",
+        "method": "POST",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.case.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/maplibre-gl.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/govtech/school/cases/astana.match-review.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/status.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/style.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=0-16383"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/sprites/v4/light.png",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=746652-776062"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=706944-722603"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/streets.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/map/demo_snapped.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v1/objects?limit=100",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat/meta",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/nura-streets.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/vendor/three/three.module.min.js",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/astana-districts.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/build3d/data/proposals.fixture.json",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=549083-594819"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=529852-549082"
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=8.2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/proposals?device_id=dev-da928030338d10375443e5def33382a2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Bold.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7923837-7936619"
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=16.7",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7894805-7906767"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/fonts/Noto%20Sans%20Regular/8448-8703.pbf",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/fonts/Inter-Regular.woff2",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7894805-7906767"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/offline/astana.pmtiles",
+        "method": "GET",
+        "status": 206,
+        "range": "bytes=7923837-7936619"
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/targets?lon=71.406556&lat=51.131155",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/classify",
+        "method": "POST",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/similar",
+        "method": "POST",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints/c-406c66998e8ffc69",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints/summary?target_id=osm-node-4109037549&category=lighting&days=14",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/complaints",
+        "method": "POST",
+        "status": 201,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/api/civic/v2/heat?days=30&zoom=17",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      },
+      {
+        "url": "http://127.0.0.1:8616/civic/ui-kit/icons.svg",
+        "method": "GET",
+        "status": 200,
+        "range": null
+      }
+    ],
+    "errors": [
+      {
+        "type": "pageerror",
+        "text": "Cannot read properties of null (reading 'text')"
+      }
+    ],
+    "ready_seconds": 2.094,
+    "navigation": {
+      "dom_ms": 273.90000000037253,
+      "load_ms": 290.2999999988824
+    },
+    "automatic_mode": {
+      "navigatorOnline": false,
+      "basemap": {
+        "active": true,
+        "reason": "forced-or-network-offline"
+      },
+      "lang": "kk"
+    },
+    "map": {
+      "pitch": 50,
+      "buildingParts": 10,
+      "labels": 9,
+      "renderer": "WebKit WebGL"
+    },
+    "complaint_header_visibility": {
+      "title": "Не болды?",
+      "uncovered": true,
+      "top": "bc-title"
+    },
+    "rapid_close_test": "separate complaint -> success -> immediate Escape"
+  }
+]

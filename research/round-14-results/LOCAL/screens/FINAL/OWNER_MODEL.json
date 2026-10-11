@@ -1,0 +1,23 @@
+{
+  "category": "lighting",
+  "score": 0.9939,
+  "needs_review": true,
+  "model_version": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011",
+  "top3": [
+    {
+      "category": "lighting",
+      "score": 0.9939
+    },
+    {
+      "category": "transport",
+      "score": 0.0031
+    },
+    {
+      "category": "snow_ice",
+      "score": 0.0006
+    }
+  ],
+  "suggest": true,
+  "source": "v2",
+  "score_kind": "softmax"
+}
