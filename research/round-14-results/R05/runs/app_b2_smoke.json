@@ -1,17 +1,15 @@
 {
- "generated_at": "2026-10-11T19:19:39.628Z",
- "url": "http://127.0.0.1:8808/",
- "r01": "claude/sharp-dijkstra-0t87gl@d791fc0 (волна 2, база FINAL-2) + R05 c8e1b064",
+ "generated_at": "2026-10-11T20:02:22.909Z",
+ "url": "http://127.0.0.1:8811/",
+ "r01": "probe r01k d791fc0 + patch + R05 work tree",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
    "status": "PASS",
    "detail": {
     "labels": [
-     "Проект · 20277",
      "Проект · 2027",
-     "Проект · 2027",
-     "Проект · 2027",
+     "Проект · 20275",
      "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027"
@@ -58,7 +56,7 @@
     "posts": [
      201
     ],
-    "id": "p-9b76084e0e06",
+    "id": "p-a9052bf3c7dc",
     "year": 2027
    }
   },
@@ -94,8 +92,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 436.6818894381255,
-     "y": 254.88900779082724
+     "x": 436.6818654346263,
+     "y": 254.88881214126758
     },
     "under": []
    }
@@ -184,12 +182,12 @@
    "detail": {
     "1366_ru": {
      "heldBefore": 1,
-     "count": 7,
+     "count": 5,
      "console_errors": []
     },
     "375_kk": {
      "heldBefore": 1,
-     "count": 7,
+     "count": 5,
      "console_errors": []
     }
    }
@@ -266,8 +264,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-f214ed65eba5"
+      "geometries": 19,
+      "selected": "p-f5a3b4ded67c"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -285,8 +283,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-f214ed65eba5"
+      "geometries": 19,
+      "selected": "p-f5a3b4ded67c"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -304,8 +302,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-f214ed65eba5"
+      "geometries": 19,
+      "selected": "p-f5a3b4ded67c"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -323,8 +321,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-f214ed65eba5"
+      "geometries": 19,
+      "selected": "p-f5a3b4ded67c"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -334,46 +332,314 @@
    }
   },
   {
-   "id": "phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
+   "id": "projects_layer_off_r05_loads_nothing_then_loads_when_on",
    "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "off": {
+      "layer": null,
+      "phase": "idle",
+      "three": "idle",
+      "root": "none",
+      "labels": 0,
+      "data_requests": [],
+      "three_requests": 0
+     },
+     "pick": {
+      "catalog_visible": true,
+      "done_button": "Готово",
+      "toggle_hidden": true,
+      "result": "sports",
+      "root_after": "none"
+     },
+     "on": {
+      "phase": "ready",
+      "count": 5,
+      "labels": 5,
+      "data_requests": [
+       "nura-streets.json",
+       "astana-districts.json",
+       "proposals.fixture.json"
+      ]
+     }
+    },
+    "375_kk": {
+     "off": {
+      "layer": null,
+      "phase": "idle",
+      "three": "idle",
+      "root": "none",
+      "labels": 0,
+      "data_requests": [],
+      "three_requests": 0
+     },
+     "pick": {
+      "catalog_visible": true,
+      "done_button": "Дайын",
+      "toggle_hidden": true,
+      "result": "sports",
+      "root_after": "none"
+     },
+     "on": {
+      "phase": "ready",
+      "count": 5,
+      "labels": 5,
+      "data_requests": [
+       "nura-streets.json",
+       "astana-districts.json",
+       "proposals.fixture.json"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "idea_pick_visible_with_projects_layer_off (proposed_r01_wave2.patch)",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "catalog_visible": true,
+     "done_button": "Готово",
+     "toggle_hidden": true,
+     "result": "sports",
+     "root_after": "none"
+    },
+    "375_kk": {
+     "catalog_visible": true,
+     "done_button": "Дайын",
+     "toggle_hidden": true,
+     "result": "sports",
+     "root_after": "none"
+    }
+   }
+  },
+  {
+   "id": "r10_b041_phone_placed_project_not_under_message_or_panel",
+   "status": "PASS",
+   "detail": {
+    "375x667_kk": {
+     "login": true,
+     "placing": {
+      "ghost": [
+       202,
+       88
+      ],
+      "ghost_on_map": true,
+      "rotate_in_head": true,
+      "rotate_name": "Оңға бұру",
+      "dock_h": 223
+     },
+     "now": {
+      "place_on_map": true,
+      "toast": [
+       558,
+       653
+      ],
+      "toast_visible": true,
+      "toast_over_place": false,
+      "toast_over_3d": false,
+      "saved": true,
+      "label_visible": false,
+      "label_over_legend": false,
+      "label": [
+       27,
+       75
+      ],
+      "legend": [
+       138,
+       171
+      ]
+     },
+     "later": {
+      "place_on_map": true,
+      "label_visible": false,
+      "label_over_legend": false,
+      "label": [
+       27,
+       75
+      ],
+      "legend": [
+       138,
+       171
+      ],
+      "saved": true
+     }
+    },
+    "375x812_ru": {
+     "login": true,
+     "placing": {
+      "ghost": [
+       150,
+       341
+      ],
+      "ghost_on_map": true,
+      "rotate_in_head": true,
+      "rotate_name": "Повернуть вправо",
+      "dock_h": 201
+     },
+     "now": {
+      "place_on_map": true,
+      "toast": [
+       713,
+       808
+      ],
+      "toast_visible": true,
+      "toast_over_place": false,
+      "toast_over_3d": false,
+      "saved": true,
+      "label_visible": false,
+      "label_over_legend": false,
+      "label": [
+       278,
+       326
+      ],
+      "legend": [
+       138,
+       171
+      ]
+     },
+     "later": {
+      "place_on_map": true,
+      "label_visible": true,
+      "label_over_legend": false,
+      "label": [
+       278,
+       326
+      ],
+      "legend": [
+       138,
+       171
+      ],
+      "saved": true
+     }
+    },
+    "360x800_ru": {
+     "login": true,
+     "placing": {
+      "ghost": [
+       142,
+       334
+      ],
+      "ghost_on_map": true,
+      "rotate_in_head": true,
+      "rotate_name": "Повернуть вправо",
+      "dock_h": 201
+     },
+     "now": {
+      "place_on_map": true,
+      "toast": [
+       698,
+       792
+      ],
+      "toast_visible": true,
+      "toast_over_place": false,
+      "toast_over_3d": false,
+      "saved": true,
+      "label_visible": false,
+      "label_over_legend": false,
+      "label": [
+       23,
+       71
+      ],
+      "legend": [
+       138,
+       171
+      ]
+     },
+     "later": {
+      "place_on_map": true,
+      "label_visible": true,
+      "label_over_legend": false,
+      "label": [
+       270,
+       318
+      ],
+      "legend": [
+       138,
+       171
+      ],
+      "saved": true
+     }
+    }
+   }
+  },
+  {
+   "id": "r10_b041_label_clear_of_shell_legend (proposed_r01_wave2.patch)",
+   "status": "FAIL",
+   "detail": {
+    "375x667_kk": {
+     "label": [
+      27,
+      75
+     ],
+     "legend": [
+      138,
+      171
+     ],
+     "visible": false
+    },
+    "375x812_ru": {
+     "label": [
+      278,
+      326
+     ],
+     "legend": [
+      138,
+      171
+     ],
+     "visible": true
+    },
+    "360x800_ru": {
+     "label": [
+      270,
+      318
+     ],
+     "legend": [
+      138,
+      171
+     ],
+     "visible": true
+    }
+   }
+  },
+  {
+   "id": "phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
+   "status": "FAIL",
    "detail": {
     "kk": {
      "sheet_before": "half",
      "tapped": [
-      188,
-      187
+      187,
+      192
      ],
-     "state": "card",
-     "sheet": "peek",
+     "state": "catalog",
+     "sheet": "half",
      "dock": [
-      210,
-      609
+      0,
+      0
      ],
      "header_bottom": 72,
      "header_free": true,
-     "object": [
-      202,
-      160
-     ],
-     "object_above_card": true
+     "object": null,
+     "object_above_card": false
     },
     "ru": {
      "sheet_before": "half",
      "tapped": [
-      188,
-      187
+      187,
+      192
      ],
      "state": "card",
      "sheet": "peek",
      "dock": [
-      210,
+      186,
       609
      ],
      "header_bottom": 72,
      "header_free": true,
      "object": [
       150,
-      160
+      112
      ],
      "object_above_card": true
     }
