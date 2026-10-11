@@ -1,0 +1,71 @@
+diff --git a/ui/civic_akim/nearby.py b/ui/civic_akim/nearby.py
+index 8fd52491..19906e22 100644
+--- a/ui/civic_akim/nearby.py
++++ b/ui/civic_akim/nearby.py
+@@ -27,6 +27,7 @@ updated_at, why: {problem_ru/kk, reason_ru/kk, result_ru/kk, inconvenience_ru/kk
+ """
+ from __future__ import annotations
+ 
++import hashlib
+ import json
+ import os
+ import re
+@@ -45,6 +46,15 @@ OUTAGE_AHEAD_DAYS = 7
+ BANNER_HOURS = 36
+ MAX_BANNERS = 2
+ MAX_SUBS_PER_DEVICE = 20
++# R15-S27: устройств с подписками всего (файл переписывается целиком на каждую подписку: без предела новые
++# device_id раздували бы его без конца).
++MAX_DEVICES = 50_000
++
++
++def _key(device_id: str) -> str:
++    """R15-S27: в файле — не сам device_id (это ключ жителя к «Моим обращениям» R09), а его sha256.
++    id случайный (≥ 16 символов), поэтому подобрать его по хэшу нельзя; соль не нужна."""
++    return "h:" + hashlib.sha256(("birge-nearby:" + device_id).encode("utf-8")).hexdigest()
+ DEVICE_RE = re.compile(r"^[A-Za-z0-9_-]{16,80}$")
+ ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,95}$")
+ R06_NEARBY_FUNCS = ("nearby_items", "works_nearby")
+@@ -244,15 +254,18 @@ def feed(district: str | None, tab: str | None = None, *, now: datetime | None =
+ def _load_subs(path: Path | None = None) -> dict:
+     try:
+         data = json.loads(Path(path or SUBS_PATH).read_text("utf-8"))
+-        return data if isinstance(data, dict) else {}
+     except (OSError, ValueError):
+         return {}
++    if not isinstance(data, dict):
++        return {}
++    # Файлы до R15-S27 хранили сырые id: при чтении переводим в хэш (в файл попадёт при следующей записи).
++    return {(k if k.startswith("h:") else _key(k)): v for k, v in data.items()}
+ 
+ 
+ def subscriptions(device_id: str, path: Path | None = None) -> list[dict]:
+     if not isinstance(device_id, str) or not DEVICE_RE.match(device_id):
+         raise NearbyError("device_id", "неверный номер устройства")
+-    return list(_load_subs(path).get(device_id, []))
++    return list(_load_subs(path).get(_key(device_id), []))
+ 
+ 
+ def subscribe(device_id: str, scope: str, scope_id: str, *, on: bool = True, path: Path | None = None,
+@@ -271,15 +284,18 @@ def subscribe(device_id: str, scope: str, scope_id: str, *, on: bool = True, pat
+     p = Path(path or SUBS_PATH)
+     with _lock:
+         data = _load_subs(p)
+-        mine = [s for s in data.get(device_id, []) if not (s.get("scope") == scope and s.get("id") == scope_id)]
++        key = _key(device_id)
++        mine = [s for s in data.get(key, []) if not (s.get("scope") == scope and s.get("id") == scope_id)]
+         if on:
++            if key not in data and len(data) >= MAX_DEVICES:
++                raise NearbyError("limit", "подписки временно недоступны — попробуйте позже", 429)
+             if len(mine) >= MAX_SUBS_PER_DEVICE:
+                 raise NearbyError("limit", f"не больше {MAX_SUBS_PER_DEVICE} подписок на устройство", 429)
+             mine.append({"scope": scope, "id": scope_id, "since": _iso(_now(now))})
+         if mine:
+-            data[device_id] = mine
++            data[key] = mine
+         else:
+-            data.pop(device_id, None)
++            data.pop(key, None)
+         p.parent.mkdir(parents=True, exist_ok=True)
+         tmp = p.with_suffix(p.suffix + ".tmp")
+         tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")

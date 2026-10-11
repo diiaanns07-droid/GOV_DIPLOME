@@ -232,6 +232,14 @@
   S25 (адрес сайта из ?base= молча) — patch P-R12. Фильтр мата R04: быстрый (≤ 7 мс на 5000 худших символов), но
   S26 ВАЖНО: в шлюзе маскирует и машинные строки (фото base64 13/20, CSRF-токен, квитанции) — patch P-R04-2.
 
+  «Рядом» R08 (r14-R08 9dbd62c): публичная лента без личных полей, подписки проверяются по формату и пределу 20 на
+  устройство. S27 (мелочь): в subscriptions.json сырой id устройства (ключ к «Моим обращениям»), нет общего предела —
+  тесты test_r15_nearby.py, patch P-R08 (sha256-ключ, MAX_DEVICES 50 000; R08 209 passed). Для R01 в INTEGRATION:
+  akim/routing и akim/decisions — staff=True, POST nearby/subscriptions — в V2_RATE_LIMITS.
+  R04 п. 9 (объединение дублей): merged — только сотрудник (403), separate — сотрудник + CSRF — чисто.
+  R01 a96f6e3 birge.js (меню): innerHTML только со статичным SVG, ?report= включает режим жителя — чисто.
+- Круг 3 — 18:56 UTC (send_later): ideas/голоса R06/R05, «Вопрос акиму» R13 и модерация, пульс, qrcode.js (sha256 с npm).
+
 ## Следующий шаг
 0. «Волна мелочей» (research/round-14/POLISH_WAVE.md, 11 окт): R15 проверяет п. 5 (фото R09) и п. 8 (фильтр R04).
    Чек-лист и готовое предложение clean_photo — INTEGRATION.txt и proposals/photo/. Когда R09/R04 сдадут — тесты
