@@ -1,0 +1,39 @@
+{
+  "contract": "civic-editor-mount",
+  "version": "r04-round12",
+  "owner": "R04 (web/civic/editor/)",
+  "consumers": ["R01 web/civic/shell/shell.js", "R03 web/civic/map/civic-map.js"],
+  "global": "window.CivicEditor.mount(options) -> handle",
+  "options": {
+    "root": { "type": "Element", "required": true },
+    "api": { "type": "object", "required": true, "shape": "request(method, path, body?, {idempotencyKey?}) -> Promise<data>; setCsrfToken?(token|null)" },
+    "map": { "type": "MapLibre Map | null | () => (MapLibre Map | null)", "required": false,
+      "note": "A function is re-read lazily (before drawing and about once a second while the form is open and no map is known), so a cabinet opened before the map is ready enables drawing as soon as the getter returns the map." },
+    "onPublished": { "type": "(publicItem, {action: 'publish'|'update'|'archive', visible: boolean}) -> void", "required": false,
+      "note": "visible=false after archive: refresh the public map but do not select/open the id (it is no longer public; R03 would show «Объект не найден»)" },
+    "apiPrefix": { "type": "string", "required": false },
+    "internalNotes": { "type": "boolean", "required": false },
+    "now": { "type": "() => Date", "required": false }
+  },
+  "handle": ["destroy", "openObject", "setMap"],
+  "handle_semantics": {
+    "openObject": "(id: string) -> Promise<boolean>. Called before the editor's own GET /session has answered, the promise waits for that one request. false when not signed in (the record is then opened right after a successful login), not found/refused (no fields shown) or superseded by a later navigation; true when the form is open",
+    "setMap": "(map|null) -> void; detaches layers/listeners from the old map and attaches to the new one. With a map getter in options, setMap(null) only detaches: the getter supplies the map again on the next lookup",
+    "destroy": "idempotent; removes map layers/sources/listeners, DOM listeners and timers; unsaved form goes to the per-tab copy"
+  },
+  "events": {
+    "civic-editor:tool": { "target": "editor root (bubbles)", "detail": { "active": "boolean", "mode": "'point'|'line'|'area' (only when active)" },
+      "expectation": "while active: Escape cancels the tool (not the cabinet); R03 should ignore its own map clicks/hover cursor" }
+  },
+  "keyboard": {
+    "Escape": "The editor calls preventDefault() when it handled Escape itself (active tool, confirmation, logout prompt) and when Escape is pressed inside an input/textarea/select or while the re-login, conflict or duplicate panel is open. The shell closes the cabinet only if !event.defaultPrevented."
+  },
+  "map_ids": { "source": "civic-r04-<n>-geom", "layers": ["civic-r04-<n>-geom-line", "civic-r04-<n>-geom-pt", "civic-r04-<n>-geom-fill"] },
+  "geometry": {
+    "sent_as_drawn": true,
+    "snapping_to_route_graph": false,
+    "types": ["Point", "LineString", "Polygon"],
+    "precision_from_place": { "unknown": "geometry=null, geometry_precision=unknown", "approximate": "approximate", "exact": "source (requires a source with fields ⊇ ['geometry'])" }
+  },
+  "local_copy": { "storage": "sessionStorage", "key": "civic-r04-unsaved:v1", "holds": "form fields only, bound to the signed-in user name", "never_holds": ["password", "session cookie", "CSRF token"] }
+}

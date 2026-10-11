@@ -1,0 +1,24 @@
+diff --git a/web/civic/i18n/kk.json b/web/civic/i18n/kk.json
+index 4be8aedd..f106b170 100644
+--- a/web/civic/i18n/kk.json
++++ b/web/civic/i18n/kk.json
+@@ -235,6 +235,7 @@
+  "heat.texts.people": "{count} адам",
+  "heat.texts.staff_only": "Тұрғындардың мәтіндерін қызметкерлер кіргеннен кейін көреді",
+  "heat.texts.none": "Әзірге мәтін жоқ",
++ "moderation.rude": "Дөрекі сөздер бар",
+  "heat.kind.park": "Саябақ",
+  "heat.kind.recycling": "Қайталама шикізат қабылдау пункті",
+  "heat.kind.kindergarten": "Балабақша",
+diff --git a/web/civic/i18n/ru.json b/web/civic/i18n/ru.json
+index 6199c926..ce036dc2 100644
+--- a/web/civic/i18n/ru.json
++++ b/web/civic/i18n/ru.json
+@@ -307,6 +307,7 @@
+  },
+  "heat.texts.staff_only": "Тексты жителей видны сотрудникам после входа",
+  "heat.texts.none": "Текстов пока нет",
++ "moderation.rude": "Содержит грубые слова",
+  "heat.kind.park": "Парк",
+  "heat.kind.recycling": "Приём вторсырья",
+  "heat.kind.kindergarten": "Детский сад",

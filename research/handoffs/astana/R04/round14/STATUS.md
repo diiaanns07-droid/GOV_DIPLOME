@@ -1,5 +1,32 @@
 # R04 · раунд 14 · handoff (дубли и ML-API)
 
+## ВОЛНА МЕЛОЧЕЙ (11 окт) — пункты 8 и 9 · статус: in_progress
+
+База: FINAL-кандидат R01 `8e67c65` (claude/sharp-dijkstra-0t87gl); мои пути взяты оттуда (в т. ч. правка R01 R15-S13
+в similar_search.py). Рабочая сборка для проверки: FINAL + мои пути + мои patch'и (в scratchpad, не в Git).
+
+### п. 8 «Мат и оскорбления» — код готов, проверен
+- `ui/civic_ml_api/profanity.py`: check / mask / is_rude / moderation / mask_json / public_response; ru + kk +
+  латиница + обходы (xуй, 6лядь, бляяять, «х у й»); первая буква остаётся, остальное «*».
+- Проверка: tests/civic/R04/round14/test_r04_profanity.py — 245 PASS; 0 ложных срабатываний на корпусах R02,
+  словарях R11, подписях OSM (2,4 млн строк JSON + 172 тыс. строк текстов). Скорость: ~20 мкс на жалобу,
+  ответ на 5 000 целей карты — 16 мс (первый раз 96 мс).
+- Стыки (patch в research/round-14-results/R04/patches/): r01_web_server_profanity.patch (одна точка в шлюзе:
+  всем, кроме сотрудника, — звёздочки), r09_moderation.patch (пометка moderation в записи и staff_view),
+  r07_rude_tag.patch (метка «Содержит грубые слова» в «Что пишут жители»), r11_i18n_moderation.patch (ключ moderation.rude).
+- Сквозная проверка в сборке (настоящий HTTP): tests/civic/R04/round14/test_r04_polish_joint.py — 3 PASS;
+  тесты R09/R07/R11/R01/R04/R15 в сборке с patch'ами — 1264 passed, 2 skipped.
+
+### п. 9 «Разъединить дубли» — следующий шаг
+План: patch для R09 (журнал объединений, POST /complaints/{id}/separate, текст жителя при «Я тоже» из формы),
+ml/civic_dedup/feedback.py (решения акимата -> пары для tune), тесты, скриншоты.
+
+### Вопросы владельцу (утром)
+1. Автор в «Мои обращения» тоже видит свой текст со звёздочками (всё, что уходит на устройство жителя, — без мата;
+   так проще и надёжнее). Если нужно показывать автору оригинал — R01 исключает маршрут complaints.mine (1 строка).
+
+---
+
 Роль: R04 «Дубли и ML-API». Агент: Claude Code (облачная сессия), Астана, Birge.
 Ветка: `claude/r14-R04` (создана от `claude/round-14-package` @ 83d64bd). В `claude/round-14-package` не пушу.
 Свои пути: `ml/civic_dedup/`, `ui/civic_ml_api/`, `tests/civic/R04/round14/`, `research/round-14-results/R04/`, этот файл.

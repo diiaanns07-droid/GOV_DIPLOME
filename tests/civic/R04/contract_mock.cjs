@@ -305,7 +305,10 @@ function createMockServer(opts = {}) {
   const staticMap = opts.static || {};
   const staticDirs = (opts.staticDirs || []).map((d) => ({ prefix: d.prefix, dir: path.resolve(d.dir) }));
 
-  const state = { objects: new Map(), history: [], sessions: new Map() };
+  const state = { objects: new Map(), history: [], sessions: new Map(), candidates: new Map() };
+  // R02 import candidates (ui/civic_store objects.list_candidates / resolve_candidate shapes). candidatesRouted=false
+  // imitates the R01 gateway, which does not route /import-candidates (404 «Адрес API не найден.»).
+  let candidatesRouted = true;
   const requests = [];
   const errors = [];
   const loginFailures = new Map(); // username -> {count, last}
@@ -314,7 +317,7 @@ function createMockServer(opts = {}) {
   const idempotent = new Map(); // "username:Idempotency-Key" -> object id
   let keepAlive = true;         // hooks.keepAlive(false): answer with Connection: close (no browser transport retries)
   const timers = new Set();
-  let counters = { obj: 0, hist: 0, write: 0 };
+  let counters = { obj: 0, hist: 0, write: 0, cand: 0 };
   let port = null;
 
   const nowIso = () => clock().toISOString();
@@ -486,13 +489,65 @@ function createMockServer(opts = {}) {
     const publication = enumParam(query, "publication", ENUMS.publication);
     const recs = [...state.objects.values()].filter((r) => !publication || r.publication === publication);
     const page = listPage(recs, query.get("cursor"));
-    return { items: page.records.map(staffDTO), next_cursor: page.next_cursor };
+    return { items: page.records.map(staffOut), next_cursor: page.next_cursor };
   }
 
   function staffGet(id) {
     const rec = getRec(id);
     const history = state.history.filter((h) => h.object_id === id).map(staffHistoryEntry).reverse();
-    return { item: staffDTO(rec), history };
+    return { item: staffOut(rec), history };
+  }
+  // staff.pending_import_candidates as in R02 _staff_item (the rest of R02's staff block is not mocked)
+  function staffOut(rec) {
+    const out = staffDTO(rec);
+    const list = state.candidates.get(rec.id);
+    if (list && list.length) out.staff = { pending_import_candidates: list.filter((c) => !c.resolved_at).length };
+    return out;
+  }
+  const CONTENT_KEYS = EDITABLE.filter((k) => k !== "internal_notes");
+  function flatContent(o) {
+    const out = {};
+    for (const key of CONTENT_KEYS) {
+      if (NESTED[key]) for (const k of NESTED[key]) out[`${key}.${k}`] = o[key] ? o[key][k] : null;
+      else out[key] = o[key];
+    }
+    return out;
+  }
+  function candidateContent(rec, cand) {  // R02 round 12: after first publication the locked original end is kept
+    const c = structuredClone(cand.content);
+    if (rec.first_published_at) c.schedule.original_planned_end = rec.schedule.original_planned_end;
+    return c;
+  }
+  function candidateView(rec, cand) {
+    const cur = flatContent(rec), next = flatContent(candidateContent(rec, cand)), diff = {};
+    for (const p of Object.keys(cur)) if (!same(cur[p], next[p])) diff[p] = { before: structuredClone(cur[p]), after: structuredClone(next[p]) };
+    return { id: cand.id, source: cand.source, external_id: cand.external_id, digest: cand.digest, created_at: cand.created_at,
+      resolved_at: cand.resolved_at, resolution: cand.resolution, content: structuredClone(cand.content), diff,
+      original_planned_end_locked: !!rec.first_published_at };
+  }
+  function listCandidates(id) {
+    const rec = getRec(id);
+    return { items: (state.candidates.get(id) || []).slice().reverse().map((c) => candidateView(rec, c)) };
+  }
+  function resolveCandidate(id, cid, body, actor, action) {
+    const rec = getRec(id);
+    checkRevision(rec, body.expected_revision, {});
+    const cand = (state.candidates.get(id) || []).find((c) => String(c.id) === String(cid));
+    if (!cand) throw new ApiError(404, "not_found", "Кандидат не найден");
+    if (cand.resolved_at) throw new ApiError(409, "stale_revision", "Кандидат уже рассмотрен.", { current_revision: rec.revision });
+    let out = rec;
+    if (action === "apply") {
+      const content = candidateContent(rec, cand), changes = {};
+      for (const k of CONTENT_KEYS) changes[k] = content[k];
+      try { out = updateObject(id, { expected_revision: rec.revision, changes, reason: body.reason }, actor); }
+      catch (e) { if (!(e instanceof ApiError && e.code === "no_changes")) throw e; }  // identical content: no-op, as in R02
+    } else {
+      const reason = readReason(body.reason);
+      if (reason.error) throw validationError({ reason: reason.error });
+    }
+    cand.resolved_at = nowIso();
+    cand.resolution = action === "apply" ? "applied" : "dismissed";
+    return state.objects.get(id) || out;
   }
 
   // ----- session / auth -----
@@ -564,6 +619,10 @@ function createMockServer(opts = {}) {
     if (sub === "/staff/objects") return { GET: "staffList", POST: "create" };
     if ((m = /^\/staff\/objects\/([^/]+)$/.exec(sub))) return { GET: "staffGet", id: m[1] };
     if ((m = /^\/staff\/objects\/([^/]+)\/(update|publish|archive)$/.exec(sub))) return { POST: m[2], id: m[1] };
+    if ((m = /^\/staff\/objects\/([^/]+)\/import-candidates$/.exec(sub))) return candidatesRouted ? { GET: "candList", id: m[1] } : null;
+    if ((m = /^\/staff\/objects\/([^/]+)\/import-candidates\/([^/]+)\/(apply|dismiss)$/.exec(sub))) {
+      return candidatesRouted ? { POST: "cand_" + m[3], id: m[1], cid: m[2] } : null;
+    }
     return null;
   }
 
@@ -633,23 +692,29 @@ function createMockServer(opts = {}) {
           if (key !== undefined && !/^[A-Za-z0-9_-]{8,200}$/.test(String(key))) throw new ApiError(400, "bad_request", "Некорректный Idempotency-Key");
           const ik = key ? session.user.username + ":" + key : null;
           if (ik && idempotent.has(ik) && state.objects.has(idempotent.get(ik))) {
-            data = { item: staffDTO(state.objects.get(idempotent.get(ik))) };
+            data = { item: staffOut(state.objects.get(idempotent.get(ik))) };
             headers = { "Idempotent-Replay": "true" };
             break;
           }
           const rec = createObject(parseJson(raw), session.user);
           if (ik) idempotent.set(ik, rec.id);
-          data = { item: staffDTO(rec) };
+          data = { item: staffOut(rec) };
           break;
         }
         case "update":
           requireSession(req, session, editorWrite);
-          data = { item: staffDTO(updateObject(id, parseJson(raw), session.user)) };
+          data = { item: staffOut(updateObject(id, parseJson(raw), session.user)) };
+          break;
+        case "candList": requireSession(req, session, editorRead); data = listCandidates(id); break;
+        case "cand_apply":
+        case "cand_dismiss":
+          requireSession(req, session, editorWrite);
+          data = { item: staffOut(resolveCandidate(id, r.cid, parseJson(raw), session.user, action.slice(5))) };
           break;
         case "publish":
         case "archive":
           requireSession(req, session, editorWrite);
-          data = { item: staffDTO(transition(id, parseJson(raw), session.user, action)) };
+          data = { item: staffOut(transition(id, parseJson(raw), session.user, action)) };
           break;
       }
       return jsonResponse(200, { ok: true, data }, headers);
@@ -814,8 +879,22 @@ function createMockServer(opts = {}) {
     mutate(id, changes, reason = "Другой редактор") {
       const rec = getRec(id);
       const actor = { username: "other-editor", name: "Другой редактор", role: "editor" };
-      return staffDTO(updateObject(id, { expected_revision: rec.revision, changes, reason }, actor));
+      return staffOut(updateObject(id, { expected_revision: rec.revision, changes, reason }, actor));
     },
+    // A changed source for an object: content = current content with `changes` applied (as R02's importer stores it).
+    addCandidate(id, changes, meta = {}) {
+      const rec = getRec(id);
+      const { next } = applyChanges(rec, changes, "create");
+      const content = {};
+      for (const k of CONTENT_KEYS) content[k] = structuredClone(next[k]);
+      const cand = { id: ++counters.cand, source: meta.source || "r05-astana-real", external_id: meta.external_id || id,
+        digest: meta.digest || crypto.createHash("sha256").update(JSON.stringify(content)).digest("hex"),
+        created_at: nowIso(), resolved_at: null, resolution: null, content };
+      if (!state.candidates.has(id)) state.candidates.set(id, []);
+      state.candidates.get(id).push(cand);
+      return cand.id;
+    },
+    routeCandidates(on) { candidatesRouted = !!on; },
     failNext({ method, pathPrefix = "", mode, afterCommit = false } = {}) {
       const m = /^(drop|html500|delay:(\d+))$/.exec(String(mode));
       if (!m) throw new Error(`failNext: unknown mode ${mode}`);
@@ -835,7 +914,9 @@ function createMockServer(opts = {}) {
       writeSeq.clear();
       idempotent.clear();
       keepAlive = true;
-      counters = { obj: 0, hist: 0, write: 0 };
+      counters = { obj: 0, hist: 0, write: 0, cand: 0 };
+      state.candidates.clear();
+      candidatesRouted = true;
       loadSeed();
     },
   };

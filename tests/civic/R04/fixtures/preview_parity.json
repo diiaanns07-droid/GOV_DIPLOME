@@ -1,0 +1,508 @@
+{
+ "contract": "resident-card-semantics",
+ "owner": "R04 preview (web/civic/editor/editor-core.js residentView)",
+ "reference": "R03 web/civic/map/civic-map-core.js @ d5ee7586592b743db0e4ab31a057e53bc4bc7fab (window.CivicMapCore)",
+ "rule": "residentView(dto, CivicMapCore) and residentView(dto, null) must give the same rows; 'expect' pins the words residents see",
+ "known_differences": [
+  "R03's card also shows the «Коротко» summary, the past-plan banner (staleness vs today), the folded provenance block and the public history; the editor preview shows only the rows below",
+  "R03's map list badges and legend (Демо-запись ring) are not part of the preview",
+  "The preview of a draft is computed as if published (R03 normalizeObject drops non-published records)"
+ ],
+ "cases": [
+  {
+   "name": "derived, sourced cost, deadline moved later",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": {
+     "type": "Point",
+     "coordinates": [
+      71.43,
+      51.13
+     ]
+    },
+    "geometry_precision": "approximate",
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "budget": {
+     "amount_kzt": 48500000,
+     "basis": "contract",
+     "source_id": "src-1"
+    },
+    "source_refs": [
+     {
+      "id": "src-1",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1",
+      "publisher": "Акимат (тест)",
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-02",
+      "access_status": "fetched",
+      "license": null,
+      "fields": [
+       "budget",
+       "schedule"
+      ]
+     }
+    ],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": "2026-10-14",
+     "original_planned_end": "2026-10-20",
+     "current_planned_end": "2026-11-05",
+     "actual_end": null
+    },
+    "kind": "roadworks",
+    "title": "Ремонт",
+    "status": "planned",
+    "evidence_type": "derived",
+    "id": null
+   },
+   "expect": {
+    "Стоимость": "48 500 000 ₸ (≈ 48,5 млн ₸) · сумма договора · источник: Акимат (тест)",
+    "Перенос срока": "Срок перенесён на 16 дней позже: 20.10.2026 → 05.11.2026",
+    "banner": "Выведено из источников, не прямая цитата."
+   }
+  },
+  {
+   "name": "synthetic never shows tenge, even with a source",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": null,
+    "geometry_precision": "unknown",
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "budget": {
+     "amount_kzt": 1000000,
+     "basis": "planned",
+     "source_id": null
+    },
+    "source_refs": [],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": null,
+     "original_planned_end": null,
+     "current_planned_end": null,
+     "actual_end": null
+    },
+    "kind": "event",
+    "title": "Демо",
+    "status": "unknown",
+    "evidence_type": "synthetic",
+    "id": null
+   },
+   "expect": {
+    "Стоимость": "нет данных (у демо-записи сумма в тенге не показывается)",
+    "banner": "Демо. Синтетическая демо-запись — не сведения о реальных работах.",
+    "Откуда сведения": "Демонстрационная запись — источника нет."
+   }
+  },
+  {
+   "name": "observed with an unsourced amount",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": null,
+    "geometry_precision": "unknown",
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "budget": {
+     "amount_kzt": 250000000,
+     "basis": "planned",
+     "source_id": null
+    },
+    "source_refs": [
+     {
+      "id": "src-1",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1",
+      "publisher": "Акимат (тест)",
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-02",
+      "access_status": "fetched",
+      "license": null,
+      "fields": [
+       "schedule"
+      ]
+     }
+    ],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": null,
+     "original_planned_end": null,
+     "current_planned_end": null,
+     "actual_end": null
+    },
+    "kind": "construction",
+    "title": "Стройка",
+    "status": "in_progress",
+    "evidence_type": "observed",
+    "id": null
+   },
+   "expect": {
+    "Стоимость": "сумма в записи есть, но источник не указан — не показываем",
+    "banner": null
+   }
+  },
+  {
+   "name": "hypothesis with nothing known",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": null,
+    "geometry_precision": "unknown",
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "budget": {
+     "amount_kzt": null,
+     "basis": "unknown",
+     "source_id": null
+    },
+    "source_refs": [],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": null,
+     "original_planned_end": null,
+     "current_planned_end": null,
+     "actual_end": null
+    },
+    "kind": "landscaping",
+    "title": "",
+    "status": "unknown",
+    "evidence_type": "hypothesis",
+    "id": null
+   },
+   "expect": {
+    "Сейчас": "Статус неизвестен",
+    "Начало по плану": "нет данных",
+    "Сейчас — до": "нет данных",
+    "Фактически": "нет данных",
+    "Место": "Координаты не указаны — объект есть только в списке, точку не придумываем.",
+    "Ответственный": "нет данных",
+    "Стоимость": "нет данных",
+    "Откуда сведения": "Источник не указан — сведения нельзя проверить по документу.",
+    "banner": "Гипотеза — не подтверждено источником."
+   }
+  },
+  {
+   "name": "responsible covered by the parent field",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": null,
+    "geometry_precision": "unknown",
+    "responsible": {
+     "organization": "ГУ «Тест»",
+     "public_contact": "+7 7172 000000"
+    },
+    "budget": {
+     "amount_kzt": null,
+     "basis": "unknown",
+     "source_id": null
+    },
+    "source_refs": [
+     {
+      "id": "src-1",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1",
+      "publisher": "Акимат (тест)",
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-02",
+      "access_status": "fetched",
+      "license": null,
+      "fields": [
+       "responsible"
+      ]
+     }
+    ],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": null,
+     "original_planned_end": null,
+     "current_planned_end": null,
+     "actual_end": null
+    },
+    "kind": "roadworks",
+    "title": "Т",
+    "status": "planned",
+    "evidence_type": "observed",
+    "id": null
+   },
+   "expect": {
+    "Ответственный": "ГУ «Тест» · +7 7172 000000 — по источнику"
+   }
+  },
+  {
+   "name": "only the original deadline is known",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": null,
+    "geometry_precision": "unknown",
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "budget": {
+     "amount_kzt": null,
+     "basis": "unknown",
+     "source_id": null
+    },
+    "source_refs": [
+     {
+      "id": "src-1",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1",
+      "publisher": "Акимат (тест)",
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-02",
+      "access_status": "fetched",
+      "license": null,
+      "fields": [
+       "schedule"
+      ]
+     }
+    ],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": null,
+     "original_planned_end": "2026-10-20",
+     "current_planned_end": null,
+     "actual_end": null
+    },
+    "kind": "roadworks",
+    "title": "Т",
+    "status": "planned",
+    "evidence_type": "observed",
+    "id": null
+   },
+   "expect": {
+    "Изначально — до": "20.10.2026",
+    "Сейчас — до": "новый срок не опубликован"
+   }
+  },
+  {
+   "name": "completed with an actual end",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": null,
+    "geometry_precision": "unknown",
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "budget": {
+     "amount_kzt": null,
+     "basis": "unknown",
+     "source_id": null
+    },
+    "source_refs": [
+     {
+      "id": "src-1",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1",
+      "publisher": "Акимат (тест)",
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-02",
+      "access_status": "fetched",
+      "license": null,
+      "fields": [
+       "status",
+       "schedule"
+      ]
+     }
+    ],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": "2026-10-01",
+     "original_planned_end": "2026-11-05",
+     "current_planned_end": "2026-11-05",
+     "actual_end": "2026-11-05"
+    },
+    "kind": "roadworks",
+    "title": "Т",
+    "status": "completed",
+    "evidence_type": "observed",
+    "id": null
+   },
+   "expect": {
+    "Сейчас": "Завершено",
+    "Фактически": "завершено 5 ноября 2026"
+   }
+  },
+  {
+   "name": "evidence type missing",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": null,
+    "geometry_precision": "unknown",
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "budget": {
+     "amount_kzt": null,
+     "basis": "unknown",
+     "source_id": null
+    },
+    "source_refs": [],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": null,
+     "original_planned_end": null,
+     "current_planned_end": null,
+     "actual_end": null
+    },
+    "kind": "roadworks",
+    "title": "Т",
+    "status": "planned",
+    "evidence_type": null,
+    "id": null
+   },
+   "expect": {
+    "banner": "Происхождение сведений не указано."
+   }
+  },
+  {
+   "name": "deadline moved earlier",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": null,
+    "geometry_precision": "unknown",
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "budget": {
+     "amount_kzt": null,
+     "basis": "unknown",
+     "source_id": null
+    },
+    "source_refs": [
+     {
+      "id": "src-1",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1",
+      "publisher": "Акимат (тест)",
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-02",
+      "access_status": "fetched",
+      "license": null,
+      "fields": [
+       "schedule"
+      ]
+     }
+    ],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": null,
+     "original_planned_end": "2026-10-20",
+     "current_planned_end": "2026-10-17",
+     "actual_end": null
+    },
+    "kind": "roadworks",
+    "title": "Т",
+    "status": "planned",
+    "evidence_type": "observed",
+    "id": null
+   },
+   "expect": {
+    "Перенос срока": "Срок перенесён на 3 дня раньше: 20.10.2026 → 17.10.2026"
+   }
+  },
+  {
+   "name": "billions are rounded the same way",
+   "dto": {
+    "schema_version": "civic-v1",
+    "city": "astana",
+    "publication": "draft",
+    "updated_at": null,
+    "revision": null,
+    "description": "",
+    "geometry": null,
+    "geometry_precision": "unknown",
+    "responsible": {
+     "organization": null,
+     "public_contact": null
+    },
+    "budget": {
+     "amount_kzt": 1530000000,
+     "basis": "spent",
+     "source_id": null
+    },
+    "source_refs": [
+     {
+      "id": "src-1",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1",
+      "publisher": "Акимат (тест)",
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-02",
+      "access_status": "fetched",
+      "license": null,
+      "fields": [
+       "budget.amount_kzt"
+      ]
+     }
+    ],
+    "evidence_notes": "",
+    "schedule": {
+     "planned_start": null,
+     "original_planned_end": null,
+     "current_planned_end": null,
+     "actual_end": null
+    },
+    "kind": "construction",
+    "title": "Т",
+    "status": "completed",
+    "evidence_type": "observed",
+    "id": null
+   },
+   "expect": {
+    "Стоимость": "1 530 000 000 ₸ (≈ 1,5 млрд ₸) · фактически освоено · источник: Акимат (тест)"
+   }
+  }
+ ],
+ "note": "Money digits are grouped with U+202F NARROW NO-BREAK SPACE, as R03 formatNumber does."
+}

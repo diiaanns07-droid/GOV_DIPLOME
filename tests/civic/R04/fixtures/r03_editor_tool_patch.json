@@ -1,0 +1,16 @@
+{
+ "target": "web/civic/map/civic-map.js",
+ "base": "d5ee7586592b743db0e4ab31a057e53bc4bc7fab",
+ "owner": "R03 (applies it); proposed by R04 round 13",
+ "why": "While the R04 editor draws, a map click must place the editor's vertex only; R03 must not open the card of a public object under the cursor nor replace the crosshair cursor. window.CivicEditor.isDrawing() is synchronous and stays true until the click that ends a tool has been handled by every listener.",
+ "replacements": [
+  {
+   "find": "    function onMapClick(e) {\n      if (destroyed) return;",
+   "replace": "    // R04 round 13: while the staff editor draws, map clicks belong to its tool, not to the public card.\n    const editorDrawing = () => !!(window.CivicEditor && typeof window.CivicEditor.isDrawing === \"function\" && window.CivicEditor.isDrawing());\n    function onMapClick(e) {\n      if (destroyed || editorDrawing()) return;"
+  },
+  {
+   "find": "    function onMapMove(e) {\n      lastHoverPoint = e;",
+   "replace": "    function onMapMove(e) {\n      if (editorDrawing()) { lastHoverPoint = null; hideTip(); return; }  // keep the editor's crosshair, no tooltip\n      lastHoverPoint = e;"
+  }
+ ]
+}
