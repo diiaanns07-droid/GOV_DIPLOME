@@ -785,8 +785,8 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     await yes.click().catch(() => null); await sleep(2500);
     const verifiedRe = new RegExp(esc(T(dict, "status.verified", lang === "kk" ? "Тұрғындар тексерді" : "Проверено жителями")), "i");
     const verified = await visibleText(page, verifiedRe);
-    step("7", `житель: «${T(dict, "verify.yes", "Да, исправлено")}» → «${T(dict, "status.verified", "Проверено жителями")}»`, verified, { verified }, await shot("7-verified"));
-  } else step("7", "житель проверяет ремонт («Да, исправлено» → «Проверено жителями»)", mineReported ? false : null,
+    step("7", "житель проверяет ремонт: «Да, исправлено» → «Проверено жителями»", verified, { verified }, await shot("7-verified"));
+  } else step("7", "житель проверяет ремонт: «Да, исправлено» → «Проверено жителями»", mineReported ? false : null,
     mineReported ? "статус «служба сообщила», а кнопки «Да, исправлено» нет" : "в сборке нет проверки жителем (до волны 2)");
 
   step("*", "консоль без ошибок (кроме шума среды: подложка, WebGL)", errors.length === 0, errors.slice(0, 6));
