@@ -4,8 +4,8 @@
 Агент: Claude Code (облачная сессия), Астана. Аккаунт b10 (s11), бюджет недели ограничен — тяжёлые прогоны → Codex.
 Рабочая ветка: **`claude/r14-R10`** (от `claude/round-14-package` @ 4bbf456). В `claude/round-14-package` не пушу.
 Свои пути: `tests/civic/R10/`, `tests/e2e/`, `research/round-14-results/R10/`, этот файл.
-Обновлено: 2026-10-10, вторая сессия (UTC; точное время — у последнего коммита ветки).
-Статус: **partial — FINAL-кандидат 8e67c65: можно показывать, блокеров нет; 1 важный дефект только на телефоне (B-041, обход есть): сценарий проходит, блокеров нет; повтор на каждом новом SHA R01 и 15 окт на официальном FINAL**.
+Обновлено: 2026-10-11, ночь (UTC; точное время — у последнего коммита ветки).
+Статус: **partial — FINAL-кандидат 8e67c65: можно показывать (1366×768 или проектор 1280×720+), блокеров нет; важные B-041, B-043, B-044, B-048, B-049 — с обходом; повтор на каждом новом SHA R01 и 15 окт на официальном FINAL**.
 Начато раньше плана по просьбе владельца: проверка поставок по отдельности и текущей ветки R01, баги — в BUGS.md.
 
 ## Утро 11 окт — коротко для владельца
@@ -36,6 +36,9 @@
    можно оставить; если и на телефоне — нужно исправить до 15 окт.
 5. **Какой экран на защите — разрешение проектора?** Если 1024×768 — либо R01 берёт патч R10 (`R01_r10_night.patch`),
    либо на показе масштаб браузера 80 %. На 1280×720 и 1366×768 всё работает и так.
+6. **Поручить R09 сброс демо-жалоб при каждом запуске (B-048, B-049)?** Тогда «Я тоже» работает всегда, без особого
+   порядка подготовки; R10 проверит за минуту (`tests/e2e/demo_reset_check.cjs`). Иначе — порядок «свежая база в день
+   показа» выше.
 
 ## Ночь 10→11 окт (R10, круги)
 | Круг | Сборка R01 | Итог | Отчёт |
@@ -95,17 +98,19 @@
 5. CODEX_ACCEPTANCE_PROMPT.txt, RUN.txt, INTEGRATION.txt, DELIVERY.json обновлены.
 
 ## Следующий шаг (для следующей сессии R10)
-1. FINAL — 15 окт после 18:00: SHA из `research/handoffs/astana/R01/round14/STATUS.md` (ветка R01 —
-   `claude/sharp-dijkstra-0t87gl`). Если R01 соберёт промежуточную сборку (B2 + повторные R07/R05/R06) раньше — тот же прогон.
-2. `git worktree add --detach ../final <SHA>`; из ветки R10:
-   `pip install --user pytest` (если нет), затем
-   `NODE_PATH=$(npm root -g) node tests/e2e/run_acceptance.cjs --root ../final --out ../r10-final --label FINAL` (~35 мин).
-3. `ACCEPTANCE_FINAL.md` по образцу `ACCEPTANCE_B2.md`; 10–13 кадров в `e2e/final/` (пути /home/... в SUMMARY/RESULT
-   заменить: `sed -i "s#/home/user/final#<worktree FINAL>#g; s#http://127.0.0.1:[0-9]*/#http://127.0.0.1:<порт>/#g"`);
-   `accuracy/FINAL-<sha>.json`; статусы BUGS.md. Особо проверить: B-016/B-017 (повторная поставка R07 306074b),
-   B-026/B-022 (R05 169c56b), B-019/B-020 (CSS-правки), B-012…B-014, B-021. Кадры смотреть глазами жюри.
-4. «Готово» по заданию: на FINAL нет блокеров, все «важные» исправлены или с обходом (таблица в ACCEPTANCE_B2.md).
-5. Если меняются тексты/ключи — синонимы в `T(...)` demo_flow.cjs; если ux_screens находит «Tab > 40» — это B-025.
+1. `git fetch origin claude/sharp-dijkstra-0t87gl` — новый SHA R01 с изменением кода (не только тесты/документы) →
+   `git worktree add --detach ../nX <SHA>`; `NODE_PATH=$(npm root -g) node tests/e2e/run_acceptance.cjs --root ../nX
+   --out ../r10-nX --label FINAL-candidate-<SHA>` (~40 мин; включает demo_reset_check). Если R01 взял
+   `patches/R01_r10_night.patch` — ещё `--sizes 1280x720,1024x768` и `--sizes 360x800,375x667`: ждём всё PASS.
+2. Обновить ACCEPTANCE_FINAL.md (шапка, итог, история), BUGS.md (закрыть исправленные с SHA), STATUS.md (утро + круг),
+   DELIVERY.json; кадры в `e2e/final/`; commit своих путей; push `claude/r14-R10`.
+3. R09 (`claude/wizardly-ptolemy-qy8ltw`): если появится сброс демо-жалоб — `demo_reset_check.cjs --root <worktree>`
+   (ждём 4 PASS), закрыть B-048/B-049.
+4. Официальный FINAL — 15 окт после 18:00: SHA из `research/handoffs/astana/R01/round14/STATUS.md`; тот же прогон.
+5. После FINAL — Codex по `CODEX_ACCEPTANCE_PROMPT.txt` (М1–М8, М3б): подложка с интернетом, GPU, телефон/iPhone,
+   проектор, казахский — владельцем.
+6. Тонкости тестов: тексты/ключи меняются — синонимы в `T(...)` demo_flow.cjs; предлагаемую правку CSS проверять
+   `demo_flow.cjs --inject-css`, затем `git apply` на локальной копии и полный прогон (как e2e/patched/).
 
 ## Как воспроизвести мои проверки
 - Ветки ролей и SHA — `DELIVERIES_CHECK.md`. Каждую — в отдельный worktree: `git worktree add --detach <папка> origin/<ветка>`.
