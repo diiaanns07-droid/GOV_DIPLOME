@@ -4,8 +4,8 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "46fcd5e2 — последний коммит web/civic/ui-kit и web/civic/i18n (волна 1 и схемы волны 2: словарь 1036 ключей ru=kk)",
-  "tested_sha": "ui-kit/i18n @ 46fcd5e2 (витрина browser_check 4/4, test_r11_ui_kit 17/17); сборки R01: 61a5a62 44/44, предпросмотр FINAL+ 44/44, FINAL-кандидат 8e67c65 — эталон первого кадра",
+  "code_sha": "537dbd3f — последний коммит web/civic/ui-kit и web/civic/i18n (словарь 1068 ключей ru=kk; i18n.js: ссылка/QR не переключают выбранный язык)",
+  "tested_sha": "ui-kit/i18n @ 537dbd3f подложены в FINAL-кандидат R01 8e67c65: review_build 44/44, 0 русских строк в ҚАЗ, витрина 4/4, первый кадр = эталон; test_r11_ui_kit 18/18",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
     "c75a9ac UX_SPEC.md v1",
@@ -43,7 +43,8 @@
     "tests/civic/R11/review/badges_covered_check.cjs",
     "tests/civic/R11/review/phone_select_check.cjs",
     "tests/civic/R11/review/review_build.sh",
-    "research/round-14/categories_v2.json (вход из claude/round-14-package, без правок)"
+    "research/round-14/categories_v2.json (вход из claude/round-14-package, без правок)",
+    "tests/civic/R11/i18n_lang_order.test.cjs"
   ],
   "tests": {
     "browser_check: витрина + prototypes/{index,akimat-map,complaint,day} × 375/1366 × ru/kk": "PASS",
@@ -67,7 +68,10 @@
     "волна 1–2: browser_check витрины 375/1366 × ru/kk (новые статусы, баннер срочного случая)": "PASS",
     "ночь, круг 16–17: R01 61a5a62 review_build 44/44; phone_select_check и badges_covered_check с патчами R11 — 0 закрытых; тесты R01 с патчами r14_b1 15/0, r14_b2 26/0, r14_shell 38/0, r12_city 81/0, p0_flow 63/0/1": "PASS",
     "first_frame_check на 8e67c65 против эталона (себя)": "PASS",
-    "экраны волны 2 ролей": "NOT_RUN — экранов ещё нет (11 октября: только бэкенд R09, R08, R12)"
+    "экраны волны 2 ролей": "NOT_RUN — экранов ещё нет (11 октября: только бэкенд R09, R08, R12)",
+    "волна 2: i18n_lang_order.test.cjs (сохранённый выбор главнее ?lang=, адрес и браузер не запоминаются)": "PASS",
+    "FINAL 8e67c65 + ui-kit/i18n R11 537dbd3f: review_build 44/44, kk 0, кабинет 0, шаги 1–2 и 6, первый кадр = эталон": "PASS",
+    "FINAL 8e67c65: badges_covered_check — у Нұра · 73 нет значка на 1366/1280 (патч R01_legend_free_area ждёт R01); на 375/360 значок «Сарайшық» под соседним (R07 58f5a56)": "FAIL — открыто, см. UX_REVIEW «FINAL-кандидат R01 8e67c65»"
   },
   "known_limits": [
     "Макеты — образец: данные примеры, карта — SVG по осям улиц OSM (подписи улиц из OSM name, по-русски)",
@@ -86,7 +90,7 @@
     "ia_schemes": "research/round-14-results/R11/IA_WAVE2.md — меню (житель/акимат по 5), правила защиты от перегруза, схемы для R09, R07, R08, R06, R05, R12, R13",
     "keys": "158 ключей схем (shell.nav/layers, status, heat.legend, mine.changes, verify, passport, fix, broadcast, inbox, nearby, akim.decision/pulse, report, qr, ask, idea)",
     "ui_kit": "токены --reported-fixed/--nodata из heat_states; .bk-heat reported_fixed/[data-reopened]; .bk-status reported_fixed/verified/reopened; легенда nodata/reported_fixed",
-    "review": "UX_REVIEW.md «Волна 2 · разбор 1» (R09, R08, R12); first_frame_check.cjs + эталон first_frame_8e67c65.json",
+    "review": "UX_REVIEW.md: «Волна 2 · разбор 1» (R09, R08, R12), «разбор 2» (R12 QR — принят с правками; R08 тексты), FINAL 8e67c65; first_frame_check.cjs + эталон",
     "patches_for_r01": [
       "patches/R01_toggle_card.patch (взят в 8e67c65)",
       "patches/R01_legend_free_area.patch (Нұра · 73 на первом кадре ноутбука; ждёт R01)"
