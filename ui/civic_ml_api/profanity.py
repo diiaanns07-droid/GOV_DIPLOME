@@ -310,7 +310,8 @@ def check(text) -> Verdict:
 
 
 def is_rude(text) -> bool:
-    return isinstance(text, str) and bool(text) and bool(_find(text, first_only=True))
+    """Есть ли грубые слова. Проверенные строки — из кэша (подписи и тексты повторяются из ответа в ответ)."""
+    return isinstance(text, str) and bool(text) and _masked_or_none(text) is not None
 
 
 def mask(text):
@@ -322,7 +323,10 @@ def mask(text):
 
 
 def moderation(text) -> dict:
-    """Поле для записи жалобы (R09 при создании): акимат видит пометку «Содержит грубые слова»."""
+    """Поле для записи жалобы (R09 при создании): акимат видит пометку «Содержит грубые слова».
+    Чистый текст — из кэша строк (список сотрудника на 5 000 жалоб не пересчитывает каждую)."""
+    if not is_rude(text):
+        return {"rude": False, "count": 0, "kinds": [], "version": VERSION}
     v = check(text)
     return {"rude": v.rude, "count": v.count, "kinds": v.kinds, "version": VERSION}
 

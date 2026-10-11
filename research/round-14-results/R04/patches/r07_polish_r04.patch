@@ -27,10 +27,10 @@ index 82d767e8..29306f45 100644
      """Мелкий масштаб: сумма по району. Пороги уровней умножены на DISTRICT_LEVEL_SCALE."""
      acc: dict = {}
 diff --git a/web/civic/heat/heat.css b/web/civic/heat/heat.css
-index 76e0d6b9..04184b83 100644
+index 76e0d6b9..9d897b24 100644
 --- a/web/civic/heat/heat.css
 +++ b/web/civic/heat/heat.css
-@@ -131,6 +131,14 @@
+@@ -131,6 +131,17 @@
  .r07-card__title { margin: 0; font-size: 22px; line-height: 1.25; font-weight: 750; overflow-wrap: anywhere; }
  .r07-root .r07-card__title:focus, .r07-root .r07-card__title:focus-visible { outline: none; } /* фокус ставится программно — рамка не нужна */
  .r07-tag { margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: #f1efe6; color: #5b5442; font-size: 14px; letter-spacing: 0; text-transform: none; }
@@ -38,7 +38,10 @@ index 76e0d6b9..04184b83 100644
 +.r07-tag--rude { background: #fbe9e7; color: #8a2d1f; }
 +/* п. 9 (R04 + R09): «Объединено с этим» — свёрнуто, у каждого пункта своя кнопка «Это разные проблемы». */
 +.r07-merged { display: flex; flex-direction: column; gap: 8px; }
-+.r07-merged > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 8px; }
++.r07-merged > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 8px; list-style: none; }
++.r07-merged > summary::-webkit-details-marker { display: none; }
++.r07-merged > summary::before { content: "▸"; color: var(--r07-green); }   /* как «▸ Слои»: видно, что раскрывается */
++.r07-merged[open] > summary::before { content: "▾"; }
 +.r07-merged__count { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 8px; border-radius: 999px; background: #f1efe6; color: #5b5442; font-size: 14px; }
 +.r07-merged .r07-quotes { margin-top: 8px; }
 +.r07-merged__btn { margin-top: 8px; width: 100%; }
