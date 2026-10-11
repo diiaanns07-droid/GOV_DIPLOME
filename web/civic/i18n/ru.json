@@ -353,6 +353,17 @@
   "few": "{count} человека",
   "many": "{count} человек"
  },
+ "heat.already_changed": "Статус уже изменён — карта обновлена",
+ "heat.kind.traffic_signal": "Светофор",
+ "heat.level_word.reported": "Служба сообщила — ждёт проверки",
+ "heat.reopened_note": "Проблема осталась — снова в работе · вернули жители",
+ "heat.reported_wait": "Ждёт проверки жителями",
+ "heat.status.reported_fixed": "Служба сообщила об устранении",
+ "heat.verified_note": {
+  "one": "Проверил {count} житель",
+  "few": "Проверили {count} жителя",
+  "many": "Проверили {count} жителей"
+ },
  "target.kind.stop": "Остановка «{name}»",
  "target.kind.stop_noname": "Остановка без названия",
  "target.kind.playground": "Детская площадка",

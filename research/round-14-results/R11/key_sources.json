@@ -994,5 +994,12 @@
  "heat.cluster.zoom": "Волна 2 · R07 · читаемость карты (просьба владельца 11 окт): кластеры и подсказка значка",
  "heat.tip.people": "Волна 2 · R07 · читаемость карты (просьба владельца 11 окт): кластеры и подсказка значка",
  "build3d.idea.hint_rotate": "Волна 2 · R05 · эскиз 3D к идее: подсказки",
- "build3d.idea.hint_touch": "Волна 2 · R05 · эскиз 3D к идее: подсказки"
+ "build3d.idea.hint_touch": "Волна 2 · R05 · эскиз 3D к идее: подсказки",
+ "heat.already_changed": "Волна 2 · R07 · состояния проверки жителями, новые цели (web/civic/heat/heat.js)",
+ "heat.kind.traffic_signal": "Волна 2 · R07 · состояния проверки жителями, новые цели (web/civic/heat/heat.js)",
+ "heat.level_word.reported": "Волна 2 · R07 · состояния проверки жителями, новые цели (web/civic/heat/heat.js)",
+ "heat.reopened_note": "Волна 2 · R07 · состояния проверки жителями, новые цели (web/civic/heat/heat.js)",
+ "heat.reported_wait": "Волна 2 · R07 · состояния проверки жителями, новые цели (web/civic/heat/heat.js)",
+ "heat.status.reported_fixed": "Волна 2 · R07 · состояния проверки жителями, новые цели (web/civic/heat/heat.js)",
+ "heat.verified_note": "Волна 2 · R07 · состояния проверки жителями, новые цели (web/civic/heat/heat.js)"
 }
