@@ -86,8 +86,11 @@ function compareMap(base, now, timeRef) {
     // Бюджет правила 5: первая отрисовка ≤ 3 с на ноутбуке (в облаке WebGL программный — если и эталон > 3 с, мерить на ноутбуке).
     const w = Number(tag.split("x")[0]);
     if (w >= 1024 && n.median && typeof n.median.first_badge === "number" && n.median.first_badge > 3000)
-      add((r.median && r.median.first_badge > 3000) ? "СМОТРЕТЬ" : "FAIL", "карта · бюджет", `${tag}: первый значок через ${(n.median.first_badge / 1000).toFixed(2)} с > 3 с (правило 5)`,
-        { baseline_s: r.median && r.median.first_badge / 1000, note: "эталон тоже > 3 с — среда облака; замер на ноутбуке владельца (Codex М-задача)" });
+    {
+      const baseOver = !!(r.median && r.median.first_badge > 3000);
+      add(baseOver ? "СМОТРЕТЬ" : "FAIL", "карта · бюджет", `${tag}: первый значок через ${(n.median.first_badge / 1000).toFixed(2)} с > 3 с (правило 5)`,
+        { baseline_s: r.median && r.median.first_badge / 1000, ...(baseOver ? { note: "эталон тоже > 3 с — среда облака; замер на ноутбуке владельца (Codex М9)" } : {}) });
+    }
     const reqMore = n.median.requests > r.median.requests * 1.2 + 5, kbMore = n.median.bytes_kb > r.median.bytes_kb * 1.25 + 200;
     add(reqMore || kbMore ? "СМОТРЕТЬ" : "OK", "карта · загрузка", `${tag}: запросов ${r.median.requests} → ${n.median.requests}, КБ ${r.median.bytes_kb} → ${n.median.bytes_kb}`);
     const newApi = ((n.requests && n.requests.api_paths) || []).filter((p) => !((b.requests && b.requests.api_paths) || []).includes(p));

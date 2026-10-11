@@ -465,15 +465,21 @@ async function checkNearby(ctx) {
       add("W2-4", tag, `${STAND.nearby ? "стенд" : `меню «${label}»`} → свой экран «${W(lang, "nearby.title")}» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка`,
         st(opened && /nearby/.test(hash) && title && tabs.every(Boolean) && mapClosed && prim.length === 1), { opened, hash, title, tabs, screen, primary: prim },
         await shotOf(P.page, `${tag}-W2-4-nearby`));
-      // Отключения: где, когда, как обойти, источник, «обновлено N … назад»; не больше 2 баннеров.
-      const out = {};
-      const scan = async () => { for (const k of ["zone", "time", "detour", "source"]) out[k] = out[k] || (await L.visibleText(P.page, part(W(lang, "nearby.outage." + k))));
-        out.updated = out.updated || (await L.visibleText(P.page, part(W(lang, "nearby.updated")))); };
-      await scan();
-      out.banners = await P.page.locator(".bk-banner").evaluateAll((els) => els.filter((e) => e.getClientRects().length).length).catch(() => null);
-      if (!out.zone) { await tabClick(P.page, lang, "outages"); await scan(); }
-      add("W2-4", tag, "отключение: «Где», «Когда», «Как обойти», «Источник», «обновлено …»; баннеров не больше 2",
-        st(out.zone && out.time && out.detour && out.source && out.updated && (out.banners === null || out.banners <= 2)), out, await shotOf(P.page, `${tag}-W2-4-outages`));
+      // Отключения (IA §4): баннеров над вкладками ≤ 2; на вкладке «Отключения» у каждого — где, когда (подпись «Когда»
+      // или само время «10:00–16:00»), источник, «обновлено …»; «Как обойти» — у перекрытия дороги (у воды обхода нет).
+      const banners = await P.page.locator(".bk-banner").evaluateAll((els) => els.filter((e) => e.getClientRects().length).length).catch(() => null);
+      await tabClick(P.page, lang, "outages");
+      const lbl = (k) => esc(W(lang, "nearby.outage." + k).split("{")[0].trim());
+      const out = await P.page.evaluate(([zone, time, detour, source, updated, closure]) => {
+        const main = document.querySelector("main, [role=main], #nearby, .birge-screen") || document.body;
+        const cards = [...main.querySelectorAll("article, li, .bk-card")].filter((e) => e.getClientRects().length && new RegExp(source).test(e.innerText) && !e.querySelector("article, li, .bk-card"));
+        return cards.map((c) => { const t = c.innerText;
+          return { zone: new RegExp(zone).test(t), time: new RegExp(time).test(t) || /\d{1,2}:\d{2}/.test(t), source: true, updated: new RegExp(updated).test(t),
+            closure: new RegExp(closure, "i").test(t), detour: new RegExp(detour).test(t), text: t.replace(/\s+/g, " ").slice(0, 90) }; });
+      }, [lbl("zone"), lbl("time"), lbl("detour"), lbl("source"), esc(W(lang, "nearby.updated").split("{")[0].trim()), "перекрыт|перекрыти|жабыл|road"]);
+      const okOut = out.length > 0 && out.every((o) => o.zone && o.time && o.updated && (!o.closure || o.detour));
+      add("W2-4", tag, "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+        st(okOut && (banners === null || banners <= 2)), { banners, outages: out }, await shotOf(P.page, `${tag}-W2-4-outages`));
       // Задержки показываем («срок перенесён»); «Зачем?» раскрывает 4 строки.
       let delay = false, why = null;
       for (const k of ["now", "planned", "done"]) {
@@ -513,9 +519,10 @@ async function checkQr(ctx) {
       try {
         await goto(P.page, new URL(`/?report=${encodeURIComponent(KHAN.id)}`, base).href, lang, { fixLang: false });
         const s = await P.page.evaluate(() => ({ lang: document.documentElement.lang, saved_mode: localStorage.getItem("birge.mode"), saved_lang: localStorage.getItem("birge.lang") }));
-        const resident = await L.firstVisible(P.page.locator("[aria-pressed=true]").filter({ hasText: modeRe(lang, "resident") }));
-        add("W2-6", tag, "/?report=<id>: язык не сменился, вид «Житель» на этот заход, сохранённый вид не перезаписан", st(s.lang === lang && !!resident && s.saved_mode === "akimat" && s.saved_lang === lang),
-          { ...s, resident_pressed: !!resident }, await shotOf(P.page, `${tag}-W2-6-report-shell`));
+        // Переключатель вида на телефоне — в «Меню» (не на экране): смотрим состояние кнопки, а не её видимость.
+        const resident = await P.page.evaluate((src) => [...document.querySelectorAll("[aria-pressed=true]")].some((e) => new RegExp(src, "i").test(e.textContent.trim())), modeRe(lang, "resident").source);
+        add("W2-6", tag, "/?report=<id>: язык не сменился, вид «Житель» на этот заход, сохранённый вид не перезаписан", st(s.lang === lang && resident && s.saved_mode === "akimat" && s.saved_lang === lang),
+          { ...s, resident_pressed: resident }, await shotOf(P.page, `${tag}-W2-6-report-shell`));
       } finally { await P.ctx.close(); }
     }
     // Ссылка с ?lang= не меняет сохранённый выбор (IA §0.8).
@@ -666,8 +673,16 @@ async function checkClutter(ctx) {
         add("P-12", `${tag} ${mode}`, `?screens=all: меню ровно «${expected.join(" · ")}»`, st(JSON.stringify(nav) === JSON.stringify(expected)), { nav, expected });
         if (P.mobile) await L.clickText(P.page, menuRe(lang), { wait: 900 });
         const more = await L.clickText(P.page, exact(expected[4]), { wait: 900 });
-        const items = more ? await P.page.evaluate(() => [...document.querySelectorAll("[role=menu] [role=menuitem], [role=menu] a, [role=menu] button")].filter((e) => e.getClientRects().length).map((e) => e.innerText.trim())) : null;
-        add("P-12", `${tag} ${mode}`, `«${expected[4]}»: маленький список (role=menu), не больше 4 пунктов`, st(more && !!items && items.length > 0 && items.length <= 4), { more, items }, await shotOf(P.page, `${tag}-P-12-${mode}-more`));
+        // IA_WAVE2 §1: «Ещё» — маленький список-меню (role="menu"), не отдельная страница; в нём ≤ 4 пункта.
+        const box = more ? await P.page.evaluate(() => {
+          const vis = (e) => e.getClientRects().length && getComputedStyle(e).visibility !== "hidden";
+          const menu = [...document.querySelectorAll("[role=menu]")].find(vis);
+          if (menu) return { kind: "role=menu", items: [...menu.querySelectorAll("[role=menuitem], a, button")].filter(vis).map((e) => e.innerText.trim()) };
+          const screen = document.querySelector("#birge-screen-title") ? document.querySelector("#birge-screen-title").closest("section, [role=dialog], main, div") : null;
+          return { kind: screen ? "экран раздела #more" : "?", hash: location.hash, items: screen ? [...screen.querySelectorAll("a, button")].filter(vis).map((e) => e.innerText.trim()).filter(Boolean) : [] };
+        }) : null;
+        add("P-12", `${tag} ${mode}`, `«${expected[4]}»: маленький список (role=menu), не отдельная страница, 1–4 пункта`,
+          st(more && !!box && box.kind === "role=menu" && box.items.length > 0 && box.items.length <= 4), { more, ...(box || {}) }, await shotOf(P.page, `${tag}-P-12-${mode}-more`));
       } finally { await P.ctx.close(); }
     }
   }
@@ -680,7 +695,7 @@ async function checkClutter(ctx) {
       .map((e) => ({ name: (e.getAttribute("aria-label") || (e.labels && e.labels[0] && e.labels[0].innerText) || e.innerText || "").trim(), on: e.checked || e.getAttribute("aria-checked") === "true" })));
     const none = W("ru", "shell.layers.none");
     const options = layers.filter((l) => /слой|жалоб|рядом|иде/i.test(l.name));
-    add("P-12", "слои", `слои карты: по умолчанию «${none}», включено не больше одного`, options.length ? st(options.filter((l) => l.on).length <= 1 && options.some((l) => l.on && l.name.startsWith(none.slice(0, 10)))) : null,
+    add("P-12", "слои", `слои карты: по умолчанию «${none}», включено не больше одного`, options.length ? st(options.filter((l) => l.on).length <= 1 && options.some((l) => l.on && l.name.startsWith(none.slice(0, 10)))) : "NOT_RUN",
       options.length ? { options } : "переключатель слоёв не найден (слоёв ещё нет) — по умолчанию карту сторожит compare_baseline.cjs", await shotOf(P.page, "1366-ru-P-12-layers"));
   } finally { await P.ctx.close(); }
 }
