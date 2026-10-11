@@ -22,6 +22,8 @@ from pathlib import Path
 from typing import Callable
 
 from . import categories
+from . import lifecycle
+from . import photos as photos_mod
 from . import record as rec
 from .record import RecordError
 
@@ -61,6 +63,37 @@ CREATE TABLE IF NOT EXISTS complaint_metoo_v2 (
   PRIMARY KEY (complaint_id, device_hash)
 );
 CREATE INDEX IF NOT EXISTS complaint_metoo_v2_device ON complaint_metoo_v2 (device_hash);
+-- «Проверено жителями» (волна 2, п. 1): один голос устройства за раунд «служба сообщила об устранении».
+CREATE TABLE IF NOT EXISTS complaint_votes_v2 (
+  complaint_id TEXT NOT NULL,
+  round INTEGER NOT NULL,
+  device_hash TEXT NOT NULL,
+  answer TEXT NOT NULL CHECK (answer IN ('yes', 'no', 'cant')),
+  at TEXT NOT NULL,
+  PRIMARY KEY (complaint_id, round, device_hash)
+);
+-- Фото (волна 1, п. 5): только очищенные байты (без EXIF/GPS); загрузка частями — шлюз R01 пропускает ≤ 64 КБ.
+CREATE TABLE IF NOT EXISTS complaint_photos_v2 (
+  id TEXT PRIMARY KEY,
+  complaint_id TEXT NOT NULL,
+  kind TEXT NOT NULL CHECK (kind IN ('resident', 'after')),
+  round INTEGER,
+  mime TEXT NOT NULL,
+  size INTEGER NOT NULL,
+  sha256 TEXT NOT NULL,
+  data BLOB NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS complaint_photos_v2_complaint ON complaint_photos_v2 (complaint_id, kind);
+CREATE TABLE IF NOT EXISTS complaint_uploads_v2 (
+  id TEXT PRIMARY KEY,
+  complaint_id TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  owner TEXT NOT NULL,
+  size INTEGER NOT NULL,
+  received BLOB NOT NULL,
+  created_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS complaint_events_v2 (
   seq INTEGER PRIMARY KEY AUTOINCREMENT,
   at TEXT NOT NULL,
@@ -120,6 +153,13 @@ class ComplaintStore:
                              (secrets.token_hex(32),))
             self._salt = self._db.execute(
                 "SELECT value FROM complaint_meta_v2 WHERE key = 'device_salt'").fetchone()[0].encode()
+            # Волна 1, п. 9: «Я тоже», перенесённые из дубля, помнят дубль (via) — чтобы разъединить ошибочное
+            # объединение. Старые базы дополняются колонкой без потери строк.
+            columns = {row[1] for row in self._db.execute("PRAGMA table_info(complaint_metoo_v2)")}
+            if "via" not in columns:
+                self._db.execute("ALTER TABLE complaint_metoo_v2 ADD COLUMN via TEXT")
+        # assignee_lookup(category, subtopic) -> название службы из таблицы R08 (подключает R01) или None.
+        self.assignee_lookup = None
 
     def close(self) -> None:
         with self._lock:
@@ -245,6 +285,14 @@ class ComplaintStore:
         lang = payload.get("lang")
         if lang not in ("ru", "kk", "mixed"):
             lang = rec.detect_lang(text)
+        # Уточнение (волна 1, п. 2) — только из списка категории; чужое или выдуманное не сохраняем.
+        subtopic = payload.get("subtopic")
+        if subtopic is not None and categories.subtopic(category, subtopic) is None:
+            raise RecordError("Уточнение не подходит к категории.", {"subtopic": "одно из уточнений категории"})
+        # Срочный случай (п. 3): сервер сам пересчитывает по уточнению и тексту; клиент сообщает, показал ли баннер.
+        urgent = lifecycle.emergency(category, subtopic, text)
+        if urgent is not None:
+            urgent["banner_shown"] = payload.get("emergency_shown") is True
         now = self._now()
         created_at = rec.iso(now)
         with self._tx() as db:
@@ -264,7 +312,8 @@ class ComplaintStore:
                 "code": self._next_code(db),
                 "created_at": created_at,
                 "text": text, "lang": lang,
-                "category": category, "category_source": source,
+                "category": category, "category_source": source, "subtopic": subtopic,
+                "emergency": urgent,
                 "model": rec.parse_model(payload.get("model")),
                 "point": point, "target": target, "district": district,
                 "status": "new",
@@ -302,9 +351,16 @@ class ComplaintStore:
 
     # ------------------------------------------------------------ статус
     def set_status(self, complaint_id: str, status: str, *, actor: str | None = None,
-                   note: str | None = None, expected: str | None = None) -> dict:
+                   note: str | None = None, expected: str | None = None,
+                   what_done: str | None = None, photos: list | None = None) -> dict:
         """Смена статуса сотрудником. expected — статус, который сотрудник видел
-        (защита от одновременной правки двумя людьми: иначе Conflict)."""
+        (защита от одновременной правки двумя людьми: иначе Conflict).
+        status="fixed" = «Служба сообщила об устранении» (волна 2, п. 1): what_done — одна строка «что сделали»,
+        photos — id фото «после», загруженных сотрудником; жители потом проверяют (verify). Оба поля необязательны,
+        чтобы старые вызовы {status: "fixed"} (R07, демо R01) продолжали работать."""
+        if what_done is not None and not isinstance(what_done, str):
+            raise RecordError("«Что сделали» — строка.", {"what_done": "строка"})
+        what_done = (what_done or "").strip()[:lifecycle.WHAT_DONE_MAX] or None
         if status not in rec.STATUSES:
             raise RecordError("Неизвестный статус.", {"status": ", ".join(rec.STATUSES)})
         now = rec.iso(self._now())
@@ -323,12 +379,173 @@ class ComplaintStore:
                 entry["by"] = str(actor)[:80]
             if isinstance(note, str) and note.strip():
                 entry["note"] = note.strip()[:500]
+            if status == "fixed":
+                after = self._photo_ids(db, record["id"], "after", photos)
+                record["resolution"] = lifecycle.new_resolution(record.get("resolution"), now, what_done, actor, after)
+                db.execute("UPDATE complaint_photos_v2 SET round = ? WHERE complaint_id = ? AND kind = 'after' "
+                           "AND round IS NULL", (record["resolution"]["round"], record["id"]))
+                self._add_update(record, now, "fixed", what_done)
+            elif record["status"] == "fixed" and record.get("resolution"):
+                # Служба сама вернула в работу (не жители): раунд проверки закрыт без итога.
+                record["resolution"]["state"] = "withdrawn"
             record["status"] = status
             record["status_history"].append(entry)
             self._save(db, record)
             event = self._event(db, "status", record, now)
         self._emit([event])
         return record
+
+    # ------------------------------------------------------------ жители проверяют ремонт (волна 2, п. 1)
+    def _participant(self, db, record: dict, device: str) -> str | None:
+        """author | metoo | None — кто это устройство для исходной жалобы."""
+        row = db.execute("SELECT device_hash FROM complaints_v2 WHERE id = ?", (record["id"],)).fetchone()
+        if row and row[0] == device:
+            return "author"
+        if db.execute("SELECT 1 FROM complaint_metoo_v2 WHERE complaint_id = ? AND device_hash = ?",
+                      (record["id"], device)).fetchone():
+            return "metoo"
+        return None
+
+    def participant(self, complaint_id: str, device_id) -> str | None:
+        try:
+            device = self.device_hash(device_id)
+        except RecordError:
+            return None
+        with self._lock:
+            record = self._load(self._db, complaint_id)
+            if record is None:
+                return None
+            record = self._root(self._db, complaint_id)
+            return self._participant(self._db, record, device)
+
+    def can_verify(self, complaint_id: str, device_id) -> bool:
+        """Показать жителю «Проблема решена?»: участник, служба сообщила об устранении, в этом раунде ещё не отвечал."""
+        try:
+            device = self.device_hash(device_id)
+        except RecordError:
+            return False
+        with self._lock:
+            if self._load(self._db, complaint_id) is None:
+                return False
+            record = self._root(self._db, complaint_id)
+            resolution = record.get("resolution") or {}
+            if record["status"] != "fixed" or resolution.get("state") not in ("reported", "verified"):
+                return False
+            if self._participant(self._db, record, device) is None:
+                return False
+            voted = self._db.execute("SELECT 1 FROM complaint_votes_v2 WHERE complaint_id = ? AND round = ? "
+                                     "AND device_hash = ?", (record["id"], resolution["round"], device)).fetchone()
+            return voted is None
+
+    def verify(self, complaint_id: str, device_id: str, answer: str) -> tuple[dict, str]:
+        """Ответ автора или «Я тоже» после «Служба сообщила об устранении»: yes | no | cant.
+        -> (запись, result): recorded | already (уже отвечал в этом раунде) | not_participant | not_waiting.
+        Правило (объяснимое): первое «Да» -> «проверено жителями»; любое «Проблема осталась» -> та же карточка
+        снова «в работе» с отметкой «вернули жители» и историей; «Не могу проверить» только считается."""
+        if answer not in lifecycle.VERIFY_ANSWERS:
+            raise RecordError("Ответ: да, проблема осталась или не могу проверить.", {"answer": "yes | no | cant"})
+        device = self.device_hash(device_id)
+        now = rec.iso(self._now())
+        events = []
+        with self._tx() as db:
+            record = self._root(db, complaint_id)
+            if self._participant(db, record, device) is None:
+                return record, "not_participant"
+            resolution = record.get("resolution")
+            if record["status"] != "fixed" or not resolution or resolution.get("state") not in ("reported", "verified"):
+                return record, "not_waiting"
+            cur = db.execute("INSERT OR IGNORE INTO complaint_votes_v2 (complaint_id, round, device_hash, answer, at) "
+                             "VALUES (?,?,?,?,?)", (record["id"], resolution["round"], device, answer, now))
+            if cur.rowcount == 0:
+                return record, "already"
+            resolution["votes"][answer] = resolution["votes"].get(answer, 0) + 1
+            if answer == "yes" and resolution["state"] == "reported":
+                resolution["state"] = "verified"
+                resolution["verified_at"] = now
+                events.append("verified")
+            elif answer == "no":
+                resolution["state"] = "reopened"
+                resolution["reopened_at"] = now
+                resolution["reopen_count"] = int(resolution.get("reopen_count") or 0) + 1
+                record["status"] = "in_progress"
+                record["status_history"].append({"at": now, "status": "in_progress", "reopened_by_residents": True})
+                self._add_update(record, now, "reopened", None)
+                events += ["reopened", "status"]
+            self._save(db, record)
+            emitted = [self._event(db, kind, record, now) for kind in events]
+        self._emit(emitted)
+        return record, "recorded"
+
+    # ------------------------------------------------------------ паспорт решения и обновления (волна 2, п. 2–3)
+    @staticmethod
+    def _add_update(record: dict, at: str, kind: str, text: str | None) -> None:
+        """Одна лента обновлений на жалобу: её видят автор и все «Я тоже» (одно действие — всем)."""
+        record.setdefault("updates", []).append({"at": at, "kind": kind, "text": text})
+
+    def update_passport(self, complaint_id: str, fields: dict, *, actor: str | None = None) -> tuple[dict, int]:
+        """Сотрудник заполняет паспорт: next_step, fix_eta (YYYY-MM-DD или пусто = «пока не определено»),
+        delay_reason, temp_measure, next_update_at (YYYY-MM-DD), assignee (по желанию; иначе таблица R08 / общий).
+        -> (запись, сколько человек увидят обновление)."""
+        if not isinstance(fields, dict):
+            raise RecordError("Пустой запрос.")
+        clean = {}
+        for name in ("next_step", "delay_reason", "temp_measure", "assignee"):
+            value = fields.get(name)
+            if value is None or value == "":
+                clean[name] = None
+                continue
+            if not isinstance(value, str):
+                raise RecordError("Поле должно быть строкой.", {name: "строка"})
+            clean[name] = " ".join(value.split())[:lifecycle.PASSPORT_TEXT_MAX] or None
+        for name in ("fix_eta", "next_update_at"):
+            value = fields.get(name)
+            if value in (None, ""):
+                clean[name] = None
+                continue
+            try:
+                clean[name] = datetime.strptime(str(value), "%Y-%m-%d").date().isoformat()
+            except ValueError:
+                raise RecordError("Дата в формате ГГГГ-ММ-ДД.", {name: "YYYY-MM-DD"}) from None
+        now = rec.iso(self._now())
+        with self._tx() as db:
+            record = self._load(db, complaint_id)
+            if record is None:
+                raise NotFound("Обращение не найдено.", {"id": complaint_id})
+            passport = dict(record.get("passport") or {})
+            for name in ("next_step", "fix_eta", "assignee"):
+                if name in fields:
+                    passport[name] = clean[name]
+            if any(name in fields for name in ("delay_reason", "temp_measure", "next_update_at")):
+                delay = {"reason": clean["delay_reason"], "temp_measure": clean["temp_measure"],
+                         "next_update_at": clean["next_update_at"]}
+                passport["delay"] = delay if any(delay.values()) else None
+            passport["updated_at"] = now
+            if actor:
+                passport["by"] = str(actor)[:80]
+            record["passport"] = passport
+            summary = clean.get("next_step") or clean.get("delay_reason")
+            self._add_update(record, now, "passport", summary)
+            self._save(db, record)
+            event = self._event(db, "update", record, now)
+        self._emit([event])
+        return record, rec.reporters(record)
+
+    def post_update(self, complaint_id: str, text, *, actor: str | None = None) -> tuple[dict, int]:
+        """Одно сообщение сотрудника всем затронутым (автор + «Я тоже»). -> (запись, сколько человек увидят)."""
+        if not isinstance(text, str) or len(" ".join(text.split())) < 3:
+            raise RecordError("Напишите обновление.", {"text": "не короче 3 символов"})
+        now = rec.iso(self._now())
+        with self._tx() as db:
+            record = self._root(db, complaint_id)
+            self._add_update(record, now, "note", " ".join(text.split())[:lifecycle.PASSPORT_TEXT_MAX * 2])
+            self._save(db, record)
+            event = self._event(db, "update", record, now)
+        self._emit([event])
+        return record, rec.reporters(record)
+
+    def changes(self, device_id: str, since: str | None = None) -> dict:
+        """«Что изменилось с вашим участием» (волна 2, п. 10): события по жалобам устройства после since."""
+        return lifecycle.changes(self.mine(device_id), since)
 
     def mark_duplicate(self, complaint_id: str, original_id: str, *, actor: str | None = None) -> dict:
         """Сотрудник отмечает дубль: duplicate_of = исходная, люди дубля (автор и его «Я тоже»)
@@ -352,8 +569,8 @@ class ComplaintStore:
                 "SELECT device_hash FROM complaint_metoo_v2 WHERE complaint_id = ?", (duplicate["id"],))]
             for device in devices:
                 if device and device != original_author:
-                    db.execute("INSERT OR IGNORE INTO complaint_metoo_v2 (complaint_id, device_hash, at) "
-                               "VALUES (?,?,?)", (original["id"], device, now))
+                    db.execute("INSERT OR IGNORE INTO complaint_metoo_v2 (complaint_id, device_hash, at, via) "
+                               "VALUES (?,?,?,?)", (original["id"], device, now, duplicate["id"]))
             # Дубли, которые ссылались на этот, теперь ссылаются на исходную.
             for child in db.execute("SELECT id FROM complaints_v2 WHERE duplicate_of = ?",
                                     (duplicate["id"],)).fetchall():
@@ -371,6 +588,134 @@ class ComplaintStore:
             events = [self._event(db, "duplicate", duplicate, now), self._event(db, "metoo", original, now)]
         self._emit(events)
         return original
+
+    def unmark_duplicate(self, complaint_id: str, *, actor: str | None = None) -> dict:
+        """Волна 1, п. 9: «Это разные проблемы» — отменить ошибочное объединение. Люди, перенесённые из дубля
+        в «Я тоже» исходной (via = дубль), возвращаются; дубль снова самостоятельная жалоба, цель пересчитывается."""
+        now = rec.iso(self._now())
+        with self._tx() as db:
+            duplicate = self._load(db, complaint_id)
+            if duplicate is None:
+                raise NotFound("Обращение не найдено.", {"id": complaint_id})
+            original_id = duplicate.get("duplicate_of")
+            if not original_id:
+                raise Conflict("Обращение не объединено с другим.")
+            original = self._load(db, original_id)
+            db.execute("DELETE FROM complaint_metoo_v2 WHERE complaint_id = ? AND via = ?", (original_id, duplicate["id"]))
+            duplicate["duplicate_of"] = None
+            entry = {"at": now, "status": duplicate["status"], "unmerged_from": original_id}
+            if actor:
+                entry["by"] = str(actor)[:80]
+            duplicate["status_history"].append(entry)
+            self._recount_metoo(db, duplicate)
+            self._save(db, duplicate)
+            events = [self._event(db, "unmerged", duplicate, now)]
+            if original is not None:
+                self._recount_metoo(db, original)
+                self._save(db, original)
+                events.append(self._event(db, "metoo", original, now))
+        self._emit(events)
+        return duplicate
+
+    # ------------------------------------------------------------ фото (волна 1, п. 5)
+    def _photo_ids(self, db, complaint_id: str, kind: str, ids) -> list[str]:
+        """id фото «после» текущего раунда: переданные (должны принадлежать жалобе) или все ещё не привязанные."""
+        rows = db.execute("SELECT id FROM complaint_photos_v2 WHERE complaint_id = ? AND kind = ? AND round IS NULL "
+                          "ORDER BY created_at", (complaint_id, kind)).fetchall()
+        available = [row[0] for row in rows]
+        if ids is None:
+            return available[:photos_mod.MAX_AFTER]
+        if not isinstance(ids, list) or any(i not in available for i in ids):
+            raise RecordError("Фото «после» не найдено.", {"photos": "загрузите фото к этому обращению"})
+        return ids[:photos_mod.MAX_AFTER]
+
+    def start_upload(self, complaint_id: str, kind: str, size, *, device_id=None, actor: str | None = None) -> dict:
+        """Начать загрузку фото: житель (автор) — kind «resident», сотрудник — «after». -> {upload_id, chunk_bytes}."""
+        if kind not in ("resident", "after"):
+            raise RecordError("Неизвестный вид фото.", {"kind": "resident | after"})
+        if not isinstance(size, int) or isinstance(size, bool) or not 0 < size <= photos_mod.MAX_BYTES:
+            raise RecordError("Фото слишком большое.", {"size": f"до {photos_mod.MAX_BYTES} байт"})
+        now = self._now()
+        with self._tx() as db:
+            record = self._load(db, complaint_id)
+            if record is None:
+                raise NotFound("Обращение не найдено.", {"id": complaint_id})
+            if kind == "resident":
+                device = self.device_hash(device_id)
+                author = db.execute("SELECT device_hash FROM complaints_v2 WHERE id = ?", (complaint_id,)).fetchone()[0]
+                if author != device:
+                    raise Conflict("Фото добавляет только автор обращения.")
+                owner = "device:" + device
+                count = db.execute("SELECT COUNT(*) FROM complaint_photos_v2 WHERE complaint_id = ? AND kind = 'resident'",
+                                   (complaint_id,)).fetchone()[0]
+                limit = photos_mod.MAX_RESIDENT
+            else:
+                owner = "staff:" + str(actor or "staff")[:80]
+                count = db.execute("SELECT COUNT(*) FROM complaint_photos_v2 WHERE complaint_id = ? AND kind = 'after' "
+                                   "AND round IS NULL", (complaint_id,)).fetchone()[0]
+                limit = photos_mod.MAX_AFTER
+            if count >= limit:
+                raise Conflict(f"Можно не больше {limit} фото.")
+            # Брошенные загрузки старше часа не держим.
+            db.execute("DELETE FROM complaint_uploads_v2 WHERE created_at < ?", (rec.iso(now - timedelta(hours=1)),))
+            upload_id = "u-" + secrets.token_hex(8)
+            db.execute("INSERT INTO complaint_uploads_v2 (id, complaint_id, kind, owner, size, received, created_at) "
+                       "VALUES (?,?,?,?,?,?,?)", (upload_id, complaint_id, kind, owner, size, b"", rec.iso(now)))
+        return {"upload_id": upload_id, "chunk_bytes": photos_mod.CHUNK_BYTES}
+
+    def upload_chunk(self, complaint_id: str, upload_id: str, offset, data: bytes, *, device_id=None,
+                     actor: str | None = None) -> dict:
+        """Следующая часть. Когда пришли все байты — фото очищается (без EXIF/GPS) и сохраняется.
+        -> {"done": False, "received"} | {"done": True, "photo": {id, kind}}."""
+        if not isinstance(offset, int) or isinstance(offset, bool) or offset < 0:
+            raise RecordError("Неверная часть фото.", {"offset": "число"})
+        if not data or len(data) > photos_mod.CHUNK_BYTES:
+            raise RecordError("Неверная часть фото.", {"data": f"1–{photos_mod.CHUNK_BYTES} байт"})
+        now = rec.iso(self._now())
+        events = []
+        with self._tx() as db:
+            row = db.execute("SELECT * FROM complaint_uploads_v2 WHERE id = ? AND complaint_id = ?",
+                             (upload_id, complaint_id)).fetchone()
+            if row is None:
+                raise NotFound("Загрузка не найдена — начните заново.", {"upload_id": upload_id})
+            owner = ("device:" + self.device_hash(device_id)) if row["kind"] == "resident" \
+                else "staff:" + str(actor or "staff")[:80]
+            if owner != row["owner"]:
+                raise Conflict("Эту загрузку начал другой пользователь.")
+            received = bytes(row["received"])
+            if offset != len(received):
+                # Повтор уже принятой части (слабая сеть) — не ошибка: сообщаем, сколько есть.
+                if offset + len(data) <= len(received):
+                    return {"done": False, "received": len(received)}
+                raise Conflict("Части фото пришли не по порядку.", {"received": len(received)})
+            received += data
+            if len(received) > row["size"]:
+                db.execute("DELETE FROM complaint_uploads_v2 WHERE id = ?", (upload_id,))
+                raise RecordError("Фото больше заявленного размера.")
+            if len(received) < row["size"]:
+                db.execute("UPDATE complaint_uploads_v2 SET received = ? WHERE id = ?", (received, upload_id))
+                return {"done": False, "received": len(received)}
+            db.execute("DELETE FROM complaint_uploads_v2 WHERE id = ?", (upload_id,))
+            try:
+                mime, clean = photos_mod.sanitize(received)
+            except photos_mod.PhotoError as exc:
+                raise RecordError(str(exc), {"photo": "jpeg, png или webp до 1,5 МБ"}) from None
+            photo_id = "p-" + secrets.token_hex(8)
+            db.execute("INSERT INTO complaint_photos_v2 (id, complaint_id, kind, round, mime, size, sha256, data, "
+                       "created_at) VALUES (?,?,?,?,?,?,?,?,?)",
+                       (photo_id, complaint_id, row["kind"], None, mime, len(clean),
+                        hashlib.sha256(clean).hexdigest(), clean, now))
+            record = self._load(db, complaint_id)
+            if row["kind"] == "resident":
+                record.setdefault("photos", []).append({"id": photo_id, "kind": "resident", "at": now})
+                self._save(db, record)
+        return {"done": True, "photo": {"id": photo_id, "kind": row["kind"], "mime": mime}}
+
+    def get_photo(self, complaint_id: str, photo_id: str) -> dict | None:
+        with self._lock:
+            row = self._db.execute("SELECT id, kind, round, mime, size, data FROM complaint_photos_v2 "
+                                   "WHERE id = ? AND complaint_id = ?", (photo_id, complaint_id)).fetchone()
+        return dict(row) if row else None
 
     # ------------------------------------------------------------ чтение
     def get(self, complaint_id: str) -> dict | None:
@@ -520,5 +865,6 @@ class ComplaintStore:
                 record["code"] = self._next_code(db)
             self._save(db, record, legacy_v1_id=legacy_v1_id)
             for device, at in metoo_devices or []:
-                db.execute("INSERT OR IGNORE INTO complaint_metoo_v2 VALUES (?,?,?)", (record["id"], device, at))
+                db.execute("INSERT OR IGNORE INTO complaint_metoo_v2 (complaint_id, device_hash, at) VALUES (?,?,?)",
+                           (record["id"], device, at))
             return True

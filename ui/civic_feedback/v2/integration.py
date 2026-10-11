@@ -36,6 +36,15 @@ ROUTES = (
     ("POST", "/complaints/{id}/metoo"),
     ("POST", "/complaints/{id}/status"),      # только сотрудник (R02 session + CSRF)
     ("POST", "/complaints/{id}/duplicate"),   # только сотрудник
+    # Волны 1–2 (POLISH_WAVE.md, POLISH_WAVE_2.md). «changes» — точный путь, в таблице R01 раньше {id}.
+    ("GET", "/complaints/changes"),
+    ("POST", "/complaints/{id}/verify"),      # житель: автор или «Я тоже»
+    ("POST", "/complaints/{id}/passport"),    # только сотрудник
+    ("POST", "/complaints/{id}/update"),      # только сотрудник
+    ("POST", "/complaints/{id}/unduplicate"), # только сотрудник
+    ("POST", "/complaints/{id}/photos"),      # житель (автор) — resident; сотрудник — after
+    ("POST", "/complaints/{id}/photos/{upload}"),
+    ("GET", "/complaints/{id}/photos/{photo}"),
 )
 
 

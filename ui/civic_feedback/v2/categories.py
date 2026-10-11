@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_PATH = ROOT / "research" / "round-14" / "categories_v2.json"
 
-# Сроки первого ответа жителю (перевод из «новое» в «принято»/«в работе»), в днях.
+# Сроки первого ответа жителю (перевод из «новое» в «принято»/«в работе»), в РАБОЧИХ днях РК (workdays.py).
 # ДЕМО-НОРМАТИВ R09, не утверждён акиматом. Срочное (холод, вода, гололёд) — 1 день,
 # опасное и тёмное — 3 дня, остальное — до 10 дней (закон РК об обращениях даёт до 15 рабочих дней).
 # Ключи обязаны совпадать со списком категорий в JSON — это проверяет validate_response_days().
@@ -66,6 +66,21 @@ def is_category(value) -> bool:
     return isinstance(value, str) and value in by_id()
 
 
+def subtopics(category: str) -> list[dict]:
+    """Уточнения категории (POLISH_WAVE п. 2): [{id, ru, kk, emergency_phone?}] — житель выбирает чипом."""
+    item = by_id().get(category) or {}
+    return list(item.get("subtopics") or [])
+
+
+def subtopic(category: str, subtopic_id) -> dict | None:
+    if not isinstance(subtopic_id, str):
+        return None
+    for item in subtopics(category):
+        if item.get("id") == subtopic_id:
+            return item
+    return None
+
+
 def v1_to_v2(label) -> str:
     """Старая метка v1 -> id v2. Неизвестное -> 'other' (а не ошибка: миграция без потерь,
     исходная метка сохраняется в legacy записи)."""
@@ -95,8 +110,12 @@ def public_payload() -> dict:
         "version": data.get("version"),
         "categories": [{"id": c["id"], "ru": c["ru"], "kk": c["kk"], "icon": c.get("icon"),
                         "examples_ru": c.get("examples_ru"), "target_kinds": c.get("target_kinds", []),
-                        "response_days": RESPONSE_DAYS[c["id"]]} for c in data["categories"]],
+                        "response_days": RESPONSE_DAYS[c["id"]],
+                        "subtopics": [{k: v for k, v in sub.items() if k in ("id", "ru", "kk", "emergency_phone")}
+                                      for sub in c.get("subtopics", [])]} for c in data["categories"]],
         "heat_levels": data.get("heat_levels", []),
         "fixed_state": data.get("fixed_state"),
         "weight_half_life_days": data.get("weight_half_life_days"),
+        "heat_states": data.get("heat_states"),
+        "emergency_numbers": data.get("emergency_numbers"),
     }

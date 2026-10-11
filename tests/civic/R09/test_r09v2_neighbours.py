@@ -14,9 +14,17 @@ import pytest
 from ui.civic_feedback.v2 import ComplaintStore, ComplaintsV2Service
 from ui.civic_feedback.v2 import record as rec
 
-HAS_GEO = importlib.util.find_spec("engine.civic_geo") is not None
-HAS_ML = importlib.util.find_spec("ui.civic_ml_api") is not None
-HAS_R03 = importlib.util.find_spec("ml.civic_classifier_v2") is not None
+def _has(module: str) -> bool:
+    """find_spec на подмодуле бросает ModuleNotFoundError, если нет родительского пакета (например, ml/)."""
+    try:
+        return importlib.util.find_spec(module) is not None
+    except ModuleNotFoundError:
+        return False
+
+
+HAS_GEO = _has("engine.civic_geo")
+HAS_ML = _has("ui.civic_ml_api")
+HAS_R03 = _has("ml.civic_classifier_v2")
 
 
 @pytest.mark.skipif(not HAS_GEO, reason="нет engine.civic_geo (R12) в этом дереве")
