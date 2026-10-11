@@ -120,8 +120,8 @@
       "heat.legend.nodata": "нет свежих данных", "heat.legend.nodata_hint": "Нет жалоб и осмотров за период — это не значит, что всё хорошо",
       "heat.reopened_mark": "вернули жители",
       "heat.reopened_note": "Проблема осталась — снова в работе · вернули жители",
-      "heat.reported_wait": "Ждёт проверки жителями · на карте до {date}",
-      "heat.verified_note": { one: "Подтвердил {count} житель · на карте до {date}", few: "Подтвердили {count} жителя · на карте до {date}", many: "Подтвердили {count} жителей · на карте до {date}" },
+      "heat.reported_wait": "Ждёт проверки жителями",
+      "heat.verified_note": { one: "Подтвердил {count} житель", few: "Подтвердили {count} жителя", many: "Подтвердили {count} жителей" },
       "deadline.left": { one: "Остался {n} рабочий день", few: "Осталось {n} рабочих дня", many: "Осталось {n} рабочих дней" },
       "deadline.today": "Срок ответа — сегодня",
       "deadline.overdue": { one: "Просрочено на {n} день", few: "Просрочено на {n} дня", many: "Просрочено на {n} дней" },
@@ -211,8 +211,8 @@
       "heat.legend.nodata": "жаңа дерек жоқ", "heat.legend.nodata_hint": "Кезеңде шағым да, тексеру де болмады — бұл бәрі жақсы дегенді білдірмейді",
       "heat.reopened_mark": "тұрғындар қайтарды",
       "heat.reopened_note": "Мәселе қалды — қайта жұмыста · тұрғындар қайтарды",
-      "heat.reported_wait": "Тұрғындардың тексеруін күтуде · картада {date} дейін",
-      "heat.verified_note": { other: "{count} тұрғын растады · картада {date} дейін" },
+      "heat.reported_wait": "Тұрғындардың тексеруін күтуде",
+      "heat.verified_note": { other: "{count} тұрғын растады" },
       "deadline.left": { other: "{n} жұмыс күні қалды" },
       "deadline.today": "Жауап мерзімі — бүгін",
       "deadline.overdue": { other: "{n} күнге кешікті" },
@@ -1122,9 +1122,10 @@
         const keys = c.members.map((m) => keyOf(m.item.target));
         const el = makeClusterEl(c.members.map((m) => m.item));
         const [w, h] = [el.offsetWidth || CLUSTER_W, el.offsetHeight || CLUSTER_W];
-        // в середине; тесно — рядом (кольцо 26 и 48 px); совсем некуда — к ближайшему уже стоящему кластеру
+        // в середине; тесно — рядом (кольцо 26 и 48 px); совсем некуда — к ближайшему уже стоящему кластеру.
+        // Кружок одного места — только на самом месте: сдвинутый, он показывал бы не туда (и выбор места жалобой мимо).
         const tries = [[0, 0]];
-        for (const r of [26, 48]) for (let k = 0; k < 8; k++) tries.push([r * Math.cos((k * Math.PI) / 4), r * Math.sin((k * Math.PI) / 4)]);
+        if (c.members.length > 1) for (const r of [26, 48]) for (let k = 0; k < 8; k++) tries.push([r * Math.cos((k * Math.PI) / 4), r * Math.sin((k * Math.PI) / 4)]);
         const at = tries.map(([dx, dy]) => ({ x: cx + dx, y: cy + dy })).find((q) => free(boxAt(q, w, h)));
         if (!at) {
           const near = clusters.filter((q) => q.fresh).sort((a, b) => Math.hypot(a.px.x - cx, a.px.y - cy) - Math.hypot(b.px.x - cx, b.px.y - cy))[0];
@@ -1218,6 +1219,8 @@
       hideTip();
       const items = clusterItems(el);
       if (!items.length || !map) return;
+      // Житель выбирает место для жалобы: кружок одного места — это само место (как значок), нескольких — приблизить
+      if (isPicking() && items.length === 1) { forwardPick(keyOf(items[0].target), ev); return; }
       let w = 180, so = 90, e = -180, n = -90;
       items.forEach((it) => { const a = it.anchor; w = Math.min(w, a[0]); e = Math.max(e, a[0]); so = Math.min(so, a[1]); n = Math.max(n, a[1]); });
       const need = items.some((it) => it.target.kind === "object") ? 15.2 : map.getZoom() + 1;
@@ -1546,9 +1549,11 @@
       let fixedNote = "";
       if (fixed && it.fixed_until) {
         const date = fmtDate(it.fixed_until, S.lang);
-        fixedNote = it.fixed_kind === "reported" ? '<p class="r07-note r07-note--wait">' + esc(t("heat.reported_wait", { date })) + "</p>"
-          : it.fixed_kind === "verified" && it.checks && it.checks.yes ? '<p class="r07-note r07-note--ok">' + esc(t("heat.verified_note", { count: it.checks.yes, date })) + "</p>"
-          : '<p class="r07-note r07-note--ok">' + esc(t("heat.fixed_until", { date })) + "</p>";
+        // одна строка: состояние проверки + прежняя «На карте зелёным до …» (ключ R11 heat.fixed_until)
+        const until = t("heat.fixed_until", { date });
+        fixedNote = it.fixed_kind === "reported" ? '<p class="r07-note r07-note--wait">' + esc(t("heat.reported_wait") + " · " + until) + "</p>"
+          : it.fixed_kind === "verified" && it.checks && it.checks.yes ? '<p class="r07-note r07-note--ok">' + esc(t("heat.verified_note", { count: it.checks.yes }) + " · " + until) + "</p>"
+          : '<p class="r07-note r07-note--ok">' + esc(until) + "</p>";
       }
       // Срок ответа (волна 1, п. 6) — только акимату и только у новых: «Осталось 2 рабочих дня» / «Просрочено на 1 день»
       // R09: просрочено = новое (никто не ответил), а срок прошёл. Строка — пока место «Новое» или срок уже просрочен.
