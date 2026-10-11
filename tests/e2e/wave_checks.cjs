@@ -223,11 +223,14 @@ async function heatItem(A, id) {
   return it ? { level: it.level, weight: it.weight, count: it.count, fixed_until: it.fixed_until, state: it.state || it.heat_state || it.fixed_state || null,
     reopened: it.reopened || null, derived: heatState(it) } : null;
 }
+// Жалоба устройства на остановку. Текст с номером — чтобы одинаковые тексты не склеивались; при отказе — код и ошибка.
+let filed = 0;
 async function fileComplaint(A, stop, device, text) {
-  const body = { text, lang: "ru", category: "transport", category_source: "resident", point: stop.point,
+  const body = { text: `${text} (${++filed})`, lang: "ru", category: "transport", category_source: "resident", point: stop.point,
     target: { kind: "object", id: stop.id, label_ru: `Остановка «${stop.name}»` }, device_id: device, demo: true };
   const r = await A.call("POST", "/api/civic/v2/complaints", body, false, device);
-  return (A.data(r) || {}).complaint || A.data(r) || null;
+  const rec = (A.data(r) || {}).complaint || A.data(r) || null;
+  return rec && rec.id ? rec : { id: null, http: r.status, error: r.body && (r.body.error || r.body.message) };
 }
 async function complaintById(A, id) {
   const l = await A.call("GET", `/api/civic/v2/complaints?bbox=${NURA_BBOX}`, null, true);
@@ -467,7 +470,7 @@ async function checkPassport(ctx) {
         fix: (await L.visibleText(R.page, part(W(lang, "passport.fix_eta")))) || (await L.visibleText(R.page, part(W(lang, "passport.fix_unknown")))),
         history: await L.visibleText(R.page, exact(W(lang, "passport.history"))) };
       add("W2-2", tag, "житель: «Передано: …» и срок ответа; «Подробнее» — «Следующий шаг», «Ответ службы до …», «Устранение: ориентир / пока не определено»",
-        st(opened && !!c && top.service && top.due && full.next && full.fix), { opened, complaint: c && c.id, top, more, full }, await shotOf(R.page, `${tag}-W2-2-passport`));
+        st(opened && !!c.id && top.service && top.due && full.next && full.fix), { opened, complaint: c.id || c, top, more, full }, await shotOf(R.page, `${tag}-W2-2-passport`));
       add("W2-2", tag, `житель: в «Подробнее» есть «${W(lang, "passport.history")}» (сообщили → передано → … — IA_WAVE2 §2.2)`, st(full.history), { history: full.history });
     } finally { await R.ctx.close(); }
   }
