@@ -160,8 +160,9 @@ def table(path: Path | None = None) -> dict:
             key = f"{cat_id}/{sub_id}"
             rows.append({"key": key, "category": cat_id, "subtopic": sub_id, "ru": sub["ru"], "kk": sub["kk"],
                          "service": rules.get(key, cat_service), "own": key in rules, "edited": key in edited})
+    # R15-S28: GET /akim/routing — публичный; логин сотрудника (updated_by) остаётся только в файле правок.
     return {"services": services, "rules": rows, "updated_at": over.get("updated_at"),
-            "updated_by": over.get("updated_by"), "note": "Общие названия служб; акимат может уточнить."}
+            "note": "Общие названия служб; акимат может уточнить."}
 
 
 def service_for(category: str | None, subtopic: str | None = None, path: Path | None = None) -> dict:

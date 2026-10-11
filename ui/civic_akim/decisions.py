@@ -168,9 +168,12 @@ def _load(path: Path | None = None) -> dict:
 
 
 def choice_for(item_id: str, path: Path | None = None) -> dict | None:
-    """Выбор акима по обращению: {option, at, by} или None. Для R09 (паспорт решения) и для «Картины дня»."""
+    """Выбор акима по обращению: {option, at} или None. Для R09 (паспорт решения) и для «Картины дня».
+
+    R15-S28: оба вывода публичные (GET /akim/summary, паспорт R09) — кто выбрал (by, логин сотрудника) остаётся
+    только в файле выборов и в ответе самому сотруднику (choose)."""
     c = _load(path).get(str(item_id))
-    return c if isinstance(c, dict) and c.get("option") in (1, 2) else None
+    return {"option": c["option"], "at": c.get("at")} if isinstance(c, dict) and c.get("option") in (1, 2) else None
 
 
 def choose(item_id: str, option, *, items: list[dict], actor: str | None = None, path: Path | None = None,

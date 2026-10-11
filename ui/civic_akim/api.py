@@ -117,8 +117,16 @@ def handle_post(path: str, body, *, staff: bool = False, actor: str | None = Non
 # Запись — функции ниже: шлюз R01 сам проверяет сотрудника и CSRF (staff=True в V2Handler) и передаёт principal;
 # ошибки ввода — ValueError с полями status/code/field (шлюз отвечает 400/404/429), см. INTEGRATION.txt §8.
 
+def _require_staff(principal):
+    """R15-S29: защита в глубину — запись только с сотрудником от шлюза (principal есть лишь у staff=True в
+    V2_HANDLERS R01). Забытая пометка в таблице маршрутов даст 403, а не правку от анонима."""
+    if not principal:
+        raise PermissionError("только сотрудник акимата")
+
+
 def routing_update(body, principal=None):
     """PUT /akim/routing — staff. body: {"rules": {...}, "services": {...}}."""
+    _require_staff(principal)
     actor = (principal or {}).get("username") if isinstance(principal, dict) else None
     try:
         return routing.update(body if isinstance(body, dict) else {}, actor=actor)
@@ -129,6 +137,7 @@ def routing_update(body, principal=None):
 
 def decision_choose(decision_id, body, principal=None):
     """POST /akim/decisions/{id} — staff. body: {"option": 1|2}."""
+    _require_staff(principal)
     actor = (principal or {}).get("username") if isinstance(principal, dict) else None
     option = body.get("option") if isinstance(body, dict) else None
     try:
