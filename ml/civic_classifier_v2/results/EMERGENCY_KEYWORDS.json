@@ -36,7 +36,7 @@
   "llm_v1": {
    "n": 3979,
    "naive": 139,
-   "rules": 21,
+   "rules": 19,
    "naive_by_label": {
     "parking": 64,
     "yards": 25,
@@ -52,8 +52,7 @@
    },
    "rules_by_label": {
     "smell_air": 10,
-    "utilities": 9,
-    "lighting": 2
+    "utilities": 9
    },
    "naive_only_words": {
     "горит": 26,
@@ -98,11 +97,9 @@
     "llm-ec4246699a",
     "llm-6c70a9b122",
     "llm-bdd39c3228",
-    "llm-82cc15eb4a",
     "llm-ccb29007b9",
     "llm-6be51c7178",
     "llm-a6b7db87e9",
-    "llm-7e5224bec9",
     "llm-05919b8308"
    ]
   },
@@ -158,13 +155,13 @@
   }
  },
  "cases": {
-  "n": 70,
-  "rules_ok": 70,
-  "naive_ok": 34,
+  "n": 78,
+  "rules_ok": 78,
+  "naive_ok": 40,
   "rules_miss": []
  },
  "js": {
-  "n": 11333,
-  "same": 11333
+  "n": 11341,
+  "same": 11341
  }
 }
