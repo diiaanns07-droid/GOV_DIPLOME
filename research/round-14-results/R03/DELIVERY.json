@@ -1,11 +1,11 @@
 {
  "role": "R03",
  "branch": "claude/r14-R03",
- "base_sha": "3c5ac25 (claude/round-14-package)",
+ "base_sha": "3c5ac25 (claude/round-14-package); 11 окт слита с пакетом c86c515 (волна 2, categories_v2.json с subtopics/heat_states)",
  "restored_from": "нет: v1 (claude/wizardly-ptolemy-qy8ltw @ 14c3384, ml/civic_classifier/) только прочитан; признаки v1 повторены в logreg.py",
  "data_from": "R02 claude/r14-R02: synth_v3, v1_in_v2, probe_v2 (@ 73b97d2), llm_v1 (@ 2a95286, gpt-4.1-mini, 3979 текстов) — читаются по путям, в ветку R03 не копировались",
  "code_sha": "ac0e954",
- "tested_sha": "ac0e954 (код); тесты и документы дополнялись позже — брать последний SHA ветки",
+ "tested_sha": "ac0e954 (рантайм модели); правила срочных случаев и тесты — 0b6cec37 и новее; брать последний SHA ветки",
  "push_status": "OK (claude/r14-R03)",
  "changed_paths": [
   "ml/civic_classifier_v2/.gitignore",
@@ -15,6 +15,9 @@
   "ml/civic_classifier_v2/bench.py",
   "ml/civic_classifier_v2/config.py",
   "ml/civic_classifier_v2/data.py",
+  "ml/civic_classifier_v2/emergency.py",
+  "ml/civic_classifier_v2/emergency_ref.mjs",
+  "ml/civic_classifier_v2/emergency_rules.json",
   "ml/civic_classifier_v2/evaluate.py",
   "ml/civic_classifier_v2/experiments.py",
   "ml/civic_classifier_v2/export_onnx.py",
@@ -62,21 +65,24 @@
   "ml/civic_classifier_v2/transformer.py",
   "ml/civic_classifier_v2/translit.py",
   "ml/civic_classifier_v2/zeroshot.py",
+  "research/handoffs/astana/R03/round14/PARALLEL.md",
   "research/handoffs/astana/R03/round14/STATUS.md",
   "research/round-14-results/R03/DELIVERY.json",
   "research/round-14-results/R03/INTEGRATION.txt",
   "research/round-14-results/R03/RUN.txt",
   "tests/civic/R03/round14/conftest.py",
+  "tests/civic/R03/round14/emergency_cases.json",
   "tests/civic/R03/round14/r03_fixtures.py",
   "tests/civic/R03/round14/r03_markers.py",
   "tests/civic/R03/round14/test_r03_analysis.py",
   "tests/civic/R03/round14/test_r03_core.py",
+  "tests/civic/R03/round14/test_r03_emergency.py",
   "tests/civic/R03/round14/test_r03_pipeline.py",
   "tests/civic/R03/round14/test_r03_zeroshot.py"
  ],
  "tests": {
-  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 112, xfailed 1 (известное ограничение словаря: благодарность с темой)",
-  "pytest без torch/sklearn/onnx (только numpy)": "PASS 103, NOT_RUN 9 (skipped с причиной), xfailed 1",
+  "pytest tests/civic/R03/round14 (Linux, Python 3.13, torch 2.14.1 CPU, transformers 5.19.0, onnx 1.23.2, onnxruntime 1.31.0, scikit-learn 1.9.1 — те же версии, что на ноутбуке)": "PASS 198, xfailed 1 (11 окт, после слияния с пакетом c86c515; известное ограничение словаря: благодарность с темой)",
+  "pytest без torch/sklearn/onnx (только numpy)": "PASS 105, NOT_RUN 7 (skipped с причиной), xfailed 1 — 11 окт, до правил срочных случаев; правила от ML-библиотек не зависят",
   "протокол: тексты людей и синтетический test не попадают в обучение/выбор (spy-тест k-fold и synth)": "PASS",
   "приватность: тексты людей не попадают в results/ и файлы прогнозов": "PASS",
   "сквозной прогон experiments → train → export_onnx → predict на крошечной случайной модели": "PASS",
@@ -118,7 +124,14 @@
   "FINAL R01 0a7a346 + пути R03 @ 68393f1: tests R03/R04/R09/R01": "PASS 814, skipped 1, xfailed 1",
   "кривая по объёму синтетики, логрегрессия на probe_v2 (synth_curve.py, облако, 20 мин)": "PASS — v3 0.751; +25 % LLM 0.790; +50 % 0.799; +100 % 0.797; вторая половина LLM +0.003 [−0.020; +0.024], не доказано",
   "кривая по объёму синтетики для трансформера": "NOT_RUN — нужен GPU (ноутбук), по желанию",
-  "FINAL R01 fa117c3 + пути R03 @ 23ecee7: tests R03/R04/R09/R01": "PASS 847, skipped 1, xfailed 1"
+  "FINAL R01 fa117c3 + пути R03 @ 23ecee7: tests R03/R04/R09/R01": "PASS 847, skipped 1, xfailed 1",
+  "новый categories_v2.json (пакет c86c515: subtopics, emergency_numbers, heat_states) — id, порядок, ru/kk, v1_to_v2 не менялись": "PASS — модель и тесты работают без правок",
+  "FINAL на ноутбуке (LOCAL_FINAL.md): какой int8 стоит в artifacts/onnx": "PASS — 279 147 957 байт = per-channel кандидат (onnx_export.json diagnostics.candidate_bytes), не старый FAIL (265.8 МиБ); /classify lighting 0.9939 source=v2",
+  "срочные случаи (волна 1 п. 3, для R09): правила на 78 фразах ru/kk/смешанные/транслит": "PASS 78/78 (буквальная подстрока «газ/горит/пожар/оборван провод» — 40/78)",
+  "срочные случаи: корпуса R02 @ 2a95286 (11 263 текста)": "PASS — 23 срабатывания (0.2 %), все газ/огонь, на parking/yards 0; подстрока — 388 (3.4 %), из них 375 мимо (газон 197, магазин 91, «горит» 81)",
+  "срочные случаи: эталон JS (emergency_ref.mjs, node 22) = Python": "PASS — 11 341 из 11 341 текста",
+  "срочные случаи: переносимость правил в JS (нет \\b, \\w, просмотра назад)": "PASS (тест)",
+  "голова R01 a2d90dd (FINAL-кандидат 8e67c65) + пути R03 @ ed1007b + categories_v2.json пакета: tests R03/R04/R09/R01": "PASS 925, skipped 1, xfailed 1"
  },
  "results_so_far": {
   "final_model": "civic-clf-v2-xlm-roberta-base-synth_all-daaa6dae4-s20261011 (v3 + llm_v1, только синтетика)",
@@ -156,7 +169,7 @@
   "Слабые места: транслит латиницей (0.53), трудные случаи (0.67), noise_safety/roads (0.71–0.72).",
   "guess_lang считает казахский без специфических букв русским — срезы берут язык из записи."
  ],
- "next_step": "Утро: RUN.txt блок «УТРО 11 ОКТ» на ноутбуке (ONNX per-channel, int8 на probe_v2, перевод транслита, парный вклад LLM-синтетики для трансформера, по желанию bench) → commit/push results. R01: в 0a7a346 уже R03 ac0e954 — рантайм актуален. Когда будет ≥ 200 текстов людей — шаги 6/7 с --human.",
+ "next_step": "Волна: R09 решает, подключать ли правила срочных случаев (INTEGRATION §R09); правки — в emergency_rules.json + emergency check. Ноутбук: блок «УТРО 11 ОКТ» RUN.txt — нужен только для чисел диплома (три PASS в onnx_export.json, int8 на probe_v2, транслит для трансформера); модель в FINAL уже правильная. Люди ≥ 200 — шаги 6/7 с --human.",
  "local4_results_sha": "c19b889 (Codex на ноутбуке владельца: experiments.json, RESULTS.md, final_model_meta.json, onnx_export.json, train_log_*.jsonl; код 477f97b)",
  "deliverables_night": {
   "DIPLOMA_TABLES.md": "ml/civic_classifier_v2/results/DIPLOMA_TABLES.md (+ results/tables/*.csv)",
@@ -167,5 +180,14 @@
   "classify_load": "ml/civic_classifier_v2/bench.py → results/classify_load_cloud.json, таблица 10 в DIPLOMA_TABLES.md (для R15/R04/R14)",
   "synth_curve": "ml/civic_classifier_v2/synth_curve.py → results/synth_curve_probe_v2.json, таблица 11 (для R02/R14)"
  },
- "for_R01": "В FINAL-кандидатах 0a7a346…fa117c3 уже R03 ac0e954 — рантайм актуален (B-004, гонка get_default, запасной torch). После ac0e954 — только инструменты (bench.py, analysis), отчёты и тесты; брать по желанию последний SHA ветки. Проверено: fa117c3 + пути R03 @ 23ecee7 — 847 passed, 1 skipped, 1 xfailed."
+ "for_R01": "Рантайм R03 в FINAL актуален (ac0e954), модель в FINAL — исправленная per-channel (проверено по размеру). Пунктов волн у R03 нет. Новое: правила срочных случаев (emergency*) — берутся в FINAL-2, только если их подключит R09. Проверено: голова a2d90dd + пути R03 @ ed1007b + categories_v2.json пакета — 925 passed, 1 skipped, 1 xfailed.",
+ "deliverables_wave": {
+  "emergency_rules": "ml/civic_classifier_v2/emergency_rules.json (r03-emergency-v1; правила для R09, один файл для Python и JS)",
+  "emergency_js": "ml/civic_classifier_v2/emergency_ref.mjs (эталон на JS без зависимостей, R09 может скопировать в web/civic/feedback/)",
+  "emergency_py": "ml/civic_classifier_v2/emergency.py (detect, check → results/EMERGENCY_KEYWORDS.md/.json)",
+  "emergency_cases": "tests/civic/R03/round14/emergency_cases.json (78 фраз; R09/R10 могут гонять в своих тестах)",
+  "report": "ml/civic_classifier_v2/results/EMERGENCY_KEYWORDS.md",
+  "model_in_final": "MODEL_CARD.md, раздел ONNX: в FINAL стоит per-channel int8 (проверено по размеру файла)",
+  "parallel_session": "research/handoffs/astana/R03/round14/PARALLEL.md — вторая сессия R03 (B): уточнения ↔ категории, продуктовый словарь"
+ }
 }
