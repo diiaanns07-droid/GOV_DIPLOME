@@ -95,6 +95,22 @@ try {
     check("нет ошибок страницы (карта по умолчанию)", errors.length === 0, errors.slice(0, 3));
     await ctx.close();
   }
+  // 5. POLISH_WAVE п. 1 в мастере R09: нажали у перекрёстка — «Это здесь?» предлагает светофор этого перекрёстка
+  {
+    const { ctx, p, errors } = await page({ width: 1366, height: 768 }, "ru", "/");
+    await p.waitForFunction(() => typeof map !== "undefined" && map && map.getStyle && document.querySelector(".bc-fab"), null, { timeout: 30000 });
+    await p.click(".bc-fab").catch(async () => { await p.click("text=Житель"); await p.click(".bc-fab"); });
+    await p.waitForTimeout(400);
+    await p.evaluate(() => map.jumpTo({ center: [71.40335, 51.17485], zoom: 17 }));
+    await p.waitForTimeout(800);
+    const pt = await p.evaluate(() => { const q = map.project([71.40335, 51.17485]), r = map.getCanvas().getBoundingClientRect(); return { x: r.left + q.x, y: r.top + q.y }; });
+    await p.mouse.click(pt.x, pt.y);
+    const ok = await p.waitForFunction(() => /Светофор на перекрёстке пр\. Богенбай Батыра и ул\. Щорса/.test(document.getElementById("birge-complaint-root")?.innerText || ""), null, { timeout: 15000 }).then(() => true, () => false);
+    check("мастер R09: у перекрёстка предлагается светофор этого перекрёстка", ok, (await p.locator("#birge-complaint-root").innerText()).slice(0, 400));
+    await p.screenshot({ path: path.join(OUT, "app-wizard-traffic-signal-1366-ru.png") });
+    check("нет ошибок страницы (мастер)", errors.length === 0, errors.slice(0, 3));
+    await ctx.close();
+  }
 } catch (e) {
   checks.push({ name: "приёмка дошла до конца", status: "FAIL", detail: String(e && e.message || e) });
   console.log("FAIL", e);

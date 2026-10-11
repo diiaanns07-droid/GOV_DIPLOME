@@ -1,5 +1,5 @@
 diff --git a/ui/web_server.py b/ui/web_server.py
-index 8f242c6..1d5442d 100644
+index 8f242c6..5058484 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
 @@ -44,6 +44,8 @@ ASSETS = {
@@ -39,6 +39,25 @@ index 8f242c6..1d5442d 100644
      "proposals.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_proposals"),
      "proposals.create": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "create_proposal", staff=True),
      "proposals.vote": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "vote_proposal"),
+@@ -1026,9 +1031,17 @@ class CivicV2Gateway:
+         if key == "targets":
+             if not (opt("lon") and opt("lat")):
+                 raise V2BadRequest("lon", "Нужны lon и lat точки.")
+-            return {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
++            args = {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
+                     "lat": _v2_number(q["lat"], "lat", ASTANA_BOUNDS[1], ASTANA_BOUNDS[3]),
+                     "category": self._category(q.get("category"))}
++            # R12 POLISH_WAVE п. 1: уточнение меняет, что идёт первым (светофор / перекрёсток / переход / участок).
++            # Чужое или неизвестное уточнение R12 сам пропускает; здесь — только форма (как id категории).
++            subtopic = q.get("subtopic") or None
++            if subtopic is not None:
++                if not re.fullmatch(r"[a-z][a-z0-9_]{0,40}", subtopic):
++                    raise V2BadRequest("subtopic", "subtopic: неизвестное уточнение.")
++                args["subtopic"] = subtopic
++            return args
+         district = q.get("district") or None
+         if district is not None and not V2_DISTRICT.match(district):
+             raise V2BadRequest("district", "district: неизвестный район.")
 diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
 index 6d86409..282a705 100644
 --- a/web/civic/shell/birge.css
