@@ -1,0 +1,2527 @@
+{
+ "meta": {
+  "what": "подписи чипов: словарь v1, словарь продукт, логрегрессия; корпуса: synth_v3 4260, llm_v1 3979, probe_v2 300, v1_in_v2 2724",
+  "model_version": null
+ },
+ "labels": {
+  "n": 78,
+  "wrong": {
+   "словарь v1": 15,
+   "словарь продукт": 7,
+   "логрегрессия": 10
+  },
+  "rows": [
+   {
+    "subtopic": "pothole",
+    "category": "roads",
+    "lang": "ru",
+    "text": "Яма, разбитый асфальт",
+    "pred": {
+     "словарь v1": "roads",
+     "словарь продукт": "roads",
+     "логрегрессия": "roads"
+    }
+   },
+   {
+    "subtopic": "pothole",
+    "category": "roads",
+    "lang": "kk",
+    "text": "Шұңқыр, бұзылған асфальт",
+    "pred": {
+     "словарь v1": "roads",
+     "словарь продукт": "roads",
+     "логрегрессия": "roads"
+    }
+   },
+   {
+    "subtopic": "traffic_light_broken",
+    "category": "roads",
+    "lang": "ru",
+    "text": "Светофор не работает",
+    "pred": {
+     "словарь v1": "roads",
+     "словарь продукт": "roads",
+     "логрегрессия": "roads"
+    }
+   },
+   {
+    "subtopic": "traffic_light_broken",
+    "category": "roads",
+    "lang": "kk",
+    "text": "Бағдаршам істемейді",
+    "pred": {
+     "словарь v1": "roads",
+     "словарь продукт": "roads",
+     "логрегрессия": "roads"
+    }
+   },
+   {
+    "subtopic": "traffic_light_timing",
+    "category": "roads",
+    "lang": "ru",
+    "text": "Светофор: долго красный или зелёный",
+    "pred": {
+     "словарь v1": "roads",
+     "словарь продукт": "roads",
+     "логрегрессия": "roads"
+    }
+   },
+   {
+    "subtopic": "traffic_light_timing",
+    "category": "roads",
+    "lang": "kk",
+    "text": "Бағдаршам: қызыл не жасыл тым ұзақ",
+    "pred": {
+     "словарь v1": "roads",
+     "словарь продукт": "roads",
+     "логрегрессия": "roads"
+    }
+   },
+   {
+    "subtopic": "intersection",
+    "category": "roads",
+    "lang": "ru",
+    "text": "Опасный или неудобный перекрёсток",
+    "pred": {
+     "словарь v1": "noise_safety",
+     "словарь продукт": "noise_safety",
+     "логрегрессия": "sidewalks"
+    }
+   },
+   {
+    "subtopic": "intersection",
+    "category": "roads",
+    "lang": "kk",
+    "text": "Қауіпті не ыңғайсыз қиылыс",
+    "pred": {
+     "словарь v1": "noise_safety",
+     "словарь продукт": "noise_safety",
+     "логрегрессия": "noise_safety"
+    }
+   },
+   {
+    "subtopic": "marking",
+    "category": "roads",
+    "lang": "ru",
+    "text": "Стёрлась разметка",
+    "pred": {
+     "словарь v1": "roads",
+     "словарь продукт": "roads",
+     "логрегрессия": "roads"
+    }
+   },
+   {
+    "subtopic": "marking",
+    "category": "roads",
+    "lang": "kk",
+    "text": "Жол таңбасы өшіп қалған",
+    "pred": {
+     "словарь v1": "roads",
+     "словарь продукт": "roads",
+     "логрегрессия": "roads"
+    }
+   },
+   {
+    "subtopic": "speed_bump",
+    "category": "roads",
+    "lang": "ru",
+    "text": "Лежачий полицейский",
+    "pred": {
+     "словарь v1": "roads",
+     "словарь продукт": "roads",
+     "логрегрессия": "roads"
+    }
+   },
+   {
+    "subtopic": "speed_bump",
+    "category": "roads",
+    "lang": "kk",
+    "text": "Жасанды кедір-бұдыр",
+    "pred": {
+     "словарь v1": "other",
+     "словарь продукт": "roads",
+     "логрегрессия": "other"
+    }
+   },
+   {
+    "subtopic": "snow_not_cleared",
+    "category": "snow_ice",
+    "lang": "ru",
+    "text": "Не убран снег",
+    "pred": {
+     "словарь v1": "snow_ice",
+     "словарь продукт": "snow_ice",
+     "логрегрессия": "snow_ice"
+    }
+   },
+   {
+    "subtopic": "snow_not_cleared",
+    "category": "snow_ice",
+    "lang": "kk",
+    "text": "Қар тазаланбаған",
+    "pred": {
+     "словарь v1": "snow_ice",
+     "словарь продукт": "snow_ice",
+     "логрегрессия": "snow_ice"
+    }
+   },
+   {
+    "subtopic": "ice",
+    "category": "snow_ice",
+    "lang": "ru",
+    "text": "Гололёд, не посыпано",
+    "pred": {
+     "словарь v1": "snow_ice",
+     "словарь продукт": "snow_ice",
+     "логрегрессия": "snow_ice"
+    }
+   },
+   {
+    "subtopic": "ice",
+    "category": "snow_ice",
+    "lang": "kk",
+    "text": "Көктайғақ, құм себілмеген",
+    "pred": {
+     "словарь v1": "snow_ice",
+     "словарь продукт": "snow_ice",
+     "логрегрессия": "snow_ice"
+    }
+   },
+   {
+    "subtopic": "icicles",
+    "category": "snow_ice",
+    "lang": "ru",
+    "text": "Сосульки, снег с крыши",
+    "pred": {
+     "словарь v1": "snow_ice",
+     "словарь продукт": "snow_ice",
+     "логрегрессия": "snow_ice"
+    }
+   },
+   {
+    "subtopic": "icicles",
+    "category": "snow_ice",
+    "lang": "kk",
+    "text": "Сүңгілер, шатырдан қар",
+    "pred": {
+     "словарь v1": "snow_ice",
+     "словарь продукт": "snow_ice",
+     "логрегрессия": "snow_ice"
+    }
+   },
+   {
+    "subtopic": "crossing",
+    "category": "sidewalks",
+    "lang": "ru",
+    "text": "Пешеходный переход",
+    "pred": {
+     "словарь v1": "noise_safety",
+     "словарь продукт": "noise_safety",
+     "логрегрессия": "sidewalks"
+    }
+   },
+   {
+    "subtopic": "crossing",
+    "category": "sidewalks",
+    "lang": "kk",
+    "text": "Жаяу жүргіншілер өткелі",
+    "pred": {
+     "словарь v1": "sidewalks",
+     "словарь продукт": "sidewalks",
+     "логрегрессия": "noise_safety"
+    }
+   },
+   {
+    "subtopic": "broken_sidewalk",
+    "category": "sidewalks",
+    "lang": "ru",
+    "text": "Разбит тротуар",
+    "pred": {
+     "словарь v1": "sidewalks",
+     "словарь продукт": "sidewalks",
+     "логрегрессия": "sidewalks"
+    }
+   },
+   {
+    "subtopic": "broken_sidewalk",
+    "category": "sidewalks",
+    "lang": "kk",
+    "text": "Тротуар бұзылған",
+    "pred": {
+     "словарь v1": "sidewalks",
+     "словарь продукт": "sidewalks",
+     "логрегрессия": "sidewalks"
+    }
+   },
+   {
+    "subtopic": "accessibility",
+    "category": "sidewalks",
+    "lang": "ru",
+    "text": "Нет пандуса, высокий бордюр",
+    "pred": {
+     "словарь v1": "sidewalks",
+     "словарь продукт": "sidewalks",
+     "логрегрессия": "sidewalks"
+    }
+   },
+   {
+    "subtopic": "accessibility",
+    "category": "sidewalks",
+    "lang": "kk",
+    "text": "Пандус жоқ, биік жиек",
+    "pred": {
+     "словарь v1": "sidewalks",
+     "словарь продукт": "sidewalks",
+     "логрегрессия": "sidewalks"
+    }
+   },
+   {
+    "subtopic": "stop_shelter",
+    "category": "transport",
+    "lang": "ru",
+    "text": "Остановка: павильон, скамья",
+    "pred": {
+     "словарь v1": "transport",
+     "словарь продукт": "transport",
+     "логрегрессия": "transport"
+    }
+   },
+   {
+    "subtopic": "stop_shelter",
+    "category": "transport",
+    "lang": "kk",
+    "text": "Аялдама: павильон, орындық",
+    "pred": {
+     "словарь v1": "transport",
+     "словарь продукт": "transport",
+     "логрегрессия": "transport"
+    }
+   },
+   {
+    "subtopic": "schedule",
+    "category": "transport",
+    "lang": "ru",
+    "text": "Долго ждать, нет расписания",
+    "pred": {
+     "словарь v1": "transport",
+     "словарь продукт": "transport",
+     "логрегрессия": "other"
+    }
+   },
+   {
+    "subtopic": "schedule",
+    "category": "transport",
+    "lang": "kk",
+    "text": "Ұзақ күту, кесте жоқ",
+    "pred": {
+     "словарь v1": "other",
+     "словарь продукт": "transport",
+     "логрегрессия": "other"
+    }
+   },
+   {
+    "subtopic": "route",
+    "category": "transport",
+    "lang": "ru",
+    "text": "Нужен маршрут или остановка",
+    "pred": {
+     "словарь v1": "transport",
+     "словарь продукт": "transport",
+     "логрегрессия": "transport"
+    }
+   },
+   {
+    "subtopic": "route",
+    "category": "transport",
+    "lang": "kk",
+    "text": "Бағыт не аялдама керек",
+    "pred": {
+     "словарь v1": "transport",
+     "словарь продукт": "transport",
+     "логрегрессия": "transport"
+    }
+   },
+   {
+    "subtopic": "lamp_off",
+    "category": "lighting",
+    "lang": "ru",
+    "text": "Не горит фонарь",
+    "pred": {
+     "словарь v1": "lighting",
+     "словарь продукт": "lighting",
+     "логрегрессия": "lighting"
+    }
+   },
+   {
+    "subtopic": "lamp_off",
+    "category": "lighting",
+    "lang": "kk",
+    "text": "Шам жанбайды",
+    "pred": {
+     "словарь v1": "lighting",
+     "словарь продукт": "lighting",
+     "логрегрессия": "lighting"
+    }
+   },
+   {
+    "subtopic": "dark_yard",
+    "category": "lighting",
+    "lang": "ru",
+    "text": "Темно во дворе",
+    "pred": {
+     "словарь v1": "lighting",
+     "словарь продукт": "lighting",
+     "логрегрессия": "lighting"
+    }
+   },
+   {
+    "subtopic": "dark_yard",
+    "category": "lighting",
+    "lang": "kk",
+    "text": "Аулада қараңғы",
+    "pred": {
+     "словарь v1": "snow_ice",
+     "словарь продукт": "lighting",
+     "логрегрессия": "lighting"
+    }
+   },
+   {
+    "subtopic": "blinking",
+    "category": "lighting",
+    "lang": "ru",
+    "text": "Фонарь мигает",
+    "pred": {
+     "словарь v1": "lighting",
+     "словарь продукт": "lighting",
+     "логрегрессия": "lighting"
+    }
+   },
+   {
+    "subtopic": "blinking",
+    "category": "lighting",
+    "lang": "kk",
+    "text": "Шам жыпылықтайды",
+    "pred": {
+     "словарь v1": "lighting",
+     "словарь продукт": "lighting",
+     "логрегрессия": "lighting"
+    }
+   },
+   {
+    "subtopic": "wire_down",
+    "category": "lighting",
+    "lang": "ru",
+    "text": "Оборван провод",
+    "pred": {
+     "словарь v1": "other",
+     "словарь продукт": "lighting",
+     "логрегрессия": "other"
+    }
+   },
+   {
+    "subtopic": "wire_down",
+    "category": "lighting",
+    "lang": "kk",
+    "text": "Сым үзілген",
+    "pred": {
+     "словарь v1": "other",
+     "словарь продукт": "lighting",
+     "логрегрессия": "utilities"
+    }
+   },
+   {
+    "subtopic": "playground",
+    "category": "yards",
+    "lang": "ru",
+    "text": "Сломана детская площадка",
+    "pred": {
+     "словарь v1": "yards",
+     "словарь продукт": "yards",
+     "логрегрессия": "yards"
+    }
+   },
+   {
+    "subtopic": "playground",
+    "category": "yards",
+    "lang": "kk",
+    "text": "Балалар алаңы бұзылған",
+    "pred": {
+     "словарь v1": "yards",
+     "словарь продукт": "yards",
+     "логрегрессия": "yards"
+    }
+   },
+   {
+    "subtopic": "trees_lawn",
+    "category": "yards",
+    "lang": "ru",
+    "text": "Деревья, газон",
+    "pred": {
+     "словарь v1": "yards",
+     "словарь продукт": "yards",
+     "логрегрессия": "yards"
+    }
+   },
+   {
+    "subtopic": "trees_lawn",
+    "category": "yards",
+    "lang": "kk",
+    "text": "Ағаштар, көгал",
+    "pred": {
+     "словарь v1": "yards",
+     "словарь продукт": "yards",
+     "логрегрессия": "yards"
+    }
+   },
+   {
+    "subtopic": "benches",
+    "category": "yards",
+    "lang": "ru",
+    "text": "Скамейки, благоустройство",
+    "pred": {
+     "словарь v1": "yards",
+     "словарь продукт": "yards",
+     "логрегрессия": "yards"
+    }
+   },
+   {
+    "subtopic": "benches",
+    "category": "yards",
+    "lang": "kk",
+    "text": "Орындықтар, абаттандыру",
+    "pred": {
+     "словарь v1": "yards",
+     "словарь продукт": "yards",
+     "логрегрессия": "yards"
+    }
+   },
+   {
+    "subtopic": "bins_full",
+    "category": "waste",
+    "lang": "ru",
+    "text": "Переполнены баки",
+    "pred": {
+     "словарь v1": "waste",
+     "словарь продукт": "waste",
+     "логрегрессия": "waste"
+    }
+   },
+   {
+    "subtopic": "bins_full",
+    "category": "waste",
+    "lang": "kk",
+    "text": "Контейнерлер толып кеткен",
+    "pred": {
+     "словарь v1": "waste",
+     "словарь продукт": "waste",
+     "логрегрессия": "waste"
+    }
+   },
+   {
+    "subtopic": "dump",
+    "category": "waste",
+    "lang": "ru",
+    "text": "Стихийная свалка",
+    "pred": {
+     "словарь v1": "waste",
+     "словарь продукт": "waste",
+     "логрегрессия": "waste"
+    }
+   },
+   {
+    "subtopic": "dump",
+    "category": "waste",
+    "lang": "kk",
+    "text": "Заңсыз қоқыс үйіндісі",
+    "pred": {
+     "словарь v1": "waste",
+     "словарь продукт": "waste",
+     "логрегрессия": "waste"
+    }
+   },
+   {
+    "subtopic": "not_collected",
+    "category": "waste",
+    "lang": "ru",
+    "text": "Не вывозят мусор",
+    "pred": {
+     "словарь v1": "waste",
+     "словарь продукт": "waste",
+     "логрегрессия": "waste"
+    }
+   },
+   {
+    "subtopic": "not_collected",
+    "category": "waste",
+    "lang": "kk",
+    "text": "Қоқыс шығарылмайды",
+    "pred": {
+     "словарь v1": "waste",
+     "словарь продукт": "waste",
+     "логрегрессия": "waste"
+    }
+   },
+   {
+    "subtopic": "no_heating",
+    "category": "utilities",
+    "lang": "ru",
+    "text": "Нет отопления",
+    "pred": {
+     "словарь v1": "utilities",
+     "словарь продукт": "utilities",
+     "логрегрессия": "utilities"
+    }
+   },
+   {
+    "subtopic": "no_heating",
+    "category": "utilities",
+    "lang": "kk",
+    "text": "Жылу жоқ",
+    "pred": {
+     "словарь v1": "utilities",
+     "словарь продукт": "utilities",
+     "логрегрессия": "utilities"
+    }
+   },
+   {
+    "subtopic": "no_water",
+    "category": "utilities",
+    "lang": "ru",
+    "text": "Нет воды",
+    "pred": {
+     "словарь v1": "utilities",
+     "словарь продукт": "utilities",
+     "логрегрессия": "utilities"
+    }
+   },
+   {
+    "subtopic": "no_water",
+    "category": "utilities",
+    "lang": "kk",
+    "text": "Су жоқ",
+    "pred": {
+     "словарь v1": "utilities",
+     "словарь продукт": "utilities",
+     "логрегрессия": "utilities"
+    }
+   },
+   {
+    "subtopic": "sewage",
+    "category": "utilities",
+    "lang": "ru",
+    "text": "Канализация",
+    "pred": {
+     "словарь v1": "utilities",
+     "словарь продукт": "utilities",
+     "логрегрессия": "utilities"
+    }
+   },
+   {
+    "subtopic": "sewage",
+    "category": "utilities",
+    "lang": "kk",
+    "text": "Кәріз",
+    "pred": {
+     "словарь v1": "utilities",
+     "словарь продукт": "utilities",
+     "логрегрессия": "utilities"
+    }
+   },
+   {
+    "subtopic": "power_building",
+    "category": "utilities",
+    "lang": "ru",
+    "text": "Нет света в доме",
+    "pred": {
+     "словарь v1": "lighting",
+     "словарь продукт": "utilities",
+     "логрегрессия": "utilities"
+    }
+   },
+   {
+    "subtopic": "power_building",
+    "category": "utilities",
+    "lang": "kk",
+    "text": "Үйде жарық жоқ",
+    "pred": {
+     "словарь v1": "lighting",
+     "словарь продукт": "utilities",
+     "логрегрессия": "utilities"
+    }
+   },
+   {
+    "subtopic": "gas",
+    "category": "smell_air",
+    "lang": "ru",
+    "text": "Запах газа",
+    "pred": {
+     "словарь v1": "smell_air",
+     "словарь продукт": "smell_air",
+     "логрегрессия": "smell_air"
+    }
+   },
+   {
+    "subtopic": "gas",
+    "category": "smell_air",
+    "lang": "kk",
+    "text": "Газ иісі",
+    "pred": {
+     "словарь v1": "smell_air",
+     "словарь продукт": "smell_air",
+     "логрегрессия": "smell_air"
+    }
+   },
+   {
+    "subtopic": "smoke_fire",
+    "category": "smell_air",
+    "lang": "ru",
+    "text": "Дым, что-то горит",
+    "pred": {
+     "словарь v1": "smell_air",
+     "словарь продукт": "smell_air",
+     "логрегрессия": "smell_air"
+    }
+   },
+   {
+    "subtopic": "smoke_fire",
+    "category": "smell_air",
+    "lang": "kk",
+    "text": "Түтін, бірдеңе жанып жатыр",
+    "pred": {
+     "словарь v1": "smell_air",
+     "словарь продукт": "smell_air",
+     "логрегрессия": "smell_air"
+    }
+   },
+   {
+    "subtopic": "dust",
+    "category": "smell_air",
+    "lang": "ru",
+    "text": "Пыль",
+    "pred": {
+     "словарь v1": "smell_air",
+     "словарь продукт": "smell_air",
+     "логрегрессия": "smell_air"
+    }
+   },
+   {
+    "subtopic": "dust",
+    "category": "smell_air",
+    "lang": "kk",
+    "text": "Шаң",
+    "pred": {
+     "словарь v1": "smell_air",
+     "словарь продукт": "smell_air",
+     "логрегрессия": "smell_air"
+    }
+   },
+   {
+    "subtopic": "bad_smell",
+    "category": "smell_air",
+    "lang": "ru",
+    "text": "Неприятный запах",
+    "pred": {
+     "словарь v1": "smell_air",
+     "словарь продукт": "smell_air",
+     "логрегрессия": "smell_air"
+    }
+   },
+   {
+    "subtopic": "bad_smell",
+    "category": "smell_air",
+    "lang": "kk",
+    "text": "Жағымсыз иіс",
+    "pred": {
+     "словарь v1": "smell_air",
+     "словарь продукт": "smell_air",
+     "логрегрессия": "smell_air"
+    }
+   },
+   {
+    "subtopic": "noise_night",
+    "category": "noise_safety",
+    "lang": "ru",
+    "text": "Шум ночью",
+    "pred": {
+     "словарь v1": "noise_safety",
+     "словарь продукт": "noise_safety",
+     "логрегрессия": "noise_safety"
+    }
+   },
+   {
+    "subtopic": "noise_night",
+    "category": "noise_safety",
+    "lang": "kk",
+    "text": "Түнгі шу",
+    "pred": {
+     "словарь v1": "noise_safety",
+     "словарь продукт": "noise_safety",
+     "логрегрессия": "noise_safety"
+    }
+   },
+   {
+    "subtopic": "dangerous_place",
+    "category": "noise_safety",
+    "lang": "ru",
+    "text": "Опасное место",
+    "pred": {
+     "словарь v1": "noise_safety",
+     "словарь продукт": "noise_safety",
+     "логрегрессия": "parking"
+    }
+   },
+   {
+    "subtopic": "dangerous_place",
+    "category": "noise_safety",
+    "lang": "kk",
+    "text": "Қауіпті орын",
+    "pred": {
+     "словарь v1": "noise_safety",
+     "словарь продукт": "noise_safety",
+     "логрегрессия": "parking"
+    }
+   },
+   {
+    "subtopic": "stray_dogs",
+    "category": "noise_safety",
+    "lang": "ru",
+    "text": "Бродячие собаки",
+    "pred": {
+     "словарь v1": "noise_safety",
+     "словарь продукт": "noise_safety",
+     "логрегрессия": "noise_safety"
+    }
+   },
+   {
+    "subtopic": "stray_dogs",
+    "category": "noise_safety",
+    "lang": "kk",
+    "text": "Қаңғыбас иттер",
+    "pred": {
+     "словарь v1": "noise_safety",
+     "словарь продукт": "noise_safety",
+     "логрегрессия": "noise_safety"
+    }
+   },
+   {
+    "subtopic": "yard_cars",
+    "category": "parking",
+    "lang": "ru",
+    "text": "Машины во дворе, на газоне",
+    "pred": {
+     "словарь v1": "yards",
+     "словарь продукт": "yards",
+     "логрегрессия": "parking"
+    }
+   },
+   {
+    "subtopic": "yard_cars",
+    "category": "parking",
+    "lang": "kk",
+    "text": "Аулада, көгалда көліктер",
+    "pred": {
+     "словарь v1": "yards",
+     "словарь продукт": "yards",
+     "логрегрессия": "parking"
+    }
+   },
+   {
+    "subtopic": "sidewalk_parking",
+    "category": "parking",
+    "lang": "ru",
+    "text": "Парковка на тротуаре",
+    "pred": {
+     "словарь v1": "parking",
+     "словарь продукт": "parking",
+     "логрегрессия": "parking"
+    }
+   },
+   {
+    "subtopic": "sidewalk_parking",
+    "category": "parking",
+    "lang": "kk",
+    "text": "Тротуарға көлік қою",
+    "pred": {
+     "словарь v1": "sidewalks",
+     "словарь продукт": "parking",
+     "логрегрессия": "parking"
+    }
+   },
+   {
+    "subtopic": "no_spaces",
+    "category": "parking",
+    "lang": "ru",
+    "text": "Нет мест",
+    "pred": {
+     "словарь v1": "other",
+     "словарь продукт": "other",
+     "логрегрессия": "parking"
+    }
+   },
+   {
+    "subtopic": "no_spaces",
+    "category": "parking",
+    "lang": "kk",
+    "text": "Орын жоқ",
+    "pred": {
+     "словарь v1": "other",
+     "словарь продукт": "other",
+     "логрегрессия": "parking"
+    }
+   }
+  ]
+ },
+ "corpus": {
+  "pothole": {
+   "category": "roads",
+   "n": 334,
+   "home": 322,
+   "covered": 11,
+   "lost": 1,
+   "share": {
+    "home": 0.964,
+    "covered": 0.033,
+    "lost": 0.003
+   },
+   "labels": {
+    "roads": 322,
+    "sidewalks": 8,
+    "lighting": 1,
+    "yards": 1,
+    "parking": 1
+   },
+   "lost_to": {
+    "other": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "roads": 140
+    },
+    "llm_v1": {
+     "roads": 84,
+     "sidewalks": 8,
+     "lighting": 1,
+     "yards": 1,
+     "parking": 1,
+     "other": 1
+    },
+    "probe_v2": {
+     "roads": 8
+    },
+    "v1_in_v2": {
+     "roads": 90
+    }
+   },
+   "flag": false
+  },
+  "traffic_light_broken": {
+   "category": "roads",
+   "n": 204,
+   "home": 198,
+   "covered": 1,
+   "lost": 5,
+   "share": {
+    "home": 0.971,
+    "covered": 0.005,
+    "lost": 0.025
+   },
+   "labels": {
+    "roads": 198,
+    "noise_safety": 4,
+    "lighting": 1,
+    "other": 1
+   },
+   "lost_to": {
+    "noise_safety": 4,
+    "other": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "roads": 82
+    },
+    "llm_v1": {
+     "roads": 37,
+     "noise_safety": 4,
+     "lighting": 1,
+     "other": 1
+    },
+    "probe_v2": {
+     "roads": 2
+    },
+    "v1_in_v2": {
+     "roads": 77
+    }
+   },
+   "flag": false
+  },
+  "traffic_light_timing": {
+   "category": "roads",
+   "n": 204,
+   "home": 198,
+   "covered": 1,
+   "lost": 5,
+   "share": {
+    "home": 0.971,
+    "covered": 0.005,
+    "lost": 0.025
+   },
+   "labels": {
+    "roads": 198,
+    "noise_safety": 4,
+    "lighting": 1,
+    "other": 1
+   },
+   "lost_to": {
+    "noise_safety": 4,
+    "other": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "roads": 82
+    },
+    "llm_v1": {
+     "roads": 37,
+     "noise_safety": 4,
+     "lighting": 1,
+     "other": 1
+    },
+    "probe_v2": {
+     "roads": 2
+    },
+    "v1_in_v2": {
+     "roads": 77
+    }
+   },
+   "flag": false
+  },
+  "intersection": {
+   "category": "roads",
+   "n": 458,
+   "home": 160,
+   "covered": 179,
+   "lost": 119,
+   "share": {
+    "home": 0.349,
+    "covered": 0.391,
+    "lost": 0.26
+   },
+   "labels": {
+    "roads": 160,
+    "sidewalks": 64,
+    "yards": 49,
+    "lighting": 44,
+    "waste": 33
+   },
+   "lost_to": {
+    "lighting": 25,
+    "waste": 23,
+    "yards": 14
+   },
+   "by_set": {
+    "synth_v3": {
+     "roads": 59,
+     "waste": 25,
+     "yards": 21,
+     "sidewalks": 18,
+     "noise_safety": 18,
+     "parking": 12,
+     "snow_ice": 11,
+     "lighting": 8,
+     "utilities": 5,
+     "other": 4,
+     "smell_air": 3
+    },
+    "llm_v1": {
+     "roads": 22,
+     "noise_safety": 6,
+     "lighting": 3,
+     "parking": 3,
+     "waste": 3,
+     "sidewalks": 3,
+     "yards": 2,
+     "other": 2,
+     "transport": 2,
+     "snow_ice": 2
+    },
+    "probe_v2": {
+     "roads": 2
+    },
+    "v1_in_v2": {
+     "roads": 77,
+     "sidewalks": 43,
+     "lighting": 33,
+     "yards": 26,
+     "transport": 21,
+     "utilities": 7,
+     "snow_ice": 6,
+     "waste": 5,
+     "noise_safety": 5,
+     "other": 1
+    }
+   },
+   "flag": true
+  },
+  "marking": {
+   "category": "roads",
+   "n": 184,
+   "home": 178,
+   "covered": 2,
+   "lost": 4,
+   "share": {
+    "home": 0.967,
+    "covered": 0.011,
+    "lost": 0.022
+   },
+   "labels": {
+    "roads": 178,
+    "parking": 3,
+    "other": 3
+   },
+   "lost_to": {
+    "other": 3,
+    "parking": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "roads": 51
+    },
+    "llm_v1": {
+     "roads": 59,
+     "other": 3,
+     "parking": 2
+    },
+    "probe_v2": {
+     "roads": 2,
+     "parking": 1
+    },
+    "v1_in_v2": {
+     "roads": 66
+    }
+   },
+   "flag": false
+  },
+  "speed_bump": {
+   "category": "roads",
+   "n": 65,
+   "home": 65,
+   "covered": 0,
+   "lost": 0,
+   "share": {
+    "home": 1.0,
+    "covered": 0.0,
+    "lost": 0.0
+   },
+   "labels": {
+    "roads": 65
+   },
+   "lost_to": {},
+   "by_set": {
+    "synth_v3": {
+     "roads": 10
+    },
+    "llm_v1": {
+     "roads": 39
+    },
+    "probe_v2": {
+     "roads": 1
+    },
+    "v1_in_v2": {
+     "roads": 15
+    }
+   },
+   "flag": false
+  },
+  "snow_not_cleared": {
+   "category": "snow_ice",
+   "n": 437,
+   "home": 422,
+   "covered": 1,
+   "lost": 14,
+   "share": {
+    "home": 0.966,
+    "covered": 0.002,
+    "lost": 0.032
+   },
+   "labels": {
+    "snow_ice": 422,
+    "other": 11,
+    "sidewalks": 2,
+    "utilities": 2
+   },
+   "lost_to": {
+    "other": 11,
+    "utilities": 2,
+    "sidewalks": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "snow_ice": 162
+    },
+    "llm_v1": {
+     "snow_ice": 203,
+     "other": 9,
+     "sidewalks": 2,
+     "utilities": 2
+    },
+    "probe_v2": {
+     "snow_ice": 11,
+     "other": 2
+    },
+    "v1_in_v2": {
+     "snow_ice": 46
+    }
+   },
+   "flag": false
+  },
+  "ice": {
+   "category": "snow_ice",
+   "n": 250,
+   "home": 246,
+   "covered": 3,
+   "lost": 1,
+   "share": {
+    "home": 0.984,
+    "covered": 0.012,
+    "lost": 0.004
+   },
+   "labels": {
+    "snow_ice": 246,
+    "sidewalks": 3,
+    "roads": 1
+   },
+   "lost_to": {
+    "roads": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "snow_ice": 70
+    },
+    "llm_v1": {
+     "snow_ice": 114,
+     "sidewalks": 3,
+     "roads": 1
+    },
+    "probe_v2": {
+     "snow_ice": 4
+    },
+    "v1_in_v2": {
+     "snow_ice": 58
+    }
+   },
+   "flag": false
+  },
+  "icicles": {
+   "category": "snow_ice",
+   "n": 65,
+   "home": 64,
+   "covered": 1,
+   "lost": 0,
+   "share": {
+    "home": 0.985,
+    "covered": 0.015,
+    "lost": 0.0
+   },
+   "labels": {
+    "snow_ice": 64,
+    "yards": 1
+   },
+   "lost_to": {},
+   "by_set": {
+    "synth_v3": {
+     "snow_ice": 32
+    },
+    "llm_v1": {
+     "snow_ice": 30,
+     "yards": 1
+    },
+    "probe_v2": {
+     "snow_ice": 2
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "crossing": {
+   "category": "sidewalks",
+   "n": 442,
+   "home": 235,
+   "covered": 77,
+   "lost": 130,
+   "share": {
+    "home": 0.532,
+    "covered": 0.174,
+    "lost": 0.294
+   },
+   "labels": {
+    "sidewalks": 235,
+    "noise_safety": 77,
+    "roads": 75,
+    "lighting": 28,
+    "parking": 20
+   },
+   "lost_to": {
+    "noise_safety": 76,
+    "parking": 20,
+    "roads": 18
+   },
+   "by_set": {
+    "synth_v3": {
+     "sidewalks": 85,
+     "noise_safety": 41,
+     "roads": 29
+    },
+    "llm_v1": {
+     "sidewalks": 55,
+     "noise_safety": 32,
+     "roads": 28,
+     "lighting": 23,
+     "parking": 18,
+     "snow_ice": 3,
+     "other": 3
+    },
+    "probe_v2": {
+     "sidewalks": 4,
+     "noise_safety": 4,
+     "roads": 2,
+     "parking": 2,
+     "snow_ice": 1,
+     "lighting": 1
+    },
+    "v1_in_v2": {
+     "sidewalks": 91,
+     "roads": 16,
+     "lighting": 4
+    }
+   },
+   "flag": true
+  },
+  "broken_sidewalk": {
+   "category": "sidewalks",
+   "n": 994,
+   "home": 580,
+   "covered": 327,
+   "lost": 87,
+   "share": {
+    "home": 0.584,
+    "covered": 0.329,
+    "lost": 0.088
+   },
+   "labels": {
+    "sidewalks": 580,
+    "snow_ice": 269,
+    "parking": 115,
+    "other": 13,
+    "waste": 7
+   },
+   "lost_to": {
+    "snow_ice": 61,
+    "other": 13,
+    "parking": 5
+   },
+   "by_set": {
+    "synth_v3": {
+     "sidewalks": 198,
+     "snow_ice": 107,
+     "parking": 58
+    },
+    "llm_v1": {
+     "sidewalks": 166,
+     "snow_ice": 125,
+     "parking": 53,
+     "other": 8,
+     "waste": 7,
+     "noise_safety": 3,
+     "lighting": 3,
+     "yards": 2,
+     "roads": 1
+    },
+    "probe_v2": {
+     "sidewalks": 13,
+     "parking": 4,
+     "snow_ice": 2,
+     "lighting": 1
+    },
+    "v1_in_v2": {
+     "sidewalks": 203,
+     "snow_ice": 35,
+     "other": 5
+    }
+   },
+   "flag": false
+  },
+  "accessibility": {
+   "category": "sidewalks",
+   "n": 288,
+   "home": 235,
+   "covered": 34,
+   "lost": 19,
+   "share": {
+    "home": 0.816,
+    "covered": 0.118,
+    "lost": 0.066
+   },
+   "labels": {
+    "sidewalks": 235,
+    "parking": 18,
+    "utilities": 14,
+    "snow_ice": 11,
+    "lighting": 3
+   },
+   "lost_to": {
+    "utilities": 14,
+    "other": 2,
+    "snow_ice": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "sidewalks": 72,
+     "utilities": 12,
+     "parking": 9
+    },
+    "llm_v1": {
+     "sidewalks": 89,
+     "snow_ice": 10,
+     "parking": 9,
+     "lighting": 2,
+     "utilities": 2,
+     "roads": 2,
+     "other": 2,
+     "noise_safety": 1,
+     "transport": 1
+    },
+    "probe_v2": {
+     "sidewalks": 4,
+     "snow_ice": 1,
+     "lighting": 1,
+     "yards": 1
+    },
+    "v1_in_v2": {
+     "sidewalks": 70
+    }
+   },
+   "flag": false
+  },
+  "stop_shelter": {
+   "category": "transport",
+   "n": 1539,
+   "home": 938,
+   "covered": 413,
+   "lost": 188,
+   "share": {
+    "home": 0.609,
+    "covered": 0.268,
+    "lost": 0.122
+   },
+   "labels": {
+    "transport": 938,
+    "snow_ice": 147,
+    "lighting": 135,
+    "parking": 82,
+    "waste": 66
+   },
+   "lost_to": {
+    "parking": 76,
+    "other": 21,
+    "lighting": 20
+   },
+   "by_set": {
+    "synth_v3": {
+     "transport": 314,
+     "snow_ice": 40,
+     "lighting": 40,
+     "parking": 40,
+     "waste": 23,
+     "sidewalks": 12,
+     "smell_air": 9
+    },
+    "llm_v1": {
+     "transport": 219,
+     "snow_ice": 75,
+     "lighting": 63,
+     "waste": 41,
+     "parking": 40,
+     "roads": 36,
+     "sidewalks": 30,
+     "noise_safety": 23,
+     "other": 20,
+     "smell_air": 18,
+     "yards": 9,
+     "utilities": 1
+    },
+    "probe_v2": {
+     "transport": 13,
+     "snow_ice": 3,
+     "sidewalks": 3,
+     "lighting": 2,
+     "waste": 2,
+     "parking": 2,
+     "noise_safety": 1,
+     "other": 1
+    },
+    "v1_in_v2": {
+     "transport": 392,
+     "lighting": 30,
+     "snow_ice": 29,
+     "sidewalks": 8
+    }
+   },
+   "flag": false
+  },
+  "schedule": {
+   "category": "transport",
+   "n": 120,
+   "home": 87,
+   "covered": 3,
+   "lost": 30,
+   "share": {
+    "home": 0.725,
+    "covered": 0.025,
+    "lost": 0.25
+   },
+   "labels": {
+    "transport": 87,
+    "waste": 24,
+    "other": 6,
+    "yards": 1,
+    "utilities": 1
+   },
+   "lost_to": {
+    "waste": 22,
+    "other": 6,
+    "yards": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "waste": 22,
+     "transport": 21
+    },
+    "llm_v1": {
+     "transport": 57,
+     "other": 6,
+     "waste": 2,
+     "yards": 1,
+     "utilities": 1,
+     "lighting": 1
+    },
+    "probe_v2": {
+     "transport": 1
+    },
+    "v1_in_v2": {
+     "transport": 8
+    }
+   },
+   "flag": true
+  },
+  "route": {
+   "category": "transport",
+   "n": 97,
+   "home": 85,
+   "covered": 4,
+   "lost": 8,
+   "share": {
+    "home": 0.876,
+    "covered": 0.041,
+    "lost": 0.082
+   },
+   "labels": {
+    "transport": 85,
+    "other": 6,
+    "roads": 2,
+    "lighting": 2,
+    "noise_safety": 1
+   },
+   "lost_to": {
+    "other": 6,
+    "roads": 1,
+    "noise_safety": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "transport": 21
+    },
+    "llm_v1": {
+     "transport": 61,
+     "other": 5,
+     "roads": 2,
+     "lighting": 2,
+     "noise_safety": 1,
+     "sidewalks": 1
+    },
+    "probe_v2": {
+     "transport": 3,
+     "other": 1
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "lamp_off": {
+   "category": "lighting",
+   "n": 586,
+   "home": 511,
+   "covered": 43,
+   "lost": 32,
+   "share": {
+    "home": 0.872,
+    "covered": 0.073,
+    "lost": 0.055
+   },
+   "labels": {
+    "lighting": 511,
+    "utilities": 41,
+    "transport": 15,
+    "roads": 13,
+    "other": 3
+   },
+   "lost_to": {
+    "utilities": 28,
+    "other": 3,
+    "noise_safety": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "lighting": 159,
+     "utilities": 31,
+     "transport": 11,
+     "roads": 6
+    },
+    "llm_v1": {
+     "lighting": 184,
+     "utilities": 9,
+     "other": 2,
+     "yards": 1
+    },
+    "probe_v2": {
+     "lighting": 9,
+     "roads": 1,
+     "snow_ice": 1,
+     "utilities": 1,
+     "noise_safety": 1,
+     "other": 1
+    },
+    "v1_in_v2": {
+     "lighting": 159,
+     "roads": 6,
+     "transport": 4
+    }
+   },
+   "flag": false
+  },
+  "dark_yard": {
+   "category": "lighting",
+   "n": 309,
+   "home": 287,
+   "covered": 8,
+   "lost": 14,
+   "share": {
+    "home": 0.929,
+    "covered": 0.026,
+    "lost": 0.045
+   },
+   "labels": {
+    "lighting": 287,
+    "utilities": 13,
+    "yards": 3,
+    "roads": 2,
+    "other": 2
+   },
+   "lost_to": {
+    "utilities": 11,
+    "other": 2,
+    "yards": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "lighting": 124
+    },
+    "llm_v1": {
+     "lighting": 96,
+     "utilities": 12,
+     "yards": 3,
+     "roads": 2,
+     "other": 2,
+     "sidewalks": 1,
+     "noise_safety": 1
+    },
+    "probe_v2": {
+     "lighting": 7,
+     "utilities": 1
+    },
+    "v1_in_v2": {
+     "lighting": 60
+    }
+   },
+   "flag": false
+  },
+  "blinking": {
+   "category": "lighting",
+   "n": 87,
+   "home": 68,
+   "covered": 19,
+   "lost": 0,
+   "share": {
+    "home": 0.782,
+    "covered": 0.218,
+    "lost": 0.0
+   },
+   "labels": {
+    "lighting": 68,
+    "roads": 19
+   },
+   "lost_to": {},
+   "by_set": {
+    "synth_v3": {
+     "lighting": 22,
+     "roads": 10
+    },
+    "llm_v1": {
+     "lighting": 30,
+     "roads": 4
+    },
+    "probe_v2": {
+     "lighting": 2
+    },
+    "v1_in_v2": {
+     "lighting": 14,
+     "roads": 5
+    }
+   },
+   "flag": false
+  },
+  "wire_down": {
+   "category": "lighting",
+   "n": 96,
+   "home": 84,
+   "covered": 5,
+   "lost": 7,
+   "share": {
+    "home": 0.875,
+    "covered": 0.052,
+    "lost": 0.073
+   },
+   "labels": {
+    "lighting": 84,
+    "other": 5,
+    "snow_ice": 3,
+    "utilities": 2,
+    "sidewalks": 1
+   },
+   "lost_to": {
+    "other": 5,
+    "utilities": 2
+   },
+   "by_set": {
+    "synth_v3": {
+     "lighting": 31
+    },
+    "llm_v1": {
+     "lighting": 36,
+     "other": 5,
+     "snow_ice": 3,
+     "utilities": 2,
+     "sidewalks": 1
+    },
+    "probe_v2": {
+     "lighting": 1,
+     "yards": 1
+    },
+    "v1_in_v2": {
+     "lighting": 16
+    }
+   },
+   "flag": false
+  },
+  "playground": {
+   "category": "yards",
+   "n": 701,
+   "home": 375,
+   "covered": 225,
+   "lost": 101,
+   "share": {
+    "home": 0.535,
+    "covered": 0.321,
+    "lost": 0.144
+   },
+   "labels": {
+    "yards": 375,
+    "waste": 68,
+    "snow_ice": 49,
+    "sidewalks": 37,
+    "other": 33
+   },
+   "lost_to": {
+    "other": 33,
+    "waste": 15,
+    "roads": 13
+   },
+   "by_set": {
+    "synth_v3": {
+     "yards": 169,
+     "snow_ice": 24,
+     "waste": 20,
+     "parking": 16,
+     "roads": 15,
+     "sidewalks": 14,
+     "other": 11,
+     "smell_air": 9,
+     "noise_safety": 8,
+     "lighting": 5,
+     "utilities": 4
+    },
+    "llm_v1": {
+     "yards": 104,
+     "waste": 38,
+     "other": 14,
+     "snow_ice": 9,
+     "parking": 7,
+     "smell_air": 7,
+     "noise_safety": 6,
+     "sidewalks": 5,
+     "lighting": 4,
+     "roads": 3,
+     "utilities": 1,
+     "transport": 1
+    },
+    "probe_v2": {
+     "yards": 9,
+     "snow_ice": 3,
+     "waste": 2,
+     "lighting": 1,
+     "smell_air": 1,
+     "noise_safety": 1,
+     "other": 1
+    },
+    "v1_in_v2": {
+     "yards": 93,
+     "sidewalks": 18,
+     "transport": 18,
+     "roads": 14,
+     "snow_ice": 13,
+     "lighting": 9,
+     "waste": 8,
+     "other": 7,
+     "utilities": 5,
+     "noise_safety": 4
+    }
+   },
+   "flag": false
+  },
+  "trees_lawn": {
+   "category": "yards",
+   "n": 488,
+   "home": 310,
+   "covered": 148,
+   "lost": 30,
+   "share": {
+    "home": 0.635,
+    "covered": 0.303,
+    "lost": 0.061
+   },
+   "labels": {
+    "yards": 310,
+    "parking": 138,
+    "roads": 28,
+    "other": 6,
+    "transport": 3
+   },
+   "lost_to": {
+    "parking": 24,
+    "other": 6
+   },
+   "by_set": {
+    "synth_v3": {
+     "yards": 133,
+     "parking": 71,
+     "roads": 28
+    },
+    "llm_v1": {
+     "yards": 72,
+     "parking": 60,
+     "other": 5,
+     "transport": 3,
+     "sidewalks": 1,
+     "waste": 1
+    },
+    "probe_v2": {
+     "yards": 7,
+     "parking": 7,
+     "sidewalks": 1,
+     "other": 1
+    },
+    "v1_in_v2": {
+     "yards": 98
+    }
+   },
+   "flag": false
+  },
+  "benches": {
+   "category": "yards",
+   "n": 277,
+   "home": 124,
+   "covered": 148,
+   "lost": 5,
+   "share": {
+    "home": 0.448,
+    "covered": 0.534,
+    "lost": 0.018
+   },
+   "labels": {
+    "transport": 149,
+    "yards": 124,
+    "other": 3,
+    "waste": 1
+   },
+   "lost_to": {
+    "other": 3,
+    "waste": 1,
+    "transport": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "transport": 62,
+     "yards": 50
+    },
+    "llm_v1": {
+     "yards": 42,
+     "transport": 36,
+     "other": 3,
+     "waste": 1
+    },
+    "probe_v2": {
+     "yards": 4,
+     "transport": 2
+    },
+    "v1_in_v2": {
+     "transport": 49,
+     "yards": 28
+    }
+   },
+   "flag": false
+  },
+  "bins_full": {
+   "category": "waste",
+   "n": 358,
+   "home": 337,
+   "covered": 11,
+   "lost": 10,
+   "share": {
+    "home": 0.941,
+    "covered": 0.031,
+    "lost": 0.028
+   },
+   "labels": {
+    "waste": 337,
+    "transport": 9,
+    "other": 4,
+    "parking": 3,
+    "utilities": 3
+   },
+   "lost_to": {
+    "other": 4,
+    "transport": 3,
+    "utilities": 2
+   },
+   "by_set": {
+    "synth_v3": {
+     "waste": 132
+    },
+    "llm_v1": {
+     "waste": 184,
+     "transport": 9,
+     "other": 4,
+     "utilities": 3,
+     "parking": 2,
+     "yards": 1,
+     "sidewalks": 1
+    },
+    "probe_v2": {
+     "waste": 8,
+     "parking": 1
+    },
+    "v1_in_v2": {
+     "waste": 13
+    }
+   },
+   "flag": false
+  },
+  "dump": {
+   "category": "waste",
+   "n": 96,
+   "home": 61,
+   "covered": 32,
+   "lost": 3,
+   "share": {
+    "home": 0.635,
+    "covered": 0.333,
+    "lost": 0.031
+   },
+   "labels": {
+    "waste": 61,
+    "smell_air": 34,
+    "snow_ice": 1
+   },
+   "lost_to": {
+    "smell_air": 3
+   },
+   "by_set": {
+    "synth_v3": {
+     "waste": 34,
+     "smell_air": 18
+    },
+    "llm_v1": {
+     "waste": 24,
+     "smell_air": 15,
+     "snow_ice": 1
+    },
+    "probe_v2": {
+     "waste": 3,
+     "smell_air": 1
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "not_collected": {
+   "category": "waste",
+   "n": 188,
+   "home": 174,
+   "covered": 6,
+   "lost": 8,
+   "share": {
+    "home": 0.926,
+    "covered": 0.032,
+    "lost": 0.043
+   },
+   "labels": {
+    "waste": 174,
+    "other": 7,
+    "snow_ice": 6,
+    "yards": 1
+   },
+   "lost_to": {
+    "other": 7,
+    "yards": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "waste": 92
+    },
+    "llm_v1": {
+     "waste": 58,
+     "other": 6,
+     "snow_ice": 5,
+     "yards": 1
+    },
+    "probe_v2": {
+     "waste": 3,
+     "snow_ice": 1
+    },
+    "v1_in_v2": {
+     "waste": 21,
+     "other": 1
+    }
+   },
+   "flag": false
+  },
+  "no_heating": {
+   "category": "utilities",
+   "n": 143,
+   "home": 142,
+   "covered": 1,
+   "lost": 0,
+   "share": {
+    "home": 0.993,
+    "covered": 0.007,
+    "lost": 0.0
+   },
+   "labels": {
+    "utilities": 142,
+    "sidewalks": 1
+   },
+   "lost_to": {},
+   "by_set": {
+    "synth_v3": {
+     "utilities": 62
+    },
+    "llm_v1": {
+     "utilities": 33,
+     "sidewalks": 1
+    },
+    "probe_v2": {
+     "utilities": 4
+    },
+    "v1_in_v2": {
+     "utilities": 43
+    }
+   },
+   "flag": false
+  },
+  "no_water": {
+   "category": "utilities",
+   "n": 20,
+   "home": 20,
+   "covered": 0,
+   "lost": 0,
+   "share": {
+    "home": 1.0,
+    "covered": 0.0,
+    "lost": 0.0
+   },
+   "labels": {
+    "utilities": 20
+   },
+   "lost_to": {},
+   "by_set": {
+    "synth_v3": {
+     "utilities": 14
+    },
+    "llm_v1": {},
+    "probe_v2": {},
+    "v1_in_v2": {
+     "utilities": 6
+    }
+   },
+   "flag": false
+  },
+  "sewage": {
+   "category": "utilities",
+   "n": 108,
+   "home": 77,
+   "covered": 8,
+   "lost": 23,
+   "share": {
+    "home": 0.713,
+    "covered": 0.074,
+    "lost": 0.213
+   },
+   "labels": {
+    "utilities": 77,
+    "roads": 22,
+    "smell_air": 6,
+    "noise_safety": 2,
+    "other": 1
+   },
+   "lost_to": {
+    "roads": 21,
+    "other": 1,
+    "smell_air": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "utilities": 40,
+     "roads": 21
+    },
+    "llm_v1": {
+     "utilities": 35,
+     "smell_air": 5,
+     "noise_safety": 1,
+     "roads": 1,
+     "other": 1
+    },
+    "probe_v2": {
+     "utilities": 2,
+     "smell_air": 1,
+     "noise_safety": 1
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "power_building": {
+   "category": "utilities",
+   "n": 27,
+   "home": 27,
+   "covered": 0,
+   "lost": 0,
+   "share": {
+    "home": 1.0,
+    "covered": 0.0,
+    "lost": 0.0
+   },
+   "labels": {
+    "utilities": 27
+   },
+   "lost_to": {},
+   "by_set": {
+    "synth_v3": {
+     "utilities": 24
+    },
+    "llm_v1": {
+     "utilities": 3
+    },
+    "probe_v2": {},
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "gas": {
+   "category": "smell_air",
+   "n": 14,
+   "home": 4,
+   "covered": 0,
+   "lost": 10,
+   "share": {
+    "home": 0.286,
+    "covered": 0.0,
+    "lost": 0.714
+   },
+   "labels": {
+    "utilities": 10,
+    "smell_air": 4
+   },
+   "lost_to": {
+    "utilities": 10
+   },
+   "by_set": {
+    "synth_v3": {},
+    "llm_v1": {
+     "utilities": 8,
+     "smell_air": 2
+    },
+    "probe_v2": {
+     "utilities": 2,
+     "smell_air": 2
+    },
+    "v1_in_v2": {}
+   },
+   "flag": true
+  },
+  "smoke_fire": {
+   "category": "smell_air",
+   "n": 254,
+   "home": 243,
+   "covered": 5,
+   "lost": 6,
+   "share": {
+    "home": 0.957,
+    "covered": 0.02,
+    "lost": 0.024
+   },
+   "labels": {
+    "smell_air": 243,
+    "parking": 9,
+    "utilities": 2
+   },
+   "lost_to": {
+    "parking": 4,
+    "utilities": 2
+   },
+   "by_set": {
+    "synth_v3": {
+     "smell_air": 130,
+     "parking": 8
+    },
+    "llm_v1": {
+     "smell_air": 102,
+     "parking": 1,
+     "utilities": 1
+    },
+    "probe_v2": {
+     "smell_air": 11,
+     "utilities": 1
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "dust": {
+   "category": "smell_air",
+   "n": 113,
+   "home": 100,
+   "covered": 8,
+   "lost": 5,
+   "share": {
+    "home": 0.885,
+    "covered": 0.071,
+    "lost": 0.044
+   },
+   "labels": {
+    "smell_air": 100,
+    "yards": 3,
+    "other": 2,
+    "sidewalks": 2,
+    "roads": 2
+   },
+   "lost_to": {
+    "other": 2,
+    "lighting": 1,
+    "roads": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "smell_air": 40
+    },
+    "llm_v1": {
+     "smell_air": 58,
+     "other": 2,
+     "yards": 2,
+     "sidewalks": 2,
+     "roads": 2,
+     "snow_ice": 1,
+     "waste": 1,
+     "lighting": 1,
+     "utilities": 1
+    },
+    "probe_v2": {
+     "smell_air": 2,
+     "yards": 1
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "bad_smell": {
+   "category": "smell_air",
+   "n": 350,
+   "home": 245,
+   "covered": 79,
+   "lost": 26,
+   "share": {
+    "home": 0.7,
+    "covered": 0.226,
+    "lost": 0.074
+   },
+   "labels": {
+    "smell_air": 245,
+    "utilities": 60,
+    "waste": 39,
+    "parking": 5,
+    "sidewalks": 1
+   },
+   "lost_to": {
+    "waste": 12,
+    "utilities": 11,
+    "parking": 3
+   },
+   "by_set": {
+    "synth_v3": {
+     "smell_air": 83,
+     "utilities": 28,
+     "waste": 12
+    },
+    "llm_v1": {
+     "smell_air": 153,
+     "utilities": 28,
+     "waste": 23,
+     "parking": 5,
+     "sidewalks": 1
+    },
+    "probe_v2": {
+     "smell_air": 9,
+     "waste": 4,
+     "utilities": 4
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "noise_night": {
+   "category": "noise_safety",
+   "n": 174,
+   "home": 166,
+   "covered": 4,
+   "lost": 4,
+   "share": {
+    "home": 0.954,
+    "covered": 0.023,
+    "lost": 0.023
+   },
+   "labels": {
+    "noise_safety": 166,
+    "other": 4,
+    "roads": 3,
+    "smell_air": 1
+   },
+   "lost_to": {
+    "other": 4
+   },
+   "by_set": {
+    "synth_v3": {
+     "noise_safety": 71
+    },
+    "llm_v1": {
+     "noise_safety": 74,
+     "other": 4,
+     "roads": 3,
+     "smell_air": 1
+    },
+    "probe_v2": {
+     "noise_safety": 4
+    },
+    "v1_in_v2": {
+     "noise_safety": 17
+    }
+   },
+   "flag": false
+  },
+  "dangerous_place": {
+   "category": "noise_safety",
+   "n": 92,
+   "home": 91,
+   "covered": 0,
+   "lost": 1,
+   "share": {
+    "home": 0.989,
+    "covered": 0.0,
+    "lost": 0.011
+   },
+   "labels": {
+    "noise_safety": 91,
+    "other": 1
+   },
+   "lost_to": {
+    "other": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "noise_safety": 44
+    },
+    "llm_v1": {
+     "noise_safety": 44,
+     "other": 1
+    },
+    "probe_v2": {
+     "noise_safety": 3
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "stray_dogs": {
+   "category": "noise_safety",
+   "n": 113,
+   "home": 110,
+   "covered": 3,
+   "lost": 0,
+   "share": {
+    "home": 0.973,
+    "covered": 0.027,
+    "lost": 0.0
+   },
+   "labels": {
+    "noise_safety": 110,
+    "yards": 2,
+    "waste": 1
+   },
+   "lost_to": {},
+   "by_set": {
+    "synth_v3": {
+     "noise_safety": 43
+    },
+    "llm_v1": {
+     "noise_safety": 30,
+     "yards": 1
+    },
+    "probe_v2": {
+     "noise_safety": 5,
+     "yards": 1,
+     "waste": 1
+    },
+    "v1_in_v2": {
+     "noise_safety": 32
+    }
+   },
+   "flag": false
+  },
+  "yard_cars": {
+   "category": "parking",
+   "n": 141,
+   "home": 113,
+   "covered": 28,
+   "lost": 0,
+   "share": {
+    "home": 0.801,
+    "covered": 0.199,
+    "lost": 0.0
+   },
+   "labels": {
+    "parking": 113,
+    "roads": 27,
+    "yards": 1
+   },
+   "lost_to": {},
+   "by_set": {
+    "synth_v3": {
+     "parking": 49,
+     "roads": 27
+    },
+    "llm_v1": {
+     "parking": 58,
+     "yards": 1
+    },
+    "probe_v2": {
+     "parking": 6
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "sidewalk_parking": {
+   "category": "parking",
+   "n": 118,
+   "home": 108,
+   "covered": 10,
+   "lost": 0,
+   "share": {
+    "home": 0.915,
+    "covered": 0.085,
+    "lost": 0.0
+   },
+   "labels": {
+    "parking": 108,
+    "sidewalks": 8,
+    "snow_ice": 2
+   },
+   "lost_to": {},
+   "by_set": {
+    "synth_v3": {
+     "parking": 54
+    },
+    "llm_v1": {
+     "parking": 50,
+     "sidewalks": 7,
+     "snow_ice": 2
+    },
+    "probe_v2": {
+     "parking": 4,
+     "sidewalks": 1
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  },
+  "no_spaces": {
+   "category": "parking",
+   "n": 57,
+   "home": 56,
+   "covered": 0,
+   "lost": 1,
+   "share": {
+    "home": 0.982,
+    "covered": 0.0,
+    "lost": 0.018
+   },
+   "labels": {
+    "parking": 56,
+    "transport": 1
+   },
+   "lost_to": {
+    "transport": 1
+   },
+   "by_set": {
+    "synth_v3": {
+     "parking": 42
+    },
+    "llm_v1": {
+     "parking": 13,
+     "transport": 1
+    },
+    "probe_v2": {
+     "parking": 1
+    },
+    "v1_in_v2": {}
+   },
+   "flag": false
+  }
+ }
+}
