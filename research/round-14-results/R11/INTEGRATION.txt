@@ -164,4 +164,7 @@ R01 8bbace7 (читаемость карты): research/round-14-results/R11/pat
 — строка в контейнере оболочки, Нұра · 73 на месте). patches/R01_wave2_phone_menu.patch пересобран на 8bbace7 — только
 меню телефона столбиком (правило ⓘ R01 переписал сам). ui-kit: токены --map-* = basemap-style.js (§12.1).
 Эталон первого кадра для review_build.sh — research/round-14-results/R11/first_frame_8bbace7c.json.
+R07 868de08 (читаемость карты) + R01: research/round-14-results/R11/patches/R01_badge_avoid.patch — web/civic/shell/shell.js
+  birgeOverlayRects отдаёт R07 ещё «Аймақ», кнопки карты, легенду, шторку и её ручку, плашку запасного фона — значки
+  районов на телефоне больше не встают под них (было 2 закрытых на 375). git apply --check на 34677e0; r12_city 81/0.
 

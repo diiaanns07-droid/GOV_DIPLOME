@@ -51,7 +51,10 @@ const SIZES = (process.env.SIZES || "1366x768,1280x720,375x812,360x800").split("
     // Значок, которого нет совсем (самый «горячий» район), не попадёт в r — сверяем со списком «Шағымы көп орындар».
     const top1 = await p.evaluate(() => { const it = document.querySelector(".r07-item"); return it ? it.textContent.trim().replace(/\s+/g, " ").slice(0, 40) : null; });
     const topName = await p.evaluate(() => { const it = document.querySelector(".r07-item .r07-item__title, .r07-item b, .r07-item strong"); return it ? it.textContent.trim() : null; });
-    const lost = !!(max && topName && !max.text.startsWith(topName));
+    // С R07 868de08 список всегда показывает места, а обзор города — районы: требуем значок, только если первый
+    // в списке — район (data-key «district:…»).
+    const topIsDistrict = await p.evaluate(() => { const it = document.querySelector(".r07-item"); return !!(it && /^district/.test(it.dataset.key || "")); });
+    const lost = !!(topIsDistrict && max && topName && !max.text.startsWith(topName));
     bad += covered.length + (lost ? 1 : 0);
     if (lost) console.log(`   НЕТ ЗНАЧКА первого в списке: «${topName}» (на карте самый большой — «${max.text}»)`);
     console.log(`${w}×${h} ${lang}: значков ${r.length}, закрыто ${covered.length}` + (covered.length ? " — " + covered.map((x) => `«${x.text}» (${x.covered.join(", ")})`).join("; ") : "")
