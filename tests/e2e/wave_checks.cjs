@@ -242,12 +242,15 @@ async function staffFixApi(A, id) {
 }
 
 // ------------------------------------------------------------------------------------------------ W1-3 срочные случаи
+// Баннер появляется на шаге текста (по словам или уточнению с emergency_phone) и остаётся до «Отправить» на шаге
+// проверки (R09: шаг 3 «Что случилось?» → «Далее» → «Проверьте перед отправкой»). UX_SPEC §10: баннер над кнопкой
+// отправки, главная кнопка — ссылка tel:N, «Отправить» — второстепенная, но доступна.
 async function checkEmergency(ctx) {
   const { browser, base, variants } = ctx;
   const cases = [
-    { name: "газ (текст)", text: { ru: "Сильно пахнет газом в подъезде", kk: "Подъездде газ иісі қатты шығып тұр" }, phone: "104" },
-    { name: "пожар (текст)", text: { ru: "Во дворе что-то горит, идёт дым", kk: "Аулада бірдеңе жанып жатыр, түтін шығып тұр" }, phone: "112" },
-    { name: "оборванный провод (уточнение)", text: { ru: "Фонарь не горит, провод висит до земли", kk: "Шам жанбайды, сым жерге дейін салбырап тұр" }, phone: "112", chip: "subtopic.wire_down" },
+    { name: "газ (текст)", text: { ru: "Сильно пахнет газом в подъезде", kk: "Подъездде газ иісі қатты шығып тұр" }, phone: "104", cat: "smell_air" },
+    { name: "пожар (текст)", text: { ru: "Во дворе что-то горит, идёт дым", kk: "Аулада бірдеңе жанып жатыр, түтін шығып тұр" }, phone: "112", cat: "smell_air" },
+    { name: "оборванный провод (уточнение)", text: { ru: "Фонарь не горит, провод висит до земли", kk: "Шам жанбайды, сым жерге дейін салбырап тұр" }, phone: "112", cat: "lighting", chip: "subtopic.wire_down" },
   ];
   for (const [size, lang] of variants) {
     const tag = `${size[0]}-${lang}`;
@@ -259,24 +262,47 @@ async function checkEmergency(ctx) {
         if (!wz.ok) { add("W1-3", tag, `${c.name}: мастер жалобы до шага текста`, "FAIL", wz.why); continue; }
         await wz.box.fill(c.text[lang]).catch(() => null);
         await L.sleep(3000);
+        const catName = W(lang, "cat." + c.cat);
         if (c.chip) {
+          // Уточнения — после категории: если модель не выбрала её сама, житель нажимает категорию.
           const chipText = W(lang, c.chip);
-          const chip = chipText ? await L.clickText(wz.dlg, exact(chipText), { wait: 1200 }) : false;
+          let chip = await L.clickText(wz.dlg, exact(chipText), { wait: 1200 });
+          if (!chip && catName) { await L.clickText(wz.dlg, part(catName), { wait: 1200 }); chip = await L.clickText(wz.dlg, exact(chipText), { wait: 1200 }); }
           add("W1-3", tag, `${c.name}: чип уточнения «${chipText}» есть и нажимается`, st(chip), { chip: chipText });
         }
         const title = W(lang, "complaint.emergency.title");
-        const banner = await L.visibleText(P.page, part(title));
+        const bannerText = await L.visibleText(P.page, part(title));
         const link = await L.firstVisible(P.page.locator(`a[href^="tel:${c.phone}"]`));
         const linkPrimary = link ? await link.evaluate((e) => /primary/.test(e.className)).catch(() => null) : null;
-        // UX_SPEC §10: ссылка «Позвонить N» — главная кнопка, «Отправить» — второстепенная, но доступна.
-        const send = await L.firstVisible(wz.dlg.getByRole("button", { name: part(W(lang, ["complaint.step3.send", "complaint.send"], lang === "kk" ? "Жіберу" : "Отправить")) }));
+        add("W1-3", tag, `${c.name}: на шаге текста — баннер «${title}» и главная кнопка — ссылка tel:${c.phone}`, st(bannerText && !!link && linkPrimary === true),
+          { banner: bannerText, tel: !!link, linkPrimary, text: link ? (await link.innerText().catch(() => "")).trim() : null }, await shotOf(P.page, `${tag}-W1-3-${c.phone}-${c.chip ? "chip" : c.name.split(" ")[0]}`));
+        // До «Отправить»: «Далее» (при необходимости — категория) → шаг проверки; баннер всё ещё виден и стоит над кнопкой.
+        const sendRe = exact(W(lang, ["complaint.step3.send", "complaint.send"], lang === "kk" ? "Жіберу" : "Отправить"));
+        const nextRe = exact(W(lang, "complaint.wizard.next", lang === "kk" ? "Әрі қарай" : "Далее"));
+        let send = null;
+        for (let i = 0; i < 4 && !send; i++) {
+          const dlg = (await L.firstVisible(P.page.getByRole("dialog"))) || P.page;
+          send = await L.firstVisible(dlg.getByRole("button", { name: sendRe }));
+          if (send) break;
+          const nb = await L.firstVisible(dlg.getByRole("button", { name: nextRe }));
+          if (!nb) break;
+          if (!(await nb.isEnabled().catch(() => false)) && catName) await L.clickText(dlg, part(catName), { wait: 900 });
+          await nb.click({ timeout: 3000 }).catch(() => null); await L.sleep(1500);
+        }
+        const at = send ? await P.page.evaluate(([t, ph]) => {
+          const b = [...document.querySelectorAll(".bk-banner, [role=alert], [class*=emergency]")].find((e) => e.getClientRects().length && e.innerText.includes(t));
+          const tel = document.querySelector(`a[href^="tel:${ph}"]`);
+          const r = (e) => (e ? e.getBoundingClientRect() : null);
+          return { banner: !!b, banner_top: b ? Math.round(r(b).top) : null, banner_in_view: b ? r(b).top < innerHeight && r(b).bottom > 0 : false,
+            tel_primary: tel ? /primary/.test(tel.className) : null };
+        }, [title.slice(0, 15), c.phone]) : null;
         const sendEnabled = send ? await send.isEnabled().catch(() => false) : false;
         const sendPrimary = send ? await send.evaluate((e) => /primary/.test(e.className)).catch(() => null) : null;
-        const still = await L.visibleText(P.page, part(W(lang, "complaint.emergency.still_send")));
-        const shot = await shotOf(P.page, `${tag}-W1-3-${c.phone}-${c.chip ? "chip" : c.name.split(" ")[0]}`);
-        add("W1-3", tag, `${c.name}: до отправки баннер «${title}» и главная кнопка — ссылка tel:${c.phone}`, st(banner && !!link && linkPrimary === true),
-          { banner, tel: !!link, linkPrimary, text: link ? (await link.innerText().catch(() => "")).trim() : null }, shot);
-        add("W1-3", tag, `${c.name}: «${W(lang, "complaint.emergency.still_send")}» — «Отправить» доступна и не главная`, st(still && sendEnabled && sendPrimary === false), { still, send: !!send, sendEnabled, sendPrimary });
+        const prim = await primaries((await L.firstVisible(P.page.getByRole("dialog"))) || P.page);  // главные кнопки в окне мастера
+        const sendTop = send ? (await send.boundingBox().catch(() => null) || {}).y : null;
+        add("W1-3", tag, `${c.name}: на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:${c.phone})`,
+          st(!!send && !!at && at.banner && at.banner_top !== null && sendTop !== null && at.banner_top < sendTop && sendEnabled && sendPrimary === false && at.tel_primary === true && prim.length === 1),
+          { send: !!send, sendEnabled, sendPrimary, sendTop: sendTop && Math.round(sendTop), primary: prim, ...(at || {}) }, await shotOf(P.page, `${tag}-W1-3-${c.phone}-${c.chip ? "chip" : c.name.split(" ")[0]}-send`));
       } finally { await P.ctx.close(); }
     }
   }
@@ -426,14 +452,23 @@ async function checkPassport(ctx) {
       await goto(R.page, base, lang);
       const opened = await header(R.page, lang, mineRe(lang), 1800);
       // IA §2.1: на карточке — «Передано: …» и «Ответ службы до …»; «Подробнее» раскрывает паспорт целиком и историю.
-      const top = { service: await L.visibleText(R.page, part(W(lang, "service.assigned"))), due: await L.visibleText(R.page, part(W(lang, "passport.answer_due"))) };
-      const more = await L.clickText(R.page, new RegExp("^(" + [W(lang, "qr.card.more", "Подробнее"), W(lang, "passport.title")].map(esc).join("|") + ")", "i"), { role: "button", wait: 800 })
-        || !!(await R.page.locator("summary").first().click({ timeout: 2000 }).then(() => true, () => false));
+      // Срок ответа на карточке — «Ответ службы до …» или в рабочих днях волны 1 («Осталось N рабочих дней», deadline.*).
+      const dueRe = new RegExp([W(lang, "passport.answer_due"), W(lang, "deadline.left", lang === "kk" ? "жұмыс күні қалды" : "рабочих дн"), W(lang, "deadline.today", "Срок ответа — сегодня"),
+        W(lang, "deadline.overdue", "Просрочено на")].filter(Boolean).map((x) => part(x).source).join("|"), "i");
+      const top = { service: await L.visibleText(R.page, part(W(lang, "service.assigned"))), due: await L.visibleText(R.page, dueRe) };
+      // «Подробнее» — кнопка, ссылка или <summary> (свёрнутый блок).
+      const moreRe = new RegExp("^(" + [W(lang, "qr.card.more", lang === "kk" ? "Толығырақ" : "Подробнее"), W(lang, "passport.title")].map(esc).join("|") + ")", "i");
+      let more = false;
+      for (const loc of [R.page.getByRole("button", { name: moreRe }), R.page.getByRole("link", { name: moreRe }), R.page.locator("summary").filter({ hasText: moreRe }), R.page.getByText(moreRe)]) {
+        const el = await L.firstVisible(loc);
+        if (el) { more = await el.click({ timeout: 3000 }).then(() => true, () => false); if (more) { await L.sleep(900); break; } }
+      }
       const full = { next: await L.visibleText(R.page, part(W(lang, "passport.next"))),
         fix: (await L.visibleText(R.page, part(W(lang, "passport.fix_eta")))) || (await L.visibleText(R.page, part(W(lang, "passport.fix_unknown")))),
         history: await L.visibleText(R.page, exact(W(lang, "passport.history"))) };
-      add("W2-2", tag, "житель: «Передано: …», «Ответ службы до …»; «Подробнее» — «Следующий шаг», «Устранение: ориентир / пока не определено», «История»",
-        st(opened && !!c && top.service && top.due && full.next && full.fix && full.history), { opened, complaint: c && c.id, top, more, full }, await shotOf(R.page, `${tag}-W2-2-passport`));
+      add("W2-2", tag, "житель: «Передано: …» и срок ответа; «Подробнее» — «Следующий шаг», «Ответ службы до …», «Устранение: ориентир / пока не определено»",
+        st(opened && !!c && top.service && top.due && full.next && full.fix), { opened, complaint: c && c.id, top, more, full }, await shotOf(R.page, `${tag}-W2-2-passport`));
+      add("W2-2", tag, `житель: в «Подробнее» есть «${W(lang, "passport.history")}» (сообщили → передано → … — IA_WAVE2 §2.2)`, st(full.history), { history: full.history });
     } finally { await R.ctx.close(); }
   }
   // Сотрудник: «Изменить» → ровно 3 поля (служба, следующий шаг, ориентир устранения) — IA §2.3.
