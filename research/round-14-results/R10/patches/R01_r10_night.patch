@@ -1,0 +1,49 @@
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -49,9 +49,10 @@
+ .birge-day-empty .bk-btn { margin-top: var(--s-4, 16px); }
+ body[data-birge-section="day"].civic-mode #civic-root { visibility: hidden; }
+ 
+-/* Ниже 1024 px — телефонная схема шапки (UX_SPEC §1): [логотип] [≡ Меню] [ҚАЗ|РУС];
+- * разделы и «Акимат / Житель» — в выпадающем листе под шапкой. */
+-@media (max-width: 1023px) {
++/* До 1100 px — телефонная схема шапки (UX_SPEC §1): [логотип] [≡ Меню] [ҚАЗ|РУС];
++ * разделы и «Акимат / Житель» — в выпадающем листе под шапкой. Ровно на 1024 (проектор) полная шапка в ҚАЗ
++ * у жителя шире экрана — «РУС» за краем (R10 B-043), поэтому граница 1100, а не 1023. */
++@media (max-width: 1100px) {
+   .civic-mode #birge-header { gap: var(--s-2, 8px); }
+   #birge-header .birge-menu-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 12px; }
+   #birge-header .bk-seg > button { padding-left: 10px; padding-right: 10px; }
+@@ -121,7 +122,7 @@
+ /* Плашка о запасном фоне карты и подзаголовок шапки — не мельче 14 px (R11 B1 п. 5 и 14, R10 B-013). */
+ .civic-mode .civic-explore #map-status { font-size: 14px; line-height: 1.4; }
+ .civic-mode .brand-sub { font-size: 14px; }
+-@media (max-width: 1023px) { .civic-mode .brand-sub { display: none; } }
++@media (max-width: 1100px) { .civic-mode .brand-sub { display: none; } }
+ /* Панель «Территория» (раунд 13, explore.js): весь текст ≥ 14 px, кнопки ≥ 44 px (R11 B1 п. 7, R10 B-013/B-014). */
+ .civic-mode .civic-explore-row > label > span,
+ .civic-mode .civic-explore button, .civic-mode .civic-explore summary,
+@@ -216,3 +217,23 @@
+ /* Открыт кабинет сотрудника или другой ящик (body[data-civic-drawer="open"]): кнопка «Что построить?» и каталог R05
+    не лежат поверх его заголовка (R10 B-031, телефон). */
+ body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
++
++/* R10 B-044: 761–1100 px — «Территория» шириной 548 px закрывала центр карты, куда камера ставит выбранное место. */
++@media (min-width: 761px) and (max-width: 1100px) {
++  .civic-mode .civic-explore { right: auto; width: 340px; }
++}
++/* R10 B-045: 761–1365 px — свёрнутая «Что построить?» по центру свободной части карты наезжала на легенду R07 слева
++   внизу; ставим её к правому краю свободной части (у кнопок карты). На 1366 и шире — как было. */
++@media (min-width: 761px) and (max-width: 1365px) {
++  .birge-build3d-root .birge-b3d-toggle { align-self: flex-end; }
++}
++/* R10 B-041: телефон — сообщение R05 («Проект поставлен · Отменить») внизу экрана поверх шторки, а не над каталогом,
++   где камера держит только что поставленный проект (иначе 6 с проект и кнопку «3D» не видно). */
++@media (max-width: 760px) {
++  .birge-build3d-root .b3d-toasts { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom));
++    width: auto; margin: 0; z-index: 60; }
++}
++/* R10 B-042: на 360 px «Birge» в шапке не помещался на 2–3 px («Bir…»). */
++@media (max-width: 370px) {
++  .civic-mode .topbar { padding-left: 8px; padding-right: 8px; }
++}

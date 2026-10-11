@@ -402,10 +402,10 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const langRe = lang === "kk" ? /^ҚАЗ$/ : /^РУС$/;
   const menuRe = new RegExp("^" + T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню") + "$", "i");
   const setLang = async () => { const b = await firstVisible(page.getByRole("button", { name: langRe })); if (b) { await b.click().catch(() => null); await sleep(1000); } return !!b; };
-  // Кнопка из шапки; на телефоне — через «≡ Меню».
+  // Кнопка из шапки; в компактной шапке (телефон и узкий экран ниже 1024) — через «≡ Меню».
   const header = async (re, wait = 1200) => {
     let ok = await clickText(page, re, { wait });
-    if (!ok && mobile && (await clickText(page, menuRe))) { ok = await clickText(page, re, { wait }); if (!ok) await page.keyboard.press("Escape").catch(() => null); }
+    if (!ok && (await clickText(page, menuRe))) { ok = await clickText(page, re, { wait }); if (!ok) await page.keyboard.press("Escape").catch(() => null); }
     return ok;
   };
   const words = {
@@ -765,7 +765,7 @@ async function networkErrors(browser, base, [w, h], lang) {
   const retryRe = new RegExp("^" + esc(T(dict, ["heat.retry", "common.action.retry"], lang === "kk" ? "Қайталау" : "Повторить")) + "$", "i");
   const menuRe = new RegExp("^" + esc(T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню")) + "$", "i");
   const header = async (page, re) => { let ok = await clickText(page, re, { wait: 2000 });
-    if (!ok && mobile && (await clickText(page, menuRe))) ok = await clickText(page, re, { wait: 2000 }); return ok; };
+    if (!ok && (await clickText(page, menuRe))) ok = await clickText(page, re, { wait: 2000 }); return ok; };
   const cases = [
     { name: "тепловая карта", route: "**/api/civic/v2/heat**", mode: "akimat" },
     { name: "«Мои обращения»", route: "**/api/civic/v2/complaints/mine**", mode: "resident",
