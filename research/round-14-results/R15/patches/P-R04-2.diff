@@ -1,8 +1,8 @@
 diff --git a/ui/civic_ml_api/profanity.py b/ui/civic_ml_api/profanity.py
-index 1924deaa..41cf8c5e 100644
+index af6ed2c3..eb52ae55 100644
 --- a/ui/civic_ml_api/profanity.py
 +++ b/ui/civic_ml_api/profanity.py
-@@ -329,7 +329,17 @@ def moderation(text) -> dict:
+@@ -333,7 +333,22 @@ def moderation(text) -> dict:
  
  # --------------------------------------------------------------------------- JSON-ответы API
  # Ключи, под которыми только геометрия и числа: их не обходим (ответ тепловой карты — в основном координаты).
@@ -13,24 +13,25 @@ index 1924deaa..41cf8c5e 100644
 +                        # (13 из 20 по 300 КБ) и токены (вход сотрудника, квитанция, «Мои обращения»).
 +                        "data_url", "csrf_token", "receipt", "code", "id", "device_id", "token", "url", "href", "src",
 +                        "sha256", "mime"})
-+_MACHINE = re.compile(r"^(?:data:|https?://)|^[A-Za-z0-9+/=_-]{16,}$")
++# R15-S26: data URL в списке без ключа (только base64 — пробелов и кириллицы в нём быть не может). Других правил по
++# значению нет: «длинное латинское слово» или «начинается с http» обходили бы фильтр в подписях идей и вопросах.
++_DATA_URL = re.compile(r"data:[a-z]+/[a-z0-9.+-]+;base64,[A-Za-z0-9+/]*={0,2}")
 +
 +
 +def _skip_key(key) -> bool:
++    """Новые машинные поля — в _SKIP_KEYS или с окончанием *_id, *_ids, *_url, *_token."""
 +    return key in _SKIP_KEYS or (isinstance(key, str) and key.endswith(("_id", "_ids", "_url", "_token")))
++
++
  _CLEAN = object()                       # метка «строка проверена, грубых слов нет» в кэше строк
  _STR_CACHE: dict = {}                   # строка -> _CLEAN или текст со звёздочками
  _STR_CACHE_MAX = 100_000
-@@ -339,6 +349,8 @@ _STR_CACHE_LEN = 2_000                  # длинные строки не кэ
- def _masked_or_none(text: str):
-     """Текст со звёздочками или None, если грубых слов нет. Подписи целей повторяются из ответа в ответ —
-     проверенные строки берутся из кэша."""
-+    if _MACHINE.match(text):                          # R15-S26: токены, base64, ссылки
-+        return None
-     hit = _STR_CACHE.get(text)
-     if hit is None:
-         masked = mask(text)
-@@ -362,7 +374,7 @@ def _needs_mask(obj) -> bool:
+@@ -362,11 +377,11 @@ def _needs_mask(obj) -> bool:
+         item = pop()
+         kind = type(item)
+         if kind is str:
+-            if _masked_or_none(item) is not None:
++            if not _DATA_URL.fullmatch(item) and _masked_or_none(item) is not None:
                  return True
          elif kind is dict:
              for key, value in item.items():
@@ -39,7 +40,13 @@ index 1924deaa..41cf8c5e 100644
                      push(value)
          elif kind is list or kind is tuple:
              stack.extend(item)
-@@ -376,7 +388,7 @@ def _walk(obj):
+@@ -375,12 +390,12 @@ def _needs_mask(obj) -> bool:
+ 
+ def _walk(obj):
+     if isinstance(obj, str):
+-        masked = _masked_or_none(obj)
++        masked = None if _DATA_URL.fullmatch(obj) else _masked_or_none(obj)
+         return (obj, 0) if masked is None else (masked, 1)
      if isinstance(obj, dict):
          total, out = 0, {}
          for key, value in obj.items():

@@ -40,6 +40,16 @@ def test_machine_strings_are_not_masked(P):
     assert out["data"]["photo"]["data_url"] == DATA_URL
 
 
+@pytest.mark.parametrize("text", ["na_huy_vse_pizdets_tut", "Nahuyvsepizdetsvsem", "https:// сука, опять яма"])
+def test_people_text_that_looks_like_a_token_is_still_masked(P, text):
+    """Обратная сторона S26: машинные строки узнаются по ключу, а не по виду. Правило «длинное латинское слово /
+    начинается с http — не текст» (первая версия P-R04-2) пропускало бы мат в подписи идеи или вопросе акиму."""
+    body = {"items": [{"title": text, "question": text}]}
+    out = P.public_response(body)["items"][0]
+    assert out["title"] != text and out["question"] != text, out
+    assert P.is_rude(text) and P.moderation(text)["rude"]
+
+
 def test_rude_human_text_is_masked_for_public_but_not_for_staff(P):
     body = {"items": [{"text": "Сука, опять яма", "label_ru": "Остановка «Нура»"}]}
     public = P.public_response(body)

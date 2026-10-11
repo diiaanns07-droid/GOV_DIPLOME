@@ -15,10 +15,10 @@ R15 (раунд 14) — INTEGRATION: исправления безопаснос
   P-R06.diff  ui/civic_store/auth.py                            S15 (мелочь; добавлен ночью 10→11 окт)
   P-R05.diff  web/civic/build3d/build3d-core.js                 S16 (мелочь; добавлен ночью 10→11 окт)
   P-R06-2.diff ui/civic_store/{v2,stages,proposals,demo_r14}.py  S17 S18 S19 S20 S21 (мелочи; добавлен 11 окт)
-  P-R09-2.diff ui/civic_feedback/v2/{photos,store}.py             S22 S23 (мелочи) S24 (важно) — волны 1–2, ночь 11→12
+  P-R09-2.diff ui/civic_feedback/v2/{photos,store}.py             S22 S23 (мелочи) S24 (важно) — волны 1–2, ночь 11→12 (на R09 5d28c5a)
   P-R12.diff   web/civic/qr/print.js                              S25 (мелочь) — QR-таблички, ночь 11→12
-  P-R04-2.diff ui/civic_ml_api/profanity.py                       S26 (важно) — фильтр мата, ночь 11→12
-  P-R08.diff   ui/civic_akim/nearby.py                            S27 (мелочь) — подписки «Рядом», ночь 11→12
+  P-R04-2.diff ui/civic_ml_api/profanity.py                       S26 (важно) — фильтр мата, ночь 11→12 (v2, на R04 7c590b6)
+  P-R08.diff   ui/civic_akim/{nearby,routing,decisions,api}.py    S27 S28 S29 (мелочи) — «Рядом», «Службы», выбор акима (на R08 ae65c09)
 
 Как применить (из корня рабочей копии сборки R01):
   git fetch origin claude/r14-R15
@@ -184,32 +184,48 @@ S25  load(): если адрес сайта для QR (из поля, в т. ч.
 
 
 --------------------------------------------------------------------------------
-P-R04-2  ui/civic_ml_api/profanity.py  (R04; ночь 11→12, ветка claude/r14-R04 @ be08d5d)
+P-R04-2  ui/civic_ml_api/profanity.py  (R04; ночь 11→12, v2 — круг 3; ветка claude/r14-R04 @ 7c590b6)
 --------------------------------------------------------------------------------
-S26  _SKIP_KEYS += data_url, csrf_token, receipt, code, id, device_id, token, url, href, src, sha256, mime;
-     ключи *_id, *_ids, *_url, *_token не обходятся; строки «data:…», «http(s)://…» и токены [A-Za-z0-9+/=_-]{16,}
-     не маскируются. Тексты людей (кириллица, пробелы, короткие слова) — как раньше.
-     Проверено: tests/civic/R04 — 304 passed; 20 ответов с фото 300 КБ, токеном и квитанцией — 0 изменений; тест R15
-     S26 -> XPASS. R01: включать фильтр в шлюз (patch R04 r01_polish_r04.patch) только вместе с P-R04-2.
+S26  Обход JSON (mask_json / public_response): _SKIP_KEYS += data_url, csrf_token, receipt, code, id, device_id, token,
+     url, href, src, sha256, mime; ключи *_id, *_ids, *_url, *_token не обходятся; строгий data URL
+     (data:<mime>;base64,<только base64>) в списке без ключа не маскируется. check/mask/is_rude/moderation — как были.
+     v2 (круг 3): убраны правила «по виду строки» из первой версии (^https?://, [A-Za-z0-9+/=_-]{16,}): они пропускали бы
+     «na_huy_vse_pizdets_tut», «Nahuyvsepizdetsvsem», «https:// сука…» в подписи идеи или вопросе акиму, а после правки
+     R04 f47d5ab (is_rude через _masked_or_none) — и пометку moderation у акимата. Новые машинные поля — в _SKIP_KEYS
+     или с окончанием *_id / *_token.
+     Проверено на 7c590b6: tests/civic/R04 — 304 passed, 12 skipped; перебор: 20 фото по 300 КБ (по ключу и в списке)
+     и 20 000 токенов token_urlsafe(32) — 0 изменений (без patch: 12 фото из 20 и 1 токен); тест R15 S26 -> XPASS,
+     новый test_people_text_that_looks_like_a_token_is_still_masked — PASS с patch и без.
+     R01: включать фильтр в шлюз (patch R04 r01_polish_r04.patch) только вместе с P-R04-2.
 
 
 --------------------------------------------------------------------------------
-P-R08  ui/civic_akim/nearby.py  (R08; ночь 11→12, ветка claude/r14-R08 @ 9dbd62c)
+P-R08  ui/civic_akim/{nearby,routing,decisions,api}.py + tests/civic/R08/test_r08_wave2.py  (R08; ночь 11→12, @ ae65c09)
 --------------------------------------------------------------------------------
 S27  В subscriptions.json ключ — не сам device_id, а "h:" + sha256("birge-nearby:" + id) (id случайный, ≥ 16 символов —
      подобрать по хэшу нельзя). Старые файлы с сырыми id переводятся при чтении и перезаписываются при следующей
      подписке. MAX_DEVICES = 50 000: новое устройство сверх предела -> NearbyError 429 «подписки временно недоступны».
-     Проверено: tests/civic/R08 — 209 passed, 4 skipped (как без patch); тесты R15 test_r15_nearby.py: S27 -> XPASS.
+S28  routing.table() (GET /akim/routing) — без updated_by; decisions.choice_for() -> {option, at} (без by): это
+     уходит в GET /akim/summary и в паспорт R09. В файлах правок/выборов и в ответе POST самому сотруднику by остаётся.
+S29  api.routing_update / api.decision_choose: без principal -> PermissionError (шлюз R01 отвечает 403). В тесте R08
+     test_gateway_functions_for_r01 два вызова получают principal (проверяют 400/404, а не права).
+     Проверено на ae65c09: tests/civic/R08 — 210 passed, 4 skipped (как без patch); тесты R15 test_r15_nearby.py и
+     test_r15_akim.py: S27 S28 S29 -> XPASS (6), остальные PASS.
 Для R01 (таблица маршрутов, когда R08 «Рядом» и «Акиму» войдут в сборку):
   - PUT akim/routing и POST akim/decisions — staff=True в V2_HANDLERS (сессия + CSRF): функции R08 доверяют пометке
     staff от шлюза и сами сессию не проверяют.
   - POST nearby/subscriptions — в V2_RATE_LIMITS (как metoo/vote): иначе один скрипт пишет файл подписок без паузы.
   - GET nearby/subscriptions и nearby/updates (?device_id=…) — id устройства в строке запроса; журнал без строки запроса (S10) это закрывает.
     Лучше — брать id из заголовка X-Birge-Device, как R09 «Мои обращения».
+  - Патч R08 r01_wave2_r08.patch (ae65c09) это и делает: staff=True у akim.routing.update и akim.decision,
+    nearby.subscribe в V2_RATE_LIMITS (20/мин, 200/сут) — R15 согласен.
+Для R01 (R09 фото, когда войдут в сборку): маршруты частей фото (POST /complaints/{id}/photos/{upload}) — в
+  V2_RATE_LIMITS по адресу (например, 300 частей/мин ≈ 10 МБ): незаконченная загрузка держит до 1,5 МБ в базе час,
+  число начатых загрузок у автора не ограничено.
 
 
 --------------------------------------------------------------------------------
-P-R09-2  ui/civic_feedback/v2/{photos,store}.py  (R09; ночь 11→12 окт, ветка claude/modest-shannon-0ki93p @ 2bf9a92)
+P-R09-2  ui/civic_feedback/v2/{photos,store}.py  (R09; ночь 11→12 окт, ветка claude/modest-shannon-0ki93p @ 5d28c5a)
 --------------------------------------------------------------------------------
 S22  photos._strip_jpeg: после SOS сжатые данные копируются до следующего маркера (FF00, RSTn и FFFF — часть данных);
      EOI — конец, хвост отбрасывается (MPF-превью, «живое фото» с EXIF/GPS); прогрессивный JPEG — дальше разбор сегментов.
@@ -218,8 +234,10 @@ S23  photos.sanitize: ширина/высота из заголовка (JPEG SO
 S24  store: в момент «исправлено» resolution.metoo_upto = MAX(rowid) таблицы «Я тоже»; _verifier(): проверить ремонт
      может автор и «Я тоже» с rowid <= metoo_upto (нажавшие позже — только подписка на обновления); can_verify и
      verify используют _verifier. Записи до patch — по времени (at <= reported_at).
-Проверено: tests/civic/R09 (без старых тестов ассистента раундов 12–13, они падают и без patch) — 279 passed,
-те же 4 старых падения; тесты R15 test_r15_photos.py: S22 S23 S24 -> XPASS, остальные PASS.
+Проверено: tests/civic/R09 (без старых тестов ассистента раундов 12–13, они падают и без patch) — на 2bf9a92 279 passed,
+на 5d28c5a 286 passed, те же 4 старых падения; тесты R15 test_r15_photos.py: S22 S23 S24 -> XPASS, остальные PASS.
+Круг 3: patch перенесён на 5d28c5a («Отписаться» CP5/CP6): _verifier стоит рядом с новыми _subscribers/unsubscribe;
+«Отписаться» делает relation None — отписавшийся ремонт не проверяет, повторное «Я тоже» возвращает прежний rowid.
 
 
 --------------------------------------------------------------------------------

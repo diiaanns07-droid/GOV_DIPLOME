@@ -1,3 +1,70 @@
+diff --git a/tests/civic/R08/test_r08_wave2.py b/tests/civic/R08/test_r08_wave2.py
+index 613b9f8b..4b0d9730 100644
+--- a/tests/civic/R08/test_r08_wave2.py
++++ b/tests/civic/R08/test_r08_wave2.py
+@@ -441,12 +441,12 @@ def test_gateway_functions_for_r01(tmp_path, monkeypatch):
+     out = api.routing_update({"rules": {"roads/marking": "road"}}, principal={"username": "akim1", "role": "staff"})
+     assert next(r for r in out["rules"] if r["key"] == "roads/marking")["service"] == "road"
+     with pytest.raises(ValueError) as exc:
+-        api.routing_update({"rules": {"roads": "nasa"}})
++        api.routing_update({"rules": {"roads": "nasa"}}, principal={"username": "akim1", "role": "staff"})
+     assert (exc.value.status, exc.value.code, exc.value.field) == (400, "bad_request", "service")
+     assert api.nearby_subscribe({"device_id": "d-abcdefghijklmnopqrstuvwx", "scope": "district", "id": "nura"})["items"]
+     with pytest.raises(ValueError) as exc:
+         api.nearby_subscribe({"device_id": "x"})
+     assert exc.value.status == 400
+     with pytest.raises(ValueError) as exc:
+-        api.decision_choose("c-nope", {"option": 1})
++        api.decision_choose("c-nope", {"option": 1}, principal={"username": "akim1", "role": "staff"})
+     assert (exc.value.status, exc.value.code) == (404, "not_found")
+diff --git a/ui/civic_akim/api.py b/ui/civic_akim/api.py
+index 6b1e03b6..eb616462 100644
+--- a/ui/civic_akim/api.py
++++ b/ui/civic_akim/api.py
+@@ -117,8 +117,16 @@ def handle_post(path: str, body, *, staff: bool = False, actor: str | None = Non
+ # Запись — функции ниже: шлюз R01 сам проверяет сотрудника и CSRF (staff=True в V2Handler) и передаёт principal;
+ # ошибки ввода — ValueError с полями status/code/field (шлюз отвечает 400/404/429), см. INTEGRATION.txt §8.
+ 
++def _require_staff(principal):
++    """R15-S29: защита в глубину — запись только с сотрудником от шлюза (principal есть лишь у staff=True в
++    V2_HANDLERS R01). Забытая пометка в таблице маршрутов даст 403, а не правку от анонима."""
++    if not principal:
++        raise PermissionError("только сотрудник акимата")
++
++
+ def routing_update(body, principal=None):
+     """PUT /akim/routing — staff. body: {"rules": {...}, "services": {...}}."""
++    _require_staff(principal)
+     actor = (principal or {}).get("username") if isinstance(principal, dict) else None
+     try:
+         return routing.update(body if isinstance(body, dict) else {}, actor=actor)
+@@ -129,6 +137,7 @@ def routing_update(body, principal=None):
+ 
+ def decision_choose(decision_id, body, principal=None):
+     """POST /akim/decisions/{id} — staff. body: {"option": 1|2}."""
++    _require_staff(principal)
+     actor = (principal or {}).get("username") if isinstance(principal, dict) else None
+     option = body.get("option") if isinstance(body, dict) else None
+     try:
+diff --git a/ui/civic_akim/decisions.py b/ui/civic_akim/decisions.py
+index 355736c5..f3a4b975 100644
+--- a/ui/civic_akim/decisions.py
++++ b/ui/civic_akim/decisions.py
+@@ -168,9 +168,12 @@ def _load(path: Path | None = None) -> dict:
+ 
+ 
+ def choice_for(item_id: str, path: Path | None = None) -> dict | None:
+-    """Выбор акима по обращению: {option, at, by} или None. Для R09 (паспорт решения) и для «Картины дня»."""
++    """Выбор акима по обращению: {option, at} или None. Для R09 (паспорт решения) и для «Картины дня».
++
++    R15-S28: оба вывода публичные (GET /akim/summary, паспорт R09) — кто выбрал (by, логин сотрудника) остаётся
++    только в файле выборов и в ответе самому сотруднику (choose)."""
+     c = _load(path).get(str(item_id))
+-    return c if isinstance(c, dict) and c.get("option") in (1, 2) else None
++    return {"option": c["option"], "at": c.get("at")} if isinstance(c, dict) and c.get("option") in (1, 2) else None
+ 
+ 
+ def choose(item_id: str, option, *, items: list[dict], actor: str | None = None, path: Path | None = None,
 diff --git a/ui/civic_akim/nearby.py b/ui/civic_akim/nearby.py
 index 8fd52491..19906e22 100644
 --- a/ui/civic_akim/nearby.py
@@ -69,3 +136,18 @@ index 8fd52491..19906e22 100644
          p.parent.mkdir(parents=True, exist_ok=True)
          tmp = p.with_suffix(p.suffix + ".tmp")
          tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")
+diff --git a/ui/civic_akim/routing.py b/ui/civic_akim/routing.py
+index a2c2e0ea..25eabc44 100644
+--- a/ui/civic_akim/routing.py
++++ b/ui/civic_akim/routing.py
+@@ -160,8 +160,9 @@ def table(path: Path | None = None) -> dict:
+             key = f"{cat_id}/{sub_id}"
+             rows.append({"key": key, "category": cat_id, "subtopic": sub_id, "ru": sub["ru"], "kk": sub["kk"],
+                          "service": rules.get(key, cat_service), "own": key in rules, "edited": key in edited})
++    # R15-S28: GET /akim/routing — публичный; логин сотрудника (updated_by) остаётся только в файле правок.
+     return {"services": services, "rules": rows, "updated_at": over.get("updated_at"),
+-            "updated_by": over.get("updated_by"), "note": "Общие названия служб; акимат может уточнить."}
++            "note": "Общие названия служб; акимат может уточнить."}
+ 
+ 
+ def service_for(category: str | None, subtopic: str | None = None, path: Path | None = None) -> dict:

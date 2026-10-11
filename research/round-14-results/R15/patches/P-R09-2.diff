@@ -96,10 +96,10 @@ index 9970dd3c..c7d65587 100644
 +        raise PhotoError("Фото слишком большое по размеру сторон.")
      return mime, clean
 diff --git a/ui/civic_feedback/v2/store.py b/ui/civic_feedback/v2/store.py
-index 6af95c72..cbb1b807 100644
+index 75959711..4eed6f0a 100644
 --- a/ui/civic_feedback/v2/store.py
 +++ b/ui/civic_feedback/v2/store.py
-@@ -382,6 +382,10 @@ class ComplaintStore:
+@@ -389,6 +389,10 @@ class ComplaintStore:
              if status == "fixed":
                  after = self._photo_ids(db, record["id"], "after", photos)
                  record["resolution"] = lifecycle.new_resolution(record.get("resolution"), now, what_done, actor, after)
@@ -110,9 +110,9 @@ index 6af95c72..cbb1b807 100644
                  db.execute("UPDATE complaint_photos_v2 SET round = ? WHERE complaint_id = ? AND kind = 'after' "
                             "AND round IS NULL", (record["resolution"]["round"], record["id"]))
                  self._add_update(record, now, "fixed", what_done)
-@@ -406,6 +410,22 @@ class ComplaintStore:
-             return "metoo"
-         return None
+@@ -439,6 +443,22 @@ class ComplaintStore:
+                              "AND muted = 0", (record["id"], device))
+             return "unsubscribed" if cur.rowcount else "not_subscribed"
  
 +    def _verifier(self, db, record: dict, device: str) -> str | None:
 +        """Кто может проверить ремонт (R15-S24): автор и «Я тоже», нажатые ДО «служба сообщила об устранении».
@@ -133,7 +133,7 @@ index 6af95c72..cbb1b807 100644
      def participant(self, complaint_id: str, device_id) -> str | None:
          try:
              device = self.device_hash(device_id)
-@@ -431,7 +451,7 @@ class ComplaintStore:
+@@ -464,7 +484,7 @@ class ComplaintStore:
              resolution = record.get("resolution") or {}
              if record["status"] != "fixed" or resolution.get("state") not in ("reported", "verified"):
                  return False
@@ -142,7 +142,7 @@ index 6af95c72..cbb1b807 100644
                  return False
              voted = self._db.execute("SELECT 1 FROM complaint_votes_v2 WHERE complaint_id = ? AND round = ? "
                                       "AND device_hash = ?", (record["id"], resolution["round"], device)).fetchone()
-@@ -449,7 +469,7 @@ class ComplaintStore:
+@@ -482,7 +502,7 @@ class ComplaintStore:
          events = []
          with self._tx() as db:
              record = self._root(db, complaint_id)
