@@ -12,6 +12,11 @@
         handle_put(path, body, staff=True, actor=…) — только для сотрудника; кто сотрудник и CSRF — решает шлюз R01.
     POST /api/civic/v2/akim/decisions/<id>  {"option": 1|2}   «Выбрать» вариант в «Нужно решение акима»:
         handle_post(path, body, staff=True, actor=…) — тоже только сотрудник.
+Раздел жителя «Рядом» (nearby.py, публично, без личных данных):
+    GET  /api/civic/v2/nearby?district=nura&tab=now|done|planned|outages
+    GET  /api/civic/v2/nearby/subscriptions?device_id=…        мои подписки
+    POST /api/civic/v2/nearby/subscriptions {device_id, scope: district|item, id, on: true|false}
+    GET  /api/civic/v2/nearby/updates?device_id=…&since=…      для R09 «Мои обращения → Что изменилось»
 Ошибка в параметрах → 400 {"error":"bad_request","field":…,"message":…}. Сбой расчёта → 500, сервер не падает.
 В ответе нет текстов жалоб и данных жителей — только числа и подписи мест.
 """
@@ -20,7 +25,7 @@ from __future__ import annotations
 import logging
 import traceback
 
-from . import decisions, routing
+from . import decisions, nearby, routing
 from .summary import AkimError, default_service
 
 PREFIX = "/api/civic/v2"
@@ -44,7 +49,15 @@ def handle_get(path: str, query: dict | None = None, service=None) -> tuple[int,
             if category:
                 return 200, routing.service_for(str(category), _one(query, "subtopic") or None)
             return 200, routing.table()
+        if path == PREFIX + "/nearby":
+            return 200, nearby.feed(_one(query, "district"), _one(query, "tab") or None)
+        if path == PREFIX + "/nearby/subscriptions":
+            return 200, {"items": nearby.subscriptions(_one(query, "device_id"))}
+        if path == PREFIX + "/nearby/updates":
+            return 200, {"items": nearby.updates_for(_one(query, "device_id"), _one(query, "since"))}
         return 404, {"error": "not_found", "message": "нет такого адреса"}
+    except nearby.NearbyError as exc:
+        return exc.status, {"error": "bad_request", "field": exc.field, "message": str(exc)}
     except (AkimError, routing.RoutingError) as exc:
         return 400, {"error": "bad_request", "field": exc.field, "message": str(exc)}
     except Exception:  # картина дня не должна ронять сервер
@@ -68,7 +81,18 @@ def handle_put(path: str, body, *, staff: bool = False, actor: str | None = None
 
 
 def handle_post(path: str, body, *, staff: bool = False, actor: str | None = None, service=None) -> tuple[int, dict]:
-    """POST /api/civic/v2/akim/decisions/<id> {"option": 1|2}. staff=False → 403."""
+    """POST /api/civic/v2/akim/decisions/<id> {"option": 1|2} (staff=False → 403);
+    POST /api/civic/v2/nearby/subscriptions {device_id, scope, id, on} — житель, без входа."""
+    if path == PREFIX + "/nearby/subscriptions":
+        b = body if isinstance(body, dict) else {}
+        try:
+            items = nearby.subscribe(b.get("device_id"), b.get("scope"), b.get("id"), on=b.get("on", True) is not False)
+            return 200, {"items": items}
+        except nearby.NearbyError as exc:
+            return exc.status, {"error": "bad_request", "field": exc.field, "message": str(exc)}
+        except Exception:
+            log.error("nearby subscribe failed: %s", traceback.format_exc())
+            return 500, {"error": "nearby_failed", "message": "подписка не сохранилась"}
     prefix = PREFIX + "/akim/decisions/"
     if not path.startswith(prefix):
         return 404, {"error": "not_found", "message": "нет такого адреса"}

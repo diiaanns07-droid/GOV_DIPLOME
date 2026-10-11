@@ -11,7 +11,7 @@
     python tests/civic/R08/demo_server.py --wave2-demo   # + уточнения и проверка жителями в демо-жалобах (синтетика)
 
 Отдаёт только файлы из web/civic/ (без листинга папок) и API R08: GET /akim/summary, GET/PUT /akim/routing,
-POST /akim/decisions/<id>. Стенд — локальный: все запросы считаются запросами сотрудника (--resident — наоборот),
+POST /akim/decisions/<id>, GET /nearby, GET/POST /nearby/subscriptions, GET /nearby/updates. Стенд — локальный: все запросы считаются запросами сотрудника (--resident — наоборот),
 GET /api/civic/v1/session отдаёт учебный CSRF-токен. Выбор акима и правки служб пишутся во временную папку
 (--state-dir), а не в .runtime проекта.
 Данные: тепловая карта R07 (ui.civic_heat) с её демо-набором жалоб (все demo: true), объекты и
@@ -31,7 +31,7 @@ from urllib.parse import parse_qs, urlsplit
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 
-from ui.civic_akim import decisions as akim_decisions, routing as akim_routing  # noqa: E402
+from ui.civic_akim import decisions as akim_decisions, nearby as akim_nearby, routing as akim_routing  # noqa: E402
 from ui.civic_akim.api import PREFIX, handle_get, handle_post, handle_put  # noqa: E402
 
 STAND_CSRF = "r08-stand-csrf"
@@ -153,6 +153,7 @@ def main(argv=None):
     state = Path(args.state_dir or tempfile.mkdtemp(prefix="r08-stand-"))
     akim_decisions.STORE_PATH = state / "decisions.json"
     akim_routing.OVERRIDE_PATH = state / "routing.json"
+    akim_nearby.SUBS_PATH = state / "subscriptions.json"
     print(f"Выбор акима и правки служб: {state}", flush=True)
     if args.wave2_demo:
         import importlib
@@ -178,6 +179,8 @@ def main(argv=None):
     for warning in stand_warnings(httpd.kit_dir):
         print("ВНИМАНИЕ: " + warning, flush=True)
     print(f"Картина дня: http://{args.host}:{args.port}/civic/akim/", flush=True)
+    print(f"Службы: http://{args.host}:{args.port}/civic/akim/services.html · Рядом: http://{args.host}:{args.port}/civic/nearby/",
+          flush=True)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
