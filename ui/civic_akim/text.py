@@ -218,12 +218,12 @@ def _objects_kk(s: dict) -> str:
 
 
 def _fixed_ru(s: dict) -> str:
-    """«За неделю исправлено 142: жители подтвердили 37, вернули в работу 3.» — только если проверка жителями есть в данных."""
+    """«За неделю исправлено 142: жители проверили 37, вернули в работу 3.» — только если проверка жителями есть в данных."""
     f = s["kpi"].get("fixed_week") or {}
     if not s["kpi"].get("verification_available") or not f.get("value") and not f.get("reopened"):
         return ""
     n = f["value"]
-    out = f"За неделю исправлено {fmt_num(n)}: жители подтвердили {fmt_num(f['verified'])}"
+    out = f"За неделю исправлено {fmt_num(n)}: жители проверили {fmt_num(f['verified'])}"
     if f.get("reopened"):
         out += f", вернули в работу {fmt_num(f['reopened'])}"
     return out + "."
@@ -233,9 +233,10 @@ def _fixed_kk(s: dict) -> str:
     f = s["kpi"].get("fixed_week") or {}
     if not s["kpi"].get("verification_available") or not f.get("value") and not f.get("reopened"):
         return ""
-    out = f"Аптада түзетілгені: {fmt_num(f['value'])}, тұрғындар растағаны: {fmt_num(f['verified'])}"
+    # R11 (волна 2, разбор 2, п. 6): «тексерді» — как статус «тұрғындар тексерді»; «қайта» не дважды.
+    out = f"Аптада түзетілгені: {fmt_num(f['value'])}, тұрғындар тексергені: {fmt_num(f['verified'])}"
     if f.get("reopened"):
-        out += f", қайта жұмысқа қайтарылғаны: {fmt_num(f['reopened'])}"
+        out += f", жұмысқа қайтарылғаны: {fmt_num(f['reopened'])}"
     return out + "."
 
 
@@ -309,7 +310,7 @@ def pulse_kk(a: dict) -> str:
     if a["kind"] == "spike_new":
         return f"{where}: 7 күнде {fmt_num(n)} хабарлама — алдыңғы {fmt_num(a['weeks'])} аптада мұндай болмаған."
     if a["kind"] == "new_hot":
-        return f"Жаңа ыстық нүкте: {_place(a, 'kk')} — 7 күнде {fmt_num(n)} адам, бір апта бұрын картада болмаған."
+        return f"Жаңа ыстық орын: {_place(a, 'kk')} — 7 күнде {fmt_num(n)} адам, бір апта бұрын картада болмаған."
     return f"«Мен де» жиі басылады: {_place(a, 'kk')} — аптасына +{fmt_num(n)} (алдыңғы аптада — {fmt_num(a.get('prev') or 0)})."
 
 

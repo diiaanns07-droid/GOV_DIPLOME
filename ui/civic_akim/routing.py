@@ -241,3 +241,9 @@ def update(changes: dict, *, actor: str | None = None, path: Path | None = None,
         tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), "utf-8")
         os.replace(tmp, p)
     return table(p)
+
+
+def assignee_lookup(category: str | None, subtopic: str | None = None) -> str:
+    """Для R09 (store.assignee_lookup, паспорт решения «Отвечает: …»): название службы по-русски.
+    Интерфейсу на казахском лучше брать id из service_for() и показывать t("service." + id)."""
+    return service_for(category, subtopic)["ru"]

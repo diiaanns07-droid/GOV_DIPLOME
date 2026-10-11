@@ -9,9 +9,11 @@
 деньги вне плана, «чей это объект», согласование между ведомствами. Без двух вариантов действия пункт
 всё равно показывается, но с пометкой «варианты не предложены» — это сигнал службе, а не акиму.
 
-Где лежит причина (читаем все формы, точную выбирает R09 — INTEGRATION.txt §8):
-  record["delay"] или record["passport"]["delay"] = {reason_code, problem_ru/kk, blocker_ru/kk,
-  options: [{ru, kk}, {ru, kk}], decision_ru/kk, temp_measure_ru/kk, next_update}.
+Где лежит причина: паспорт решения R09 (lifecycle.py, claude/modest-shannon-0ki93p) — record["passport"]["delay"] =
+  {reason (текст «что мешает»), temp_measure, next_update_at}. Чтобы задержка попала сюда, R09 добавляет в форму
+  отметку «Нужно решение руководителя» и два варианта: delay.needs_decision = true, delay.options = [{ru, kk}, {ru, kk}],
+  delay.decision = «что нужно от акима» (INTEGRATION.txt §8). Читаем и расширенную форму: record["delay"] /
+  passport.delay = {reason_code, problem_ru/kk, blocker_ru/kk, options, decision_ru/kk, temp_measure_ru/kk}.
 Пока R09 не даёт причин, а жалобы — демо (R07), блок показывает пример из fixtures/decisions_demo.json
 (помечен «Пример»): эти записи проходят тот же критерий, что и настоящие.
 
@@ -68,6 +70,13 @@ def _txt(d: dict, key: str, lang: str):
     return v.strip() if isinstance(v, str) and v.strip() else None
 
 
+def _free_reason(d: dict) -> str | None:
+    r = d.get("reason")
+    if isinstance(r, str) and r.strip() and r.strip().lower() not in NEEDS_DECISION and " " in r.strip():
+        return r.strip()
+    return None
+
+
 def _subtopic(category: str | None, subtopic: str | None) -> dict | None:
     if not subtopic:
         return None
@@ -114,7 +123,8 @@ def build(records: list[dict], as_of: datetime, *, status_at, parse_time, labels
             "service": {k: service[k] for k in ("id", "ru", "kk", "name_edited")},
             "problem_ru": _txt(d, "problem", "ru") or (sub or cat)["ru"],
             "problem_kk": _txt(d, "problem", "kk"),
-            "blocker_ru": _txt(d, "blocker", "ru"), "blocker_kk": _txt(d, "blocker", "kk"),
+            # «Что мешает»: blocker_*; у R09 — свободный текст delay.reason (если это не код причины)
+            "blocker_ru": _txt(d, "blocker", "ru") or _free_reason(d), "blocker_kk": _txt(d, "blocker", "kk"),
             "options": options,
             "options_missing": len(options) < 2,
             "decision_ru": _txt(d, "decision", "ru"), "decision_kk": _txt(d, "decision", "kk"),

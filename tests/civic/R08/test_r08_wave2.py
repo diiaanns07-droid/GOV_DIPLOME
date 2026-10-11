@@ -55,8 +55,21 @@ def test_add_workdays_skips_weekend_and_holiday():
     assert workdays.workdays_between(date(2026, 10, 12), date(2026, 10, 9)) == 0
 
 
+def test_own_calendar_matches_r09_for_2026():
+    """Один календарь у жителя, сотрудника и акима: правила R08 и holidays_kz.json R09 дают одни и те же дни."""
+    r09 = pytest.importorskip("ui.civic_feedback.v2.workdays")
+    if 2026 not in r09.calendar_years():
+        pytest.skip("в календаре R09 нет 2026")
+    d, diff = date(2026, 1, 1), []
+    while d.year == 2026:
+        if workdays.own_is_workday(d) != r09.is_working_day(d):
+            diff.append(d.isoformat())
+        d += timedelta(days=1)
+    assert diff == []
+
+
 def test_timer_working_and_calendar_days():
-    # Дороги, 7 рабочих: подано пт 2 октября → срок вт 13 октября 23:59
+    # Дороги, 7 рабочих: подано пт 2 октября 18:00 → срок вт 13 октября 18:00 (время суток сохраняется, как у R09)
     t = deadlines.timer("roads", at(2026, 10, 2, 18), NOW)
     assert (t["unit"], t["state"], t["left"]) == ("work", "ok", 1)
     t = deadlines.timer("roads", at(2026, 10, 2, 18), at(2026, 10, 13, 9))
@@ -129,8 +142,8 @@ def test_verified_vs_awaiting_and_reopened():
     assert s["kpi"]["verification_available"] is True
     assert verified_at(yes, NOW) is not None and verified_at(waiting, NOW) is None
     assert reopen_moments(reopened, NOW)[0][1] is True
-    assert "жители подтвердили 1, вернули в работу 1" in s["text"]["ru"]
-    assert "тұрғындар растағаны: 1" in s["text"]["kk"]
+    assert "жители проверили 1, вернули в работу 1" in s["text"]["ru"]
+    assert "тұрғындар тексергені: 1, жұмысқа қайтарылғаны: 1" in s["text"]["kk"]
 
 
 def test_verified_status_and_verification_field_forms():
@@ -148,7 +161,7 @@ def test_no_verification_data_means_no_claim():
     """Пока R09 не даёт проверку жителями — не пишем «подтвердили 0» ни в числах-подписях, ни в сводке."""
     s = summary([_fixed(1), _fixed(2)])
     assert s["kpi"]["verification_available"] is False
-    assert "подтвердили" not in s["text"]["ru"] and "растағаны" not in s["text"]["kk"]
+    assert "проверили" not in s["text"]["ru"] and "тексергені" not in s["text"]["kk"]
 
 
 def test_week_ago_verification_not_leaking_from_future():
@@ -365,3 +378,52 @@ def test_choose_option_persists_and_shows(tmp_path, monkeypatch):
         code, body = api.handle_post(f"/api/civic/v2/akim/decisions/{bad_id}", {"option": bad_option}, staff=True, service=s)
         assert (code, body.get("field")) == (code_expected, field), (bad_id, bad_option, body)
     assert api.handle_post("/api/civic/v2/akim/other", {}, staff=True, service=s)[0] == 404
+
+
+# ---------------------------------------------------------------- форма R09 (lifecycle.py) и данные R07
+
+def test_r09_resolution_form_counts():
+    """R09: resolution {state: reported|verified|reopened, verified_at}, возврат — шаг с reopened_by_residents."""
+    reported = _fixed(1)
+    reported["resolution"] = {"round": 1, "state": "reported", "reported_at": reported["status_history"][-1]["at"],
+                              "verified_at": None, "votes": {"yes": 0, "no": 0, "cant": 1}}
+    verified = _fixed(2)
+    verified["resolution"] = {"round": 1, "state": "verified", "verified_at": (NOW - timedelta(hours=5)).isoformat(),
+                              "votes": {"yes": 2, "no": 0, "cant": 0}}
+    back = rec(3, age_days=4, history=[(1, "fixed"), (2, "in_progress")])
+    back["status_history"][-1]["reopened_by_residents"] = True
+    back["resolution"] = {"round": 1, "state": "reopened", "reopened_at": back["status_history"][-1]["at"]}
+    s = summary([reported, verified, back])
+    f = s["kpi"]["fixed_week"]
+    assert (f["value"], f["verified"], f["awaiting"], f["reopened"], f["reopened_by_residents"]) == (2, 1, 1, 1, 1)
+    assert s["kpi"]["verification_available"] is True
+
+
+def test_out_of_order_history_is_not_a_reopen():
+    """Демо R07: «исправлено» по времени раньше «принято», но в списке — последним. Это не возврат в работу."""
+    r = rec(1, age_days=5, status="fixed")
+    created = parse_time(r["created_at"])
+    r["status_history"] = [{"at": created.isoformat(), "status": "new"},
+                           {"at": (created + timedelta(hours=8)).isoformat(), "status": "accepted"},
+                           {"at": (created + timedelta(hours=8)).isoformat(), "status": "in_progress"},
+                           {"at": (created + timedelta(hours=1)).isoformat(), "status": "fixed"}]
+    assert reopen_moments(r, NOW) == []
+    assert summary([r])["kpi"]["fixed_week"]["reopened"] == 0
+
+
+def test_r09_passport_delay_reason_is_the_blocker():
+    r = rec(1, age_days=20, category="roads", status="in_progress")
+    r["passport"] = {"delay": {"reason": "Нет денег в плане службы на новую опору", "temp_measure": "Временный фонарь",
+                               "next_update_at": "2026-10-16", "needs_decision": True,
+                               "options": [{"ru": "Из резерва района"}, {"ru": "В план следующего года"}],
+                               "decision": "Выбрать источник денег"}}
+    item = summary([r])["decisions"]["items"][0]
+    assert item["blocker_ru"] == "Нет денег в плане службы на новую опору"
+    assert item["temp_measure_ru"] == "Временный фонарь" and item["decision_ru"] == "Выбрать источник денег"
+    assert [o["ru"] for o in item["options"]] == ["Из резерва района", "В план следующего года"]
+
+
+def test_assignee_lookup_for_r09():
+    from ui.civic_akim import routing
+    assert routing.assignee_lookup("roads", "traffic_light_broken") == "Служба светофоров и разметки"
+    assert routing.assignee_lookup("unknown", None) == routing.SERVICES[routing.DEFAULT_RULES["other"]]["ru"]

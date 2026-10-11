@@ -8,8 +8,11 @@
 
 ОГРАНИЧЕНИЕ (честно): Правительство каждый год может дополнительно переносить рабочие дни постановлением;
 такие переносы здесь НЕ учтены — сверить с постановлением на 2026 год. Даты Курбан айта: 2025-06-06,
-2026-05-27 (ожидаемая); для других лет — без него. Модуль общий: R09 может брать его для срока ответа,
-чтобы у жителя, сотрудника и акима был один календарь.
+2026-05-27 (ожидаемая); для других лет — без него.
+
+ОДИН КАЛЕНДАРЬ С R09: если в сборке есть ui.civic_feedback.v2.workdays (R09, holidays_kz.json) и в нём есть
+этот год — берём его (житель, сотрудник и аким видят одни и те же рабочие дни; правка календаря — в одном месте
+у R09). Иначе — правила ниже. Для 2026 оба дают одни и те же дни (тест test_r08_wave2).
 """
 from __future__ import annotations
 
@@ -40,8 +43,29 @@ def days_off(year: int) -> frozenset:
     return frozenset(off)
 
 
+@lru_cache(maxsize=1)
+def _r09():
+    """(is_working_day, годы календаря) R09 или None."""
+    try:
+        from ui.civic_feedback.v2 import workdays as r09  # type: ignore
+        return r09.is_working_day, frozenset(r09.calendar_years())
+    except Exception:  # модуля нет или календарь не читается — свои правила
+        return None
+
+
 def is_workday(d: Date) -> bool:
+    r09 = _r09()
+    if r09 is not None and d.year in r09[1]:
+        return bool(r09[0](d))
+    return own_is_workday(d)
+
+
+def own_is_workday(d: Date) -> bool:
     return d.weekday() < 5 and d not in days_off(d.year)
+
+
+def source() -> str:
+    return "r09" if _r09() is not None else "r08"
 
 
 def add_workdays(start: Date, n: int) -> Date:

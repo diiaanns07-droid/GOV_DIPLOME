@@ -4,7 +4,9 @@
 а срок его категории уже прошёл (due() ниже).
 
 Срок в РАБОЧИХ днях (волна мелочей п. 6: выходные и праздники РК не съедают срок, workdays.py):
-срок = конец N-го рабочего дня после дня подачи. Исключение — аварийные категории (CALENDAR_DAYS):
+срок = момент подачи + N рабочих дней, время суток сохраняется — так же считает R09 срок ответа
+(workdays.add_working_days: подано в субботу 10:00, 1 рабочий день → понедельник 10:00).
+Исключение — аварийные категории (CALENDAR_DAYS):
 нет тепла или воды, снег и гололёд, мусор, газ и дым — службы работают без выходных, и срок у них
 в КАЛЕНДАРНЫХ днях от момента подачи. Интерфейс пишет это словами: «Осталось 2 рабочих дня»,
 «Просрочено на 1 день».
@@ -84,7 +86,7 @@ def due(category: str | None, created: datetime) -> datetime:
     if unit(category) == "calendar":
         return created + timedelta(days=n)
     last = workdays.add_workdays(created.date(), n)
-    return datetime(last.year, last.month, last.day, 23, 59, 59, tzinfo=created.tzinfo)
+    return datetime(last.year, last.month, last.day, created.hour, created.minute, created.second, tzinfo=created.tzinfo)
 
 
 def timer(category: str | None, created: datetime, moment: datetime) -> dict:

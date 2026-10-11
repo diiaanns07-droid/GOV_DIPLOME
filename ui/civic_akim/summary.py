@@ -42,9 +42,11 @@ WORK = ("accepted", "in_progress")
 # «Исправлено»: fixed у R09 сейчас; verified / verified_fixed — если R09 сделает «проверено жителями» статусом.
 FIXED = ("fixed", "verified", "verified_fixed")
 VERIFIED_STATUSES = ("verified", "verified_fixed")
-# Отметки проверки жителями, которые читаем (волна 2 п. 1; точную форму выбирает R09 — INTEGRATION.txt §8):
-#   в status_history: {"at", "event": "resident_check", "answer": "yes|no|cant"} или {"at", "event": "verified"}
-#   / {"at", "event": "reopened", "by": "resident"}; у записи: verification = {"state": "verified|reopened", "at"}.
+# Проверка жителями (волна 2 п. 1). Основная форма — R09 lifecycle.py (claude/modest-shannon-0ki93p, 8c07864):
+#   record["resolution"] = {state: reported|verified|reopened, reported_at, verified_at, reopened_at, votes, round};
+#   возврат в работу — шаг истории {"status": "in_progress", "reopened_by_residents": true}.
+# Запасные формы (если R09 поменяет): в status_history {"event": "resident_check", "answer": "yes|no|cant"},
+#   {"event": "verified"} / {"event": "reopened", "by": "resident"}; у записи verification = {"state", "at"}.
 VERIFIED_EVENTS = {"verified", "verified_fixed", "resident_verified", "resident_confirmed"}
 REOPEN_EVENTS = {"reopened", "resident_reopened", "resident_not_fixed", "not_fixed"}
 YES = {"yes", "fixed", "confirmed", "verified"}
@@ -148,8 +150,14 @@ def _resident_marks(record: dict) -> list[tuple[datetime, str]]:
         reason = str(h.get("reason") or "").lower()
         if h.get("status") in VERIFIED_STATUSES or ev in VERIFIED_EVENTS or (ev == "resident_check" and answer in YES):
             marks.append((t, "verified"))
-        elif ev in REOPEN_EVENTS or reason in REOPEN_EVENTS or (ev == "resident_check" and answer in NO):
+        elif (ev in REOPEN_EVENTS or reason in REOPEN_EVENTS or (ev == "resident_check" and answer in NO)
+              or h.get("reopened_by_residents") is True):
             marks.append((t, "reopened"))
+    res = record.get("resolution")
+    if isinstance(res, dict):  # R09: время последнего «Да, исправлено» в текущем раунде
+        t = parse_time(res.get("verified_at"))
+        if t is not None and res.get("state") == "verified":
+            marks.append((t, "verified"))
     v = record.get("verification") or record.get("resident_check")
     if isinstance(v, dict):
         state = str(v.get("state") or v.get("status") or "").lower()
@@ -178,17 +186,21 @@ def verified_at(record: dict, moment: datetime) -> datetime | None:
 def reopen_moments(record: dict, moment: datetime) -> list[tuple[datetime, bool]]:
     """Возвраты в работу после «исправлено» до moment: [(время, by_resident)].
 
-    by_resident — рядом (±1 ч) есть отметка жителя «Проблема осталась» или у шага истории by=resident.
+    Порядок шагов — как в списке status_history (R09 дописывает шаги по порядку), а не по времени: в демо-наборе
+    R07 у части записей время «исправлено» раньше времени «принято», и сортировка по времени выдумала бы возврат.
+    by_resident — у шага reopened_by_residents (R09) или by=resident, или рядом (±1 ч) отметка «Проблема осталась».
     """
     marks = [t for t, kind in _resident_marks(record) if kind == "reopened"]
     out, prev = [], None
-    raw = {(parse_time(h.get("at")), h.get("status")): h for h in record.get("status_history") or [] if isinstance(h, dict)}
-    for t, s in _history(record):
-        if t > moment:
-            break
-        if prev in FIXED and s in OPEN:
-            h = raw.get((t, s)) or {}
-            by_resident = str(h.get("by") or "").lower() == "resident" or any(abs((m - t).total_seconds()) <= 3600 for m in marks)
+    for h in record.get("status_history") or []:
+        if not isinstance(h, dict) or not h.get("status"):
+            continue
+        t, s = parse_time(h.get("at")), str(h["status"])
+        if t is None:
+            continue
+        if prev in FIXED and s in OPEN and t <= moment:
+            by_resident = (h.get("reopened_by_residents") is True or str(h.get("by") or "").lower() == "resident"
+                           or any(abs((m - t).total_seconds()) <= 3600 for m in marks))
             out.append((t, by_resident))
         prev = s
     return out
@@ -472,7 +484,8 @@ class AkimService:
                            "awaiting": now_state["fixed"] - now_state["verified"], "reopened": now_state["reopened"],
                            "reopened_by_residents": now_state["reopened_by_residents"]},
             # Проверка жителями есть в данных (R09 волна 2)? Нет — интерфейс не пишет «проверено: 0», а молчит.
-            "verification_available": any(_resident_marks(r) or r.get("status") in VERIFIED_STATUSES for r in recs),
+            "verification_available": any(isinstance(r.get("resolution"), dict) or _resident_marks(r)
+                                          or r.get("status") in VERIFIED_STATUSES for r in recs),
         }
 
     # ---------- тепловая карта ----------
