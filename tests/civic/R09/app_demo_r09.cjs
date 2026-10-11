@@ -168,8 +168,9 @@ async function variant(browser, base, width, height, lang, staff, opts = {}) {
   seen.category = chip;
   await shot(page, `app-${tag}-3-text`);
   await page.click(".bc-send");
+  // Волна 2: шаг 4 — либо «Я тоже» (похожая жалоба), либо проверка перед отправкой (data-review=1).
   await page.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 15000 });
-  const step4 = await page.$(".bc-panel[data-step='4']");
+  const step4 = await page.$(".bc-panel[data-step='4']:not([data-review])");
   const title = (await page.textContent(".bc-title")).trim();
   const n = Number((title.match(/\d+/) || [0])[0]);
   check(`${tag}: шаг 2 демо — «${title}» (похожая жалоба нашлась на чистой демо-базе)`, !!step4 && n >= 3, title);
@@ -180,6 +181,8 @@ async function variant(browser, base, width, height, lang, staff, opts = {}) {
   if (opts.different) {
     // LOCAL_FINAL №2: «У меня другое» -> успех -> сразу Escape; отложенная подсказка не должна читать null.
     await page.click(".bc-different");
+    await page.waitForSelector(".bc-panel[data-review='1'] .bc-send:not([disabled])", { timeout: 10000 });
+    await page.click(".bc-panel[data-review='1'] .bc-send");   // экран проверки -> «Отправить»
     await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 10000 });
     await page.keyboard.press("Escape");
     await sleep(2500);

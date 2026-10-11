@@ -23,7 +23,7 @@ const args = process.argv.slice(2);
 const r11Dir = args.includes("--r11") ? path.resolve(args[args.indexOf("--r11") + 1]) : null;
 // --real: стенд вызывает настоящие R12 engine.civic_geo и R04 ui.civic_ml_api (их пакеты должны лежать в дереве).
 const real = args.includes("--real");
-// --only local_final: только проверки LOCAL_FINAL №1–2 (быстро).
+// --only local_final: только проверки LOCAL_FINAL №1–2 (быстро); --only wave: только сценарии волны 1–2.
 const only = args.includes("--only") ? args[args.indexOf("--only") + 1] : null;
 const shotDir = args.includes("--screenshots") ? path.resolve(args[args.indexOf("--screenshots") + 1]) : null;
 if (shotDir) fs.mkdirSync(shotDir, { recursive: true });
@@ -51,6 +51,8 @@ async function newPage(browser, base, width, height, lang, opts = {}) {
                                              hasTouch: width < 1024, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
   // Сессия сотрудника в том же браузере (стенд: cookie stand_staff=1 — как вход R02 в приложении).
   if (opts.staff) await context.addCookies([{ name: "stand_staff", value: "1", url: base }]);
+  // Заранее известное устройство жителя (волна 2: автор и «Я тоже» — разные устройства одного сценария).
+  if (opts.device) await context.addInitScript((d) => { try { localStorage.setItem("birge.device", d); } catch (e) { /* нет хранилища */ } }, opts.device);
   const page = await context.newPage();
   page.problems = [];
   page.on("console", (msg) => {
@@ -174,6 +176,12 @@ async function uxSizes(page) {
   });
 }
 
+// Волна 2 (обязательные мелочи): перед отправкой — экран проверки (шаг 4, data-review=1) с «Отправить».
+async function sendFromReview(page, timeout = 10000) {
+  await page.waitForSelector(".bc-panel[data-review='1'] .bc-send:not([disabled])", { timeout });
+  await page.click(".bc-panel[data-review='1'] .bc-send");
+}
+
 async function shot(page, name) {
   // Дать закончиться анимациям шторки и тоста (240–300 мс), иначе кадр ловит полупрозрачное промежуточное состояние.
   if (shotDir) { await page.waitForTimeout(450); await page.screenshot({ path: path.join(shotDir, name + ".png") }); }
@@ -239,7 +247,7 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   check(`${tag}: подсказка категории чипом`, lang === "kk" ? /Аялдамалар мен көлік/.test(chip) : /Остановки и транспорт/.test(chip), chip.trim());
   await shot(page, `${tag}-3-text`);
   await page.click(".bc-send"); taps++;
-  await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 8000 });
+  await page.waitForSelector(".bc-panel[data-step='4']:not([data-review])", { timeout: 8000 });
   const title4 = await page.textContent(".bc-title");
   const before = Number((title4.match(/\d+/) || [0])[0]);
   check(`${tag}: шаг 4 «уже сообщили N» (N ≥ 7 по демо-цели)`, before >= 7, title4);
@@ -311,23 +319,46 @@ async function newComplaintAndMine(browser, base, lang, width, height, tag, poin
   await checkGridWords(page, tag);
   await shot(page, `${tag}-grid`);
   await page.click(".bk-catgrid > button:nth-child(5)");
-  // Обрыв сети при отправке: тост с «Повторить», текст не теряется.
-  await page.route("**/api/civic/v2/complaints", (route) => route.request().method() === "POST" ? route.abort() : route.continue());
+  // «Далее» -> похожих нет -> экран проверки: место, проблема, текст, фото и кто что увидит (волна 2, мелочи).
   await page.click(".bc-send");
-  await page.waitForSelector(".bc-toast:not([hidden])", { timeout: 15000 }).catch(async (err) => {
-    console.log("DIAG notes=", JSON.stringify(page.retryNotes), "clicks=", await page.evaluate(() => window.standClicks), "step=", await page.$eval(".bc-panel", (e) => e.dataset.step),
-                "panel=", (await page.textContent(".bc-panel")).slice(0, 300));
+  await page.waitForSelector(".bc-panel[data-review='1']", { timeout: 10000 }).catch(async (err) => {
+    console.log("DIAG step=", await page.$eval(".bc-panel", (e) => e.dataset.step), "panel=", (await page.textContent(".bc-panel")).slice(0, 300));
     throw err;
   });
-  const toast = await page.textContent(".bc-toast");
-  const kept = await page.inputValue("#bc-text");
-  check(`${tag}: обрыв сети — понятный тост и текст сохранён`, /Повтор|Қайталау/.test(toast) && kept.length > 5, toast);
+  const review = await page.evaluate(() => {
+    const p = document.querySelector(".bc-panel");
+    return { title: p.querySelector(".bc-title").textContent.trim(), rows: p.querySelectorAll(".bc-review__row").length,
+             text: (p.querySelector(".bc-review__text") || {}).textContent || "", vis: (p.querySelector(".bc-visibility") || {}).textContent || "",
+             primary: p.querySelectorAll(".bk-btn--primary").length, edit: !!p.querySelector(".bc-edit") };
+  });
+  check(`${tag}: [W2] проверка перед отправкой — место, проблема, текст, фото; одна главная кнопка и «Изменить»`,
+        review.rows === 4 && review.text.length > 5 && review.primary === 1 && review.edit &&
+        (lang === "kk" ? /Жіберер алдында/.test(review.title) : /Проверьте перед отправкой/.test(review.title)), JSON.stringify(review));
+  check(`${tag}: [W2] «это увидят все / только служба» и подсказка убрать личное`,
+        lang === "kk" ? /Барлығы көреді/.test(review.vis) && /Тек қызмет/.test(review.vis) && /ЖСН/.test(review.vis)
+                      : /Увидят все/.test(review.vis) && /Только служба/.test(review.vis) && /ИИН/.test(review.vis), review.vis);
+  await shot(page, `${tag}-review`);
+  // Обрыв сети при отправке (волна 1, п. 10): обращение в очереди на телефоне, автоповтор, понятное сообщение.
+  await page.route("**/api/civic/v2/complaints", (route) => route.request().method() === "POST" ? route.abort() : route.continue());
+  await page.click(".bc-panel[data-review='1'] .bc-send");
+  await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
+  const queued = await page.evaluate(() => ({ title: document.querySelector(".bc-title").textContent.trim(),
+    lead: (document.querySelector(".bc-lead") || {}).textContent || "",
+    outbox: JSON.parse(localStorage.getItem("birge.complaint.outbox") || "[]") }));
+  check(`${tag}: [W1-10] нет сети — «${queued.title}», в очереди 1 обращение с текстом`,
+        (lang === "kk" ? /телефонда сақталды/.test(queued.title) && /автоматты/.test(queued.lead)
+                       : /сохранено на телефоне/.test(queued.title) && /автоматически/.test(queued.lead)) &&
+        queued.outbox.length === 1 && queued.outbox[0].body.text.length > 5, JSON.stringify({ t: queued.title, n: queued.outbox.length }));
   await shot(page, `${tag}-offline`);
   await page.unroute("**/api/civic/v2/complaints");
-  await page.click(".bc-toast .bk-btn");
-  await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
+  await page.click(".bc-panel[data-step='5'] .bk-btn--primary");   // «Отправить сейчас» (иначе — автоповтор через 5–60 с)
+  await page.waitForSelector(".bc-code__value", { timeout: 15000 });
   const code = await page.textContent(".bc-code__value");
-  check(`${tag}: отправлено, номер обращения`, /^B-\d{4,}$/.test(code), code);
+  check(`${tag}: отправлено из очереди, номер обращения, очередь пуста`, /^B-\d{4,}$/.test(code) &&
+        (await page.evaluate(() => JSON.parse(localStorage.getItem("birge.complaint.outbox") || "[]").length)) === 0, code);
+  const after = await page.evaluate(() => [...document.querySelectorAll(".bc-panel .bc-next, .bc-panel .bc-meta")].map((n) => n.textContent).join(" | "));
+  check(`${tag}: [W2] после отправки — номер, следующий шаг и как найти`,
+        lang === "kk" ? /Әрі қарай: қызмет/.test(after) && /Менің өтініштерім/.test(after) : /Дальше: служба ответит до/.test(after) && /Мои обращения/.test(after), after);
   const steps = await page.$$eval(".bk-steps__item", (n) => n.map((x) => x.getAttribute("data-state")));
   check(`${tag}: шкала статуса принято → в работе → исправлено`, steps.join() === "current,todo,todo", steps.join());
   await shot(page, `${tag}-sent`);
@@ -424,7 +455,7 @@ async function placeTotal(browser, base, lang, width, height, tag, point) {
   // Модель стенда по словам «двор», «площадка» подсказывает «Дворы и площадки» — как у двух жалоб выше.
   await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 8000 });
   await page.click(".bc-send");
-  const step4 = await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 10000 }).then(() => true, () => false);
+  const step4 = await page.waitForSelector(".bc-panel[data-step='4']:not([data-review])", { timeout: 10000 }).then(() => true, () => false);
   const title = step4 ? (await page.textContent(".bc-title")).trim() : "";
   const n = Number((title.match(/\d+/) || [0])[0]);
   check(`${tag}: две отдельные жалобы на месте — «${title}» (всего людей по месту: ${b.data.reporters})`,
@@ -464,10 +495,11 @@ async function withoutMl(browser, base, hot, tag) {
   await checkGridWords(page, tag);
   await page.click(".bk-catgrid > button:nth-child(4)");  // «Остановки и транспорт»
   await page.click(".bc-send");
-  await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 8000 });
+  await page.waitForSelector(".bc-panel[data-step='4']:not([data-review])", { timeout: 8000 });
   check(`${tag}: /similar недоступен — «Я тоже» по той же цели`, /\d/.test(await page.textContent(".bc-title")),
         await page.textContent(".bc-title"));
-  await page.click(".bc-different");  // «У меня другое»
+  await page.click(".bc-different");  // «У меня другое» -> проверка перед отправкой
+  await sendFromReview(page);
   await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 8000 });
   check(`${tag}: «У меня другое» — новая жалоба отправлена`, /^B-/.test(await page.textContent(".bc-code__value")));
   const errorsShown = await page.isVisible(".bc-toast:not([hidden])");
@@ -567,9 +599,17 @@ async function phoneLayout(browser, base, hot, lang, tag) {
   await page.fill("#bc-text", lang === "kk" ? "Аулада шамдар жанбайды, түнде қараңғы" : "Во дворе не горят фонари, ночью темно");
   await page.waitForTimeout(900);
   if (!(await page.$(".bc-cat-row .bk-chip[aria-pressed='true']"))) await page.click(".bk-catgrid > button:nth-child(5)").catch(() => {});
-  await page.route("**/api/civic/v2/complaints", (route) => route.request().method() === "POST" ? route.abort() : route.continue());
+  // Сбой сервера (500) — тост с «Повторить» (обрыв сети ведёт в очередь, его проверяет newComplaintAndMine).
+  await page.route("**/api/civic/v2/complaints", (route) => route.request().method() === "POST"
+    ? route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ ok: false, error: { code: "internal" } }) })
+    : route.continue());
   await page.click(".bc-send");
+  const viaSimilar = await page.waitForSelector(".bc-panel[data-review='1'], .bc-different", { timeout: 10000 })
+    .then(async (el) => (await el.getAttribute("class")).includes("bc-different"));
+  if (viaSimilar) await page.click(".bc-different");
+  await sendFromReview(page);
   await page.waitForSelector(".bc-toast:not([hidden])", { timeout: 15000 });
+  page.problems = page.problems.filter((p) => !/^500 .*\/complaints$/.test(p));   // 500 подставлен тестом намеренно
   await page.waitForTimeout(400);  // замер после анимации появления
   const toast = await page.$eval(".bc-toast", (t) => { const r = t.getBoundingClientRect(); const b = t.querySelector(".bk-btn");
     const br = b.getBoundingClientRect(); const x = t.querySelector(".bk-iconbtn");
@@ -582,10 +622,11 @@ async function phoneLayout(browser, base, hot, lang, tag) {
   await page.unroute("**/api/civic/v2/complaints");
   await page.click(".bc-toast .bk-btn");
   await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
-  const due = await page.$$eval(".bc-panel .bc-meta", (n) => n.map((x) => x.textContent).join(" | "));
-  const months = lang === "kk" ? /Жауап мерзімі: \d{1,2}\u00a0(қаңтар|ақпан|наурыз|сәуір|мамыр|маусым|шілде|тамыз|қыркүйек|қазан|қараша|желтоқсан)/
-    : /Ответ до \d{1,2}\u00a0(янв|фев|мар|апр|мая|июн|июл|авг|сен|окт|ноя|дек)/;
-  check(`${tag}: [R11 №10/B1 №10] срок ответа — ключ complaint.step5.due и общий формат даты`, months.test(due), due);
+  const due = await page.$$eval(".bc-panel .bc-next", (n) => n.map((x) => x.textContent).join(" | "));
+  // Волна 2: срок ответа — в строке «Дальше: …» (complaint.step5.next), дата в общем формате (R11 №10).
+  const months = lang === "kk" ? /Әрі қарай: қызмет \d{1,2}\u00a0(қаңтар|ақпан|наурыз|сәуір|мамыр|маусым|шілде|тамыз|қыркүйек|қазан|қараша|желтоқсан)/
+    : /Дальше: служба ответит до \d{1,2}\u00a0(янв|фев|мар|апр|мая|июн|июл|авг|сен|окт|ноя|дек)/;
+  check(`${tag}: [R11 №10/B1 №10] срок ответа — «Дальше: …» и общий формат даты`, months.test(due), due);
   const ticks = await page.$eval(".bc-panel .bk-steps", (l) => (l.textContent.match(/✓/g) || []).length);
   check(`${tag}: [R11 №9] в шкале статуса нет своей «✓»`, ticks === 0);
   await page.click(".bc-panel[data-step='5'] .bk-btn--primary");
@@ -620,7 +661,7 @@ async function staffFirst(browser, base, hot, lang, width, height, tag) {
   await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 6000 });
   await page.click(".bc-send");
   const step = await page.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 10000 })
-    .then((el) => el.getAttribute("data-step"));
+    .then(async (el) => (await el.getAttribute("data-step")) + ((await el.getAttribute("data-review")) ? "-review" : ""));
   const title = await page.textContent(".bc-title");
   check(`${tag}: [LOCAL-1] при входе сотрудника шаг «Я тоже» не пропущен`, step === "4" && /\d/.test(title), `шаг ${step}: ${title}`);
   check(`${tag}: [LOCAL-1] текст чужой жалобы жителю не показан и при входе сотрудника`,
@@ -643,8 +684,9 @@ async function quickClose(browser, base, hot, lang, width, height, tag) {
   await page.fill("#bc-text", lang === "kk" ? "Аялдаманың павильоны сынған, шатыры жоқ" : "Павильон остановки сломан, нет крыши");
   await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 6000 });
   await page.click(".bc-send");
-  await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 10000 });
+  await page.waitForSelector(".bc-panel[data-step='4']:not([data-review])", { timeout: 10000 });
   await page.click(".bc-different");
+  await sendFromReview(page);
   for (const how of ["escape"]) {
     await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 10000 });
     if (how === "escape") await page.keyboard.press("Escape");
@@ -665,6 +707,315 @@ async function quickClose(browser, base, hot, lang, width, height, tag) {
   const late = page.problems.filter((p) => /null|undefined|TypeError/.test(p));
   check(`${tag}: [LOCAL-2] закрытие во время подсказки модели без ошибок`, late.length === 0, late.join(" | "));
   await page.context().close();
+}
+
+// ---------------------------------------------------------------- волна 1–2 (POLISH_WAVE_2)
+// Фото «как с телефона»: JPEG 2400×1800 с сегментом APP1 «Exif» и меткой GPS сразу после SOI.
+async function exifJpeg(page, width, height) {
+  const b64 = await page.evaluate(async ([w, h]) => {
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    const g = c.getContext("2d"); g.fillStyle = "#7aa35c"; g.fillRect(0, 0, w, h); g.fillStyle = "#2c3e50"; g.fillRect(w / 4, h / 4, w / 2, h / 2);
+    const blob = await new Promise((ok) => c.toBlob(ok, "image/jpeg", 0.9));
+    const src = new Uint8Array(await blob.arrayBuffer());
+    const payload = new TextEncoder().encode("Exif\0\0GPSLatitude=51.1283;GPSLongitude=71.4305;R09-SECRET-GPS");
+    const app1 = new Uint8Array(4 + payload.length);
+    app1.set([0xFF, 0xE1, (payload.length + 2) >> 8, (payload.length + 2) & 255]); app1.set(payload, 4);
+    const out = new Uint8Array(src.length + app1.length);
+    out.set(src.slice(0, 2)); out.set(app1, 2); out.set(src.slice(2), 2 + app1.length);
+    let s = ""; for (let i = 0; i < out.length; i += 0x8000) s += String.fromCharCode.apply(null, out.subarray(i, i + 0x8000));
+    return btoa(s);
+  }, [width, height]);
+  return Buffer.from(b64, "base64");
+}
+
+// Размер JPEG по маркеру SOF0/SOF2 (без библиотек).
+function jpegSize(buf) {
+  let i = 2;
+  while (i + 9 < buf.length) {
+    if (buf[i] !== 0xFF) return null;
+    const marker = buf[i + 1], len = buf.readUInt16BE(i + 2);
+    if (marker === 0xC0 || marker === 0xC2) return { h: buf.readUInt16BE(i + 5), w: buf.readUInt16BE(i + 7) };
+    i += 2 + len;
+  }
+  return null;
+}
+
+const staffApi = async (base, method, p, body) => (await fetch(base + "/api/civic/v2" + p, { method,
+  headers: { "Content-Type": "application/json", "Cookie": "stand_staff=1", "X-CSRF-Token": "stand" },
+  body: body ? JSON.stringify(body) : undefined })).json();
+const deviceApi = async (base, method, p, body, device) => (await fetch(base + "/api/civic/v2" + p, { method,
+  headers: { "Content-Type": "application/json", "X-Birge-Device": device }, body: body ? JSON.stringify(body) : undefined })).json();
+
+// Карта по умолчанию не сложнее (защита от перегруза, п. 1): до открытия мастера — ни одного слоя R09 и
+// из элементов R09 на экране только кнопка «Сообщить о проблеме».
+async function defaultMapUnchanged(page, tag) {
+  const seen = await page.evaluate(() => ({
+    layers: window.standMap.getStyle().layers.map((l) => l.id).filter((id) => /^bc-/.test(id)),
+    visible: [...document.querySelectorAll("[class*='bc-']")].filter((n) => !n.closest(".bc-fab") && n.getClientRects().length &&
+      getComputedStyle(n).visibility !== "hidden" && !n.hidden && !n.closest("[hidden]"))
+      .map((n) => n.className).filter((c) => !/bc-fab/.test(c)) }));
+  check(`${tag}: [защита п.1] карта по умолчанию — без новых слоёв, на экране только кнопка R09`,
+        seen.layers.length === 0 && seen.visible.length === 0 && await page.isVisible(".bc-fab"), JSON.stringify(seen));
+}
+
+async function waveWizard(browser, base, lang, width, height, tag, point) {
+  const page = await newPage(browser, base, width, height, lang);
+  await defaultMapUnchanged(page, tag);
+  // Сезонный порядок (волна 1, п. 11): ноябрь–март — снег и гололёд первыми, апрель–октябрь — дороги.
+  const season = await page.evaluate(() => { const first = (ms) => BirgeComplaint.seasonalCategories(ms)[0].id;
+    return { jan: first(Date.UTC(2026, 0, 15, 6)), mar: first(Date.UTC(2026, 2, 31, 6)), apr: first(Date.UTC(2026, 3, 1, 6)),
+             jul: first(Date.UTC(2026, 6, 15, 6)), nov: first(Date.UTC(2026, 10, 1, 6)), n: BirgeComplaint.seasonalCategories(Date.now()).length }; });
+  check(`${tag}: [W1-11] сезонный порядок категорий`, season.jan === "snow_ice" && season.mar === "snow_ice" && season.nov === "snow_ice" &&
+        season.apr === "roads" && season.jul === "roads" && season.n === 12, JSON.stringify(season));
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  await clickMapAt(page, point);
+  await page.waitForSelector(".bc-panel[data-step='3'], .bc-option", { timeout: 8000 });
+  if (await page.$(".bc-option")) await page.click(".bc-option.bk-btn--ghost, .bc-option:has-text('Примерн'), .bc-option:has-text('Шамамен')");
+  await page.waitForSelector(".bc-panel[data-step='3']", { timeout: 8000 });
+  // «Газон» — не газ: срочного баннера нет.
+  await page.fill("#bc-text", lang === "kk" ? "Подъезд алдындағы газон бұзылған" : "У подъезда разбит газон");
+  await page.waitForTimeout(300);
+  check(`${tag}: [W1-3] «газон» не вызывает баннер про газ`, !(await page.$(".bc-emergency")));
+  if (!(await page.$(".bk-catgrid"))) await page.click(".bc-change");
+  const first = await page.$eval(".bk-catgrid > button", (b) => b.textContent.trim());
+  check(`${tag}: [W1-11] в октябре первая в сетке — «Дороги»`, lang === "kk" ? /Жол/.test(first) : /Дорог/.test(first), first);
+  // Срочный случай до отправки (волна 1, п. 3): «Звоните 104 сейчас», ссылка tel:, отправить всё равно можно.
+  await page.fill("#bc-text", lang === "kk" ? "Подъезде газ иісі шығып тұр" : "В подъезде сильно пахнет газом");
+  await page.waitForSelector(".bc-emergency", { timeout: 3000 });
+  const banner = await page.$eval(".bc-emergency", (b) => { const a = b.querySelector("a"); const r = a.getBoundingClientRect();
+    return { role: b.getAttribute("role"), href: a.getAttribute("href"), h: Math.round(r.height), text: b.textContent }; });
+  check(`${tag}: [W1-3] баннер «Это может быть опасно. Звоните 104 сейчас», кнопка tel:104 ≥ 44 px`,
+        banner.role === "alert" && banner.href === "tel:104" && banner.h >= 44 &&
+        (lang === "kk" ? /104/.test(banner.text) : /опасно/.test(banner.text) && /Звоните 104 сейчас/.test(banner.text)), JSON.stringify(banner));
+  // Категория «Запахи и воздух» и уточнение «Запах газа» одним нажатием (волна 1, п. 2).
+  await page.waitForTimeout(1200);   // подсказка модели по новому тексту успела прийти
+  if (!(await page.$(".bk-catgrid"))) await page.click(".bc-change");
+  await page.click(".bk-catgrid > button[data-category='smell_air']");
+  await page.waitForSelector(".bc-subtopic[data-subtopic='gas']", { timeout: 3000 });
+  const subs = await page.$$eval(".bc-subtopic", (n) => n.map((x) => x.dataset.subtopic));
+  await page.click(".bc-subtopic[data-subtopic='gas']");
+  const pressed = await page.$eval(".bc-subtopic[data-subtopic='gas']", (b) => b.getAttribute("aria-pressed"));
+  check(`${tag}: [W1-2] уточнения категории чипами, выбор одним нажатием`, subs.length === 4 && pressed === "true", subs.join());
+  // Фото (волна 1, п. 5): до 3, уменьшается до 1600 px, EXIF/GPS не уходит; подпись «увидит только служба».
+  const jpeg = await exifJpeg(page, 2400, 1800);
+  await page.setInputFiles("#bc-photo-input", { name: "IMG_0001.jpg", mimeType: "image/jpeg", buffer: jpeg });
+  await page.waitForSelector(".bc-photos .bc-thumb img", { timeout: 8000 });
+  const photoUi = await page.evaluate(() => ({ thumbs: document.querySelectorAll(".bc-photos .bc-thumb").length,
+    add: (document.querySelector(".bc-photo-add") || {}).textContent || "", hint: [...document.querySelectorAll(".bc-photos .bc-meta")].map((n) => n.textContent).join() }));
+  check(`${tag}: [W1-5] фото добавлено: миниатюра, счётчик «1 из 3», «увидит только служба»`,
+        photoUi.thumbs === 1 && /1/.test(photoUi.add) && (lang === "kk" ? /қызмет/.test(photoUi.hint) : /только служба/.test(photoUi.hint)), JSON.stringify(photoUi));
+  const sizes = await uxSizes(page);
+  check(`${tag}: [UX] шаг 3 с баннером, уточнением и фото — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  const primaries = await page.$$eval(".bc-panel .bk-btn--primary", (n) => n.length);
+  check(`${tag}: [защита п.4] на шаге 3 одна главная кнопка (звонок — красная, не главная)`, primaries === 1, String(primaries));
+  await shot(page, `${tag}-3-emergency-photo`);
+  await page.click(".bc-send");
+  const similarFirst = await page.waitForSelector(".bc-panel[data-review='1'], .bc-different", { timeout: 10000 })
+    .then(async (el) => (await el.getAttribute("class")).includes("bc-different"));
+  if (similarFirst) await page.click(".bc-different");
+  await page.waitForSelector(".bc-panel[data-review='1']");
+  const review = await page.evaluate(() => ({ what: document.querySelector(".bc-review__row:nth-child(2) dd").textContent,
+    thumbs: document.querySelectorAll(".bc-review .bc-thumb").length, emergency: !!document.querySelector(".bc-panel .bc-emergency a[href='tel:104']") }));
+  check(`${tag}: [W2] проверка: «Запах · Запах газа», фото и баннер 104 видны перед отправкой`,
+        review.thumbs === 1 && review.emergency && review.what.includes("·"), JSON.stringify(review));
+  await shot(page, `${tag}-review`);
+  await sendFromReview(page);
+  await page.waitForSelector(".bc-code__value", { timeout: 20000 });
+  const code = (await page.textContent(".bc-code__value")).trim();
+  const created = await page.evaluate(() => (window.standEvents || []).filter((e) => e.type === "created").pop());
+  const staff = (await staffApi(base, "GET", "/complaints/" + created.complaint_id)).data.complaint;
+  check(`${tag}: [W1-2/W1-3] запись: subtopic=gas, баннер 104 был показан`, staff.subtopic === "gas" &&
+        staff.emergency && staff.emergency.phone === "104" && staff.emergency.banner_shown === true, JSON.stringify({ s: staff.subtopic, e: staff.emergency }));
+  const photoMeta = (staff.photos || [])[0];
+  const got = photoMeta ? (await staffApi(base, "GET", `/complaints/${staff.id}/photos/${photoMeta.id}`)).data : null;
+  const bytes = got ? Buffer.from(got.photo.data_url.split(",")[1], "base64") : Buffer.alloc(0);
+  const dims = jpegSize(bytes);
+  check(`${tag}: [W1-5] у акимата фото без EXIF/GPS, уменьшено до ≤ 1600 px (${dims && dims.w}×${dims && dims.h})`,
+        staff.photos.length === 1 && bytes.length > 1000 && bytes[0] === 0xFF && bytes[1] === 0xD8 &&
+        !bytes.includes(Buffer.from("R09-SECRET-GPS")) && !bytes.includes(Buffer.from("Exif")) &&
+        dims && Math.max(dims.w, dims.h) <= 1600 && Math.max(dims.w, dims.h) >= 1500, JSON.stringify({ n: staff.photos.length, len: bytes.length, dims }));
+  const other = await deviceApi(base, "GET", `/complaints/${staff.id}/photos/${photoMeta && photoMeta.id}`, null, "dev-r09-wave-stranger-01");
+  const pub = await deviceApi(base, "GET", `/complaints/${staff.id}`, null, "dev-r09-wave-stranger-01");
+  check(`${tag}: [W1-5] чужой житель фото не получает, в публичной записи нет фото и текста`,
+        other.ok === false && pub.data && !("photos" in pub.data.complaint) && !("text" in pub.data.complaint), JSON.stringify(other.error || other).slice(0, 120));
+  check(`${tag}: номер ${code} показан после отправки`, /^B-\d{4,}$/.test(code), code);
+  check(`${tag}: нет ключей и технических слов`, (await visibleKeys(page)).length === 0);
+  check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(page));
+  check(`${tag}: нет ошибок консоли`, page.problems.length === 0, page.problems.join(" | "));
+  await page.context().close();
+}
+
+// Черновик на устройстве (волна 1, п. 10): закрыли вкладку — текст и категория вернулись при следующем открытии.
+async function draftSurvives(browser, base, lang, tag, point) {
+  const page = await newPage(browser, base, 375, 812, lang);
+  await page.click(".bc-fab");
+  await clickMapAt(page, point);
+  await page.waitForSelector(".bc-panel[data-step='3'], .bc-option", { timeout: 8000 });
+  if (await page.$(".bc-option")) await page.click(".bc-option.bk-btn--ghost, .bc-option:has-text('Примерн'), .bc-option:has-text('Шамамен')");
+  await page.waitForSelector(".bc-panel[data-step='3']");
+  const text = lang === "kk" ? "Аулада қоқыс жәшіктері толып кеткен" : "Во дворе переполнены мусорные баки";
+  await page.fill("#bc-text", text);
+  await page.waitForTimeout(300);
+  await page.reload();
+  await page.waitForFunction(() => document.documentElement.getAttribute("data-map-ready") === "1", null, { timeout: 15000 });
+  await page.click(".bc-fab");
+  await clickMapAt(page, point);
+  await page.waitForSelector(".bc-panel[data-step='3'], .bc-option", { timeout: 8000 });
+  if (await page.$(".bc-option")) await page.click(".bc-option.bk-btn--ghost, .bc-option:has-text('Примерн'), .bc-option:has-text('Шамамен')");
+  await page.waitForSelector(".bc-panel[data-step='3']");
+  const restored = await page.inputValue("#bc-text");
+  check(`${tag}: [W1-10] черновик пережил перезагрузку страницы`, restored === text, restored);
+  // Нет сети совсем (navigator.onLine=false): очередь, затем сеть вернулась — отправка сама, без нажатий.
+  await page.waitForSelector(".bc-send:not([disabled])", { timeout: 8000 });
+  await page.click(".bc-send");
+  const viaSimilar = await page.waitForSelector(".bc-panel[data-review='1'], .bc-different", { timeout: 10000 })
+    .then(async (el) => (await el.getAttribute("class")).includes("bc-different"));
+  if (viaSimilar) await page.click(".bc-different");
+  await page.waitForSelector(".bc-panel[data-review='1'] .bc-send:not([disabled])");
+  await page.context().setOffline(true);
+  await page.click(".bc-panel[data-review='1'] .bc-send");
+  await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
+  const queuedTitle = (await page.textContent(".bc-title")).trim();
+  await page.context().setOffline(false);
+  const code = await page.waitForSelector(".bc-code__value", { timeout: 20000 }).then((e) => e.textContent(), () => "");
+  const toast = await page.textContent(".bc-toast").catch(() => "");
+  check(`${tag}: [W1-10] «${queuedTitle}» → сеть вернулась → отправлено само (${code})`,
+        /^B-\d{4,}$/.test((code || "").trim()) && (lang === "kk" ? /жіберілді/.test(toast) : /отправлено/.test(toast)), toast);
+  check(`${tag}: черновик очищен после отправки`, await page.evaluate(() => !localStorage.getItem("birge.complaint.draft")));
+  check(`${tag}: нет ошибок консоли`, page.problems.filter((p) => !/Failed to load resource|ERR_|net::/.test(p)).length === 0, page.problems.join(" | "));
+  await page.context().close();
+}
+
+// Центральная сцена волны 2: служба сообщила «исправлено» (что сделали + фото «после») -> «Я тоже» говорит
+// «Проблема осталась» -> та же карточка снова в работе -> служба исправила ещё раз -> автор: «Да, исправлено».
+// Паспорт решения и одно обновление доходят до обоих; у автора — «Что изменилось» и ссылка на конкретную жалобу.
+async function centralScene(browser, base, lang, width, height, tag, point) {
+  const suffix = tag.replace(/[^a-z0-9]/gi, "").toLowerCase();
+  const devA = "dev-r09-wave-author-" + suffix, devB = "dev-r09-wave-metoo-" + suffix;
+  const text = lang === "kk" ? "Аулада кешке шамдар жанбайды" : "Во дворе вечером не горят фонари";
+  const a = await deviceApi(base, "POST", "/complaints", { text, category: "lighting", subtopic: "lamp_off", point,
+    target: { kind: "object", id: "osm-node-1" } }, devA);
+  const id = a.data.complaint.id, code = a.data.complaint.code;
+  const joined = await deviceApi(base, "POST", `/complaints/${id}/metoo`, {}, devB);
+  check(`${tag}: автор и «Я тоже» — 2 человека`, joined.data && joined.data.complaint.reporters === 2, JSON.stringify(joined.data && joined.data.result));
+  // Автор открыл «Мои обращения» до действий службы: дальше «Что изменилось» считается от этого момента.
+  const pageA = await newPage(browser, base, width, height, lang, { device: devA });
+  await pageA.evaluate(() => window.standUi.openMine());
+  await pageA.waitForSelector(".bc-mine__card");
+  const caption = await pageA.$$eval(".bc-changes", (n) => n.length);
+  check(`${tag}: первый визит — без блока «Что изменилось»`, caption === 0);
+  await pageA.keyboard.press("Escape");
+
+  // Сотрудник: компонент complaint-staff.js в карточке (как встроят R07/R01).
+  const staff = await newPage(browser, base, width, height, lang, { staff: true });
+  await staff.evaluate((cid) => {
+    const box = document.createElement("div");
+    box.id = "staff-box";
+    box.style.cssText = "position:fixed;inset:0;overflow:auto;background:#fff;z-index:50;padding:16px;max-width:480px";
+    document.body.appendChild(box);
+    window.staffCtl = BirgeComplaintStaff.mount(box, { complaintId: cid, csrf: "stand" });
+  }, id);
+  await staff.waitForSelector(".bc-staff__summary", { timeout: 8000 });
+  await staff.fill("[name=next_step]", lang === "kk" ? "Тіректердегі шамдарды ауыстыру" : "Заменить лампы на опорах");
+  await staff.fill("[name=fix_eta]", "2026-10-20");
+  await staff.fill("[name=delay_reason]", lang === "kk" ? "Көтергіш күтілуде" : "Ждём подъёмник");
+  await staff.click(".bc-staff__form:nth-of-type(2) button[type=submit]");
+  await staff.waitForFunction(() => /2/.test((document.querySelector(".bc-staff__note") || {}).textContent || ""), null, { timeout: 8000 });
+  const notePassport = (await staff.textContent(".bc-staff__note")).trim();
+  await staff.fill("[name=text]", lang === "kk" ? "Көтергіш сәрсенбіде келеді" : "Подъёмник приедет в среду");
+  await staff.click(".bc-staff__form:last-of-type button[type=submit]");
+  await staff.waitForFunction((p) => { const t = (document.querySelector(".bc-staff__note") || {}).textContent || ""; return t && /2/.test(t); }, null, { timeout: 8000 });
+  const noteUpdate = (await staff.textContent(".bc-staff__note")).trim();
+  check(`${tag}: [W2-2/W2-3] паспорт и одно обновление дошли до 2 участников`, /2/.test(notePassport) && /2/.test(noteUpdate), notePassport + " | " + noteUpdate);
+  // «Исправлено» без «что сделали» — подсказка, не отправка.
+  await staff.click(".bc-staff__form:first-of-type button[type=submit]");
+  const blocked = await staff.evaluate(() => document.querySelector("[name=what_done]").validity.valueMissing);
+  check(`${tag}: [W2-1] без строки «что сделали» отметить исправленным нельзя`, blocked);
+  await staff.fill("[name=what_done]", lang === "kk" ? "4 шам ауыстырылды" : "Заменили 4 лампы");
+  await staff.setInputFiles(".bc-staff .bc-photo-input", { name: "after.jpg", mimeType: "image/jpeg", buffer: await exifJpeg(staff, 1200, 900) });
+  await staff.waitForSelector(".bc-staff .bc-thumb img", { timeout: 8000 });
+  await shot(staff, `${tag}-staff`);
+  await staff.click(".bc-staff__form:first-of-type button[type=submit]");
+  await staff.waitForFunction(() => !document.querySelector("[name=what_done]"), null, { timeout: 15000 });
+  let pub = (await deviceApi(base, "GET", `/complaints/${id}`, null, "dev-r09-wave-stranger-02")).data.complaint;
+  check(`${tag}: [W2-1] карта: «служба сообщила» = reported_fixed (пунктир), ещё не «проверено»`,
+        pub.status === "fixed" && pub.heat_state === "reported_fixed" && pub.resolution.state === "reported", JSON.stringify(pub.resolution));
+
+  // «Я тоже» отвечает: «Проблема осталась» -> та же карточка снова в работе.
+  const pageB = await newPage(browser, base, width, height, lang, { device: devB });
+  await pageB.evaluate(() => window.standUi.openMine());
+  await pageB.waitForSelector(".bc-mine__card .bc-verify", { timeout: 8000 });
+  const verifyB = await pageB.evaluate(() => ({ what: (document.querySelector(".bc-verify") || {}).textContent || "",
+    buttons: [...document.querySelectorAll(".bc-verify__buttons button")].map((b) => b.textContent.trim()),
+    after: document.querySelectorAll(".bc-verify .bc-thumb").length }));
+  check(`${tag}: [W2-1] «Я тоже» видит «Служба сообщила», что сделали, фото «после» и 3 ответа`,
+        verifyB.buttons.length === 3 && (lang === "kk" ? /4 шам/.test(verifyB.what) : /Заменили 4 лампы/.test(verifyB.what)) && verifyB.after === 1, JSON.stringify(verifyB));
+  await pageB.waitForFunction(() => [...document.querySelectorAll(".bc-verify .bc-thumb img")].every((i) => i.src.startsWith("data:image/")), null, { timeout: 8000 })
+    .catch(() => {});
+  await shot(pageB, `${tag}-verify`);
+  await pageB.click(".bc-verify__no");
+  await pageB.waitForSelector(".bc-state--reopened", { timeout: 8000 });
+  pub = (await deviceApi(base, "GET", `/complaints/${id}`, null, "dev-r09-wave-stranger-02")).data.complaint;
+  const eventsB = await pageB.evaluate(() => (window.standEvents || []).map((e) => e.type));
+  check(`${tag}: [W2-1] «Проблема осталась» — снова в работе, heat_state=reopened, событие для карты`,
+        pub.status === "in_progress" && pub.heat_state === "reopened" && pub.resolution.reopen_count === 1 && eventsB.includes("reopened"),
+        JSON.stringify({ s: pub.status, h: pub.heat_state, e: eventsB }));
+  await shot(pageB, `${tag}-reopened`);
+  await pageB.context().close();
+
+  // Служба исправила ещё раз (раунд 2) — автор проверяет.
+  await staff.evaluate(() => window.staffCtl.refresh());
+  await staff.waitForSelector("[name=what_done]", { timeout: 8000 });
+  await staff.fill("[name=what_done]", lang === "kk" ? "Тағы 2 шам ауыстырылды" : "Заменили ещё 2 лампы");
+  await staff.click(".bc-staff__form:first-of-type button[type=submit]");
+  await staff.waitForFunction(() => !document.querySelector("[name=what_done]"), null, { timeout: 15000 });
+  check(`${tag}: нет ошибок консоли у сотрудника`, staff.problems.length === 0, staff.problems.join(" | "));
+  await staff.context().close();
+
+  // Автор: уведомление ведёт на конкретную жалобу (#complaint=код), язык ссылкой не меняется.
+  await pageA.goto(base + "/stand/#complaint=" + code);
+  await pageA.waitForFunction(() => document.documentElement.getAttribute("data-map-ready") === "1", null, { timeout: 15000 });
+  await pageA.evaluate((l) => BirgeComplaint.setLang(l), lang);
+  await pageA.waitForSelector(".bc-mine__card--focus", { timeout: 8000 });
+  const focus = await pageA.evaluate(() => ({ code: document.querySelector(".bc-mine__card--focus").dataset.code,
+    open: !!document.querySelector(".bc-mine__card--focus details[open]"), lang: document.documentElement.lang }));
+  check(`${tag}: [W2] ссылка #complaint=${code} открыла именно эту карточку, «Подробнее» раскрыто`,
+        focus.code === code && focus.open, JSON.stringify(focus));
+  const mine = await pageA.evaluate(() => {
+    const card = document.querySelector(".bc-mine__card--focus");
+    return { changes: (document.querySelector(".bc-changes") || {}).textContent || "",
+             items: document.querySelectorAll(".bc-changes__item").length,
+             passport: [...card.querySelectorAll(".bc-passport li")].map((n) => n.textContent),
+             updates: (card.querySelector(".bc-updates") || {}).textContent || "",
+             primaries: document.querySelectorAll(".bc-panel .bk-btn--primary").length,
+             verify: !!card.querySelector(".bc-verify__yes") };
+  });
+  check(`${tag}: [W2-10] «Что изменилось» — изменения с прошлого визита и итог одной строкой`,
+        mine.items >= 1 && (lang === "kk" ? /өзгерді/i.test(mine.changes) : /Что изменилось/.test(mine.changes)), mine.changes.slice(0, 200));
+  const pl = mine.passport.join(" | ");
+  check(`${tag}: [W2-2] паспорт: отвечает служба, следующий шаг, ответ дан, ориентир 20 октября, причина задержки`,
+        mine.passport.length >= 5 && (lang === "kk" ? /Көтергіш күтілуде/.test(pl) : /Отвечает: Служба освещения/.test(pl) &&
+        /Следующий шаг: Заменить лампы на опорах/.test(pl) && /Служба ответила/.test(pl) && /ориентир 20/.test(pl) && /Ждём подъёмник/.test(pl)), pl);
+  check(`${tag}: [W2-3] обновление службы видно автору`, lang === "kk" ? /сәрсенбіде/.test(mine.updates) : /Подъёмник приедет в среду/.test(mine.updates), mine.updates.slice(0, 200));
+  check(`${tag}: [защита п.4] на экране одна главная кнопка («Да, исправлено»)`, mine.primaries === 1 && mine.verify, String(mine.primaries));
+  await shot(pageA, `${tag}-mine-changes`);
+  // Нажатие на изменение подсвечивает ту же карточку.
+  await pageA.click(".bc-changes__item");
+  check(`${tag}: [W2-10] изменение открывает свою карточку`, !!(await pageA.$(`.bc-mine__card--focus[data-code="${code}"]`)));
+  await pageA.click(".bc-mine__card--focus .bc-verify__yes");
+  await pageA.waitForSelector(".bc-state--verified", { timeout: 8000 });
+  pub = (await deviceApi(base, "GET", `/complaints/${id}`, null, "dev-r09-wave-stranger-02")).data.complaint;
+  check(`${tag}: [W2-1] автор «Да, исправлено» — verified_fixed (7 дней на карте), голос засчитан`,
+        pub.status === "fixed" && pub.heat_state === "verified_fixed" && pub.resolution.state === "verified" && pub.resolution.votes.yes === 1 &&
+        pub.resolution.round === 2, JSON.stringify(pub.resolution));
+  await shot(pageA, `${tag}-verified`);
+  check(`${tag}: нет ключей и технических слов`, (await visibleKeys(pageA)).length === 0, (await visibleKeys(pageA)).join(", "));
+  check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(pageA));
+  const sizes = await uxSizes(pageA);
+  check(`${tag}: [UX] «Мои обращения» — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: нет ошибок консоли`, pageA.problems.length === 0, pageA.problems.join(" | "));
+  await pageA.context().close();
 }
 
 async function keyboard(browser, base, tag) {
@@ -705,7 +1056,15 @@ async function keyboard(browser, base, tag) {
     if (real) check("стенд вызывает настоящие R12 /targets и R04 /classify, /similar (не FIXTURE)",
                     info1.real_geo && info1.real_ml && info2.real_geo && !info2.real_ml, JSON.stringify([info1, info2].map(
                       (i) => ({ geo: i.real_geo, ml: i.real_ml }))));
-    if (only !== "local_final") {
+    if (!only || only === "wave") {
+      // Волна 1–2: свои точки на пустых местах (иначе «Я тоже» к жалобам других сценариев).
+      await waveWizard(browser, "http://127.0.0.1:8791", "ru", 375, 812, "375-ru-wave", [71.4520, 51.0700]);
+      await waveWizard(browser, "http://127.0.0.1:8791", "kk", 1366, 768, "1366-kk-wave", [71.3880, 51.0690]);
+      await draftSurvives(browser, "http://127.0.0.1:8791", "ru", "375-ru-draft", [71.4700, 51.0900]);
+      await centralScene(browser, "http://127.0.0.1:8791", "ru", 375, 812, "375-ru-scene", [71.4800, 51.1000]);
+      await centralScene(browser, "http://127.0.0.1:8791", "kk", 1366, 768, "1366-kk-scene", [71.3800, 51.1100]);
+    }
+    if (!only) {
       await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 375, 812, "375-ru");
       await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk");
       await residentPath(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru");
@@ -727,7 +1086,7 @@ async function keyboard(browser, base, tag) {
     }
     // LOCAL_FINAL №1–2 (они ломали демо) — в конце: «У меня другое» создаёт настоящую жалобу на демо-остановке,
     // и в сценариях после неё похожей оказалась бы она, а не демо-жалоба с меткой «Пример».
-    for (const [lang, w, h] of [["ru", 375, 812], ["kk", 1366, 768]]) {
+    for (const [lang, w, h] of (only === "wave" ? [] : [["ru", 375, 812], ["kk", 1366, 768]])) {
       await staffFirst(browser, "http://127.0.0.1:8791", info1.hot, lang, w, h, `${w}-${lang}-staff-first`);
       await quickClose(browser, "http://127.0.0.1:8791", info1.hot, lang, w, h, `${w}-${lang}-quick-close`);
     }

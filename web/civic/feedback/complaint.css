@@ -139,7 +139,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 
 /* Фото: миниатюры 72 px, крестик удаления ≥ 44 px. */
 .bc-photos { display: flex; flex-direction: column; gap: 8px; }
-.bc-photo-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.bc-photo-input { display: none; }  /* открывается кнопкой «Добавить фото» (input.click работает и со скрытым полем) */
 .bc-photo-add { align-self: flex-start; }
 .bc-thumbs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .bc-thumb { position: relative; width: 72px; height: 72px; border-radius: var(--r-m, 12px); overflow: hidden;

@@ -14,6 +14,7 @@ from ui.civic_feedback.v2 import categories, web_assets
 ROOT = Path(__file__).resolve().parents[3]
 WEB = ROOT / "web" / "civic" / "feedback"
 JS = (WEB / "complaint.js").read_text(encoding="utf-8")
+STAFF_JS = (WEB / "complaint-staff.js").read_text(encoding="utf-8")
 
 
 def strings():
@@ -53,7 +54,7 @@ def test_ru_kk_same_keys_and_no_empty():
 
 def test_every_key_used_in_code_exists():
     data = strings()
-    used = set(re.findall(r'\bt\("([a-z0-9_.]+)"', JS))
+    used = set(re.findall(r'\bt\("([a-z0-9_.]+)"', JS + STAFF_JS))
     # t("status." + x) и т. п. — составные ключи; каждый вариант проверяется ниже.
     dynamic_prefixes = {"status.", "complaint.example.", "cat.", "complaint.emergency.service.",
                         "mine.passport.next_default.", "mine.update."}
@@ -91,11 +92,11 @@ def test_no_technical_words_in_texts():
 
 
 def test_no_runtime_internet_and_no_innerhtml_with_data():
-    for name in ("complaint.js", "complaint.css", "kit-fallback.css", "complaint-strings.js"):
+    for name in ("complaint.js", "complaint-staff.js", "complaint.css", "kit-fallback.css", "complaint-strings.js"):
         text = (WEB / name).read_text(encoding="utf-8")
         assert "http://" not in text.replace("http://www.w3.org/2000/svg", "") and "https://" not in text, name
     # Тексты пользователей вставляются только через textContent/узлы, не через innerHTML.
-    assignments = re.findall(r"innerHTML\s*=\s*([^;]+);", JS)
+    assignments = re.findall(r"innerHTML\s*=\s*([^;]+);", JS + STAFF_JS)
     assert assignments and all(value == '""' for value in assignments)   # только очистка контейнера
 
 
@@ -171,3 +172,56 @@ def test_r12_approximate_only_skips_question_and_no_duplicate_other_place():
     assert "state.candidates.every(function (c) { return c.approximate" in JS
     assert "if (!hasApprox) {" in JS
     assert "GENERIC_APPROX[label]" in JS   # подробная подпись R12 не затирается общей
+
+
+# ---------------------------------------------------------------- волна 1–2: JS и сервер решают одинаково
+def run_complaint_js(expr: str):
+    """Вычислить выражение над window.BirgeComplaint в node (без браузера и DOM)."""
+    code = ("global.window={};for(const f of process.argv.slice(1))require(f);"
+            "process.stdout.write(JSON.stringify((function(C){return " + expr + ";})(window.BirgeComplaint)))")
+    files = [str(WEB / n) for n in ("categories_v2.js", "complaint-strings.js", "complaint.js")]
+    try:
+        out = subprocess.run(["node", "-e", code, *files], capture_output=True, text=True, check=True, timeout=30).stdout
+    except FileNotFoundError:
+        pytest.skip("node не установлен")
+    return json.loads(out)
+
+
+EMERGENCY_PHRASES = [
+    ("smell_air", "gas", "Пахнет в подъезде"), ("lighting", "wire_down", "Висит над дорогой"),
+    ("smell_air", "smoke_fire", ""), ("other", None, "Сильно пахнет газом в подъезде"),
+    ("other", None, "Подъезде газ иісі шығып тұр"), ("other", None, "Утечка газа во дворе"),
+    ("other", None, "На пустыре пожар, всё в дыму"), ("other", None, "Горит мусорный бак во дворе"),
+    ("other", None, "Аулада өрт шықты"), ("other", None, "Түтін шығып жатыр"), ("other", None, "Оборван провод у школы"),
+    ("other", None, "Сым үзіліп жерде жатыр"), ("other", None, "Загорелась трава"),
+    ("lighting", None, "Не горят фонари во дворе"), ("lighting", None, "Фонарь горит весь день"),
+    ("lighting", None, "Шамдар жанбайды"), ("parking", None, "Машины стоят на газоне"),
+    ("other", None, "Газета в почтовом ящике"), ("roads", None, "Яма на дороге"), ("other", None, ""),
+]
+
+
+def test_emergency_js_matches_server():
+    """Баннер «Звоните N» в браузере и отметка emergency на сервере не должны расходиться (волна 1, п. 3)."""
+    from ui.civic_feedback.v2 import lifecycle
+    js = run_complaint_js("%s.map(function(c){var r=C.emergency(c[0],c[1],c[2]);return r?r.phone:null;})"
+                          % json.dumps(EMERGENCY_PHRASES, ensure_ascii=False))
+    py = [(lifecycle.emergency(c, s, t) or {}).get("phone") for c, s, t in EMERGENCY_PHRASES]
+    assert js == py
+    assert py.count(None) == 7 and py.count("104") == 4
+
+
+def test_seasonal_order_in_grid():
+    """Волна 1, п. 11: ноябрь–март — «Снег и гололёд» первым, апрель–октябрь — «Дороги»; набор тот же (12)."""
+    months = run_complaint_js("[0,1,2,3,4,5,6,7,8,9,10,11].map(function(m){"
+                              "return C.seasonalCategories(Date.UTC(2026,m,15,6)).map(function(c){return c.id;});})")
+    for month, order in enumerate(months, start=1):
+        assert sorted(order) == sorted(categories.ids())
+        assert order[0] == ("snow_ice" if month in (11, 12, 1, 2, 3) else "roads"), month
+    assert months[6] == list(categories.ids())   # летом — порядок контракта
+
+
+def test_staff_component_has_one_primary_and_required_what_done():
+    """Волна 2, п. 1: «Отметить исправленным» требует строку «что сделали»; главная кнопка одна."""
+    assert STAFF_JS.count("bk-btn--primary") == 1
+    assert re.search(r'name: "what_done", maxlength: "200", required: true', STAFF_JS)
+    assert "staff.fixed.need_what" in STAFF_JS

@@ -903,7 +903,7 @@
       var grid = h("div", { "class": "bk-catgrid", role: "group", "aria-labelledby": "bc-cat-title" });
       // Сезонный порядок (волна 1, п. 11): зимой «Снег и гололёд» первым, летом — «Дороги».
       seasonalCategories(opts.now ? opts.now() : Date.now()).forEach(function (c) {
-        grid.appendChild(h("button", { type: "button",
+        grid.appendChild(h("button", { type: "button", "data-category": c.id,
                                        "aria-pressed": state.category === c.id ? "true" : "false",
                                        "data-suggested": c.id === state.suggestion ? "true" : null,
                                        onclick: function () { pickCategory(c.id); } },
@@ -1313,11 +1313,15 @@
         });
     }
 
+    // Карточка из ссылки/уведомления остаётся выделенной и раскрытой и после перерисовки (язык, ответ «Да/Осталось»);
+    // прокрутка к ней — один раз.
     function focusCard() {
       if (!state || !state.focusCode) return;
-      var card = els.panel.querySelector('.bc-mine__card[data-code="' + state.focusCode.replace(/"/g, "") + '"]');
+      var code = state.focusCode;
       state.focusCode = null;
+      var card = els.panel.querySelector('.bc-mine__card[data-code="' + code.replace(/"/g, "") + '"]');
       if (!card) return;
+      state.focused = code;
       card.classList.add("bc-mine__card--focus");
       var more = card.querySelector("details");
       if (more) more.open = true;
@@ -1411,7 +1415,7 @@
     }
 
     // «Паспорт решения» (волна 2, п. 2) и обновления — свёрнуто: карточка не растёт (защита от перегруза, п. 3).
-    function detailsBlock(item) {
+    function detailsBlock(item, open) {
       var p = item.passport || {};
       var lines = [];
       if (p.assignee) lines.push(t("mine.passport.assignee", { name: p.assignee }));
@@ -1424,7 +1428,7 @@
         if (p.delay.temp_measure) lines.push(t("mine.passport.temp", { text: p.delay.temp_measure }));
         if (p.delay.next_update_at) lines.push(t("mine.passport.next_update", { date: formatDate(p.delay.next_update_at + "T12:00:00+05:00") }));
       }
-      var more = h("details", { "class": "bc-more" }, [h("summary", {}, t("mine.details")),
+      var more = h("details", { "class": "bc-more", open: open || null }, [h("summary", {}, t("mine.details")),
         h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); }))]);
       var updates = (item.updates || []).slice(-5).reverse();
       if (updates.length) {
@@ -1480,7 +1484,9 @@
         var title = categoryLabel(item.category) + (item.subtopic ? " · " + subtopicLabel(item.category, item.subtopic) : "");
         var primary = item.can_verify && !primaryUsed;
         if (primary) primaryUsed = true;
-        list.appendChild(h("li", { "class": "bk-card bc-mine__card", "data-code": item.code || "", "data-id": item.id }, [
+        var focused = !!item.code && state.focused === item.code;
+        list.appendChild(h("li", { "class": "bk-card bc-mine__card" + (focused ? " bc-mine__card--focus" : ""),
+                                   "data-code": item.code || "", "data-id": item.id }, [
           h("div", { "class": "bc-mine__head" }, [
             h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)]),
             statusBadge(item.status)]),
@@ -1494,7 +1500,7 @@
           stateLine(item),
           item.can_verify ? verifyBlock(item, primary) : null,
           stepsBar(item),
-          detailsBlock(item)]));
+          detailsBlock(item, focused)]));
       });
       body.appendChild(list);
     }

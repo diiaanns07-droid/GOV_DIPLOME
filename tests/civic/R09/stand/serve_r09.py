@@ -52,7 +52,7 @@ STATIC = {
     "/vendor/maplibre-gl.css": WEB / "vendor" / "maplibre-gl.css",
     "/stand/": STAND / "index.html",
 }
-for name in ("complaint.js", "complaint.css", "complaint-strings.js", "categories_v2.js", "kit-fallback.css"):
+for name in ("complaint.js", "complaint-staff.js", "complaint.css", "complaint-strings.js", "categories_v2.js", "kit-fallback.css"):
     STATIC["/civic/feedback/" + name] = WEB / "civic" / "feedback" / name
 for name in ("tokens.css", "components.css", "icons.svg"):  # ui-kit R11, если уже есть в дереве
     STATIC["/civic/ui-kit/" + name] = WEB / "civic" / "ui-kit" / name
