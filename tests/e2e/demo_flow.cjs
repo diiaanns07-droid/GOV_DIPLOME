@@ -502,13 +502,20 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     const suggested = await visibleText(dlg, textRe(sugg));
     const catShown = await visibleText(dlg, new RegExp(esc(cat), "i"));
     step("2", `модель предложила категорию «${cat}» («${sugg}»)`, !!box && suggested && catShown, { textbox: !!box, suggested, catShown }, await shot("2-category"));
-    const sent = await clickText(dlg, textRe(T(dict, ["complaint.step3.send", "complaint.send"], lang === "kk" ? "Жіберу" : "Отправить")), { wait: 3000 });
+    const sendRe = textRe(T(dict, ["complaint.step3.send", "complaint.send"], lang === "kk" ? "Жіберу" : "Отправить"));
     const metooRe = new RegExp("^" + esc(T(dict, "complaint.step4.metoo", lang === "kk" ? "Мен де" : "Я тоже")) + "$", "i");
+    // До FINAL-2 «Отправить» — на шаге текста. С волны 1 R09: «Далее» → «Об этом уже сообщили N» («Я тоже») или
+    // «Проверьте перед отправкой» → «Отправить» (DEMO_SCRIPT FINAL-2, шаг 2.4).
+    let sent = await clickText(dlg, sendRe, { wait: 3000 });
+    let next = false;
+    if (!sent) next = await clickText(dlg, new RegExp("^" + esc(T(dict, "complaint.wizard.next", lang === "kk" ? "Әрі қарай" : "Далее")) + "$", "i"), { wait: 3000 });
     const metoo = !!(await firstVisible(page.getByRole("button", { name: metooRe })));
     if (metoo) await clickText(page, metooRe, { wait: 2500 });  // DEMO_SCRIPT: «Я тоже» на существующем
+    else if (next) sent = await clickText((await firstVisible(page.getByRole("dialog"))) || page, sendRe, { wait: 3000 });
+    sent = sent || next;
     const done = await visibleText(page, textRe(T(dict, "complaint.step5.title", "Обращение отправлено")))
       || await visibleText(page, textRe(T(dict, "complaint.step5.metoo_title", "Ваш голос учтён")));
-    step("2", "после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено»", sent && done, { sent, metoo, done }, await shot("2-sent"));
+    step("2", "после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено»", sent && done, { sent, next, metoo, done }, await shot("2-sent"));
   } else step("2", "категория и «Я тоже»", null, "место на шаге 1 не выбрано");
 
   // 3. Акимат: тепловая карта у остановки — цвет и число рядом, легенда с числами.
@@ -610,6 +617,20 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     if (!(await clickText(page, /^(Закрыть кабинет|Кабинетті жабу)$/i))) await page.keyboard.press("Escape").catch(() => null);
     await sleep(800);
   }
+  // FINAL-2 (R01, POLISH_WAVE_2 правило 1): проекты и «Что построить?» — в слое «Проекты»: кнопка слоёв «Слой на карте»
+  // (последняя в колонке кнопок карты) → «Проекты». В 8e67c65 переключателя нет — каталог виден сразу.
+  const layersRe = new RegExp("^" + esc(T(dict, ["shell.layers.label", "shell.layers.title"], lang === "kk" ? "Картадағы қабат" : "Слой на карте")) + "$", "i");
+  const setLayer = async (key, fallback) => {
+    const btn = await firstVisible(page.getByRole("button", { name: layersRe }));
+    if (!btn) return null;
+    await btn.click().catch(() => null); await sleep(600);
+    const radio = await firstVisible(page.getByRole("radio", { name: new RegExp("^" + esc(T(dict, key, fallback)), "i") }));
+    if (!radio) { await page.keyboard.press("Escape").catch(() => null); return false; }
+    await radio.check({ force: true }).catch(() => radio.click({ force: true }).catch(() => null)); await sleep(1500);
+    return true;
+  };
+  let projectsLayer = null;
+  if (!(await visibleText(page, textRe(T(dict, "proposal.catalog.title", "Что построить?"))))) projectsLayer = await setLayer("shell.layers.projects", lang === "kk" ? "Жобалар" : "Проекты");
   const catalog = await visibleText(page, textRe(T(dict, "proposal.catalog.title", "Что построить?")));
   // Карточка каталога: «Сквер» или «Сквер: поставить на карту» — не путать с табличкой «Сквер: проект 2027…».
   const kindRe = (k) => { const name = T(dict, "proposal.kind." + k, k);
@@ -625,7 +646,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     unfolded = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.catalog.title", "Что построить?")) + "$", "i"), { wait: 1000 });
     kinds = await kindsShown();
   }
-  step("5", "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение", catalog && kinds.length === 5, { catalog, unfolded, kinds }, await shot("5-catalog"));
+  step("5", "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение", catalog && kinds.length === 5, { catalog, unfolded, kinds, projects_layer: projectsLayer }, await shot("5-catalog"));
   if (catalog && kinds.includes("square") && login.ok) {
     const place = [PLACE[0], PLACE[1] + 0.0012 * vi];
     const kindName = T(dict, "proposal.kind.square", lang === "kk" ? "Гүлзар" : "Сквер");
@@ -693,6 +714,9 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     const delClick = await clickText(page, new RegExp("^" + esc(T(dict, "proposal.delete", lang === "kk" ? "Жою" : "Удалить")) + "$", "i"), { wait: 2500 });
     const deleted = await visibleText(page, textRe(T(dict, "build3d.deleted", "Проект удалён")));
     step("5", "акимат: карточка проекта → «Удалить» → «Проект удалён»", delClick && deleted, { label: !!lbl2, delClick, deleted });
+    // DEMO_SCRIPT FINAL-2: «После шага — слои → Только жалобы».
+    if (projectsLayer) step("5", "слои → «Только жалобы и работы»: каталог «Что построить?» скрыт", (await setLayer("shell.layers.none", lang === "kk" ? "Тек шағымдар мен жұмыстар" : "Только жалобы и работы"))
+      && !(await visibleText(page, textRe(T(dict, "proposal.catalog.title", "Что построить?")))));
   } else {
     step("5", "постановка проекта и удаление", null, { catalog, kinds, login: login.ok });
     // Голос жителя всё равно проверяем — по демо-проекту seed-r14-demo (DEMO_SCRIPT: житель голосует с телефона).
@@ -747,8 +771,22 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   // Статус — в окне «Мои обращения»: шкала этапов обращения — список, его имя для экранного диктора = текущий статус
   // (у новой жалобы на шкале тоже написано «Исправлено», но имя списка — «Новое»; легенда карты не в счёт).
   const mineBox = mineOpen ? (await firstVisible(page.getByRole("dialog").filter({ hasText: textRe(mineLabel) }))) || page : null;
+  // FINAL-2 (волна 2): после «Отметить исправленным» у жителя — «Служба сообщила об устранении» (не «Исправлено»),
+  // блок «Ждут вашей проверки» → «Да, исправлено» → «Проверено жителями» (DEMO_SCRIPT шаги 6–7).
+  const reportedWord = T(dict, "status.reported_fixed", lang === "kk" ? "Қызмет түзетілгенін хабарлады" : "Служба сообщила об устранении");
   const mineFixed = mineBox ? !!(await firstVisible(mineBox.getByRole("list", { name: new RegExp("^" + esc(T(dict, "status.fixed", fixedWord)) + "$") }))) : false;
-  step("6", `житель: «${mineLabel}» → у обращения статус «${T(dict, "status.fixed", fixedWord)}»`, mineOpen && mineFixed, { mineOpen, mineFixed }, await shot("6-mine"));
+  const mineReported = mineBox && !mineFixed ? await visibleText(mineBox, new RegExp(esc(reportedWord), "i")) : false;
+  step("6", `житель: «${mineLabel}» → у обращения статус «${T(dict, "status.fixed", fixedWord)}» (с волны 2 — «${reportedWord}»)`, mineOpen && (mineFixed || mineReported),
+    { mineOpen, mineFixed, mineReported }, await shot("6-mine"));
+  const yesRe = new RegExp("^" + esc(T(dict, "verify.yes", lang === "kk" ? "Иә, түзетілді" : "Да, исправлено")) + "$", "i");
+  const yes = mineBox ? await firstVisible(mineBox.getByRole("button", { name: yesRe })) : null;
+  if (yes) {
+    await yes.click().catch(() => null); await sleep(2500);
+    const verifiedRe = new RegExp(esc(T(dict, "status.verified", lang === "kk" ? "Тұрғындар тексерді" : "Проверено жителями")), "i");
+    const verified = await visibleText(page, verifiedRe);
+    step("7", `житель: «${T(dict, "verify.yes", "Да, исправлено")}» → «${T(dict, "status.verified", "Проверено жителями")}»`, verified, { verified }, await shot("7-verified"));
+  } else step("7", "житель проверяет ремонт («Да, исправлено» → «Проверено жителями»)", mineReported ? false : null,
+    mineReported ? "статус «служба сообщила», а кнопки «Да, исправлено» нет" : "в сборке нет проверки жителем (до волны 2)");
 
   step("*", "консоль без ошибок (кроме шума среды: подложка, WebGL)", errors.length === 0, errors.slice(0, 6));
   await ctx.close();
