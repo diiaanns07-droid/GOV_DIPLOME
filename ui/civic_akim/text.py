@@ -217,17 +217,115 @@ def _objects_kk(s: dict) -> str:
     return " ".join(parts)
 
 
+def _fixed_ru(s: dict) -> str:
+    """«За неделю исправлено 142: жители подтвердили 37, вернули в работу 3.» — только если проверка жителями есть в данных."""
+    f = s["kpi"].get("fixed_week") or {}
+    if not s["kpi"].get("verification_available") or not f.get("value") and not f.get("reopened"):
+        return ""
+    n = f["value"]
+    out = f"За неделю исправлено {fmt_num(n)}: жители подтвердили {fmt_num(f['verified'])}"
+    if f.get("reopened"):
+        out += f", вернули в работу {fmt_num(f['reopened'])}"
+    return out + "."
+
+
+def _fixed_kk(s: dict) -> str:
+    f = s["kpi"].get("fixed_week") or {}
+    if not s["kpi"].get("verification_available") or not f.get("value") and not f.get("reopened"):
+        return ""
+    out = f"Аптада түзетілгені: {fmt_num(f['value'])}, тұрғындар растағаны: {fmt_num(f['verified'])}"
+    if f.get("reopened"):
+        out += f", қайта жұмысқа қайтарылғаны: {fmt_num(f['reopened'])}"
+    return out + "."
+
+
+def _decisions_ru(s: dict) -> str:
+    n = len((s.get("decisions") or {}).get("items") or [])
+    if not n:
+        return ""
+    return f"Ждут вашего решения: {fmt_num(n)} {plural_ru(n, 'вопрос', 'вопроса', 'вопросов')}."
+
+
+def _decisions_kk(s: dict) -> str:
+    n = len((s.get("decisions") or {}).get("items") or [])
+    return f"Сіздің шешіміңізді күтетін мәселе: {fmt_num(n)}." if n else ""
+
+
+# ---------------------------------------------------------------- «Пульс» (pulse.py)
+
+def _place(a: dict, lang: str) -> str:
+    t = a.get("target") or {}
+    label = t.get(f"label_{lang}") or t.get("label_ru")
+    if not label and t.get("kind"):
+        label = _dict(lang).get("heat.kind." + t["kind"]) or _dict("ru").get("heat.kind." + t["kind"])
+    return label or (a.get(f"category_{lang}") or "")
+
+
+def _base_txt(base: float) -> str:
+    """Обычный уровень: от 3 — целым («в среднем 10»), меньше — с одной цифрой после запятой («1,5»)."""
+    return fmt_num(int(round(base))) if base >= 3 or float(base).is_integer() else fmt_ratio(round(base, 1))
+
+
+def _city_list(a: dict, lang: str) -> str:
+    rows = a.get("districts") or []
+    names = ", ".join(r[lang] for r in rows[:3])
+    rest = len(rows) - 3
+    if rest > 0:
+        names += f" и ещё {fmt_num(rest)}" if lang == "ru" else f" және тағы {fmt_num(rest)}"
+    return names
+
+
+def pulse_ru(a: dict) -> str:
+    cat, dist, n = a.get("category_ru") or "Другое", a.get("district_ru"), a["value"]
+    where = f"«{cat}» в районе {dist}" if dist else f"«{cat}»"
+    reports = plural_ru(n, "сообщение", "сообщения", "сообщений")
+    if a["kind"] == "spike_city":
+        k = len(a.get("districts") or [])
+        r = a["ratio"]
+        return (f"«{cat}» — всплеск в {fmt_num(k)} {plural_ru(k, 'районе', 'районах', 'районах')} ({_city_list(a, 'ru')}): "
+                f"{fmt_num(n)} {reports} за 7 дней, в {fmt_ratio(r)} {plural_ru(r, 'раз', 'раза', 'раз')} больше обычного.")
+    if a["kind"] == "spike":
+        r = a["ratio"]
+        return (f"{where}: {fmt_num(n)} {reports} за 7 дней — в {fmt_ratio(r)} {plural_ru(r, 'раз', 'раза', 'раз')} "
+                f"больше обычного (в среднем {_base_txt(a['base'])} в неделю за {fmt_num(a['weeks'])} {plural_ru(a['weeks'], 'неделю', 'недели', 'недель')}).")
+    if a["kind"] == "spike_new":
+        return f"{where}: {fmt_num(n)} {reports} за 7 дней — за прошлые {fmt_num(a['weeks'])} {plural_ru(a['weeks'], 'неделю', 'недели', 'недель')} таких не было."
+    if a["kind"] == "new_hot":
+        people = plural_ru(n, "человек", "человека", "человек")
+        return f"Новое горячее место: {_place(a, 'ru')} — {fmt_num(n)} {people} за 7 дней, неделю назад его на карте не было."
+    return f"Быстро растёт «Я тоже»: {_place(a, 'ru')} — +{fmt_num(n)} за сутки."
+
+
+def pulse_kk(a: dict) -> str:
+    cat, dist, n = a.get("category_kk") or "Басқа", a.get("district_kk"), a["value"]
+    where = f"{dist} ауданында «{cat}»" if dist else f"«{cat}»"
+    if a["kind"] == "spike_city":
+        k = len(a.get("districts") or [])
+        return (f"«{cat}» — {fmt_num(k)} ауданда күрт өсу ({_city_list(a, 'kk')}): 7 күнде {fmt_num(n)} хабарлама, "
+                f"әдеттегіден {fmt_ratio(a['ratio'])} есе көп.")
+    if a["kind"] == "spike":
+        return (f"{where}: 7 күнде {fmt_num(n)} хабарлама — әдеттегіден {fmt_ratio(a['ratio'])} есе көп "
+                f"(соңғы {fmt_num(a['weeks'])} аптада аптасына орта есеппен {_base_txt(a['base'])}).")
+    if a["kind"] == "spike_new":
+        return f"{where}: 7 күнде {fmt_num(n)} хабарлама — алдыңғы {fmt_num(a['weeks'])} аптада мұндай болмаған."
+    if a["kind"] == "new_hot":
+        return f"Жаңа ыстық нүкте: {_place(a, 'kk')} — 7 күнде {fmt_num(n)} адам, бір апта бұрын картада болмаған."
+    return f"«Мен де» тез өсіп жатыр: {_place(a, 'kk')} — бір тәулікте +{fmt_num(n)}."
+
+
 def render_parts(summary: dict, lang: str = "ru") -> list[dict]:
-    """Фразы сводки с ролью: new, main (главная проблема — интерфейс выделяет её), overdue, objects."""
+    """Фразы сводки с ролью: new, main (главная проблема — интерфейс выделяет её), overdue, fixed, decisions, objects."""
     if summary.get("complaints_available") is False:  # нет источника жалоб — не выдумываем нули
         no_data = ("Өтініштер туралы деректер әлі қосылмаған." if lang == "kk"
                    else "Данные об обращениях пока не подключены.")
         objects = _objects_kk(summary) if lang == "kk" else _objects_ru(summary)
         return [{"role": "new", "text": no_data}] + ([{"role": "objects", "text": objects}] if objects else [])
     if lang == "kk":
-        fns = (("new", _new_kk), ("main", _main_kk), ("overdue", _overdue_kk), ("objects", _objects_kk))
+        fns = (("new", _new_kk), ("main", _main_kk), ("overdue", _overdue_kk), ("fixed", _fixed_kk),
+               ("decisions", _decisions_kk), ("objects", _objects_kk))
     else:
-        fns = (("new", _new_ru), ("main", _main_ru), ("overdue", _overdue_ru), ("objects", _objects_ru))
+        fns = (("new", _new_ru), ("main", _main_ru), ("overdue", _overdue_ru), ("fixed", _fixed_ru),
+               ("decisions", _decisions_ru), ("objects", _objects_ru))
     return [{"role": role, "text": t} for role, fn in fns if (t := fn(summary))]
 
 

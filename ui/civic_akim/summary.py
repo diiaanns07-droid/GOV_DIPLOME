@@ -8,9 +8,12 @@
   в 10:00 — с прошлой неделей до 10:00, а не с целым днём, иначе утром всегда было бы «меньше».
 - «Новые за 7 дней» — (as_of − 7 дн., as_of]; сравнение — с 7 днями перед ними.
 - «В работе» — статус на момент as_of «принято» или «в работе». «Ждут ответа» — статус «новое».
-- «Просрочено» — на момент as_of не исправлено (новое / принято / в работе), а с подачи прошло
-  больше срока категории (deadlines.py, демо-норматив).
+- «Просрочено» — на момент as_of не исправлено (новое / принято / в работе), а срок категории истёк
+  (deadlines.due: рабочие дни с праздниками РК, у аварийных категорий — календарные; демо-норматив).
 - «Исправлено за неделю» — получили статус «исправлено» за (as_of − 7 дн., as_of] и не открыты снова.
+  Делится на «проверено жителями» и «ждёт проверки» (служба сообщила об устранении, жители ещё не
+  подтвердили) — heat_states в categories_v2.json. «Вернули в работу» — за 7 дней после «исправлено»
+  обращение снова открыто (у R09 так бывает, когда житель ответил «Проблема осталась»).
   Статус «на момент» восстанавливается по status_history, поэтому прошлые даты и «неделю назад» честные.
 - «Горячие места», «Темы», «Районы» и главная проблема — РОВНО тепловая карта R07 за 7 дней:
   сколько человек (жалоба + «Я тоже») сообщили о нерешённом. Сегодняшние числа берутся вызовом
@@ -27,14 +30,25 @@ import threading
 import time
 from datetime import date as Date, datetime, timedelta, timezone
 
-from . import deadlines, sources, text
+from . import deadlines, decisions, pulse, routing, sources, text
 
 ASTANA_TZ = timezone(timedelta(hours=5))
 WEEK = timedelta(days=7)
 HEAT_DAYS = 7           # период тепловой карты для «Картины дня»: последняя неделя
 TOP_N = 10              # «Горячие места» — первые 10 целей карты
+OVERDUE_TOP = 5         # «Просрочено — дольше всех»: сколько строк с таймером показать
 OPEN = ("new", "accepted", "in_progress")
 WORK = ("accepted", "in_progress")
+# «Исправлено»: fixed у R09 сейчас; verified / verified_fixed — если R09 сделает «проверено жителями» статусом.
+FIXED = ("fixed", "verified", "verified_fixed")
+VERIFIED_STATUSES = ("verified", "verified_fixed")
+# Отметки проверки жителями, которые читаем (волна 2 п. 1; точную форму выбирает R09 — INTEGRATION.txt §8):
+#   в status_history: {"at", "event": "resident_check", "answer": "yes|no|cant"} или {"at", "event": "verified"}
+#   / {"at", "event": "reopened", "by": "resident"}; у записи: verification = {"state": "verified|reopened", "at"}.
+VERIFIED_EVENTS = {"verified", "verified_fixed", "resident_verified", "resident_confirmed"}
+REOPEN_EVENTS = {"reopened", "resident_reopened", "resident_not_fixed", "not_fixed"}
+YES = {"yes", "fixed", "confirmed", "verified"}
+NO = {"no", "not_fixed", "still_there", "reopened"}
 PCT_MIN_BASE = 10       # с какой базы показывать изменение в процентах
 CACHE_TTL_S = 30.0
 
@@ -102,16 +116,82 @@ def status_at(record: dict, moment: datetime) -> str | None:
 
 
 def fixed_moment(record: dict, moment: datetime) -> datetime | None:
-    """Когда обращение (последний раз до moment) стало «исправлено»; None — не исправлено на moment."""
-    if status_at(record, moment) != "fixed":
+    """Когда обращение (последний раз до moment) стало «исправлено»; None — не исправлено на moment.
+
+    «Проверено жителями» после «исправлено» — то же исправление: считаем от первого перехода в группу FIXED.
+    """
+    if status_at(record, moment) not in FIXED:
         return None
-    last = None
+    last, prev = None, None
     for t, s in _history(record):
-        if s == "fixed" and t <= moment:
+        if t > moment:
+            break
+        if s in FIXED and prev not in FIXED:
             last = t
+        prev = s
     if last is None:  # статус fixed без истории — как у R07: время обновления или подачи
         last = parse_time(record.get("updated_at")) or parse_time(record.get("created_at"))
     return last
+
+
+def _resident_marks(record: dict) -> list[tuple[datetime, str]]:
+    """Отметки жителей: [(время, verified|reopened)] из status_history и поля verification."""
+    marks = []
+    for h in record.get("status_history") or []:
+        if not isinstance(h, dict):
+            continue
+        t = parse_time(h.get("at"))
+        if t is None:
+            continue
+        ev = str(h.get("event") or h.get("type") or "").lower()
+        answer = str(h.get("answer") or "").lower()
+        reason = str(h.get("reason") or "").lower()
+        if h.get("status") in VERIFIED_STATUSES or ev in VERIFIED_EVENTS or (ev == "resident_check" and answer in YES):
+            marks.append((t, "verified"))
+        elif ev in REOPEN_EVENTS or reason in REOPEN_EVENTS or (ev == "resident_check" and answer in NO):
+            marks.append((t, "reopened"))
+    v = record.get("verification") or record.get("resident_check")
+    if isinstance(v, dict):
+        state = str(v.get("state") or v.get("status") or "").lower()
+        t = parse_time(v.get("at")) or parse_time(record.get("updated_at"))
+        if t is not None and state in YES | {"verified_fixed"}:
+            marks.append((t, "verified"))
+        elif t is not None and state in NO:
+            marks.append((t, "reopened"))
+    marks.sort(key=lambda m: m[0])
+    return marks
+
+
+def verified_at(record: dict, moment: datetime) -> datetime | None:
+    """Когда жители подтвердили текущее исправление (на момент moment); None — ещё не подтвердили."""
+    fixed = fixed_moment(record, moment)
+    if fixed is None:
+        return None
+    for t, kind in _resident_marks(record):
+        if kind == "verified" and fixed <= t <= moment:
+            return t
+    if status_at(record, moment) in VERIFIED_STATUSES:  # статус без отметки времени
+        return fixed
+    return None
+
+
+def reopen_moments(record: dict, moment: datetime) -> list[tuple[datetime, bool]]:
+    """Возвраты в работу после «исправлено» до moment: [(время, by_resident)].
+
+    by_resident — рядом (±1 ч) есть отметка жителя «Проблема осталась» или у шага истории by=resident.
+    """
+    marks = [t for t, kind in _resident_marks(record) if kind == "reopened"]
+    out, prev = [], None
+    raw = {(parse_time(h.get("at")), h.get("status")): h for h in record.get("status_history") or [] if isinstance(h, dict)}
+    for t, s in _history(record):
+        if t > moment:
+            break
+        if prev in FIXED and s in OPEN:
+            h = raw.get((t, s)) or {}
+            by_resident = str(h.get("by") or "").lower() == "resident" or any(abs((m - t).total_seconds()) <= 3600 for m in marks)
+            out.append((t, by_resident))
+        prev = s
+    return out
 
 
 def snapshot(record: dict, moment: datetime) -> dict | None:
@@ -280,8 +360,14 @@ class AkimService:
         kpi = self._kpi(scoped, day_start, as_of)
         # Карте отдаём ровно те записи, что получает R07 (с дублями — как у него), чтобы «неделю назад» считалось так же.
         heat_part = self._heat_part(all_records, district, as_of, is_today)
+        items_now, items_prev = heat_part.pop("_items_now"), heat_part.pop("_items_prev")
+        labels = {it["target"].get("id"): {"ru": it["target"].get("label_ru"), "kk": it["target"].get("label_kk")}
+                  for it in items_now or [] if it["target"].get("label_ru")}
         objects = self._objects_part(district, as_of)
         proposals = self._proposals_part(district, as_of)
+        overdue_list = self._overdue_part(scoped, as_of, labels)
+        decisions_part = self._decisions_part(scoped, district, as_of, labels)
+        pulse_part = self._pulse_part(scoped, as_of, items_now, items_prev)
 
         d_info = districts().get(district) if district else None
         result = {
@@ -293,9 +379,13 @@ class AkimService:
             "district": d_info,
             "kpi": kpi,
             **heat_part,
+            "overdue": overdue_list,
+            "decisions": decisions_part,
+            "pulse": pulse_part,
             "objects": objects,
             "proposals": proposals,
             "deadlines": dict(deadlines.DEADLINE_DAYS),
+            "deadline_units": {c: deadlines.unit(c) for c in deadlines.DEADLINE_DAYS},
             "heat_days": HEAT_DAYS,
             # Нет источника жалоб — это «нет данных», а не «ноль обращений»: интерфейс и сводка говорят об этом прямо.
             "complaints_available": self._records is not None,
@@ -305,6 +395,7 @@ class AkimService:
                 "complaints": any(r.get("demo") for r in scoped) or self.source_names["complaints"] == "r07-demo",
                 "objects": objects.get("demo", False),
                 "proposals": proposals.get("demo", False),
+                "decisions": decisions_part.get("demo", False),
             },
             "stats": {"records": len(all_records), "skipped_invalid": skipped,
                       "duplicates": len(all_records) - len(recs), "in_scope": len(scoped)},
@@ -343,7 +434,7 @@ class AkimService:
             return n
 
         def at(moment: datetime) -> dict:
-            work = waiting = overdue = fixed = 0
+            work = waiting = overdue = fixed = verified = reopened = reopened_res = 0
             for r in recs:
                 st = status_at(r, moment)
                 if st is None:
@@ -352,14 +443,19 @@ class AkimService:
                     work += 1
                 elif st == "new":
                     waiting += 1
-                if st in OPEN:
-                    age = moment - parse_time(r["created_at"])
-                    if age > timedelta(days=deadlines.deadline_days(r.get("category"))):
-                        overdue += 1
+                if st in OPEN and moment > deadlines.due(r.get("category"), parse_time(r["created_at"])):
+                    overdue += 1
                 f = fixed_moment(r, moment)
                 if f is not None and moment - WEEK < f <= moment:
                     fixed += 1
-            return {"work": work, "waiting": waiting, "overdue": overdue, "fixed": fixed}
+                    if verified_at(r, moment) is not None:
+                        verified += 1
+                for t, by_resident in reopen_moments(r, moment):
+                    if moment - WEEK < t <= moment:
+                        reopened += 1
+                        reopened_res += int(by_resident)
+            return {"work": work, "waiting": waiting, "overdue": overdue, "fixed": fixed, "verified": verified,
+                    "reopened": reopened, "reopened_by_residents": reopened_res}
 
         now_state, prev_state = at(as_of), at(as_of - WEEK)
         new_day = created_between(day_start, as_of, True)
@@ -371,7 +467,12 @@ class AkimService:
             "new_week": change(new_week, new_week_prev),
             "in_progress": {**change(now_state["work"], prev_state["work"]), "waiting": now_state["waiting"]},
             "overdue": change(now_state["overdue"], prev_state["overdue"]),
-            "fixed_week": change(now_state["fixed"], prev_state["fixed"]),
+            # verified + awaiting = value: «служба сообщила об устранении» делится на проверенные жителями и ждущие проверки.
+            "fixed_week": {**change(now_state["fixed"], prev_state["fixed"]), "verified": now_state["verified"],
+                           "awaiting": now_state["fixed"] - now_state["verified"], "reopened": now_state["reopened"],
+                           "reopened_by_residents": now_state["reopened_by_residents"]},
+            # Проверка жителями есть в данных (R09 волна 2)? Нет — интерфейс не пишет «проверено: 0», а молчит.
+            "verification_available": any(_resident_marks(r) or r.get("status") in VERIFIED_STATUSES for r in recs),
         }
 
     # ---------- тепловая карта ----------
@@ -401,7 +502,8 @@ class AkimService:
     def _heat_part(self, recs: list[dict], district: str | None, as_of: datetime, is_today: bool) -> dict:
         unavailable = {"available": False, "reason": "heat_unavailable"}
         if self.heat is None or self.engine is None:
-            return {"hot": unavailable, "topics": unavailable, "districts": unavailable, "main_problem": None}
+            return {"hot": unavailable, "topics": unavailable, "districts": unavailable, "main_problem": None,
+                    "_items_now": None, "_items_prev": None}
 
         moment_prev = as_of - WEEK
         snap_prev = [s for s in (snapshot(r, moment_prev) for r in recs) if s]
@@ -409,8 +511,14 @@ class AkimService:
 
         # Горячие места: первые TOP_N активных целей — то же, что HeatService.top().
         items = self._items_now(as_of, is_today, snap_now, district=district)
+        active_now = self._active(items)
+        by_target: dict = {}
+        for r in recs:
+            t = r.get("target")
+            if isinstance(t, dict) and t.get("id") and not r.get("duplicate_of"):
+                by_target.setdefault(t["id"], []).append(r)
         hot = []
-        for rank, it in enumerate(self._active(items)[:TOP_N], start=1):
+        for rank, it in enumerate(active_now[:TOP_N], start=1):
             by_cat = it.get("by_category") or {}
             hot.append({
                 "rank": rank,
@@ -418,6 +526,7 @@ class AkimService:
                 "count": it["count"], "level": it["level"], "color": it.get("color"), "weight": it["weight"],
                 "status": it.get("status"), "district": it.get("district"),
                 "category": next(iter(by_cat), None), "approximate": bool(it.get("approximate")),
+                "subtopic": self._subtopic_of(by_target.get(it["target"].get("id"), []), as_of),
                 "anchor": it.get("anchor"), "last_at": it.get("last_at"), "demo": bool(it.get("demo")),
             })
 
@@ -469,7 +578,90 @@ class AkimService:
                        "total": sum(t["value"] for t in topics)},
             "districts": {"available": True, "days": HEAT_DAYS, "items": dist_rows, "selected": district},
             "main_problem": main,
+            # Внутреннее (не уходит в ответ): цели карты сейчас и неделю назад — для «Пульса» и подписей мест.
+            "_items_now": active_now,
+            "_items_prev": self._active(self._items_past(snap_prev, moment_prev, district=district)),
         }
+
+    @staticmethod
+    def _subtopic_of(records: list[dict], as_of: datetime) -> dict | None:
+        """Уточнение горячего места (волна мелочей п. 12): чаще всего выбранное жителями среди нерешённых.
+
+        Считаем людей (жалоба + «Я тоже»). Нет уточнений в данных — None, интерфейс пишет только категорию.
+        """
+        acc: dict = {}
+        for r in records:
+            if status_at(r, as_of) not in OPEN or not r.get("subtopic"):
+                continue
+            key = (r.get("category"), r["subtopic"])
+            acc[key] = acc.get(key, 0) + 1 + int(r.get("metoo") or 0)
+        if not acc:
+            return None
+        (cat, sub), n = max(acc.items(), key=lambda kv: (kv[1], kv[0][1]))
+        info = decisions._subtopic(cat, sub)
+        if info is None:
+            return None
+        return {**info, "category": cat, "people": n, "share": round(n / sum(acc.values()), 2)}
+
+    # ---------- просрочки, решения, пульс ----------
+    def _overdue_part(self, recs: list[dict], as_of: datetime, labels: dict) -> dict:
+        """«Просрочено — дольше всех»: таймер в рабочих днях (волна мелочей п. 6), служба (п. 7), без текстов жителей."""
+        rows = []
+        for r in recs:
+            if status_at(r, as_of) not in OPEN:
+                continue
+            created = parse_time(r["created_at"])
+            timer = deadlines.timer(r.get("category"), created, as_of)
+            if timer["state"] != "overdue":
+                continue
+            target = r.get("target") if isinstance(r.get("target"), dict) else {}
+            label = labels.get(target.get("id"))
+            service = routing.service_for(r.get("category"), r.get("subtopic"))
+            rows.append({"id": r.get("id"), "category": r.get("category"), "district": self._district_of(r),
+                         "subtopic": decisions._subtopic(r.get("category"), r.get("subtopic")),
+                         "place_ru": (label or {}).get("ru"), "place_kk": (label or {}).get("kk"),
+                         # Ссылка на карту — только если место есть на карте (у него есть подпись цели).
+                         "target": {"kind": target.get("kind"), "id": target.get("id")} if target.get("id") else None,
+                         "on_map": bool(label),
+                         "people": 1 + int(r.get("metoo") or 0), "timer": timer,
+                         "service": {"id": service["id"], "ru": service["ru"], "kk": service["kk"]},
+                         "demo": bool(r.get("demo"))})
+        # Одно место — одна строка: несколько просроченных обращений об одной остановке не повторяем.
+        places: dict = {}
+        for row in rows:
+            key = ("t", row["target"]["kind"], row["target"]["id"]) if row["target"] else ("c", row["id"])
+            cur = places.get(key)
+            if cur is None:
+                places[key] = {**row, "complaints": 1}
+                continue
+            cur["complaints"] += 1
+            cur["people"] += row["people"]
+            cur["demo"] = cur["demo"] or row["demo"]
+            if row["timer"]["overdue_by"] > cur["timer"]["overdue_by"]:
+                cur.update({k: row[k] for k in ("id", "timer", "category", "subtopic", "service")})
+        grouped = sorted(places.values(), key=lambda x: (-x["timer"]["overdue_by"], -x["complaints"], -x["people"], str(x["id"])))
+        return {"count": len(rows), "places": len(grouped), "items": grouped[:OVERDUE_TOP], "top": OVERDUE_TOP}
+
+    def _decisions_part(self, recs: list[dict], district, as_of: datetime, labels: dict) -> dict:
+        """«Нужно решение акима» (волна 2 п. 5). Критерий — decisions.py. Пример — только при демо-жалобах."""
+        items = decisions.build(recs, as_of, status_at=status_at, parse_time=parse_time, labels=labels)
+        demo = False
+        if not items and self.source_names.get("complaints") == "r07-demo":
+            example = [r for r in decisions.fixture_records(as_of.date())
+                       if district is None or r.get("district") == district]
+            items = decisions.build(example, as_of, status_at=status_at, parse_time=parse_time)
+            demo = bool(items)
+        return {"available": self._records is not None, "items": items[:decisions.MAX_ITEMS], "count": len(items),
+                "demo": demo, "source": "example" if demo else "complaints"}
+
+    def _pulse_part(self, recs: list[dict], as_of: datetime, items_now, items_prev) -> dict:
+        """«Пульс» (волна 2 п. 8): метод — pulse.py."""
+        if self._records is None or items_now is None:
+            return {"available": False, "items": []}
+        names = {d_id: {"ru": i["ru"], "kk": i["kk"]} for d_id, i in districts().items()}
+        return pulse.alarms(recs, as_of, parse_time=parse_time, district_of=self._district_of,
+                            categories=deadlines.load_categories()["categories"], district_names=names,
+                            items_now=items_now, items_prev=items_prev or [])
 
     # ---------- объекты и предложения (R06) ----------
     def _objects_part(self, district, as_of: datetime) -> dict:
