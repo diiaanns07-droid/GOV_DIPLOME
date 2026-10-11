@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-10T20:37:35.611Z",
- "url": "http://127.0.0.1:8805/",
- "r01": "claude/sharp-dijkstra-0t87gl@1dd5b53 (FINAL night 5a) + R05 be7d813 + proposed_r01_final2.patch",
+ "generated_at": "2026-10-10T21:00:46.918Z",
+ "url": "http://127.0.0.1:8806/",
+ "r01": "claude/sharp-dijkstra-0t87gl@eb9bb59 (FINAL fa117c3, code 61a5a62) + R05 15fb40d + proposed_r01_final2.patch",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
@@ -58,7 +58,7 @@
     "posts": [
      201
     ],
-    "id": "p-25349bfacaf8",
+    "id": "p-20fa0be226e2",
     "year": 2027
    }
   },
@@ -94,8 +94,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 674.9891918208352,
-     "y": 278.00518373175515
+     "x": 674.9891918411511,
+     "y": 278.00518385794715
     },
     "under": []
    }
@@ -195,6 +195,63 @@
    }
   },
   {
+   "id": "resident_hint_not_over_r07_legend_1366_1100",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "state": "hint",
+     "hint": {
+      "l": 380,
+      "t": 623,
+      "r": 828,
+      "b": 672
+     },
+     "legend": {
+      "l": 12,
+      "t": 639,
+      "r": 372,
+      "b": 734
+     },
+     "over_legend": false,
+     "over_fab": false
+    },
+    "1366_kk": {
+     "state": "hint",
+     "hint": {
+      "l": 380,
+      "t": 623,
+      "r": 764,
+      "b": 672
+     },
+     "legend": {
+      "l": 12,
+      "t": 639,
+      "r": 372,
+      "b": 734
+     },
+     "over_legend": false,
+     "over_fab": false
+    },
+    "1100_kk": {
+     "state": "hint",
+     "hint": {
+      "l": 172,
+      "t": 514,
+      "r": 556,
+      "b": 563
+     },
+     "legend": {
+      "l": 12,
+      "t": 571,
+      "r": 372,
+      "b": 666
+     },
+     "over_legend": false,
+     "over_fab": false
+    }
+   }
+  },
+  {
    "id": "phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
    "status": "PASS",
    "detail": {
@@ -202,7 +259,7 @@
      "sheet_before": "half",
      "tapped": [
       188,
-      187
+      188
      ],
      "state": "card",
      "sheet": "peek",
@@ -222,7 +279,7 @@
      "sheet_before": "half",
      "tapped": [
       188,
-      187
+      188
      ],
      "state": "card",
      "sheet": "peek",

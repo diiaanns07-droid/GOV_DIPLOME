@@ -2,13 +2,13 @@
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
  "delivery": 7,
- "for_build": "FINAL (R01 claude/sharp-dijkstra-0t87gl @ 1dd5b53 содержит R05 05f8e52 и патч легенды)",
+ "for_build": "FINAL (R01 claude/sharp-dijkstra-0t87gl @ eb9bb59 = кандидат fa117c3, код 61a5a62; в нём R05 a331db0)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "be7d813",
- "tested_sha": "be7d813",
- "tested_note": "На be7d813 полностью (ui-kit/i18n R11 @ 1958634): browser_check 43 PASS / 1 NOT_RUN (GPU), R11 день 3 29/29, Node 34/34, Python 12/12, i18n_sync 0 расхождений; стенды R06 трёх поколений: 3d10f7d 16/16, b42e790 18/18, d707efc 19/19, их r05_client_r14.cjs 17/17 на b42e790 и 18af65b; внутри R01 FINAL 1dd5b53 + proposed_r01_final2.patch: B-033 и заголовки 1366/375 × ru/kk PASS, app_b2_smoke 17/17, r14_b2.cjs R01 26/26, r14_shell.cjs R01 38/38 (runs/r01_final_1dd5b53_with_patch2.txt). Стенд R12 и measure R11 — последний прогон на a9d256d.",
+ "code_sha": "15fb40d",
+ "tested_sha": "15fb40d",
+ "tested_note": "На 15fb40d полностью (ui-kit/i18n R11 @ 1958634; словарь сверен и с eac07c4): browser_check 44 PASS / 1 NOT_RUN (GPU), R11 день 3 29/29, Node 34/34, Python 12/12, i18n_sync 0 расхождений; стенды R06: 3d10f7d 16/16, b42e790 18/18, d707efc 19/19, их r05_client_r14.cjs 17/17 ×2; внутри R01 eb9bb59 + proposed_r01_final2.patch: B-033 и заголовки PASS, app_b2_smoke 18/18, r14_b2.cjs R01 26/26, r14_shell.cjs R01 38/38 (runs/r01_final_eb9bb59_with_patch2.txt). Стенд R12 и measure R11 — последний прогон на a9d256d.",
  "previous_delivery": {
   "code_sha": "38cfc4a",
   "delivery_commit": "7c6bbce",
@@ -173,7 +173,7 @@
   },
   "browser_check": {
    "status": "PASS",
-   "detail": "43 PASS, 0 FAIL, 1 NOT_RUN — runs/browser_check.json (ui-kit/i18n R11 @ 1958634), прогон на be7d813"
+   "detail": "44 PASS, 0 FAIL, 1 NOT_RUN — runs/browser_check.json (ui-kit/i18n R11 @ 1958634), прогон на 15fb40d"
   },
   "browser_checks": {
    "load_auto_falls_back_to_local_store": "PASS",
@@ -215,6 +215,7 @@
    "rate_limit_429_says_too_many_without_retry_ru_kk": "PASS",
    "reload_during_list_request_logs_no_console_error": "PASS",
    "card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk": "PASS",
+   "resident_hint_moves_off_host_legend_1366_1100_ru_kk": "PASS",
    "r01_map_getter_waits_for_map": "PASS",
    "lighting_outside_nura_without_r12_says_so": "PASS",
    "screenshots_1366_375_pitch_0_60_ru_kk": "PASS",
@@ -375,7 +376,7 @@
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: в FINAL 1dd5b53 заменить web/civic/build3d на be7d813 и применить proposed_r01_final2.patch (INTEGRATION §1.2б); R10: B-033 закрыть (runs/final_kk_street.json); R12 (не блокер): near_street_ru/kk в /street-snap для безымянных проездов; LOCAL: LOCAL-R05-1/2/3.",
+ "next_step": "R01: в FINAL eb9bb59 заменить web/civic/build3d на 15fb40d и применить proposed_r01_final2.patch (INTEGRATION §1.2б); R10: B-033 и B-039 перепроверить после этого; R12 (не блокер): near_street_ru/kk в /street-snap; LOCAL: LOCAL-R05-1/2/3.",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -460,20 +461,20 @@
   "r01_patch_for_head": "research/round-14-results/R05/proposed_r01_b3.patch (к 2b9e837 и 13ae790; git apply --check OK)"
  },
  "final_candidate": {
-  "r01": "claude/sharp-dijkstra-0t87gl @ 1dd5b53 (FINAL night 5a: R05 05f8e52; proposed_r01_final.patch уже внутри)",
-  "take": "web/civic/build3d/ из be7d813 + research/round-14-results/R05/proposed_r01_final2.patch (shell.js: на телефоне у акимата карточка проекта опускает шторку; birge.css: легенда R07 скрыта под карточкой 3D на телефоне; git apply --check на 1dd5b53: OK)",
+  "r01": "claude/sharp-dijkstra-0t87gl @ eb9bb59 (кандидат fa117c3, код 61a5a62: R05 a331db0; proposed_r01_final.patch внутри, proposed_r01_final2.patch — ещё нет)",
+  "take": "web/civic/build3d/ из 15fb40d + research/round-14-results/R05/proposed_r01_final2.patch (shell.js: .r07-maplegend в avoid и onSelect — опустить шторку на телефоне у акимата; birge.css: легенда R07 скрыта под карточкой 3D на телефоне; git apply --check на eb9bb59: OK)",
   "closes_in_final": [
-   "телефон, акимат, шторка half: карточка проекта закрывала шапку и сам объект",
-   "казахский заголовок нового проекта — с казахским именем улицы (near_street_kk)",
-   "вне Нуры новый проект называется «вид + улица» (улица от R12; просьба R06)",
-   "строки модуля = словарь R11"
+   "R10 B-039: подсказка жителя на легенде R07 (1366)",
+   "R10 B-033 полностью: казахский заголовок с казахским именем улицы",
+   "телефон, акимат: шторка опускается, объект над карточкой",
+   "вне Нуры: «вид + улица» (улица от R12; просьба R06)"
   ],
   "checked": {
    "r01_r14_shell": "38/38",
    "r01_r14_b2": "26/26",
-   "r05_shell_smoke": "17/17",
+   "r05_shell_smoke": "18/18",
    "r10_b033_and_titles": "PASS — runs/final_kk_street.json",
-   "log": "runs/r01_final_1dd5b53_with_patch2.txt"
+   "log": "runs/r01_final_eb9bb59_with_patch2.txt"
   }
  },
  "night_4": {
@@ -575,5 +576,24 @@
    }
   },
   "code": "a331db0 (шапка на телефоне) → be7d813 (казахский заголовок, улица вне Нуры)"
+ },
+ "night_10": {
+  "sources_checked": "R10 f2b01d5 (B-033 «частично» — заголовок; новый B-039), R11 eac07c4 (замечаний к R05 нет, словарь совпадает), R15 fda0819 (PASS), R06 4c7e5d5, R01 eb9bb59 (взял R05 a331db0, без патча 2)",
+  "fixed": {
+   "R10_B039": {
+    "status": "FIXED",
+    "detail": "1366/1280/1100, житель: подсказка «Нажмите на проект…» лежала на заголовке легенды R07. Подсказка — по ширине текста; узкая панель хозяина из avoid под ней — сдвиг вбок в той же строке, если хватает места, иначе подъём; патч R01 2 добавляет .r07-maplegend в avoid",
+    "check": "browser_check resident_hint_moves_off_host_legend_1366_1100_ru_kk; app_b2_smoke resident_hint_not_over_r07_legend_1366_1100",
+    "screens": [
+     "screens/hint_legend_shell_1366_ru_before.png",
+     "screens/hint_legend_shell_1366_ru.png",
+     "screens/hint_legend_shell_1366_kk.png",
+     "screens/hint_legend_shell_1100_kk.png",
+     "screens/hint_legend_1366_ru.png",
+     "screens/hint_legend_1100_kk.png"
+    ]
+   }
+  },
+  "R10_B033": "частично в 85c16e2 (карточка) — заголовок исправлен в be7d813 (near_street_kk), войдёт с 15fb40d"
  }
 }

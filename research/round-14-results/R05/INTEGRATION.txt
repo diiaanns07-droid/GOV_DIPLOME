@@ -1,7 +1,16 @@
-R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14, поставка 7 (ночь 9, для FINAL)
+R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14, поставка 7 (ночь 10, для FINAL)
 3D-превью предложений: акимат ставит объект на карту, он «строится», жители голосуют
 
-Источник: ветка claude/r14-R05. Код — code_sha из DELIVERY.json (be7d813), проверен на нём же.
+Источник: ветка claude/r14-R05. Код — code_sha из DELIVERY.json (15fb40d), проверен на нём же.
+
+НОЧЬ 10 — что нового (код 15fb40d):
+- R01 (FINAL eb9bb59: R05 a331db0 — спасибо): заменить web/civic/build3d на 15fb40d и применить
+  research/round-14-results/R05/proposed_r01_final2.patch (обновлён под eb9bb59, git apply --check: OK). В нём теперь и
+  R10 B-039: «.r07-maplegend» в avoid при монтировании R05 — подсказка жителя «Нажмите на проект…» больше не лежит на
+  заголовке легенды (1366: в той же строке правее легенды; 1100: над ней). Без этой строки модуль легенду не видит.
+  Проверено на eb9bb59 + 15fb40d + патч 2: ваш r14_shell 38/38, r14_b2 26/26, мой smoke 18/18
+  (runs/r01_final_eb9bb59_with_patch2.txt; кадры до/после screens/hint_legend_shell_1366_*).
+- R10: B-033 «частично» (заголовок) — исправлено в be7d813 (near_street_kk), войдёт с 15fb40d; B-039 — см. выше.
 
 НОЧЬ 9 — что нового (код a331db0 → be7d813):
 - R01 (FINAL 1dd5b53: R05 05f8e52, патч легенды уже у вас — спасибо): заменить web/civic/build3d на be7d813 и применить
@@ -114,10 +123,10 @@ web/civic/build3d/demo.html и data/demo-basemap.json — только для д
     tests/civic/R01/browser/r14_b2.cjs — ожидания под поставку 2: у жителя dock "hint" или "empty" (не только "empty");
       «За» — в карточке R06 (.r06-vote__btn[data-value="1"]) или в своей ([data-action=vote-up]); «Поставить» ждёт
       успешный POST (с R06 7031afa первый POST с контекстом 3D получает 422, R05 повторяет базовым телом).
-1.2б FINAL R01 1dd5b53 (R05 05f8e52, proposed_r01_final.patch уже внутри): заменить web/civic/build3d/ на be7d813 и применить
-    research/round-14-results/R05/proposed_r01_final2.patch (см. «НОЧЬ 9» выше). git apply --check на 1dd5b53: OK.
-    Проверено на 1dd5b53 + be7d813 + патч 2: r14_shell 38/38, r14_b2 26/26, app_b2_smoke 17/17, B-033 и заголовки PASS.
-    Раньше: 4ca9aef + b38654a + патч легенды — 38/38, 25/25, 16/16; ef1ef44 + a9d256d — 25/25, 15/15 (B-007, B-008, B-033).
+1.2б FINAL R01 eb9bb59 (кандидат fa117c3; R05 a331db0, proposed_r01_final.patch уже внутри): заменить web/civic/build3d/ на
+    15fb40d и применить research/round-14-results/R05/proposed_r01_final2.patch (см. «НОЧЬ 10», «НОЧЬ 9»). git apply --check на
+    eb9bb59: OK. Проверено на eb9bb59 + 15fb40d + патч 2: r14_shell 38/38, r14_b2 26/26, app_b2_smoke 18/18, B-033 и заголовки PASS.
+    Раньше: 1dd5b53 + be7d813 + патч 2 — 38/38, 26/26, 17/17; 4ca9aef + b38654a — 38/38, 25/25, 16/16.
 1.2а На голове R01 2b9e837 и 13ae790 (B3 + ночь 1; файлы оболочки одинаковые) — patch
     research/round-14-results/R05/proposed_r01_b3.patch (git apply --check на обеих: OK):
     shell.js — убрать остаток адаптера build3dFetch (DELETE→withdraw и device_id R05 делает сам), mount({mode, api:
