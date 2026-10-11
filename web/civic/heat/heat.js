@@ -91,6 +91,14 @@
       "heat.texts.people": { one: "{count} человек", few: "{count} человека", many: "{count} человек" },
       "heat.texts.staff_only": "Тексты жителей видны сотрудникам после входа",
       "heat.texts.none": "Текстов пока нет",
+      "moderation.rude": "Содержит грубые слова",
+      "merge.title": "Объединено с этим",
+      "merge.hint": "Если объединили по ошибке — разделите. Число людей у цели пересчитается.",
+      "merge.kind.metoo": "Нажал «Я тоже» · {date}",
+      "merge.kind.duplicate": "Отмечено дублем · {code} · {date}",
+      "merge.separate": "Это разные проблемы",
+      "merge.separated": "Разделено. Теперь это отдельное обращение {code}",
+      "merge.already": "Уже разделено",
       "heat.error_title": "Нет связи с сервером",
       "heat.error_hint": "Проверьте интернет и нажмите «Повторить».",
       "heat.not_ready": "Тепловая карта ещё не подключена к серверу",
@@ -183,6 +191,14 @@
       "heat.texts.people": { other: "{count} адам" },
       "heat.texts.staff_only": "Тұрғындардың мәтіндерін қызметкерлер кіргеннен кейін көреді",
       "heat.texts.none": "Әзірге мәтін жоқ",
+      "moderation.rude": "Дөрекі сөздер бар",
+      "merge.title": "Осымен біріктірілген",
+      "merge.hint": "Қате біріктірілсе — бөліңіз. Нысандағы адам саны қайта есептеледі.",
+      "merge.kind.metoo": "«Мен де» басты · {date}",
+      "merge.kind.duplicate": "Қайталанған деп белгіленді · {code} · {date}",
+      "merge.separate": "Бұл әртүрлі мәселелер",
+      "merge.separated": "Бөлінді. Енді бұл жеке өтініш: {code}",
+      "merge.already": "Бұрын бөлінген",
       "heat.error_title": "Сервермен байланыс жоқ",
       "heat.error_hint": "Интернетті тексеріп, «Қайталау» түймесін басыңыз.",
       "heat.not_ready": "Шағымдар картасы серверге әлі қосылмаған",
@@ -391,6 +407,8 @@
       selected: null,         // ключ выбранной цели
       catsOpen: false,        // раскрыт ли список категорий
       texts: new Map(),       // «Что пишут жители»: ключ|дни → {status, data}
+      merged: new Map(),      // «Объединено с этим» (п. 9): ключ цели → {status, items}; только сотруднику
+      mergedOpen: null,       // ключ цели, у которой список «Объединено» раскрыт
       legendEl: null,         // легенда на карте
       fitted: false,          // карта уже подогнана под горячие места (один раз, до первого касания)
       pendingSelect: null,    // цель из ссылки / «Картины дня», ждёт загрузки данных
@@ -1290,6 +1308,7 @@
       render();
       declutter();
       void loadTexts(key);
+      void loadMerged(key);
       const heading = panel.querySelector(".r07-card__title");
       if (heading) heading.focus({ preventScroll: true });
       root.dispatchEvent(new CustomEvent("birge:heat-select", { bubbles: true, detail: { target: it ? it.target : null } }));
@@ -1574,7 +1593,7 @@
         // Статус и главная кнопка — сразу под числом: видны без прокрутки и на 1366, и на 375 px.
         '<p class="r07-card__status">' + esc(t("heat.status")) + ": " + statusPill + "</p>" + dueLine +
         (actions ? '<div class="r07-actions">' + actions + "</div>" : "") +
-        (S.role === "akimat" ? textsHtml(key) : "") +
+        (S.role === "akimat" ? textsHtml(key) + mergedHtml(key) : "") +
         (!fixed ? '<div class="r07-chart" aria-label="' + esc(t("heat.chart")) + '"><h4 class="r07-h4">' + esc(t("heat.chart")) + '</h4><div class="r07-spark">' + bars +
           '</div><div class="r07-axis"><span>' + esc(t("heat.chart_from")) + "</span><span>" + esc(t("heat.chart_to")) + "</span></div></div>" : "") +
         (topics ? '<h4 class="r07-h4">' + esc(t("heat.topics")) + '</h4><ul class="r07-topics">' + topics + "</ul>" : "") +
@@ -1596,12 +1615,64 @@
         body = groups.length
           ? '<ul class="r07-quotes">' + groups.map((g) =>
             '<li><p class="r07-quote" lang="' + esc(g.lang === "kk" ? "kk" : g.lang === "ru" ? "ru" : S.lang) + '">«' + esc(g.text) + '»</p><p class="r07-quote__meta">' +
-            esc(t("heat.texts.people", { count: g.people })) + (g.demo ? ' <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") + "</p></li>").join("") + "</ul>"
+            esc(t("heat.texts.people", { count: g.people })) + (g.demo ? ' <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") +
+            (g.rude ? ' <span class="r07-tag r07-tag--rude">' + esc(t("moderation.rude")) + "</span>" : "") + "</p></li>").join("") + "</ul>"
           : "";
         if (hidden) body += '<p class="r07-note">' + esc(t("heat.texts.staff_only")) + "</p>";
         if (!body) body = '<p class="r07-muted">' + esc(t("heat.texts.none")) + "</p>";
       }
       return '<section class="r07-texts"><h4 class="r07-h4">' + esc(t("heat.texts.title")) + "</h4>" + body + "</section>";
+    }
+    // «Объединено с этим» (волна мелочей п. 9, R04 + R09): дубли и «Я тоже» с текстом жителя, присоединённые к жалобам
+    // этой цели. Ошибочное объединение акимат отменяет одним нажатием «Это разные проблемы» — R09 выделяет жалобу
+    // обратно, цель пересчитывается. Блок свёрнут (карточка не растёт) и есть только у вошедшего сотрудника.
+    function mergedHtml(key) {
+      const st = S.merged.get(key);
+      if (!st || st.status !== "ready" || !st.items.length) return "";
+      const rows = st.items.map((m) => {
+        const meta = m.kind === "duplicate"
+          ? t("merge.kind.duplicate", { code: m.code || "", date: fmtDate(m.merged_at || m.at, S.lang) })
+          : t("merge.kind.metoo", { date: fmtDate(m.at, S.lang) });
+        return '<li><p class="r07-quote" lang="' + esc(m.lang === "kk" ? "kk" : m.lang === "ru" ? "ru" : S.lang) + '">«' + esc(m.text || "") + '»</p>' +
+          '<p class="r07-quote__meta">' + esc(meta) + (m.moderation ? ' <span class="r07-tag r07-tag--rude">' + esc(t("moderation.rude")) + "</span>" : "") + "</p>" +
+          '<button type="button" class="r07-btn r07-merged__btn" data-act="separate" data-item="' + esc(m.id) + '">' + esc(t("merge.separate")) + "</button></li>";
+      }).join("");
+      return '<details class="r07-merged"' + (S.mergedOpen === key ? " open" : "") + '><summary class="r07-h4">' + esc(t("merge.title")) +
+        ' <span class="r07-merged__count">' + fmtNum(st.items.length) + "</span></summary>" +
+        '<p class="r07-note">' + esc(t("merge.hint")) + '</p><ul class="r07-quotes">' + rows + "</ul></details>";
+    }
+    async function loadMerged(key) {
+      if (S.role !== "akimat") return;
+      const [kind, ...rest] = key.split(":");
+      if (kind === "district") return;
+      S.merged.set(key, { status: "loading", items: [] });
+      try {
+        const res = await getJson("/complaints/merged?target_id=" + encodeURIComponent(rest.join(":")));
+        S.merged.set(key, { status: "ready", items: res && Array.isArray(res.items) ? res.items : [] });
+      } catch (e) {
+        S.merged.set(key, { status: "error", items: [] });   // 403 — не вошёл: блока просто нет
+      }
+      if (S.selected === key && !S.destroyed) render();
+    }
+    async function separate(it, itemId, btn) {
+      const key = keyOf(it.target);
+      btn.setAttribute("aria-busy", "true");
+      btn.disabled = true;
+      try {
+        const res = await post("/complaints/" + encodeURIComponent(itemId) + "/separate", {});
+        const made = res && res.data && res.data.complaint;
+        toast(t("merge.separated", { code: (made && made.code) || "" }));
+        await load("event");
+        await loadMerged(key);
+      } catch (e) {
+        if (e && e.status === 409) { toast(t("merge.already")); void loadMerged(key); return; }
+        actionFailed(e, () => {
+          const again = panel.querySelector('[data-act="separate"][data-item="' + (window.CSS && CSS.escape ? CSS.escape(itemId) : itemId) + '"]');
+          if (again) void separate(it, itemId, again);
+        });
+        btn.disabled = false;
+        btn.removeAttribute("aria-busy");
+      }
     }
     async function loadTexts(key) {
       if (S.role !== "akimat") return;
@@ -1659,6 +1730,10 @@
         if (b.dataset.act === "take") void setStatus(it, "in_progress", b);
         if (b.dataset.act === "fixed") void setStatus(it, "fixed", b);
         if (b.dataset.act === "metoo") void metoo(it, b);
+        if (b.dataset.act === "separate") void separate(it, b.dataset.item, b);
+      }));
+      panel.querySelectorAll(".r07-merged").forEach((d) => d.addEventListener("toggle", () => {
+        S.mergedOpen = d.open ? S.selected : null;
       }));
     }
 
