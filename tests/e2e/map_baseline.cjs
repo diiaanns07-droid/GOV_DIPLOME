@@ -241,8 +241,9 @@ async function variant(browser, base, size, lang, mode) {
       out.shot = `default-${tag}.png`;
       await r.page.screenshot({ path: path.join(OUT, out.shot) }).catch(() => null);
       out.smooth = await r.page.evaluate(SMOOTH, STOP).catch((e) => ({ error: String(e.message).slice(0, 120) }));
-      out.transitions = await transitions(r.page, dict, lang, mode, r.mobile);
+      // Карточка — до проверки отклика: та в конце переключает вид «Житель → Акимат».
       out.card = await cardMetrics(r.page, tag);
+      out.transitions = await transitions(r.page, dict, lang, mode, r.mobile);
     }
     await r.ctx.close();
   }
