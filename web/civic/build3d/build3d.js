@@ -81,6 +81,7 @@
       "build3d.card.your_vote_up": "Ваш голос: за",
       "build3d.card.your_vote_down": "Ваш голос: против",
       "build3d.card.open": "{kind}: проект {year}, открыть карточку",
+      "build3d.card.view3d": "Посмотреть в 3D",
       "build3d.catalog.place": "{kind}: поставить на карту",
       "build3d.local_note": "Сохраняется только на этом устройстве, пока не подключён сервер предложений",
       "build3d.near.stop": "Рядом уже есть остановка, {m} м",
@@ -130,6 +131,7 @@
       "build3d.card.your_vote_up": "Сіздің дауысыңыз: жақтаймын",
       "build3d.card.your_vote_down": "Сіздің дауысыңыз: қарсымын",
       "build3d.card.open": "{kind}: {year} жылғы жоба, карточканы ашу",
+      "build3d.card.view3d": "3D көріністе қарау",
       "build3d.catalog.place": "{kind}: картаға қою",
       "build3d.local_note": "Ұсыныстар сервері қосылғанша тек осы құрылғыда сақталады",
       "build3d.near.stop": "Жанында аялдама бар, {m} м",
@@ -318,6 +320,10 @@
   var VIEW_ZOOM = 17.4; // «показать проекты» — тот же крупный план
   var DOT_PX = 32; // сжатая подпись-точка: ≥ 24 px (UX_SPEC §5, R10 B-026), зона нажатия — 48 px
   var LAYER_ID = "civic-build3d";
+  // «Лёгкая карточка раньше 3D; 3D — по кнопке» (POLISH_WAVE_2): объёмный вид — когда карта наклонена так же, как
+  // кнопкой «3D» оболочки R01 (web/interface.js: THREE_D_MIN_PITCH 30, наклон кнопки 52°).
+  var PITCH_3D = 30;
+  var TILT_3D = 52;
   var OUTLINE_COLOR = 0x176b4a; // пунктир границы проекта (бренд)
   var OUTLINE_SELECTED = 0x2f7fd6; // выбранный проект — цвет фокуса ui-kit
 
@@ -375,6 +381,7 @@
       select: later("select"),
       flyToProposals: later("flyToProposals"),
       refresh: later("refresh"),
+      view3d: later("view3d"),
       setVisible: later("setVisible"),
       setMode: later("setMode"),
       update: later("update"),
@@ -411,6 +418,9 @@
       useR06Card: opts.useR06Card !== false, // карточка R06 при настоящем API (если её модуль подключён)
       dock: opts.dock !== false, // каталог/подсказка видны (карточка и размещение — всегда)
       storage: opts.storage || safeLocalStorage(),
+      // auto — плоская карта: лёгкие метки и карточки без three.js; наклон ≥ 30° (кнопка «3D»), «Посмотреть в 3D»
+      // или размещение — объёмный вид. 3d — всегда объёмный (демо-страница 3D-превью). light — только по кнопке.
+      view: opts.view === "3d" || opts.view === "light" ? opts.view : "auto",
     };
     var i18n = opts.i18n || root.BirgeI18n || null;
     var t = makeT(i18n);
@@ -430,6 +440,8 @@
       error: null,
       hint: null, // {key, params, error:true}
       cardBusy: null,
+      view: "light", // light — метки и карточки без 3D; 3d — модели three.js на карте
+      three: "idle", // idle | loading | ready | unsupported | error — объёмный вид грузится только когда нужен
     };
     var THREE = null,
       Models = null,
@@ -476,6 +488,7 @@
       var g = S.ghost;
       return JSON.stringify([
         S.phase, S.mode, S.kind, S.hint, S.visible, S.storeMode, S.cardBusy, t.lang(), Object.keys(S.objects).length, o.dock, o.role,
+        S.view, S.three,
         g ? [g.valid && g.valid.ok, !!(g.section && g.section.ok), nearInfo()] : null,
         sel ? [sel.p.id, sel.p.votes_up, sel.p.votes_down, sel.p.my_vote, sel.pending] : null,
       ]);
@@ -622,8 +635,11 @@
       if (S.phase === "loading") return renderLoading();
       if (S.phase === "unsupported") return renderMessage("alert", t("build3d.unsupported_title"), t("build3d.unsupported_text"), false);
       if (S.phase === "error") return renderMessage("wifi-off", t("build3d.load_failed"), "", true);
-      if (S.mode === "placing") return renderPlacing();
+      if (S.mode === "placing") return S.three === "ready" ? renderPlacing() : renderLoading();
+      if (pendingStart && S.three === "loading") return renderLoading();
       if (S.selected && S.objects[S.selected] && o.renderCard) return renderCard(S.objects[S.selected].p);
+      // Без WebGL2 жители видят проекты и голосуют (лёгкие метки), а поставить объект нельзя — говорим прямо.
+      if (o.role === "akimat" && o.dock && S.three === "unsupported") return renderMessage("alert", t("build3d.unsupported_title"), t("build3d.unsupported_text"), false);
       if (!o.dock) {
         dock.setAttribute("data-state", "empty"); // хозяин спрятал каталог; объекты и карточки работают
         return;
@@ -799,7 +815,23 @@
         var yardName = t.lang() === "kk" ? yard.label_kk || yard.label_ru : yard.label_ru || yard.label_kk;
         dock.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
       }
+      var v3 = view3dBtn();
+      if (v3) dock.appendChild(v3);
       if (o.role === "akimat") dock.appendChild(deleteBtn(p));
+    }
+
+    // «Посмотреть в 3D» — второстепенная кнопка лёгкой карточки (главная — голос). Наклоняет карту, как кнопка «3D».
+    function view3dBtn() {
+      if (S.view === "3d" && S.three === "ready") return null;
+      if (S.three === "unsupported") return null;
+      var loading = S.three === "loading";
+      var b = actionBtn("cube", t(loading ? "build3d.loading" : "build3d.card.view3d"), "b3d-view3d", function () {
+        enable3d({ tilt: true }).then(function (ok) {
+          if (ok && S.selected && S.objects[S.selected]) keepAboveDock(S.objects[S.selected]);
+        });
+      }, "view3d");
+      if (loading) b.setAttribute("aria-busy", "true");
+      return b;
     }
 
     function deleteBtn(p) {
@@ -852,6 +884,8 @@
       var note = p.my_vote === 1 ? t("build3d.card.your_vote_up") : p.my_vote === -1 ? t("build3d.card.your_vote_down") : t("proposal.one_vote");
       if (p.voting_open === false) note = t("proposal.voting_closed");
       card.appendChild(el("p", "bk-meta", { text: note }));
+      var v3 = view3dBtn();
+      if (v3) card.appendChild(v3);
       if (o.role === "akimat") card.appendChild(deleteBtn(p));
       dock.appendChild(card);
     }
@@ -983,11 +1017,6 @@
       S.phase = "loading";
       S.error = null;
       render();
-      var threeP = THREE
-        ? Promise.resolve(THREE)
-        : import(/* webpackIgnore: true */ o.threeUrl).then(function (mod) {
-            return mod;
-          });
       // Улицы и районы нужны для освещения и проверки места; без них модуль работает, но беднее.
       var streetsP = streets
         ? Promise.resolve(null)
@@ -1015,18 +1044,18 @@
           fixture = { proposals: [] };
         }
       );
-      return Promise.all([threeP, streetsP, districtsP, fixtureP])
-        .then(function (res) {
-          if (S.destroyed) return;
-          THREE = res[0];
-          Models = ModelsLib.create(THREE);
-          store = makeStore();
-          return whenStyleReady().then(addLayer);
-        })
+      // three.js (≈ 600 КБ) — не здесь: первая отрисовка — лёгкие метки и карточки; объёмный вид — по кнопке.
+      return Promise.all([streetsP, districtsP, fixtureP])
         .then(function () {
           if (S.destroyed) return;
-          if (S.phase === "unsupported") return render();
+          store = makeStore();
           return loadProposals();
+        })
+        .then(function () {
+          if (S.destroyed || S.phase !== "ready") return;
+          if (want3d()) return enable3d();
+          // Акимат ставит объекты — модуль three.js подгружаем заранее в фоне (без слоя), чтобы «Поставить» не ждало.
+          if (o.role === "akimat") loadThree().catch(function () {});
         })
         .catch(function (err) {
           if (S.destroyed) return;
@@ -1149,7 +1178,7 @@
         if (renderer) return; // после смены стиля слой добавляется снова — рендерер тот же
         var isGL2 = typeof root.WebGL2RenderingContext !== "undefined" && gl instanceof root.WebGL2RenderingContext;
         if (!isGL2) {
-          S.phase = "unsupported";
+          S.three = "unsupported";
           return;
         }
         renderer = new THREE.WebGLRenderer({ canvas: m.getCanvas(), context: gl, antialias: true });
@@ -1219,11 +1248,12 @@
 
     // После смены стиля карты (map.setStyle) MapLibre убирает все слои — возвращаем свой.
     function onStyleData() {
-      if (!THREE || !renderer || S.destroyed || S.phase === "unsupported") return;
+      if (!THREE || !renderer || S.destroyed || S.three !== "ready") return;
       if (map.getLayer(LAYER_ID)) return;
       layerAdded = false;
       try {
         addLayer();
+        setLayerVisibility();
       } catch (e) {
         // JSON стиля ещё не разобран — попробуем, когда карта успокоится.
         map.once("idle", onStyleData);
@@ -1232,6 +1262,115 @@
 
     function repaint() {
       if (map && !S.destroyed) map.triggerRepaint();
+    }
+
+    // ── Лёгкий вид и объёмный ──
+    var threeP = null;
+    function loadThree() {
+      if (THREE) return Promise.resolve(THREE);
+      if (!threeP)
+        threeP = import(/* webpackIgnore: true */ o.threeUrl).then(
+          function (mod) {
+            THREE = mod;
+            Models = ModelsLib.create(THREE);
+            return THREE;
+          },
+          function (err) {
+            threeP = null; // «Повторить» загрузит заново
+            throw err;
+          }
+        );
+      return threeP;
+    }
+    function want3d() {
+      return o.view === "3d" || (o.view === "auto" && map.getPitch() >= PITCH_3D);
+    }
+    function setLayerVisibility() {
+      try {
+        if (layerAdded && map.getLayer(LAYER_ID)) map.setLayoutProperty(LAYER_ID, "visibility", S.visible && S.view === "3d" ? "visible" : "none");
+      } catch (e) {
+        /* стиль ещё не готов — слой вернётся в onStyleData */
+      }
+    }
+    // Слой и модели всех проектов (без анимации постройки — они уже стоят). Синхронно, если three.js уже загружен.
+    function finish3d() {
+      if (S.destroyed) return false;
+      addLayer();
+      if (S.three === "unsupported" || !renderer) {
+        S.three = renderer ? S.three : "unsupported";
+        S.view = "light";
+        setLayerVisibility();
+        render();
+        return false;
+      }
+      S.three = "ready";
+      Object.keys(S.objects).forEach(function (id) {
+        if (!S.objects[id].group) buildGroup(S.objects[id]);
+      });
+      setLayerVisibility();
+      render();
+      repaint();
+      return true;
+    }
+    function enable3d(how) {
+      how = how || {};
+      if (S.destroyed || S.three === "unsupported") return Promise.resolve(false);
+      if (how.tilt && o.view !== "3d" && map.getPitch() < PITCH_3D) {
+        map.easeTo({ pitch: TILT_3D, bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
+      }
+      S.view = "3d";
+      if (S.three === "ready") {
+        setLayerVisibility();
+        render();
+        repaint();
+        return Promise.resolve(true);
+      }
+      if (THREE && styleJsonReady()) return Promise.resolve(finish3d());
+      S.three = "loading";
+      render();
+      return loadThree()
+        .then(whenStyleReady)
+        .then(finish3d)
+        .catch(function (err) {
+          if (S.destroyed) return false;
+          logFail("[build3d] 3D не загрузилось", err);
+          S.three = "error";
+          S.view = "light";
+          if (S.mode === "placing") cancel();
+          render();
+          toast(t("build3d.load_failed"), {
+            error: true,
+            action: t("common.action.retry"),
+            actionId: "retry-3d",
+            onAction: function () {
+              enable3d(how);
+            },
+          });
+          return false;
+        });
+    }
+    function disable3d() {
+      if (S.view !== "3d") return;
+      S.view = "light";
+      setLayerVisibility();
+      render();
+      updateLabels();
+    }
+    // Кнопка «3D» оболочки наклоняет карту (≥ 30°) — объёмный вид; вернули плоскую — снова лёгкие метки.
+    // Выходим из объёмного вида только когда наклонённую карту сделали плоской (кнопка «3D» ещё раз): модель,
+    // поставленную на плоской карте, следующий сдвиг карты не прячет.
+    var wasTilted = false;
+    function onViewMoveEnd() {
+      if (o.view !== "auto" || S.destroyed || S.phase !== "ready") return;
+      var tilted = map.getPitch() >= PITCH_3D;
+      if (tilted && S.view !== "3d") enable3d();
+      else if (!tilted && wasTilted && S.view === "3d" && S.mode !== "placing" && !anims.length) disable3d();
+      wasTilted = tilted;
+    }
+    // Лёгкий вид: метки двигаются вместе с картой (в объёмном их ставит слой three.js в каждом кадре).
+    function onMapRender() {
+      if (S.destroyed) return;
+      if (S.view !== "3d" || S.three !== "ready") updateLabels();
     }
 
     // ───────────── Материалы ─────────────
@@ -1333,20 +1472,29 @@
 
     function addObject(p, flags) {
       flags = flags || {};
-      if (!scene) return null;
       if (S.objects[p.id]) disposeObject(p.id); // тот же id ещё исчезает после «Удалить» — убрать сразу
-      var geos = buildGeos(p);
-      var mats = makeMaterials(false);
-      var group = makeMeshes(geos, mats);
-      placeGroup(group, p);
-      scene.add(group);
-      var obj = { p: p, group: group, height: geos.height, mats: mats, label: null, pending: !!flags.pending };
-      obj.labelPoint = labelPointOf(p, geos);
+      // Лёгкий вид: только данные и метка; модель строится, когда включат объёмный вид (buildGroup).
+      var obj = { p: p, group: null, height: 0, mats: null, label: null, labelPoint: null, pending: !!flags.pending };
+      if (scene) buildGroup(obj);
       obj.label = makeLabel(obj);
       S.objects[p.id] = obj;
-      if (flags.animate && !reducedMotion()) animateBuild(obj);
+      if (flags.animate && obj.group && S.view === "3d" && !reducedMotion()) animateBuild(obj);
       repaint();
       return obj;
+    }
+    function buildGroup(obj) {
+      var geos = buildGeos(obj.p);
+      obj.mats = makeMaterials(false);
+      obj.group = makeMeshes(geos, obj.mats);
+      obj.height = geos.height;
+      obj.labelPoint = labelPointOf(obj.p, geos);
+      placeGroup(obj.group, obj.p);
+      scene.add(obj.group);
+      var outline = obj.group.children.find(function (m) {
+        return m.userData.part === "outline";
+      });
+      if (outline && S.selected === obj.p.id) outline.material.color.set(OUTLINE_SELECTED);
+      obj.labelSize = null;
     }
 
     // Точка подписи «Проект · 2027» — над верхом объекта (у освещения — над средней опорой).
@@ -1395,7 +1543,7 @@
     function disposeObject(id) {
       var obj = S.objects[id];
       if (!obj) return;
-      disposeGroup(obj.group);
+      if (obj.group) disposeGroup(obj.group);
       if (obj.dust) disposeGroup(obj.dust);
       if (obj.label && obj.label.parentNode) obj.label.parentNode.removeChild(obj.label);
       delete S.objects[id];
@@ -1496,7 +1644,7 @@
       var obj = S.objects[id];
       if (!obj) return done && done();
       if (obj.label) obj.label.classList.add("b3d-label--hidden");
-      if (reducedMotion()) {
+      if (reducedMotion() || !obj.group || S.view !== "3d") {
         disposeObject(id);
         return done && done();
       }
@@ -1542,6 +1690,18 @@
       var v = new THREE.Vector3(point[0], point[1], point[2]);
       return v.applyMatrix4(obj.group.matrixWorld);
     }
+    function anchorLngLat(p) {
+      return p.kind === "lighting" ? p.geometry.coordinates[Math.floor(p.geometry.coordinates.length / 2)] : p.geometry.coordinates;
+    }
+    // Экранная точка подписи: в объёмном виде — над верхом модели; в лёгком — у самой точки проекта.
+    function labelScreen(obj) {
+      if (S.view === "3d" && obj.group && obj.labelPoint && lastMatrix) {
+        var wp = worldOf(obj, obj.labelPoint);
+        return projectLocal(wp.x, wp.y, wp.z);
+      }
+      var q = map.project(anchorLngLat(obj.p));
+      return { x: q.x, y: q.y - 4, depth: 0 };
+    }
 
     function updateLabels() {
       var canvas = map.getCanvas();
@@ -1552,8 +1712,7 @@
       Object.keys(S.objects).forEach(function (id) {
         var obj = S.objects[id];
         if (!obj.label) return;
-        var wp = worldOf(obj, obj.labelPoint);
-        var sp = projectLocal(wp.x, wp.y, wp.z);
+        var sp = labelScreen(obj);
         if (!sp || sp.x < -80 || sp.x > w + 80 || sp.y < -40 || sp.y > h + 40) {
           obj.label.style.visibility = "hidden";
           return;
@@ -1724,12 +1883,28 @@
       return { key: "build3d.near." + S.kind + (named ? "_named" : ""), params: { m: m, name: name }, id: near.id };
     }
 
+    var pendingStart = null;
     function start(kind, how) {
       how = how || {};
-      if (!Core.KINDS[kind] || S.phase !== "ready" || o.role !== "akimat") return false;
+      if (!Core.KINDS[kind] || S.phase !== "ready" || o.role !== "akimat" || S.three === "unsupported") return false;
       if (Object.keys(S.objects).length >= Core.MAX_OBJECTS) {
         toast(t("proposal.limit"), { error: true });
         return false;
+      }
+      // Размещение — объёмное (призрак модели). three.js ещё грузится — продолжим, когда загрузится.
+      if (S.three !== "ready" || S.view !== "3d") {
+        var pend = (pendingStart = { kind: kind, how: how });
+        enable3d().then(function (ok) {
+          if (pendingStart !== pend) return;
+          pendingStart = null;
+          if (ok) start(kind, how);
+          else render();
+        });
+        if (S.three !== "ready") {
+          render();
+          return true;
+        }
+        pendingStart = null; // загрузилось синхронно (three.js уже был в памяти)
       }
       if (S.mode === "placing") clearGhost();
       S.selected = null;
@@ -1767,6 +1942,7 @@
     }
 
     function cancel() {
+      pendingStart = null;
       if (S.mode !== "placing") return;
       clearGhost();
       S.mode = "idle";
@@ -2242,11 +2418,11 @@
 
     // Попадание щелчком в объект: экранный прямоугольник его 3D-габарита (у освещения — опоры).
     function hitTest(point) {
-      if (!lastMatrix) return null;
+      if (!lastMatrix || S.view !== "3d") return null; // в лёгком виде проект открывают по его метке
       var best = null;
       Object.keys(S.objects).forEach(function (id) {
         var obj = S.objects[id];
-        if (obj.removing) return;
+        if (obj.removing || !obj.group) return;
         var box = obj.group.children.length ? new THREE.Box3().setFromObject(obj.group) : null;
         if (!box || box.isEmpty()) return;
         if (obj.p.kind === "lighting") {
@@ -2505,7 +2681,7 @@
       Object.keys(S.objects).forEach(function (k) {
         var obj = S.objects[k];
         updateLabelText(obj);
-        var outline = obj.group.children.find(function (m) {
+        var outline = obj.group && obj.group.children.find(function (m) {
           return m.userData.part === "outline";
         });
         if (outline) outline.material.color.set(k === id ? OUTLINE_SELECTED : OUTLINE_COLOR);
@@ -2596,9 +2772,12 @@
     // (слева от карточки на ноутбуке, над панелью на телефоне) и, если объект вне её, плавно ставим его в её
     // центр. Это ответ на нажатие пользователя, поэтому правило «карта сама не двигается» не нарушается.
     function keepAboveDock(obj) {
-      if (!obj || !lastMatrix) return;
-      var ground = worldOf(obj, obj.p.kind === "lighting" ? [obj.labelPoint[0], obj.labelPoint[1], 0] : [0, 0, 0]);
-      var sp = projectLocal(ground.x, ground.y, 0);
+      if (!obj) return;
+      var sp;
+      if (S.view === "3d" && obj.group && lastMatrix) {
+        var ground = worldOf(obj, obj.p.kind === "lighting" ? [obj.labelPoint[0], obj.labelPoint[1], 0] : [0, 0, 0]);
+        sp = projectLocal(ground.x, ground.y, 0);
+      } else sp = map.project(anchorLngLat(obj.p));
       if (!sp) return;
       var f = freeArea();
       var m = 48; // запас: подпись над объектом тоже должна быть видна
@@ -2684,6 +2863,7 @@
       o.role = r;
       ui.setAttribute("data-b3d-role", r);
       render(true);
+      if (r === "akimat" && S.phase === "ready" && !THREE) loadThree().catch(function () {}); // заранее, без слоя
     }
     function onShellMode(e) {
       if (e && e.detail && e.detail.mode) setMode(e.detail.mode);
@@ -2695,6 +2875,8 @@
     map.on("move", onMapMove);
     map.on("styledata", onStyleData);
     map.on("idle", refitSoon); // панели хозяина появляются позже модуля (легенда R07 — после загрузки жалоб)
+    map.on("moveend", onViewMoveEnd);
+    map.on("render", onMapRender);
     doc.addEventListener("keydown", onKey);
     if (opts.followShellMode !== false) doc.addEventListener("birge:mode", onShellMode);
     var onResize = function () {
@@ -2743,10 +2925,18 @@
       refresh: function () {
         return store ? loadProposals() : ready;
       },
+      // Объёмный вид по кнопке хозяина: view3d(true) — включить (и наклонить карту), view3d(false) — лёгкий вид.
+      view3d: function (on) {
+        if (on === false) {
+          disable3d();
+          return Promise.resolve(false);
+        }
+        return enable3d({ tilt: true });
+      },
       setVisible: function (v) {
         S.visible = !!v;
         labelsLayer.hidden = !S.visible;
-        if (layerAdded && map.getLayer(LAYER_ID)) map.setLayoutProperty(LAYER_ID, "visibility", S.visible ? "visible" : "none");
+        setLayerVisibility();
         if (!S.visible) cancel();
         render();
       },
@@ -2788,12 +2978,14 @@
           animating: anims.length > 0,
           memory: renderer ? { geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs ? renderer.info.programs.length : null } : null,
           origin: origin ? origin.slice() : null,
+          view: S.view, // light — лёгкие метки и карточки; 3d — модели (POLISH_WAVE_2: «3D — по кнопке»)
+          three: S.three,
         };
       },
       // Для проверок точности (tests/civic/R05): экранная точка 3D-точки объекта (x, y, z в метрах модели).
       _project: function (id, point) {
         var obj = S.objects[id];
-        if (!obj || !lastMatrix) return null;
+        if (!obj || !lastMatrix || !obj.group) return null;
         var wp = worldOf(obj, point || [0, 0, 0]);
         return projectLocal(wp.x, wp.y, wp.z);
       },
@@ -2806,6 +2998,8 @@
         map.off("move", onMapMove);
         map.off("styledata", onStyleData);
         map.off("idle", refitSoon);
+        map.off("moveend", onViewMoveEnd);
+        map.off("render", onMapRender);
         doc.removeEventListener("keydown", onKey);
         doc.removeEventListener("birge:mode", onShellMode);
         root.removeEventListener("resize", onResize);

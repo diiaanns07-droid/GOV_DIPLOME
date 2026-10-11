@@ -653,13 +653,19 @@ await check("keyboard_tab_enter_escape", async () => {
 
 // ───────────── 11. Ошибка загрузки 3D: понятное сообщение и «Повторить» ─────────────
 await check("three_load_error_state", async () => {
-  const p = await openPage({}, "?reset=1&store=local&three=/vendor/three/none.js", { phase: "error" });
-  const text = await p.textContent(".b3d-message");
-  const retry = await p.$(".b3d-message button");
+  // three.js не загрузился: проекты остаются на карте лёгкими метками (голосовать можно), а не пустая панель;
+  // сообщение «Не получилось загрузить 3D» с «Повторить» (POLISH_WAVE_2: лёгкая карточка раньше 3D).
+  const p = await openPage({}, "?reset=1&store=local&three=/vendor/three/none.js");
+  await p.waitForSelector(".bk-toast--error", { timeout: 20000 });
+  const text = await p.textContent(".bk-toast--error");
+  const retry = await p.$(".bk-toast [data-action=retry-3d]");
+  const st = await state(p);
+  const labels = await p.$$eval(".b3d-label", (els) => els.filter((e) => e.style.visibility !== "hidden").length);
   if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", "1366_ru_error.png") });
   await p.context().close();
-  assert(retry && /Повторить/.test(text), text);
-  return { status: "PASS", detail: text.replace(/\s+/g, " ").trim() };
+  assert(retry && /Повторить/.test(text) && /3D/.test(text) && st.phase === "ready" && st.view === "light" && st.three === "error" && labels >= 1,
+    JSON.stringify({ text, phase: st.phase, view: st.view, three: st.three, labels }));
+  return { status: "PASS", detail: text.replace(/\s+/g, " ").trim() + ` · меток проектов ${labels}, вид ${st.view}` };
 });
 
 // ───────────── 12. Настоящий путь через API (макет R06 по CONTRACT §7) ─────────────
@@ -1120,6 +1126,69 @@ await check("resident_hint_moves_off_host_legend_1366_1100_ru_kk", async () => {
     out[`${w}_${lang}`] = { withLegend, hidden };
     const sideways = /translate\((\d+)px, 0px\)/.test(withLegend.transform), lifted = /translate\(0px, -\d+px\)/.test(withLegend.transform);
     assert(withLegend.state === "hint" && !withLegend.overlap && (w === 1366 ? sideways : lifted) && hidden.transform === "", JSON.stringify(out));
+  }
+  return { status: "PASS", detail: out };
+});
+await check("light_card_first_3d_by_button_1366_375_ru_kk", async () => {
+  // POLISH_WAVE_2: «Лёгкая карточка раньше 3D; 3D — по кнопке». Вид auto (как в оболочке R01): на плоской карте
+  // three.js не грузится, проекты — лёгкие метки, карточка открывается без 3D; «Посмотреть в 3D» грузит объёмный вид
+  // и наклоняет карту (как кнопка «3D» оболочки); карту вернули плоской — снова лёгкие метки.
+  const out = {};
+  for (const [w, h, lang] of [[1366, 768, "ru"], [1366, 768, "kk"], [375, 812, "ru"], [375, 812, "kk"]]) {
+    const phone = w < 640;
+    const ctx = await browser.newContext(Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {}));
+    const p = await ctx.newPage();
+    const threeReq = [];
+    p.on("request", (r) => { if (/three\.module/.test(r.url())) threeReq.push(r.url()); });
+    p.on("pageerror", (e) => pageErrors.push("light: " + e.message));
+    await p.goto(BASE + `?reset=1&store=local&view=auto&role=resident&lang=${lang}&center=71.4008,51.1272&zoom=17.2&pitch=0&bearing=0`);
+    await waitReady(p);
+    await p.waitForTimeout(800);
+    const s0 = await state(p);
+    const before = { view: s0.view, three: s0.three, memory: s0.memory, three_requests: threeReq.length,
+      labels: await p.$$eval(".b3d-label", (els) => els.filter((e) => e.style.visibility !== "hidden").length) };
+    const id = s0.proposals.find((q) => q.kind !== "lighting").id;
+    const lab = await p.$(`.b3d-label[data-id="${id}"]`);
+    if (phone) await lab.tap();
+    else await lab.click();
+    await p.waitForSelector(".b3d-dock[data-state=card] [data-action=view3d]", { timeout: 10000 });
+    const btn = (await p.textContent("[data-action=view3d]")).trim();
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `light_card_${w}_${lang}.png`) });
+    await p.click("[data-action=view3d]");
+    await p.waitForFunction(() => { const s = __b3d.getState(); return s.view === "3d" && s.three === "ready" && !__map.isMoving(); }, null, { timeout: 30000 });
+    await idle(p);
+    const s1 = await state(p);
+    const after = { view: s1.view, three: s1.three, pitch: Math.round(await p.evaluate(() => __map.getPitch())), geometries: s1.memory && s1.memory.geometries,
+      selected: s1.selected === id, button_left: !!(await p.$("[data-action=view3d]")), three_requests: threeReq.length };
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `light_card_to3d_${w}_${lang}.png`) });
+    // Кнопка «3D» оболочки ещё раз: карта плоская — лёгкий вид, метки на месте.
+    await p.evaluate(() => __map.easeTo({ pitch: 0, bearing: 0, duration: 300 }));
+    await p.waitForFunction(() => __b3d.getState().view === "light" && !__map.isMoving(), null, { timeout: 10000 });
+    const flat = { view: (await state(p)).view, labels: await p.$$eval(".b3d-label", (els) => els.filter((e) => e.style.visibility !== "hidden").length) };
+    await ctx.close();
+    out[`${w}_${lang}`] = { before, button: btn, after, flat };
+    assert(before.view === "light" && before.three === "idle" && before.memory === null && before.three_requests === 0 && before.labels >= 1, JSON.stringify(out));
+    assert(lang === "ru" ? btn === "Посмотреть в 3D" : btn === "3D көріністе қарау", JSON.stringify(out));
+    assert(after.view === "3d" && after.pitch >= 30 && after.geometries > 0 && after.selected && !after.button_left && after.three_requests >= 1, JSON.stringify(out));
+    assert(flat.view === "light" && flat.labels >= 1, JSON.stringify(out));
+  }
+  // Акимат: three.js подгружается в фоне (без слоя), «Что построить?» → размещение сразу в объёмном виде.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+    const p = await ctx.newPage();
+    const threeReq = [];
+    p.on("request", (r) => { if (/three\.module/.test(r.url())) threeReq.push(r.url()); });
+    await p.goto(BASE + "?reset=1&store=local&view=auto&role=akimat&center=71.4008,51.1272&zoom=17.4&pitch=0&bearing=0");
+    await waitReady(p);
+    await p.waitForFunction(() => true, null, { timeout: 1000 });
+    for (let i = 0; i < 50 && !threeReq.length; i++) await p.waitForTimeout(100);
+    const s0 = await state(p);
+    await p.click(".b3d-card[data-kind=square]");
+    await p.waitForFunction(() => __b3d.getState().mode === "placing" && __b3d.getState().view === "3d" && !!__b3d.getState().ghost, null, { timeout: 15000 });
+    const s1 = await state(p);
+    await ctx.close();
+    out.akimat_1366_ru = { preloaded: threeReq.length >= 1, view_before: s0.view, layer_before: s0.memory === null, placing_view: s1.view, three: s1.three, pitch: s1.ghost && Math.round(0) };
+    assert(threeReq.length >= 1 && s0.view === "light" && s0.memory === null && s1.view === "3d" && s1.three === "ready", JSON.stringify(out.akimat_1366_ru));
   }
   return { status: "PASS", detail: out };
 });
