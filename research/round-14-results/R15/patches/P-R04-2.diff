@@ -1,0 +1,50 @@
+diff --git a/ui/civic_ml_api/profanity.py b/ui/civic_ml_api/profanity.py
+index 1924deaa..41cf8c5e 100644
+--- a/ui/civic_ml_api/profanity.py
++++ b/ui/civic_ml_api/profanity.py
+@@ -329,7 +329,17 @@ def moderation(text) -> dict:
+ 
+ # --------------------------------------------------------------------------- JSON-ответы API
+ # Ключи, под которыми только геометрия и числа: их не обходим (ответ тепловой карты — в основном координаты).
+-_SKIP_KEYS = frozenset({"geometry", "coordinates", "bbox", "point", "points"})
++_SKIP_KEYS = frozenset({"geometry", "coordinates", "bbox", "point", "points",
++                        # R15-S26: машинные строки — не текст людей. В случайных символах base64 фото, CSRF-токена,
++                        # номера квитанции и id часто попадается «грубое» латинское сочетание: звёздочки ломают фото
++                        # (13 из 20 по 300 КБ) и токены (вход сотрудника, квитанция, «Мои обращения»).
++                        "data_url", "csrf_token", "receipt", "code", "id", "device_id", "token", "url", "href", "src",
++                        "sha256", "mime"})
++_MACHINE = re.compile(r"^(?:data:|https?://)|^[A-Za-z0-9+/=_-]{16,}$")
++
++
++def _skip_key(key) -> bool:
++    return key in _SKIP_KEYS or (isinstance(key, str) and key.endswith(("_id", "_ids", "_url", "_token")))
+ _CLEAN = object()                       # метка «строка проверена, грубых слов нет» в кэше строк
+ _STR_CACHE: dict = {}                   # строка -> _CLEAN или текст со звёздочками
+ _STR_CACHE_MAX = 100_000
+@@ -339,6 +349,8 @@ _STR_CACHE_LEN = 2_000                  # длинные строки не кэ
+ def _masked_or_none(text: str):
+     """Текст со звёздочками или None, если грубых слов нет. Подписи целей повторяются из ответа в ответ —
+     проверенные строки берутся из кэша."""
++    if _MACHINE.match(text):                          # R15-S26: токены, base64, ссылки
++        return None
+     hit = _STR_CACHE.get(text)
+     if hit is None:
+         masked = mask(text)
+@@ -362,7 +374,7 @@ def _needs_mask(obj) -> bool:
+                 return True
+         elif kind is dict:
+             for key, value in item.items():
+-                if key not in _SKIP_KEYS and value is not None and type(value) not in (int, float, bool):
++                if not _skip_key(key) and value is not None and type(value) not in (int, float, bool):
+                     push(value)
+         elif kind is list or kind is tuple:
+             stack.extend(item)
+@@ -376,7 +388,7 @@ def _walk(obj):
+     if isinstance(obj, dict):
+         total, out = 0, {}
+         for key, value in obj.items():
+-            if key in _SKIP_KEYS:
++            if _skip_key(key):
+                 out[key] = value
+                 continue
+             out[key], n = _walk(value)
