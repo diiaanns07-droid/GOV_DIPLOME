@@ -101,6 +101,8 @@ class ComplaintStore:
     def __init__(self, db_path, *, clock: Callable[[], datetime] | None = None, limits: dict | None = None):
         self.clock = clock or (lambda: datetime.now(rec.ASTANA_TZ))
         self.limits = {**DEFAULT_LIMITS, **(limits or {})}
+        # R15-S04/S12: target_lookup(target) -> форма и подписи цели с карты R12 (подключает R01) или None.
+        self.target_lookup = None
         self._lock = threading.RLock()
         self._listeners: list[Callable[[dict], None]] = []
         self.db_path = str(db_path)
@@ -235,8 +237,8 @@ class ComplaintStore:
             source = "resident"
         point = rec.parse_point(payload.get("point"))
         # Жалоба всегда имеет цель: нет выбранной цели -> ячейка «примерное место».
-        target = rec.parse_target(payload["target"]) if payload.get("target") is not None \
-            else rec.cell_target(*point)
+        target = rec.checked_target(rec.parse_target(payload["target"]), point, self.target_lookup) \
+            if payload.get("target") is not None else rec.cell_target(*point)
         district = payload.get("district")
         if district is not None and (not isinstance(district, str) or not rec.DISTRICT.match(district)):
             district = None
@@ -437,6 +439,23 @@ class ComplaintStore:
             item["metoo_at"] = row[1]
             result.append(item)
         return result
+
+    def place_reporters(self, record: dict, *, days: int = 14) -> int:
+        """Сколько людей сообщили о том же на этом месте: жалобы той же цели и категории (кроме отклонённых и дублей —
+        люди дубля уже перенесены в исходную), поданные в пределах ±days от этой. Для «Мои обращения»: то же число, что
+        житель видел на шаге «Я тоже», даже если о проблеме подали несколько отдельных жалоб; после «исправлено» не меняется."""
+        own = rec.reporters(record)
+        target_id = (record.get("target") or {}).get("id")
+        created = rec.parse_iso(record.get("created_at"))
+        if not target_id or not record.get("category") or created is None:
+            return own
+        span = timedelta(days=days).total_seconds()
+        with self._lock:
+            rows = self._db.execute(
+                "SELECT record_json FROM complaints_v2 WHERE target_id = ? AND category = ? AND status != 'rejected' "
+                "AND duplicate_of IS NULL AND created_ts BETWEEN ? AND ?",
+                (target_id, record["category"], created.timestamp() - span, created.timestamp() + span)).fetchall()
+        return max(own, sum(rec.reporters(json.loads(row[0])) for row in rows))
 
     def is_author(self, complaint_id: str, device_id: str) -> bool:
         try:

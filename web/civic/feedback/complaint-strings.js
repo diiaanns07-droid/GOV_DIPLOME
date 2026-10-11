@@ -3,7 +3,7 @@
  * Это ЗАПАСНОЙ словарь: если подключён web/civic/i18n/i18n.js (R11) и в нём есть ключ,
  * берётся перевод R11. Ключи и черновики переводов передаются R11 в INTEGRATION.txt;
  * после того как R11 перенесёт их в ru.json / kk.json, этот файл можно не подключать.
- * Казахский — черновик R09; сомнительные места помечены в research/round-14-results/R09/I18N_KEYS.md.
+ * Значения выровнены со словарём R11 (claude/r14-R11 @ 52d7c59, ночь раунда 14): при расхождении прав R11.
  * Формы чисел ru: {one, few, many}; в kk существительное после числа не меняется — одна строка.
  */
 (function () {
@@ -17,14 +17,15 @@
       "complaint.wizard.next": "Далее",
 
       "complaint.step2.title": "Где проблема?",
-      "complaint.step2.hint": "Нажмите на карту или определите место автоматически.",
+      "complaint.step2.hint": "Нажмите на карту или определите ваше место",
       "complaint.step2.locate": "Моё местоположение",
-      "complaint.step2.locating": "Определяем место…",
+      "complaint.step2.locating": "Определяем ваше место…",
       "complaint.step2.locate_failed": "Не удалось определить место. Нажмите на карту.",
       "complaint.step2.loading": "Ищем, что рядом…",
       "complaint.step2.question": "Это здесь?",
       "complaint.step2.choose": "Выберите, о чём жалоба",
-      "complaint.step2.distance": "в {n} м",
+      "complaint.step2.distance": "{n} м",
+      "complaint.step2.here": "Вы здесь",
       "complaint.step2.other_place": "Другое место",
       "complaint.step2.approximate": "Примерное место",
       "complaint.step2.approximate_hint": "Отметим область около точки. Акимат уточнит место.",
@@ -35,7 +36,7 @@
       "complaint.step3.label": "Опишите проблему",
       "complaint.step3.example": "Например: «{example}»",
       "complaint.step3.privacy": "Не пишите телефон и ИИН: текст увидят только сотрудники акимата.",
-      "complaint.step3.too_short": "Напишите хотя бы пару слов.",
+      "complaint.step3.too_short": "Опишите проблему хотя бы в нескольких словах",
       "complaint.step3.suggested": "Похоже на:",
       "complaint.step3.change": "Сменить категорию",
       "complaint.step3.choose": "Выберите категорию",
@@ -44,7 +45,7 @@
       "complaint.step3.sending": "Отправляем…",
 
       "complaint.step4.title": { "one": "Об этом уже сообщил {n} человек", "few": "Об этом уже сообщили {n} человека", "many": "Об этом уже сообщили {n} человек" },
-      "complaint.step4.hint": "Нажмите «Я тоже» — так жалоба станет весомее, а не потеряется среди копий.",
+      "complaint.step4.hint": "Нажмите «Я тоже» — так жалоба станет весомее и не потеряется среди повторов",
       "complaint.step4.ago_days": { "one": "{n} день назад", "few": "{n} дня назад", "many": "{n} дней назад" },
       "complaint.step4.today": "сегодня",
       "complaint.step4.metoo": "Я тоже",
@@ -58,7 +59,7 @@
       "complaint.step5.code_label": "Номер обращения:",
       "complaint.step5.copy": "Скопировать",
       "complaint.step5.copied": "Номер скопирован",
-      "complaint.step5.due": "Ответ — до {date}",
+      "complaint.step5.due": "Ответ до {date}",
       "complaint.step5.mine": "Мои обращения",
       "complaint.step5.to_map": "На карту",
 
@@ -108,16 +109,17 @@
       "complaint.wizard.next": "Әрі қарай",
 
       "complaint.step2.title": "Мәселе қай жерде?",
-      "complaint.step2.hint": "Картаны басыңыз немесе орныңызды автоматты түрде анықтаңыз.",
+      "complaint.step2.hint": "Картаны басыңыз немесе орныңызды анықтаңыз",
       "complaint.step2.locate": "Менің орным",
-      "complaint.step2.locating": "Орын анықталуда…",
+      "complaint.step2.locating": "Орныңыз анықталып жатыр…",
       "complaint.step2.locate_failed": "Орынды анықтау мүмкін болмады. Картаны басыңыз.",
       "complaint.step2.loading": "Маңайдағы нысандарды іздеп жатырмыз…",
       "complaint.step2.question": "Осы жерде ме?",
       "complaint.step2.choose": "Шағым неге қатысты екенін таңдаңыз",
-      "complaint.step2.distance": "{n} м жерде",
+      "complaint.step2.distance": "{n} м",
+      "complaint.step2.here": "Сіз осындасыз",
       "complaint.step2.other_place": "Басқа орын",
-      "complaint.step2.approximate": "Шамамен орны",
+      "complaint.step2.approximate": "Шамамен көрсетілген орын",
       "complaint.step2.approximate_hint": "Нүктенің маңайындағы аумақты белгілейміз. Әкімдік орнын нақтылайды.",
       "complaint.step2.selected": "Таңдалды: {label}",
       "complaint.step2.pick_again": "Басқа нүктені таңдау үшін картаны басыңыз.",
@@ -126,8 +128,8 @@
       "complaint.step3.label": "Мәселені сипаттаңыз",
       "complaint.step3.example": "Мысалы: «{example}»",
       "complaint.step3.privacy": "Телефон мен ЖСН жазбаңыз: мәтінді тек әкімдік қызметкерлері көреді.",
-      "complaint.step3.too_short": "Кемінде бірер сөз жазыңыз.",
-      "complaint.step3.suggested": "Ұқсайды:",
+      "complaint.step3.too_short": "Мәселені бірнеше сөзбен болса да сипаттаңыз",
+      "complaint.step3.suggested": "Ұқсас санат:",
       "complaint.step3.change": "Санатты өзгерту",
       "complaint.step3.choose": "Санатты таңдаңыз",
       "complaint.step3.chosen": "Санат:",
@@ -135,27 +137,27 @@
       "complaint.step3.sending": "Жіберілуде…",
 
       "complaint.step4.title": "Бұл туралы {n} адам хабарлаған",
-      "complaint.step4.hint": "«Мен де» түймесін басыңыз — шағым салмақты болады, көшірмелер арасында жоғалмайды.",
+      "complaint.step4.hint": "«Мен де» деп белгілесеңіз, шағым күштірек болады және қайталанбайды",
       "complaint.step4.ago_days": "{n} күн бұрын",
       "complaint.step4.today": "бүгін",
       "complaint.step4.metoo": "Мен де",
-      "complaint.step4.different": "Менікі басқа",
+      "complaint.step4.different": "Менде басқа мәселе",
 
       "complaint.step5.title": "Өтініш жіберілді",
-      "complaint.step5.metoo_title": "Дауысыңыз есептелді",
+      "complaint.step5.metoo_title": "Сіздің дауысыңыз есепке алынды",
       "complaint.step5.metoo_count": "Енді {n} адам хабарлады",
       "complaint.step5.already": "Сіз бұл мәселе бойынша «Мен де» түймесін бұрын басқансыз.",
       "complaint.step5.author": "Бұл — сіздің өтінішіңіз, сіз хабарлағандардың қатарындасыз.",
       "complaint.step5.code_label": "Өтініш нөмірі:",
       "complaint.step5.copy": "Көшіру",
       "complaint.step5.copied": "Нөмір көшірілді",
-      "complaint.step5.due": "Жауап — {date} дейін",
+      "complaint.step5.due": "Жауап мерзімі: {date}",
       "complaint.step5.mine": "Менің өтініштерім",
       "complaint.step5.to_map": "Картаға",
 
       "complaint.error.send": "Жіберу мүмкін болмады. Байланысты тексеріп, қайталаңыз.",
       "complaint.error.retry": "Қайталау",
-      "complaint.error.too_many": "Өтініштер тым көп. Кейінірек қайталаңыз.",
+      "complaint.error.too_many": "Қатарынан тым көп өтініш жіберілді. Кейінірек қайталаңыз.",
       "complaint.error.outside": "Бұл орын Астанадан тыс. Қаладағы нүктені таңдаңыз.",
 
       "mine.title": "Менің өтініштерім",
@@ -171,7 +173,7 @@
 
       "status.new": "Жаңа",
       "status.accepted": "Қабылданды",
-      "status.in_progress": "Жұмыста",
+      "status.in_progress": "Орындалуда",
       "status.fixed": "Түзетілді",
       "status.rejected": "Қабылданбады",
       "common.demo": "Үлгі",
@@ -186,9 +188,9 @@
       "complaint.example.yards": "Балалар алаңы сынған",
       "complaint.example.waste": "Қоқыс жәшіктері үш күннен бері толы",
       "complaint.example.utilities": "Үйде ыстық су жоқ",
-      "complaint.example.smell_air": "Кешке қатты түтін иісі шығады",
+      "complaint.example.smell_air": "Кешке қатты күйік иісі шығады",
       "complaint.example.noise_safety": "Мектеп жанында жаяу жүргіншілер өткелі жоқ",
-      "complaint.example.parking": "Аулада көліктер көгалға тұрады",
+      "complaint.example.parking": "Аулада көліктер көгалда тұрады",
       "complaint.example.other": "Өз сөзіңізбен сипаттаңыз"
     }
   };

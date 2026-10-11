@@ -3,6 +3,7 @@
   python -m ui.civic_feedback.v2 migrate --v1 <civic.sqlite3> [--db <v2.sqlite3>] [--real]
   python -m ui.civic_feedback.v2 stats --db <v2.sqlite3>
   python -m ui.civic_feedback.v2 events --db <v2.sqlite3> [--after N]
+  python -m ui.civic_feedback.v2 seed-demo --db <v2.sqlite3>     # демо-жалобы «Пример» для показа (R10 B-030)
 
 По умолчанию перенесённые записи помечаются demo=true (происхождение старых строк неизвестно,
 выдавать синтетику за реальные обращения нельзя). --real — только если владелец подтвердил.
@@ -12,6 +13,7 @@ import argparse
 import json
 import sys
 
+from .demo_seed import seed_demo
 from .migrate import migrate
 from .store import ComplaintStore
 
@@ -28,6 +30,8 @@ def main(argv=None) -> int:
     e = sub.add_parser("events")
     e.add_argument("--db", required=True)
     e.add_argument("--after", type=int, default=0)
+    d = sub.add_parser("seed-demo", help="засеять синтетические демо-жалобы (demo: true) у остановки из сценария")
+    d.add_argument("--db", required=True)
     args = parser.parse_args(argv)
 
     store = ComplaintStore(args.db or args.v1)
@@ -41,6 +45,8 @@ def main(argv=None) -> int:
                 by_status[item["status"]] = by_status.get(item["status"], 0) + 1
             out = {"total": len(items), "by_status": by_status, "overdue": len(store.overdue()),
                    "demo": sum(1 for i in items if i.get("demo"))}
+        elif args.cmd == "seed-demo":
+            out = seed_demo(store)
         else:
             out = store.events_since(args.after)
     finally:

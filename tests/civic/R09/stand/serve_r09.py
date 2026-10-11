@@ -98,6 +98,8 @@ class Stand:
         # Вызываются так же, как в шлюзе R01 (ui/web_server.py, CivicV2Gateway): функция -> тело ответа как есть.
         self.geo = importlib.import_module("engine.civic_geo") if real_geo else None
         self.mlapi = importlib.import_module("ui.civic_ml_api") if real_ml and ml else None
+        # Цель жалобы сверяется с картой, как в сборке (R15 S04/S12): настоящий R12 или эта же FIXTURE.
+        self.store.target_lookup = self.geo.target_geometry if self.geo is not None else self.target_geometry
         if self.geo is not None:
             self.geo.targets(71.43, 51.13, None)          # прогрев графа (~2–4 с), как должен делать R01 при старте
         if self.mlapi is not None:
@@ -147,6 +149,22 @@ class Stand:
                 break
         scored.sort(key=lambda item: item[0])
         return [candidate for _, candidate in scored[:3]]
+
+    def target_geometry(self, target):
+        """FIXTURE R12 target_geometry: форма и подписи цели по id (те же, что предлагает /targets стенда)."""
+        tid = (target or {}).get("id")
+        for item in self.objects.items:
+            if item["target"]["id"] == tid:
+                t = item["target"]
+                return {"geometry": item["geometry"], "label_ru": t.get("label_ru"), "label_kk": t.get("label_kk"),
+                        "approximate": bool(t.get("approximate"))}
+        for edge in self.edges:
+            if edge["id"] == tid:
+                name = edge.get("name") or ""
+                return {"geometry": {"type": "LineString", "coordinates": edge["geometry"]},
+                        "label_ru": f"Участок: {name}" if name else "Участок улицы",
+                        "label_kk": f"Көше бөлігі: {name}" if name else "Көше бөлігі", "approximate": False}
+        return None
 
     # ---------------------------------------------------------- FIXTURE R04
     def classify(self, text):

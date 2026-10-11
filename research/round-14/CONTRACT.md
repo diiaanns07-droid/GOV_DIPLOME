@@ -53,7 +53,11 @@
 | R10 Приёмка | `tests/civic/R10/`, `tests/e2e/` |
 | R11 UX и казахский | `web/civic/ui-kit/`, `web/civic/i18n/`, `tests/civic/R11/` |
 | R12 Точность карты | `engine/civic_geo/`, `data/civic/astana/geo/`, `web/civic/map/`, `web/civic/editor/`, `tests/civic/R12/` |
-| LOCAL (Codex на ноутбуке) | `data/civic/astana/osm-objects/`, `data/civic/astana/nura-real/`, `web/vendor/three/` (первичная загрузка) |
+| R13 Прогноз (прототип) | `ml/civic_forecast/`, `ui/civic_forecast/`, `tests/civic/R13/` |
+| R14 Диплом и документация | `docs/birge/`, `docs/diploma/` |
+| R15 Ревью безопасности | `tests/civic/R15/` (чужой код — только patch в INTEGRATION.txt) |
+| Вторая волна (11 окт) | R06 + `web/civic/ideas/`, `web/civic/notify/`; R08 + `web/civic/done/`, `web/civic/stats/`; R12 + `web/civic/qr/`; R13 + `ui/civic_qa/`, `web/civic/qa/`, `tests/civic/R13/qa/`; R04 + `ml/civic_replies/`; LOCAL + `web/vendor/qrcode/` |
+| LOCAL (Codex на ноутбуке) | `data/civic/astana/osm-objects/`, `data/civic/astana/nura-real/`, `data/civic/astana/weather/`, `web/vendor/three/` (первичная загрузка) |
 
 Заморожено в этом раунде: `engine/` (кроме `engine/civic_scenarios/` только чтение), `agent/`, `web/govtech/`, Шымкент, `legacy/`.
 
@@ -70,6 +74,7 @@
 - `object` — реальный объект из OSM: остановка, площадка, спортплощадка, парк. `id` = `osm-node-<id>` / `osm-way-<id>`.
 - `segment` — участок улицы. `id` = id ребра пешеходного графа `osm-w<way>-<n>` из `engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json` (у каждого ребра есть настоящая форма улицы).
 - `area` — двор/квартал (`yard-<id>`, из OSM landuse=residential) или ячейка ~150 м (`cell-<id>`) там, где двора нет.
+- Для объектов-отношений OSM допускается `osm-relation-<id>` (R10 B-010).
 
 Выбор target делает R12 (`engine/civic_geo`): по точке и категории возвращает 1–3 ближайших кандидата.
 

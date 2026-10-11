@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import sqlite3
 from datetime import timedelta
 from urllib.parse import parse_qs, unquote, urlsplit
@@ -187,7 +188,8 @@ class ComplaintsV2Service:
         if not _is_staff(principal):
             raise ApiError(403, "forbidden", "Действие доступно только сотрудникам акимата.")
         check = getattr(principal, "check_csrf", None)
-        if callable(check) and not check(_header(context, "X-CSRF-Token")):
+        # R15-S05: нет проверки CSRF у principal (другой формат сессии) — отказ, а не пропуск.
+        if not callable(check) or not check(_header(context, "X-CSRF-Token")):
             raise ApiError(403, "csrf_failed", "Сессия устарела. Обновите страницу.")
 
     @staticmethod
@@ -245,6 +247,7 @@ class ComplaintsV2Service:
             relation = record.pop("relation")
             view = rec.author_view(record) if relation == "author" else rec.public_view(record)
             view["relation"] = relation
+            view["place_reporters"] = self.store.place_reporters(record)
             if relation == "metoo":
                 view["steps"] = rec.resident_steps(record)
                 view["metoo_at"] = record.get("metoo_at")
@@ -266,7 +269,9 @@ class ComplaintsV2Service:
         category = params.get("category") or None
         if category and not categories.is_category(category):
             raise ApiError(422, "invalid", "Неизвестная категория.", {"category": ",".join(categories.ids())})
-        days = int(params["days"]) if params.get("days", "").isdigit() else 14
+        # R15-S06: только ASCII-цифры: str.isdigit() пропускает «²», а int() на нём падает (500).
+        raw_days = params.get("days", "")
+        days = int(raw_days) if re.fullmatch(r"[0-9]{1,4}", raw_days) else 14
         return _ok(200, self.store.target_summary(target_id, days=max(1, min(days, 90)), category=category))
 
     def _place(self, *, params, body, principal, context):

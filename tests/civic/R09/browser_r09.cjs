@@ -66,10 +66,10 @@ async function newPage(browser, base, width, height, lang) {
   return page;
 }
 
-async function clickMapAt(page, point) {
+async function centerOn(page, point, zoom = 17) {
   // Точку ставим в середину видимой части карты (на телефоне снизу шторка, на ноутбуке справа панель):
   // jumpTo + panBy без анимации, затем проверяем, что точка действительно в видимой области.
-  const xy = await page.evaluate(async (p) => {
+  return page.evaluate(async ([p, zoom]) => {
     const map = window.standMap;
     const canvas = map.getCanvas().getBoundingClientRect();
     const panel = document.querySelector(".bc-panel");
@@ -79,7 +79,7 @@ async function clickMapAt(page, point) {
     const bottom = r && mobile ? r.top : canvas.bottom;
     const want = { x: (canvas.left + right) / 2, y: (canvas.top + bottom) / 2 };
     for (let i = 0; i < 3; i++) {
-      map.jumpTo({ center: p, zoom: 17 });
+      map.jumpTo({ center: p, zoom });
       const q = map.project(p);
       map.panBy([canvas.left + q.x - want.x, canvas.top + q.y - want.y], { duration: 0 });
       await new Promise((ok) => setTimeout(ok, 150));
@@ -89,7 +89,11 @@ async function clickMapAt(page, point) {
     }
     const q = map.project(p);
     return { x: canvas.left + q.x, y: canvas.top + q.y, unstable: true };
-  }, point);
+  }, [point, zoom]);
+}
+
+async function clickMapAt(page, point) {
+  const xy = await centerOn(page, point);
   const tap = async () => {
     if (page.viewportSize().width < 1024) await page.touchscreen.tap(xy.x, xy.y); else await page.mouse.click(xy.x, xy.y);
   };
@@ -151,8 +155,24 @@ async function checkGridWords(page, tag) {
         res.count === 12 && res.broken.length === 0 && res.columns >= 1 && res.columns <= 3, res.broken.join(", "));
 }
 
+// UX_BRIEF №2: в панели жалобы текст не мельче 14 px, кнопки и поля не ниже 44 px (ui-kit даёт 48).
+async function uxSizes(page) {
+  return page.evaluate(() => {
+    const bad = [];
+    document.querySelectorAll(".bc-panel:not([hidden]) *, .bc-fab").forEach((n) => {
+      const r = n.getBoundingClientRect();
+      if (!r.width || getComputedStyle(n).visibility === "hidden") return;
+      const own = [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim());
+      if (own && parseFloat(getComputedStyle(n).fontSize) < 14) bad.push("text " + n.textContent.trim().slice(0, 24) + " " + getComputedStyle(n).fontSize);
+      if (/^(BUTTON|A|INPUT|TEXTAREA)$/.test(n.tagName) && r.height < 44) bad.push("tap " + n.textContent.trim().slice(0, 24) + " " + Math.round(r.height));
+    });
+    return bad;
+  });
+}
+
 async function shot(page, name) {
-  if (shotDir) await page.screenshot({ path: path.join(shotDir, name + ".png") });
+  // Дать закончиться анимациям шторки и тоста (240–300 мс), иначе кадр ловит полупрозрачное промежуточное состояние.
+  if (shotDir) { await page.waitForTimeout(450); await page.screenshot({ path: path.join(shotDir, name + ".png") }); }
 }
 
 async function residentPath(browser, base, hot, lang, width, height, tag) {
@@ -209,6 +229,8 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   const ticks = await page.$eval(".bc-cat-row .bk-chip[aria-pressed='true']", (c) => ({
     inText: (c.textContent.match(/✓/g) || []).length, before: getComputedStyle(c, "::before").content }));
   check(`${tag}: [R11-6] одна галочка в чипе категории`, ticks.inText === 0 && /✓/.test(ticks.before), JSON.stringify(ticks));
+  const sizes3 = await uxSizes(page);
+  check(`${tag}: [UX] шаг 3 — текст ≥ 14 px, кнопки ≥ 44 px`, sizes3.length === 0, sizes3.join("; "));
   const chip = await page.textContent(".bc-cat-row");
   check(`${tag}: подсказка категории чипом`, lang === "kk" ? /Аялдамалар мен көлік/.test(chip) : /Остановки и транспорт/.test(chip), chip.trim());
   await shot(page, `${tag}-3-text`);
@@ -217,10 +239,25 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   const title4 = await page.textContent(".bc-title");
   const before = Number((title4.match(/\d+/) || [0])[0]);
   check(`${tag}: шаг 4 «уже сообщили N» (N ≥ 7 по демо-цели)`, before >= 7, title4);
+  const demoTag = await page.$$eval(".bc-similar .bk-tag--demo", (x) => x.map((e) => e.textContent.trim()));
+  check(`${tag}: похожая демо-жалоба на шаге 4 помечена «Пример»`, demoTag.length === 1, demoTag.join());
   const leak = await page.evaluate(() => document.querySelector(".bc-panel").innerText.includes("нет крыши") &&
     !document.querySelector("#bc-text"));
   check(`${tag}: чужой текст жалобы не показан`, !leak);
   await shot(page, `${tag}-4-similar`);
+  if (tag === "375-ru") {
+    // R15 (ночь): лимит «Я тоже» (429) — понятное сообщение без «Повторить» (повтор снова упрётся в лимит).
+    await page.route("**/metoo", (route) => route.fulfill({ status: 429, contentType: "application/json",
+      body: JSON.stringify({ ok: false, error: { code: "too_many_requests" }, retry_after: 60 }) }));
+    await page.click(".bc-panel[data-step='4'] .bk-btn--primary");
+    await page.waitForSelector(".bc-toast:not([hidden])", { timeout: 8000 });
+    const limited = await page.$eval(".bc-toast", (t) => ({ text: t.textContent, retry: !!t.querySelector(".bk-btn") }));
+    check(`${tag}: [R15] «Я тоже» при лимите — сообщение без «Повторить»`, !limited.retry && /много|көп/.test(limited.text),
+          JSON.stringify(limited));
+    await page.unroute("**/metoo");
+    page.problems = page.problems.filter((p) => !/^429 .*\/metoo$/.test(p));   // 429 подставлен тестом намеренно
+    await page.click(".bc-toast .bc-toast__close");
+  }
   await page.click(".bc-panel[data-step='4'] .bk-btn--primary"); taps++;
   await page.waitForSelector(".bc-panel[data-step='5']");
   const done = await page.textContent(".bc-panel");
@@ -229,8 +266,11 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   check(`${tag}: путь за ${taps} нажатий + текст, ${elapsed.toFixed(1)} с автоматом`, taps <= 6 && elapsed < 30);
   const events = await page.evaluate(() => window.standEvents);
   check(`${tag}: событие birge:complaint для тепловой карты`, events.length === 1 && events[0].type === "metoo" &&
-    events[0].target && events[0].target.id === hot.target.id && events[0].reporters === before + 1, JSON.stringify(events));
+    events[0].target && events[0].target.id === hot.target.id && events[0].reporters >= 2 && events[0].reporters <= before + 1,
+    JSON.stringify(events));
   await shot(page, `${tag}-5-done`);
+  const sizes5 = await uxSizes(page);
+  check(`${tag}: [UX] шаг 5 — текст ≥ 14 px, кнопки ≥ 44 px`, sizes5.length === 0, sizes5.join("; "));
   check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(page));
   const keys = await visibleKeys(page);
   check(`${tag}: нет ключей и технических слов`, keys.length === 0, keys.join(", "));
@@ -303,6 +343,110 @@ async function newComplaintAndMine(browser, base, lang, width, height, tag, poin
   await page.context().close();
 }
 
+// UX_BRIEF правило 7: у «Мои обращения» есть загрузка (скелетон), «пока пусто» с подсказкой и ошибка с «Повторить».
+async function mineStates(browser, base, lang, width, height, tag) {
+  const page = await newPage(browser, base, width, height, lang);
+  const MINE = "**/api/civic/v2/complaints/mine";
+  await page.route(MINE, async (route) => { await new Promise((ok) => setTimeout(ok, 2500)); await route.continue(); });
+  await page.evaluate(() => window.standUi.openMine());
+  const loading = await page.waitForSelector(".bc-panel .bc-loading .bk-skel", { timeout: 3000 }).then(() => true, () => false);
+  const loadingText = loading ? (await page.textContent(".bc-panel .bc-loading")).trim() : "";
+  check(`${tag}: «Мои обращения» — загрузка: скелетон и «${loadingText}»`, loading && /Загружаем|жүктелуде/.test(loadingText));
+  await shot(page, `${tag}-mine-loading`);
+  await page.waitForSelector(".bc-panel .bk-empty", { timeout: 8000 });
+  if (width < 1024) {
+    // Пусто — шторка по содержимому, без пустого белого низа (UX_BRIEF правило 7); карта над ней видна.
+    await page.waitForTimeout(400);
+    const sheet = await page.evaluate(() => { const p = document.querySelector(".bc-panel"); const r = p.getBoundingClientRect();
+      const last = p.querySelector(".bk-empty button").getBoundingClientRect();
+      return { snap: p.dataset.snap, top: Math.round(r.top), gap: Math.round(r.bottom - last.bottom), h: innerHeight }; });
+    check(`${tag}: «Мои обращения» пусто — шторка по содержимому (верх ${sheet.top} px, под кнопкой ${sheet.gap} px)`,
+          sheet.snap === "peek" && sheet.top > sheet.h * 0.4 && sheet.gap < 120, JSON.stringify(sheet));
+  }
+  const empty = await page.evaluate(() => {
+    const box = document.querySelector(".bc-panel .bk-empty"); const b = box.querySelector("button").getBoundingClientRect();
+    return { title: box.querySelector(".bk-empty__title").textContent.trim(), text: box.textContent.trim(), h: Math.round(b.height) };
+  });
+  check(`${tag}: «Мои обращения» — пусто: «${empty.title}», подсказка и кнопка «Сообщить» (${empty.h} px)`,
+        /ничего не отправляли|ештеңе жібермедіңіз/.test(empty.title) && /Сообщить о проблеме|Мәселе туралы хабарлау/.test(empty.text)
+        && empty.h >= 48, JSON.stringify(empty));
+  await shot(page, `${tag}-mine-empty`);
+  await page.unroute(MINE);
+  await page.route(MINE, (route) => route.abort());
+  await page.evaluate(() => window.standUi.openMine());
+  await page.waitForSelector(".bc-panel .bk-error", { timeout: 8000 });
+  const error = await page.evaluate(() => {
+    const box = document.querySelector(".bc-panel .bk-error"); const b = box.querySelector("button").getBoundingClientRect();
+    return { title: box.querySelector(".bk-error__title").textContent.trim(), button: box.querySelector("button").textContent.trim(),
+             role: box.getAttribute("role"), h: Math.round(b.height) };
+  });
+  check(`${tag}: «Мои обращения» — нет связи: «${error.title}» и «${error.button}» (${error.h} px)`,
+        /Нет связи|байланыс жоқ/.test(error.title) && /Повторить|Қайталау/.test(error.button) && error.role === "alert" && error.h >= 48, JSON.stringify(error));
+  await shot(page, `${tag}-mine-error`);
+  await page.unroute(MINE);
+  await page.click(".bc-panel .bk-error button");
+  const back = await page.waitForSelector(".bc-panel .bk-empty", { timeout: 8000 }).then(() => true, () => false);
+  check(`${tag}: «Повторить» загружает снова`, back);
+  await page.click(".bc-panel .bk-empty button");
+  const wizard = await page.waitForSelector(".bc-panel[data-step='2']", { timeout: 5000 }).then(() => true, () => false);
+  check(`${tag}: кнопка из пустого списка открывает «Где проблема?»`, wizard);
+  check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(page));
+  const keys = await visibleKeys(page);
+  check(`${tag}: нет ключей и технических слов`, keys.length === 0, keys.join(", "));
+  check(`${tag}: нет ошибок консоли`, page.problems.filter((p) => !/Failed to load resource|ERR_FAILED/.test(p)).length === 0,
+        page.problems.join(" | "));
+  await page.context().close();
+}
+
+// Несколько ОТДЕЛЬНЫХ жалоб об одном и том же на одном месте (так засевает демо R01): «Об этом уже сообщили N» —
+// все люди по месту и категории (как число на значке карты), а не только самая похожая жалоба; после «Я тоже» — N+1.
+async function placeTotal(browser, base, lang, width, height, tag, point) {
+  const api = async (method, p, body, device) => (await fetch(base + "/api/civic/v2" + p, { method,
+    headers: { "Content-Type": "application/json", "X-Birge-Device": device }, body: body ? JSON.stringify(body) : undefined })).json();
+  const text = "Во дворе разбита детская площадка, сломаны качели";
+  // Первая жалоба с заведомо далёкой целью: сервер сам ставит «примерное место» у точки (R15 S12) — берём его как цель.
+  const a = await api("POST", "/complaints", { text, category: "yards", point, target: { kind: "object", id: "osm-node-1" } }, "dev-r09-place-total-a1");
+  const target = a.data.complaint.target;
+  await api("POST", "/complaints", { text: text + " и скамейка", category: "yards", point, target }, "dev-r09-place-total-b2");
+  const b = await api("GET", `/complaints/summary?target_id=${encodeURIComponent(target.id)}&category=yards&days=14`, null, "dev-r09-place-total-c3");
+  const page = await newPage(browser, base, width, height, lang);
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  await clickMapAt(page, point);
+  await page.waitForSelector(".bc-panel[data-step='3'], .bc-option", { timeout: 8000 });
+  if (await page.$(".bc-option")) await page.click(".bc-option.bk-btn--ghost, .bc-option:has-text('Примерн'), .bc-option:has-text('Шамамен')");
+  await page.waitForSelector(".bc-panel[data-step='3']", { timeout: 8000 });
+  await page.fill("#bc-text", text);
+  // Модель стенда по словам «двор», «площадка» подсказывает «Дворы и площадки» — как у двух жалоб выше.
+  await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 8000 });
+  await page.click(".bc-send");
+  const step4 = await page.waitForSelector(".bc-panel[data-step='4']", { timeout: 10000 }).then(() => true, () => false);
+  const title = step4 ? (await page.textContent(".bc-title")).trim() : "";
+  const n = Number((title.match(/\d+/) || [0])[0]);
+  check(`${tag}: две отдельные жалобы на месте — «${title}» (всего людей по месту: ${b.data.reporters})`,
+        step4 && b.data.complaints === 2 && n === b.data.reporters && n === 2, JSON.stringify({ title, summary: b.data.reporters }));
+  const badge = step4 ? (await page.textContent(".bc-similar__badge")).trim() : "";
+  check(`${tag}: число на карточке похожей жалобы — то же (${badge})`, badge === String(n));
+  await shot(page, `${tag}-4-similar`);
+  if (step4) {
+    await page.click(".bc-panel[data-step='4'] .bk-btn--primary");
+    await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 8000 });
+    const lead = (await page.textContent(".bc-lead")).trim();
+    check(`${tag}: после «Я тоже» — «${lead}»`, lead.includes(String(n + 1)), lead);
+    const after = await api("GET", `/complaints/summary?target_id=${encodeURIComponent(target.id)}&category=yards&days=14`, null, "dev-r09-place-total-c3");
+    check(`${tag}: на сервере людей по месту стало ${n + 1}, жалоб по-прежнему 2`, after.data.reporters === n + 1 && after.data.complaints === 2,
+          JSON.stringify(after.data && { reporters: after.data.reporters, complaints: after.data.complaints }));
+    await shot(page, `${tag}-5-done`);
+    await page.click(".bc-panel[data-step='5'] .bk-btn--primary");
+    await page.waitForSelector(".bc-mine__card", { timeout: 8000 });
+    const card = (await page.textContent(".bc-mine__card")).replace(/\s+/g, " ");
+    check(`${tag}: в «Мои обращения» — то же число людей (${n + 1}), что на шаге «Я тоже»`, card.includes(String(n + 1)), card.slice(0, 160));
+    await shot(page, `${tag}-mine`);
+  }
+  check(`${tag}: нет ошибок консоли`, page.problems.length === 0, page.problems.join(" | "));
+  await page.context().close();
+}
+
 async function withoutMl(browser, base, hot, tag) {
   const page = await newPage(browser, base, 375, 812, "ru");
   await page.click(".bc-fab");
@@ -328,6 +472,131 @@ async function withoutMl(browser, base, hot, tag) {
   await page.context().close();
 }
 
+// R10 B-019 / LOCAL №2 / R11 B1 №3: значок тепловой карты R07 (маркер MapLibre с собственным обработчиком,
+// гасящим всплытие, как в heat.js) не должен «съедать» нажатие в «Где проблема?».
+async function badgeTap(browser, base, hot, lang, width, height, tag) {
+  const page = await newPage(browser, base, width, height, lang);
+  await page.evaluate((p) => {
+    window.r07Clicks = 0;
+    const make = (kind, at) => {
+      const el = document.createElement("button");
+      el.className = "r07-badge"; el.type = "button"; el.dataset.kind = kind; el.textContent = kind === "district" ? "Нұра · 12" : "13";
+      el.style.cssText = "min-width:40px;height:32px;border-radius:16px;background:#a32d2d;color:#fff;border:2px solid #fff";
+      el.addEventListener("click", (ev) => { ev.stopPropagation(); window.r07Clicks++; });   // как R07: свой обработчик
+      return new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(at).addTo(window.standMap);
+    };
+    make("object", p);
+    make("district", [p[0] + 0.004, p[1] + 0.002]);
+  }, hot.point);
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  const picking = await page.evaluate(() => document.documentElement.classList.contains("bc-picking"));
+  await centerOn(page, hot.point);
+  const box = await page.$eval(".r07-badge[data-kind='object']", (b) => { const r = b.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+  if (width < 1024) await page.touchscreen.tap(box.x, box.y); else await page.mouse.click(box.x, box.y);
+  const offered = await page.waitForSelector(".bc-option--first", { timeout: 8000 }).then(() => true, () => false);
+  const first = offered ? (await page.textContent(".bc-option--first")).trim() : "";
+  const hotLabel = lang === "kk" ? hot.target.label_kk : hot.target.label_ru;
+  check(`${tag}: нажатие на значок тепловой карты выбирает это место («${first.slice(0, 40)}»)`,
+        picking && offered && first.startsWith(hotLabel), `bc-picking=${picking}`);
+  check(`${tag}: значок не открыл свою карточку во время выбора места`, (await page.evaluate(() => window.r07Clicks)) === 0);
+  // Значок района только приближает карту — район не место жалобы.
+  const zoom0 = await page.evaluate(() => window.standMap.getZoom());
+  await centerOn(page, [hot.point[0] + 0.004, hot.point[1] + 0.002], 12);
+  const dist = await page.$eval(".r07-badge[data-kind='district']", (b) => { const r = b.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2, visible: r.width > 0 }; });
+  const before = await page.evaluate(() => window.standAdapter.current().features.length);
+  if (dist.visible) {
+    if (width < 1024) await page.touchscreen.tap(dist.x, dist.y); else await page.mouse.click(dist.x, dist.y);
+  }
+  await page.waitForTimeout(800);
+  const after = await page.evaluate(() => ({ zoom: window.standMap.getZoom(),
+    point: JSON.stringify(window.standAdapter.current().features.find((f) => f.properties.pick) || null) }));
+  check(`${tag}: значок района приближает карту, а не выбирает место`, dist.visible && after.zoom >= 14 &&
+        (await page.evaluate(() => window.r07Clicks)) === 0, `zoom ${zoom0.toFixed(1)} -> 12 -> ${after.zoom.toFixed(1)}`);
+  // После выбора места значок снова работает как значок R07.
+  await page.keyboard.press("Escape");
+  await page.waitForSelector(".bc-panel", { state: "hidden" });
+  const after2 = await page.evaluate(() => document.documentElement.classList.contains("bc-picking"));
+  await page.$eval(".r07-badge[data-kind='object']", (b) => b.click());
+  check(`${tag}: мастер закрыт — значок снова открывает свою карточку`, !after2 &&
+        (await page.evaluate(() => window.r07Clicks)) === 1);
+  check(`${tag}: нет ошибок консоли`, page.problems.length === 0, page.problems.join(" | "));
+  await page.context().close();
+}
+
+// Ночь раунда 14: раскладка на телефоне по UX_REVIEW R11 (день 2 №7–10, B1 №2 и №8, B2 №3).
+async function phoneLayout(browser, base, hot, lang, tag) {
+  const page = await newPage(browser, base, 375, 812, lang);
+  const fab = await page.$eval(".bc-fab", (b) => { const r = b.getBoundingClientRect();
+    return { w: Math.round(r.width), h: Math.round(r.height), left: Math.round(r.left), text: b.textContent.trim() }; });
+  check(`${tag}: [R11 №7/B1 №8] «Сообщить о проблеме» во всю ширину, одна строка, 56 px`,
+        fab.w >= 340 && fab.left === 16 && fab.h >= 56 && fab.h <= 60, JSON.stringify(fab));
+  await page.evaluate(() => { const c = document.createElement("article"); c.className = "r07-card"; c.id = "fake-r07";
+    document.body.appendChild(c); });
+  const hiddenWithCard = await page.$eval(".bc-fab", (b) => getComputedStyle(b).display === "none");
+  await page.evaluate(() => document.getElementById("fake-r07").remove());
+  const backAfter = await page.$eval(".bc-fab", (b) => getComputedStyle(b).display !== "none");
+  check(`${tag}: [R11 B1 №8] кнопка спрятана, пока открыта карточка места R07`, hiddenWithCard && backAfter);
+  await page.click(".bc-fab");
+  await page.waitForSelector(".bc-panel[data-step='2']");
+  const peek = await page.$eval(".bc-panel", (p) => ({ snap: p.dataset.snap, h: Math.round(p.getBoundingClientRect().height) }));
+  check(`${tag}: [R11 B1 №2] шаг 2 до выбора места — низкая шторка (${peek.h} px), карта видна`,
+        peek.snap === "peek" && peek.h <= 300, JSON.stringify(peek));
+  // Точка внутри двора (0 м) — «Вы здесь», а не метры.
+  await page.route("**/api/civic/v2/targets**", (route) => route.fulfill({ status: 200, contentType: "application/json",
+    body: JSON.stringify({ ok: true, data: { candidates: [
+      { target: { kind: "area", id: "yard-123", label_ru: "Двор — улица Сауран", label_kk: "Аула — Сауран көшесі" }, distance_m: 0,
+        geometry: { type: "Polygon", coordinates: [[[hot.point[0] - 0.0005, hot.point[1] - 0.0003], [hot.point[0] + 0.0005, hot.point[1] - 0.0003],
+          [hot.point[0] + 0.0005, hot.point[1] + 0.0003], [hot.point[0] - 0.0005, hot.point[1] - 0.0003]]] } },
+      { target: hot.target, distance_m: 12.4, geometry: { type: "Point", coordinates: hot.point } }] } }) }));
+  await clickMapAt(page, hot.point);
+  await page.waitForSelector(".bc-option--first");
+  const metas = await page.$$eval(".bc-option .bc-option__meta", (n) => n.map((x) => x.textContent.trim()));
+  const half = await page.$eval(".bc-panel", (p) => p.dataset.snap);
+  check(`${tag}: [R11 B2 №3] точка внутри двора — «${metas[0]}», рядом — метры`,
+        metas[0] === (lang === "kk" ? "Сіз осындасыз" : "Вы здесь") && /12\s?м/.test(metas[1] || "") && half === "half",
+        JSON.stringify({ metas, half }));
+  await page.unroute("**/api/civic/v2/targets**");
+  await page.click(".bc-option--first");
+  await page.fill("#bc-text", lang === "kk" ? "Аулада шамдар жанбайды, түнде қараңғы" : "Во дворе не горят фонари, ночью темно");
+  await page.waitForTimeout(900);
+  if (!(await page.$(".bc-cat-row .bk-chip[aria-pressed='true']"))) await page.click(".bk-catgrid > button:nth-child(5)").catch(() => {});
+  await page.route("**/api/civic/v2/complaints", (route) => route.request().method() === "POST" ? route.abort() : route.continue());
+  await page.click(".bc-send");
+  await page.waitForSelector(".bc-toast:not([hidden])", { timeout: 15000 });
+  await page.waitForTimeout(400);  // замер после анимации появления
+  const toast = await page.$eval(".bc-toast", (t) => { const r = t.getBoundingClientRect(); const b = t.querySelector(".bk-btn");
+    const br = b.getBoundingClientRect(); const x = t.querySelector(".bk-iconbtn");
+    return { w: Math.round(r.width), inside: br.right <= r.right + 0.5 && br.left >= r.left - 0.5, close: !!x,
+             centred: Math.abs((r.left + r.right) / 2 - window.innerWidth / 2) < 2,
+             lines: Math.round(t.querySelector(".bk-toast__text").getBoundingClientRect().height / 20) }; });
+  check(`${tag}: [R11 №8] тост ошибки широкий (${toast.w} px), «Повторить» внутри, есть ✕`,
+        toast.w >= 330 && toast.inside && toast.close && toast.centred && toast.lines <= 3, JSON.stringify(toast));
+  await shot(page, `${tag}-toast`);
+  await page.unroute("**/api/civic/v2/complaints");
+  await page.click(".bc-toast .bk-btn");
+  await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
+  const due = await page.$$eval(".bc-panel .bc-meta", (n) => n.map((x) => x.textContent).join(" | "));
+  const months = lang === "kk" ? /Жауап мерзімі: \d{1,2}\u00a0(қаңтар|ақпан|наурыз|сәуір|мамыр|маусым|шілде|тамыз|қыркүйек|қазан|қараша|желтоқсан)/
+    : /Ответ до \d{1,2}\u00a0(янв|фев|мар|апр|мая|июн|июл|авг|сен|окт|ноя|дек)/;
+  check(`${tag}: [R11 №10/B1 №10] срок ответа — ключ complaint.step5.due и общий формат даты`, months.test(due), due);
+  const ticks = await page.$eval(".bc-panel .bk-steps", (l) => (l.textContent.match(/✓/g) || []).length);
+  check(`${tag}: [R11 №9] в шкале статуса нет своей «✓»`, ticks === 0);
+  await page.click(".bc-panel[data-step='5'] .bk-btn--primary");
+  await page.waitForSelector(".bc-mine__card");
+  const date = await page.$eval(".bc-mine__card .bc-meta", (m) => m.textContent);
+  check(`${tag}: [R11 №10] дата в «Мои обращения» — не «қаз»/«10 қаз»`, !/\bқаз\b/.test(date) && /\u00a0/.test(date), date);
+  const code = await page.$eval(".bc-mine__card .bc-nowrap", (c) => c.getClientRects().length);
+  check(`${tag}: номер обращения в «Мои обращения» не рвётся на две строки`, code === 1, String(code));
+  await shot(page, `${tag}-mine`);
+  check(`${tag}: нет ключей и технических слов`, (await visibleKeys(page)).length === 0);
+  check(`${tag}: нет ошибок консоли`, page.problems.filter((p) => !/Failed to load resource|ERR_FAILED/.test(p)).length === 0,
+        page.problems.join(" | "));
+  await page.context().close();
+}
+
 async function keyboard(browser, base, tag) {
   const page = await newPage(browser, base, 1366, 768, "ru");
   let reached = false;
@@ -344,6 +613,12 @@ async function keyboard(browser, base, tag) {
   check(`${tag}: фокус переходит на заголовок шага`, focused === "bc-title", focused);
   await page.keyboard.press("Escape");
   check(`${tag}: Escape закрывает панель`, await page.isHidden(".bc-panel"));
+  // R01 INTEGRATION §8: Escape закрывает и «Мои обращения», когда фокус вне панели (например, на карте).
+  await page.evaluate(() => window.standUi.openMine());
+  await page.waitForSelector(".bc-panel[data-step='mine']");
+  await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.standMap.getCanvas().focus(); });
+  await page.keyboard.press("Escape");
+  check(`${tag}: Escape закрывает «Мои обращения» при фокусе на карте`, await page.isHidden(".bc-panel"));
   await page.context().close();
 }
 
@@ -368,7 +643,16 @@ async function keyboard(browser, base, tag) {
     await newComplaintAndMine(browser, "http://127.0.0.1:8791", "kk", 375, 812, "375-kk-new", [71.4605, 51.0785]);
     await newComplaintAndMine(browser, "http://127.0.0.1:8791", "ru", 1366, 768, "1366-ru-new", [71.3965, 51.0765]);
     await withoutMl(browser, "http://127.0.0.1:8792", info2.hot, "375-noml");
+    await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "kk", 375, 812, "375-kk-badge");
+    await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "ru", "375-ru-layout");
+    await phoneLayout(browser, "http://127.0.0.1:8791", info1.hot, "kk", "375-kk-layout");
+    await badgeTap(browser, "http://127.0.0.1:8791", info1.hot, "ru", 1366, 768, "1366-ru-badge");
     await keyboard(browser, "http://127.0.0.1:8791", "1366-kbd");
+    await placeTotal(browser, "http://127.0.0.1:8791", "ru", 375, 812, "375-ru-place", [71.4410, 51.0860]);
+    await placeTotal(browser, "http://127.0.0.1:8791", "kk", 1366, 768, "1366-kk-place", [71.4130, 51.1010]);
+    for (const [lang, w, h] of [["ru", 375, 812], ["kk", 375, 812], ["ru", 1366, 768], ["kk", 1366, 768]]) {
+      await mineStates(browser, "http://127.0.0.1:8791", lang, w, h, `${w}-${lang}-states`);
+    }
     await browser.close();
   } catch (err) {
     console.error(err);
