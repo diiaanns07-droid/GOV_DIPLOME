@@ -251,7 +251,7 @@
    ],
    "logic": "волны 241/0 FAIL (тест W2-6 обновлён под табличку R12 qr.sign.call), точность 31/0"
   },
-  "final_before_after": "research/round-14-results/R10/design/compare-final/ — 8e67c65 | FINAL-3 61be62e6 | марафон 83010621: лучше 112 из 114 (хуже 2 — «i» MapLibre 24 px)",
+  "final_before_after": "research/round-14-results/R10/design/compare-final/ — 8e67c65 | FINAL-3 61be62e6 | марафон R01 368631aa (круги 1–10): лучше 112 из 114 (хуже 2 — «i» MapLibre 24 px на телефоне)",
   "totals_per_screen": "43,1 (8e67c65) → 15,1 (FINAL-3) → 6,0 (марафон 83010621)",
   "round7": {
    "build": "368631aa (R01 круги 10b–10c)",
