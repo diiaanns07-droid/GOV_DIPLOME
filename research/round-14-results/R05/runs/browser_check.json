@@ -1,7 +1,7 @@
 {
  "role": "R05",
- "generated_at": "2026-10-12T12:18:57.821Z",
- "tested_sha": "8ce26a3b4810e629a921360b723f920b62a15608",
+ "generated_at": "2026-10-12T15:54:40.300Z",
+ "tested_sha": "7ee461305f7d6f3becf1ebeffacd1a2f9d83a4bf",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
@@ -10,9 +10,9 @@
   "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit12",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 5.4,
-  "fps_20_objects_swiftshader": 3.4,
-  "gpu_geometries_20_objects": 75
+  "fps_0_objects_swiftshader": 5.9,
+  "fps_20_objects_swiftshader": 3.5,
+  "gpu_geometries_20_objects": 100
  },
  "summary": {
   "pass": 54,
@@ -59,7 +59,7 @@
   {
    "id": "labels_follow_objects_when_tilted",
    "status": "PASS",
-   "detail": "8 подписей над объектами, макс. смещение по x 7.9 px (60°, поворот −35°)"
+   "detail": "8 подписей над объектами, макс. смещение по x 8.9 px (60°, поворот −35°)"
   },
   {
    "id": "reload_keeps_objects_without_animation",
@@ -74,7 +74,7 @@
   {
    "id": "delete_frees_gpu_memory_and_undo_restores",
    "status": "PASS",
-   "detail": "геометрий на GPU: 34 → 38 → 34 (освобождены); «Отменить» вернул объект, всего 10"
+   "detail": "геометрий на GPU: 43 → 49 → 43 (освобождены); «Отменить» вернул объект, всего 10"
   },
   {
    "id": "undo_after_place_removes_object",
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 3.4 кадр/с (без объектов 5.4)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.5 кадр/с (без объектов 5.9)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -601,7 +601,7 @@
       "view": "3d",
       "three": "ready",
       "pitch": 52,
-      "geometries": 15,
+      "geometries": 19,
       "selected": true,
       "button_left": false,
       "three_requests": 1
@@ -624,7 +624,7 @@
       "view": "3d",
       "three": "ready",
       "pitch": 52,
-      "geometries": 15,
+      "geometries": 19,
       "selected": true,
       "button_left": false,
       "three_requests": 1
@@ -647,7 +647,7 @@
       "view": "3d",
       "three": "ready",
       "pitch": 52,
-      "geometries": 15,
+      "geometries": 19,
       "selected": true,
       "button_left": false,
       "three_requests": 1
@@ -670,7 +670,7 @@
       "view": "3d",
       "three": "ready",
       "pitch": 52,
-      "geometries": 15,
+      "geometries": 19,
       "selected": true,
       "button_left": false,
       "three_requests": 1
@@ -856,11 +856,11 @@
      "off": {
       "ideas": 0,
       "labels": 0,
-      "geo": 15
+      "geo": 19
      },
      "on": {
       "ideas": 3,
-      "geo": 20,
+      "geo": 24,
       "labels": [
        "Идея · 47",
        "Идея · 23",
@@ -871,18 +871,18 @@
      "after": {
       "ideas": 0,
       "labels": 0,
-      "geo": 15
+      "geo": 19
      }
     },
     "1366_kk": {
      "off": {
       "ideas": 0,
       "labels": 0,
-      "geo": 15
+      "geo": 19
      },
      "on": {
       "ideas": 3,
-      "geo": 20,
+      "geo": 24,
       "labels": [
        "Идея · 47",
        "Идея · 23",
@@ -893,18 +893,18 @@
      "after": {
       "ideas": 0,
       "labels": 0,
-      "geo": 15
+      "geo": 19
      }
     },
     "375_ru": {
      "off": {
       "ideas": 0,
       "labels": 0,
-      "geo": 15
+      "geo": 19
      },
      "on": {
       "ideas": 3,
-      "geo": 20,
+      "geo": 24,
       "labels": [
        "Идея · 47"
       ]
@@ -913,18 +913,18 @@
      "after": {
       "ideas": 0,
       "labels": 0,
-      "geo": 15
+      "geo": 19
      }
     },
     "375_kk": {
      "off": {
       "ideas": 0,
       "labels": 0,
-      "geo": 15
+      "geo": 19
      },
      "on": {
       "ideas": 3,
-      "geo": 20,
+      "geo": 24,
       "labels": [
        "Идея · 47"
       ]
@@ -933,7 +933,7 @@
      "after": {
       "ideas": 0,
       "labels": 0,
-      "geo": 15
+      "geo": 19
      }
     }
    }
