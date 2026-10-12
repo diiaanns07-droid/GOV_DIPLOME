@@ -78,6 +78,9 @@
       "proposal.need_staff": "Войдите как сотрудник акимата",
       "staff.login.submit": "Войти",
       "mine.error.hint": "Проверьте интернет и повторите.",
+      "common.state.network_text": "Проверьте интернет и повторите.",
+      "staff.login.note": "Учётную запись выдаёт администратор.",
+      "common.tag.demo_hint": "Пример для показа, не настоящие данные",
       "mine.metoo_badge": "Вы нажали «Я тоже»",
       "mine.reporters": {"one": "Сообщил {n} человек", "few": "Сообщили {n} человека", "many": "Сообщили {n} человек"},
 
@@ -368,6 +371,9 @@
       "proposal.need_staff": "Әкімдік қызметкері ретінде кіріңіз",
       "staff.login.submit": "Кіру",
       "mine.error.hint": "Интернетті тексеріп, қайталаңыз.",
+      "common.state.network_text": "Интернетті тексеріп, қайталап көріңіз.",
+      "staff.login.note": "Тіркелгіні әкімші береді.",
+      "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты дерек емес",
       "mine.metoo_badge": "Сіз «Мен де» түймесін бастыңыз",
       "mine.reporters": "{n} адам хабарлады",
 

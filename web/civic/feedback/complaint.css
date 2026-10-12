@@ -3,13 +3,17 @@
 
 .bc-fab {
   position: fixed; z-index: 30;
-  left: 50%; transform: translateX(-50%);
   bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   min-height: 56px; padding: 0 24px;
   box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18));
   max-width: calc(100vw - 32px);
 }
 .bc-fab[hidden] { display: none; }
+/* Ноутбук и планшет: по центру без transform (left/right + margin auto) — сжатие при нажатии строго на месте и
+   общее button:active оболочки ничего не сдвигает (R11 INTEGRATION 12.2, R10 B-068). Область центровки — ниже. */
+@media (min-width: 761px) {
+  .bc-fab { left: 0; right: 0; margin-inline: auto; width: max-content; transform: none; }
+}
 
 /* Панель: ноутбук — справа 400 px поверх карты; телефон — нижняя шторка. */
 .bc-panel {
@@ -21,6 +25,7 @@
   font-family: var(--font, system-ui, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif);
   font-size: var(--fs-body, 15px); line-height: 1.45;
   padding: 0 20px 20px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;   /* въезд шага не даёт полосы прокрутки вбок */
+  scroll-padding-bottom: 80px;   /* под прилипшей «Далее» (56 + поле 8 + 16): чип в фокусе не прячется за ней (R11 9.3 e) */
   animation: bc-in-right var(--t-base, 240ms) var(--ease, cubic-bezier(.22, 1, .36, 1));
 }
 .bc-panel[hidden] { display: none; }
@@ -136,7 +141,7 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-skel-line { height: 56px; border-radius: var(--r-m, 12px); }
 /* Скелетон карточки: строки на месте категории, статуса, «Передано…» и меты. */
 .bc-skel-card { display: grid; gap: 10px; padding: 16px; border-radius: var(--r-l, 14px); background: var(--c-surface, #fff); }
-.bk-glass .bc-skel-card { background: rgba(255, 255, 255, .7); }
+.bk-glass .bc-skel-card { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px rgba(16, 24, 22, .08); }   /* как .bk-glass .bk-card ui-kit (R11 D-7) */
 .bc-skel-line { display: block; height: 12px; width: 72%; border-radius: 6px; }
 .bc-skel-line--title { height: 16px; width: 44%; }
 .bc-skel-line--status { width: 30%; }
@@ -277,11 +282,14 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-staff .bc-thumb__remove { font-size: 22px; line-height: 1; color: #fff; text-shadow: 0 0 3px rgba(21, 44, 38, .9); }
 
 /* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01): список целей, вкладки, карточка действий. */
-.bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 960px; margin: 0 auto; }
-.bc-inbox__title { margin: 0; font-size: var(--fs-title, 22px); font-weight: var(--fw-semi, 600); }   /* заголовок h1/h2: не 700 (R11 разбор FINAL-3 №12) */
+.bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px; margin: 0 auto; }   /* одна колонка 720 у всех разделов-списков (R11 D-1) */
+.bc-inbox__title { margin: 0; font-size: var(--fs-h1, 28px); font-weight: var(--fw-semi, 600); }   /* 28, как у остальных разделов (R11 9.3 a); не 700 (FINAL-3 №12) */
 .bc-inbox__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
 .bc-inbox__tabs .bk-chip { min-height: 44px; flex: 0 0 auto; white-space: nowrap; }
 .bc-inbox__count { font-weight: var(--fw-semi, 600); }
+/* Ноль не показываем: глаз сразу видит вкладки, где есть работа (R11 11.6, вариант «без числа» — серый ноль --c-text-3
+   был бы ниже 4,5:1 на заливке чипа). Пустую выбранную вкладку объясняет состояние «Здесь пусто» под ней. */
+.bc-inbox__count[data-zero] { display: none; }
 .bc-inbox__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .bc-inbox__item { padding: 0; overflow: hidden; }
 /* «Обращения» — на листе раздела R01 (стекло); строки и форма сотрудника внутри — непрозрачные (GLASS.md, R09). */
@@ -300,6 +308,9 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-inbox__item--open { box-shadow: 0 0 0 2px var(--c-brand, #152c26); }
 .bc-inbox__detail { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 16px; }
 .bc-inbox__map { align-self: flex-start; }
+.bc-more__demo { display: inline-flex; margin-top: 8px; }
+/* Сноска «Пример для показа…» — внизу списка (R11 D-5); на стекле «Моих обращений» — тем же серым. */
+.bc-demo-note { text-align: left; }
 
 /* ───────────── Дизайн-марафон (12–14 окт): путь жителя «как в iOS» — только вид, движение и состояния ───────────── */
 /* Смена шага: содержимое мягко въезжает (вперёд — справа, назад — слева), 240 мс, ease-out. */
@@ -310,12 +321,13 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 
 /* Успех: круг и галочка рисуются линией акцента (зелёный в Birge — только «исправлено»). */
 .bc-success { display: flex; justify-content: center; margin: 8px 0 0; }
-.bc-success__mark { width: 64px; height: 64px; animation: bc-success-in 320ms var(--ease, cubic-bezier(.22, 1, .36, 1)) backwards; }
-.bc-success__circle { fill: var(--c-brand-soft, #eef1f0); stroke: var(--c-brand, #152c26); stroke-width: 2.5;
-                      stroke-dasharray: 158; stroke-dashoffset: 158; transform: rotate(-90deg); transform-origin: 28px 28px;
+/* Иллюстрация ill-done ui-kit (.bk-ill, 96 / 80 px), линия акцента 2 px: сначала круг, затем галочка (R11 9.3 d). */
+.bc-success__mark.bk-ill { width: 96px; height: 96px; fill: none; stroke: var(--c-brand, #152c26); stroke-width: .5;
+  stroke-linecap: round; stroke-linejoin: round; animation: bc-success-in 320ms var(--ease, cubic-bezier(.22, 1, .36, 1)) backwards; }
+@media (max-width: 1023px) { .bc-success__mark.bk-ill { width: 80px; height: 80px; stroke-width: .6; } }
+.bc-success__mark .bc-success__circle { stroke-dasharray: 54; stroke-dashoffset: 54; transform: rotate(-90deg); transform-origin: 12px 12px;
                       animation: bc-draw 520ms ease-out 80ms forwards; }
-.bc-success__tick { fill: none; stroke: var(--c-brand, #152c26); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round;
-                    stroke-dasharray: 34; stroke-dashoffset: 34; animation: bc-draw 300ms ease-out 480ms forwards; }
+.bc-success__mark .bc-success__tick { stroke-dasharray: 12; stroke-dashoffset: 12; animation: bc-draw 300ms ease-out 480ms forwards; }
 @keyframes bc-draw { to { stroke-dashoffset: 0; } }
 @keyframes bc-success-in { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
 .bc-panel[data-step="5"] .bc-title { text-align: center; margin-top: 8px; }
@@ -370,21 +382,22 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-mine__card--verified-now .bc-mine__status .bk-status::before {
   animation: bc-pop 520ms cubic-bezier(.34, 1.56, .64, 1), bc-glow 900ms ease-out 200ms; }
 
-/* Пусто / нет связи / нужен вход: крупный линейный значок ui-kit в мягком круге — как пустые состояния iOS. */
+/* Пусто / нет связи / нужен вход: иллюстрация ui-kit .bk-ill (96 / 80 px, стили ui-kit). Старый ui-kit без иллюстраций —
+   крупный линейный значок в мягком круге — как пустые состояния iOS. */
 .bc-panel .bk-empty > .ic, .bc-panel .bk-error > .ic, .bc-inbox .bk-empty > .ic, .bc-inbox .bk-error > .ic {
   box-sizing: border-box; width: 72px; height: 72px; padding: 20px; margin-bottom: 4px; border-radius: 50%;
   background: var(--c-fill, #eff1f2); color: var(--c-text-2, #5b6a64); stroke-width: 1.6; }
 
 /* Нажатие даёт отклик — лёгкое сжатие (чек-лист №10). */
-/* Свойство scale, а не transform: кнопка «Сообщить о проблеме» на ноутбуке центрируется transform — не сдвигаем её. */
+/* Свойство scale, а не transform: своё transform элемента (выезд, сдвиг) не сбивается. */
 .bc-panel .bk-btn, .bc-panel .bc-option, .bc-panel .bk-chip, .bc-fab { transition: scale 120ms ease-out, background-color 150ms ease-out; }
 .bc-panel .bk-btn:not(:disabled):active, .bc-panel .bc-option:active, .bc-panel .bk-chip:active,
 .bc-panel .bk-catgrid > button:active, .bc-fab:active { scale: .98; }
 
 @media (prefers-reduced-motion: reduce) {
-  .bc-body--enter, .bc-success__mark, .bc-success__circle, .bc-success__tick,
+  .bc-body--enter, .bc-success__mark, .bc-success__mark .bc-success__circle, .bc-success__mark .bc-success__tick,
   .bc-mine__card--verified-now .bc-mine__status .bk-status::before { animation: none !important; }
-  .bc-success__circle, .bc-success__tick { stroke-dashoffset: 0; }
+  .bc-success__mark .bc-success__circle, .bc-success__mark .bc-success__tick { stroke-dashoffset: 0; }
   .bc-panel .bk-btn:active, .bc-panel .bc-option:active, .bc-panel .bk-chip:active,
   .bc-panel .bk-catgrid > button:active, .bc-fab:active { scale: none; }
 }
@@ -395,18 +408,18 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
    1024–1279 (проектор) — по центру свободной карты (легенду оболочка там поднимает над кнопкой); от 1280 — посередине
    между легендой и панелью (≈ центр экрана − 28 px). */
 @media (min-width: 1024px) and (max-width: 1279px) {
-  body.civic-mode .bc-fab { left: calc((100% - var(--panel-w, 400px) - 24px) / 2); }
+  body.civic-mode .bc-fab { right: calc(var(--panel-w, 400px) + 24px); }
 }
 @media (min-width: 1280px) {
-  body.civic-mode .bc-fab { left: calc(50% - 28px); }
+  body.civic-mode .bc-fab { right: 56px; }
 }
 @media (prefers-reduced-motion: reduce) { .bc-inbox__row > .ic { transition: none; } }
 
-/* Ноутбук: панель мастера — по содержимому, как боковая карточка Apple Maps (шаг 2, похожие, проверка, успех); снизу
-   нет пустого белого столба. Шаг 3 (текст) и «Мои обращения» — во всю высоту. */
+/* Ноутбук: панель — по содержимому, как боковая карточка Apple Maps, на всех шагах и в «Моих обращениях» (круг 8: и шаг 3,
+   и короткий список «Моих обращений» больше не тянут пустой белый / стеклянный столб до низа экрана). Длинное —
+   прокручивается внутри, панель не выше экрана под шапкой. */
 @media (min-width: 1024px) {
-  .bc-panel:not([data-step="mine"])[data-snap="peek"], .bc-panel:not([data-step="mine"])[data-snap="half"],
-  .bc-panel:not([data-step="mine"])[data-snap="fit"] { bottom: auto; max-height: calc(100vh - var(--header-h, 64px) - 24px); }
+  .bc-panel { bottom: auto; max-height: calc(100vh - var(--header-h, 64px) - 24px); }
 }
 
 /* Мягкое появление карточек «Моих обращений» и строк «Обращений» одна за другой (280 мс, шаг 40 мс; только первые 5).
@@ -428,5 +441,5 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
    иначе закрывает кнопки карты. */
 @media (min-width: 1024px) and (max-width: 1100px) {
   .bc-panel { width: 360px; }
-  body.civic-mode .bc-fab { left: calc((100% - 360px - 32px) / 2); }
+  body.civic-mode .bc-fab { right: calc(360px + 32px); }
 }

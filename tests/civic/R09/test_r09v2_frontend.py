@@ -272,7 +272,10 @@ def test_inbox_screen_contract_for_r01():
     assert "window.BirgeComplaintList = { mount: mount }" in LIST_JS
     assert all(k in LIST_JS for k in ("destroy:", "setLang:", "opts.api.v2", "opts.openTarget", "opts.titleTag"))
     assert 'var TABS = ["new", "in_progress", "waiting_check", "overdue", "reopened"];' in LIST_JS
-    assert "bk-btn--primary" not in LIST_JS            # главная кнопка — у карточки действий (одна на экран)
+    # Главная кнопка — у карточки действий (одна на экран); исключение — «Войти» без входа: карточки действий тогда нет
+    # (R11 INTEGRATION 10.3).
+    assert LIST_JS.count("bk-btn--primary") == 1
+    assert "bk-btn--primary" in LIST_JS.split('if (state.error === "staff") {', 1)[1].split("return;", 1)[0]
     from ui.civic_feedback.v2 import lifecycle
     assert list(lifecycle.INBOX_TABS) == ["new", "in_progress", "waiting_check", "overdue", "reopened"]
 
@@ -310,14 +313,19 @@ def test_inbox_shows_rude_mark_and_original_text():
 
 
 def test_inbox_without_staff_login_asks_to_sign_in():
-    """R11 разбор FINAL-3 №1 (patch R09_inbox_need_staff, взят из сборки R01): 401/403 — «Войдите как сотрудник акимата»
-    + «Войти» (не главная кнопка), а не «Нет связи»; №12 — заголовок «Обращений» 600, не 700."""
+    """R11 разбор FINAL-3 №1 (patch R09_inbox_need_staff, взят из сборки R01): 401/403 — «Войдите как сотрудник акимата»,
+    а не «Нет связи»; марафон (R11 INTEGRATION 9.3 b, 10.3): одно состояние на все разделы — иллюстрация staff,
+    подсказка «Учётную запись выдаёт администратор.», «Войти» — главная (единственная кнопка экрана); №12 и 9.3 a —
+    заголовок «Обращений» 28 / 600."""
     assert 'res.status === 401 || res.status === 403 ? "staff" : true' in LIST_JS
     assert 't("proposal.need_staff")' in LIST_JS and 't("staff.login.submit")' in LIST_JS
+    staff = LIST_JS.split('if (state.error === "staff") {', 1)[1].split("return;", 1)[0]
+    assert 'art("staff", "user")' in staff and 't("staff.login.note")' in staff and '"bk-btn bk-btn--primary"' in staff
     s = strings()
     assert s["ru"]["proposal.need_staff"] == "Войдите как сотрудник акимата" and s["kk"]["staff.login.submit"] == "Кіру"
+    assert s["ru"]["staff.login.note"] == "Учётную запись выдаёт администратор." and s["kk"]["staff.login.note"] == "Тіркелгіні әкімші береді."
     css = (WEB / "complaint.css").read_text(encoding="utf-8")
-    assert re.search(r"\.bc-inbox__title \{[^}]*font-weight: var\(--fw-semi, 600\)", css)
+    assert re.search(r"\.bc-inbox__title \{[^}]*font-size: var\(--fs-h1, 28px\); font-weight: var\(--fw-semi, 600\)", css)
 
 
 def test_glass_only_on_mine_panel():
@@ -356,3 +364,52 @@ def test_design_marathon_resident_path():
     # Срочный баннер — сразу под полем текста, до категорий.
     text_step = JS.split("function renderText(body)", 1)[1].split("// ---------------------------------------------------------------- шаг 4", 1)[0]
     assert text_step.index("els.emergencyBox = h(") < text_step.index("els.categoryBox = h(")
+
+
+def test_design_marathon_round7_r11_edits():
+    """Марафон, круг 7 — правки R11 для R09 (INTEGRATION 9.3 d/e, 10.3, 11.6, 12.2, D-1, D-5, D-7)."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    # 10.3: «нет связи» — иллюстрация offline ui-kit (запасной — значок), общая фраза, ⟳ в «Повторить» у обоих экранов.
+    assert 'function illustration(name, fallback)' in JS and '"#ill-" + name' in JS and "illustration: illustration," in JS
+    assert 'illustration("offline", "wifi-off")' in JS and 'art("offline", "wifi-off")' in LIST_JS
+    assert JS.count('t("common.state.network_text")') == 1 and LIST_JS.count('t("common.state.network_text")') == 1
+    assert 't("mine.error.hint")' not in JS + LIST_JS
+    err = LIST_JS.split("if (state.error) {", 1)[1].split("return;", 1)[0]
+    assert 'C().icon("refresh")' in err
+    s = strings()
+    assert s["kk"]["common.state.network_text"] == "Интернетті тексеріп, қайталап көріңіз."
+    # 9.3 d: галочка успеха — геометрия ill-done (круг r 8.5, «✓» m8.2 12.3…) с классами bk-ill bk-check-draw, рисуется.
+    mark = JS.split("function successMark()", 1)[1].split("// ----", 1)[0]
+    assert '"bk-ill bk-check-draw bc-success__mark"' in mark and '"m8.2 12.3 2.6 2.6 5-5.4"' in mark and '"8.5"' in mark
+    assert ".bc-success__mark .bc-success__tick { stroke-dasharray: 12;" in css
+    # 9.3 e: под прилипшей «Далее» чип в фокусе виден.
+    assert "scroll-padding-bottom: 80px;" in css
+    # 11.6: ноль у вкладки не показываем.
+    assert '"data-zero": n ? null : ""' in LIST_JS and ".bc-inbox__count[data-zero] { display: none; }" in css
+    # 12.2: «Сообщить о проблеме» на ≥ 761 — без transform (сжатие на месте); области — через right.
+    fab = css.split(".bc-fab {", 1)[1].split("}", 1)[0]
+    assert "transform" not in fab and "left: 50%" not in fab
+    assert ".bc-fab { left: 0; right: 0; margin-inline: auto; width: max-content; transform: none; }" in css
+    assert "translateX(-50%)" not in css and "body.civic-mode .bc-fab { right: 56px; }" in css
+    # D-1: колонка «Обращений» 720.  D-7: скелетон на стекле — белая карточка с волосяной линией.
+    assert ".bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px;" in css
+    assert ".bk-glass .bc-skel-card { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px rgba(16, 24, 22, .08); }" in css
+    # D-5: «Пример» — одна сноска под списком; метка — у раскрытой карточки и у похожей на шаге «Я тоже».
+    assert 'h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint"))' in JS
+    assert 'h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint"))' in LIST_JS
+    mine_card = JS.split('list.appendChild(h("li", { "class": "bk-card bc-mine__card"', 1)[1].split("detailsBlock(item, focused)", 1)[0]
+    assert "bk-tag--demo" not in mine_card and 'item.demo) more.appendChild(h("span", { "class": "bk-tag bk-tag--demo bc-more__demo" }' in JS
+    assert "bk-tag--demo" not in LIST_JS.split('var head = h("button"', 1)[1].split("var li = ", 1)[0]
+    assert 'match.demo ? h("span", { "class": "bk-tag bk-tag--demo" }' in JS   # похожая на шаге 4 — с меткой
+    assert s["ru"]["common.tag.demo_hint"] == "Пример для показа, не настоящие данные"
+
+
+def test_design_marathon_round8_laptop_panel_hugs_content():
+    """Марафон, круг 8: на ноутбуке панель R09 по содержимому на всех шагах и в «Моих обращениях» (как карточка
+    Apple Maps): шаг 3 и короткий список не тянут пустой столб до низа экрана; длинное прокручивается внутри."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    block = css.split("@media (min-width: 1024px) {\n  .bc-panel { bottom: auto;", 1)
+    assert len(block) == 2 and "max-height: calc(100vh - var(--header-h, 64px) - 24px); }" in block[1].split("}", 1)[0] + "}"
+    assert '.bc-panel:not([data-step="mine"])[data-snap="peek"]' not in css
+    # Телефон: список «Моих обращений» — шторка по содержимому (fit), загрузка — половина, пусто / нет связи — низкая.
+    assert '(state.mine ? "fit" : "half")' in JS
