@@ -658,6 +658,15 @@
   .b3d-dock:not(.bk-glass) {
     border-radius: var(--r-xl, 20px) var(--r-xl, 20px) 0 0;
   }
+  /* Подсказка жителю (одна строка) — плавающая плашка над краем экрана, а не шторка без низа: тянуть и листать
+     в ней нечего. Со всех сторон отступ 16 px и скругление панели стекла. */
+  .b3d--overlay .b3d-dock[data-state="hint"] {
+    width: auto;
+    max-width: calc(100% - 2 * var(--gutter-phone, 16px));
+    margin-bottom: var(--gutter-phone, 16px);
+    padding: var(--s-3, 12px) var(--s-4, 16px);
+    border-radius: var(--r-glass, 24px);
+  }
   .b3d-card__pic {
     height: 64px;
   }

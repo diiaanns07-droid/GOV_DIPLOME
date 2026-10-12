@@ -1150,7 +1150,9 @@ await check("resident_hint_moves_off_host_legend_1366_1100_ru_kk", async () => {
     const withLegend = await m();
     if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `hint_legend_${w}_${lang}.png`) });
     await p.evaluate(() => { document.getElementById("t-legend").style.visibility = "hidden"; });
-    await p.waitForTimeout(300);
+    // Ждём возврата подсказки (до 3 с), а не ровно 300 мс: под нагрузкой (параллельный прогон R10) кадр запаздывал.
+    // Не вернулась — проверка ниже по-прежнему падает.
+    await p.waitForFunction(() => !document.querySelector("#t-root .b3d-dock").style.transform, null, { timeout: 3000 }).catch(() => {});
     const hidden = await m();
     await p.evaluate(() => __t.destroy());
     await p.context().close();

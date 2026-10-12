@@ -9,6 +9,7 @@
 //   selected_<ширина>_<язык>.png — выбранный проект (табличка и пунктир цвета выбора);
 //   card_akimat_<ширина>_<язык>.png — карточка проекта у акимата (с «Удалить»);
 //   placing_<вид>_<ширина>_<язык>.png — размещение на телефоне 375/360: панель и призрак;
+//   hint_resident_<ширина>_<язык>.png — подсказка жителю «Нажмите на проект…»;
 //   build_<доля>.png    — постройка сквера (замедлена до 6 с): доли 0.1 … 1.0;
 // Набор как в browser_check (SHOWCASE: спортплощадка + примеры), без ?reset — иначе демо стирает набор.
 // Ничего не проверяет — только снимает (проверки остаются в browser_check.mjs). Сервер — статический web/ (+ ui-kit/i18n из --kit).
@@ -151,6 +152,13 @@ for (const [w, h, lang] of [[1366, 768, "ru"], [375, 812, "kk"]]) {
   await settle(p);
   await p.waitForTimeout(600);
   await shot(p, `card_akimat_${w}_${lang}.png`);
+  await p.context().close();
+}
+// 2в'. Подсказка жителю «Нажмите на проект…» — телефон 375 kk и 360 ru, ноутбук 1366 ru.
+for (const [w, h, lang] of [[375, 812, "kk"], [360, 800, "ru"], [1366, 768, "ru"]]) {
+  if (!want(`hint_resident_${w}_${lang}.png`)) continue;
+  const p = await open({ width: w, height: h }, `?store=local&lang=${lang}&role=resident&center=71.4008,51.1278&zoom=${w < 700 ? 16.9 : 17.5}&pitch=60&bearing=-30`, SHOWCASE);
+  await shot(p, `hint_resident_${w}_${lang}.png`);
   await p.context().close();
 }
 // 2г. Размещение каждого вида (панель и призрак) — телефон 375 и 360, ru/kk.
