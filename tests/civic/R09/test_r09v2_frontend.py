@@ -275,7 +275,7 @@ def test_inbox_screen_contract_for_r01():
     # Главная кнопка — у карточки действий (одна на экран); исключение — «Войти» без входа: карточки действий тогда нет
     # (R11 INTEGRATION 10.3).
     assert LIST_JS.count("bk-btn--primary") == 1
-    assert "bk-btn--primary" in LIST_JS.split('if (state.error === "staff") {', 1)[1].split("return;", 1)[0]
+    assert "bk-btn--primary" in LIST_JS.split('if (state.error === "staff") {', 1)[1].split("if (state.error) {", 1)[0]
     from ui.civic_feedback.v2 import lifecycle
     assert list(lifecycle.INBOX_TABS) == ["new", "in_progress", "waiting_check", "overdue", "reopened"]
 
@@ -319,8 +319,10 @@ def test_inbox_without_staff_login_asks_to_sign_in():
     заголовок «Обращений» 28 / 600."""
     assert 'res.status === 401 || res.status === 403 ? "staff" : true' in LIST_JS
     assert 't("proposal.need_staff")' in LIST_JS and 't("staff.login.submit")' in LIST_JS
-    staff = LIST_JS.split('if (state.error === "staff") {', 1)[1].split("return;", 1)[0]
+    staff = LIST_JS.split('if (state.error === "staff") {', 1)[1].split("if (state.error) {", 1)[0]
     assert 'art("staff", "user")' in staff and 't("staff.login.note")' in staff and '"bk-btn bk-btn--primary"' in staff
+    # R11 16.3: при ui-kit с BirgeUI.loginState — одно общее состояние ui-kit; своё — запасное того же вида.
+    assert "window.BirgeUI.loginState(holder, openLogin);" in staff
     s = strings()
     assert s["ru"]["proposal.need_staff"] == "Войдите как сотрудник акимата" and s["kk"]["staff.login.submit"] == "Кіру"
     assert s["ru"]["staff.login.note"] == "Учётную запись выдаёт администратор." and s["kk"]["staff.login.note"] == "Тіркелгіні әкімші береді."
@@ -434,3 +436,5 @@ def test_design_marathon_round9_r10_circle2():
     import re as _re
     off = [m.group(0) for m in _re.finditer(r"(?:padding|gap|column-gap)(?:-[a-z]+)?: [^;]*\b(?:6|10|14)px", css)]
     assert not off, off
+    # R11 16.4: ряд вкладок «Обращений» — .bk-scroll-x с затуханием края ui-kit.
+    assert '"bk-chips bk-scroll-x bc-inbox__tabs"' in LIST_JS and "window.BirgeUI.scrollFade(bar)" in LIST_JS

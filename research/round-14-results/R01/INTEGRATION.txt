@@ -837,3 +837,4 @@ web/civic/offline/{style.json, boot.js}. Скриншоты до/после — 
      на 1366 — карточка вверху панели (scrollTop 1200, верх карточки 92 при верхе панели 84). «×» ящика — 44 (25.9).
 25.19 R12 bd9e526 (лист QR: шкала 28/17/13, строки ≤ 70 знаков) — только web/civic/qr/print.css.
 25.20 R12 7fb739d4 (паспорт QR: report.js, пробы clip/focus) и R09 c2fd325 (complaint.css/js, complaint-staff.js, тест фронтенда).
+25.21 R09 118a415 («Обращения» без входа — BirgeUI.loginState, вкладки .bk-scroll-x).
