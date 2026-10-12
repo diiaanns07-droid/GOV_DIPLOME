@@ -597,7 +597,10 @@
     var OBJECT_ROOM = 150;
     function lowerPhoneCard(r) {
       var cr = map.getCanvas().getBoundingClientRect();
-      if (r.width < cr.width * 0.9) return r; // ноутбук и планшет: карточка сбоку или по центру, а не во всю ширину
+      // Ноутбук и планшет: карточка сбоку или по центру, а не во всю ширину. На телефоне ширину не сравниваем: корень
+      // хозяина с align-items: center сжимает карточку по тексту (ui-kit со стеклом, «ру» — 329 из 375 px), и она
+      // переставала опускаться над шторкой.
+      if (!phoneLayout() && r.width < cr.width * 0.9) return r;
       var rects = avoidRects();
       var target = r.top;
       // Верхний край свободного места — низ панелей хозяина в верхней половине карты (шапка, «Территория», легенда
