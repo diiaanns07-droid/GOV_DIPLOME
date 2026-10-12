@@ -42,16 +42,16 @@
   <body class="bk-app">
     <main class="r06-demo">
       <div class="r06-demo__head">
-        <h1 class="bk-h1" data-i18n="proposal.catalog.title"></h1>
+        <h1 class="bk-h1" data-i18n="proposal.catalog.title">Что построить?</h1>
         <div id="lang"></div>
       </div>
-      <p class="bk-meta" data-i18n="common.tag.demo_hint"></p>
+      <p class="bk-meta" data-i18n="common.tag.demo_hint">Пример для показа, не настоящие данные</p>
       <section>
-        <h2 class="bk-h2" data-i18n="akim.proposals.title"></h2>
+        <h2 class="bk-h2" data-i18n="akim.proposals.title">Новые предложения</h2>
         <div class="r06-demo__grid" id="proposals"></div>
       </section>
       <section>
-        <h2 class="bk-h2" data-i18n="akim.late.title"></h2>
+        <h2 class="bk-h2" data-i18n="akim.late.title">Объекты с отставанием</h2>
         <div id="objects"></div>
       </section>
     </main>
@@ -64,6 +64,19 @@
         "use strict";
         var P = window.BirgeProposals;
         var role = new URLSearchParams(location.search).get("role") === "akimat" ? "akimat" : "resident";
+        // R10 B-006: без ui-kit.js / i18n.js (стенд без --kit-dir) — не пустые блоки и не TypeError, а понятное
+        // сообщение с «Обновить» в обоих блоках.
+        if (!window.BirgeUI || !window.BirgeI18n || !P) {
+          ["proposals", "objects"].forEach(function (id) {
+            var box = document.getElementById(id);
+            box.innerHTML = '<p class="r06-bare" role="alert"></p><button class="r06-bare__btn" type="button"></button>';
+            box.firstChild.textContent = P ? P.KIT_MISSING : "Не загрузились файлы интерфейса. Обновите страницу. / " +
+              "Интерфейс файлдары жүктелмеді. Бетті жаңартыңыз.";
+            box.lastChild.textContent = "Обновить / Жаңарту";
+            box.lastChild.addEventListener("click", function () { location.reload(); });
+          });
+          return;
+        }
         window.BirgeUI.langSwitch(document.getElementById("lang"));
 
         function cell(parent) {

@@ -106,8 +106,9 @@ async function main() {
       await menuOk(page, n, "akimat", ["map", "day"]), n);
     const layers0 = await page.evaluate(() => ({ active: window.BirgeShell.layer,
       options: [...document.querySelectorAll("#birge-layer-list input")].map((i) => i.value) }));
-    check("default map: one «слои» button with «Проекты» (R05), no extra layer on — map shows complaints and city works only",
-      n.layerBtn && layers0.active === null && JSON.stringify(layers0.options) === '["","projects"]', { n, layers0 });
+    // Пункты слоёв — от модулей: «Проекты» (R05), «Идеи жителей» (R06 волна 2, только с R05 ≥ 395d9ea). По умолчанию — ни одного.
+    check("default map: one «слои» button with «Проекты» (R05) (+ «Идеи жителей» R06), no extra layer on — map shows complaints and city works only",
+      n.layerBtn && layers0.active === null && ['["","projects"]', '["","projects","ideas"]'].includes(JSON.stringify(layers0.options)), { n, layers0 });
     // Маркеры MapLibre (элемент из new Marker({element})): без transition на transform/left/top — значок не отстаёт.
     await page.waitForFunction(() => window.CivicShell?.heat?.state?.().status === "ready"
       && [...document.querySelectorAll(".maplibregl-marker")].some((e) => e.getBoundingClientRect().width > 0), null, { timeout: 20000 }).catch(() => null);
@@ -257,6 +258,9 @@ async function main() {
       check(`«Вернуться к карте» → map, address without #${soonId}`, n.section === "map" && n.hash === "" && !sc.shown && !sc.mapHidden, { n, sc });
     } else {
       console.log("NOT_RUN «скоро появится»: у всех разделов жителя есть модули в этой сборке");
+      // Без заглушки мы ещё на экране «Рядом» — вернуться на карту, чтобы «Ещё» и «Назад» проверялись от карты.
+      await page.click("#birge-header [data-section=map]");
+      await page.waitForTimeout(300);
     }
 
     // «Ещё» — маленькое меню, не страница (IA_WAVE2 §1); у жителя в нём «Вопрос акиму».

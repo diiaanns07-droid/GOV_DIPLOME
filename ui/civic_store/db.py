@@ -301,6 +301,103 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
     (8, "round 14 proposal street in kazakh", (
         "ALTER TABLE civic_proposals ADD COLUMN near_street_kk TEXT",
     )),
+    # Волна 2 (POLISH_WAVE_2): п. 7 «Идеи жителей → голоса → проект», п. 4 «Что делают рядом» (работы и
+    # отключения, которые сотрудник добавляет вручную). Только новые таблицы и одна новая колонка — старые
+    # записи и их история не меняются.
+    (9, "round 14 wave 2 residents ideas and nearby works", (
+        # Идея жителя. Тексты — на том языке, на котором их написали (lang); у демо-идей — оба языка.
+        # review → voting → checking (акимат проверяет, голосование закрыто) → project | rejected;
+        # review → hidden (модерация: личные данные, грубые слова).
+        """CREATE TABLE civic_ideas (
+            id TEXT PRIMARY KEY CHECK (length(id) BETWEEN 1 AND 64),
+            lang TEXT NOT NULL CHECK (lang IN ('ru', 'kk')),
+            texts_json TEXT NOT NULL,
+            geometry_json TEXT NOT NULL,
+            district TEXT,
+            object_json TEXT,
+            status TEXT NOT NULL CHECK (status IN ('review', 'voting', 'checking', 'project', 'rejected', 'hidden')),
+            author_hash TEXT CHECK (author_hash IS NULL OR length(author_hash) = 64),
+            check_json TEXT,
+            reason TEXT NOT NULL DEFAULT '',
+            can_improve TEXT NOT NULL DEFAULT '',
+            project_id TEXT REFERENCES civic_proposals(id),
+            votes_at_decision INTEGER,
+            demo INTEGER NOT NULL DEFAULT 0 CHECK (demo IN (0, 1)),
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            published_at TEXT,
+            decided_at TEXT,
+            decided_by INTEGER REFERENCES civic_users(id)
+        )""",
+        "CREATE INDEX civic_ideas_order ON civic_ideas(created_at DESC, id DESC)",
+        """CREATE TRIGGER civic_ideas_no_delete BEFORE DELETE ON civic_ideas
+           BEGIN SELECT RAISE(ABORT, 'civic_ideas rows are hidden, not deleted'); END""",
+        # Поддержка идеи: одна строка на (идея, устройство); снять поддержку — удалить строку. Хранится хэш устройства.
+        """CREATE TABLE civic_idea_votes (
+            idea_id TEXT NOT NULL REFERENCES civic_ideas(id),
+            device_hash TEXT NOT NULL CHECK (length(device_hash) = 64),
+            created_at TEXT NOT NULL,
+            PRIMARY KEY (idea_id, device_hash)
+        )""",
+        """CREATE TABLE civic_idea_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            idea_id TEXT NOT NULL REFERENCES civic_ideas(id),
+            at TEXT NOT NULL,
+            action TEXT NOT NULL CHECK (action IN ('create', 'publish', 'hide', 'check', 'project', 'reject', 'reopen')),
+            status TEXT NOT NULL,
+            reason TEXT NOT NULL DEFAULT '',
+            actor_user_id INTEGER REFERENCES civic_users(id),
+            actor_label TEXT NOT NULL
+        )""",
+        """CREATE TRIGGER civic_idea_history_no_update BEFORE UPDATE ON civic_idea_history
+           BEGIN SELECT RAISE(ABORT, 'civic_idea_history is append-only'); END""",
+        """CREATE TRIGGER civic_idea_history_no_delete BEFORE DELETE ON civic_idea_history
+           BEGIN SELECT RAISE(ABORT, 'civic_idea_history is append-only'); END""",
+        # Проект, сделанный из идеи: «По идее жителей · 47 голосов» (R05 рисует строку по полю idea).
+        "ALTER TABLE civic_proposals ADD COLUMN idea_id TEXT REFERENCES civic_ideas(id)",
+        # «Что делают рядом»: работа (status) или отключение (utility, start/end). Тексты — {поле_ru, поле_kk}.
+        # Демо-записи хранят сроки относительно «сегодня» (demo_rel_json): показ в любой день выглядит одинаково.
+        """CREATE TABLE civic_nearby_items (
+            id TEXT PRIMARY KEY CHECK (length(id) BETWEEN 1 AND 64),
+            type TEXT NOT NULL CHECK (type IN ('work', 'outage')),
+            status TEXT CHECK (status IS NULL OR status IN ('in_progress', 'done', 'planned')),
+            work_kind TEXT,
+            utility TEXT,
+            district TEXT NOT NULL,
+            texts_json TEXT NOT NULL,
+            start_at TEXT,
+            end_at TEXT,
+            planned_end TEXT,
+            forecast_end TEXT,
+            source TEXT,
+            geometry_json TEXT,
+            removed INTEGER NOT NULL DEFAULT 0 CHECK (removed IN (0, 1)),
+            demo INTEGER NOT NULL DEFAULT 0 CHECK (demo IN (0, 1)),
+            demo_rel_json TEXT,
+            revision INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            created_by INTEGER REFERENCES civic_users(id),
+            updated_by INTEGER REFERENCES civic_users(id)
+        )""",
+        "CREATE INDEX civic_nearby_items_district ON civic_nearby_items(district, removed)",
+        """CREATE TRIGGER civic_nearby_items_no_delete BEFORE DELETE ON civic_nearby_items
+           BEGIN SELECT RAISE(ABORT, 'civic_nearby_items rows are removed, not deleted'); END""",
+        """CREATE TABLE civic_nearby_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            item_id TEXT NOT NULL REFERENCES civic_nearby_items(id),
+            revision INTEGER NOT NULL,
+            at TEXT NOT NULL,
+            action TEXT NOT NULL CHECK (action IN ('create', 'update', 'remove')),
+            snapshot_json TEXT NOT NULL,
+            actor_user_id INTEGER REFERENCES civic_users(id),
+            actor_label TEXT NOT NULL
+        )""",
+        """CREATE TRIGGER civic_nearby_history_no_update BEFORE UPDATE ON civic_nearby_history
+           BEGIN SELECT RAISE(ABORT, 'civic_nearby_history is append-only'); END""",
+        """CREATE TRIGGER civic_nearby_history_no_delete BEFORE DELETE ON civic_nearby_history
+           BEGIN SELECT RAISE(ABORT, 'civic_nearby_history is append-only'); END""",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 

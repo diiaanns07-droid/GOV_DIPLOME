@@ -15,6 +15,8 @@ EXPECTED_TABLES = {
     # R06 раунд 14, миграция 6 (патч R06 r02_old_store_tests.patch, перенесён R01 на версии раунда 13)
     "civic_object_stages", "civic_stage_history", "civic_proposals", "civic_proposal_history",
     "civic_votes", "civic_v2_settings",
+    # R06 раунд 14, миграция 9 (идеи жителей и «Работы и отключения»; R01 FINAL-3 шаг 4)
+    "civic_ideas", "civic_idea_votes", "civic_idea_history", "civic_nearby_items", "civic_nearby_history",
 }
 
 

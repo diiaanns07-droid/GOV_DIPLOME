@@ -372,6 +372,8 @@ async function clickVote(page, id, value) {
       const targetRu = target === "acceptance" ? "Приёмка" : "Строительство";
       await editor.locator("select").selectOption(target);
       await editor.locator('input[name="forecast_end"]').fill("");
+      // R15-S18 (P-R06-2): после публикации этап назад или срок позже — только с причиной (поле редактора «Причина»).
+      await editor.locator('textarea[name="reason"]').fill("Уточнение графика после проверки на месте (тест стенда)");
       const saved = page.waitForResponse((r) => r.url().endsWith("/stage") && r.request().method() === "PUT");
       await editor.locator("[data-save]").click();
       const res = await saved;
@@ -382,6 +384,7 @@ async function clickVote(page, id, value) {
       if (shots) await page.screenshot({ path: path.join(shots, "r06-1366-ru-stage-editor.png") });
       const ed2 = second.locator(".r06-stage-editor").first();
       await ed2.locator("select").selectOption(target === "design" ? "planned" : "design");
+      await ed2.locator('textarea[name="reason"]').fill("Другая правка той же записи (тест стенда)");
       const conflict = second.waitForResponse((r) => r.url().endsWith("/stage") && r.request().method() === "PUT");
       await ed2.locator("[data-save]").click();
       const res2 = await conflict;

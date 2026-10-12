@@ -20,6 +20,15 @@
   POST /proposals/{id}/approve|reject|withdraw   сотрудник: {reason?}
   DELETE /proposals/{id}                 сотрудник: то же, что withdraw («Удалить» в 3D R05); 200 {withdrawn}
   GET  /meta                             перечисления (этапы, виды, районы, порог устаревания)
+Волна 2 (POLISH_WAVE_2):
+  GET  /ideas?status&district&device_id  идеи жителей: voting | project | rejected (+ свои на проверке — автору)
+  POST /ideas                            житель: {title, description?, geometry: Point, object?, device_id, lang?}
+  GET  /ideas/{id}?device_id
+  POST /ideas/{id}/support               житель: {device_id, on: true|false}
+  POST /ideas/{id}/decide                сотрудник: {action: publish|hide|check|project|reject, …}
+  GET  /staff/ideas?status&district      сотрудник: идеи на проверке (review, voting) и любые статусы
+  GET  /works?district                   сотрудник: работы и отключения «Рядом» (форма «Работы и отключения»)
+  POST /works                            сотрудник: новая запись; POST /works/{id} — правка; POST /works/{id}/remove
 
 Права: чтение и голос — публичные (только адрес этого сервера; голос — без чужого Origin);
 запись этапа и решения по предложениям — сессия редактора + X-CSRF-Token (require_staff R02).
@@ -34,6 +43,8 @@ from urllib.parse import unquote
 from .db import StorageError
 from .districts import DISTRICT_NAMES
 from .objects import BadRequest, Conflict, NotFound
+from .ideas import IdeaRepository
+from .nearby import NearbyRepository
 from .proposals import DECISIONS, KINDS, ProposalRepository, VISIBLE_STATUSES, _VoteRateLimited
 from .service import MAX_BODY, _TooLarge, error, ok, parse_body, parse_query
 from .stages import STAGES, STALE_DAYS, StageRepository, parse_district, _single
@@ -42,7 +53,7 @@ from .validate import ValidationError, is_valid_id
 
 LOGGER = logging.getLogger("ui.civic_store.v2")
 PREFIX_V2 = "/api/civic/v2"
-OWN_ROOTS = ("objects", "proposals", "staff", "meta")
+OWN_ROOTS = ("objects", "proposals", "staff", "meta", "ideas", "works")
 
 
 def meta_v2() -> dict:
@@ -64,6 +75,8 @@ class CivicV2:
         self.service = service
         self.stages = StageRepository(service.db, service.clock)
         self.proposals = ProposalRepository(service.db, service.clock)
+        self.ideas = IdeaRepository(service.db, service.clock, self.proposals)
+        self.nearby = NearbyRepository(service.db, service.clock)
 
     # --- функции для соседей без HTTP (R08 «Картина дня», R05, R01) ---------------------
 
@@ -153,6 +166,22 @@ class CivicV2:
             return {"POST": (self._vote, (s[1],))}
         if n == 3 and s[0] == "proposals" and s[2] in DECISIONS:
             return {"POST": (self._decide, (s[1], s[2]))}
+        if s == ["ideas"]:
+            return {"GET": (self._ideas, ()), "POST": (self._create_idea, ())}
+        if n == 2 and s[0] == "ideas":
+            return {"GET": (self._idea, (s[1],))}
+        if n == 3 and s[0] == "ideas" and s[2] == "support":
+            return {"POST": (self._support_idea, (s[1],))}
+        if n == 3 and s[0] == "ideas" and s[2] == "decide":
+            return {"POST": (self._decide_idea, (s[1],))}
+        if s == ["staff", "ideas"]:
+            return {"GET": (self._staff_ideas, ())}
+        if s == ["works"]:
+            return {"GET": (self._works, ()), "POST": (self._create_work, ())}
+        if n == 2 and s[0] == "works":
+            return {"POST": (self._update_work, (s[1],))}
+        if n == 3 and s[0] == "works" and s[2] == "remove":
+            return {"POST": (self._remove_work, (s[1],))}
         return None
 
     # --- обработчики -----------------------------------------------------------------------
@@ -236,6 +265,72 @@ class CivicV2:
         if denied:
             return denied
         return ok(self.proposals.decide(principal.actor(), proposal_id, action, payload))
+
+    # --- волна 2: идеи жителей и «Что делают рядом» ------------------------------------------
+
+    def _ideas(self, context, params, payload):
+        return self._public_ok(context) or ok(self.ideas.list(params, _single(params, "device_id")))
+
+    def _idea(self, context, params, payload, idea_id):
+        return self._public_ok(context) or ok(self.ideas.get(idea_id, _single(params, "device_id")))
+
+    def _resident_write(self, context):
+        denied = self._public_ok(context)
+        if denied:
+            return denied
+        if context.get("is_same_origin") is False:
+            return error(403, "cross_origin", "Запрос с чужого сайта отклонён.")
+        return None
+
+    def _create_idea(self, context, params, payload):
+        denied = self._resident_write(context)
+        if denied:
+            return denied
+        client = str(context.get("client_ip") or "unknown")
+        return ok(self.ideas.create(payload, client_key=client), status=201)
+
+    def _support_idea(self, context, params, payload, idea_id):
+        denied = self._resident_write(context)
+        if denied:
+            return denied
+        client = str(context.get("client_ip") or "unknown")
+        return ok(self.ideas.support(idea_id, payload, client_key=client))
+
+    def _decide_idea(self, context, params, payload, idea_id):
+        principal, denied = self.service.require_staff(context, unsafe=True)
+        if denied:
+            return denied
+        return ok(self.ideas.decide(principal.actor(), idea_id, payload))
+
+    def _staff_ideas(self, context, params, payload):
+        principal, denied = self.service.require_staff(context, unsafe=False)
+        if denied:
+            return denied
+        return ok(self.ideas.list(params, None, staff=True))
+
+    def _works(self, context, params, payload):
+        principal, denied = self.service.require_staff(context, unsafe=False)
+        if denied:
+            return denied
+        return ok(self.nearby.list_staff(params))
+
+    def _create_work(self, context, params, payload):
+        principal, denied = self.service.require_staff(context, unsafe=True)
+        if denied:
+            return denied
+        return ok(self.nearby.create(principal.actor(), payload), status=201)
+
+    def _update_work(self, context, params, payload, item_id):
+        principal, denied = self.service.require_staff(context, unsafe=True)
+        if denied:
+            return denied
+        return ok(self.nearby.update(principal.actor(), item_id, payload))
+
+    def _remove_work(self, context, params, payload, item_id):
+        principal, denied = self.service.require_staff(context, unsafe=True)
+        if denied:
+            return denied
+        return ok(self.nearby.remove(principal.actor(), item_id, payload))
 
 
 # ===========================================================================================
@@ -395,3 +490,76 @@ def akim_proposals(district=None):
 def lagging_objects(district=None):
     """Для R08 «Картина дня»: {today, late:[…], stale:[…], counts, by_district}."""
     return _run(_v2().stages.lagging, district)
+
+
+# --- волна 2: функции для шлюза R01 (маршруты — INTEGRATION.txt R06, раздел «Волна 2») ---------------------------
+
+def _resident(context):
+    """Запись жителя (идея, поддержка): только с адреса этого сервера и не с чужого сайта (как голос, R15-S17)."""
+    context = context or {}
+    if context.get("host_allowed") is False:
+        raise V2Error(403, "forbidden_host", "Откройте интерфейс через адрес этого сервера.")
+    if context.get("is_same_origin") is False:
+        raise V2Error(403, "cross_origin", "Запрос с чужого сайта отклонён.")
+    return str(context.get("client_ip") or "unknown")
+
+
+def list_ideas(district=None, status=None, device_id=None, context=None):
+    """GET /ideas — публично: идут голосование, стали проектом, отклонены (+ свои на проверке — автору)."""
+    return _run(_v2().ideas.list, _query(None, district, status), device_id)
+
+
+def get_idea(idea_id, device_id=None, context=None):
+    return _run(_v2().ideas.get, idea_id, device_id)
+
+
+def create_idea(body, context=None):
+    """POST /ideas — житель. Ответ 201 {item} со статусом review («Идею опубликуют после проверки»)."""
+    client = _resident(context)
+    return 201, _run(_v2().ideas.create, body or {}, client_key=client)
+
+
+def support_idea(idea_id, body, context=None):
+    """POST /ideas/{id}/support — житель: {device_id, on}."""
+    client = _resident(context)
+    return _run(_v2().ideas.support, idea_id, body or {}, client_key=client)
+
+
+def list_ideas_staff(district=None, status=None, context=None, principal=None):
+    """GET /staff/ideas — сотрудник: по умолчанию review и voting («Идеи на проверке»)."""
+    _actor(context, unsafe=False)
+    return _run(_v2().ideas.list, _query(None, district, status), None, staff=True)
+
+
+def decide_idea(idea_id, body, context=None, principal=None):
+    """POST /ideas/{id}/decide — сотрудник: {action: publish|hide|check|project|reject, …}."""
+    return _run(_v2().ideas.decide, _actor(context), idea_id, body or {})
+
+
+def ideas_summary():
+    """Для «Картины дня» R08 (по желанию): {counts, top}."""
+    return _run(_v2().ideas.summary)
+
+
+def nearby_items(district=None):
+    """Для R08 «Рядом» (ui/civic_akim/nearby.py): работы и отключения, которые добавил сотрудник, формат ITEM.
+    Не связан с хранилищем — V2Error 503 module_not_ready: R08 тогда показывает свой пример."""
+    return _run(_v2().nearby.items, district)
+
+
+def list_works(district=None, context=None, principal=None):
+    """GET /works — сотрудник: все записи района (с ревизией), варианты полей формы."""
+    _actor(context, unsafe=False)
+    return _run(_v2().nearby.list_staff, _query(None, district))
+
+
+def create_work(body, context=None, principal=None):
+    return 201, _run(_v2().nearby.create, _actor(context), body or {})
+
+
+def update_work(work_id, body, context=None, principal=None):
+    return _run(_v2().nearby.update, _actor(context), work_id, body or {})
+
+
+def remove_work(work_id, body=None, context=None, principal=None):
+    return _run(_v2().nearby.remove, _actor(context), work_id, body or {})

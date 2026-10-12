@@ -272,6 +272,8 @@ async function emptyRegistry(browser, base) {
         return { pin: true, rect: [p.left, p.top, p.right, p.bottom].map(Math.round), covered: hits, inView: p.left >= 0 && p.right <= innerWidth && p.top >= 0 && p.bottom <= innerHeight };
       });
       check(`${tag}: chosen street is marked in the free map area (not under panel/navigation/tools)`, pinFree.pin && pinFree.inView && pinFree.covered.length === 0, pinFree);
+      // Число записей приходит после запроса — под нагрузкой (pytest рядом) позже 1,3 с; ждём до 6 с.
+      await page.waitForFunction(() => /Улица: .*(\d+|нет)/.test(document.querySelector(".civic-explore-view")?.textContent || ""), null, { timeout: 6000 }).catch(() => {});
       const streetView = await page.textContent(".civic-explore-view");
       // Текст — из словаря R11 (с a62a67c: «на видимой части карты»), запасной shell-text.js — «в кадре».
       check(`${tag}: street view line says how many published records are in frame (zero is not "no works")`,

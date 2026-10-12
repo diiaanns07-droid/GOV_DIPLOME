@@ -83,7 +83,7 @@ TARGET_KINDS = ("object", "segment", "area")
 TARGET_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")
 # Поля, которые назначает сервер: клиент R05 присылает их обратно при «Отменить» после «Удалить» — не ошибка.
 SERVER_KEYS = frozenset({"id", "votes_up", "votes_down", "my_vote", "voting_open", "created_at", "updated_at",
-                         "decided_at", "district", "proposal", "item"})
+                         "decided_at", "district", "proposal", "item", "idea"})
 VOTES_PER_MINUTE = 30  # с одного адреса; защита сервера от залипшей кнопки и скриптов
 # R15 S08: новых голосов за ОДНО предложение с одного адреса в сутки (семье и офису хватает; скрипт с новыми
 # device_id упирается в 20, а не в 1800 в час). Смена своего голоса не считается. Полное решение — вход eGov/SMS.
@@ -178,7 +178,16 @@ class ProposalRepository:
             "near_street": row["near_street"], "near_street_kk": row["near_street_kk"],
             "target": _loads(row["target_json"]),
             "created_at": row["created_at"], "updated_at": row["updated_at"], "decided_at": row["decided_at"],
+            # Проект из идеи жителей: R05 и карточка R06 пишут «По идее жителей · 47 голосов» (votes — на момент решения).
+            "idea": self._idea_ref(conn, row["idea_id"]),
         }
+
+    @staticmethod
+    def _idea_ref(conn, idea_id):
+        if not idea_id:
+            return None
+        row = conn.execute("SELECT id, votes_at_decision FROM civic_ideas WHERE id = ?", (idea_id,)).fetchone()
+        return {"id": row["id"], "votes": row["votes_at_decision"] or 0} if row else None
 
     @staticmethod
     def _row(conn, proposal_id):
@@ -265,6 +274,21 @@ class ProposalRepository:
     def create(self, actor, payload: dict) -> dict:
         """Новое предложение (акимат, 3D R05). Вернуть удалённое («Отменить» после «Удалить») — тот же вызов
         с id снятого предложения: оно возвращается со своими голосами, новое не создаётся."""
+        new = self._clean_new(payload)
+        now = iso(utc_now(self.clock))
+        with self.db.write() as conn:
+            restored = self._restore(conn, actor, payload.get("id"), new["kind"], now)
+            if restored is not None:
+                return {"item": restored, "proposal": restored, "restored": True, "ignored_fields": new["ignored"]}
+            item = self._insert(conn, actor, new, now)
+            return {"item": item, "proposal": item, "restored": False, "ignored_fields": new["ignored"]}
+
+    def create_in(self, conn, actor, payload: dict, now: str, *, idea_id: str) -> dict:
+        """Проект из идеи жителя (волна 2 п. 7) — в транзакции IdeaRepository.decide: идея и проект меняются вместе."""
+        return self._insert(conn, actor, self._clean_new(payload), now, idea_id=idea_id)
+
+    def _clean_new(self, payload: dict) -> dict:
+        """Проверка полей нового предложения. Ошибки — ValidationError по полям (422)."""
         errors = _Errors()
         allowed = {"kind", "geometry", "title_ru", "title_kk", "rotation_deg", "planned_year", "year", "demo",
                    "status", "near_street", "near_street_kk", "target"}
@@ -315,36 +339,34 @@ class ProposalRepository:
             errors.add("demo", "true или false.")
         if errors.fields:
             raise ValidationError(errors.fields)
-        now = iso(utc_now(self.clock))
-        district = district_of(geometry)  # район считает сервер по полигонам OSM; присланный клиентом — подсказка
         if not title_ru and not title_kk and (near_street or near_street_kk):
             default_ru, default_kk = street_titles(kind, near_street, near_street_kk)
-        with self.db.write() as conn:
-            restored = self._restore(conn, actor, payload.get("id"), kind, now)
-            if restored is not None:
-                return {"item": restored, "proposal": restored, "restored": True, "ignored_fields": ignored}
-            if district is not None:
-                open_count = conn.execute("SELECT COUNT(*) FROM civic_proposals WHERE status = 'proposal' AND district = ?",
-                                          (district,)).fetchone()[0]
-                if open_count >= MAX_OPEN_PER_DISTRICT:
-                    raise Conflict(f"В районе уже {MAX_OPEN_PER_DISTRICT} открытых проектов: решите по одному из них.",
-                                   None, code="limit")
-            proposal_id = "p-" + secrets.token_hex(6)
-            conn.execute(
-                """INSERT INTO civic_proposals(id, kind, geometry_json, rotation_deg, title_ru, title_kk, status,
-                       district, planned_year, demo, created_at, updated_at, created_by, near_street, near_street_kk,
-                       target_json)
-                   VALUES (?, ?, ?, ?, ?, ?, 'proposal', ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (proposal_id, kind, _dumps(geometry), float(rotation) % 360, title_ru or default_ru,
-                 title_kk if title_kk else (default_kk if not title_ru else None), district, year,
-                 int(demo), now, now, actor.user_id, near_street, near_street_kk,
-                 _dumps(target) if target else None))
-            conn.execute(
-                """INSERT INTO civic_proposal_history(proposal_id, at, action, status, reason, actor_user_id,
-                       actor_label) VALUES (?, ?, 'create', 'proposal', '', ?, ?)""",
-                (proposal_id, now, actor.user_id, actor.label))
-            item = self._dto(conn, self._row(conn, proposal_id))
-            return {"item": item, "proposal": item, "restored": False, "ignored_fields": ignored}
+        return {"kind": kind, "geometry": geometry, "rotation": float(rotation) % 360, "year": year, "demo": demo,
+                "title_ru": title_ru or default_ru, "title_kk": title_kk if title_kk else (default_kk if not title_ru else None),
+                "near_street": near_street, "near_street_kk": near_street_kk, "target": target, "ignored": ignored}
+
+    def _insert(self, conn, actor, new: dict, now: str, *, idea_id=None) -> dict:
+        district = district_of(new["geometry"])  # район считает сервер по полигонам OSM; присланный клиентом — подсказка
+        if district is not None:
+            open_count = conn.execute("SELECT COUNT(*) FROM civic_proposals WHERE status = 'proposal' AND district = ?",
+                                      (district,)).fetchone()[0]
+            if open_count >= MAX_OPEN_PER_DISTRICT:
+                raise Conflict(f"В районе уже {MAX_OPEN_PER_DISTRICT} открытых проектов: решите по одному из них.",
+                               None, code="limit")
+        proposal_id = "p-" + secrets.token_hex(6)
+        conn.execute(
+            """INSERT INTO civic_proposals(id, kind, geometry_json, rotation_deg, title_ru, title_kk, status,
+                   district, planned_year, demo, created_at, updated_at, created_by, near_street, near_street_kk,
+                   target_json, idea_id)
+               VALUES (?, ?, ?, ?, ?, ?, 'proposal', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (proposal_id, new["kind"], _dumps(new["geometry"]), new["rotation"], new["title_ru"], new["title_kk"],
+             district, new["year"], int(new["demo"]), now, now, actor.user_id, new["near_street"],
+             new["near_street_kk"], _dumps(new["target"]) if new["target"] else None, idea_id))
+        conn.execute(
+            """INSERT INTO civic_proposal_history(proposal_id, at, action, status, reason, actor_user_id,
+                   actor_label) VALUES (?, ?, 'create', 'proposal', ?, ?, ?)""",
+            (proposal_id, now, "По идее жителей " + idea_id if idea_id else "", actor.user_id, actor.label))
+        return self._dto(conn, self._row(conn, proposal_id))
 
     def _restore(self, conn, actor, proposal_id, kind, now):
         """Снятое предложение с тем же id и видом → снова proposal (голоса сохранены). Иначе None."""
@@ -361,6 +383,8 @@ class ProposalRepository:
             """INSERT INTO civic_proposal_history(proposal_id, at, action, status, reason, actor_user_id, actor_label)
                VALUES (?, ?, 'create', 'proposal', 'Возвращено после «Удалить» (Отменить)', ?, ?)""",
             (proposal_id, now, actor.user_id, actor.label))
+        from .ideas import project_restored  # идея, из которой сделан проект, снова «Стала проектом»
+        project_restored(conn, proposal_id, now, actor)
         return self._dto(conn, self._row(conn, proposal_id))
 
     def vote(self, proposal_id, payload: dict, *, client_key: str) -> dict:
@@ -430,6 +454,8 @@ class ProposalRepository:
                        actor_label) VALUES (?, ?, ?, ?, ?, ?, ?)""",
                 (proposal_id, now, action, status, reason or "", actor.user_id, actor.label))
             if status == "withdrawn":
+                from .ideas import project_withdrawn  # проект из идеи сняли — идея снова на голосовании
+                project_withdrawn(conn, proposal_id, now, actor)
                 return {"item": None, "withdrawn": proposal_id}
             item = self._dto(conn, self._row(conn, proposal_id))
             return {"item": item, "proposal": item}

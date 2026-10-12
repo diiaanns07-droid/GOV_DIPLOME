@@ -24,6 +24,14 @@
     tests/civic/R06/round14/test_r06r14_demo_osm.py. Зданий в этих данных нет: попадание в дом не проверено.
   Прежние гипотетические точки отвергнуты этой проверкой: «площадка» стояла на территории школы, «спортплощадка» —
   в 25 м от существующей.
+
+Волна 2 (POLISH_WAVE_2): 6 демо-идей жителей в Нуре (п. 7) и 8 демо-записей «Что делают рядом» (п. 4).
+  - Идеи — те же правила места, что у проектов (жилой квартал OSM, ≥ 60 м от площадок и парков, вне школ и детсадов,
+    улица с названием ≤ 100 м — test_r06r14_wave2_demo.py). Тексты придуманы (demo, «Пример»), ru и kk (kk — черновик
+    R06 на вычитку R11). Одна идея «стала проектом» — это демо-проект освещения улицы Ильяса Омарова; одна отклонена
+    с причиной и «Можно доработать»; одна ждёт проверки (видна только сотруднику).
+  - «Рядом» — пример R08 (ui/civic_akim/fixtures/nearby_demo.json): события придуманы, улицы настоящие, источник —
+    общее название службы. Сроки — относительно сегодняшнего дня. Пустой «обход» («—») не храним.
 """
 
 from __future__ import annotations
@@ -31,6 +39,8 @@ from __future__ import annotations
 from datetime import timedelta
 import secrets
 
+from .ideas import IdeaRepository
+from .nearby import NearbyRepository
 from .objects import Actor, iso, utc_now
 from .proposals import ProposalRepository
 from .stages import StageRepository
@@ -75,6 +85,140 @@ PLANNED_STAGES = (
 # честно «Этап работ не указан»; мероприятия — у них нет этапов стройки.
 SKIP_STATUSES = ("cancelled", "unknown")
 SKIP_KINDS = ("event",)
+
+
+def _point(lon, lat):
+    return {"type": "Point", "coordinates": [lon, lat]}
+
+
+# Идеи жителей (демо). votes — поддержек; у project/rejected — сколько было на момент решения.
+YES, NO = "yes", "no"
+DEMO_IDEAS = (
+    {"key": "square", "status": "voting", "votes": 47, "place": "inside osm-way-257962279, улица Сыганак 73 м",
+     "geometry": _point(71.364964, 51.132812),
+     "object": {"kind": "square", "geometry": _point(71.364964, 51.132812), "rotation_deg": 15},
+     "texts": {"title_ru": "Сквер у улицы Сыганак", "title_kk": "Сығанақ көшесі маңындағы гүлзар",
+               "description_ru": "Во дворе нет тени и негде присесть. Нужны деревья, скамейки и урны.",
+               "description_kk": "Аулада көлеңке жоқ, отыратын орын жоқ. Ағаштар, орындықтар мен қоқыс жәшіктері керек."}},
+    {"key": "sports", "status": "voting", "votes": 23, "place": "landuse=residential, улица Ильяса Омарова 51 м",
+     "geometry": _point(71.369444, 51.139359),
+     "object": {"kind": "sports", "geometry": _point(71.369444, 51.139359)},
+     "texts": {"title_ru": "Спортплощадка для подростков у улицы Ильяса Омарова",
+               "title_kk": "Ілияс Омаров көшесі маңында жасөспірімдерге спорт алаңы",
+               "description_ru": "Подросткам негде играть в футбол и баскетбол — играют на парковке.",
+               "description_kk": "Жасөспірімдерге футбол мен баскетбол ойнайтын орын жоқ — тұрақта ойнайды."}},
+    {"key": "gazebo", "status": "voting", "votes": 12, "place": "landuse=residential, улица Чингиза Айтматова 35 м",
+     "geometry": _point(71.366098, 51.141718),
+     "texts": {"title_ru": "Беседка и скамейки во дворе", "title_kk": "Аулада беседка мен орындықтар",
+               "description_ru": "Пожилым жителям негде отдохнуть во дворе.",
+               "description_kk": "Егде тұрғындарға аулада демалатын орын жоқ."}},
+    # Стала проектом: демо-проект «Освещение улицы Ильяса Омарова» (точка — середина того же участка улицы).
+    {"key": "lighting", "status": "project", "votes": 52, "project_kind": "lighting", "place": "osm-w1482578141-6",
+     "geometry": _point(71.3688499, 51.1358187), "object": {"kind": "lighting"},
+     "check": {"land": YES, "networks": YES, "access": YES, "maintenance": YES},
+     "texts": {"title_ru": "Свет на улице Ильяса Омарова", "title_kk": "Ілияс Омаров көшесіне жарық",
+               "description_ru": "Вечером на улице темно, страшно идти от остановки.",
+               "description_kk": "Кешке көше қараңғы, аялдамадан жүру қорқынышты."}},
+    {"key": "fountain", "status": "rejected", "votes": 8, "place": "inside osm-way-257962279, улица Ильяса Омарова 55 м",
+     "geometry": _point(71.367439, 51.134156),
+     "check": {"land": YES, "networks": NO, "access": YES, "maintenance": NO},
+     "reason": "На участке нет водопровода, а содержание фонтана дорого для двора",
+     "can_improve": "Предложите питьевой фонтанчик у сквера — к нему можно подвести воду",
+     "texts": {"title_ru": "Фонтан во дворе", "title_kk": "Аулада субұрқақ",
+               "description_ru": "Летом жарко, детям нужен фонтан.",
+               "description_kk": "Жазда ыстық, балаларға субұрқақ керек.",
+               "reason_ru": "На участке нет водопровода, а содержание фонтана дорого для двора",
+               "reason_kk": "Учаскеде су құбыры жоқ, ал субұрқақты күтіп-ұстау аула үшін қымбат",
+               "can_improve_ru": "Предложите питьевой фонтанчик у сквера — к нему можно подвести воду",
+               "can_improve_kk": "Гүлзар жанынан ауыз су бұрқағын ұсыныңыз — оған су тартуға болады"}},
+    # Ждёт проверки — видна только сотруднику («Идеи на проверке»). Место — остановка OSM «Ильяса Омарова».
+    {"key": "bikes", "status": "review", "votes": 0, "place": "osm-node-5259599422 highway=bus_stop «Ильяса Омарова»",
+     "geometry": _point(71.3677445, 51.1324657),
+     "texts": {"title_ru": "Велопарковка у остановки «Ильяса Омарова»",
+               "title_kk": "«Ильяса Омарова» аялдамасы жанында велотұрақ",
+               "description_ru": "Велосипеды пристёгивают к деревьям.",
+               "description_kk": "Велосипедтерді ағаштарға байлайды."}},
+)
+
+
+def _why(problem, reason, result, inconvenience):
+    """4 строки «Зачем?» (ru, kk) → поля texts_json."""
+    out = {}
+    for key, (ru, kk) in zip(("problem", "reason", "result", "inconvenience"), (problem, reason, result, inconvenience)):
+        out[f"why_{key}_ru"], out[f"why_{key}_kk"] = ru, kk
+    return out
+
+
+# «Что делают рядом» — пример R08 (fixtures/nearby_demo.json, тот же id): события придуманы, улицы настоящие.
+DEMO_NEARBY = (
+    {"demo_key": "nb-demo-water-nura", "type": "outage", "utility": "water", "district": "nura", "source": "water",
+     "rel": {"when": {"day": 1, "from": "10:00", "to": "16:00"}, "updated_ago_min": 12},
+     "texts": {"title_ru": "Не будет холодной воды", "title_kk": "Суық су болмайды",
+               "zone_ru": "ул. Кабанбай батыра, 48–56", "zone_kk": "Қабанбай батыр көшесі, 48–56",
+               "detour_ru": "Питьевая вода — в автоцистерне у дома 52 с 10:00",
+               "detour_kk": "Ауыз су — 10:00-ден бастап 52-үй жанындағы автоцистернада",
+               **_why(("Течь на водопроводе под двором", "Аула астындағы су құбыры ағып тұр"),
+                      ("Трубу меняют днём, когда расход воды меньше", "Құбырды су аз жұмсалатын күндізгі уақытта ауыстырады"),
+                      ("Напор во дворах вернётся к норме", "Аулалардағы су қысымы қалпына келеді"),
+                      ("Без воды 6 часов, завтра 10:00–16:00", "6 сағат су болмайды, ертең 10:00–16:00"))}},
+    {"demo_key": "nb-demo-road-nura", "type": "work", "status": "in_progress", "work_kind": "roadworks",
+     "district": "nura", "rel": {"start_day": -12, "planned_end_day": 2, "forecast_end_day": 9, "updated_ago_min": 190},
+     "texts": {"title_ru": "Ремонт дороги на улице Е-308", "title_kk": "Е-308 көшесінде жол жөндеу",
+               **_why(("Ямы и провалы после замены труб", "Құбыр ауыстырылғаннан кейінгі шұңқырлар мен ойықтар"),
+                      ("Сначала меняли трубы под дорогой, потом кладут асфальт — иначе пришлось бы вскрывать заново",
+                       "Алдымен жол астындағы құбырларды ауыстырды, содан кейін асфальт төселеді — әйтпесе қайта қазуға тура келер еді"),
+                      ("Новый асфальт и разметка на 600 м", "600 м жаңа асфальт пен жол таңбасы"),
+                      ("Одна полоса закрыта; срок перенесён из-за дождей", "Бір жолақ жабық; жаңбырға байланысты мерзімі ауыстырылды"))}},
+    {"demo_key": "nb-demo-yard-nura", "type": "work", "status": "done", "work_kind": "landscaping", "district": "nura",
+     "rel": {"start_day": -40, "planned_end_day": -6, "forecast_end_day": -6, "updated_ago_min": 4300},
+     "texts": {"title_ru": "Новая детская площадка во дворе", "title_kk": "Аулада жаңа балалар алаңы",
+               **_why(("Старая площадка была опасной", "Ескі алаң қауіпті болды"),
+                      ("Жители выбрали этот двор голосованием", "Тұрғындар осы аулаға дауыс берді"),
+                      ("Безопасная площадка с мягким покрытием", "Жұмсақ төсемі бар қауіпсіз алаң"),
+                      ("Работы закончены", "Жұмыс аяқталды"))}},
+    {"demo_key": "nb-demo-light-nura", "type": "work", "status": "planned", "work_kind": "lighting", "district": "nura",
+     "rel": {"start_day": 14, "planned_end_day": 30, "forecast_end_day": 30, "updated_ago_min": 2900},
+     "texts": {"title_ru": "Освещение пешеходной дорожки", "title_kk": "Жаяу жүргіншілер жолын жарықтандыру",
+               **_why(("Вечером на дорожке темно", "Кешке жолда қараңғы"),
+                      ("Опоры ставят после окончания дорожного ремонта рядом",
+                       "Тіректер жанындағы жол жөндеу аяқталған соң орнатылады"),
+                      ("12 фонарей вдоль дорожки", "Жол бойында 12 шам"),
+                      ("Дорожка закрыта 2 дня во время монтажа", "Монтаж кезінде жол 2 күн жабық"))}},
+    {"demo_key": "nb-demo-heat-esil", "type": "outage", "utility": "heating", "district": "esil", "source": "heating",
+     "rel": {"when": {"day": 0, "from": "08:00", "to": "20:00"}, "updated_ago_min": 35},
+     "texts": {"title_ru": "Отопление включат позже", "title_kk": "Жылу кейінірек қосылады",
+               "zone_ru": "ул. Сыганак, 10–14", "zone_kk": "Сығанақ көшесі, 10–14",
+               **_why(("Промывка труб перед зимой", "Қыс алдында құбырларды жуу"),
+                      ("Без промывки зимой батареи греют хуже", "Жумаса, қыста батареялар нашар жылытады"),
+                      ("Ровное тепло во всех подъездах", "Барлық кіреберісте бірқалыпты жылу"),
+                      ("Сегодня 08:00–20:00 батареи холодные", "Бүгін 08:00–20:00 батареялар суық"))}},
+    {"demo_key": "nb-demo-close-esil", "type": "outage", "utility": "road_closure", "district": "esil", "source": "road",
+     "rel": {"when": {"day": 2, "from": "22:00", "to": "06:00"}, "updated_ago_min": 70},
+     "texts": {"title_ru": "Перекрытие проезда", "title_kk": "Жол жабылады",
+               "zone_ru": "Проезд между ул. Достык и ул. Акмешит", "zone_kk": "Достық және Ақмешіт көшелері арасындағы өтпе жол",
+               "detour_ru": "Объезд по ул. Кунаева", "detour_kk": "Қонаев көшесі арқылы айналып өту",
+               **_why(("Замена бордюров", "Жиектасты ауыстыру"),
+                      ("Ночью меньше машин — работы быстрее и безопаснее", "Түнде көлік аз — жұмыс тезірек әрі қауіпсіз"),
+                      ("Ровные бордюры и пандусы у перехода", "Өткел жанында тегіс жиектас пен пандустар"),
+                      ("Проезд закрыт ночью 22:00–06:00", "Түнде 22:00–06:00 жол жабық"))}},
+    {"demo_key": "nb-demo-square-esil", "type": "work", "status": "in_progress", "work_kind": "landscaping",
+     "district": "esil", "rel": {"start_day": -20, "planned_end_day": 20, "forecast_end_day": 20, "updated_ago_min": 600},
+     "texts": {"title_ru": "Благоустройство сквера", "title_kk": "Скверді абаттандыру",
+               **_why(("Разбитые дорожки и нет скамеек", "Жолдар бұзылған, орындық жоқ"),
+                      ("Работы идут участками, чтобы сквер оставался открытым",
+                       "Сквер ашық тұруы үшін жұмыс бөлікпен жүргізіледі"),
+                      ("Новые дорожки, скамейки и деревья", "Жаңа жолдар, орындықтар мен ағаштар"),
+                      ("Часть сквера огорожена до конца месяца", "Сквердің бір бөлігі ай соңына дейін қоршалған"))}},
+    {"demo_key": "nb-demo-power-almaty", "type": "outage", "utility": "power", "district": "almaty", "source": "power",
+     "rel": {"when": {"day": 3, "from": "09:00", "to": "13:00"}, "updated_ago_min": 240},
+     "texts": {"title_ru": "Не будет света", "title_kk": "Жарық болмайды",
+               "zone_ru": "ул. Жансугурова, 4–8", "zone_kk": "Жансүгіров көшесі, 4–8",
+               **_why(("Старый кабель часто отключается", "Ескі кабель жиі сөніп қалады"),
+                      ("Кабель меняют днём, в будни, когда дома меньше людей",
+                       "Кабель адамдар үйде аз болатын жұмыс күні ауыстырылады"),
+                      ("Меньше аварийных отключений зимой", "Қыста апаттық сөну азаяды"),
+                      ("Без света 4 часа", "4 сағат жарық болмайды"))}},
+)
 
 
 def demo_stage(status, kind, planned_index, today, actual_end=None):
@@ -150,4 +294,28 @@ def seed_r14_demo(service) -> dict:
                              (item["id"], device, 1 if n < up else -1, iso(now), iso(now)))
         report["proposals"].append({"kind": kind, "action": "create", "id": item["id"],
                                     "votes_up": up, "votes_down": down, "place": osm_ref})
+    report["ideas"] = seed_demo_ideas(service, proposals)
+    nearby = NearbyRepository(service.db, service.clock)
+    report["nearby"] = [{"id": item["demo_key"], "action": "create" if nearby.seed_demo(item) else "kept"}
+                        for item in DEMO_NEARBY]
     return report
+
+
+def seed_demo_ideas(service, proposals) -> list[dict]:
+    """Демо-идеи — один раз на базу (есть хоть одна демо-идея — ничего не делаем: настоящие не трогаются)."""
+    ideas = IdeaRepository(service.db, service.clock, proposals)
+    with service.db.read() as conn:
+        if conn.execute("SELECT COUNT(*) FROM civic_ideas WHERE demo = 1").fetchone()[0]:
+            return [{"action": "kept"}]
+        project = {r["kind"]: r["id"] for r in conn.execute(
+            "SELECT kind, id FROM civic_proposals WHERE demo = 1 AND status = 'proposal' AND idea_id IS NULL")}
+    out = []
+    for idea in DEMO_IDEAS:
+        status, project_id = idea["status"], None
+        if status == "project":
+            project_id = project.get(idea["project_kind"])
+            if project_id is None:  # демо-проекта нет (снят) — идея остаётся на голосовании
+                status = "voting"
+        seeded = ideas.seed_demo({**idea, "status": status}, votes=idea["votes"], project_id=project_id)
+        out.append({"key": idea["key"], "action": "create", **seeded, "place": idea["place"]})
+    return out

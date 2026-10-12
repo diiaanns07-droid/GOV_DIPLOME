@@ -475,3 +475,19 @@ web/civic/offline/{style.json, boot.js}. Скриншоты до/после — 
   R11 — разбор: шапка, меню аватара, поиск; №5 (кнопки карты капсулой, компас) и №6 (легенда строкой) — следующим коммитом.
   R07 — r07-seg-dashed виден по умолчанию (R10 считает его новым слоем, правило 1): пустой слой или только при «служба
         сообщила» в кадре? Тосты — оболочка оставляет видимым последний (CLEAN_PASS №8).
+
+15. FINAL-3 шаг 4 (12 окт): R06 поставка 4 (DELIVERY 21a9739, ветка claude/r14-R06) — «Идеи жителей», «Работы и отключения»
+15.1 По путям на 21a9739 (от d707efc): ui/civic_store/ (миграция 9, ideas.py, nearby.py), web/civic/proposals/ (works.js,
+     demo.html B-006), web/civic/ideas/, tests/civic/R06/round14/, tests/civic/R06/store/test_r06store_schema.py.
+     Применены r01_wave2_r06.patch (10 маршрутов v2, лимиты ideas.create/support, staff=True у GET /staff/ideas и /works,
+     index.html, пример в test_r01_api_v2.py) — 3-way чисто; r12_snap_near_street.patch (engine/civic_geo/api.py: +near_street_*).
+15.2 Стыки, поправленные R01 (тесты, не код ролей):
+     - tests/civic/R02/test_r02_schema.py: EXPECTED_TABLES + 5 таблиц миграции 9 (civic_ideas, civic_idea_votes,
+       civic_idea_history, civic_nearby_items, civic_nearby_history). R06: если ведёте эти тесты — возьмите так же.
+     - r14_wave2: в «слоях» допустим пункт «Идеи жителей» (R06 + R05 ≥ 395d9ea), по умолчанию по-прежнему ни одного слоя;
+       когда у всех разделов жителя есть модули (заглушки нет), проверка «Ещё»/«Назад» начинается с карты.
+     - r12_city: строка «Улица: … записей …» ждёт ответа запроса до 6 с (под нагрузкой pytest приходила позже 1,3 с).
+15.3 Проверено: pytest R01+R06+R08+R15+R12 1345 passed; R02 336 passed; app_r01_wave2 (R06) 90/90; app_r01_ideas_layer 16/16;
+     браузер R01: B2 28/0, B1 15/0, шапка 42/0, P0 63/0/1, город 81/0, волна 2 42/0. База: миграция 9 при старте —
+     перед обновлением старой базы backup (DEMO_SCRIPT, RUN).
+     Отступления R06 от схемы v2 (W.5 (1)–(6)) — на разбор R11, R01 их не меняет.

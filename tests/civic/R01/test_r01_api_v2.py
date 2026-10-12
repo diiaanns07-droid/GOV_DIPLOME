@@ -101,6 +101,17 @@ ROUTE_SAMPLES = [
     ("POST", "/proposals/p-1/vote", "", {"value": 1, "device_id": "device-123"}),
     ("GET", "/objects", "", None),
     ("PUT", "/objects/o-1/stage", "", {"stage": "design"}),
+    # R06 волна 2: идеи жителей и «Работы и отключения».
+    ("GET", "/ideas", "", None),
+    ("POST", "/ideas", "", {"title": "Сквер"}),
+    ("GET", "/ideas/i-1", "", None),
+    ("POST", "/ideas/i-1/support", "", {"device_id": "device-123", "on": True}),
+    ("POST", "/ideas/i-1/decide", "", {"action": "publish"}),
+    ("GET", "/staff/ideas", "", None),
+    ("GET", "/works", "", None),
+    ("POST", "/works", "", {"type": "work"}),
+    ("POST", "/works/w-1", "", {"type": "work"}),
+    ("POST", "/works/w-1/remove", "", {"expected_revision": 1}),
     ("GET", "/forecast", "month=2026-11&k=5", None),
 ]
 
