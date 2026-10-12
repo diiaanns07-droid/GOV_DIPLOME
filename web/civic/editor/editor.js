@@ -101,7 +101,7 @@
     "staff.logout.retry": "Қайта шығу",
     "staff.msg.server_detail": "Сервер: {text}",
     "staff.pub.draft": "Қаралама",
-    "staff.pub.published": "Жарияланды",
+    "staff.pub.published": "Жарияланған",  // как в словаре R11 (UX_REVIEW круг 17 п. 3)
     "staff.pub.archived": "Мұрағатта",
     "staff.row.end": "аяқталуы: {date}",
     "staff.row.no_kind": "Түрі көрсетілмеген",

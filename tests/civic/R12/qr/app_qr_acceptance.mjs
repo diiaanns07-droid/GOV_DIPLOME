@@ -44,6 +44,18 @@ async function pointVisible(p, lngLat) {
   }, lngLat);
 }
 const STOP_LL = [71.4065528, 51.1311545];  // точка остановки в data/civic/astana/geo/objects.json
+// Вид «Житель / Акимат». Чистый дизайн FINAL-3 (R01 INTEGRATION 14.1, 18.2): в меню аватара .birge-avatar →
+// #birge-account [data-mode]; в сборках до него — кнопки шапки «Житель» / «Акимат».
+async function setView(p, mode) {
+  if ((await p.evaluate(() => document.body.dataset.birgeMode)) === mode) return;
+  if (await p.locator(".birge-avatar").count()) {
+    await p.click(".birge-avatar");
+    await p.click(`#birge-account [data-mode="${mode}"]`);
+  } else {
+    await p.click(`text=${mode === "resident" ? "Житель" : "Акимат"}`);
+  }
+  await p.waitForFunction((m) => document.body.dataset.birgeMode === m, mode, { timeout: 5000 });
+}
 const reportState = (p) => p.waitForFunction(() => /ready|error/.test(document.querySelector("#birge-report-root .bq-report")?.dataset.state || ""), null, { timeout: 30000 });
 
 try {
@@ -61,6 +73,13 @@ try {
       await p.evaluate(() => [document.body.dataset.birgeMode, localStorage.getItem("birge.mode")]));
     const vis = await pointVisible(p, STOP_LL);
     check("ноутбук: остановка на карте видна, не под панелью", vis.inside && !vis.under, vis);
+    if (await p.locator(".birge-avatar").count()) {  // чистый дизайн: вид выбирается в меню аватара
+      await p.click(".birge-avatar");
+      const checked = await p.locator('#birge-account [data-mode="resident"]').getAttribute("aria-checked");
+      check("меню аватара: по ссылке отмечен вид «Житель»", checked === "true", checked);
+      await p.keyboard.press("Escape");
+      await p.waitForTimeout(200);
+    }
     await p.screenshot({ path: path.join(OUT, "app-qr-1366-ru.png") });
     // «Подробнее»: текущие обращения и история (POLISH_WAVE_2 п. 6) — из публичного вида настоящего R09
     await p.click("#birge-report-root details.bq-more > summary");
@@ -138,6 +157,7 @@ try {
     // Нарушения CSP. «Refused … MIME type» от /vendor/qrcode/qrcode.js — это 404, пока нет LOCAL-11 (лист честно предупреждает).
     p.on("console", (m) => { if (/Content Security Policy/.test(m.text())) csp.push(m.text()); });
     await p.waitForFunction(() => document.querySelector("#birge-heat-root .r07-item, #birge-heat-root .r07-list"), null, { timeout: 30000 }).catch(() => null);
+    await setView(p, "akimat");
     await p.goto(BASE + "/#target=object:" + STOP);
     const link = await p.waitForSelector("#birge-heat-root .r07-qr a", { timeout: 20000 }).then((h) => h.getAttribute("href"), () => null);
     check("акимат: в карточке места есть «Распечатать QR» на лист этого объекта", link === "/civic/qr/print.html?ids=" + STOP, link);
@@ -149,6 +169,16 @@ try {
     const sheet = await p.locator("#bqp-root").innerText().catch(() => "");
     check("лист QR открывается в приложении: табличка остановки", /Хан Шатыр/.test(await p.locator(".bqp-sheet").innerText().catch(() => "")), sheet.slice(0, 300));
     check("лист QR без нарушений CSP R01 (встроенных скриптов нет)", csp.length === 0, csp);
+    // Настоящий генератор (LOCAL-11, web/vendor/qrcode) — если он в сборке: QR нарисован, «Распечатать QR» — главная кнопка.
+    const gen = await p.evaluate(() => typeof window.qrcode === "function");
+    if (gen) {
+      const qr = await p.evaluate(() => ({ path: (document.querySelector(".bqp-sign .bqp-qr__svg path")?.getAttribute("d") || "").length,
+        print: !document.querySelector('[data-act="print"]')?.hidden,
+        primary: document.querySelector(".bqp-buttons .bk-btn--primary")?.textContent.trim(),
+        foreign: /не адрес этого сервера/.test(document.querySelector(".bqp-status")?.innerText || "") }));
+      check("настоящий QR на табличке и «Распечатать QR» — одна главная кнопка; адрес этого сервера без предупреждения",
+        qr.path > 1000 && qr.print && /Распечатать QR/.test(qr.primary || "") && !qr.foreign, qr);
+    } else checks.push({ name: "настоящий QR на табличке", status: "NOT_RUN", detail: "в сборке нет web/vendor/qrcode/qrcode.js (LOCAL-11)" });
     await p.screenshot({ path: path.join(OUT, "app-qr-print-1366-ru.png") });
     check("нет ошибок страницы (акимат, лист QR)", errors.length === 0, errors.slice(0, 3));
     await ctx.close();
@@ -157,7 +187,8 @@ try {
   {
     const { ctx, p, errors } = await page({ width: 1366, height: 768 }, "ru", "/");
     await p.waitForFunction(() => typeof map !== "undefined" && map && map.getStyle && document.querySelector(".bc-fab"), null, { timeout: 30000 });
-    await p.click(".bc-fab").catch(async () => { await p.click("text=Житель"); await p.click(".bc-fab"); });
+    await setView(p, "resident");  // ноутбук открывается в виде «Акимат»; кнопка жалобы — у жителя
+    await p.click(".bc-fab");
     await p.waitForTimeout(400);
     await p.evaluate(() => map.jumpTo({ center: [71.40335, 51.17485], zoom: 17 }));
     await p.waitForTimeout(800);
