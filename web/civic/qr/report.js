@@ -338,6 +338,9 @@
     function render() {
       if (destroyed) return;
       box.setAttribute("data-state", S.state);
+      // Стекло (GLASS.md R11 §4: «QR-паспорт — bk-glass на карточке»): своё — только вне панели оболочки. В панели R01
+      // (.civic-panel, по GLASS.md §4 №5 — стекло) паспорт лежит на её стекле: второе стекло или карточка в карточке не нужны.
+      box.classList.toggle("bk-glass", !(box.parentElement && box.parentElement.closest && box.parentElement.closest(".bk-glass, .civic-panel")));
       box.lang = lang();
       var kids = [];
       // Крестик — в углу карточки, а не отдельной строкой: на телефоне главная кнопка остаётся видна без прокрутки.

@@ -10,6 +10,8 @@
   overflow-wrap: anywhere;
 }
 .bq-report *, .bq-report *::before, .bq-report *::after { box-sizing: border-box; }
+/* Своё стекло (вне стеклянной панели): отступ под радиус капсулы. Цвета текста — токены ui-kit (на стекле — тёмные). */
+.bq-report.bk-glass { padding: 12px 18px 22px; }
 .bq-report__close { position: absolute; top: 4px; right: 4px; min-width: 48px; min-height: 48px; }
 .bq-eyebrow { padding-right: 52px; min-height: 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 4px; color: var(--c-text-2, #5b6a64); font-size: 14px; }
 .bq-eyebrow .ic { width: 18px; height: 18px; }

@@ -66,6 +66,8 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   assert.equal(await page.locator('[data-act="report-other"]').count(), 1);
   assert.equal(await page.locator("details.bq-more").getAttribute("open"), null, "подробности свёрнуты");
   assert.doesNotMatch(card, /qr\.|osm-node|ребр|граф/i, "ни ключей, ни технических слов");
+  // GLASS.md R11 §4: на стенде панель не стеклянная — стекло у самой карточки
+  assert.equal(await page.locator(".bq-report.bk-glass").count(), 1, "своё стекло вне стеклянной панели");
   await shot(page, "qr-passport-stop-1366-ru");
   // «Я тоже» → POST с id устройства, спасибо, событие для тепловой карты, кнопка меняется
   await page.click('[data-act="metoo"]');
