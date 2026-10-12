@@ -879,6 +879,6 @@ body.civic-mode[data-birge-section]:not([data-birge-section="map"]) .civic-explo
    прокруткой, а невидимая часть списка в Chromium рисовалась бледным прямоугольником поверх карты); «Ещё…» — 13 серым. */
 body.civic-mode[data-birge-explore="header"] .civic-explore-list { max-height: calc(100vh - 96px); }
 body.civic-mode .civic-explore-list .civic-explore-more { font-size: 13px; color: var(--c-text-2, #5b6a64); padding: 8px 16px; }
-/* Подробная легенда под «?» и плашка о карте внизу по центру на 1024 ложились друг на друга — сообщения по одному:
-   пока открыта легенда, плашка ждёт (она и так гаснет через 6 с) */
-body.civic-mode:has(#birge-legend[data-open="true"]) .civic-explore #map-status { visibility: hidden; }
+/* Подробная легенда под «?», меню слоёв и меню шапки ложились на плашку о карте (1024 — легенда, 375 — легенда и слои) —
+   сообщения по одному: пока открыто меню или легенда, плашка ждёт (она и так гаснет через 6 с) */
+body.civic-mode:has(#birge-legend[data-open="true"], #birge-layer-btn[aria-expanded="true"], .topbar [aria-expanded="true"]) .civic-explore #map-status { visibility: hidden; }
