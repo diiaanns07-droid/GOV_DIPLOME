@@ -1358,6 +1358,7 @@
           if (!state || state !== owner || state.view !== "mine") return;
           if (!res.ok) { state.mineError = true; render(); return; }
           state.mine = res.data.items || [];
+          state.mineEnter = true;   // пришли данные — карточки мягко появляются; перерисовка того же списка — без движения
           state.changes = changes && changes.ok ? changes.data : null;
           // «Что изменилось» — с прошлого визита; первый визит только запоминает момент.
           storageSet("localStorage", SEEN_KEY, new Date().toISOString());
@@ -1670,7 +1671,8 @@
         return;
       }
       renderWaitCheck(body);
-      var list = h("ul", { "class": "bc-mine" });
+      var list = h("ul", { "class": "bc-mine" + (state.mineEnter ? " bc-list--enter" : "") });
+      state.mineEnter = false;
       state.mine.forEach(function (item) {
         var c = category(item.category);
         var title = categoryLabel(item.category) + (item.subtopic ? " · " + subtopicLabel(item.category, item.subtopic) : "");

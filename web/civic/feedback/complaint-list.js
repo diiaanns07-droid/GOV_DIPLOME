@@ -84,6 +84,7 @@
         // 401/403 — не вошёл сотрудник (R11 разбор FINAL-3): это не «нет связи», а «войдите»
         if (!res.ok) { state.error = res.status === 401 || res.status === 403 ? "staff" : true; state.data = null; render(); return; }
         state.data = res.data;
+        state.enter = true;   // новые данные — строки мягко появляются (раскрытие строки — без движения)
         if (!state.tab) {
           // По умолчанию — «Новые»; если там пусто — первая непустая вкладка.
           var counts = res.data.counts || {};
@@ -106,7 +107,7 @@
         bar.appendChild(h("button", { "class": "bk-chip bc-inbox__tab", type: "button", role: "tab", "data-tab": id,
                                       "aria-selected": state.tab === id ? "true" : "false",
                                       "aria-pressed": state.tab === id ? "true" : "false",
-                                      onclick: function () { state.tab = id; state.open = null; closeStaff(); render(); } },
+                                      onclick: function () { state.tab = id; state.open = null; state.enter = true; closeStaff(); render(); } },
           [h("span", {}, t("inbox.tab." + id)), h("span", { "class": "bc-inbox__count" }, " " + (counts[id] || 0))]));
       });
       return bar;
@@ -226,7 +227,8 @@
         box.appendChild(h("div", { "class": "bk-empty" }, [C().icon ? C().icon("check") : null, h("p", { "class": "bk-empty__title" }, t("inbox.empty"))]));
         return;
       }
-      box.appendChild(h("ul", { "class": "bc-inbox__list", role: "tabpanel" }, items.map(row)));
+      box.appendChild(h("ul", { "class": "bc-inbox__list" + (state.enter ? " bc-list--enter" : ""), role: "tabpanel" }, items.map(row)));
+      state.enter = false;
     }
 
     // Язык: оболочка зовёт setLang(lang); словарь R11 грузится асинхронно и потом шлёт "birge:lang" — перерисуем и тогда.
