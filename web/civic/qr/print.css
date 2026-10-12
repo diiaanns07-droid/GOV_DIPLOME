@@ -9,16 +9,22 @@
 /* ── Форма (экран) ── */
 .bqp-form { display: grid; gap: 16px; max-width: 640px; }
 .bqp-h1 { margin: 0; font-size: var(--fs-h1, 28px); line-height: 1.2; font-weight: var(--fw-semi, 600); letter-spacing: -0.01em; }
-.bqp-lead { margin: -8px 0 8px; max-width: 60ch; color: var(--c-text-2, #5b6a64); font-size: var(--fs-lead, 17px); line-height: 1.45; }
+/* три размера на экране формы: 28 заголовок · 17 текст, подписи полей и кнопки (как .bk-btn) · 13 подсказки;
+   строки ≤ 70 знаков (R10 DESIGN_REVIEW круг 2) */
+.bqp-lead { margin: -8px 0 8px; max-width: 56ch; color: var(--c-text-2, #5b6a64); font-size: var(--fs-lead, 17px); line-height: 1.45; }
+.bqp-form .bk-field__label { font-size: var(--fs-lead, 17px); }
+.bqp-form .bk-field__hint { max-width: 60ch; }
 .bqp-field textarea { font-family: inherit; }
 .bqp-size { align-self: start; justify-self: start; }
+.bqp-size button { font-size: var(--fs-lead, 17px); }  /* та же 17, что у кнопок и подписей: 3 размера на экране */
 .bqp-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .bqp-buttons .bk-btn { min-height: 48px; }
 .bqp-status { display: grid; gap: 8px; }
-.bqp-msg { margin: 0; padding: 12px 16px; border-radius: var(--r-m, 10px); font-size: var(--fs-body, 15px); }
+.bqp-msg { margin: 0; padding: 12px 16px; border-radius: var(--r-m, 10px); font-size: var(--fs-lead, 17px); }
 .bqp-msg--error { background: var(--c-danger-soft, #fdecea); color: var(--c-danger, #b3362e); }
 .bqp-msg--warn { background: var(--c-warn-soft, #fff4dc); color: var(--c-warn, #8a5a12); }
-.bqp-msg--ok { background: var(--c-ok-soft, #eaf4dc); color: var(--c-ok, #2f6b12); }
+/* «Готово табличек: N» — нейтрально: зелёный в Birge только для «исправлено» (R10 DESIGN_REVIEW) */
+.bqp-msg--ok { background: var(--c-fill, #eff1f2); color: var(--c-ink, #152c26); }
 .bqp-msg--info { padding: 0; color: var(--c-text-2, #5b6a64); }
 
 /* ── Таблички на экране: превью в масштабе ── */
