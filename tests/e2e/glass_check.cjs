@@ -375,6 +375,26 @@ async function contrastRun(browser, base, size, lang, mode) {
   } finally { await ctx.close(); }
 }
 
+// Перетаскивание карты мышью (как житель): счётчик кадров в странице, 40 шагов мыши за ~1,6 с по свободной части карты.
+async function dragFps(page) {
+  const at = await page.evaluate(() => { // eslint-disable-next-line no-undef
+    const m = typeof map !== "undefined" && map && map.getCanvas ? map : null; if (!m) return null;
+    const c = m.getCanvas(), r = c.getBoundingClientRect();
+    for (const fx of [0.3, 0.2, 0.45]) { const x = r.left + r.width * fx, y = r.top + r.height * 0.55; if (document.elementFromPoint(x, y) === c) return { x, y }; }
+    return null; });
+  if (!at) return null;
+  await page.evaluate(() => { window.__r10f = []; let last = performance.now(); window.__r10run = true;
+    const loop = (t) => { window.__r10f.push(t - last); last = t; if (window.__r10run) requestAnimationFrame(loop); }; requestAnimationFrame(loop); });
+  const t0 = Date.now();
+  await page.mouse.move(at.x, at.y); await page.mouse.down();
+  for (let i = 1; i <= 40; i++) { await page.mouse.move(at.x + i * 6, at.y + i * 2); await L.sleep(40); }
+  await page.mouse.up();
+  const ms = Date.now() - t0;
+  const d = await page.evaluate(() => { window.__r10run = false; return window.__r10f.slice(1); });
+  const v = d.slice().sort((a, b) => a - b);
+  return { fps: Math.round((d.length * 1000) / ms), p95_ms: Math.round(v[Math.floor(v.length * 0.95)] || 0), over50: v.filter((x) => x > 50).length };
+}
+
 async function fpsRun(browser, base, size, label, glass) {
   const runs = [];
   for (let i = 0; i < FPS_REPEAT; i++) {
@@ -382,16 +402,18 @@ async function fpsRun(browser, base, size, label, glass) {
     try {
       await page.goto(base); await settle(page);
       const plain = await page.evaluate(SMOOTH, KHAN).catch((e) => ({ error: String(e.message).slice(0, 120) }));
+      if (plain && !plain.error) plain.drag = await dragFps(page).catch(() => null);
       const p = await L.showPoint(page, KHAN, 17); if (p) await L.tap(page, p.x, p.y); await L.sleep(2500);
       const panel = !!(await L.firstVisible(page.locator(".r07-card")));
       const withPanel = await page.evaluate(SMOOTH, KHAN).catch((e) => ({ error: String(e.message).slice(0, 120) }));
+      if (withPanel && !withPanel.error) withPanel.drag = await dragFps(page).catch(() => null);
       const glassOn = await page.evaluate(() => !document.documentElement.classList.contains("bk-glass-off") && [...document.querySelectorAll("body *")].some((e) => { const f = getComputedStyle(e).backdropFilter; return f && f !== "none"; }));
       runs.push({ plain, panel, withPanel, glassOn });
     } finally { await ctx.close(); }
   }
   // Медиана по повторам (кадры/с).
   const med = (key, k) => { const v = runs.map((r) => r[key] && r[key][k] && r[key][k].fps).filter((x) => x); return v.length ? L.median(v) : null; };
-  return { label, glass, size: size.join("x"), runs, fps: { plain: { pan: med("plain", "pan"), fly: med("plain", "fly") }, withPanel: { pan: med("withPanel", "pan"), fly: med("withPanel", "fly") } },
+  return { label, glass, size: size.join("x"), runs, fps: { plain: { pan: med("plain", "pan"), fly: med("plain", "fly"), drag: med("plain", "drag") }, withPanel: { pan: med("withPanel", "pan"), fly: med("withPanel", "fly"), drag: med("withPanel", "drag") } },
     panel: runs.some((r) => r.panel), glassOn: runs.some((r) => r.glassOn) };
 }
 // Итог по FPS: программный WebGL (обе < 10 к/с) — ИНФО; иначе падение > 20 % → FAIL; < 30 к/с со стеклом при ≥ 30 без него →
@@ -458,7 +480,7 @@ async function fallbackRun(browser, base, size) {
       const off = delivered || args.force ? await fpsRun(browser, server.base, size, sha + " bk-glass-off", "off") : null;
       const b = ctl ? await fpsRun(browser, ctl.base, size, L.buildSha(CONTROL), "keep") : null;
       fps.push(a); if (off) fps.push(off); if (b) fps.push(b);
-      for (const [k, v] of [["pan", "сдвиг"], ["fly", "перелёт"]]) for (const [state, key] of [["без панели", "plain"], ["с панелью", "withPanel"]]) {
+      for (const [k, v] of [["drag", "перетаскивание мышью"], ["pan", "сдвиг"], ["fly", "перелёт"]]) for (const [state, key] of [["без панели", "plain"], ["с панелью", "withPanel"]]) {
         const now = a.fps[key][k];
         const refs = [[off, "без стекла (bk-glass-off)"], [b, b && b.label]].filter(([r]) => r);
         if (!refs.length) add("G-4", size.join("x"), `плавность карты, ${v} ${state}: ${now ?? "?"} к/с (стекла нет — замер для сравнения)`, "INFO", { now, repeats: FPS_REPEAT });

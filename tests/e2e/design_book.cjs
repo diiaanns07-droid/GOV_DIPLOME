@@ -71,8 +71,24 @@ const DESIGN = () => {
       const lines = Math.max(1, tops.size), cpl = Math.round(own.length / lines);
       if (cpl > 75) { longLines.push({ cpl, lines, text: own.slice(0, 30), owner: ownerOf(e) }); issue("3 типографика", ownerOf(e), `строка ~${cpl} знаков (> 70): «${own.slice(0, 24)}»`); }
     }
+    // Обрезано краем: буквы выходят за ближайшего предка с overflow ≠ visible (лист, шторка, карточка) — «казахский не
+    // обрезается» (чек-лист 3); или поле/подпись шире себя (scrollWidth) без «…».
+    if (!map) {
+      const rg2 = document.createRange(); let tr = null;
+      for (const x of e.childNodes) if (x.nodeType === 3 && x.textContent.trim()) { rg2.selectNodeContents(x); const q = rg2.getBoundingClientRect(); if (q.width > 0) tr = tr ? { l: Math.min(tr.l, q.left), r: Math.max(tr.r, q.right) } : { l: q.left, r: q.right }; }
+      let clip = null; for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const ps = getComputedStyle(p); if (ps.overflowX !== "visible") { clip = p; break; } }
+      const cr = clip ? clip.getBoundingClientRect() : { left: 0, right: innerWidth };
+      if (tr && (tr.r > Math.min(cr.right, innerWidth) + 1.5 || tr.l < Math.max(cr.left, 0) - 1.5)) { cut.push({ text: own.slice(0, 30), owner: ownerOf(e), edge: true }); issue("3 типографика", ownerOf(e), `обрезано краем: «${own.slice(0, 24)}»`); }
+    }
     if ((s.textOverflow === "ellipsis" && e.scrollWidth > e.clientWidth + 1) || (/-webkit-box/.test(s.display) && e.scrollHeight > e.clientHeight + 2)) {
       cut.push({ text: own.slice(0, 30), owner: ownerOf(e) }); issue("3 типографика", ownerOf(e), `обрезано «…»: «${own.slice(0, 24)}»`); }
+  }
+  for (const f of all.filter((x) => x.matches("select, input[type=date], input[type=text], input:not([type])"))) {
+    const v = f.tagName === "SELECT" ? (f.options[f.selectedIndex] || {}).text || "" : f.value || f.placeholder || "";
+    if (!v) continue;
+    const cs = getComputedStyle(f), cv = document.createElement("canvas").getContext("2d"); cv.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    const need = cv.measureText(v).width + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + (f.tagName === "SELECT" || f.type === "date" ? 24 : 0);
+    if (need > f.clientWidth + 2) { cut.push({ text: v.slice(0, 30), owner: ownerOf(f), field: true }); issue("3 типографика", ownerOf(f), `поле узкое — текст обрезан: «${v.slice(0, 24)}»`); }
   }
   const sizeList = Object.keys(sizes).map(Number).sort((a, b) => a - b);
   R.type = { sizes, weights, distinct: sizeList.length, off_scale: offScale.slice(0, 12), long_lines: longLines.slice(0, 8), cut: cut.slice(0, 8) };
@@ -262,7 +278,8 @@ async function wizardText(P) {
   if (pt) { const at = pt.onCanvas || !pt.near ? pt : pt.near; await L.tap(P.page, at.x, at.y); await L.sleep(2500); }
   const dlg = (await L.firstVisible(P.page.getByRole("dialog"))) || P.page;
   const place = (await L.firstVisible(dlg.getByRole("button", { name: /Хан Шатыр|Хан Шатыр/i })))
-    || (await L.firstVisible(dlg.getByRole("button", { name: partRe(word(P.lang, "complaint.step2.approximate", "Примерное место", "Шамамен орны")) })));
+    || (await L.firstVisible(dlg.getByRole("button", { name: L.textRe(word(P.lang, "complaint.step2.approximate", "Примерное место", "Шамамен орны")) })))
+    || (await L.firstVisible(dlg.getByRole("button", { name: /Примерное место|Шамамен орны/i })));
   if (!place) return false; await place.click().catch(() => null); await L.sleep(1800);
   const box = await L.firstVisible(((await L.firstVisible(P.page.getByRole("dialog"))) || P.page).getByRole("textbox"));
   if (!box) return false; await box.fill("Аялдамада жарық жоқ, вечером на остановке темно").catch(() => null); await L.sleep(3000);
