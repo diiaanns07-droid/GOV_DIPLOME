@@ -139,11 +139,14 @@ async function openPage(browser, size, lang, storage) {
           const card = p.querySelector(".bc-mine__card"), cc = card ? getComputedStyle(card) : null;
           return { glass: p.classList.contains("bk-glass"), step: p.getAttribute("data-step"), bg: cs.backgroundColor,
                    blur: cs.backdropFilter || cs.webkitBackdropFilter, radius: cs.borderTopLeftRadius, headBg: head.backgroundColor,
-                   headBlur: head.backdropFilter || head.webkitBackdropFilter, card: cc && cc.backgroundColor,
+                   headBlur: head.backdropFilter || head.webkitBackdropFilter, card: cc && cc.backgroundColor, cardLine: cc && cc.boxShadow,
                    text2: cs.getPropertyValue("--c-text-2").trim() }; });
         check(`${tag}: «Мои обращения» — стекло ui-kit (80 % белого, размытие, радиус)`,
           st && st.glass && st.step === "mine" && /rgba\(255, 255, 255, 0\.8\)/.test(st.bg) && /blur\(2[0-4]px\)/.test(st.blur || ""), st);
-        check(`${tag}: карточки на стекле — плотная подложка (как .bk-card ui-kit)`, st && /rgba\(255, 255, 255, 0\.7\)/.test(st.card || ""), st && st.card);
+        // ui-kit R11 (D-7, d2ed919f+): белая карточка с волосяной линией; в ui-kit до марафона — 70 % белого.
+        check(`${tag}: карточки на стекле — плотная подложка (как .bk-card ui-kit)`, st &&
+          (/^rgb\(255, 255, 255\)$/.test(st.card || "") && /inset/.test(st.cardLine || "") || /rgba\(255, 255, 255, 0\.7\)/.test(st.card || "")),
+          st && [st.card, st.cardLine]);
         check(`${tag}: шапка «Закрыть» над прокруткой — тем же стеклом (размытие)`, st && /blur/.test(st.headBlur || ""), st && { headBg: st.headBg, headBlur: st.headBlur });
         const under = await page.evaluate(() => { const p = document.querySelector(".civic-panel");
           return { mineOpen: document.documentElement.classList.contains("bc-mine-open"), panel: p ? getComputedStyle(p).visibility : null }; });

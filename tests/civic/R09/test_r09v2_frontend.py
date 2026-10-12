@@ -393,7 +393,7 @@ def test_design_marathon_round7_r11_edits():
     assert "translateX(-50%)" not in css and "body.civic-mode .bc-fab { right: 56px; }" in css
     # D-1: колонка «Обращений» 720.  D-7: скелетон на стекле — белая карточка с волосяной линией.
     assert ".bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px;" in css
-    assert ".bk-glass .bc-skel-card { background: var(--c-surface, #fff); box-shadow: 0 0 0 1px rgba(16, 24, 22, .08); }" in css
+    assert ".bk-glass .bc-skel-card { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px rgba(16, 24, 22, .08); }" in css
     # D-5: «Пример» — одна сноска под списком; метка — у раскрытой карточки и у похожей на шаге «Я тоже».
     assert 'h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint"))' in JS
     assert 'h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint"))' in LIST_JS

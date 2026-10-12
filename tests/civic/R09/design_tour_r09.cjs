@@ -292,6 +292,15 @@ async function akimat(browser, base, srv, width, height, lang) {
     const row = await page.$(".bc-inbox__row");
     if (row) { await row.click(); await sleep(1500); }
     await shot(page, tag, "23-inbox-detail");
+    // Пустая вкладка (ноль у вкладки скрыт) и «нет связи» «Обращений» (круг 7: иллюстрации ui-kit).
+    const emptyTab = await page.$(".bc-inbox__tab:has(.bc-inbox__count[data-zero])");
+    if (emptyTab) { await emptyTab.click(); await sleep(700); }
+    await shot(page, tag, "23b-inbox-empty-tab");
+    await page.route("**/api/civic/v2/complaints/inbox*", (r) => r.abort());
+    await page.evaluate(() => window.BirgeShell?.setSection?.("map")); await sleep(400);
+    await page.evaluate(() => window.BirgeShell?.setSection?.("complaints")); await sleep(1500);
+    await shot(page, tag, "23c-inbox-error");
+    await page.unroute("**/api/civic/v2/complaints/inbox*");
     // Карточка цели R07 на карте: блок сотрудника R09 (паспорт, «Обновление для всех») и форма «что сделали».
     // Открытое настоящее обращение у остановки (демо-примеры не меняются) — синтетика, своё устройство.
     await fetch(base + "/api/civic/v2/complaints", { method: "POST", headers: { "Content-Type": "application/json",

@@ -141,7 +141,7 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-skel-line { height: 56px; border-radius: var(--r-m, 12px); }
 /* Скелетон карточки: строки на месте категории, статуса, «Передано…» и меты. */
 .bc-skel-card { display: grid; gap: 10px; padding: 16px; border-radius: var(--r-l, 14px); background: var(--c-surface, #fff); }
-.bk-glass .bc-skel-card { background: var(--c-surface, #fff); box-shadow: 0 0 0 1px rgba(16, 24, 22, .08); }   /* как .bk-glass .bk-card ui-kit (R11 D-7) */
+.bk-glass .bc-skel-card { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px rgba(16, 24, 22, .08); }   /* как .bk-glass .bk-card ui-kit (R11 D-7) */
 .bc-skel-line { display: block; height: 12px; width: 72%; border-radius: 6px; }
 .bc-skel-line--title { height: 16px; width: 44%; }
 .bc-skel-line--status { width: 30%; }
