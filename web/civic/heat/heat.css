@@ -1,219 +1,235 @@
 /* R07 · Тепловая карта объектов — стили панели и значков на карте.
- * Цвета и размеры берутся из токенов ui-kit R11 (--b-…), а пока ui-kit не подключён — из запасных значений.
- * Правила: текст ≥ 16 px (мелкие подписи 14), кнопки и зоны нажатия ≥ 48 px, цвет всегда с числом или словом. */
+ * Чистый дизайн (R11 CLEAN_PASS, решение владельца 12 окт): одна краска #152c26 + цвета жалоб, нейтральный серый,
+ * два веса 400/600, шкала 13/15/17/22, панели и карточки без рамок и плашек, второстепенное — серой заливкой.
+ * Цвета и размеры — из токенов ui-kit R11 (--c-…, --fs-…); без ui-kit (страница demo.html) — те же значения запасными.
+ * Зоны нажатия ≥ 48 px, значки на карте ≥ 44 px, цвет всегда с числом или словом. */
 
 .r07-root {
-  --r07-ink: var(--b-ink, #152c26);
-  --r07-ink-2: var(--b-ink-2, #55655e);
-  --r07-line: var(--b-line, #e1e7df);
-  --r07-paper: var(--b-paper, #f7f8f4);
-  --r07-green: var(--b-green, #176b4a);
-  --r07-green-50: var(--b-green-50, #eaf4ee);
-  --r07-lime: var(--b-lime, #d7f57c);
-  --r07-focus: var(--b-focus, #2f7de1);
-  --r07-ok-ink: var(--b-ok-ink, #3f6f14);
-  --r07-ok-bg: var(--b-ok-bg, #eef6e4);
-  --r07-warn-ink: var(--b-warn-ink, #7a531a);
-  --r07-warn-bg: var(--b-warn-bg, #faf5e7);
-  --r07-danger-ink: var(--b-danger-ink, #a33a2f);
-  --r07-ease: var(--b-ease, cubic-bezier(0.22, 1, 0.36, 1));
-  font-family: var(--b-font, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif);
-  font-size: 16px;
-  line-height: 1.5;
+  --r07-ink: var(--c-ink, #152c26);
+  --r07-ink-2: var(--c-text-2, #5b6a64);
+  --r07-line: var(--c-line, #e8eaeb);
+  --r07-paper: var(--c-paper, #f4f5f6);
+  --r07-fill: var(--c-fill, #eff1f2);
+  --r07-fill-hover: var(--c-fill-hover, #e5e8ea);
+  --r07-brand: var(--c-brand, #152c26);
+  --r07-brand-hover: var(--c-brand-hover, #0f221d);
+  --r07-brand-soft: var(--c-brand-soft, #eef1f0);
+  --r07-focus: var(--c-focus, #2f7fd6);
+  --r07-ok: var(--c-ok, #2f6b12);
+  --r07-danger: var(--c-danger, #b3362e);
+  --r07-ease: var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  font-family: var(--font, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif);
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 400;
   color: var(--r07-ink);
 }
 .r07-root *, .r07-root *::before, .r07-root *::after { box-sizing: border-box; }
 /* Сброс через :where() — нулевая специфичность, иначе он перебивает цвет главной кнопки:
-   «.r07-root button» (0,1,1) сильнее «.r07-btn--primary» (0,1,0) → тёмный текст на зелёном, 2,3:1 (UX_REVIEW R11, день 3, №1). */
+   «.r07-root button» (0,1,1) сильнее «.r07-btn--primary» (0,1,0) → тёмный текст на тёмной кнопке (UX_REVIEW R11, день 3, №1). */
 :where(.r07-root) button, :where(.r07-root) select { font: inherit; color: inherit; }
-.r07-root :focus-visible, .r07-badge:focus-visible { outline: 3px solid var(--r07-focus); outline-offset: 2px; }
+.r07-root :focus-visible, .r07-badge:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 .r07-ic { flex-shrink: 0; vertical-align: middle; }
 .r07-ic--flip { transform: scaleX(-1); color: var(--r07-ink-2); }
 .r07-vh, .r07-sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.r07-muted { color: var(--r07-ink-2); font-weight: 500; font-size: 14px; }
+.r07-muted { color: var(--r07-ink-2); font-weight: 400; font-size: 13px; }
 
-.r07-panel { display: flex; flex-direction: column; gap: 14px; }
+.r07-panel { display: flex; flex-direction: column; gap: 16px; }
 .r07-head { display: flex; align-items: flex-start; gap: 8px; }
-.r07-h { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 750; letter-spacing: -0.01em; }
-.r07-sub { margin: 2px 0 0; color: var(--r07-ink-2); font-size: 14px; }
-.r07-h3 { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
-.r07-h4 { margin: 4px 0 6px; font-size: 16px; font-weight: 700; }
+.r07-h { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 600; }
+.r07-sub { margin: 2px 0 0; color: var(--r07-ink-2); font-size: 15px; }
+.r07-h3 { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
+.r07-h4 { margin: 0; font-size: 15px; font-weight: 600; }
 
-.r07-note { margin: 0; padding: 10px 12px; border-radius: 12px; font-size: 14px; background: #eaf2fb; color: #1f5f9e; }
-.r07-note--demo { background: #f1efe6; color: #5b5442; }
-.r07-note--ok { background: var(--r07-ok-bg); color: var(--r07-ok-ink); }
-.r07-note--warn { background: var(--r07-warn-bg); color: var(--r07-warn-ink); }
+/* Пояснения — серым текстом, без плашек (CLEAN_PASS №2: единственная плашка — срочный случай 104/112) */
+.r07-note { margin: 0; font-size: 13px; color: var(--r07-ink-2); }
+/* «Данные — пример» — одна серая строка внизу панели (CLEAN_PASS R07 №5, ui-kit .bk-footnote) */
+.r07-footnote { margin: 0; padding: 12px 0 0; border-top: 1px solid var(--r07-line); color: var(--r07-ink-2); font-size: 13px; line-height: 1.4; }
 
-/* ---- Фильтры ---- */
-.r07-filters { display: flex; flex-direction: column; gap: 10px; }
-.r07-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.r07-chip {
-  position: relative; display: inline-flex; align-items: center; gap: 6px;
-  min-height: 44px; padding: 0 12px;
-  border: 1px solid #c9d4c5; border-radius: 999px; background: #fff;
-  font-size: 16px; font-weight: 600; white-space: nowrap; cursor: pointer;
-  transition: background 0.2s var(--r07-ease), border-color 0.2s var(--r07-ease);
-}
-.r07-chip::after { content: ""; position: absolute; inset: -2px 0; } /* 44 видимые + кайма = зона нажатия 48 px */
-.r07-chip:hover { border-color: #9fb59c; }
-.r07-chip .r07-ic { color: var(--r07-green); }
-.r07-chip[aria-pressed="true"] { background: var(--r07-lime); border-color: #b6d65a; }
-.r07-chip[aria-pressed="true"] .r07-ic { color: var(--r07-ink); }
+/* ---- Фильтры: тема — поле с заливкой, период — сегменты ui-kit, «Сбросить» — текстовая кнопка ---- */
+.r07-filters { display: flex; flex-direction: column; gap: 8px; }
 .r07-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.r07-cat-toggle { flex: 1 1 auto; justify-content: space-between; min-width: 0; }
-.r07-cat-toggle > span { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.r07-cat-toggle .r07-ic { color: var(--r07-green); }
-.r07-cat-toggle--on { background: var(--r07-lime); border-color: #b6d65a; }
-.r07-cat-toggle--on .r07-ic { color: var(--r07-ink); }
+.r07-field {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px;
+  border: 1px solid transparent; border-radius: 10px; background: var(--r07-fill); color: var(--r07-ink);
+  font-size: 15px; font-weight: 400; cursor: pointer; transition: background 0.2s var(--r07-ease);
+}
+.r07-field:hover { background: var(--r07-fill-hover); }
+.r07-cat-toggle { flex: 1 1 auto; justify-content: space-between; min-width: 0; text-align: left; }
+.r07-cat-toggle > span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.r07-cat-toggle .r07-ic { color: var(--r07-ink); }
+.r07-cat-toggle--on { font-weight: 600; }
 .r07-ic--down { transform: rotate(-90deg); color: var(--r07-ink-2) !important; }
 .r07-cat-toggle[aria-expanded="true"] .r07-ic--down { transform: rotate(90deg); }
+.r07-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .r07-chips[hidden] { display: none; }
-.r07-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 12px; background: #eef2ea; }
-.r07-seg > button {
-  min-height: 44px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 9px;
-  background: transparent; color: var(--r07-ink-2); font-weight: 650; white-space: nowrap; cursor: pointer;
+.r07-chip {
+  position: relative; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 44px; padding: 0 14px 0 10px;
+  border: 1px solid transparent; border-radius: 999px; background: var(--r07-fill);
+  font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer;
+  transition: background 0.2s var(--r07-ease);
 }
-/* 44 px видимые (R11: элементы ≥ 44 на 1366) + невидимая кайма 2 px сверху и снизу = 48 px для пальца (№6) */
-.r07-seg > button { position: relative; }
-.r07-seg > button::after { content: ""; position: absolute; inset: -2px 0; }
-.r07-seg > button[aria-pressed="true"] { background: #fff; color: var(--r07-ink); box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; }
+.r07-chip::after { content: ""; position: absolute; inset: -2px 0; } /* 44 видимые (R11: элементы ≥ 44) + кайма = 48 px */
+.r07-chip:hover { background: var(--r07-fill-hover); }
+.r07-chip .r07-ic { color: var(--r07-ink-2); }
+/* Выбранная тема — единственный акцент #152c26 с белым текстом и ✓ (не только цвет); ✓ не входит в имя кнопки */
+.r07-chip[aria-pressed="true"] { background: var(--r07-brand); color: #fff; }
+.r07-chip[aria-pressed="true"] .r07-ic { color: #fff; }
+.r07-chip[aria-pressed="true"]::before { content: "✓" / ""; font-weight: 600; }
+.r07-seg { display: inline-flex; gap: 2px; padding: 4px; border-radius: 10px; background: var(--r07-fill); }
+.r07-seg > button {
+  position: relative; min-height: 44px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 8px;
+  background: transparent; color: var(--r07-ink-2); font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.r07-seg > button::after { content: ""; position: absolute; inset: -2px 0; } /* 44 видимые + кайма = 48 px для пальца */
+.r07-seg > button[aria-pressed="true"] { background: #fff; color: var(--r07-ink); box-shadow: var(--shadow-1, 0 1px 2px #1018160d, 0 2px 10px #1018160f); }
 .r07-select select {
-  min-height: 48px; max-width: 100%; padding: 0 36px 0 12px; border: 1px solid #c9d4c5; border-radius: 12px;
-  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23152c26' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center / 18px;
-  appearance: none; font-weight: 600; cursor: pointer;
+  max-width: 100%; padding: 0 36px 0 12px; appearance: none;
+  background: var(--r07-fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23152c26' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center / 18px;
 }
 
-/* ---- Кнопки ---- */
+/* ---- Кнопки (как .bk-btn ui-kit): главная — #152c26, второстепенная — серая заливка, текстовая — без фона ---- */
 .r07-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 48px; padding: 0 18px; border: 1px solid #c9d4c5; border-radius: 12px;
-  background: #fff; font-size: 16px; font-weight: 650; line-height: 1.2; text-align: center; cursor: pointer;
-  transition: background 0.2s var(--r07-ease), border-color 0.2s var(--r07-ease);
+  min-height: 48px; padding: 0 20px; border: 1px solid transparent; border-radius: 10px;
+  background: var(--r07-fill); color: var(--r07-ink); font-size: 17px; font-weight: 600; line-height: 1.25; text-align: center; cursor: pointer;
+  transition: background 0.2s var(--r07-ease);
 }
-.r07-btn:hover:not(:disabled) { background: var(--r07-green-50); }
+.r07-btn:hover:not(:disabled) { background: var(--r07-fill-hover); }
 .r07-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.r07-btn--primary, .r07-root .r07-btn--primary { background: var(--r07-green); border-color: var(--r07-green); color: #fff; }
-.r07-btn--primary:hover:not(:disabled) { background: #0f5137; border-color: #0f5137; }
-.r07-btn--ghost { border-color: transparent; background: transparent; color: var(--r07-green); padding: 0 10px; }
-.r07-btn--lg { min-height: 56px; font-size: 18px; }
+.r07-btn--primary, .r07-root .r07-btn--primary { background: var(--r07-brand); color: #fff; }
+.r07-btn--primary:hover:not(:disabled) { background: var(--r07-brand-hover); }
+.r07-btn--ghost { background: transparent; color: var(--r07-brand); padding: 0 12px; }
+.r07-btn--ghost:hover:not(:disabled) { background: var(--r07-brand-soft); }
+.r07-btn--lg { min-height: 56px; }
 .r07-btn[aria-busy="true"]::before { content: ""; width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: r07-spin 0.8s linear infinite; }
-.r07-icon-btn { display: inline-grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 12px; background: transparent; cursor: pointer; }
-.r07-icon-btn:hover { background: var(--r07-paper); }
+.r07-icon-btn { display: inline-grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 10px; background: transparent; color: var(--r07-ink); cursor: pointer; }
+.r07-icon-btn:hover { background: var(--r07-fill); }
 @keyframes r07-spin { to { transform: rotate(360deg); } }
 
-/* ---- Список «Горячие места» ---- */
+/* ---- Список «Горячие места» (CLEAN_PASS R07 №7): значок-число + название 17/600 + «Тема · N чел.» 13 серым ---- */
 .r07-list { list-style: none; margin: 0; padding: 0; }
 .r07-list > li + li { border-top: 1px solid var(--r07-line); }
 .r07-item {
-  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 60px;
-  padding: 8px 4px; border: 0; background: transparent; text-align: left; cursor: pointer; border-radius: 10px;
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px;
+  padding: 10px 4px; border: 0; background: transparent; text-align: left; cursor: pointer; border-radius: 10px;
 }
-.r07-item:hover { background: var(--r07-paper); }
-.r07-item__rank { min-width: 1.6em; font-weight: 800; color: var(--r07-ink-2); font-variant-numeric: tabular-nums; }
+.r07-item:hover { background: var(--r07-brand-soft); }
 .r07-item__text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
-.r07-item__title { font-weight: 650; overflow-wrap: anywhere; }
-.r07-item__meta { font-size: 14px; color: var(--r07-ink-2); }
+.r07-item__title { font-size: 17px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.r07-item__meta { font-size: 13px; color: var(--r07-ink-2); }
 
-/* Число на цветной плашке: на светлых уровнях тёмный текст, на тёмных — белый.
- * Уровень 3 (#E24B4A) с белым текстом даёт 3.9:1, поэтому там число крупное и жирное (≥ 18.7 px bold — норма 3:1). */
+/* Число на цветной плашке: на светлых уровнях тёмный текст, на тёмных — белый на «значковых» оттенках ui-kit
+ * (--heat-3-badge #c93b3a — 5:1 с белым; цвет карты #e24b4a дал бы 3,9:1). */
 .r07-mini {
   display: inline-grid; place-items: center; min-width: 40px; height: 32px; padding: 0 8px;
-  border-radius: 10px; background: var(--r07-c, #ccc); color: var(--r07-ink);
-  font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; flex-shrink: 0;
+  border-radius: 8px; background: var(--r07-c, #ccc); color: var(--r07-ink);
+  font-weight: 600; font-size: 15px; font-variant-numeric: tabular-nums; flex-shrink: 0;
 }
-.r07-mini[data-level="3"] { color: #fff; font-size: 19px; }
-.r07-mini[data-level="4"], .r07-mini[data-level="fixed"] { color: #fff; }
+.r07-mini[data-level="3"] { background: var(--heat-3-badge, #c93b3a); color: #fff; }
+.r07-mini[data-level="4"] { background: var(--heat-4-badge, #a32d2d); color: #fff; }
+.r07-mini[data-level="fixed"] { background: var(--fixed-badge, #4e7d1a); color: #fff; }
 
-/* ---- Карточка цели ---- */
-.r07-card { display: flex; flex-direction: column; gap: 10px; }
-.r07-card__nav { display: flex; justify-content: space-between; align-items: center; margin: -6px -6px 0 -10px; }
-.r07-eyebrow { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--r07-ink-2); }
-.r07-card__title { margin: 0; font-size: 22px; line-height: 1.25; font-weight: 750; overflow-wrap: anywhere; }
+/* ---- Карточка цели (CLEAN_PASS R07 №1–3) ---- */
+.r07-card { display: flex; flex-direction: column; gap: 16px; }
+.r07-card__nav { display: flex; justify-content: space-between; align-items: center; margin: -6px -6px -8px -12px; }
+.r07-card__head { display: flex; flex-direction: column; gap: 2px; }
+.r07-eyebrow { display: block; margin: 0; font-size: 13px; font-weight: 400; color: var(--r07-ink-2); }
+.r07-card__title { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 600; overflow-wrap: anywhere; }
 .r07-root .r07-card__title:focus, .r07-root .r07-card__title:focus-visible { outline: none; } /* фокус ставится программно — рамка не нужна */
-.r07-tag { margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: #f1efe6; color: #5b5442; font-size: 14px; letter-spacing: 0; text-transform: none; }
-/* п. 8 (R04): пометка у акимата «Содержит грубые слова» — заметно, но не тревожно (цвет + текст, не только цвет). */
-.r07-tag--rude { background: #fbe9e7; color: #8a2d1f; }
-/* п. 9 (R04 + R09): «Объединено с этим» — свёрнуто, у каждого пункта своя кнопка «Это разные проблемы». */
-.r07-merged { display: flex; flex-direction: column; gap: 8px; }
-.r07-merged > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 8px; list-style: none; }
-.r07-merged > summary::-webkit-details-marker { display: none; }
-.r07-merged > summary::before { content: "▸"; color: var(--r07-green); }   /* как «▸ Слои»: видно, что раскрывается */
-.r07-merged[open] > summary::before { content: "▾"; }
-.r07-merged__count { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 8px; border-radius: 999px; background: #f1efe6; color: #5b5442; font-size: 14px; }
-.r07-merged .r07-quotes { margin-top: 8px; }
-.r07-merged__btn { margin-top: 8px; width: 100%; }
-.r07-level { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; }
-.r07-card__reported { margin: 0; font-size: 17px; }
-.r07-spark { display: flex; align-items: flex-end; gap: 3px; height: 56px; padding: 4px; border-radius: 10px; background: var(--r07-paper); }
-.r07-spark > i { flex: 1; border-radius: 3px 3px 0 0; background: #EF9F27; min-height: 2px; }
-.r07-axis { display: flex; justify-content: space-between; font-size: 14px; color: var(--r07-ink-2); }
-.r07-topics { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-.r07-topics li { display: flex; align-items: center; gap: 10px; }
-.r07-topics li .r07-ic { color: var(--r07-green); }
-.r07-topics li span { flex: 1; }
-.r07-card__status { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.r07-status { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 14px; font-weight: 650; background: #eaf2fb; color: #1f5f9e; }
-.r07-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-.r07-status[data-status="accepted"] { background: #efedfa; color: #5a4bb0; }
-.r07-status[data-status="in_progress"] { background: var(--r07-warn-bg); color: #8a5a12; }
-.r07-status[data-status="fixed"] { background: var(--r07-ok-bg); color: var(--r07-ok-ink); }
-.r07-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-.r07-actions > .r07-btn { flex: 1 1 160px; }
-
-/* ---- Легенда на карте (№3): ноутбук — слева внизу над атрибуцией, телефон — сверху слева, компактно ---- */
-.r07-maplegend { position: absolute; z-index: 5; left: 12px; bottom: 34px; max-width: 360px; padding: 10px 12px;
-  border: 1px solid var(--r07-line); border-radius: 14px; background: #fffffff2; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812;
-  font-size: 15px; pointer-events: auto; }
-.r07-maplegend[hidden] { display: none; }
-.r07-zoomhint { display: none; margin: 0; align-items: center; gap: 6px; font-size: 14px; color: var(--r07-ink-2); }
-@media (max-width: 760px) { .r07-zoomhint { display: flex; } }
-.r07-maplegend .r07-legend__title { margin: 0 0 6px; font-size: 15px; font-weight: 700; }
-.r07-maplegend ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; }
-.r07-maplegend li { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
-.r07-maplegend .r07-legend__hint { margin: 6px 0 0; font-size: 14px; color: var(--r07-ink-2); }
-@media (max-width: 760px) {
-  /* Телефон: легенда — одна строка ~32 px (UX_REVIEW R11, ночь 4, п. 1); подсказка о масштабе — тостом один раз */
-  .r07-maplegend { box-sizing: border-box; top: 8px; bottom: auto; left: 8px; right: auto; max-width: calc(100% - 74px); padding: 5px 7px; font-size: 14px; }
-  .r07-maplegend .r07-legend__title, .r07-maplegend .r07-legend__fresh, .r07-maplegend .r07-legend__zoom { display: none; }
-  .r07-maplegend ul { flex-wrap: nowrap; gap: 0 5px; white-space: nowrap; }
-  .r07-maplegend li { gap: 3px; }
-  .r07-maplegend .r07-sw { width: 12px; height: 12px; border-radius: 4px; }
+.r07-card__reported { margin: -4px 0 0; font-size: 15px; color: var(--r07-ink-2); }
+/* «Пример» — серое слово, «Содержит грубые слова» — красное слово: без плашек */
+.r07-tag { color: var(--r07-ink-2); font-size: 13px; font-weight: 400; }
+.r07-tag--rude { color: var(--r07-danger); font-weight: 600; }
+/* Статус — один раз: точка + слово + одна строка (как .bk-statusline ui-kit; здесь — то же без ui-kit) */
+.r07-statusline { display: grid; gap: 2px; margin: 0; }
+.r07-status { display: inline-flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; color: var(--r07-ink); white-space: normal; }
+.r07-status::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--dot, var(--r07-ink-2)); }
+.r07-status[data-status="new"], .r07-status[data-status="reopened"] { --dot: var(--heat-3, #e24b4a); }
+.r07-status[data-status="accepted"], .r07-status[data-status="in_progress"] { --dot: var(--heat-2, #ef9f27); }
+.r07-status[data-status="fixed"], .r07-status[data-status="verified"] { --dot: var(--fixed, #639922); }
+.r07-status[data-status="reported_fixed"]::before { background: transparent; border: 2px dashed var(--fixed, #639922); }
+.r07-statusline__note { padding-left: 18px; color: var(--r07-ink-2); font-size: 15px; }
+.r07-statusline__note[data-overdue="true"] { color: var(--r07-danger); font-weight: 600; }
+.r07-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.r07-actions > .r07-btn { flex: 1 1 100%; }   /* одна под другой во всю ширину: главная сверху, kk-подписи не ломаются в 3 строки */
+/* «Подробнее»: блоки под главной кнопкой — <details> (как .bk-details ui-kit) */
+.r07-details { border-top: 1px solid var(--r07-line); }
+.r07-details > summary { display: flex; align-items: center; gap: 8px; min-height: 48px; color: var(--r07-brand); cursor: pointer; list-style: none; }
+.r07-details > summary::-webkit-details-marker { display: none; }
+.r07-details > summary::before {
+  content: ""; flex: none; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg); transition: transform 0.2s var(--r07-ease);
 }
+.r07-details[open] > summary::before { transform: rotate(45deg); }
+.r07-details > :not(summary) { margin: 0 0 12px; }
+.r07-texts { display: block; }
+.r07-merged__count { color: var(--r07-ink-2); font-weight: 400; }
+.r07-merged__btn { margin-top: 8px; width: 100%; }
+.r07-spark { display: flex; align-items: flex-end; gap: 3px; height: 56px; padding: 4px; border-radius: 8px; background: var(--r07-paper); }
+.r07-spark > i { flex: 1; border-radius: 3px 3px 0 0; background: var(--heat-2, #ef9f27); min-height: 2px; }
+.r07-axis { display: flex; justify-content: space-between; font-size: 13px; color: var(--r07-ink-2); }
+.r07-topics { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.r07-topics li { display: flex; align-items: center; gap: 10px; }
+.r07-topics li .r07-ic { color: var(--r07-ink-2); }
+.r07-topics li span { flex: 1; }
+.r07-topics li b { font-weight: 600; }
+.r07-topics__sub { display: block; font-size: 13px; color: var(--r07-ink-2); font-weight: 400; }
+/* R12 волна 2 п. 6: ссылка «Распечатать QR» у акимата — внизу карточки, не главная кнопка. */
+.r07-qr { margin: -8px 0 0; }
+.r07-qr .r07-btn { text-decoration: none; padding: 0 4px; }
 
-/* ---- «Что пишут жители» (№4) ---- */
-.r07-texts { display: flex; flex-direction: column; gap: 6px; }
-.r07-quotes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.r07-quotes li { padding: 10px 12px; border-radius: 12px; background: var(--r07-paper); border-left: 4px solid #d9d4c5; }
-.r07-quote { margin: 0; font-size: 16px; line-height: 1.4; }
-.r07-quote__meta { margin: 4px 0 0; font-size: 14px; color: var(--r07-ink-2); display: flex; align-items: center; gap: 6px; }
+/* ---- «Что пишут жители» (№4): цитаты с разделителями, без плашек ---- */
+.r07-quotes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.r07-quotes li { padding: 8px 0; border-bottom: 1px solid var(--r07-line); }
+.r07-quotes li:last-child { border-bottom: 0; }
+.r07-quote { margin: 0; font-size: 15px; line-height: 1.45; }
+.r07-quote__meta { margin: 2px 0 0; font-size: 13px; color: var(--r07-ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
 .r07-skeleton--line i { height: 40px; }
 .r07-empty__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 4px; }
 
-/* ---- Легенда ---- */
-.r07-legend { padding: 12px; border: 1px solid var(--r07-line); border-radius: 14px; background: #fff; }
-.r07-legend__title { margin: 0 0 8px; font-size: 16px; font-weight: 700; }
+/* ---- Легенда (подробная; в оболочке — под «?» строки легенды, CLEAN_PASS R01 №6) ---- */
+.r07-maplegend { position: absolute; z-index: 5; left: 12px; bottom: 34px; max-width: 360px; padding: 12px 16px;
+  border: 0; border-radius: 14px; background: #fff; box-shadow: var(--shadow-2, 0 2px 6px #1018160a, 0 10px 32px #1018161a);
+  font-size: 15px; pointer-events: auto; }
+.r07-maplegend[hidden] { display: none; }
+.r07-zoomhint { display: none; margin: 0; align-items: center; gap: 6px; font-size: 13px; color: var(--r07-ink-2); }
+@media (max-width: 760px) { .r07-zoomhint { display: flex; } }
+.r07-maplegend .r07-legend__title { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+.r07-maplegend ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.r07-maplegend li { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.r07-maplegend .r07-legend__hint { margin: 8px 0 0; font-size: 13px; color: var(--r07-ink-2); }
+@media (max-width: 760px) {
+  /* Телефон без оболочки: легенда — одна строка ~32 px (UX_REVIEW R11, ночь 4, п. 1). Под «?» оболочки — полностью. */
+  .r07-maplegend:not(.r07-maplegend--more) { box-sizing: border-box; top: 8px; bottom: auto; left: 8px; right: auto; max-width: calc(100% - 74px); padding: 5px 8px; font-size: 13px; }
+  .r07-maplegend:not(.r07-maplegend--more) :is(.r07-legend__title, .r07-legend__fresh, .r07-legend__zoom) { display: none; }
+  .r07-maplegend:not(.r07-maplegend--more) ul { flex-wrap: nowrap; gap: 0 6px; white-space: nowrap; }
+  .r07-maplegend:not(.r07-maplegend--more) li { gap: 3px; }
+  .r07-maplegend:not(.r07-maplegend--more) .r07-sw { width: 12px; height: 12px; border-radius: 4px; }
+}
+.r07-legend { padding: 12px 16px; border: 0; border-radius: 14px; background: #fff; box-shadow: var(--shadow-1, 0 1px 2px #1018160d, 0 2px 10px #1018160f); }
+.r07-legend__title { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
 .r07-legend ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
 .r07-legend li { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-variant-numeric: tabular-nums; }
-.r07-sw { display: inline-block; width: 18px; height: 18px; border-radius: 5px; border: 1px solid #0000001f; }
-.r07-legend__hint { margin: 8px 0 0; font-size: 14px; color: var(--r07-ink-2); }
+.r07-sw { display: inline-block; width: 16px; height: 16px; border-radius: 4px; border: 1px solid #0000001a; }
+.r07-legend__hint { margin: 8px 0 0; font-size: 13px; color: var(--r07-ink-2); }
 
-/* ---- Состояния ---- */
+/* ---- Состояния (без цветных плашек) ---- */
 .r07-skeleton { display: flex; flex-direction: column; gap: 10px; }
-.r07-skeleton i { display: block; height: 52px; border-radius: 12px; background: linear-gradient(90deg, #eef2ea, #f8faf6, #eef2ea); background-size: 200% 100%; animation: r07-shimmer 1.2s linear infinite; }
+.r07-skeleton i { display: block; height: 52px; border-radius: 10px; background: linear-gradient(90deg, #eff1f2, #f7f8f9, #eff1f2); background-size: 200% 100%; animation: r07-shimmer 1.2s linear infinite; }
 @keyframes r07-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-.r07-empty, .r07-error { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 20px 12px; text-align: center; border-radius: 14px; }
+.r07-empty, .r07-error { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 20px 12px; text-align: center; }
 .r07-empty .r07-ic { color: var(--r07-ink-2); }
-.r07-error { background: #fbeceb; }
-.r07-error .r07-ic { color: var(--r07-danger-ink); }
-.r07-empty__title, .r07-error__title { margin: 0; font-size: 18px; font-weight: 700; }
-.r07-error__title { color: var(--r07-danger-ink); }
+.r07-error .r07-ic { color: var(--r07-danger); }
+.r07-empty__title, .r07-error__title { margin: 0; font-size: 17px; font-weight: 600; }
 .r07-empty__hint, .r07-error__hint { margin: 0; color: var(--r07-ink-2); max-width: 34ch; }
 
-/* ---- Тосты ---- */
+/* ---- Тосты (запасные; в оболочке — один общий тост ui-kit) ---- */
 .r07-toasts { position: fixed; z-index: 50; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; width: min(420px, calc(100vw - 24px)); pointer-events: none; }
-.r07-toast { min-height: 48px; display: flex; align-items: center; padding: 10px 16px; border-radius: 12px; background: #152c26; color: #fff; box-shadow: 0 12px 40px #19362818; animation: r07-in 0.4s var(--r07-ease); transition: opacity 0.3s; }
-.r07-toast--error { background: #a33a2f; }
-.r07-toast { gap: 12px; justify-content: space-between; }
+.r07-toast { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; border-radius: 10px; background: #152c26; color: #fff; font-size: 15px; box-shadow: 0 12px 40px #1018161f; animation: r07-in 0.4s var(--r07-ease); transition: opacity 0.3s; }
+.r07-toast--error { background: #b3362e; }
+.r07-toasts > .r07-toast:not(:last-child) { display: none; } /* по одному: новый заменяет старый (CLEAN_PASS №10) */
 .r07-toast__action { pointer-events: auto; position: relative; min-height: 44px; padding: 0 14px; border: 1px solid #ffffff99; border-radius: 10px; background: transparent; color: #fff; font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .r07-toast__action::after { content: ""; position: absolute; inset: -2px 0; }
 .r07-toast--out { opacity: 0; }
@@ -222,11 +238,12 @@
 body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode], .r07-badge.r07-badge--pick { pointer-events: auto; cursor: crosshair; }
 @keyframes r07-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
-/* ---- Значок цели на карте: кружок цвета уровня с иконкой + белая плашка с числом ---- */
+/* ---- Значок цели на карте: кружок 44 px цвета уровня с иконкой + белая плашка с числом ----
+ * Значки ≥ 44 px (FINAL-3, R01 «значки карты R07 36 px»): кружок 44, кластер 44, плашка района 44; зона нажатия ≥ 48. */
 .r07-badge {
-  display: inline-flex; align-items: center; padding: 0; border: 0; background: transparent; cursor: pointer;
-  font-family: var(--b-font, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
-  filter: drop-shadow(0 1px 3px #19362840);
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer;
+  font-family: var(--font, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
+  filter: drop-shadow(0 1px 3px #10181633);
   /* Без transition: этот элемент — element маркера MapLibre, карта двигает его через transform каждый кадр.
      С transition значки «плыли» за картой и догоняли свои места (замечание владельца на демо). */
 }
@@ -234,59 +251,59 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
    селектором сильнее «button:not(:disabled)». Оставляем только плавную прозрачность маркера MapLibre. */
 .r07-badge.r07-badge, .maplibregl-marker.r07-badge { transition: opacity 0.2s; }
 /* Увеличение при наведении и выборе — у внутренней обёртки, а не у маркера */
-.r07-badge__inner { display: inline-flex; align-items: center; transform-origin: 17px 50%; transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); }
+.r07-badge__inner { display: inline-flex; align-items: center; transform-origin: 22px 50%; transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); }
 .r07-badge[hidden] { display: none; }
-/* Зона нажатия значка ≥ 48 px (видимый значок 34–38 px). Маркер MapLibre уже position:absolute. */
-.r07-badge::after { content: ""; position: absolute; inset: -6px -3px; }
-/* Маленькая плашка с числом — когда полному значку тесно (№2): число остаётся, кружок прячется */
-.r07-badge--mini .r07-badge__dot { display: none; }
-.r07-badge--mini .r07-badge__count { margin-left: 0; height: 22px; line-height: 20px; padding: 0 7px 0 6px; border-radius: 11px;
-  border-left: 5px solid var(--r07-c, #999); font-size: 14px; }
-.r07-badge--mini::after { inset: -13px -7px; }
-.r07-badge--mini .r07-badge__name { display: none; }
+/* Зона нажатия значка ≥ 52 px (видимый значок 44 px). Маркер MapLibre уже position:absolute. */
+.r07-badge::after { content: ""; position: absolute; inset: -4px; }
 .r07-badge:hover, .r07-badge--selected { z-index: 3; }
-.r07-badge:hover .r07-badge__inner { transform: scale(1.12); }
+.r07-badge:hover .r07-badge__inner { transform: scale(1.08); }
 /* Режим фокуса (просьба владельца, п. 6): выбранная цель крупнее, остальные значки бледнеют до 40 %, Esc — сброс */
-.r07-badge--selected .r07-badge__inner { transform: scale(1.25); }
+.r07-badge--selected .r07-badge__inner { transform: scale(1.15); }
 .r07-focusing .r07-badge:not(.r07-badge--selected) .r07-badge__inner { opacity: 0.4; }
 .r07-focusing .r07-badge:not(.r07-badge--selected):hover .r07-badge__inner { opacity: 0.85; }
-/* Обводка подписей (п. 5): белый ореол у текста и белая кайма у плашки — читается и на цветной улице */
-.r07-badge__count { text-shadow: 0 0 2px #fff, 0 0 2px #fff; box-shadow: 0 0 0 2px #fff; }
-.r07-badge__name { text-shadow: 0 0 2px #fff, 0 0 3px #fff; }
-/* Кружок-кластер (п. 2): число людей, цвет — самого высокого уровня; «стопка» — второе кольцо */
-.r07-cluster {
-  display: grid; place-items: center; min-width: 36px; height: 36px; padding: 0 6px; box-sizing: border-box;
-  border: 2px solid #fff; border-radius: 18px; background: var(--r07-c, #ccc); color: #152c26;
-  font-size: 15px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 2px #fff, 0 0 2px #fff;
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--r07-c, #ccc) 35%, transparent), 0 1px 3px #19362840;
-}
-.r07-badge--cluster[data-level="3"] .r07-cluster, .r07-badge--cluster[data-level="4"] .r07-cluster, .r07-badge--cluster[data-level="fixed"] .r07-cluster {
-  color: #fff; text-shadow: 0 0 2px #152c26, 0 0 2px #152c26;
-}
-.r07-badge--cluster::after { inset: -6px; }
-/* Подсказка при наведении (п. 9): название · сколько человек · категория */
-.r07-tip {
-  position: absolute; z-index: 6; max-width: min(320px, calc(100% - 8px)); padding: 6px 10px; border-radius: 8px;
-  background: #152c26; color: #fff; font: 600 14px/1.35 var(--b-font, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
-  box-shadow: 0 6px 20px #19362833; pointer-events: none; white-space: normal;
-}
-.r07-tip[hidden] { display: none; }
 .r07-badge__dot {
-  display: grid; place-items: center; width: 34px; height: 34px; border: 2px solid #fff; border-radius: 50%;
+  position: relative; display: grid; place-items: center; box-sizing: border-box; width: 44px; height: 44px;
+  border: 2px solid #fff; border-radius: 50%;
   background: var(--r07-c, #ccc); color: #152c26; transition: background 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .r07-badge[data-level="3"] .r07-badge__dot, .r07-badge[data-level="4"] .r07-badge__dot, .r07-badge[data-level="fixed"] .r07-badge__dot { color: #fff; }
+.r07-badge__dot .r07-ic { width: 22px; height: 22px; }
 .r07-badge__count {
-  min-width: 28px; height: 24px; margin-left: -8px; padding: 0 8px 0 11px;
-  border: 1px solid #15302626; border-radius: 0 12px 12px 0; background: #fff; color: #152c26;
-  font-size: 15px; font-weight: 800; line-height: 22px; white-space: nowrap; font-variant-numeric: tabular-nums;
+  box-sizing: border-box; min-width: 32px; height: 30px; margin-left: -10px; padding: 0 10px 0 14px;
+  border: 1px solid #1018161f; border-radius: 0 15px 15px 0; background: #fff; color: #152c26;
+  font-size: 15px; font-weight: 600; line-height: 28px; white-space: nowrap; font-variant-numeric: tabular-nums;
 }
+/* Обводка подписей (п. 5): белый ореол у текста и белая кайма у плашки — читается и на цветной улице */
+.r07-badge__count { text-shadow: 0 0 2px #fff, 0 0 2px #fff; box-shadow: 0 0 0 2px #fff; }
+.r07-badge__name { text-shadow: 0 0 2px #fff, 0 0 3px #fff; }
 .r07-badge--selected .r07-badge__dot { box-shadow: 0 0 0 3px #152c26; }
-/* Районы (их 6): значок 44 px — как кнопки (R11: элементы ≥ 44 на 1366); значки мест остаются 34 px (≥ 24, кайма 48) */
-.r07-badge[data-kind="district"] .r07-badge__dot { width: 44px; height: 44px; }
-.r07-badge[data-kind="district"] .r07-badge__count { font-size: 17px; height: 34px; line-height: 32px; margin-left: -10px; padding-left: 13px; border-radius: 0 17px 17px 0; }
-.r07-badge[data-kind="district"]:not(.r07-badge--mini)::after { inset: -2px -3px; }
+/* Районы (их 6–7): та же высота 44, крупнее число и название района */
+.r07-badge[data-kind="district"] .r07-badge__count { font-size: 17px; height: 34px; line-height: 32px; border-radius: 0 17px 17px 0; }
+/* Маленькая плашка с числом — когда полному значку тесно (№2): число остаётся, кружок прячется.
+   Видимая плашка 32 px, сама кнопка — 44 px по высоте (прозрачные поля), зона нажатия ≥ 48. */
+.r07-badge--mini .r07-badge__dot { display: none; }
+.r07-badge--mini .r07-badge__count { margin-left: 0; height: 32px; line-height: 30px; padding: 0 10px 0 8px; border-radius: 16px;
+  border-left: 6px solid var(--r07-c, #999); font-size: 15px; }
+.r07-badge--mini { padding: 6px 2px; }
+.r07-badge--mini .r07-badge__name { display: none; }
+/* Кружок-кластер (п. 2): число людей, цвет — самого высокого уровня (тёмные уровни — «значковые» оттенки ui-kit,
+   белый текст ≥ 4,5:1); «стопка» — второе кольцо */
+.r07-cluster {
+  display: grid; place-items: center; min-width: 44px; height: 44px; padding: 0 8px; box-sizing: border-box;
+  border: 2px solid #fff; border-radius: 22px; background: var(--r07-c, #ccc); color: #152c26;
+  font-size: 15px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--r07-c, #ccc) 35%, transparent), 0 1px 3px #10181640;
+}
+.r07-badge--cluster[data-level="3"] .r07-cluster { background: var(--heat-3-badge, #c93b3a); color: #fff; }
+.r07-badge--cluster[data-level="4"] .r07-cluster { background: var(--heat-4-badge, #a32d2d); color: #fff; }
+.r07-badge--cluster[data-level="fixed"] .r07-cluster { background: var(--fixed-badge, #4e7d1a); color: #fff; }
+/* Подсказка при наведении (п. 9): название · сколько человек · категория */
+.r07-tip {
+  position: absolute; z-index: 6; max-width: min(320px, calc(100% - 8px)); padding: 6px 10px; border-radius: 8px;
+  background: #152c26; color: #fff; font: 600 13px/1.35 var(--font, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
+  box-shadow: 0 6px 20px #10181633; pointer-events: none; white-space: normal;
+}
+.r07-tip[hidden] { display: none; }
 
 /* Пульс при новой жалобе: два расходящихся кольца цвета уровня */
 .r07-pulse { width: 24px; height: 24px; border-radius: 50%; pointer-events: none; }
@@ -302,12 +319,11 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 
 @media (prefers-reduced-motion: reduce) {
   .r07-pulse::before, .r07-pulse::after, .r07-skeleton i, .r07-toast { animation: none; }
-  .r07-badge__inner, .r07-badge__dot { transition: none; }
+  .r07-badge__inner, .r07-badge__dot, .r07-details > summary::before { transition: none; }
 }
 @media (max-width: 760px) {
   .r07-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; margin: 0 -2px; }
   .r07-chips::-webkit-scrollbar { display: none; }
-  .r07-h { font-size: 20px; }
 }
 
 /* ---- Волна 2: состояния после ремонта (categories_v2.json → heat_states; R11 IA_WAVE2 §3) ---- */
@@ -315,20 +331,7 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 .r07-badge[data-fixed="reported"] .r07-badge__dot { border: 2px dashed #3b6d11; }
 .r07-sw--dashed { box-shadow: inset 0 0 0 2px #3b6d11; border: 1px dashed #3b6d11; }
 /* «Вернули жители» — отметка ↺ у кружка (цвет — по весу) */
-.r07-badge__dot { position: relative; }
 .r07-badge__mark {
-  position: absolute; top: -7px; right: -7px; display: grid; place-items: center; width: 18px; height: 18px;
-  border: 2px solid #fff; border-radius: 50%; background: #152c26; color: #fff; font-size: 12px; font-weight: 800; line-height: 1;
+  position: absolute; top: -6px; right: -6px; display: grid; place-items: center; width: 20px; height: 20px;
+  border: 2px solid #fff; border-radius: 50%; background: #152c26; color: #fff; font-size: 12px; font-weight: 600; line-height: 1;
 }
-.r07-status[data-status="reported_fixed"] { background: #eef6e4; color: #2f5410; }
-.r07-status[data-status="verified"] { background: #e3f1d6; color: #27500a; }
-.r07-note--wait { background: #f2f7ea; color: #2f5410; border-left: 4px dashed #97C459; }
-.r07-note--reopened { font-weight: 700; }
-/* Срок ответа (волна 1, п. 6) — одна строка под статусом, просрочка — красным словом */
-.r07-card__due { display: flex; align-items: center; gap: 6px; margin: 2px 0 0; font-size: 16px; color: var(--r07-ink-2, #3d4b45); }
-.r07-card__due[data-overdue="true"] { color: #a32d2d; font-weight: 700; }
-/* «О чём сообщают»: уточнение под категорией */
-.r07-topics__sub { display: block; font-size: 14px; color: var(--r07-ink-2, #3d4b45); font-weight: 400; }
-/* R12 волна 2 п. 6: ссылка «Распечатать QR» у акимата — внизу карточки, не главная кнопка. */
-.r07-qr { margin: 4px 0 0; }
-.r07-qr .r07-btn { text-decoration: none; }

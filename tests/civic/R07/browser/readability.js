@@ -102,7 +102,14 @@ const shot = (page, name) => page.screenshot({ path: path.join(OUT, `${LABEL}-${
     await page.close();
     // --- режим фокуса: выбранная крупнее, остальные 40 %, Esc — сброс ---
     ({ page, errors } = await open(browser, size, lang, "&view=nura" + (size === 375 ? "&sheet=half" : "")));
-    await page.click(".r07-item");
+    // место в Нуре (вокруг есть другие значки): первым в списке может оказаться место в другом районе — демо-жалобы
+    // привязаны к дате, и порядок мест меняется день ото дня (с 12 окт первым стал участок в Байконуре)
+    await page.evaluate(async () => {
+      const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=14")).json();
+      const nura = new Set((d.data || d).items.filter((x) => x.district === "nura").map((x) => x.target.kind + ":" + x.target.id));
+      const b = [...document.querySelectorAll(".r07-item")].find((x) => nura.has(x.dataset.key)) || document.querySelector(".r07-item");
+      b.click();
+    });
     await page.waitForTimeout(1300);
     await shot(page, `${tag}-3-focus`);
     if (!SHOTS_ONLY) {
@@ -119,7 +126,9 @@ const shot = (page, name) => page.screenshot({ path: path.join(OUT, `${LABEL}-${
         layer: window.__map.getPaintProperty("r07-seg", "line-opacity"), card: !!document.querySelector(".r07-card") }));
       const p = [];
       if (!f.focusing) p.push("нет режима фокуса при выбранной цели");
-      if (!/matrix\(1\.2[45]/.test(f.scale)) p.push("выбранный значок не крупнее: " + f.scale);
+      // значок 44 px, выбранный ×1.15 (≈ 51 px) и с тёмным кольцом (FINAL-3)
+      const sc = Number((/matrix\(([\d.]+)/.exec(f.scale) || [])[1] || 1);
+      if (!(sc >= 1.1)) p.push("выбранный значок не крупнее: " + f.scale);
       if (!f.dim.length || f.dim.some((o) => Math.abs(o - 0.4) > 0.02)) p.push("остальные значки не бледнеют до 40 %: " + f.dim.slice(0, 5).join(","));
       if (!Array.isArray(f.layer)) p.push("слои карты не бледнеют (нет выражения фокуса)");
       if (after.focusing || after.card || after.dim.some((o) => o < 0.99) || Array.isArray(after.layer)) p.push("Esc не сбросил фокус");

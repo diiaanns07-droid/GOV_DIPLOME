@@ -431,6 +431,7 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
             "color": color,
             "count": count,
             "fixed_until": iso(fixed_until) if fixed_until else None,
+            "fixed_at": iso(t_fixed) if state == "fixed" else None,   # когда служба сообщила (строка статуса в карточке)
             "state": state,
             "fixed_kind": fixed_kind,              # reported | verified | None (волна 2, п. 1)
             "reopened": state == "active" and reopened_at is not None,
@@ -564,6 +565,7 @@ def districts_summary(target_items: list, config: HeatConfig, *, district: str |
             "color": no_data_color if state == "no_data" else config.color_for(level),
             "count": a["count"],
             "fixed_until": None,
+            "fixed_at": None,
             "state": state,
             "targets": a["targets"],
             "fixed_targets": a["fixed"],
