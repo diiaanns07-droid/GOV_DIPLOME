@@ -1,0 +1,12 @@
+R05 · дизайн-марафон · прогон 2026-10-12 (облако Claude Code, SwiftShader без GPU, без интернета)
+Сборка R01: claude/sharp-dijkstra-0t87gl @ 65343341 (FINAL-3 со стеклом 61be62e6, ui-kit R11 7117132 внутри); web/civic/build3d заменён на R05 b4f9236.
+
+code b4f9236e 16:13
+shell smoke exit 0 pass=27 fail=0  16:19
+R01 r14_b2 exit 0 pass=28 fail=0 
+R01 r14_shell exit 0 pass=42 fail=0 
+DONE
+
+Перед этим:
+- R05 3f0e872 в той же сборке: smoke 27/27, r14_shell 42/42, r14_b2 27/28 — FAIL «no page errors or unexpected console errors»: предупреждение Chrome «Canvas2D: Multiple readback operations…» от тени на холсте; с 5e8b2cc тень без холста — на b4f9236 r14_b2 28/28.
+- демо R05 на 6a10e7f с ui-kit 7117132: 54 PASS / 0 FAIL / 1 NOT_RUN (GPU); R11 день 3 — 29/29 (runs/browser_check.json — последний полный прогон).
