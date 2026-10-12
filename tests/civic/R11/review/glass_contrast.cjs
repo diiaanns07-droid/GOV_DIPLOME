@@ -3,7 +3,7 @@
  *   NODE_PATH="$(npm root -g)" node tests/civic/R11/review/glass_contrast.cjs <url> [<url> …]
  *   GLASS_SIZES=1366x768,375x812  GLASS_SHOTS=<папка> — сохранить кадры «стекло без текста»
  * Как: на странице находим стекло (.bk-glass, .bk-glass--control или любой видимый элемент с backdrop-filter),
- * прячем всё его содержимое (visibility: hidden у детей, текст прозрачный) — остаётся только фон стекла поверх карты;
+ * прячем всё, кроме карты и самих стеклянных элементов (их содержимое тоже) — остаётся только фон стекла поверх карты;
  * снимаем каждый элемент, берём САМЫЙ ТЁМНЫЙ пиксель внутри (без 3 px края с тенью и рамкой) и считаем контраст
  * с цветом текста: ink (#152c26) для всех, вторичный текст стекла (--glass-text-2) — только для панелей.
  * Норма — ≥ 4.5:1. Для кнопок карты (.bk-glass--control) — только ink.
@@ -41,7 +41,9 @@ const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 
 const lum = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
 const ratio = (l1, l2) => (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
-const INK = lum(...hex("#152c26")), TEXT2 = lum(...hex("#4c5853"));
+const INK = lum(...hex("#152c26")), TEXT2 = lum(...hex("#3f4a46")); // --glass-text-2 ui-kit
+// Что считать картой (остаётся видимым под стеклом): сборка — #map/MapLibre, макеты R11 — .pm-map/.cl-map
+const MAP = process.env.GLASS_MAP || "#map, .maplibregl-map, .pm-map, .cl-map";
 
 (async () => {
   const urls = process.argv.slice(2);
@@ -67,7 +69,15 @@ const INK = lum(...hex("#152c26")), TEXT2 = lum(...hex("#4c5853"));
           x: Math.max(0, b.left), y: Math.max(0, b.top), w: Math.min(b.width, innerWidth - Math.max(0, b.left)), h: Math.min(b.height, innerHeight - Math.max(0, b.top)) };
       });
     });
-    await page.addStyleTag({ content: "[data-r11-glass] > * { visibility: hidden !important; } [data-r11-glass] { color: transparent !important; }" });
+    // Остаётся только карта и фон стекла: всё прочее (поле поиска, кнопка «Сообщить о проблеме», тосты поверх стекла,
+    // содержимое стекла) прячем — иначе самым тёмным «фоном» окажется чужой элемент над стеклом (R01 INTEGRATION 24.5).
+    await page.addStyleTag({ content: [
+      "body * { visibility: hidden !important; }",
+      MAP.split(",").map((m) => `${m.trim()}, ${m.trim()} *`).join(", ") + " { visibility: visible !important; }",
+      "[data-r11-glass] { visibility: visible !important; color: transparent !important; }",
+      // содержимое стекла прячем и там, где стекло лежит внутри карты (#map * сильнее по специфичности — легенда R01)
+      ["[data-r11-glass] *", ...MAP.split(",").map((m) => `${m.trim()} [data-r11-glass] *`)].join(", ") + " { visibility: hidden !important; }",
+    ].join("\n") });
     await page.waitForTimeout(300);
     for (const b of boxes) {
       if (b.w < 12 || b.h < 12) continue;

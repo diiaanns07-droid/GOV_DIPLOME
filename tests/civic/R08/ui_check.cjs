@@ -255,6 +255,30 @@ async function shot(page, name, full) {
         : /^Дольше всех: .+ · Просрочено на \d+ д(ень|ня|ней)$/.test(w2.overdue.trim()), w2.overdue);
       check(`${tag}: у горячих мест — уточнение жителей, а не только категория`,
         w2.hotSubs.filter((t) => /Сломана детская|Не убран снег|Долго ждать|Яма|Балалар алаңы бұзылған|Қар тазаланбаған|Ұзақ күту|Шұңқыр/.test(t)).length >= 3, w2.hotSubs.slice(0, 4));
+      // Дизайн-марафон: мини-графики под числами, мини-карта «Горячих мест», объекты без плашек.
+      const dash = await page.evaluate(() => {
+        const q = (s) => Array.from(document.querySelectorAll(s));
+        const fig = document.querySelector(".akim-hot .akim-minimap");
+        const credit = document.querySelector(".akim-hot .akim-minimap__credit");
+        return {
+          sparks: q(".akim-kpi .akim-spark").map((sv) => ({ hidden: sv.getAttribute("aria-hidden"),
+            pts: ((sv.querySelector(".akim-spark__line") || {}).getAttribute ? sv.querySelector(".akim-spark__line").getAttribute("d") : "").split(/[ML]/).filter(Boolean).length,
+            h: Math.round(sv.getBoundingClientRect().height) })),
+          sparkBottoms: q(".akim-kpi .akim-spark").map((sv) => Math.round(sv.getBoundingClientRect().bottom)),
+          map: fig ? { hidden: fig.getAttribute("aria-hidden"), districts: fig.querySelectorAll(".akim-minimap__district").length,
+            dots: fig.querySelectorAll(".akim-minimap__dot").length, w: Math.round((fig.querySelector("svg") || fig).getBoundingClientRect().width) } : null,
+          credit: credit && credit.getClientRects().length ? credit.textContent : "",
+          objTags: q(".akim-objects .bk-tag").length,
+          lateWords: q(".akim-objects .akim-obj__late").length,
+        };
+      });
+      check(`${tag}: под каждым числом — мини-график за 14 дней (только для глаза), графики в ряду на одной линии`,
+        dash.sparks.length === 4 && dash.sparks.every((x) => x.hidden === "true" && x.pts === 14 && x.h >= 20)
+          && (width < 480 ? new Set(dash.sparkBottoms.slice(0, 2)).size === 1 && new Set(dash.sparkBottoms.slice(2)).size === 1
+                          : new Set(dash.sparkBottoms).size === 1), dash.sparks.concat([dash.sparkBottoms]));
+      check(`${tag}: мини-карта «Горячих мест» — районы и точки мест, подпись © OpenStreetMap`,
+        !!dash.map && dash.map.hidden === "true" && dash.map.districts >= 6 && dash.map.dots >= 5 && dash.map.w >= 80 && dash.credit === "© OpenStreetMap", dash.map);
+      check(`${tag}: «Объекты с отставанием» — отставание словами, без плашек`, dash.objTags === 0 && dash.lateWords >= 1, dash);
       // Смена языка — без нового запроса (текст сводки пришёл сразу на двух языках).
       const before = calls;
       const other = lang === "ru" ? "kk" : "ru";
@@ -555,6 +579,42 @@ async function shot(page, name, full) {
     const st = await page.evaluate(() => document.getElementById("akim").dataset.state);
     check("тихое обновление: нет связи — числа остаются, ошибкой экран не сменяется",
       st === "ok" && (await page.textContent(".akim-kpi .bk-kpi__value")) === after, { st });
+    await ctx.close();
+  }
+
+  // ───────────── 3б. Дизайн-марафон: стеклянная полоса раздела и «уменьшить движение» ─────────────
+  for (const [width, height, lang] of [[1366, 768, "ru"], [375, 812, "kk"]]) {
+    const { ctx, page } = await open(browser, { width, height, lang });
+    await waitState(page, "ok");
+    await page.waitForTimeout(400);
+    const before = await page.evaluate(() => document.getElementById("akim").hasAttribute("data-scrolled"));
+    await page.evaluate(() => window.scrollTo(0, 1200));
+    await page.waitForTimeout(500);
+    const bar = await page.evaluate(() => {
+      const b = document.querySelector(".akim__bar-btn"), r = b.getBoundingClientRect();
+      return { on: document.getElementById("akim").hasAttribute("data-scrolled"), op: getComputedStyle(b).opacity, top: Math.round(r.top),
+               h: Math.round(r.height), tab: b.tabIndex, hidden: b.parentElement.getAttribute("aria-hidden"), text: b.textContent };
+    });
+    if (width === 375) await shot(page, `akim-bar-${width}-${lang}`);
+    await page.click(".akim__bar-btn");
+    await page.waitForTimeout(900);
+    const back = await page.evaluate(() => ({ y: Math.round(window.scrollY), on: document.getElementById("akim").hasAttribute("data-scrolled") }));
+    check(`${width}-${lang}: компактная полоса «${lang === "kk" ? "Күн қорытындысы" : "Картина дня"} · дата» появляется после прокрутки, нажатие — к началу`,
+      !before && bar.on && bar.op === "1" && bar.top >= 0 && bar.top <= 20 && bar.h >= 44 && bar.tab === -1 && bar.hidden === "true"
+        && bar.text.startsWith(lang === "kk" ? "Күн қорытындысы · " : "Картина дня · ") && back.y < 400 && !back.on, { before, bar, back });
+    await ctx.close();
+  }
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, reducedMotion: "reduce" });
+    const page = await ctx.newPage();
+    await page.addInitScript(() => { try { localStorage.setItem("birge.lang", "ru"); } catch (e) { /* */ } });
+    await page.goto(PAGE + "?lang=ru");
+    await waitState(page, "ok");
+    const anim = await page.evaluate(() => ({
+      spark: getComputedStyle(document.querySelector(".akim-spark__line")).animationName,
+      enter: Array.from(document.querySelectorAll(".akim__body > *")).map((e) => getComputedStyle(e).animationName).filter((n) => n !== "none").length,
+    }));
+    check("prefers-reduced-motion: графики и блоки без анимации", anim.spark === "none" && anim.enter === 0, anim);
     await ctx.close();
   }
 

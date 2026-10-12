@@ -109,6 +109,19 @@
   // По умолчанию: ноутбук — акимат (главный зритель демо), телефон — житель.
   function defaultMode() { return innerWidth < PHONE ? "resident" : "akimat"; }
 
+  // Значок пункта меню (марафон, чек-лист №9): один набор ui-kit (icons.svg), рядом с подписью, тише текста.
+  const MENU_ICONS = { map: "pin", day: "chart", inbox: "list", projects: "cube", mine: "list", nearby: "users", ideas: "bulb",
+    questions: "info", works: "calendar", qr: "print", services: "building", staff: "user" };
+  function menuIcon(node, id) {
+    const sprite = window.BirgeUI && window.BirgeUI.SPRITE, name = MENU_ICONS[id];
+    if (!sprite || !name || !node) return node;
+    const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"), use = document.createElementNS(NS, "use");
+    svg.setAttribute("class", "ic birge-menu-ic"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
+    use.setAttribute("href", sprite + "#i-" + name);
+    svg.append(use);
+    node.prepend(svg);
+    return node;
+  }
   function el(tag, attrs, children) {
     const node = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs || {})) {
@@ -194,6 +207,7 @@
         ? el("a", { role: "menuitem", class: "birge-more-item", href: extra.href, target: extra.target || null, rel: extra.target ? "noopener" : null })
         : el("button", { type: "button", role: "menuitem", class: "birge-more-item", "data-section": id });
       item.textContent = navTitle(id);
+      menuIcon(item, id);
       if (id === state.section) item.setAttribute("aria-current", "page");
       return item;
     }));
@@ -292,7 +306,7 @@
     const item = (attrs, text) => { const b = el("button", { type: "button", class: "bk-menu__item", role: "menuitem", ...attrs }); b.textContent = text; return b; };
     if (document.body.dataset.birgeHeader === "compact") {
       for (const id of NAV[state.mode].filter((x) => x !== "more" && available(x, state.mode))) {
-        const b = id === "mine" ? item({ "data-action": "mine" }, t("common.nav.mine")) : item({ "data-section": id }, navTitle(id));
+        const b = menuIcon(id === "mine" ? item({ "data-action": "mine" }, t("common.nav.mine")) : item({ "data-section": id }, navTitle(id)), id);
         if (id === state.section) b.setAttribute("aria-current", "page");
         if (id === "mine" && mineChanges > 0) {
           const badge = el("span", { class: "bk-nav__badge", "aria-hidden": "true" });
@@ -305,6 +319,7 @@
         const extra = state.extra.find((x) => x.id === id);
         const b = extra?.href ? el("a", { role: "menuitem", class: "bk-menu__item", href: extra.href }) : item({ "data-section": id }, "");
         b.textContent = navTitle(id);
+        menuIcon(b, id);
         if (id === state.section) b.setAttribute("aria-current", "page");
         items.push(b);
       }
@@ -315,7 +330,7 @@
     for (const m of MODES) items.push(item({ "data-mode": m, role: "menuitemradio", "aria-checked": String(m === state.mode) }, t("common.role." + m)));
     items.push(el("div", { class: "bk-menu__sep", role: "separator" }));
     const signedIn = !!window.CivicShell?.api?.session?.authenticated;
-    items.push(item({ "data-action": "staff" }, t(signedIn ? "staff.cabinet.title" : "shell.staff.open")));
+    items.push(menuIcon(item({ "data-action": "staff" }, t(signedIn ? "staff.cabinet.title" : "shell.staff.open")), "staff"));
     if (signedIn) items.push(item({ "data-action": "logout" }, t("staff.login.logout")));
     account.replaceChildren(...items);
     account.setAttribute("aria-label", t("common.account.menu"));
@@ -622,7 +637,7 @@
   // Не стекло: значки карты, формы, главные кнопки, тосты.
   const GLASS = [
     [".topbar", "bk-glass bk-glass--bar"],                       // №1 шапка — плавающая капсула
-    ["#birge-account, .birge-more-menu, #birge-layer-list", "bk-glass"],   // №2 меню
+    ["#birge-account, .birge-more-menu, #birge-layer-list", "bk-glass bk-glass--menu"],   // №2 меню (радиус 18, ui-kit 58b28edc)
     ["#birge-locate, #toggle-3d, #birge-layer-btn, #birge-compass, .birge-legend-q, .map-tools .bk-mapctl__group", "bk-glass--control"],  // №3
     [".birge-legend-line", "bk-glass bk-glass--bar"],             // №4 строка легенды
     ["#civic-panel", "bk-glass"],                                 // №5 панель / шторка
@@ -806,9 +821,9 @@
     const option = (value, text) => {
       const input = el("input", { type: "radio", name: "birge-layer", value });
       input.checked = (state.layer || "") === value;
-      return el("label", { class: "birge-layer__opt" }, [input, el("span", { text })]);
+      return el("label", { class: "birge-layer__opt bk-menu__radio" }, [input, el("span", { text })]);  // как пункт меню (R11 §11.1)
     };
-    listBox.replaceChildren(el("span", { class: "birge-layer__title", text: t("shell.layers.label") }),
+    listBox.replaceChildren(el("span", { class: "birge-layer__title bk-menu__label", text: t("shell.layers.label") }),
       option("", t("shell.layers.none")), ...list.map((l) => option(l.id, layerTitle(l))));
   }
 
@@ -858,6 +873,13 @@
     buildMapControls();
     watchExplore();
     watchGlass();
+    // Карточка цели открылась (R07 «birge:heat-select») — панель/шторка с начала: на телефоне шторка оставалась
+    // прокрученной списком, и первая строка карточки уходила под ручку (R11 марафон §9.1 e).
+    document.addEventListener("birge:heat-select", (event) => {
+      if (!event.detail || !event.detail.target) return;
+      const scroll = document.getElementById("civic-scroll");
+      if (scroll) scroll.scrollTop = 0;
+    });
     // «Мои обращения» R09 открываются и закрываются сами (класс html.bc-mine-open) — пункт в шапке следует за ними.
     if (typeof MutationObserver === "function") {
       let mineWas = false;

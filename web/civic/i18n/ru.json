@@ -1661,5 +1661,9 @@
  "merge.kind.duplicate": "Отмечено дублем · {code} · {date}",
  "merge.separate": "Это разные проблемы",
  "merge.separated": "Разделено. Теперь это отдельное обращение {code}",
- "merge.already": "Уже разделено"
+ "merge.already": "Уже разделено",
+ "ask.answer.edited": "изменён {date}",
+ "ask.staff.reason_answered": "На вопрос уже ответили: снять его можно только из-за личных данных",
+ "heat.approx_short": "Примерное место",
+ "idea.decided": "Решённые идеи"
 }

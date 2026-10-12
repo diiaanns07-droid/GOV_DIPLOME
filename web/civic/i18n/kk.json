@@ -1416,5 +1416,9 @@
  "merge.kind.duplicate": "Қайталанған деп белгіленді · {code} · {date}",
  "merge.separate": "Бұл әртүрлі мәселелер",
  "merge.separated": "Бөлінді. Енді бұл жеке өтініш: {code}",
- "merge.already": "Бұрын бөлінген"
+ "merge.already": "Бұрын бөлінген",
+ "ask.answer.edited": "өзгертілді: {date}",
+ "ask.staff.reason_answered": "Сұраққа жауап берілген: оны тек жеке деректер болса ғана алып тастауға болады",
+ "heat.approx_short": "Шамамен көрсетілген орын",
+ "idea.decided": "Шешім қабылданған идеялар"
 }

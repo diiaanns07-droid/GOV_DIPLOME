@@ -545,7 +545,7 @@ body.civic-mode .birge-day.bk-glass { top: 84px; left: 12px; right: 12px; bottom
 body.civic-mode .civic-explore #map-status.bk-glass:not(.hidden) { border-radius: var(--r-pill, 999px); }
 /* №4 строка легенды и №2 меню — радиусы ui-kit (капсула / 24) */
 body.civic-mode .birge-legend-line.bk-glass { border-radius: var(--r-pill, 999px); }
-body.civic-mode :is(#birge-account, .birge-more-menu, #birge-layer-list).bk-glass { border-radius: var(--r-glass, 24px); }
+body.civic-mode :is(#birge-account, .birge-more-menu, #birge-layer-list).bk-glass { border-radius: var(--r-glass-menu, 18px); }
 
 @media (min-width: 761px) {
   /* под капсулой (12 + 60) ещё 12 */
@@ -643,14 +643,14 @@ body.civic-mode .civic-explore:has(.civic-explore-list:not([hidden])) #map-statu
 /* Разделы: черта выбранного — под словом (8 от низа капсулы), а не на краю стекла. */
 body.civic-mode #birge-header .birge-nav > [aria-current="page"]::after { bottom: 8px; left: 12px; right: 12px; height: 2px; }
 
-/* Меню («Ещё», аватар, слои) — один вид: отступ 8, пункты 48 со скруглением 16 (концентрично радиусу 24), обычный
+/* Меню («Ещё», аватар, слои) — один вид: отступ 8, пункты 48 со скруглением 10 (концентрично радиусу 18), обычный
    вес 400 (выбранный — 600 и «✓»), подсветка мягкой заливкой; 8 под капсулой шапки. */
-body.civic-mode .birge-more-menu { top: calc(100% + 14px); padding: 8px; gap: 0; min-width: 260px; }
-body.civic-mode .birge-more-item { font-weight: 400; border-radius: 16px; padding: 0 16px; }
+body.civic-mode .birge-more-menu { top: calc(100% + 14px); padding: 8px; gap: 0; min-width: 260px; white-space: nowrap; }
+body.civic-mode .birge-more-item { font-weight: 400; border-radius: 10px; padding: 0 16px; }
 body.civic-mode .birge-more-item:hover, body.civic-mode .birge-more-item:focus-visible { background: rgba(21, 44, 38, 0.06); }
 body.civic-mode .birge-more-item[aria-current="page"] { box-shadow: none; font-weight: 600; }
 body.civic-mode #birge-account.bk-menu { padding: 8px; min-width: 260px; }
-body.civic-mode #birge-account .bk-menu__item { border-radius: 16px; padding: 0 16px; }
+body.civic-mode #birge-account .bk-menu__item { border-radius: 10px; padding: 0 16px; }
 body.civic-mode #birge-account .bk-menu__item:hover, body.civic-mode #birge-account .bk-menu__item:focus-visible { background: rgba(21, 44, 38, 0.06); }
 body.civic-mode #birge-account .bk-menu__label { padding: 8px 16px 4px; }
 body.civic-mode #birge-account .bk-menu__sep { margin: 8px 16px; }
@@ -660,14 +660,10 @@ body.civic-mode #birge-account .bk-menu__sep { margin: 8px 16px; }
 body.civic-mode .topbar :is(#birge-account, .birge-more-menu).bk-glass { background-color: var(--glass-solid, #fff); background-image: none; }
 body.civic-mode #birge-account { margin-top: 8px; }
 
-/* «Слой на карте» — как меню: строки 48, радиокнопки цвета бренда, текст в одну строку. */
-body.civic-mode #birge-layer-list { padding: 8px; min-width: 260px; white-space: nowrap; }
-body.civic-mode #birge-layer-list .birge-layer__title { display: block; padding: 8px 16px 4px; font-size: 13px; font-weight: 400; color: var(--c-text-2, #5b6a64); }
-body.civic-mode #birge-layer-list .birge-layer__opt { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 16px;
-  border-radius: 16px; font-size: 15px; cursor: pointer; }
-body.civic-mode #birge-layer-list .birge-layer__opt:hover { background: rgba(21, 44, 38, 0.06); }
-body.civic-mode #birge-layer-list .birge-layer__opt input { accent-color: var(--c-brand, #152c26); width: 20px; height: 20px; margin: 0; flex: none; }
-body.civic-mode #birge-layer-list .birge-layer__opt:has(input:checked) { font-weight: 600; }
+/* «Слой на карте» — пункты меню ui-kit (.bk-menu__radio: кружок скрыт, выбранный — 600 и «✓» справа; R11 §11.1). */
+body.civic-mode #birge-layer-list { padding: 8px; min-width: 248px; white-space: nowrap; }
+body.civic-mode #birge-layer-list .birge-layer__title { display: block; padding: 8px 16px 4px; }
+body.civic-mode #birge-layer-list .birge-layer__opt.bk-menu__radio { border-radius: 10px; cursor: pointer; }
 
 /* «?» легенды — шкала 15/600, как подписи кнопок (было 17). */
 body.civic-mode .birge-legend-q { font-size: 15px; font-weight: 600; }
@@ -735,3 +731,28 @@ body.civic-mode :is(.map-tools, #birge-legend, .maplibregl-ctrl-attrib) :focus-v
 @media (min-width: 1105px) {
   body.civic-mode .birge-day.bk-glass { left: max(12px, calc(50% - 540px)); right: max(12px, calc(50% - 540px)); }
 }
+/* Значки пунктов меню — 20 px, цвет второго текста; выбранный пункт — цвет текста. */
+body.civic-mode .birge-menu-ic { width: 20px; height: 20px; color: var(--c-text-2, #5b6a64); flex: none; }
+body.civic-mode .birge-more-item { gap: 12px; }
+body.civic-mode :is(.birge-more-item, .bk-menu__item)[aria-current="page"] .birge-menu-ic { color: var(--c-ink, #152c26); }
+
+/* Круг 2 (R11 INTEGRATION §9.1): отступы по сетке 8 pt и движение плашки карты на токенах ui-kit. */
+body.civic-mode .topbar.bk-glass { padding: 0 8px 0 16px; }
+body.civic-mode .top-actions { gap: 8px; }
+body.civic-mode .birge-legend-line { padding: 0 4px 0 16px; }
+body.civic-mode .civic-explore #map-status:not(.hidden) { padding: 8px 16px; }
+body.civic-mode .civic-explore #map-status { transition: opacity var(--t-slow, 340ms) var(--ease, ease-out), visibility var(--t-slow, 340ms); }
+@media (max-width: 760px) {
+  body.civic-mode .topbar.bk-glass { padding: 0 4px 0 8px; }
+  body.civic-mode .top-actions { gap: 4px; }
+}
+/* «Картина дня» — дашборд: лист до 1280; разделы-списки («Рядом», «Вопрос акиму») — колонка 720 по центру листа 1080
+   (как «Идеи»; R11 §9.1 f). «Обращения» сотрудника — таблица во всю ширину листа. */
+@media (min-width: 1105px) {
+  body.civic-mode #birge-day.birge-day.bk-glass { left: max(12px, calc(50% - 640px)); right: max(12px, calc(50% - 640px)); }
+}
+body.civic-mode .birge-screen-root.nb, body.civic-mode .birge-screen-root > .qa { max-width: 720px; margin-inline: auto; }
+/* Открыт раздел (лист поверх карты уже не во всю ширину) — элементы карты по краям не выглядывают из-под листа:
+   легенда, кнопки карты, подпись карты и 3D-каталог прячутся до возврата на «Карту». */
+body.civic-mode[data-birge-section]:not([data-birge-section="map"]) :is(#birge-legend, .map-tools, .maplibregl-ctrl-bottom-right, .birge-build3d-root) {
+  visibility: hidden; }

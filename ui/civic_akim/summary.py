@@ -34,6 +34,7 @@ from . import deadlines, decisions, pulse, routing, sources, text
 
 ASTANA_TZ = timezone(timedelta(hours=5))
 WEEK = timedelta(days=7)
+SERIES_DAYS = 14  # мини-графики под числами «Картины дня» (дизайн-марафон): по дням, последний — сегодня до as_of
 HEAT_DAYS = 7           # период тепловой карты для «Картины дня»: последняя неделя
 TOP_N = 10              # «Горячие места» — первые 10 целей карты
 OVERDUE_TOP = 5         # «Просрочено — дольше всех»: сколько строк с таймером показать
@@ -134,6 +135,48 @@ def fixed_moment(record: dict, moment: datetime) -> datetime | None:
     if last is None:  # статус fixed без истории — как у R07: время обновления или подачи
         last = parse_time(record.get("updated_at")) or parse_time(record.get("created_at"))
     return last
+
+
+def kpi_series(recs: list[dict], ends: list[datetime]) -> dict:
+    """«В работе», «просрочено», «исправлено за 7 дней» на каждый момент ends — то же, что _kpi.at(), но за один проход:
+    история каждой записи разбирается один раз (14 моментов × все записи по отдельности — в 3 раза медленнее сводки)."""
+    n = len(ends)
+    work, overdue, fixed = [0] * n, [0] * n, [0] * n
+    for r in recs:
+        created = parse_time(r.get("created_at"))
+        if created is None:
+            continue
+        hist = _history(r)
+        due = deadlines.due(r.get("category"), created)
+        fallback_fixed = parse_time(r.get("updated_at")) or created
+        last_t = hist[-1][0] if hist else None
+        for i, m in enumerate(ends):
+            if created > m:
+                continue
+            if last_t is None or last_t <= m:  # позже m в истории ничего нет — верим текущему полю (как status_at)
+                st = r.get("status") or (hist[-1][1] if hist else "new")
+            else:
+                st = "new"
+                for t, s_ in hist:
+                    if t > m:
+                        break
+                    st = s_
+            if st in WORK:
+                work[i] += 1
+            if st in OPEN and m > due:
+                overdue[i] += 1
+            if st in FIXED:
+                last, prev = None, None
+                for t, s_ in hist:
+                    if t > m:
+                        break
+                    if s_ in FIXED and prev not in FIXED:
+                        last = t
+                    prev = s_
+                f = last if last is not None else fallback_fixed
+                if m - WEEK < f <= m:
+                    fixed[i] += 1
+    return {"work": work, "overdue": overdue, "fixed": fixed}
 
 
 def _resident_marks(record: dict) -> list[tuple[datetime, str]]:
@@ -476,13 +519,26 @@ class AkimService:
         new_day_prev = created_between(day_start - WEEK, as_of - WEEK, True)
         new_week = created_between(as_of - WEEK, as_of, False)
         new_week_prev = created_between(as_of - 2 * WEEK, as_of - WEEK, False)
+        # Мини-графики: новые за каждый из 14 дней; «в работе», «просрочено», «исправлено за 7 дней» — на конец дня
+        # (сегодня — на as_of, последняя точка = само число). Только для вида — числа и сравнения выше не меняются.
+        tick = timedelta(microseconds=1)
+        starts = [day_start - timedelta(days=k) for k in range(SERIES_DAYS - 1, -1, -1)]
+        ends = [a + timedelta(days=1) - tick for a in starts[:-1]] + [as_of]
+        series = kpi_series(recs, ends)
+        series_new = [0] * SERIES_DAYS
+        for r in recs:
+            c = parse_time(r["created_at"])
+            if starts[0] <= c <= as_of:
+                series_new[min((c - starts[0]).days, SERIES_DAYS - 1)] += 1
         return {
-            "new_day": change(new_day, new_day_prev),
+            "new_day": {**change(new_day, new_day_prev), "series": series_new},
             "new_week": change(new_week, new_week_prev),
-            "in_progress": {**change(now_state["work"], prev_state["work"]), "waiting": now_state["waiting"]},
-            "overdue": change(now_state["overdue"], prev_state["overdue"]),
+            "in_progress": {**change(now_state["work"], prev_state["work"]), "waiting": now_state["waiting"],
+                            "series": series["work"]},
+            "overdue": {**change(now_state["overdue"], prev_state["overdue"]), "series": series["overdue"]},
             # verified + awaiting = value: «служба сообщила об устранении» делится на проверенные жителями и ждущие проверки.
-            "fixed_week": {**change(now_state["fixed"], prev_state["fixed"]), "verified": now_state["verified"],
+            "fixed_week": {**change(now_state["fixed"], prev_state["fixed"]), "series": series["fixed"],
+                           "verified": now_state["verified"],
                            "awaiting": now_state["fixed"] - now_state["verified"], "reopened": now_state["reopened"],
                            "reopened_by_residents": now_state["reopened_by_residents"]},
             # Проверка жителями есть в данных (R09 волна 2)? Нет — интерфейс не пишет «проверено: 0», а молчит.

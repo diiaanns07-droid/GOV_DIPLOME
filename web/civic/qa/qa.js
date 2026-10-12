@@ -106,6 +106,18 @@
       "ask.answer.only_ru": "Ответ дан на русском языке",
       "ask.answer.only_kk": "Ответ дан на казахском языке",
       "ask.answer.edited": "изменён {date}",
+      "ask.answer.sign": "Аким · {date}",
+      "ask.empty.top_title": "Вопросов без ответа пока нет",
+      "ask.empty.new_title": "Вопросов пока нет",
+      "ask.sent_hint": "Вопрос опубликуют после проверки. Тогда его увидят и смогут поддержать соседи.",
+      "ask.empty.ask_hint": "Задайте свой вопрос — раз в неделю аким отвечает на самые поддержанные.",
+      "ask.empty.answered_hint": "Поддержите вопросы, которые важны вам, — так они попадут в пятёрку недели.",
+      "ask.empty.to_top": "Посмотреть популярные",
+      "ask.staff.empty.queue_hint": "Новые вопросы жителей появятся здесь.",
+      "ask.staff.empty.top_hint": "Когда жители поддержат опубликованные вопросы, здесь появится пятёрка недели.",
+      "ask.staff.empty.answered_hint": "Ответьте на вопросы из «Топ-5 недели» — ответы увидят все.",
+      "ask.staff.empty.to_top": "Открыть топ-5 недели",
+      "ask.staff.edit_answer": "Изменить ответ",
       "ask.staff.reason_answered": "На вопрос уже ответили: снять его можно только из-за личных данных",
     },
     kk: {
@@ -175,6 +187,18 @@
       "ask.answer.only_ru": "Жауап орыс тілінде берілген",
       "ask.answer.only_kk": "Жауап қазақ тілінде берілген",
       "ask.answer.edited": "өзгертілді: {date}",
+      "ask.answer.sign": "Әкім · {date}",
+      "ask.empty.top_title": "Әзірге жауапсыз сұрақ жоқ",
+      "ask.empty.new_title": "Әзірге сұрақ жоқ",
+      "ask.sent_hint": "Сұрақ тексерілгеннен кейін жарияланады. Сонда оны көршілер көріп, қолдай алады.",
+      "ask.empty.ask_hint": "Сұрағыңызды қойыңыз — әкім аптасына бір рет ең көп қолдау тапқан сұрақтарға жауап береді.",
+      "ask.empty.answered_hint": "Өзіңізге маңызды сұрақтарды қолдаңыз — сонда олар аптаның бестігіне енеді.",
+      "ask.empty.to_top": "Танымал сұрақтарды көру",
+      "ask.staff.empty.queue_hint": "Тұрғындардың жаңа сұрақтары осында көрінеді.",
+      "ask.staff.empty.top_hint": "Тұрғындар жарияланған сұрақтарды қолдағанда, мұнда аптаның бестігі шығады.",
+      "ask.staff.empty.answered_hint": "«Аптаның үздік 5 сұрағына» жауап беріңіз — жауапты бәрі көреді.",
+      "ask.staff.empty.to_top": "Аптаның үздік 5 сұрағын ашу",
+      "ask.staff.edit_answer": "Жауапты өзгерту",
       "ask.staff.reason_answered": "Сұраққа жауап берілген: оны тек жеке деректерге байланысты алып тастауға болады",
     },
   };
@@ -349,10 +373,15 @@
     }
 
     // ---------------------------------------------------------------- загрузка
-    function load(keepScroll) {
+    // keepScroll — тихо обновить тот же список (после голоса или действия сотрудника); soft — смена вкладки: прежний
+    // список остаётся приглушённым, пока не придёт новый (без мигания скелетоном).
+    function load(keepScroll, soft) {
       var req = ++state.request;
       if (!state.tab) state.tab = defaultTab();
-      if (!keepScroll || !state.data) {
+      if (soft && state.data && state.status === "ready") {
+        state.switching = true;
+        render();
+      } else if (!keepScroll || !state.data) {
         state.status = "loading";
         render();
       }
@@ -363,9 +392,13 @@
         if (!state.alive || req !== state.request) return;
         state.data = data || { items: [], counts: {} };
         state.status = "ready";
+        state.enter = !keepScroll; // новый список — мягкое появление карточек; тихое обновление — без движения
+        state.switching = false;
         render();
+        state.enter = false;
       }, function (err) {
         if (!state.alive || req !== state.request) return;
+        state.switching = false;
         state.status = staff() && err && (err.status === 401 || err.status === 403) ? "login" : "error";
         render();
       });
@@ -391,7 +424,7 @@
           ]));
         }
         box.appendChild(renderTabs());
-        if (staff() && state.tab === "top" && state.status === "ready" && state.data && state.data.week) {
+        if (staff() && state.tab === "top" && state.status === "ready" && !state.switching && state.data && state.data.week) {
           box.appendChild(h("p", { class: "qa__week" }, [icon("calendar"),
             h("span", { text: tr("ask.staff.week", { n: state.data.week.answered || 0 }) })]));
         }
@@ -422,7 +455,7 @@
         if (!id || state.tab === id) return;
         state.tab = id;
         state.open = null;
-        load();
+        load(false, true);
       }
       if (root.BirgeUI && typeof root.BirgeUI.tabs === "function") {
         root.BirgeUI.tabs(list, choose);
@@ -460,37 +493,92 @@
       return el;
     }
 
-    function renderBody() {
-      if (state.status === "loading") {
-        var wait = h("div", { class: "qa-state" });
-        if (root.BirgeUI && root.BirgeUI.state) root.BirgeUI.state(wait, "loading");
-        else wait.appendChild(h("p", { class: "bk-meta", role: "status", text: tr("common.state.loading") }));
-        return wait;
+    // Загрузка — три карточки-скелетона в форме настоящих (UX: скелетон вместо пустоты), статус — для чтения с экрана.
+    function skeleton() {
+      var list = h("ul", { class: "qa-list qa-skeleton", "aria-hidden": "true" });
+      for (var i = 0; i < 3; i++) {
+        list.appendChild(h("li", { class: "bk-card qa-card" }, [
+          h("span", { class: "bk-skel bk-skel--line qa-skel--short" }),
+          h("span", { class: "bk-skel bk-skel--title" }),
+          h("span", { class: "bk-skel bk-skel--line" }),
+          h("span", { class: "bk-skel bk-skel--line qa-skel--half" }),
+        ]));
       }
+      return h("div", { class: "qa-state", "aria-busy": "true" }, [
+        h("p", { class: "bk-sr-only", role: "status", text: tr("common.state.loading") }), list]);
+    }
+
+    // Пустое состояние: линейная картинка в стиле иконок ui-kit, что здесь будет и (если есть) куда пойти.
+    function emptyArt() {
+      var NS = "http://www.w3.org/2000/svg";
+      var svg = doc.createElementNS(NS, "svg");
+      svg.setAttribute("class", "qa-empty__art");
+      svg.setAttribute("viewBox", "0 0 120 88");
+      svg.setAttribute("aria-hidden", "true");
+      svg.setAttribute("focusable", "false");
+      // Два «облачка» разговора: вопрос жителя и ответ акима (тонкие линии, без заливки).
+      [["path", { d: "M14 14h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8H38l-12 10v-10H14a8 8 0 0 1-8-8V22a8 8 0 0 1 8-8Z" }],
+        ["path", { d: "M38 27.5a6 6 0 1 1 8.5 5.4c-1.6.8-2.5 2-2.5 3.6v1.5" }],
+        ["circle", { cx: "44", cy: "44", r: "1.4", class: "qa-empty__dot" }],
+        ["path", { d: "M84 34h22a8 8 0 0 1 8 8v20a8 8 0 0 1-8 8h-2v9l-10-9H84a8 8 0 0 1-8-8" }],
+        ["path", { d: "M88 47h16M88 55h10" }]].forEach(function (x) {
+        var el = doc.createElementNS(NS, x[0]);
+        Object.keys(x[1]).forEach(function (k) { el.setAttribute(k, x[1][k]); });
+        svg.appendChild(el);
+      });
+      return svg;
+    }
+    function emptyState(title, hint, action) {
+      return h("div", { class: "qa-empty", role: "status" }, [
+        emptyArt(),
+        h("p", { class: "qa-empty__title", text: title }),
+        hint ? h("p", { class: "qa-empty__hint", text: hint }) : null,
+        action ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", onclick: action.onClick, text: action.label }) : null,
+      ]);
+    }
+    function emptyFor() {
+      var goTab = function (id) {
+        return function () {
+          state.tab = id;
+          load();
+        };
+      };
+      if (staff()) {
+        if (state.tab === "queue") return emptyState(tr("ask.staff.empty.queue"), tr("ask.staff.empty.queue_hint"));
+        if (state.tab === "top") return emptyState(tr("ask.staff.empty.top"), tr("ask.staff.empty.top_hint"));
+        return emptyState(tr("ask.empty.answered"), tr("ask.staff.empty.answered_hint"),
+          { label: tr("ask.staff.empty.to_top"), onClick: goTab("top") });
+      }
+      if (state.tab === "answered") return emptyState(tr("ask.empty.answered"), tr("ask.empty.answered_hint"),
+        { label: tr("ask.empty.to_top"), onClick: goTab("top") });
+      return emptyState(tr("ask.empty." + state.tab + "_title"), tr("ask.empty.ask_hint"));
+    }
+
+    function renderBody() {
+      if (state.status === "loading") return skeleton();
       if (state.status === "login") {
         var shell = root.CivicShell;
         var canLogin = shell && typeof shell.openEditor === "function";
-        var login = h("div", { class: "bk-empty qa-login", role: "status" }, [
-          h("p", { class: "bk-empty__title", text: tr("ask.staff.login") }),
+        // Одно главное действие — «Войти»; «Повторить» — тихая (вдруг сессия уже открыта в другой вкладке).
+        return h("div", { class: "qa-empty qa-login", role: "status" }, [
+          h("span", { class: "qa-login__icon", "aria-hidden": "true" }, [icon("user")]),
+          h("p", { class: "qa-empty__title", text: tr("ask.staff.login") }),
+          h("div", { class: "qa-empty__actions" }, [
+            canLogin ? h("button", { type: "button", class: "bk-btn bk-btn--primary", onclick: function () { shell.openEditor(); },
+              text: tr("ask.staff.login_btn") }) : null,
+            h("button", { type: "button", class: "bk-btn bk-btn--ghost", onclick: function () { load(); } },
+              [icon("refresh"), tr("common.action.retry")]),
+          ]),
         ]);
-        var row = h("div", { class: "qa-card__actions" });
-        if (canLogin) row.appendChild(h("button", { type: "button", class: "bk-btn", onclick: function () { shell.openEditor(); },
-          text: tr("ask.staff.login_btn") }));
-        row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", onclick: function () { load(); } },
-          [icon("refresh"), tr("common.action.retry")]));
-        login.appendChild(row);
-        return login;
       }
       if (state.status === "error") {
         return stateBox("error", tr("common.state.network_title"), tr("common.state.network_text"),
           { label: tr("common.action.retry"), onClick: function () { load(); } });
       }
       var items = (state.data && state.data.items) || [];
-      if (!items.length) {
-        var key = staff() ? (state.tab === "answered" ? "ask.empty.answered" : "ask.staff.empty." + state.tab) : "ask.empty." + state.tab;
-        return h("div", { class: "bk-empty qa-empty", role: "status" }, [h("p", { class: "bk-empty__title", text: tr(key) })]);
-      }
-      var list = h("ul", { class: "qa-list", "aria-labelledby": "qa-title" });
+      if (!items.length && !state.switching) return emptyFor();
+      var list = h("ul", { class: "qa-list" + (state.enter ? " qa-list--enter" : "") + (state.switching ? " qa-list--busy" : ""),
+        "aria-labelledby": "qa-title", "aria-busy": state.switching ? "true" : null });
       items.forEach(function (q) {
         list.appendChild(staff() ? staffCard(q) : residentCard(q));
       });
@@ -513,19 +601,24 @@
       var l = lang();
       var text = a[l] || a[l === "kk" ? "ru" : "kk"];
       var textLangAttr = a[l] ? l : l === "kk" ? "ru" : "kk";
-      // Свёрнутый блок — ui-kit .bk-details (стрелка и отступы общие для всех разделов чистого дизайна).
+      // Свёрнутый блок — ui-kit .bk-details (стрелка и отступы общие для всех разделов чистого дизайна); внутри —
+      // карточка-цитата «Ответ акима»: текст, подпись «Аким» и дата (дата правки — если ответ меняли, R15 S39).
       return h("details", { class: "bk-details qa-answer", open: open ? true : null }, [
-        h("summary", {}, [h("span", { text: tr("ask.answer") + " · " + date(a.answered_at)
-          + (a.edited_at ? " · " + tr("ask.answer.edited", { date: date(a.edited_at) }) : "") })]),
-        // Ответ только на другом языке — честно говорим об этом (R11 разбор 15 №3)
-        !a[l] && text ? h("p", { class: "qa-answer__lang", text: tr(l === "kk" ? "ask.answer.only_ru" : "ask.answer.only_kk") }) : null,
-        h("p", { class: "qa-answer__text", lang: textLangAttr, text: text || "" }),
+        h("summary", {}, [h("span", { text: tr("ask.answer") + " · " + date(a.answered_at) })]),
+        h("figure", { class: "qa-answer__card" }, [
+          // Ответ только на другом языке — честно говорим об этом (R11 разбор 15 №3)
+          !a[l] && text ? h("p", { class: "qa-answer__lang", text: tr(l === "kk" ? "ask.answer.only_ru" : "ask.answer.only_kk") }) : null,
+          h("blockquote", { class: "qa-answer__text", lang: textLangAttr, text: text || "" }),
+          h("figcaption", { class: "qa-answer__sign" }, [icon("building"), h("span", { text: tr("ask.answer.sign", { date: date(a.answered_at) })
+            + (a.edited_at ? " · " + tr("ask.answer.edited", { date: date(a.edited_at) }) : "") })]),
+        ]),
       ]);
     }
 
     // ---------------------------------------------------------------- житель
     function residentCard(q) {
-      var votes = h("span", { class: "qa-card__votes" }, [icon("users"), h("span", { text: tr("ask.votes", { n: q.votes }) })]);
+      var votes = h("span", { class: "qa-card__votes" + (state.bump === q.id ? " qa-bump" : "") },
+        [icon("users"), h("span", { text: tr("ask.votes", { n: q.votes }) })]);
       var row = h("div", { class: "qa-card__row" }, [votes]);
       if (!q.answer) {
         var busy = !!state.busyVote[q.id];
@@ -539,7 +632,7 @@
         eyebrow(q, q.published_at ? relative(q.published_at) : null),
         questionText(q),
         row,
-        answerBlock(q, false),
+        answerBlock(q, state.tab === "answered"), // во вкладке «С ответом» ответ открыт: за ним туда и приходят
       ]);
     }
 
@@ -549,7 +642,9 @@
       // Сразу показываем «Вы поддержали»; ошибка — вернуть как было и сказать об этом.
       q.my_vote = true;
       q.votes += 1;
+      state.bump = q.id; // число голосов «подпрыгивает» один раз (без движения при prefers-reduced-motion)
       render();
+      state.bump = null;
       call("POST", "/questions/" + encodeURIComponent(q.id) + "/vote", { device_id: deviceId() }).then(function (res) {
         delete state.busyVote[q.id];
         if (res && typeof res.votes === "number") q.votes = res.votes;
@@ -595,6 +690,16 @@
         d.text = area.value;
         counter.textContent = num(d.text.trim().length) + " / " + num(TEXT_MAX);
         area.setAttribute("lang", textLang(d.text));
+        // Ошибка уходит, как только текст стал подходящим (не ждём повторного нажатия «Отправить»).
+        if (d.field === "text" && d.text.trim().length >= TEXT_MIN) {
+          d.field = null;
+          d.error = null;
+          var f = area.closest(".bk-field");
+          if (f) f.classList.remove("bk-field--error");
+          area.removeAttribute("aria-invalid");
+          var e = box.querySelector("#qa-text-error");
+          if (e) e.remove();
+        }
       });
       var select = h("select", { id: "qa-district", "aria-invalid": districtError ? "true" : null,
         "aria-describedby": districtError ? "qa-district-error" : null });
@@ -604,7 +709,18 @@
         if (d.district === id) o.selected = true;
         select.appendChild(o);
       });
-      select.addEventListener("change", function () { d.district = select.value; });
+      select.addEventListener("change", function () {
+        d.district = select.value;
+        if (d.field === "district" && d.district) {
+          d.field = null;
+          d.error = null;
+          var f = select.closest(".bk-field");
+          if (f) f.classList.remove("bk-field--error");
+          select.removeAttribute("aria-invalid");
+          var e = box.querySelector("#qa-district-error");
+          if (e) e.remove();
+        }
+      });
       var form = h("form", { class: "qa-form", novalidate: true, onsubmit: function (e) { e.preventDefault(); send(); } }, [
         h("div", { class: "bk-field" + (textError ? " bk-field--error" : "") }, [
           h("label", { class: "bk-field__label", for: "qa-text", text: tr("ask.text") }),
@@ -624,7 +740,7 @@
         d.error && !d.field ? h("p", { class: "qa-form__error", role: "alert", text: d.error }) : null,
         h("div", { class: "qa-form__actions" }, [
           h("button", { type: "submit", class: "bk-btn bk-btn--primary", "aria-busy": d.busy ? "true" : null,
-            "aria-disabled": d.busy ? "true" : null }, [icon("send"), tr("ask.send")]),
+            "aria-disabled": d.busy ? "true" : null }, [d.busy ? null : icon("send"), tr("ask.send")]), // при отправке — только крутилка ui-kit
           h("button", { type: "button", class: "bk-btn bk-btn--ghost", onclick: closeForm, text: tr("common.action.cancel") }),
         ]),
       ]);
@@ -672,10 +788,17 @@
     }
 
     function renderSent() {
-      return h("div", { class: "bk-empty qa-sent", role: "status" }, [
-        icon("check"),
-        h("p", { class: "bk-empty__title", id: "qa-sent-title", tabindex: "-1", "data-focus": "sent-title", text: tr("ask.sent_title") }),
-        h("p", { class: "bk-empty__text", text: tr("ask.moderation") }),
+      var NS = "http://www.w3.org/2000/svg";
+      var mark = doc.createElementNS(NS, "svg");
+      mark.setAttribute("class", "qa-sent__mark");
+      mark.setAttribute("viewBox", "0 0 52 52");
+      mark.setAttribute("aria-hidden", "true");
+      // Галочка рисуется линией (240 мс) внутри круга; при prefers-reduced-motion — сразу целиком.
+      mark.innerHTML = '<circle cx="26" cy="26" r="24"></circle><path d="m15 27 7.5 7.5L37.5 19"></path>';
+      return h("div", { class: "qa-empty qa-sent", role: "status" }, [
+        mark,
+        h("p", { class: "qa-empty__title", id: "qa-sent-title", tabindex: "-1", "data-focus": "sent-title", text: tr("ask.sent_title") }),
+        h("p", { class: "qa-empty__hint", text: tr("ask.sent_hint") }),
         h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "back", onclick: function () {
           state.view = "list";
           state.tab = "new";
@@ -723,7 +846,7 @@
           onclick: function () { openPanel(q, "reject"); }, text: tr("ask.staff.reject") }));
       } else {
         row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "ans-" + q.id,
-          onclick: function () { openPanel(q, "answer"); } }, [icon("edit"), tr("ask.staff.answer")]));
+          onclick: function () { openPanel(q, "answer"); } }, [icon("edit"), tr("ask.staff.edit_answer")]));
         // Снять отвеченный вопрос можно только по причине «личные данные» (сервер отвечает 409 на другие причины).
         row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "rej-" + q.id,
           onclick: function () { openPanel(q, "reject"); }, text: tr("ask.staff.reject") }));

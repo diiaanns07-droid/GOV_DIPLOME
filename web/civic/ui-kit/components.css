@@ -131,7 +131,7 @@
   gap: var(--s-2);
   min-height: var(--tap);
   min-width: var(--tap);
-  padding: 10px var(--s-5);
+  padding: var(--s-2) var(--s-5); /* сетка 8 pt: высоту даёт min-height 48 */
   border: 1px solid transparent; /* чистый дизайн: второстепенная кнопка — серая заливка, без рамки */
   border-radius: var(--r-m);
   background: var(--c-fill);
@@ -156,7 +156,8 @@
   background: var(--c-fill-hover);
 }
 .bk-btn:active {
-  transform: translateY(1px);
+  transform: scale(var(--press-scale)); /* лёгкое сжатие — отклик нажатия */
+  transition-duration: var(--t-press);
 }
 .bk-btn:disabled,
 .bk-btn[aria-disabled="true"] {
@@ -240,6 +241,7 @@
   justify-content: center;
   width: var(--tap);
   height: var(--tap);
+  padding: 0;
   border: 0;
   border-radius: var(--r-m);
   background: var(--c-surface);
@@ -286,7 +288,7 @@
   gap: 6px;
   flex: none;
   min-height: 40px;
-  padding: 6px 14px 6px 10px;
+  padding: var(--s-2) var(--s-4) var(--s-2) var(--s-3);
   border: 1px solid transparent;
   border-radius: var(--r-pill);
   background: var(--c-fill);
@@ -415,7 +417,7 @@
 .bk-field select {
   width: 100%;
   min-height: var(--tap);
-  padding: 12px 14px;
+  padding: var(--s-3) var(--s-4);
   border: 1px solid transparent;
   border-radius: var(--r-m);
   background: var(--c-fill);
@@ -661,7 +663,7 @@
   position: relative;
   min-width: 48px; /* ноутбук 48; телефон 44 (ниже) — зона нажатия (R01 §21.1) */
   min-height: var(--tap);
-  padding: 0 6px;
+  padding: 0 var(--s-2);
   border: 0;
   background: none;
   color: var(--c-text-2);
@@ -691,6 +693,7 @@
   flex: none;
   width: 48px; /* ноутбук: шапка 64 px; телефон — 44 (ниже) */
   height: 48px;
+  padding: 0;
   border: 0;
   border-radius: 50%;
   background: var(--c-fill);
@@ -732,7 +735,7 @@
   list-style: none;
 }
 .bk-menu__label {
-  padding: var(--s-2) var(--s-4) 2px;
+  padding: var(--s-2) var(--s-4) var(--s-1);
   color: var(--c-text-2);
   font-size: var(--fs-caption);
 }
@@ -764,6 +767,44 @@
   content: "✓";
   content: "✓" / ""; /* «Акимат», а не «Акимат✓» в имени пункта (R01 §21.2) */
   margin-left: auto;
+}
+/* Выбор одного из списка в меню (слой на карте и т. п.): <label class="bk-menu__radio"><input type="radio">Текст</label> —
+   как пункт меню, выбранный — полужирный с ✓ справа; сам кружок радио скрыт, но остаётся для клавиатуры и диктора */
+.bk-menu__radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--tap);
+  padding: var(--s-1) var(--s-4);
+  color: var(--c-ink);
+  font-size: var(--fs-body);
+  cursor: pointer;
+}
+.bk-menu__radio > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+.bk-menu__radio > span {
+  flex: 1;
+}
+.bk-menu__radio:hover,
+.bk-menu__radio:has(> input:focus-visible) {
+  background: var(--c-brand-soft);
+}
+.bk-menu__radio:has(> input:focus-visible) {
+  outline: 2px solid var(--c-focus);
+  outline-offset: -2px;
+}
+.bk-menu__radio:has(> input:checked) {
+  font-weight: var(--fw-semi);
+}
+.bk-menu__radio:has(> input:checked)::after {
+  content: "✓";
+  content: "✓" / "";
 }
 .bk-menu__sep {
   height: 1px;
@@ -1218,7 +1259,7 @@
 .bk-banner {
   display: grid;
   gap: var(--s-2);
-  padding: var(--s-3) var(--s-4);
+  padding: var(--s-2) 0; /* без заливки — без боковых полей: текст на одной линии с колонкой (марафон, п. 2) */
   border-radius: var(--r-m);
   border: 0;
   background: transparent;
@@ -1240,6 +1281,10 @@
 .bk-banner > .bk-btn {
   justify-self: start;
 }
+.bk-banner--danger,
+.bk-banner--warn {
+  padding: var(--s-3) var(--s-4);
+}
 .bk-banner--danger {
   border: 2px solid var(--c-danger);
   background: var(--c-danger-soft);
@@ -1249,9 +1294,15 @@
   color: var(--c-danger);
 }
 .bk-banner--warn {
-  border: 1px solid var(--c-warn);
-  background: var(--c-warn-soft);
+  /* дизайн-марафон: без рамки и бежевой плашки — серая заливка, предупреждение несёт заголовок/значок цветом warn */
+  border: 0;
+  background: var(--c-fill);
   color: var(--c-ink);
+}
+.bk-banner--warn .bk-banner__title,
+.bk-banner--warn > .ic:first-child,
+p.bk-banner--warn {
+  color: var(--c-warn);
 }
 
 .bk-tag {
@@ -2006,10 +2057,15 @@
 .bk-glass--bar {
   border-radius: var(--r-pill);
 }
+.bk-glass--menu {
+  border-radius: var(--r-glass-menu);
+  padding-block: var(--s-2);
+}
 .bk-glass--sheet {
   border-radius: var(--r-glass-sheet) var(--r-glass-sheet) 0 0;
 }
 .bk-glass--control {
+  padding: 0;
   background-color: var(--glass-control);
   border-radius: var(--r-pill);
   transition: background-color var(--t-fast) var(--ease);
@@ -2043,8 +2099,28 @@
   background-color: var(--c-surface);
   box-shadow: inset 0 0 0 1px var(--c-line);
 }
-.bk-glass .bk-btn:not(.bk-btn--primary):not(.bk-btn--ghost):not(.bk-btn--danger) {
-  background-color: rgba(16, 24, 22, 0.06); /* серая заливка кнопки поверх стекла — та же «капсула», но прозрачнее */
+.bk-glass .bk-btn:not(.bk-btn--primary):not(.bk-btn--ghost):not(.bk-btn--danger),
+.bk-glass .bk-banner--warn {
+  /* серая заливка поверх стекла — непрозрачная: полупрозрачная брала оттенок карты и выглядела бежевой (марафон, круг 1) */
+  background-color: var(--c-fill);
+}
+.bk-glass .bk-btn:not(.bk-btn--primary):not(.bk-btn--ghost):not(.bk-btn--danger):hover {
+  background-color: var(--c-fill-hover);
+}
+/* Кнопка-стекло внутри стеклянной строки (например «?» в строке легенды) — без второго слоя стекла и второй тени:
+   одна поверхность, кнопка плоская, при наведении — лёгкая заливка */
+.bk-glass .bk-glass--control:not([aria-pressed="true"]):not([aria-expanded="true"]) {
+  background-color: transparent;
+  background-image: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.bk-glass .bk-glass--control:not([aria-pressed="true"]):not([aria-expanded="true"]):hover {
+  background-color: rgba(16, 24, 22, 0.06);
+}
+.bk-glass .bk-glass--control {
+  box-shadow: none;
 }
 /* Запасной вид — непрозрачный белый: браузер без backdrop-filter, «уменьшить прозрачность» в системе,
    выключатель для слабых ноутбуков (R01 ставит html.bk-glass-off, если карта дёргается — замер R10) */
@@ -2087,6 +2163,120 @@
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     box-shadow: none;
+  }
+}
+
+/* Иллюстрация пустого состояния / ошибки — линейная, спокойная, 96 px (на телефоне 80) */
+.bk-ill {
+  width: 96px;
+  height: 96px;
+  flex: none;
+  fill: none;
+  stroke: var(--c-text-3);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bk-empty .bk-ill,
+.bk-error .bk-ill {
+  margin-bottom: var(--s-2);
+}
+.bk-error .bk-ill {
+  stroke: var(--c-text-2);
+}
+@media (max-width: 1023px) {
+  .bk-ill {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* ───────────── Движение и отклик (дизайн-марафон): 200–350 мс, ease-out; при prefers-reduced-motion — без движения ───────────── */
+.bk-chip,
+.bk-mapbtn,
+.bk-glass--control,
+.bk-iconbtn,
+.bk-option,
+.bk-list__item,
+.bk-menu__item,
+.bk-tabs > [role="tab"] {
+  transition:
+    background-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    transform var(--t-press) var(--ease);
+}
+.bk-chip:active,
+.bk-mapbtn:active,
+.bk-glass--control:active,
+.bk-iconbtn:active,
+.bk-option:active,
+.bk-list__item:active {
+  transform: scale(var(--press-scale));
+}
+/* Панели выезжают, а не появляются: добавьте класс на время показа (или всегда — анимация один раз при вставке) */
+.bk-enter-up {
+  animation: bk-enter-up var(--t-base) var(--ease-out) both;
+}
+.bk-enter-right {
+  animation: bk-enter-right var(--t-base) var(--ease-out) both;
+}
+.bk-enter-fade {
+  animation: bk-fade var(--t-fast) var(--ease-out) both;
+}
+.bk-enter-pop {
+  animation: bk-enter-pop var(--t-base) var(--ease-out) both;
+}
+@keyframes bk-enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes bk-enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes bk-enter-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Галочка успеха рисуется линией (экран «Отправлено», «Проверено жителями») */
+.bk-check-draw path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: bk-draw var(--t-slow) var(--ease-out) 120ms forwards;
+}
+@keyframes bk-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bk-enter-up,
+  .bk-enter-right,
+  .bk-enter-fade,
+  .bk-enter-pop {
+    animation: none;
+  }
+  .bk-check-draw path {
+    animation: none;
+    stroke-dashoffset: 0;
   }
 }
 
