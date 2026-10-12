@@ -1,5 +1,9 @@
 # R12 · раунд 14 · Точность карты — handoff
 
+> **Поставка 6 (12 окт, вечер, к FINAL-3 2f643dc).** Тест QR под меню аватара (R01 18.2) — 32/0 на 2f643dc + R12, с
+> проверкой настоящего QR на листе; patch R06 r12_snap_near_street внесён в ветку R12 (R01 18.1); в FINAL-3 не хватает
+> одной строки web/civic/editor/editor.js (INTEGRATION F3.3). pytest R12+R06+R01+R15+R10 на сборке — 1164 passed.
+
 > **Поставка 5 (12 окт, к FINAL-3), ветка `claude/tender-brahmagupta-ef5ztl`.** FINAL-2 R01 (0f5101a) уже содержит
 > поставку 4 (QR-паспорт, светофоры/переходы/перекрёстки). Сегодня — замечания к R12 (INTEGRATION.txt раздел D12):
 > - R15-S25 (P-R12) взят к себе; R10 c24 / R01 §13.8 — patch для R10 `patches/R10_accuracy_graph_nodes.patch`

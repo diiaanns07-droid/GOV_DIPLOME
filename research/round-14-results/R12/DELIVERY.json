@@ -1,179 +1,255 @@
 {
  "role": "R12",
  "round": 14,
- "title": "Точность карты: привязка к улицам и объектам OSM · волны 1–2 закрыты · замечания к FINAL-3",
+ "title": "Точность карты · поставка 6 к FINAL-3: тест QR под меню аватара, patch R06 street-snap в ветке R12",
  "branch": "claude/tender-brahmagupta-ef5ztl",
- "branch_note": "Ветка этой сессии (продолжение claude/r14-R12 @ 7f0f1ab, одна история). В BRANCHES.md её нет — реестр правит координатор.",
- "delivery": 5,
- "for_build": "FINAL-3 (R01, вечер 12 окт)",
- "base_sha": "R12 поставка 4 d4e2a77 (в FINAL-2 R01 с 0f5101a; FINAL-2 = 12c925a)",
- "code_sha": "a02e9069e9794aedcbfae7889188cf0f4da97039",
- "code_sha_note": "Поставка 5 = a02e906 (3d27fb6 правки дня 12 + a02e906 kk-слово кабинета и приёмка «Подробнее»). После — только patch-файл R10, документы и результаты прогонов.",
- "tested_sha": "a02e9069e9794aedcbfae7889188cf0f4da97039",
- "tested_note": "Среда: Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон). Сборка: detached worktree R01 12c925a (FINAL-2) + пути R12 из a02e906 (побайтно, 0 отличий) + тесты R10 0ceb0c8 + patches/R10_accuracy_graph_nodes.patch; CIVIC_DEMO=1, база засеяна как run-city.bat; ничего не коммитилось. Раньше — то же на 0f5101a.",
- "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (коммит с этим файлом — в финальном сообщении и STATUS.md)",
- "take": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/map web/civic/qr web/civic/editor tests/civic/R12 (patch R01_qr_report / R07_qr_print_link / R09_open_with_place уже в FINAL-2 — повторно не накладывать)",
- "items_status": [
-  {
-   "id": "POLISH_WAVE п. 1",
-   "title": "Светофор, перекрёсток, переход как цели",
-   "status": "done",
-   "where": "поставка 4 (в FINAL-2); день 12 — kk-регистр подписей («және», «хандар»)"
-  },
-  {
-   "id": "POLISH_WAVE_2 п. 6",
-   "title": "QR-паспорт объекта",
-   "status": "done (печать настоящего QR — после LOCAL-11)",
-   "where": "поставка 4 (в FINAL-2); день 12 — «история, текущие обращения» в «Подробнее» (публичный вид R09), номер группами по 3 цифры, R15-S25 в ветке R12"
-  }
- ],
+ "branch_note": "Ветка этой сессии (продолжение claude/r14-R12, одна история); в BRANCHES.md её нет — реестр правит координатор.",
+ "delivery": 6,
+ "for_build": "FINAL-3 (R01, кандидат 2f643dc)",
+ "base_sha": "R12 поставка 5 a02e906 (в FINAL-3 с шага 7, 0464f5c)",
+ "code_sha": "b1bd13e612242cb212586c2a6eeadf99218e3118",
+ "tested_sha": "b1bd13e612242cb212586c2a6eeadf99218e3118",
+ "code_sha_note": "b1bd13e = a02e906 + тест QR под меню аватара + api.py с patch R06 (near_street_ru/kk) + тест на него. После — только документы и результаты прогонов.",
+ "tested_note": "Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета. Сборка: detached worktree R01 2f643dc + пути R12 из b1bd13e (побайтно, 0 отличий; engine/civic_geo/api.py совпадает со сборкой); CIVIC_DEMO=1, база засеяна как run-city.bat; ничего не коммитилось.",
+ "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (коммит с этим файлом — в финальном сообщении)",
+ "take": "git checkout <code_sha> -- engine/civic_geo tests/civic/R12 web/civic/editor/editor.js (data, web/civic/map, web/civic/qr не менялись с a02e906)",
  "fixed": [
   {
-   "id": "R15-S25 (P-R12)",
-   "what": "лист QR: адрес сайта не этого сервера → предупреждение ru/kk до печати (код как в FINAL-2)",
-   "test": "tests/civic/R12/qr/qr.test.mjs (печать), tests/civic/R15/test_r15_qr.py в полном pytest"
+   "id": "R01 INTEGRATION 18.2 (просьба R12 в STATUS FINAL-3)",
+   "what": "tests/civic/R12/qr/app_qr_acceptance.mjs: вид «Житель/Акимат» — через меню аватара .birge-avatar → #birge-account [data-mode] (старые сборки — кнопки шапки); + «по ссылке в меню аватара отмечен «Житель»»; + настоящий QR и «Распечатать QR» на листе, если генератор в сборке",
+   "test": "на 2f643dc + R12: 32/0/0 (было 28/1)"
   },
   {
-   "id": "POLISH_WAVE_2 п. 6 «история, текущие обращения» / IA_WAVE2 §6.1",
-   "what": "«Подробнее» паспорта: «Обращения здесь» (до 3: тема · статус, «Сообщили N человек · Ответ службы до {date}») и «История» (status_history и resolution, ≤ 5, новые сверху); только публичный вид R09 GET /complaints/{id}, грузится при раскрытии; верх карточки не менялся",
-   "test": "qr.test.mjs (стенд, синтетика) + app_qr_acceptance «Подробнее» из настоящего R09"
+   "id": "R01 INTEGRATION 18.1",
+   "what": "patch R06 r12_snap_near_street (/street-snap → near_street_ru/kk) теперь в ветке R12, код как в сборке",
+   "test": "test_civic_geo.py::test_street_snap_gives_the_named_street_near_an_unnamed_drive"
   },
   {
-   "id": "R11 UX_REVIEW волна 2 разбор 2 п. 3",
-   "what": "номер объекта группами по 3 цифры: «Объект № 4 109 037 549» (паспорт и табличка)",
-   "test": "qr.test.mjs, app_qr_acceptance"
-  },
-  {
-   "id": "R10 B-015 (R12 часть)",
-   "what": "карточка/лента работ: «Пример. Пример для показа — не сведения о реальных работах» на ru и kk, «Пример для показа — источника нет», фильтр «Примеры»; даты в карточке словами («10 октября 2026»)",
-   "test": "map/browser.test.mjs 69/69, map/core.test.mjs 30/30",
-   "not_r12": "названия «Демо: …» и «Демо-данные (синтетика)» — данные R02"
-  },
-  {
-   "id": "R11 UX_REVIEW круг 17 п. 3",
-   "what": "ҚАЗ «Қашан аяқталады»: «25 қазан 2026» без «мерзімі:»; запасное «Жарияланған» в кабинете",
-   "test": "map/r12_accuracy.test.mjs (works card in ҚАЗ), editor/e2e_r12_kk 3/3"
-  },
-  {
-   "id": "LOCAL_FINAL P3 (R12 часть)",
-   "what": "зоны нажатия карточки и ленты работ R12 — min-height 48 px (было 28–44)",
-   "test": "замер на FINAL-2: у элементов R12 < 48 px — 0 (остались «7/30/90 дней» R07, 44 px)"
-  },
-  {
-   "id": "R11 UX_REVIEW круг 7 п. 2",
-   "what": "kk «Керей және Жәнібек хандар көшесі» — союз и нарицательное строчными в подписях (данные OSM не меняются)",
-   "test": "test_civic_geo.py::test_kazakh_conjunction_and_common_noun_are_lowercase"
-  },
-  {
-   "id": "R01 §13.8 / R10 c24, c26",
-   "what": "R10 сам перевёл проверку объектов R12 на снимок пешеходной сети и узлы графа (0ceb0c8) — все проверки R12 PASS; для целей R07 на точках R12 — patches/R10_accuracy_graph_nodes.patch",
-   "test": "R10 accuracy 31/0, pytest tests/civic/R10 39 passed (с patch)"
-  }
- ],
- "patches_for_others": [
-  {
-   "for": "R10",
-   "file": "research/round-14-results/R12/patches/R10_accuracy_graph_nodes.patch",
-   "applies": "git apply --check OK на claude/r14-R10 0ceb0c8",
-   "what": "«объекты R07 = точки OSM»: цель R07 на светофоре/переходе/перекрёстке R12 сверяется со снимком пешеходной сети или узлом графа"
-  },
-  {
-   "for": "R01",
-   "note": "R01_qr_report, R07_qr_print_link, R09_open_with_place уже в FINAL-2 (0f5101a/12c925a); новых patch для R01 нет"
+   "id": "поправка к поставке 5",
+   "what": "web/civic/editor/editor.js (kk «Жарияланған», одна строка) в FINAL-3 не попал — в INTEGRATION D12 было ошибочно «editor не менялся»; взять (INTEGRATION F3.3). На экране разницы нет — словарь R11 главнее"
   }
  ],
  "tests": [
   {
-   "name": "engine/civic_geo (pytest)",
+   "name": "QR и мастер R09 в настоящем приложении: FINAL-3 2f643dc + R12",
    "status": "PASS",
-   "result": "41/41",
-   "command": "python3 -m pytest -q tests/civic/R12/test_civic_geo.py",
-   "sha": "a02e906"
+   "result": "32/0/0",
+   "command": "node tests/civic/R12/qr/app_qr_acceptance.mjs http://127.0.0.1:<порт> <папка>",
+   "evidence": "runs/app_qr_acceptance.json, screenshots/wave2/app-*"
   },
   {
-   "name": "отчёт точности R12",
+   "name": "pytest tests/civic/R12 R06 R01 R15 R10 на 2f643dc + R12",
    "status": "PASS",
-   "result": "7164/7164",
-   "command": "python3 -m engine.civic_geo report",
-   "sha": "a02e906"
+   "result": "1164 passed, 3 skipped"
   },
   {
-   "name": "/targets быстрее 50 мс",
+   "name": "engine/civic_geo (pytest, ветка)",
    "status": "PASS",
-   "result": "p50 0,29 мс, p95 1,77 мс, max 11 мс (3000 точек)",
-   "command": "python3 -m engine.civic_geo bench 3000",
-   "sha": "a02e906"
+   "result": "42/42",
+   "sha": "b1bd13e612242cb212586c2a6eeadf99218e3118"
   },
   {
-   "name": "карта: ядро / браузер / точность R12",
-   "status": "PASS",
-   "result": "30/30, 69/69, 6/6",
-   "sha": "3d27fb6 (код карты с тех пор не менялся)"
-  },
-  {
-   "name": "редактор: core / e2e / e2e_r13 / e2e_r12 / e2e_r12_real / e2e_r12_kk",
-   "status": "PASS",
-   "result": "31, 25, 14, 8, 1, 3 — 0 FAIL",
-   "sha": "a02e906"
-  },
-  {
-   "name": "QR: стенд (паспорт, «Подробнее», ошибки, ҚАЗ 375, лист печати, S25)",
+   "name": "QR стенд",
    "status": "PASS",
    "result": "6/6",
-   "sha": "a02e906",
-   "evidence_type": "synthetic (heat_fixture.json), QR — тестовая заглушка"
+   "sha": "b1bd13e612242cb212586c2a6eeadf99218e3118",
+   "evidence_type": "synthetic"
   },
   {
-   "name": "QR в настоящем приложении: FINAL-2 12c925a + R12",
+   "name": "карта, редактор, точность, bench",
    "status": "PASS",
-   "result": "30/0/0",
-   "command": "node tests/civic/R12/qr/app_qr_acceptance.mjs http://127.0.0.1:<порт> <папка>",
-   "evidence": "runs/app_qr_acceptance.json, screenshots/wave2/app-qr-*"
+   "result": "без изменений с поставки 5 (карта 30/69/6, редактор 31/25/14/8/1/3, точность 7164/7164, p95 1,77 мс)",
+   "sha": "a02e906 (код карты/редактора/данных не менялся)"
   },
   {
-   "name": "pytest tests (все роли) на FINAL-2 12c925a + R12 + тесты R10 0ceb0c8 + patch R10",
-   "status": "PASS",
-   "result": "3350 passed, 30 skipped, 1 xfailed, 0 failed"
-  },
-  {
-   "name": "pytest tests на FINAL-2 шаг 4 0f5101a + R12 (+ первый вариант patch R10)",
-   "status": "PASS (кроме чужого)",
-   "result": "3298 passed, 1 failed — R07×R08 test_demo_numbers_with_r08_day_summary_if_available (R01 §13.2, не R12; на 12c925a исправлено)"
-  },
-  {
-   "name": "R01 браузер на 12c925a + R12",
-   "status": "PASS",
-   "result": "r14_wave2 44/0, r14_shell 39/0, r14_b2 28/0"
-  },
-  {
-   "name": "R10 точность на 12c925a + R12",
-   "status": "PASS",
-   "result": "31/0 с patch R10 (без него — 30/1: c26 «объекты R07 = точки OSM»)"
-  },
-  {
-   "name": "R10 сценарий демо (demo_flow) на 12c925a + R12",
-   "status": "PASS",
-   "result": "версия теста из сборки: 169/2 (оба FAIL — шаг 6 ru «Исправлено»: состояние R07 «служба сообщила», R10 уже поправил тест); версия R10 0ceb0c8, ru 1366+375: 95/0; kk в первом прогоне — все PASS"
-  },
-  {
-   "name": "настоящий генератор QR (LOCAL-11)",
+   "name": "полный pytest на 2f643dc + R12",
    "status": "NOT_RUN",
-   "note": "файла web/vendor/qrcode/qrcode.js нет"
+   "note": "не запускался в этой поставке; R01 на 32d5352 (те же пути R12, кроме api.py = его же patch) — 3552/0"
   }
  ],
  "known_limits": [
-  "LOCAL-11 (web/vendor/qrcode/qrcode.js) не пришёл: лист печати честно предупреждает, «Распечатать QR» нет; тесты — заглушка генератора.",
-  "LOCAL-10 не пришёл: светофоры/переходы — из имеющегося снимка OSM; после LOCAL-10 — build-data && report.",
-  "Patch R10 для целей R07 владельцем не взят: без него на FINAL c26 «объекты R07 = точки OSM» — FAIL (показ не затронут).",
-  "Полный pytest: 1 FAIL не R12 — tests/civic/R07/test_r07_day3.py::test_demo_numbers_with_r08_day_summary_if_available (R07 × R08, INTEGRATION R01 §13.2).",
-  "«Демо: …» в названиях демо-записей работ и «Демо-данные (синтетика)» — данные R02 (не R12).",
-  "Подпись «Шамамен орны» без улицы в /complaints/place — R09 (у R12 есть «Шамамен орны — {улица}»).",
-  "186 из 3 820 светофоров/переходов без улицы с названием в 150 м — просто «Пешеходный переход»/«Светофор».",
-  "2 новых ключа для R11: qr.card.complaints, qr.form.base_other (i18n_keys.json).",
-  "Демо-жалобы — synthetic (CIVIC_DEMO=1, метка «Пример»); стенд QR — synthetic heat_fixture.json."
+  "Изменение R12 в сборке — только тест и одна строка editor.js; поведение приложения не меняется (api.py уже такой в FINAL-3).",
+  "Демо-жалобы — synthetic (CIVIC_DEMO=1, «Пример»); стенд QR — synthetic.",
+  "Остаётся из поставки 5: 186 из 3 820 светофоров/переходов без улицы с названием в 150 м — просто «Пешеходный переход»/«Светофор»; 2 новых ключа для R11 (qr.card.complaints, qr.form.base_other)."
  ],
- "next_step": "R01: пути R12 из a02e906 в FINAL-3; R10: patch точности для целей R07, прогон FINAL-2 шаг 4 (QR); R11: ключи qr.card.complaints, qr.form.base_other; R02: «Пример» в названиях демо-записей; LOCAL-11 — qrcode.js. R12 дальше: замечания по FINAL-3.",
+ "next_step": "R01: пути R12 из b1bd13e (тест QR и одна строка editor.js) в окончательный FINAL-3; R10: app_qr_acceptance.mjs можно включить в приёмку FINAL-3. R12 дальше: замечания по окончательному FINAL-3.",
  "previous": {
+  "delivery_5": {
+   "role": "R12",
+   "round": 14,
+   "title": "Точность карты: привязка к улицам и объектам OSM · волны 1–2 закрыты · замечания к FINAL-3",
+   "branch": "claude/tender-brahmagupta-ef5ztl",
+   "branch_note": "Ветка этой сессии (продолжение claude/r14-R12 @ 7f0f1ab, одна история). В BRANCHES.md её нет — реестр правит координатор.",
+   "delivery": 5,
+   "for_build": "FINAL-3 (R01, вечер 12 окт)",
+   "base_sha": "R12 поставка 4 d4e2a77 (в FINAL-2 R01 с 0f5101a; FINAL-2 = 12c925a)",
+   "code_sha": "a02e9069e9794aedcbfae7889188cf0f4da97039",
+   "code_sha_note": "Поставка 5 = a02e906 (3d27fb6 правки дня 12 + a02e906 kk-слово кабинета и приёмка «Подробнее»). После — только patch-файл R10, документы и результаты прогонов.",
+   "tested_sha": "a02e9069e9794aedcbfae7889188cf0f4da97039",
+   "tested_note": "Среда: Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон). Сборка: detached worktree R01 12c925a (FINAL-2) + пути R12 из a02e906 (побайтно, 0 отличий) + тесты R10 0ceb0c8 + patches/R10_accuracy_graph_nodes.patch; CIVIC_DEMO=1, база засеяна как run-city.bat; ничего не коммитилось. Раньше — то же на 0f5101a.",
+   "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (коммит с этим файлом — в финальном сообщении и STATUS.md)",
+   "take": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/map web/civic/qr web/civic/editor tests/civic/R12 (patch R01_qr_report / R07_qr_print_link / R09_open_with_place уже в FINAL-2 — повторно не накладывать)",
+   "items_status": [
+    {
+     "id": "POLISH_WAVE п. 1",
+     "title": "Светофор, перекрёсток, переход как цели",
+     "status": "done",
+     "where": "поставка 4 (в FINAL-2); день 12 — kk-регистр подписей («және», «хандар»)"
+    },
+    {
+     "id": "POLISH_WAVE_2 п. 6",
+     "title": "QR-паспорт объекта",
+     "status": "done (печать настоящего QR — после LOCAL-11)",
+     "where": "поставка 4 (в FINAL-2); день 12 — «история, текущие обращения» в «Подробнее» (публичный вид R09), номер группами по 3 цифры, R15-S25 в ветке R12"
+    }
+   ],
+   "fixed": [
+    {
+     "id": "R15-S25 (P-R12)",
+     "what": "лист QR: адрес сайта не этого сервера → предупреждение ru/kk до печати (код как в FINAL-2)",
+     "test": "tests/civic/R12/qr/qr.test.mjs (печать), tests/civic/R15/test_r15_qr.py в полном pytest"
+    },
+    {
+     "id": "POLISH_WAVE_2 п. 6 «история, текущие обращения» / IA_WAVE2 §6.1",
+     "what": "«Подробнее» паспорта: «Обращения здесь» (до 3: тема · статус, «Сообщили N человек · Ответ службы до {date}») и «История» (status_history и resolution, ≤ 5, новые сверху); только публичный вид R09 GET /complaints/{id}, грузится при раскрытии; верх карточки не менялся",
+     "test": "qr.test.mjs (стенд, синтетика) + app_qr_acceptance «Подробнее» из настоящего R09"
+    },
+    {
+     "id": "R11 UX_REVIEW волна 2 разбор 2 п. 3",
+     "what": "номер объекта группами по 3 цифры: «Объект № 4 109 037 549» (паспорт и табличка)",
+     "test": "qr.test.mjs, app_qr_acceptance"
+    },
+    {
+     "id": "R10 B-015 (R12 часть)",
+     "what": "карточка/лента работ: «Пример. Пример для показа — не сведения о реальных работах» на ru и kk, «Пример для показа — источника нет», фильтр «Примеры»; даты в карточке словами («10 октября 2026»)",
+     "test": "map/browser.test.mjs 69/69, map/core.test.mjs 30/30",
+     "not_r12": "названия «Демо: …» и «Демо-данные (синтетика)» — данные R02"
+    },
+    {
+     "id": "R11 UX_REVIEW круг 17 п. 3",
+     "what": "ҚАЗ «Қашан аяқталады»: «25 қазан 2026» без «мерзімі:»; запасное «Жарияланған» в кабинете",
+     "test": "map/r12_accuracy.test.mjs (works card in ҚАЗ), editor/e2e_r12_kk 3/3"
+    },
+    {
+     "id": "LOCAL_FINAL P3 (R12 часть)",
+     "what": "зоны нажатия карточки и ленты работ R12 — min-height 48 px (было 28–44)",
+     "test": "замер на FINAL-2: у элементов R12 < 48 px — 0 (остались «7/30/90 дней» R07, 44 px)"
+    },
+    {
+     "id": "R11 UX_REVIEW круг 7 п. 2",
+     "what": "kk «Керей және Жәнібек хандар көшесі» — союз и нарицательное строчными в подписях (данные OSM не меняются)",
+     "test": "test_civic_geo.py::test_kazakh_conjunction_and_common_noun_are_lowercase"
+    },
+    {
+     "id": "R01 §13.8 / R10 c24, c26",
+     "what": "R10 сам перевёл проверку объектов R12 на снимок пешеходной сети и узлы графа (0ceb0c8) — все проверки R12 PASS; для целей R07 на точках R12 — patches/R10_accuracy_graph_nodes.patch",
+     "test": "R10 accuracy 31/0, pytest tests/civic/R10 39 passed (с patch)"
+    }
+   ],
+   "patches_for_others": [
+    {
+     "for": "R10",
+     "file": "research/round-14-results/R12/patches/R10_accuracy_graph_nodes.patch",
+     "applies": "git apply --check OK на claude/r14-R10 0ceb0c8",
+     "what": "«объекты R07 = точки OSM»: цель R07 на светофоре/переходе/перекрёстке R12 сверяется со снимком пешеходной сети или узлом графа"
+    },
+    {
+     "for": "R01",
+     "note": "R01_qr_report, R07_qr_print_link, R09_open_with_place уже в FINAL-2 (0f5101a/12c925a); новых patch для R01 нет"
+    }
+   ],
+   "tests": [
+    {
+     "name": "engine/civic_geo (pytest)",
+     "status": "PASS",
+     "result": "41/41",
+     "command": "python3 -m pytest -q tests/civic/R12/test_civic_geo.py",
+     "sha": "a02e906"
+    },
+    {
+     "name": "отчёт точности R12",
+     "status": "PASS",
+     "result": "7164/7164",
+     "command": "python3 -m engine.civic_geo report",
+     "sha": "a02e906"
+    },
+    {
+     "name": "/targets быстрее 50 мс",
+     "status": "PASS",
+     "result": "p50 0,29 мс, p95 1,77 мс, max 11 мс (3000 точек)",
+     "command": "python3 -m engine.civic_geo bench 3000",
+     "sha": "a02e906"
+    },
+    {
+     "name": "карта: ядро / браузер / точность R12",
+     "status": "PASS",
+     "result": "30/30, 69/69, 6/6",
+     "sha": "3d27fb6 (код карты с тех пор не менялся)"
+    },
+    {
+     "name": "редактор: core / e2e / e2e_r13 / e2e_r12 / e2e_r12_real / e2e_r12_kk",
+     "status": "PASS",
+     "result": "31, 25, 14, 8, 1, 3 — 0 FAIL",
+     "sha": "a02e906"
+    },
+    {
+     "name": "QR: стенд (паспорт, «Подробнее», ошибки, ҚАЗ 375, лист печати, S25)",
+     "status": "PASS",
+     "result": "6/6",
+     "sha": "a02e906",
+     "evidence_type": "synthetic (heat_fixture.json), QR — тестовая заглушка"
+    },
+    {
+     "name": "QR в настоящем приложении: FINAL-2 12c925a + R12",
+     "status": "PASS",
+     "result": "30/0/0",
+     "command": "node tests/civic/R12/qr/app_qr_acceptance.mjs http://127.0.0.1:<порт> <папка>",
+     "evidence": "runs/app_qr_acceptance.json, screenshots/wave2/app-qr-*"
+    },
+    {
+     "name": "pytest tests (все роли) на FINAL-2 12c925a + R12 + тесты R10 0ceb0c8 + patch R10",
+     "status": "PASS",
+     "result": "3350 passed, 30 skipped, 1 xfailed, 0 failed"
+    },
+    {
+     "name": "pytest tests на FINAL-2 шаг 4 0f5101a + R12 (+ первый вариант patch R10)",
+     "status": "PASS (кроме чужого)",
+     "result": "3298 passed, 1 failed — R07×R08 test_demo_numbers_with_r08_day_summary_if_available (R01 §13.2, не R12; на 12c925a исправлено)"
+    },
+    {
+     "name": "R01 браузер на 12c925a + R12",
+     "status": "PASS",
+     "result": "r14_wave2 44/0, r14_shell 39/0, r14_b2 28/0"
+    },
+    {
+     "name": "R10 точность на 12c925a + R12",
+     "status": "PASS",
+     "result": "31/0 с patch R10 (без него — 30/1: c26 «объекты R07 = точки OSM»)"
+    },
+    {
+     "name": "R10 сценарий демо (demo_flow) на 12c925a + R12",
+     "status": "PASS",
+     "result": "версия теста из сборки: 169/2 (оба FAIL — шаг 6 ru «Исправлено»: состояние R07 «служба сообщила», R10 уже поправил тест); версия R10 0ceb0c8, ru 1366+375: 95/0; kk в первом прогоне — все PASS"
+    },
+    {
+     "name": "настоящий генератор QR (LOCAL-11)",
+     "status": "NOT_RUN",
+     "note": "файла web/vendor/qrcode/qrcode.js нет"
+    }
+   ],
+   "known_limits": [
+    "LOCAL-11 (web/vendor/qrcode/qrcode.js) не пришёл: лист печати честно предупреждает, «Распечатать QR» нет; тесты — заглушка генератора.",
+    "LOCAL-10 не пришёл: светофоры/переходы — из имеющегося снимка OSM; после LOCAL-10 — build-data && report.",
+    "Patch R10 для целей R07 владельцем не взят: без него на FINAL c26 «объекты R07 = точки OSM» — FAIL (показ не затронут).",
+    "Полный pytest: 1 FAIL не R12 — tests/civic/R07/test_r07_day3.py::test_demo_numbers_with_r08_day_summary_if_available (R07 × R08, INTEGRATION R01 §13.2).",
+    "«Демо: …» в названиях демо-записей работ и «Демо-данные (синтетика)» — данные R02 (не R12).",
+    "Подпись «Шамамен орны» без улицы в /complaints/place — R09 (у R12 есть «Шамамен орны — {улица}»).",
+    "186 из 3 820 светофоров/переходов без улицы с названием в 150 м — просто «Пешеходный переход»/«Светофор».",
+    "2 новых ключа для R11: qr.card.complaints, qr.form.base_other (i18n_keys.json).",
+    "Демо-жалобы — synthetic (CIVIC_DEMO=1, метка «Пример»); стенд QR — synthetic heat_fixture.json."
+   ],
+   "next_step": "R01: пути R12 из a02e906 в FINAL-3; R10: patch точности для целей R07, прогон FINAL-2 шаг 4 (QR); R11: ключи qr.card.complaints, qr.form.base_other; R02: «Пример» в названиях демо-записей; LOCAL-11 — qrcode.js. R12 дальше: замечания по FINAL-3."
+  },
   "delivery_4": {
    "role": "R12",
    "round": 14,

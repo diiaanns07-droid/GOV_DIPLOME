@@ -6,11 +6,27 @@ claude/tender-brahmagupta-ef5ztl (перемотана до r14-R12, истор�
 Переносить ПО ПУТЯМ (git checkout <sha> -- <пути>), без слияния ветки.
 
 =====================================================================================================
+F3. 12 ОКТ, вечер · поставка 6 · к FINAL-3 (кандидат R01 2f643dc)
+=====================================================================================================
+Взять (R01): git checkout <code_sha из DELIVERY.json> -- engine/civic_geo tests/civic/R12 web/civic/editor/editor.js
+  (data, web/civic/map, web/civic/qr — как в a02e906, без изменений).
+F3.1 R01 18.2 — тест QR под меню аватара: tests/civic/R12/qr/app_qr_acceptance.mjs выбирает вид через .birge-avatar →
+  #birge-account [data-mode] (в старых сборках — кнопки шапки); новая проверка «по ссылке в меню аватара отмечен
+  «Житель»»; лист QR — настоящий QR (генератор web/vendor/qrcode в сборке) и «Распечатать QR» главной кнопкой.
+  На 2f643dc + пути R12: 32/0/0.
+F3.2 R01 18.1 — R06 r12_snap_near_street.patch теперь в ветке R12 (engine/civic_geo/api.py, код как в сборке):
+  /street-snap отдаёт near_street_ru/kk; тест test_street_snap_gives_the_named_street_near_an_unnamed_drive.
+  Следующие поставки R12 его не снимут.
+F3.3 Поправка к D12: в a02e906 менялся и web/civic/editor/editor.js (запасное kk «Жарияланған» вместо «Жарияланды»,
+  UX_REVIEW R11 круг 17 п. 3) — в D12 по ошибке было «editor не менялся», поэтому в FINAL-3 его нет. На экране разницы нет
+  (словарь R11 главнее), но взять — одна строка.
+
+=====================================================================================================
 D12. 12 ОКТ · поставка 5 · к FINAL-3: замечания R10 / R11 / R15 / LOCAL_FINAL / R01 §13 по R12
 =====================================================================================================
 Взять (R01): git fetch origin claude/tender-brahmagupta-ef5ztl
   git checkout <code_sha из DELIVERY.json> -- engine/civic_geo data/civic/astana/geo web/civic/map web/civic/qr tests/civic/R12
-  (web/civic/editor не менялся). Patch R01_qr_report / R07_qr_print_link / R09_open_with_place уже в FINAL-2 — повторно
+  + web/civic/editor (одна строка kk, см. F3.3). Patch R01_qr_report / R07_qr_print_link / R09_open_with_place уже в FINAL-2 — повторно
   не накладывать. Проверено на копии FINAL-2 0f5101a + пути R12 (ничего не коммитилось): см. DELIVERY.json tests.
 D12.1 R15-S25 (P-R12) — теперь и в ветке R12 (тот же код, что R01 наложил в FINAL-2): чужой адрес сайта на листе QR →
   предупреждение до печати («…это не адрес этого сервера»). Тест стенда R12 и tests/civic/R15/test_r15_qr.py.
