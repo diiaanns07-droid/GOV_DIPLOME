@@ -1,18 +1,22 @@
 {
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
- "delivery": 8,
- "for_build": "FINAL-2 (R01 claude/sharp-dijkstra-0t87gl @ 28e23e3 = FINAL-2 шаг 3; в нём R05 15fb40d — поставка 7)",
+ "delivery": 9,
+ "for_build": "FINAL-3 (R01 claude/sharp-dijkstra-0t87gl @ 0f5101a = FINAL-2 шаг 4; в нём R05 15fb40d — поставка 7)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "395d9ea",
- "tested_sha": "395d9ea (web/civic/build3d без изменений до головы ветки; позже — только тесты и документы)",
- "tested_note": "Полный прогон 395d9ea (runs/r01_final2_28e23e3.txt), ui-kit/словарь R11 @ 41dd006, тесты R10 @ c131fcd: browser_check 51 PASS / 0 FAIL / 1 NOT_RUN (GPU), R11 день 3 29/29, Node 35/35, Python OK, i18n_sync 0 расхождений и 0 новых ключей; стенды R06 3d10f7d 16/16, b42e790 18/18, d707efc 19/19, их тест клиента 17/17 ×2. Оболочка R01 FINAL-2 28e23e3 + R05 395d9ea как есть: B-033 и заголовки PASS, их r14_b2 28/28, r14_shell 39/39 (сообщений build3d 0), r14_wave2 41/41, демо-сценарий R10 172/0/0 (шаг 5 на 375 ru/kk — B-041 PASS), R10 wave_checks 101/21/2 — все 21 FAIL у W2-1 (R07/R08/R09) и W2-2 (R09), W2-7 «Идеи» ждёт window.BirgeIdeas (R06); мой smoke 22/23 — FAIL только эскиз к идее (нужен патч). С proposed_r01_wave2.patch: мой smoke 23/23 (runs/app_b2_smoke.json), r14_b2 28/28, r14_shell 39/39, r14_wave2 41/41.",
+ "code_sha": "e7a5dd1",
+ "tested_sha": "e7a5dd1 (web/civic/build3d без изменений до головы ветки; позже — только тесты, результаты и документы)",
+ "tested_note": "Полный прогон e7a5dd1 на R01 0f5101a (runs/r01_final3_0f5101a.txt), ui-kit/словарь R11 @ 07708d8, тесты R10 @ 931ed65: browser_check exit 0 Итого: 53 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0; node exit 0 # pass 35 # fail 0 ; python exit 0 OK; r06 r06d1 (3d10f7d) exit 0 pass=16 fail=0; r06 r06d2 (b42e790) exit 0 pass=18 fail=0; r06 own r06d2 exit 0 17 PASS, 0 FAIL; r06 r06d3 (d707efc) exit 0 pass=19 fail=0; r06 own r06d3 exit 0 17 PASS, 0 FAIL; как есть: shell smoke exit 1 pass=25 fail=2 FAIL idea_pick_visible_with_projects_layer_off (proposed_r01_final3.patch) — {\"1366_ru\":{\"catalog_visible\":false},\"375 FAIL resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch) — {\"1024_resident\":{\"start\":{\"state\":\"hi ; asis: r01 r14_b2 exit 0 pass=28 fail=0 build3d_msgs=0; asis: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0; asis: r01 r14_wave2 exit 0 pass=42 fail=0 build3d_msgs=0; как есть: r10 demo_flow exit 0 ИТОГ: { PASS: 171, FAIL: 0, NOT_RUN: 0 } → <scratch>/o_asis_demo; как есть: r10 wave_checks exit 1 ИТОГ: { PASS: 114, FAIL: 23, PENDING: 1, NOT_RUN: 2, INFO: 6 } → <scratch>/o_asis_wave; с патчем: shell smoke exit 0 pass=27 fail=0 ; с патчем: final_kk_street exit 0 PASS; patch: r01 r14_b2 exit 0 pass=28 fail=0 build3d_msgs=0; patch: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0; patch: r01 r14_wave2 exit 0 pass=42 fail=0 build3d_msgs=0; с патчем: r10 demo_flow exit 0 ИТОГ: { PASS: 171, FAIL: 0, NOT_RUN: 0 } → <scratch>/o_patch_demo",
  "previous_delivery": {
-  "code_sha": "15fb40d",
-  "delivery_commit": "d4c083d",
+  "code_sha": "395d9ea",
+  "delivery_commit": "999cdc8",
   "before": [
+   {
+    "code_sha": "15fb40d",
+    "delivery_commit": "d4c083d"
+   },
    {
     "code_sha": "38cfc4a",
     "delivery_commit": "7c6bbce"
@@ -43,7 +47,7 @@
  "changed_paths": [
   {
    "path": "web/civic/build3d/",
-   "files": 10
+   "files": 11
   },
   {
    "path": "web/vendor/three/",
@@ -52,7 +56,7 @@
   },
   {
    "path": "tests/civic/R05/build3d/",
-   "files": 11
+   "files": 14
   },
   {
    "path": "data/civic/astana/osm-objects/",
@@ -61,7 +65,7 @@
   },
   {
    "path": "research/round-14-results/R05/",
-   "files": 64
+   "files": 188
   },
   {
    "path": "research/handoffs/astana/R05/round14/STATUS.md",
@@ -69,8 +73,8 @@
   }
  ],
  "owned_paths_only": true,
- "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, ветки R01/R06/R11/R12 — изменения оболочки R01 только патчем research/round-14-results/R05/proposed_r01_wave2.patch (к d791fc0 и 28e23e3, git apply --check: OK)",
- "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3, Chromium 141.0.7390.37 headless, WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2, SwiftShader без GPU; ui-kit/i18n R11 @ 1958634 (--kit)",
+ "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, ветки R01/R06/R11/R12 — изменения оболочки R01 только патчем research/round-14-results/R05/proposed_r01_final3.patch (к 0f5101a, git apply --check: OK)",
+ "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3.13, Chromium (Playwright 1.56.1) headless, WebGL2 SwiftShader без GPU; ui-kit/i18n R11 @ 07708d8 (--kit); оболочка R01 0f5101a; без интернета (подложка — запасной фон)",
  "ux_review_r11_day3": {
   "source": "claude/r14-R11 @ 52d7c59, research/round-14-results/R11/UX_REVIEW.md, «День 3», пп. 20–26 (и «День 4» — пунктов для R05 нет, кроме правок kk)",
   "table": "research/round-14-results/R05/UX_REVIEW_DAY3.md",
@@ -169,15 +173,15 @@
  "tests": {
   "node_core_models": {
    "status": "PASS",
-   "detail": "35/35 — node --test test_core.mjs test_models.mjs"
+   "detail": "node exit 0 # pass 35 # fail 0 "
   },
   "python_fixtures": {
    "status": "PASS",
-   "detail": "12/12 — данные OSM, без ж/д платформ, внутри Астаны, name:kk только из OSM, отступ опор по lanes/width, генератор байт в байт"
+   "detail": "python exit 0 OK"
   },
   "browser_check": {
    "status": "PASS",
-   "detail": "51 PASS, 0 FAIL, 1 NOT_RUN (плавность на GPU) — runs/browser_check.json (ui-kit/i18n R11 @ 41dd006)"
+   "detail": "browser_check exit 0 Итого: 53 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json"
   },
   "browser_checks": {
    "load_auto_falls_back_to_local_store": "PASS",
@@ -214,6 +218,7 @@
    "mode_switch_clears_akimat_undo_toast": "PASS",
    "catalog_labels_fit_cards_in_narrow_host": "PASS",
    "r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk": "PASS",
+   "label_was_cluster_then_single_tap_opens_card_375": "PASS",
    "kk_street_names_from_osm_card_and_lighting_hint_1366_375": "PASS",
    "kk_no_russian_street_names_in_card_and_hint": "PASS",
    "rate_limit_429_says_too_many_without_retry_ru_kk": "PASS",
@@ -226,6 +231,7 @@
    "projects_layer_off_ideas_on_and_view3d_idea_1366_375": "PASS",
    "idea_pick_works_with_projects_layer_off_1366_375_ru_kk": "PASS",
    "phone_placing_rotate_in_title_row_ghost_visible_375_ru_kk": "PASS",
+   "controls_48px_all_states_1366_375_ru_kk": "PASS",
    "project_from_idea_card_says_by_residents_idea_ru_kk": "PASS",
    "r01_map_getter_waits_for_map": "PASS",
    "lighting_outside_nura_without_r12_says_so": "PASS",
@@ -312,6 +318,55 @@
   "r10_wave_checks_28e23e3": {
    "status": "не R05",
    "detail": "101 PASS / 21 FAIL / 2 PENDING / 3 NOT_RUN: FAIL — W2-1 (R07/R08/R09), W2-2 (R09); W2-7 «Идеи» — ЖДЁТ window.BirgeIdeas (R06)"
+  },
+  "app_b2_smoke_checks_with_final3_patch": {
+   "shell_mounted_module_with_projects": "PASS",
+   "akimat_catalog_not_under_shell_panel": "PASS",
+   "catalog_labels_inside_cards_ru": "PASS",
+   "staff_login_through_shell": "PASS",
+   "place_square_stored_by_r06_via_shell_client": "PASS",
+   "card_not_over_shell_panel": "PASS",
+   "r07_legend_hidden_while_3d_card_open": "PASS",
+   "selected_object_visible_in_free_part_of_shell_map": "PASS",
+   "shell_mode_switch_to_resident_without_remount": "PASS",
+   "delete_is_withdraw_in_shell": "PASS",
+   "kk_catalog_in_shell": "PASS",
+   "phone_kk_resident_hint_does_not_cover_open_sheet": "PASS",
+   "phone_kk_resident_hint_above_lowered_sheet": "PASS",
+   "phone_ru_akimat_catalog_above_peek_sheet": "PASS",
+   "shell_reload_during_list_request_no_console_error": "PASS",
+   "resident_hint_not_over_r07_legend_1366_1100": "PASS",
+   "light_card_first_3d_by_button_in_shell": "PASS",
+   "projects_layer_off_r05_loads_nothing_then_loads_when_on": "PASS",
+   "idea_pick_visible_with_projects_layer_off (proposed_r01_final3.patch)": "PASS",
+   "r10_b041_phone_placed_project_not_under_message_or_panel": "PASS",
+   "r10_b041_label_clear_of_shell_legend (proposed_r01_final3.patch)": "PASS",
+   "phone_akimat_card_with_half_sheet_does_not_cover_shell_header": "PASS",
+   "phone_akimat_card_every_project_visible_above_card": "PASS",
+   "r05_controls_tap_zone_48px (LOCAL_FINAL №9)": "PASS",
+   "r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons": "PASS",
+   "resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch)": "PASS",
+   "no_page_errors": "PASS"
+  },
+  "app_b2_smoke_final3": {
+   "status": "PASS",
+   "detail": "с патчем: shell smoke exit 0 pass=27 fail=0  | как есть: shell smoke exit 1 pass=25 fail=2 FAIL idea_pick_visible_with_projects_layer_off (proposed_r01_final3.patch) — {\"1366_ru\":{\"catalog_visible\":false},\"375 FAIL resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch) — {\"1024_resident\":{\"start\":{\"state\":\"hi "
+  },
+  "r01_own_tests_0f5101a": {
+   "status": "PASS",
+   "detail": "asis: r01 r14_b2 exit 0 pass=28 fail=0 build3d_msgs=0 | asis: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0 | asis: r01 r14_wave2 exit 0 pass=42 fail=0 build3d_msgs=0 | patch: r01 r14_b2 exit 0 pass=28 fail=0 build3d_msgs=0 | patch: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0 | patch: r01 r14_wave2 exit 0 pass=42 fail=0 build3d_msgs=0"
+  },
+  "r10_demo_flow_0f5101a": {
+   "status": "PASS",
+   "detail": "как есть: r10 demo_flow exit 0 ИТОГ: { PASS: 171, FAIL: 0, NOT_RUN: 0 } → <scratch>/o_asis_demo | с патчем: r10 demo_flow exit 0 ИТОГ: { PASS: 171, FAIL: 0, NOT_RUN: 0 } → <scratch>/o_patch_demo"
+  },
+  "r10_wave_checks_0f5101a": {
+   "status": "INFO",
+   "detail": "как есть: r10 wave_checks exit 1 ИТОГ: { PASS: 114, FAIL: 23, PENDING: 1, NOT_RUN: 2, INFO: 6 } → <scratch>/o_asis_wave — FAIL только у чужих пунктов (см. runs/r01_final3_0f5101a.txt)"
+  },
+  "r06_stands": {
+   "status": "PASS",
+   "detail": "r06 r06d1 (3d10f7d) exit 0 pass=16 fail=0 | r06 r06d2 (b42e790) exit 0 pass=18 fail=0 | r06 own r06d2 exit 0 17 PASS, 0 FAIL | r06 r06d3 (d707efc) exit 0 pass=19 fail=0 | r06 own r06d3 exit 0 17 PASS, 0 FAIL"
   }
  },
  "screenshots": {
@@ -389,17 +444,18 @@
   "project_mark_always": "PASS — табличка «Проект · 2027» на каждом объекте, пунктир границы проекта, метка «Проект» в карточке; примеры помечены «Пример»"
  },
  "known_limits": [
+  "Без proposed_r01_final3.patch: эскиз к идее в оболочке невидим; подсказка жителя на 1024–1199 — в 4 строки поверх кнопки «Слой на карте». С патчем подсказка на 1024 стоит над легендой и может частично закрыть значок района («Есіл · 14») — так её ставит оболочка (bottom: 168px).",
+  "Телефон, акимат: если над карточкой проекта меньше 150 px, карточка закрывает свёрнутую шторку («Карта жалоб», «Для сотрудников») — до закрытия карточки (×).",
   "Плавность 20 объектов на ноутбуке с GPU не проверена (в облаке нет GPU) — LOCAL-R05-1.",
   "Зданий нет ни в демо, ни в офлайн-фоне сборки: в LOCAL-1 нет контуров домов — выгрузка LOCAL-R05-3; пересечение проектов с домами не проверяется (только между проектами), посмотреть примеры с 3D-зданиями — LOCAL-R05-2.",
   "С R06 поставки 1 (7031afa, сейчас в B2) контекст 3D (улица, двор, участок) не сохраняется на сервере — модуль вычисляет его по геометрии при показе; «Отменить» после «Удалить» создаёт новое предложение без голосов. С R06 ≥ b42e790 — сохраняется и возвращается то же.",
-  "Без патча R01 (адаптер оставлен): на телефоне подсказка жителя закрывает фильтры открытой шторки, объект открытой карточки может уйти под «Территорию».",
   "В kk названия улиц: name:kk из OSM (13 из 59 улиц Нуры) или правило R07 (тип улицы по-казахски, имя собственное как есть) — это не перевод имени; улицы без известного типа в kk не показываются.",
   "Опоры освещения — у края проезжей части по тегам OSM width/lanes (иначе типовое число полос по классу улицы); вне улиц Нуры (участки R12) — 5 м от оси: ширины в ответе R12 нет.",
   "Подсказка «рядом уже есть …» опирается на OSM: отсутствие объекта в OSM не значит, что его нет.",
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: в FINAL-2 (28e23e3, сейчас R05 15fb40d) заменить web/civic/build3d на 395d9ea и применить proposed_r01_wave2.patch (проверено там же: 23/23 и ваши тесты зелёные); R06: API идей и window.BirgeIdeas — R05 подключит setIdeas/pickObject/view3dIdea по INTEGRATION «ВОЛНА 2» B; R10: B-041 закрыть (шаг 5 на телефоне PASS); R11: разбор части «Идеи» после поставки R06.",
+ "next_step": "R01: в FINAL-3 заменить web/civic/build3d на e7a5dd1 и применить proposed_r01_final3.patch вместо wave2 (проверено на 0f5101a: smoke 27/27, ваши r14_b2/r14_shell/r14_wave2 и R10 demo_flow зелёные); R06: экран «Идеи» и window.BirgeIdeas (API 57b7b53 с R05 проверено 6/6); R10: B-045 закрыть (не воспроизводится), шаг 5 на телефоне 375×667 — карточка над объектом; R11: разбор части «Идеи» после экрана R06; LOCAL-R05-1/2/3 — ноутбук с GPU.",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -693,5 +749,73 @@
   ],
   "r06_contract": "INTEGRATION.txt «ВОЛНА 2» B: формат идеи, onIdeaSelect/civic-build3d:idea, view3dIdea, idea {id, votes} в предложении, BirgeProposals.showsIdea",
   "owner_question": "Автонаклон R01 (52° с 15-го масштаба) при включённом слое «Проекты» показывает модели — это тот же наклон, что у кнопки «3D». Если нужно строго только по кнопке карточки — R01 ставит view: \"light\" в mount (одна строка)."
+ },
+ "r01_patch": {
+  "file": "research/round-14-results/R05/proposed_r01_final3.patch",
+  "instead_of": "proposed_r01_wave2.patch (final3 = wave2 целиком + 1 правило birge.css для 1024–1199)",
+  "apply_check": "git apply --check на 0f5101a: OK",
+  "without_patch": "работает всё, кроме эскиза к идее в оболочке (невидим) и подсказки жителя на 1024–1199 (4 строки поверх «Слой на карте»); на телефоне табличка поставленного проекта может лечь на легенду"
+ },
+ "two_sessions": "12 окт. в ветке работали две сессии R05 (01FDvgz… и 01Nh9Qu…, разные аккаунты), без force push, каждая — git pull --rebase перед коммитом. Раздел работы (STATUS.md): 01FDvgz… — телефонная карточка, освещение, 1024, полный прогон и этот DELIVERY; 01Nh9Qu… — 48 px (dba5691), «Идеи» с R06 (фильтр слоя 3efb785, r06_ideas_check 6/6, INTEGRATION B и E).",
+ "final_3": {
+  "source": "задание владельца 12 окт: волны 1–2, проверка на последней сборке R01 (0f5101a), замечания R10 BUGS/ACCEPTANCE_FINAL2, R11 UX_REVIEW/IA_WAVE2, R15 SECURITY_REVIEW, LOCAL_FINAL (Codex)",
+  "waves": "POLISH_WAVE.md — пунктов R05 нет; POLISH_WAVE_2.md — «Лёгкая карточка раньше 3D» сделано (поставка 8), п. 7 часть R05 сделана; API идей R06 57b7b53 проверено с R05 (6/6), экран «Идеи» и window.BirgeIdeas — у R06",
+  "reviews": "R10: B-041 закрыт в FINAL-2, B-045 не воспроизводится на 0f5101a, новых R05 нет; R11: замечаний к R05 нет (часть «Идеи» ждёт экран R06); R15: S16 закрыт, новых к R05 нет; LOCAL_FINAL №9 — сделано",
+  "items": {
+   "phone_card_leaves_room_for_project": {
+    "status": "FIXED (своя проверка на 0f5101a)",
+    "what": "375×667 и 360×800: карточка акимата поднималась до шапки, выбранный проект уходил под шапку и «Территорию». «Удалить» — компактная 48 px в строке «Рядом · 3D»; при нехватке места (< 150 px) карточка опускается поверх шторки хозяина, лежащей прямо под ней (житель не затронут — его карточка над «Сообщить о проблеме»); после анимации шторки объект снова над карточкой; подпись выбранного — полная",
+    "checks": [
+     "app_b2_smoke phone_akimat_card_every_project_visible_above_card",
+     "app_b2_smoke phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
+     "browser_check card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk (новое правило)"
+    ],
+    "screens": [
+     "screens/phone_card_room_{375x667_kk,360x800_ru,375x812_ru}.png",
+     "screens/phone_akimat_half_card_375_{ru,kk}.png"
+    ]
+   },
+   "lighting_focus_middle_pole": {
+    "status": "FIXED",
+    "what": "камера, лёгкая подпись, группа меток и «к проектам» — у средней опоры участка (была «средняя вершина» = конец участка из двух точек)",
+    "checks": [
+     "app_b2_smoke phone_akimat_card_every_project_visible_above_card (вид «Освещение»)"
+    ]
+   },
+   "label_ex_cluster_opens_card": {
+    "status": "FIXED",
+    "what": "метка, бывшая группой, после обновления подписей и приближения приближала карту вместо карточки (каждое второе нажатие на телефоне)",
+    "checks": [
+     "browser_check label_was_cluster_then_single_tap_opens_card_375 (без исправления FAIL)",
+     "app_b2_smoke п. 10"
+    ]
+   },
+   "projector_1024": {
+    "status": "FIXED (+ патч R01)",
+    "what": "1024: открытый каталог закрывал «Слой на карте» — панель сужается до столбика кнопок карты и пересчитывается при открытии каталога оболочкой; подсказка жителя в полосе 162 px — proposed_r01_final3.patch",
+    "checks": [
+     "app_b2_smoke r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons",
+     "app_b2_smoke resident_hint_1024_1366_clear_of_map_buttons (с патчем)"
+    ],
+    "screens": [
+     "screens/wide_1024_akimat_catalog.png",
+     "screens/wide_1024_resident_hint.png"
+    ]
+   },
+   "LOCAL_FINAL_9_48px": {
+    "status": "DONE",
+    "what": "кнопки R05 < 48 px были «3D» и «Отменить»/«Повторить» (45) — 48; «Удалить» — 48",
+    "checks": [
+     "app_b2_smoke r05_controls_tap_zone_48px (LOCAL_FINAL №9)",
+     "browser_check controls_48px_all_states_1366_375_ru_kk"
+    ]
+   },
+   "R10_B045": {
+    "status": "NOT_REPRODUCED на 0f5101a",
+    "checks": [
+     "app_b2_smoke r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons"
+    ]
+   }
+  }
  }
 }

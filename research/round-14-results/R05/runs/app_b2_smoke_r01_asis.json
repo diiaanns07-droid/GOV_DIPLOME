@@ -1,20 +1,18 @@
 {
- "generated_at": "2026-10-12T04:07:22.630Z",
- "url": "http://127.0.0.1:8813/",
- "r01": "claude/sharp-dijkstra-0t87gl@0f5101a (FINAL-2 шаг 4) + R05 5c8bc4ce",
+ "generated_at": "2026-10-12T05:52:45.843Z",
+ "url": "http://127.0.0.1:8801/",
+ "r01": "claude/sharp-dijkstra-0t87gl@0f5101a + R05 e7a5dd1e, без патча",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
    "status": "PASS",
    "detail": {
     "labels": [
-     "Проект · 20272",
      "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027",
-     "Проект · 2027",
-     "Проект · 2027"
+     "Проект · 20275"
     ],
     "catalog_folded_by_shell": true
    }
@@ -58,7 +56,7 @@
     "posts": [
      201
     ],
-    "id": "p-0fa199435cb2",
+    "id": "p-fe49fef7e70d",
     "year": 2027
    }
   },
@@ -68,11 +66,11 @@
    "detail": {
     "card": {
      "left": 257,
-     "top": 362.4375,
+     "top": 394.03125,
      "right": 697,
      "bottom": 734,
      "w": 440,
-     "h": 371.5625
+     "h": 339.96875
     },
     "panel": {
      "left": 946,
@@ -94,8 +92,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 436.6818892862471,
-     "y": 254.8890077684272
+     "x": 572.8047689484845,
+     "y": 319.28709239361467
     },
     "under": []
    }
@@ -184,12 +182,12 @@
    "detail": {
     "1366_ru": {
      "heldBefore": 1,
-     "count": 7,
+     "count": 5,
      "console_errors": []
     },
     "375_kk": {
      "heldBefore": 1,
-     "count": 7,
+     "count": 5,
      "console_errors": []
     }
    }
@@ -266,8 +264,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-0f6c0344a389"
+      "geometries": 19,
+      "selected": "p-b38d761d9255"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -285,8 +283,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-0f6c0344a389"
+      "geometries": 19,
+      "selected": "p-b38d761d9255"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -304,8 +302,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-0f6c0344a389"
+      "geometries": 19,
+      "selected": "p-b38d761d9255"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -323,8 +321,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 27,
-      "selected": "p-0f6c0344a389"
+      "geometries": 19,
+      "selected": "p-b38d761d9255"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -352,8 +350,8 @@
      },
      "on": {
       "phase": "ready",
-      "count": 7,
-      "labels": 7,
+      "count": 5,
+      "labels": 5,
       "data_requests": [
        "nura-streets.json",
        "astana-districts.json",
@@ -376,8 +374,8 @@
      },
      "on": {
       "phase": "ready",
-      "count": 7,
-      "labels": 7,
+      "count": 5,
+      "labels": 5,
       "data_requests": [
        "nura-streets.json",
        "astana-districts.json",
@@ -388,7 +386,7 @@
    }
   },
   {
-   "id": "idea_pick_visible_with_projects_layer_off (proposed_r01_wave2.patch)",
+   "id": "idea_pick_visible_with_projects_layer_off (proposed_r01_final3.patch)",
    "status": "FAIL",
    "detail": {
     "1366_ru": {
@@ -408,7 +406,7 @@
      "placing": {
       "ghost": [
        150,
-       252
+       236
       ],
       "ghost_on_map": true,
       "rotate_in_head": true,
@@ -418,18 +416,19 @@
      "now": {
       "place_on_map": true,
       "toast": [
-       553,
-       651
+       565,
+       663
       ],
       "toast_visible": true,
       "toast_over_place": false,
       "toast_over_3d": false,
       "saved": true,
+      "id": "p-7415d4a781d0",
       "label_visible": false,
       "label_over_legend": false,
       "label": [
-       188,
-       236
+       14,
+       63
       ],
       "legend": [
        138,
@@ -441,8 +440,8 @@
       "label_visible": true,
       "label_over_legend": false,
       "label": [
-       188,
-       236
+       173,
+       221
       ],
       "legend": [
        138,
@@ -473,11 +472,12 @@
       "toast_over_place": false,
       "toast_over_3d": false,
       "saved": true,
+      "id": "p-befcda92dc2a",
       "label_visible": false,
       "label_over_legend": false,
       "label": [
-       265,
-       313
+       22,
+       71
       ],
       "legend": [
        138,
@@ -514,18 +514,19 @@
      "now": {
       "place_on_map": true,
       "toast": [
-       688,
-       786
+       698,
+       796
       ],
       "toast_visible": true,
       "toast_over_place": false,
       "toast_over_3d": false,
       "saved": true,
+      "id": "p-54584907ff72",
       "label_visible": false,
       "label_over_legend": false,
       "label": [
-       259,
-       307
+       22,
+       70
       ],
       "legend": [
        138,
@@ -550,13 +551,13 @@
    }
   },
   {
-   "id": "r10_b041_label_clear_of_shell_legend (proposed_r01_wave2.patch)",
+   "id": "r10_b041_label_clear_of_shell_legend (proposed_r01_final3.patch)",
    "status": "PASS",
    "detail": {
     "375x667_kk": {
      "label": [
-      188,
-      236
+      173,
+      221
      ],
      "legend": [
       138,
@@ -595,42 +596,489 @@
     "kk": {
      "sheet_before": "half",
      "tapped": [
-      188,
-      187
+      187,
+      195
      ],
      "state": "card",
      "sheet": "peek",
      "dock": [
-      210,
-      609
+      452,
+      812
      ],
      "header_bottom": 72,
      "header_free": true,
      "object": [
-      202,
-      160
+      150,
+      329
      ],
-     "object_above_card": true
+     "object_above_card": true,
+     "label": [
+      269,
+      317
+     ],
+     "label_above_card": true
     },
     "ru": {
      "sheet_before": "half",
      "tapped": [
-      188,
-      187
+      187,
+      195
      ],
      "state": "card",
      "sheet": "peek",
      "dock": [
-      210,
-      609
+      421,
+      812
      ],
      "header_bottom": 72,
      "header_free": true,
      "object": [
-      188,
-      126
+      150,
+      310
      ],
-     "object_above_card": true
+     "object_above_card": true,
+     "label": [
+      250,
+      298
+     ],
+     "label_above_card": true
+    }
+   }
+  },
+  {
+   "id": "phone_akimat_card_every_project_visible_above_card",
+   "status": "PASS",
+   "detail": {
+    "375x667_kk": {
+     "lighting": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       307,
+       667
+      ],
+      "label": [
+       86,
+       162,
+       216,
+       211
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [
+       "#birge-legend"
+      ],
+      "dock_in_screen": true
+     },
+     "sports": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       307,
+       667
+      ],
+      "label": [
+       85,
+       182,
+       215,
+       230
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "square": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       282,
+       667
+      ],
+      "label": [
+       84,
+       159,
+       214,
+       207
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [
+       "#birge-legend"
+      ],
+      "dock_in_screen": true
+     },
+     "stop": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       307,
+       667
+      ],
+      "label": [
+       85,
+       182,
+       215,
+       230
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "playground": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       307,
+       667
+      ],
+      "label": [
+       85,
+       179,
+       215,
+       227
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     }
+    },
+    "360x800_ru": {
+     "lighting": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       348,
+       800
+      ],
+      "label": [
+       72,
+       185,
+       215,
+       233
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "sports": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       348,
+       800
+      ],
+      "label": [
+       70,
+       207,
+       214,
+       255
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "square": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       380,
+       800
+      ],
+      "label": [
+       70,
+       218,
+       214,
+       266
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "stop": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       348,
+       800
+      ],
+      "label": [
+       70,
+       207,
+       214,
+       255
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "playground": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       352,
+       800
+      ],
+      "label": [
+       70,
+       207,
+       214,
+       255
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     }
+    },
+    "375x812_ru": {
+     "lighting": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       421,
+       812
+      ],
+      "label": [
+       77,
+       141,
+       221,
+       189
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [
+       "#birge-legend"
+      ],
+      "dock_in_screen": true
+     },
+     "sports": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       421,
+       812
+      ],
+      "label": [
+       78,
+       250,
+       222,
+       298
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "square": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       476,
+       812
+      ],
+      "label": [
+       116,
+       338,
+       260,
+       386
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "stop": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       421,
+       812
+      ],
+      "label": [
+       78,
+       250,
+       222,
+       298
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "playground": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       421,
+       812
+      ],
+      "label": [
+       78,
+       248,
+       222,
+       296
+      ],
+      "visible": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     }
+    }
+   }
+  },
+  {
+   "id": "r05_controls_tap_zone_48px (LOCAL_FINAL №9)",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "placed_and_undone": true,
+     "below_48": []
+    },
+    "375_kk": {
+     "placed_and_undone": true,
+     "below_48": []
+    }
+   }
+  },
+  {
+   "id": "r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons",
+   "status": "PASS",
+   "detail": {
+    "1024_akimat": {
+     "start": {
+      "state": "catalog",
+      "hits": [],
+      "dock_w": null
+     },
+     "catalog": {
+      "state": "catalog",
+      "hits": [],
+      "dock_w": 556
+     }
+    },
+    "1024_resident": {
+     "start": {
+      "state": "hint",
+      "hits": [
+       "dock×tools"
+      ],
+      "dock_w": 162
+     }
+    },
+    "1100_akimat": {
+     "start": {
+      "state": "catalog",
+      "hits": [],
+      "dock_w": null
+     },
+     "catalog": {
+      "state": "catalog",
+      "hits": [],
+      "dock_w": 688
+     }
+    },
+    "1100_resident": {
+     "start": {
+      "state": "hint",
+      "hits": [],
+      "dock_w": 238
+     }
+    },
+    "1280_akimat": {
+     "start": {
+      "state": "catalog",
+      "hits": [],
+      "dock_w": null
+     },
+     "catalog": {
+      "state": "catalog",
+      "hits": [],
+      "dock_w": 720
+     }
+    },
+    "1280_resident": {
+     "start": {
+      "state": "hint",
+      "hits": [],
+      "dock_w": 378
+     }
+    },
+    "1366_akimat": {
+     "start": {
+      "state": "catalog",
+      "hits": [],
+      "dock_w": null
+     },
+     "catalog": {
+      "state": "catalog",
+      "hits": [],
+      "dock_w": 720
+     }
+    },
+    "1366_resident": {
+     "start": {
+      "state": "hint",
+      "hits": [],
+      "dock_w": 384
+     }
+    }
+   }
+  },
+  {
+   "id": "resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch)",
+   "status": "FAIL",
+   "detail": {
+    "1024_resident": {
+     "start": {
+      "state": "hint",
+      "hits": [
+       "dock×tools"
+      ],
+      "dock_w": 162
+     }
+    },
+    "1100_resident": {
+     "start": {
+      "state": "hint",
+      "hits": [],
+      "dock_w": 238
+     }
+    },
+    "1280_resident": {
+     "start": {
+      "state": "hint",
+      "hits": [],
+      "dock_w": 378
+     }
+    },
+    "1366_resident": {
+     "start": {
+      "state": "hint",
+      "hits": [],
+      "dock_w": 384
+     }
     }
    }
   },
