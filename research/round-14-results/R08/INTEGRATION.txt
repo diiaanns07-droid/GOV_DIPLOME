@@ -4,6 +4,34 @@ R08 · «Картина дня» для акима — как подключит
 Мои пути: ui/civic_akim/, web/civic/akim/, web/civic/nearby/ (новый, волна 2 п. 4), tests/civic/R08/,
 research/round-14-results/R08/. Чужие файлы я не менял. Ниже — что сделать владельцам соседних модулей. Применяет R01.
 
+§10. ДИЗАЙН-МАРАФОН (research/round-14/DESIGN_MARATHON.md) — 12 окт, база R01 65343341 (FINAL-3 со стеклом)
+------------------------------------------------------------------------------------------------------
+10.1 R01 · взять из claude/r14-R08 (код ec73b533) path-scoped — только мои пути, ключей и файлов не добавлено:
+      git checkout origin/claude/r14-R08 -- web/civic/akim/akim.js web/civic/akim/akim.css \
+        web/civic/nearby/nearby.js web/civic/nearby/nearby.css ui/civic_akim/summary.py
+    по желанию тесты: tests/civic/R08/ui_check.cjs, nearby_check.cjs, shell_wave2_check.cjs, glass_check.cjs,
+      design_shots.cjs, test_r08_design.py.
+    Что меняется: «Картина дня» — мини-графики под числами (API: kpi.new_day/in_progress/overdue/fixed_week.series —
+    14 значений по дням, последнее = число; считается за один проход, сводка ~85–100 мс как раньше), мини-карта
+    «Горячих мест» (контур районов OSM ODbL из data/civic/astana/geofence.json, упрощён и встроен в akim.js — нового
+    файла в CIVIC_ASSETS нет; подпись «© OpenStreetMap» видна), компактная стеклянная полоса раздела при прокрутке
+    (.akim__bar-btn — bk-glass bk-glass--bar внутри листа #birge-day; нажатие — к началу), значки у тревог «Пульса»,
+    скелет загрузки той же формы, «тихий день» — иллюстрация из линий, движение 200–320 мс с prefers-reduced-motion,
+    объекты без плашек, печать — 3 листа. «Рядом»: одна главная кнопка, строки 17, тихие «Подписаться»/«На карте»,
+    плавная смена вкладок; по прямому адресу #nearby до загрузки словаря — только скелет (ушли INFO r14_wave2 о
+    «неизвестных ключах» district.*, heat.filter.district, nearby.title).
+    Проверено в сборке 65343341 + R08 ec73b533: r14_shell 42/0, r14_wave2 42/0 (без INFO о ключах R08),
+    shell_wave2_check 20/20, glass_check 51/51 (стекло R01), R10 wave_checks W2-4/W2-5/W2-8 30/0/1 NOT_RUN (R09);
+    pytest R08 + R15 akim/nearby + R01 b061 + R13 pulse + R06 pair — 302 passed.
+10.2 R10 · селекторы, которые появились: .akim-spark (svg, aria-hidden, 14 точек), .akim-minimap (figure, aria-hidden;
+    .akim-minimap__dot[data-key="dot:<kind>:<id>"]), .akim__bar / .akim__bar-btn (aria-hidden, tabindex -1),
+    .akim-pulse__icon, .akim-obj__late (вместо .bk-tag--warn в объектах), .akim-empty__art. Прежние классы — как были.
+    Для замера FPS: стекло внутри R08 — только .akim__bar-btn (видна после прокрутки).
+10.3 R11 · на ревью: кадры research/round-14-results/R08/design/round1/*-before|after.jpg и CHECKLIST.md. Иллюстрация
+    «тихий день» нарисована R08 линиями 2 px (как значки ui-kit) — если появится набор линейных иллюстраций ui-kit,
+    заменю на него. Шкала: на «Картине дня» 5 размеров (28/22/17/15/13) — как в CLEAN_PASS; «≤ 3 размера» из
+    чек-листа марафона с ней спорит — вопрос владельцу в STATUS.
+
 §9. FINAL-3 — ЧИСТЫЙ ДИЗАЙН «КАРТИНЫ ДНЯ» (R11 CLEAN_PASS §3 R08 п. 1–6) — 12 окт
 --------------------------------------------------------------------------------
 9.1 R01 · взять из claude/r14-R08 (код 0fac615d) ТОЛЬКО два файла, path-scoped:
