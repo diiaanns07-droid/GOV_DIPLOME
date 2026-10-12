@@ -4,7 +4,7 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "85a11f09 — последний коммит web/civic/ui-kit и web/civic/i18n: чистый дизайн (токены, компоненты, clean.html), словарь 1299 ключей ru=kk",
+  "code_sha": "85a11f09 — последний коммит web/civic/ui-kit и web/civic/i18n: чистый дизайн (токены, компоненты, clean.html), словарь 1300 ключей ru=kk",
   "tested_sha": "FINAL-2 шаг 4 R01 0f5101a3 (содержит R11 8d58318): review_build 44/44, kk 0, шаги 6–7 PASS, первый кадр = эталон 8bbace7; ui-kit @ 85a11f09: test_r11_ui_kit 18/18, витрина 4/4, clean.html 12 кадров 0 ошибок; FINAL-2 + ui-kit 85a11f09 — см. tests",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
@@ -99,7 +99,7 @@
     "12 окт: FINAL-2 шаг 4 — badges_covered_check: 10 закрытых (под «Аймақ», ручкой шторки и плашкой #map-status; патч R01_badge_avoid ждёт R01)": "FAIL — открыто (R01)",
     "12 окт: tap_targets.cjs на 0f5101a3 — зона < 48 только у кнопки «i» MapLibre (24×24); с патчем R01_attrib_tap — 0 на 375, 1 угловая 48×32 на 1366": "PASS с патчем",
     "12 окт: QR-паспорт R12 /?report= — язык не меняется, вид «Житель», одна главная кнопка, неизвестный номер — «Нысан табылмады»; лист печати — 2 языка, номер, домен": "PASS (3 правки — UX_REVIEW разбор 14)",
-    "12 окт: ui-kit 85a11f09 (чистый дизайн) — test_r11_ui_kit 18/18 (шкала 13/15/17/22/28, веса 400/600), i18n_tools check 1299 ключей, витрина 375/1366 × ru/kk 4/4, clean.html 12 кадров: 0 ошибок JS, 0 ключей, 0 прокрутки вбок": "PASS",
+    "12 окт: ui-kit 85a11f09 (чистый дизайн) — test_r11_ui_kit 18/18 (шкала 13/15/17/22/28, веса 400/600), i18n_tools check 1300 ключей, витрина 375/1366 × ru/kk 4/4, clean.html 12 кадров: 0 ошибок JS, 0 ключей, 0 прокрутки вбок": "PASS",
     "12 окт: FINAL-2 0f5101a3 + ui-kit/i18n R11 85a11f09 — review_build и R10 demo_flow c2e3751": "идёт (см. STATUS.md)"
   },
   "known_limits": [
@@ -108,7 +108,7 @@
     "Файл fonts/Inter-Bold.woff2 оставлен: он в списке статики шлюза R01; в tokens.css не подключается",
     "Макеты — образец: данные примеры, карта — SVG по осям улиц OSM",
     "Скриншоты — headless Chromium с программным WebGL, без интернета (запасной фон карты)",
-    "Казахский — R11 и черновики ролей, не проверен носителем; 63 места ⚑ в KK_REVIEW.md; 7 правок уточнений не перенесены в categories_v2.json пакета"
+    "Казахский — R11 и черновики ролей, не проверен носителем; 64 места ⚑ в KK_REVIEW.md; 7 правок уточнений не перенесены в categories_v2.json пакета"
   ],
   "next_step": "R01 FINAL-3: взять ui-kit/i18n R11 85a11f09 + правки CLEAN_PASS R01 №1–8 + patches R01_badge_avoid, R01_attrib_tap; роли R07/R08/R09 — CLEAN_PASS §3; R11 разбирает FINAL-3 (review_build, tap_targets, сверка с clean.html) и код R06/R13 по SCHEMES_R06_R13",
   "wave_1": {
