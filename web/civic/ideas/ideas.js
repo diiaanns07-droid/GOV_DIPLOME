@@ -389,7 +389,8 @@
     var done = button("bk-btn--primary", tr("common.action.done"), "check", { disabled: true });
     var cancel = button("bk-btn--ghost", tr("common.action.cancel"), "close");
     var hint = h("p", { class: "ri-pick__hint", role: "status", text: tr("idea.place_hint") });
-    var bar = h("div", { class: "ri-pick bk-app", role: "dialog", "aria-label": tr("idea.place") }, [hint, h("div", { class: "bk-actions" }, [done, cancel])]);
+    // Плавающая панель над картой — стекло ui-kit (GLASS.md); без стекла в ui-kit — белая (ideas.css, :where).
+    var bar = h("div", { class: "ri-pick bk-app bk-glass", role: "dialog", "aria-label": tr("idea.place") }, [hint, h("div", { class: "bk-actions" }, [done, cancel])]);
     doc.body.appendChild(bar);
     // Свой класс, не birge-picking оболочки: при нём значки R07 ловят нажатие для мастера жалобы (heat.css).
     // ri-picking: шторка и значки не мешают — нажатие доходит до карты (ideas.css).
