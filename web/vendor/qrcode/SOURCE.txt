@@ -1,0 +1,33 @@
+qrcode-generator 1.4.4
+Author: Kazuhiko Arase
+License: MIT
+Metadata URL: https://registry.npmjs.org/qrcode-generator/1.4.4
+Package URL: https://registry.npmjs.org/qrcode-generator/-/qrcode-generator-1.4.4.tgz
+Downloaded UTC: 2026-10-12T03:55:36.391756+00:00
+Npm integrity (verified): sha512-HM7yY8O2ilqhmULxGMpcHSF1EhJJ9yBj8gvDEuZ6M+KGJ0YY2hKpnXvRD+hZPLrDVck3ExIGhmPtSdcjC+guuw==
+Package SHA256: ab6ed47d378877441deae95972e07b2716c26545a735a23aa6b9d442b33026ed
+Upstream tag: js1.4.4
+Upstream commit: 9bd2163ddc1628d1ec8ff22ea288a747275ef442
+
+qrcode.js is unmodified from npm and byte-identical to js/qrcode.js at the upstream tag.
+The npm tarball omits LICENSE; the unmodified license was fetched from the same upstream tag.
+
+qrcode.js
+  Source URL: https://registry.npmjs.org/qrcode-generator/-/qrcode-generator-1.4.4.tgz (package/qrcode.js)
+  Bytes: 56694
+  SHA256: 18ae399f81182bc9de916e9c77b195df20cc58d6f2d55a62b085a299f1bf1780
+LICENSE
+  Source URL: https://raw.githubusercontent.com/kazuhikoarase/qrcode-generator/9bd2163ddc1628d1ec8ff22ea288a747275ef442/LICENSE
+  Bytes: 1071
+  SHA256: 3a850fa5f08101db6f40676c2786e10bd2cd5fff7b12ffdf1e0c434d4e49d90c
+
+LOCAL-11 verification: PASS
+Node: v24.14.1
+Payload: http://127.0.0.1:8611/?report=osm-node-1
+Auto type, error correction M: 29x29 modules (QR version 3).
+make(), getModuleCount(), isDark(), createSvgTag(), createDataURL() succeeded.
+Network/file/process APIs were unavailable to the library inside the Node vm.
+The .gitattributes file preserves exact upstream bytes for qrcode.js and LICENSE.
+
+Reproduce from repository root:
+node -e "const q=require('./web/vendor/qrcode/qrcode.js')(0,'M');q.addData('http://127.0.0.1:8611/?report=osm-node-1');q.make();if(q.getModuleCount()!==29)throw Error('Unexpected QR size');console.log('PASS',q.getModuleCount());"
