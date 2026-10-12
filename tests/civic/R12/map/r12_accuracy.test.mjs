@@ -201,12 +201,13 @@ test("r12: works card in ҚАЗ — kind, status, deadline, place and buttons in
   });
   const kk = await card();
   for (const t of ["Барлық нысандар", "Үлгі.", "Жол жұмыстары", "Қазір", "Қашан аяқталады", "Орны", "OSM картасы бойынша көше бөлігі: Сәкен Сейфуллин көшесі",
-    "мерзімі: 25 қазан 2026", "Сілтемені көшіру"])
+    "25 қазан 2026", "Сілтемені көшіру"])
     assert.ok(kk.visible.toLowerCase().includes(t.toLowerCase()), "нет «" + t + "» в казахской карточке:\n" + kk.visible);  // заголовки секций — заглавными (CSS)
   // Русские подписи раунда 13 не видны вне раздела «орыс тілінде» (кроме названия записи — это данные).
   const title = await page.textContent(".civic-r03-card-title");
   const outside = kk.visible.replace(title, "");
   assert.doesNotMatch(outside, /Все объекты|Сейчас|Когда закончат|Кто отвечает|Откуда сведения|Источники|История изменений|Скопировать ссылку|Дорожные работы|Участок улицы/i, outside);
+  assert.doesNotMatch(kk.visible, /мерзімі: 25 қазан/i, "под «Қашан аяқталады» — только дата (UX_REVIEW R11 круг 17 п. 3)");
   assert.deepEqual([kk.more, kk.open, kk.moreLang], ["Толық мәліметтер (орыс тілінде)", false, "ru"]);
   if (SHOTS) await page.screenshot({ path: path.join(SHOTS, "works-card-kk-1366.png") });
   // РУС — карточка раунда 13 как была, без раздела

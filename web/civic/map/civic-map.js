@@ -670,7 +670,7 @@
       demoNote.textContent = !cov.demo ? "" : cov.demo === cov.total
         ? "Подтверждённых реальных работ в реестре пока нет: " + (cov.total === 1 ? "единственная запись — демонстрационная" : "все " + plural(cov.total, "запись", "записи", "записей") + " — демонстрационные") + ", не сведения о работах в городе."
         : (cov.real === 0 ? "Подтверждённых реальных работ в реестре пока нет. " : "") +
-          "Демо-записей: " + cov.demo + " из " + cov.total + ". Они отмечены «Демо» и не описывают реальные работы.";
+          "Примеров: " + cov.demo + " из " + cov.total + ". Они отмечены «Пример» и не описывают реальные работы.";
       listEl.replaceChildren();
       listNotes.replaceChildren();
       listEl.setAttribute("aria-busy", String(st.list === "loading"));
@@ -1137,12 +1137,12 @@
       // The newest source that covers the status (published_on is YYYY-MM-DD, so strings compare as dates).
       const statusSrc = it.sourceRefs.filter((r) => r.published_on && r.fields.includes("status"))
         .reduce((a, r) => (!a || r.published_on > a.published_on ? r : a), null);
-      if (it.evidence === "synthetic" && kk) {
+      // R10 B-015: пример — «Пример» / «Үлгі» на обоих языках (UX_SPEC §5, ключ R11 common.tag.demo), не «Демо».
+      if (it.evidence === "synthetic") {
         cardView.append(h("p", { class: P + "banner " + P + "banner-demo", role: "note" },
           h("b", { text: C.tr("common.tag.demo", "Пример") + ". " }), C.tr("works.evidence.synthetic_hint", "Пример для показа — не сведения о реальных работах") + "."));
       } else if (it.evidence !== "observed") {
-        cardView.append(h("p", { class: P + "banner " + (it.evidence === "synthetic" ? P + "banner-demo" : P + "banner-warn"), role: "note" },
-          it.evidence === "synthetic" ? h("b", { text: "Демо. " }) : null, ev.label + "."));
+        cardView.append(h("p", { class: P + "banner " + P + "banner-warn", role: "note" }, ev.label + "."));
       }
       const kindText = kk ? C.tr("works.kind." + (C.KINDS[it.kind] ? it.kind : "other"), k.label) : k.label;
       cardView.append(
@@ -1167,7 +1167,7 @@
       const summary = h("dl", { class: P + "summary", "aria-label": "Коротко об объекте" },
         h("dt", { text: "Сейчас" }),
         h("dd", null, h("span", { class: P + "status " + P + "status-" + it.status, text: C.STATUSES[it.status] }),
-          h("span", { class: P + "muted", text: statusSrc ? " — по источнику от " + C.formatDay(statusSrc.published_on) : " — источник статуса не указан" }),
+          h("span", { class: P + "muted", text: statusSrc ? " — по источнику от " + C.formatDay(statusSrc.published_on, "long") : " — источник статуса не указан" }),
           stale ? h("span", { class: P + "warn-text", text: " · срок по плану уже прошёл" }) : null),
         h("dt", { text: "Когда закончат" }),
         h("dd", null, h("span", { text: whenText }),
@@ -1186,7 +1186,8 @@
         if (s.actual_end) whenKk = C.tr("map.card.done_on", "завершено {date}", { date: day(s.actual_end) });
         else if (it.status === "completed") whenKk = C.tr("works.status.completed", "Завершено");
         else if (it.status === "cancelled") whenKk = C.tr("works.status.cancelled", "Отменено");
-        else if (s.current_planned_end) whenKk = C.tr("works.until", "до {date}", { date: day(s.current_planned_end) });
+        // Под подписью «Қашан аяқталады» — только дата: «мерзімі: …» повторял бы подпись (UX_REVIEW R11, круг 17 п. 3).
+        else if (s.current_planned_end) whenKk = day(s.current_planned_end);
         else whenKk = C.tr("works.no_dates", "сроки: нет данных");
         cardView.append(h("dl", { class: P + "summary", "aria-label": C.tr("map.card.summary", "Коротко об объекте") },
           h("dt", { text: C.tr("map.card.now", "Сейчас") }),
@@ -1214,7 +1215,7 @@
         else reasonText = h("span", { class: P + "muted", text: "Причина переноса в опубликованной истории не указана." });
         sink.append(h("div", { class: P + "shift", role: "note" },
           h("b", { text: "Срок перенесён на " + C.daysText(shift.days) + " " + dir + ": " }),
-          h("span", { text: C.formatDay(shift.from) + " → " + C.formatDay(shift.to) }), h("br"), reasonText));
+          h("span", { text: C.formatDay(shift.from, "long") + " → " + C.formatDay(shift.to, "long") }), h("br"), reasonText));
       }
       if (stale) {
         const st0 = "«" + C.STATUSES[it.status] + "»";
@@ -1639,7 +1640,7 @@
       const node = h("div", { class: P + "tip-body" },
         h("b", { text: it.title.length > 90 ? it.title.slice(0, 90) + "…" : it.title }),
         h("span", { text: kindText + " · " + statusText }),
-        it.evidence === "synthetic" ? h("span", { class: P + "tip-demo", text: kk ? C.tr("common.tag.demo", "Пример") : "Демо-запись" }) : null,
+        it.evidence === "synthetic" ? h("span", { class: P + "tip-demo", text: C.tr("common.tag.demo", "Пример") }) : null,
         it.snap ? h("span", { class: P + "muted", text: C.placeText(it) }) : it.precision !== "source"
           ? h("span", { class: P + "muted", text: kk ? C.tr("map.card.precision." + it.precision, C.PRECISION[it.precision] || "") : C.PRECISION[it.precision] }) : null);
       popup.setLngLat(lngLat).setDOMContent(node);

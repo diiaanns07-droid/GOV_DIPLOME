@@ -388,6 +388,14 @@ def test_kazakh_street_names_without_invented_translations():
         assert "учаске" not in kk.lower()
 
 
+def test_kazakh_conjunction_and_common_noun_are_lowercase():
+    """UX_REVIEW R11 круг 7 п. 2: name:kk OSM «Керей Және Жәнібек Хандар көшесі» → «және», «хандар» строчные."""
+    from engine.civic_geo import names
+    assert names.kk_street(None, "Керей Және Жәнібек Хандар көшесі") == "Керей және Жәнібек хандар көшесі"
+    assert names.kk_case("Және") == "Және"  # первое слово (имя собственное) не трогаем
+    assert names.kk_street(None, "Қабанбай Батыр даңғылы") == "Қабанбай Батыр даңғылы"
+
+
 def test_real_targets_name_unnamed_segments_by_the_nearest_street(real):
     r = targets(71.4045, 51.1285, "roads", graph=real)
     labels = [c["target"]["label_ru"] for c in r["candidates"]]

@@ -38,7 +38,7 @@
     observed: { short: "По источнику", label: "Сведения из опубликованного источника" },
     derived: { short: "Вывод", label: "Выведено из источников, не прямая цитата" },
     hypothesis: { short: "Гипотеза", label: "Гипотеза — не подтверждено источником" },
-    synthetic: { short: "Демо", label: "Синтетическая демо-запись — не сведения о реальных работах" },
+    synthetic: { short: "Пример", label: "Пример для показа — не сведения о реальных работах" },  // R10 B-015: «Пример», как .bk-tag--demo
   };
   const EVIDENCE_UNKNOWN = { short: "Происхождение?", label: "Происхождение сведений не указано" };
 
@@ -384,13 +384,13 @@
   function provenanceLine(item) {
     const refs = item.sourceRefs || [];
     if (!refs.length) {
-      if (item.evidence === "synthetic") return { state: "demo", text: "Демонстрационная запись — источника нет." };
+      if (item.evidence === "synthetic") return { state: "demo", text: "Пример для показа — источника нет." };
       return { state: "none", text: "Источник не указан — сведения нельзя проверить по документу." };
     }
     // The newest dated source leads (dates are YYYY-MM-DD strings); undated ones only when nothing is dated.
     const r = refs.reduce((a, x) => (x.published_on && (!a.published_on || x.published_on > a.published_on) ? x : a), refs[0]);
     const name = r.publisher || r.host || "источник без названия";
-    return { state: "ok", ref: r, text: name + (r.published_on ? ", " + formatDay(r.published_on) : "") + (refs.length > 1 ? " и ещё " + (refs.length - 1) : "") };
+    return { state: "ok", ref: r, text: name + (r.published_on ? ", " + formatDay(r.published_on, "long") : "") + (refs.length > 1 ? " и ещё " + (refs.length - 1) : "") };
   }
 
   // ---------- schedule semantics ----------
@@ -546,7 +546,7 @@
   // contradicts the card's «Откуда сведения» (R02 lets a hypothesis carry a source).
   // hidePast: hide plans that never started (planned/unknown) whose planned end passed; overdue works in
   // progress stay visible — a delay is what the resident needs to see (see pastPlan()).
-  const EVIDENCE_FILTERS = { all: "Все записи", sourced: "С источником", demo: "Демонстрационные", unsourced: "Без источника" };
+  const EVIDENCE_FILTERS = { all: "Все записи", sourced: "С источником", demo: "Примеры", unsourced: "Без источника" };
   function evidenceGroup(item) {
     if (item.evidence === "synthetic") return "demo";
     return Array.isArray(item.sourceRefs) && item.sourceRefs.length ? "sourced" : "unsourced";

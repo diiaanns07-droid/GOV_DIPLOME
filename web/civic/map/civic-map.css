@@ -173,7 +173,7 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  min-height: 40px;
+  min-height: 48px;
   padding: 8px 14px;
   border-radius: 11px;
   border: 1px solid var(--civic-r03-line);
@@ -204,7 +204,7 @@
   border: 0;
   background: none;
   padding: 6px 2px;
-  min-height: 32px;
+  min-height: 48px;
   color: var(--civic-r03-green);
   font-weight: 650;
   font-size: 13px;
@@ -223,7 +223,7 @@
   cursor: pointer;
   list-style-position: inside;
   padding: 10px 12px;
-  min-height: 42px;
+  min-height: 48px;
   font-weight: 650;
   font-size: 13px;
 }
@@ -276,7 +276,7 @@
 .civic-r03-date {
   width: 100%;
   min-width: 0;
-  min-height: 40px;
+  min-height: 48px;
   padding: 7px 10px;
   border: 1px solid var(--civic-r03-control);
   border-radius: 10px;
@@ -306,7 +306,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 36px;
+  min-height: 48px;
   max-width: 100%;
   padding: 5px 9px;
   border-radius: 12px;
@@ -344,7 +344,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 36px;
+  min-height: 48px;
   font-size: 13px;
   font-weight: 600;
 }
@@ -713,7 +713,7 @@
 }
 .civic-r03-tech > summary {
   cursor: pointer;
-  min-height: 32px;
+  min-height: 48px;
   padding: 6px 0;
   font-weight: 650;
   color: var(--civic-r03-green);
@@ -856,7 +856,7 @@
   gap: 4px;
   font-weight: 650;
   color: var(--civic-r03-green);
-  min-height: 28px;
+  min-height: 48px;
 }
 .civic-r03-src-link .civic-r03-icon {
   width: 14px;
@@ -1041,13 +1041,13 @@
   .civic-r03-select,
   .civic-r03-date,
   .civic-r03-item {
-    min-height: 44px;
+    min-height: 48px;
   }
   .civic-r03-chip,
   .civic-r03-check,
   .civic-r03-link-btn,
   .civic-r03-pill {
-    min-height: 44px;
+    min-height: 48px;
   }
   .civic-r03-dl {
     grid-template-columns: minmax(104px, 40%) 1fr;

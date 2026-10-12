@@ -4,6 +4,7 @@
 
 - GET  /api/civic/v2/target?id=…        НАСТОЯЩИЙ engine/civic_geo (граф и объекты OSM Астаны)
 - GET  /api/civic/v2/heat/target?…      СИНТЕТИКА из heat_fixture.json (как отвечает R07; нет записи — 404)
+- GET  /api/civic/v2/complaints/<id>    СИНТЕТИКА из heat_fixture.json["complaints"] (публичный вид R09: без текста)
 - POST /api/civic/v2/complaints/<id>/metoo   запоминает вызов и прибавляет 1 к числу людей (СИНТЕТИКА)
 - GET  /api/test/calls                   что приходило на «Я тоже» (для проверок)
 - статика: /civic/** и /vendor/** из web/, /stand/** из этой папки;
@@ -23,7 +24,9 @@ from engine.civic_geo import api  # noqa: E402
 
 TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
          ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".woff2": "font/woff2"}
-HEAT = json.loads((HERE / "heat_fixture.json").read_text("utf-8"))["items"]
+FIXTURE = json.loads((HERE / "heat_fixture.json").read_text("utf-8"))
+HEAT = FIXTURE["items"]
+COMPLAINTS = FIXTURE.get("complaints", {})
 CALLS = []
 STATE = {"fail_target": 0, "fail_heat": 0, "fake_qr": False}
 
@@ -62,6 +65,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(500, {"error": {"code": "internal", "message": "test"}})
             status, body = api.handle("/target", q)
             return self._send(status, body)
+        m = re.match(r"^/api/civic/v2/complaints/([A-Za-z0-9._:-]{1,96})$", u.path)
+        if m:
+            c = COMPLAINTS.get(m.group(1))
+            return self._send(200, {"ok": True, "data": {"complaint": c}}) if c else self._send(404, {"ok": False, "error": {"code": "not_found"}})
         if u.path == "/api/civic/v2/heat/target":
             if STATE["fail_heat"]:
                 STATE["fail_heat"] -= 1

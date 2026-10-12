@@ -52,7 +52,7 @@ try {
     const { ctx, p, errors } = await page({ width: 1366, height: 768 }, "ru", "/?report=" + STOP);
     await reportState(p);
     const card = await p.locator("#birge-report-root").innerText();
-    check("ссылка ?report открывает паспорт остановки в панели", /Хан Шатыр/.test(card) && /Объект № 4109037549/.test(card), card.slice(0, 200));
+    check("ссылка ?report открывает паспорт остановки в панели", /Хан Шатыр/.test(card) && /Объект № 4\s109\s037\s549/.test(card), card.slice(0, 200));
     check("в паспорте видно, сколько людей сообщили, и статус", /Сообщил/.test(card) && /Статус/.test(card), card.slice(0, 300));
     check("одна главная кнопка в паспорте", (await p.locator("#birge-report-root .bk-btn--primary").count()) === 1, null);
     check("«Карта жалоб» спрятана, пока открыт паспорт (одна карточка)", !(await p.locator("#birge-heat-root").isVisible()), null);
@@ -84,7 +84,7 @@ try {
     const { ctx, p, errors } = await page({ width: 375, height: 740 }, "kk", "/?report=" + STOP);
     await reportState(p);
     const card = await p.locator("#birge-report-root").innerText();
-    check("телефон, kk: паспорт по-казахски", /аялдамасы/.test(card) && /Нысан № 4109037549/.test(card), card.slice(0, 200));
+    check("телефон, kk: паспорт по-казахски", /аялдамасы/.test(card) && /Нысан № 4\s109\s037\s549/.test(card), card.slice(0, 200));
     check("ссылка не переключила язык", (await p.evaluate(() => document.documentElement.lang)) === "kk", null);
     const btn = await p.locator("#birge-report-root .bk-btn--primary").boundingBox();
     check("главная кнопка видна без прокрутки страницы", !!btn && btn.y + btn.height <= 740 && btn.height >= 44, btn);

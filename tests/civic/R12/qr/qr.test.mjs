@@ -57,7 +57,7 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   const card = await page.locator(".bq-report").innerText();
   assert.match(card, /Остановка/);
   assert.match(card, /Исатай батыр/);
-  assert.match(card, /Объект № 10272524280/);
+  assert.match(card, /Объект № 10\s272\s524\s280/);
   assert.match(card, /Сообщили 3 человека/);
   assert.match(card, /В работе|Новое/);
   assert.match(card, /Пример/, "демо-данные помечены");
@@ -83,6 +83,16 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   assert.equal(rep.target.id, STOP);
   assert.equal(rep.target.object_kind, "bus_stop");
   assert.equal(rep.geometry.type, "Point");
+  // «Подробнее» (POLISH_WAVE_2 п. 6: «история, текущие обращения») — грузится только при раскрытии
+  assert.equal(await page.locator(".bq-cases").count(), 0, "до раскрытия обращения не грузятся");
+  await page.click("details.bq-more > summary");
+  await page.waitForSelector(".bq-cases li");
+  const more = await page.locator("details.bq-more").innerText();
+  assert.match(more, /Обращения здесь[\s\S]*Остановки и транспорт[^\n]*В работе[\s\S]*Освещение[^\n]*Новое/);
+  assert.match(more, /Ответ службы до 15/);
+  assert.match(more, /История[\s\S]*Новое/);
+  assert.equal(await page.locator(".bq-history li").count(), 4, "4 события двух обращений, новые сверху");
+  assert.doesNotMatch(more, /c-demo|osm-node/);
   assert.deepEqual(errors, []);
   await ctx.close();
 });
@@ -152,7 +162,7 @@ test("QR: Kazakh and phone 375 px — no keys, main button visible without scrol
     const txt = await page.locator(".bq-report").innerText();
     if (lang === "kk") {
       assert.match(txt, /Аялдама/);
-      assert.match(txt, /Нысан № 10272524280/);
+      assert.match(txt, /Нысан № 10\s272\s524\s280/);
       assert.match(txt, /Мен де/);
       assert.match(txt, /\d адам хабарлады/);  // первый тест мог уже нажать «Я тоже»
     }
@@ -178,12 +188,14 @@ test("print sheet: QR + domain + bilingual address + number; bad and unknown ids
   assert.match(first, /birge\.example\.kz/);
   assert.match(first, /«Исатай батыр» аялдамасы/);
   assert.match(first, /Остановка «Исатай батыр»/);
-  assert.match(first, /Нысан № 10272524280 · Объект № 10272524280/);
+  assert.match(first, /Нысан № 10\s272\s524\s280 · Объект № 10\s272\s524\s280/);
   assert.match(first, /https:\/\/birge\.example\.kz\/\?report=osm-node-10272524280/);
   assert.equal(await r.page.locator(".bqp-sign path").count(), 2, "QR нарисован (тестовая заглушка генератора)");
   const msgs = await r.page.locator(".bqp-status").innerText();
   assert.match(msgs, /«<x>» — не номер объекта/);
   assert.match(msgs, /Объект osm-node-1 не найден/);
+  // R15-S25: адрес сайта из ссылки не совпадает с этим сервером — предупреждение до печати
+  assert.match(msgs, /birge\.example\.kz — это не адрес этого сервера/);
   assert.equal(await r.page.locator('[data-act="print"]').isVisible(), true);
   assert.equal(await r.page.locator(".bqp-buttons .bk-btn--primary").count(), 1, "одна главная кнопка: «Распечатать QR»");
   assert.match(await r.page.locator(".bqp-buttons .bk-btn--primary").innerText(), /Распечатать QR/);
@@ -205,6 +217,7 @@ test("print sheet: QR + domain + bilingual address + number; bad and unknown ids
   r = await open("?ids=" + STOP, { path: "/civic/qr/print.html" });
   await r.page.waitForSelector(".bqp-sign");
   assert.match(await r.page.locator(".bqp-status").innerText(), /Генератор QR ещё не подключён/);
+  assert.doesNotMatch(await r.page.locator(".bqp-status").innerText(), /не адрес этого сервера/, "адрес этого сервера — без предупреждения");
   assert.equal(await r.page.locator('[data-act="print"]').isVisible(), false);
   assert.match(await r.page.locator(".bqp-sign").innerText(), /\/\?report=osm-node-10272524280/);
   // адрес сайта с путём или чужой схемой — отказ

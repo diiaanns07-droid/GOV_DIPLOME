@@ -314,7 +314,7 @@ test("r12: cost and responsible are shown only when a source covers them; proven
   assert.equal(C.costView(money).show, true);
   const parent = C.normalizeObject({ ...base, source_refs: [{ ...ref, fields: ["responsible"] }] }).item;
   assert.equal(C.responsibleView(parent).contact, "+7 700", "a parent field covers its children");
-  assert.equal(C.provenanceLine(org).text, "Акимат (тест), 01.09.2026");
+  assert.equal(C.provenanceLine(org).text, "Акимат (тест), 1 сентября 2026");
   const demo = C.normalizeObject({ id: "d", title: "d", evidence_type: "synthetic", budget: { amount_kzt: 5, basis: "planned", source_id: null } }).item;
   assert.equal(C.costView(demo).state, "suppressed");
   assert.equal(C.provenanceLine(demo).state, "demo");
@@ -348,7 +348,7 @@ test("r12 review: 'hide past plans' keeps overdue works in progress; every count
   const obsNoRef = C.normalizeObject({ id: "o", title: "o", evidence_type: "observed", source_refs: [] }).item;
   const demo = C.normalizeObject({ id: "d", title: "d", evidence_type: "synthetic", source_refs: [{ id: "s", publisher: "x", fields: [] }] }).item;
   assert.deepEqual([C.evidenceGroup(hyp), C.evidenceGroup(obsNoRef), C.evidenceGroup(demo)], ["sourced", "unsourced", "demo"]);
-  assert.equal(C.provenanceLine(hyp).text, "Акимат s1, 01.09.2026", "the card and the filter agree");
+  assert.equal(C.provenanceLine(hyp).text, "Акимат s1, 1 сентября 2026", "the card and the filter agree");
 });
 
 

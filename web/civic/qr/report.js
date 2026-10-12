@@ -60,6 +60,7 @@
       "status.rejected": "Отклонено", "status.reported_fixed": "Служба сообщила об устранении",
       "status.verified": "Проверено жителями", "status.reopened": "Проблема осталась — снова в работе", "status.label": "Статус",
       "common.action.close": "Закрыть", "common.action.retry": "Повторить",
+      "qr.card.complaints": "Обращения здесь", "passport.history": "История", "passport.answer_due": "Ответ службы до {date}",
     },
     kk: {
       "common.tag.demo": "Үлгі", "common.tag.approx": "Шамамен көрсетілген орын",
@@ -81,6 +82,7 @@
       "status.rejected": "Қабылданбады", "status.reported_fixed": "Қызмет түзетілгенін хабарлады",
       "status.verified": "Тұрғындар тексерді", "status.reopened": "Мәселе қалды — қайта жұмыста", "status.label": "Мәртебесі",
       "common.action.close": "Жабу", "common.action.retry": "Қайталау",
+      "qr.card.complaints": "Осы жердегі өтініштер", "passport.history": "Тарих", "passport.answer_due": "Қызмет жауабының мерзімі: {date}",
     },
   };
   // Подпись «за 30 дней»: в ru — формы числа, как в словаре R11.
@@ -107,6 +109,11 @@
     if (key === "common.period.last_days" && l === "ru" && params) return "за " + params.n + " " + plural(params.n, ["день", "дня", "дней"]);
     return fill((PENDING[l] && PENDING[l][key]) || PENDING.ru[key] || key, params);
   }
+  // Номер объекта группами по 3 цифры («4 109 037 549» — продиктовать оператору); Д-…/К-… как есть.
+  function groupDigits(num) {
+    var s = String(num == null ? "" : num);
+    return /^[0-9]{5,}$/.test(s) ? s.replace(/\B(?=([0-9]{3})+(?![0-9]))/g, "\u00a0") : s;
+  }
   function reportedText(n) {
     var B = i18n();
     if (B && B.has && B.has("target.reported")) return B.t("target.reported", { n: n });
@@ -115,6 +122,30 @@
     if (m10 === 1 && m100 !== 11) return "Сообщил " + n + " человек";
     if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return "Сообщили " + n + " человека";
     return "Сообщили " + n + " человек";
+  }
+  // Дата «11 окт» / «11 қаз» — BirgeI18n.formatDate (UX_BRIEF); без словаря — ГГГГ-ММ-ДД из записи.
+  function fmtDate(value) {
+    var B = i18n();
+    if (B && typeof B.formatDate === "function") return B.formatDate(value);
+    return String(value || "").slice(0, 10);
+  }
+  // Что было с обращениями места (публичные поля R09: status_history, resolution) — новые сверху, не больше 5.
+  function historyRows(complaints) {
+    var seen = {}, rows = [];
+    (complaints || []).forEach(function (c) {
+      (c.status_history || []).forEach(function (e) { rows.push({ at: e.at, status: e.status }); });
+      var r = c.resolution || {};
+      if (r.reported_at) rows.push({ at: r.reported_at, status: "reported_fixed" });
+      if (r.verified_at) rows.push({ at: r.verified_at, status: "verified_fixed" });
+      if (r.reopened_at) rows.push({ at: r.reopened_at, status: "reopened" });
+    });
+    rows.sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); });
+    return rows.filter(function (e) {
+      var k = String(e.at).slice(0, 10) + "|" + e.status;
+      if (!e.at || seen[k]) return false;
+      seen[k] = true;
+      return true;
+    }).slice(0, 5);
   }
   function catName(id) {
     var B = i18n();
@@ -206,7 +237,8 @@
     var api = opts.api || API;
     var sprite = opts.iconSprite || "/civic/ui-kit/icons.svg";
     var fetchFn = opts.fetch || (root.fetch && root.fetch.bind(root));
-    var S = { id: null, info: null, heat: null, state: "idle", error: null, seq: 0, notice: null, busy: false, detailsOpen: false };
+    var S = { id: null, info: null, heat: null, state: "idle", error: null, seq: 0, notice: null, busy: false, detailsOpen: false,
+      cases: null };  // cases: {key, rows} — обращения места (R09, публичный вид), грузятся только при раскрытии «Подробнее»
     var box = h("section", { class: "bq-report", "aria-live": "polite", "data-state": "idle" });
     host.appendChild(box);
     var destroyed = false;
@@ -253,7 +285,9 @@
       return getJson("/heat/target?" + q).then(function (res) {
         if (destroyed || my !== S.seq) return;
         S.heat = res && res.item ? res.item : null;
+        S.cases = null;
         S.state = "ready"; render();
+        if (S.detailsOpen) loadCases();
       }, function (err) {
         if (destroyed || my !== S.seq) return;
         S.heat = null;
@@ -264,6 +298,22 @@
       });
     }
 
+    // «История, текущие обращения» (POLISH_WAVE_2 п. 6, IA_WAVE2 §6.1) — в «Подробнее»: до 3 открытых обращений места.
+    function loadCases() {
+      var ids = ((S.heat && S.heat.open_ids) || []).slice(0, 3), key = S.id + "|" + ids.join(","), my = S.seq;
+      if (!ids.length || (S.cases && S.cases.key === key)) return;
+      S.cases = { key: key, rows: null };
+      Promise.all(ids.map(function (id) {
+        return getJson("/complaints/" + encodeURIComponent(id)).then(function (b) {
+          var c = b && (b.data ? b.data.complaint : b.complaint);
+          return c && typeof c === "object" ? c : null;
+        }, function () { return null; });
+      })).then(function (rows) {
+        if (destroyed || my !== S.seq || !S.cases || S.cases.key !== key) return;
+        S.cases.rows = rows.filter(Boolean);
+        render();
+      });
+    }
     function metoo() {
       var it = S.heat, tg = S.info.target, id = it && (it.open_ids || [])[0];
       if (!id || S.busy) return;
@@ -325,7 +375,7 @@
         kk ? t(kk) : null,
         demo ? h("span", { class: "bk-tag bk-tag--demo", text: t("common.tag.demo") }) : null]));
       out.push(h("h2", { class: "bq-title", tabindex: "-1", text: title }));
-      out.push(h("p", { class: "bq-number", text: t("qr.object_no", { id: info.number }) }));
+      out.push(h("p", { class: "bq-number", text: t("qr.object_no", { id: groupDigits(info.number) }) }));
       if (info.approximate) out.push(h("p", { class: "bk-tag bk-tag--approx bq-approx", text: t("common.tag.approx") }));
       // Сколько людей и статус — сразу под заголовком: видно без прокрутки на 375 px. Жалоб нет — блока нет (IA_WAVE2 §0 п. 6).
       if (it && it.count > 0) {
@@ -362,13 +412,30 @@
         more.push(h("h3", { class: "bq-h3", text: t("heat.topics") }));
         more.push(h("ul", { class: "bq-topics" }, topics.map(function (c) { return h("li", {}, [h("span", { text: catName(c) }), h("b", { text: String(it.by_category[c]) })]); })));
       }
+      var cases = S.cases && S.cases.rows;
+      if (cases && cases.length) {
+        more.push(h("h3", { class: "bq-h3", text: t("qr.card.complaints") }));
+        more.push(h("ul", { class: "bq-cases" }, cases.map(function (c) {
+          var st = c.heat_state || c.status, open = !isFixed({ status: st }) && c.status !== "rejected";
+          return h("li", {}, [h("span", { class: "bq-case__what", text: catName(c.category) + " · " + t(statusKey(st)) }),
+            h("span", { class: "bq-case__meta", text: reportedText(c.reporters || 1) +
+              (open && c.due_at ? " · " + t("passport.answer_due", { date: fmtDate(c.due_at) }) : "") })]);
+        })));
+        var hist = historyRows(cases);
+        if (hist.length) {
+          more.push(h("h3", { class: "bq-h3", text: t("passport.history") }));
+          more.push(h("ol", { class: "bq-history" }, hist.map(function (e) {
+            return h("li", {}, [h("time", { datetime: String(e.at), text: fmtDate(e.at) }), " — " + t(statusKey(e.status))]);
+          })));
+        }
+      }
       if (typeof opts.onOpenMap === "function") {
         more.push(h("button", { type: "button", class: "bk-btn bk-btn--ghost bq-map", "data-act": "map", onclick: function () { opts.onOpenMap(tg); } },
           [icon("pin", sprite), t("complaint.step5.to_map")]));
       }
       if (more.length) {
         var det = h("details", { class: "bq-more", open: S.detailsOpen ? true : null }, [h("summary", { text: t("common.action.more") })].concat(more));
-        det.addEventListener("toggle", function () { S.detailsOpen = det.open; });
+        det.addEventListener("toggle", function () { S.detailsOpen = det.open; if (det.open) loadCases(); });
         out.push(det);
       }
       return out;
@@ -390,5 +457,5 @@
   }
 
   return { mount: mount, parseReportId: parseReportId, kindKey: kindKey, mainAction: mainAction, REPORT_ID_RE: REPORT_ID_RE,
-    statusKey: statusKey, PENDING: PENDING, version: "r12-wave2-qr-2" };
+    statusKey: statusKey, groupDigits: groupDigits, historyRows: historyRows, PENDING: PENDING, version: "r12-wave2-qr-2" };
 });

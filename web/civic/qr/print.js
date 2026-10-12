@@ -26,7 +26,7 @@
   // остальное — форма для сотрудника (ключи qr.form.* переданы R11 в i18n_keys.json). Табличка — всегда kk + ru.
   var TEXT = {
     ru: {
-      "qr.title": "QR-таблички объектов", "qr.print": "Распечатать QR", "qr.call": "Есть проблема? Сканируйте",
+      "qr.title": "QR-таблички объектов", "qr.print": "Распечатать QR", "qr.call": "Есть проблема с этим местом? Наведите камеру телефона на код",
       "qr.object_no": "Объект № {id}",
       "qr.form.lead": "Распечатайте и повесьте на остановке, площадке или у перекрёстка. Житель наводит камеру — открывается карточка объекта.",
       "qr.form.ids": "Номера объектов", "qr.form.ids_hint": "Через запятую или с новой строки, например osm-node-10185771782. Не больше 24.",
@@ -34,20 +34,22 @@
       "qr.form.show": "Показать таблички", "qr.form.none": "Добавьте номера объектов, чтобы увидеть таблички.",
       "qr.form.not_found": "Объект {id} не найден — табличка не будет напечатана.", "qr.form.bad_id": "«{id}» — не номер объекта.",
       "qr.form.too_many": "Не больше {n} объектов за раз.", "qr.form.bad_base": "Адрес сайта должен начинаться с https:// или http:// и не содержать пути.",
-      "qr.form.no_qr": "Генератор QR ещё не подключён (LOCAL-11). Пока на табличке будет только ссылка.",
+      "qr.form.no_qr": "Генератор QR ещё не подключён. Пока на табличке будет только ссылка.",
       "qr.form.network": "Нет связи. Повторите.", "qr.form.loading": "Загружаем…", "qr.form.ready": "Готово табличек: {n}",
+      "qr.form.base_other": "QR на табличках поведёт на {base} — это не адрес этого сервера. Проверьте адрес перед печатью.",
     },
     kk: {
-      "qr.title": "Нысандардың QR-тақтайшалары", "qr.print": "QR басып шығару", "qr.call": "Мәселе бар ма? Сканерлеңіз",
+      "qr.title": "Нысандардың QR-тақтайшалары", "qr.print": "QR басып шығару", "qr.call": "Осы жерде мәселе бар ма? Телефон камерасын кодқа бағыттаңыз",
       "qr.object_no": "Нысан № {id}",
-      "qr.form.lead": "Басып шығарып, аялдамаға, алаңға немесе қиылысқа іліңіз. Тұрғын камераны бағыттайды — нысан картасы ашылады.",
+      "qr.form.lead": "Басып шығарып, аялдамаға, алаңға немесе қиылысқа іліңіз. Тұрғын камераны бағыттайды — нысан карточкасы ашылады.",
       "qr.form.ids": "Нысан нөмірлері", "qr.form.ids_hint": "Үтір арқылы немесе жаңа жолдан, мысалы osm-node-10185771782. 24-тен аспасын.",
       "qr.form.base": "Тақтайшадағы сайт мекенжайы", "qr.form.base_hint": "Тек сайт мекенжайы, мысалы https://birge.astana.kz",
       "qr.form.show": "Тақтайшаларды көрсету", "qr.form.none": "Тақтайшаларды көру үшін нысан нөмірлерін қосыңыз.",
       "qr.form.not_found": "{id} нысаны табылмады — тақтайша басылмайды.", "qr.form.bad_id": "«{id}» — нысан нөмірі емес.",
-      "qr.form.too_many": "Бір реттен {n} нысаннан аспасын.", "qr.form.bad_base": "Сайт мекенжайы https:// немесе http:// деп басталып, жолсыз болуы керек.",
-      "qr.form.no_qr": "QR генераторы әлі қосылмаған (LOCAL-11). Әзірге тақтайшада тек сілтеме болады.",
+      "qr.form.too_many": "Бір ретте {n} нысаннан аспасын.", "qr.form.bad_base": "Сайт мекенжайы https:// немесе http:// деп басталып, жолсыз болуы керек.",
+      "qr.form.no_qr": "QR генераторы әлі қосылмаған. Әзірге тақтайшада тек сілтеме болады.",
       "qr.form.network": "Байланыс жоқ. Қайталаңыз.", "qr.form.loading": "Жүктелуде…", "qr.form.ready": "Дайын тақтайшалар: {n}",
+      "qr.form.base_other": "Тақтайшадағы QR {base} мекенжайына апарады — бұл осы сервердің мекенжайы емес. Басып шығарар алдында тексеріңіз.",
     },
   };
 
@@ -80,6 +82,11 @@
     var s = String(text || "").trim().replace(/\/+$/, "");
     var m = /^(https?):\/\/([A-Za-z0-9.-]+(?::[0-9]{1,5})?)$/.exec(s);
     return m ? m[1].toLowerCase() + "://" + m[2].toLowerCase() : null;
+  }
+  // Номер объекта крупно — группами по 3 цифры («10 272 524 280», UX_REVIEW R11 волна 2 разбор 2 п. 3); Д-…/К-… как есть.
+  function groupDigits(num) {
+    var s = String(num == null ? "" : num);
+    return /^[0-9]{5,}$/.test(s) ? s.replace(/\B(?=([0-9]{3})+(?![0-9]))/g, "\u00a0") : s;
   }
   function reportUrl(base, id) { return base + "/?report=" + encodeURIComponent(id); }
   function domainOf(base) { return base.replace(/^https?:\/\//, ""); }
@@ -137,7 +144,8 @@
       h(doc, "p", { class: "bqp-sign__domain", text: domainOf(base) }),
       h(doc, "h2", { class: "bqp-sign__title", lang: "kk", text: kk }),
       kk !== ru ? h(doc, "p", { class: "bqp-sign__title bqp-sign__title--ru", lang: "ru", text: ru }) : null,
-      h(doc, "p", { class: "bqp-sign__number" }, [tx("qr.object_no", { id: info.number }, "kk") + " · " + tx("qr.object_no", { id: info.number }, "ru")]),
+      h(doc, "p", { class: "bqp-sign__number" }, [tx("qr.object_no", { id: groupDigits(info.number) }, "kk") + " · " +
+        tx("qr.object_no", { id: groupDigits(info.number) }, "ru")]),
       h(doc, "p", { class: "bqp-sign__url", text: url }),
     ]);
   }
@@ -185,6 +193,11 @@
       var my = ++S.seq, parsed = parseIds(idsField.value), base = normalizeBase(baseField.value);
       S.messages = parsed.bad.map(function (b) { return { kind: "error", text: tx("qr.form.bad_id", { id: b }) }; });
       if (!base) S.messages.push({ kind: "error", text: tx("qr.form.bad_base") });
+      // R15-S25: адрес сайта мог прийти из ссылки (?base=). Подменённая ссылка напечатала бы QR на чужой сайт —
+      // если это не адрес этого сервера, сотрудник видит предупреждение до печати.
+      if (base && base !== normalizeBase(root.location.origin)) {
+        S.messages.push({ kind: "warn", text: tx("qr.form.base_other", { base: domainOf(base) }) });
+      }
       if (parsed.ids.length > MAX_IDS) S.messages.push({ kind: "error", text: tx("qr.form.too_many", { n: MAX_IDS }) });
       if (typeof root.qrcode !== "function") S.messages.push({ kind: "warn", text: tx("qr.form.no_qr") });
       S.signs = [];
@@ -235,5 +248,6 @@
   }
 
   return { mount: mount, parseIds: parseIds, normalizeBase: normalizeBase, reportUrl: reportUrl, qrSvg: qrSvg, ID_RE: ID_RE, MAX_IDS: MAX_IDS,
+    groupDigits: groupDigits,
     TEXT: TEXT };
 });

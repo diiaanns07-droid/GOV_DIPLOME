@@ -3,7 +3,8 @@
  "review": [
   "staff.row.revision — «нұсқа {n}» (номер редакции записи)",
   "staff.session.switched, staff.cabinet.recovery_note — длинные служебные сообщения кабинета",
-  "qr.form.* (волна 2 п. 6) — форма листа QR-табличек для сотрудника; паспорт /?report= и сама табличка новых ключей не вводят: только ключи словаря R11 (report.here/other, qr.object_no, qr.call, qr.title, qr.print, target.*, map.card.not_found*, status.*, common.*)"
+  "qr.form.* (волна 2 п. 6) — форма листа QR-табличек для сотрудника; паспорт /?report= и сама табличка новых ключей не вводят: только ключи словаря R11 (report.here/other, qr.object_no, qr.call, qr.title, qr.print, target.*, map.card.not_found*, status.*, common.*)",
+  "День 12: qr.form.base_other (R15-S25) и qr.card.complaints («Обращения здесь» в «Подробнее» паспорта); история — passport.history, срок — passport.answer_due (ключи R09/R11)"
  ],
  "keys": {
   "editor.geo.not_wired": {
@@ -399,6 +400,18 @@
    "ru": "Готово табличек: {n}",
    "kk": "Дайын тақтайшалар: {n}",
    "where": "R12 лист QR-табличек акимата (web/civic/qr/print.js; «Ещё → QR-таблички»), волна 2 п. 6",
+   "status": "new: черновик kk R12, на проверку R11"
+  },
+  "qr.form.base_other": {
+   "ru": "QR на табличках поведёт на {base} — это не адрес этого сервера. Проверьте адрес перед печатью.",
+   "kk": "Тақтайшадағы QR {base} мекенжайына апарады — бұл осы сервердің мекенжайы емес. Басып шығарар алдында тексеріңіз.",
+   "where": "R12 лист QR-табличек (print.js), R15-S25: адрес сайта не этого сервера",
+   "status": "new: текст R15 (P-R12), kk — R15/R12, на проверку R11"
+  },
+  "qr.card.complaints": {
+   "ru": "Обращения здесь",
+   "kk": "Осы жердегі өтініштер",
+   "where": "R12 QR-паспорт, «Подробнее»: текущие обращения места (POLISH_WAVE_2 п. 6)",
    "status": "new: черновик kk R12, на проверку R11"
   }
  }

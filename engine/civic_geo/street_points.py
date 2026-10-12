@@ -56,7 +56,8 @@ def find_intersections(graph: StreetGraph, inside=None) -> list[dict]:
         streets, streets_kk, degree = node_streets(graph, node)
         if degree >= 3 and len(streets) >= 2:
             cands.append({"node": node, "point": (lon, lat), "pair": tuple(sorted(streets[:2])),
-                          "streets": streets[:2], "streets_kk": streets_kk[:2]})
+                          "streets": streets[:2],
+                          "streets_kk": [names.kk_street(n, k) for n, k in zip(streets[:2], streets_kk[:2])]})
     # Склейка: узлы с той же парой улиц ближе CLUSTER_M — одна развязка (жадно, в порядке id: результат стабилен).
     by_pair: dict = {}
     for c in sorted(cands, key=lambda c: c["node"]):

@@ -1,5 +1,5 @@
 {
- "_comment": "СИНТЕТИКА для стенда R12 (QR-паспорт): ответы R07 /heat/target. Объекты — настоящие id OSM, жалобы — выдуманные.",
+ "_comment": "СИНТЕТИКА для стенда R12 (QR-паспорт): ответы R07 /heat/target. Объекты — настоящие id OSM, жалобы — выдуманные. complaints — СИНТЕТИКА публичного вида R09 GET /complaints/{id} (без текстов).",
  "items": {
   "osm-node-10272524280": {
    "target": {
@@ -99,6 +99,58 @@
    "open_ids": [],
    "demo": true,
    "fixed_until": "2026-10-18"
+  }
+ },
+ "complaints": {
+  "c-demo-qr-1": {
+   "id": "c-demo-qr-1",
+   "created_at": "2026-09-14T09:10:00+05:00",
+   "category": "transport",
+   "status": "in_progress",
+   "status_history": [
+    {
+     "at": "2026-09-14T09:10:00+05:00",
+     "status": "new"
+    },
+    {
+     "at": "2026-09-16T11:00:00+05:00",
+     "status": "accepted"
+    },
+    {
+     "at": "2026-09-20T10:00:00+05:00",
+     "status": "in_progress"
+    }
+   ],
+   "reporters": 2,
+   "due_at": "2026-09-19T09:10:00+05:00",
+   "demo": true,
+   "resolution": null,
+   "heat_state": null,
+   "target": {
+    "kind": "object",
+    "id": "osm-node-10272524280"
+   }
+  },
+  "c-demo-qr-2": {
+   "id": "c-demo-qr-2",
+   "created_at": "2026-10-10T19:40:00+05:00",
+   "category": "lighting",
+   "status": "new",
+   "status_history": [
+    {
+     "at": "2026-10-10T19:40:00+05:00",
+     "status": "new"
+    }
+   ],
+   "reporters": 1,
+   "due_at": "2026-10-15T19:40:00+05:00",
+   "demo": true,
+   "resolution": null,
+   "heat_state": null,
+   "target": {
+    "kind": "object",
+    "id": "osm-node-10272524280"
+   }
   }
  }
 }

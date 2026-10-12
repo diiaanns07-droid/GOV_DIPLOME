@@ -138,12 +138,12 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   const demo = await page.locator(".civic-r03-card").innerText();
   assert.match(demo, /Стоимость\s+нет данных/);
   assert.doesNotMatch(demo, /₸/, "no tenge on a synthetic record");
-  assert.match(demo, /Демо\. Синтетическая демо-запись/);
+  assert.match(demo, /Пример\. Пример для показа — не сведения о реальных работах/);  // R10 B-015
   // r12: the short answer comes first; technical provenance is folded away
   assert.match(demo, /Сейчас\s+Идут работы — источник статуса не указан/);
   assert.match(demo, /Когда закончат\s+до 5 ноября 2026 \(по плану\)\s*перенесён на 16 дней/);
   assert.match(demo, /Кто отвечает\s+не подтверждено источником/);
-  assert.match(demo, /Откуда сведения\s+Тестовый источник \(fixture R03\), 15\.09\.2026/);
+  assert.match(demo, /Откуда сведения\s+Тестовый источник \(fixture R03\), 15 сентября 2026/);
   assert.doesNotMatch(demo, /Демо-подрядчик/, "an unsourced organisation name is not shown");
   assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /Запись обновлена: 5 октября 2026, 16:40 \(время Астаны\)/);
   assert.doesNotMatch(demo, /по данным на/);
@@ -155,14 +155,14 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   });
   assert.match(card.text, /Тест форматирования карточки \(fixture R03/);
   assert.match(card.text, /Срок перенесён на 16 дней позже/);
-  assert.match(card.text, /20\.10\.2026 → 05\.11\.2026/);
+  assert.match(card.text, /20 октября 2026 → 5 ноября 2026/);
   assert.match(card.text, /Причина: «Демо: перенос из-за поставки материалов/);
   assert.match(card.text, /48\u202f500\u202f000 ₸/);
   assert.match(card.text, /сумма договора · источник: Тестовый источник/);
   assert.match(card.text, /Кто отвечает\s+Тестовая организация \(fixture\) — по источнику/);
   assert.match(card.text, /Выведено из источников/);
-  assert.match(card.text, /Сейчас\s+Идут работы — по источнику от 15\.09\.2026/);
-  assert.match(card.text, /Откуда сведения\s+Тестовый источник \(fixture R03, не реальный\), 15\.09\.2026/);
+  assert.match(card.text, /Сейчас\s+Идут работы — по источнику от 15 сентября 2026/);
+  assert.match(card.text, /Откуда сведения\s+Тестовый источник \(fixture R03, не реальный\), 15 сентября 2026/);
   assert.match(card.text, /Изначально — до\s+20 октября 2026\s+Сейчас — до\s+5 ноября 2026\s+Фактически\s+нет данных/);
   assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /подтверждает: статус, текущий срок, стоимость, основание стоимости, организация/);
   assert.equal(card.href, "https://example.org/civic-fixture/notice-1");
@@ -337,7 +337,7 @@ test("one map click = one selection and one request; hover tooltip; repeated cli
   const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.4304, 51.1282]); return { x: c.left + p.x, y: c.top + p.y }; });
   await page.mouse.move(pt.x, pt.y);
   await page.waitForSelector(".civic-r03-tip", { timeout: 3000 });
-  assert.match(await page.locator(".civic-r03-tip").innerText(), /Демо-запись/);
+  assert.match(await page.locator(".civic-r03-tip").innerText(), /Пример/);
   await page.mouse.click(pt.x, pt.y);
   await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
   await page.waitForTimeout(150);
@@ -948,7 +948,7 @@ test("r12: 'Сведения' separates demo, sourced and unsourced records; pas
   await page.selectOption('[data-r03-filter="evidence"]', "demo");
   assert.equal(await page.locator(".civic-r03-item").count(), 12);
   const opt = await page.evaluate(() => [...document.querySelector('[data-r03-filter="evidence"]').options].map((o) => o.textContent));
-  assert.deepEqual(opt, ["Все записи", "С источником (1)", "Демонстрационные (12)", "Без источника (0)"]);
+  assert.deepEqual(opt, ["Все записи", "С источником (1)", "Примеры (12)", "Без источника (0)"]);
   await page.selectOption('[data-r03-filter="evidence"]', "all");
   await page.check('[data-r03-filter="hidePast"]');
   const ids = await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id));
@@ -1157,13 +1157,13 @@ test("r12 review: mixed registry — no 'all demo' claim; a hypothesis with a so
   ]);
   const note = await page.locator(".civic-r03-demo-note").innerText();
   assert.doesNotMatch(note, /все 14/);
-  assert.match(note, /Подтверждённых реальных работ в реестре пока нет\. Демо-записей: 12 из 14/);
+  assert.match(note, /Подтверждённых реальных работ в реестре пока нет\. Примеров: 12 из 14/);
   const opts = await page.evaluate(() => [...document.querySelector('[data-r03-filter="evidence"]').options].map((o) => o.textContent));
-  assert.deepEqual(opts, ["Все записи", "С источником (1)", "Демонстрационные (12)", "Без источника (1)"]);
+  assert.deepEqual(opts, ["Все записи", "С источником (1)", "Примеры (12)", "Без источника (1)"]);
   await page.selectOption('[data-r03-filter="evidence"]', "sourced");
   await page.click('[data-id="hyp-src"]');
   await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
-  assert.match(await page.locator(".civic-r03-summary").innerText(), /Откуда сведения\s+Акимат s1, 01\.09\.2026/);
+  assert.match(await page.locator(".civic-r03-summary").innerText(), /Откуда сведения\s+Акимат s1, 1 сентября 2026/);
   await ctx.close();
 });
 
@@ -1193,8 +1193,8 @@ test("r12 review: finished without a date never reads as going on; status is cre
   const t = await page.locator(".civic-r03-summary").innerText();
   assert.match(t, /Когда закончат\s+завершено, дата окончания не указана \(план был до 31 декабря 2026\)/);
   assert.doesNotMatch(t, /по плану\)|перенесён/);
-  assert.match(t, /по источнику от 20\.09\.2026/);
-  assert.match(t, /Откуда сведения\s+Акимат, 20\.09\.2026 и ещё 1/);
+  assert.match(t, /по источнику от 20 сентября 2026/);
+  assert.match(t, /Откуда сведения\s+Акимат, 20 сентября 2026 и ещё 1/);
   assert.doesNotMatch(t, /01\.03\.2025/);
   await ctx.close();
 });
