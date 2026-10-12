@@ -394,6 +394,13 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 /* «Служба сообщила об устранении» — светло-зелёный с пунктирной каймой; «проверено жителями» — зелёный (как было) */
 .r07-badge[data-fixed="reported"] .r07-badge__dot { border: 2px dashed #3b6d11; }
 .r07-sw--dashed { box-shadow: inset 0 0 0 2px #3b6d11; border: 1px dashed #3b6d11; }
+/* Смена состояния на «исправлено»: одно кольцо цвета нового состояния расходится от кружка (heat.js .r07-badge--settle) */
+.r07-badge--settle .r07-badge__dot::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--r07-c, #639922);
+  animation: r07-settle 1.1s cubic-bezier(0.22, 1, 0.36, 1) both; pointer-events: none;
+}
+@keyframes r07-settle { from { transform: scale(0.9); opacity: 0.95; } to { transform: scale(1.9); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .r07-badge--settle .r07-badge__dot::after { animation: none; display: none; } }
 /* «Вернули жители» — отметка ↺ у кружка (цвет — по весу) */
 .r07-badge__mark {
   position: absolute; top: -6px; right: -6px; display: grid; place-items: center; width: 20px; height: 20px;

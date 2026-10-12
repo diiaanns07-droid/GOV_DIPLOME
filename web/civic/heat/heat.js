@@ -1015,6 +1015,17 @@
       const fixed = it.state === "fixed";
       const district = it.target.kind === "district";
       const icon = fixed ? "check" : district ? "pin" : BADGE_SUBTYPE_ICON[it.target.subtype] || catIcon(Object.keys(it.by_category || {})[0] || "other");
+      // Переход «служба сообщила» → «проверено жителями» и «новое» → «служба сообщила»: одно мягкое кольцо цвета нового
+      // состояния (дизайн-марафон №12), а не скачок; первая отрисовка значка и «меньше движения» — без кольца (CSS).
+      const before = el.dataset.level ? (el.dataset.fixed || el.dataset.level) : null;
+      const after = fixed ? it.fixed_kind || "fixed" : String(it.level);
+      if (before && before !== after && fixed) {
+        el.classList.remove("r07-badge--settle");
+        void el.offsetWidth;   // перезапуск анимации, если состояние сменилось ещё раз
+        el.classList.add("r07-badge--settle");
+        clearTimeout(el.r07SettleTimer);
+        el.r07SettleTimer = setTimeout(() => el.classList.remove("r07-badge--settle"), 1300);
+      }
       el.dataset.level = fixed ? "fixed" : String(it.level);
       // Волна 2: «служба сообщила» — пунктирная кайма; «вернули жители» — отметка ↺ (R11 IA_WAVE2 §3)
       if (fixed && it.fixed_kind) el.dataset.fixed = it.fixed_kind; else delete el.dataset.fixed;
