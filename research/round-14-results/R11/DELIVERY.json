@@ -4,8 +4,8 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "60d7a581 — последний коммит web/civic/ui-kit и web/civic/i18n (словарь 1258 ключей ru=kk)",
-  "tested_sha": "FINAL-2 шаг 1 R01 34677e0 (содержит R11 8d58318): review_build 44/44, kk 0, все значки видны, первый кадр = эталон 8bbace7; ui-kit @ 9d076d12: test_r11_ui_kit 18/18, витрина 4/4",
+  "code_sha": "85a11f09 — последний коммит web/civic/ui-kit и web/civic/i18n: чистый дизайн (токены, компоненты, clean.html), словарь 1299 ключей ru=kk",
+  "tested_sha": "FINAL-2 шаг 4 R01 0f5101a3 (содержит R11 8d58318): review_build 44/44, kk 0, шаги 6–7 PASS, первый кадр = эталон 8bbace7; ui-kit @ 85a11f09: test_r11_ui_kit 18/18, витрина 4/4, clean.html 12 кадров 0 ошибок; FINAL-2 + ui-kit 85a11f09 — см. tests",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
     "c75a9ac UX_SPEC.md v1",
@@ -48,7 +48,15 @@
     "tests/civic/R11/review/wave2_shots.cjs",
     "research/round-14-results/R11/patches/R01_wave2_phone_menu.patch",
     "research/round-14-results/R11/first_frame_8bbace7c.json",
-    "tests/civic/R11/review/demo_step67_check.cjs"
+    "tests/civic/R11/review/demo_step67_check.cjs",
+    "research/round-14-results/R11/SCHEMES_R06_R13.md",
+    "research/round-14-results/R11/CLEAN_PASS.md",
+    "web/civic/ui-kit/prototypes/clean.html",
+    "tests/civic/R11/review/tap_targets.cjs",
+    "research/round-14-results/R11/patches/R01_attrib_tap.patch",
+    "research/round-14-results/R11/tap_targets_0f5101a3.json",
+    "research/round-14-results/R11/screens/clean/",
+    "research/round-14-results/R11/screens/final2s4/"
   ],
   "tests": {
     "browser_check: витрина + prototypes/{index,akimat-map,complaint,day} × 375/1366 × ru/kk": "PASS",
@@ -86,15 +94,23 @@
     "волна 2, разбор 8: FINAL-2 шаг 1 + R07 868de08 — badges_covered_check: без патча 2 закрытых на 375, с R01_badge_avoid — 0; r12_city 81/0": "PASS с патчем",
     "FINAL-2 шаг 3 R01 28e23e3: review_build 44/44, kk 0, кабинет 0, первый кадр = эталон; demo_step67_check (1366 kk) — «Иә, түзетілді» → «Тұрғындар тексерді»": "PASS",
     "FINAL-2 шаг 3: badges_covered_check на 375/360 — 2 закрытых (патч R01_badge_avoid ждёт R01)": "FAIL — открыто",
-    "волна 2, разбор 13: FINAL-2 шаг 3 + R07 04dafc1 (фронт и сервер), свежая база — demo_step67 PASS; до ответа жителей цель «Қызмет хабарлады — тексеруді күтуде», светло-зелёная (B-055)": "PASS"
+    "волна 2, разбор 13: FINAL-2 шаг 3 + R07 04dafc1 (фронт и сервер), свежая база — demo_step67 PASS; до ответа жителей цель «Қызмет хабарлады — тексеруді күтуде», светло-зелёная (B-055)": "PASS",
+    "12 окт: FINAL-2 шаг 4 R01 0f5101a3 как есть — review_build 44/44, kk 0 (5 экранов × 2 размера), витрина 4/4, кабинет kk, шаги 1–2, 6, 6–7 PASS, первый кадр = эталон 8bbace7; ключ вне словаря 1 (qr.form.base_other) — добавлен": "PASS",
+    "12 окт: FINAL-2 шаг 4 — badges_covered_check: 10 закрытых (под «Аймақ», ручкой шторки и плашкой #map-status; патч R01_badge_avoid ждёт R01)": "FAIL — открыто (R01)",
+    "12 окт: tap_targets.cjs на 0f5101a3 — зона < 48 только у кнопки «i» MapLibre (24×24); с патчем R01_attrib_tap — 0 на 375, 1 угловая 48×32 на 1366": "PASS с патчем",
+    "12 окт: QR-паспорт R12 /?report= — язык не меняется, вид «Житель», одна главная кнопка, неизвестный номер — «Нысан табылмады»; лист печати — 2 языка, номер, домен": "PASS (3 правки — UX_REVIEW разбор 14)",
+    "12 окт: ui-kit 85a11f09 (чистый дизайн) — test_r11_ui_kit 18/18 (шкала 13/15/17/22/28, веса 400/600), i18n_tools check 1299 ключей, витрина 375/1366 × ru/kk 4/4, clean.html 12 кадров: 0 ошибок JS, 0 ключей, 0 прокрутки вбок": "PASS",
+    "12 окт: FINAL-2 0f5101a3 + ui-kit/i18n R11 85a11f09 — review_build и R10 demo_flow c2e3751": "идёт (см. STATUS.md)"
   },
   "known_limits": [
-    "Макеты — образец: данные примеры, карта — SVG по осям улиц OSM (подписи улиц из OSM name, по-русски)",
-    "Скриншоты — headless Chromium с программным WebGL; бледная карта после выбора точки у R09 не подтверждена (п. 12 дня 2)",
-    "cat.sidewalks kk («Жаяу жүргіншілер жолы») длинный — ждёт решения владельца",
-    "Казахский — R11 и черновики ролей, не проверен носителем; 63 места ⚑ в KK_REVIEW.md (1а — видно на демо)"
+    "Чистый дизайн в ui-kit меняет только компоненты bk-*; модули ролей со своим CSS (R07 heat.css, R08 akim.css, R09 complaint.css, оболочка R01) выглядят по-новому только после правок CLEAN_PASS §3",
+    "Шкала 13/15/17/22/28 (решение владельца): подписи 13 px — проверки R10 «текст < 14» нужно перевести на 13 (CLEAN_PASS §4)",
+    "Файл fonts/Inter-Bold.woff2 оставлен: он в списке статики шлюза R01; в tokens.css не подключается",
+    "Макеты — образец: данные примеры, карта — SVG по осям улиц OSM",
+    "Скриншоты — headless Chromium с программным WebGL, без интернета (запасной фон карты)",
+    "Казахский — R11 и черновики ролей, не проверен носителем; 63 места ⚑ в KK_REVIEW.md; 7 правок уточнений не перенесены в categories_v2.json пакета"
   ],
-  "next_step": "R01 FINAL: взять R11 по INTEGRATION.txt §7; R11 проверяет каждый новый SHA R01 (build_shots, ru_kk_same FULL)",
+  "next_step": "R01 FINAL-3: взять ui-kit/i18n R11 85a11f09 + правки CLEAN_PASS R01 №1–8 + patches R01_badge_avoid, R01_attrib_tap; роли R07/R08/R09 — CLEAN_PASS §3; R11 разбирает FINAL-3 (review_build, tap_targets, сверка с clean.html) и код R06/R13 по SCHEMES_R06_R13",
   "wave_1": {
     "subtopics_kk": "39 уточнений вычитаны → ключи subtopic.<id>; 7 правок к черновику координатора — kk_review_extra.md",
     "emergency": "complaint.emergency.* + emergency.service.<номер>; ui-kit .bk-banner--danger; правило — UX_SPEC §10",
@@ -110,7 +126,17 @@
       "patches/R01_toggle_card.patch — взят (8e67c65)",
       "patches/R01_legend_free_area.patch — не нужен (8bbace7)",
       "patches/R01_wave2_phone_menu.patch — взят (d791fc0)",
-      "patches/R01_badge_avoid.patch (значки R07 не под «Аймақ», кнопками карты, легендой и шторкой; ждёт R01)"
-    ]
+      "patches/R01_badge_avoid.patch (значки R07 не под «Аймақ», кнопками карты, легендой и шторкой; ждёт R01)",
+      "patches/R01_attrib_tap.patch (кнопка «i» MapLibre: зона 48 и подпись ru/kk; ждёт R01)"
+    ],
+    "schemes_r06_r13": "research/round-14-results/R11/SCHEMES_R06_R13.md — v2 под контракт оболочки R01 §11.2 (12 окт)"
+  },
+  "updated": "2026-10-12",
+  "clean_pass": {
+    "doc": "research/round-14-results/R11/CLEAN_PASS.md",
+    "prototype": "web/civic/ui-kit/prototypes/clean.html (?lang=kk, ?role=resident, ?rotated=1&menu=1)",
+    "tokens": "--c-brand #152c26, --c-accent #e3e9e6 (бывший лайм), --c-paper #f4f5f6, --c-fill, шрифт 13/15/17/22/28, веса 400/600, радиусы 10/14/20, мягкие тени, --gap-edge 16",
+    "components": ".bk-nav, .bk-langtext (langSwitch {text:true}), .bk-avatar + .bk-menu (BirgeUI.menu), .bk-mapctl + __group, .bk-compass (иконка compass), .bk-legend--line, .bk-statusline, .bk-footnote, .bk-tabs (BirgeUI.tabs), .bk-details",
+    "edits": "R01 8, R07 8, R08 6, R09 7 — CLEAN_PASS §3"
   }
 }
