@@ -1,22 +1,22 @@
 {
  "role": "R05",
- "generated_at": "2026-10-12T05:56:35.249Z",
- "tested_sha": "e7a5dd1ee8324d00414b3c228f78ca5d5d152acb",
+ "generated_at": "2026-10-12T12:02:17.237Z",
+ "tested_sha": "5dfcc4aa9b5cb8c051cd8599bfceca9d77df3b34",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
-  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/4436be33-e499-5274-87ae-bb2e6fb5e9e1/scratchpad/r11kit",
+  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit12",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 5.6,
-  "fps_20_objects_swiftshader": 2.3,
+  "fps_0_objects_swiftshader": 5.2,
+  "fps_20_objects_swiftshader": 3.5,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
   "pass": 53,
-  "fail": 0,
+  "fail": 1,
   "not_run": 1
  },
  "checks": [
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.3 кадр/с (без объектов 5.6)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 3.5 кадр/с (без объектов 5.2)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -197,14 +197,14 @@
    "detail": {
     "cursor_over_model": "pointer",
     "opened_by_model_click": "p-demo-square-yard-1148721825",
-    "label_height_px": 40.390625,
-    "tap_zone_px": 48.390625
+    "label_height_px": 40,
+    "tap_zone_px": 48
    }
   },
   {
    "id": "r11_21_selected_object_not_under_card_1366_375",
    "status": "PASS",
-   "detail": "1366 px: объект (489, 486) на экране и не под карточкой; 375 px: объект (188, 287) на экране и не под карточкой"
+   "detail": "1366 px: объект (487, 486) на экране и не под карточкой; 375 px: объект (188, 291) на экране и не под карточкой"
   },
   {
    "id": "r11_22_23_demo_header_title_and_3d_label",
@@ -261,7 +261,7 @@
     "ru800": {
      "allInRow": true,
      "bad": [],
-     "minFs": 16
+     "minFs": 15
     },
     "ru720": {
      "allInRow": true,
@@ -276,7 +276,7 @@
     "kk800": {
      "allInRow": true,
      "bad": [],
-     "minFs": 16
+     "minFs": 15
     },
     "kk720": {
      "allInRow": true,
@@ -418,57 +418,8 @@
   },
   {
    "id": "card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk",
-   "status": "PASS",
-   "detail": {
-    "ru": {
-     "half": {
-      "state": "card",
-      "top": 442,
-      "bottom": 812,
-      "headBottom": 72,
-      "capped": false,
-      "scrolls": false,
-      "headTop": true,
-      "lowered": true,
-      "vh": 812
-     },
-     "peek": {
-      "state": "card",
-      "top": 238,
-      "bottom": 609,
-      "headBottom": 72,
-      "capped": false,
-      "scrolls": false,
-      "headTop": true,
-      "lowered": false,
-      "vh": 812
-     }
-    },
-    "kk": {
-     "half": {
-      "state": "card",
-      "top": 442,
-      "bottom": 812,
-      "headBottom": 72,
-      "capped": false,
-      "scrolls": false,
-      "headTop": true,
-      "lowered": true,
-      "vh": 812
-     },
-     "peek": {
-      "state": "card",
-      "top": 238,
-      "bottom": 609,
-      "headBottom": 72,
-      "capped": false,
-      "scrolls": false,
-      "headTop": true,
-      "lowered": false,
-      "vh": 812
-     }
-    }
-   }
+   "status": "FAIL",
+   "detail": "{\"ru\":{\"half\":{\"state\":\"card\",\"top\":80,\"bottom\":430,\"headBottom\":72,\"capped\":true,\"scrolls\":true,\"headTop\":true,\"lowered\":false,\"vh\":812},\"peek\":{\"state\":\"card\",\"top\":245,\"bottom\":609,\"headBottom\":72,\"capped\":false,\"scrolls\":false,\"headTop\":true,\"lowered\":false,\"vh\":812}}}"
   },
   {
    "id": "resident_hint_moves_off_host_legend_1366_1100_ru_kk",
@@ -480,7 +431,7 @@
       "hint": {
        "l": 380,
        "t": 623,
-       "r": 828,
+       "r": 808,
        "b": 672
       },
       "legend": {
@@ -490,14 +441,14 @@
        "b": 734
       },
       "overlap": false,
-      "transform": "translate(127px, 0px)"
+      "transform": "translate(117px, 0px)"
      },
      "hidden": {
       "state": "hint",
       "hint": {
-       "l": 253,
+       "l": 263,
        "t": 623,
-       "r": 701,
+       "r": 691,
        "b": 672
       },
       "legend": {
@@ -516,7 +467,7 @@
       "hint": {
        "l": 380,
        "t": 623,
-       "r": 764,
+       "r": 746,
        "b": 672
       },
       "legend": {
@@ -526,14 +477,14 @@
        "b": 734
       },
       "overlap": false,
-      "transform": "translate(95px, 0px)"
+      "transform": "translate(86px, 0px)"
      },
      "hidden": {
       "state": "hint",
       "hint": {
-       "l": 285,
+       "l": 294,
        "t": 623,
-       "r": 669,
+       "r": 660,
        "b": 672
       },
       "legend": {
@@ -550,9 +501,9 @@
      "withLegend": {
       "state": "hint",
       "hint": {
-       "l": 172,
+       "l": 181,
        "t": 514,
-       "r": 556,
+       "r": 547,
        "b": 563
       },
       "legend": {
@@ -567,9 +518,9 @@
      "hidden": {
       "state": "hint",
       "hint": {
-       "l": 172,
+       "l": 181,
        "t": 555,
-       "r": 556,
+       "r": 547,
        "b": 604
       },
       "legend": {
@@ -1134,7 +1085,7 @@
      "in_head": true,
      "in_actions": false,
      "title": "Повернуть вправо",
-     "dock_h": 201,
+     "dock_h": 200,
      "ghost_on_map": true,
      "rot0": 0,
      "rot1": 15
@@ -1143,7 +1094,7 @@
      "in_head": true,
      "in_actions": false,
      "title": "Оңға бұру",
-     "dock_h": 223,
+     "dock_h": 221,
      "ghost_on_map": true,
      "rot0": 0,
      "rot1": 15
@@ -1163,6 +1114,64 @@
    "id": "controls_48px_all_states_1366_375_ru_kk",
    "status": "PASS",
    "detail": "все кнопки R05 ≥ 48 × 48 px: каталог, размещение, тост, карточка акимата, эскиз, подсказка, таблички, лёгкая карточка — 1366/375 × ru/kk"
+  },
+  {
+   "id": "glass_panel_from_ui_kit_1366_375",
+   "status": "PASS",
+   "detail": {
+    "375": {
+     "cat": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass bk-glass--sheet",
+      "state": "catalog",
+      "blur": "blur(22px) saturate(1.7)",
+      "bg_alpha": 0.8,
+      "label_blur": "none"
+     },
+     "card": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass bk-glass--sheet",
+      "state": "card",
+      "blur": "blur(22px) saturate(1.7)",
+      "bg_alpha": 0.8,
+      "label_blur": "none"
+     },
+     "off": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass bk-glass--sheet",
+      "state": "card",
+      "blur": "none",
+      "bg_alpha": 1,
+      "label_blur": "none"
+     }
+    },
+    "1366": {
+     "cat": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass",
+      "state": "catalog",
+      "blur": "blur(22px) saturate(1.7)",
+      "bg_alpha": 0.8,
+      "label_blur": "none"
+     },
+     "card": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass",
+      "state": "card",
+      "blur": "blur(22px) saturate(1.7)",
+      "bg_alpha": 0.8,
+      "label_blur": "none"
+     },
+     "off": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass",
+      "state": "card",
+      "blur": "none",
+      "bg_alpha": 1,
+      "label_blur": "none"
+     }
+    }
+   }
   },
   {
    "id": "project_from_idea_card_says_by_residents_idea_ru_kk",
