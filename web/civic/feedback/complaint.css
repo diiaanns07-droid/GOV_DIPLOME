@@ -294,7 +294,8 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 /* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01): список целей, вкладки, карточка действий. */
 .bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px; margin: 0 auto; }   /* одна колонка 720 у всех разделов-списков (R11 D-1) */
 .bc-inbox__title { margin: 0; font-size: var(--fs-h1, 28px); font-weight: var(--fw-semi, 600); }   /* 28, как у остальных разделов (R11 9.3 a); не 700 (FINAL-3 №12) */
-.bc-inbox__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
+.bc-inbox__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }   /* затухание края — .bk-scroll-x ui-kit */
+.bc-inbox__tabs::-webkit-scrollbar { display: none; }
 .bc-inbox__tabs .bk-chip { min-height: 44px; flex: 0 0 auto; white-space: nowrap; }
 .bc-inbox__count { font-weight: var(--fw-semi, 600); }
 /* Ноль не показываем: глаз сразу видит вкладки, где есть работа (R11 11.6, вариант «без числа» — серый ноль --c-text-3

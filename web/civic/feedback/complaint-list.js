@@ -115,7 +115,9 @@
     function tabs() {
       var counts = (state.data && state.data.counts) || {};
       // Одним рядом с прокруткой (на 375 — без переноса в 3 ряда, R11 разбор 5 №4в; как вкладки «Рядом» R08).
-      var bar = h("div", { "class": "bk-chips bc-inbox__tabs", role: "tablist" });
+      // bk-scroll-x + scrollFade ui-kit R11: на телефоне справа мягкое затухание, пока есть что прокрутить (R11 16.4).
+      var bar = h("div", { "class": "bk-chips bk-scroll-x bc-inbox__tabs", role: "tablist" });
+      if (window.BirgeUI && typeof window.BirgeUI.scrollFade === "function") window.BirgeUI.scrollFade(bar);
       TABS.forEach(function (id) {
         bar.appendChild(h("button", { "class": "bk-chip bc-inbox__tab", type: "button", role: "tab", "data-tab": id,
                                       "aria-selected": state.tab === id ? "true" : "false",
@@ -210,13 +212,20 @@
       box.appendChild(title());
       if (state.error === "staff") {
         var shell = window.CivicShell;
-        // Одно состояние «войдите как сотрудник» на все разделы (R11 INTEGRATION 9.3 b): иллюстрация staff, подсказка,
-        // «Войти» — главная: без входа карточки действий нет, это единственная кнопка экрана (10.3).
+        var openLogin = function () { if (window.BirgeShell) window.BirgeShell.setSection("map"); if (shell && shell.openEditor) shell.openEditor(); };
+        // Одно состояние «войдите как сотрудник» на все разделы — BirgeUI.loginState ui-kit R11 (16.3); без него — своё такое же.
+        if (window.BirgeUI && typeof window.BirgeUI.loginState === "function") {
+          var holder = h("div", { "class": "bc-inbox__login" });
+          box.appendChild(holder);
+          window.BirgeUI.loginState(holder, openLogin);
+          return;
+        }
+        // Тот же вид (R11 INTEGRATION 9.3 b): иллюстрация staff, подсказка, «Войти» — главная: без входа карточки действий
+        // нет, это единственная кнопка экрана (10.3).
         box.appendChild(h("div", { "class": "bk-empty", role: "status" }, [art("staff", "user"),
           h("p", { "class": "bk-empty__title" }, t("proposal.need_staff")),
           h("p", { "class": "bk-empty__text" }, t("staff.login.note")),
-          h("button", { "class": "bk-btn bk-btn--primary", type: "button",
-            onclick: function () { if (window.BirgeShell) window.BirgeShell.setSection("map"); if (shell && shell.openEditor) shell.openEditor(); } }, t("staff.login.submit"))]));
+          h("button", { "class": "bk-btn bk-btn--primary", type: "button", onclick: openLogin }, t("staff.login.submit"))]));
         return;
       }
       if (state.error) {
