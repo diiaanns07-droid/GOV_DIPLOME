@@ -341,5 +341,5 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 /* «Вернули жители» — отметка ↺ у кружка (цвет — по весу) */
 .r07-badge__mark {
   position: absolute; top: -6px; right: -6px; display: grid; place-items: center; width: 20px; height: 20px;
-  border: 2px solid #fff; border-radius: 50%; background: #152c26; color: #fff; font-size: 12px; font-weight: 600; line-height: 1;
+  border: 2px solid #fff; border-radius: 50%; background: #152c26; color: #fff; font-size: 13px; font-weight: 600; line-height: 1;
 }
