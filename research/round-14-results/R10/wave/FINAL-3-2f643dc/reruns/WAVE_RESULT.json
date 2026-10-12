@@ -1,0 +1,430 @@
+{
+ "meta": {
+  "root": "/home/user/bf3c",
+  "sha": "2f643dc7",
+  "when": "2026-10-12T10:39:41.877Z",
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "node": "v22.22.0",
+  "runtime": {
+   "BirgeNearby": true,
+   "BirgeIdeas": true,
+   "BirgeProjects": false,
+   "BirgeComplaintList": true,
+   "BirgeAsk": true,
+   "BirgeQuestions": false,
+   "BirgeShell": true
+  }
+ },
+ "counts": {
+  "PASS": 17,
+  "FAIL": 0,
+  "PENDING": 0,
+  "NOT_RUN": 1,
+  "INFO": 2
+ },
+ "items": [
+  {
+   "id": "W2-7",
+   "title": "Идеи → голосование → проект в 3D",
+   "owner": "R06 + R05",
+   "done": "Путь «идея → голоса → проект в 3D» или «отказ с причиной и доработка»",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "W2-9",
+   "title": "«Вопрос акиму»",
+   "owner": "R13",
+   "done": "вопросы, голоса и «Ответ акима»",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  }
+ ],
+ "results": [
+  {
+   "item": "W2-7",
+   "scope": "сборка",
+   "name": "Идеи → голосование → проект в 3D: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed",
+      "web/civic/heat/heat.js: reported_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": true,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": true,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-7",
+   "scope": "1366-ru",
+   "name": "меню «Идеи» → «Идеи жителей»: «Это опрос для выбора концепции, решение принимает акимат.» видно сразу, одна главная «Предложить идею», 3 вкладки",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "honest": true,
+    "primary": [
+     "Предложить идею"
+    ],
+    "tabs": [
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "1366-ru-W2-7-ideas.jpg"
+  },
+  {
+   "item": "W2-7",
+   "scope": "1366-ru",
+   "name": "«Поддержать» → «Вы поддержали», голосов +1; после перезагрузки не удваивается",
+   "status": "PASS",
+   "detail": {
+    "support": true,
+    "done": true,
+    "before": 47,
+    "after": 48,
+    "again": 48
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-7",
+   "scope": "1366-ru",
+   "name": "отказ: «Причина отказа: {text}» и «Можно доработать: {text}»; проект: «По идее жителей · {n} голосов»; 3D само не открывается",
+   "status": "PASS",
+   "detail": {
+    "reason": true,
+    "improve": true,
+    "byRes": true,
+    "auto3d": 0
+   },
+   "shot": "1366-ru-W2-7-paths.jpg"
+  },
+  {
+   "item": "W2-7",
+   "scope": "1366-kk",
+   "name": "меню «Идеялар» → «Тұрғындар идеялары»: «Бұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды.» видно сразу, одна главная «Идея ұсыну», 3 вкладки",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "honest": true,
+    "primary": [
+     "Идея ұсыну"
+    ],
+    "tabs": [
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "1366-kk-W2-7-ideas.jpg"
+  },
+  {
+   "item": "W2-7",
+   "scope": "1366-kk",
+   "name": "«Қолдау» → «Сіз қолдадыңыз», голосов +1; после перезагрузки не удваивается",
+   "status": "PASS",
+   "detail": {
+    "support": true,
+    "done": true,
+    "before": 48,
+    "after": 49,
+    "again": 49
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-7",
+   "scope": "1366-kk",
+   "name": "отказ: «Бас тарту себебі: {text}» и «Жетілдіруге болады: {text}»; проект: «Тұрғындар идеясы бойынша · {n} дауыс»; 3D само не открывается",
+   "status": "PASS",
+   "detail": {
+    "reason": true,
+    "improve": true,
+    "byRes": true,
+    "auto3d": 0
+   },
+   "shot": "1366-kk-W2-7-paths.jpg"
+  },
+  {
+   "item": "W2-7",
+   "scope": "375-ru",
+   "name": "меню «Идеи» → «Идеи жителей»: «Это опрос для выбора концепции, решение принимает акимат.» видно сразу, одна главная «Предложить идею», 3 вкладки",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "honest": true,
+    "primary": [
+     "Предложить идею"
+    ],
+    "tabs": [
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "375-ru-W2-7-ideas.jpg"
+  },
+  {
+   "item": "W2-7",
+   "scope": "375-ru",
+   "name": "«Поддержать» → «Вы поддержали», голосов +1; после перезагрузки не удваивается",
+   "status": "PASS",
+   "detail": {
+    "support": true,
+    "done": true,
+    "before": 49,
+    "after": 50,
+    "again": 50
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-7",
+   "scope": "375-ru",
+   "name": "отказ: «Причина отказа: {text}» и «Можно доработать: {text}»; проект: «По идее жителей · {n} голосов»; 3D само не открывается",
+   "status": "PASS",
+   "detail": {
+    "reason": true,
+    "improve": true,
+    "byRes": true,
+    "auto3d": 0
+   },
+   "shot": "375-ru-W2-7-paths.jpg"
+  },
+  {
+   "item": "W2-7",
+   "scope": "375-kk",
+   "name": "меню «Идеялар» → «Тұрғындар идеялары»: «Бұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды.» видно сразу, одна главная «Идея ұсыну», 3 вкладки",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "honest": true,
+    "primary": [
+     "Идея ұсыну"
+    ],
+    "tabs": [
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "375-kk-W2-7-ideas.jpg"
+  },
+  {
+   "item": "W2-7",
+   "scope": "375-kk",
+   "name": "«Қолдау» → «Сіз қолдадыңыз», голосов +1; после перезагрузки не удваивается",
+   "status": "PASS",
+   "detail": {
+    "support": true,
+    "done": true,
+    "before": 50,
+    "after": 51,
+    "again": 51
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-7",
+   "scope": "375-kk",
+   "name": "отказ: «Бас тарту себебі: {text}» и «Жетілдіруге болады: {text}»; проект: «Тұрғындар идеясы бойынша · {n} дауыс»; 3D само не открывается",
+   "status": "PASS",
+   "detail": {
+    "reason": true,
+    "improve": true,
+    "byRes": true,
+    "auto3d": 0
+   },
+   "shot": "375-kk-W2-7-paths.jpg"
+  },
+  {
+   "item": "W2-7",
+   "scope": "1366-ru",
+   "name": "акимат «Проекты и идеи»: проверка реализуемости (участок, сети, доступность, содержание), «Сделать проектом», «Отклонить с причиной»",
+   "status": "PASS",
+   "detail": {
+    "logged": true,
+    "opened": true,
+    "checkOpen": true,
+    "checks": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "make": true,
+    "reject": true
+   },
+   "shot": "1366-ru-W2-7-akimat.jpg"
+  },
+  {
+   "item": "W2-7",
+   "scope": "путь",
+   "name": "новая идея за 3 шага (место → название и описание → объект 3D) и превращение в проект в 3D",
+   "status": "NOT_RUN",
+   "detail": "дописать при поставке R06/R05 (вход сотрудника, API идей)",
+   "shot": null
+  },
+  {
+   "item": "W2-9",
+   "scope": "сборка",
+   "name": "«Вопрос акиму»: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed",
+      "web/civic/heat/heat.js: reported_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": true,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": true,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-9",
+   "scope": "1366-ru",
+   "name": "«Вопрос акиму»: вопросы жителей с голосами, во вкладке «С ответом» — «Ответ акима» хотя бы у 2, демо помечено",
+   "status": "PASS",
+   "detail": {
+    "votes": 7,
+    "tab": true,
+    "answers": 2,
+    "demo": true
+   },
+   "shot": "1366-ru-W2-9-ask.jpg"
+  },
+  {
+   "item": "W2-9",
+   "scope": "1366-kk",
+   "name": "«Вопрос акиму»: вопросы жителей с голосами, во вкладке «С ответом» — «Ответ акима» хотя бы у 2, демо помечено",
+   "status": "PASS",
+   "detail": {
+    "votes": 7,
+    "tab": true,
+    "answers": 2,
+    "demo": true
+   },
+   "shot": "1366-kk-W2-9-ask.jpg"
+  },
+  {
+   "item": "W2-9",
+   "scope": "375-ru",
+   "name": "«Вопрос акиму»: вопросы жителей с голосами, во вкладке «С ответом» — «Ответ акима» хотя бы у 2, демо помечено",
+   "status": "PASS",
+   "detail": {
+    "votes": 7,
+    "tab": true,
+    "answers": 2,
+    "demo": true
+   },
+   "shot": "375-ru-W2-9-ask.jpg"
+  },
+  {
+   "item": "W2-9",
+   "scope": "375-kk",
+   "name": "«Вопрос акиму»: вопросы жителей с голосами, во вкладке «С ответом» — «Ответ акима» хотя бы у 2, демо помечено",
+   "status": "PASS",
+   "detail": {
+    "votes": 7,
+    "tab": true,
+    "answers": 2,
+    "demo": true
+   },
+   "shot": "375-kk-W2-9-ask.jpg"
+  }
+ ]
+}

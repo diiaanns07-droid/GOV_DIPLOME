@@ -911,7 +911,7 @@ async function checkIdeas(ctx) {
       await tabClick(P.page, lang, "rejected");
       const reason = await L.visibleText(P.page, part(W(lang, "idea.reason"))), improve = await L.visibleText(P.page, part(W(lang, "idea.can_improve")));
       await tabClick(P.page, lang, "project");
-      const byRes = await L.visibleText(P.page, part(W(lang, "idea.by_residents")));
+      const byRes = await L.visibleText(P.page, Wany(lang, "idea.by_residents"));  // все формы числа: «… 34 голоса» / «… 51 голос»
       const auto3d = await P.page.evaluate(() => [...document.querySelectorAll("canvas")].filter((c) => !c.classList.contains("maplibregl-canvas") && c.getClientRects().length).length);
       add("W2-7", tag, `отказ: «${W(lang, "idea.reason")}» и «${W(lang, "idea.can_improve")}»; проект: «${W(lang, "idea.by_residents")}»; 3D само не открывается`,
         st(reason && improve && byRes && auto3d === 0), { reason, improve, byRes, auto3d }, await shotOf(P.page, `${tag}-W2-7-paths`));
@@ -925,7 +925,11 @@ async function checkIdeas(ctx) {
     const logged = await staffLogin(S.page, "ru", staff);
     const opened = await header(S.page, "ru", exact(W("ru", ["common.nav.projects", "shell.nav.projects"])), 2200);
     await tabClick(S.page, "ru", "review");
-    const checkOpen = await L.clickText(S.page, exact(W("ru", "idea.check_open", "Проверить")), { wait: 1200 });
+    // Чек-лист реализуемости — у идеи в голосовании (не у идеи на модерации): «Проверить» в её карточке.
+    const voting = S.page.locator("article.ri-card, article[data-idea]").filter({ hasText: part(W("ru", "idea.status.voting", "Идёт голосование")) })
+      .filter({ has: S.page.getByRole("button", { name: exact(W("ru", "idea.check_open", "Проверить")) }) });
+    const vcard = await L.firstVisible(voting);
+    const checkOpen = vcard ? await L.clickText(vcard, exact(W("ru", "idea.check_open", "Проверить")), { wait: 1200 }) : false;
     const checks = [];
     for (const k of ["land", "networks", "access", "maintenance"]) checks.push(await L.visibleText(S.page, exact(W("ru", "idea.check." + k))));
     const make = await L.firstVisible(S.page.getByRole("button", { name: exact(W("ru", "idea.make_project")) }));
