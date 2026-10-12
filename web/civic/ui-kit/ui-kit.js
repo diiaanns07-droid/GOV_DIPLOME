@@ -262,6 +262,19 @@
     }
   }
 
+  // Одно состояние «войдите как сотрудник» для всех разделов (марафон, INTEGRATION §9.3 b): линейная иллюстрация staff,
+  // заголовок, подсказка «Учётную запись выдаёт администратор.» и одна главная кнопка «Войти». loginState(el, onLogin, opts)
+  // opts: title / text / label — свои тексты (например, ask.staff.login у «Вопроса акиму»).
+  function loginState(el, onLogin, opts) {
+    opts = opts || {};
+    state(el, "empty", {
+      illustration: "staff",
+      title: opts.title || tr("proposal.need_staff"),
+      text: opts.text != null ? opts.text : tr("staff.login.note"),
+      action: { label: opts.label || tr("staff.login.submit"), onClick: onLogin },
+    });
+  }
+
   // Меню аватара (чистый дизайн): кнопка .bk-avatar открывает список .bk-menu под собой у правого края.
   // Esc, щелчок мимо и выбор пункта закрывают; ↑/↓ — по пунктам. menu(button, list) → {open(), close()}.
   function menu(button, list) {
@@ -354,6 +367,6 @@
     return list;
   }
 
-  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, esc: esc,
+  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, loginState: loginState, esc: esc,
     seasonOrder: seasonOrder, tabs: tabs, menu: menu, illustration: illustration, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);

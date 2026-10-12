@@ -488,6 +488,7 @@
           <div class="bk-card" id="kit-loading"></div>
           <div class="bk-card" id="kit-empty"></div>
           <div class="bk-card" id="kit-error"></div>
+          <div class="bk-card" id="kit-login"></div>
         </div>
         <div class="kit-icons kit-ills" id="kit-ills" aria-hidden="true"></div>
         <!-- Выбор в меню (.bk-menu__radio, марафон): как список «Слой на карте» оболочки; предупреждение без рамки -->
@@ -633,6 +634,7 @@
           UI.state($("kit-loading"), "loading");
           UI.state($("kit-empty"), "empty", { title: t("heat.empty.title", { n: 7 }), text: t("heat.empty.hint"), action: { label: t("common.period.days", { n: 30 }) } });
           UI.state($("kit-error"), "error", { action: { onClick: function () { UI.state($("kit-error"), "loading"); } } });
+          UI.loginState($("kit-login"), function () { UI.toast(t("staff.login.title")); }); // одно состояние «войдите» для всех разделов
         }
 
         decorate();
