@@ -81,7 +81,8 @@
       render();
       return call("GET", "/complaints/inbox").then(function (res) {
         if (!alive) return;
-        if (!res.ok) { state.error = true; state.data = null; render(); return; }
+        // 401/403 — не вошёл сотрудник (R11 разбор FINAL-3): это не «нет связи», а «войдите»
+        if (!res.ok) { state.error = res.status === 401 || res.status === 403 ? "staff" : true; state.data = null; render(); return; }
         state.data = res.data;
         if (!state.tab) {
           // По умолчанию — «Новые»; если там пусто — первая непустая вкладка.
@@ -188,6 +189,15 @@
       closeStaff();
       box.innerHTML = "";
       box.appendChild(title());
+      if (state.error === "staff") {
+        var shell = window.CivicShell;
+        box.appendChild(h("div", { "class": "bk-empty", role: "status" }, [
+          h("p", { "class": "bk-empty__title" }, t("proposal.need_staff")),
+          // Не главная (bk-btn): главная кнопка в «Обращениях» — у карточки действий (контракт R09, одна на экран).
+          h("button", { "class": "bk-btn", type: "button",
+            onclick: function () { if (window.BirgeShell) window.BirgeShell.setSection("map"); if (shell && shell.openEditor) shell.openEditor(); } }, t("staff.login.submit"))]));
+        return;
+      }
       if (state.error) {
         box.appendChild(h("div", { "class": "bk-error", role: "alert" }, [
           h("p", { "class": "bk-error__title" }, t("mine.error.title")),

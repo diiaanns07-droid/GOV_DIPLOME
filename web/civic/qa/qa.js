@@ -496,6 +496,8 @@
       var textLangAttr = a[l] ? l : l === "kk" ? "ru" : "kk";
       return h("details", { class: "qa-answer", open: open ? true : null }, [
         h("summary", {}, [h("span", { text: tr("ask.answer") + " · " + date(a.answered_at) }), icon("chevron-down")]),
+        // Ответ только на другом языке — честно говорим об этом (R11 разбор 15 №3)
+        !a[l] && text ? h("p", { class: "qa-answer__lang", text: tr(l === "kk" ? "ask.answer.only_ru" : "ask.answer.only_kk") }) : null,
         h("p", { class: "qa-answer__text", lang: textLangAttr, text: text || "" }),
       ]);
     }
@@ -566,7 +568,7 @@
       var counter = h("span", { class: "qa-form__count", id: "qa-text-count", "aria-live": "polite",
         text: num(d.text.trim().length) + " / " + num(TEXT_MAX) });
       var area = h("textarea", { id: "qa-text", rows: "4", maxlength: String(TEXT_MAX), "aria-describedby": "qa-text-count qa-privacy" + (textError ? " qa-text-error" : ""),
-        "aria-invalid": textError ? "true" : null, lang: textLang(d.text) });
+        "aria-invalid": textError ? "true" : null, lang: textLang(d.text), placeholder: tr("ask.placeholder") }); // R11 разбор 15 №2
       area.value = d.text;
       area.addEventListener("input", function () {
         d.text = area.value;

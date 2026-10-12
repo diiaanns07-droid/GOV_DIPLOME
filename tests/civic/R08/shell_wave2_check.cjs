@@ -61,7 +61,7 @@ async function login(page) {
         hscroll: document.documentElement.scrollWidth - innerWidth,
         dec: document.querySelectorAll("#birge-day-root .akim-decision").length,
         decTitleTag: (document.querySelector("#akim-decisions-title") || {}).tagName,
-        pulse: !!document.querySelector("#birge-day-root .akim-pulse, #birge-day-root .akim-pulse-none"),
+        pulse: !!document.querySelector("#birge-day-root .akim-pulse"),
         h1: document.querySelectorAll("#birge-day-root h1").length,  // у модуля в оболочке — h2 (h1 — у оболочки)
       }));
       check(`${tag}: «Картина дня» в оболочке — решения и пульс, заголовки модуля h2, без прокрутки вбок`,
@@ -92,9 +92,17 @@ async function login(page) {
       check("«Выбрать» после входа сотрудника — сохранено на сервере (CSRF оболочки)", st === 200 && /Выбран вариант \d/.test(chosen), { st, chosen });
       await page.screenshot({ path: path.join(OUT, "day-1366-ru-chosen.png") });
       // «Ещё» → «Службы»
-      await page.goto(BASE + "/#more");
-      await page.waitForSelector('[data-section="services"]', { timeout: 15000 });
-      await page.click('[data-section="services"]');
+      // «Ещё»: с FINAL-2 (R01 d791fc0) — маленькое меню в шапке; раньше (a96f6e3) — экран #more со списком.
+      const moreBtn = await page.$('.birge-nav [data-section="more"]');
+      if (moreBtn && (await moreBtn.isVisible())) {
+        await moreBtn.click();
+        await page.waitForSelector('.birge-more-menu [data-section="services"]', { timeout: 15000 });
+        await page.click('.birge-more-menu [data-section="services"]');
+      } else {
+        await page.goto(BASE + "/#more");
+        await page.waitForSelector('[data-section="services"]', { timeout: 15000 });
+        await page.click('[data-section="services"]');
+      }
       await page.waitForSelector("#birge-screen-root.svc[data-state=ok]", { timeout: 15000 });
       await page.click(".svc__details >> nth=0");
       const before = await page.$eval("#svc-roads-speed-bump", (e) => e.value);

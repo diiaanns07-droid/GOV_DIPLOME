@@ -22,6 +22,11 @@
  * (нет тревог — одна строка), вторая строка плитки «Исправлено» (akim.verify.split). Ключи, которых в словаре
  * R11 ещё нет, — в WAVE2_KEYS ниже (запасной текст до слияния; список для R11 — INTEGRATION.txt §8).
  * «Выбрать» вариант: POST {apiBase}/akim/decisions/<id> {option}, сотрудник, X-CSRF-Token как у R05/R06.
+ * FINAL-3, чистый дизайн (R11 CLEAN_PASS §3 R08): заголовок 28/600 и одна строка мета; «данные — пример» — серая
+ * строка внизу экрана (.bk-footnote); дата и район — поля с заливкой (.bk-field), «Распечатать» — .bk-btn--ghost;
+ * KPI без карточек: число, подпись, ОДНА строка изменения, остальное — в «Подробнее» (.bk-details); «Коротко о дне» —
+ * обычный абзац 17; «Нужно решение» — список с разделителями, «Выбрать» — .bk-btn--ghost, выбранный — точка + слово;
+ * пустые блоки не показываем (ни «Резких всплесков нет», ни «Пока пусто»).
  */
 (function (root) {
   "use strict";
@@ -160,12 +165,6 @@
   }
   function districtName(id) {
     return id ? tr("district." + id) : tr("akim.district.all_city");
-  }
-  function lowerFirst(text) {
-    return text ? text.charAt(0).toLocaleLowerCase(lang()) + text.slice(1) : text;
-  }
-  function demoTag() {
-    return h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") });
   }
 
   // Изменение к прошлой неделе: стрелка (CSS) + слово. Цвет никогда не один.
@@ -361,15 +360,9 @@
         h(/^h[1-3]$/.test(opts.titleTag) ? opts.titleTag : "h1", { class: "akim__title" }, [
           tr("akim.title"),
           h("span", { class: "akim__title-date", text: " · " + I().formatDate(date) }),
-          // Метка «Пример» — одна на страницу, здесь; в карточках её нет (UX_REVIEW день 3, п. 11).
-          d && state.status === "ok" && d.demo && d.demo.any ? demoTag() : null,
         ]),
+        // Одна строка мета 13 серым; «данные — пример» — серой строкой внизу экрана (CLEAN_PASS §3 R08 п. 1).
         h("p", { class: "akim__meta bk-meta", text: meta.join(" · ") }),
-        // Пояснение к метке «Пример» — в шапке под датой, а не отдельной строкой над числами: так первая карточка
-        // «Нужно решение акима» помещается в первый экран ноутбука (R11 IA_WAVE2 §5).
-        d && state.status === "ok" && d.demo && d.demo.any
-          ? h("p", { class: "akim-demo", text: tr("common.tag.demo") + ": " + lowerFirst(tr("akim.demo_note")) })
-          : null,
       ]);
 
       var dateInput = h("input", {
@@ -396,7 +389,7 @@
         )
       );
       var controls = h("div", { class: "akim__controls" }, [
-        h("label", { class: "akim__field", for: "akim-date" }, [h("span", { class: "akim__field-label", text: tr("akim.date") }), dateInput]),
+        h("label", { class: "bk-field akim__field", for: "akim-date" }, [h("span", { class: "akim__field-label", text: tr("akim.date") }), dateInput]),
         isToday
           ? null
           : h("button", {
@@ -407,7 +400,7 @@
                 setDate(null);
               },
             }),
-        h("label", { class: "akim__field", for: "akim-district" }, [
+        h("label", { class: "bk-field akim__field", for: "akim-district" }, [
           h("span", { class: "akim__field-label", text: tr("heat.filter.district") }),
           districtSelect,
         ]),
@@ -415,7 +408,7 @@
           "button",
           {
             type: "button",
-            class: "bk-btn akim__print",
+            class: "bk-btn bk-btn--ghost akim__print",
             onclick: function () {
               printPage();
             },
@@ -470,43 +463,48 @@
     }
 
     // ── четыре крупных числа ──
-    function kpiCard(kind, ch, labelKey, goodWhenUp, extra) {
+    // Чистый дизайн: число 28/600, подпись 15 и ОДНА строка изменения 13 («▲ больше на 41 %»). «С чем сравниваем»
+    // показано один раз — строкой под заголовком («сравнение с 5 окт»), а не в каждой плитке; для чтения с экрана
+    // слова «чем неделю назад» остаются (скрытым текстом .bk-sr-only).
+    function kpiCard(kind, ch, labelKey, goodWhenUp) {
+      var delta = deltaEl(ch, goodWhenUp);
+      if (needsVs(ch)) delta.appendChild(h("span", { class: "bk-sr-only", text: " " + tr("akim.delta.vs_week") }));
       return h("article", { class: "bk-kpi akim-kpi", "data-kind": kind }, [
         h("span", { class: "bk-kpi__value", text: num(ch.value) }),
         h("span", { class: "bk-kpi__label", text: tr(labelKey) }),
-        deltaEl(ch, goodWhenUp),
-        needsVs(ch) ? h("span", { class: "akim-kpi__vs", text: tr("akim.delta.vs_week") }) : null,
-        extra ? h("span", { class: "akim-kpi__extra" }, extra) : null,
+        delta,
       ]);
     }
     function renderKpis(d) {
       var k = d.kpi;
-      var week = k.new_week;
       return h("section", { class: "bk-kpis akim-kpis", "aria-label": tr("akim.title") }, [
-        // «За 7 дней» — вторая стрелка в карточке; на телефоне скрыта (akim.css, < 480 px), там одно изменение.
-        kpiCard("new", k.new_day, "akim.kpi.new", false, [
-          h("span", { class: "akim-kpi__week" }, [tr("akim.kpi.week", { n: week.value }) + " · ", deltaEl(week, false)]),
-        ]),
-        kpiCard("in_progress", k.in_progress, "akim.kpi.in_progress", null,
-          k.in_progress.waiting ? [tr("akim.kpi.waiting", { n: k.in_progress.waiting })] : null),
-        kpiCard("overdue", k.overdue, "akim.kpi.overdue", false, overdueExtra(d)),
-        // Волна 2 п. 1: «Служба сообщила 12 · жители проверили 8 · вернули 2». Нет проверки жителями в данных —
-        // прежняя подсказка, а не «проверили 0».
-        kpiCard("fixed", k.fixed_week, "akim.kpi.fixed_week", true, [
-          k.verification_available
-            ? tr("akim.verify.split", { a: k.fixed_week.awaiting, b: k.fixed_week.verified, c: k.fixed_week.reopened || 0 })
-            : tr("akim.kpi.fixed_hint"),
-        ]),
+        kpiCard("new", k.new_day, "akim.kpi.new", false),
+        kpiCard("in_progress", k.in_progress, "akim.kpi.in_progress", null),
+        kpiCard("overdue", k.overdue, "akim.kpi.overdue", false),
+        kpiCard("fixed", k.fixed_week, "akim.kpi.fixed_week", true),
       ]);
     }
-    // Волна мелочей п. 6: таймер в «Картине дня» — самое давнее просроченное место прямо в плитке.
-    function overdueExtra(d) {
+    // Остальное о числах — в «Подробнее» под плитками (CLEAN_PASS §3 R08 п. 3): за 7 дней, ждут ответа, самое давнее
+    // просроченное место (волна мелочей п. 6), «служба сообщила · жители проверили · вернули» (волна 2 п. 1).
+    function renderKpiMore(d) {
+      var k = d.kpi;
+      var rows = [];
+      rows.push(h("li", { "data-kind": "new" }, [tr("akim.kpi.week", { n: k.new_week.value }) + " · ", deltaEl(k.new_week, false)]));
+      if (k.in_progress.waiting) rows.push(h("li", { "data-kind": "in_progress", text: tr("akim.kpi.waiting", { n: k.in_progress.waiting }) }));
       var o = d.overdue && d.overdue.items && d.overdue.items[0];
-      if (!o) return [tr("akim.kpi.overdue_hint")];
-      return [
-        tr("akim.overdue.longest", { place: placeName(o) }) + " · ",
-        h("span", { class: "akim-late-days", text: timerText(o.timer) }),
-      ];
+      if (o)
+        rows.push(
+          h("li", { "data-kind": "overdue" }, [
+            tr("akim.overdue.longest", { place: placeName(o) }) + " · ",
+            h("span", { class: "akim-late-days", text: timerText(o.timer) }),
+          ])
+        );
+      if (k.verification_available)
+        rows.push(h("li", { "data-kind": "fixed", text: tr("akim.verify.split", { a: k.fixed_week.awaiting, b: k.fixed_week.verified, c: k.fixed_week.reopened || 0 }) }));
+      return h("details", { class: "bk-details akim-kpi-more" }, [
+        h("summary", { "data-key": "kpi-more", text: tr("common.action.more") }),
+        h("ul", { class: "akim-kpi-more__list" }, rows),
+      ]);
     }
     function placeName(x) {
       var l = lang();
@@ -596,10 +594,10 @@
             h("li", { class: "akim-decision__option" + (chosen ? " is-chosen" : "") }, [
               h("span", { class: "akim-decision__option-text", text: tr("akim.decision.option", { n: n, text: o[l] || o.ru }) }),
               chosen
-                ? h("span", { class: "bk-tag akim-decision__chosen" }, [icon("check", 18), tr("akim.decision.chosen", { n: n })])
+                ? h("span", { class: "bk-status akim-decision__chosen", "data-status": "fixed", text: tr("akim.decision.chosen", { n: n }) })
                 : h("button", {
                     type: "button",
-                    class: "bk-btn akim-decision__choose",
+                    class: "bk-btn bk-btn--ghost akim-decision__choose",
                     "data-key": "decision:" + it.id + ":" + n,
                     "aria-label": tr("akim.decision.choose") + ": " + tr("akim.decision.option", { n: n, text: o[l] || o.ru }),
                     text: tr("akim.decision.choose"),
@@ -689,10 +687,7 @@
       var p = d.pulse;
       if (!p || !p.available) return null;
       var items = p.items || [];
-      if (!items.length) {
-        // Нет тревог — одна строка мелко, без пустой карточки (IA_WAVE2 §5).
-        return h("p", { class: "akim-pulse-none bk-meta" }, [h("strong", { text: tr("akim.pulse.title") + ": " }), tr("akim.pulse.none")]);
-      }
+      if (!items.length) return null; // пустое не показываем (CLEAN_PASS §2.6, §3 R08 п. 6)
       var card = h("section", { class: "bk-card akim-card akim-pulse", "aria-labelledby": "akim-pulse-title" }, [
         h("h2", { class: "bk-h2", id: "akim-pulse-title", text: tr("akim.pulse.title") }),
       ]);
@@ -723,9 +718,6 @@
     function unavailable() {
       return h("div", { class: "akim-unavailable" }, [icon("alert"), h("span", { text: tr("akim.unavailable") })]);
     }
-    function emptyBlock(key, iconName) {
-      return h("div", { class: "bk-empty akim-empty" }, [icon(iconName || "check", 48), h("p", { class: "bk-empty__title", text: tr(key) })]);
-    }
 
     // ── горячие места ──
     function mapLink(target, days) {
@@ -741,10 +733,7 @@
         card.appendChild(unavailable());
         return card;
       }
-      if (!d.hot.items.length) {
-        card.appendChild(emptyBlock("akim.hot.empty"));
-        return card;
-      }
+      if (!d.hot.items.length) return null; // пустое не показываем
       var list = h("ol", { class: "bk-list akim-hot__list" });
       d.hot.items.forEach(function (it) {
         // Подписи нет (новая цель без названия) — вид места из словаря R11, а не пустая строка.
@@ -765,7 +754,6 @@
             },
           },
           [
-            h("span", { class: "akim-hot__rank", "aria-hidden": "true", text: String(it.rank) }),
             h("span", { class: "bk-heat", "data-level": String(it.level), "aria-hidden": "true", text: num(it.count) }),
             h("span", { class: "bk-list__main" }, [
               h("span", { class: "bk-list__title", text: name }),
@@ -824,8 +812,8 @@
     }
     function renderTopics(d) {
       var card = h("section", { class: "bk-card akim-card akim-topics" }, [cardHead("akim.topics.title", "akim.topics.hint")]);
+      if (d.topics.available && !d.topics.items.length) return null; // пустое не показываем
       if (!d.topics.available) card.appendChild(unavailable());
-      else if (!d.topics.items.length) card.appendChild(emptyBlock("akim.topics.empty"));
       else
         card.appendChild(
           bars(
@@ -842,6 +830,10 @@
         card.appendChild(unavailable());
         return card;
       }
+      var anyDistrict = d.districts.items.some(function (r) {
+        return r.value > 0;
+      });
+      if (!anyDistrict) return null; // все районы по нулям — блок не показываем
       card.appendChild(
         bars(
           d.districts.items.map(function (r) {
@@ -920,15 +912,12 @@
     }
     function renderObjects(d) {
       var o = d.objects || {};
+      // Нет реестра R06 — блока нет (это не «карта жалоб не отвечает»).
+      if (!o.available) return null;
       var card = h("section", { class: "bk-card akim-card akim-objects" }, [cardHead("akim.late.title", null)]);
-      if (!o.available) {
-        card.appendChild(unavailable());
-        return card;
-      }
-      // Нет ни одного объекта в реестре (район без работ) — «Пока пусто», а не «Все объекты идут по графику».
-      if (!o.total) card.appendChild(emptyBlock("common.state.empty_title", "building"));
-      else if (!o.late.length) card.appendChild(emptyBlock("akim.late.empty"));
-      else {
+      // Пустое не показываем: нет объектов или все по графику и все обновлялись — блока нет (CLEAN_PASS §3 R08 п. 6).
+      if (!o.total || (!o.late.length && !o.stale.length)) return null;
+      if (o.late.length) {
         var ul = h("ul", { class: "bk-list akim-obj__list" });
         o.late.slice(0, LATE_VISIBLE).forEach(function (x) {
           ul.appendChild(objectRow(x));
@@ -956,14 +945,8 @@
     function renderProposals(d) {
       var p = d.proposals || {};
       var card = h("section", { class: "bk-card akim-card akim-proposals" }, [cardHead("akim.proposals.title", null)]);
-      if (!p.available) {
-        card.appendChild(unavailable());
-        return card;
-      }
-      if (!p.top.length) {
-        card.appendChild(emptyBlock("akim.proposals.empty", "building"));
-        return card;
-      }
+      if (!p.available) return null; // нет данных R06 — блока нет
+      if (!p.top.length) return null; // пустое не показываем
       card.appendChild(h("p", { class: "akim-proposals__new", text: tr("akim.proposals.new", { n: p.new_count }) }));
       var ul = h("ul", { class: "bk-list akim-obj__list" });
       p.top.forEach(function (x) {
@@ -984,37 +967,54 @@
     }
 
     function renderOk(d) {
-      if (d.complaints_available === false) {
-        // Нет источника жалоб: показываем это прямо, а не четыре нуля.
-        body.appendChild(h("div", { class: "akim-unavailable akim-no-complaints", role: "status" }, [icon("alert"), h("span", { text: tr("akim.no_complaints") })]));
-      } else {
+      // Нет источника жалоб — не четыре нуля и не отдельный блок-заглушка (CLEAN_PASS §3 R08 п. 6): чисел нет,
+      // а сводка ниже прямо говорит «Данные об обращениях пока не подключены».
+      if (d.complaints_available !== false) {
         body.appendChild(renderKpis(d));
+        body.appendChild(renderKpiMore(d));
       }
-      body.appendChild(
-        h("section", { class: "bk-card akim-card akim-summary", "aria-labelledby": "akim-summary-title" }, [
-          h("h2", { class: "akim-summary__title", id: "akim-summary-title", text: tr("akim.summary.title") }),
-          summaryText(d),
-        ])
-      );
-      // Порядок по схеме R11 (IA_WAVE2 §5): KPI → сводка → «Нужно решение акима» → «Пульс» → прежние блоки.
+      // Пустые блоки не показываем (CLEAN_PASS §3 R08 п. 6); если ниже чисел пусто всё — одно состояние «пусто» ui-kit.
       var decisionsEl = renderDecisions(d);
-      if (decisionsEl) body.appendChild(decisionsEl);
       var pulseEl = renderPulse(d);
-      if (pulseEl) body.appendChild(pulseEl);
       // Две колонки на ноутбуке: слева «Горячие места» и объекты, справа темы, районы, предложения.
       // На телефоне колонки «растворяются» (display: contents), порядок задаёт CSS order.
+      var main = [renderHot(d), renderObjects(d)].filter(Boolean);
+      var side = [renderTopics(d), renderDistricts(d), renderProposals(d)].filter(Boolean);
+      var nothing = d.empty && !decisionsEl && !pulseEl && !main.length && !side.length;
+      if (nothing)
+        body.appendChild(
+          h("div", { class: "bk-empty akim-empty", role: "status" }, [
+            icon("search", 48),
+            h("p", { class: "bk-empty__title", text: tr(d.is_today === false ? "akim.empty_day" : "akim.empty") }),
+            h("p", { class: "bk-empty__text", text: tr("akim.empty_hint") }),
+          ])
+        );
+      // «Коротко о дне» — обычный абзац 17 без плашки; заголовок — только для чтения с экрана (CLEAN_PASS §3 R08 п. 4).
+      else
+        body.appendChild(
+          h("section", { class: "akim-summary", "aria-labelledby": "akim-summary-title" }, [
+            h("h2", { class: "akim-summary__title bk-sr-only", id: "akim-summary-title", text: tr("akim.summary.title") }),
+            summaryText(d),
+          ])
+        );
+      // Порядок по схеме R11 (IA_WAVE2 §5): KPI → сводка → «Нужно решение акима» → «Пульс» → прежние блоки.
+      if (decisionsEl) body.appendChild(decisionsEl);
+      if (pulseEl) body.appendChild(pulseEl);
+      if (main.length || side.length)
+        body.appendChild(
+          h("div", { class: "akim-grid" + (main.length && side.length ? "" : " akim-grid--one") }, [
+            main.length ? h("div", { class: "akim-col akim-col--main" }, main) : null,
+            side.length ? h("div", { class: "akim-col akim-col--side" }, side) : null,
+          ])
+        );
       body.appendChild(
-        h("div", { class: "akim-grid" }, [
-          h("div", { class: "akim-col akim-col--main" }, [renderHot(d), renderObjects(d)]),
-          h("div", { class: "akim-col akim-col--side" }, [renderTopics(d), renderDistricts(d), renderProposals(d)]),
-        ])
-      );
-      body.appendChild(
-        h("button", { type: "button", class: "bk-btn bk-btn--block akim-print-bottom", onclick: function () { printPage(); } }, [
+        h("button", { type: "button", class: "bk-btn bk-btn--ghost bk-btn--block akim-print-bottom", onclick: function () { printPage(); } }, [
           icon("print"),
           tr("common.action.print"),
         ])
       );
+      // «Данные — пример» — одна серая строка внизу экрана (CLEAN_PASS §2.9, §3 R08 п. 1).
+      if (d.demo && d.demo.any) body.appendChild(h("p", { class: "bk-footnote akim-demo", text: tr("common.demo_footnote") }));
     }
 
     // Сводка текстом; фраза о главной проблеме — жирным, чтобы глаз сразу нашёл её.
@@ -1110,5 +1110,5 @@
     return handle;
   }
 
-  root.BirgeAkim = { mount: mount, version: "akim-r14-w2" };
+  root.BirgeAkim = { mount: mount, version: "akim-r14-clean" };
 })(window);

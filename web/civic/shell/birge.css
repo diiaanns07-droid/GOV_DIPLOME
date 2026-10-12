@@ -62,6 +62,14 @@ body[data-birge-mode="resident"] #civic-moderation-button { display: none !impor
 .birge-day--module .birge-day-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .birge-day-empty .bk-btn { margin-top: var(--s-4, 16px); }
 body.civic-mode[data-birge-section]:not([data-birge-section="map"]) #civic-root { visibility: hidden; }
+/* Поле поиска в шапке остаётся и в разделах (R11 FINAL-3 №6: исчезало, пункты меню прыгали); нажатие — к карте с
+   поиском (birge.js). Плашка карты и подсказки поиска в разделах не нужны. */
+body.civic-mode[data-birge-explore="header"][data-birge-section]:not([data-birge-section="map"]) .civic-explore { visibility: visible; }
+body.civic-mode[data-birge-section]:not([data-birge-section="map"]) .civic-explore #map-status,
+body.civic-mode[data-birge-section]:not([data-birge-section="map"]) .civic-explore-status { visibility: hidden; }
+/* Знак Birge — «Карта» (R11 FINAL-3 №4). */
+.civic-mode .topbar .brand[role="link"] { cursor: pointer; border-radius: var(--r-m, 10px); }
+.civic-mode .topbar .brand[role="link"]:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
 
 /* Экраны новых разделов (#birge-screen, волна 2) — тот же лист, что «Картина дня» (класс .birge-day). «Ещё» — список. */
 .birge-more-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2, 8px); max-width: 560px; }
@@ -489,14 +497,6 @@ body[data-civic-sheet="full"].civic-mode .civic-explore #map-status { display: n
 .civic-mode .map-tools .bk-compass[hidden] { display: none; }
 .civic-mode .map-tools .bk-compass > .ic { transform: rotate(var(--bearing, 0deg)); transition: transform 0.15s ease; }
 .civic-mode .map-tools .ic { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
-
-/* Меню аватара: «✓» у выбранного вида — только картинка, не часть имени пункта (иначе программа чтения с экрана и
-   поиск по имени слышат «Акимат✓», R10 demo_flow setMode). Браузер без «/ альтернативы» берёт правило ui-kit. */
-#birge-account .bk-menu__item[aria-checked="true"]::after { content: "✓" / ""; }
-/* «ҚАЗ · РУС»: точка-разделитель — картинка (не часть имени «РУС») и не перехватывает нажатие у «ҚАЗ» (R10 FINAL-3:
-   «ҚАЗ под РУС», поиск кнопки «РУС» по имени). Зона нажатия на телефоне — не уже 44 px (ui-kit даёт 36, R10 порог 40). */
-#birge-header .birge-lang > button + button::before { content: "·" / ""; pointer-events: none; }
-@media (max-width: 760px) { #birge-header .birge-lang > button { min-width: 44px; } }
 /* Телефон (R10 FINAL-3 375/360): строка легенды помещается между краем и столбиком кнопок карты — не наезжает на «моё
    место»; капсула масштаба целая [+ | −] (раунд 13 прятал «−» на телефоне; убрать ли +/− совсем — вопрос владельцу 5). */
 @media (max-width: 760px) {
@@ -504,8 +504,12 @@ body[data-civic-sheet="full"].civic-mode .civic-explore #map-status { display: n
   .civic-mode .birge-legend-line .bk-legend__scale { width: 40px; }
   .civic-mode .map-tools .bk-mapctl__group > #zoom-out { display: grid; }
 }
-/* Круг-аватар: 44 px (ui-kit 40 — ниже порога R10 «кнопки ≥ 44 px», FINAL-3); на ноутбуке шапка 64 px — 48. */
-#birge-header .birge-avatar { width: 44px; height: 44px; }
-@media (min-width: 761px) { #birge-header .birge-avatar { width: 48px; height: 48px; } }
-/* «ҚАЗ · РУС» на любой ширине не уже 44 px (ui-kit: 44, на ≤ 1100 — 36). */
-#birge-header .birge-lang > button { min-width: 44px; }
+/* «·», «✓», аватар 44/48 и «ҚАЗ/РУС» ≥ 44/48 — в ui-kit R11 (bdc9934, по R01 §21.7); свои правила R01 сняты. */
+/* R11 FINAL-3 №7: два веса (400/600), панель без рамки — белая, радиус 14, тень; «?» легенды 44 px (зона 48). */
+.civic-mode .birge-day-title { font-weight: 600; }
+.civic-mode .map-tools .icon-btn { font-weight: 600; }
+.civic-mode .map-tools .three-d { font-size: 13px; }
+.civic-mode .civic-panel { border: 0; background: var(--c-surface, #fff); box-shadow: var(--shadow-2, 0 4px 18px #1536281f); }
+@media (min-width: 761px) { .civic-mode .civic-panel { border-radius: 14px; } }
+.birge-legend-q { width: 44px; height: 44px; }
+.birge-legend-q::after { inset: -2px; }

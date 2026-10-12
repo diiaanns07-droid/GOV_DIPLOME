@@ -241,6 +241,22 @@
     }
     avatar.addEventListener("click", () => { if (!account.hidden) renderAccount(true); });
     buildNav();
+    // Поле поиска видно и в разделах (R11 FINAL-3 №6): нажатие на него возвращает к карте, фокус остаётся в поле.
+    document.addEventListener("focusin", (event) => {
+      if (state.section !== "map" && event.target.closest?.(".civic-explore-field")) setSection("map");
+    });
+    // Знак Birge в шапке — «Карта» (R11 FINAL-3 №4): на телефоне из разделов к карте одним нажатием, без меню аватара.
+    const brand = document.querySelector(".topbar .brand");
+    if (brand) {
+      const home = (event) => {
+        if (!document.body.classList.contains("civic-mode")) return;
+        if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        setSection("map");
+      };
+      brand.addEventListener("click", home);
+      brand.addEventListener("keydown", home);
+    }
     const act = (button) => {
       if (button.dataset.action === "mine") { setSection("map"); window.CivicShell?.openMine?.(); return; }
       if (button.dataset.action === "staff") { setSection("map"); window.CivicShell?.openEditor?.(); return; }
@@ -377,6 +393,11 @@
       const sub = document.querySelector(".brand-sub");
       if (title) title.textContent = "Birge";
       if (sub) sub.textContent = t("shell.brand.tagline");
+      const brand = document.querySelector(".topbar .brand");
+      if (brand) {
+        brand.setAttribute("role", "link"); brand.tabIndex = 0;
+        brand.setAttribute("aria-label", "Birge — " + t("common.nav.map")); brand.title = t("common.nav.map");
+      }
       document.title = t("shell.title");
       document.getElementById("map")?.setAttribute("aria-label", t("shell.map.label"));
       // Кнопки карты (web/index.html) и плашка запасного фона (web/map.js) — на языке страницы (UX_REVIEW R11 B1 п. 5–6).
@@ -567,18 +588,25 @@
   function watchMapStatus() {
     const status = document.getElementById("map-status");
     if (!status || typeof MutationObserver !== "function") return;
-    let timer = null;
+    let timer = null, last = "";
+    // Гаснет через 6 с (CLEAN_PASS R01 №7). Без интернета карта повторяет ошибку тайлов и переписывает тот же текст —
+    // это не новое сообщение: таймер не сбрасываем (R11 FINAL-3 №5: плашка «висела» и на 375×667 закрывала место).
     const shown = () => {
+      const text = status.classList.contains("hidden") ? "" : status.textContent.trim();
+      if (text === last) return;
+      last = text;
       clearTimeout(timer);
       delete status.dataset.faded;
-      if (status.classList.contains("hidden") || !status.textContent.trim()) return;
+      if (!text) return;
       timer = setTimeout(() => { status.dataset.faded = "1"; }, 6000);
     };
     new MutationObserver(shown).observe(status, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ["class"] });
     shown();
+    // Панель построена заново (возврат из «Учебной модели» / «Школ»): та же плашка снова видна 6 с.
+    return () => { last = ""; shown(); };
   }
   function watchExplore() {
-    watchMapStatus();
+    const reshowStatus = watchMapStatus() || (() => {});
     const again = () => requestAnimationFrame(placeHeader);
     window.addEventListener("resize", again);
     document.addEventListener("civic:mode", again);
@@ -587,7 +615,7 @@
     const root = document.getElementById("civic-root") || document.body;
     const isExplore = (n) => n.nodeType === 1 && (n.classList?.contains("civic-explore") || n.querySelector?.(".civic-explore"));
     if (typeof MutationObserver === "function") new MutationObserver((records) => {
-      if (records.some((r) => [...r.addedNodes].some(isExplore))) again();
+      if (records.some((r) => [...r.addedNodes].some(isExplore))) { again(); reshowStatus(); }
     }).observe(root, { childList: true, subtree: true });
     again();
   }
