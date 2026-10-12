@@ -5,6 +5,9 @@
 //        --out <папка> [--shots 1366-ru,375-ru,375-kk]   (какие варианты склеивать в кадры; по умолчанию — все)
 // Итог: <out>/COMPARE.md, COMPARE.json, кадры <вариант>/<id>.jpg (слева направо — сборки в порядке --books).
 "use strict";
+// Микро-отклик (100–170 мс, только цвет/тень/сжатие) — не замечание (то же правило, что в design_book.cjs с круга 2).
+const MICRO = /^переход ((?:transform|scale|translate|background-color|background|color|box-shadow|opacity|filter|border-color|outline-color)(?:, )?)+ (1[0-6]\d) мс/;
+const keep = (w) => !MICRO.test(w);
 const fs = require("fs"), path = require("path");
 const { chromium } = require("playwright");
 const L = require("./r10_lib.cjs");
@@ -20,7 +23,7 @@ function points(rec) {
   const p = {};
   if (!rec || !rec.reached) return null;
   const d = rec.design || {}, u = rec.ui || {};
-  for (const o of Object.values(d.owners || {})) for (const [k, v] of Object.entries(o)) p[k] = (p[k] || 0) + v.length;
+  for (const o of Object.values(d.owners || {})) for (const [k, v] of Object.entries(o)) { const n = v.filter(keep).length; if (n) p[k] = (p[k] || 0) + n; }
   if (u.fonts && u.fonts.length) p["3 типографика"] = (p["3 типографика"] || 0) + u.fonts.length;
   if (u.taps && u.taps.length) p["10 нажатия"] = (p["10 нажатия"] || 0) + u.taps.length;
   if (u.contrast && u.contrast.length) p["4 цвет"] = (p["4 цвет"] || 0) + u.contrast.length;
@@ -96,7 +99,7 @@ const ITEMS = ["1 иерархия", "2 сетка", "3 типографика",
   md.push("", `## Стало хуже (${books[last].name} против ${books[prev].name}) — по пунктам`, "");
   for (const w of worse) {
     const a = w.recs[last], b = w.recs[prev];
-    const list = (rec, k) => Object.entries((rec && rec.design && rec.design.owners) || {}).flatMap(([o, p]) => (p[k] || []).map((x) => `${o}: ${x}`));
+    const list = (rec, k) => Object.entries((rec && rec.design && rec.design.owners) || {}).flatMap(([o, p]) => (p[k] || []).filter(keep).map((x) => `${o}: ${x}`));
     for (const k of w.grew) {
       const was = new Set(list(b, k)); const now = list(a, k).filter((x) => !was.has(x));
       md.push(`- ${w.v} · ${names[w.id].name} · ${k}: ${(now.length ? now : list(a, k)).slice(0, 4).join("; ") || "(замер ui: шрифт/зона/контраст)"}`);

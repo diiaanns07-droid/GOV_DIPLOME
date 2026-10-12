@@ -4,6 +4,9 @@
 // (размеров шрифта, главных кнопок, фокус, отклик нажатия, скелетон при загрузке, текст ошибки).
 //   node tests/e2e/design_summary.cjs --book <папка с BOOK.json> [--out <файл SUMMARY.md>]
 "use strict";
+// Микро-отклик (100–170 мс, только цвет/тень/сжатие) — не замечание (то же правило, что в design_book.cjs с круга 2).
+const MICRO = /^переход ((?:transform|scale|translate|background-color|background|color|box-shadow|opacity|filter|border-color|outline-color)(?:, )?)+ (1[0-6]\d) мс/;
+const keep = (w) => !MICRO.test(w);
 const fs = require("fs"), path = require("path");
 const L = require("./r10_lib.cjs");
 const args = L.parseArgs(process.argv.slice(2));
@@ -19,7 +22,7 @@ for (const [variant, states] of Object.entries(book.variants)) {
   for (const [id, r] of Object.entries(states)) {
     if (id.startsWith("_") || !r.reached) continue;
     const d = r.design || {}, u = r.ui || {};
-    for (const [owner, pts] of Object.entries(d.owners || {})) for (const [pt, list] of Object.entries(pts)) for (const w of list) {
+    for (const [owner, pts] of Object.entries(d.owners || {})) for (const [pt, list] of Object.entries(pts)) for (const w of list.filter(keep)) {
       const o = (byOwner[owner] = byOwner[owner] || {}), p = (o[pt] = o[pt] || {}), k = keyOf(w);
       const e = (p[k] = p[k] || { n: 0, where: new Set(), ex: new Set() });
       e.n++; e.where.add(`${variant} ${id}`); const m = w.match(/«([^»]*)»?\s*$/); if (m && m[1].trim() && e.ex.size < 4) e.ex.add(m[1].trim().slice(0, 28));

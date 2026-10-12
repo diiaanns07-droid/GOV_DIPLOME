@@ -39,7 +39,7 @@ const DESIGN = () => {
     const s = getComputedStyle(e); return s.visibility !== "hidden" && s.display !== "none" && Number(s.opacity) > 0.05; };
   const OWN = [[/^r07-/, "R07"], [/^(akim|nb)[-_]/, "R08"], [/^bc-/, "R09"], [/^(ri|rw|r06)-/, "R06"], [/^qa[-_]/, "R13"], [/^bq-/, "R12"], [/editor/i, "R12"], [/^b3d-/, "R05"]];
   const ownerOf = (e) => { for (let p = e; p && p !== document.body; p = p.parentElement) { const cls = [...(p.classList || [])].concat(p.id ? [p.id] : []);
-    for (const c of cls) for (const [re, o] of OWN) if (re.test(c)) return o; } return "R01"; };
+    for (const c of cls) for (const [re, o] of OWN) if (re.test(c)) return o; } return /\/civic\/qr\//.test(location.pathname) ? "R12" : "R01"; };
   const label = (e) => ((e.getAttribute && e.getAttribute("aria-label")) || e.innerText || e.textContent || "").trim().replace(/\s+/g, " ").slice(0, 48);
   const rgba = (c) => { const m = String(c).match(/rgba?\(([^)]+)\)/); if (!m) return null; const v = m[1].split(/[ ,/]+/).filter(Boolean).map(Number); return [v[0], v[1], v[2], v.length > 3 ? v[3] : 1]; };
   const hsl = ([r, g, b]) => { r /= 255; g /= 255; b /= 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2; let h = 0, s = 0;
@@ -188,7 +188,10 @@ const DESIGN = () => {
     const inf = /infinite/.test(s.animationIterationCount);
     for (const d of td.concat(inf ? [] : ad)) {
       const key = `${Math.round(d)} мс`; motion[key] = (motion[key] || 0) + 1;
-      if (d < 170 || d > 380) offMotion.push({ ms: Math.round(d), owner: ownerOf(e), what: (td.includes(d) ? "переход " + s.transitionProperty.slice(0, 30) : "анимация " + s.animationName), label: label(e).slice(0, 20) });
+      // Микро-отклик (наведение, нажатие: цвет, тень, сжатие) — 100–170 мс норма (токен R11 120 мс, iOS ~100 мс);
+      // 200–350 мс — для движения панелей, меню, шторок.
+      const micro = td.includes(d) && d >= 100 && d < 170 && e.matches("button, a, [role=button], [role=tab], [role=menuitem], [role=menuitemradio], input, select, textarea, label, summary") && s.transitionProperty.split(",").every((x) => /^\s*(transform|scale|translate|background-color|background|color|box-shadow|opacity|filter|border-color|outline-color)\s*$/.test(x));
+      if (!micro && (d < 170 || d > 380)) offMotion.push({ ms: Math.round(d), owner: ownerOf(e), what: (td.includes(d) ? "переход " + s.transitionProperty.slice(0, 30) : "анимация " + s.animationName), label: label(e).slice(0, 20) });
     }
     if (inf && ad.length) motion["∞ " + s.animationName] = (motion["∞ " + s.animationName] || 0) + 1;
   }
