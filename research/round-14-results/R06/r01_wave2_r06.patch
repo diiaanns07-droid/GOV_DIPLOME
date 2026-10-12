@@ -1,0 +1,136 @@
+diff --git a/tests/civic/R01/test_r01_api_v2.py b/tests/civic/R01/test_r01_api_v2.py
+index 111c2621..573d3531 100644
+--- a/tests/civic/R01/test_r01_api_v2.py
++++ b/tests/civic/R01/test_r01_api_v2.py
+@@ -101,6 +101,17 @@ ROUTE_SAMPLES = [
+     ("POST", "/proposals/p-1/vote", "", {"value": 1, "device_id": "device-123"}),
+     ("GET", "/objects", "", None),
+     ("PUT", "/objects/o-1/stage", "", {"stage": "design"}),
++    # R06 волна 2: идеи жителей и «Работы и отключения».
++    ("GET", "/ideas", "", None),
++    ("POST", "/ideas", "", {"title": "Сквер"}),
++    ("GET", "/ideas/i-1", "", None),
++    ("POST", "/ideas/i-1/support", "", {"device_id": "device-123", "on": True}),
++    ("POST", "/ideas/i-1/decide", "", {"action": "publish"}),
++    ("GET", "/staff/ideas", "", None),
++    ("GET", "/works", "", None),
++    ("POST", "/works", "", {"type": "work"}),
++    ("POST", "/works/w-1", "", {"type": "work"}),
++    ("POST", "/works/w-1/remove", "", {"expected_revision": 1}),
+     ("GET", "/forecast", "month=2026-11&k=5", None),
+ ]
+ 
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 42e2c89e..9311665a 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -96,6 +96,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 "nearby/index.html", "nearby/nearby.js", "nearby/nearby.css",
+                 "map/demo_snapped.json",  # B2: R12 демо-линии, привязанные к улицам OSM
+                 "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
++                # Волна 2, R06: «Идеи жителей» (#ideas, #projects) и форма «Работы и отключения» (#works).
++                "ideas/ideas.js", "ideas/ideas.css", "proposals/works.js",
+                 # B2: R05 3D-превью @ b0353ee. demo.html и data/demo-basemap.json не отдаём (только для демо R05).
+                 "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
+                 "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
+@@ -210,6 +212,10 @@ V2_RATE_LIMITS = {
+     "classify": ((60, 60, False),),
+     "similar": ((60, 60, False),),
+     "nearby.subscribe": ((60, 20, False), (86400, 200, False)),  # R08: подписка жителя на район/карточку
++    # R06 волна 2: новая идея жителя (модуль ещё держит ≤ 5 в час и ≤ 3 на проверке с устройства) и поддержка идеи
++    # (как голос за проект: ≤ 20 новых в сутки на одну идею с адреса, R15 S08).
++    "ideas.create": ((60, 3, False), (3600, 10, False)),
++    "ideas.support": ((60, 30, False), (86400, 20, True)),
+     # R09 волна 2 (просьба R15): фото частями — начатые загрузки и части по адресу (300 частей ≈ 10 МБ в минуту;
+     # незаконченная загрузка держит до 1,5 МБ в базе час); проверка ремонта — как «Я тоже», на одну жалобу.
+     "complaints.photos.start": ((60, 20, False), (3600, 60, False)),
+@@ -696,6 +702,17 @@ V2_ROUTES = (
+     ("GET", ("objects", "{id}"), "objects.get"),
+     ("PUT", ("objects", "{id}", "stage"), "objects.stage"),
+     ("GET", ("staff", "objects", "{id}", "stage"), "objects.stage.get"),
++    # R06 волна 2 (POLISH_WAVE_2 п. 7 и п. 4): идеи жителей и «Работы и отключения» для раздела «Рядом» R08.
++    ("GET", ("ideas",), "ideas.list"),
++    ("POST", ("ideas",), "ideas.create"),
++    ("GET", ("ideas", "{id}"), "ideas.get"),
++    ("POST", ("ideas", "{id}", "support"), "ideas.support"),
++    ("POST", ("ideas", "{id}", "decide"), "ideas.decide"),
++    ("GET", ("staff", "ideas"), "ideas.staff"),
++    ("GET", ("works",), "works.list"),
++    ("POST", ("works",), "works.create"),
++    ("POST", ("works", "{id}"), "works.update"),
++    ("POST", ("works", "{id}", "remove"), "works.remove"),
+     # R13 @ 8705829: прогноз проблемных территорий (прототип на синтетике, evidence_type="synthetic").
+     ("GET", ("forecast",), "forecast"),
+ )
+@@ -733,6 +750,18 @@ V2_HANDLERS = {
+     "objects.lagging": V2Handler("R06", ("ui.civic_store.v2",), "lagging_objects"),
+     "objects.get": V2Handler("R06", ("ui.civic_store.v2",), "get_object"),
+     "objects.stage.get": V2Handler("R06", ("ui.civic_store.v2",), "get_object_stage", staff=True),
++    "ideas.list": V2Handler("R06", ("ui.civic_store.v2",), "list_ideas"),
++    "ideas.create": V2Handler("R06", ("ui.civic_store.v2",), "create_idea"),
++    "ideas.get": V2Handler("R06", ("ui.civic_store.v2",), "get_idea"),
++    "ideas.support": V2Handler("R06", ("ui.civic_store.v2",), "support_idea"),
++    "ideas.decide": V2Handler("R06", ("ui.civic_store.v2",), "decide_idea", staff=True),
++    # Чтение для сотрудника (GET): без staff=True — шлюз требует для staff-маршрутов CSRF, а клиент оболочки шлёт его
++    # только в изменяющих запросах. Сессию сотрудника функции R06 проверяют сами (R15-S17): без входа — 401.
++    "ideas.staff": V2Handler("R06", ("ui.civic_store.v2",), "list_ideas_staff"),
++    "works.list": V2Handler("R06", ("ui.civic_store.v2",), "list_works"),
++    "works.create": V2Handler("R06", ("ui.civic_store.v2",), "create_work", staff=True),
++    "works.update": V2Handler("R06", ("ui.civic_store.v2",), "update_work", staff=True),
++    "works.remove": V2Handler("R06", ("ui.civic_store.v2",), "remove_work", staff=True),
+     "forecast": V2Handler("R13", ("ui.civic_forecast",), "forecast_response"),
+ }
+ 
+@@ -1131,6 +1160,31 @@ class CivicV2Gateway:
+             return {"proposal_id": params["id"], "value": value, "device_id": device}
+         if key == "objects.stage":
+             return {"object_id": params["id"], "body": body}
++        # R06 волна 2: тело проверяет сам модуль (422 с полями); здесь — только форма параметров адреса.
++        if key in ("ideas.list", "ideas.staff"):
++            status = q.get("status") or None
++            if status is not None and not re.fullmatch(r"[a-z_,]{1,60}", status):
++                raise V2BadRequest("status", "status: неизвестный статус.")
++            args = {"district": district, "status": status}
++            if key == "ideas.list":
++                device = q.get("device_id") or None
++                if device is not None and not V2_DEVICE_ID.match(device):
++                    raise V2BadRequest("device_id", "device_id: строка 8–128 символов.")
++                args["device_id"] = device
++            return args
++        if key == "ideas.get":
++            device = q.get("device_id") or None
++            if device is not None and not V2_DEVICE_ID.match(device):
++                raise V2BadRequest("device_id", "device_id: строка 8–128 символов.")
++            return {"idea_id": params["id"], "device_id": device}
++        if key in ("ideas.create", "works.create"):
++            return {"body": body}
++        if key in ("ideas.support", "ideas.decide"):
++            return {"idea_id": params["id"], "body": body}
++        if key == "works.list":
++            return {"district": district}
++        if key in ("works.update", "works.remove"):
++            return {"work_id": params["id"], "body": body}
+         return {}
+ 
+     # --- вызов ------------------------------------------------------------------
+diff --git a/web/index.html b/web/index.html
+index d3c88510..351cfb9d 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -25,6 +25,7 @@
+     <link rel="stylesheet" href="/civic/akim/services.css" />
+     <link rel="stylesheet" href="/civic/nearby/nearby.css" />
+     <link rel="stylesheet" href="/civic/proposals/proposals.css" />
++    <link rel="stylesheet" href="/civic/ideas/ideas.css" />
+     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+     <link rel="stylesheet" href="/civic/shell/shell.css" />
+     <link rel="stylesheet" href="/civic/qr/report.css" />
+@@ -246,6 +247,8 @@
+     <script defer src="/civic/shell/shell-text.js"></script>
+     <script defer src="/civic/shell/birge.js"></script>
+     <script defer src="/civic/nearby/nearby.js"></script>
++    <script defer src="/civic/ideas/ideas.js"></script>
++    <script defer src="/civic/proposals/works.js"></script>
+     <script defer src="/civic/akim/services.js"></script>
+     <script defer src="/civic/shell/explore.js"></script>
+     <script defer src="/civic/shell/shell.js"></script>

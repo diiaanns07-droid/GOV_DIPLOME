@@ -201,6 +201,8 @@
       esc(t("proposal.kind." + p.kind)) + "</span></span>" + tags + "</div>" +
       '<h3 class="bk-card__title" id="' + id + '" lang="' + ttl.lang + '">' + esc(ttl.text) + "</h3>" +
       (p.district ? '<p class="bk-meta" style="margin:0">' + esc(t("district.name", { name: t("district." + p.district) })) + "</p>" : "") +
+      // Проект из идеи жителей (волна 2 п. 7): «По идее жителей · 47 голосов» — голоса за идею на момент решения.
+      (p.idea ? '<p class="r06-idea">' + icon("users") + "<span>" + esc(t("idea.by_residents", { n: p.idea.votes || 0 })) + "</span></p>" : "") +
       '<div class="bk-card__row"><span class="bk-meta">' + esc(t("status.label")) + '</span><span class="bk-status" data-status="' +
       (STATUS_LOOK[p.status] || "new") + '">' + esc(t("proposal.status." + p.status)) + "</span></div>" +
       (akimat
@@ -432,6 +434,8 @@
   }
 
   root.BirgeProposals = {
+    // Строку «По идее жителей · N голосов» карточка рисует сама — 3D-модуль R05 свою не добавляет.
+    showsIdea: true,
     api: api,
     unwrap: unwrap,
     deviceId: deviceId,

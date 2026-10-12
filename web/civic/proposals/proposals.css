@@ -139,3 +139,13 @@
   padding: 0 20px;
   font: 600 16px system-ui, sans-serif;
 }
+
+/* «По идее жителей · 47 голосов» (волна 2 п. 7): проект вырос из идеи жителей. */
+.r06-idea {
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+  margin: 0;
+  color: var(--c-ok);
+  font-weight: var(--fw-semi);
+}
