@@ -1,0 +1,14 @@
+R05 · дизайн-марафон, круг 5 — полный прогон (12.10, облако, SwiftShader)
+Код R05: 4b0208e (рабочее дерево на начало прогона = 4b0208e по web/civic/build3d; HEAD тогда — c3aa687, коммит круга 5 сделан в 18:47 из того же дерева)
+ui-kit/i18n демо: R11 claude/r14-R11 @ 49d1ee64 (--kit); оболочка: R01 claude/sharp-dijkstra-0t87gl @ e69b6f0d + R05 4b0208e; тесты R10 754ee723 (= 53d1c070 по tests/)
+
+browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json 18:56
+ux_day3 exit 0 Итого: 29 PASS, 0 FAIL
+node exit 0 # pass 38 # fail 0 
+i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0
+shell smoke exit 0 pass=28 fail=0  19:05
+R01 r14_b2 exit 0 pass=28 fail=0 
+R01 r14_shell exit 0 pass=42 fail=0 
+R01 r14_wave2 exit 0 pass=42 fail=0 
+R10 demo_flow (тесты 754ee723) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m12_demo 19:21
+DONE
