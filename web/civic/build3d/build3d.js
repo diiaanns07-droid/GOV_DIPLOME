@@ -1715,7 +1715,10 @@
       Object.keys(ideas).forEach(removeIdea);
       (Array.isArray(list) ? list : []).forEach(function (raw) {
         var p = Core.normalizeIdea(raw);
-        if (!p || ideas[p.id]) return;
+        // Слой «Идеи жителей» — идеи, за которые сейчас голосуют (R06 voting). Стала проектом — она в слое «Проекты»;
+        // отклонённая, на проверке, скрытая — не для карты (у отклонённой причина — в карточке идеи R06).
+        // Открыть любую идею в 3D по кнопке её карточки — view3dIdea.
+        if (!p || ideas[p.id] || p.status !== "voting") return;
         var it = { p: p, group: null, label: null };
         it.label = makeIdeaLabel(it);
         ideas[p.id] = it;
