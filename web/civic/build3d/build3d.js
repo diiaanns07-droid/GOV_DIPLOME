@@ -1243,7 +1243,8 @@
       clearTimeout(toastTimer);
       toastIsError = !!opts2.error;
       var n = el("div", "bk-toast" + (opts2.error ? " bk-toast--error" : " bk-toast--ok"), { role: opts2.error ? "alert" : "status" });
-      if (!opts2.error) n.appendChild(icon("check", o.iconsUrl));
+      // Значок слева, как в ui-kit (иконка | текст | действие под текстом): успех — галочка, ошибка — «внимание».
+      n.appendChild(icon(opts2.error ? "alert" : "check", o.iconsUrl));
       n.appendChild(el("span", "bk-toast__text", { text: text }));
       if (opts2.action) {
         var b = el("button", "bk-btn", { type: "button", "data-action": opts2.actionId || "toast-action" });
@@ -1688,14 +1689,21 @@
         };
       }
       if (ghost) {
-        // Призрак: можно — графит ui-kit (не зелёный: зелёный в Birge — только «исправлено»), нельзя — красный.
-        var color = tint || (invalid ? 0xb3362e : 0x3f524c);
+        // Призрак размещения (дизайн-марафон): сама модель в своих цветах, полупрозрачно — видно, что встанет; пунктир —
+        // #152c26. Нельзя поставить — модель краснеет (цвета под красным, пунктир красный). Было — однотонный зелёный слепок.
         return {
-          solid: new THREE.MeshLambertMaterial({ color: color, emissive: color, emissiveIntensity: 0.25, transparent: true, opacity: 0.55 }),
+          solid: new THREE.MeshLambertMaterial({
+            vertexColors: true,
+            color: invalid ? 0xff9a90 : 0xffffff,
+            emissive: invalid ? 0xb3362e : 0x000000,
+            emissiveIntensity: invalid ? 0.35 : 0,
+            transparent: true,
+            opacity: 0.72,
+          }),
           glass: null,
-          glow: new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.55 }),
+          glow: new THREE.MeshBasicMaterial({ color: invalid ? 0xffb3ab : 0xfff1c1, transparent: true, opacity: 0.72 }),
           decal: null,
-          outline: new THREE.MeshBasicMaterial({ color: color }),
+          outline: new THREE.MeshBasicMaterial({ color: invalid ? 0xb3362e : 0x152c26 }),
         };
       }
       return {

@@ -173,7 +173,7 @@
   align-items: center;
   gap: var(--s-2, 8px);
   margin: 0;
-  font-size: var(--fs-lead, 18px);
+  font-size: var(--fs-lead, 17px);
   font-weight: var(--fw-bold, 700);
   line-height: var(--lh-head, 1.2);
 }
@@ -208,8 +208,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: var(--s-2, 8px) var(--s-2, 8px) 10px;
+  gap: var(--s-2, 8px);
+  padding: var(--s-2, 8px) var(--s-2, 8px) var(--s-3, 12px); /* сетка 8 pt */
   border: 0;
   border-radius: var(--r-l, 16px);
   /* Плитка ui-kit (R11 INTEGRATION 11.3): заливка без рамки и без тени (одна тень — у панели, GLASS.md);
@@ -217,7 +217,7 @@
   background: var(--c-fill, #eff1f2);
   color: var(--c-ink, #152c26);
   font: inherit;
-  font-size: var(--fs-body, 16px);
+  font-size: var(--fs-body, 15px);
   font-weight: var(--fw-semi, 600);
   line-height: 1.2;
   text-align: center;
@@ -262,7 +262,7 @@
 .b3d-card--skel {
   border: 0;
   box-shadow: none;
-  min-height: 115px; /* как карточка с превью — каталог не «прыгает» после загрузки */
+  min-height: 120px; /* как карточка с превью — каталог не «прыгает» после загрузки */
 }
 .b3d-card__label {
   overflow-wrap: normal;
@@ -273,7 +273,7 @@
 @container (max-width: 700px) {
   .b3d-card {
     padding-inline: 4px;
-    font-size: 14px; /* не меньше 14 px (UX_BRIEF); токена «14 для подписей» у ui-kit нет — --fs-caption только для мета */
+    font-size: var(--fs-body, 15px); /* шкала ui-kit 13/15/17/22/28 (дизайн-марафон): было 14 px вне шкалы */
   }
 }
 
@@ -283,7 +283,7 @@
   align-items: flex-start;
   gap: var(--s-2, 8px);
   margin: 0;
-  font-size: var(--fs-body, 16px);
+  font-size: var(--fs-body, 15px);
   min-height: 1.4em;
 }
 .b3d-hint .ic {
@@ -301,7 +301,7 @@
 }
 .b3d-hint--lead {
   align-items: center;
-  font-size: var(--fs-lead, 18px);
+  font-size: var(--fs-lead, 17px);
   font-weight: var(--fw-semi, 600);
 }
 .b3d-hint--lead .ic {
@@ -343,7 +343,7 @@
   align-items: center;
   gap: var(--s-2, 8px);
   margin: 0;
-  font-size: var(--fs-title, 20px);
+  font-size: var(--fs-title, 22px);
   font-weight: var(--fw-bold, 700);
   line-height: var(--lh-head, 1.2);
 }
@@ -384,7 +384,7 @@
 }
 .b3d-message__title {
   margin: 0;
-  font-size: var(--fs-lead, 18px);
+  font-size: var(--fs-lead, 17px);
   font-weight: var(--fw-semi, 600);
 }
 .b3d-message .bk-meta {
@@ -471,7 +471,7 @@
   border-radius: var(--r-pill, 999px);
   box-shadow: var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
   font-family: var(--font, "Birge Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif);
-  font-size: var(--fs-body, 16px);
+  font-size: var(--fs-body, 15px);
   font-weight: var(--fw-semi, 600);
   line-height: 1.4;
   white-space: nowrap;
@@ -531,7 +531,7 @@
   min-width: 36px;
   height: 36px;
   min-height: 36px;
-  padding: 0 10px;
+  padding: 0 var(--s-3, 12px); /* сетка 8 pt */
   gap: 4px;
 }
 .b3d-label--cluster .b3d-label__icon {
@@ -539,7 +539,7 @@
 }
 .b3d-label--cluster .b3d-label__count {
   display: inline;
-  font-size: var(--fs-body, 16px);
+  font-size: var(--fs-body, 15px);
   font-weight: var(--fw-bold, 700);
   line-height: 1;
 }
@@ -613,14 +613,14 @@
     height: 64px;
   }
   .b3d-card--skel {
-    min-height: 107px;
+    min-height: 112px;
   }
   .b3d-card {
     flex: 0 0 144px; /* «Спортплощадка» одним словом — 16 px без переноса */
     min-width: 144px;
     min-height: 88px;
     padding: var(--s-2, 8px) 6px;
-    font-size: var(--fs-body, 16px);
+    font-size: var(--fs-body, 15px);
   }
   .b3d-actions {
     display: grid;
