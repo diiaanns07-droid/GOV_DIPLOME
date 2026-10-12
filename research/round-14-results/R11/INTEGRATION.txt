@@ -245,3 +245,45 @@ R07 868de08 (читаемость карты) + R01: research/round-14-results/R
      .ri-new > .bk-btn { flex: 0 1 auto; } (на телефоне — во всю ширину, как сейчас).
   c) Строка-правило «Это опрос…» (.bk-banner.ri-honest) теперь выровнена по колонке сама (ui-kit: обычный .bk-banner
      без заливки — без боковых полей); своё ничего не нужно.
+
+10. ДИЗАЙН-МАРАФОН · круг 2 — состояния «загрузка» и «нет связи» (п. 8 чек-листа)
+================================================================================
+Инструмент: NODE_PATH="$(npm root -g)" node tests/civic/R11/review/state_shots.cjs http://127.0.0.1:<порт>/ <папка>
+(ответ API раздела задерживается на 20 с или обрывается; 1366 ru и 375 kk; итог в консоли: скелетон · рисунок · «Повторить»).
+На 65343341 + ui-kit R11: скелетоны есть у всех разделов; «нет связи» с линейной иллюстрацией ui-kit — «Идеи», «Проекты»,
+«Рядом», «Вопрос акиму». Без неё — три места ниже. Образец — BirgeUI.state(el, "error", { action: { onClick: retry } }):
+иллюстрация ill-offline 96/80 px, «Нет связи с сервером», «Проверьте интернет и повторите.», серая кнопка ⟳ «Повторить».
+Рисунок вне BirgeUI.state: var art = document.createElement("span"); art.innerHTML = BirgeUI.illustration("offline");
+→ art.firstChild (статичная разметка ui-kit, без данных пользователя; CSP не нарушает).
+
+10.1 R07 · web/civic/heat/heat.js errorHtml(): маленький красный значок 40 → иллюстрация, кнопка ui-kit с ⟳.
+-      return '<div class="r07-error" role="alert">' + svgIcon(notReady ? "alert" : "wifi_off", 40) + '<p class="r07-error__title">' +
++      return '<div class="r07-error bk-error" role="alert">' + window.BirgeUI.illustration(notReady ? "search" : "offline") + '<p class="r07-error__title bk-error__title">' +
+ …
+-        '<button type="button" class="r07-btn" data-retry>' + esc(t("heat.retry")) + "</button></div>";
++        '<button type="button" class="bk-btn" data-retry>' + window.BirgeUI.icon("refresh") + esc(t("heat.retry")) + "</button></div>";
+     (если BirgeUI нет — прежний svgIcon; текст «Проверьте интернет и нажмите «Повторить»» можно оставить.)
+
+10.2 R08 · web/civic/akim/akim.js renderError(): ошибка внутри белой карточки .bk-card, значок 48 красный, кнопка главная.
+     Стало как у остальных разделов: без обёртки .bk-card (на стекле листа и так подложка), иллюстрация вместо icon(…, 48),
+     кнопка «Повторить» — .bk-btn (серая; главная на экране — «Распечатать»/выбор варианта, не повтор):
+-      var box = h("div", { class: "bk-card akim-card" }, [
+-        h("div", { class: "bk-error", role: "alert" }, [
+-          icon(kind === "network" ? "wifi-off" : "alert", 48),
++      var art = document.createElement("span");
++      art.innerHTML = window.BirgeUI.illustration(kind === "network" ? "offline" : "search");
++      var box = h("div", { class: "akim-card" }, [
++        h("div", { class: "bk-error", role: "alert" }, [
++          art.firstChild,
+ …
+-              class: "bk-btn bk-btn--primary",
++              class: "bk-btn",
+
+10.3 R09 · web/civic/feedback/complaint-list.js (Обращения) и complaint.js renderMine (Мои обращения):
+     в обоих bk-error добавить иллюстрацию первой строкой и ⟳ в кнопку (в «Обращениях» её нет):
++          (function () { var a = document.createElement("span"); a.innerHTML = window.BirgeUI.illustration("offline"); return a.firstChild; })(),
+           h("p", { "class": "bk-error__title" }, t("mine.error.title")),
+     и в complaint.js вместо icon("wifi-off") — та же иллюстрация. Текст mine.error.hint (kk «…қайталаңыз.») можно заменить
+     общим common.state.network_text («…қайталап көріңіз.») — тогда на всех экранах одна фраза.
+     «Обращения» без входа (§9.3 b): кнопка «Войти» здесь единственная на экране — пусть будет главной (bk-btn--primary);
+     это не нарушает «одна главная на экран» (карточки действий без входа нет).

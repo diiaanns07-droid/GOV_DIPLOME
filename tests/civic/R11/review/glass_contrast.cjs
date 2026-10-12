@@ -75,7 +75,8 @@ const MAP = process.env.GLASS_MAP || "#map, .maplibregl-map, .pm-map, .cl-map";
       "body * { visibility: hidden !important; }",
       MAP.split(",").map((m) => `${m.trim()}, ${m.trim()} *`).join(", ") + " { visibility: visible !important; }",
       "[data-r11-glass] { visibility: visible !important; color: transparent !important; }",
-      "[data-r11-glass] * { visibility: hidden !important; }",
+      // содержимое стекла прячем и там, где стекло лежит внутри карты (#map * сильнее по специфичности — легенда R01)
+      ["[data-r11-glass] *", ...MAP.split(",").map((m) => `${m.trim()} [data-r11-glass] *`)].join(", ") + " { visibility: hidden !important; }",
     ].join("\n") });
     await page.waitForTimeout(300);
     for (const b of boxes) {
