@@ -1,0 +1,737 @@
+{
+ "meta": {
+  "root": "/home/user/bf3gl",
+  "sha": "3d8c426f",
+  "control": "/home/user/bf3f",
+  "inject_css": "/tmp/claude-0/-home-user-GOV-DIPLOME/9577afd2-0809-513f-ad04-e94ab286f08b/scratchpad/glass/r01_apply.css",
+  "inject_js": "/tmp/claude-0/-home-user-GOV-DIPLOME/9577afd2-0809-513f-ad04-e94ab286f08b/scratchpad/glass/r01_apply.js",
+  "note": "С ПРОБНЫМ CSS/JS — не приёмка сборки",
+  "when": "2026-10-12T13:00:10.769Z",
+  "sizes": [
+   "1366x768",
+   "1024x768"
+  ],
+  "langs": [
+   "ru"
+  ],
+  "delivered": true,
+  "machine": {
+   "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+   "cores": 4,
+   "mem_gb": 16,
+   "platform": "linux 6.18.44-fc-v114",
+   "node": "v22.22.0"
+  }
+ },
+ "counts": {
+  "PASS": 1,
+  "INFO": 16
+ },
+ "css": {
+  "glass": [
+   "web/civic/ui-kit/components.css"
+  ],
+  "reduced": [
+   "web/civic/ui-kit/components.css"
+  ],
+  "nosupport": [
+   "web/civic/ui-kit/components.css"
+  ]
+ },
+ "fps": [
+  {
+   "label": "3d8c426f",
+   "glass": "keep",
+   "size": "1366x768",
+   "runs": [
+    {
+     "plain": {
+      "pan": {
+       "fps": 3,
+       "p95_ms": 483,
+       "over50": 9
+      },
+      "fly": {
+       "fps": 3,
+       "p95_ms": 350,
+       "over50": 10
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 5,
+       "p95_ms": 250,
+       "over50": 13
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 317,
+       "over50": 12
+      }
+     },
+     "glassOn": true
+    },
+    {
+     "plain": {
+      "pan": {
+       "fps": 3,
+       "p95_ms": 583,
+       "over50": 8
+      },
+      "fly": {
+       "fps": 3,
+       "p95_ms": 333,
+       "over50": 10
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 5,
+       "p95_ms": 250,
+       "over50": 13
+      },
+      "fly": {
+       "fps": 3,
+       "p95_ms": 350,
+       "over50": 9
+      }
+     },
+     "glassOn": true
+    }
+   ],
+   "fps": {
+    "plain": {
+     "pan": 3,
+     "fly": 3
+    },
+    "withPanel": {
+     "pan": 5,
+     "fly": 4
+    }
+   },
+   "panel": true,
+   "glassOn": true
+  },
+  {
+   "label": "3d8c426f bk-glass-off",
+   "glass": "off",
+   "size": "1366x768",
+   "runs": [
+    {
+     "plain": {
+      "pan": {
+       "fps": 4,
+       "p95_ms": 500,
+       "over50": 10
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 317,
+       "over50": 11
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 4,
+       "p95_ms": 300,
+       "over50": 11
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 333,
+       "over50": 12
+      }
+     },
+     "glassOn": false
+    },
+    {
+     "plain": {
+      "pan": {
+       "fps": 2,
+       "p95_ms": 533,
+       "over50": 7
+      },
+      "fly": {
+       "fps": 3,
+       "p95_ms": 350,
+       "over50": 10
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 4,
+       "p95_ms": 367,
+       "over50": 10
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 350,
+       "over50": 12
+      }
+     },
+     "glassOn": false
+    }
+   ],
+   "fps": {
+    "plain": {
+     "pan": 3,
+     "fly": 4
+    },
+    "withPanel": {
+     "pan": 4,
+     "fly": 4
+    }
+   },
+   "panel": true,
+   "glassOn": false
+  },
+  {
+   "label": "f94f0fc1",
+   "glass": "keep",
+   "size": "1366x768",
+   "runs": [
+    {
+     "plain": {
+      "pan": {
+       "fps": 4,
+       "p95_ms": 500,
+       "over50": 11
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 300,
+       "over50": 11
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 4,
+       "p95_ms": 300,
+       "over50": 12
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 317,
+       "over50": 11
+      }
+     },
+     "glassOn": false
+    },
+    {
+     "plain": {
+      "pan": {
+       "fps": 3,
+       "p95_ms": 567,
+       "over50": 9
+      },
+      "fly": {
+       "fps": 3,
+       "p95_ms": 317,
+       "over50": 11
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 4,
+       "p95_ms": 250,
+       "over50": 12
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 350,
+       "over50": 12
+      }
+     },
+     "glassOn": false
+    }
+   ],
+   "fps": {
+    "plain": {
+     "pan": 4,
+     "fly": 4
+    },
+    "withPanel": {
+     "pan": 4,
+     "fly": 4
+    }
+   },
+   "panel": true,
+   "glassOn": false
+  },
+  {
+   "label": "3d8c426f",
+   "glass": "keep",
+   "size": "1024x768",
+   "runs": [
+    {
+     "plain": {
+      "pan": {
+       "fps": 5,
+       "p95_ms": 233,
+       "over50": 13
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 250,
+       "over50": 13
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 6,
+       "p95_ms": 217,
+       "over50": 15
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 333,
+       "over50": 11
+      }
+     },
+     "glassOn": true
+    },
+    {
+     "plain": {
+      "pan": {
+       "fps": 5,
+       "p95_ms": 267,
+       "over50": 13
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 283,
+       "over50": 13
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 7,
+       "p95_ms": 183,
+       "over50": 15
+      },
+      "fly": {
+       "fps": 5,
+       "p95_ms": 317,
+       "over50": 14
+      }
+     },
+     "glassOn": true
+    }
+   ],
+   "fps": {
+    "plain": {
+     "pan": 5,
+     "fly": 4
+    },
+    "withPanel": {
+     "pan": 7,
+     "fly": 5
+    }
+   },
+   "panel": true,
+   "glassOn": true
+  },
+  {
+   "label": "3d8c426f bk-glass-off",
+   "glass": "off",
+   "size": "1024x768",
+   "runs": [
+    {
+     "plain": {
+      "pan": {
+       "fps": 6,
+       "p95_ms": 217,
+       "over50": 14
+      },
+      "fly": {
+       "fps": 5,
+       "p95_ms": 250,
+       "over50": 14
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 7,
+       "p95_ms": 167,
+       "over50": 17
+      },
+      "fly": {
+       "fps": 5,
+       "p95_ms": 267,
+       "over50": 13
+      }
+     },
+     "glassOn": false
+    },
+    {
+     "plain": {
+      "pan": {
+       "fps": 5,
+       "p95_ms": 600,
+       "over50": 10
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 283,
+       "over50": 12
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 7,
+       "p95_ms": 200,
+       "over50": 15
+      },
+      "fly": {
+       "fps": 5,
+       "p95_ms": 267,
+       "over50": 14
+      }
+     },
+     "glassOn": false
+    }
+   ],
+   "fps": {
+    "plain": {
+     "pan": 6,
+     "fly": 5
+    },
+    "withPanel": {
+     "pan": 7,
+     "fly": 5
+    }
+   },
+   "panel": true,
+   "glassOn": false
+  },
+  {
+   "label": "f94f0fc1",
+   "glass": "keep",
+   "size": "1024x768",
+   "runs": [
+    {
+     "plain": {
+      "pan": {
+       "fps": 4,
+       "p95_ms": 267,
+       "over50": 12
+      },
+      "fly": {
+       "fps": 5,
+       "p95_ms": 283,
+       "over50": 14
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 7,
+       "p95_ms": 200,
+       "over50": 15
+      },
+      "fly": {
+       "fps": 5,
+       "p95_ms": 300,
+       "over50": 13
+      }
+     },
+     "glassOn": false
+    },
+    {
+     "plain": {
+      "pan": {
+       "fps": 5,
+       "p95_ms": 217,
+       "over50": 14
+      },
+      "fly": {
+       "fps": 4,
+       "p95_ms": 300,
+       "over50": 13
+      }
+     },
+     "panel": true,
+     "withPanel": {
+      "pan": {
+       "fps": 6,
+       "p95_ms": 217,
+       "over50": 15
+      },
+      "fly": {
+       "fps": 5,
+       "p95_ms": 233,
+       "over50": 14
+      }
+     },
+     "glassOn": false
+    }
+   ],
+   "fps": {
+    "plain": {
+     "pan": 5,
+     "fly": 5
+    },
+    "withPanel": {
+     "pan": 7,
+     "fly": 5
+    }
+   },
+   "panel": true,
+   "glassOn": false
+  }
+ ],
+ "results": [
+  {
+   "item": "G-2",
+   "scope": "CSS",
+   "name": "запасной вид без стекла: @media (prefers-reduced-transparency: reduce) и @supports not (backdrop-filter) — непрозрачный белый",
+   "status": "PASS",
+   "detail": {
+    "glass": [
+     "web/civic/ui-kit/components.css"
+    ],
+    "reduced": [
+     "web/civic/ui-kit/components.css"
+    ],
+    "nosupport": [
+     "web/civic/ui-kit/components.css"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1366x768",
+   "name": "плавность карты, сдвиг без панели: 3 к/с против 3 — без стекла (bk-glass-off) · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 3,
+    "was": 3,
+    "ratio": 1,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1366x768",
+   "name": "плавность карты, сдвиг без панели: 3 к/с против 4 — f94f0fc1 · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 3,
+    "was": 4,
+    "ratio": 0.75,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1366x768",
+   "name": "плавность карты, сдвиг с панелью: 5 к/с против 4 — без стекла (bk-glass-off) · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 5,
+    "was": 4,
+    "ratio": 1.25,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1366x768",
+   "name": "плавность карты, сдвиг с панелью: 5 к/с против 4 — f94f0fc1 · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 5,
+    "was": 4,
+    "ratio": 1.25,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1366x768",
+   "name": "плавность карты, перелёт без панели: 3 к/с против 4 — без стекла (bk-glass-off) · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 3,
+    "was": 4,
+    "ratio": 0.75,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1366x768",
+   "name": "плавность карты, перелёт без панели: 3 к/с против 4 — f94f0fc1 · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 3,
+    "was": 4,
+    "ratio": 0.75,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1366x768",
+   "name": "плавность карты, перелёт с панелью: 4 к/с против 4 — без стекла (bk-glass-off) · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 4,
+    "was": 4,
+    "ratio": 1,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1366x768",
+   "name": "плавность карты, перелёт с панелью: 4 к/с против 4 — f94f0fc1 · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 4,
+    "was": 4,
+    "ratio": 1,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1024x768",
+   "name": "плавность карты, сдвиг без панели: 5 к/с против 6 — без стекла (bk-glass-off) · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 5,
+    "was": 6,
+    "ratio": 0.83,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1024x768",
+   "name": "плавность карты, сдвиг без панели: 5 к/с против 5 — f94f0fc1 · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 5,
+    "was": 5,
+    "ratio": 1,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1024x768",
+   "name": "плавность карты, сдвиг с панелью: 7 к/с против 7 — без стекла (bk-glass-off) · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 7,
+    "was": 7,
+    "ratio": 1,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1024x768",
+   "name": "плавность карты, сдвиг с панелью: 7 к/с против 7 — f94f0fc1 · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 7,
+    "was": 7,
+    "ratio": 1,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1024x768",
+   "name": "плавность карты, перелёт без панели: 4 к/с против 5 — без стекла (bk-glass-off) · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 4,
+    "was": 5,
+    "ratio": 0.8,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1024x768",
+   "name": "плавность карты, перелёт без панели: 4 к/с против 5 — f94f0fc1 · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 4,
+    "was": 5,
+    "ratio": 0.8,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1024x768",
+   "name": "плавность карты, перелёт с панелью: 5 к/с против 5 — без стекла (bk-glass-off) · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 5,
+    "was": 5,
+    "ratio": 1,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "G-4",
+   "scope": "1024x768",
+   "name": "плавность карты, перелёт с панелью: 5 к/с против 5 — f94f0fc1 · программный WebGL — мерить на ноутбуке (Codex М9)",
+   "status": "INFO",
+   "detail": {
+    "now": 5,
+    "was": 5,
+    "ratio": 1,
+    "glass_on": true,
+    "repeats": 2
+   },
+   "shot": null
+  }
+ ]
+}
