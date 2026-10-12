@@ -1012,7 +1012,7 @@
         // Наклон и «объект над карточкой» — одним движением камеры: второе easeTo оборвало бы наклон.
         var sel = S.selected && S.objects[S.selected];
         var tilt = o.view !== "3d" && map.getPitch() < PITCH_3D;
-        enable3d({ tilt: tilt && !sel });
+        enable3d({ tilt: tilt && !sel, rise: true });
         if (sel && tilt) keepAboveDock(sel, { pitch: TILT_3D, bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
       });
       if (loading) b.setAttribute("aria-busy", "true");
@@ -1337,6 +1337,7 @@
             if (!seen[id] && !S.objects[id].pending) disposeObject(id);
           });
           S.phase = "ready";
+          readyAt = performance.now();
           render();
           repaint();
         },
@@ -1344,6 +1345,7 @@
           if (S.destroyed) return;
           logFail("[build3d] предложения не загрузились", err);
           S.phase = "ready";
+          readyAt = performance.now();
           render();
           if (S.leaving) return;
           toast(t("build3d.load_failed"), {
@@ -1528,9 +1530,10 @@
       if (how.tilt && o.view !== "3d" && map.getPitch() < PITCH_3D) {
         map.easeTo({ pitch: TILT_3D, bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
       }
-      // Житель или акимат сам перешёл в объёмный вид (кнопка «3D», наклон карты) — модели «поднимаются» той же волной,
-      // что при постройке, но быстрее и без кольца (как дома в картах Apple при наклоне). При загрузке страницы — нет.
-      var rise = S.phase === "ready" && S.view !== "3d";
+      // Житель или акимат сам перешёл в объёмный вид (кнопка «3D», наклон карты: how.rise) — модели «поднимаются» той же
+      // волной, что при постройке, но быстрее и без кольца (как дома в картах Apple при наклоне). При загрузке и
+      // перезагрузке страницы — нет (первые 1.5 с после готовности данных объёмный вид включает сам модуль).
+      var rise = !!how.rise && S.view !== "3d" && S.phase === "ready" && performance.now() - readyAt > 1500;
       var done3d = function (ok) {
         if (ok && rise) riseAll();
         return ok;
@@ -1581,7 +1584,7 @@
     function onViewMoveEnd() {
       if (o.view !== "auto" || S.destroyed || (S.phase !== "ready" && S.phase !== "idle")) return;
       var tilted = map.getPitch() >= PITCH_3D;
-      if (tilted && S.view !== "3d" && anyVisible()) enable3d();
+      if (tilted && S.view !== "3d" && anyVisible()) enable3d({ rise: true });
       else if (!tilted && wasTilted && S.view === "3d" && S.mode !== "placing" && !anims.length) disable3d();
       wasTilted = tilted;
     }
@@ -2022,6 +2025,7 @@
     // Подъём моделей при переходе в объёмный вид (0.7 с): uReveal 0 → 1 у всех стоящих объектов, тень проявляется;
     // подписи не прячутся, кольца нет. «Уменьшить движение» — сразу.
     var RISE_MS = 700;
+    var readyAt = Infinity; // когда данные проектов готовы (performance.now()); подъём — не раньше чем через 1.5 с
     function setReveal(obj, v) {
       [obj.mats.solid, obj.mats.glass, obj.mats.glow].forEach(function (m) {
         if (m && m.userData.reveal) m.userData.reveal.value = v;
@@ -3586,7 +3590,7 @@
           disable3d();
           return Promise.resolve(false);
         }
-        return enable3d({ tilt: true });
+        return enable3d({ tilt: true, rise: true });
       },
       setVisible: function (v) {
         S.visible = !!v;
