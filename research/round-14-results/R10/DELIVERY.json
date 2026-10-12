@@ -5,8 +5,8 @@
  "base_sha": "4bbf456 (claude/round-14-package)",
  "restored_from": "— (новые пути tests/e2e/, tests/civic/R10/; в раунде 13 их не было)",
  "code_sha": "тесты R10 ветки claude/r14-R10 (12 окт): шапка FINAL-3 78a59b6, 7988ad7 (R01 INTEGRATION 21.6), «Идеи» и «Вопрос акиму» 1672078 и новее; ACCEPTED.json шаг 6",
- "tested_sha": "FINAL-3 кандидат R01 2f643dc: сценарий 173/0/0; против эталона 8e67c65 — сценарий, тексты, контраст да; 13 px — 1 новое (B-067); 44 px — не хуже эталона; время в порогах (контроль шага 3 ×1,17); первый значок 2,5–2,7 с; волны 237/4/8 NOT_RUN/1 ЖДЁТ; точность 31/0",
- "status": "partial — FINAL-3 кандидат 2f643dc принят: можно показывать. Закрыты B-056, B-060, B-062, B-064. Открыто у R07: B-057, B-067, значки 34–36 px; R08: B-061 (обход в DEMO_SCRIPT), B-059. Отчёт — ACCEPTANCE_FINAL3.md.",
+ "tested_sha": "FINAL-3 окончательная R01 f94f0fc (код b3d0f90): сценарий 173/0/0; против эталона 8e67c65 — сценарий, тексты, контраст да; 13 px — 1 новое (B-067); 44 px — не хуже эталона; время все шаги в порогах; первый значок 1,6–1,7 с; волны 237/4/8 NOT_RUN/1 ЖДЁТ; точность 31/0. Кандидат 2f643dc — то же (шаг 3 с контролем ×1,17)",
+ "status": "partial — FINAL-3 (окончательная f94f0fc и кандидат 2f643dc) принят R10: можно показывать. Открыто: R07 — B-057, B-067, значки 34–36 px; R08 — B-059. Стекло «Liquid Glass»: проверка glass_check.cjs готова (ЖДЁТ поставки R11 GLASS.md → R01/R07/R08/R09), самопроверка на пробном стекле — ловит серый текст на стекле.",
  "push_status": "OK: ветка claude/r14-R10 в origin; последний SHA — в STATUS.md и итоговом сообщении",
  "environment": "облачный Linux, Python 3.13.16 (+pytest 9.1.1), Node 22.22.0, Playwright 1.56.1 + Chromium headless (программный WebGL), без интернета (подложка OpenFreeMap недоступна)",
  "changed_paths": [
@@ -46,7 +46,11 @@
   "research/round-14-results/R10/ACCEPTANCE_FINAL3.md",
   "research/round-14-results/R10/e2e/final3-2f643dc/",
   "research/round-14-results/R10/compare/FINAL-3-2f643dc/",
-  "research/round-14-results/R10/wave/FINAL-3-2f643dc/"
+  "research/round-14-results/R10/wave/FINAL-3-2f643dc/",
+  "tests/e2e/glass_check.cjs",
+  "research/round-14-results/R10/e2e/final3-f94f0fc/",
+  "research/round-14-results/R10/compare/FINAL-3-f94f0fc/",
+  "research/round-14-results/R10/wave/FINAL-3-f94f0fc/"
  ],
  "builds_checked": {
   "R01 claude/sharp-dijkstra-0t87gl @ bc7c961 (до B1)": "ACCEPTANCE_PRE_B1.md — сценарий не проходит (ожидаемо до B1)",
@@ -75,7 +79,8 @@
   "8e67c65 «состаренная» демо-база": "демо-жалобам ~14 дней: /similar days=14 — 0, summary 0 → нет «Я тоже» (B-049); days=30 — 1",
   "FINAL-2 шаг 4 @ 0f5101a3": "ACCEPTANCE_FINAL2.md §6 — сценарий 170/0/0; против 8e67c65: 4 FAIL = B-054, загрузка быстрее; интерфейс: 13 px и 44 px — не хуже эталона, контраст — B-058; волны 192/35/3/3; пробные: «+ R07 9e337dc» 173/0/0 и B-057, «+ web/vendor/qrcode» — лист QR PASS",
   "FINAL-2 итог @ 12c925a": "ACCEPTANCE_FINAL2.md §7 — сценарий 173/0/0; против 8e67c65: не хуже по карте и времени, B-054 исправлен; 13 px — B-067; волны 210/19/7/3; исправлены B-051, B-054, B-055, B-058, B-063, B-066",
-  "FINAL-3 кандидат @ 2f643dc": "ACCEPTANCE_FINAL3.md — сценарий 173/0/0; пять критериев владельца: сценарий/тексты/контраст да, 13 px — B-067, 44 px не хуже эталона; волны 237/4/8/1; точность 31/0; первый значок 2,5–2,7 с"
+  "FINAL-3 кандидат @ 2f643dc": "ACCEPTANCE_FINAL3.md — сценарий 173/0/0; пять критериев владельца: сценарий/тексты/контраст да, 13 px — B-067, 44 px не хуже эталона; волны 237/4/8/1; точность 31/0; первый значок 2,5–2,7 с",
+  "FINAL-3 окончательная @ f94f0fc": "ACCEPTANCE_FINAL3.md §0 — 173/0/0; время в порогах; первый значок 1,6–1,7 с; волны 237/4/8/1; точность 31/0"
  },
  "tests": {
   "pytest tests/civic/R10 (самопроверка геометрии: расстояние, Хаусдорф с уплотнением, кольца с дырой, разбор литералов без выполнения, сдвиг ребра на 6 м)": "PASS 7, остальные skip = NOT_RUN без данных модулей в ветке R10",
@@ -109,7 +114,7 @@
   "Сценарий идёт с CIVIC_DEMO=1 (как run-city.bat); --no-demo — без синтетического набора R07.",
   "Проверка «Tab до главной кнопки» ограничена 40 нажатиями: с демо-набором R07 главная кнопка дальше (B-025)."
  ],
- "next_step": "После окончательного FINAL-3 R01 (если код изменится) — тот же прогон (RUN.txt «FINAL-3 против эталона»); 15 окт — официальный FINAL; Codex М9 на ноутбуке владельца",
+ "next_step": "Стекло: когда R11 запушит GLASS.md и R01/R07/R08/R09 — стекло, glass_check.cjs (контраст на стекле над фонами, где стекло, запасной вид, FPS 1366/1024 с --control f94f0fc) + полный прогон сценария и сравнения; дополнить ACCEPTANCE_FINAL3.md",
  "night_11_12": {
   "baseline": "research/round-14-results/R10/baseline_8e67c65/ (README.md: состав, пороги, порядок сравнения FINAL-2)",
   "scripts": [
@@ -167,7 +172,7 @@
   "wave_checks_new": "wave_more.cjs: W1-1, W1-2, W1-5…W1-12, W2-3, W2-5, W2-8, W2-9, W2-10, M-1…M-5 (M-2/M-3 — в LF-2)"
  },
  "for_R01": {
-  "final3_candidate": "2f643dc принят R10 (ACCEPTANCE_FINAL3.md)",
+  "final3_candidate": "2f643dc и окончательная f94f0fc приняты R10 (ACCEPTANCE_FINAL3.md)",
   "R10_tests_to_take": "tests/e2e/ и tests/civic/R10/ с claude/r14-R10 (последний SHA — STATUS R10): шапка FINAL-3, форма «что сделали», легенда строкой, P-12 телефона, «Идеи», «Вопрос акиму», сверка интерфейса --audit",
   "baseline": "research/round-14-results/R10/baseline_8e67c65/ (+ audit/, ACCEPTED.json: шаг 2 и 6, r07-seg-dashed, переименование проверки шрифта)",
   "open_for_others": "R07 — B-057, B-067, значки ≥ 44 px (CLEAN_PASS §3); R08 — B-061, B-059"

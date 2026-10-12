@@ -80,6 +80,10 @@ const SCAN = () => {
     let g = null; for (let p = e; p && p !== document.body; p = p.parentElement) if (glassOf(p)) { g = p; break; }
     if (!g) continue;
     const r = e.getBoundingClientRect(), cs = getComputedStyle(e), c = rgba(cs.color);
+    // Надпись видна сверху (не прокручена за край панели и не закрыта): в середине — она сама.
+    const hx = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1), hy = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
+    const hit = document.elementFromPoint(hx, hy);
+    if (!hit || !(hit === e || e.contains(hit) || hit.contains(e))) continue;
     e.setAttribute("data-r10t", String(n));
     texts.push({ n: n++, text: own.slice(0, 40), x: r.left, y: r.top, w: r.width, h: r.height, color: c, fs: parseFloat(cs.fontSize), bold: Number(cs.fontWeight) >= 600, glass: name(g) });
   }
@@ -115,14 +119,17 @@ async function pixelContrast(ctx, png, texts, dpr) {
 }
 
 // Фон под стеклом: слой поверх холста карты внутри .maplibregl-map (панели и шапка — над ним, их стекло размывает его).
+// Строгие (FAIL): карта как есть и насыщенные цвета карты — парк, вода, «много жалоб». Предельные (СМОТРЕТЬ): чёрный и
+// полосы чёрное/белое — так тёмной карта не бывает, но видно запас контраста.
 const BACKGROUNDS = {
   "карта": null,
-  "чёрный": "#000",
   "тёмно-зелёный": "#1b5e20",
   "синий": "#0d47a1",
   "красный": "#b71c1c",
+  "чёрный": "#000",
   "полосы": "repeating-linear-gradient(45deg,#000 0 10px,#fff 10px 20px)",
 };
+const EXTREME = new Set(["чёрный", "полосы"]);
 const setBackground = (page, bg) => page.evaluate((bg) => {
   let d = document.getElementById("r10-stress");
   if (!bg) { if (d) d.remove(); return true; }
@@ -195,7 +202,8 @@ async function contrastRun(browser, base, size, lang, mode) {
         const res = await pixelContrast(ctx, png, scan.texts, 1);
         const fails = res.filter((r) => !r.ok);
         worst[bname] = { min: Math.min(...res.map((r) => r.ratio)), fails: fails.length };
-        add("G-3", tag, `${sname} · фон «${bname}»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)`, st(fails.length === 0),
+        add("G-3", tag, `${sname} · фон «${bname}»${EXTREME.has(bname) ? " (предельный)" : ""}: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)`,
+          fails.length === 0 ? "PASS" : EXTREME.has(bname) ? "СМОТРЕТЬ" : "FAIL",
           { texts: res.length, min: worst[bname].min, fails: fails.slice(0, 5).map((f) => `${f.ratio}:1 «${f.text}» (${f.glass})`) },
           bname === "полосы" || fails.length ? await page.screenshot({ path: path.join(OUT, `${tag}-${sname.replace(/\s+/g, "_")}-${bname}.jpg`), type: "jpeg", quality: 70 }).then(() => `${tag}-${sname.replace(/\s+/g, "_")}-${bname}.jpg`, () => null) : null);
       }
