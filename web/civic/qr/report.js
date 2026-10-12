@@ -377,7 +377,17 @@
         kids = card();
         if (S.enter) { box.classList.add("bq-enter"); S.enter = false; } else box.classList.remove("bq-enter");
       }
+      // Фокус клавиатуры не теряется при перерисовке («Я тоже», «Подробнее», «Повторить»): если он был в карточке —
+      // на ту же кнопку, если она осталась и доступна, иначе на заголовок (tabindex=-1). Снаружи карточки — не трогаем.
+      var doc = root.document, act = doc.activeElement;
+      var had = !!(act && act !== doc.body && box.contains(act));
+      var was = had ? (act.tagName === "SUMMARY" ? "summary" : act.getAttribute("data-act")) : null;
       box.replaceChildren.apply(box, kids);
+      if (had && !box.contains(doc.activeElement)) {
+        var same = was === "summary" ? box.querySelector(".bq-more > summary") : was ? box.querySelector('[data-act="' + was + '"]') : null;
+        var to = same && !same.disabled ? same : box.querySelector(".bq-title") || box.querySelector("button:not([disabled])");
+        if (to) { try { to.focus({ preventScroll: true }); } catch (e) { to.focus(); } }
+      }
     }
     // Верхняя строка во всех состояниях: вид объекта слева, крестик справа (не поверх скелетона и текста).
     function top(content) {
@@ -499,5 +509,5 @@
   }
 
   return { mount: mount, parseReportId: parseReportId, kindKey: kindKey, mainAction: mainAction, REPORT_ID_RE: REPORT_ID_RE,
-    statusKey: statusKey, groupDigits: groupDigits, historyRows: historyRows, kindIcon: kindIcon, PENDING: PENDING, version: "r12-marathon-qr-4" };
+    statusKey: statusKey, groupDigits: groupDigits, historyRows: historyRows, kindIcon: kindIcon, PENDING: PENDING, version: "r12-marathon-qr-5" };
 });
