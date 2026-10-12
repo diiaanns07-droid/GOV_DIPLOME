@@ -241,7 +241,8 @@
   "final3_plus_R09_f80c0bf_R12_bea4fa9": "тесты R15 209 passed (файлы ролей подложены в копию FINAL-3)",
   "r15_on_final3_e4a7641": "PASS — 236 passed, 0 skipped (своей копией до синхронизации: 216 passed + 20 XPASS(strict) S30–S40)",
   "browser_on_e4a7641": "B1 16/16, B2 28/28; CSP 8 страниц (/, akim, ui-kit, akim/services, nearby, qr/print.html, /?report=, qa/index.html) — 0 нарушений",
-  "r15_on_final3_32d5352": "PASS — 236 passed; B1 16/16, B2 28/28; CSP 8 страниц — 0 нарушений"
+  "r15_on_final3_32d5352": "PASS — 236 passed; B1 16/16, B2 28/28; CSP 8 страниц — 0 нарушений",
+  "r15_on_final3_candidate_32d5352": "R01 назвал 32d5352 кандидатом FINAL-3 (379cbec): R15 — 236 passed, B1 16/16, B2 28/28, CSP 8 страниц 0 — все 40 находок исправлены"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
