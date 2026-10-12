@@ -1624,7 +1624,8 @@
       }
       return {
         solid: withReveal(new THREE.MeshLambertMaterial({ vertexColors: true })),
-        glass: withReveal(new THREE.MeshLambertMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide })),
+        // Стекло остановки, сетки, струя фонтана — с мягким бликом (Phong), остальное матовое.
+        glass: withReveal(new THREE.MeshPhongMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, shininess: 48, specular: 0x4a4a4a })),
         glow: withReveal(new THREE.MeshBasicMaterial({ vertexColors: true })),
         decal: new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 }),
         outline: new THREE.MeshBasicMaterial({ color: OUTLINE_COLOR }),

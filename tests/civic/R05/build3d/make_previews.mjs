@@ -47,7 +47,7 @@ window.render = (kind, W, H) => {
     : M.build(kind, { seed: "preview-" + kind });
   const mats = {
     solid: new THREE.MeshLambertMaterial({ vertexColors: true }),
-    glass: new THREE.MeshLambertMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide }),
+    glass: new THREE.MeshPhongMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, shininess: 48, specular: 0x4a4a4a }),
     glow: new THREE.MeshBasicMaterial({ vertexColors: true }),
     decal: new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false }),
   };
