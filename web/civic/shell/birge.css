@@ -756,3 +756,17 @@ body.civic-mode .birge-screen-root.nb, body.civic-mode .birge-screen-root > .qa 
    легенда, кнопки карты, подпись карты и 3D-каталог прячутся до возврата на «Карту». */
 body.civic-mode[data-birge-section]:not([data-birge-section="map"]) :is(#birge-legend, .map-tools, .maplibregl-ctrl-bottom-right, .birge-build3d-root) {
   visibility: hidden; }
+
+/* Круг 3 · мелочи (чек-лист №12), только при «движение разрешено»: черта выбранного раздела вырастает из центра;
+   подробная легенда под «?» и плашка карты проявляются, а не возникают. */
+@media (prefers-reduced-motion: no-preference) {
+  body.civic-mode #birge-header .birge-nav > [aria-current="page"]::after { animation: birge-underline var(--t-base, 260ms) var(--ease, ease-out); }
+  body.civic-mode .birge-legend[data-open="true"] .birge-legend-host { animation: birge-rise var(--t-fast, 200ms) var(--ease, ease-out); }
+  body.civic-mode .civic-explore #map-status:not(.hidden):not([data-faded="1"]) { animation: birge-fade var(--t-base, 260ms) var(--ease, ease-out); }
+}
+@keyframes birge-underline { from { transform: scaleX(0.2); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes birge-rise { from { transform: translateY(6px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes birge-fade { from { opacity: 0; } to { opacity: 1; } }
+/* Зона нажатия раздела ≥ 44 и на проекторе (плотные отступы 6: «Ещё» был 42 px). Крестик поиска — знак 20 px. */
+body.civic-mode #birge-header .birge-nav > button { min-width: 44px; justify-content: center; }
+body.civic-mode .civic-explore .civic-explore-clear { font-size: 20px; line-height: 1; color: var(--c-text-2, #5b6a64); }

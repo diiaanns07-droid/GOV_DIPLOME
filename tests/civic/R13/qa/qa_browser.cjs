@@ -121,6 +121,23 @@ const worstContrast = (page) => page.evaluate(() => {
           more: window.BirgeShell?.navItems("resident") || [],
         }));
         check(`${tag} житель: экран открыт, правило видно`, r.title && r.rule, r.title);
+        if (w === 1366) {
+          // Движение (чек-лист марафона п. 7): карточки появляются анимацией qa-in и через 0,6 с непрозрачны;
+          // при «уменьшить движение» в системе анимации нет.
+          const motion = await page.evaluate(() => new Promise((ok) => {
+            const li = document.querySelector(".qa-list > li");
+            const name = li ? getComputedStyle(li).animationName : null;
+            setTimeout(() => ok({ name, opacity: li ? getComputedStyle(li).opacity : null }), 600);
+          }));
+          const rctx = await browser.newContext({ viewport: { width: w, height: hgt }, reducedMotion: "reduce" });
+          await rctx.addInitScript(([l]) => { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); }, [lang]);
+          const rp = await rctx.newPage();
+          await openSection(rp, base, "resident", lang);
+          const reduced = await rp.evaluate(() => getComputedStyle(document.querySelector(".qa-list > li")).animationName);
+          await rctx.close();
+          check(`${tag} движение: карточки появляются мягко, при «уменьшить движение» — без анимации`,
+            motion.opacity === "1" && reduced === "none", { motion, reduced });
+        }
         check(`${tag} житель: одна главная кнопка`, r.primary === 1, r.primary);
         check(`${tag} житель: 3 вкладки, карточки с меткой «Пример»`, r.tabs === 3 && r.cards >= 5 && r.demoTags === r.cards, r);
         check(`${tag} житель: на карте ничего нового`, r.inMap === 0, r.inMap);

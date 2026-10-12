@@ -112,6 +112,16 @@
   // Значок пункта меню (марафон, чек-лист №9): один набор ui-kit (icons.svg), рядом с подписью, тише текста.
   const MENU_ICONS = { map: "pin", day: "chart", inbox: "list", projects: "cube", mine: "list", nearby: "users", ideas: "bulb",
     questions: "info", works: "calendar", qr: "print", services: "building", staff: "user" };
+  // Линейная иллюстрация ui-kit (icons.svg #ill-…) для пустых состояний листа (чек-лист №8, №12) — без innerHTML.
+  function illustration(name) {
+    const sprite = window.BirgeUI && window.BirgeUI.SPRITE;
+    if (!sprite) return null;
+    const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"), use = document.createElementNS(NS, "use");
+    svg.setAttribute("class", "bk-ill"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
+    use.setAttribute("href", sprite + "#ill-" + name);
+    svg.append(use);
+    return svg;
+  }
   function menuIcon(node, id) {
     const sprite = window.BirgeUI && window.BirgeUI.SPRITE, name = MENU_ICONS[id];
     if (!sprite || !name || !node) return node;
@@ -128,7 +138,7 @@
       if (v === false || v == null) continue;
       if (k === "text") node.textContent = v; else node.setAttribute(k, v === true ? "" : v);
     }
-    for (const child of children || []) node.append(child);
+    for (const child of children || []) if (child != null) node.append(child);  // null — части нет (нет ui-kit)
     return node;
   }
   function segButton(group, value, pressed) {
@@ -464,6 +474,7 @@
   function emptyDay(kind) {
     // Состояния по UX_BRIEF правило 7: «пока пусто» с подсказкой или ошибка с действием — не белый экран.
     const box = el("div", { class: kind === "error" ? "bk-error birge-day-empty" : "bk-empty birge-day-empty" }, [
+      illustration(kind === "error" ? "offline" : "list"),
       el("h2", { class: "bk-empty__title", text: t(kind === "error" ? "shell.day.error_title" : "shell.day.soon_title") }),
       el("p", { class: "bk-empty__text", text: t(kind === "error" ? "shell.day.error_text" : "shell.day.soon_text") }),
     ]);
@@ -508,6 +519,7 @@
   }
   function emptyScreen(kind) {
     const box = el("div", { class: kind === "error" ? "bk-error birge-day-empty" : "bk-empty birge-day-empty" }, [
+      illustration(kind === "error" ? "offline" : "list"),
       el("h2", { class: "bk-empty__title", text: t(kind === "error" ? "shell.screen.error_title" : "shell.screen.soon_title") }),
       el("p", { class: "bk-empty__text", text: t(kind === "error" ? "shell.screen.error_text" : "shell.screen.soon_text") }),
     ]);
