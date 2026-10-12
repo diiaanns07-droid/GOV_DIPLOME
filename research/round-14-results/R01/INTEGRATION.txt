@@ -550,3 +550,11 @@ web/civic/offline/{style.json, boot.js}. Скриншоты до/после — 
 18.4 R14: docs/birge, docs/diploma, docs/gton, research/round-14-results/R14 на e9236838 (только документы).
 18.5 Проверено: pytest весь 3551 passed, 0 failed (24 skipped, 1 xfailed); QR R12 в приложении 28/1 (шаг 5 — 18.2;
      с заменой выбора вида 30/0); браузер B2 28/0, B1 16/0, шапка 42/0, P0 63/0/1, город 81/0, волна 2 42/0.
+
+19. FINAL-3 шаг 8 (12 окт): генератор QR в сборке (R10 B-060) и DEMO_SCRIPT по B-061
+19.1 web/vendor/qrcode/ (4 файла) из claude/round-14-package (LOCAL-11 Codex): qrcode-generator 1.4.4, MIT, без изменений;
+     sha256 qrcode.js 18ae399f…1780 = npm-релиз (R15 test_vendored_qrcode_matches_npm_release — PASS, раньше SKIP);
+     прочитан перед включением: fetch/XHR/eval/хранилищ/cookie нет. Маршрут /vendor/qrcode/qrcode.js в шлюзе уже был.
+     Лист «QR-таблички» теперь печатает настоящий QR (было: «Генератор QR ещё не подключён»).
+19.2 DEMO_SCRIPT шаг 2: до шага 4 новую отдельную жалобу не подавать — иначе «Нужно решение акима» пропадает
+     (B-061; правка в данных — у R08).

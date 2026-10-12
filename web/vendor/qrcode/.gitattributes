@@ -1,0 +1,4 @@
+# Keep upstream bytes stable across Windows and Unix checkouts.
+qrcode.js -text
+LICENSE -text
+SOURCE.txt text eol=lf
