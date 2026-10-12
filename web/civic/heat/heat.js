@@ -1629,7 +1629,7 @@
         current + svgIcon("back", 18).replace('class="r07-ic"', 'class="r07-ic r07-ic--down"') + "</button>" + reset +
         (showDistrict ? '<label class="r07-select"><span class="r07-vh">' + esc(t("heat.district")) + '</span><select class="r07-field" data-district aria-label="' + esc(t("heat.district")) + '"><option value="">' + esc(t("heat.district_all")) + "</option>" + districts + "</select></label>" : "") +
         "</div>" +
-        '<div class="r07-chips" id="r07-cats" role="group" aria-label="' + esc(t("heat.category_all")) + '"' + (S.catsOpen ? "" : " hidden") + ">" + all + cats + "</div>" +
+        '<div class="r07-chips bk-scroll-x" id="r07-cats" role="group" aria-label="' + esc(t("heat.category_all")) + '"' + (S.catsOpen ? "" : " hidden") + ">" + all + cats + "</div>" +
         '<div class="r07-row"><div class="r07-seg bk-seg" role="group" aria-label="' + esc(t("heat.period")) + '">' + periods + "</div></div></section>";
     }
 

@@ -81,6 +81,9 @@
 .r07-cat-toggle[aria-expanded="true"] .r07-ic--down { transform: rotate(90deg); }
 .r07-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .r07-chips[hidden] { display: none; }
+/* .bk-scroll-x — ряд ui-kit: на телефоне (ряд прокручивается) край мягко затухает, пока есть что листать (BirgeUI
+   подключает сам, R11 §16.4); на ноутбуке чипы переносятся — прокрутки нет, рамка фокуса не обрезается */
+@media (min-width: 761px) { .r07-chips.bk-scroll-x { overflow: visible; } }
 .r07-chip {
   position: relative; display: inline-flex; align-items: center; gap: 6px;
   min-height: 44px; padding: 0 14px 0 10px;
