@@ -537,6 +537,8 @@ body.civic-mode .map-tools .bk-mapctl__group.bk-glass--control > .icon-btn + .ic
 body.civic-mode .topbar.bk-glass { top: 12px; left: 12px; right: 12px; height: 60px; border-radius: var(--r-pill, 999px); padding: 0 8px 0 14px; }
 /* №5 панель (ноутбук) и шторка (телефон) */
 body.civic-mode .civic-panel.bk-glass { border-radius: var(--r-glass, 24px); }
+/* Панель R09 («Мои обращения», мастер жалобы) встаёт на 12 под шапкой по --header-h (R09 INTEGRATION G5): капсула 12+60 */
+body.civic-mode .bc-panel { --header-h: 72px; }
 /* №6 лист раздела: отступ 12 от шапки и краёв, радиус 24 */
 body.civic-mode .birge-day.bk-glass { top: 84px; left: 12px; right: 12px; bottom: 12px; border-radius: var(--r-glass, 24px); }
 /* №7 плашка о запасном фоне — стеклянная строка с тёмным текстом (гаснет через 6 с — birge.js) */
