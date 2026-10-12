@@ -5,7 +5,8 @@
 > `research/round-14-results/LOCAL/LOCAL_B2.md` и `LOCAL_FINAL.md`.
 > Проверено R14 в облаке (Linux, Python 3.13.16, `CIVIC_DEMO=1`): на B2 f54361d и FINAL-кандидатах до 8e67c65 — 37 маршрутов
 > v2 `ready`; на **FINAL-2** (шаг 4 0f5101a и итог 12c925a) — `civic-v2: ready R04, R06, R07, R08, R09, R12, R13`, **55 маршрутов
-> v2 `ready`**; весь pytest на 0f5101a — 3 301 passed / 24 skipped / 2 failed (стыки тестов ролей, показ не затронут). **`run-city.bat` на Windows** запускал
+> v2 `ready`**; весь pytest на 0f5101a — 3 301 passed / 24 skipped / 2 failed, на 12c925a — 3 349 / 26 / 2 (стыки тестов ролей,
+> показ не затронут). **`run-city.bat` на Windows** запускал
 > Codex на ноутбуке владельца: B2 (`LOCAL_B2.md`) и FINAL-кандидат 8e67c65 (`LOCAL_FINAL.md`: сценарий R10 140 / 0 с интернетом
 > и без него, модель v2 ONNX, архив карты PMTiles).
 
