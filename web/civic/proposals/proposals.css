@@ -49,16 +49,37 @@
   font-size: var(--fs-title);
   line-height: 1;
 }
-/* Выбранный голос виден не только цветом: рамка толще, текст «Вы проголосовали…» под кнопками. */
-.r06-vote__btn[data-value="1"][aria-pressed="true"] {
+/* Выбранный голос виден не только цветом: рамка толще, текст «Вы проголосовали…» под кнопками.
+   Вес (0,6,0) — выше серой кнопки ui-kit на стекле (.bk-glass .bk-btn:not(…)×3 = 0,5,0): карточка живёт в стеклянной
+   панели 3D (R05), и без этого выбранная «За» теряла свою подложку. */
+.r06-card .r06-vote > .bk-btn.r06-vote__btn[data-value="1"][aria-pressed="true"] {
   border-color: var(--c-brand);
-  background: var(--c-brand-soft);
+  background-color: var(--c-brand-soft);
   box-shadow: inset 0 0 0 2px var(--c-brand);
 }
-.r06-vote__btn[data-value="-1"][aria-pressed="true"] {
+.r06-card .r06-vote > .bk-btn.r06-vote__btn[data-value="-1"][aria-pressed="true"] {
   border-color: var(--c-danger);
-  background: var(--c-danger-soft);
+  background-color: var(--c-danger-soft);
   box-shadow: inset 0 0 0 2px var(--c-danger);
+}
+.r06-roll {
+  display: inline-block;
+  animation: r06-roll var(--t-base, 260ms) var(--ease-out, var(--ease)) both;
+}
+@keyframes r06-roll {
+  from {
+    transform: translateY(60%);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .r06-roll {
+    animation: none;
+  }
 }
 .r06-vote__btn[aria-busy="true"] {
   cursor: progress;

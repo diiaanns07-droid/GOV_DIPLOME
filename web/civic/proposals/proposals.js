@@ -264,6 +264,9 @@
           toast(t(data.changed && data.previous ? "proposal.vote_changed" : "proposal.vote_saved"));
           var again = el.querySelector('.r06-vote__btn[data-value="' + value + '"]');
           if (again) again.focus(); // фокус остаётся на нажатой кнопке после перерисовки
+          // Отклик (дизайн-марафон): число на нажатой кнопке «перекатывается» — как счётчик «Поддержать» в «Идеях».
+          var count = again && again.querySelector(".bk-btn__count");
+          if (count) count.classList.add("r06-roll");
           if (opts.onChange) opts.onChange(state.p);
         },
         function (err) {
