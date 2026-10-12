@@ -1732,7 +1732,8 @@
       if (!b) return;
       var name = t(Core.KINDS[obj.p.kind].key);
       b.querySelector(".b3d-label__text").textContent = projectLabel(obj.p);
-      b._clusterKey = null; // группу (число, aria) пересоберёт updateLabels
+      b._clusterKey = undefined; // группу (число, aria) пересоберёт updateLabels (undefined — см. там же)
+      b._cluster = null;
       obj.labelSize = null; // текст сменился — размер измерим заново (один раз, не в каждом кадре)
       b.setAttribute("aria-label", t("build3d.card.open", { kind: name, year: String(obj.p.year || "") }).replace(/\s+,/, ","));
       b.setAttribute("aria-pressed", S.selected === obj.p.id ? "true" : "false");
@@ -2058,7 +2059,11 @@
         if (it.obj.labelSize) return;
         var lab = it.obj.label;
         lab.classList.remove("b3d-label--dot", "b3d-label--cluster");
-        lab._clusterKey = null; // группу (число, aria) setCluster вернёт заново, а не сочтёт уже показанной
+        // Группу (число, aria) setCluster вернёт заново. Ключ — undefined, а не null: с null вызов setCluster(…, null)
+        // для одиночной метки считал её «уже без группы» и выходил, а _cluster оставался от прошлой группы — метка
+        // выглядела обычной, но нажатие приближало карту вместо карточки (телефон, каждый второй раз).
+        lab._clusterKey = undefined;
+        lab._cluster = null;
         var pill = lab.firstChild || lab; // наложение считаем по видимой таблетке, а не по зоне нажатия
         it.obj.labelSize = { w: pill.offsetWidth || 120, h: pill.offsetHeight || 40 };
       });

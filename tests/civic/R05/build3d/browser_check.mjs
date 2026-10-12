@@ -904,6 +904,28 @@ await check("r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk", async () =
     JSON.stringify(out));
   return { status: "PASS", detail: out.map((o) => `${o.vp} ${o.lang}: метка «${o.far.count}» (${o.far.aria}), точка ≥ ${o.far.minPill} px, зона ${o.far.zone} → масштаб ${o.near.zoom}, полных подписей ${o.near.full}`).join("; ") };
 });
+await check("label_was_cluster_then_single_tap_opens_card_375", async () => {
+  // FINAL-3 (найдено на сборке R01 0f5101a, телефон: каждое второе нажатие): метка была группой на мелком масштабе,
+  // её текст обновился (выбор/снятие выбора проекта), и в том же кадре карту приблизили — метка стала одиночной, но
+  // помнила прошлую группу: нажатие приближало карту вместо карточки. Теперь — карточка именно этого проекта.
+  const p = await openPage({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true }, "?reset=1&store=local&lang=kk&center=71.4012,51.1278&zoom=12&pitch=0");
+  await p.waitForSelector(".b3d-label--cluster", { timeout: 10000 });
+  const id = await p.evaluate(() => document.querySelector(".b3d-label--cluster").dataset.id);
+  // смена текста подписей (снятие выбора обновляет все) и приближение — в одной задаче, до следующего кадра
+  await p.evaluate((id) => {
+    __b3d.select(null);
+    const x = __b3d.getState().proposals.find((q) => q.id === id);
+    __map.jumpTo({ center: x.kind === "lighting" ? x.geometry.coordinates[0] : x.geometry.coordinates, zoom: 17.4, pitch: 0 });
+  }, id);
+  await p.waitForTimeout(800);
+  const before = await p.evaluate((id) => { const b = document.querySelector(`.b3d-label[data-id="${id}"]`); return { cluster: b.classList.contains("b3d-label--cluster"), visible: b.style.visibility !== "hidden" }; }, id);
+  await p.tap(`.b3d-label[data-id="${id}"]`);
+  await p.waitForTimeout(900);
+  const after = await p.evaluate(() => ({ state: document.querySelector(".b3d-dock").dataset.state, selected: __b3d.getState().selected, zoom: +__map.getZoom().toFixed(1) }));
+  await p.context().close();
+  assert(!before.cluster && before.visible && after.state === "card" && after.selected === id && after.zoom < 18, JSON.stringify({ id, before, after }));
+  return { status: "PASS", detail: { id, before, after } };
+});
 await check("kk_street_names_from_osm_card_and_lighting_hint_1366_375", async () => {
   // Самопроверка по UX_BRIEF п. 6: в kk название улицы — казахское из OSM (name:kk), если оно там есть.
   const out = [];
