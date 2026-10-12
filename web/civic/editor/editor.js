@@ -113,6 +113,40 @@
     "works.status.planned": "Жоспарланған", "works.status.in_progress": "Жұмыс жүріп жатыр", "works.status.completed": "Аяқталды",
     "works.status.cancelled": "Болдырылмады", "works.status.unknown": "Мәртебесі белгісіз",
     "works.evidence.synthetic": "Үлгі", "works.not_on_map": "Картада жоқ", "works.no_dates": "мерзімі: дерек жоқ",
+    // Дизайн-марафон, круг 7: подписи формы (разделы, поля, кнопки, ошибка сохранения) — черновик kk R12 для R11.
+    "staff.form.required": "Міндетті өріс.",
+    "staff.form.archive": "Мұрағатқа…", "staff.form.cancel": "Болдырмау",
+    "staff.form.choose_kind": "— түрін таңдаңыз —", "staff.form.confirm.apply": "Дереккөз өзгерістерін қабылдау",
+    "staff.form.confirm.archive": "Мұрағатқа көшіру", "staff.form.confirm.dismiss": "Ұсынысты қабылдамау",
+    "staff.form.confirm.publish": "Жариялауды растау", "staff.form.create_draft": "Қаралама жасау",
+    "staff.form.field.actual_end": "Іс жүзінде аяқталды", "staff.form.field.amount": "Құны, ₸",
+    "staff.form.field.basis": "Бұл қандай сома", "staff.form.field.budget_source_id": "Соманың дереккөзі",
+    "staff.form.field.current_planned_end": "Жоспарлы аяқталуы — өзекті", "staff.form.field.description": "Тұрғындарға арналған сипаттама",
+    "staff.form.field.evidence_notes": "Сенімділік туралы түсініктеме (тұрғындарға көрінеді)", "staff.form.field.evidence_type": "Мәліметтер қаншалықты расталған",
+    "staff.form.field.internal_notes": "Ішкі жазба — жарияланбайды", "staff.form.field.kind": "Нысан түрі",
+    "staff.form.field.organization": "Жауапты ұйым", "staff.form.field.original_planned_end": "Жоспарлы аяқталуы — бастапқы",
+    "staff.form.field.planned_start": "Жоспарлы басталуы", "staff.form.field.public_contact": "Ашық байланыс",
+    "staff.form.field.status": "Жұмыс мәртебесі", "staff.form.field.title": "Атауы",
+    "staff.form.how_source": "Дереккөзді қалай көрсету", "staff.form.label.actual_end": "Іс жүзінде аяқталды",
+    "staff.form.label.amount": "Құны", "staff.form.label.basis": "Соманың негізі",
+    "staff.form.label.budget_source_id": "Соманың дереккөзі", "staff.form.label.current_planned_end": "Өзекті жоспарлы мерзім",
+    "staff.form.label.description": "Сипаттама", "staff.form.label.evidence_notes": "Сенімділік туралы түсініктеме",
+    "staff.form.label.evidence_type": "Сенімділік", "staff.form.label.geometry": "Орны",
+    "staff.form.label.geometry_precision": "Орынның дәлдігі", "staff.form.label.internal_notes": "Ішкі жазба",
+    "staff.form.label.kind": "Түрі", "staff.form.label.organization": "Ұйым",
+    "staff.form.label.original_planned_end": "Бастапқы жоспарлы мерзім", "staff.form.label.place": "Орын туралы белгілісі",
+    "staff.form.label.planned_start": "Жоспарлы басталуы", "staff.form.label.public_contact": "Ашық байланыс",
+    "staff.form.label.reason": "Себебі", "staff.form.label.sources": "Дереккөздер",
+    "staff.form.label.status": "Жұмыс мәртебесі", "staff.form.label.title": "Атауы",
+    "staff.form.new_note": "ID мен нұсқа нөмірін сервер береді. Тұрғындар қараламаны көрмейді.", "staff.form.no_source": "— дереккөз жоқ —",
+    "staff.form.preview": "Тұрғындар қалай көреді", "staff.form.preview_hide": "Алдын ала көріністі жасыру",
+    "staff.form.publish": "Жариялау…", "staff.form.publish_changes": "Өзгерістерді жариялау…",
+    "staff.form.save_changes": "Өзгерістерді сақтау", "staff.form.save_draft": "Қараламаны сақтау",
+    "staff.form.save_fix": "Сақталмады: белгіленген өрістерді түзетіңіз ({n}). Енгізілген мәтін орнында.", "staff.form.saving": "Сақталып жатыр…",
+    "staff.form.sec.dates": "3. Мерзімдер", "staff.form.sec.place": "2. Картадағы орны",
+    "staff.form.sec.responsible": "4. Жауапты және құны", "staff.form.sec.sources": "5. Дереккөздер және сенімділік",
+    "staff.form.sec.what": "1. Бұл не", "staff.form.sending": "Жіберіліп жатыр…",
+    "staff.form.unknown": "белгісіз", "staff.form.will_be_draft": "Қаралама болады",
   };
   const fill = (text, params) => (params ? String(text).replace(/\{(\w+)\}/g, (w, n) => (params[n] == null ? w : String(params[n]))) : text);
   function tr(key, ru, params) {
@@ -171,6 +205,7 @@
     evidence_type: "Достоверность", evidence_notes: "Пояснение к достоверности", internal_notes: "Внутренняя заметка", sources: "Источники",
     reason: "Причина",
   };
+  const formLabel = (k) => (FORM_LABEL[k] ? tr("staff.form.label." + k, FORM_LABEL[k]) : undefined);  // марафон: kk через KK_DRAFT
   const HISTORY_LABEL = Object.assign({}, C.PATH_LABEL, { publication: "Публикация", schedule: "Сроки", budget: "Стоимость", responsible: "Ответственный" });
   const ACTION_LABEL = { create: "создание", update: "изменение", publish: "публикация", archive: "архив", import_create: "импорт", import_update: "импорт" };
   // [фильтр, ключ R11, русский текст на случай, если словаря нет]
@@ -758,7 +793,7 @@
     }
     function dateField(key, label, help, readonly) {
       const x = input(key, { type: "date", min: "1990-01-01", max: "2100-12-31", readonly: !!readonly, "aria-readonly": readonly ? "true" : null });
-      const clear = readonly ? null : btn("× неизвестно", () => { x.value = ""; S.form[key] = ""; changed(key); x.focus(); }, "mini", "clear-" + key, { "aria-label": "Очистить: " + label + " (неизвестно)" });
+      const clear = readonly ? null : btn("× " + tr("staff.form.unknown", "неизвестно"), () => { x.value = ""; S.form[key] = ""; changed(key); x.focus(); }, "mini", "clear-" + key, { "aria-label": "Очистить: " + label + " (неизвестно)" });
       // A half-typed date gives value "" (validity.badInput): re-check on every key so it is never saved as «unknown».
       x.addEventListener("keyup", () => revalidate());
       x.addEventListener("blur", () => revalidate());
@@ -776,7 +811,7 @@
       const meta = it
         ? el("p", { class: "civic-r04-meta" }, [badge(C.PUBLICATION[it.publication] || String(it.publication), "pub-" + it.publication),
           " ред. " + it.revision + " · обновлено " + C.fmtDateTime(it.updated_at) + " · ID " + it.id])
-        : el("p", { class: "civic-r04-meta" }, [badge("Будет черновиком", "pub-draft"), " ID и номер редакции назначит сервер. Жители черновик не видят."]);
+        : el("p", { class: "civic-r04-meta" }, [badge(tr("staff.form.will_be_draft", "Будет черновиком"), "pub-draft"), " " + tr("staff.form.new_note", "ID и номер редакции назначит сервер. Жители черновик не видят.")]);
       const banner = !it ? null
         : it.publication === "archived" ? el("p", { class: "civic-r04-msg civic-r04-msg-info" }, "Запись в архиве: только просмотр. Возврат из архива в civic-v1 не предусмотрен.")
         : it.publication === "published" && C.pendingInfo(it).pending ? el("p", { class: "civic-r04-msg civic-r04-msg-warn" }, "Есть сохранённые, но не опубликованные изменения: жители видят прежнюю версию" + (it.staff.published_revision ? " (ред. " + it.staff.published_revision + ")" : "") + ". Нажмите «Опубликовать изменения…».")
@@ -784,39 +819,39 @@
         : it.publication === "published" ? el("p", { class: "civic-r04-msg civic-r04-msg-info" }, "Запись опубликована. Сохранённые изменения сразу видны жителям и записываются в историю с причиной.")
         : null;
 
-      const sec1 = section("1. Что это", [
-        field("title", "Название *", input("title"), "Повторяющиеся названия допустимы: запись различает серверный ID."),
-        field("kind", "Тип объекта *", select("kind", C.KINDS, "— выберите тип —")),
-        field("status", "Статус работ", select("status", C.STATUSES), "Не знаете — оставьте «Статус неизвестен». Публикация записи не означает, что работы идут."),
-        field("description", "Описание для жителей", textarea("description", 4), "Обычный текст без разметки: что делается и как это влияет на проход и проезд."),
+      const sec1 = section(tr("staff.form.sec.what", "1. Что это"), [
+        field("title", tr("staff.form.field.title", "Название") + " *", input("title"), "Повторяющиеся названия допустимы: запись различает серверный ID."),
+        field("kind", tr("staff.form.field.kind", "Тип объекта") + " *", select("kind", C.KINDS, tr("staff.form.choose_kind", "— выберите тип —"))),
+        field("status", tr("staff.form.field.status", "Статус работ"), select("status", C.STATUSES), "Не знаете — оставьте «Статус неизвестен». Публикация записи не означает, что работы идут."),
+        field("description", tr("staff.form.field.description", "Описание для жителей"), textarea("description", 4), "Обычный текст без разметки: что делается и как это влияет на проход и проезд."),
       ]);
       const origHelp = locked
         ? "Зафиксирован при первой публикации" + (S.form.original_planned_end ? " (" + C.fmtDate(S.form.original_planned_end) + ")" : "") + " и не меняется. Переносите актуальный срок."
         : "Обещанная дата окончания. После первой публикации останется в карточке как исходное обещание.";
-      const sec3 = section("3. Сроки", [
+      const sec3 = section(tr("staff.form.sec.dates", "3. Сроки"), [
         el("p", { class: "civic-r04-help" }, "Плановый срок — дата по плану. «Фактически завершено» — только когда работы действительно закончены. Пустое поле = «неизвестно»: сегодняшняя дата сама не подставляется."),
         el("div", { class: "civic-r04-grid" }, [
-          dateField("planned_start", "Плановое начало"),
-          dateField("original_planned_end", "Плановое окончание — первоначальное", origHelp, locked),
-          dateField("current_planned_end", "Плановое окончание — актуальное",
+          dateField("planned_start", tr("staff.form.field.planned_start", "Плановое начало")),
+          dateField("original_planned_end", tr("staff.form.field.original_planned_end", "Плановое окончание — первоначальное"), origHelp, locked),
+          dateField("current_planned_end", tr("staff.form.field.current_planned_end", "Плановое окончание — актуальное"),
             locked ? "Перенос опубликованного срока сохраняется в истории вместе с причиной." : "Пока даты совпадают, поле повторяет первоначальное; измените его, если срок уже перенесён."),
           V.sched,
-          dateField("actual_end", "Фактически завершено", "Только при статусе «Завершено» и только по факту. Будущая дата не принимается."),
+          dateField("actual_end", tr("staff.form.field.actual_end", "Фактически завершено"), "Только при статусе «Завершено» и только по факту. Будущая дата не принимается."),
         ]),
       ]);
-      const sec2 = section("2. Место на карте", [V.geom]);
-      const amountCtl = input("amount", { inputmode: "decimal", placeholder: "неизвестно" });
-      const srcSel = select("budget_source_id", {}, "— нет источника —");
-      const sec4 = section("4. Ответственный и стоимость", [
+      const sec2 = section(tr("staff.form.sec.place", "2. Место на карте"), [V.geom]);
+      const amountCtl = input("amount", { inputmode: "decimal", placeholder: tr("staff.form.unknown", "неизвестно") });
+      const srcSel = select("budget_source_id", {}, tr("staff.form.no_source", "— нет источника —"));
+      const sec4 = section(tr("staff.form.sec.responsible", "4. Ответственный и стоимость"), [
         el("div", { class: "civic-r04-grid" }, [
-          field("organization", "Ответственная организация", input("organization"), "Как в источнике. Пусто = не указано."),
-          field("public_contact", "Публичный контакт", input("public_contact"), "Телефон приёмной или сайт организации — не личный номер сотрудника."),
-          field("amount", "Стоимость, ₸", amountCtl, "Пусто = неизвестно (не ноль). Сумма сохраняется только с основанием и источником."),
-          field("basis", "Что это за сумма", select("basis", C.BASIS)),
-          field("budget_source_id", "Источник суммы", srcSel, "Выберите из источников в разделе 5."),
+          field("organization", tr("staff.form.field.organization", "Ответственная организация"), input("organization"), "Как в источнике. Пусто = не указано."),
+          field("public_contact", tr("staff.form.field.public_contact", "Публичный контакт"), input("public_contact"), "Телефон приёмной или сайт организации — не личный номер сотрудника."),
+          field("amount", tr("staff.form.field.amount", "Стоимость, ₸"), amountCtl, "Пусто = неизвестно (не ноль). Сумма сохраняется только с основанием и источником."),
+          field("basis", tr("staff.form.field.basis", "Что это за сумма"), select("basis", C.BASIS)),
+          field("budget_source_id", tr("staff.form.field.budget_source_id", "Источник суммы"), srcSel, "Выберите из источников в разделе 5."),
         ]),
       ]);
-      const ev = el("fieldset", { class: "civic-r04-radios", id: P + "f-evidence_type", "aria-describedby": P + "f-evidence_type-err" }, [el("legend", {}, "Насколько сведения подтверждены *")]
+      const ev = el("fieldset", { class: "civic-r04-radios", id: P + "f-evidence_type", "aria-describedby": P + "f-evidence_type-err" }, [el("legend", {}, tr("staff.form.field.evidence_type", "Насколько сведения подтверждены") + " *")]
         .concat(Object.entries(C.EVIDENCE).map(([v, l], i) => {
           const r = el("input", { type: "radio", name: P + "evidence", value: v, id: P + "ev-" + v, "data-fk": i === 0 ? "evidence_type" : "ev-" + v, checked: S.form.evidence_type === v });
           r.addEventListener("change", () => { if (r.checked) { S.form.evidence_type = v; changed("evidence_type"); touch("evidence_type"); } });
@@ -824,18 +859,18 @@
         })));
       const evErr = el("p", { class: "civic-r04-err", id: P + "f-evidence_type-err" }), evWarn = el("p", { class: "civic-r04-warn" });
       F.evidence_type = { control: ev.querySelector("input"), err: evErr, warn: evWarn };
-      const sec5 = section("5. Источники и достоверность", [
+      const sec5 = section(tr("staff.form.sec.sources", "5. Источники и достоверность"), [
         el("div", { class: "civic-r04-field" }, [ev, evErr, evWarn]),
         el("p", { class: "civic-r04-help" }, "Тип выбираете вы — система его не подставляет. Ввод сотрудником не означает «официально подтверждено»."),
-        el("details", { class: "civic-r04-hint" }, [el("summary", {}, "Как указать источник"), el("ul", {}, [
+        el("details", { class: "civic-r04-hint" }, [el("summary", {}, tr("staff.form.how_source", "Как указать источник")), el("ul", {}, [
           el("li", {}, "Ссылка на официальную страницу или документ (gov.kz, решение акимата, извещение о закупке)."),
           el("li", {}, "«Дата публикации» — когда источник опубликован; «Когда вы его открыли» — дата проверки."),
           el("li", {}, "Отметьте, что именно он подтверждает: сроки, место, стоимость. Старый план не доказывает, что работы идут сейчас."),
           el("li", {}, "Если страница не открылась — так и укажите «Недоступен»: это не доказательство отсутствия данных."),
         ])]),
         V.sources,
-        field("evidence_notes", "Пояснение к достоверности (видно жителям)", textarea("evidence_notes", 2), "Например: «сроки по объявлению от 01.10.2026, фактическое состояние не проверено»."),
-        S.internalNotes ? field("internal_notes", "Внутренняя заметка — не публикуется", textarea("internal_notes", 2), "Видна только редакторам; не попадает в карточку жителя и публичную историю.") : null,
+        field("evidence_notes", tr("staff.form.field.evidence_notes", "Пояснение к достоверности (видно жителям)"), textarea("evidence_notes", 2), "Например: «сроки по объявлению от 01.10.2026, фактическое состояние не проверено»."),
+        S.internalNotes ? field("internal_notes", tr("staff.form.field.internal_notes", "Внутренняя заметка — не публикуется"), textarea("internal_notes", 2), "Видна только редакторам; не попадает в карточку жителя и публичную историю.") : null,
       ].filter(Boolean));
 
       const ro = !acts.edit;
@@ -848,7 +883,7 @@
       body.replaceChildren(el("div", { class: "civic-r04-edit" }, [
         el("div", { class: "civic-r04-bar" }, [
           btn(tr("staff.cabinet.back_to_list", "← Все записи"), () => showList(true), "link", "back"),
-          el("h3", { id: P + "edit-h", tabindex: "-1", "data-fk": "edit-h" }, it ? it.title || "(без названия)" : "Новый объект"), meta]),
+          el("h3", { id: P + "edit-h", tabindex: "-1", "data-fk": "edit-h" }, it ? it.title || tr("staff.cabinet.untitled", "(без названия)") : tr("staff.cabinet.new_object", "Новый объект")), meta]),
         V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.stage, V.preview, V.history, review, actions].filter(Boolean)));
       // R06 раунд 14: этап работ — отдельный блок со своей кнопкой и ревизией (web/civic/proposals/stage-editor.js),
       // форма и сохранение редактора не меняются. Только у сохранённой записи: у новой ещё нет ID.
@@ -890,7 +925,8 @@
     function paintErrors() {
       for (const [k, f] of Object.entries(F)) {
         const msg = errorOf(k);
-        f.err.textContent = msg;
+        // проверка (editor-core) пишет по-русски; самое частое сообщение — на языке интерфейса (марафон, круг 7)
+        f.err.textContent = msg === "Обязательное поле." ? tr("staff.form.required", msg) : msg;
         f.warn.textContent = msg ? "" : S.warnings[k] || "";
         if (f.control) { if (msg) f.control.setAttribute("aria-invalid", "true"); else f.control.removeAttribute("aria-invalid"); }
       }
@@ -1004,7 +1040,7 @@
           btn("Готово", finishEdit, "primary", "tool-done"),
           btn("Отменить шаг", undoEdit, "", "tool-undo", { disabled: !t.undo.length }),
           btn("Удалить вершину", deleteVertex, "", "vx-del", { disabled: t.selected === null || t.vertices.length <= min }),
-          btn("Отмена", () => { closeTool(); focusKey("tool-edit"); }, "ghost", "tool-cancel")]));
+          btn(tr("staff.form.cancel", "Отмена"), () => { closeTool(); focusKey("tool-edit"); }, "ghost", "tool-cancel")]));
       } else if (t && (t.mode === "segment" || t.mode === "yard")) {
         kids.push(el("p", { class: "civic-r04-tool", role: "status" }, toolText(t.mode)));
         if (t.mode === "segment") {
@@ -1026,7 +1062,7 @@
         kids.push(el("p", { class: "civic-r04-row-btns" }, [
           btn("Готово", finishShape, "primary", "tool-done", { disabled: !(t.mode === "segment" ? t.result : t.yard) || t.pending }),
           t.mode === "segment" ? btn(tr("editor.seg.restart", "Начать заново"), () => { t.start = null; t.result = null; t.problem = null; t.seq++; t.pending = false; renderGeometry(); syncMap(); }, "", "tool-undo", { disabled: !t.start }) : null,
-          btn("Отмена", () => { closeTool(); focusKey("tool-point"); }, "ghost", "tool-cancel")].filter(Boolean)));
+          btn(tr("staff.form.cancel", "Отмена"), () => { closeTool(); focusKey("tool-point"); }, "ghost", "tool-cancel")].filter(Boolean)));
       } else if (t) {
         const n = t.vertices.length;
         const need = t.mode === "area" ? 3 : 2;
@@ -1035,7 +1071,7 @@
         kids.push(el("p", { class: "civic-r04-row-btns" }, [
           t.mode !== "point" ? btn("Готово", finishShape, "primary", "tool-done", { disabled: n < need }) : null,
           t.mode !== "point" ? btn("Убрать последнюю точку", () => { t.vertices.pop(); t.problem = null; renderGeometry(); syncMap(); }, "", "tool-undo", { disabled: !n }) : null,
-          btn("Отмена", () => { closeTool(); focusKey("tool-point"); }, "ghost", "tool-cancel")].filter(Boolean)));
+          btn(tr("staff.form.cancel", "Отмена"), () => { closeTool(); focusKey("tool-point"); }, "ghost", "tool-cancel")].filter(Boolean)));
       } else {
         kids.push(el("p", { class: "civic-r04-help" }, g ? "Отмечено: " + C.describeGeometry(g) + "." : "Выберите, как отметить место:"));
         kids.push(drawRow(true));
@@ -1539,7 +1575,7 @@
       const f = F.budget_source_id;
       if (!f) return;
       const x = f.control, val = S.form.budget_source_id;
-      x.replaceChildren(el("option", { value: "" }, "— нет источника —"), ...S.form.sources.map((s) => {
+      x.replaceChildren(el("option", { value: "" }, tr("staff.form.no_source", "— нет источника —")), ...S.form.sources.map((s) => {
         let host = "";
         try { host = s.url ? new URL(s.url).hostname : ""; } catch (e) { host = ""; }
         return el("option", { value: s.id }, s.id + " — " + (s.publisher || host || "адрес не указан"));
@@ -1580,7 +1616,7 @@
       S.mirror = false;
       buildEditor(); syncMap(); refreshDirty();
       setNotice(res.conflicts.length ? "warn" : "info", res.conflicts.length
-        ? "Правки восстановлены. Эти поля за это время изменились и на сервере — оставлено ваше значение, проверьте: " + res.conflicts.map((k) => FORM_LABEL[k] || k).join(", ") + "."
+        ? "Правки восстановлены. Эти поля за это время изменились и на сервере — оставлено ваше значение, проверьте: " + res.conflicts.map((k) => formLabel(k) || k).join(", ") + "."
         : "Правки восстановлены. Проверьте «было/станет» и сохраните.");
       focusKey("msg");
     }
@@ -1662,7 +1698,7 @@
       const c = S.conflict;
       if (!c) { V.conflict.replaceChildren(); return; }
       const L = c.latest, last = (c.history || []).slice().sort((a, b) => (b.revision || 0) - (a.revision || 0))[0];
-      const names = (ks) => ks.map((k) => FORM_LABEL[k] || k).join(", ");
+      const names = (ks) => ks.map((k) => formLabel(k) || k).join(", ");
       V.conflict.replaceChildren(el("div", { class: "civic-r04-msg civic-r04-msg-error", role: "group", "aria-label": "Конфликт версий" }, [
         el("p", {}, el("b", {}, "Запись уже изменена: на сервере ред. " + L.revision + ", у вас была ред. " + (S.item && S.item.revision) + ".")),
         last ? el("p", {}, "Последнее изменение: " + C.fmtDateTime(last.at) + (last.reason ? " — «" + last.reason + "»" : "")) : null,
@@ -1694,7 +1730,7 @@
         el("thead", {}, el("tr", {}, [el("th", { scope: "col" }, "Поле"), el("th", { scope: "col" }, "Было (ред. " + revs[0] + ")"),
           el("th", { scope: "col" }, "На сервере (ред. " + revs[1] + ")"), el("th", { scope: "col" }, revs[2] || "Ваша правка")])),
         el("tbody", {}, keys.map((k) => el("tr", { class: rb.conflicts.includes(k) ? "civic-r04-both" : null }, [
-          el("th", { scope: "row" }, (FORM_LABEL[k] || k) + (rb.conflicts.includes(k) ? " — изменено обеими сторонами" : "")),
+          el("th", { scope: "row" }, (formLabel(k) || k) + (rb.conflicts.includes(k) ? " — изменено обеими сторонами" : "")),
           el("td", {}, C.fmtFormValue(k, base[k])),
           el("td", {}, rb.theirs.includes(k) || rb.conflicts.includes(k) ? C.fmtFormValue(k, server[k]) : "без изменений"),
           el("td", {}, rb.kept.includes(k) ? C.fmtFormValue(k, mine[k]) : "без изменений")])))]);
@@ -1894,19 +1930,19 @@
       let kids;
       if (S.confirm) {
         if (V.rare) rebuild(V.rare, []);
-        const cl = { publish: "Подтвердить публикацию", archive: "Перенести в архив", apply: "Принять изменения источника", dismiss: "Отклонить предложение" }[S.confirm];
-        kids = [btn(S.busy === S.confirm ? "Отправляем…" : cl, () => doTransition(S.confirm), S.confirm === "archive" ? "danger" : "primary", "confirm", { disabled: busy, "aria-busy": S.busy ? "true" : null }),
-          btn("Отмена", cancelConfirm, "ghost", "confirm-cancel", { disabled: !!S.busy })];
+        const cl = { publish: tr("staff.form.confirm.publish", "Подтвердить публикацию"), archive: tr("staff.form.confirm.archive", "Перенести в архив"), apply: tr("staff.form.confirm.apply", "Принять изменения источника"), dismiss: tr("staff.form.confirm.dismiss", "Отклонить предложение") }[S.confirm];
+        kids = [btn(S.busy === S.confirm ? tr("staff.form.sending", "Отправляем…") : cl, () => doTransition(S.confirm), S.confirm === "archive" ? "danger" : "primary", "confirm", { disabled: busy, "aria-busy": S.busy ? "true" : null }),
+          btn(tr("staff.form.cancel", "Отмена"), cancelConfirm, "ghost", "confirm-cancel", { disabled: !!S.busy })];
       } else {
-        const saveLabel = S.busy === "save" ? "Сохраняем…" : !it ? "Создать черновик" : it.publication === "published" ? "Сохранить изменения" : "Сохранить черновик";
+        const saveLabel = S.busy === "save" ? tr("staff.form.saving", "Сохраняем…") : !it ? tr("staff.form.create_draft", "Создать черновик") : it.publication === "published" ? tr("staff.form.save_changes", "Сохранить изменения") : tr("staff.form.save_draft", "Сохранить черновик");
         kids = [
           acts.edit ? btn(saveLabel, save, "primary", "save", { disabled: busy || (it && !dirty), "aria-busy": S.busy === "save" ? "true" : null }) : null,
-          btn(S.preview ? "Скрыть предпросмотр" : "Как увидят жители", () => { S.preview = !S.preview; renderPreview(); renderButtons(); focusKey("preview"); }, "", "preview", { "aria-expanded": String(!!S.preview) }),
+          btn(S.preview ? tr("staff.form.preview_hide", "Скрыть предпросмотр") : tr("staff.form.preview", "Как увидят жители"), () => { S.preview = !S.preview; renderPreview(); renderButtons(); focusKey("preview"); }, "", "preview", { "aria-expanded": String(!!S.preview) }),
           // with unsaved edits these are hidden (not just disabled): the line below explains, and the sticky bar stays short
-          acts.publish && it && !dirty ? btn(it.publication === "published" ? "Опубликовать изменения…" : "Опубликовать…", () => askConfirm("publish"), "", "publish", { disabled: busy }) : null,
+          acts.publish && it && !dirty ? btn(it.publication === "published" ? tr("staff.form.publish_changes", "Опубликовать изменения…") : tr("staff.form.publish", "Опубликовать…"), () => askConfirm("publish"), "", "publish", { disabled: busy }) : null,
         ].filter(Boolean);
         rebuild(V.rare, acts.archive && it && !dirty ? [el("p", { class: "civic-r04-row-btns civic-r04-rare" }, [
-          btn("В архив…", () => askConfirm("archive"), "ghost", "archive", { disabled: busy })])] : []);
+          btn(tr("staff.form.archive", "В архив…"), () => askConfirm("archive"), "ghost", "archive", { disabled: busy })])] : []);
         if (S.conflict) kids.push(el("p", { class: "civic-r04-help" }, "Сначала выберите вариант в блоке «Запись уже изменена» выше."));
         else if (dirty && it && (acts.publish || acts.archive)) kids.push(el("p", { class: "civic-r04-help" }, "Публикация и архив доступны после сохранения изменений."));
       }
@@ -1986,8 +2022,8 @@
       if (bad.length || S.reasonErr) {
         renderReason();
         const keys = bad.concat(S.reasonErr ? ["reason"] : []);
-        setNotice("error", "Не сохранено: исправьте отмеченные поля (" + keys.length + "). Введённый текст на месте.", keys.slice(0, 6).map((k) => ({
-          label: FORM_LABEL[k] || FORM_LABEL[k.split(".")[0]] || k, fk: "goto-" + k, cls: "link", fn: () => (k === "reason" ? focusKey("reason") : focusField(k)) })));
+        setNotice("error", tr("staff.form.save_fix", "Не сохранено: исправьте отмеченные поля ({n}). Введённый текст на месте.", { n: keys.length }), keys.slice(0, 6).map((k) => ({
+          label: formLabel(k) || formLabel(k.split(".")[0]) || k, fk: "goto-" + k, cls: "link", fn: () => (k === "reason" ? focusKey("reason") : focusField(k)) })));
         S.notice.fixKeys = keys;
         if (bad.length) focusField(firstErrorKey() || bad[0]); else focusKey("reason");
         return;
@@ -2159,7 +2195,7 @@
         S.server = {};
         for (const [k, m] of Object.entries(n.fields)) { if (k === "reason") S.reasonErr = m; else if (k !== "_form") S.server[k] = m; }
         paintErrors(); renderReason();
-        const lost = Object.entries(S.server).filter(([k]) => !F[k]).map(([k, m]) => (FORM_LABEL[k] || FORM_LABEL[k.split(".")[0]] || k) + ": " + m);
+        const lost = Object.entries(S.server).filter(([k]) => !F[k]).map(([k, m]) => (formLabel(k) || formLabel(k.split(".")[0]) || k) + ": " + m);
         const shown = Object.keys(S.server).some((k) => F[k]) || !!S.reasonErr;
         setNotice("error", { text: shown ? n.text : "Сервер не принял запись. Причина:", detail: [n.fields._form].concat(lost).filter(Boolean).join(" ") || n.detail });
         const k = firstErrorKey();
