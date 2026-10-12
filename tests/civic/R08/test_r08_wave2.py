@@ -312,6 +312,15 @@ def test_pulse_metoo_and_new_hot_place():
     assert "new_hot" not in {x["kind"] for x in _alarms([r], items_now=[item], items_prev=[item])["items"]}
 
 
+def test_pulse_ordinary_week_noise_is_quiet():
+    # R13 (PULSE_METHOD.md): 8 при обычных 2,5 в неделю — ×3, но такое бывает «просто так» в 1,6 % недель
+    # (биномиальная проверка с обычным уровнем по 4 неделям) — не тревога; 12 при обычных 3 (0,1 %) — тревога.
+    assert _alarms(_flow("nura", "waste", [8, 2, 3, 2, 3, 1]))["items"] == []
+    assert [x["kind"] for x in _alarms(_flow("nura", "waste", [12, 3, 3, 3, 3, 1]))["items"]] == ["spike"]
+    assert pulse._surprise(8, 2.5, 4) > pulse.SURPRISE_P > pulse._surprise(12, 3.0, 4)
+    assert pulse._surprise(2000, 300.0, 4) == 0.0  # тысячи сообщений — без переполнения и быстро
+
+
 def test_pulse_at_most_five():
     recs = []
     for cat in ("snow_ice", "roads", "waste", "lighting", "yards", "parking", "transport"):

@@ -967,31 +967,39 @@
     }
 
     function renderOk(d) {
-      if (d.complaints_available === false) {
-        // Нет источника жалоб: показываем это прямо (состояние «пусто» ui-kit), а не четыре нуля.
-        body.appendChild(
-          h("div", { class: "bk-empty akim-no-complaints", role: "status" }, [icon("alert", 48), h("p", { class: "bk-empty__title", text: tr("akim.no_complaints") })])
-        );
-      } else {
+      // Нет источника жалоб — не четыре нуля и не отдельный блок-заглушка (CLEAN_PASS §3 R08 п. 6): чисел нет,
+      // а сводка ниже прямо говорит «Данные об обращениях пока не подключены».
+      if (d.complaints_available !== false) {
         body.appendChild(renderKpis(d));
         body.appendChild(renderKpiMore(d));
       }
-      // «Коротко о дне» — обычный абзац 17 без плашки; заголовок — только для чтения с экрана (CLEAN_PASS §3 R08 п. 4).
-      body.appendChild(
-        h("section", { class: "akim-summary", "aria-labelledby": "akim-summary-title" }, [
-          h("h2", { class: "akim-summary__title bk-sr-only", id: "akim-summary-title", text: tr("akim.summary.title") }),
-          summaryText(d),
-        ])
-      );
-      // Порядок по схеме R11 (IA_WAVE2 §5): KPI → сводка → «Нужно решение акима» → «Пульс» → прежние блоки.
+      // Пустые блоки не показываем (CLEAN_PASS §3 R08 п. 6); если ниже чисел пусто всё — одно состояние «пусто» ui-kit.
       var decisionsEl = renderDecisions(d);
-      if (decisionsEl) body.appendChild(decisionsEl);
       var pulseEl = renderPulse(d);
-      if (pulseEl) body.appendChild(pulseEl);
       // Две колонки на ноутбуке: слева «Горячие места» и объекты, справа темы, районы, предложения.
       // На телефоне колонки «растворяются» (display: contents), порядок задаёт CSS order.
       var main = [renderHot(d), renderObjects(d)].filter(Boolean);
       var side = [renderTopics(d), renderDistricts(d), renderProposals(d)].filter(Boolean);
+      var nothing = d.empty && !decisionsEl && !pulseEl && !main.length && !side.length;
+      if (nothing)
+        body.appendChild(
+          h("div", { class: "bk-empty akim-empty", role: "status" }, [
+            icon("search", 48),
+            h("p", { class: "bk-empty__title", text: tr(d.is_today === false ? "akim.empty_day" : "akim.empty") }),
+            h("p", { class: "bk-empty__text", text: tr("akim.empty_hint") }),
+          ])
+        );
+      // «Коротко о дне» — обычный абзац 17 без плашки; заголовок — только для чтения с экрана (CLEAN_PASS §3 R08 п. 4).
+      else
+        body.appendChild(
+          h("section", { class: "akim-summary", "aria-labelledby": "akim-summary-title" }, [
+            h("h2", { class: "akim-summary__title bk-sr-only", id: "akim-summary-title", text: tr("akim.summary.title") }),
+            summaryText(d),
+          ])
+        );
+      // Порядок по схеме R11 (IA_WAVE2 §5): KPI → сводка → «Нужно решение акима» → «Пульс» → прежние блоки.
+      if (decisionsEl) body.appendChild(decisionsEl);
+      if (pulseEl) body.appendChild(pulseEl);
       if (main.length || side.length)
         body.appendChild(
           h("div", { class: "akim-grid" + (main.length && side.length ? "" : " akim-grid--one") }, [

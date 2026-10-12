@@ -67,7 +67,7 @@ async function layoutProblems(page) {
       const box = el.getBoundingClientRect();
       if (box.width <= 1 && box.height <= 1) continue; // только для экранного диктора — на экране не видно
       const hasText = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
-      if (hasText && parseFloat(cs.fontSize) < 14) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
+      if (hasText && parseFloat(cs.fontSize) < 13) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
       if (hasText && el.scrollWidth > el.clientWidth + 1 && cs.overflow !== "visible" && el.clientWidth > 0)
         out.clipped.push(el.className + ":" + el.textContent.trim().slice(0, 30));
     }
@@ -114,7 +114,7 @@ async function shot(page, name, full) {
       check(`${tag}: нет ключей перевода на экране`, !KEYLIKE.test(text), (text.match(KEYLIKE) || [])[0]);
       check(`${tag}: нет технических слов`, !TECH.test(text), (text.match(TECH) || [])[0]);
       check(`${tag}: нет предупреждений [i18n] и ошибок JS`, logs.length === 0, logs);
-      check(`${tag}: шрифт не меньше 14 px`, lp.small.length === 0, lp.small.slice(0, 5));
+      check(`${tag}: шрифт не меньше 13 px (шкала R11: 13/15/17/22/28)`, lp.small.length === 0, lp.small.slice(0, 5));
       check(`${tag}: текст не обрезан`, lp.clipped.length === 0, lp.clipped.slice(0, 5));
       check(`${tag}: зоны нажатия не меньше 44 px`, lp.tiny.length === 0, lp.tiny.slice(0, 5));
       const nums = await page.$$eval(".akim-kpi .bk-kpi__value", (els) => els.map((e) => e.textContent));
@@ -127,25 +127,66 @@ async function shot(page, name, full) {
       const expected = realSummary && realSummary.text[lang];
       check(`${tag}: сводка текстом совпадает с сервером`, summary.trim() === (expected || "").trim(), summary.slice(0, 80));
       check(`${tag}: главная проблема выделена`, (await page.$$(".akim-summary__main")).length === 1);
-      check(`${tag}: пометка «Пример» у демо-данных`, (await page.$$(".bk-tag--demo")).length >= 1);
-      // UX_REVIEW день 3, п. 11: метка «Пример» одна — в заголовке страницы; в карточках её нет; строка сверху — словами.
-      const demo = await page.evaluate(() => ({
-        tags: document.querySelectorAll("#akim .bk-tag--demo").length,
-        inTitle: document.querySelectorAll(".akim__title .bk-tag--demo").length,
-        inCards: document.querySelectorAll(".akim-card .bk-tag--demo, .akim-kpi .bk-tag--demo").length,
-        note: (document.querySelector(".akim-demo") || {}).textContent || "",
+      // CLEAN_PASS §2/§3 R08 п. 1: «данные — пример» — одна серая строка внизу (common.demo_footnote), меток «Пример» нет.
+      const demo = await page.evaluate(() => {
+        const f = document.querySelector("#akim .bk-footnote.akim-demo");
+        const last = f && Array.from(f.parentElement.children).filter((e) => e.getClientRects().length).pop();
+        const fb = f ? f.getBoundingClientRect() : null;
+        const below = fb ? Array.from(document.querySelectorAll("#akim .akim-card, #akim .akim-kpis, #akim .akim-summary"))
+          .filter((e) => e.getBoundingClientRect().bottom > fb.top + 1).length : -1;
+        return { tags: document.querySelectorAll("#akim .bk-tag--demo").length, footnotes: document.querySelectorAll("#akim .bk-footnote").length,
+                 note: f ? f.textContent : "", bottom: below === 0, size: f ? parseFloat(getComputedStyle(f).fontSize) : 0, isLast: last === f || below === 0 };
+      });
+      check(`${tag}: «${lang === "kk" ? "Деректер — үлгі" : "Данные — пример"}» — одна строка внизу, меток «Пример» нет (CLEAN_PASS п. 1)`,
+        demo.tags === 0 && demo.footnotes === 1 && demo.note.startsWith(lang === "kk" ? "Деректер — үлгі" : "Данные — пример") && demo.bottom && demo.size === 13, demo);
+      // CLEAN_PASS п. 3: плитки без карточек — число 28/600, подпись 15 и ОДНА строка изменения на любой ширине;
+      // остальное («за 7 дней», «ждут ответа», «дольше всех», «служба сообщила…») — в «Подробнее».
+      const kpiStyle = await page.$$eval(".akim-kpi", (cards) => cards.map((c) => {
+        const cs = getComputedStyle(c), v = getComputedStyle(c.querySelector(".bk-kpi__value")), l = getComputedStyle(c.querySelector(".bk-kpi__label"));
+        return { deltas: Array.from(c.querySelectorAll(".bk-kpi__delta")).filter((d) => d.getClientRects().length > 0).length,
+                 card: cs.boxShadow !== "none" || parseFloat(cs.borderTopWidth) > 0 || !/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor),
+                 num: v.fontSize + "/" + v.fontWeight, label: l.fontSize };
       }));
-      check(`${tag}: «Пример» — одна метка в заголовке, в карточках нет (п. 11)`, demo.tags === 1 && demo.inTitle === 1 && demo.inCards === 0, demo);
-      check(`${tag}: строка сверху начинается с «${lang === "kk" ? "Үлгі" : "Пример"}:»`, demo.note.startsWith(lang === "kk" ? "Үлгі: " : "Пример: "), demo.note.slice(0, 40));
-      // П. 10: на телефоне в каждой карточке одно изменение (к прошлой неделе); на ноутбуке у «Новых» ещё «за 7 дней».
-      const perCard = await page.$$eval(".akim-kpi", (cards) => cards.map((c) =>
-        Array.from(c.querySelectorAll(".bk-kpi__delta")).filter((d) => d.getClientRects().length > 0).length));
-      const lines = await page.$$eval(".akim-kpi", (cards) => cards.map((c) => {
-        const lh = parseFloat(getComputedStyle(c.querySelector(".bk-kpi__label")).lineHeight) || 20;
-        return Math.round((c.getBoundingClientRect().height - 24) / lh);
-      }));
-      if (width < 480) check(`${tag}: на телефоне одно изменение в карточке, без «за 7 дней» (п. 10)`, perCard.every((n) => n === 1), { perCard, lines });
-      else check(`${tag}: на ноутбуке у «Новых» видно и «за 7 дней»`, perCard[0] === 2 && perCard.slice(1).every((n) => n === 1), perCard);
+      check(`${tag}: плитки без карточек, число 28/600, подпись 15, одна строка изменения (CLEAN_PASS п. 3)`,
+        kpiStyle.length === 4 && kpiStyle.every((k) => k.deltas === 1 && !k.card && k.num === "28px/600" && k.label === "15px"), kpiStyle);
+      const more = await page.evaluate(() => {
+        const d = document.querySelector(".akim-kpis + .akim-kpi-more, .akim-kpi-more");
+        return d ? { open: d.open, summary: d.querySelector("summary").textContent, rows: d.querySelectorAll("li").length } : null;
+      });
+      check(`${tag}: остальное о числах — в «${lang === "kk" ? "Толығырақ" : "Подробнее"}» (закрыто)`,
+        !!more && !more.open && more.summary === (lang === "kk" ? "Толығырақ" : "Подробнее") && more.rows >= 3, more);
+      // CLEAN_PASS п. 4: сводка — абзац 17 без плашки, жирная (600) только главная фраза.
+      const sum = await page.evaluate(() => {
+        const sec = document.querySelector(".akim-summary"), p = document.querySelector(".akim-summary__text");
+        const cs = getComputedStyle(sec);
+        return { size: getComputedStyle(p).fontSize, plaque: cs.boxShadow !== "none" || parseFloat(cs.borderTopWidth) > 0 || parseFloat(cs.borderLeftWidth) > 0
+                   || !/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor),
+                 bold: Array.from(p.querySelectorAll("*")).filter((e) => parseInt(getComputedStyle(e).fontWeight, 10) >= 600).map((e) => e.className),
+                 mainWeight: (document.querySelector(".akim-summary__main") && getComputedStyle(document.querySelector(".akim-summary__main")).fontWeight) || "" };
+      });
+      check(`${tag}: сводка — абзац 17 px без плашки, жирная только главная фраза (CLEAN_PASS п. 4)`,
+        sum.size === "17px" && !sum.plaque && sum.mainWeight === "600" && sum.bold.length === 1, sum);
+      // CLEAN_PASS п. 1–2: заголовок 28/600, одна серая строка 13; поля даты и района — с заливкой; «Распечатать» — ghost.
+      const top = await page.evaluate(() => {
+        const t = document.querySelector(".akim__title"), cs = getComputedStyle(t);
+        return { title: cs.fontSize + "/" + cs.fontWeight, metas: document.querySelectorAll(".akim__meta").length,
+                 meta: getComputedStyle(document.querySelector(".akim__meta")).fontSize,
+                 fields: document.querySelectorAll(".akim__controls .bk-field").length,
+                 print: (document.querySelector(".akim__print") || { className: "" }).className.includes("bk-btn--ghost"),
+                 printIcon: !!document.querySelector(".akim__print svg") };
+      });
+      check(`${tag}: заголовок 28/600, одна строка 13, поля с заливкой, «Распечатать» ghost со значком (CLEAN_PASS п. 1–2)`,
+        top.title === "28px/600" && top.metas === 1 && top.meta === "13px" && top.fields === 2 && top.print && top.printIcon, top);
+      // CLEAN_PASS §2: два начертания — 400 и 600.
+      const weights = await page.evaluate(() => {
+        const set = new Set();
+        for (const el of document.querySelectorAll("#akim *")) {
+          if (!el.getClientRects().length) continue;
+          if (Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim())) set.add(getComputedStyle(el).fontWeight);
+        }
+        return Array.from(set).sort();
+      });
+      check(`${tag}: два начертания — 400 и 600 (CLEAN_PASS §2)`, weights.every((w) => w === "400" || w === "600"), weights);
       // П. 14: у объектов полоса из 6 этапов (ui-kit .bk-stages--compact) и подпись «Этап N из 6: …».
       const stages = await page.$$eval(".akim-objects .akim-obj", (rows) => rows.map((r) => {
         const ol = r.querySelector(".bk-stages--compact");
@@ -188,8 +229,11 @@ async function shot(page, name, full) {
           pulseMore: q(".akim-pulse__more li").length,
           pulseMoreSummary: (document.querySelector(".akim-pulse__more > summary") || {}).textContent || "",
           pulseRows: q(".akim-pulse__item").map((li) => [li.querySelector(".akim-pulse__title").textContent, li.querySelector(".akim-pulse__reason").textContent]),
-          split: (document.querySelector('.akim-kpi[data-kind="fixed"] .akim-kpi__extra') || {}).textContent || "",
-          overdue: (document.querySelector('.akim-kpi[data-kind="overdue"] .akim-kpi__extra') || {}).textContent || "",
+          split: (document.querySelector('.akim-kpi-more li[data-kind="fixed"]') || {}).textContent || "",
+          overdue: (document.querySelector('.akim-kpi-more li[data-kind="overdue"]') || {}).textContent || "",
+          ghost: q(".akim-decision__choose").every((b) => b.classList.contains("bk-btn--ghost") && !b.classList.contains("bk-btn--primary")),
+          decBorders: q(".akim-decision").map((c) => { const cs = getComputedStyle(c);
+            return [cs.borderTopWidth, cs.boxShadow === "none", /rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor)]; }),
           hotSubs: q(".akim-hot__sub").map((e) => e.textContent),
         };
       });
@@ -197,15 +241,17 @@ async function shot(page, name, full) {
       check(`${tag}: «${kk ? "Әкімнің шешімі керек" : "Нужно решение акима"}» — 1–3 карточки, у каждой 2 варианта и «Выбрать», срок красным`,
         w2.cards.length >= 1 && w2.cards.length <= 3 && w2.cards.every((c) => c.opts === 2 && c.btns === 2 && c.late && c.needed)
           && w2.decTitle === (kk ? "Әкімнің шешімі керек" : "Нужно решение акима"), w2.cards);
+      check(`${tag}: решения — список с линиями 1 px, без плашек; «Выбрать» — ghost (CLEAN_PASS п. 5)`,
+        w2.ghost && w2.decBorders.every(([b, noShadow, clear], i) => noShadow && clear && b === (i ? "1px" : "0px")), w2.decBorders);
       check(`${tag}: «Пульс района» — не больше 3 строк сразу, остальное в «${kk ? "Тағы" : "Ещё"} N»`,
         w2.pulseVisible >= 1 && w2.pulseVisible <= 3 && w2.pulseVisible + w2.pulseMore <= 5
           && (w2.pulseMore === 0 || w2.pulseMoreSummary.startsWith(kk ? "Тағы" : "Ещё")), { v: w2.pulseVisible, more: w2.pulseMore, s: w2.pulseMoreSummary });
       check(`${tag}: у каждой тревоги есть причина (без «сигма», «аномалия»)`,
         w2.pulseRows.every(([t, r]) => t.length > 5 && r.length > 5 && !/сигм|аномал|z-/i.test(t + r)), w2.pulseRows.slice(0, 2));
-      check(`${tag}: плитка «Исправлено» — служба сообщила · жители проверили · вернули`,
+      check(`${tag}: «Подробнее» об «Исправлено» — служба сообщила · жители проверили · вернули`,
         kk ? /^Қызмет хабарлады \d+ · тұрғындар тексерді \d+ · қайтарылды \d+$/.test(w2.split.trim())
            : /^Служба сообщила \d+ · жители проверили \d+ · вернули \d+$/.test(w2.split.trim()), w2.split);
-      check(`${tag}: плитка «Просрочено» — самое долгое место и срок`, kk ? /^Ең ұзақ кешіккені: .+ · \d+ күнге кешікті$/.test(w2.overdue.trim())
+      check(`${tag}: «Подробнее» о «Просрочено» — самое долгое место и срок`, kk ? /^Ең ұзақ кешіккені: .+ · \d+ күнге кешікті$/.test(w2.overdue.trim())
         : /^Дольше всех: .+ · Просрочено на \d+ д(ень|ня|ней)$/.test(w2.overdue.trim()), w2.overdue);
       check(`${tag}: у горячих мест — уточнение жителей, а не только категория`,
         w2.hotSubs.filter((t) => /Сломана детская|Не убран снег|Долго ждать|Яма|Балалар алаңы бұзылған|Қар тазаланбаған|Ұзақ күту|Шұңқыр/.test(t)).length >= 3, w2.hotSubs.slice(0, 4));
@@ -351,16 +397,20 @@ async function shot(page, name, full) {
                  kk: "Бүгін жаңа өтініш жоқ. Мерзімі өткен өтініш жоқ. Кестеден қалып жатқан нысан жоқ." };
   empty.text_parts = { ru: [{ role: "new", text: "Сегодня новых обращений нет." }], kk: [{ role: "new", text: "Бүгін жаңа өтініш жоқ." }] };
   {
-    const { ctx, page } = await stateCase("состояние: пусто — «Сегодня новых обращений нет» и подсказки в блоках",
+    // CLEAN_PASS §3 R08 п. 6: пустые блоки не показываем; ниже чисел пусто всё — одно состояние «пусто» ui-kit.
+    const { ctx, page } = await stateCase("состояние: пусто — числа и одно состояние «Сегодня новых обращений нет»",
       (route) => route.fulfill({ json: empty }), "ok",
-      ["Сегодня новых обращений нет", "За 7 дней нерешённых жалоб нет", "Все объекты идут по графику", "Новых предложений нет"],
+      ["Сегодня новых обращений нет", "Выберите другую дату или район"],
       "akim-state-empty");
     const lp = await layoutProblems(page);
     check("состояние: пусто — нет пустых белых блоков и прокрутки", lp.hscroll <= 0);
-    const quiet = await page.evaluate(() => ({ dec: !!document.querySelector(".akim-decisions"),
-      pulse: (document.querySelector(".akim-pulse-none") || {}).textContent || "", card: !!document.querySelector(".akim-pulse") }));
-    check("волна 2: нет решений — блока нет; нет тревог — одна строка «Резких всплесков нет»",
-      !quiet.dec && !quiet.card && quiet.pulse.includes("Резких всплесков нет"), quiet);
+    const quiet = await page.evaluate(() => ({
+      blocks: Array.from(document.querySelectorAll("#akim .akim-card")).map((e) => e.className),
+      empties: document.querySelectorAll("#akim .bk-empty").length, kpis: document.querySelectorAll("#akim .akim-kpi").length,
+      text: document.querySelector("#akim").innerText }));
+    check("состояние: пусто — блоков-заглушек нет («Резких всплесков нет», «Пока пусто», «идут по графику»), одно «пусто», 4 числа",
+      quiet.blocks.length === 0 && quiet.empties === 1 && quiet.kpis === 4
+        && !/Резких всплесков нет|Пока пусто|идут по графику|Новых предложений нет|нерешённых жалоб нет/.test(quiet.text), quiet);
     await ctx.close();
   }
   {
@@ -372,9 +422,10 @@ async function shot(page, name, full) {
     const noComplaints = JSON.parse(JSON.stringify(noHeat));
     noComplaints.complaints_available = false;
     noComplaints.text_parts = { ru: [{ role: "new", text: "Данные об обращениях пока не подключены." }], kk: [{ role: "new", text: "Өтініштер туралы дерек әлі қосылмаған." }] };
-    const nc = await stateCase("состояние: жалобы не подключены — вместо нулей прямой текст",
-      (route) => route.fulfill({ json: noComplaints }), "ok", ["Обращения пока не подключены", "Данные об обращениях пока не подключены"], null);
-    check("состояние: жалобы не подключены — нет карточек с нулями", (await nc.page.$$(".akim-kpi")).length === 0);
+    const nc = await stateCase("состояние: жалобы не подключены — вместо нулей прямой текст в сводке",
+      (route) => route.fulfill({ json: noComplaints }), "ok", ["Данные об обращениях пока не подключены"], null);
+    check("состояние: жалобы не подключены — нет чисел с нулями и блока-заглушки (CLEAN_PASS п. 6)",
+      (await nc.page.$$(".akim-kpi, .akim-kpi-more, .akim-no-complaints")).length === 0);
     await nc.ctx.close();
   }
   {
@@ -399,13 +450,13 @@ async function shot(page, name, full) {
   }
 
   {
-    // Реестр объектов пуст (район без работ): не «Все объекты идут по графику», а «Пока пусто».
+    // Реестр объектов пуст (район без работ) или все идут по графику — блока нет (CLEAN_PASS п. 6), не «идут по графику».
     const none = JSON.parse(JSON.stringify(realSummary));
     Object.assign(none.objects, { available: true, late: [], stale: [], late_count: 0, stale_count: 0, total: 0 });
     const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru", route: (route) => route.fulfill({ json: none }) });
     await waitState(page, "ok");
-    const t = await page.textContent(".akim-objects");
-    check("объекты: пустой реестр — «Пока пусто», а не «идут по графику»", t.includes("Пока пусто") && !t.includes("идут по графику"), t);
+    const t = await page.evaluate(() => ({ block: !!document.querySelector(".akim-objects"), text: document.querySelector("#akim").innerText }));
+    check("объекты: пустой реестр — блока нет, нет «идут по графику»", !t.block && !t.text.includes("идут по графику"), t.block);
     await ctx.close();
   }
 
@@ -520,7 +571,8 @@ async function shot(page, name, full) {
     let posted = null;
     page.on("request", (r) => { if (r.method() === "POST" && r.url().includes("/akim/decisions/")) posted = { url: r.url(), body: r.postData(), csrf: r.headers()["x-csrf-token"] }; });
     await btn.click();
-    await page.waitForSelector(`[data-key="${id}"] .akim-decision__chosen`);
+    // На стенде выбор мог остаться от прошлого прогона — ждём именно «Выбран вариант n».
+    await page.waitForFunction(([k, m]) => ((document.querySelector(`[data-key="${k}"] .akim-decision__chosen`) || {}).textContent || "").includes("вариант " + m), [id, n]);
     const chosen = await page.textContent(`[data-key="${id}"] .akim-decision__chosen`);
     await page.reload();
     await waitState(page, "ok");

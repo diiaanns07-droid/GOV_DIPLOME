@@ -285,9 +285,6 @@
   color: var(--c-brand);
   font-weight: var(--fw-semi);
 }
-.akim-pulse-none {
-  margin: 0 0 var(--s-3);
-}
 
 /* ── сетка блоков: слева «Горячие места», справа темы и районы, ниже объекты и предложения ── */
 .akim-grid {
@@ -319,14 +316,6 @@
 .akim-hot__item .bk-list__title {
   font-size: var(--fs-lead);
   font-weight: var(--fw-semi);
-}
-.akim-hot__rank {
-  flex: none;
-  width: 1.5em;
-  text-align: right;
-  color: var(--c-text-2);
-  font-weight: var(--fw-semi);
-  font-variant-numeric: tabular-nums;
 }
 .akim-hot__item .bk-heat {
   flex: none;
@@ -454,15 +443,8 @@
   background: var(--c-warn-soft);
   color: var(--c-warn);
 }
-.akim-empty {
-  padding: var(--s-4) var(--s-2);
-}
-.akim-no-complaints {
-  margin-bottom: var(--s-3);
-  font-size: var(--fs-lead);
-}
-.akim-empty .bk-empty__title {
-  font-size: var(--fs-body);
+.akim-empty { /* ниже чисел пусто всё — одно состояние «пусто» ui-kit (CLEAN_PASS §3 R08 п. 6) */
+  margin: var(--s-4) 0;
 }
 
 /* ── узкий экран: всё в одну колонку, числа 2×2 ── */
@@ -528,9 +510,6 @@
     grid-template-columns: minmax(0, 9.5em) 1fr 3ch;
     gap: var(--s-2);
   }
-  .akim-summary__text {
-    font-size: var(--fs-body);
-  }
   .akim-pulse__item {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "title" "reason" "map";
@@ -551,11 +530,10 @@
     flex-direction: column;
   }
   .akim-kpis { order: 1; }
-  .akim-no-complaints { order: 1; }
   .akim-decisions { order: 2; }
-  .akim-summary { order: 3; }
-  .akim-pulse,
-  .akim-pulse-none { order: 4; }
+  .akim-summary,
+  .akim-empty { order: 3; }
+  .akim-pulse { order: 4; }
   .akim-grid { order: 5; }
   .akim-print-bottom { order: 6; }
   .akim-kpi-more { order: 1; }
@@ -697,9 +675,6 @@
   }
   .akim-bars .bk-bar {
     min-height: 20px;
-  }
-  .akim-empty {
-    padding: 8px;
   }
   .akim-pulse__more > summary { /* на бумаге «Ещё N» раскрыто (akim.js открывает details перед печатью) */
     display: none;

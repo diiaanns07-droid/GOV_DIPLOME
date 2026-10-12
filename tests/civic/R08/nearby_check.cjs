@@ -64,7 +64,7 @@ async function open(browser, w, h, lang, extra) {
             .map((e) => e.className || e.tagName),
           primary: q(".bk-btn--primary").length,
           late: q(".nb-card__late").length,
-          small: q(".nb *").filter((e) => Array.from(e.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim()) && parseFloat(getComputedStyle(e).fontSize) < 14)
+          small: q(".nb *").filter((e) => Array.from(e.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim()) && parseFloat(getComputedStyle(e).fontSize) < 13)
             .map((e) => e.textContent.trim().slice(0, 20)),
           geo: window.__geo,
         };
@@ -72,7 +72,7 @@ async function open(browser, w, h, lang, extra) {
       const kk = lang === "kk";
       check(`${tag}: нет горизонтальной прокрутки страницы`, info.hscroll <= 0, info.hscroll);
       check(`${tag}: нет ключей перевода и предупреждений`, !KEYLIKE.test(info.text) && logs.length === 0, [(info.text.match(KEYLIKE) || [])[0], logs]);
-      check(`${tag}: зоны нажатия ≥ 44 px, шрифт ≥ 14 px`, info.tiny.length === 0 && info.small.length === 0, [info.tiny, info.small]);
+      check(`${tag}: зоны нажатия ≥ 44 px, шрифт ≥ 13 px (шкала R11)`, info.tiny.length === 0 && info.small.length === 0, [info.tiny, info.small]);
       check(`${tag}: 4 вкладки в одну строку`, info.tabs === 4 && info.tabHeights.every((x) => x <= 48), info.tabHeights);
       check(`${tag}: баннеров отключений ≤ 2, в баннере где, когда, источник и «обновлено»`,
         info.banners.length >= 1 && info.banners.length <= 2 &&
