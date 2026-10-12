@@ -84,6 +84,24 @@
 .nb-tabs {
   margin: 0;
 }
+.nb-loading {
+  display: grid;
+  gap: var(--s-3);
+}
+.nb-skel__tabs {
+  height: 44px;
+  border-radius: var(--r-s);
+}
+.nb-skel__row {
+  display: grid;
+  gap: 8px;
+  padding: var(--s-3) 0;
+  border-top: 1px solid var(--c-line);
+}
+.nb-skel__eyebrow {
+  width: 30%;
+  height: 12px;
+}
 .nb-list {
   margin: 0;
   padding: 0;

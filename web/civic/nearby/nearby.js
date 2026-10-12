@@ -423,7 +423,14 @@
       if (pending) rootEl.setAttribute("data-pending", "");
       else rootEl.removeAttribute("data-pending");
       if (state.status === "loading" && !pending) {
-        rootEl.appendChild(h("div", { class: "bk-card nb-loading", role: "status" }, [h("div", { class: "bk-skel bk-skel--title" }), h("div", { class: "bk-skel bk-skel--line" }), h("div", { class: "bk-skel bk-skel--line" })]));
+        // Скелет той же формы, что лента: строка вкладок и две строки (дизайн-марафон, чек-лист п. 8).
+        rootEl.appendChild(
+          h("div", { class: "nb-loading", role: "status", "aria-label": tr("nearby.title") }, [
+            h("div", { class: "bk-skel nb-skel__tabs" }),
+            h("div", { class: "nb-skel__row" }, [h("div", { class: "bk-skel nb-skel__eyebrow" }), h("div", { class: "bk-skel bk-skel--title" }), h("div", { class: "bk-skel bk-skel--line" })]),
+            h("div", { class: "nb-skel__row" }, [h("div", { class: "bk-skel nb-skel__eyebrow" }), h("div", { class: "bk-skel bk-skel--title" }), h("div", { class: "bk-skel bk-skel--line" })]),
+          ])
+        );
         return;
       }
       if (state.status === "error") {
