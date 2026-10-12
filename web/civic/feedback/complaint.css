@@ -236,7 +236,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 
 /* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01): список целей, вкладки, карточка действий. */
 .bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 960px; margin: 0 auto; }
-.bc-inbox__title { margin: 0; font-size: var(--fs-title, 22px); }
+.bc-inbox__title { margin: 0; font-size: var(--fs-title, 22px); font-weight: var(--fw-semi, 600); }   /* заголовок h1/h2: не 700 (R11 разбор FINAL-3 №12) */
 .bc-inbox__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
 .bc-inbox__tabs .bk-chip { min-height: 44px; flex: 0 0 auto; white-space: nowrap; }
 .bc-inbox__count { font-weight: var(--fw-semi, 600); }

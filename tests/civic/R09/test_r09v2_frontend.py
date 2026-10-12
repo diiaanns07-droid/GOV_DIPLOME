@@ -306,3 +306,14 @@ def test_inbox_shows_rude_mark_and_original_text():
     assert '"bc-staff__text"' in STAFF_JS and 'current.moderation && current.moderation.rude' in STAFF_JS
     s = strings()
     assert s["ru"]["moderation.rude"] == "Содержит грубые слова" and s["kk"]["moderation.rude"] == "Дөрекі сөздер бар"
+
+
+def test_inbox_without_staff_login_asks_to_sign_in():
+    """R11 разбор FINAL-3 №1 (patch R09_inbox_need_staff, взят из сборки R01): 401/403 — «Войдите как сотрудник акимата»
+    + «Войти» (не главная кнопка), а не «Нет связи»; №12 — заголовок «Обращений» 600, не 700."""
+    assert 'res.status === 401 || res.status === 403 ? "staff" : true' in LIST_JS
+    assert 't("proposal.need_staff")' in LIST_JS and 't("staff.login.submit")' in LIST_JS
+    s = strings()
+    assert s["ru"]["proposal.need_staff"] == "Войдите как сотрудник акимата" and s["kk"]["staff.login.submit"] == "Кіру"
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    assert re.search(r"\.bc-inbox__title \{[^}]*font-weight: var\(--fw-semi, 600\)", css)
