@@ -72,7 +72,8 @@
 /* На стекле поле выбора — как поля ui-kit в стекле: непрозрачное белое с тонкой линией (GLASS.md §1) */
 .bk-glass .r07-field { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px var(--c-line, #e8eaeb); }
 .bk-glass .r07-field:hover { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px var(--c-line-strong, #d3d8db); }
-.r07-cat-toggle { flex: 1 1 auto; justify-content: space-between; min-width: 0; text-align: left; }
+.r07-cat-toggle { flex: 1 1 0; justify-content: space-between; min-width: 0; text-align: left; }
+.r07-reset { flex: none; padding: 0 8px; }
 .r07-cat-toggle > span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .r07-cat-toggle .r07-ic { color: var(--r07-ink); }
 .r07-cat-toggle--on { font-weight: 600; }
@@ -331,8 +332,11 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 /* Маленькая плашка с числом — когда полному значку тесно (№2): число остаётся, кружок прячется.
    Видимая плашка 32 px, сама кнопка — 44 px по высоте (прозрачные поля), зона нажатия ≥ 48. */
 .r07-badge--mini .r07-badge__dot { display: none; }
-.r07-badge--mini .r07-badge__count { margin-left: 0; height: 32px; line-height: 30px; padding: 0 10px 0 8px; border-radius: 16px;
-  border-left: 6px solid var(--r07-c, #999); font-size: 17px; }
+/* белая капсула с цветной точкой уровня (раньше — цветная полоса слева) */
+.r07-badge--mini .r07-badge__count { display: inline-flex; align-items: center; gap: 6px; margin-left: 0; height: 32px; line-height: 32px;
+  padding: 0 11px 0 9px; border-radius: 16px; font-size: 17px; }
+.r07-badge--mini .r07-badge__count::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--r07-c, #999);
+  box-shadow: inset 0 0 0 1px rgba(16, 24, 22, 0.12); }
 .r07-badge--mini { padding: 6px 2px; }
 .r07-badge--mini .r07-badge__name { display: none; }
 /* Кружок-кластер (п. 2): число людей, цвет — самого высокого уровня (тёмные уровни — «значковые» оттенки ui-kit,

@@ -1583,14 +1583,16 @@
       const districts = showDistrict ? ((S.meta && S.meta.districts) || []).slice().sort((a, b) => (a.ru > b.ru ? 1 : -1)).map((d) =>
         '<option value="' + esc(d.id) + '"' + (S.filters.district === d.id ? " selected" : "") + ">" + esc(S.lang === "kk" ? d.kk : d.ru) + "</option>").join("") : "";
       const dirty = S.filters.category || S.filters.district || S.filters.days !== ((S.meta && S.meta.default_days) || 30);
+      // «Сбросить» — в строке темы, рядом с тем, что сбрасывает (не одна на строке); пока список пуст, сброс — кнопкой
+      // «Сбросить фильтры» в самом пустом состоянии (R11 №8), без второй такой же кнопки здесь.
+      const reset = dirty && (S.top || []).length ? '<button type="button" class="r07-btn r07-btn--ghost r07-reset" data-reset>' + esc(t("heat.reset")) + "</button>" : "";
       return '<section class="r07-filters" aria-label="' + esc(t("heat.filters")) + '">' +
         '<div class="r07-row"><button type="button" class="r07-field r07-cat-toggle' + (S.filters.category ? " r07-cat-toggle--on" : "") + '" data-cats-toggle aria-expanded="' + S.catsOpen + '" aria-controls="r07-cats">' +
-        current + svgIcon("back", 18).replace('class="r07-ic"', 'class="r07-ic r07-ic--down"') + "</button>" +
+        current + svgIcon("back", 18).replace('class="r07-ic"', 'class="r07-ic r07-ic--down"') + "</button>" + reset +
         (showDistrict ? '<label class="r07-select"><span class="r07-vh">' + esc(t("heat.district")) + '</span><select class="r07-field" data-district aria-label="' + esc(t("heat.district")) + '"><option value="">' + esc(t("heat.district_all")) + "</option>" + districts + "</select></label>" : "") +
         "</div>" +
         '<div class="r07-chips" id="r07-cats" role="group" aria-label="' + esc(t("heat.category_all")) + '"' + (S.catsOpen ? "" : " hidden") + ">" + all + cats + "</div>" +
-        '<div class="r07-row"><div class="r07-seg bk-seg" role="group" aria-label="' + esc(t("heat.period")) + '">' + periods + "</div>" +
-        (dirty ? '<button type="button" class="r07-btn r07-btn--ghost" data-reset>' + esc(t("heat.reset")) + "</button>" : "") + "</div></section>";
+        '<div class="r07-row"><div class="r07-seg bk-seg" role="group" aria-label="' + esc(t("heat.period")) + '">' + periods + "</div></div></section>";
     }
 
     // Пункты легенды волны 2 — только по делу (R11 IA_WAVE2 §3): «сообщили об устранении», когда такая цель видна на
