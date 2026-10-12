@@ -49,7 +49,7 @@
   "FINAL-3 шаг 1 7782b92 + ui-kit/словарь R11 2b8f72e + R05 395d9ea + пути R06 21a9739 + оба patch: pytest R01 R06 R08 R12 R15": "PASS 1345 passed, 7 skipped",
   "то же дерево: app_r01_wave2.cjs (1366 ru/kk, 375 kk/ru: житель, мастер с местом на карте, акимат, работы → «Рядом» R08)": "PASS 90/90",
   "то же дерево: app_r01_ideas_layer.cjs (слой «Идеи жителей» с R05 395d9ea)": "PASS 16/16",
-  "то же дерево: R10 demo_flow.cjs (claude/r14-R10 tests/e2e)": "RUNNING — итог в STATUS.md",
+  "то же дерево: R10 demo_flow.cjs (claude/r14-R10 tests/e2e)": "PASS: ru (тесты R10 6edc451) 95/0/0; kk (1366, 375) — все шаги PASS в прогоне тестами R10 931ed65 (там 2 FAIL ru шага 6 — устаревшее ожидание «Исправлено», R10 исправил в 0ceb0c8; карточка R07 «Служба сообщила — ждёт проверки», не R06)",
   "FINAL-2 0f5101a (ui-kit до 12 окт) + пути R06 21a9739 + оба patch: app_r01_wave2.cjs": "PASS 90/90",
   "FINAL-2 0f5101a + R06 со старым R05: app_r01_ideas_layer.cjs (пункта слоя нет)": "PASS 4/4",
   "FINAL-2 0f5101a + R06 d3fb9dd + patch: R10 demo_flow.cjs": "PASS 171, FAIL 0, NOT_RUN 0 (до правок по схеме R11 v2 — они не трогают шаги демо)",
