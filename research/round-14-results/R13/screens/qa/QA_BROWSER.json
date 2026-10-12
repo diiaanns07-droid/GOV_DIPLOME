@@ -1,6 +1,6 @@
 {
- "repo": "scratchpad stand: R01 0f5101a + R13 patch",
- "passed": 69,
+ "repo": "FINAL-3 77ee50b + R13 + ui-kit R11 7117132 (стекло в ui-kit, лист раздела без .bk-glass — как сейчас у R01); облако, стенд scratchpad",
+ "passed": 81,
  "failed": 0,
  "checks": [
   {
@@ -29,6 +29,7 @@
      "map",
      "mine",
      "nearby",
+     "ideas",
      "more"
     ]
    }
@@ -45,6 +46,7 @@
     "map",
     "mine",
     "nearby",
+    "ideas",
     "more"
    ]
   },
@@ -52,6 +54,15 @@
    "name": "375-ru житель: нет прокрутки вбок",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "375-ru стекло: у корня экрана своего фона нет",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": []
+   }
   },
   {
    "name": "375-ru житель: «Поддержать» → «Вы поддержали», голос сохранён",
@@ -66,6 +77,17 @@
    "name": "375-ru форма: фокус в поле вопроса",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "375-ru форма вопроса непрозрачная (не стекло)",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": [
+     1
+    ]
+   }
   },
   {
    "name": "375-ru форма: ошибка у пустого поля",
@@ -125,6 +147,17 @@
    "detail": "Выберите причину"
   },
   {
+   "name": "375-ru форма ответа акима непрозрачная",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": [
+     1
+    ]
+   }
+  },
+  {
    "name": "375-ru акимат: топ-5 ≤ 5, ответ виден в «Отвечено», неделя +1",
    "status": "PASS",
    "detail": {
@@ -136,6 +169,25 @@
    "name": "375-ru ответ виден всем во вкладке «С ответом»",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "375-ru правка ответа: дата правки в API и на экране",
+   "status": "PASS",
+   "detail": {
+    "api": true,
+    "shown": true,
+    "sum": "Ответ акима · 12 окт · изменён 12 окт"
+   }
+  },
+  {
+   "name": "375-ru отвеченный: снять можно только из-за личных данных",
+   "status": "PASS",
+   "detail": [
+    [
+     "personal_data",
+     true
+    ]
+   ]
   },
   {
    "name": "375-ru акимат: нет ошибок JS",
@@ -168,6 +220,7 @@
      "map",
      "mine",
      "nearby",
+     "ideas",
      "more"
     ]
    }
@@ -184,6 +237,7 @@
     "map",
     "mine",
     "nearby",
+    "ideas",
     "more"
    ]
   },
@@ -191,6 +245,15 @@
    "name": "1366-ru житель: нет прокрутки вбок",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "1366-ru стекло: у корня экрана своего фона нет",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": []
+   }
   },
   {
    "name": "1366-ru житель: «Ещё» → «Вопрос акиму»",
@@ -205,7 +268,7 @@
   {
    "name": "1366-ru житель: ответ акима свёрнут и раскрывается",
    "status": "PASS",
-   "detail": "Светофор поставят в ноябре, проект согласован."
+   "detail": "Светофор поставят в конце ноября."
   },
   {
    "name": "1366-ru житель: нет ошибок JS",
@@ -270,6 +333,7 @@
      "map",
      "mine",
      "nearby",
+     "ideas",
      "more"
     ]
    }
@@ -286,6 +350,7 @@
     "map",
     "mine",
     "nearby",
+    "ideas",
     "more"
    ]
   },
@@ -295,9 +360,29 @@
    "detail": null
   },
   {
+   "name": "375-kk стекло: у корня экрана своего фона нет",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": []
+   }
+  },
+  {
    "name": "375-kk форма: фокус в поле вопроса",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "375-kk форма вопроса непрозрачная (не стекло)",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": [
+     1
+    ]
+   }
   },
   {
    "name": "375-kk форма: ошибка у пустого поля",
@@ -312,7 +397,7 @@
   {
    "name": "375-kk житель: ответ акима свёрнут и раскрывается",
    "status": "PASS",
-   "detail": "Светофор поставят в ноябре, проект согласован."
+   "detail": "Светофор поставят в конце ноября."
   },
   {
    "name": "375-kk житель: нет ошибок JS",
@@ -377,6 +462,7 @@
      "map",
      "mine",
      "nearby",
+     "ideas",
      "more"
     ]
    }
@@ -393,6 +479,7 @@
     "map",
     "mine",
     "nearby",
+    "ideas",
     "more"
    ]
   },
@@ -400,6 +487,15 @@
    "name": "1366-kk житель: нет прокрутки вбок",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "1366-kk стекло: у корня экрана своего фона нет",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": []
+   }
   },
   {
    "name": "1366-kk житель: «Ещё» → «Вопрос акиму»",
@@ -414,7 +510,7 @@
   {
    "name": "1366-kk житель: ответ акима свёрнут и раскрывается",
    "status": "PASS",
-   "detail": "Светофор поставят в ноябре, проект согласован."
+   "detail": "Светофор поставят в конце ноября."
   },
   {
    "name": "1366-kk житель: нет ошибок JS",
@@ -459,6 +555,17 @@
    "detail": "Себебін таңдаңыз"
   },
   {
+   "name": "1366-kk форма ответа акима непрозрачная",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": [
+     1
+    ]
+   }
+  },
+  {
    "name": "1366-kk акимат: топ-5 ≤ 5, ответ виден в «Отвечено», неделя +1",
    "status": "PASS",
    "detail": {
@@ -470,6 +577,25 @@
    "name": "1366-kk ответ виден всем во вкладке «С ответом»",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "1366-kk правка ответа: дата правки в API и на экране",
+   "status": "PASS",
+   "detail": {
+    "api": true,
+    "shown": true,
+    "sum": "Әкімнің жауабы · 12 қазан · өзгертілді: 12 қазан"
+   }
+  },
+  {
+   "name": "1366-kk отвеченный: снять можно только из-за личных данных",
+   "status": "PASS",
+   "detail": [
+    [
+     "personal_data",
+     true
+    ]
+   ]
   },
   {
    "name": "1366-kk акимат: нет ошибок JS",

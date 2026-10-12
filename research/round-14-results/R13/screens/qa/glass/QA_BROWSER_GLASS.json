@@ -1,0 +1,736 @@
+{
+ "repo": "FINAL-3 77ee50b + R13 + ui-kit R11 7117132 (стекло), #birge-screen.bk-glass поставлен тестом (QA_GLASS=1)",
+ "passed": 91,
+ "failed": 0,
+ "checks": [
+  {
+   "name": "375-ru житель: экран открыт, правило видно",
+   "status": "PASS",
+   "detail": "Вопрос акиму"
+  },
+  {
+   "name": "375-ru житель: одна главная кнопка",
+   "status": "PASS",
+   "detail": 1
+  },
+  {
+   "name": "375-ru житель: 3 вкладки, карточки с меткой «Пример»",
+   "status": "PASS",
+   "detail": {
+    "title": "Вопрос акиму",
+    "rule": true,
+    "primary": 1,
+    "tabs": 3,
+    "cards": 7,
+    "demoTags": 7,
+    "votes": 7,
+    "inMap": 0,
+    "more": [
+     "map",
+     "mine",
+     "nearby",
+     "ideas",
+     "more"
+    ]
+   }
+  },
+  {
+   "name": "375-ru житель: на карте ничего нового",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "375-ru житель: «Ещё» в меню",
+   "status": "PASS",
+   "detail": [
+    "map",
+    "mine",
+    "nearby",
+    "ideas",
+    "more"
+   ]
+  },
+  {
+   "name": "375-ru житель: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru стекло: у корня экрана своего фона нет",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": []
+   }
+  },
+  {
+   "name": "375-ru стекло: контраст текста ≥ 4,5 над чёрной картой (житель)",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 7.43,
+     "text": "Нура · вчера",
+     "color": "rgb(76, 88, 83)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "375-ru житель: «Поддержать» → «Вы поддержали», голос сохранён",
+   "status": "PASS",
+   "detail": {
+    "before": "34 голоса",
+    "after": "35 голосов",
+    "kept": true
+   }
+  },
+  {
+   "name": "375-ru форма: фокус в поле вопроса",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru форма вопроса непрозрачная (не стекло)",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": [
+     1
+    ]
+   }
+  },
+  {
+   "name": "375-ru стекло: контраст текста формы",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 7.43,
+     "text": "Вопрос опубликуют после проверки",
+     "color": "rgb(76, 88, 83)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "375-ru форма: ошибка у пустого поля",
+   "status": "PASS",
+   "detail": "Напишите вопрос подробнее — хотя бы 10 символов"
+  },
+  {
+   "name": "375-ru форма: вопрос отправлен, «после проверки»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru житель: ответ акима свёрнут и раскрывается",
+   "status": "PASS",
+   "detail": "Обновление площадки внесено в план на следующий год. Какой б"
+  },
+  {
+   "name": "375-ru житель: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru акимат без входа: просьба войти",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru акимат: очередь на проверке, подсказка о личных данных",
+   "status": "PASS",
+   "detail": {
+    "title": "Вопросы жителей",
+    "cards": 4,
+    "pii": [
+     "Похоже на личные данные: телефон"
+    ],
+    "primary": 0
+   }
+  },
+  {
+   "name": "375-ru акимат: без главной кнопки в списке",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "375-ru акимат: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru стекло: контраст текста ≥ 4,5 над чёрной картой (акимат)",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 6.87,
+     "text": "Похоже на личные данные: телефон",
+     "color": "rgb(117, 76, 15)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "375-ru акимат: «Опубликовать» убирает вопрос из очереди",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru акимат: отказ только с причиной",
+   "status": "PASS",
+   "detail": "Выберите причину"
+  },
+  {
+   "name": "375-ru форма ответа акима непрозрачная",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": [
+     1
+    ]
+   }
+  },
+  {
+   "name": "375-ru акимат: топ-5 ≤ 5, ответ виден в «Отвечено», неделя +1",
+   "status": "PASS",
+   "detail": {
+    "topCount": 5,
+    "week": 1
+   }
+  },
+  {
+   "name": "375-ru ответ виден всем во вкладке «С ответом»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru правка ответа: дата правки в API и на экране",
+   "status": "PASS",
+   "detail": {
+    "api": true,
+    "shown": true,
+    "sum": "Ответ акима · 12 окт · изменён 12 окт"
+   }
+  },
+  {
+   "name": "375-ru отвеченный: снять можно только из-за личных данных",
+   "status": "PASS",
+   "detail": [
+    [
+     "personal_data",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "375-ru акимат: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru житель: экран открыт, правило видно",
+   "status": "PASS",
+   "detail": "Вопрос акиму"
+  },
+  {
+   "name": "1366-ru житель: одна главная кнопка",
+   "status": "PASS",
+   "detail": 1
+  },
+  {
+   "name": "1366-ru житель: 3 вкладки, карточки с меткой «Пример»",
+   "status": "PASS",
+   "detail": {
+    "title": "Вопрос акиму",
+    "rule": true,
+    "primary": 1,
+    "tabs": 3,
+    "cards": 7,
+    "demoTags": 7,
+    "votes": 7,
+    "inMap": 0,
+    "more": [
+     "map",
+     "mine",
+     "nearby",
+     "ideas",
+     "more"
+    ]
+   }
+  },
+  {
+   "name": "1366-ru житель: на карте ничего нового",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "1366-ru житель: «Ещё» в меню",
+   "status": "PASS",
+   "detail": [
+    "map",
+    "mine",
+    "nearby",
+    "ideas",
+    "more"
+   ]
+  },
+  {
+   "name": "1366-ru житель: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru стекло: у корня экрана своего фона нет",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": []
+   }
+  },
+  {
+   "name": "1366-ru стекло: контраст текста ≥ 4,5 над чёрной картой (житель)",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 7.43,
+     "text": "Сарыарка · сегодня",
+     "color": "rgb(76, 88, 83)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "1366-ru житель: «Ещё» → «Вопрос акиму»",
+   "status": "PASS",
+   "detail": [
+    [
+     "questions",
+     "Вопрос акиму"
+    ]
+   ]
+  },
+  {
+   "name": "1366-ru житель: ответ акима свёрнут и раскрывается",
+   "status": "PASS",
+   "detail": "Светофор поставят в конце ноября."
+  },
+  {
+   "name": "1366-ru житель: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru акимат без входа: просьба войти",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru акимат: очередь на проверке, подсказка о личных данных",
+   "status": "PASS",
+   "detail": {
+    "title": "Вопросы жителей",
+    "cards": 2,
+    "pii": [
+     "Похоже на личные данные: телефон"
+    ],
+    "primary": 0
+   }
+  },
+  {
+   "name": "1366-ru акимат: без главной кнопки в списке",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "1366-ru акимат: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru стекло: контраст текста ≥ 4,5 над чёрной картой (акимат)",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 6.87,
+     "text": "Похоже на личные данные: телефон",
+     "color": "rgb(117, 76, 15)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "1366-ru акимат: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk житель: экран открыт, правило видно",
+   "status": "PASS",
+   "detail": "Әкімге сұрақ"
+  },
+  {
+   "name": "375-kk житель: одна главная кнопка",
+   "status": "PASS",
+   "detail": 1
+  },
+  {
+   "name": "375-kk житель: 3 вкладки, карточки с меткой «Пример»",
+   "status": "PASS",
+   "detail": {
+    "title": "Әкімге сұрақ",
+    "rule": true,
+    "primary": 1,
+    "tabs": 3,
+    "cards": 7,
+    "demoTags": 7,
+    "votes": 7,
+    "inMap": 0,
+    "more": [
+     "map",
+     "mine",
+     "nearby",
+     "ideas",
+     "more"
+    ]
+   }
+  },
+  {
+   "name": "375-kk житель: на карте ничего нового",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "375-kk житель: «Ещё» в меню",
+   "status": "PASS",
+   "detail": [
+    "map",
+    "mine",
+    "nearby",
+    "ideas",
+    "more"
+   ]
+  },
+  {
+   "name": "375-kk житель: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk стекло: у корня экрана своего фона нет",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": []
+   }
+  },
+  {
+   "name": "375-kk стекло: контраст текста ≥ 4,5 над чёрной картой (житель)",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 7.43,
+     "text": "Сарыарқа · бүгін",
+     "color": "rgb(76, 88, 83)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "375-kk форма: фокус в поле вопроса",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk форма вопроса непрозрачная (не стекло)",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": [
+     1
+    ]
+   }
+  },
+  {
+   "name": "375-kk стекло: контраст текста формы",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 7.43,
+     "text": "Сұрақ тексерілгеннен кейін жарияланады",
+     "color": "rgb(76, 88, 83)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "375-kk форма: ошибка у пустого поля",
+   "status": "PASS",
+   "detail": "Сұрақты толығырақ жазыңыз — кемінде 10 таңба"
+  },
+  {
+   "name": "375-kk форма: вопрос отправлен, «после проверки»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk житель: ответ акима свёрнут и раскрывается",
+   "status": "PASS",
+   "detail": "Светофор поставят в конце ноября."
+  },
+  {
+   "name": "375-kk житель: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk акимат без входа: просьба войти",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk акимат: очередь на проверке, подсказка о личных данных",
+   "status": "PASS",
+   "detail": {
+    "title": "Тұрғындар сұрақтары",
+    "cards": 3,
+    "pii": [
+     "Жеке деректерге ұқсайды: телефон"
+    ],
+    "primary": 0
+   }
+  },
+  {
+   "name": "375-kk акимат: без главной кнопки в списке",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "375-kk акимат: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk стекло: контраст текста ≥ 4,5 над чёрной картой (акимат)",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 6.87,
+     "text": "Жеке деректерге ұқсайды: телефон",
+     "color": "rgb(117, 76, 15)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "375-kk акимат: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk житель: экран открыт, правило видно",
+   "status": "PASS",
+   "detail": "Әкімге сұрақ"
+  },
+  {
+   "name": "1366-kk житель: одна главная кнопка",
+   "status": "PASS",
+   "detail": 1
+  },
+  {
+   "name": "1366-kk житель: 3 вкладки, карточки с меткой «Пример»",
+   "status": "PASS",
+   "detail": {
+    "title": "Әкімге сұрақ",
+    "rule": true,
+    "primary": 1,
+    "tabs": 3,
+    "cards": 7,
+    "demoTags": 7,
+    "votes": 7,
+    "inMap": 0,
+    "more": [
+     "map",
+     "mine",
+     "nearby",
+     "ideas",
+     "more"
+    ]
+   }
+  },
+  {
+   "name": "1366-kk житель: на карте ничего нового",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "1366-kk житель: «Ещё» в меню",
+   "status": "PASS",
+   "detail": [
+    "map",
+    "mine",
+    "nearby",
+    "ideas",
+    "more"
+   ]
+  },
+  {
+   "name": "1366-kk житель: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk стекло: у корня экрана своего фона нет",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": []
+   }
+  },
+  {
+   "name": "1366-kk стекло: контраст текста ≥ 4,5 над чёрной картой (житель)",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 7.43,
+     "text": "Сарыарқа · бүгін",
+     "color": "rgb(76, 88, 83)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "1366-kk житель: «Ещё» → «Вопрос акиму»",
+   "status": "PASS",
+   "detail": [
+    [
+     "questions",
+     "Әкімге сұрақ"
+    ]
+   ]
+  },
+  {
+   "name": "1366-kk житель: ответ акима свёрнут и раскрывается",
+   "status": "PASS",
+   "detail": "Светофор поставят в конце ноября."
+  },
+  {
+   "name": "1366-kk житель: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk акимат без входа: просьба войти",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk акимат: очередь на проверке, подсказка о личных данных",
+   "status": "PASS",
+   "detail": {
+    "title": "Тұрғындар сұрақтары",
+    "cards": 3,
+    "pii": [
+     "Жеке деректерге ұқсайды: телефон"
+    ],
+    "primary": 0
+   }
+  },
+  {
+   "name": "1366-kk акимат: без главной кнопки в списке",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "1366-kk акимат: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk стекло: контраст текста ≥ 4,5 над чёрной картой (акимат)",
+   "status": "PASS",
+   "detail": {
+    "worst": {
+     "ratio": 6.87,
+     "text": "Жеке деректерге ұқсайды: телефон",
+     "color": "rgb(117, 76, 15)"
+    },
+    "bad": [],
+    "glass": true
+   }
+  },
+  {
+   "name": "1366-kk акимат: «Опубликовать» убирает вопрос из очереди",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk акимат: отказ только с причиной",
+   "status": "PASS",
+   "detail": "Себебін таңдаңыз"
+  },
+  {
+   "name": "1366-kk форма ответа акима непрозрачная",
+   "status": "PASS",
+   "detail": {
+    "rootClear": true,
+    "formsOpaque": true,
+    "forms": [
+     1
+    ]
+   }
+  },
+  {
+   "name": "1366-kk акимат: топ-5 ≤ 5, ответ виден в «Отвечено», неделя +1",
+   "status": "PASS",
+   "detail": {
+    "topCount": 5,
+    "week": 2
+   }
+  },
+  {
+   "name": "1366-kk ответ виден всем во вкладке «С ответом»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk правка ответа: дата правки в API и на экране",
+   "status": "PASS",
+   "detail": {
+    "api": true,
+    "shown": true,
+    "sum": "Әкімнің жауабы · 12 қазан · өзгертілді: 12 қазан"
+   }
+  },
+  {
+   "name": "1366-kk отвеченный: снять можно только из-за личных данных",
+   "status": "PASS",
+   "detail": [
+    [
+     "personal_data",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "1366-kk акимат: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  }
+ ]
+}

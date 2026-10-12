@@ -2,8 +2,8 @@
  "role": "R13",
  "title": "Прогноз проблемных территорий (прототип) + волна 2: «Вопрос акиму» (п. 9) и проверка метода «Пульса» (п. 8)",
  "branch": "claude/r14-R13",
- "base_sha": "46f2308 (claude/round-14-package)",
- "restored_from": null,
+ "base_sha": "46f2308 (claude/round-14-package); пути R13 сверены с R01 FINAL-3 77ee50b",
+ "restored_from": "R01 claude/sharp-dijkstra-0t87gl @ 77ee50b — по путям R13 взяты правки сборки: P-R13 (R15 S35–S40), patch R11 R13_qa_placeholder_answer_lang (разбор 15 №2–3)",
  "inputs_read_only": {
   "data/civic/astana/geo/ (R12)": "claude/tender-brahmagupta-ef5ztl @ d13f49a — objects/yards/way_tags/SOURCE.json, ODbL; в ветку R13 не копировались, собран ml/civic_forecast/data/targets.json",
   "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json": "только чтение (участки улиц)",
@@ -12,7 +12,8 @@
   "ui/web_server.py R01": "claude/sharp-dijkstra-0t87gl @ d3c33d9 — только для patch и теста шлюза",
   "data/civic/astana/weather/": "claude/round-14-package @ a2ff96e (LOCAL-9, Open-Meteo Historical Weather API, CC BY 4.0, real) — без изменений",
   "ui/web_server.py, web/index.html R01": "claude/sharp-dijkstra-0t87gl @ 0f5101a (FINAL-2 шаг 4) — только для patch §8 и проверок",
-  "ui/civic_akim/pulse.py R08": "claude/r14-R08 @ 8e0b2ac (= сборка R01 0f5101a) — только для проверки метода и patch §9"
+  "ui/civic_akim/pulse.py R08": "claude/r14-R08 @ 8e0b2ac (= сборка R01 0f5101a) — только для проверки метода и patch §9",
+  "ui-kit R11 (стекло)": "claude/r14-R11 @ 7117132 — GLASS.md и .bk-glass; на стенде только для проверки, в ветку R13 не копировался"
  },
  "evidence": {
   "territories": "real (OSM через R12), 2334",
@@ -22,43 +23,38 @@
   "questions_demo": "synthetic, demo: true (ui/civic_qa/demo.py: 12 придуманных вопросов, телефон заведомо несуществующий)",
   "pulse_check": "synthetic (потоки жалоб из истории R13 + вставленные всплески)"
  },
- "code_sha": "198902f",
- "tested_sha": "198902f — сборка «как у R01»: claude/sharp-dijkstra-0t87gl @ 0f5101a + пути R13 с 198902f + patches/r01_questions_route.patch + patches/r08_pulse_not_by_chance.patch (Linux, Python 3.13.16, scikit-learn 1.9.1, Node 22, Chromium 1194 Playwright 1.56)",
- "push_status": "198902f и документы — в origin/claude/r14-R13 (см. git log)",
+ "code_sha": "816b06a",
+ "tested_sha": "816b06a — стенд «как у R01»: claude/sharp-dijkstra-0t87gl @ 77ee50b (FINAL-3) + web/civic/qa и tests/civic/R13/qa с 816b06a (ui/civic_qa и test_r13_qa.py побайтно как в сборке); со стеклом — тот же стенд + ui-kit R11 7117132. Linux, Python 3.13.16, Node 22, Chromium 1194 (Playwright 1.56), облако без интернета",
+ "push_status": "816b06a и документы — в origin/claude/r14-R13 (см. git log)",
  "changed_paths": [
-  "ui/civic_qa/ (store, service, demo — «Вопрос акиму»)",
-  "web/civic/qa/ (qa.js — window.BirgeAsk, qa.css, index.html, qa-page.js)",
-  "tests/civic/R13/qa/ (test_r13_qa.py, qa_browser.cjs)",
-  "ml/civic_forecast/pulse_check.py, ml/civic_forecast/results_pulse.json (проверка метода «Пульса»)",
-  "ml/civic_forecast/reasons.py (kk «+28 °C-тан жоғары»)",
-  "tests/civic/R13/test_r13_pulse_check.py, tests/civic/R13/test_r13_forecast.py",
-  "ml/civic_forecast/ и ui/civic_forecast/ — прочее без изменений с a0133e9",
-  "research/round-14-results/R13/ (INTEGRATION §8–9, RUN 5–6, PULSE_METHOD.md, patches/, screens/qa/)",
+  "web/civic/qa/qa.js (вкладки .bk-tabs, ответ .bk-details, дата правки, «Отвечено» — только «личные данные»; + правки R11/R15 из сборки)",
+  "web/civic/qa/qa.css (формы непрозрачные — GLASS.md §2; без своих вкладок)",
+  "tests/civic/R13/qa/qa_browser.cjs (проверки стекла и контраста QA_GLASS=1, правка ответа, отказ отвеченного)",
+  "ui/civic_qa/{service,store}.py, tests/civic/R13/qa/test_r13_qa.py — как в сборке 77ee50b (P-R13 R15)",
+  "research/round-14-results/R13/ (INTEGRATION §10, RUN, screens/qa/ и screens/qa/glass/)",
   "research/handoffs/astana/R13/round14/STATUS.md"
  ],
  "results_on_synthetic": "История жалоб — СИНТЕТИКА, погода — real (LOCAL-9). precision@10/20/30: бустинг 0,57/0,51/0,47; без погоды 0,59/0,51/0,46; запасная 0,57/0,51/0,46; «как в прошлом месяце» 0,47/0,40/0,38; «как год назад» 0,40/0,36/0,32; случайно 0,04. Ориентир Gton 60–70 % не достигнут; погодные признаки ≈ 0 (−0,006). Пульс (R08, проверка R13, синтетика): на обычной неделе ~2,9 ложной тревоги; с проверкой «не случайно ли» ~0,3; всплеск ×5 находится в 90 % недель (было 95 %), ×3 — 61 % (было 79 %).",
  "tests": {
-  "pytest tests/civic/R13 (сборка 0f5101a + R13 198902f + оба patch)": "PASS 97 passed",
-  "pytest tests/civic/R13 + tests/civic/R08 + tests/civic/R01/test_r01_api_v2.py (та же сборка)": "PASS 469 passed, 1 skipped",
-  "pytest tests/civic/R01 + tests/civic/R15 (0f5101a + patch R01 §8)": "PASS 376 passed, 1 skipped",
+  "браузер qa_browser.cjs на 77ee50b + R13 816b06a (ui-kit сборки)": "PASS 81/81",
+  "браузер qa_browser.cjs QA_GLASS=1 (ui-kit R11 7117132, стекло на листе раздела)": "PASS 91/91; худший контраст текста над чёрной картой 6,87:1",
+  "R10 tests/e2e/wave_checks.cjs --only W2-9 (та же сборка)": "PASS 4/4 (1366/375 × ru/kk)",
+  "R01 tests/civic/R01/browser/r14_wave2.cjs (та же сборка)": "PASS 42/0",
+  "pytest tests/civic/R13 + tests/civic/R15 (та же сборка)": "PASS 333 passed",
   "pytest tests/civic/R13 в ветке R13 (без шлюза и модуля R08)": "PASS 87 passed, 10 skipped",
-  "браузер tests/civic/R13/qa/qa_browser.cjs (житель и акимат, 375/1366 × ru/kk)": "PASS 69/69 (три прогона, в т. ч. на чистой сборке)",
-  "браузер tests/civic/R01/browser/r14_wave2.cjs (меню оболочки, «Ещё → Вопрос акиму», #ask, Назад, ҚАЗ)": "PASS 42/0",
-  "демо «Картины дня» с patch R08 (CIVIC_DEMO=1)": "PASS — первые 4 тревоги пульса те же, 5-я (свёрнутая) меняется",
-  "backtest прогноза": "без изменений с a0133e9 (RESULTS.md)",
-  "интерфейс прогноза R08": "NOT_RUN — в FINAL-2 прогноз только API /forecast (решение R01/R08); note_ru/note_kk «Прототип…» в ответе"
+  "стекло на настоящем листе R01 (#birge-screen.bk-glass от оболочки)": "NOT_RUN — оболочка R01 ещё не поставила стекло (GLASS.md R01 №6); проверено с классом, поставленным тестом",
+  "FPS карты со стеклом": "NOT_RUN — задача R10 (GLASS.md §5.3); экран R13 — лист раздела, над неподвижной картой"
  },
  "known_limits": [
-  "История жалоб синтетическая: модель прогноза учит закономерности генератора. Реальная точность — только в пилоте; ориентир Gton 60–70 % на синтетике не достигнут.",
-  "«Вопрос акиму»: голос — «одно устройство — один голос» + лимиты по адресу; новый device_id = новый «житель» (как R06/R09, R15 S08). Полное решение — вход через eGov/SMS.",
-  "«Вопрос акиму»: 41 новый ключ ask.* — запасные ru/kk в qa.js (казахский — черновик R13, ждёт вычитки R11). Тексты вопросов и ответов не переводятся: показываются на языке автора (ответ — на языке интерфейса, если есть, иначе на другом).",
-  "«Вопрос акиму»: автор не видит статус своего вопроса после отправки («Мои вопросы» схема R11 не предусматривает); причина отказа хранится для акимата, жителю не показывается.",
-  "Пульс: patch R08 снижает ложные тревоги, но слабые всплески ×2–×3 при малых числах находит реже; порог 1 % проверен только на синтетике.",
-  "Территории прогноза — снимок данных R12 @ d13f49a; при обновлении — build-targets + build-cache."
+  "История жалоб прогноза и демо-вопросы — синтетика (demo: true). Реальная точность прогноза — только в пилоте; ориентир Gton 60–70 % на синтетике не достигнут.",
+  "Голос «Поддержать» — одно устройство + лимиты по адресу (R15 S08); полное решение — вход через eGov/SMS.",
+  "Ключи ask.answer.edited и ask.staff.reason_answered — пока только запасные в qa.js (нужны в словаре R11, INTEGRATION §10.3).",
+  "Стекло листа раздела ставит R01; на стекле .bk-card без тени почти сливается с листом на светлой карте — решение за R11 (§10.3).",
+  "Автор не видит судьбу своего вопроса после отправки (по схеме R11 «Мои вопросы» нет)."
  ],
- "next_step": "R01 (FINAL-3): взять пути R13 на code_sha 198902f (ui/civic_qa/, web/civic/qa/, tests/civic/R13/, ml/civic_forecast/, ui/civic_forecast/) и применить patches/r01_questions_route.patch; patch R08 — по решению R08/R01 (§9). R11: разбор экрана «Вопрос акиму» по IA_WAVE2 §7 и 41 ключ (INTEGRATION §8.4). R15: §8.3. R10: §8.5.",
- "delivery": 3,
- "delivery_note": "Поставка 3 (12 окт, для FINAL-3): волна 2 п. 9 «Вопрос акиму» (новый модуль), п. 8 «Пульс» — проверка метода R08 и patch, kk-причина «жаркие дни». Поставка 2: a0133e9 (в FINAL-кандидате и FINAL-2). Поставка 1: 8705829.",
+ "next_step": "R01 (FINAL-3, окончательная): взять пути R13 на 816b06a (меняются web/civic/qa/qa.js, qa.css, tests/civic/R13/qa/qa_browser.cjs); после стекла оболочки — qa_browser с QA_GLASS=1 меряет контраст уже на настоящем стекле. R11: 2 ключа §10.3 и решение по границе карточек в стекле. R10: W2-9 и qa_browser на окончательной сборке.",
+ "delivery": 4,
+ "delivery_note": "Поставка 4 (12 окт, день): FINAL-3 и стекло — правки сборки по путям R13 перенесены в ветку R13; вкладки .bk-tabs, ответ .bk-details, дата правки ответа, отказ отвеченного только по «личным данным», формы непрозрачные. Поставка 3: 198902f (в FINAL-3 3d2529e).",
  "night_fixes": {
   "R11 KK_REVIEW (причины)": "«шешілмей тұр», «жылдық норма», «(+28 °C және одан жоғары) — қоқыс пен жағымсыз иіс» — test_reason_texts_ru_kk",
   "R11 KK_REVIEW (подписи территорий)": "«Аула · жанында …» без запятой и двоеточия (257 подписей в кэше; числа прогноза не изменились — сравнено поле за полем)",
@@ -67,12 +63,17 @@
   "R11 UX_REVIEW ночь п. 5 (улицы в kk)": "подписи территорий в ҚАЗ без «улица/проспект»: «Кенгир көшесі», «… даңғылы» (правило R07 kk_street_from_ru); 0 из 2334 — test_kk_labels_have_no_russian_street_words"
  },
  "patches_for_others": {
-  "R01": "research/round-14-results/R13/patches/r01_questions_route.patch — ui/web_server.py (+7 маршрутов qa.*, kind=service ui.civic_qa.make_service, лимиты qa.create/qa.vote, 4 ассета), web/index.html (css + script после nearby), tests/civic/R01/test_r01_api_v2.py (+7 примеров). git apply --check OK на 0f5101a.",
-  "R08": "research/round-14-results/R13/patches/r08_pulse_not_by_chance.patch — ui/civic_akim/pulse.py (проверка «не случайно ли», SURPRISE_P=0.01) + тест R08. git apply --check OK на R08 8e0b2ac и R01 0f5101a."
+  "R01": "не нужен: маршруты qa.* (patches/r01_questions_route.patch) и pulse patch R08 уже в FINAL-3. Взять пути R13 на 816b06a — меняются 3 файла (INTEGRATION §10.1).",
+  "R08": "patches/r08_pulse_not_by_chance.patch — уже в FINAL-3 (R01 шаг 6 3d2529e)."
  },
  "wave2": {
   "8 Пульс района (R13 метод + R08 вывод)": "метод в сборке — R08 (экран принят R11); R13: проверка на известных всплесках (PULSE_METHOD.md) и patch R08 «не случайно ли»",
   "9 Вопрос акиму (R13 новый модуль)": "ui/civic_qa + web/civic/qa: вопросы с модерацией, голоса (одно устройство — один голос), топ-5 недели, ответы акима ru/kk, демо 9 опубликованных (2 с ответом) + 3 на проверке, demo: true"
  },
- "polish_wave_1": "пунктов R13 в POLISH_WAVE.md нет"
+ "polish_wave_1": "пунктов R13 в POLISH_WAVE.md нет",
+ "final3": {
+  "R11 UX_REVIEW FINAL-3 №10 (R13)": "вкладки → .bk-tabs + BirgeUI.tabs — сделано; подсказка и «ответ на другом языке» — patch R11 уже в сборке и в ветке R13; один тост — ui-kit",
+  "R15 S34–S40 (R13)": "исправлено в сборке (P-R13, P-R01-2/3); код P-R13 перенесён в ветку R13; S35 в интерфейсе — отказ отвеченного только по «личным данным»; S39 — дата правки на экране",
+  "GLASS.md §4 (R13 по желанию)": "корень без фона, формы непрозрачные, только токены — проверено контрастом над чёрной картой"
+ }
 }
