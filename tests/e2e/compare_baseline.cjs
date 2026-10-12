@@ -30,7 +30,7 @@ const items = [];
 const ACCEPTED = (() => { try { return JSON.parse(fs.readFileSync(path.join(BASE, "ACCEPTED.json"), "utf8")); } catch { return {}; } })();
 const acceptedLayer = (id) => (ACCEPTED.layers || {})[id] || null;
 const acceptedControl = (c) => (ACCEPTED.controls || {})[c] || null;
-const add = (status, area, what, detail) => items.push({ status, area, what, detail: detail ?? null });
+const add = (status, area, what, detail, crit) => items.push({ status, area, what, detail: detail ?? null, ...(crit ? { crit } : {}) });
 
 const sameMachine = (a, b) => !!(a && b && a.machine && b.machine && a.machine.cpu === b.machine.cpu && a.machine.cores === b.machine.cores && a.chromium === b.chromium);
 
@@ -49,13 +49,13 @@ function compareScenario(base, now, timeRef) {
       if (k2) { n = nb.get(k2); nb.delete(k2); nb.set(k, n); add("ИНФО", "сценарий", "имя проверки уточнено", { was: k, now: k2 }); }
     }
     if (!n) add("СМОТРЕТЬ", "сценарий", "проверки нет в новом прогоне (переименована или пропала)", { check: k, was: r.status });
-    else if (r.status === "PASS" && n.status !== "PASS") add("FAIL", "сценарий", "было PASS — стало " + n.status, { check: k, detail: n.detail, shot: n.shot });
+    else if (r.status === "PASS" && n.status !== "PASS") add("FAIL", "сценарий", "было PASS — стало " + n.status, { check: k, detail: n.detail, shot: n.shot }, "scenario");
     else if (r.status !== "PASS" && n.status === "PASS") add("ИНФО", "сценарий", "было " + r.status + " — стало PASS", { check: k });
     else if (r.status === "PASS") kept++;
   }
   const added = [...nb.keys()].filter((k) => !bb.has(k));
   add("OK", "сценарий", `PASS сохранились: ${kept}; итог эталона ${JSON.stringify(base.counts)}, нового ${JSON.stringify(now.counts)}`, added.length ? { new_checks: added.slice(0, 30) } : null);
-  for (const k of added) { const n = nb.get(k); if (n.status === "FAIL") add("FAIL", "сценарий", "новая проверка — FAIL", { check: k, detail: n.detail }); }
+  for (const k of added) { const n = nb.get(k); if (n.status === "FAIL") add("FAIL", "сценарий", "новая проверка — FAIL", { check: k, detail: n.detail }, "scenario"); }
   // Время шагов: тот же сценарий, то же время (с запасом на разброс).
   const ref = timeRef || base;
   if (!ref.timing || !now.timing) { add("СМОТРЕТЬ", "сценарий · время", "нет времени шагов (прогон старой версией demo_flow.cjs)"); return; }
@@ -238,6 +238,49 @@ async function compareShots(baseDir, newDir) {
   } finally { await browser.close(); }
 }
 
+// ------------------------------------------------------------------------------------------------ интерфейс по кадрам
+// Владелец, 12 окт: «FINAL-3 против эталона: сценарий не сломан, все тексты на месте, ничего не стало меньше 13 px,
+// кнопки ≥ 44 px, контраст в норме». Источник — uiAudit (ux_lib.cjs) на каждом кадре demo_flow.cjs --audit:
+// эталон — <base>/audit/RESULT.json (прогон 8e67c65 с --audit), новый — RESULT.json прогона с --audit.
+// Пороги абсолютные (шрифт < 13 px, зона нажатия < 44 px, контраст < 4.5:1 / 3:1 крупный) → FAIL на любом кадре; в
+// подробностях — было ли то же в эталоне. Кнопка лицензии MapLibre «i» (24 px) — СМОТРЕТЬ (чужой элемент карты),
+// ссылка внутри строки текста — ИНФО (исключение WCAG 2.5.8). Пропавшие строки текста — СМОТРЕТЬ со списком по кадру:
+// часть изменений намеренная (волна 2), решает человек; ключи перевода, «{n}», «undefined» вместо текста — FAIL.
+const CRIT = { scenario: "сценарий не сломан", texts: "все тексты на месте", font: "ничего меньше 13 px", tap: "кнопки ≥ 44 px", contrast: "контраст в норме" };
+function compareAudit(baseA, newA) {
+  if (!newA) { add("СМОТРЕТЬ", "интерфейс", "в новом прогоне нет audit (запустить demo_flow.cjs с --audit)", null); return false; }
+  const norm = (t) => t.replace(/\d+([.,:]\d+)*/g, "#").replace(/\s+/g, " ").trim().toLowerCase();
+  const key = (o) => JSON.stringify([o.text || o.name, o.where]);
+  let shots = 0;
+  for (const [tag, byShot] of Object.entries(newA)) {
+    for (const [shot, a] of Object.entries(byShot)) {
+      if (!a || a.error) { add("СМОТРЕТЬ", "интерфейс", `${tag}-${shot}: замер не удался`, a && a.error); continue; }
+      shots++;
+      const b = baseA && baseA[tag] && baseA[tag][shot];
+      const was = (list, o) => !!(b && (b[list] || []).some((x) => key(x) === key(o)));
+      const where = `${tag}-${shot}`;
+      for (const f of a.fonts) add("FAIL", "интерфейс · шрифт", `${where}: ${f.px} px «${f.text}» (${f.where})`, { в_эталоне: b ? was("fonts", f) : "нет кадра" }, "font");
+      for (const t of a.taps) {
+        const st = t.vendor ? "СМОТРЕТЬ" : t.inline ? "ИНФО" : "FAIL";
+        add(st, "интерфейс · кнопки", `${where}: «${t.name}» ${t.w}×${t.h} px (${t.where})${t.vendor ? " — кнопка MapLibre" : t.inline ? " — ссылка в строке текста" : ""}`,
+          { в_эталоне: b ? was("taps", t) : "нет кадра" }, "tap");
+      }
+      for (const c of a.contrast) add("FAIL", "интерфейс · контраст", `${where}: ${c.ratio}:1 (нужно ${c.need}:1) «${c.text}» (${c.where})`, { в_эталоне: b ? was("contrast", c) : "нет кадра" }, "contrast");
+      for (const k of a.keys) add("FAIL", "интерфейс · тексты", `${where}: ключ перевода вместо текста «${k}»`, null, "texts");
+      for (const j of a.junk) add("FAIL", "интерфейс · тексты", `${where}: заготовка вместо текста «${j}»`, null, "texts");
+      for (const n of a.noName) add("FAIL", "интерфейс · тексты", `${where}: кнопка без подписи (${n})`, null, "texts");
+      for (const c of a.cut) add(b && (b.cut || []).includes(c) ? "СМОТРЕТЬ" : "FAIL", "интерфейс · тексты", `${where}: короткая надпись обрезана «${c}»`, null, "texts");
+      if (b && b.texts) {
+        const nowT = new Set(a.texts.map(norm));
+        const lost = [...new Set(b.texts.map(norm))].filter((t) => !nowT.has(t));
+        if (lost.length) add("СМОТРЕТЬ", "интерфейс · тексты", `${where}: строк эталона нет на кадре: ${lost.length} из ${new Set(b.texts.map(norm)).size}`, { нет: lost.slice(0, 14) }, "texts");
+      }
+    }
+  }
+  add("OK", "интерфейс", `кадров с замером: ${shots}; эталон — ${baseA ? Object.values(baseA).reduce((n, x) => n + Object.keys(x).length, 0) + " кадров" : "нет (audit эталона не снят)"}`, null);
+  return true;
+}
+
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const e2eB = readJ(find(BASE, "e2e", "RESULT.json")), e2eN = readJ(find(NEW, "e2e", "RESULT.json"));
@@ -247,6 +290,8 @@ async function compareShots(baseDir, newDir) {
   compareScenario(e2eB, e2eN, e2eC);
   compareMap(mapB, mapN, mapC);
   await compareShots(mapBf && path.dirname(mapBf), mapNf && path.dirname(mapNf));
+  const auditB = (readJ(find(BASE, "audit", "RESULT.json")) || {}).audit || (e2eB && e2eB.audit) || null;
+  const audited = compareAudit(auditB, e2eN && e2eN.audit);
   const counts = {};
   items.forEach((i) => (counts[i.status] = (counts[i.status] || 0) + 1));
   const verdict = counts.FAIL ? "ХУЖЕ" : "НЕ ХУЖЕ";
@@ -257,6 +302,9 @@ async function compareShots(baseDir, newDir) {
   const order = ["FAIL", "СМОТРЕТЬ", "ИНФО", "OK"];
   const md = [`# R10 · сравнение с эталоном · ${meta.base_sha} → ${meta.new_sha}: **${verdict}**`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: ${order.filter((s) => counts[s]).map((s) => `${s} ${counts[s]}`).join(" · ")}`, "",
+    ...(audited ? ["Критерии владельца (12 окт):", "", "| Критерий | Итог | FAIL | СМОТРЕТЬ |", "|---|---|---:|---:|",
+      ...Object.entries(CRIT).map(([k, name]) => { const f = items.filter((i) => i.crit === k && i.status === "FAIL").length, w = items.filter((i) => i.crit === k && i.status === "СМОТРЕТЬ").length;
+        return `| ${name} | **${f ? "НЕТ" : w ? "да, смотреть" : "да"}** | ${f} | ${w} |`; }), ""] : []),
     "FAIL — правило 7 нарушено (стало хуже); СМОТРЕТЬ — изменилось, решает человек по кадру `diff-*.jpg` (эталон | новый | разница красным).", "",
     "| Итог | Область | Что | Подробно |", "|---|---|---|---|",
     ...order.flatMap((s) => items.filter((i) => i.status === s).map((i) => `| **${i.status}** | ${i.area} | ${i.what} | ${i.detail ? JSON.stringify(i.detail).replace(/\|/g, "/").slice(0, 260) : ""} |`))];

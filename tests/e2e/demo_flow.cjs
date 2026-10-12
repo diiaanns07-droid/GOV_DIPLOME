@@ -49,7 +49,7 @@ const UI_STOPS = args.stop ? [STOP] : [STOP,
   { id: "osm-node-2716977767", name: "Национальный кардиологический центр", name_kk: "Ұлттық кардиохирургиялық орталық", point: [71.4131502, 51.1276695] }];
 const NURA_BBOX = "71.375,51.115,71.420,51.140";
 const DEVICE = "r10-e2e-device-" + Date.now();
-const { NOISE, TAB_LIMIT, uiScreen, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
+const { NOISE, TAB_LIMIT, uiScreen, uiAudit, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
 
 // Python: переменная PYTHON (например .venv\Scripts\python на Windows), иначе python3 / python.
 const PY = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
@@ -58,8 +58,13 @@ const results = [];
 // Время: у каждой строки ms — от старта теста; marks — начало каждого варианта экрана. Из них — время шагов
 // в RESULT.json (timing), для сравнения с эталоном «сценарий не стал медленнее» (POLISH_WAVE_2 правило 7).
 const T0 = Date.now(), marks = {};
+// --audit: на каждом кадре шага — uiAudit (шрифт, зоны нажатия, контраст, тексты) → RESULT.json audit; его время
+// вычитается из времени шагов, чтобы сравнение с эталоном по времени не менялось.
+const AUDIT = !!args.audit, audit = {};
+let auditMs = 0;
+const now = () => Date.now() - T0 - auditMs;
 const add = (layer, step, name, status, detail, shot) => {
-  results.push({ layer, step, name, status, detail: detail ?? null, shot: shot || null, ms: Date.now() - T0 });
+  results.push({ layer, step, name, status, detail: detail ?? null, shot: shot || null, ms: now() });
   console.log(`${status.padEnd(7)} ${layer} ${step} ${name}` + (detail ? " — " + JSON.stringify(detail).slice(0, 300) : ""));
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -407,7 +412,7 @@ async function showPoint(page, point, zoom = 17) {
 async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const dict = loadDict(lang);
   const tag = `${w}-${lang}`;
-  marks[`UI ${tag}`] = Date.now() - T0;
+  marks[`UI ${tag}`] = now();
   const mobile = w < 761;
   const st = UI_STOPS[vi % UI_STOPS.length];  // остановка этого варианта (шаги 1–2 и 6)
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
@@ -419,7 +424,9 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
   page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errors.push(m.type() + ": " + m.text().slice(0, 200)); });
   // JPEG 70 %: кадр ~60 КБ вместо ~350 КБ PNG — отчёты лежат в Git.
-  const shot = async (s) => { const f = path.join(OUT, `${tag}-${s}.jpg`); await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null); return path.basename(f); };
+  const shot = async (s) => { const f = path.join(OUT, `${tag}-${s}.jpg`); await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+    if (AUDIT) { const a0 = Date.now(); (audit[tag] = audit[tag] || {})[s] = await uiAudit(page).catch((e) => ({ error: String(e.message || e).slice(0, 200) })); auditMs += Date.now() - a0; }
+    return path.basename(f); };
   const step = (s, name, ok, detail, file) => add(`UI ${tag}`, s, name, ok === null ? "NOT_RUN" : ok ? "PASS" : "FAIL", detail, file);
 
   const langRe = lang === "kk" ? /^ҚАЗ$/ : /^РУС$/;
@@ -907,7 +914,8 @@ async function networkErrors(browser, base, [w, h], lang) {
   for (const t of Object.values(timing)) { t.total_ms = t.prev - t.start_ms; delete t.prev; }
   const meta = { root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
     when: new Date().toISOString(), node: process.version, total_ms: Date.now() - T0, ...(INJECT_CSS ? { inject_css: String(args["inject-css"]) } : {}) };
-  fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results }, null, 1));
+  if (AUDIT) meta.audit = { font_min_px: 13, tap_min_px: 44, shots: Object.values(audit).reduce((n, a) => n + Object.keys(a).length, 0), excluded_ms: auditMs };
+  fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results, ...(AUDIT ? { audit } : {}) }, null, 1));
   const md = [`# R10 e2e · сценарий демо · ${sha}${INJECT_CSS ? " · С ПРАВКОЙ CSS (не приёмка сборки)" : ""}`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, NOT_RUN ${counts.NOT_RUN}`, "", "| Слой | Шаг | Проверка | Итог | Подробно | Кадр |", "|---|---|---|---|---|---|",
     ...results.map((r) => `| ${r.layer} | ${r.step} | ${r.name} | **${r.status}** | ${r.detail ? JSON.stringify(r.detail).replace(/\|/g, "/").slice(0, 220) : ""} | ${r.shot || ""} |`)];

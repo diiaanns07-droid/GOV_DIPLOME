@@ -193,4 +193,93 @@ async function focusToPrimary(page, labelRe, maxTabs = 80) {
   return { tabs: null, primary: false, ring: false };
 }
 
-module.exports = { NOISE, TECH_WORDS, RAW_KEY, SAME_IN_BOTH, TAB_LIMIT, uiScreen, cyrLines, untranslated, focusToPrimary };
+// Сверка «FINAL-3 против эталона» (владелец, 12 окт): на каждом кадре сценария — шрифт < 13 px, зона нажатия < 44 px,
+// контраст, ключи и заготовки вместо текста, обрезанный текст и список видимых строк (что пропало по сравнению с эталоном).
+// Зона нажатия — не только рамка элемента: в 4 точках на 22 px от середины (влево, вправо, вверх, вниз) проверяем, что
+// нажатие попадёт в него (так учитываются прозрачные поля и ::before у значков на карте). У флажка/переключателя — <label>.
+const AUDIT_FONT_MIN = 13, AUDIT_TAP_MIN = 44;
+function uiAudit(page) {
+  return page.evaluate(({ raw, FONT, TAP }) => {
+    const onTop = (e) => { const r = e.getBoundingClientRect();
+      const x = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1), y = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
+      const h = document.elementFromPoint(x, y); return !h || h === e || e.contains(h) || h.contains(e); };
+    const vis = (e) => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+      return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && Number(s.opacity) > 0.05
+        && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth && onTop(e); };
+    const clean = (t) => String(t || "").replace(/\s+/g, " ").trim();
+    const where = (e) => { const z = e.closest(".maplibregl-marker, .b3d-labels") ? "карта" : e.closest(".maplibregl-ctrl") ? "кнопки карты"
+      : e.closest("[role=dialog], dialog, .bk-sheet, .bc-panel, .r07-card, aside") ? "панель" : e.closest("header, nav, .birge-nav, .bk-topbar") ? "шапка" : "экран";
+      return z; };
+    const nameOf = (e) => clean(e.getAttribute("aria-label") || e.innerText || e.getAttribute("title") || e.value || "").slice(0, 40);
+    // 1. Шрифт
+    const fonts = [];
+    for (const el of document.querySelectorAll("body *")) {
+      const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+      if (!own || el.closest("svg, .maplibregl-ctrl-attrib") || /©/.test(own) || !vis(el)) continue;
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if (fs > 0 && fs < FONT) fonts.push({ px: fs, text: clean(own).slice(0, 40), where: where(el) });
+    }
+    // 2. Зоны нажатия
+    const sel = "button, a[href], [role=button], [role=tab], [role=menuitem], [role=radio], [role=checkbox], [role=switch], [role=option], input:not([type=hidden]), select, summary, textarea";
+    const seen = new Set(), taps = [];
+    let tapsN = 0;
+    for (let e of document.querySelectorAll(sel)) {
+      if (/^(checkbox|radio)$/.test(e.type || "") && (e.closest("label") || (e.id && document.querySelector(`label[for="${e.id}"]`)))) e = e.closest("label") || document.querySelector(`label[for="${e.id}"]`);
+      if (seen.has(e) || !vis(e)) continue;
+      seen.add(e); tapsN++;
+      const r = e.getBoundingClientRect();
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2, d = TAP / 2 - 0.5;
+      const hit = (x, y) => { if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return false; const h = document.elementFromPoint(x, y); return !!h && (h === e || e.contains(h)); };
+      const wOk = r.width >= TAP || (hit(cx - d, cy) && hit(cx + d, cy));
+      const hOk = r.height >= TAP || (hit(cx, cy - d) && hit(cx, cy + d));
+      if (wOk && hOk) continue;
+      // Ссылка внутри строки текста — исключение WCAG 2.5.8 (inline): отмечаем, но не как кнопку.
+      const inline = e.tagName === "A" && getComputedStyle(e).display === "inline" && clean(e.parentElement && e.parentElement.innerText).length > clean(e.innerText).length + 10;
+      taps.push({ w: Math.round(r.width), h: Math.round(r.height), name: nameOf(e) || e.tagName.toLowerCase(), where: where(e),
+        vendor: !!e.closest(".maplibregl-ctrl-attrib, .maplibregl-ctrl-logo"), inline });
+    }
+    // 3. Контраст (та же формула, что в uiScreen: фон — первый непрозрачный слой вверх по предкам)
+    const rgba = (c) => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const v = m[1].split(/[ ,\/]+/).filter(Boolean).map(Number);
+      return [v[0], v[1], v[2], v.length > 3 ? v[3] : 1]; };
+    const lum = (c) => { const f = (x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+      return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+    const over = (top, bot) => { const a = top[3]; return [0, 1, 2].map((i) => top[i] * a + bot[i] * (1 - a)).concat(1); };
+    const bgOf = (e) => { const layers = [];
+      for (let n = e; n && n.nodeType === 1; n = n.parentElement) { const cs = getComputedStyle(n);
+        if (Number(cs.opacity) < 0.99 || (cs.backgroundImage && cs.backgroundImage !== "none")) return null;
+        if (n.classList.contains("maplibregl-map") || n.classList.contains("maplibregl-canvas-container")) return null;
+        const c = rgba(cs.backgroundColor); if (c && c[3] > 0) { layers.push(c); if (c[3] >= 0.99) break; }
+        if (n === document.documentElement && (!c || c[3] < 0.99)) layers.push([255, 255, 255, 1]); }
+      if (!layers.length) return null;
+      let col = layers[layers.length - 1]; if (col[3] < 0.99) col = over(col, [255, 255, 255, 1]);
+      for (let i = layers.length - 2; i >= 0; i--) col = over(layers[i], col); return col; };
+    const contrast = [];
+    for (const el of document.querySelectorAll("body *")) {
+      const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+      if (own.length < 2 || el.closest("svg, .maplibregl-ctrl-attrib, [disabled], [aria-disabled=true]") || !vis(el)) continue;
+      const cs = getComputedStyle(el); const fg = rgba(cs.color); const bg = bgOf(el); if (!fg || !bg) continue;
+      const f = fg[3] < 0.99 ? over(fg, bg) : fg; const L1 = lum(f), L2 = lum(bg), ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+      const fs = parseFloat(cs.fontSize), bold = Number(cs.fontWeight) >= 700, need = fs >= 24 || (bold && fs >= 18.66) ? 3 : 4.5;
+      if (ratio < need) contrast.push({ ratio: Math.round(ratio * 100) / 100, need, text: clean(own).slice(0, 36), where: where(el) });
+    }
+    // 4. Тексты: видимые строки; ключи перевода и заготовки вместо текста; кнопки без имени; обрезанное многоточием
+    const lines = new Set();
+    for (const el of document.querySelectorAll("body *")) {
+      const own = clean([...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join(" "));
+      if (own.length < 2 || el.closest("script, style, svg") || !vis(el)) continue;
+      lines.add(own.slice(0, 80));
+    }
+    const all = [...lines];
+    const keys = all.filter((t) => new RegExp(raw).test(t)).slice(0, 10);
+    const junk = all.filter((t) => /\{[a-z_]+\}|\bundefined\b|\bNaN\b|\[object Object\]|\bnull\b/.test(t)).slice(0, 10);
+    const noName = [...seen].filter((e) => !nameOf(e) && !e.querySelector("img[alt]:not([alt=''])")).map((e) => `${e.tagName.toLowerCase()}.${String(e.className || "").split(" ")[0]}`).slice(0, 10);
+    const cut = [];
+    for (const el of document.querySelectorAll("body *")) {
+      if (el.scrollWidth <= el.clientWidth + 1 || getComputedStyle(el).textOverflow !== "ellipsis" || !vis(el)) continue;
+      const t = clean(el.textContent); if (t && t.length <= 24) cut.push(t);
+    }
+    return { w: innerWidth, h: innerHeight, fonts, taps, tapsN, contrast, keys, junk, noName, cut, texts: all.slice(0, 600) };
+  }, { raw: RAW_KEY.source, FONT: AUDIT_FONT_MIN, TAP: AUDIT_TAP_MIN });
+}
+
+module.exports = { NOISE, TECH_WORDS, RAW_KEY, SAME_IN_BOTH, TAB_LIMIT, AUDIT_FONT_MIN, AUDIT_TAP_MIN, uiScreen, uiAudit, cyrLines, untranslated, focusToPrimary };
