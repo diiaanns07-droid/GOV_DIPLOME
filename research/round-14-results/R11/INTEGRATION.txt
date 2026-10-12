@@ -317,3 +317,37 @@ R07 868de08 (читаемость карты) + R01: research/round-14-results/R
      непрозрачный контейнер: корню .svc (или вашему) background: var(--c-surface); border-radius: var(--r-l); padding 16.
 11.6 R09 · «Обращения» сотрудника: фильтры-чипы с нулём («В работе 0», «Просрочено 0») — число 0 цветом --c-text-3
      (или без числа): глаз сразу видит, где есть работа. Заголовок 28 — §9.3 a.
+
+12. ДИЗАЙН-МАРАФОН · круг 4 — R10 B-068 и ответ на R01 INTEGRATION 25.3
+================================================================================
+12.0 ui-kit R11 (придёт с web/civic/ui-kit): отклик нажатия (.bk-btn, чипы, кнопки карты, пункты меню) и появление
+     (.bk-enter-*) — свойствами scale/translate вместо transform; «стекло внутри стекла» (.bk-glass .bk-glass — меню в
+     стеклянной шапке) — сплошное белое; GLASS.md дополнен (R01 25.3 принят).
+12.1 R01 · web/style.css — B-068 «Сообщить о проблеме» прыгает при нажатии на 134 px: причина — общее правило
+       button:active:not(:disabled) { transform: translateY(1px); }
+     перебивает transform: translateX(-50%) у .bc-fab (CDP: matched rules при :active). Правка:
+-button:active:not(:disabled) {
+-  transform: translateY(1px);
+-}
++button:active:not(:disabled) {
++  translate: 0 1px; /* не transform: не сбивает центровку и выезд модулей (R10 B-068) */
++}
+     и в transition над ним: «transform 0.18s» → «translate 0.18s». Проверено на стенде (правка правила через CSSOM):
+     центр кнопки 683 → 687 (сдвиг 4 px остаётся из-за сжатия вокруг точки до translateX — см. 12.2).
+12.2 R09 · web/civic/feedback/complaint.css — центровать «Сообщить о проблеме» без transform (тогда сжатие при нажатии
+     строго на месте: 683 → 683, проверено вставкой вместе с 12.1):
++@media (min-width: 761px) {
++  .bc-fab { left: 0; right: 0; margin-inline: auto; width: max-content; transform: none; }
++}
+     (на телефоне у вас уже left: 16px; right: 16px; transform: none.)
+12.3 R01 · web/civic/shell/birge.css — телефон, мастер жалобы шаг 2 «Где проблема?»: шторка мастера опущена, чтобы
+     нажать на карту, но над ней остаётся верх шторки «Карта жалоб» — две шторки друг над другом, карта меньше.
+     Пока открыт мастер (html.bc-open), шторку карты прятать (кадр design/round4/proposed-wizard-step2-375-kk-pair.jpg,
+     проверено вставкой на 41ccb57a + ui-kit R11):
++@media (max-width: 760px) {
++  html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
++}
+     (рядом с вашим правилом «html.bc-open .civic-mode .civic-explore, … .r07-maplegend { display: none; }».)
+12.4 R01 41ccb57a + ui-kit R11 (круг 4): закрыто — поиск по центру капсулы на телефоне (§9.1 a), слои как меню (§11.1),
+     одно меню, движение листа 240 мс; остаётся §9.1 b (отступы 14/9/5 у .topbar, легенды, #map-status, .top-actions),
+     §9.1 c (#map-status 400 мс), «Обзор: вся Астана» 14 px (.civic-explore-view → 13), §9.1 e, 12.1, 12.3.

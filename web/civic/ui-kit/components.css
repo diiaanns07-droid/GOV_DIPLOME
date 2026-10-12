@@ -150,20 +150,22 @@
     background var(--t-fast) var(--ease),
     border-color var(--t-fast) var(--ease),
     box-shadow var(--t-fast) var(--ease),
-    transform var(--t-fast) var(--ease);
+    scale var(--t-fast) var(--ease);
 }
 .bk-btn:hover {
   background: var(--c-fill-hover);
 }
 .bk-btn:active {
-  transform: scale(var(--press-scale)); /* лёгкое сжатие — отклик нажатия */
+  /* лёгкое сжатие — отклик нажатия. Свойство scale, а не transform: transform модуля (центровка translateX(-50%)
+     у «Сообщить о проблеме» R09) остаётся, кнопка не прыгает (R10 B-068) */
+  scale: var(--press-scale);
   transition-duration: var(--t-press);
 }
 .bk-btn:disabled,
 .bk-btn[aria-disabled="true"] {
   cursor: not-allowed;
   opacity: 0.5;
-  transform: none;
+  scale: none;
 }
 .bk-btn--primary {
   border-color: var(--c-brand);
@@ -1813,7 +1815,7 @@ p.bk-banner--warn {
 @keyframes bk-rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    translate: 0 12px;
   }
 }
 @keyframes bk-shimmer {
@@ -2087,6 +2089,15 @@ p.bk-banner--warn {
 .bk-mapctl__group.bk-glass--control > .bk-mapbtn + .bk-mapbtn {
   border-top-color: rgba(16, 24, 22, 0.1);
 }
+/* Стекло внутри стекла (меню аватара и «Ещё» в стеклянной шапке): у предка с backdrop-filter свой «корень фона» — вложенное
+   стекло размывает только сам предок, а не карту под ним, и текст карты просвечивает резко (R01 INTEGRATION 25.3).
+   Поэтому вложенная панель — сплошная белая (форма и тень те же); стекло — у меню вне шапки (слои у кнопок карты). */
+.bk-glass .bk-glass {
+  background-color: var(--glass-solid);
+  background-image: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
 /* Внутри стекла: карточки — более плотная белая подложка без тени; поля форм — непрозрачные */
 .bk-glass .bk-card,
 .bk-glass .bk-kpi {
@@ -2203,7 +2214,7 @@ p.bk-banner--warn {
   transition:
     background-color var(--t-fast) var(--ease),
     color var(--t-fast) var(--ease),
-    transform var(--t-press) var(--ease);
+    scale var(--t-press) var(--ease);
 }
 .bk-chip:active,
 .bk-mapbtn:active,
@@ -2211,9 +2222,10 @@ p.bk-banner--warn {
 .bk-iconbtn:active,
 .bk-option:active,
 .bk-list__item:active {
-  transform: scale(var(--press-scale));
+  scale: var(--press-scale); /* не transform — см. .bk-btn:active (B-068) */
 }
-/* Панели выезжают, а не появляются: добавьте класс на время показа (или всегда — анимация один раз при вставке) */
+/* Панели выезжают, а не появляются: добавьте класс на время показа (или всегда — анимация один раз при вставке).
+   Анимируются свойства translate/scale, а не transform: своё transform элемента (центровка, выезд шторки) не сбивается */
 .bk-enter-up {
   animation: bk-enter-up var(--t-base) var(--ease-out) both;
 }
@@ -2229,31 +2241,31 @@ p.bk-banner--warn {
 @keyframes bk-enter-up {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    translate: 0 16px;
   }
   to {
     opacity: 1;
-    transform: none;
+    translate: none;
   }
 }
 @keyframes bk-enter-right {
   from {
     opacity: 0;
-    transform: translateX(24px);
+    translate: 24px 0;
   }
   to {
     opacity: 1;
-    transform: none;
+    translate: none;
   }
 }
 @keyframes bk-enter-pop {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    scale: 0.96;
   }
   to {
     opacity: 1;
-    transform: none;
+    scale: none;
   }
 }
 /* Галочка успеха рисуется линией (экран «Отправлено», «Проверено жителями») */
