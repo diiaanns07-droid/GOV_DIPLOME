@@ -1,21 +1,21 @@
 {
  "role": "R05",
- "generated_at": "2026-10-11T20:26:46.740Z",
- "tested_sha": "d83eba6b50e8e6c5f6786d47a9206a939f16c3c9",
+ "generated_at": "2026-10-12T03:58:54.095Z",
+ "tested_sha": "a06a6bee3005c74888e86134563c31122d58ae71",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
   "renderer": "SwiftShader (без GPU)",
-  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit10",
+  "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit11",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 5.6,
-  "fps_20_objects_swiftshader": 2.6,
+  "fps_0_objects_swiftshader": 8.8,
+  "fps_20_objects_swiftshader": 4.1,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 51,
+  "pass": 52,
   "fail": 0,
   "not_run": 1
  },
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 2.6 кадр/с (без объектов 5.6)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 4.1 кадр/с (без объектов 8.8)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -1134,6 +1134,11 @@
      "rot1": 15
     }
    }
+  },
+  {
+   "id": "controls_48px_all_states_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": "все кнопки R05 ≥ 48 × 48 px: каталог, размещение, тост, карточка акимата, эскиз, подсказка, таблички, лёгкая карточка — 1366/375 × ru/kk"
   },
   {
    "id": "project_from_idea_card_says_by_residents_idea_ru_kk",
