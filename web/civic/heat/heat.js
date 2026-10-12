@@ -1047,7 +1047,7 @@
         void el.offsetWidth;   // перезапуск анимации, если состояние сменилось ещё раз
         el.classList.add("r07-badge--settle");
         clearTimeout(el.r07SettleTimer);
-        el.r07SettleTimer = setTimeout(() => el.classList.remove("r07-badge--settle"), 1300);
+        el.r07SettleTimer = setTimeout(() => el.classList.remove("r07-badge--settle"), 1000);   // кольцо --t-heat 800 мс
       }
       el.dataset.level = fixed ? "fixed" : String(it.level);
       // Волна 2: «служба сообщила» — пунктирная кайма; «вернули жители» — отметка ↺ (R11 IA_WAVE2 §3)
@@ -1436,7 +1436,7 @@
       el.className = "r07-pulse";
       el.style.setProperty("--r07-c", it.color || "#E24B4A");
       const marker = new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(it.anchor).addTo(map);
-      setTimeout(() => marker.remove(), 2600);
+      setTimeout(() => marker.remove(), 2200);   // два кольца по --t-heat 800 мс, второе — через 0,4 с
       srBox.textContent = t("heat.toast_new", { target: label(it.target) }) + ". " + t("heat.reported", { count: it.count });
     }
 

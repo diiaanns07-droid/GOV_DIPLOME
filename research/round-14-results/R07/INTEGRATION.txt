@@ -45,6 +45,10 @@ M.12 Круг 6 (R11 INTEGRATION §10.1): при window.BirgeUI.illustration «�
     (.r07-error, .r07-empty, [data-retry], .r07-empty__title) прежние — тесты R10/R07 их ищут. Без ui-kit — свои рисунки.
     Ряд тем #r07-cats — ещё и .bk-scroll-x: на телефоне затухание края ui-kit (BirgeUI подключает сам), на ноутбуке
     overflow: visible (чипы переносятся).
+M.13 Круг 7 (R10 DESIGN_REVIEW, R07): перекраска кружка значка — transition background var(--t-slow, 340ms); пружина
+    нового значка 340 мс; кольцо «settle» и пульс — var(--t-heat, 800ms) (класс settle снимается через 1 с, маркер пульса
+    — через 2,2 с). Строки .r07-item — padding 12px 8px; .r07-maplegend — padding 16px 18px, ul gap 8px 16px, li gap 8px;
+    .r07-spark gap 4px.
 M.10 Соседям — точные места (кадры: design/round4/neighbors/):
     R01-1. .civic-explore-registry («Реестр пуст: опубликованных записей пока нет…») — остаток старого блока поиска
       «Территория / Вся Астана / Найти». На свежей базе (CIVIC_DEMO=1, реестр работ пуст) виден поверх карты: 1366 — слева
