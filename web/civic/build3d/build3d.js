@@ -1612,6 +1612,17 @@
     }
 
     function makeMaterials(ghost, invalid, tint) {
+      // Эскиз идеи жителя (дизайн-марафон): цвета самой модели под лёгкой янтарной «сепией», полупрозрачно — видно,
+      // что это сквер или площадка (газон, дорожки, деревья), но ещё не проект. Было — сплошной охристый слепок.
+      if (ghost && tint) {
+        return {
+          solid: new THREE.MeshLambertMaterial({ vertexColors: true, color: 0xffe2a8, emissive: 0x6b4a12, emissiveIntensity: 0.12, transparent: true, opacity: 0.8 }),
+          glass: null,
+          glow: new THREE.MeshBasicMaterial({ color: 0xffe9b8, transparent: true, opacity: 0.8 }),
+          decal: null,
+          outline: new THREE.MeshBasicMaterial({ color: tint }),
+        };
+      }
       if (ghost) {
         var color = tint || (invalid ? 0xb3362e : 0x176b4a);
         return {
