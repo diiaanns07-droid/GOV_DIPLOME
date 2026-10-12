@@ -83,7 +83,7 @@ async function check(browser, base, width, height, lang) {
         if (v && /^[a-z0-9_]+(\.[a-z0-9_]+){1,}$/.test(v)) out.keys.push(a + "=" + v);
       });
     });
-    document.querySelectorAll(".bk-btn,.bk-mapbtn,.bk-iconbtn,.bk-option,.bk-list__item").forEach((el) => {
+    document.querySelectorAll(".bk-btn,.bk-mapbtn,.bk-iconbtn,.bk-option,.bk-list__item,.bk-tabs > [role=tab],.bk-details > summary").forEach((el) => {
       if (!visible(el)) return;
       const h = el.getBoundingClientRect().height;
       if (h < 47.5) out.lowButtons.push((el.textContent.trim() || el.getAttribute("aria-label") || el.className) + " " + Math.round(h) + "px");
@@ -103,6 +103,14 @@ async function check(browser, base, width, height, lang) {
   r.lowButtons.forEach((k) => problems.push("кнопка ниже 48 px: " + k));
   r.small.forEach((k) => problems.push("текст кнопки < 16 px: " + k));
   r.tinyText.forEach((k) => problems.push("текст < 14 px: " + k));
+  // Вкладки ui-kit (волна 2): щелчок и стрелка → aria-selected, выбрана ровно одна
+  if (await page.$("#kit-tabs")) {
+    await page.click('#kit-tabs [role="tab"]:nth-child(2)');
+    await page.keyboard.press("ArrowRight");
+    const sel = await page.$$eval('#kit-tabs [role="tab"]', (bs) => bs.map((b) => b.getAttribute("aria-selected")));
+    if (sel.join() !== "false,false,true") problems.push("вкладки: после щелчка по 2-й и → ждали 3-ю, " + sel.join());
+    await page.click('#kit-tabs [role="tab"]:nth-child(1)');
+  }
   if (SHOTS) {
     fs.mkdirSync(SHOTS, { recursive: true });
     const name = path.basename(PAGE, ".html").replace("index", "ui-kit") + `-${width}-${lang}`;

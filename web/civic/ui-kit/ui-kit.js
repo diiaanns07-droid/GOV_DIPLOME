@@ -243,6 +243,46 @@
     }
   }
 
+  // Вкладки раздела (волна 2): <div class="bk-tabs" role="tablist"><button role="tab" value="…">…</button></div>.
+  // Отмечает выбранную (aria-selected, tabindex), стрелки ←/→ переходят между вкладками; onChange(value) — по выбору.
+  function tabs(el, onChange) {
+    function all() { return Array.prototype.slice.call(el.querySelectorAll('[role="tab"]')); }
+    function select(btn, focus) {
+      all().forEach(function (b) {
+        b.setAttribute("aria-selected", b === btn ? "true" : "false");
+        b.tabIndex = b === btn ? 0 : -1;
+      });
+      if (focus) btn.focus();
+      if (btn.scrollIntoView) btn.scrollIntoView({ block: "nearest", inline: "nearest" });
+      if (onChange) onChange(btn.value || btn.getAttribute("data-value"));
+    }
+    el.addEventListener("click", function (e) {
+      var b = e.target.closest ? e.target.closest('[role="tab"]') : null;
+      if (b && el.contains(b)) select(b, false);
+    });
+    el.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      var list = all(), i = list.indexOf(doc.activeElement);
+      if (i < 0) return;
+      e.preventDefault();
+      select(list[(i + (e.key === "ArrowRight" ? 1 : list.length - 1)) % list.length], true);
+    });
+    var cur = el.querySelector('[role="tab"][aria-selected="true"]') || all()[0];
+    all().forEach(function (b) {
+      b.setAttribute("aria-selected", b === cur ? "true" : "false");
+      b.tabIndex = b === cur ? 0 : -1;
+    });
+    // Не помещаются (длинные kk-подписи на 375) — край строки затухает, пока есть что прокрутить вправо.
+    function edge() {
+      var more = el.scrollWidth - el.clientWidth - el.scrollLeft > 2;
+      if (more) el.setAttribute("data-more", "true");
+      else el.removeAttribute("data-more");
+    }
+    el.addEventListener("scroll", edge, { passive: true });
+    if (typeof ResizeObserver !== "undefined") new ResizeObserver(edge).observe(el);
+    edge();
+  }
+
   // Сезонный порядок категорий (POLISH_WAVE п. 11). Месяц — по часам устройства: зимой житель не ищет снег в конце.
   function seasonOrder(categories, date) {
     var list = (categories || []).slice();
@@ -256,5 +296,5 @@
   }
 
   root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, esc: esc,
-    seasonOrder: seasonOrder, SPRITE: SPRITE };
+    seasonOrder: seasonOrder, tabs: tabs, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);

@@ -1584,6 +1584,104 @@
   }
 }
 
+/* ───────────── Вкладки раздела и «Подробнее» (волна 2: «Идеи», «Вопрос акиму», «Обращения») ─────────────
+   Вкладки — <div class="bk-tabs" role="tablist"> с <button role="tab" aria-selected>; длинные kk-подписи
+   не переносятся: строка вкладок прокручивается сама по себе, страница вбок — нет. */
+.bk-tabs {
+  display: flex;
+  gap: var(--s-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--c-line);
+  margin: 0 0 var(--s-3);
+}
+.bk-tabs::-webkit-scrollbar {
+  display: none;
+}
+.bk-tabs[data-more="true"] {
+  -webkit-mask-image: linear-gradient(to right, #000 80%, transparent);
+  mask-image: linear-gradient(to right, #000 80%, transparent);
+}
+.bk-tabs > [role="tab"] {
+  flex: 0 0 auto;
+  min-height: var(--tap);
+  padding: 0 var(--s-2);
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.bk-tabs > [role="tab"][aria-selected="true"] {
+  color: var(--c-ink);
+  border-bottom-color: var(--c-brand);
+}
+.bk-tabs > [role="tab"]:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: -3px;
+}
+.bk-tabs .bk-num {
+  margin-left: 6px;
+  color: var(--c-text-3);
+}
+
+/* <details class="bk-details"><summary>Толығырақ</summary>…</details> — карточка не растёт (IA_WAVE2 §0.4) */
+.bk-details {
+  border-top: 1px solid var(--c-line);
+}
+.bk-details > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  color: var(--c-brand);
+  font-weight: var(--fw-semi);
+  cursor: pointer;
+  list-style: none;
+}
+.bk-details > summary::-webkit-details-marker {
+  display: none;
+}
+.bk-details > summary::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--t-fast) var(--ease);
+}
+.bk-details[open] > summary::before {
+  transform: rotate(45deg);
+}
+.bk-details > summary:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+}
+.bk-details > :not(summary) {
+  margin: 0 0 var(--s-3);
+}
+
+/* Значок идеи на карте и в списке (слой «Идеи жителей»): синий контур, число голосов — с 15-го масштаба */
+.bk-idea-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border: 3px solid var(--idea);
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  color: var(--idea);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+}
+
 /* ───────────── Печать («Картина дня») ───────────── */
 @media print {
   .bk-header,
