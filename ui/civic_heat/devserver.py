@@ -7,6 +7,8 @@
     GET  /api/civic/v2/heat, /heat/meta, /heat/target       — настоящий модуль ui/civic_heat (api.handle_get)
     POST /api/civic/v2/complaints/{id}/status {status}      — ПОДСТАВНОЙ двойник R09 (меняет демо-записи в памяти)
     POST /api/civic/v2/complaints/{id}/metoo {device_id}    — ПОДСТАВНОЙ двойник R09 (одно «Я тоже» с устройства)
+    POST /api/civic/v2/complaints/{id}/verify {answer}      — ПОДСТАВНОЙ двойник R09 «Проблема решена?» (yes | no | cant;
+                                                              только у исправленной жалобы) — для показа «проверено жителями»
     POST /api/civic/v2/heat/demo/complaint {target_id}      — добавить демо-жалобу (для показа пульса)
 Все данные синтетические (demo: true) и живут только в памяти процесса.
 """
@@ -31,7 +33,7 @@ STATUSES = ("new", "accepted", "in_progress", "fixed", "rejected")
 
 
 class DemoStore:
-    """Демо-записи в памяти + подставные операции R09 (status, metoo)."""
+    """Демо-записи в памяти + подставные операции R09 (status, metoo, verify)."""
 
     def __init__(self, now=None):
         self.lock = threading.Lock()
@@ -69,6 +71,20 @@ class DemoStore:
                 return 200, dict(r, already=True)
             seen.add(device or "anon")
             r["metoo"] = int(r.get("metoo") or 0) + 1
+        self.service.invalidate()
+        return 200, r
+
+    def verify(self, cid, answer):
+        # Ответ жителя после ремонта — запись resident_checks, которую читает engine.resident_answers (как у R09).
+        if answer not in ("yes", "no", "cant"):
+            return 400, {"error": "bad_request", "field": "answer"}
+        with self.lock:
+            r = self._find(cid)
+            if not r:
+                return 404, {"error": "not_found"}
+            if r.get("status") != "fixed":
+                return 409, {"error": "not_fixed"}
+            r["resident_checks"] = list(r.get("resident_checks") or []) + [{"answer": answer, "at": iso(datetime.now(timezone.utc))}]
         self.service.invalidate()
         return 200, r
 
@@ -139,6 +155,8 @@ def make_handler(store: DemoStore):
                     return self._json(*store.set_status(cid, body.get("status")))
                 if action == "metoo":
                     return self._json(*store.metoo(cid, str(body.get("device_id") or "")))
+                if action == "verify":
+                    return self._json(*store.verify(cid, str(body.get("answer") or "")))
             return self._json(404, {"error": "not_found"})
 
     return Handler

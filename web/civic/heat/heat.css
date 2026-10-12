@@ -199,7 +199,8 @@
 }
 .r07-details[open] > summary::before { transform: rotate(45deg); }
 .r07-details > :not(summary) { margin: 0 0 12px; }
-.r07-details[open] > :not(summary) { animation: r07-enter 220ms var(--r07-ease) backwards; }
+/* плавно — только когда человек раскрыл блок (класс на 400 мс из bindPanel), а не при каждой перерисовке карточки */
+.r07-details--opening[open] > :not(summary) { animation: r07-enter 220ms var(--r07-ease) backwards; }
 .r07-texts { display: block; }
 .r07-merged__count { color: var(--r07-ink-2); font-weight: 400; }
 .r07-merged__btn { margin-top: 8px; width: 100%; }
@@ -258,8 +259,8 @@
 
 /* ---- Состояния (без цветных плашек) ----
    Скелетон — в форме того, что появится: поле темы, 7/30/90 и строки «Горячих мест» (значок-число и две строки). */
-.r07-skeleton { display: flex; flex-direction: column; gap: 8px; }
-.r07-skeleton i { display: block; border-radius: 8px; background: linear-gradient(90deg, var(--r07-skel-a), var(--r07-skel-b), var(--r07-skel-a));
+.r07-skeleton, .r07-texts__skel { display: flex; flex-direction: column; gap: 8px; }
+.r07-skeleton i, .r07-texts__skel i { display: block; border-radius: 8px; background: linear-gradient(90deg, var(--r07-skel-a), var(--r07-skel-b), var(--r07-skel-a));
   background-size: 200% 100%; animation: r07-shimmer 1.4s linear infinite; }
 .r07-skel__field { height: 48px; border-radius: 10px !important; }
 .r07-skel__seg { height: 52px; width: 66%; border-radius: 10px !important; margin-bottom: 8px; }
@@ -269,6 +270,14 @@
 .r07-skel__lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
 .r07-skel__lines i:first-child { height: 16px; width: 78%; }
 .r07-skel__lines i:last-child { height: 12px; width: 46%; }
+/* «Что пишут жители» грузится: три цитаты по 2 строки + «N человек» — по высоте как настоящие (17 / 13, строки 8 px),
+ * чтобы «Жалобы по дням» и QR ниже не прыгали, когда цитаты приходят */
+.r07-texts__skel { gap: 0; }
+.r07-texts__q { display: flex; flex-direction: column; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--r07-line); }
+.r07-texts__q:last-child { border-bottom: 0; }
+.r07-texts__skel i { height: 16px; width: 92%; }
+.r07-texts__skel i:nth-child(2) { width: 58%; }
+.r07-texts__skel .r07-skel__meta { height: 12px; width: 28%; }
 @keyframes r07-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 /* Пусто и нет связи: линейная иллюстрация (линия 1.9, как у иконок ui-kit), заголовок 17/600, одна строка, действие */
 .r07-empty, .r07-error { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 8px 16px; text-align: center; }
@@ -388,8 +397,8 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 .r07-root[data-role="resident"] .r07-legend__hint { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .r07-pulse::before, .r07-pulse::after, .r07-skeleton i, .r07-toast, .r07-enter, .r07-badge--new .r07-badge__inner,
-  .r07-maplegend.bk-glass, .r07-details[open] > :not(summary) { animation: none; }
+  .r07-pulse::before, .r07-pulse::after, .r07-skeleton i, .r07-texts__skel i, .r07-toast, .r07-enter, .r07-badge--new .r07-badge__inner,
+  .r07-maplegend.bk-glass, .r07-details--opening[open] > :not(summary) { animation: none; }
   .r07-badge__inner, .r07-badge__dot, .r07-details > summary::before, .r07-btn, .r07-field, .r07-chip, .r07-item, .r07-icon-btn,
   .r07-seg > button { transition: none; }
   .r07-root { --r07-press: none; }

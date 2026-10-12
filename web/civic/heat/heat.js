@@ -442,6 +442,7 @@
       fitted: false,          // карта уже подогнана под горячие места (один раз, до первого касания)
       pendingSelect: null,    // цель из ссылки / «Картины дня», ждёт загрузки данных
       busyKey: null,          // строка «Горячих мест», которая «открывается» (перелёт к цели и её загрузка)
+      detailsOpen: new Map(), // «цель|блок» → раскрыт ли «Подробнее» (выбор человека переживает перерисовку карточки)
       prevColors: new Map(),  // ключ → цвет до обновления (для плавного перехода)
       markers: new Map(),     // ключ → { marker, el, item }
       clusters: [],           // кружки-кластеры: { key, marker, el, members: [ключи], ll, w, h }
@@ -1562,6 +1563,10 @@
       const view = cardItem ? "card:" + S.selected : S.data ? "list" : S.status;
       if (S.lastView && S.lastView !== view && S.data) panel.querySelector(".r07-card, .r07-hot, .r07-empty")?.classList.add("r07-enter");
       S.lastView = view;
+      if (S.textsFresh) {   // цитаты только что пришли на место скелета — мягкое проявление
+        if (cardItem && S.textsFresh === textsKey(S.selected)) panel.querySelector(".r07-texts .r07-quotes")?.classList.add("r07-enter");
+        S.textsFresh = null;
+      }
       bindPanel();
       mountR09();
       if (map) declutter();   // легенда могла сменить размер (язык, режим) — значки не должны оказаться под ней
@@ -1727,7 +1732,10 @@
 
     // Блок «Подробнее» карточки — <details> ui-kit; пустые блоки не рисуются вовсе (CLEAN_PASS R07 №3)
     function detailsHtml(cls, title, body, open) {
-      return '<details class="bk-details r07-details ' + cls + '"' + (open ? " open" : "") + '><summary class="r07-h4">' + title + "</summary>" + body + "</details>";
+      // Раскрытый или свёрнутый человеком блок остаётся таким, когда карточка перерисовывается (пришли тексты, новая жалоба)
+      const k = S.selected + "|" + cls;
+      const isOpen = S.detailsOpen.has(k) ? S.detailsOpen.get(k) : open;
+      return '<details class="bk-details r07-details ' + cls + '" data-dk="' + esc(k) + '"' + (isOpen ? " open" : "") + '><summary class="r07-h4">' + title + "</summary>" + body + "</details>";
     }
 
     // Карточка (CLEAN_PASS R07 №2): «‹ Горячие места ✕» → вид места · район (13 серым) → название 22/600 → статус один раз →
@@ -1798,10 +1806,17 @@
     // «Что пишут жители» (UX_REVIEW R11, день 3, №4): 1–3 группы похожих текстов с числом людей.
     // Только для акимата. Сервер отдаёт тексты примеров (synthetic) всем, а настоящих жалоб — только сотруднику
     // после входа (шлюз R01 передаёт staff=True); жителю этот раздел не показывается вовсе.
-    // Чистый дизайн: блок «Подробнее», у акимата открыт; текстов нет — блока нет (пока грузятся — тоже нет).
+    // Чистый дизайн: блок «Подробнее», у акимата открыт; текстов нет — блока нет. Пока грузятся — та же строка «Что пишут
+    // жители» и скелет цитат на их месте (дизайн-марафон №8): карточка не «прыгает», когда цитаты приходят через миг,
+    // а сами цитаты мягко проявляются (S.textsFresh → .r07-enter, один раз).
     function textsKey(key) { return key + "|" + S.filters.days; }
     function textsHtml(key) {
       const st = S.texts.get(textsKey(key));
+      if (st && st.status === "loading") {
+        const q = '<span class="r07-texts__q"><i></i><i></i><i class="r07-skel__meta"></i></span>';   // цитата 2 строки + «N человек»
+        const skel = '<div class="r07-texts__skel" aria-hidden="true">' + q + q + q + "</div>";
+        return '<section class="r07-texts r07-texts--loading" aria-busy="true">' + detailsHtml("r07-texts__box", esc(t("heat.texts.title")), skel, true) + "</section>";
+      }
       if (!st || st.status !== "ready") return "";
       const groups = (st.data && st.data.groups) || [];
       const hidden = (st.data && st.data.hidden_people) || 0;
@@ -1875,6 +1890,7 @@
         const q = new URLSearchParams({ kind, id: rest.join(":"), days: String(S.filters.days) });
         const res = await getJson("/heat/target?" + q.toString());
         S.texts.set(tk, { status: "ready", data: res && res.item ? res.item.texts : null });
+        S.textsFresh = tk;
       } catch (e) {
         S.texts.set(tk, { status: "error" });
       }
@@ -1932,6 +1948,15 @@
       panel.querySelectorAll(".r07-merged").forEach((d) => d.addEventListener("toggle", () => {
         S.mergedOpen = d.open ? S.selected : null;
       }));
+      // «Подробнее»: запомнить выбор; плавное раскрытие — только по нажатию, не при каждой перерисовке
+      panel.querySelectorAll(".r07-details").forEach((d) => {
+        if (d.dataset.dk) d.addEventListener("toggle", () => S.detailsOpen.set(d.dataset.dk, d.open));
+        d.querySelector(":scope > summary")?.addEventListener("click", () => {
+          if (d.open) return;
+          d.classList.add("r07-details--opening");
+          setTimeout(() => d.classList.remove("r07-details--opening"), 400);
+        });
+      });
     }
 
     // ----- события -----

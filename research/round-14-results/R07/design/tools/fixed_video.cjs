@@ -1,9 +1,10 @@
-// R07 · видео перехода «В работе → Служба сообщила, что исправлено» на стенде R07 (synthetic, отдельный экземпляр
+// R07 · видео перехода «В работе → Служба сообщила, что исправлено → Проверено жителями» на стенде R07 (synthetic, отдельный экземпляр
 // devserver — его данные в памяти, после остановки сбрасываются). Статус меняется настоящим запросом стенда
 // POST /complaints/{id}/status (как R09), затем событие birge:complaint — R07 перечитывает данные: цвет значка перетекает,
-// одно кольцо, карточка меняет статус.   node fixed_video.cjs <out-dir> [port] [lang]
+// одно кольцо, карточка меняет статус; затем ответ жителя «да» (POST /complaints/{id}/verify) — «проверено жителями».
+//   node fixed_video.cjs <out-dir> [port] [lang] [noverify]
 const { chromium } = require("/opt/node-tools/node_modules/playwright");
-const OUT = process.argv[2], PORT = process.argv[3] || "8627", LANG = process.argv[4] || "ru";
+const OUT = process.argv[2], PORT = process.argv[3] || "8627", LANG = process.argv[4] || "ru", VERIFY = process.argv[5] !== "noverify";
 const BASE = `http://127.0.0.1:${PORT}`;
 (async () => {
   const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
@@ -34,8 +35,18 @@ const BASE = `http://127.0.0.1:${PORT}`;
     window.dispatchEvent(new CustomEvent("birge:complaint", { detail: { type: "status", target } }));
   }, [BASE, pick.ids, pick.target]);
   await p.waitForTimeout(4500);
-  const after = await p.evaluate(() => { const c = document.querySelector(".r07-card .bk-status"); return c ? c.textContent.trim() : null; });
-  console.log("после", after, "ошибки", errs.length ? errs : 0);
+  const status = () => p.evaluate(() => { const c = document.querySelector(".r07-card .bk-status"); return c ? c.textContent.trim() : null; });
+  console.log("служба сообщила:", await status());
+  // житель отвечает «Да, исправлено» (двойник R09 POST /complaints/{id}/verify на стенде) — «Проверено жителями»
+  if (VERIFY) {
+    await p.evaluate(async ([base, id, target]) => {
+      await fetch(`${base}/api/civic/v2/complaints/${encodeURIComponent(id)}/verify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answer: "yes" }) });
+      window.dispatchEvent(new CustomEvent("birge:complaint", { detail: { type: "status", target } }));
+    }, [BASE, pick.ids[0], pick.target]);
+    await p.waitForTimeout(4500);
+    console.log("проверено:", await status());
+  }
+  console.log("ошибки", errs.length ? errs : 0);
   await ctx.close();
   await b.close();
 })();
