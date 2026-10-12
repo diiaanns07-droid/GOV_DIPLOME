@@ -17,7 +17,7 @@ PICK = [
     ("w-step2-error", ["375-ru", "1366-kk"]), ("w-step3", ["1366-kk", "375-ru"]), ("w-sent", ["1366-ru", "375-kk"]),
     ("a-queue", ["1366-ru", "375-ru"]), ("a-review-open", ["1366-kk"]), ("a-check", ["1366-ru", "375-kk"]),
     ("a-check-allyes", ["1366-ru", "375-ru"]), ("a-decided", ["375-kk"]), ("a-projects-tall", ["1366-ru"]),
-    ("k-works-tall", ["1366-ru", "375-kk"]), ("k-form-errors-tall", ["1366-ru"]), ("k-form-tall", ["375-kk"]), ("p-card-idea", ["375-ru", "1366-ru"]),
+    ("k-works-tall", ["1366-ru", "375-kk"]), ("k-form-errors-tall", ["1366-ru"]), ("k-form-tall", ["375-kk"]), ("p-card-idea", ["375-ru"]),
     ("a-nologin", ["1366-ru"]), ("r-mine-review", ["375-kk"]), ("w-pick-chosen", ["1366-ru"]), ("r-more", ["1366-kk"]),
 ]
 
