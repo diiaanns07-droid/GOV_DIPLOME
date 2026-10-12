@@ -399,36 +399,10 @@
     } catch (e) { /* приватный режим — не страшно */ }
   }
 
-  // ---------- Предзагрузка первого кадра (R01 INTEGRATION 21.9, «первый значок ≤ 3 с») ----------
-  // Ответ /heat приходит по сети за десятки мс, но на старте главный поток занят картой и модулями, и разбор ответа,
-  // запрошенного при монтировании, ждал до 1 с. С атрибутом <script … data-prefetch> (или CivicHeat.prefetch()) модуль
-  // запрашивает то же, что попросит первым кадром (справочник, районы города и места за 30 дней), сразу при загрузке
-  // скрипта; mount берёт эти ответы один раз, если фильтры по умолчанию. Ответ /heat одинаков для всех (тексты жителей
-  // — только в /heat/target), промах или ошибка — обычный запрос. Без атрибута ничего не меняется.
-  const PREFETCH_TTL = 60000;
-  let prefetched = null;
+  // Шлюз R01 может завернуть ответ в конверт {ok, data} (как в civic-v1) — принимаем оба вида.
   function unwrap(body) {
-    // Шлюз R01 может завернуть ответ в конверт {ok, data} (как в civic-v1) — принимаем оба вида.
     return body && body.ok === true && body.data && !body.items && !body.categories ? body.data : body;
   }
-  function prefetch(apiBase) {
-    const base = (apiBase || "/api/civic/v2").replace(/\/$/, "");
-    if (prefetched && prefetched.base === base) return;
-    const get = (path) => window.fetch(base + path, { headers: { Accept: "application/json" }, credentials: "same-origin" })
-      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("HTTP " + res.status)))).then(unwrap);
-    const reqs = { meta: get("/heat/meta"), districts: get("/heat?days=30&zoom=" + (DISTRICT_ZOOM - 1)), targets: get("/heat?days=30&zoom=" + (DISTRICT_ZOOM + 2)) };
-    Object.values(reqs).forEach((p) => p.catch(() => { /* при монтировании будет обычный запрос */ }));
-    prefetched = { base, at: Date.now(), reqs };
-  }
-  function takePrefetch(base) {
-    const p = prefetched;
-    prefetched = null;   // только первый кадр: дальше данные свежие, по запросу
-    return p && p.base === base && Date.now() - p.at < PREFETCH_TTL ? p.reqs : null;
-  }
-  try {
-    const me = document.currentScript;
-    if (me && me.hasAttribute("data-prefetch") && typeof window.fetch === "function") prefetch(me.getAttribute("data-api") || undefined);
-  } catch (e) { /* без предзагрузки */ }
 
   // ---------- Модуль ----------
   function mount(options) {
@@ -563,9 +537,6 @@
       }
       return unwrap(body);
     }
-    // Ответы предзагрузки (её включает сама страница атрибутом data-prefetch; GET оболочки — тот же fetch).
-    // opts.prefetch: false — не брать (например, проверка с подменённым fetch на той же странице).
-    let early = opts.prefetch === false ? null : takePrefetch(apiBase);
 
     function zoomNow() { return map ? map.getZoom() : 14; }
     function modeFor(z) { return z < ((S.meta && S.meta.district_zoom_max) || DISTRICT_ZOOM) ? "districts" : "targets"; }
@@ -577,11 +548,9 @@
         // Справочник (/heat/meta) и сами жалобы (/heat) — одновременно, а не друг за другом: на старте главный поток
         // занят картой и модулями, и каждый лишний круг «ответ → следующий запрос» стоил до 1 с до первого значка
         // (R01 INTEGRATION 21.9). Порог районов до прихода справочника — тот же DISTRICT_ZOOM, что присылает сервер.
-        // Первый кадр с предзагрузкой (data-prefetch): берём её ответы, если фильтры по умолчанию; иначе — как обычно.
-        const pre = early && S.filters.days === 30 && !S.filters.category && !S.filters.district ? early : null;
-        early = null;
-        const via = (p, path) => (p ? p.catch(() => getJson(path)) : getJson(path));
-        const metaReq = S.meta ? Promise.resolve(S.meta) : via(pre && pre.meta, "/heat/meta");
+        // Первый кадр оболочка R01 запрашивает заранее и отдаёт через opts.fetch (R01 INTEGRATION 22.1: /heat/meta,
+        // районы и места за 30 дней при zoom 14) — здесь те же адреса.
+        const metaReq = S.meta ? Promise.resolve(S.meta) : getJson("/heat/meta");
         const query = (zoom) => {
           const q = new URLSearchParams();
           q.set("days", String(S.filters.days));
@@ -592,8 +561,8 @@
         };
         // На мелком масштабе карта — районы, а список «Горячие места» — всё равно 10 мест: их берём вторым запросом.
         const districtsView = modeFor(zoomNow()) === "districts";
-        const [meta, data, places] = await Promise.all([metaReq, via(pre && pre[districtsView ? "districts" : "targets"], query(zoomNow())),
-          districtsView ? via(pre && pre.targets, query(DISTRICT_ZOOM + 2)).catch(() => null) : Promise.resolve(null)]);
+        const [meta, data, places] = await Promise.all([metaReq, getJson(query(zoomNow())),
+          districtsView ? getJson(query(DISTRICT_ZOOM + 2)).catch(() => null) : Promise.resolve(null)]);
         if (seq !== S.reqSeq || S.destroyed) return;   // пришёл устаревший ответ — пропускаем
         S.meta = meta;
         const placeItems = ((places && places.mode === "targets") ? places : data).items || [];
@@ -1090,15 +1059,9 @@
     // Смысловой зум (просьба владельца, п. 2): город (< 12) — районы; 12–15 — дворы и участки улиц; с 15 — и объекты.
     // Значок, которому тесно, и объекты на 12–15 не пропадают — собираются в кружок-кластер с числом людей и цветом
     // самого высокого уровня; нажатие на кластер приближает карту к его местам.
-    function declutter(how) {
-      if (!map) return;
-      const z = map.getZoom(), bearing = map.getBearing(), pitch = map.getPitch();
-      const placed = [];
-      // Значки не прячутся под легендой и другими плашками поверх карты (opts.avoidRects — от оболочки).
-      const host = map.getContainer().getBoundingClientRect();
-      const L = S.layout;
-      const full = how === "full" || !L || Math.abs(L.z - z) > 0.01 || Math.abs(L.bearing - bearing) > 0.5 ||
-        Math.abs(L.pitch - pitch) > 0.5 || Math.abs(L.w - host.width) > 1 || Math.abs(L.h - host.height) > 1;
+    // Плашки поверх карты, которые значок не должен закрывать: своя легенда и панель, кнопки MapLibre, чужие значки
+    // и таблички проектов R05, плашки оболочки (opts.avoidRects).
+    function overlayRects() {
       const overlays = [];
       if (S.legendEl && S.legendEl.isConnected) overlays.push(S.legendEl.getBoundingClientRect());
       // Своя панель / шторка поверх карты и кнопки MapLibre: значок наполовину под ними выглядит обрезанным.
@@ -1112,6 +1075,28 @@
         if (r.width && r.height && cs.visibility !== "hidden" && Number(cs.opacity) > 0.1) overlays.push(r);
       });
       if (typeof opts.avoidRects === "function") overlays.push(...(opts.avoidRects() || []));
+      return overlays;
+    }
+    const overlaySig = (list) => list.map((r) => (r && r.width ? Math.round(r.left) + "," + Math.round(r.top) + "," + Math.round(r.right) + "," + Math.round(r.bottom) : "")).join(";");
+    // Плашки оболочки появляются и двигаются без движения карты: строка легенды — после первой отрисовки, «Карта улиц
+    // не загрузилась» — когда не пришли тайлы, гаснет через 6 с. Раз в секунду (пока карта стоит) сверяем их рамки с
+    // прошлой раскладкой; изменились — раскладываем значки заново (R11 badges_covered 360×800: «Байқоңыр» под легендой).
+    const overlayTimer = map ? setInterval(() => {
+      if (S.destroyed || !S.markers.size || map.isMoving() || S.overlaySig === undefined) return;
+      if (overlaySig(overlayRects()) !== S.overlaySig) declutter();
+    }, 1000) : null;
+
+    function declutter(how) {
+      if (!map) return;
+      const z = map.getZoom(), bearing = map.getBearing(), pitch = map.getPitch();
+      const placed = [];
+      // Значки не прячутся под легендой и другими плашками поверх карты (opts.avoidRects — от оболочки).
+      const host = map.getContainer().getBoundingClientRect();
+      const L = S.layout;
+      const full = how === "full" || !L || Math.abs(L.z - z) > 0.01 || Math.abs(L.bearing - bearing) > 0.5 ||
+        Math.abs(L.pitch - pitch) > 0.5 || Math.abs(L.w - host.width) > 1 || Math.abs(L.h - host.height) > 1;
+      const overlays = overlayRects();
+      S.overlaySig = overlaySig(overlays);
       overlays.forEach((r) => { if (r && r.width) placed.push([r.left - host.left, r.top - host.top, r.right - host.left, r.bottom - host.top]); });
       const boxAt = (p, w, h) => [p.x - w / 2, p.y - h / 2, p.x + w / 2, p.y + h / 2];
       // Значок — только целиком внутри карты (обрезанный краем выглядит сломанным) и не поверх уже поставленных.
@@ -1975,6 +1960,7 @@
     }
     function destroy() {
       S.destroyed = true;
+      if (overlayTimer) clearInterval(overlayTimer);
       if (S.anim) cancelAnimationFrame(S.anim);
       window.removeEventListener("birge:complaint", onComplaintEvent);
       window.removeEventListener("birge:lang", onLang);
@@ -2000,5 +1986,5 @@
   }
 
   // messages — запасной словарь ru/kk (R11 переносит ключи heat.* в общие ru.json / kk.json).
-  window.CivicHeat = { mount, prefetch, version: VERSION, schema: "civic-v2", messages: DICT };
+  window.CivicHeat = { mount, version: VERSION, schema: "civic-v2", messages: DICT };
 })();
