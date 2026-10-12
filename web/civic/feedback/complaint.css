@@ -21,7 +21,7 @@
   border-radius: var(--r-l, 16px);
   box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18));
   font-family: var(--font, system-ui, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif);
-  font-size: var(--fs-body, 16px); line-height: 1.4;
+  font-size: var(--fs-body, 15px); line-height: 1.45;
   padding: 0 20px 20px; overflow-y: auto; overscroll-behavior: contain;
   animation: bc-in-right var(--t-base, 240ms) var(--ease, cubic-bezier(.22, 1, .36, 1));
 }
@@ -45,7 +45,7 @@
   .bc-fab { left: 16px; right: 16px; transform: none; max-width: none; white-space: nowrap; justify-content: center; }
   /* Открыта карточка места R07 со своей «Я тоже» — главную кнопку не показываем поверх неё (R11 B1 №8). */
   body:has(.r07-card) .bc-fab { display: none; }
-  .bc-handle { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--c-line, #e4e9e3);
+  .bc-handle { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--c-line, #e8eaeb);
                margin: 8px auto 0; flex: none; }
 }
 
@@ -55,30 +55,35 @@
 .bc-back, .bc-close { padding: 0 8px; }
 @media (max-width: 359px) { .bc-close__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } }
 
-.bc-title { font-size: var(--fs-title, 20px); font-weight: 700; line-height: 1.2; margin: 8px 0 12px; }
+.bc-title { font-size: var(--fs-title, 22px); font-weight: var(--fw-semi, 600); line-height: 1.25; margin: 4px 0 12px; }
+/* «Шаг 3 из 5» — 13 серым над заголовком (R11 CLEAN_PASS R09 №1); точки — <i> ui-kit. */
+.bc-panel .bk-wizard { margin-top: 4px; }
+.bc-panel .bk-wizard__label { font-size: var(--fs-caption, 13px); color: var(--c-text-2, #5b6a64); }
 .bc-title:focus { outline: none; }
 .bc-title:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 .bc-body { display: flex; flex-direction: column; gap: 12px; }
 .bc-hint { margin: 0; }
-.bc-lead { margin: 0; font-size: var(--fs-lead, 18px); font-weight: 600; }
-.bc-meta { margin: 0; font-size: var(--fs-caption, 14px); color: var(--c-text-2, #5b6a64); }
+.bc-lead { margin: 0; font-size: var(--fs-lead, 17px); font-weight: 600; }
+.bc-meta { margin: 0; font-size: var(--fs-caption, 13px); color: var(--c-text-2, #5b6a64); }
 .bc-label { font-weight: 600; margin: 4px 0 0; display: block; }
-.bc-question { font-size: var(--fs-lead, 18px); font-weight: 700; margin: 8px 0 0; }
+.bc-question { font-size: var(--fs-lead, 17px); font-weight: var(--fw-semi, 600); margin: 8px 0 0; }
 
 .bc-options { display: flex; flex-direction: column; gap: 8px; }
 .bc-option { justify-content: flex-start; text-align: left; white-space: normal; min-height: 56px; height: auto;
              padding-top: 8px; padding-bottom: 8px; }
 .bc-option__label { flex: 1; }
-.bc-option__meta { font-size: var(--fs-caption, 14px); color: var(--c-text-2, #5b6a64); font-weight: 400; }
-.bc-option--first { border-color: var(--c-brand, #176b4a); border-width: 2px; }
+.bc-option__meta { font-size: var(--fs-caption, 13px); color: var(--c-text-2, #5b6a64); font-weight: 400; }
+.bc-option--first { border-color: var(--c-brand, #152c26); border-width: 2px; }
 
-.bc-place { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 12px;
-            background: var(--c-paper, #f7f8f4); border-radius: var(--r-m, 12px); font-weight: 600; }
+.bc-place { display: flex; align-items: center; gap: 8px; margin: 0; padding: 0;
+            font-size: var(--fs-body, 15px); font-weight: var(--fw-semi, 600); }   /* строка с булавкой, без плашки (CLEAN_PASS №2) */
 
+.bc-field { display: grid; gap: 6px; }
 .bc-textarea { width: 100%; box-sizing: border-box; min-height: 112px; resize: vertical;
                font: inherit; font-size: 16px; /* ≥16 px: iOS не масштабирует страницу при вводе */
-               padding: 12px; border: 1px solid var(--c-line, #e4e9e3); border-radius: var(--r-m, 12px);
-               color: var(--c-ink, #152c26); background: var(--c-surface, #fff); }
+               padding: 12px 14px; border: 1px solid transparent; border-radius: var(--r-m, 10px);
+               color: var(--c-ink, #152c26); background: var(--c-fill, #eff1f2); }   /* заливка вместо рамки (CLEAN_PASS №3) */
+.bc-textarea:focus { border-color: var(--c-focus, #2f7fd6); background: var(--c-surface, #fff); }
 .bc-textarea:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 
 .bc-category { display: flex; flex-direction: column; gap: 8px; }
@@ -87,28 +92,41 @@
 .bc-cat-row .bk-chip { min-height: 48px; }   /* подсказанная категория — кнопка: зона нажатия 48 px (UX_BRIEF №2) */
 .bc-change { align-self: flex-start; }
 /* Сетка категорий — .bk-catgrid ui-kit R11 (своей сетки нет). Подсказанная моделью категория — рамкой бренда. */
-.bk-catgrid > button[data-suggested="true"] { border-color: var(--c-brand, #176b4a); }
+.bk-catgrid > button[data-suggested="true"] { border-color: var(--c-brand, #152c26); }
 
 .bc-send { margin-top: 4px; }
+/* Главная кнопка шага — одна, внизу шторки, прилипает при прокрутке (R11 CLEAN_PASS R09 №5). Белое поле вокруг —
+   чтобы текст под ней не просвечивал; срочный звонок 104/112 — в своём баннере, не прилипает. */
+.bc-panel:not([data-step="mine"]) .bc-body > .bk-btn--primary.bk-btn--block {
+  position: sticky; bottom: 0; z-index: 2; box-shadow: 0 0 0 8px var(--c-surface, #fff); }
+/* Последняя на шаге — белое и под ней: в нижнем отступе шторки не просвечивает прокрученное (после неё ничего нет). */
+.bc-panel:not([data-step="mine"]) .bc-body > .bk-btn--primary.bk-btn--block:last-child {
+  box-shadow: 0 0 0 8px var(--c-surface, #fff), 0 24px 0 8px var(--c-surface, #fff); }
 .bc-loading { display: flex; flex-direction: column; gap: 8px; }
 .bc-loading__text { color: var(--c-text-2, #5b6a64); }
 .bc-skel-line { height: 56px; border-radius: var(--r-m, 12px); }
 .bc-skel-card { height: 120px; border-radius: var(--r-l, 16px); }
 
 .bc-similar { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--r-l, 16px);
-              background: var(--c-paper, #f7f8f4); }
+              background: var(--c-paper, #f4f5f6); }
 .bc-similar__count { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 600; }
 .bc-similar__status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 
-.bc-code { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; font-size: var(--fs-lead, 18px); }
-.bc-code__value { font-size: 24px; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bc-code { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; font-size: var(--fs-lead, 17px); }
+.bc-code__value { font-size: var(--fs-title, 22px); letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .bc-nowrap { white-space: nowrap; }   /* номер «B-0007» не рвётся на дефисе */
 
 .bc-mine { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 .bc-mine__card { display: flex; flex-direction: column; gap: 6px; }
 .bc-mine__card > .bk-tag { align-self: flex-start; }   /* метка «Пример» — по тексту, не на всю ширину (R11 день 2 №9) */
 .bc-mine__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.bc-mine__cat { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.bc-mine__cat { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-lead, 17px); font-weight: var(--fw-semi, 600); }
+/* Статус один раз: точка + слово, под ним одна строка «Передано: … · осталось …» (CLEAN_PASS R09 №6). */
+.bc-mine__status { display: grid; gap: 2px; margin: 0; }   /* то же, что .bk-statusline ui-kit — и со старым ui-kit */
+.bc-mine__status > .bk-status { justify-self: start; }   /* старый ui-kit рисует статус «таблеткой» — по слову, не во всю ширину */
+.bc-mine__status .bk-statusline__note { padding-left: 18px; color: var(--c-text-2, #5b6a64); font-size: var(--fs-body, 15px); }
+.bc-mine__status .bc-deadline--warn, .bc-mine__status .bc-deadline--danger { font-weight: var(--fw-semi, 600); }
+.bc-more .bk-steps { margin: 4px 0 8px; }
 .bc-overdue { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--c-danger, #b3362e); font-weight: 600; }
 
 /* Центр без transform: анимация появления ui-kit (bk-rise) сама задаёт transform и сдвигала тост вправо. */
@@ -140,7 +158,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-photo-add { align-self: flex-start; }
 .bc-thumbs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .bc-thumb { position: relative; width: 72px; height: 72px; border-radius: var(--r-m, 12px); overflow: hidden;
-            background: var(--c-paper, #f7f8f4); border: 1px solid var(--c-line, #e4e9e3); }
+            background: var(--c-paper, #f4f5f6); border: 1px solid var(--c-line, #e8eaeb); }
 .bc-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .bc-thumb__remove { position: absolute; top: -2px; right: -2px; width: 44px; height: 44px; background: transparent; }
 .bc-thumb__remove .ic { width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: rgba(21, 44, 38, .75); color: #fff; }
@@ -149,70 +167,85 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 /* Экран проверки перед отправкой. */
 .bc-review { display: grid; grid-template-columns: minmax(80px, auto) 1fr; gap: 6px 12px; margin: 0; }
 .bc-review__row { display: contents; }
-.bc-review dt { color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 14px); padding-top: 2px; }
+.bc-review dt { color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 13px); padding-top: 2px; }
 .bc-review dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
 .bc-review__text { font-weight: 400; white-space: pre-wrap; }
 .bc-visibility { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: var(--r-m, 12px);
-                 background: var(--c-paper, #f7f8f4); }
+                 background: var(--c-paper, #f4f5f6); }
 .bc-visibility p { display: flex; gap: 8px; align-items: flex-start; margin: 0; }
 .bc-next { margin: 0; font-weight: 600; }
 .bc-metoo-caption { margin-top: -4px; text-align: center; }
 
 /* «Мои обращения»: что изменилось, проверка ремонта, состояние, «Подробнее». */
-.bc-changes { display: flex; flex-direction: column; gap: 6px; border-color: var(--c-brand, #176b4a); }
-.bc-changes__title { margin: 0; font-size: var(--fs-lead, 18px); font-weight: 700; }
+.bc-changes { display: flex; flex-direction: column; gap: 6px; border-color: var(--c-brand, #152c26); }
+.bc-changes__title { margin: 0; font-size: var(--fs-lead, 17px); font-weight: var(--fw-semi, 600); }
 .bc-changes__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .bc-changes__item { display: block; width: 100%; min-height: 44px; padding: 8px 0; border: 0; background: none;
                     text-align: left; font: inherit; color: inherit; cursor: pointer; }
 .bc-changes__item:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
-.bc-changes__item--focus { background: var(--c-accent-soft, #f1fbd3); border-radius: var(--r-s, 8px); padding-inline: 8px; }
+.bc-changes__item--focus { background: var(--c-accent-soft, #f1f4f3); border-radius: var(--r-s, 8px); padding-inline: 8px; }
 .bc-changes__more { align-self: flex-start; }
 /* «Ждут вашей проверки» — сверху экрана, пунктир = «служба сообщила», как на карте (heat_states.reported_fixed). */
 .bc-wait { display: flex; flex-direction: column; gap: 8px; border: 1px dashed var(--fixed, #639922); }
 .bc-wait__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
 .bc-verify { display: flex; flex-direction: column; gap: 8px; }
-.bc-verify + .bc-verify { padding-top: 12px; border-top: 1px solid var(--c-line, #e4e9e3); }
+.bc-verify + .bc-verify { padding-top: 12px; border-top: 1px solid var(--c-line, #e8eaeb); }
 .bc-verify p { margin: 0; }
 .bc-verify__place { display: flex; align-items: center; gap: 6px; }
 .bc-verify__reported { font-weight: 600; color: var(--c-ok, #2f6b12); }
-.bc-verify__question { font-weight: 700; font-size: var(--fs-lead, 18px); }
+.bc-verify__question { font-weight: var(--fw-semi, 600); font-size: var(--fs-lead, 17px); }
 .bc-verify__buttons { display: flex; flex-direction: column; gap: 8px; }
+.bc-link { align-self: center; min-height: 44px; padding: 8px 12px; border: 0; background: none; font: inherit;
+           font-weight: 600; color: var(--c-brand, #152c26); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.bc-link:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 /* Сроки в рабочих днях: цвет + слово (UX_SPEC §10). */
 .bc-deadline--warn { color: var(--c-warn, #8a5a12); font-weight: 600; }
-.bc-deadline--danger { color: var(--c-danger, #b3362e); font-weight: 700; }
+.bc-deadline--danger { color: var(--c-danger, #b3362e); font-weight: var(--fw-semi, 600); }
 .bc-assignee { margin: 0; }
 .bc-delay { margin: 0; }
 .bc-subs__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .bc-subs__item { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
 .bc-more summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600;
-                   color: var(--c-brand, #176b4a); }
+                   color: var(--c-brand, #152c26); }
 .bc-more summary:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 .bc-passport, .bc-updates { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
-.bc-mine__card--focus { box-shadow: 0 0 0 3px var(--c-accent, #d7f57c), var(--shadow-1, none); }
+.bc-mine__card--focus { box-shadow: 0 0 0 3px var(--c-focus, #2f7fd6), var(--shadow-1, none); }   /* не лайм (CLEAN_PASS №7) */
 .bc-mine__card--pending { border-style: dashed; }
-.bk-status[data-status="pending"] { color: var(--c-warn, #8a5a12); background: var(--c-warn-bg, #fff4dc); }
+.bk-status[data-status="pending"] { --dot: var(--c-warn, #8a5a12); color: var(--c-warn, #8a5a12); background: transparent; }   /* точка + слово, как остальные статусы */
 
 /* Компонент сотрудника (complaint-staff.js) — внутри карточки акимата, не поверх карты. */
 .bc-staff { display: flex; flex-direction: column; gap: 12px; }
 .bc-staff__summary { margin: 0; }
-.bc-staff__form { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px solid var(--c-line, #e4e9e3); }
+.bc-staff__form { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px solid var(--c-line, #e8eaeb); }
 .bc-staff__field { display: flex; flex-direction: column; gap: 4px; }
-.bc-staff__field input, .bc-staff__field select { min-height: 44px; padding: 8px 12px; font: inherit; font-size: 16px; border: 1px solid var(--c-line, #e4e9e3);
-                         border-radius: var(--r-m, 12px); }
+.bc-staff__field input, .bc-staff__field select { min-height: 44px; padding: 8px 12px; font: inherit; font-size: 16px; border: 1px solid transparent;
+                         border-radius: var(--r-m, 10px); background: var(--c-fill, #eff1f2); }
+.bc-staff__field input:focus, .bc-staff__field select:focus { border-color: var(--c-focus, #2f7fd6); background: var(--c-surface, #fff); }
 .bc-staff__note { margin: 0; min-height: 1.4em; font-weight: 600; color: var(--c-ok, #2f6b12); }
 .bc-staff__note--error { color: var(--c-danger, #b3362e); }
+.bc-staff__check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 600; }
+.bc-staff__check input { width: 22px; height: 22px; }
+.bc-staff__decision { display: flex; flex-direction: column; gap: 8px; padding-left: 12px;
+                      border-left: 3px solid var(--c-warn, #8a5a12); }
+.bc-staff__decision[hidden] { display: none; }
+.bc-staff__text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0; overflow-wrap: anywhere; }
+/* «Содержит грубые слова» — слово цветом опасности, без плашки (чистый дизайн R11). */
+.bc-tag--rude { color: var(--c-danger, #b3362e); background: transparent; padding: 0; font-size: var(--fs-caption, 13px); font-weight: var(--fw-semi, 600); }
+.bc-staff__fix-error { margin: 0; font-weight: 600; color: var(--c-danger, #b3362e); }
+.bc-staff .bc-thumb__remove { font-size: 22px; line-height: 1; color: #fff; text-shadow: 0 0 3px rgba(21, 44, 38, .9); }
 
 /* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01): список целей, вкладки, карточка действий. */
 .bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 960px; margin: 0 auto; }
 .bc-inbox__title { margin: 0; font-size: var(--fs-title, 22px); }
-.bc-inbox__tabs .bk-chip { min-height: 44px; }
-.bc-inbox__count { font-weight: 700; }
+.bc-inbox__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
+.bc-inbox__tabs .bk-chip { min-height: 44px; flex: 0 0 auto; white-space: nowrap; }
+.bc-inbox__count { font-weight: var(--fw-semi, 600); }
 .bc-inbox__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .bc-inbox__item { padding: 0; overflow: hidden; }
 .bc-inbox__row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 56px;
                  padding: 12px 16px; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
 .bc-inbox__row:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: -3px; }
 .bc-inbox__place { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.bc-inbox__item--open { box-shadow: 0 0 0 2px var(--c-brand, #176b4a); }
+.bc-inbox__item--open { box-shadow: 0 0 0 2px var(--c-brand, #152c26); }
 .bc-inbox__detail { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 16px; }
 .bc-inbox__map { align-self: flex-start; }

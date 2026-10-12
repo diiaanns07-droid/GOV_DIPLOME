@@ -248,6 +248,11 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        if ctype.startswith("text/html"):
+            # Как CSP сборки R01 (ui/web_server.py): fetch/XHR — только к своему серверу; blob: — для картинок и
+            # воркеров. Так стенд ловит то, что ловит приложение (R10 B-056: fetch(blob:) у сотрудника).
+            self.send_header("Content-Security-Policy",
+                             "connect-src 'self'; img-src 'self' data: blob:; worker-src 'self' blob:; child-src 'self' blob:")
         for key, value in (headers or {}).items():
             self.send_header(key, value)
         self.end_headers()
@@ -379,6 +384,9 @@ def main(argv=None):
     Handler.stand = Stand(db, ml=not args.no_ml, targets=not args.no_targets,
                           real_geo=args.real_geo, real_ml=args.real_ml)
     Handler.r11_dir = Path(args.r11) if args.r11 else None
+    if Handler.r11_dir is not None and not (Handler.r11_dir / "civic" / "ui-kit").is_dir() \
+            and (Handler.r11_dir / "web" / "civic" / "ui-kit").is_dir():
+        Handler.r11_dir = Handler.r11_dir / "web"   # дали корень репозитория R11 — берём его web (R11 разбор 5 №5)
     if args.seed:
         Handler.stand.seed()
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)

@@ -1377,6 +1377,36 @@
         btn.removeAttribute("aria-busy");
       }
     }
+    // R09 в карточке цели (волна 2, IA_WAVE2 §2.2–2.4), только у сотрудника:
+    //  - «Отметить исправленным» открывает форму R09 «Сообщить жителям» (что сделали + фото «после», «Увидят N человек»);
+    //    пока она открыта, кнопки карточки скрыты (одна главная кнопка);
+    //  - под кнопками — паспорт решения («Изменить» → 3 поля) и «Обновление для всех» R09 без своей главной кнопки.
+    // Перерисовка карточки (язык, новое событие) открывает их снова. Без R09 на странице — карточка как раньше.
+    function mountR09() {
+      const it = S.selected && findItem(S.selected);
+      const actions = panel.querySelector(".r07-actions");
+      const R09 = window.BirgeComplaintStaff;
+      if (!it || !actions || !R09 || !(it.open_ids || []).length) { S.fixFor = null; return; }
+      if (S.fixFor && S.fixFor === S.selected && typeof R09.fixForm === "function") {
+        actions.hidden = true;
+        const holder = document.createElement("div");
+        holder.className = "r07-fixform";
+        actions.after(holder);
+        R09.fixForm(holder, {
+          complaintIds: it.open_ids,
+          onDone: async () => { S.fixFor = null; toast(t("heat.toast_fixed")); await load("event"); },
+          onCancel: () => { S.fixFor = null; render(); },
+        });
+        return;
+      }
+      S.fixFor = null;
+      if (S.role === "akimat" && typeof R09.mount === "function") {
+        const box = document.createElement("div");
+        box.className = "r07-r09staff";
+        actions.after(box);
+        R09.mount(box, { complaintId: it.open_ids[0], fix: false, compact: true, staffOnly: true });
+      }
+    }
     async function metoo(it, btn) {
       const id = (it.open_ids || [])[0];
       if (!id) return;
@@ -1428,6 +1458,7 @@
       if (map) renderMapLegend(); else parts.push(legendHtml(false));
       panel.innerHTML = parts.join("");
       bindPanel();
+      mountR09();
       if (map) declutter();   // легенда могла сменить размер (язык, режим) — значки не должны оказаться под ней
     }
 
@@ -1735,7 +1766,13 @@
         const it = findItem(S.selected);
         if (!it) return;
         if (b.dataset.act === "take") void setStatus(it, "in_progress", b);
-        if (b.dataset.act === "fixed") void setStatus(it, "fixed", b);
+        if (b.dataset.act === "fixed") {
+          // R09 волна 2 (IA_WAVE2 §2.3, R11 разбор 9 №1): «что сделали» + фото «после» — форма R09 в этой же карточке.
+          // Без модуля R09 на странице — как раньше: сразу «исправлено».
+          if (window.BirgeComplaintStaff && typeof window.BirgeComplaintStaff.fixForm === "function" && (it.open_ids || []).length) {
+            S.fixFor = S.selected; render();
+          } else void setStatus(it, "fixed", b);
+        }
         if (b.dataset.act === "metoo") void metoo(it, b);
         if (b.dataset.act === "separate") void separate(it, b.dataset.item, b);
       }));

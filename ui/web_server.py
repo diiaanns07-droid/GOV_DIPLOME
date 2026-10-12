@@ -655,6 +655,7 @@ V2_ROUTES = (
     # R09 волны 1–2 (POLISH_WAVE, POLISH_WAVE_2): точные пути — раньше {id}.
     ("GET", ("complaints", "changes"), "complaints.changes"),
     ("GET", ("complaints", "inbox"), "complaints.inbox"),
+    ("GET", ("complaints", "merged"), "complaints.merged"),   # п. 9 (R04 + R09): что объединено с целью, сотрудник
     ("GET", ("complaints", "{id}"), "complaints.get"),
     ("POST", ("complaints", "{id}", "metoo"), "complaints.metoo"),
     ("POST", ("complaints", "{id}", "status"), "complaints.status"),
@@ -664,6 +665,7 @@ V2_ROUTES = (
     ("POST", ("complaints", "{id}", "update"), "complaints.update"),
     ("POST", ("complaints", "{id}", "unduplicate"), "complaints.unduplicate"),
     ("POST", ("complaints", "{id}", "unsubscribe"), "complaints.unsubscribe"),
+    ("POST", ("complaints", "{id}", "separate"), "complaints.separate"),   # п. 9: «Это разные проблемы», сотрудник
     ("POST", ("complaints", "{id}", "photos"), "complaints.photos.start"),
     # Фото частями (≤ 36 000 байт в части, тело ≈ 48 КБ < 64 КБ шлюза); второй {id} — u-… или p-….
     ("POST", ("complaints", "{id}", "photos", "{id}"), "complaints.photos.chunk"),
@@ -725,7 +727,8 @@ V2_HANDLERS = {
         "complaints.categories", "complaints.list", "complaints.create", "complaints.mine", "complaints.events",
         "complaints.summary", "complaints.place", "complaints.get", "complaints.metoo", "complaints.status",
         "complaints.duplicate", "complaints.changes", "complaints.inbox", "complaints.verify", "complaints.passport",
-        "complaints.update", "complaints.unduplicate", "complaints.unsubscribe", "complaints.photos.start",
+        "complaints.update", "complaints.unduplicate", "complaints.unsubscribe", "complaints.merged", "complaints.separate",
+        "complaints.photos.start",
         "complaints.photos.chunk", "complaints.photos.get")},
     **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta")},
     "heat.target": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", staff_view=True),

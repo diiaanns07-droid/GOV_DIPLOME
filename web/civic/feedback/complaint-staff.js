@@ -6,8 +6,10 @@
  *   ещё причина, временная мера, следующее обновление (п. 2);
  *   «Обновление для всех» — одно сообщение автору и всем «Я тоже» (п. 3). Перед действием — «Увидят N человек».
  *
- *   BirgeComplaintStaff.mount(container, { complaintId, csrf: "<токен R02>" | () => токен, onChange(complaint) })
+ *   BirgeComplaintStaff.mount(container, { complaintId, csrf: "<токен R02>" | () => токен, onChange(complaint),
+ *                                         fix: false (без «Отметить исправленным»), compact, staffOnly })
  *     -> { refresh(), destroy() }
+ *   BirgeComplaintStaff.fixForm(container, { complaintIds, csrf, onDone, onCancel }) — форма для карточки цели R07.
  * Тексты — словарь R11 (fix.*, passport.*, broadcast.*, service.*), запасной — complaint-strings.js.
  */
 (function () {
@@ -87,14 +89,26 @@
       return true;
     }
 
+    // Ошибка — прямо в форме, над кнопкой (внизу карточки её не видно, R10 B-056).
+    function fixError(form, text) {
+      var box = form.querySelector(".bc-staff__fix-error");
+      if (!text) { if (box) box.parentNode.removeChild(box); return; }
+      if (!box) {
+        box = h("p", { "class": "bc-staff__fix-error", role: "alert" });
+        form.insertBefore(box, form.querySelector("button[type=submit]"));
+      }
+      box.textContent = text;
+    }
+
     function markFixed(form) {
       var what = form.querySelector("[name=what_done]").value.trim();
-      if (what.length < 3) { note(t("staff.fixed.need_what"), true); return; }
+      if (what.length < 3) { fixError(form, t("staff.fixed.need_what")); return; }
       var button = form.querySelector("button[type=submit]");
       button.disabled = true;
-      // B-056 / R15: сам Blob из shrink(), без fetch(blob:…) — строгая CSP сборки (connect-src без blob:) его запрещает.
+      fixError(form, null);
+      // R10 B-056: фото — сам Blob после уменьшения, без fetch(blob:…) (CSP сборки: connect-src 'self').
       var upload = photo
-        ? window.BirgeComplaintPhotos.upload(id, photo.blob, "after", csrf())
+        ? window.BirgeComplaintPhotos.upload(id, photo.blob, "after", csrf()).then(null, function () { throw { photo: true }; })
         : Promise.resolve(null);
       upload.then(function (uploaded) {
         var steps = current && current.status === "new" ? call("POST", "/complaints/" + id + "/status", { status: "in_progress" })
@@ -107,10 +121,13 @@
         button.disabled = false;
         if (res && res.ok) {
           if (photo && photo.url) URL.revokeObjectURL(photo.url);
-          photo = null;
+          photo = null; done(res); return;
         }
-        done(res);
-      }, function () { button.disabled = false; note(t("complaint.error.send"), true); });
+        fixError(form, (res && res.error && res.error.message) || t("complaint.error.send"));
+      }, function (err) {
+        button.disabled = false;
+        fixError(form, t(err && err.photo ? "staff.photo.failed" : "complaint.error.send"));
+      });
     }
 
     function savePassport(form) {
@@ -118,6 +135,12 @@
       var body = { service: get("service"), next_step: get("next_step"), fix_eta: get("fix_eta") };
       if (form.querySelector("[name=delay_reason]")) {
         body.delay_reason = get("delay_reason"); body.temp_measure = get("temp_measure"); body.next_update_at = get("next_update_at");
+        // «Нужно решение руководителя» → блок R08 «Нужно решение акима» (волна 2 п. 5): два варианта и что нужно.
+        var needs = form.querySelector("[name=needs_decision]");
+        body.needs_decision = !!(needs && needs.checked);
+        if (body.needs_decision) {
+          body.option_1 = get("option_1"); body.option_2 = get("option_2"); body.decision = get("decision");
+        }
       }
       call("POST", "/complaints/" + id + "/passport", body).then(done);
     }
@@ -151,6 +174,12 @@
       if (d.reason) lines.push(t("passport.delay_reason", { text: d.reason }));
       if (d.temp_measure) lines.push(t("passport.temp_measure", { text: d.temp_measure }));
       if (d.next_update_at) lines.push(t("passport.next_update", { date: dateText(d.next_update_at) }));
+      if (d.needs_decision) {
+        lines.push(t("akim.decision.title") + (d.decision ? " · " + t("akim.decision.needed", { text: d.decision }) : ""));
+        (d.options || []).forEach(function (o, i) { lines.push(t("akim.decision.option", { n: i + 1, text: o.ru || o.kk || "" })); });
+        if ((d.options || []).length < 2) lines.push(t("akim.decision.no_options"));
+        if (p.decision_choice) lines.push(t("akim.decision.chosen", { n: p.decision_choice.option }));
+      }
       return h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); }));
     }
 
@@ -176,6 +205,15 @@
         fields.push(field(t("passport.field.reason"), reason),
                     field(t("passport.field.temp"), h("input", { name: "temp_measure", maxlength: "160", value: d.temp_measure || "" })),
                     field(t("passport.field.next_update"), next));
+        // Задержку не сдвинуть без руководителя: два варианта и что нужно от акима (R08 «Нужно решение акима»).
+        var opts = d.options || [];
+        var extra = h("div", { "class": "bc-staff__decision", hidden: d.needs_decision ? null : true }, [
+          field(t("passport.field.option", { n: 1 }), h("input", { name: "option_1", maxlength: "160", value: (opts[0] || {}).ru || "" })),
+          field(t("passport.field.option", { n: 2 }), h("input", { name: "option_2", maxlength: "160", value: (opts[1] || {}).ru || "" })),
+          field(t("passport.field.decision"), h("input", { name: "decision", maxlength: "160", value: d.decision || "" }))]);
+        var box = h("input", { type: "checkbox", name: "needs_decision", checked: d.needs_decision ? true : null });
+        box.addEventListener("change", function () { extra.hidden = !box.checked; });
+        fields.push(h("label", { "class": "bc-staff__check" }, [box, h("span", {}, t("passport.field.needs_decision"))]), extra);
       }
       var form = h("form", { "class": "bc-staff__form bc-staff__passport-form",
                              onsubmit: function (e) { e.preventDefault(); savePassport(form); } },
@@ -189,19 +227,29 @@
       var p = current.passport_view || {};
       var r = current.resolution || {};
       var shown = C().displayStatus ? C().displayStatus(current) : current.status;
-      root.appendChild(h("p", { "class": "bc-staff__summary" }, [
-        h("strong", {}, current.code + " · "), h("span", { "class": "bk-status", "data-status": shown }, t("status." + shown)),
-        " · ", t("mine.reporters", { n: current.reporters || 1 })]));
-      // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
-      root.appendChild(h("p", { "class": "bc-meta" }, C().categoryLabel(current.category) +
-        (current.subtopic ? " · " + C().subtopicLabel(current.category, current.subtopic) : "")));
+      // opts.compact (карточка цели R07): статус, число людей и категорию карточка уже показывает — не повторяем.
+      if (!opts.compact) {
+        root.appendChild(h("p", { "class": "bc-staff__summary" }, [
+          h("strong", {}, current.code + " · "), h("span", { "class": "bk-status", "data-status": shown }, t("status." + shown)),
+          " · ", t("mine.reporters", { n: current.reporters || 1 })]));
+        // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
+        root.appendChild(h("p", { "class": "bc-meta" }, C().categoryLabel(current.category) +
+          (current.subtopic ? " · " + C().subtopicLabel(current.category, current.subtopic) : "")));
+        // Текст жителя — оригинал, только акимату (staff_view); грубые слова — пометкой (п. 8, R10 B-064).
+        // В карточке цели R07 (compact) тексты показывает сама карточка («Что пишут жители»).
+        if (current.text) {
+          root.appendChild(h("p", { "class": "bc-staff__text" }, [h("span", {}, "«" + current.text + "»"),
+            current.moderation && current.moderation.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]));
+        }
+      }
       if (p.update_overdue) root.appendChild(h("p", { "class": "bc-overdue" }, t("passport.update_overdue")));
       if (r.state) root.appendChild(h("p", { "class": "bc-meta" }, t("staff.votes", {
         yes: (r.votes || {}).yes || 0, no: (r.votes || {}).no || 0, cant: (r.votes || {}).cant || 0 })));
       var willSee = t("fix.will_see", { n: current.subscribers || current.reporters || 1 });
 
       // 1) «Отметить исправленным» → форма «Сообщить жителям об устранении» — главное действие карточки.
-      if (isOpen() && !fixing) {
+      //    opts.fix === false — в карточке цели R07: там своя кнопка «Отметить исправленным» (открывает fixForm).
+      if (opts.fix !== false && isOpen() && !fixing) {
         root.appendChild(h("div", { "class": "bc-staff__form" }, [
           h("button", { "class": "bk-btn bk-btn--primary bk-btn--block bc-staff__open-fix", type: "button",
                         onclick: function () {
@@ -211,7 +259,7 @@
                         } }, t("heat.mark_fixed")),
           h("p", { "class": "bc-meta" }, willSee)]));
       }
-      if (isOpen() && fixing) {
+      if (opts.fix !== false && isOpen() && fixing) {
         var preview = h("ul", { "class": "bc-thumbs bc-thumbs--small" });
         var input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", "class": "bc-photo-input" });
         input.addEventListener("change", function () {
@@ -220,8 +268,11 @@
           window.BirgeComplaintPhotos.shrink(file).then(function (shrunk) {
             photo = shrunk;
             preview.innerHTML = "";
-            preview.appendChild(h("li", { "class": "bc-thumb" }, h("img", { src: shrunk.url, alt: "" })));
-          }, function () { note(t("complaint.photo.bad_type"), true); });
+            preview.appendChild(h("li", { "class": "bc-thumb" }, [h("img", { src: shrunk.url, alt: "" }),
+              h("button", { "class": "bk-iconbtn bc-thumb__remove", type: "button", "aria-label": t("complaint.photo.remove"),
+                            onclick: function () { photo = null; preview.innerHTML = ""; } }, "×")]));
+            input.value = "";
+          }, function () { fixError(input.form || input.parentNode, t("complaint.photo.bad_type")); });
         });
         var fixed = h("form", { "class": "bc-staff__form bc-staff__fix", onsubmit: function (e) { e.preventDefault(); markFixed(fixed); } }, [
           h("p", { "class": "bc-label" }, t("fix.title")),
@@ -256,14 +307,21 @@
 
     function refresh() {
       return call("GET", "/complaints/" + encodeURIComponent(id)).then(function (res) {
-        if (res.ok) { current = res.data.complaint; render(); }
+        // opts.staffOnly (карточка R07): не сотрудник (нет служебных полей) или ошибка — блока просто нет.
+        if (res.ok && opts.staffOnly && !(res.data.complaint && "subscribers" in res.data.complaint)) { root.hidden = true; return; }
+        if (res.ok) { current = res.data.complaint; root.hidden = false; render(); }
+        else if (opts.staffOnly) { root.hidden = true; }
         else { root.innerHTML = ""; root.appendChild(h("p", { "class": "bk-error" }, t("mine.error.title"))); }
       });
     }
 
     // Смена языка (в том числе после асинхронной загрузки словаря R11) — перерисовать подписи; открытая правка
     // паспорта закрывается без потери сохранённого (несохранённые поля — как после «Отмена»).
-    function onLang() { if (current) render(); }
+    function onLang() {
+      // Карточку R07 перерисовывают целиком: снятый со страницы блок отписывается сам (без утечки слушателей).
+      if (!root.isConnected) { window.removeEventListener("birge:lang", onLang); return; }
+      if (current) render();
+    }
     window.addEventListener("birge:lang", onLang);
     render();
     refresh();
@@ -273,5 +331,96 @@
     } };
   }
 
-  window.BirgeComplaintStaff = { mount: mount };
+  // ---------------------------------------------------------------- форма для карточки цели R07
+  // «Отметить исправленным» в карточке цели R07 (R11 разбор 9 №1, IA_WAVE2 §2.3): та же одна строка «что сделали»
+  // и фото «после», но для всех открытых обращений цели (R07 отмечает исправленными все open_ids).
+  //   BirgeComplaintStaff.fixForm(container, { complaintIds, csrf, onDone(results), onCancel() }) -> { destroy() }
+  function fixForm(container, opts) {
+    opts = opts || {};
+    var ids = (opts.complaintIds || []).filter(Boolean);
+    var csrf = function () {
+      if (typeof opts.csrf === "function") return opts.csrf() || "";
+      if (opts.csrf) return opts.csrf;
+      var shell = window.CivicShell;
+      return shell && typeof shell.csrfToken === "function" ? (shell.csrfToken() || "") : "";
+    };
+    var photo = null;
+    function post(path, body) {
+      return fetch(API + path, { method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "Accept": "application/json", "X-CSRF-Token": csrf() },
+        body: JSON.stringify(body) }).then(function (r) {
+          return r.json().catch(function () { return null; }).then(function (j) {
+            if (!r.ok || !j || j.ok === false) { var e = new Error("HTTP " + r.status); e.status = r.status; e.body = j; throw e; }
+            return j.data;
+          });
+        });
+    }
+    var what = h("input", { name: "what_done", maxlength: "120", required: true, placeholder: t("staff.fixed.what_hint") });
+    var preview = h("ul", { "class": "bc-thumbs bc-thumbs--small" });
+    var input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", "class": "bc-photo-input" });
+    var error = h("p", { "class": "bc-staff__fix-error", role: "alert", hidden: true });
+    var send = h("button", { "class": "bk-btn bk-btn--primary bk-btn--block", type: "submit" }, t("fix.send"));
+    // «Увидят N человек» до действия (R11 §2.3): автор и «Я тоже» всех открытых обращений цели.
+    var willSee = h("p", { "class": "bc-meta bc-fixform__will-see", hidden: true });
+    Promise.all(ids.map(function (cid) {
+      return fetch(API + "/complaints/" + encodeURIComponent(cid), { credentials: "same-origin", headers: { "Accept": "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+          var c = j && j.data && j.data.complaint;
+          return c && typeof c.subscribers === "number" ? c.subscribers : 0;
+        }, function () { return 0; });
+    })).then(function (counts) {
+      var n = counts.reduce(function (a, b) { return a + b; }, 0);
+      if (n > 0) { willSee.textContent = t("fix.will_see", { n: n }); willSee.hidden = false; }
+    });
+    var form = h("form", { "class": "bc-staff bc-staff__form bc-staff__fix bc-fixform" }, [
+      h("p", { "class": "bc-label" }, t("fix.title")),
+      h("label", { "class": "bc-staff__field" }, [h("span", { "class": "bc-label" }, t("fix.what_done")), what]),
+      input,
+      h("button", { "class": "bk-btn", type: "button", onclick: function () { input.click(); } }, t("fix.photo")),
+      preview, error, send, willSee,
+      h("button", { "class": "bc-link", type: "button", onclick: function () { destroy(); if (opts.onCancel) opts.onCancel(); } },
+        t("common.action.cancel"))]);
+    function fail(text) { error.textContent = text; error.hidden = false; send.disabled = false; }
+    input.addEventListener("change", function () {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      window.BirgeComplaintPhotos.shrink(file).then(function (shrunk) {
+        photo = shrunk;
+        preview.innerHTML = "";
+        preview.appendChild(h("li", { "class": "bc-thumb" }, [h("img", { src: shrunk.url, alt: "" }),
+          h("button", { "class": "bk-iconbtn bc-thumb__remove", type: "button", "aria-label": t("complaint.photo.remove"),
+                        onclick: function () { photo = null; preview.innerHTML = ""; } }, "×")]));
+        input.value = "";
+      }, function () { fail(t("complaint.photo.bad_type")); });
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var text = what.value.trim();
+      if (text.length < 3) { fail(t("staff.fixed.need_what")); return; }
+      send.disabled = true; error.hidden = true;
+      var results = [];
+      // По очереди: фото «после» каждому обращению цели (его жители проверяют своё), затем «исправлено».
+      ids.reduce(function (chain, id) {
+        return chain.then(function () {
+          var up = photo ? window.BirgeComplaintPhotos.upload(id, photo.blob, "after", csrf())
+            .then(null, function () { throw { photo: true }; }) : Promise.resolve(null);
+          return up.then(function (uploaded) {
+            return post("/complaints/" + encodeURIComponent(id) + "/status",
+                        { status: "fixed", what_done: text, photos: uploaded ? [uploaded.id] : [] });
+          }).then(function (data) { results.push(data); });
+        });
+      }, Promise.resolve()).then(function () {
+        destroy();
+        if (opts.onDone) opts.onDone(results);
+      }, function (err) {
+        fail(t(err && err.photo ? "staff.photo.failed" : "complaint.error.send"));
+      });
+    });
+    function destroy() { if (form.parentNode) form.parentNode.removeChild(form); }
+    container.appendChild(form);
+    what.focus();
+    return { destroy: destroy };
+  }
+
+  window.BirgeComplaintStaff = { mount: mount, fixForm: fixForm };
 })();

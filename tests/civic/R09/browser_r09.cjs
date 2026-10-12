@@ -19,7 +19,9 @@ function loadPlaywright() {
 const { chromium } = loadPlaywright();
 const ROOT = path.resolve(__dirname, "../../..");
 const args = process.argv.slice(2);
-// --r11 <папка с web/civic/ui-kit и web/civic/i18n R11>: стенд подключает настоящий ui-kit и словари R11.
+// --r11 <папка WEB ветки R11, в ней civic/ui-kit и civic/i18n>: стенд подключает настоящий ui-kit и словари R11.
+//   Например: git archive origin/claude/r14-R11 web/civic/ui-kit web/civic/i18n | tar -x -C /tmp/r11 → --r11 /tmp/r11/web
+//   (корень репозитория вместо web — стенд без стилей и ложные FAIL, R11 разбор 5 №5).
 const r11Dir = args.includes("--r11") ? path.resolve(args[args.indexOf("--r11") + 1]) : null;
 // --real: стенд вызывает настоящие R12 engine.civic_geo и R04 ui.civic_ml_api (их пакеты должны лежать в дереве).
 const real = args.includes("--real");
@@ -161,7 +163,8 @@ async function checkGridWords(page, tag) {
         res.count === 12 && res.broken.length === 0 && res.columns >= 1 && res.columns <= 3, res.broken.join(", "));
 }
 
-// UX_BRIEF №2: в панели жалобы текст не мельче 14 px, кнопки и поля не ниже 44 px (ui-kit даёт 48).
+// UX_BRIEF №2: в панели жалобы текст не мельче 13 px (шкала чистого дизайна 13/15/17/22/28 — решение владельца 12 окт,
+// R11 CLEAN_PASS §4: порог «мелкий текст» < 13 px, было 14), кнопки и поля не ниже 44 px (ui-kit даёт 48).
 async function uxSizes(page) {
   return page.evaluate(() => {
     const bad = [];
@@ -169,7 +172,7 @@ async function uxSizes(page) {
       const r = n.getBoundingClientRect();
       if (!r.width || getComputedStyle(n).visibility === "hidden") return;
       const own = [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim());
-      if (own && parseFloat(getComputedStyle(n).fontSize) < 14) bad.push("text " + n.textContent.trim().slice(0, 24) + " " + getComputedStyle(n).fontSize);
+      if (own && parseFloat(getComputedStyle(n).fontSize) < 13) bad.push("text " + n.textContent.trim().slice(0, 24) + " " + getComputedStyle(n).fontSize);
       if (/^(BUTTON|A|INPUT|TEXTAREA)$/.test(n.tagName) && r.height < 44) bad.push("tap " + n.textContent.trim().slice(0, 24) + " " + Math.round(r.height));
     });
     return bad;
@@ -242,7 +245,7 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
     inText: (c.textContent.match(/✓/g) || []).length, before: getComputedStyle(c, "::before").content }));
   check(`${tag}: [R11-6] одна галочка в чипе категории`, ticks.inText === 0 && /✓/.test(ticks.before), JSON.stringify(ticks));
   const sizes3 = await uxSizes(page);
-  check(`${tag}: [UX] шаг 3 — текст ≥ 14 px, кнопки ≥ 44 px`, sizes3.length === 0, sizes3.join("; "));
+  check(`${tag}: [UX] шаг 3 — текст ≥ 13 px, кнопки ≥ 44 px`, sizes3.length === 0, sizes3.join("; "));
   const chip = await page.textContent(".bc-cat-row");
   check(`${tag}: подсказка категории чипом`, lang === "kk" ? /Аялдамалар мен көлік/.test(chip) : /Остановки и транспорт/.test(chip), chip.trim());
   await shot(page, `${tag}-3-text`);
@@ -282,7 +285,7 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
     JSON.stringify(events));
   await shot(page, `${tag}-5-done`);
   const sizes5 = await uxSizes(page);
-  check(`${tag}: [UX] шаг 5 — текст ≥ 14 px, кнопки ≥ 44 px`, sizes5.length === 0, sizes5.join("; "));
+  check(`${tag}: [UX] шаг 5 — текст ≥ 13 px, кнопки ≥ 44 px`, sizes5.length === 0, sizes5.join("; "));
   check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(page));
   const keys = await visibleKeys(page);
   check(`${tag}: нет ключей и технических слов`, keys.length === 0, keys.join(", "));
@@ -624,7 +627,8 @@ async function phoneLayout(browser, base, hot, lang, tag) {
   await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
   const due = await page.$$eval(".bc-panel .bc-next", (n) => n.map((x) => x.textContent).join(" | "));
   // Волна 2: срок ответа — в строке «Дальше: …» (complaint.step5.next), дата в общем формате (R11 №10).
-  const months = lang === "kk" ? /Әрі қарай: қызмет \d{1,2}\u00a0(қаңтар|ақпан|наурыз|сәуір|мамыр|маусым|шілде|тамыз|қыркүйек|қазан|қараша|желтоқсан)/
+  // kk — текст словаря R11 b06020a: «Әрі қарай: қызмет жауабының мерзімі — 15 қазан».
+  const months = lang === "kk" ? /Әрі қарай: қызмет (жауабының мерзімі — )?\d{1,2}\u00a0(қаңтар|ақпан|наурыз|сәуір|мамыр|маусым|шілде|тамыз|қыркүйек|қазан|қараша|желтоқсан)/
     : /Дальше: служба ответит до \d{1,2}\u00a0(янв|фев|мар|апр|мая|июн|июл|авг|сен|окт|ноя|дек)/;
   check(`${tag}: [R11 №10/B1 №10] срок ответа — «Дальше: …» и общий формат даты`, months.test(due), due);
   const ticks = await page.$eval(".bc-panel .bk-steps", (l) => (l.textContent.match(/✓/g) || []).length);
@@ -811,7 +815,7 @@ async function waveWizard(browser, base, lang, width, height, tag, point) {
   check(`${tag}: [W1-5] фото добавлено: миниатюра, счётчик «1 из 3», «увидит только служба»`,
         photoUi.thumbs === 1 && /1/.test(photoUi.add) && (lang === "kk" ? /қызметкер/.test(photoUi.hint) : /только сотрудники/.test(photoUi.hint)), JSON.stringify(photoUi));
   const sizes = await uxSizes(page);
-  check(`${tag}: [UX] шаг 3 с баннером, уточнением и фото — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: [UX] шаг 3 с баннером, уточнением и фото — текст ≥ 13 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
   const primaries = await page.$$eval(".bc-panel .bk-btn--primary", (n) => n.map((b) => b.className));
   check(`${tag}: [защита п.4, UX_SPEC §10] одна главная кнопка — звонок 104, «Далее» второстепенная`,
         primaries.length === 1 && /bc-emergency__call/.test(primaries[0]), primaries.join(" | "));
@@ -953,10 +957,23 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   await staff.click(".bc-staff__edit");
   const delayFields = await staff.$$eval(".bc-staff__passport-form [name]", (n) => n.map((x) => x.name + (x.required ? "*" : "")));
   check(`${tag}: [W2-2/§2.3] при задержке — ещё причина, мера, дата обновления (обязательна) · служб ${options - 1}`,
-        delayFields.join() === "service,next_step,fix_eta,delay_reason,temp_measure,next_update_at*" && options === 21, delayFields.join());
+        delayFields.join().startsWith("service,next_step,fix_eta,delay_reason,temp_measure,next_update_at*,needs_decision") && options === 21,
+        delayFields.join());
   await staff.fill("[name=temp_measure]", lang === "kk" ? "Уақытша шам қойылды" : "Поставили временный фонарь");
+  // R08 «Нужно решение акима» (волна 2 п. 5): отметка открывает 2 варианта и «что нужно от акима».
+  const hiddenBefore = await staff.$eval(".bc-staff__decision", (n) => n.hidden);
+  await staff.check("[name=needs_decision]");
+  await staff.fill("[name=option_1]", lang === "kk" ? "Әкімдік есебінен ауыстыру" : "Заменить за счёт акимата");
+  await staff.fill("[name=option_2]", lang === "kk" ? "Электр желілеріне беру" : "Передать электросетям");
+  await staff.fill("[name=decision]", lang === "kk" ? "Кім төлейтінін таңдау" : "Выбрать, кто платит");
   await staff.click(".bc-staff__passport-form button[type=submit]");
   await staff.waitForSelector(".bc-staff__edit", { timeout: 8000 });
+  const decided = (await staff.textContent(".bc-staff .bc-passport")).replace(/\s+/g, " ");
+  const stored = (await staffApi(base, "GET", `/complaints/${id}`)).data.complaint.passport.delay;
+  check(`${tag}: [R08 п.5] «Нужно решение руководителя»: поля скрыты до отметки, 2 варианта и «что нужно» сохранены`,
+        hiddenBefore && stored.needs_decision === true && stored.options.length === 2 && !!stored.decision &&
+        (lang === "kk" ? /Әкімнің шешімі керек/.test(decided) && /1-нұсқа/.test(decided) : /Нужно решение акима/.test(decided) && /Вариант 2: Передать электросетям/.test(decided)),
+        decided.slice(0, 160));
   await staff.fill("[name=text]", lang === "kk" ? "Көтергіш сәрсенбіде келеді" : "Подъёмник приедет в среду");
   await staff.click(".bc-staff__broadcast button[type=submit]");
   await staff.waitForFunction(() => !document.querySelector("[name=text]").value, null, { timeout: 8000 });
@@ -1056,6 +1073,7 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
              items: document.querySelectorAll(".bc-changes__item").length,
              passport: [...card.querySelectorAll(".bc-passport li")].map((n) => n.textContent),
              updates: (card.querySelector(".bc-updates") || {}).textContent || "",
+             history: [...card.querySelectorAll(".bc-history li")].map((n) => n.dataset.kind),
              primaries: [...document.querySelectorAll(".bc-panel .bk-btn--primary")].map((b) => b.className),
              open: !!card.querySelector("details[open]") };
   });
@@ -1066,6 +1084,9 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
         mine.open && (lang === "kk" ? /Келесі қадам: Тіректердегі шамдарды ауыстыру/.test(pl) && /Түзету: шамамен 20/.test(pl)
                                     : /Следующий шаг: Заменить лампы на опорах/.test(pl) && /Устранение: ориентир 20/.test(pl)), pl);
   check(`${tag}: [W2-3] обновление службы и история видны автору`, lang === "kk" ? /сәрсенбіде/.test(mine.updates) : /Подъёмник приедет в среду/.test(mine.updates), mine.updates.slice(0, 200));
+  check(`${tag}: [R10 W2-2] «История»: сообщили → … → служба сообщила → вернули → служба сообщила (${mine.history.length} шагов)`,
+        mine.history[0] === "created" && mine.history.includes("reopened") && mine.history.filter((k) => k === "fixed").length === 2 &&
+        mine.history.indexOf("reopened") > mine.history.indexOf("fixed"), mine.history.join(","));
   check(`${tag}: [защита п.4] на экране одна главная кнопка — «Да, исправлено» в «Ждут вашей проверки»`,
         mine.primaries.length === 1 && /bc-verify__yes/.test(mine.primaries[0]), mine.primaries.join(" | "));
   await shot(pageA, `${tag}-mine-changes`);
@@ -1081,7 +1102,7 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   check(`${tag}: нет ключей и технических слов`, (await visibleKeys(pageA)).length === 0, (await visibleKeys(pageA)).join(", "));
   check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(pageA));
   const sizes = await uxSizes(pageA);
-  check(`${tag}: [UX] «Мои обращения» — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: [UX] «Мои обращения» — текст ≥ 13 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
   check(`${tag}: нет ошибок консоли`, pageA.problems.length === 0, pageA.problems.join(" | "));
   await pageA.context().close();
 }
@@ -1125,23 +1146,42 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
       const r = n.getBoundingClientRect();
       if (!r.width || getComputedStyle(n).display === "none") return;
       const own = [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim());
-      if (own && parseFloat(getComputedStyle(n).fontSize) < 14) bad.push("text " + n.textContent.trim().slice(0, 24));
+      if (own && parseFloat(getComputedStyle(n).fontSize) < 13) bad.push("text " + n.textContent.trim().slice(0, 24));
       if (/^(BUTTON|A|INPUT|SELECT)$/.test(n.tagName) && r.height < 44) bad.push("tap " + (n.name || n.textContent.trim().slice(0, 24)) + " " + Math.round(r.height));
     });
     return bad;
   });
-  check(`${tag}: [UX] «Обращения» — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: [UX] «Обращения» — текст ≥ 13 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  // Вкладки — одним рядом с прокруткой внутри ряда (R11 разбор 5 №4в); страница вбок не прокручивается.
+  const tabsRow = await page.$$eval(".bc-inbox__tab", (n) => new Set(n.map((b) => Math.round(b.getBoundingClientRect().top))).size);
+  check(`${tag}: [R11 5 №4в] 5 вкладок одним рядом`, tabsRow === 1, String(tabsRow));
   check(`${tag}: нет горизонтальной прокрутки`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1 &&
-        [...document.querySelectorAll(".bc-inbox *")].every((n) => { const r = n.getBoundingClientRect(); return !r.width || r.right <= innerWidth + 1; })));
+        [...document.querySelectorAll(".bc-inbox *")].filter((n) => !n.closest(".bc-inbox__tabs"))
+          .every((n) => { const r = n.getBoundingClientRect(); return !r.width || r.right <= innerWidth + 1; })));
   await shot(page, `${tag}-inbox`);
   // Сотрудник сообщает об устранении прямо из списка → группа уходит во «Ждут проверки».
   await page.click(".bc-inbox__item--open .bc-staff__open-fix");
   await page.fill(".bc-inbox__item--open [name=what_done]", lang === "kk" ? "Шұңқыр жамалды" : "Заделали яму");
+  // R10 B-056: фото «после» под CSP сборки (connect-src 'self') и сбой загрузки — сообщение в форме, ничего не отмечено.
+  await page.setInputFiles(".bc-inbox__item--open .bc-photo-input", { name: "after.jpg", mimeType: "image/jpeg", buffer: await exifJpeg(page, 640, 480) });
+  await page.waitForSelector(".bc-inbox__item--open .bc-thumb img", { timeout: 8000 });
+  await page.route("**/photos", (route) => route.abort());
+  await page.click(".bc-inbox__item--open .bc-staff__fix button[type=submit]");
+  const failed = await page.waitForSelector(".bc-inbox__item--open .bc-staff__fix-error", { timeout: 8000 }).then(async (e) => (await e.textContent()).trim(), () => "");
+  const still = (await deviceApi(base, "GET", `/complaints/${made.data.complaint.id}`, null, "dev-r09-inbox-stranger-1")).data.complaint.status;
+  const enabled = await page.$eval(".bc-inbox__item--open .bc-staff__fix button[type=submit]", (b) => !b.disabled);
+  check(`${tag}: [B-056] фото не загрузилось — «${failed.slice(0, 40)}…», кнопка доступна, обращение не отмечено`,
+        (lang === "kk" ? /Фото жүктелмеді/.test(failed) : /Фото не загрузилось/.test(failed)) && enabled && still !== "fixed", still);
+  await page.unroute("**/photos");
+  page.problems = page.problems.filter((p) => !/photos|ERR_FAILED|Failed to load/.test(p));   // обрыв подставлен тестом
   await page.click(".bc-inbox__item--open .bc-staff__fix button[type=submit]");
   await page.waitForFunction(() => !document.querySelector(".bc-inbox__item--open [name=what_done]"), null, { timeout: 15000 });
   await page.click(".bc-inbox__tab[data-tab='waiting_check']");
   const moved = await page.waitForSelector(`.bc-inbox__row[data-key="${key}"]`, { timeout: 8000 }).then(() => true, () => false);
   check(`${tag}: [§2.5] после «Сообщить жителям» — во вкладке «Ждут проверки»`, moved);
+  const withPhoto = (await staffApi(base, "GET", `/complaints/${made.data.complaint.id}`)).data.complaint;
+  check(`${tag}: [B-056] фото «после» дошло с повторной попытки (CSP connect-src 'self')`,
+        ((withPhoto.resolution || {}).photos_after || []).length === 1, JSON.stringify((withPhoto.resolution || {}).photos_after));
   // Пример (demo) — только просмотр, без формы (как карточка R07).
   await page.click(".bc-inbox__tab[data-tab='new']");
   const demoRow = await page.$(".bc-inbox__item .bk-tag--demo");

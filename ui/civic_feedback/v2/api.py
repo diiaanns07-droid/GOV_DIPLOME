@@ -26,6 +26,8 @@ handle(...) возвращает None для чужих путей — шлюз 
   GET  /complaints/{id}/photos/{photo}   фото data:URL — акимат; автор — свои и «после»; «Я тоже» — «после»
   POST /complaints/{id}/status           + what_done, photos при status=fixed («служба сообщила об устранении»)
   POST /complaints/{id}/unsubscribe      «Отписаться» от «Я тоже» (голос остаётся, обновлений нет)
+  GET  /complaints/merged?target_id      что объединено с жалобами цели: дубли и «Я тоже» с текстом (сотрудник, R04)
+  POST /complaints/{id}/separate         «Это разные проблемы»: id дубля (c-…) или «Я тоже» (mt-…) (сотрудник, R04)
   GET  /complaints/inbox?tab=            акимат: цели с открытыми обращениями по вкладкам (new, in_progress,
                                          waiting_check, overdue, reopened) — экран «Обращения» (#complaints)
 """
@@ -153,7 +155,7 @@ class ComplaintsV2Service:
             return need(("GET", "POST"), self._list if method in ("GET", "HEAD") else self._create)
         if len(parts) == 2:
             special = {"mine": self._mine, "events": self._events, "summary": self._summary, "place": self._place,
-                       "changes": self._changes, "inbox": self._inbox}
+                       "changes": self._changes, "inbox": self._inbox, "merged": self._merged}
             if parts[1] in special:
                 return need(("GET",), special[parts[1]])
             return need(("GET",), self._detail, parts[1])
@@ -161,7 +163,7 @@ class ComplaintsV2Service:
             action = {"metoo": self._metoo, "status": self._status, "duplicate": self._duplicate,
                       "verify": self._verify, "passport": self._passport, "update": self._update,
                       "unduplicate": self._unduplicate, "photos": self._photo_start,
-                      "unsubscribe": self._unsubscribe}.get(parts[2])
+                      "unsubscribe": self._unsubscribe, "separate": self._separate}.get(parts[2])
             if action:
                 return need(("POST",), action, parts[1])
         if len(parts) == 4 and parts[2] == "photos":
@@ -257,6 +259,8 @@ class ComplaintsV2Service:
         view["relation"] = relation
         view["resolution"] = lifecycle.participant_resolution(record)
         view["passport"] = lifecycle.passport_view(record, self.store._now(), self.store.assignee_lookup)
+        view["passport"].pop("decision_choice", None)   # выбор акима — служебное (R15-S28: кто выбрал — не наружу)
+        view["history"] = lifecycle.history(record)
         # Обновления без имён сотрудников: «что сделали», следующий шаг, сообщения службы.
         view["updates"] = [{"at": u["at"], "kind": u["kind"], "text": u.get("text")} for u in record.get("updates") or []]
         view["can_verify"] = bool(device) and self.store.can_verify(record["id"], device)
@@ -268,7 +272,9 @@ class ComplaintsV2Service:
         view["reporters"] = rec.reporters(record)
         now = self.store._now()
         view["heat_state"] = lifecycle.heat_state(record, now)
-        view["passport_view"] = lifecycle.passport_view(record, now, self.store.assignee_lookup)
+        view["passport_view"] = lifecycle.passport_view(record, now, self.store.assignee_lookup,
+                                                        getattr(self.store, "decision_lookup", None))
+        view["history"] = lifecycle.history(record)
         view["deadline"] = lifecycle.deadline(record, now)
         # «Увидят N человек» до действия (R11 §2.3: fix.will_see) — автор и «Я тоже» без «Отписаться».
         view["subscribers"] = self.store.subscribers(record["id"])
@@ -358,7 +364,7 @@ class ComplaintsV2Service:
 
     def _metoo(self, complaint_id, *, params, body, principal, context):
         data = self._json(body)
-        record, result = self.store.metoo(complaint_id, self._device(context, data))
+        record, result = self.store.metoo(complaint_id, self._device(context, data), note=data.get("note"))
         return _ok(200, {"result": result, "complaint": self._public(record)})
 
     def _status(self, complaint_id, *, params, body, principal, context):
@@ -382,7 +388,25 @@ class ComplaintsV2Service:
         since = params.get("since") or None
         if since and rec.parse_iso(since) is None:
             raise ApiError(422, "invalid", "Неверная дата.", {"since": "ISO-дата"})
-        return _ok(200, self.store.changes(self._device(context), since))
+        data = self.store.changes(self._device(context), since)
+        # Подписки «Рядом» (R08, волна 2 п. 4): их обновления — в том же «Что изменилось» (R10 W2-4).
+        nearby = self._nearby_updates(self._device(context), since)
+        if nearby:
+            data["items"] = sorted(data["items"] + nearby, key=lambda e: e.get("at") or "", reverse=True)
+        return _ok(200, data)
+
+    def _nearby_updates(self, device, since) -> list[dict]:
+        lookup = getattr(self.store, "nearby_lookup", None)
+        if lookup is None or not device:
+            return []
+        try:
+            found = lookup(device, since) or []
+        except Exception:  # noqa: BLE001 — «Рядом» R08 недоступен: «Что изменилось» по своим жалобам
+            LOGGER.warning("nearby updates unavailable", exc_info=True)
+            return []
+        return [{"id": "nearby." + str(item.get("id")), "kind": "nearby", "at": item.get("updated_at"),
+                 "tab": item.get("tab"), "title_ru": item.get("title_ru"), "title_kk": item.get("title_kk"),
+                 "demo": bool(item.get("demo"))} for item in found if item.get("updated_at")][:20]
 
     def _inbox(self, *, params, body, principal, context):
         """Акимат · «Обращения»: цели с открытыми обращениями по вкладкам (R11 IA_WAVE2 §2.5, R01 #complaints)."""
@@ -395,6 +419,22 @@ class ComplaintsV2Service:
         data = lifecycle.inbox(records, self.store._now(), tab)
         data["tab"] = tab
         return _ok(200, data)
+
+    # ------------------------------------------------------------ «Это разные проблемы» (п. 9, R04 + R09)
+    def _merged(self, *, params, body, principal, context):
+        if not _is_staff(principal):  # тексты жителей — только акимату (чтение: без CSRF, как список)
+            raise ApiError(403, "forbidden", "Действие доступно только сотрудникам акимата.")
+        target_id = params.get("target_id") or ""
+        if not target_id or len(target_id) > 100:
+            raise ApiError(422, "invalid", "Не указана цель.", {"target_id": "id объекта, участка или двора"})
+        items = self.store.merged(target_id)
+        return _ok(200, {"items": items, "count": len(items)})
+
+    def _separate(self, item_id, *, params, body, principal, context):
+        self._require_staff(principal, context)
+        separated, original = self.store.separate(item_id, actor=_actor(principal))
+        return _ok(200, {"complaint": self._staff(separated),
+                         "original": self._staff(original) if original else None})
 
     def _unsubscribe(self, complaint_id, *, params, body, principal, context):
         data = self._json(body)

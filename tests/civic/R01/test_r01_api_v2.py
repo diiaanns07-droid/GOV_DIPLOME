@@ -67,6 +67,8 @@ ROUTE_SAMPLES = [
     ("POST", "/complaints/c-1/update", "", {"text": "Бригада выехала"}),
     ("POST", "/complaints/c-1/unduplicate", "", {}),
     ("POST", "/complaints/c-1/unsubscribe", "", {}),
+    ("GET", "/complaints/merged", "target_id=osm-node-1", None),
+    ("POST", "/complaints/mt-1/separate", "", {}),
     ("POST", "/complaints/c-1/photos", "", {"kind": "resident", "size": 1000}),
     ("POST", "/complaints/c-1/photos/u-1", "", {"offset": 0, "data": ""}),
     ("GET", "/complaints/c-1/photos/p-1", "", None),

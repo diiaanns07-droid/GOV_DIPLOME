@@ -58,7 +58,7 @@ def test_every_key_used_in_code_exists():
     used = set(re.findall(r'\bt\("([a-z0-9_.]+)"', JS + STAFF_JS + LIST_JS))
     # t("status." + x) и т. п. — составные ключи; каждый вариант проверяется ниже.
     dynamic_prefixes = {"status.", "complaint.example.", "cat.", "emergency.service.", "service.", "subtopic.",
-                        "mine.passport.next_default.", "mine.update.", "inbox.tab."}
+                        "mine.passport.next_default.", "mine.update.", "inbox.tab.", "nearby.tab."}
     missing = sorted(k for k in used if k not in data["ru"] and k not in dynamic_prefixes)
     assert not missing, missing
     # Ключи, собираемые в коде из частей: status.<статус>, complaint.example.<категория>
@@ -81,6 +81,8 @@ def test_every_key_used_in_code_exists():
         assert "mine.passport.next_default." + status in data["ru"]
     for kind in ("fixed", "reopened", "passport", "note"):
         assert "mine.update." + kind in data["ru"]
+    for tab in ("now", "done", "planned", "outages"):                 # вкладки «Рядом» R08 (события подписок)
+        assert "nearby.tab." + tab in data["ru"]
 
 
 def test_placeholders_match_between_languages():
@@ -232,9 +234,12 @@ def test_seasonal_order_in_grid():
 
 def test_staff_component_has_one_primary_and_required_what_done():
     """Волна 2, п. 1: «Отметить исправленным» требует строку «что сделали»; главная кнопка одна."""
-    # Две главные кнопки в коде, но на экране одна: «Отметить исправленным» (форма свёрнута) или «Сообщить жителям».
-    assert STAFF_JS.count("bk-btn--primary") == 2
-    assert "if (isOpen() && !fixing) {" in STAFF_JS and "if (isOpen() && fixing) {" in STAFF_JS
+    # В коде три главные кнопки, на экране одна: «Отметить исправленным» (форма свёрнута) или «Сообщить жителям»;
+    # третья — в отдельной форме fixForm для карточки R07 (там кнопки карточки на время формы скрыты).
+    assert STAFF_JS.count("bk-btn--primary") == 3
+    assert "window.BirgeComplaintStaff = { mount: mount, fixForm: fixForm };" in STAFF_JS
+    assert "if (opts.fix !== false && isOpen() && !fixing) {" in STAFF_JS
+    assert "if (opts.fix !== false && isOpen() && fixing) {" in STAFF_JS
     assert re.search(r'name: "what_done", maxlength: String\(WHAT_DONE_MAX\), required: true', STAFF_JS)
     assert "var WHAT_DONE_MAX = 120;" in STAFF_JS                     # R11 §2.3: одна строка ≤ 120 знаков
     assert "staff.fixed.need_what" in STAFF_JS
@@ -270,3 +275,34 @@ def test_inbox_screen_contract_for_r01():
     assert "bk-btn--primary" not in LIST_JS            # главная кнопка — у карточки действий (одна на экран)
     from ui.civic_feedback.v2 import lifecycle
     assert list(lifecycle.INBOX_TABS) == ["new", "in_progress", "waiting_check", "overdue", "reopened"]
+
+
+def test_clean_pass_r11_r09_items():
+    """R11 CLEAN_PASS §3 R09 (чистый дизайн, решение владельца 12 окт): статус один раз, поле с заливкой,
+    прилипающая главная кнопка, точки шага — <i> ui-kit, без лайма и бежевого, два веса."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    kit = (WEB / "kit-fallback.css").read_text(encoding="utf-8")
+    # №1: точки шага рисует ui-kit только для <i> (.bk-wizard__dots > i)
+    assert 'track.appendChild(h("i", {' in JS and ".bk-wizard__dots > i" in kit
+    # №3: поле текста — .bk-field
+    assert '"class": "bk-field bc-field"' in JS and "field.appendChild(els.textarea)" in JS
+    # №5: главная кнопка шага прилипает к низу шторки
+    assert re.search(r"\.bc-body > \.bk-btn--primary\.bk-btn--block \{\s*position: sticky; bottom: 0;", css)
+    # №6: в карточке «Мои обращения» статус один раз (.bk-statusline), полоса этапов — в «Подробнее»
+    card = JS.split('list.appendChild(h("li", { "class": "bk-card bc-mine__card"', 1)[1].split("body.appendChild(list)", 1)[0]
+    assert "statusLine(item)" in card and "stepsBar(" not in card and "statusBadge(" not in card
+    details = JS.split("function detailsBlock(item, open)", 1)[1].split("function historyText", 1)[0]
+    assert '"bk-details bc-more"' in details and "stepsBar(item)" in details
+    # №7 и правила 2, 4: ни лайма, ни бежевого, ни веса 700 в своих стилях
+    for text in (css, kit):
+        low = text.lower()
+        assert not any(c in low for c in ("#d7f57c", "#f1fbd3", "#f7f8f4", "#f1efe6")), "лайм/бежевый"
+        assert "font-weight: 700" not in text
+
+
+def test_inbox_shows_rude_mark_and_original_text():
+    """R10 B-064: «Обращения» — пометка moderation.rude (ключ R11, как в карточке R07) в строке и текст-оригинал в карточке."""
+    assert 'group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude"))' in LIST_JS
+    assert '"bc-staff__text"' in STAFF_JS and 'current.moderation && current.moderation.rude' in STAFF_JS
+    s = strings()
+    assert s["ru"]["moderation.rude"] == "Содержит грубые слова" and s["kk"]["moderation.rude"] == "Дөрекі сөздер бар"

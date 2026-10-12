@@ -98,11 +98,26 @@ async function step6(page, tag, width, lang, staff) {
   const take = await page.waitForSelector(".r07-card [data-act='take']", { timeout: 8000 }).then(() => true, () => false);
   if (take) { await page.click(".r07-card [data-act='take']"); await sleep(1500); }
   const fix = await page.waitForSelector(".r07-card [data-act='fixed']", { timeout: 8000 }).then(() => true, () => false);
-  if (fix) { await page.click(".r07-card [data-act='fixed']"); await sleep(2500); }
-  const word = lang === "kk" ? "Түзетілді" : "Исправлено";
+  let formUsed = false;
+  if (fix) {
+    await page.click(".r07-card [data-act='fixed']");
+    // С патчем R07_fix_form.patch кнопка карточки открывает форму R09: одна строка «что сделали» (+ фото «после»).
+    formUsed = await page.waitForSelector(".r07-fixform [name=what_done]", { timeout: 3000 }).then(() => true, () => false);
+    if (formUsed) {
+      check(`${tag}: шаг 6 — «Отметить исправленным» открывает форму R09 в карточке, кнопки карточки скрыты`,
+            await page.evaluate(() => document.querySelector(".r07-actions").hidden &&
+              document.querySelectorAll(".r07-card .bk-btn--primary").length === 1));
+      await page.fill(".r07-fixform [name=what_done]", lang === "kk" ? "Шам ауыстырылды" : "Заменили лампу");
+      await shot(page, `app-${tag}-6-fixform`);
+      await page.click(".r07-fixform button[type=submit]");
+    }
+    await sleep(2500);
+  }
+  // До R07 9e337dc карточка пишет «Исправлено», с ним — «Служба сообщила — ждёт проверки» (B-055): принимаем оба.
+  const word = lang === "kk" ? /Түзетілді|Қызмет хабарлады|түзетілгенін/ : /Исправлено|Служба сообщила/;
   const card = ((await page.textContent(".r07-card").catch(() => "")) || "").replace(/\s+/g, " ");
-  check(`${tag}: шаг 6 демо — акимат: «Взять в работу» → «Отметить исправленным» → «${word}»`,
-        logged && take && fix && card.includes(word), { logged, take, fix, card: card.slice(0, 160) });
+  check(`${tag}: шаг 6 демо — акимат: «Взять в работу» → «Отметить исправленным» → ${word}`,
+        logged && take && fix && word.test(card), { logged, take, fix, card: card.slice(0, 160) });
   await shot(page, `app-${tag}-6-fixed`);
   // Волна 2: раздел акимата «Обращения» (#complaints, R01 INTEGRATION §11.2) — экран R09 BirgeComplaintList.
   if (await page.evaluate(() => !!window.BirgeComplaintList && !!window.BirgeShell?.setSection)) {
@@ -128,6 +143,11 @@ async function step6(page, tag, width, lang, staff) {
         joined.length >= 1 && joined.every((c) => c.status === "reported_fixed") && !!ask, cards);
   await shot(page, `app-${tag}-6-mine`);
   if (!ask) return;
+  if (formUsed) {
+    const what = ((await page.textContent(".bc-wait")) || "").replace(/\s+/g, " ");
+    check(`${tag}: шаг 6 — житель видит, что сделали («${lang === "kk" ? "Шам ауыстырылды" : "Заменили лампу"}»)`,
+          what.includes(lang === "kk" ? "Шам ауыстырылды" : "Заменили лампу"), what.slice(0, 160));
+  }
   await page.click(".bc-wait .bc-verify__yes");
   const verified = await page.waitForSelector(".bc-mine__card .bk-status[data-status='verified']", { timeout: 8000 })
     .then(() => true, () => false);

@@ -43,6 +43,8 @@ REQUEST_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
 DISTRICT = re.compile(r"^[a-z][a-z0-9_-]{1,40}$")
 TEXT_MIN, TEXT_MAX = 3, 2000
 LABEL_MAX = 160
+# Вид объекта с карты R12 (traffic_signal, crossing, intersection, bus_stop, …) — для значка и подписи R07 (R10 B-063).
+OBJECT_KIND_RE = re.compile(r"^[a-z][a-z_]{0,31}$")
 CATEGORY_SOURCES = ("resident", "model", "staff")
 
 # Ячейка ~150 м там, где нет двора (CONTRACT §4: cell-<ix>-<iy>). ОБЩАЯ сетка с R07 (ui/civic_heat/geo.py) и
@@ -279,6 +281,23 @@ def distance_to_geometry_m(point, geometry) -> float | None:
     return None
 
 
+def _own_cell(point: list[float], lookup=None) -> dict:
+    """Ячейка «примерного места» у точки. Подпись — с карты R12, если он подключён: «Примерное место — проспект
+    Туран» (R11 разбор 5 №4б: подряд одинаковые «Примерное место» в «Обращениях» неразличимы); иначе общая."""
+    cell = cell_target(*point)
+    if lookup is None:
+        return cell
+    try:
+        found = lookup({"kind": cell["kind"], "id": cell["id"], "approximate": True})
+    except Exception:  # noqa: BLE001 — карта R12 недоступна: общая подпись
+        return cell
+    if isinstance(found, dict):
+        for name in ("label_ru", "label_kk"):
+            if isinstance(found.get(name), str) and found[name].strip():
+                cell[name] = found[name].strip()[:LABEL_MAX]
+    return cell
+
+
 def checked_target(target: dict, point: list[float], lookup=None) -> dict:
     """R15-S04/S12: цель, которой можно верить. Подписи — только с карты (R12), не из запроса жителя.
 
@@ -286,9 +305,9 @@ def checked_target(target: dict, point: list[float], lookup=None) -> dict:
     (подключает R01). Цель неизвестна карте или дальше TARGET_MAX_M от точки -> «примерное место» у точки.
     Без lookup подписи жителя не сохраняются (интерфейс покажет общее слово по виду цели).
     """
-    own_cell = cell_target(*point)
+    own_cell = _own_cell(point, lookup)
     if target["id"] == own_cell["id"]:
-        return own_cell  # «Другое место»: ячейка R09 у точки жителя, подписи — свои
+        return own_cell  # «Другое место»: ячейка у точки жителя (подпись с улицей — от R12, если он есть)
     clean = {"kind": target["kind"], "id": target["id"]}
     if target.get("approximate") is True:
         clean["approximate"] = True
@@ -313,6 +332,9 @@ def checked_target(target: dict, point: list[float], lookup=None) -> dict:
     for name in ("label_ru", "label_kk"):
         if isinstance(found.get(name), str) and found[name]:
             clean[name] = found[name][:LABEL_MAX]
+    kind = found.get("object_kind")
+    if clean["kind"] == "object" and isinstance(kind, str) and OBJECT_KIND_RE.match(kind):
+        clean["object_kind"] = kind  # только с карты R12, не из запроса жителя (как подписи)
     if found.get("approximate") is True:
         clean["approximate"] = True
     return clean

@@ -966,7 +966,10 @@
           h("span", {}, t("complaint.step2.selected", { label: targetLabel(state.target || { approximate: true }) }))]));
       }
       var example = t("complaint.example." + (state.category || "roads"));
-      body.appendChild(h("label", { "class": "bc-label", "for": "bc-text" }, t("complaint.step3.label")));
+      // Поле — .bk-field ui-kit (заливка, рамка только у фокуса; R11 CLEAN_PASS R09 №3).
+      var field = h("div", { "class": "bk-field bc-field" }, [
+        h("label", { "class": "bk-field__label bc-label", "for": "bc-text" }, t("complaint.step3.label"))]);
+      body.appendChild(field);
       if (!els.textarea) {
         els.textarea = h("textarea", { id: "bc-text", "class": "bc-textarea", rows: "4", maxlength: "2000" });
         els.textarea.addEventListener("input", function () {
@@ -979,7 +982,7 @@
       }
       els.textarea.value = state.text;
       els.textarea.setAttribute("placeholder", t("complaint.step3.example", { example: example }));
-      body.appendChild(els.textarea);
+      field.appendChild(els.textarea);
       body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step3.privacy")));
       els.categoryBox = h("div", { "class": "bc-category", "aria-live": "polite" });
       body.appendChild(els.categoryBox);
@@ -1085,6 +1088,10 @@
         [icon("users"), h("span", {}, t("complaint.step4.metoo"))]));
       // «Я тоже» = подписка на общий случай (волна 2, п. 3): одно обновление службы видят все.
       body.appendChild(h("p", { "class": "bc-meta bc-metoo-caption" }, t("broadcast.metoo_hint")));
+      // R04: текст при «Я тоже» тоже сохраняется — только для службы (обязательная мелочь «кто что увидит»).
+      if (state.text && state.text.trim().length >= 3) {
+        body.appendChild(h("p", { "class": "bc-meta bc-metoo-private" }, t("complaint.step4.note_private")));
+      }
       body.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-different", type: "button", onclick: openReview },
         t("complaint.step4.different")));
     }
@@ -1138,7 +1145,11 @@
     function metoo(match, button) {
       if (button) button.disabled = true;
       var owner = state;
-      request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", {}).then(function (res) {
+      // Волна мелочей п. 9 (R04): текст и место жителя уходят вместе с «Я тоже» — их видит только служба; если «Похоже
+      // на» ошиблось, сотрудник одним действием выделит это в отдельную жалобу жителя («Это разные проблемы»).
+      var note = state.text && state.text.trim().length >= 3
+        ? { text: state.text, point: state.point, target: state.target, category: state.category } : undefined;
+      request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", note ? { note: note } : {}).then(function (res) {
         if (button) button.disabled = false;
         if (state !== owner) return;
         // Лимит (429, R15): повтор снова упрётся в лимит — сообщаем без «Повторить», как при отправке жалобы.
@@ -1385,12 +1396,23 @@
       var list = h("ul", { "class": "bc-changes__list" });
       var shown = state.changesAll ? data.items : data.items.slice(0, CHANGES_SHOWN);
       shown.forEach(function (item) {
-        var what = item.kind === "status" ? t("mine.changes.status", { status: t("status." + item.status) }) : t(CHANGE_TEXT[item.kind]);
-        var row = h("button", { "class": "bc-changes__item" + (state.focusEvent === item.id ? " bc-changes__item--focus" : ""),
-                                type: "button", "data-event": item.id || "",
-                                onclick: function () { state.focusCode = item.code; focusCard(); } },
-          [h("strong", {}, targetLabel(item.target)), h("span", {}, " — " + what + (item.text ? ": " + item.text : "")),
-           h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
+        var row;
+        if (item.kind === "nearby") {
+          // Подписка «Рядом» (R08): нажатие ведёт в раздел «Рядом» оболочки R01 (#nearby).
+          var title = (currentLang() === "kk" ? item.title_kk : item.title_ru) || item.title_ru || item.title_kk || "";
+          row = h("button", { "class": "bc-changes__item bc-changes__item--nearby", type: "button", "data-event": item.id || "",
+                              onclick: function () { close(); window.location.hash = "#nearby"; } },
+            [h("strong", {}, title), h("span", {}, " — " + t("nearby.tab." + (item.tab || "now"))),
+             item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
+             h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
+        } else {
+          var what = item.kind === "status" ? t("mine.changes.status", { status: t("status." + item.status) }) : t(CHANGE_TEXT[item.kind]);
+          row = h("button", { "class": "bc-changes__item" + (state.focusEvent === item.id ? " bc-changes__item--focus" : ""),
+                              type: "button", "data-event": item.id || "",
+                              onclick: function () { state.focusCode = item.code; focusCard(); } },
+            [h("strong", {}, targetLabel(item.target)), h("span", {}, " — " + what + (item.text ? ": " + item.text : "")),
+             h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
+        }
         list.appendChild(h("li", {}, row));
       });
       box.appendChild(list);
@@ -1466,9 +1488,11 @@
           after.map(function (id) { return photoThumb(item.id, id); })) : null,
         h("p", { "class": "bc-verify__question" }, t("verify.question"))]);
       var buttons = h("div", { "class": "bc-verify__buttons" });
-      [["yes", "verify.yes", primary ? " bk-btn--primary" : ""], ["no", "verify.no", ""], ["cant", "verify.cant", " bk-btn--ghost"]]
+      // «Не могу проверить» — ссылкой, а не третьей кнопкой (R11 разбор 9 №3: заливка читалась как вторая главная).
+      [["yes", "verify.yes", "bk-btn bk-btn--block" + (primary ? " bk-btn--primary" : "")], ["no", "verify.no", "bk-btn bk-btn--block"],
+       ["cant", "verify.cant", "bc-link"]]
         .forEach(function (b) {
-          buttons.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-verify__" + b[0] + b[2], type: "button",
+          buttons.appendChild(h("button", { "class": b[2] + " bc-verify__" + b[0], type: "button",
                                             onclick: function (e) { verify(item, b[0], e.currentTarget); } }, t(b[1])));
         });
       box.appendChild(buttons);
@@ -1504,8 +1528,13 @@
       var p = item.passport || {};
       if (item.status === "rejected" || (!p.assignee && !p.assignee_id)) return null;
       var due = item.status === "new" ? deadlineNode(p.deadline) : null;
-      return h("p", { "class": "bc-meta bc-assignee" }, [h("span", {}, t("service.assigned", { service: serviceName(p) })),
+      return h("span", { "class": "bk-statusline__note bc-assignee" }, [h("span", {}, t("service.assigned", { service: serviceName(p) })),
         due ? " · " : null, due]);
+    }
+
+    // Статус — один раз (R11 CLEAN_PASS, правило 5): точка + слово и одна строка пояснения («Передано: … · осталось …»).
+    function statusLine(item) {
+      return h("div", { "class": "bk-statusline bc-mine__status" }, [statusBadge(displayStatus(item)), passportLine(item)]);
     }
 
     // Задержка — баннер-предупреждение в карточке (R11 §2.2): причина · временная мера · следующее обновление.
@@ -1528,14 +1557,18 @@
       if (item.status !== "rejected") {
         lines.push(p.fix_eta ? t("passport.fix_eta", { date: formatDate(p.fix_eta + "T12:00:00+05:00") }) : t("passport.fix_unknown"));
       }
-      var more = h("details", { "class": "bc-more", open: open || null }, [h("summary", {}, t("common.action.more")),
+      // Полоса этапов — тоже здесь, не в карточке: статус в карточке показан один раз (R11 CLEAN_PASS R09 №6).
+      var more = h("details", { "class": "bk-details bc-more", open: open || null }, [h("summary", {}, t("common.action.more")),
+        stepsBar(item),
         h("p", { "class": "bc-label" }, t("passport.title")),
         h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); }))]);
-      var updates = (item.updates || []).slice(-5).reverse();
-      if (updates.length) {
+      // «История» (R11 IA_WAVE2 §2.2, R10 W2-2): сообщили → в работе → служба сообщила → проверили / вернули.
+      var steps = item.history || (item.updates || []).map(function (u) { return u; });
+      if (steps.length) {
         more.appendChild(h("p", { "class": "bc-label" }, t("passport.history")));
-        more.appendChild(h("ul", { "class": "bc-updates" }, updates.map(function (u) {
-          return h("li", {}, [h("span", { "class": "bc-meta" }, formatDate(u.at) + " · "), h("span", {}, t("mine.update." + u.kind) + (u.text ? ": " + u.text : ""))]);
+        more.appendChild(h("ol", { "class": "bc-updates bc-history" }, steps.map(function (u) {
+          return h("li", { "data-kind": u.kind }, [h("span", { "class": "bc-meta" }, formatDate(u.at) + " · "),
+                                                    h("span", {}, historyText(u))]);
         })));
       }
       var own = item.photos || [];
@@ -1553,11 +1586,18 @@
       return more;
     }
 
+    function historyText(u) {
+      if (u.kind === "created") return t("mine.history.created");
+      if (u.kind === "status") return t("mine.changes.status", { status: t("status." + u.status) });
+      if (u.kind === "verified") return t("mine.changes.verified");
+      return t("mine.update." + u.kind) + (u.text ? ": " + u.text : "");
+    }
+
     // «Подписки (N)» — свёрнуто внизу (R11 §2.1): «Я тоже» = подписка; «Отписаться» — голос остаётся.
     function renderSubscriptions(body) {
       var subs = state.mine.filter(function (item) { return item.relation === "metoo"; });
       if (!subs.length) return;
-      var more = h("details", { "class": "bc-more bc-subs" }, [
+      var more = h("details", { "class": "bk-details bc-more bc-subs" }, [
         h("summary", {}, t("mine.subscriptions") + " (" + subs.length + ")"),
         h("ul", { "class": "bc-subs__list" }, subs.map(function (item) {
           return h("li", { "class": "bc-subs__item" }, [
@@ -1602,17 +1642,15 @@
         list.appendChild(h("li", { "class": "bk-card bc-mine__card" + (focused ? " bc-mine__card--focus" : ""),
                                    "data-code": item.code || "", "data-id": item.id }, [
           h("div", { "class": "bc-mine__head" }, [
-            h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)]),
-            statusBadge(displayStatus(item))]),
+            h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)])]),
+          statusLine(item),
           h("p", { "class": "bc-meta" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
             item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null]),
           item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
           item.relation === "metoo" ? h("p", { "class": "bc-meta" }, t("mine.metoo_badge")) : null,
           // Все люди, сообщившие о том же на этом месте (как на шаге «Я тоже»), а не только по этой жалобе.
           h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || reportersOf(item) || 1 })),
-          passportLine(item),
           delayBanner(item),
-          stepsBar(item),
           detailsBlock(item, focused)]));
       });
       body.appendChild(list);
@@ -1646,7 +1684,8 @@
         var dots = h("div", { "class": "bk-wizard" }, [h("span", { "class": "bk-wizard__label" },
           t("complaint.wizard.step", { n: state.step, total: TOTAL_STEPS }))]);
         var track = h("span", { "class": "bk-wizard__dots", "aria-hidden": "true" });
-        for (var i = 1; i <= TOTAL_STEPS; i++) track.appendChild(h("span", { "data-state": i < state.step ? "done" : (i === state.step ? "current" : "todo") }));
+        // Точки шага — <i>, как в ui-kit R11 (.bk-wizard__dots > i): со <span> ui-kit их не рисовал.
+        for (var i = 1; i <= TOTAL_STEPS; i++) track.appendChild(h("i", { "data-state": i < state.step ? "done" : (i === state.step ? "current" : "todo") }));
         dots.appendChild(track);
         panel.appendChild(dots);
       }

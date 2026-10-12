@@ -171,6 +171,15 @@ async function main() {
     check("«Взять в работу» on the target card changes the status (staff session + CSRF via the shell)", status1 === "in_progress", status1);
     await page.waitForSelector("[data-act='fixed']", { timeout: 10000 });
     await page.click("[data-act='fixed']");
+    // С R09 9cf4ca2 + R07_fix_form.patch «Отметить исправленным» открывает форму R09 «Сообщить жителям» (что сделали
+    // + фото «после») прямо в карточке; без формы (старый R07) — сразу «исправлено».
+    const fixForm = await page.waitForSelector(".r07-fixform input[name=what_done]", { timeout: 3000 }).catch(() => null);
+    if (fixForm) {
+      check("«Отметить исправленным» opens the R09 form in the card (what was done), card buttons hidden",
+        await page.evaluate(() => document.querySelector(".r07-actions")?.hidden === true), null);
+      await fixForm.fill("Заменили лампу");
+      await page.click(".r07-fixform button[type=submit]");
+    }
     await page.waitForTimeout(1500);
     const fixed = await page.evaluate(async (id) => {
       const d = (await (await fetch("/api/civic/v2/complaints/" + id)).json()).data;

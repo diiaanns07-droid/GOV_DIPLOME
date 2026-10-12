@@ -25,6 +25,7 @@ from . import categories
 from . import lifecycle
 from . import photos as photos_mod
 from . import record as rec
+from . import separate as sep
 from .record import RecordError
 
 SCHEMA_SQL = """
@@ -63,6 +64,7 @@ CREATE TABLE IF NOT EXISTS complaint_metoo_v2 (
   PRIMARY KEY (complaint_id, device_hash)
 );
 CREATE INDEX IF NOT EXISTS complaint_metoo_v2_device ON complaint_metoo_v2 (device_hash);
+""" + sep.SCHEMA_SQL + """
 -- «Проверено жителями» (волна 2, п. 1): один голос устройства за раунд «служба сообщила об устранении».
 CREATE TABLE IF NOT EXISTS complaint_votes_v2 (
   complaint_id TEXT NOT NULL,
@@ -128,7 +130,8 @@ class Conflict(RecordError):
     pass
 
 
-class ComplaintStore:
+class ComplaintStore(sep.SeparateMixin):
+    # «Это разные проблемы» (separate, merged, текст «Я тоже») — separate.py (R04 + R09, волна мелочей п. 9).
     """Потокобезопасно: одно соединение под RLock (как FeedbackService v1)."""
 
     def __init__(self, db_path, *, clock: Callable[[], datetime] | None = None, limits: dict | None = None):
@@ -161,6 +164,10 @@ class ComplaintStore:
             # Волна 2 (R11 IA_WAVE2 §2.1): «Отписаться» — голос остаётся, обновления и «Мои обращения» — нет.
             if "muted" not in columns:
                 self._db.execute("ALTER TABLE complaint_metoo_v2 ADD COLUMN muted INTEGER NOT NULL DEFAULT 0")
+        # decision_lookup(complaint_id) -> {option, at} | None — выбор акима (R08 decisions.choice_for).
+        self.decision_lookup = None
+        # nearby_lookup(device_id, since) -> [карточки «Рядом»] — подписки R08 для «Что изменилось».
+        self.nearby_lookup = None
         # assignee_lookup(category, subtopic) — таблица R08 (подключает R01): лучше routing.service_for
         # ({"id","ru","kk","name_edited"}), можно и routing.assignee_lookup (строка). None — таблица R09.
         self.assignee_lookup = None
@@ -326,18 +333,24 @@ class ComplaintStore:
                 "due_at": rec.due_at(created_at, category),
                 "schema": rec.SCHEMA,
             }
+            flag = rec.moderation(record.get("text"))   # п. 8 (R04): акимат видит оригинал с пометкой
+            if flag:
+                record["moderation"] = flag
             self._save(db, record, device_hash=device, request_id=request_id)
             event = self._event(db, "created", record, created_at)
         self._emit([event])
         return record, True
 
     # ------------------------------------------------------------ «Я тоже»
-    def metoo(self, complaint_id: str, device_id: str) -> tuple[dict, str]:
+    def metoo(self, complaint_id: str, device_id: str, note: dict | None = None) -> tuple[dict, str]:
         """«Я тоже» — одно на устройство. -> (исходная запись, result):
         added | already (уже нажимал) | author (это его собственная жалоба).
-        Новую запись не создаёт никогда; если нажали на дубль — засчитывается исходной."""
+        Новую запись не создаёт никогда; если нажали на дубль — засчитывается исходной.
+        note — текст, место, цель, категория из формы жалобы (R04, п. 9): видит только акимат; если «Похоже на»
+        ошиблось, сотрудник одним действием выделит это в отдельную жалобу жителя (separate.py)."""
         device = self.device_hash(device_id)
         now = rec.iso(self._now())
+        parsed = self.parse_metoo_note(note)
         with self._tx() as db:
             record = self._root(db, complaint_id)
             author = db.execute("SELECT device_hash FROM complaints_v2 WHERE id = ?", (record["id"],)).fetchone()[0]
@@ -350,6 +363,8 @@ class ComplaintStore:
                 db.execute("UPDATE complaint_metoo_v2 SET muted = 0 WHERE complaint_id = ? AND device_hash = ?",
                            (record["id"], device))
                 return record, "already"
+            if parsed:
+                self._add_metoo_note(db, record["id"], device, now, parsed)
             self._recount_metoo(db, record)
             self._save(db, record)
             event = self._event(db, "metoo", record, now)
@@ -546,7 +561,7 @@ class ComplaintStore:
         if service not in (None, "") and service not in lifecycle.SERVICES:
             raise RecordError("Неизвестная служба.", {"service": ",".join(lifecycle.SERVICES)})
         clean["service"] = service or None
-        for name in ("next_step", "delay_reason", "temp_measure"):
+        for name in ("next_step", "delay_reason", "temp_measure", "decision", "option_1", "option_2"):
             value = fields.get(name)
             if value is None or value == "":
                 clean[name] = None
@@ -575,10 +590,16 @@ class ComplaintStore:
             if "service" in fields:
                 passport["assignee_id"] = clean["service"]
                 passport.pop("assignee", None)          # свободный текст старых версий уступает выбору из списка
-            if any(name in fields for name in ("delay_reason", "temp_measure", "next_update_at")):
+            if any(name in fields for name in ("delay_reason", "temp_measure", "next_update_at", "needs_decision")):
                 delay = {"reason": clean["delay_reason"], "temp_measure": clean["temp_measure"],
                          "next_update_at": clean["next_update_at"]}
-                passport["delay"] = delay if any(delay.values()) else None
+                # «Нужно решение руководителя» (R08 «Нужно решение акима», волна 2 п. 5): два варианта и что нужно
+                # от акима. Формат читает ui.civic_akim.decisions: delay.needs_decision, options [{ru}], decision.
+                if fields.get("needs_decision") is True:
+                    delay["needs_decision"] = True
+                    delay["options"] = [{"ru": clean[k]} for k in ("option_1", "option_2") if clean[k]]
+                    delay["decision"] = clean["decision"]
+                passport["delay"] = delay if any(v for k, v in delay.items()) else None
             passport["updated_at"] = now
             if actor:
                 passport["by"] = str(actor)[:80]
@@ -652,8 +673,12 @@ class ComplaintStore:
         return original
 
     def unmark_duplicate(self, complaint_id: str, *, actor: str | None = None) -> dict:
-        """Волна 1, п. 9: «Это разные проблемы» — отменить ошибочное объединение. Люди, перенесённые из дубля
-        в «Я тоже» исходной (via = дубль), возвращаются; дубль снова самостоятельная жалоба, цель пересчитывается."""
+        """Волна 1, п. 9: «Это разные проблемы» — отменить ошибочное объединение (то же, что separate(c-…) R04:
+        снимает «Я тоже» дубля по всей цепочке исходных и возвращает перепривязанные дубли)."""
+        return self.separate(complaint_id, actor=actor)[0]
+
+    def _unmark_duplicate_simple(self, complaint_id: str, *, actor: str | None = None) -> dict:
+        """Прежняя простая отмена (только прямая исходная, по via) — оставлена для сравнения в тестах."""
         now = rec.iso(self._now())
         with self._tx() as db:
             duplicate = self._load(db, complaint_id)
@@ -912,6 +937,33 @@ class ComplaintStore:
         return [r for r in self.list(status="new") if rec.is_overdue(r, now)]
 
     # ------------------------------------------------------------ импорт (миграция, демо)
+    def reset_demo_record(self, record: dict, metoo_devices: list[tuple[str, str]] | None = None) -> str:
+        """Демо-запись (demo: true) — в исходное состояние при каждом запуске демо-сборки (R10 B-048, B-049):
+        статус «Новое», исходные синтетические «Я тоже», время — от текущего запуска. После репетиции (исправлено,
+        «Я тоже» ведущего, проверка ремонта) и через две недели после первой настройки шаг 2 демо снова такой же.
+        Настоящие жалобы не трогаются; если id занят настоящей записью — ничего не делаем.
+        -> added | reset | skipped."""
+        if not record.get("demo"):
+            raise RecordError("Сбрасывать можно только демо-запись.")
+        now = rec.iso(self._now())
+        with self._tx() as db:
+            old = self._load(db, record["id"])
+            if old is not None and not old.get("demo"):
+                return "skipped"
+            fresh = dict(record)
+            fresh["code"] = (old or {}).get("code") or fresh.get("code") or self._next_code(db)
+            fresh["metoo"] = len(metoo_devices or [])
+            self._save(db, fresh)
+            if old is not None:
+                for table in ("complaint_metoo_v2", "complaint_votes_v2", "complaint_photos_v2", "complaint_uploads_v2"):
+                    db.execute(f"DELETE FROM {table} WHERE complaint_id = ?", (record["id"],))
+            for device, at in metoo_devices or []:
+                db.execute("INSERT OR IGNORE INTO complaint_metoo_v2 (complaint_id, device_hash, at) VALUES (?,?,?)",
+                           (record["id"], device, at))
+            event = self._event(db, "update" if old is not None else "created", fresh, now)
+        self._emit([event])
+        return "reset" if old is not None else "added"
+
     def import_record(self, record: dict, *, legacy_v1_id: int | None = None,
                       metoo_devices: list[tuple[str, str]] | None = None) -> bool:
         """Сохранить готовую запись v2 (миграция v1, синтетика R02). Идемпотентно по id и legacy_v1_id.
