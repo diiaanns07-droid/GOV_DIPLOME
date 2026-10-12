@@ -1,5 +1,21 @@
 R06 · раунд 14 · команды и что теперь можно сделать
 
+=== ДИЗАЙН-МАРАФОН (поставка 6, 12–13 окт): «Идеи», «Проекты и идеи», «Работы и отключения», карточка проекта ===
+Что видно: карточки идей как в App Store (плитка вида объекта, одна строка, «Поддержать» — капсула, число перекатывается),
+одна краска статусов, «до → после» (идея → проект; плановый срок → новый), скелетон и пустые состояния с рисунками ui-kit,
+мастер с полосой шагов и рисующейся галочкой, чек-лист реализуемости со значками, пояснениями и полосой «да: n из 4»,
+одно состояние «Войдите» в «Проектах и идеях» и «Работах и отключениях». Логика, API и демо — прежние.
+Дерево сборки (как в «Волне 2» ниже): TR=$(mktemp -d); git archive origin/claude/sharp-dijkstra-0t87gl | tar -x -C $TR;
+  for d in ui/civic_store web/civic/proposals web/civic/ideas tests/civic/R06; do rm -rf $TR/$d; mkdir -p $TR/$d; cp -r $d/. $TR/$d/; done
+Проверки (всё во временных базах, демо synthetic):
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/design_audit.cjs $TR [out.json]     # чек-лист марафона, 274 проверки
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_wave2.cjs $TR               # 104 проверки
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_ideas_layer.cjs $TR         # 16 (слой идей R05)
+Кадры всех состояний (1366/375 × ru/kk, ~36 на размер и язык):
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/design_shots.cjs $TR <папка> [фильтр] [1366,375] [ru,kk]
+  Пары «до | после»: python3 -I research/round-14-results/R06/design/pairs.py <кадры до> <кадры после> <папка>
+  (кадры «до» — та же команда на дереве без путей R06 этой ветки).
+
 === ВОЛНА 2 (поставка 4, 12 окт): «Идеи жителей», «Проекты и идеи», «Работы и отключения» ===
 Что теперь может пользователь:
   - Житель: меню «Идеи» — честная строка «Это опрос для выбора концепции, решение принимает акимат», «Поддержать»
@@ -19,7 +35,7 @@ R06 · раунд 14 · команды и что теперь можно сде�
            && patch -p1 < <репо>/research/round-14-results/R06/r12_snap_near_street.patch)
   (cd $TR && python3 -m pytest -q tests/civic/R01 tests/civic/R06 tests/civic/R08 tests/civic/R15)
   Как в FINAL-3 (ui-kit и словарь R11 чистого дизайна): git -C <репо> archive origin/claude/r14-R11 web/civic/ui-kit web/civic/i18n | tar -x -C $TR
-  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_wave2.cjs $TR [папка-скриншотов]      # 96 проверок
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_wave2.cjs $TR [папка-скриншотов]      # 104 проверки
   С 3D R05 (слой идей): (cd $TR && git checkout origin/claude/r14-R05 -- web/civic/build3d
      && git show origin/claude/r14-R05:research/round-14-results/R05/proposed_r01_wave2.patch | patch -p1)
      (в $TR без .git: git -C <репо> archive origin/claude/r14-R05 web/civic/build3d | tar -x -C $TR)

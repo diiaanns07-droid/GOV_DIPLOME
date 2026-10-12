@@ -113,7 +113,12 @@ async function resident(browser, base, width, lang) {
   const card = page.locator(".ri-card", { has: page.locator(".ri-support") }).first();
   await card.locator(".ri-support").click();
   await page.waitForFunction(() => document.querySelector(".ri-support[aria-pressed=true]"));
-  const look = await page.locator(".ri-support[aria-pressed=true]").first().evaluate((b) => { const cs = getComputedStyle(b); return { bg: cs.backgroundColor, fg: cs.color }; });
+  // Цвета — у текущей кнопки в странице (после ответа карточка перерисовывается).
+  const look = await page.waitForFunction(() => {
+    const b = document.querySelector(".ri-support[aria-pressed=true]");
+    const cs = b && b.isConnected ? getComputedStyle(b) : null;
+    return cs && cs.backgroundColor ? { bg: cs.backgroundColor, fg: cs.color } : null;
+  }, null, { timeout: 5000 }).then((h) => h.jsonValue()).catch(() => ({ bg: "", fg: "" }));
   check(`${tag}: «Вы поддержали» — сплошная тёмная капсула (${look.bg})`, /^rgb\(/.test(look.bg) && contrastOf(look.bg, look.fg) >= 4.5, look);
   const rolled = await page.locator(".ri-votes__n.ri-roll-up").count();
   check(`${tag}: число голосов «перекатилось» (+1)`, rolled === 1, rolled);

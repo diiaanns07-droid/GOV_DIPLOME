@@ -126,7 +126,14 @@ async function resident(browser, base, width, lang, full) {
   const after = await votes();
   check(`${tag} житель: «${T.support}» → ${before + 1}, «${T.supported}»`, after === before + 1 && (await card.innerText()).includes(T.supported), `${before} → ${after}`);
   // Дизайн-марафон: «Вы поддержали» — тёмная капсула с белым текстом (на стекле ui-kit тоже), контраст ≥ 4.5.
-  const look = await card.locator(".ri-support").evaluate((b) => { const cs = getComputedStyle(b); return { bg: cs.backgroundColor, fg: cs.color }; });
+  // Цвета читаем в странице у текущей кнопки (карточка перерисовывается после ответа — старый узел уже не в документе).
+  const look = await page.waitForFunction((t) => {
+    const c = Array.from(document.querySelectorAll(".ri-card")).find((x) => x.textContent.includes(t));
+    const b = c && c.querySelector(".ri-support[aria-pressed=true]");
+    if (!b || !b.isConnected) return null;
+    const cs = getComputedStyle(b);
+    return cs.backgroundColor ? { bg: cs.backgroundColor, fg: cs.color } : null;
+  }, T.square, { timeout: 5000 }).then((h) => h.jsonValue()).catch(() => ({ bg: "", fg: "" }));
   check(`${tag} житель: «${T.supported}» — тёмная капсула, текст читается (≥ 4.5:1)`, !/rgba\([^)]*,\s*0(\.\d+)?\)/.test(look.bg) && contrast(look.bg, look.fg) >= 4.5, JSON.stringify(look));
   check(`${tag} житель: правило «один голос» — один раз над списком`, (await page.locator(".ri-onevote").count()) === 1, await page.locator(".ri-onevote").count());
   await card.locator(".ri-support").click();
