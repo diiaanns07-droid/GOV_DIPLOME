@@ -6,7 +6,7 @@
  "restored_from": "— (новые пути tests/e2e/, tests/civic/R10/; в раунде 13 их не было)",
  "code_sha": "тесты R10 ветки claude/r14-R10 (12 окт): шапка FINAL-3 78a59b6, 7988ad7 (R01 INTEGRATION 21.6), «Идеи» и «Вопрос акиму» 1672078 и новее; ACCEPTED.json шаг 6",
  "tested_sha": "FINAL-3 со стеклом R01 61be62e6: сценарий 173/0/0 (и со стеклом, которое держится включённым); против эталона 8e67c65 все пять пунктов не хуже (новых FAIL 0, B-067 закрыт); волны 241/0 FAIL; точность 31/0; стекло glass_check 343/0 FAIL/6 СМОТРЕТЬ (чёрный 4,0–4,5:1); время со стеклом = 3d8c426f; FPS облака 3–7 к/с одинаково. Раньше: 3d8c426f, f94f0fc, 2f643dc",
- "status": "partial — FINAL-3 со стеклом 61be62e6 принят R10: можно показывать (ACCEPTANCE_FINAL3.md §8). Открыто (мелочи): B-059 (R08, данные примера), B-065 частично (R07); подсказки: R11 — --glass-text-2 на шаг темнее (на чёрном 4,0–4,5:1), R08 — свой фон .akim-hot__list на телефоне, R07 — стекло панели не поставлено. FPS — только на ноутбуке (Codex М9).",
+ "status": "partial — дизайн-марафон, роль R10 (визуальный контроль): инструменты книги экранов/сравнения/выжимки готовы; круг 1 — 8e67c65 → FINAL-3 61be62e6 → R01 cc4b5121 (FINAL-3 чище эталона на всех экранах; чекпойнт R01 лучше 32 / хуже 4); стекло со светлой/пёстрой картой — нарушений нет; дефекты B-068…B-072 и правки ролям — design/DESIGN_REVIEW.md, INTEGRATION §6. FINAL-3 со стеклом 61be62e6 принят (ACCEPTANCE_FINAL3 §8).",
  "push_status": "OK: ветка claude/r14-R10 в origin; последний SHA — в STATUS.md и итоговом сообщении",
  "environment": "облачный Linux, Python 3.13.16 (+pytest 9.1.1), Node 22.22.0, Playwright 1.56.1 + Chromium headless (программный WebGL), без интернета (подложка OpenFreeMap недоступна)",
  "changed_paths": [
@@ -117,7 +117,7 @@
   "Сценарий идёт с CIVIC_DEMO=1 (как run-city.bat); --no-demo — без синтетического набора R07.",
   "Проверка «Tab до главной кнопки» ограничена 40 нажатиями: с демо-набором R07 главная кнопка дальше (B-025)."
  ],
- "next_step": "При новой сборке R01 — тот же набор (RUN.txt: demo_flow --audit [--glass keep], map_baseline, compare_baseline, glass_check, wave_checks, accuracy); на ноутбуке — Codex М9: glass_check --fps-only 1366/1024",
+ "next_step": "Каждая новая сборка R01 марафона: design_book.cjs + design_summary.cjs + design_compare.cjs (8e67c65=…,FINAL-3=…,сейчас=…) + glass_check.cjs (стекло, FPS перетаскивания 1366/1024) → DESIGN_REVIEW.md круг N",
  "night_11_12": {
   "baseline": "research/round-14-results/R10/baseline_8e67c65/ (README.md: состав, пороги, порядок сравнения FINAL-2)",
   "scripts": [
@@ -180,6 +180,31 @@
   "baseline": "research/round-14-results/R10/baseline_8e67c65/ (+ audit/, ACCEPTED.json: шаг 2 и 6, r07-seg-dashed, переименование проверки шрифта)",
   "open_for_others": "R08 — B-059, свой фон .akim-hot__list на телефоне; R07 — B-065 частично, стекло панели (GLASS §4 R07); R11 — --glass-text-2 на шаг темнее (по желанию)",
   "glass": "Сборка со стеклом 61be62e6 принята: контраст на фонах карты в норме, запасной вид PASS (шапка поправлена), автовыключатель №8 срабатывает один раз после движения карты, время сценария не изменилось. Для показа на проекторе/слабом ноутбуке — ?glass=off или автовыключатель.",
-  "timing": "Шаг 3 сценария на 1366 стабильно +4 с к эталону (×1,16–1,19 на контроле, в пороге ×1,25) — перелёты карты к местам"
+  "timing": "Шаг 3 сценария на 1366 стабильно +4 с к эталону (×1,16–1,19 на контроле, в пороге ×1,25) — перелёты карты к местам",
+  "design_marathon": "R10 tests: design_book/design_summary/design_compare (tests/e2e, claude/r14-R10 ≥ d1c5aa48). Для R01: B-069 (shell.js:341), отступы оболочки 6/14/9/5 px, «Обзор: вся Астана» 14 px, .civic-state 12 px/650, .brand-mark радиус 9 — INTEGRATION R10 §6."
+ },
+ "design_marathon": {
+  "tools": [
+   "tests/e2e/design_book.cjs",
+   "tests/e2e/design_summary.cjs",
+   "tests/e2e/design_compare.cjs",
+   "tests/e2e/glass_check.cjs (светлый/пёстрый фон, FPS перетаскивания)"
+  ],
+  "round1": {
+   "builds": [
+    "8e67c65",
+    "61be62e6 (FINAL-3, до марафона)",
+    "cc4b5121 (R01 чекпойнт)"
+   ],
+   "result": "FINAL-3 чище эталона на всех экранах (карта 52→17, мастер 58–63→18–24, «Картина дня» 55→12); R01 чекпойнт лучше 32 / хуже 4 (R07 «↺» 800 мс); стекло светлый/пёстрый 451/0 FAIL (мин. 6,2/5,6:1, красный 4,54)",
+   "bugs": [
+    "B-068 R09/R11 кнопка прыгает при нажатии",
+    "B-069 R01 ложное «Нет связи» при медленной сети",
+    "B-070 R07/R09 две главные кнопки",
+    "B-071 R09 kk тип места дважды",
+    "B-072 R08 телефон kk заголовок обрезан"
+   ],
+   "report": "research/round-14-results/R10/design/DESIGN_REVIEW.md"
+  }
  }
 }
