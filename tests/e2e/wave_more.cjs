@@ -511,10 +511,16 @@ module.exports = function waveMore(H) {
       try {
         await goto(P.page, new URL("#ask", base).href, lang);
         await L.sleep(1500);
+        const first = await P.page.evaluate(() => document.body.innerText);
+        const votes = (first.match(/\d+\s*(голос|дауыс)/gi) || []).length;
+        // Ответы — во вкладке «С ответом» (R13 qa.js, ключ ask.tab.answered).
+        const tab = W(lang, "ask.tab.answered", say(lang, "С ответом", "Жауабы бар"));
+        const opened = (await L.clickText(P.page, part(tab), { role: "tab", wait: 1200 })) || (await L.clickText(P.page, part(tab), { wait: 1200 }));
         const txt = await P.page.evaluate(() => document.body.innerText);
         const answers = (txt.match(new RegExp(L.textRe(W(lang, "ask.answer", say(lang, "Ответ акима", "Әкімнің жауабы"))).source, "gi")) || []).length;
-        const demo = /пример|үлгі/i.test(txt);
-        add("W2-9", tag, "«Вопрос акиму»: вопросы жителей с голосами, «Ответ акима» хотя бы у 2, демо помечено", st(answers >= 2 && demo), { answers, demo }, await shotOf(P.page, `${tag}-W2-9-ask`));
+        const demo = /пример|үлгі/i.test(first);
+        add("W2-9", tag, "«Вопрос акиму»: вопросы жителей с голосами, во вкладке «С ответом» — «Ответ акима» хотя бы у 2, демо помечено",
+          st(votes >= 3 && opened && answers >= 2 && demo), { votes, tab: opened, answers, demo }, await shotOf(P.page, `${tag}-W2-9-ask`));
       } finally { await P.ctx.close(); }
     }
   }

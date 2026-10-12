@@ -878,8 +878,10 @@ async function checkQr(ctx) {
 
 // ------------------------------------------------------------------------------------------------ W2-7 идеи
 async function checkIdeas(ctx) {
-  const { browser, base, variants } = ctx;
-  const tabClick = async (page, lang, k) => (await L.clickText(page, part(W(lang, k)), { role: "tab", wait: 1000 })) || (await L.clickText(page, part(W(lang, k)), { wait: 1000 }));
+  const { browser, base, variants, staff } = ctx;
+  // Вкладки R06 (поставка 4, 21a9739): ключи idea.tab.* («Голосование», «Стали проектами», «Отклонены»), подпись с числом.
+  const tabWord = (lang, k) => W(lang, ["idea.tab." + k, "idea.status." + k]);
+  const tabClick = async (page, lang, k) => (await L.clickText(page, part(tabWord(lang, k)), { role: "tab", wait: 1000 })) || (await L.clickText(page, part(tabWord(lang, k)), { wait: 1000 }));
   for (const [size, lang] of variants) {
     const tag = `${size[0]}-${lang}`;
     const P = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": devId("i") });
@@ -890,8 +892,8 @@ async function checkIdeas(ctx) {
       const honest = await L.visibleText(P.page, part(W(lang, "idea.honest")));
       const prim = await primaries(P.page);
       const tabs = [];
-      for (const k of ["voting", "project", "rejected"]) tabs.push(!!(await L.firstVisible(P.page.getByRole("tab", { name: part(W(lang, "idea.status." + k)) })))
-        || !!(await L.firstVisible(P.page.getByRole("button", { name: part(W(lang, "idea.status." + k)) }))));
+      for (const k of ["voting", "project", "rejected"]) tabs.push(!!(await L.firstVisible(P.page.getByRole("tab", { name: part(tabWord(lang, k)) })))
+        || !!(await L.firstVisible(P.page.getByRole("button", { name: part(tabWord(lang, k)) }))));
       add("W2-7", tag, `меню «${label}» → «${W(lang, "idea.title")}»: «${W(lang, "idea.honest")}» видно сразу, одна главная «${W(lang, "idea.new")}», 3 вкладки`,
         st(opened && honest && prim.length === 1 && new RegExp(esc(W(lang, "idea.new")), "i").test(prim[0] || "") && tabs.every(Boolean)), { opened, honest, primary: prim, tabs },
         await shotOf(P.page, `${tag}-W2-7-ideas`));
@@ -906,9 +908,9 @@ async function checkIdeas(ctx) {
       add("W2-7", tag, `«${W(lang, "idea.support")}» → «${W(lang, "idea.supported")}», голосов +1; после перезагрузки не удваивается`,
         st(!!sup && done && before !== null && after === before + 1 && again === after), { support: !!sup, done, before, after, again });
       // Отклонённая — причина и «Можно доработать»; принятая — «По идее жителей · N голосов». 3D — только по кнопке.
-      await tabClick(P.page, lang, "idea.status.rejected");
+      await tabClick(P.page, lang, "rejected");
       const reason = await L.visibleText(P.page, part(W(lang, "idea.reason"))), improve = await L.visibleText(P.page, part(W(lang, "idea.can_improve")));
-      await tabClick(P.page, lang, "idea.status.project");
+      await tabClick(P.page, lang, "project");
       const byRes = await L.visibleText(P.page, part(W(lang, "idea.by_residents")));
       const auto3d = await P.page.evaluate(() => [...document.querySelectorAll("canvas")].filter((c) => !c.classList.contains("maplibregl-canvas") && c.getClientRects().length).length);
       add("W2-7", tag, `отказ: «${W(lang, "idea.reason")}» и «${W(lang, "idea.can_improve")}»; проект: «${W(lang, "idea.by_residents")}»; 3D само не открывается`,
@@ -919,14 +921,17 @@ async function checkIdeas(ctx) {
   const S = await openPage(browser, [1366, 768], "ru", { "birge.mode": "akimat" });
   try {
     await goto(S.page, base, "ru");
+    // Идеи на проверке видит только сотрудник (GET /staff/ideas): вход, «Проекты и идеи» → «На проверке» → «Проверить».
+    const logged = await staffLogin(S.page, "ru", staff);
     const opened = await header(S.page, "ru", exact(W("ru", ["common.nav.projects", "shell.nav.projects"])), 2200);
-    await tabClick(S.page, "ru", "idea.tab.review");
+    await tabClick(S.page, "ru", "review");
+    const checkOpen = await L.clickText(S.page, exact(W("ru", "idea.check_open", "Проверить")), { wait: 1200 });
     const checks = [];
     for (const k of ["land", "networks", "access", "maintenance"]) checks.push(await L.visibleText(S.page, exact(W("ru", "idea.check." + k))));
     const make = await L.firstVisible(S.page.getByRole("button", { name: exact(W("ru", "idea.make_project")) }));
     const reject = await L.firstVisible(S.page.getByRole("button", { name: exact(W("ru", "idea.reject")) }));
     add("W2-7", "1366-ru", "акимат «Проекты и идеи»: проверка реализуемости (участок, сети, доступность, содержание), «Сделать проектом», «Отклонить с причиной»",
-      st(opened && checks.every(Boolean) && !!make && !!reject), { opened, checks, make: !!make, reject: !!reject }, await shotOf(S.page, "1366-ru-W2-7-akimat"));
+      st(opened && checks.every(Boolean) && !!make && !!reject), { logged, opened, checkOpen, checks, make: !!make, reject: !!reject }, await shotOf(S.page, "1366-ru-W2-7-akimat"));
   } finally { await S.ctx.close(); }
   add("W2-7", "путь", "новая идея за 3 шага (место → название и описание → объект 3D) и превращение в проект в 3D", "NOT_RUN", "дописать при поставке R06/R05 (вход сотрудника, API идей)");
 }
