@@ -48,7 +48,7 @@ async function open(browser, url, w, h, lang, storage) {
   page.httpStatus = res ? res.status() : 0;
   await sleep(3000);
   // Экраны без ?lang= (оболочка R01): язык выбирается кнопкой ҚАЗ / РУС в шапке.
-  const btn = page.getByRole("button", { name: lang === "kk" ? /^ҚАЗ$/ : /^РУС$/ }).first();
+  const btn = page.getByRole("button", { name: lang === "kk" ? /^(·\s*)?ҚАЗ$/ : /^(·\s*)?РУС$/ }).first();
   if (await btn.isVisible().catch(() => false)) { await btn.click().catch(() => null); await sleep(1000); }
   return { ctx, page };
 }

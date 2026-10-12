@@ -186,7 +186,7 @@ async function newPage(browser, [w, h], lang, mode) {
 
 async function ensureLang(page, lang) {
   if ((await page.evaluate(() => document.documentElement.lang).catch(() => null)) === lang) return true;
-  const b = await L.firstVisible(page.getByRole("button", { name: lang === "kk" ? /^ҚАЗ$/ : /^РУС$/ }));
+  const b = await L.firstVisible(page.getByRole("button", { name: lang === "kk" ? /^(·\s*)?ҚАЗ$/ : /^(·\s*)?РУС$/ }));
   if (b) { await b.click().catch(() => null); await L.sleep(1000); }
   return (await page.evaluate(() => document.documentElement.lang).catch(() => null)) === lang;
 }
@@ -315,10 +315,10 @@ async function transitions(page, dict, lang, mode, mobile) {
       await L.sleep(1200);
     } else res.day_kpi_ms = null;
   }
-  const other = lang === "kk" ? /^РУС$/ : /^ҚАЗ$/, otherLang = lang === "kk" ? "ru" : "kk";
+  const other = lang === "kk" ? /^(·\s*)?РУС$/ : /^(·\s*)?ҚАЗ$/, otherLang = lang === "kk" ? "ru" : "kk";
   if (await press(other)) {
     res.lang_switch_ms = await L.timeUntil(page, (l) => document.documentElement.lang === l, otherLang, 8000);
-    await press(lang === "kk" ? /^ҚАЗ$/ : /^РУС$/); await L.sleep(800);
+    await press(lang === "kk" ? /^(·\s*)?ҚАЗ$/ : /^(·\s*)?РУС$/); await L.sleep(800);
   } else res.lang_switch_ms = null;
   return res;
 }
