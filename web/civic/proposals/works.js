@@ -301,6 +301,7 @@
         root.BirgeUI.state(list, "empty", { title: tr("works.form.empty"), icon: "calendar" });
       } else {
         state.items.forEach(function (item) { list.appendChild(card(item)); });
+        if (state.items.some(function (x) { return x.demo; })) list.appendChild(h("p", { class: "bk-footnote", text: tr("common.tag.demo_hint") }));
       }
       rootEl.appendChild(list);
     }
@@ -332,11 +333,9 @@
       var l = lang();
       var title = item["title_" + l] || item.title_ru;
       var confirming = state.confirm === item.id;
-      // «вид · Пример»: точка прилипает к слову слева, перенос — только после неё (как в «Идеях»).
-      var meta = h("p", { class: "ri-meta" }, [h("span", { text: kindLabel(item) }),
-        item.demo ? doc.createTextNode("\u00a0· ") : null,
-        item.demo ? h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }) : null]);
-      return h("article", { class: "bk-card rw-card", "data-work": item.id }, [
+      // «Пример» — одной строкой под списком, а не у каждой записи (R11 INTEGRATION §13 D-5).
+      var meta = h("p", { class: "ri-meta" }, [h("span", { text: kindLabel(item) })]);
+      return h("article", { class: "bk-card rw-card", "data-work": item.id, "data-demo": item.demo ? "" : null }, [
         h("div", { class: "ri-app" }, [tileOf(item), h("div", { class: "ri-app__body" }, [meta,
           h("h3", { class: "bk-card__title rw-title", lang: item["title_" + l] ? l : "ru", text: title }), whenLine(item)])]),
         item.type === "outage" && item.zone_ru ? h("p", { class: "rw-where", text: tr("nearby.outage.zone", { text: item["zone_" + l] || item.zone_ru }) }) : null,

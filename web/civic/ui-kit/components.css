@@ -1975,9 +1975,21 @@ p.bk-banner--warn {
 .bk-tabs::-webkit-scrollbar {
   display: none;
 }
-.bk-tabs[data-more="true"] {
+.bk-tabs[data-more="true"],
+.bk-scroll-x[data-more="true"] {
   -webkit-mask-image: linear-gradient(to right, #000 80%, transparent);
   mask-image: linear-gradient(to right, #000 80%, transparent);
+}
+/* Ряд чипов/фильтров, который на телефоне прокручивается вбок, без полосы прокрутки; затухание — BirgeUI.scrollFade(el) */
+.bk-scroll-x {
+  display: flex;
+  gap: var(--s-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.bk-scroll-x::-webkit-scrollbar {
+  display: none;
 }
 .bk-tabs > [role="tab"] {
   flex: 0 0 auto;

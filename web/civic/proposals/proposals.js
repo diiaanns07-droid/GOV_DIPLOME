@@ -185,7 +185,9 @@
     var tags =
       '<span class="bk-tag bk-tag--project">' + esc(p.planned_year ? t("proposal.label", { year: String(p.planned_year) }) : t("common.tag.project")) + "</span>";
     // «Пример» — в тихой строке района («район Нура · Пример»), а не третьей меткой в ряду: ряд не переносится (дизайн-марафон).
-    var demoTag = p.demo ? '<span class="bk-tag bk-tag--demo" title="' + esc(t("common.tag.demo_hint")) + '">' + esc(t("common.tag.demo")) + "</span>" : "";
+    // В списке (opts.list) метки у каждой карточки нет — одна строка под списком (R11 INTEGRATION §13 D-5); у карточки,
+    // открытой отдельно (на карте), — рядом с районом (R15 «честная пометка»).
+    var demoTag = p.demo && !opts.list ? '<span class="bk-tag bk-tag--demo" title="' + esc(t("common.tag.demo_hint")) + '">' + esc(t("common.tag.demo")) + "</span>" : "";
     var place = p.district ? esc(t("district.name", { name: t("district." + p.district) })) : "";
     var voteBtn = function (value, key, ic, count) {
       var pressed = p.my_vote === value;
