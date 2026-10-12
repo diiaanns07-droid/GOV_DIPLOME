@@ -2,15 +2,15 @@
  "role": "R09",
  "round": 14,
  "title": "Жалоба жителя v2 — волны 1–2, LOCAL_FINAL №1–2 и замечания приёмки 12 окт (R10, R11, R15, R08, R04) для FINAL-3",
- "status": "READY_FOR_FINAL_3 (R01: взять пути R09 @ f80c0bf, применить R01_separate_routes.patch и R07_fix_form.patch, если R07 не выпустит его сам)",
+ "status": "READY_FOR_FINAL_3 (R01: взять пути R09 @ 2d2cf80, применить R01_separate_routes.patch и R07_fix_form.patch, если R07 не выпустит его сам)",
  "branch": "claude/modest-shannon-0ki93p",
  "branch_note": "Ветка по BRANCHES.md. Ночной код (wizardly-ptolemy-qy8ltw @ ee94ef1, код f4fb7b9) перенесён сюда побайтно в 38e6d67; ночную ветку больше не трогаем.",
- "base_sha": "8a1d390 (волна 2) → c765bb0 (правки сборки R01 0f5101a: R15 P-R09-2, R04 п. 8, R12 QR) → f80c0bf",
- "code_sha": "f80c0bfdda942ecb5efdedb5f49ec6a91782d58d",
- "tested_sha": "f80c0bfdda942ecb5efdedb5f49ec6a91782d58d (пути R09) на сборке R01 claude/sharp-dijkstra-0t87gl @ 7782b92 + R01_separate_routes.patch + R07_fix_form.patch",
- "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout f80c0bf -- ui/civic_feedback web/civic/feedback tests/civic/R09 && git apply research/round-14-results/R09/R01_separate_routes.patch && git apply research/round-14-results/R09/R07_fix_form.patch",
+ "base_sha": "8a1d390 (волна 2) → c765bb0 (правки сборки R01 0f5101a) → f80c0bf (замечания приёмки) → 5e99e2c (CLEAN_PASS) → 2d2cf80 (B-063, B-064)",
+ "code_sha": "2d2cf8023be7ae69fd570289ad59489fafd7c012",
+ "tested_sha": "2d2cf8023be7ae69fd570289ad59489fafd7c012 (пути R09) на сборке R01 claude/sharp-dijkstra-0t87gl @ 7782b92 + R01_separate_routes.patch + R07_fix_form.patch",
+ "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout 2d2cf80 -- ui/civic_feedback web/civic/feedback tests/civic/R09 && git apply research/round-14-results/R09/R01_separate_routes.patch && git apply research/round-14-results/R09/R07_fix_form.patch",
  "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22, Playwright + Chromium headless (программный WebGL), без интернета; настоящий телефон — NOT_RUN",
- "push_status": "код f80c0bf — push OK; документы дня и этот файл — следующим коммитом (SHA — в STATUS.md и финальном сообщении)",
+ "push_status": "код 2d2cf80 — push OK; документы и этот файл — следующим коммитом (SHA — в финальном сообщении)",
  "changed_paths": {
   "code_and_tests": [
    "tests/civic/R09/app_demo_r09.cjs",
@@ -66,9 +66,10 @@
    "research/round-14-results/R09/WAVE_R10_DAY12.txt",
    "research/round-14-results/R09/APP_RESULT_DAY12.txt",
    "research/round-14-results/R09/BROWSER_RESULT_DAY12.txt",
-   "research/round-14-results/R09/BROWSER_RESULT_DAY12_R11UI.txt",
    "research/round-14-results/R09/PYTEST_DAY12.txt",
-   "research/round-14-results/R09/screens-day12/"
+   "research/round-14-results/R09/screens-day12/",
+   "research/round-14-results/R09/WAVE_R10_MORE_DAY12.txt",
+   "research/round-14-results/R09/BROWSER_RESULT_DAY12_R11UI.txt"
   ]
  },
  "done": {
@@ -112,20 +113,26 @@
    "R08_wave2_item5_needs_decision": "fixed (delay.needs_decision/options/decision; decisions.choice_for in passport)",
    "wave1_item9_separate_R04_patch": "ported (separate.py, GET /complaints/merged, POST /complaints/{id}/separate) + R01_separate_routes.patch",
    "R15_P-R09-2_R04_item8_R12_QR": "taken from R01 build into R09 branch (c765bb0)",
-   "LOCAL_FINAL": "no new R09 items (1–2 closed 437c5f3)"
+   "LOCAL_FINAL": "no new R09 items (1–2 closed 437c5f3)",
+   "R10_B-062_separate_routes": "fixed (R09 routes merged/separate + R01_separate_routes.patch); R10 W1-9 card PASS",
+   "R10_B-063_object_kind": "fixed R09 part (target.object_kind from R12 only); R10 W1-12 API subtype traffic_signal PASS; card icon — R07",
+   "R10_B-064_rude_mark_inbox": "fixed (row tag + original text with tag in «Обращения», key moderation.rude); R10 W1-8 PASS",
+   "R11_CLEAN_PASS_R09_1_7": "done (status once via .bk-statusline, stages in bk-details, .bk-field, sticky main button, step dots <i>, no lime/beige, weights 400/600)"
   }
  },
  "tests": {
-  "day12_tree": "R01 7782b92 + R09 f80c0bf + R01_separate_routes.patch + R07_fix_form.patch",
-  "pytest_r09_r04_r01": "1065 passed, 2 skipped — PYTEST_DAY12.txt",
-  "pytest_r15_r08_r07_r12": "211/1 skip · 258/1 skip · 175 · 40 — all passed",
-  "pytest_r02_r03_r05_r06_r11_r13_citywide": "all passed",
+  "day12_tree": "R01 7782b92 + R09 2d2cf80 + R01_separate_routes.patch + R07_fix_form.patch",
+  "pytest_r09_r04_r01_r15_r07_r12_r08": "1752 passed, 4 skipped, 1 failed (R07 timing test under parallel browser load; R07 alone 175 passed)",
+  "pytest_r02_r03_r05_r06_r11_r13_citywide": "all passed (on f80c0bf)",
+  "pytest_r09_v2_in_branch": "178 passed, 3 skipped (R12/R04 packages absent in the R09 branch)",
   "pytest_r10": "34 passed, 2 failed — test_r10_accuracy (R12/R07 objects vs OSM points: no full OSM extract in the cloud), not R09",
   "r04_app_polish": "39/39 PASS — APP_RESULT_R04_DAY12.txt",
   "r10_demo_reset_check": "4/4 PASS",
-  "r10_wave_checks": "see WAVE_R10_DAY12.txt",
+  "r10_wave_checks": "W1-3/W2-1/W2-2/W2-4: 91 PASS / 10 FAIL / 2 NOT_RUN — FAIL not R09 (R07 card text B-055/B-057, R07 card does not open on 1366 — same without the R07 patch, «Карта» on 375); WAVE_R10_DAY12.txt",
+  "r10_wave_more": "W1-8/W1-9/W1-12: 11 PASS / 2 FAIL (R07 card does not open on 1366); WAVE_R10_MORE_DAY12.txt",
   "r09_real_app": "see APP_RESULT_DAY12.txt",
-  "r09_stand": "see BROWSER_RESULT_DAY12.txt / BROWSER_RESULT_DAY12_R11UI.txt",
+  "r09_stand": "470/470 (kit-fallback) — BROWSER_RESULT_DAY12.txt",
+  "r09_stand_r11_kit_d9f2ff9": "see BROWSER_RESULT_DAY12_R11UI.txt",
   "phone_device": "NOT_RUN (no device in the cloud session)",
   "previous_wave2": {
    "pytest_r09_v2": "168 passed, 3 skipped (R12/R04 packages absent in R09 branch) — PYTEST_WAVE2.txt",
@@ -150,9 +157,10 @@
   "One verification vote per device per round; device switching is not prevented (same as «Я тоже»).",
   "R07 card gets the fix form and passport only with R07_fix_form.patch (R07 code); without it the card works as before.",
   "«Это разные проблемы» needs R01_separate_routes.patch in the gateway (404 without it).",
-  "holidays_kz.json is derived (transfer decree 2026 not verified offline)."
+  "holidays_kz.json is derived (transfer decree 2026 not verified offline).",
+  "Map highlight of the chosen place keeps #176b4a (not in R11 CLEAN_PASS list)."
  ],
- "next_step": "R01: FINAL-3 — take R09 @ f80c0bf + R01_separate_routes.patch (+ R07_fix_form.patch unless R07 ships it); do not apply R04 r09_polish_r04.patch (already in R09). R07: apply R07_fix_form.patch. R11: 6 new keys (I18N_KEYS.md, 12 окт). R10: rerun W2-1/W2-2/W2-4 and B-056 on FINAL-3. R09: app_demo_r09 and stand on FINAL-3.",
+ "next_step": "R01: FINAL-3 — take R09 @ 2d2cf80 + R01_separate_routes.patch (+ R07_fix_form.patch unless R07 ships it); do not apply R04 r09_polish_r04.patch (already in R09). R07: apply R07_fix_form.patch; traffic-signal icon/label from target.object_kind (B-063). R11: 6 new keys (I18N_KEYS.md, 12 окт), review CLEAN_PASS R09 on screens-day12/. R10: rerun W2-1/W2-2/W2-4, W1-8/W1-9/W1-12, B-056 on FINAL-3. R09: app_demo_r09 and stand on FINAL-3.",
  "previous": {
   "wave2_code_sha": "8a1d39077edf0055620145fdb81c9d39c88ce88f",
   "wave2_status": "READY_FOR_FINAL_2 (волны 1–2 сделаны по схемам R11 IA_WAVE2 §2; R01 нужно взять пути R09 @ 8a1d390 и применить r01_wave2_assets.patch)",

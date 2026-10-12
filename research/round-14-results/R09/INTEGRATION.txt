@@ -1,10 +1,11 @@
 R09 · РАУНД 14 · INTEGRATION — 12 ОКТ, ДЛЯ FINAL-3 (сначала этот раздел; ниже — волна 2 и ночные)
-Ветка R09: claude/modest-shannon-0ki93p, код f80c0bf (DELIVERY.json, DAY12_FIXES.md). Забрать пути R09 целиком:
+Ветка R09: claude/modest-shannon-0ki93p, код 2d2cf80 (DELIVERY.json, DAY12_FIXES.md). Забрать пути R09 целиком:
     git fetch origin claude/modest-shannon-0ki93p
-    git checkout f80c0bf -- ui/civic_feedback web/civic/feedback tests/civic/R09
+    git checkout 2d2cf80 -- ui/civic_feedback web/civic/feedback tests/civic/R09
 Новых файлов фронтенда и скриптов в index.html нет; новый модуль Python — ui/civic_feedback/v2/separate.py (берётся
-той же командой). Проверено на сборке R01 7782b92 + пути R09 + 2 патча ниже: pytest R09+R04+R01 1065 passed / 2 skip,
-R15/R08/R07/R12 зелёные; R04 app_polish_r04 39/39; R10 demo_reset_check 4/4; R10 wave_checks — WAVE_R10_DAY12.txt.
+той же командой). Проверено на сборке R01 7782b92 + пути R09 + 2 патча ниже: pytest R09+R04+R01+R15+R07+R12+R08
+1752 passed (R07 замер времени — отдельно 175 passed); приложение app_demo_r09 — APP_RESULT_DAY12.txt; R04 app_polish_r04
+39/39; R10 demo_reset_check 4/4; R10 wave_checks/wave_more — WAVE_R10_DAY12.txt, WAVE_R10_MORE_DAY12.txt; стенд 470/470.
 
 === R01 — нужно сделать (FINAL-3) ===
 F1) Применить research/round-14-results/R09/R01_separate_routes.patch (git apply --check на 7782b92 — OK):
@@ -31,6 +32,9 @@ R1) R07_fix_form.patch: «Отметить исправленным» в кар�
     карточки скрыты, пока форма открыта; под кнопками — паспорт решения и «Обновление для всех» R09:
     BirgeComplaintStaff.mount(el, {complaintId, fix:false, compact:true, staffOnly:true}) (без своей главной кнопки;
     если ответ без поля subscribers — т. е. не сотрудник — блок не показывается).
+R3) R10 B-063: цель записи R09 теперь несёт target.object_kind с карты R12 (traffic_signal, crossing, intersection,
+    bus_stop, …) — только от R12, формат [a-z_]. Значок и подпись «Светофор …» в карточке — у вас (ключи target.kind.*).
+    На сборке /heat уже отдаёт subtype traffic_signal (R10 W1-12 API — PASS).
 R2) «Это разные проблемы» (ваш 9e337dc с патчем R04): маршруты R09 GET /complaints/merged?target_id=<id цели>
     (только сотрудник, 403 иначе; ответ {items, count}) и POST /complaints/{id}/separate, где id — дубль (c-…) или
     «Я тоже» с текстом (mt-…), CSRF сотрудника; ответ {complaint, original} — теперь есть в R09.
@@ -50,6 +54,8 @@ K2) CLEAN_PASS §3 R09 №1–7 — сделано (DAY12_FIXES.md, раздел
     Новых ключей и классов ui-kit R09 не добавлял. Стенд: --r11 с ui-kit d9f2ff9.
 
 === R10 ===
+T0) B-062 (маршруты merged/separate), B-063 (object_kind в записи), B-064 (пометка в «Обращениях») — со стороны R09
+    сделаны; W1-8 и W1-9 — PASS на сборке с патчами R09, W1-12 API — PASS (WAVE_R10_MORE_DAY12.txt).
 T1) Повторить на FINAL-3: wave_checks --only W2-1,W2-2,W2-4; B-056 (фото «после» в «Обращениях» и в карточке R07);
     demo_reset_check. Что не R09 в нашем прогоне: текст карточки R07 «зелёным до …» (B-055) и «Карта» на 375.
 

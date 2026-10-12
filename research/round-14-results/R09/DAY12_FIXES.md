@@ -2,7 +2,7 @@
 
 Ветка `claude/modest-shannon-0ki93p`. Проверено на сборке R01 `claude/sharp-dijkstra-0t87gl` @ 7782b92 (FINAL-3 шаг 1)
 с путями R09 этого дня и патчем `R07_fix_form.patch`. Источники замечаний: R10 BUGS.md / ACCEPTANCE_FINAL2.md
-(claude/r14-R10 @ 931ed65), R11 UX_REVIEW.md разборы 5–13 и IA_WAVE2.md (claude/r14-R11 @ b06020a), R15
+(claude/r14-R10 @ 931ed65, затем @ 2e72f62 — B-062…B-064), R11 UX_REVIEW.md разборы 5–13 и IA_WAVE2.md (claude/r14-R11 @ b06020a), R15
 SECURITY_REVIEW.md (claude/r14-R15), LOCAL_FINAL.md (claude/round-14-package) — у LOCAL новых пунктов к R09 нет
 (№1–2 закрыты 11 окт, 437c5f3).
 
@@ -23,6 +23,9 @@ SECURITY_REVIEW.md (claude/r14-R15), LOCAL_FINAL.md (claude/round-14-package) �
 | **R11 разбор 5 №5** | Стенд с `--r11 <корень репозитория>` без стилей | Стенд сам берёт `web` внутри корня; подсказка в RUN.txt | прогон с корнем R11 |
 | **R08 INTEGRATION 8.2б–в** (волна 2 п. 5, данные для R08) | В форме паспорта не было «Нужно решение руководителя» — блок R08 «Нужно решение акима» жил на примере | При задержке: отметка «Нужно решение руководителя» + 2 варианта + «что нужно от акима» (`delay.needs_decision`, `options`, `decision` — формат R08); выбор акима (`decisions.choice_for`) виден службе в паспорте | pytest (в т. ч. `decisions.needs_decision` R08 = True), `[R08 п.5]` ×4 |
 | **Волна 1 п. 9 / R04** «Разъединить дубли» | Кнопка «Это разные проблемы» в карточке R07 (R07 9e337dc) звала `/complaints/merged` и `/complaints/{id}/separate`, которых в R09 не было; патч R04 `r09_polish_r04.patch` сделан на код до волн и не применялся | Перенесён вручную (`ui/civic_feedback/v2/separate.py`): ошибочный дубль и ошибочное «Я тоже» (его текст и место теперь сохраняются — видит только служба) разъединяются одним нажатием, число людей у цели пересчитывается; `unmark_duplicate` идёт тем же путём. Маршрутов нет в шлюзе R01 — **патч для R01** `R01_separate_routes.patch` | R04 `app_polish_r04.cjs` 39/39 PASS (9 → 8 у остановки), R04 pytest (joint, separate) зелёный |
+| **R10 B-062** (важно) «Это разные проблемы» нет в карточке R07 | R07 звал `/complaints/merged`, `/separate` — 404 | Маршруты есть в R09 (перенос патча R04, см. строку выше) + `R01_separate_routes.patch` для шлюза | R10 `wave_more` W1-9: карточка R07 «Объединено с этим» → «Это разные проблемы» — PASS (`WAVE_R10_MORE_DAY12.txt`) |
+| **R10 B-063** (важно, R09-часть) светофор на карте — «Объект» | Запись R09 хранила цель без вида объекта | `checked_target` сохраняет `object_kind` с карты R12 (только от R12, проверка формата; не из запроса); в «Обращениях» — тоже | pytest `test_object_kind_kept_only_from_r12`; R10 W1-12 API: `subtype: traffic_signal` — PASS (было null). Карточка R07 со значком — у R07 |
+| **R10 B-064** (мелочь) нет пометки в «Обращениях» | Пометка была только в карточке R07 | Строка списка — «Содержит грубые слова» (ключ R11 `moderation.rude`); карточка — текст-оригинал жителя (только акимату) с той же пометкой | pytest; R10 W1-8 «Обращения» ru/kk — PASS |
 | **R04 п. 8** пометка при создании | Флаг «грубые слова» ставился только в сборке R01 | `record["moderation"]` при создании (R04 `record.moderation()`), шаг 4 мастера: «текст увидит только служба» | R04 `app_polish_r04.cjs` (п. 8) PASS |
 | **R15 P-R09-2** (S22–S24), **R04** пометка грубых слов, **R12** QR-заготовка | Были только в сборке R01 поверх R09 | Взяты в ветку R09 побайтно (c765bb0) — FINAL-3 не потеряет их, беря пути R09 | R15 209 passed на сборке |
 
@@ -48,15 +51,16 @@ SECURITY_REVIEW.md (claude/r14-R15), LOCAL_FINAL.md (claude/round-14-package) �
 
 | Проверка | Итог |
 |---|---|
-| pytest R09 + R04 + R01 | 1065 passed, 2 skipped |
-| pytest R15 / R08 / R07 / R12 | 211/1 skip · 258/1 skip · 175 · 40 — все зелёные |
-| pytest R02 / R03 / R05 / R06 / R11 / R13 / citywide | все зелёные |
+| pytest R09 + R04 + R01 + R15 + R07 + R12 + R08 (код 2d2cf80) | 1752 passed, 4 skipped, 1 failed — `test_citywide_under_300ms_with_5000_complaints` R07 (замер времени, шли 2 прогона браузера); R07 отдельно — 175 passed |
+| pytest R02 / R03 / R05 / R06 / R11 / R13 / citywide (код f80c0bf) | все зелёные |
 | pytest R10 | 34 passed, 2 failed — `test_r10_accuracy` (объекты R12/R07 = точки OSM: в облаке нет полной выгрузки OSM), не R09 |
 | R04 `app_polish_r04.cjs` (п. 8–9) | 39/39 PASS — `APP_RESULT_R04_DAY12.txt`, кадры `screens-day12/r04-*` |
 | R10 `demo_reset_check.cjs` (B-048/B-049) | 4/4 PASS |
 | R10 `wave_checks.cjs --only W1-3,W2-1,W2-2,W2-4` | **91 PASS / 10 FAIL / 2 NOT_RUN** (`WAVE_R10_DAY12.txt`; прогон этого же дня до «Увидят N» и паспорта в карточке R07 — 88 PASS / 13 FAIL). Части R09 — PASS: форма «что сделали» + фото + «Увидят N» в карточке R07 (×4), «Изменить» → 3 поля (W2-2), «История», запись «служба сообщила» / «проверено» / «вернули». FAIL не R09: текст карточки R07 «На карте зелёным до …» до проверки (×4, B-055); на 1366 карточка R07 не открывается нажатием по цели в новой вкладке акимата после проверки жителями (×4, `card:false`) — **так же без патча R07** (прогон A/B на том же дереве без `R07_fix_form.patch`), т. е. карта R01/R07; «Карта» в меню на 375 (×2, R01/R08). NOT_RUN — проверки R10 ещё не написаны (W2-4 «Рядом» в «Что изменилось», W2-2 задержка через API) |
 | R09 `app_demo_r09.cjs` (шаги 1–7, акимат) | `APP_RESULT_DAY12.txt` |
-| стенд `browser_r09.cjs` (ui-kit R09 и R11 b06020a) | `BROWSER_RESULT_DAY12.txt`, `BROWSER_RESULT_DAY12_R11UI.txt` |
+| стенд `browser_r09.cjs` (ui-kit R09 kit-fallback) | **470/470 PASS** — `BROWSER_RESULT_DAY12.txt` |
+| стенд `browser_r09.cjs --r11` (ui-kit и словарь R11 d9f2ff9 — чистый дизайн) | `BROWSER_RESULT_DAY12_R11UI.txt` |
+| R10 `wave_more` W1-8 / W1-9 / W1-12 (B-062…B-064) | 11 PASS / 2 FAIL (карточка R07 не открылась на 1366) — `WAVE_R10_MORE_DAY12.txt` |
 
 ## Волны 1–2 — сверка со STATUS.md
 
