@@ -59,6 +59,11 @@
   «По идее жителей · N голосов» пропадала у проекта из идеи (R06 5cfbdb5 showsIdea = true); (2) слой идей показывает
   voting/checking/project — как просит слой R06 (`status=voting,project`, их тест ждёт 4 идеи), не ставит review/hidden/
   rejected. Проверка с R06 5cfbdb5 — runs/r06_ideas_check.json 6/6; демо idea/r06/card — PASS.
+- **07:15 UTC — DELIVERY.json: code_sha поднят с `e7a5dd1` до `03ac17c` (сессия 01Nh9Qu…), остальное в поставке 9 —
+  ваше, без изменений.** Почему: R01 FINAL-3 `0464f5c` уже содержит «Идеи» R06; с `e7a5dd1` их тест слоя 14/16 (3 идеи
+  вместо 4) и пропадает «По идее жителей · 52 голоса»; с `03ac17c` — 16/16, строка есть, R01 r14_b2 28/28, r14_shell 42/42,
+  r14_wave2 42/42 (runs/final3_0464f5c_ideas_03ac17c.txt). **Для сессии 01FDvgz…:** `proposed_r01_final3.patch` к `0464f5c`
+  не применяется (`git apply --check` — нет, `-3` — да: патч wave2 там уже внутри) — пересоберите его к голове R01.
 - Мой прогон `dba5691` на R01 `0f5101a` (до объединения): runs/run_dba5691_r01_0f5101a.txt — R01 r14_b2 28/28,
   r14_shell 39/39, r14_wave2 42/42 (как есть и с патчем), R10 demo_flow 170/0/0, демо 52/0/1, стенды R06 зелёные.
 - R06 API идей (`claude/r14-R06` @ 57b7b53) с R05: runs/r06_ideas_check.json — 6/6 PASS.
@@ -69,7 +74,7 @@
   Сейчас — как у кнопки «3D» (по умолчанию).
 
 ## Дальше
-1. R01: FINAL-3 — `build3d` = `e7a5dd1` + `proposed_r01_final3.patch` (см. выше).
+1. R01: FINAL-3 — `build3d` = `03ac17c` (= `e7a5dd1` + правки «Идей») + `proposed_r01_final3.patch` (см. выше).
 2. R06: экран «Идеи» и `window.BirgeIdeas` → R05 уже готов (`setIdeas`/`pickObject`/`view3dIdea`, INTEGRATION B и E).
 3. R10: B-045 закрыть (не воспроизводится); R11: разбор части «Идеи» после экрана R06.
 4. LOCAL-R05-1/2/3 (ноутбук с GPU) — только у владельца/Codex.
