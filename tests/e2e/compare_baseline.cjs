@@ -30,7 +30,8 @@ const items = [];
 const ACCEPTED = (() => { try { return JSON.parse(fs.readFileSync(path.join(BASE, "ACCEPTED.json"), "utf8")); } catch { return {}; } })();
 const acceptedLayer = (id) => (ACCEPTED.layers || {})[id] || null;
 const acceptedControl = (c) => (ACCEPTED.controls || {})[c] || null;
-const add = (status, area, what, detail, crit) => items.push({ status, area, what, detail: detail ?? null, ...(crit ? { crit } : {}) });
+// crit — критерий владельца (сценарий / тексты / шрифт / кнопки / контраст); old — то же нарушение было и в эталоне.
+const add = (status, area, what, detail, crit, old) => items.push({ status, area, what, detail: detail ?? null, ...(crit ? { crit } : {}), ...(old ? { old: true } : {}) });
 
 const sameMachine = (a, b) => !!(a && b && a.machine && b.machine && a.machine.cpu === b.machine.cpu && a.machine.cores === b.machine.cores && a.chromium === b.chromium);
 
@@ -250,22 +251,27 @@ const CRIT = { scenario: "сценарий не сломан", texts: "все т
 function compareAudit(baseA, newA) {
   if (!newA) { add("СМОТРЕТЬ", "интерфейс", "в новом прогоне нет audit (запустить demo_flow.cjs с --audit)", null); return false; }
   const norm = (t) => t.replace(/\d+([.,:]\d+)*/g, "#").replace(/\s+/g, " ").trim().toLowerCase();
-  const key = (o) => JSON.stringify([o.text || o.name, o.where]);
+  // Тот же элемент в эталоне — по тексту без чисел («Сообщили 6 человек» = «Сообщили 12 человек») и месту на экране.
+  // Значки на карте — по размеру (на кадре видны другие места, но тот же вид значка был в эталоне).
+  const key = (o) => JSON.stringify(o.where === "карта" && o.w ? [o.where, o.w, o.h] : [norm(String(o.text || o.name || "")), o.where]);
   let shots = 0;
   for (const [tag, byShot] of Object.entries(newA)) {
     for (const [shot, a] of Object.entries(byShot)) {
       if (!a || a.error) { add("СМОТРЕТЬ", "интерфейс", `${tag}-${shot}: замер не удался`, a && a.error); continue; }
       shots++;
       const b = baseA && baseA[tag] && baseA[tag][shot];
-      const was = (list, o) => !!(b && (b[list] || []).some((x) => key(x) === key(o)));
+      // Значок на карте — «был», если такой же вид значка был на любом кадре эталона этого варианта (места на кадрах разные).
+      const pool = (list, o) => (o.where === "карта" && baseA && baseA[tag] ? Object.values(baseA[tag]).flatMap((x) => (x && x[list]) || []) : (b && b[list]) || []);
+      // Зона значка на карте «не стала хуже», если в эталоне был значок с зоной не больше этой (значки выросли, но < 44 px — «было»).
+      const was = (list, o) => pool(list, o).some((x) => (list === "taps" && o.where === "карта" ? x.where === "карта" && Math.min(x.w, x.h) <= Math.min(o.w, o.h) : key(x) === key(o)));
       const where = `${tag}-${shot}`;
-      for (const f of a.fonts) add("FAIL", "интерфейс · шрифт", `${where}: ${f.px} px «${f.text}» (${f.where})`, { в_эталоне: b ? was("fonts", f) : "нет кадра" }, "font");
+      for (const f of a.fonts) add("FAIL", "интерфейс · шрифт", `${where}: ${f.px} px «${f.text}» (${f.where})`, { в_эталоне: b ? was("fonts", f) : "нет кадра" }, "font", b ? was("fonts", f) : false);
       for (const t of a.taps) {
         const st = t.vendor ? "СМОТРЕТЬ" : t.inline ? "ИНФО" : "FAIL";
         add(st, "интерфейс · кнопки", `${where}: «${t.name}» ${t.w}×${t.h} px (${t.where})${t.vendor ? " — кнопка MapLibre" : t.inline ? " — ссылка в строке текста" : ""}`,
-          { в_эталоне: b ? was("taps", t) : "нет кадра" }, "tap");
+          { в_эталоне: b ? was("taps", t) : "нет кадра" }, "tap", b ? was("taps", t) : false);
       }
-      for (const c of a.contrast) add("FAIL", "интерфейс · контраст", `${where}: ${c.ratio}:1 (нужно ${c.need}:1) «${c.text}» (${c.where})`, { в_эталоне: b ? was("contrast", c) : "нет кадра" }, "contrast");
+      for (const c of a.contrast) add("FAIL", "интерфейс · контраст", `${where}: ${c.ratio}:1 (нужно ${c.need}:1) «${c.text}» (${c.where})`, { в_эталоне: b ? was("contrast", c) : "нет кадра" }, "contrast", b ? was("contrast", c) : false);
       for (const k of a.keys) add("FAIL", "интерфейс · тексты", `${where}: ключ перевода вместо текста «${k}»`, null, "texts");
       for (const j of a.junk) add("FAIL", "интерфейс · тексты", `${where}: заготовка вместо текста «${j}»`, null, "texts");
       for (const n of a.noName) add("FAIL", "интерфейс · тексты", `${where}: кнопка без подписи (${n})`, null, "texts");
@@ -302,9 +308,12 @@ function compareAudit(baseA, newA) {
   const order = ["FAIL", "СМОТРЕТЬ", "ИНФО", "OK"];
   const md = [`# R10 · сравнение с эталоном · ${meta.base_sha} → ${meta.new_sha}: **${verdict}**`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: ${order.filter((s) => counts[s]).map((s) => `${s} ${counts[s]}`).join(" · ")}`, "",
-    ...(audited ? ["Критерии владельца (12 окт):", "", "| Критерий | Итог | FAIL | СМОТРЕТЬ |", "|---|---|---:|---:|",
-      ...Object.entries(CRIT).map(([k, name]) => { const f = items.filter((i) => i.crit === k && i.status === "FAIL").length, w = items.filter((i) => i.crit === k && i.status === "СМОТРЕТЬ").length;
-        return `| ${name} | **${f ? "НЕТ" : w ? "да, смотреть" : "да"}** | ${f} | ${w} |`; }), ""] : []),
+    ...(audited ? ["Критерии владельца (12 окт). «Новое» — нарушения, которых в эталоне 8e67c65 не было (стало хуже); «было» — то же",
+      "нарушение уже было в эталоне (не стало хуже, но порог не выполнен).", "",
+      "| Критерий | Против эталона | По порогу | FAIL новое | FAIL было | СМОТРЕТЬ |", "|---|---|---|---:|---:|---:|",
+      ...Object.entries(CRIT).map(([k, name]) => { const fs_ = items.filter((i) => i.crit === k && i.status === "FAIL"), nw = fs_.filter((i) => !i.old).length, od = fs_.length - nw;
+        const w = items.filter((i) => i.crit === k && i.status === "СМОТРЕТЬ").length;
+        return `| ${name} | **${nw ? "стало хуже" : "не хуже"}** | ${fs_.length ? "нет" : w ? "да, смотреть" : "да"} | ${nw} | ${od} | ${w} |`; }), ""] : []),
     "FAIL — правило 7 нарушено (стало хуже); СМОТРЕТЬ — изменилось, решает человек по кадру `diff-*.jpg` (эталон | новый | разница красным).", "",
     "| Итог | Область | Что | Подробно |", "|---|---|---|---|",
     ...order.flatMap((s) => items.filter((i) => i.status === s).map((i) => `| **${i.status}** | ${i.area} | ${i.what} | ${i.detail ? JSON.stringify(i.detail).replace(/\|/g, "/").slice(0, 260) : ""} |`))];

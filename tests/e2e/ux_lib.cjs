@@ -272,7 +272,9 @@ function uiAudit(page) {
     const all = [...lines];
     const keys = all.filter((t) => new RegExp(raw).test(t)).slice(0, 10);
     const junk = all.filter((t) => /\{[a-z_]+\}|\bundefined\b|\bNaN\b|\[object Object\]|\bnull\b/.test(t)).slice(0, 10);
-    const noName = [...seen].filter((e) => !nameOf(e) && !e.querySelector("img[alt]:not([alt=''])")).map((e) => `${e.tagName.toLowerCase()}.${String(e.className || "").split(" ")[0]}`).slice(0, 10);
+    // Кнопка без подписи: разметка и текст вокруг — чтобы владелец нашёл её без повторного прогона.
+    const noName = [...seen].filter((e) => !nameOf(e) && !e.querySelector("img[alt]:not([alt=''])"))
+      .map((e) => `${e.tagName.toLowerCase()}.${String(e.className || "").trim().replace(/\s+/g, ".")} в «${clean(e.parentElement && e.parentElement.innerText).slice(0, 40)}» ${e.outerHTML.slice(0, 120)}`).slice(0, 10);
     const cut = [];
     for (const el of document.querySelectorAll("body *")) {
       if (el.scrollWidth <= el.clientWidth + 1 || getComputedStyle(el).textOverflow !== "ellipsis" || !vis(el)) continue;
