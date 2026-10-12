@@ -148,6 +148,25 @@ async function headerClick(page, re, { wait = 1200, menuRe = null } = {}) {
   return false;
 }
 
+// Стекло R11/R01 (GLASS.md): "keep" — снимать автовыключатель R01 №8 (html.bk-glass-off при < 30 к/с — в облаке всегда),
+// "off" — белый запасной вид. Скрипт ждёт появления <html> (init-скрипт идёт раньше него).
+async function glassMode(ctx, mode) {
+  if (!mode) return;
+  await ctx.addInitScript((g) => {
+    const watch = (h) => {
+      if (g === "off") h.classList.add("bk-glass-off");
+      new MutationObserver(() => { const on = h.classList.contains("bk-glass-off");
+        if (g === "keep" && on) h.classList.remove("bk-glass-off"); if (g === "off" && !on) h.classList.add("bk-glass-off"); })
+        .observe(h, { attributes: true, attributeFilter: ["class"] });
+    };
+    if (document.documentElement) watch(document.documentElement);
+    else { const mo = new MutationObserver(() => { if (document.documentElement) { mo.disconnect(); watch(document.documentElement); } }); mo.observe(document, { childList: true }); }
+  }, mode);
+}
+// Видно ли стекло сейчас: элементов с backdrop-filter и класс выключателя.
+const glassSeen = (page) => page.evaluate(() => ({ off: document.documentElement.classList.contains("bk-glass-off"),
+  blurred: [...document.querySelectorAll("body *")].filter((e) => { const f = getComputedStyle(e).backdropFilter; return f && f !== "none"; }).length })).catch(() => null);
+
 const tap = async (page, x, y) => { if (page.viewportSize().width < 1024) await page.touchscreen.tap(x, y); else await page.mouse.click(x, y); };
 // Показать точку на карте на свободной от панелей части холста и вернуть её место на экране (как demo_flow.cjs).
 async function showPoint(page, point, zoom = 17) {
@@ -195,5 +214,5 @@ function machine() {
   return { cpu: cpus[0] && cpus[0].model, cores: cpus.length, mem_gb: Math.round(os.totalmem() / 2 ** 30), platform: `${os.platform()} ${os.release()}`, node: process.version };
 }
 
-module.exports = { parseArgs, sleep, PY, startServer, api, loadDict, T, esc, textRe, anyRe, firstVisible, clickText, visibleText, headerClick,
+module.exports = { glassMode, glassSeen, parseArgs, sleep, PY, startServer, api, loadDict, T, esc, textRe, anyRe, firstVisible, clickText, visibleText, headerClick,
   tap, showPoint, keyByText, timeUntil, median, buildSha, machine };

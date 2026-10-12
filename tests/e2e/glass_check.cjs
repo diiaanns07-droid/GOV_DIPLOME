@@ -18,7 +18,7 @@
 //      ещё и другая сборка на этой машине. Программный WebGL (облако, < 10 к/с везде) — только ИНФО: мерить на ноутбуке.
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/glass_check.cjs --root <сборка> --out <папка> [--sizes 1366x768,1024x768]
-//        [--langs ru,kk] [--control <сборка без стекла>] [--fps-repeat 2] [--no-fps] [--force]
+//        [--langs ru,kk] [--control <сборка без стекла>] [--fps-repeat 2] [--no-fps | --fps-only] [--force]
 //        [--inject-css <файл>] [--inject-js <файл>]   (пробное стекло поверх сборки — самопроверка, не приёмка)
 // Итог: <out>/GLASS.json, GLASS.md, кадры; код возврата 1 — при FAIL.
 "use strict";
@@ -37,6 +37,7 @@ const INJECT = args["inject-css"] ? fs.readFileSync(path.resolve(String(args["in
 const INJECT_JS = args["inject-js"] ? fs.readFileSync(path.resolve(String(args["inject-js"])), "utf8") : null;
 const FPS_REPEAT = Math.max(1, Number(args["fps-repeat"] || 2));
 const NO_FPS = !!args["no-fps"];
+const FPS_ONLY = !!args["fps-only"];  // только плавность (отдельный прогон без другой нагрузки на машине)
 const DICT = { ru: L.loadDict(ROOT, "ru"), kk: L.loadDict(ROOT, "kk") };
 const word = (lang, key, ru, kk) => L.T(DICT[lang], key, lang === "kk" ? kk : ru);
 const exactRe = (s) => new RegExp("^\\s*" + L.esc(s) + "\\s*$", "i");
@@ -84,7 +85,11 @@ const SCAN = () => {
     surfaces.push({ name: name(e), tag: e.tagName.toLowerCase(), cls: String(e.className || "").slice(0, 60), filter: f, alpha: bg ? bg[3] : null,
       w: Math.round(r.width), h: Math.round(r.height), text_len: (e.innerText || "").trim().length,
       on_marker: !!e.closest(".maplibregl-marker, .r07-badge, .b3d-labels"), in_form: /^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName) || !!e.closest("input, textarea, select"),
-      primary: !!e.closest(".bk-btn--primary, .bc-fab, .bk-toast") });
+      primary: !!e.closest(".bk-btn--primary, .bc-fab, .bk-toast"),
+      // Стекло закрыто своим непрозрачным фоном модуля (GLASS.md §4: «свои фоны у корня панели убрать»): доля площади.
+      covered: (() => { let best = null; for (const d of e.querySelectorAll("*")) { const q = d.getBoundingClientRect(); if (q.width * q.height < r.width * r.height * 0.5) continue;
+        const a = rgba(getComputedStyle(d).backgroundColor); if (a && a[3] >= 0.95) { const k = Math.round((q.width * q.height) / (r.width * r.height) * 100) / 100; if (!best || k > best.share) best = { share: Math.min(1, k), el: (d.id ? "#" + d.id : "") + "." + String(d.className).trim().split(/\s+/).slice(0, 2).join(".") }; } }
+        return best; })() });
   }
   document.querySelectorAll("[data-r10t]").forEach((e) => e.removeAttribute("data-r10t"));
   const texts = []; let n = 0;
@@ -93,13 +98,34 @@ const SCAN = () => {
     if (own.length < 2 || !vis(e) || e.closest("svg")) continue;
     let g = null; for (let p = e; p && p !== document.body; p = p.parentElement) if (glassOf(p)) { g = p; break; }
     if (!g) continue;
-    const r = e.getBoundingClientRect(), cs = getComputedStyle(e), c = rgba(cs.color);
-    // Надпись видна сверху (не прокручена за край панели и не закрыта): в середине — она сама.
-    const hx = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1), hy = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
-    const hit = document.elementFromPoint(hx, hy);
-    if (!hit || !(hit === e || e.contains(hit) || hit.contains(e))) continue;
+    // Рамка самих букв (узлы текста), без значков рядом в том же элементе («✓ исправлено»): иначе значок попадёт в «фон».
+    const rg = document.createRange(); let r = null;
+    for (const x of e.childNodes) if (x.nodeType === 3 && x.textContent.trim()) { rg.selectNodeContents(x); const q = rg.getBoundingClientRect();
+      if (q.width > 0 && q.height > 0) r = r ? { left: Math.min(r.left, q.left), top: Math.min(r.top, q.top), right: Math.max(r.right, q.right), bottom: Math.max(r.bottom, q.bottom) } : { left: q.left, top: q.top, right: q.right, bottom: q.bottom }; }
+    if (!r) continue;
+    r.width = r.right - r.left; r.height = r.bottom - r.top;
+    const cs = getComputedStyle(e), c = rgba(cs.color);
+    // Надпись не обрезана прокруткой: ≥ 60 % её рамки внутри всех предков с overflow ≠ visible и внутри самого стекла;
+    // не гаснет (прозрачность всех предков ≈ 1 — плашка карты гаснет через 6 с).
+    let cl = { l: r.left, t: r.top, r: r.right, b: r.bottom }, fade = 1;
+    for (let p = e; p && p !== document.documentElement; p = p.parentElement) {
+      const ps = getComputedStyle(p); fade *= Number(ps.opacity);
+      if (p === g || ps.overflow !== "visible" || ps.overflowX !== "visible" || ps.overflowY !== "visible") {
+        const q = p.getBoundingClientRect(); cl = { l: Math.max(cl.l, q.left), t: Math.max(cl.t, q.top), r: Math.min(cl.r, q.right), b: Math.min(cl.b, q.bottom) };
+      }
+    }
+    const shown = Math.max(0, cl.r - cl.l) * Math.max(0, cl.b - cl.t) / Math.max(1, r.width * r.height);
+    if (shown < 0.6 || fade < 0.98) continue;
+    // Надпись открыта целиком (не закрыта кнопкой, другой панелью): сетка 5 × 3 точек в видимой части — везде она сама.
+    let open = true;
+    for (let i = 0; i < 5 && open; i++) for (let j = 0; j < 3 && open; j++) {
+      const hx = Math.min(Math.max(cl.l + (cl.r - cl.l) * (0.1 + 0.2 * i), 0), innerWidth - 1), hy = Math.min(Math.max(cl.t + (cl.b - cl.t) * (0.2 + 0.3 * j), 0), innerHeight - 1);
+      const hit = document.elementFromPoint(hx, hy);
+      if (!hit || !(hit === e || e.contains(hit) || hit.contains(e))) open = false;
+    }
+    if (!open) continue;
     e.setAttribute("data-r10t", String(n));
-    texts.push({ n: n++, text: own.slice(0, 40), x: r.left, y: r.top, w: r.width, h: r.height, color: c, fs: parseFloat(cs.fontSize), bold: Number(cs.fontWeight) >= 600, glass: name(g) });
+    texts.push({ n: n++, text: own.slice(0, 40), x: cl.l, y: cl.t, w: cl.r - cl.l, h: cl.b - cl.t, color: c, fs: parseFloat(cs.fontSize), bold: Number(cs.fontWeight) >= 600, glass: name(g) });
   }
   return { surfaces, texts };
 };
@@ -156,7 +182,9 @@ const setBackground = (page, bg) => page.evaluate((bg) => {
   const glassOf = (e) => { const s = getComputedStyle(e); const f = s.backdropFilter || s.webkitBackdropFilter || "none"; return f && f !== "none"; };
   for (const e of document.querySelectorAll("body *")) {
     if (!glassOf(e) || e.id === "r10-stress") continue;
-    let p = e.parentElement; while (p && p !== document.documentElement && glassOf(p)) p = p.parentElement;
+    let nested = false; for (let q = e.parentElement; q && q !== document.documentElement; q = q.parentElement) if (glassOf(q)) { nested = true; break; }
+    if (nested) continue;  // стекло внутри стекла: под ним — внешнее стекло, фон кладём только под внешнее
+    const p = e.parentElement;
     if (!p || p.hasAttribute("data-r10bg") || p.contains(m) || m.contains(p)) continue;  // карта — уже слоем
     p.setAttribute("data-r10bg", p.style.background || ""); p.style.setProperty("background", bg, "important");
   }
@@ -165,16 +193,27 @@ const setBackground = (page, bg) => page.evaluate((bg) => {
 
 // Формы без стекла (GLASS.md §2 «Нет»): у формы (form, шаг мастера, форма сотрудника) между ней и ближайшим стеклом выше
 // должна быть непрозрачная подложка (альфа ≥ 0.95) — иначе форма лежит на стекле.
-const FORMSCAN = () => {
+const FORMSCAN = (withDialogs = false) => {
   const vis = (e) => { const r = e.getBoundingClientRect(), s = getComputedStyle(e); return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none"; };
   const glassOf = (e) => { const s = getComputedStyle(e); const f = s.backdropFilter || s.webkitBackdropFilter || "none"; return f && f !== "none"; };
   const alpha = (e) => { const m = String(getComputedStyle(e).backgroundColor).match(/rgba?\(([^)]+)\)/); if (!m) return 0; const v = m[1].split(/[ ,/]+/).filter(Boolean).map(Number); return v.length > 3 ? v[3] : 1; };
-  const forms = new Set();
+  // Форма ввода — form / шаг мастера / форма сотрудника / диалог с текстовым полем, textarea или кнопкой отправки; одиночное
+  // поле-фильтр (район, дата, поиск) — форма из одного поля: непрозрачным должно быть само поле (ui-kit .bk-glass input).
+  const forms = new Set(), fields = [];
+  const isInput = (c) => !!c.querySelector("textarea, input[type=text], input:not([type]), input[type=email], input[type=tel], input[type=file], input[type=password], button[type=submit]");
   for (const f of document.querySelectorAll("input:not([type=hidden]), textarea, select")) {
     if (!vis(f)) continue;
-    forms.add(f.closest("form, [data-step], .r07-fixform, [role=dialog]") || f.parentElement);
+    const c = f.closest("form, [data-step], .r07-fixform, [role=dialog]");
+    if (c && isInput(c)) forms.add(c); else fields.push(f);
   }
-  return [...forms].filter(Boolean).map((c) => {
+  // Шаг мастера — форма; «Мои обращения» R09 (.bc-panel[data-step="mine"]) — список на стекле, не форма (GLASS.md §4 R09).
+  for (const c of document.querySelectorAll(withDialogs ? "[data-step], [role=dialog]" : "[data-step]"))
+    if (vis(c) && c.getAttribute("data-step") !== "mine" && (withDialogs || isInput(c))) forms.add(c);
+  const single = fields.map((f) => {
+    let glass = null; for (let p = f; p && p !== document.documentElement; p = p.parentElement) if (glassOf(p)) { glass = p; break; }
+    return { form: "поле " + (f.name || f.type || f.tagName.toLowerCase()), on_glass: !!glass && alpha(f) < 0.95, glass: glass ? (glass.id ? "#" + glass.id : glass.tagName.toLowerCase()) : null, opaque: alpha(f) >= 0.95 ? "само поле" : null, fields: 1 };
+  });
+  return single.concat([...forms].filter(Boolean).map((c) => {
     let opaque = null, glass = null;
     for (let p = c; p && p !== document.documentElement; p = p.parentElement) {
       if (glassOf(p)) { glass = p; break; }
@@ -182,7 +221,7 @@ const FORMSCAN = () => {
     }
     const nm = (e) => e ? (e.id ? "#" + e.id : "") + (e.className ? "." + String(e.className).trim().split(/\s+/).slice(0, 2).join(".") : "") || e.tagName.toLowerCase() : null;
     return { form: nm(c), on_glass: !!glass && !opaque, glass: nm(glass), opaque: nm(opaque), fields: c.querySelectorAll("input, textarea, select").length };
-  });
+  }));
 };
 
 // Запасной вид в браузере: все .bk-glass / .bk-glass--control (по классу) — без размытия и с непрозрачным фоном.
@@ -225,14 +264,19 @@ async function openPage(browser, [w, h], lang, mode, { glass = "keep", reduced =
     if (document.head) add(); else document.addEventListener("DOMContentLoaded", add); }, INJECT);
   if (INJECT_JS) await ctx.addInitScript(INJECT_JS);
   await ctx.addInitScript((g) => {
-    const h = document.documentElement; window.__r10_off = [];
-    if (g === "off") h.classList.add("bk-glass-off");
-    new MutationObserver(() => {
-      const on = h.classList.contains("bk-glass-off");
-      if (g !== "off" && on) window.__r10_off.push(Math.round(performance.now()));
-      if (g === "keep" && on) h.classList.remove("bk-glass-off");
-      if (g === "off" && !on) h.classList.add("bk-glass-off");
-    }).observe(h, { attributes: true, attributeFilter: ["class"] });
+    window.__r10_off = [];
+    // Скрипт идёт до появления <html> — ждём его, затем держим класс (off) или снимаем выключатель R01 (keep).
+    const watch = (h) => {
+      if (g === "off") h.classList.add("bk-glass-off");
+      new MutationObserver(() => {
+        const on = h.classList.contains("bk-glass-off");
+        if (g !== "off" && on) window.__r10_off.push(Math.round(performance.now()));
+        if (g === "keep" && on) h.classList.remove("bk-glass-off");
+        if (g === "off" && !on) h.classList.add("bk-glass-off");
+      }).observe(h, { attributes: true, attributeFilter: ["class"] });
+    };
+    if (document.documentElement) watch(document.documentElement);
+    else { const mo = new MutationObserver(() => { if (document.documentElement) { mo.disconnect(); watch(document.documentElement); } }); mo.observe(document, { childList: true }); }
   }, glass);
   const page = await ctx.newPage();
   if (reduced) {
@@ -269,12 +313,24 @@ async function contrastRun(browser, base, size, lang, mode) {
       const ok = await enter();
       if (!ok) { add("G-3", tag, `${sname}: открыть`, "NOT_RUN", "состояние не открылось"); continue; }
       if (sname === "мастер жалобы") {
-        const forms = await page.evaluate(FORMSCAN), bad = forms.filter((f) => f.on_glass);
-        add("G-1", tag, "мастер жалобы — форма без стекла (между формой и стеклом непрозрачная подложка)", forms.length ? st(bad.length === 0) : "NOT_RUN",
-          { forms: forms.length, bad: bad.slice(0, 4), ok: forms.filter((f) => !f.on_glass).slice(0, 3) }, await shotOf(page, `${tag}-wizard`));
+        // Шаг «Где проблема?» (диалог), затем «Примерное место» → шаг с текстом: везде форма без стекла.
+        const forms = await page.evaluate(FORMSCAN, true);
+        const shot1 = await shotOf(page, `${tag}-wizard-1`);
+        const pt = await L.showPoint(page, KHAN, 17); if (pt) await L.tap(page, (pt.near || pt).x, (pt.near || pt).y); await L.sleep(2500);
+        const dlg = await L.firstVisible(page.getByRole("dialog"));
+        const approx = dlg && (await L.firstVisible(dlg.getByRole("button", { name: new RegExp(L.esc(word(lang, "complaint.step2.approximate", "Примерное место", "Шамамен орны")), "i") })));
+        if (approx) { await approx.click().catch(() => null); await L.sleep(1500); }
+        const forms2 = await page.evaluate(FORMSCAN, true), all = forms.concat(forms2), bad = all.filter((f) => f.on_glass);
+        add("G-1", tag, "мастер жалобы (шаги «Где проблема?» и текст) — форма без стекла (между формой и стеклом непрозрачная подложка)", all.length ? st(bad.length === 0) : "NOT_RUN",
+          { forms: all.length, text_step: !!approx, bad: bad.slice(0, 4), ok: all.filter((f) => !f.on_glass).slice(0, 4) }, (await shotOf(page, `${tag}-wizard-2`)) || shot1);
         continue;
       }
+      await page.addStyleTag({ content: "*,*::before,*::after{transition:none!important;animation:none!important}" }).then((h) => h.evaluate((e) => { e.id = "r10-freeze"; })).catch(() => null);
+      await L.sleep(200);
       const scan = await page.evaluate(SCAN);
+      const covered = scan.surfaces.filter((x) => x.covered && x.covered.share >= 0.6);
+      if (covered.length) add("G-1", tag, `${sname}: стекло закрыто своим непрозрачным фоном модуля (стекла не видно; GLASS.md §4 — свой фон убрать)`, "INFO",
+        covered.slice(0, 5).map((x) => ({ glass: x.name, by: x.covered.el, share: x.covered.share })));
       if (sname !== "карта") {
         const forms = (await page.evaluate(FORMSCAN)).filter((f) => f.on_glass);
         if (forms.length) add("G-1", tag, `${sname}: поля и формы без стекла`, "FAIL", { bad: forms.slice(0, 4) });
@@ -295,16 +351,21 @@ async function contrastRun(browser, base, size, lang, mode) {
         await page.addStyleTag({ content: "[data-r10t]{color:transparent!important;text-shadow:none!important;-webkit-text-fill-color:transparent!important}" }).then((h) => h.evaluate((e) => { e.id = "r10-hide"; }));
         await L.sleep(150);
         const png = await page.screenshot({ type: "png" });
+        // Надписи, которые пропали за время замера (плашка погасла, панель закрылась), не считаются.
+        const alive = new Set(await page.evaluate(() => [...document.querySelectorAll("[data-r10t]")].filter((e) => {
+          const r = e.getBoundingClientRect(); let o = 1; for (let p = e; p && p !== document.documentElement; p = p.parentElement) { const s = getComputedStyle(p); o *= Number(s.opacity); if (s.visibility === "hidden" || s.display === "none") o = 0; }
+          return r.width > 0 && r.height > 0 && o >= 0.98; }).map((e) => Number(e.getAttribute("data-r10t")))));
         await page.evaluate(() => { const e = document.getElementById("r10-hide"); if (e) e.remove(); });
-        const res = await pixelContrast(ctx, png, scan.texts, 1);
+        const res = await pixelContrast(ctx, png, scan.texts.filter((t) => alive.has(t.n)), 1);
         const fails = res.filter((r) => !r.ok);
         worst[bname] = { min: Math.min(...res.map((r) => r.ratio)), fails: fails.length };
         add("G-3", tag, `${sname} · фон «${bname}»${EXTREME.has(bname) ? " (предельный)" : ""}: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)`,
-          fails.length === 0 ? "PASS" : EXTREME.has(bname) ? "СМОТРЕТЬ" : "FAIL",
+          !res.length ? "NOT_RUN" : fails.length === 0 ? "PASS" : EXTREME.has(bname) ? "СМОТРЕТЬ" : "FAIL",
           { texts: res.length, min: worst[bname].min, fails: fails.slice(0, 5).map((f) => `${f.ratio}:1 «${f.text}» (${f.glass})`) },
           bname === "полосы" || fails.length ? await page.screenshot({ path: path.join(OUT, `${tag}-${sname.replace(/\s+/g, "_")}-${bname}.jpg`), type: "jpeg", quality: 70 }).then(() => `${tag}-${sname.replace(/\s+/g, "_")}-${bname}.jpg`, () => null) : null);
       }
       await setBackground(page, null);
+      await page.evaluate(() => { const e = document.getElementById("r10-freeze"); if (e) e.remove(); }).catch(() => null);
     }
   } finally { await ctx.close(); }
 }
@@ -353,10 +414,17 @@ async function fallbackRun(browser, base, size) {
   }
   const { ctx, page } = await openPage(browser, size, "ru", "resident", { glass: "auto" });
   try {
-    await page.goto(base); await settle(page); await L.sleep(8000);
+    await page.goto(base); await settle(page);
+    // R01 меряет кадры при движении карты (≥ 600 мс, дважды) — двигаем карту три раза по 1,5 с.
+    const before = await page.evaluate(() => document.documentElement.classList.contains("bk-glass-off"));
+    await page.evaluate(async (p) => { const m = typeof map !== "undefined" && map && map.easeTo ? map : null; if (!m) return; // eslint-disable-line no-undef
+      const wait = (ms) => new Promise((ok) => setTimeout(ok, ms));
+      for (let i = 0; i < 3; i++) { m.easeTo({ center: [p[0] + 0.01 * (i % 2 ? -1 : 1), p[1]], duration: 1500 }); await wait(2200); } }, KHAN).catch(() => null);
+    await L.sleep(1000);
     const off = await page.evaluate(() => ({ now: document.documentElement.classList.contains("bk-glass-off"), times: window.__r10_off || [] }));
+    off.before_motion = before;
     add("G-2", tag, "автовыключатель R01 (GLASS.md R01 №8: < 30 к/с при движении карты → html.bk-glass-off один раз, без мигания)", "INFO",
-      { off_now: off.now, set_at_ms: off.times.slice(0, 5), note: "облако — программный WebGL (~5 к/с): выключатель должен сработать; на ноутбуке — нет" });
+      { off_before_motion: off.before_motion, off_after_motion: off.now, set_at_ms: off.times.slice(0, 5), set_times: off.times.length, note: "облако — программный WebGL (~5 к/с): после движения карты выключатель должен сработать один раз; на ноутбуке — нет" });
   } finally { await ctx.close(); }
 }
 
@@ -375,7 +443,7 @@ async function fallbackRun(browser, base, size) {
   const browser = await chromium.launch();
   const fps = [];
   try {
-    if (delivered || args.force) {
+    if ((delivered || args.force) && !FPS_ONLY) {
       for (const size of SIZES) for (const lang of LANGS) for (const mode of ["resident", "akimat"]) await contrastRun(browser, server.base, size, lang, mode);
       for (const size of SIZES) await fallbackRun(browser, server.base, size);
     }
