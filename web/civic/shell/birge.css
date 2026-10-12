@@ -769,20 +769,33 @@ body.civic-mode #birge-header .birge-nav > button { min-width: 44px; justify-con
 body.civic-mode .civic-explore .civic-explore-clear { font-size: 20px; line-height: 1; color: var(--c-text-2, #5b6a64); }
 
 /* Загрузка (чек-лист №8): до первой раскладки поиска поле скрыто (не мелькает прежняя «Территория»); на телефоне слово
-   Birge не показываем и до появления поиска — шапка не прыгает. Пустая панель «Карта жалоб» до прихода модуля R07 —
-   скелет из ui-kit-полос (заголовок и три строки), мягко пульсирует; при «уменьшить движение» — без пульса. */
+   Birge не показываем и до появления поиска — шапка не прыгает. */
 body.civic-mode:not([data-birge-explore]) .civic-explore { visibility: hidden; }
 @media (max-width: 760px) { body.civic-mode .topbar .brand-title { display: none; } }
-body.civic-mode #birge-heat-root:empty { display: block; min-height: 248px; padding: 20px 16px 0; }  /* shell.css прятал пустой слот */
-body.civic-mode #birge-heat-root:empty::before,
-body.civic-mode #birge-heat-root:empty::after { content: ""; display: block; background: var(--c-fill, #eceee9); }
-body.civic-mode #birge-heat-root:empty::before { width: 60%; height: 22px; border-radius: 8px; box-shadow: 0 34px 0 -4px var(--c-fill, #eceee9); }
-body.civic-mode #birge-heat-root:empty::after { height: 48px; margin-top: 52px; border-radius: 12px;
-  box-shadow: 0 60px 0 var(--c-fill, #eceee9), 0 120px 0 var(--c-fill, #eceee9); }
+/* Пустая «Карта жалоб» до подключения R07 — скелет той же формы и тех же размеров, что скелет R07 (heat.css .r07-skel__*):
+   заголовок и подзаголовок словами, поле темы 48, 7/30/90 52 × 66 %, строки 64 со значком 40 × 32; переливание 1,4 с,
+   при «уменьшить движение» — без него. Подключённый модуль заменяет содержимое корня — смена скелетов не видна (R07 M.10). */
+body.civic-mode .birge-skel { display: flex; flex-direction: column; gap: 8px; font-family: var(--font, system-ui, sans-serif); line-height: 1.4; color: var(--c-ink, #152c26); }
+body.civic-mode .birge-skel * { box-sizing: border-box; }
+body.civic-mode .birge-skel .birge-skel__title { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 600; }
+body.civic-mode .birge-skel .birge-skel__sub { margin: -6px 0 0; font-size: 13px; color: var(--c-text-2, #5b6a64); }
+body.civic-mode .birge-skel i { display: block; border-radius: 8px;
+  background: linear-gradient(90deg, rgba(16, 24, 22, 0.07), rgba(16, 24, 22, 0.025), rgba(16, 24, 22, 0.07)); background-size: 200% 100%; }
+body.civic-mode .birge-skel .birge-skel__field { margin-top: 8px; height: 48px; border-radius: 10px; }
+body.civic-mode .birge-skel .birge-skel__seg { height: 52px; width: 66%; margin-bottom: 8px; border-radius: 10px; }
+body.civic-mode .birge-skel .birge-skel__row { display: flex; align-items: center; gap: 12px; min-height: 64px; }
+body.civic-mode .birge-skel .birge-skel__row + .birge-skel__row { border-top: 1px solid var(--c-line, #e8eaeb); }
+body.civic-mode .birge-skel .birge-skel__sq { flex: none; width: 40px; height: 32px; }
+body.civic-mode .birge-skel .birge-skel__lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+body.civic-mode .birge-skel .birge-skel__lines i:first-child { height: 16px; width: 78%; }
+body.civic-mode .birge-skel .birge-skel__lines i:last-child { height: 12px; width: 46%; }
+@media (max-width: 760px) { body.civic-mode .birge-skel { padding-inline: 4px; } }  /* как .r07-panel на телефоне (поле 16) */
+/* сервер не ответил — в панели «Нет связи… Повторить», скелет не обещает загрузку */
+body.civic-mode #civic-panel:has(#civic-state[data-kind="error"]:not([hidden])) .birge-skel { display: none; }
 @media (prefers-reduced-motion: no-preference) {
-  body.civic-mode #birge-heat-root:empty::before, body.civic-mode #birge-heat-root:empty::after { animation: birge-skel 1.2s ease-in-out infinite alternate; }
+  body.civic-mode .birge-skel i { animation: birge-shimmer 1.4s linear infinite; }
 }
-@keyframes birge-skel { from { opacity: 0.55; } to { opacity: 1; } }
+@keyframes birge-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
 /* Круг 5 · соседи (R12 «× ящика ≥ 44», R09 M1/M5, R07 тост): крестик ящика сотрудника и окон — 44 круг; панель «Моих
    обращений» R09 — на сетке оболочки (12 от края, как правая панель; у R09 было 20); на телефоне тост ui-kit — над
@@ -808,3 +821,37 @@ body.civic-mode .civic-state[data-kind="error"] { color: var(--glass-danger, #9a
 @media (max-width: 760px) {
   body.civic-mode .maplibregl-ctrl-bottom-right { right: auto; left: 8px; }
 }
+
+/* Круг 8 · R07 M.10 (соседи). R01-2 — первый кадр, до скриптов: шапка уже капсула-стекло со словом Birge, а не полоса с
+   прежним заголовком «Аким на 5 часов.» (текст в HTML остаётся для «Школ» и «Учебной модели», shell.js); кнопки карты
+   и плашка «Загружаем карту…» появляются вместе с оболочкой (мягко, 260 мс) — без белых квадратов и бежевой плашки. */
+body.civic-mode:not(.birge-ready) .topbar {
+  top: 12px; left: 12px; right: 12px; height: 60px; padding: 0 8px 0 16px; border: 0; border-radius: var(--r-pill, 999px);
+  color: var(--c-ink, #152c26); background-color: var(--glass-panel, rgba(255, 255, 255, 0.72)); background-image: var(--glass-highlight, none);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 24px)) saturate(var(--glass-saturate, 1.6));
+  backdrop-filter: blur(var(--glass-blur, 24px)) saturate(var(--glass-saturate, 1.6));
+  box-shadow: inset 0 0 0 1px var(--glass-edge, rgba(255, 255, 255, 0.6)), inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 0 0 0.5px var(--glass-hairline, rgba(16, 24, 22, 0.08)), var(--glass-shadow, 0 8px 32px rgba(16, 24, 22, 0.12));
+}
+@media (max-width: 760px) { body.civic-mode:not(.birge-ready) .topbar { top: 8px; left: 8px; right: 8px; height: 56px; padding: 0 4px 0 8px; } }
+body.civic-mode:not(.birge-ready) .topbar .brand-title { font-size: 0; }
+body.civic-mode:not(.birge-ready) .topbar .brand-title::before { content: "Birge"; font-size: 22px; }
+body.civic-mode:not(.birge-ready) :is(.map-tools, #map-status) { visibility: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  body.civic-mode.birge-ready .map-tools, body.civic-mode #birge-header { animation: birge-fade var(--t-base, 260ms) var(--ease, ease-out) both; }
+}
+
+/* R01-1 — «Реестр пуст: опубликованных записей пока нет…» (свежая база без записей реестра): не зелёная плашка раунда 13
+   шириной 420 (на телефоне уходила за край и ложилась на строку легенды), а тихая стеклянная строка 13 px на сетке 12:
+   ноутбук — под шапкой слева, телефон — под строкой легенды, левее кнопок карты; значки R07 её обходят (avoidRects).
+   На телефоне, пока видна плашка о карте (#map-status, гаснет через 6 с), строка ждёт — сообщения по одному. */
+body.civic-mode .civic-explore-registry.bk-glass:not([hidden]) {
+  width: max-content; max-width: min(400px, calc(100vw - 24px)); margin: 0; padding: 8px 16px; border-radius: 16px;
+  color: var(--c-text-2, #5b6a64); font-size: 13px; line-height: 1.4;
+}
+body.civic-mode[data-birge-explore="header"] .civic-explore-registry { left: calc(var(--be-edge, 12px) - var(--be-left, 12px)); width: max-content; }
+@media (max-width: 760px) {
+  body.civic-mode[data-birge-explore="header"] .civic-explore-registry.bk-glass:not([hidden]) { position: fixed; top: 124px; left: 8px; right: auto; max-width: calc(100vw - 80px); }
+  body.civic-mode .civic-explore:has(#map-status:not(.hidden):not([data-faded="1"])) .civic-explore-registry { visibility: hidden; }
+}
+body.civic-mode[data-birge-section]:not([data-birge-section="map"]) .civic-explore-registry { visibility: hidden; }

@@ -111,6 +111,10 @@ const shot = (page, name) => page.screenshot({ path: path.join(OUT, `${LABEL}-${
       b.click();
     });
     await page.waitForTimeout(1300);
+    // место встаёт в свободную часть карты над шторкой (dee03b8b) — на телефоне на 16-м масштабе рядом может не оказаться
+    // других значков; отдаляем до 14,5 (выбор остаётся), чтобы было что приглушать
+    await page.evaluate(() => window.__map.easeTo({ zoom: Math.min(window.__map.getZoom(), 14.5), duration: 0 }));
+    await page.waitForTimeout(1200);
     await shot(page, `${tag}-3-focus`);
     if (!SHOTS_ONLY) {
       const f = await page.evaluate(() => {

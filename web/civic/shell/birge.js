@@ -425,6 +425,7 @@
       const title = document.querySelector(".brand-title");
       const sub = document.querySelector(".brand-sub");
       if (title) title.textContent = "Birge";
+      document.body.classList.add("birge-ready");  // первый кадр до скриптов — birge.css (R07 M.10 R01-2)
       if (sub) sub.textContent = t("shell.brand.tagline");
       const brand = document.querySelector(".topbar .brand");
       if (brand) {
@@ -658,6 +659,7 @@
     ["#civic-panel", "bk-glass"],                                 // №5 панель / шторка
     ["#birge-day, #birge-screen", "bk-glass"],                    // №6 лист раздела
     ["#map-status", "bk-glass bk-glass--bar"],                    // №7 плашка о запасном фоне
+    [".civic-explore-registry", "bk-glass bk-glass--bar"],        // «Реестр пуст…» — строка над картой, не плашка раунда 13
   ];
   function glassify() {
     if (!document.body.classList.contains("civic-mode")) return;

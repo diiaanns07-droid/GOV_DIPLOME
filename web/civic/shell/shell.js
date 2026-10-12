@@ -173,6 +173,12 @@
   const originalBrand = brandTitle ? brandTitle.innerHTML : "";
   const originalSub = brandSub ? brandSub.textContent : "";
 
+  // Скелет «Карты жалоб», пока R07 не подключён, — той же формы, что скелет самого R07 (заголовок, поле темы, 7/30/90,
+  // строки «Горячих мест»): модуль при подключении заменяет содержимое корня, и смена не видна (R07 M.10 R01-3).
+  const skelRow = '<span class="birge-skel__row"><i class="birge-skel__sq"></i><span class="birge-skel__lines"><i></i><i></i></span></span>';
+  const HEAT_SKELETON = '<div class="birge-skel" aria-busy="true" data-t-attr="aria-label:heat.loading">' +
+    '<p class="birge-skel__title" data-t="heat.title"></p><p class="birge-skel__sub" data-t="heat.subtitle"></p>' +
+    '<i class="birge-skel__field"></i><i class="birge-skel__seg"></i>' + skelRow.repeat(4) + "</div>";
   // DOM: one root with the public panel, editor drawer and scenarios drawer.
   const root = el("section", { id: "civic-root", hidden: true, "data-t-attr": "aria-label:shell.root.label" });
   root.innerHTML = `
@@ -183,7 +189,7 @@
         <!-- B1: «Карта жалоб» (R07) — главное содержимое панели Birge; ниже — реестр работ раунда 13. -->
         <!-- R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) — вместо «Карты жалоб», пока открыт. -->
         <div id="birge-report-root" class="civic-slot birge-report-slot" hidden></div>
-        <div id="birge-heat-root" class="civic-slot birge-heat-slot"></div>
+        <div id="birge-heat-root" class="civic-slot birge-heat-slot">${HEAT_SKELETON}</div>
         <section class="civic-works" aria-labelledby="civic-works-title">
           <header class="civic-head">
             <span class="eyebrow" data-t="shell.panel.eyebrow"></span>
@@ -431,7 +437,7 @@
     }
     // Плашки и кнопки оболочки поверх карты: значок R07 не встаёт под «Аймақ», кнопки карты, легенду и край шторки
     // (R07 868de08 приближает карту к районам — на 375 «Байқоңыр» уходил под «Аймақ», «Есіл» — под ручку шторки; R11).
-    for (const el of document.querySelectorAll(".civic-explore, .map-tools, #birge-legend, #civic-panel, #civic-sheet-handle, #map-status")) {
+    for (const el of document.querySelectorAll(".civic-explore, .civic-explore-registry, .map-tools, #birge-legend, #civic-panel, #civic-sheet-handle, #map-status")) {
       if (!el.getClientRects().length || getComputedStyle(el).visibility === "hidden") continue;
       const r = el.getBoundingClientRect();
       if (r.width > 0 && r.height > 0) rects.push(r);
