@@ -643,6 +643,8 @@
         }
         shown.forEach(function (item) { body.appendChild(residentCard(item)); });
       }
+      // Демо-данные в списке — одна серая строка «Пример для показа, не настоящие данные» внизу (R11 §13 D-5).
+      var shownDemo = Array.prototype.some.call(body.querySelectorAll("[data-demo]"), function () { return true; });
       // Карточки мягко появляются одна за другой (40 мс) — только после загрузки и смены вкладки, не при каждой перерисовке.
       if (state.appear) {
         body.classList.add("ri-body--in");
@@ -650,6 +652,7 @@
         state.appear = false;
       }
       rootEl.appendChild(body);
+      if (shownDemo) rootEl.appendChild(h("p", { class: "bk-footnote ri-demo-note", text: tr("common.tag.demo_hint") }));
     }
 
     // ── карточка (дизайн-марафон: «как в App Store») ──
@@ -666,7 +669,7 @@
       var kind = item.object && item.object.kind;
       var parts = [h("span", { text: kind ? tr("proposal.kind." + kind) : tr("idea.kind_none") })];
       if (item.district) parts.push(h("span", { text: tr("district.name", { name: tr("district." + item.district) }) }));
-      if (item.demo) parts.push(h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }));
+      // «Пример» — не на каждой карточке, а одной строкой под списком (R11 INTEGRATION §13 D-5, как в «Рядом» R08).
       var row = h("p", { class: "ri-meta" }, metaParts(parts));
       if (item.mine) row.appendChild(h("span", { class: "bk-tag ri-mine", text: tr("idea.mine") }));
       return row;
@@ -756,7 +759,8 @@
       var counted = item.status !== "review" && item.status !== "hidden" && item.status !== "project";
       var foot = h("div", { class: "ri-foot" }, [counted ? votesEl(item) : h("span", { class: "ri-foot__space" }),
         item.status !== "hidden" ? mapButton(item) : null, supportBtn]);
-      return h("article", { class: "bk-card ri-card", "data-idea": item.id, "data-idea-status": item.status, "aria-labelledby": "ri-t-" + item.id }, [
+      return h("article", { class: "bk-card ri-card", "data-idea": item.id, "data-idea-status": item.status, "data-demo": item.demo ? "" : null,
+        "aria-labelledby": "ri-t-" + item.id }, [
         head(item), decisionBlock(item), foot, details(item),
       ]);
     }
@@ -868,7 +872,7 @@
       kids.push(h("div", { class: "ri-foot" }, [counted ? votesEl(item) : h("span", { class: "ri-foot__space" }), mapButton(item), toggle]));
       if (open) kids.push(staffPanel(item));
       return h("article", { class: "bk-card ri-card" + (open ? " ri-card--open" : ""), "data-idea": item.id, "data-idea-status": item.status,
-        "aria-labelledby": "ri-t-" + item.id }, kids);
+        "data-demo": item.demo ? "" : null, "aria-labelledby": "ri-t-" + item.id }, kids);
     }
     // Чек-лист реализуемости: у каждого пункта значок, название и что проверить; «да» — тёмная капсула с галочкой,
     // «нет» — красным, «не знаю» — белая. Сверху — «Да: n из 4» и полоса из четырёх сегментов.
@@ -1022,7 +1026,7 @@
         return;
       }
       list.forEach(function (p) {
-        var cell = h("div", { class: "ri-project" });
+        var cell = h("div", { class: "ri-project", "data-demo": p.demo ? "" : null });
         body.appendChild(cell);
         // list: в списке из нескольких карточек «Одобрить» — не главная кнопка (одна главная на экран, CLEAN_PASS).
         if (root.BirgeProposals && root.BirgeProposals.renderProposal) root.BirgeProposals.renderProposal(cell, p, { role: "akimat", list: true });

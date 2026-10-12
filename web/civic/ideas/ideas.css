@@ -51,7 +51,10 @@
 .ri-pb {
   margin: 0;
   padding-left: 28px; /* под текстом правила, а не под значком */
-  max-width: 62ch;
+  max-width: 56ch; /* ≤ 70 знаков в строке (R11 §15.5: строка «Бюджет участия» была длиннее) */
+}
+.ri-demo-note {
+  padding-top: 0;
 }
 .ri-honest-line {
   margin: 0;
