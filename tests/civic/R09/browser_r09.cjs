@@ -163,7 +163,8 @@ async function checkGridWords(page, tag) {
         res.count === 12 && res.broken.length === 0 && res.columns >= 1 && res.columns <= 3, res.broken.join(", "));
 }
 
-// UX_BRIEF №2: в панели жалобы текст не мельче 14 px, кнопки и поля не ниже 44 px (ui-kit даёт 48).
+// UX_BRIEF №2: в панели жалобы текст не мельче 13 px (шкала чистого дизайна 13/15/17/22/28 — решение владельца 12 окт,
+// R11 CLEAN_PASS §4: порог «мелкий текст» < 13 px, было 14), кнопки и поля не ниже 44 px (ui-kit даёт 48).
 async function uxSizes(page) {
   return page.evaluate(() => {
     const bad = [];
@@ -171,7 +172,7 @@ async function uxSizes(page) {
       const r = n.getBoundingClientRect();
       if (!r.width || getComputedStyle(n).visibility === "hidden") return;
       const own = [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim());
-      if (own && parseFloat(getComputedStyle(n).fontSize) < 14) bad.push("text " + n.textContent.trim().slice(0, 24) + " " + getComputedStyle(n).fontSize);
+      if (own && parseFloat(getComputedStyle(n).fontSize) < 13) bad.push("text " + n.textContent.trim().slice(0, 24) + " " + getComputedStyle(n).fontSize);
       if (/^(BUTTON|A|INPUT|TEXTAREA)$/.test(n.tagName) && r.height < 44) bad.push("tap " + n.textContent.trim().slice(0, 24) + " " + Math.round(r.height));
     });
     return bad;
@@ -244,7 +245,7 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
     inText: (c.textContent.match(/✓/g) || []).length, before: getComputedStyle(c, "::before").content }));
   check(`${tag}: [R11-6] одна галочка в чипе категории`, ticks.inText === 0 && /✓/.test(ticks.before), JSON.stringify(ticks));
   const sizes3 = await uxSizes(page);
-  check(`${tag}: [UX] шаг 3 — текст ≥ 14 px, кнопки ≥ 44 px`, sizes3.length === 0, sizes3.join("; "));
+  check(`${tag}: [UX] шаг 3 — текст ≥ 13 px, кнопки ≥ 44 px`, sizes3.length === 0, sizes3.join("; "));
   const chip = await page.textContent(".bc-cat-row");
   check(`${tag}: подсказка категории чипом`, lang === "kk" ? /Аялдамалар мен көлік/.test(chip) : /Остановки и транспорт/.test(chip), chip.trim());
   await shot(page, `${tag}-3-text`);
@@ -284,7 +285,7 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
     JSON.stringify(events));
   await shot(page, `${tag}-5-done`);
   const sizes5 = await uxSizes(page);
-  check(`${tag}: [UX] шаг 5 — текст ≥ 14 px, кнопки ≥ 44 px`, sizes5.length === 0, sizes5.join("; "));
+  check(`${tag}: [UX] шаг 5 — текст ≥ 13 px, кнопки ≥ 44 px`, sizes5.length === 0, sizes5.join("; "));
   check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(page));
   const keys = await visibleKeys(page);
   check(`${tag}: нет ключей и технических слов`, keys.length === 0, keys.join(", "));
@@ -813,7 +814,7 @@ async function waveWizard(browser, base, lang, width, height, tag, point) {
   check(`${tag}: [W1-5] фото добавлено: миниатюра, счётчик «1 из 3», «увидит только служба»`,
         photoUi.thumbs === 1 && /1/.test(photoUi.add) && (lang === "kk" ? /қызметкер/.test(photoUi.hint) : /только сотрудники/.test(photoUi.hint)), JSON.stringify(photoUi));
   const sizes = await uxSizes(page);
-  check(`${tag}: [UX] шаг 3 с баннером, уточнением и фото — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: [UX] шаг 3 с баннером, уточнением и фото — текст ≥ 13 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
   const primaries = await page.$$eval(".bc-panel .bk-btn--primary", (n) => n.map((b) => b.className));
   check(`${tag}: [защита п.4, UX_SPEC §10] одна главная кнопка — звонок 104, «Далее» второстепенная`,
         primaries.length === 1 && /bc-emergency__call/.test(primaries[0]), primaries.join(" | "));
@@ -1100,7 +1101,7 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   check(`${tag}: нет ключей и технических слов`, (await visibleKeys(pageA)).length === 0, (await visibleKeys(pageA)).join(", "));
   check(`${tag}: нет горизонтальной прокрутки`, await noHorizontalScroll(pageA));
   const sizes = await uxSizes(pageA);
-  check(`${tag}: [UX] «Мои обращения» — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: [UX] «Мои обращения» — текст ≥ 13 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
   check(`${tag}: нет ошибок консоли`, pageA.problems.length === 0, pageA.problems.join(" | "));
   await pageA.context().close();
 }
@@ -1144,12 +1145,12 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
       const r = n.getBoundingClientRect();
       if (!r.width || getComputedStyle(n).display === "none") return;
       const own = [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim());
-      if (own && parseFloat(getComputedStyle(n).fontSize) < 14) bad.push("text " + n.textContent.trim().slice(0, 24));
+      if (own && parseFloat(getComputedStyle(n).fontSize) < 13) bad.push("text " + n.textContent.trim().slice(0, 24));
       if (/^(BUTTON|A|INPUT|SELECT)$/.test(n.tagName) && r.height < 44) bad.push("tap " + (n.name || n.textContent.trim().slice(0, 24)) + " " + Math.round(r.height));
     });
     return bad;
   });
-  check(`${tag}: [UX] «Обращения» — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: [UX] «Обращения» — текст ≥ 13 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
   // Вкладки — одним рядом с прокруткой внутри ряда (R11 разбор 5 №4в); страница вбок не прокручивается.
   const tabsRow = await page.$$eval(".bc-inbox__tab", (n) => new Set(n.map((b) => Math.round(b.getBoundingClientRect().top))).size);
   check(`${tag}: [R11 5 №4в] 5 вкладок одним рядом`, tabsRow === 1, String(tabsRow));
