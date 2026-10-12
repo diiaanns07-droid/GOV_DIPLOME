@@ -1,0 +1,177 @@
+[
+  {
+    "width": 375,
+    "lang": "ru",
+    "mode": "resident",
+    "offline": false,
+    "repeat": 1,
+    "timing": {
+      "map_created": 257,
+      "first_badge": 951
+    },
+    "ready_seconds": 1.469,
+    "errors": [
+      {
+        "kind": "warning",
+        "text": "[.WebGL-0x41ac00a19a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "kind": "warning",
+        "text": "[.WebGL-0x41ac00a19a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "kind": "warning",
+        "text": "[.WebGL-0x41ac00a19a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "kind": "warning",
+        "text": "[.WebGL-0x41ac00a19a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+      }
+    ]
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "mode": "resident",
+    "offline": false,
+    "repeat": 2,
+    "timing": {
+      "map_created": 263,
+      "style_loaded": 421,
+      "first_badge": 886
+    },
+    "ready_seconds": 1.312,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "mode": "resident",
+    "offline": false,
+    "repeat": 3,
+    "timing": {
+      "map_created": 294,
+      "first_badge": 853
+    },
+    "ready_seconds": 1.281,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "mode": "resident",
+    "offline": false,
+    "repeat": 1,
+    "timing": {
+      "map_created": 299,
+      "first_badge": 866
+    },
+    "ready_seconds": 1.344,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "mode": "resident",
+    "offline": false,
+    "repeat": 2,
+    "timing": {
+      "map_created": 301,
+      "first_badge": 887
+    },
+    "ready_seconds": 1.281,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "mode": "resident",
+    "offline": false,
+    "repeat": 3,
+    "timing": {
+      "map_created": 304,
+      "first_badge": 884
+    },
+    "ready_seconds": 1.313,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "mode": "resident",
+    "offline": true,
+    "repeat": 1,
+    "timing": {
+      "map_created": 466,
+      "style_loaded": 602,
+      "first_badge": 1117
+    },
+    "ready_seconds": 1.578,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "mode": "resident",
+    "offline": true,
+    "repeat": 2,
+    "timing": {
+      "map_created": 406,
+      "first_badge": 1062
+    },
+    "ready_seconds": 1.641,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "mode": "resident",
+    "offline": true,
+    "repeat": 3,
+    "timing": {
+      "map_created": 456,
+      "first_badge": 1101
+    },
+    "ready_seconds": 1.578,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "mode": "resident",
+    "offline": true,
+    "repeat": 1,
+    "timing": {
+      "map_created": 442,
+      "first_badge": 1035
+    },
+    "ready_seconds": 1.485,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "mode": "resident",
+    "offline": true,
+    "repeat": 2,
+    "timing": {
+      "map_created": 443,
+      "first_badge": 1106
+    },
+    "ready_seconds": 1.563,
+    "errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "mode": "resident",
+    "offline": true,
+    "repeat": 3,
+    "timing": {
+      "map_created": 446,
+      "first_badge": 1083
+    },
+    "ready_seconds": 1.531,
+    "errors": []
+  }
+]

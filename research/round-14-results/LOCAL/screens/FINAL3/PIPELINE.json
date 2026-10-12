@@ -1,0 +1,34 @@
+[
+  {
+    "args": [
+      "--timings"
+    ],
+    "exit_code": 0,
+    "seconds": 57.45
+  },
+  {
+    "args": [
+      "--matrix"
+    ],
+    "exit_code": 0,
+    "seconds": 1317.42
+  },
+  {
+    "args": [
+      "--lang",
+      "ru",
+      "--video"
+    ],
+    "exit_code": 0,
+    "seconds": 462.23
+  },
+  {
+    "args": [
+      "--lang",
+      "kk",
+      "--video"
+    ],
+    "exit_code": 0,
+    "seconds": 462.41
+  }
+]

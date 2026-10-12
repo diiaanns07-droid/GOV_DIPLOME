@@ -1,0 +1,62 @@
+[
+  {
+    "args": [
+      "final3_run.py",
+      "--width",
+      "375",
+      "--lang",
+      "ru",
+      "--online"
+    ],
+    "exit_code": 0,
+    "seconds": 116.83
+  },
+  {
+    "args": [
+      "final3_run.py",
+      "--width",
+      "375",
+      "--lang",
+      "kk",
+      "--online"
+    ],
+    "exit_code": 0,
+    "seconds": 112.61
+  },
+  {
+    "args": [
+      "final3_run.py",
+      "--width",
+      "375",
+      "--lang",
+      "ru"
+    ],
+    "exit_code": 0,
+    "seconds": 97.95
+  },
+  {
+    "args": [
+      "final3_run.py",
+      "--width",
+      "375",
+      "--lang",
+      "kk"
+    ],
+    "exit_code": 0,
+    "seconds": 90.53
+  },
+  {
+    "args": [
+      "final3_mobile_timing.py"
+    ],
+    "exit_code": 0,
+    "seconds": 26.11
+  },
+  {
+    "args": [
+      "final3_video_delivery.py"
+    ],
+    "exit_code": 0,
+    "seconds": 107.44
+  }
+]
