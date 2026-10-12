@@ -67,6 +67,19 @@
   font-size: 16px; /* iOS не увеличивает страницу при фокусе */
 }
 
+/* ── на стекле (R11 GLASS.md §4 R08: лист раздела — стекло R01) ──
+   Числа — без подложки (ui-kit даёт .bk-kpi на стекле белую подложку 70 %; у нас «без карточек», CLEAN_PASS п. 3);
+   дата и район — непрозрачные поля, как остальные формы на стекле (белые с тонкой линией). Цвета текста — только
+   переменные ui-kit: внутри .bk-glass они сами становятся тёмными. Блоки .bk-card получают подложку от ui-kit. */
+.bk-glass .akim-kpi.bk-kpi {
+  background: transparent;
+}
+.bk-glass .akim__field input,
+.bk-glass .akim__field select {
+  background-color: var(--c-surface);
+  box-shadow: inset 0 0 0 1px var(--c-line);
+}
+
 /* ── «данные — пример»: серая строка внизу экрана (.bk-footnote ui-kit) ── */
 .akim-demo {
   margin-top: var(--s-4);
