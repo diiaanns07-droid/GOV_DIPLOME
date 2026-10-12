@@ -149,6 +149,57 @@
     svg.appendChild(use);
     return svg;
   }
+  function svgEl(tag, attrs) {
+    var el = doc.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      el.setAttribute(k, attrs[k]);
+    });
+    return el;
+  }
+  // Мини-график под числом (дизайн-марафон): 14 дней, последний — сегодня. Шкала от нуля — маленькое изменение
+  // не выглядит обвалом. Только для глаза (aria-hidden): словами изменение уже сказано строкой под числом.
+  function sparkline(series) {
+    if (!series || series.length < 2) return null;
+    var W = 160, H = 36, pad = 3;
+    var max = Math.max.apply(null, series) || 1;
+    var step = (W - 2 * pad) / (series.length - 1);
+    var pts = series.map(function (v, i) {
+      return [pad + i * step, H - pad - (Math.max(0, v) / max) * (H - 2 * pad)];
+    });
+    var line = pts
+      .map(function (p, i) {
+        return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1);
+      })
+      .join("");
+    var last = pts[pts.length - 1];
+    var svg = svgEl("svg", { class: "akim-spark", viewBox: "0 0 " + W + " " + H, "aria-hidden": "true", focusable: "false" });
+    svg.appendChild(svgEl("path", { class: "akim-spark__area", d: line + "L" + last[0].toFixed(1) + " " + (H - pad) + "L" + pad + " " + (H - pad) + "Z" }));
+    svg.appendChild(svgEl("path", { class: "akim-spark__line", d: line, pathLength: "1" }));
+    svg.appendChild(svgEl("circle", { class: "akim-spark__dot", cx: last[0].toFixed(1), cy: last[1].toFixed(1), r: "3" }));
+    return svg;
+  }
+  // Контуры районов для мини-карты «Горячих мест» (дизайн-марафон): data/civic/astana/geofence.json — OpenStreetMap,
+  // ODbL, не официальная граница; упрощено до ~1 px при ширине 240 (проекция: долгота × cos широты). Только для глаза.
+  var ASTANA_OUTLINE = {
+    box: [71.2179735, 50.9306941, 71.7851913, 51.3511101],
+    k: 423.1179,
+    sy: 674.3911,
+    w: 240,
+    h: 284,
+    d: {
+      almaty: "M239 135L240 125L221 125L224 127L230 139L232 139ZM97 148L113 152L127 146L130 142L136 145L147 145L176 153L205 164L210 148L199 142L181 142L171 110L156 103L154 100L143 108L137 110L133 115L131 116L129 117L121 113L118 118L110 126L93 137Z",
+      baikonur: "M50 54L43 38L37 41L38 50L34 53L39 59ZM186 23L192 28L193 27L191 25L192 23L203 11L207 2L204 1L203 3L201 2L202 0L197 0L190 8L179 13ZM97 112L94 116L87 117L90 133L89 134L93 137L110 126L118 118L121 113L129 117L131 116L133 115L137 110L143 108L154 100L151 88L170 69L159 50L148 63L146 69L144 69L141 73L107 59L119 45L119 41L109 44L106 49L98 54L89 52L77 56L71 33L58 36L63 54L49 57L36 78L58 89L63 96Z",
+      esil: "M89 134L83 146L81 162L69 215L69 228L100 236L99 248L101 249L99 263L104 265L103 272L105 272L106 273L107 279L112 278L114 283L139 283L142 258L142 253L135 245L135 232L138 229L143 226L136 204L139 202L143 204L153 189L165 175L156 171L131 167L125 169L119 167L115 170L111 169L107 166L101 165L99 163L96 156L99 152L97 149L94 138Z",
+      nura: "M48 222L50 224L69 228L69 215L81 162L83 146L89 134L86 129L80 131L75 127L59 126L53 120L51 119L48 120L46 117L43 117L34 113L31 109L23 110L22 113L27 116L20 119L15 118L15 130L10 130L10 134L9 134L8 136L8 147L5 154L5 159L0 162L12 191L14 191L16 194L16 204L27 220L30 222L42 221Z",
+      saraishyk: "M136 168L156 171L165 175L168 170L195 179L196 176L198 174L199 175L201 174L202 176L204 176L205 174L208 174L208 172L207 171L210 170L212 170L214 167L216 167L219 172L222 168L221 166L206 161L205 164L176 153L147 145L136 145L130 142L127 146L113 152L97 148L99 152L96 156L99 164L102 166L108 166L111 169L115 170L120 167L125 169L130 167Z",
+      saryarka: "M61 126L75 127L80 131L86 129L89 134L90 133L87 117L94 116L97 112L63 96L57 88L36 78L35 79L18 71L11 85L13 85L10 94L8 95L11 97L9 101L11 103L10 103L16 109L18 107L20 109L25 110L31 109L34 113L43 117L46 117L48 120L52 119L59 126Z"
+    },
+  };
+  function project(lonlat) {
+    var b = ASTANA_OUTLINE.box;
+    if (!lonlat || lonlat[0] < b[0] || lonlat[0] > b[2] || lonlat[1] < b[1] || lonlat[1] > b[3]) return null;
+    return [(lonlat[0] - b[0]) * ASTANA_OUTLINE.k, (b[3] - lonlat[1]) * ASTANA_OUTLINE.sy];
+  }
   function todayAstana() {
     return new Date(Date.now() + ASTANA_OFFSET_MS).toISOString().slice(0, 10);
   }
@@ -218,9 +269,33 @@
     rootEl.classList.add("akim");
     var top = h("div", { class: "akim__top" });
     var body = h("div", { class: "akim__body", "aria-live": "polite", "aria-busy": "true" });
+    // Компактная стеклянная полоса раздела (дизайн-марафон): появляется, когда большой заголовок ушёл вверх, как в iOS;
+    // нажатие — к началу «Картины дня». Диктору не нужна — заголовок и так первый (aria-hidden, без фокуса).
+    var barBtn = h("button", {
+      type: "button",
+      class: "akim__bar-btn bk-glass bk-glass--bar",
+      tabindex: "-1",
+      onclick: function () {
+        var still = root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        top.scrollIntoView({ block: "start", behavior: still ? "auto" : "smooth" });
+      },
+    });
+    var bar = h("div", { class: "akim__bar", "aria-hidden": "true" }, [barBtn]);
     rootEl.textContent = "";
+    rootEl.appendChild(bar);
     rootEl.appendChild(top);
     rootEl.appendChild(body);
+    var barIO = null;
+    if (typeof root.IntersectionObserver === "function") {
+      barIO = new root.IntersectionObserver(function (entries) {
+        var e = entries[entries.length - 1];
+        // Заголовок не виден и ушёл вверх (а не ещё не прокручен) — показываем полосу.
+        var gone = !e.isIntersecting && e.boundingClientRect.bottom < (root.innerHeight || 800) / 2;
+        if (gone) rootEl.setAttribute("data-scrolled", "");
+        else rootEl.removeAttribute("data-scrolled");
+      });
+      barIO.observe(top);
+    }
 
     function syncUrl() {
       if (!opts.syncUrl || !root.history || !root.history.replaceState) return;
@@ -358,8 +433,8 @@
       }
       var title = h("div", { class: "akim__titlebox" }, [
         h(/^h[1-3]$/.test(opts.titleTag) ? opts.titleTag : "h1", { class: "akim__title" }, [
-          tr("akim.title"),
-          h("span", { class: "akim__title-date", text: " · " + I().formatDate(date) }),
+          tr("akim.title") + " ",
+          h("span", { class: "akim__title-date", text: "· " + I().formatDate(date) }),
         ]),
         // Одна строка мета 13 серым; «данные — пример» — серой строкой внизу экрана (CLEAN_PASS §3 R08 п. 1).
         h("p", { class: "akim__meta bk-meta", text: meta.join(" · ") }),
@@ -382,7 +457,7 @@
             setDistrict(e.target.value);
           },
         },
-        [h("option", { value: "", text: tr("district.all") })].concat(
+        [h("option", { value: "", text: districtName(null) })].concat(
           DISTRICT_IDS.map(function (id) {
             return h("option", { value: id, text: tr("district." + id), selected: state.district === id });
           })
@@ -418,18 +493,37 @@
       ]);
       top.appendChild(title);
       top.appendChild(controls);
+      barBtn.textContent = tr("akim.title") + " · " + I().formatDate(date) + (state.district ? " · " + districtName(state.district) : "");
     }
 
     // ── состояния ──
+    // Загрузка — скелет той же формы, что экран: 4 числа с подписью и графиком, абзац сводки, первый блок
+    // (дизайн-марафон, чек-лист п. 8). Слова «Собираем картину дня…» — для чтения с экрана.
     function renderLoading() {
-      var kpis = h("div", { class: "bk-kpis" });
-      for (var i = 0; i < 4; i++) kpis.appendChild(h("div", { class: "bk-kpi akim-kpi" }, [h("div", { class: "bk-skel bk-skel--block akim-skel-kpi" })]));
+      var kpis = h("div", { class: "bk-kpis akim-kpis akim-skel", "aria-hidden": "true" });
+      for (var i = 0; i < 4; i++)
+        kpis.appendChild(
+          h("div", { class: "bk-kpi akim-kpi" }, [
+            h("span", { class: "bk-skel akim-skel__num" }),
+            h("span", { class: "bk-skel bk-skel--line akim-skel__label" }),
+            h("span", { class: "bk-skel bk-skel--line akim-skel__delta" }),
+            h("span", { class: "bk-skel akim-skel__spark" }),
+          ])
+        );
       body.appendChild(kpis);
       body.appendChild(
-        h("div", { class: "bk-card akim-card akim-loading", role: "status" }, [
-          h("div", { class: "bk-skel bk-skel--line" }),
-          h("div", { class: "bk-skel bk-skel--line" }),
-          h("p", { class: "bk-meta", text: tr("akim.loading") }),
+        h("div", { class: "akim-skel akim-skel__summary", "aria-hidden": "true" }, [
+          h("span", { class: "bk-skel bk-skel--line" }),
+          h("span", { class: "bk-skel bk-skel--line" }),
+          h("span", { class: "bk-skel bk-skel--line" }),
+        ])
+      );
+      body.appendChild(
+        h("div", { class: "bk-card akim-card akim-loading" }, [
+          h("span", { class: "bk-skel bk-skel--title", "aria-hidden": "true" }),
+          h("span", { class: "bk-skel bk-skel--line", "aria-hidden": "true" }),
+          h("span", { class: "bk-skel bk-skel--line", "aria-hidden": "true" }),
+          h("p", { class: "bk-sr-only", role: "status", text: tr("akim.loading") }),
         ])
       );
     }
@@ -473,6 +567,7 @@
         h("span", { class: "bk-kpi__value", text: num(ch.value) }),
         h("span", { class: "bk-kpi__label", text: tr(labelKey) }),
         delta,
+        sparkline(ch.series),
       ]);
     }
     function renderKpis(d) {
@@ -667,14 +762,16 @@
             class: "akim-pulse__map",
             href: mapLink(a.target, (d0() && d0().hot && d0().hot.days) || 7),
             "data-key": "pulse:" + a.kind + ":" + (a.category || "") + ":" + (a.district || "") + ":" + a.target.id,
-            text: tr("common.action.show_on_map"),
             onclick: function (e) {
               var ev = new CustomEvent("birge:open-target", { cancelable: true, detail: { target: a.target, days: 7, from: "akim-pulse" } });
               if (!doc.dispatchEvent(ev)) e.preventDefault();
             },
-          })
+          }, [icon("pin", 18), tr("common.action.show_on_map")])
         : null;
+      // Значок вида тревоги в мягком круге (дизайн-марафон): рост — график, новое место — метка, «Я тоже» — люди.
+      var ic = a.kind === "new_hot" || a.kind === "spike_new" ? "pin" : a.kind === "metoo_growth" ? "users" : "chart";
       return h("li", { class: "akim-pulse__item", "data-kind": a.kind }, [
+        h("span", { class: "akim-pulse__icon", "aria-hidden": "true" }, [icon(ic, 18)]),
         h("span", { class: "akim-pulse__title", text: title }),
         h("span", { class: "akim-pulse__reason bk-meta", text: reason }),
         link,
@@ -734,6 +831,11 @@
         return card;
       }
       if (!d.hot.items.length) return null; // пустое не показываем
+      var map = miniMap(d.hot.items, state.district);
+      if (map) {
+        card.classList.add("akim-hot--map");
+        card.appendChild(map);
+      }
       var list = h("ol", { class: "bk-list akim-hot__list" });
       d.hot.items.forEach(function (it) {
         // Подписи нет (новая цель без названия) — вид места из словаря R11, а не пустая строка.
@@ -766,10 +868,54 @@
             icon("chevron-right"),
           ]
         );
+        // Строка списка ↔ точка на мини-карте: при наведении и фокусе точка крупнее и сверху.
+        var dotKey = "dot:" + it.target.kind + ":" + it.target.id;
+        var mark = function (on) {
+          var dot = map && map.querySelector('[data-key="' + dotKey.replace(/"/g, "") + '"]');
+          if (!dot) return;
+          if (on) {
+            dot.parentNode.appendChild(dot);
+            dot.setAttribute("data-active", "");
+          } else dot.removeAttribute("data-active");
+        };
+        a.addEventListener("mouseenter", function () { mark(true); });
+        a.addEventListener("mouseleave", function () { mark(false); });
+        a.addEventListener("focus", function () { mark(true); });
+        a.addEventListener("blur", function () { mark(false); });
         list.appendChild(h("li", null, [a]));
       });
       card.appendChild(list);
       return card;
+    }
+    // Мини-карта «Горячих мест»: контуры районов и точки мест цветом карты жалоб (top-3 — крупнее). Только для глаза:
+    // всё то же есть в списке рядом; подпись OpenStreetMap — условие ODbL.
+    function miniMap(items, district) {
+      var O = ASTANA_OUTLINE;
+      var svg = svgEl("svg", { class: "akim-minimap__svg", viewBox: "0 0 " + O.w + " " + O.h, focusable: "false", "aria-hidden": "true" });
+      Object.keys(O.d).forEach(function (id) {
+        svg.appendChild(svgEl("path", { class: "akim-minimap__district" + (district === id ? " is-current" : ""), d: O.d[id] }));
+      });
+      var dots = 0;
+      items
+        .slice()
+        .reverse()
+        .forEach(function (it) {
+          var p = project(it.anchor);
+          if (!p) return;
+          dots++;
+          svg.appendChild(
+            svgEl("circle", {
+              class: "akim-minimap__dot",
+              cx: p[0].toFixed(1),
+              cy: p[1].toFixed(1),
+              r: it.rank <= 3 ? "9" : "6.5",
+              "data-level": String(it.level),
+              "data-key": "dot:" + it.target.kind + ":" + it.target.id,
+            })
+          );
+        });
+      if (!dots) return null;
+      return h("figure", { class: "akim-minimap", "aria-hidden": "true" }, [svg, h("figcaption", { class: "akim-minimap__credit", text: "© OpenStreetMap" })]);
     }
 
     // ── темы и районы ──
@@ -1033,6 +1179,7 @@
       return p;
     }
 
+    var shownStatus = null;
     function render() {
       renderTop();
       body.textContent = "";
@@ -1040,6 +1187,15 @@
       if (state.status === "loading") renderLoading();
       else if (state.status === "error") renderError();
       else renderOk(state.data);
+      // Блоки мягко поднимаются, только когда экран сменил состояние (загрузка → данные), а не при тихом обновлении
+      // и смене языка; prefers-reduced-motion выключает (akim.css).
+      if (state.status !== shownStatus && state.status !== "loading") {
+        body.setAttribute("data-enter", "");
+        setTimeout(function () {
+          body.removeAttribute("data-enter");
+        }, 700);
+      }
+      shownStatus = state.status;
       rootEl.setAttribute("data-state", state.status);
     }
 
@@ -1096,6 +1252,7 @@
       },
       destroy: function () {
         if (off) off();
+        if (barIO) barIO.disconnect();
         if (refreshTimer) clearInterval(refreshTimer);
         doc.removeEventListener("visibilitychange", onVisible);
         root.removeEventListener("beforeprint", preparePrint);

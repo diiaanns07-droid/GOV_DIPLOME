@@ -80,6 +80,217 @@
   box-shadow: inset 0 0 0 1px var(--c-line);
 }
 
+/* ── мини-график под числом (дизайн-марафон): 14 дней, линия краской #152c26, лёгкая заливка, точка «сегодня» ── */
+.akim-spark {
+  display: block;
+  width: min(100%, 160px);
+  height: auto;
+  overflow: visible;
+  color: var(--c-brand);
+}
+.akim-spark__area {
+  fill: currentColor;
+  opacity: 0.08;
+}
+.akim-spark__line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  animation: akim-spark-draw 320ms var(--ease) both;
+}
+.akim-spark__dot {
+  fill: currentColor;
+  stroke: var(--c-surface);
+  stroke-width: 1.5;
+}
+@keyframes akim-spark-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ── появление: блоки мягко поднимаются друг за другом (240 мс, шаг 40 мс), только при смене состояния ── */
+.akim__body[data-enter] > * {
+  animation: akim-rise 240ms var(--ease) both;
+}
+.akim__body[data-enter] > :nth-child(2) { animation-delay: 40ms; }
+.akim__body[data-enter] > :nth-child(3) { animation-delay: 80ms; }
+.akim__body[data-enter] > :nth-child(4) { animation-delay: 120ms; }
+.akim__body[data-enter] > :nth-child(n + 5) { animation-delay: 160ms; }
+@keyframes akim-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .akim__body[data-enter] > *,
+  .akim-spark__line {
+    animation: none;
+  }
+}
+
+/* ── компактная стеклянная полоса раздела: видна, когда большой заголовок ушёл вверх (как в iOS) ── */
+.akim__bar {
+  position: sticky;
+  top: 8px;
+  z-index: 6;
+  display: flex;
+  justify-content: center;
+  height: 44px;
+  margin-bottom: -44px;
+  pointer-events: none;
+}
+.akim__bar-btn {
+  max-width: calc(100% - 32px);
+  min-height: 44px;
+  padding: 0 var(--s-4);
+  overflow: hidden;
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.akim[data-scrolled] .akim__bar-btn {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.akim__bar-btn:active {
+  transform: scale(0.98);
+}
+
+/* ── мини-карта «Горячих мест»: справа от списка (ноутбук), маленькая у заголовка (телефон) ── */
+.akim-hot--map {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  grid-template-areas: "head map" "list map";
+  column-gap: var(--s-4);
+  align-items: start;
+}
+.akim-hot--map > .akim-card__head {
+  grid-area: head;
+}
+.akim-hot--map > .akim-hot__list {
+  grid-area: list;
+  margin-right: 0;
+}
+.akim-minimap {
+  grid-area: map;
+  margin: 0;
+}
+.akim-minimap__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.akim-minimap__district {
+  fill: var(--c-fill-hover);
+  stroke: var(--c-surface);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.akim-minimap__district.is-current {
+  fill: var(--c-accent);
+}
+.akim-minimap__dot {
+  stroke: #fff;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform var(--t-fast) var(--ease);
+}
+.akim-minimap__dot[data-level="1"] { fill: var(--heat-1-badge); }
+.akim-minimap__dot[data-level="2"] { fill: var(--heat-2-badge); }
+.akim-minimap__dot[data-level="3"] { fill: var(--heat-3-badge); }
+.akim-minimap__dot[data-level="4"] { fill: var(--heat-4-badge); }
+.akim-minimap__dot[data-active] {
+  transform: scale(1.5);
+}
+.akim__body[data-enter] .akim-minimap__dot {
+  animation: akim-pop 320ms var(--ease) both;
+  animation-delay: 160ms;
+}
+@keyframes akim-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.akim-minimap__credit {
+  margin-top: 4px;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+  text-align: right;
+}
+@media (prefers-reduced-motion: reduce) {
+  .akim__body[data-enter] .akim-minimap__dot {
+    animation: none;
+  }
+  .akim__bar-btn,
+  .akim-minimap__dot {
+    transition: none;
+  }
+}
+
+/* ── загрузка: скелет той же формы, что экран ── */
+.akim-skel__num {
+  width: 64px;
+  height: 30px;
+  margin-bottom: 6px;
+  border-radius: var(--r-s);
+}
+.akim-skel__label {
+  width: 70%;
+}
+.akim-skel__delta {
+  width: 45%;
+  height: 12px;
+  margin-top: 6px;
+}
+.akim-skel__spark {
+  width: min(100%, 160px);
+  height: 36px;
+  margin-top: var(--s-2);
+  border-radius: var(--r-s);
+}
+.akim-skel__summary {
+  display: grid;
+  gap: 10px;
+  max-width: 110ch;
+  margin: var(--s-4) 0 var(--s-5);
+}
+.akim-skel__summary > :last-child {
+  width: 60%;
+}
+.akim-loading {
+  display: grid;
+  gap: 10px;
+}
+
 /* ── «данные — пример»: серая строка внизу экрана (.bk-footnote ui-kit) ── */
 .akim-demo {
   margin-top: var(--s-4);
@@ -94,7 +305,13 @@
   border-bottom: 1px solid var(--c-line);
 }
 .akim-kpi {
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.akim-kpi > .akim-spark {
+  margin-top: auto; /* графики в одном ряду на одной высоте, даже если подпись в две строки */
+  padding-top: var(--s-2);
 }
 .akim-kpi .bk-kpi__delta {
   display: inline-flex;
@@ -263,12 +480,25 @@
 }
 .akim-pulse__item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: "title map" "reason map";
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  grid-template-areas: "icon title map" "icon reason map";
   align-items: center;
   column-gap: var(--s-3);
-  padding: var(--s-2) 0;
+  padding: var(--s-3) 0;
   border-top: 1px solid var(--c-line);
+}
+/* значок вида тревоги в мягком круге */
+.akim-pulse__icon {
+  grid-area: icon;
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--c-fill);
+  color: var(--c-ink);
 }
 .akim-pulse__list > .akim-pulse__item:first-child {
   border-top: 0;
@@ -280,15 +510,29 @@
 .akim-pulse__reason {
   grid-area: reason;
 }
-.akim-pulse__map {
+.akim-pulse__map { /* тихая кнопка-ссылка со значком, без подчёркивания (как ghost ui-kit) */
   grid-area: map;
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   min-height: 44px;
-  padding: 0 var(--s-2);
+  padding: 0 var(--s-3);
+  border-radius: var(--r-pill);
   color: var(--c-brand);
   font-weight: var(--fw-semi);
+  text-decoration: none;
   white-space: nowrap;
+  transition: background-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.akim-pulse__map:hover {
+  background: var(--c-fill);
+}
+.akim-pulse__map:active {
+  transform: scale(0.97);
+}
+.akim-pulse__map:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
 }
 .akim-pulse__more > summary {
   display: flex;
@@ -362,6 +606,15 @@
 }
 .akim-bars .bk-bar__value {
   text-align: right;
+}
+/* полосы тоньше и спокойнее (дизайн-марафон): 8 px, рост 320 мс */
+.akim-bars .bk-bar__track {
+  height: 8px;
+  border-radius: 4px;
+}
+.akim-bars .bk-bar__fill {
+  border-radius: 4px;
+  transition-duration: 320ms;
 }
 .akim-bar-btn {
   width: 100%;
@@ -517,24 +770,43 @@
   }
   .akim-kpi {
     min-height: 0;
-    padding: var(--s-3);
+    padding: var(--s-3) 0;
+  }
+  /* телефон: маленькая карта справа от заголовка, подпись OpenStreetMap (ODbL) — под списком */
+  .akim-hot--map {
+    grid-template-columns: minmax(0, 1fr) 88px;
+    grid-template-areas: "head map" "list list" "credit credit";
+  }
+  .akim-minimap {
+    display: contents;
+  }
+  .akim-minimap__svg {
+    grid-area: map;
+  }
+  .akim-minimap__credit {
+    grid-area: credit;
   }
   .akim-bars .bk-bar {
     grid-template-columns: minmax(0, 9.5em) 1fr 3ch;
     gap: var(--s-2);
   }
   .akim-pulse__item {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "title" "reason" "map";
+    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-areas: "icon title" "icon reason" ". map";
   }
   .akim-pulse__map {
-    padding: 0;
+    justify-self: start;
+    margin-left: calc(-1 * var(--s-3));
   }
   .akim-decision {
     grid-template-columns: minmax(0, 1fr);
   }
   .akim-decision__option {
     flex-wrap: wrap;
+  }
+  /* «Выбрать» под текстом варианта — подпись кнопки на одной линии с текстом (кнопка-текст, как в iOS) */
+  .akim-decision__choose {
+    margin-left: calc(-1 * var(--s-3) - 1px); /* ghost ui-kit: поле 12 + рамка 1 */
   }
   /* Телефон (схема R11 §5: на 375 видны KPI 2×2 и заголовок «Нужно решение акима»): решения — сразу после чисел,
      сводка — следующим блоком (сдвиг на один блок). Дата и район — в одну строку. */
@@ -550,9 +822,12 @@
   .akim-grid { order: 5; }
   .akim-print-bottom { order: 6; }
   .akim-kpi-more { order: 1; }
+  .akim-loading { order: 2; }
+  .akim-skel__summary { order: 3; }
   .akim-demo { order: 7; }
+  /* дата — не уже 150 px (иначе «10/12/20»), район — остальное; «Весь город» короче «Все районы» */
   .akim__controls {
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-columns: minmax(150px, 1fr) minmax(0, 1fr);
   }
   .akim__today {
     grid-column: 1 / -1;
@@ -700,7 +975,32 @@
   .akim-card {
     box-shadow: none !important;
     border: 1px solid #c9d3cb;
+  }
+  /* Блок может переходить на следующий лист между строками, сама строка — нет (иначе «Пульс» один на листе) */
+  .akim-card__head {
+    break-after: avoid;
+  }
+  .akim-pulse__item,
+  .akim-hot__list > li,
+  .akim-obj,
+  .akim-bars .bk-bar,
+  .akim-proposals li {
     break-inside: avoid;
+  }
+  /* мини-карта на бумаге — маленькая справа вверху блока, список во всю ширину */
+  .akim-hot--map {
+    display: block;
+  }
+  .akim-minimap {
+    float: right;
+    width: 92px;
+    margin: 0 0 4px 8px;
+  }
+  .akim-minimap__credit {
+    font-size: 8px;
+  }
+  .akim-spark {
+    width: 120px;
   }
   .akim-kpi.bk-kpi { /* числа без карточек и на бумаге (CLEAN_PASS п. 3); рамку печати ui-kit снимаем */
     border: 0;
