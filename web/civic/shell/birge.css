@@ -872,3 +872,8 @@ body.civic-mode[data-birge-section]:not([data-birge-section="map"]) .civic-explo
     -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 0 0 1px rgba(16, 24, 22, 0.08); }
   body.civic-mode:has(.birge-build3d-root[data-catalog="open"]) .maplibregl-ctrl-attrib:not(:focus-within) .maplibregl-ctrl-attrib-inner { display: none; }
 }
+
+/* Круг 10 · подсказки поиска: список — по высоте экрана (был не выше 420: строка «Ещё 44 — уточните запрос» пряталась под
+   прокруткой, а невидимая часть списка в Chromium рисовалась бледным прямоугольником поверх карты); «Ещё…» — 13 серым. */
+body.civic-mode[data-birge-explore="header"] .civic-explore-list { max-height: calc(100vh - 96px); }
+body.civic-mode .civic-explore-list .civic-explore-more { font-size: 13px; color: var(--c-text-2, #5b6a64); padding: 8px 16px; }
