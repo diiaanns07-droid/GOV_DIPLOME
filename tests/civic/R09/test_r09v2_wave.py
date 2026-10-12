@@ -622,3 +622,34 @@ def test_own_cell_gets_street_label_from_r12():
     assert got["id"] == own["id"] and got["label_kk"] == "Шамамен орны — Тұран даңғылы" and got["approximate"] is True
     assert rec.checked_target(dict(own), point, lambda t: 1 / 0)["label_ru"] == "Примерное место"
     assert rec.checked_target(dict(own), point, None)["label_ru"] == "Примерное место"
+
+
+def test_object_kind_kept_only_from_r12():
+    """R10 B-063: вид объекта R12 (светофор, переход, перекрёсток) сохраняется в цели записи — для значка и подписи R07.
+    Только с карты R12, не из запроса жителя (как подписи)."""
+    point = [71.406553, 51.131155]
+    asked = {"kind": "object", "id": "osm-node-13389177514", "object_kind": "made_up", "label_ru": "Мой текст"}
+    lookup = lambda t: {"label_ru": "Светофор на перекрёстке", "label_kk": "Бағдаршам", "object_kind": "traffic_signal",
+                        "geometry": {"type": "Point", "coordinates": point}}
+    got = rec.checked_target(dict(asked), point, lookup)
+    assert got["object_kind"] == "traffic_signal" and got["label_ru"] == "Светофор на перекрёстке"
+    bad = lambda t: dict(lookup(t), object_kind="<script>")
+    assert "object_kind" not in rec.checked_target(dict(asked), point, bad)
+    assert "object_kind" not in rec.checked_target(dict(asked), point, None)           # без карты — не верим запросу
+    seg = rec.checked_target({"kind": "segment", "id": "osm-w1-0"}, point, lookup)       # только у объектов
+    assert "object_kind" not in seg
+
+
+def test_inbox_marks_rude_words(store, clock, monkeypatch):
+    """R10 B-064: «Содержит грубые слова» — и в списке «Обращений» (группа и обращение), не только в карточке R07."""
+    monkeypatch.setattr(rec, "moderation", lambda text: {"rude": True, "count": 1} if "плохое" in (text or "") else None)
+    rude = make(store, text="Фонарь не горит, плохое слово")
+    make(store, device=DEV_B, text="И второй фонарь не горит")
+    assert store.get(rude["id"])["moderation"]["rude"] is True
+    group = next(g for g in lifecycle.inbox(store.list(), clock.now)["items"] if g["category"] == "lighting")
+    assert group["rude"] is True
+    assert {c["id"]: c["rude"] for c in group["complaints"]}[rude["id"]] is True
+    assert sum(c["rude"] for c in group["complaints"]) == 1
+    old = dict(store.get(rude["id"]))
+    old.pop("moderation")                                     # запись до п. 8 — пометка считается на лету
+    assert lifecycle.inbox([old], clock.now)["items"][0]["rude"] is True

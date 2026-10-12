@@ -347,15 +347,19 @@ def inbox(records: list[dict], now: datetime, tab: str | None = None) -> dict:
         group = groups.setdefault(key, {"key": f"{key[0]}|{key[1]}", "tab": rtab, "category": record.get("category"),
                                         "subtopic": record.get("subtopic"), "people": 0, "complaints": [],
                                         "target": {k: v for k, v in target.items()
-                                                   if k in ("kind", "id", "label_ru", "label_kk", "approximate")},
+                                                   if k in ("kind", "id", "label_ru", "label_kk", "approximate", "object_kind")},
                                         "point": record.get("point"), "deadline": None, "demo": True,
                                         "created_at": record.get("created_at")})
         if _TAB_ORDER.index(rtab) < _TAB_ORDER.index(group["tab"]):
             group["tab"] = rtab
         group["people"] += rec.reporters(record)
         group["demo"] = group["demo"] and bool(record.get("demo"))
+        # П. 8 (R04): «Содержит грубые слова» — пометка и в списке «Обращений» (R10 B-064); сам текст — в карточке.
+        rude = bool(record.get("moderation") if "moderation" in record else rec.moderation(record.get("text")))
+        group["rude"] = group.get("rude", False) or rude
         group["complaints"].append({"id": record["id"], "code": record.get("code"), "status": record.get("status"),
-                                    "reporters": rec.reporters(record), "tab": rtab, "demo": bool(record.get("demo"))})
+                                    "reporters": rec.reporters(record), "tab": rtab, "demo": bool(record.get("demo")),
+                                    "rude": rude})
         info = deadline(record, now)
         if info and _deadline_rank(info) > _deadline_rank(group["deadline"]):
             group["deadline"] = info

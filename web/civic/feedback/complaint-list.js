@@ -123,7 +123,9 @@
       var head = h("button", { "class": "bc-inbox__row", type: "button", "aria-expanded": expanded ? "true" : "false",
                                "data-key": group.key, onclick: function () { toggle(group); } }, [
         h("span", { "class": "bc-inbox__place" }, [h("strong", {}, place),
-          group.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null]),
+          group.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
+          // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
+          group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
         // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
         h("span", { "class": "bc-meta" }, what),
         h("span", { "class": "bc-meta" }, [t("inbox.people", { n: group.people }),

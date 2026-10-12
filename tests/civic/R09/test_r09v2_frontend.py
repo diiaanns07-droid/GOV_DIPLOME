@@ -298,3 +298,11 @@ def test_clean_pass_r11_r09_items():
         low = text.lower()
         assert not any(c in low for c in ("#d7f57c", "#f1fbd3", "#f7f8f4", "#f1efe6")), "лайм/бежевый"
         assert "font-weight: 700" not in text
+
+
+def test_inbox_shows_rude_mark_and_original_text():
+    """R10 B-064: «Обращения» — пометка moderation.rude (ключ R11, как в карточке R07) в строке и текст-оригинал в карточке."""
+    assert 'group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude"))' in LIST_JS
+    assert '"bc-staff__text"' in STAFF_JS and 'current.moderation && current.moderation.rude' in STAFF_JS
+    s = strings()
+    assert s["ru"]["moderation.rude"] == "Содержит грубые слова" and s["kk"]["moderation.rude"] == "Дөрекі сөздер бар"

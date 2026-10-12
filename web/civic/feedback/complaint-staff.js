@@ -235,6 +235,12 @@
         // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
         root.appendChild(h("p", { "class": "bc-meta" }, C().categoryLabel(current.category) +
           (current.subtopic ? " · " + C().subtopicLabel(current.category, current.subtopic) : "")));
+        // Текст жителя — оригинал, только акимату (staff_view); грубые слова — пометкой (п. 8, R10 B-064).
+        // В карточке цели R07 (compact) тексты показывает сама карточка («Что пишут жители»).
+        if (current.text) {
+          root.appendChild(h("p", { "class": "bc-staff__text" }, [h("span", {}, "«" + current.text + "»"),
+            current.moderation && current.moderation.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]));
+        }
       }
       if (p.update_overdue) root.appendChild(h("p", { "class": "bc-overdue" }, t("passport.update_overdue")));
       if (r.state) root.appendChild(h("p", { "class": "bc-meta" }, t("staff.votes", {

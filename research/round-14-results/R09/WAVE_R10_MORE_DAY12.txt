@@ -1,0 +1,22 @@
+R10 tests/e2e/wave_checks.cjs + wave_more.cjs (claude/r14-R10 @ 2e72f62) --only W1-8,W1-9,W1-12 — B-062, B-063, B-064
+Дерево: R01 7782b92 + пути R09 (B-063/B-064, 12 окт) + R01_separate_routes.patch + R07_fix_form.patch. Облако, Chromium headless, без интернета.
+FAIL W1-12 «карточка цели на карте» ×2 — card:false (карточка R07 не открылась нажатием на 1366, как в WAVE_R10_DAY12.txt) — карта R07/R01.
+
+INFO    W1-8 сборка Мат и оскорбления: есть в сборке — проверяю — {"static":{"emergency":["web/civic/feedback/categories_v2.js: emergency_phone","web/civic/feedback/complaint-strings.js: complaint.emergency","web/civic/feedback/complaint.js: emergency_phone","ui/civic_feedback/v2/categories.py: emergency_
+PASS    W1-8 API не сотрудникам (карточка, карта, похожие, «Мои обращения»): грубых слов нет, в тексте — звёздочки — {"raw_in":{"public":false,"heat":false,"similar":false,"mine":false},"masked_in_mine":true}
+PASS    W1-8 API акимат видит оригинал и пометку «содержит грубые слова» (moderation.rude) — {"login":true,"moderation":{"count":2,"kinds":["mat"],"rude":true,"version":"r04-profanity-1"}}
+PASS    W1-8 1366-ru карточка места (R07) у акимата: пометка «содержит грубые слова» у текста жителя — {"card":true,"mark":true}
+PASS    W1-8 1366-ru «Обращения» (R09): пометка «содержит грубые слова» у такого обращения — {"opened":true,"mark":true}
+PASS    W1-8 1366-kk карточка места (R07) у акимата: пометка «содержит грубые слова» у текста жителя — {"card":true,"mark":true}
+PASS    W1-8 1366-kk «Обращения» (R09): пометка «содержит грубые слова» у такого обращения — {"opened":true,"mark":true}
+INFO    W1-9 сборка Разъединить дубли: есть в сборке — проверяю — {"static":{"emergency":["web/civic/feedback/categories_v2.js: emergency_phone","web/civic/feedback/complaint-strings.js: complaint.emergency","web/civic/feedback/complaint.js: emergency_phone","ui/civic_feedback/v2/categories.py: emergency_
+PASS    W1-9 API сотрудник отмечает дубль: люди дубля переходят к исходной — {"http":200,"before":1,"after":2}
+PASS    W1-9 1366-ru карточка места (R07): «Объединено с этим» → «Это разные проблемы» разделяет одним действием — {"card":true,"block":true,"clicked":true,"duplicate_of":null}
+INFO    W1-12 сборка Новые цели на карте и уточнения в «Картине дня»: есть в сборке — проверяю — {"static":{"emergency":["web/civic/feedback/categories_v2.js: emergency_phone","web/civic/feedback/complaint-strings.js: complaint.emergency","web/civic/feedback/complaint.js: emergency_phone","ui/civic_feedback/v2/categories.py: emergency_
+PASS    W1-12 API тепловая карта: у цели-светофора свой вид (subtype traffic_signal), а не просто «объект» — {"found":true,"subtype":"traffic_signal","label":"Светофор на перекрёстке ул. Сыганак и ул. Достык"}
+FAIL    W1-12 1366-ru карточка цели на карте: вид «Светофор» и подпись светофора — {"card":false,"eyebrow":""}
+PASS    W1-12 1366-ru «Картина дня»: у горячего места — уточнение («… — светофор, N жалоб») — {"day":true,"hot_with_subtopic":9,"label":"Деревья, газон"}
+FAIL    W1-12 1366-kk карточка цели на карте: вид «Бағдаршам» и подпись светофора — {"card":false,"eyebrow":""}
+PASS    W1-12 1366-kk «Картина дня»: у горячего места — уточнение («… — светофор, N жалоб») — {"day":true,"hot_with_subtopic":9,"label":"Ағаштар, көгал"}
+ИТОГ: { PASS: 11, FAIL: 2, PENDING: 0, NOT_RUN: 0, INFO: 3 } → <scratch>/r10-more-out
+EXIT 1
