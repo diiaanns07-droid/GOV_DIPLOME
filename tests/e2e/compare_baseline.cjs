@@ -131,7 +131,11 @@ function compareMap(base, now, timeRef) {
     const basemap = plus.filter((x) => /^(vector|raster|raster-dem|background)$/.test(kind[x] || ""));
     const accepted = plus.filter((x) => !basemap.includes(x) && acceptedLayer(x));
     for (const x of accepted) add("ИНФО", "карта · вид", `${tag}: новый слой ${x} — принято`, acceptedLayer(x));
-    const thematic = plus.filter((x) => !basemap.includes(x) && !acceptedLayer(x));
+    // Слой включён, но на виде по умолчанию ничего не рисует (rendered = 0) — не «видно сразу»: СМОТРЕТЬ, а не FAIL.
+    const rendered = (fn.style && fn.style.rendered) || {};
+    const empty = plus.filter((x) => !basemap.includes(x) && !acceptedLayer(x) && rendered[x] === 0);
+    if (empty.length) add("СМОТРЕТЬ", "карта · вид", `${tag}: новые слои включены, но по умолчанию пусты (0 объектов): ${empty.join(", ")}`, { kinds: empty.map((x) => kind[x] || "?") });
+    const thematic = plus.filter((x) => !basemap.includes(x) && !acceptedLayer(x) && !empty.includes(x));
     add(thematic.length ? "FAIL" : "OK", "карта · вид", `${tag}: видимые слои по умолчанию ${lb.length} → ${ln.length}` + (thematic.length ? " — новые функциональные слои видны сразу (правило 1)" : ""),
       thematic.length ? { new: thematic, kinds: thematic.map((x) => kind[x] || "?") } : null);
     if (basemap.length) add("СМОТРЕТЬ", "карта · вид", `${tag}: новые слои подложки (стиль карты) — сверить кадр`, { new: basemap.slice(0, 30), n: basemap.length });
@@ -300,7 +304,9 @@ function compareAudit(baseA, newA) {
   const audited = compareAudit(auditB, e2eN && e2eN.audit);
   const counts = {};
   items.forEach((i) => (counts[i.status] = (counts[i.status] || 0) + 1));
-  const verdict = counts.FAIL ? "ХУЖЕ" : "НЕ ХУЖЕ";
+  // Правило 7 — «не стало хуже»: нарушение порога, которое было и в эталоне (old), вердикт не меняет — оно в таблице критериев.
+  const newFails = items.filter((i) => i.status === "FAIL" && !i.old).length;
+  const verdict = newFails ? "ХУЖЕ" : "НЕ ХУЖЕ";
   const meta = { base: BASE, new: NEW, control: CONTROL, when: new Date().toISOString(),
     base_sha: (e2eB && e2eB.meta.sha) || (mapB && mapB.meta.sha), new_sha: (e2eN && e2eN.meta.sha) || (mapN && mapN.meta.sha),
     same_machine: sameMachine((mapC || mapB || {}).meta, (mapN || {}).meta) };
@@ -314,10 +320,10 @@ function compareAudit(baseA, newA) {
       ...Object.entries(CRIT).map(([k, name]) => { const fs_ = items.filter((i) => i.crit === k && i.status === "FAIL"), nw = fs_.filter((i) => !i.old).length, od = fs_.length - nw;
         const w = items.filter((i) => i.crit === k && i.status === "СМОТРЕТЬ").length;
         return `| ${name} | **${nw ? "стало хуже" : "не хуже"}** | ${fs_.length ? "нет" : w ? "да, смотреть" : "да"} | ${nw} | ${od} | ${w} |`; }), ""] : []),
-    "FAIL — правило 7 нарушено (стало хуже); СМОТРЕТЬ — изменилось, решает человек по кадру `diff-*.jpg` (эталон | новый | разница красным).", "",
+    "FAIL — правило 7 нарушено (стало хуже) или порог владельца не выполнен (у таких строк «в_эталоне: true» — было и в 8e67c65, вердикт не меняют); СМОТРЕТЬ — изменилось, решает человек по кадру `diff-*.jpg` (эталон | новый | разница красным).", "",
     "| Итог | Область | Что | Подробно |", "|---|---|---|---|",
     ...order.flatMap((s) => items.filter((i) => i.status === s).map((i) => `| **${i.status}** | ${i.area} | ${i.what} | ${i.detail ? JSON.stringify(i.detail).replace(/\|/g, "/").slice(0, 260) : ""} |`))];
   fs.writeFileSync(path.join(OUT, "COMPARE.md"), md.join("\n") + "\n");
   console.log(verdict, counts, "→", OUT);
-  process.exit(counts.FAIL ? 1 : 0);
+  process.exit(newFails ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(2); });
