@@ -255,6 +255,8 @@
 
     function load() {
       var id = ++state.request;
+      // Смена района при показанной ленте — без мигания скелетом: прежнее приглушено, полоса загрузки (как в «Картине дня»).
+      state.keep = state.status === "ok" && !!state.data;
       state.status = "loading";
       render();
       request("GET", "/nearby?district=" + encodeURIComponent(state.district))
@@ -262,6 +264,7 @@
           if (id !== state.request) return;
           state.data = d;
           state.status = "ok";
+          state.keep = false;
           // Первая непустая вкладка, если в выбранной пусто (житель не видит пустую ленту при полном районе).
           if (!d.tabs[state.tab]) {
             var first = TABS.filter(function (t) {
@@ -274,6 +277,7 @@
         .catch(function () {
           if (id !== state.request) return;
           state.status = "error";
+          state.keep = false;
           render();
         });
     }
@@ -415,7 +419,10 @@
           select,
         ])
       );
-      if (state.status === "loading") {
+      var pending = state.status === "loading" && state.keep && !!state.data;
+      if (pending) rootEl.setAttribute("data-pending", "");
+      else rootEl.removeAttribute("data-pending");
+      if (state.status === "loading" && !pending) {
         rootEl.appendChild(h("div", { class: "bk-card nb-loading", role: "status" }, [h("div", { class: "bk-skel bk-skel--title" }), h("div", { class: "bk-skel bk-skel--line" }), h("div", { class: "bk-skel bk-skel--line" })]));
         return;
       }
