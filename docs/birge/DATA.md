@@ -161,7 +161,7 @@
 | three.js | 0.169.0 (r169) | MIT | `web/vendor/three/SOURCE.txt` (npm, sha256 `f7cee3c7…`, LOCAL-2, 2026-10-10) |
 | Inter (шрифт «Birge Sans») | 4.0 | SIL OFL 1.1 | `web/civic/ui-kit/fonts/` (ветка R11 / сборка R01) |
 | PMTiles JS (офлайн-подложка) | 4.5.0 | BSD-3-Clause | `web/vendor/pmtiles/` (Codex OFFLINE afbc6ee, в сборке с 6096be8); архив тайлов Астаны `data/civic/astana/tiles/astana.pmtiles` (10 146 737 Б, Protomaps, ODbL) — **вне Git**, `download_tiles.ps1` |
-| qrcode-generator | 1.4.4 | MIT | **нет в сборке** — задача LOCAL-11 (`web/vendor/qrcode/qrcode.js`); без него лист QR-табличек R12 показывает ссылку вместо кода |
+| qrcode-generator | 1.4.4 | MIT | `web/vendor/qrcode/qrcode.js` — LOCAL-11 выполнен в пакете (`claude/round-14-package` @ c734f3b, с происхождением MIT); в FINAL-2 его ещё нет — без него лист QR-табличек R12 показывает ссылку вместо кода; войдёт с FINAL-3 |
 
 Подложка карты (не хранится в репозитории): OpenFreeMap, стиль `liberty`, 3D-здания из `tiles.openfreemap.org/planet` (данные OSM/OpenMapTiles) — атрибуция показывается на карте.
 
@@ -175,4 +175,4 @@
 | Реальные работы в Нуре (15–30 записей с источниками) | LOCAL-5 (ChatGPT с поиском) → `data/civic/astana/nura-real/records.csv` → привязка R12 | владелец / R12 |
 | Реальные (обезличенные) обращения 109 | запрос в акимат; без договорённости не использовать | владелец |
 | Проверка казахского носителем | `KK_REVIEW.md` R11 | владелец |
-| Генератор QR для листов табличек | LOCAL-11: qrcode-generator 1.4.4 в `web/vendor/qrcode/` | Codex / владелец |
+| ~~Генератор QR для листов табличек~~ | сделано 12.10 (LOCAL-11, pkg @ c734f3b); взять в сборку — R01 (FINAL-3) | R01 |
