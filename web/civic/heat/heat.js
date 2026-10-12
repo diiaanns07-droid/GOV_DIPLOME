@@ -299,8 +299,16 @@
     // облако без связи
     error: '<path d="M28 60h34a14 14 0 0 0 1-28 20 20 0 0 0-38-2 14 14 0 0 0 3 30z"/><path d="m22 14 52 52"/>',
   };
+  // В оболочке — линейные иллюстрации ui-kit R11 (одна семья рисунков во всех разделах: R11 INTEGRATION §10.1, DESIGN_BOOK);
+  // без ui-kit (страница R07 сама по себе) — свои рисунки выше.
+  const UI_ILL = { empty: "map", empty_filtered: "search", error: "offline", not_ready: "search" };
+  const uiKit = () => (window.BirgeUI && typeof window.BirgeUI.illustration === "function" ? window.BirgeUI : null);
   function illo(name) {
-    return '<svg class="r07-illo" viewBox="0 0 96 80" width="96" height="80" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + ILLO[name] + "</svg>";
+    const ui = uiKit();
+    if (ui && UI_ILL[name]) return ui.illustration(UI_ILL[name]);
+    if (name === "not_ready") return svgIcon("alert", 40);
+    const own = ILLO[name === "empty_filtered" ? "empty" : name];
+    return '<svg class="r07-illo" viewBox="0 0 96 80" width="96" height="80" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + own + "</svg>";
   }
   function svgIcon(name, size) {
     const s = size || 20;
@@ -1669,9 +1677,12 @@
     }
     function errorHtml() {
       const notReady = S.status === "not_ready";
-      return '<div class="r07-error" role="alert">' + (notReady ? svgIcon("alert", 40) : illo("error")) + '<p class="r07-error__title">' +
+      // «Повторить» с ⟳ ui-kit — как у «нет связи» в остальных разделах (R11 §10.1)
+      const ui = uiKit();
+      const again = ui && typeof ui.icon === "function" ? ui.icon("refresh") : "";
+      return '<div class="r07-error" role="alert">' + illo(notReady ? "not_ready" : "error") + '<p class="r07-error__title">' +
         esc(notReady ? t("heat.not_ready") : t("heat.error_title")) + "</p>" + (notReady ? "" : '<p class="r07-error__hint">' + esc(t("heat.error_hint")) + "</p>") +
-        '<button type="button" class="r07-btn" data-retry>' + esc(t("heat.retry")) + "</button></div>";
+        '<button type="button" class="r07-btn" data-retry>' + again + esc(t("heat.retry")) + "</button></div>";
     }
 
     function listHtml() {
@@ -1681,7 +1692,7 @@
         // Пусто ≠ «всё исправлено»: иконка поиска, «За 7 дней жалоб нет» и действие «Показать 30 дней» (№8).
         const filtered = Boolean(S.filters.category || S.filters.district);
         const next = (S.meta && S.meta.periods || [7, 30, 90]).find((d) => d > S.filters.days);
-        return '<div class="r07-empty" role="status">' + illo("empty") + '<p class="r07-empty__title">' + esc(t("heat.empty.title", { n: S.filters.days })) +
+        return '<div class="r07-empty" role="status">' + illo(filtered ? "empty_filtered" : "empty") + '<p class="r07-empty__title">' + esc(t("heat.empty.title", { n: S.filters.days })) +
           '</p><p class="r07-empty__hint">' + esc(t(filtered ? "heat.empty.hint_filters" : "heat.empty.hint")) + '</p><div class="r07-empty__actions">' +
           (next ? '<button type="button" class="r07-btn r07-btn--primary" data-days-next="' + next + '">' + esc(t("heat.empty.show_days", { n: next })) + "</button>" : "") +
           (filtered ? '<button type="button" class="r07-btn" data-reset>' + esc(t("heat.filter.reset")) + "</button>" : "") + "</div></div>";
