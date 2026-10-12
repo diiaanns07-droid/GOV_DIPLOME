@@ -45,17 +45,28 @@
   background: var(--c-surface, #ffffff);
   box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
 }
-/* Смена вида панели — мягкое проявление (enterDock): только прозрачность, положение не трогаем */
+/* Смена вида панели (enterDock: каталог ↔ размещение, карточка, подсказка): панель проявляется, а её содержимое
+   приподнимается на 8 px за --t-base — «выезжает, а не появляется» (чек-лист п. 7, R10 motion_check). Сама панель
+   не сдвигается: fitDock меряет её сразу после отрисовки (отступ от шапки, сдвиг от легенды хозяина), сдвиг бы его сбил. */
 .b3d-dock--enter {
-  animation: b3d-dock-in var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  animation: b3d-dock-in var(--t-base, 260ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+}
+.b3d-dock--enter > * {
+  animation: b3d-dock-rise var(--t-base, 260ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 @keyframes b3d-dock-in {
   from {
     opacity: 0;
   }
 }
+@keyframes b3d-dock-rise {
+  from {
+    translate: 0 8px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .b3d-dock--enter {
+  .b3d-dock--enter,
+  .b3d-dock--enter > * {
     animation: none;
   }
 }
@@ -117,13 +128,15 @@
 @media (min-width: 1024px) {
   .b3d--overlay:not(.b3d--host-right) .b3d-dock[data-state="card"] {
     position: absolute;
-    top: var(--gap-edge, 12px);
+    /* --b3d-card-top: хозяин опускает карточку под свои кнопки карты справа сверху (демо: «3D»), иначе она
+       закрывала их, и из-за скругления угла выглядывал край тёмной кнопки */
+    top: var(--b3d-card-top, var(--gap-edge, 12px));
     right: var(--gap-edge, 12px);
     width: min(var(--panel-w, 400px), calc(100% - 2 * var(--gap-edge, 12px)));
-    max-height: calc(100% - 2 * var(--gap-edge, 12px));
+    max-height: calc(100% - var(--b3d-card-top, var(--gap-edge, 12px)) - var(--gap-edge, 12px));
     overflow-y: auto;
     overscroll-behavior: contain;
-    animation: b3d-slide-in var(--t-base, 240ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+    animation: b3d-slide-in var(--t-base, 260ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
   }
 }
 @keyframes b3d-slide-in {
@@ -140,6 +153,19 @@
 .b3d-pcard__where,
 .b3d-pcard__yard {
   margin: 0;
+}
+/* Строка «Один голос с устройства» и справа у акимата компактная «Удалить» */
+.b3d-pcard__noterow > .b3d-pcard__note {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+/* Название в панели размещения: пометка «Проект» сразу за ним, переносится вместе с текстом */
+.b3d-title__text {
+  min-width: 0;
+}
+.b3d-title__text > .bk-tag {
+  margin-left: 2px;
 }
 /* Карточка R06 внутри панели: без второй тени и полей, «Закрыть» — в углу панели. */
 .b3d-head--end {
@@ -244,6 +270,12 @@
   height: 100%;
   object-fit: contain;
 }
+/* Кольцо фокуса с клавиатуры — внутри плитки (как у вкладок ui-kit в прокручиваемой строке): снаружи его срезал край
+   строки каталога с прокруткой, у первой плитки — слева */
+.b3d-card:focus-visible {
+  outline: 3px solid var(--c-focus, #2f7fd6);
+  outline-offset: -3px;
+}
 .b3d-card:hover {
   background: var(--c-fill-hover, #e5e8ea);
 }
@@ -307,7 +339,8 @@
 .b3d-hint--lead .ic {
   color: var(--c-brand, #152c26);
 }
-.b3d-hint--info {
+/* «Рядом уже есть остановка…» — справка, не ссылка: текст обычным цветом, синим — только значок «i» */
+.b3d-hint--info .ic {
   color: var(--c-info, #1f5fa8);
 }
 .b3d-hint--info .bk-meta {
@@ -331,6 +364,13 @@
 }
 .b3d-act[data-action="place"] {
   flex: 1 1 160px;
+}
+/* Одна кнопка в ряду («Отменить» в каталоге эскиза к идее): на ноутбуке — компактная справа, как второстепенное
+   действие диалога, а не серая полоса во всю панель (телефон — во всю ширину, ниже) */
+.b3d-actions > .b3d-act:only-child {
+  flex: 0 1 auto;
+  min-width: 160px;
+  margin-left: auto;
 }
 
 /* ── Карточка предложения ── */
@@ -475,6 +515,10 @@
   font-weight: var(--fw-semi, 600);
   line-height: 1.4;
   white-space: nowrap;
+  transition:
+    translate var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+    box-shadow var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+    scale var(--t-press, 120ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 }
 /* «Хвостик» вниз — к объекту. */
 .b3d-label__pill::after {
@@ -489,8 +533,27 @@
   border-bottom: 2px solid var(--c-surface, #ffffff);
   transform: translateX(-50%) rotate(45deg);
 }
-.b3d-label--hover .b3d-label__pill {
-  box-shadow: 0 0 0 3px var(--c-brand, #152c26), var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
+/* Наведение (на табличку или на саму модель) — табличка мягко приподнимается с тенью, а не тёмное кольцо:
+   кольцо цвета бренда выглядело как выбранный проект. Нажатие — лёгкое сжатие, как кнопки ui-kit. */
+.b3d-label--hover .b3d-label__pill,
+.b3d-label:hover .b3d-label__pill {
+  translate: 0 -2px;
+  box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
+}
+.b3d-label:active .b3d-label__pill {
+  scale: var(--press-scale, 0.97);
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d-label__pill {
+    transition: none;
+  }
+  .b3d-label--hover .b3d-label__pill,
+  .b3d-label:hover .b3d-label__pill {
+    translate: none;
+  }
+  .b3d-label:active .b3d-label__pill {
+    scale: none;
+  }
 }
 .b3d-label:focus-visible {
   outline: none;
@@ -507,9 +570,18 @@
 }
 /* Сжатая подпись (подписи перекрываются или карта далеко): точка цвета «проект» в той же зоне 48 px.
    Текст не обнуляется по размеру, а прячется как для экранного диктора — его по-прежнему читает aria. */
-.b3d-label__icon,
 .b3d-label__count {
   display: none;
+}
+/* Значок вида перед «Проект · 2027» (дизайн-марафон): сквер, площадка, остановка различимы без чтения, как метки
+   Apple Maps; в сжатой подписи-точке он один. Цвет — текста таблички (на выбранной — белый). */
+.b3d-label__icon {
+  display: block;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  color: currentColor;
 }
 /* Точка 32 px со значком вида проекта (UX_SPEC §5: значки на карте ≥ 24 px; R10 B-026). */
 .b3d-label--dot .b3d-label__pill {
@@ -523,6 +595,7 @@
   display: block;
   width: 18px;
   height: 18px;
+  margin-right: 0;
   color: var(--c-ink, #152c26);
 }
 /* Несколько проектов в одной точке — одна метка с числом; нажатие приближает к ним. */
@@ -609,6 +682,15 @@
   .b3d-dock:not(.bk-glass) {
     border-radius: var(--r-xl, 20px) var(--r-xl, 20px) 0 0;
   }
+  /* Подсказка жителю (одна строка) — плавающая плашка над краем экрана, а не шторка без низа: тянуть и листать
+     в ней нечего. Со всех сторон отступ 16 px и скругление панели стекла. */
+  .b3d--overlay .b3d-dock[data-state="hint"] {
+    width: auto;
+    max-width: calc(100% - 2 * var(--gutter-phone, 16px));
+    margin-bottom: var(--gutter-phone, 16px);
+    padding: var(--s-3, 12px) var(--s-4, 16px);
+    border-radius: var(--r-glass, 24px);
+  }
   .b3d-card__pic {
     height: 64px;
   }
@@ -636,6 +718,10 @@
   }
   .b3d-act[data-action="place"] {
     grid-column: span 1;
+  }
+  /* Одна кнопка в ряду («Отменить» в каталоге эскиза к идее) — во всю ширину, а не половина ряда у левого края */
+  .b3d-actions > .bk-btn:only-child {
+    grid-column: 1 / -1;
   }
 }
 

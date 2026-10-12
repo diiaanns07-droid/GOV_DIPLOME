@@ -32,6 +32,8 @@
         position: relative;
         flex: 1 1 auto;
         min-height: 0;
+        /* Карточка проекта (ноутбук, справа сверху) — под кнопкой «3D», а не поверх неё */
+        --b3d-card-top: calc(var(--gap-edge) + var(--tap, 48px) + var(--s-2));
       }
       .demo-maptools {
         position: absolute;

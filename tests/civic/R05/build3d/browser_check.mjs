@@ -141,9 +141,23 @@ function assert(cond, msg) {
 
 const browser = await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
 const pageErrors = [];
+// Кадры-доказательства — после CSS-анимаций модуля (проявление панели 200 мс, выезд карточки 260 мс, тосты): иначе
+// снимок ловил начало движения и выходил пустым (idea_pick_catalog_1366, 1366_ru_resident_card). На проверки не влияет:
+// ждём только перед снимком и не дольше 0,8 с. Подмена на прототипе — для всех страниц, в том числе ctx.newPage().
+function settleBeforeShots(page) {
+  const proto = Object.getPrototypeOf(page);
+  if (proto.__b3dShots) return;
+  const orig = proto.screenshot;
+  proto.screenshot = async function (o) {
+    await this.waitForFunction(() => !document.getAnimations().some((a) => a.playState === "running" && a.effect && a.effect.target && a.effect.target.closest && a.effect.target.closest(".b3d, .b3d-labels")), null, { timeout: 800 }).catch(() => {});
+    return orig.call(this, o);
+  };
+  proto.__b3dShots = true;
+}
 async function openPage(ctxOpts, query, opts = {}) {
   const ctx = await browser.newContext(Object.assign({ viewport: { width: 1366, height: 768 } }, ctxOpts));
   const page = await ctx.newPage();
+  settleBeforeShots(page);
   page._console = [];
   page.on("console", (m) => page._console.push({ type: m.type(), text: m.text() }));
   page.on("pageerror", (e) => pageErrors.push(query + ": " + e.message));
@@ -565,7 +579,10 @@ await check("resident_sees_objects_and_votes_no_catalog", async () => {
   const del = await p.$("[data-action=delete]");
   const vote = await p.$("[data-action=vote-up]");
   const started = await p.evaluate(() => __b3d.start("square"));
-  if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", "1366_ru_resident_card.png") });
+  if (SHOTS) {
+    await p.waitForTimeout(400); // карточка выезжает 260 мс — кадр после неё, а не пустой экран в начале движения
+    await p.screenshot({ path: path.join(OUT, "screens", "1366_ru_resident_card.png") });
+  }
   await p.context().close();
   assert(cards.length === 0 && !del && vote && started === false, JSON.stringify({ cards: cards.length, del: !!del, vote: !!vote, started }));
   return { status: "PASS", detail: "нет каталога и «Удалить», есть «За/Против»" };
@@ -1147,7 +1164,9 @@ await check("resident_hint_moves_off_host_legend_1366_1100_ru_kk", async () => {
     const withLegend = await m();
     if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `hint_legend_${w}_${lang}.png`) });
     await p.evaluate(() => { document.getElementById("t-legend").style.visibility = "hidden"; });
-    await p.waitForTimeout(300);
+    // Ждём возврата подсказки (до 3 с), а не ровно 300 мс: под нагрузкой (параллельный прогон R10) кадр запаздывал.
+    // Не вернулась — проверка ниже по-прежнему падает.
+    await p.waitForFunction(() => !document.querySelector("#t-root .b3d-dock").style.transform, null, { timeout: 3000 }).catch(() => {});
     const hidden = await m();
     await p.evaluate(() => __t.destroy());
     await p.context().close();

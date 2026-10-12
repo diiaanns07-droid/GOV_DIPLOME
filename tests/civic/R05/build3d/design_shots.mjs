@@ -7,6 +7,9 @@
 //   obj_<вид>_375.png   — то же на телефоне (×2);
 //   all_<ширина>_<язык>.png — все объекты с панелью и каталогом «Что построить?», как в демо;
 //   selected_<ширина>_<язык>.png — выбранный проект (табличка и пунктир цвета выбора);
+//   card_akimat_<ширина>_<язык>.png — карточка проекта у акимата (с «Удалить»);
+//   placing_<вид>_<ширина>_<язык>.png — размещение на телефоне 375/360: панель и призрак;
+//   hint_resident_<ширина>_<язык>.png — подсказка жителю «Нажмите на проект…»;
 //   build_<доля>.png    — постройка сквера (замедлена до 6 с): доли 0.1 … 1.0;
 // Набор как в browser_check (SHOWCASE: спортплощадка + примеры), без ?reset — иначе демо стирает набор.
 // Ничего не проверяет — только снимает (проверки остаются в browser_check.mjs). Сервер — статический web/ (+ ui-kit/i18n из --kit).
@@ -140,6 +143,42 @@ for (const [w, h, lang] of [[1366, 768, "ru"], [375, 812, "kk"]]) {
   await p.waitForTimeout(600);
   await shot(p, `selected_${w}_${lang}.png`);
   await p.context().close();
+}
+// 2в. Карточка проекта акимата («Удалить») — 1366 ru и 375 kk.
+for (const [w, h, lang] of [[1366, 768, "ru"], [375, 812, "kk"]]) {
+  if (!want(`card_akimat_${w}_${lang}.png`)) continue;
+  const p = await open({ width: w, height: h }, `?store=local&lang=${lang}&role=akimat&center=71.4008,51.1278&zoom=${w < 700 ? 16.9 : 17.5}&pitch=60&bearing=-30`, SHOWCASE);
+  await p.evaluate(() => __b3d.select("p-demo-stop-syganak"));
+  await settle(p);
+  await p.waitForTimeout(600);
+  await shot(p, `card_akimat_${w}_${lang}.png`);
+  await p.context().close();
+}
+// 2в'. Подсказка жителю «Нажмите на проект…» — телефон 375 kk и 360 ru, ноутбук 1366 ru.
+for (const [w, h, lang] of [[375, 812, "kk"], [360, 800, "ru"], [1366, 768, "ru"]]) {
+  if (!want(`hint_resident_${w}_${lang}.png`)) continue;
+  const p = await open({ width: w, height: h }, `?store=local&lang=${lang}&role=resident&center=71.4008,51.1278&zoom=${w < 700 ? 16.9 : 17.5}&pitch=60&bearing=-30`, SHOWCASE);
+  await shot(p, `hint_resident_${w}_${lang}.png`);
+  await p.context().close();
+}
+// 2г. Размещение каждого вида (панель и призрак) — телефон 375 и 360, ru/kk.
+const KINDS = ["square", "playground", "sports", "stop", "lighting"];
+for (const lang of ["ru", "kk"]) {
+  for (const [w, h] of [[375, 812], [360, 800]]) {
+    if (!want(...KINDS.map((k) => `placing_${k}_${w}_${lang}.png`))) continue;
+    const p = await open({ width: w, height: h }, `?store=local&lang=${lang}&role=akimat&center=71.4008,51.1278&zoom=16.9&pitch=60&bearing=-30`, SHOWCASE);
+    for (const k of KINDS) {
+      if (!want(`placing_${k}_${w}_${lang}.png`)) continue;
+      await p.click(`.b3d-card[data-kind=${k}]`);
+      await p.waitForSelector("[data-action=cancel]");
+      await settle(p);
+      await shot(p, `placing_${k}_${w}_${lang}.png`);
+      await p.click("[data-action=cancel]");
+      await p.waitForSelector(".b3d-card[data-kind=square]");
+      await settle(p);
+    }
+    await p.context().close();
+  }
 }
 // 3. Постройка сквера, замедленная до 6 с: кадры по долям времени.
 if (want(...[0.1, 0.25, 0.4, 0.55, 0.7, 0.85, 1].map((f) => `build_${f.toFixed(2)}.png`))) {
