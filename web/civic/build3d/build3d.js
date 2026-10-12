@@ -1243,7 +1243,8 @@
       clearTimeout(toastTimer);
       toastIsError = !!opts2.error;
       var n = el("div", "bk-toast" + (opts2.error ? " bk-toast--error" : " bk-toast--ok"), { role: opts2.error ? "alert" : "status" });
-      if (!opts2.error) n.appendChild(icon("check", o.iconsUrl));
+      // Значок слева, как в ui-kit (иконка | текст | действие под текстом): успех — галочка, ошибка — «внимание».
+      n.appendChild(icon(opts2.error ? "alert" : "check", o.iconsUrl));
       n.appendChild(el("span", "bk-toast__text", { text: text }));
       if (opts2.action) {
         var b = el("button", "bk-btn", { type: "button", "data-action": opts2.actionId || "toast-action" });
