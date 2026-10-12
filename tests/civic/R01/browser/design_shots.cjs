@@ -104,6 +104,10 @@ const STATES = [
   ["nearby", "resident", async (p) => { await p.evaluate(() => { location.hash = "#nearby"; }); await sleep(2500); return true; }],
   ["ideas", "resident", async (p) => { await p.evaluate(() => { location.hash = "#ideas"; }); await sleep(2500); return true; }],
   ["mine", "resident", async (p) => (await click(p, "#birge-header [data-action=mine]")) || click(p, "#birge-header .birge-mine-btn").then(async (ok) => { await sleep(1500); return ok; })],
+  ["wizard", "resident", async (p) => { const ok = await click(p, ".bc-fab"); await sleep(1200); return ok; }],
+  ["projects", "akimat", async (p) => { await p.evaluate(() => { location.hash = "#projects"; }); await sleep(2500); return true; }],
+  ["catalog", "akimat", async (p) => { await p.evaluate(() => { location.hash = "#projects"; }); await sleep(2500);
+    const ok = await click(p, ".birge-b3d-toggle"); await sleep(1500); return ok; }],
   ["loading", "akimat", null, { route: { url: /\/api\/civic\/v2\/heat/, handler: async (r) => { await sleep(6000); await r.continue().catch(() => null); } }, early: 1800 }],
   ["error", "akimat", null, { route: { url: /\/api\/civic\/v2\/heat/, handler: (r) => r.fulfill({ status: 503, contentType: "application/json", body: '{"error":"unavailable"}' }) } }],
 ];
