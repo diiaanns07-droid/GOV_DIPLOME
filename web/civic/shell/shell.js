@@ -608,6 +608,11 @@
         // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —
         // опускаем, как для каталога (R10 B-022). У жителя карточка лежит поверх шторки — там не трогаем.
         onSelect: (p) => { if (p && innerWidth < 761 && birgeMode() !== "resident" && S.sheet !== "peek") setSheet("peek"); },
+        // «×» в листе каталога R05 (дизайн-марафон, R11 INTEGRATION 11.3): свернуть каталог, фокус — на «Что построить?».
+        onCatalogClose: () => {
+          setBuild3dCatalog(false);
+          $c("birge-build3d-root")?.querySelector(".birge-b3d-toggle")?.focus?.({ preventScroll: true });
+        },
       }) || null;
     } catch (error) {
       console.error("birge build3d mount", error);

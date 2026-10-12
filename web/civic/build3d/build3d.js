@@ -24,6 +24,7 @@
  *   buildMs    — длительность анимации постройки (1100 мс);
  *   onToolChange(active, kind) — модуль взял/отдал щелчки по карте (R01: map.setInteractionEnabled);
  *   onSelect(proposal|null)    — выбрано предложение (R06 может показать свою карточку);
+ *   onCatalogClose()           — хозяин сворачивает каталог сам: в листе каталога — «×» (дизайн-марафон, R11 11.3);
  *   renderCard: false          — не показывать встроенную карточку (её рисует R06).
  *   avoid: () => [элементы]    — элементы хозяина поверх карты (шапка, панели, кнопки карты R01): модуль ставит
  *                                объект при открытой карточке в свободную часть карты, а в режиме overlay — и свою
@@ -339,8 +340,9 @@
   // кнопкой «3D» оболочки R01 (web/interface.js: THREE_D_MIN_PITCH 30, наклон кнопки 52°).
   var PITCH_3D = 30;
   var TILT_3D = 52;
-  var OUTLINE_COLOR = 0x176b4a; // пунктир границы проекта (бренд)
-  var OUTLINE_SELECTED = 0x2f7fd6; // выбранный проект — цвет фокуса ui-kit
+  // Пунктир границы проекта — вторичный цвет текста ui-kit (дизайн-марафон: «зелёный — только «исправлено»»; было #176b4a).
+  var OUTLINE_COLOR = 0x5b6a64;
+  var OUTLINE_SELECTED = 0x152c26; // выбранный проект — как его табличка: сплошной #152c26 (дизайн-марафон; было — синий фокуса)
 
   // ───────────── mount ─────────────
 
@@ -526,12 +528,35 @@
       applyInsets();
       renderDock();
       fitDock();
+      enterDock();
       labelsLayer.classList.toggle("b3d-labels--passive", S.mode === "placing");
       if (focusSel) {
         var again = dock.querySelector(focusSel);
         if (again) again.focus({ preventScroll: true });
       }
     }
+    // Панель сменила вид (каталог → размещение → карточка, другой проект) — мягко проявляется за 200 мс (дизайн-марафон,
+    // п. 7). Только прозрачность: положение панели модуль меряет сразу после отрисовки (fitDock) — сдвиг бы его сбил.
+    // У карточки на ноутбуке без хозяина своя анимация въезда — не трогаем; «уменьшить движение» — без анимации.
+    var dockLook = "";
+    function enterDock() {
+      var look = (dock.getAttribute("data-state") || "") + "|" + (S.selected || "") + "|" + (pick ? 1 : 0);
+      if (look === dockLook) return;
+      dockLook = look;
+      dock.classList.remove("b3d-dock--enter");
+      if (reducedMotion() || !dock.getAttribute("data-state") || ui.hidden) return;
+      try {
+        if (root.getComputedStyle(dock).animationName !== "none") return;
+      } catch (e) {
+        return;
+      }
+      void dock.offsetWidth; // перезапуск анимации
+      dock.classList.add("b3d-dock--enter");
+    }
+    dock.addEventListener("animationend", function () {
+      dock.classList.remove("b3d-dock--enter");
+    });
+
     // Свободная часть карты: не заходим под элементы хозяина (панель R01 слева, шторка снизу на телефоне).
     function applyInsets() {
       if (typeof opts.avoid !== "function" || !ui.classList.contains("b3d--overlay")) return;
@@ -834,19 +859,47 @@
       dock.appendChild(box);
     }
 
+    // Картинка карточки каталога (дизайн-марафон): превью модели из data/previews (тот же свет и угол, что на карте).
+    // Не загрузилась (сборка без data/previews) — прежний значок.
+    function previewSrc(kind) {
+      var base = o.dataUrl + "previews/" + kind;
+      return { src: base + ".png", srcset: base + ".png 1x, " + base + "@2x.png 2x", width: 240, height: 160 };
+    }
+    function cardPic(kind) {
+      var k = Core.KINDS[kind];
+      var pv = previewSrc(kind);
+      var wrap = el("span", "b3d-card__pic");
+      var img = el("img", "", { src: pv.src, srcset: pv.srcset, alt: "", width: "120", height: "80", decoding: "async", draggable: "false" });
+      img.addEventListener("error", function () {
+        if (wrap.parentNode) wrap.parentNode.replaceChild(icon(k.icon, o.iconsUrl), wrap);
+      });
+      wrap.appendChild(img);
+      return wrap;
+    }
+
     function renderCatalog() {
       dock.setAttribute("data-state", "catalog");
       var head = el("div", "b3d-head");
       head.appendChild(el("p", "b3d-title", { text: t("proposal.catalog.title"), id: "b3d-catalog-title" }));
       var count = Object.keys(S.objects).length;
       if (count >= Core.MAX_OBJECTS) head.appendChild(el("span", "bk-tag bk-tag--warn", { text: t("proposal.limit") }));
+      // Хозяин сворачивает каталог сам (оболочка R01: кнопка «Что построить?» / «Закрыть»): «×» — в листе, в правом
+      // верхнем углу, как у карточки (R11 INTEGRATION 11.3), а не отдельной кнопкой под листом.
+      if (typeof opts.onCatalogClose === "function") {
+        var x = el("button", "bk-iconbtn b3d-head__close", { type: "button", "aria-label": t("common.action.close"), title: t("common.action.close"), "data-action": "close-catalog" });
+        x.appendChild(icon("close", o.iconsUrl));
+        x.addEventListener("click", function () {
+          opts.onCatalogClose();
+        });
+        head.appendChild(x);
+      }
       dock.appendChild(head);
       var row = el("div", "b3d-cards", { role: "group", "aria-labelledby": "b3d-catalog-title" });
       Core.KIND_ORDER.forEach(function (kind) {
         var k = Core.KINDS[kind];
         var name = t(k.key);
         var b = el("button", "b3d-card", { type: "button", "data-kind": kind, "aria-label": t("build3d.catalog.place", { kind: name }) });
-        b.appendChild(icon(k.icon, o.iconsUrl));
+        b.appendChild(cardPic(kind));
         b.appendChild(el("span", "b3d-card__label", { text: name }));
         if (count >= Core.MAX_OBJECTS) b.disabled = true;
         b.addEventListener("click", function (ev) {
@@ -1635,7 +1688,8 @@
         };
       }
       if (ghost) {
-        var color = tint || (invalid ? 0xb3362e : 0x176b4a);
+        // Призрак: можно — графит ui-kit (не зелёный: зелёный в Birge — только «исправлено»), нельзя — красный.
+        var color = tint || (invalid ? 0xb3362e : 0x3f524c);
         return {
           solid: new THREE.MeshLambertMaterial({ color: color, emissive: color, emissiveIntensity: 0.25, transparent: true, opacity: 0.55 }),
           glass: null,
@@ -2005,7 +2059,8 @@
           revealMats.forEach(function (m) {
             m.userData.reveal.value = k >= 1 ? 1e4 : k;
           });
-          if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(Math.min(1, Math.max(0, (k - 0.15) / 0.75)));
+          // Тень — когда части уже выросли (иначе на пустом газоне лежат тени будущих деревьев).
+          if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(Math.min(1, Math.max(0, (k - 0.45) / 0.55)));
           if (obj.dust) obj.dust.userData.step(k);
           if (k >= 1) {
             obj.building = false;
@@ -2051,7 +2106,7 @@
           objs.forEach(function (obj) {
             if (obj.removing || obj.building || S.objects[obj.p.id] !== obj) return;
             setReveal(obj, k >= 1 ? 1e4 : k);
-            if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(k);
+            if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(Math.max(0, (k - 0.4) / 0.6));
           });
           return k < 1;
         },
@@ -2059,13 +2114,13 @@
       repaint();
     }
 
-    // Кольцо на земле: от центра объекта к его краю расходится и тает мягкий овал цвета бренда (~0.8 с).
+    // Кольцо на земле: от центра объекта к его краю расходится и тает мягкий овал цвета бренда #152c26 (~0.8 с).
     function makePulse(obj) {
       var k = Core.KINDS[obj.p.kind];
       var rx = k.line ? 7 : k.w / 2 + 1,
         ry = k.line ? 7 : k.d / 2 + 1;
       var geo = new THREE.RingGeometry(0.86, 1, 72);
-      var mat = new THREE.MeshBasicMaterial({ color: 0x2f7d5b, transparent: true, opacity: 0, depthWrite: false });
+      var mat = new THREE.MeshBasicMaterial({ color: 0x152c26, transparent: true, opacity: 0, depthWrite: false });
       var ring = new THREE.Mesh(geo, mat);
       ring.frustumCulled = false;
       ring.renderOrder = 5;
@@ -2080,7 +2135,7 @@
         var e = easeOutCubic(Math.min(1, kk / 0.8));
         var sc = 0.35 + 0.8 * e;
         ring.scale.set(rx * sc, ry * sc, 1);
-        mat.opacity = 0.34 * (1 - e) * Math.min(1, kk / 0.08);
+        mat.opacity = 0.24 * (1 - e) * Math.min(1, kk / 0.08);
       };
       group.userData.step(0);
       return group;
@@ -2402,7 +2457,7 @@
         if (kind === "lighting") return;
         var k = Core.KINDS[kind];
         var b = el("button", "b3d-card", { type: "button", "data-kind": kind, "aria-label": t(k.key) });
-        b.appendChild(icon(k.icon, o.iconsUrl));
+        b.appendChild(cardPic(kind));
         b.appendChild(el("span", "b3d-card__label", { text: t(k.key) }));
         b.addEventListener("click", function (ev) {
           start(kind, { keyboard: ev.detail === 0, pick: true });
@@ -3559,9 +3614,7 @@
       // Картинка-превью объекта для карточек каталога (дизайн-марафон): {src, srcset} из data/previews/ (рендер тех же
       // моделей — tests/civic/R05/build3d/make_previews.mjs, 240×160 и @2x). Без three.js — годится для лёгкого вида.
       previewOf: function (kind) {
-        if (!Core.KINDS[kind]) return null;
-        var base = o.dataUrl + "previews/" + kind;
-        return { src: base + ".png", srcset: base + ".png 1x, " + base + "@2x.png 2x", width: 240, height: 160 };
+        return Core.KINDS[kind] ? previewSrc(kind) : null;
       },
       flyToProposals: flyToProposals,
       setMode: setMode,

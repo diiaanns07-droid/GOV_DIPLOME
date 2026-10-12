@@ -120,6 +120,24 @@ try {
   const dockR = await rect(p, "#birge-build3d-root .b3d-dock"), panelR = await rect(p, ".civic-panel");
   check("akimat_catalog_not_under_shell_panel", (await p.$$(".b3d-card")).length === 5 && !overlap(dockR, panelR), { dock: dockR, panel: panelR });
   check("catalog_labels_inside_cards_ru", (await labelsFit(p)).length === 0, await labelsFit(p));
+  // Дизайн-марафон (R11 INTEGRATION 11.3): с proposed_r01_marathon.patch «Закрыть» — «×» в листе каталога, кнопка
+  // оболочки под листом спрятана; «×» сворачивает каталог и возвращает фокус на «Что построить?». Без патча — как было.
+  const xr = await p.evaluate(() => {
+    const vis = (e) => !!e && getComputedStyle(e).display !== "none" && e.getClientRects().length > 0;
+    const x = document.querySelector("#birge-build3d-root .b3d-head__close"), t = document.querySelector(".birge-b3d-toggle");
+    return { x: vis(x), toggle: vis(t), toggleText: t ? t.textContent.trim() : null, xSize: x ? Math.round(x.getBoundingClientRect().height) : null };
+  });
+  if (xr.x) {
+    await p.click("#birge-build3d-root .b3d-head__close");
+    await p.waitForTimeout(300);
+    Object.assign(xr, await p.evaluate(() => ({
+      after: document.getElementById("birge-build3d-root")?.dataset.catalog,
+      focus: document.activeElement?.classList.contains("birge-b3d-toggle") || false,
+      toggleAfter: document.querySelector(".birge-b3d-toggle")?.textContent.trim(),
+    })));
+    await openCatalog(p);
+  }
+  check("catalog_close_x_inside_sheet (proposed_r01_marathon.patch)", xr.x ? !xr.toggle && xr.xSize >= 44 && xr.after === "closed" && xr.focus : xr.toggle, xr);
   // 2. Вход сотрудника (клиент оболочки) → «Поставить» сквер → R06 хранит (через BirgeShell.api.v2, без адаптера).
   const login = PASSWORD ? await p.evaluate((pw) => window.CivicShell.api.login("operator", pw).then(() => true, () => false), PASSWORD) : false;
   check("staff_login_through_shell", login === true, login);

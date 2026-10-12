@@ -45,6 +45,20 @@
   background: var(--c-surface, #ffffff);
   box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
 }
+/* Смена вида панели — мягкое проявление (enterDock): только прозрачность, положение не трогаем */
+.b3d-dock--enter {
+  animation: b3d-dock-in var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+}
+@keyframes b3d-dock-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d-dock--enter {
+    animation: none;
+  }
+}
 .b3d-dock[data-state="empty"] {
   display: none;
 }
@@ -149,6 +163,11 @@
   gap: var(--s-2, 8px);
   min-height: 32px;
 }
+/* «×» каталога (хозяин сворачивает его сам) — справа в строке заголовка, как у карточки проекта */
+.b3d-head__close {
+  margin-left: auto;
+  flex: 0 0 auto;
+}
 .b3d-title {
   display: flex;
   align-items: center;
@@ -159,13 +178,13 @@
   line-height: var(--lh-head, 1.2);
 }
 .b3d-title .ic {
-  color: var(--c-brand, #176b4a);
+  color: var(--c-brand, #152c26);
 }
 .b3d-note {
   margin: 0;
 }
 
-/* ── Каталог: 5 карточек с иконкой и подписью ── */
+/* ── Каталог: 5 карточек — превью модели и подпись (дизайн-марафон; раньше — значок-линия) ── */
 .b3d-cards {
   display: flex;
   gap: var(--s-3, 12px);
@@ -189,11 +208,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--s-2, 8px);
-  padding: var(--s-2, 8px);
-  border: 1px solid var(--c-line-strong, #c9d3cb);
-  border-radius: var(--r-m, 12px);
-  background: var(--c-surface, #ffffff);
+  gap: 6px;
+  padding: var(--s-2, 8px) var(--s-2, 8px) 10px;
+  border: 0;
+  border-radius: var(--r-l, 16px);
+  /* Плитка ui-kit (R11 INTEGRATION 11.3): заливка без рамки и без тени (одна тень — у панели, GLASS.md);
+     серая заливка непрозрачна и на стекле — карта её не тонирует */
+  background: var(--c-fill, #eff1f2);
   color: var(--c-ink, #152c26);
   font: inherit;
   font-size: var(--fs-body, 16px);
@@ -203,21 +224,36 @@
   cursor: pointer;
   touch-action: manipulation;
   transition:
-    border-color var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    background var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    transform var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+    background-color var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+    transform var(--t-press, 120ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 }
 .b3d-card .ic {
   width: 32px;
   height: 32px;
-  color: var(--c-brand, #176b4a);
+  color: var(--c-brand, #152c26);
+}
+/* Превью: прозрачный фон, вписано по высоте строки (ноутбук 72 px, телефон 64 px) */
+.b3d-card__pic {
+  display: block;
+  width: 100%;
+  height: 72px;
+}
+.b3d-card__pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .b3d-card:hover {
-  border-color: var(--c-brand, #176b4a);
-  background: var(--c-brand-soft, #e6f1eb);
+  background: var(--c-fill-hover, #e5e8ea);
 }
 .b3d-card:active {
-  transform: translateY(1px);
+  transform: scale(var(--press-scale, 0.97)); /* отклик нажатия — лёгкое сжатие (токены движения R11) */
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d-card:active {
+    transform: none;
+  }
 }
 .b3d-card:disabled {
   opacity: 0.5;
@@ -225,6 +261,8 @@
 }
 .b3d-card--skel {
   border: 0;
+  box-shadow: none;
+  min-height: 115px; /* как карточка с превью — каталог не «прыгает» после загрузки */
 }
 .b3d-card__label {
   overflow-wrap: normal;
@@ -267,7 +305,7 @@
   font-weight: var(--fw-semi, 600);
 }
 .b3d-hint--lead .ic {
-  color: var(--c-brand, #176b4a);
+  color: var(--c-brand, #152c26);
 }
 .b3d-hint--info {
   color: var(--c-info, #1f5fa8);
@@ -310,7 +348,7 @@
   line-height: var(--lh-head, 1.2);
 }
 .b3d-pcard__title .ic {
-  color: var(--c-brand, #176b4a);
+  color: var(--c-brand, #152c26);
 }
 .b3d-pcard p {
   margin: 0;
@@ -324,9 +362,9 @@
   flex: 1 1 140px;
 }
 .b3d-vote[aria-pressed="true"] {
-  border-color: var(--c-brand, #176b4a);
-  background: var(--c-brand-soft, #e6f1eb);
-  box-shadow: inset 0 0 0 1px var(--c-brand, #176b4a);
+  border-color: var(--c-brand, #152c26);
+  background: var(--c-brand-soft, #eef1f0);
+  box-shadow: inset 0 0 0 1px var(--c-brand, #152c26);
 }
 
 /* ── Состояния: ошибка, нет 3D ── */
@@ -452,12 +490,17 @@
   transform: translateX(-50%) rotate(45deg);
 }
 .b3d-label--hover .b3d-label__pill {
-  box-shadow: 0 0 0 3px var(--c-brand, #176b4a), var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
+  box-shadow: 0 0 0 3px var(--c-brand, #152c26), var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
 }
 .b3d-label:focus-visible {
   outline: none;
 }
-.b3d-label[aria-pressed="true"] .b3d-label__pill,
+/* Выбранный проект (дизайн-марафон): как нажатая кнопка ui-kit — сплошной #152c26, белый текст (GLASS.md: «нажатая —
+   сплошная #152c26»; одна акцентная краска). Синее кольцо — только фокус с клавиатуры. */
+.b3d-label[aria-pressed="true"] .b3d-label__pill {
+  background: var(--c-ink, #152c26);
+  color: var(--c-on-ink, #ffffff);
+}
 .b3d-label:focus-visible .b3d-label__pill {
   outline: 3px solid var(--c-focus, #2f7fd6);
   outline-offset: 2px;
@@ -565,6 +608,12 @@
   }
   .b3d-dock:not(.bk-glass) {
     border-radius: var(--r-xl, 20px) var(--r-xl, 20px) 0 0;
+  }
+  .b3d-card__pic {
+    height: 64px;
+  }
+  .b3d-card--skel {
+    min-height: 107px;
   }
   .b3d-card {
     flex: 0 0 144px; /* «Спортплощадка» одним словом — 16 px без переноса */
