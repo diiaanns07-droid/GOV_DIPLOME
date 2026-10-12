@@ -45,6 +45,20 @@
   background: var(--c-surface, #ffffff);
   box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
 }
+/* Смена вида панели — мягкое проявление (enterDock): только прозрачность, положение не трогаем */
+.b3d-dock--enter {
+  animation: b3d-dock-in var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+}
+@keyframes b3d-dock-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d-dock--enter {
+    animation: none;
+  }
+}
 .b3d-dock[data-state="empty"] {
   display: none;
 }

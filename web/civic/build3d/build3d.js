@@ -528,12 +528,35 @@
       applyInsets();
       renderDock();
       fitDock();
+      enterDock();
       labelsLayer.classList.toggle("b3d-labels--passive", S.mode === "placing");
       if (focusSel) {
         var again = dock.querySelector(focusSel);
         if (again) again.focus({ preventScroll: true });
       }
     }
+    // Панель сменила вид (каталог → размещение → карточка, другой проект) — мягко проявляется за 200 мс (дизайн-марафон,
+    // п. 7). Только прозрачность: положение панели модуль меряет сразу после отрисовки (fitDock) — сдвиг бы его сбил.
+    // У карточки на ноутбуке без хозяина своя анимация въезда — не трогаем; «уменьшить движение» — без анимации.
+    var dockLook = "";
+    function enterDock() {
+      var look = (dock.getAttribute("data-state") || "") + "|" + (S.selected || "") + "|" + (pick ? 1 : 0);
+      if (look === dockLook) return;
+      dockLook = look;
+      dock.classList.remove("b3d-dock--enter");
+      if (reducedMotion() || !dock.getAttribute("data-state") || ui.hidden) return;
+      try {
+        if (root.getComputedStyle(dock).animationName !== "none") return;
+      } catch (e) {
+        return;
+      }
+      void dock.offsetWidth; // перезапуск анимации
+      dock.classList.add("b3d-dock--enter");
+    }
+    dock.addEventListener("animationend", function () {
+      dock.classList.remove("b3d-dock--enter");
+    });
+
     // Свободная часть карты: не заходим под элементы хозяина (панель R01 слева, шторка снизу на телефоне).
     function applyInsets() {
       if (typeof opts.avoid !== "function" || !ui.classList.contains("b3d--overlay")) return;
