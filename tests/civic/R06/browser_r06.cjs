@@ -65,8 +65,9 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
 
 (async () => {
   const dbDir = fs.mkdtempSync(path.join(os.tmpdir(), "r06-browser-"));
+  // Лимит частоты поднят только для длинного сценария; сам лимит проверяют тесты Python (429).
   const server = spawn("python3", [path.join(ROOT, "tests/civic/R06/harness/serve_r06.py"), "--port", String(PORT),
-    "--db", path.join(dbDir, "feedback.sqlite3")], { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"] });
+    "--db", path.join(dbDir, "feedback.sqlite3"), "--per-sender-max", "20"], { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"] });
   let browser;
   try {
     await waitForServer(server);
@@ -181,7 +182,7 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     if (shotDir) await page.locator("#resident-root").screenshot({ path: path.join(shotDir, "r06_public_card.png") });
 
     // 12. Logout: открытая форма модерации не выполняет действие.
-    await page.locator("#moderation-root .civic-r06-tab", { hasText: "Ожидают" }).click();
+    await page.locator("#moderation-root .civic-r06-tab", { hasText: "Новые" }).click();
     await page.waitForSelector("#moderation-root .civic-r06-queue-item");
     await page.locator("#moderation-root .civic-r06-queue-item").first().click();
     await page.waitForSelector("#moderation-root .civic-r06-decision");
@@ -189,7 +190,7 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     await page.waitForFunction(() => document.getElementById("session").textContent.includes("не вошли"));
     await page.locator("#moderation-root .civic-r06-decision textarea").first().fill("Попытка после выхода");
     await page.locator("#moderation-root .civic-r06-decision button[type=submit]").click();
-    await page.waitForFunction(() => /Войдите снова|не выполнено/.test(document.querySelector("#moderation-root .civic-r06-decision .civic-r06-status").textContent));
+    await page.waitForFunction(() => /Войдите снова|не выполнено/.test((document.querySelector("#moderation-root .civic-r06-decision .civic-r06-status")?.textContent || "")));
     check("logout blocks moderation in open form", true);
 
     // 13. Истёкшая сессия тоже не выполняет действие.
@@ -201,7 +202,7 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     await page.click("#expire");
     await page.locator("#moderation-root .civic-r06-decision textarea").first().fill("Попытка с истёкшей сессией");
     await page.locator("#moderation-root .civic-r06-decision button[type=submit]").click();
-    await page.waitForFunction(() => /истекла/.test(document.querySelector("#moderation-root .civic-r06-decision .civic-r06-status").textContent));
+    await page.waitForFunction(() => /истекла/.test((document.querySelector("#moderation-root .civic-r06-decision .civic-r06-status")?.textContent || "")));
     await page.click("#login-editor");
     await page.waitForFunction(() => document.getElementById("session").textContent.includes("editor"));
     check("pending unchanged after logout/expired attempts", (await apiQueue(page, "pending")).body.data.items.length === 1);
@@ -263,6 +264,87 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     });
     check("mobile form has no horizontal overflow", overflow <= 1, String(overflow));
     if (shotDir) await mobile.locator("#resident-root").screenshot({ path: path.join(shotDir, "r06_form_mobile.png") });
+
+    // ---------------- Round 12: черновик, потерянный ответ, конфликт версии, обработка, заметки
+    const p2 = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    p2.on("pageerror", (e) => consoleErrors.push(String(e)));
+    p2.on("dialog", (d) => { dialogs.push(d.message()); d.dismiss(); });
+    const ready = async () => { await p2.waitForSelector("body[data-r06-ready='1']"); };
+    const park = async () => { await p2.selectOption("#target", "object:demo-astana-park-02"); await p2.waitForSelector("#resident-root .civic-r06-form"); };
+    const submitBtn = "#resident-root button[type=submit]";
+    await p2.goto(BASE + "/harness/");
+    await ready();
+    await park();
+    const draftText = "R12 черновик: сломана скамейка у входа в сквер, сидеть нельзя.";
+    await fillForm(p2, { text: draftText, category: "landscaping", consent: true });
+    await p2.reload();
+    await ready();
+    await park();
+    check("r12 draft survives page reload (same tab)", (await p2.locator("#resident-root textarea").inputValue()) === draftText &&
+      (await p2.locator("#resident-root select").inputValue()) === "landscaping" &&
+      (await p2.locator("#resident-root input[type=radio][value=true]").isChecked()));
+    // Сервер сохранил, но ответ потерян; затем двойной клик — одна запись, та же квитанция.
+    await p2.route("**/api/civic/v1/feedback", async (route) => { await route.fetch(); await route.abort(); }, { times: 1 });
+    await p2.locator(submitBtn).click();
+    await p2.waitForSelector("#resident-root .civic-r06-status-error");
+    await p2.locator(submitBtn).dblclick();
+    await p2.waitForSelector("#resident-root .civic-r06-receipt");
+    const firstReceipt = (await p2.locator("#resident-root .civic-r06-receipt-id").innerText()).trim();
+    await p2.reload();
+    await ready();
+    await p2.selectOption("#target", "object:demo-astana-park-02");
+    // Round 13: после перезагрузки вкладки житель снова видит квитанцию и статус, а не пустую форму.
+    await p2.waitForSelector("#resident-root .civic-r06-receipt .civic-r06-receipt-handling:not(:empty)");
+    check("r13 receipt card restored after reload", (await p2.locator("#resident-root .civic-r06-receipt-id").innerText()).trim() === firstReceipt);
+    await p2.locator("#resident-root button", { hasText: "Написать ещё одно сообщение" }).click();
+    await park();
+    check("r12 draft cleared after successful send", (await p2.locator("#resident-root textarea").inputValue()) === "");
+    // Ответ потерян, автор исправил текст: понятное предупреждение с прежней квитанцией, копия только по явному выбору.
+    await fillForm(p2, { text: "R12 вторая версия: нет освещения на дорожке в сквере вечером.", category: "lighting", consent: false });
+    await p2.route("**/api/civic/v1/feedback", async (route) => { await route.fetch(); await route.abort(); }, { times: 1 });
+    await p2.locator(submitBtn).click();
+    await p2.waitForSelector("#resident-root .civic-r06-status-error");
+    await p2.locator("#resident-root textarea").fill("R12 вторая версия: нет освещения на дорожке в сквере вечером, совсем темно.");
+    await p2.locator(submitBtn).click();
+    await p2.waitForSelector("#resident-root .civic-r06-status-warning");
+    const conflictText = await p2.locator("#resident-root .civic-r06-status").innerText();
+    check("r12 edited resend shows saved previous receipt", conflictText.includes("Предыдущая версия уже сохранена") && /fbr_/.test(conflictText), conflictText);
+    await p2.locator("#resident-root button", { hasText: "Отправить изменённый текст отдельным сообщением" }).click();
+    await p2.waitForSelector("#resident-root .civic-r06-receipt");
+    await p2.click("#login-editor");
+    await p2.waitForFunction(() => document.getElementById("session").textContent.includes("editor"));
+    const r12 = await p2.evaluate(async () => {
+      const r = await fetch("/api/civic/v1/staff/feedback?status=all&q=" + encodeURIComponent("R12") + "&limit=50", { credentials: "same-origin" });
+      return (await r.json()).data.items.map((i) => i.text);
+    });
+    check("r12 lost response + double click = one message", r12.filter((t) => t === draftText).length === 1, JSON.stringify(r12));
+    check("r12 edited version saved only by explicit choice (2 versions)", r12.filter((t) => t.startsWith("R12 вторая версия")).length === 2, JSON.stringify(r12));
+    check("r12 receipt shown after replayed send", /^fbr_/.test(firstReceipt), firstReceipt);
+    // Сотрудник: поиск, статус «В работе», служебная заметка, журнал.
+    await p2.waitForSelector("#moderation-root .civic-r06-queue-item");
+    await p2.locator("#moderation-root input[type=search]").fill("скамейка");
+    await p2.waitForFunction(() => document.querySelectorAll("#moderation-root .civic-r06-queue-item").length === 1);
+    check("r12 queue search finds by word", (await p2.locator("#moderation-root .civic-r06-queue-item").innerText()).includes("скамейка"));
+    await p2.locator("#moderation-root .civic-r06-queue-item").first().click();
+    await p2.waitForSelector("#moderation-root .civic-r06-handling");
+    check("r12 classifier absence is explicit", (await p2.locator("#moderation-root .civic-r06-classifier").innerText()).includes("модель не подключена"));
+    await p2.locator("#moderation-root .civic-r06-handling select").selectOption("in_review");
+    await p2.locator("#moderation-root .civic-r06-handling textarea").last().fill("Взято в работу сотрудником платформы");
+    await p2.locator("#moderation-root .civic-r06-handling button[type=submit]").click();
+    await p2.waitForFunction(() => /В работе/.test((document.querySelector("#moderation-root .civic-r06-handling-line")?.textContent || "")));
+    check("r12 status changed via UI", true);
+    const note = "R12 служебно: уточнить у балансодержателя сквера";
+    await p2.locator("#moderation-root .civic-r06-note textarea").fill(note);
+    await p2.locator("#moderation-root .civic-r06-note button[type=submit]").click();
+    await p2.waitForFunction((n) => document.querySelector("#moderation-root .civic-r06-history") &&
+      (document.querySelector("#moderation-root .civic-r06-history")?.textContent || "").includes(n), note);
+    check("r12 note visible in staff history", true);
+    if (shotDir) await p2.locator("#moderation-root").screenshot({ path: path.join(shotDir, "r06_r12_moderation.png") });
+    const publicDump = await p2.evaluate(async () => {
+      const r = await fetch("/api/civic/v1/objects/demo-astana-park-02/feedback", { credentials: "same-origin" });
+      return await r.text();
+    });
+    check("r12 note and staff names never in public list", !publicDump.includes("R12 служебно") && !publicDump.includes("fixture-editor"));
     check("no page errors", consoleErrors.length === 0, consoleErrors.join("; "));
   } catch (error) {
     check("browser run completed", false, String(error && error.stack || error));

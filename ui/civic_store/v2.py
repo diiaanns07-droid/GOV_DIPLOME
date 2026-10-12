@@ -300,11 +300,15 @@ def _query(bbox=None, district=None, status=None):
     return query
 
 
-def _actor(context):
-    """Сотрудник из серверной сессии (cookie). principal-словарь шлюза не содержит user_id для истории."""
-    principal = _v2().service.resolve_principal(context or {})
-    if principal is None or not principal.is_staff:
-        raise V2Error(401, "unauthenticated", "Войдите как сотрудник акимата.")
+def _actor(context, *, unsafe=True):
+    """Сотрудник из серверной сессии (cookie). principal-словарь шлюза не содержит user_id для истории.
+
+    R15-S17: для изменений — ещё CSRF-токен и same-origin (require_staff), как в CivicV2.handle: не полагаемся
+    только на флаг staff в таблице маршрутов шлюза R01 (защита в глубину)."""
+    principal, denied = _v2().service.require_staff(context or {}, unsafe=unsafe)
+    if denied:
+        err = (denied.get("body") or {}).get("error") or {}
+        raise V2Error(denied.get("status", 403), err.get("code", "forbidden"), err.get("message", "Недостаточно прав."))
     return principal.actor()
 
 
@@ -321,7 +325,13 @@ def create_proposal(body, context=None, principal=None):
 
 
 def vote_proposal(proposal_id, value, device_id, context=None):
-    client = str((context or {}).get("client_ip") or "unknown")
+    context = context or {}
+    # R15-S17: как CivicV2.handle и жалобы R09 — шлюз сообщил чужой адрес или чужой сайт -> отказ (защита в глубину).
+    if context.get("host_allowed") is False:
+        raise V2Error(403, "forbidden_host", "Откройте интерфейс через адрес этого сервера.")
+    if context.get("is_same_origin") is False:
+        raise V2Error(403, "cross_origin", "Голос с чужого сайта отклонён.")
+    client = str(context.get("client_ip") or "unknown")
     return _run(_v2().proposals.vote, proposal_id, {"value": value, "device_id": device_id}, client_key=client)
 
 
@@ -346,7 +356,7 @@ def set_object_stage(object_id, body, context=None, principal=None):
 
 
 def get_object_stage(object_id, context=None, principal=None):
-    _actor(context)
+    _actor(context, unsafe=False)
     return _run(_v2().stages.get_staff, object_id)
 
 

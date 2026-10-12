@@ -38,9 +38,13 @@ def test_component_exposes_contract_globals_only():
 def test_component_does_not_touch_body_or_storage_or_staff_from_public_form():
     code = code_only(JS)
     assert "document.body" not in code
-    assert "localStorage" not in code and "sessionStorage" not in code
-    resident = code.split("function mountModeration")[0]
+    assert "localStorage" not in code  # ничего не переживает закрытие вкладки
+    resident, staff_part = code.split("function mountModeration")
     assert "/staff/" not in resident  # публичная форма не грузит служебные endpoint
+    # round 12: черновик жителя (без контактов) — только sessionStorage этой вкладки, чтобы текст
+    # пережил перезагрузку после ошибки сети; кабинет сотрудника хранилищ браузера не использует.
+    assert "sessionStorage" not in staff_part
+    assert "removeItem(DRAFT_PREFIX" in resident  # после успешной отправки черновик удаляется
 
 
 def test_css_is_scoped_to_component_prefix():

@@ -5,7 +5,10 @@ FeedbackService.handle: реальные headers, client_ip, is_same_origin, с�
 principal из cookie. Учётные записи — fixture (ui/civic_feedback/fixtures.py),
 пароль не нужен, сервер слушает только 127.0.0.1. БД — временный файл.
 
-    python tests/civic/R06/harness/serve_r06.py --port 8766 [--db PATH]
+    python tests/civic/R06/harness/serve_r06.py --port 8766 [--db PATH] [--classifier r08]
+
+--classifier r08 подключает настоящий ml.civic_classifier (если его нет — стенд не стартует,
+а не подменяет модель заглушкой); fixture — FIXTURE-подсказка по ключевым словам.
 """
 
 from __future__ import annotations
@@ -25,13 +28,15 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from ui.civic_feedback import FeedbackService  # noqa: E402
+from ui.civic_feedback.classifier_adapter import r08_status  # noqa: E402
 from ui.civic_feedback.fixtures import (FIXTURE_EDITOR, FIXTURE_NOTICE, FIXTURE_RESIDENT,  # noqa: E402
-                                        fixture_object_lookup)
+                                        broken_classifier, fixture_keyword_classifier, fixture_object_lookup)
 
 HERE = Path(__file__).resolve().parent
 STATIC = {
     "/harness/": (HERE / "index.html", "text/html; charset=utf-8"),
     "/harness/harness.js": (HERE / "harness.js", "text/javascript; charset=utf-8"),
+    "/harness/harness.css": (HERE / "harness.css", "text/css; charset=utf-8"),
     "/web/civic/feedback/feedback.js": (ROOT / "web/civic/feedback/feedback.js", "text/javascript; charset=utf-8"),
     "/web/civic/feedback/feedback.css": (ROOT / "web/civic/feedback/feedback.css", "text/css; charset=utf-8"),
 }
@@ -39,9 +44,24 @@ MAX_BODY = 64 * 1024
 FIXTURE_USERS = {"editor": FIXTURE_EDITOR, "resident": FIXTURE_RESIDENT}
 
 
+CLASSIFIERS = {"none": None, "fixture": fixture_keyword_classifier, "broken": broken_classifier, "r08": "r08"}
+
+
+def resolve_classifier(name: str):
+    """(classify, source). r08 — только настоящий модуль, прошедший пробный вызов по контракту."""
+    if name != "r08":
+        return CLASSIFIERS[name], None
+    status = r08_status()
+    if not status["available"]:
+        raise SystemExit(f"R08 (ml.civic_classifier) недоступен: {status['reason']}")
+    return status["classify"], "r08"
+
+
 class Harness:
-    def __init__(self, db_path: str):
-        self.service = FeedbackService(db_path, fixture_object_lookup)
+    def __init__(self, db_path: str, *, limits: dict | None = None, classifier: str = "none"):
+        classify, source = resolve_classifier(classifier)
+        self.service = FeedbackService(db_path, fixture_object_lookup, classifier=classify,
+                                       classifier_source=source, limits=limits)
         self.sessions: dict[str, dict] = {}
 
     def principal(self, handler) -> dict | None:
@@ -159,10 +179,12 @@ class Handler(BaseHTTPRequestHandler):
                 "csrf_token": principal["csrf_token"], "fixture_notice": FIXTURE_NOTICE}
 
 
-def create_server(port: int, db_path: str | None = None):
+def create_server(port: int, db_path: str | None = None, *, per_sender_max: int | None = None,
+                  classifier: str = "none"):
     if db_path is None:
         db_path = str(Path(tempfile.mkdtemp(prefix="r06-harness-")) / "feedback.sqlite3")
-    Handler.harness = Harness(db_path)
+    limits = {"per_sender_max": per_sender_max} if per_sender_max else None
+    Handler.harness = Harness(db_path, limits=limits, classifier=classifier)
     return ThreadingHTTPServer(("127.0.0.1", port), Handler)
 
 
@@ -170,8 +192,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8766)
     parser.add_argument("--db", default=None)
+    parser.add_argument("--per-sender-max", type=int, default=None,
+                        help="лимит сообщений с одного адреса за 10 минут (по умолчанию как в сервисе: 5)")
+    parser.add_argument("--classifier", choices=sorted(CLASSIFIERS), default="none",
+                        help="none — без модели; r08 — настоящий ml.civic_classifier; fixture — FIXTURE-подсказка "
+                             "по ключевым словам (не R08); broken — ошибка модели")
     args = parser.parse_args()
-    server = create_server(args.port, args.db)
+    server = create_server(args.port, args.db, per_sender_max=args.per_sender_max, classifier=args.classifier)
     print(f"R06 FIXTURE harness: http://127.0.0.1:{server.server_address[1]}/harness/", flush=True)
     try:
         server.serve_forever()

@@ -1,0 +1,13 @@
+/* FIXTURE harness: раскладка стенда (не продукт). На узком экране — одна колонка. */
+body { margin: 0; padding: 12px; font-family: system-ui, sans-serif; }
+#fixture-banner { margin: 0 0 8px; padding: 6px 8px; background: #fff4d6; font-size: 13px; }
+#controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; font-size: 13px; }
+#controls select { max-width: 100%; }
+.harness-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 24px; }
+#resident-root { max-width: 440px; min-width: 0; }
+#receipt-root:empty { display: none; }
+#receipt-root { margin-bottom: 12px; max-width: 520px; }
+@media (max-width: 760px) {
+  .harness-main { grid-template-columns: minmax(0, 1fr); }
+  #resident-root { max-width: none; }
+}

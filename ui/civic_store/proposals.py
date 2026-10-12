@@ -20,6 +20,7 @@ import threading
 import time
 
 from .districts import DISTRICT_NAMES, bbox_intersects, district_of, geometry_bbox
+from .districts import _load as _geofence
 from .objects import BadRequest, Conflict, NotFound, iso, utc_now, _dumps, _loads
 from .stages import parse_bbox, parse_district, _single
 from .validate import ValidationError, _Errors, clean_geometry, clean_text, is_valid_id
@@ -75,6 +76,8 @@ DEVICE_RE = re.compile(r"^[A-Za-z0-9._:-]{8,128}\Z")  # как V2_DEVICE_ID шл
 MAX_TITLE = 200
 MAX_REASON = 500
 MAX_PROPOSALS = 500
+# R15-S19: проект — точка, участок улицы или контур двора, а не тысячи вершин (публичный список отдаётся всем).
+MAX_PROPOSAL_POSITIONS = 500
 MAX_OPEN_PER_DISTRICT = 20  # открытых проектов на район (как лимит сцены R05: до 20 объектов) → 409 limit
 TARGET_KINDS = ("object", "segment", "area")
 TARGET_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")
@@ -89,6 +92,14 @@ VOTES_PER_TARGET_PER_DAY = 20
 
 class VotingClosed(Conflict):
     pass
+
+
+def _positions(geometry):
+    """Все точки геометрии Point / LineString / Polygon (кольца подряд)."""
+    kind, coords = geometry["type"], geometry["coordinates"]
+    if kind == "Point":
+        return [coords]
+    return list(coords) if kind == "LineString" else [p for ring in coords for p in ring]
 
 
 class RateLimiter:
@@ -277,6 +288,13 @@ class ProposalRepository:
                 errors.add("geometry", "Освещение — линия вдоль участка улицы (LineString).")
             if kind != "lighting" and geometry["type"] == "LineString":
                 errors.add("geometry", "Этот объект ставится точкой или площадью.")
+        if geometry is not None and "geometry" not in errors.fields:
+            # R15-S19: каждая точка — внутри границы Астаны (CONTRACT §8.3), если граница есть в сборке.
+            points = _positions(geometry)
+            if len(points) > MAX_PROPOSAL_POSITIONS:
+                errors.add("geometry", f"Не более {MAX_PROPOSAL_POSITIONS} точек.")
+            elif _geofence() and any(district_of({"type": "Point", "coordinates": p}) is None for p in points):
+                errors.add("geometry", "Место должно быть внутри границы Астаны.")
         default_ru, default_kk = DEFAULT_TITLES.get(kind, (None, None))
         title_ru = clean_text(payload.get("title_ru"), "title_ru", errors, max_len=MAX_TITLE, nullable=True)
         title_kk = clean_text(payload.get("title_kk"), "title_kk", errors, max_len=MAX_TITLE, nullable=True)

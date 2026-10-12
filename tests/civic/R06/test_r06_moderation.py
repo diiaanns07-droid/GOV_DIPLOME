@@ -11,7 +11,7 @@ from ui.civic_feedback.fixtures import (FIXTURE_EDITOR, FIXTURE_LOGGED_OUT, FIXT
 XSS = '<img src=x onerror="alert(1)"><script>alert(2)</script> https://evil.example/?q=<b>'
 PUBLIC_KEYS = {"id", "object_id", "kind", "kind_label", "category", "category_label", "text",
                "public_reply", "submitted_on", "published_at", "moderation_label",
-               "official_registration", "history"}
+               "official_registration", "history", "handling_status", "handling_label"}
 
 
 def first_pending(service):

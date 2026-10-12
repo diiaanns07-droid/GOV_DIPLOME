@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>R06 FIXTURE harness</title>
     <link rel="stylesheet" href="/web/civic/feedback/feedback.css" />
+    <link rel="stylesheet" href="/harness/harness.css" />
     <script defer src="/web/civic/feedback/feedback.js"></script>
     <script defer src="/harness/harness.js"></script>
   </head>
@@ -23,10 +24,12 @@
       <button type="button" id="login-resident">Войти как fixture-житель</button>
       <button type="button" id="logout">Выйти</button>
       <button type="button" id="expire">Истечь сессию</button>
+      <button type="button" id="check-receipt">Проверить квитанцию</button>
       <span id="session"></span>
     </div>
-    <main style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:24px;">
-      <div id="resident-root" style="max-width:440px"></div>
+    <div id="receipt-root"></div>
+    <main class="harness-main">
+      <div id="resident-root"></div>
       <div id="moderation-root"></div>
     </main>
   </body>

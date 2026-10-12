@@ -199,10 +199,17 @@ def test_same_client_request_id_replays_receipt(service):
     # Тот же id с другим текстом — конфликт, а не подмена.
     other = submit(service, client_request_id=request_id, text="Совсем другое сообщение про освещение.")
     assert error(other)[1]["code"] == "request_id_conflict"
-    # Чужой отправитель с тем же id не получает чужую квитанцию.
-    foreign = submit(service, client_request_id=request_id, ip="10.9.9.9")
-    assert foreign["status"] == 201
-    assert foreign["body"]["data"]["receipt_id"] != first["body"]["data"]["receipt_id"]
+    # round 13: повтор той же отправки после смены сети (другой IP, тот же случайный client_request_id)
+    # не создаёт второе сообщение. Квитанцию получает только знающий секретный id формы, а не «тот же IP».
+    retried = submit(service, client_request_id=request_id, ip="10.9.9.9")
+    assert retried["status"] == 200 and retried["body"]["data"]["replayed"] is True
+    assert retried["body"]["data"]["receipt_id"] == first["body"]["data"]["receipt_id"]
+    assert len(queue_items(service)) == 1
+    # Другой житель за тем же NAT (тот же IP) без id не получает чужую квитанцию.
+    neighbour = submit(service, client_request_id="7c9e6679-7425-40de-944b-e07fc1f90ae7",
+                       text="Другой житель: на остановке разбит павильон, нет навеса от дождя.")
+    assert neighbour["status"] == 201
+    assert neighbour["body"]["data"]["receipt_id"] != first["body"]["data"]["receipt_id"]
 
 
 def test_receipt_warns_about_contact_data(service):
