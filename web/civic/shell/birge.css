@@ -349,6 +349,12 @@ body.birge-picking .birge-legend { pointer-events: none; }
 @media (min-width: 1024px) {
   body.civic-mode:has(#birge-legend .r07-maplegend:not([hidden])) .birge-build3d-root:not([data-catalog="open"]):not(:has(.b3d-dock:is([data-state="placing"], [data-state="card"]))) { left: 470px; }
 }
+/* R05 поставка 9 (proposed_r01_final3, F3б): 1024–1199, житель — подсказка «Нажмите на проект…» уже над легендой
+   (bottom: 168px выше): ей вся свободная ширина, а не полоса 162 px между легендой и кнопками карты (4 строки поверх
+   «Слой на карте»). */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  body.civic-mode:has(#birge-legend .r07-maplegend:not([hidden])) .birge-build3d-root:not([data-catalog="open"]):has(.b3d-dock[data-state="hint"]) { left: 20px; }
+}
 
 /* «Ещё» — маленькое меню разделов (IA_WAVE2 §1: role="menu", ≤ 4 пункта), под своей кнопкой в шапке. */
 #birge-header { position: relative; }

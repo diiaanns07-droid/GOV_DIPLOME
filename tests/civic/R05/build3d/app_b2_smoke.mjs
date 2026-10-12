@@ -244,13 +244,19 @@ try {
     q.on("pageerror", (e) => errors.push(e.message));
     await q.goto(URL0);
     await q.waitForFunction(() => window.CivicShell?.build3d?.getState?.().phase === "ready", null, { timeout: 60000 });
-    const ll = await q.evaluate(() => CivicShell.build3d.getState().proposals.find((x) => x.kind !== "lighting").geometry.coordinates);
+    const target = await q.evaluate(() => { const x = CivicShell.build3d.getState().proposals.find((y) => y.kind !== "lighting"); return { id: x.id, ll: x.geometry.coordinates }; });
+    const ll = target.ll;
     await q.evaluate((c) => map.jumpTo({ center: c, zoom: 17.4, pitch: 50, bearing: -20 }), ll);
     await q.waitForTimeout(500);
     await q.evaluate((c) => { const s = map.project(c); map.panBy([s.x - map.getCanvas().clientWidth / 2, s.y - 230], { duration: 0 }); }, ll);
+    // Карта наклонена — объёмный вид включается, когда догрузится three.js (данные слоя «Проекты» грузятся при его
+    // включении): тогда метка встаёт над моделью. Место метки берём после этого, а не до.
+    await q.waitForFunction(() => { const s = CivicShell.build3d.getState(); return s.view !== "3d" || s.three === "ready" || s.three === "error"; }, null, { timeout: 30000 }).catch(() => {});
     await q.waitForTimeout(1200);
     const sheet0 = await q.evaluate(() => document.querySelector(".civic-panel").dataset.sheet);
-    const lab = await q.evaluate(() => { for (const b of document.querySelectorAll(".b3d-label")) { if (b.style.visibility === "hidden") continue; const r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, t = document.elementFromPoint(x, y); if (t && b.contains(t) && y < 420) return [Math.round(x), Math.round(y)]; } return null; });
+    // Нажимаем подпись именно этого проекта (раньше — первую видимую: попадалось освещение, у которого «точка
+    // объекта» _project — начало участка, а не подпись).
+    const lab = await q.evaluate((id) => { const b = document.querySelector(`.b3d-label[data-id="${id}"]`); if (!b || b.style.visibility === "hidden") return null; const r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, t = document.elementFromPoint(x, y); return t && b.contains(t) && y < 420 ? [Math.round(x), Math.round(y)] : null; }, target.id);
     if (lab) {
       await q.touchscreen.tap(lab[0], lab[1]);
       await q.waitForTimeout(1500);
@@ -258,8 +264,11 @@ try {
     const m = await q.evaluate(() => {
       const st = CivicShell.build3d.getState(), d = document.querySelector("#birge-build3d-root .b3d-dock"), dr = d.getBoundingClientRect(), h = document.querySelector("header.topbar").getBoundingClientRect();
       const o = st.selected ? CivicShell.build3d._project(st.selected) : null, top = document.elementFromPoint(h.left + 40, h.bottom - 6);
+      const sl = st.selected && document.querySelector(`.b3d-label[data-id="${st.selected}"]`), lr = sl && sl.getBoundingClientRect();
+      const lc = lr && document.elementFromPoint((lr.left + lr.right) / 2, (lr.top + lr.bottom) / 2);
       return { state: d.dataset.state, sheet: document.querySelector(".civic-panel").dataset.sheet, dock: [Math.round(dr.top), Math.round(dr.bottom)], header_bottom: Math.round(h.bottom),
-        header_free: !!(top && top.closest("header.topbar")), object: o ? [Math.round(o.x), Math.round(o.y)] : null, object_above_card: !!o && o.y > h.bottom && o.y < dr.top };
+        header_free: !!(top && top.closest("header.topbar")), object: o ? [Math.round(o.x), Math.round(o.y)] : null, object_above_card: !!o && o.y > h.bottom && o.y < dr.top,
+        label: lr ? [Math.round(lr.top), Math.round(lr.bottom)] : null, label_above_card: !!(lr && lc && lc.closest(".b3d-label") && lr.top >= h.bottom && lr.bottom <= dr.top) };
     });
     await shot(q, `phone_akimat_half_card_375_${lang}.png`);
     halfCards[lang] = Object.assign({ sheet_before: sheet0, tapped: lab }, m);
@@ -338,7 +347,7 @@ try {
 
   // 13. Волна 2, защита от перегруза п. 5 и п. 7 (идеи): слой «Проекты» выключен (по умолчанию) — R05 не грузит ни
   // three.js, ни свои данные (улицы, районы, список проектов). Мастер идеи R06 зовёт pickObject() — каталог эскиза
-  // виден и при выключенном слое (нужен proposed_r01_wave2.patch: оболочка прячет корень R05 вместе со слоем), «Готово»
+  // виден и при выключенном слое (нужен proposed_r01_final3.patch (в нём и wave2): оболочка прячет корень R05 вместе со слоем), «Готово»
   // отдаёт эскиз, после — корень снова скрыт. Включили слой — только тогда проекты грузятся и видны.
   const lazy = {};
   for (const [vp, lang, extra] of [[{ width: 1366, height: 768 }, "ru", {}], [{ width: 375, height: 812 }, "kk", { hasTouch: true, isMobile: true }]]) {
@@ -399,7 +408,7 @@ try {
   check("projects_layer_off_r05_loads_nothing_then_loads_when_on", Object.values(lazy).every((r) => r.off.layer !== "projects" && r.off.phase === "idle" && r.off.three === "idle" &&
     r.off.data_requests.length === 0 && r.off.three_requests === 0 && r.off.root === "none" && r.off.labels === 0 && r.on.phase === "ready" && r.on.count > 0 && r.on.labels > 0 &&
     r.on.data_requests.length >= 3), lazy);
-  check("idea_pick_visible_with_projects_layer_off (proposed_r01_wave2.patch)", Object.entries(lazy).every(([k, r]) => r.pick.catalog_visible &&
+  check("idea_pick_visible_with_projects_layer_off (proposed_r01_final3.patch)", Object.entries(lazy).every(([k, r]) => r.pick.catalog_visible &&
     r.pick.done_button === (k.endsWith("_kk") ? "Дайын" : "Готово") && r.pick.toggle_hidden && r.pick.result === "sports" && r.pick.root_after === "none"), Object.fromEntries(Object.entries(lazy).map(([k, r]) => [k, r.pick])));
 
   // 14. R10 B-041: телефон, акимат, шаг 5 сценария — «Не салайық?» → «Гүлзар» → нажать на карту → ↺ ↻ → «Орнату».
@@ -451,7 +460,7 @@ try {
       const lg = document.getElementById("birge-legend"), lgr = lg && getComputedStyle(lg).display !== "none" && lg.getBoundingClientRect();
       return { place_on_map: !!e && (e.tagName === "CANVAS" || !!e.closest(".b3d-labels")), toast: tr ? [Math.round(tr.top), Math.round(tr.bottom)] : null,
         toast_visible: !!(tc && tc.closest(".bk-toast")), toast_over_place: !!(tr && pt.x >= tr.left && pt.x <= tr.right && pt.y >= tr.top && pt.y <= tr.bottom),
-        toast_over_3d: ov(tr, br), saved: !!mine && !/^tmp-/.test(mine.id), label_visible: !!(lc && lc.closest(".b3d-label")),
+        toast_over_3d: ov(tr, br), saved: !!mine && !/^tmp-/.test(mine.id), id: mine ? mine.id : null, label_visible: !!(lc && lc.closest(".b3d-label")),
         label_over_legend: ov(lr, lgr), label: lr ? [Math.round(lr.top), Math.round(lr.bottom)] : null, legend: lgr ? [Math.round(lgr.top), Math.round(lgr.bottom)] : null };
     }, [at, ids0]);
     const now = await look();
@@ -460,16 +469,182 @@ try {
     const later = await look();
     b041[`${vp.width}x${vp.height}_${lang}`] = { login: ok, placing, now, later: { place_on_map: later.place_on_map, label_visible: later.label_visible, label_over_legend: later.label_over_legend,
       label: later.label, legend: later.legend, saved: later.saved } };
+    // Снять поставленный проект («Удалить» в его карточке): повторный прогон на той же базе иначе упирается в занятое
+    // место (рядом с проектом ставить нельзя — «Поставить» неактивна).
+    if (later.saved) {
+      await q.evaluate((id) => CivicShell.build3d.select(id), later.id);
+      await q.click("#birge-build3d-root [data-action=delete]", { timeout: 10000 }).catch(() => null);
+      await q.waitForFunction((id) => !CivicShell.build3d.getState().proposals.some((x) => x.id === id), later.id, { timeout: 10000 }).catch(() => {});
+      await q.waitForTimeout(800);
+    }
     await ctx.close();
   }
   check("r10_b041_phone_placed_project_not_under_message_or_panel", Object.values(b041).every((r) => r.login && r.placing.ghost_on_map && r.placing.rotate_in_head &&
     r.now.place_on_map && r.now.toast && r.now.toast_visible && !r.now.toast_over_place && !r.now.toast_over_3d && r.later.place_on_map && r.later.saved), b041);
   // Табличка поставленного проекта не под легендой оболочки: R05 видит легенду, только если она в opts.avoid (патч).
-  check("r10_b041_label_clear_of_shell_legend (proposed_r01_wave2.patch)", Object.values(b041).every((r) => r.later.label_visible && !r.later.label_over_legend),
+  check("r10_b041_label_clear_of_shell_legend (proposed_r01_final3.patch)", Object.values(b041).every((r) => r.later.label_visible && !r.later.label_over_legend),
     Object.fromEntries(Object.entries(b041).map(([k, r]) => [k, { label: r.later.label, legend: r.later.legend, visible: r.later.label_visible }])));
 
   check("phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
-    Object.values(halfCards).every((r) => r.tapped && r.state === "card" && r.header_free && r.dock[0] >= r.header_bottom && (r.sheet !== "peek" || r.object_above_card)), halfCards);
+    Object.values(halfCards).every((r) => r.tapped && r.state === "card" && r.header_free && r.dock[0] >= r.header_bottom && (r.sheet !== "peek" || (r.object_above_card && r.label_above_card))), halfCards);
+
+  // 15. Раунд 14, 12 окт (своя проверка R05 на FINAL-2 шаг 4): телефон, акимат — карточка каждого вида проекта.
+  // На 375×667 и 360×800 высокая карточка («Одобрить / Отклонить», «Удалить») поднималась до шапки, и выбранный
+  // проект уходил под шапку и «Территорию». Теперь «Удалить» — в строке «Рядом», карточка опускается до низа экрана
+  // поверх свёрнутой шторки; подпись выбранного проекта видна целиком между панелями сверху и карточкой.
+  const phoneCards = {};
+  for (const [vp, lang] of [[{ width: 375, height: 667 }, "kk"], [{ width: 360, height: 800 }, "ru"], [{ width: 375, height: 812 }, "ru"]]) {
+    const ctx = await browser.newContext({ viewport: vp, hasTouch: true, isMobile: true });
+    await ctx.addInitScript(PROJECTS_ON);
+    await ctx.addInitScript((l) => { try { localStorage.setItem("birge.mode", "akimat"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
+    const q = await ctx.newPage();
+    q.on("pageerror", (e) => errors.push(e.message));
+    await q.goto(URL0);
+    await q.waitForFunction(() => window.CivicShell?.build3d?.getState?.().phase === "ready", null, { timeout: 60000 });
+    // по одному проекту каждого вида (демо R06: сквер, площадка, спорт, остановка, освещение)
+    const kinds = await q.evaluate(() => { const seen = {}; for (const x of CivicShell.build3d.getState().proposals) if (!seen[x.kind]) seen[x.kind] = x.id; return seen; });
+    const rows = {};
+    for (const [kind, id] of Object.entries(kinds)) {
+      await q.evaluate(() => CivicShell.build3d.select(null));
+      await q.evaluate((id) => { const x = CivicShell.build3d.getState().proposals.find((y) => y.id === id); const c = x.kind === "lighting" ? x.geometry.coordinates[0] : x.geometry.coordinates; map.jumpTo({ center: c, zoom: 17.4, pitch: 50, bearing: -20 }); }, id);
+      await q.waitForFunction(() => { const s = CivicShell.build3d.getState(); return s.view !== "3d" || s.three === "ready" || s.three === "error"; }, null, { timeout: 30000 }).catch(() => {});
+      await q.waitForTimeout(600);
+      await q.evaluate((id) => CivicShell.build3d.select(id), id);
+      await q.waitForTimeout(1600);
+      rows[kind] = await q.evaluate((id) => {
+        const st = CivicShell.build3d.getState(), d = document.querySelector("#birge-build3d-root .b3d-dock"), dr = d.getBoundingClientRect();
+        const lab = document.querySelector(`.b3d-label[data-id="${id}"]`), lr = lab && lab.getBoundingClientRect();
+        const c = lr && document.elementFromPoint((lr.left + lr.right) / 2, (lr.top + lr.bottom) / 2);
+        const ov = (a, b) => !!(a && b && a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1);
+        const under = [];
+        for (const sel of ["header.topbar", ".civic-explore", ".map-tools", "#birge-legend"]) {
+          const e = document.querySelector(sel);
+          if (e && getComputedStyle(e).display !== "none" && ov(lr, e.getBoundingClientRect())) under.push(sel);
+        }
+        return { state: d.dataset.state, selected: st.selected === id, dock: [Math.round(dr.top), Math.round(dr.bottom)], label: lr ? [Math.round(lr.left), Math.round(lr.top), Math.round(lr.right), Math.round(lr.bottom)] : null,
+          visible: !!(c && c.closest(".b3d-label")), whole_on_screen: !!(lr && lr.left >= 0 && lr.right <= innerWidth), above_card: !!(lr && lr.bottom <= dr.top), under, dock_in_screen: dr.bottom <= innerHeight + 1 };
+      }, id);
+      if (kind === "sports") await shot(q, `phone_card_room_${vp.width}x${vp.height}_${lang}.png`);
+    }
+    phoneCards[`${vp.width}x${vp.height}_${lang}`] = rows;
+    await ctx.close();
+  }
+  check("phone_akimat_card_every_project_visible_above_card", Object.values(phoneCards).every((rows) => Object.keys(rows).length >= 4 &&
+    Object.values(rows).every((r) => r.state === "card" && r.selected && r.visible && r.whole_on_screen && r.above_card && r.dock_in_screen && !r.under.some((u) => u !== "#birge-legend"))), phoneCards);
+
+  // 16. LOCAL_FINAL № 9 / P3 (Codex): все кнопки R05 — зона нажатия ≥ 48 px (UX_BRIEF). Состояния: начало, лёгкая
+  // карточка, 3D, каталог, размещение, сообщение «Проект поставлен · Отменить»; ноутбук ru и телефон kk.
+  const sizes = {};
+  for (const [vp, lang, touch] of [[{ width: 1366, height: 768 }, "ru", false], [{ width: 375, height: 812 }, "kk", true]]) {
+    const ctx = await browser.newContext(Object.assign({ viewport: vp }, touch ? { hasTouch: true, isMobile: true } : {}));
+    await ctx.addInitScript(PROJECTS_ON);
+    await ctx.addInitScript((l) => { try { localStorage.setItem("birge.mode", "akimat"); localStorage.setItem("birge.lang", l); } catch (e) { /* нет хранилища */ } }, lang);
+    const q = await ctx.newPage();
+    q.on("pageerror", (e) => errors.push(e.message));
+    await q.goto(URL0);
+    await q.waitForFunction(() => window.CivicShell?.build3d?.getState?.().phase === "ready", null, { timeout: 60000 });
+    if (PASSWORD) await q.evaluate((pw) => CivicShell.api.login("operator", pw).catch(() => null), PASSWORD);
+    const small = [];
+    const measure = async (tag) => small.push(...(await q.evaluate((tag) => {
+      const out = [];
+      for (const e of document.querySelectorAll("#birge-build3d-root button, #birge-build3d-root [role=button], .b3d-label")) {
+        const cs = getComputedStyle(e);
+        if (cs.display === "none" || cs.visibility === "hidden" || e.closest("[hidden]")) continue;
+        const r = e.getBoundingClientRect();
+        if (!r.width || !r.height) continue;
+        let w = r.width, h = r.height; // зона нажатия: сам элемент или ::before/::after с отрицательным отступом
+        for (const ps of ["::before", "::after"]) {
+          const p = getComputedStyle(e, ps);
+          if (p.content === "none" || p.position !== "absolute") continue;
+          w = Math.max(w, r.width - (parseFloat(p.left) || 0) - (parseFloat(p.right) || 0));
+          h = Math.max(h, r.height - (parseFloat(p.top) || 0) - (parseFloat(p.bottom) || 0));
+        }
+        if (Math.min(w, h) < 47.5) out.push({ tag, el: (e.dataset.action || e.className.toString()).slice(0, 40), w: Math.round(w), h: Math.round(h) });
+      }
+      return out;
+    }, tag)));
+    const sq = await q.evaluate(() => CivicShell.build3d.getState().proposals.find((x) => x.kind === "square"));
+    await q.evaluate((c) => map.jumpTo({ center: c, zoom: 14.6, pitch: 0, bearing: 0 }), sq.geometry.coordinates);
+    await q.waitForTimeout(1200);
+    await measure("start");
+    await q.evaluate((id) => CivicShell.build3d.select(id), sq.id);
+    await q.waitForTimeout(1200);
+    await measure("card_light");
+    const v3 = await q.$("#birge-build3d-root [data-action=view3d]");
+    if (v3) {
+      await v3.click();
+      await q.waitForFunction(() => CivicShell.build3d.getState().three === "ready" && !map.isMoving(), null, { timeout: 30000 }).catch(() => {});
+      await q.waitForTimeout(600);
+    }
+    await measure("card_3d");
+    await q.evaluate(() => CivicShell.build3d.select(null));
+    await q.waitForTimeout(400);
+    // телефон: кнопка «Что построить?» сама опускает шторку (R01 B-022)
+    await openCatalog(q).catch(() => null);
+    await q.waitForTimeout(400);
+    await measure("catalog");
+    await q.click('#birge-build3d-root .b3d-card[data-kind="square"]').catch(() => null);
+    await q.waitForFunction(() => CivicShell.build3d.getState().mode === "placing" && CivicShell.build3d.getState().three === "ready", null, { timeout: 30000 }).catch(() => {});
+    await q.waitForTimeout(600);
+    await measure("placing");
+    const g = await q.evaluate(() => { const s = CivicShell.build3d.getState(); return s.ghost ? map.project(s.ghost.pos) : null; });
+    if (g) {
+      if (touch) await q.touchscreen.tap(g.x, g.y);
+      else await q.mouse.click(g.x, g.y);
+      await q.waitForTimeout(400);
+    }
+    let placed = false;
+    const pl = await q.$("#birge-build3d-root [data-action=place]");
+    if (pl && !(await pl.isDisabled())) {
+      await pl.click();
+      await q.waitForSelector("#birge-build3d-root .b3d-toasts .bk-toast .bk-btn", { timeout: 10000 }).then(() => (placed = true), () => null);
+    }
+    await measure("placed_toast");
+    if (placed) await q.click("#birge-build3d-root .b3d-toasts .bk-toast .bk-btn").catch(() => null); // «Отменить»: не копим проекты
+    await q.waitForTimeout(600);
+    sizes[`${vp.width}_${lang}`] = { placed_and_undone: placed, below_48: small };
+    await ctx.close();
+  }
+  check("r05_controls_tap_zone_48px (LOCAL_FINAL №9)", Object.values(sizes).every((r) => r.placed_and_undone && r.below_48.length === 0), sizes);
+
+  // 17. R10 B-045 и проектор 1024 (R10 B-043/B-044): 1024–1366 px, слой «Проекты». «Что построить?», открытый каталог
+  // акимата и подсказка жителя не лежат на легенде, панели и кнопках карты. На 1024 открытый каталог закрывал кнопку
+  // «Слой на карте» (R05: панель сужается до столбика кнопок), подсказка жителя в полосе 162 px — тоже (оболочка:
+  // proposed_r01_final3.patch даёт ей всю ширину над легендой).
+  const wide = {};
+  for (const [w, h] of [[1024, 768], [1100, 800], [1280, 800], [1366, 768]]) {
+    for (const mode of ["akimat", "resident"]) {
+      const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+      await ctx.addInitScript(PROJECTS_ON);
+      await ctx.addInitScript((m) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", "kk"); } catch (e) { /* нет хранилища */ } }, mode);
+      const q = await ctx.newPage();
+      q.on("pageerror", (e) => errors.push(e.message));
+      await q.goto(URL0);
+      await q.waitForFunction(() => window.CivicShell?.build3d?.getState?.().phase === "ready", null, { timeout: 60000 });
+      await q.waitForTimeout(2500);
+      const look = () => q.evaluate(() => {
+        const R = (e) => { if (!e) return null; const cs = getComputedStyle(e); if (cs.display === "none" || cs.visibility === "hidden") return null; const r = e.getBoundingClientRect(); return r.width && r.height ? r : null; };
+        const ov = (a, b) => !!(a && b && a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1);
+        const mine = { toggle: R(document.querySelector(".birge-b3d-toggle")), dock: R(document.querySelector("#birge-build3d-root .b3d-dock")) };
+        const host = { legend: R(document.getElementById("birge-legend")), panel: R(document.getElementById("civic-panel")), tools: R(document.querySelector(".map-tools")), header: R(document.querySelector("header.topbar")) };
+        const hits = [];
+        for (const [a, ra] of Object.entries(mine)) for (const [b, rb] of Object.entries(host)) if (ov(ra, rb)) hits.push(a + "×" + b);
+        return { state: document.querySelector("#birge-build3d-root .b3d-dock")?.dataset.state, hits, dock_w: mine.dock ? Math.round(mine.dock.width) : null };
+      });
+      const r = { start: await look() };
+      if (mode === "akimat" && (await q.$(".birge-b3d-toggle")) && (await q.isVisible(".birge-b3d-toggle"))) {
+        await q.click(".birge-b3d-toggle");
+        await q.waitForTimeout(800);
+        r.catalog = await look();
+        if (w === 1024) await shot(q, "wide_1024_akimat_catalog.png");
+      }
+      if (mode === "resident" && w === 1024) await shot(q, "wide_1024_resident_hint.png");
+      wide[`${w}_${mode}`] = r;
+      await ctx.close();
+    }
+  }
+  check("r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons", Object.entries(wide).filter(([k]) => k.endsWith("_akimat")).every(([, r]) => r.start.hits.length === 0 && r.catalog && r.catalog.state === "catalog" && r.catalog.hits.length === 0), wide);
+  check("resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch)", Object.entries(wide).filter(([k]) => k.endsWith("_resident")).every(([, r]) => r.start.state === "hint" && r.start.hits.length === 0), Object.fromEntries(Object.entries(wide).filter(([k]) => k.endsWith("_resident"))));
 } catch (e) {
   check("run", false, e.message.split("\n")[0]);
 }
