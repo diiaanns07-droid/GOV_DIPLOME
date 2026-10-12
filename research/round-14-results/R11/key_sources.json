@@ -1081,5 +1081,7 @@
  "ask.staff.login": "R13 · «Вопрос акиму» (web/civic/qa/qa.js)",
  "ask.staff.login_btn": "R13 · «Вопрос акиму» (web/civic/qa/qa.js)",
  "ask.staff.empty.queue": "R13 · «Вопрос акиму» (web/civic/qa/qa.js)",
- "ask.staff.empty.top": "R13 · «Вопрос акиму» (web/civic/qa/qa.js)"
+ "ask.staff.empty.top": "R13 · «Вопрос акиму» (web/civic/qa/qa.js)",
+ "ask.answer.only_ru": "R13 · ответ акима есть только на одном языке (строка над текстом ответа)",
+ "ask.answer.only_kk": "R13 · ответ акима есть только на одном языке"
 }
