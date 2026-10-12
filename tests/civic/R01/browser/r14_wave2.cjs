@@ -263,6 +263,9 @@ async function main() {
     await page.waitForTimeout(300);
     n = await nav(page);
     check("old link #ask still opens «Вопрос акиму» (#questions)", n.section === "questions", n);
+    const viaCode = await page.evaluate(() => { window.BirgeShell.setSection("complaints"); const s = window.BirgeShell.section;
+      window.BirgeShell.setSection("map"); return s; });
+    check("old name from role code: BirgeShell.setSection(\"complaints\") opens «Обращения» (#inbox)", viaCode === "inbox", viaCode);
     await page.click("#birge-header [data-section=map]");
     await page.waitForTimeout(200);
 

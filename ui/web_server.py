@@ -44,6 +44,8 @@ ASSETS = {
     "/vendor/maplibre-gl.js": ("vendor/maplibre-gl.js", "text/javascript; charset=utf-8"),
     "/vendor/pmtiles/pmtiles.js": ("vendor/pmtiles/pmtiles.js", "text/javascript; charset=utf-8"),
     "/vendor/maplibre-gl.css": ("vendor/maplibre-gl.css", "text/css; charset=utf-8"),
+    # R12 волна 2 п. 6: генератор QR (LOCAL-11, qrcode-generator 1.4.4, MIT). Нет файла — 404, лист честно предупреждает.
+    "/vendor/qrcode/qrcode.js": ("vendor/qrcode/qrcode.js", "text/javascript; charset=utf-8"),
     # B2: three.js 0.169.0 (LOCAL-2) для 3D-превью R05; грузится модулем build3d только при монтировании.
     "/vendor/three/three.module.min.js": ("vendor/three/three.module.min.js", "text/javascript; charset=utf-8"),
 }
@@ -99,7 +101,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
                 "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",
                 # B3: запасной фон карты без интернета (web/map.js offlineStyle) — оси улиц OSM со стенда R07 @ 306074b.
-                "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson")
+                "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
+                # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
+                "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css")
 # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
@@ -677,6 +681,7 @@ V2_ROUTES = (
     ("GET", ("objects-near",), "geo.objects"),
     ("GET", ("yard",), "geo.yard"),
     ("GET", ("geo", "status"), "geo.status"),
+    ("GET", ("target",), "geo.target"),  # R12 волна 2 п. 6: QR-паспорт — что за объект по id
     ("GET", ("proposals",), "proposals.list"),
     ("POST", ("proposals",), "proposals.create"),
     # R06 @ 7031afa: точные пути (summary, lagging) — раньше шаблонов с {id}.
@@ -714,7 +719,7 @@ V2_HANDLERS = {
     "akim.decision": V2Handler("R08", ("ui.civic_akim.api",), "decision_choose", staff=True),
     "nearby.subscribe": V2Handler("R08", ("ui.civic_akim.api",), "nearby_subscribe"),
     **{key: V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True)
-       for key in ("geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status")},
+       for key in ("geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status", "geo.target")},
     "proposals.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_proposals"),
     "proposals.create": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "create_proposal", staff=True),
     "proposals.vote": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "vote_proposal"),
@@ -1064,9 +1069,17 @@ class CivicV2Gateway:
         if key == "targets":
             if not (opt("lon") and opt("lat")):
                 raise V2BadRequest("lon", "Нужны lon и lat точки.")
-            return {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
+            args = {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
                     "lat": _v2_number(q["lat"], "lat", ASTANA_BOUNDS[1], ASTANA_BOUNDS[3]),
                     "category": self._category(q.get("category"))}
+            # R12 POLISH_WAVE п. 1: уточнение меняет, что идёт первым (светофор / перекрёсток / переход / участок).
+            # Чужое или неизвестное уточнение R12 сам пропускает; здесь — только форма (как id категории).
+            subtopic = q.get("subtopic") or None
+            if subtopic is not None:
+                if not re.fullmatch(r"[a-z][a-z0-9_]{0,40}", subtopic):
+                    raise V2BadRequest("subtopic", "subtopic: неизвестное уточнение.")
+                args["subtopic"] = subtopic
+            return args
         if key in ("akim.routing.update", "nearby.subscribe"):  # R08: тело проверяет сам модуль (ValueError -> 400)
             return {"body": body}
         if key == "akim.decision":

@@ -30,7 +30,8 @@ def target_geometry(target: dict) -> dict | None:
             return None
         t = object_target(f)
         g = {"type": "Polygon", "coordinates": f.polygon} if f.polygon else {"type": "Point", "coordinates": geo.round_coord(f.point)}
-        return {"geometry": g, "point": geo.round_coord(f.point), "label_ru": t["label_ru"], "label_kk": t["label_kk"], "approximate": False}
+        return {"geometry": g, "point": geo.round_coord(f.point), "label_ru": t["label_ru"], "label_kk": t["label_kk"],
+                "object_kind": f.kind, "approximate": False}
     if tid.startswith("yard-"):
         f = yards.by_id.get(tid)
         if f is None:
@@ -56,3 +57,53 @@ def target_geometry(target: dict) -> dict | None:
         return {"geometry": {"type": "LineString", "coordinates": coords}, "point": coords[len(coords) // 2],
                 "label_ru": t["label_ru"], "label_kk": t["label_kk"], "approximate": False}
     return None
+
+
+# ---------- QR-паспорт объекта (POLISH_WAVE_2 п. 6): /?report=<target_id> ----------
+import re as _re
+
+# Только эти формы id попадают в ссылку и на табличку (защита от подмены: ничего, кроме id цели).
+REPORT_ID_RE = _re.compile(r"^(osm-(node|way|relation)-[0-9]{1,15}|osm-w[0-9]{1,15}-[0-9]{1,6}|"
+                           r"yard-r?[0-9]{1,15}(-[0-9]{1,3})?|cell--?[0-9]{1,6}--?[0-9]{1,6})$")
+
+
+def target_kind(target_id: str) -> str | None:
+    """Вид цели по id: object / segment / area; None — не id цели."""
+    if not isinstance(target_id, str) or not REPORT_ID_RE.match(target_id):
+        return None
+    if target_id.startswith("osm-w"):
+        return "segment"
+    if target_id.startswith(("yard-", "cell-")):
+        return "area"
+    return "object"
+
+
+def object_number(target_id: str) -> str:
+    """Номер объекта на табличке: цифры id OSM («10185771782», «693873790-4»); двор — «Д-…», ячейка — «К-…»."""
+    if target_id.startswith("osm-w"):
+        return target_id[len("osm-w"):]
+    if target_id.startswith("osm-"):
+        return target_id.split("-", 2)[2]
+    if target_id.startswith("yard-"):
+        return "Д-" + target_id[len("yard-"):]
+    return "К-" + target_id[len("cell-"):]
+
+
+def target_info(target_id: str) -> dict:
+    """Карточка цели для QR-паспорта: {target:{kind,id,label_ru,label_kk,object_kind?}, number, point, geometry,
+    approximate}. Неизвестный id — исключение со status 404 (шлюз R01 отвечает 404), неверный — 400."""
+    from .targets import TargetError
+
+    kind = target_kind(target_id)
+    if kind is None:
+        raise TargetError("bad_target_id", "Неверный номер объекта в ссылке.")
+    got = target_geometry({"kind": kind, "id": target_id})
+    if not got:
+        err = TargetError("target_not_found", "Объект не найден. Возможно, ссылка или QR-код устарели.")
+        err.status = 404
+        raise err
+    target = {"kind": kind, "id": target_id, "label_ru": got["label_ru"], "label_kk": got["label_kk"]}
+    if got.get("object_kind"):
+        target["object_kind"] = got["object_kind"]
+    return {"target": target, "number": object_number(target_id), "point": got.get("point"),
+            "geometry": got["geometry"], "approximate": bool(got.get("approximate"))}

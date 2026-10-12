@@ -309,3 +309,7 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
   .r07-chips::-webkit-scrollbar { display: none; }
   .r07-h { font-size: 20px; }
 }
+
+/* R12 волна 2 п. 6: ссылка «Распечатать QR» у акимата — внизу карточки, не главная кнопка. */
+.r07-qr { margin: 4px 0 0; }
+.r07-qr .r07-btn { text-decoration: none; }

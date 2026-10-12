@@ -1,0 +1,38 @@
+/* R12 · QR-паспорт объекта (web/civic/qr/report.js). Токены и кнопки — ui-kit R11 (tokens.css, components.css). */
+.bq-report {
+  position: relative;
+  box-sizing: border-box;
+  max-width: 480px;
+  padding: 8px 16px 20px;
+  color: var(--c-ink, #152c26);
+  font-size: var(--fs-body, 16px);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.bq-report *, .bq-report *::before, .bq-report *::after { box-sizing: border-box; }
+.bq-report__close { position: absolute; top: 4px; right: 4px; min-width: 48px; min-height: 48px; }
+.bq-eyebrow { padding-right: 52px; min-height: 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 4px; color: var(--c-text-2, #5b6a64); font-size: 14px; }
+.bq-eyebrow .ic { width: 18px; height: 18px; }
+.bq-title { margin: 0 0 4px; font-size: 22px; line-height: 1.25; font-weight: 700; }
+.bq-title:focus { outline: none; }
+.bq-number { margin: 0 0 10px; color: var(--c-text-2, #5b6a64); font-size: 15px; font-variant-numeric: tabular-nums; }
+.bq-approx { display: inline-block; margin: 0 0 10px; }
+.bq-reported { margin: 0 0 6px; font-size: 18px; }
+.bq-status { margin: 0 0 14px; }
+.bq-done { display: flex; gap: 6px; align-items: center; margin: 0 0 12px; color: var(--c-ok, #2f6b12); }
+.bq-actions { display: grid; gap: 8px; margin: 0 0 12px; }
+.bq-actions .bk-btn { min-height: 48px; }
+.bq-notice { margin: 0 0 12px; padding: 10px 12px; border-radius: 10px; }
+.bq-notice--ok { background: var(--c-ok-soft, #eaf4dc); color: var(--c-ok, #2f6b12); }
+.bq-notice--error { background: var(--c-danger-soft, #fdecea); color: var(--c-danger, #b3362e); }
+.bq-more { border-top: 1px solid var(--c-line, #e4e9e3); padding-top: 8px; }
+.bq-more > summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.bq-h3 { margin: 12px 0 6px; font-size: 16px; }
+.bq-spark { height: 48px; }
+.bq-topics { list-style: none; margin: 0; padding: 0; }
+.bq-topics li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--c-line, #e4e9e3); }
+.bq-map { margin-top: 12px; min-height: 48px; }
+.bq-error { margin-top: 8px; }
+.bq-skel { display: grid; gap: 10px; padding-top: 8px; }
+.bq-skel .bk-skel--block { height: 96px; }
+.bq-report [hidden] { display: none !important; }

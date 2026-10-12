@@ -29,7 +29,8 @@ def tiny():
 @pytest.fixture(scope="module")
 def tiny_layers(tmp_path_factory):
     out = tmp_path_factory.mktemp("geo")
-    result = build_geo_data.build(FIX / "osm-objects" / "raw", walking_raw=None, evidence_type="synthetic")
+    tiny_graph = StreetGraph(load_raw_graph(path=FIX / "tiny.graph.json"), json.loads((FIX / "tiny.way_tags.json").read_text("utf-8")))
+    result = build_geo_data.build(FIX / "osm-objects" / "raw", walking_raw=None, evidence_type="synthetic", graph=tiny_graph)
     build_geo_data.write(result, out, FIX / "osm-objects" / "raw")
     return out, result
 
@@ -393,3 +394,105 @@ def test_real_targets_name_unnamed_segments_by_the_nearest_street(real):
     assert labels[0] == "Участок: проспект Туран" and r["candidates"][0]["target"]["label_kk"] == "Тұран даңғылының бөлігі"
     assert "Проезд без названия" not in labels, labels
     assert len(labels) == len(set(labels)), "одинаковые подписи не повторяются: " + str(labels)
+
+
+
+# ---------- POLISH_WAVE п. 1: светофор, переход, перекрёсток ----------
+def test_street_points_built_from_fixture(tiny_layers):
+    _, result = tiny_layers
+    c = result["counts"]
+    assert (c["traffic_signal"], c["crossing"], c["intersection"]) == (1, 1, 1)
+    assert result["street_points"]["off_street_dropped"] == 1, "переход вдали от улиц графа не становится целью"
+    objs = {o["id"]: o for o in result["objects"]}
+    j = objs["osm-node-990002"]  # узел графа: 2 ребра «Тестовой» + 2 ребра «Поперечной»
+    assert j["kind"] == "intersection" and j["streets_ru"] == ["улица Поперечная", "улица Тестовая"]
+    from engine.civic_geo import street_points
+    assert street_points.labels(j) == ("Перекрёсток ул. Поперечная и ул. Тестовая",
+                                      "Поперечная көшесі мен Тестілік көшесінің қиылысы")
+    sig = objs["osm-node-8001"]
+    assert sig["junction"] == "osm-node-990002"
+    assert street_points.labels(sig)[0] == "Светофор на перекрёстке ул. Поперечная и ул. Тестовая"
+    cr = objs["osm-node-8002"]
+    assert street_points.labels(cr) == ("Пешеходный переход со светофором: ул. Тестовая",
+                                       "Бағдаршамы бар жаяу жүргіншілер өткелі: Тестілік көшесі")
+
+
+def test_street_points_go_first_for_roads_and_follow_the_subtopic(tiny, tiny_layers):
+    layers = _layers(tiny_layers[0])
+    at = (71.4351, 51.16002)  # у перекрёстка
+    kinds = lambda r: [c["target"].get("object_kind") or c["target"]["kind"] for c in r["candidates"]]  # noqa: E731
+    assert kinds(targets(*at, "roads", graph=tiny, layers=layers))[:2] == ["intersection", "traffic_signal"]
+    assert kinds(targets(*at, "roads", graph=tiny, layers=layers, subtopic="traffic_light_timing"))[0] == "traffic_signal"
+    pothole = kinds(targets(*at, "roads", graph=tiny, layers=layers, subtopic="pothole"))
+    assert pothole[0] == "segment" and pothole[-1] in ("intersection", "traffic_signal"), pothole
+    assert kinds(targets(*at, "noise_safety", graph=tiny, layers=layers))[0] in ("intersection", "traffic_signal", "crossing")
+    # «Освещение» и «Остановки» точки улиц не подмешивают
+    assert not {"intersection", "traffic_signal", "crossing"} & set(kinds(targets(*at, "lighting", graph=tiny, layers=layers)))
+    near_cross = kinds(targets(71.4374, 51.16001, "sidewalks", graph=tiny, layers=layers, subtopic="crossing"))
+    assert near_cross[0] == "crossing"
+    # неизвестное уточнение не ломает выбор
+    assert kinds(targets(*at, "roads", graph=tiny, layers=layers, subtopic="nope"))[0] == "intersection"
+
+
+def test_real_signal_target_and_geometry(real):
+    import engine.civic_geo as g
+    from engine.civic_geo import objects as o
+    o.clear_cache()
+    objects, _, _ = o.get_layers()
+    sig = next(f for f in objects.items if f.kind == "traffic_signal" and len(f.raw.get("streets_ru") or []) == 2)
+    r = g.targets(sig.point[0] + 0.00003, sig.point[1], "roads", subtopic="traffic_light_broken")
+    first = r["candidates"][0]["target"]
+    assert first["object_kind"] == "traffic_signal" and first["label_ru"].startswith("Светофор на перекрёстке")
+    assert g.target_geometry({"kind": "object", "id": first["id"]})["object_kind"] == "traffic_signal"
+    assert sum(1 for f in objects.items if f.kind == "intersection") > 1000
+
+
+
+def test_street_point_without_its_street_is_named_by_the_nearest_one(real):
+    """UX_REVIEW R11 волна 2 п. 4: голое «Пешеходный переход» в «Это здесь?» ничего не говорит — «у улицы …»."""
+    from engine.civic_geo import names, objects as o, street_points
+    assert names.near_labels("Пешеходный переход", "Жаяу жүргіншілер өткелі", "улица Сыганак", "Сығанақ көшесі") == \
+        ("Пешеходный переход у улицы Сыганак", "Жаяу жүргіншілер өткелі · Сығанақ көшесі маңында")
+    assert names.near_labels("Светофор", "Бағдаршам", None) == ("Светофор", "Бағдаршам")
+    o.clear_cache()
+    objects, _, _ = o.get_layers()
+    pts = [f for f in objects.items if f.kind in ("crossing", "traffic_signal")]
+    near = [f for f in pts if not f.raw.get("streets_ru") and f.raw.get("near_ru")]
+    bare = [f for f in pts if street_points.labels(f.raw)[0] in ("Пешеходный переход", "Светофор")]
+    assert len(near) > 100 and all(" у " in street_points.labels(f.raw)[0] or " — " in street_points.labels(f.raw)[0] for f in near)
+    assert len(bare) < 0.06 * len(pts)  # улиц с названием в 150 м нет (внутри микрорайонов): остаётся как есть
+
+
+def test_without_category_a_nearby_junction_is_the_object_candidate(tiny, tiny_layers):
+    """R09 спрашивает место до категории: у перекрёстка вариант «объект» — перекрёсток или светофор."""
+    layers = _layers(tiny_layers[0])
+    got = targets(71.4351, 51.16002, None, graph=tiny, layers=layers)["candidates"]
+    obj = [c for c in got if c["target"]["kind"] == "object"]
+    assert len(obj) == 1 and obj[0]["target"]["object_kind"] in ("intersection", "traffic_signal")
+
+
+# ---------- POLISH_WAVE_2 п. 6: QR-паспорт ----------
+def test_target_info_for_qr_passport(real):
+    import engine.civic_geo as g
+    from engine.civic_geo import api as geo_api
+    info = g.target_info("osm-node-10185771782")
+    assert info["target"]["object_kind"] == "traffic_signal" and info["number"] == "10185771782"
+    assert info["point"] and info["geometry"]["type"] == "Point"
+    assert g.target_info("osm-w693873790-4")["target"]["kind"] == "segment"
+    assert g.target_info("cell-143-245")["approximate"] is True
+    assert g.target_info("cell-143-245")["number"] == "К-143-245"
+    assert geo_api.handle("/target", {"id": ["osm-node-1"]})[0] == 404
+    for bad in ("<script>", "osm-node-", "osm-node-1/../x", "javascript:1", "", "yard-12-1234"):
+        assert geo_api.handle("/target", {"id": bad})[0] == 400, bad
+
+
+def test_report_id_rule_is_the_same_in_js_and_python():
+    """Ссылка /?report=<id>: одно правило в engine/civic_geo, web/civic/qr/report.js и print.js."""
+    import re
+    from engine.civic_geo import REPORT_ID_RE
+    root = HERE.parents[2]
+    for js in ("web/civic/qr/report.js", "web/civic/qr/print.js"):
+        text = (root / js).read_text("utf-8")
+        m = re.search(r"/\^\((osm-\(node.*?)\)\$/", text)
+        assert m, js
+        assert REPORT_ID_RE.pattern == "^(" + m.group(1).replace("\\/", "/") + ")$", js

@@ -181,6 +181,8 @@
       <div id="civic-state" class="civic-state" role="status" aria-live="polite"></div>
       <div id="civic-scroll" class="civic-scroll">
         <!-- B1: «Карта жалоб» (R07) — главное содержимое панели Birge; ниже — реестр работ раунда 13. -->
+        <!-- R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) — вместо «Карты жалоб», пока открыт. -->
+        <div id="birge-report-root" class="civic-slot birge-report-slot" hidden></div>
         <div id="birge-heat-root" class="civic-slot birge-heat-slot"></div>
         <section class="civic-works" aria-labelledby="civic-works-title">
           <header class="civic-head">
@@ -466,6 +468,39 @@
       }
     }
     mountBuild3d();
+    openReportFromLink();
+  }
+  // R12 волна 2 п. 6: ссылка с QR-таблички /?report=<target_id> — лёгкая карточка объекта в панели.
+  // Карта не меняется (слоёв не добавляем); закрыли карточку — обычная «Карта жалоб», адрес без ?report=.
+  function openReportFromLink() {
+    const R = window.BirgeReport, host = $c("birge-report-root");
+    const id = R?.parseReportId?.(location.search);
+    if (!host || S.mounted.report || !(id || /[?&]report=/.test(location.search))) return;
+    const close = () => {
+      S.mounted.report = null;
+      host.hidden = true;
+      document.body.classList.remove("birge-report-open");
+      const q = new URLSearchParams(location.search); q.delete("report");
+      history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
+    };
+    host.hidden = false;
+    document.body.classList.add("birge-report-open");
+    S.mounted.report = R.mount({ root: host,
+      // Мастер R09 сразу с этим местом (patch R09 open(preset)); старый мастер просто откроется на выборе места.
+      onReport: (p) => S.mounted.complaint?.open?.(p),
+      onOpenMap: (t) => { S.mounted.report?.destroy?.(); close(); if (t) S.mounted.heat?.focusTarget?.(t.kind, t.id); },
+      onClose: close });
+    // Телефон: шторка наполовину (IA_WAVE2 §6.1) — сверху видно место на карте, в шторке — главная кнопка.
+    if (innerWidth < 761 && S.sheet !== "half") setSheet("half");
+    S.mounted.report.open(id || "bad").then((ok) => {
+      // Камера — к объекту, мягко и только если житель её ещё не трогал; место — в свободной части карты (не под панелью).
+      const info = ok && S.mounted.report?.info?.();
+      const m = currentMap();
+      if (!m || !info?.point || m.isMoving()) return;
+      const pad = freeArea();
+      m.easeTo({ center: info.point, zoom: Math.max(m.getZoom(), 16), offset: [(pad.left - pad.right) / 2, (pad.top - pad.bottom) / 2],
+        duration: motionSafe() ? 600 : 0 });
+    });
   }
   // ---------------------------------------------------------------- 3D-превью предложений (R05 + R06)
   // R05 поставки 2 (169c56b) сам говорит на контракте R06 через клиент оболочки BirgeShell.api.v2 (CSRF сотрудника,

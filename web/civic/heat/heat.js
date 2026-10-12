@@ -69,6 +69,7 @@
       "heat.approximate": "Примерное место: точный объект не выбран, показана область.",
       "heat.take": "Взять в работу",
       "heat.mark_fixed": "Отметить исправленным",
+      "qr.print": "Распечатать QR",
       "heat.metoo": "Я тоже",
       "heat.metoo_done": { one: "Вы с нами. Сообщил {count} человек", few: "Вы с нами. Сообщили {count} человека", many: "Вы с нами. Сообщили {count} человек" },
       "heat.metoo_already": "Вы уже отметились",
@@ -157,6 +158,7 @@
       "heat.approximate": "Шамамен көрсетілген орын: нақты нысан таңдалмаған, аумақ көрсетілген.",
       "heat.take": "Жұмысқа алу",
       "heat.mark_fixed": "Түзетілді деп белгілеу",
+      "qr.print": "QR басып шығару",
       "heat.metoo": "Мен де",
       "heat.metoo_done": { other: "Сіз бізбен біргесіз. {count} адам хабарлады" },
       "heat.metoo_already": "Сіз бұған дейін белгі қойғансыз",
@@ -285,6 +287,8 @@
     return "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
   }
   function keyOf(target) { return target.kind + ":" + target.id; }
+  // Цели, на которые можно повесить QR-табличку (R12: тот же вид id, что принимает /?report=): объект, участок, двор.
+  const QR_ID = /^(osm-(node|way|relation)-[0-9]{1,15}|osm-w[0-9]{1,15}-[0-9]{1,6}|yard-r?[0-9]{1,15}(-[0-9]{1,3})?)$/;
   function inRing(pt, ring) {
     let inside = false;
     for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
@@ -1470,6 +1474,9 @@
         (!fixed ? '<div class="r07-chart" aria-label="' + esc(t("heat.chart")) + '"><h4 class="r07-h4">' + esc(t("heat.chart")) + '</h4><div class="r07-spark">' + bars +
           '</div><div class="r07-axis"><span>' + esc(t("heat.chart_from")) + "</span><span>" + esc(t("heat.chart_to")) + "</span></div></div>" : "") +
         (topics ? '<h4 class="r07-h4">' + esc(t("heat.topics")) + '</h4><ul class="r07-topics">' + topics + "</ul>" : "") +
+        // R12 волна 2 п. 6 (IA_WAVE2 §6.2): акимату — ссылка на лист QR-табличек этого места (второстепенная, внизу карточки).
+        (S.role === "akimat" && QR_ID.test(it.target.id) ? '<p class="r07-qr"><a class="r07-btn r07-btn--ghost" href="/civic/qr/print.html?ids=' +
+          encodeURIComponent(it.target.id) + '" target="_blank" rel="noopener">' + esc(t("qr.print")) + "</a></p>" : "") +
         "</article>";
     }
 

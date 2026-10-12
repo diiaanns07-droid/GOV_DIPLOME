@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Стенд R12 · QR-паспорт</title>
+  <link rel="stylesheet" href="/civic/ui-kit/tokens.css">
+  <link rel="stylesheet" href="/civic/ui-kit/components.css">
+  <link rel="stylesheet" href="/civic/qr/report.css">
+  <style>
+    body { margin: 0; background: #e9efe4; }
+    /* как панель оболочки R01: справа на ноутбуке, снизу шторкой на телефоне */
+    #panel { position: fixed; background: #fff; overflow: auto; box-shadow: 0 2px 16px rgba(0,0,0,.12); }
+    @media (min-width: 761px) { #panel { top: 16px; right: 16px; bottom: 16px; width: 400px; border-radius: 16px; } }
+    @media (max-width: 760px) { #panel { left: 0; right: 0; bottom: 0; max-height: 78vh; border-radius: 16px 16px 0 0; } }
+    .stand-flag { position: fixed; left: 12px; top: 12px; font: 13px system-ui; background: #fff4dc; padding: 4px 8px; border-radius: 8px; }
+  </style>
+</head>
+<body class="bk-app">
+  <p class="stand-flag">СТЕНД R12 · QR-паспорт · жалобы — СИНТЕТИКА</p>
+  <div id="panel"></div>
+  <script src="/civic/i18n/i18n.js"></script>
+  <script src="/civic/qr/report.js"></script>
+  <script>
+    window.__reports = []; window.__maps = []; window.__closed = 0; window.__events = [];
+    window.addEventListener("birge:complaint", function (e) { window.__events.push(e.detail); });
+    function start() {
+      var id = BirgeReport.parseReportId(location.search);
+      window.__parsed = id;
+      window.__ui = BirgeReport.mount({ root: document.getElementById("panel"),
+        onReport: function (p) { window.__reports.push(p); },
+        onOpenMap: function (t) { window.__maps.push(t); },
+        onClose: function () { window.__closed++; } });
+      if (id) window.__ui.open(id); else if (location.search.indexOf("report=") >= 0) window.__ui.open("bad");
+    }
+    BirgeI18n.ready.then(start, start);
+  </script>
+</body>
+</html>

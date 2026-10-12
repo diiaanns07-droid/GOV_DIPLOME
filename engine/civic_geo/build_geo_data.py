@@ -36,6 +36,11 @@ def classify(tags: dict) -> str | None:
         return "bus_stop"
     if tags.get("public_transport") == "platform" and tags.get("railway") is None and tags.get("train") != "yes":
         return "bus_stop"
+    # POLISH_WAVE п. 1: светофоры и переходы (LOCAL-10 и узлы снимка пешеходной сети).
+    if tags.get("highway") == "traffic_signals":
+        return "traffic_signal"
+    if tags.get("highway") == "crossing":
+        return "crossing"
     leisure = tags.get("leisure")
     if leisure == "playground":
         return "playground"
@@ -144,8 +149,14 @@ def _file_entry(path: Path) -> dict:
     return {"path": str(rel), "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)}
 
 
+STREET_POINT_KINDS = ("traffic_signal", "crossing")
+WALKING_KINDS = ("bus_stop",) + STREET_POINT_KINDS
+
+
 def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OSM_WALKING_RAW,
-          geofence_path: Path = GEOFENCE, evidence_type: str = "real") -> dict:
+          geofence_path: Path = GEOFENCE, evidence_type: str = "real", graph=None, street_points: bool = True) -> dict:
+    """graph — граф улиц для подписей светофоров/переходов и для перекрёстков (по умолчанию — граф Астаны);
+    street_points=False — без перекрёстков и подписей (быстро, для тестов без графа)."""
     boundary = CityBoundary(geofence_path)
     sources: list[dict] = []
     elements: list[tuple[dict, str]] = []
@@ -155,9 +166,9 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
         sources.append(_file_entry(p))
         elements.extend((el, p.name) for el in _load_elements(p))
     if walking_raw is not None and Path(walking_raw).is_file():
-        sources.append(_file_entry(Path(walking_raw)) | {"use": "только узлы-остановки на линиях дорог"})
+        sources.append(_file_entry(Path(walking_raw)) | {"use": "узлы на линиях дорог: остановки, светофоры, переходы"})
         for el in _load_elements(Path(walking_raw)):
-            if el.get("type") == "node" and el.get("tags") and classify(el["tags"]) == "bus_stop":
+            if el.get("type") == "node" and el.get("tags") and classify(el["tags"]) in WALKING_KINDS:
                 elements.append((el, Path(walking_raw).name))
 
     objects: dict[str, dict] = {}
@@ -216,6 +227,8 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
             item["subkind"] = "garden"
         if kind == "waste" and tags.get("amenity") == "recycling":
             item["subkind"] = "recycling"
+        if kind == "crossing" and tags.get("crossing") == "traffic_signals":
+            item["subkind"] = "signals"
         if polygon:
             item["polygon"] = polygon
         item["src"] = src
@@ -231,6 +244,12 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
                 del objects[b["id"]]
                 skipped["duplicate"] += 1
 
+    street_counts = {}
+    if street_points:
+        from .graph import get_graph
+        from .street_points import build_street_points
+        street_counts = build_street_points(objects, graph or get_graph(), boundary.contains)
+
     items = sorted(objects.values(), key=lambda o: (o["kind"], o["id"]))
     counts: dict[str, int] = {}
     for o in items:
@@ -240,6 +259,7 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
         "yards": sorted(yards.values(), key=lambda y: y["id"]),
         "sources": sources,
         "counts": counts | {"yard": len(yards)},
+        "street_points": street_counts,
         "skipped": skipped,
         "not_used_tags": dict(sorted(other.items(), key=lambda kv: -kv[1])[:20]),
         "raw_dir_present": bool(raw_files),
@@ -255,7 +275,7 @@ def write(result: dict, out_dir: Path, raw_dir: Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     common = {"license": LICENSE, "evidence_type": result["evidence_type"]}
     objects = {"schema": "r12-geo-objects-v1", **common,
-               "kinds": ["bus_stop", "playground", "pitch", "park", "waste"],
+               "kinds": ["bus_stop", "playground", "pitch", "park", "waste", "traffic_signal", "crossing", "intersection"],
                "count": len(result["objects"]), "items": result["objects"]}
     yards = {"schema": "r12-geo-yards-v1", **common,
              "note": "Дворы — полигоны landuse=residential из OSM, упрощены с допуском 1,5 м.",
@@ -275,6 +295,8 @@ def write(result: dict, out_dir: Path, raw_dir: Path) -> dict:
         "raw_dir_present": result["raw_dir_present"],
         "inputs": result["sources"],
         "counts": result["counts"],
+        "street_points": result.get("street_points"),
+        "intersection_rule": "узел графа: ≥ 3 рёбра проезжей части и ≥ 2 названия; узлы той же пары улиц ближе 60 м — один перекрёсток",
         "skipped": result["skipped"],
         "not_used_tags": result["not_used_tags"],
         "license": LICENSE,

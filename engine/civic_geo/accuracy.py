@@ -21,6 +21,7 @@ from .paths import DEMO_SYNTHETIC, GEO_DIR, ROOT
 
 LINE_TOLERANCE_M = 5.0
 STOP_TO_STREET_M = 60.0
+STREET_POINT_M = 15.0
 SCENARIO_CASES = ROOT / "engine" / "civic_scenarios" / "cases"
 
 
@@ -117,6 +118,19 @@ def report(graph: StreetGraph | None = None, geo_dir: Path = GEO_DIR, demo_path:
         elif f.polygon and outside_vertices(f):
             out = outside_vertices(f)
             rows.append(_row("inside_astana", f.id, False, len(out), f"вершины контура вне границы: {out[:2]}"))
+        if f.kind in ("traffic_signal", "crossing"):
+            # Светофор и переход — узлы OSM на самой улице (допуск 15 м — узел вне графа из LOCAL-10).
+            near = graph.nearest(f.point, 30.0, limit=1)
+            d = near[0][0] if near else float("inf")
+            rows.append(_row("street_point_on_street", f.id, d <= STREET_POINT_M, d,
+                             f"до улицы {d:.1f} м (допуск {STREET_POINT_M:g} м)"))
+        elif f.kind == "intersection":
+            from .street_points import graph_node_id, node_streets
+            node = graph_node_id(f.id)
+            streets, _, degree = node_streets(graph, node) if node in graph.adj else ([], [], 0)
+            ok = degree >= 3 and len(streets) >= 2
+            rows.append(_row("intersection_is_junction", f.id, ok, degree,
+                             f"узел графа: {degree} ветки проезжей части, улиц с названием {len(streets)}"))
         if f.kind == "bus_stop":
             d = stop_distance(graph, f.point)
             rows.append(_row("stop_within_60m_of_street", f.id, d <= STOP_TO_STREET_M, d,

@@ -88,3 +88,66 @@ def unnamed_labels(group: str, near_ru: str | None = None, near_kk: str | None =
     near = ru_near(near_ru)
     ru = f"{ru_word} {near}" if near else f"{ru_word} — {near_ru}"
     return ru, f"{kk_street(near_ru, near_kk)} маңындағы {kk_word}"
+
+
+# ---------- перекрёстки, светофоры, переходы (POLISH_WAVE п. 1) ----------
+RU_SHORT = (("улица", "ул."), ("проспект", "пр."), ("переулок", "пер."), ("шоссе", "ш."), ("бульвар", "бул."),
+            ("площадь", "пл."), ("набережная", "наб."))
+
+
+def ru_short(name_ru: str | None) -> str | None:
+    """«улица Кенесары» → «ул. Кенесары», «проспект Абая» → «пр. Абая» (для коротких подписей); иначе как есть."""
+    if not name_ru:
+        return name_ru
+    split = _split_type(name_ru, RU_SHORT)
+    if not split:
+        return name_ru
+    return dict(RU_SHORT)[split[0]] + " " + split[1]
+
+
+def crossing_pair_labels(streets_ru: list, streets_kk: list) -> tuple[str, str] | None:
+    """Две улицы перекрёстка: («ул. Кенесары и ул. Иманова», «Кенесары көшесі мен Иманов көшесінің»)."""
+    if len(streets_ru) < 2:
+        return None
+    a_ru, b_ru = streets_ru[0], streets_ru[1]
+    a_kk = kk_street(a_ru, streets_kk[0] if streets_kk else None)
+    b_kk = kk_street(b_ru, streets_kk[1] if len(streets_kk) > 1 else None)
+    return f"{ru_short(a_ru)} и {ru_short(b_ru)}", (f"{a_kk} мен {kk_genitive(b_kk)}" if kk_genitive(b_kk) else None) or f"{a_kk} – {b_kk}"
+
+
+def intersection_labels(streets_ru: list, streets_kk: list) -> tuple[str, str]:
+    """«Перекрёсток ул. Кенесары и ул. Иманова» / «Кенесары көшесі мен Иманов көшесінің қиылысы»."""
+    pair = crossing_pair_labels(streets_ru, streets_kk)
+    if not pair:
+        return "Перекрёсток", "Қиылыс"
+    ru, kk = pair
+    return f"Перекрёсток {ru}", (f"{kk} қиылысы" if " мен " in kk else f"Қиылыс: {kk}")
+
+
+def signal_labels(streets_ru: list, streets_kk: list) -> tuple[str, str]:
+    """Светофор: на перекрёстке двух улиц или на одной улице; без улиц — просто «Светофор»."""
+    pair = crossing_pair_labels(streets_ru, streets_kk)
+    if pair:
+        ru, kk = pair
+        return f"Светофор на перекрёстке {ru}", (f"Бағдаршам: {kk} қиылысы" if " мен " in kk else f"Бағдаршам: {kk}")
+    if streets_ru:
+        return f"Светофор: {ru_short(streets_ru[0])}", f"Бағдаршам: {kk_street(streets_ru[0], streets_kk[0] if streets_kk else None)}"
+    return "Светофор", "Бағдаршам"
+
+
+def near_labels(ru0: str, kk0: str, near_ru: str | None, near_kk: str | None = None) -> tuple[str, str]:
+    """Точка без своей улицы — по ближайшей улице с названием (UX_REVIEW R11 волна 2 п. 4):
+    «Пешеходный переход у улицы Сауран» / «Жаяу жүргіншілер өткелі · Сауран көшесі маңында»; улицы нет — как есть."""
+    if not near_ru:
+        return ru0, kk0
+    near = ru_near(near_ru)
+    return (f"{ru0} {near}" if near else f"{ru0} — {near_ru}"), f"{kk0} · {kk_street(near_ru, near_kk)} маңында"
+
+
+def crossing_labels(streets_ru: list, streets_kk: list, signals: bool = False) -> tuple[str, str]:
+    """Пешеходный переход через улицу: «Пешеходный переход: ул. Кенесары» / «Жаяу жүргіншілер өткелі: Кенесары көшесі»."""
+    ru0 = "Пешеходный переход со светофором" if signals else "Пешеходный переход"
+    kk0 = "Бағдаршамы бар жаяу жүргіншілер өткелі" if signals else "Жаяу жүргіншілер өткелі"
+    if streets_ru:
+        return f"{ru0}: {ru_short(streets_ru[0])}", f"{kk0}: {kk_street(streets_ru[0], streets_kk[0] if streets_kk else None)}"
+    return ru0, kk0

@@ -419,3 +419,7 @@ body:has(#birge-header .birge-more-menu:not([hidden])) .topbar { z-index: 45; }
 @media (min-width: 761px) and (max-width: 1279px) {
   body[data-birge-mode="resident"] .birge-legend { bottom: 88px; }
 }
+/* R12 волна 2 п. 6: пока открыт QR-паспорт, «Карта жалоб» и реестр работ в панели не показываются (одна карточка). */
+body.birge-report-open #birge-heat-root, body.birge-report-open .civic-works { display: none; }
+/* …и кнопка «Сообщить о проблеме» R09 не перекрывает главную кнопку паспорта (как при карточке R07). */
+body.birge-report-open .bc-fab { display: none !important; }

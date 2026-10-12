@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Birge · QR</title>
+  <link rel="stylesheet" href="/civic/ui-kit/tokens.css">
+  <link rel="stylesheet" href="/civic/ui-kit/components.css">
+  <link rel="stylesheet" href="/civic/qr/print.css">
+</head>
+<body class="bk-app">
+  <!-- R12 волна 2 п. 6 (IA_WAVE2 §6.2): «Ещё → QR-таблички» акимата. Встроенных скриптов нет (CSP R01): print.js
+       сам запускается на #bqp-root[data-autostart]. Генератор QR — LOCAL-11 (MIT); нет файла — 404 и честная заглушка. -->
+  <main id="bqp-root" class="bqp" data-autostart></main>
+  <script src="/vendor/qrcode/qrcode.js"></script>
+  <script src="/civic/i18n/i18n.js"></script>
+  <script src="/civic/qr/print.js"></script>
+</body>
+</html>

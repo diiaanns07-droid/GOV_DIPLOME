@@ -644,6 +644,7 @@
   }
 
   function setSection(section, options) {
+    section = ROUTE_ALIAS[section] || section;  // прежние имена (#complaints, #ask) — и из кода ролей
     if (!SECTIONS.includes(section)) section = "map";
     // «Картина дня» — экран акимата; житель всегда на карте. Раздел другого вида переключает вид (ссылка, «Ещё»).
     if (section === "day" && state.mode === "resident") setMode("akimat");
@@ -686,6 +687,11 @@
     buildDay();
     buildScreen();
     watchExplore();
+    // R12 волна 2 п. 6: QR-таблички — отдельная страница печати (web/civic/qr/print.html); пункт «Ещё → QR-таблички»
+    // у акимата появляется, когда в сборке есть модуль QR R12 (report.js). Скрипты defer: проверяем после всех.
+    const linkQr = () => { if (window.BirgeReport && !screenModule("qr")) registerScreen({ id: "qr", href: "/civic/qr/print.html" }); };
+    if (document.readyState === "complete") linkQr();
+    else { document.addEventListener("DOMContentLoaded", linkQr, { once: true }); window.addEventListener("load", linkQr, { once: true }); }
     // Разделы — адрес #day, #nearby, #ideas, #more…; прочие адреса (#object=, #target=, #school) — карта, как раньше.
     const routeOf = () => { const h = ROUTE_ALIAS[location.hash.slice(1)] || location.hash.slice(1); return SECTIONS.includes(h) ? h : "map"; };
     setSection(routeOf(), { hash: false });

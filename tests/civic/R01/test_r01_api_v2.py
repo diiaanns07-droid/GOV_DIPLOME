@@ -87,6 +87,7 @@ ROUTE_SAMPLES = [
     ("GET", "/objects-near", "lon=71.41&lat=51.11", None),
     ("GET", "/yard", "lon=71.41&lat=51.11", None),
     ("GET", "/geo/status", "", None),
+    ("GET", "/target", "id=osm-node-4109037549", None),  # R12 волна 2 п. 6: QR-паспорт
     ("GET", "/proposals/summary", "", None),
     ("GET", "/proposals/p-1", "", None),
     ("POST", "/proposals/p-1/approve", "", {}),
