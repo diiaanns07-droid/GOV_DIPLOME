@@ -308,7 +308,6 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-inbox__item--open { box-shadow: 0 0 0 2px var(--c-brand, #152c26); }
 .bc-inbox__detail { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 16px; }
 .bc-inbox__map { align-self: flex-start; }
-.bc-inbox__demo { align-self: flex-start; }
 .bc-more__demo { display: inline-flex; margin-top: 8px; }
 /* Сноска «Пример для показа…» — внизу списка (R11 D-5); на стекле «Моих обращений» — тем же серым. */
 .bc-demo-note { text-align: left; }

@@ -154,8 +154,6 @@
       var li = h("li", { "class": "bk-card bc-inbox__item" + (expanded ? " bc-inbox__item--open" : ""), "data-demo": group.demo ? "true" : null }, head);
       if (expanded) {
         var detail = h("div", { "class": "bc-inbox__detail" });
-        // Раскрытая строка — карточка: метка «Пример» здесь, у действий (в списке — одна сноска внизу, R11 D-5).
-        if (group.demo) detail.appendChild(h("span", { "class": "bk-tag bk-tag--demo bc-inbox__demo" }, t("common.demo")));
         if (typeof opts.openTarget === "function" && group.target && group.target.id) {
           detail.appendChild(h("button", { "class": "bk-btn bc-inbox__map", type: "button",
                                            onclick: function () { opts.openTarget(group.target.kind, group.target.id, 14); } },

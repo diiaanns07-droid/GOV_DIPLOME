@@ -23,8 +23,8 @@ M6) Круг 7 — правки R11 для R09 (INTEGRATION R11 §9.3, §10.3, �
       «Сообщить о проблеме» на ≥ 761 — без transform (left/right + margin-inline: auto; width: max-content): ваше
       button:active { translate } больше не с чем спорить. Области прежние (см. M1).
     - R10: «Пример» в списках — одна строка .bc-demo-note (.bk-footnote) внизу «Обращений» и «Моих обращений»; метка
-      .bk-tag--demo осталась у раскрытой строки «Обращений» (.bc-inbox__demo), в «Подробнее» (.bc-more__demo) и у похожей
-      на шаге «Я тоже». Строка «Обращений» с примером — li.bc-inbox__item[data-demo]. Ноль у вкладки скрыт
+      .bk-tag--demo осталась в «Подробнее» (.bc-more__demo) и у похожей на шаге «Я тоже»; раскрытая строка «Обращений»
+      с примером и так говорит «Это пример: статус примеров не меняется…». Строка с примером — li.bc-inbox__item[data-demo]. Ноль у вкладки скрыт
       (.bc-inbox__count[data-zero]). «Обращения» без входа — главная кнопка «Войти» (единственная на экране).
     - R11: состояния — иллюстрации ui-kit (staff / offline / list / done) через BirgeUI.illustration-совместимую разметку
       (<svg class="bk-ill"><use href="…icons.svg#ill-…">); без BirgeUI.illustration — прежний значок. Экран успеха —
