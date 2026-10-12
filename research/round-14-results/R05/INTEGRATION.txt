@@ -17,6 +17,13 @@ R05 -> R01 / R06 / R11 / R12 / R10 / LOCAL — INTEGRATION, раунд 14 (ди�
 - Ваш тест r14_b2 на R05 3f0e872 давал 1 FAIL: предупреждение Chrome «Canvas2D: Multiple readback…» от прежней
   тени на холсте — с 5e8b2cc тень без холста, предупреждения нет (проверка — DELIVERY.json, раздел марафона).
 - Кадры до/после: research/round-14-results/R05/design/before → after; разбор по чек-листу — design/CHECKLIST.md.
+- Круг 3 (панель, R11 INTEGRATION 11.3, 16.5): каталог «Что построить?» — плитки ui-kit (заливка --c-fill без рамки)
+  с превью моделей; выбранный проект — табличка и пунктир сплошным #152c26 (было синее кольцо фокуса).
+  «Закрыть» под листом → «×» в листе: R05 рисует «×» в заголовке каталога, если хозяин передал onCatalogClose().
+  Для R01 — research/round-14-results/R05/proposed_r01_marathon.patch (к d2b5f087, 7 строк, git apply --check: OK):
+    shell.js  — в mount: onCatalogClose: () => { setBuild3dCatalog(false); фокус на «Что построить?» }
+    birge.css — .birge-build3d-root[data-catalog="open"]:has(.b3d-head__close) .birge-b3d-toggle { display: none; }
+  Без патча — всё как раньше (каталог закрывается вашей кнопкой «Закрыть»); со старым R05 правило не срабатывает.
 
 FINAL-3 + СТЕКЛО (12.10, вечер) — что взять R01. Код — code_sha из DELIVERY.json (поставка 10).
 - web/civic/build3d/ целиком. Шапку, меню, кнопки карты R05 не трогает. Патч wave2 (эскиз идеи, #birge-legend в avoid)
