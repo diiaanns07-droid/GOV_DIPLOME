@@ -176,7 +176,7 @@
  },
  "for_R01": {
   "final3_candidate": "61be62e6 (стекло), 3d8c426f, f94f0fc и 2f643dc приняты R10 (ACCEPTANCE_FINAL3.md §8, §0а, §0)",
-  "R10_tests_to_take": "tests/e2e/ и tests/civic/R10/ с claude/r14-R10 @ d9d64772 или новее: glass_check.cjs (замечания R01 24.5 учтены, «Мои обращения» data-step=mine — список, автовыключатель после движения карты), demo_flow --glass keep|off, r10_lib glassMode/glassSeen",
+  "R10_tests_to_take": "tests/e2e/ и tests/civic/R10/ с claude/r14-R10 (≥ этого коммита): wave_checks W2-6 принимает табличку R12 (qr.sign.call); design_book/summary/compare, motion_check, glass_check (светлый/пёстрый фон, перетаскивание, проверка «надпись открыта» у краёв), demo_flow --glass",
   "baseline": "research/round-14-results/R10/baseline_8e67c65/ (+ audit/, ACCEPTED.json: шаг 2 и 6, r07-seg-dashed, переименование проверки шрифта)",
   "open_for_others": "R08 — B-059, свой фон .akim-hot__list на телефоне; R07 — B-065 частично, стекло панели (GLASS §4 R07); R11 — --glass-text-2 на шаг темнее (по желанию)",
   "glass": "Сборка со стеклом 61be62e6 принята: контраст на фонах карты в норме, запасной вид PASS (шапка поправлена), автовыключатель №8 срабатывает один раз после движения карты, время сценария не изменилось. Для показа на проекторе/слабом ноутбуке — ?glass=off или автовыключатель.",
@@ -248,7 +248,10 @@
     "R09 — строки «Мои обращения», лента статусов",
     "R01 — «i» MapLibre 24 px",
     "R08 — вкладки «Рядом» телефон kk"
-   ]
-  }
+   ],
+   "logic": "волны 241/0 FAIL (тест W2-6 обновлён под табличку R12 qr.sign.call), точность 31/0"
+  },
+  "final_before_after": "research/round-14-results/R10/design/compare-final/ — 8e67c65 | FINAL-3 61be62e6 | марафон 83010621: лучше 112 из 114 (хуже 2 — «i» MapLibre 24 px)",
+  "totals_per_screen": "43,1 (8e67c65) → 15,1 (FINAL-3) → 6,0 (марафон 83010621)"
  }
 }
