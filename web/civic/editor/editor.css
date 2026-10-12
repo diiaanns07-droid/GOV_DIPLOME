@@ -28,7 +28,8 @@ body[data-birge-tools="off"] .civic-r04-tech { display: none; }
 .civic-r04-ask { flex: 1 1 100%; order: 4; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--c-warn-soft, #fff4dc); border-radius: 10px; padding: 12px 16px; }
 .civic-r04-ask p { margin: 0; flex: 1 1 100%; }
 .civic-r04-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 16px 16px 0; }
-.civic-r04-body h3 { margin: 8px 0; font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
+/* .civic-r04 впереди: правило оболочки «.civic-drawer h3 { 13px }» (shell.css) не должно уменьшать заголовок записи. */
+.civic-r04 .civic-r04-body h3 { margin: 8px 0; font-size: 17px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .civic-r04-body h4 { margin: 16px 0 8px; font-size: 15px; font-weight: 600; }
 .civic-r04-muted, .civic-r04-help { color: var(--r4-muted); font-size: 13px; margin: 4px 0; }
 .civic-r04-meta { font-size: 13px; color: var(--r4-muted); margin: 0 0 8px; overflow-wrap: anywhere; }
@@ -184,9 +185,14 @@ body[data-birge-tools="off"] .civic-r04-tech { display: none; }
 .civic-r04-rules { color: var(--r4-muted); }
 .civic-r04-street { margin: 8px 0; padding: 12px 16px; border: 0; border-radius: var(--r-l, 14px); background: var(--r4-fill); }
 .civic-r04-street > label { font-weight: 600; font-size: 15px; display: block; margin: 0 0 8px; }
-.civic-r04-street input:not([type=checkbox]):not([type=radio]) { background: var(--c-surface, #fff); }
+/* Внутри серых блоков (предпросмотр, координаты, источник, улица, подтверждение) поля и второстепенные кнопки — белые,
+   иначе серое на сером не видно. */
+:is(.civic-r04-preview, .civic-r04-coords, .civic-r04-source, .civic-r04-checks, .civic-r04-radios, .civic-r04-street, .civic-r04-confirm-box, .civic-r04-note, .civic-r04-msg-info)
+  :is(input:not([type=checkbox]):not([type=radio]):not([readonly]), select, textarea, .civic-r04-btn:not(.primary):not(.link):not(.danger)) { background: var(--c-surface, #fff); }
+:is(.civic-r04-preview, .civic-r04-coords, .civic-r04-source, .civic-r04-street, .civic-r04-confirm-box, .civic-r04-note, .civic-r04-msg-info)
+  .civic-r04-btn:not(.primary):not(.link):not(.danger):hover:not(:disabled) { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px var(--c-line-strong, #d3d8db); }
 .civic-r04-street-list { list-style: none; margin: 4px 0; padding: 0; max-height: 220px; overflow-y: auto; }
-.civic-r04-street-list .civic-r04-btn { text-align: left; width: 100%; min-height: 44px; background: transparent; font-weight: 400; }
+.civic-r04-street .civic-r04-street-list .civic-r04-btn { text-align: left; width: 100%; min-height: 44px; background: transparent; font-weight: 400; }
 .civic-r04-street-list .civic-r04-btn:hover:not(:disabled) { background: var(--c-surface, #fff); }
 .civic-r04-vxlist { list-style: decimal inside; padding: 0; margin: 4px 0; max-height: 200px; overflow-y: auto; }
 .civic-r04-vxlist .civic-r04-btn[aria-pressed=true] { font-weight: 600; background: var(--c-brand, #152c26); color: #fff; }

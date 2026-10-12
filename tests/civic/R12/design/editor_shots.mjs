@@ -1,4 +1,5 @@
-// R12 · дизайн-марафон: кабинет сотрудника (редактор) — вход, список, новый объект, ошибки, запись — 1366/375 × ru/kk.
+// R12 · дизайн-марафон: кабинет сотрудника (редактор) — вход, список, новый объект, ошибки, опубликованная запись
+//   (верх, «Как увидят жители», история) — 1366/375 × ru/kk. Метрики (размеры, веса, зоны < 44, фоны) — по последнему экрану.
 //   NODE_PATH=$(npm root -g) node editor_shots.mjs <base> <out> <файл-пароля> [логин]
 import { createRequire } from "node:module";
 import fs from "node:fs";
@@ -41,6 +42,19 @@ for (const [w, h] of [[1366, 768], [375, 812]]) for (const lang of ["ru", "kk"])
   await p.click('#civic-editor [data-fk="save"]').catch(() => null);
   await p.waitForTimeout(500);
   await shot("new-errors");
+  // опубликованная запись: верх (карточка, сообщение), предпросмотр «Как увидят жители», низ (история)
+  await p.click('#civic-editor [data-fk="back"]').catch(() => null);
+  await p.waitForSelector("#civic-editor .civic-r04-list", { timeout: 10000 }).catch(() => null);
+  await p.click("#civic-editor .civic-r04-tabs button >> nth=1").catch(() => null);
+  await p.waitForTimeout(300);
+  await p.click("#civic-editor .civic-r04-list .civic-r04-row >> nth=0").catch(() => null);
+  await p.waitForSelector("#civic-editor .civic-r04-form", { timeout: 10000 }).catch(() => null);
+  await scrollBody("top"); await shot("edit-top");
+  await p.click('#civic-editor [data-fk="preview"]').catch(() => null);
+  await p.waitForTimeout(300);
+  await p.evaluate(() => { const e = document.querySelector("#civic-editor .civic-r04-preview"); if (e) e.scrollIntoView({ block: "start" }); });
+  await shot("edit-preview");
+  await scrollBody("end"); await shot("edit-end");
   const m = await p.evaluate(() => {
     const r = document.querySelector("#civic-editor .civic-r04"); if (!r) return null;
     const vis = [...r.querySelectorAll("*")].filter((e) => e.getClientRects().length);
