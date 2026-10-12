@@ -8,6 +8,8 @@ const pw = require("playwright");
 const [BASE, OUT, ONLY] = process.argv.slice(2);
 fs.mkdirSync(OUT, { recursive: true });
 const STOP = "osm-node-4109037549";
+// R12_SIZES=375x812,1024x768,1366x768 — другие размеры экрана (проектор 1024); по умолчанию 375 и 1366.
+const SIZES = (process.env.R12_SIZES || "375x812,1366x768").split(",").map((x) => x.split("x").map(Number));
 const STATES = {
   loading: { id: STOP, route: "hold" },
   open: { id: STOP },
@@ -24,7 +26,7 @@ const b = await pw.chromium.launch({ args: ["--enable-unsafe-swiftshader", "--us
 const report = [];
 for (const name of only) {
   const st = STATES[name];
-  for (const [w, h] of [[375, 812], [1366, 768]]) for (const lang of ["ru", "kk"]) {
+  for (const [w, h] of SIZES) for (const lang of ["ru", "kk"]) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: w < 500, deviceScaleFactor: w < 500 ? 2 : 1 });
     const p = await ctx.newPage();
     const errs = []; p.on("pageerror", (e) => errs.push(e.message));

@@ -11,7 +11,9 @@ const PASS = fs.readFileSync(PWF, "utf8").trim();
 fs.mkdirSync(OUT, { recursive: true });
 const b = await pw.chromium.launch({ args: ["--enable-unsafe-swiftshader", "--use-angle=swiftshader"] });
 const rep = [];
-for (const [w, h] of [[1366, 768], [375, 812]]) for (const lang of ["ru", "kk"]) {
+// R12_SIZES=1366x768,1024x768,375x812 — другие размеры экрана (проектор 1024); по умолчанию 1366 и 375.
+const SIZES = (process.env.R12_SIZES || "1366x768,375x812").split(",").map((x) => x.split("x").map(Number));
+for (const [w, h] of SIZES) for (const lang of ["ru", "kk"]) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: w < 500 });
   const p = await ctx.newPage();
   const errs = []; p.on("pageerror", (e) => errs.push(e.message));
