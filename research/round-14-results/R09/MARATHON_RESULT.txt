@@ -5,6 +5,8 @@ glass_r09.cjs — ИТОГ: 34/34 PASS
 browser_r09.cjs --r11 <сборка> — ИТОГ: 474/474 PASS;  browser_r09.cjs (kit-fallback, без ui-kit) — ИТОГ: 474/474 PASS
 pytest tests/civic/R09/test_r09v2_*.py + R01 + R15 + R11 + R04 на том же дереве — 1000 passed, 2 skipped
 design_tour_r09.cjs --only 375-ru,1366-ru — 60 кадров, 0 ошибок обхода; кадры — design/round8/before|after.
+R10 wave_checks (claude/r14-R10, скрипт не менялся с e978a6f) --only W2-1,W2-2,W1-8: ИТОГ: { PASS: 59, FAIL: 0, PENDING: 0,
+  NOT_RUN: 1, INFO: 3 } — NOT_RUN у самой проверки R10 («нужна просроченная запись»), как и на b2b1236.
 Настоящий телефон — NOT_RUN (в облачной сессии устройства нет).
 
 R09 · дизайн-марафон — круг 7 (12 окт, вечер). Код R09: 1188e1d (правки R11 §9.3/§10.3/§11.6/§12.2/D-1/D-5/D-7).

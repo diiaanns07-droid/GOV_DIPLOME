@@ -166,7 +166,7 @@
   "stand_r11_glass_kit": "474/474 PASS (77c8400)",
   "stand_kit_fallback": "474/474 PASS (77c8400)",
   "design_tour": "round 7: before 112 / after 120 frames (375/1366 ru/kk), round 8: 60 frames (375/1366 ru), 0 tour errors — design/round7, design/round8",
-  "r10_wave_checks": "NOT_RUN on 77c8400 (59/0/1 on b2b1236; round 7–8 change states/heights, not flows)",
+  "r10_wave_checks": "W2-1/W2-2/W1-8 (claude/r14-R10 wave_checks.cjs, unchanged since e978a6f) on 77c8400: 59 PASS / 0 FAIL / 1 NOT_RUN (R10's own placeholder: needs an overdue record) / 3 INFO",
   "phone_device": "NOT_RUN (no device in the cloud session)",
   "rounds1_6": {
    "marathon_tree_rounds1_6": "R01 65343341 (FINAL-3 with glass) + R09 b2b1236",
