@@ -1,0 +1,10 @@
+{
+  "complaint_id": "c-demo4eca27874085ec47",
+  "public_has_reporters": true,
+  "public_reporters": 3,
+  "staff_has_reporters": false,
+  "staff_metoo": 2,
+  "summary_reporters": 3,
+  "ui_gate": "match.reporters > 0",
+  "ui_result_if_staff": "step 4 skipped; sends a new complaint"
+}

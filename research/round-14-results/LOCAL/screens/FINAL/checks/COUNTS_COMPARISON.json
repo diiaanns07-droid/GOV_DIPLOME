@@ -1,0 +1,65 @@
+{
+  "same_target": "osm-node-4109037549",
+  "category": "lighting",
+  "days": 14,
+  "complaint_summary_reporters": 7,
+  "heat_count": 7,
+  "heat": {
+    "target": {
+      "kind": "object",
+      "id": "osm-node-4109037549",
+      "label_ru": "Остановка «Хан Шатыр»",
+      "label_kk": "«Хан Шатыр» аялдамасы",
+      "subtype": "bus_stop"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        71.406553,
+        51.131155
+      ]
+    },
+    "anchor": [
+      71.406553,
+      51.131155
+    ],
+    "weight": 6.831,
+    "level": 3,
+    "color": "#E24B4A",
+    "count": 7,
+    "fixed_until": null,
+    "state": "active",
+    "status": "new",
+    "approximate": false,
+    "district": "nura",
+    "by_category": {
+      "lighting": 7
+    },
+    "daily": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      4
+    ],
+    "last_at": "2026-10-11T21:57:37+05:00",
+    "open_ids": [
+      "c-c243c345228db942",
+      "c-406c66998e8ffc69",
+      "c-c8cd8a348b514501",
+      "c-8ce9dd362d96cce6",
+      "c-demo4eca27874085ec47"
+    ],
+    "examples_open": 0,
+    "demo": false
+  }
+}

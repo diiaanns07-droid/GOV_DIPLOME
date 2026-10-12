@@ -1,0 +1,167 @@
+[
+  {
+    "file": "01-demo-ru-01-overview.png",
+    "caption": "Обзор Астаны, реальные объекты и синтетическая тепловая карта",
+    "source": "demo-ru/01-overview.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 460717,
+    "sha256": "d827a4e08e06e6818d64cb0a8b094dd4f3902fa41268651898d972a200491231"
+  },
+  {
+    "file": "02-demo-ru-02-real-buildings.png",
+    "caption": "Локальная подложка, подписи и 3D-здания",
+    "source": "demo-ru/02-real-buildings.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 517086,
+    "sha256": "4bc1577aa35e8f5cb13fef4de5ff63333a7dd2727945c0e2db8661e53b33f8bd"
+  },
+  {
+    "file": "03-demo-ru-05-model-lighting.png",
+    "caption": "Смешанный текст и подсказка локальной модели R03",
+    "source": "demo-ru/05-model-lighting.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 435846,
+    "sha256": "f4e98e49a34b5849b9ced99d2f8ad819486c75f1d62c4faeb0054fa662cc8454"
+  },
+  {
+    "file": "04-demo-ru-06-similar-three.png",
+    "caption": "Три человека уже сообщили — объединение жалоб",
+    "source": "demo-ru/06-similar-three.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 426969,
+    "sha256": "f8eaed3f8f9545c5f38d8edf7c82bef44a90e9c438b92102d8d3b23e618f8a05"
+  },
+  {
+    "file": "05-demo-ru-07-metoo-four.png",
+    "caption": "Голос учтён — четыре человека",
+    "source": "demo-ru/07-metoo-four.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 416628,
+    "sha256": "c7e76c5c5794f9c848abdbcd6cef73576456e7956459c51b2673392722cee424"
+  },
+  {
+    "file": "06-demo-ru-08-heat.png",
+    "caption": "Тепловая карта после голоса",
+    "source": "demo-ru/08-heat.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 433431,
+    "sha256": "aef8f21f5aef8c8c0dba019d9fd81d271899a1a9344c30984b842b747e39d50e"
+  },
+  {
+    "file": "07-demo-ru-11-day-kpi.png",
+    "caption": "Картина дня: показатели",
+    "source": "demo-ru/11-day-kpi.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 221713,
+    "sha256": "32cbf4398b76cb1e3193ae52f7fb068e5ac7843ba529a0fd153369555ba146fc"
+  },
+  {
+    "file": "08-demo-ru-12a-day-lagging.png",
+    "caption": "Объекты с отставанием и этапы работ",
+    "source": "demo-ru/12a-day-lagging.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 196108,
+    "sha256": "395bc2fda1529b1ab6a53a7de1de2040fcbfe731f2b633c2e545b69db20fc729"
+  },
+  {
+    "file": "09-demo-ru-22-fixed-green.png",
+    "caption": "Акимат отметил проблему исправленной",
+    "source": "demo-ru/22-fixed-green.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 428933,
+    "sha256": "6fa064c8a10d2c8736d2ef45ff14685503207c2acf30fdc8385de201517130fa"
+  },
+  {
+    "file": "10-demo-kk-05-model-lighting.png",
+    "caption": "ҚАЗ: подсказка категории",
+    "source": "demo-kk/05-model-lighting.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 446404,
+    "sha256": "1b1ef057a70e5e255d7136dbb8cfa9d062702b2a7cc00569d4f897033102ace8"
+  },
+  {
+    "file": "11-demo-kk-11-day-kpi.png",
+    "caption": "ҚАЗ: күн қорытындысы",
+    "source": "demo-kk/11-day-kpi.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 226910,
+    "sha256": "1cebfd8b7cdf677a4b3d2031ba3e18eb1f5c5cc698934c64b8f9c21a7c2a7458"
+  },
+  {
+    "file": "12-demo-kk-17-project-angle.png",
+    "caption": "ҚАЗ: поставленный сквер при наклоне 60°",
+    "source": "demo-kk/17-project-angle.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 432613,
+    "sha256": "bd21ae857e6bc2bf6faed97a3bf45dbb16f59b8ad5c9ec3f7f148d0b2abfdf6c"
+  },
+  {
+    "file": "13-demo-kk-19-vote-saved.png",
+    "caption": "ҚАЗ: голос жителя за проект",
+    "source": "demo-kk/19-vote-saved.png",
+    "dimensions": [
+      1366,
+      768
+    ],
+    "bytes": 365551,
+    "sha256": "4de875ead003bfeca907c0858798efaa03c24ae1aefd059f63a234e541697b86"
+  },
+  {
+    "file": "14-checks-offline-375-kk-resident-form.png",
+    "caption": "375×812: мастер жителя на казахском без интернета",
+    "source": "checks/offline-375-kk-resident-form.png",
+    "dimensions": [
+      375,
+      812
+    ],
+    "bytes": 53698,
+    "sha256": "040a9d22c1e604df3189123d16bc5cf9387ab0d02b976340dd10aec194b30573"
+  },
+  {
+    "file": "15-e2e-375-ru-6-mine.jpg",
+    "caption": "375×812: исправлено в моих обращениях",
+    "source": "offline/e2e/375-ru-6-mine.jpg",
+    "dimensions": [
+      375,
+      812
+    ],
+    "bytes": 17635,
+    "sha256": "baefcc4d1521dc030c4fe9144f8f524f0adf1efb6db6d40c9c18bd0eea73df08"
+  }
+]

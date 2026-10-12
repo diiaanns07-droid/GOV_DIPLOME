@@ -84,3 +84,30 @@ LOCAL-3. Окружение для обучения модели (без ком�
 ## 13–15 октября: Codex desktop — запуск сборки и скриншоты (LOCAL-7)
 
 «Переключись на SHA сборки R01 (из его STATUS.md) в отдельном worktree, запусти run-city.bat, пройди research/round-14-results/R01/DEMO_SCRIPT.md, сделай скриншоты 1366×768 и 375×812 каждого шага в ҚАЗ и РУС → research/round-14-results/LOCAL/screens/<сборка>/, запушь в claude/round-14-package, перечисли всё, что работает не так».
+
+## LOCAL-9: погода Астаны для прогноза R13 (Codex desktop)
+
+```
+Работай в папке C:\Users\LEGION\Desktop\hackalem\birge-coord (это отдельная рабочая папка ветки claude/round-14-package; основную папку проекта не трогай). git pull --rebase origin claude/round-14-package.
+Скачай с Open-Meteo Historical Weather API (https://archive-api.open-meteo.com/v1/archive) дневную погоду Астаны
+(latitude 51.13, longitude 71.43, timezone Asia/Almaty) с 2023-01-01 по вчерашний день: temperature_2m_max, temperature_2m_min,
+precipitation_sum, snowfall_sum, rain_sum, wind_speed_10m_max (и snow_depth_mean, если API отдаёт его для daily).
+Сохрани data/civic/astana/weather/openmeteo_daily.csv и SOURCE.json (URL запроса, дата скачивания, лицензия CC BY 4.0,
+атрибуция «Weather data by Open-Meteo.com»). Коммить только эту папку, git pull --rebase, push в origin claude/round-14-package. Отчёт: число дней, SHA.
+```
+
+## LOCAL-10: светофоры и пешеходные переходы Астаны (Codex desktop)
+
+```
+Работай в папке C:\Users\LEGION\Desktop\hackalem\birge-coord (ветка claude/round-14-package; git pull --rebase до и перед push).
+Как в LOCAL-1 (тот же bbox, тот же формат gzip JSON с out geom), скачай через Overpass: highway=traffic_signals и highway=crossing (узлы).
+Сохрани data/civic/astana/osm-objects/raw/traffic_signals.json.gz и crossings.json.gz, дополни README.md и SOURCE.json. Коммить только эти файлы, push. Отчёт: число объектов, SHA.
+```
+
+## LOCAL-11: генератор QR-кодов (Codex desktop)
+
+```
+Работай в C:\Users\LEGION\Desktop\hackalem\birge-coord (ветка claude/round-14-package; git pull --rebase до и перед push).
+Скачай qrcode-generator (Kazuhiko Arase, MIT) версии 1.4.4 из npm: файл qrcode.js → web/vendor/qrcode/qrcode.js, LICENSE и SOURCE.txt (версия, URL, sha256).
+Проверь в Node, что генерирует QR для строки «http://127.0.0.1:8611/?report=osm-node-1». Коммить только web/vendor/qrcode/, push. Отчёт: SHA.
+```

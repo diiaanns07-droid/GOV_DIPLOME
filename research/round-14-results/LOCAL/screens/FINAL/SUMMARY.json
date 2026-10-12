@@ -1,0 +1,86 @@
+{
+  "tested_sha": "8e67c65fb0d6d6b3956c421993f7530fa1767ec9",
+  "r10_online": {
+    "PASS": 140,
+    "FAIL": 0,
+    "NOT_RUN": 0
+  },
+  "r10_offline": {
+    "PASS": 140,
+    "FAIL": 0,
+    "NOT_RUN": 0
+  },
+  "ux": {
+    "PASS": 106,
+    "FAIL": 0,
+    "NOT_RUN": 8
+  },
+  "accuracy": {
+    "PASS": 29,
+    "FAIL": 0,
+    "NOT_RUN": 0
+  },
+  "timing_profiles": 8,
+  "external_requests": 0,
+  "bad_http": 0,
+  "js_errors": [
+    {
+      "profile": "online-1366-ru",
+      "errors": []
+    },
+    {
+      "profile": "online-1366-kk",
+      "errors": []
+    },
+    {
+      "profile": "online-375-ru",
+      "errors": [
+        {
+          "type": "pageerror",
+          "text": "Cannot read properties of null (reading 'text')"
+        }
+      ]
+    },
+    {
+      "profile": "online-375-kk",
+      "errors": [
+        {
+          "type": "pageerror",
+          "text": "Cannot read properties of null (reading 'text')"
+        }
+      ]
+    },
+    {
+      "profile": "offline-1366-ru",
+      "errors": []
+    },
+    {
+      "profile": "offline-1366-kk",
+      "errors": []
+    },
+    {
+      "profile": "offline-375-ru",
+      "errors": [
+        {
+          "type": "pageerror",
+          "text": "Cannot read properties of null (reading 'text')"
+        }
+      ]
+    },
+    {
+      "profile": "offline-375-kk",
+      "errors": [
+        {
+          "type": "pageerror",
+          "text": "Cannot read properties of null (reading 'text')"
+        }
+      ]
+    }
+  ],
+  "b2_closed": 9,
+  "b2_partial": [
+    9
+  ],
+  "best_screens": 15,
+  "video_count": 2
+}
