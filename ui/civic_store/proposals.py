@@ -319,7 +319,7 @@ class ProposalRepository:
                 errors.add("geometry", f"Не более {MAX_PROPOSAL_POSITIONS} точек.")
             elif _geofence() and any(district_of({"type": "Point", "coordinates": p}) is None for p in points):
                 errors.add("geometry", "Место должно быть внутри границы Астаны.")
-        default_ru, default_kk = DEFAULT_TITLES.get(kind, (None, None))
+        default_ru, default_kk = DEFAULT_TITLES.get(kind, (None, None)) if isinstance(kind, str) else (None, None)
         title_ru = clean_text(payload.get("title_ru"), "title_ru", errors, max_len=MAX_TITLE, nullable=True)
         title_kk = clean_text(payload.get("title_kk"), "title_kk", errors, max_len=MAX_TITLE, nullable=True)
         near_street = clean_text(payload.get("near_street"), "near_street", errors, max_len=MAX_TITLE, nullable=True)

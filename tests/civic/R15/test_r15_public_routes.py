@@ -28,7 +28,9 @@ MARKERS = {
     "точка жителя (долгота)": "71.412345",
     "заметка сотрудника": "R15-NOTE-MARKER",
     "логин сотрудника": STAFF,
+    "текст «Я тоже» (R09 волна 1 п. 9)": "R15-METOO-MARKER",
 }
+METOO_DEVICE = "device-r15-metoo-marker-01"
 QUERY = ("bbox=70.9,50.9,71.9,51.4&lon=71.4123&lat=51.1234&district=nura&days=30&zoom=16"
          f"&target_id={CELL}&kind=area&id={CELL}")
 
@@ -51,6 +53,11 @@ def _seed(srv):
     if status not in (200, 201):
         pytest.skip(f"жалобы R09 в этой сборке не принимаются: {status}")
     complaint = json.loads(data)["data"]["complaint"]
+    # «Я тоже» с текстом (R09 + R04 п. 9): текст жителя виден только акимату (GET /complaints/merged).
+    request(srv, "POST", "/api/civic/v2/complaints/%s/metoo" % complaint["id"],
+            {"note": {"text": "R15-METOO-MARKER у меня то же самое, звоните 5551234", "point": POINT,
+                      "target": {"kind": "area", "id": CELL}}},
+            headers={"Origin": origin, "X-Birge-Device": METOO_DEVICE})
     store = srv.civic.service("store")
     if store is not None and hasattr(store, "accounts"):
         store.accounts.create_user(STAFF, "R15-Strong-Pass-2026", display_name="R15 Маркеров", role="editor")
@@ -96,6 +103,17 @@ def test_public_v2_routes_leak_no_personal_markers(srv):
                     leaks.append(f"{key} ({path}{'?' + query if query else ''}): {what}")
     assert checked, "ни один публичный маршрут не ответил"
     assert not leaks, "личные данные в публичных ответах:\n" + "\n".join(sorted(set(leaks)))
+    if any(key == "complaints.merged" for _m, _p, key in web_server.V2_ROUTES):
+        # Проверка самой проверки: текст «Я тоже» сохранился и виден сотруднику — значит, его действительно искали.
+        origin = "http://127.0.0.1:%d" % srv.server_address[1]
+        status, headers, raw = request(srv, "POST", "/api/civic/v1/session/login",
+                                       {"username": STAFF, "password": "R15-Strong-Pass-2026"}, headers={"Origin": origin})
+        if status == 200:
+            cookie = headers.get("set-cookie", "").split(";")[0]
+            target_id = (complaint.get("target") or {}).get("id") or CELL   # R09 пересчитывает ячейку по точке (S12)
+            status, _h, raw = request(srv, "GET", "/api/civic/v2/complaints/merged?target_id=" + target_id,
+                                      headers={"Cookie": cookie})
+            assert status == 200 and b"R15-METOO-MARKER" in raw, (status, raw[:300])
 
 
 def test_author_sees_own_text_but_not_staff_note(srv):

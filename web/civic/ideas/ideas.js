@@ -690,7 +690,12 @@
       var form = state.form || (state.form = { id: item.id, check: Object.assign({ land: "unknown", networks: "unknown", access: "unknown", maintenance: "unknown" }, item.check || {}),
         kind: item.object && item.object.kind || null, mode: null, reason: "", improve: "" });
       var panel = h("div", { class: "ri-panel" });
-      if (item.status === "review") {
+      if (item.status === "rejected" || item.status === "project") {
+        // R15-S30: уже решённую идею можно скрыть (личные данные заметили позже, просьба автора).
+        panel.appendChild(h("div", { class: "bk-actions" }, [
+          button("bk-btn--ghost", tr("idea.hide"), null, { onclick: function () { form.mode = "hide"; render(); } }),
+        ]));
+      } else if (item.status === "review") {
         // Модерация до голосования (R11 SCHEMES §2.3): «Опубликовать» / «Отклонить с причиной»; третья, тихая кнопка —
         // «Скрыть» для личных данных и грубых слов (отклонённая идея видна всем, скрытая — нет).
         panel.appendChild(h("div", { class: "bk-actions" }, [

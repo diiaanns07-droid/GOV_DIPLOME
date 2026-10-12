@@ -504,3 +504,31 @@ web/civic/offline/{style.json, boot.js}. Скриншоты до/после — 
 16.4 Проверено: pytest R09+R04+R01+R15+R07+R12+R08 1763 passed; весь pytest 3455 passed / 2 failed (только точность R10
      c24/c26 — R12 D12.2 дал R10 patch); app_demo_r09 75/75; браузер B2 28/0, B1 16/0, шапка 42/0, P0 63/0/1, город 81/0,
      волна 2 42/0.
+
+17. FINAL-3 шаг 6 (12 окт): безопасность R15 (S30–S40), «Вопрос акиму» R13, «Пульс» (R13 → R08), словарь R11
+17.1 R15 (claude/r14-R15 6b1b1ab / e970cf2): P-R01-2 (шлюз: сессия + CSRF у kind="service" со staff=True — S34; «\Z»
+     вместо «$» в CIVIC_ID / V2_DEVICE_ID / V2_DISTRICT / V2_DATE — S36) — применён как есть.
+     P-R06-3 (S30 важно, S31–S33) сделан на R06 ae9ba29, к 21a9739 — 3-way с двумя конфликтами, слиты вручную:
+       ideas.py decide(): hide ← review|voting|checking|rejected|project (R15: скрыть и после решения + статус R06
+       «checking»), check ← voting|checking, project ← voting|checking, reject ← review|voting|checking (как у R06 21a9739);
+       ideas.js: у rejected/project — только тихая «Скрыть», дальше ветка review R06 со своим комментарием.
+       Остальное (публично — только опубликованные, личные данные → 422, очередь, типы) — как в patch.
+     R06: возьмите ui/civic_store/{ideas,nearby,proposals}.py и web/civic/ideas/ideas.js из сборки (или P-R06-3 с этим
+     слиянием) — иначе следующая поставка R06 откатит S30–S33.
+     tests/civic/R15 из claude/r14-R15 (test_r15_ideas, test_r15_qa, public_routes); S30–S40 перенесены в FIXED
+     (r15_common.py) — все 20 тестов были XPASS(strict). R15: 235 passed, 1 skipped.
+17.2 R13 поставка 3 (198902f): пути ui/civic_qa/, web/civic/qa/, tests/civic/R13/, ml/civic_forecast/, ui/civic_forecast/;
+     P-R13 R15 (S35 S37 S39 S40) — чисто. Маршруты — P-R01-3 R15 (= r01_questions_route.patch R13 + staff=True у
+     qa.publish/reject/answer + суточное окно qa.create 30, S38), перенесён вручную: patch сделан на дереве без R06/R09
+     (blob не найден для 3-way) — 7 маршрутов /questions…, V2_HANDLERS, лимиты qa.create/qa.vote, 4 файла CIVIC_ASSETS,
+     qa.css/qa.js в index.html, 7 примеров в test_r01_api_v2.py. Оболочке правок не нужно (SCREENS.questions).
+17.3 R08 «Пульс»: r08_pulse_not_by_chance.patch R13 (ui/civic_akim/pulse.py + тест R08) — применён R01: R08 закончил
+     круги проверок (8e0b2ac), R11 принял метод (разбор 15), R13 §9 «применяет R08 или R01». R08: возьмите к себе.
+17.4 R11 словарь 2b8f72e2 (web/civic/i18n: +38 ключей «Вопрос акиму», ask.staff.week в смысле R13, +2) — ui-kit не менялся
+     с 85a11f0 (уже в сборке).
+17.5 Тест R01 под сборку: r14_wave2 — «Ещё» акимата в полной сборке занят 4 разделами ролей (Вопросы жителей · Работы и
+     отключения · QR-таблички · Службы); пятая зарегистрированная ссылка по правилу ≤ 4 не показывается — проверяется
+     предел, пункт «ссылка видна» — NOT_RUN с причиной.
+17.6 Проверено: pytest весь 3545 passed / 2 failed (только точность R10 c24/c26 — R12 D12.2 дал patch R10); R15 235/1 skip;
+     R13 qa_browser 69/69; R06 app_r01_wave2 90/90, слой идей 16/16; браузер B2 28/0, B1 16/0, шапка 42/0, P0 63/0/1,
+     город 81/0, волна 2 42/0.

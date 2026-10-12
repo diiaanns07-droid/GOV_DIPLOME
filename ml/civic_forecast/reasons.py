@@ -86,7 +86,7 @@ def render(reason: dict, lang: str = "ru") -> str:
         return f"В {MONTH_LOC_RU[mi]} начинается отопительный сезон — больше жалоб на тепло и воду"
     if k == "forecast.reason.heat":
         if kk:
-            return f"{MONTH_LOC_KK[mi].capitalize()} әдетте {_num(n)} ыстық күн (+28 °C және одан жоғары) — қоқыс пен жағымсыз иіс"
+            return f"{MONTH_LOC_KK[mi].capitalize()} әдетте {_num(n)} ыстық күн (+28 °C-тан жоғары) — қоқыс пен жағымсыз иіс"
         return f"В {MONTH_LOC_RU[mi]} обычно {_num(n)} {_plural_ru(n, 'жаркий день', 'жарких дня', 'жарких дней')} (выше +28 °C) — мусор и запахи"
     if k == "forecast.reason.thaw_last":
         if kk:

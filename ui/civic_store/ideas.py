@@ -19,7 +19,10 @@
 from __future__ import annotations
 
 import hashlib
+import re
 import secrets
+import threading
+import time
 
 from .districts import DISTRICT_NAMES, district_of
 from .districts import _load as _geofence
@@ -46,6 +49,14 @@ CITY_BOX = (70.9, 50.9, 71.9, 51.4)
 IDEAS_PER_HOUR = 5
 REVIEW_PER_DEVICE = 3
 REVIEW_QUEUE_MAX = 300
+# R15-S32: очередь полна — новые идеи принимаются только с адресов, которые за сутки идей не подавали (один скрипт
+# с десятков адресов не закрывает приём для всего города), и не больше этого потолка.
+REVIEW_QUEUE_HARD_MAX = 2 * REVIEW_QUEUE_MAX
+CREATOR_MEMORY = 24 * 3600.0
+# R15-S31: идею увидят все — телефон, почта и ИИН в ней не нужны (шаблоны как в ui/civic_feedback/text.py).
+_PERSONAL = (re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+", re.UNICODE), re.compile(r"(?<!\d)\d{12}(?!\d)"),
+             re.compile(r"(?<![\w+])(?:\+?7|8)[\s\-()]*\d{3}[\s\-()]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}(?!\d)"))
+PERSONAL_HINT = "Не пишите телефон, e-mail или ИИН: идею увидят все жители."
 SUPPORTS_PER_MINUTE = 30
 SUPPORTS_PER_IDEA_PER_DAY = 20      # как VOTES_PER_TARGET_PER_DAY у проектов (R15 S08)
 
@@ -62,6 +73,20 @@ class IdeaRepository:
         self.create_limiter = RateLimiter(IDEAS_PER_HOUR, window=3600.0)
         self.support_limiter = RateLimiter(SUPPORTS_PER_MINUTE)
         self.target_limiter = RateLimiter(SUPPORTS_PER_IDEA_PER_DAY, window=24 * 3600.0)
+        self._creators: dict[str, float] = {}   # R15-S32: адрес → когда подал последнюю идею (память процесса)
+        self._creators_lock = threading.Lock()
+
+    def _recent_creator(self, client_key: str) -> bool:
+        with self._creators_lock:
+            at = self._creators.get(client_key)
+            return at is not None and time.monotonic() - at < CREATOR_MEMORY
+
+    def _remember_creator(self, client_key: str) -> None:
+        with self._creators_lock:
+            now = time.monotonic()
+            if len(self._creators) > 10000:
+                self._creators = {k: v for k, v in self._creators.items() if now - v < CREATOR_MEMORY}
+            self._creators[client_key] = now
 
     # --- служебное -----------------------------------------------------------------------
 
@@ -143,10 +168,11 @@ class IdeaRepository:
         with self.db.read() as conn:
             device = self._device(conn, device_id)
             rows = conn.execute(
-                f"""SELECT * FROM civic_ideas WHERE status IN ({','.join('?' * len(statuses))})
-                       OR (? IS NOT NULL AND author_hash = ? AND status IN ('review', 'hidden'))
+                f"""SELECT * FROM civic_ideas WHERE (status IN ({','.join('?' * len(statuses))})
+                           AND (? OR published_at IS NOT NULL))
+                       OR (? IS NOT NULL AND author_hash = ? AND status IN ('review', 'hidden', 'rejected'))
                     ORDER BY created_at DESC, id DESC LIMIT ?""",
-                (*statuses, device, device, MAX_LIST + 1)).fetchall()
+                (*statuses, int(staff), device, device, MAX_LIST + 1)).fetchall()
             items = []
             for row in rows[:MAX_LIST]:
                 if district is not None and row["district"] != district:
@@ -163,7 +189,8 @@ class IdeaRepository:
         with self.db.read() as conn:
             row = self._row(conn, idea_id)
             device = self._device(conn, device_id)
-            if not staff and row["status"] not in PUBLIC_STATUSES and row["author_hash"] != device:
+            if not staff and (row["status"] not in PUBLIC_STATUSES or row["published_at"] is None) \
+                    and row["author_hash"] != device:
                 raise NotFound(idea_id)  # чужая идея на проверке не видна
             return {"item": self._dto(conn, row, device, staff=staff)}
 
@@ -244,6 +271,9 @@ class IdeaRepository:
             errors.add("title", f"Название — от {TITLE_MIN} символов.")
         description = clean_text(payload.get("description"), "description", errors, max_len=DESCRIPTION_MAX,
                                  multiline=True)
+        for name, value in (("title", title), ("description", description)):
+            if isinstance(value, str) and name not in errors.fields and any(rx.search(value) for rx in _PERSONAL):
+                errors.add(name, PERSONAL_HINT)
         geometry = self._clean_point(payload.get("geometry"), "geometry", errors)
         obj = self._clean_object(payload.get("object"), errors)
         device_id = payload.get("device_id")
@@ -263,12 +293,13 @@ class IdeaRepository:
                 raise Conflict(f"У вас уже {REVIEW_PER_DEVICE} идеи на проверке. Дождитесь ответа.", None,
                                code="limit")
             queue = conn.execute("SELECT COUNT(*) FROM civic_ideas WHERE status = 'review'").fetchone()[0]
-            if queue >= REVIEW_QUEUE_MAX:
+            if queue >= REVIEW_QUEUE_HARD_MAX or (queue >= REVIEW_QUEUE_MAX and self._recent_creator(client_key)):
                 raise Conflict("Сейчас на проверке много идей. Попробуйте завтра.", None, code="limit")
             # Лимит по адресу — последним: отказ по другим причинам не тратит попытку жителя.
             if not self.create_limiter.allow(client_key):
                 raise _VoteRateLimited("С этого устройства или сети уже много новых идей. Попробуйте через час.",
                                        self.create_limiter.retry_after(client_key))
+            self._remember_creator(client_key)
             idea_id = "i-" + secrets.token_hex(6)
             conn.execute(
                 """INSERT INTO civic_ideas(id, lang, texts_json, geometry_json, district, object_json, status,
@@ -368,8 +399,10 @@ class IdeaRepository:
         with self.db.write() as conn:
             row = self._row(conn, idea_id)
             status = row["status"]
-            sources = {"publish": ("review",), "hide": ("review", "voting", "checking"), "check": ("voting", "checking"),
-                       "project": ("voting", "checking"), "reject": ("review", "voting", "checking")}[action]
+            # R15: скрыть можно и после решения (личные данные заметили позже, просьба автора).
+            sources = {"publish": ("review",), "hide": ("review", "voting", "checking", "rejected", "project"),
+                       "check": ("voting", "checking"), "project": ("voting", "checking"),
+                       "reject": ("review", "voting", "checking")}[action]
             if status not in sources:
                 raise Conflict("Решение по идее уже принято: обновите карточку.", None, code="already_decided")
             check_json = _dumps(check) if check is not None else row["check_json"]
@@ -408,9 +441,9 @@ class IdeaRepository:
         kind = payload.get("kind") or obj.get("kind")
         geometry = payload.get("geometry") or obj.get("geometry") or _loads(row["geometry_json"])
         rotation = payload.get("rotation_deg", obj.get("rotation_deg", 0))
-        if kind is None:
+        if not isinstance(kind, str):
             raise ValidationError({"kind": "Выберите объект из каталога: " + ", ".join(KINDS) + "."})
-        if kind == "lighting" and (geometry or {}).get("type") != "LineString":
+        if kind == "lighting" and (not isinstance(geometry, dict) or geometry.get("type") != "LineString"):
             raise ValidationError({"geometry": "Освещение — линия вдоль участка улицы: поставьте его в 3D-каталоге."})
         body = {"kind": kind, "geometry": geometry, "rotation_deg": rotation, "demo": bool(row["demo"])}
         for key in ("near_street", "near_street_kk", "planned_year"):

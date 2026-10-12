@@ -12,11 +12,18 @@
      и вдвое больше, чем за 7 дней до того (нужны времена нажатий metoo_times).
 Одна тема всплеснула сразу в нескольких районах (снегопад) — одна тревога «по городу» со списком районов
 (spike_city), а не пять одинаковых строк. Порядок — по силе сигнала (score), не больше MAX_ALARMS.
+Не случайно ли (R13, research/round-14-results/R13/PULSE_METHOD.md): всплеск остаётся, только если при обычном уровне
+такая неделя бывает реже чем в 1 случае из 100 (SURPRISE_P). Проверка учитывает, что «обычный уровень» сам посчитан
+по 2–4 неделям: если всё как обычно, каждое из n = сейчас + сумма прошлых недель сообщений с равной вероятностью
+попадает в любую из недель; P(в текущую ≥ сейчас) — биномиальная. Без неё на обычных неделях (синтетика R13, 72 пары
+«район × тема») пульс показывал ~2,9 ложной тревоги в неделю, с ней ~0,3; всплеск ×5 находится в 90 % недель (было 95 %).
+Тревога «по городу» остаётся, если неожиданна хотя бы в одном районе. Текст тревоги не меняется.
 Ссылка: место на карте (у всплеска — самое горячее место этой категории в районе / в городе).
 """
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+import math
 
 from . import text as T
 
@@ -28,6 +35,7 @@ MIN_REPORTS = 5
 SPIKE_RATIO = 2.0
 MIN_METOO_WEEK = 8
 MAX_ALARMS = 5
+SURPRISE_P = 0.01
 
 
 def _report_times(r: dict, parse_time) -> list[datetime]:
@@ -85,7 +93,7 @@ def alarms(records: list[dict], as_of: datetime, *, parse_time, district_of, cat
             out.append({"kind": kind, "category": cat, "district": d_id, "value": cur,
                         "base": round(base, 1), "ratio": ratio, "weeks": len(weeks), "score": score,
                         "target": _target(hottest.get((cat, d_id)))})
-        out = _merge_city(out, hottest)
+        out = [a for a in _merge_city(out, hottest) if _not_by_chance(a)]
 
     prev_ids = {(it["target"].get("kind"), it["target"].get("id")) for it in items_prev}
     for it in items_now:
@@ -130,6 +138,36 @@ def alarms(records: list[dict], as_of: datetime, *, parse_time, district_of, cat
             "method": {"min_reports": MIN_REPORTS, "spike_ratio": SPIKE_RATIO, "base_weeks": BASE_WEEKS,
                        "min_metoo_week": MIN_METOO_WEEK},
             "note": None if len(weeks) >= MIN_BASE_WEEKS else "too_little_history"}
+
+
+def _surprise(value: int, base: float, weeks: int) -> float:
+    """P(в текущей неделе ≥ value сообщений), если всё как обычно: биномиальная, n = value + base × weeks, q = 1/(weeks+1).
+
+    Первый член — через логарифм гамма-функции, следующие — умножением; хвост дальше 1e-12 не считаем (быстро и при
+    тысячах сообщений в неделю).
+    """
+    k, n = int(value), int(value) + int(round(base * weeks))
+    q = 1.0 / (weeks + 1)
+    if k <= 0:
+        return 1.0
+    term = math.exp(math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1)
+                    + k * math.log(q) + (n - k) * math.log1p(-q))
+    if term == 0.0:  # всплеск ≥ 2 × обычного: члены дальше только убывают — хвост тоже ≈ 0
+        return 0.0
+    total, ratio = term, q / (1 - q)
+    for i in range(k + 1, n + 1):
+        term *= (n - i + 1) / i * ratio
+        total += term
+        if term < 1e-12 * total:
+            break
+    return min(1.0, total)
+
+
+def _not_by_chance(a: dict) -> bool:
+    if a["kind"] == "spike_city":
+        return any(_surprise(r["value"], r["value"] / r["ratio"] if r.get("ratio") else 0.0, a["weeks"]) <= SURPRISE_P
+                   for r in a["districts"])
+    return _surprise(a["value"], a.get("base") or 0.0, a["weeks"]) <= SURPRISE_P
 
 
 def _merge_city(spikes: list[dict], hottest: dict) -> list[dict]:

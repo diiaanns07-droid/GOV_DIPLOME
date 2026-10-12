@@ -105,7 +105,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 # B3: запасной фон карты без интернета (web/map.js offlineStyle) — оси улиц OSM со стенда R07 @ 306074b.
                 "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
-                "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css")
+                "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
+                # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
+                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
 # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
@@ -124,7 +126,7 @@ for _asset in CIVIC_ASSETS:
 CIVIC_PREFIX = "/api/civic/v1"
 CIVIC_MAX_BODY = 64 * 1024
 CIVIC_MAX_QUERY = 2048
-CIVIC_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}$")
+CIVIC_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")  # \Z: «$» пропускает «id\n» (R15-S36)
 # Order matters: /objects/{id}/feedback must win over /objects/{id}.
 CIVIC_ROUTES = (
     ("GET", ("modules",), "gateway"),
@@ -221,6 +223,10 @@ V2_RATE_LIMITS = {
     "complaints.photos.start": ((60, 20, False), (3600, 60, False)),
     "complaints.photos.chunk": ((60, 300, False),),
     "complaints.verify": ((60, 30, False), (86400, 20, True)),
+    # R13 волна 2 п. 9 («Вопрос акиму»): новый вопрос — как жалоба, но реже; голос — как «Я тоже» (≤ 20 в сутки
+    # за один вопрос с адреса, R15 S08). Сервис R13 сам держит ≤ 3 вопросов на проверке и ≤ 5 в сутки на устройство.
+    "qa.create": ((60, 3, False), (3600, 20, False), (86400, 30, False)),  # R15-S38: сутки — очередь модерации
+    "qa.vote": ((60, 30, False), (86400, 20, True)),
 }
 
 
@@ -613,9 +619,9 @@ CATEGORIES_V2_FILE = ROOT / "research" / "round-14" / "categories_v2.json"
 # Город с запасом: координаты вне этого прямоугольника — точно ошибка ввода (CONTRACT §8).
 ASTANA_BOUNDS = (70.9, 50.9, 71.9, 51.4)
 V2_TEXT_MAX = 5000
-V2_DEVICE_ID = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
-V2_DISTRICT = re.compile(r"^[a-z][a-z0-9_-]{1,39}$")
-V2_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+V2_DEVICE_ID = re.compile(r"^[A-Za-z0-9._:-]{8,128}\Z")  # R15-S36: «dev\n» — второй голос
+V2_DISTRICT = re.compile(r"^[a-z][a-z0-9_-]{1,39}\Z")
+V2_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}\Z")
 
 
 class V2Handler:
@@ -717,6 +723,14 @@ V2_ROUTES = (
     ("POST", ("works", "{id}", "remove"), "works.remove"),
     # R13 @ 8705829: прогноз проблемных территорий (прототип на синтетике, evidence_type="synthetic").
     ("GET", ("forecast",), "forecast"),
+    # R13 волна 2 п. 9: «Вопрос акиму» (ui.civic_qa, kind="service"). Точный путь staff — раньше {id}.
+    ("GET", ("questions",), "qa.list"),
+    ("POST", ("questions",), "qa.create"),
+    ("GET", ("questions", "staff"), "qa.staff"),
+    ("POST", ("questions", "{id}", "vote"), "qa.vote"),
+    ("POST", ("questions", "{id}", "publish"), "qa.publish"),
+    ("POST", ("questions", "{id}", "reject"), "qa.reject"),
+    ("POST", ("questions", "{id}", "answer"), "qa.answer"),
 )
 # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
 V2_HANDLERS = {
@@ -766,6 +780,12 @@ V2_HANDLERS = {
     "works.update": V2Handler("R06", ("ui.civic_store.v2",), "update_work", staff=True),
     "works.remove": V2Handler("R06", ("ui.civic_store.v2",), "remove_work", staff=True),
     "forecast": V2Handler("R13", ("ui.civic_forecast",), "forecast_response"),
+    # R13 «Вопрос акиму»: сервис на той же SQLite (таблицы qa_*); сотрудника, CSRF и Origin проверяет сам (как R09).
+    **{key: V2Handler("R13", ("ui.civic_qa",), "make_service", kind="service") for key in (
+        "qa.list", "qa.create", "qa.staff", "qa.vote")},
+    # Модерация: сессия R02 + CSRF проверяет и шлюз (staff=True, R15-S34), и сам сервис — защита в глубину.
+    **{key: V2Handler("R13", ("ui.civic_qa",), "make_service", kind="service", staff=True) for key in (
+        "qa.publish", "qa.reject", "qa.answer")},
 }
 
 
@@ -1279,6 +1299,10 @@ class CivicV2Gateway:
             return self._raw(fn, key, rel_path if handler.strip_prefix else CIVIC_V2_PREFIX + rel_path, query, module,
                              handler, staff=staff)
         if handler.kind == "service":
+            if handler.staff:  # R15-S34: сервис проверяет сотрудника сам; шлюз — ещё раз (сессия R02 + CSRF)
+                _principal, denied = self._staff(context)
+                if denied:
+                    return denied
             return self._delegate(fn, method, rel_path, query, body, context, module, handler)
         try:
             args = self.arguments(key, params, query, body)

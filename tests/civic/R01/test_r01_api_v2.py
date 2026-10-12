@@ -115,6 +115,14 @@ ROUTE_SAMPLES = [
     ("POST", "/works/w-1", "", {"type": "work"}),
     ("POST", "/works/w-1/remove", "", {"expected_revision": 1}),
     ("GET", "/forecast", "month=2026-11&k=5", None),
+    # R13 волна 2 п. 9: «Вопрос акиму»
+    ("GET", "/questions", "tab=top", None),
+    ("POST", "/questions", "", {"text": "Когда откроют каток во дворе?", "district": "nura", "device_id": "device-123"}),
+    ("GET", "/questions/staff", "tab=queue", None),
+    ("POST", "/questions/q-1/vote", "", {"device_id": "device-123"}),
+    ("POST", "/questions/q-1/publish", "", {}),
+    ("POST", "/questions/q-1/reject", "", {"reason": "other"}),
+    ("POST", "/questions/q-1/answer", "", {"answer_ru": "Ответ акима на вопрос"}),
 ]
 
 

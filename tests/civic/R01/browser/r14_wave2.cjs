@@ -346,9 +346,13 @@ async function main() {
     await page.click("#birge-header .birge-nav [data-section=more]");
     await page.waitForTimeout(200);
     const akimatMore = await page.evaluate(() => [...document.querySelectorAll("#birge-header .birge-more-menu [role=menuitem]")].map((a) => [a.textContent, a.getAttribute("href")]));
-    check("akimat «Ещё» appears with a registered role link (QR sheets) and lists it; «Рядом» stays a resident section",
+    // В полной сборке (с FINAL-3: R13 «Вопросы жителей», R06 «Работы и отключения», R12 QR, R08 «Службы») «Ещё» акимата
+    // уже занято четырьмя разделами ролей — пятая ссылка не влезает по правилу «Ещё» ≤ 4 (IA_WAVE2 §1).
+    const moreFull = akimatMore.length === 4 && !akimatMore.some(([label]) => label === "Листы QR для остановок");
+    if (moreFull) console.log("NOT_RUN registered link in akimat «Ещё»: menu already holds 4 role sections — cap ≤ 4 checked instead");
+    check("akimat «Ещё» appears with a registered role link (QR sheets) and lists it (or is full: ≤ 4); «Рядом» stays a resident section",
       n.ids.includes("more") && !n.ids.includes("nearby") && akimatMore.length <= 4
-      && akimatMore.some(([label, href]) => label === "Листы QR для остановок" && href === "/civic/qr/"), { ids: n.ids, akimatMore });
+      && (moreFull || akimatMore.some(([label, href]) => label === "Листы QR для остановок" && href === "/civic/qr/")), { ids: n.ids, akimatMore });
     await page.keyboard.press("Escape");
 
     // ---------------------------------------------------------------- one extra map layer at a time

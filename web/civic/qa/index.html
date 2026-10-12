@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Вопрос акиму · Birge</title>
+  <!-- R13 · «Вопрос акиму» (волна 2 п. 9). Отдельная страница для проверки без оболочки; в Birge раздел живёт в
+       оболочке R01 (#questions, BirgeAsk.mount). Вид акимата — ?role=akimat (нужен вход сотрудника). -->
+  <link rel="stylesheet" href="../ui-kit/tokens.css">
+  <link rel="stylesheet" href="../ui-kit/components.css">
+  <link rel="stylesheet" href="qa.css">
+</head>
+<body class="bk-app">
+  <header class="bk-header">
+    <div class="bk-header__brand">
+      <span class="bk-header__mark" aria-hidden="true">B</span>
+      <span class="bk-header__brand-text" data-i18n="common.app_name">Birge</span>
+    </div>
+    <div class="bk-header__end">
+      <div class="bk-seg" role="group" data-i18n-attr="aria-label:common.lang.label" aria-label="Язык интерфейса">
+        <button type="button" data-lang="kk" lang="kk" data-i18n="common.lang.kk" aria-pressed="false">ҚАЗ</button>
+        <button type="button" data-lang="ru" lang="ru" data-i18n="common.lang.ru" aria-pressed="true">РУС</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="qa-page"></main>
+
+  <noscript><p>Для этой страницы нужен включённый JavaScript.</p></noscript>
+
+  <script src="../i18n/i18n.js"></script>
+  <script src="../ui-kit/ui-kit.js"></script>
+  <script src="qa.js"></script>
+  <script src="qa-page.js"></script>
+</body>
+</html>
