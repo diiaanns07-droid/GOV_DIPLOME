@@ -1,22 +1,23 @@
 {
  "role": "R09",
  "round": 14,
- "title": "Жалоба жителя v2 — волны 1–2 (POLISH_WAVE, POLISH_WAVE_2) и LOCAL_FINAL №1–2",
- "status": "READY_FOR_FINAL_2 (волны 1–2 сделаны по схемам R11 IA_WAVE2 §2; R01 нужно взять пути R09 @ 8a1d390 и применить r01_wave2_assets.patch)",
+ "title": "Жалоба жителя v2 — волны 1–2, LOCAL_FINAL №1–2 и замечания приёмки 12 окт (R10, R11, R15, R08, R04) для FINAL-3",
+ "status": "READY_FOR_FINAL_3 (R01: взять пути R09 @ f80c0bf, применить R01_separate_routes.patch и R07_fix_form.patch, если R07 не выпустит его сам)",
  "branch": "claude/modest-shannon-0ki93p",
  "branch_note": "Ветка по BRANCHES.md. Ночной код (wizardly-ptolemy-qy8ltw @ ee94ef1, код f4fb7b9) перенесён сюда побайтно в 38e6d67; ночную ветку больше не трогаем.",
- "base_sha": "38e6d67 (пути R09 = ночной код f4fb7b9) поверх claude/round-14-package",
- "code_sha": "8a1d39077edf0055620145fdb81c9d39c88ce88f",
- "tested_sha": "8a1d39077edf0055620145fdb81c9d39c88ce88f",
- "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout 8a1d390 -- ui/civic_feedback web/civic/feedback tests/civic/R09 && git apply research/round-14-results/R09/r01_wave2_assets.patch",
+ "base_sha": "8a1d390 (волна 2) → c765bb0 (правки сборки R01 0f5101a: R15 P-R09-2, R04 п. 8, R12 QR) → f80c0bf",
+ "code_sha": "f80c0bfdda942ecb5efdedb5f49ec6a91782d58d",
+ "tested_sha": "f80c0bfdda942ecb5efdedb5f49ec6a91782d58d (пути R09) на сборке R01 claude/sharp-dijkstra-0t87gl @ 7782b92 + R01_separate_routes.patch + R07_fix_form.patch",
+ "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout f80c0bf -- ui/civic_feedback web/civic/feedback tests/civic/R09 && git apply research/round-14-results/R09/R01_separate_routes.patch && git apply research/round-14-results/R09/R07_fix_form.patch",
  "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22, Playwright + Chromium headless (программный WebGL), без интернета; настоящий телефон — NOT_RUN",
- "push_status": "OK (код 8a1d390; документы и этот файл — следующим коммитом, SHA в STATUS.md и финальном сообщении)",
+ "push_status": "код f80c0bf — push OK; документы дня и этот файл — следующим коммитом (SHA — в STATUS.md и финальном сообщении)",
  "changed_paths": {
   "code_and_tests": [
    "tests/civic/R09/app_demo_r09.cjs",
    "tests/civic/R09/browser_r09.cjs",
    "tests/civic/R09/stand/index.html",
    "tests/civic/R09/stand/serve_r09.py",
+   "tests/civic/R09/test_r09v2_demo_seed.py",
    "tests/civic/R09/test_r09v2_frontend.py",
    "tests/civic/R09/test_r09v2_neighbours.py",
    "tests/civic/R09/test_r09v2_store.py",
@@ -24,11 +25,13 @@
    "tests/civic/R09/test_r09v2_workdays.py",
    "ui/civic_feedback/v2/api.py",
    "ui/civic_feedback/v2/categories.py",
+   "ui/civic_feedback/v2/demo_seed.py",
    "ui/civic_feedback/v2/holidays_kz.json",
    "ui/civic_feedback/v2/integration.py",
    "ui/civic_feedback/v2/lifecycle.py",
    "ui/civic_feedback/v2/photos.py",
    "ui/civic_feedback/v2/record.py",
+   "ui/civic_feedback/v2/separate.py",
    "ui/civic_feedback/v2/store.py",
    "ui/civic_feedback/v2/workdays.py",
    "web/civic/feedback/categories_v2.js",
@@ -54,7 +57,18 @@
    "research/round-14-results/R09/APP_RESULT_LOCAL_FINAL.txt",
    "research/round-14-results/R09/APP_RESULT_LOCAL_FINAL_BEFORE_FIX.txt",
    "research/round-14-results/R09/DELIVERY.json",
-   "research/handoffs/astana/R09/round14/STATUS.md"
+   "research/handoffs/astana/R09/round14/STATUS.md",
+   "research/round-14-results/R09/DAY12_FIXES.md",
+   "research/round-14-results/R09/R07_fix_form.patch",
+   "research/round-14-results/R09/R01_separate_routes.patch",
+   "research/round-14-results/R09/RUN.txt",
+   "research/round-14-results/R09/APP_RESULT_R04_DAY12.txt",
+   "research/round-14-results/R09/WAVE_R10_DAY12.txt",
+   "research/round-14-results/R09/APP_RESULT_DAY12.txt",
+   "research/round-14-results/R09/BROWSER_RESULT_DAY12.txt",
+   "research/round-14-results/R09/BROWSER_RESULT_DAY12_R11UI.txt",
+   "research/round-14-results/R09/PYTEST_DAY12.txt",
+   "research/round-14-results/R09/screens-day12/"
   ]
  },
  "done": {
@@ -84,18 +98,46 @@
    "akimat_inbox_screen": "window.BirgeComplaintList for R01 #complaints (R11 IA_WAVE2 §2.5)",
    "unsubscribe": "R11 IA_WAVE2 §2.1 «Жазылымдар» — vote stays",
    "menu_badge": "changesCount() / window event birge:complaint-changes"
+  },
+  "day12": {
+   "R10_B-056_staff_after_photo_csp": "fixed (Blob upload, no fetch(blob:); inline error, button re-enabled, photo removable)",
+   "R10_B-048_B-049_demo_reset": "fixed (every CIVIC_DEMO=1 start resets demo:true records; times relative to start)",
+   "R10_W2-2_history_in_details": "fixed",
+   "R10_W2-4_nearby_in_changes": "fixed (R08 nearby.updates_for)",
+   "R10_W2-1_fix_form_in_R07_card": "fixed via R07_fix_form.patch (BirgeComplaintStaff.fixForm + passport block in card)",
+   "R11_review9_n3_cant_verify_link": "fixed",
+   "R11_review5_n4b_inbox_place_labels": "fixed (R12 street label for own cell; else code)",
+   "R11_review5_n4c_tabs_one_row_375": "fixed",
+   "R11_review5_n5_stand_r11_root": "fixed",
+   "R08_wave2_item5_needs_decision": "fixed (delay.needs_decision/options/decision; decisions.choice_for in passport)",
+   "wave1_item9_separate_R04_patch": "ported (separate.py, GET /complaints/merged, POST /complaints/{id}/separate) + R01_separate_routes.patch",
+   "R15_P-R09-2_R04_item8_R12_QR": "taken from R01 build into R09 branch (c765bb0)",
+   "LOCAL_FINAL": "no new R09 items (1–2 closed 437c5f3)"
   }
  },
  "tests": {
-  "pytest_r09_v2": "168 passed, 3 skipped (R12/R04 packages absent in R09 branch) — PYTEST_WAVE2.txt",
-  "stand_r09_kit": "450/450 — BROWSER_RESULT_WAVE2.txt",
-  "stand_r11_kit_and_dictionary": "450/450 (claude/r14-R11 @ 537dbd3) — BROWSER_RESULT_WAVE2_R11UI.txt",
-  "wave_scenarios": "232 checks, 375/1366 × ru/kk (--only wave)",
-  "real_app_r01_a96f6e3_plus_r09_plus_patch": "73/73 (steps 1–7, akimat «Обращения») — APP_RESULT_WAVE2.txt",
-  "r01_pytest_same_tree": "all passed (1 skipped)",
-  "r01_r14_wave2_same_tree": "29/31 — expected: with R09 module the akimat menu gains «Обращения» (R01 §11.1); R01 updates 2 expectations",
-  "default_map_unchanged": "checked on 4 combos: no bc-* layers, only the FAB before opening the wizard",
-  "phone_device": "NOT_RUN (no device in the cloud session)"
+  "day12_tree": "R01 7782b92 + R09 f80c0bf + R01_separate_routes.patch + R07_fix_form.patch",
+  "pytest_r09_r04_r01": "1065 passed, 2 skipped — PYTEST_DAY12.txt",
+  "pytest_r15_r08_r07_r12": "211/1 skip · 258/1 skip · 175 · 40 — all passed",
+  "pytest_r02_r03_r05_r06_r11_r13_citywide": "all passed",
+  "pytest_r10": "34 passed, 2 failed — test_r10_accuracy (R12/R07 objects vs OSM points: no full OSM extract in the cloud), not R09",
+  "r04_app_polish": "39/39 PASS — APP_RESULT_R04_DAY12.txt",
+  "r10_demo_reset_check": "4/4 PASS",
+  "r10_wave_checks": "see WAVE_R10_DAY12.txt",
+  "r09_real_app": "see APP_RESULT_DAY12.txt",
+  "r09_stand": "see BROWSER_RESULT_DAY12.txt / BROWSER_RESULT_DAY12_R11UI.txt",
+  "phone_device": "NOT_RUN (no device in the cloud session)",
+  "previous_wave2": {
+   "pytest_r09_v2": "168 passed, 3 skipped (R12/R04 packages absent in R09 branch) — PYTEST_WAVE2.txt",
+   "stand_r09_kit": "450/450 — BROWSER_RESULT_WAVE2.txt",
+   "stand_r11_kit_and_dictionary": "450/450 (claude/r14-R11 @ 537dbd3) — BROWSER_RESULT_WAVE2_R11UI.txt",
+   "wave_scenarios": "232 checks, 375/1366 × ru/kk (--only wave)",
+   "real_app_r01_a96f6e3_plus_r09_plus_patch": "73/73 (steps 1–7, akimat «Обращения») — APP_RESULT_WAVE2.txt",
+   "r01_pytest_same_tree": "all passed (1 skipped)",
+   "r01_r14_wave2_same_tree": "29/31 — expected: with R09 module the akimat menu gains «Обращения» (R01 §11.1); R01 updates 2 expectations",
+   "default_map_unchanged": "checked on 4 combos: no bc-* layers, only the FAB before opening the wizard",
+   "phone_device": "NOT_RUN (no device in the cloud session)"
+  }
  },
  "evidence": {
   "holidays_kz.json": "derived (Labour Code art. 85 + holiday law; Kurban ait 2026-05-27 expected; transfer decree 2026 not verified)",
@@ -106,7 +148,14 @@
   "Push/SMS notifications are not implemented: «notification» = menu badge + #mine/event link.",
   "Faces and number plates on photos are not detected (hint only); review of «after» photos — R15.",
   "One verification vote per device per round; device switching is not prevented (same as «Я тоже»).",
-  "R07 card does not embed the staff component yet (R07 code); API and example in INTEGRATION.txt."
+  "R07 card gets the fix form and passport only with R07_fix_form.patch (R07 code); without it the card works as before.",
+  "«Это разные проблемы» needs R01_separate_routes.patch in the gateway (404 without it).",
+  "holidays_kz.json is derived (transfer decree 2026 not verified offline)."
  ],
- "next_step": "R01: take 8a1d390 + r01_wave2_assets.patch into FINAL-2, update 2 expectations in r14_wave2.cjs and DEMO_SCRIPT steps 6–7; R11: review SCREENS_WAVE2.md and add 42 R09 keys; R07: heat_state colours and verified/reopened events; then R09 re-runs app_demo_r09.cjs on FINAL-2."
+ "next_step": "R01: FINAL-3 — take R09 @ f80c0bf + R01_separate_routes.patch (+ R07_fix_form.patch unless R07 ships it); do not apply R04 r09_polish_r04.patch (already in R09). R07: apply R07_fix_form.patch. R11: 6 new keys (I18N_KEYS.md, 12 окт). R10: rerun W2-1/W2-2/W2-4 and B-056 on FINAL-3. R09: app_demo_r09 and stand on FINAL-3.",
+ "previous": {
+  "wave2_code_sha": "8a1d39077edf0055620145fdb81c9d39c88ce88f",
+  "wave2_status": "READY_FOR_FINAL_2 (волны 1–2 сделаны по схемам R11 IA_WAVE2 §2; R01 нужно взять пути R09 @ 8a1d390 и применить r01_wave2_assets.patch)",
+  "wave2_next_step": "R01: take 8a1d390 + r01_wave2_assets.patch into FINAL-2, update 2 expectations in r14_wave2.cjs and DEMO_SCRIPT steps 6–7; R11: review SCREENS_WAVE2.md and add 42 R09 keys; R07: heat_state colours and verified/reopened events; then R09 re-runs app_demo_r09.cjs on FINAL-2."
+ }
 }
