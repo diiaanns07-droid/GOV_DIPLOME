@@ -3,7 +3,7 @@
  "title": "Предложения, голоса жителей, этапы и отставание объектов; волна 2 — идеи жителей и «Работы и отключения»",
  "branch": "claude/r14-R06",
  "branch_note": "С 12 окт — ветка по COMMON (claude/r14-R06), создана от прежней claude/round-14-r06 (поставки 1–3, история) + слияние claude/round-14-package c86c515. Координатору: BRANCHES.md — R06 → claude/r14-R06.",
- "base_sha": "claude/round-14-package c86c515 (слит в ветку); код сверен с FINAL-2 R01 0f5101a (claude/sharp-dijkstra-0t87gl)",
+ "base_sha": "claude/round-14-package c86c515 (слит в ветку); код сверен с FINAL-2 R01 0f5101a и FINAL-3 шаг 1 7782b92 (claude/sharp-dijkstra-0t87gl)",
  "restored_from": {
   "ui/civic_store/": "claude/elegant-franklin-jbhprq @ 26793c8 (R02 раунда 13, код b9eb180)",
   "tests/civic/R06/store/": "tests/civic/R02 @ 26793c8, переименованы в r06store_*; тесты схемы/cookie/выгрузки/seed-demo/проекции обновлены под миграции 6–7, geometry_source и названия демо без служебных слов"
@@ -13,14 +13,14 @@
   "tests/civic/R06/*.py, *.cjs, harness/ (раунд 13)": "как в 0f5101a (R01 восстановил их по пинам раунда 13 и применил patch R06 tools_all) — без изменений"
  },
  "inputs_read_only": {
-  "R01 FINAL-2": "claude/sharp-dijkstra-0t87gl @ 0f5101a — дерево для проверок (ui/web_server.py, оболочка, R08, R12, R11 словарь)",
   "R05 3D": "claude/r14-R05 (web/civic/build3d @ 395d9ea, proposed_r01_wave2.patch) — для проверки слоя идей и клиента",
   "R10 приёмка": "claude/r14-R10 tests/e2e (demo_flow.cjs) — регресс сценария демо",
-  "R11 схемы": "claude/r14-R11 research/round-14-results/R11/IA_WAVE2.md §4, §8 (07708d8)",
-  "OSM": "data/civic/astana/osm-objects (LOCAL-1, real) и пешеходный граф — места демо-идей"
+  "OSM": "data/civic/astana/osm-objects (LOCAL-1, real) и пешеходный граф — места демо-идей",
+  "R01 FINAL": "claude/sharp-dijkstra-0t87gl @ 0f5101a — дерево для проверок (ui/web_server.py, оболочка, R08, R12, R11 словарь); FINAL-3 шаг 1 @ 7782b92",
+  "R11 схемы и ui-kit": "claude/r14-R11 @ d9f2ff9 (код 2b8f72e): SCHEMES_R06_R13.md v2, CLEAN_PASS.md, ui-kit/словарь 1340 ключей"
  },
- "code_sha": "d3fb9dd",
- "tested_sha": "d3fb9dd (облако Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright 1.56, без интернета)",
+ "code_sha": "21a9739",
+ "tested_sha": "21a9739 (облако Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright 1.56, без интернета)",
  "push_status": "OK — origin/claude/r14-R06",
  "delivery": 4,
  "delivery_note": "Поставка 4 (12 окт, волна 2) для FINAL-3. Поставка 3: d707efc (в FINAL-2 0f5101a вместе с P-R06-2). Поставки 1–2: 7031afa, b42e790.",
@@ -45,17 +45,19 @@
   "r01_app_e2e_r06_tools_all.patch": "из поставки 3 — уже применён R01 в 0f5101a"
  },
  "tests": {
-  "pytest tests/civic/R06/round14 + store (ветка R06)": "PASS 425 passed, 8 skipped (SKIP: соседи по переменным окружения и стык с R08 без ui/civic_akim)",
-  "дерево FINAL-2 0f5101a + пути R06 d3fb9dd + оба patch: pytest R01 R06 R08 R15": "PASS 1286 passed, 4 skipped",
-  "app_r01_wave2.cjs на том же дереве (1366 ru/kk, 375 kk/ru)": "PASS 84/84",
-  "app_r01_wave2.cjs на дереве + R05 395d9ea с его proposed_r01_wave2.patch": "PASS 84/84",
-  "app_r01_ideas_layer.cjs: с R05 395d9ea / со старым R05 FINAL-2": "PASS 16/16 / PASS 4/4 (пункта слоя нет)",
-  "R10 demo_flow.cjs на дереве FINAL-2 + R06 d3fb9dd + patch": "RUNNING — см. STATUS.md",
+  "pytest tests/civic/R06/round14 + store (ветка R06 @21a9739)": "PASS 425 passed, 8 skipped (SKIP: соседи по переменным окружения и стык с R08 без ui/civic_akim)",
+  "FINAL-3 шаг 1 7782b92 + ui-kit/словарь R11 2b8f72e + R05 395d9ea + пути R06 21a9739 + оба patch: pytest R01 R06 R08 R12 R15": "PASS 1345 passed, 7 skipped",
+  "то же дерево: app_r01_wave2.cjs (1366 ru/kk, 375 kk/ru: житель, мастер с местом на карте, акимат, работы → «Рядом» R08)": "PASS 90/90",
+  "то же дерево: app_r01_ideas_layer.cjs (слой «Идеи жителей» с R05 395d9ea)": "PASS 16/16",
+  "то же дерево: R10 demo_flow.cjs (claude/r14-R10 tests/e2e)": "RUNNING — итог в STATUS.md",
+  "FINAL-2 0f5101a (ui-kit до 12 окт) + пути R06 21a9739 + оба patch: app_r01_wave2.cjs": "PASS 90/90",
+  "FINAL-2 0f5101a + R06 со старым R05: app_r01_ideas_layer.cjs (пункта слоя нет)": "PASS 4/4",
+  "FINAL-2 0f5101a + R06 d3fb9dd + patch: R10 demo_flow.cjs": "PASS 171, FAIL 0, NOT_RUN 0 (до правок по схеме R11 v2 — они не трогают шаги демо)",
   "стенд browser_r14.cjs (ui-kit/словарь из 0f5101a)": "PASS 107/107",
   "browser_nokit.cjs (R10 B-006)": "PASS 22/22",
   "клиент R05 build3d-core 395d9ea против стенда": "PASS 17/17",
-  "app_r01_day_kk.cjs («Картина дня» ҚАЗ) на дереве с R06 d3fb9dd": "PASS 7/7",
-  "R12 tests с r12_snap_near_street.patch": "PASS 40 passed",
+  "app_r01_day_kk.cjs («Картина дня» ҚАЗ) на дереве с R06": "PASS 7/7",
+  "R15 test_r15_route_policy + R01 test_r01_api_v2 с patch на 7782b92": "PASS 123 passed",
   "Windows run-city.bat, вид полей даты/времени в Chrome ru/kk": "NOT_RUN: облако Linux (LOCAL-R06-1)"
  },
  "review_items": {
@@ -64,12 +66,17 @@
   "R10 W2-7 «Идеи»": "поставка есть: window.BirgeIdeas, API /ideas — проверено app_r01_wave2.cjs",
   "R11 UX_REVIEW разбор 3 п. 4 («проверю, когда R06/R08 зарегистрируют слои»)": "слой «Идеи жителей» регистрируется (только с R05 ≥ 395d9ea)",
   "R15 S17–S21": "P-R06-2 в ветке R06 (fa44e53), побайтно как в FINAL-2",
-  "LOCAL_FINAL (Codex)": "к R06 замечаний нет; UX NOT_RUN «страницы стендов 404» — ожидаемо (demo.html сервер не отдаёт)"
+  "LOCAL_FINAL (Codex)": "к R06 замечаний нет; UX NOT_RUN «страницы стендов 404» — ожидаемо (demo.html сервер не отдаёт)",
+  "R11 SCHEMES_R06_R13 v2 (12 окт)": "экраны «Идеи» и «Проекты и идеи» приведены к схеме: колонка 720, правило + «Бюджет участия» текстом, bk-tabs с короткими подписями, «Акимат проверяет», «Сделать проектом» только при четырёх «да», ключи схемы; 6 отступлений с причинами — INTEGRATION W.5",
+  "R11 CLEAN_PASS (чистый дизайн)": "R06 — только токены и компоненты ui-kit; раскрытая карточка без рамки; кадры с ui-kit 2b8f72e — screens/wave2/",
+  "R10 B-059": "не R06: жалобы «исправлено 143» засевает R07 ui/civic_heat/demo_seed.py; в демо R06 жалоб нет",
+  "R15 route policy (GET очереди модерации — только сотруднику)": "GET /staff/ideas и GET /works — staff=True в patch R01; модули R06 шлют X-CSRF-Token и в GET"
  },
  "known_limits": [
   "Поддержка идеи и голос за проект — одна с устройства (хэш с солью) + лимиты по адресу; без eGov/SMS накрутку можно усложнить, но не исключить: это «мнение жителей», не официальное голосование.",
   "Идея жителя — на языке, на котором её написали (lang); перевода нет. Демо-идеи и демо-«Рядом» — ru и kk (kk — черновик R06 на вычитку R11).",
   "Запись «Рядом» сотрудник пишет на языке интерфейса; второй язык — той же записью после переключения ҚАЗ/РУС. Без перевода R08 показывает текст на языке записи.",
+  "«Сделать проектом» — только при четырёх «да» в чек-листе (схема R11); сохранённый чек-лист переводит идею в «Акимат проверяет» и закрывает голосование.",
   "Освещение из идеи в проект кнопкой не превращается: линию вдоль улицы ставят в каталоге «Что построить?» (R05).",
   "Название проекта из идеи — «вид + улица рядом»; улица — из R12 /street-snap (near_street_* — r12_snap_near_street.patch); без patch — только вид.",
   "Слой «Идеи жителей» — только с R05 ≥ 395d9ea (setIdeas); со старым R05 пункта нет.",
@@ -77,5 +84,5 @@
   "Код до поставки 4 не откроет базу после миграции 9 — перед обновлением backup.",
   "Прежние ограничения поставки 3 (title_kk только у демо, район по полигонам OSM, stale) — в силе."
  ],
- "next_step": "R01 (FINAL-3): взять R06 по путям на code_sha d3fb9dd (ui/civic_store/, web/civic/proposals/, web/civic/ideas/, tests/civic/R06/round14/, tests/civic/R06/store/test_r06store_schema.py), применить r01_wave2_r06.patch и (по желанию) r12_snap_near_street.patch; для слоя идей — R05 ≥ 395d9ea. R11: 83 ключа I18N_WAVE2_R06.json и разбор экранов. R10: W2-7 и закрыть B-006/B-028. LOCAL: LOCAL-R06-1."
+ "next_step": "R01 (FINAL-3): взять R06 по путям на code_sha 21a9739 (ui/civic_store/, web/civic/proposals/, web/civic/ideas/, tests/civic/R06/round14/, tests/civic/R06/store/test_r06store_schema.py), применить r01_wave2_r06.patch и (по желанию) r12_snap_near_street.patch; для слоя идей — R05 ≥ 395d9ea. R11: 70 ключей I18N_WAVE2_R06.json и разбор экранов. R10: W2-7 и закрыть B-006/B-028. LOCAL: LOCAL-R06-1."
 }
