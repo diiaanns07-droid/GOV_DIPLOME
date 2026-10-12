@@ -414,10 +414,17 @@ async function fallbackRun(browser, base, size) {
   }
   const { ctx, page } = await openPage(browser, size, "ru", "resident", { glass: "auto" });
   try {
-    await page.goto(base); await settle(page); await L.sleep(8000);
+    await page.goto(base); await settle(page);
+    // R01 меряет кадры при движении карты (≥ 600 мс, дважды) — двигаем карту три раза по 1,5 с.
+    const before = await page.evaluate(() => document.documentElement.classList.contains("bk-glass-off"));
+    await page.evaluate(async (p) => { const m = typeof map !== "undefined" && map && map.easeTo ? map : null; if (!m) return; // eslint-disable-line no-undef
+      const wait = (ms) => new Promise((ok) => setTimeout(ok, ms));
+      for (let i = 0; i < 3; i++) { m.easeTo({ center: [p[0] + 0.01 * (i % 2 ? -1 : 1), p[1]], duration: 1500 }); await wait(2200); } }, KHAN).catch(() => null);
+    await L.sleep(1000);
     const off = await page.evaluate(() => ({ now: document.documentElement.classList.contains("bk-glass-off"), times: window.__r10_off || [] }));
+    off.before_motion = before;
     add("G-2", tag, "автовыключатель R01 (GLASS.md R01 №8: < 30 к/с при движении карты → html.bk-glass-off один раз, без мигания)", "INFO",
-      { off_now: off.now, set_at_ms: off.times.slice(0, 5), note: "облако — программный WebGL (~5 к/с): выключатель должен сработать; на ноутбуке — нет" });
+      { off_before_motion: off.before_motion, off_after_motion: off.now, set_at_ms: off.times.slice(0, 5), set_times: off.times.length, note: "облако — программный WebGL (~5 к/с): после движения карты выключатель должен сработать один раз; на ноутбуке — нет" });
   } finally { await ctx.close(); }
 }
 
