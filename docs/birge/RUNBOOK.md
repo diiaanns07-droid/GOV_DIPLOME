@@ -16,7 +16,7 @@
 ```bat
 cd C:\Users\LEGION\Desktop\hackalem\hack-d3b2c613-stupits
 git fetch origin
-git switch --detach <SHA FINAL-3 из STATUS.md R01>   & rem 12.10: кандидат 2f643dc, шаг 11 77a5e7d; FINAL-2 — 12c925a (R10 173/0/0); принятый FINAL-кандидат — 8e67c65; FINAL 15.10 — SHA из STATUS.md R01
+git switch --detach <SHA FINAL-3 из STATUS.md R01>   & rem 12.10: кандидат 2f643dc принят R10 (173/0/0), голова b3d0f90; FINAL-2 — 12c925a (R10 173/0/0); принятый FINAL-кандидат — 8e67c65; FINAL 15.10 — SHA из STATUS.md R01
 run-city.bat
 ```
 
@@ -219,7 +219,9 @@ $env:HF_HUB_OFFLINE = "1"; $env:TRANSFORMERS_OFFLINE = "1"; $env:PYTHONUTF8 = "1
 Полный порядок с репликами — `docs/gton/SPEECH.md` (R14) и `research/round-14-results/R01/DEMO_SCRIPT.md` (R01).
 
 1. **Сборка.** Показывать ту, приёмку которой закончил R10: принятый FINAL-кандидат 8e67c65 (6 шагов), FINAL-2 12c925a (7 шагов,
-   173/0/0) или FINAL-3 (чистый дизайн; приёмка R10 — `ACCEPTANCE_FINAL3.md`, когда появится).
+   173/0/0) или FINAL-3 (чистый дизайн; кандидат 2f643dc принят — `ACCEPTANCE_FINAL3.md`: 173/0/0, «можно показывать»; окончательную
+   голову и стиль «стекло» R10 проверяет). Со «стеклом» — до показа проверить на проекторе, что текст на панелях читается; если нет —
+   в Windows «Эффекты прозрачности: выкл.» (по заданию стиль тогда переходит на непрозрачный белый — проверить на ноутбуке показа).
 2. **Переход на FINAL-3 со старой базой:** сначала backup — FINAL-3 при первом запуске обновит базу (миграция 9 R06: идеи и
    «Рядом»), и код до FINAL-3 её потом не откроет:
    `.venv\Scripts\python -m ui.civic_store --db .runtime\round11-local.sqlite3 backup .runtime\before-final3.sqlite3`.
