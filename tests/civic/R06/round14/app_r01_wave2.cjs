@@ -240,7 +240,8 @@ async function akimat(browser, base, width, lang) {
   check(`${tag} акимат: нет ошибок JS (идеи)`, page.errs.length === 0, page.errs.join(" | "));
   // «Работы и отключения»: пустая форма не уходит; отключение с 4 строками «Зачем?» попадает в «Рядом» R08.
   await page.goto(base + "#works");
-  await page.waitForSelector(".rw .bk-card", { timeout: 30000 });
+  // Ждать записей, а не «.bk-card»: заглушка загрузки ui-kit — тоже .bk-card (скелет), иначе гонка с ответом /works.
+  await page.waitForSelector(".rw [data-work]", { timeout: 30000 });
   const w = await audit(page, ".rw");
   check(`${tag} работы: «${T.works}», демо-записи района, одна главная кнопка`, w.text.includes(T.works) && w.primaries === 1 && (await page.locator(".rw [data-work]").count()) >= 4, w.text.slice(0, 200));
   check(`${tag} работы: нет прокрутки вбок, текст ≥ 13 px`, w.overflow <= 1 && w.small.length === 0, w.overflow + " " + w.small.join(", "));

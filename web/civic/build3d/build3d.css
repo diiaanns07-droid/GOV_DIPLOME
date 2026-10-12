@@ -37,6 +37,10 @@
   gap: var(--s-3, 12px);
   width: min(800px, 100%);
   padding: var(--s-4, 16px) var(--s-5, 20px);
+}
+/* Без стекла ui-kit — прежняя белая панель. Со стеклом (класс bk-glass, GLASS.md R11) фон, рамку, тень и радиус
+   даёт ui-kit, в том числе запасной непрозрачный вид. */
+.b3d-dock:not(.bk-glass) {
   border-radius: var(--r-l, 16px);
   background: var(--c-surface, #ffffff);
   box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
@@ -558,6 +562,8 @@
   .b3d-dock {
     width: 100%;
     padding: var(--s-3, 12px) var(--gutter-phone, 16px) var(--s-4, 16px);
+  }
+  .b3d-dock:not(.bk-glass) {
     border-radius: var(--r-xl, 20px) var(--r-xl, 20px) 0 0;
   }
   .b3d-card {

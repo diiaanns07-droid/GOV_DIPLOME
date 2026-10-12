@@ -89,6 +89,13 @@ const openCatalog = async (p) => {
   }
   return closed;
 };
+// «Акимат / Житель»: в чистом дизайне FINAL-3 (R11 CLEAN_PASS №4) — в меню аватара, раньше — кнопками в шапке.
+async function switchMode(p, mode) {
+  if (await p.$("#birge-header .birge-avatar")) {
+    await p.click("#birge-header .birge-avatar");
+    await p.click(`#birge-account [data-mode=${mode}]`);
+  } else await p.click(`#birge-header [data-mode="${mode}"]`);
+}
 const settle = (p) =>
   p.waitForFunction(() => !document.getAnimations().some((a) => a.playState === "running" || a.pending), null, { timeout: 5000 }).catch(() => {});
 const shot = async (p, name) => {
@@ -153,14 +160,14 @@ try {
   await shot(p, "b2_1366_ru_card.png");
   // 4. «Житель» в шапке R01 → модуль сам (birge:mode): каталога нет, подсказка, тоста «Отменить» акимата нет.
   await p.evaluate((id) => CivicShell.build3d.select(null), placed.id);
-  await p.click('#birge-header [data-mode="resident"]');
+  await switchMode(p, "resident");
   await p.waitForTimeout(400);
   const res = await p.evaluate(() => ({ cards: document.querySelectorAll("#birge-build3d-root .b3d-card").length, toasts: document.querySelectorAll("#birge-build3d-root .bk-toast").length,
     hint: (document.querySelector("#birge-build3d-root .b3d-dock") || {}).innerText || "", same: !!window.CivicShell.build3d }));
   check("shell_mode_switch_to_resident_without_remount", res.cards === 0 && res.toasts === 0 && /проголосовать/.test(res.hint), res);
   await shot(p, "b2_1366_ru_resident.png");
   // 5. Акимат снова и «Удалить» (POST …/withdraw).
-  await p.click('#birge-header [data-mode="akimat"]');
+  await switchMode(p, "akimat");
   await p.waitForTimeout(300);
   await p.evaluate((id) => CivicShell.build3d.select(id), placed.id);
   await p.waitForSelector("#birge-build3d-root [data-action=delete]");
@@ -288,7 +295,8 @@ try {
     await q.waitForTimeout(2500);
     const m = await q.evaluate(() => {
       const R = (n) => { if (!n || getComputedStyle(n).visibility === "hidden") return null; const r = n.getBoundingClientRect(); return r.width ? { l: Math.round(r.left), t: Math.round(r.top), r: Math.round(r.right), b: Math.round(r.bottom) } : null; };
-      const d = document.querySelector("#birge-build3d-root .b3d-dock"), hint = R(d), lg = R(document.querySelector(".r07-maplegend")), fab = R(document.querySelector(".bc-fab"));
+      // Легенда: R07 .r07-maplegend; в чистом дизайне FINAL-3 видна строка #birge-legend (а .r07-maplegend — 0 × 0).
+      const d = document.querySelector("#birge-build3d-root .b3d-dock"), hint = R(d), lg = R(document.querySelector(".r07-maplegend")) || R(document.getElementById("birge-legend")), fab = R(document.querySelector(".bc-fab"));
       const ov = (a, b) => !!(a && b && a.l < b.r && a.r > b.l && a.t < b.b && a.b > b.t);
       return { state: d && d.dataset.state, hint, legend: lg, over_legend: ov(hint, lg), over_fab: ov(hint, fab) };
     });
@@ -315,10 +323,16 @@ try {
     await q.waitForTimeout(1500);
     const s0 = await q.evaluate(() => { const s = CivicShell.build3d.getState(); return { view: s.view, three: s.three, pitch: Math.round(map.getPitch()) }; });
     const req0 = threeReq.length;
-    const target = await q.evaluate(() => CivicShell.build3d.getState().proposals.find((x) => x.kind !== "lighting"));
-    // 14,5 — ниже автонаклона оболочки R01 (52° с 15-го масштаба): плоская карта, лёгкий вид.
-    await q.evaluate((c) => map.jumpTo({ center: c, zoom: 14.5, pitch: 0, bearing: 0 }), target.geometry.coordinates);
-    await q.waitForTimeout(900);
+    // 14,5 — ниже автонаклона оболочки R01 (52° с 15-го масштаба): плоская карта, лёгкий вид. Берём проект, чья табличка
+    // на этом масштабе не закрыта соседней (у демо R06 рядом несколько проектов — ближе они расходятся, как на любой карте).
+    let target = null;
+    for (const cand of await q.evaluate(() => CivicShell.build3d.getState().proposals.filter((x) => x.kind !== "lighting"))) {
+      await q.evaluate((c) => map.jumpTo({ center: c, zoom: 14.5, pitch: 0, bearing: 0 }), cand.geometry.coordinates);
+      await q.waitForTimeout(900);
+      const free = await q.evaluate((id) => { const b = document.querySelector(`.b3d-label[data-id="${id}"]`); if (!b || b.style.visibility === "hidden") return false;
+        const r = b.getBoundingClientRect(), t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!t && b.contains(t); }, cand.id);
+      if (free) { target = cand; break; }
+    }
     const lab = await q.$(`.b3d-label[data-id="${target.id}"]`);
     if (extra.hasTouch) await lab.tap();
     else await lab.click();
@@ -514,7 +528,11 @@ try {
       rows[kind] = await q.evaluate((id) => {
         const st = CivicShell.build3d.getState(), d = document.querySelector("#birge-build3d-root .b3d-dock"), dr = d.getBoundingClientRect();
         const lab = document.querySelector(`.b3d-label[data-id="${id}"]`), lr = lab && lab.getBoundingClientRect();
-        const c = lr && document.elementFromPoint((lr.left + lr.right) / 2, (lr.top + lr.bottom) / 2);
+        // Плашка R01 «Карта улиц не загрузилась — показан упрощённый фон» (#map-status, body.offline-basemap) — только в
+        // облаке без тайлов; на ноутбуке с локальной подложкой её нет (LOCAL_FINAL п. 10). Её не считаем, но пишем в отчёт.
+        const stack = lr ? document.elementsFromPoint((lr.left + lr.right) / 2, (lr.top + lr.bottom) / 2) : [];
+        const env_notice = stack.length > 0 && !!stack[0].closest("#map-status");
+        const c = stack.find((e) => !e.closest("#map-status"));
         const ov = (a, b) => !!(a && b && a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1);
         const under = [];
         for (const sel of ["header.topbar", ".civic-explore", ".map-tools", "#birge-legend"]) {
@@ -522,7 +540,7 @@ try {
           if (e && getComputedStyle(e).display !== "none" && ov(lr, e.getBoundingClientRect())) under.push(sel);
         }
         return { state: d.dataset.state, selected: st.selected === id, dock: [Math.round(dr.top), Math.round(dr.bottom)], label: lr ? [Math.round(lr.left), Math.round(lr.top), Math.round(lr.right), Math.round(lr.bottom)] : null,
-          visible: !!(c && c.closest(".b3d-label")), whole_on_screen: !!(lr && lr.left >= 0 && lr.right <= innerWidth), above_card: !!(lr && lr.bottom <= dr.top), under, dock_in_screen: dr.bottom <= innerHeight + 1 };
+          visible: !!(c && c.closest(".b3d-label")), env_notice, whole_on_screen: !!(lr && lr.left >= 0 && lr.right <= innerWidth), above_card: !!(lr && lr.bottom <= dr.top), under, dock_in_screen: dr.bottom <= innerHeight + 1 };
       }, id);
       if (kind === "sports") await shot(q, `phone_card_room_${vp.width}x${vp.height}_${lang}.png`);
     }

@@ -1472,6 +1472,38 @@ await check("controls_48px_all_states_1366_375_ru_kk", async () => {
   assert(Object.values(small).every((b) => b.length === 0), JSON.stringify(small));
   return { status: "PASS", detail: "все кнопки R05 ≥ 48 × 48 px: каталог, размещение, тост, карточка акимата, эскиз, подсказка, таблички, лёгкая карточка — 1366/375 × ru/kk" };
 });
+await check("glass_panel_from_ui_kit_1366_375", async () => {
+  // GLASS.md R11 (§4, R05): панель модуля (каталог, размещение, карточка, подсказка) — стекло ui-kit .bk-glass, если ui-kit
+  // его умеет; таблички на карте и тосты — без стекла; html.bk-glass-off (слабый ноутбук) — непрозрачная белая панель.
+  // Старый ui-kit без стекла — прежняя белая панель (класса нет).
+  const out = {};
+  for (const [w, h] of [[1366, 768], [375, 812]]) {
+    const phone = w < 640;
+    const p = await openPage(Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {}), "?reset=1&store=local&role=akimat&lang=ru&" + MAIN_Q.slice(1));
+    const look = () => p.evaluate(() => {
+      const d = document.querySelector(".b3d-dock"), cs = getComputedStyle(d), lab = document.querySelector(".b3d-label .b3d-label__pill") || document.querySelector(".b3d-label");
+      const alpha = (c) => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const v = m[1].split(",").map((x) => parseFloat(x)); return v.length > 3 ? v[3] : 1; };
+      return { kit_glass: !!getComputedStyle(document.documentElement).getPropertyValue("--glass-panel").trim(), cls: d.className, state: d.dataset.state,
+        blur: cs.backdropFilter || cs.webkitBackdropFilter || "none", bg_alpha: alpha(cs.backgroundColor), label_blur: lab ? (getComputedStyle(lab).backdropFilter || "none") : null };
+    });
+    const cat = await look();
+    await p.evaluate(() => __b3d.select(__b3d.getState().proposals[0].id));
+    await p.waitForSelector(".b3d-dock[data-state=card]", { timeout: 10000 });
+    // карточка выезжает (анимация) — снимок после её конца
+    await p.waitForFunction(() => !document.getAnimations().some((a) => a.playState === "running" || a.pending), null, { timeout: 5000 }).catch(() => {});
+    await p.waitForTimeout(300);
+    const card = await look();
+    if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `glass_card_${w}_ru.png`) });
+    await p.evaluate(() => document.documentElement.classList.add("bk-glass-off"));
+    const off = await look();
+    await p.context().close();
+    out[w] = { cat, card, off };
+    const glassOk = (r) => /b3d-dock/.test(r.cls) && (r.kit_glass ? /\bbk-glass\b/.test(r.cls) && /blur/.test(r.blur) && r.bg_alpha < 0.95 && r.bg_alpha >= 0.7
+      : !/\bbk-glass\b/.test(r.cls) && r.bg_alpha === 1) && (!r.label_blur || r.label_blur === "none");
+    assert(glassOk(cat) && glassOk(card) && (!off.kit_glass || (!/blur/.test(off.blur) && off.bg_alpha === 1)), JSON.stringify(out[w]));
+  }
+  return { status: "PASS", detail: out };
+});
 await check("project_from_idea_card_says_by_residents_idea_ru_kk", async () => {
   // Акимат превратил идею в проект (R06): в карточке «По идее жителей · 47 голосов» / «Тұрғындар идеясы бойынша · 47 дауыс».
   const out = {};
