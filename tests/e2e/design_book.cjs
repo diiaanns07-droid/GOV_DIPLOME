@@ -225,6 +225,14 @@ const DESIGN = () => {
     if (!hit || b === hit || b.contains(hit) || hit.contains(b)) continue;
     const by = hit.closest("button, [role=button], a, [role=dialog], .bc-fab") || hit;
     if (by === document.body || by.closest(".maplibregl-canvas-container")) continue;
+    // Задуманные наложения — не дефект: открытое меню/диалог/всплывашка поверх; кнопки карты под шторкой/панелью.
+    if (hit.closest("[role=menu], [role=dialog], [role=listbox], .bk-menu, #birge-account, .birge-more-menu, #birge-layer, .birge-legend-host, .r07-maplegend")) continue;
+    if (b.closest(".map-tools, .bk-mapctl, .birge-legend, .birge-legend-line, #birge-compass, .birge-b3d-toggle")) continue;
+    // Кнопку можно вывести прокруткой из-под закрывающего (липкая нижняя кнопка, шторка) — не дефект.
+    let sc = null; for (let q = b.parentElement; q && q !== document.body; q = q.parentElement) { const qs = getComputedStyle(q); if (/(auto|scroll)/.test(qs.overflowY) && q.scrollHeight > q.clientHeight + 1) { sc = q; break; } }
+    const cover = (hit.closest("button, [role=button], .bc-fab") || hit).getBoundingClientRect();
+    const need = r.bottom - cover.top + 8;
+    if (sc && sc.scrollHeight - sc.clientHeight - sc.scrollTop >= need) continue;
     covered.push({ label: label(b).slice(0, 30), by: label(by).slice(0, 30), owner: ownerOf(b) });
     issue("10 нажатия", ownerOf(b), `кнопка «${label(b).slice(0, 20)}» закрыта «${label(by).slice(0, 20)}»`);
   }
