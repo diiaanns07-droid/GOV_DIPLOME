@@ -164,6 +164,7 @@
   border-radius: var(--r-l);
 }
 .qa-form {
+  max-width: 640px; /* на ноутбуке форма не растягивается на всю колонку */
   padding: var(--s-4);
 }
 .qa-panel {
