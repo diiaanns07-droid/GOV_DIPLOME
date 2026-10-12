@@ -12,6 +12,7 @@
   <style>
     html, body { margin: 0; }
     body { min-height: 100vh; }
+    body.bk-app { background: var(--c-surface); } /* в оболочке экран лежит на белой панели — здесь так же */
     .akim-header__nav { display: flex; gap: var(--s-1); }
     .akim-header__nav a {
       display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 var(--s-3);
@@ -52,6 +53,7 @@
   <noscript><p style="padding: 24px">Для этой страницы нужен включённый JavaScript.</p></noscript>
 
   <script src="../i18n/i18n.js"></script>
+  <script src="../ui-kit/ui-kit.js"></script>
   <script src="nearby.js"></script>
   <script>
     (function () {
