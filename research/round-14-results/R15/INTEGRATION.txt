@@ -11,7 +11,16 @@ R15 (раунд 14) — INTEGRATION: исправления безопаснос
 (test_r15_gateway_wave2.py) 7 passed, браузер B1 15/15, B2 28/28, CSP 5 страниц — 0 нарушений.
 FINAL-2 шаг 3 = 28e23e3 (круг 5): R09 8a1d390 + P-R09-2 побайтно (S22–S24 исправлены), лимиты фото и проверки
 ремонта в V2_RATE_LIMITS — как просил R15. Тесты R15 194 passed, HTTP-тесты волны 2 11 passed, B1 15/15, B2 28/28, CSP чисто.
-ОСТАЛОСЬ для R01: при поставке QR R12 (claude/tender-brahmagupta-ef5ztl @ 73ccec4) — P-R12 (S25).
+FINAL-2 шаг 4 = 0f5101a (12 окт): QR R12 d4e2a77 + P-R12 побайтно (S25) — исправлены все 29 находок. Тесты R15
+208 passed, 3 skipped, 1 xfail (B-056); B1 15/15, B2 28/28; CSP 7 страниц (с листом QR и /?report=) — чисто.
+ОСТАЛОСЬ для FINAL-3 (R01):
+  - P-R09-3 (web/civic/feedback/complaint-staff.js) — B-056 R10: фото «после» у сотрудника через fetch(blob:…), строгая
+    CSP его запрещает. Не расширять connect-src: patch отдаёт в upload сам Blob. Затем снять xfail с
+    tests/civic/R15/test_r15_photos.py::test_staff_after_photo_is_not_read_through_blob_fetch.
+  - web/vendor/qrcode/qrcode.js (LOCAL-11): только npm qrcode-generator@1.4.4, файл package/qrcode.js, sha256
+    18ae399f81182bc9de916e9c77b195df20cc58d6f2d55a62b085a299f1bf1780 (test_vendored_qrcode_matches_npm_release).
+  - новые разделы (идеи R06, «Вопрос акиму» R13): запись жителя — в V2_RATE_LIMITS, решения/модерация — staff=True,
+    очередь модерации — не публично; это проверяет tests/civic/R15/test_r15_route_policy.py.
 
 Файлы patch (в этой папке, patches/):
   P-R01.diff  ui/web_server.py                                  S01 S02 S08 S10 + подключение S04/S12
@@ -26,6 +35,7 @@ FINAL-2 шаг 3 = 28e23e3 (круг 5): R09 8a1d390 + P-R09-2 побайтно 
   P-R12.diff   web/civic/qr/print.js                              S25 (мелочь) — QR-таблички, ночь 11→12
   P-R04-2.diff ui/civic_ml_api/profanity.py                       S26 (важно) — фильтр мата, ночь 11→12 (v2, на R04 7c590b6)
   P-R08.diff   ui/civic_akim/{nearby,routing,decisions,api}.py    S27 S28 S29 (мелочи) — «Рядом», «Службы», выбор акима (на R08 ae65c09)
+  P-R09-3.diff web/civic/feedback/complaint-staff.js             B-056 R10 (не находка: CSP и фото «после»), на R09 c765bb0
 
 Как применить (из корня рабочей копии сборки R01):
   git fetch origin claude/r14-R15
@@ -229,6 +239,18 @@ S29  api.routing_update / api.decision_choose: без principal -> PermissionErr
 Для R01 (R09 фото, когда войдут в сборку): маршруты частей фото (POST /complaints/{id}/photos/{upload}) — в
   V2_RATE_LIMITS по адресу (например, 300 частей/мин ≈ 10 МБ): незаконченная загрузка держит до 1,5 МБ в базе час,
   число начатых загрузок у автора не ограничено.
+
+
+--------------------------------------------------------------------------------
+P-R09-3  web/civic/feedback/complaint-staff.js  (R09; 12 окт, ветка claude/modest-shannon-0ki93p @ c765bb0)
+--------------------------------------------------------------------------------
+B-056 (R10, важно для сцены «Сообщить жителям» с фото): markFixed() читал фото «после» как fetch(photo.url) по
+     URL.createObjectURL — строгая CSP сборки (S01: connect-src без blob:) запрещает, отправка молча не шла.
+     Patch: BirgeComplaintPhotos.upload(id, photo.blob, …) — Blob из shrink() уже есть; после успеха revokeObjectURL.
+     R15 против варианта «connect-src … blob:»: шире, чем нужно, и ничего не даёт против найденного.
+     Проверено: R10 tests/e2e/wave_checks.cjs --only W2-1 (1366 ru) на FINAL-2 0f5101a — шаг «сотрудник через
+     «Обращения»… фото «после» … «Сообщить жителям»» FAIL → PASS с patch (остальные 4 FAIL W2-1 — карта R07, те же без
+     patch); tests/civic/R09 test_r09v2_frontend + test_r09v2_wave — 66 passed с patch и без.
 
 
 --------------------------------------------------------------------------------

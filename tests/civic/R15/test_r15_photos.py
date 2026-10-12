@@ -14,7 +14,7 @@ import zlib
 
 import pytest
 
-from r15_common import need_module, xfail
+from r15_common import ROOT, need_module, xfail
 
 # Чистый JPEG 32×24 и сразу за ним второй JPEG с EXIF: модель телефона SECRETPHONE и GPS (51°07', 71°25').
 # Так телефоны хранят MPF-превью и «живое фото» — после маркера конца первой картинки.
@@ -193,3 +193,18 @@ def test_outsider_cannot_reopen_verified_fix(svc):
     status, body = call(svc, "POST", "/complaints/%s/verify" % cid, {"answer": "no"}, context=ctx(STRANGER))
     assert status == 200 and body["data"]["result"] != "recorded"
     assert body["data"]["complaint"]["status"] == "fixed"
+
+
+# B-056 (R10, важно): строгая CSP сборки (S01: connect-src без blob:) запрещает fetch(blob:…). Фото «после» у сотрудника
+# читалось так — «Сообщить жителям» с фото молча не отправлялось. Правка — сам Blob из shrink() (patch P-R09-3), а не
+# расширение CSP. Не находка безопасности, поэтому не в FINDINGS; strict: когда R01 возьмёт P-R09-3, снять xfail.
+STAFF_JS = ROOT / "web" / "civic" / "feedback" / "complaint-staff.js"
+
+
+@pytest.mark.xfail(strict=True, reason="B-056 (R10): fetch(blob:) под CSP — patch P-R09-3 для R09, ещё не в сборке")
+def test_staff_after_photo_is_not_read_through_blob_fetch():
+    if not STAFF_JS.is_file():
+        pytest.skip("в этой сборке нет web/civic/feedback/complaint-staff.js (R09 волна 2)")
+    import re
+    code = STAFF_JS.read_text(encoding="utf-8")
+    assert not re.search(r"fetch\(\s*photo\.url", code), "fetch(blob:…) — CSP connect-src его запрещает (B-056)"

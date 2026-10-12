@@ -122,3 +122,18 @@ def test_print_page_defaults_to_this_server(static_web):
     got = _print_page(static_web, "?ids=osm-node-10272524280")
     assert got["base"] == static_web, got
     assert not any(static_web.split("//")[1] in text for text in got["warn"]), got
+
+
+# qrcode-generator 1.4.4 (Kazuhiko Arase, MIT): package/qrcode.js из npm-архива. Архив сверен с dist.integrity реестра
+# (sha512-HM7yY8O2…guuw==, sha1 63f7712…40e7) 12 окт 2026 через прокси сессии R15 (observed). LOCAL-11 кладёт файл в
+# web/vendor/qrcode/qrcode.js — подмена или другая версия заметна сразу.
+QRCODE_JS = ROOT / "web" / "vendor" / "qrcode" / "qrcode.js"
+QRCODE_JS_SHA256 = "18ae399f81182bc9de916e9c77b195df20cc58d6f2d55a62b085a299f1bf1780"
+
+
+def test_vendored_qrcode_matches_npm_release():
+    if not QRCODE_JS.is_file():
+        pytest.skip("web/vendor/qrcode/qrcode.js ещё не положен (LOCAL-11): лист печати честно предупреждает «нет QR»")
+    import hashlib
+    digest = hashlib.sha256(QRCODE_JS.read_bytes()).hexdigest()
+    assert digest == QRCODE_JS_SHA256, f"qrcode.js не тот, что в npm qrcode-generator@1.4.4: sha256 {digest}"
