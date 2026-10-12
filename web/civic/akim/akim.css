@@ -729,6 +729,32 @@
 .akim-empty { /* ниже чисел пусто всё — одно состояние «пусто» ui-kit (CLEAN_PASS §3 R08 п. 6) */
   margin: var(--s-4) 0;
 }
+.akim-empty__art {
+  display: block;
+  width: 160px;
+  height: auto;
+  margin: 0 auto var(--s-3);
+}
+.akim-empty__line {
+  fill: none;
+  stroke: var(--c-text-2);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.akim-empty__sun {
+  stroke: var(--c-brand);
+}
+.akim-empty__badge {
+  fill: var(--c-brand);
+}
+.akim-empty__check {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 /* ── узкий экран: всё в одну колонку, числа 2×2 ── */
 @media (max-width: 1023px) {
